@@ -1409,8 +1409,6 @@ qbool VID_SetWindowedMode (int modenum)
 	vid.buffer = vid.direct = dibdc->surface;
 	vid.rowbytes = dibdc->mi.bytesPerLine;
 	vid.numpages = 1;
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
 	vid.height = DIBHeight;
 	vid.width = DIBWidth;
 	vid.aspect = 1.0;
@@ -1456,8 +1454,6 @@ qbool VID_SetFullscreenMode (int modenum)
 	vid_fulldib_on_focus_mode = 0;
 
 	vid.buffer = vid.direct = NULL;
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
 	DIBHeight = vid.height = modelist[modenum].height;
 	DIBWidth = vid.width = modelist[modenum].width;
 	vid.aspect = ((float)vid.height / (float)vid.width) *
@@ -1578,8 +1574,6 @@ qbool VID_SetFullDIBMode (int modenum)
 	vid.buffer = vid.direct = dibdc->surface;
 	vid.rowbytes = dibdc->mi.bytesPerLine;
 	vid.numpages = 1;
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
 	vid.height = DIBHeight;
 	vid.width = DIBWidth;
 	vid.aspect = ((float)vid.height / (float)vid.width) *
@@ -2083,8 +2077,6 @@ void	VID_Init (unsigned char *palette)
 		VID_InitFullDIB (global_hInstance);
 	}
 
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
 	vid_testingmode = 0;
 

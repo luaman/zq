@@ -28,9 +28,6 @@ static SDL_Surface *screen = NULL;
 Uint32 flags = 0; // SDL flags
 int bpp = 0;
 
-#define WARP_WIDTH		320
-#define WARP_HEIGHT		200
-
 unsigned short	d_8to16table[256];
 unsigned		d_8to24table[256];
 unsigned        d_8to24table2[256];
@@ -484,8 +481,6 @@ void VID_Init(unsigned char *palette)
 	Cvar_Register (&m_filter);
     Cvar_Register (&_windowed_mouse);
 
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
 
 	if ((i = COM_CheckParm("-window")) != 0)

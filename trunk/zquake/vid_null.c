@@ -30,8 +30,8 @@ void	VID_ShiftPalette (unsigned char *palette)
 
 void	VID_Init (unsigned char *palette)
 {
-	vid.maxwarpwidth = vid.width = BASEWIDTH;
-	vid.maxwarpheight = vid.height = BASEHEIGHT;
+	vid.width = BASEWIDTH;
+	vid.height = BASEHEIGHT;
 	vid.aspect = 1.0;
 	vid.numpages = 1;
 	vid.colormap = host_colormap;

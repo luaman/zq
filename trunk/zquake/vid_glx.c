@@ -48,9 +48,6 @@ static GLXContext ctx = NULL;
 static float mouse_x, mouse_y, old_mouse_x, old_mouse_y;
 static qbool input_grabbed =  false;
 
-#define WARP_WIDTH		320
-#define WARP_HEIGHT		200
-
 #define KEY_MASK (KeyPressMask | KeyReleaseMask)
 #define MOUSE_MASK (ButtonPressMask | ButtonReleaseMask | \
 		    PointerMotionMask | ButtonMotionMask )
@@ -774,8 +771,6 @@ void VID_Init(unsigned char *palette)
     Cvar_Register (&_windowed_mouse);
     Cvar_Register (&m_filter);
 
-    vid.maxwarpwidth = WARP_WIDTH;
-    vid.maxwarpheight = WARP_HEIGHT;
     vid.colormap = host_colormap;
 
     // interpret command-line params

@@ -636,8 +636,8 @@ void R_SetupFrame (void)
 	{
 		if (r_dowarp)
 		{
-			if ((vid.width <= vid.maxwarpwidth) &&
-				(vid.height <= vid.maxwarpheight))
+			if ((vid.width <= WARP_WIDTH) &&
+				(vid.height <= WARP_HEIGHT))
 			{
 				r_refdef.vrect.x = 0;
 				r_refdef.vrect.y = 0;
@@ -651,16 +651,16 @@ void R_SetupFrame (void)
 				w = vid.width;
 				h = vid.height;
 
-				if (w > vid.maxwarpwidth)
+				if (w > WARP_WIDTH)
 				{
-					h *= (float)vid.maxwarpwidth / w;
-					w = vid.maxwarpwidth;
+					h *= (float)WARP_WIDTH / w;
+					w = WARP_WIDTH;
 				}
 
-				if (h > vid.maxwarpheight)
+				if (h > WARP_HEIGHT)
 				{
-					h = vid.maxwarpheight;
-					w *= (float)vid.maxwarpheight / h;
+					h = WARP_HEIGHT;
+					w *= (float)WARP_HEIGHT / h;
 				}
 
 				r_refdef.vrect.x = 0;

@@ -361,8 +361,8 @@ void VID_Init (unsigned char *palette)
 
 	Cvar_Register (&vid_ref);
 
-	vid.maxwarpwidth = vid.width = BASEWIDTH;
-	vid.maxwarpheight = vid.height = BASEHEIGHT;
+	vid.width = BASEWIDTH;
+	vid.height = BASEHEIGHT;
 	vid.aspect = ((float)vid.height / (float)vid.width) *
 				(320.0 / 240.0);
 
