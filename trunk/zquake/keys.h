@@ -101,6 +101,11 @@ typedef enum {
 	K_MOUSE1 = 200,
 	K_MOUSE2,
 	K_MOUSE3,
+	K_MOUSE4,
+	K_MOUSE5,
+	K_MOUSE6,
+	K_MOUSE7,
+	K_MOUSE8,
 
 //
 // joystick buttons
