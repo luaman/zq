@@ -35,27 +35,28 @@ HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion,
 	LPDIRECTINPUT * lplpDirectInput, LPUNKNOWN punkOuter);
 
 // mouse variables
-cvar_t	m_filter = {"m_filter","0"};
+cvar_t	m_filter = {"m_filter", "0"};
+cvar_t	in_dinput = {"in_dinput", "0"};
 
 // compatibility with old Quake -- setting to 0 disables KP_* codes
 cvar_t	cl_keypad = {"cl_keypad","1"};
 
-int			mouse_buttons;
-int			mouse_oldbuttonstate;
-POINT		current_pos;
-double		mouse_x, mouse_y;
-int			old_mouse_x, old_mouse_y, mx_accum, my_accum;
+static int		mouse_buttons;
+static int		mouse_oldbuttonstate;
+static POINT	current_pos;
+static double	mouse_x, mouse_y;
+static int		old_mouse_x, old_mouse_y, mx_accum, my_accum;
 
 static qbool	restore_spi;
 static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
-qbool			mouseinitialized;
+static qbool	mouseinitialized;
 static qbool	mouseparmsvalid, mouseactivatetoggle;
 static qbool	mouseshowtoggle = 1;
 static qbool	dinput_acquired;
 static unsigned int		mstate_di;
 unsigned int uiWheelMessage;
 
-qbool		mouseactive;
+qbool		mouseactive;	// FIXME, rename to in_mouseactive
 
 // joystick defines and variables
 // where should defines be moved?
@@ -108,12 +109,12 @@ cvar_t	joy_yawsensitivity = {"joyyawsensitivity", "-1.0"};
 cvar_t	joy_wwhack1 = {"joywwhack1", "0.0"};
 cvar_t	joy_wwhack2 = {"joywwhack2", "0.0"};
 
-qbool		joy_avail, joy_advancedinit, joy_haspov;
-DWORD		joy_oldbuttonstate, joy_oldpovstate;
+static qbool	joy_avail, joy_advancedinit, joy_haspov;
+static DWORD	joy_oldbuttonstate, joy_oldpovstate;
 
-int			joy_id;
-DWORD		joy_flags;
-DWORD		joy_numbuttons;
+static int		joy_id;
+static DWORD	joy_flags;
+static DWORD	joy_numbuttons;
 
 static LPDIRECTINPUT		g_pdi;
 static LPDIRECTINPUTDEVICE	g_pMouse;
@@ -166,7 +167,7 @@ void IN_JoyMove (usercmd_t *cmd);
 Force_CenterView_f
 ===========
 */
-void Force_CenterView_f (void)
+static void Force_CenterView_f (void)
 {
 	cl.viewangles[PITCH] = 0;
 }
@@ -332,7 +333,7 @@ void IN_RestoreOriginalMouseState (void)
 IN_InitDInput
 ===========
 */
-qbool IN_InitDInput (void)
+static qbool IN_InitDInput (void)
 {
     HRESULT		hr;
 	DIPROPDWORD	dipdw = {
@@ -423,16 +424,14 @@ qbool IN_InitDInput (void)
 IN_StartupMouse
 ===========
 */
-void IN_StartupMouse (void)
+static void IN_StartupMouse (void)
 {
-//	HDC			hdc;
-
 	if ( COM_CheckParm ("-nomouse") ) 
 		return; 
 
 	mouseinitialized = true;
 
-	if (COM_CheckParm ("-dinput"))
+	if (in_dinput.value || COM_CheckParm ("-dinput"))
 	{
 		dinput = IN_InitDInput ();
 
@@ -490,12 +489,13 @@ void IN_Init (void)
 {
 	// mouse variables
 	Cvar_Register (&m_filter);
-
-	// keyboard variables
-	Cvar_Register (&cl_keypad);
+	Cvar_Register (&in_dinput);
 
 	// joystick variables
 	Cvar_Register (&in_joystick);
+
+	// keyboard variables
+	Cvar_Register (&cl_keypad);
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 	Cmd_AddCommand ("loadkeys", IN_LoadKeys_f);
@@ -567,10 +567,9 @@ void IN_MouseEvent (int mstate)
 IN_MouseMove
 ===========
 */
-void IN_MouseMove (usercmd_t *cmd)
+static void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
-//	HDC	hdc;
 	int					i;
 	DIDEVICEOBJECTDATA	od;
 	DWORD				dwElements;
@@ -736,9 +735,6 @@ IN_Accumulate
 */
 void IN_Accumulate (void)
 {
-//	int		mx, my;
-//	HDC	hdc;
-
 	if (mouseactive)
 	{
 		GetCursorPos (&current_pos);
@@ -774,7 +770,7 @@ void IN_ClearStates (void)
 IN_StartupJoystick 
 =============== 
 */  
-void IN_StartupJoystick (void) 
+static void IN_StartupJoystick (void) 
 { 
 	int			numdevs;
 	JOYCAPS		jc;
@@ -864,7 +860,7 @@ void IN_StartupJoystick (void)
 RawValuePointer
 ===========
 */
-PDWORD RawValuePointer (int axis)
+static PDWORD RawValuePointer (int axis)
 {
 	switch (axis)
 	{
@@ -890,7 +886,7 @@ PDWORD RawValuePointer (int axis)
 Joy_AdvancedUpdate_f
 ===========
 */
-void Joy_AdvancedUpdate_f (void)
+static void Joy_AdvancedUpdate_f (void)
 {
 
 	// called once by IN_ReadJoystick and by user whenever an update is needed
@@ -1032,7 +1028,7 @@ void IN_Commands (void)
 IN_ReadJoystick
 =============== 
 */  
-qbool IN_ReadJoystick (void)
+static qbool IN_ReadJoystick (void)
 {
 
 	memset (&ji, 0, sizeof(ji));
@@ -1067,7 +1063,7 @@ qbool IN_ReadJoystick (void)
 IN_JoyMove
 ===========
 */
-void IN_JoyMove (usercmd_t *cmd)
+static void IN_JoyMove (usercmd_t *cmd)
 {
 	float	speed, aspeed;
 	float	fAxisValue, fTemp;
@@ -1283,7 +1279,6 @@ Map from windows to quake keynums and generate Key_EventEx
 void IN_TranslateKeyEvent (int lKeyData, qbool down)
 {
 	int		extended, scancode, key, shiftkey;
-	extern cvar_t	cl_keypad;
 
 	extended = (lKeyData >> 24) & 1;
 
@@ -1355,7 +1350,7 @@ keycode ext 28 KP_ENTER
 keycode     40 ' #34
 ===========
 */
-void IN_LoadKeys_f (void)
+static void IN_LoadKeys_f (void)
 {
 	int n, keynum, count, cmd_shift;
 	qbool ext;
