@@ -685,7 +685,7 @@ char *Cmd_Macro_Location_f (void)
 
 typedef struct msg_trigger_s {
 	char name[32];
-	char string[32];
+	char string[64];
 	struct msg_trigger_s *next;
 } msg_trigger_t;
 
@@ -741,7 +741,7 @@ void CL_MsgTrigger_f (void)
 	}
 
 	if (c == 3) {
-		if (strlen(Cmd_Argv(2)) > 31) {
+		if (strlen(Cmd_Argv(2)) > 63) {
 			Con_Printf ("trigger string too long\n");
 			return;
 		}
