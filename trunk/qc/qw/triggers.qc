@@ -396,7 +396,6 @@ local entity	death;
 void() teleport_touch =
 {
 local entity	t;
-local vector	org;
 local vector	oldorg;
 local entity	e;
 
