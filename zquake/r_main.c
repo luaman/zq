@@ -758,6 +758,47 @@ int R_BmodelCheckBBox (model_t *clmodel, float *minmaxs)
 
 
 /*
+===================
+R_FindTopNode
+===================
+*/
+mnode_t *R_FindTopNode (vec3_t mins, vec3_t maxs)
+{
+	mplane_t	*splitplane;
+	int			sides;
+	mnode_t		*node;
+
+	node = cl.worldmodel->nodes;
+
+	while (1)
+	{
+		if (node->visframe != r_visframecount)
+			return NULL;		// not visible at all
+		
+		if (node->contents < 0)
+		{
+			if (node->contents != CONTENTS_SOLID)
+				return node; // we've reached a non-solid leaf, so it's
+							//  visible and not BSP clipped
+			return NULL;	// in solid, so not visible
+		}
+		
+		splitplane = node->plane;
+		sides = BOX_ON_PLANE_SIDE (mins, maxs, splitplane);
+		
+		if (sides == 3)
+			return node;	// this is the splitter
+		
+		// not split yet; recurse down the contacted side
+		if (sides & 1)
+			node = node->children[0];
+		else
+			node = node->children[1];
+	}
+}
+
+
+/*
 =============
 R_DrawBEntitiesOnList
 =============
@@ -768,6 +809,7 @@ void R_DrawBEntitiesOnList (void)
 	vec3_t		oldorigin;
 	model_t		*clmodel;
 	float		minmaxs[6];
+	mnode_t		*topnode;
 
 	if (!r_drawentities.value)
 		return;
@@ -821,18 +863,13 @@ void R_DrawBEntitiesOnList (void)
 			}
 		}
 
-		r_pefragtopnode = NULL;
+		topnode = R_FindTopNode (minmaxs, minmaxs+3);
 
-		VectorCopy (minmaxs, r_emins);
-		VectorCopy ((minmaxs+3), r_emaxs);
-
-		R_SplitEntityOnNode2 (cl.worldmodel->nodes);
-
-		if (r_pefragtopnode)
+		if (topnode)
 		{
-			currententity->topnode = r_pefragtopnode;
+			currententity->topnode = topnode;
 
-			if (r_pefragtopnode->contents >= 0)
+			if (topnode->contents >= 0)
 			{
 			// not a leaf; has to be clipped to the world BSP
 				r_clipflags = clipflags;
