@@ -852,6 +852,12 @@ void PR_ParseDefs (void)
 		name = PR_ParseName ();
 
 		def = PR_GetDef (type, name, pr_scope, true);
+
+		if (type->type == ev_void) {
+			// end_sys_globals and end_sys_fields are special flags for structure dumping
+			if (strcmp(name, "end_sys_globals") && strcmp(name, "end_sys_fields"))
+				PR_ParseError ("'%s' : illegal use of type 'void'", name);
+		}
 		
 // check for an initialization
 		if ( PR_Check ("=") )
@@ -888,7 +894,8 @@ void PR_ParseDefs (void)
 				
 				continue;
 			}
-			else if (pr_immediate_type != type)
+
+			if (pr_immediate_type != type)
 				PR_ParseError ("wrong immediate type for %s", name);
 	
 			def->initialized = 1;
