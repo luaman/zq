@@ -1408,12 +1408,10 @@ static void FlushString (char *s, int level, qbool team, int offset)
 					continue;
 				}
 			}
-#ifndef AGRIP
 			if (*p != 10 && *p != 13
 				&& !(p==s && (*p==1 || *p==2)))
 				*out++ = *p | 128;	// convert to red
 			else
-#endif
 				*out++ = *p;
 		}
 		*out = 0;
@@ -1472,6 +1470,7 @@ void CL_ParsePrint (void)
 		}
 	}
 
+#ifndef AGRIP
 	if (cl.sprint_buf[0] && (level != cl.sprint_level
 		|| s[0] == 1 || s[0] == 2)) {
 		FlushString (cl.sprint_buf, cl.sprint_level, false, 0);
@@ -1482,6 +1481,7 @@ void CL_ParsePrint (void)
 		FlushString (s, level, (flags==2), offset);
 		return;
 	}
+#endif
 
 	strlcat (cl.sprint_buf, s, sizeof(cl.sprint_buf));
 	cl.sprint_level = level;
@@ -1805,7 +1805,7 @@ void CL_ParseServerMessage (void)
 			{	char *s = MSG_ReadString();
 				SCR_CenterPrint (s);
 #ifdef AGRIP
-				Com_Printf ("%s\n", s);
+				Sys_Printf ("%s\n", s);
 #endif
 			}
 			break;
