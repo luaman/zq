@@ -686,11 +686,11 @@ void weapon_touch ()
 
 /*QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 0) (16 16 32)
 */
-
 void weapon_supershotgun ()
 {
-if (deathmatch <= 3)
-{
+	if (deathmatch > 3)
+		return;
+
 	precache_model ("progs/g_shot.mdl");
 	setmodel (self, "progs/g_shot.mdl");
 	self.weapon = IT_SUPER_SHOTGUN;
@@ -699,15 +699,14 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-}
 
 /*QUAKED weapon_nailgun (0 .5 .8) (-16 -16 0) (16 16 32)
 */
-
 void weapon_nailgun ()
 {
-if (deathmatch <= 3)
-{
+	if (deathmatch > 3)
+		return;
+
 	precache_model ("progs/g_nail.mdl");
 	setmodel (self, "progs/g_nail.mdl");
 	self.weapon = IT_NAILGUN;
@@ -716,15 +715,14 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-}
 
 /*QUAKED weapon_supernailgun (0 .5 .8) (-16 -16 0) (16 16 32)
 */
-
 void weapon_supernailgun ()
 {
-if (deathmatch <= 3)
-{
+	if (deathmatch > 3)
+		return;
+
 	precache_model ("progs/g_nail2.mdl");
 	setmodel (self, "progs/g_nail2.mdl");
 	self.weapon = IT_SUPER_NAILGUN;
@@ -733,15 +731,14 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-}
 
 /*QUAKED weapon_grenadelauncher (0 .5 .8) (-16 -16 0) (16 16 32)
 */
-
 void weapon_grenadelauncher ()
 {
-if (deathmatch <= 3)
-{
+	if (deathmatch > 3)
+		return;
+
 	precache_model ("progs/g_rock.mdl");
 	setmodel (self, "progs/g_rock.mdl");
 	self.weapon = 3;
@@ -750,15 +747,14 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-}
 
 /*QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
 */
-
 void weapon_rocketlauncher ()
 {
-if (deathmatch <= 3)
-{
+	if (deathmatch > 3)
+		return;
+
 	precache_model ("progs/g_rock2.mdl");
 	setmodel (self, "progs/g_rock2.mdl");
 	self.weapon = 3;
@@ -767,16 +763,15 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-}
 
 
 /*QUAKED weapon_lightning (0 .5 .8) (-16 -16 0) (16 16 32)
 */
-
 void weapon_lightning ()
 {
-if (deathmatch <= 3)
-{
+	if (deathmatch > 3)
+		return;
+
 	precache_model ("progs/g_light.mdl");
 	setmodel (self, "progs/g_light.mdl");
 	self.weapon = 3;
@@ -784,7 +779,6 @@ if (deathmatch <= 3)
 	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
-}
 }
 
 
