@@ -21,7 +21,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 
-#undef cnode_t		// HP-UX defines this
+#ifdef hpux
+	// HP-UX already has a typedef cnode_t
+	// --> we rename it for that platform:
+#  ifdef cnode_t
+#    undef cnode_t
+#  endif
+#  define cnode_t	mycnode_t
+#endif
 
 
 typedef struct cnode_s
