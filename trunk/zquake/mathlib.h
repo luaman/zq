@@ -78,6 +78,7 @@ int GreatestCommonDivisor (int i1, int i2);
 
 void vectoangles(vec3_t vec, vec3_t ang);
 void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
+void MakeNormalVectors (vec3_t forward, vec3_t right, vec3_t up);
 int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
 float	anglemod(float a);
 
