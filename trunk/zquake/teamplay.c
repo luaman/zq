@@ -2238,7 +2238,7 @@ qboolean TP_FilterMessage (char *s)
 		return true;
 
 	maxlen = MAX_FILTER_LENGTH + 1;
-	for (i=len-2 ; i >= 0, maxlen > 0 ; i--, maxlen--) {
+	for (i=len-2 ; i >= 0 && maxlen > 0 ; i--, maxlen--) {
 		if (s[i] == ' ')
 			return true;
 		if (s[i] == '#')
