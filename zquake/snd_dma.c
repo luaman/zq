@@ -71,7 +71,7 @@ int sound_started=0;
 
 cvar_t bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
 cvar_t s_initsound = {"s_initsound", "1"};
-cvar_t s_volume = {"volume", "0.7", CVAR_ARCHIVE};
+cvar_t s_volume = {"s_volume", "0.7", CVAR_ARCHIVE};
 cvar_t s_nosound = {"s_nosound", "0"};
 cvar_t s_precache = {"s_precache", "1"};
 cvar_t s_loadas8bit = {"s_loadas8bit", "0"};
