@@ -393,6 +393,7 @@ void CL_Disconnect (void)
 
 	// don't accept any remote packets
 	cls.server_adr = net_null;
+	cls.netchan.remote_address = net_null;
 
 	cls.state = ca_disconnected;
 	connect_time = 0;
@@ -652,7 +653,7 @@ void CL_ReadPackets (void)
 		// packet from server
 		//
 		if (!cls.demoplayback && 
-			!NET_CompareAdr (net_from, cls.server_adr))
+			!NET_CompareAdr (net_from, cls.netchan.remote_address))
 		{
 			Com_DPrintf ("%s: sequenced packet without connection\n"
 				,NET_AdrToString(net_from));
