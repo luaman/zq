@@ -1,21 +1,21 @@
 ./spprogs.dat
 
-defs.qc
-subs.qc
+../qw/defs.qc
+../qw/subs.qc
 fight.qc
 ai.qc
-combat.qc
-items.qc
-weapons.qc
-world.qc
-client.qc
-player.qc
+../qw/combat.qc
+../qw/items.qc
+../qw/weapons.qc
+../qw/world.qc
+../qw/client.qc
+../qw/player.qc
 monsters.qc
-doors.qc
-buttons.qc
-triggers.qc
-plats.qc
-misc.qc
+../qw/doors.qc
+../qw/buttons.qc
+../qw/triggers.qc
+../qw/plats.qc
+../qw/misc.qc
 
 ogre.qc
 demon.qc
