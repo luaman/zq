@@ -134,12 +134,12 @@ void M_PrintWhite (int cx, int cy, char *str)
 	Draw_String (cx + ((menuwidth - 320)>>1), cy + m_yofs, str);
 }
 
-void M_DrawTransPic (int x, int y, qpic_t *pic)
+void M_DrawTransPic (int x, int y, mpic_t *pic)
 {
 	Draw_TransPic (x + ((menuwidth - 320)>>1), y + m_yofs, pic);
 }
 
-void M_DrawPic (int x, int y, qpic_t *pic)
+void M_DrawPic (int x, int y, mpic_t *pic)
 {
 	Draw_Pic (x + ((menuwidth - 320)>>1), y + m_yofs, pic);
 }
@@ -172,7 +172,7 @@ void M_BuildTranslationTable(int top, int bottom)
 }
 
 
-void M_DrawTransPicTranslate (int x, int y, qpic_t *pic)
+void M_DrawTransPicTranslate (int x, int y, mpic_t *pic)
 {
 	Draw_TransPicTranslate (x + ((menuwidth - 320)>>1), y + m_yofs, pic, translationTable);
 }
@@ -244,7 +244,7 @@ void M_Menu_Main_f (void)
 void M_Main_Draw (void)
 {
 	int		f;
-	qpic_t	*p;
+	mpic_t	*p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/ttl_main.lmp");
@@ -478,7 +478,7 @@ void M_DrawCheckbox (int x, int y, int on)
 void M_Options_Draw (void)
 {
 	float		r;
-	qpic_t	*p;
+	mpic_t	*p;
 	
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_option.lmp");
@@ -731,7 +731,7 @@ void M_Keys_Draw (void)
 	int		keys[2];
 	char	*name;
 	int		x, y;
-	qpic_t	*p;
+	mpic_t	*p;
 
 	p = Draw_CachePic ("gfx/ttl_cstm.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
@@ -870,7 +870,7 @@ void M_Menu_Fps_f (void)
 
 void M_Fps_Draw (void)
 {
-	qpic_t	*p;
+	mpic_t	*p;
 	
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/ttl_cstm.lmp");
@@ -1157,7 +1157,7 @@ void M_Menu_SinglePlayer_f (void)
 void M_SinglePlayer_Draw (void)
 {
 	int		f;
-	qpic_t	*p;
+	mpic_t	*p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/ttl_sgl.lmp");
@@ -1245,7 +1245,7 @@ void M_Menu_SinglePlayer_f (void)
 
 void M_SinglePlayer_Draw (void)
 {
-	qpic_t	*p;
+	mpic_t	*p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/ttl_sgl.lmp");
@@ -1333,7 +1333,7 @@ void M_Menu_Save_f (void)
 void M_Load_Draw (void)
 {
 //	int		i;
-	qpic_t	*p;
+	mpic_t	*p;
 
 	p = Draw_CachePic ("gfx/p_load.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
@@ -1354,7 +1354,7 @@ void M_Load_Draw (void)
 void M_Save_Draw (void)
 {
 //	int		i;
-	qpic_t	*p;
+	mpic_t	*p;
 
 	p = Draw_CachePic ("gfx/p_save.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
@@ -1416,7 +1416,7 @@ void M_Menu_MultiPlayer_f (void)
 
 void M_MultiPlayer_Draw (void)
 {
-	qpic_t	*p;
+	mpic_t	*p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
@@ -1874,7 +1874,7 @@ int		gameoptions_cursor;
 
 void M_GameOptions_Draw (void)
 {
-	qpic_t	*p;
+	mpic_t	*p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
@@ -2168,7 +2168,7 @@ void M_Menu_Setup_f (void)
 
 void M_Setup_Draw (void)
 {
-	qpic_t	*p;
+	mpic_t	*p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
@@ -2350,7 +2350,7 @@ void M_ServerList_Draw (void)
 {
 	int serv;
 	int line = 1;
-	qpic_t *p;
+	mpic_t *p;
 	//int f;
 
 	M_DrawTransPic(16,4,Draw_CachePic("gfx/qplaque.lmp"));
@@ -2546,7 +2546,7 @@ void M_Menu_SEdit_f (void) {
 }
 
 void M_SEdit_Draw (void) {
-	qpic_t *p;
+	mpic_t *p;
 
 	M_DrawTransPic(16,4,Draw_CachePic("gfx/qplaque.lmp"));
 	p = Draw_CachePic("gfx/p_multi.lmp");
