@@ -1114,7 +1114,7 @@ SV_ReadDelayedPackets
 */
 void SV_ReadDelayedPackets (void)
 {
-	int			i, j, num = 0;
+	int			i, j;
 	client_t	*cl;
 	packet_t	*pack;
 
@@ -1124,8 +1124,6 @@ void SV_ReadDelayedPackets (void)
 			pack++;
 			continue;
 		}
-
-		num++;
 
 		SZ_Clear(&net_message);
 		SZ_Write(&net_message, pack->msg.data, pack->msg.cursize);
