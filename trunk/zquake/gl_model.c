@@ -1176,8 +1176,12 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	header = (dheader_t *)buffer;
 
 	i = LittleLong (header->version);
-	if (i != BSPVERSION)
-		Sys_Error ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)", mod->name, i, BSPVERSION);
+
+	if (i != BSPVERSION) 
+	{
+		Host_EndGame ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)\n", mod->name, i, BSPVERSION);
+		return;
+	}
 
 // swap all the lumps
 	mod_base = (byte *)header;
@@ -1249,7 +1253,8 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		mod->numleafs = bm->visleafs;
 
 		if (i < mod->numsubmodels-1)
-		{	// duplicate the basic information
+		{
+			// duplicate the basic information
 			char	name[10];
 
 			sprintf (name, "*%i", i+1);
@@ -1286,7 +1291,7 @@ byte		player_8bit_texels[320*200];
 Mod_LoadAliasFrame
 =================
 */
-void * Mod_LoadAliasFrame (void * pin, maliasframedesc_t *frame)
+void *Mod_LoadAliasFrame (void * pin, maliasframedesc_t *frame)
 {
 	trivertx_t		*pinframe;
 	int				i;
@@ -1322,7 +1327,7 @@ void * Mod_LoadAliasFrame (void * pin, maliasframedesc_t *frame)
 Mod_LoadAliasGroup
 =================
 */
-void * Mod_LoadAliasGroup (void * pin,  maliasframedesc_t *frame)
+void *Mod_LoadAliasGroup (void * pin,  maliasframedesc_t *frame)
 {
 	daliasgroup_t		*pingroup;
 	int					i, numframes;
@@ -1468,7 +1473,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 			Mod_FloodFillSkin (skin, pheader->skinwidth, pheader->skinheight);
 
 			// save 8 bit texels for the player model to remap
-			if (!strcmp(loadmodel->name,"progs/player.mdl"))
+			if (loadmodel->modhint == MOD_PLAYER)
 			{
 				if (s > sizeof(player_8bit_texels))
 					Sys_Error ("Player skin too large");
@@ -1560,6 +1565,8 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		!strcmp(mod->name, "progs/bolt2.mdl") ||
 		!strcmp(mod->name, "progs/bolt3.mdl"))
 		mod->modhint = MOD_THUNDERBOLT;
+	else
+		mod->modhint = MOD_NORMAL;
 
 	if (mod->modhint == MOD_PLAYER || mod->modhint == MOD_EYES) {
 		unsigned short crc;
@@ -1590,9 +1597,15 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	pinmodel = (mdl_t *)buffer;
 
 	version = LittleLong (pinmodel->version);
-	if (version != ALIAS_VERSION)
-		Sys_Error ("%s has wrong version number (%i should be %i)",
+
+	if (version != ALIAS_VERSION) {
+		Hunk_FreeToLowMark (start);
+
+		Host_EndGame ("%s has wrong version number (%i should be %i)\n",
 				 mod->name, version, ALIAS_VERSION);
+
+		return;
+	}
 
 //
 // allocate space for a working header, plus all the data except the frames,
@@ -1739,7 +1752,7 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 Mod_LoadSpriteFrame
 =================
 */
-void * Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe, int framenum)
+void *Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe, int framenum)
 {
 	dspriteframe_t		*pinframe;
 	mspriteframe_t		*pspriteframe;
@@ -1780,7 +1793,7 @@ void * Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe, int framenum)
 Mod_LoadSpriteGroup
 =================
 */
-void * Mod_LoadSpriteGroup (void * pin, mspriteframe_t **ppframe, int framenum)
+void *Mod_LoadSpriteGroup (void * pin, mspriteframe_t **ppframe, int framenum)
 {
 	dspritegroup_t		*pingroup;
 	mspritegroup_t		*pspritegroup;
@@ -1845,9 +1858,12 @@ void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 	pin = (dsprite_t *)buffer;
 
 	version = LittleLong (pin->version);
-	if (version != SPRITE_VERSION)
-		Sys_Error ("%s has wrong version number "
+
+	if (version != SPRITE_VERSION) {
+		Host_EndGame ("%s has wrong version number "
 				 "(%i should be %i)", mod->name, version, SPRITE_VERSION);
+		return;
+	}
 
 	numframes = LittleLong (pin->numframes);
 
