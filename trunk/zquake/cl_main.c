@@ -343,8 +343,6 @@ void CL_Disconnect (void)
 	}
 	else if (cls.state != ca_disconnected)
 	{
-		cls.state = ca_disconnected;
-
 		final[0] = clc_stringcmd;
 		strcpy (final+1, "drop");
 		Netchan_Transmit (&cls.netchan, 6, final);
@@ -357,6 +355,8 @@ void CL_Disconnect (void)
 			SV_Shutdown ("");
 #endif
 	}
+
+	cls.state = ca_disconnected;
 
 	Cam_Reset();
 
