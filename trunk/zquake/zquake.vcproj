@@ -161,7 +161,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mglfx.lib dxguid.lib opengl32.lib wsock32.lib winmm.lib"
+				AdditionalDependencies="mgllt.lib dxguid.lib opengl32.lib wsock32.lib winmm.lib"
 				OutputFile=".\Debug/zquake.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -3719,7 +3719,7 @@
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -3730,7 +3730,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -3741,7 +3741,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -3778,7 +3778,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -3815,7 +3815,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -3852,7 +3852,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -3889,7 +3889,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -3926,7 +3926,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -3963,7 +3963,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4000,7 +4000,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4025,7 +4025,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4036,7 +4036,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4047,7 +4047,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4084,7 +4084,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4121,7 +4121,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4158,7 +4158,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4195,7 +4195,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4232,7 +4232,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4257,7 +4257,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4268,7 +4268,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4279,7 +4279,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4316,7 +4316,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4353,7 +4353,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4378,7 +4378,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4389,7 +4389,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4400,7 +4400,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4425,7 +4425,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4436,7 +4436,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
@@ -4447,7 +4447,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Name="VCCustomBuildTool"
 						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
 gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.obj /Zm /Zi &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
+ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
 del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 "
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
