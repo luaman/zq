@@ -167,7 +167,9 @@ void() GotoNextMap =
 
 //ZOID: 12-13-96, samelevel is overloaded, only 1 works for same level
 
-	if (cvar("samelevel") == 1)     // if samelevel is set, stay on same level
+	if (!deathmatch)
+		changelevel (nextmap);
+	else if (cvar("samelevel") == 1)	// if samelevel is set, stay on same level
 		changelevel (mapname);
 	else {
 		// configurable map lists, see if the current map exists as a
