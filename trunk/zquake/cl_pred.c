@@ -264,14 +264,6 @@ static void CL_PredictLocalPlayer (void)
 	frame_t		*from = NULL, *to;
 	int			oldphysent;
 
-	if (cl.paused)
-		return;
-
-	if (cl.intermission) {
-		cl.crouch = 0;
-		return;
-	}
-
 	if (cls.nqdemoplayback)
 		goto out;
 
@@ -346,18 +338,18 @@ void CL_PredictMovement (void)
 	if (cls.state != ca_active)
 		return;
 
+	if (cl.paused)
+		return;
+
+	if (cl.intermission) {
+		cl.crouch = 0;
+		return;
+	}
+
 #ifdef MVDPLAY
 	if (cls.mvdplayback && !cam_track)
 	{
 		player_state_t	state;
-
-		if (cl.paused)
-			return;
-
-		if (cl.intermission) {
-			cl.crouch = 0;
-			return;
-		}
 
 		memset (&state, 0, sizeof(state));
 		state.pm_type = PM_SPECTATOR;
