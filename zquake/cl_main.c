@@ -1092,7 +1092,6 @@ void Host_Init (quakeparms_t *parms)
 	CL_Init ();
 
 	Cbuf_InsertText ("exec quake.rc\n");
-//	Cbuf_AddText ("echo Type connect <internet address> or use GameSpy to connect to a game.\n");
 	Cbuf_AddText ("cl_warncmd 1\n");
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
