@@ -1172,6 +1172,8 @@ void CL_ProcessServerInfo (void)
 	else
 		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
 
+	cl.maxfps = Q_atof(Info_ValueForKey(cl.serverinfo, "maxfps"));
+	cl.maxfps = cl.maxfps ? bound (30.0, cl.maxfps, 120.0) : 72.0;
 	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext"));
 	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
 	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
