@@ -1253,11 +1253,16 @@ void SV_Noclip_f (void)
 	if (sv_player->v.movetype != MOVETYPE_NOCLIP)
 	{
 		sv_player->v.movetype = MOVETYPE_NOCLIP;
+		sv_player->v.solid = SOLID_TRIGGER;
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "noclip ON\n");
 	}
 	else
 	{
 		sv_player->v.movetype = MOVETYPE_WALK;
+		if (sv_player->v.health > 0)
+			sv_player->v.solid = SOLID_SLIDEBOX;
+		else
+			sv_player->v.solid = SOLID_NOT;
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "noclip OFF\n");
 	}
 }
