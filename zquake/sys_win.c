@@ -432,7 +432,6 @@ WinMain
 ==================
 */
 HINSTANCE	global_hInstance;
-int			global_nCmdShow;
 HWND		hwnd_dialog;	// startup dialog box
 
 
@@ -445,7 +444,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	RECT			rect;
 
 	global_hInstance = hInstance;
-	global_nCmdShow = nCmdShow;
 
 	lpBuffer.dwLength = sizeof(MEMORYSTATUS);
 	GlobalMemoryStatus (&lpBuffer);
