@@ -424,7 +424,7 @@ void CompleteName(void) {
 
     p = q = key_lines[edit_line] + key_linepos;
     while (--p >= key_lines[edit_line] + 1)
-        if (!(  (*p >= 32 && *p <= 127) && !strchr(disallowed, *p) )) 
+        if (!(  (*(signed char *)p >= 32) && !strchr(disallowed, *p) )) 
              break;
     p++;
     if (q - p <= 0)
@@ -669,7 +669,7 @@ void Key_Console (int key)
 			return;
 	}
 
-	if ((key == 'V' || key == 'v') && keydown[K_CTRL]
+	if (((key == 'V' || key == 'v') && keydown[K_CTRL])
 		|| ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
 	{
 		int	len;
@@ -796,7 +796,7 @@ void Key_Message (int key)
 		return;
 	}
 
-	if ((key == 'V' || key == 'v') && keydown[K_CTRL]
+	if (((key == 'V' || key == 'v') && keydown[K_CTRL])
 		|| ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
 	{
 		int	len;
