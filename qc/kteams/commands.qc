@@ -1151,11 +1151,11 @@ void ToggleVwep ()
     tmp = stof(infokey(world, "vwep"));
     if(tmp != 0) {
         localcmd("localinfo vwep 0\n");
-        bprint(2, "vwep νοδε off\n");   //TODO: change vwep for red text version
+        bprint(2, "vwep νοδε off\nrequires map restart\n");   //TODO: change vwep for red text version
         return;
     }
     localcmd("localinfo vwep 1\n");
-    bprint(2, "vwep νοδε on\n");
+    bprint(2, "vwep νοδε on\nrequires map restart\n");
 }
 
 void() ToggleSpecTalk =
@@ -1581,7 +1581,7 @@ void() TeamCommands =
 	else if(self.impulse == 35) ToggleDropRing();
 	else if(self.impulse == 56) ToggleDropPack();
 
-else if(self.impulse == 38) ToggleSpecTalk();
+    else if(self.impulse == 38) ToggleSpecTalk();
 	else if(self.impulse == 40) ResetOptions();
 	else if(self.impulse == 41) ShowRules();
 	else if(self.impulse == 42) ChangeLock();
@@ -1623,19 +1623,19 @@ else if(self.impulse == 38) ToggleSpecTalk();
 	else if(self.impulse == 74) ToggleQEnemy();
 	else if(self.impulse == 77) ToggleQPoint();
 
-        else if(self.impulse == 87) AdminKick();
-        else if(self.impulse == 88) YesKick();
-        else if(self.impulse == 89) DontKick();
-        else if(self.impulse == 90) ListWhoNot();
-        else if(self.impulse == 91) ChangeOvertime();
-        else if(self.impulse == 92) ChangeOvertimeUp();
-        else if(self.impulse == 93) VoteAdmin();
-        else if(self.impulse == 94) VoteYes();
-        else if(self.impulse == 95) VoteNo();
-        else if(self.impulse == 79) BecomeCaptain();
-        else if(self.impulse == 80) ToggleFreeze();
+    else if(self.impulse == 87) AdminKick();
+    else if(self.impulse == 88) YesKick();
+    else if(self.impulse == 89) DontKick();
+    else if(self.impulse == 90) ListWhoNot();
+    else if(self.impulse == 91) ChangeOvertime();
+    else if(self.impulse == 92) ChangeOvertimeUp();
+    else if(self.impulse == 93) VoteAdmin();
+    else if(self.impulse == 94) VoteYes();
+    else if(self.impulse == 95) VoteNo();
+    else if(self.impulse == 79) BecomeCaptain();
+    else if(self.impulse == 80) ToggleFreeze();
 	else if(self.impulse == 96) Deathmsg();
-        else if(self.impulse == 97) RandomPickup();
-        else if(self.impulse == 98) SetOfficial();
-        else if(self.impulse == 103) ToggleVwep();
+    else if(self.impulse == 97) RandomPickup();
+    else if(self.impulse == 98) SetOfficial();
+    else if(self.impulse == 103) ToggleVwep();
 };
