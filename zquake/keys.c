@@ -727,20 +727,24 @@ the K_* names are matched up.
 int Key_StringToKeynum (char *str)
 {
 	keyname_t	*kn;
+	int			keynum;
 	
 	if (!str || !str[0])
 		return -1;
 	if (!str[1])
 		return (int)(unsigned char)str[0];
 
-	if (str[0] == '#')
-		return Q_atoi(str + 1);
+	if (str[0] == '#') {
+		keynum = Q_atoi(str + 1);
+		if (keynum < 32 || keynum > 127)
+			return -1;
+	}
 
-	for (kn=keynames ; kn->name ; kn++)
-	{
+	for (kn=keynames ; kn->name ; kn++) {
 		if (!Q_stricmp(str,kn->name))
 			return kn->keynum;
 	}
+
 	return -1;
 }
 
