@@ -1431,7 +1431,7 @@ void TP_NewMap ()
 			TP_LoadLocFile (locname, true);
 		}
 		strcpy (last_map, mapname);
-		Cvar_SetROM (&cl_mapname, mapname);
+		Cvar_ForceSet (&cl_mapname, mapname);
 	}
 
 	TP_ExecTrigger ("f_newmap");
