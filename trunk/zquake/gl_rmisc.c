@@ -461,6 +461,9 @@ void R_TimeRefresh_f (void)
 	int			i;
 	float		start, stop, time;
 
+	if (cls.state != ca_active)
+		return;
+
 	glDrawBuffer  (GL_FRONT);
 	glFinish ();
 

@@ -74,6 +74,9 @@ void R_TimeRefresh_f (void)
 	int			startangle;
 	vrect_t		vr;
 
+	if (cls.state != ca_active)
+		return;
+
 	startangle = r_refdef.viewangles[1];
 	
 	start = Sys_DoubleTime ();
