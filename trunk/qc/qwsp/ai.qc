@@ -52,9 +52,6 @@ walkmove(angle, speed) primitive is all or nothing
 //
 // globals
 //
-float	current_yaw;
-
-//
 // when a monster becomes angry at a player, that monster will be used
 // as the sight target the next frame so that monsters near that one
 // will wake up even if they wouldn't have noticed the player

@@ -519,7 +519,6 @@ const float	AS_MISSILE		= 4;
 .float		walkframe;
 
 // Zoid Additions
-.float	    maxspeed;	    // Used to set Maxspeed on a player
 .float	    gravity;	    // Gravity Multiplier (0 to 1.0)
 
 
@@ -563,7 +562,7 @@ const float	AS_MISSILE		= 4;
 //
 // doors, etc
 //
-.vector 	dest, dest1, dest2;
+.vector 	dest1, dest2;
 .float		wait;			// time from firing to restarting
 .float		delay;			// time from activation to firing
 .entity 	trigger_field;	// door's trigger entity
@@ -610,9 +609,7 @@ const float	AS_MISSILE		= 4;
 //
 // sounds
 //
-.float		waitmin, waitmax;
-.float		distance;
-.float		volume;
+.float		waitmin;
 
 
 
