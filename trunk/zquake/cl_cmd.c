@@ -492,9 +492,11 @@ void CL_Quit_f (void)
 	extern void SV_Quit_f (void);
 	extern cvar_t cl_confirmquit;
 
+#ifndef CLIENTONLY
 	if (dedicated)
 		SV_Quit_f ();
 	else
+#endif
 	{
 		if (cl_confirmquit.value)
 			M_Menu_Quit_f ();
@@ -531,10 +533,6 @@ void CL_Serverinfo_f (void)
 	}
 #endif
 
-// Tonik: no need to request serverinfo from server, because we
-// already have it cached in cl.serverinfo
-// this also lets us get serverinfo when playing a demo
-	//Cmd_ForwardToServer();
 	if (cls.state >= ca_onserver && cl.serverinfo)
 		Info_Print (cl.serverinfo);
 	else
