@@ -33,10 +33,6 @@ movevars_t		movevars;
 
 playermove_t	pmove;
 
-int			onground;
-int			waterlevel;
-int			watertype;
-
 float		frametime;
 
 vec3_t		forward, right, up;
@@ -368,7 +364,7 @@ void PM_Friction (void)
 	friction = movevars.friction;
 
 // if the leading edge is over a dropoff, increase friction
-	if (onground != -1) {
+	if (pmove.onground != -1) {
 		start[0] = stop[0] = pmove.origin[0] + vel[0]/speed*16;
 		start[1] = stop[1] = pmove.origin[1] + vel[1]/speed*16;
 		start[2] = pmove.origin[2] + player_mins[2];
@@ -383,9 +379,9 @@ void PM_Friction (void)
 
 	drop = 0;
 
-	if (waterlevel >= 2) // apply water friction
-		drop += speed*movevars.waterfriction*waterlevel*frametime;
-	else if (onground != -1) // apply ground friction
+	if (pmove.waterlevel >= 2) // apply water friction
+		drop += speed*movevars.waterfriction*pmove.waterlevel*frametime;
+	else if (pmove.onground != -1) // apply ground friction
 	{
 		control = speed < movevars.stopspeed ? movevars.stopspeed : speed;
 		drop += control*friction*frametime;
@@ -559,7 +555,7 @@ void PM_AirMove (void)
 //	if (pmove.waterjumptime)
 //		Con_Printf ("am->%f, %f, %f\n", pmove.velocity[0], pmove.velocity[1], pmove.velocity[2]);
 
-	if ( onground != -1)
+	if ( pmove.onground != -1)
 	{
 		if (pmove.velocity[2] > 0 || !pm_slidefix.value)
 			pmove.velocity[2] = 0;
@@ -581,11 +577,11 @@ void PM_AirMove (void)
 		i = PM_FlyMove();
 		if (!i && pm_jumpfix.value)
 		{
-			// the move didn't get blocked
+			// the move didn't block
 			PM_CategorizePosition ();
-			if (onground != -1)		// but we're on ground now
+			if (pmove.onground != -1)		// but we're on ground now
 			{
-			// This is a hack to fix the jumping bug
+			// This is a hack to fix the jump bug
 				VectorCopy (pmove.origin, original);
 				// Calculate correct velocity
 				if ( ! PM_FlyMove() )
@@ -631,16 +627,16 @@ void PM_CategorizePosition (void)
 	point[2] = pmove.origin[2] - 1;
 	if (pmove.velocity[2] > 180)
 	{
-		onground = -1;
+		pmove.onground = -1;
 	}
 	else
 	{
 		tr = PM_PlayerMove (pmove.origin, point);
 		if ( tr.plane.normal[2] < 0.7)
-			onground = -1;	// too steep
+			pmove.onground = -1;	// too steep
 		else
-			onground = tr.ent;
-		if (onground != -1)
+			pmove.onground = tr.ent;
+		if (pmove.onground != -1)
 		{
 			pmove.waterjumptime = 0;
 			if (!tr.startsolid && !tr.allsolid)
@@ -658,25 +654,25 @@ void PM_CategorizePosition (void)
 //
 // get waterlevel
 //
-	waterlevel = 0;
-	watertype = CONTENTS_EMPTY;
+	pmove.waterlevel = 0;
+	pmove.watertype = CONTENTS_EMPTY;
 
 	point[2] = pmove.origin[2] + player_mins[2] + 1;	
 	cont = PM_PointContents (point);
 
 	if (cont <= CONTENTS_WATER)
 	{
-		watertype = cont;
-		waterlevel = 1;
+		pmove.watertype = cont;
+		pmove.waterlevel = 1;
 		point[2] = pmove.origin[2] + (player_mins[2] + player_maxs[2])*0.5;
 		cont = PM_PointContents (point);
 		if (cont <= CONTENTS_WATER)
 		{
-			waterlevel = 2;
+			pmove.waterlevel = 2;
 			point[2] = pmove.origin[2] + 22;
 			cont = PM_PointContents (point);
 			if (cont <= CONTENTS_WATER)
-				waterlevel = 3;
+				pmove.waterlevel = 3;
 		}
 	}
 }
@@ -697,20 +693,20 @@ void JumpButton (void)
 		return;
 	}
 
-	if (waterlevel >= 2)
+	if (pmove.waterlevel >= 2)
 	{	// swimming, not jumping
-		onground = -1;
+		pmove.onground = -1;
 
-		if (watertype == CONTENTS_WATER)
+		if (pmove.watertype == CONTENTS_WATER)
 			pmove.velocity[2] = 100;
-		else if (watertype == CONTENTS_SLIME)
+		else if (pmove.watertype == CONTENTS_SLIME)
 			pmove.velocity[2] = 80;
 		else
 			pmove.velocity[2] = 50;
 		return;
 	}
 
-	if (onground == -1)
+	if (pmove.onground == -1)
 		return;		// in air, so no effect
 
 #ifdef SERVERONLY
@@ -727,7 +723,7 @@ void JumpButton (void)
 		if (pmove.velocity[2] < 0)
 			pmove.velocity[2] = 0;
 
-	onground = -1;
+	pmove.onground = -1;
 	pmove.velocity[2] += 270;
 
 	pmove.oldbuttons |= BUTTON_JUMP;	// don't jump again until released
@@ -931,7 +927,7 @@ void PlayerMove (void)
 	// set onground, watertype, and waterlevel
 	PM_CategorizePosition ();
 
-	if (waterlevel == 2)
+	if (pmove.waterlevel == 2)
 		CheckWaterJump ();
 
 	if (pmove.velocity[2] < 0)
@@ -957,7 +953,7 @@ void PlayerMove (void)
 
 	PM_Friction ();
 
-	if (waterlevel >= 2)
+	if (pmove.waterlevel >= 2)
 		PM_WaterMove ();
 	else
 		PM_AirMove ();
