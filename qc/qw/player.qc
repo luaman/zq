@@ -510,9 +510,9 @@ void ThrowGib (string gibname, float dm)
 	entity	new;
 
 	new = spawn();
-	setorigin (new, self.origin);
+	new.origin = self.origin;
 	setmodel (new, gibname);
-	setsize (new, VEC_ORIGIN, VEC_ORIGIN);
+	setsize (new, VEC_ORIGIN, VEC_ORIGIN);	// link into world
 	new.velocity = VelocityForDamage (dm);
 	new.movetype = MOVETYPE_BOUNCE;
 	new.solid = SOLID_NOT;
