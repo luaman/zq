@@ -1031,7 +1031,7 @@ void PF_precache_model (void)
 
 void PF_coredump (void)
 {
-	ED_PrintEdicts ();
+	ED_PrintEdicts_f ();
 }
 
 void PF_traceon (void)
