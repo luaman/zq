@@ -1917,7 +1917,9 @@ void Info_Print (char *s)
 	}
 }
 
-static byte chktbl[1024 + 4] = {
+//============================================================================
+
+static byte chktbl[1024] = {
 0x78,0xd2,0x94,0xe3,0x41,0xec,0xd6,0xd5,0xcb,0xfc,0xdb,0x8a,0x4b,0xcc,0x85,0x01,
 0x23,0xd2,0xe5,0xf2,0x29,0xa7,0x45,0x94,0x4a,0x62,0xe3,0xa5,0x6f,0x3f,0xe1,0x7a,
 0x64,0xed,0x5c,0x99,0x29,0x87,0xa8,0x78,0x59,0x0d,0xaa,0x0f,0x25,0x0a,0x5c,0x58,
@@ -1951,59 +1953,11 @@ static byte chktbl[1024 + 4] = {
 0xac,0x60,0x09,0xc0,0x40,0xee,0xb9,0xeb,0x13,0x5b,0xe8,0x2b,0xb1,0x20,0xf0,0xce,
 0x4c,0xbd,0xc6,0x04,0x86,0x70,0xc6,0x33,0xc3,0x15,0x0f,0x65,0x19,0xfd,0xc2,0xd3,
 
-// map checksum goes here
-0x00,0x00,0x00,0x00
+// Only the first 512 bytes of the table are initialized, the rest
+// is just zeros.
+// This is an idiocy in QW but we can't change this, or checksums
+// will not match.
 };
-
-static byte chkbuf[16 + 60 + 4];
-
-static unsigned last_mapchecksum = 0;
-
-#if 0
-/*
-====================
-COM_BlockSequenceCheckByte
-
-For proxy protecting
-====================
-*/
-byte	COM_BlockSequenceCheckByte (byte *base, int length, int sequence, unsigned mapchecksum)
-{
-	int		checksum;
-	byte	*p;
-
-	if (last_mapchecksum != mapchecksum) {
-		last_mapchecksum = mapchecksum;
-		chktbl[1024] = (mapchecksum & 0xff000000) >> 24;
-		chktbl[1025] = (mapchecksum & 0x00ff0000) >> 16;
-		chktbl[1026] = (mapchecksum & 0x0000ff00) >> 8;
-		chktbl[1027] = (mapchecksum & 0x000000ff);
-
-		Com_BlockFullChecksum (chktbl, sizeof(chktbl), chkbuf);
-	}
-
-	p = chktbl + (sequence % (sizeof(chktbl) - 8));
-
-	if (length > 60)
-		length = 60;
-	memcpy (chkbuf + 16, base, length);
-
-	length += 16;
-
-	chkbuf[length] = (sequence & 0xff) ^ p[0];
-	chkbuf[length+1] = p[1];
-	chkbuf[length+2] = ((sequence>>8) & 0xff) ^ p[2];
-	chkbuf[length+3] = p[3];
-
-	length += 4;
-
-	checksum = LittleLong(Com_BlockChecksum (chkbuf, length));
-
-	checksum &= 0xff;
-
-	return checksum;
-}
-#endif
 
 /*
 ====================
@@ -2012,13 +1966,13 @@ COM_BlockSequenceCRCByte
 For proxy protecting
 ====================
 */
-byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence)
+byte COM_BlockSequenceCRCByte (byte *base, int length, int sequence)
 {
 	unsigned short crc;
 	byte	*p;
 	byte chkb[60 + 4];
 
-	p = chktbl + (sequence % (sizeof(chktbl) - 8));
+	p = chktbl + (sequence % (sizeof(chktbl) - 4));
 
 	if (length > 60)
 		length = 60;
@@ -2031,7 +1985,7 @@ byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence)
 
 	length += 4;
 
-	crc = CRC_Block(chkb, length);
+	crc = CRC_Block (chkb, length);
 
 	crc &= 0xff;
 
@@ -2074,6 +2028,9 @@ void Com_Printf (char *fmt, ...)
 	va_start (argptr, fmt);
 	vsprintf (msg, fmt, argptr);
 	va_end (argptr);
+
+if(strstr(msg, "aaa"))
+Sys_Printf ("sizeof(chktbl) = %i\n", sizeof(chktbl));
 	
 	if (rd_print)
 	{
