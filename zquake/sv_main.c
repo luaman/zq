@@ -1416,9 +1416,6 @@ void SV_InitLocal (void)
 	extern	cvar_t	sv_nailhack;
 	extern	cvar_t	sv_loadentfiles;
 
-#ifndef QW_BOTH
-	Cvar_Init ();
-#endif
 	SV_InitOperatorCommands	();
 	SV_UserInit ();
 	
@@ -1724,6 +1721,7 @@ void SV_Init (quakeparms_t *parms)
 
 	Cbuf_Init ();
 	Cmd_Init ();	
+	Cvar_Init ();
 
 	COM_Init ();
 	
