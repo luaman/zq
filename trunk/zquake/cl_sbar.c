@@ -30,6 +30,7 @@ int			sb_lines;			// scan lines to draw
 qbool		sb_drawinventory;
 qbool		sb_drawmain;
 qbool		sb_oldmanssbar;		// cl_sbar 2: solid sbar, but viewrect is y-centered
+qbool		sb_oldmanssbar2;	// cl_sbar 3: same as above but with ibar on side
 
 qbool		sb_hipnotic;
 
@@ -608,7 +609,7 @@ static void Sbar_DrawInventory (void)
 	qbool	headsup;
 	qbool	hudswap;
 
-	headsup = !cl_sbar.value;
+	headsup = !cl_sbar.value || sb_oldmanssbar2;
 	hudswap = cl_hudswap.value ? true : false; // Get that nasty float out :)
 
 	if (!headsup)
@@ -982,7 +983,7 @@ void Sbar_Draw (void)
 	qbool	headsup;
 	qbool	inventory_area_drawn = false;
 
-	headsup = !cl_sbar.value;
+	headsup = !cl_sbar.value || sb_oldmanssbar2;
 	if ((sb_updates >= vid.numpages) && !headsup && !sb_oldmanssbar)
 		return;
 

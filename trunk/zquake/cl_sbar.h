@@ -27,6 +27,7 @@ extern int		sb_lines;			// scan lines to draw
 extern qbool	sb_drawinventory;
 extern qbool	sb_drawmain;
 extern qbool	sb_oldmanssbar;
+extern qbool	sb_oldmanssbar2;
 
 void Sbar_Init (void);
 void Sbar_RegisterPics (void);
