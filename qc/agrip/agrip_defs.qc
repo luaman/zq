@@ -35,4 +35,11 @@
 .entity agrip_esr;
 .entity agrip_aux;
 
+// these declarations are here because I don't want them in
+// qw/defs.qc right now  - Tonik
+//soundtoclient() is here just so that things compile. it's not supported
+//by ZQuake yet
+void (entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #50;
+void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity forent) tracebox = #90;	// DP_QC_TRACEBOX
+
 /* $AGRIP-END */
