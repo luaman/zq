@@ -34,66 +34,59 @@ void (*vid_menukeyfn)(int key);
 enum {m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer,
 	m_setup, m_net, m_options, m_video, m_keys, m_help, m_quit,
 	m_serialconfig, m_modemconfig, m_lanconfig, m_gameoptions, 
-	m_search, m_slist, m_sedit, m_fps} m_state;
+	m_search, m_slist, m_sedit, m_fps, m_demos} m_state;
 
 void M_Menu_Main_f (void);
 	void M_Menu_SinglePlayer_f (void);
 		void M_Menu_Load_f (void);
 		void M_Menu_Save_f (void);
 	void M_Menu_MultiPlayer_f (void);
-		void M_Menu_SEdit_f (void);
+		void M_Menu_ServerList_f (void);
+			void M_Menu_SEdit_f (void);
 		void M_Menu_Setup_f (void);
-//		void M_Menu_Net_f (void);
+		void M_Menu_Demos_f (void);
+		void M_Menu_GameOptions_f (void);
 	void M_Menu_Options_f (void);
 		void M_Menu_Keys_f (void);
 		void M_Menu_Fps_f (void);
 		void M_Menu_Video_f (void);
 	void M_Menu_Help_f (void);
 	void M_Menu_Quit_f (void);
-void M_Menu_SerialConfig_f (void);
-	void M_Menu_ModemConfig_f (void);
-void M_Menu_LanConfig_f (void);
-void M_Menu_GameOptions_f (void);
-void M_Menu_Search_f (void);
-void M_Menu_ServerList_f (void);
 
 void M_Main_Draw (void);
 	void M_SinglePlayer_Draw (void);
 		void M_Load_Draw (void);
 		void M_Save_Draw (void);
 	void M_MultiPlayer_Draw (void);
+		void M_ServerList_Draw (void);
+			void M_SEdit_Draw (void);
 		void M_Setup_Draw (void);
-		void M_Net_Draw (void);
+		void M_Demos_Draw (void);
+		void M_GameOptions_Draw (void);
 	void M_Options_Draw (void);
 		void M_Keys_Draw (void);
+		void M_Fps_Draw (void);
 		void M_Video_Draw (void);
 	void M_Help_Draw (void);
 	void M_Quit_Draw (void);
-void M_SerialConfig_Draw (void);
-	void M_ModemConfig_Draw (void);
-void M_LanConfig_Draw (void);
-void M_GameOptions_Draw (void);
-void M_Search_Draw (void);
-void M_ServerList_Draw (void);
 
 void M_Main_Key (int key);
 	void M_SinglePlayer_Key (int key);
 		void M_Load_Key (int key);
 		void M_Save_Key (int key);
 	void M_MultiPlayer_Key (int key);
+		void M_ServerList_Key (int key);
+			void M_SEdit_Key (int key);
 		void M_Setup_Key (int key);
-		void M_Net_Key (int key);
+		void M_Demos_Key (int key);
+		void M_GameOptions_Key (int key);
 	void M_Options_Key (int key);
 		void M_Keys_Key (int key);
+		void M_Fps_Key (int key);
 		void M_Video_Key (int key);
 	void M_Help_Key (int key);
 	void M_Quit_Key (int key);
-void M_SerialConfig_Key (int key);
-	void M_ModemConfig_Key (int key);
-void M_LanConfig_Key (int key);
-void M_GameOptions_Key (int key);
-void M_Search_Key (int key);
-void M_ServerList_Key (int key);
+
 
 qboolean	m_entersound;		// play after drawing a frame, so caching
 								// won't disrupt the sound
@@ -103,14 +96,6 @@ int			m_return_state;
 qboolean	m_return_onerror;
 char		m_return_reason [32];
 
-#define StartingGame	(m_multiplayer_cursor == 1)
-#define JoiningGame		(m_multiplayer_cursor == 0)
-#define SerialConfig	(m_net_cursor == 0)
-#define DirectConfig	(m_net_cursor == 1)
-#define	IPXConfig		(m_net_cursor == 2)
-#define	TCPIPConfig		(m_net_cursor == 3)
-
-void M_ConfigureNetSubsystem(void);
 
 //=============================================================================
 /* Support Routines */
@@ -599,7 +584,7 @@ void M_Options_Draw (void)
 	M_Print (16, 152, "          FPS settings");
 
 	if (vid_menudrawfn)
-		M_Print (16, 160, "         Video Options");
+		M_Print (16, 160, "           Video Modes");
 
 #ifdef _WIN32
 	if (modestate == MS_WINDOWED)
@@ -1472,8 +1457,11 @@ void M_Save_Key (int k)
 /* MULTIPLAYER MENU */
 
 int	m_multiplayer_cursor;
+#ifdef QW_BOTH
+#define	MULTIPLAYER_ITEMS	4
+#else
 #define	MULTIPLAYER_ITEMS	3
-
+#endif
 
 void M_Menu_MultiPlayer_f (void)
 {
@@ -1485,22 +1473,20 @@ void M_Menu_MultiPlayer_f (void)
 
 void M_MultiPlayer_Draw (void)
 {
-	int		f;
 	qpic_t	*p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
-	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mp_menu.lmp") );
+	M_Print (80, 40, "favorite servers");
+	M_Print (80, 48, "player setup");
+	M_Print (80, 56, "demos");
+#ifdef QW_BOTH
+	M_Print (80, 64, "new game");
+#endif
 
-	f = (int)(realtime * 10)%6;
-
-	M_DrawTransPic (54, 32 + m_multiplayer_cursor * 20,Draw_CachePic( va("gfx/menudot%i.lmp", f+1 ) ) );
-
-/*	if (serialAvailable || ipxAvailable || tcpipAvailable)
-		return;
-	M_PrintWhite ((320/2) - ((27*8)/2), 148, "No Communications Available");
-*/
+// cursor
+	M_DrawCharacter (64, 40 + m_multiplayer_cursor*8, 12+((int)(realtime*4)&1));
 }
 
 
@@ -1541,23 +1527,262 @@ void M_MultiPlayer_Key (int key)
 		switch (m_multiplayer_cursor)
 		{
 		case 0:
-//			if (serialAvailable || ipxAvailable || tcpipAvailable)
-//				M_Menu_Net_f ();
 			M_Menu_ServerList_f ();
 			break;
 
 		case 1:
-//			if (serialAvailable || ipxAvailable || tcpipAvailable)
-//				M_Menu_ServerList_f ();
-#ifdef QW_BOTH
-			M_Menu_GameOptions_f ();
-#endif
+			M_Menu_Setup_f ();
 			break;
 
 		case 2:
-			M_Menu_Setup_f ();
+			M_Menu_Demos_f ();
 			break;
+
+#ifdef QW_BOTH
+		case 3:
+			M_Menu_GameOptions_f ();
+			break;
+#endif
 		}
+	}
+}
+
+
+//=============================================================================
+/* DEMOS MENU */
+
+#define MAX_DEMO_NAME 64
+#define MAX_DEMO_FILES 64
+#define MAXLINES 19	  // maximum number of files visible on screen
+
+typedef struct direntry_s {
+	int		type;	// 0=file, 1=dir, 2="..", 3=message
+	char	name[MAX_DEMO_NAME];
+	int		size;
+} direntry_t;
+
+direntry_t	dir[MAX_DEMO_FILES];
+int			numfiles;
+char		demodir[MAX_QPATH] = "";
+char		prevdir[MAX_QPATH] = "";
+
+int	demo_cursor = 0;
+int	demo_base = 0;
+
+static void ReadDir (void)
+{
+	HANDLE	h;
+	WIN32_FIND_DATA fd;
+	int		i;
+
+	numfiles = 0;
+	demo_cursor = 0;
+
+#ifdef _WIN32		// FIXME
+	if (demodir[0]) {
+		strcpy (dir[0].name, "..");
+		dir[0].type = 2;
+		numfiles = 1;
+	}
+
+	h = FindFirstFile (va("%s%s/*.*", com_gamedir, demodir), &fd);
+/*	if (h == INVALID_HANDLE_VALUE && demodir[0]) {
+		// go to the base directory
+		demodir[0] = '\0';
+		h = FindFirstFile (va("%s%s/*.*", com_gamedir, demodir), &fd);
+		numfiles = 0;
+	}*/
+
+	if (h == INVALID_HANDLE_VALUE) {
+		strcpy (dir[numfiles].name, "Error reading directory\n");
+		dir[numfiles].type = 3;
+		numfiles++;
+		return;
+	}
+	
+	do {
+		if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+			if (!strcmp(fd.cFileName, ".") || !strcmp(fd.cFileName, ".."))
+				continue;
+			strncpy (dir[numfiles].name, fd.cFileName, MAX_DEMO_NAME-1);
+			dir[numfiles].type = 1;
+			if (!strcmp(fd.cFileName, prevdir))	{
+				demo_cursor = numfiles;
+				if (demo_cursor >= MAXLINES) {
+					demo_base -= demo_cursor - (MAXLINES-1);
+					demo_cursor = MAXLINES-1;
+				}
+				*prevdir = '\0';
+			}
+		}
+		else
+		{
+			i = strlen(fd.cFileName);
+			if (i < 5 || Q_strcasecmp(fd.cFileName+i-4, ".qwd"))
+				continue;
+			strncpy (dir[numfiles].name, fd.cFileName, MAX_DEMO_NAME-1);
+			dir[numfiles].type = 0;
+			dir[numfiles].size = fd.nFileSizeLow;
+		}
+		numfiles++;
+		if (numfiles == MAX_DEMO_FILES)
+			break;
+	} while ( FindNextFile(h, &fd) );
+	FindClose (h);
+#endif	// _WIN32
+
+	if (!numfiles) {
+		strcpy (dir[0].name, "[ no files ]");
+		dir[0].type = 3;
+		numfiles = 1;
+	}
+}
+
+void M_Menu_Demos_f (void)
+{
+	m_entersound = true;
+	m_state = m_demos;
+	key_dest = key_menu;
+	ReadDir ();
+}
+
+static char *toyellow (char *s)
+{
+	static char buf[20];
+
+	strncpy (buf, s, sizeof(buf)-1);
+	for (s=buf ; *s ; s++)
+		if (*s >= '0' && *s <= '9')
+			*s = *s - '0' + 18;
+	return buf;
+}
+
+void M_Demos_Draw (void)
+{
+	int		i;
+	int		y;
+	direntry_t	*d;
+
+	M_Print (140, 8, "DEMOS");
+	M_Print (16, 16, demodir);
+	M_Print (8, 24, "\x1d\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1f \x1d\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1e\x1f");
+
+	d = dir + demo_base;
+	for (i=0, y=32 ; i<numfiles-demo_base && i<MAXLINES ; i++, y+=8, d++)
+	{
+		if (d->type)
+			M_PrintWhite (24, y, d->name);
+		else
+			M_Print (24, y, d->name);
+
+		if (d->type == 1)
+			M_PrintWhite (240, y, "  folder");
+		else if (d->type == 2)
+			M_PrintWhite (240, y, "    up  ");
+		else if (d->type == 0)
+			M_Print (240, y, toyellow(va("%7ik", d->size>>10)));
+	}
+	
+	M_DrawCharacter (8, 32 + demo_cursor*8, 12+((int)(realtime*4)&1));
+}
+
+void M_Demos_Key (int k)
+{
+	switch (k)
+	{
+	case K_ESCAPE:
+		M_Menu_MultiPlayer_f ();
+		break;
+
+	case K_UPARROW:
+		S_LocalSound ("misc/menu1.wav");
+		if (demo_cursor > 0)
+			demo_cursor--;
+		else if (demo_base > 0)
+			demo_base--;
+		break;
+
+	case K_DOWNARROW:
+		S_LocalSound ("misc/menu1.wav");
+		if (demo_cursor+demo_base < numfiles-1)
+		{
+			if (demo_cursor < MAXLINES-1)
+				demo_cursor++;
+			else
+				demo_base++;
+		}
+		break;
+
+	case K_HOME:
+		S_LocalSound ("misc/menu1.wav");
+		demo_cursor = 0;
+		demo_base = 0;
+		break;
+
+	case K_END:
+		S_LocalSound ("misc/menu1.wav");
+		if (numfiles > MAXLINES) {
+			demo_cursor = MAXLINES-1;
+			demo_base = numfiles - demo_cursor - 1;
+		} else {
+			demo_base = 0;
+			demo_cursor = numfiles-1;
+		}
+		break;
+
+	case K_PGUP:
+		S_LocalSound ("misc/menu1.wav");
+		demo_cursor -= MAXLINES-1;
+		if (demo_cursor < 0) {
+			demo_base += demo_cursor;
+			if (demo_base < 0)
+				demo_base = 0;
+			demo_cursor = 0;
+		}
+		break;
+
+	case K_PGDN:
+		S_LocalSound ("misc/menu1.wav");
+		demo_cursor += MAXLINES-1;
+		if (demo_base + demo_cursor >= numfiles)
+			demo_cursor = numfiles - demo_base - 1;
+		if (demo_cursor >= MAXLINES) {
+			demo_base += demo_cursor - (MAXLINES-1);
+			demo_cursor = MAXLINES-1;
+			if (demo_base + demo_cursor >= numfiles)
+				demo_base = numfiles - demo_cursor - 1;
+		}
+		break;
+
+	case K_ENTER:
+		if (!numfiles || dir[demo_base + demo_cursor].type == 3)
+			break;
+
+		if (dir[demo_base + demo_cursor].type) {
+			if (dir[demo_base + demo_cursor].type == 2)
+			{
+				char *p;
+				if ( (p = strrchr(demodir, '/')) != NULL)
+				{
+					strcpy (prevdir, p+1);
+					*p = '\0';
+				}
+			}
+			else
+			{
+				strncat (demodir, "/", sizeof(demodir)-1);
+				strncat (demodir, dir[demo_base + demo_cursor].name, sizeof(demodir)-1);
+			}
+			demo_cursor = 0;
+			ReadDir ();
+		}
+		else
+		{
+			key_dest = key_game;
+			m_state = m_none;
+			Cbuf_AddText (va("playdemo \"%s/%s\"\n", demodir, dir[demo_cursor+demo_base].name));
+		}
+		break;
 	}
 }
 
@@ -1747,6 +1972,7 @@ void M_GameOptions_Draw (void)
 void M_NetStart_Change (int dir)
 {
 	int count;
+	extern cvar_t	registered;
 
 	switch (gameoptions_cursor)
 	{
@@ -2511,6 +2737,7 @@ void M_Init (void)
 #endif
 	Cmd_AddCommand ("menu_multiplayer", M_Menu_MultiPlayer_f);
 	Cmd_AddCommand ("menu_setup", M_Menu_Setup_f);
+	Cmd_AddCommand ("menu_demos", M_Menu_Demos_f);
 	Cmd_AddCommand ("menu_options", M_Menu_Options_f);
 	Cmd_AddCommand ("menu_keys", M_Menu_Keys_f);
 	Cmd_AddCommand ("menu_fps", M_Menu_Fps_f);
@@ -2636,6 +2863,9 @@ void M_Draw (void)
 	case m_sedit:
 		M_SEdit_Draw ();
 		break;
+
+	case m_demos:
+		M_Demos_Draw ();
 	}
 
 	m_yofs = 0;
@@ -2739,6 +2969,10 @@ void M_Keydown (int key)
 
 	case m_sedit:
 		M_SEdit_Key (key);
+		break;
+
+	case m_demos:
+		M_Demos_Key (key);
 		break;
 	}
 }
