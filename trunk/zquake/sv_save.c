@@ -13,7 +13,7 @@ LOAD / SAVE GAME
 extern cvar_t	maxclients;
 
 #define	SAVEGAME_COMMENT_LENGTH	39
-#define	SAVEGAME_VERSION	5
+#define	SAVEGAME_VERSION	6
 
 /*
 ===============
