@@ -421,7 +421,7 @@ byte *CM_LeafPHS (const cleaf_t *leaf)
 	if (leaf == map_leafs)
 		return map_novis;
 
-	return map_phs + (leaf - map_leafs) * map_vis_rowbytes;
+	return map_phs + (leaf - 1 - map_leafs) * map_vis_rowbytes;
 }
 
 /*
@@ -947,8 +947,7 @@ static void CM_BuildPHS (void)
 				if (! (bitbyte & (1<<k)) )
 					continue;
 				// or this pvs row into the phs
-				// +1 because pvs is 1 based
-				index = ((j<<3)+k+1);
+				index = (j<<3) + k;
 				if (index >= visleafs)
 					continue;
 				src = (unsigned *)map_pvs + index * map_vis_rowlongs;
