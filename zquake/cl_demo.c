@@ -185,7 +185,6 @@ qbool CL_GetDemoMessage (void)
 	byte	c;
 	usercmd_t *pcmd;
 #ifdef MVDPLAY
-	int		size, tracknum;
 	byte	newtime;
 #endif
 
@@ -283,9 +282,8 @@ readnext:
 	
 	// get the msg type
 	r = fread (&c, sizeof(c), 1, cls.demofile);
-	if (r != 1) {
+	if (r != 1)
 		Host_Error ("Unexpected end of demo");
-	}
 	
 #ifdef MVDPLAY
     switch (cls.mvdplayback ? c&7 : c) {
@@ -328,24 +326,6 @@ readit:
 		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
 		if (r != 1)
 			Host_Error ("Unexpected end of demo");
-
-#ifdef MVDPLAY
-		if (cls.mvdplayback) {
-			switch(cls.lasttype) {
-			case dem_multiple:
-				tracknum = Cam_TrackNum();
-				if (tracknum == -1 || !(cls.lastto & (1 << tracknum)))
-					goto readnext;	
-				break;
-			case dem_single:
-				tracknum = Cam_TrackNum();
-				if (tracknum == -1 || cls.lastto != spec_track)
-					goto readnext;
-				break;
-			}
-		}
-#endif
-
 		return true;
 
 	case dem_set:
