@@ -133,6 +133,9 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void VID_SetCaption (char *text)
 {
+	if (!dpy)
+		return;
+	XStoreName (dpy, win, text);
 }
 
 static int XLateKey(XKeyEvent *ev)
@@ -918,7 +921,7 @@ void VID_Init(unsigned char *palette)
     win = XCreateWindow(dpy, root, 0, 0, width, height,
                         0, visinfo->depth, InputOutput,
                         visinfo->visual, mask, &attr);
-    XStoreName(dpy, win, "zquake-glx");
+    XStoreName(dpy, win, PROGRAM);
     XMapWindow(dpy, win);
 
 #ifdef USE_VMODE
