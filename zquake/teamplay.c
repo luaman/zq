@@ -269,8 +269,9 @@ char *Macro_BestAmmo_f (void)
 // needed for %b parsing
 char *Macro_BestWeaponAndAmmo_f (void)
 {
-	strcpy (macro_buf, va("%s:%s", Macro_BestWeapon_f(),
-		Macro_BestAmmo_f()));
+	char buf[MAX_MACRO_VALUE];
+	_snprintf (buf, MAX_MACRO_VALUE-1, "%s:%s", Macro_BestWeapon_f(),
+		Macro_BestAmmo_f());
 	return macro_buf;
 }
 
@@ -382,9 +383,48 @@ char *CL_ParseMacroString (char *string)
 	{
 		if (cl_parsesay.value == 1)
 		{
+			// check %[P], etc
+			if (*s == '%' && s[1]=='[' && s[2] && s[3]==']')
+			{
+				static char mbuf[MAX_MACRO_VALUE];
+				switch (s[2]) {
+				case 'a':
+					macro_string = Macro_ArmorType_f();
+					if (!macro_string[0])
+						macro_string = "a";
+					if (cl.stats[STAT_ARMOR] < 30)
+						sprintf (mbuf, "\x90%s:%i\x91", macro_string, cl.stats[STAT_ARMOR]);
+					else
+						sprintf (mbuf, "%s:%i", macro_string, cl.stats[STAT_ARMOR]);
+					macro_string = mbuf;
+					break;
+
+				case 'P':
+					macro_string = Macro_Powerups_f();
+					if (macro_string[0])
+						sprintf (mbuf, "\x90%s\x91", macro_string);
+					else
+						mbuf[0] = 0;
+					macro_string = mbuf;
+					break;
+
+				// todo: %[w], %[h], %[b]
+
+				default:
+					buf[i++] = *s++;
+					continue;
+				}
+				if (i + strlen(macro_string) >= MAX_MACRO_STRING-1)
+					Sys_Error("CL_ParseMacroString: macro string length > MAX_MACRO_STRING)");
+				strcpy (&buf[i], macro_string);
+				i += strlen(macro_string);
+				s += 4;	// skip %[<char>]
+				continue;
+			}
+			
+			// check %a, etc
 			if (*s == '%')
 			{
-				macro_string = NULL;
 				switch (s[1])
 				{
 				case 'a': macro_string = Macro_Armor_f(); break;
@@ -406,12 +446,12 @@ char *CL_ParseMacroString (char *string)
 					buf[i++] = *s++;
 					continue;
 				}
-					if (i + strlen(macro_string) >= MAX_MACRO_STRING-1) // !!! is this right?
-						Sys_Error("CL_ParseMacroString: macro string length > MAX_MACRO_STRING)");
-					strcpy (&buf[i], macro_string);
+				if (i + strlen(macro_string) >= MAX_MACRO_STRING-1)
+					Sys_Error("CL_ParseMacroString: macro string length > MAX_MACRO_STRING)");
+				strcpy (&buf[i], macro_string);
 					i += strlen(macro_string);
-					s += 2;	// skip % and letter
-					continue;
+				s += 2;	// skip % and letter
+				continue;
 			}
 
 			if (*s == '$')
@@ -788,7 +828,7 @@ char *trigger_commands[] = {
 
 void CL_ExecuteTriggerString (char *text)
 {
-	char	buf[1024];
+	static char	buf[1024];
 	char	*arg0;
 	int		i;
 	cmd_function_t	*cmd;
@@ -1067,8 +1107,11 @@ void CL_NewMap (void)
 	if (strcmp(mapname, last_map))
 	{	// map name has changed
 		loc_numentries = 0;	// clear loc file
-		if (cl_loadlocs.value && !cls.demoplayback)
-			CL_LoadLocFile (va("%s.loc", mapname), true);
+		if (cl_loadlocs.value && !cls.demoplayback) {
+			char locname[MAX_OSPATH];
+			_snprintf (locname, MAX_OSPATH, "%s.loc", mapname);
+			CL_LoadLocFile (locname, true);
+		}
 		strcpy (last_map, mapname);
 		Cvar_SetROM (&cl_mapname, mapname);
 	}
