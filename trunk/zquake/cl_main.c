@@ -736,7 +736,10 @@ void CL_Init (void)
 {
 	cls.state = ca_disconnected;
 
-	Key_Init ();
+	strcpy (cls.gamedirfile, com_gamedirfile);
+	strcpy (cls.gamedir, com_gamedir);
+
+	W_LoadWadFile ("gfx.wad");
 
 	host_basepal = (byte *)FS_LoadHunkFile ("gfx/palette.lmp");
 	if (!host_basepal)
@@ -744,6 +747,10 @@ void CL_Init (void)
 	host_colormap = (byte *)FS_LoadHunkFile ("gfx/colormap.lmp");
 	if (!host_colormap)
 		Sys_Error ("Couldn't load gfx/colormap.lmp");
+
+	Sys_mkdir(va("%s/%s", com_basedir, "qw"));
+
+	Key_Init ();
 
 #ifdef __linux__
 	IN_Init ();
@@ -774,6 +781,8 @@ void CL_Init (void)
 	TP_Init ();
 	Sbar_Init ();
 	M_Init ();	
+
+	NET_Config (true, false);
 
 	SList_Init ();
 	SList_Load ();
@@ -1067,28 +1076,20 @@ void Host_Init (quakeparms_t *parms)
 
 	COM_Init ();
 
-	strcpy (cls.gamedirfile, com_gamedirfile);
-	strcpy (cls.gamedir, com_gamedir);
-
 #ifdef QW_BOTH
 	PR_Init ();
 	SV_InitLocal ();	// register server cvars and commands
 #endif
 
 	NET_Init ();
-	NET_Config (true, false);
 	Netchan_Init ();
 
 	Sys_Init ();
 	Pmove_Init ();
 
-	W_LoadWadFile ("gfx.wad");
-
 	Con_Init ();
 	Mod_Init ();
 	
-	Sys_mkdir(va("%s/%s", com_basedir, "qw"));
-
 	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Com_Printf ("%4.1f megs RAM used.\n",parms->memsize/ (1024*1024.0));
 	
