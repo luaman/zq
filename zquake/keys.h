@@ -71,10 +71,10 @@ typedef enum {
 	K_HOME,
 	K_END,
 
-	K_WIN,
-	K_LWIN,
-	K_RWIN,
-	K_MENU,
+//	K_WIN,
+//	K_LWIN,
+//	K_RWIN,
+//	K_MENU,
 
 //
 // Keypad stuff..
@@ -184,6 +184,7 @@ void Key_SetBinding (int keynum, char *binding);
 void Key_Unbind (int keynum);
 void Key_ClearStates (void);
 int Key_StringToKeynum (char *str);
-char *Key_KeynumToString (int keynum, char *buffer, size_t buf_size);
+//char *Key_KeynumToString (int keynum, char *buffer, size_t buf_size);
+char *Key_KeynumToString (int keynum);
 
 #endif /* _KEYS_H_ */
