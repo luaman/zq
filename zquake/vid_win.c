@@ -2217,40 +2217,39 @@ void	VID_Init (unsigned char *palette)
 }
 
 
-void	VID_Shutdown (void)
+void VID_Shutdown (void)
 {
-//	HDC				hdc;
-//	int				dummy;
+	if (!vid_initialized)
+		return;
 
-	if (vid_initialized)
-	{
-		if (modestate == MS_FULLDIB)
-			ChangeDisplaySettings (NULL, CDS_FULLSCREEN);
+	VID_ForceUnlockedAndReturnState ();
 
-		PostMessage (HWND_BROADCAST, WM_PALETTECHANGED, (WPARAM)mainwindow, (LPARAM)0);
-		PostMessage (HWND_BROADCAST, WM_SYSCOLORCHANGE, (WPARAM)0, (LPARAM)0);
+	if (modestate == MS_FULLDIB)
+		ChangeDisplaySettings (NULL, CDS_FULLSCREEN);
 
-		AppActivate(false, false);
-		DestroyDIBWindow ();
-		DestroyFullscreenWindow ();
-		DestroyFullDIBWindow ();
+	PostMessage (HWND_BROADCAST, WM_PALETTECHANGED, (WPARAM)mainwindow, (LPARAM)0);
+	PostMessage (HWND_BROADCAST, WM_SYSCOLORCHANGE, (WPARAM)0, (LPARAM)0);
 
-		if (hwnd_dialog)
-			DestroyWindow (hwnd_dialog);
+	AppActivate(false, false);
+	DestroyDIBWindow ();
+	DestroyFullscreenWindow ();
+	DestroyFullDIBWindow ();
 
-		if (mainwindow)
-			DestroyWindow(mainwindow);
+	if (hwnd_dialog)
+		DestroyWindow (hwnd_dialog);
 
-		MGL_exit();
+	if (mainwindow)
+		DestroyWindow(mainwindow);
 
-		vid_testingmode = 0;
-		vid_initialized = 0;
+	MGL_exit();
 
-		// Tonik: this is a workaroung for the bug with garbaged
-		// screen on Riva TNT
-		if (modestate == MS_FULLSCREEN && vid_resetonswitch.value)
-			ChangeDisplaySettings (NULL, CDS_RESET);
-	}
+	vid_testingmode = 0;
+	vid_initialized = 0;
+
+	// Tonik: this is a workaroung for the bug with garbaged
+	// screen on Riva TNT
+	if (modestate == MS_FULLSCREEN && vid_resetonswitch.value)
+		ChangeDisplaySettings (NULL, CDS_RESET);
 }
 
 

@@ -142,9 +142,8 @@ void Sys_Printf (char *fmt, ...)
 
 void Sys_Quit (void)
 {
-	VID_ForceUnlockedAndReturnState ();
-
 	Host_Shutdown();
+
 	if (tevent)
 		CloseHandle (tevent);
 
