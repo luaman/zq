@@ -417,6 +417,58 @@ store:
 	}
 }
 
+
+/*
+================
+R_UpdateSurfaceLightMap
+================
+*/
+void R_UpdateSurfaceLightMap (msurface_t *fa)
+{
+	byte		*base;
+	int			maps;
+	glRect_t    *theRect;
+	int			smax, tmax;
+	qbool		lightstyle_modified = false;
+
+	// check for lightmap modification
+	for (maps=0 ; maps<MAXLIGHTMAPS && fa->styles[maps] != 255 ; maps++)
+		if (d_lightstylevalue[fa->styles[maps]] != fa->cached_light[maps]) {
+			lightstyle_modified = true;
+			break;
+		}
+
+	if (fa->dlightframe == r_framecount)
+		R_BuildDlightList (fa);
+	else
+		numdlights = 0;
+
+	if (numdlights == 0 && !fa->cached_dlight && !lightstyle_modified)
+		return;
+	
+	lightmap_modified[fa->lightmaptexturenum] = true;
+	theRect = &lightmap_rectchange[fa->lightmaptexturenum];
+	if (fa->light_t < theRect->t) {
+		if (theRect->h)
+			theRect->h += theRect->t - fa->light_t;
+		theRect->t = fa->light_t;
+	}
+	if (fa->light_s < theRect->l) {
+		if (theRect->w)
+			theRect->w += theRect->l - fa->light_s;
+		theRect->l = fa->light_s;
+	}
+	smax = (fa->extents[0]>>4)+1;
+	tmax = (fa->extents[1]>>4)+1;
+	if ((theRect->w + theRect->l) < (fa->light_s + smax))
+		theRect->w = (fa->light_s-theRect->l)+smax;
+	if ((theRect->h + theRect->t) < (fa->light_t + tmax))
+		theRect->h = (fa->light_t-theRect->t)+tmax;
+	base = lightmaps + fa->lightmaptexturenum*lightmap_bytes*BLOCK_WIDTH*BLOCK_HEIGHT;
+	base += fa->light_t * BLOCK_WIDTH * lightmap_bytes + fa->light_s * lightmap_bytes;
+	R_BuildLightMap (fa, base, BLOCK_WIDTH*lightmap_bytes);
+}
+
 /*
 ===============
 R_UploadLightMap
@@ -671,7 +723,6 @@ void R_BlendLightmaps (void)
 	glDepthMask (GL_TRUE);		// back to normal Z buffering
 }
 
-
 /*
 ================
 R_RenderBrushPoly
@@ -680,11 +731,6 @@ R_RenderBrushPoly
 void R_RenderBrushPoly (msurface_t *fa)
 {
 	texture_t	*t;
-	byte		*base;
-	int			maps;
-	glRect_t    *theRect;
-	int			smax, tmax;
-	qbool		lightstyle_modified = false;
 
 	c_brush_polys++;
 
@@ -725,42 +771,7 @@ void R_RenderBrushPoly (msurface_t *fa)
 	if (!r_dynamic.value)
 		return;
 
-	// check for lightmap modification
-	for (maps=0 ; maps<MAXLIGHTMAPS && fa->styles[maps] != 255 ; maps++)
-		if (d_lightstylevalue[fa->styles[maps]] != fa->cached_light[maps]) {
-			lightstyle_modified = true;
-			break;
-		}
-
-	if (fa->dlightframe == r_framecount)
-		R_BuildDlightList (fa);
-	else
-		numdlights = 0;
-
-	if (numdlights == 0 && !fa->cached_dlight && !lightstyle_modified)
-		return;
-	
-	lightmap_modified[fa->lightmaptexturenum] = true;
-	theRect = &lightmap_rectchange[fa->lightmaptexturenum];
-	if (fa->light_t < theRect->t) {
-		if (theRect->h)
-			theRect->h += theRect->t - fa->light_t;
-		theRect->t = fa->light_t;
-	}
-	if (fa->light_s < theRect->l) {
-		if (theRect->w)
-			theRect->w += theRect->l - fa->light_s;
-		theRect->l = fa->light_s;
-	}
-	smax = (fa->extents[0]>>4)+1;
-	tmax = (fa->extents[1]>>4)+1;
-	if ((theRect->w + theRect->l) < (fa->light_s + smax))
-		theRect->w = (fa->light_s-theRect->l)+smax;
-	if ((theRect->h + theRect->t) < (fa->light_t + tmax))
-		theRect->h = (fa->light_t-theRect->t)+tmax;
-	base = lightmaps + fa->lightmaptexturenum*lightmap_bytes*BLOCK_WIDTH*BLOCK_HEIGHT;
-	base += fa->light_t * BLOCK_WIDTH * lightmap_bytes + fa->light_s * lightmap_bytes;
-	R_BuildLightMap (fa, base, BLOCK_WIDTH*lightmap_bytes);
+	R_UpdateSurfaceLightMap (fa);
 }
 
 
@@ -772,12 +783,6 @@ Multitexture
 */
 void R_RenderDynamicLightmaps (msurface_t *fa)
 {
-	byte		*base;
-	int			maps;
-	glRect_t    *theRect;
-	int			smax, tmax;
-	qbool		lightstyle_modified = false;
-
 	c_brush_polys++;
 
 	if (fa->flags & ( SURF_DRAWSKY | SURF_DRAWTURB) )
@@ -789,42 +794,7 @@ void R_RenderDynamicLightmaps (msurface_t *fa)
 	if (!r_dynamic.value)
 		return;
 
-	// check for lightmap modification
-	for (maps=0 ; maps<MAXLIGHTMAPS && fa->styles[maps] != 255 ; maps++)
-		if (d_lightstylevalue[fa->styles[maps]] != fa->cached_light[maps]) {
-			lightstyle_modified = true;
-			break;
-		}
-		
-	if (fa->dlightframe == r_framecount)
-		R_BuildDlightList (fa);
-	else
-		numdlights = 0;
-	
-	if (numdlights == 0 && !fa->cached_dlight && !lightstyle_modified)
-		return;
-	
-	lightmap_modified[fa->lightmaptexturenum] = true;
-	theRect = &lightmap_rectchange[fa->lightmaptexturenum];
-	if (fa->light_t < theRect->t) {
-		if (theRect->h)
-			theRect->h += theRect->t - fa->light_t;
-		theRect->t = fa->light_t;
-	}
-	if (fa->light_s < theRect->l) {
-		if (theRect->w)
-			theRect->w += theRect->l - fa->light_s;
-		theRect->l = fa->light_s;
-	}
-	smax = (fa->extents[0]>>4)+1;
-	tmax = (fa->extents[1]>>4)+1;
-	if ((theRect->w + theRect->l) < (fa->light_s + smax))
-		theRect->w = (fa->light_s-theRect->l)+smax;
-	if ((theRect->h + theRect->t) < (fa->light_t + tmax))
-		theRect->h = (fa->light_t-theRect->t)+tmax;
-	base = lightmaps + fa->lightmaptexturenum*lightmap_bytes*BLOCK_WIDTH*BLOCK_HEIGHT;
-	base += fa->light_t * BLOCK_WIDTH * lightmap_bytes + fa->light_s * lightmap_bytes;
-	R_BuildLightMap (fa, base, BLOCK_WIDTH*lightmap_bytes);
+	R_UpdateSurfaceLightMap (fa);
 }
 
 
