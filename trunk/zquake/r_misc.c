@@ -459,9 +459,6 @@ void R_SetupFrame (void)
 	r_fullbright.value = 0;
 	r_ambient.value = 0;
 
-	if (cl.teamfortress)
-		r_drawflat.value = 0;
-
 	if (r_numsurfs.value)
 	{
 		if ((surface_p - surfaces) > r_maxsurfsseen)
