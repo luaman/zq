@@ -80,6 +80,7 @@ cvar_t	tp_need_rockets = {"tp_need_rockets", "5"};
 cvar_t	tp_need_cells = {"tp_need_cells", "20"};
 cvar_t	tp_need_nails = {"tp_need_nails", "40"};
 cvar_t	tp_need_shells = {"tp_need_shells", "10"};
+cvar_t	tp_took_pointed = {"tp_took_pointed", "1"};
 
 void TP_FindModelNumbers (void);
 void TP_FindPoint (void);
@@ -1835,8 +1836,11 @@ static int CountTeammates (void)
 
 static void ExecTookTrigger (char *s, int flag, vec3_t org)
 {
+	qboolean	report;
+
+	// decide whether this pickup should be reported
 	if ( !((pkflags|tookflags) & flag) )
-		return;
+			return;
 
 	vars.tooktime = cls.realtime;
 	strncpy (vars.tookname, s, sizeof(vars.tookname)-1);
@@ -1847,9 +1851,22 @@ static void ExecTookTrigger (char *s, int flag, vec3_t org)
 			return;
 	}
 
-	if (tookflags & flag) {
-		if (CountTeammates())
-			TP_ExecTrigger ("f_took");
+	report = (tookflags & flag) ? true : false;
+
+	if (!report) {
+		if (tp_took_pointed.value && !strcmp(vars.pointname, s)) {
+			vec3_t	dist;
+			VectorSubtract (org, vars.pointloc, dist);
+			if (VectorLength(dist) < 80) {		// tune this!
+				// ok, this looks like the item we pointed at
+				// report it
+				report = true;
+			}
+		}
+	}
+
+	if (report && CountTeammates()) {
+		TP_ExecTrigger ("f_took");
 	}
 }
 
@@ -2373,6 +2390,7 @@ void TP_Init (void)
 	Cvar_Register (&tp_need_cells);
 	Cvar_Register (&tp_need_nails);
 	Cvar_Register (&tp_need_shells);
+	Cvar_Register (&tp_took_pointed);
 
 	Cmd_AddCommand ("macrolist", TP_MacroList_f);
 	Cmd_AddCommand ("loadloc", TP_LoadLocFile_f);
