@@ -381,28 +381,14 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 	}
 }
 
-// ouch! ouch! ouch!
-static void BubbleSort (packet_entities_t *pack)
+// passed to qsort
+static int __cdecl entity_state_compare (const void *p1, const void *p2)
 {
-	int			i;
-	qboolean	done;
-
-	do {
-		done = true;
-		for (i = 0; i < pack->num_entities - 1; i++) {
-			if (pack->entities[i].number > pack->entities[i+1].number) {
-				entity_state_t tmp;
-				tmp = pack->entities[i];
-				pack->entities[i] = pack->entities[i+1];
-				pack->entities[i+1] = tmp;
-				done = false;
-			}
-		}
-	} while (!done);
+	return ((entity_state_t *) p1)->number - ((entity_state_t *) p2)->number;
 }
 
-// we pass it to MSG_EmitPacketEntities
-entity_state_t *SV_GetBaseline (int number)
+// passed to MSG_EmitPacketEntities
+static entity_state_t *SV_GetBaseline (int number)
 {
 	return &EDICT_NUM(number)->baseline;
 }
@@ -481,8 +467,8 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 		state->effects = ent->v.effects;
 	}
 
-	// entity translation might have broken original entnum order so make sure entity states are sorted
-	BubbleSort (pack);
+	// entity translation might have broken original entnum order, so sort them
+	qsort (pack->entities, pack->num_entities, sizeof(pack->entities[0]), entity_state_compare);
 
 	if (client->delta_sequence != -1) {
 		// encode the packet entities as a delta from the
