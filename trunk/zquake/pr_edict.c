@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // sv_edict.c -- entity dictionary
 
 #include "qwsvdef.h"
+#include "crc.h"
 
 dprograms_t		*progs;
 dfunction_t		*pr_functions;
