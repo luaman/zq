@@ -2333,6 +2333,9 @@ static void PF_checkextension (void)
 		"ZQ_MOVETYPE_NONE",
 		"ZQ_QC_PARTICLE",
 		"ZQ_TESTBOT",
+#ifdef VWEP_TEST
+		"ZQ_VWEP",
+#endif
 		NULL
 	};
 	char **pstr, *extension;
