@@ -119,7 +119,7 @@ Skin_Cache
 Returns a pointer to the skin bitmap, or NULL to use the default
 ==========
 */
-byte	*Skin_Cache (skin_t *skin)
+byte *Skin_Cache (skin_t *skin)
 {
 	char	name[1024];
 	byte	*raw;
@@ -281,7 +281,8 @@ void Skin_NextDownload (void)
 #endif
 	}
 
-	if (cls.state != ca_active)
+// Tonik: only download when connecting
+	if (cls.state == ca_onserver)
 	{	// get next signon phase
 		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 		MSG_WriteString (&cls.netchan.message,
@@ -298,7 +299,7 @@ Skin_Skins_f
 Refind all skins, downloading if needed.
 ==========
 */
-void	Skin_Skins_f (void)
+void Skin_Skins_f (void)
 {
 	int		i;
 
@@ -322,7 +323,7 @@ Skin_AllSkins_f
 Sets all skins to one specific one
 ==========
 */
-void	Skin_AllSkins_f (void)
+void Skin_AllSkins_f (void)
 {
 	strcpy (allskins, Cmd_Argv(1));
 	Skin_Skins_f ();
