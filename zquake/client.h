@@ -50,7 +50,7 @@ typedef struct
 	int			flags;			// dead, gib, etc
 
 	float		waterjumptime;
-	int			onground;		// -1 = in air, else pmove entity number
+	qboolean	onground;
 	int			oldbuttons;
 	int			jump_msec;		// fix bunny-hop flickering
 } player_state_t;
@@ -272,7 +272,7 @@ typedef struct
 	float		driftmove;
 	double		laststop;
 
-	int			onground;		// -1 when in air    -- Tonik
+	qboolean	onground;
 	float		crouch;			// local amount for smoothing stepups
 
 	qboolean	paused;			// send over by server
