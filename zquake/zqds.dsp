@@ -41,8 +41,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir ".\Release-server"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX- /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /W3 /GX- /O2 /D "NDEBUG" /D "SERVERONLY" /D "WIN32" /D "_CONSOLE" /D "id386" /YX /FD /c
+# ADD BASE CPP /nologo /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /YX /c
+# ADD CPP /nologo /W3 /O2 /D "NDEBUG" /D "SERVERONLY" /D "WIN32" /D "_CONSOLE" /D "id386" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
@@ -67,8 +67,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir ".\Debug-server"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX- /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /W3 /GX- /ZI /Od /D "_DEBUG" /D "SERVERONLY" /D "WIN32" /D "_CONSOLE" /D "id386" /FR /YX /FD /c
+# ADD BASE CPP /nologo /W3 /Gm /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /c
+# ADD CPP /nologo /W3 /ZI /Od /D "_DEBUG" /D "SERVERONLY" /D "WIN32" /D "_CONSOLE" /D "id386" /FR /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -318,23 +318,11 @@ SOURCE=.\zone.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=.\qe3.ico
-# End Source File
-# Begin Source File
-
-SOURCE=.\qwcl2.ico
-# End Source File
-# Begin Source File
-
 SOURCE=.\zqds.ico
 # End Source File
 # Begin Source File
 
 SOURCE=.\zqds.rc
-# End Source File
-# Begin Source File
-
-SOURCE=.\zquake.bmp
 # End Source File
 # End Group
 # Begin Group "Asm Files"
