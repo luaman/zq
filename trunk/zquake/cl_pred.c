@@ -240,7 +240,7 @@ void CL_PredictMove (void)
 	{	// first update is the final signon stage
 		cls.state = ca_active;
 #ifdef _WIN32
-		SetWindowText (mainwindow, va("QuakeWorld: %s", cls.servername));
+		SetWindowText (mainwindow, va("ZQuake: %s", cls.servername));
 #endif
 		Con_ClearNotify ();
 		TP_ExecTrigger ("f_spawn");

@@ -329,7 +329,7 @@ void CL_Disconnect (void)
 	server_version = 0;
 
 #ifdef _WIN32
-	SetWindowText (mainwindow, "QuakeWorld: disconnected");
+	SetWindowText (mainwindow, "ZQuake: disconnected");
 #endif
 
 // stop sounds (especially looping!)
