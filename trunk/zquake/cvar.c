@@ -39,7 +39,7 @@ cvar_t *Cvar_FindVar (char *var_name)
 	cvar_t	*var;
 	int		key;
 
-	key = HashKey (var_name);
+	key = Com_HashKey (var_name);
 	
 	for (var=cvar_hash[key] ; var ; var=var->hash_next)
 		if (!Q_stricmp (var_name, var->name))
@@ -268,7 +268,7 @@ void Cvar_Register (cvar_t *var)
 	var->value = Q_atof (var->string);
 
 	// link the variable in
-	key = HashKey (var->name);
+	key = Com_HashKey (var->name);
 	var->hash_next = cvar_hash[key];
 	cvar_hash[key] = var;
 	var->next = cvar_vars;
@@ -414,7 +414,7 @@ cvar_t *Cvar_Create (char *name, char *string, int cvarflags)
 	v->next = cvar_vars;
 	cvar_vars = v;
 
-	key = HashKey (name);
+	key = Com_HashKey (name);
 	v->hash_next = cvar_hash[key];
 	cvar_hash[key] = v;
 
@@ -437,7 +437,7 @@ qboolean Cvar_Delete (char *name)
 	cvar_t	*var, *prev;
 	int		key;
 
-	key = HashKey (name);
+	key = Com_HashKey (name);
 
 	prev = NULL;
 	for (var = cvar_hash[key] ; var ; var=var->hash_next)
