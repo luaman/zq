@@ -157,8 +157,6 @@ void Sbar_RegisterHipnoticPics (void)
 {
 	int i, j;
 
-	sb_hipnotic = false;
-
 	hsb_weapons[0][0] = R_CacheWadPic ("inv_laser");
 	// quick check to see if it's the hipnotic wad
 	if (!hsb_weapons[0][0])
@@ -288,6 +286,7 @@ void Sbar_RegisterPics (void)
 	sb_ibar = R_CacheWadPic ("ibar");
 	sb_scorebar = R_CacheWadPic ("scorebar");
 
+	sb_hipnotic = false;
 	if (!strcmp(com_gamedirfile, "hipnotic"))
 		Sbar_RegisterHipnoticPics ();
 }
