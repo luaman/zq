@@ -722,9 +722,13 @@ void JumpButton (void)
 	if (onground == -1)
 		return;		// in air, so no effect
 
-	if ( pmove.oldbuttons & BUTTON_JUMP 
-		&& !pmove.jump_msec )
+#ifdef SERVERONLY
+	if (pmove.oldbuttons & BUTTON_JUMP)
 		return;		// don't pogo stick
+#else
+	if (pmove.oldbuttons & BUTTON_JUMP && !pmove.jump_msec)
+		return;		// don't pogo stick
+#endif
 
 // When connected to a Kombat Teams server, "fix" the jumping bug
 // the same way qc code does to minimize prediction errors
