@@ -161,8 +161,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	PF_WEAPONFRAME	(1<<8)		// only sent for view player
 #define	PF_DEAD			(1<<9)		// don't block movement any more
 #define	PF_GIB			(1<<10)		// offset the view height differently
-#define	PF_NOGRAV		(1<<11)		// don't apply gravity for prediction
-#define	PF_JUMPRELEASED	(1<<12)		// for jump debouncing
+// bits 11..13 are player move type bits
+#define PF_PM_TYPE_SHIFT	11
+#define	PF_PM_TYPE_MASK	7
+
+// player move types
+#define PM_NORMAL			0		// normal ground movement
+#define PM_NORMAL_JUMP_HELD	1		// a fake move type for jump debouncing
+#define PM_NOCLIP			2
+#define PM_FLY				3		// clipped
 
 //==============================================
 
@@ -238,7 +245,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // ZQuake protocol extensions (*z_ext serverinfo key)
 //
-#define Z_EXT_JUMPRELEASED	(1<<0)
+#define Z_EXT_PM_TYPE		(1<<0)
 
 
 /*
