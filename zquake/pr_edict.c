@@ -523,18 +523,20 @@ void ED_PrintNum (int ent)
 
 /*
 =============
-ED_PrintEdicts
+ED_PrintEdicts_f
 
 For debugging, prints all the entities in the current server
 =============
 */
-void ED_PrintEdicts (void)
+void ED_PrintEdicts_f (void)
 {
 	int		i;
 	
 	Com_Printf ("%i entities\n", sv.num_edicts);
 	for (i=0 ; i<sv.num_edicts ; i++)
 	{
+		if (EDICT_NUM(i)->free)
+			continue;
 		Com_Printf ("\nEDICT %i:\n",i);
 		ED_PrintNum (i);
 	}
@@ -544,7 +546,7 @@ void ED_PrintEdicts (void)
 =============
 ED_PrintEdict_f
 
-For debugging, prints a single edicy
+For debugging, prints a single edict
 =============
 */
 void ED_PrintEdict_f (void)
@@ -558,12 +560,12 @@ void ED_PrintEdict_f (void)
 
 /*
 =============
-ED_Count
+ED_Count_f
 
 For debugging
 =============
 */
-void ED_Count (void)
+void ED_Count_f (void)
 {
 	int		i;
 	edict_t	*ent;
@@ -1082,8 +1084,8 @@ PR_Init
 void PR_Init (void)
 {
 	Cmd_AddCommand ("edict", ED_PrintEdict_f);
-	Cmd_AddCommand ("edicts", ED_PrintEdicts);
-	Cmd_AddCommand ("edictcount", ED_Count);
+	Cmd_AddCommand ("edicts", ED_PrintEdicts_f);
+	Cmd_AddCommand ("edictcount", ED_Count_f);
 	Cmd_AddCommand ("profile", PR_Profile_f);
 }
 
