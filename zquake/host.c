@@ -52,6 +52,10 @@ void SV_Init (void)
 
 
 int			host_hunklevel;
+qboolean	host_initialized;		// true if into command execution
+
+quakeparms_t host_parms;
+
 
 
 

@@ -28,16 +28,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "version.h"
 
-quakeparms_t host_parms;
-
-qboolean	host_initialized;		// true if into command execution (compatability)
-
 double		sv_frametime;
 
-#ifndef	QW_BOTH
+#ifdef SERVERONLY
 double		realtime;				// without any filtering or bounding
-
-int			host_hunklevel;
 #endif
 
 int			current_skill;			// for entity spawnflags checking

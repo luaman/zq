@@ -118,10 +118,6 @@ entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
 
 double			connect_time = 0;		// for connection retransmits
 
-quakeparms_t host_parms;
-
-qboolean	host_initialized;		// true if into command execution
-
 double		realtime;				// without any filtering or bounding
 double		oldrealtime;			// last frame run
 qboolean	host_skipframe;			// used in demo playback
