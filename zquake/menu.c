@@ -1562,11 +1562,11 @@ void M_MultiPlayer_Draw (void)
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
-	M_Print (80, 40, "favorite servers");
-	M_Print (80, 48, "player setup");
-	M_Print (80, 56, "demos");
+	M_Print (80, 40, "Favorite Servers");
+	M_Print (80, 48, "Player Setup");
+	M_Print (80, 56, "Demos");
 #ifdef QW_BOTH
-	M_Print (80, 64, "new game");
+m	M_Print (80, 64, "New Game");
 #endif
 
 // cursor
