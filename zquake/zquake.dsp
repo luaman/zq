@@ -1312,7 +1312,7 @@ SOURCE=.\gl_warp_sin.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\glquake.h
+SOURCE=.\gl_local.h
 # End Source File
 # Begin Source File
 
