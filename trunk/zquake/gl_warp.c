@@ -171,6 +171,48 @@ void GL_SubdivideSurface (msurface_t *fa)
 	SubdividePolygon (numverts, verts[0]);
 }
 
+/*
+================
+GL_BuildSkySurfacePoly
+
+Just build the gl polys, don't subdivide
+================
+*/
+void GL_BuildSkySurfacePolys (msurface_t *fa)
+{
+	vec3_t		verts[64];
+	int			numverts;
+	int			i;
+	int			lindex;
+	float		*vec;
+	glpoly_t	*poly;
+	float		*vert;
+
+	//
+	// convert edges back to a normal polygon
+	//
+	numverts = 0;
+	for (i=0 ; i<fa->numedges ; i++)
+	{
+		lindex = loadmodel->surfedges[fa->firstedge + i];
+
+		if (lindex > 0)
+			vec = loadmodel->vertexes[loadmodel->edges[lindex].v[0]].position;
+		else
+			vec = loadmodel->vertexes[loadmodel->edges[-lindex].v[1]].position;
+		VectorCopy (vec, verts[numverts]);
+		numverts++;
+	}
+
+	poly = Hunk_Alloc (sizeof(glpoly_t) + (numverts-4) * VERTEXSIZE*sizeof(float));
+	poly->next = NULL;
+	fa->polys = poly;
+	poly->numverts = numverts;
+	vert = verts[0];
+	for (i=0 ; i<numverts ; i++, vert+= 3)
+		VectorCopy (vert, poly->verts[i]);
+}
+
 //=========================================================
 
 
@@ -225,7 +267,7 @@ void EmitWaterPolys (msurface_t *fa)
 EmitSkyPolys
 =============
 */
-void EmitSkyPolys (msurface_t *fa)
+static void EmitSkyPolys (msurface_t *fa)
 {
 	glpoly_t	*p;
 	float		*v;
@@ -260,10 +302,10 @@ void EmitSkyPolys (msurface_t *fa)
 
 /*
 =============
-EmitFlatSkyPoly
+EmitFlatPoly
 =============
 */
-void EmitFlatSkyPoly (msurface_t *fa)
+void EmitFlatPoly (msurface_t *fa)
 {
 	glpoly_t	*p;
 	float		*v;
@@ -295,7 +337,7 @@ void EmitBothSkyLayers (msurface_t *fa)
 		glDisable (GL_TEXTURE_2D);
 		glColor3ubv ((byte *)&d_8to24table[(byte)r_skycolor.value]);
 
-		EmitFlatSkyPoly (fa);
+		EmitFlatPoly (fa);
 
 		glEnable (GL_TEXTURE_2D);
 		glColor3f (1, 1, 1);
@@ -315,47 +357,6 @@ void EmitBothSkyLayers (msurface_t *fa)
 
 	EmitSkyPolys (fa);
 
-	glDisable (GL_BLEND);
-}
-
-/*
-=================
-R_DrawSkyChain
-=================
-*/
-void R_DrawSkyChain (msurface_t *s)
-{
-	msurface_t	*fa;
-
-	GL_DisableMultitexture();
-
-	if (r_fastsky.value) {
-		glDisable (GL_TEXTURE_2D);
-		glColor3ubv ((byte *)&d_8to24table[(byte)r_skycolor.value]);
-		
-		for (fa=s ; fa ; fa=fa->texturechain)
-			EmitFlatSkyPoly (fa);
-
-		glEnable (GL_TEXTURE_2D);
-		glColor3f (1, 1, 1);
-		return;
-	}
-	
-	GL_Bind(solidskytexture);
-	speedscale = r_refdef2.time*8;
-	speedscale -= (int)speedscale & ~127;
-	
-	for (fa=s ; fa ; fa=fa->texturechain)
-		EmitSkyPolys (fa);
-	
-	glEnable (GL_BLEND);
-	GL_Bind (alphaskytexture);
-	speedscale = r_refdef2.time*16;
-	speedscale -= (int)speedscale & ~127;
-	
-	for (fa=s ; fa ; fa=fa->texturechain)
-		EmitSkyPolys (fa);
-	
 	glDisable (GL_BLEND);
 }
 
@@ -496,6 +497,8 @@ vec3_t	skyclip[6] = {
 	{1,0,1},
 	{-1,0,1} 
 };
+
+#define skybox_range	2400
 
 // 1 = s, 2 = t, 3 = 2048
 int	st_to_vec[6][3] =
@@ -718,10 +721,10 @@ void R_AddSkyBoxSurface (msurface_t *fa)
 
 /*
 ==============
-R_ClearSkyBox
+R_ClearSky
 ==============
 */
-void R_ClearSkyBox (void)
+void R_ClearSky (void)
 {
 	int		i;
 
@@ -737,9 +740,9 @@ void MakeSkyVec (float s, float t, int axis)
 	vec3_t		v, b;
 	int			j, k;
 
-	b[0] = s*2048;
-	b[1] = t*2048;
-	b[2] = 2048;
+	b[0] = s*skybox_range;
+	b[1] = t*skybox_range;
+	b[2] = skybox_range;
 
 	for (j=0 ; j<3 ; j++)
 	{
@@ -779,18 +782,6 @@ void R_DrawSkyBox (void)
 {
 	int		i;
 
-	if (!r_skyboxloaded)
-		return;
-
-	if (r_viewleaf->contents == CONTENTS_SOLID) {
-		// always draw if we're in a solid leaf (probably outside the level)
-		// FIXME, don't really have to add all six planes every time
-		for (i = 0; i < 6; i++) {
-			skymins[0][i] = skymins[1][i] = -1;
-			skymaxs[0][i] = skymaxs[1][i] = 1;
-		}
-	}
-
 	for (i = 0; i < 6; i++)
 	{
 		if ((skymins[0][i] >= skymaxs[0][i]	|| skymins[1][i] >= skymaxs[1][i]))
@@ -807,3 +798,171 @@ void R_DrawSkyBox (void)
 	}
 }
 
+extern msurface_t *skychain;
+
+void EmitSkyVert (vec3_t v)
+{
+	vec3_t dir;
+	float	s, t;
+	float	length;
+
+	VectorSubtract (v, r_origin, dir);
+	dir[2] *= 3;	// flatten the sphere
+
+	length = VectorLength (dir);
+	length = 6*63/length;
+
+	dir[0] *= length;
+	dir[1] *= length;
+
+	s = (speedscale + dir[0]) * (1.0/128);
+	t = (speedscale + dir[1]) * (1.0/128);
+
+	glTexCoord2f (s, t);
+	glVertex3fv (v);
+}
+
+void DrawSkyFace (int axes[3], int sign)
+{
+	int i, j;
+	vec3_t	v, v2, v3, v4;
+
+#define boxsize			(skybox_range * 2)
+#define subdivisions	10
+#define tilesize		(boxsize / subdivisions)
+
+	glBegin (GL_QUADS);
+
+	v[axes[0]] = r_origin[axes[0]] - (boxsize / 2) * sign;
+	for (i = 0; i < subdivisions; i++)
+	{
+		v[axes[1]] = r_origin[axes[1]] + (i*2 - subdivisions) * tilesize / 2;
+		for (j = 0; j < subdivisions; j++) {
+			v[axes[2]] = r_origin[axes[2]] + (j*2 - subdivisions) * tilesize / 2;
+
+			VectorCopy (v, v2);
+			VectorCopy (v, v3);
+			VectorCopy (v, v4);
+
+			v2[axes[2]] += tilesize;
+			v3[axes[2]] += tilesize; v3[axes[1]] += tilesize;
+			v4[axes[1]] += tilesize;
+
+			EmitSkyVert (v);
+			EmitSkyVert (v2);
+			EmitSkyVert (v3);
+			EmitSkyVert (v4);
+
+		}
+	}
+
+	glEnd ();
+}
+
+void R_DrawSkyDome (void)
+{
+	int skyaxes[][3] = {
+		{0, 2, 1},
+		{0, 1, 2},
+		{1, 0, 2},
+		{1, 2, 0},
+		{2, 1, 0},
+		{2, 0, 1},
+	};
+
+	int skysigns[6] = {
+		-1, 1, -1, 1, -1, 1
+	};
+
+	int i;
+
+	GL_DisableMultitexture();
+	GL_Bind (solidskytexture);
+
+	speedscale = r_refdef2.time*8;
+	speedscale -= (int)speedscale & ~127;
+
+	// FIXME: implement per-polygon clipping
+	for (i = 0; i < 6; i++) {
+		if ((skymins[0][i] >= skymaxs[0][i]	|| skymins[1][i] >= skymaxs[1][i]))
+			continue;
+		DrawSkyFace (skyaxes[i], skysigns[i]);
+	}
+
+	glEnable (GL_BLEND);
+	GL_Bind (alphaskytexture);
+
+	speedscale = r_refdef2.time*16;
+	speedscale -= (int)speedscale & ~127;
+
+	for (i = 0; i < 6; i++) {
+		if ((skymins[0][i] >= skymaxs[0][i]	|| skymins[1][i] >= skymaxs[1][i]))
+			continue;
+		DrawSkyFace (skyaxes[i], skysigns[i]);
+	}
+}
+
+void R_DrawSky (void)
+{
+	msurface_t	*fa;
+
+	if (r_fastsky.value) {
+		GL_DisableMultitexture ();
+
+		glDisable (GL_TEXTURE_2D);
+		glColor3ubv ((byte *)&d_8to24table[(byte)r_skycolor.value]);
+		
+		for (fa = skychain; fa; fa = fa->texturechain)
+			EmitFlatPoly (fa);
+		skychain = NULL;
+
+		glEnable (GL_TEXTURE_2D);
+		glColor3f (1, 1, 1);
+		return;
+	}
+
+	if (r_viewleaf->contents == CONTENTS_SOLID) {
+		// always draw if we're in a solid leaf (probably outside the level)
+		// FIXME: we don't really want to add all six planes every time!
+		int i;
+		for (i = 0; i < 6; i++) {
+			skymins[0][i] = skymins[1][i] = -1;
+			skymaxs[0][i] = skymaxs[1][i] = 1;
+		}
+	}
+	else {
+		if (!skychain)
+			return;
+
+		// figure out how much of the sky box we need to draw
+		for (fa = skychain; fa; fa = fa->texturechain)
+			R_AddSkyBoxSurface (fa);
+	}
+
+	// draw a skybox or classic quake clouds
+	if (r_skyboxloaded)
+		R_DrawSkyBox ();
+	else
+		R_DrawSkyDome ();
+
+	// now draw the sky polys to Z buffer
+	if (Cvar_VariableValue("noskyz")) {
+		skychain = NULL;
+		return;
+	}
+
+	glDisable(GL_TEXTURE_2D);
+	glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ZERO, GL_ONE);
+
+	for (fa = skychain; fa; fa = fa->texturechain)
+		EmitFlatPoly (fa);
+	skychain = NULL;
+	
+	glEnable (GL_TEXTURE_2D);
+	glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glDisable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
