@@ -172,6 +172,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define PMC_OLD_SPECTATOR	2		// fly through walls (QW compatibility mode)
 #define PMC_SPECTATOR		3		// fly through walls
 #define PMC_FLY				4		// clipped
+#define PMC_DEAD			5		// no acceleration
 
 //==============================================
 
