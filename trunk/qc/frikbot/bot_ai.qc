@@ -459,7 +459,6 @@ confused
 void bot_path ()
 {
 	entity	jj, tele;
-	vector	org;
 
 	bot_check_lost(self.target1);
 	if (!self.target1)

@@ -33,7 +33,7 @@ float bot_size_player (entity e)
 void bot_dodge_stuff ()
 {
 	entity	foe;
-	float	foedist, avdist, scandist, foesz, flen, tsz;
+	float	foedist, avdist, foesz, flen, tsz;
 	vector	v;
 
 	if (waypoint_mode > WM_LOADED)
