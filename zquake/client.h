@@ -323,6 +323,8 @@ typedef struct
 	float		entgravity;
 	float		maxspeed;
 	float		bunnyspeedcap;
+
+	char		sky[32];
 } client_state_t;
 
 extern	client_state_t	cl;
