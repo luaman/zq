@@ -1196,8 +1196,10 @@ void M_Quit_Key (int key)
 /* SINGLE PLAYER MENU */
 
 #ifdef QW_BOTH
-int	m_singleplayer_cursor;
+
 #define	SINGLEPLAYER_ITEMS	3
+int	m_singleplayer_cursor;
+qboolean m_singleplayer_confirm;
 
 extern	cvar_t	maxclients;
 
@@ -1205,8 +1207,8 @@ void M_Menu_SinglePlayer_f (void)
 {
 	key_dest = key_menu;
 	m_state = m_singleplayer;
-//	m_entersound = true;
-	S_LocalSound ("misc/menu1.wav");
+	m_singleplayer_confirm = false;
+	m_entersound = true;
 }
 
 
@@ -1215,19 +1217,49 @@ void M_SinglePlayer_Draw (void)
 	int		f;
 	mpic_t	*p;
 
+	if (m_singleplayer_confirm) {
+		M_PrintWhite (64, 11*8, "Are you sure you want to");
+		M_PrintWhite (64, 12*8, "    start a new game?");
+		return;
+	}
+
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/ttl_sgl.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
 	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/sp_menu.lmp") );
 
 	f = (int)(realtime * 10)%6;
-
 	M_DrawTransPic (54, 32 + m_singleplayer_cursor * 20,Draw_CachePic( va("gfx/menudot%i.lmp", f+1 ) ) );
 }
 
 
+static void StartNewGame (void)
+{
+	key_dest = key_game;
+	Cvar_Set (&maxclients, "1");
+//	Cvar_Set (&maxspectators, "0");
+	Cvar_Set (&teamplay, "0");
+	Cvar_Set (&timelimit, "0");	// FIXME
+	Cvar_Set (&deathmatch, "0");
+	Cvar_Set (&coop, "0");
+	if (sv.state != ss_dead)
+		Cbuf_AddText ("disconnect\n");
+	Cbuf_AddText ("gamedir single\n");	// FIXME
+	Cbuf_AddText ("map start\n");
+}
+
 void M_SinglePlayer_Key (int key)
 {
+	if (m_singleplayer_confirm) {
+		if (key == K_ESCAPE || key == 'n') {
+			m_singleplayer_confirm = false;
+			m_entersound = true;
+		}
+		else if (key == 'y' || key == K_ENTER)
+			StartNewGame ();
+		return;
+	}
+
 	switch (key)
 	{
 	case K_ESCAPE:
@@ -1259,26 +1291,16 @@ void M_SinglePlayer_Key (int key)
 		break;
 
 	case K_ENTER:
-//		m_entersound = true;
-//		S_LocalSound ("misc/menu1.wav");
-
 		switch (m_singleplayer_cursor)
 		{
 		case 0:
-			if (sv.state != ss_dead)
-				if (!SCR_ModalMessage("Are you sure you want to\nstart a new game?\n"))
-					break;
-			key_dest = key_game;
-			Cvar_Set (&maxclients, "1");
-//			Cvar_Set (&maxspectators, "0");
-			Cvar_Set (&teamplay, "0");
-			Cvar_Set (&timelimit, "0");
-			Cvar_Set (&deathmatch, "0");
-			Cvar_Set (&coop, "0");
-			if (sv.state != ss_dead)
-				Cbuf_AddText ("disconnect\n");
-			Cbuf_AddText ("gamedir single\n");	// FIXME
-			Cbuf_AddText ("map start\n");
+			if (sv.state != ss_dead) {
+				// bring up confirmation dialog
+				m_singleplayer_confirm = true;
+				m_entersound = true;
+			}
+			else
+				StartNewGame ();
 			break;
 
 		case 1:
