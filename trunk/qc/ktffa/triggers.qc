@@ -319,7 +319,7 @@ void(vector org) spawn_tfog =
 {
 	local entity s;
         s = spawn ();
-	s.origin = org;
+	setorigin (s, org);
 	s.nextthink = time + 0.2;
 //	s.think = play_teleport;
 	s.think = SUB_Remove;
@@ -445,7 +445,7 @@ local vector	org;
 // move the player and lock him down for a little while
 	if (!other.health)
 	{
-		other.origin = t.origin;
+		setorigin (other, t.origin);
 		play_teleport(other);
 		other.velocity = (v_forward * other.velocity_x) + (v_forward * other.velocity_y);
 		return;
@@ -475,7 +475,7 @@ void() info_teleport_destination =
 	self.mangle = self.angles;
 	self.angles = '0 0 0';
 	self.model = "";
-	self.origin = self.origin + '0 0 27';
+	setorigin (self, self.origin + '0 0 27');
 	if (!self.targetname)
 		objerror ("no targetname");
 };

@@ -509,7 +509,7 @@ void ThrowGib (string gibname, float dm)
 	entity	new;
 
 	new = spawn();
-	new.origin = self.origin;
+	setorigin (new, self.origin);
 	setmodel (new, gibname);
 	setsize (new, '0 0 0', '0 0 0');
 	new.velocity = VelocityForDamage (dm);

@@ -98,7 +98,8 @@ void DropQuad (float timeleft)
 	entity	item;
 
 	item = spawn();
-	item.origin = self.origin;
+
+	setorigin (item, self.origin),
 	
 	item.velocity_z = 300;
 	item.velocity_x = -100 + (random() * 200);
@@ -152,7 +153,7 @@ void DropRing (float timeleft)
 	entity	item;
 
 	item = spawn();
-	item.origin = self.origin;
+	setorigin (item, self.origin),
 	
 	item.velocity_z = 300;
 	item.velocity_x = -100 + (random() * 200);
@@ -1625,7 +1626,7 @@ void DropBackpack ()
 		return; // nothing in it
 
 	item = spawn();
-	item.origin = self.origin - '0 0 24';
+  setorigin (item, self.origin - '0 0 24');
 	
 	item.items = self.weapon;
 	if (item.items == IT_AXE)

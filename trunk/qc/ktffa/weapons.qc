@@ -421,7 +421,7 @@ void T_MissileTouch ()
 	T_RadiusDamage (self, self.owner, 120, other, "rocket");
 
 //	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
-	self.origin = self.origin - 8 * normalize(self.velocity);
+	setorigin (self, self.origin - 8 * normalize(self.velocity));
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
