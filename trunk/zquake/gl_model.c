@@ -1180,7 +1180,7 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 
 	if (i != BSPVERSION) 
 	{
-		Host_EndGame ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)\n", mod->name, i, BSPVERSION);
+		Host_Error ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)\n", mod->name, i, BSPVERSION);
 		return;
 	}
 
@@ -1598,7 +1598,7 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	if (version != ALIAS_VERSION) {
 		Hunk_FreeToLowMark (start);
 
-		Host_EndGame ("%s has wrong version number (%i should be %i)\n",
+		Host_Error ("%s has wrong version number (%i should be %i)\n",
 				 mod->name, version, ALIAS_VERSION);
 
 		return;
@@ -1857,7 +1857,7 @@ void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 	version = LittleLong (pin->version);
 
 	if (version != SPRITE_VERSION) {
-		Host_EndGame ("%s has wrong version number "
+		Host_Error ("%s has wrong version number "
 				 "(%i should be %i)", mod->name, version, SPRITE_VERSION);
 		return;
 	}

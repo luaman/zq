@@ -572,7 +572,7 @@ void CL_ParseServerData (void)
 	protover = MSG_ReadLong ();
 	if (protover != PROTOCOL_VERSION && 
 		!(cls.demoplayback && (protover == 26 || protover == 27 || protover == 28)))
-		Host_EndGame ("Server returned version %i, not %i\nYou probably need to upgrade.\nCheck http://www.quakeworld.net/", protover, PROTOCOL_VERSION);
+		Host_Error ("Server returned version %i, not %i\nYou probably need to upgrade.\nCheck http://www.quakeworld.net/", protover, PROTOCOL_VERSION);
 
 	cl.servercount = MSG_ReadLong ();
 
@@ -682,7 +682,7 @@ void CL_ParseSoundlist (void)
 			break;
 		numsounds++;
 		if (numsounds == MAX_SOUNDS)
-			Host_EndGame ("Server sent too many sound_precache");
+			Host_Error ("Server sent too many sound_precache");
 		strcpy (cl.sound_name[numsounds], str);
 	}
 
@@ -721,7 +721,7 @@ void CL_ParseModellist (void)
 			break;
 
 		if (++nummodels==MAX_MODELS)
-			Host_EndGame ("Server sent too many model_precache");
+			Host_Error ("Server sent too many model_precache");
 
 		strcpy (cl.model_name[nummodels], str);
 
@@ -801,7 +801,7 @@ void CL_ParseStatic (void)
 	CL_ParseBaseline (&es);
 		
 	if (cl.num_statics >= MAX_STATIC_ENTITIES)
-		Host_EndGame ("Too many static entities");
+		Host_Error ("Too many static entities");
 	ent = &cl_static_entities[cl.num_statics];
 	cl.num_statics++;
 
@@ -884,7 +884,7 @@ void CL_ParseStartSoundPacket(void)
 	channel &= 7;
 
 	if (ent > MAX_EDICTS)
-		Host_EndGame ("CL_ParseStartSoundPacket: ent = %i", ent);
+		Host_Error ("CL_ParseStartSoundPacket: ent = %i", ent);
 	
     S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
 	if (ent == cl.playernum+1)
@@ -1114,7 +1114,7 @@ void CL_UpdateUserinfo (void)
 
 	slot = MSG_ReadByte ();
 	if (slot >= MAX_CLIENTS)
-		Host_EndGame ("CL_ParseServerMessage: svc_updateuserinfo > MAX_CLIENTS");
+		Host_Error ("CL_ParseServerMessage: svc_updateuserinfo > MAX_CLIENTS");
 
 	player = &cl.players[slot];
 	player->userid = MSG_ReadLong ();
@@ -1137,7 +1137,7 @@ void CL_SetInfo (void)
 
 	slot = MSG_ReadByte ();
 	if (slot >= MAX_CLIENTS)
-		Host_EndGame ("CL_ParseServerMessage: svc_setinfo > MAX_CLIENTS");
+		Host_Error ("CL_ParseServerMessage: svc_setinfo > MAX_CLIENTS");
 
 	player = &cl.players[slot];
 
@@ -1332,7 +1332,7 @@ void CL_SetStat (int stat, int value)
 {
 	int	j;
 	if (stat < 0 || stat >= MAX_CL_STATS)
-		Host_EndGame ("CL_SetStat: %i is invalid", stat);
+		Host_Error ("CL_SetStat: %i is invalid", stat);
 
 	Sbar_Changed ();
 	
@@ -1444,7 +1444,7 @@ void CL_ParseServerMessage (void)
 	{
 		if (msg_badread)
 		{
-			Host_EndGame ("CL_ParseServerMessage: Bad server message");
+			Host_Error ("CL_ParseServerMessage: Bad server message");
 			break;
 		}
 
@@ -1463,7 +1463,7 @@ void CL_ParseServerMessage (void)
 		switch (cmd)
 		{
 		default:
-			Host_EndGame ("CL_ParseServerMessage: Illegible server message");
+			Host_Error ("CL_ParseServerMessage: Illegible server message");
 			break;
 			
 		case svc_nop:
@@ -1472,7 +1472,7 @@ void CL_ParseServerMessage (void)
 			
 		case svc_disconnect:
 			if (cls.state == ca_connected)
-				Host_EndGame ("Server disconnected\n"
+				Host_Error ("Server disconnected\n"
 					"Server version may not be compatible");
 			else
 				Host_EndGame ("Server disconnected");
@@ -1509,7 +1509,7 @@ void CL_ParseServerMessage (void)
 		case svc_lightstyle:
 			i = MSG_ReadByte ();
 			if (i >= MAX_LIGHTSTYLES)
-				Host_EndGame ("svc_lightstyle > MAX_LIGHTSTYLES");
+				Host_Error ("svc_lightstyle > MAX_LIGHTSTYLES");
 			strcpy (cl_lightstyle[i].map,  MSG_ReadString());
 			cl_lightstyle[i].length = strlen(cl_lightstyle[i].map);
 			break;
@@ -1527,21 +1527,21 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed ();
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("CL_ParseServerMessage: svc_updatefrags > MAX_CLIENTS");
+				Host_Error ("CL_ParseServerMessage: svc_updatefrags > MAX_CLIENTS");
 			cl.players[i].frags = MSG_ReadShort ();
 			break;			
 
 		case svc_updateping:
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("CL_ParseServerMessage: svc_updateping > MAX_CLIENTS");
+				Host_Error ("CL_ParseServerMessage: svc_updateping > MAX_CLIENTS");
 			cl.players[i].ping = MSG_ReadShort ();
 			break;
 			
 		case svc_updatepl:
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("CL_ParseServerMessage: svc_updatepl > MAX_CLIENTS");
+				Host_Error ("CL_ParseServerMessage: svc_updatepl > MAX_CLIENTS");
 			cl.players[i].pl = MSG_ReadByte ();
 			break;
 			
@@ -1549,7 +1549,7 @@ void CL_ParseServerMessage (void)
 		// time is sent over as seconds ago
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("CL_ParseServerMessage: svc_updateentertime > MAX_CLIENTS");
+				Host_Error ("CL_ParseServerMessage: svc_updateentertime > MAX_CLIENTS");
 			cl.players[i].entertime = realtime - MSG_ReadFloat ();
 			break;
 			

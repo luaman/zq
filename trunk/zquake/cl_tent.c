@@ -350,7 +350,7 @@ void CL_ParseTEnt (void)
 		break;
 
 	default:
-		Host_EndGame ("CL_ParseTEnt: bad type");
+		Host_Error ("CL_ParseTEnt: bad type");
 	}
 }
 
