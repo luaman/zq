@@ -296,8 +296,6 @@ qboolean CL_GetMessage (void)
 	if (!NET_GetPacket(NS_CLIENT))
 		return false;
 
-	CL_WriteDemoMessage (&net_message);
-	
 	return true;
 }
 
