@@ -2151,7 +2151,6 @@ static void PF_pow (void)
 =================
 PF_strlen
 
-FRIK_FILE
 float strlen(string s) = #114;
 =================
 */
@@ -2165,7 +2164,6 @@ static void PF_strlen (void)
 =================
 PF_strlen
 
-FRIK_FILE
 string stradd(string s1, string s2, ...) = #115; 
 =================
 */
@@ -2185,7 +2183,6 @@ static void PF_stradd (void)
 =================
 PF_substr
 
-FRIK_FILE
 string substr(string s, float start, float count) = #116;
 =================
 */
@@ -2219,7 +2216,6 @@ PF_substr
 
 returns vector value from a string
 
-FRIK_FILE
 vector stov(string s) = #117
 =================
 */
@@ -2256,7 +2252,6 @@ void PF_stov(void)
 =================
 PF_strzone
 
-FRIK_FILE
 string strzone(string s) = #118
 =================
 */
@@ -2287,7 +2282,6 @@ static void PF_strzone (void)
 =================
 PF_strunzone
 
-FRIK_FILE
 void strunzone(string s) = #119
 =================
 */
@@ -2382,6 +2376,7 @@ static void PF_setinfo (void)
 }
 
 
+#ifdef VWEP_TEST
 static void PF_precache_vwep_model (void)
 {
 	char	*s;
@@ -2400,7 +2395,7 @@ static void PF_precache_vwep_model (void)
 
 	sv.vw_model_name[i] = s;
 }
-
+#endif
 // <-- Tonik's experiments
 
 
@@ -2450,7 +2445,10 @@ static qbool CheckBuiltin (int num)
 		// I'm being paranoid here
 		|| pr_builtins[num] == PF_testbot
 		|| pr_builtins[num] == PF_setinfo
-		|| pr_builtins[num] == PF_precache_vwep_model)
+#ifdef VWEP_TEST
+		|| pr_builtins[num] == PF_precache_vwep_model
+#endif
+		)
 	{
 		return false;
 	}
@@ -2741,7 +2739,11 @@ builtin_t pr_extbuiltins[] =
 	PF_Fixme,			// RESERVED #0x5a06
 	PF_Fixme,			// RESERVED #0x5a07
 	PF_soundtoclient,	// void soundtoclient (entity client, entity e, float chan, string samp, float vol, float atten) = #0x5a08;
+#ifdef VWEP_TEST
 	PF_precache_vwep_model,	// #0x5a09
+#else
+	PF_Fixme,
+#endif
 	PF_testbot,			// #0x5a0A
 	PF_setinfo,			// #0x5a0B
 };

@@ -44,7 +44,9 @@ func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
 
 int		fofs_maxspeed, fofs_gravity;
 int		fofs_forwardmove, fofs_sidemove, fofs_upmove;
+#ifdef VWEP_TEST
 int		fofs_vw_index, fofs_vw_frame;
+#endif
 
 
 ddef_t *ED_FieldAtOfs (int ofs);
@@ -1140,8 +1142,10 @@ void PR_LoadProgs (void)
 	fofs_forwardmove = ED_FindFieldOffset ("forwardmove");
 	fofs_sidemove = ED_FindFieldOffset ("sidemove");
 	fofs_upmove = ED_FindFieldOffset ("upmove");
+#ifdef VWEP_TEST
 	fofs_vw_index = ED_FindFieldOffset ("vw_index");
 	fofs_vw_frame = ED_FindFieldOffset ("vw_frame");
+#endif
 
 	PR_CheckExtensions ();
 	PR_FindCmdFunctions ();

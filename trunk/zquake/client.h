@@ -60,8 +60,10 @@ typedef struct
 
 	short		flags;			// dead, gib, etc
 
+#ifdef VWEP_TEST
 	byte		vw_index;
 	byte		vw_frame;
+#endif
 
 	// prediction info
 	byte		pm_type;
@@ -193,7 +195,9 @@ typedef enum {
 typedef enum {
 	dl_none,
 	dl_model,
+#ifdef VWEP_TEST
 	dl_vwep_model,
+#endif
 	dl_sound,
 	dl_skin,
 	dl_single
@@ -287,7 +291,9 @@ typedef struct
 	qbool		teamfortress;	// true if gamedir is "fortress"
 	int			fpd;			// FAQ proxy flags
 	int			z_ext;			// ZQuake protocol extensions flags
+#ifdef VWEP_TEST
 	qbool		vwep_enabled;
+#endif
 	qbool		servertime_works;	// Does the server actually send STAT_TIME/svc_time?
 	float		maxfps;
 	float		minpitch;
@@ -356,11 +362,15 @@ typedef struct
 // information that is static for the entire time connected to a server
 //
 	char		model_name[MAX_MODELS][MAX_QPATH];
+#ifdef VWEP_TEST
 	char		vw_model_name[MAX_VWEP_MODELS][MAX_QPATH];	// VWep support
+#endif
 	char		sound_name[MAX_SOUNDS][MAX_QPATH];
 
 	struct model_s	*model_precache[MAX_MODELS];
+#ifdef VWEP_TEST
 	struct model_s	*vw_model_precache[MAX_VWEP_MODELS];	// VWep support
+#endif
 	struct sfx_s	*sound_precache[MAX_SOUNDS];
 
 	cmodel_t	*clipmodels[MAX_MODELS];

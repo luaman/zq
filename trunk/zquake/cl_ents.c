@@ -690,12 +690,14 @@ void CL_ParsePlayerState (void)
 	if (flags & PF_COMMAND)
 		MSG_ReadDeltaUsercmd (&nullcmd, &state->command, cl.protocol_26);
 
+#ifdef VWEP_TEST
 	if (cl.z_ext & Z_EXT_VWEP) {
 		state->vw_index = state->command.impulse;
 		state->vw_frame = state->command.msec;
 	} else {
 		state->vw_index = state->vw_frame = 0;
 	}
+#endif
 
 	for (i=0 ; i<3 ; i++)
 	{
@@ -840,6 +842,7 @@ void CL_AddFlagModels (entity_t *ent, int team)
 CL_AddVWepModel
 ================
 */
+#ifdef VWEP_TEST
 static qbool CL_AddVWepModel (entity_t *ent, int vw_index, int vw_frame)
 {
 	entity_t	newent;
@@ -866,6 +869,7 @@ static qbool CL_AddVWepModel (entity_t *ent, int vw_index, int vw_frame)
 	V_AddEntity (&newent);
 	return true;
 }
+#endif
 
 
 /*
@@ -993,6 +997,7 @@ void CL_LinkPlayers (void)
 		else if (state->effects & EF_FLAG2)
 			CL_AddFlagModels (&ent, 1);
 
+#ifdef VWEP_TEST
 		if (cl.vwep_enabled && state->vw_index) {
 			qbool vwep;
 			vwep = CL_AddVWepModel (&ent, state->vw_index, state->vw_frame);
@@ -1009,6 +1014,7 @@ void CL_LinkPlayers (void)
 				V_AddEntity (&ent);
 		}
 		else
+#endif
 			V_AddEntity (&ent);
 
 		VectorCopy (ent.origin, cent->lerp_origin);

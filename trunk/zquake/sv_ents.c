@@ -300,12 +300,14 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 			cmd.buttons = 0;	// never send buttons
 			cmd.impulse = 0;	// never send impulses
 
+#ifdef VWEP_TEST
 			// @@VWep test
 			if ((client->extensions & Z_EXT_VWEP) && sv.vw_model_name[0]
 					&& fofs_vw_index && fofs_vw_frame) {
 				cmd.impulse = EdictFieldFloat (ent, fofs_vw_index);
 				cmd.msec = EdictFieldFloat (ent, fofs_vw_frame);
 			}
+#endif
 
 			MSG_WriteDeltaUsercmd (msg, &nullcmd, &cmd);
 		}
