@@ -277,6 +277,8 @@ void CL_ParsePacketEntities (qboolean delta)
 		if (cls.netchan.outgoing_sequence - oldpacket >= UPDATE_BACKUP-1)
 		{	// we can't use this, it is too old
 			FlushEntityPacket ();
+			cl.validsequence = 0;	// FIXME: add cl.delta_sequence and clear it
+									// in FlushEntityPacket; and remove this line?
 			return;
 		}
 
