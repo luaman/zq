@@ -271,6 +271,9 @@ void PR_LexVector (void)
 	pr_file_p++;
 	pr_token_type = tt_immediate;
 	pr_immediate_type = &type_const_vector;
+
+	// FIXME, we'd better not allow any whitespace but space chars and tabs inside vector immediates...
+	PR_LexWhitespace ();
 	for (i=0 ; i<3 ; i++)
 	{
 		pr_immediate.vector[i] = PR_LexNumber ();
