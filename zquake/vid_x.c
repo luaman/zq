@@ -1142,7 +1142,7 @@ void VID_Update (vrect_t *rects)
 	// if the window changes dimension, skip this frame
 	if (config_notify)
 	{
-		fprintf (stderr, "config notify\n");
+//		fprintf (stderr, "config notify\n");
 		config_notify = 0;
 		vid.width = config_notify_width & ~7;
 		vid.height = config_notify_height;
