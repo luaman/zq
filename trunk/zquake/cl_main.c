@@ -314,7 +314,7 @@ void CL_ClearState (void)
 	memset (cl_efrags, 0, sizeof(cl_efrags));
 	memset (cl_dlights, 0, sizeof(cl_dlights));
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
-
+	
 //
 // allocate the efrags and chain together into a free list
 //
@@ -1109,7 +1109,7 @@ void Host_Init (quakeparms_t *parms)
 
 	Cbuf_InsertText ("exec quake.rc\n");
 //	Cbuf_AddText ("echo Type connect <internet address> or use GameSpy to connect to a game.\n");
-	Cbuf_AddText ("cl_warncmd 1\n");
+//	Cbuf_AddText ("cl_warncmd 1\n");
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
