@@ -679,6 +679,138 @@ char *Cmd_Macro_Location_f (void)
 	return locdata[min_num].name;
 }
 
+//-----------------------------------------------------
+// message triggers
+
+typedef struct msg_trigger_s {
+	char name[32];
+	char string[32];
+	struct msg_trigger_s *next;
+} msg_trigger_t;
+
+static msg_trigger_t *msg_triggers;
+
+msg_trigger_t *CL_FindTrigger (char *name)
+{
+	msg_trigger_t *t;
+
+	for (t=msg_triggers; t; t=t->next)
+		if (!strcmp(t->name, name))
+			return t;
+
+	return NULL;
+}
+
+
+void CL_MsgTrigger_f (void)
+{
+	int		c;
+	char	*name;
+	msg_trigger_t	*trig;
+
+	c = Cmd_Argc();
+
+	if (c > 3) {
+		Con_Printf ("msg_trigger <trigger name> \"string\"\n");
+		return;
+	}
+
+	if (c == 1) {
+		if (!msg_triggers)
+			Con_Printf ("no triggers defined\n");
+		else
+		for (trig=msg_triggers; trig; trig=trig->next)
+			Con_Printf ("%s : \"%s\"\n", trig->name, trig->string);
+		return;
+	}
+
+	name = Cmd_Argv(1);
+	if (strlen(name) > 31) {
+		Con_Printf ("trigger name too long\n");
+		return;
+	}
+
+	if (c == 2) {
+		trig = CL_FindTrigger (name);
+		if (trig)
+			Con_Printf ("%s: \"%s\"\n", trig->name, trig->string);
+		else
+			Con_Printf ("trigger \"%s\" not found\n", name);
+		return;
+	}
+
+	if (c == 3) {
+		if (strlen(Cmd_Argv(2)) > 31) {
+			Con_Printf ("trigger string too long\n");
+			return;
+		}
+		
+		trig = CL_FindTrigger (name);
+
+		if (!trig) {
+			// allocate new trigger
+			trig = Z_Malloc (sizeof(msg_trigger_t));
+			trig->next = msg_triggers;
+			msg_triggers = trig;
+			strcpy (trig->name, name);
+		}
+
+		strcpy (trig->string, Cmd_Argv(2));
+	}
+}
+
+void CL_ExecuteTriggerString (char *text)
+{	
+//	cmd_function_t	*cmd;
+	int				key;
+	static	// FIXME
+	char			buf[1024];
+
+#if 0
+	Cmd_TokenizeString (text);
+#else
+	Cmd_ExpandString (text, buf);
+	Cmd_TokenizeString (buf);
+#endif
+			
+// execute the command line
+	if (!Cmd_Argc())
+		return;		// no tokens
+
+	if (!Q_strcasecmp (Cmd_Argv(0), "play"))
+		S_Play();
+	else if (!Q_strcasecmp (Cmd_Argv(0), "playvol")) 
+		S_PlayVol();
+	else if (!Q_strcasecmp (Cmd_Argv(0), "set")) 
+		Cvar_Set_f();
+	else if (!Q_strcasecmp (Cmd_Argv(0), "echo")) 
+		Cmd_Echo_f();
+	else if (!Q_strcasecmp (Cmd_Argv(0), "say_team")) 
+		Cmd_ForwardToServer();
+	else {
+		// check cvars
+		if (!Cvar_Command () && (cl_warncmd.value || developer.value))
+			Con_Printf ("Invalid trigger command \"%s\"\n", Cmd_Argv(0));
+	}
+}
+
+
+void CL_SearchForMsgTriggers (char *s)
+{
+	msg_trigger_t	*t;
+	char *string;
+	extern char *Cmd_AliasString (char *);
+
+	for (t=msg_triggers; t; t=t->next)
+		if (t->string[0] && strstr(s, t->string)) {
+			string = Cmd_AliasString (t->name);
+			if (string)
+				CL_ExecuteTriggerString (string);
+			else
+				Con_Printf ("trigger \"%s\" has no matching alias\n", t->name);
+		}
+}
+
 void CL_InitTeamplay()
 {
 	Cvar_RegisterVariable (&_cmd_macros);
@@ -689,4 +821,5 @@ void CL_InitTeamplay()
 
 	Cmd_Macro_Init();
 	Cmd_AddCommand ("loadloc", CL_LoadLocFile_f);
+	Cmd_AddCommand ("msg_trigger", CL_MsgTrigger_f);
 }
