@@ -74,23 +74,19 @@ cvar_t  localid = {"localid", ""};
 static qboolean allowremotecmd = true;
 
 // ZQuake cvars
-cvar_t	cl_speedjumpfix = {"cl_speedjumpfix", "1"};
-
-cvar_t	cl_demotimescale = {"demotimescale", "1"};
-
-cvar_t	cl_deadbodyfilter = {"cl_deadbodyfilter", "0"};
-cvar_t	cl_explosion = {"cl_explosion", "0"};
-cvar_t	cl_gibfilter = {"cl_gibfilter", "0"};
 cvar_t	r_rocketlight = {"r_rocketlight", "1"};
 cvar_t	r_rockettrail = {"r_rockettrail", "1"};
 cvar_t	r_grenadetrail = {"r_grenadetrail", "1"};
 cvar_t	r_powerupglow = {"r_powerupglow", "1"};
+cvar_t	cl_deadbodyfilter = {"cl_deadbodyfilter", "0"};
+cvar_t	cl_explosion = {"cl_explosion", "0"};
+cvar_t	cl_gibfilter = {"cl_gibfilter", "0"};
 cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
-
+cvar_t	cl_speedjumpfix = {"cl_speedjumpfix", "1"};
+cvar_t	cl_demotimescale = {"demotimescale", "1"};
 cvar_t	cl_staticsounds = {"cl_staticsounds", "1"};
-
+cvar_t	cl_trueLightning = {"cl_trueLightning", "0"};
 cvar_t	default_fov = {"default_fov", "0"};
-
 cvar_t	qizmo_dir = {"qizmo_dir", "qizmo"};
 
 //
@@ -720,17 +716,18 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&noskins);
 
 	// ZQuake cvars
+	Cvar_RegisterVariable (&r_rockettrail);
+	Cvar_RegisterVariable (&r_grenadetrail);
+	Cvar_RegisterVariable (&r_powerupglow);
+	Cvar_RegisterVariable (&r_rocketlight);
 	Cvar_RegisterVariable (&cl_speedjumpfix);
 	Cvar_RegisterVariable (&cl_demotimescale);
 	Cvar_RegisterVariable (&cl_deadbodyfilter);
 	Cvar_RegisterVariable (&cl_explosion);
 	Cvar_RegisterVariable (&cl_gibfilter);
 	Cvar_RegisterVariable (&cl_muzzleflash);
-	Cvar_RegisterVariable (&r_rockettrail);
-	Cvar_RegisterVariable (&r_grenadetrail);
-	Cvar_RegisterVariable (&r_powerupglow);
-	Cvar_RegisterVariable (&r_rocketlight);
 	Cvar_RegisterVariable (&cl_staticsounds);
+	Cvar_RegisterVariable (&cl_trueLightning);
 	Cvar_RegisterVariable (&default_fov);
 	Cvar_RegisterVariable (&qizmo_dir);
 
