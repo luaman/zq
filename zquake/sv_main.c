@@ -1670,23 +1670,6 @@ void SV_ExtractFromUserinfo (client_t *cl)
 
 /*
 ====================
-SV_InitNet
-====================
-*/
-void SV_InitNet (void)
-{
-	NET_Init ();
-	NET_Config (false, true);
-	Netchan_Init ();
-
-	// heartbeats will always be sent to the id master
-	svs.last_heartbeat = -99999;		// send immediately
-//	NET_StringToAdr ("192.246.40.70:27000", &idmaster_adr);
-}
-
-
-/*
-====================
 SV_Init
 ====================
 */
@@ -1700,7 +1683,7 @@ void SV_Init (quakeparms_t *parms)
 	host_parms = *parms;
 
 	if (parms->memsize < MINIMUM_MEMORY)
-		SV_Error ("Only %4.1f megs of memory reported, can't execute game", parms->memsize / (float)0x100000);
+		Sys_Error ("Only %4.1f megs of memory reported, can't execute game", parms->memsize / (float)0x100000);
 
 	Memory_Init (parms->membase, parms->memsize);
 
@@ -1713,7 +1696,11 @@ void SV_Init (quakeparms_t *parms)
 	PR_Init ();
 	Mod_Init ();
 
-	SV_InitNet ();
+	NET_Init ();
+	NET_Config (false, true);
+	Netchan_Init ();
+
+	svs.last_heartbeat = -99999;		// send immediately
 
 	SV_InitLocal ();
 	Sys_Init ();
