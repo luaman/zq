@@ -65,7 +65,7 @@ hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset)
 		if (ent->v.movetype != MOVETYPE_PUSH)
 			Host_Error ("SOLID_BSP without MOVETYPE_PUSH");
 
-		model = sv.models[ (int)ent->v.modelindex ];
+		model = sv.FIXME_models[ (int)ent->v.modelindex ];
 
 		if (!model || model->type != mod_brush)
 			Host_Error ("SOLID_BSP with a non-bsp model");
@@ -257,7 +257,7 @@ void SV_FindTouchedLeafs (edict_t *ent, mnode_t *node)
 			return;
 
 		leaf = (mleaf_t *)node;
-		leafnum = leaf - sv.worldmodel->leafs - 1;
+		leafnum = leaf - sv.FIXME_worldmodel->leafs - 1;
 
 		ent->leafnums[ent->num_leafs] = leafnum;
 		ent->num_leafs++;			
@@ -325,7 +325,7 @@ void SV_LinkEdict (edict_t *ent, qboolean touch_triggers)
 // link to PVS leafs
 	ent->num_leafs = 0;
 	if (ent->v.modelindex)
-		SV_FindTouchedLeafs (ent, sv.worldmodel->nodes);
+		SV_FindTouchedLeafs (ent, sv.FIXME_worldmodel->nodes);
 
 	if (ent->v.solid == SOLID_NOT)
 		return;

@@ -340,6 +340,10 @@ typedef struct
 	struct model_s		*model_precache[MAX_MODELS];
 	struct sfx_s		*sound_precache[MAX_SOUNDS];
 
+	cmodel_t	*clipmodels[MAX_MODELS];
+	unsigned	map_checksum;
+	unsigned	map_checksum2;
+
 	char		levelname[40];	// for display on solo scoreboard
 	int			playernum;
 	int			viewplayernum;	// either playernum or spec_track (in chase camera mode)

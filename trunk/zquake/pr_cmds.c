@@ -661,9 +661,9 @@ int PF_newcheckclient (int check)
 
 // get the PVS for the entity
 	VectorAdd (ent->v.origin, ent->v.view_ofs, org);
-	leaf = Mod_PointInLeaf (org, sv.worldmodel);
-	pvs = Mod_LeafPVS (leaf, sv.worldmodel);
-	memcpy (checkpvs, pvs, (sv.worldmodel->numleafs+7)>>3 );
+	leaf = Mod_PointInLeaf (org, sv.FIXME_worldmodel);
+	pvs = Mod_LeafPVS (leaf, sv.FIXME_worldmodel);
+	memcpy (checkpvs, pvs, (sv.FIXME_worldmodel->numleafs+7)>>3 );
 
 	return i;
 }
@@ -709,8 +709,8 @@ void PF_checkclient (void)
 // if current entity can't possibly see the check entity, return 0
 	self = PROG_TO_EDICT(pr_global_struct->self);
 	VectorAdd (self->v.origin, self->v.view_ofs, view);
-	leaf = Mod_PointInLeaf (view, sv.worldmodel);
-	l = (leaf - sv.worldmodel->leafs) - 1;
+	leaf = Mod_PointInLeaf (view, sv.FIXME_worldmodel);
+	l = (leaf - sv.FIXME_worldmodel->leafs) - 1;
 	if ( (l<0) || !(checkpvs[l>>3] & (1<<(l&7)) ) )
 	{
 		RETURN_EDICT(sv.edicts);

@@ -209,11 +209,11 @@ void SV_Multicast (vec3_t origin, int to)
 	qboolean	reliable;
 	vec3_t		org;
 
-	leaf = Mod_PointInLeaf (origin, sv.worldmodel);
+	leaf = Mod_PointInLeaf (origin, sv.FIXME_worldmodel);
 	if (!leaf)
 		leafnum = 0;
 	else
-		leafnum = leaf - sv.worldmodel->leafs;
+		leafnum = leaf - sv.FIXME_worldmodel->leafs;
 
 	reliable = false;
 
@@ -228,13 +228,13 @@ void SV_Multicast (vec3_t origin, int to)
 	case MULTICAST_PHS_R:
 		reliable = true;	// intentional fallthrough
 	case MULTICAST_PHS:
-		mask = sv.phs + leafnum * 4*((sv.worldmodel->numleafs+31)>>5);
+		mask = sv.phs + leafnum * 4*((sv.FIXME_worldmodel->numleafs+31)>>5);
 		break;
 
 	case MULTICAST_PVS_R:
 		reliable = true;	// intentional fallthrough
 	case MULTICAST_PVS:
-		mask = sv.pvs + leafnum * 4*((sv.worldmodel->numleafs+31)>>5);
+		mask = sv.pvs + leafnum * 4*((sv.FIXME_worldmodel->numleafs+31)>>5);
 		break;
 
 	default:
@@ -257,11 +257,11 @@ void SV_Multicast (vec3_t origin, int to)
 				goto inrange;
 		}
 
-		leaf = Mod_PointInLeaf (org, sv.worldmodel);
+		leaf = Mod_PointInLeaf (org, sv.FIXME_worldmodel);
 		if (leaf)
 		{
 			// -1 is because pvs rows are 1 based, not 0 based like leafs
-			leafnum = leaf - sv.worldmodel->leafs - 1;
+			leafnum = leaf - sv.FIXME_worldmodel->leafs - 1;
 			if ( !(mask[leafnum>>3] & (1<<(leafnum&7)) ) )
 			{
 //				Com_Printf ("supressed multicast\n");
