@@ -619,7 +619,7 @@ void() func_illusionary =
 };
 
 /*QUAKED func_episodegate (0 .5 .8) ? E1 E2 E3 E4
-This bmodel will appear if the episode has allready been completed, so players can't reenter it.
+This bmodel will appear if the episode has already been completed, so players can't reenter it.
 */
 void() func_episodegate =
 

@@ -128,7 +128,7 @@ void() plat_outside_touch =
 void() plat_trigger_use =
 {
 	if (self.think)
-		return;		// allready activated
+		return;		// already activated
 	plat_go_down();
 };
 
