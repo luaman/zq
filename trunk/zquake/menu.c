@@ -91,7 +91,7 @@ void M_Main_Key (int key);
 
 qbool	m_entersound;		// play after drawing a frame, so caching
 							// won't disrupt the sound
-qbool	m_recursiveDraw;
+
 int		m_topmenu;			// set if a submenu was entered via a
 							// menu_* command
 
@@ -2569,14 +2569,6 @@ void M_Quit_Draw (void)
 	char **p;
 	int x, y;
 
-/*	if (wasInMenus)
-	{
-		m_state = m_quit_prevstate;
-		m_recursiveDraw = true;
-		M_Draw ();
-		m_state = m_quit;
-	}*/
-
 	M_DrawTextBox (0, 0, 38, 23);
 	y = 12;
 	for (p = quitmsg; *p; p++, y += 8)
@@ -2629,26 +2621,11 @@ void M_Draw (void)
 	if (m_state == m_none || key_dest != key_menu)
 		return;
 
-	if (!m_recursiveDraw)
-	{
-		scr_copyeverything = 1;
+	scr_copyeverything = 1;
+	scr_fullupdate = 0;
 
-		if (scr_con_current == vid.height)
-		{
-			Draw_ConsoleBackground (scr_con_current);
-			VID_UnlockBuffer ();
-			S_ExtraUpdate ();
-			VID_LockBuffer ();
-		}
-		else
-			R_FadeScreen ();
-
-		scr_fullupdate = 0;
-	}
-	else
-	{
-		m_recursiveDraw = false;
-	}
+	if (scr_con_current != vid.height)
+		R_FadeScreen ();
 
 #ifdef GLQUAKE
 	if (scr_scaleMenu.value) {
