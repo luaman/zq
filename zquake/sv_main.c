@@ -1342,6 +1342,8 @@ void SV_InitLocal (void)
 	extern cvar_t	pm_friction;
 	extern cvar_t	pm_waterfriction;
 	extern cvar_t	pm_bunnyspeedcap;
+	extern cvar_t	pm_ktjump;
+	extern cvar_t	pm_slidefix;
 
 	SV_InitOperatorCommands	();
 
@@ -1390,6 +1392,8 @@ void SV_InitLocal (void)
 	Cvar_Register (&pm_friction);
 	Cvar_Register (&pm_waterfriction);
 	Cvar_Register (&pm_bunnyspeedcap);
+	Cvar_Register (&pm_ktjump);
+	Cvar_Register (&pm_slidefix);
 
 	Cvar_Register (&allow_download);
 	Cvar_Register (&allow_download_skins);

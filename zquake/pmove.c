@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "pmove.h"
 
-cvar_t	pm_slidefix = {"pm_slidefix","0"};	// FIXME: remove?
-
 movevars_t		movevars;
 playermove_t	pmove;
 
@@ -38,7 +36,6 @@ void PM_InitBoxHull (void);
 
 void Pmove_Init (void)
 {
-	Cvar_Register (&pm_slidefix);
 	PM_InitBoxHull ();
 }
 
@@ -227,7 +224,7 @@ void PM_StepSlideMove (void)
 	vec3_t	original, originalvel, down, up, downvel;
 	float	downdist, updist;
 
-	if (!pm_slidefix.value)
+	if (!movevars.slidefix)
 		pmove.velocity[2] = 0;
 
 	if (!pmove.velocity[0] && !pmove.velocity[1])
@@ -546,7 +543,7 @@ void PM_AirMove (void)
 	
 	if (pmove.onground)
 	{
-		if (pmove.velocity[2] > 0 || !pm_slidefix.value)
+		if (pmove.velocity[2] > 0 || !movevars.slidefix)
 			pmove.velocity[2] = 0;
 		PM_Accelerate (wishdir, wishspeed, movevars.accelerate);
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * frametime;
@@ -701,10 +698,14 @@ void PM_CheckJump (void)
 	pmove.onground = false;
 	pmove.velocity[2] += 270;
 
-	// we mix vanilla QW and KTeams physics here so that prediction
-	// errors are reasonable no matter what server we play on
-	if (pmove.velocity[2] < 270)
-		pmove.velocity[2] = pmove.velocity[2] * 0.5 + 270 * 0.5;
+	if (movevars.ktjump > 0)
+	{
+		if (movevars.ktjump > 1)
+			movevars.ktjump = 1;
+		if (pmove.velocity[2] < 270)
+			pmove.velocity[2] = pmove.velocity[2] * (1 - movevars.ktjump)
+				+ 270 * movevars.ktjump;
+	}
 
 	pmove.oldbuttons |= BUTTON_JUMP;	// don't jump again until released
 

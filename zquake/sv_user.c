@@ -35,6 +35,8 @@ extern int fp_messages, fp_persecond, fp_secondsdead;
 extern cvar_t	sv_floodprotmsg;
 extern cvar_t	sv_pausable;
 extern cvar_t	pm_bunnyspeedcap;
+extern cvar_t	pm_ktjump;
+extern cvar_t	pm_slidefix;
 
 extern double	sv_frametime;
 
@@ -1551,6 +1553,8 @@ void SV_RunCmd (usercmd_t *ucmd)
 	movevars.entgravity = sv_client->entgravity;
 	movevars.maxspeed = sv_client->maxspeed;
 	movevars.bunnyspeedcap = pm_bunnyspeedcap.value;
+	movevars.ktjump = pm_ktjump.value;
+	movevars.slidefix = pm_slidefix.value;
 
 	for (i=0 ; i<3 ; i++)
 	{
