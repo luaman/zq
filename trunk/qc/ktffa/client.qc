@@ -592,7 +592,6 @@ void() PutClientInServer =
 	self.invisible_finished = 0;
 	self.invincible_finished = 0;
 
-	self.brokenankle = 0;
 // s: the spawn falling damage bug workaround
 	self.jump_flag = 0;
 	self.swim_flag = 0;
@@ -984,20 +983,17 @@ void() PlayerJump =
 
 	self.flags = self.flags - (self.flags & FL_JUMPRELEASED);       
 
-// s: check the flag and jump if we can
-	if (!self.brokenankle) {
-		self.button2 = 0;
+    self.button2 = 0;
 // player jumping sound
-		sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
+    sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
 
-		if (server_is_2_3x) {
-			// if and only if running on a 2.30 or 2.33 server,
-			// fix the jump bug via QC
-			// newer servers should have an engine-side fix
-			if (self.velocity_z < 0)
-				self.velocity_z = 0;
-		}
-	} else self.velocity_z = -270;
+    if (server_is_2_3x) {
+        // if and only if running on a 2.30 or 2.33 server,
+        // fix the jump bug via QC
+        // newer servers should have an engine-side fix
+        if (self.velocity_z < 0)
+            self.velocity_z = 0;
+    }
 
 };
 
@@ -1240,8 +1236,7 @@ void() PlayerPreThink =
 		return; // dying, so do nothing
 	}
 
-// s: brokenankle included here
-	if (self.button2 || self.brokenankle)
+	if (self.button2)
 	{
 		PlayerJump ();
 	}
@@ -1457,9 +1452,6 @@ void() PlayerPostThink =
 // and playing the leave water sound if the player died underwater.
 	WaterMove ();
 
-// s: clear the flag if we landed
-	if(self.flags & FL_ONGROUND) self.brokenankle = 0;
-
 // check to see if player landed and play landing sound 
 	if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) )
 	{
@@ -1474,11 +1466,6 @@ void() PlayerPostThink =
 			self.deathtype = "falling";
 			T_Damage (self, world, world, 5); 
 			sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
-// s: set the flag if needed
-			if(self.waterlevel < 2)
-				self.brokenankle = 1;
-					// Yes we have just broken it
-
 		}
 		else
 			sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
