@@ -30,6 +30,7 @@ entity_t	*currententity;
 
 int			r_visframecount;	// bumped when going to a new PVS
 int			r_framecount;		// used for dlight push checking
+qboolean	r_dowarp;
 
 mplane_t	frustum[4];
 
@@ -83,6 +84,7 @@ cvar_t	r_lightmap = {"r_lightmap","0"};
 cvar_t	r_shadows = {"r_shadows","0"};
 cvar_t	r_mirroralpha = {"r_mirroralpha","1"};
 cvar_t	r_wateralpha = {"r_wateralpha","1"};
+cvar_t	r_waterwarp = {"r_waterwarp","1"};
 cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
@@ -821,6 +823,8 @@ void R_SetupFrame (void)
 	r_lightmap.value = 0;
 	if (!atoi(Info_ValueForKey(cl.serverinfo, "watervis")))
 		r_wateralpha.value = 1;
+
+	r_dowarp = (r_waterwarp.value != 0);
 
 	R_AnimateLight ();
 
