@@ -718,6 +718,62 @@ setuptexture:
 	return glt->texnum;
 }
 
+
+/*
+================
+GL_LoadTexture32
+
+FIXME: merge with GL_LoadTexture
+================
+*/
+int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten)
+{
+	int			i;
+	unsigned	crc;
+	gltexture_t	*glt;
+
+	if (lightmode != 2)
+		brighten = false;
+
+	// see if the texture is already present
+	if (identifier[0]) {
+		crc = CRC_Block (data, width*height);
+		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++) {
+			if (!strncmp (identifier, glt->identifier, sizeof(glt->identifier)-1)) {
+				if (width == glt->width && height == glt->height
+					&& crc == glt->crc && brighten == glt->brighten)
+					return gltextures[i].texnum;
+				else
+					goto setuptexture;	// reload the texture into the same slot
+			}
+		}
+	}
+	else
+		glt = &gltextures[numgltextures];
+
+	if (numgltextures == MAX_GLTEXTURES)
+		Sys_Error ("GL_LoadTexture: numgltextures == MAX_GLTEXTURES");
+	numgltextures++;
+
+	strlcpy (glt->identifier, identifier, sizeof(glt->identifier));
+	glt->texnum = texture_extension_number;
+	texture_extension_number++;
+
+setuptexture:
+	glt->width = width;
+	glt->height = height;
+	glt->mipmap = mipmap;
+	glt->brighten = false /* brighten */;
+	glt->crc = crc;
+
+	GL_Bind (glt->texnum);
+
+	GL_Upload32 ((unsigned int *)data, width, height, mipmap, alpha);
+
+	return glt->texnum;
+}
+
+
 static void R_InitParticleTexture (void)
 {
 	int		i, x, y;
