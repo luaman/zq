@@ -443,8 +443,6 @@ const float MULTICAST_PVS_R	= 5;		// within sight, reliable
 //
 // globals
 //
-float	movedist;
-
 const string  string_null = "";    // null string, nothing should be held here
 
 entity	activator;		// the entity that activated a trigger or brush
@@ -488,29 +486,12 @@ float		coop;
 
 
 //
-// monster ai
+// monster ai & used in mp
 //
-.void() 	th_stand;
-.void() 	th_walk;
-.void() 	th_run;
-.void() 	th_missile;
-.void() 	th_melee;
 .void(entity attacker, float damage)		th_pain;
 .void() 	th_die;
 
-.entity 	oldenemy;		// mad at this player before taking damage
-
 .float		speed;
-
-.float	lefty;
-
-.float	search_time;
-.float	attack_state;
-
-const float	AS_STRAIGHT		= 1;
-const float	AS_SLIDING		= 2;
-const float	AS_MELEE		= 3;
-const float	AS_MISSILE		= 4;
 
 //
 // player only fields
@@ -569,10 +550,9 @@ const float	AS_MISSILE		= 4;
 .string 	noise4;
 
 //
-// monsters
+// monsters in qwsp & teleporters in qw
 //
-.float		pausetime;
-.entity 	movetarget;
+.float		pausetime; // paustime is also set by teleporters to keep the player from moving a while
 
 
 //
@@ -605,11 +585,6 @@ const float	AS_MISSILE		= 4;
 .float		state;
 .vector 	pos1, pos2;		// top and bottom positions
 .float		height;
-
-//
-// sounds
-//
-.float		waitmin;
 
 
 
