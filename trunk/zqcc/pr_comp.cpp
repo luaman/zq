@@ -399,7 +399,35 @@ def_t *PR_Expression (int priority)
 				continue;
 			if (!PR_Check (op->name))
 				continue;
-			if ( op->right_associative )
+
+			if (op->name[0] == '.')
+			{
+				char *name = PR_ParseName ();
+				
+				e2 = PR_FindDef (name, pr_scope);
+				if (!e2 || e2->type->type != ev_field)
+					PR_ParseError ("'%s' is not a field", name);
+
+				type_c = e2->type->aux_type->type;
+
+				// we still allow ".void foo" so need to check
+				if (type_c == ev_void)
+					PR_ParseError ("tried to access a 'void' field");
+
+				assert (type_c != ev_pointer && type_c != ev_void);
+				while (type_c != op->type_c) {
+					op++;
+					assert (op->name);
+				}
+
+				e = PR_Statement (op, e, e2);
+
+				// field access gets type from field
+				e->type = e2->type->aux_type;
+				break;
+			}
+
+			if (op->right_associative)
 			{
 			// if last statement is an indirect, change it to an address of
 				if ( (unsigned)(statements[numstatements-1].op - OP_LOAD_F) < 6 )
@@ -417,20 +445,8 @@ def_t *PR_Expression (int priority)
 			type_a = e->type->type;
 			type_b = e2->type->type;
 
-			if (op->name[0] == '.')// field access gets type from field
-			{
-				if (e2->type->aux_type)
-					type_c = e2->type->aux_type->type;
-				else
-					type_c = (etype_t) -1;	// not a field
-			}
-			else
-				type_c = ev_void;
-				
 			oldop = op;
-			while (type_a != op->type_a
-			|| type_b != op->type_b
-			|| (type_c != ev_void && type_c != op->type_c) )
+			while (type_a != op->type_a || type_b != op->type_b )
 			{
 				op++;
 				if (!op->name || strcmp (op->name , oldop->name))
@@ -445,9 +461,6 @@ def_t *PR_Expression (int priority)
 				e = PR_Statement (op, e2, e);
 			else
 				e = PR_Statement (op, e, e2);
-			
-			if (type_c != ev_void)	// field access gets type from field
-				e->type = e2->type->aux_type;
 			
 			break;
 		}
