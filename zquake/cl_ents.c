@@ -507,19 +507,11 @@ void CL_LinkPacketEntities (void)
 		}
 		else
 		{
-			vec3_t	a1, a2;
+			vec3_t	old, cur;
 
-			MSG_UnpackAngles (cent->current.s_angles, a1);
-			MSG_UnpackAngles (cent->previous.s_angles, a2);
-
-			for (i = 0; i < 3; i++)
-			{
-				if (a1[i] - a2[i] > 180)
-					a1[i] -= 360;
-				if (a1[i] - a2[i] < -180)
-					a1[i] += 360;
-				ent.angles[i] = a2[i] + f * (a1[i] - a2[i]);
-			}
+			MSG_UnpackAngles (cent->current.s_angles, old);
+			MSG_UnpackAngles (cent->previous.s_angles, cur);
+			LerpAngles (old, cur, f, ent.angles);
 		}
 
 		// calculate origin
@@ -720,6 +712,7 @@ void CL_LinkProjectiles (void)
 extern	int		cl_spikeindex, cl_playerindex, cl_flagindex;
 
 #ifdef MVDPLAY
+
 int TranslateFlags(int src)
 {
 	int dst = 0;
@@ -739,12 +732,81 @@ int TranslateFlags(int src)
 
 	return dst;
 }
-#endif
 
-#ifdef MVDPLAY
-extern int parsecountmod;
-extern double parsecounttime;
-#endif
+
+static void MVD_ParsePlayerState (void)
+{
+	int			flags;
+	player_info_t	*info;
+	player_state_t	*state, *oldstate;
+	static player_state_t dummy;	// all zeroes
+	int			num;
+	int			i;
+
+	num = MSG_ReadByte ();
+	if (num >= MAX_CLIENTS)
+		Host_Error ("CL_ParsePlayerState: bad num");
+
+	info = &cl.players[num];
+
+	if (cls.findtrack && info->stats[STAT_HEALTH] != 0)
+	{
+		Cam_Lock (num);
+		cls.findtrack = false;
+	}
+
+	state = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[num];
+
+	if (info->prevcount > cl.parsecount || !cl.parsecount) {
+		oldstate = &dummy;
+	} else {
+		if (cl.parsecount - info->prevcount >= UPDATE_BACKUP-1)
+			oldstate = &dummy;
+		else 
+			oldstate = &cl.frames[info->prevcount&UPDATE_MASK].playerstate[num];
+	}
+
+	info->prevcount = cl.parsecount;
+
+	memcpy(state, oldstate, sizeof(player_state_t));
+
+	flags = MSG_ReadShort ();
+	state->flags = TranslateFlags(flags);
+
+	state->messagenum = cl.parsecount;
+	state->command.msec = 0;
+
+	state->frame = MSG_ReadByte ();
+
+	state->state_time = cls.realtime;
+	state->command.msec = 0;
+
+	for (i=0; i <3; i++)
+		if (flags & (DF_ORIGIN << i))
+			state->origin[i] = MSG_ReadCoord ();
+
+	for (i=0; i <3; i++)
+		if (flags & (DF_ANGLES << i))
+			state->command.angles[i] = MSG_ReadAngle16 ();
+
+
+	if (flags & DF_MODEL)
+		state->modelindex = MSG_ReadByte ();
+		
+	if (flags & DF_SKINNUM)
+		state->skinnum = MSG_ReadByte ();
+		
+	if (flags & DF_EFFECTS)
+		state->effects = MSG_ReadByte ();
+	
+	if (flags & DF_WEAPONFRAME)
+		state->weaponframe = MSG_ReadByte ();
+		
+	VectorCopy (state->command.angles, state->viewangles);
+}
+
+#endif	// MVDPLAY
+
 
 /*
 ===================
@@ -757,12 +819,16 @@ void CL_ParsePlayerState (void)
 	int			flags;
 	player_info_t	*info;
 	player_state_t	*state;
-#ifdef MVDPLAY
-    player_state_t *prevstate;
-	static player_state_t dummy;	// all zeroes
-#endif
 	int			num;
 	int			i;
+
+#ifdef MVDPLAY
+	if (cls.mvdplayback)
+	{
+		MVD_ParsePlayerState ();
+		return;
+	}
+#endif
 
 	num = MSG_ReadByte ();
 	if (num >= MAX_CLIENTS)
@@ -771,64 +837,6 @@ void CL_ParsePlayerState (void)
 	info = &cl.players[num];
 
 	state = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[num];
-
-#ifdef MVDPLAY
-	if (info->prevcount > cl.parsecount || !cl.parsecount) {
-		prevstate = &dummy;
-	} else {
-		if (cl.parsecount - info->prevcount >= UPDATE_BACKUP-1)
-			prevstate = &dummy;
-		else 
-			prevstate = &cl.frames[info->prevcount&UPDATE_MASK].playerstate[num];
-	}
-
-	info->prevcount = cl.parsecount;
-
-	if (cls.mvdplayback)
-	{
-		if (cls.findtrack && info->stats[STAT_HEALTH] != 0)
-		{
-			Cam_Lock (num);
-			cls.findtrack = false;
-		}
-
-		memcpy(state, prevstate, sizeof(player_state_t));
-		flags = MSG_ReadShort ();
-		state->flags = TranslateFlags(flags);
-
-		state->messagenum = cl.parsecount;
-		state->command.msec = 0;
-
-		state->frame = MSG_ReadByte ();
-
-		state->state_time = parsecounttime;
-		state->command.msec = 0;
-
-		for (i=0; i <3; i++)
-			if (flags & (DF_ORIGIN << i))
-				state->origin[i] = MSG_ReadCoord ();
-
-		for (i=0; i <3; i++)
-			if (flags & (DF_ANGLES << i))
-				state->command.angles[i] = MSG_ReadAngle16 ();
-
-
-		if (flags & DF_MODEL)
-			state->modelindex = MSG_ReadByte ();
-			
-		if (flags & DF_SKINNUM)
-			state->skinnum = MSG_ReadByte ();
-			
-		if (flags & DF_EFFECTS)
-			state->effects = MSG_ReadByte ();
-		
-		if (flags & DF_WEAPONFRAME)
-			state->weaponframe = MSG_ReadByte ();
-			
-		VectorCopy (state->command.angles, state->viewangles);
-		return;
-	}
-#endif
 
 	flags = state->flags = MSG_ReadShort ();
 
@@ -1231,28 +1239,6 @@ void CL_SetSolidEntities (void)
 #ifdef MVDPLAY
 extern float nextdemotime, olddemotime;
 
-static float adjustangle(float current, float ideal, float fraction)
-{
-    float move;
-
-    move = ideal - current;
-    if (ideal > current)
-    {
-
-        if (move >= 180)
-            move = move - 360;
-    }
-    else
-    {
-        if (move <= -180)
-            move = move + 360;
-    }
-
-    move *= fraction;
-
-    return (current + move);
-}
-
 #define ISDEAD(i) ( (i) >=41 && (i) <=102 )
 
 int	fixangle;
@@ -1364,7 +1350,7 @@ void MVD_ClearPredict(void)
 
 void MVD_Interpolate(void)
 {
-	int i, j;
+	int i;
 	float f;
 	frame_t	*frame, *oldframe;
 	entity_state_t *oldents;
@@ -1397,10 +1383,8 @@ void MVD_Interpolate(void)
 		if (!cl.int_projectiles[i].interpolate)
 			continue;
 
-		for (j = 0; j < 3; j++) {
-			cl_projectiles[i].origin[j] = cl_oldprojectiles[cl.int_projectiles[i].oldindex].origin[j] +
-				f * (cl.int_projectiles[i].origin[j] - cl_oldprojectiles[cl.int_projectiles[i].oldindex].origin[j]);
-		}
+		LerpVector (cl_oldprojectiles[cl.int_projectiles[i].oldindex].origin,
+				cl.int_projectiles[i].origin, f, cl_projectiles[i].origin);
 	}
 
 	// interpolate clients
@@ -1410,11 +1394,9 @@ void MVD_Interpolate(void)
 		oldstate = &oldframe->playerstate[i];
 
 		if (pplayer->predict) {
-			for (j = 0; j < 3; j++) {
-				state->viewangles[j] = adjustangle(oldstate->command.angles[j], pplayer->olda[j], f);
-				state->origin[j] = oldstate->origin[j] + f * (pplayer->oldo[j] - oldstate->origin[j]);
-				state->velocity[j] = oldstate->velocity[j] + f * (pplayer->oldv[j] - oldstate->velocity[j]);
-			}
+			LerpAngles (oldstate->command.angles, pplayer->olda, f, state->viewangles);
+			LerpVector (oldstate->origin, pplayer->oldo, f, state->origin);
+			LerpVector (oldstate->velocity, pplayer->oldv, f, state->velocity);
 		}
 	}
 }
