@@ -870,20 +870,17 @@ void CL_BeginLocalConnection (void)
 	S_StopAllSounds (true);
 	SCR_BeginLoadingPlaque ();
 
-	// make sure we're not connected to an external server,
-	// and demo playback is stopped
-	if (!com_serveractive)
-		CL_Disconnect ();
-
-#if 1
-	if (cls.state == ca_active)
-		cls.state = ca_connected;
-#else
-	if (cls.state < ca_connected)
-		Cmd_ExecuteString ("connect local");
+	if (com_serveractive)
+	{
+		if (cls.state == ca_active)
+			cls.state = ca_connected;
+	}
 	else
-		cls.state = ca_connected;
-#endif
+	{
+		// make sure we're not connected to an external server,
+		// and demo playback is stopped
+		CL_Disconnect ();
+	}
 }
 
 
