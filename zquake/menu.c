@@ -432,12 +432,12 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue (&bgmvolume, bgmvolume.value);
 		break;
 	case 8:	// sfx volume
-		volume.value += dir * 0.1;
-		if (volume.value < 0)
-			volume.value = 0;
-		if (volume.value > 1)
-			volume.value = 1;
-		Cvar_SetValue (&volume, volume.value);
+		s_volume.value += dir * 0.1;
+		if (s_volume.value < 0)
+			s_volume.value = 0;
+		if (s_volume.value > 1)
+			s_volume.value = 1;
+		Cvar_SetValue (&s_volume, s_volume.value);
 		break;
 		
 	case 9:	// always run
@@ -543,7 +543,7 @@ void M_Options_Draw (void)
 	M_DrawSlider (220, 88, r);
 
 	M_Print (16, 96, "          Sound Volume");
-	r = volume.value;
+	r = s_volume.value;
 	M_DrawSlider (220, 96, r);
 
 	M_Print (16, 104,  "            Always Run");
