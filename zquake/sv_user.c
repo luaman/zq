@@ -372,7 +372,6 @@ void Cmd_Spawn_f (void)
 	client_t	*client;
 	edict_t	*ent;
 	eval_t *val;
-	unsigned n;
 
 	if (sv_client->state != cs_connected)
 	{
@@ -380,7 +379,7 @@ void Cmd_Spawn_f (void)
 		return;
 	}
 
-// handle the case of a level changing while a client was connecting
+	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
 		Com_Printf ("Cmd_Spawn_f from different level\n");
@@ -388,25 +387,15 @@ void Cmd_Spawn_f (void)
 		return;
 	}
 
-	n = atoi(Cmd_Argv(2));
-	if (n >= MAX_CLIENTS) {
-		SV_ClientPrintf (sv_client, PRINT_HIGH, 
-				"Cmd_Spawn_f: Invalid client start\n");
-		SV_DropClient (sv_client); 
-		return;
-	}
-	
-// send all current names, colors, and frag counts
 	// FIXME: is this a good thing?
 	SZ_Clear (&sv_client->netchan.message);
 
-// send current status of all other players
-
+	// send current status of all other players
 	// normally this could overflow, but no need to check due to backbuf
-	for (i=n, client = svs.clients + n ; i<MAX_CLIENTS ; i++, client++)
+	for (i = 0, client = svs.clients ; i<MAX_CLIENTS ; i++, client++)
 		SV_FullClientUpdateToClient (client, sv_client);
 	
-// send all current light styles
+	// send all current light styles
 	for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
 	{
 		if ((!sv.lightstyles[i] || !sv.lightstyles[i][0])
@@ -442,9 +431,9 @@ void Cmd_Spawn_f (void)
 	if (val)
 		val->_float = pm_maxspeed.value;
 
-//
-// force stats to be updated
-//
+	//
+	// force stats to be updated
+	//
 	memset (sv_client->stats, 0, sizeof(sv_client->stats));
 
 	ClientReliableWrite_Begin (sv_client, svc_updatestatlong, 6);
@@ -467,7 +456,6 @@ void Cmd_Spawn_f (void)
 	// when that is completed, a begin command will be issued
 	ClientReliableWrite_Begin (sv_client, svc_stufftext, 8);
 	ClientReliableWrite_String (sv_client, "skins\n" );
-
 }
 
 /*
