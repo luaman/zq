@@ -359,11 +359,9 @@ void CL_Disconnect (void)
 {
 	byte	final[10];
 
-	connect_time = 0;
-
 	VID_SetCaption (PROGRAM);
 
-// stop sounds (especially looping!)
+	// stop sounds (especially looping!)
 	S_StopAllSounds (true);
 	
 	Cmd_RemoveStuffedAliases ();
@@ -384,8 +382,6 @@ void CL_Disconnect (void)
 		Netchan_Transmit (&cls.netchan, 6, final);
 	}
 
-	cls.state = ca_disconnected;
-
 	Cam_Reset();
 
 	if (cls.download) {
@@ -394,6 +390,12 @@ void CL_Disconnect (void)
 	}
 
 	CL_StopUpload ();
+
+	// don't accept any remote packets
+	cls.server_adr = net_null;
+
+	cls.state = ca_disconnected;
+	connect_time = 0;
 }
 
 void CL_Disconnect_f (void)
@@ -642,7 +644,7 @@ void CL_ReadPackets (void)
 		// packet from server
 		//
 		if (!cls.demoplayback && 
-			!NET_CompareAdr (net_from, cls.netchan.remote_address))
+			!NET_CompareAdr (net_from, cls.server_adr))
 		{
 			Com_DPrintf ("%s: sequenced packet without connection\n"
 				,NET_AdrToString(net_from));
