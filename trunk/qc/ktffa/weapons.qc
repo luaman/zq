@@ -25,6 +25,24 @@
 
 */
 
+// constants for the impulse command
+const float  IMPULSE_NONE                     =   0;
+const float  IMPULSE_WEAPON_FIRST             =   1;
+const float  IMPULSE_AXE                      =   1;
+const float  IMPULSE_SHOTGUN                  =   2;
+const float  IMPULSE_SUPER_SHOTGUN            =   3;
+const float  IMPULSE_NAILGUN                  =   4;
+const float  IMPULSE_SUPER_NAILGUN            =   5;
+const float  IMPULSE_GRENADE_LAUNCHER         =   6;
+const float  IMPULSE_ROCKET_LAUNCHER          =   7;
+const float  IMPULSE_LIGHTNING                =   8;
+const float  IMPULSE_WEAPON_LAST              =   8;
+const float  IMPULSE_CHEAT                    =   9;
+const float  IMPULSE_WEAPONCYCLE_F            =  10;
+const float  IMPULSE_CHEAT_SERVERFLAGS        =  11;
+const float  IMPULSE_WEAPONCYCLE_R            =  12;
+
+
 void T_Damage (entity targ, entity inflictor, entity attacker, float damage);
 void player_run ();
 void T_RadiusDamage (entity bomb, entity attacker, float rad, entity ignore, string dtype);
@@ -138,7 +156,7 @@ void SpawnMeatSpray (vector org, vector vel)
 	missile.think = SUB_Remove;
 
 	setmodel (missile, "progs/zom_gib.mdl");
-	setsize (missile, '0 0 0', '0 0 0');
+	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);
 	setorigin (missile, org);
 }
 
@@ -421,7 +439,7 @@ void T_MissileTouch ()
 	T_RadiusDamage (self, self.owner, 120, other, "rocket");
 
 //	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
-	setorigin (self, self.origin - 8 * normalize(self.velocity));
+	self.origin = self.origin - 8 * normalize(self.velocity);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
@@ -472,7 +490,7 @@ void W_FireRocket ()
 
 	setmodel (newmis, "progs/missile.mdl");
 	setsize (newmis, '0 0 0', '0 0 0');
-	setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
+	setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
 }
 
 /*
@@ -579,7 +597,7 @@ void W_FireLightning ()
 			cells = self.ammo_cells;
 			self.ammo_cells = 0;
 			W_SetCurrentAmmo ();
-			T_RadiusDamage (self, self, 35*cells, world,"");
+			T_RadiusDamage (self, self, 35*cells, world, "");
 			return;
 		}
 	}
@@ -701,15 +719,13 @@ void W_FireGrenade ()
 	newmis.touch = GrenadeTouch;
 	
 // set newmis duration
+    newmis.nextthink = time + 2.5;
 	if (deathmatch == 4)
 	{
-		newmis.nextthink = time + 2.5;		
 		self.attack_finished = time + 1.1;
-//		self.health = self.health - 1;
 		T_Damage (self, self, self.owner, 10 );
 	}
 	else
-		newmis.nextthink = time + 2.5;
 
 	newmis.think = GrenadeExplode;
 
@@ -1461,48 +1477,34 @@ void ImpulseCommands ()
 {
 	if (self.impulse >= IMPULSE_WEAPON_FIRST && self.impulse <= IMPULSE_WEAPON_LAST)
 		W_ChangeWeapon ();
-	else
-	if (self.impulse == IMPULSE_CHEAT)
+	else if (self.impulse == IMPULSE_CHEAT)
 		CheatCommand ();
-	else
-	if (self.impulse == IMPULSE_WEAPONCYCLE_F)
+	else if (self.impulse == IMPULSE_WEAPONCYCLE_F)
 		CycleWeaponCommand ();
-	else
-	if (self.impulse == IMPULSE_CHEAT_SERVERFLAGS)
+	else if (self.impulse == IMPULSE_CHEAT_SERVERFLAGS)
 		ServerflagsCommand ();
-	else
-	if (self.impulse == IMPULSE_WEAPONCYCLE_R)
+	else if (self.impulse == IMPULSE_WEAPONCYCLE_R)
 		CycleWeaponReverseCommand ();
-
-// KTFFA --> 
-  else
-	if (self.impulse == KT_IMPULSE_VOTE_CHANGE)
-		VoteChange();
-	else
-	if (self.impulse == KT_IMPULSE_VOTE_YES)
-		VoteYes();
-	else
-	if (self.impulse == KT_IMPULSE_VOTE_NO)
-		VoteNo();
-	else
-	if (self.impulse == KT_IMPULSE_PRINT_SCORES)
-		PrintScores();
-	else
-	if (self.impulse == KT_IMPULSE_PRINT_CMDS)
-		PrintCommands();
-	else
-	if (self.impulse == KT_IMPULSE_MSG_KILLER)
-		SendMessage(self.killer);
-	else
-	if (self.impulse == KT_IMPULSE_MSG_VICTIM)
-		SendMessage(self.victim);
-	else
-	if (self.impulse == KT_IMPULSE_MSG_NEWCOMER)
-		SendMessage(newcomer);
-	else
-	if (self.impulse == KT_IMPULSE_PRINT_VERSION)
-		ShowVersion();
-// <-- KTFFA
+#ifdef KTFFA
+    else if (self.impulse == KT_IMPULSE_VOTE_CHANGE)
+        VoteChange();
+    else if (self.impulse == KT_IMPULSE_VOTE_YES)
+        VoteYes();
+    else if (self.impulse == KT_IMPULSE_VOTE_NO)
+        VoteNo();
+    else if (self.impulse == KT_IMPULSE_PRINT_SCORES)
+        PrintScores();
+    else if (self.impulse == KT_IMPULSE_PRINT_CMDS)
+        PrintCommands();
+    else if (self.impulse == KT_IMPULSE_MSG_KILLER)
+        SendMessage(self.killer);
+    else if (self.impulse == KT_IMPULSE_MSG_VICTIM)
+        SendMessage(self.victim);
+    else if (self.impulse == KT_IMPULSE_MSG_NEWCOMER)
+        SendMessage(newcomer);
+    else if (self.impulse == KT_IMPULSE_PRINT_VERSION)
+        ShowVersion();
+#endif
 
 	self.impulse = IMPULSE_NONE;
 }

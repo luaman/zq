@@ -19,13 +19,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // Most of the stuff done by rc\sturm is here
 
-void() CheckAll;
+void CheckAll ();
 
-void() TimerThink =
+void TimerThink ()
 {
-	local float f1;
-	local string tmp;
-	local entity p;
+    float f1;
+    string tmp;
+    entity p;
 
 	mytime = mytime + 1;
 // s: minutes
@@ -61,13 +61,13 @@ void() TimerThink =
 	self.nextthink = time + 1;
 // check rate every 20 seconds
 	if (floor(f1/20) == f1/20) CheckAll();
-};
+}
 
-void() PrintScores =
+void PrintScores ()
 {
-	local float f1, f2;
-	local string tmp;
-	local entity p;
+    float f1, f2;
+    string tmp;
+    entity p;
 
 	if(timelimit) {
 		f1 = timelimit - mytime;
@@ -101,12 +101,12 @@ void() PrintScores =
 		else
 			sprint(self, 2, "‘ frags to go\n");
 	}
-};
+}
 
-void(string name) SendMessage =
+void SendMessage (string name)
 {
-	local string s1, s2;
-	local entity p;
+    string s1, s2;
+    entity p;
 
 	p = find(world, classname, "player");
 	while((p != world && p.netname != name) || p == self)
@@ -122,24 +122,24 @@ void(string name) SendMessage =
 		bprint(3, "\n");
 	} else
 		stuffcmd(self, "echo No name to display\n");
-};			
+}
 
-void() PrintCommands =
+void PrintCommands ()
 {
 	sprint(self, 2, "φοτε....... vote for mapchange\nωεσ........ give a vote\nξο......... withdraw a vote\nσγοςεσ..... print game info\nαβουτ...... kombat teams FFA info\nλιμμες..... who killed you last\nφιγτιν..... who you last killed\nξεχγονες... last player joined\n");
-};
+}
 
-void() PrintSCommands =
+void PrintSCommands ()
 {
 	sprint(self, 2, "κοιξ....... join the game\nσγοςεσ..... print game info\nαβουτ...... kombat teams FFA info\n");
-};
+}
 
-void() ShowVersion =
+void ShowVersion ()
 {
         sprint(self, 3, "\nThis is Kombat Teams 2.22 FFA\nby Cenobite and Sturm.\n\nSource, configs etc. at:\nhttp://kteam.co.uk\n");
-};
+}
 
-void() StuffThink =
+void StuffThink ()
 {
 	string	s;
 
@@ -176,5 +176,5 @@ void() StuffThink =
 
 	self.think = SUB_Remove;
 	self.nextthink = time + 0.1;
-};
+}
 

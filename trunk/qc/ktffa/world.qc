@@ -1,175 +1,37 @@
 /*
-Copyright (C) 1996-1997 Id Software, Inc.
+	world.qc
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+	main/world setup functions
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+	Copyright (C) 1996-1997  Id Software, Inc.
 
-See the GNU General Public License for more details.
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		59 Temple Place - Suite 330
+		Boston, MA  02111-1307, USA
 
 */
-void() InitBodyQue;
 
-void() main =
+void InitBodyQue ();
+void NextLevel ();
+
+void main ()
 {
-	dprint ("main function\n");
-	
-// these are just commands the the prog compiler to copy these files
-
-	precache_file ("progs.dat");
-	precache_file ("gfx.wad");
-	precache_file ("quake.rc");
-	precache_file ("default.cfg");
-
-	precache_file ("end1.bin");
-	precache_file2 ("end2.bin");
-
-	precache_file ("demo1.dem");
-	precache_file ("demo2.dem");
-	precache_file ("demo3.dem");
-
-//
-// these are all of the lumps from the cached.ls files
-//
-	precache_file ("gfx/palette.lmp");
-	precache_file ("gfx/colormap.lmp");
-
-	precache_file2 ("gfx/pop.lmp");
-
-	precache_file ("gfx/complete.lmp");
-	precache_file ("gfx/inter.lmp");
-
-	precache_file ("gfx/ranking.lmp");
-	precache_file ("gfx/vidmodes.lmp");
-	precache_file ("gfx/finale.lmp");
-	precache_file ("gfx/conback.lmp");
-	precache_file ("gfx/qplaque.lmp");
-
-	precache_file ("gfx/menudot1.lmp");
-	precache_file ("gfx/menudot2.lmp");
-	precache_file ("gfx/menudot3.lmp");
-	precache_file ("gfx/menudot4.lmp");
-	precache_file ("gfx/menudot5.lmp");
-	precache_file ("gfx/menudot6.lmp");
-
-	precache_file ("gfx/menuplyr.lmp");
-	precache_file ("gfx/bigbox.lmp");
-	precache_file ("gfx/dim_modm.lmp");
-	precache_file ("gfx/dim_drct.lmp");
-	precache_file ("gfx/dim_ipx.lmp");
-	precache_file ("gfx/dim_tcp.lmp");
-	precache_file ("gfx/dim_mult.lmp");
-	precache_file ("gfx/mainmenu.lmp");
-	
-	precache_file ("gfx/box_tl.lmp");
-	precache_file ("gfx/box_tm.lmp");
-	precache_file ("gfx/box_tr.lmp");
-	
-	precache_file ("gfx/box_ml.lmp");
-	precache_file ("gfx/box_mm.lmp");
-	precache_file ("gfx/box_mm2.lmp");
-	precache_file ("gfx/box_mr.lmp");
-	
-	precache_file ("gfx/box_bl.lmp");
-	precache_file ("gfx/box_bm.lmp");
-	precache_file ("gfx/box_br.lmp");
-	
-	precache_file ("gfx/sp_menu.lmp");
-	precache_file ("gfx/ttl_sgl.lmp");
-	precache_file ("gfx/ttl_main.lmp");
-	precache_file ("gfx/ttl_cstm.lmp");
-	
-	precache_file ("gfx/mp_menu.lmp");
-	
-	precache_file ("gfx/netmen1.lmp");
-	precache_file ("gfx/netmen2.lmp");
-	precache_file ("gfx/netmen3.lmp");
-	precache_file ("gfx/netmen4.lmp");
-	precache_file ("gfx/netmen5.lmp");
-	
-	precache_file ("gfx/sell.lmp");
-	
-	precache_file ("gfx/help0.lmp");
-	precache_file ("gfx/help1.lmp");
-	precache_file ("gfx/help2.lmp");
-	precache_file ("gfx/help3.lmp");
-	precache_file ("gfx/help4.lmp");
-	precache_file ("gfx/help5.lmp");
-
-	precache_file ("gfx/pause.lmp");
-	precache_file ("gfx/loading.lmp");
-
-	precache_file ("gfx/p_option.lmp");
-	precache_file ("gfx/p_load.lmp");
-	precache_file ("gfx/p_save.lmp");
-	precache_file ("gfx/p_multi.lmp");
-
-// sounds loaded by C code
-	precache_sound ("misc/menu1.wav");
-	precache_sound ("misc/menu2.wav");
-	precache_sound ("misc/menu3.wav");
-
-	precache_sound ("ambience/water1.wav");
-	precache_sound ("ambience/wind2.wav");
-
-// shareware
-	precache_file ("maps/start.bsp");
-
-	precache_file ("maps/e1m1.bsp");
-	precache_file ("maps/e1m2.bsp");
-	precache_file ("maps/e1m3.bsp");
-	precache_file ("maps/e1m4.bsp");
-	precache_file ("maps/e1m5.bsp");
-	precache_file ("maps/e1m6.bsp");
-	precache_file ("maps/e1m7.bsp");
-	precache_file ("maps/e1m8.bsp");
-
-// registered
-	precache_file2 ("gfx/pop.lmp");
-
-	precache_file2 ("maps/e2m1.bsp");
-	precache_file2 ("maps/e2m2.bsp");
-	precache_file2 ("maps/e2m3.bsp");
-	precache_file2 ("maps/e2m4.bsp");
-	precache_file2 ("maps/e2m5.bsp");
-	precache_file2 ("maps/e2m6.bsp");
-	precache_file2 ("maps/e2m7.bsp");
-
-	precache_file2 ("maps/e3m1.bsp");
-	precache_file2 ("maps/e3m2.bsp");
-	precache_file2 ("maps/e3m3.bsp");
-	precache_file2 ("maps/e3m4.bsp");
-	precache_file2 ("maps/e3m5.bsp");
-	precache_file2 ("maps/e3m6.bsp");
-	precache_file2 ("maps/e3m7.bsp");
-
-	precache_file2 ("maps/e4m1.bsp");
-	precache_file2 ("maps/e4m2.bsp");
-	precache_file2 ("maps/e4m3.bsp");
-	precache_file2 ("maps/e4m4.bsp");
-	precache_file2 ("maps/e4m5.bsp");
-	precache_file2 ("maps/e4m6.bsp");
-	precache_file2 ("maps/e4m7.bsp");
-	precache_file2 ("maps/e4m8.bsp");
-
-	precache_file2 ("maps/end.bsp");
-
-	precache_file2 ("maps/dm1.bsp");
-	precache_file2 ("maps/dm2.bsp");
-	precache_file2 ("maps/dm3.bsp");
-	precache_file2 ("maps/dm4.bsp");
-	precache_file2 ("maps/dm5.bsp");
-	precache_file2 ("maps/dm6.bsp");
-};
+//	dprint ("main function\n");
+}
 
 
 entity  lastspawn;
@@ -186,9 +48,10 @@ World Types:
 2: base
 */
 //=======================
-void() worldspawn =
+void worldspawn ()
 {
-	local string tmp;
+    string  s;
+	string tmp;
 
 	// Tonik: check if we're running on an 2.3x server
 	tmp = infokey(world, "*version");
@@ -200,10 +63,15 @@ void() worldspawn =
 
 // custom map attributes
 
+	if (!self.gravity)
+	{
 	if (self.model == "maps/e1m8.bsp")
-		cvar_set ("sv_gravity", "100");
+			self.gravity = 100;
 	else
-		cvar_set ("sv_gravity", "800");
+			self.gravity = 800;
+	}
+	s = ftos(self.gravity);
+	cvar_set ("sv_gravity", s);
 
 
 // the area based ambient sounds MUST be the first precache_sounds
@@ -215,7 +83,7 @@ void() worldspawn =
 	precache_sound ("demon/dland2.wav");            // landing thud
 	precache_sound ("misc/h2ohit1.wav");            // landing splash
 
-// setup precaches allways needed
+// setup precaches always needed
 	precache_sound ("items/itembk2.wav");           // item respawn sound
 	precache_sound ("player/plyrjmp8.wav");         // player jump
 	precache_sound ("player/land.wav");                     // player landing
@@ -236,11 +104,11 @@ void() worldspawn =
 	precache_sound ("weapons/lock4.wav");           // ammo pick up
 	precache_sound ("weapons/pkup.wav");            // weapon up
 	precache_sound ("items/armor1.wav");            // armor up
-	precache_sound ("weapons/lhit.wav");            //lightning
-	precache_sound ("weapons/lstart.wav");          //lightning start
+	precache_sound ("weapons/lhit.wav");			// lightning
+	precache_sound ("weapons/lstart.wav");			// lightning start
 	precache_sound ("items/damage3.wav");
 
-	precache_sound ("misc/power.wav");                      //lightning for boss
+	precache_sound ("misc/power.wav");				// lightning for boss
 
 // player gib sounds
 	precache_sound ("player/gib.wav");                      // player gib sound
@@ -367,20 +235,32 @@ void() worldspawn =
 
 	// 63 testing
 	lightstyle(63, "a");
-};
 
-void() StartFrame =
+
+	// get game rules
+	deathmatch = cvar("deathmatch");
+	skill = cvar("skill");
+	coop = cvar("coop");
+}
+
+void StartFrame ()
 {
-	local entity timer;
+	entity timer;
+
+#ifdef FRIKBOT
+	BotFrame(); // FrikBot
+#endif
 
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar("fraglimit");
-// team: force teamplay 0
-//	cvar_set("teamplay", "0");
-//	deathmatch = cvar("deathmatch");
+	teamplay = cvar("teamplay");
 	
 	framecount = framecount + 1;
 
+	if (deathmatch && timelimit && time >= timelimit)
+		NextLevel ();
+
+#ifdef KTFFA
 // s: spawn the timer here.
 	timer = find(world, classname, "timer");
 	if(framecount == 1 && timer != world) {
@@ -396,13 +276,14 @@ void() StartFrame =
 		timer.owner = world;
 		timer.classname = "timer";
 	}
+#endif
 
 // Tonik: note current "serverinfo maxfps" setting
 // (we don't want to do it in every player frame)
 	current_maxfps = stof(infokey(world, "maxfps"));
 	if (!current_maxfps)
 		current_maxfps = 72;	// 2.30 standard
-};
+}
 
 /*
 ==============================================================================
@@ -414,12 +295,12 @@ BODY QUE
 
 entity  bodyque_head;
 
-void() bodyque =
+void bodyque ()
 {       // just here so spawn functions don't complain after the world
 	// creates bodyques
-};
+}
 
-void() InitBodyQue =
+void InitBodyQue ()
 {
 	bodyque_head = spawn();
 	bodyque_head.classname = "bodyque";
@@ -430,12 +311,12 @@ void() InitBodyQue =
 	bodyque_head.owner.owner.owner = spawn();
 	bodyque_head.owner.owner.owner.classname = "bodyque";
 	bodyque_head.owner.owner.owner.owner = bodyque_head;
-};
+}
 
 
 // make a body que entry for the given ent so the ent can be
 // respawned elsewhere
-void(entity ent) CopyToBodyQue =
+void CopyToBodyQue (entity ent)
 {
 	bodyque_head.angles = ent.angles;
 	bodyque_head.model = ent.model;
@@ -448,4 +329,4 @@ void(entity ent) CopyToBodyQue =
 	setorigin (bodyque_head, ent.origin);
 	setsize (bodyque_head, ent.mins, ent.maxs);
 	bodyque_head = bodyque_head.owner;
-};
+}
