@@ -664,9 +664,10 @@ void SVC_DirectConnect (void)
 	newcl->extensions = atoi(Info_ValueForKey(newcl->userinfo, "*z_ext"));
 	Info_RemoveKey (newcl->userinfo, "*z_ext");
 
-//@@VWep test
+#ifdef VWEP_TEST
 	newcl->extensions |= atoi(Info_ValueForKey(newcl->userinfo, "*vwtest")) ? Z_EXT_VWEP : 0;
 	Info_RemoveKey (newcl->userinfo, "*vwtest");
+#endif
 
 	// See if the client is using a proxy. The best test I can come up with for now...
 	newcl->uses_proxy = *Info_ValueForKey(newcl->userinfo, "Qizmo") ? true : false;
@@ -1417,8 +1418,9 @@ void SV_InitLocal (void)
 
 	Info_SetValueForStarKey (svs.info, "*version", va(PROGRAM " %s", VersionString()), MAX_SERVERINFO_STRING);
 	Info_SetValueForStarKey (svs.info, "*z_ext", va("%i", SUPPORTED_EXTENSIONS), MAX_SERVERINFO_STRING);
-//@@VWep test
+#ifdef VWEP_TEST
 	Info_SetValueForStarKey (svs.info, "*vwtest", "1", MAX_SERVERINFO_STRING);
+#endif
 
 	if (strcmp(com_gamedirfile, "qw"))
 		Info_SetValueForStarKey (svs.info, "*gamedir", com_gamedirfile, MAX_SERVERINFO_STRING);

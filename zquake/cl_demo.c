@@ -476,6 +476,7 @@ static void CL_Record (void)
 		SZ_Clear (&buf); 
 	}
 
+#ifdef VWEP_TEST
 // vwep modellist
 	if ((cl.z_ext & Z_EXT_VWEP) && cl.vw_model_name[0][0]) {
 		// send VWep precaches
@@ -494,7 +495,7 @@ static void CL_Record (void)
 		MSG_WriteString (&buf, "");
 	}
 	// don't bother flushing, the vwep list is not that large (I hope)
-
+#endif
 
 // modellist
 	MSG_WriteByte (&buf, svc_modellist);

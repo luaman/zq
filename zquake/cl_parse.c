@@ -272,6 +272,7 @@ void CL_Prespawn (void)
 VWepModel_NextDownload
 =================
 */
+#ifdef VWEP_TEST
 void VWepModel_NextDownload (void)
 {
 	int		i;
@@ -322,6 +323,7 @@ void VWepModel_NextDownload (void)
 	// all done
 	CL_Prespawn ();
 }
+#endif
 
 
 /*
@@ -376,10 +378,14 @@ void Model_NextDownload (void)
 			cl.clipmodels[i] = CM_InlineModel(cl.model_name[i]);
 	}
 
+#ifdef VWEP_TEST
 	// done with normal models, request vwep models if necessary
 	cls.downloadtype = dl_vwep_model;
 	cls.downloadnumber = 0;
 	VWepModel_NextDownload ();
+#else
+	CL_Prespawn ();
+#endif
 }
 
 /*
@@ -440,9 +446,11 @@ void CL_RequestNextDownload (void)
 	case dl_model:
 		Model_NextDownload ();
 		break;
+#ifdef VWEP_TEST
 	case dl_vwep_model:
 		VWepModel_NextDownload ();
 		break;
+#endif
 	case dl_sound:
 		Sound_NextDownload ();
 		break;
@@ -1228,9 +1236,10 @@ void CL_ProcessServerInfo (void)
 	// Get the server's ZQuake extension bits
 	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext"));
 
-//@@VWep test
+#ifdef VWEP_TEST
 	if (atoi(Info_ValueForKey(cl.serverinfo, "*vwtest")))
 		cl.z_ext |= Z_EXT_VWEP;
+#endif
 
 	// Initialize cl.maxpitch & cl.minpitch
 	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "maxpitch") : "";
@@ -1284,6 +1293,7 @@ A typical vwep model list will look like this:
 ""					// list is terminated with an empty key
 ==============
 */
+#ifdef VWEP_TEST
 void CL_ParseVWepPrecache (char *str)
 {
 	int num;
@@ -1342,6 +1352,7 @@ void CL_ParseVWepPrecache (char *str)
 
 	Com_DPrintf ("VWEP %i: '%s'\n", num, cl.vw_model_name[num]);
 }
+#endif
 
 
 /*
@@ -1357,10 +1368,12 @@ void CL_ParseServerInfoChange (void)
 	strlcpy (key, MSG_ReadString(), sizeof(key));
 	strlcpy (value, MSG_ReadString(), sizeof(value));
 
+#ifdef VWEP_TEST
 	if ( (cl.z_ext & Z_EXT_VWEP) && !strcmp(key, "#vw") ) {
 		CL_ParseVWepPrecache (value);
 		return;
 	}
+#endif
 
 	Com_DPrintf ("SERVERINFO: %s=%s\n", key, value);
 

@@ -268,7 +268,7 @@ Cmd_Modellist_f
 static void Cmd_Modellist_f (void)
 {
 	char		**s;
-	int			i, n;
+	int			n;
 	int			maxsize;
 	byte		msg_data[MAX_MSGLEN];
 	sizebuf_t	msg;
@@ -298,8 +298,9 @@ static void Cmd_Modellist_f (void)
 	}
 
 
-//@@VWep test
+#ifdef VWEP_TEST
 	if (n == 0 && (sv_client->extensions & Z_EXT_VWEP) && sv.vw_model_name[0]) {
+		int i;
 		// send VWep precaches
 		for (i = 0, s = sv.vw_model_name; i < MAX_VWEP_MODELS; s++, i++) {
 			if (!sv.vw_model_name[i] || !sv.vw_model_name[i][0])
@@ -315,7 +316,7 @@ static void Cmd_Modellist_f (void)
 		ClientReliableWrite_String ("");
 		ClientReliableWrite_End();
 	}
-
+#endif
 
 	// if we're not back-bufffered, try to fit the modellist into current message
 	if (!sv_client->num_backbuf &&
