@@ -608,13 +608,16 @@ void SVC_DirectConnect (void)
 		}
 	}
 
-	// count up the clients and spectators
-	clients = 0;
-	spectators = 0;
-	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
+	// count up the clients and spectators and find an empty client slot
+	clients = spectators = 0;
+	newcl = NULL;
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++,cl++)
 	{
-		if (cl->state == cs_free)
+		if (cl->state == cs_free) {
+			if (!newcl)
+				newcl = cl;		// grab first available slot
 			continue;
+		}
 		if (cl->spectator)
 			spectators++;
 		else
@@ -623,26 +626,11 @@ void SVC_DirectConnect (void)
 
 	// if at server limits, refuse connection
 	if ( (spectator && spectators >= (int)maxspectators.value)
-		|| (!spectator && clients >= (int)maxclients.value) )
+		|| (!spectator && clients >= (int)maxclients.value)
+		|| !newcl)
 	{
 		Com_Printf ("%s:full connect\n", NET_AdrToString (adr));
 		Netchan_OutOfBandPrint (NS_SERVER, adr, "%c\nserver is full\n\n", A2C_PRINT);
-		return;
-	}
-
-	// find a client slot
-	newcl = NULL;
-	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
-	{
-		if (cl->state == cs_free)
-		{
-			newcl = cl;
-			break;
-		}
-	}
-	if (!newcl)
-	{
-		Com_Printf ("WARNING: miscounted available clients\n");
 		return;
 	}
 
