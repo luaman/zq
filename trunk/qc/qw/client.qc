@@ -30,6 +30,7 @@ void () W_WeaponFrame;
 void() W_SetCurrentAmmo;
 void() player_pain;
 void() player_stand1;
+void (entity ent) play_teleport;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
 void() ExitIntermission;
@@ -548,6 +549,7 @@ void() PutClientInServer =
 	if (deathmatch || coop)
 	{	
 		makevectors(self.angles);
+		play_teleport (self);
 		spawn_tfog (self.origin + v_forward*20);
 	}
 
