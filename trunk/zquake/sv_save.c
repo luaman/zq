@@ -30,7 +30,7 @@ void SV_SavegameComment (char *text)
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 		text[i] = ' ';
 	memcpy (text, cl.levelname, strlen(cl.levelname));
-	sprintf (kills, "kills:%3i/%3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
+	sprintf (kills, "kills:%3i/%-3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
 	memcpy (text+22, kills, strlen(kills));
 
 // convert space to _ to make stdio happy
