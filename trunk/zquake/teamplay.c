@@ -486,14 +486,14 @@ void Cmd_Macro_Init (void)
 =============================================================================
 */
 
-#define MAX_LOC_NAME 16
+#define MAX_LOC_NAME 32
 
 typedef struct locdata_s {
 	vec3_t coord;
 	char name[MAX_LOC_NAME];
 } locdata_t;
 
-#define MAX_LOC_ENTRIES 400
+#define MAX_LOC_ENTRIES 1024
 
 locdata_t locdata[MAX_LOC_ENTRIES];	// FIXME: allocate dynamically?
 int	loc_numentries;
