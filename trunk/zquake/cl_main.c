@@ -54,6 +54,8 @@ cvar_t	cl_sbar		= {"cl_sbar", "0", CVAR_ARCHIVE};
 cvar_t	cl_hudswap	= {"cl_hudswap", "0", CVAR_ARCHIVE};
 cvar_t	cl_maxfps	= {"cl_maxfps", "0", CVAR_ARCHIVE};
 
+cvar_t	cl_writecfg = {"cl_writecfg", "1"};
+
 cvar_t	lookspring = {"lookspring","0", CVAR_ARCHIVE};
 cvar_t	lookstrafe = {"lookstrafe","0", CVAR_ARCHIVE};
 cvar_t	sensitivity = {"sensitivity","3", CVAR_ARCHIVE};
@@ -685,6 +687,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&cl_hudswap);
 	Cvar_RegisterVariable (&cl_maxfps);
 	Cvar_RegisterVariable (&cl_timeout);
+	Cvar_RegisterVariable (&cl_writecfg);
 	Cvar_RegisterVariable (&lookspring);
 	Cvar_RegisterVariable (&lookstrafe);
 	Cvar_RegisterVariable (&sensitivity);
@@ -818,7 +821,7 @@ void Host_WriteConfiguration (void)
 {
 	FILE	*f;
 
-	if (host_initialized)
+	if (host_initialized && cl_writecfg.value)
 	{
 		f = fopen (va("%s/config.cfg",com_gamedir), "w");
 		if (!f)
