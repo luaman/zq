@@ -183,8 +183,6 @@ void() main =
 };
 
 
-entity  lastspawn;
-
 //=======================
 /*QUAKED worldspawn (0 0 0) ?
 Only used for the world entity.
@@ -201,7 +199,6 @@ void() worldspawn =
 {
 	local string s;
 
-	lastspawn = world;
 	InitBodyQue ();
 
 // custom map attributes
