@@ -297,7 +297,7 @@ qboolean VID_AllocBuffers (int width, int height)
 	if ((host_memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
 		 0x10000 * 3) < MINIMUM_MEMORY)
 	{
-		Con_SafePrintf ("Not enough memory for video mode\n");
+		Com_Printf ("Not enough memory for video mode\n");
 		return false;		// not enough memory for mode
 	}
 
@@ -856,7 +856,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		modenum = 0;
 		lowestres = 99999;
 
-		Con_SafePrintf ("No 8-bpp fullscreen DIB modes found\n");
+		Com_Printf ("No 8-bpp fullscreen DIB modes found\n");
 
 		do
 		{
@@ -1051,7 +1051,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 	if (nummodes != originalnummodes)
 		vid_default = MODE_FULLSCREEN_DEFAULT;
 	else
-		Con_SafePrintf ("No fullscreen DIB modes found\n");
+		Com_Printf ("No fullscreen DIB modes found\n");
 }
 
 
@@ -1761,7 +1761,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	ClearAllStates ();
 
 	if (!msg_suppress_1)
-		Con_SafePrintf ("Video mode %s initialized\n", VID_GetModeDescription (vid_modenum));
+		Com_Printf ("Video mode %s initialized\n", VID_GetModeDescription (vid_modenum));
 
 	VID_SetPalette (palette);
 

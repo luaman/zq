@@ -215,7 +215,7 @@ sndinitstat SNDDMA_InitDirect (void)
 		
 		if (hInstDS == NULL)
 		{
-			Con_SafePrintf ("Couldn't load dsound.dll\n");
+			Com_Printf ("Couldn't load dsound.dll\n");
 			return SIS_FAILURE;
 		}
 
@@ -223,7 +223,7 @@ sndinitstat SNDDMA_InitDirect (void)
 
 		if (!pDirectSoundCreate)
 		{
-			Con_SafePrintf ("Couldn't get DS proc addr\n");
+			Com_Printf ("Couldn't get DS proc addr\n");
 			return SIS_FAILURE;
 		}
 	}
@@ -232,11 +232,11 @@ sndinitstat SNDDMA_InitDirect (void)
 	{
 		if (hresult == DSERR_ALLOCATED)
 		{
-			Con_SafePrintf ("DirectSoundCreate failed, hardware already in use\n");
+			Com_Printf ("DirectSoundCreate failed, hardware already in use\n");
 			return SIS_NOTAVAIL;
 		}
 
-		Con_SafePrintf ("DirectSound create failed\n");
+		Com_Printf ("DirectSound create failed\n");
 		return SIS_FAILURE;
 	}
 
@@ -244,19 +244,19 @@ sndinitstat SNDDMA_InitDirect (void)
 
 	if (DS_OK != pDS->lpVtbl->GetCaps (pDS, &dscaps))
 	{
-		Con_SafePrintf ("Couldn't get DS caps\n");
+		Com_Printf ("Couldn't get DS caps\n");
 	}
 
 	if (dscaps.dwFlags & DSCAPS_EMULDRIVER)
 	{
-		Con_SafePrintf ("No DirectSound driver installed\n");
+		Com_Printf ("No DirectSound driver installed\n");
 		FreeSound ();
 		return SIS_FAILURE;
 	}
 
 	if (DS_OK != pDS->lpVtbl->SetCooperativeLevel (pDS, mainwindow, DSSCL_EXCLUSIVE))
 	{
-		Con_SafePrintf ("Set coop level failed\n");
+		Com_Printf ("Set coop level failed\n");
 		FreeSound ();
 		return SIS_FAILURE;
 	}
@@ -282,12 +282,12 @@ sndinitstat SNDDMA_InitDirect (void)
 			if (DS_OK != pDSPBuf->lpVtbl->SetFormat (pDSPBuf, &pformat))
 			{
 //				if (snd_firsttime)
-//					Con_SafePrintf ("Set primary sound buffer format: no\n");
+//					Com_Printf ("Set primary sound buffer format: no\n");
 			}
 			else
 //			{
 //				if (snd_firsttime)
-//					Con_SafePrintf ("Set primary sound buffer format: yes\n");
+//					Com_Printf ("Set primary sound buffer format: yes\n");
 
 				primary_format_set = true;
 //			}
@@ -308,7 +308,7 @@ sndinitstat SNDDMA_InitDirect (void)
 
 		if (DS_OK != pDS->lpVtbl->CreateSoundBuffer(pDS, &dsbuf, &pDSBuf, NULL))
 		{
-			Con_SafePrintf ("DS:CreateSoundBuffer Failed");
+			Com_Printf ("DS:CreateSoundBuffer Failed");
 			FreeSound ();
 			return SIS_FAILURE;
 		}
@@ -319,19 +319,19 @@ sndinitstat SNDDMA_InitDirect (void)
 
 		if (DS_OK != pDSBuf->lpVtbl->GetCaps (pDSBuf, &dsbcaps))
 		{
-			Con_SafePrintf ("DS:GetCaps failed\n");
+			Com_Printf ("DS:GetCaps failed\n");
 			FreeSound ();
 			return SIS_FAILURE;
 		}
 
 //		if (snd_firsttime)
-//			Con_SafePrintf ("Using secondary sound buffer\n");
+//			Com_Printf ("Using secondary sound buffer\n");
 	}
 	else
 	{
 		if (DS_OK != pDS->lpVtbl->SetCooperativeLevel (pDS, mainwindow, DSSCL_WRITEPRIMARY))
 		{
-			Con_SafePrintf ("Set coop level failed\n");
+			Com_Printf ("Set coop level failed\n");
 			FreeSound ();
 			return SIS_FAILURE;
 		}
@@ -343,14 +343,14 @@ sndinitstat SNDDMA_InitDirect (void)
 		}
 
 		pDSBuf = pDSPBuf;
-//		Con_SafePrintf ("Using primary sound buffer\n");
+//		Com_Printf ("Using primary sound buffer\n");
 	}
 
 	// Make sure mixer is active
 	pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
 
 /*	if (snd_firsttime)
-		Con_SafePrintf("   %d channel(s)\n"
+		Com_Printf ("   %d channel(s)\n"
 		               "   %d bits/sample\n"
 					   "   %d bytes/sec\n",
 					   shm->channels, shm->samplebits, shm->speed);*/
@@ -364,14 +364,14 @@ sndinitstat SNDDMA_InitDirect (void)
 	{
 		if (hresult != DSERR_BUFFERLOST)
 		{
-			Con_SafePrintf ("SNDDMA_InitDirect: DS::Lock Sound Buffer Failed\n");
+			Com_Printf ("SNDDMA_InitDirect: DS::Lock Sound Buffer Failed\n");
 			FreeSound ();
 			return SIS_FAILURE;
 		}
 
 		if (++reps > 10000)
 		{
-			Con_SafePrintf ("SNDDMA_InitDirect: DS: couldn't restore buffer\n");
+			Com_Printf ("SNDDMA_InitDirect: DS: couldn't restore buffer\n");
 			FreeSound ();
 			return SIS_FAILURE;
 		}
@@ -443,9 +443,9 @@ qboolean SNDDMA_InitWav (void)
 					0, 0L, CALLBACK_NULL)) != MMSYSERR_NOERROR)
 	{
 		if (hr == MMSYSERR_ALLOCATED)
-			Con_SafePrintf ("waveOutOpen failed, hardware already in use\n");
+			Com_Printf ("waveOutOpen failed, hardware already in use\n");
 		else
-			Con_SafePrintf ("waveOutOpen failed\n");
+			Com_Printf ("waveOutOpen failed\n");
 
 		return false;
 	} 
@@ -460,14 +460,14 @@ qboolean SNDDMA_InitWav (void)
 	hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, gSndBufSize); 
 	if (!hData) 
 	{ 
-		Con_SafePrintf ("Sound: Out of memory.\n");
+		Com_Printf ("Sound: Out of memory.\n");
 		FreeSound ();
 		return false; 
 	}
 	lpData = GlobalLock(hData);
 	if (!lpData)
 	{ 
-		Con_SafePrintf ("Sound: Failed to lock.\n");
+		Com_Printf ("Sound: Failed to lock.\n");
 		FreeSound ();
 		return false; 
 	} 
@@ -483,7 +483,7 @@ qboolean SNDDMA_InitWav (void)
 
 	if (hWaveHdr == NULL)
 	{ 
-		Con_SafePrintf ("Sound: Failed to Alloc header.\n");
+		Com_Printf ("Sound: Failed to Alloc header.\n");
 		FreeSound ();
 		return false; 
 	} 
@@ -492,7 +492,7 @@ qboolean SNDDMA_InitWav (void)
 
 	if (lpWaveHdr == NULL)
 	{ 
-		Con_SafePrintf ("Sound: Failed to lock header.\n");
+		Com_Printf ("Sound: Failed to lock header.\n");
 		FreeSound ();
 		return false; 
 	}
@@ -508,7 +508,7 @@ qboolean SNDDMA_InitWav (void)
 		if (waveOutPrepareHeader(hWaveOut, lpWaveHdr+i, sizeof(WAVEHDR)) !=
 				MMSYSERR_NOERROR)
 		{
-			Con_SafePrintf ("Sound: failed to prepare wave headers\n");
+			Com_Printf ("Sound: failed to prepare wave headers\n");
 			FreeSound ();
 			return false;
 		}
@@ -559,12 +559,12 @@ int SNDDMA_Init(void)
 				snd_isdirect = true;
 
 				if (snd_firsttime)
-					Con_SafePrintf ("DirectSound initialized\n");
+					Com_Printf ("DirectSound initialized\n");
 			}
 			else
 			{
 				snd_isdirect = false;
-				Con_SafePrintf ("DirectSound failed to init\n");
+				Com_Printf ("DirectSound failed to init\n");
 			}
 		}
 	}
@@ -580,11 +580,11 @@ int SNDDMA_Init(void)
 			if (snd_iswave)
 			{
 				if (snd_firsttime)
-					Con_SafePrintf ("Wave sound initialized\n");
+					Com_Printf ("Wave sound initialized\n");
 			}
 			else
 			{
-				Con_SafePrintf ("Wave sound failed to init\n");
+				Com_Printf ("Wave sound failed to init\n");
 			}
 		}
 	}
@@ -594,7 +594,7 @@ int SNDDMA_Init(void)
 	if (!dsound_init && !wav_init)
 	{
 		if (snd_firsttime)
-			Con_SafePrintf ("No sound device initialized\n");
+			Com_Printf ("No sound device initialized\n");
 
 		return 0;
 	}
@@ -687,7 +687,7 @@ void SNDDMA_Submit(void)
 
 		if (wResult != MMSYSERR_NOERROR)
 		{ 
-			Con_SafePrintf ("Failed to write block to device\n");
+			Com_Printf ("Failed to write block to device\n");
 			FreeSound ();
 			return; 
 		} 

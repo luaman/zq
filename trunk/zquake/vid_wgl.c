@@ -476,7 +476,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	ClearAllStates ();
 
 //	if (!msg_suppress_1)
-	Con_SafePrintf ("Video mode %s initialized.\n", VID_GetModeDescription (vid_modenum));
+	Com_Printf ("Video mode %s initialized.\n", VID_GetModeDescription (vid_modenum));
 
 //	VID_SetPalette (palette);
 
@@ -1487,7 +1487,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 	} while (!done);
 
 	if (nummodes == originalnummodes)
-		Con_SafePrintf ("No fullscreen DIB modes found\n");
+		Com_Printf ("No fullscreen DIB modes found\n");
 }
 
 qboolean VID_Is8bit() {
@@ -1544,7 +1544,7 @@ void VID_Init8bitPalette()
 		!COM_CheckParm("-use8bit"))
 		return;
 
-	Con_SafePrintf("8-bit GL extensions enabled.\n");
+	Com_Printf ("8-bit GL extensions enabled.\n");
     glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
 	oldPalette = (char *) d_8to24table;
 	newPalette = thePalette;
