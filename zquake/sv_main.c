@@ -1066,7 +1066,7 @@ void SV_ReadPackets (void)
 	int			i;
 	client_t	*cl;
 	int			qport;
-	packet_t	*pack, *next;
+	packet_t	*next;
 
 	// first deal with delayed packets from connected clients
 	for (i = 0, cl=svs.clients; i < MAX_CLIENTS; i++, cl++) {
@@ -1075,18 +1075,16 @@ void SV_ReadPackets (void)
 
 		net_from = cl->netchan.remote_address;
 
-		for (pack = cl->packets; pack; pack = next) {
-			if (svs.realtime < pack->time + cl->delay)
-				break;		// packets are queued up in order of increasing pack->time
-
+		while (cl->packets && svs.realtime - cl->packets->time >= cl->delay) {
 			SZ_Clear(&net_message);
-			SZ_Write(&net_message, pack->msg.data, pack->msg.cursize);
+			SZ_Write(&net_message, cl->packets->msg.data, cl->packets->msg.cursize);
+			SV_ExecuteClientMessage(cl);
 
-			SV_ExecuteClientMessage (cl);
-
-			cl->packets = next = pack->next;
-			pack->next = svs.free_packets;
-			svs.free_packets = pack;
+			// remove from queue
+			next = cl->packets->next;
+			cl->packets->next = svs.free_packets;
+			svs.free_packets = cl->packets;
+			cl->packets = next;
 		}		
 	}
 
@@ -1132,7 +1130,7 @@ void SV_ReadPackets (void)
 		}
 
 		if (i == MAX_CLIENTS)
-			break;
+			continue;
 
 		// ok, we know who sent this packet, but do we need to delay executing it?
 		if (cl->delay > 0) {
