@@ -184,11 +184,7 @@ void SV_RunBots (void)
 		// create a fake client move command for prediction's sake
 		cmd = nullcmd;
 		VectorCopy (ent->v.v_angle, cmd.angles);
-		// oldman: isn't this better? byte can't be > 255?
-		if (((svs.realtime - cl->cmdtime) * 1000) > 255)
-			cmd.msec = 255;
-		else
-			cmd.msec = (svs.realtime - cl->cmdtime) * 1000;
+		cmd.msec = min ((svs.realtime - cl->cmdtime) * 1000, 255);
 		cl->lastcmd = cmd;
 		cl->cmdtime = svs.realtime;
 
