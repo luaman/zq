@@ -903,6 +903,10 @@ void PlayQWZDemo (void)
 		else
 			Q_strncpyz (qwz_name, va("%s/%s", cls.gamedir, name), sizeof(qwz_name));
 
+	// Qizmo needs an absolute file name
+	_fullpath (qwz_name, qwz_name, sizeof(qwz_name)-1);
+	qwz_name[sizeof(qwz_name)-1] = 0;
+
 	// check if the file exists
 	cls.demofile = fopen (qwz_name, "rb");
 	if (!cls.demofile)
