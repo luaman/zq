@@ -155,6 +155,7 @@ extern vec_t sound_nominal_clip_dist;
 extern cvar_t	s_loadas8bit;
 extern cvar_t	s_khz;
 extern cvar_t	s_volume;
+extern cvar_t	s_swapstereo;
 extern cvar_t	bgmvolume;
 
 extern qboolean	snd_initialized;
