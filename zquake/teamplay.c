@@ -768,14 +768,20 @@ void CL_MsgTrigger_f (void)
 char *trigger_commands[] = {
 	"play",
 	"playvol",
+	"stopsound",
 	"set",
 	"echo",
 	"say",
 	"say_team",
 	"alias",
+	"unalias",
 	"msg_trigger",
 	"inc",
-	"bind"
+	"bind",
+	"unbind",
+	"record",
+	"easyrecord",
+	"stop"
 };
 
 #define NUM_TRIGGER_COMMANDS (sizeof(trigger_commands)/sizeof(trigger_commands[0]))
@@ -937,12 +943,7 @@ char *CL_EnemyName ()
 
 char *CL_MapName ()
 {
-	static char mapname[MAX_INFO_STRING];
-
-	// FIXME: take map name from modellist?
-	strcpy (mapname, Info_ValueForKey (cl.serverinfo, "map"));
-
-	return mapname;
+	return cl_mapname.string;
 }
 
 
