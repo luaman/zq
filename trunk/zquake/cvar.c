@@ -259,40 +259,53 @@ void Cvar_SetValue (cvar_t *var, float value)
 Cvar_Register
 
 Adds a freestanding variable to the variable list.
+
+If the variable already exists, the value will not be set
+The flags will be or'ed in if the variable exists.
 ============
 */
 void Cvar_Register (cvar_t *variable)
 {
-	char	value[512];
+	char	string[512];
 	int		key;
+	cvar_t	*old;
 
-// first check to see if it has already been defined
-	if (Cvar_FindVar (variable->name))
+	// first check to see if it has already been defined
+	old = Cvar_FindVar (variable->name);
+	if (old && !(old->flags & CVAR_USER_CREATED))
 	{
 		Com_Printf ("Can't register variable %s, already defined\n", variable->name);
 		return;
 	}
 	
-// check for overlap with a command
+	// check for overlap with a command
 	if (Cmd_Exists (variable->name))
 	{
 		Com_Printf ("Cvar_Register: %s is a command\n", variable->name);
 		return;
 	}
-		
-// link the variable in
+
+	// copy the value off, because future sets will Z_Free it
+	if (old)
+	{
+		Q_strncpyz (string, old->string, sizeof(string));
+		variable->flags |= old->flags & ~CVAR_USER_CREATED;
+		Cvar_Delete (old->name);
+	}
+	else
+		Q_strncpyz (string, variable->string, sizeof(string));
+
+	variable->string = Z_Malloc (1);
+	
+	// link the variable in
 	key = Key (variable->name);
 	variable->hash_next = cvar_hash[key];
 	cvar_hash[key] = variable;
 	variable->next = cvar_vars;
 	cvar_vars = variable;
 
-// copy the value off, because future sets will Z_Free it
-	strcpy (value, variable->string);
-	variable->string = Z_Malloc (1);	
-	
-// set it through the function to be consistent
-	Cvar_Set (variable, value);
+	// set it through the function to be consistent
+	Cvar_Set (variable, string);
 }
 
 
