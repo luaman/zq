@@ -47,7 +47,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 cvar_t	rcon_password = {"rcon_password", ""};
-
 cvar_t	rcon_address = {"rcon_address", ""};
 
 cvar_t	cl_timeout = {"cl_timeout", "60"};
@@ -185,7 +184,6 @@ CL_Quit_f
 */
 void CL_Quit_f (void)
 {
-//	if (strcmp(Cmd_Argv(1), "now"))	// Tonik - "quit now" quits immediately
 	if (1 /* key_dest != key_console */ /* && cls.state != ca_dedicated */)
 	{
 		M_Menu_Quit_f ();
@@ -193,18 +191,6 @@ void CL_Quit_f (void)
 	}
 	CL_Disconnect ();
 	Sys_Quit ();
-}
-
-/*
-=======================
-CL_Version_f
-======================
-*/
-void CL_Version_f (void)
-{
-	Con_Printf ("QW version %4.2f\n", VERSION);
-	Con_Printf ("ZQuake version %s (Build %04d)\n", Z_VERSION, build_number());
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 }
 
 
@@ -263,8 +249,6 @@ void CL_SendConnectPacket (void)
 	connect_time = realtime+t2-t1;	// for retransmit requests
 
 	cls.qport = Cvar_VariableValue("qport");
-
-//Tonik	Info_SetValueForStarKey (cls.userinfo, "*ip", NET_AdrToString(adr), MAX_INFO_STRING);
 
 //	Con_Printf ("Connecting to %s...\n", cls.servername);
 	sprintf (data, "%c%c%c%cconnect %i %i %i \"%s\"\n",
@@ -745,7 +729,6 @@ void CL_FullServerinfo_f (void)
 	if ((p = Info_ValueForKey(cl.serverinfo, "*z_version")) && *p) {
 		v = Q_atof(p);
 		if (v) {
-//			Con_Printf("ZQuake Version %1.2f Server\n", v);
 			Con_Printf("ZQuake Version %s Server\n", p);
 			server_version = 2.40;
 		}
@@ -1406,15 +1389,11 @@ void CL_Init (void)
 	Cmd_AddCommand ("windows", CL_Windows_f);
 #endif
 
-// Tonik -->
 	Server_List_Init();
-//	Con_Printf("CL_Init: Server list initialized.\n");
 	if ((serlist = fopen(va("%s/servers.txt", com_basedir),"r")) != NULL) {
-//		Con_Printf("CL_Init: Found servers.txt...\n");
 		Server_List_Load(serlist);
 		fclose(serlist);
 	}
-// <-- Tonik
 }
 
 
@@ -1533,7 +1512,7 @@ void Host_ForceReconnect()
 void Host_ConnectLocal()
 {
 	if (cls.state == ca_disconnected)
-	Cbuf_AddText ("connect local\n");
+		Cbuf_AddText ("connect local\n");
 }
 
 
@@ -1553,30 +1532,23 @@ void Host_Frame (double time)
 	static double		time3 = 0;
 	int			pass1, pass2, pass3;
 	float fps;
-// Tonik:
 	float scale;
 
 	if (setjmp (host_abort) )
 		return;			// something bad happened, or the server disconnected
 
 	// decide the simulation time
-//Tonik	realtime += time;
 
-// Tonik -->
 	if (!cls.demoplayback)
-		scale = 1;
+		realtime += time;
 	else
 	{
 		scale = cl_demotimescale.value;
-		if (scale <= 0)
-			scale = 1;
-		if (scale < 0.1)
-			scale = 0.1;
-		if (scale > 10)
-			scale = 1;
+		if (scale <= 0) scale = 1;
+		if (scale < 0.1) scale = 0.1;
+		if (scale > 10) scale = 1;
+		realtime += time*scale;
 	}
-	realtime += time*scale;
-// <-- Tonik
 
 	if (oldrealtime > realtime)
 		oldrealtime = 0;
@@ -1624,9 +1596,7 @@ void Host_Frame (double time)
 	} else
 		CL_SendCmd ();
 
-#ifdef QW_BOTH	// FIXME: remove?
 	if (cls.state >= ca_onserver)	// !!! Tonik
-#endif
 	{
 		// Set up prediction for other players
 		CL_SetUpPlayerPrediction(false);
