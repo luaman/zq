@@ -314,10 +314,13 @@ void CL_Disconnect (void)
 	
 	if (cls.demoplayback)
 		CL_StopPlayback ();
-	else if (cls.state != ca_disconnected)
+
+	if (cls.demorecording)
+		CL_Stop_f ();
+
+	if (cls.state != ca_disconnected)
 	{
-		if (cls.demorecording)
-			CL_Stop_f ();
+		cls.state = ca_disconnected;
 
 		final[0] = clc_stringcmd;
 		strcpy (final+1, "drop");
@@ -325,18 +328,12 @@ void CL_Disconnect (void)
 		Netchan_Transmit (&cls.netchan, 6, final);
 		Netchan_Transmit (&cls.netchan, 6, final);
 
-		cls.state = ca_disconnected;
-
 #ifdef QW_BOTH
 		// if running a local server, shut it down
 		if (sv.state != ss_dead)
 			SV_ShutdownServer();
 #endif
-
-		cls.demoplayback = cls.demorecording = cls.timedemo = false;
 	}
-	else
-		cl.intermission = 0;
 
 	Cam_Reset();
 
@@ -345,11 +342,12 @@ void CL_Disconnect (void)
 		cls.download = NULL;
 	}
 
-	CL_StopUpload();
+	CL_StopUpload ();
 }
 
 void CL_Disconnect_f (void)
 {
+	cl.intermission = 0;
 	CL_Disconnect ();
 }
 
