@@ -615,6 +615,17 @@ static void IN_MouseMove (usercmd_t *cmd)
 					my += od.dwData;
 					break;
 
+				case DIMOFS_Z:
+					// dunno if it's right to check this bit, but it seems to work
+					if (od.dwData & 0x80) {
+						Key_Event(K_MWHEELDOWN, true);
+						Key_Event(K_MWHEELDOWN, false);
+					} else {
+						Key_Event(K_MWHEELUP, true);
+						Key_Event(K_MWHEELUP, false);
+					}
+					break;
+
 				case DIMOFS_BUTTON0:
 					if (od.dwData & 0x80)
 						mstate_di |= 1;
@@ -628,7 +639,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 					else
 						mstate_di &= ~(1<<1);
 					break;
-					
+
 				case DIMOFS_BUTTON2:
 					if (od.dwData & 0x80)
 						mstate_di |= (1<<2);
