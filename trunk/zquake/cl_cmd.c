@@ -724,6 +724,17 @@ void CL_Fov_f (void)
 		Cvar_Set (&scr_fov, Cmd_Argv(1));
 }
 
+
+void CL_R_DrawViewModel_f (void)
+{
+	extern cvar_t cl_filterdrawviewmodel;
+
+	if (cl_filterdrawviewmodel.value)
+		return;
+	Cvar_Command ();
+}
+
+
 typedef struct {
 	char	*name;
 	void	(*func) (void);
@@ -736,6 +747,7 @@ svcmd_t svcmds[] =
 	{"nextul", CL_NextUpload},
 	{"stopul", CL_StopUpload},
 	{"fov", CL_Fov_f},
+	{"r_drawviewmodel", CL_R_DrawViewModel_f},
 	{NULL, NULL}
 };
 
