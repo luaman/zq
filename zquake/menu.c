@@ -1038,7 +1038,7 @@ void M_Fps_Key (int k)
 		// fast
 		case 13:
 			Cvar_SetValue (&cl_explosion, 3);
-			Cvar_SetValue (&cl_muzzleflash, 0);
+			Cvar_SetValue (&cl_muzzleflash, 2);
 			Cvar_SetValue (&cl_gibfilter, 1);
 			Cvar_SetValue (&cl_deadbodyfilter, 1);
 			Cvar_SetValue (&r_rocketlight, 0);
