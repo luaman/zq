@@ -403,13 +403,6 @@ const float ATTN_NORM		= 1;
 const float ATTN_IDLE		= 2;
 const float ATTN_STATIC		= 3;
 
-// update types
-// FIXME, unused -- remove?
-const float UPDATE_GENERAL	= 0;
-const float UPDATE_STATIC	= 1;
-const float UPDATE_BINARY	= 2;
-const float UPDATE_TEMP		= 3;
-
 // entity effects
 //const float EF_BRIGHTFIELD	= 1;
 //const float EF_MUZZLEFLASH	= 2;
