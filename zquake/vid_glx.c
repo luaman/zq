@@ -302,8 +302,7 @@ static void install_grabs(void)
 	XF86DGADirectVideo(dpy, DefaultScreen(dpy), XF86DGADirectMouse);
 	dgamouse = 1;
 	XWarpPointer(dpy, None, win, 0, 0, 0, 0, 0, 0); // oldman: this should be here really
-#endif
-#ifndef USE_DGA
+#else
 	XWarpPointer(dpy, None, win,
 				 0, 0, 0, 0,
 				 vid.width / 2, vid.height / 2);
