@@ -1785,7 +1785,7 @@ void SV_Init (quakeparms_t *parms)
 	Con_Printf ("\nServer Version %s (Build %04d)\n\n", Z_VERSION, build_number());
 #endif
 
-	Con_Printf ("For help on ZQuake, go to http://zquake.da.ru/\n\n");
+	Con_Printf ("For help on ZQuake, go to http://zquake.frag.ru/\n\n");
 
 	Con_Printf ("======== QuakeWorld Initialized ========\n");
 	
