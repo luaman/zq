@@ -115,7 +115,6 @@ cvar_t	r_fastsky = {"r_fastsky","0"};
 cvar_t	r_waterwarp = {"r_waterwarp","1"};
 cvar_t	r_fullbright = {"r_fullbright","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
-cvar_t	r_drawviewmodel = {"r_drawviewmodel","2"};
 cvar_t	r_drawflame = {"r_drawflame","1"};
 cvar_t	r_aliasstats = {"r_polymodelstats","0"};
 cvar_t	r_dspeeds = {"r_dspeeds","0"};
@@ -200,7 +199,6 @@ void R_Init (void)
 	Cvar_Register (&r_waterwarp);
 	Cvar_Register (&r_fullbright);
 	Cvar_Register (&r_drawentities);
-	Cvar_Register (&r_drawviewmodel);
 	Cvar_Register (&r_drawflame);
 	Cvar_Register (&r_aliasstats);
 	Cvar_Register (&r_dspeeds);
@@ -633,10 +631,6 @@ void R_DrawViewModel (void)
 	float		add;
 	dlight_t	*dl;
 	
-	if (!r_drawviewmodel.value ||
-		(r_fov_greater_than_90 && r_drawviewmodel.value == 2))
-		return;
-
 	if (!r_drawentities.value)
 		return;
 
