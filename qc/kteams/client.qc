@@ -1010,8 +1010,6 @@ void PlayerJump ()
 			if (self.velocity_z < 0)
 				self.velocity_z = 0;
 		}
-	} else self.velocity_z = -270;
-
 }
 
 
