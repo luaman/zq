@@ -185,6 +185,26 @@ float	turbsin[] =
 
 /*
 =============
+EmitFlatPoly
+=============
+*/
+void EmitFlatPoly (msurface_t *fa)
+{
+	glpoly_t	*p;
+	float		*v;
+	int			i;
+	
+	for (p=fa->polys ; p ; p=p->next)
+	{
+		glBegin (GL_POLYGON);
+		for (i=0,v=p->verts[0] ; i<p->numverts ; i++, v+=VERTEXSIZE)
+			glVertex3fv (v);
+		glEnd ();
+	}
+}
+
+/*
+=============
 EmitWaterPolys
 
 Does a water warp on the pre-fragmented glpoly_t chain
@@ -196,7 +216,16 @@ void EmitWaterPolys (msurface_t *fa)
 	float		*v;
 	int			i;
 	float		s, t, os, ot;
+	extern cvar_t	r_fastturb;
 
+	if (r_fastturb.value) {
+		glDisable (GL_TEXTURE_2D);
+		glColor3ubv ((byte *) &fa->texinfo->texture->flatcolor3ub);
+		EmitFlatPoly (fa);
+		glColor3f (1, 1, 1);
+		glEnable (GL_TEXTURE_2D);
+		return;
+	}
 
 	for (p=fa->polys ; p ; p=p->next)
 	{
@@ -260,26 +289,6 @@ void EmitSkyPolys (msurface_t *fa)
 }
 
 /*
-=============
-EmitFlatSkyPoly
-=============
-*/
-void EmitFlatSkyPoly (msurface_t *fa)
-{
-	glpoly_t	*p;
-	float		*v;
-	int			i;
-	
-	for (p=fa->polys ; p ; p=p->next)
-	{
-		glBegin (GL_POLYGON);
-		for (i=0,v=p->verts[0] ; i<p->numverts ; i++, v+=VERTEXSIZE)
-			glVertex3fv (v);
-		glEnd ();
-	}
-}
-
-/*
 ===============
 EmitBothSkyLayers
 
@@ -296,7 +305,7 @@ void EmitBothSkyLayers (msurface_t *fa)
 		glDisable (GL_TEXTURE_2D);
 		glColor3ubv ((byte *)&d_8to24table[(byte)r_skycolor.value]);
 
-		EmitFlatSkyPoly (fa);
+		EmitFlatPoly (fa);
 
 		glEnable (GL_TEXTURE_2D);
 		glColor3f (1, 1, 1);
@@ -335,7 +344,7 @@ void R_DrawSkyChain (msurface_t *s)
 		glColor3ubv ((byte *)&d_8to24table[(byte)r_skycolor.value]);
 		
 		for (fa=s ; fa ; fa=fa->texturechain)
-			EmitFlatSkyPoly (fa);
+			EmitFlatPoly (fa);
 
 		glEnable (GL_TEXTURE_2D);
 		glColor3f (1, 1, 1);

@@ -111,6 +111,7 @@ cvar_t	r_graphheight = {"r_graphheight","15"};
 cvar_t	r_clearcolor = {"r_clearcolor","2"};
 cvar_t	r_skycolor = {"r_skycolor","4"};
 cvar_t	r_fastsky = {"r_fastsky","0"};
+cvar_t	r_fastturb = {"r_fastturb","0"};
 cvar_t	r_waterwarp = {"r_waterwarp","1"};
 cvar_t	r_fullbright = {"r_fullbright","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
@@ -193,6 +194,7 @@ void R_Init (void)
 	Cvar_Register (&r_clearcolor);
 	Cvar_Register (&r_skycolor);
 	Cvar_Register (&r_fastsky);
+	Cvar_Register (&r_fastturb);
 	Cvar_Register (&r_waterwarp);
 	Cvar_Register (&r_fullbright);
 	Cvar_Register (&r_drawentities);

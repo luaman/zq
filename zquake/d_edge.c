@@ -208,6 +208,16 @@ void D_DrawSurfaces (void)
 		}
 		else if (s->flags & SURF_DRAWTURB)
 		{
+			extern cvar_t r_fastturb;
+			if (r_fastturb.value) {
+				texture_t *tx;
+				pface = s->data;
+				tx = pface->texinfo->texture;
+				D_DrawSolidSurface (s, *((byte*) tx + tx->offsets[0] + ((tx->width * tx->height) >> 1)));
+				D_DrawZSpans(s->spans);
+				continue;
+			}
+
 			pface = s->data;
 			miplevel = 0;
 			cacheblock = (pixel_t *)
