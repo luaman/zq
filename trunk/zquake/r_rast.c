@@ -76,7 +76,7 @@ int box_surfedges[24] = { 1,2,3,4,  -1,5,6,7,  8,9,-6,10,  -2,-7,-9,11,
   12,-3,-11,-8,  -12,-10,-5,-4};
 int box_edges[24] = { 1,2, 2,3, 3,4, 4,1, 1,5, 5,6, 6,2, 7,8, 8,6, 5,7, 8,3, 7,4};
 
-int	box_faces[6] = {0,0,2,2,2,0};
+int	box_faces[6] = {0,0,SURF_PLANEBACK,SURF_PLANEBACK,SURF_PLANEBACK,0};
 
 vec3_t	box_vecs[6][2] = {
 	{	{0,-1,0}, {-1,0,0} },
