@@ -298,10 +298,9 @@ char *Sys_ConsoleInput (void)
 						break;
 
 					default:
-						if (((ch=='V' || ch=='v') && (rec.Event.KeyEvent.dwControlKeyState & 
-							(LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))) || ((rec.Event.KeyEvent.dwControlKeyState 
-							& SHIFT_PRESSED) && (rec.Event.KeyEvent.wVirtualKeyCode
-							==VK_INSERT))) {
+						if ((ch == ('V'&31) /* Ctrl-V */) ||
+							((rec.Event.KeyEvent.dwControlKeyState & SHIFT_PRESSED)
+							&& (rec.Event.KeyEvent.wVirtualKeyCode == VK_INSERT))) {
 							if (OpenClipboard(NULL)) {
 								hclipdata = GetClipboardData(CF_TEXT);
 								if (hclipdata) {
