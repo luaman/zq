@@ -733,6 +733,10 @@ SOURCE=.\pr_exec.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\q_shared.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\r_aclip.c
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
@@ -1352,6 +1356,10 @@ SOURCE=.\pmove.h
 # Begin Source File
 
 SOURCE=.\protocol.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\q_shared.h
 # End Source File
 # Begin Source File
 

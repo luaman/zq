@@ -118,12 +118,6 @@ extern refdef2_t	r_refdef2;
 // FIXME, only used by sound code in client -- make private to refresh?
 extern vec3_t		r_origin, vpn, vright, vup;
 
-// FIXME, move these to *_local.h
-extern struct texture_s	*r_notexture_mip;
-extern entity_t		r_worldentity;
-void R_InitSky (struct texture_s *mt);	// classic Quake sky
-
-
 void R_Init (void);
 void R_InitTextures (void);
 void R_InitEfrags (void);
@@ -135,7 +129,7 @@ void R_SetSky (char *name);				// Quake2 skybox
 void R_AddEfrags (entity_t *ent);
 void R_RemoveEfrags (entity_t *ent);
 
-void R_NewMap (void);
+void R_NewMap (struct model_s *worldmodel);
 
 void R_PushDlights (void);
 

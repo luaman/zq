@@ -19,80 +19,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // common.h  -- general definitions
 
-#include <math.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <assert.h>
+#include "q_shared.h"
+#include "zone.h"
+#include "cvar.h"
+#include "cmd.h"
+#include "net.h"
+#include "protocol.h"
+#include "cmodel.h"
 
-#ifdef _MSC_VER
-#pragma warning( disable : 4244 4127 4201 4214 4514 4305 4115 4018)
-#endif
-
-#ifdef _MSC_VER
-#define inline __inline
-#define HAVE_INLINE
-#endif
-
-#undef gamma	// math.h defines this
-
-#define	QUAKE_GAME			// as opposed to utilities
-
-#define PROGRAM "ZQuake"
-
-typedef unsigned char 		byte;
-#define _DEF_BYTE_
-
-typedef enum {false, true} qbool;
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
-
-
-#ifdef _WIN32
-#define IS_SLASH(c) ((c) == '/' || (c) == '\\')
-#else
-#define IS_SLASH(c) ((c) == '/')
-#endif
-
-
-#ifndef min
-#define min(a,b) ((a) < (b) ? (a) : (b))
-#endif
-#ifndef max
-#define max(a,b) ((a) > (b) ? (a) : (b))
-#endif
-
-//#define bound(a,b,c) (max((a), min((b), (c))))
-#define bound(a,b,c) ((a) >= (c) ? (a) : \
-					(b) < (a) ? (a) : (b) > (c) ? (c) : (b))
-
-
-//============================================================================
-
-#if id386
-#define UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
-#else
-#define UNALIGNED_OK	0
-#endif
-
-#define UNUSED(x)	(x = x)	// for pesky compiler / lint warnings
-
-//============================================================================
-
-#define	MINIMUM_MEMORY	0x550000
-
-#define	MAX_QPATH		64			// max length of a quake game pathname
-#define	MAX_OSPATH		128			// max length of a filesystem pathname
-
-#define	ON_EPSILON		0.1			// point on plane side epsilon
-
-#define	MAX_MSGLEN		1450		// max length of a reliable message
-#define	MAX_DATAGRAM	1450		// max length of unreliable message
-#define	MAX_BIG_MSGLEN	8000		// max length of a demo or loop message, >= MAX_MSGLEN + header
 
 //
 // per-level limits
@@ -107,6 +41,10 @@ typedef enum {false, true} qbool;
 #define	SAVEGAME_COMMENT_LENGTH	39
 
 #define	MAX_STYLESTRING	64
+
+//============================================================================
+
+// move these to gamedefs.h?
 
 //
 // stats are integers communicated to the client by the server
@@ -191,68 +129,6 @@ typedef enum {false, true} qbool;
 #define	GAME_DEATHMATCH		1
 
 
-#define MAX_INFO_KEY			64
-#define	MAX_INFO_STRING			196
-#define	MAX_SERVERINFO_STRING	512
-#define	MAX_LOCALINFO_STRING	32768
-
-//============================================================================
-
-typedef struct sizebuf_s
-{
-	qbool	allowoverflow;	// if false, do a Sys_Error
-	qbool	overflowed;		// set to true if the buffer size failed
-	byte	*data;
-	int		maxsize;
-	int		cursize;
-} sizebuf_t;
-
-void SZ_Init (sizebuf_t *buf, byte *data, int length);
-void SZ_Clear (sizebuf_t *buf);
-void *SZ_GetSpace (sizebuf_t *buf, int length);
-void SZ_Write (sizebuf_t *buf, void *data, int length);
-void SZ_Print (sizebuf_t *buf, char *data);	// strcats onto the sizebuf
-
-//============================================================================
-
-typedef struct link_s
-{
-	struct link_s	*prev, *next;
-} link_t;
-
-
-void ClearLink (link_t *l);
-void RemoveLink (link_t *l);
-void InsertLinkBefore (link_t *l, link_t *before);
-void InsertLinkAfter (link_t *l, link_t *after);
-
-// (type *)STRUCT_FROM_LINK(link_t *link, type, member)
-// ent = STRUCT_FROM_LINK(link,entity_t,order)
-// FIXME: remove this mess!
-#define	STRUCT_FROM_LINK(l,t,m) ((t *)((byte *)l - (int)&(((t *)0)->m)))
-
-//============================================================================
-
-short	ShortSwap (short l);
-int		LongSwap (int l);
-float	FloatSwap (float f);
-
-#ifdef BIGENDIAN
-#define BigShort(x) (x)
-#define BigLong(x) (x)
-#define BigFloat(x) (x)
-#define LittleShort(x) ShortSwap (x)
-#define LittleLong(x) LongSwap(x)
-#define LittleFloat(x) FloatSwap(x)
-#else
-#define BigShort(x) ShortSwap (x)
-#define BigLong(x) LongSwap(x)
-#define BigFloat(x) FloatSwap(x)
-#define LittleShort(x) (x)
-#define LittleLong(x) (x)
-#define LittleFloat(x) (x)
-#endif
-
 //============================================================================
 
 struct usercmd_s;
@@ -292,30 +168,6 @@ float MSG_ReadCoord (void);
 float MSG_ReadAngle (void);
 float MSG_ReadAngle16 (void);
 void MSG_ReadDeltaUsercmd (struct usercmd_s *from, struct usercmd_s *cmd, qbool protocol_26);
-
-//============================================================================
-
-#ifdef _WIN32
-
-#define Q_stricmp(s1, s2) _stricmp((s1), (s2))
-#define Q_strnicmp(s1, s2, n) _strnicmp((s1), (s2), (n))
-
-#else
-
-#define Q_stricmp(s1, s2) strcasecmp((s1), (s2))
-#define Q_strnicmp(s1, s2, n) strncasecmp((s1), (s2), (n))
-
-#endif
-
-int	Q_atoi (char *str);
-float Q_atof (char *str);
-char *Q_ftos (float value);		// removes trailing zero chars
-
-size_t strlcpy (char *dst, const char *src, size_t size);
-size_t strlcat (char *dst, const char *src, size_t size);
-void Q_snprintfz (char *dest, size_t size, char *fmt, ...);
-
-int Com_HashKey (char *name);
 
 //============================================================================
 
@@ -375,6 +227,12 @@ void COM_CreatePath (char *path);
 
 void COM_CheckRegistered (void);
 
+//============================================================================
+
+#define MAX_INFO_KEY			64
+#define	MAX_INFO_STRING			196
+#define	MAX_SERVERINFO_STRING	512
+#define	MAX_LOCALINFO_STRING	32768
 
 char *Info_ValueForKey (char *s, char *key);
 void Info_RemoveKey (char *s, char *key);
@@ -382,6 +240,8 @@ void Info_RemovePrefixedKeys (char *start, char prefix);
 void Info_SetValueForKey (char *s, char *key, char *value, int maxsize);
 void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize);
 void Info_Print (char *s);
+
+//============================================================================
 
 unsigned Com_BlockChecksum (void *buffer, int length);
 void Com_BlockFullChecksum (void *buffer, int len, unsigned char *outbuf);
@@ -393,20 +253,6 @@ void Com_BeginRedirect (void (*RedirectedPrint) (char *));
 void Com_EndRedirect (void);
 void Com_Printf (char *fmt, ...);
 void Com_DPrintf (char *fmt, ...);
-
-//============================================================================
-
-//
-// include frequently used headers
-//
-#include "mathlib.h"
-#include "zone.h"
-#include "cvar.h"
-#include "cmd.h"
-#include "sys.h"
-#include "net.h"
-#include "protocol.h"
-#include "cmodel.h"
 
 //============================================================================
 

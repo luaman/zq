@@ -278,6 +278,7 @@ void R_SetupFrame (void);
 void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1);
 void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
+void R_InitSky (texture_t *mt);	// classic Quake sky
 void R_InitSkyBox (model_t *loadmodel);
 void R_32To8bit (unsigned int *in, int inwidth, int inheight, byte *out, int outwidth, int outheight);
 
@@ -297,3 +298,6 @@ typedef struct mpic_s
 
 //=========================================================
 
+extern texture_t	*r_notexture_mip;
+extern model_t		*r_worldmodel;
+extern entity_t		r_worldentity;

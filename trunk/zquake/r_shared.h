@@ -150,4 +150,6 @@ typedef struct edge_s
 	medge_t			*owner;
 } edge_t;
 
+extern entity_t		r_worldentity;		// FIXME, also in r_local.h
+
 #endif	// _R_SHARED_H_

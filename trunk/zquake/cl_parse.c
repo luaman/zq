@@ -301,10 +301,11 @@ void Model_NextDownload (void)
 
 	CL_ClearParticles ();
 	CL_FindModelNumbers ();
-	R_NewMap ();
+	R_NewMap (cl.worldmodel);
 	R_SetSky (cl.sky);
 
 	TP_NewMap ();
+
 	Hunk_Check ();		// make sure nothing is hurt
 
 	// done with modellist, request first of static signon messages

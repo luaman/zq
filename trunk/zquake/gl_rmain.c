@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gl_local.h"
 #include "sound.h"
 
+model_t		*r_worldmodel;
 entity_t	r_worldentity;
 
 qbool		r_cache_thrash;		// compatability
@@ -1003,7 +1004,7 @@ void R_SetupFrame (void)
 	r_oldviewleaf = r_viewleaf;
 	r_oldviewleaf2 = r_viewleaf2;
 
-	r_viewleaf = Mod_PointInLeaf (r_origin, cl.worldmodel);
+	r_viewleaf = Mod_PointInLeaf (r_origin, r_worldmodel);
 	r_viewleaf2 = NULL;
 
 	// check above and below so crossing solid water doesn't draw wrong
@@ -1012,7 +1013,7 @@ void R_SetupFrame (void)
 		// look up a bit
 		VectorCopy (r_origin, testorigin);
 		testorigin[2] += 10;
-		leaf = Mod_PointInLeaf (testorigin, cl.worldmodel);
+		leaf = Mod_PointInLeaf (testorigin, r_worldmodel);
 		if (leaf->contents == CONTENTS_EMPTY)
 			r_viewleaf2 = leaf;
 	}
@@ -1021,7 +1022,7 @@ void R_SetupFrame (void)
 		// look down a bit
 		VectorCopy (r_origin, testorigin);
 		testorigin[2] -= 10;
-		leaf = Mod_PointInLeaf (testorigin, cl.worldmodel);
+		leaf = Mod_PointInLeaf (testorigin, r_worldmodel);
 		if (leaf->contents <= CONTENTS_WATER &&	leaf->contents >= CONTENTS_LAVA)
 			r_viewleaf2 = leaf;
 	}
@@ -1369,10 +1370,10 @@ void R_Mirror (void)
 	glLoadMatrixf (r_base_world_matrix);
 
 	glColor4f (1, 1, 1, r_mirroralpha.value);
-	s = cl.worldmodel->textures[mirrortexturenum]->texturechain;
+	s = r_worldmodel->textures[mirrortexturenum]->texturechain;
 	for ( ; s ; s=s->texturechain)
 		R_RenderBrushPoly (s);
-	cl.worldmodel->textures[mirrortexturenum]->texturechain = NULL;
+	r_worldmodel->textures[mirrortexturenum]->texturechain = NULL;
 	glDisable (GL_BLEND);
 	glColor3f (1, 1, 1);
 }
@@ -1392,7 +1393,7 @@ void R_RenderView (void)
 	if (r_norefresh.value)
 		return;
 
-	if (!r_worldentity.model || !cl.worldmodel)
+	if (!r_worldentity.model || !r_worldmodel)
 		Sys_Error ("R_RenderView: NULL worldmodel");
 
 	if (r_speeds.value)

@@ -158,6 +158,10 @@ SOURCE=.\pr_exec.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\q_shared.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\sv_bot.c
 # End Source File
 # Begin Source File
@@ -271,6 +275,10 @@ SOURCE=.\progs.h
 # Begin Source File
 
 SOURCE=.\protocol.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\q_shared.h
 # End Source File
 # Begin Source File
 

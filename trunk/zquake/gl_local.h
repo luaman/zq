@@ -110,14 +110,15 @@ typedef struct mpic_s
 //====================================================
 
 
-extern	entity_t	r_worldentity;
-extern	qbool		r_cache_thrash;		// compatability
-extern	vec3_t		modelorg, r_entorigin;
-extern	entity_t	*currententity;
-extern	int			r_visframecount;
-extern	int			r_framecount;
-extern	mplane_t	frustum[4];
-extern	int		c_brush_polys, c_alias_polys;
+extern model_t		*r_worldmodel;
+extern entity_t		r_worldentity;
+extern qbool		r_cache_thrash;		// compatability
+extern vec3_t		modelorg, r_entorigin;
+extern entity_t		*currententity;
+extern int			r_visframecount;
+extern int			r_framecount;
+extern mplane_t		frustum[4];
+extern int			c_brush_polys, c_alias_polys;
 
 
 //
@@ -238,6 +239,7 @@ void R_DrawSkyChain (msurface_t *s);
 void R_AddSkyBoxSurface (msurface_t *fa);
 void R_ClearSkyBox (void);
 void R_DrawSkyBox (void);
+void R_InitSky (texture_t *mt);	// classic Quake sky
 extern qbool	r_skyboxloaded;
 
 //
