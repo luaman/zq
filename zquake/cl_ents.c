@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include "pmove.h"
+#include "teamplay.h"
 
 extern	cvar_t	cl_predict_players;
 extern	cvar_t	cl_predict_players2;
@@ -402,8 +403,9 @@ void CL_ParsePacketEntities (qboolean delta)
 }
 
 
-extern	int		cl_playerindex; // Tonik
-extern	int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index; // Tonik
+extern	int		cl_playerindex; 
+extern	int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
+extern	int		cl_rocketindex, cl_grenadeindex;
 
 /*
 ===============
@@ -447,23 +449,18 @@ void CL_LinkPacketEntities (void)
 		else if (s1->effects & EF_DIMLIGHT)
 			CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand()&31), 0.1, 0);
 
-// Tonik -->	
-#if 0
-		// This can be considered cheating in TF (makes spies lying on the ground visible)
-		if (cl_deadbodyfilter.value && s1->modelindex == cl_playerindex
-			&& s1->number > 32)
-			continue;
-#else
 		if (cl_deadbodyfilter.value && s1->modelindex == cl_playerindex
 			&& ( (i=s1->frame)==49 || i==60 || i==69 || i==84 || i==93 || i==102) )
 			continue;
-#endif
 
 		if (cl_gibfilter.value)
 		if (s1->modelindex == cl_h_playerindex || s1->modelindex == cl_gib1index
 			|| s1->modelindex == cl_gib2index || s1->modelindex == cl_gib3index)
 			continue;
-// <-- Tonik
+
+		if (cl_rocket2grenade.value && cl_grenadeindex != -1)
+			if (s1->modelindex == cl_rocketindex)
+				s1->modelindex = cl_grenadeindex;
 
 		// if set to invisible, skip
 		if (!s1->modelindex)

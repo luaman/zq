@@ -115,6 +115,7 @@ double	parsecounttime;
 int		cl_spikeindex, cl_playerindex, cl_flagindex;
 
 int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index; // Tonik
+int		cl_rocketindex, cl_grenadeindex; // Tonik
 
 //=============================================================================
 
@@ -304,6 +305,7 @@ void Sound_NextDownload (void)
 // Tonik -->
 	cl_h_playerindex = -1;
 	cl_gib1index = cl_gib2index = cl_gib3index = -1;
+	cl_rocketindex = cl_grenadeindex = -1;
 // <-- Tonik
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 //	MSG_WriteString (&cls.netchan.message, va("modellist %i 0", cl.servercount));
@@ -723,6 +725,10 @@ void CL_ParseModellist (void)
 			cl_gib2index = nummodels;
 		else if (!strcmp(cl.model_name[nummodels],"progs/gib3.mdl"))
 			cl_gib3index = nummodels;
+		else if (!strcmp(cl.model_name[nummodels],"progs/missile.mdl"))
+			cl_rocketindex = nummodels;
+		else if (!strcmp(cl.model_name[nummodels],"progs/grenade.mdl"))
+			cl_grenadeindex = nummodels;
 // <-- Tonik
 	}
 
