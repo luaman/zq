@@ -417,14 +417,20 @@ char *Macro_PointLocation_f (void)
 {
 	if (host_framecount != vars.pointframe)
 		TP_FindPoint ();
-	return vars.pointloc;
+	if (vars.pointloc[0])
+		return vars.pointloc;
+	else
+		return tp_name_someplace.string;
 }
 
 char *Macro_PointNameAtLocation_f (void)
 {
 	if (host_framecount != vars.pointframe)
 		TP_FindPoint ();
-	return va ("%s %s %s", vars.pointname, tp_name_at.string, vars.pointloc);
+	if (vars.pointloc[0])
+		return va ("%s %s %s", vars.pointname, tp_name_at.string, vars.pointloc);
+	else
+		return vars.pointname;
 }
 
 
@@ -758,8 +764,6 @@ void TP_LoadLocFile (char *path, qboolean quiet)
 
 	while (1)
 	{
-//		while (*buf == ' ' || *buf == 9)
-//			buf++;
 		SKIPBLANKS(p);
 
 		if (*p == 0)
@@ -771,6 +775,7 @@ void TP_LoadLocFile (char *path, qboolean quiet)
 			goto _endofline;
 		}
 
+		// parse three ints
 		for (i = 0; i < 3; i++)
 		{
 			n = 0;
@@ -805,16 +810,15 @@ void TP_LoadLocFile (char *path, qboolean quiet)
 			}
 _next:
 			n *= sign;
-			locdata[loc_numentries].coord[i] = n;
+			locdata[loc_numentries].coord[i] = n / 8.0;
 
 			SKIPBLANKS(p);
 		}
 
 
-// Save the location's name
-//
-		nameindex = 0;
+		// parse location name
 
+		nameindex = 0;
 		while (1)
 		{
 			switch (*p)
@@ -867,20 +871,16 @@ char *TP_LocationName (vec3_t location)
 {
 	int		i, minnum;
 	float	dist, mindist;
-	vec3_t	vec, org;
+	vec3_t	vec;
 	
 	if (!loc_numentries || (cls.state != ca_active))
 		return tp_name_someplace.string;
-
-	VectorCopy (location, org);
-	for (i = 0; i < 3; i++)
-		org[i] *= 8;
 
 	minnum = 0;
 	mindist = 9999999;
 
 	for (i = 0; i < loc_numentries; i++) {
-		VectorSubtract (org, locdata[i].coord, vec);
+		VectorSubtract (location, locdata[i].coord, vec);
 		dist = Length (vec);
 		if (dist < mindist) {
 			minnum = i;
@@ -1364,7 +1364,7 @@ in the enemy team. The result will be 3 (1+2)
 Never returns 2 if we are a spectator.
 ======================
 */
-int TP_CategorizeMessage (char *s)
+int TP_CategorizeMessage (char *s, int *offset)
 {
 	int		i, msglen, len;
 	int		flags;
@@ -1374,6 +1374,8 @@ int TP_CategorizeMessage (char *s)
 	msglen = strlen(s);
 	if (!msglen)
 		return 0;
+
+	*offset = 0;
 
 	for (i=0, player=cl.players ; i < MAX_CLIENTS ; i++, player++)
 	{
@@ -1388,6 +1390,7 @@ int TP_CategorizeMessage (char *s)
 				flags |= 4;
 			else
 				flags |= 1;
+			*offset = len + 2;
 		}
 		// check messagemode2
 		else if (s[0] == '(' && !cl.spectator && len+4 <= msglen &&
@@ -1398,6 +1401,7 @@ int TP_CategorizeMessage (char *s)
 			if (i == cl.playernum || ( atoi(Info_ValueForKey(cl.serverinfo, "teamplay"))
 				&& !strcmp(cl.players[cl.playernum].team, player->team)) )
 				flags |= 2;
+			*offset = len + 4;
 		}
 	}
 
@@ -1751,6 +1755,9 @@ static int CountTeammates ()
 	if (tp_forceTriggers.value)
 		return 1;
 
+	if (!atoi(Info_ValueForKey(cl.serverinfo, "teamplay")))
+		return 0;
+
 	count = 0;
 	myteam = cl.players[cl.playernum].team;
 	for (i=0, player=cl.players; i < MAX_CLIENTS ; i++, player++) {
@@ -1781,7 +1788,7 @@ static void ExecTookTrigger (char *s, int flag)
 
 void TP_CheckPickupSound (char *s)
 {
-	if (cl.spectator || !atoi(Info_ValueForKey(cl.serverinfo, "teamplay")))
+	if (cl.spectator)
 		return;
 
 	if (!strcmp(s, "items/damage.wav"))
