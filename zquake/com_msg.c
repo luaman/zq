@@ -183,7 +183,6 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 {
 	int		bits;
 	int		i;
-	float	miss;
 
 	assert (to->number > 0);
 	assert (to->number < 512);
@@ -191,12 +190,9 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 // send an update
 	bits = 0;
 	
-	for (i=0 ; i<3 ; i++)
-	{
-		miss = to->origin[i] - from->origin[i];
-		if ( miss < -0.1 || miss > 0.1 )
+	for (i = 0; i < 3; i++)
+		if (to->origin[i] != from->origin[i])
 			bits |= U_ORIGIN1<<i;
-	}
 
 	if ( to->angles[0] != from->angles[0] )
 		bits |= U_ANGLE1;
