@@ -582,7 +582,7 @@ void Mod_LoadVertexes (lump_t *l)
 	mvertex_t	*out;
 	int			i, count;
 
-	in = (void *)(mod_base + l->fileofs);
+	in = (dvertex_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -610,7 +610,7 @@ void Mod_LoadSubmodels (lump_t *l)
 	dmodel_t	*out;
 	int			i, j, count;
 
-	in = (void *)(mod_base + l->fileofs);
+	in = (dmodel_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -646,7 +646,7 @@ void Mod_LoadEdges (lump_t *l)
 	medge_t *out;
 	int 	i, count;
 
-	in = (void *)(mod_base + l->fileofs);
+	in = (dedge_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -674,7 +674,7 @@ void Mod_LoadTexinfo (lump_t *l)
 	int 	i, j, count;
 	int		miptex;
 
-	in = (void *)(mod_base + l->fileofs);
+	in = (texinfo_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -776,7 +776,7 @@ void Mod_LoadFaces (lump_t *l)
 	int			i, count, surfnum;
 	int			planenum, side;
 
-	in = (void *)(mod_base + l->fileofs);
+	in = (dface_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -862,7 +862,7 @@ void Mod_LoadNodes (lump_t *l)
 	dnode_t		*in;
 	mnode_t 	*out;
 
-	in = (void *)(mod_base + l->fileofs);
+	in = (dnode_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -909,7 +909,7 @@ void Mod_LoadLeafs (lump_t *l)
 	mleaf_t 	*out;
 	int			i, j, count, p;
 
-	in = (void *)(mod_base + l->fileofs);
+	in = (dleaf_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -955,7 +955,7 @@ void Mod_LoadClipnodes (lump_t *l)
 	int			i, count;
 	hull_t		*hull;
 
-	in = (void *)(mod_base + l->fileofs);
+	in = (dclipnode_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -1046,7 +1046,7 @@ void Mod_LoadMarksurfaces (lump_t *l)
 	short		*in;
 	msurface_t **out;
 	
-	in = (void *)(mod_base + l->fileofs);
+	in = (short *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -1074,7 +1074,7 @@ void Mod_LoadSurfedges (lump_t *l)
 	int		i, count;
 	int		*in, *out;
 	
-	in = (void *)(mod_base + l->fileofs);
+	in = (int *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -1101,7 +1101,7 @@ void Mod_LoadPlanes (lump_t *l)
 	int			count;
 	int			bits;
 	
-	in = (void *)(mod_base + l->fileofs);
+	in = (dplane_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
@@ -1352,7 +1352,7 @@ void *Mod_LoadAliasGroup (void * pin,  maliasframedesc_t *frame)
 
 	pin_intervals += numframes;
 
-	ptemp = (void *)pin_intervals;
+	ptemp = (daliasinterval_t *)pin_intervals;
 
 	for (i=0 ; i<numframes ; i++)
 	{
@@ -1502,7 +1502,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 			groupskins = LittleLong (pinskingroup->numskins);
 			pinskinintervals = (daliasskininterval_t *)(pinskingroup + 1);
 
-			pskintype = (void *)(pinskinintervals + groupskins);
+			pskintype = (daliasskintype_t *)(pinskinintervals + groupskins);
 
 			for (j=0 ; j<groupskins ; j++)
 			{
@@ -1830,7 +1830,7 @@ void *Mod_LoadSpriteGroup (void * pin, mspriteframe_t **ppframe, int framenum)
 		pin_intervals++;
 	}
 
-	ptemp = (void *)pin_intervals;
+	ptemp = (dspriteinterval_t *)pin_intervals;
 
 	for (i=0 ; i<numframes ; i++)
 	{
