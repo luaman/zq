@@ -790,6 +790,9 @@ void NQD_LinkEntities (void)
 		if (cent->lastframe != cl_entframecount)
 			continue;		// not present in this frame
 
+		if (state->effects & EF_BRIGHTFIELD)
+			CL_EntityParticles (state->origin);
+
 		// spawn light flashes, even ones coming from invisible objects
 		if (state->effects & EF_MUZZLEFLASH) {
 			vec3_t		forward;
