@@ -234,6 +234,9 @@ qboolean VID_SetWindowedMode (int modenum)
 	DIBWidth = modelist[modenum].width;
 	DIBHeight = modelist[modenum].height;
 
+	vid.realwidth = modelist[modenum].width;
+	vid.realheight = modelist[modenum].height;
+
 	WindowStyle = WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU |
 				  WS_MINIMIZEBOX;
 	ExWindowStyle = 0;
@@ -332,6 +335,9 @@ qboolean VID_SetFullDIBMode (int modenum)
 
 	DIBWidth = modelist[modenum].width;
 	DIBHeight = modelist[modenum].height;
+
+	vid.realwidth = modelist[modenum].width;
+	vid.realheight = modelist[modenum].height;
 
 	WindowStyle = WS_POPUP;
 	ExWindowStyle = 0;

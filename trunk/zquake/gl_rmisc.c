@@ -462,26 +462,26 @@ void R_ScreenShot_f (void)
 		}
 	}		
 
-	buffer = Q_Malloc (vid.width * vid.height * 3 + 18);
+	buffer = Q_Malloc (vid.realwidth * vid.realheight * 3 + 18);
 	memset (buffer, 0, 18);
 	buffer[2] = 2;          // uncompressed type
-	buffer[12] = vid.width&255;
-	buffer[13] = vid.width>>8;
-	buffer[14] = vid.height&255;
-	buffer[15] = vid.height>>8;
+	buffer[12] = vid.realwidth&255;
+	buffer[13] = vid.realwidth>>8;
+	buffer[14] = vid.realheight&255;
+	buffer[15] = vid.realheight>>8;
 	buffer[16] = 24;        // pixel size
 
-	glReadPixels (0, 0, vid.width, vid.height, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 ); 
+	glReadPixels (0, 0, vid.realwidth, vid.realheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 ); 
 
 	// swap rgb to bgr
-	c = 18 + vid.width * vid.height * 3;
+	c = 18 + vid.realwidth * vid.realheight * 3;
 	for (i=18 ; i<c ; i+=3)
 	{
 		temp = buffer[i];
 		buffer[i] = buffer[i+2];
 		buffer[i+2] = temp;
 	}
-	COM_WriteFile (va("%s/%s", cls.gamedirfile, pcxname), buffer, vid.width*vid.height*3 + 18 );
+	COM_WriteFile (va("%s/%s", cls.gamedirfile, pcxname), buffer, vid.realwidth*vid.realheight*3 + 18 );
 
 	free (buffer);
 	Com_Printf ("Wrote %s\n", pcxname);
@@ -661,15 +661,15 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 // 
 // save the pcx file 
 // 
-	newbuf = Q_Malloc (vid.height * vid.width * 3);
+	newbuf = Q_Malloc (vid.realheight * vid.realwidth * 3);
 
-	glReadPixels (0, 0, vid.width, vid.height, GL_RGB, GL_UNSIGNED_BYTE, newbuf);
+	glReadPixels (0, 0, vid.realwidth, vid.realheight, GL_RGB, GL_UNSIGNED_BYTE, newbuf);
 
-	w = min (vid.width, RSSHOT_WIDTH);
-	h = min (vid.height, RSSHOT_HEIGHT);
+	w = min (vid.realwidth, RSSHOT_WIDTH);
+	h = min (vid.realheight, RSSHOT_HEIGHT);
 
-	fracw = (float)vid.width / (float)w;
-	frach = (float)vid.height / (float)h;
+	fracw = (float)vid.realwidth / (float)w;
+	frach = (float)vid.realheight / (float)h;
 
 	for (y = 0; y < h; y++) {
 		dest = newbuf + (w*3 * y);
@@ -686,7 +686,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 
 			count = 0;
 			for (/* */; dy < dey; dy++) {
-				src = newbuf + (vid.width * 3 * dy) + dx * 3;
+				src = newbuf + (vid.realwidth * 3 * dy) + dx * 3;
 				for (nx = dx; nx < dex; nx++) {
 					r += *src++;
 					g += *src++;

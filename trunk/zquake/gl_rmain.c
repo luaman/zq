@@ -1074,10 +1074,22 @@ void R_SetupGL (void)
 	//
 	glMatrixMode(GL_PROJECTION);
     glLoadIdentity ();
-	x = r_refdef.vrect.x;
-	x2 = r_refdef.vrect.x + r_refdef.vrect.width;
-	y = vid.height - r_refdef.vrect.y;
-	y2 = vid.height - (r_refdef.vrect.y + r_refdef.vrect.height);
+	x = (r_refdef.vrect.x * vid.realwidth) / vid.width;
+	x2 = ((r_refdef.vrect.x + r_refdef.vrect.width) * vid.realwidth) / vid.width;
+	y = ((vid.height - r_refdef.vrect.y) * vid.realheight) / vid.height;
+	y2 = ((vid.height - (r_refdef.vrect.y + r_refdef.vrect.height)) * vid.realheight) / vid.height;
+
+#if 0		// Tonik - what is this for?
+	// fudge around because of frac screen scale
+	if (x > 0)
+		x--;
+	if (x2 < vid.realwidth)
+		x2++;
+	if (y2 < 0)
+		y2--;
+	if (y < vid.realheight)
+		y++; 
+#endif
 
 	w = x2 - x;
 	h = y - y2;
