@@ -756,6 +756,131 @@ void CL_WriteConfig_f (void)
 	CL_WriteConfig (name);
 }
 
+
+/*
+** CL_ConnectedToQizmo
+*/
+qboolean CL_ConnectedToQizmo (void)
+{
+	if (cls.state < ca_connected)
+		return false;
+
+	if (Info_ValueForKey(cl.players[cl.playernum].userinfo, "Qizmo")[0])
+		return true;
+	else
+		return false;
+}
+
+/*
+** CL_ConnectedToQWServer
+*/
+qboolean CL_ConnectedToQWServer (void)
+{
+	char *p;
+
+	if (cls.state < ca_connected)
+		return false;
+
+	p = Info_ValueForKey(cl.serverinfo, "*version");
+	if (*p && strcmp(p, "2.91"))
+		return true;
+	else
+		return false;
+}
+
+/*
+** CL_Join_f
+** Connect to a server as player
+*/
+void CL_Join_f (void)
+{
+	extern cvar_t spectator, cl_useproxy;
+
+	if (Cmd_Argc() > 2) {
+		Com_Printf ("join [server]: join the game as player\n");
+		return; 
+	}
+
+	if (Cmd_Argc() == 2) {
+		// a server name was given, connect directly or through Qizmo
+		Cvar_Set(&spectator, "");
+		if (cl_useproxy.value && CL_ConnectedToQizmo())
+			Cmd_ExecuteString (va("say ,con %s", Cmd_Argv(1)));
+		else
+			Cmd_ExecuteString (va("connect %s", Cmd_Argv(1)));
+		return;
+	}
+
+	if (!CL_ConnectedToQWServer()) {
+		Com_Printf ("not connected to server\n");
+		return;
+	}
+
+	if (cls.state >= ca_connected && !cl.spectator)
+		return;			// already connected as player, ignore
+
+	Cvar_Set(&spectator, "");
+
+	if (cl.z_ext & Z_EXT_JOIN_OBSERVE) {
+		// server supports the 'join' command, good
+		Cmd_ExecuteString("cmd join");
+		return;
+	}
+
+	if (CL_ConnectedToQizmo())
+		Cmd_ExecuteString("say ,reconnect");
+	else
+		Cmd_ExecuteString("reconnect");
+}
+
+
+/*
+** CL_Observe_f
+** Connect to a server as player
+*/
+void CL_Observe_f (void)
+{
+	extern cvar_t spectator, cl_useproxy;
+
+	if (Cmd_Argc() > 2) {
+		Com_Printf ("observe [server]: join the game as spectator\n");
+		return; 
+	}
+
+	if (Cmd_Argc() == 2) {
+		// a server name was given, connect directly or through Qizmo
+		Cvar_Set(&spectator, "1");
+		if (cl_useproxy.value && CL_ConnectedToQizmo())
+			Cmd_ExecuteString (va("say ,con %s", Cmd_Argv(1)));
+		else
+			Cmd_ExecuteString (va("connect %s", Cmd_Argv(1)));
+		return;
+	}
+
+	if (!CL_ConnectedToQWServer()) {
+		Com_Printf ("not connected to server\n");
+		return;
+	}
+
+	if (cls.state >= ca_connected && cl.spectator)
+		return;			// already connected as spectator, ignore
+
+	Cvar_Set(&spectator, "1");
+
+	if (cl.z_ext & Z_EXT_JOIN_OBSERVE) {
+		// server supports the 'join' command, good
+		Cmd_ExecuteString("cmd observe");
+		return;
+	}
+
+	if (CL_ConnectedToQizmo())
+		Cmd_ExecuteString("say ,reconnect");
+	else
+		Cmd_ExecuteString("reconnect");
+}
+
+
+
 void CL_InitCommands (void)
 {
 	Cvar_Register (&cl_allowRSShot);
@@ -763,6 +888,8 @@ void CL_InitCommands (void)
 // general commands
 	Cmd_AddCommand ("cmd", CL_ForwardToServer_f);
 	Cmd_AddCommand ("download", CL_Download_f);
+	Cmd_AddCommand ("join", CL_Join_f);
+	Cmd_AddCommand ("observe", CL_Observe_f);
 	Cmd_AddCommand ("qstat", CL_QStat_f);
 	Cmd_AddCommand ("packet", CL_Packet_f);
 	Cmd_AddCommand ("rcon", CL_Rcon_f);
