@@ -55,14 +55,16 @@ mpic_t *R_CacheWadPic (char *name)
 		if (!strcmp (name, cpic->name))
 			return &cpic->pic;
 
+	p = W_GetLumpName (name, false);
+	if (!p)
+		return NULL;
+
 	if (numcachepics == MAX_CACHED_PICS)
 		Sys_Error ("numcachepics == MAX_CACHED_PICS");
 
 	numcachepics++;
 	strlcpy (cpic->name, name, sizeof(cpic->name));
 	cpic->cache.data = NULL;
-
-	p = W_GetLumpName (name, true);
 
 	cpic->pic.width = p->width;
 	cpic->pic.height = p->height;
@@ -483,6 +485,9 @@ static void R_DrawTransPic (int x, int y, mpic_t *pic)
 
 void R_DrawPic (int x, int y, mpic_t *pic)
 {
+	if (!pic)
+		return;
+
 	if ((x < 0) || (x + pic->width > vid.width) ||
 		(y < 0) || (y + pic->height > vid.height))
 	{
@@ -578,6 +583,9 @@ void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int
 	unsigned short	*pusdest;
 	int				v, u;
 
+	if (!pic)
+		return;
+
 	if ((x < 0) || (x + width > vid.width) ||
 		(y < 0) || (y + height > vid.height))
 	{
@@ -631,6 +639,9 @@ void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
 	byte	*dest, *source, tbyte;
 	unsigned short	*pusdest;
 	int				v, u;
+
+	if (!pic)
+		return;
 
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
@@ -718,7 +729,7 @@ void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float a
 	int			startline;
 	unsigned	frac, fracstep;
 
-	if (!alpha)
+	if (!pic || !alpha)
 		return;
 
 	if ((x < 0) || (x + width > vid.width) || (y + height > vid.height)) {

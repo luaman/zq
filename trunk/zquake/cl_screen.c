@@ -436,6 +436,8 @@ void SCR_SizeDown_f (void)
 void SCR_RegisterPics (void)
 {
 	scr_backtile = R_CacheWadPic ("backtile");
+	if (!scr_backtile)
+		Sys_Error ("Couldn't load backtile pic");
 	scr_ram = R_CacheWadPic ("ram");
 	scr_net = R_CacheWadPic ("net");
 	scr_turtle = R_CacheWadPic ("turtle");

@@ -167,14 +167,10 @@ static mpic_t *R_CachePic_impl (char *path, qbool wad, qbool crash)
 		if (!strcmp (path, pic->name))
 			return &pic->pic;
 
-	if (numcachepics == MAX_CACHED_PICS)
-		Sys_Error ("numcachepics == MAX_CACHED_PICS");
-	numcachepics++;
-
-	strlcpy (pic->name, path, sizeof(pic->name));
-
 	if (wad) {
 		p = W_GetLumpName (path, crash);
+		if (!p)
+			return NULL;
 	}
 	else {
 		// load the pic from disk
@@ -197,6 +193,12 @@ static mpic_t *R_CachePic_impl (char *path, qbool wad, qbool crash)
 		}
 	}
 
+	if (numcachepics == MAX_CACHED_PICS)
+		Sys_Error ("numcachepics == MAX_CACHED_PICS");
+
+	numcachepics++;
+
+	strlcpy (pic->name, path, sizeof(pic->name));
 	pic->pic.width = p->width;
 	pic->pic.height = p->height;
 
@@ -236,12 +238,7 @@ mpic_t *R_CachePic (char *path)
 
 mpic_t *R_CacheWadPic (char *name)
 {
-	if (!strcmp(name, "conchars")) {
-		R_LoadCharset ();
-		return NULL /* FIXME */;
-	}
-
-	return R_CachePic_impl (name, true, true);
+	return R_CachePic_impl (name, true, false);
 }
 
 
@@ -563,6 +560,9 @@ void R_DrawPic (int x, int y, mpic_t *pic)
 */
 	cachepic_t *cpic = (cachepic_t *) pic;
 
+	if (!pic)
+		return;
+
 	if (scrap_dirty)
 		Scrap_Upload ();
 
@@ -614,6 +614,9 @@ void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int
 	float oldglwidth, oldglheight;
 	cachepic_t *cpic = (cachepic_t *) pic;
 
+	if (!pic)
+		return;
+
 	if (scrap_dirty)
 		Scrap_Upload ();
 	
@@ -652,6 +655,9 @@ void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
 	unsigned		trans[64*64], *dest;
 	byte			*src;
 	int				p;
+
+	if (!pic)
+		return;
 
 	GL_Bind (translate_texture);
 
@@ -693,7 +699,7 @@ void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float a
 {
 	cachepic_t *cpic = (cachepic_t *) pic;
 
-	if (!alpha)
+	if (!pic || !alpha)
 		return;
 
 	if (scrap_dirty)
