@@ -168,13 +168,10 @@ LINE TESTING IN HULLS
 // 1/32 epsilon to keep floating point happy
 #define	DIST_EPSILON	(0.03125)
 
-/*
-==================
-PM_RecursiveHullCheck
+static hull_t		trace_hull;
+static pmtrace_t	trace_trace;
 
-==================
-*/
-qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, pmtrace_t *trace)
+static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
 {
 	dclipnode_t	*node;
 	mplane_t	*plane;
@@ -190,25 +187,25 @@ qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	{
 		if (num != CONTENTS_SOLID)
 		{
-			trace->allsolid = false;
+			trace_trace.allsolid = false;
 			if (num == CONTENTS_EMPTY)
-				trace->inopen = true;
+				trace_trace.inopen = true;
 			else
-				trace->inwater = true;
+				trace_trace.inwater = true;
 		}
 		else
-			trace->startsolid = true;
+			trace_trace.startsolid = true;
 		return true;		// empty
 	}
 
-	if (num < hull->firstclipnode || num > hull->lastclipnode)
-		Sys_Error ("PM_RecursiveHullCheck: bad node number");
+	if (num < trace_hull.firstclipnode || num > trace_hull.lastclipnode)
+		Sys_Error ("RecursiveHullTrace: bad node number");
 
 //
 // find the point distances
 //
-	node = hull->clipnodes + num;
-	plane = hull->planes + node->planenum;
+	node = trace_hull.clipnodes + num;
+	plane = trace_hull.planes + node->planenum;
 
 	if (plane->type < 3)
 	{
@@ -223,14 +220,14 @@ qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	
 #if 1
 	if (t1 >= 0 && t2 >= 0)
-		return PM_RecursiveHullCheck (hull, node->children[0], p1f, p2f, p1, p2, trace);
+		return RecursiveHullTrace (node->children[0], p1f, p2f, p1, p2);
 	if (t1 < 0 && t2 < 0)
-		return PM_RecursiveHullCheck (hull, node->children[1], p1f, p2f, p1, p2, trace);
+		return RecursiveHullTrace (node->children[1], p1f, p2f, p1, p2);
 #else
 	if ( (t1 >= DIST_EPSILON && t2 >= DIST_EPSILON) || (t2 > t1 && t1 >= 0) )
-		return PM_RecursiveHullCheck (hull, node->children[0], p1f, p2f, p1, p2, trace);
+		return RecursiveHullTrace (node->children[0], p1f, p2f, p1, p2);
 	if ( (t1 <= -DIST_EPSILON && t2 <= -DIST_EPSILON) || (t2 < t1 && t1 <= 0) )
-		return PM_RecursiveHullCheck (hull, node->children[1], p1f, p2f, p1, p2, trace);
+		return RecursiveHullTrace (node->children[1], p1f, p2f, p1, p2);
 #endif
 
 // put the crosspoint DIST_EPSILON pixels on the near side
@@ -250,7 +247,7 @@ qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	side = (t1 < 0);
 
 // move up to the node
-	if (!PM_RecursiveHullCheck (hull, node->children[side], p1f, midf, p1, mid, trace) )
+	if (!RecursiveHullTrace (node->children[side], p1f, midf, p1, mid))
 		return false;
 
 #ifdef PARANOID
@@ -262,12 +259,12 @@ qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	}
 #endif
 	
-	if (PM_HullPointContents (hull, node->children[side^1], mid)
+	if (PM_HullPointContents (&trace_hull, node->children[side^1], mid)
 	!= CONTENTS_SOLID)
 // go past the node
-		return PM_RecursiveHullCheck (hull, node->children[side^1], midf, p2f, mid, p2, trace);
+		return RecursiveHullTrace (node->children[side^1], midf, p2f, mid, p2);
 	
-	if (trace->allsolid)
+	if (trace_trace.allsolid)
 		return false;		// never got out of the solid area
 		
 //==================
@@ -275,23 +272,23 @@ qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 //==================
 	if (!side)
 	{
-		VectorCopy (plane->normal, trace->plane.normal);
-		trace->plane.dist = plane->dist;
+		VectorCopy (plane->normal, trace_trace.plane.normal);
+		trace_trace.plane.dist = plane->dist;
 	}
 	else
 	{
-		VectorNegate (plane->normal, trace->plane.normal);
-		trace->plane.dist = -plane->dist;
+		VectorNegate (plane->normal, trace_trace.plane.normal);
+		trace_trace.plane.dist = -plane->dist;
 	}
 
-	while (PM_HullPointContents (hull, hull->firstclipnode, mid)
+	while (PM_HullPointContents (&trace_hull, trace_hull.firstclipnode, mid)
 	== CONTENTS_SOLID)
 	{ // shouldn't really happen, but does occasionally
 		frac -= 0.1;
 		if (frac < 0)
 		{
-			trace->fraction = midf;
-			VectorCopy (mid, trace->endpos);
+			trace_trace.fraction = midf;
+			VectorCopy (mid, trace_trace.endpos);
 			Com_DPrintf ("backup past 0\n");
 			return false;
 		}
@@ -300,12 +297,21 @@ qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 			mid[i] = p1[i] + frac*(p2[i] - p1[i]);
 	}
 
-	trace->fraction = midf;
-	VectorCopy (mid, trace->endpos);
+	trace_trace.fraction = midf;
+	VectorCopy (mid, trace_trace.endpos);
 
 	return false;
 }
 
+void PM_HullTrace (hull_t *hull, float p1f, float p2f, vec3_t p1, vec3_t p2, pmtrace_t *trace)
+{
+	trace_hull = *hull;
+	trace_trace = *trace;
+
+	RecursiveHullTrace (trace_hull.firstclipnode, p1f, p2f, p1, p2);
+
+	*trace = trace_trace;
+}
 
 /*
 ================
@@ -391,7 +397,7 @@ pmtrace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 		VectorCopy (end, trace.endpos);
 
 	// trace a line through the apropriate clipping hull
-		PM_RecursiveHullCheck (hull, hull->firstclipnode, 0, 1, start_l, end_l, &trace);
+		PM_HullTrace (hull, 0, 1, start_l, end_l, &trace);
 
 		if (trace.allsolid)
 			trace.startsolid = true;
@@ -456,7 +462,7 @@ pmtrace_t PM_TraceLine (vec3_t start, vec3_t end)
 		VectorCopy (end, trace.endpos);
 
 	// trace a line through the apropriate clipping hull
-		PM_RecursiveHullCheck (hull, hull->firstclipnode, 0, 1, start_l, end_l, &trace);
+		PM_HullTrace (hull, 0, 1, start_l, end_l, &trace);
 
 		if (trace.allsolid)
 			trace.startsolid = true;
