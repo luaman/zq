@@ -74,6 +74,7 @@ int		UseKeyboard = 1;
 
 int		mouserate = MOUSE_DEFAULTSAMPLERATE;
 
+cvar_t		vid_ref = {"vid_ref", "soft", CVAR_ROM};
 cvar_t		vid_mode = {"vid_mode","5"};
 cvar_t		vid_redrawfull = {"vid_redrawfull","0"};
 cvar_t		vid_waitforrefresh = {"vid_waitforrefresh","0",CVAR_ARCHIVE};
@@ -550,6 +551,7 @@ void VID_Init(unsigned char *palette)
 
 		VID_InitModes();
 
+		Cvar_Register (&vid_ref);
 		Cvar_Register (&vid_mode);
 		Cvar_Register (&vid_redrawfull);
 		Cvar_Register (&vid_waitforrefresh);
