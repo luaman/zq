@@ -659,7 +659,6 @@ static void IN_MouseMove (usercmd_t *cmd)
 				case DIMOFS_BUTTON0 + 5: // in DirectX 7 and higher
 				case DIMOFS_BUTTON0 + 6: //
 				case DIMOFS_BUTTON0 + 7: //
-Com_Printf ("%i\n", od.dwData);
 					if (od.dwData & 0x80)
 						mstate_di |= 1 << (od.dwOfs - DIMOFS_BUTTON0);
 					else
