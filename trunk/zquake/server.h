@@ -58,7 +58,7 @@ typedef struct
 	
 	char		sky[32];			// skybox file name ("unit1_", etc)
 
-	char		name[64];			// map name
+	char		mapname[64];		// "e1m1", "dm6", etc
 	char		modelname[MAX_QPATH];		// maps/<name>.bsp, for model_precache[0]
 	unsigned	map_checksum;
 	unsigned	map_checksum2;
@@ -69,6 +69,7 @@ typedef struct
 	char		*lightstyles[MAX_LIGHTSTYLES];
 	cmodel_t	*models[MAX_MODELS];
 	struct model_s		*FIXME_models[MAX_MODELS];
+	char		*entitystring;		// entfile may override
 
 	int			num_edicts;			// increases towards MAX_EDICTS
 	edict_t		*edicts;			// can NOT be array indexed, because
@@ -393,7 +394,7 @@ void SV_MoveToGoal (void);
 int SV_ModelIndex (char *name);
 void SV_FlushSignon (void);
 void SV_SaveSpawnparms (void);
-void SV_SpawnServer (char *server, qboolean devmap);
+void SV_SpawnServer (char *mapname, qboolean devmap);
 
 
 //

@@ -163,6 +163,7 @@ void Host_ClearMemory ()
 {
 	D_FlushCaches ();
 	Mod_ClearAll ();
+	CM_InvalidateMap ();
 
 	// any data previously allocated on hunk is no longer valid
 	Hunk_FreeToLowMark (host_hunklevel);

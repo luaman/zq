@@ -28,10 +28,12 @@ char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
 char localinfo[MAX_LOCALINFO_STRING+1]; // local game info
 
+cvar_t	sv_loadentfiles = {"sv_loadentfiles", "0"};
+
+
 /*
 ================
 SV_ModelIndex
-
 ================
 */
 int SV_ModelIndex (char *name)
@@ -273,7 +275,6 @@ unsigned SV_CheckModel(char *mdl)
 	return crc;
 }
 
-cvar_t	sv_loadentfiles = {"sv_loadentfiles", "0"};
 void SV_LoadEntFile (void)
 {
 	char	name[MAX_OSPATH];
@@ -285,14 +286,14 @@ void SV_LoadEntFile (void)
 	if (!sv_loadentfiles.value)
 		return;
 
-	COM_StripExtension (sv.FIXME_worldmodel->name, name);
+	COM_StripExtension (sv.modelname, name);
 	strcat (name, ".ent");
 
 	data = (char *) FS_LoadHunkFile (name);
 	if (!data)
 		return;
 
-	sv.FIXME_worldmodel->entities = data;
+	sv.entitystring = data;
 
 	Com_DPrintf ("Loaded entfile %s\n", name);
 
@@ -310,14 +311,14 @@ clients along with it.
 This is only called from the SV_Map_f() function.
 ================
 */
-void SV_SpawnServer (char *server, qboolean devmap)
+void SV_SpawnServer (char *mapname, qboolean devmap)
 {
 	edict_t		*ent;
 	int			i;
 	extern qboolean	sv_allow_cheats;
 	extern cvar_t	sv_cheats;
 
-	Com_DPrintf ("SpawnServer: %s\n",server);
+	Com_DPrintf ("SpawnServer: %s\n", mapname);
 	
 	SV_SaveSpawnparms ();
 
@@ -382,9 +383,9 @@ void SV_SpawnServer (char *server, qboolean devmap)
 
 	sv.time = 1.0;
 	
-	strlcpy (sv.name, server, sizeof(sv.name));
-	Cvar_ForceSet (&host_mapname, sv.name);
-	Q_snprintfz (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", server);
+	strlcpy (sv.mapname, mapname, sizeof(sv.mapname));
+	Cvar_ForceSet (&host_mapname, sv.mapname);
+	Q_snprintfz (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", sv.mapname);
 
 	sv.worldmodel = CM_LoadMap (sv.modelname, false, &sv.map_checksum, &sv.map_checksum2);
 	sv.FIXME_worldmodel = Mod_ForName (sv.modelname, true);
@@ -423,12 +424,12 @@ void SV_SpawnServer (char *server, qboolean devmap)
 
 	ent = EDICT_NUM(0);
 	ent->free = false;
-	ent->v.model = PR_SetString(sv.FIXME_worldmodel->name);
+	ent->v.model = PR_SetString(sv.modelname);
 	ent->v.modelindex = 1;		// world model
 	ent->v.solid = SOLID_BSP;
 	ent->v.movetype = MOVETYPE_PUSH;
 
-	pr_global_struct->mapname = PR_SetString(sv.name);
+	pr_global_struct->mapname = PR_SetString(sv.mapname);
 	// serverflags are for cross level information (sigils)
 	pr_global_struct->serverflags = svs.serverflags;
 	
@@ -436,10 +437,11 @@ void SV_SpawnServer (char *server, qboolean devmap)
 	SV_ProgStartFrame ();
 
 	// check for a custom entity file
+	sv.entitystring = CM_EntityString ();
 	SV_LoadEntFile ();
 
 	// load and spawn all other entities
-	ED_LoadFromFile (sv.FIXME_worldmodel->entities);
+	ED_LoadFromFile (sv.entitystring);
 
 	// look up some model indexes for specialized message compression
 	SV_FindModelNumbers ();
@@ -462,7 +464,7 @@ void SV_SpawnServer (char *server, qboolean devmap)
 	SV_CreateBaseline ();
 	sv.signon_buffer_size[sv.num_signon_buffers-1] = sv.signon.cursize;
 
-	Info_SetValueForKey (svs.info, "map", sv.name, MAX_SERVERINFO_STRING);
+	Info_SetValueForKey (svs.info, "map", sv.mapname, MAX_SERVERINFO_STRING);
 	Com_DPrintf ("Server spawned.\n");
 }
 

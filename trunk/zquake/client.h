@@ -341,7 +341,6 @@ typedef struct
 	struct sfx_s		*sound_precache[MAX_SOUNDS];
 
 	cmodel_t	*clipmodels[MAX_MODELS];
-	unsigned	map_checksum;
 	unsigned	map_checksum2;
 
 	char		levelname[40];	// for display on solo scoreboard
