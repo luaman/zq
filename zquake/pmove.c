@@ -575,6 +575,7 @@ void PM_AirMove (void)
 }
 
 
+pmplane_t	groundplane;
 
 /*
 =============
@@ -606,6 +607,7 @@ void PM_CategorizePosition (void)
 		else {
 			pmove.onground = true;
 			pmove.groundent = tr.ent;
+			groundplane = tr.plane;
 		}
 
 		if (pmove.onground)
@@ -691,14 +693,24 @@ void JumpButton (void)
 		return;		// don't pogo stick
 #endif
 
-// When connected to a Kombat Teams server, "fix" the jumping bug
-// the same way qc code does to minimize prediction errors
-	if (pm_ktphysics.value)
-		if (pmove.velocity[2] < 0)
-			pmove.velocity[2] = 0;
+	// check for jump bug
+	// groundplane normal was set in the call to PM_CategorizePosition
+	if (DotProduct(pmove.velocity, groundplane.normal) < -0.1)
+	{
+		// pmove.velocity is pointing into the ground, clip it
+		PM_ClipVelocity (pmove.velocity, groundplane.normal, pmove.velocity, 1);
+	}
 
 	pmove.onground = false;
 	pmove.velocity[2] += 270;
+
+	// we mix vanilla QW and KTeams physics here so that prediction
+	// errors are reasonable no matter what server we play on
+	if (pmove.velocity[2] < 270)
+		pmove.velocity[2] = pmove.velocity[2] * 0.4 + 270 * 0.6;
+
+	if (pmove.velocity[2] < 190)
+		pmove.velocity[2] = 190;
 
 	pmove.oldbuttons |= BUTTON_JUMP;	// don't jump again until released
 
