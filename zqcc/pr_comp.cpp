@@ -326,7 +326,7 @@ def_t *PR_ParseFunctionCall (def_t *func)
 
 	if (t->type != ev_function)
 		PR_ParseError ("not a function");
-	
+
 // copy the arguments to the global parameter variables
 	arg = 0;
 	if (!PR_Check(")"))
@@ -1170,6 +1170,10 @@ void PR_ParseDefs (void)
 			// C-style function declaration
 
 			char functionName[MAX_NAME];
+
+			if (strlen(name) >= MAX_NAME)
+				PR_ParseError ("name of function \"%s\" is too long (max. %d chars)", name, (int)(MAX_NAME - 1));
+
 			strcpy (functionName, name);
 
 			type_t *functionType = PR_ParseFunctionType (type);
