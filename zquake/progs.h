@@ -155,6 +155,7 @@ extern func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
 
 extern int	fofs_gravity, fofs_maxspeed;
 extern int	fofs_forwardmove, fofs_sidemove, fofs_upmove;
+extern int	fofs_vw_index, fofs_vw_frame;
 
 #define EdictFieldFloat(ed, fieldoffset) ((eval_t *)((byte *)&(ed)->v + (fieldoffset)))->_float
 

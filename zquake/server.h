@@ -67,6 +67,7 @@ typedef struct
 	unsigned	map_checksum2;
 	cmodel_t 	*worldmodel;
 	char		*model_name[MAX_MODELS];	// NULL terminated
+	char		*vw_model_name[MAX_VWEP_MODELS];	// NULL terminated
 	char		*sound_name[MAX_SOUNDS];	// NULL terminated
 	char		*lightstyles[MAX_LIGHTSTYLES];
 	cmodel_t	*models[MAX_MODELS];

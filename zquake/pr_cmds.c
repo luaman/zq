@@ -1663,7 +1663,7 @@ void PF_multicast (void)
 	SV_Multicast (o, to);
 }
 
-
+// Tonik's experiments -->
 void PF_testbot (void)
 {
 	edict_t	*ed;
@@ -1695,6 +1695,27 @@ void PF_setinfo (void)
 	MSG_WriteString (&sv.reliable_datagram, key);
 	MSG_WriteString (&sv.reliable_datagram, value);
 }
+
+void PF_precache_vwep_model (void)
+{
+	char	*s;
+	int		i;
+	
+	if (sv.state != ss_loading)
+		PR_RunError ("PF_Precache_*: Precache can only be done in spawn functions");
+		
+	i = G_FLOAT(OFS_PARM0);
+	s = G_STRING(OFS_PARM1);
+	G_INT(OFS_RETURN) = G_INT(OFS_PARM1);	// FIXME, remove?
+	PR_CheckEmptyString (s);
+
+	if (i < 0 || i >= MAX_VWEP_MODELS)
+		PR_RunError ("PF_precache_vwep_model: bad index %i", i);
+
+	sv.vw_model_name[i] = s;
+}
+
+// <-- Tonik's experiments
 
 
 void PF_Fixme (void)
@@ -1802,6 +1823,7 @@ PF_multicast,
 
 PF_testbot,			// !!! Temporary! It will be removed !!!
 PF_setinfo,			// !!! Temporary! It will be removed !!!
+PF_precache_vwep_model,			// !!! Temporary! It will be removed !!!
 };
 
 int pr_numbuiltins = sizeof(pr_builtins)/sizeof(pr_builtins[0]);

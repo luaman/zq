@@ -686,6 +686,13 @@ void CL_ParsePlayerinfo (void)
 	if (flags & PF_COMMAND)
 		MSG_ReadDeltaUsercmd (&nullcmd, &state->command, cl.protocol_26);
 
+	if (cl.z_ext & Z_EXT_VWEP) {
+		state->vw_index = state->command.impulse;
+		state->vw_frame = state->command.msec;
+	} else {
+		state->vw_index = state->vw_frame = 0;
+	}
+
 	for (i=0 ; i<3 ; i++)
 	{
 		if (flags & (PF_VELOCITY1<<i) )
@@ -823,6 +830,40 @@ void CL_AddFlagModels (entity_t *ent, int team)
 	V_AddEntity (&newent);
 }
 
+
+/*
+================
+CL_AddVWepModel
+================
+*/
+static qbool CL_AddVWepModel (entity_t *ent, int vw_index, int vw_frame)
+{
+	entity_t	newent;
+
+	if ((unsigned)vw_index >= MAX_VWEP_MODELS)
+		return false;
+
+	if (cl.vw_model_name[vw_index][0] == '*')
+		return true;	// empty vwep model
+
+	if (!cl.vw_model_precache[vw_index])
+		return false;	// vwep model not present - draw default player.mdl
+
+	// build the weapon entity
+	memset (&newent, 0, sizeof(entity_t));
+	VectorCopy (ent->origin, newent.origin);
+	VectorCopy (ent->angles, newent.angles);
+	newent.model = cl.vw_model_precache[vw_index];
+	newent.frame = vw_frame;
+	newent.skinnum = 0;
+	newent.colormap = vid.colormap;
+	newent.renderfx = RF_PLAYERMODEL;	// not really, but use same lighting rules
+
+	V_AddEntity (&newent);
+	return true;
+}
+
+
 /*
 =============
 CL_LinkPlayers
@@ -948,8 +989,25 @@ void CL_LinkPlayers (void)
 		else if (state->effects & EF_FLAG2)
 			CL_AddFlagModels (&ent, 1);
 
+		if (cl.vwep_enabled && state->vw_index) {
+			qbool vwep;
+			vwep = CL_AddVWepModel (&ent, state->vw_index, state->vw_frame);
+			if (vwep) {
+				if (cl.vw_model_name[0][0] != '*') {
+					ent.model = cl.vw_model_precache[0];
+					ent.renderfx = RF_PLAYERMODEL;
+					V_AddEntity (&ent);
+				} else {
+					// server said don't add vwep player model
+				}
+			}
+			else
+				V_AddEntity (&ent);
+		}
+		else
+			V_AddEntity (&ent);
+
 		VectorCopy (ent.origin, cent->lerp_origin);
-		V_AddEntity (&ent);
 	}
 }
 

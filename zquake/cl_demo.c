@@ -364,6 +364,28 @@ void CL_WriteSetDemoMessage (void)
 }
 
 
+// FIXME: same as in sv_user.c. Move to common.c?
+static char *TrimModelName (char *full)
+{
+	static char shortn[MAX_QPATH];
+	int len;
+
+	if (!strncmp(full, "progs/", 6) && !strchr(full + 6, '/'))
+		strlcpy (shortn, full + 6, sizeof(shortn));		// strip progs/
+	else
+		strlcpy (shortn, full, sizeof(shortn));
+
+	len = strlen(shortn);
+	if (len > 4 && !strcmp(shortn + len - 4, ".mdl")
+		&& strchr(shortn, '.') == shortn + len - 4)
+	{	// strip .mdl
+		shortn[len - 4] = '\0';
+	}
+
+	return shortn;
+}
+
+
 /*
 ====================
 CL_Record
@@ -453,6 +475,26 @@ static void CL_Record (void)
 		CL_WriteRecordDemoMessage (&buf, seq++);
 		SZ_Clear (&buf); 
 	}
+
+// vwep modellist
+	if ((cl.z_ext & Z_EXT_VWEP) && cl.vw_model_name[0][0]) {
+		// send VWep precaches
+		// pray we don't overflow
+		for (i = 0; i < MAX_VWEP_MODELS; i++) {
+			s = cl.vw_model_name[i];
+			if (!*s)
+				continue;
+			MSG_WriteByte (&buf, svc_serverinfo);
+			MSG_WriteString (&buf, "#vw");
+			MSG_WriteString (&buf, va("%i %s", i, TrimModelName(s)));
+		}
+		// send end-of-list messsage
+		MSG_WriteByte (&buf, svc_serverinfo);
+		MSG_WriteString (&buf, "#vw");
+		MSG_WriteString (&buf, "");
+	}
+	// don't bother flushing, the vwep list is not that large (I hope)
+
 
 // modellist
 	MSG_WriteByte (&buf, svc_modellist);
