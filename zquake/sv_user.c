@@ -1715,6 +1715,43 @@ void SV_PostRunCmd (void)
 }
 
 
+
+/*
+===================
+SV_ExecuteClientMove
+
+Run one or more client move commands (more than one if some
+packets were dropped)
+===================
+*/
+void SV_ExecuteClientMove (client_t *cl, usercmd_t oldest, usercmd_t oldcmd, usercmd_t newcmd)
+{
+	int		net_drop;
+
+	if (sv.paused)
+		return;
+
+	SV_PreRunCmd();
+	
+	net_drop = cl->netchan.dropped;
+	if (net_drop < 20)
+	{
+		while (net_drop > 2)
+		{
+			SV_RunCmd (&cl->lastcmd);
+			net_drop--;
+		}
+		if (net_drop > 1)
+			SV_RunCmd (&oldest);
+		if (net_drop > 0)
+			SV_RunCmd (&oldcmd);
+	}
+	SV_RunCmd (&newcmd);
+	
+	SV_PostRunCmd();
+}
+
+
 /*
 ===================
 SV_ExecuteClientMessage
@@ -1726,7 +1763,6 @@ void SV_ExecuteClientMessage (client_t *cl)
 {
 	int		c;
 	char	*s;
-	int		net_drop;
 	usercmd_t	oldest, oldcmd, newcmd;
 	client_frame_t	*frame;
 	vec3_t o;
@@ -1819,26 +1855,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 				return;
 			}
 
-			if (!sv.paused) {
-				SV_PreRunCmd();
-
-				net_drop = cl->netchan.dropped;
-				if (net_drop < 20)
-				{
-					while (net_drop > 2)
-					{
-						SV_RunCmd (&cl->lastcmd);
-						net_drop--;
-					}
-					if (net_drop > 1)
-						SV_RunCmd (&oldest);
-					if (net_drop > 0)
-						SV_RunCmd (&oldcmd);
-				}
-				SV_RunCmd (&newcmd);
-
-				SV_PostRunCmd();
-			}
+			SV_ExecuteClientMove (cl, oldest, oldcmd, newcmd);
 
 			cl->lastcmd = newcmd;
 			cl->lastcmd.buttons = 0; // avoid multiple fires on lag
