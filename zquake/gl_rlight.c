@@ -77,15 +77,25 @@ void R_InitBubble() {
 	}
 }
 
+
+float bubblecolor[NUM_DLIGHTTYPES][4] = {
+	{ 0.2, 0.1, 0.05, 0.7 },	// dimlight or brightlight
+	{ 0.05, 0.05, 0.3, 0.7 },	// blue
+	{ 0.5, 0.05, 0.05, 0.7 },	// red
+	{ 0.5, 0.05, 0.4, 0.7 },	// red + blue
+	{ 0.2, 0.1, 0.05, 0.7 },	// muzzleflash
+	{ 0.2, 0.1, 0.05, 0.7 },	// explosion
+	{ 0, 0, 0, 0 }				// rocket (no light bubble)
+};
+
 void R_RenderDlight (dlight_t *light)
 {
 	int		i, j;
-//	float	a;
 	vec3_t	v;
-	float	rad;
-	float	*bub_sin, *bub_cos;
 	vec3_t	v_right, v_up;
 	float	length;
+	float	rad;
+	float	*bub_sin, *bub_cos;
 
 	bub_sin = bubble_sintable;
 	bub_cos = bubble_costable;
@@ -100,8 +110,7 @@ void R_RenderDlight (dlight_t *light)
 	}
 
 	glBegin (GL_TRIANGLE_FAN);
-	glColor4f (light->color[0], light->color[1], light->color[2],
-		light->color[3]);
+	glColor4fv (bubblecolor[light->type]);
 
 	v_right[0] = v[1];
 	v_right[1] = -v[0];
@@ -113,7 +122,7 @@ void R_RenderDlight (dlight_t *light)
 		VectorScale (v, rad, v);
 	else {
 		// make sure the light bubble will not be clipped by
-		// near z clipping plane
+		// near z clip plane
 		VectorScale (v, length-8, v);
 	}
 	VectorSubtract (light->origin, v, v);
@@ -122,7 +131,6 @@ void R_RenderDlight (dlight_t *light)
 	glColor3f (0, 0, 0);
 	for (i=16 ; i>=0 ; i--)
 	{
-//		a = i/16.0 * M_PI*2;
 		for (j=0 ; j<3 ; j++)
 			v[j] = light->origin[j] + (v_right[j]*(*bub_cos) +
 				+ v_up[j]*(*bub_sin)) * rad;
@@ -157,7 +165,7 @@ void R_RenderDlights (void)
 	l = cl_dlights;
 	for (i=0 ; i<MAX_DLIGHTS ; i++, l++)
 	{
-		if (l->die < cl.time || !l->radius || !l->color[3])
+		if (l->die < cl.time || !l->radius || l->type == lt_rocket)
 			continue;
 		R_RenderDlight (l);
 	}

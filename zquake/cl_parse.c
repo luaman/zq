@@ -1334,12 +1334,12 @@ CL_MuzzleFlash
 */
 void CL_MuzzleFlash (void)
 {
-	vec3_t		fv, rv, uv;
+	vec3_t		forward, right, up;
 	dlight_t	*dl;
 	int			i;
 	int			j, num_ent;
 	entity_state_t	*ent;
-	player_state_t	*pl;
+	player_state_t	*state;
 
 	i = MSG_ReadShort ();
 
@@ -1350,22 +1350,18 @@ void CL_MuzzleFlash (void)
 	{
 		// a monster firing
 		num_ent = cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].packet_entities.num_entities;
-		for (j = 0; j < num_ent; j++)
+		for (j=0; j<num_ent; j++)
 		{
 			ent = &cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].packet_entities.entities[j];
 			if (ent->number == i)
 			{
 				dl = CL_AllocDlight (i);
-				VectorCopy (ent->origin,  dl->origin);
-				AngleVectors (ent->angles, fv, rv, uv);
-				VectorMA (dl->origin, 18, fv, dl->origin);
+				AngleVectors (ent->angles, forward, right, up);
+				VectorMA (ent->origin, 18, forward, dl->origin);
 				dl->radius = 200 + (rand()&31);
 				dl->minlight = 32;
 				dl->die = cl.time + 0.1;
-				dl->color[0] = 0.2;
-				dl->color[1] = 0.1;
-				dl->color[2] = 0.05;
-				dl->color[3] = 0.7;
+				dl->type = lt_muzzleflash;
 				break;
 			}
 		}
@@ -1381,20 +1377,14 @@ void CL_MuzzleFlash (void)
 	if (cl_muzzleflash.value == 2 && i-1 == cl.playernum)
 		return;
 
-	pl = &cl.frames[parsecountmod].playerstate[i-1];
-
 	dl = CL_AllocDlight (i);
-	VectorCopy (pl->origin,  dl->origin);
-	AngleVectors (pl->viewangles, fv, rv, uv);
-		
-	VectorMA (dl->origin, 18, fv, dl->origin);
+	state = &cl.frames[parsecountmod].playerstate[i-1];
+	AngleVectors (state->viewangles, forward, right, up);
+	VectorMA (state->origin, 18, forward, dl->origin);
 	dl->radius = 200 + (rand()&31);
 	dl->minlight = 32;
 	dl->die = cl.time + 0.1;
-	dl->color[0] = 0.2;
-	dl->color[1] = 0.1;
-	dl->color[2] = 0.05;
-	dl->color[3] = 0.7;
+	dl->type = lt_muzzleflash;
 }
 
 
