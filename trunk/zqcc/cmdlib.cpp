@@ -178,19 +178,28 @@ void Error (char *error, ...)
 CheckParm
 
 Checks for the given parameter in the program's command line arguments
-Returns the argument number (1 to argc-1) or 0 if not present
+  starting with startarg (or with first argument if <= 0)
+Returns the argument number (1 to argc-1) or 0 if not present.
+if option is true, it removes leading '/' and '-' before testing.
+it checks the beginning of the argument strings, therefore
+  the argument "/help" matches the checkstring "/h"
 =================
 */
-int			 CheckParm (char *check, int startarg)
+int			 CheckParm (char *check, int startarg, qboolean optioncheck)
 {
-	int		 i;
+	int		 i, j;
 
 	if (startarg <= 0)
 		startarg = 1;
 
 	for (i = startarg;i < myargc; i++)
 	{
-		if ( !Q_strnicmp(myargv[i], check, strlen(check)) )
+		/* were looking for an option and remove all leading '-' or '/' will be removed */
+		j = 0;
+		while ( option && j < (int)strlen(myargv[i]) && (myargv[i][j] == '-' || myargv[i][j] == '/') )
+			j++;
+
+		if ( !Q_strnicmp(myargv[i] + j, check, strlen(check)) )
 			return i;
 	}
 

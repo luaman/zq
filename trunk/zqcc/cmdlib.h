@@ -71,7 +71,7 @@ char *strupr (char *in);
 char *strlower (char *in);
 
 void	Error (char *error, ...);
-int		CheckParm (char *check, int startarg);
+int		CheckParm (char *check, int startarg, qboolean optioncheck);
 
 FILE	*SafeOpenWrite (const char *filename);
 FILE	*SafeOpenRead (const char *filename);
