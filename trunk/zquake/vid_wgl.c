@@ -631,13 +631,13 @@ GL_Init
 */
 void GL_Init (void)
 {
-	gl_vendor = glGetString (GL_VENDOR);
+	gl_vendor = (const char *) glGetString (GL_VENDOR);
 	Com_Printf ("GL_VENDOR: %s\n", gl_vendor);
-	gl_renderer = glGetString (GL_RENDERER);
+	gl_renderer = (const char *) glGetString (GL_RENDERER);
 	Com_Printf ("GL_RENDERER: %s\n", gl_renderer);
-	gl_version = glGetString (GL_VERSION);
+	gl_version = (const char *) glGetString (GL_VERSION);
 	Com_Printf ("GL_VERSION: %s\n", gl_version);
-	gl_extensions = glGetString (GL_EXTENSIONS);
+	gl_extensions = (const char *) glGetString (GL_EXTENSIONS);
 //	Com_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	Cvar_Register (&gl_strings);
