@@ -394,6 +394,8 @@ void CL_LinkPacketEntities (void)
 			continue;
 
 		ent.model = model = cl.model_precache[state->modelindex];
+		if (!model)
+			Host_Error ("CL_LinkPacketEntities: bad modelindex");
 
 		if (cl_rocket2grenade.value && cl_grenadeindex != -1)
 			if (state->modelindex == cl_rocketindex)
@@ -818,6 +820,8 @@ void CL_LinkPlayers (void)
 			continue;
 
 		ent.model = cl.model_precache[state->modelindex];
+		if (!ent.model)
+			Host_Error ("CL_LinkPlayers: bad modelindex");
 		ent.skinnum = state->skinnum;
 		ent.frame = state->frame;
 		ent.colormap = info->translations;

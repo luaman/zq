@@ -823,6 +823,8 @@ void CL_ParseStatic (void)
 
 // copy it to the current state
 	ent->model = cl.model_precache[es.modelindex];
+	if (!ent->model)
+		Host_Error ("CL_ParseStatic: bad modelindex");
 	ent->frame = es.frame;
 	ent->colormap = vid.colormap;
 	ent->skinnum = es.skinnum;
