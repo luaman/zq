@@ -484,6 +484,7 @@ void SV_SpawnSpectator (void)
 	VectorClear (sv_player->v.origin);
 	VectorClear (sv_player->v.view_ofs);
 	sv_player->v.view_ofs[2] = 22;
+	sv_player->v.fixangle = true;
 
 	// search for an info_playerstart to spawn the spectator at
 	for (i=MAX_CLIENTS-1 ; i<sv.num_edicts ; i++)
@@ -492,6 +493,7 @@ void SV_SpawnSpectator (void)
 		if (!strcmp(PR_GetString(e->v.classname), "info_player_start"))
 		{
 			VectorCopy (e->v.origin, sv_player->v.origin);
+			VectorCopy (e->v.angles, sv_player->v.angles);
 			return;
 		}
 	}
@@ -1163,6 +1165,145 @@ void Cmd_Snap_f (void)
 	}
 }
 
+
+/*
+==================
+Cmd_Join_f
+
+Set client to player mode without reconnecting
+==================
+*/
+void Cmd_Join_f (void)
+{
+	int		i;
+	client_t	*cl;
+	int		numclients;
+	extern cvar_t	maxclients, sv_password;
+
+	if (sv_client->state != cs_spawned)
+		return;
+	if (!sv_client->spectator)
+		return;		// already a player
+
+	if (sv_password.string[0] && Q_stricmp(sv_password.string, "none")) {
+		Com_Printf ("This server requires a %s password. Please disconnect, set the password and reconnect as %s.\n", "player", "player");
+		return;
+	}
+
+	// count players already on server
+	numclients = 0;
+	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++) {
+		if (cl->state != cs_free && !cl->spectator)
+			numclients++;
+	}
+	if (numclients >= maxclients.value) {
+		Com_Printf ("Can't join, all player slots full\n");
+		return;
+	}
+
+	// call the prog function for removing a client
+	// this will set the body to a dead frame, among other things
+	pr_global_struct->self = EDICT_TO_PROG(sv_player);
+	if (SpectatorDisconnect)
+		PR_ExecuteProgram (SpectatorDisconnect);
+
+	sv_client->old_frags = 0;
+	sv_client->edict->v.frags = 0;
+
+	// turn the spectator into a player
+	sv_client->spectator = false;
+	Info_RemoveKey (sv_client->userinfo, "*spectator");
+
+	// FIXME, bump the client's userid?
+
+	// call the progs to get default spawn parms for the new client
+	PR_ExecuteProgram (pr_global_struct->SetNewParms);
+	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+		sv_client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
+
+	// call the spawn function
+	pr_global_struct->time = sv.time;
+	pr_global_struct->self = EDICT_TO_PROG(sv_player);
+	PR_ExecuteProgram (pr_global_struct->ClientConnect);
+	
+	// actually spawn the player
+	pr_global_struct->time = sv.time;
+	pr_global_struct->self = EDICT_TO_PROG(sv_player);
+	PR_ExecuteProgram (pr_global_struct->PutClientInServer);	
+
+	// send notification to all clients
+	sv_client->sendinfo = true;
+}
+
+
+/*
+==================
+Cmd_Observe_f
+
+Set client to spectator mode without reconnecting
+==================
+*/
+void Cmd_Observe_f (void)
+{
+	int		i;
+	client_t	*cl;
+	int		numspectators;
+	extern cvar_t	maxspectators, sv_spectatorPassword;
+
+	if (sv_client->state != cs_spawned)
+		return;
+	if (sv_client->spectator)
+		return;		// already a spectator
+
+	if (sv_spectatorPassword.string[0] && Q_stricmp(sv_spectatorPassword.string, "none")) {
+		Com_Printf ("This server requires a %s password. Please disconnect, set the password and reconnect as %s.\n", "spectator", "spectator");
+		return;
+	}
+
+	// count spectators already on server
+	numspectators = 0;
+	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++) {
+		if (cl->state != cs_free && !cl->spectator)
+			numspectators++;
+	}
+	if (numspectators >= maxspectators.value) {
+		Com_Printf ("Can't join, all spectator slots full\n");
+		return;
+	}
+
+	// call the prog function for removing a client
+	// this will set the body to a dead frame, among other things
+	pr_global_struct->self = EDICT_TO_PROG(sv_player);
+	PR_ExecuteProgram (pr_global_struct->ClientDisconnect);
+
+	sv_client->old_frags = 0;
+	sv_client->edict->v.frags = 0;
+
+	// turn the player into a spectator
+	sv_client->spectator = true;
+	Info_SetValueForStarKey (sv_client->userinfo, "*spectator", "1", MAX_INFO_STRING);
+
+	// FIXME, bump the client's userid?
+
+	// call the progs to get default spawn parms for the new client
+	PR_ExecuteProgram (pr_global_struct->SetNewParms);
+	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+		sv_client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
+
+	SV_SpawnSpectator ();
+	
+	// call the spawn function
+	if (SpectatorConnect) {
+		pr_global_struct->time = sv.time;
+		pr_global_struct->self = EDICT_TO_PROG(sv_player);
+		PR_ExecuteProgram (SpectatorConnect);
+	}
+
+	// send notification to all clients
+	sv_client->sendinfo = true;
+}
+
+
 /*
 =============================================================================
 
@@ -1395,6 +1536,10 @@ void SV_ExecuteUserCommand (char *s)
 		Cmd_Noclip_f ();
 	else if (!Q_stricmp(cmd, "fly"))
 		Cmd_Fly_f ();
+	else if (!Q_stricmp(cmd, "join"))
+		Cmd_Join_f ();
+	else if (!Q_stricmp(cmd, "observe"))
+		Cmd_Observe_f ();
 	else
 		Com_Printf ("Bad user command: %s\n", cmd);
 
