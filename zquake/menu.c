@@ -34,7 +34,7 @@ void (*vid_menukeyfn)(int key);
 enum {m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer,
 	m_setup, m_net, m_options, m_video, m_keys, m_help, m_quit,
 	m_serialconfig, m_modemconfig, m_lanconfig, m_gameoptions, 
-	m_search, m_slist, m_sedit} m_state;
+	m_search, m_slist, m_sedit, m_fps} m_state;
 
 void M_Menu_Main_f (void);
 	void M_Menu_SinglePlayer_f (void);
@@ -46,6 +46,7 @@ void M_Menu_Main_f (void);
 //		void M_Menu_Net_f (void);
 	void M_Menu_Options_f (void);
 		void M_Menu_Keys_f (void);
+		void M_Menu_Fps_f (void);
 		void M_Menu_Video_f (void);
 	void M_Menu_Help_f (void);
 	void M_Menu_Quit_f (void);
@@ -880,6 +881,141 @@ void M_Keys_Key (int k)
 		break;
 	}
 }
+
+
+//=============================================================================
+/* FPS SETTINGS MENU */
+
+#define	FPS_ITEMS	10
+int		fps_cursor = 0;
+
+extern cvar_t v_bonusflash;
+extern cvar_t cl_rocket2grenade;
+extern cvar_t v_damagecshift;
+
+void M_Menu_Fps_f (void)
+{
+	key_dest = key_menu;
+	m_state = m_fps;
+	m_entersound = true;
+}
+
+void M_Fps_Draw (void)
+{
+	float		r;
+	qpic_t	*p;
+	
+	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
+	p = Draw_CachePic ("gfx/p_option.lmp");
+	M_DrawPic ( (320-p->width)/2, 4, p);
+	
+	M_Print (16, 32, "            Explosions");
+	M_Print (220, 32, "//todo");
+
+	M_Print (16, 40, "         Muzzleflashes");
+	M_Print (220, 40, cl_muzzleflash.value==2 ? "own off" :
+		cl_muzzleflash.value ? "on" : "off");
+
+	M_Print (16, 48, "            Gib filter");
+	M_DrawCheckbox (220, 48, cl_gibfilter.value);
+
+	M_Print (16, 56, "    Dead bodies filter");
+	M_DrawCheckbox (220, 56, cl_deadbodyfilter.value);
+
+	M_Print (16, 64, "          Rocket model");
+	M_Print (220, 64, cl_rocket2grenade.value ? "grenade" : "normal");
+
+	M_Print (16, 72, "          Rocket trail");
+	M_Print (220, 72, r_rockettrail.value ? "on" : "off");//FIXME
+
+	M_Print (16, 80, "          Rocket light");
+	M_DrawCheckbox (220, 80, r_rocketlight.value);
+
+	M_Print (16, 88, "         Damage filter");
+	M_DrawCheckbox (220, 88, v_damagecshift.value == 0);
+
+	M_Print (16, 96, "        Pickup flashes");
+	M_DrawCheckbox (220, 96, v_bonusflash.value);
+
+	M_Print (16, 104, "     Draw flame models");
+	M_DrawCheckbox (220, 104, r_drawflame.value);
+
+// cursor
+	M_DrawCharacter (200, 32 + fps_cursor*8, 12+((int)(realtime*4)&1));
+}
+
+void M_Fps_Key (int k)
+{
+	switch (k)
+	{
+	case K_ESCAPE:
+		M_Menu_Options_f ();
+		break;
+
+	case K_UPARROW:
+		S_LocalSound ("misc/menu1.wav");
+		fps_cursor--;
+		if (fps_cursor < 0)
+			fps_cursor = FPS_ITEMS - 1;
+		break;
+
+	case K_DOWNARROW:
+		S_LocalSound ("misc/menu1.wav");
+		fps_cursor++;
+		if (fps_cursor >= FPS_ITEMS)
+			fps_cursor = 0;
+		break;
+
+	case K_HOME:
+	case K_PGUP:
+		S_LocalSound ("misc/menu1.wav");
+		fps_cursor = 0;
+		break;
+
+	case K_END:
+	case K_PGDN:
+		S_LocalSound ("misc/menu1.wav");
+		fps_cursor = FPS_ITEMS - 1;
+		break;
+
+	case K_ENTER:
+		S_LocalSound ("misc/menu2.wav");
+		switch (fps_cursor) {
+		case 1:
+			Cvar_SetValue (&cl_muzzleflash, cl_muzzleflash.value==2 ? 1 :
+				cl_muzzleflash.value ? 0 : 2);
+			break;
+		case 2:
+			Cvar_SetValue (&cl_gibfilter, !cl_gibfilter.value);
+			break;
+		case 3:
+			Cvar_SetValue (&cl_deadbodyfilter, !cl_deadbodyfilter.value);
+			break;
+		case 4:
+			Cvar_SetValue (&cl_rocket2grenade, !cl_rocket2grenade.value);
+			break;
+		case 5:
+			Cvar_SetValue (&r_rockettrail, !r_rockettrail.value);
+			break;
+		case 6:
+			Cvar_SetValue (&r_rocketlight, !r_rocketlight.value);
+			break;
+		case 7:
+			Cvar_SetValue (&v_damagecshift, !v_damagecshift.value);
+			break;
+		case 8:
+			Cvar_SetValue (&v_bonusflash, !v_bonusflash.value);
+			break;
+		case 9:
+			Cvar_SetValue (&r_drawflame, !r_drawflame.value);
+			break;
+			
+		}
+		break;
+
+	}
+}
+
 
 //=============================================================================
 /* VIDEO MENU */
@@ -2287,6 +2423,7 @@ void M_Init (void)
 	Cmd_AddCommand ("menu_setup", M_Menu_Setup_f);
 	Cmd_AddCommand ("menu_options", M_Menu_Options_f);
 	Cmd_AddCommand ("menu_keys", M_Menu_Keys_f);
+	Cmd_AddCommand ("menu_fps", M_Menu_Fps_f);
 	Cmd_AddCommand ("menu_video", M_Menu_Video_f);
 	Cmd_AddCommand ("help", M_Menu_Help_f);
 	Cmd_AddCommand ("menu_help", M_Menu_Help_f);
@@ -2359,6 +2496,10 @@ void M_Draw (void)
 
 	case m_keys:
 		M_Keys_Draw ();
+		break;
+
+	case m_fps:
+		M_Fps_Draw ();
 		break;
 
 	case m_video:
@@ -2457,6 +2598,10 @@ void M_Keydown (int key)
 
 	case m_keys:
 		M_Keys_Key (key);
+		return;
+
+	case m_fps:
+		M_Fps_Key (key);
 		return;
 
 	case m_video:
