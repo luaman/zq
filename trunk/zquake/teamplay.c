@@ -121,7 +121,7 @@ void TP_ExecTrigger (char *s)
 	if (Cmd_FindAlias(s))
 	{
 		char *astr, *p;
-		qboolean quote = false;
+		qbool quote = false;
 
 		astr = Cmd_AliasString (s);
 		for (p=astr ; *p ; p++)
@@ -803,7 +803,7 @@ TP_ParseFunChars
 Doesn't check for overflows, so strlen(s) should be < MAX_MACRO_STRING
 ==============
 */
-char *TP_ParseFunChars (char *s, qboolean chat)
+char *TP_ParseFunChars (char *s, qbool chat)
 {
 	static char	buf[MAX_MACRO_STRING];
 	char	*out = buf;
@@ -916,7 +916,7 @@ locdata_t locdata[MAX_LOC_ENTRIES];	// FIXME: allocate dynamically?
 int	loc_numentries;
 
 
-void TP_LoadLocFile (char *filename, qboolean quiet)
+void TP_LoadLocFile (char *filename, qbool quiet)
 {
 	char	fullpath[MAX_QPATH];
 	char	*buf, *p;
@@ -1012,7 +1012,7 @@ char *TP_LocationName (vec3_t location)
 	int		i, minnum;
 	float	dist, mindist;
 	vec3_t	vec;
-	static qboolean	recursive;
+	static qbool	recursive;
 	static char	buf[1024];
 	
 	if (!loc_numentries || (cls.state != ca_active))
@@ -1528,7 +1528,7 @@ static void FlagCommand (int *flags, int defaultflags)
 	int		i, j, c;
 	char	*p;
 	char	str[255] = "";
-	qboolean	removeflag = false;
+	qbool	removeflag = false;
 	int		flag;
 	
 	c = Cmd_Argc ();
@@ -1841,7 +1841,7 @@ static int CountTeammates (void)
 
 static void ExecTookTrigger (char *s, int flag, vec3_t org)
 {
-	qboolean	report;
+	qbool	report;
 
 	// decide whether this pickup should be reported
 	if ( !((pkflags|tookflags) & flag) )
@@ -1932,7 +1932,7 @@ more:
 	// armor
 	if (!strcmp(s, "items/armor1.wav"))	{
 		item_t	*item;
-		qboolean armor_updated;
+		qbool armor_updated;
 		int armortype;
 
 		armor_updated = (vars.stat_framecounts[STAT_ARMOR] == cls.framecount);
@@ -2188,7 +2188,7 @@ A sound trigger must be terminated by either a CR or LF.
 Returns true if a sound was found and played
 ======================
 */
-qboolean TP_CheckSoundTrigger (char *str)
+qbool TP_CheckSoundTrigger (char *str)
 {
 	int		i, j;
 	int		start, length;
@@ -2268,7 +2268,7 @@ returns false if the message shouldn't be printed
 matching filters are stripped from the message
 ======================
 */
-qboolean TP_FilterMessage (char *s)
+qbool TP_FilterMessage (char *s)
 {
 	int i, j, len, maxlen;
 

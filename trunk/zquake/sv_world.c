@@ -255,7 +255,7 @@ SV_LinkEdict
 
 ===============
 */
-void SV_LinkEdict (edict_t *ent, qboolean touch_triggers)
+void SV_LinkEdict (edict_t *ent, qbool touch_triggers)
 {
 	areanode_t	*node;
 	

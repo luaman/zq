@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "server.h"
 
-cvar_t		sv_cheats = {"sv_cheats", "0"};
-qboolean	sv_allow_cheats = false;
+cvar_t	sv_cheats = {"sv_cheats", "0"};
+qbool	sv_allow_cheats = false;
 
-int fp_messages=4, fp_persecond=4, fp_secondsdead=10;
-cvar_t sv_floodprotmsg = {"floodprotmsg", ""};
+int		fp_messages=4, fp_persecond=4, fp_secondsdead=10;
+cvar_t	sv_floodprotmsg = {"floodprotmsg", ""};
 
 extern cvar_t cl_warncmd;
 extern redirect_t sv_redirected;
@@ -140,7 +140,7 @@ SV_SetPlayer
 Sets sv_client and sv_player to the player with idnum Cmd_Argv(1)
 ==================
 */
-qboolean SV_SetPlayer (void)
+qbool SV_SetPlayer (void)
 {
 	client_t	*cl;
 	int			i;
@@ -178,7 +178,7 @@ void SV_Map_f (void)
 	char	level[MAX_QPATH];
 	char	expanded[MAX_QPATH];
 	FILE	*f;
-	qboolean	devmap;
+	qbool	devmap;
 
 	if (Cmd_Argc() != 2)
 	{

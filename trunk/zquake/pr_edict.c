@@ -33,14 +33,14 @@ globalvars_t	*pr_global_struct;
 float			*pr_globals;			// same as pr_global_struct
 int				pr_edict_size;	// in bytes
 
-qboolean		pr_z_ext_clientcommand;
+qbool			pr_z_ext_clientcommand;
 pr_cmdfunction_t	pr_cmdfunctions[MAX_PR_CMDFUNCTIONS];
 int				pr_numcmdfunctions;
 
 int		type_size[8] = {1,sizeof(void *)/4,1,3,1,1,sizeof(void *)/4,sizeof(void *)/4};
 
 ddef_t *ED_FieldAtOfs (int ofs);
-qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s);
+qbool	ED_ParseEpair (void *base, ddef_t *key, char *s);
 
 #define	MAX_FIELD_LEN	64
 #define GEFV_CACHESIZE	2
@@ -724,7 +724,7 @@ Can parse either fields or globals
 returns false if error
 =============
 */
-qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s)
+qbool ED_ParseEpair (void *base, ddef_t *key, char *s)
 {
 	int		i;
 	char	string[128];
@@ -800,10 +800,10 @@ Used for initial level load and for savegames.
 */
 char *ED_ParseEdict (char *data, edict_t *ent)
 {
-	ddef_t		*key;
-	qboolean	anglehack, skyhack;
-	qboolean	init;
-	char		keyname[256];
+	ddef_t	*key;
+	qbool	anglehack, skyhack;
+	qbool	init;
+	char	keyname[256];
 
 	init = false;
 

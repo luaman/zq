@@ -174,7 +174,7 @@ Returns true if the file exists, otherwise it attempts
 to start a download from the server.
 ===============
 */
-qboolean CL_CheckOrDownloadFile (char *filename)
+qbool CL_CheckOrDownloadFile (char *filename)
 {
 	FILE	*f;
 
@@ -556,7 +556,7 @@ void CL_StartUpload (byte *data, int size)
 	CL_NextUpload();
 } 
 
-qboolean CL_IsUploading(void)
+qbool CL_IsUploading(void)
 {
 	if (upload_data)
 		return true;
@@ -588,8 +588,8 @@ void CL_ParseServerData (void)
 	char	*str;
 	FILE	*f;
 	char	fn[MAX_OSPATH];
-	qboolean	cflag = false;
-	int protover;
+	qbool	cflag = false;
+	int		protover;
 	
 	Com_DPrintf ("Serverdata packet received.\n");
 //
@@ -1216,14 +1216,14 @@ void CL_ParseServerInfoChange (void)
 
 
 // for CL_ParsePrint
-static void FlushString (char *s, int level, qboolean team, int offset)
+static void FlushString (char *s, int level, qbool team, int offset)
 {
 	if (level == PRINT_CHAT)
 	{
 		char	buf[2048];
 		char	*out = buf, *p, *p1;
 		extern cvar_t	cl_parseWhiteText;
-		qboolean	parsewhite;
+		qbool	parsewhite;
 
 		parsewhite = cl_parseWhiteText.value == 1 ||
 			(cl_parseWhiteText.value == 2 && team);
@@ -1269,7 +1269,7 @@ void CL_ParsePrint (void)
 	int		level, flags=0;
 	int		offset = 0;
 	extern cvar_t	cl_chatsound, cl_nofake;
-	qboolean	suppress_talksound;
+	qbool	suppress_talksound;
 
 	level = MSG_ReadByte ();
 	s = MSG_ReadString ();

@@ -159,14 +159,14 @@ typedef enum {key_game, key_console, key_message, key_menu} keydest_t;
 extern keydest_t	key_dest;
 extern char 	*keybindings[256];
 extern int		key_repeats[256];
-extern qboolean	keydown[256];
+extern qbool	keydown[256];
 extern int		key_lastpress;
 
 extern char 	chat_buffer[];
 extern int 		chat_linepos;
-extern qboolean	chat_team;
+extern qbool	chat_team;
 
-void Key_Event (int key, qboolean down);
+void Key_Event (int key, qbool down);
 void Key_Init (void);
 void Key_WriteBindings (FILE *f);
 void Key_SetBinding (int keynum, char *binding);

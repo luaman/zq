@@ -366,7 +366,7 @@ R_DrawSurface
 ===============
 Returns false if it wasn't hit by a dynamic light
 */
-qboolean R_DrawSurface (void)
+qbool R_DrawSurface (void)
 {
 	unsigned char	*basetptr;
 	int				smax, tmax, twidth;

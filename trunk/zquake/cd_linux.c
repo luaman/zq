@@ -35,12 +35,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cdaudio.h"
 #include "sound.h"
 
-static qboolean cdValid = false;
-static qboolean	playing = false;
-static qboolean	wasPlaying = false;
-static qboolean	initialized = false;
-static qboolean	enabled = true;
-static qboolean playLooping = false;
+static qbool	cdValid = false;
+static qbool	playing = false;
+static qbool	wasPlaying = false;
+static qbool	initialized = false;
+static qbool	enabled = true;
+static qbool	playLooping = false;
 static float	cdvolume;
 static byte 	remap[100];
 static byte		playTrack;
@@ -49,7 +49,7 @@ static byte		maxTrack;
 static int cdfile = -1;
 static char cd_dev[64] = "/dev/cdrom";
 
-static void CDAudio_Eject(void)
+static void CDAudio_Eject (void)
 {
 	if (cdfile == -1 || !enabled)
 		return; // no cd init'd
@@ -59,7 +59,7 @@ static void CDAudio_Eject(void)
 }
 
 
-static void CDAudio_CloseDoor(void)
+static void CDAudio_CloseDoor (void)
 {
 	if (cdfile == -1 || !enabled)
 		return; // no cd init'd
@@ -68,7 +68,7 @@ static void CDAudio_CloseDoor(void)
 		Com_DPrintf ("ioctl cdromclosetray failed\n");
 }
 
-static int CDAudio_GetAudioDiskInfo(void)
+static int CDAudio_GetAudioDiskInfo (void)
 {
 	struct cdrom_tochdr tochdr;
 
@@ -93,7 +93,7 @@ static int CDAudio_GetAudioDiskInfo(void)
 }
 
 
-void CDAudio_Play(byte track, qboolean looping)
+void CDAudio_Play (byte track, qbool looping)
 {
 	struct cdrom_tocentry entry;
 	struct cdrom_ti ti;
@@ -160,7 +160,7 @@ void CDAudio_Play(byte track, qboolean looping)
 }
 
 
-void CDAudio_Stop(void)
+void CDAudio_Stop (void)
 {
 	if (cdfile == -1 || !enabled)
 		return;
@@ -175,7 +175,7 @@ void CDAudio_Stop(void)
 	playing = false;
 }
 
-void CDAudio_Pause(void)
+void CDAudio_Pause (void)
 {
 	if (cdfile == -1 || !enabled)
 		return;
@@ -191,7 +191,7 @@ void CDAudio_Pause(void)
 }
 
 
-void CDAudio_Resume(void)
+void CDAudio_Resume (void)
 {
 	if (cdfile == -1 || !enabled)
 		return;
@@ -325,7 +325,7 @@ static void CD_f (void)
 	}
 }
 
-void CDAudio_Update(void)
+void CDAudio_Update (void)
 {
 	struct cdrom_subchnl subchnl;
 	static time_t lastchk;
@@ -366,7 +366,7 @@ void CDAudio_Update(void)
 	}
 }
 
-int CDAudio_Init(void)
+int CDAudio_Init (void)
 {
 	int i;
 
@@ -401,7 +401,7 @@ int CDAudio_Init(void)
 }
 
 
-void CDAudio_Shutdown(void)
+void CDAudio_Shutdown (void)
 {
 	if (!initialized)
 		return;

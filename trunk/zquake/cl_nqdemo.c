@@ -59,9 +59,9 @@ void R_TranslatePlayerSkin (int playernum);
 
 //=========================================================================================
 
-qboolean	nq_drawpings;	// for sbar code
+qbool	nq_drawpings;	// for sbar code
 
-qboolean	nq_player_teleported;	// hacky
+qbool	nq_player_teleported;	// hacky
 
 vec3_t	nq_last_fixangle;
 
@@ -74,10 +74,10 @@ float	nq_mtime[2];
 vec3_t	nq_mvelocity[2];
 vec3_t	nq_mviewangles[2];
 vec3_t	nq_mviewangles_temp;
-qboolean	standard_quake = true;
+qbool	standard_quake = true;
 
 
-qboolean CL_GetNQDemoMessage (void)
+qbool CL_GetNQDemoMessage (void)
 {
 	int r, i;
 	float f;
@@ -492,7 +492,7 @@ void NQD_ParseUpdate (int bits)
 	int			i;
 //	model_t		*model;
 	int			modnum;
-	qboolean	forcelink;
+	qbool		forcelink;
 	centity_t	*ent;
 	entity_state_t	*state;
 	int			num;
@@ -929,9 +929,9 @@ extern char *svc_strings[];
 
 void NQD_ParseServerMessage (void)
 {
-	int			cmd;
-	int			i;
-	qboolean	message_with_datagram;		// hack to fix glitches when receiving a packet
+	int		cmd;
+	int		i;
+	qbool	message_with_datagram;		// hack to fix glitches when receiving a packet
 											// without a datagram
 
 	nq_player_teleported = false;		// OMG, it's a hack!
@@ -1194,8 +1194,8 @@ void NQD_ReadPackets (void)
 
 void NQD_StartPlayback ()
 {
-	int c;
-	qboolean	neg;
+	int		c;
+	qbool	neg;
 
 	// parse forced cd track
 	while ((c = getc(cls.demofile)) != '\n') {

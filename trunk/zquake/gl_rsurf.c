@@ -43,7 +43,7 @@ typedef struct glRect_s {
 } glRect_t;
 
 glpoly_t	*lightmap_polys[MAX_LIGHTMAPS];
-qboolean	lightmap_modified[MAX_LIGHTMAPS];
+qbool		lightmap_modified[MAX_LIGHTMAPS];
 glRect_t	lightmap_rectchange[MAX_LIGHTMAPS];
 
 int			allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
@@ -59,7 +59,7 @@ msurface_t  *waterchain = NULL;
 void R_RenderDynamicLightmaps (msurface_t *fa);
 
 glpoly_t	*fullbright_polys[MAX_GLTEXTURES];
-qboolean	drawfullbrights = false;
+qbool		drawfullbrights = false;
 
 void DrawGLPoly (glpoly_t *p);
 
@@ -698,7 +698,7 @@ void R_RenderBrushPoly (msurface_t *fa)
 	int			maps;
 	glRect_t    *theRect;
 	int			smax, tmax;
-	qboolean	lightstyle_modified = false;
+	qbool		lightstyle_modified = false;
 
 	c_brush_polys++;
 
@@ -783,7 +783,7 @@ void R_RenderDynamicLightmaps (msurface_t *fa)
 	int			maps;
 	glRect_t    *theRect;
 	int			smax, tmax;
-	qboolean	lightstyle_modified = false;
+	qbool		lightstyle_modified = false;
 
 	c_brush_polys++;
 
@@ -987,7 +987,7 @@ void R_DrawBrushModel (entity_t *e)
 	float		dot;
 	mplane_t	*pplane;
 	model_t		*clmodel;
-	qboolean	rotated;
+	qbool		rotated;
 
 	currententity = e;
 	currenttexture = -1;

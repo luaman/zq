@@ -39,7 +39,7 @@ cvar_t	sv_nailhack	= {"sv_nailhack", "0"};
 cvar_t	sv_nailhack	= {"sv_nailhack", "1"};
 #endif
 
-qboolean SV_AddNailUpdate (edict_t *ent)
+qbool SV_AddNailUpdate (edict_t *ent)
 {
 	if (sv_nailhack.value)
 		return false;

@@ -280,7 +280,7 @@ const cshift_t	cshift_slime = { {  0, 25,  5}, 150 };
 const cshift_t	cshift_lava =  { {255, 80,  0}, 150 };
 
 #define ONCHANGE(FUNC, VAR)									\
-void FUNC (cvar_t *var, char *string, qboolean *cancel) {	\
+void FUNC (cvar_t *var, char *string, qbool *cancel) {	\
 	Cvar_SetValue (&VAR, Q_atof(string));					\
 }
 
@@ -354,7 +354,7 @@ void BuildGammaTable (float g, float c)
 V_CheckGamma
 =================
 */
-qboolean V_CheckGamma (void)
+qbool V_CheckGamma (void)
 {
 	static float old_gamma;
 	static float old_contrast;
@@ -610,7 +610,7 @@ V_UpdatePalette
 void V_UpdatePalette (void)
 {
 	int		i, j;
-	qboolean	new;
+	qbool	new;
 	static float	prev_blend[4];
 	float	a, rgb[3];
 	int		c;
@@ -688,11 +688,11 @@ V_UpdatePalette
 void V_UpdatePalette (void)
 {
 	int		i, j;
-	qboolean	new;
+	qbool	new;
 	byte	*basepal, *newpal;
 //	byte	pal[768];
 	int		r,g,b;
-	qboolean force;
+	qbool	force;
 	static cshift_t	prev_cshifts[NUM_CSHIFTS];
 
 	if (cls.state != ca_active) {

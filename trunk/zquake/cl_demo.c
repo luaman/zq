@@ -33,10 +33,10 @@ void Cam_TryLock (void);
 void CL_FinishTimeDemo (void);
 
 // .qwz playback
-static qboolean	qwz_unpacking = false;
+static qbool	qwz_unpacking = false;
 
 #ifdef _WIN32
-static qboolean	qwz_playback = false;
+static qbool	qwz_playback = false;
 static HANDLE	hQizmoProcess = NULL;
 static char tempqwd_name[256] = ""; // this file must be deleted
 									// after playback is finished
@@ -163,7 +163,7 @@ CL_GetDemoMessage
   FIXME...
 ====================
 */
-qboolean CL_GetDemoMessage (void)
+qbool CL_GetDemoMessage (void)
 {
 	int		r, i, j;
 	float	demotime;
@@ -953,7 +953,7 @@ play [demoname]
 void CL_PlayDemo_f (void)
 {
 	char	name[256];
-	qboolean	try_dem;
+	qbool	try_dem;
 
 	if (Cmd_Argc() != 2)
 	{

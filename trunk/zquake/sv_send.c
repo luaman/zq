@@ -205,7 +205,7 @@ void SV_Multicast (vec3_t origin, int to)
 	byte		*mask;
 	int			leafnum;
 	int			j;
-	qboolean	reliable;
+	qbool		reliable;
 	vec3_t		vieworg;
 
 	reliable = false;
@@ -331,8 +331,8 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
 	int			i;
 	int			ent;
 	vec3_t		origin;
-	qboolean	use_phs;
-	qboolean	reliable = false;
+	qbool		use_phs;
+	qbool		reliable = false;
 
 	if (volume < 0 || volume > 255)
 		Host_Error ("SV_StartSound: volume = %i", volume);
@@ -558,7 +558,7 @@ void SV_UpdateClientStats (client_t *client)
 SV_SendClientDatagram
 =======================
 */
-qboolean SV_SendClientDatagram (client_t *client)
+qbool SV_SendClientDatagram (client_t *client)
 {
 	byte		msg_buf[MAX_DATAGRAM];
 	sizebuf_t	msg;

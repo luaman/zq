@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void CL_ProcessServerInfo (void);
 void SV_Serverinfo_f (void);
 void Key_WriteBindings (FILE *f);
-void S_StopAllSounds (qboolean clear);
+void S_StopAllSounds (qbool clear);
 
 void CL_RSShot (void);
 cvar_t cl_allowRSShot = {"scr_allowsnap", "1"};
@@ -129,7 +129,7 @@ CL_Say
 Handles both say and say_team
 ===============
 */
-void CL_Say (qboolean team)
+void CL_Say (qbool team)
 {
 	extern cvar_t cl_fakename;
 	char	text[1024], sendtext[1024], *s;
@@ -760,7 +760,7 @@ void CL_WriteConfig_f (void)
 /*
 ** CL_ConnectedToQizmo
 */
-qboolean CL_ConnectedToQizmo (void)
+qbool CL_ConnectedToQizmo (void)
 {
 	if (cls.state < ca_connected)
 		return false;
@@ -774,7 +774,7 @@ qboolean CL_ConnectedToQizmo (void)
 /*
 ** CL_ConnectedToQWServer
 */
-qboolean CL_ConnectedToQWServer (void)
+qbool CL_ConnectedToQWServer (void)
 {
 	char *p;
 
@@ -1086,7 +1086,7 @@ CL_CheckServerCommand
 Called by Cmd_ExecuteString if cbuf_current==&cbuf_svc
 ================
 */
-qboolean CL_CheckServerCommand ()
+qbool CL_CheckServerCommand ()
 {
 	svcmd_t	*cmd;
 	char	*s;

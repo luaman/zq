@@ -40,7 +40,7 @@ typedef struct cbuf_s {
 	char	text_buf[MAXCMDBUF];
 	int		text_start;
 	int		text_end;
-	qboolean	wait;
+	qbool	wait;
 } cbuf_t;
 
 extern cbuf_t	cbuf_main;
@@ -98,7 +98,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function);
 // if function is NULL, the command will be forwarded to the server
 // as a clc_stringcmd instead of executed locally
 
-qboolean Cmd_Exists (char *cmd_name);
+qbool Cmd_Exists (char *cmd_name);
 // used by the cvar code to check for cvar / command name overlap
 
 cmd_function_t *Cmd_FindCommand (char *cmd_name);  // for message triggers
@@ -140,7 +140,7 @@ void Cmd_ForwardToServer (void);
 void Cbuf_AddEarlyCommands (void);
 void Cmd_StuffCmds_f (void);
 void Cmd_AddLegacyCommand (char *oldname, char *newname);
-qboolean Cmd_IsLegacyCommand (char *oldname);
+qbool Cmd_IsLegacyCommand (char *oldname);
 
 
 //===========================================================================
@@ -159,7 +159,7 @@ typedef struct cmd_alias_s
 	int		flags;
 } cmd_alias_t;
 
-qboolean Cmd_DeleteAlias (char *name);	// return true if successful
+qbool Cmd_DeleteAlias (char *name);	// return true if successful
 void Cmd_RemoveStuffedAliases (void);
 cmd_alias_t *Cmd_FindAlias (char *name); // returns NULL on failure
 char *Cmd_AliasString (char *name); // returns NULL on failure

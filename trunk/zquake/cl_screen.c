@@ -108,7 +108,7 @@ cvar_t		show_fps = {"show_fps", "0"};
 cvar_t		gl_triplebuffer = {"gl_triplebuffer", "1", CVAR_ARCHIVE};
 #endif
 
-qboolean	scr_initialized;		// ready to draw
+qbool		scr_initialized;		// ready to draw
 
 mpic_t		*scr_ram;
 mpic_t		*scr_net;
@@ -123,13 +123,13 @@ viddef_t	vid;				// global video state
 
 vrect_t		scr_vrect;
 
-qboolean	scr_skipupdate;
+qbool		scr_skipupdate;
 
-qboolean	scr_drawloading;
-qboolean	scr_disabled_for_loading;
+qbool		scr_drawloading;
+qbool		scr_disabled_for_loading;
 float		scr_disabled_time;
 
-qboolean	block_drawing;
+qbool		block_drawing;
 
 /*
 ===============================================================================
@@ -290,7 +290,7 @@ void SCR_CalcRefdef (void)
 	float		size;
 #ifdef GLQUAKE
 	int 		h;
-	qboolean	full = false;
+	qbool		full = false;
 #else
 	vrect_t		vrect;
 #endif

@@ -31,12 +31,12 @@ void AppActivate (BOOL fActive, BOOL minimize);
 
 extern int		Minimized;
 
-HWND		mainwindow;
+HWND	mainwindow;
 
-qboolean	DDActive;
+qbool	DDActive;
 
-int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
-RECT		window_rect;
+int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
+RECT	window_rect;
 
 #define	BASEWIDTH	320
 #define	BASEHEIGHT	200
@@ -53,8 +53,8 @@ cvar_t	vid_ref = {"vid_ref", "soft", CVAR_ROM};
 cvar_t	_windowed_mouse = {"_windowed_mouse", "0"};
 
 static HICON	hIcon;
-static qboolean in_mode_set = false;  // what's it for?
-static qboolean	vid_initialized = false;
+static qbool	in_mode_set = false;  // what's it for?
+static qbool	vid_initialized = false;
 
 
 LPDIRECTDRAW lpDirectDraw;
@@ -478,7 +478,7 @@ ClearAllStates
 void ClearAllStates (void)
 {
 	extern void IN_ClearStates (void);
-	extern qboolean keydown[256];
+	extern qbool keydown[256];
 	int		i;
 	
 // send an up event for each key, to make sure the server clears them all
@@ -543,7 +543,7 @@ MAIN WINDOW
 ===================================================================
 */
 
-int IN_TranslateKeyEvent (int lKeyData, qboolean down);
+int IN_TranslateKeyEvent (int lKeyData, qbool down);
 
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {

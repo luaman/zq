@@ -45,7 +45,7 @@ extern	int		edit_line;
 extern	int		key_linepos;
 		
 
-qboolean	con_initialized = false;
+qbool		con_initialized = false;
 
 
 void Key_ClearTyping (void)

@@ -28,8 +28,8 @@ edict_t	*sv_player;
 cvar_t	sv_spectalk = {"sv_spectalk", "1"};
 cvar_t	sv_mapcheck	= {"sv_mapcheck", "1"};
 
-void OnChange_sv_maxpitch (cvar_t *var, char *str, qboolean *cancel);
-void OnChange_sv_minpitch (cvar_t *var, char *str, qboolean *cancel);
+void OnChange_sv_maxpitch (cvar_t *var, char *str, qbool *cancel);
+void OnChange_sv_minpitch (cvar_t *var, char *str, qbool *cancel);
 cvar_t	sv_maxpitch = {"sv_maxpitch", "80", 0, OnChange_sv_maxpitch};
 cvar_t	sv_minpitch = {"sv_minpitch", "-70", 0, OnChange_sv_minpitch};
 
@@ -52,7 +52,7 @@ extern double	sv_frametime;
 // but don't want them in serverinfo (save a couple of bytes of space)
 // Value sanity checks are also done here
 //
-void OnChange_sv_maxpitch (cvar_t *var, char *str, qboolean *cancel) {
+void OnChange_sv_maxpitch (cvar_t *var, char *str, qbool *cancel) {
 	float	newval;
 	char	*newstr;
 
@@ -68,7 +68,7 @@ void OnChange_sv_maxpitch (cvar_t *var, char *str, qboolean *cancel) {
 	SV_SendServerInfoChange("maxpitch", newstr);
 }
 
-void OnChange_sv_minpitch (cvar_t *var, char *str, qboolean *cancel) {
+void OnChange_sv_minpitch (cvar_t *var, char *str, qbool *cancel) {
 	float	newval;
 	char	*newstr;
 
@@ -806,7 +806,7 @@ deny_download:
 SV_Say
 ==================
 */
-void SV_Say (qboolean team)
+void SV_Say (qbool team)
 {
 	client_t *client;
 	int		j, tmp;
@@ -1390,7 +1390,7 @@ CHEAT COMMANDS
 =============================================================================
 */
 
-extern qboolean	sv_allow_cheats;
+extern qbool	sv_allow_cheats;
 
 /*
 ==================
@@ -1897,8 +1897,8 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	if (!sv_client->spectator && !sv_client->bot)
 	{
-		qboolean	old_onground;
-		vec3_t		originalvel;
+		qbool	old_onground;
+		vec3_t	originalvel;
 
 		VectorCopy (sv_player->v.velocity, originalvel);
 		old_onground = (int)sv_player->v.flags & FL_ONGROUND;
@@ -2003,8 +2003,7 @@ void SV_PostRunCmd (void)
 	// run post-think
 
 	if (!sv_client->spectator) {
-		qboolean	onground;
-		onground = (int)sv_player->v.flags & FL_ONGROUND;
+		qbool onground = (int)sv_player->v.flags & FL_ONGROUND;
 
 		pr_global_struct->time = sv.time;
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
@@ -2084,7 +2083,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 	usercmd_t	oldest, oldcmd, newcmd;
 	client_frame_t	*frame;
 	vec3_t o;
-	qboolean	move_issued = false; //only allow one move command
+	qbool	move_issued = false; //only allow one move command
 	int		checksumIndex;
 	byte	checksum, calculatedChecksum;
 	int		seq_hash;

@@ -187,7 +187,7 @@ LINE TESTING IN HULLS
 static hull_t	trace_hull;
 static trace_t	trace_trace;
 
-static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
+static qbool RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
 {
 	dclipnode_t	*node;
 	mplane_t	*plane;
@@ -979,7 +979,7 @@ void CM_InvalidateMap (void)
 /*
 ** CM_LoadMap
 */
-cmodel_t *CM_LoadMap (char *name, qboolean clientload, unsigned *checksum, unsigned *checksum2)
+cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned *checksum2)
 {
 	int			i;
 	dheader_t	*header;

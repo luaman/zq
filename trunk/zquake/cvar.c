@@ -146,7 +146,7 @@ Cvar_Set
 */
 void Cvar_Set (cvar_t *var, char *string)
 {
-	static qboolean	changing = false;
+	static qbool changing = false;
 
 	if (!var)
 		return;
@@ -165,7 +165,7 @@ void Cvar_Set (cvar_t *var, char *string)
 	}
 
 	if (var->OnChange && !changing) {
-		qboolean cancel = false;
+		qbool cancel = false;
 		changing = true;
 		var->OnChange(var, string, &cancel);
 		changing = false;
@@ -304,7 +304,7 @@ Cvar_Command
 Handles variable inspection and changing from the console
 ============
 */
-qboolean Cvar_Command (void)
+qbool Cvar_Command (void)
 {
 	cvar_t		*var;
 
@@ -436,7 +436,7 @@ Cvar_Delete
 ===========
 returns true if the cvar was found (and deleted)
 */
-qboolean Cvar_Delete (char *name)
+qbool Cvar_Delete (char *name)
 {
 	cvar_t	*var, *prev;
 	int		key;
@@ -484,7 +484,7 @@ qboolean Cvar_Delete (char *name)
 }
 
 
-static qboolean cvar_seta = false;
+static qbool cvar_seta = false;
 
 void Cvar_Set_f (void)
 {

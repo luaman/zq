@@ -230,7 +230,7 @@ void PF_sprint (void)
 	char		*buf, *str;
 	int			buflen, len;
 	int			i;
-	qboolean	flush = false, flushboth = false;
+	qbool		flush = false, flushboth = false;
 	
 	entnum = G_EDICTNUM(OFS_PARM0);
 	level = G_FLOAT(OFS_PARM1);

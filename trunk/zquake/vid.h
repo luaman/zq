@@ -80,7 +80,7 @@ int VID_SetMode (int modenum, unsigned char *palette);
 // sets the mode; only used by the Quake engine for resetting to mode 0 (the
 // base mode) on memory allocation failures
 
-void VID_HandlePause (qboolean pause);
+void VID_HandlePause (qbool pause);
 // called only on Win32, when pause happens, so the mouse can be released
 
 void VID_LockBuffer (void);
@@ -90,13 +90,13 @@ void VID_SetCaption (char *text);
 
 // oldman: gamma variables for glx linux
 void VID_SetDeviceGammaRamp (unsigned short *ramps);
-extern qboolean vid_hwgamma_enabled;
+extern qbool vid_hwgamma_enabled;
 
 #ifdef GLQUAKE
-qboolean VID_Is8bit(void);
+qbool VID_Is8bit(void);
 #endif
 
 #ifdef _WIN32
 void VID_SetDeviceGammaRamp (unsigned short *ramps);
-extern qboolean vid_hwgamma_enabled;
+extern qbool vid_hwgamma_enabled;
 #endif

@@ -40,11 +40,11 @@ int		history_line=0;
 keydest_t	key_dest;
 
 char	*keybindings[256];
-qboolean	consolekeys[256];	// if true, can't be rebound while in console
-qboolean	menubound[256];	// if true, can't be rebound while in menu
+qbool	consolekeys[256];	// if true, can't be rebound while in console
+qbool	menubound[256];	// if true, can't be rebound while in menu
 int		keyshift[256];		// key to map to if shift held down in console
 int		key_repeats[256];	// if > 1, it is autorepeating
-qboolean	keydown[256];
+qbool	keydown[256];
 
 typedef struct
 {
@@ -200,7 +200,7 @@ keyname_t keynames[] =
 ==============================================================================
 */
 
-qboolean CheckForCommand (void)
+qbool CheckForCommand (void)
 {
 	char	command[128];
 	char	*cmd, *s;
@@ -736,9 +736,9 @@ void Key_Console (int key)
 
 //============================================================================
 
-qboolean	chat_team;
-char		chat_buffer[MAXCMDLINE];
-int			chat_linepos = 0;
+qbool	chat_team;
+char	chat_buffer[MAXCMDLINE];
+int		chat_linepos = 0;
 
 void Key_Message (int key)
 {
@@ -1149,7 +1149,7 @@ Called by the system between frames for both key up and key down events
 Should NOT be called during an interrupt!
 ===================
 */
-void Key_EventEx (int key, int shiftkey, qboolean down)
+void Key_EventEx (int key, int shiftkey, qbool down)
 {
 	char	*kb;
 	char	cmd[1024];
@@ -1304,7 +1304,7 @@ void Key_EventEx (int key, int shiftkey, qboolean down)
 	}
 }
 
-void Key_Event (int key, qboolean down)
+void Key_Event (int key, qbool down)
 {
 	if (keydown[K_SHIFT])
 		Key_EventEx (key, keyshift[key], down);

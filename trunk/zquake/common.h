@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 typedef unsigned char 		byte;
 #define _DEF_BYTE_
 
-typedef enum {false, true} qboolean;
+typedef enum {false, true} qbool;
 
 #ifndef NULL
 #define NULL ((void *)0)
@@ -195,8 +195,8 @@ typedef enum {false, true} qboolean;
 
 typedef struct sizebuf_s
 {
-	qboolean	allowoverflow;	// if false, do a Sys_Error
-	qboolean	overflowed;		// set to true if the buffer size failed
+	qbool	allowoverflow;	// if false, do a Sys_Error
+	qbool	overflowed;		// set to true if the buffer size failed
 	byte	*data;
 	int		maxsize;
 	int		cursize;
@@ -270,8 +270,8 @@ void MSG_WriteDeltaUsercmd (sizebuf_t *sb, struct usercmd_s *from, struct usercm
 void MSG_EmitPacketEntities (struct packet_entities_s *from, int delta_sequence, struct packet_entities_s *to,
 							sizebuf_t *msg, struct entity_state_s *(*GetBaseline)(int number));
 
-extern	int			msg_readcount;
-extern	qboolean	msg_badread;		// set if a read goes beyond end of message
+extern	int		msg_readcount;
+extern	qbool	msg_badread;		// set if a read goes beyond end of message
 
 void MSG_BeginReading (void);
 int MSG_GetReadCount(void);
@@ -286,7 +286,7 @@ char *MSG_ReadStringLine (void);
 float MSG_ReadCoord (void);
 float MSG_ReadAngle (void);
 float MSG_ReadAngle16 (void);
-void MSG_ReadDeltaUsercmd (struct usercmd_s *from, struct usercmd_s *cmd, qboolean protocol_26);
+void MSG_ReadDeltaUsercmd (struct usercmd_s *from, struct usercmd_s *cmd, qbool protocol_26);
 
 //============================================================================
 
@@ -314,8 +314,8 @@ int Com_HashKey (char *name);
 
 //============================================================================
 
-extern	char		com_token[1024];
-extern	qboolean	com_eof;
+extern	char	com_token[1024];
+extern	qbool	com_eof;
 
 char *COM_Parse (char *data);
 
@@ -354,7 +354,8 @@ extern char	com_gamedir[MAX_OSPATH];
 extern char	com_basedir[MAX_OSPATH];
 extern char com_gamedirfile[MAX_QPATH];
 
-qboolean file_from_pak; // global indicating file came from pak file
+extern qbool	file_from_pak;		// set if file came from a pak file
+extern qbool	file_from_gamedir;	// set if file came from a gamedir (and gamedir wasn't id1/qw)
 
 void FS_InitFilesystem (void);
 void FS_SetGamedir (char *dir);
@@ -409,25 +410,25 @@ void Com_DPrintf (char *fmt, ...);
 #elif CLIENTONLY
 #define	dedicated	0
 #else
-extern qboolean	dedicated;
+extern qbool	dedicated;
 #endif
 
 extern cvar_t	developer;
 extern cvar_t	registered;
 
-extern qboolean		com_serveractive;	// true if sv.state != ss_dead
-extern int			CL_ClientState ();	// returns cls.state
+extern qbool	com_serveractive;	// true if sv.state != ss_dead
+extern int		CL_ClientState ();	// returns cls.state
 
-extern double		curtime;	// not bounded or scaled, shared by
+extern double	curtime;	// not bounded or scaled, shared by
 								// local client and server
 
 //
 // host
 //
-extern qboolean		host_initialized;
-extern int			host_memsize;
+extern qbool	host_initialized;
+extern int		host_memsize;
 
-extern cvar_t		host_mapname;
+extern cvar_t	host_mapname;
 
 // functions that may be called accross subsystems (host, client, server)
 

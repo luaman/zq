@@ -46,16 +46,16 @@ POINT		current_pos;
 double		mouse_x, mouse_y;
 int			old_mouse_x, old_mouse_y, mx_accum, my_accum;
 
-static qboolean	restore_spi;
+static qbool	restore_spi;
 static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
-qboolean		mouseinitialized;
-static qboolean	mouseparmsvalid, mouseactivatetoggle;
-static qboolean	mouseshowtoggle = 1;
-static qboolean	dinput_acquired;
+qbool			mouseinitialized;
+static qbool	mouseparmsvalid, mouseactivatetoggle;
+static qbool	mouseshowtoggle = 1;
+static qbool	dinput_acquired;
 static unsigned int		mstate_di;
 unsigned int uiWheelMessage;
 
-qboolean	mouseactive;
+qbool		mouseactive;
 
 // joystick defines and variables
 // where should defines be moved?
@@ -108,7 +108,7 @@ cvar_t	joy_yawsensitivity = {"joyyawsensitivity", "-1.0"};
 cvar_t	joy_wwhack1 = {"joywwhack1", "0.0"};
 cvar_t	joy_wwhack2 = {"joywwhack2", "0.0"};
 
-qboolean	joy_avail, joy_advancedinit, joy_haspov;
+qbool		joy_avail, joy_advancedinit, joy_haspov;
 DWORD		joy_oldbuttonstate, joy_oldpovstate;
 
 int			joy_id;
@@ -122,7 +122,7 @@ static JOYINFOEX	ji;
 
 static HINSTANCE hInstDI;
 
-static qboolean	dinput;
+static qbool	dinput;
 
 typedef struct MYDATA {
 	LONG  lX;                   // X axis goes here
@@ -332,7 +332,7 @@ void IN_RestoreOriginalMouseState (void)
 IN_InitDInput
 ===========
 */
-qboolean IN_InitDInput (void)
+qbool IN_InitDInput (void)
 {
     HRESULT		hr;
 	DIPROPDWORD	dipdw = {
@@ -1032,7 +1032,7 @@ void IN_Commands (void)
 IN_ReadJoystick
 =============== 
 */  
-qboolean IN_ReadJoystick (void)
+qbool IN_ReadJoystick (void)
 {
 
 	memset (&ji, 0, sizeof(ji));
@@ -1265,13 +1265,13 @@ static byte scantokey[128] =
 	0,      0,      0,      0,      0,      0,      0,      0
 };
 
-// user defined keymap
-byte keymap[256];	// 128-255 are extended scancodes
-byte shiftkeymap[256];	// generated when shift is pressed
-byte altgrkeymap[256];	// generated when Alt-GR is pressed
-qboolean keymap_active = false;
+// user-defined keymap
+byte	keymap[256];	// 128-255 are extended scancodes
+byte	shiftkeymap[256];	// generated when shift is pressed
+byte	altgrkeymap[256];	// generated when Alt-GR is pressed
+qbool	keymap_active = false;
 
-extern void Key_EventEx (int key, int shiftkey, qboolean down);
+extern void Key_EventEx (int key, int shiftkey, qbool down);
 
 /*
 =======
@@ -1280,7 +1280,7 @@ IN_TranslateKeyEvent
 Map from windows to quake keynums and generate Key_EventEx
 =======
 */
-void IN_TranslateKeyEvent (int lKeyData, qboolean down)
+void IN_TranslateKeyEvent (int lKeyData, qbool down)
 {
 	int		extended, scancode, key, shiftkey;
 	extern cvar_t	cl_keypad;
@@ -1358,7 +1358,7 @@ keycode     40 ' #34
 void IN_LoadKeys_f (void)
 {
 	int n, keynum, count, cmd_shift;
-	qboolean ext;
+	qbool ext;
 	char *data;
 	char filename[MAX_QPATH];
 	char layout[64] = "custom";

@@ -31,7 +31,7 @@ char	loadname[32];	// for hunk tags
 void Mod_LoadSpriteModel (model_t *mod, void *buffer);
 void Mod_LoadBrushModel (model_t *mod, void *buffer);
 void Mod_LoadAliasModel (model_t *mod, void *buffer);
-model_t *Mod_LoadModel (model_t *mod, qboolean crash);
+model_t *Mod_LoadModel (model_t *mod, qbool crash);
 
 byte	mod_novis[MAX_MAP_LEAFS/8];
 
@@ -232,7 +232,7 @@ Mod_LoadModel
 Loads a model into the cache
 ==================
 */
-model_t *Mod_LoadModel (model_t *mod, qboolean crash)
+model_t *Mod_LoadModel (model_t *mod, qbool crash)
 {
 	void	*d;
 	unsigned *buf;
@@ -308,7 +308,7 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t *Mod_ForName (char *name, qboolean crash)
+model_t *Mod_ForName (char *name, qbool crash)
 {
 	model_t	*mod;
 	
@@ -318,7 +318,7 @@ model_t *Mod_ForName (char *name, qboolean crash)
 }
 
 
-qboolean Img_HasFullbrights (byte *pixels, int size)
+qbool Img_HasFullbrights (byte *pixels, int size)
 {
     int i;
 

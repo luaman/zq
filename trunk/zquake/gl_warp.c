@@ -30,7 +30,7 @@ float	speedscale;		// for top sky and bottom sky
 
 msurface_t	*warpface;
 
-qboolean	r_skyboxloaded;
+qbool	r_skyboxloaded;
 
 void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
 {
@@ -606,7 +606,7 @@ void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 {
 	float	*norm;
 	float	*v;
-	qboolean	front, back;
+	qbool	front, back;
 	float	d, e;
 	float	dists[MAX_CLIP_VERTS];
 	int		sides[MAX_CLIP_VERTS];

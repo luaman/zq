@@ -37,9 +37,9 @@ static char	*largv[MAX_NUM_ARGVS + 1];
 cvar_t	developer = {"developer","0"};
 cvar_t	registered = {"registered","0"};
 
-qboolean com_serveractive = false;
+qbool	com_serveractive = false;
 
-void OnChange_logfile_var (cvar_t *var, char *string, qboolean *cancel);
+void OnChange_logfile_var (cvar_t *var, char *string, qbool *cancel);
 cvar_t	logfile_var = {"logfile", "0", 0, OnChange_logfile_var};
 FILE	*logfile;
 
@@ -1035,8 +1035,8 @@ Finds the file in the search path.
 Sets com_filesize and one of handle or file
 ===========
 */
-qboolean file_from_pak; // global indicating file came from pack file ZOID
-qboolean file_from_gamedir;	//global indicating file came from pak/file in gamedir (and gamedir wasn't id1/qw)
+qbool	file_from_pak;		// global indicating file came from a packfile
+qbool	file_from_gamedir;	// global indicating file came from a gamedir (and gamedir wasn't id1/qw)
 
 int FS_FOpenFile (char *filename, FILE **file)
 {
@@ -1773,7 +1773,7 @@ void Com_EndRedirect (void)
 	rd_print = NULL;
 }
 
-void OnChange_logfile_var (cvar_t *var, char *string, qboolean *cancel)
+void OnChange_logfile_var (cvar_t *var, char *string, qbool *cancel)
 {
 	if (!Q_atof(string) && logfile) {
 		// close logfile if it's opened

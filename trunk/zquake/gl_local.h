@@ -58,10 +58,10 @@ extern	float	gldepthmin, gldepthmax;
 
 #define MAX_GLTEXTURES 1024
 
-void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha);
-void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean brighten);
-void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboolean alpha);
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, qboolean brighten);
+void GL_Upload32 (unsigned *data, int width, int height,  qbool mipmap, qbool alpha);
+void GL_Upload8 (byte *data, int width, int height,  qbool mipmap, qbool alpha, qbool brighten);
+void GL_Upload8_EXT (byte *data, int width, int height,  qbool mipmap, qbool alpha);
+int GL_LoadTexture (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten);
 int GL_FindTexture (char *identifier);
 
 typedef struct
@@ -101,7 +101,7 @@ texture_t *R_TextureAnimation (texture_t *base);
 
 
 extern	entity_t	r_worldentity;
-extern	qboolean	r_cache_thrash;		// compatability
+extern	qbool		r_cache_thrash;		// compatability
 extern	vec3_t		modelorg, r_entorigin;
 extern	entity_t	*currententity;
 extern	int			r_visframecount;
@@ -183,7 +183,7 @@ extern	int		gl_alpha_format;
 extern	cvar_t	gl_playermip;
 
 extern	int			mirrortexturenum;	// quake texturenum, not gltexturenum
-extern	qboolean	mirror;
+extern	qbool		mirror;
 extern	mplane_t	*mirror_plane;
 
 extern	float	r_world_matrix[16];
@@ -211,8 +211,8 @@ extern lpMTexFUNC qglMultiTexCoord2f;
 extern lpSelTexFUNC qglActiveTexture;
 #endif
 
-extern qboolean gl_mtexable;
-extern qboolean gl_mtexfbskins;
+extern qbool gl_mtexable;
+extern qbool gl_mtexfbskins;
 
 void GL_DisableMultitexture(void);
 void GL_EnableMultitexture(void);
@@ -228,7 +228,7 @@ void R_DrawSkyChain (msurface_t *s);
 void R_AddSkyBoxSurface (msurface_t *fa);
 void R_ClearSkyBox (void);
 void R_DrawSkyBox (void);
-extern qboolean	r_skyboxloaded;
+extern qbool	r_skyboxloaded;
 
 //
 // gl_draw.c
@@ -238,8 +238,8 @@ void GL_Set2D (void);
 //
 // gl_rmain.c
 //
-qboolean R_CullBox (vec3_t mins, vec3_t maxs);
-qboolean R_CullSphere (vec3_t centre, float radius);
+qbool R_CullBox (vec3_t mins, vec3_t maxs);
+qbool R_CullSphere (vec3_t centre, float radius);
 void R_RotateForEntity (entity_t *e);
 void R_PolyBlend (void);
 void R_BrightenScreen (void);

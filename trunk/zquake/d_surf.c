@@ -23,11 +23,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "d_local.h"
 #include "r_local.h"
 
-float           surfscale;
-qboolean        r_cache_thrash;         // set if surface cache is thrashing
+float		surfscale;
+qbool		r_cache_thrash;         // set if surface cache is thrashing
 
-int                                     sc_size;
-surfcache_t                     *sc_rover, *sc_base;
+int			sc_size;
+surfcache_t	*sc_rover, *sc_base;
 
 #define GUARDSIZE       4
 
@@ -128,8 +128,8 @@ D_SCAlloc
 */
 surfcache_t     *D_SCAlloc (int width, int size)
 {
-	surfcache_t             *new;
-	qboolean                wrapped_this_time;
+	surfcache_t		*new;
+	qbool			wrapped_this_time;
 
 	if ((width < 0) || (width > 256))
 		Sys_Error ("D_SCAlloc: bad cache width %d", width);
