@@ -34,11 +34,11 @@ HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS
 
 typedef enum {SIS_SUCCESS, SIS_FAILURE, SIS_NOTAVAIL} sndinitstat;
 
-static qboolean	wavonly;
-static qboolean	dsound_init;
-static qboolean	wav_init;
-static qboolean	snd_firsttime = true, snd_isdirect, snd_iswave;
-static qboolean	primary_format_set;
+static qbool	wavonly;
+static qbool	dsound_init;
+static qbool	wav_init;
+static qbool	snd_firsttime = true, snd_isdirect, snd_iswave;
+static qbool	primary_format_set;
 
 static int	sample16;
 static int	snd_sent, snd_completed;
@@ -68,8 +68,8 @@ LPDIRECTSOUNDBUFFER pDSBuf, pDSPBuf;
 
 HINSTANCE hInstDS;
 
-qboolean SNDDMA_InitDirect (void);
-qboolean SNDDMA_InitWav (void);
+qbool SNDDMA_InitDirect (void);
+qbool SNDDMA_InitWav (void);
 
 
 /*
@@ -416,7 +416,7 @@ SNDDM_InitWav
 Crappy windows multimedia base
 ==================
 */
-qboolean SNDDMA_InitWav (void)
+qbool SNDDMA_InitWav (void)
 {
 	WAVEFORMATEX  format; 
 	int				i;

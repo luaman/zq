@@ -36,7 +36,7 @@ extern	console_t	con;
 
 extern int		con_ormask;
 extern int		con_totallines;
-extern qboolean	con_initialized;
+extern qbool	con_initialized;
 extern int		con_notifylines;	// scan lines to clear for notify lines
 
 void Con_CheckResize (void);

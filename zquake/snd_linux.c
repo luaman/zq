@@ -17,7 +17,7 @@ int snd_inited;
 
 static int tryrates[] = { 11025, 22051, 44100, 8000 };
 
-qboolean SNDDMA_Init(void)
+qbool SNDDMA_Init(void)
 {
 
 	int rc;

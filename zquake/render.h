@@ -102,8 +102,8 @@ typedef struct
 
 typedef struct {
 	float		time;
-	qboolean	allowCheats;
-	qboolean	watervis;
+	qbool		allowCheats;
+	qbool		watervis;
 	int			numParticles;
 	particle_t	*particles;
 } refdef2_t;
@@ -143,7 +143,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize);
 //
 // surface cache related
 //
-extern qboolean	r_cache_thrash;	// set if thrashing the surface cache
+extern qbool	r_cache_thrash;	// set if thrashing the surface cache
 
 int	D_SurfaceCacheForRes (int width, int height);
 void D_FlushCaches (void);

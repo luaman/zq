@@ -25,14 +25,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #if !defined(CLIENTONLY) && !defined(SERVERONLY)
-qboolean	dedicated = false;
+qbool		dedicated = false;
 #endif
 
 cvar_t		host_mapname = {"mapname", "", CVAR_ROM};
 
 double		curtime;
 
-qboolean	host_initialized;		// true if into command execution
+qbool		host_initialized;		// true if into command execution
 int			host_hunklevel;
 int			host_memsize;
 void		*host_membase;
@@ -77,7 +77,7 @@ void Host_Error (char *error, ...)
 {
 	va_list		argptr;
 	char		string[1024];
-	static	qboolean inerror = false;
+	static qbool inerror = false;
 	
 	if (inerror)
 		Sys_Error ("Host_Error: recursively entered");
@@ -283,7 +283,7 @@ to run quit through here before the final handoff to the sys code.
 */
 void Host_Shutdown (void)
 {
-	static qboolean isdown = false;
+	static qbool isdown = false;
 	
 	if (isdown)
 	{

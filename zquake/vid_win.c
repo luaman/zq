@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
 
-qboolean	dibonly;
+qbool	dibonly;
 
 extern int		Minimized;
 
@@ -44,7 +44,7 @@ HWND		mainwindow;
 HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
 
 int			DIBWidth, DIBHeight;
-qboolean	DDActive;
+qbool		DDActive;
 RECT		WindowRect;
 DWORD		WindowStyle, ExWindowStyle;
 
@@ -52,16 +52,16 @@ int			window_center_x, window_center_y, window_x, window_y, window_width, window
 RECT		window_rect;
 
 static DEVMODE	gdevmode;
-static qboolean	startwindowed = 0, windowed_mode_set;
+static qbool	startwindowed = 0, windowed_mode_set;
 static int		firstupdate = 1;
-static qboolean	vid_initialized = false, vid_palettized;
+static qbool	vid_initialized = false, vid_palettized;
 static int		lockcount;
 static int		vid_fulldib_on_focus_mode;
-static qboolean	force_minimized, in_mode_set, is_mode0x13, force_mode_set;
+static qbool	force_minimized, in_mode_set, is_mode0x13, force_mode_set;
 static int		vid_stretched, windowed_mouse;
-static qboolean	palette_changed, syscolchg, vid_mode_set, hide_window, pal_is_nostatic;
+static qbool	palette_changed, syscolchg, vid_mode_set, hide_window, pal_is_nostatic;
 static HICON	hIcon;
-extern qboolean mouseactive; // from in_win.c
+extern qbool	mouseactive; // from in_win.c
 
 #define MODE_WINDOWED			0
 #define MODE_SETTABLE_WINDOW	2
@@ -116,11 +116,11 @@ static int		VID_highhunkmark;
 unsigned char	vid_curpal[256*3];
 
 unsigned short	d_8to16table[256];
-unsigned	d_8to24table[256];
-unsigned char d_15to8table[65536];
+unsigned int	d_8to24table[256];
+unsigned char	d_15to8table[65536];
 
 int			driver = grDETECT,mode;
-qboolean	useWinDirect = true, useDirectDraw = true;
+qbool		useWinDirect = true, useDirectDraw = true;
 MGLDC		*mgldc = NULL,*memdc = NULL,*dibdc = NULL,*windc = NULL;
 
 typedef struct {
@@ -155,7 +155,7 @@ void VID_MenuKey (int key);
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void AppActivate(BOOL fActive, BOOL minimize);
 
-qboolean msg_suppress_1 = 0;	// suppresses resolution and cache size console output
+qbool msg_suppress_1 = 0;	// suppresses resolution and cache size console output
 								// at fullscreen DIB focus gain/loss
 
 
@@ -239,7 +239,7 @@ ClearAllStates
 void ClearAllStates (void)
 {
 	extern void IN_ClearStates (void);
-	extern qboolean keydown[256];
+	extern qbool keydown[256];
 	int		i;
 	
 // send an up event for each key, to make sure the server clears them all
@@ -259,7 +259,7 @@ void ClearAllStates (void)
 VID_CheckAdequateMem
 ================
 */
-qboolean VID_CheckAdequateMem (int width, int height)
+qbool VID_CheckAdequateMem (int width, int height)
 {
 	int		tbuffersize;
 
@@ -284,7 +284,7 @@ qboolean VID_CheckAdequateMem (int width, int height)
 VID_AllocBuffers
 ================
 */
-qboolean VID_AllocBuffers (int width, int height)
+qbool VID_AllocBuffers (int width, int height)
 {
 	int		tsize, tbuffersize;
 
@@ -1276,13 +1276,12 @@ void DestroyFullDIBWindow (void)
 }
 
 
-qboolean VID_SetWindowedMode (int modenum)
+qbool VID_SetWindowedMode (int modenum)
 {
 	HDC				hdc;
 	pixel_format_t	pf;
-	qboolean		stretched;
+	qbool			stretched;
 	int				lastmodestate;
-//	LONG			wlong;
 
 	if (!windowed_mode_set)
 	{
@@ -1428,7 +1427,7 @@ qboolean VID_SetWindowedMode (int modenum)
 	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
 
 	// Tonik: this is a workaroung for the bug with garbaged
-	// screen on Riva TNT
+	// screen on Riva TNT + Win9x
 	if (lastmodestate == MS_FULLSCREEN && vid_resetonswitch.value)
 		ChangeDisplaySettings (NULL, CDS_RESET);
 
@@ -1436,7 +1435,7 @@ qboolean VID_SetWindowedMode (int modenum)
 }
 
 
-qboolean VID_SetFullscreenMode (int modenum)
+qbool VID_SetFullscreenMode (int modenum)
 {
 
 	DDActive = 1;
@@ -1488,7 +1487,7 @@ qboolean VID_SetFullscreenMode (int modenum)
 }
 
 
-qboolean VID_SetFullDIBMode (int modenum)
+qbool VID_SetFullDIBMode (int modenum)
 {
 	HDC				hdc;
 	pixel_format_t	pf;
@@ -1604,7 +1603,7 @@ qboolean VID_SetFullDIBMode (int modenum)
 
 void VID_RestoreOldMode (int original_mode)
 {
-	static qboolean	inerror = false;
+	static qbool	inerror = false;
 
 	if (inerror)
 		return;
@@ -1670,10 +1669,10 @@ void VID_Build15to8table (unsigned char *palette)
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int				original_mode, temp /*, dummy */;
-	qboolean		stat;
-    MSG				msg;
-	HDC				hdc;
+	int			original_mode, temp /*, dummy */;
+	qbool		stat;
+    MSG			msg;
+	HDC			hdc;
 
 	while ((modenum >= nummodes) || (modenum < 0))
 	{
@@ -1965,7 +1964,7 @@ void VID_ModeList_f (void)
 {
 	int			i, lnummodes;
 	char		*pinfo;
-	qboolean	na;
+	qbool		na;
 	vmode_t		*pv;
 
 	na = false;
@@ -2783,7 +2782,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 VID_HandlePause
 ================
 */
-void VID_HandlePause (qboolean pause)
+void VID_HandlePause (qbool pause)
 {
 #if 0
 	if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
@@ -2813,7 +2812,7 @@ MAIN WINDOW
 
 LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-int IN_TranslateKeyEvent (int lKeyData, qboolean down);
+int IN_TranslateKeyEvent (int lKeyData, qbool down);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (

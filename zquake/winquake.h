@@ -37,7 +37,7 @@ extern DWORD				gSndBufSize;
 
 extern HINSTANCE	global_hInstance;
 
-extern qboolean		DDActive;
+extern qbool		DDActive;
 
 
 typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT} modestate_t;
@@ -45,9 +45,9 @@ typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT} modestate_t;
 extern modestate_t	modestate;
 
 extern HWND			mainwindow;
-extern qboolean		ActiveApp, Minimized;
+extern qbool		ActiveApp, Minimized;
 
-extern qboolean	WinNT;
+extern qbool		WinNT;
 
 void IN_ShowMouse (void);
 void IN_DeactivateMouse (void);

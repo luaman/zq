@@ -67,7 +67,7 @@ void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 	a->port = s->sin_port;
 }
 
-qboolean NET_CompareBaseAdr (netadr_t a, netadr_t b)
+qbool NET_CompareBaseAdr (netadr_t a, netadr_t b)
 {
 	if (a.type != b.type)
 		return false;
@@ -78,7 +78,7 @@ qboolean NET_CompareBaseAdr (netadr_t a, netadr_t b)
 	return false;
 }
 
-qboolean NET_CompareAdr (netadr_t a, netadr_t b)
+qbool NET_CompareAdr (netadr_t a, netadr_t b)
 {
 	if (a.type != b.type)
 		return false;
@@ -89,7 +89,7 @@ qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 	return false;
 }
 
-qboolean NET_IsLocalAddress (netadr_t a)
+qbool NET_IsLocalAddress (netadr_t a)
 {
 	if ((*(unsigned *)a.ip == *(unsigned *)net_local_adr.ip
 		|| *(unsigned *)a.ip == htonl(INADDR_LOOPBACK)) )
@@ -136,7 +136,7 @@ idnewt:28000
 192.246.40.70:28000
 =============
 */
-qboolean NET_StringToAdr (char *s, netadr_t *a)
+qbool NET_StringToAdr (char *s, netadr_t *a)
 {
 	struct hostent	*h;
 	struct sockaddr_in sadr;
@@ -189,7 +189,7 @@ LOOPBACK BUFFERS FOR LOCAL PLAYER
 =============================================================================
 */
 
-qboolean NET_GetLoopPacket (netsrc_t sock)
+qbool NET_GetLoopPacket (netsrc_t sock)
 {
 	int		i;
 	loopback_t	*loop;
@@ -240,7 +240,7 @@ void NET_ClearLoopback (void)
 
 //=============================================================================
 
-qboolean NET_GetPacket (netsrc_t sock)
+qbool NET_GetPacket (netsrc_t sock)
 {
 	int 	ret;
 	struct sockaddr_in	from;
@@ -369,7 +369,7 @@ int UDP_OpenSocket (int port)
 NET_ClientConfig
 ====================
 */
-void NET_ClientConfig (qboolean enable)
+void NET_ClientConfig (qbool enable)
 {
 	if (enable)
 	{
@@ -394,7 +394,7 @@ void NET_ClientConfig (qboolean enable)
 NET_ServerConfig
 ====================
 */
-void NET_ServerConfig (qboolean enable)
+void NET_ServerConfig (qbool enable)
 {
 	int		i, port;
 

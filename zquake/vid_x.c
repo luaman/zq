@@ -56,16 +56,16 @@ int		VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes, VGA_planar;
 byte	*VGA_pagebase;
 
 
-qboolean        mouse_avail;
-int             mouse_buttons=3;
-int             mouse_oldbuttonstate;
-int             mouse_buttonstate;
-float   mouse_x, mouse_y;
-float   old_mouse_x, old_mouse_y;
-int p_mouse_x;
-int p_mouse_y;
-int ignorenext;
-int bits_per_pixel;
+qbool	mouse_avail;
+int		mouse_buttons=3;
+int		mouse_oldbuttonstate;
+int		mouse_buttonstate;
+float	mouse_x, mouse_y;
+float	old_mouse_x, old_mouse_y;
+int		p_mouse_x;
+int		p_mouse_y;
+int		ignorenext;
+int		bits_per_pixel;
 
 typedef struct
 {
@@ -80,7 +80,7 @@ int		num_shades=32;
 
 int		vid_buffersize;
 
-static qboolean			doShm;
+static qbool			doShm;
 static Display			*x_disp;
 static Colormap			x_cmap;
 static Window			x_win;
@@ -92,7 +92,7 @@ static XVisualInfo		*x_visinfo;
 static int				x_shmeventtype;
 //static XShmSegmentInfo	x_shminfo;
 
-static qboolean			oktodraw = false;
+static qbool			oktodraw = false;
 
 int XShmQueryExtension(Display *);
 int XShmGetEventBase(Display *);

@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 typedef struct
 {
 	char		name[16];
-	qboolean	failedload;		// the name isn't a valid skin
+	qbool		failedload;		// the name isn't a valid skin
 	cache_user_t	cache;
 } skin_t;
 
@@ -51,8 +51,8 @@ typedef struct
 
 	int			pm_type;
 	float		waterjumptime;
-	qboolean	onground;
-	qboolean	jump_held;
+	qbool		onground;
+	qbool		jump_held;
 	int			jump_msec;		// hack for fixing bunny-hop flickering on non-ZQuake servers
 } player_state_t;
 
@@ -70,7 +70,7 @@ typedef struct player_info_s
 	int		frags;
 	int		ping;
 	byte	pl;
-	qboolean	spectator;
+	qbool	spectator;
 
 	// skin information
 	int		real_topcolor;			// what the server tells us
@@ -100,7 +100,7 @@ typedef struct
 	player_state_t	playerstate[MAX_CLIENTS];	// message received that reflects performing
 							// the usercmd
 	packet_entities_t	packet_entities;
-	qboolean	invalid;		// true if the packet_entities delta was invalid
+	qbool		invalid;		// true if the packet_entities delta was invalid
 } frame_t;
 
 typedef struct
@@ -226,14 +226,14 @@ typedef struct
 
 // demo recording info must be here, because record is started before
 // entering a map (and clearing client_state_t)
-	qboolean	demorecording;
-	qboolean	demoplayback;
-	qboolean	nqdemoplayback;
+	qbool		demorecording;
+	qbool		demoplayback;
+	qbool		nqdemoplayback;
 	FILE		*demofile;
 	byte		demomessage_data[MAX_MSGLEN * 2 /* FIXME */];
 	sizebuf_t	demomessage;
-	qboolean	demomessage_skipwrite;
-	qboolean	timedemo;
+	qbool		demomessage_skipwrite;
+	qbool		timedemo;
 	float		td_lastframe;		// to meter out one message a frame
 	int			td_startframe;		// cls.framecount at start
 	float		td_starttime;		// realtime at second frame of timedemo
@@ -258,22 +258,22 @@ typedef struct
 {
 	int			servercount;	// server identification for prespawns
 	char		serverinfo[MAX_SERVERINFO_STRING];
-	qboolean	protocol_26;
+	qbool		protocol_26;
 // some important serverinfo keys are mirrored here:
 	int			maxclients;
 	int			deathmatch;
 	int			teamplay;
 	int			gametype;		// GAME_COOP or GAME_DEATHMATCH
-	qboolean	teamfortress;	// true if gamedir is "fortress"
+	qbool		teamfortress;	// true if gamedir is "fortress"
 	int			fpd;			// FAQ proxy flags
 	int			z_ext;			// ZQuake protocol extensions flags
-	qboolean	servertime_works;	// Does the server actually send STAT_TIME/svc_time?
+	qbool		servertime_works;	// Does the server actually send STAT_TIME/svc_time?
 	float		maxfps;
 	float		minpitch;
 	float		maxpitch;
-	qboolean	allow_fbskins;
-	qboolean	allow_truelightning;
-	qboolean	allow_frj;
+	qbool		allow_fbskins;
+	qbool		allow_truelightning;
+	qbool		allow_frj;
 
 	int			parsecount;		// server message counter
 	int			validsequence;	// this is the sequence number of the last good
@@ -313,11 +313,11 @@ typedef struct
 
 // pitch drifting vars
 	float		pitchvel;
-	qboolean	nodrift;
+	qbool		nodrift;
 	float		driftmove;
 	double		laststop;
 
-	qboolean	onground;
+	qbool		onground;
 	float		crouch;			// local amount for smoothing stepups
 	float		viewheight;
 
@@ -439,7 +439,7 @@ extern char emodel_name[], pmodel_name[];
 //
 // cl_demo.c
 //
-qboolean CL_GetDemoMessage (void);
+qbool CL_GetDemoMessage (void);
 void CL_WriteDemoCmd (usercmd_t *pcmd);
 void CL_WriteDemoMessage (sizebuf_t *msg);
 void CL_StopPlayback (void);
@@ -467,8 +467,8 @@ extern int	packet_latency[NET_TIMINGS];
 int CL_CalcNet (void);
 void CL_ParseServerMessage (void);
 void CL_NewTranslation (int slot);
-qboolean CL_CheckOrDownloadFile (char *filename);
-qboolean CL_IsUploading (void);
+qbool CL_CheckOrDownloadFile (char *filename);
+qbool CL_IsUploading (void);
 void CL_NextUpload (void);
 void CL_StartUpload (byte *data, int size);
 void CL_StopUpload (void);
@@ -513,11 +513,11 @@ void CL_EntityParticles (vec3_t org);
 // cl_ents.c
 //
 void CL_SetSolidPlayers (int playernum);
-void CL_SetUpPlayerPrediction(qboolean dopred);
+void CL_SetUpPlayerPrediction (qbool dopred);
 void CL_EmitEntities (void);
 void CL_ClearProjectiles (void);
 void CL_ParseProjectiles (void);
-void CL_ParsePacketEntities (qboolean delta);
+void CL_ParsePacketEntities (qbool delta);
 void CL_SetSolidEntities (void);
 void CL_ParsePlayerinfo (void);
 
@@ -531,12 +531,12 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u);
 //
 // cl_cam.c
 //
-extern qboolean		cam_track;
-extern int			cam_target;		// playernum of who we're tracking or wish to track
-extern qboolean		cam_locked;
+extern qbool	cam_track;
+extern int		cam_target;		// playernum of who we're tracking or wish to track
+extern qbool	cam_locked;
 
-qboolean Cam_DrawViewModel (void);
-qboolean Cam_DrawPlayer (int playernum);
+qbool Cam_DrawViewModel (void);
+qbool Cam_DrawPlayer (int playernum);
 int Cam_TargetCount (void);
 void Cam_FinishMove (usercmd_t *cmd);
 void Cam_Reset (void);

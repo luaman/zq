@@ -32,7 +32,7 @@ typedef struct cvar_s
 	char	*name;
 	char	*string;
 	int		flags;
-	void	(*OnChange)(struct cvar_s *var, char *value, qboolean *cancel);
+	void	(*OnChange)(struct cvar_s *var, char *value, qbool *cancel);
 	float	value;
 	struct cvar_s *hash_next;
 	struct cvar_s *next;
@@ -68,14 +68,14 @@ char  *Cvar_CompleteVariable (char *partial);
 // called by Cmd_ExecuteString when Cmd_Argv(0) doesn't match a known
 // command.  Returns true if the command was a variable reference that
 // was handled. (print or change)
-qboolean Cvar_Command (void);
+qbool Cvar_Command (void);
 
 // Writes lines containing "set variable value" for all variables
 // with the archive flag set to true.
 void Cvar_WriteVariables (FILE *f);
 
 cvar_t *Cvar_FindVar (char *name);
-qboolean Cvar_Delete (char *name);
+qbool Cvar_Delete (char *name);
 
 // Use this to walk through all vars
 cvar_t *Cvar_Next (cvar_t *var);

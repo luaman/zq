@@ -48,7 +48,7 @@ cvar_t	cl_solidPlayers = {"cl_solidPlayers", "1"};
 
 cvar_t  localid = {"localid", ""};
 
-static qboolean allowremotecmd = true;
+static qbool allowremotecmd = true;
 
 // ZQuake cvars
 // FIXME: r_ prefix is wrong, but not changing for compatibility reasons
@@ -117,7 +117,7 @@ particle_t		cl_visparticles[MAX_PARTICLES];
 
 double			connect_time = 0;		// for connection retransmits
 
-qboolean	host_skipframe;			// used in demo playback
+qbool		host_skipframe;			// used in demo playback
 
 byte		*host_basepal;
 byte		*host_colormap;
@@ -604,7 +604,7 @@ CL_GetMessage
 Handles playback of demos, on top of NET_ code
 ====================
 */
-qboolean CL_GetMessage (void)
+qbool CL_GetMessage (void)
 {
 #ifdef _WIN32
 	extern void CheckQizmoCompletion ();

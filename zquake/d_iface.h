@@ -89,7 +89,7 @@ extern int		r_framecount;		// sequence # of current frame since Quake
 extern float	r_aliasuvscale;		// scale-up factor for screen u and v
 									//  on Alias vertices passed to driver
 extern int		r_pixbytes;
-extern qboolean	r_dowarp;
+extern qbool	r_dowarp;
 
 extern affinetridesc_t	r_affinetridesc;
 extern spritedesc_t		r_spritedesc;
@@ -149,12 +149,12 @@ typedef struct
 	int			surfmip;	// mipmapped ratio of surface texels / world pixels
 	int			surfwidth;	// in mipmapped texels
 	int			surfheight;	// in mipmapped texels
-	qboolean	dlightonly;	// only have to recalc dynamic lights
+	qbool		dlightonly;	// only have to recalc dynamic lights
 } drawsurf_t;
 
 extern drawsurf_t	r_drawsurf;
 
-qboolean R_DrawSurface (void);
+qbool R_DrawSurface (void);
 void R_GenTile (msurface_t *psurf, void *pdest);
 
 

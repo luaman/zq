@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 entity_t	r_worldentity;
 
-qboolean	r_cache_thrash;		// compatability
+qbool		r_cache_thrash;		// compatability
 
 vec3_t		modelorg, r_entorigin;
 entity_t	*currententity;
@@ -46,7 +46,7 @@ int			playerfbtextures[MAX_CLIENTS];
 int			skyboxtextures;
 
 int			mirrortexturenum;	// quake texturenum, not gltexturenum
-qboolean	mirror;
+qbool		mirror;
 mplane_t	*mirror_plane;
 
 //
@@ -114,7 +114,7 @@ int		lightmode = 2;
 
 
 #ifndef _WIN32
-qboolean vid_hwgamma_enabled = false;	// dummy
+qbool vid_hwgamma_enabled = false;	// dummy
 #endif
 
 
@@ -130,7 +130,7 @@ R_CullBox
 Returns true if the box is completely outside the frustom
 =================
 */
-qboolean R_CullBox (vec3_t mins, vec3_t maxs)
+qbool R_CullBox (vec3_t mins, vec3_t maxs)
 {
 	int		i;
 
@@ -147,7 +147,7 @@ R_CullSphere
 Returns true if the sphere is completely outside the frustum
 =================
 */
-qboolean R_CullSphere (vec3_t centre, float radius)
+qbool R_CullSphere (vec3_t centre, float radius)
 {
 	int		i;
 	mplane_t *p;
@@ -334,7 +334,7 @@ int	lastposenum;
 GL_DrawAliasFrame
 =============
 */
-void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qboolean mtex)
+void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qbool mtex)
 {
 	float 	l;
 	trivertx_t	*verts;
@@ -450,7 +450,7 @@ R_SetupAliasFrame
 
 =================
 */
-void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr, qboolean mtex)
+void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr, qbool mtex)
 {
 	int				pose, numposes;
 	float			interval;
@@ -491,7 +491,7 @@ void R_DrawAliasModel (entity_t *ent)
 	vec3_t		mins, maxs;
 	aliashdr_t	*paliashdr;
 	int			anim, skinnum;
-	qboolean	full_light;
+	qbool		full_light;
 	model_t		*clmodel = ent->model;
 	int			texture, fb_texture;
 
@@ -708,9 +708,9 @@ void R_DrawAliasModel (entity_t *ent)
 R_SetSpritesState
 =============
 */
-void R_SetSpritesState (qboolean state)
+void R_SetSpritesState (qbool state)
 {
-	static qboolean r_state = false;
+	static qbool r_state = false;
 
 	if (r_state == state)
 		return;
@@ -1244,8 +1244,8 @@ R_Clear
 int gl_ztrickframe = 0;
 void R_Clear (void)
 {
-	static qboolean cleartogray;
-	qboolean	clear = false;
+	static qbool cleartogray;
+	qbool	clear = false;
 
 	if (gl_clear.value) {
 		clear = true;

@@ -46,9 +46,9 @@ clipplane_t	world_clipplanes[16];
 
 medge_t			*r_pedge;
 
-qboolean		r_leftclipped, r_rightclipped;
-static qboolean	makeleftedge, makerightedge;
-qboolean		r_nearzionly;
+qbool			r_leftclipped, r_rightclipped;
+static qbool	makeleftedge, makerightedge;
+qbool			r_nearzionly;
 
 int		sintable[1280];
 int		intsintable[1280];
@@ -67,7 +67,7 @@ float			r_nearzi;
 float			r_u1, r_v1, r_lzi1;
 int				r_ceilv1;
 
-qboolean	r_lastvertvalid;
+qbool	r_lastvertvalid;
 
 // I just copied this data from a box map...
 int skybox_planes[12] = {2,-128, 0,-128, 2,128, 1,128, 0,128, 1,-128};
@@ -103,7 +103,7 @@ msurface_t		*r_skyfaces;
 mvertex_t		*r_skyverts;
 mplane_t		*r_skyplanes;
 mtexinfo_t		*r_skytexinfo;
-qboolean		r_skyboxloaded;
+qbool			r_skyboxloaded;
 
 /*
 ================

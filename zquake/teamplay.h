@@ -34,7 +34,7 @@ extern cvar_t snd_trigger;
 void TP_ExecTrigger (char *s);
 void TP_StatChanged (int stat, int value);
 void TP_CheckPickupSound (char *s, vec3_t org);
-qboolean TP_CheckSoundTrigger (char *str);
+qbool TP_CheckSoundTrigger (char *str);
 
 // message triggers
 void TP_SearchForMsgTriggers (char *s, int level);
@@ -53,13 +53,13 @@ extern int cl_teambottomcolor;
 extern int cl_enemytopcolor;
 extern int cl_enemybottomcolor;
 
-void TP_LoadLocFile (char *path, qboolean quiet);
+void TP_LoadLocFile (char *path, qbool quiet);
 char *TP_ParseMacroString (char *s);
-char *TP_ParseFunChars (char *s, qboolean chat);
+char *TP_ParseFunChars (char *s, qbool chat);
 void TP_NewMap ();
 void TP_CheckVersionRequest(char *s);
 int TP_CategorizeMessage (char *s, int *offset);
-qboolean TP_FilterMessage (char *s);
+qbool TP_FilterMessage (char *s);
 
 void TP_Init ();
 

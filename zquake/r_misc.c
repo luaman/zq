@@ -32,8 +32,8 @@ R_CheckVariables
 */
 void R_CheckVariables (void)
 {
-	static qboolean	oldbright = false;
-	qboolean fullbright;
+	static qbool	oldbright = false;
+	qbool			fullbright;
 
 	fullbright = (r_fullbright.value && r_refdef2.allowCheats);
 	if (fullbright != oldbright) {

@@ -12,7 +12,7 @@ LOAD / SAVE GAME
 // hmm...
 extern int CL_Stat_Monsters(void), CL_Stat_TotalMonsters(void);
 extern int CL_IntermissionRunning (void);
-extern qboolean scr_disabled_for_loading;
+extern qbool scr_disabled_for_loading;
 
 #define	SAVEGAME_COMMENT_LENGTH	39
 #define	SAVEGAME_VERSION	6
@@ -167,7 +167,7 @@ void SV_LoadGame_f (void)
 	int		entnum;
 	int		version;
 	float	spawn_parms[NUM_SPAWN_PARMS];
-	qboolean	save_disabled_for_loading;
+	qbool	save_disabled_for_loading;
 
 	if (Cmd_Argc() != 2) {
 		Com_Printf ("load <savename> : load a game\n");

@@ -47,7 +47,7 @@ typedef struct
 	vec3_t		origin;
 	vec3_t		angles;
 	vec3_t		velocity;
-	qboolean	jump_held;
+	qbool		jump_held;
 #ifndef SERVERONLY
 	int			jump_msec;	// msec since last jump
 #endif
@@ -64,7 +64,7 @@ typedef struct
 	// results
 	int			numtouch;
 	int			touchindex[MAX_PHYSENTS];
-	qboolean	onground;
+	qbool		onground;
 	int			groundent;		// index in physents array, only valid
 								// when onground is true
 	int			waterlevel;
@@ -84,8 +84,8 @@ typedef struct {
 	float	entgravity;
 	float	bunnyspeedcap;
 	float	ktjump;
-	qboolean	slidefix;
-	qboolean	airstep;
+	qbool	slidefix;
+	qbool	airstep;
 } movevars_t;
 
 
@@ -97,6 +97,6 @@ void PM_Init (void);
 
 int PM_PointContents (vec3_t point);
 void PM_CategorizePosition (void);
-qboolean PM_TestPlayerPosition (vec3_t point);
+qbool PM_TestPlayerPosition (vec3_t point);
 trace_t PM_PlayerTrace (vec3_t start, vec3_t end);
 trace_t PM_TraceLine (vec3_t start, vec3_t end);

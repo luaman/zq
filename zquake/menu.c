@@ -89,11 +89,11 @@ void M_Main_Key (int key);
 	void M_Quit_Key (int key);
 
 
-qboolean	m_entersound;		// play after drawing a frame, so caching
-								// won't disrupt the sound
-qboolean	m_recursiveDraw;
-int			m_topmenu;			// set if a submenu was entered via a
-								// menu_* command
+qbool	m_entersound;		// play after drawing a frame, so caching
+							// won't disrupt the sound
+qbool	m_recursiveDraw;
+int		m_topmenu;			// set if a submenu was entered via a
+							// menu_* command
 
 
 //=============================================================================
@@ -1133,7 +1133,7 @@ void M_Help_Key (int key)
 
 int		msgNumber;
 int		m_quit_prevstate;
-qboolean	wasInMenus;
+qbool	wasInMenus;
 
 void M_Menu_Quit_f (void)
 {
@@ -1185,8 +1185,8 @@ void M_Quit_Key (int key)
 
 #define	SINGLEPLAYER_ITEMS	3
 int	m_singleplayer_cursor;
-qboolean m_singleplayer_confirm;
-qboolean m_singleplayer_notavail;
+qbool m_singleplayer_confirm;
+qbool m_singleplayer_notavail;
 
 extern	cvar_t	maxclients, teamplay, deathmatch, coop, skill, fraglimit, timelimit;
 

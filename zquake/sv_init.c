@@ -232,11 +232,11 @@ clients along with it.
 This is only called from the SV_Map_f() function.
 ================
 */
-void SV_SpawnServer (char *mapname, qboolean devmap)
+void SV_SpawnServer (char *mapname, qbool devmap)
 {
 	edict_t		*ent;
 	int			i;
-	extern qboolean	sv_allow_cheats;
+	extern qbool	sv_allow_cheats;
 	extern cvar_t	sv_cheats;
 
 	Com_DPrintf ("SpawnServer: %s\n", mapname);

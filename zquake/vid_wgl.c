@@ -69,7 +69,7 @@ const char *gl_renderer;
 const char *gl_version;
 const char *gl_extensions;
 
-qboolean		DDActive;
+qbool			DDActive;
 
 static vmode_t	modelist[MAX_MODE_LIST];
 static int		nummodes;
@@ -77,12 +77,12 @@ static vmode_t	*pcurrentmode;
 static vmode_t	badmode;
 
 static DEVMODE	gdevmode;
-static qboolean	vid_initialized = false;
-static qboolean	windowed, leavecurrentmode;
-static qboolean vid_canalttab = false;
-static qboolean vid_wassuspended = false;
+static qbool	vid_initialized = false;
+static qbool	windowed, leavecurrentmode;
+static qbool	vid_canalttab = false;
+static qbool	vid_wassuspended = false;
 static int		windowed_mouse;
-extern qboolean	mouseactive;  // from in_win.c
+extern qbool	mouseactive;  // from in_win.c
 static HICON	hIcon;
 
 int			DIBWidth, DIBHeight;
@@ -96,7 +96,7 @@ int			vid_realmode;
 int			vid_default = MODE_WINDOWED;
 static int	windowed_default;
 unsigned char	vid_curpal[256*3];
-static qboolean fullsbardraw = false;
+static qbool fullsbardraw = false;
 
 float vid_gamma = 1.0;
 
@@ -110,8 +110,8 @@ cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1"};
 cvar_t	gl_swapinterval = {"gl_swapinterval", "1"};
 cvar_t	gl_ext_swapinterval = {"gl_ext_swapinterval", "1"};
 
-qboolean	vid_gammaworks = false;
-qboolean	vid_hwgamma_enabled = false;
+qbool	vid_gammaworks = false;
+qbool	vid_hwgamma_enabled = false;
 unsigned short *currentgammaramp = NULL;
 void RestoreHWGamma (void);
 
@@ -144,10 +144,10 @@ PROC glVertexPointerEXT;
 
 typedef void (APIENTRY *lp3DFXFUNC) (int, int, int, int, int, const void*);
 lp3DFXFUNC glColorTableEXT;
-qboolean is8bit = false;
-qboolean isPermedia = false;
-qboolean gl_mtexable = false;
-qboolean gl_mtexfbskins = false;
+qbool is8bit = false;
+qbool isPermedia = false;
+qbool gl_mtexable = false;
+qbool gl_mtexfbskins = false;
 
 //====================================
 
@@ -169,7 +169,7 @@ RECT		window_rect;
 
 // direct draw software compatability stuff
 
-void VID_HandlePause (qboolean pause)
+void VID_HandlePause (qbool pause)
 {
 }
 
@@ -217,7 +217,7 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 			SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 }
 
-qboolean VID_SetWindowedMode (int modenum)
+qbool VID_SetWindowedMode (int modenum)
 {
 	HDC				hdc;
 	int				lastmodestate, width, height;
@@ -298,7 +298,7 @@ qboolean VID_SetWindowedMode (int modenum)
 }
 
 
-qboolean VID_SetFullDIBMode (int modenum)
+qbool VID_SetFullDIBMode (int modenum)
 {
 	HDC				hdc;
 	int				lastmodestate, width, height;
@@ -399,10 +399,9 @@ qboolean VID_SetFullDIBMode (int modenum)
 
 int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int				original_mode, temp;
-	qboolean		stat;
-    MSG				msg;
-//	HDC				hdc;
+	int			original_mode, temp;
+	qbool		stat;
+    MSG			msg;
 
 	if ((windowed && (modenum != 0)) ||
 		(!windowed && (modenum < 1)) ||
@@ -529,7 +528,7 @@ BINDTEXFUNCPTR bindTexFunc;
 void CheckTextureExtensions (void)
 {
 	char		*tmp;
-	qboolean	texture_ext;
+	qbool		texture_ext;
 	HINSTANCE	hInstGL;
 
 	texture_ext = FALSE;
@@ -701,7 +700,7 @@ void GL_Init (void)
 
 void GL_EndRendering (void)
 {
-	static qboolean old_hwgamma_enabled;
+	static qbool old_hwgamma_enabled;
 
 	vid_hwgamma_enabled = vid_hwgammacontrol.value && vid_gammaworks
 		&& ActiveApp && !Minimized && modestate == MS_FULLDIB;
@@ -789,7 +788,7 @@ void VID_ShiftPalette (unsigned char *palette)
 }
 
 static byte	systemgammaramp[3][256][2];
-static qboolean customgamma = false;
+static qbool customgamma = false;
 
 /*
 ======================
@@ -921,7 +920,7 @@ ClearAllStates
 void ClearAllStates (void)
 {
 	extern void IN_ClearStates (void);
-	extern qboolean keydown[256];
+	extern qbool keydown[256];
 	int		i;
 	
 // send an up event for each key, to make sure the server clears them all
@@ -1027,7 +1026,7 @@ MAIN WINDOW
 
 LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-int IN_TranslateKeyEvent (int lKeyData, qboolean down);
+int IN_TranslateKeyEvent (int lKeyData, qbool down);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (
@@ -1474,7 +1473,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		Com_Printf ("No fullscreen DIB modes found\n");
 }
 
-qboolean VID_Is8bit() {
+qbool VID_Is8bit() {
 	return is8bit;
 }
 

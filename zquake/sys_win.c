@@ -38,8 +38,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define PAUSE_SLEEP		50				// sleep time on pause or minimization
 #define NOT_FOCUS_SLEEP	20				// sleep time when not focus
 
-qboolean		ActiveApp, Minimized;
-qboolean		WinNT;
+qbool		ActiveApp, Minimized;
+qbool		WinNT;
 
 static HANDLE	qwclsemaphore;
 static HANDLE	tevent;
@@ -169,7 +169,7 @@ void Sys_Quit (void)
 
 
 static double pfreq;
-static qboolean hwtimer = false;
+static qbool hwtimer = false;
 
 void Sys_InitDoubleTime (void)
 {
@@ -196,7 +196,7 @@ double Sys_DoubleTime (void)
 	static __int64 startcount;
 
 	static DWORD starttime;
-	static qboolean first = true;
+	static qbool first = true;
 	DWORD now;
 
 	if (hwtimer)

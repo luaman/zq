@@ -41,9 +41,9 @@ typedef struct
 
 typedef struct
 {
-	qboolean	allsolid;		// if true, plane is not valid
-	qboolean	startsolid;		// if true, the initial point was in a solid area
-	qboolean	inopen, inwater;
+	qbool		allsolid;		// if true, plane is not valid
+	qbool		startsolid;		// if true, the initial point was in a solid area
+	qbool		inopen, inwater;
 	float		fraction;		// time completed, 1.0 = didn't hit anything
 	vec3_t		endpos;			// final position
 	plane_t		plane;			// surface normal at impact
@@ -76,5 +76,5 @@ char *CM_EntityString (void);
 int	CM_NumInlineModels (void);
 cmodel_t *CM_InlineModel (char *name);
 void CM_InvalidateMap (void);
-cmodel_t *CM_LoadMap (char *name, qboolean clientload, unsigned *checksum, unsigned *checksum2);
+cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned *checksum2);
 void CM_Init (void);

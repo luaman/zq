@@ -27,8 +27,8 @@ extern unsigned char d_15to8table[65536];
 extern unsigned d_8to24table2[256];
 extern cvar_t crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
-void OnChange_gl_texturemode (cvar_t *var, char *string, qboolean *cancel);
-void OnChange_gl_smoothfont (cvar_t *var, char *string, qboolean *cancel);
+void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel);
+void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel);
 
 cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
@@ -98,15 +98,15 @@ typedef struct
 	int		texnum;
 	char	identifier[64];
 	int		width, height;
-	qboolean	mipmap;
-	qboolean	brighten;
+	qbool	mipmap;
+	qbool	brighten;
 	unsigned	crc;
 } gltexture_t;
 
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
-qboolean	mtexenabled = false;
+qbool	mtexenabled = false;
 
 #ifdef _WIN32
 lpMTexFUNC qglMultiTexCoord2f = NULL;
@@ -185,7 +185,7 @@ int			scrap_dirty = 0;	// bit mask
 int			scrap_texnum;
 
 // returns false if allocation failed
-qboolean Scrap_AllocBlock (int scrapnum, int w, int h, int *x, int *y)
+qbool Scrap_AllocBlock (int scrapnum, int w, int h, int *x, int *y)
 {
 	int		i, j;
 	int		best, best2;
@@ -242,9 +242,9 @@ void Scrap_Upload (void)
 
 typedef struct cachepic_s
 {
-	char		name[MAX_QPATH];
-	mpic_t		pic;
-	qboolean	valid;
+	char	name[MAX_QPATH];
+	mpic_t	pic;
+	qbool	valid;
 } cachepic_t;
 
 #define	MAX_CACHED_PICS		128
@@ -405,7 +405,7 @@ glmode_t modes[] = {
 };
 
 
-void OnChange_gl_texturemode (cvar_t *var, char *string, qboolean *cancel)
+void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel)
 {
 	int		i;
 	gltexture_t	*glt;
@@ -438,7 +438,7 @@ void OnChange_gl_texturemode (cvar_t *var, char *string, qboolean *cancel)
 }
 
 
-void OnChange_gl_smoothfont (cvar_t *var, char *string, qboolean *cancel)
+void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 {
 	float	newval;
 
@@ -1354,7 +1354,7 @@ void GL_MipMap8Bit (byte *in, int width, int height)
 GL_Upload32
 ===============
 */
-void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha)
+void GL_Upload32 (unsigned *data, int width, int height, qbool mipmap, qbool alpha)
 {
 	int			samples;
 static	unsigned	scaled[1024*512];	// [512*256];
@@ -1432,10 +1432,10 @@ done: ;
 	}
 }
 
-void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboolean alpha) 
+void GL_Upload8_EXT (byte *data, int width, int height, qbool mipmap, qbool alpha) 
 {
 	int			i, s;
-	qboolean	noalpha;
+	qbool		noalpha;
 	int			samples;
     static	unsigned char scaled[1024*512];	// [512*256];
 	int			scaled_width, scaled_height;
@@ -1526,18 +1526,18 @@ done: ;
 	}
 }
 
-extern qboolean VID_Is8bit();
+extern qbool VID_Is8bit();
 
 /*
 ===============
 GL_Upload8
 ===============
 */
-void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean brighten)
+void GL_Upload8 (byte *data, int width, int height, qbool mipmap, qbool alpha, qbool brighten)
 {
 static	unsigned	trans[640*480];		// FIXME, temporary
 	int			i, s;
-	qboolean	noalpha;
+	qbool		noalpha;
 	int			p;
 	unsigned	*table;
 
@@ -1603,7 +1603,7 @@ static	unsigned	trans[640*480];		// FIXME, temporary
 GL_LoadTexture
 ================
 */
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, qboolean brighten)
+int GL_LoadTexture (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten)
 {
 	int			i;
 	unsigned	crc;

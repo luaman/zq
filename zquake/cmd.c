@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "common.h"
 
 #ifndef SERVERONLY
-qboolean CL_CheckServerCommand (void);
+qbool CL_CheckServerCommand (void);
 #endif
 
 cvar_t cl_warncmd = {"cl_warncmd", "0"};
@@ -170,7 +170,7 @@ void Cbuf_ExecuteEx (cbuf_t *cbuf)
 	int		i, j, cursize;
 	char	*text;
 	char	line[1024], *src, *dest;
-	qboolean comment, quotes;
+	qbool	comment, quotes;
 
 	cbuf_current = cbuf;
 
@@ -557,7 +557,7 @@ void Cmd_Alias_f (void)
 }
 
 
-qboolean Cmd_DeleteAlias (char *name)
+qbool Cmd_DeleteAlias (char *name)
 {
 	cmd_alias_t	*a, *prev;
 	int			key;
@@ -696,7 +696,7 @@ void Cmd_AddLegacyCommand (char *oldname, char *newname)
 	cmd->newname = newname;
 }
 
-qboolean Cmd_IsLegacyCommand (char *oldname)
+qbool Cmd_IsLegacyCommand (char *oldname)
 {
 	legacycmd_t *cmd;
 
@@ -707,9 +707,9 @@ qboolean Cmd_IsLegacyCommand (char *oldname)
 	return false;
 }
 
-static qboolean Cmd_LegacyCommand (void)
+static qbool Cmd_LegacyCommand (void)
 {
-	qboolean recursive = false;
+	qbool recursive = false;
 	legacycmd_t *cmd;
 	char	text[1024];
 
@@ -917,7 +917,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 Cmd_Exists
 ============
 */
-qboolean Cmd_Exists (char *cmd_name)
+qbool Cmd_Exists (char *cmd_name)
 {
 	int	key;
 	cmd_function_t	*cmd;
@@ -1290,7 +1290,7 @@ checkaliases:
 }
 
 
-static qboolean is_numeric (char *c)
+static qbool is_numeric (char *c)
 {	
 	return (*c >= '0' && *c <= '9') ||
 		((*c == '-' || *c == '+') && (c[1] == '.' || (c[1]>='0' && c[1]<='9'))) ||
@@ -1305,7 +1305,7 @@ void Cmd_If_f (void)
 {
 	int		i, c;
 	char	*op;
-	qboolean	result;
+	qbool	result;
 	char	buf[256];
 
 	c = Cmd_Argc ();

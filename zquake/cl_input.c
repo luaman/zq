@@ -56,7 +56,7 @@ kbutton_t	in_up, in_down;
 
 int			in_impulse;
 
-qboolean	in_invertview;	// for forward rocket jump
+qbool		in_invertview;	// for forward rocket jump
 
 
 void KeyDown (kbutton_t *b)
@@ -260,8 +260,8 @@ Returns 0.25 if a key was pressed and released during the frame,
 */
 float CL_KeyState (kbutton_t *key)
 {
-	float		val;
-	qboolean	impulsedown, impulseup, down;
+	float	val;
+	qbool	impulsedown, impulseup, down;
 	
 	impulsedown = key->state & 2;
 	impulseup = key->state & 4;
@@ -519,7 +519,7 @@ void CL_SendCmd (void)
 	int			lost;
 	static float	pps_balance = 0;
 	static int	dropcount = 0;
-	qboolean	dontdrop;
+	qbool		dontdrop;
 
 	if (cls.demoplayback)
 		return; // sendcmds come from the demo

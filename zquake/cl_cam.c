@@ -26,9 +26,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define NOTARGET	-1
 
-qboolean	cam_track;
+qbool		cam_track;
 int			cam_target;
-qboolean	cam_locked;
+qbool		cam_locked;
 static int	cam_curtarget;		// playernum or NOTARGET
 
 static int	cam_oldbuttons;
@@ -75,7 +75,7 @@ void Cam_SetViewPlayer (void)
 }
 
 // returns true if weapon model should be drawn in camera mode
-qboolean Cam_DrawViewModel (void)
+qbool Cam_DrawViewModel (void)
 {
 	if (!cl.spectator)
 		return true;
@@ -87,7 +87,7 @@ qboolean Cam_DrawViewModel (void)
 }
 
 // returns true if we should draw this player, we don't if we are chase-camming
-qboolean Cam_DrawPlayer (int playernum)
+qbool Cam_DrawPlayer (int playernum)
 {
 	if (cl.spectator && cam_curtarget == playernum)
 		return false;

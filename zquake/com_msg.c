@@ -179,7 +179,7 @@ Writes part of a packetentities message.
 Can delta from either a baseline or a previous packet_entity
 ==================
 */
-void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qboolean force)
+void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qbool force)
 {
 	int		bits;
 	int		i;
@@ -341,7 +341,7 @@ void MSG_EmitPacketEntities (packet_entities_t *from, int delta_sequence, packet
 // reading functions
 //
 int			msg_readcount;
-qboolean	msg_badread;
+qbool		msg_badread;
 
 void MSG_BeginReading (void)
 {
@@ -510,7 +510,7 @@ Movement is packed into a byte instead of a short.
 */
 #define	CM_MSEC	(1<<7)		// same as CM_ANGLE2
 
-void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qboolean protocol_26)
+void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qbool protocol_26)
 {
 	int bits;
 
