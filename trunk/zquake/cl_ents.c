@@ -650,7 +650,7 @@ void CL_ParsePlayerinfo (void)
 		state->state_time = parsecounttime;
 
 	if (flags & PF_COMMAND)
-		MSG_ReadDeltaUsercmd (&nullcmd, &state->command);
+		MSG_ReadDeltaUsercmd (&nullcmd, &state->command, cl.protocol_26);
 
 	for (i=0 ; i<3 ; i++)
 	{
