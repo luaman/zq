@@ -369,6 +369,9 @@ void CL_Disconnect (void)
 
 		cls.demoplayback = cls.demorecording = cls.timedemo = false;
 	}
+	else
+		cl.intermission = 0;
+
 	Cam_Reset();
 
 	if (cls.download) {

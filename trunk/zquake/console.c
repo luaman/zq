@@ -71,7 +71,7 @@ void Con_ToggleConsole_f (void)
 
 	if (key_dest == key_console)
 	{
-		if (cls.state == ca_active)
+		if (cls.state == ca_active || cl.intermission)
 			key_dest = key_game;
 	}
 	else
