@@ -19,23 +19,25 @@
 
 // this file is shared by quake and qcc
 
-typedef int	func_t;
-typedef int	string_t;
+typedef int func_t;
+typedef int string_t;
 
-typedef enum {ev_void, ev_string, ev_float, ev_vector, ev_entity, ev_field, ev_function, ev_pointer} etype_t;
+enum etype_t {
+	ev_void, ev_string, ev_float, ev_vector, ev_entity, ev_field, ev_function, ev_pointer
+};
 
 
-#define	OFS_NULL		0
-#define	OFS_RETURN		1
-#define	OFS_PARM0		4		// leave 3 ofs for each parm to hold vectors
-#define	OFS_PARM1		7
-#define	OFS_PARM2		10
-#define	OFS_PARM3		13
-#define	OFS_PARM4		16
-#define	OFS_PARM5		19
-#define	OFS_PARM6		22
-#define	OFS_PARM7		25
-#define	RESERVED_OFS	28
+const int OFS_NULL		= 0;
+const int OFS_RETURN	= 1;
+const int OFS_PARM0		= 4;	// leave 3 ofs for each parm to hold vectors
+const int OFS_PARM1		= 7;
+const int OFS_PARM2		= 10;
+const int OFS_PARM3		= 13;
+const int OFS_PARM4		= 16;
+const int OFS_PARM5		= 19;
+const int OFS_PARM6		= 22;
+const int OFS_PARM7		= 25;
+const int RESERVED_OFS	= 28;
 
 
 enum {
@@ -117,24 +119,25 @@ enum {
 };
 
 
-typedef struct statement_s
+struct dstatement_t
 {
 	unsigned short	op;
 	short	a,b,c;
-} dstatement_t;
+};
 
-typedef struct
+struct ddef_t
 {
 	unsigned short	type;		// if DEF_SAVEGLOBGAL bit is set
 								// the variable needs to be saved in savegames
 	unsigned short	ofs;
 	int			s_name;
-} ddef_t;
-#define	DEF_SAVEGLOBGAL	(1<<15)
+};
 
-#define	MAX_PARMS	8
+const int DEF_SAVEGLOBGAL = 1<<15;
 
-typedef struct
+const int MAX_PARMS	= 8;
+
+struct dfunction_t
 {
 	int		first_statement;	// negative numbers are builtins
 	int		parm_start;
@@ -147,11 +150,12 @@ typedef struct
 	
 	int		numparms;
 	byte	parm_size[MAX_PARMS];
-} dfunction_t;
+};
 
 
-#define	PROG_VERSION	6
-typedef struct
+const int PROG_VERSION = 6;
+
+struct dprograms_t
 {
 	int		version;
 	int		crc;			// check of header file
@@ -175,5 +179,5 @@ typedef struct
 	int		numglobals;
 	
 	int		entityfields;
-} dprograms_t;
+};
 
