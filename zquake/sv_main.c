@@ -1282,11 +1282,7 @@ void SV_CheckVars (void)
 	if (spw && spw[0] && strcmp(spw, "none"))
 		v |= 2;
 
-#ifdef QW_BOTH
-//	if (dedicated)
-	if (false)
-#endif
-	Con_Printf ("Updated needpass.\n");
+	Con_DPrintf ("Updated needpass.\n");
 	if (!v)
 		Info_SetValueForKey (svs.info, "needpass", "", MAX_SERVERINFO_STRING);
 	else
