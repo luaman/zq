@@ -50,6 +50,8 @@ typedef struct
 	unsigned	model_player_checksum;
 	unsigned	eyes_player_checksum;
 	
+	char		sky[32];			// skybox file name ("unit1_", etc)
+
 	char		name[64];			// map name
 	char		modelname[MAX_QPATH];		// maps/<name>.bsp, for model_precache[0]
 	struct model_s 	*worldmodel;

@@ -62,6 +62,7 @@ void SV_New_f (void)
 {
 	char		*gamedir;
 	int			playernum;
+	char		info[MAX_SERVERINFO_STRING];
 
 	if (sv_client->state == cs_spawned)
 		return;
@@ -116,8 +117,20 @@ void SV_New_f (void)
 	MSG_WriteByte (&sv_client->netchan.message, sv.edicts->v.sounds);
 
 	// send server info string
+	strcpy (info, svs.info);
+
+	// append skybox name if there's enough room
+	if (sv.sky[0] && !strstr(sv.sky, ".."))
+	{
+		if (strlen(info) + 5 + strlen(sv.sky) < MAX_SERVERINFO_STRING)
+		{
+			strcat (info, "\\sky\\");
+			strcat (info, sv.sky);
+		}
+	}
 	MSG_WriteByte (&sv_client->netchan.message, svc_stufftext);
-	MSG_WriteString (&sv_client->netchan.message, va("fullserverinfo \"%s\"\n", svs.info) );
+	MSG_WriteString (&sv_client->netchan.message, va("fullserverinfo \"%s\"\n", info));
+
 }
 
 /*

@@ -795,7 +795,7 @@ Used for initial level load and for savegames.
 char *ED_ParseEdict (char *data, edict_t *ent)
 {
 	ddef_t		*key;
-	qboolean	anglehack;
+	qboolean	anglehack, skyhack;
 	qboolean	init;
 	char		keyname[256];
 
@@ -841,6 +841,15 @@ if (!strcmp(com_token, "light"))
 
 		init = true;	
 
+		skyhack = false;
+		if (ent == sv.edicts && (!strcmp(keyname, "sky") || !strcmp(keyname, "skyname")))
+		{
+			skyhack = true;
+			Q_strncpyz (sv.sky, com_token, sizeof(sv.sky));
+			if (strstr(sv.sky, ".."))
+				sv.sky[0] = 0;
+		}
+
 // keynames with a leading underscore are used for utility comments,
 // and are immediately discarded by quake
 		if (keyname[0] == '_')
@@ -849,7 +858,8 @@ if (!strcmp(com_token, "light"))
 		key = ED_FindField (keyname);
 		if (!key)
 		{
-			Com_Printf ("%s is not a field\n", keyname);
+			if (!skyhack)
+				Com_Printf ("%s is not a field\n", keyname);
 			continue;
 		}
 
