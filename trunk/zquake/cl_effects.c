@@ -967,11 +967,12 @@ void CL_LinkDlights (void)
 	dl = cl_dlights;
 	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
 	{
-		dl->radius -= cls.frametime * dl->decay;
 		if (dl->die < cl.time || dl->radius <= 0)
 			continue;
 
 		V_AddDlight(dl->key, dl->origin, dl->radius, dl->minlight, dl->type);
+
+		dl->radius -= cls.frametime * dl->decay;
 	}
 }
 
