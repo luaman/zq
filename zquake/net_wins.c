@@ -352,10 +352,7 @@ int UDP_OpenSocket (int port)
 	} else
 		address.sin_addr.s_addr = INADDR_ANY;
 
-	if (port == PORT_ANY)
-		address.sin_port = 0;
-	else
-		address.sin_port = htons((short)port);
+	address.sin_port = htons((short)port);
 
 	if (bind (newsocket, (void *)&address, sizeof(address)) == -1)
 		return -1;
