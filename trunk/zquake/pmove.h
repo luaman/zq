@@ -90,6 +90,7 @@ typedef struct {
 	float	friction;
 	float	waterfriction;
 	float	entgravity;
+	float	bunnyspeedcap;
 } movevars_t;
 
 

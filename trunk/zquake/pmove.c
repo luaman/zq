@@ -399,18 +399,25 @@ void PM_Accelerate (vec3_t wishdir, float wishspeed, float accel)
 		accelspeed = addspeed;
 	
 	for (i=0 ; i<3 ; i++)
-		pmove.velocity[i] += accelspeed*wishdir[i];	
+		pmove.velocity[i] += accelspeed*wishdir[i];
 }
 
 void PM_AirAccelerate (vec3_t wishdir, float wishspeed, float accel)
 {
 	int			i;
 	float		addspeed, accelspeed, currentspeed, wishspd = wishspeed;
+	float		originalspeed, newspeed, speedcap;
 		
 	if (pmove.dead)
 		return;
 	if (pmove.waterjumptime)
 		return;
+
+	if (movevars.bunnyspeedcap > 0)
+	{
+		originalspeed = sqrt(pmove.velocity[0]*pmove.velocity[0] +
+						pmove.velocity[1]*pmove.velocity[1]);
+	}
 
 	if (wishspd > 30)
 		wishspd = 30;
@@ -423,7 +430,24 @@ void PM_AirAccelerate (vec3_t wishdir, float wishspeed, float accel)
 		accelspeed = addspeed;
 	
 	for (i=0 ; i<3 ; i++)
-		pmove.velocity[i] += accelspeed*wishdir[i];	
+		pmove.velocity[i] += accelspeed*wishdir[i];
+
+	if (movevars.bunnyspeedcap > 0)
+	{
+		newspeed = sqrt(pmove.velocity[0]*pmove.velocity[0] +
+					pmove.velocity[1]*pmove.velocity[1]);
+		if (newspeed > originalspeed)
+		{
+			speedcap = movevars.maxspeed * movevars.bunnyspeedcap;
+			if (newspeed > speedcap)
+			{
+				if (originalspeed < speedcap)
+					originalspeed = speedcap;
+				pmove.velocity[0] *= originalspeed / newspeed;
+				pmove.velocity[1] *= originalspeed / newspeed;
+			}
+		}
+	}
 }
 
 
