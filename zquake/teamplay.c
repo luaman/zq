@@ -1628,7 +1628,7 @@ void TP_StatChanged (int stat, int value)
 		i = value &~ vars.items;
 
 		if (i & (IT_KEY1|IT_KEY2)) {
-			if (cl.teamfortress)
+			if (cl.teamfortress && !cl.spectator)
 				ExecTookTrigger (tp_name_flag.string, pk_flag);
 		}
 
