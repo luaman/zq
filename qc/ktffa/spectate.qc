@@ -1,23 +1,29 @@
 /*
-Copyright (C) 1996-1997 Id Software, Inc.
+	spectate.qc
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+	spectator functions
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+	Copyright (C) 1996-1997  Id Software, Inc.
 
-See the GNU General Public License for more details.
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		59 Temple Place - Suite 330
+		Boston, MA  02111-1307, USA
 
 */
-// Spectator functions
 // Added Aug11'97 by Zoid <zoid@idsoftware.com>
 //
 // These functions are called from the server if they exist.
@@ -35,14 +41,13 @@ SpectatorConnect
 called when a spectator connects to a server
 ============
 */
-void() SpectatorConnect =
+void SpectatorConnect ()
 {
 	string s;
 
-	bprint (PRINT_MEDIUM, "Spectator ");
-	bprint (PRINT_MEDIUM, self.netname);
-	bprint (PRINT_MEDIUM, " entered the game\n");
+	bprint (PRINT_MEDIUM, "Spectator ", self.netname, " entered the game\n");
 
+#ifdef KTFFA
 	sprint(self, 2, "Welcome to ÀÔÌ‚·Ù ‘Â·ÌÛ ≤Æ≤ ∆∆¡ mod\nType „ÔÌÌ·Ó‰Û for help\n");
 
 	stuffcmd(self, "alias join \"impulse ");
@@ -58,9 +63,10 @@ void() SpectatorConnect =
 	s = ftos(KT_IMPULSE_PRINT_VERSION);
 	stuffcmd(self.owner, s);
 	stuffcmd(self.owner, "\"\n");
+#endif
 
 	self.goalentity = world; // used for impulse IMPULSE_AXE below
-};
+}
 
 /*
 ===========
@@ -69,12 +75,10 @@ SpectatorDisconnect
 called when a spectator disconnects from a server
 ============
 */
-void() SpectatorDisconnect =
+void SpectatorDisconnect ()
 {
-	bprint (PRINT_MEDIUM, "Spectator ");
-	bprint (PRINT_MEDIUM, self.netname);
-	bprint (PRINT_MEDIUM, " left the game\n");
-};
+	bprint (PRINT_MEDIUM, "Spectator ", self.netname, " left the game\n");
+}
 
 /*
 ================
@@ -83,7 +87,7 @@ SpectatorImpulseCommand
 Called by SpectatorThink if the spectator entered an impulse
 ================
 */
-void() SpectatorImpulseCommand =
+void SpectatorImpulseCommand ()
 {
 	if (self.impulse == IMPULSE_AXE) {
 		// teleport the spectator to the next spawn point
@@ -98,12 +102,14 @@ void() SpectatorImpulseCommand =
 			self.fixangle = true;           // turn this way immediately
 		}
 	}
+#ifdef KTFFA
 	else if(self.impulse == KT_IMPULSE_VOTE_CHANGE) stuffcmd(self, "spectator 0; wait; wait; reconnect\n");
 	else if(self.impulse == KT_IMPULSE_PRINT_SCORES) PrintScores();
 	else if(self.impulse == KT_IMPULSE_PRINT_CMDS) PrintSCommands();
 	else if(self.impulse == KT_IMPULSE_PRINT_VERSION) ShowVersion();
+#endif
 	self.impulse = IMPULSE_NONE;
-};
+}
 
 /*
 ================
@@ -112,11 +118,11 @@ SpectatorThink
 Called every frame after physics are run
 ================
 */
-void() SpectatorThink =
+void SpectatorThink ()
 {
 	// self.origin, etc contains spectator position, so you could
 	// do some neat stuff here
 
 	if (self.impulse)
 		SpectatorImpulseCommand();
-};
+}

@@ -297,7 +297,6 @@ void PainSound ()
 // slime pain sounds
 	if (self.watertype == CONTENT_SLIME)
 	{
-// FIX ME       put in some steam here
 		if (random() > 0.5)
 			sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);
 		else
@@ -390,8 +389,11 @@ void player_die_ax1 ();
 void DeathBubblesSpawn ()
 {
 	entity	bubble;
-	if (self.owner.waterlevel != 3)
+	if ((self.owner.waterlevel != 3) && (self.owner.health > 0))
+        {
+                remove(self);       // remove bubble spawner
 		return;
+        }
 	bubble = spawn();
 	setmodel (bubble, "progs/s_bubble.spr");
 	setorigin (bubble, self.owner.origin + '0 0 24');
@@ -424,7 +426,6 @@ void DeathBubbles (float num_bubbles)
 	bubble_spawner.air_finished = 0;
 	bubble_spawner.owner = self;
 	bubble_spawner.bubble_count = num_bubbles;
-	return;
 }
 
 
@@ -509,9 +510,9 @@ void ThrowGib (string gibname, float dm)
 	entity	new;
 
 	new = spawn();
-	setorigin (new, self.origin);
+	new.origin = self.origin;
 	setmodel (new, gibname);
-	setsize (new, '0 0 0', '0 0 0');
+	setsize (new, VEC_ORIGIN, VEC_ORIGIN);	// link into world
 	new.velocity = VelocityForDamage (dm);
 	new.movetype = MOVETYPE_BOUNCE;
 	new.solid = SOLID_NOT;
@@ -625,14 +626,16 @@ void PlayerDie ()
 	
 	self.angles_x = 0;
 	self.angles_z = 0;
+#ifdef KTFFA
+// KTFFA: created this function to allow it to be called from client.qc
+// was originally part of PlayerDie() and hasn't been altered
         StartDie();
 }
 
-// KTFFA: created this function to allow it to be called from client.qc
-// was originally part of PlayerDie() and hasn't been altered
 void StartDie ()
 {
         float i;
+#endif
         
 	if (self.weapon == IT_AXE)
 	{

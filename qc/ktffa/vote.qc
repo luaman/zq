@@ -19,12 +19,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // vote.q: mapchange voting functions
 
-void() NextLevel;
+void NextLevel ();
 
-float() CountPlayers =
+float CountPlayers ()
 {
-	local entity p;
-	local float num;
+	entity p;
+	float num;
 
 	num = 0;
 	p = find(world, classname, "player");
@@ -33,11 +33,11 @@ float() CountPlayers =
 		p = find(p, classname, "player");
 	}
 	return num;
-};
+}
 
-void() VoteThink =
+void VoteThink ()
 {
-	local entity p;
+	entity p;
 
 	bprint(2, "The voting has timed out.\n");
 	self.nextthink = -1;
@@ -48,13 +48,13 @@ void() VoteThink =
 		p = find(p, classname, "player");
 	}
 	remove(self);
-};
+}
 
-void() VoteChange =
+void VoteChange ()
 {
-	local float f1;
-	local string tmp;
-	local entity voteguard;
+	float f1;
+	string tmp;
+	entity voteguard;
 
 	if(k_vote) return;
 
@@ -82,13 +82,13 @@ void() VoteChange =
 	voteguard.classname = "voteguard";
 	voteguard.think = VoteThink;
 	voteguard.nextthink = time + 30;
-};
+}
 
-void() VoteYes =
+void VoteYes ()
 {
-	local float f1, f2;
-	local string tmp;
-	local entity p;
+	float f1, f2;
+	string tmp;
+	entity p;
 
 	if(!k_vote) return;
 
@@ -127,13 +127,13 @@ void() VoteYes =
 	bprint(2, "", tmp, "‘ more vote");
 	if(f1 > 1) bprint(2, "s");
 	bprint(2, " needed\n");
-};
+}
 
-void() VoteNo=
+void VoteNo()
 {
-	local entity p;
-	local float f1, f2;
-	local string tmp;
+	entity p;
+	float f1, f2;
+	string tmp;
 
 // withdraw one's vote
 	if(!k_vote || !self.k_voted) return;
@@ -160,4 +160,4 @@ void() VoteNo=
 	bprint(2, "‘ more vote");
 	if(f1 > 1) bprint(2, "s");
 	bprint(2, " needed\n");
-};
+}
