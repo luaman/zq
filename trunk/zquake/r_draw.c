@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include "r_local.h"
-#include "wad.h"
+#include "rc_wad.h"
 #include "sound.h"
 #include "version.h"
 
