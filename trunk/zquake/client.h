@@ -272,20 +272,6 @@ typedef struct
 
 extern client_persistent_t	cls;
 
-#ifdef MVDPLAY
-typedef struct
-{
-	qbool	interpolate;
-	vec3_t		origin;
-	vec3_t		angles;
-	int			oldindex;
-} interpolate_t;
-
-#endif
-
-
-#define	MAX_PROJECTILES	32
-
 
 // cl.paused flags
 #define PAUSED_SERVER	1

@@ -580,6 +580,8 @@ PROJECTILE PARSING / LINKING
 =========================================================================
 */
 
+#define	MAX_PROJECTILES	32
+
 typedef struct {
 	byte	number;
 	vec3_t	origin;
