@@ -143,7 +143,7 @@ CENTER PRINTING
 ===============================================================================
 */
 
-char		scr_centerstring[1024];
+char		scr_centerstring[2048];
 float		scr_centertime_start;	// for slow victory printing
 float		scr_centertime_off;
 int			scr_center_lines;
