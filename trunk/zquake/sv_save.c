@@ -39,7 +39,7 @@ void SV_SavegameComment (char *text)
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 		text[i] = ' ';
 	levelname = PR_GetString(sv.edicts->v.message);
-	memcpy (text, levelname, strlen(levelname));
+	memcpy (text, levelname, min(strlen(levelname), 21));
 	sprintf (kills, "kills:%3i/%-3i", CL_Stat_Monsters(), CL_Stat_TotalMonsters());
 	memcpy (text+22, kills, strlen(kills));
 
