@@ -690,7 +690,8 @@ void JumpButton (void)
 
 	// check for jump bug
 	// groundplane normal was set in the call to PM_CategorizePosition
-	if (DotProduct(pmove.velocity, groundplane.normal) < -0.1)
+	if (pmove.velocity[2] < 0 &&
+		DotProduct(pmove.velocity, groundplane.normal) < -0.1)
 	{
 		// pmove.velocity is pointing into the ground, clip it
 		PM_ClipVelocity (pmove.velocity, groundplane.normal, pmove.velocity, 1);
