@@ -1068,9 +1068,11 @@ void Host_Init (quakeparms_t *parms)
 	host_colormap = (byte *)FS_LoadHunkFile ("gfx/colormap.lmp");
 	if (!host_colormap)
 		Sys_Error ("Couldn't load gfx/colormap.lmp");
+
 #ifdef __linux__
 	IN_Init ();
-	CDAudio_Init ();
+#endif
+
 	VID_Init (host_basepal);
 	Draw_Init ();
 	SCR_Init ();
@@ -1078,19 +1080,11 @@ void Host_Init (quakeparms_t *parms)
 
 	S_Init ();
 	
-	Sbar_Init ();
-	CL_Init ();
-#else
-	VID_Init (host_basepal);
-	Draw_Init ();
-	SCR_Init ();
-	R_Init ();
-
-	S_Init();
-
 	CDAudio_Init ();
 	Sbar_Init ();
 	CL_Init ();
+
+#ifndef __linux__
 	IN_Init ();
 #endif
 
