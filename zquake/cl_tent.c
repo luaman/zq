@@ -473,7 +473,7 @@ void CL_UpdateBeams (void)
 		{
 			VectorCopy (cl.simorg, b->start);
 			b->start[2] += cl.crouch;
-			if (cl_trueLightning.value && cl.allow_truelightning)
+			if (cl_trueLightning.value && cl.allow_truelightning && !cl.paused)
 			{
 				vec3_t	forward;
 				vec3_t	v, org;
