@@ -145,8 +145,6 @@ qbool Cmd_IsLegacyCommand (char *oldname);
 
 //===========================================================================
 
-#define	MAX_ALIAS_NAME	32
-
 #define ALIAS_ARCHIVE	1	// save to config.cfg
 #define ALIAS_STUFFED	2	// stuffed by mod, clear after leaving server
 
@@ -154,7 +152,7 @@ typedef struct cmd_alias_s
 {
 	struct cmd_alias_s	*hash_next;
 	struct cmd_alias_s	*next;
-	char	name[MAX_ALIAS_NAME];
+	char	*name;
 	char	*value;
 	int		flags;
 } cmd_alias_t;

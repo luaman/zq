@@ -509,7 +509,7 @@ void Cmd_Alias_f (void)
 {
 	cmd_alias_t	*a;
 	int			key;
-	char		*s;
+	char		*name;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -518,19 +518,15 @@ void Cmd_Alias_f (void)
 		return;
 	}
 
-	s = Cmd_Argv(1);
-	if (strlen(s) >= MAX_ALIAS_NAME)
-	{
-		Com_Printf ("Alias name is too long\n");
-		return;
-	}
+	name = Cmd_Argv(1);
 
-	key = Com_HashKey(s);
+	key = Com_HashKey(name);
 
 	// if the alias already exists, reuse it
 	for (a = cmd_alias_hash[key] ; a ; a=a->hash_next)
 	{
-		if (!Q_stricmp(a->name, s))	{
+		if (!Q_stricmp(a->name, name))	{
+			Q_free (a->name);
 			Q_free (a->value);
 			break;
 		}
@@ -548,7 +544,8 @@ void Cmd_Alias_f (void)
 		cmd_alias_hash[key] = a;
 	}
 
-	strcpy (a->name, s);	// safe (length checked earlier)
+	a->name = Q_strdup(name);
+	a->value = Q_strdup(Cmd_MakeArgs(2));	// copy the rest of the command line
 
 #ifndef SERVERONLY
 	if (cbuf_current == &cbuf_svc)
@@ -560,8 +557,6 @@ void Cmd_Alias_f (void)
 	if (!Q_stricmp(Cmd_Argv(0), "aliasa"))
 		a->flags |= ALIAS_ARCHIVE;
 
-// copy the rest of the command line
-	a->value = Q_strdup (Cmd_MakeArgs(2));
 }
 
 
@@ -602,6 +597,7 @@ qbool Cmd_DeleteAlias (char *name)
 				cmd_alias = a->next;
 
 			// free
+			Q_free (a->name);
 			Q_free (a->value);
 			Q_free (a);
 			return true;
@@ -615,7 +611,7 @@ qbool Cmd_DeleteAlias (char *name)
 
 void Cmd_UnAlias_f (void)
 {
-	char		*s;
+	char	*name;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -623,16 +619,11 @@ void Cmd_UnAlias_f (void)
 		return;
 	}
 
-	s = Cmd_Argv(1);
-	if (strlen(s) >= MAX_ALIAS_NAME)
-	{
-		Com_Printf ("Alias name is too long\n");
-		return;
-	}
+	name = Cmd_Argv(1);
 
-	if (!Cmd_DeleteAlias(s)) {
+	if (!Cmd_DeleteAlias(name)) {
 		if (cl_warncmd.value || developer.value)
-			Com_Printf ("No such alias: \"%s\"\n", s);
+			Com_Printf ("No such alias: \"%s\"\n", name);
 	}
 }
 
@@ -644,6 +635,7 @@ void Cmd_UnAliasAll_f (void)
 
 	for (a=cmd_alias ; a ; a=next) {
 		next = a->next;
+		Q_free (a->name);
 		Q_free (a->value);
 		Q_free (a);
 	}
