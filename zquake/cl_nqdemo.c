@@ -86,6 +86,7 @@ int		nq_maxclients;
 float	nq_mtime[2];
 vec3_t	nq_mvelocity[2];
 vec3_t	nq_mviewangles[2];
+vec3_t	nq_mviewangles_temp;
 qboolean	standard_quake = true;
 
 
@@ -116,10 +117,9 @@ qboolean CL_GetNQDemoMessage (void)
 
 	// get the next message
 	fread (&net_message.cursize, 4, 1, cls.demofile);
-	VectorCopy (nq_mviewangles[0], nq_mviewangles[1]);
 	for (i=0 ; i<3 ; i++) {
 		r = fread (&f, 4, 1, cls.demofile);
-		nq_mviewangles[0][i] = LittleFloat (f);
+		nq_mviewangles_temp[i] = LittleFloat (f);
 	}
 
 	net_message.cursize = LittleLong (net_message.cursize);
@@ -978,10 +978,12 @@ void NQD_ParseServerMessage (void)
 {
 	int			cmd;
 	int			i;
+	qboolean	message_with_datagram;		// hack to fix glitches when receiving a packet
+											// without a datagram
 
 	nq_player_teleported = false;		// OMG, it's a hack!
-
-	cl_entframecount++;		// FIXME?
+	message_with_datagram = false;
+	cl_entframecount++;
 
 	if (cl_shownet.value == 1)
 		Com_Printf ("%i ", net_message.cursize);
@@ -1005,6 +1007,14 @@ void NQD_ParseServerMessage (void)
 		if (cmd == -1)
 		{
 			SHOWNET("END OF MESSAGE");
+			if (!message_with_datagram) {
+				cl_entframecount--;
+			}
+			else
+			{
+				VectorCopy (nq_mviewangles[0], nq_mviewangles[1]);
+				VectorCopy (nq_mviewangles_temp, nq_mviewangles[0]);
+			}
 			return;		// end of message
 		}
 
@@ -1032,6 +1042,7 @@ void NQD_ParseServerMessage (void)
 			nq_mtime[1] = nq_mtime[0];
 			nq_mtime[0] = MSG_ReadFloat ();
 			cl.servertime = nq_mtime[0];
+			message_with_datagram = true;
 			break;
 
 		case svc_clientdata:
@@ -1214,6 +1225,7 @@ void NQD_ParseServerMessage (void)
 			break;
 		}
 	}
+
 }
 
 
