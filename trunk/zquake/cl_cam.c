@@ -124,7 +124,7 @@ void Cam_Lock(int playernum)
 	Sbar_Changed();
 }
 
-pmtrace_t Cam_DoTrace(vec3_t vec1, vec3_t vec2)
+trace_t Cam_DoTrace(vec3_t vec1, vec3_t vec2)
 {
 #if 0
 	memset(&pmove, 0, sizeof(pmove));
@@ -142,7 +142,7 @@ pmtrace_t Cam_DoTrace(vec3_t vec1, vec3_t vec2)
 static float Cam_TryFlyby(player_state_t *self, player_state_t *player, vec3_t vec, qboolean checkvis)
 {
 	vec3_t v;
-	pmtrace_t trace;
+	trace_t trace;
 	float len;
 
 	vectoangles(vec, v);
@@ -174,7 +174,7 @@ static float Cam_TryFlyby(player_state_t *self, player_state_t *player, vec3_t v
 // Is player visible?
 static qboolean Cam_IsVisible(player_state_t *player, vec3_t vec)
 {
-	pmtrace_t trace;
+	trace_t trace;
 	vec3_t v;
 
 	trace = Cam_DoTrace(player->origin, vec);

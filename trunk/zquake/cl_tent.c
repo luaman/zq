@@ -434,7 +434,7 @@ void CL_UpdateBeams (void)
 				vec3_t	v, org;
 				vec3_t	ang;
 				float	f, delta;
-				pmtrace_t	trace;
+				trace_t	trace;
 
 				f = max(0, min(1, cl_trueLightning.value));
 

@@ -2033,7 +2033,7 @@ void TP_FindPoint (void)
 		if (rank < best || best < 0) {
 			// check if we can actually see the object
 			vec3_t	end;
-			pmtrace_t	trace;
+			trace_t	trace;
 			float	radius;
 
 			radius = item->radius;
