@@ -1289,7 +1289,7 @@ void CL_ParsePrint (void)
 	strncat (cl.sprint_buf, s, sizeof(cl.sprint_buf)-1);
 	cl.sprint_level = level;
 
-	while ( (p=strchr(cl.sprint_buf, '\n')) != NULL ) {
+	if ( (p=strrchr(cl.sprint_buf, '\n')) != NULL ) {
 		len = p - cl.sprint_buf + 1;
 		memcpy(str, cl.sprint_buf, len);
 		str[len] = '\0';
