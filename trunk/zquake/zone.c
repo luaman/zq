@@ -31,7 +31,7 @@ void Cache_FreeHigh (int new_high_hunk);
 
 typedef struct
 {
-	int		sentinal;
+	int		sentinel;
 	int		size;		// including sizeof(hunk_t), -1 = not allocated
 	char	name[8];
 } hunk_t;
@@ -49,7 +49,7 @@ int		hunk_tempmark;
 ==============
 Hunk_Check
 
-Run consistancy and sentinal trahing checks
+Run consistency and sentinel trashing checks
 ==============
 */
 void Hunk_Check (void)
@@ -58,8 +58,8 @@ void Hunk_Check (void)
 	
 	for (h = (hunk_t *)hunk_base ; (byte *)h != hunk_base + hunk_low_used ; )
 	{
-		if (h->sentinal != HUNK_SENTINEL)
-			Sys_Error ("Hunk_Check: trahsed sentinal");
+		if (h->sentinel != HUNK_SENTINEL)
+			Sys_Error ("Hunk_Check: trashed sentinel");
 		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("Hunk_Check: bad size");
 		h = (hunk_t *)((byte *)h+h->size);
@@ -114,10 +114,10 @@ void Hunk_Print (qbool all)
 			break;
 
 	//
-	// run consistancy checks
+	// run consistency checks
 	//
-		if (h->sentinal != HUNK_SENTINEL)
-			Sys_Error ("Hunk_Check: trahsed sentinal");
+		if (h->sentinel != HUNK_SENTINEL)
+			Sys_Error ("Hunk_Check: trashed sentinel");
 		if (h->size < 16 || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("Hunk_Check: bad size");
 			
@@ -187,7 +187,7 @@ void *Hunk_AllocName (int size, char *name)
 	memset (h, 0, size);
 	
 	h->size = size;
-	h->sentinal = HUNK_SENTINEL;
+	h->sentinel = HUNK_SENTINEL;
 	strncpy (h->name, name, 8);
 	
 	return (void *)(h+1);
@@ -278,7 +278,7 @@ void *Hunk_HighAllocName (int size, char *name)
 
 	memset (h, 0, size);
 	h->size = size;
-	h->sentinal = HUNK_SENTINEL;
+	h->sentinel = HUNK_SENTINEL;
 	strncpy (h->name, name, 8);
 
 	return (void *)(h+1);
