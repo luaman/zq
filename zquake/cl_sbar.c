@@ -25,36 +25,36 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern mpic_t *scr_backtile;
 
-int			sb_updates;		// if >= vid.numpages, no update needed
-
-#define STAT_MINUS		10	// num frame for '-' stats digit
-mpic_t		*sb_nums[2][11];
-mpic_t		*sb_colon, *sb_slash;
-mpic_t		*sb_ibar;
-mpic_t		*sb_sbar;
-mpic_t		*sb_scorebar;
-
-mpic_t		*sb_weapons[7][8];	// 0 is active, 1 is owned, 2-5 are flashes
-mpic_t		*sb_ammo[4];
-mpic_t		*sb_sigil[4];
-mpic_t		*sb_armor[3];
-mpic_t		*sb_items[32];
-
-mpic_t		*sb_faces[5][2];		// 0 is dead, 1-4 are alive
-								// 0 is static, 1 is temporary animation
-mpic_t		*sb_face_invis;
-mpic_t		*sb_face_quad;
-mpic_t		*sb_face_invuln;
-mpic_t		*sb_face_invis_invuln;
-
-mpic_t		*sb_disc;			// invulnerability
-
-qbool		sb_showscores;
-qbool		sb_showteamscores;
-
+int			sb_updates;			// if >= vid.numpages, no update needed
 int			sb_lines;			// scan lines to draw
 qbool		sb_drawinventory;
 qbool		sb_drawmain;
+
+
+#define STAT_MINUS		10	// num frame for '-' stats digit
+static mpic_t	*sb_nums[2][11];
+static mpic_t	*sb_colon, *sb_slash;
+static mpic_t	*sb_ibar;
+static mpic_t	*sb_sbar;
+static mpic_t	*sb_scorebar;
+
+static mpic_t	*sb_weapons[7][8];	// 0 is active, 1 is owned, 2-5 are flashes
+static mpic_t	*sb_ammo[4];
+static mpic_t	*sb_sigil[4];
+static mpic_t	*sb_armor[3];
+static mpic_t	*sb_items[32];
+
+static mpic_t	*sb_faces[5][2];		// 0 is dead, 1-4 are alive
+								// 0 is static, 1 is temporary animation
+static mpic_t	*sb_face_invis;
+static mpic_t	*sb_face_quad;
+static mpic_t	*sb_face_invuln;
+static mpic_t	*sb_face_invis_invuln;
+
+static mpic_t	*sb_disc;			// invulnerability
+
+static qbool	sb_showscores;
+static qbool	sb_showteamscores;
 
 void Sbar_DeathmatchOverlay (int start);
 void Sbar_TeamOverlay (void);
@@ -73,7 +73,7 @@ Sbar_ShowTeamScores
 Tab key down
 ===============
 */
-void Sbar_ShowTeamScores (void)
+static void Sbar_ShowTeamScores (void)
 {
 	if (sb_showteamscores)
 		return;
@@ -89,7 +89,7 @@ Sbar_DontShowTeamScores
 Tab key up
 ===============
 */
-void Sbar_DontShowTeamScores (void)
+static void Sbar_DontShowTeamScores (void)
 {
 	sb_showteamscores = false;
 	sb_updates = 0;
@@ -102,7 +102,7 @@ Sbar_ShowScores
 Tab key down
 ===============
 */
-void Sbar_ShowScores (void)
+static void Sbar_ShowScores (void)
 {
 	if (sb_showscores)
 		return;
@@ -118,7 +118,7 @@ Sbar_DontShowScores
 Tab key up
 ===============
 */
-void Sbar_DontShowScores (void)
+static void Sbar_DontShowScores (void)
 {
 	sb_showscores = false;
 	sb_updates = 0;
@@ -252,7 +252,7 @@ void Sbar_Init (void)
 Sbar_DrawPic
 =============
 */
-void Sbar_DrawPic (int x, int y, mpic_t *pic)
+static void Sbar_DrawPic (int x, int y, mpic_t *pic)
 {
 	R_DrawPic (x + sbar_xofs, y + (vid.height-SBAR_HEIGHT), pic);
 }
@@ -264,7 +264,7 @@ Sbar_DrawSubPic
 JACK: Draws a portion of the picture in the status bar.
 */
 
-void Sbar_DrawSubPic(int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height) 
+static void Sbar_DrawSubPic(int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height) 
 {
 	R_DrawSubPic (x, y+(vid.height-SBAR_HEIGHT), pic, srcx, srcy, width, height);
 }
@@ -277,7 +277,7 @@ Sbar_DrawChar
 Draws one solid graphics character
 ================
 */
-void Sbar_DrawChar (int x, int y, int num)
+static void Sbar_DrawChar (int x, int y, int num)
 {
 	R_DrawChar (x + 4 + sbar_xofs, y + vid.height-SBAR_HEIGHT, num);
 }
@@ -287,7 +287,7 @@ void Sbar_DrawChar (int x, int y, int num)
 Sbar_DrawString
 ================
 */
-void Sbar_DrawString (int x, int y, char *str)
+static void Sbar_DrawString (int x, int y, char *str)
 {
 	R_DrawString (x + sbar_xofs, y+ vid.height-SBAR_HEIGHT, str);
 }
@@ -297,7 +297,7 @@ void Sbar_DrawString (int x, int y, char *str)
 Sbar_itoa
 =============
 */
-int Sbar_itoa (int num, char *buf)
+static int Sbar_itoa (int num, char *buf)
 {
 	char	*str;
 	int		pow10;
@@ -333,7 +333,7 @@ int Sbar_itoa (int num, char *buf)
 Sbar_DrawNum
 =============
 */
-void Sbar_DrawNum (int x, int y, int num, int digits, int color)
+static void Sbar_DrawNum (int x, int y, int num, int digits, int color)
 {
 	char			str[12];
 	char			*ptr;
@@ -378,7 +378,7 @@ int scoreboardteams;
 Sbar_SortFrags
 ===============
 */
-void Sbar_SortFrags (qbool includespec)
+static void Sbar_SortFrags (qbool includespec)
 {
 	int		i, j, k;
 		
@@ -406,7 +406,7 @@ void Sbar_SortFrags (qbool includespec)
 			}
 }
 
-void Sbar_SortTeams (void)
+static void Sbar_SortTeams (void)
 {
 	int				i, j, k;
 	player_info_t	*s;
@@ -467,7 +467,7 @@ addpinginfo:
 			}
 }
 
-int	Sbar_ColorForMap (int m)
+static int Sbar_ColorForMap (int m)
 {
 	m = (m < 0) ? 0 : ((m > 13) ? 13 : m);
 
@@ -481,7 +481,7 @@ int	Sbar_ColorForMap (int m)
 Sbar_SoloScoreboard
 ===============
 */
-void Sbar_SoloScoreboard (void)
+static void Sbar_SoloScoreboard (void)
 {
 	char	str[80];
 	double	_time;
@@ -532,7 +532,7 @@ void Sbar_SoloScoreboard (void)
 Sbar_DrawInventory
 ===============
 */
-void Sbar_DrawInventory (void)
+static void Sbar_DrawInventory (void)
 {	
 	int		i;
 	char	num[6];
@@ -641,7 +641,7 @@ void Sbar_DrawInventory (void)
 Sbar_DrawFrags
 ===============
 */
-void Sbar_DrawFrags (void)
+static void Sbar_DrawFrags (void)
 {	
 	int				i, k, l;
 	int				top, bottom;
@@ -707,7 +707,7 @@ void Sbar_DrawFrags (void)
 Sbar_DrawFace
 ===============
 */
-void Sbar_DrawFace (void)
+static void Sbar_DrawFace (void)
 {
 	int		f, anim;
 
@@ -751,7 +751,7 @@ void Sbar_DrawFace (void)
 Sbar_DrawNormal
 =============
 */
-void Sbar_DrawNormal (void)
+static void Sbar_DrawNormal (void)
 {
 	if (cl_sbar.value)
 		Sbar_DrawPic (0, 0, sb_sbar);
@@ -795,6 +795,36 @@ void Sbar_DrawNormal (void)
 	, cl.stats[STAT_AMMO] <= 10);
 }
 
+
+/*
+=============
+Sbar_SpectatorScoreboard
+=============
+*/
+static void Sbar_SpectatorScoreboard (void)
+{
+	char	st[512];
+
+	if (!cam_track) {
+		Sbar_DrawPic (0, 0, sb_scorebar);
+		Sbar_DrawString (160-7*8,4, "SPECTATOR MODE");
+		if (Cam_TargetCount())
+			Sbar_DrawString(160-14*8+4, 12, "Press [ATTACK] for AutoCamera");
+	} else {
+		if (sb_showscores || cl.stats[STAT_HEALTH] <= 0)
+			Sbar_SoloScoreboard ();
+		else
+			Sbar_DrawNormal ();
+
+		sprintf (st, "Tracking %-.13s", cl.players[cam_target].name);	// sprintf ok
+		if (!cam_locked)
+			strcat (st, " (waiting)");
+		else if (!cls.demoplayback && Cam_TargetCount() > 1)
+			strcat (st, ", [JUMP] for next");
+		Sbar_DrawString(0, -8, st);
+	}
+}
+
 /*
 ===============
 Sbar_Draw
@@ -808,7 +838,6 @@ void Sbar_Draw (void)
 {
 	qbool	headsup;
 	qbool	inventory_area_drawn = false;
-	char	st[512];
 
 	headsup = !cl_sbar.value;
 	if ((sb_updates >= vid.numpages) && !headsup)
@@ -821,8 +850,6 @@ void Sbar_Draw (void)
 		return;		// nothing to do
 
 	scr_copyeverything = 1;
-//	scr_fullupdate = 0;
-
 	sb_updates++;
 
 	if (scr_centerSbar.value)
@@ -838,7 +865,7 @@ void Sbar_Draw (void)
 	}
 #endif
 
-// top line
+// inventory
 	if (sb_drawinventory)
 	{
 		if (!cl.spectator || cam_track) {
@@ -852,26 +879,9 @@ void Sbar_Draw (void)
 // main area
 	if (sb_drawmain)
 	{
-		if (cl.spectator) {
-			if (!cam_track) {
-				Sbar_DrawPic (0, 0, sb_scorebar);
-				Sbar_DrawString (160-7*8,4, "SPECTATOR MODE");
-				if (Cam_TargetCount())
-					Sbar_DrawString(160-14*8+4, 12, "Press [ATTACK] for AutoCamera");
-			} else {
-				if (sb_showscores || cl.stats[STAT_HEALTH] <= 0)
-					Sbar_SoloScoreboard ();
-				else
-					Sbar_DrawNormal ();
-
-				sprintf(st, "Tracking %-.13s", cl.players[cam_target].name);
-				if (!cam_locked)
-					strcat (st, " (waiting)");
-				else if (!cls.demoplayback && Cam_TargetCount() > 1)
-					strcat (st, ", [JUMP] for next");
-				Sbar_DrawString(0, -8, st);
-			}
-		} else if (sb_showscores || cl.stats[STAT_HEALTH] <= 0)
+		if (cl.spectator)
+			Sbar_SpectatorScoreboard ();
+		else if (sb_showscores || cl.stats[STAT_HEALTH] <= 0)
 			Sbar_SoloScoreboard ();
 		else
 			Sbar_DrawNormal ();
@@ -918,7 +928,7 @@ Sbar_IntermissionNumber
 
 ==================
 */
-void Sbar_IntermissionNumber (int x, int y, int num, int digits, int color)
+static void Sbar_IntermissionNumber (int x, int y, int num, int digits, int color)
 {
 	char			str[12];
 	char			*ptr;
@@ -952,7 +962,7 @@ team frags
 added by Zoid
 ==================
 */
-void Sbar_TeamOverlay (void)
+static void Sbar_TeamOverlay (void)
 {
 	mpic_t			*pic;
 	int				i, k, l;
@@ -1045,7 +1055,7 @@ Sbar_DeathmatchOverlay
 ping time frags name
 ==================
 */
-void Sbar_DeathmatchOverlay (int start)
+static void Sbar_DeathmatchOverlay (int start)
 {
 	mpic_t			*pic;
 	int				i, k, l;
@@ -1238,7 +1248,7 @@ frags team name
 displayed to right of status bar if there's room
 ==================
 */
-void Sbar_MiniDeathmatchOverlay (void)
+static void Sbar_MiniDeathmatchOverlay (void)
 {
 	int				i, k;
 	int				top, bottom;
@@ -1377,7 +1387,6 @@ void Sbar_MiniDeathmatchOverlay (void)
 /*
 ==================
 Sbar_IntermissionOverlay
-
 ==================
 */
 void Sbar_IntermissionOverlay (void)
@@ -1437,7 +1446,6 @@ void Sbar_IntermissionOverlay (void)
 /*
 ==================
 Sbar_FinaleOverlay
-
 ==================
 */
 void Sbar_FinaleOverlay (void)
