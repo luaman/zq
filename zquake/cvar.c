@@ -375,10 +375,16 @@ with the archive flag set to true.
 void Cvar_WriteVariables (FILE *f)
 {
 	cvar_t	*var;
-	
+
+	// write builtin cvars in a QW compatible way
 	for (var = cvar_vars ; var ; var = var->next)
 		if (var->flags & CVAR_ARCHIVE)
 			fprintf (f, "%s \"%s\"\n", var->name, var->string);
+
+	// write everything else
+	for (var = cvar_vars ; var ; var = var->next)
+		if (var->flags & CVAR_USER_ARCHIVE)
+			fprintf (f, "seta %s \"%s\"\n", var->name, var->string);
 }
 
 
@@ -421,7 +427,7 @@ void Cvar_CvarList_f (void)
 
 	for (var=cvar_vars, i=0 ; var ; var=var->next, i++)
 		Com_Printf ("%c%c%c %s\n",
-			var->flags & CVAR_ARCHIVE ? '*' : ' ',
+			var->flags & (CVAR_ARCHIVE|CVAR_USER_ARCHIVE) ? '*' : ' ',
 			var->flags & CVAR_USERINFO ? 'u' : ' ',
 			var->flags & CVAR_SERVERINFO ? 's' : ' ',
 			var->name);
@@ -513,6 +519,8 @@ qboolean Cvar_Delete (char *name)
 }
 
 
+static qboolean cvar_seta = false;
+
 void Cvar_Set_f (void)
 {
 	cvar_t *var;
@@ -546,7 +554,19 @@ void Cvar_Set_f (void)
 
 		var = Cvar_Create (var_name, Cmd_Argv(2), CVAR_USER_CREATED);
 	}
+
+	if (cvar_seta)
+		var->flags |= CVAR_USER_ARCHIVE;
 }
+
+
+void Cvar_Seta_f (void)
+{
+	cvar_seta = true;
+	Cvar_Set_f ();
+	cvar_seta = false;
+}
+
 
 void Cvar_Inc_f (void)
 {
@@ -597,7 +617,7 @@ void Cvar_Init (void)
 	Cmd_AddCommand ("cvarlist", Cvar_CvarList_f);
 	Cmd_AddCommand ("toggle", Cvar_Toggle_f);
 	Cmd_AddCommand ("set", Cvar_Set_f);
-	Cmd_AddCommand ("seta", Cvar_Set_f);
+	Cmd_AddCommand ("seta", Cvar_Seta_f);
 	Cmd_AddCommand ("inc", Cvar_Inc_f);
 
 #ifdef CVAR_DEBUG
