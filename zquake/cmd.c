@@ -1117,15 +1117,13 @@ void Cmd_If_f (void)
 		result = Q_atof(Cmd_Argv(1)) > Q_atof(Cmd_Argv(3));
 	else if (!strcmp(op, "<"))
 		result = Q_atof(Cmd_Argv(1)) < Q_atof(Cmd_Argv(3));
-	else if (!strcmp(op, "&"))
-		result = Q_atoi(Cmd_Argv(1)) & Q_atoi(Cmd_Argv(3));
 	else if (!strcmp(op, ">="))
 		result = Q_atof(Cmd_Argv(1)) >= Q_atof(Cmd_Argv(3));
 	else if (!strcmp(op, "<="))
 		result = Q_atof(Cmd_Argv(1)) <= Q_atof(Cmd_Argv(3));
 	else {
 		Con_Printf ("unknown operator: %s\n", op);
-		Con_Printf ("valid operators are ==, =, !=, <>, >, <, >=, <=, &\n");
+		Con_Printf ("valid operators are ==, =, !=, <>, >, <, >=, <=\n");
 		return;
 	}
 
@@ -1185,91 +1183,6 @@ int Cmd_CheckParm (char *parm)
 	return 0;
 }
 
-void CL_Playerinfo_f (void)
-{
-	int	 i, c;
-	char playerversion[9], playerproxy[10], playerrate[5];
-	
-	if (cls.state != ca_active)
-		return;
-
-	//           userid player          rate proxy      version
-	Con_Printf ("υσεςιδ πμαωες          ςατε πςοψω      φεςσιοξ\n");
-	Con_Printf ("    \n");
-
-	for (i = 0, c = 0; i < MAX_CLIENTS; i++)
-	{
-		if (cl.players[i].name[0])
-		{
-			c++;
-
-			// version
-			strncpy(playerversion, Info_ValueForKey(cl.players[i].userinfo, "*z_ver"), 9); // zquake
-
-			if (!playerversion[0])
-				strncpy(playerversion, Info_ValueForKey(cl.players[i].userinfo, "*ver"), 9); // qw
-
-			if (!playerversion[0])
-				strncpy(playerversion, Info_ValueForKey(cl.players[i].userinfo, "*XL"), 9); // ENHANCED QUAKEWORLD cheat
-
-			playerversion[9] = 0;
-
-			// proxy
-			strncpy(playerproxy, Info_ValueForKey(cl.players[i].userinfo, "NFProxy"), 5);
-
-			if (playerversion[0])
-			{
-				strcpy(playerproxy, "nf ");
-				strncat(playerproxy, Info_ValueForKey(cl.players[i].userinfo, "NFProxy"), 5);
-			}
-
-			if (!playerproxy[0])
-			{
-				strncpy(playerproxy, Info_ValueForKey(cl.players[i].userinfo, "Qizmo"), 4);
-
-				if (playerproxy[0])
-				{
-					strcpy(playerproxy, "qizmo ");
-					strncat(playerproxy, Info_ValueForKey(cl.players[i].userinfo, "Qizmo"), 4);
-				}
-
-			}
-
-			if (!playerproxy[0])
-			{
-				strncpy(playerproxy, Info_ValueForKey(cl.players[i].userinfo, "Cheapo"), 3);
-
-				if (playerproxy[0])
-				{
-					strcpy(playerproxy, "cheapo ");
-					strncat(playerproxy, Info_ValueForKey(cl.players[i].userinfo, "Cheapo"), 3);
-				}
-			}
-
-			playerproxy[10] = 0;
-
-			// rate
-			strncpy(playerrate, Info_ValueForKey(cl.players[i].userinfo, "rate"), 5);
-
-			if (strlen(playerrate) > 4)
-				strcpy(playerrate, "9999");
-
-			playerrate[5] = 0;
-
-			// print
-			Con_Printf ("%-6i %-15s %-4s %-10s %-20s\n",
-					cl.players[i].userid,
-					cl.players[i].name,
-					playerrate,
-					playerproxy,
-					playerversion
-				);
-		}
-	}
-
-	Con_Printf ("    \n");
-	Con_Printf ("%i total users\n", c);
-}
 		
 /*
 ============
@@ -1290,7 +1203,6 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("cmdlist", Cmd_CmdList_f);
 	Cmd_AddCommand ("unaliasall", Cmd_UnAliasAll_f);
 	Cmd_AddCommand ("unalias", Cmd_UnAlias_f);
-	Cmd_AddCommand ("playerinfo", CL_Playerinfo_f);
 	Cmd_AddCommand ("if", Cmd_If_f);
 	Cmd_AddCommand ("_z_cmd", Cmd_Z_Cmd_f);	// ZQuake
 }
