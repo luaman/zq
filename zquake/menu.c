@@ -770,7 +770,7 @@ void M_UnbindCommand (char *command)
 		if (!b)
 			continue;
 		if (!strncmp (b, command, l) )
-			Key_SetBinding (j, "");
+			Key_Unbind (j);
 	}
 }
 
