@@ -1334,19 +1334,8 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		!strcmp(mod->name, "progs/bolt3.mdl"))
 		mod->modhint = MOD_THUNDERBOLT;	*/
 
-	if (mod->modhint == MOD_PLAYER || mod->modhint == MOD_EYES) {
-		if (cls.state >= ca_connected) {
-			char st[40];
-			unsigned short crc;
-
-			crc = CRC_Block (buffer, fs_filesize);
-			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-			sprintf(st, "setinfo %s %d", 
-					mod->modhint == MOD_PLAYER ? pmodel_name : emodel_name,
-					(int)crc);
-			SZ_Print (&cls.netchan.message, st);
-		}
-	}
+	if (mod->modhint == MOD_PLAYER || mod->modhint == MOD_EYES)
+		mod->crc = CRC_Block (buffer, fs_filesize);
 
 	start = Hunk_LowMark ();
 
@@ -1763,4 +1752,9 @@ void Mod_Print (void)
 int R_ModelFlags (const struct model_s *model)
 {
 	return model->flags;
+}
+
+unsigned short R_ModelChecksum (const struct model_s *model)
+{
+	return model->crc;
 }

@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "rc_wad.h"
 #include "crc.h"
 
-#define HALFLIFEBSP	// enable Half-Life map support
+//#define HALFLIFEBSP	// enable Half-Life map support
 
 model_t	*loadmodel;
 char	loadname[32];	// for hunk tags
@@ -1592,19 +1592,8 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	else
 		mod->modhint = MOD_NORMAL;
 
-	if (mod->modhint == MOD_PLAYER || mod->modhint == MOD_EYES) {
-		if (cls.state >= ca_connected) {
-			char st[40];
-			unsigned short crc;
-
-			crc = CRC_Block (buffer, fs_filesize);
-			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-			sprintf(st, "setinfo %s %d", 
-					mod->modhint == MOD_PLAYER ? pmodel_name : emodel_name,
-					(int)crc);
-			SZ_Print (&cls.netchan.message, st);
-		}
-	}
+	if (mod->modhint == MOD_PLAYER || mod->modhint == MOD_EYES)
+		mod->crc = CRC_Block (buffer, fs_filesize) + 1;
 	
 	start = Hunk_LowMark ();
 
@@ -1964,3 +1953,9 @@ int R_ModelFlags (const struct model_s *model)
 {
 	return model->flags;
 }
+
+unsigned short R_ModelChecksum (const struct model_s *model)
+{
+	return model->crc;
+}
+

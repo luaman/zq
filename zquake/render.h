@@ -227,6 +227,7 @@ void Mod_ClearAll (void);
 void Mod_TouchModel (char *name);
 struct model_s *Mod_ForName (char *name, qbool crash);
 int R_ModelFlags (const struct model_s *model);
+unsigned short R_ModelChecksum (const struct model_s *model);
 
 #endif /* _RENDER_H_ */
 
