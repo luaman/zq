@@ -32,13 +32,12 @@ extern cvar_t cl_nofake;
 extern cvar_t cl_loadlocs;
 extern cvar_t cl_rocket2grenade;
 
-extern int		loc_numentries;		// Tonik
+extern int		loc_numentries;
 
 void CL_StatChanged (int stat, int value);
 void CL_NewMap (void);
 void CL_ExecTrigger (char *s);
 
-void Cmd_Macro_Init (void);
 void CL_LoadLocFile (char *path, qboolean quiet);
 char *CL_ParseMacroString(char *string);
 
