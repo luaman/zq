@@ -856,7 +856,7 @@ void M_Keys_Key (int k)
 //=============================================================================
 /* FPS SETTINGS MENU */
 
-#define	FPS_ITEMS	12
+#define	FPS_ITEMS	15
 
 int		fps_cursor = 0;
 
@@ -922,6 +922,15 @@ void M_Fps_Draw (void)
 	M_Print (16, 120, "             Fast sky");
 	M_DrawCheckbox (220, 120, r_fastsky.value);
 
+#ifdef GLQUAKE
+	M_Print (16, 128, "          Fast lights");
+	M_DrawCheckbox (220, 128, gl_flashblend.value);
+#endif
+
+	M_PrintWhite (16, 136, "            Fast mode");
+
+	M_PrintWhite (16, 144, "        Hight quality");
+
 // cursor
 	M_DrawCharacter (200, 32 + fps_cursor*8, 12+((int)(realtime*4)&1));
 }
@@ -946,6 +955,12 @@ void M_Fps_Key (int k)
 	case K_DOWNARROW:
 		S_LocalSound ("misc/menu1.wav");
 		fps_cursor++;
+
+#ifndef GLQUAKE
+		if (fps_cursor == 12)
+			fps_cursor = 13;
+#endif
+
 		if (fps_cursor >= FPS_ITEMS)
 			fps_cursor = 0;
 		break;
@@ -1012,6 +1027,48 @@ void M_Fps_Key (int k)
 		case 11:
 			Cvar_SetValue (&r_fastsky, !r_fastsky.value);
 			break;
+
+#ifdef GLQUAKE
+		case 12:
+			Cvar_SetValue (&gl_flashblend, !gl_flashblend.value);
+			break;
+#endif
+
+		// fast
+		case 13:
+			Cvar_SetValue (&cl_explosion, 3);
+			Cvar_SetValue (&cl_muzzleflash, 0);
+			Cvar_SetValue (&cl_gibfilter, 1);
+			Cvar_SetValue (&cl_deadbodyfilter, 1);
+			Cvar_SetValue (&r_rockettrail, 0);
+			Cvar_SetValue (&r_rocketlight, 0);
+			Cvar_SetValue (&r_powerupglow, 0);
+			Cvar_SetValue (&r_drawflame, 0);
+			Cvar_SetValue (&r_fastsky, 1);
+
+#ifdef GLQUAKE
+			Cvar_SetValue (&gl_flashblend, 1);
+#endif
+			break;
+
+		// high quality
+		case 14:
+			Cvar_SetValue (&cl_explosion, 0);
+			Cvar_SetValue (&cl_muzzleflash, 1);
+			Cvar_SetValue (&cl_gibfilter, 0);
+			Cvar_SetValue (&cl_deadbodyfilter, 0);
+			Cvar_SetValue (&r_rockettrail, 1);
+			Cvar_SetValue (&r_rocketlight, 1);
+			Cvar_SetValue (&r_powerupglow, 1);
+			Cvar_SetValue (&r_drawflame, 1);
+			Cvar_SetValue (&r_fastsky, 0);
+
+#ifdef GLQUAKE
+			Cvar_SetValue (&gl_flashblend, 0);
+#endif
+
+			break;
+
 		}
 		break;
 
