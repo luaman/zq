@@ -1912,23 +1912,24 @@ bad_message:
 			
 		case svc_setangle:
 #ifdef MVDPLAY
-			if (cls.mvdplayback) {
+			if (cls.mvdplayback)
+			{
 				extern int	fixangle;
+				vec3_t ang;
+
 				j = MSG_ReadByte();
 				fixangle |= 1 << j;
-				if (j != Cam_TrackNum())
-					for (i=0; i<3; i++)
-						MSG_ReadAngle();
+				for (i = 0; i < 3; i++)
+					ang[i] = MSG_ReadAngle();
+				if (j == Cam_TrackNum())
+					VectorCopy (ang, cl.viewangles);
 			}
-
-			if (!cls.mvdplayback || (cls.mvdplayback && j == Cam_TrackNum()))
+			else
+#endif
 			{
-#endif
-			for (i=0 ; i<3 ; i++)
-				cl.viewangles[i] = MSG_ReadAngle ();
-#ifdef MVDPLAY
+				for (i = 0; i < 3 ; i++)
+					cl.viewangles[i] = MSG_ReadAngle ();
             }
-#endif
 //			cl.viewangles[PITCH] = cl.viewangles[ROLL] = 0;
 			break;
 			
