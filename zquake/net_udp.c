@@ -83,7 +83,7 @@ void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 	a->port = s->sin_port;
 }
 
-qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b)
+qboolean NET_CompareBaseAdr (netadr_t a, netadr_t b)
 {
 	if (a.type == NA_LOOPBACK && b.type == NA_LOOPBACK)
 		return true;
@@ -92,7 +92,7 @@ qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b)
 	return false;
 }
 
-qboolean	NET_CompareAdr (netadr_t a, netadr_t b)
+qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 {
 	if (a.type == NA_LOOPBACK && b.type == NA_LOOPBACK)
 		return true;
@@ -101,7 +101,16 @@ qboolean	NET_CompareAdr (netadr_t a, netadr_t b)
 	return false;
 }
 
-char	*NET_AdrToString (netadr_t a)
+qboolean NET_IsLocalAddress (netadr_t a)
+{
+	if ((*(unsigned *)a.ip == *(unsigned *)net_local_adr.ip
+		|| *(unsigned *)a.ip == htonl(INADDR_LOOPBACK)) )
+		return true;
+	
+	return false;
+}
+
+char *NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
@@ -113,7 +122,7 @@ char	*NET_AdrToString (netadr_t a)
 	return s;
 }
 
-char	*NET_BaseAdrToString (netadr_t a)
+char *NET_BaseAdrToString (netadr_t a)
 {
 	static	char	s[64];
 	
