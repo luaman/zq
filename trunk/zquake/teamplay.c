@@ -1303,12 +1303,37 @@ char *pknames[] = {"quad", "pent", "ring", "suit", "ra", "ya",	"ga",
 "mh", "health", "lg", "rl", "gl", "sng", "ng", "ssg", "pack",
 "cells", "rockets", "nails", "shells", "flag"};
 
-enum {pk_quad, pk_pent, pk_ring, pk_suit, pk_ra, pk_ya, pk_ga,
+#define pk_quad		(1<<0)
+#define pk_pent		(1<<1)
+#define pk_ring		(1<<2)
+#define pk_suit		(1<<3)
+#define pk_ra		(1<<4)
+#define pk_ya		(1<<5)
+#define pk_ga		(1<<6)
+#define pk_mh		(1<<7)
+#define pk_health	(1<<8)
+#define pk_lg		(1<<9)
+#define pk_rl		(1<<10)
+#define pk_gl		(1<<11)
+#define pk_sng		(1<<12)
+#define pk_ng		(1<<13)
+#define pk_ssg		(1<<14)
+#define pk_pack		(1<<15)
+#define pk_cells	(1<<16)
+#define pk_rockets	(1<<17)
+#define pk_nails	(1<<18)
+#define pk_shells	(1<<19)
+#define pk_flag		(1<<20)
+#define NUM_PKFLAGS 21
+		
+/*enum {pk_quad, pk_pent, pk_ring, pk_suit, pk_ra, pk_ya, pk_ga,
 pk_mh, pk_health, pk_lg, pk_rl, pk_gl, pk_sng, pk_ng, pk_ssg, pk_pack,
 pk_cells, pk_rockets, pk_nails, pk_shells, pk_flag, MAX_PKFLAGS};
-
 #define default_pkflags ((1<<pk_quad)|(1<<pk_pent)|(1<<pk_ring)| \
 		(1<<pk_ra)|(1<<pk_ya)|(1<<pk_lg)|(1<<pk_rl)|(1<<pk_mh)|(1<<pk_flag))
+*/
+#define default_pkflags (pk_quad|pk_pent|pk_ring|pk_ra|pk_ya|pk_lg| \
+			pk_rl|pk_mh|pk_flag)
 
 int pkflags = default_pkflags;
 
@@ -1326,7 +1351,7 @@ void TP_TookTrigger_f (void)
 	{
 		if (!pkflags)
 			strcpy (str, "nothing");
-		for (i=0 ; i<MAX_PKFLAGS ; i++)
+		for (i=0 ; i<NUM_PKFLAGS ; i++)
 			if (pkflags & (1<<i))
 			{
 				if (*str)
@@ -1352,7 +1377,7 @@ void TP_TookTrigger_f (void)
 		}
 
 		flag = 0;
-		for (j=0 ; j<MAX_PKFLAGS ; j++) {
+		for (j=0 ; j<NUM_PKFLAGS ; j++) {
 			if (!Q_strncasecmp (p, pknames[j], 3)) {
 				flag = 1<<j;
 				break;
@@ -1361,18 +1386,17 @@ void TP_TookTrigger_f (void)
 
 		if (!flag) {
 			if (!Q_strcasecmp (p, "armor"))
-				flag = (1<<pk_ra)|(1<<pk_ya)|(1<<pk_ga);
+				flag = pk_ra|pk_ya|pk_ga;
 			else if (!Q_strcasecmp (p, "weapons"))
-				flag = (1<<pk_lg)|(1<<pk_rl)|(1<<pk_gl)|(1<<pk_sng)|
-						(1<<pk_ng)|(1<<pk_ssg);
+				flag = pk_lg|pk_rl|pk_gl|pk_sng|pk_ng|pk_ssg;
 			else if (!Q_strcasecmp (p, "powerups"))
-				flag = (1<<pk_quad)|(1<<pk_pent)|(1<<pk_ring);
+				flag = pk_quad|pk_pent|pk_ring;
 			else if (!Q_strcasecmp (p, "ammo"))
-				flag = (1<<pk_cells)|(1<<pk_rockets)|(1<<pk_nails)|(1<<pk_shells);
+				flag = pk_cells|pk_rockets|pk_nails|pk_shells;
 			else if (!Q_strcasecmp (p, "default"))
 				flag = default_pkflags;
 			else if (!Q_strcasecmp (p, "all"))
-				flag = (1<<MAX_PKFLAGS)-1;
+				flag = (1<<NUM_PKFLAGS)-1;
 		}
 
 		if (removeflag)
@@ -1562,7 +1586,7 @@ static int CountTeammates ()
 static void ExecTookTrigger (char *s, int flag)
 {
 	strcpy (vars.tookitem, s);
-	if (pkflags & (1<<flag))
+	if (pkflags & flag)
 	{
 		if (CountTeammates () > 0)
 		{
