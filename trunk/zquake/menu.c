@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -156,7 +156,7 @@ static void M_BuildTranslationTable (int top, int bottom)
 		memcpy (dest + BOTTOM_RANGE, source + bottom, 16);
 	else
 		for (j=0 ; j<16 ; j++)
-			dest[BOTTOM_RANGE+j] = source[bottom+15-j];		
+			dest[BOTTOM_RANGE+j] = source[bottom+15-j];
 }
 
 
@@ -235,7 +235,7 @@ void M_LeaveMenu (int parent)
 		m_entersound = true;
 	}
 }
-		
+
 //=============================================================================
 /* MAIN MENU */
 
@@ -247,7 +247,7 @@ void M_Menu_Main_f (void)
 {
 	M_EnterMenu (m_main);
 }
-				
+
 
 void M_Main_Draw (void)
 {
@@ -260,7 +260,7 @@ void M_Main_Draw (void)
 	M_DrawPic (72, 32, R_CachePic ("gfx/mainmenu.lmp") );
 
 	f = (int)(curtime * 10)%6;
-	
+
 	M_DrawPic (54, 32 + m_main_cursor * 20, R_CachePic(va("gfx/menudot%i.lmp", f+1)));
 }
 
@@ -273,7 +273,7 @@ void M_Main_Key (int key)
 		key_dest = key_game;
 		m_state = m_none;
 		break;
-		
+
 	case K_UPARROW:
 		S_LocalSound ("misc/menu1.wav");
 		if (--m_main_cursor < 0)
@@ -297,7 +297,7 @@ void M_Main_Key (int key)
 		S_LocalSound ("misc/menu1.wav");
 		m_main_cursor = MAIN_ITEMS - 1;
 		break;
-	
+
 	case K_ENTER:
 		m_entersound = true;
 
@@ -404,19 +404,19 @@ void M_AdjustSliders (int dir)
 			s_volume.value = 1;
 		Cvar_SetValue (&s_volume, s_volume.value);
 		break;
-		
+
 	case 9:	// always run
 		Cvar_SetValue (&cl_run, !cl_run.value);
 		break;
-	
+
 	case 10:	// mouse look
 		Cvar_SetValue (&freelook, !freelook.value);
 		break;
-	
+
 	case 11:	// invert mouse
 		Cvar_SetValue (&m_pitch, -m_pitch.value);
 		break;
-	
+
 	case 12:	// lookstrafe
 		Cvar_SetValue (&lookstrafe, !lookstrafe.value);
 		break;
@@ -469,11 +469,11 @@ void M_Options_Draw (void)
 {
 	float		r;
 	mpic_t	*p;
-	
+
 	M_DrawPic (16, 4, R_CachePic("gfx/qplaque.lmp"));
 	p = R_CachePic ("gfx/p_option.lmp");
 	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
-	
+
 	M_Print (16, 32, "    Customize controls");
 	M_Print (16, 40, "         Go to console");
 	M_Print (16, 48, "     Reset to defaults");
@@ -549,7 +549,7 @@ void M_Options_Key (int k)
 	case K_ESCAPE:
 		M_LeaveMenu (m_main);
 		break;
-		
+
 	case K_ENTER:
 		m_entersound = true;
 		switch (options_cursor)
@@ -577,7 +577,7 @@ void M_Options_Key (int k)
 			break;
 		}
 		return;
-	
+
 	case K_UPARROW:
 		S_LocalSound ("misc/menu1.wav");
 		options_cursor--;
@@ -590,7 +590,7 @@ void M_Options_Key (int k)
 		options_cursor++;
 		if (options_cursor >= OPTIONS_ITEMS)
 			options_cursor = 0;
-		break;	
+		break;
 
 	case K_HOME:
 	case K_PGUP:
@@ -622,7 +622,7 @@ void M_Options_Key (int k)
 			//options_cursor = 0;
 			options_cursor++;
 	}
-	
+
 #ifdef _WIN32
 	if ((options_cursor == 17) && (modestate != MS_WINDOWED))
 	{
@@ -631,7 +631,7 @@ void M_Options_Key (int k)
 		else
 			options_cursor = 0;
 	}
-#endif	
+#endif
 }
 
 
@@ -730,7 +730,7 @@ void M_Keys_Draw (void)
 		M_Print (12, 32, "Press a key or button for this action");
 	else
 		M_Print (18, 32, "Enter to change, del to clear");
-		
+
 // search for known bindings
 	for (i=0 ; i<NUMCOMMANDS ; i++)
 	{
@@ -739,26 +739,28 @@ void M_Keys_Draw (void)
 		M_Print (16, y, bindnames[i][1]);
 
 		l = strlen (bindnames[i][0]);
-		
+
 		M_FindKeysForCommand (bindnames[i][0], keys);
-		
+
 		if (keys[0] == -1)
 		{
 			M_Print (156, y, "???");
 		}
 		else
 		{
-			name = Key_KeynumToString (keys[0]);
+			char str[64];
+
+			name = Key_KeynumToString (keys[0], str, sizeof(str) - 1);
 			M_Print (156, y, name);
 			x = strlen(name) * 8;
 			if (keys[1] != -1)
 			{
 				M_Print (156 + x + 8, y, "or");
-				M_Print (156 + x + 32, y, Key_KeynumToString (keys[1]));
+				M_Print (156 + x + 32, y, Key_KeynumToString (keys[1], NULL, 0));
 			}
 		}
 	}
-	
+
 	if (bind_grab)
 		M_DrawChar (142, 48 + keys_cursor*8, '=');
 	else
@@ -769,7 +771,7 @@ void M_Keys_Draw (void)
 void M_Keys_Key (int k)
 {
 	int		keys[2];
-	
+
 	if (bind_grab)
 	{	// defining a key
 		S_LocalSound ("misc/menu1.wav");
@@ -781,11 +783,11 @@ void M_Keys_Key (int k)
 		{
 			Key_SetBinding (k, bindnames[keys_cursor][0]);
 		}
-		
+
 		bind_grab = false;
 		return;
 	}
-	
+
 	switch (k)
 	{
 	case K_BACKSPACE:
@@ -858,11 +860,11 @@ void M_Menu_Fps_f (void)
 void M_Fps_Draw (void)
 {
 	mpic_t	*p;
-	
+
 	M_DrawPic (16, 4, R_CachePic ("gfx/qplaque.lmp") );
 	p = R_CachePic ("gfx/ttl_cstm.lmp");
 	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
-	
+
 	M_Print (16, 32, "            Explosions");
 	M_Print (220, 32, cl_explosion.value==0 ? "normal" :
 		cl_explosion.value==1 ? "type 1" : cl_explosion.value==2 ? "type 2" :
@@ -1103,7 +1105,7 @@ void M_Help_Key (int key)
 	case K_ESCAPE:
 		M_LeaveMenu (m_main);
 		break;
-		
+
 	case K_UPARROW:
 	case K_RIGHTARROW:
 		m_entersound = true;
@@ -1199,7 +1201,7 @@ void M_SinglePlayer_Draw (void)
 	if (m_singleplayer_notavail) {
 		p = R_CachePic ("gfx/ttl_sgl.lmp");
 		M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
-		M_DrawTextBox (60, 10*8, 24, 4);	
+		M_DrawTextBox (60, 10*8, 24, 4);
 		M_PrintWhite (80, 12*8, " Cannot start a game");
 		M_PrintWhite (80, 13*8, "spprogs.dat not found");
 		return;
@@ -1346,7 +1348,7 @@ void M_SinglePlayer_Draw (void)
 	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 //	M_DrawPic (72, 32, R_CachePic("gfx/sp_menu.lmp"));
 
-	M_DrawTextBox (60, 10*8, 23, 4);	
+	M_DrawTextBox (60, 10*8, 23, 4);
 	M_PrintWhite (88, 12*8, "This client is for");
 	M_PrintWhite (88, 13*8, "Internet play only");
 }
@@ -1675,7 +1677,7 @@ static void ReadDir (void)
 		numfiles++;
 		return;
 	}
-	
+
 	do {
 		int type, size;
 		int pos;
@@ -1887,7 +1889,7 @@ void M_Demos_Draw (void)
 		else if (d->type == 0)
 			M_Print (240, y, toyellow(va("%7ik", d->size>>10)));
 	}
-	
+
 	M_DrawChar (8, 32 + demo_cursor*8, 12+((int)(curtime*4)&1));
 }
 
@@ -2152,7 +2154,7 @@ void M_GameOptions_Draw (void)
 			M_Print (160, 72, "none");
 		else
 			M_Print (160, 72, va("%i frags", _fraglimit));
-		
+
 		M_Print (0, 80, "        timelimit");
 		if (_timelimit == 0)
 			M_Print (160, 80, "none");
@@ -2161,7 +2163,7 @@ void M_GameOptions_Draw (void)
 	}
 	M_Print (0, 96, "       maxclients");
 	M_Print (160, 96, va("%i", _maxclients) );
-	
+
 	M_Print (0, 104, "       maxspect.");
 	M_Print (160, 104, va("%i", _maxspectators) );
 
@@ -2320,7 +2322,7 @@ void M_GameOptions_Key (int key)
 		{
 			key_dest = key_game;
 
-			// Kill the server, unless we continue playing 
+			// Kill the server, unless we continue playing
 			// deathmatch on another level
 			if (!_deathmatch || !deathmatch.value)
 				Cbuf_AddText ("disconnect\n");
