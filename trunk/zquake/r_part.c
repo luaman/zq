@@ -298,7 +298,7 @@ void R_LavaSplash (vec3_t org)
 				p->org[1] = org[1] + dir[1];
 				p->org[2] = org[2] + (rand()&63);
 	
-				VectorNormalizeFast (dir);						
+				VectorNormalize (dir);
 				vel = 50 + (rand()&63);
 				VectorScale (dir, vel, p->vel);
 			}
@@ -340,7 +340,7 @@ void R_TeleportSplash (vec3_t org)
 				p->org[1] = org[1] + j + (rand()&3);
 				p->org[2] = org[2] + k + (rand()&3);
 	
-				VectorNormalizeFast (dir);						
+				VectorNormalize (dir);
 				vel = 50 + (rand()&63);
 				VectorScale (dir, vel, p->vel);
 			}
@@ -461,13 +461,9 @@ void R_DrawParticles (void)
 	unsigned char	theAlpha;
 	vec3_t			up, right;
 	float			dist, scale;
-//	qboolean		alphaTestEnabled;
 
 	GL_Bind(particletexture);
-//	alphaTestEnabled = glIsEnabled(GL_ALPHA_TEST);
 	
-//	if (alphaTestEnabled)
-//		glDisable(GL_ALPHA_TEST);
 	glEnable (GL_BLEND);
 	glDepthMask (GL_FALSE);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -608,8 +604,6 @@ void R_DrawParticles (void)
 	glEnd ();
 	glDisable (GL_BLEND);
 	glDepthMask (GL_TRUE);
-//	if (alphaTestEnabled)
-//		glEnable(GL_ALPHA_TEST);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glColor3f (1, 1, 1);
 #else
