@@ -2325,6 +2325,7 @@ static void PF_checkextension (void)
 		"ZQ_MOVETYPE_FLY",
 		"ZQ_MOVETYPE_NONE",
 		"ZQ_QC_PARTICLE",
+		"ZQ_TESTBOT",
 		NULL
 	};
 	char **pstr, *extension;
