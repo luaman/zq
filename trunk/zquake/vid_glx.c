@@ -507,7 +507,8 @@ void Check_Gamma (unsigned char *pal) {
 }
 
 // oldman: replaced VID_SetPalette function
-void VID_SetPalette (unsigned char *palette) {
+void VID_SetPalette (unsigned char *palette) 
+{
 	int i;
 	byte *pal;
 	unsigned r,g,b, v, *table;
@@ -516,13 +517,16 @@ void VID_SetPalette (unsigned char *palette) {
 	pal = palette;
 	table = d_8to24table;
 	for (i = 0; i < 256; i++) {
-		r = pal[0];
-		g = pal[1];
-		b = pal[2];
+		r = pal[1];
+		g = pal[2];
+		b = pal[3];
 		pal += 3;
 
-		v = (255 << 24) + (r << 0) + (g << 8) + (b << 16);
-		*table++ = v;
+#ifdef BIGENDIAN
+		*table++ = (255 << 0) + (r << 24) + (g << 16) + (b << 8); // rgba
+#else
+		*table++ = (255 << 24) + (r << 0) + (g << 8) + (b << 16);
+#endif
 	}
 	d_8to24table[255] = 0;	// 255 is transparent
 
@@ -535,7 +539,12 @@ void VID_SetPalette (unsigned char *palette) {
 		g = pal[1] * (2.0 / 1.5); if (g > 255) g = 255;
 		b = pal[2] * (2.0 / 1.5); if (b > 255) b = 255;
 		pal += 3;
+
+#ifdef BIGENDIAN
+		*table++ = (255 << 0) + (r << 24) + (g << 16) + (b << 8);
+#else
 		*table++ = (255 << 24) + (r << 0) + (g << 8) + (b << 16);
+#endif
 	}
 	d_8to24table2[255] = 0;	// 255 is transparent
 }
