@@ -204,26 +204,6 @@ void R_RotateForEntity (entity_t *e)
 
 //==================================================================================
 
-static void R_SetSpritesState (qbool state)
-{
-	static qbool r_state = false;	// FIXME, static across map changes? -- Tonik
-
-	if (r_state == state)
-		return;
-
-	r_state = state;
-
-	if (state) {
-		GL_DisableMultitexture ();
-		glEnable (GL_ALPHA_TEST);
-//		glDepthMask (GL_FALSE);
-	}
-	else {
-		glDisable (GL_ALPHA_TEST);
-//		glDepthMask (GL_TRUE);
-	}
-}
-
 /*
 =============
 R_DrawEntitiesOnList
@@ -232,11 +212,14 @@ R_DrawEntitiesOnList
 void R_DrawEntitiesOnList (void)
 {
 	int		i;
+	qbool	draw_sprites;
+	qbool	draw_translucent;
 
 	if (!r_drawentities.value)
 		return;
 
-	// draw sprites separately, because of alpha blending
+	draw_sprites = draw_translucent = false;
+
 	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = &cl_visedicts[i];
@@ -246,45 +229,56 @@ void R_DrawEntitiesOnList (void)
 			case mod_alias:
 				if (!(currententity->renderfx & RF_TRANSLUCENT))
 					R_DrawAliasModel (currententity);
+				else
+					draw_translucent = true;
 				break;
 
 			case mod_brush:
 				R_DrawBrushModel (currententity);
 				break;
 
-			default:
-				break;
-		}
-	}
-
-	for (i = 0; i < cl_numvisedicts; i++)
-	{
-		currententity = &cl_visedicts[i];
-
-		switch (currententity->model->type)
-		{
 			case mod_sprite:
-				R_SetSpritesState (true);
-				R_DrawSpriteModel (currententity);
+				draw_sprites = true;
 				break;
 
 			default:
 				break;
 		}
 	}
-	R_SetSpritesState (false);
+
+	// draw sprites separately, because of alpha blending
+	if (draw_sprites)
+	{
+		GL_DisableMultitexture ();
+		glEnable (GL_ALPHA_TEST);
+//		glDepthMask (GL_FALSE);
+
+		for (i = 0; i < cl_numvisedicts; i++)
+		{
+			currententity = &cl_visedicts[i];
+
+			if (currententity->model->type == mod_sprite)
+				R_DrawSpriteModel (currententity);
+		}
+
+		glDisable (GL_ALPHA_TEST);
+//		glDepthMask (GL_TRUE);
+	}
 
 	// draw translucent models
-	glDepthMask (GL_FALSE);		// no z writes
-	for (i = 0; i < cl_numvisedicts; i++)
+	if (draw_translucent)
 	{
-		currententity = &cl_visedicts[i];
+		glDepthMask (GL_FALSE);		// no z writes
+		for (i = 0; i < cl_numvisedicts; i++)
+		{
+			currententity = &cl_visedicts[i];
 
-		if (currententity->model->type == mod_alias
-				&& (currententity->renderfx & RF_TRANSLUCENT))
-			R_DrawAliasModel (currententity);
+			if (currententity->model->type == mod_alias
+					&& (currententity->renderfx & RF_TRANSLUCENT))
+				R_DrawAliasModel (currententity);
+		}
+		glDepthMask (GL_TRUE);
 	}
-	glDepthMask (GL_TRUE);
 }
 
 /*
