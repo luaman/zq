@@ -334,7 +334,7 @@ pmtrace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 // fill in a default trace
 	memset (&total, 0, sizeof(pmtrace_t));
 	total.fraction = 1;
-	total.ent = -1;
+	total.entnum = -1;
 	VectorCopy (end, total.endpos);
 
 	for (i=0 ; i< pmove.numphysent ; i++)
@@ -377,7 +377,7 @@ pmtrace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 			// fix trace up by the offset
 			VectorAdd (trace.endpos, offset, trace.endpos);
 			total = trace;
-			total.ent = i;
+			total.entnum = i;
 		}
 
 	}
@@ -403,7 +403,7 @@ pmtrace_t PM_TraceLine (vec3_t start, vec3_t end)
 // fill in a default trace
 	memset (&total, 0, sizeof(pmtrace_t));
 	total.fraction = 1;
-	total.ent = -1;
+	total.entnum = -1;
 	VectorCopy (end, total.endpos);
 
 	for (i=0 ; i< pmove.numphysent ; i++)
@@ -442,7 +442,7 @@ pmtrace_t PM_TraceLine (vec3_t start, vec3_t end)
 			// fix trace up by the offset
 			VectorAdd (trace.endpos, offset, trace.endpos);
 			total = trace;
-			total.ent = i;
+			total.entnum = i;
 		}
 
 	}

@@ -141,7 +141,7 @@ int PM_SlideMove (void)
 
 		// save entity for contact
 		if (pmove.numtouch < MAX_PHYSENTS) {
-			pmove.touchindex[pmove.numtouch] = trace.ent;
+			pmove.touchindex[pmove.numtouch] = trace.entnum;
 			pmove.numtouch++;
 		}
 
@@ -614,16 +614,16 @@ void PM_CategorizePosition (void)
 		else
 		{
 			pmove.onground = true;
-			pmove.groundent = trace.ent;
+			pmove.groundent = trace.entnum;
 			groundplane = trace.plane;
 			pmove.waterjumptime = 0;
 		}
 
 		// standing on an entity other than the world
-		if (trace.ent > 0)
+		if (trace.entnum > 0)
 		{
 			if (pmove.numtouch < MAX_PHYSENTS) {
-				pmove.touchindex[pmove.numtouch] = trace.ent;
+				pmove.touchindex[pmove.numtouch] = trace.entnum;
 				pmove.numtouch++;
 			}
 		}
