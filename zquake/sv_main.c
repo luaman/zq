@@ -1699,8 +1699,6 @@ SV_Init
 void SV_Init (quakeparms_t *parms)
 {
 	COM_InitArgv (parms->argc, parms->argv);
-	COM_AddParm ("-game");
-	COM_AddParm ("qw");
 
 	if (COM_CheckParm ("-minmemory"))
 		parms->memsize = MINIMUM_MEMORY;
