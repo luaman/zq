@@ -92,7 +92,7 @@ cvar_t	bottomcolor = {"bottomcolor","0", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	skin = {"skin", "", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	rate = {"rate", "2500", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	msg = {"msg", "1", CVAR_ARCHIVE|CVAR_USERINFO};
-cvar_t	noaim = {"noaim", "0", CVAR_ARCHIVE|CVAR_USERINFO};
+cvar_t	noaim = {"noaim", "", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	w_switch = {"w_switch", "", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	b_switch = {"b_switch", "", CVAR_ARCHIVE|CVAR_USERINFO};
 
