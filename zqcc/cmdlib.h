@@ -69,22 +69,18 @@ extern char **myargv;
 
 char *strupr (char *in);
 char *strlower (char *in);
-int Q_filelength (int handle);
-int Q_tell (int handle);
-
-double I_FloatTime (void);
 
 void	Error (char *error, ...);
 int		CheckParm (char *check);
 
-int 	SafeOpenWrite (char *filename);
-int 	SafeOpenRead (char *filename);
-void 	SafeRead (int handle, void *buffer, long count);
-void 	SafeWrite (int handle, void *buffer, long count);
+FILE	*SafeOpenWrite (const char *filename);
+FILE	*SafeOpenRead (const char *filename);
+void 	SafeRead (FILE *f, void *buffer, long count);
+void 	SafeWrite (FILE *f, const void *buffer, long count);
 void 	*SafeMalloc (long size);
 
 long	LoadFile (char *filename, void **bufferptr);
-void	SaveFile (char *filename, void *buffer, long count);
+void	SaveFile (char *filename, const void *buffer, long count);
 
 void 	DefaultExtension (char *path, char *extension);
 void 	DefaultPath (char *path, char *basepath);

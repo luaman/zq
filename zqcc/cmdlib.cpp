@@ -23,6 +23,8 @@
 #ifdef _WIN32
 #include <io.h>
 #include <fcntl.h>
+#else
+#include <unistd.h>
 #endif
 
 #define PATHSEPERATOR   '/'
@@ -33,30 +35,6 @@ char **myargv;
 
 char	com_token[1024];
 int		com_eof;
-
-/*
-================
-I_FloatTime
-================
-*/
-#if 0
-double I_FloatTime (void)
-{
-	struct timeval tp;
-	struct timezone tzp;
-	static int		secbase;
-
-	gettimeofday(&tp, &tzp);
-	
-	if (!secbase)
-	{
-		secbase = tp.tv_sec;
-		return tp.tv_usec/1000000.0;
-	}
-	
-	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
-}
-#endif
 
 /*
 ==============
@@ -141,28 +119,6 @@ skipwhite:
 
 
 
-/*
-================
-Q_filelength
-================
-*/
-int Q_filelength (int handle)
-{
-	struct stat	fileinfo;
-    
-	if (fstat (handle,&fileinfo) == -1)
-	{
-		Error ("Error fstating");
-	}
-
-	return fileinfo.st_size;
-}
-
-int Q_tell (int handle)
-{
-	return lseek (handle, 0, SEEK_CUR);
-}
-
 char *strupr (char *start)
 {
 	char	*in;
@@ -239,48 +195,41 @@ int CheckParm (char *check)
 }
 
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
-int SafeOpenWrite (char *filename)
+FILE *SafeOpenWrite (const char *filename)
 {
-	int     handle;
-
-	umask (0);
+	FILE *f;
 	
-	handle = open(filename,O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
-	, 0666);
+	f = fopen (filename, "wb");
 
-	if (handle == -1)
-		Error ("Error opening %s: %s",filename,strerror(errno));
+	if (!f)
+		Error ("Error opening %s: %s", filename, strerror(errno));
 
-	return handle;
+	return f;
 }
 
-int SafeOpenRead (char *filename)
+FILE *SafeOpenRead (const char *filename)
 {
-	int     handle;
+	FILE *f;
+	
+	f = fopen (filename, "rb");
 
-	handle = open(filename,O_RDONLY | O_BINARY);
+	if (!f)
+		Error ("Error opening %s: %s", filename, strerror(errno));
 
-	if (handle == -1)
-		Error ("Error opening %s: %s",filename,strerror(errno));
-
-	return handle;
+	return f;
 }
 
 
-void SafeRead (int handle, void *buffer, long count)
+void SafeRead (FILE *f, void *buffer, long count)
 {
-	if (read (handle,buffer,count) != count)
+	if (fread(buffer, count, 1, f) != 1)
 		Error ("File read failure");
 }
 
 
-void SafeWrite (int handle, void *buffer, long count)
+void SafeWrite (FILE *f, const void *buffer, long count)
 {
-	if (write (handle,buffer,count) != count)
+	if (fwrite(buffer, count, 1, f) != 1)
 		Error ("File write failure");
 }
 
@@ -303,18 +252,21 @@ void *SafeMalloc (long size)
 LoadFile
 ==============
 */
-long    LoadFile (char *filename, void **bufferptr)
+long LoadFile (char *filename, void **bufferptr)
 {
-	int             handle;
+	FILE	*f;;
 	long    length;
 	void    *buffer;
 
-	handle = SafeOpenRead (filename);
-	length = filelength (handle);
+	f = SafeOpenRead (filename);
+	
+	fseek (f, 0, SEEK_END);
+	length = ftell(f);
+	fseek (f, 0, SEEK_SET);
 	buffer = SafeMalloc (length+1);
 	((byte *)buffer)[length] = 0;
-	SafeRead (handle, buffer, length);
-	close (handle);
+	SafeRead (f, buffer, length);
+	fclose (f);
 
 	*bufferptr = buffer;
 	return length;
@@ -326,13 +278,13 @@ long    LoadFile (char *filename, void **bufferptr)
 SaveFile
 ==============
 */
-void    SaveFile (char *filename, void *buffer, long count)
+void SaveFile (char *filename, const void *buffer, long count)
 {
-	int             handle;
+	FILE	*f;
 
-	handle = SafeOpenWrite (filename);
-	SafeWrite (handle, buffer, count);
-	close (handle);
+	f = SafeOpenWrite (filename);
+	SafeWrite (f, buffer, count);
+	fclose (f);
 }
 
 
@@ -369,7 +321,7 @@ void DefaultPath (char *path, char *basepath)
 }
 
 
-void    StripFilename (char *path)
+void StripFilename (char *path)
 {
 	int             length;
 
@@ -379,7 +331,7 @@ void    StripFilename (char *path)
 	path[length] = 0;
 }
 
-void    StripExtension (char *path)
+void StripExtension (char *path)
 {
 	int             length;
 

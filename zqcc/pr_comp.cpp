@@ -980,7 +980,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, def_t *visscope, bool 
 			if (!opt_idcomp)
 				goto allocNew;		// a local def overrides global (ok)
 			else
-				PR_Warning (WARN_HIGH, "'%s' already declared on global scope");
+				PR_Warning (WARN_HIGH, "'%s' already declared on global scope", name);
 		}
 
 		if (def->type != type)
