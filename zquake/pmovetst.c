@@ -136,7 +136,7 @@ LINE TESTING IN HULLS
 #define	DIST_EPSILON	(0.03125)
 
 static hull_t		trace_hull;
-static pmtrace_t	trace_trace;
+static trace_t	trace_trace;
 
 static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
 {
@@ -270,7 +270,7 @@ static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, ve
 	return false;
 }
 
-void PM_HullTrace (hull_t *hull, float p1f, float p2f, vec3_t p1, vec3_t p2, pmtrace_t *trace)
+void PM_HullTrace (hull_t *hull, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t *trace)
 {
 	trace_hull = *hull;
 	trace_trace = *trace;
@@ -321,9 +321,9 @@ qboolean PM_TestPlayerPosition (vec3_t pos)
 PM_PlayerTrace
 ================
 */
-pmtrace_t PM_PlayerTrace (vec3_t start, vec3_t end)
+trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 {
-	pmtrace_t		trace, total;
+	trace_t		trace, total;
 	vec3_t		offset;
 	vec3_t		start_l, end_l;
 	hull_t		*hull;
@@ -332,7 +332,7 @@ pmtrace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 	vec3_t		mins, maxs;
 
 // fill in a default trace
-	memset (&total, 0, sizeof(pmtrace_t));
+	memset (&total, 0, sizeof(trace_t));
 	total.fraction = 1;
 	total.entnum = -1;
 	VectorCopy (end, total.endpos);
@@ -357,7 +357,7 @@ pmtrace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 		VectorSubtract (end, offset, end_l);
 
 	// fill in a default trace
-		memset (&trace, 0, sizeof(pmtrace_t));
+		memset (&trace, 0, sizeof(trace_t));
 		trace.fraction = 1;
 		trace.allsolid = true;
 //		trace.startsolid = true;
@@ -391,9 +391,9 @@ pmtrace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 PM_TraceLine
 ================
 */
-pmtrace_t PM_TraceLine (vec3_t start, vec3_t end)
+trace_t PM_TraceLine (vec3_t start, vec3_t end)
 {
-	pmtrace_t		trace, total;
+	trace_t		trace, total;
 	vec3_t		offset;
 	vec3_t		start_l, end_l;
 	hull_t		*hull;
@@ -401,7 +401,7 @@ pmtrace_t PM_TraceLine (vec3_t start, vec3_t end)
 	physent_t	*pe;
 
 // fill in a default trace
-	memset (&total, 0, sizeof(pmtrace_t));
+	memset (&total, 0, sizeof(trace_t));
 	total.fraction = 1;
 	total.entnum = -1;
 	VectorCopy (end, total.endpos);
@@ -422,7 +422,7 @@ pmtrace_t PM_TraceLine (vec3_t start, vec3_t end)
 		VectorSubtract (end, offset, end_l);
 
 	// fill in a default trace
-		memset (&trace, 0, sizeof(pmtrace_t));
+		memset (&trace, 0, sizeof(trace_t));
 		trace.fraction = 1;
 		trace.allsolid = true;
 //		trace.startsolid = true;

@@ -103,7 +103,7 @@ int PM_SlideMove (void)
 	vec3_t		planes[MAX_CLIP_PLANES];
 	vec3_t		primal_velocity, original_velocity;
 	int			i, j;
-	pmtrace_t		trace;
+	trace_t		trace;
 	vec3_t		end;
 	float		time_left;
 	int			blocked;
@@ -224,7 +224,7 @@ sliding along it.
 void PM_StepSlideMove (void)
 {
 	vec3_t	dest;
-	pmtrace_t	trace;
+	trace_t	trace;
 	vec3_t	original, originalvel, down, up, downvel;
 	float	downdist, updist;
 	int		blocked;
@@ -314,7 +314,7 @@ void PM_Friction (void)
 	float	friction;
 	float	drop;
 	vec3_t	start, stop;
-	pmtrace_t	trace;
+	trace_t	trace;
 	
 	if (pmove.waterjumptime)
 		return;
@@ -582,7 +582,7 @@ void PM_AirMove (void)
 }
 
 
-pmplane_t	groundplane;
+plane_t	groundplane;
 
 /*
 =============
@@ -593,7 +593,7 @@ void PM_CategorizePosition (void)
 {
 	vec3_t		point;
 	int			cont;
-	pmtrace_t	trace;
+	trace_t	trace;
 
 // if the player hull point one unit down is solid, the player
 // is on ground

@@ -33,4 +33,25 @@ typedef struct
 } hull_t;
 
 
+typedef struct
+{
+	vec3_t	normal;
+	float	dist;
+} plane_t;
+
+typedef struct
+{
+	qboolean	allsolid;		// if true, plane is not valid
+	qboolean	startsolid;		// if true, the initial point was in a solid area
+	qboolean	inopen, inwater;
+	float		fraction;		// time completed, 1.0 = didn't hit anything
+	vec3_t		endpos;			// final position
+	plane_t		plane;			// surface normal at impact
+	union {						// entity the surface is on (we rely on sizeof(int) == sizeof(*int) here)
+		int		entnum;			// for pmove
+		struct edict_s *ent;	// for sv_world
+	};
+} trace_t;
+
+
 int CM_HullPointContents (hull_t *hull, int num, vec3_t p);
