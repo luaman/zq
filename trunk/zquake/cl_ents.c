@@ -1106,14 +1106,21 @@ Made up of: clients, packet_entities, nails, and tents
 */
 void CL_EmitEntities (void)
 {
+	static list_index = 0;
+	static oldvalidsequence;
+
 	if (cls.state != ca_active)
 		return;
 	if (!cl.validsequence)
 		return;
 
-	cl_oldnumvisedicts = cl_numvisedicts;
-	cl_oldvisedicts = cl_visedicts_list[(cls.netchan.incoming_sequence-1)&1];
-	cl_visedicts = cl_visedicts_list[cls.netchan.incoming_sequence&1];
+	if (cl.validsequence > oldvalidsequence) {	
+		// a new valid packet was received
+		cl_oldnumvisedicts = cl_numvisedicts;
+		cl_oldvisedicts = cl_visedicts_list[list_index];
+		list_index = 1 - list_index;
+		cl_visedicts = cl_visedicts_list[list_index];
+	}	// otherwise, just re-link the same entities again
 
 	cl_numvisedicts = 0;
 
