@@ -92,6 +92,8 @@ cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
 cvar_t	cl_teamskin = {"teamskin", ""};
 cvar_t	cl_enemyskin = {"enemyskin", ""};
 
+cvar_t	default_fov = {"default_fov", "0"};
+
 int cl_teamtopcolor = -1;
 int cl_teambottomcolor;
 int cl_enemytopcolor = -1;
@@ -205,6 +207,19 @@ void CL_Version_f (void)
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 }
 
+
+qboolean CL_OnFovChange (cvar_t *var, char *value)
+{
+	extern cvar_t scr_fov;
+
+	if (var == &scr_fov && cbuf_current == &cbuf_svc
+		&& Q_atof(value) == 90.0 && default_fov.value)
+	{
+		Cvar_SetValue (&scr_fov, default_fov.value);
+		return true;
+	}
+	return false;
+}
 
 /*
 =======================
@@ -1313,6 +1328,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&r_drawflame);
 	Cvar_RegisterVariable (&r_rockettrail);
 	Cvar_RegisterVariable (&r_rocketlight);
+	Cvar_RegisterVariable (&default_fov);
 	Cmd_AddCommand ("teamcolor", CL_ForceTeamColor_f);
 	Cmd_AddCommand ("enemycolor", CL_ForceEnemyColor_f);
 // <-- Tonik
