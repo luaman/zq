@@ -65,6 +65,7 @@ static int			numclipnodes;
 
 static cleaf_t		*map_leafs;
 static int			numleafs;
+static int			visleafs;
 
 static byte			map_novis[MAX_MAP_LEAFS/8];
 
@@ -473,7 +474,7 @@ byte *CM_FatPVS (vec3_t org)
 {
 	VectorCopy (org, fatpvs_org);
 
-	fatbytes = (numleafs+31)>>3;
+	fatbytes = (visleafs+31)>>3;
 	memset (fatpvs, 0, fatbytes);
 	AddToFatPVS_r (map_nodes);
 	return fatpvs;
@@ -593,6 +594,8 @@ static void CM_LoadSubmodels (lump_t *l)
 
 	out = map_cmodels;
 	numcmodels = count;
+
+	visleafs = LittleLong (in[0].visleafs);
 
 	for (i = 0; i < count; i++, in++, out++)
 	{
@@ -813,7 +816,7 @@ static byte *DecompressVis (byte *in)
 	byte	*out;
 	int		row;
 
-	row = (numleafs + 7) >> 3;	
+	row = (visleafs + 7) >> 3;	
 	out = decompressed;
 
 	if (!in)
@@ -866,14 +869,14 @@ static void CM_BuildPVS (lump_t *lump_vis, lump_t *lump_leafs)
 		// FIXME, make sure lump_vis->filelen is valid
 	}
 
-	map_vis_rowlongs = (numleafs + 31) >> 5;
+	map_vis_rowlongs = (visleafs + 31) >> 5;
 	map_vis_rowbytes = map_vis_rowlongs * 4;
-	map_pvs = Hunk_Alloc (map_vis_rowbytes * numleafs);
+	map_pvs = Hunk_Alloc (map_vis_rowbytes * visleafs);
 
 	// go through all leafs and decompress visibility data
 	in = (dleaf_t *)(cmod_base + lump_leafs->fileofs);
 	scan = map_pvs;
-	for (i = 0; i < numleafs; i++, in++, scan += map_vis_rowbytes)
+	for (i = 0; i < visleafs; i++, in++, scan += map_vis_rowbytes)
 	{
 		int p = LittleLong(in->visofs);
 		if (i == 0 || p == -1)
@@ -891,6 +894,7 @@ static void CM_BuildPVS (lump_t *lump_vis, lump_t *lump_leafs)
 ** CM_BuildPHS
 **
 ** Expands the PVS and calculates the PHS (potentially hearable set)
+** Call after CM_BuildPVS (so that map_vis_rowbytes & map_vis_rowlongs are set)
 */
 static void CM_BuildPVSAndPHS (void)
 {
@@ -907,19 +911,19 @@ static void CM_BuildPVSAndPHS (void)
 	// do we really care?
 	c_visible = 0;
 	scan = map_pvs + map_vis_rowbytes;	// start from leaf 1
-	for (i = 1; i < numleafs; i++, scan += map_vis_rowbytes) {
-		for (j = 0; j < numleafs; j++) {
+	for (i = 1; i < visleafs; i++, scan += map_vis_rowbytes) {
+		for (j = 0; j < visleafs; j++) {
 			if ( scan[j>>3] & (1<<(j&7)) )
 				c_visible++;
 		}
 	}
 
 
-	map_phs = Hunk_Alloc (map_vis_rowbytes * numleafs);
+	map_phs = Hunk_Alloc (map_vis_rowbytes * visleafs);
 	c_hearable = 0;
 	scan = map_pvs;
 	dest = (unsigned *)map_phs;
-	for (i = 0; i < numleafs; i++, dest += map_vis_rowlongs, scan += map_vis_rowbytes)
+	for (i = 0; i < visleafs; i++, dest += map_vis_rowlongs, scan += map_vis_rowbytes)
 	{
 		// copy from pvs
 		memcpy (dest, scan, map_vis_rowbytes);
@@ -937,7 +941,7 @@ static void CM_BuildPVSAndPHS (void)
 				// or this pvs row into the phs
 				// +1 because pvs is 1 based
 				index = ((j<<3)+k+1);
-				if (index >= numleafs)
+				if (index >= visleafs)
 					continue;
 				src = (unsigned *)map_pvs + index * map_vis_rowlongs;
 				for (l = 0; l < map_vis_rowlongs; l++)
@@ -947,14 +951,14 @@ static void CM_BuildPVSAndPHS (void)
 
 		if (i == 0)
 			continue;
-		for (j = 0; j < numleafs; j++) {
+		for (j = 0; j < visleafs; j++) {
 			if ( ((byte *)dest)[j>>3] & (1<<(j&7)) )
 				c_hearable++;
 		}
 	}
 
 	Com_DPrintf ("Average leafs visible / hearable / total: %i / %i / %i\n",
-					c_visible/numleafs, c_hearable/numleafs, numleafs);
+					c_visible/visleafs, c_hearable/visleafs, visleafs);
 }
 
 
@@ -1079,3 +1083,5 @@ void CM_Init (void)
 // That code effectively overwrites the numleafs value with visleafs
 // What is correct, Quake code or mine?
 // I don't grok this shit
+
+// UPDATE: hopefully now it is fixed?
