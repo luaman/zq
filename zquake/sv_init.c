@@ -309,9 +309,6 @@ void SV_SpawnServer (char *mapname, qboolean devmap)
 
 	sv.worldmodel = CM_LoadMap (sv.modelname, false, &sv.map_checksum, &sv.map_checksum2);
 
-	// FIXME: GET RID OF THIS!!!
-	Mod_ForName (sv.modelname, true);
-
 	//
 	// clear physics interaction links
 	//
@@ -323,8 +320,7 @@ void SV_SpawnServer (char *mapname, qboolean devmap)
 
 	sv.model_name[1] = sv.modelname;
 	sv.models[1] = sv.worldmodel;
-	for (i = 1; i < CM_NumInlineModels(); i++)
-	{
+	for (i = 1; i < CM_NumInlineModels(); i++) {
 		sv.model_name[1+i] = localmodels[i];
 		sv.models[i+1] = CM_InlineModel (localmodels[i]);
 	}

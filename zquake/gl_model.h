@@ -165,8 +165,6 @@ typedef struct mleaf_s
 
 	msurface_t	**firstmarksurface;
 	int			nummarksurfaces;
-
-	byte		ambient_sound_level[NUM_AMBIENTS];
 } mleaf_t;
 
 /*

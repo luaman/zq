@@ -820,6 +820,7 @@ void CL_Init (void)
 
 	Draw_Init ();
 	SCR_Init ();
+	Mod_Init ();
 	R_Init ();
 
 	S_Init ();

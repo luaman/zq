@@ -690,7 +690,7 @@ S_UpdateAmbientSounds
 */
 void S_UpdateAmbientSounds (void)
 {
-	mleaf_t		*l;
+	cleaf_t		*leaf;
 	float		vol;
 	int			ambient_channel;
 	channel_t	*chan;
@@ -702,8 +702,8 @@ void S_UpdateAmbientSounds (void)
 	if (!cl.worldmodel)
 		return;
 
-	l = Mod_PointInLeaf (listener_origin, cl.worldmodel);
-	if (!l || !s_ambientlevel.value)
+	leaf = CM_PointInLeaf (listener_origin);
+	if (!CM_Leafnum(leaf) || !s_ambientlevel.value)
 	{
 		for (ambient_channel = 0 ; ambient_channel< NUM_AMBIENTS ; ambient_channel++)
 			channels[ambient_channel].sfx = NULL;
@@ -715,7 +715,7 @@ void S_UpdateAmbientSounds (void)
 		chan = &channels[ambient_channel];	
 		chan->sfx = ambient_sfx[ambient_channel];
 	
-		vol = s_ambientlevel.value * l->ambient_sound_level[ambient_channel];
+		vol = s_ambientlevel.value * CM_LeafAmbientLevel(leaf, ambient_channel);
 		if (vol < 8)
 			vol = 0;
 

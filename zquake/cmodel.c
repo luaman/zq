@@ -357,6 +357,14 @@ int CM_Leafnum (const cleaf_t *leaf)
 	return leaf - map_leafs;
 }
 
+int	CM_LeafAmbientLevel (const cleaf_t *leaf, int ambient_channel)
+{
+	assert ((unsigned)ambient_channel <= NUM_AMBIENTS);
+	assert (leaf);
+
+	return leaf->ambient_sound_level[ambient_channel];
+}
+
 // always returns a valid cleaf_t pointer
 cleaf_t *CM_PointInLeaf (const vec3_t p)
 {

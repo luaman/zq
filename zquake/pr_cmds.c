@@ -162,10 +162,10 @@ Also sets size, mins, and maxs for inline bmodels
 */
 void PF_setmodel (void)
 {
-	edict_t	*e;
-	char	*m, **check;
-	int		i;
-	model_t	*mod;
+	int			i;
+	edict_t		*e;
+	char		*m, **check;
+	cmodel_t	*mod;
 
 	e = G_EDICT(OFS_PARM0);
 	m = G_STRING(OFS_PARM1);
@@ -182,9 +182,8 @@ void PF_setmodel (void)
 	e->v.modelindex = i;
 
 // if it is an inline model, get the size information for it
-	if (m[0] == '*')
-	{
-		mod = Mod_ForName (m, true);
+	if (m[0] == '*') {
+		mod = CM_InlineModel (m);
 		VectorCopy (mod->mins, e->v.mins);
 		VectorCopy (mod->maxs, e->v.maxs);
 		VectorSubtract (mod->maxs, mod->mins, e->v.size);

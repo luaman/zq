@@ -178,10 +178,6 @@ SOURCE=.\sv_main.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\sv_model.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\sv_move.c
 # End Source File
 # Begin Source File
