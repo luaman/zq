@@ -245,7 +245,7 @@ void R_TranslatePlayerSkin (int playernum)
 	int		i, j;
 	byte	*original;
 	unsigned	pixels[512*256], *out;
-	unsigned	scaled_width, scaled_height;
+	int			scaled_width, scaled_height;
 	int			inwidth, inheight;
 	int			tinwidth, tinheight;
 	byte		*inrow;
@@ -340,6 +340,10 @@ void R_TranslatePlayerSkin (int playernum)
 		// allow users to crunch sizes down even more if they want
 		scaled_width >>= (int)gl_playermip.value;
 		scaled_height >>= (int)gl_playermip.value;
+		if (scaled_width < 1)
+			scaled_width = 1;
+		if (scaled_height < 1)
+			scaled_height = 1;
 
 		if (VID_Is8bit()) { // 8bit texture upload
 			byte *out2;
