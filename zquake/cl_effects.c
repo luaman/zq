@@ -177,6 +177,40 @@ void CL_ParticleExplosion (vec3_t org)
 	}
 }
 
+
+/*
+===============
+CL_ParticleExplosion2
+
+NetQuake
+===============
+*/
+void CL_ParticleExplosion2 (vec3_t org, int colorStart, int colorLength)
+{
+	int			i, j;
+	int			colorMod = 0;
+	cparticle_t	*p;
+	
+	for (i=0 ; i<1024 ; i++)
+	{
+		if (!(p = new_particle()))
+			return;
+
+		p->die = cl.time + 0.3;
+		p->alpha = 1.0f;
+		p->color = colorStart + (colorMod % colorLength);
+		colorMod++;
+
+		p->type = pt_blob;
+		for (j=0 ; j<3 ; j++)
+		{
+			p->org[j] = org[j] + ((rand()%32)-16);
+			p->vel[j] = (rand()%512)-256;
+		}
+	}
+}
+
+
 /*
 ===============
 CL_BlobExplosion

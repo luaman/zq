@@ -497,6 +497,7 @@ void CL_ReadPointFile_f (void);
 
 void CL_BlobExplosion (vec3_t org);
 void CL_ParticleExplosion (vec3_t org);
+void CL_ParticleExplosion2 (vec3_t org, int colorStart, int colorLength);
 void CL_LavaSplash (vec3_t org);
 void CL_TeleportSplash (vec3_t org);
 void CL_SlightBloodTrail (vec3_t start, vec3_t end);

@@ -247,6 +247,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	TE_BLOOD			12
 #define	TE_LIGHTNINGBLOOD	13
 
+#define NQ_TE_EXPLOSION2	12
+#define NQ_TE_BEAM			13
+
 #define	DEFAULT_VIEWHEIGHT	22
 
 //==============================================
