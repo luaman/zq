@@ -2941,12 +2941,14 @@ LONG WINAPI MainWndProc (
 		// Its delta is either positive or neg, and we generate the proper
 		// Event.
 		case WM_MOUSEWHEEL: 
-			if ((short) HIWORD(wParam) > 0) {
-				Key_Event(K_MWHEELUP, true);
-				Key_Event(K_MWHEELUP, false);
-			} else {
-				Key_Event(K_MWHEELDOWN, true);
-				Key_Event(K_MWHEELDOWN, false);
+			if (!dinput) {
+				if ((short) HIWORD(wParam) > 0) {
+					Key_Event(K_MWHEELUP, true);
+					Key_Event(K_MWHEELUP, false);
+				} else {
+					Key_Event(K_MWHEELDOWN, true);
+					Key_Event(K_MWHEELDOWN, false);
+				}
 			}
 			break;
 		// KJB: Added these new palette functions
