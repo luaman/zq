@@ -83,7 +83,7 @@ edict_t *SV_CreateBot (char *name)
 	newcl->bot = true;
 	newcl->userid = ++svs.lastuserid;
 	newcl->extensions = SUPPORTED_EXTENSIONS;	// bots always use latest ZQuake :-)
-	Q_strncpyz (newcl->name, name, sizeof(newcl->name));
+	strlcpy (newcl->name, name, sizeof(newcl->name));
 
 	// init a bogus network connection
 	SZ_Init (&newcl->datagram, newcl->datagram_buf, sizeof(newcl->datagram_buf));

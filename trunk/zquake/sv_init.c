@@ -382,7 +382,7 @@ void SV_SpawnServer (char *server, qboolean devmap)
 
 	sv.time = 1.0;
 	
-	Q_strncpyz (sv.name, server, sizeof(sv.name));
+	strlcpy (sv.name, server, sizeof(sv.name));
 	Cvar_ForceSet (&host_mapname, sv.name);
 	Q_snprintfz (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", server);
 	sv.worldmodel = Mod_ForName (sv.modelname, true);

@@ -236,7 +236,7 @@ void CL_CheckForResend (void)
 
 	if (cls.state == ca_disconnected && com_serveractive) {
 		// if the local server is running and we are not, then connect
-		Q_strncpyz (cls.servername, "local", sizeof(cls.servername));
+		strlcpy (cls.servername, "local", sizeof(cls.servername));
 		CL_SendConnectPacket ();	// we don't need a challenge on the local server
 		// FIXME: cls.state = ca_connecting so that we don't send the packet twice?
 		return;
@@ -291,7 +291,7 @@ void CL_Connect_f (void)
 
 	Host_EndGame ();
 
-	Q_strncpyz (cls.servername, server, sizeof(cls.servername));
+	strlcpy (cls.servername, server, sizeof(cls.servername));
 	CL_BeginServerConnect();
 }
 
@@ -507,7 +507,7 @@ void CL_ConnectionlessPacket (void)
 #endif
 		s = MSG_ReadString ();
 
-		Q_strncpyz (cmdtext, s, sizeof(cmdtext));
+		strlcpy (cmdtext, s, sizeof(cmdtext));
 
 		s = MSG_ReadString ();
 

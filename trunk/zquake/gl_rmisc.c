@@ -428,7 +428,7 @@ void R_ScreenShot_f (void)
 	FILE	*f;
 
 	if (Cmd_Argc() == 2) {
-		Q_strncpyz (pcxname, Cmd_Argv(1), sizeof(pcxname));
+		strlcpy (pcxname, Cmd_Argv(1), sizeof(pcxname));
 		COM_ForceExtension (pcxname, ".tga");
 	}
 	else
@@ -644,10 +644,10 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 	st[strlen(st) - 1] = 0;
 	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, h - 1, w);
 
-	Q_strncpyz (st, cls.servername, sizeof(st));
+	strlcpy (st, cls.servername, sizeof(st));
 	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, h - 11, w);
 
-	Q_strncpyz (st, name.string, sizeof(st));
+	strlcpy (st, name.string, sizeof(st));
 	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, h - 21, w);
 
 	// +w*(h-1) and -w are because we have the data upside down in newbuf

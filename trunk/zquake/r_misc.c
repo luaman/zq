@@ -648,7 +648,7 @@ void R_ScreenShot_f (void)
 	int			pcxsize;
 
 	if (Cmd_Argc() == 2) {
-		Q_strncpyz (pcxname, Cmd_Argv(1), sizeof(pcxname));
+		strlcpy (pcxname, Cmd_Argv(1), sizeof(pcxname));
 		COM_ForceExtension (pcxname, ".pcx");
 	}
 	else
@@ -842,10 +842,10 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 	st[strlen(st) - 1] = 0;		// remove the trailing \n
 	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, 0, w);
 
-	Q_strncpyz (st, cls.servername, sizeof(st));
+	strlcpy (st, cls.servername, sizeof(st));
 	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, 10, w);
 
-	Q_strncpyz (st, name.string, sizeof(st));
+	strlcpy (st, name.string, sizeof(st));
 	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, 20, w);
 
 	WritePCX (newbuf, w, h, w, host_basepal, pcxdata, pcxsize);

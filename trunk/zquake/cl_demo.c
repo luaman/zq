@@ -754,7 +754,7 @@ void CL_EasyRecord_f (void)
 			*p = '_';
 	}
 
-	Q_strncpyz (name, va("%s/%s", cls.gamedir, name), MAX_OSPATH);
+	strlcpy (name, va("%s/%s", cls.gamedir, name), MAX_OSPATH);
 
 // find a filename that doesn't exist yet
 	strcpy (name2, name);
@@ -864,12 +864,12 @@ void PlayQWZDemo (void)
 	name = Cmd_Argv(1);
 
 	if (!strncmp(name, "../", 3) || !strncmp(name, "..\\", 3))
-		Q_strncpyz (qwz_name, va("%s/%s", com_basedir, name+3), sizeof(qwz_name));
+		strlcpy (qwz_name, va("%s/%s", com_basedir, name+3), sizeof(qwz_name));
 	else
 		if (name[0] == '/' || name[0] == '\\')
-			Q_strncpyz (qwz_name, va("%s/%s", cls.gamedir, name+1), sizeof(qwz_name));
+			strlcpy (qwz_name, va("%s/%s", cls.gamedir, name+1), sizeof(qwz_name));
 		else
-			Q_strncpyz (qwz_name, va("%s/%s", cls.gamedir, name), sizeof(qwz_name));
+			strlcpy (qwz_name, va("%s/%s", cls.gamedir, name), sizeof(qwz_name));
 
 	// Qizmo needs an absolute file name
 	_fullpath (qwz_name, qwz_name, sizeof(qwz_name)-1);
@@ -884,7 +884,7 @@ void PlayQWZDemo (void)
 	}
 	fclose (cls.demofile);
 	
-	Q_strncpyz (tempqwd_name, qwz_name, sizeof(tempqwd_name)-4);
+	strlcpy (tempqwd_name, qwz_name, sizeof(tempqwd_name)-4);
 #if 0
 	// the right way
 	strcpy (tempqwd_name + strlen(tempqwd_name) - 4, ".qwd");
@@ -916,7 +916,7 @@ void PlayQWZDemo (void)
 	si.wShowWindow = SW_HIDE;
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	
-	Q_strncpyz (cmdline, va("%s/%s/qizmo.exe -q -u -D \"%s\"", com_basedir,
+	strlcpy (cmdline, va("%s/%s/qizmo.exe -q -u -D \"%s\"", com_basedir,
 		qizmo_dir.string, qwz_name), sizeof(cmdline));
 	
 	if (!CreateProcess (NULL, cmdline, NULL, NULL,
@@ -969,7 +969,7 @@ void CL_PlayDemo_f (void)
 //
 // open the demo file
 //
-	Q_strncpyz (name, Cmd_Argv(1), sizeof(name)-4);
+	strlcpy (name, Cmd_Argv(1), sizeof(name)-4);
 
 #ifdef _WIN32
 	if (strlen(name) > 4 && !Q_stricmp(name + strlen(name) - 4, ".qwz")) {
@@ -1114,7 +1114,7 @@ void CL_StartDemos_f (void)
 			cls.playdemos = 1;
 			continue;
 		}
-		Q_strncpyz (cls.demos[num], Cmd_Argv(i), sizeof(cls.demos[0]));
+		strlcpy (cls.demos[num], Cmd_Argv(i), sizeof(cls.demos[0]));
 		num++;
 		if (num == MAX_DEMOS)
 			break;

@@ -1412,7 +1412,7 @@ void M_ScanSaves (void)
 			continue;
 		fscanf (f, "%i\n", &version);
 		fscanf (f, "%79s\n", name);
-		Q_strncpyz (m_filenames[i], name, sizeof(m_filenames[i]));
+		strlcpy (m_filenames[i], name, sizeof(m_filenames[i]));
 
 	// change _ back to space
 		for (j=0 ; j<SAVEGAME_COMMENT_LENGTH ; j++)
@@ -1723,7 +1723,7 @@ static void ReadDir (void)
 			size = fd.nFileSizeLow;
 		}
 
-		Q_strncpyz (name, fd.cFileName, MAX_DEMO_NAME);
+		strlcpy (name, fd.cFileName, sizeof(name));
 
 		// inclusion sort
 		for (i=0 ; i<numfiles ; i++)
@@ -1824,7 +1824,7 @@ static void ReadDir (void)
 			size = fileinfo.st_size;
 		}
 
-		Q_strncpyz (name, dstruct->d_name, MAX_DEMO_NAME);
+		strlcpy (name, dstruct->d_name, sizeof(name));
 
 		// inclusion sort
 		for (i=0 ; i<numfiles ; i++)
@@ -1879,7 +1879,7 @@ static char *toyellow (char *s)
 {
 	static char buf[20];
 
-	Q_strncpyz (buf, s, sizeof(buf));
+	strlcpy (buf, s, sizeof(buf));
 	for (s=buf ; *s ; s++)
 		if (*s >= '0' && *s <= '9')
 			*s = *s - '0' + 18;
@@ -1900,7 +1900,7 @@ void M_Demos_Draw (void)
 	d = dir + demo_base;
 	for (i=0, y=32 ; i<numfiles-demo_base && i<MAXLINES ; i++, y+=8, d++)
 	{
-		Q_strncpyz (str, d->name, sizeof(str));
+		strlcpy (str, d->name, sizeof(str));
 		if (d->type)
 			M_PrintWhite (24, y, str);
 		else
@@ -1924,7 +1924,7 @@ void M_Demos_Key (int k)
 	case K_BACKSPACE:
 		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-		Q_strncpyz(prevdir, dir[demo_cursor+demo_base].name, MAX_QPATH);
+		strlcpy (prevdir, dir[demo_cursor+demo_base].name, sizeof(prevdir));
 		M_LeaveMenu (m_multiplayer);
 		break;
 
@@ -2004,8 +2004,9 @@ void M_Demos_Key (int k)
 			}
 			else
 			{
-				Q_strncatz (demodir, "/", sizeof(demodir)-1);
-				Q_strncatz (demodir, dir[demo_base + demo_cursor].name, sizeof(demodir)-1);
+				// FIXME, why -1?
+				strlcat (demodir, "/", sizeof(demodir)-1);
+				strlcat (demodir, dir[demo_base + demo_cursor].name, sizeof(demodir)-1);
 			}
 			demo_cursor = 0;
 			ReadDir ();
@@ -2015,7 +2016,7 @@ void M_Demos_Key (int k)
 			key_dest = key_game;
 			m_state = m_none;
 			Cbuf_AddText (va("playdemo \"..%s/%s\"\n", demodir, dir[demo_cursor+demo_base].name));
-			Q_strncpyz(prevdir, dir[demo_cursor+demo_base].name, MAX_QPATH);
+			strlcpy (prevdir, dir[demo_cursor+demo_base].name, sizeof(prevdir));
 		}
 		break;
 	}
@@ -2401,8 +2402,8 @@ extern cvar_t	topcolor, bottomcolor;
 void M_Menu_Setup_f (void)
 {
 	M_EnterMenu (m_setup);
-	Q_strncpyz (setup_name, name.string, sizeof(setup_name));
-	Q_strncpyz (setup_team, team.string, sizeof(setup_team));
+	strlcpy (setup_name, name.string, sizeof(setup_name));
+	strlcpy (setup_team, team.string, sizeof(setup_team));
 	setup_top = setup_oldtop = (int)topcolor.value;
 	setup_bottom = setup_oldbottom = (int)bottomcolor.value;
 }
@@ -2776,8 +2777,8 @@ int sedit_state;
 void M_Menu_SEdit_f (void) {
 	M_EnterMenu (m_sedit);
 	sedit_state = 0;
-	Q_strncpyz (serv, slist[m_multip_cursor].server, sizeof(serv));
-	Q_strncpyz (desc, slist[m_multip_cursor].description, sizeof(desc));
+	strlcpy (serv, slist[m_multip_cursor].server, sizeof(serv));
+	strlcpy (desc, slist[m_multip_cursor].description, sizeof(desc));
 	serv_max = strlen(serv) > SERV_L ? strlen(serv) : SERV_L;
 	serv_min = serv_max - (SERV_L);
 	desc_max = strlen(desc) > DESC_L ? strlen(desc) : DESC_L;

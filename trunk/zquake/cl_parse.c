@@ -610,7 +610,7 @@ void CL_ParseServerData (void)
 	if (Q_stricmp(cls.gamedirfile, str)) {
 		// save current config
 		CL_WriteConfiguration ();
-		Q_strncpyz (cls.gamedirfile, str, sizeof(cls.gamedirfile));
+		strlcpy (cls.gamedirfile, str, sizeof(cls.gamedirfile));
 		Q_snprintfz (cls.gamedir, sizeof(cls.gamedir),
 			"%s/%s", com_basedir, cls.gamedirfile);
 		cflag = true;
@@ -653,7 +653,7 @@ void CL_ParseServerData (void)
 
 	// get the full level name
 	str = MSG_ReadString ();
-	Q_strncpyz (cl.levelname, str, sizeof(cl.levelname));
+	strlcpy (cl.levelname, str, sizeof(cl.levelname));
 
 	// get the movevars
 	movevars.gravity			= MSG_ReadFloat();
@@ -703,7 +703,7 @@ void CL_ParseSoundlist (void)
 		numsounds++;
 		if (numsounds == MAX_SOUNDS)
 			Host_Error ("Server sent too many sound precaches");
-		Q_strncpyz (cl.sound_name[numsounds], str, sizeof(cl.sound_name[numsounds]));
+		strlcpy (cl.sound_name[numsounds], str, sizeof(cl.sound_name[numsounds]));
 	}
 
 	n = MSG_ReadByte();
@@ -742,7 +742,7 @@ void CL_ParseModellist (void)
 		if (++nummodels==MAX_MODELS)
 			Host_Error ("Server sent too many model precaches");
 
-		Q_strncpyz (cl.model_name[nummodels], str, sizeof(cl.model_name[nummodels]));
+		strlcpy (cl.model_name[nummodels], str, sizeof(cl.model_name[nummodels]));
 	}
 
 	n = MSG_ReadByte();
@@ -1023,7 +1023,7 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 {
 	char	old_team[MAX_INFO_STRING];
 
-	Q_strncpyz (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
+	strlcpy (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
 	if (!player->name[0] && player->userid && strlen(player->userinfo) >= MAX_INFO_STRING - 17) {
 		// somebody's trying to hide himself by overflowing userinfo
 		strcpy (player->name, " ");
@@ -1069,7 +1069,7 @@ void CL_UpdateUserinfo (void)
 
 	player = &cl.players[slot];
 	player->userid = MSG_ReadLong ();
-	Q_strncpyz (player->userinfo, MSG_ReadString(), sizeof(player->userinfo));
+	strlcpy (player->userinfo, MSG_ReadString(), sizeof(player->userinfo));
 
 	CL_ProcessUserInfo (slot, player);
 }
@@ -1092,8 +1092,8 @@ void CL_SetInfo (void)
 
 	player = &cl.players[slot];
 
-	Q_strncpyz (key, MSG_ReadString(), sizeof(key));
-	Q_strncpyz (value, MSG_ReadString(), sizeof(value));
+	strlcpy (key, MSG_ReadString(), sizeof(key));
+	strlcpy (value, MSG_ReadString(), sizeof(value));
 
 	if (!cl.teamfortress)	// don't allow cheating in TF
 		Com_DPrintf ("SETINFO %s: %s=%s\n", player->name, key, value);
@@ -1196,8 +1196,8 @@ void CL_ParseServerInfoChange (void)
 	char key[MAX_INFO_STRING];
 	char value[MAX_INFO_STRING];
 
-	Q_strncpyz (key, MSG_ReadString(), sizeof(key));
-	Q_strncpyz (value, MSG_ReadString(), sizeof(value));
+	strlcpy (key, MSG_ReadString(), sizeof(key));
+	strlcpy (value, MSG_ReadString(), sizeof(value));
 
 	Com_DPrintf ("SERVERINFO: %s=%s\n", key, value);
 
@@ -1303,7 +1303,7 @@ void CL_ParsePrint (void)
 		return;
 	}
 
-	Q_strncatz (cl.sprint_buf, s, sizeof(cl.sprint_buf));
+	strlcat (cl.sprint_buf, s, sizeof(cl.sprint_buf));
 	cl.sprint_level = level;
 
 	if ( (p=strrchr(cl.sprint_buf, '\n')) != NULL ) {
@@ -1578,7 +1578,7 @@ void CL_ParseServerMessage (void)
 			i = MSG_ReadByte ();
 			if (i >= MAX_LIGHTSTYLES)
 				Host_Error ("svc_lightstyle > MAX_LIGHTSTYLES");
-			Q_strncpyz (cl_lightstyle[i].map,  MSG_ReadString(), sizeof(cl_lightstyle[i].map));
+			strlcpy (cl_lightstyle[i].map,  MSG_ReadString(), sizeof(cl_lightstyle[i].map));
 			cl_lightstyle[i].length = strlen(cl_lightstyle[i].map);
 			break;
 			

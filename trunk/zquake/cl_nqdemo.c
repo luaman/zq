@@ -395,7 +395,7 @@ void NQD_ParseServerData (void)
 			break;
 		if (nummodels == MAX_MODELS)
 			Host_Error ("Server sent too many model precaches");
-		Q_strncpyz (cl.model_name[nummodels], str, sizeof(cl.model_name[0]));
+		strlcpy (cl.model_name[nummodels], str, sizeof(cl.model_name[0]));
 		Mod_TouchModel (str);
 	}
 
@@ -407,7 +407,7 @@ void NQD_ParseServerData (void)
 			break;
 		if (numsounds == MAX_SOUNDS)
 			Host_Error ("Server sent too many sound precaches");
-		Q_strncpyz (cl.sound_name[numsounds], str, sizeof(cl.sound_name[0]));
+		strlcpy (cl.sound_name[numsounds], str, sizeof(cl.sound_name[0]));
 		S_TouchSound (str);
 	}
 
@@ -1093,7 +1093,7 @@ void NQD_ParseServerMessage (void)
 			i = MSG_ReadByte ();
 			if (i >= MAX_LIGHTSTYLES)
 				Sys_Error ("svc_lightstyle > MAX_LIGHTSTYLES");
-			Q_strncpyz (cl_lightstyle[i].map,  MSG_ReadString(), sizeof(cl_lightstyle[0].map));
+			strlcpy (cl_lightstyle[i].map,  MSG_ReadString(), sizeof(cl_lightstyle[0].map));
 			cl_lightstyle[i].length = strlen(cl_lightstyle[i].map);
 			break;
 
@@ -1111,7 +1111,7 @@ void NQD_ParseServerMessage (void)
 			i = MSG_ReadByte ();
 			if (i >= nq_maxclients)
 				Host_Error ("CL_ParseServerMessage: svc_updatename > NQ_MAX_CLIENTS");
-			Q_strncpyz(cl.players[i].name, MSG_ReadString(), sizeof(cl.players[i].name));
+			strlcpy (cl.players[i].name, MSG_ReadString(), sizeof(cl.players[i].name));
 			break;
 
 		case svc_updatefrags:

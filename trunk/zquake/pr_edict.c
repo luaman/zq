@@ -850,7 +850,7 @@ if (!strcmp(com_token, "light"))
 		if (ent == sv.edicts && (!strcmp(keyname, "sky") || !strcmp(keyname, "skyname")))
 		{
 			skyhack = true;
-			Q_strncpyz (sv.sky, com_token, sizeof(sv.sky));
+			strlcpy (sv.sky, com_token, sizeof(sv.sky));
 			if (strstr(sv.sky, ".."))
 				sv.sky[0] = 0;
 		}
@@ -1019,7 +1019,7 @@ void PR_FindCmdFunctions (void)
 		func = &pr_functions[i];
 		name = PR_GetString(func->s_name);
 		if (!strncmp(name, "Cmd_", 4)) {
-			Q_strncpyz (pr_cmdfunctions[pr_numcmdfunctions].name, name + 4, sizeof(pr_cmdfunctions[0].name));
+			strlcpy (pr_cmdfunctions[pr_numcmdfunctions].name, name + 4, sizeof(pr_cmdfunctions[0].name));
 			pr_cmdfunctions[pr_numcmdfunctions].funcnum = i;
 			pr_numcmdfunctions++;
 			if (pr_numcmdfunctions == MAX_PR_CMDFUNCTIONS)

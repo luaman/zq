@@ -516,7 +516,7 @@ void SVC_DirectConnect (void)
 	challenge = atoi(Cmd_Argv(3));
 
 	// note an extra byte is needed to replace spectator key
-	Q_strncpyz (userinfo, Cmd_Argv(4), sizeof(userinfo)-1);
+	strlcpy (userinfo, Cmd_Argv(4), sizeof(userinfo)-1);
 
 	// see if the challenge is valid
 	if (net_from.type != NA_LOOPBACK)
@@ -634,7 +634,7 @@ void SVC_DirectConnect (void)
 			if (*q > 31 && *q <= 127)
 				*p++ = *q;
 	} else
-		Q_strncpyz (newcl->userinfo, userinfo, sizeof(newcl->userinfo));
+		strlcpy (newcl->userinfo, userinfo, sizeof(newcl->userinfo));
 
 
 	Netchan_OutOfBandPrint (NS_SERVER, adr, "%c", S2C_CONNECTION );
@@ -1188,8 +1188,8 @@ void SV_CheckVars (void)
 	if (strcmp(sv_password.string, pw) ||
 		strcmp(sv_spectatorPassword.string, spw))
 	{
-		Q_strncpyz (pw, sv_password.string, sizeof(pw));
-		Q_strncpyz (spw, sv_spectatorPassword.string, sizeof(spw));
+		strlcpy (pw, sv_password.string, sizeof(pw));
+		strlcpy (spw, sv_spectatorPassword.string, sizeof(spw));
 		Cvar_Set (&sv_password, pw);
 		Cvar_Set (&sv_spectatorPassword, spw);
 		
@@ -1503,7 +1503,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	val = Info_ValueForKey (cl->userinfo, "name");
 
 	// trim user name
-	Q_strncpyz (newname, val, sizeof(newname));
+	strlcpy (newname, val, sizeof(newname));
 
 	for (p = newname; (*p == ' ' || *p == '\r' || *p == '\n') && *p; p++)
 		;
@@ -1578,7 +1578,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	}
 
 
-	Q_strncpyz (cl->name, val, sizeof(cl->name));
+	strlcpy (cl->name, val, sizeof(cl->name));
 
 	// rate
 	val = Info_ValueForKey (cl->userinfo, "rate");

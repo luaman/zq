@@ -67,13 +67,13 @@ void Skin_Find (player_info_t *sc)
 		if (cl_teamskin.string[0] && teamplay && 
 			!strcmp(sc->team, cl.players[cl.playernum].team))
 		{
-			Q_strncpyz (name, cl_teamskin.string, sizeof(name));
+			strlcpy (name, cl_teamskin.string, sizeof(name));
 		}
 		
 		if (cl_enemyskin.string[0] && (!teamplay || 
 			strcmp(sc->team, cl.players[cl.playernum].team)))
 		{
-			Q_strncpyz (name, cl_enemyskin.string, sizeof(name));
+			strlcpy (name, cl_enemyskin.string, sizeof(name));
 		}
 	}
 
@@ -103,7 +103,7 @@ void Skin_Find (player_info_t *sc)
 	numskins++;
 
 	memset (skin, 0, sizeof(*skin));
-	Q_strncpyz (skin->name, name, sizeof(skin->name));
+	strlcpy (skin->name, name, sizeof(skin->name));
 }
 
 
@@ -256,6 +256,6 @@ Sets all skins to one specific one
 */
 void Skin_AllSkins_f (void)
 {
-	Q_strncpyz (allskins, Cmd_Argv(1), sizeof(allskins));
+	strlcpy (allskins, Cmd_Argv(1), sizeof(allskins));
 	Skin_Skins_f ();
 }

@@ -791,7 +791,7 @@ void CM_LoadMap (char *name, qboolean clientload, unsigned *checksum, unsigned *
 
 	CM_MakeHull0 ();
 
-	Q_strncpyz (map_name, name, MAX_QPATH);
+	strlcpy (map_name, name, sizeof(map_name));
 
 /*
 //
