@@ -176,7 +176,7 @@ static void UpdateEntities (void)
 		} else {
 			// not in previous message
 			cent->previous = *ent;
-			VectorCopy (cent->current.origin, cent->lerp_origin);
+			VectorCopy (ent->origin, cent->lerp_origin);
 		}
 
 		cent->current = *ent;
