@@ -449,7 +449,7 @@ void SV_WriteClientdataToMessage (client_t *client, sizebuf_t *msg)
 	{
 		MSG_WriteByte (msg, svc_setangle);
 		for (i=0 ; i < 3 ; i++)
-			MSG_WriteAngle (msg, ent->v.angles[i] );
+			MSG_WriteAngle (msg, ent->v.v_angle[i]);
 		ent->v.fixangle = 0;
 	}
 }
