@@ -1048,6 +1048,8 @@ void CopyFiles (void)
 
 //============================================================================
 
+bool pr_idcomp = false;
+
 /*
 ============
 main
@@ -1064,17 +1066,23 @@ void main (int argc, char **argv)
 	myargc = argc;
 	myargv = argv;
 	
-	if ( CheckParm ("-?") || CheckParm ("-help"))
+	if (CheckParm ("-?") || CheckParm ("-help"))
 	{
 		printf ("qcc looks for progs.src in the current directory.\n");
 		printf ("to look in a different directory: qcc -src <directory>\n");
+		printf ("to enable vanilla id Software code compatibility: -idcomp\n");
 		printf ("to dump progdefs.h: qcc -progdefs\n");
 		printf ("to build a clean data tree: qcc -copy <srcdir> <destdir>\n");
 		printf ("to build a clean pak file: qcc -pak <srcdir> <packfile>\n");
 		printf ("to bsp all bmodels: qcc -bspmodels <gamedir>\n");
 		return;
 	}
-	
+
+	if (CheckParm ("-idcomp")) {
+		printf ("compiling in id compatibility mode\n");
+		pr_idcomp = true;
+	}
+
 	p = CheckParm ("-src");
 	if (p && p < argc-1 )
 	{
