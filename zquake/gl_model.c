@@ -1480,7 +1480,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 					Host_Error ("Player skin too large");
 				memcpy (player_8bit_texels, (byte *)(pskintype + 1), s);
 			}
-			_snprintf (name, sizeof(name)-1, "%s_%i", loadmodel->name, i);
+			Q_snprintfz (name, sizeof(name), "%s_%i", loadmodel->name, i);
 			pheader->gl_texturenum[i][0] =
 			pheader->gl_texturenum[i][1] =
 			pheader->gl_texturenum[i][2] =
@@ -1510,7 +1510,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 			for (j=0 ; j<groupskins ; j++)
 			{
 					Mod_FloodFillSkin (skin, pheader->skinwidth, pheader->skinheight);
-					_snprintf (name, sizeof(name)-1, "%s_%i_%i", loadmodel->name, i, j);
+					Q_snprintfz (name, sizeof(name), "%s_%i_%i", loadmodel->name, i, j);
 					pheader->gl_texturenum[i][j&3] = 
 						GL_LoadTexture (name, pheader->skinwidth, 
 						pheader->skinheight, (byte *)(pskintype), true, false, false);

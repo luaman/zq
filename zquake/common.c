@@ -2085,7 +2085,7 @@ void Com_Printf (char *fmt, ...)
 	if (com_debuglog) {
 		char        msg2[MAX_OSPATH + 32];
 
-		_snprintf (msg2, sizeof (msg2), "%s/qconsole.log", com_gamedir);
+		Q_snprintfz (msg2, sizeof (msg2), "%s/qconsole.log", com_gamedir);
 		Sys_DebugLog (msg2, "%s", msg);
 	}
 

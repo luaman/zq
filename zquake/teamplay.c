@@ -1430,6 +1430,7 @@ void TP_NewMap ()
 {
 	static char last_map[MAX_QPATH] = "";
 	char mapname[MAX_QPATH];
+	char locname[MAX_OSPATH];
 
 	memset (&vars, 0, sizeof(vars));
 	TP_FindModelNumbers ();
@@ -1439,8 +1440,7 @@ void TP_NewMap ()
 	{	// map name has changed
 		loc_numentries = 0;	// clear loc file
 		if (tp_loadlocs.value && cl.deathmatch && !cls.demoplayback) {
-			char locname[MAX_OSPATH];
-			_snprintf (locname, MAX_OSPATH, "%s.loc", mapname);
+			Q_snprintfz (locname, sizeof(locname), "%s.loc", mapname);
 			TP_LoadLocFile (locname, true);
 		}
 		strcpy (last_map, mapname);

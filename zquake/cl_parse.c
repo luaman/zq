@@ -605,21 +605,20 @@ void CL_ParseServerData (void)
 	//if it exists
 	if (cflag) {
 		int cl_warncmd_val = cl_warncmd.value;
-		// FIXME: _snprintf is Win32 only
-		_snprintf(fn, sizeof(fn), "%s/%s", com_gamedir, "config.cfg");
+		Q_snprintfz (fn, sizeof(fn), "%s/%s", com_gamedir, "config.cfg");
 		if ((f = fopen(fn, "r")) != NULL) {
 			fclose(f);
 			Cbuf_AddText ("cl_warncmd 0\n");
 			Cbuf_AddText ("exec config.cfg\n");
 		}
-		_snprintf(fn, sizeof(fn), "%s/%s", com_gamedir, "frontend.cfg");
+		Q_snprintfz (fn, sizeof(fn), "%s/%s", com_gamedir, "frontend.cfg");
 		if ((f = fopen(fn, "r")) != NULL) {
 			fclose(f);
 			Cbuf_AddText ("cl_warncmd 0\n");
 			Cbuf_AddText ("exec frontend.cfg\n");
 		}
-		_snprintf(fn,sizeof(fn), "cl_warncmd %d\n", cl_warncmd_val);
-		Cbuf_AddText(fn);
+		Q_snprintfz (fn, sizeof(fn), "cl_warncmd %d\n", cl_warncmd_val);
+		Cbuf_AddText (fn);
 	}
 
 	// parse player slot, high bit means spectator
