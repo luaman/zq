@@ -103,6 +103,7 @@ typedef struct
 typedef struct {
 	float		time;
 	qboolean	allowCheats;
+	qboolean	watervis;
 	int			numParticles;
 	particle_t	*particles;
 } refdef2_t;
