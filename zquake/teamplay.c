@@ -28,7 +28,7 @@
 #include "version.h"
 #include "pmove.h"
 
-cvar_t	cl_parsesay = {"cl_parsesay", "0"};
+cvar_t	cl_parseSay = {"cl_parseSay", "0"};
 cvar_t	cl_parseFunChars = {"cl_parseFunChars", "1"};
 cvar_t	cl_triggers = {"cl_triggers", "0"};
 cvar_t	tp_forceTriggers = {"tp_forceTriggers", "0"};
@@ -63,7 +63,8 @@ cvar_t	tp_name_mh = {"tp_name_mh", "mega"};
 cvar_t	tp_name_health = {"tp_name_health", "health"};
 cvar_t	tp_name_backpack = {"tp_name_backpack", "pack"};
 cvar_t	tp_name_flag = {"tp_name_flag", "flag"};
-cvar_t	tp_name_nothing = {"tp_name_nothing", ""};
+cvar_t	tp_name_nothing = {"tp_name_nothing", "nothing"};
+cvar_t	tp_name_someplace = {"tp_name_someplace", "someplace"};
 cvar_t	tp_name_at = {"tp_name_at", "at"};
 
 char *Macro_Location_f (void);
@@ -82,8 +83,9 @@ typedef struct tvars_s {
 	float	deathtrigger_time;
 	float	f_version_reply_time;
 	char	lastdeathloc[MAX_LOC_NAME];
-	char	tookitem[32];
-	char	last_tooktrigger[32];
+	char	tookname[32];
+	char	tookloc[MAX_LOC_NAME];
+	float	tooktime;
 	int		pointframe;		// host_framecount for which pointitem&pointloc are valid
 	char	pointname[32];
 	char	pointloc[MAX_LOC_NAME];
@@ -132,7 +134,7 @@ void TP_ExecTrigger (char *s)
 */
 
 #define MAX_MACRO_VALUE	256
-static char	macro_buf[MAX_MACRO_VALUE];
+static char	macro_buf[MAX_MACRO_VALUE] = "";
 
 
 char *Macro_Health_f (void)
@@ -290,11 +292,11 @@ char *Macro_BestWeaponAndAmmo_f (void)
 char *Macro_ArmorType_f (void)
 {
 	if (cl.stats[STAT_ITEMS] & IT_ARMOR1)
-		return "ga";
+		return "g";
 	else if (cl.stats[STAT_ITEMS] & IT_ARMOR2)
-		return "ya";
+		return "y";
 	else if (cl.stats[STAT_ITEMS] & IT_ARMOR3)
-		return "ra";
+		return "r";
 	else
 		return "";	// no armor at all
 }
@@ -344,7 +346,7 @@ char *Macro_LastDeath_f (void)
 	if (vars.deathtrigger_time)
 		return vars.lastdeathloc;
 	else
-		return "someplace";
+		return tp_name_someplace.string;
 }
 
 char *Macro_Time_f (void)
@@ -370,16 +372,35 @@ char *Macro_Date_f (void)
 }
 
 // returns the last item picked up
-char *Macro_Item_f (void)
+char *Macro_Took_f (void)
 {
-	strcpy (macro_buf, vars.tookitem);
+	if (!vars.tooktime || realtime > vars.tooktime + 20)
+		strncpy (macro_buf, tp_name_nothing.string, sizeof(macro_buf)-1);
+	else
+		strcpy (macro_buf, vars.tookname);
 	return macro_buf;
 }
 
-// returns the last item that triggered f_took
-char *Macro_Took_f (void)
+// returns location of the last item picked up
+char *Macro_TookLoc_f (void)
 {
-	strcpy (macro_buf, vars.last_tooktrigger);
+	if (!vars.tooktime || realtime > vars.tooktime + 20)
+		strncpy (macro_buf, tp_name_someplace.string, sizeof(macro_buf)-1);
+	else
+		strcpy (macro_buf, vars.tookloc);
+	return macro_buf;
+}
+
+
+// %i macro - last item picked up in "name at location" style
+char *Macro_TookAtLoc_f (void)
+{
+	if (!vars.tooktime || realtime > vars.tooktime + 20)
+		strncpy (macro_buf, tp_name_nothing.string, sizeof(macro_buf)-1);
+	else {
+		strncpy (macro_buf, va("%s %s %s", vars.tookname,
+			tp_name_at.string, vars.tookloc), sizeof(macro_buf)-1);
+	}
 	return macro_buf;
 }
 
@@ -433,7 +454,8 @@ macro_command_t macro_commands[] =
 	{"location", Macro_Location_f},
 	{"time", Macro_Time_f},
 	{"date", Macro_Date_f},
-	{"item", Macro_Item_f},
+	{"tookatloc", Macro_TookAtLoc_f},
+	{"tookloc", Macro_TookLoc_f},
 	{"took", Macro_Took_f},
 	{NULL, NULL}
 };
@@ -481,7 +503,7 @@ char *TP_ParseMacroString (char *s)
 	int		i = 0;
 	char	*macro_string;
 
-	if (!cl_parsesay.value)
+	if (!cl_parseSay.value)
 		return s;
 
 	while (*s && i < MAX_MACRO_STRING-1)
@@ -544,8 +566,7 @@ char *TP_ParseMacroString (char *s)
 				case 'c': macro_string = Macro_Cells_f(); break;
 				case 'd': macro_string = Macro_LastDeath_f(); break;
 				case 'h': macro_string = Macro_Health_f(); break;
-				case 'i': macro_string = vars.tookitem; break;
-				case 'I': macro_string = vars.last_tooktrigger; break;
+				case 'i': macro_string = Macro_TookAtLoc_f(); break;
 				case 'l': macro_string = Macro_Location_f(); break;
 				case 'L': macro_string = Macro_Location2_f(); break;
 				case 'P':
@@ -849,7 +870,7 @@ char *TP_LocationName (vec3_t location)
 	vec3_t	vec, org;
 	
 	if (!loc_numentries || (cls.state != ca_active))
-		return "someplace";
+		return tp_name_someplace.string;
 
 	VectorCopy (location, org);
 	for (i = 0; i < 3; i++)
@@ -1745,12 +1766,16 @@ static void ExecTookTrigger (char *s, int flag)
 {
 	if ( !((pkflags|tookflags) & flag) )
 		return;
-	strcpy (vars.tookitem, s);
+
+	vars.tooktime = realtime;
+	strncpy (vars.tookname, s, sizeof(vars.tookname)-1);
+	// FIXME: better use the item location, not the player's
+	strncpy (vars.tookloc, TP_LocationName (cl.frames[parsecountmod]
+			.playerstate[cl.playernum].origin), sizeof(vars.tookloc)-1);
+
 	if (tookflags & flag) {
-		if (CountTeammates()) {
-			strcpy (vars.last_tooktrigger, s);
+		if (CountTeammates())
 			TP_ExecTrigger ("f_took");
-		}
 	}
 }
 
@@ -2007,7 +2032,7 @@ void TP_StatChanged (int stat, int value)
 void TP_Init ()
 {
 	Cvar_RegisterVariable (&cl_parseFunChars);
-	Cvar_RegisterVariable (&cl_parsesay);
+	Cvar_RegisterVariable (&cl_parseSay);
 	Cvar_RegisterVariable (&cl_triggers);
 	Cvar_RegisterVariable (&tp_forceTriggers);
 	Cvar_RegisterVariable (&cl_nofake);
@@ -2040,6 +2065,7 @@ void TP_Init ()
 	Cvar_RegisterVariable (&tp_name_backpack);
 	Cvar_RegisterVariable (&tp_name_flag);
 	Cvar_RegisterVariable (&tp_name_nothing);
+	Cvar_RegisterVariable (&tp_name_someplace);
 	Cvar_RegisterVariable (&tp_name_at);
 
 	Cmd_AddCommand ("macrolist", TP_MacroList_f);
