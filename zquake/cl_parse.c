@@ -593,7 +593,7 @@ void CL_ParseServerData (void)
 
 	if (Q_strcasecmp(cls.gamedirfile, str)) {
 		// save current config
-		Host_WriteConfiguration ();
+		CL_WriteConfiguration ();
 		Q_strncpyz (cls.gamedirfile, str, sizeof(cls.gamedirfile));
 		Q_snprintfz (cls.gamedir, sizeof(cls.gamedir),
 			"%s/%s", com_basedir, cls.gamedirfile);
