@@ -336,13 +336,13 @@ readit:
 
 #ifdef MVDPLAY
 		if (cls.mvdplayback) {
-			switch(cls.lasttype) {
+			switch(cls.mvd_lasttype) {
 			case dem_multiple:
-				if (!cam_locked || !(cls.lastto & (1 << cam_target)))
+				if (!cam_locked || !(cls.mvd_lastto & (1 << cam_target)))
 					goto readnext;	
 				break;
 			case dem_single:
-				if (!cam_locked || cls.lastto != cam_target)
+				if (!cam_locked || cls.mvd_lastto != cam_target)
 					goto readnext;
 				break;
 			}
@@ -367,23 +367,23 @@ readit:
 		r = fread (&i, 4, 1, cls.demofile);
 		if (r != 1)
 			Host_Error ("Unexpected end of demo");
-		cls.lastto = LittleLong(i);
-		cls.lasttype = dem_multiple;
+		cls.mvd_lastto = LittleLong(i);
+		cls.mvd_lasttype = dem_multiple;
 		goto readit;
 
 	case dem_single:
-		cls.lastto = c>>3;
-		cls.lasttype = dem_single;
+		cls.mvd_lastto = c>>3;
+		cls.mvd_lasttype = dem_single;
 		goto readit;
 
 	case dem_stats:
-		cls.lastto = c>>3;
-		cls.lasttype = dem_stats;
+		cls.mvd_lastto = c>>3;
+		cls.mvd_lasttype = dem_stats;
 		goto readit;
 
 	case dem_all:
-		cls.lastto = 0;
-		cls.lasttype = dem_all;
+		cls.mvd_lastto = 0;
+		cls.mvd_lasttype = dem_all;
 		goto readit;
 #endif
 
@@ -1207,9 +1207,9 @@ try_again:
 	cls.demotime = 0;
 #ifdef MVDPLAY
 	olddemotime = 0;
-	cls.findtrack = true;
-	cls.lasttype = 0;
-	cls.lastto = 0;
+	cls.mvd_findtarget = true;
+	cls.mvd_lasttype = 0;
+	cls.mvd_lastto = 0;
 	MVD_ClearPredict();
 #endif
 }

@@ -1617,8 +1617,8 @@ void CL_SetStat (int stat, int value)
 
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
-		cl.players[cls.lastto].stats[stat]=value;
-		if ( Cam_TrackNum() != cls.lastto )
+		cl.players[cls.mvd_lastto].stats[stat]=value;
+		if (Cam_TrackNum() != cls.mvd_lastto)
 			return;
 	}
 #endif

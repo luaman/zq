@@ -250,9 +250,9 @@ typedef struct
 	qbool		nqdemoplayback;
 #ifdef MVDPLAY
 	qbool   	mvdplayback; // playing mvd 
-	int			lastto;
-	int			lasttype;
-	qbool   	findtrack;
+	int			mvd_lastto;
+	int			mvd_lasttype;
+	qbool   	mvd_findtarget;
 #endif
 	FILE		*demofile;
 	byte		demomessage_data[MAX_MSGLEN * 2 /* FIXME */];

@@ -756,10 +756,10 @@ static void MVD_ParsePlayerState (void)
 
 	info = &cl.players[num];
 
-	if (cls.findtrack && info->stats[STAT_HEALTH] != 0)
+	if (cls.mvd_findtarget && info->stats[STAT_HEALTH] != 0)
 	{
 		Cam_Lock (num);
-		cls.findtrack = false;
+		cls.mvd_findtarget = false;
 	}
 
 	state = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[num];
