@@ -939,7 +939,6 @@ void M_Menu_Fps_f (void)
 
 void M_Fps_Draw (void)
 {
-	float		r;
 	qpic_t	*p;
 	
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
@@ -1675,7 +1674,6 @@ int		gameoptions_cursor;
 void M_GameOptions_Draw (void)
 {
 	qpic_t	*p;
-	int		x;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");

@@ -1379,7 +1379,6 @@ int	received_framecount;
 void CL_ParseServerMessage (void)
 {
 	int			cmd;
-	char		*s;
 	int			i, j;
 
 	received_framecount = host_framecount;

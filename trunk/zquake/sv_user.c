@@ -1,5 +1,3 @@
-// Portions Copyright (C) 2000 by Anton Gavrilov (tonik@quake.ru)
-
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -595,11 +593,11 @@ SV_NextUpload
 */
 void SV_NextUpload (void)
 {
-	byte	buffer[1024];
-	int		r;
 	int		percent;
 	int		size;
-	client_t *client;
+//	byte	buffer[1024];
+//	int		r;
+//	client_t *client;
 
 	if (!*host_client->uploadfn) {
 		SV_ClientPrintf(host_client, PRINT_HIGH, "Upload denied\n");
@@ -936,8 +934,7 @@ SV_Pause_f
 */
 void SV_Pause_f (void)
 {
-	int i;
-	client_t *cl;
+//	client_t *cl;
 	char st[sizeof(host_client->name) + 32];
 
 	if (!pausable.value) {

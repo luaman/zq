@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_main.c
 
 #include "quakedef.h"
+#include "sound.h"
 
 entity_t	r_worldentity;
 
@@ -1217,8 +1218,6 @@ void R_RenderView (void)
 
 	// render mirror view
 //	R_Mirror ();
-
-//	R_PolyBlend ();
 
 	if (r_speeds.value)
 	{

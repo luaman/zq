@@ -30,7 +30,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void SCR_RSShot_f (void);
 void CL_ProcessServerInfo (void);
-
+void SV_Serverinfo_f (void);
+void Key_WriteBindings (FILE *f);
+void S_StopAllSounds (qboolean clear);
 
 /*
 ===================

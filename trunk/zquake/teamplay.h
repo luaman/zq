@@ -3,7 +3,7 @@
 
 	Teamplay enhancements ("proxy features")
 
-	Copyright (C) 2000       Anton Gavrilov (tonik@quake.ru)
+	Copyright (C) 2000-2001       Anton Gavrilov
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -22,8 +22,6 @@
 		Free Software Foundation, Inc.
 		59 Temple Place - Suite 330
 		Boston, MA  02111-1307, USA
-
-	$Id$
 */
 
 extern cvar_t cl_parsesay;
@@ -61,6 +59,8 @@ void TP_LoadLocFile (char *path, qboolean quiet);
 char *TP_ParseMacroString(char *string);
 void TP_NewMap ();
 void TP_CheckVersionRequest(char *s);
+int TP_CategorizeMessage (char *s);
+
 void TP_Init ();
 
 
