@@ -391,7 +391,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 		(!windowed && (modenum < 1)) ||
 		(!windowed && (modenum >= nummodes)))
 	{
-		Sys_Error ("Bad video mode\n");
+		Sys_Error ("Bad video mode");
 	}
 
 // so Con_Printfs don't mess us up by forcing vid and snd updates
@@ -530,7 +530,7 @@ void CheckTextureExtensions (void)
 		hInstGL = LoadLibrary("opengl32.dll");
 		
 		if (hInstGL == NULL)
-			Sys_Error ("Couldn't load opengl32.dll\n");
+			Sys_Error ("Couldn't load opengl32.dll");
 
 		bindTexFunc = (void *)GetProcAddress(hInstGL,"glBindTexture");
 
