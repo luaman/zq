@@ -1,11 +1,9 @@
 // version.h
 
-#define GLQUAKE_VERSION 1.00
-#define	QW_VERSION		2.40
-#define Z_VERSION	"0.13dev"
-#define LINUX_VERSION 0.98
+#define	QW_VERSION	2.40
+#define Z_VERSION	"0.14"
 
-// #define RELEASE_VERSION
+#define RELEASE_VERSION
 
 #ifdef _WIN32
 #define QW_PLATFORM	"Win32"
