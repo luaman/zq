@@ -431,7 +431,7 @@ void Sys_Init_ (void)
 	// allocate a named semaphore on the client so the
 	// front end can tell if it is alive
 
-	if (!dedicated)
+	if (!dedicated && !COM_CheckParm("-allowmultiple"))
 	{
 		// mutex will fail if semaphore already exists
 		qwclsemaphore = CreateMutex(

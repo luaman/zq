@@ -376,13 +376,7 @@ void MakeNormalVectors (/* in */ vec3_t forward, /* out */ vec3_t right, vec3_t 
 
 int VectorCompare (vec3_t v1, vec3_t v2)
 {
-	int		i;
-	
-	for (i=0 ; i<3 ; i++)
-		if (v1[i] != v2[i])
-			return 0;
-			
-	return 1;
+	return (v1[0] == v2[0] && v1[1] == v2[1] && v1[2] == v2[2]);
 }
 
 void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
@@ -391,7 +385,6 @@ void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
 	vecc[1] = veca[1] + scale*vecb[1];
 	vecc[2] = veca[2] + scale*vecb[2];
 }
-
 
 vec_t _DotProduct (vec3_t v1, vec3_t v2)
 {
@@ -426,24 +419,16 @@ void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross)
 	cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
 }
 
-double sqrt(double x);
-
 vec_t VectorLength (vec3_t v)
 {
-	float	length;
-	
-	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
-	length = sqrt (length);		// FIXME
-
-	return length;
+	return sqrt (v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 }
 
 float VectorNormalize (vec3_t v)
 {
 	float	length, ilength;
 
-	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
-	length = sqrt (length);		// FIXME
+	length = sqrt (v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 
 	if (length)
 	{
@@ -454,7 +439,6 @@ float VectorNormalize (vec3_t v)
 	}
 		
 	return length;
-
 }
 
 void VectorScale (vec3_t in, vec_t scale, vec3_t out)
