@@ -1011,11 +1011,13 @@ void() PlayerJump =
 // player jumping sound
 		sound (self, 4, "player/plyrjmp8.wav", 1, 1);
 
-        	// JUMPBUG[
-	        // the engine checks velocity_z and won't perform the jump
-		// if it's < zero!
-		if (self.velocity_z < 0) self.velocity_z = 0;
-		// JUMPBUG]
+		if (server_is_2_3x) {
+			// if and only if running on a 2.30 or 2.33 server,
+			// fix the jump bug via QC
+			// newer servers should have an engine-side fix
+			if (self.velocity_z < 0)
+				self.velocity_z = 0;
+		}
 	} else self.velocity_z = -270;
 
 };
