@@ -63,8 +63,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".\SDebug"
-# PROP Intermediate_Dir ".\SDebug"
+# PROP Output_Dir ".\Debug-server"
+# PROP Intermediate_Dir ".\Debug-server"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /c
@@ -76,7 +76,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386
-# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:console /map /debug /machine:I386 /out:".\Debug-server/zqds.exe"
+# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:console /map /debug /machine:I386
 # SUBTRACT LINK32 /profile
 
 !ENDIF 
@@ -338,7 +338,7 @@ InputName=math
 !ELSEIF  "$(CFG)" == "zqds - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\SDebug
+OutDir=.\Debug-server
 InputPath=.\math.s
 InputName=math
 
@@ -375,7 +375,7 @@ InputName=worlda
 !ELSEIF  "$(CFG)" == "zqds - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\SDebug
+OutDir=.\Debug-server
 InputPath=.\worlda.s
 InputName=worlda
 
