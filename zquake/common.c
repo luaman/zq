@@ -1662,7 +1662,7 @@ void FS_SetGamedir (char *dir)
 		com_searchpaths = search;		
 	}
 
-breakOut:
+breakOut:;
 #ifdef GLQUAKE
 	Draw_FlushCache ();
 #endif
