@@ -504,9 +504,6 @@ void SV_Begin_f (void)
 			pr_global_struct->self = EDICT_TO_PROG(sv_player);
 			PR_ExecuteProgram (pr_global_struct->ClientConnect);
 			
-			//		if (sv.loadgame)
-			//			memcpy (sv_client->spawn_parms, spawn_parms, sizeof(spawn_parms));
-			
 			// actually spawn the player
 			pr_global_struct->time = sv.time;
 			pr_global_struct->self = EDICT_TO_PROG(sv_player);
