@@ -107,12 +107,8 @@ void() agh_world_precaches =
     precache_sound ("nav/marker.wav");
 
     // Footsteps
-    // AG_FIXME: Need footstep sounds!
-    precache_sound ("footsteps/footstep.wav");
-    precache_sound ("footsteps/foot1.wav");
-    precache_sound ("footsteps/foot2.wav");
-    precache_sound ("footsteps/foot3.wav");
-    precache_sound ("footsteps/foot4.wav");
+    precache_sound ("footsteps/footstep_l.wav");
+    precache_sound ("footsteps/footstep_r.wav");
 
     // D5K Entity Beeps
     precache_sound ("buttons/switch04.wav");        // Switch - AG_FIXME
@@ -239,15 +235,11 @@ void() agh_player_footsteps =
             {
                 // Generate the footstep sound a bit randomly...
                 local float r;
-                r = rint(random() * 3);
-                if( r == 1 )
-                    soundtoclient(self, self, CHAN_AUTO, "footsteps/footstep.wav", 0.5, ATTN_NORM);
-                else if( r == 2 )
-                    soundtoclient(self, self, CHAN_AUTO, "footsteps/footstep.wav", 0.5, ATTN_NORM);
-                else if( r == 0 )
-                    soundtoclient(self, self, CHAN_AUTO, "footsteps/footstep.wav", 0.5, ATTN_NORM);
+                r = random(); 
+                if( r < 0.5 )
+                    soundtoclient(self, self, CHAN_AUTO, "footsteps/footstep_l.wav", 0.5, ATTN_NORM);
                 else
-                    soundtoclient(self, self, CHAN_AUTO, "footsteps/footstep.wav", 0.5, ATTN_NORM);
+                    soundtoclient(self, self, CHAN_AUTO, "footsteps/footstep_r.wav", 0.5, ATTN_NORM);
             }
         }
     }
