@@ -1327,7 +1327,7 @@ static void Sbar_DeathmatchOverlay (int start)
 
 		if (!cls.nqdemoplayback)
 		{
-			if (!cl.protocol_26)
+			if (cl.protocol >= 27)
 			{
 				// draw pl
 				p = s->pl;

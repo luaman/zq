@@ -672,12 +672,12 @@ void CL_ParseServerData (void)
 	CL_ClearState ();
 
 // parse protocol version number
-// allow 2.2 and 2.29 demos to play
+// allow old demos to play
 	protover = MSG_ReadLong ();
-	if (protover != PROTOCOL_VERSION && !(cls.demoplayback && (protover == 26 || protover == 27 || protover == 28))) {
+	if (protover != PROTOCOL_VERSION && !(cls.demoplayback && (protover >= 24 && protover <= 28))) {
 		Host_Error ("Server returned version %i, not %i\n", protover, PROTOCOL_VERSION);
 	}
-	cl.protocol_26 = (protover == 26);
+	cl.protocol = protover;
 
 	cl.servercount = MSG_ReadLong ();
 
@@ -735,16 +735,32 @@ void CL_ParseServerData (void)
 	strlcpy (cl.levelname, str, sizeof(cl.levelname));
 
 	// get the movevars
-	movevars.gravity			= MSG_ReadFloat();
-	movevars.stopspeed          = MSG_ReadFloat();
-	cl.maxspeed                 = MSG_ReadFloat();
-	movevars.spectatormaxspeed  = MSG_ReadFloat();
-	movevars.accelerate         = MSG_ReadFloat();
-	movevars.airaccelerate      = MSG_ReadFloat();
-	movevars.wateraccelerate    = MSG_ReadFloat();
-	movevars.friction           = MSG_ReadFloat();
-	movevars.waterfriction      = MSG_ReadFloat();
-	cl.entgravity               = MSG_ReadFloat();
+	if (cl.protocol >= 25)
+	{	// from QW 2.00 on
+		movevars.gravity			= MSG_ReadFloat();
+		movevars.stopspeed          = MSG_ReadFloat();
+		cl.maxspeed                 = MSG_ReadFloat();
+		movevars.spectatormaxspeed  = MSG_ReadFloat();
+		movevars.accelerate         = MSG_ReadFloat();
+		movevars.airaccelerate      = MSG_ReadFloat();
+		movevars.wateraccelerate    = MSG_ReadFloat();
+		movevars.friction           = MSG_ReadFloat();
+		movevars.waterfriction      = MSG_ReadFloat();
+		cl.entgravity               = MSG_ReadFloat();
+	}
+	else
+	{
+		movevars.gravity = 800;
+		movevars.stopspeed = 100;
+		cl.maxspeed = 320;
+		movevars.spectatormaxspeed = 500;
+		movevars.accelerate = 10;
+		movevars.airaccelerate = 10;
+		movevars.wateraccelerate = 10;
+		movevars.friction = 4;
+		movevars.waterfriction = 4;
+		cl.entgravity = 1;
+	}
 
 	// separate the printfs so the server message can have a color
 	Com_Printf ("\n");
@@ -775,7 +791,10 @@ void CL_ParseSoundlist (void)
 // precache sounds
 //	memset (cl.sound_precache, 0, sizeof(cl.sound_precache));
 
-	numsounds = MSG_ReadByte();
+	if (cl.protocol >= 26)
+		numsounds = MSG_ReadByte();
+	else
+		numsounds = 0;
 
 	for (;;) {
 		str = MSG_ReadString ();
@@ -787,12 +806,15 @@ void CL_ParseSoundlist (void)
 		strlcpy (cl.sound_name[numsounds], str, sizeof(cl.sound_name[numsounds]));
 	}
 
-	n = MSG_ReadByte();
+	if (cl.protocol >= 26)
+	{
+		n = MSG_ReadByte();
 
-	if (n) {
-		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message, va("soundlist %i %i", cl.servercount, n));
-		return;
+		if (n) {
+			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+			MSG_WriteString (&cls.netchan.message, va("soundlist %i %i", cl.servercount, n));
+			return;
+		}
 	}
 
 	cls.downloadnumber = 0;
@@ -812,7 +834,10 @@ void CL_ParseModellist (void)
 	int n;
 
 // precache models and note certain default indexes
-	nummodels = MSG_ReadByte();
+	if (cl.protocol >= 26)
+		nummodels = MSG_ReadByte();
+	else
+		nummodels = 0;
 
 	for (;;)
 	{
@@ -826,12 +851,15 @@ void CL_ParseModellist (void)
 		strlcpy (cl.model_name[nummodels], str, sizeof(cl.model_name[nummodels]));
 	}
 
-	n = MSG_ReadByte();
+	if (cl.protocol >= 26)
+	{
+		n = MSG_ReadByte();
 
-	if (n) {
-		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message, va("modellist %i %i", cl.servercount, n));
-		return;
+		if (n) {
+			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+			MSG_WriteString (&cls.netchan.message, va("modellist %i %i", cl.servercount, n));
+			return;
+		}
 	}
 
 	cls.downloadnumber = 0;
