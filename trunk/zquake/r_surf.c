@@ -58,6 +58,7 @@ unsigned		blocklights[18*18];
 R_AddDynamicLights
 ===============
 */
+#if 0
 void R_AddDynamicLights (void)
 {
 	msurface_t *surf;
@@ -121,6 +122,81 @@ void R_AddDynamicLights (void)
 		}
 	}
 }
+#else
+//Tonik: a noticeable speedup here
+void R_AddDynamicLights (void)
+{
+	msurface_t *surf;
+	int			lnum;
+	float		dist;
+	vec3_t		impact;
+	int			local[2];
+	int			s, t;
+	int			i;
+	int			smax, tmax;
+	mtexinfo_t	*tex;
+	int			sd, td;
+	int			_sd, _td;
+	int			irad, idist, iminlight;
+	unsigned	*dest;
+
+	surf = r_drawsurf.surf;
+	smax = (surf->extents[0]>>4)+1;
+	tmax = (surf->extents[1]>>4)+1;
+	tex = surf->texinfo;
+
+	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	{
+		if ( !(surf->dlightbits & (1<<lnum) ) )
+			continue;		// not lit by this light
+
+		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) -
+				surf->plane->dist;
+		irad = (cl_dlights[lnum].radius - fabs(dist)) * 256;
+		iminlight = cl_dlights[lnum].minlight * 256;
+		if (irad < iminlight)
+			continue;
+		iminlight = irad - iminlight;
+
+		for (i=0 ; i<3 ; i++)
+		{
+			impact[i] = cl_dlights[lnum].origin[i] -
+					surf->plane->normal[i]*dist;
+		}
+
+		local[0] = (DotProduct (impact, tex->vecs[0]) +
+			tex->vecs[0][3] - surf->texturemins[0]) * 256;
+		local[1] = (DotProduct (impact, tex->vecs[1]) +
+			tex->vecs[1][3] - surf->texturemins[1]) * 256;
+		
+		_td = local[1];
+		dest = blocklights;
+		for (t = 0 ; t<tmax ; t++)
+		{
+			td = _td;
+			_td -= 16*256;
+			if (td < 0)
+				td = -td;
+			_sd = local[0];
+			for (s=0 ; s<smax ; s++)
+			{
+				sd = _sd;
+				_sd -= 16*256;
+				if (sd < 0)	sd = -sd;
+				if (sd > td)
+					idist = sd + (td>>1);
+				else
+					idist = td + (sd>>1);
+				if (idist < iminlight)
+					*dest += irad - idist;
+				dest++;
+
+			}
+		}
+
+	}
+}
+#endif
 
 /*
 ===============
