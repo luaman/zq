@@ -1018,6 +1018,8 @@ void PR_LoadProgs (void)
 {
 	int		i;
 	char	num[32];
+	static int lumpsize[6] = { sizeof(dstatement_t), sizeof(ddef_t),
+		sizeof(ddef_t), sizeof(dfunction_t), 4, 4 };
 
 	progs = NULL;
 	if (!deathmatch.value)
@@ -1046,6 +1048,10 @@ void PR_LoadProgs (void)
 		progs = (dprograms_t *)FS_LoadHunkFile ("qwprogs.dat");
 	if (!progs)
 		Host_Error ("PR_LoadProgs: couldn't load qwprogs.dat");
+
+	if (fs_filesize < sizeof(*progs))
+		Host_Error("progs.dat is corrupt");
+
 	Com_DPrintf ("Programs occupy %iK.\n", fs_filesize/1024);
 
 // add prog crc to the serverinfo
@@ -1053,24 +1059,34 @@ void PR_LoadProgs (void)
 	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
 
 // byte swap the header
-	for (i=0 ; i<sizeof(*progs)/4 ; i++)
+	for (i = 0; i < sizeof(*progs)/4; i++)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );		
 
 	if (progs->version != PROG_VERSION)
 		Host_Error ("progs.dat has wrong version number (%i should be %i)", progs->version, PROG_VERSION);
 	if (progs->crc != PROGHEADER_CRC)
-		Host_Error ("You must have the progs.dat from QuakeWorld installed");
+		Host_Error ("You must have the qwprogs.dat from QuakeWorld installed");
+
+// check lump offsets and sizes
+	for (i = 0; i < 6; i ++) {
+		if (((int *)progs)[i*2 + 2] < sizeof(*progs)
+			|| ((int *)progs)[i*2 + 2] + ((int *)progs)[i*2 + 3]*lumpsize[i] > fs_filesize)
+		Host_Error("progs.dat is corrupt");
+	}
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_strings = (char *)progs + progs->ofs_strings;
 	pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
 	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
+	pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
+
+	Com_Printf ("globals end: %i\n", progs->ofs_globals + progs->numglobals * 4);
+	Com_Printf ("file size: %i\n", fs_filesize);
+
+	pr_globals = (float *)pr_global_struct;
 
 	num_prstr = 0;
-
-	pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
-	pr_globals = (float *)pr_global_struct;
 	
 	pr_edict_size = progs->entityfields * 4 + sizeof (edict_t) - sizeof(entvars_t);
 	
