@@ -223,31 +223,21 @@ sliding along it.
 */
 void PM_StepSlideMove (void)
 {
-	vec3_t	start, dest;
+	vec3_t	dest;
 	pmtrace_t	trace;
 	vec3_t	original, originalvel, down, up, downvel;
 	float	downdist, updist;
-
-	// first try just moving to the destination	
-	dest[0] = pmove.origin[0] + pmove.velocity[0]*frametime;
-	dest[1] = pmove.origin[1] + pmove.velocity[1]*frametime;	
-	dest[2] = pmove.origin[2] + pmove.velocity[2]*frametime;
-
-	// first try moving directly to the next spot
-	VectorCopy (dest, start);
-	trace = PM_PlayerTrace (pmove.origin, dest);
-	if (trace.fraction == 1)
-	{
-		VectorCopy (trace.endpos, pmove.origin);
-		return;
-	}
+	int		blocked;
 
 	// try sliding forward both on ground and up 16 pixels
 	// take the move that goes farthest
 	VectorCopy (pmove.origin, original);
 	VectorCopy (pmove.velocity, originalvel);
 
-	PM_SlideMove ();
+	blocked = PM_SlideMove ();
+
+	if (!blocked)
+		return;		// moved the entire distance
 
 	VectorCopy (pmove.origin, down);
 	VectorCopy (pmove.velocity, downvel);
