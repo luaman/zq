@@ -638,22 +638,22 @@ void M_Options_Key (int k)
 	if (options_cursor == 16 && vid_menudrawfn == NULL)
 	{
 		if (k == K_UPARROW || k == K_END || k == K_PGDN)
-			options_cursor = 15;
+			//options_cursor = 15;
+			options_cursor--;
 		else
-			options_cursor = 0;
+			//options_cursor = 0;
+			options_cursor++;
 	}
-
-	if ((options_cursor == 17)
+	
 #ifdef _WIN32
-	&& (modestate != MS_WINDOWED)
-#endif
-	)
+	if ((options_cursor == 17) && (modestate != MS_WINDOWED))
 	{
 		if (k == K_UPARROW || k == K_END || k == K_PGDN)
 			options_cursor = 16;
 		else
 			options_cursor = 0;
 	}
+#endif	
 }
 
 
