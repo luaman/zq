@@ -763,34 +763,6 @@ void CL_Init (void)
 }
 
 
-/*
-===============
-CL_WriteConfiguration
-
-Writes key bindings and archived cvars to config.cfg
-===============
-*/
-void CL_WriteConfiguration (void)
-{
-	FILE	*f;
-
-	if (host_initialized && cl_writecfg.value)
-	{
-		f = fopen (va("%s/config.cfg", cls.gamedir), "w");
-		if (!f)
-		{
-			Com_Printf ("Couldn't write config.cfg.\n");
-			return;
-		}
-		
-		Key_WriteBindings (f);
-		Cvar_WriteVariables (f);
-
-		fclose (f);
-	}
-}
-
-
 //============================================================================
 
 void CL_BeginLocalConnection ()

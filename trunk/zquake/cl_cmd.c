@@ -536,6 +536,40 @@ void CL_Serverinfo_f (void)
 }
 
 
+//============================================================================
+
+void CL_WriteConfig (char *name)
+{
+	FILE	*f;
+
+	f = fopen (va("%s/%s", cls.gamedir, name), "w");
+	if (!f) {
+		Com_Printf ("Couldn't write %s.\n", name);
+		return;
+	}
+	
+	Key_WriteBindings (f);
+	Cvar_WriteVariables (f);
+	Cmd_WriteAliases (f);
+
+	fclose (f);
+}
+
+/*
+===============
+CL_WriteConfiguration
+
+Writes key bindings and archived cvars to config.cfg
+===============
+*/
+void CL_WriteConfiguration (void)
+{
+	extern cvar_t	cl_writecfg;
+
+	if (host_initialized && cl_writecfg.value)
+		CL_WriteConfig ("config.cfg");
+}
+
 /*
 ===============
 CL_WriteConfig_f
@@ -545,8 +579,7 @@ Writes key bindings and archived cvars to a custom config file
 */
 void CL_WriteConfig_f (void)
 {
-	FILE	*f;
-	char	name[MAX_QPATH];
+	char	name[MAX_OSPATH];
 
 	if (Cmd_Argc() != 2) {
 		Com_Printf ("usage: writeconfig <filename>\n");
@@ -558,16 +591,7 @@ void CL_WriteConfig_f (void)
 
 	Com_Printf ("Writing %s\n", name);
 
-	f = fopen (va("%s/%s", cls.gamedir, name), "w");
-	if (!f) {
-		Com_Printf ("Couldn't write %s.\n", name);
-		return;
-	}
-	
-	Key_WriteBindings (f);
-	Cvar_WriteVariables (f);
-
-	fclose (f);
+	CL_WriteConfig (name);
 }
 
 
