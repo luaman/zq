@@ -138,7 +138,7 @@ int PM_SlideMove (void)
 
 		// save entity for contact
 		if (pmove.numtouch < MAX_PHYSENTS) {
-			pmove.touchindex[pmove.numtouch] = trace.entnum;
+			pmove.touchindex[pmove.numtouch] = trace.e.entnum;
 			pmove.numtouch++;
 		}
 
@@ -611,16 +611,16 @@ void PM_CategorizePosition (void)
 		else
 		{
 			pmove.onground = true;
-			pmove.groundent = trace.entnum;
+			pmove.groundent = trace.e.entnum;
 			groundplane = trace.plane;
 			pmove.waterjumptime = 0;
 		}
 
 		// standing on an entity other than the world
-		if (trace.entnum > 0)
+		if (trace.e.entnum > 0)
 		{
 			if (pmove.numtouch < MAX_PHYSENTS) {
-				pmove.touchindex[pmove.numtouch] = trace.entnum;
+				pmove.touchindex[pmove.numtouch] = trace.e.entnum;
 				pmove.numtouch++;
 			}
 		}
@@ -979,3 +979,5 @@ void PM_PlayerMove (void)
 		PM_ClipVelocity (pmove.velocity, groundplane.normal, pmove.velocity, 1);
 	}
 }
+
+/* vi: set noet ts=4 sts=4 ai sw=4: */

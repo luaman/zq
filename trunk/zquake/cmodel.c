@@ -333,7 +333,7 @@ static qbool RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, vec3_
 }
 
 // trace a line through the supplied clipping hull
-// does not fill trace.ent
+// does not fill trace.e.ent
 trace_t CM_HullTrace (hull_t *hull, vec3_t start, vec3_t end)
 {
 	// fill in a default trace
@@ -1078,3 +1078,5 @@ void CM_Init (void)
 	memset (map_novis, 0xff, sizeof(map_novis));
 	CM_InitBoxHull ();
 }
+
+/* vi: set noet ts=4 sts=4 ai sw=4: */
