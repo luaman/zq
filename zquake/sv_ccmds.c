@@ -212,6 +212,18 @@ void SV_Map_f (void)
 
 
 /*
+================
+SV_KillServer_f
+
+================
+*/
+void SV_KillServer_f (void)
+{
+	SV_Shutdown ("server was killed\n");
+}
+
+
+/*
 ==================
 SV_Kick_f
 
@@ -812,6 +824,7 @@ void SV_InitOperatorCommands (void)
 
 	Cmd_AddCommand ("map", SV_Map_f);
 	Cmd_AddCommand ("devmap", SV_Map_f);
+	Cmd_AddCommand ("killserver", SV_KillServer_f);
 
 	Cmd_AddCommand ("setmaster", SV_SetMaster_f);
 	Cmd_AddCommand ("heartbeat", SV_Heartbeat_f);
