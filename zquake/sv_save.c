@@ -19,7 +19,7 @@ extern cvar_t	maxclients;
 ===============
 SV_SavegameComment
 
-Writes a SAVEGAME_COMMENT_LENGTH character comment describing the current 
+Writes a SAVEGAME_COMMENT_LENGTH character comment
 ===============
 */
 void SV_SavegameComment (char *text)
@@ -27,15 +27,17 @@ void SV_SavegameComment (char *text)
 	int		i;
 	char	kills[20];
 
-	for (i=0 ; i<SAVEGAME_COMMENT_LENGTH ; i++)
+	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 		text[i] = ' ';
 	memcpy (text, cl.levelname, strlen(cl.levelname));
-	sprintf (kills,"kills:%3i/%3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
+	sprintf (kills, "kills:%3i/%3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
 	memcpy (text+22, kills, strlen(kills));
+
 // convert space to _ to make stdio happy
-	for (i=0 ; i<SAVEGAME_COMMENT_LENGTH ; i++)
+	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 		if (text[i] == ' ')
 			text[i] = '_';
+
 	text[SAVEGAME_COMMENT_LENGTH] = '\0';
 }
 
@@ -52,52 +54,50 @@ void SV_SaveGame_f (void)
 	int		i;
 	char	comment[SAVEGAME_COMMENT_LENGTH+1];
 
-	if (sv.state != ss_active)
-	{
-		Com_Printf ("Not playing a local game.\n");
-		return;
-	}
-
-	if (cl.intermission)
-	{
-		Com_Printf ("Can't save in intermission.\n");
-		return;
-	}
-
-	if (maxclients.value != 1)
-	{
-		Com_Printf ("Can't save multiplayer games.\n");
-		return;
-	}
-
-	if (Cmd_Argc() != 2)
-	{
+	if (Cmd_Argc() != 2) {
 		Com_Printf ("save <savename> : save a game\n");
 		return;
 	}
 
-	if (strstr(Cmd_Argv(1), ".."))
-	{
+	if (strstr(Cmd_Argv(1), "..")) {
 		Com_Printf ("Relative pathnames are not allowed.\n");
 		return;
 	}
-		
-/*	for (i=0 ; i < svs.maxclients ; i++)
-	{
-		if (svs.clients[i].active && (svs.clients[i].edict->v.health <= 0) )
-		{
-			Com_Printf ("Can't savegame with a dead player\n");
-			return;
-		}
-	}	*/
-	// FIXME
-	if (cl.stats[STAT_HEALTH] <= 0)
-	{
-		Com_Printf ("Can't savegame with a dead player\n");
+
+	if (sv.state != ss_active) {
+		Com_Printf ("Not playing a local game.\n");
 		return;
 	}
 
-	sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
+	if (cl.intermission) {
+		Com_Printf ("Can't save in intermission.\n");
+		return;
+	}
+
+/*	if (maxclients.value != 1) {
+		Com_Printf ("Can't save multiplayer games.\n");
+		return;
+	}	*/
+
+	for (i = 1; i < MAX_CLIENTS; i++) {
+		if (svs.clients[i].state == cs_spawned)
+		{
+			Com_Printf ("Can't save multiplayer games.\n");
+			return;
+		}
+	}	
+	
+	if (svs.clients[0].state != cs_spawned) {
+		Com_Printf ("Can't save, client #0 not spawned.\n");
+		return;
+	}
+
+	if (svs.clients[0].edict->v.health <= 0) {
+		Com_Printf ("Can't save game with a dead player\n");
+		return;
+	}
+
+	sprintf (name, "%s/save/%s", com_gamedir, Cmd_Argv(1));
 	COM_DefaultExtension (name, ".sav");
 	
 	Com_Printf ("Saving game to %s...\n", name);
@@ -118,8 +118,7 @@ void SV_SaveGame_f (void)
 	fprintf (f, "%f\n",sv.time);
 
 // write the light styles
-
-	for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
+	for (i = 0; i < MAX_LIGHTSTYLES; i++)
 	{
 		if (sv.lightstyles[i])
 			fprintf (f, "%s\n", sv.lightstyles[i]);
@@ -157,15 +156,14 @@ void SV_LoadGame_f (void)
 	int		version;
 	float			spawn_parms[NUM_SPAWN_PARMS];
 
-	if (Cmd_Argc() != 2)
-	{
+	if (Cmd_Argc() != 2) {
 		Com_Printf ("load <savename> : load a game\n");
 		return;
 	}
 
 	cls.demonum = -1;		// stop demo loop in case this fails
 
-	sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
+	sprintf (name, "%s/save/%s", com_gamedir, Cmd_Argv(1));
 	COM_DefaultExtension (name, ".sav");
 	
 // we can't call SCR_BeginLoadingPlaque, because too much stack space has
@@ -198,6 +196,7 @@ void SV_LoadGame_f (void)
 	Cvar_SetValue (&deathmatch, 0);
 	Cvar_SetValue (&coop, 0);
 	Cvar_SetValue (&teamplay, 0);
+	Cvar_SetValue (&maxclients, 1);
 
 	fscanf (f, "%s\n",mapname);
 	fscanf (f, "%f\n",&time);
@@ -210,8 +209,8 @@ void SV_LoadGame_f (void)
 		Com_Printf ("Couldn't load map\n");
 		return;
 	}
-//	sv.paused = true;		// pause until all clients connect
-//	sv.loadgame = true;
+	sv.paused = true;		// pause until all clients connect
+	sv.loadgame = true;
 
 // load the light styles
 
@@ -273,16 +272,11 @@ void SV_LoadGame_f (void)
 
 	fclose (f);
 
-	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 		svs.clients->spawn_parms[i] = spawn_parms[i];
 
-/*	if (cls.state != ca_dedicated)
-	{
-		CL_EstablishConnection ("local");
-		Host_Reconnect_f ();
-	}*/
+	// FIXME: is this ok?
 	if (cls.state > ca_connected)
 		cls.state = ca_connected;
 	Cbuf_AddText ("connect local\n");
 }
-
