@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef QW_BOTH
 #include "quakedef.h"
 #include "server.h"
-#include "sound.h"
 #else
 #include "qwsvdef.h"
 #endif
@@ -169,8 +168,7 @@ qboolean SV_SetPlayer (void)
 }
 
 
-void CL_Disconnect ();
-void Host_ConnectLocal ();
+void CL_BeginLocalConnection ();
 
 /*
 ======================
@@ -206,15 +204,8 @@ void SV_Map_f (void)
 
 	NET_ServerConfig (true);
 
-#ifdef QW_BOTH
-	// make sure we're not connected to an external server,
-	// and demo playback is stopped
-	if (sv.state == ss_dead)
-		CL_Disconnect();
-
-	S_StopAllSounds (true);
-	cl.worldmodel = NULL;
-	Host_ConnectLocal ();
+#ifndef SERVERONLY
+	CL_BeginLocalConnection ();
 #endif
 
 	SV_BroadcastCommand ("changing\n");
