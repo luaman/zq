@@ -650,7 +650,8 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 	Q_strncpyz (st, name.string, sizeof(st));
 	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, h - 21, w);
 
-	WritePCX (newbuf, w, h, w, host_basepal, pcxdata, pcxsize);
+	// +w*(h-1) and -w are because we have the data upside down in newbuf
+	WritePCX (newbuf + w*(h-1), w, h, -w, host_basepal, pcxdata, pcxsize);
 
 	free(newbuf);
 
