@@ -640,8 +640,6 @@ extern	int		cl_spikeindex, cl_playerindex, cl_flagindex;
 CL_ParsePlayerinfo
 ===================
 */
-extern int parsecountmod;
-extern double parsecounttime;
 void CL_ParsePlayerinfo (void)
 {
 	int			msec;
@@ -657,7 +655,7 @@ void CL_ParsePlayerinfo (void)
 
 	info = &cl.players[num];
 
-	state = &cl.frames[parsecountmod].playerstate[num];
+	state = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[num];
 
 	flags = state->flags = MSG_ReadShort ();
 
@@ -674,10 +672,10 @@ void CL_ParsePlayerinfo (void)
 	if (flags & PF_MSEC)
 	{
 		msec = MSG_ReadByte ();
-		state->state_time = parsecounttime - msec*0.001;
+		state->state_time = cl.frames[cl.parsecount & UPDATE_MASK].senttime - msec*0.001;
 	}
 	else
-		state->state_time = parsecounttime;
+		state->state_time = cl.frames[cl.parsecount & UPDATE_MASK].senttime;
 
 	if (flags & PF_COMMAND)
 		MSG_ReadDeltaUsercmd (&nullcmd, &state->command, cl.protocol_26);
@@ -970,7 +968,7 @@ void CL_SetSolidEntities (void)
 	pmove.physents[0].info = 0;
 	pmove.numphysent = 1;
 
-	frame = &cl.frames[parsecountmod];
+	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
 	pak = &frame->packet_entities;
 
 	for (i=0 ; i<pak->num_entities ; i++)
