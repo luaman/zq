@@ -41,22 +41,22 @@ cvar_t	in_dinput = {"in_dinput", "1", CVAR_ARCHIVE};
 // compatibility with old Quake -- setting to 0 disables KP_* codes
 cvar_t	cl_keypad = {"cl_keypad","1"};
 
-static int		mouse_buttons;
-static int		mouse_oldbuttonstate;
+static int		mouse_buttons = 0;
+static int		mouse_oldbuttonstate = 0;
 static POINT	current_pos;
-static double	mouse_x, mouse_y;
-static int		old_mouse_x, old_mouse_y, mx_accum, my_accum;
+static double	mouse_x = 0.0, mouse_y = 0.0;
+static int		old_mouse_x = 0, old_mouse_y = 0, mx_accum = 0, my_accum = 0;
 
-static qbool	restore_spi;
+static qbool	restore_spi = false;
 static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 0};
-static qbool	mouseinitialized;
-static qbool	mouseparmsvalid, mouseactivatetoggle;
-static qbool	mouseshowtoggle = 1;
-static qbool	dinput_acquired;
-static unsigned int		mstate_di;
-unsigned int uiWheelMessage;
+static qbool	mouseinitialized = false;
+static qbool	mouseparmsvalid = false, mouseactivatetoggle = false;
+static qbool	mouseshowtoggle = true;
+static qbool	dinput_acquired = false;
+static unsigned int		mstate_di = (unsigned int)0;
+unsigned int	uiWheelMessage = (unsigned int)0;
 
-qbool		mouseactive;	// FIXME, rename to in_mouseactive
+qbool			in_mouseactive = false;
 
 // joystick defines and variables
 // where should defines be moved?
@@ -109,7 +109,7 @@ cvar_t	joy_yawsensitivity = {"joyyawsensitivity", "-1.0"};
 cvar_t	joy_wwhack1 = {"joywwhack1", "0.0"};
 cvar_t	joy_wwhack2 = {"joywwhack2", "0.0"};
 
-static qbool	joy_avail, joy_advancedinit, joy_haspov;
+static qbool	joy_avail = false, joy_advancedinit = false, joy_haspov = false;
 static DWORD	joy_oldbuttonstate, joy_oldpovstate;
 
 static int		joy_id;
@@ -123,7 +123,7 @@ static JOYINFOEX	ji;
 
 static HINSTANCE hInstDI;
 
-qbool	dinput;
+qbool	dinput = false;
 
 // Some drivers send DIMOFS_Z, some send WM_MOUSEWHEEL, and some send both.
 // To get the mouse wheel to work in any case but avoid duplicate events,
@@ -174,9 +174,11 @@ static DIDATAFORMAT	df = {
 };
 
 // forward-referenced functions
-void IN_StartupJoystick (void);
-void Joy_AdvancedUpdate_f (void);
-void IN_JoyMove (usercmd_t *cmd);
+static void IN_StartupJoystick (void);
+static void Joy_AdvancedUpdate_f (void);
+static void IN_JoyMove (usercmd_t *cmd);
+
+static void IN_LoadKeys_f (void);
 
 
 /*
@@ -197,8 +199,7 @@ IN_UpdateClipCursor
 */
 void IN_UpdateClipCursor (void)
 {
-
-	if (mouseinitialized && mouseactive && !dinput)
+	if (mouseinitialized && in_mouseactive && !dinput)
 	{
 		ClipCursor (&window_rect);
 	}
@@ -271,7 +272,7 @@ void IN_ActivateMouse (void)
 			ClipCursor (&window_rect);
 		}
 
-		mouseactive = true;
+		in_mouseactive = true;
 	}
 }
 
@@ -320,7 +321,7 @@ void IN_DeactivateMouse (void)
 		ReleaseCapture ();
 	}
 
-		mouseactive = false;
+		in_mouseactive = false;
 	}
 }
 
@@ -511,8 +512,6 @@ static void IN_StartupMouse (void)
 }
 
 
-void IN_LoadKeys_f (void);
-
 /*
 ===========
 IN_Init
@@ -572,7 +571,7 @@ void IN_MouseEvent (int mstate)
 {
 	int		i;
 
-	if (mouseactive && !dinput)
+	if (in_mouseactive && !dinput)
 	{
 	// perform button actions
 		for (i=0 ; i<mouse_buttons ; i++)
@@ -608,7 +607,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 	DWORD				dwElements;
 	HRESULT				hr;
 
-	if (!mouseactive)
+	if (!in_mouseactive)
 		return;
 
 	if (dinput)
@@ -776,7 +775,7 @@ IN_Accumulate
 */
 void IN_Accumulate (void)
 {
-	if (mouseactive)
+	if (in_mouseactive)
 	{
 		GetCursorPos (&current_pos);
 
@@ -797,7 +796,7 @@ IN_ClearStates
 void IN_ClearStates (void)
 {
 
-	if (mouseactive)
+	if (in_mouseactive)
 	{
 		mx_accum = 0;
 		my_accum = 0;
