@@ -909,7 +909,7 @@ void Draw_FadeScreen (void)
 {
 	glEnable (GL_BLEND);
 	glDisable (GL_TEXTURE_2D);
-	glColor4f (0, 0, 0, 0.8);
+	glColor4f (0, 0, 0, 0.7);
 	glBegin (GL_QUADS);
 
 	glVertex2f (0,0);
