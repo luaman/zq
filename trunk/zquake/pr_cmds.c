@@ -1860,7 +1860,10 @@ static void PF_strzone (void)
 	int i;
 	char *s;
 
-	s = G_STRING(OFS_PARM0);
+	if (pr_argc >= 1)
+		s = G_STRING(OFS_PARM0);
+	else
+		s = "";
 
 	for (i = MAX_PRSTR; i < MAX_PRSTR + MAX_DYN_PRSTR; i++) {
 		if (pr_strtbl[i] != NULL)
