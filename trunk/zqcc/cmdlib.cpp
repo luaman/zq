@@ -165,8 +165,8 @@ void Error (char *error, ...)
 
 	printf ("\n************ ERROR ************\n");
 
-	va_start (argptr,error);
-	vprintf (error,argptr);
+	va_start (argptr, error);
+	vprintf (error, argptr);
 	va_end (argptr);
 	printf ("\n");
 	exit (1);
@@ -218,11 +218,11 @@ int			 CheckParm (char *check, int startarg, qboolean optioncheck, qboolean case
 FILE *SafeOpenWrite (const char *filename)
 {
 	FILE *f;
-	
+
 	f = fopen (filename, "wb");
 
 	if (!f)
-		Error ("Error opening %s: %s", filename, strerror(errno));
+		Error ("Error opening %s for writing: %s", filename, strerror(errno));
 
 	return f;
 }
@@ -230,11 +230,11 @@ FILE *SafeOpenWrite (const char *filename)
 FILE *SafeOpenRead (const char *filename)
 {
 	FILE *f;
-	
+
 	f = fopen (filename, "rb");
 
 	if (!f)
-		Error ("Error opening %s: %s", filename, strerror(errno));
+		Error ("Error opening %s for reading: %s", filename, strerror(errno));
 
 	return f;
 }
@@ -243,14 +243,14 @@ FILE *SafeOpenRead (const char *filename)
 void SafeRead (FILE *f, void *buffer, long count)
 {
 	if (fread(buffer, count, 1, f) != 1)
-		Error ("File read failure");
+		Error ("File read failure: %s", strerror(errno));
 }
 
 
 void SafeWrite (FILE *f, const void *buffer, long count)
 {
 	if (fwrite(buffer, count, 1, f) != 1)
-		Error ("File write failure");
+		Error ("File write failure: %s", strerror(errno));
 }
 
 
@@ -261,7 +261,7 @@ void *SafeMalloc (long size)
 	ptr = malloc (size);
 
 	if (!ptr)
-		Error ("Malloc failure for %lu bytes",size);
+		Error ("Malloc failure for %lu bytes: %s", (unsigned long)size, strerror(errno));
 
 	return ptr;
 }
@@ -279,7 +279,7 @@ long LoadFile (char *filename, void **bufferptr)
 	void    *buffer;
 
 	f = SafeOpenRead (filename);
-	
+
 	fseek (f, 0, SEEK_END);
 	length = ftell(f);
 	fseek (f, 0, SEEK_SET);
@@ -312,10 +312,11 @@ void SaveFile (char *filename, const void *buffer, long count)
 void DefaultExtension (char *path, char *extension)
 {
 	char    *src;
-//
-// if path doesn't have a .EXT, append extension
-// (extension should include the .)
-//
+
+	//
+	// if path doesn't have a .EXT, append extension
+	// (extension should include the .)
+	//
 	src = path + strlen(path) - 1;
 
 	while (*src != PATHSEPARATOR && src != path)
@@ -335,9 +336,9 @@ void DefaultPath (char *path, char *basepath)
 
 	if (path[0] == PATHSEPARATOR)
 		return;                   // absolute path location
-	strcpy (temp,path);
-	strcpy (path,basepath);
-	strcat (path,temp);
+	strlcpy (temp, path, sizeof(temp) - 1);
+	strcpy (path, basepath);
+	strcat (path, temp);
 }
 
 
