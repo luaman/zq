@@ -854,7 +854,7 @@ static void Cmd_Download_f (void)
 	}
 
 	// special check for maps that came from a pak file
-	if (Q_stricmp(dirname, "maps") && file_from_pak && !allow_download_pakmaps.value) {
+	if (!Q_stricmp(dirname, "maps") && file_from_pak && !allow_download_pakmaps.value) {
 		fclose (sv_client->download);
 		sv_client->download = NULL;
 		goto deny_download;
