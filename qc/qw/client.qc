@@ -1155,11 +1155,14 @@ called when a player disconnects from a server
 */
 void() ClientDisconnect =
 {
+	local string s;
+
 	// let everyone else know
 	bprint (PRINT_HIGH, self.netname);
-		bprint (PRINT_HIGH, " left the game with ");
-		bprint (PRINT_HIGH, ftos(self.frags));
-		bprint (PRINT_HIGH, " frags\n");
+	bprint (PRINT_HIGH, " left the game with ");
+	s = ftos(self.frags);
+	bprint (PRINT_HIGH, s);
+	bprint (PRINT_HIGH, " frags\n");
 	sound (self, CHAN_BODY, "player/tornoff2.wav", 1, ATTN_NONE);
 	set_suicide_frame ();
 };
