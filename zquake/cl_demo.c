@@ -690,9 +690,10 @@ easyrecord [demoname]
 void CL_EasyRecord_f (void)
 {
 	int		c;
-	char	name[MAX_OSPATH];
-	char	name2[MAX_OSPATH];
+	char	name[1024];
+	char	name2[MAX_OSPATH*2];
 	int		i;
+	unsigned char	*p;
 	FILE	*f;
 
 	c = Cmd_Argc();
@@ -709,9 +710,11 @@ void CL_EasyRecord_f (void)
 
 	if (cls.demorecording)
 		CL_Stop_f();
-  
+
+/// FIXME: check buffer sizes!!!
+
 	if (c == 2)
-		sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
+		sprintf (name, "%s", Cmd_Argv(1));
 	else {
 		// guess game type and write demo name
 		i = CL_CountPlayers();
@@ -719,7 +722,7 @@ void CL_EasyRecord_f (void)
 			&& i >= 3)
 		{
 			// Teamplay
-			sprintf (name, "%s/%s_%s_vs_%s_%s", com_gamedir, 
+			sprintf (name, "%s_%s_vs_%s_%s",
 				CL_PlayerName(),
 				CL_PlayerTeam(),
 				CL_EnemyTeam(),
@@ -727,32 +730,42 @@ void CL_EasyRecord_f (void)
 		} else {
 			if (i == 2) {
 				// Duel
-				sprintf (name, "%s/%s_vs_%s_%s", com_gamedir, 
+				sprintf (name, "%s_vs_%s_%s",
 					CL_PlayerName(),
 					CL_EnemyName(),
 					CL_MapName());
 			}
 			else if (i > 2) {
 				// FFA
-				sprintf (name, "%s/%s_ffa_%s", com_gamedir, 
+				sprintf (name, "%s_ffa_%s",
 					CL_PlayerName, 
 					CL_MapName());
 			}
 			else {
 				// one player
-				sprintf (name, "%s/%s_%s", com_gamedir,
+				sprintf (name, "%s_%s",
 					CL_PlayerName(),
 					CL_MapName());
 			}
 		}
 	}
 
-//
-// open the demo file
-//
+// Make sure the filename doesn't contain illegal characters
+	for (p=name ; *p ; p++)	{
+		char c;
+		*p &= 0x7F;		// strip high bit
+		c = *p;
+		if (c<=' ' || c=='?' || c=='*' || c=='\\' || c=='/' || c==':'
+			|| c=='<' || c=='>' || c=='"')
+			*p = '_';
+	}
+
+	strncpy (name, va("%s/%s", com_gamedir, name), MAX_OSPATH-1);
+	name[MAX_OSPATH-1] = 0;
+
+// find a filename that doesn't exist yet
 	strcpy (name2, name);
 	COM_DefaultExtension (name2, ".qwd");
-
 	f = fopen (name2, "rb");
 	if (f) {
 		i = 0;
@@ -765,6 +778,9 @@ void CL_EasyRecord_f (void)
 		} while (f);
 	}
 
+//
+// open the demo file
+//
 	cls.demofile = fopen (name2, "wb");
 	if (!cls.demofile)
 	{
