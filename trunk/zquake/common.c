@@ -377,7 +377,7 @@ void COM_Init (void)
 	Cvar_Register (&registered);
 	Cvar_Register (&logfile_var);
 
-	if (COM_CheckParm("-condebug"))
+	if (COM_CheckParm("-condebug") || COM_CheckParm("-conlog"))
 		Cvar_SetValue (&logfile_var, 2);	// flush every write
 
 	Cmd_AddCommand ("path", COM_Path_f);
