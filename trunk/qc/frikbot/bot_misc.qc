@@ -154,7 +154,7 @@ b_originator == targ
 
  
 */
-void(float tpic) bot_start_topic =
+void bot_start_topic (float tpic)
 {
 	if (random() < 0.2)
 	{
@@ -163,9 +163,9 @@ void(float tpic) bot_start_topic =
 	}
 	else
 		b_topic = 0;
-};
+}
 
-void() bot_chat =
+void bot_chat ()
 {
 	local float r;
 	if (b_options & OPT_NOCHAT)
@@ -479,7 +479,7 @@ void() bot_chat =
 			}
 		}
 	}
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -489,7 +489,7 @@ Kick A Bot.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() KickABot =
+void KickABot ()
 {
 	local entity ty;
 	ty = find(world, classname, "player");
@@ -504,7 +504,7 @@ void() KickABot =
 			ty = find(ty, classname, "player");
 	}
 
-};
+}
 
 
 /*
@@ -517,11 +517,11 @@ God, I wish I had inline
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-vector(entity ent) realorigin =
+vector realorigin (entity ent)
 {
 // even more simplified...
 	return (ent.absmin + ent.absmax) * 0.5;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -534,7 +534,7 @@ of the bounding boxes
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-float (entity targ) fisible =
+float fisible (entity targ)
 {
 	local vector	spot1, org;
 	local float thruwater, pc1, pc2;
@@ -613,7 +613,7 @@ float (entity targ) fisible =
 	else if (trace_fraction == 1)
 		return TRUE;
 	return FALSE;
-};
+}
 
 
 /*
@@ -628,7 +628,7 @@ for waypoints
 */
 
 // this is used for waypoint stuff....
-float (entity targ1, entity targ2) wisible =
+float wisible (entity targ1, entity targ2)
 {
 	local vector	spot1, spot2;
 	local entity ignore;
@@ -647,7 +647,7 @@ float (entity targ1, entity targ2) wisible =
 		return TRUE;
 	else 
 		return FALSE;
-};
+}
 
 
 /*
@@ -661,14 +661,14 @@ used when we need just a simple traceline nothing else
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-float (entity targ) sisible =
+float sisible (entity targ)
 {
 	traceline (self.origin, targ.origin, TRUE, self);
 	if (trace_ent == targ)
 		return TRUE;
 	else if (trace_fraction == 1)
 		return TRUE;
-};
+}
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -678,8 +678,7 @@ subtracts one angle from another
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
-
-float (float y1, float y2) angcomp = 
+float angcomp (float y1, float y2)
 {
 	y1 = frik_anglemod(y1);
 	y2 = frik_anglemod(y2);
@@ -691,7 +690,7 @@ float (float y1, float y2) angcomp =
 	else if (answer < -180)
 		answer = answer + 360;
 	return answer;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -702,7 +701,7 @@ is the entity in the bot's field of view
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
-float (entity targ) fov =
+float fov (entity targ)
 {
 	local vector yawn;
 	local float g;
@@ -718,7 +717,7 @@ float (entity targ) fov =
 		return FALSE;
  
 	return TRUE;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -727,7 +726,7 @@ frik_anglemod
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
-float(float v) frik_anglemod =
+float frik_anglemod (float v)
 {
 	return v - floor(v/360) * 360;
-};
+}

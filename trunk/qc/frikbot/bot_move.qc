@@ -1,10 +1,10 @@
-void() bot_jump =
+void bot_jump ()
 {
 	// TODO check for precision, etc.
 	self.button2 = TRUE;
-};
+}
 
-float(entity e) bot_can_rj =
+float bot_can_rj (entity e)
 {
 	// this returns true of the bot can rocket/superjump/hook
 	// if your mod doesn't have an RL you can just return FALSE all the time
@@ -31,9 +31,9 @@ float(entity e) bot_can_rj =
 		return TRUE;
 	else
 		return FALSE;
-};
+}
 
-float(float flag) frik_recognize_plat =
+float frik_recognize_plat (float flag)
 {
 	if ((self.classname != "waypoint") && !(self.flags & FL_ONGROUND))
 		return FALSE;
@@ -57,9 +57,9 @@ float(float flag) frik_recognize_plat =
 	}
 	else
 		return FALSE;
-};
+}
 
-float(vector sdir) frik_KeysForDir =
+float frik_KeysForDir (vector sdir)
 {
 
 	local vector keydir;
@@ -89,7 +89,7 @@ float(vector sdir) frik_KeysForDir =
 		outkeys = outkeys + KEY_MOVEDOWN;
 	return outkeys;
 
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -102,7 +102,7 @@ manuever around.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void(vector whichway, float danger) frik_obstructed =
+void frik_obstructed (vector whichway, float danger)
 {
 	local float dist;
 	local vector disway, org;
@@ -154,7 +154,7 @@ void(vector whichway, float danger) frik_obstructed =
 
 		self.b_aiflags = self.b_aiflags | AI_OBSTRUCTED;
 	}
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -169,7 +169,7 @@ Also responsible for jumping gaps.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() frik_obstacles =
+void frik_obstacles ()
 {
 	local vector start, stop, ang;
 	local float test, conts, dist, hgt;
@@ -289,7 +289,7 @@ void() frik_obstacles =
 	}
 	// go for it
 
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -302,7 +302,7 @@ I have no idea how well it will work
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() frik_dodge_obstruction =
+void frik_dodge_obstruction ()
 {
 	local vector way, org;
 	local float oflags, yaw;
@@ -348,7 +348,7 @@ void() frik_dodge_obstruction =
 
 	self.origin = org;
 	self.flags = oflags;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -359,8 +359,7 @@ blah
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
-
-void() frik_movetogoal =
+void frik_movetogoal ()
 {
 	local vector way, start, stop, ang;
 	local float g;
@@ -393,9 +392,9 @@ void() frik_movetogoal =
 		if (fabs(g) > 10)
 			self.keys = self.keys & 960;
 	}
-};
+}
 
-float(vector weird) frik_walkmove =
+float frik_walkmove (vector weird)
 {
 	// okay so it's not walkmove
 	// sue me
@@ -407,7 +406,7 @@ float(vector weird) frik_walkmove =
 		return FALSE;
 	else
 		return TRUE;
-};
+}
 
 
 /*
@@ -423,8 +422,7 @@ own waypoints.
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
-
-void() frik_bot_roam =
+void frik_bot_roam ()
 {
 	local vector org, ang, org1;
 	local float loopcount, flag, dist;
@@ -465,4 +463,4 @@ void() frik_bot_roam =
 		}
 	}
 	self.b_angle_y = self.v_angle_y + 10;
-};
+}
