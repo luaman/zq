@@ -189,7 +189,7 @@ void R_SetupAndDrawSprite ()
 		if (nump < 3)
 			return;
 		if (nump >= MAXWORKINGVERTS)
-			Sys_Error("R_SetupAndDrawSprite: too many points");
+			Host_Error ("R_SetupAndDrawSprite: too many points");
 	}
 
 // transform vertices into viewspace and project
