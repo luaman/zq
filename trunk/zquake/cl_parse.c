@@ -126,7 +126,7 @@ int CL_CalcNet (void)
 			packet_latency[i&NET_TIMINGSMASK] = 10000;	// choked
 		else if (frame->receivedtime == -3)
 			packet_latency[i&NET_TIMINGSMASK] = -1;	// choked by c2spps
-		else if (frame->invalid)
+		else if (!frame->valid)
 			packet_latency[i&NET_TIMINGSMASK] = 9998;	// invalid delta
 		else
 			packet_latency[i&NET_TIMINGSMASK] = (frame->receivedtime - frame->senttime)*20;
