@@ -184,58 +184,52 @@ def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 
 /*
 ============
-PR_ParseImmediate
+PR_GetImmediate
 
-Looks for a preexisting constant
+Return a preexisting constant if possible, or allocate a new def
 ============
 */
-def_t	*PR_ParseImmediate (void)
+def_t *PR_GetImmediate (type_t *type, eval_t val, char *string = NULL /* for ev_string only */)
 {
 	def_t	*cn;
-	
+
+	assert (type == &type_const_string || type == &type_const_float || type == &type_const_vector);
+
 // check for a constant with the same value
 	for (cn=pr.def_head.next ; cn ; cn=cn->next)
 	{
 		if (!cn->initialized)
 			continue;
-		if (cn->type != pr_immediate_type)
+		if (cn->type != type)
 			continue;
-		if (pr_immediate_type == &type_const_string)
-		{
-			if (!strcmp(G_STRING(cn->ofs), pr_immediate_string) )
-			{
-				PR_Lex ();
+//		if (!cn->type->constant)
+//			continue;
+
+		if (type == &type_const_string) {
+			if (!strcmp(G_STRING(cn->ofs), string) )
 				return cn;
-			}
 		}
-		else if (pr_immediate_type == &type_const_float)
-		{
-			if ( G_FLOAT(cn->ofs) == pr_immediate._float )
-			{
-				PR_Lex ();
+		else if (type == &type_const_float) {
+			if ( G_FLOAT(cn->ofs) == val._float )
 				return cn;
-			}
 		}
-		else if	(pr_immediate_type == &type_const_vector)
-		{
-			if ( ( G_FLOAT(cn->ofs) == pr_immediate.vector[0] )
-			&& ( G_FLOAT(cn->ofs+1) == pr_immediate.vector[1] )
-			&& ( G_FLOAT(cn->ofs+2) == pr_immediate.vector[2] ) )
-			{
-				PR_Lex ();
+		else if	(type == &type_const_vector) {
+			if ( ( G_FLOAT(cn->ofs) == val.vector[0] )
+			&& ( G_FLOAT(cn->ofs+1) == val.vector[1] )
+			&& ( G_FLOAT(cn->ofs+2) == val.vector[2] ) ) {
 				return cn;
 			}
 		}
 		else			
-			PR_ParseError ("weird immediate type");		
+			PR_ParseError ("weird immediate type");
 	}
 	
-// allocate a new one
+// allocate a new constant
 	cn = (def_t *) malloc (sizeof(def_t));
 	cn->next = NULL;
 	pr.def_tail->next = cn;
 	pr.def_tail = cn;
-	cn->type = pr_immediate_type;
+	cn->type = type;
 	cn->name = "IMMEDIATE";
 	cn->initialized = 1;
 	cn->scope = cn->visscope = NULL;	// always share immediates
@@ -243,17 +237,33 @@ def_t	*PR_ParseImmediate (void)
 // copy the immediate to the global area
 	cn->ofs = numpr_globals;
 	pr_global_defs[cn->ofs] = cn;
-	numpr_globals += type_size[pr_immediate_type->type];
-	if (pr_immediate_type == &type_const_string)
-		pr_immediate.string = CopyString (pr_immediate_string);
+	numpr_globals += type_size[type->type];
+	if (type == &type_const_string)
+		val.string = CopyString (string);
 	
-	memcpy (pr_globals + cn->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
+	memcpy (pr_globals + cn->ofs, &val, 4*type_size[type->type]);
 	
-	PR_Lex ();
-
 	return cn;
 }
 
+/*
+============
+PR_ParseImmediate
+
+Allocates the immediate if needed and gets next token
+============
+*/
+def_t *PR_ParseImmediate (void)
+{
+	assert (pr_immediate_type == &type_const_float ||
+			pr_immediate_type == &type_const_string ||
+			pr_immediate_type == &type_const_vector);
+
+	def_t *def = PR_GetImmediate (pr_immediate_type, pr_immediate, pr_immediate_string);
+	PR_Lex ();
+
+	return def;
+}
 
 /*
 ============
