@@ -19,12 +19,12 @@ CFG=zquake - Win32 Release
 !MESSAGE 
 !MESSAGE "zquake - Win32 Release" (based on "Win32 (x86) Application")
 !MESSAGE "zquake - Win32 Debug" (based on "Win32 (x86) Application")
-!MESSAGE "zquake - Win32 GLDebug" (based on "Win32 (x86) Application")
 !MESSAGE "zquake - Win32 GLRelease" (based on "Win32 (x86) Application")
+!MESSAGE "zquake - Win32 GLDebug" (based on "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
-# PROP AllowPerConfigDependencies 0
+# PROP AllowPerConfigDependencies 1
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /G5 /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /YX /FD /c
+# ADD CPP /nologo /G5 /W3 /GX- /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -73,7 +73,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /FR"" /YX /Fo"" /FD /c
+# ADD CPP /nologo /G5 /ML /W3 /Gm /GX- /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /FR"" /YX /Fo"" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -90,57 +90,57 @@ LINK32=link.exe
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir ".\zquake___0"
-# PROP BASE Intermediate_Dir ".\zquake___0"
+# PROP BASE Output_Dir ".\Debug-GL"
+# PROP BASE Intermediate_Dir ".\Debug-GL"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".\Debug-gl"
-# PROP Intermediate_Dir ".\Debug-gl"
+# PROP Output_Dir ".\Debug-GL"
+# PROP Intermediate_Dir ".\Debug-GL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /ML /Gm /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /FR /YX /FD /c
+# ADD CPP /nologo /G5 /ML /W3 /GX- /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG" /d "GLQUAKE"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib e:\msdev\projects\scitech\lib\win32\vc\mgllt.lib /nologo /subsystem:windows /debug /machine:I386
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\Debug-gl/zquake-gl.exe"
+# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\Debug-GL/zquake-gl.exe"
 # SUBTRACT LINK32 /incremental:no /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir ".\zquake___W"
-# PROP BASE Intermediate_Dir ".\zquake___W"
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir ".\Release-GL"
+# PROP BASE Intermediate_Dir ".\Release-GL"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".\Release-gl"
-# PROP Intermediate_Dir ".\Release-gl"
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir ".\Release-GL"
+# PROP Intermediate_Dir ".\Release-GL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /G5 /ML /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "GLQUAKE" /FR /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /YX /FD /c
+# ADD BASE CPP /nologo /G5 /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "GLQUAKE" /FR /YX /c
+# ADD CPP /nologo /G5 /W3 /GX- /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /YX /FD /c
 # SUBTRACT CPP /Fr
-# ADD BASE MTL /nologo /D "_DEBUG" /win32
-# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD BASE MTL /nologo /D "NDEBUG" /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG" /d "GLQUAKE"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 e:\msdev\projects\winquake\dxsdk\sdk\lib\dxguid.lib winmm.lib wsock32.lib opengl32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386 /out:"GLDebug/glzquake.exe"
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:".\Release-gl/zquake-gl.exe"
+# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /machine:I386 /out:".\Release-GL/zquake-gl.exe"
 # SUBTRACT LINK32 /debug /nodefaultlib
 
 !ENDIF 
@@ -967,6 +967,7 @@ SOURCE=.\r_part.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
+# PROP BASE Exclude_From_Build 1
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1469,15 +1470,15 @@ SOURCE=.\zone.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # Begin Source File
 
+SOURCE=.\qe3.ico
+# End Source File
+# Begin Source File
+
 SOURCE=.\qwcl2.ico
 # End Source File
 # Begin Source File
 
 SOURCE=.\qwsv2.ico
-# End Source File
-# Begin Source File
-
-SOURCE=.\qe3.ico
 # End Source File
 # Begin Source File
 
@@ -1524,7 +1525,7 @@ InputName=cl_math
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Debug-gl
+OutDir=.\Debug-GL
 InputPath=.\cl_math.s
 InputName=cl_math
 
@@ -1539,7 +1540,7 @@ InputName=cl_math
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Release-gl
+OutDir=.\Release-GL
 InputPath=.\cl_math.s
 InputName=cl_math
 
@@ -1729,7 +1730,7 @@ InputName=math
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Debug-gl
+OutDir=.\Debug-GL
 InputPath=.\math.s
 InputName=math
 
@@ -1744,7 +1745,7 @@ InputName=math
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Release-gl
+OutDir=.\Release-GL
 InputPath=.\math.s
 InputName=math
 
@@ -2210,7 +2211,7 @@ InputName=snd_mixa
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Debug-gl
+OutDir=.\Debug-GL
 InputPath=.\snd_mixa.s
 InputName=snd_mixa
 
@@ -2225,7 +2226,7 @@ InputName=snd_mixa
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Release-gl
+OutDir=.\Release-GL
 InputPath=.\snd_mixa.s
 InputName=snd_mixa
 
@@ -2369,7 +2370,7 @@ InputName=sys_x86
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Debug-gl
+OutDir=.\Debug-GL
 InputPath=.\sys_x86.s
 InputName=sys_x86
 
@@ -2384,7 +2385,7 @@ InputName=sys_x86
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Release-gl
+OutDir=.\Release-GL
 InputPath=.\sys_x86.s
 InputName=sys_x86
 
