@@ -81,7 +81,7 @@ static qbool	windowed, leavecurrentmode;
 static qbool	vid_canalttab = false;
 static qbool	vid_wassuspended = false;
 static int		windowed_mouse;
-extern qbool	mouseactive;  // from in_win.c
+extern qbool	in_mouseactive;  // from in_win.c
 static HICON	hIcon;
 
 int			DIBWidth, DIBHeight;
@@ -529,14 +529,14 @@ BINDTEXFUNCPTR bindTexFunc;
 
 void CheckTextureExtensions (void)
 {
-	char		*tmp;
-	qbool		texture_ext;
-	HINSTANCE	hInstGL;
+	unsigned char	*tmp;
+	qbool			 texture_ext;
+	HINSTANCE		 hInstGL;
 
 	texture_ext = FALSE;
 	/* check for texture extension */
 	tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
-	while (*tmp)
+	while (tmp && *tmp)
 	{
 		if (strncmp((const char*)tmp, TEXTURE_EXT_STRING, strlen(TEXTURE_EXT_STRING)) == 0)
 			texture_ext = TRUE;
@@ -546,7 +546,7 @@ void CheckTextureExtensions (void)
 	if (!texture_ext || COM_CheckParm ("-gl11") )
 	{
 		hInstGL = LoadLibrary("opengl32.dll");
-		
+
 		if (hInstGL == NULL)
 			Sys_Error ("Couldn't load opengl32.dll");
 
@@ -568,19 +568,18 @@ void CheckTextureExtensions (void)
 
 void CheckArrayExtensions (void)
 {
-	char		*tmp;
+	unsigned char		*tmp;
 
 	/* check for texture extension */
 	tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
-	while (*tmp)
+	while (tmp && *tmp)
 	{
 		if (strncmp((const char*)tmp, "GL_EXT_vertex_array", strlen("GL_EXT_vertex_array")) == 0)
 		{
-			if (
-((glArrayElementEXT = wglGetProcAddress("glArrayElementEXT")) == NULL) ||
-((glColorPointerEXT = wglGetProcAddress("glColorPointerEXT")) == NULL) ||
-((glTexCoordPointerEXT = wglGetProcAddress("glTexCoordPointerEXT")) == NULL) ||
-((glVertexPointerEXT = wglGetProcAddress("glVertexPointerEXT")) == NULL) )
+			if ( ((glArrayElementEXT = wglGetProcAddress("glArrayElementEXT")) == NULL) ||
+			     ((glColorPointerEXT = wglGetProcAddress("glColorPointerEXT")) == NULL) ||
+			     ((glTexCoordPointerEXT = wglGetProcAddress("glTexCoordPointerEXT")) == NULL) ||
+			     ((glVertexPointerEXT = wglGetProcAddress("glVertexPointerEXT")) == NULL) )
 			{
 				Sys_Error ("GetProcAddress for vertex extension failed");
 				return;
@@ -721,10 +720,10 @@ void GL_EndRendering (void)
 			}
 		} else {
 			windowed_mouse = true;
-			if (key_dest == key_game && !mouseactive && ActiveApp) {
+			if (key_dest == key_game && !in_mouseactive && ActiveApp) {
 				IN_ActivateMouse ();
 				IN_HideMouse ();
-			} else if (mouseactive && key_dest != key_game) {
+			} else if (in_mouseactive && key_dest != key_game) {
 				IN_DeactivateMouse ();
 				IN_ShowMouse ();
 			}
