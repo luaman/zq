@@ -35,6 +35,7 @@ void bot_dodge_stuff ()
 	entity	foe;
 	float	foedist, avdist, foesz, flen, tsz;
 	vector	v;
+    string foe_team, self_team;
 
 	if (waypoint_mode > WM_LOADED)
 		return;
@@ -142,7 +143,9 @@ void bot_dodge_stuff ()
 				{
 					if (foe.health > 0)
 					{
-						if (!(teamplay && self.team == foe.team))
+                        self_team = infokey (self, "team");
+                        foe_team = infokey (foe, "team");
+						if (!(teamplay && self_team == foe_team))
 						{
 							flen = vlen(foe.origin - self.origin);
 							if (flen < foedist)
@@ -310,7 +313,7 @@ void bot_fight_style ()
 {
 	vector	v, v1, v2, org;
 	float	foedist, mysz, foesz;
-
+    string trace_ent_team, self_team;
 
 	if (self.enemy.health <= 0)
 	{
@@ -342,8 +345,12 @@ void bot_fight_style ()
 		{
 			// try to avoid shooting teammates
 			if (trace_ent.classname == "player")
-				if ((trace_ent.team == self.team && teamplay) || (coop))
+            {
+                trace_ent_team = infokey (trace_ent, "team");
+                self_team = infokey (self, "team");
+				if ((trace_ent_team == self_team && teamplay) || (coop))
 					return;
+            }
 			bot_shoot();
 		}
 	}
