@@ -1323,12 +1323,9 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	{
 		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
 		{
-			if (!strcmp (identifier, glt->identifier))
-			{
-				if (width != glt->width || height != glt->height)
-					Sys_Error ("GL_LoadTexture: cache mismatch");
+			if (!strcmp (identifier, glt->identifier)
+				&& width == glt->width && height == glt->height)
 				return gltextures[i].texnum;
-			}
 		}
 	}
 	else
