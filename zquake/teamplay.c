@@ -780,6 +780,12 @@ void CL_MsgTrigger_f (void)
 	}
 }
 
+void S_Play (void);
+void S_PlayVol (void);
+void Cvar_Set_f (void);
+void Cmd_Echo_f (void);
+void Cmd_Alias_f (void);
+
 void CL_ExecuteTriggerString (char *text)
 {	
 	static	// FIXME
@@ -810,6 +816,8 @@ void CL_ExecuteTriggerString (char *text)
 		Cmd_ForwardToServer();
 	else if (!Q_strcasecmp (Cmd_Argv(0), "alias")) 
 		Cmd_Alias_f();
+	else if (!Q_strcasecmp (Cmd_Argv(0), "msg_trigger")) 
+		CL_MsgTrigger_f();
 	else {
 		// check cvars
 		if (!Cvar_Command () && (cl_warncmd.value || developer.value))
