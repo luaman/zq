@@ -28,8 +28,9 @@ edict_t	*sv_player;
 cvar_t	sv_spectalk = {"sv_spectalk", "1"};
 cvar_t	sv_mapcheck	= {"sv_mapcheck", "1"};
 
-void OnChange_sv_maxpitch (cvar_t *var, char *str, qbool *cancel);
-void OnChange_sv_minpitch (cvar_t *var, char *str, qbool *cancel);
+static void SV_ExecuteUserCommand (char *s);
+static void OnChange_sv_maxpitch (cvar_t *var, char *str, qbool *cancel);
+static void OnChange_sv_minpitch (cvar_t *var, char *str, qbool *cancel);
 cvar_t	sv_maxpitch = {"sv_maxpitch", "80", 0, OnChange_sv_maxpitch};
 cvar_t	sv_minpitch = {"sv_minpitch", "-70", 0, OnChange_sv_minpitch};
 
