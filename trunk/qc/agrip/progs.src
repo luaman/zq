@@ -1,7 +1,7 @@
 ./qwprogs.dat
 
-../frikbot/defs.qc     // Give AudioQuake players smt to play with
-//../qw/defs.qc
+../frikbot/defs_frikbot.qc     // Give AudioQuake players smt to play with
+../qw/defs.qc
 agrip_defs.qc // Accessibility definitions
 
 ../frikbot/map_dm1.qc
