@@ -674,8 +674,8 @@ void CL_Record_f (void)
 		return;
 	}
 
-	if (cls.state != ca_active) {
-		Con_Printf ("You must be connected to record.\n");
+	if (cls.state != ca_active && cls.state != ca_disconnected) {
+		Con_Printf ("Cannot record while connecting.\n");
 		return;
 	}
 
@@ -697,7 +697,11 @@ void CL_Record_f (void)
 	}
 
 	Con_Printf ("recording to %s.\n", name);
-	CL_Record ();
+
+	if (cls.state == ca_active)
+		CL_Record ();
+	else
+		cls.demorecording = true;
 }
 
 
