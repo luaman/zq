@@ -1238,7 +1238,7 @@ ok:
 }
 
 
-int	TP_CountPlayers ()
+int	TP_CountPlayers (void)
 {
 	int	i, count;
 
@@ -1251,7 +1251,7 @@ int	TP_CountPlayers ()
 	return count;
 }
 
-char *TP_EnemyTeam ()
+char *TP_EnemyTeam (void)
 {
 	int			i;
 	char		myteam[MAX_INFO_STRING];
@@ -1270,7 +1270,7 @@ char *TP_EnemyTeam ()
 	return "";
 }
 
-char *TP_PlayerName ()
+char *TP_PlayerName (void)
 {
 	static char	myname[MAX_INFO_STRING];
 
@@ -1278,7 +1278,7 @@ char *TP_PlayerName ()
 	return myname;
 }
 
-char *TP_PlayerTeam ()
+char *TP_PlayerTeam (void)
 {
 	static char	myteam[MAX_INFO_STRING];
 
@@ -1286,7 +1286,7 @@ char *TP_PlayerTeam ()
 	return myteam;
 }
 
-char *TP_EnemyName ()
+char *TP_EnemyName (void)
 {
 	int			i;
 	char		*myname;
@@ -1305,7 +1305,7 @@ char *TP_EnemyName ()
 	return "";
 }
 
-char *TP_MapName ()
+char *TP_MapName (void)
 {
 	return cl_mapname.string;
 }
@@ -1419,7 +1419,7 @@ void TP_EnemyColor_f (void)
 
 //===================================================================
 
-void TP_NewMap ()
+void TP_NewMap (void)
 {
 	static char last_map[MAX_QPATH] = "";
 	char mapname[MAX_QPATH];
@@ -1843,7 +1843,7 @@ static int FindNearestItem (int flags, item_t **pitem)
 }
 
 
-static int CountTeammates ()
+static int CountTeammates (void)
 {
 	int	i, count;
 	player_info_t	*player;
@@ -1979,7 +1979,7 @@ more:
 }
 
 
-void TP_FindPoint ()
+void TP_FindPoint (void)
 {
 	packet_entities_t	*pak;
 	entity_state_t		*ent;
@@ -2358,7 +2358,7 @@ void TP_MsgFilter_f (void)
 	}
 }
 
-void TP_Init ()
+void TP_Init (void)
 {
 	Cvar_Register (&cl_parseFunChars);
 	Cvar_Register (&cl_parseSay);

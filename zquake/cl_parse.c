@@ -1431,7 +1431,7 @@ CL_MuzzleFlash
 */
 void CL_MuzzleFlash (void)
 {
-	vec3_t		forward, right, up;
+	vec3_t		forward;
 	dlight_t	*dl;
 	int			i;
 	int			j, num_ent;
@@ -1456,7 +1456,7 @@ void CL_MuzzleFlash (void)
 			if (ent->number == i)
 			{
 				dl = CL_AllocDlight (-i);
-				AngleVectors (ent->angles, forward, right, up);
+				AngleVectors (ent->angles, forward, NULL, NULL);
 				VectorMA (ent->origin, 18, forward, dl->origin);
 				dl->radius = 200 + (rand()&31);
 				dl->minlight = 32;
@@ -1473,7 +1473,7 @@ void CL_MuzzleFlash (void)
 
 	dl = CL_AllocDlight (-i);
 	state = &cl.frames[parsecountmod].playerstate[i-1];
-	AngleVectors (state->viewangles, forward, right, up);
+	AngleVectors (state->viewangles, forward, NULL, NULL);
 	VectorMA (state->origin, 18, forward, dl->origin);
 	dl->radius = 200 + (rand()&31);
 	dl->minlight = 32;
