@@ -1061,16 +1061,19 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-char *va(char *format, ...)
+char *va (char *format, ...)
 {
 	va_list		argptr;
-	static char		string[1024];
+	static char		string[2][1024];
+	static int		idx = 0;
 	
+	idx = 1 - idx;
+
 	va_start (argptr, format);
-	vsprintf (string, format,argptr);
+	vsprintf (string[idx], format,argptr);
 	va_end (argptr);
 
-	return string;	
+	return string[idx];
 }
 
 
