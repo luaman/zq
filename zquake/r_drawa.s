@@ -35,7 +35,7 @@
 
 #ifdef id386
 
-// !!! if these are changed, they must be changed in r_draw.c too !!!
+// !!! if these are changed, they must be changed in r_rast.c too !!!
 #define FULLY_CLIPPED_CACHED	0x80000000
 #define FRAMECOUNT_MASK			0x7FFFFFFF
 

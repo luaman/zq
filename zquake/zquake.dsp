@@ -829,7 +829,7 @@ SOURCE=.\r_bsp.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\r_draw.c
+SOURCE=.\r_rast.c
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
