@@ -76,6 +76,8 @@ qboolean	nq_drawpings;	// for sbar code
 
 qboolean	nq_player_teleported;	// hacky
 
+vec3_t	last_fixangle;
+
 int		nq_num_entities;
 int		nq_viewentity;
 int		nq_forcecdtrack;
@@ -1066,7 +1068,7 @@ void NQD_ParseServerMessage (void)
 
 		case svc_setangle:
 			for (i=0 ; i<3 ; i++)
-				cl.simangles[i] = cl.viewangles[i] = MSG_ReadAngle ();
+				last_fixangle[i] = cl.simangles[i] = cl.viewangles[i] = MSG_ReadAngle ();
 			break;
 
 		case svc_setview:
@@ -1183,6 +1185,7 @@ void NQD_ParseServerMessage (void)
 			cl.intermission = 1;
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
+			VectorCopy (last_fixangle, cl.simangles);
 			break;
 
 		case svc_finale:
@@ -1190,6 +1193,7 @@ void NQD_ParseServerMessage (void)
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
 			SCR_CenterPrint (MSG_ReadString ());
+			VectorCopy (last_fixangle, cl.simangles);
 			break;
 
 		case svc_cutscene:
@@ -1197,6 +1201,7 @@ void NQD_ParseServerMessage (void)
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
 			SCR_CenterPrint (MSG_ReadString ());
+			VectorCopy (last_fixangle, cl.simangles);
 			break;
 
 		case svc_sellscreen:
