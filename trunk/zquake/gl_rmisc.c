@@ -161,7 +161,6 @@ void R_Init (void)
 	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
 #endif
 
-	Cvar_Register (&r_watervishack);
 	Cvar_Register (&r_norefresh);
 	Cvar_Register (&r_lightmap);
 	Cvar_Register (&r_fullbright);

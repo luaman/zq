@@ -89,7 +89,6 @@ cvar_t	r_wateralpha = {"r_wateralpha","1"};
 cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
-cvar_t	r_watervishack = {"r_watervishack", "1"};
 cvar_t	r_fullbrightSkins = {"r_fullbrightSkins", "0"};
 cvar_t	r_fastsky = {"r_fastsky", "0"};
 cvar_t	r_skycolor = {"r_skycolor", "4"};
@@ -927,6 +926,8 @@ R_SetupFrame
 */
 void R_SetupFrame (void)
 {
+	vec3_t	testorigin;
+	mleaf_t	*leaf;
 	extern float	wateralpha;
 
 // don't allow cheats in multiplayer
@@ -948,33 +949,30 @@ void R_SetupFrame (void)
 
 // current viewleaf
 	r_oldviewleaf = r_viewleaf;
+	r_oldviewleaf2 = r_viewleaf2;
+
 	r_viewleaf = Mod_PointInLeaf (r_origin, cl.worldmodel);
+	r_viewleaf2 = NULL;
 
-	if (r_watervishack.value) {
-		vec3_t	testorigin;
-		mleaf_t	*testleaf;
-
-		r_oldviewleaf2 = r_viewleaf2;
-		r_viewleaf2 = NULL;
+	// check above and below so crossing solid water doesn't draw wrong
+	if (r_viewleaf->contents <= CONTENTS_WATER && r_viewleaf->contents >= CONTENTS_LAVA)
+	{
+		// look up a bit
 		VectorCopy (r_origin, testorigin);
-		if (r_viewleaf->contents <= CONTENTS_WATER  &&
-			r_viewleaf->contents >= CONTENTS_LAVA) {
-			// Test the point 10 units above. 10 seems to be enough
-			// for fov values up to 140
-			testorigin[2] += 10;
-			testleaf = Mod_PointInLeaf (testorigin, cl.worldmodel);
-			if (testleaf->contents == CONTENTS_EMPTY)
-				r_viewleaf2 = testleaf;
-		}
-		else if (r_viewleaf->contents == CONTENTS_EMPTY) {
-			testorigin[2] -= 10;
-			testleaf = Mod_PointInLeaf (testorigin, cl.worldmodel);
-			if (testleaf->contents <= CONTENTS_WATER &&
-				testleaf->contents >= CONTENTS_LAVA)
-				r_viewleaf2 = testleaf;
-		}
-	} else
-		r_viewleaf2 = r_oldviewleaf2 = NULL;
+		testorigin[2] += 10;
+		leaf = Mod_PointInLeaf (testorigin, cl.worldmodel);
+		if (leaf->contents == CONTENTS_EMPTY)
+			r_viewleaf2 = leaf;
+	}
+	else if (r_viewleaf->contents == CONTENTS_EMPTY)
+	{
+		// look down a bit
+		VectorCopy (r_origin, testorigin);
+		testorigin[2] -= 10;
+		leaf = Mod_PointInLeaf (testorigin, cl.worldmodel);
+		if (leaf->contents <= CONTENTS_WATER &&	leaf->contents >= CONTENTS_LAVA)
+			r_viewleaf2 = leaf;
+	}
 
 	V_SetContentsColor (r_viewleaf->contents);
 	V_CalcBlend ();
