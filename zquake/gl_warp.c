@@ -965,8 +965,7 @@ void R_DrawSky (void)
 		ignore_z = false;
 	}
 
-	// turn off Z writes to avoid problems on large maps
-	glDepthMask (GL_FALSE);
+	// turn off Z tests & writes to avoid problems on large maps
 	glDisable (GL_DEPTH_TEST);
 
 	// draw a skybox or classic quake clouds
@@ -975,7 +974,7 @@ void R_DrawSky (void)
 	else
 		R_DrawSkyDome ();
 
-	glDepthMask (GL_TRUE);	// re-enable Z writes
+	glEnable (GL_DEPTH_TEST);
 
 	// draw the sky polys into the Z buffer
 	// don't need depth test yet
@@ -994,8 +993,6 @@ void R_DrawSky (void)
 		glDisable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
-
-	glEnable (GL_DEPTH_TEST);
 
 	skychain = NULL;
 }
