@@ -1439,13 +1439,16 @@ void CL_MuzzleFlash (void)
 	if (!cl_muzzleflash.value)
 		return;
 
+	if (!cl.validsequence)
+		return;
+
 	if ((unsigned)(i-1) >= MAX_CLIENTS)
 	{
 		// a monster firing
-		num_ent = cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].packet_entities.num_entities;
+		num_ent = cl.frames[cl.validsequence & UPDATE_MASK].packet_entities.num_entities;
 		for (j=0; j<num_ent; j++)
 		{
-			ent = &cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].packet_entities.entities[j];
+			ent = &cl.frames[cl.validsequence & UPDATE_MASK].packet_entities.entities[j];
 			if (ent->number == i)
 			{
 				dl = CL_AllocDlight (-i);

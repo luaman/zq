@@ -324,7 +324,7 @@ void Cam_Track(usercmd_t *cmd)
 		return;
 	}
 
-	frame = &cl.frames[cls.netchan.incoming_sequence & UPDATE_MASK];
+	frame = &cl.frames[cl.validsequence & UPDATE_MASK];
 	player = frame->playerstate + spec_track;
 	self = frame->playerstate + cl.playernum;
 
@@ -477,7 +477,7 @@ void Cam_TryLock (void)
 	old_autocam = autocam;
 	old_spec_track = spec_track;
 
-	state = cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].playerstate;
+	state = cl.frames[cl.validsequence & UPDATE_MASK].playerstate;
 	for (i=0 ; i<MAX_CLIENTS ; i++) {
 		if (!cl.players[i].name[0] || cl.players[i].spectator ||
 			state[i].messagenum != cl.parsecount)
