@@ -1250,6 +1250,7 @@ void SV_GetConsoleCommands (void)
 		if (!cmd)
 			break;
 		Cbuf_AddText (cmd);
+		Cbuf_AddText ("\n");
 	}
 }
 
