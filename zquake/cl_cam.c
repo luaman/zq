@@ -24,12 +24,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cl_sbar.h"
 
 
-#define NOTARGET	-1
-
 qbool		cam_track;
 int			cam_target;
 qbool		cam_locked;
-static int	cam_curtarget;		// playernum or NOTARGET
+int			cam_curtarget;		// playernum or CAM_NOTARGET
 
 static int	cam_oldbuttons;
 
@@ -37,7 +35,7 @@ cvar_t cl_hightrack = {"cl_hightrack", "0" };	// track high fragger
 
 void Cam_SetViewPlayer (void)
 {
-	if (cl.spectator && cam_curtarget != NOTARGET)
+	if (cl.spectator && cam_curtarget != CAM_NOTARGET)
 		cl.viewplayernum = cam_curtarget;
 	else
 		cl.viewplayernum = cl.playernum;
@@ -49,7 +47,7 @@ qbool Cam_DrawViewModel (void)
 	if (!cl.spectator)
 		return true;
 
-	if (cam_curtarget != NOTARGET)
+	if (cam_curtarget != CAM_NOTARGET)
 		return true;
 
 	return false;
@@ -187,7 +185,7 @@ void Cam_FinishMove (usercmd_t *cmd)
 			// leave tracking mode
 			cam_track = false;
 			cam_locked = false;
-			cam_curtarget = NOTARGET;
+			cam_curtarget = CAM_NOTARGET;
 			Sbar_Changed ();
 			Cam_SendUnlockCommand ();
 		}
@@ -210,7 +208,7 @@ void Cam_FinishMove (usercmd_t *cmd)
 		}
 	}
 
-	if (cam_curtarget != NOTARGET) {
+	if (cam_curtarget != CAM_NOTARGET) {
 		player_state_t	*state;
 		state = &cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cam_curtarget];
 		if (state->messagenum == cl.parsecount) {
@@ -226,7 +224,7 @@ void Cam_FinishMove (usercmd_t *cmd)
 		}
 		else {
 			// lost target (player disconnected?)
-			cam_curtarget = NOTARGET;
+			cam_curtarget = CAM_NOTARGET;
 			if (cam_locked) {
 				// try next guy
 				cam_locked = false;		// in case we don't find anyone
@@ -251,7 +249,7 @@ void Cam_Reset (void)
 	cam_track = 0;
 	cam_locked = false;
 	cam_target = 0;
-	cam_curtarget = NOTARGET;
+	cam_curtarget = CAM_NOTARGET;
 	cam_oldbuttons = 0;
 }
 
@@ -306,7 +304,7 @@ void Cam_TryLock (void)
 		// the spectator switched to free spectator mode
 		cam_track = false;
 		cam_locked = false;
-		cam_curtarget = NOTARGET;
+		cam_curtarget = CAM_NOTARGET;
 	}
 
 	if (cam_target != old_target || cam_locked != old_locked)

@@ -590,9 +590,12 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u);
 //
 // cl_cam.c
 //
+#define CAM_NOTARGET	-1
+
 extern qbool	cam_track;
 extern int		cam_target;		// playernum of who we're tracking or wish to track
 extern qbool	cam_locked;
+extern int		cam_curtarget;	// who we're tracking, or CAM_NOTARGET
 
 qbool Cam_DrawViewModel (void);
 qbool Cam_DrawPlayer (int playernum);
