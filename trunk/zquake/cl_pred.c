@@ -302,7 +302,10 @@ void CL_PredictMove (void)
 		VectorCopy (to->playerstate[cl.viewplayernum].velocity, cl.simvel);
 		VectorCopy (to->playerstate[cl.viewplayernum].origin, cl.simorg);
 		VectorCopy (to->playerstate[cl.viewplayernum].viewangles, cl.simangles);
-		CL_CategorizePosition ();
+		if (cl.z_ext & Z_EXT_PF_ONGROUND)
+			cl.onground = !!(to->playerstate[cl.viewplayernum].flags & PF_ONGROUND);
+		else
+			CL_CategorizePosition ();
 		goto out;
 	}
 
@@ -310,7 +313,10 @@ void CL_PredictMove (void)
 	{
 		VectorCopy (to->playerstate[cl.playernum].velocity, cl.simvel);
 		VectorCopy (to->playerstate[cl.playernum].origin, cl.simorg);
-		CL_CategorizePosition ();
+		if (cl.z_ext & Z_EXT_PF_ONGROUND)
+			cl.onground = !!(to->playerstate[cl.viewplayernum].flags & PF_ONGROUND);
+		else
+			CL_CategorizePosition ();
 		goto out;
 	}
 
