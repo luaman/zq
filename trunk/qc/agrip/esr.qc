@@ -193,7 +193,7 @@ void() snap_esr_classic =
           sure who the original RADAR code was written by, unfortunately; it may
           have come from the Quake-C Patch Archives.  It is Public Domain,
           anyway, so is fully GPL-compatible.
-	* Z Tolerance comes from the ESR object's ``.frags'' property.
+	    * Z Tolerance comes from the ESR object's ``.frags'' property.
 */
 {
     local entity potential_hit, nearest_monster, nearest_enemy, nearest_friend;
@@ -233,99 +233,79 @@ void() snap_esr_classic =
     // Work out which (if any) are the closest threats...
     while( potential_hit )
     {
-        // Don't sound out secret doors...
-        if(    potential_hit.classname != "door"
-            && potential_hit.classname != "agrip_marker" )
+        // Don't detect things that shouldn't be detected...
+        // FIXME: QuakeWiki says that QC does NOT return early
+        //        when it encounters a false result in an &&'d if
+        //        statement -- is this true of the new ZQCC?
+        if(     snap_misc_ownervisible(potential_hit.origin)
+            &&  potential_hit.health > 1
+            &&  potential_hit != self.owner
+            &&  potential_hit != world 
+	        &&  potential_hit.classname != "worldspwan"
+            &&  potential_hit.classname != "door"
+            &&  potential_hit.classname != "agrip_marker" )
         {
             // Get distance to the entity...
             dist = vlen(self.owner.origin - potential_hit.origin);
 
-            // Make sure the entity has health (can be killed),
-            // is not the player or the world,
-            // and is closer than the last potential_hit detected
-            // (if this is the first entity to be examined, this would be
-            // make sure it is within the whole detection radius).
-            if(     snap_misc_ownervisible(potential_hit.origin)
-                &&  potential_hit.health > 1
-                &&  potential_hit != self.owner
-                &&  potential_hit != world 
-	            &&  potential_hit.classname != "worldspwan" )
-	    {
-                // Work out if it is a monster, enemy or friend...
+            // Work out if it is a monster, enemy or friend...
 
-                // Monster...
-                if( potential_hit.flags & FL_MONSTER )
+            // Monster...
+            if( potential_hit.flags & FL_MONSTER )
+            {
+                //dprint("monster?\n");
+                pm_lev = snap_esr_classic_level(potential_hit.origin_z);
+                if( pm_lev == SNAP_ESR_LEVEL_SAME && m_same_dist > dist)
                 {
-                    pm_lev = snap_esr_classic_level(potential_hit.origin_z);
-                    if( pm_lev == SNAP_ESR_LEVEL_SAME && m_same_dist > dist)
+                    m_same = potential_hit;
+                    m_same_dist = dist;
+                }
+                else if( pm_lev == SNAP_ESR_LEVEL_HIGHER && m_higher_dist > dist )
+                {
+                    m_higher = potential_hit;
+                    m_higher_dist = dist;
+                }
+                else if( pm_lev == SNAP_ESR_LEVEL_LOWER && m_lower_dist > dist )
+                {
+                    m_lower = potential_hit;
+                    m_lower_dist = dist;
+                }
+            }
+            // Potential team-mate...
+            else if( teamplay )
+            {
+                //dprint("teamplay -- ");
+                local string ownerteam;
+                ownerteam = infokey(self.owner, "team");
+                local string otherteam; 
+                otherteam = infokey(potential_hit, "team");
+                    
+                // On the same team?
+                if(     ownerteam == otherteam 
+                    ||  self.owner.colormap == potential_hit.colormap )
+                {
+                    //dprint("same team?\n");
+                    pf_lev = snap_esr_classic_level(potential_hit.origin_z);
+                    if( pf_lev == SNAP_ESR_LEVEL_SAME && f_same_dist > dist)
                     {
-                        m_same = potential_hit;
-                        m_same_dist = dist;
+                        f_same = potential_hit;
+                        f_same_dist = dist;
                     }
-                    else if( pm_lev == SNAP_ESR_LEVEL_HIGHER && m_higher_dist > dist )
+                    else if( pf_lev == SNAP_ESR_LEVEL_HIGHER && f_higher_dist > dist )
                     {
-                        m_higher = potential_hit;
-                        m_higher_dist = dist;
+                        f_higher = potential_hit;
+                        f_higher_dist = dist;
                     }
-                    else if( pm_lev == SNAP_ESR_LEVEL_LOWER && m_lower_dist > dist )
+                    else if( pf_lev == SNAP_ESR_LEVEL_LOWER && f_lower_dist > dist )
                     {
-                        m_lower = potential_hit;
-                        m_lower_dist = dist;
+                        f_lower = potential_hit;
+                        f_lower_dist = dist;
                     }
                 }
-                // Potential team-mate...
-                else if( teamplay )
-                {
-                    local string ownerteam;
-                    ownerteam = infokey(self.owner, "team");
-                    local string otherteam; 
-                    otherteam = infokey(potential_hit, "team");
-                        
-                    // On the same team?
-                    if(     ownerteam == otherteam 
-                        ||  self.owner.colormap == potential_hit.colormap )
-                    {
-                        pf_lev = snap_esr_classic_level(potential_hit.origin_z);
-                        if( pf_lev == SNAP_ESR_LEVEL_SAME && f_same_dist > dist)
-                        {
-                            f_same = potential_hit;
-                            f_same_dist = dist;
-                        }
-                        else if( pf_lev == SNAP_ESR_LEVEL_HIGHER && f_higher_dist > dist )
-                        {
-                            f_higher = potential_hit;
-                            f_higher_dist = dist;
-                        }
-                        else if( pf_lev == SNAP_ESR_LEVEL_LOWER && f_lower_dist > dist )
-                        {
-                            f_lower = potential_hit;
-                            f_lower_dist = dist;
-                        }
-                    }
-                    // Potential enemy...
-                    else if( ! potential_hit.flags & FL_MONSTER )
-                    {
-                        pe_lev = snap_esr_classic_level(potential_hit.origin_z);
-                        if( pe_lev == SNAP_ESR_LEVEL_SAME && e_same_dist > dist)
-                        {
-                            e_same = potential_hit;
-                            e_same_dist = dist;
-                        }
-                        else if( pe_lev == SNAP_ESR_LEVEL_HIGHER && e_higher_dist > dist )
-                        {
-                            e_higher = potential_hit;
-                            e_higher_dist = dist;
-                        }
-                        else if( pe_lev == SNAP_ESR_LEVEL_LOWER && e_lower_dist > dist )
-                        {
-                            e_lower = potential_hit;
-                            e_lower_dist = dist;
-                        }
-                    }
-                }
-                // No teamplay -- most likely an enemy, then...
+                // Potential enemy...
                 else if( ! potential_hit.flags & FL_MONSTER )
                 {
+                    //dprint("enemy?\n");
                     pe_lev = snap_esr_classic_level(potential_hit.origin_z);
                     if( pe_lev == SNAP_ESR_LEVEL_SAME && e_same_dist > dist)
                     {
@@ -342,6 +322,27 @@ void() snap_esr_classic =
                         e_lower = potential_hit;
                         e_lower_dist = dist;
                     }
+                }
+            }
+            // No teamplay -- most likely an enemy, then...
+            else if( ! potential_hit.flags & FL_MONSTER )
+            {
+                //dprint("no teamplay -- enemy?\n");
+                pe_lev = snap_esr_classic_level(potential_hit.origin_z);
+                if( pe_lev == SNAP_ESR_LEVEL_SAME && e_same_dist > dist)
+                {
+                    e_same = potential_hit;
+                    e_same_dist = dist;
+                }
+                else if( pe_lev == SNAP_ESR_LEVEL_HIGHER && e_higher_dist > dist )
+                {
+                    e_higher = potential_hit;
+                    e_higher_dist = dist;
+                }
+                else if( pe_lev == SNAP_ESR_LEVEL_LOWER && e_lower_dist > dist )
+                {
+                    e_lower = potential_hit;
+                    e_lower_dist = dist;
                 }
 	        }
         }
@@ -471,95 +472,86 @@ void() snap_esr_classic =
         //dprint("ESR: enemy -- lower [default]\n");
     }
 
-    // Debug info -- what did we find?
-    /*dprint("ESR m: ");dprint(nearest_monster.classname);
-    dprint("  e: ");dprint(nearest_enemy.classname);
-    dprint("  f: ");dprint(nearest_friend.classname);dprint("\n");*/
-
 
     // SOUNDING THE CREATURES OUT
     
     // Now make sound based on where potential_hit is in relation to player...
+
+    // Monsters...
     if(     nearest_monster != world
-        ||  nearest_enemy != world
-        ||  nearest_friend != world )
+        &&  self.aiment.state != 1 
+        &&  infokey(self.owner, "agv_t_esr_monster_warnings") == "1" )
     {
-        // Get the level for and sound out each hit...
-
-        // Monsters...
-        if(     nearest_monster != world
-            &&  self.aiment.state != 1 
-            &&  infokey(self.owner, "agv_t_esr_monster_warnings") == "1" )
+        level = snap_esr_classic_level(nearest_monster.origin_z);
+        mdist = vlen(self.owner.origin - nearest_monster.origin);
+        if( snap_misc_fovtest(nearest_monster.origin, self.frame) )
         {
-            level = snap_esr_classic_level(nearest_monster.origin_z);
-            mdist = vlen(self.owner.origin - nearest_monster.origin);
-            if( snap_misc_fovtest(nearest_monster.origin, self.frame) )
-            {
-                if( level == SNAP_ESR_LEVEL_LOWER )
-                    self.aiment.message = "esr/monster-lower.wav";
-                else if( level == SNAP_ESR_LEVEL_SAME )
-                    self.aiment.message = "esr/monster-same.wav";
-                else
-                    self.aiment.message = "esr/monster-higher.wav";
-            }
+            if( level == SNAP_ESR_LEVEL_LOWER )
+                self.aiment.message = "esr/monster-lower.wav";
+            else if( level == SNAP_ESR_LEVEL_SAME )
+                self.aiment.message = "esr/monster-same.wav";
             else
-            {
-                self.aiment.message = "weapons/ric1.wav";
-            }
-            setorigin(self.aiment, nearest_monster.origin);
-            self.aiment.state = 1;
-            self.aiment.nextthink = time + ( mdist / 500 );
+                self.aiment.message = "esr/monster-higher.wav";
         }
-
-        // Friends...
-        if(     nearest_friend != world
-            &&  self.goalentity.state != 1
-            &&  infokey(self.owner, "agv_t_esr_friend_warnings") == "1" )
+        else
         {
-            level = snap_esr_classic_level(nearest_friend.origin_z);
-            fdist = vlen(self.owner.origin - nearest_friend.origin);
-            if( snap_misc_fovtest(nearest_friend.origin, self.frame) )
-            {
-                if( level == SNAP_ESR_LEVEL_LOWER )
-                    self.goalentity.message = "esr/friend-lower.wav";
-                else if( level == SNAP_ESR_LEVEL_SAME )
-                    self.goalentity.message = "esr/friend-same.wav";
-                else
-                    self.goalentity.message = "esr/friend-higher.wav";
-            }
-            else
-            {
-                self.goalentity.message = "weapons/ric1.wav";
-            }
-            setorigin(self.goalentity, nearest_friend.origin);
-            self.goalentity.state = 1;
-            self.goalentity.nextthink = time + ( fdist / 500 );
+            self.aiment.message = "weapons/ric1.wav";
         }
+        setorigin(self.aiment, nearest_monster.origin);
+        self.aiment.state = 1;
+        self.aiment.nextthink = time + ( mdist / 500 );
+    }
 
-        // Enemies...
-        if(     nearest_enemy != world 
-            &&  self.enemy.state != 1
-            &&  infokey(self.owner, "agv_t_esr_enemy_warnings") == "1" )
+    // Friends...
+    if(     nearest_friend != world
+        &&  self.goalentity.state != 1
+        &&  infokey(self.owner, "agv_t_esr_friend_warnings") == "1" )
+    {
+        dprint("sounding friend.\n");
+        level = snap_esr_classic_level(nearest_friend.origin_z);
+        fdist = vlen(self.owner.origin - nearest_friend.origin);
+        if( snap_misc_fovtest(nearest_friend.origin, self.frame) )
         {
-            level = snap_esr_classic_level(nearest_enemy.origin_z);
-            edist = vlen(self.owner.origin - nearest_enemy.origin);
-            if( snap_misc_fovtest(nearest_enemy.origin, self.frame) )
-            {
-                if( level == SNAP_ESR_LEVEL_LOWER )
-                    self.enemy.message = "esr/enemy-lower.wav";
-                else if( level == SNAP_ESR_LEVEL_SAME )
-                    self.enemy.message = "esr/enemy-same.wav";
-                else
-                    self.enemy.message = "esr/enemy-higher.wav";
-            }
+            if( level == SNAP_ESR_LEVEL_LOWER )
+                self.goalentity.message = "esr/friend-lower.wav";
+            else if( level == SNAP_ESR_LEVEL_SAME )
+                self.goalentity.message = "esr/friend-same.wav";
             else
-            {
-                self.enemy.message = "weapons/ric1.wav";
-            }
-            setorigin(self.enemy, nearest_enemy.origin);
-            self.enemy.state = 1;
-            self.enemy.nextthink = time + ( edist / 500 );
+                self.goalentity.message = "esr/friend-higher.wav";
         }
+        else
+        {
+            self.goalentity.message = "weapons/ric1.wav";
+        }
+        setorigin(self.goalentity, nearest_friend.origin);
+        self.goalentity.state = 1;
+        self.goalentity.nextthink = time + ( fdist / 500 );
+    }
+
+    // Enemies...
+    if(     nearest_enemy != world 
+        &&  self.enemy.state != 1
+        &&  infokey(self.owner, "agv_t_esr_enemy_warnings") == "1" )
+    {
+        dprint("sounding enemy.\n");
+        level = snap_esr_classic_level(nearest_enemy.origin_z);
+        edist = vlen(self.owner.origin - nearest_enemy.origin);
+        if( snap_misc_fovtest(nearest_enemy.origin, self.frame) )
+        {
+            if( level == SNAP_ESR_LEVEL_LOWER )
+                self.enemy.message = "esr/enemy-lower.wav";
+            else if( level == SNAP_ESR_LEVEL_SAME )
+                self.enemy.message = "esr/enemy-same.wav";
+            else
+                self.enemy.message = "esr/enemy-higher.wav";
+        }
+        else
+        {
+            self.enemy.message = "weapons/ric1.wav";
+        }
+        setorigin(self.enemy, nearest_enemy.origin);
+        self.enemy.state = 1;
+        self.enemy.nextthink = time + ( edist / 500 );
     }
     
     self.nextthink = time + 0.1;
