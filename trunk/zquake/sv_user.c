@@ -223,7 +223,7 @@ static void Cmd_Soundlist_f (void)
 	MSG_WriteByte (&msg, svc_soundlist);
 	MSG_WriteByte (&msg, n);
 	for (s = sv.sound_name + 1 + n; n < MAX_SOUNDS - 1 && *s; s++, n++) {
-		if (msg.cursize + strlen(*s) + 3 > maxsize)
+		if (msg.cursize + strlen(*s) + 3 + 1 > maxsize)
 			break;
 		MSG_WriteString (&msg, *s);
 	}
@@ -330,7 +330,7 @@ static void Cmd_Modellist_f (void)
 	MSG_WriteByte (&msg, svc_modellist);
 	MSG_WriteByte (&msg, n);
 	for (s = sv.model_name + 1 + n; n < MAX_MODELS - 1 && *s; s++, n++) {
-		if (msg.cursize + strlen(*s) + 3 > maxsize)
+		if (msg.cursize + strlen(*s) + 3 + 1 > maxsize)
 			break;
 		MSG_WriteString (&msg, *s);
 	}
