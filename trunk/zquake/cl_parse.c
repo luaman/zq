@@ -1094,23 +1094,6 @@ void CL_NewTranslation (int slot)
 }
 
 
-static int DecodeRailColor (char *str)
-{
-	switch (str[0]) {
-	case 'r':
-		return 224;
-	case 'g':
-		return 180;
-	case 'b':
-	default:
-		return 208;
-	case 'y':
-		return 192;
-	case 'w':
-		return 6;
-	}
-}
-
 /*
 ==============
 CL_ProcessUserInfo
@@ -1129,9 +1112,6 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 	player->real_bottomcolor = atoi(Info_ValueForKey (player->userinfo, "bottomcolor"));
 	strcpy (old_team, player->team);
 	strcpy (player->team, Info_ValueForKey (player->userinfo, "team"));
-
-	// experimental extension
-	player->railcolor = DecodeRailColor(Info_ValueForKey(player->userinfo, "railcolor"));
 
 	if (Info_ValueForKey (player->userinfo, "*spectator")[0])
 		player->spectator = true;
