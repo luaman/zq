@@ -660,9 +660,6 @@ void PutClientInServer ()
 	self.invincible_finished = 0;
 	self.effects = 0;
 
-// KTEAMS
-    self.brokenankle = 0;
-
 // the spawn falling damage bug workaround
 	self.jump_flag = 0;
 	self.swim_flag = 0;
@@ -1560,9 +1557,6 @@ void PlayerPostThink ()
 // and playing the leave water sound if the player died underwater.
 
         WaterMove ();
-
-// clear the flag if we landed
-	if(self.flags & 512) self.brokenankle = 0;
 
 // check to see if player landed and play landing sound
 	if ((self.jump_flag < -300) && (self.flags & 512) )
