@@ -305,7 +305,7 @@ void Cmd_StuffCmds_f (void)
 	}
 	
 	if (build[0])
-		Cbuf_InsertText (build);
+		Cbuf_AddText (build);
 	
 	Z_Free (text);
 	Z_Free (build);
@@ -1255,7 +1255,6 @@ void Cmd_Init (void)
 //
 // register our commands
 //
-	Cmd_AddCommand ("stuffcmds", Cmd_StuffCmds_f);
 	Cmd_AddCommand ("exec", Cmd_Exec_f);
 	Cmd_AddCommand ("echo", Cmd_Echo_f);
 	Cmd_AddCommand ("aliaslist", Cmd_AliasList_f);
