@@ -167,8 +167,8 @@ void ZombieGrenadeTouch ()
 		return;
 	}
 	sound (self, CHAN_WEAPON, "zombie/z_miss.wav", 1, ATTN_NORM);	// bounce sound
-	self.velocity = '0 0 0';
-	self.avelocity = '0 0 0';
+	self.velocity = VEC_ORIGIN;
+	self.avelocity = VEC_ORIGIN;
 	self.touch = SUB_Remove;
 }
 
@@ -209,7 +209,7 @@ void ZombieFireGrenade (vector st)
 	missile.think = SUB_Remove;
 
 	setmodel (missile, "progs/zom_gib.mdl");
-	setsize (missile, '0 0 0', '0 0 0');		
+	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);		
 	setorigin (missile, org);
 }
 

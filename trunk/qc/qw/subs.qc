@@ -69,7 +69,7 @@ void SetMovedir ()
 		self.movedir = v_forward;
 	}
 	
-	self.angles = '0 0 0';
+	self.angles = VEC_ORIGIN;
 }
 
 /*
@@ -81,7 +81,7 @@ void InitTrigger ()
 {
 // trigger angles are used for one-way touches.  An angle of 0 is assumed
 // to mean no restrictions, so use a yaw of 360 instead.
-	if (self.angles != '0 0 0')
+	if (self.angles != VEC_ORIGIN)
 		SetMovedir ();
 	self.solid = SOLID_TRIGGER;
 	setmodel (self, self.model);	// set size and link into world
@@ -122,7 +122,7 @@ void SUB_CalcMove (vector tdest, float tspeed, void() func)
 
 	if (tdest == self.origin)
 	{
-		self.velocity = '0 0 0';
+		self.velocity = VEC_ORIGIN;
 		self.nextthink = self.ltime + 0.1;
 		return;
 	}
@@ -154,7 +154,7 @@ After moving, set origin to exact final destination
 void SUB_CalcMoveDone ()
 {
 	setorigin(self, self.finaldest);
-	self.velocity = '0 0 0';
+	self.velocity = VEC_ORIGIN;
 	self.nextthink = -1;
 	if (self.think1)
 		self.think1();
@@ -216,7 +216,7 @@ After rotating, set angle to exact final angle
 void SUB_CalcAngleMoveDone ()
 {
 	self.angles = self.finalangle;
-	self.avelocity = '0 0 0';
+	self.avelocity = VEC_ORIGIN;
 	self.nextthink = -1;
 	if (self.think1)
 		self.think1();

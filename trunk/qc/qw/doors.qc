@@ -610,7 +610,7 @@ void fd_secret_use ()
 		self.th_pain = SUB_Null;
 		self.takedamage = DAMAGE_NO;
 	}
-	self.velocity = '0 0 0';
+	self.velocity = VEC_ORIGIN;
 
 	// Make a sound, wait a little...
 	
@@ -785,7 +785,7 @@ void func_door_secret ()
 		
 	// Magic formula...
 	self.mangle = self.angles;
-	self.angles = '0 0 0';
+	self.angles = VEC_ORIGIN;
 	self.solid = SOLID_BSP;
 	self.movetype = MOVETYPE_PUSH;
 	self.classname = "door";

@@ -512,7 +512,7 @@ void ThrowGib (string gibname, float dm)
 	new = spawn();
 	setorigin (new, self.origin);
 	setmodel (new, gibname);
-	setsize (new, '0 0 0', '0 0 0');
+	setsize (new, VEC_ORIGIN, VEC_ORIGIN);
 	new.velocity = VelocityForDamage (dm);
 	new.movetype = MOVETYPE_BOUNCE;
 	new.solid = SOLID_NOT;

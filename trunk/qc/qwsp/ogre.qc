@@ -93,8 +93,8 @@ void OgreGrenadeTouch ()
 		return;
 	}
 	sound (self, CHAN_VOICE, "weapons/bounce.wav", 1, ATTN_NORM);	// bounce sound
-	if (self.velocity == '0 0 0')
-		self.avelocity = '0 0 0';
+	if (self.velocity == VEC_ORIGIN)
+		self.avelocity = VEC_ORIGIN;
 }
 
 /*
@@ -134,7 +134,7 @@ void OgreFireGrenade ()
 	missile.think = OgreGrenadeExplode;
 
 	setmodel (missile, "progs/grenade.mdl");
-	setsize (missile, '0 0 0', '0 0 0');		
+	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);		
 	setorigin (missile, self.origin);
 }
 

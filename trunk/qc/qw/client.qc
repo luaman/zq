@@ -253,10 +253,9 @@ void execute_changelevel ()
 		other.invincible_finished = 0;
 
 		setorigin (other, intermission_spot.origin);
-		other.velocity = '0 0 0';
+		other.velocity = VEC_ORIGIN;
 		other = find (other, classname, "player");
 	}       
-
 }
 
 
@@ -577,7 +576,7 @@ void PutClientInServer ()
 // Mod - Xian (May.20.97)
 // Bug where player would have velocity from their last kill
 
-	self.velocity = '0 0 0';
+	self.velocity = VEC_ORIGIN;
 
 	player_stand1 ();
 
@@ -770,7 +769,7 @@ void PlayerDeathThink ()
 		forward = vlen (self.velocity);
 		forward = forward - 20;
 		if (forward <= 0)
-			self.velocity = '0 0 0';
+			self.velocity = VEC_ORIGIN;
 		else    
 			self.velocity = forward * normalize(self.velocity);
 	}
@@ -955,7 +954,7 @@ void PlayerPreThink ()
 
 // teleporters can force a non-moving pause time        
 	if (time < self.pausetime)
-		self.velocity = '0 0 0';
+		self.velocity = VEC_ORIGIN;
 
 	if(time > self.attack_finished && self.currentammo == 0 && self.weapon != IT_AXE)
 	{
@@ -1154,7 +1153,7 @@ void PlayerPostThink ()
 	if (intermission_running)
 	{
 		setorigin (self, intermission_spot.origin);
-		self.velocity = '0 0 0';	// don't stray off the intermission spot too far
+		self.velocity = VEC_ORIGIN;	// don't stray off the intermission spot too far
 		return;
 	}
 
