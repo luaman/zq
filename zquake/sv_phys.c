@@ -299,7 +299,7 @@ int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 			blocked |= 1;		// floor
 			if (trace.ent->v.solid == SOLID_BSP)
 			{
-				ent->v.flags =	(int)ent->v.flags | FL_ONGROUND;
+				ent->v.flags = (int)ent->v.flags | FL_ONGROUND;
 				ent->v.groundentity = EDICT_TO_PROG(trace.ent);
 			}
 		}
