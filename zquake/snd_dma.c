@@ -40,31 +40,33 @@ void S_StopAllSounds_f (void);
 channel_t   channels[MAX_CHANNELS];
 int			total_channels;
 
-int				snd_blocked = 0;
-static qbool	snd_ambient = 1;
-qbool			snd_initialized = false;
+qbool		snd_blocked = 0;
+qbool		snd_initialized = false;
 
-// pointer should go away
-volatile dma_t  *shm = 0;
-volatile dma_t sn;
+dma_t		dma;
 
 vec3_t		listener_origin;
 vec3_t		listener_forward;
 vec3_t		listener_right;
 vec3_t		listener_up;
-vec_t		sound_nominal_clip_dist=1000.0;
+
+#define sound_nominal_clip_dist 1000.0
 
 int			soundtime;		// sample PAIRS
 int   		paintedtime; 	// sample PAIRS
 
 
-#define	MAX_SFX		512
-sfx_t		*known_sfx;		// hunk allocated [MAX_SFX]
+// during registration it is possible to have more sounds
+// than could actually be referenced during gameplay,
+// because we don't want to free anything until we are
+// sure we won't need it.
+#define	MAX_SFX		(MAX_SOUNDS*2)
+sfx_t		known_sfx[MAX_SFX];
 int			num_sfx;
 
 sfx_t		*ambient_sfx[NUM_AMBIENTS];
 
-int sound_started=0;
+qbool	sound_started = false;
 
 cvar_t bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
 cvar_t s_initsound = {"s_initsound", "1"};
@@ -86,43 +88,21 @@ cvar_t s_swapstereo = {"s_swapstereo", "0", CVAR_ARCHIVE};
 // ====================================================================
 
 
-//
-// Fake dma is a synchronous faking of the DMA progress used for
-// isolating performance in the renderer.  The fakedma_updates is
-// number of times S_Update() is called per second.
-//
-
-qbool fakedma = false;
-int fakedma_updates = 15;
-
-
-void S_AmbientOff (void)
-{
-	snd_ambient = false;
-}
-
-
-void S_AmbientOn (void)
-{
-	snd_ambient = true;
-}
-
-
 void S_SoundInfo_f (void)
 {
-	if (!sound_started || !shm)
+	if (!sound_started)
 	{
 		Com_Printf ("sound system not started\n");
 		return;
 	}
 	
-    Com_Printf ("%5d stereo\n", shm->channels - 1);
-    Com_Printf ("%5d samples\n", shm->samples);
-    Com_Printf ("%5d samplepos\n", shm->samplepos);
-    Com_Printf ("%5d samplebits\n", shm->samplebits);
-    Com_Printf ("%5d submission_chunk\n", shm->submission_chunk);
-    Com_Printf ("%5d speed\n", shm->speed);
-    Com_Printf ("0x%x dma buffer\n", shm->buffer);
+    Com_Printf ("%5d stereo\n", dma.channels - 1);
+    Com_Printf ("%5d samples\n", dma.samples);
+    Com_Printf ("%5d samplepos\n", dma.samplepos);
+    Com_Printf ("%5d samplebits\n", dma.samplebits);
+    Com_Printf ("%5d submission_chunk\n", dma.submission_chunk);
+    Com_Printf ("%5d speed\n", dma.speed);
+    Com_Printf ("0x%x dma buffer\n", dma.buffer);
 	Com_Printf ("%5d total_channels\n", total_channels);
 }
 
@@ -139,21 +119,18 @@ void S_Startup (void)
 	if (!snd_initialized)
 		return;
 
-	if (!fakedma)
-	{
-		rc = SNDDMA_Init();
+	rc = SNDDMA_Init();
 
-		if (!rc)
-		{
+	if (!rc)
+	{
 #ifndef	_WIN32
-			Com_Printf ("S_Startup: SNDDMA_Init failed.\n");
+		Com_Printf ("S_Startup: SNDDMA_Init failed.\n");
 #endif
-			sound_started = 0;
-			return;
-		}
+		sound_started = false;
+		return;
 	}
 
-	sound_started = 1;
+	sound_started = true;
 }
 
 
@@ -207,9 +184,6 @@ void S_Init (void)
 		return;
 	}
 
-	if (COM_CheckParm("-simsound"))
-		fakedma = true;
-
 	Cmd_AddCommand("snd_restart", SND_Restart_f);
 	Cmd_AddCommand("play", S_Play_f);
 	Cmd_AddCommand("playvol", S_PlayVol_f);
@@ -223,40 +197,15 @@ void S_Init (void)
 		Com_Printf ("loading all sounds as 8bit\n");
 	}
 
-
-
 	snd_initialized = true;
 
 	S_Startup ();
 
 	SND_InitScaletable ();
 
-	known_sfx = Hunk_AllocName (MAX_SFX*sizeof(sfx_t), "sfx_t");
 	num_sfx = 0;
 
-// create a piece of DMA memory
-
-	if (fakedma)
-	{
-		shm = (void *) Hunk_AllocName(sizeof(*shm), "shm");
-		shm->splitbuffer = 0;
-		shm->samplebits = 16;
-		shm->speed = 22050;
-		shm->channels = 2;
-		shm->samples = 32768;
-		shm->samplepos = 0;
-		shm->soundalive = true;
-		shm->gamealive = true;
-		shm->submission_chunk = 1;
-		shm->buffer = Hunk_AllocName(1<<16, "shmbuf");
-	}
-
-//	Com_Printf ("Sound sampling rate: %i\n", shm->speed);
-
-	// provides a tick sound until washed clean
-
-//	if (shm->buffer)
-//		shm->buffer[4] = shm->buffer[5] = 0x7f;	// force a pop for debugging
+//	Com_Printf ("Sound sampling rate: %i\n", dma.speed);
 
 	ambient_sfx[AMBIENT_WATER] = S_PrecacheSound ("ambience/water1.wav");
 	ambient_sfx[AMBIENT_SKY] = S_PrecacheSound ("ambience/wind2.wav");
@@ -271,20 +220,12 @@ void S_Init (void)
 
 void S_Shutdown (void)
 {
-
 	if (!sound_started)
 		return;
 
-	if (shm)
-		shm->gamealive = 0;
+	sound_started = false;
 
-	shm = 0;
-	sound_started = 0;
-
-	if (!fakedma)
-	{
-		SNDDMA_Shutdown();
-	}
+	SNDDMA_Shutdown();
 }
 
 
@@ -444,7 +385,7 @@ void SND_Spatialize (channel_t *ch)
 	
 	dot = DotProduct(listener_right, source_vec);
 
-	if (shm->channels == 1)
+	if (dma.channels == 1)
 	{
 		rscale = 1.0;
 		lscale = 1.0;
@@ -529,7 +470,7 @@ void S_StartSound (int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float 
 			continue;
 		if (check->sfx == sfx && !check->pos)
 		{
-			skip = rand () % (int)(0.1*shm->speed);
+			skip = rand () % (int)(0.1*dma.speed);
 			if (skip >= target_chan->end)
 				skip = target_chan->end - 1;
 			target_chan->pos += skip;
@@ -585,13 +526,13 @@ void S_ClearBuffer (void)
 	int		clear;
 		
 #ifdef _WIN32
-	if (!sound_started || !shm || (!shm->buffer && !pDSBuf))
+	if (!sound_started || (!dma.buffer && !pDSBuf))
 #else
-	if (!sound_started || !shm || !shm->buffer)
+	if (!sound_started || !dma.buffer)
 #endif
 		return;
 
-	if (shm->samplebits == 8)
+	if (dma.samplebits == 8)
 		clear = 0x80;
 	else
 		clear = 0;
@@ -623,7 +564,7 @@ void S_ClearBuffer (void)
 			}
 		}
 
-		memset(pData, clear, shm->samples * shm->samplebits/8);
+		memset(pData, clear, dma.samples * dma.samplebits/8);
 
 		pDSBuf->lpVtbl->Unlock(pDSBuf, pData, dwSize, NULL, 0);
 	
@@ -631,7 +572,7 @@ void S_ClearBuffer (void)
 	else
 #endif
 	{
-		memset(shm->buffer, clear, shm->samples * shm->samplebits/8);
+		memset(dma.buffer, clear, dma.samples * dma.samplebits/8);
 	}
 }
 
@@ -834,7 +775,7 @@ void GetSoundtime (void)
 	static	int		oldsamplepos;
 	int		fullsamples;
 	
-	fullsamples = shm->samples / shm->channels;
+	fullsamples = dma.samples / dma.channels;
 
 // it is possible to miscount buffers if it has wrapped twice between
 // calls to S_Update.  Oh well.
@@ -853,7 +794,7 @@ void GetSoundtime (void)
 	}
 	oldsamplepos = samplepos;
 
-	soundtime = buffers*fullsamples + samplepos/shm->channels;
+	soundtime = buffers*fullsamples + samplepos/dma.channels;
 }
 
 
@@ -891,8 +832,8 @@ void S_Update_ (void)
 	}
 
 // mix ahead of current position
-	endtime = soundtime + s_mixahead.value * shm->speed;
-	samps = shm->samples >> (shm->channels-1);
+	endtime = soundtime + s_mixahead.value * dma.speed;
+	samps = dma.samples >> (dma.channels-1);
 	if (endtime - soundtime > samps)
 		endtime = soundtime + samps;
 
