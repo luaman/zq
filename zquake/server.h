@@ -106,6 +106,11 @@ typedef struct
 	int			num_signon_buffers;
 	int			signon_buffer_size[MAX_SIGNON_BUFFERS];
 	byte		signon_buffers[MAX_SIGNON_BUFFERS][MAX_DATAGRAM];
+
+	qbool		intermission_running;	// when true, use intermission PVS
+	int			intermission_hunt;		// looking for WriteCoords to fill in intermission_origin
+	qbool		intermission_origin_valid;
+	vec3_t		intermission_origin;
 } server_t;
 
 
