@@ -285,7 +285,7 @@ void M_Main_Draw (void)
 	M_DrawPic ( (320-p->width)/2, 4, p);
 	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mainmenu.lmp") );
 
-	f = (int)(realtime * 10)%6;
+	f = (int)(curtime * 10)%6;
 	
 	M_DrawTransPic (54, 32 + m_main_cursor * 20,Draw_CachePic( va("gfx/menudot%i.lmp", f+1 ) ) );
 }
@@ -578,7 +578,7 @@ void M_Options_Draw (void)
 #endif
 
 // cursor
-	M_DrawCharacter (200, 32 + options_cursor*8, 12+((int)(realtime*4)&1));
+	M_DrawCharacter (200, 32 + options_cursor*8, 12+((int)(curtime*4)&1));
 }
 
 
@@ -804,7 +804,7 @@ void M_Keys_Draw (void)
 	if (bind_grab)
 		M_DrawCharacter (142, 48 + keys_cursor*8, '=');
 	else
-		M_DrawCharacter (142, 48 + keys_cursor*8, 12+((int)(realtime*4)&1));
+		M_DrawCharacter (142, 48 + keys_cursor*8, 12+((int)(curtime*4)&1));
 }
 
 
@@ -957,7 +957,7 @@ void M_Fps_Draw (void)
 	M_PrintWhite (16, 144, "         High quality");
 
 // cursor
-	M_DrawCharacter (200, 32 + fps_cursor*8, 12+((int)(realtime*4)&1));
+	M_DrawCharacter (200, 32 + fps_cursor*8, 12+((int)(curtime*4)&1));
 }
 
 void M_Fps_Key (int k)
@@ -1258,7 +1258,7 @@ void M_SinglePlayer_Draw (void)
 	M_DrawPic ( (320-p->width)/2, 4, p);
 	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/sp_menu.lmp") );
 
-	f = (int)(realtime * 10)%6;
+	f = (int)(curtime * 10)%6;
 	M_DrawTransPic (54, 32 + m_singleplayer_cursor * 20,Draw_CachePic( va("gfx/menudot%i.lmp", f+1 ) ) );
 }
 
@@ -1480,7 +1480,7 @@ void M_Load_Draw (void)
 		M_Print (16, 32 + 8*i, m_filenames[i]);
 
 // line cursor
-	M_DrawCharacter (8, 32 + load_cursor*8, 12+((int)(realtime*4)&1));
+	M_DrawCharacter (8, 32 + load_cursor*8, 12+((int)(curtime*4)&1));
 */
 
 	M_DrawTextBox (60, 10*8, 23, 4);	
@@ -1501,7 +1501,7 @@ void M_Save_Draw (void)
 		M_Print (16, 32 + 8*i, m_filenames[i]);
 
 // line cursor
-	M_DrawCharacter (8, 32 + load_cursor*8, 12+((int)(realtime*4)&1));
+	M_DrawCharacter (8, 32 + load_cursor*8, 12+((int)(curtime*4)&1));
 */
 
 	M_DrawTextBox (60, 10*8, 23, 4);	
@@ -1567,7 +1567,7 @@ void M_MultiPlayer_Draw (void)
 #endif
 
 // cursor
-	M_DrawCharacter (64, 40 + m_multiplayer_cursor*8, 12+((int)(realtime*4)&1));
+	M_DrawCharacter (64, 40 + m_multiplayer_cursor*8, 12+((int)(curtime*4)&1));
 }
 
 
@@ -1896,7 +1896,7 @@ void M_Demos_Draw (void)
 			M_Print (240, y, toyellow(va("%7ik", d->size>>10)));
 	}
 	
-	M_DrawCharacter (8, 32 + demo_cursor*8, 12+((int)(realtime*4)&1));
+	M_DrawCharacter (8, 32 + demo_cursor*8, 12+((int)(curtime*4)&1));
 }
 
 void M_Demos_Key (int k)
@@ -2180,7 +2180,7 @@ void M_GameOptions_Draw (void)
 	M_Print (160, 136, levels[episodes[startepisode].firstLevel + startlevel].name);
 
 // line cursor
-	M_DrawCharacter (144, gameoptions_cursor_table[gameoptions_cursor], 12+((int)(realtime*4)&1));
+	M_DrawCharacter (144, gameoptions_cursor_table[gameoptions_cursor], 12+((int)(curtime*4)&1));
 }
 
 
@@ -2418,13 +2418,13 @@ void M_Setup_Draw (void)
 	M_BuildTranslationTable(setup_top*16, setup_bottom*16);
 	M_DrawTransPicTranslate (172, 72, p);
 
-	M_DrawCharacter (56, setup_cursor_table [setup_cursor], 12+((int)(realtime*4)&1));
+	M_DrawCharacter (56, setup_cursor_table [setup_cursor], 12+((int)(curtime*4)&1));
 
 	if (setup_cursor == 0)
-		M_DrawCharacter (168 + 8*strlen(setup_name), setup_cursor_table [setup_cursor], 10+((int)(realtime*4)&1));
+		M_DrawCharacter (168 + 8*strlen(setup_name), setup_cursor_table [setup_cursor], 10+((int)(curtime*4)&1));
 
 	if (setup_cursor == 1)
-		M_DrawCharacter (168 + 8*strlen(setup_team), setup_cursor_table [setup_cursor], 10+((int)(realtime*4)&1));
+		M_DrawCharacter (168 + 8*strlen(setup_team), setup_cursor_table [setup_cursor], 10+((int)(curtime*4)&1));
 }
 
 
@@ -2601,7 +2601,7 @@ void M_ServerList_Draw (void)
 	M_PrintWhite(STAT_X+18,STAT_Y+16,"IP/Hostname:");
 	M_Print(STAT_X+18,STAT_Y+24,slist[m_multip_cursor].server);
 	M_DrawCharacter(MENU_X+8,(m_multip_cursor - m_multip_mins + 1) * 8+MENU_Y,
-		12+((int)(realtime*4)&1));
+		12+((int)(curtime*4)&1));
 }
 
 void M_ServerList_Key (key)
@@ -2783,10 +2783,10 @@ void M_SEdit_Draw (void) {
 	M_Print(DESC_X+9,DESC_Y+8,va("%1.22s",desc+desc_min));
 	if (sedit_state == 0)
 		M_DrawCharacter(SERV_X+9+8*(strlen(serv)-serv_min),
-			SERV_Y+8,10+((int)(realtime*4)&1));
+			SERV_Y+8,10+((int)(curtime*4)&1));
 	if (sedit_state == 1)
 		M_DrawCharacter(DESC_X+9+8*(strlen(desc)-desc_min),
-			DESC_Y+8,10+((int)(realtime*4)&1));
+			DESC_Y+8,10+((int)(curtime*4)&1));
 }
 
 void M_SEdit_Key (int key) {
