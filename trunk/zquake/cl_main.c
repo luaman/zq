@@ -828,7 +828,7 @@ void CL_Init (void)
 
 //============================================================================
 
-void CL_BeginLocalConnection ()
+void CL_BeginLocalConnection (void)
 {
 	S_StopAllSounds (true);
 	SCR_BeginLoadingPlaque ();

@@ -163,8 +163,6 @@ qboolean SV_SetPlayer (void)
 }
 
 
-void CL_BeginLocalConnection ();
-
 /*
 ======================
 SV_Map_f
@@ -201,10 +199,8 @@ void SV_Map_f (void)
 
 	NET_ServerConfig (true);
 
-#ifndef SERVERONLY
 	if (!dedicated)
 		CL_BeginLocalConnection ();
-#endif
 
 	SV_BroadcastCommand ("changing\n");
 	SV_SendMessagesToAll ();
