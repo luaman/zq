@@ -103,8 +103,10 @@ typedef struct tvars_s {
 	char	tookname[32];
 	char	tookloc[MAX_LOC_NAME];
 	float	tooktime;
-	int		pointframe;		// cls.framecount for which pointitem & pointloc are valid
+
+	int		pointframe;		// cls.framecount for which point* vars are valid
 	char	pointname[32];
+	vec3_t	pointorg;
 	char	pointloc[MAX_LOC_NAME];
 } tvars_t;
 
@@ -1856,10 +1858,10 @@ static void ExecTookTrigger (char *s, int flag, vec3_t org)
 	if (!report) {
 		if (tp_took_pointed.value && !strcmp(vars.pointname, s)) {
 			vec3_t	dist;
-			VectorSubtract (org, vars.pointloc, dist);
+			VectorSubtract (org, vars.pointorg, dist);
+			//Com_DPrintf ("dist: %f\n", VectorLength(dist));
 			if (VectorLength(dist) < 80) {		// tune this!
-				// ok, this looks like the item we pointed at
-				// report it
+				// ok, this looks like the item we have pointed at
 				report = true;
 			}
 		}
@@ -2104,6 +2106,7 @@ ok:
 
 		Q_strncpyz (vars.pointname, p, sizeof(vars.pointname));
 		Q_strncpyz (vars.pointloc, TP_LocationName (bestent->origin), sizeof(vars.pointloc));
+		VectorCopy (bestent->origin, vars.pointorg);
 	}
 	else {
 nothing:
