@@ -483,12 +483,11 @@ void CL_ConnectionlessPacket (void)
 		}
 	}
 
-	if (!cls.demoplayback)
-		Com_Printf ("%s: ", NET_AdrToString (net_from));
 //	Com_DPrintf ("%s", net_message.data + 5);
 	if (c == S2C_CONNECTION)
 	{
-		Com_Printf ("connection\n");
+		if (!com_serveractive || developer.value)
+			Com_Printf ("%s: connection\n", NET_AdrToString(net_from));
 		if (cls.state >= ca_connected)
 		{
 			if (!cls.demoplayback)
@@ -499,7 +498,8 @@ void CL_ConnectionlessPacket (void)
 		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
 		MSG_WriteString (&cls.netchan.message, "new");	
 		cls.state = ca_connected;
-		Com_Printf ("Connected.\n");
+		if (!com_serveractive || developer.value)
+			Com_Printf ("Connected.\n");
 		allowremotecmd = false; // localid required now for remote cmds
 		return;
 	}
@@ -508,7 +508,7 @@ void CL_ConnectionlessPacket (void)
 	{
 		char	cmdtext[2048];
 
-		Com_Printf ("client command\n");
+		Com_Printf ("%s: client command\n", NET_AdrToString(net_from));
 
 		if (!NET_IsLocalAddress(net_from))
 		{
@@ -557,7 +557,7 @@ void CL_ConnectionlessPacket (void)
 	// print command from somewhere
 	if (c == A2C_PRINT)
 	{
-		Com_Printf ("print\n");
+		Com_Printf ("%s: print\n", NET_AdrToString(net_from));
 
 		s = MSG_ReadString ();
 		Com_Printf ("%s", s);
@@ -569,7 +569,7 @@ void CL_ConnectionlessPacket (void)
 	{
 		char	data[6];
 
-		Com_Printf ("ping\n");
+		Com_Printf ("%s: ping\n", NET_AdrToString(net_from));
 
 		data[0] = 0xff;
 		data[1] = 0xff;
@@ -583,7 +583,7 @@ void CL_ConnectionlessPacket (void)
 	}
 
 	if (c == S2C_CHALLENGE) {
-		Com_Printf ("challenge\n");
+		Com_Printf ("%s: challenge\n", NET_AdrToString(net_from));
 
 		s = MSG_ReadString ();
 		cls.challenge = atoi(s);
