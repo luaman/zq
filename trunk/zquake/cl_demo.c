@@ -166,7 +166,6 @@ void CL_WriteDemoMessage (sizebuf_t *msg)
 }
 
 #ifdef MVDPLAY
-static float	demotime;
 static float	prevtime;
 float			olddemotime, nextdemotime;
 #endif
@@ -185,7 +184,7 @@ qbool CL_GetDemoMessage (void)
 	byte	c;
 	usercmd_t *pcmd;
 #ifdef MVDPLAY
-	byte	newtime;
+	byte	msec;
 #endif
 
 	if (qwz_unpacking)
@@ -194,7 +193,7 @@ qbool CL_GetDemoMessage (void)
 	if (cl.paused & PAUSED_DEMO)
 		return false;
 
-#ifdef MVDPLAY
+/*#ifdef MVDPLAY
     if (cls.mvdplayback) {
         if (prevtime < nextdemotime)
             prevtime = nextdemotime;
@@ -204,21 +203,14 @@ qbool CL_GetDemoMessage (void)
         }
     }
 #endif
+*/
 
 readnext:
 	// read the time from the packet
 #ifdef MVDPLAY
-    if (cls.mvdplayback) {
-        fread(&newtime, sizeof(newtime), 1, cls.demofile);
-        demotime = prevtime + newtime * 0.001;
-        if (cls.demotime - nextdemotime > 0.0001 && nextdemotime != demotime) {
-            olddemotime = nextdemotime;
-            cls.netchan.incoming_sequence++;
-            cls.netchan.incoming_acknowledged++;
-            cls.netchan.frame_latency = 0;
-            cls.netchan.last_received = cls.demotime; // just to happy timeout check
-			nextdemotime = demotime;
-        }
+	if (cls.mvdplayback) {
+		fread(&msec, sizeof(msec), 1, cls.demofile);
+		demotime = prevtime + msec * 0.001;
 	}
 	else
 #endif
@@ -236,7 +228,7 @@ readnext:
 			// rewind back to time
 #ifdef MVDPLAY
 			if (cls.mvdplayback) {
-				fseek(cls.demofile, ftell(cls.demofile) - sizeof(newtime),
+				fseek(cls.demofile, ftell(cls.demofile) - sizeof(msec),
 					SEEK_SET);
 			} else 
 #endif
@@ -253,11 +245,11 @@ readnext:
 #ifdef MVDPLAY
 		if (cls.mvdplayback)
 		{
-            if (nextdemotime < demotime) {
-                fseek(cls.demofile, ftell(cls.demofile) - sizeof(newtime),
-                        SEEK_SET);
-                return false;
-            }
+			if (cls.demotime < demotime) {
+				fseek(cls.demofile, ftell(cls.demofile) - sizeof(msec),
+						SEEK_SET);
+				return false;
+			}
 		}
         else
 #endif
@@ -272,9 +264,24 @@ readnext:
 	} else
 		cls.demotime = demotime; // we're warping
 
+
 #ifdef MVDPLAY
-    if (cls.mvdplayback)
-        prevtime = demotime;
+	if (cls.mvdplayback)
+	{
+		prevtime = demotime;
+
+		if (msec)
+		{
+			olddemotime = nextdemotime;
+			nextdemotime = demotime;
+			cls.netchan.incoming_sequence++;
+			cls.netchan.incoming_acknowledged++;
+			cls.netchan.frame_latency = 0;
+			cls.netchan.last_received = cls.demotime; // just to happy timeout check
+
+			CL_ParseClientdata();	// @@@Tonik
+		}
+	}
 #endif
 
 	if (cls.state < ca_demostart)
