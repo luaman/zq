@@ -91,7 +91,7 @@ typedef struct
 	int		width, height;
 	qboolean	mipmap;
 	qboolean	brighten;
-	int		crc;
+	unsigned short	crc;
 } gltexture_t;
 
 gltexture_t	gltextures[MAX_GLTEXTURES];
@@ -452,6 +452,7 @@ void Draw_Init (void)
 
 	strcpy (ver, Z_VERSION);
 	dest = cb->data + 320 + 320*186 - 11 - 8*strlen(ver);
+
 	for (x=0 ; x<strlen(ver) ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
 
@@ -542,6 +543,8 @@ void Draw_String (int x, int y, char *str)
 
 	if (y <= -8)
 		return;			// totally off screen
+	if (!str || !str[0])
+		return;
 
 	GL_Bind (char_texture);
 
@@ -581,6 +584,8 @@ void Draw_Alt_String (int x, int y, char *str)
 
 	if (y <= -8)
 		return;			// totally off screen
+	if (!str || !str[0])
+		return;
 
 	GL_Bind (char_texture);
 
@@ -588,7 +593,7 @@ void Draw_Alt_String (int x, int y, char *str)
 
 	while (*str) // stop rendering when out of characters
 	{
-		if ((num = *str++|0x80) != 32|0x80) // skip spaces
+		if ((num = *str++|0x80) != (32|0x80))
 		{
 			frow = (float) (num >> 4)*0.0625;
 			fcol = (float) (num & 15)*0.0625;
@@ -1283,7 +1288,7 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 	int			i, s;
 	qboolean	noalpha;
 	int			samples;
-    static	unsigned char scaled[1024*512];	// [512*256];
+    static byte scaled[1024*512];	// [512*256];
 	int			scaled_width, scaled_height;
 
 	s = width*height;
@@ -1451,7 +1456,8 @@ GL_LoadTexture
 */
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, qboolean brighten)
 {
-	int			i, crc;
+	int	i;
+	unsigned short crc;
 	gltexture_t	*glt;
 
 	if (lightmode != 2)
