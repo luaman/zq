@@ -511,17 +511,6 @@ void Cmd_Alias_f (void)
 		return;
 	}
 
-#if 0
-	if ( (var = Cvar_FindVar(s)) != NULL ) {
-		if (var->flags & CVAR_USER_CREATED)
-			Cvar_Delete (var->name);
-		else {
-//			Com_Printf ("%s is a variable\n");
-			return;
-		}
-	}
-#endif
-
 	key = Com_HashKey(s);
 
 	// if the alias already exists, reuse it
