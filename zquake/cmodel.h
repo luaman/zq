@@ -47,7 +47,7 @@ typedef struct
 	float		fraction;		// time completed, 1.0 = didn't hit anything
 	vec3_t		endpos;			// final position
 	plane_t		plane;			// surface normal at impact
-	union {						// entity the surface is on (we rely on sizeof(int) == sizeof(*int) here)
+	union {						// entity the surface is on
 		int		entnum;			// for pmove
 		struct edict_s *ent;	// for sv_world
 	};
@@ -55,3 +55,4 @@ typedef struct
 
 
 int CM_HullPointContents (hull_t *hull, int num, vec3_t p);
+trace_t CM_HullTrace (hull_t *hull, vec3_t start, vec3_t end);
