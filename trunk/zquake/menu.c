@@ -912,9 +912,9 @@ void M_Keys_Key (int k)
 /* FPS SETTINGS MENU */
 
 #ifdef GLQUAKE
-#define	FPS_ITEMS	10
-#else
 #define	FPS_ITEMS	11
+#else
+#define	FPS_ITEMS	12
 #endif
 int		fps_cursor = 0;
 
@@ -922,6 +922,7 @@ extern cvar_t v_bonusflash;
 extern cvar_t cl_rocket2grenade;
 extern cvar_t v_damagecshift;
 extern cvar_t r_fastsky;
+extern cvar_t r_drawflame;
 
 void M_Menu_Fps_f (void)
 {
@@ -936,7 +937,7 @@ void M_Fps_Draw (void)
 	qpic_t	*p;
 	
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
-	p = Draw_CachePic ("gfx/p_option.lmp");
+	p = Draw_CachePic ("gfx/ttl_cstm.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
 	
 	M_Print (16, 32, "            Explosions");
@@ -974,13 +975,13 @@ void M_Fps_Draw (void)
 	M_Print (220, 104, r_powerupglow.value==2 ? "own off" :
 		r_powerupglow.value ? "on" : "off");
 
-#ifndef GLQUAKE
-	M_Print (16, 112, "             Fast sky");
-	M_DrawCheckbox (220, 112, r_fastsky.value);
-#endif
+	M_Print (16, 112, "         Draw torches");
+	M_DrawCheckbox (220, 112, r_drawflame.value);
 
-//	M_Print (16, 120, "     Draw flame models");
-//	M_DrawCheckbox (220, 120, r_drawflame.value);
+#ifndef GLQUAKE
+	M_Print (16, 120, "             Fast sky");
+	M_DrawCheckbox (220, 120, r_fastsky.value);
+#endif
 
 // cursor
 	M_DrawCharacter (200, 32 + fps_cursor*8, 12+((int)(realtime*4)&1));
@@ -1065,15 +1066,14 @@ void M_Fps_Key (int k)
 					i = 0;
 			Cvar_SetValue (&r_powerupglow, i);
 			break;
-#ifndef GLQUAKE
 		case 10:
+			Cvar_SetValue (&r_drawflame, !r_drawflame.value);
+			break;
+#ifndef GLQUAKE
+		case 11:
 			Cvar_SetValue (&r_fastsky, !r_fastsky.value);
 			break;
 #endif
-//		case 11:
-//			Cvar_SetValue (&r_drawflame, !r_drawflame.value);
-//			break;
-			
 		}
 		break;
 
