@@ -343,7 +343,9 @@ void SCR_CalcRefdef (void)
 			sb_drawinventory = sb_drawmain = true;
 		}
 
-		if (!cl_sbar.value)
+		sb_oldmanssbar = (cl_sbar.value == 2 && vid.width > 320);
+
+		if (!cl_sbar.value || sb_oldmanssbar)
 			sb_lines = 0;
 
 		if (size > 100.0)
