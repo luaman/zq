@@ -31,6 +31,7 @@ extern cvar_t crosshair, cl_crossx, cl_crossy, crosshaircolor;
 cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_max_size = {"gl_max_size", "1024"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
+cvar_t		gl_conalpha = {"gl_conalpha", "0.8"};
 
 byte		*draw_chars;				// 8*8 graphic characters
 qpic_t		*draw_disc;
@@ -427,6 +428,7 @@ void Draw_Init (void)
 	Cvar_RegisterVariable (&gl_nobind);
 	Cvar_RegisterVariable (&gl_max_size);
 	Cvar_RegisterVariable (&gl_picmip);
+	Cvar_RegisterVariable (&gl_conalpha);
 
 	// 3dfx can only handle 256 wide textures
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4) ||
@@ -825,17 +827,13 @@ Draw_ConsoleBackground
 void Draw_ConsoleBackground (int lines)
 {
 	char ver[80];
-	int x, i;
-	int y;
+	int x, y, i;
 
-	y = (vid.height * 3) >> 2;
-	if (lines > y)
-		Draw_Pic(0, lines-vid.height, conback);
+	if (lines == vid.height)
+		Draw_Pic(0, lines - vid.height, conback);
 	else
-		Draw_AlphaPic (0, lines - vid.height, conback, (float)(1.2 * lines)/y);
+		Draw_AlphaPic (0, lines - vid.height, conback, gl_conalpha.value);
 
-	// hack the version number directly into the pic
-//	y = lines-186;
 	y = lines-14;
 	if (!cls.download) {
 #ifdef __linux__
