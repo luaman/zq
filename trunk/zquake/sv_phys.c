@@ -853,7 +853,7 @@ void SV_RunEntity (edict_t *ent)
 		return;
 	ent->lastruntime = sv.time;
 
-	ent->v.lastruntime = (float)realtime; // QW compatibility (FIXME: remove?)
+	ent->v.lastruntime = (float)svs.realtime; // QW compatibility (FIXME: remove?)
 
 	switch ((int)ent->v.movetype)
 	{
