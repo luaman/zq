@@ -45,54 +45,6 @@ int			numglobaldefs;
 ddef_t		fields[MAX_FIELDS];
 int			numfielddefs;
 
-char		precache_sounds[MAX_SOUNDS][MAX_DATA_PATH];
-int			precache_sounds_block[MAX_SOUNDS];
-int			numsounds;
-
-char		precache_models[MAX_MODELS][MAX_DATA_PATH];
-int			precache_models_block[MAX_SOUNDS];
-int			nummodels;
-
-char		precache_files[MAX_FILES][MAX_DATA_PATH];
-int			precache_files_block[MAX_SOUNDS];
-int			numfiles;
-
-
-/*
-=================
-BspModels
-
-Runs qbsp and light on all of the models with a .bsp extension
-=================
-*/
-void BspModels (void)
-{
-	int		p;
-	char	*gamedir;
-	int		i;
-	char	*m;
-	char	cmd[1024];
-	char	name[256];
-
-	p = CheckParm ("-bspmodels");
-	if (!p)
-		return;
-	if (p == myargc-1)
-		Error ("-bspmodels must precede a game directory");
-	gamedir = myargv[p+1];
-	
-	for (i=0 ; i<nummodels ; i++)
-	{
-		m = precache_models[i];
-		if (strcmp(m+strlen(m)-4, ".bsp"))
-			continue;
-		strcpy (name, m);
-		name[strlen(m)-4] = 0;
-		sprintf (cmd, "qbsp %s/%s ; light -extra %s/%s", gamedir, name, gamedir, name);
-		system (cmd);
-	}
-}
-
 // CopyString returns an offset from the string heap
 int	CopyString (char *str)
 {
@@ -353,7 +305,7 @@ char *PR_String (char *string)
 
 
 
-def_t	*PR_DefForFieldOfs (gofs_t ofs)
+def_t *PR_DefForFieldOfs (gofs_t ofs)
 {
 	def_t	*d;
 	
@@ -548,7 +500,7 @@ PR_BeginCompilation
 called before compiling a batch of files, clears the pr struct
 ==============
 */
-void	PR_BeginCompilation (void *memory, int memsize)
+void PR_BeginCompilation (void *memory, int memsize)
 {
 	int		i;
 	
@@ -789,262 +741,6 @@ void PrintFunction (char *name)
 	}
 }
 
-/*
-==============================================================================
-
-DIRECTORY COPYING / PACKFILE CREATION
-
-==============================================================================
-*/
-
-typedef struct
-{
-	char	name[56];
-	int		filepos, filelen;
-} packfile_t;
-
-typedef struct
-{
-	char	id[4];
-	int		dirofs;
-	int		dirlen;
-} packheader_t;
-
-packfile_t	pfiles[4096], *pf;
-int			packhandle;
-int			packbytes;
-
-void Sys_mkdir (char *path)
-{
-#ifdef _WIN32
-	if (_mkdir (path) != -1)
-		return;
-#else
-	if (mkdir (path, 0777) != -1)
-		return;
-#endif
-	if (errno != EEXIST)
-		Error ("mkdir %s: %s",path, strerror(errno)); 
-}
-
-/*
-============
-CreatePath
-============
-*/
-void	CreatePath (char *path)
-{
-	char	*ofs;
-	
-	for (ofs = path+1 ; *ofs ; ofs++)
-	{
-		if (*ofs == '/')
-		{	// create the directory
-			*ofs = 0;
-			Sys_mkdir (path);
-			*ofs = '/';
-		}
-	}
-}
-
-
-/*
-===========
-PackFile
-
-Copy a file into the pak file
-===========
-*/
-void PackFile (char *src, char *name)
-{
-	int		in;
-	int		remaining, count;
-	char	buf[4096];
-	
-	if ( (byte *)pf - (byte *)pfiles > sizeof(pfiles) )
-		Error ("Too many files in pak file");
-	
-	in = SafeOpenRead (src);
-	remaining = filelength (in);
-
-	pf->filepos = LittleLong (lseek (packhandle, 0, SEEK_CUR));
-	pf->filelen = LittleLong (remaining);
-	strcpy (pf->name, name);
-	printf ("%64s : %7i\n", pf->name, remaining);
-
-	packbytes += remaining;
-	
-	while (remaining)
-	{
-		if (remaining < sizeof(buf))
-			count = remaining;
-		else
-			count = sizeof(buf);
-		SafeRead (in, buf, count);
-		SafeWrite (packhandle, buf, count);
-		remaining -= count;
-	}
-
-	close (in);
-	pf++;
-}
-
-
-/*
-===========
-CopyFile
-
-Copies a file, creating any directories needed
-===========
-*/
-void CopyFile (char *src, char *dest)
-{
-	int		in, out;
-	int		remaining, count;
-	char	buf[4096];
-	
-	printf ("%s to %s\n", src, dest);
-
-	in = SafeOpenRead (src);
-	remaining = filelength (in);
-	
-	CreatePath (dest);
-	out = SafeOpenWrite (dest);
-	
-	while (remaining)
-	{
-		if (remaining < sizeof(buf))
-			count = remaining;
-		else
-			count = sizeof(buf);
-		SafeRead (in, buf, count);
-		SafeWrite (out, buf, count);
-		remaining -= count;
-	}
-
-	close (in);
-	close (out);	
-}
-
-
-/*
-===========
-CopyFiles
-===========
-*/
-void CopyFiles (void)
-{
-	int		i, p;
-	char	srcdir[1024], destdir[1024];
-	char	srcfile[1024], destfile[1024];
-	int		copytype;
-	char	name[1024];
-	packheader_t	header;
-	int		dirlen;
-	int		blocknum;
-	unsigned short		crc;
-
-	printf ("%3i unique precache_sounds\n", numsounds);
-	printf ("%3i unique precache_models\n", nummodels);
-	
-	copytype = 0;
-
-	p = CheckParm ("-copy");
-	if (p && p < myargc-2)
-	{	// create a new directory tree
-		copytype = 1;
-
-		strcpy (srcdir, myargv[p+1]);
-		strcpy (destdir, myargv[p+2]);
-		if (srcdir[strlen(srcdir)-1] != '/')
-			strcat (srcdir, "/");
-		if (destdir[strlen(destdir)-1] != '/')
-			strcat (destdir, "/");
-	}
-
-	blocknum = 1;
-	p = CheckParm ("-pak2");
-	if (p && p <myargc-2)
-		blocknum = 2;
-	else
-		p = CheckParm ("-pak");
-	if (p && p < myargc-2)
-	{	// create a pak file
-		strcpy (srcdir, myargv[p+1]);
-		strcpy (destdir, myargv[p+2]);
-		if (srcdir[strlen(srcdir)-1] != '/')
-			strcat (srcdir, "/");
-		DefaultExtension (destdir, ".pak");
-
-		pf = pfiles;
-		packhandle = SafeOpenWrite (destdir);
-		SafeWrite (packhandle, &header, sizeof(header));	
-		copytype = 2;
-	}
-	
-	if (!copytype)
-		return;
-				
-	for (i=0 ; i<numsounds ; i++)
-	{
-		if (precache_sounds_block[i] != blocknum)
-			continue;
-		sprintf (name, "sound/%s", precache_sounds[i]);
-		sprintf (srcfile,"%s%s",srcdir, name);
-		sprintf (destfile,"%s%s",destdir, name);
-		if (copytype == 1)
-			CopyFile (srcfile, destfile);
-		else
-			PackFile (srcfile, name);
-	}
-	for (i=0 ; i<nummodels ; i++)
-	{
-		if (precache_models_block[i] != blocknum)
-			continue;
-		sprintf (srcfile,"%s%s",srcdir, precache_models[i]);
-		sprintf (destfile,"%s%s",destdir, precache_models[i]);
-		if (copytype == 1)
-			CopyFile (srcfile, destfile);
-		else
-			PackFile (srcfile, precache_models[i]);
-	}
-	for (i=0 ; i<numfiles ; i++)
-	{
-		if (precache_files_block[i] != blocknum)
-			continue;
-		sprintf (srcfile,"%s%s",srcdir, precache_files[i]);
-		sprintf (destfile,"%s%s",destdir, precache_files[i]);
-		if (copytype == 1)
-			CopyFile (srcfile, destfile);
-		else
-			PackFile (srcfile, precache_files[i]);
-	}
-	
-	if (copytype == 2)
-	{
-		header.id[0] = 'P';
-		header.id[1] = 'A';
-		header.id[2] = 'C';
-		header.id[3] = 'K';
-		dirlen = (byte *)pf - (byte *)pfiles;
-		header.dirofs = LittleLong(lseek (packhandle, 0, SEEK_CUR));
-		header.dirlen = LittleLong(dirlen);
-		
-		SafeWrite (packhandle, pfiles, dirlen);
-	
-		lseek (packhandle, 0, SEEK_SET);
-		SafeWrite (packhandle, &header, sizeof(header));
-		close (packhandle);	
-	
-	// do a crc of the file
-		CRC_Init (&crc);
-		for (i=0 ; i<dirlen ; i++)
-			CRC_ProcessByte (&crc, ((byte *)pfiles)[i]);
-	
-		i = pf - pfiles;
-		printf ("%i files packed in %i bytes (%i crc)\n",i, packbytes, crc);
-	}
-}
 
 //============================================================================
 
@@ -1072,9 +768,6 @@ void main (int argc, char **argv)
 		printf ("to look in a different directory: qcc -src <directory>\n");
 		printf ("to enable vanilla id Software code compatibility: -idcomp\n");
 		printf ("to dump progdefs.h: qcc -progdefs\n");
-		printf ("to build a clean data tree: qcc -copy <srcdir> <destdir>\n");
-		printf ("to build a clean pak file: qcc -pak <srcdir> <packfile>\n");
-		printf ("to bsp all bmodels: qcc -bspmodels <gamedir>\n");
 		return;
 	}
 
@@ -1143,10 +836,4 @@ void main (int argc, char **argv)
 	
 // write data file
 	WriteData (crc);
-	
-// regenerate bmodels if -bspmodels
-	BspModels ();
-
-// report / copy the data files
-	CopyFiles ();
 }
