@@ -484,7 +484,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 	vid.colormap = (pixel_t *) host_colormap;
-	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 	vid.numpages = 1;
 	
 	vid.maxwarpwidth = WARP_WIDTH;

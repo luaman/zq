@@ -2090,7 +2090,6 @@ void	VID_Init (unsigned char *palette)
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
-	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 	vid_testingmode = 0;
 
 // GDI doesn't let us remap palette index 0, so we'll remap color
