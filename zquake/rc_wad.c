@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // rc_wad.c - .wad file loading
 
 #include "quakedef.h"
-#include "wad.h"
+#include "rc_wad.h"
 #include "crc.h"
 
 #define	HARDCODED_OCRANA_LEDS
