@@ -284,7 +284,10 @@ void Key_Console (int key)
 					goto no_lf;					// drop the whole line
 
 				// convert to a chat message
-				Cbuf_AddText ("say ");
+				if (keydown[K_CTRL])
+					Cbuf_AddText ("say_team ");
+				else
+					Cbuf_AddText ("say ");
 				Cbuf_AddText (key_lines[edit_line]+1);
 			}
 			else
