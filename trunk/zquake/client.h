@@ -102,6 +102,15 @@ typedef struct
 	qboolean	invalid;		// true if the packet_entities delta was invalid
 } frame_t;
 
+typedef struct
+{
+	entity_state_t	baseline;
+	entity_state_t	previous;
+	entity_state_t	current;
+
+	int				lastframe;
+	vec3_t			lerp_origin;
+} centity_t;
 
 typedef struct
 {
@@ -376,7 +385,7 @@ extern	cvar_t	r_powerupglow;
 #define	MAX_STATIC_ENTITIES	128			// torches, etc
 
 // FIXME, allocate dynamically
-extern	entity_state_t	cl_baselines[MAX_EDICTS];
+extern	centity_t		cl_entities[MAX_EDICTS];
 extern	efrag_t			cl_efrags[MAX_EFRAGS];
 extern	entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 extern	lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
@@ -402,10 +411,10 @@ void CL_Disconnect (void);
 void CL_Disconnect_f (void);
 void CL_NextDemo (void);
 
+extern	int				cl_entframecount;
 
-extern	int				cl_numvisedicts, cl_oldnumvisedicts;
-extern	entity_t		*cl_visedicts, *cl_oldvisedicts;
-extern	entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
+extern	int				cl_numvisedicts;
+extern	entity_t		cl_visedicts[MAX_VISEDICTS];
 
 extern	int				cl_numvisparticles;
 extern	particle_t		cl_visparticles[MAX_PARTICLES];

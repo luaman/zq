@@ -94,7 +94,7 @@ cvar_t	b_switch = {"b_switch", "", CVAR_ARCHIVE|CVAR_USERINFO};
 clientPersistent_t	cls;
 clientState_t	cl;
 
-entity_state_t	cl_baselines[MAX_EDICTS];
+centity_t		cl_entities[MAX_EDICTS];
 efrag_t			cl_efrags[MAX_EFRAGS];
 entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
@@ -103,9 +103,10 @@ dlight_t		cl_dlights[MAX_DLIGHTS];
 // refresh list
 // this is double buffered so the last frame
 // can be scanned for oldorigins of trailing objects
-int				cl_numvisedicts, cl_oldnumvisedicts;
-entity_t		*cl_visedicts, *cl_oldvisedicts;
-entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
+int				cl_entframecount;
+
+int				cl_numvisedicts;
+entity_t		cl_visedicts[MAX_VISEDICTS];
 
 int				cl_numvisparticles;
 particle_t		cl_visparticles[MAX_PARTICLES];
@@ -314,9 +315,11 @@ void CL_ClearState (void)
 	memset (cl_efrags, 0, sizeof(cl_efrags));
 	memset (cl_dlights, 0, sizeof(cl_dlights));
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
-	memset (cl_baselines, 0, sizeof(cl_baselines));
+	memset (cl_entities, 0, sizeof(cl_entities));
 
-	cl_numvisedicts = cl_oldnumvisedicts = 0;
+	cl_numvisedicts = 0;
+
+	cl_entframecount = 0;
 
 // make sure no centerprint messages are left from previous level
 	scr_centertime_off = 0;

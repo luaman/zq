@@ -1097,14 +1097,6 @@ V_ClearScene
 */
 void V_ClearScene (void)
 {
-	static int list_index = 0;
-
-	// swap visedict lists
-	cl_oldnumvisedicts = cl_numvisedicts;
-	cl_oldvisedicts = cl_visedicts_list[list_index];
-	list_index = 1 - list_index;
-	cl_visedicts = cl_visedicts_list[list_index];
-
 	cl_numvisedicts = 0;
 	cl_numvisparticles = 0;
 }
