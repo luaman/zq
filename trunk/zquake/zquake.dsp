@@ -1056,10 +1056,6 @@ SOURCE=.\r_vars.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\savegame.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\sbar.c
 # End Source File
 # Begin Source File
@@ -1129,6 +1125,10 @@ SOURCE=.\sv_nchan.c
 # Begin Source File
 
 SOURCE=.\sv_phys.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\sv_save.c
 # End Source File
 # Begin Source File
 
