@@ -210,7 +210,7 @@ void CL_PredictMove (void)
 {
 	int			i;
 	float		f;
-	frame_t		*from, *to = NULL;
+	frame_t		*from = NULL, *to;
 	int			oldphysent;
 	double		playertime;
 
@@ -234,27 +234,27 @@ void CL_PredictMove (void)
 	if (!cl.validsequence)
 		return;
 
-	if (cls.netchan.outgoing_sequence - cls.netchan.incoming_sequence >= UPDATE_BACKUP-1)
+	if (cls.netchan.outgoing_sequence - cl.validsequence >= UPDATE_BACKUP-1)
 		return;
 
 	VectorCopy (cl.viewangles, cl.simangles);
 
 	// this is the last valid frame received from the server
-	from = &cl.frames[cl.validsequence & UPDATE_MASK];
+	to = &cl.frames[cl.validsequence & UPDATE_MASK];
 
 	// FIXME...
 	if (cls.demoplayback && cl.spectator && cl.viewplayernum != cl.playernum) {
-		VectorCopy (from->playerstate[cl.viewplayernum].velocity, cl.simvel);
-		VectorCopy (from->playerstate[cl.viewplayernum].origin, cl.simorg);
-		VectorCopy (from->playerstate[cl.viewplayernum].viewangles, cl.simangles);
+		VectorCopy (to->playerstate[cl.viewplayernum].velocity, cl.simvel);
+		VectorCopy (to->playerstate[cl.viewplayernum].origin, cl.simorg);
+		VectorCopy (to->playerstate[cl.viewplayernum].viewangles, cl.simangles);
 		CL_CategorizePosition ();
 		goto out;
 	}
 
-	if (cl_nopred.value)
+	if (cl_nopred.value || cl.validsequence + 1 >= cls.netchan.outgoing_sequence)
 	{
-		VectorCopy (from->playerstate[cl.playernum].velocity, cl.simvel);
-		VectorCopy (from->playerstate[cl.playernum].origin, cl.simorg);
+		VectorCopy (to->playerstate[cl.playernum].velocity, cl.simvel);
+		VectorCopy (to->playerstate[cl.playernum].origin, cl.simorg);
 		CL_CategorizePosition ();
 		goto out;
 	}
@@ -266,19 +266,16 @@ void CL_PredictMove (void)
 	for (i=1 ; i<UPDATE_BACKUP-1 && cl.validsequence+i <
 			cls.netchan.outgoing_sequence; i++)
 	{
+		from = to;
 		to = &cl.frames[(cl.validsequence+i) & UPDATE_MASK];
 		CL_PredictUsercmd (&from->playerstate[cl.playernum]
 			, &to->playerstate[cl.playernum], &to->cmd, cl.spectator);
 		cl.onground = pmove.onground;
 		if (to->senttime >= playertime)
 			break;
-		from = to;
 	}
 
 	pmove.numphysent = oldphysent;
-
-	if (i == UPDATE_BACKUP-1 || !to)
-		return;		// net hasn't deliver packets in a long time...
 
 	// now interpolate some fraction of the final frame
 	if (to->senttime == from->senttime)
