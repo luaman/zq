@@ -672,7 +672,6 @@ void CL_Init (void)
 {
 	extern	cvar_t		baseskin;
 	extern	cvar_t		noskins;
-	char st[80];
 
 	cls.state = ca_disconnected;
 
@@ -683,8 +682,7 @@ void CL_Init (void)
 	Info_SetValueForKey (cls.userinfo, "msg", "1", MAX_INFO_STRING);
 
 #ifndef RELEASE_VERSION
-	sprintf (st, "%s", Z_VERSION);
-	Info_SetValueForStarKey (cls.userinfo, "*z_ver", st, MAX_INFO_STRING);
+	Info_SetValueForStarKey (cls.userinfo, "*z_ver", Z_VERSION, MAX_INFO_STRING);
 #endif
 
 	CL_InitInput ();
@@ -1144,12 +1142,7 @@ void Host_Init (quakeparms_t *parms)
 #endif
 
 	Cbuf_InsertText ("exec quake.rc\n");
-#ifdef TEST_VERSION
-	Cbuf_AddText ("echo This is a test release! Please do not distribute.\n");
-	Cbuf_AddText ("echo Report bugs to tonik@quake.ru\necho\n");
-#else
 //	Cbuf_AddText ("echo Type connect <internet address> or use GameSpy to connect to a game.\n");
-#endif
 	Cbuf_AddText ("cl_warncmd 1\n");
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
