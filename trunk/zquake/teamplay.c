@@ -70,6 +70,12 @@ cvar_t	tp_need_ra = {"tp_need_ra", "50"};
 cvar_t	tp_need_ya = {"tp_need_ya", "50"};
 cvar_t	tp_need_ga = {"tp_need_ga", "50"};
 cvar_t	tp_need_health = {"tp_need_health", "50"};
+cvar_t	tp_need_weapon = {"tp_need_weapon", "35687"};
+cvar_t	tp_need_rl = {"tp_need_rl", "1"};
+cvar_t	tp_need_rockets = {"tp_need_rockets", "5"};
+cvar_t	tp_need_cells = {"tp_need_cells", "20"};
+cvar_t	tp_need_nails = {"tp_need_nails", "40"};
+cvar_t	tp_need_shells = {"tp_need_shells", "10"};
 
 void TP_FindModelNumbers (void);
 void TP_FindPoint (void);
@@ -452,6 +458,9 @@ char *Macro_PointNameAtLocation_f (void)
 
 char *Macro_Need_f (void)
 {
+	int i, weapon;
+	char	*needammo = NULL;
+
 	macro_buf[0] = 0;
 
 	// check armor
@@ -460,7 +469,7 @@ char *Macro_Need_f (void)
 		|| ((cl.stats[STAT_ITEMS] & IT_ARMOR3) && cl.stats[STAT_ARMOR] < tp_need_ra.value)
 		|| (!(cl.stats[STAT_ITEMS] & (IT_ARMOR1|IT_ARMOR2|IT_ARMOR3))
 			&& (tp_need_ga.value || tp_need_ya.value || tp_need_ra.value)))
-		Q_strncpyz (macro_buf, "armor", sizeof(macro_buf));
+		strcpy (macro_buf, "armor");
 
 	// check health
 	if (tp_need_health.value && cl.stats[STAT_HEALTH] < tp_need_health.value) {
@@ -469,13 +478,50 @@ char *Macro_Need_f (void)
 		strcat (macro_buf, "health");
 	}
 
-	// TODO
-/*	if (!(cl.stats[STAT_ITEMS] & IT_ROCKET_LAUNCHER)) {
+	if (cl.teamfortress)
+		goto done;	// don't check weapons in TF
+
+	// check weapon
+	weapon = 0;
+	for (i=strlen(tp_need_weapon.string)-1 ; i>=0 ; i--) {
+		switch (tp_need_weapon.string[i]) {
+			case '2': if (cl.stats[STAT_ITEMS] & IT_SHOTGUN) weapon = 2; break;
+			case '3': if (cl.stats[STAT_ITEMS] & IT_SUPER_SHOTGUN) weapon = 3; break;
+			case '4': if (cl.stats[STAT_ITEMS] & IT_NAILGUN) weapon = 4; break;
+			case '5': if (cl.stats[STAT_ITEMS] & IT_SUPER_NAILGUN) weapon = 5; break;
+			case '6': if (cl.stats[STAT_ITEMS] & IT_GRENADE_LAUNCHER) weapon = 6; break;
+			case '7': if (cl.stats[STAT_ITEMS] & IT_ROCKET_LAUNCHER) weapon = 7; break;
+			case '8': if (cl.stats[STAT_ITEMS] & IT_LIGHTNING) weapon = 8; break;
+		}
+		if (weapon)
+			break;
+	}
+
+	if (!weapon) {
 		if (macro_buf[0])
 			strcat (macro_buf, "/");
-		strcat (macro_buf, "RL");
-	}*/
+		strcat (macro_buf, "weapon");
+	} else {
+		if (tp_need_rl.value && !(cl.stats[STAT_ITEMS] & IT_ROCKET_LAUNCHER)) {
+			if (macro_buf[0])
+				strcat (macro_buf, "/");
+			strcat (macro_buf, "rl");
+		}
 
+		switch (weapon) {
+			case 2: case 3: if (cl.stats[STAT_SHELLS] < tp_need_shells.value) needammo = "shells"; break;
+			case 4: case 5: if (cl.stats[STAT_NAILS] < tp_need_nails.value) needammo = "nails"; break;
+			case 6: case 7: if (cl.stats[STAT_ROCKETS] < tp_need_rockets.value) needammo = "rockets"; break;
+			case 8: if (cl.stats[STAT_CELLS] < tp_need_cells.value) needammo = "cells"; break;
+		}
+		if (needammo) {
+			if (macro_buf[0])
+				strcat (macro_buf, "/");
+			strcat (macro_buf, needammo);
+		}
+	}
+
+done:
 	if (!macro_buf[0])
 		strcpy (macro_buf, "nothing");
 
@@ -2209,6 +2255,12 @@ void TP_Init ()
 	Cvar_RegisterVariable (&tp_need_ya);
 	Cvar_RegisterVariable (&tp_need_ga);
 	Cvar_RegisterVariable (&tp_need_health);
+	Cvar_RegisterVariable (&tp_need_weapon);
+	Cvar_RegisterVariable (&tp_need_rl);
+	Cvar_RegisterVariable (&tp_need_rockets);
+	Cvar_RegisterVariable (&tp_need_cells);
+	Cvar_RegisterVariable (&tp_need_nails);
+	Cvar_RegisterVariable (&tp_need_shells);
 
 	Cmd_AddCommand ("macrolist", TP_MacroList_f);
 	Cmd_AddCommand ("loadloc", TP_LoadLocFile_f);
