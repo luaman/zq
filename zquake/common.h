@@ -407,8 +407,8 @@ void Host_Init (int argc, char **argv, int default_memsize);
 void Host_Shutdown (void);
 void Host_Frame (double time);
 void Host_Abort (void);					// longjmp() to Host_Frame
+void Host_EndGame (void);				// kill local client and server
 void Host_Error (char *error, ...);
-void Host_EndGame (char *message, ...);
 void Host_Quit (void);
 
 void CL_Init (void);
