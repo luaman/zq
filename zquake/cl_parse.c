@@ -1158,10 +1158,7 @@ void CL_ProcessServerInfo (void)
 	movevars.slidefix = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_slidefix")) != 0);
 	movevars.airstep = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_airstep")) != 0);
 	p = Info_ValueForKey(cl.serverinfo, "pm_ktjump");
-	if (*p)
-		movevars.ktjump = Q_atof(p);
-	else
-		movevars.ktjump = 0.5;
+	movevars.ktjump = *p ? Q_atof(p) : (cl.teamfortress ? 0 : 0.5); 
 
 	// deathmatch and teamplay
 	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
