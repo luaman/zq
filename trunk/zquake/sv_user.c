@@ -616,7 +616,7 @@ void SV_NextUpload (void)
 	if (!*sv_client->uploadfn) {
 		SV_ClientPrintf(sv_client, PRINT_HIGH, "Upload denied\n");
 		ClientReliableWrite_Begin (sv_client, svc_stufftext, 8);
-		ClientReliableWrite_String (sv_client, "stopul");
+		ClientReliableWrite_String (sv_client, "stopul\n");
 
 		// suck out rest of packet
 		size = MSG_ReadShort ();	MSG_ReadByte ();
@@ -633,7 +633,7 @@ void SV_NextUpload (void)
 		if (!sv_client->upload) {
 			Sys_Printf("Can't create %s\n", sv_client->uploadfn);
 			ClientReliableWrite_Begin (sv_client, svc_stufftext, 8);
-			ClientReliableWrite_String (sv_client, "stopul");
+			ClientReliableWrite_String (sv_client, "stopul\n");
 			*sv_client->uploadfn = 0;
 			return;
 		}
