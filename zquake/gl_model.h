@@ -319,6 +319,8 @@ typedef struct model_s
 //
 // brush model
 //
+	qbool		halflifebsp;
+
 	int			firstmodelsurface, nummodelsurfaces;
 
 	// FIXME, don't really need these two

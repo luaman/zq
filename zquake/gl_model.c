@@ -533,6 +533,12 @@ void Mod_LoadLighting (lump_t *l)
 		return;
 	}
 
+	if (loadmodel->halflifebsp) {
+		loadmodel->lightdata = Hunk_AllocName(l->filelen, loadname);
+		memcpy (loadmodel->lightdata, mod_base + l->fileofs, l->filelen);
+		return;
+	}
+
 	// LordHavoc's .lit support
 	if (!gl_loadlitfiles.value || !gl_colorlights.value)
 		goto loadmono;
@@ -857,7 +863,7 @@ void Mod_LoadFaces (lump_t *l)
 		if (i == -1)
 			out->samples = NULL;
 		else
-			out->samples = loadmodel->lightdata + i * 3 /* because lightmaps are RGB */;
+			out->samples = loadmodel->lightdata + (loadmodel->halflifebsp ? i : i * 3);
 		
 	// set the drawing flags flag
 		
@@ -1113,12 +1119,10 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	header = (dheader_t *)buffer;
 
 	i = LittleLong (header->version);
+	if (i != BSPVERSION && i != HL_BSPVERSION)
+		Host_Error ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)", mod->name, i, BSPVERSION);
 
-	if (i != BSPVERSION) 
-	{
-		Host_Error ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)\n", mod->name, i, BSPVERSION);
-		return;
-	}
+	loadmodel->halflifebsp = (i == HL_BSPVERSION);
 
 // swap all the lumps
 	mod_base = (byte *)header;
