@@ -1713,6 +1713,9 @@ int SV_PMTypeForClient (client_t *cl)
 	if (sv_player->v.movetype == MOVETYPE_FLY)
 		return PM_FLY;
 
+	if (sv_player->v.movetype == MOVETYPE_NONE)
+		return PM_NONE;
+
 	if (sv_player->v.health <= 0)
 		return PM_DEAD;
 
