@@ -1,7 +1,7 @@
 /*
-	cl_math.S
+	cl_math.s
 
-	(description)
+	x86 assembly language math routines
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -22,11 +22,7 @@
 		Free Software Foundation, Inc.
 		59 Temple Place - Suite 330
 		Boston, MA  02111-1307, USA
-
-	$Id$
 */
-// math.s
-// x86 assembly-language math routines.
 
 #include "asm_i386.h"
 #include "quakeasm.h"
