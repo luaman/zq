@@ -466,7 +466,8 @@ void Cmd_Alias_f (void)
 	char		*s;
 //	cvar_t		*var;
 
-	if (Cmd_Argc() == 1)
+	c = Cmd_Argc();
+	if (c == 1)
 	{
 		Con_Printf ("Current alias commands:\n");
 		for (a = cmd_alias ; a ; a=a->next)
@@ -516,12 +517,11 @@ void Cmd_Alias_f (void)
 
 // copy the rest of the command line
 	cmd[0] = 0;		// start out with a null string
-	c = Cmd_Argc();
-	for (i=2 ; i < c ; i++)
+	for (i=2 ; i<c ; i++)
 	{
-		strcat (cmd, Cmd_Argv(i));
-		if (i != c)
+		if (i > 2)
 			strcat (cmd, " ");
+		strcat (cmd, Cmd_Argv(i));
 	}
 	strcat (cmd, "\n");
 	
