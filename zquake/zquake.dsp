@@ -717,7 +717,7 @@ SOURCE=.\menu.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\model.c
+SOURCE=.\r_model.c
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
@@ -1336,7 +1336,7 @@ SOURCE=.\menu.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\model.h
+SOURCE=.\r_model.h
 # End Source File
 # Begin Source File
 
