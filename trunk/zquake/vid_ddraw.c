@@ -386,7 +386,7 @@ void VID_Init (unsigned char *palette)
 
 
 //create window class
-	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
+	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_APPICON));
 
 	/* Register the frame class */
 	wc.style         = 0;
