@@ -1,42 +1,40 @@
 .entity avoid;
 
-float(entity e) bot_size_player =
+float bot_size_player (entity e)
 {
 	local float sz;
 
 	sz = e.health + e.armorvalue * e.armortype;
-	if (e.weapon == 32)
+	if (e.weapon == IT_LIGHTNING)
 		sz = sz + 60;
-	else if (e.weapon == 64)
+	else if (e.weapon == IT_ROCKET_LAUNCHER)
 		sz = sz + 60;
-	else if (e.weapon == 16)
+	else if (e.weapon == IT_GRENADE_LAUNCHER)
 		sz = sz + 50;
-	else if (e.weapon == 8)
+	else if (e.weapon == IT_SUPER_NAILGUN)
 		sz = sz + 50;
-	else if (e.weapon == 4)
+	else if (e.weapon == IT_NAILGUN)
 		sz = sz + 40;
-	else if (e.weapon == 2)
+	else if (e.weapon == IT_SUPER_SHOTGUN)
 		sz = sz + 40;
-	else if (e.weapon == 1)
+	else if (e.weapon == IT_SHOTGUN)
 		sz = sz + 10;
-	else if (e.weapon == 4096)
+	else if (e.weapon == IT_AXE)
 		sz = sz - 50;
-	if (e.items & 4194304) // Quad
+	if (e.items & IT_QUAD)
 		sz = sz + 200;
-	if (e.items & 1048576) // Invul
+	if (e.items & IT_INVULNERABILITY)
 		sz = sz + 300;
-	if (e.items & 524288) // Invis
+	if (e.items & IT_INVISIBILITY)
 		sz = sz + 250;
 	return sz;
-};
+}
 
-void() bot_dodge_stuff =
+void bot_dodge_stuff ()
 {
 	local entity foe;
 	local float foedist, avdist, scandist, foesz, flen, tsz;
 	local vector v;
-
-//return;//@@@Tonik
 
 	if (waypoint_mode > WM_LOADED)
 		return;
@@ -169,7 +167,7 @@ void() bot_dodge_stuff =
 			foe = foe._next;
 		}
 	}
-};
+}
 
 
 
@@ -185,25 +183,25 @@ _z maximum range bot can be to be effective (lg/axe) (move in)
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-vector(float wep) weapon_range =
+vector weapon_range (float wep)
 {
-	if (wep == 4096) // IT_AXE
+	if (wep == IT_AXE)
 		return '48 0 64';
-	else if (wep == 1) // IT_SHOTGUN
+	else if (wep == IT_SHOTGUN)
 		return '128 0 99999';
-	else if (wep == 2) // IT_SUPER_SHOTGUN
+	else if (wep == IT_SUPER_SHOTGUN)
 		return '128 0 99999';
-	else if (wep == 4) // IT_NAILGUN
+	else if (wep == IT_NAILGUN)
 		return '180 0 3000';
-	else if (wep == 8) // IT_SUPER_NAILGUN
+	else if (wep == IT_SUPER_NAILGUN)
 		return '180 0 3000';
-	else if (wep == 16) // IT_GRENADE_LAUNCHER
+	else if (wep == IT_GRENADE_LAUNCHER)
 		return '180 48 3000';
-	else if (wep == 32) // IT_ROCKET_LAUNCHER
+	else if (wep == IT_ROCKET_LAUNCHER)
 		return '180 48 3000';
-	else if (wep == 64) // IT_LIGHTNING
+	else if (wep == IT_LIGHTNING)
 		return '350 0 512';
-};
+}
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -214,7 +212,7 @@ Pick a weapon based on range / ammo
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void(float brange) bot_weapon_switch =
+void bot_weapon_switch (float brange)
 {
 	local	float	it, flag, pulse;
 	local vector v;
@@ -282,9 +280,9 @@ void(float brange) bot_weapon_switch =
 			return;
 		}
 	}
-};
+}
 
-void() bot_shoot = 
+void bot_shoot ()
 {
 	// quick little function to stop making him shoot the wrong way ! Argh
 	local float g;
@@ -295,7 +293,7 @@ void() bot_shoot =
 	if (fabs(g) > 30)
 		return; // not again!
 	self.button0 = TRUE;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -308,7 +306,7 @@ attacking an enemy.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() bot_fight_style =
+void bot_fight_style ()
 {
 	local vector v, v1, v2, org;
 	local float foedist, mysz, foesz;
@@ -411,6 +409,6 @@ void() bot_fight_style =
 			return;
 		self.keys = self.keys & 960;
 	}
-};
+}
 
 

@@ -8,7 +8,7 @@ checks to see if an entity is on the bot's stack
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-float(entity scot) target_onstack =
+float target_onstack (entity scot)
 {
 	if (scot == world)
 		return FALSE;
@@ -22,7 +22,7 @@ float(entity scot) target_onstack =
 		return 4;
 	else
 		return FALSE;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -35,7 +35,7 @@ LIFO stack, this will be the bot's new target1
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void(entity ent) target_add =
+void target_add (entity ent)
 {
 	if (ent == world)
 		return;
@@ -46,7 +46,7 @@ void(entity ent) target_add =
 	self.target2 = self.target1;
 	self.target1 = ent;
 	self.search_time = time + 5;
-};
+}
 
 
 /*
@@ -63,7 +63,7 @@ is gone too.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void(entity ent) target_drop =
+void target_drop (entity ent)
 {
 	local float tg;
 	
@@ -89,7 +89,7 @@ void(entity ent) target_drop =
 	else if (tg == 4)
 		self.target1 = self.target2 = self.target3 = self.target4 = world;
 	self.search_time = time + 5;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -101,7 +101,7 @@ Bot has lost its target.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void(entity targ, float success) bot_lost =
+void bot_lost (entity targ, float success)
 {
 	if (!targ)
 		return;
@@ -136,7 +136,7 @@ void(entity targ, float success) bot_lost =
 
 	if (targ.classname != "player")
 		targ.search_time = time + 5;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -148,7 +148,7 @@ removed.
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
-void(entity targ) bot_check_lost =
+void bot_check_lost (entity targ)
 {
 	local vector dist;
 	dist = realorigin(targ) - self.origin;
@@ -269,7 +269,7 @@ void(entity targ) bot_check_lost =
 	// targets are lost if the bot's search time has expired
 	if (time > self.search_time)
 		bot_lost(targ, FALSE);
-};
+}
 
 
 /*
@@ -283,7 +283,7 @@ based b_aiflags.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() bot_handle_ai =
+void bot_handle_ai ()
 {
 	local entity newt;
 	local vector v;
@@ -440,7 +440,7 @@ void() bot_handle_ai =
 		// FIXME: increase delay?
 	}
 
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -455,7 +455,7 @@ confused
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() bot_path =
+void bot_path ()
 {
 
 	local entity jj, tele;
@@ -542,7 +542,7 @@ void() bot_path =
 	self.b_dir = normalize(jj.origin - self.last_way.origin);
 
 	self.last_way = jj;
-};
+}
 
 
 /*
@@ -561,7 +561,7 @@ the bot finds things it wants to kill/grab.
 
 // *!* Make sure you add code to bot_check_lost to remove the target *!*
 
-float(entity thing) priority_for_thing =
+float priority_for_thing (entity thing)
 {
 	local float thisp;
 	thisp = 0;
@@ -675,9 +675,9 @@ float(entity thing) priority_for_thing =
 		}
 	} 		
 	return thisp;
-};
+}
 
-void(float scope) bot_look_for_crap =
+void bot_look_for_crap (float scope)
 {
 	local entity foe, best;
 	local float thatp, bestp, dist;
@@ -714,7 +714,7 @@ void(float scope) bot_look_for_crap =
 			self.b_aiflags = self.b_aiflags | AI_WAIT;
 		}
 	}
-};
+}
 
 
 /*
@@ -729,7 +729,7 @@ generally making the bot look good.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() bot_angle_set =
+void bot_angle_set ()
 {
 	local float h;
 	local vector view;
@@ -815,7 +815,7 @@ void() bot_angle_set =
 		else if (angcomp(self.b_angle_x, self.v_angle_x) > 10)
 			self.keys = self.keys | KEY_LOOKDOWN;
 	}
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -829,7 +829,7 @@ frame, the ai_time limits it's actual updating
 */
 float stagger_think;
 
-void() BotAI =
+void BotAI ()
 {
 	// am I dead? Fire randomly until I respawn
 	// health < 1 is used because fractional healths show up as 0 on normal player
@@ -948,4 +948,4 @@ void() BotAI =
 		bot_handle_ai(); 
 	else
 		bot_chat(); // don't want chat to screw him up if he's rjing or something
-};
+}

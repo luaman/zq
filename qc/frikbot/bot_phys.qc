@@ -5,12 +5,15 @@ Stuff mimicking cl_input.c code
 
 =========================================
 */
-float(float key) CL_KeyState =
+float CL_KeyState (float key)
 {
 	return ((self.keys & key) > 0);
-};
+}
 
-void() CL_KeyMove = // CL_BaseMove + CL_AdjustAngles
+//
+// CL_BaseMove + CL_AdjustAngles
+//
+void CL_KeyMove ()
 {
 	local float anglespeed;
 	local vector view;
@@ -79,7 +82,7 @@ void() CL_KeyMove = // CL_BaseMove + CL_AdjustAngles
 		self.v_angle_z = -50;
 	self.v_angle_y = frik_anglemod(self.v_angle_y);
 
-};
+}
 
 /*
 =========================================
@@ -89,7 +92,12 @@ Stuff mimicking sv_phys.c
 =========================================
 */
 
+// Tonik -- commented everything out
+// I'm not sure if anything here used to affect bot logic...
+
+
 /*
+
 float() SV_RunThink  =
 {
 	local float thinktime, bkuptime;
@@ -106,68 +114,8 @@ float() SV_RunThink  =
 	self.think();
 	time = bkuptime;
 	return TRUE;
-};
-*/
+}
 
-void() RemoveThud = // well sometimes
-{ 
-	local entity oself;
-	if (other == world)
-	{
-		if (self.flags & FL_ONGROUND)
-		{
-			self.flags = self.flags - FL_ONGROUND; 
-		}
-	}
-	else
-	{
-		if (other.solid == SOLID_BSP && (self.flags & FL_ONGROUND))	
-		{
-			// RM: Does this break anything?
-			// If not, then some more thuds have been removed.
-			self.flags = self.flags - FL_ONGROUND;
-		}		
-		if (other == self.owner)
-			return;
-		if (self.owner.solid == SOLID_NOT)
-			return;
-		oself = other;
-		other = self.owner;
-		self = oself;
-		if (self.solid == SOLID_BSP)
-			if (self.touch)
-				self.touch();
-	}
-
-};
-void() SV_CheckOnGround =
-{
-	local vector org, v;
-	org = self.origin;
-	local float currentflags;
-	currentflags = self.flags;
-	self.flags = self.flags | FL_ONGROUND | FL_PARTIALGROUND;
-	walkmove(0,0); // perform C touch function
-	self.flags = currentflags | FL_ONGROUND;
-	if ((org_x != self.origin_x) || (org_y != self.origin_y))
-		org = self.origin;
-	else
-		self.origin = org;
-	v = org;
-	v_z = self.maxs_z + org_z + 1;
-	traceline (org, v, TRUE, self); 
-	if ((self.waterlevel == 3) && (self.movetype == MOVETYPE_WALK))
-		self.flags = self.flags - FL_ONGROUND;
-	else if ((trace_plane_normal_z <= 0.7) && (trace_fraction != 1))
-		self.flags = self.flags - FL_ONGROUND;
-        else if (!droptofloor())
-		self.flags = self.flags - FL_ONGROUND;
-	else if (org_z - self.origin_z < 2)
-		self.flags = self.flags | FL_ONGROUND;
-	else
-		self.flags = self.flags - FL_ONGROUND;
-	setorigin(self, org);
-};
 // Thanks to Alan Kivlin for this function
 // modified heavily by me
 float(vector dir) botCheckForStep =
@@ -198,9 +146,9 @@ float(vector dir) botCheckForStep =
 	self.flags = currentflags;
 	setorigin(self, currentorigin);
 	return 0;
-}; 
+} 
 // this is merely here to fix a problem with e3m5
-void(vector dir) BruteForceStep =
+void BruteForceStep (vector dir)
 {
 	local vector currentorigin;
 	local float currentflags, i, len;
@@ -221,11 +169,10 @@ void(vector dir) BruteForceStep =
 	self.flags = currentflags;
 	if (i >=18)
 		setorigin(self, currentorigin);
-};
+}
 
-void() PostPhysics =
+void PostPhysics ()
 {
-/*
 	local vector obstr, org;
 	local float back, dst,cflags;
 
@@ -290,5 +237,6 @@ void() PostPhysics =
 	PlayerPostThink();
 	BotAI();
 	self.dmg_take = self.dmg_save = 0;
+}
+
 */
-};

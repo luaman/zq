@@ -1,7 +1,13 @@
-//Tonik:
+//TEST TEST TEST
 entity (string name, string team, float topcolor, float bottomcolor) testbot = #83;
 
-void() bot_map_load =
+
+void DeveloperLightning (entity e1, entity e2, float flag)
+{
+};
+
+
+void bot_map_load ()
 {
 	// place your qc loaded waypoints here
 
@@ -17,7 +23,7 @@ void() bot_map_load =
 		map_dm5();
 	else if (mapname == "dm6")
 		map_dm6();
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -37,16 +43,16 @@ for all variable in the bot...
 .float	portal_time, b_skill;
 .float	b_aiflags, b_num, b_chattime;
 .float	b_menu, b_menu_time, b_menu_value;
-.float route_failed, dyn_flags, dyn_time;
-.float dyn_plat;
+.float	route_failed, dyn_flags, dyn_time;
+.float	dyn_plat;
 .entity	temp_way, last_way;
 .entity	target1, target2, target3, target4;
 .entity	_next, _last;
 .entity	current_way;
 .vector	b_angle, b_dest, mouse_emu, obs_dir;
 .vector	b_dir;
-.float forwardmove, sidemove, upmove;
-.vector dyn_dest;
+.float	forwardmove, sidemove, upmove;
+.vector	dyn_dest;
 
 // used for the physics & movement AI
 float KEY_MOVEUP 		= 1;
@@ -114,66 +120,66 @@ float		sv_gravity;
 entity		fixer;
 entity		route_table;
 entity		b_temp1, b_temp2, b_temp3;
-entity 		player_head, phys_head, way_head;
+entity 		player_head, way_head;
 float		busy_waypoints;
 
 // -------Prototypes------
 
 // rankings
-float(float clientno)		ClientBitFlag;
-void(float whatbot, float whatskill) BotConnect;
-void(entity bot)			BotDisconnect;
+float	ClientBitFlag (float clientno);
+void	BotConnect (float whatbot, float whatskill);
+void	BotDisconnect (entity bot);
 
 // waypointing
-void()				DynamicWaypoint;
-entity(vector org)		make_waypoint;
-void()				ClearAllWays;
-void()				FixWaypoints;
-float()				begin_route;
-void(entity this, float direct)			bot_get_path;
-void()				WaypointThink;
-entity(entity start)				FindWayPoint;
+void	DynamicWaypoint ();
+entity	make_waypoint (vector org);
+void	ClearAllWays ();
+void	FixWaypoints ();
+float	begin_route ();
+void	bot_get_path (entity this, float direct);
+void	WaypointThink ();
+entity	FindWayPoint (entity start);
 
 // physics & movement
-float(entity e)			bot_can_rj;
-void()				bot_jump;
-void()				frik_bot_roam;
-float(vector weird)		frik_walkmove;
-void()				frik_movetogoal;
-void()				frik_obstacles;
-float(float flag)			frik_recognize_plat;
-float(vector sdir)		frik_KeysForDir;
-void(vector whichway, float danger) frik_obstructed;
-void() 				CL_KeyMove;
+float	bot_can_rj (entity e);
+void	bot_jump ();
+void	frik_bot_roam ();
+float	frik_walkmove (vector weird);
+void	frik_movetogoal ();
+void	frik_obstacles ();
+float	frik_recognize_plat (float flag);
+float	frik_KeysForDir (vector sdir);
+void	frik_obstructed (vector whichway, float danger);
+void	CL_KeyMove ();
 
 // ai & misc
-float(entity targ)		fov;
-float(float y1, float y2)	angcomp;
-float(entity targ1, entity targ2)		wisible;
-float(entity targ)		sisible;
-float(entity targ)		fisible;
-vector(entity ent)		realorigin;
-void(entity ent)			target_drop;
-void(entity ent)			target_add;
-void()				KickABot;
-void(entity targ, float success) bot_lost;
-string(entity ent, float r)		BotName;
-string(entity ent)			PickARandomName;
-float(float v)			frik_anglemod;
-void() bot_chat;
-void(float tpic) bot_start_topic;
+float	fov (entity targ);
+float	angcomp (float y1, float y2);
+float	wisible (entity targ1, entity targ2);
+float	sisible (entity targ);
+float	fisible (entity targ);
+vector	realorigin (entity ent);
+void	target_drop (entity ent);
+void	target_add (entity ent);
+void	KickABot ();
+void	bot_lost (entity targ, float success);
+string	BotName (entity ent, float r);
+string	PickARandomName (entity ent);
+float	frik_anglemod (float v);
+void	bot_chat ();
+void	bot_start_topic (float tpic);
 
 
 // ----------Commands---------
-void(entity e, float chan, string samp, float vol, float atten) frik_sound = #8;
-vector(entity e, float sped)		frik_aim = #44;	
+void(entity e, float chan, string samp, float vol, float atten) real_sound = #8;
+vector(entity e, float sped)		real_aim = #44;	
 
 //----------------------------------------------------------------------------
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-Function redclarations. These allow function 
+Function redeclarations. These allow function 
 designed to work for clients (sprint, so forth)
 to mainly not complain when working with a bot
 
@@ -185,22 +191,24 @@ direct messages to the bots, it crashes quake :-(
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-vector(entity e, float sped) aim =
+vector aim (entity e, float sped)
 {
 	e.missile_speed = sped;
-	return frik_aim(e, sped);
-};
+	return real_aim(e, sped);
+}
 
-void(entity e, float chan, string samp, float vol, float atten) sound = 
+void sound (entity e, float chan, string samp, float vol, float atten)
 {
-	frik_sound(e, chan, samp, vol, atten);
+	real_sound (e, chan, samp, vol, atten);
+
 	if (samp == "items/inv3.wav")
 		return;
 	else if (e.classname == "player")
 		e.b_sound = time + 1;
+/* Tonik -- what the ****? */
 	else if (other.classname == "player")
 		other.b_sound = time + 1;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -211,9 +219,9 @@ it just links the bot into the mod
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-float(entity ent) GetClientNum;
+float GetClientNum (entity ent);
 
-void() ClientConnected =
+void ClientConnected ()
 {
 	float isBot;
 
@@ -256,7 +264,7 @@ void() ClientConnected =
 }
 
 
-void() ClientDisconnected =
+void ClientDisconnected ()
 {
 	if (!self.ishuman) {
 		BotDisconnect ();
@@ -269,7 +277,7 @@ void() ClientDisconnected =
 		self._next._last = self._last;
 	if (self._last)
 		self._last._next = self._next;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -280,25 +288,26 @@ The rest of this code is in bot_rank.qc
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
+
 void(entity client, float level, string s, string s2) sprint2 = #24;
 void(float level, string s, string s2) bprint2	= #23;
 
-void(string h) BotSay = // simulate talking by composing a 'chat' message
+void BotSay (string s)
 {
-	bprint2 (PRINT_CHAT, self.netname, h);
-};
-void() BotSayInit =
+	bprint2 (PRINT_CHAT, self.netname, s);
+}
+void BotSayInit ()
 {
 	bprint (PRINT_CHAT, self.netname);
-};
-void(string h) BotSay2 =
+}
+void BotSay2 (string h)
 {
 	bprint (PRINT_CHAT, h);
-};
-void(string h) BotSayTeam = 
+}
+void BotSayTeam (string h)
 {
 	// FBX QW doesn't support teamplay...yet
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -309,12 +318,12 @@ BotInit
 */
 
 
-void() BotInit =
+void BotInit ()
 {
 	max_clients = 32;	//Tonik
 
 	bot_map_load();
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -327,7 +336,7 @@ signs on to the server.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-float(float clientno) ClientBitFlag =
+float ClientBitFlag (float clientno)
 {
 	local float bitflag;
 	bitflag = 1;
@@ -337,9 +346,8 @@ float(float clientno) ClientBitFlag =
 		clientno = clientno - 1;
 	}
 	return bitflag;
-};
+}
 
-void(entity e1, entity e2, float flag) DeveloperLightning = {};
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -348,7 +356,7 @@ BotConnect and related functions.
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */				
-entity(float num) GetClientEntity =
+entity GetClientEntity (float num)
 {
 	local entity upsy;
 	upsy = world;
@@ -359,9 +367,9 @@ entity(float num) GetClientEntity =
 		upsy = nextent(upsy);
 	}
 	return upsy;
-};
+}
 
-float(entity ent) GetClientNum =
+float GetClientNum (entity ent)
 {
 	entity upsy;
 	float	num;
@@ -375,9 +383,9 @@ float(entity ent) GetClientNum =
 	}
 
 	return num;
-};
+}
 
-void(float whatbot, float whatskill) BotConnect =
+void BotConnect (float whatbot, float whatskill)
 {
 	entity bot;
 	entity temp;
@@ -400,12 +408,12 @@ void(float whatbot, float whatskill) BotConnect =
 
 	bot.ishuman = 0;
 
-};
+}
 
-void(entity bot) BotDisconnect =
+void BotDisconnect (entity bot)
 {
 	bot_count = bot_count - 1;
-};
+}
 
 
 void BotAI ();	// Tonik
@@ -433,7 +441,7 @@ void BotPreThink ()
 	DynamicWaypoint();
 }
 
-void() BotFrame =
+void BotFrame ()
 {
 	local string h;
 	
@@ -442,7 +450,7 @@ void() BotFrame =
 	
 	// for the sake of speed
 	sv_gravity = cvar("sv_gravity");
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

@@ -7,7 +7,7 @@ Waypoint Linking code
 */
 
 
-float (entity e1, entity e2) CheckLinked =
+float CheckLinked (entity e1, entity e2)
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
 		return FALSE;
@@ -37,10 +37,10 @@ float (entity e1, entity e2) CheckLinked =
 	}
 
 	else return FALSE;
-};
+}
 
 
-float (entity e1, entity e2) LinkWays =
+float LinkWays (entity e1, entity e2)
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
 		return FALSE;
@@ -69,10 +69,10 @@ float (entity e1, entity e2) LinkWays =
 	}
 	else return FALSE;
 
-};
+}
 // Link Ways part 2, used only for teleporters
 
-float (entity e1, entity e2) TeleLinkWays =
+float TeleLinkWays (entity e1, entity e2)
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
 		return FALSE;
@@ -106,9 +106,9 @@ float (entity e1, entity e2) TeleLinkWays =
 	else
 		return FALSE;
 
-};
+}
 
-void (entity e1, entity e2) UnlinkWays =
+void UnlinkWays (entity e1, entity e2)
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
 		return;
@@ -136,7 +136,7 @@ void (entity e1, entity e2) UnlinkWays =
 		e1.target4 = world;
 	}
 
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -151,7 +151,7 @@ Finds the closest, fisible, waypoint to e
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-entity(entity start) FindWayPoint =
+entity FindWayPoint (entity start)
 {
 	local entity t;
 	local vector org;
@@ -191,7 +191,7 @@ entity(entity start) FindWayPoint =
 		t = t._next;
 	} 
 	return best;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -203,7 +203,7 @@ Waypoint Spawning Code
 
 entity way_foot; // Ugh. Do I need a foot for this or not?
 
-entity(vector org) make_waypoint = 
+entity make_waypoint (vector org)
 {
 	local entity point;
 	point = spawn();
@@ -232,7 +232,7 @@ entity(vector org) make_waypoint =
 	if (waypoint_mode > WM_LOADED) // editor modes
 		setmodel(point, "progs/s_bubble.spr"); 
 	return point;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -243,7 +243,7 @@ very good all things considered.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() DynamicWaypoint =
+void DynamicWaypoint ()
 {
 	local entity t;
 	local float dist, dynlink, dynpoint, editor;
@@ -440,7 +440,7 @@ void() DynamicWaypoint =
 		if (trace_ent.classname == "door")
 			t.b_aiflags = t.b_aiflags | AI_DOORFLAG;
 	}
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -450,7 +450,7 @@ Waypoint Loading from file
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() ClearAllWays =
+void ClearAllWays ()
 {
 
 	local entity t, n;
@@ -464,9 +464,9 @@ void() ClearAllWays =
 	way_head = world;
 	way_foot = world;
 	waypoints = 0;
-};
+}
 
-entity(float num) WaypointForNum =
+entity WaypointForNum (float num)
 {
 	local entity t;
 	if (!num)
@@ -480,9 +480,9 @@ entity(float num) WaypointForNum =
 		t = t._next;
 	}
 	return world;
-};
+}
 
-void() FixThisWaypoint = 
+void FixThisWaypoint ()
 {
 	self.enemy.target1 = WaypointForNum(self.enemy.b_pants);
 	self.enemy.target2 = WaypointForNum(self.enemy.b_skill);
@@ -495,20 +495,20 @@ void() FixThisWaypoint =
 		remove(self);
 		fixer = world;
 	}
-};
+}
 
-void() FixWaypoints =
+void FixWaypoints ()
 {
 	if (!fixer)
 		fixer = spawn();
 	fixer.nextthink = time;
 	fixer.think = FixThisWaypoint;
 	fixer.enemy = way_head;
-};
+}
 
 
 
-void(entity what) delete_waypoint =
+void delete_waypoint (entity what)
 {
 	local entity t;
 
@@ -532,7 +532,7 @@ void(entity what) delete_waypoint =
 	if (self.current_way == what)
 		self.current_way = world;
 	remove(what);
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -544,7 +544,7 @@ in bot_ai.qc
 */
 
 
-entity(string s) FindThing =
+entity FindThing (string s)
 {
 	local entity t;
 	local float tdst, dst;
@@ -563,7 +563,7 @@ entity(string s) FindThing =
 		t = find(t, classname, s);
 	}
 	return best;
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -578,7 +578,7 @@ an object.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-entity(entity lastone) FindRoute =
+entity FindRoute (entity lastone)
 {
 	// kinda like FindWaypoint, only of this bots route though
 	local entity t, best;
@@ -601,7 +601,7 @@ entity(entity lastone) FindRoute =
 		t = t._next;
 	} 
 	return best;
-};
+}
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -610,7 +610,7 @@ Route & path table management
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() ClearRouteTable =
+void ClearRouteTable ()
 {
 	// cleans up route table
 
@@ -623,9 +623,9 @@ void() ClearRouteTable =
 		t.items = -1; // not in table
 		t = t._next;
 	}
-};
+}
 
-void() ClearMyRoute =
+void ClearMyRoute ()
 {
 	local float flag;
 	local entity t;
@@ -638,7 +638,7 @@ void() ClearMyRoute =
 		t.b_sound = t.b_sound - (t.b_sound & flag);
 		t = t._next;
 	}
-};
+}
 
 
 /*
@@ -654,7 +654,7 @@ different bot.
 */
 
 
-void(entity this) mark_path =
+void mark_path (entity this)
 {
 	local entity t, oself;
 	local float flag;
@@ -689,7 +689,7 @@ void(entity this) mark_path =
 		t.b_sound = t.b_sound | flag;
 		t = t.enemy; 	
 	}
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -702,7 +702,7 @@ tripping the runaway loop counter
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void(entity e2, float b_bit) FollowLink =
+void FollowLink (entity e2, float b_bit)
 {
 	local float dist;
 	
@@ -732,9 +732,9 @@ void(entity e2, float b_bit) FollowLink =
 		e2.nextthink = time;
 		e2.enemy = self;
 	}
-};
+}
 
-void() WaypointThink =
+void WaypointThink ()
 {
 	local entity oself;
 
@@ -794,7 +794,7 @@ void() WaypointThink =
 			direct_route = FALSE;
 		}
 	}
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -813,7 +813,7 @@ Boy it's confusing.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-float() begin_route =
+float begin_route ()
 {
 	if (busy_waypoints > 0)
 		return FALSE;
@@ -846,9 +846,9 @@ float() begin_route =
 		busy_waypoints = 0;
 		return FALSE;
 	}
-};
+}
 
-void(entity this, float direct) bot_get_path =
+void bot_get_path (entity this, float direct)
 {
 	if (this == world)
 		return;
@@ -870,7 +870,7 @@ void(entity this, float direct) bot_get_path =
 			bot_lost(this, FALSE);
 		return;
 	}
-};
+}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -880,7 +880,7 @@ BSP/QC Waypoint loading
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() waypoint =
+void waypoint ()
 {	
 	self.search_time = time;
 	self.solid = SOLID_TRIGGER;
@@ -908,9 +908,9 @@ void() waypoint =
 		self.think = FixWaypoints; // wait until all bsp loaded points are spawned
 		self.nextthink = time;
 	}
-};
+}
 
-void(vector org, vector bit1, float bit4, float flargs) make_way =
+void make_way (vector org, vector bit1, float bit4, float flargs)
 {
 	local entity y;
 	waypoint_mode = WM_LOADED;
@@ -925,7 +925,7 @@ void(vector org, vector bit1, float bit4, float flargs) make_way =
 		y.think = FixWaypoints; // wait until all qc loaded points are spawned
 		y.nextthink = time;
 	}
-};
+}
 
 
 /*
@@ -936,7 +936,7 @@ Temporary Marker code
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void(vector org) SpawnTempWaypoint =
+void SpawnTempWaypoint (vector org)
 {	
 	local entity tep;
 
@@ -951,5 +951,6 @@ void(vector org) SpawnTempWaypoint =
 	tep.movetype = MOVETYPE_NOCLIP;
 	setorigin(tep, org);
 	target_add(tep);
-	setsize(tep, VEC_HULL_MIN, VEC_HULL_MAX); // FIXME: convert these to numerical
-};
+	setsize(tep, VEC_HULL_MIN, VEC_HULL_MAX);
+}
+
