@@ -1164,91 +1164,6 @@ void TP_MsgTrigger_f (void)
 	}
 }
 
-char *trigger_commands[] = {
-	"play",
-	"playvol",
-	"stopsound",
-	"set",
-	"echo",
-	"say",
-	"say_team",
-	"alias",
-	"unalias",
-	"msg_trigger",
-	"inc",
-	"bind",
-	"unbind",
-	"record",
-	"easyrecord",
-	"stop",
-	"if"
-};
-
-#define NUM_TRIGGER_COMMANDS (sizeof(trigger_commands)/sizeof(trigger_commands[0]))
-
-void TP_ExecuteTriggerString (char *text)
-{
-	static char	buf[1024];
-	char	*arg0;
-	int		i;
-	cmd_function_t	*cmd;
-
-	Cmd_ExpandString (text, buf);
-	Cmd_TokenizeString (buf);
-			
-	if (!Cmd_Argc())
-		return;		// no tokens
-
-// check cvars
-	if (Cvar_Command())
-		return;
-
-// check commands
-	arg0 = Cmd_Argv(0);
-
-	for (i=0; i < NUM_TRIGGER_COMMANDS ; i++)
-		if (!Q_stricmp(arg0, trigger_commands[i]))
-		{
-			cmd = Cmd_FindCommand (arg0);
-			if (cmd) {
-				if (!cmd->function)
-					Cmd_ForwardToServer ();
-				else
-					cmd->function ();
-				return;
-			}
-		}
-
-	if (cl_warncmd.value || developer.value)
-		Com_Printf ("Invalid trigger command: \"%s\"\n", arg0);
-}
-
-
-void TP_ExecuteTriggerBuf (char *text)
-{
-	char	line[1024];
-	int		i, quotes;
-
-	while (*text)
-	{
-		quotes = 0;
-		for (i=0 ; text[i] ; i++)
-		{
-			if (text[i] == '"')
-				quotes++;
-			if ( !(quotes&1) &&  text[i] == ';' )
-				break;	// don't break if inside a quoted string
-			if (text[i] == '\n')
-				break;
-		}
-		memcpy (line, text, i);
-		line[i] = 0;
-		TP_ExecuteTriggerString (line);
-		if (!text[i])
-			break;
-		text += i + 1;
-	}
-}
 
 void TP_SearchForMsgTriggers (char *s, int level)
 {
@@ -1269,7 +1184,10 @@ void TP_SearchForMsgTriggers (char *s, int level)
 
 			string = Cmd_AliasString (t->name);
 			if (string)
-				TP_ExecuteTriggerBuf (string);
+			{
+				Cbuf_AddTextEx (&cbuf_safe, string);
+				Cbuf_ExecuteEx (&cbuf_safe);
+			}
 			else
 				Com_Printf ("trigger \"%s\" has no matching alias\n", t->name);
 		}

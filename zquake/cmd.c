@@ -30,6 +30,7 @@ cvar_t cl_warncmd = {"cl_warncmd", "0"};
 
 cbuf_t	cbuf_main;
 #ifndef SERVERONLY
+cbuf_t	cbuf_safe;
 cbuf_t	cbuf_svc;
 #endif
 
@@ -75,6 +76,8 @@ void Cbuf_Init (void)
 	cbuf_main.text_start = cbuf_main.text_end = MAXCMDBUF / 2;
 	cbuf_main.wait = false;
 #ifndef SERVERONLY
+	cbuf_safe.text_start = cbuf_safe.text_end = MAXCMDBUF / 2;
+	cbuf_safe.wait = false;
 	cbuf_svc.text_start = cbuf_svc.text_end = MAXCMDBUF / 2;
 	cbuf_svc.wait = false;
 #endif
@@ -1044,30 +1047,59 @@ void Cmd_ExpandString (char *data, char *dest)
 	dest[len] = 0;
 }
 
+// Commands allowed for msg_trigger
+char *safe_commands[] = {
+	"play",
+	"playvol",
+	"stopsound",
+	"set",
+	"echo",
+	"say",
+	"say_team",
+	"alias",
+	"unalias",
+	"msg_trigger",
+	"inc",
+	"bind",
+	"unbind",
+	"record",
+	"easyrecord",
+	"stop",
+	"if",
+	NULL
+};
 
 /*
 ============
 Cmd_ExecuteString
 
 A complete command line has been parsed, so try to execute it
-FIXME: lookupnoadd the token to speed search?
+
+FIXME: this function is getting really messy...
 ============
 */
 void Cmd_ExecuteString (char *text)
 {	
 	cmd_function_t	*cmd;
 	cmd_alias_t		*a;
+	char			**s;
 	int				key;
 	static char		buf[1024];
+	cbuf_t			*inserttarget;
 
 	Cmd_ExpandString (text, buf);
 	Cmd_TokenizeString (buf);
-			
+
 // execute the command line
 	if (!Cmd_Argc())
 		return;		// no tokens
 
+	inserttarget = &cbuf_main;
+
 #ifndef SERVERONLY
+	if (cbuf_current == &cbuf_safe)
+		inserttarget = &cbuf_safe;
+
 	if (cbuf_current == &cbuf_svc) {
 		if (CL_CheckServerCommand())
 			return;
@@ -1081,6 +1113,20 @@ void Cmd_ExecuteString (char *text)
 	{
 		if (!Q_stricmp (cmd_argv[0], cmd->name))
 		{
+#ifndef SERVERONLY
+			// special check for msg_trigger commands
+			if (cbuf_current == &cbuf_safe) {
+				for (s = safe_commands; *s; s++) {
+					if (!Q_stricmp(cmd_argv[0], *s))
+						break;
+				}
+				if (!*s) {
+					if (cl_warncmd.value || developer.value)
+						Com_Printf ("\"%s\" cannot be used in message triggers\n", cmd_argv[0]);
+					return;
+				}
+			}
+#endif
 			if (cmd->function)
 				cmd->function ();
 			else
@@ -1113,7 +1159,7 @@ if ( ! (!strcmp(Cmd_Argv(0), "skill") && Cmd_Argc() == 1 && Cmd_FindAlias("skill
 			else
 #endif
 			{
-				Cbuf_InsertText ("\n");
+				Cbuf_InsertTextEx (inserttarget, "\n");
 
 				// if the alias value is a command or cvar and
 				// the alias is called with parameters, add them
@@ -1121,11 +1167,11 @@ if ( ! (!strcmp(Cmd_Argv(0), "skill") && Cmd_Argc() == 1 && Cmd_FindAlias("skill
 					&& (Cvar_FindVar(a->value) || (Cmd_FindCommand(a->value)
 					&& a->value[0] != '+' && a->value[0] != '-')))
 				{
-					Cbuf_InsertText (Cmd_Args());
-					Cbuf_InsertText (" ");
+					Cbuf_InsertTextEx (inserttarget, Cmd_Args());
+					Cbuf_InsertTextEx (inserttarget, " ");
 				}
 
-				Cbuf_InsertText (a->value);
+				Cbuf_InsertTextEx (inserttarget, a->value);
 			}
 			return;
 		}
@@ -1222,7 +1268,7 @@ void Cmd_If_f (void)
 	}
 
 	strcat (buf, "\n");
-	Cbuf_InsertText (buf);
+	Cbuf_InsertTextEx (cbuf_current, buf);
 }
 
 
