@@ -43,7 +43,10 @@ cvar_t	cl_rocket2grenade = {"cl_r2g", "0"};
 // Defined later...
 char *Cmd_Macro_Location_f (void);
 
-void *Cmd_FindAlias(s);	 // hmm
+void *Cmd_FindAlias(s);	 // hmm, it's NOT void in fact
+
+// dest must point to a 1024-byte buffer
+void Cmd_ExpandString (char *data, char *dest);
 
 #define MAX_LOC_NAME 32
 
