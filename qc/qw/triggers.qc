@@ -472,7 +472,7 @@ void info_teleport_destination ()
 	self.mangle = self.angles;
 	self.angles = '0 0 0';
 	self.model = "";
-	self.origin = self.origin + '0 0 27';
+	setorigin (self, self.origin + '0 0 27');
 	if (!self.targetname)
 		objerror ("no targetname");
 }

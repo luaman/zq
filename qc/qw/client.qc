@@ -557,7 +557,7 @@ void PutClientInServer ()
 	
 	spot = SelectSpawnPoint ();
 
-	self.origin = spot.origin + '0 0 1';
+	setorigin (self, spot.origin + '0 0 1');
 	self.angles = spot.angles;
 	self.fixangle = true;           // turn this way immediately
 	self.jump_flag = 0;
