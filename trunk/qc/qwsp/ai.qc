@@ -421,10 +421,10 @@ float FindTarget ()
 // got one
 //
 	self.enemy = client;
-	if (self.enemy.classname != "player")
+	if (self.enemy.classname != "player" || self.enemy.flags & FL_NOTARGET)
 	{
 		self.enemy = self.enemy.enemy;
-		if (self.enemy.classname != "player")
+		if (self.enemy.classname != "player" || self.enemy.flags & FL_NOTARGET)
 		{
 			self.enemy = world;
 			return false;
