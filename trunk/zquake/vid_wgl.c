@@ -1536,7 +1536,7 @@ void VID_Init8bitPalette()
 	char *oldPalette, *newPalette;
 
 	glColorTableEXT = (void *)wglGetProcAddress("glColorTableEXT");
-    if (!glColorTableEXT || strstr(gl_extensions, "GL_EXT_shared_texture_palette") ||
+    if (!glColorTableEXT || !strstr(gl_extensions, "GL_EXT_shared_texture_palette") ||
 		COM_CheckParm("-no8bit"))
 		return;
 
