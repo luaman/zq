@@ -77,6 +77,11 @@ char *Sys_ConsoleInput (void)
 	return NULL;
 }
 
+char *Sys_GetClipboardText (void)
+{
+	return NULL;
+}
+
 void Sys_SendKeyEvents (void)
 {
 }
