@@ -2225,7 +2225,14 @@ qboolean TP_CheckSoundTrigger (char *str)
 char filter_strings[8][MAX_FILTER_LENGTH+1];
 int	num_filters = 0;
 
-// returns false if the message shouldn't be printed
+/*
+======================
+TP_FilterMessage
+
+returns false if the message shouldn't be printed
+matching filters are stripped from the message
+======================
+*/
 qboolean TP_FilterMessage (char *s)
 {
 	int i, j, len, maxlen;
@@ -2245,18 +2252,28 @@ qboolean TP_FilterMessage (char *s)
 			break;
 	}
 	if (i < 0 || !maxlen)
-		return true;
+		return true;	// no filter at all
 
 	s[len-1] = 0;	// so that strcmp works properly
-	i++;
+
 	for (j=0 ; j<num_filters ; j++)
-		if (!strcmp(s + i, filter_strings[j])) {
-			s[len-1] = '\n';
+		if (!strcmp(s + i + 1, filter_strings[j]))
+		{
+			// strip the filter from message
+			if (i && s[i-1] == ' ')
+			{	// there's a space just before the filter, remove it
+				// so that soundtriggers like ^blah #att work 
+				s[i-1] = '\n';
+				s[i] = 0;
+			} else {
+				s[i] = '\n';
+				s[i+1] = 0;
+			}
 			return true;
 		}
 
 	s[len-1] = '\n';
-	return false;	// this message is not for us
+	return false;	// this message is not for us, don't print it
 }
 
 void TP_MsgFilter_f (void)
