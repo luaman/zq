@@ -25,10 +25,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	RETURN_EDICT(e) (((int *)pr_globals)[OFS_RETURN] = EDICT_TO_PROG(e))
 #define	RETURN_STRING(s) (((int *)pr_globals)[OFS_RETURN] = PR_SetString(s))
 
-// Used when returning a string
-// Let us hope it's large enough (no crashes, but result may be truncated)
-// Well, QW had 128...
-static char	pr_string_temp[512];
+/*
+=================
+PR_GetTempString
+
+Returns a pointer to the next temporary buffer for string operations
+(this prevents overwritten buffers in up to STRINGTEMP_BUFFERS succesive calls)
+=================
+*/
+#define STRINGTEMP_BUFFERS	16			// number of temporaray buffers
+#define	STRINGTEMP_LENGTH	512			// length of each buffer (original QW had only 128...)
+static char	*PR_GetTempString(void)
+{
+	char		*s = NULL;
+	static char	 pr_string_temp[STRINGTEMP_BUFFERS][STRINGTEMP_LENGTH];
+	static int	 pr_string_tempindex = 0;
+
+	s = pr_string_temp[pr_string_tempindex];
+	pr_string_tempindex = (pr_string_tempindex + 1) % STRINGTEMP_BUFFERS;
+	s[0] = '\0';
+	return s;
+}
 
 
 /*
@@ -56,7 +73,7 @@ static void PF_Fixme (void)
 static char *PF_VarString (int first)
 {
 	int		i;
-	static char out[256];
+	static char out[2048];
 	
 	out[0] = 0;
 	for (i = first; i < pr_argc; i++)
@@ -922,22 +939,25 @@ static void PF_ftos (void)
 {
 	float	v;
 	int	i;
+	char *string_temp;
+
+	string_temp = PR_GetTempString();
 
 	v = G_FLOAT(OFS_PARM0);
 
 	if (v == (int)v)
-		sprintf (pr_string_temp, "%d", (int)v);
+		Q_snprintfz (string_temp, STRINGTEMP_LENGTH, "%d", (int)v);
 	else
 	{
-		Q_snprintfz (pr_string_temp, sizeof(pr_string_temp), "%f", v);
+		Q_snprintfz (string_temp, STRINGTEMP_LENGTH, "%f", v);
 
-		for (i=strlen(pr_string_temp)-1 ; i>0 && pr_string_temp[i]=='0' ; i--)
-			pr_string_temp[i] = 0;
-		if (pr_string_temp[i] == '.')
-			pr_string_temp[i] = 0;
+		for (i=strlen(string_temp) - 1; i > 0 && string_temp[i] == '0'; i--)
+			string_temp[i] = 0;
+		if (string_temp[i] == '.')
+			string_temp[i] = 0;
 	}
 
-	G_INT(OFS_RETURN) = PR_SetString(pr_string_temp);
+	G_INT(OFS_RETURN) = PR_SetString(string_temp);
 }
 
 static void PF_fabs (void)
@@ -949,8 +969,14 @@ static void PF_fabs (void)
 
 static void PF_vtos (void)
 {
-	sprintf (pr_string_temp, "'%5.1f %5.1f %5.1f'", G_VECTOR(OFS_PARM0)[0], G_VECTOR(OFS_PARM0)[1], G_VECTOR(OFS_PARM0)[2]);
-	G_INT(OFS_RETURN) = PR_SetString(pr_string_temp);
+	char *string_temp;
+
+	string_temp = PR_GetTempString();
+
+	Q_snprintfz (string_temp, STRINGTEMP_LENGTH,
+	             "'%5.1f %5.1f %5.1f'",
+	             G_VECTOR(OFS_PARM0)[0], G_VECTOR(OFS_PARM0)[1], G_VECTOR(OFS_PARM0)[2]);
+	G_INT(OFS_RETURN) = PR_SetString(string_temp);
 }
 
 static void PF_Spawn (void)
@@ -1798,12 +1824,15 @@ static void PF_strlen (void)
 static void PF_stradd (void)
 {
 	int i;
+	char *string_temp;
+	
+	string_temp = PR_GetTempString();
 
-	pr_string_temp[0] = '\0';
+	string_temp[0] = '\0';
 	for (i = 0; i < pr_argc; i++)
-		strlcat (pr_string_temp, G_STRING(OFS_PARM0 + i * 3), sizeof(pr_string_temp));
+		strlcat (string_temp, G_STRING(OFS_PARM0 + i * 3), STRINGTEMP_LENGTH);
 
-	RETURN_STRING(pr_string_temp);
+	RETURN_STRING(string_temp);
 }
 
 // string(string s, float start, float count) substr = #116;
@@ -1811,6 +1840,9 @@ static void PF_substr (void)
 {
 	int		start, count;
 	char	*s;
+	char	*string_temp;
+
+	string_temp = PR_GetTempString();
 
 	s = G_STRING(OFS_PARM0);
 	start = (int)G_FLOAT(OFS_PARM1);
@@ -1825,9 +1857,9 @@ static void PF_substr (void)
 	}
 
 	// up to count characters, or until buffer size is exceeded
-	strlcpy (pr_string_temp, s + start, min(count + 1, sizeof(pr_string_temp)));
+	strlcpy (string_temp, s + start, min(count + 1, STRINGTEMP_LENGTH));
 
-	RETURN_STRING(pr_string_temp);
+	RETURN_STRING(string_temp);
 }
 
 
