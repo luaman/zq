@@ -1137,7 +1137,7 @@ static void Mod_ParseWadsFromEntityLump(lump_t *l)
 	if (!l->filelen)
 		return;
 
-	data = mod_base + l->fileofs;
+	data = (char *)(mod_base + l->fileofs);
 	data = COM_Parse(data);
 	if (!data)
 		return;

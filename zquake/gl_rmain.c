@@ -596,6 +596,9 @@ void R_SetupGL (void)
 }
 
 
+extern void R_InitBubble (void);
+extern void R_Draw_Init (void);
+
 /*
 ===============
 R_Init
@@ -603,9 +606,6 @@ R_Init
 */
 void R_Init (unsigned char *palette)
 {
-	extern void R_InitBubble (void);
-	extern void R_Draw_Init (void);
-
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
 	Cmd_AddCommand ("screenshot", R_ScreenShot_f);
 	Cmd_AddCommand ("loadsky", R_LoadSky_f);

@@ -151,6 +151,9 @@ void Host_InitMemory (int memsize)
 }
 
 
+extern void D_FlushCaches (void);
+extern void Mod_ClearAll (void);
+
 /*
 ===============
 Host_ClearMemory
@@ -161,9 +164,6 @@ Can only be called when changing levels!
 */
 void Host_ClearMemory ()
 {
-	extern void D_FlushCaches (void);
-	extern void Mod_ClearAll (void);
-
 	// FIXME, move to CL_ClearState
 	if (!dedicated)
 		D_FlushCaches ();

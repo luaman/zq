@@ -331,8 +331,8 @@ static void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 static void R_LoadCharset (void)
 {
 	int i;
-	char	buf[128*256];
-	char	*src, *dest;
+	byte	buf[128*256];
+	byte	*src, *dest;
 
 	draw_chars = W_GetLumpName ("conchars", true);
 	for (i=0 ; i<256*64 ; i++)

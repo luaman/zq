@@ -376,7 +376,7 @@ void CL_Disconnect (void)
 	else if (cls.state != ca_disconnected)
 	{
 		final[0] = clc_stringcmd;
-		strcpy (final+1, "drop");
+		strcpy ((char *)(final+1), "drop");
 		Netchan_Transmit (&cls.netchan, 6, final);
 		// don't choke the loopback buffers
 		if (cls.netchan.remote_address.type != NA_LOOPBACK)
@@ -444,6 +444,10 @@ void CL_Reconnect_f (void)
 	CL_Disconnect();	// FIXME: replace with Host_EndGame?
 	CL_BeginServerConnect();
 }
+
+
+extern double qstat_senttime;
+extern void CL_PrintQStatReply (char *s);
 
 /*
 =================
@@ -520,9 +524,6 @@ void CL_ConnectionlessPacket (void)
 	// print command from somewhere
 	if (c == A2C_PRINT) {
 		if (net_message.data[msg_readcount] == '\\') {
-			extern double qstat_senttime;
-			extern void CL_PrintQStatReply (char *s);
-
 			if (qstat_senttime && curtime - qstat_senttime < 10) {
 				CL_PrintQStatReply (MSG_ReadString());
 				return;
@@ -600,6 +601,8 @@ void CL_ConnectionlessPacket (void)
 }
 
 
+extern void CheckQizmoCompletion ();
+
 /*
 ====================
 CL_GetMessage
@@ -610,7 +613,6 @@ Handles playback of demos, on top of NET_ code
 qbool CL_GetMessage (void)
 {
 #ifdef _WIN32
-	extern void CheckQizmoCompletion ();
 	CheckQizmoCompletion ();
 #endif
 
@@ -889,13 +891,13 @@ void CL_BeginLocalConnection (void)
 }
 
 
+extern void SV_TogglePause (const char *msg);
+extern cvar_t sv_paused;
+
 // automatically pause the game when going into the menus in single player
 static void CL_CheckAutoPause (void)
 {
 #ifndef CLIENTONLY
-	extern void SV_TogglePause (const char *msg);
-	extern cvar_t sv_paused;
-
 	if (com_serveractive && cls.state == ca_active && !cl.deathmatch && cl.maxclients == 1
 		&& (key_dest == key_menu /*|| key_dest == key_console*/))
 	{
@@ -955,7 +957,7 @@ CL_Frame
 */
 void CL_Frame (double time)
 {
-	double			time1, time2;
+	double			time1 = 0, time2 = 0;
 	static double	time3 = 0;
 	int				pass1, pass2, pass3;
 	static double	extratime = 0.001;
