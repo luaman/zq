@@ -912,7 +912,7 @@ void CL_LinkPlayers (void)
 		// spawn light flashes, even ones coming from invisible objects
 		if (r_powerupglow.value && !(r_powerupglow.value == 2 && j == cl.viewplayernum))
 		{
-			if (j == cl.playernum) {
+			if (j == cl.viewplayernum) {
 				VectorCopy (cl.simorg, org);
 			} else
 				VectorCopy (state->origin, org);
