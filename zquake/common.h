@@ -317,6 +317,7 @@ void COM_Shutdown (void);
 
 
 char *COM_SkipPath (char *pathname);
+char *COM_FileExtension (char *in);
 void COM_StripExtension (char *in, char *out);
 void COM_FileBase (char *in, char *out);
 void COM_DefaultExtension (char *path, char *extension);
