@@ -201,28 +201,13 @@ called by CL_Connect_f and CL_CheckResend
 */
 void CL_SendConnectPacket (void)
 {
-	netadr_t	adr;
 	char	data[2048];
-	double t1, t2;
 	char	biguserinfo[MAX_INFO_STRING + 32];
 
 	if (cls.state != ca_disconnected)
 		return;
 
-// JACK: Fixed bug where DNS lookups would cause two connects real fast
-// Now, adds lookup time to the connect time.
-	t1 = Sys_DoubleTime ();
-	if (!NET_StringToAdr (cls.servername, &adr))
-	{
-		Com_Printf ("Bad server address\n");
-		connect_time = 0;
-		return;
-	}
-	t2 = Sys_DoubleTime ();
-	connect_time = cls.realtime + t2 - t1;	// for retransmit requests
-
-	if (adr.port == 0)
-		adr.port = BigShort (PORT_SERVER);
+	connect_time = cls.realtime;	// for retransmit requests
 
 	cls.qport = Cvar_VariableValue("qport");
 
@@ -232,7 +217,7 @@ void CL_SendConnectPacket (void)
 
 	sprintf (data, "\xff\xff\xff\xff" "connect %i %i %i \"%s\"\n",
 		PROTOCOL_VERSION, cls.qport, cls.challenge, biguserinfo);
-	NET_SendPacket (NS_CLIENT, strlen(data), data, adr);
+	NET_SendPacket (NS_CLIENT, strlen(data), data, cls.server_adr);
 }
 
 /*
@@ -244,13 +229,13 @@ Resend a connect message if the last one has timed out
 */
 void CL_CheckForResend (void)
 {
-	netadr_t	adr;
 	char	data[2048];
 	double t1, t2;
 
 	if (cls.state == ca_disconnected && com_serveractive) {
 		// if the local server is running and we are not, then connect
 		strlcpy (cls.servername, "local", sizeof(cls.servername));
+		NET_StringToAdr ("local", &cls.server_adr);
 		CL_SendConnectPacket ();	// we don't need a challenge on the local server
 		// FIXME: cls.state = ca_connecting so that we don't send the packet twice?
 		return;
@@ -262,7 +247,7 @@ void CL_CheckForResend (void)
 		return;
 
 	t1 = Sys_DoubleTime ();
-	if (!NET_StringToAdr (cls.servername, &adr))
+	if (!NET_StringToAdr (cls.servername, &cls.server_adr))
 	{
 		Com_Printf ("Bad server address\n");
 		connect_time = 0;
@@ -271,12 +256,12 @@ void CL_CheckForResend (void)
 	t2 = Sys_DoubleTime ();
 	connect_time = cls.realtime + t2 - t1;	// for retransmit requests
 
-	if (adr.port == 0)
-		adr.port = BigShort (PORT_SERVER);
+	if (cls.server_adr.port == 0)
+		cls.server_adr.port = BigShort (PORT_SERVER);
 
 	Com_Printf ("Connecting to %s...\n", cls.servername);
 	sprintf (data, "\xff\xff\xff\xff" "getchallenge\n");
-	NET_SendPacket (NS_CLIENT, strlen(data), data, adr);
+	NET_SendPacket (NS_CLIENT, strlen(data), data, cls.server_adr);
 }
 
 void CL_BeginServerConnect(void)

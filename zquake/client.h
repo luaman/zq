@@ -224,6 +224,7 @@ typedef struct
 	netchan_t	netchan;
 	int			qport;
 	char		servername[MAX_OSPATH];	// name of server from original connect
+	netadr_t	server_adr;
 
 // private userinfo for sending to masterless servers
 	char		userinfo[MAX_INFO_STRING];
