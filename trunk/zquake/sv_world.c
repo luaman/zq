@@ -442,8 +442,6 @@ POINT TESTING IN HULLS
 ===============================================================================
 */
 
-#if	!id386
-
 /*
 ==================
 SV_HullPointContents
@@ -477,8 +475,6 @@ int SV_HullPointContents (hull_t *hull, int num, vec3_t p)
 	return num;
 }
 
-#endif	// !id386
-
 
 /*
 ==================
@@ -488,7 +484,7 @@ SV_PointContents
 */
 int SV_PointContents (vec3_t p)
 {
-	return SV_HullPointContents (&sv.worldmodel->hulls[0], 0, p);
+	return SV_HullPointContents (&sv.worldmodel->hulls[0], sv.worldmodel->hulls[0].firstclipnode, p);
 }
 
 //===========================================================================
