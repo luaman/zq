@@ -182,7 +182,7 @@ void PR_LexString (void)
 			pr_token[len] = 0;
 			pr_token_type = tt_immediate;
 			pr_immediate_type = &type_const_string;
-			strcpy (pr_immediate_string, pr_token);
+			strlcpy (pr_immediate_string, pr_token, sizeof(pr_immediate_string));
 			return;
 		}
 		pr_token[len] = c;
@@ -336,7 +336,7 @@ void PR_LexPunctuation (void)
 		len = strlen(p);
 		if (!strncmp(p, pr_file_p, len) )
 		{
-			strcpy (pr_token, p);
+			strlcpy (pr_token, p, sizeof(pr_token));
 			if (p[0] == '{')
 				pr_bracelevel++;
 			else if (p[0] == '}')
@@ -458,7 +458,7 @@ void PR_ParseFrame (void)
 {
 	while (PR_SimpleGetToken ())
 	{
-		strcpy (pr_framemacros[pr_nummacros], pr_token);
+		strlcpy (pr_framemacros[pr_nummacros], pr_token, sizeof(pr_framemacros[pr_nummacros]));
 		pr_nummacros++;
 	}
 }
@@ -662,7 +662,7 @@ void          PR_LexPrecomp (void)
 			PR_ParseError ("Q543: #define: Invalid name");
 
 		// predefine it:
-		strcpy (define_name, pr_token);
+		strlcpy (define_name, pr_token, sizeof(define_name));
 
 		if (PR_AddDefine (define_name, &type_const_float, NULL, false) <= 0)
 			PR_ParseError ("Q544: #define \"%s\": creation failed", define_name);
@@ -881,7 +881,7 @@ char *PR_ParseName (void)
 		PR_ParseError ("'%s' : not a name", pr_token);
 	if (strlen(pr_token) >= MAX_NAME-1)
 		PR_ParseError ("name too long");
-	strcpy (ident, pr_token);
+	strlcpy (ident, pr_token, sizeof(ident));
 	PR_Lex ();
 
 	return ident;
@@ -979,7 +979,7 @@ type_t *PR_ParseFunctionType (type_t *returnType)
 
 		type_t *type = PR_ParseType ();
 		char *name = PR_ParseName ();
-		strcpy (pr_parm_names[newtype.num_parms], name);
+		strlcpy (pr_parm_names[newtype.num_parms], name, sizeof(pr_parm_names[newtype.num_parms]));
 		newtype.parm_types[newtype.num_parms] = type;
 		newtype.num_parms++;
 	} while (PR_Check (","));
