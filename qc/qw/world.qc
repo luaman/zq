@@ -379,6 +379,8 @@ void() worldspawn =
 
 	// get game rules
 	deathmatch = cvar("deathmatch");
+	skill = cvar("skill");
+	coop = cvar("coop");
 };
 
 void() StartFrame =
