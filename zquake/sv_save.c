@@ -12,8 +12,6 @@ LOAD / SAVE GAME
 
 extern cvar_t	maxclients;
 
-void CL_BeginLocalConnection ();
-
 #define	SAVEGAME_COMMENT_LENGTH	39
 #define	SAVEGAME_VERSION	6
 
