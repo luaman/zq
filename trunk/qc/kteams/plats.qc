@@ -1,50 +1,59 @@
 /*
-Copyright (C) 1996-1997 Id Software, Inc.
+	plats.qc
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+	platform functions
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+	Copyright (C) 1996-1997  Id Software, Inc.
 
-See the GNU General Public License for more details.
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		59 Temple Place - Suite 330
+		Boston, MA  02111-1307, USA
 
 */
-void() plat_center_touch;
-void() plat_outside_touch;
-void() plat_trigger_use;
-void() plat_go_up;
-void() plat_go_down;
-void() plat_crush;
-float PLAT_LOW_TRIGGER = 1;
 
-void() plat_spawn_inside_trigger =
+
+void plat_center_touch ();
+void plat_outside_touch ();
+void plat_trigger_use ();
+void plat_go_up ();
+void plat_go_down ();
+void plat_crush ();
+const float PLAT_LOW_TRIGGER = 1;
+
+void plat_spawn_inside_trigger ()
 {
-	local entity	trigger;
-	local vector	tmin, tmax;
+	entity	trigger;
+	vector	tmin, tmax;
 
 //
 // middle trigger
-//
+//	
 	trigger = spawn();
 	trigger.touch = plat_center_touch;
-	trigger.movetype = 0;
-	trigger.solid = 1;
+	trigger.movetype = MOVETYPE_NONE;
+	trigger.solid = SOLID_TRIGGER;
 	trigger.enemy = self;
-
+	
 	tmin = self.mins + '25 25 0';
 	tmax = self.maxs - '25 25 -8';
 	tmin_z = tmax_z - (self.pos1_z - self.pos2_z + 8);
 	if (self.spawnflags & PLAT_LOW_TRIGGER)
 		tmax_z = tmin_z + 8;
-
+	
 	if (self.size_x <= 50)
 	{
 		tmin_x = (self.mins_x + self.maxs_x) / 2;
@@ -55,105 +64,109 @@ void() plat_spawn_inside_trigger =
 		tmin_y = (self.mins_y + self.maxs_y) / 2;
 		tmax_y = tmin_y + 1;
 	}
-
+	
 	setsize (trigger, tmin, tmax);
-};
+}
 
-void() plat_hit_top =
+void plat_hit_top ()
 {
-	sound (self, 8+2, self.noise1, 1, 1);
-	self.state = 0;
+	sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+	self.state = STATE_TOP;
 	self.think = plat_go_down;
 	self.nextthink = self.ltime + 3;
-};
+}
 
-void() plat_hit_bottom =
+void plat_hit_bottom ()
 {
-	sound (self, 8+2, self.noise1, 1, 1);
-	self.state = 1;
-};
+	sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+	self.state = STATE_BOTTOM;
+}
 
-void() plat_go_down =
+void plat_go_down ()
 {
-	sound (self, 2, self.noise, 1, 1);
-	self.state = 3;
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	self.state = STATE_DOWN;
 	SUB_CalcMove (self.pos2, self.speed, plat_hit_bottom);
-};
+}
 
-void() plat_go_up =
+void plat_go_up ()
 {
-	sound (self, 2, self.noise, 1, 1);
-	self.state = 2;
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	self.state = STATE_UP;
 	SUB_CalcMove (self.pos1, self.speed, plat_hit_top);
-};
+}
 
-void() plat_center_touch =
+void plat_center_touch ()
 {
+// KTEAMS -->
 // return if countdown or map frozen
 	if(match_in_progress == 1 ||
 		(!match_in_progress && stof(infokey(world, "k_freeze")))) return;
+// <-- KTEAMS                
 
 	if (other.classname != "player")
 		return;
-
+		
 	if (other.health <= 0)
 		return;
 
 	self = self.enemy;
-	if (self.state == 1)
+	if (self.state == STATE_BOTTOM)
 		plat_go_up ();
-	else if (self.state == 0)
+	else if (self.state == STATE_TOP)
 		self.nextthink = self.ltime + 1;	// delay going down
-};
+}
 
-void() plat_outside_touch =
+void plat_outside_touch ()
 {
+// KTEAMS -->
 // return if countdown or map frozen
 	if(match_in_progress == 1 ||
 		(!match_in_progress && stof(infokey(world, "k_freeze")))) return;
+// <-- KTEAMS                
 
 	if (other.classname != "player")
 		return;
 
 	if (other.health <= 0)
 		return;
-
+		
 //dprint ("plat_outside_touch\n");
 	self = self.enemy;
-	if (self.state == 0)
+	if (self.state == STATE_TOP)
 		plat_go_down ();
-};
+}
 
-void() plat_trigger_use =
+void plat_trigger_use ()
 {
 	if (self.think)
-		return;		// allready activated
+		return;		// already activated
 	plat_go_down();
-};
+}
 
 
-void() plat_crush =
+void plat_crush ()
 {
 //dprint ("plat_crush\n");
 
 	other.deathtype = "squish";
 	T_Damage (other, self, self, 1);
-
-	if (self.state == 2)
+	
+	if (self.state == STATE_UP)
 		plat_go_down ();
-	else if (self.state == 3)
+	else if (self.state == STATE_DOWN)
 		plat_go_up ();
 	else
 		objerror ("plat_crush: bad self.state\n");
-};
+}
 
-void() plat_use =
+void plat_use ()
 {
 	self.use = SUB_Null;
-	if (self.state != 2)
+	if (self.state != STATE_UP)
 		objerror ("plat_use: not in up state");
 	plat_go_down();
-};
+}
 
 
 /*QUAKED func_plat (0 .5 .8) ? PLAT_LOW_TRIGGER
@@ -170,8 +183,7 @@ Set "sounds" to one of the following:
 */
 
 
-void() func_plat =
-
+void func_plat ()
 {
 	if (!self.t_length)
 		self.t_length = 80;
@@ -203,9 +215,9 @@ void() func_plat =
 	self.angles = '0 0 0';
 
 	self.classname = "plat";
-	self.solid = 4;
-	self.movetype = 7;
-	setorigin (self, self.origin);
+	self.solid = SOLID_BSP;
+	self.movetype = MOVETYPE_PUSH;
+	setorigin (self, self.origin);	
 	setmodel (self, self.model);
 	setsize (self, self.mins , self.maxs);
 
@@ -223,58 +235,60 @@ void() func_plat =
 
 	self.use = plat_trigger_use;
 
-	plat_spawn_inside_trigger ();	// the "start moving" trigger
+	plat_spawn_inside_trigger ();	// the "start moving" trigger	
 
 	if (self.targetname)
 	{
-		self.state = 2;
+		self.state = STATE_UP;
 		self.use = plat_use;
 	}
 	else
 	{
 		setorigin (self, self.pos2);
-		self.state = 1;
+		self.state = STATE_BOTTOM;
 	}
-};
+}
 
 //============================================================================
 
-void() train_next;
-void() func_train_find;
+void train_next ();
+void func_train_find ();
 
-void() train_blocked =
+void train_blocked ()
 {
 	if (time < self.attack_finished)
 		return;
 	self.attack_finished = time + 0.5;
 	other.deathtype = "squish";
 	T_Damage (other, self, self, self.dmg);
-};
-void() train_use =
+}
+
+void train_use ()
 {
 	if (self.think != func_train_find)
 		return;		// already activated
 	train_next();
-};
+}
 
-void() train_wait =
+void train_wait ()
 {
 	if (self.wait)
 	{
 		self.nextthink = self.ltime + self.wait;
-		sound (self, 8+2, self.noise, 1, 1);
+		sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	}
 	else
 		self.nextthink = self.ltime + 0.1;
-// make trains stop if frozen (no hack)
-	if(match_in_progress == 2 ||
-		(!stof(infokey(world, "k_freeze")) && !match_in_progress))
-		self.think = train_next;
-};
+// KTEAMS -->
+// make trains stop if frozen
+        if(match_in_progress == 2 || (!stof(infokey(world, "k_freeze")) && !match_in_progress))
+            self.think = train_next;
+// <-- KTEAMS            
+}
 
-void() train_next =
+void train_next ()
 {
-	local entity	targ;
+	entity	targ;
 
 	targ = find (world, targetname, self.target);
 	self.target = targ.target;
@@ -284,14 +298,13 @@ void() train_next =
 		self.wait = targ.wait;
 	else
 		self.wait = 0;
-	sound (self, 2, self.noise1, 1, 1);
+	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	SUB_CalcMove (targ.origin - self.mins, self.speed, train_wait);
-};
+}
 
-void() func_train_find =
-
+void func_train_find ()
 {
-	local entity	targ;
+	entity	targ;
 
 	targ = find (world, targetname, self.target);
 	self.target = targ.target;
@@ -300,17 +313,8 @@ void() func_train_find =
 	{	// not triggered, so start immediately
 		self.nextthink = self.ltime + 0.1;
 		self.think = train_next;
-
-/* yay. No hacking please..
-//team
-		self.k_ptime = self.nextthink - self.ltime;
-		self.nextthink = -1;
-		self.k_oldspeed = self.velocity;
-		self.velocity = '0 0 0';
-//team
-*/
 	}
-};
+}
 
 /*QUAKED func_train (0 .5 .8) ?
 Trains are moving platforms that players can ride.
@@ -323,8 +327,8 @@ sounds
 1) ratchet metal
 
 */
-void() func_train =
-{
+void func_train ()
+{	
 	if (!self.speed)
 		self.speed = 100;
 	if (!self.target)
@@ -348,9 +352,8 @@ void() func_train =
 		precache_sound ("plats/train1.wav");
 	}
 
-	self.cnt = 1;
-	self.solid = 4;
-	self.movetype = 7;
+	self.solid = SOLID_BSP;
+	self.movetype = MOVETYPE_PUSH;
 	self.blocked = train_blocked;
 	self.use = train_use;
 	self.classname = "train";
@@ -363,21 +366,20 @@ void() func_train =
 // a chance to spawn
 	self.nextthink = self.ltime + 0.1;
 	self.think = func_train_find;
-};
+}
 
 /*QUAKED misc_teleporttrain (0 .5 .8) (-8 -8 -8) (8 8 8)
 This is used for the final bos
 */
-void() misc_teleporttrain =
-{
+void misc_teleporttrain ()
+{	
 	if (!self.speed)
 		self.speed = 100;
 	if (!self.target)
 		objerror ("func_train without a target");
 
-	self.cnt = 1;
-	self.solid = 0;
-	self.movetype = 7;
+	self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_PUSH;
 	self.blocked = train_blocked;
 	self.use = train_use;
 	self.avelocity = '100 200 300';
@@ -396,4 +398,5 @@ void() misc_teleporttrain =
 // a chance to spawn
 	self.nextthink = self.ltime + 0.1;
 	self.think = func_train_find;
-};
+}
+

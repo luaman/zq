@@ -26,7 +26,7 @@ doors.qc
 buttons.qc
 triggers.qc
 plats.qc
-misc.qc
+../qw/misc.qc
 
-server.qc
+../qw/server.qc
 
