@@ -319,65 +319,62 @@ Handles both ground friction and water friction
 */
 void PM_Friction (void)
 {
-	float	*vel;
 	float	speed, newspeed, control;
 	float	friction;
 	float	drop;
 	vec3_t	start, stop;
-	pmtrace_t		trace;
+	pmtrace_t	trace;
 	
 	if (pmove.waterjumptime)
 		return;
 
-	vel = pmove.velocity;
-	
-	speed = VectorLength(vel);
+	speed = VectorLength(pmove.velocity);
 	if (speed < 1)
 	{
-		vel[0] = 0;
-		vel[1] = 0;
+		pmove.velocity[0] = 0;
+		pmove.velocity[1] = 0;
+		if (pmove.pm_type == PM_FLY)
+			pmove.velocity[2] = 0;
 		return;
 	}
 
-	if (pmove.pm_type == PM_FLY) {
+	if (pmove.waterlevel >= 2)
+		// apply water friction, even if in fly mode
+		drop = speed*movevars.waterfriction*pmove.waterlevel*frametime;
+	else if (pmove.pm_type == PM_FLY) {
 		// apply flymode friction
 		drop = speed * pm_flyfriction * frametime;
-		goto scalevel;
 	}
+	else if (pmove.onground) {
+		// apply ground friction
+		friction = movevars.friction;
 
-	friction = movevars.friction;
+		// if the leading edge is over a dropoff, increase friction
+		if (pmove.onground) {
+			start[0] = stop[0] = pmove.origin[0] + pmove.velocity[0]/speed*16;
+			start[1] = stop[1] = pmove.origin[1] + pmove.velocity[1]/speed*16;
+			start[2] = pmove.origin[2] + player_mins[2];
+			stop[2] = start[2] - 34;
 
-// if the leading edge is over a dropoff, increase friction
-	if (pmove.onground) {
-		start[0] = stop[0] = pmove.origin[0] + vel[0]/speed*16;
-		start[1] = stop[1] = pmove.origin[1] + vel[1]/speed*16;
-		start[2] = pmove.origin[2] + player_mins[2];
-		stop[2] = start[2] - 34;
+			trace = PM_PlayerTrace (start, stop);
 
-		trace = PM_PlayerTrace (start, stop);
+			if (trace.fraction == 1)
+				friction *= 2;
+		}
 
-		if (trace.fraction == 1)
-			friction *= 2;
-	}
-
-	drop = 0;
-
-	if (pmove.waterlevel >= 2) // apply water friction
-		drop += speed*movevars.waterfriction*pmove.waterlevel*frametime;
-	else if (pmove.onground) // apply ground friction
-	{
 		control = speed < movevars.stopspeed ? movevars.stopspeed : speed;
-		drop += control*friction*frametime;
+		drop = control*friction*frametime;
 	}
+	else
+		return;		// in air, no friction
 
 
 // scale the velocity
-scalevel:
 	newspeed = speed - drop;
 	if (newspeed < 0)
 		newspeed = 0;
 
-	VectorScale (vel, newspeed / speed, vel);
+	VectorScale (pmove.velocity, newspeed / speed, pmove.velocity);
 }
 
 
