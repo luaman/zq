@@ -25,32 +25,12 @@ MAKEFILE		?=Makefile
 # compilation tool and detection of targets/achitecture
 CC=gcc
 CXX=g++
-MACHINE					:=$(shell $(CC) -dumpmachine)
-ARCH					:=$(shell echo $(MACHINE) | sed -e 's/\-.*//g' -e 's/i.86/x86/g' -e 's/hppa.*/hppa/')
-ifeq ($(ARCH),x86)
-	ARCH_CFLAGS			:=-march=$(shell echo $(MACHINE) | sed -e 's/\-.*//g')
-endif
-ifeq ($(ARCH),ppc)
-	ARCH_CFLAGS			:=-arch ppc
-endif
-ifeq ($(ARCH),hppa)
-	ARCH_CFLAGS			:=-mpa-risc-$(shell echo $(MACHINE) | sed -e 's/hppa\([0-9]\).\([0-9]\).*/\1-\2/g')
-endif
 
 # compiler flags
-BASE_CFLAGS				 =-Wall $(ARCH_CFLAGS)
-BASE_RELEASE_CFLAGS		 =\
-	-O6 -ffast-math -funroll-loops \
-	-fomit-frame-pointer -fexpensive-optimizations -falign-loops=2 \
-	-falign-jumps=2 -falign-functions=2
+BASE_CFLAGS				 =-Wall
+BASE_RELEASE_CFLAGS		 =-O2
 BASE_DEBUG_CFLAGS		 =-g -D_DEBUG
 
-ifeq ($(ARCH),ppc)
-	BASE_CFLAGS			+= -DHAVE_STRLCAT -DHAVE_STRLCPY -DBIGENDIAN -Ddarwin
-endif
-ifeq ($(ARCH),hppa)
-	BASE_CFLAGS			+= -DBIGENDIAN -Dhpux
-endif
 RELEASE_CFLAGS			 =$(BASE_CFLAGS) $(BASE_RELEASE_CFLAGS)
 DEBUG_CFLAGS			 =$(BASE_CFLAGS) $(BASE_DEBUG_CFLAGS)
 PROFILE_CFLAGS			 =$(DEBUG_CFLAGS) -pg
@@ -108,7 +88,7 @@ help default:
 	@echo ""
 
 all: $(EXES)
-	@echo "*** $(EXES) have been generated!"
+	@echo "*** $(EXES) has been generated!"
 
 debug:
 	$(MAKE) $(MYMAKEFLAGS) "CFLAGS=$(DEBUG_CFLAGS)" all
@@ -125,7 +105,7 @@ clean:
 clobber distclean:	clean
 	rm -f $(EXES)
 
-.c.o: ; $(CXX) -c $(CFLAGS) -o $@ $*.cpp
+.c.o: ; $(CXX) -c $(CFLAGS) -o $@ $*.c
 .cpp.o: ; $(CXX) -c $(CFLAGS) -o $@ $*.cpp
 
 QCCFILES = qcc.o pr_lex.o pr_comp.o cmdlib.o
