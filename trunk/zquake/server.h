@@ -254,7 +254,7 @@ typedef struct
 	byte		log_buf[2][MAX_DATAGRAM];
 
 	challenge_t	challenges[MAX_CHALLENGES];	// to prevent invalid IPs from connecting
-} server_static_t;
+} serverPersistent_t;
 
 //=============================================================================
 
@@ -340,7 +340,7 @@ extern	cvar_t	timelimit;
 extern	cvar_t	skill;
 extern	cvar_t	coop;
 
-extern	server_static_t	svs;				// persistant server info
+extern	serverPersistent_t	svs;			// persistent server info
 extern	server_t		sv;					// local server
 
 extern	client_t	*sv_client;
