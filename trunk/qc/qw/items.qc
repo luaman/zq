@@ -246,9 +246,11 @@ rot you down to your maximum health limit,
 one point per second.
 */
 
-float   H_ROTTEN = 1;
-float   H_MEGA = 2;
+const float H_ROTTEN	= 1;
+const float H_MEGA		= 2;
+
 .float  healamount, healtype;
+
 void health_touch ();
 void item_megahealth_rot ();
 
@@ -889,7 +891,7 @@ void ammo_touch ()
 
 
 
-float WEAPON_BIG2 = 1;
+const float WEAPON_BIG2 = 1;
 
 /*QUAKED item_shells (0 .5 .8) (0 0 0) (32 32 32) big
 */
@@ -1012,10 +1014,11 @@ void item_cells ()
 DO NOT USE THIS!!!! IT WILL BE REMOVED!
 */
 
-float WEAPON_SHOTGUN = 1;
-float WEAPON_ROCKET = 2;
-float WEAPON_SPIKES = 4;
-float WEAPON_BIG = 8;
+const float WEAPON_SHOTGUN = 1;
+const float WEAPON_ROCKET = 2;
+const float WEAPON_SPIKES = 4;
+const float WEAPON_BIG = 8;
+
 void item_weapon ()
 {
 	if (deathmatch == 4)
