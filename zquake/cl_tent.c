@@ -418,8 +418,6 @@ void CL_ParseTEnt (void)
 }
 
 
-void vectoangles(vec3_t vec, vec3_t ang);
-
 /*
 =================
 CL_UpdateBeams
