@@ -632,31 +632,11 @@ void CL_SendToServer (void)
 
 void CL_InitCommands (void);
 
-/*
-=================
-CL_Init
-=================
-*/
-void CL_Init (void)
+void CL_InitLocal (void)
 {
 	extern	cvar_t		baseskin;
 	extern	cvar_t		noskins;
 
-	cls.state = ca_disconnected;
-
-#ifndef RELEASE_VERSION
-	Info_SetValueForStarKey (cls.userinfo, "*z_ver", Z_VERSION, MAX_INFO_STRING);
-#endif
-
-	CL_InitInput ();
-	CL_InitTEnts ();
-	CL_InitPrediction ();
-	CL_InitCam ();
-	Pmove_Init ();
-	
-//
-// register our commands
-//
 	Cvar_Register (&show_fps);
 	Cvar_Register (&host_speeds);
 
@@ -714,15 +694,36 @@ void CL_Init (void)
 	Cvar_Register (&msg);
 	Cvar_Register (&noaim);
 
+#ifndef RELEASE_VERSION
+	Info_SetValueForStarKey (cls.userinfo, "*z_ver", Z_VERSION, MAX_INFO_STRING);
+#endif
 
 	CL_InitCommands ();
 
 	Cmd_AddCommand ("disconnect", CL_Disconnect_f);
 	Cmd_AddCommand ("connect", CL_Connect_f);
 	Cmd_AddCommand ("reconnect", CL_Reconnect_f);
+}
 
-	SList_Init();
-	SList_Load();
+/*
+=================
+CL_Init
+=================
+*/
+void CL_Init (void)
+{
+	cls.state = ca_disconnected;
+
+	CL_InitLocal ();
+
+	CL_InitInput ();
+	CL_InitTEnts ();
+	CL_InitPrediction ();
+	CL_InitCam ();
+	Pmove_Init ();
+
+	SList_Init ();
+	SList_Load ();
 }
 
 
