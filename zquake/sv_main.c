@@ -18,13 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#ifdef QW_BOTH
-#include "quakedef.h"
-#include "server.h"
-#else
 #include "qwsvdef.h"
-#endif
-
 #include "pmove.h"
 #include "version.h"
 
