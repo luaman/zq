@@ -932,10 +932,9 @@ void PF_Remove (void)
 
 	if (num >= 1 && num <= MAX_CLIENTS) {
 		client_t *cl = svs.clients + num - 1;
-		if (cl->bot) {
+		if (cl->bot)
 			SV_RemoveBot (cl);
-			return;
-		}
+		return;
 	}
 
 	ED_Free (ed);
