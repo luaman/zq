@@ -108,12 +108,15 @@ void R_NetGraph (void)
 	x =	-(int)((vid.width - 320)>>1);
 	y = vid.height - sb_lines - 24 - NET_GRAPHHEIGHT - 1;
 
-	M_DrawTextBox (x, y, NET_TIMINGS/8, NET_GRAPHHEIGHT/8 + 1);
-	y += 8;
+	if (r_netgraphBox.value) {
+		M_DrawTextBox (x, y, NET_TIMINGS/8, NET_GRAPHHEIGHT/8 + 1);
 
-	sprintf(st, "%3i%% packet loss", lost);
-	Draw_String(8, y, st);
-	y += 8;
+		sprintf(st, "%3i%% packet loss", lost);
+		Draw_String(8, y + 8, st);
+	}
+
+	x = 8;
+	y += 16;
 	
     GL_Bind(netgraphtexture);
 
@@ -125,7 +128,6 @@ void R_NetGraph (void)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	x = 8;
 	glBegin (GL_QUADS);
 	glTexCoord2f (0, 0);
 	glVertex2f (x, y);
