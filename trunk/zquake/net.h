@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define	PORT_ANY	-1
 
-typedef enum {NA_LOOPBACK, NA_BROADCAST, NA_IP, NA_IPX, NA_BROADCAST_IPX} netadrtype_t;
+typedef enum {NA_NULL, NA_LOOPBACK, NA_BROADCAST, NA_IP, NA_IPX, NA_BROADCAST_IPX} netadrtype_t;
 
 typedef enum {NS_CLIENT, NS_SERVER} netsrc_t;
 
@@ -35,9 +35,10 @@ typedef struct
 	unsigned short	port;
 } netadr_t;
 
-extern	netadr_t	net_local_adr;
-extern	netadr_t	net_from;		// address of who sent the packet
-extern	sizebuf_t	net_message;
+extern netadr_t	net_local_adr;
+extern netadr_t	net_from;		// address of who sent the packet
+extern netadr_t net_null;		// anything written here goes straight to /dev/null
+extern sizebuf_t	net_message;
 
 void		NET_Init (void);
 void		NET_Shutdown (void);
