@@ -1046,6 +1046,7 @@ void SV_ReadPackets (void)
 	int			i;
 	client_t	*cl;
 	int			qport;
+	packet_t	*pack;
 
 	while (NET_GetPacket(NS_SERVER))
 	{
@@ -1083,15 +1084,18 @@ void SV_ReadPackets (void)
 				Com_DPrintf ("SV_ReadPackets: fixing up a translated port\n");
 				cl->netchan.remote_address.port = net_from.port;
 			}
-			if (Netchan_Process(&cl->netchan))
-			{	// this is a valid, sequenced packet, so process it
-				svs.stats.packets++;
-				if (cl->state != cs_zombie) {
-					cl->send_message = true;	// reply at end of frame
-					SV_ExecuteClientMessage (cl);
-				}
-			}
+
+			if (svs.num_packets == MAX_DELAYED_PACKETS) // packet has to be dropped..
+				break;
+
+			pack = &svs.packets[svs.num_packets++];
+
+			pack->time = svs.realtime;
+			pack->clientnum = i;
+			SZ_Clear(&pack->msg);
+			SZ_Write(&pack->msg, net_message.data, net_message.cursize);
 			break;
+
 		}
 		
 		if (i != MAX_CLIENTS)
@@ -1100,6 +1104,51 @@ void SV_ReadPackets (void)
 		// packet is not from a known client
 		//	Com_Printf ("%s:sequenced packet without connection\n"
 		// ,NET_AdrToString(net_from));
+	}
+}
+
+/*
+=================
+SV_ReadDelayedPackets
+=================
+*/
+void SV_ReadDelayedPackets (void)
+{
+	int			i, j, num = 0;
+	client_t	*cl;
+	packet_t	*pack;
+
+	for (i = 0, pack = svs.packets; i < svs.num_packets; ) {
+		if (svs.realtime < pack->time + svs.clients[pack->clientnum].delay) {
+			i++;
+			pack++;
+			continue;
+		}
+
+		num++;
+
+		SZ_Clear(&net_message);
+		SZ_Write(&net_message, pack->msg.data, pack->msg.cursize);
+		cl = &svs.clients[pack->clientnum];
+		net_from = cl->netchan.remote_address;
+
+		if (Netchan_Process(&cl->netchan)) {
+			// this is a valid, sequenced packet, so process it
+			svs.stats.packets++;
+			if (cl->state != cs_zombie) {
+				cl->send_message = true;	// reply at end of frame
+				SV_ExecuteClientMessage (cl);
+			}
+		}
+
+		for (j = i + 1; j < svs.num_packets; j++) {
+			SZ_Clear(&svs.packets[j - 1].msg);
+			SZ_Write(&svs.packets[j - 1].msg, svs.packets[j].msg.data, svs.packets[j].msg.cursize);
+			svs.packets[j - 1].clientnum = svs.packets[j].clientnum;
+			svs.packets[j - 1].time = svs.packets[j].time;
+		}
+
+		svs.num_packets--;
 	}
 }
 
@@ -1284,6 +1333,9 @@ void SV_Frame (double time)
 // get packets
 	SV_ReadPackets ();
 
+// check delayed packets
+	SV_ReadDelayedPackets ();
+
 	if (dedicated)
 	{
 	// check for commands typed to the host
@@ -1326,6 +1378,7 @@ void SV_InitLocal (void)
 	int		i;
 	extern cvar_t	sv_spectalk;
 	extern cvar_t	sv_mapcheck;
+	extern cvar_t	sv_minping;
 	extern cvar_t	sv_maxpitch;
 	extern cvar_t	sv_minpitch;
 	extern cvar_t	sv_nailhack;
@@ -1368,6 +1421,7 @@ void SV_InitLocal (void)
 	Cmd_AddLegacyCommand ("zombietime", "sv_zombietime");
 	Cvar_Register (&sv_spectalk);
 	Cvar_Register (&sv_mapcheck);
+	Cvar_Register (&sv_minping);
 	Cvar_Register (&sv_maxpitch);
 	Cvar_Register (&sv_minpitch);
 
@@ -1433,6 +1487,11 @@ void SV_InitLocal (void)
 
 	SZ_Init (&svs.log[1], svs.log_buf[1], sizeof(svs.log_buf[1]));
 	svs.log[1].allowoverflow = true;
+
+	for (i = 0; i < MAX_DELAYED_PACKETS; i++)
+		SZ_Init (&svs.packets[i].msg, svs.packets[i].buf, sizeof(svs.packets[i].buf));
+
+	svs.num_packets = 0;
 }
 
 
