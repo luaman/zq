@@ -36,6 +36,9 @@ extern int fp_messages, fp_persecond, fp_secondsdead;
 extern char fp_msg[];
 extern cvar_t pausable;
 
+cvar_t	pm_bunnyspeedcap = {"pm_bunnyspeedcap", "", CVAR_SERVERINFO};
+
+
 /*
 ============================================================
 
@@ -1535,6 +1538,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	movevars.entgravity = host_client->entgravity;
 	movevars.maxspeed = host_client->maxspeed;
+	movevars.bunnyspeedcap = pm_bunnyspeedcap.value;
 
 	for (i=0 ; i<3 ; i++)
 	{
@@ -1790,4 +1794,5 @@ void SV_UserInit (void)
 {
 	Cvar_Register (&sv_spectalk);
 	Cvar_Register (&sv_mapcheck);
+	Cvar_Register (&pm_bunnyspeedcap);
 }
