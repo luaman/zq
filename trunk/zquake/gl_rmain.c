@@ -96,7 +96,6 @@ cvar_t	gl_polyblend = {"gl_polyblend","1"};
 cvar_t	gl_flashblend = {"gl_flashblend","0"};
 cvar_t	gl_playermip = {"gl_playermip","0"};
 cvar_t	gl_nocolors = {"gl_nocolors","0"};
-cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1"};
 cvar_t	gl_finish = {"gl_finish","0"};
 cvar_t	gl_fb_depthhack = {"gl_fb_depthhack","1"};
 cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
@@ -644,7 +643,6 @@ void R_Init (unsigned char *palette)
 	Cvar_Register (&gl_colorlights);
 	Cvar_Register (&gl_loadlitfiles);
 	Cvar_Register (&gl_lightmode);
-	Cvar_Register (&gl_keeptjunctions);
 	Cvar_Register (&gl_solidparticles);
 
 	// assume gl_texsort 0 is faster if the card supports multitexture

@@ -962,18 +962,24 @@ void R_DrawBrushModel (entity_t *e)
 
 	clmodel = e->model;
 
+	VectorAdd (e->origin, clmodel->mins, mins);
+	VectorAdd (e->origin, clmodel->maxs, maxs);
+
 	if (e->angles[0] || e->angles[1] || e->angles[2])
 	{
+		vec3_t	center;
+
 		rotated = true;
 
-		if (R_CullSphere (e->origin, clmodel->radius))
+		VectorAdd (mins, maxs, center);
+		VectorScale (center, 0.5, center);
+
+		if (R_CullSphere (center, clmodel->radius))
 			return;
 	}
 	else
 	{
 		rotated = false;
-		VectorAdd (e->origin, clmodel->mins, mins);
-		VectorAdd (e->origin, clmodel->maxs, maxs);
 
 		if (R_CullBox (mins, maxs))
 			return;
@@ -1326,8 +1332,6 @@ int AllocBlock (int w, int h, int *x, int *y)
 mvertex_t	*r_pcurrentvertbase;
 model_t		*currentmodel;
 
-// int	nColinElim;
-
 /*
 ================
 BuildSurfaceDisplayList
@@ -1398,47 +1402,7 @@ void BuildSurfaceDisplayList (msurface_t *fa)
 		poly->verts[i][6] = t;
 	}
 
-	//
-	// remove co-linear points - Ed
-	//
-	if (!gl_keeptjunctions.value)
-	{
-		for (i=0 ; i<lnumverts ; i++)
-		{
-			vec3_t v1, v2;
-			float *prev, *this, *next;
-
-			prev = poly->verts[(i + lnumverts - 1) % lnumverts];
-			this = poly->verts[i];
-			next = poly->verts[(i + 1) % lnumverts];
-
-			VectorSubtract (this, prev, v1);
-			VectorNormalize (v1);
-			VectorSubtract (next, prev, v2 );
-			VectorNormalize (v2);
-
-			// skip co-linear points
-			#define COLINEAR_EPSILON 0.001
-			if ((fabs(v1[0] - v2[0]) <= COLINEAR_EPSILON) &&
-				(fabs(v1[1] - v2[1]) <= COLINEAR_EPSILON) && 
-				(fabs(v1[2] - v2[2]) <= COLINEAR_EPSILON))
-			{
-				int j;
-				for (j = i + 1; j < lnumverts; ++j)
-				{
-					int k;
-					for (k = 0; k < VERTEXSIZE; ++k)
-						poly->verts[j - 1][k] = poly->verts[j][k];
-				}
-				lnumverts--;
-//				nColinElim++;
-				// retry next vertex next time, which is now current vertex
-				i--;
-			}
-		}
-	}
 	poly->numverts = lnumverts;
-
 }
 
 /*
