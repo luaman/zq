@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -397,7 +397,7 @@ qbool VID_SetFullDIBMode (int modenum)
 int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int			original_mode, temp;
-	qbool		stat;
+	qbool		stat = false;
 //    MSG			msg;
 
 	if ((windowed && (modenum != 0)) ||
@@ -546,7 +546,7 @@ void CheckTextureExtensions (void)
 		if (hInstGL == NULL)
 			Sys_Error ("Couldn't load opengl32.dll");
 
-		bindTexFunc = (void *)GetProcAddress(hInstGL,"glBindTexture");
+		bindTexFunc = (BINDTEXFUNCPTR)GetProcAddress(hInstGL,"glBindTexture");
 
 		if (!bindTexFunc)
 			Sys_Error ("No texture objects!");
@@ -588,11 +588,11 @@ void CheckArrayExtensions (void)
 	Sys_Error ("Vertex array extension not present");
 }
 
-void CheckMultiTextureExtensions (void) 
+void CheckMultiTextureExtensions (void)
 {
 	if (strstr(gl_extensions, "GL_ARB_multitexture ") && !COM_CheckParm("-nomtex")) {
-		qglMultiTexCoord2f = (void *) wglGetProcAddress("glMultiTexCoord2fARB");
-		qglActiveTexture = (void *) wglGetProcAddress("glActiveTextureARB");
+		qglMultiTexCoord2f = (lpMTexFUNC) wglGetProcAddress("glMultiTexCoord2fARB");
+		qglActiveTexture = (lpSelTexFUNC) wglGetProcAddress("glActiveTextureARB");
 		if (!qglMultiTexCoord2f || !qglActiveTexture)
 			return;
 		Com_Printf ("Multitexture extensions found.\n");
@@ -608,7 +608,7 @@ BOOL ( WINAPI * qwglSwapIntervalEXT)( int interval ) = NULL;
 void CheckSwapIntervalExtension (void)
 {
 	if (gl_ext_swapinterval.value && strstr(gl_extensions, "WGL_EXT_swap_control")) {
-		qwglSwapIntervalEXT = (void *) wglGetProcAddress("wglSwapIntervalEXT");
+		qwglSwapIntervalEXT = (BOOL (WINAPI *)( int )) wglGetProcAddress("wglSwapIntervalEXT");
 	}
 }
 
@@ -631,13 +631,13 @@ GL_Init
 */
 void GL_Init (void)
 {
-	gl_vendor = glGetString (GL_VENDOR);
+	gl_vendor = (const char *)glGetString (GL_VENDOR);
 	Com_Printf ("GL_VENDOR: %s\n", gl_vendor);
-	gl_renderer = glGetString (GL_RENDERER);
+	gl_renderer = (const char *)glGetString (GL_RENDERER);
 	Com_Printf ("GL_RENDERER: %s\n", gl_renderer);
-	gl_version = glGetString (GL_VERSION);
+	gl_version = (const char *)glGetString (GL_VERSION);
 	Com_Printf ("GL_VERSION: %s\n", gl_version);
-	gl_extensions = glGetString (GL_EXTENSIONS);
+	gl_extensions = (const char *)glGetString (GL_EXTENSIONS);
 //	Com_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	Cvar_Register (&gl_strings);
@@ -748,7 +748,7 @@ void VID_SetPalette (unsigned char *palette)
 		g = pal[1];
 		b = pal[2];
 		pal += 3;
-		
+
 //		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
 //		v = (255<<0) + (r<<8) + (g<<16) + (b<<24);
 		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
@@ -867,7 +867,7 @@ BOOL bSetupPixelFormat(HDC hDC)
 	0,				// shift bit ignored
 	0,				// no accumulation buffer
 	0, 0, 0, 0, 			// accum bits ignored
-	32,				// 32-bit z-buffer	
+	32,				// 32-bit z-buffer
 	0,				// no stencil buffer
 	0,				// no auxiliary buffer
 	PFD_MAIN_PLANE,			// main layer
@@ -899,6 +899,8 @@ MAIN WINDOW
 
 ===================================================================
 */
+extern void IN_ClearStates (void);
+extern qbool keydown[256];
 
 /*
 ================
@@ -907,10 +909,8 @@ ClearAllStates
 */
 void ClearAllStates (void)
 {
-	extern void IN_ClearStates (void);
-	extern qbool keydown[256];
 	int		i;
-	
+
 // send an up event for each key, to make sure the server clears them all
 	for (i=0 ; i<256 ; i++)
 	{
@@ -969,7 +969,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 
 				// Fix for alt-tab bug in NVidia drivers
 				MoveWindow (mainwindow, 0, 0, gdevmode.dmPelsWidth, gdevmode.dmPelsHeight, false);
-				
+
 				scr_fullupdate = 0;
 			}
 		}
@@ -989,7 +989,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
 			RestoreHWGamma ();
-			if (vid_canalttab) { 
+			if (vid_canalttab) {
 				ChangeDisplaySettings (NULL, 0);
 				vid_wassuspended = true;
 			}
@@ -1051,7 +1051,7 @@ LONG WINAPI MainWndProc (
 		case WM_SYSKEYDOWN:
 			IN_TranslateKeyEvent (lParam, true);
 			break;
-			
+
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
 			IN_TranslateKeyEvent (lParam, false);
@@ -1097,7 +1097,7 @@ LONG WINAPI MainWndProc (
 		// JACK: This is the mouse wheel with the Intellimouse
 		// Its delta is either positive or neg, and we generate the proper
 		// Event.
-		case WM_MOUSEWHEEL: 
+		case WM_MOUSEWHEEL:
 			if (in_mwheeltype != MWHEEL_DINPUT)
 			{
 				in_mwheeltype = MWHEEL_WINDOWMSG;
@@ -1168,7 +1168,7 @@ int VID_NumModes (void)
 	return nummodes;
 }
 
-	
+
 /*
 =================
 VID_GetModePtr
@@ -1516,14 +1516,14 @@ void VID_Build15to8table (void)
 	}
 }
 
-void VID_Init8bitPalette() 
+void VID_Init8bitPalette()
 {
 	// Check for 8bit Extensions and initialize them.
 	int i;
 	char thePalette[256*3];
 	char *oldPalette, *newPalette;
 
-	glColorTableEXT = (void *)wglGetProcAddress("glColorTableEXT");
+	glColorTableEXT = (lp3DFXFUNC)wglGetProcAddress("glColorTableEXT");
     if (!glColorTableEXT || !strstr(gl_extensions, "GL_EXT_shared_texture_palette") ||
 		!COM_CheckParm("-use8bit"))
 		return;
@@ -1580,7 +1580,7 @@ VID_Init
 void	VID_Init (unsigned char *palette)
 {
 	int		i, existingmode;
-	int		basenummodes, width, height, bpp, findbpp, done;
+	int		basenummodes, width, height = 0, bpp, findbpp, done;
 	char	gldir[MAX_OSPATH];
 	HDC		hdc;
 	DEVMODE	devmode;
@@ -1880,7 +1880,7 @@ void VID_MenuDraw (void)
 
 	vid_wmodes = 0;
 	lnummodes = VID_NumModes ();
-	
+
 	for (i=1 ; (i<lnummodes) && (vid_wmodes < MAX_MODEDESCS) ; i++)
 	{
 		ptr = VID_GetModeDescription (i);
