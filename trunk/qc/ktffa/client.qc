@@ -33,12 +33,12 @@ void player_stand1 ();
 void play_teleport (entity ent);
 void spawn_tfog (vector org);
 void spawn_tdeath (vector org, entity death_owner);
-void StartDie ();
 void ExitIntermission ();
 string ObituaryForMonster (string attacker_class);
 
 float   modelindex_eyes, modelindex_player;
 
+#ifdef KTFFA
 // ILLEGALFPS[
 .float fAverageFrameTime;
 .float fFrameCount;
@@ -47,6 +47,7 @@ float   modelindex_eyes, modelindex_player;
 .float fIllegalFPSWarnings;
 // ILLEGALFPS]
 
+void StartDie ();
 
 // Rate capper function
 void CheckAll ()
@@ -94,7 +95,8 @@ void CheckAll ()
 			p = find(p, classname, "player");
 		}
 	}
-};
+}
+#endif
 
 /*
 =============================================================================
@@ -120,6 +122,8 @@ void info_intermission ()
 {
 	self.angles = self.mangle;      // so C can get at it
 }
+
+
 
 void SetChangeParms ()
 {
@@ -153,8 +157,9 @@ void SetChangeParms ()
 	parm7 = self.ammo_cells;
 	parm8 = self.weapon;
 	parm9 = self.armortype * 100;
-
+#ifdef KTFFA
 	parm10 = self.k_stuff;
+#endif
 }
 
 void SetNewParms ()
@@ -168,8 +173,9 @@ void SetNewParms ()
 	parm7 = 0;
 	parm8 = 1;
 	parm9 = 0;
-
+#ifdef KTFFA
 	parm10 = 0;
+#endif
 }
 
 void DecodeLevelParms ()
@@ -226,6 +232,7 @@ entity FindIntermission ()
 	return spot;
 }
 
+
 void GotoNextMap ()
 {
 	string newmap;
@@ -246,6 +253,8 @@ void GotoNextMap ()
 			changelevel (nextmap);
 	}
 }
+
+
 
 /*
 ============
@@ -275,11 +284,11 @@ Take the players to the intermission spot
 */
 void execute_changelevel ()
 {
-	entity    pos;
-	string	tmp;
-
 	intermission_running = 1;
+
+#ifdef KTFFA
 	intermission_getting_closer = 0;
+#endif
 
 // enforce a wait time before allowing changelevel
 	intermission_exittime = time + 5;
@@ -315,11 +324,11 @@ void execute_changelevel ()
 
 		setorigin (other, intermission_spot.origin);
 		other.velocity = VEC_ORIGIN;
-// team
+#ifdef KTFFA
 		other.model = string_null;
 		if(stof(infokey(other, "k_flags")) & 2)
 			stuffcmd(other, "wait; wait; wait; wait; wait; wait; screenshot\n");
-// team
+#endif
 		other = find (other, classname, "player");
 	}       
 }
@@ -473,10 +482,6 @@ void ClientKill ()
 	respawn ();
 }
 
-float CheckSpawnPoint (vector v)
-{
-	return false;
-}
 
 /*
 ============
@@ -485,17 +490,16 @@ SelectSpawnPoint
 Returns the entity to spawn at
 ============
 */
-
-// SpawnSafety
 entity SelectSpawnPoint ()
 {
     entity  spot, thing;
 	float   numspots, totalspots;
 	float   pcount;
 	entity spots;
+#ifdef KTFFA
 	float	k_nspots;	// KTEAMS
 	vector	v1;			// KTEAMS
-
+#endif
 
 	numspots = 0;
 	totalspots = 0;
@@ -505,6 +509,30 @@ entity SelectSpawnPoint ()
 	if (spot)
 		return spot;
 
+	if (!deathmatch)
+	{
+		if (coop)
+		{
+			lastspawn = find(lastspawn, classname, "info_player_coop");
+			if (lastspawn == world)
+				lastspawn = find (lastspawn, classname, "info_player_start");
+			if (lastspawn != world)
+				return lastspawn;
+		}
+
+		if (serverflags)
+		{	// return with a rune to start
+			spot = find (world, classname, "info_player_start2");
+			if (spot)
+				return spot;
+		}
+
+		spot = find (world, classname, "info_player_start");
+		if (!spot)
+			error ("PutClientInServer: no info_player_start on level");
+		return spot;
+	}
+		
 // choose a info_player_deathmatch point
 // ok, find all spots that don't have players nearby
 
@@ -514,33 +542,34 @@ entity SelectSpawnPoint ()
     {
 		totalspots = totalspots + 1;
 
-		thing = findradius(spot.origin, 84);
-        pcount = 0;
-		while(thing) 
+		thing=findradius(spot.origin, 84);
+		pcount=0;               
+		while (thing)
         {
 			if (thing.classname == "player")
-                pcount = pcount + 1;
+				pcount=pcount + 1;                      
 			thing=thing.chain;
 		}
-//team
+#ifdef KTFFA
+        //FIXME: is this needed anymore or has tonik done this himself?
 		if(self.k_lastspawn == spot)
 		 pcount = pcount + 1;
-//team
+#endif
         if (pcount == 0) {
         	spot.goalentity = spots;
         	spots = spot;
         	numspots = numspots + 1;
 		}
+
 		// Get the next spot in the chain
 		spot = find (spot, classname, "info_player_deathmatch");
 	}
+#ifdef KTFFA
+    self.k_1spawn = 200;
+    k_nspots = totalspots;
+#endif
 
-//team
-	self.k_1spawn = 200;
-	k_nspots = totalspots;
-//team
-
-totalspots = totalspots - 1;
+    totalspots=totalspots - 1;
 	if (!numspots) {
         // ack, they are all full, just pick one at random
 //		bprint (PRINT_HIGH, "Ackk! All spots are full. Selecting random spawn spot\n");
@@ -551,7 +580,7 @@ totalspots = totalspots - 1;
 			spot = find (spot, classname, "info_player_deathmatch");
 		}
 
-        // kteams -->
+#ifdef KTFFA
 		if(k_nspots > 2) self.k_lastspawn = spot;
 
 		makevectors(spot.angles);
@@ -567,27 +596,31 @@ totalspots = totalspots - 1;
 			} else if(thing.classname == "teledeath") remove(thing);
 			thing = thing.chain;
 		}
-        // <-- kteams
+#endif
+
 		return spot;
 	}
 
 
 // We now have the number of spots available on the map in numspots
-// Generate a random number between 1 and numspots
+
+	// Generate a random number between 1 and numspots
 
 	numspots = numspots - 1;
 
-	numspots = rint((random() * numspots));
+	numspots = rint((random() * numspots ) );
+
 	spot = spots;
 	while (numspots > 0) {
 		spot = spot.goalentity;
 		numspots = numspots - 1;
 	}
-//team
+#ifdef KTFFA
 	if(k_nspots > 2) self.k_lastspawn = spot;
-//team
+#endif
  	return spot;
 }
+
 
 void DecodeLevelParms ();
 void PlayerDie ();
@@ -639,6 +672,14 @@ void PutClientInServer ()
 	self.fixangle = true;           // turn this way immediately
 	self.jump_flag = 0;
 	self.swim_flag = 0;
+
+#ifdef AGRIP
+	// Stop the player from spawning at a bad angle...
+	if (self.angles_y != -90 && self.angles_y != 90
+		&& self.angles_y != 0 &&  self.angles_y != 180
+							&& self.angles_y != -180)
+		self.angles_y = -90;
+#endif
 
 // oh, this is a hack!
 	setmodel (self, "progs/eyes.mdl");
@@ -714,7 +755,9 @@ void PutClientInServer ()
 		self.invincible_finished = time + 3;
 	}
 
-
+#ifdef AGRIP
+	agh_client_startdevs();
+#endif
 }
 
 
@@ -769,34 +812,34 @@ go to the next level for deathmatch
 */
 void NextLevel ()
 {
-	entity p;
+	entity o;
 	string tmp;
 	float f1, maxfrags, maxdeaths, maxeffi;
 
 	if (nextmap != "")
 		return; // already done
 
-// kteam --->
+#ifdef KTFFA
 // s: remove timer entity
 
 	intermission_getting_closer = 1;
 
 	mytime = 0;
-	p = find(world, classname, "timer");
-	if(p != world) remove(p);
+	o = find(world, classname, "timer");
+	if(o != world) remove(o);
 
 // s: take away powerups so scoreboard looks normal
-	p = find(world, classname, "player");
-	while(p != world) {
-		if(p.netname != "") {
-			p.items = p.items - (p.items & 7864320);
-			p.effects = p.effects - (p.effects & 200);
-			p.invisible_finished = 0;
-			p.invincible_finished = 0;
-			p.super_damage_finished = 0;
-			p.radsuit_finished = 0;
+	o = find(world, classname, "player");
+	while(o != world) {
+		if(o.netname != "") {
+			o.items = o.items - (o.items & 7864320);
+			o.effects = o.effects - (o.effects & 200);
+			o.invisible_finished = 0;
+			o.invincible_finished = 0;
+			o.super_damage_finished = 0;
+			o.radsuit_finished = 0;
 		}
-		p = find(p, classname, "player");
+		o = find(o, classname, "player");
 	}
 
 	bprint(2, "The round is over\n");
@@ -809,73 +852,73 @@ void NextLevel ()
 	maxeffi = 0;
 
 	bprint(2, "\nĞìáùåò óôáôéóôéãó:\nÆòáçó (òáîë)  åææéãéåîãù\nŸ\n");
-	p = find(world, classname, "player");
-	while(p != world) {
-		if(p.netname != "") {
-			bprint(2, p.netname, ": ");
-			tmp = ftos(p.frags);
+	o = find(world, classname, "player");
+	while(o != world) {
+		if(o.netname != "") {
+			bprint(2, o.netname, ": ");
+			tmp = ftos(o.frags);
 			bprint(2, tmp, " (");
-			tmp = ftos(p.frags - p.deaths);
+			tmp = ftos(o.frags - o.deaths);
 			bprint(2, tmp, ") ");
-			if(p.frags < 1)
-				p.efficiency = 0;
+			if(o.frags < 1)
+				o.efficiency = 0;
 			else
-				p.efficiency = p.frags / (p.frags + p.deaths) * 100;
-			tmp = ftos(p.efficiency);
-			if(floor(p.efficiency) == p.efficiency)
+				o.efficiency = o.frags / (o.frags + o.deaths) * 100;
+			tmp = ftos(o.efficiency);
+			if(floor(o.efficiency) == o.efficiency)
 				bprint(2, " ");
 			else
 				bprint(2, "");
 			bprint(2, tmp, "%\n");
-			if (maxfrags < p.frags) maxfrags = p.frags;
-			if (maxdeaths < p.deaths) maxdeaths = p.deaths;
-			if (maxeffi < p.efficiency) maxeffi = p.efficiency;
+			if (maxfrags < o.frags) maxfrags = o.frags;
+			if (maxdeaths < o.deaths) maxdeaths = o.deaths;
+			if (maxeffi < o.efficiency) maxeffi = o.efficiency;
 		}
-		p = find(p, classname, "player");
+		o = find(o, classname, "player");
 	}
 // Print the high score table
 	bprint(2, "\n", mapname, " ôïğ óãïòåòó:\nFrags     : ");
 	tmp = ftos(maxfrags);
 	f1 = 0;
-	p = find(world, classname, "player");
-	while(p != world) {
-		if(p.netname != "")
-			if(p.frags == maxfrags) {
+	o = find(world, classname, "player");
+	while(o != world) {
+		if(o.netname != "")
+			if(o.frags == maxfrags) {
 				if(f1) bprint(2, "            ");
 				f1 = 1;
-				bprint(2, p.netname, " ", tmp, "‘\n");
+				bprint(2, o.netname, " ", tmp, "‘\n");
 			}
-		p = find(p, classname, "player");
+		o = find(o, classname, "player");
 	}
 	f1 = 0;
 	bprint(2, "Deaths    : ");
 	tmp = ftos(maxdeaths);
-	p = find(world, classname, "player");
-	while(p != world) {
-		if(p.netname != "")
-			if(p.deaths == maxdeaths) {
+	o = find(world, classname, "player");
+	while(o != world) {
+		if(o.netname != "")
+			if(o.deaths == maxdeaths) {
 				if(f1) bprint(2, "            ");
 				f1 = 1;
-				bprint(2, p.netname, " ", tmp, "‘\n");
+				bprint(2, o.netname, " ", tmp, "‘\n");
 			}
-		p = find(p, classname, "player");
+		o = find(o, classname, "player");
 	}
 	f1 = 0;
 	bprint(2, "Efficiency: ");
 	tmp = ftos(maxeffi);
-	p = find(world, classname, "player");
-	while(p != world) {
-		if(p.netname != "")
-			if(p.efficiency == maxeffi) {
+	o = find(world, classname, "player");
+	while(o != world) {
+		if(o.netname != "")
+			if(o.efficiency == maxeffi) {
 				if(f1) bprint(2, "            ");
 				f1 = 1;
-				bprint(2, p.netname, " ", tmp, "%‘\n");
+				bprint(2, o.netname, " ", tmp, "%‘\n");
 			}
-		p = find(p, classname, "player");
+		o = find(o, classname, "player");
 	}
 	bprint(2, "\n");
 
-// <--- kteam
+#endif
 
 	if (mapname == "start")
 	{
@@ -904,26 +947,26 @@ void NextLevel ()
 			serverflags = serverflags - 7;
 		}
  
-		p = spawn();
-		p.map = mapname;
+		o = spawn();
+		o.map = mapname;
 	}
 	else
 	{
 		// find a trigger changelevel
-		p = find(world, classname, "trigger_changelevel");
-		if (!p || mapname == "start")
+		o = find(world, classname, "trigger_changelevel");
+		if (!o || mapname == "start")
 		{       // go back to same map if no trigger_changelevel
-			p = spawn();
-			p.map = mapname;
+			o = spawn();
+			o.map = mapname;
 		}
 	}
 
-	nextmap = p.map;
+	nextmap = o.map;
 
-	if (p.nextthink < time)
+	if (o.nextthink < time)
 	{
-		p.think = execute_changelevel;
-		p.nextthink = time + 0.1;
+		o.think = execute_changelevel;
+		o.nextthink = time + 0.1;
 	}
 }
 
@@ -1006,11 +1049,12 @@ void PlayerJump ()
 		return;         // don't pogo stick
 
 	self.flags = self.flags - (self.flags & FL_JUMPRELEASED);       
-
     self.button2 = 0;
+
 // player jumping sound
     sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
 
+#ifdef KTFFA
     if (server_is_2_3x) {
         // if and only if running on a 2.30 or 2.33 server,
         // fix the jump bug via QC
@@ -1018,6 +1062,7 @@ void PlayerJump ()
         if (self.velocity_z < 0)
             self.velocity_z = 0;
     }
+#endif
 }
 
 
@@ -1107,6 +1152,7 @@ void WaterMove ()
 	}       
 }
 
+#ifdef KTFFA
 void CheckWaterJump ()
 {
 	vector start, end;
@@ -1135,6 +1181,7 @@ void CheckWaterJump ()
 		}
 	}
 }
+#endif
 
 /*
 ================
@@ -1154,11 +1201,14 @@ void PlayerPreThink ()
 		return;                                 // the think tics
 	}
 
+#ifdef KTFFA
 	if (self.view_ofs == '0 0 0')
 		return;         // intermission or finale
+#endif
 
 	makevectors (self.v_angle);             // is this still used
 
+#ifdef KTFFA
 // ILLEGALFPS[
 	self.fAverageFrameTime = self.fAverageFrameTime + frametime;
 	self.fFrameCount = self.fFrameCount + 1;
@@ -1232,6 +1282,7 @@ void PlayerPreThink ()
 		self.fLowestFrameTime = 0.013;
 	}
 // ILLEGALFPS]
+#endif
 
 	self.deathtype = "";
 
@@ -1244,14 +1295,17 @@ void PlayerPreThink ()
 		return;
 	}
 	
-	if (self.deadflag == DEAD_DYING) {
-// s: Sometimes (rarely) the death animation functions in player.qc aren't
-// invoked on death for some reason (couldn't figure out why). This leads to a
-// state when the player stands still after dying and can't respawn or even
-// suicide and has to reconnect. This is checked and fixed here
+	if (self.deadflag == DEAD_DYING)
+    {
+#ifdef KTFFA
+        // s: Sometimes (rarely) the death animation functions in player.qc aren't
+        // invoked on death for some reason (couldn't figure out why). This leads to a
+        // state when the player stands still after dying and can't respawn or even
+        // suicide and has to reconnect. This is checked and fixed here
 		if((self.dead_time + 0.1) < time
 			&& self.frame < 41 || self.frame > 102)
 				StartDie();
+#endif
 		return; // dying, so do nothing
 	}
 
@@ -1460,23 +1514,31 @@ Called every frame after physics are run
 */
 void PlayerPostThink ()
 {
-//dprint ("post think\n");
-	if (self.view_ofs == '0 0 0')
-		return;         // intermission or finale
+	if (intermission_running)
+	{
+		setorigin (self, intermission_spot.origin);
+		self.velocity = VEC_ORIGIN;	// don't stray off the intermission spot too far
+		return;
+	}
+
 	if (self.deadflag)
 		return;
 
+#ifdef KTFFA
 // s: WaterMove function call moved here from PlayerPreThink to avoid
 // occurrence of the spawn lavaburn bug and to fix the problem on spawning
 // and playing the leave water sound if the player died underwater.
 	WaterMove ();
+#endif
 
 // check to see if player landed and play landing sound 
 	if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) )
 	{
-// s: Falling often results in 5-5 points of damage through 2 frames.
-// This fixes the bug
+#ifdef KTFFA
+        // s: Falling often results in 5-5 points of damage through 2 frames.
+        // This fixes the bug
 		self.velocity_z = 0;
+#endif
 
 		if (self.watertype == CONTENT_WATER)
 			sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
@@ -1502,6 +1564,10 @@ void PlayerPostThink ()
 	CheckPowerups ();
 
 	W_WeaponFrame ();
+
+#ifdef AGRIP
+	snap_misc_blockedtest();
+#endif
 }
 
 
@@ -1514,7 +1580,13 @@ called when a player connects to a server
 */
 void ClientConnect ()
 {
+#ifdef KTFFA
 	entity stuffer;
+#endif
+
+#ifdef FRIKBOT
+	ClientConnected(); // FrikBot
+#endif
 
 	if (deathmatch || coop)
 	{
@@ -1526,7 +1598,7 @@ void ClientConnect ()
 	if (intermission_running)
 		SendIntermissionToClient ();
 
-// team
+#ifdef KTFFA
 	newcomer = self.netname;
 	self.frags = 0;
 	self.deaths = 0;
@@ -1550,7 +1622,7 @@ void ClientConnect ()
 		stuffer.nextthink = time + 2;
 		self.k_stuff = 1;
 	}
-// team
+#endif
 }
 
 /*
@@ -1563,6 +1635,13 @@ called when a player disconnects from a server
 void ClientDisconnect ()
 {
     string s;
+
+#ifdef FRIKBOT
+	ClientDisconnected(); // FrikBot
+#endif
+#ifdef AGRIP
+	agh_player_dietidy(); // tidy up before leaving
+#endif
 
 	// let everyone else know
 	s = ftos(self.frags);
@@ -1580,7 +1659,6 @@ ClientObituary
 called when a player dies
 ============
 */
-
 void ClientObituary (entity targ, entity attacker)
 {
     float rnum;
@@ -1611,9 +1689,11 @@ void ClientObituary (entity targ, entity attacker)
                 attacker.owner.netname, "\n");
         logfrag (attacker.owner, targ);
 
+#ifdef KTFFA
         targ.deaths = targ.deaths + 1; // FIXME
         attacker.owner.victim = targ.netname;
         targ.killer = attacker.owner.netname;
+#endif
         attacker.owner.frags = attacker.owner.frags + 1;
         return;
     }
@@ -1636,6 +1716,7 @@ void ClientObituary (entity targ, entity attacker)
         return;
     }
 
+
     if (targ.deathtype == "squish")
     {
         if (teamplay && targteam == attackerteam && attackerteam != "" && targ != attacker)
@@ -1650,9 +1731,11 @@ void ClientObituary (entity targ, entity attacker)
             bprint (PRINT_MEDIUM, attacker.netname, " squishes ",
                     targ.netname, "\n");
             logfrag (attacker, targ);
+#ifdef KTFFA
             targ.deaths = targ.deaths + 1; // FIXME
             attacker.victim = targ.netname;
             targ.killer = attacker.netname;
+#endif
             attacker.frags = attacker.frags + 1;
             return;
         }
@@ -1665,41 +1748,39 @@ void ClientObituary (entity targ, entity attacker)
         }
     }
 
-    if (attacker.classname == "player") {
-
+    if (attacker.classname == "player")
+    {
+#ifdef KTFFA
         // s: included big part starts to handle optional new death messages :p
-
         if(stof(infokey(world, "k_deathmsg"))) {
+#endif
             if (targ == attacker)
             {
                 // killed self
                 logfrag (attacker, attacker);
                 attacker.frags = attacker.frags - 1;
-                bprint (PRINT_MEDIUM,targ.netname);
-
                 if (targ.deathtype == "grenade")
-                    bprint (PRINT_MEDIUM, " tries to put the pin back in\n");
+                    bprint (PRINT_MEDIUM, targ.netname, " tries to put the pin back in\n");
                 else if (targ.deathtype == "rocket")
                 {
                     if (rnum < 0.50)
-                        bprint (PRINT_MEDIUM, " becomes bored with life\n");
+                        bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
                     else
-                        bprint (PRINT_MEDIUM, " discovers blast radius\n");
+                        bprint (PRINT_MEDIUM, targ.netname, " discovers blast radius\n");
                 }
                 else if (targ.weapon == 64 && targ.waterlevel > 1)
                 {
                     if (targ.watertype == CONTENT_SLIME)
-                        bprint (PRINT_MEDIUM," discharges into the slime\n");
+                        bprint (PRINT_MEDIUM, targ.netname, " discharges into the slime\n");
                     else if (targ.watertype == CONTENT_LAVA)
-                        bprint (PRINT_MEDIUM," discharges into the lava\n");
+                        bprint (PRINT_MEDIUM, targ.netname, " discharges into the lava\n");
                     else if (random() < 0.5)
-                        bprint (PRINT_MEDIUM," discharges into the water.\n");
+                        bprint (PRINT_MEDIUM, targ.netname, " discharges into the water.\n");
                     else
-                        bprint (PRINT_MEDIUM," heats up the water\n");
-                    return;
+                        bprint (PRINT_MEDIUM, targ.netname, " heats up the water\n");
                 }
                 else
-                    bprint (PRINT_MEDIUM," becomes bored with life\n");
+                    bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
             }
             else
             {
@@ -1850,9 +1931,11 @@ void ClientObituary (entity targ, entity attacker)
             {
                 logfrag (attacker, targ);
                 attacker.frags = attacker.frags + 1;
+#ifdef KTFFA
                 targ.deaths = targ.deaths + 1;
                 attacker.victim = targ.netname;
                 targ.killer = attacker.netname;
+#endif
                 rnum = attacker.weapon;
                 if (targ.deathtype == "nail")
                 {
@@ -1885,20 +1968,16 @@ void ClientObituary (entity targ, entity attacker)
                             deathstring = " was smeared by ";
                         else
                         {
-                            bprint (PRINT_MEDIUM, attacker.netname);
-                            bprint (PRINT_MEDIUM, " rips ");
-                            bprint (PRINT_MEDIUM, targ.netname);
-                            bprint (PRINT_MEDIUM, " a new one\n");
+						bprint (PRINT_MEDIUM, attacker.netname, " rips ",
+							targ.netname, " a new one\n");
                             return;
                         }
-
                         deathstring2 = "'s quad rocket\n";
                     }
                     else
                     {
                         deathstring = " rides ";
                         deathstring2 = "'s rocket\n";
-
                         if (targ.health < -40)
                         {
                             deathstring = " was gibbed by ";
@@ -1906,6 +1985,11 @@ void ClientObituary (entity targ, entity attacker)
                         }
                     }
                 }
+			else if (targ.deathtype == "stomp")
+			{
+				deathstring = " was stomped by ";
+				deathstring2 = "\n";
+			}
                 else if (rnum == IT_AXE)
                 {
                     deathstring = " was ax-murdered by ";
@@ -1929,10 +2013,8 @@ void ClientObituary (entity targ, entity attacker)
                     else
                         deathstring2 = "'s shaft\n";
                 }
-                bprint (PRINT_MEDIUM,targ.netname);
-                bprint (PRINT_MEDIUM,deathstring);
-                bprint (PRINT_MEDIUM,attacker.netname);
-                bprint (PRINT_MEDIUM,deathstring2);
+			bprint (PRINT_MEDIUM, targ.netname, deathstring,
+									attacker.netname, deathstring2);
             }
             return;
         }
@@ -1943,75 +2025,72 @@ void ClientObituary (entity targ, entity attacker)
         targ.frags = targ.frags - 1;            // killed self
         rnum = targ.watertype;
 
-        bprint (PRINT_MEDIUM,targ.netname);
         if (rnum == -3)
         {
             if (random() < 0.5)
-                bprint (PRINT_MEDIUM," sleeps with the fishes\n");
+				deathstring = " sleeps with the fishes\n";
             else
-                bprint (PRINT_MEDIUM," sucks it down\n");
-            return;
+				deathstring = " sucks it down\n";
         }
         else if (rnum == -4)
         {
             if (random() < 0.5)
-                bprint (PRINT_MEDIUM," gulped a load of slime\n");
+				deathstring = " gulped a load of slime\n";
             else
-                bprint (PRINT_MEDIUM," can't exist on slime alone\n");
-            return;
+				deathstring = " can't exist on slime alone\n";
         }
         else if (rnum == -5)
         {
             if (targ.health < -15)
-            {
-                bprint (PRINT_MEDIUM," burst into flames\n");
-                return;
-            }
-            if (random() < 0.5)
-                bprint (PRINT_MEDIUM," turned into hot slag\n");
+				deathstring = " burst into flames\n";
+			else if (random() < 0.5)
+				deathstring = " turned into hot slag\n";
             else
-                bprint (PRINT_MEDIUM," visits the Volcano God\n");
-            return;
+				deathstring = " visits the Volcano God\n";
         }
-
-        if (attacker.classname == "explo_box")
+		else if (attacker.classname == "explo_box")
         {
-            bprint (PRINT_MEDIUM," blew up\n");
-            return;
+			deathstring = " blew up\n";
         }
-        if (targ.deathtype == "falling")
+		else if (targ.deathtype == "falling")
         {
+#ifdef KTFFA
             rnum = stof(infokey(world, "k_deathmsg"));
             if(random() < 0.5 && rnum)
-                bprint(PRINT_MEDIUM, " cratered\n");
+                deathstring = " cratered\n";
             else {
-                bprint (PRINT_MEDIUM, " fell to ");
                 if(infokey(targ, "gender") == "f")
-                    bprint(PRINT_MEDIUM, "her death\n");
-                else	bprint(PRINT_MEDIUM, "his death\n");
+                    deathstring = "fell to her death\n";
+                else
+#endif
+                    deathstring = "fell to his death\n";
             }
-            return;
         }
-        if (targ.deathtype == "nail" || targ.deathtype == "supernail")
+        else if (targ.deathtype == "nail" || targ.deathtype == "supernail")
         {
-            bprint (PRINT_MEDIUM," was spiked\n");
-            return;
+			deathstring = " was spiked\n";
         }
-        if (targ.deathtype == "laser")
+		else if (targ.deathtype == "laser")
         {
-            bprint (PRINT_MEDIUM," was zapped\n");
-            return;
+			deathstring = " was zapped\n";
         }
-        if (attacker.classname == "fireball")
+		else if (attacker.classname == "fireball")
         {
-            bprint (PRINT_MEDIUM," ate a lavaball\n");
-            return;
+			deathstring = " ate a lavaball\n";
         }
-        if (attacker.classname == "trigger_changelevel")
+		else if (attacker.classname == "trigger_changelevel")
         {
-            bprint (PRINT_MEDIUM," tried to leave\n");
-            return;
+			deathstring = " tried to leave\n";
+		}
+		else if (attacker.flags & FL_MONSTER)
+		{
+			deathstring = ObituaryForMonster(attacker.classname);
         }
-        bprint (PRINT_MEDIUM," died\n");
+		else
+		{
+			deathstring = " died\n";
+		}
+
+		bprint (PRINT_MEDIUM, targ.netname, deathstring);
     }
 }

@@ -51,12 +51,14 @@ World Types:
 void worldspawn ()
 {
     string  s;
+#ifdef KTFFA
 	string tmp;
 
 	// Tonik: check if we're running on an 2.3x server
 	tmp = infokey(world, "*version");
 	if (tmp == "2.30" || tmp == "2.33")
 		server_is_2_3x = true;
+#endif
 
 	lastspawn = world;
 	InitBodyQue ();
@@ -191,6 +193,11 @@ void worldspawn ()
 	precache_model ("progs/v_light.mdl");
 	
 
+#ifdef AGRIP
+	agh_world_precaches();
+#endif
+
+
 //
 // Setup light animation tables. 'a' is total darkness, 'z' is maxbright.
 //
@@ -245,7 +252,9 @@ void worldspawn ()
 
 void StartFrame ()
 {
+#ifdef KTFFA
 	entity timer;
+#endif
 
 #ifdef FRIKBOT
 	BotFrame(); // FrikBot
@@ -276,13 +285,13 @@ void StartFrame ()
 		timer.owner = world;
 		timer.classname = "timer";
 	}
-#endif
 
 // Tonik: note current "serverinfo maxfps" setting
 // (we don't want to do it in every player frame)
 	current_maxfps = stof(infokey(world, "maxfps"));
 	if (!current_maxfps)
 		current_maxfps = 72;	// 2.30 standard
+#endif
 }
 
 /*

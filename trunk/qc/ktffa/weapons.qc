@@ -435,7 +435,6 @@ void T_MissileTouch ()
 	// don't do radius damage to the other, because all the damage
 	// was done in the impact
 
-
 	T_RadiusDamage (self, self.owner, 120, other, "rocket");
 
 //	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
@@ -720,12 +719,12 @@ void W_FireGrenade ()
 	
 // set newmis duration
     newmis.nextthink = time + 2.5;
+
 	if (deathmatch == 4)
 	{
 		self.attack_finished = time + 1.1;
 		T_Damage (self, self, self.owner, 10 );
 	}
-	else
 
 	newmis.think = GrenadeExplode;
 
@@ -769,10 +768,10 @@ void launch_spike (vector org, vector dir)
 	newmis.velocity = dir * 1000;
 }
 
+
 void W_FireSuperSpikes ()
 {
 	vector	dir;
-	entity	old;
 
 	sound (self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
 	self.attack_finished = time + 0.2;
@@ -787,10 +786,10 @@ void W_FireSuperSpikes ()
 	WriteByte (MSG_ONE, SVC_SMALLKICK);
 }
 
+
 void W_FireSpikes (float ox)
 {
 	vector	dir;
-	entity	old;
 
 	makevectors (self.v_angle);
 
@@ -817,7 +816,6 @@ void W_FireSpikes (float ox)
 	msg_entity = self;
 	WriteByte (MSG_ONE, SVC_SMALLKICK);
 }
-
 
 
 void spike_touch ()
@@ -862,8 +860,8 @@ void spike_touch ()
 	}
 
 	remove(self);
-
 }
+
 
 void superspike_touch ()
 {
@@ -874,7 +872,6 @@ void superspike_touch ()
 		return;
 	}
 	self.voided = 1;
-
 
 	if (other.solid == SOLID_TRIGGER)
 		return; // trigger field, do nothing
@@ -1066,6 +1063,10 @@ float W_BestWeapon ()
 {
 	float	it;
 
+#ifdef AGRIP
+	soundtoclient (self, self, CHAN_AUTO, "ammo-out.wav", 1, ATTN_NORM);
+#endif
+
 	it = self.items;
 
 	if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & IT_LIGHTNING) )
@@ -1181,7 +1182,7 @@ void W_Attack ()
 	else if (self.weapon == IT_LIGHTNING)
 	{
 		self.attack_finished = time + 0.1;
-		sound (self, CHAN_WEAPON, "weapons/lstart.wav", 1, ATTN_NORM);
+		sound (self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM);
 		player_light1();
 /*
 		player_shot1 ();
@@ -1255,13 +1256,21 @@ void W_ChangeWeapon ()
 	
 	if (!(self.items & fl))
 	{	// don't have the weapon or the ammo
+#ifndef AGRIP
 		sprint (self, PRINT_HIGH, "no weapon.\n");
+#else
+		soundtoclient (self, self, CHAN_WEAPON, "deny.wav", 1, ATTN_NORM);
+#endif
 		return;
 	}
 
 	if (am)
 	{	// don't have the ammo
+#ifndef AGRIP
 		sprint (self, PRINT_HIGH, "not enough ammo.\n");
+#else
+		soundtoclient (self, self, CHAN_WEAPON, "ammo-out.wav", 1, ATTN_NORM);
+#endif
 		return;
 	}
 
@@ -1270,6 +1279,10 @@ void W_ChangeWeapon ()
 //
 	self.weapon = fl;
 	W_SetCurrentAmmo ();
+
+#ifdef AGRIP
+	snap_misc_weaponswitch();
+#endif
 }
 
 /*
@@ -1370,6 +1383,9 @@ void CycleWeaponCommand ()
 		if ( (self.items & self.weapon) && am == 0)
 		{
 			W_SetCurrentAmmo ();
+#ifdef AGRIP
+			snap_misc_weaponswitch();
+#endif
 			return;
 		}
 	}
@@ -1445,6 +1461,9 @@ void CycleWeaponReverseCommand ()
 		if ( (it & self.weapon) && am == 0)
 		{
 			W_SetCurrentAmmo ();
+#ifdef AGRIP
+			snap_misc_weaponswitch();
+#endif
 			return;
 		}
 	}
@@ -1504,6 +1523,10 @@ void ImpulseCommands ()
         SendMessage(newcomer);
     else if (self.impulse == KT_IMPULSE_PRINT_VERSION)
         ShowVersion();
+#endif
+#ifdef AGRIP
+	else
+		agh_weapons_impulsecommands();
 #endif
 
 	self.impulse = IMPULSE_NONE;
