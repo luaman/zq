@@ -744,7 +744,7 @@ void CL_ParseServerData (void)
 	if (cls.mvdplayback) {
 		int i;
 		// FIXME
-		cls.netchan.last_received = cls.mvd_newtime = cls.mvd_oldtime = MSG_ReadFloat();
+		cls.mvd_newtime = cls.mvd_oldtime = MSG_ReadFloat();
 		cl.playernum = MAX_CLIENTS - 1;
 		cl.spectator = true;
 		for (i = 0; i < UPDATE_BACKUP; i++)
