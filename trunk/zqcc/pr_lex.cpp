@@ -40,17 +40,15 @@ char	*pr_punctuation[] =
 {"&&", "||", "<=", ">=","==", "!=", ";", ",", "!", "*", "/", "(", ")", "-", "+", "=", "[", "]", "{", "}", "...", ".", "<", ">" , "#" , "&" , "|" , NULL};
 
 // simple types.  function types are dynamically allocated
-type_t	type_void = {ev_void, &def_void};
-type_t	type_string = {ev_string, &def_string};
-type_t	type_float = {ev_float, &def_float};
-type_t	type_vector = {ev_vector, &def_vector};
-type_t	type_entity = {ev_entity, &def_entity};
-type_t	type_field = {ev_field, &def_field};
-type_t	type_function = {ev_function, &def_function,&type_void};
-// type_function is a void() function used for state defs
-type_t	type_pointer = {ev_pointer, &def_pointer};
-
-type_t	type_floatfield = {ev_field, &def_field, &type_float};
+type_t	type_void = {ev_void};
+type_t	type_string = {ev_string};
+type_t	type_float = {ev_float};
+type_t	type_vector = {ev_vector};
+type_t	type_entity = {ev_entity};
+type_t	type_field = {ev_field};
+type_t	type_function = {ev_function, &type_void};	// type_function is a void() function used for state defs
+type_t	type_pointer = {ev_pointer};
+type_t	type_floatfield = {ev_field, &type_float};
 
 int		type_size[8] = {1,1,1,3,1,1,1,1};
 
@@ -594,7 +592,6 @@ a new one and copies it out.
 */
 type_t *PR_GetType (type_t *type)
 {
-	def_t	*def;
 	type_t	*check;
 	int		i;
 	
@@ -619,11 +616,6 @@ type_t *PR_GetType (type_t *type)
 	check->next = pr.types;
 	pr.types = check;
 	
-// allocate a generic def for the type, so fields can reference it
-	def = (def_t *) malloc (sizeof(def_t));
-	def->name = "COMPLEX TYPE";
-	def->type = check;
-	check->def = def;
 	return check;
 }
 

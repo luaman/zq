@@ -243,10 +243,9 @@ const int VA_MASK = 15;
 struct type_t
 {
 	etype_t		type;
-	def_t		*def;			// a def that points to this type
+	type_t		*aux_type;		// return type or field type
 
 // function types are more complex
-	type_t		*aux_type;		// return type or field type
 	int			num_parms;		// number of required parms ( + VA_BIT if variable parms)
 	type_t		*parm_types[MAX_PARMS];	// only [num_parms] allocated
 
