@@ -24,7 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 cvar_t	pm_slidefix = {"pm_slidefix","0"};	// FIXME: remove?
 
 movevars_t		movevars;
-
 playermove_t	pmove;
 
 float		frametime;
@@ -44,6 +43,7 @@ void Pmove_Init (void)
 }
 
 #define	STEPSIZE	18
+#define	MIN_STEP_NORMAL	0.7		// roughly 45 degrees
 
 
 /*
@@ -142,7 +142,7 @@ int PM_SlideMove (void)
 			pmove.numtouch++;
 		}
 
-		if (trace.plane.normal[2] > 0.7)
+		if (trace.plane.normal[2] > MIN_STEP_NORMAL)
 		{
 			blocked |= 1;		// floor
 		}
@@ -277,7 +277,7 @@ void PM_GroundMove (void)
 	VectorCopy (pmove.origin, dest);
 	dest[2] -= STEPSIZE;
 	trace = PM_PlayerMove (pmove.origin, dest);
-	if (trace.fraction != 1 && trace.plane.normal[2] < 0.7)
+	if (trace.fraction != 1 && trace.plane.normal[2] < MIN_STEP_NORMAL)
 		goto usedown;
 	if (!trace.startsolid && !trace.allsolid)
 	{
@@ -496,7 +496,8 @@ void PM_WaterMove (void)
 	VectorCopy (dest, start);
 	start[2] += STEPSIZE + 1;
 	trace = PM_PlayerMove (start, dest);
-	if (!trace.startsolid && !trace.allsolid)	// FIXME: check steep slope?
+	if (!trace.startsolid && !trace.allsolid &&
+		(trace.fraction == 1 || trace.plane.normal[2] > MIN_STEP_NORMAL))
 	{	// walked up the step
 		VectorCopy (trace.endpos, pmove.origin);
 		return;
@@ -579,7 +580,7 @@ void PM_CategorizePosition (void)
 {
 	vec3_t		point;
 	int			cont;
-	pmtrace_t		tr;
+	pmtrace_t	trace;
 
 // if the player hull point one unit down is solid, the player
 // is on ground
@@ -594,27 +595,27 @@ void PM_CategorizePosition (void)
 	}
 	else
 	{
-		tr = PM_PlayerMove (pmove.origin, point);
-		if (tr.fraction == 1 || tr.plane.normal[2] < 0.7)
+		trace = PM_PlayerMove (pmove.origin, point);
+		if (trace.fraction == 1 || trace.plane.normal[2] < MIN_STEP_NORMAL)
 			pmove.onground = false;
 		else {
 			pmove.onground = true;
-			pmove.groundent = tr.ent;
-			groundplane = tr.plane;
+			pmove.groundent = trace.ent;
+			groundplane = trace.plane;
 		}
 
 		if (pmove.onground)
 		{
 			pmove.waterjumptime = 0;
-			if (!tr.startsolid && !tr.allsolid)
-				VectorCopy (tr.endpos, pmove.origin);
+			if (!trace.startsolid && !trace.allsolid)
+				VectorCopy (trace.endpos, pmove.origin);
 		}
 
 		// standing on an entity other than the world
-		if (tr.ent > 0)
+		if (trace.ent > 0)
 		{
 			if (pmove.numtouch < MAX_PHYSENTS) {
-				pmove.touchindex[pmove.numtouch] = tr.ent;
+				pmove.touchindex[pmove.numtouch] = trace.ent;
 				pmove.numtouch++;
 			}
 		}
