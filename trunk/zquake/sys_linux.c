@@ -143,6 +143,11 @@ void floating_point_exception_handler(int whatever)
 	signal(SIGFPE, floating_point_exception_handler);
 }
 
+char *Sys_GetClipboardText (void)
+{
+	return NULL;
+}
+
 char *Sys_ConsoleInput(void)
 {
 #if 0
