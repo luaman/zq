@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 cvar_t	cl_nodelta = {"cl_nodelta","0"};
 cvar_t	cl_deltarecord = {"cl_deltarecord","0"};	// Tonik
+cvar_t	cl_c2spps = {"cl_c2spps","0"};				// Tonik
 
 /*
 ===============================================================================
@@ -470,6 +471,7 @@ void CL_SendCmd (void)
 	int			checksumIndex;
 	int			lost;
 	int			seq_hash;
+	static float	pps_balance;
 
 	if (cls.demoplayback)
 		return; // sendcmds come from the demo
@@ -549,6 +551,24 @@ void CL_SendCmd (void)
 	if (cls.demorecording)
 		CL_WriteDemoCmd(cmd);
 
+	if (cl_c2spps.value) {
+		pps_balance += host_frametime;
+		if (pps_balance > 0) {
+			float	pps;
+			pps = cl_c2spps.value;
+			if (pps < 10) pps = 10;
+			if (pps > 72) pps = 72;
+			pps_balance -= 1 / pps;
+			// hmmm
+			if (pps_balance > 0)
+				pps_balance = 0;
+		} else {
+			// drop this message
+			cls.netchan.outgoing_sequence++;
+			return;
+		}
+	}
+
 //
 // deliver the message
 //
@@ -601,6 +621,7 @@ void CL_InitInput (void)
 
 	Cvar_RegisterVariable (&cl_nodelta);
 //	Cvar_RegisterVariable (&cl_deltarecord);	// Tonik
+	Cvar_RegisterVariable (&cl_c2spps);			// Tonik
 }
 
 /*
