@@ -571,9 +571,6 @@ void R_DrawEntitiesOnList (void)
 			{
 				j = R_LightPoint (currententity->origin);
 
-				if ((currententity->renderfx & RF_WEAPONMODEL) && j < 24)
-					j = 24;		// always give some light on gun
-				
 				lighting.ambientlight = j;
 				lighting.shadelight = j;
 
@@ -594,11 +591,19 @@ void R_DrawEntitiesOnList (void)
 						lighting.ambientlight += add;
 				}
 	
-			// clamp lighting so it doesn't overbright as much
+				// clamp lighting so it doesn't overbright as much
 				if (lighting.ambientlight > 128)
 					lighting.ambientlight = 128;
 				if (lighting.ambientlight + lighting.shadelight > 192)
 					lighting.shadelight = 192 - lighting.ambientlight;
+
+				// always give the gun some light
+				if (currententity->renderfx & RF_WEAPONMODEL && lighting.ambientlight < 24)
+					lighting.ambientlight = lighting.shadelight = 24;		// always give some light on gun
+				
+				// never allow players to go totally black
+				if (currententity->model->modhint == MOD_PLAYER && lighting.ambientlight < 8)
+						lighting.ambientlight = lighting.shadelight = 8;
 
 				if (r_fullbrightSkins.value && currententity->model->modhint == MOD_PLAYER
 					&& r_refdef2.allow_fbskins) {
