@@ -1417,10 +1417,16 @@ void CL_SetStat (int stat, int value)
 	
 	if (stat == STAT_ITEMS)
 	{	// set flash times
-		Sbar_Changed ();
-		for (j=0 ; j<32 ; j++)
-			if ( (value & (1<<j)) && !(cl.stats[stat] & (1<<j)))
-				cl.item_gettime[j] = cl.time;
+		if (cl.stats[STAT_ITEMS] || cls.state == ca_active) {
+			for (j=0 ; j<32 ; j++)
+				if ( (value & (1<<j)) && !(cl.stats[STAT_ITEMS] & (1<<j)))
+					cl.item_gettime[j] = cl.time;
+		}
+		else {
+			// reset flash times if we're just entering the map
+			for (j = 0; j < 32; j++)
+				cl.item_gettime[j] = -99;
+		}
 	}
 
 	cl.stats[stat] = value;
