@@ -78,7 +78,7 @@ void BspModels (void)
 	if (!p)
 		return;
 	if (p == myargc-1)
-		Error ("-bspmodels must preceed a game directory");
+		Error ("-bspmodels must precede a game directory");
 	gamedir = myargv[p+1];
 	
 	for (i=0 ; i<nummodels ; i++)
