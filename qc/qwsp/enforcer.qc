@@ -168,7 +168,7 @@ void()	enf_paind17	=[	$paind17,	enf_paind18	] {ai_pain(1);}
 void()	enf_paind18	=[	$paind18,	enf_paind19	] {}
 void()	enf_paind19	=[	$paind19,	enf_run1	] {}
 
-void enf_pain ()
+void enf_pain (entity attacker, float damage)
 {
 	float	r;
 
