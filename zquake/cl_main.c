@@ -940,11 +940,13 @@ void CL_Frame (double time)
 		host_skipframe = false;
 	}
 
-	cls.realtime += cls.frametime;
-	if (!cl.paused) {
-		cl.time += cls.frametime;
-		cl.servertime += cls.frametime;
-	}
+	cls.realtime += cls.frametime;		// go on even if paused (dunno why...)
+
+	if (cl.paused)
+		cls.frametime = 0;
+
+	cl.time += cls.frametime;
+	cl.servertime += cls.frametime;
 
 	// get new key events
 	Sys_SendKeyEvents ();
