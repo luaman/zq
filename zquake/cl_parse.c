@@ -1321,6 +1321,7 @@ void CL_ParseServerMessage (void)
 					con_ormask = 128;
 				S_LocalSound ("misc/talk.wav");
 			}
+			CL_SearchForMsgTriggers (s);
 			Con_Printf ("%s", s);
 			con_ormask = 0;
 			break;
