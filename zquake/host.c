@@ -203,10 +203,8 @@ void Host_Init (int argc, char **argv, int default_memsize)
 
 #ifdef SERVERONLY
 
-	Cbuf_InsertText ("exec server.cfg\n");
-	
-// process command line arguments
-	Cmd_StuffCmds_f ();
+	Cbuf_AddText ("exec server.cfg\n");
+	Cmd_StuffCmds_f ();		// process command line arguments
 	Cbuf_Execute ();
 
 // if a map wasn't specified on the command line, spawn start map
@@ -217,7 +215,10 @@ void Host_Init (int argc, char **argv, int default_memsize)
 
 #else
 
-	Cbuf_InsertText ("exec quake.rc\n");
+	Cbuf_AddText ("exec default.cfg\n");
+	Cbuf_AddText ("exec config.cfg\n");
+	Cbuf_AddText ("exec autoexec.cfg\n");
+	Cmd_StuffCmds_f ();		// process command line arguments
 	Cbuf_AddText ("cl_warncmd 1\n");
 
 #endif
