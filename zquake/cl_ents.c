@@ -222,7 +222,7 @@ void FlushEntityPacket (void)
 		word = (unsigned short)MSG_ReadShort ();
 		if (msg_badread)
 		{	// something didn't parse right...
-			Host_EndGame ("msg_badread in packetentities");
+			Host_Error ("msg_badread in packetentities");
 			return;
 		}
 
@@ -305,7 +305,7 @@ void CL_ParsePacketEntities (qboolean delta)
 		word = (unsigned short)MSG_ReadShort ();
 		if (msg_badread)
 		{	// something didn't parse right...
-			Host_EndGame ("msg_badread in packetentities");
+			Host_Error ("msg_badread in packetentities");
 			return;
 		}
 
@@ -315,7 +315,7 @@ void CL_ParsePacketEntities (qboolean delta)
 			{	// copy all the rest of the entities from the old packet
 //Con_Printf ("copy %i\n", oldp->entities[oldindex].number);
 				if (newindex >= MAX_PACKET_ENTITIES)
-					Host_EndGame ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
+					Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
 				newp->entities[newindex] = oldp->entities[oldindex];
 				newindex++;
 				oldindex++;
@@ -338,7 +338,7 @@ void CL_ParsePacketEntities (qboolean delta)
 //Con_Printf ("copy %i\n", oldnum);
 			// copy one of the old entities over to the new packet unchanged
 			if (newindex >= MAX_PACKET_ENTITIES)
-				Host_EndGame ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
+				Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
 			newp->entities[newindex] = oldp->entities[oldindex];
 			newindex++;
 			oldindex++;
@@ -360,7 +360,7 @@ void CL_ParsePacketEntities (qboolean delta)
 				continue;
 			}
 			if (newindex >= MAX_PACKET_ENTITIES)
-				Host_EndGame ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
+				Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
 			CL_ParseDelta (&cl_baselines[newnum], &newp->entities[newindex], word);
 			newindex++;
 			continue;
