@@ -823,35 +823,6 @@ void() WaterMove =
 	}       
 };
 
-void() CheckWaterJump =
-{
-	local vector start, end;
-
-// check for a jump-out-of-water
-	makevectors (self.angles);
-	start = self.origin;
-	start_z = start_z + 8; 
-	v_forward_z = 0;
-	normalize(v_forward);
-	end = start + v_forward*24;
-	traceline (start, end, TRUE, self);
-	if (trace_fraction < 1)
-	{       // solid at waist
-		start_z = start_z + self.maxs_z - 8;
-		end = start + v_forward*24;
-		self.movedir = trace_plane_normal * -50;
-		traceline (start, end, TRUE, self);
-		if (trace_fraction == 1)
-		{       // open at eye level
-			self.flags = self.flags | FL_WATERJUMP;
-			self.velocity_z = 225;
-			self.flags = self.flags - (self.flags & FL_JUMPRELEASED);
-			self.teleport_time = time + 2;  // safety net
-			return;
-		}
-	}
-};
-
 /*
 ================
 PlayerPreThink
@@ -873,10 +844,6 @@ void() PlayerPreThink =
 
 	CheckRules ();
 	WaterMove ();
-/*
-	if (self.waterlevel == 2)
-		CheckWaterJump ();
-*/
 
 	if (self.deadflag >= DEAD_DEAD)
 	{
