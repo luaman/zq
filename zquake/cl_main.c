@@ -360,7 +360,6 @@ void CL_Disconnect (void)
 	byte	final[10];
 
 	connect_time = 0;
-	cl.teamfortress = false;
 
 	VID_SetCaption (PROGRAM);
 
