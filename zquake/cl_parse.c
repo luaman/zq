@@ -1181,11 +1181,6 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 {
 	char	old_team[MAX_INFO_KEY];
 
-#ifdef MVDPLAY
-	if (slot == cl.playernum && cls.mvdplayback)
-		return;
-#endif
-
 	strlcpy (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
 	if (!player->name[0] && player->userid && strlen(player->userinfo) >= MAX_INFO_STRING - 17) {
 		// somebody's trying to hide himself by overflowing userinfo
@@ -1201,7 +1196,11 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 	else
 		player->spectator = false;
 
+#ifdef MVDPLAY
+	if (!cls.mvdplayback && slot == cl.playernum && player->name[0]) {
+#else
 	if (slot == cl.playernum && player->name[0]) {
+#endif
 		if (cl.spectator && !player->spectator)
 			Cam_Reset ();	// switching to player mode
 		cl.spectator = player->spectator;
