@@ -347,14 +347,12 @@ void() agh_weapons_impulsecommands =
     //          taken into consideration; otherwise it'll always be an
     //          opponent to us.
     
-#ifdef FRIKBOT
     if( self.impulse == 50 )
-        Cmd_AddBot("", "");
-
+        create_bot(1);
+                   
     if( self.impulse == 51 )
-        Cmd_RemoveBot();
-#endif
-     
+        create_bot(2);
+    
     if( self.impulse == 52 )
     {
         if( ! self.agrip_aux.ammo_cells )

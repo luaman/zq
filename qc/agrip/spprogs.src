@@ -48,3 +48,5 @@ hooks.qc     // Hook functions (moves accessibility code out of main QC)
 ../qwsp/shalrath.qc		// registered
 ../qwsp/enforcer.qc		// registered
 ../qwsp/oldone.qc		// registered
+
+tutor.qc                        // a bot that supports coop
