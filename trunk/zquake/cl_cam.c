@@ -75,6 +75,14 @@ void vectoangles(vec3_t vec, vec3_t ang)
 	ang[2] = 0;
 }
 
+void Cam_SetViewPlayer (void)
+{
+	if (cl.spectator && autocam && locked && cl_chasecam.value)
+		cl.viewplayernum = spec_track;
+	else
+		cl.viewplayernum = cl.playernum;
+}
+
 // returns true if weapon model should be drawn in camera mode
 qboolean Cam_DrawViewModel(void)
 {
@@ -349,8 +357,6 @@ void Cam_Track(usercmd_t *cmd)
 			// move there locally immediately
 			VectorCopy(desired_position, self->origin);
 		}
-		self->weaponframe = player->weaponframe;
-
 	} else {
 		// Ok, move to our desired position and set our angles to view
 		// the player
