@@ -625,7 +625,7 @@ static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, ve
 
 // trace a line through the supplied clipping hull
 // does not fill trace.ent
-trace_t SV_HullTrace (hull_t *hull, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
+trace_t SV_HullTrace (hull_t *hull, vec3_t start, vec3_t end)
 {
 	// fill in a default trace
 	memset (&trace_trace, 0, sizeof(trace_trace));
@@ -635,7 +635,7 @@ trace_t SV_HullTrace (hull_t *hull, vec3_t start, vec3_t mins, vec3_t maxs, vec3
 
 	trace_hull = *hull;
 
-	RecursiveHullTrace (hull->firstclipnode, 0, 1, start, end);
+	RecursiveHullTrace (trace_hull.firstclipnode, 0, 1, start, end);
 
 	return trace_trace;
 }
@@ -663,7 +663,7 @@ trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec3_t max
 	VectorSubtract (end, offset, end_l);
 
 // trace a line through the apropriate clipping hull
-	trace = SV_HullTrace (hull, start_l, mins, maxs, end_l);
+	trace = SV_HullTrace (hull, start_l, end_l);
 
 // fix trace up by the offset
 	VectorAdd (trace.endpos, offset, trace.endpos);
