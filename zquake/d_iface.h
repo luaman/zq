@@ -176,7 +176,7 @@ extern float	skyshift;
 
 extern int		c_surf;
 
-extern byte		*r_warpbuffer;
+extern byte		r_warpbuffer[WARP_WIDTH * WARP_HEIGHT];
 
 #endif /* _D_IFACE_H_ */
 
