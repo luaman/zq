@@ -1013,7 +1013,7 @@ MAIN WINDOW
 
 LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-qbool IN_TranslateKeyEvent (unsigned int virtkey, unsigned int keydata, qbool down);
+int IN_TranslateKeyEvent (int lKeyData, qbool down);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (
@@ -1049,19 +1049,16 @@ LONG WINAPI MainWndProc (
 
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
-			if (!IN_TranslateKeyEvent (wParam, lParam, true))
-				lRet = 0;
+			IN_TranslateKeyEvent (lParam, true);
 			break;
 
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
-			if (!IN_TranslateKeyEvent (wParam, lParam, false))
-				lRet = 0;
+			IN_TranslateKeyEvent (lParam, false);
 			break;
 
 		case WM_SYSCHAR:
 		// keep Alt-Space from happening
-			lRet = 1;
 			break;
 
 	// this is complicated because Win32 seems to pack multiple mouse events into
