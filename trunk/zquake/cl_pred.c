@@ -346,6 +346,7 @@ void CL_PredictMovement (void)
 	if (cls.state != ca_active)
 		return;
 
+#ifdef MVDPLAY
 	if (cls.mvdplayback && !cam_track)
 	{
 		player_state_t	state;
@@ -363,6 +364,7 @@ void CL_PredictMovement (void)
 		cl.onground = false;
 		return;
 	}
+#endif
 
 	// set up prediction for other players
 	CL_SetUpPlayerPrediction (false);
