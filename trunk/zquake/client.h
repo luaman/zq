@@ -291,6 +291,8 @@ typedef struct
 
 // all player information
 	player_info_t	players[MAX_CLIENTS];
+
+	char		sprint_buf[1024];	// Tonik
 } client_state_t;
 
 
