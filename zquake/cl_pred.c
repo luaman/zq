@@ -357,6 +357,9 @@ Predict the local player and other players
 */
 void CL_PredictMovement (void)
 {
+	if (cls.state != ca_active)
+		return;
+
 	// set up prediction for other players
 	CL_SetUpPlayerPrediction (false);
 

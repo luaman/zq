@@ -1019,16 +1019,14 @@ void CL_Frame (double time)
 	if (!(com_serveractive && !cls.demorecording))
 		CL_SendToServer ();
 
-	if (cls.state >= ca_onserver)	// !!! Tonik
-	{
-		Cam_SetViewPlayer ();
+	// see if using autocam and set cl.viewplayernum
+	Cam_SetViewPlayer ();
 
-		// predict all players
-		CL_PredictMovement ();
+	// predict all players
+	CL_PredictMovement ();
 
-		// build a refresh entity list
-		CL_EmitEntities ();
-	}
+	// build a refresh entity list
+	CL_EmitEntities ();
 
 	// update video
 	if (host_speeds.value)
