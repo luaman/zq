@@ -686,7 +686,7 @@ void CL_ParsePlayerinfo (void)
 			state->jump_held = (pm_code == PMC_NORMAL_JUMP_HELD);
 		}
 		else if (pm_code == PMC_OLD_SPECTATOR)
-			state->pm_type = PMC_OLD_SPECTATOR;
+			state->pm_type = PM_OLD_SPECTATOR;
 		else {
 			if (cl.z_ext & Z_EXT_PM_TYPE_NEW) {
 				if (pm_code == PMC_SPECTATOR)
