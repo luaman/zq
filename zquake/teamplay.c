@@ -1207,7 +1207,7 @@ char *trigger_commands[] = {
 	"unbind",
 	"record",
 	"easyrecord",
-	"stop"
+	"stop",
 	"if"
 };
 
