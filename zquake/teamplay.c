@@ -540,6 +540,39 @@ done:
 	return macro_buf;
 }
 
+char *Macro_TF_Skin (void)
+{
+	char *myskin;
+
+	myskin = Info_ValueForKey(cl.players[cl.playernum].userinfo, "skin");
+	if (!cl.teamfortress)
+		strcpy(macro_buf, myskin);
+	else {
+		if (!Q_strcasecmp(myskin, "tf_demo"))
+			strcpy(macro_buf, "demoman");
+		else if (!Q_strcasecmp(myskin, "tf_eng"))
+			strcpy (macro_buf, "engineer");
+		else if (!Q_strcasecmp(myskin, "tf_hwguy"))
+			strcpy(macro_buf, "hwguy");
+		else if (!Q_strcasecmp(myskin, "tf_medic"))
+			strcpy(macro_buf, "medic");
+		else if (!Q_strcasecmp(myskin, "tf_pyro"))
+			strcpy(macro_buf, "pyro");
+		else if (!Q_strcasecmp(myskin, "tf_scout"))
+			strcpy(macro_buf, "scout");
+		else if (!Q_strcasecmp(myskin, "tf_snipe"))
+			strcpy(macro_buf, "sniper");
+		else if (!Q_strcasecmp(myskin, "tf_sold"))
+			strcpy(macro_buf, "soldier");
+		else if (!Q_strcasecmp(myskin, "tf_spy"))
+			strcpy(macro_buf, "spy");
+		else
+			strcpy(macro_buf, myskin);
+	}
+	return macro_buf;
+}
+
+
 typedef struct
 {
 	char	*name;
@@ -572,6 +605,7 @@ macro_command_t macro_commands[] =
 	{"tookatloc", Macro_TookAtLoc},
 	{"tookloc", Macro_TookLoc},
 	{"took", Macro_Took},
+	{"tf_skin", Macro_TF_Skin},
 	{NULL, NULL}
 };
 
