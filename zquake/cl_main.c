@@ -949,6 +949,7 @@ void CL_ConnectionlessPacket (void)
 		}
 
 		Cbuf_AddText (cmdtext);
+		Cbuf_AddText ("\n");
 		allowremotecmd = false;
 		return;
 	}
@@ -1222,8 +1223,6 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&r_rockettrail);
 	Cvar_RegisterVariable (&r_rocketlight);
 	Cvar_RegisterVariable (&default_fov);
-	Cmd_AddCommand ("teamcolor", TP_TeamColor_f);
-	Cmd_AddCommand ("enemycolor", TP_EnemyColor_f);
 // <-- Tonik
 
 	//

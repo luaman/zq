@@ -1194,4 +1194,6 @@ void CL_InitTeamplay()
 
 	Cmd_AddCommand ("loadloc", CL_LoadLocFile_f);
 	Cmd_AddCommand ("msg_trigger", CL_MsgTrigger_f);
+	Cmd_AddCommand ("teamcolor", TP_TeamColor_f);
+	Cmd_AddCommand ("enemycolor", TP_EnemyColor_f);
 }
