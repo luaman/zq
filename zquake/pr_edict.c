@@ -980,8 +980,8 @@ void PR_LoadProgs (void)
 	progs = NULL;
 	if (!deathmatch.value)
 		progs = (dprograms_t *)FS_LoadHunkFile ("spprogs.dat");
-	if (!progs)
-		progs = (dprograms_t *)FS_LoadHunkFile ("zqprogs.dat");
+//	if (!progs)
+//		progs = (dprograms_t *)FS_LoadHunkFile ("zqprogs.dat");
 	if (!progs)
 		progs = (dprograms_t *)FS_LoadHunkFile ("qwprogs.dat");
 	if (!progs)
