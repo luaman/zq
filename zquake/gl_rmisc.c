@@ -398,10 +398,6 @@ void R_NewMap (void)
 {
 	int		i;
 
-	lightmode = gl_lightmode.value;
-	if (lightmode < 0 || lightmode > 2)
-		lightmode = 2;
-
 	for (i=0 ; i<256 ; i++)
 		d_lightstylevalue[i] = 264;		// normal light value
 
@@ -473,6 +469,12 @@ void R_TimeRefresh_f (void)
 
 void D_FlushCaches (void)
 {
+	// maybe it's not the right place for this code, but it serves
+	// its purpose - set lightmode to gl_lightmode before loading
+	// any models for a new map
+	lightmode = gl_lightmode.value;
+	if (lightmode < 0 || lightmode > 2)
+		lightmode = 2;
 }
 
 
