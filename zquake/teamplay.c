@@ -952,10 +952,8 @@ _endoffile:
 
 	Hunk_FreeToLowMark (mark);
 
-	if (quiet)
-		Com_Printf ("Loaded %s\n", locname);
-	else
-		Com_Printf ("Loaded %s (%i locations)\n", locname, loc_numentries);
+	if (!quiet)
+		Com_Printf ("Loaded %s (%i loc points)\n", locname, loc_numentries);
 }
 
 void TP_LoadLocFile_f (void)
