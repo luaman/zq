@@ -129,7 +129,6 @@ void FlushEntityPacket (void)
 	memset (&olde, 0, sizeof(olde));
 
 	cl.delta_sequence = 0;
-	cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].invalid = true;
 
 	// read it all, but ignore it
 	while (1)
@@ -204,7 +203,7 @@ void CL_ParsePacketEntities (qbool delta)
 
 	newpacket = cls.netchan.incoming_sequence&UPDATE_MASK;
 	newp = &cl.frames[newpacket].packet_entities;
-	cl.frames[newpacket].invalid = false;
+	cl.frames[newpacket].valid = false;	// will set to true after we parse everything
 
 	if (delta)
 	{
@@ -339,6 +338,7 @@ void CL_ParsePacketEntities (qbool delta)
 	}
 
 	newp->num_entities = newindex;
+	cl.frames[newpacket].valid = true;
 
 	cl_oldentframecount = cl_entframecount;
 	cl_entframecount++;

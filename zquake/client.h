@@ -116,7 +116,7 @@ typedef struct
 	player_state_t	playerstate[MAX_CLIENTS];	// message received that reflects performing
 							// the usercmd
 	packet_entities_t	packet_entities;
-	qbool		invalid;		// true if the packet_entities delta was invalid
+	qbool		valid;		// are packet_entities valid?
 } frame_t;
 
 typedef struct
