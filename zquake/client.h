@@ -173,7 +173,10 @@ typedef struct
 {
 // connection information
 	cactive_t	state;
-	
+
+	int			framecount;		// incremented every frame, never reset
+	double		frametime;
+
 // network stuff
 	netchan_t	netchan;
 	int			qport;
@@ -204,7 +207,7 @@ typedef struct
 	qboolean	timedemo;
 	FILE		*demofile;
 	float		td_lastframe;		// to meter out one message a frame
-	int			td_startframe;		// host_framecount at start
+	int			td_startframe;		// cls.framecount at start
 	float		td_starttime;		// realtime at second frame of timedemo
 
 	int			challenge;

@@ -114,7 +114,7 @@ void CL_DecayLights (void)
 		if (dl->die < cl.time || !dl->radius)
 			continue;
 		
-		dl->radius -= host_frametime*dl->decay;
+		dl->radius -= cls.frametime * dl->decay;
 		if (dl->radius < 0)
 			dl->radius = 0;
 	}

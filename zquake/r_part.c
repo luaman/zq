@@ -481,7 +481,7 @@ void R_DrawParticles (void)
 	VectorCopy (vpn, r_ppn);
 #endif
 
-	frametime = host_frametime;
+	frametime = cls.frametime;
 	if (cl.paused)
 		frametime = 0;
 	time3 = frametime * 15;

@@ -316,9 +316,9 @@ void CL_AdjustAngles (void)
 	float	up, down;
 	
 	if (in_speed.state & 1)
-		speed = host_frametime * cl_anglespeedkey.value;
+		speed = cls.frametime * cl_anglespeedkey.value;
 	else
-		speed = host_frametime;
+		speed = cls.frametime;
 
 	if (!(in_strafe.state & 1))
 	{
@@ -441,9 +441,9 @@ void CL_FinishMove (usercmd_t *cmd)
 
 	// send milliseconds of time to apply the move
 #if 0
-	ms = host_frametime * 1000;
+	ms = cls.frametime * 1000;
 #else
-	msec_balance += host_frametime * 990;
+	msec_balance += cls.frametime * 990;
 	ms = msec_balance;
 	msec_balance -= ms;
 #endif
@@ -571,7 +571,7 @@ void CL_SendCmd (void)
 		CL_WriteDemoCmd (cmd);
 
 	if (cl_c2spps.value) {
-		pps_balance += host_frametime;
+		pps_balance += cls.frametime;
 		// never drop more than 2 messages in a row -- that'll cause PL
 		// and don't drop if one of the last two movemessages have an impulse
 		if (pps_balance > 0 || dropcount >= 2 || dontdrop) {
