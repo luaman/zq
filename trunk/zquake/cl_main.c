@@ -312,13 +312,14 @@ void CL_Disconnect (void)
 // stop sounds (especially looping!)
 	S_StopAllSounds (true);
 	
-	if (cls.demoplayback)
-		CL_StopPlayback ();
-
 	if (cls.demorecording)
 		CL_Stop_f ();
 
-	if (cls.state != ca_disconnected)
+	if (cls.demoplayback)
+	{
+		CL_StopPlayback ();
+	}
+	else if (cls.state != ca_disconnected)
 	{
 		cls.state = ca_disconnected;
 
