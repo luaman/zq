@@ -181,86 +181,6 @@ void SV_SaveSpawnparms (void)
 	}
 }
 
-/*
-================
-SV_CalcPHS
-
-Expands the PVS and calculates the PHS
-(Potentially Hearable Set)
-================
-*/
-void SV_CalcPHS (void)
-{
-	int		rowbytes, rowwords;
-	int		i, j, k, l, index, num;
-	int		bitbyte;
-	unsigned	*dest, *src;
-	byte	*scan;
-	int		count, vcount;
-
-	Com_DPrintf ("Building PHS...\n");
-
-	num = sv.FIXME_worldmodel->numleafs;
-	rowwords = (num+31)>>5;
-	rowbytes = rowwords*4;
-
-	sv.pvs = Hunk_Alloc (rowbytes*num);
-	scan = sv.pvs;
-	vcount = 0;
-	for (i=0 ; i<num ; i++, scan+=rowbytes)
-	{
-		memcpy (scan, Mod_LeafPVS(sv.FIXME_worldmodel->leafs+i, sv.FIXME_worldmodel),
-			rowbytes);
-		if (i == 0)
-			continue;
-		for (j=0 ; j<num ; j++)
-		{
-			if ( scan[j>>3] & (1<<(j&7)) )
-			{
-				vcount++;
-			}
-		}
-	}
-
-
-	sv.phs = Hunk_Alloc (rowbytes*num);
-	count = 0;
-	scan = sv.pvs;
-	dest = (unsigned *)sv.phs;
-	for (i=0 ; i<num ; i++, dest += rowwords, scan += rowbytes)
-	{
-		memcpy (dest, scan, rowbytes);
-		for (j=0 ; j<rowbytes ; j++)
-		{
-			bitbyte = scan[j];
-			if (!bitbyte)
-				continue;
-			for (k=0 ; k<8 ; k++)
-			{
-				if (! (bitbyte & (1<<k)) )
-					continue;
-				// or this pvs row into the phs
-				// +1 because pvs is 1 based
-				index = ((j<<3)+k+1);
-				if (index >= num)
-					continue;
-				src = (unsigned *)sv.pvs + index*rowwords;
-				for (l=0 ; l<rowwords ; l++)
-					dest[l] |= src[l];
-			}
-		}
-
-		if (i == 0)
-			continue;
-		for (j=0 ; j<num ; j++)
-			if ( ((byte *)dest)[j>>3] & (1<<(j&7)) )
-				count++;
-	}
-
-	Com_DPrintf ("Average leafs visible / hearable / total: %i / %i / %i\n"
-		, vcount/num, count/num, num);
-}
-
 unsigned SV_CheckModel(char *mdl)
 {
 	byte	stackbuf[1024];		// avoid dirtying the cache heap
@@ -389,7 +309,6 @@ void SV_SpawnServer (char *mapname, qboolean devmap)
 
 	sv.worldmodel = CM_LoadMap (sv.modelname, false, &sv.map_checksum, &sv.map_checksum2);
 	sv.FIXME_worldmodel = Mod_ForName (sv.modelname, true);
-	SV_CalcPHS ();
 
 	//
 	// clear physics interaction links

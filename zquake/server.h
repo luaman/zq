@@ -80,8 +80,6 @@ typedef struct
 										// translate entnums dynamically before sending
 	entity_translation_t	translations[512];	// translated numbers are tracked here
 
-	byte		*pvs, *phs;			// fully expanded and decompressed
-
 	// added to every client's unreliable buffer each frame, then cleared
 	sizebuf_t	datagram;
 	byte		datagram_buf[MAX_DATAGRAM];

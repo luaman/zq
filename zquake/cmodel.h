@@ -66,7 +66,9 @@ hull_t *CM_HullForBox (vec3_t mins, vec3_t maxs);
 int CM_HullPointContents (hull_t *hull, int num, vec3_t p);
 trace_t CM_HullTrace (hull_t *hull, vec3_t start, vec3_t end);
 cleaf_t *CM_PointInLeaf (const vec3_t p);
+int CM_Leafnum (const cleaf_t *leaf);
 byte *CM_LeafPVS (cleaf_t *leaf);
+byte *CM_LeafPHS (cleaf_t *leaf);		// only for the server
 byte *CM_FatPVS (vec3_t org);
 char *CM_EntityString (void);
 cmodel_t *CM_InlineModel (char *name);

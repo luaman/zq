@@ -68,12 +68,16 @@ static int			numclipnodes;
 static cleaf_t		*map_leafs;
 static int			numleafs;
 
-static byte			*map_visdata;
+static byte			*map_visdata;				// compressed
 static byte			map_novis[MAX_MAP_LEAFS/8];
+
+static byte			*map_pvs, *map_phs;			// fully expanded and decompressed
+												// only valid if we are the server
+static int			map_pvs_rowbytes;			// for both pvs and phs
 
 static char			*map_entitystring;
 
-static byte			*cmod_base;		// for CM::Load* functions
+static byte			*cmod_base;					// for CM_Load* functions
 
 
 
@@ -344,6 +348,13 @@ char *CM_EntityString (void)
 	return map_entitystring;
 }
 
+int CM_Leafnum (const cleaf_t *leaf)
+{
+	assert (leaf);
+	return leaf - map_leafs;
+}
+
+// always returns a valid cleaf pointer
 cleaf_t *CM_PointInLeaf (const vec3_t p)
 {
 	cnode_t		*node;
@@ -419,9 +430,22 @@ byte *CM_LeafPVS (cleaf_t *leaf)
 {
 	if (leaf == map_leafs)
 		return map_novis;
+
+	// could just as well use map_pvs, just make sure we build it in clientload also
 	return CM_DecompressVis (leaf->compressed_vis);
 }
 
+
+/*
+** only the server may call this
+*/
+byte *CM_LeafPHS (cleaf_t *leaf)
+{
+	if (leaf == map_leafs)
+		return map_novis;
+
+	return map_phs + (leaf - map_leafs) * map_pvs_rowbytes;
+}
 
 /*
 =============================================================================
@@ -763,6 +787,84 @@ static void CM_LoadPlanes (lump_t *l)
 }
 
 /*
+** CM_BuildPVSAndPHS
+**
+**	Expands the PVS and calculates the PHS (potentially hearable set)
+*/
+static void CM_BuildPVSAndPHS (void)
+{
+	int		rowwords;
+	int		i, j, k, l, index;
+	int		bitbyte;
+	unsigned	*dest, *src;
+	byte	*scan;
+	int		c_visible, c_hearable;
+
+	Com_DPrintf ("Building PHS...\n");
+
+	rowwords = (numleafs + 31) >> 5;
+	map_pvs_rowbytes = rowwords*4;
+
+	map_pvs = Hunk_Alloc (map_pvs_rowbytes * numleafs);
+	scan = map_pvs;
+	c_visible = 0;
+	for (i = 0; i < numleafs; i++, scan += map_pvs_rowbytes)
+	{
+		memcpy (scan, CM_LeafPVS(map_leafs + i), map_pvs_rowbytes);
+		if (i == 0)
+			continue;
+		for (j = 0; j < numleafs; j++) {
+			if ( scan[j>>3] & (1<<(j&7)) )
+				c_visible++;
+		}
+	}
+
+
+	map_phs = Hunk_Alloc (map_pvs_rowbytes * numleafs);
+	c_hearable = 0;
+	scan = map_pvs;
+	dest = (unsigned *)map_phs;
+	for (i = 0; i < numleafs; i++, dest += rowwords, scan += map_pvs_rowbytes)
+	{
+		// copy from pvs
+		memcpy (dest, scan, map_pvs_rowbytes);
+
+		// or in hearable leafs
+		for (j = 0; j < map_pvs_rowbytes; j++)
+		{
+			bitbyte = scan[j];
+			if (!bitbyte)
+				continue;
+			for (k = 0; k < 8; k++)
+			{
+				if (! (bitbyte & (1<<k)) )
+					continue;
+				// or this pvs row into the phs
+				// +1 because pvs is 1 based
+				index = ((j<<3)+k+1);
+				if (index >= numleafs)
+					continue;
+				src = (unsigned *)map_pvs + index*rowwords;
+				for (l=0 ; l<rowwords ; l++)
+					dest[l] |= src[l];
+			}
+		}
+
+		if (i == 0)
+			continue;
+		for (j = 0; j < numleafs; j++) {
+			if ( ((byte *)dest)[j>>3] & (1<<(j&7)) )
+				c_hearable++;
+		}
+	}
+
+	Com_DPrintf ("Average leafs visible / hearable / total: %i / %i / %i\n",
+					c_visible/numleafs, c_hearable/numleafs, numleafs);
+}
+
+
+
+/*
 ** hunk was reset by host, so the data is no longer valid
 */
 void CM_InvalidateMap (void)
@@ -836,7 +938,8 @@ cmodel_t *CM_LoadMap (char *name, qboolean clientload, unsigned *checksum, unsig
 	CM_MakeHull0 ();
 
 	if (!clientload) {	// client doesn't need PHS
-//		MakePHS ();
+		// FIXME, build (and use) pvs anyway even if we're the client
+		CM_BuildPVSAndPHS ();
 	}
 
 	strlcpy (map_name, name, sizeof(map_name));
