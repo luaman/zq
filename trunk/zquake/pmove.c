@@ -737,7 +737,9 @@ void JumpButton (void)
 
 	pmove.oldbuttons |= BUTTON_JUMP;	// don't jump again until released
 
+#ifndef SERVERONLY
 	pmove.jump_msec = pmove.cmd.msec;
+#endif
 }
 
 /*
