@@ -261,7 +261,7 @@ void VID_Gamma_f (void)
 	}
 }
 
-void VID_DescribeModes_f (void)
+void VID_ModeList_f (void)
 {
 	int i;
 	
@@ -554,7 +554,7 @@ void VID_Init(unsigned char *palette)
 		Cvar_Register (&vid_redrawfull);
 		Cvar_Register (&vid_waitforrefresh);
 		
-		Cmd_AddCommand("vid_describemodes", VID_DescribeModes_f);
+		Cmd_AddCommand("vid_modelist", VID_ModeList_f);
 		Cmd_AddCommand("vid_debug", VID_Debug_f);
 
 	// interpret command-line params

@@ -1916,10 +1916,10 @@ void	VID_ShiftPalette (unsigned char *palette)
 
 /*
 =================
-VID_DescribeModes_f
+VID_ModeList_f
 =================
 */
-void VID_DescribeModes_f (void)
+void VID_ModeList_f (void)
 {
 	int			i, lnummodes;
 	char		*pinfo;
@@ -2063,7 +2063,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_Register (&vid_displayfrequency);
 
 	Cmd_AddCommand ("vid_testmode", VID_TestMode_f);
-	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
+	Cmd_AddCommand ("vid_modelist", VID_ModeList_f);
 	Cmd_AddCommand ("vid_forcemode", VID_ForceMode_f);
 	Cmd_AddCommand ("vid_windowed", VID_Windowed_f);
 	Cmd_AddCommand ("vid_fullscreen", VID_Fullscreen_f);
