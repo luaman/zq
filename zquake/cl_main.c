@@ -57,7 +57,6 @@ cvar_t	cl_writecfg = {"cl_writecfg", "1"};
 
 cvar_t	entlatency = {"entlatency", "20"};
 cvar_t	cl_predict_players = {"cl_predict_players", "1"};
-cvar_t	cl_predict_players2 = {"cl_predict_players2", "1"};
 cvar_t	cl_solid_players = {"cl_solid_players", "1"};
 
 cvar_t  localid = {"localid", ""};
@@ -677,7 +676,6 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&rcon_address);
 
 	Cvar_RegisterVariable (&entlatency);
-	Cvar_RegisterVariable (&cl_predict_players2);
 	Cvar_RegisterVariable (&cl_predict_players);
 	Cvar_RegisterVariable (&cl_solid_players);
 
