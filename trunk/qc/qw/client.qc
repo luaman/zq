@@ -342,9 +342,7 @@ void() respawn =
 	}
 	else
 	{	// restart the entire server
-		localcmd ("map ");
-		localcmd (mapname);
-		localcmd ("\n");
+		changelevel (mapname);
 	}
 };
 
