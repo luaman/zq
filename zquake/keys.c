@@ -495,7 +495,7 @@ static void HandleEnter (void)
 	else if (keydown[K_CTRL])
 		type = TEAMCHAT;
 	else if (keydown[K_SHIFT])
-		type = (cl_chatmode.value == 1 && CheckForCommand()) ? COMMAND : CHAT;
+		type = (cl_chatmode.value == 1) ? COMMAND : CHAT;
 	else if (key_lines[edit_line][1] == '\\' || key_lines[edit_line][1] == '/')
 		type = COMMAND;
 	else if (cl_chatmode.value == 1 || (cl_chatmode.value == 2 && !CheckForCommand()))
