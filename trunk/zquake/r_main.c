@@ -538,13 +538,7 @@ R_DrawEntitiesOnList
 */
 void R_DrawEntitiesOnList (void)
 {
-	int			i, j;
-	int			lnum;
-	alight_t	lighting;
-// FIXME: remove and do real lighting
-	float		lightvec[3] = {-1, 0, 0};
-	vec3_t		dist;
-	float		add;
+	int			i;
 
 	if (!r_drawentities.value)
 		return;
@@ -564,58 +558,7 @@ void R_DrawEntitiesOnList (void)
 		case mod_alias:
 			VectorCopy (currententity->origin, r_entorigin);
 			VectorSubtract (r_origin, r_entorigin, modelorg);
-
-		// see if the bounding box lets us trivially reject, also sets
-		// trivial accept status
-			if (R_AliasCheckBBox ())
-			{
-				j = R_LightPoint (currententity->origin);
-
-				lighting.ambientlight = j;
-				lighting.shadelight = j;
-
-				lighting.plightvec = lightvec;
-
-				for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
-				{
-					if (cl_dlights[lnum].die < r_refdef2.time ||
-						!cl_dlights[lnum].radius)
-						continue;
-
-					VectorSubtract (currententity->origin,
-									cl_dlights[lnum].origin,
-									dist);
-					add = cl_dlights[lnum].radius - VectorLength(dist);
-
-					if (add > 0)
-						lighting.ambientlight += add;
-				}
-	
-				// clamp lighting so it doesn't overbright as much
-				if (lighting.ambientlight > 128)
-					lighting.ambientlight = 128;
-				if (lighting.ambientlight + lighting.shadelight > 192)
-					lighting.shadelight = 192 - lighting.ambientlight;
-
-				// always give the gun some light
-				if (currententity->renderfx & RF_WEAPONMODEL && lighting.ambientlight < 24)
-					lighting.ambientlight = lighting.shadelight = 24;		// always give some light on gun
-				
-				// never allow players to go totally black
-				if ((currententity->model->modhint == MOD_PLAYER || currententity->renderfx & RF_PLAYERMODEL)
-						&& lighting.ambientlight < 8) {
-					lighting.ambientlight = lighting.shadelight = 8;
-				}
-
-				if ((currententity->model->modhint == MOD_PLAYER || currententity->renderfx & RF_PLAYERMODEL)
-						&&r_fullbrightSkins.value && r_refdef2.allow_fbskins) {
-					lighting.ambientlight = max (lighting.ambientlight, 100);
-					lighting.shadelight = max (lighting.shadelight, 100);
-				}
-
-				R_AliasDrawModel (&lighting);
-			}
-
+			R_AliasDrawModel ();
 			break;
 
 		default:
