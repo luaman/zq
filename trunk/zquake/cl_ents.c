@@ -394,8 +394,14 @@ void CL_ParsePacketEntities (qboolean delta)
 
 	// we can now render a frame
 	if (cls.state == ca_onserver)
-	{	// first update is the final signon stage
+	{	
+		extern qboolean host_skipframe;
+		
+		// first update is the final signon stage
 		cls.state = ca_active;
+		if (cls.demoplayback)
+			host_skipframe = true;
+
 #ifdef _WIN32
 		SetWindowText (mainwindow, va("ZQuake: %s", cls.servername));
 #endif
