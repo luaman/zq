@@ -122,6 +122,7 @@ double		host_frametime;
 double		realtime;				// without any filtering or bounding
 double		oldrealtime;			// last frame run
 int			host_framecount;
+qboolean	host_skipframe;			// used in demo playback
 
 int			host_hunklevel;
 
@@ -884,6 +885,11 @@ void Host_Frame (double time)
 		return;			// something bad happened, or the server disconnected
 
 	// decide the simulation time
+
+	if (host_skipframe) {
+		host_skipframe = false;
+		time = 0;
+	}
 
 	if (!cls.demoplayback)
 		realtime += time;
