@@ -288,6 +288,7 @@ extern entity_t		r_worldentity;
 extern unsigned char	r_palette[768];
 extern qbool			d_15to8table_made;
 extern unsigned char	d_15to8table[65536];
+extern unsigned short	d_8to16table[256];
 
 // r_misc.c
 void R_Build15to8table (void);
