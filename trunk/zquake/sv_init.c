@@ -291,6 +291,8 @@ void SV_SpawnServer (char *server)
 {
 	edict_t		*ent;
 	int			i;
+	extern qboolean	sv_allow_cheats;
+	extern cvar_t	sv_cheats;
 
 	Con_DPrintf ("SpawnServer: %s\n",server);
 	
@@ -317,6 +319,14 @@ void SV_SpawnServer (char *server)
 		current_skill = 3;
 	Cvar_Set (&skill, va("%d", (int)current_skill));
 
+	if (sv_cheats.value && !sv_allow_cheats) {
+		sv_allow_cheats = true;
+		Info_SetValueForStarKey (svs.info, "*cheats", "ON", MAX_SERVERINFO_STRING);
+	}
+	else if (!sv_cheats.value && sv_allow_cheats) {
+		sv_allow_cheats = false;
+		Info_SetValueForStarKey (svs.info, "*cheats", "", MAX_SERVERINFO_STRING);
+	}
 
 	// wipe the entire per-level structure
 	memset (&sv, 0, sizeof(sv));
