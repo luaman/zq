@@ -19,7 +19,7 @@
 
 #include "qcc.h"
 
-int			pr_source_line;
+int		 pr_source_line;
 
 char		*pr_file_p;
 char		*pr_line_start;		// start of current source line
@@ -34,6 +34,15 @@ eval_t		pr_immediate;
 char	pr_immediate_string[2048];
 
 int		pr_error_count;
+
+/* structure for preprocessor defines: */
+static define_t	 pr_defines[MAX_DEFINES];
+static int		 hash_defines[HASH_SIZE];
+static int		 num_defines	= 0;
+
+/* nested #ifdefs */
+static int		 ifdefdepth		= 0;
+static int		 ignoredepth	= 0;
 
 char	*pr_punctuation[] =
 // longer symbols must be before a shorter partial match
@@ -69,7 +78,9 @@ int		type_size[8] = {1,1,1,3,1,1,1,1};
 type_t	*type_for_etype[8] = {&type_void, &type_string, &type_float, &type_vector, &type_entity, &type_field, &type_function, &type_pointer};
 def_t	*def_for_type[8] = {&def_void, &def_string, &def_float, &def_vector, &def_entity, &def_field, &def_function, &def_pointer};
 
-void PR_LexWhitespace (void);
+
+static void		 PR_LexWhitespace (void);
+static void		 PR_LexPrecomp (void);
 
 
 // don't take const into account
@@ -115,7 +126,7 @@ Call at start of file and when *pr_file_p == '\n'
 void PR_NewLine (void)
 {
 	bool m;
-	
+
 	if (*pr_file_p == '\n')
 	{
 		pr_file_p++;
@@ -145,7 +156,7 @@ void PR_LexString (void)
 {
 	int		c;
 	int		len;
-	
+
 	len = 0;
 	pr_file_p++;
 	do
@@ -205,15 +216,13 @@ float PR_LexNumber (void)
 		pr_file_p += 2;
 		while (1)
 		{
-			int c = *pr_file_p;
+			int c = (int)(unsigned char)*pr_file_p;
 
-			if (c >= '0' && c <= '9')
-				ival = (ival << 4) + (c - '0');
-			else if (c >= 'a' && c <= 'f')
-				ival = (ival << 4) + (c - 'a') + 10;
-			else if (c >= 'A' && c <= 'F')
-				ival = (ival << 4) + (c - 'A') + 10;
-			else if ((c >= 'G' && c <= 'Z') || (c >= 'g' && c <= 'z'))
+			if ( isdigit(c) )
+				ival = (ival << 4) + (c - (int)'0');
+			else if ( isxdigit(c) )
+				ival = (ival << 4) + (tolower(c) - (int)'a') + 10;
+			else if ( isalpha(c) )
 				PR_ParseError ("syntax error : '%c'", c);
 			else
 				break;	// found a legal non-numeric char
@@ -235,13 +244,13 @@ float PR_LexNumber (void)
 	// parse decimal
 	while (1)
 	{
-		int c = *pr_file_p;
+		int c = (int)(unsigned char)*pr_file_p;
 
-		if (c >= '0' && c <= '9') {
+		if ( isdigit(c) ) {
 		}
 		else if (c == '.' && !dot)
 			dot = true;
-		else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+		else if ( isalpha(c) )
 			PR_ParseError ("syntax error : '%c'", c);
 		else
 			break;	// found a legal non-numeric char
@@ -268,7 +277,7 @@ Parses a single quoted vector
 void PR_LexVector (void)
 {
 	int		i;
-	
+
 	pr_file_p++;
 	pr_token_type = tt_immediate;
 	pr_immediate_type = &type_const_vector;
@@ -296,17 +305,16 @@ void PR_LexName (void)
 {
 	int		c;
 	int		len;
-	
+
 	len = 0;
-	c = *pr_file_p;
+	c = (int)(unsigned char)*pr_file_p;
 	do
 	{
 		pr_token[len] = c;
 		len++;
 		pr_file_p++;
 		c = *pr_file_p;
-	} while ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' 
-	|| (c >= '0' && c <= '9'));
+	} while ( isalpha(c) || c == '_' || isdigit(c) );
 	pr_token[len] = 0;
 	pr_token_type = tt_name;
 }
@@ -321,9 +329,9 @@ void PR_LexPunctuation (void)
 	int		i;
 	int		len;
 	char	*p;
-	
+
 	pr_token_type = tt_punct;
-	
+
 	for (i=0 ; (p = pr_punctuation[i]) != NULL ; i++)
 	{
 		len = strlen(p);
@@ -338,20 +346,20 @@ void PR_LexPunctuation (void)
 			return;
 		}
 	}
-	
+
 	PR_ParseError ("unknown character '0x%02x'", (byte)*pr_file_p);
 }
 
-		
+
 /*
 ==============
 PR_LexWhitespace
 ==============
 */
-void PR_LexWhitespace (void)
+static void	 PR_LexWhitespace (void)
 {
 	int		c;
-	
+
 	while (1)
 	{
 	// skip whitespace
@@ -363,7 +371,7 @@ void PR_LexWhitespace (void)
 				return;		// end of file
 			pr_file_p++;
 		}
-		
+
 	// skip // comments
 		if (c=='/' && pr_file_p[1] == '/')
 		{
@@ -373,7 +381,7 @@ void PR_LexWhitespace (void)
 			pr_file_p++;
 			continue;
 		}
-		
+
 	// skip /* */ comments
 		if (c=='/' && pr_file_p[1] == '*')
 		{
@@ -388,7 +396,7 @@ void PR_LexWhitespace (void)
 			pr_file_p++;
 			continue;
 		}
-		
+
 		break;		// a real character has been found
 	}
 }
@@ -408,7 +416,7 @@ void PR_ClearGrabMacros (void)
 void PR_FindMacro (void)
 {
 	int		i;
-	
+
 	for (i=0 ; i<pr_nummacros ; i++)
 		if (!strcmp (pr_token, pr_framemacros[i]))
 		{
@@ -426,7 +434,7 @@ bool PR_SimpleGetToken (void)
 {
 	int		c;
 	int		i;
-	
+
 // skip whitespace
 	while ( (c = *pr_file_p) <= ' ')
 	{
@@ -434,7 +442,7 @@ bool PR_SimpleGetToken (void)
 			return false;
 		pr_file_p++;
 	}
-	
+
 	i = 0;
 	while ( (c = *pr_file_p) > ' ' && c != ',' && c != ';')
 	{
@@ -445,6 +453,7 @@ bool PR_SimpleGetToken (void)
 	pr_token[i] = 0;
 	return true;
 }
+
 
 void PR_ParseFrame (void)
 {
@@ -463,11 +472,11 @@ Deals with counting sequence numbers and replacing frame macros
 ==============
 */
 void PR_LexGrab (void)
-{	
+{
 	pr_file_p++;	// skip the $
 	if (!PR_SimpleGetToken ())
 		PR_ParseError ("hanging $");
-	
+
 // check for $frame
 	if (!strcmp (pr_token, "frame"))
 	{
@@ -491,6 +500,214 @@ void PR_LexGrab (void)
 		PR_FindMacro ();
 }
 
+
+//============================================================================
+
+/*
+========================
+PR_LexPrecomp
+
+parses and executes directives
+  with a leading '#':
+  #define
+  #undef
+  #ifdef
+  #ifndef
+  #else
+  #endif
+  #error
+  #message
+  #pragma message
+========================
+*/
+static void          PR_LexPrecomp (void)
+{
+	// yeah it isn't quite Precompiler is it?
+	pr_file_p++;  // skip the hash
+	if (!PR_SimpleGetToken ())
+		PR_ParseError ("Q534: Invalid preprocessor command"); // that's not possible
+
+	if (!strcmp(pr_token, "ifdef"))
+	{
+		if (ifdefdepth > ignoredepth)
+		{
+			// inside another ignored "ifdef"/"ifndef"
+			// -> ignore statements
+			ifdefdepth++;
+			return;
+		}
+		ifdefdepth++;
+		ignoredepth = ifdefdepth;
+		PR_Lex();
+		if (!PR_FindDefine(pr_token, true))
+		{
+			// not defined
+			// -> ignore statements until endif or else
+			ignoredepth--;
+			while(ifdefdepth > ignoredepth)
+				PR_Lex();
+			return;
+		}
+		// defined
+		// -> parse statements
+		PR_Lex();
+		return;
+	}
+	else
+	if (!strcmp(pr_token, "ifndef"))
+	{
+		if (ifdefdepth > ignoredepth)
+		{
+			// inside another ignored ifdef
+			// -> ignore statements
+			ifdefdepth++;
+			return;
+		}
+		ifdefdepth++;
+		ignoredepth = ifdefdepth;
+		PR_Lex();
+		if (PR_FindDefine(pr_token, true))
+		{
+			// defined
+			// -> ignore statements
+			ignoredepth--;
+			while(ifdefdepth > ignoredepth)
+				PR_Lex();
+			return;
+		}
+		PR_Lex();
+		return;
+	}
+	else
+	if (!strcmp(pr_token, "endif"))
+	{
+		ifdefdepth--;
+		if (ifdefdepth < 0)
+		  PR_ParseError ("Q119: Too many #endifs");
+		PR_Lex();
+		return;
+	}
+	else
+	if (!strcmp(pr_token, "else"))
+	{
+		if (ifdefdepth == (ignoredepth + 1))
+		{
+			// the "ifdef" or "ifndef" part has not been entered
+			// -> parse the statements inside "else"
+			//print("parsing statment %s in else on %s(%ld)", pr_token, s_file + strings, pr_source_line);
+			ignoredepth = ifdefdepth;
+			pr_token_type = tt_name;
+			PR_Lex();
+			return;
+		}
+
+		// "ifdef" or "ifndef" part has already been entered
+		// -> ignore statements in "else" part
+		ignoredepth--;
+		while (ifdefdepth > ignoredepth)
+			PR_Lex();
+		return;
+	}
+	else
+	if (ifdefdepth > ignoredepth)
+	{
+		//print("ignored %s on %s(%ld)", pr_token, s_file + strings, pr_source_line);
+		return;
+	}
+	else
+	if (PR_Check("error"))
+	{
+		if (pr_immediate_type != &type_string && pr_immediate_type != &type_const_string)
+		  PR_ParseError ("Q541: Error must be a string");
+		PR_ParseError ("User Error on %s(%ld): %s", s_file + strings, pr_source_line, pr_immediate_string);
+		PR_Lex();
+		return;
+	}
+	else
+	if (PR_Check("message"))
+	{
+		if (pr_immediate_type != &type_string && pr_immediate_type != &type_const_string)
+		  PR_ParseError ("Q541: Message must be a string");
+		printf ("Message on %s(%ld): %s\n", s_file + strings, pr_source_line, pr_immediate_string);
+		PR_Lex();
+		return;
+	}
+	else
+	if (PR_Check("pragma"))
+	{
+		if (PR_Check("message"))
+		{
+			if (pr_immediate_type != &type_string && pr_immediate_type != &type_const_string)
+				PR_ParseError ("Q541: Message must be a string");
+			printf ("Message on %s(%ld): %s\n", s_file + strings, pr_source_line, pr_immediate_string);
+			PR_Lex();
+			return;
+		}
+
+		// unknown pragma directive
+		printf ("Warning on %s(%ld): unknown #pragma \"%s\" (will be ignored)", s_file + strings, pr_source_line, pr_token);
+
+		// skip to the end of the line
+		while (PR_SimpleGetToken ())
+			;
+
+		PR_Lex();
+		return;
+	}
+	else
+	if (PR_Check("define"))
+	{
+		char	define_name[2048];
+
+		if (pr_token_type != tt_name)
+			PR_ParseError ("Q543: #define: Invalid name");
+
+		// predefine it:
+		strcpy (define_name, pr_token);
+
+		if (PR_AddDefine (define_name, &type_const_float, NULL, false) <= 0)
+			PR_ParseError ("Q544: #define \"%s\": creation failed", define_name);
+
+		// get the value of the define
+		PR_Lex();
+		if (pr_token_type == tt_immediate)
+		{
+			if (pr_immediate_type != &type_float && pr_immediate_type != &type_const_float)
+				PR_ParseError ("Q545: #define \"%s\": Invalid type of value", define_name);
+
+         // finally fix the define (with given value)
+			if (PR_AddDefine (define_name, pr_immediate_type, &pr_immediate, false) <= 0)
+				PR_ParseError ("Q544: #define \"%s\": creation failed", define_name);
+
+			PR_Lex();
+		}
+      else
+      {
+         eval_t   value;
+
+         value._float = 1;
+
+         // finally fix the define (with default-value)
+		   if (PR_AddDefine (define_name, &type_const_float, &value, false) <= 0)
+			   PR_ParseError ("Q544: #define \"%s\": creation failed", define_name);
+      }
+
+      return;
+	}
+	else
+	if (PR_Check("undef"))
+	{
+		if (pr_token_type != tt_name)
+			PR_ParseError ("Q544: #undef: Invalid name");
+
+		PR_DelDefine (pr_token, false);
+
+		PR_Lex();
+		return;
+	}
+} // END_FUNC PR_LexPrecomp
+
+
 //============================================================================
 
 /*
@@ -505,7 +722,7 @@ void PR_Lex (void)
 	int		c;
 
 	pr_token[0] = 0;
-	
+
 	if (!pr_file_p)
 	{
 		pr_token_type = tt_eof;
@@ -515,7 +732,6 @@ void PR_Lex (void)
 	PR_LexWhitespace ();
 
 	c = *pr_file_p;
-		
 	if (!c)
 	{
 		pr_token_type = tt_eof;
@@ -523,14 +739,14 @@ void PR_Lex (void)
 	}
 
 // handle quoted strings as a unit
-	if (c == '\"')
+	if (c == (int)'\"')
 	{
 		PR_LexString ();
 		return;
 	}
 
 // handle quoted vectors as a unit
-	if (c == '\'')
+	if (c == (int)'\'')
 	{
 		PR_LexVector ();
 		return;
@@ -538,9 +754,9 @@ void PR_Lex (void)
 
 // if the first character is a valid identifier, parse until a non-id
 // character is reached
-	if ( isdigit(c) || 
-		( c=='.' && isdigit(pr_file_p[1]) ) ||
-		( c=='-' && (isdigit(pr_file_p[1]) || pr_file_p[1]=='.') )
+	if ( isdigit(c) ||
+		( c == (int)'.' && isdigit((int)(unsigned char)pr_file_p[1]) ) ||
+		( c == (int)'-' && (isdigit((int)(unsigned char)pr_file_p[1]) || pr_file_p[1] == '.') )
 		)
 	{
 		pr_token_type = tt_immediate;
@@ -548,19 +764,28 @@ void PR_Lex (void)
 		pr_immediate._float = PR_LexNumber ();
 		return;
 	}
-	
-	if ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' )
+
+	if ( isalpha(c) || c == (int)'_' )
 	{
 		PR_LexName ();
 		return;
 	}
-	
-	if (c == '$')
+
+	if (c == (int)'$')
 	{
 		PR_LexGrab ();
 		return;
 	}
-	
+
+   if (c == (int)'#')
+   {
+      if ( isalpha((int)(unsigned char)pr_file_p[1]) || pr_file_p[1] == '_' )
+      {
+         PR_LexPrecomp();
+         return;
+      }
+   }
+
 // parse symbol strings until a non-symbol is found
 	PR_LexPunctuation ();
 }
@@ -584,7 +809,7 @@ void PR_ParseError (char *text, ...)
 	va_end (argptr);
 
 	printf ("%s(%i): error: %s\n", strings + s_file, pr_source_line, string);
-	
+
 	longjmp (pr_parse_abort, 1);
 }
 
@@ -637,7 +862,7 @@ bool PR_Check (char *string)
 {
 	if (strcmp (string, pr_token))
 		return false;
-		
+
 	PR_Lex ();
 	return true;
 }
@@ -652,14 +877,14 @@ Checks to see if the current token is a valid name
 char *PR_ParseName (void)
 {
 	static char	ident[MAX_NAME];
-	
+
 	if (pr_token_type != tt_name)
 		PR_ParseError ("'%s' : not a name", pr_token);
 	if (strlen(pr_token) >= MAX_NAME-1)
 		PR_ParseError ("name too long");
 	strcpy (ident, pr_token);
 	PR_Lex ();
-	
+
 	return ident;
 }
 
@@ -675,7 +900,7 @@ type_t *PR_GetType (type_t *type)
 {
 	type_t	*check;
 	int		i;
-	
+
 	for (check = pr.types ; check ; check = check->next)
 	{
 		if (check->type != type->type
@@ -683,21 +908,21 @@ type_t *PR_GetType (type_t *type)
 		|| check->num_parms != type->num_parms
 		|| check->constant != type->constant)
 			continue;
-	
+
 		for (i = 0; i < (type->num_parms & VA_MASK); i++)
 			if (check->parm_types[i] != type->parm_types[i])
 				break;
-			
+
 		if (i == (type->num_parms & VA_MASK))
-			return check;	
+			return check;
 	}
-	
+
 // allocate a new one
 	check = (type_t *) malloc (sizeof (*check));
 	*check = *type;
 	check->next = pr.types;
 	pr.types = check;
-	
+
 	return check;
 }
 
@@ -755,10 +980,12 @@ type_t *PR_ParseFunctionType (type_t *returnType)
 		strcpy (pr_parm_names[newtype.num_parms], name);
 		newtype.parm_types[newtype.num_parms] = type;
 		newtype.num_parms++;
+		if (newtype.num_parms >= MAX_PARMS)
+			PR_ParseError ("too many parameters (max. %d allowed)", (int)(MAX_PARMS - 1));
 	} while (PR_Check (","));
-	
+
 	PR_Expect (")");
-	
+
 	return PR_GetType(&newtype);
 }
 
@@ -800,7 +1027,7 @@ type_t *PR_ParseType (void)
 		type = &type_void;	// shut up compiler warning
 	}
 	PR_Lex ();
-	
+
 	if (PR_Check("(")) {
 		// function type
 
@@ -818,3 +1045,168 @@ type_t *PR_ParseType (void)
 
 	return type;
 }
+
+
+//=============================================================================
+
+/*
+========================
+PR_InitDefines
+
+(Re-)initialize the defines structures
+========================
+*/
+void		 PR_InitDefines (void)
+{
+	int		 i;
+
+	for (i = 0; i < HASH_SIZE; i++)
+		hash_defines[i] = 0;
+	for (i = 0; i < MAX_DEFINES; i++)
+	{
+		if (i > 0 && i < num_defines)
+			free (pr_defines[i].name);
+		pr_defines[i].name		= NULL;
+		pr_defines[i].defined	= false;
+		pr_defines[i].type		= NULL;
+		pr_defines[i].reserved	= false;
+	}
+
+	num_defines = 0;
+}  // END_FUNC PR_InitDefines
+
+
+/*
+========================
+PR_AddDefine
+
+Add a new define
+if value and type are both set,
+  the define will be "activated",
+  otherwise it's only "predefined".
+reserved defines may not be changed
+  or deleted.
+========================
+*/
+int			 PR_AddDefine (const char *name, const type_t *type, const eval_t *value, bool reserved)
+{
+	int		 i	= 0;
+
+	if (!name)
+		return 0;
+
+	i = PR_FindDefine (name, false);
+	if (i <= 0)
+	{
+		// add new define
+		i = ++num_defines;
+		if (num_defines >= MAX_DEFINES)
+			Error ("num_defines >= MAX_DEFINES (%d)", (int)MAX_DEFINES);
+
+		hash_defines[Com_HashKey(name)] = i;
+		pr_defines[i].name = (char *)SafeMalloc (strlen(name) + 1);
+		strcpy(pr_defines[i].name, name);
+	}
+	else 
+	if (pr_defines[i].reserved && pr_defines[i].defined)
+	{
+		// a reserved constant shall be modified
+		// -> this is not allowed
+		PR_ParseError ("\"%s\" is a reserved #define and must not be changed!", name);
+		return 0;
+	}
+
+	// modify value of define
+	pr_defines[i].type         = (type_t *)type;
+	if (value)
+		memcpy (&(pr_defines[i].value), value, sizeof(eval_t));
+	pr_defines[i].reserved = reserved;
+
+	if (type && value)
+		pr_defines[i].defined = true;
+	else
+		pr_defines[i].defined = false;
+
+	return i;
+} // END_FUNC PR_AddDefine
+
+
+/*
+========================
+PR_DelDefine
+
+delete an existing define
+========================
+*/
+void		 PR_DelDefine (const char *name, bool overrideReserved)
+{
+	int     i  = 0;
+	int     j  = 0;
+
+	if (!name)
+		return;
+
+	i = PR_FindDefine (name, false);
+	if (i <= 0)
+		return;
+
+	if (pr_defines[i].reserved && pr_defines[i].defined && !overrideReserved)
+	{
+		PR_ParseError ("\"%s\" is a reserved #define and must not be deleted!", name);
+		return;
+	}
+
+	free (pr_defines[i].name);
+
+	num_defines--;
+	for (j = i; j <= num_defines; j++)
+		memcpy (&(pr_defines[j]), &(pr_defines[j + 1]), sizeof(define_t));
+	for (j = 0; j < HASH_SIZE; j++)
+	{
+		if (hash_defines[j] > i)
+			hash_defines[j]--;
+		else
+		if (hash_defines[j] == i)
+			hash_defines[j] = 0;
+	}
+
+	return;
+} // END_FUNC PR_DelDefine
+
+
+/*
+========================
+PR_FindDefine
+
+search for an exiting
+  define and give back
+  the index (starting
+  with 1)
+  or 0 if not found.
+========================
+*/
+int			 PR_FindDefine (const char *name, bool fullDefined)
+{
+	int		 i;
+	int		 h;
+
+	h = Com_HashKey(name);
+	i = hash_defines[h];
+	if (i > 0 &&
+	    !strcmp(name, pr_defines[i].name) &&
+	    (!fullDefined || pr_defines[i].defined))
+		return i;
+	for (i = num_defines; i > 0; i--)
+	{
+		if (!strcmp(name, pr_defines[i].name))
+		{
+			hash_defines[h] = i;
+
+			if (!fullDefined || pr_defines[i].defined)
+				return i;
+		}
+	}
+	return 0;
+} // END_FUNC PR_FindDefine
+
+/* vi: set noet ts=4 sts=4 ai sw=4: */
