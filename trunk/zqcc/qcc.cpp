@@ -22,6 +22,8 @@
 #ifdef _WIN32
 #include <io.h>
 #include <direct.h>
+#else
+#include <unistd.h>
 #endif
 
 char		destfile[1024];
@@ -140,7 +142,7 @@ void WriteData (int crc)
 	def_t		*def;
 	ddef_t		*dd;
 	dprograms_t	progs;
-	int			h;
+	FILE		*f;
 	int			i;
 
 	for (def = pr.def_head.next ; def ; def = def->next)
@@ -184,27 +186,27 @@ strofs = (strofs+3)&~3;
 	printf ("%6i numfielddefs\n", numfielddefs);
 	printf ("%6i numpr_globals\n", numpr_globals);
 	
-	h = SafeOpenWrite (destfile);
-	SafeWrite (h, &progs, sizeof(progs));
+	f = SafeOpenWrite (destfile);
+	SafeWrite (f, &progs, sizeof(progs));
 
-	progs.ofs_strings = lseek (h, 0, SEEK_CUR);
+	progs.ofs_strings = ftell(f);
 	progs.numstrings = strofs;
-	SafeWrite (h, strings, strofs);
+	SafeWrite (f, strings, strofs);
 
-	progs.ofs_statements = lseek (h, 0, SEEK_CUR);
+	progs.ofs_statements = ftell(f);
 	progs.numstatements = numstatements;
-	for (i=0 ; i<numstatements ; i++)
+	for (i = 0; i < numstatements; i++)
 	{
 		statements[i].op = LittleShort(statements[i].op);
 		statements[i].a = LittleShort(statements[i].a);
 		statements[i].b = LittleShort(statements[i].b);
 		statements[i].c = LittleShort(statements[i].c);
 	}
-	SafeWrite (h, statements, numstatements*sizeof(dstatement_t));
+	SafeWrite (f, statements, numstatements*sizeof(dstatement_t));
 
-	progs.ofs_functions = lseek (h, 0, SEEK_CUR);
+	progs.ofs_functions = ftell(f);
 	progs.numfunctions = numfunctions;
-	for (i=0 ; i<numfunctions ; i++)
+	for (i = 0; i < numfunctions; i++)
 	{
 	functions[i].first_statement = LittleLong (functions[i].first_statement);
 	functions[i].parm_start = LittleLong (functions[i].parm_start);
@@ -213,35 +215,35 @@ strofs = (strofs+3)&~3;
 	functions[i].numparms = LittleLong (functions[i].numparms);
 	functions[i].locals = LittleLong (functions[i].locals);
 	}	
-	SafeWrite (h, functions, numfunctions*sizeof(dfunction_t));
+	SafeWrite (f, functions, numfunctions*sizeof(dfunction_t));
 
-	progs.ofs_globaldefs = lseek (h, 0, SEEK_CUR);
+	progs.ofs_globaldefs = ftell(f);
 	progs.numglobaldefs = numglobaldefs;
-	for (i=0 ; i<numglobaldefs ; i++)
+	for (i = 0; i < numglobaldefs; i++)
 	{
 		globals[i].type = LittleShort (globals[i].type);
 		globals[i].ofs = LittleShort (globals[i].ofs);
 		globals[i].s_name = LittleLong (globals[i].s_name);
 	}
-	SafeWrite (h, globals, numglobaldefs*sizeof(ddef_t));
+	SafeWrite (f, globals, numglobaldefs*sizeof(ddef_t));
 
-	progs.ofs_fielddefs = lseek (h, 0, SEEK_CUR);
+	progs.ofs_fielddefs = ftell(f);
 	progs.numfielddefs = numfielddefs;
-	for (i=0 ; i<numfielddefs ; i++)
+	for (i = 0; i < numfielddefs; i++)
 	{
 		fields[i].type = LittleShort (fields[i].type);
 		fields[i].ofs = LittleShort (fields[i].ofs);
 		fields[i].s_name = LittleLong (fields[i].s_name);
 	}
-	SafeWrite (h, fields, numfielddefs*sizeof(ddef_t));
+	SafeWrite (f, fields, numfielddefs*sizeof(ddef_t));
 
-	progs.ofs_globals = lseek (h, 0, SEEK_CUR);
+	progs.ofs_globals = ftell(f);
 	progs.numglobals = numpr_globals;
-	for (i=0 ; i<numpr_globals ; i++)
+	for (i = 0; i < numpr_globals; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
-	SafeWrite (h, pr_globals, numpr_globals*4);
+	SafeWrite (f, pr_globals, numpr_globals*4);
 
-	printf ("%6i TOTAL SIZE\n", (int)lseek (h, 0, SEEK_CUR));	
+	printf ("%6i TOTAL SIZE\n", ftell(f));
 
 	progs.entityfields = pr.size_fields;
 
@@ -249,11 +251,11 @@ strofs = (strofs+3)&~3;
 	progs.crc = crc;
 	
 // byte swap the header and write it out
-	for (i=0 ; i<sizeof(progs)/4 ; i++)
+	for (i = 0; i < sizeof(progs)/4; i++)
 		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );		
-	lseek (h, 0, SEEK_SET);
-	SafeWrite (h, &progs, sizeof(progs));
-	close (h);
+	fseek (f, 0, SEEK_SET);
+	SafeWrite (f, &progs, sizeof(progs));
+	fclose (f);
 	
 }
 
@@ -755,7 +757,7 @@ bool opt_mergeconstants = false;
 main
 ============
 */
-void main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 	char	*src;
 	char	*src2;
@@ -772,7 +774,7 @@ void main (int argc, char **argv)
 		printf ("to look in a different directory: qcc -src <directory>\n");
 		printf ("to enable vanilla id Software code compatibility: -idcomp\n");
 		printf ("to dump progdefs.h: qcc -progdefs\n");
-		return;
+		return 0;	// or should I return 1?
 	}
 
 	if (CheckParm ("-idcomp")) {
