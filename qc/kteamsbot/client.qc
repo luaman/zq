@@ -1175,14 +1175,14 @@ void() PlayerPreThink =
 		tmp = ftos(r);
 		self.real_time = time;
 		if(r > 103 && !match_in_progress) {
-			sprint(self, 2, "WARNING: QW clients up to 2.30 have a timer related bug which is caused by too long uptime. Either reboot your machine or upgrade to QWCL 2.33.\n");
+			sprint(self, PRINT_HIGH, "WARNING: QW clients up to 2.30 have a timer related bug which is caused by too long uptime. Either reboot your machine or upgrade to QWCL 2.33.\n");
 			dprint(self.netname, "%speed%", tmp, "\n");
 			if(r > 105)
 				self.uptimebugpolicy = self.uptimebugpolicy + 1;
 		}
 		if(self.uptimebugpolicy > 3) {
-			bprint(2, "\n", self.netname, " gets kicked for too long uptime\n");
-			sprint(self, 2, "Reboot your machine to get rid of this bug\n");
+			bprint(PRINT_HIGH, "\n", self.netname, " gets kicked for too long uptime\n");
+			sprint(self, PRINT_HIGH, "Reboot your machine to get rid of this bug\n");
 			self.classname = "";
 			stuffcmd(self, "disconnect\n");
 		}
@@ -1196,9 +1196,9 @@ void() PlayerPreThink =
 		
 		fps = floor( 72 * 13 / ( self.fAverageFrameTime / self.fFrameCount * 1000 ) );
 		
-		if( fps > 74 )
+		if( fps > current_maxfps )
 		{
-			bprint( 2, "\nWARNING: ", self.netname, " is using the timedemo bug and has abnormally high frame rates, " );
+			bprint( PRINT_HIGH, "\nWARNING: ", self.netname, " is using the timedemo bug and has abnormally high frame rates, " );
 
 			local float peak;
 			local string str;
@@ -1206,22 +1206,23 @@ void() PlayerPreThink =
 			peak = floor( 72 * 13 / ( self.fLowestFrameTime * 1000 ) );
 			str = ftos( peak );
 			
-			bprint( 2, "highest FPS = ", str, " (frametime was ");
+			bprint( PRINT_HIGH, "highest FPS = ", str, " (frametime was ");
 		
 			str = ftos( self.fLowestFrameTime * 1000 );
 			
-			bprint( 2, str, "), " );
+			bprint( PRINT_HIGH, str, "), " );
 				
 			str = ftos( fps );
 			
-			bprint( 2, "average FPS = ", str, "!\n");
+			bprint( PRINT_HIGH, "average FPS = ", str, "!\n");
 			
 			self.fIllegalFPSWarnings = self.fIllegalFPSWarnings + 1;
 			
                         if( self.fIllegalFPSWarnings > 3 )
 			{
 				// kick the player from server!
-                                bprint(2, self.netname, " gets kicked for timedemo cheating\n");
+				// s: changed the text a bit :)
+                                bprint(PRINT_HIGH, self.netname, " gets kicked for timedemo cheating\n");
                                 self.classname = "";
                                 stuffcmd(self, "disconnect\n");
                         }

@@ -847,3 +847,6 @@ float intermission_exittime;
 // k_oldspeed is commented out in main code so could probably be deleted
 // from both
 // .vector k_oldspeed;
+
+float server_is_2_3x;	// if true, fix the jump bug via QC
+float current_maxfps;	// current value of serverinfo maxfps

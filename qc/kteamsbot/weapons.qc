@@ -1443,14 +1443,14 @@ Called every frame so impulse events can be handled as well as possible
 */
 void() W_WeaponFrame =
 {
-	if (time < self.attack_finished)
-		return;
-
 // update vwep frame
     if(stof(infokey(world, "vwep")))
     {
         self.vw_frame = self.frame;
     }
+
+	if (time < self.attack_finished)
+		return;
 
     if (self.impulse)
         ImpulseCommands();

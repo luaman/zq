@@ -452,7 +452,7 @@ void StartFrame ()
 
 // KTEAMS -->        
 	timelimit = cvar("timelimit") * 60;     // should be * 60 ...
-        k_maxspeed = cvar("sv_maxspeed");
+    k_maxspeed = cvar("sv_maxspeed");
 // <-- KTEAMS        
 	fraglimit = cvar("fraglimit");
 	teamplay = cvar("teamplay");
@@ -466,7 +466,13 @@ void StartFrame ()
                 framechecks = 0;
 // <-- KTEAMS
 
-        if (deathmatch && timelimit && time >= timelimit)
+// Tonik: note current "serverinfo maxfps" setting
+// (we don't want to do it in every player frame)
+	current_maxfps = stof(infokey(world, "maxfps"));
+	if (!current_maxfps)
+		current_maxfps = 72;	// 2.30 standard
+
+if (deathmatch && timelimit && time >= timelimit)
 		NextLevel ();
 }
 
