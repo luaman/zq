@@ -1092,22 +1092,19 @@ void Cmd_SetInfo_f (void)
 	int i;
 	char oldval[MAX_INFO_STRING];
 
-
-	if (Cmd_Argc() == 1)
-	{
+	if (Cmd_Argc() == 1) {
 		Com_Printf ("User info settings:\n");
 		Info_Print (sv_client->userinfo);
 		return;
 	}
 
-	if (Cmd_Argc() != 3)
-	{
+	if (Cmd_Argc() != 3) {
 		Com_Printf ("usage: setinfo [ <key> <value> ]\n");
 		return;
 	}
 
 	if (Cmd_Argv(1)[0] == '*')
-		return;		// don't set priveledged values
+		return;		// don't set privileged values
 
 	strcpy(oldval, Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)));
 
@@ -1130,6 +1127,63 @@ void Cmd_SetInfo_f (void)
 	MSG_WriteString (&sv.reliable_datagram, Cmd_Argv(1));
 	MSG_WriteString (&sv.reliable_datagram, Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)));
 }
+
+
+/*
+==================
+Cmd_Info_f
+
+Same as setinfo, but passes transparently through Qizmo and thus (potentically) can be used
+to add more keys than MAX_INFO_STRING
+==================
+*/
+void Cmd_Info_f (void)
+{
+	int i;
+	char oldval[MAX_INFO_STRING];
+
+	if (Cmd_Argc() == 1) {
+		Com_Printf ("User info settings:\n");
+		Info_Print (sv_client->userinfo);
+		return;
+	}
+
+	if (Cmd_Argc() != 3) {
+		Com_Printf ("usage: info [ <key> <value> ]\n");
+		return;
+	}
+
+	if (!strcmp(Cmd_Argv(1), "*z_ext")) {
+		sv_client->extensions = atoi(Cmd_Argv(2));
+		return;
+	}
+
+	if (!strcmp(Cmd_Argv(1), "*ver")) {
+		// ignored for now
+		return;
+	}
+
+	if (Cmd_Argv(1)[0] == '*')
+		return;		// don't set privileged values
+
+	strcpy(oldval, Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)));
+
+	Info_SetValueForKey (sv_client->userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
+
+	if (!strcmp(Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)), oldval))
+		return; // key hasn't changed
+
+	// process any changed values
+	SV_ExtractFromUserinfo (sv_client);
+
+	i = sv_client - svs.clients;
+	MSG_WriteByte (&sv.reliable_datagram, svc_setinfo);
+	MSG_WriteByte (&sv.reliable_datagram, i);
+	MSG_WriteString (&sv.reliable_datagram, Cmd_Argv(1));
+	MSG_WriteString (&sv.reliable_datagram, Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)));
+}
+
+
 
 /*
 ==================
@@ -1507,6 +1561,7 @@ ucmd_t ucmds[] =
 	{"say_team", Cmd_Say_Team_f},
 
 	{"setinfo", Cmd_SetInfo_f},
+	{"info", Cmd_Info_f},
 	{"serverinfo", Cmd_Serverinfo_f},
 
 	{NULL, NULL}
