@@ -1050,42 +1050,19 @@ void Host_Frame (double time)
 
 /*
 ===============
-Host_Shutdown
-
-FIXME: this is a callback from Sys_Quit and Sys_Error.  It would be better
-to run quit through here before the final handoff to the sys code.
+CL_Shutdown
 ===============
 */
-void Host_Shutdown (void)
+void CL_Shutdown (void)
 {
-	static qboolean isdown = false;
-	
-	if (isdown)
-	{
-		printf ("recursive shutdown\n");
-		return;
-	}
-	isdown = true;
-
 	CL_Disconnect ();
-
-#ifdef QW_BOTH
-	SV_Shutdown ("Server quit\n");
-#endif
 
 	CL_WriteConfiguration (); 
 
 	SList_Shutdown ();
 	CDAudio_Shutdown ();
-	NET_Shutdown ();
 	S_Shutdown();
 	IN_Shutdown ();
 	if (host_basepal)
 		VID_Shutdown();
-}
-
-void Host_Quit (void)
-{
-	Host_Shutdown ();
-	Sys_Quit ();
 }
