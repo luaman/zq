@@ -404,6 +404,7 @@ extern int			host_memsize;
 
 
 void Host_Init (int argc, char **argv, int default_memsize);
+void Host_ClearMemory ();
 void Host_Shutdown (void);
 void Host_Frame (double time);
 void Host_Abort (void);					// longjmp() to Host_Frame
