@@ -25,6 +25,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 cvar_t	cl_nodelta = {"cl_nodelta","0"};
 cvar_t	cl_c2spps = {"cl_c2spps","0"};
 cvar_t	cl_c2sImpulseBackup = {"cl_c2sImpulseBackup","3"};
+#ifdef AGRIP
+cvar_t  agv_mov_turnvalue = {"agv_mov_turnvalue","30",CVAR_USERINFO};
+#endif
 
 /*
 ===============================================================================
@@ -298,7 +301,19 @@ float CL_KeyState (kbutton_t *key)
 	}
 
 	key->state &= 1;		// clear impulses
-	
+
+#ifdef AGRIP
+        // The player snaps a certain number of degrees for each ``turn''...
+        if(  !  ( in_strafe.state & 1 )
+            &&  ( key == &in_right || key == &in_left ) )
+        {
+            if( val == 0.5 || val == 0.25 )
+                val = agv_mov_turnvalue.value;
+            else
+                val = 0;
+        }
+#endif
+
 	return val;
 }
 
@@ -330,7 +345,6 @@ cvar_t	m_forward = {"m_forward","1"};
 cvar_t	m_side = {"m_side","0.8"};
 
 
-
 /*
 ================
 CL_AdjustAngles
@@ -360,9 +374,22 @@ void CL_AdjustAngles (void)
 			yawspeed = bound (-1000, yawspeed, 1000);
 			yawspeed *= cls.frametime;
 		}
+#ifndef AGRIP
 		cl.viewangles[YAW] -= yawspeed * CL_KeyState (&in_right);
 		cl.viewangles[YAW] += yawspeed * CL_KeyState (&in_left);
 		cl.viewangles[YAW] = anglemod(cl.viewangles[YAW]);
+#else
+                // Accessible player turning support:
+                // Simpler yaw calculations...
+                cl.viewangles[YAW] -= CL_KeyState (&in_right);
+                cl.viewangles[YAW] += CL_KeyState (&in_left);
+
+                // Can't use anglemod as we must ensure exact (non-decimal) results...
+                if( cl.viewangles[YAW] > 360 )
+                    cl.viewangles[YAW] -= 360;
+                else if( cl.viewangles[YAW] < 0 )
+                    cl.viewangles[YAW] += 360;
+#endif
 	}
 	if (in_klook.state & 1)
 	{
@@ -688,6 +715,9 @@ void CL_InitInput (void)
 	Cvar_Register (&cl_yawspeed);
 	Cvar_Register (&cl_pitchspeed);
 	Cvar_Register (&cl_anglespeedkey);
+#ifdef AGRIP
+        Cvar_Register (&agv_mov_turnvalue);
+#endif
 
 	Cvar_Register (&lookspring);
 	Cvar_Register (&lookstrafe);

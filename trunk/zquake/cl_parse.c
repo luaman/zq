@@ -1413,10 +1413,12 @@ static void FlushString (char *s, int level, qbool team, int offset)
 					continue;
 				}
 			}
+#ifndef AGRIP
 			if (*p != 10 && *p != 13
 				&& !(p==s && (*p==1 || *p==2)))
 				*out++ = *p | 128;	// convert to red
 			else
+#endif
 				*out++ = *p;
 		}
 		*out = 0;

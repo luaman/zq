@@ -67,10 +67,15 @@ void		 Sys_Printf (char *fmt, ...)
 		return;
 
 	for (p = (unsigned char *)text; *p; p++)
+#ifndef AGRIP
 		if ((*p > 128 || *p < 32) && *p != 10 && *p != 13 && *p != 9)
 			printf("[%02x]", *p);
 		else
 			putc(*p, stdout);
+#else
+		if (!((*p > 128 || *p < 32) && *p != 10 && *p != 13 && *p != 9))
+			putc(*p, stdout);
+#endif
 }
 
 
