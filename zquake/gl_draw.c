@@ -598,17 +598,18 @@ void Draw_Alt_String (int x, int y, char *str)
 	}
 }
 
-void Draw_Crosshair(void)
+void Draw_Crosshair (void)
 {
 	int x, y;
+	int ofs1, ofs2;
 	extern vrect_t		scr_vrect;
 	unsigned char *pColor;
 
 	if (crosshair.value == 2 || crosshair.value == 3) {
-		x = scr_vrect.x + scr_vrect.width/2 - 3 + cl_crossx.value; 
-		y = scr_vrect.y + scr_vrect.height/2 - 3 + cl_crossy.value;
+		x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value; 
+		y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
 
-		glTexEnvf ( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		pColor = (unsigned char *) &d_8to24table[(byte) crosshaircolor.value];
 		glColor4ubv ( pColor );
 		if (crosshair.value == 2)
@@ -616,24 +617,30 @@ void Draw_Crosshair(void)
 		else
 			GL_Bind (cs3_texture);
 
+		if (vid.width == 320) {
+			ofs1 = 3;//3.5;
+			ofs2 = 5;//4.5;
+		} else {
+			ofs1 = 7;
+			ofs2 = 9;
+		}
 		glBegin (GL_QUADS);
 		glTexCoord2f (0, 0);
-		glVertex2f (x - 4, y - 4);
+		glVertex2f (x - ofs1, y - ofs1);
 		glTexCoord2f (1, 0);
-		glVertex2f (x+12, y-4);
+		glVertex2f (x + ofs2, y - ofs1);
 		glTexCoord2f (1, 1);
-		glVertex2f (x+12, y+12);
+		glVertex2f (x + ofs2, y + ofs2);
 		glTexCoord2f (0, 1);
-		glVertex2f (x - 4, y+12);
+		glVertex2f (x - ofs1, y + ofs2);
 		glEnd ();
 		
-		glTexEnvf ( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	} else if (crosshair.value)
 		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
 			scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, 
 			'+');
 }
-
 
 /*
 ================
