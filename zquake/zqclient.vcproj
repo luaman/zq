@@ -1706,7 +1706,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="image.c">
+				RelativePath="rc_image.c">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -3029,7 +3029,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="wad.c">
+				RelativePath="rc_wad.c">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -3201,7 +3201,7 @@
 				RelativePath="gl_warp_sin.h">
 			</File>
 			<File
-				RelativePath="image.h">
+				RelativePath="rc_image.h">
 			</File>
 			<File
 				RelativePath="input.h">
@@ -3270,7 +3270,7 @@
 				RelativePath="vid.h">
 			</File>
 			<File
-				RelativePath="wad.h">
+				RelativePath="rc_wad.h">
 			</File>
 			<File
 				RelativePath="winquake.h">

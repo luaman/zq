@@ -715,7 +715,7 @@ SOURCE=.\host.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\image.c
+SOURCE=.\rc_image.c
 # End Source File
 # Begin Source File
 
@@ -1158,7 +1158,7 @@ SOURCE=.\vid_win.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\wad.c
+SOURCE=.\rc_wad.c
 # End Source File
 # Begin Source File
 
@@ -1302,7 +1302,7 @@ SOURCE=.\gl_warp_sin.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\image.h
+SOURCE=.\rc_image.h
 # End Source File
 # Begin Source File
 
@@ -1398,7 +1398,7 @@ SOURCE=.\vid.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\wad.h
+SOURCE=.\rc_wad.h
 # End Source File
 # Begin Source File
 
