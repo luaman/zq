@@ -817,7 +817,7 @@ void PF_cvar_set (void)
 	var = Cvar_FindVar(var_name);
 	if (!var)
 	{
-		Con_Printf ("PF_cvar_set: variable %s not found\n", var_name);
+		Con_DPrintf ("PF_cvar_set: variable %s not found\n", var_name);
 		return;
 	}
 
