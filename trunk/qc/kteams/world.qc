@@ -435,7 +435,7 @@ void worldspawn ()
 void StartFrame ()
 {
 // KTEAMS -->        
-	timelimit = cvar("timelimit");
+	timelimit = cvar("timelimit") * 60;     // this should be 60...
         k_maxspeed = cvar("sv_maxspeed");
 // <-- KTEAMS        
 	fraglimit = cvar("fraglimit");
