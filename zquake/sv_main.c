@@ -155,6 +155,10 @@ void SV_Shutdown (char *finalmsg)
 	SV_FinalMessage (finalmsg);
 
 	Master_Shutdown ();
+#ifdef QW_BOTH
+	NET_Config (true, false);
+#endif
+
 	if (sv_logfile)
 	{
 		fclose (sv_logfile);
@@ -1695,18 +1699,8 @@ SV_InitNet
 */
 void SV_InitNet (void)
 {
-	int	port;
-	int	p;
-
-	port = PORT_SERVER;
-	p = COM_CheckParm ("-port");
-	if (p && p < com_argc)
-	{
-		port = atoi(com_argv[p+1]);
-		Con_Printf ("Port: %i\n", port);
-	}
-	NET_Init (0, port);
-
+	NET_Init ();
+	NET_Config (false, true);
 	Netchan_Init ();
 
 	// heartbeats will always be sent to the id master

@@ -26,8 +26,6 @@ netadr_t	net_local_adr;
 
 netadr_t	net_from;
 sizebuf_t	net_message;
-int			net_clientsocket;
-int			net_serversocket;
 
 #define	MAX_UDP_PACKET	(MAX_MSGLEN*2)	// one more than msg + header
 byte		net_message_buffer[MAX_UDP_PACKET];
@@ -49,6 +47,7 @@ typedef struct
 } loopback_t;
 
 loopback_t	loopbacks[2];
+int			ip_sockets[2] = { -1, -1 };
 
 //=============================================================================
 
@@ -206,7 +205,7 @@ void NET_SendLoopPacket (netsrc_t sock, int length, void *data, netadr_t to)
 	loop->send++;
 
 	if (length > sizeof(loop->msgs[i].data))
-		Sys_Error ("Outgoing loopback packet size > MAX_UDP_PACKET");
+		Sys_Error ("NET_SendLoopPacket: length > MAX_UDP_PACKET");
 
 	memcpy (loop->msgs[i].data, data, length);
 	loop->msgs[i].datalen = length;
@@ -224,10 +223,9 @@ qboolean NET_GetPacket (netsrc_t sock)
 	if (NET_GetLoopPacket (sock))
 		return true;
 
-	if (sock == NS_CLIENT)
-		net_socket = net_clientsocket;
-	else
-		net_socket = net_serversocket;
+	net_socket = ip_sockets[sock];
+	if (net_socket == -1)
+		return false;
 
 	fromlen = sizeof(from);
 	ret = recvfrom (net_socket, (char *)net_message_buffer, sizeof(net_message_buffer), 0, (struct sockaddr *)&from, &fromlen);
@@ -278,10 +276,9 @@ void NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to)
 
 	NetadrToSockadr (&to, &addr);
 
-	if (sock == NS_CLIENT)
-		net_socket = net_clientsocket;
-	else
-		net_socket = net_serversocket;
+	net_socket = ip_sockets[sock];
+	if (net_socket == -1)
+		return;
 
 	ret = sendto (net_socket, data, length, 0, (struct sockaddr *)&addr, sizeof(addr) );
 	if (ret == -1)
@@ -303,10 +300,10 @@ void NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to)
 
 //=============================================================================
 
-int UDP_OpenSocket (int port, qboolean crash)
+int UDP_OpenSocket (int port)
 {
-	int newsocket;
-	struct sockaddr_in address;
+	int			newsocket;
+	struct		sockaddr_in address;
 	unsigned long _true = true;
 	int i;
 
@@ -317,10 +314,11 @@ int UDP_OpenSocket (int port, qboolean crash)
 		Sys_Error ("UDP_OpenSocket: ioctl FIONBIO:", strerror(errno));
 
 	address.sin_family = AF_INET;
-//ZOID -- check for interface binding option
+
+// check for interface binding option
 	if ((i = COM_CheckParm("-ip")) != 0 && i < com_argc) {
 		address.sin_addr.s_addr = inet_addr(com_argv[i+1]);
-		Con_Printf("Binding to IP Interface Address of %s\n",
+		Con_Printf ("Binding to IP Interface Address of %s\n",
 				inet_ntoa(address.sin_addr));
 	} else
 		address.sin_addr.s_addr = INADDR_ANY;
@@ -329,75 +327,123 @@ int UDP_OpenSocket (int port, qboolean crash)
 		address.sin_port = 0;
 	else
 		address.sin_port = htons((short)port);
-	if( bind (newsocket, (void *)&address, sizeof(address)) == -1)
-	{
-#ifdef QW_BOTH
-		if (!crash)
+
+	if (bind (newsocket, (void *)&address, sizeof(address)) == -1)
 			return -1;
-		else
-#endif
-		Sys_Error ("UDP_OpenSocket: bind: %s", strerror(errno));
-	}
 
 	return newsocket;
 }
 
-void NET_GetLocalAddress (int net_socket)	// FIXME
+
+/*
+====================
+NET_Config
+====================
+*/
+void NET_Config (qboolean client, qboolean server)
 {
-	char	buff[512];
-	struct sockaddr_in	address;
-	int		namelen;
+	int		i, port;
 
-	gethostname(buff, 512);
-	buff[512-1] = 0;
+#ifndef SERVERONLY
+	if (client)
+	{
+		if (ip_sockets[NS_CLIENT] == -1)
+		{
+			ip_sockets[NS_CLIENT] = UDP_OpenSocket (PORT_CLIENT);
+			if (ip_sockets[NS_CLIENT] == -1)
+				Sys_Error ("Couldn't allocate client socket");
+		}
+	}
+	else
+	{
+		if (ip_sockets[NS_CLIENT] != -1) {
+			closesocket (ip_sockets[NS_CLIENT]);
+			ip_sockets[NS_CLIENT] = -1;
+		}
+	}
+#endif
 
-	NET_StringToAdr (buff, &net_local_adr);
+#if defined(QW_BOTH) || defined(SERVERONLY)
+	if (server)
+	{
+		if (ip_sockets[NS_SERVER] != -1)
+			return;
 
-	namelen = sizeof(address);
-	if (getsockname (net_socket, (struct sockaddr *)&address, &namelen) == -1)
-		Sys_Error ("NET_Init: getsockname:", strerror(errno));
-	net_local_adr.port = address.sin_port;
+		port = 0;
+		i = COM_CheckParm ("-port");
+		if (i && i < com_argc)
+			port = atoi(com_argv[i+1]);
+		if (!port)
+			port = PORT_SERVER;
 
-	Con_Printf("IP address %s\n", NET_AdrToString (net_local_adr) );
+		ip_sockets[NS_SERVER] = UDP_OpenSocket (port);
+		if (ip_sockets[NS_SERVER] == -1)
+		{
+#ifdef SERVERONLY
+			Sys_Error ("Couldn't allocate server socket");
+#else
+			Con_Printf ("WARNING: Couldn't allocate server socket.\n");
+#endif
+		}
+	}
+	else
+	{
+		if (ip_sockets[NS_SERVER] != -1) {
+			closesocket (ip_sockets[NS_SERVER]);
+			ip_sockets[NS_SERVER] = -1;
+		}
+	}
+#endif
 }
+
+
+/*
+====================
+NET_Shutdown
+
+Sleeps msec or until the server socket is ready
+====================
+*/
+void NET_Sleep (int msec)
+{
+    struct timeval timeout;
+	fd_set	fdset;
+	int i;
+
+	FD_ZERO(&fdset);
+	i = 0;
+	if (ip_sockets[NS_SERVER] != -1) {
+		FD_SET(ip_sockets[NS_SERVER], &fdset); // network socket
+		i = ip_sockets[NS_SERVER];
+	}
+
+/*	if (ipx_sockets[NS_SERVER] != -1) {
+		FD_SET(ipx_sockets[NS_SERVER], &fdset); // network socket
+		if (ipx_sockets[NS_SERVER] > i)
+			i = ipx_sockets[NS_SERVER];
+	}
+*/
+	timeout.tv_sec = msec/1000;
+	timeout.tv_usec = (msec%1000)*1000;
+	select(i+1, &fdset, NULL, NULL, &timeout);
+}
+
 
 /*
 ====================
 NET_Init
 ====================
 */
-int __serverport;	// so we can open it later
-void NET_Init (int clientport, int serverport)
+void NET_Init (void)
 {
 	WORD	wVersionRequested; 
 	int		r;
 
 	wVersionRequested = MAKEWORD(1, 1); 
-
-	r = WSAStartup (MAKEWORD(1, 1), &winsockdata);
+	r = WSAStartup (wVersionRequested, &winsockdata);
 
 	if (r)
 		Sys_Error ("Winsock initialization failed.");
-
-	//
-	// open the single socket to be used for all communications
-	//
-//	net_socket = UDP_OpenSocket (port);
-	if (clientport)
-		net_clientsocket = UDP_OpenSocket (clientport, true);
-#ifndef QW_BOTH
-	if (serverport)
-		net_serversocket = UDP_OpenSocket (serverport, false);
-#else
-	// An ugly hack to let you run zquake and qwsv or proxy without
-	// changing ports via the command line	-- Tonik, 5 Aug 2000
-	__serverport = serverport;
-	net_serversocket = -1;
-/*	if (net_serversocket == -1)
-	{
-		Con_Printf ("NET_Init: Could not open server socket\n");
-	}	*/
-#endif
 
 	//
 	// init the message buffer
@@ -405,15 +451,7 @@ void NET_Init (int clientport, int serverport)
 	net_message.maxsize = sizeof(net_message_buffer);
 	net_message.data = net_message_buffer;
 
-	//
-	// determine my name & address
-	//
-	if (clientport)
-		NET_GetLocalAddress (net_clientsocket);
-	else if (serverport)
-		NET_GetLocalAddress (net_serversocket);
-
-	Con_Printf("UDP Initialized\n");
+	Con_Printf("Winsock initialized.\n");
 }
 
 /*
@@ -423,10 +461,7 @@ NET_Shutdown
 */
 void	NET_Shutdown (void)
 {
-	if (net_clientsocket)
-		closesocket (net_clientsocket);
-	if (net_serversocket)
-		closesocket (net_serversocket);
+	NET_Config (false, false);
 	WSACleanup ();
 }
 
