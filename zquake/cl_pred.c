@@ -109,7 +109,7 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 	VectorCopy (pmove.origin, to->origin);
 	VectorCopy (pmove.angles, to->viewangles);
 	VectorCopy (pmove.velocity, to->velocity);
-	to->onground = onground;
+	to->onground = pmove.onground;
 
 	to->weaponframe = from->weaponframe;
 }
@@ -133,7 +133,7 @@ void CL_CategorizePosition (void)
 	VectorCopy (cl.simorg, pmove.origin);
 	pmove.numtouch = 0;
 	PM_CategorizePosition ();
-	cl.onground = onground;
+	cl.onground = pmove.onground;
 }
 
 
@@ -266,7 +266,7 @@ void CL_PredictMove (void)
 		to = &cl.frames[(cl.validsequence+i) & UPDATE_MASK];
 		CL_PredictUsercmd (&from->playerstate[cl.playernum]
 			, &to->playerstate[cl.playernum], &to->cmd, cl.spectator);
-		cl.onground = onground;
+		cl.onground = pmove.onground;
 		if (to->senttime >= cl.time)
 			break;
 		from = to;
