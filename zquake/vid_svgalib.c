@@ -302,7 +302,7 @@ void VID_Debug_f (void)
 
 
 
-void VID_InitModes(void)
+void VID_InitModes (void)
 {
 
 	int i;
@@ -310,7 +310,7 @@ void VID_InitModes(void)
 // get complete information on all modes
 
 	num_modes = vga_lastmodenumber()+1;
-	modes = Z_Malloc(num_modes * sizeof(vga_modeinfo));
+	modes = Hunk_Alloc (num_modes * sizeof(vga_modeinfo));
 	for (i=0 ; i<num_modes ; i++)
 	{
 		if (vga_hasmode(i))
