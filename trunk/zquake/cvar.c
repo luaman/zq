@@ -350,7 +350,7 @@ cvar_t *Cvar_Create (char *name, char *string, int cvarflags)
 	v->string = Z_Malloc (strlen(string)+1);
 	strcpy (v->string, string);
 	v->flags = cvarflags;
-	v->value = atof (v->string);
+	v->value = Q_atof (v->string);
 
 	return v;
 }
@@ -386,8 +386,8 @@ void Cvar_Set_f (void)
 }
 
 
-//debug
-#if 0
+//#define CVAR_DEBUG
+#ifdef CVAR_DEBUG
 static void Cvar_Hash_Print_f (void)
 {
 	int		i, count;
@@ -410,6 +410,7 @@ void Cvar_Init (void)
 	Cmd_AddCommand ("toggle", Cvar_Toggle_f);
 	Cmd_AddCommand ("set", Cvar_Set_f);
 
-	// debug
-//	Cmd_AddCommand ("cvar_hash_print", Cvar_Hash_Print_f);
+#ifdef CVAR_DEBUG
+	Cmd_AddCommand ("cvar_hash_print", Cvar_Hash_Print_f);
+#endif
 }
