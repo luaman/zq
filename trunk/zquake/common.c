@@ -384,7 +384,7 @@ void MSG_WriteAngle (sizebuf_t *sb, float f)
 
 void MSG_WriteAngle16 (sizebuf_t *sb, float f)
 {
-	MSG_WriteShort (sb, (int)(f*(65535.0f/360.0f) + 0.5f) & 65535);
+	MSG_WriteShort (sb, (int)(f*(65536.0f/360.0f) + 0.5f) & 65535);
 }
 
 void MSG_WriteDeltaUsercmd (sizebuf_t *buf, usercmd_t *from, usercmd_t *cmd)
