@@ -1555,6 +1555,9 @@ Cmd_Noclip_f
 */
 static void Cmd_Noclip_f (void)
 {
+	if (sv_client->spectator)
+		return;
+
 	if (!sv_allow_cheats)
 	{
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cheats are not allowed on this server\n");
@@ -1586,6 +1589,9 @@ Cmd_Fly_f
 */
 static void Cmd_Fly_f (void)
 {
+	if (sv_client->spectator)
+		return;
+
 	if (!sv_allow_cheats)
 	{
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cheats are not allowed on this server\n");
