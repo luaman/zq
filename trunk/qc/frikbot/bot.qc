@@ -48,11 +48,6 @@ for all variable in the bot...
 .float forwardmove, sidemove, upmove;
 .vector dyn_dest;
 
-// --------defines-----
-float SVC_UPDATENAME	= 13;
-float SVC_UPDATEFRAGS	= 14;
-float SVC_UPDATECOLORS	= 17;
-
 // used for the physics & movement AI
 float KEY_MOVEUP 		= 1;
 float KEY_MOVEDOWN 	= 2;
@@ -294,22 +289,17 @@ void(string h) BotSay = // simulate talking by composing a 'chat' message
 };
 void() BotSayInit =
 {
-	WriteByte(MSG_ALL, 8);
-	WriteByte(MSG_ALL, 3);
-	WriteByte(MSG_ALL, 1);
-	WriteString(MSG_ALL, self.netname);
+	bprint (PRINT_CHAT, self.netname);
 };
 void(string h) BotSay2 =
 {
-	WriteByte(MSG_ALL, 8);
-	WriteByte(MSG_ALL, 3);
-	WriteByte(MSG_ALL, 2);
-	WriteString(MSG_ALL, h);
+	bprint (PRINT_CHAT, h);
 };
 void(string h) BotSayTeam = 
 {
 	// FBX QW doesn't support teamplay...yet
 };
+
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -420,7 +410,7 @@ void(entity bot) BotDisconnect =
 
 void BotAI ();	// Tonik
 
-void BotPreThink (entity self)
+void BotPreThink ()
 {
 	frik_obstacles();
 	CL_KeyMove();
