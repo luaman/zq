@@ -71,7 +71,7 @@ unsigned d_8to24table[256];
 unsigned d_8to24table2[256];
 unsigned char	d_15to8table[65536];
 
-static int scr_width, scr_height, scrnum;
+static int scrnum;
 
 #ifdef USE_DGA
 static int dgamouse = 0;
@@ -940,8 +940,8 @@ void VID_Init(unsigned char *palette)
 
     glXMakeCurrent(dpy, win, ctx);
 
-    vid.realwidth = scr_width = width;
-    vid.realheight = scr_height = height;
+    vid.realwidth = width;
+    vid.realheight = height;
 
     if (vid.height > height)
         vid.height = height;
