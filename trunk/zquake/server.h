@@ -151,10 +151,10 @@ typedef struct client_s
 	byte			datagram_buf[MAX_DATAGRAM];
 
 	// back buffers for client reliable data
-	sizebuf_t	backbuf;
-	int			num_backbuf;
-	int			backbuf_size[MAX_BACK_BUFFERS];
-	byte		backbuf_data[MAX_BACK_BUFFERS][MAX_MSGLEN];
+	sizebuf_t		backbuf;
+	int				num_backbuf;
+	int				backbuf_size[MAX_BACK_BUFFERS];
+	byte			backbuf_data[MAX_BACK_BUFFERS][MAX_MSGLEN];
 
 	// stufftext and sprint messages are buffered to reduce traffic
 	char			stufftext_buf[MAX_STUFFTEXT];
@@ -181,11 +181,9 @@ typedef struct client_s
 
 	int				spec_track;			// entnum of player tracking
 
-	double			whensaid[10];       // JACK: For floodprots
- 	int			whensaidhead;       // Head value for floodprots
+	double			whensaid[10];		// For floodprots
+ 	int				whensaidhead;		// Head value for floodprots
  	double			lockedtill;
-
-	qboolean		upgradewarn;		// did we warn him?
 
 	FILE			*upload;
 	char			uploadfn[MAX_QPATH];
@@ -333,7 +331,6 @@ extern	netadr_t	master_adr[MAX_MASTERS];	// address of the master server
 
 extern	int		current_skill;
 
-extern	cvar_t	spawn;
 extern	cvar_t	teamplay;
 extern	cvar_t	deathmatch;
 extern	cvar_t	fraglimit;
@@ -369,25 +366,22 @@ int SV_CalcPing (client_t *cl);
 void SV_FullClientUpdate (client_t *client, sizebuf_t *buf);
 void SV_FullClientUpdateToClient (client_t *client, client_t *cl);
 
-qboolean SV_CheckBottom (edict_t *ent);
-qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink);
-
-void SV_WriteClientdataToMessage (client_t *client, sizebuf_t *msg);
-
-void SV_MoveToGoal (void);
-
-void SV_Physics_Client (edict_t	*ent);
-
 void SV_ExecuteUserCommand (char *s);
 void SV_InitOperatorCommands (void);
 
-void SV_SendServerinfo (client_t *client);
 void SV_ExtractFromUserinfo (client_t *cl);
 int SV_BoundRate (int rate);
 
 void Master_Heartbeat (void);
 void Master_Packet (void);
 
+
+//
+// sv_move.c
+//
+qboolean SV_CheckBottom (edict_t *ent);
+qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink);
+void SV_MoveToGoal (void);
 
 //
 // sv_init.c
@@ -404,11 +398,8 @@ void SV_SpawnServer (char *server, qboolean devmap);
 void SV_ProgStartFrame (void);
 void SV_Physics (void);
 void SV_CheckVelocity (edict_t *ent);
-void SV_AddGravity (edict_t *ent, float scale);
 qboolean SV_RunThink (edict_t *ent);
-void SV_Physics_Toss (edict_t *ent);
 void SV_RunNewmis (void);
-void SV_Impact (edict_t *e1, edict_t *e2);
 void SV_SetMoveVars(void);
 
 //
@@ -447,6 +438,7 @@ void SV_SendServerInfoChange (char *key, char *value);
 // sv_ents.c
 //
 void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg);
+void SV_WriteClientdataToMessage (client_t *client, sizebuf_t *msg);
 
 //
 // sv_nchan.c
