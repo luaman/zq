@@ -31,7 +31,7 @@ client_t	*sv_client;					// current client
 #ifndef SERVERONLY
 cvar_t	sv_mintic = {"sv_mintic","0"};		//
 #else										//
-cvar_t	sv_mintic = {"sv_mintic","0.03"};	// bound the size of the
+cvar_t	sv_mintic = {"sv_mintic","0.013"};	// bound the size of the
 #endif										// physics time tic 
 cvar_t	sv_maxtic = {"sv_maxtic","0.1"};	//
 
