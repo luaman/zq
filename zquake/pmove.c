@@ -943,5 +943,12 @@ void PlayerMove (void)
 
 	// set onground, watertype, and waterlevel for final spot
 	PM_CategorizePosition ();
-}
 
+	// this is to make sure landing sound is not played twice
+	// and falling damage is calculated correctly
+	if (pmove.onground && pmove.velocity[2] < -300
+		&& DotProduct(pmove.velocity, groundplane.normal) < -0.1)
+	{
+		PM_ClipVelocity (pmove.velocity, groundplane.normal, pmove.velocity, 1);
+	}
+}
