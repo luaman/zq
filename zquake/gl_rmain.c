@@ -107,6 +107,7 @@ cvar_t	gl_finish = {"gl_finish","0"};
 cvar_t	gl_fb_depthhack = {"gl_fb_depthhack","1"};
 cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
 cvar_t	gl_fb_models = {"gl_fb_models","1"};
+cvar_t	gl_colorlights = {"gl_colorlights","0"};
 
 cvar_t	gl_lightmode = {"gl_lightmode","2"};
 int		lightmode = 2;
