@@ -358,7 +358,7 @@ void M_Main_Key (int key)
 
 int		options_cursor;
 
-extern cvar_t	gamma;
+extern cvar_t	gammavar;
 extern cvar_t	contrast;
 
 void M_Menu_Options_f (void)
@@ -382,12 +382,12 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue (&scr_viewsize, scr_viewsize.value);
 		break;
 	case 4:	// gamma
-		gamma.value -= dir * 0.05;
-		if (gamma.value < 0.5)
-			gamma.value = 0.5;
-		if (gamma.value > 1)
-			gamma.value = 1;
-		Cvar_SetValue (&gamma, gamma.value);
+		gammavar.value -= dir * 0.05;
+		if (gammavar.value < 0.5)
+			gammavar.value = 0.5;
+		if (gammavar.value > 1)
+			gammavar.value = 1;
+		Cvar_SetValue (&gammavar, gammavar.value);
 		break;
 	case 5:	// contrast
 		contrast.value += dir * 0.1;
@@ -513,7 +513,7 @@ void M_Options_Draw (void)
 	M_DrawSlider (220, 56, r);
 
 	M_Print (16, 64, "                 Gamma");
-	r = (1.0 - gamma.value) / 0.5;
+	r = (1.0 - gammavar.value) / 0.5;
 	M_DrawSlider (220, 64, r);
 
 	M_Print (16, 72, "              Contrast");
