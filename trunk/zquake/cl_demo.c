@@ -553,7 +553,21 @@ static void CL_Record (void)
 	}
 
 // spawnstaticsound
-	// static sounds are skipped in demos, life is hard
+
+	for (i = 0; i < cl.num_static_sounds; i++) {
+		static_sound_t *ss = &cl.static_sounds[i];
+		MSG_WriteByte (&buf, svc_spawnstaticsound);
+		for (j = 0; j < 3; j++)
+			MSG_WriteCoord (&buf, ss->org[j]);
+		MSG_WriteByte (&buf, ss->sound_num);
+		MSG_WriteByte (&buf, ss->vol);
+		MSG_WriteByte (&buf, ss->atten);
+
+		if (buf.cursize > MAX_MSGLEN/2) {
+			CL_WriteRecordDemoMessage (&buf, seq++);
+			SZ_Clear (&buf); 
+		}
+	}
 
 // baselines
 

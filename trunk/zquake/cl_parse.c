@@ -898,18 +898,22 @@ CL_ParseStaticSound
 void CL_ParseStaticSound (void)
 {
 	extern cvar_t	cl_staticsounds;
-	vec3_t		org;
-	int			sound_num, vol, atten;
+	static_sound_t	ss;
 	int			i;
 	
 	for (i=0 ; i<3 ; i++)
-		org[i] = MSG_ReadCoord ();
-	sound_num = MSG_ReadByte ();
-	vol = MSG_ReadByte ();
-	atten = MSG_ReadByte ();
+		ss.org[i] = MSG_ReadCoord ();
+	ss.sound_num = MSG_ReadByte ();
+	ss.vol = MSG_ReadByte ();
+	ss.atten = MSG_ReadByte ();
+
+	if (cl.num_static_sounds < MAX_STATIC_SOUNDS) {
+		cl.static_sounds[cl.num_static_sounds] = ss;
+		cl.num_static_sounds++;
+	}
 
 	if (cl_staticsounds.value)
-		S_StaticSound (cl.sound_precache[sound_num], org, vol, atten);
+		S_StaticSound (cl.sound_precache[ss.sound_num], ss.org, ss.vol, ss.atten);
 }
 
 

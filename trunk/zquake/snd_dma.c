@@ -133,10 +133,10 @@ void S_Startup (void)
 
 /*
 ================
-SND_Restart_f
+S_Restart
 ================
 */
-void SND_Restart_f (void)
+void S_Restart (void)
 {
 	int		i;
 
@@ -189,7 +189,6 @@ void S_Init (void)
 		Cmd_AddLegacyCommand ("snd_show", "s_show");
 		Cmd_AddLegacyCommand ("_snd_mixahead", "s_mixahead");
 
-		Cmd_AddCommand("snd_restart", SND_Restart_f);
 		Cmd_AddCommand("play", S_Play_f);
 		Cmd_AddCommand("playvol", S_PlayVol_f);
 		Cmd_AddCommand("stopsound", S_StopAllSounds_f);
@@ -604,7 +603,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 	channel_t	*ss;
 	sfxcache_t		*sc;
 
-	if (!sfx)
+	if (!sfx || !sound_started)
 		return;
 
 	if (total_channels == MAX_CHANNELS)
