@@ -582,7 +582,6 @@ void VID_Init(unsigned char *palette)
 		VID_SetMode(current_mode, palette);
 
 		VID_SetPalette(palette);
-		VID_Build15to8table (palette);
 
 		// we do want to run in the background when switched away
 		vga_runinbackground(1);	
@@ -773,26 +772,6 @@ void VID_Update(vrect_t *rects)
 	
 	if (vid_mode.value != current_mode)
 		VID_SetMode ((int)vid_mode.value, vid_current_palette);
-}
-
-static int dither;
-
-void VID_DitherOn(void)
-{
-    if (dither == 0)
-    {
-//		R_ViewChanged (&vrect, sb_lines, vid.aspect);
-        dither = 1;
-    }
-}
-
-void VID_DitherOff(void)
-{
-    if (dither)
-    {
-//		R_ViewChanged (&vrect, sb_lines, vid.aspect);
-        dither = 0;
-    }
 }
 
 void Sys_SendKeyEvents(void)

@@ -1024,26 +1024,6 @@ void			 VID_Update (vrect_t *rects)
 	}
 }
 
-static int dither;
-
-void VID_DitherOn(void)
-{
-	if (dither == 0)
-	{
-		vid.recalc_refdef = 1;
-		dither = 1;
-	}
-}
-
-void VID_DitherOff(void)
-{
-	if (dither)
-	{
-		vid.recalc_refdef = 1;
-		dither = 0;
-	}
-}
-
 int Sys_OpenWindow(void)
 {
 	return 0;
