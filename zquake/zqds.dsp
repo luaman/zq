@@ -22,7 +22,7 @@ CFG=zqds - Win32 Release
 !MESSAGE 
 
 # Begin Project
-# PROP AllowPerConfigDependencies 0
+# PROP AllowPerConfigDependencies 1
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /W3 /GX /O2 /D "NDEBUG" /D "SERVERONLY" /D "WIN32" /D "_CONSOLE" /D "id386" /YX /FD /c
+# ADD CPP /nologo /W3 /GX- /O2 /D "NDEBUG" /D "SERVERONLY" /D "WIN32" /D "_CONSOLE" /D "id386" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
@@ -51,7 +51,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 wsock32.lib user32.lib winmm.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /profile
 
 !ELSEIF  "$(CFG)" == "zqds - Win32 Debug"
@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /W3 /GX /ZI /Od /D "_DEBUG" /D "SERVERONLY" /D "WIN32" /D "_CONSOLE" /D "id386" /FR /YX /FD /c
+# ADD CPP /nologo /W3 /GX- /ZI /Od /D "_DEBUG" /D "SERVERONLY" /D "WIN32" /D "_CONSOLE" /D "id386" /FR /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -76,7 +76,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386
-# ADD LINK32 wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:console /map /debug /machine:I386
+# ADD LINK32 wsock32.lib user32.lib winmm.lib /nologo /subsystem:console /map /debug /machine:I386
 # SUBTRACT LINK32 /profile
 
 !ENDIF 
@@ -318,11 +318,11 @@ SOURCE=.\zone.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=.\qwcl2.ico
+SOURCE=.\qe3.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\qe3.ico
+SOURCE=.\qwcl2.ico
 # End Source File
 # Begin Source File
 
@@ -330,13 +330,12 @@ SOURCE=.\qwsv2.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\zquake.bmp
+SOURCE=.\zqds.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\zqds.rc
+SOURCE=.\zquake.bmp
 # End Source File
-
 # End Group
 # Begin Group "Asm Files"
 
