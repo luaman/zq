@@ -42,6 +42,8 @@ void Cmd_Macro_Init (void);
 void CL_LoadLocFile (char *path, qboolean quiet);
 char *CL_ParseMacroString(char *string);
 
+void CL_SearchForMsgTriggers (char *s);
+
 int CL_CountPlayers();
 char *CL_MapName();
 char *CL_PlayerName();
