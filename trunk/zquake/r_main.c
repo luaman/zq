@@ -779,99 +779,91 @@ void R_DrawBEntitiesOnList (void)
 	for (i=0 ; i<cl_numvisedicts ; i++)
 	{
 		currententity = &cl_visedicts[i];
+		clmodel = currententity->model;
 
-		switch (currententity->model->type)
+		if (clmodel->type != mod_brush)
+			continue;
+
+	// see if the bounding box lets us trivially reject, also sets
+	// trivial accept status
+		for (j=0 ; j<3 ; j++)
 		{
-		case mod_brush:
+			minmaxs[j] = currententity->origin[j] +
+					clmodel->mins[j];
+			minmaxs[3+j] = currententity->origin[j] +
+					clmodel->maxs[j];
+		}
 
-			clmodel = currententity->model;
+		clipflags = R_BmodelCheckBBox (clmodel, minmaxs);
 
-		// see if the bounding box lets us trivially reject, also sets
-		// trivial accept status
+		if (clipflags != BMODEL_FULLY_CLIPPED)
+		{
+			VectorCopy (currententity->origin, r_entorigin);
+			VectorSubtract (r_origin, r_entorigin, modelorg);
+		// FIXME: is this needed?
+			VectorCopy (modelorg, r_worldmodelorg);
+	
+			r_pcurrentvertbase = clmodel->vertexes;
+	
+		// FIXME: stop transforming twice
+			R_RotateBmodel ();
+
+		// calculate dynamic lighting for bmodel if it's not an
+		// instanced model
+			if (clmodel->firstmodelsurface != 0)
+			{
+				for (k=0 ; k<MAX_DLIGHTS ; k++)
+				{
+					if ((cl_dlights[k].die < cl.time) ||
+						(!cl_dlights[k].radius))
+					{
+						continue;
+					}
+
+					R_MarkLights (&cl_dlights[k], 1<<k,
+						clmodel->nodes + clmodel->hulls[0].firstclipnode);
+				}
+			}
+
+			r_pefragtopnode = NULL;
+
 			for (j=0 ; j<3 ; j++)
 			{
-				minmaxs[j] = currententity->origin[j] +
-						clmodel->mins[j];
-				minmaxs[3+j] = currententity->origin[j] +
-						clmodel->maxs[j];
+				r_emins[j] = minmaxs[j];
+				r_emaxs[j] = minmaxs[3+j];
 			}
 
-			clipflags = R_BmodelCheckBBox (clmodel, minmaxs);
+			R_SplitEntityOnNode2 (cl.worldmodel->nodes);
 
-			if (clipflags != BMODEL_FULLY_CLIPPED)
+			if (r_pefragtopnode)
 			{
-				VectorCopy (currententity->origin, r_entorigin);
-				VectorSubtract (r_origin, r_entorigin, modelorg);
-			// FIXME: is this needed?
-				VectorCopy (modelorg, r_worldmodelorg);
-		
-				r_pcurrentvertbase = clmodel->vertexes;
-		
-			// FIXME: stop transforming twice
-				R_RotateBmodel ();
+				currententity->topnode = r_pefragtopnode;
 
-			// calculate dynamic lighting for bmodel if it's not an
-			// instanced model
-				if (clmodel->firstmodelsurface != 0)
+				if (r_pefragtopnode->contents >= 0)
 				{
-					for (k=0 ; k<MAX_DLIGHTS ; k++)
-					{
-						if ((cl_dlights[k].die < cl.time) ||
-							(!cl_dlights[k].radius))
-						{
-							continue;
-						}
-
-						R_MarkLights (&cl_dlights[k], 1<<k,
-							clmodel->nodes + clmodel->hulls[0].firstclipnode);
-					}
+				// not a leaf; has to be clipped to the world BSP
+					r_clipflags = clipflags;
+					R_DrawSolidClippedSubmodelPolygons (clmodel);
+				}
+				else
+				{
+				// falls entirely in one leaf, so we just put all the
+				// edges in the edge list and let 1/z sorting handle
+				// drawing order
+					R_DrawSubmodelPolygons (clmodel, clipflags);
 				}
 
-				r_pefragtopnode = NULL;
-
-				for (j=0 ; j<3 ; j++)
-				{
-					r_emins[j] = minmaxs[j];
-					r_emaxs[j] = minmaxs[3+j];
-				}
-
-				R_SplitEntityOnNode2 (cl.worldmodel->nodes);
-
-				if (r_pefragtopnode)
-				{
-					currententity->topnode = r_pefragtopnode;
-
-					if (r_pefragtopnode->contents >= 0)
-					{
-					// not a leaf; has to be clipped to the world BSP
-						r_clipflags = clipflags;
-						R_DrawSolidClippedSubmodelPolygons (clmodel);
-					}
-					else
-					{
-					// falls entirely in one leaf, so we just put all the
-					// edges in the edge list and let 1/z sorting handle
-					// drawing order
-						R_DrawSubmodelPolygons (clmodel, clipflags);
-					}
-
-					currententity->topnode = NULL;
-				}
-
-			// put back world rotation and frustum clipping		
-			// FIXME: R_RotateBmodel should just work off base_vxx
-				VectorCopy (base_vpn, vpn);
-				VectorCopy (base_vup, vup);
-				VectorCopy (base_vright, vright);
-				VectorCopy (base_modelorg, modelorg);
-				VectorCopy (oldorigin, modelorg);
-				R_TransformFrustum ();
+				currententity->topnode = NULL;
 			}
 
-			break;
-
-		default:
-			break;
+		// put back world rotation and frustum clipping		
+		// FIXME: R_RotateBmodel should just work off base_vxx
+			VectorCopy (base_vpn, vpn);
+			VectorCopy (base_vup, vup);
+			VectorCopy (base_vright, vright);
+			VectorCopy (base_modelorg, modelorg);
+			VectorCopy (oldorigin, modelorg);
+			R_TransformFrustum ();
 		}
 	}
 
