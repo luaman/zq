@@ -556,7 +556,7 @@ void PutClientInServer ()
 	
 	spot = SelectSpawnPoint ();
 
-	setorigin (self, spot.origin + '0 0 1');
+	self.origin = spot.origin + '0 0 1';
 	self.angles = spot.angles;
 	self.fixangle = true;           // turn this way immediately
 	self.jump_flag = 0;
@@ -569,6 +569,7 @@ void PutClientInServer ()
 	setmodel (self, "progs/player.mdl");
 	modelindex_player = self.modelindex;
 
+// set size and link into world
 	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 	
 	self.view_ofs = '0 0 22';
