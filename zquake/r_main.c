@@ -836,6 +836,10 @@ void R_DrawBEntitiesOnList (void)
 		if (clipflags == BMODEL_FULLY_CLIPPED)
 			continue;		// off the edge of the screen
 
+		topnode = R_FindTopNode (minmaxs, minmaxs+3);
+		if (!topnode)
+			continue;	// no part in a visible leaf
+
 		VectorCopy (currententity->origin, r_entorigin);
 		VectorSubtract (r_origin, r_entorigin, modelorg);
 	// FIXME: is this needed?
@@ -863,28 +867,23 @@ void R_DrawBEntitiesOnList (void)
 			}
 		}
 
-		topnode = R_FindTopNode (minmaxs, minmaxs+3);
+		currententity->topnode = topnode;
 
-		if (topnode)
+		if (topnode->contents >= 0)
 		{
-			currententity->topnode = topnode;
-
-			if (topnode->contents >= 0)
-			{
-			// not a leaf; has to be clipped to the world BSP
-				r_clipflags = clipflags;
-				R_DrawSolidClippedSubmodelPolygons (clmodel);
-			}
-			else
-			{
-			// falls entirely in one leaf, so we just put all the
-			// edges in the edge list and let 1/z sorting handle
-			// drawing order
-				R_DrawSubmodelPolygons (clmodel, clipflags);
-			}
-
-			currententity->topnode = NULL;
+		// not a leaf; has to be clipped to the world BSP
+			r_clipflags = clipflags;
+			R_DrawSolidClippedSubmodelPolygons (clmodel);
 		}
+		else
+		{
+		// falls entirely in one leaf, so we just put all the
+		// edges in the edge list and let 1/z sorting handle
+		// drawing order
+			R_DrawSubmodelPolygons (clmodel, clipflags);
+		}
+
+		currententity->topnode = NULL;
 
 	// put back world rotation and frustum clipping		
 	// FIXME: R_RotateBmodel should just work off base_vxx
