@@ -370,10 +370,6 @@ void() ClientKill =
 	respawn ();
 };
 
-float(vector v) CheckSpawnPoint =
-{
-	return FALSE;
-};
 
 /*
 ============
