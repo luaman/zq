@@ -831,7 +831,7 @@ void CheckQizmoCompletion (void)
 	// start playback
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
-	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
+	Netchan_Setup (NS_CLIENT, &cls.netchan, net_null, 0);
 	cls.demotime = 0;
 }
 
@@ -903,7 +903,7 @@ void PlayQWZDemo (void)
 		// .qwd already exists, so just play it
 		cls.demoplayback = true;
 		cls.state = ca_demostart;
-		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
+		Netchan_Setup (NS_CLIENT, &cls.netchan, net_null, 0);
 		cls.demotime = 0;
 		return;
 	}
@@ -938,7 +938,7 @@ void PlayQWZDemo (void)
 	cls.demoplayback = true;
 	cls.demofile = NULL;
 	cls.state = ca_demostart;
-	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
+	Netchan_Setup (NS_CLIENT, &cls.netchan, net_null, 0);
 	cls.demotime = 0;
 }
 #endif
@@ -1013,7 +1013,7 @@ try_again:
 
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
-	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
+	Netchan_Setup (NS_CLIENT, &cls.netchan, net_null, 0);
 	cls.demotime = 0;
 }
 
