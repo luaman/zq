@@ -847,11 +847,13 @@ SV_RunEntity
 */
 void SV_RunEntity (edict_t *ent)
 {
-	if (ent->v.lastruntime == (float)realtime)
+	if (ent->lastruntime == sv.time)
 		return;
-	ent->v.lastruntime = (float)realtime;
+	ent->lastruntime = sv.time;
 
-	switch ( (int)ent->v.movetype)
+	ent->v.lastruntime = (float)realtime; // QW compatibility (FIXME: remove?)
+
+	switch ((int)ent->v.movetype)
 	{
 	case MOVETYPE_PUSH:
 		SV_Physics_Pusher (ent);
