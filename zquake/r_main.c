@@ -229,6 +229,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_aliastransbase);
 	Cvar_RegisterVariable (&r_aliastransadj);
 	Cvar_RegisterVariable (&r_fullbrightSkins);
+	Cvar_RegisterVariable (&r_nicefont);
 
 	Cvar_SetValue (&r_maxedges, (float)NUMSTACKEDGES);
 	Cvar_SetValue (&r_maxsurfs, (float)NUMSTACKSURFACES);
@@ -395,7 +396,7 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 
 	R_SetVrect (pvrect, &r_refdef.vrect, lineadj);
 
-	r_refdef.horizontalFieldOfView = 2.0 * tan (r_refdef.fov_x/360*M_PI);
+	r_refdef.horizontalFieldOfView = 2.0 * Q_tan (r_refdef.fov_x/360*M_PI);
 	r_refdef.fvrectx = (float)r_refdef.vrect.x;
 	r_refdef.fvrectx_adj = (float)r_refdef.vrect.x - 0.5;
 	r_refdef.vrect_x_adj_shift20 = (r_refdef.vrect.x<<20) + (1<<19) - 1;
@@ -479,9 +480,9 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	screenedge[3].type = PLANE_ANYZ;
 	
 	for (i=0 ; i<4 ; i++)
-		VectorNormalize (screenedge[i].normal);
+		VectorNormalizeFast (screenedge[i].normal);
 
-	res_scale = sqrt ((double)(r_refdef.vrect.width * r_refdef.vrect.height) /
+	res_scale = Q_sqrt ((double)(r_refdef.vrect.width * r_refdef.vrect.height) /
 			          (320.0 * 152.0)) *
 			(2.0 / r_refdef.horizontalFieldOfView);
 	r_aliastransition = r_aliastransbase.value * res_scale;
@@ -597,16 +598,17 @@ void R_DrawEntitiesOnList (void)
 
 				for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
 				{
-					if (cl_dlights[lnum].die >= cl.time)
-					{
-						VectorSubtract (currententity->origin,
-										cl_dlights[lnum].origin,
-										dist);
-						add = cl_dlights[lnum].radius - Length(dist);
-	
-						if (add > 0)
-							lighting.ambientlight += add;
-					}
+					if (cl_dlights[lnum].die < cl.time ||
+						!cl_dlights[lnum].radius)
+						continue;
+
+					VectorSubtract (currententity->origin,
+									cl_dlights[lnum].origin,
+									dist);
+					add = cl_dlights[lnum].radius - VectorLength(dist);
+
+					if (add > 0)
+						lighting.ambientlight += add;
 				}
 	
 			// clamp lighting so it doesn't overbright as much
@@ -663,7 +665,7 @@ void R_DrawViewModel (void)
 	VectorSubtract (r_origin, r_entorigin, modelorg);
 
 	VectorCopy (vup, viewlightvec);
-	VectorInverse (viewlightvec);
+	VectorInverse (viewlightvec, viewlightvec);
 
 	j = R_LightPoint (currententity->origin);
 
@@ -684,7 +686,7 @@ void R_DrawViewModel (void)
 			continue;
 
 		VectorSubtract (currententity->origin, dl->origin, dist);
-		add = dl->radius - Length(dist);
+		add = dl->radius - VectorLength(dist);
 		if (add > 0)
 			r_viewlighting.ambientlight += add;
 	}
