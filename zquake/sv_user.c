@@ -1294,7 +1294,6 @@ ucmd_t ucmds[] =
 	
 // issued by hand at client consoles	
 	{"rate", SV_Rate_f},
-	{"kill", SV_Kill_f},
 	{"pause", SV_Pause_f},
 	{"msg", SV_Msg_f},
 
@@ -1303,11 +1302,6 @@ ucmd_t ucmds[] =
 
 	{"setinfo", SV_SetInfo_f},
 	{"serverinfo", SV_ShowServerinfo_f},
-
-// cheat commands
-	{"god", SV_God_f},
-	{"give", SV_Give_f},
-	{"noclip", SV_Noclip_f},
 
 	{NULL, NULL}
 };
@@ -1320,22 +1314,47 @@ SV_ExecuteUserCommand
 void SV_ExecuteUserCommand (char *s)
 {
 	ucmd_t	*u;
+	pr_cmdfunction_t *cmdfunc;
+	char	*cmd;
+	int		i, j;
 	
 	Cmd_TokenizeString (s);
 	sv_player = sv_client->edict;
+	cmd = Cmd_Argv(0);
 
 	SV_BeginRedirect (RD_CLIENT);
 
 	for (u=ucmds ; u->name ; u++)
-		if (!strcmp (Cmd_Argv(0), u->name) )
+		if (!strcmp (cmd, u->name) )
 		{
 			u->func ();
-			break;
+			goto out;
 		}
 
-	if (!u->name)
-		Com_Printf ("Bad user command: %s\n", Cmd_Argv(0));
+	for (i = 0, cmdfunc = pr_cmdfunctions; i < pr_numcmdfunctions; i++, cmdfunc++) {
+		if (!Q_stricmp(cmdfunc->name, cmd)) {
+			pr_global_struct->time = sv.time;
+			pr_global_struct->self = EDICT_TO_PROG(sv_player);
+			for (j = 0; j < 8; j++)
+				*(string_t *)&pr_globals[OFS_PARM0 + j*3] = PR_SetString(Cmd_Argv(j + 1));
+			PR_ExecuteProgram (cmdfunc->funcnum);
+			goto out;
+		}
+	}
 
+	// check other commands (progs may override them)
+	if (!Q_stricmp(cmd, "kill"))
+		SV_Kill_f ();
+	else if (!Q_stricmp(cmd, "god"))
+		SV_God_f ();
+	else if (!Q_stricmp(cmd, "give"))
+		SV_Give_f ();
+	else if (!Q_stricmp(cmd, "noclip"))
+		SV_Noclip_f ();
+	else
+		Com_Printf ("Bad user command: %s\n", cmd);
+
+out:
 	SV_EndRedirect ();
 }
 
