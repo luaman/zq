@@ -538,7 +538,7 @@ void SV_Begin_f (void)
 	ent = EDICT_NUM( 1 + (sv_client - svs.clients) );
 	MSG_WriteByte (&sv_client->netchan.message, svc_setangle);
 	for (i=0 ; i < 2 ; i++)
-		MSG_WriteAngle (&sv_client->netchan.message, ent->v.angles[i] );
+		MSG_WriteAngle (&sv_client->netchan.message, ent->v.v_angle[i]);
 	MSG_WriteAngle (&sv_client->netchan.message, 0 );
 #endif
 }
