@@ -564,7 +564,7 @@ void R_DrawAliasModel (entity_t *ent)
 		skinnum = 0;
 	}
 
-	texture = paliashdr->gl_texturenum[ent->skinnum][anim];
+	texture = paliashdr->gl_texturenum[skinnum][anim];
 
 	// we can't dynamically colormap textures, so they are cached
 	// separately for the players.  Heads are just uncolored.
