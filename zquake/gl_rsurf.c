@@ -231,7 +231,7 @@ Returns the proper texture for a given time and base texture
 */
 texture_t *R_TextureAnimation (texture_t *base)
 {
-	int		reletive;
+	int		relative;
 	int		count;
 
 	if (currententity->frame)
@@ -243,10 +243,10 @@ texture_t *R_TextureAnimation (texture_t *base)
 	if (!base->anim_total)
 		return base;
 
-	reletive = (int)(cl.time*10) % base->anim_total;
+	relative = (int)(cl.time*10) % base->anim_total;
 
 	count = 0;	
-	while (base->anim_min > reletive || base->anim_max <= reletive)
+	while (base->anim_min > relative || base->anim_max <= relative)
 	{
 		base = base->anim_next;
 		if (!base)
