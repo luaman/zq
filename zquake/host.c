@@ -26,10 +26,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined(QW_BOTH) || defined(SERVERONLY)
 #include "server.h"
+#endif
 
+void CL_Shutdown ();
 void SV_Init (void);
 void SV_Error (char *error, ...);
-#endif
 
 
 #ifdef SERVERONLY
@@ -37,15 +38,20 @@ void SV_Error (char *error, ...);
 void CL_Init (void)
 {
 }
-
+void CL_Shutdown (void)
+{
+}
 void Con_Init (void)
 {
 }
 #endif
 
 #if !defined(QW_BOTH) && !defined(SERVERONLY)
-// this should go to sv_null.c
+// these should go to sv_null.c
 void SV_Init (void)
+{
+}
+void SV_Shutdown (char *finalmsg)
 {
 }
 #endif
@@ -57,6 +63,40 @@ qboolean	host_initialized;		// true if into command execution
 quakeparms_t host_parms;
 
 
+/*
+===============
+Host_Shutdown
+
+FIXME: this is a callback from Sys_Quit and Sys_Error.  It would be better
+to run quit through here before the final handoff to the sys code.
+===============
+*/
+void Host_Shutdown (void)
+{
+	static qboolean isdown = false;
+	
+	if (isdown)
+	{
+		printf ("recursive shutdown\n");
+		return;
+	}
+	isdown = true;
+
+	SV_Shutdown ("Server quit\n");
+	CL_Shutdown ();
+	NET_Shutdown ();
+}
+
+/*
+===============
+Host_Quit
+===============
+*/
+void Host_Quit (void)
+{
+	Host_Shutdown ();
+	Sys_Quit ();
+}
 
 
 /*
