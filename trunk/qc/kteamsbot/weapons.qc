@@ -1404,7 +1404,7 @@ void() ImpulseCommands =
 
         if (self.impulse >= 200 && !match_in_progress)
                 SelectMap();
-        else if (self.impulse == 99) ReportMe();
+        else if (self.impulse == 103) ReportMe();
 
 	else if(self.k_admin == 1 && self.impulse >= 1 && self.impulse <= 9) {
 		AdminImpBot();
@@ -1419,12 +1419,12 @@ void() ImpulseCommands =
 		CycleWeaponCommand ();
 	else if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
-        else if (self.impulse == 100)
-            Cmd_AddBot("heh", "3"); 
-        else if (self.impulse == 101)
-            Cmd_AddBot("heh2", "1");
-        else if (self.impulse == 102)
-            KickABot();
+    else if (self.impulse == 100)
+        Cmd_AddBot("heh", "3"); 
+    else if (self.impulse == 101)
+        Cmd_AddBot("heh2", "1");
+    else if (self.impulse == 102)
+        KickABot();
 
 // TEAM -->
         else
