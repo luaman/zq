@@ -396,7 +396,7 @@ def_t	*PR_ParseValue (void)
 	name = PR_ParseName ();
 	
 // look through the defs
-	d = PR_GetDef (NULL, name, pr_scope, false);
+	d = PR_FindDef (name, pr_scope);
 	if (!d)
 		PR_ParseError ("'%s' : undeclared identifier", name);	
 	return d;
@@ -667,7 +667,7 @@ void PR_ParseState (void)
 	PR_Expect (",");
 
 	name = PR_ParseName ();
-	def = PR_GetDef (&type_function, name,0, true);
+	def = PR_GetDef (&type_function, name, 0);
 		
 	PR_Expect ("]");
 	
@@ -709,7 +709,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 //
 	for (i=0 ; i<type->num_parms ; i++)
 	{
-		defs[i] = PR_GetDef (type->parm_types[i], pr_parm_names[i], pr_scope, true);
+		defs[i] = PR_GetDef (type->parm_types[i], pr_parm_names[i], pr_scope);
 		f->parm_ofs[i] = defs[i]->ofs;
 		if (i > 0 && f->parm_ofs[i] < f->parm_ofs[i-1])
 			Error ("bad parm order");
@@ -738,34 +738,51 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 	return f;
 }
 
+
+/*
+============
+PR_FindDef
+
+Returns NULL if no matching def is found
+============
+*/
+def_t *PR_FindDef (char *name, def_t *scope)
+{
+	for (def_t *def = pr.def_head.next ; def ; def = def->next) {
+		if (def->scope && def->scope != scope)
+			continue;		// in a different function
+			
+		if (strcmp(def->name, name))
+			continue;
+
+		// found it
+		return def;
+	}
+	
+	return NULL;
+}
+
 /*
 ============
 PR_GetDef
 
-If type is NULL, it will match any type
-If allocate is true, a new def will be allocated if it can't be found
+A new def will be allocated if it can't be found
 ============
 */
-def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool allocate)
+def_t *PR_GetDef (type_t *type, char *name, def_t *scope)
 {
 	def_t		*def;
 	char element[MAX_NAME];
 
 // see if the name is already in use
-	for (def = pr.def_head.next ; def ; def = def->next)
-		if (!strcmp(def->name,name) )
-		{
-			if ( def->scope && def->scope != scope)
-				continue;		// in a different function
-			
-			if (type && def->type != type)
-				PR_ParseError ("type mismatch on redeclaration of %s",name);
-			return def;
-		}
-	
-	if (!allocate)
-		return NULL;
-		
+	def = PR_FindDef (name, scope);
+
+	if (def && def->type != type)
+		PR_ParseError ("type mismatch on redeclaration of %s",name);
+
+	if (def)
+		return def;
+
 // allocate a new def
 	def = (def_t *) malloc (sizeof(def_t));
 	memset (def, 0, sizeof(*def));
@@ -789,13 +806,13 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool allocate)
 	if (type->type == ev_vector)
 	{		
 		sprintf (element, "%s_x",name);
-		PR_GetDef (&type_float, element, scope, true);
+		PR_GetDef (&type_float, element, scope);
 		
 		sprintf (element, "%s_y",name);
-		PR_GetDef (&type_float, element, scope, true);
+		PR_GetDef (&type_float, element, scope);
 		
 		sprintf (element, "%s_z",name);
-		PR_GetDef (&type_float, element, scope, true);
+		PR_GetDef (&type_float, element, scope);
 	}
 	else
 		numpr_globals += type_size[type->type];
@@ -807,13 +824,13 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool allocate)
 		if (type->aux_type->type == ev_vector)
 		{
 			sprintf (element, "%s_x",name);
-			PR_GetDef (&type_floatfield, element, scope, true);
+			PR_GetDef (&type_floatfield, element, scope);
 			
 			sprintf (element, "%s_y",name);
-			PR_GetDef (&type_floatfield, element, scope, true);
+			PR_GetDef (&type_floatfield, element, scope);
 			
 			sprintf (element, "%s_z",name);
-			PR_GetDef (&type_floatfield, element, scope, true);
+			PR_GetDef (&type_floatfield, element, scope);
 		}
 		else
 			pr.size_fields += type_size[type->aux_type->type];
@@ -925,7 +942,7 @@ void PR_ParseDefs (void)
 
 			type_t *functionType = PR_ParseFunctionType (type);
 			
-			def_t *def = PR_GetDef (functionType, functionName, pr_scope, true);
+			def_t *def = PR_GetDef (functionType, functionName, pr_scope);
 			
 			if (!c_defs && !strcmp(pr_token, "{")) {
 				// C-style function definition
@@ -936,7 +953,7 @@ void PR_ParseDefs (void)
 			continue;
 		}
 
-		def_t *def = PR_GetDef (type, name, pr_scope, true);
+		def_t *def = PR_GetDef (type, name, pr_scope);
 
 		if (type->type == ev_void) {
 			// end_sys_globals and end_sys_fields are special flags for structure dumping
