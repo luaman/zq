@@ -75,8 +75,6 @@ void CL_StopPlayback (void)
 		CL_FinishTimeDemo ();
 
 	cl.teamfortress = false;
-	memset (cl.cshifts, 0, sizeof(cl.cshifts));
-	cl.stats[STAT_ITEMS] = 0;
 }
 
 #define dem_cmd		0

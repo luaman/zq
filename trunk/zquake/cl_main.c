@@ -287,15 +287,13 @@ void CL_ClearState (void)
 	S_StopAllSounds (true);
 
 	Con_DPrintf ("Clearing memory\n");
-//	D_FlushCaches ();
 #ifdef QW_BOTH
 	if (sv.state == ss_dead) // connecting to a remote server
 	{
 #endif
 	D_FlushCaches ();
 	Mod_ClearAll ();
-	if (host_hunklevel)	// FIXME: check this...
-		Hunk_FreeToLowMark (host_hunklevel);
+	Hunk_FreeToLowMark (host_hunklevel);
 #ifdef QW_BOTH
 	}
 #endif
@@ -375,8 +373,6 @@ void CL_Disconnect (void)
 	CL_StopUpload();
 
 	cl.teamfortress = false;
-	memset (cl.cshifts, 0, sizeof(cl.cshifts));
-	cl.stats[STAT_ITEMS] = 0;
 }
 
 void CL_Disconnect_f (void)
@@ -843,36 +839,12 @@ void Host_WriteConfiguration (void)
 
 //============================================================================
 
-
-void Host_ClearMemory()
+void Host_ConnectLocal ()
 {
-/*  // WinQuake:
-	Con_DPrintf ("Clearing memory\n");
-	D_FlushCaches ();
-	Mod_ClearAll ();
-	if (host_hunklevel)
-		Hunk_FreeToLowMark (host_hunklevel);
-
-	cls.signon = 0;
-	memset (&sv, 0, sizeof(sv));
-	memset (&cl, 0, sizeof(cl));*/
-
-//	cls.state = ca_disconnected;	// !!!
-	memset (&cl, 0, sizeof(cl));
-};
-
-// FIXME
-void Host_ForceReconnect()
-{
-	if (cls.state > ca_connected)
+	if (cls.state < ca_connected)
+		Cmd_ExecuteString ("connect local");
+	else
 		cls.state = ca_connected;
-}
-
-// FIXME
-void Host_ConnectLocal()
-{
-	if (cls.state == ca_disconnected)
-		Cmd_ExecuteString ("connect local\n");
 }
 
 
