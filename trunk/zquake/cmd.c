@@ -471,7 +471,7 @@ void Cmd_Viewalias_f(void)
 ===============
 Cmd_Alias_f
 
-Creates a new command that executes a command string (possibly ; seperated)
+Creates a new command that executes a command string (possibly ; separated)
 ===============
 */
 
@@ -728,7 +728,7 @@ void Cmd_TokenizeString (char *text)
 		}
 		
 		if (*text == '\n')
-		{	// a newline seperates commands in the buffer
+		{	// a newline separates commands in the buffer
 			text++;
 			break;
 		}

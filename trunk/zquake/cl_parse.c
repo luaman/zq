@@ -440,7 +440,7 @@ void CL_ParseDownload (void)
 
 		fclose (cls.download);
 
-		// rename the temp file to it's final name
+		// rename the temp file to its final name
 		if (strcmp(cls.downloadtempname, cls.downloadname)) {
 			if (strncmp(cls.downloadtempname,"skins/",6)) {
 				sprintf (oldn, "%s/%s", com_gamedir, cls.downloadtempname);
@@ -646,7 +646,7 @@ void CL_ParseServerData (void)
 	movevars.waterfriction      = MSG_ReadFloat();
 	movevars.entgravity         = MSG_ReadFloat();
 
-	// seperate the printfs so the server message can have a color
+	// separate the printfs so the server message can have a color
 	Con_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
 	Con_Printf ("%c%s\n", 2, str);
 

@@ -343,7 +343,7 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 		}
 	}
 #else
-	// Tonik: don't cache anything, because it's seems just as fast
+	// Tonik: don't cache anything, because it seems just as fast
 	// (if not faster) to rebuild the tris instead of loading them from disk
 	BuildTris ();		// trifans or lists
 #endif
