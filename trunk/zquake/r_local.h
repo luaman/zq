@@ -284,3 +284,16 @@ void R_32To8bit (unsigned int *in, int inwidth, int inheight, byte *out, int out
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define CACHE_SIZE	32		// used to align key data structures
 
+//=========================================================
+
+typedef struct mpic_s
+{
+	int			width;
+	short		height;
+	byte		alpha;
+	byte		pad;
+	byte		data[4];	// variable sized
+} mpic_t;
+
+//=========================================================
+

@@ -256,7 +256,7 @@ void M_Main_Draw (void)
 
 	M_DrawPic (16, 4, R_CachePic ("gfx/qplaque.lmp") );
 	p = R_CachePic ("gfx/ttl_main.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 	M_DrawPic (72, 32, R_CachePic ("gfx/mainmenu.lmp") );
 
 	f = (int)(curtime * 10)%6;
@@ -472,7 +472,7 @@ void M_Options_Draw (void)
 	
 	M_DrawPic (16, 4, R_CachePic("gfx/qplaque.lmp"));
 	p = R_CachePic ("gfx/p_option.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 	
 	M_Print (16, 32, "    Customize controls");
 	M_Print (16, 40, "         Go to console");
@@ -724,7 +724,7 @@ void M_Keys_Draw (void)
 	mpic_t	*p;
 
 	p = R_CachePic ("gfx/ttl_cstm.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 
 	if (bind_grab)
 		M_Print (12, 32, "Press a key or button for this action");
@@ -861,7 +861,7 @@ void M_Fps_Draw (void)
 	
 	M_DrawPic (16, 4, R_CachePic ("gfx/qplaque.lmp") );
 	p = R_CachePic ("gfx/ttl_cstm.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 	
 	M_Print (16, 32, "            Explosions");
 	M_Print (220, 32, cl_explosion.value==0 ? "normal" :
@@ -1198,7 +1198,7 @@ void M_SinglePlayer_Draw (void)
 
 	if (m_singleplayer_notavail) {
 		p = R_CachePic ("gfx/ttl_sgl.lmp");
-		M_DrawPic ( (320-p->width)/2, 4, p);
+		M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 		M_DrawTextBox (60, 10*8, 24, 4);	
 		M_PrintWhite (80, 12*8, " Cannot start a game");
 		M_PrintWhite (80, 13*8, "spprogs.dat not found");
@@ -1214,7 +1214,7 @@ void M_SinglePlayer_Draw (void)
 
 	M_DrawPic (16, 4, R_CachePic ("gfx/qplaque.lmp") );
 	p = R_CachePic ("gfx/ttl_sgl.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 	M_DrawPic (72, 32, R_CachePic ("gfx/sp_menu.lmp") );
 
 	f = (int)(curtime * 10)%6;
@@ -1343,7 +1343,7 @@ void M_SinglePlayer_Draw (void)
 
 	M_DrawPic (16, 4, R_CachePic("gfx/qplaque.lmp"));
 	p = R_CachePic ("gfx/ttl_sgl.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 //	M_DrawPic (72, 32, R_CachePic("gfx/sp_menu.lmp"));
 
 	M_DrawTextBox (60, 10*8, 23, 4);	
@@ -1429,7 +1429,7 @@ void M_Load_Draw (void)
 	mpic_t	*p;
 
 	p = R_CachePic ("gfx/p_load.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 		M_Print (16, 32 + 8*i, m_filenames[i]);
@@ -1445,7 +1445,7 @@ void M_Save_Draw (void)
 	mpic_t	*p;
 
 	p = R_CachePic ("gfx/p_save.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 
 	for (i = 0; i < MAX_SAVEGAMES ; i++)
 		M_Print (16, 32 + 8*i, m_filenames[i]);
@@ -1555,7 +1555,7 @@ void M_MultiPlayer_Draw (void)
 
 	M_DrawPic (16, 4, R_CachePic ("gfx/qplaque.lmp"));
 	p = R_CachePic ("gfx/p_multi.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 	M_Print (80, 40, "Player Setup");
 	M_Print (80, 48, "Demos");
 #ifndef CLIENTONLY
@@ -2110,7 +2110,7 @@ void M_GameOptions_Draw (void)
 
 	M_DrawPic (16, 4, R_CachePic ("gfx/qplaque.lmp") );
 	p = R_CachePic ("gfx/p_multi.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 
 	M_DrawTextBox (152, 32, 10, 1);
 	M_Print (160, 40, "begin game");
@@ -2389,7 +2389,7 @@ void M_Setup_Draw (void)
 
 	M_DrawPic (16, 4, R_CachePic ("gfx/qplaque.lmp") );
 	p = R_CachePic ("gfx/p_multi.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 
 	M_Print (64, 40, "Your name");
 	M_DrawTextBox (160, 32, 16, 1);

@@ -100,6 +100,15 @@ texture_t *R_TextureAnimation (texture_t *base);
 
 //====================================================
 
+typedef struct mpic_s
+{
+	int			width, height;
+	int			texnum;
+	float		sl, tl, sh, th;
+} mpic_t;
+
+//====================================================
+
 
 extern	entity_t	r_worldentity;
 extern	qbool		r_cache_thrash;		// compatability
@@ -278,3 +287,4 @@ void GL_BuildLightmaps (void);
 // gl_ngraph.c
 //
 void R_NetGraph (void);
+
