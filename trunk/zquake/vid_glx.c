@@ -74,7 +74,7 @@ unsigned char	d_15to8table[65536];
 static int scrnum;
 
 #ifdef USE_DGA
-static int dgamouse = 0;
+static qbool dgamouse = false;
 #endif
 
 #ifdef USE_VMODE
@@ -352,6 +352,7 @@ static Cursor CreateNullCursor(Display *display, Window root)
 
 static void install_grabs(void)
 {
+    int MajorVersion, MinorVersion;
 
     // don't show mouse cursor icon
     XDefineCursor(x_disp, x_win, CreateNullCursor(x_disp, x_win));
@@ -365,14 +366,18 @@ static void install_grabs(void)
                  CurrentTime);
 
 #ifdef USE_DGA
-    XF86DGADirectVideo(x_disp, DefaultScreen(x_disp), XF86DGADirectMouse);
-    dgamouse = 1;
-    XWarpPointer(x_disp, None, x_win, 0, 0, 0, 0, 0, 0); // oldman: this should be here really
-#else
-    XWarpPointer(x_disp, None, x_win,
-                 0, 0, 0, 0,
-                 vid.width / 2, vid.height / 2);
+    if (!COM_CheckParm("-nodga") &&
+            XF86DGAQueryVersion(x_disp, &MajorVersion, &MinorVersion)) {
+        // let us hope XF86DGADirectMouse will work
+        XF86DGADirectVideo(x_disp, DefaultScreen(x_disp), XF86DGADirectMouse);
+        dgamouse = true;
+        XWarpPointer(x_disp, None, x_win, 0, 0, 0, 0, 0, 0); // oldman: this should be here really
+    }
+    else
 #endif
+        XWarpPointer(x_disp, None, x_win,
+                     0, 0, 0, 0,
+                     vid.width / 2, vid.height / 2);
 
     XGrabKeyboard(x_disp, x_win,
                   False,
@@ -384,7 +389,7 @@ static void uninstall_grabs(void)
 {
 #ifdef USE_DGA
     XF86DGADirectVideo(x_disp, DefaultScreen(x_disp), 0);
-    dgamouse = 0;
+    dgamouse = false;
 #endif
 
     XUngrabPointer(x_disp, CurrentTime);
