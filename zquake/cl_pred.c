@@ -309,7 +309,7 @@ static void CL_PredictLocalPlayer (void)
 		VectorCopy (to->playerstate[cl.viewplayernum].velocity, cl.simvel);
 		VectorCopy (to->playerstate[cl.viewplayernum].origin, cl.simorg);
 		if (cl.z_ext & Z_EXT_PF_ONGROUND)
-			cl.onground = !!(to->playerstate[cl.viewplayernum].flags & PF_ONGROUND);
+			cl.onground = to->playerstate[cl.viewplayernum].onground;
 		else
 			CL_CategorizePosition ();
 		goto out;
