@@ -1304,31 +1304,31 @@ void IN_TranslateKeyEvent (int lKeyData, qboolean down)
 	if (cl_keypad.value) {
 		if (extended) {
 			switch (key) {
-				case K_ENTER:		key = KP_ENTER;
-				case '/':			key = KP_SLASH;
-				case K_PAUSE:		key = KP_NUMLOCK;
-			};
+				case K_ENTER:		key = KP_ENTER; break;
+				case '/':			key = KP_SLASH; break;
+				case K_PAUSE:		key = KP_NUMLOCK; break;
+			}
 		} else {
 			switch (key) {
-				case K_HOME:		key = KP_HOME;
-				case K_UPARROW:		key = KP_UPARROW;
-				case K_PGUP:		key = KP_PGUP;
-				case K_LEFTARROW:	key = KP_LEFTARROW;
-				case K_RIGHTARROW:	key = KP_RIGHTARROW;
-				case K_END:			key = KP_END;
-				case K_DOWNARROW:	key = KP_DOWNARROW;
-				case K_PGDN:		key = KP_PGDN;
-				case K_INS:			key = KP_INS;
-				case K_DEL:			key = KP_DEL;
+				case K_HOME:		key = KP_HOME; break;
+				case K_UPARROW:		key = KP_UPARROW; break;
+				case K_PGUP:		key = KP_PGUP; break;
+				case K_LEFTARROW:	key = KP_LEFTARROW; break;
+				case K_RIGHTARROW:	key = KP_RIGHTARROW; break;
+				case K_END:			key = KP_END; break;
+				case K_DOWNARROW:	key = KP_DOWNARROW; break;
+				case K_PGDN:		key = KP_PGDN; break;
+				case K_INS:			key = KP_INS; break;
+				case K_DEL:			key = KP_DEL; break;
 			}
 		}
 	} else {
 		// cl_keypad 0, compatibility mode
 		switch (key) {
-			case KP_STAR:	key = '*';
-			case KP_MINUS:	key = '-';
-			case KP_5:		key = '5';
-			case KP_PLUS:	key = '+';
+			case KP_STAR:	key = '*'; break;
+			case KP_MINUS:	key = '-'; break;
+			case KP_5:		key = '5'; break;
+			case KP_PLUS:	key = '+'; break;
 		}
 	}
 
