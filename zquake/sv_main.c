@@ -655,6 +655,10 @@ void SVC_DirectConnect (void)
 	// spectator mode can ONLY be set at join time
 	newcl->spectator = spectator;
 
+	// extract extensions mask
+	newcl->extensions = atoi(Info_ValueForKey(newcl->userinfo, "*z_ext"));
+	Info_RemoveKey (newcl->userinfo, "*z_ext");
+
 	ent = EDICT_NUM(edictnum);	
 	newcl->edict = ent;
 	
