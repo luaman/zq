@@ -107,7 +107,7 @@ void SV_CreateBaseline (void)
 	// create entity baseline
 	//
 		MSG_PackOrigin (svent->v.origin, svent->baseline.s_origin);
-		VectorCopy (svent->v.angles, svent->baseline.angles);
+		MSG_PackAngles (svent->v.angles, svent->baseline.s_angles);
 		svent->baseline.frame = svent->v.frame;
 		svent->baseline.skinnum = svent->v.skin;
 		if (entnum > 0 && entnum <= MAX_CLIENTS)
@@ -138,10 +138,10 @@ void SV_CreateBaseline (void)
 		MSG_WriteByte (&sv.signon, svent->baseline.frame);
 		MSG_WriteByte (&sv.signon, svent->baseline.colormap);
 		MSG_WriteByte (&sv.signon, svent->baseline.skinnum);
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
 			MSG_WriteShort (&sv.signon, svent->baseline.s_origin[i]);
-			MSG_WriteAngle (&sv.signon, svent->baseline.angles[i]);
+			MSG_WriteChar (&sv.signon, svent->baseline.s_angles[i]);
 		}
 	}
 }

@@ -617,27 +617,27 @@ void NQD_ParseUpdate (int bits)
 	else
 		state->s_origin[0] = ent->baseline.s_origin[0];
 	if (bits & NQ_U_ANGLE1)
-		state->angles[0] = MSG_ReadAngle();
+		state->s_angles[0] = MSG_ReadChar ();
 	else
-		state->angles[0] = ent->baseline.angles[0];
+		state->s_angles[0] = ent->baseline.s_angles[0];
 
 	if (bits & NQ_U_ORIGIN2)
 		state->s_origin[1] = MSG_ReadShort ();
 	else
 		state->s_origin[1] = ent->baseline.s_origin[1];
 	if (bits & NQ_U_ANGLE2)
-		state->angles[1] = MSG_ReadAngle();
+		state->s_angles[1] = MSG_ReadChar ();
 	else
-		state->angles[1] = ent->baseline.angles[1];
+		state->s_angles[1] = ent->baseline.s_angles[1];
 
 	if (bits & NQ_U_ORIGIN3)
 		state->s_origin[2] = MSG_ReadShort ();
 	else
 		state->s_origin[2] = ent->baseline.s_origin[2];
 	if (bits & NQ_U_ANGLE3)
-		state->angles[2] = MSG_ReadAngle();
+		state->s_angles[2] = MSG_ReadChar ();
 	else
-		state->angles[2] = ent->baseline.angles[2];
+		state->s_angles[2] = ent->baseline.s_angles[2];
 
 	if ( bits & NQ_U_NOLERP )
 		forcelink = true;
@@ -646,7 +646,7 @@ void NQD_ParseUpdate (int bits)
 	{	// didn't have an update last message
 		VectorCopy (state->s_origin, ent->previous.s_origin);
 		MSG_UnpackOrigin (state->s_origin, ent->lerp_origin);
-		VectorCopy (state->angles, ent->previous.angles);
+		VectorCopy (state->s_angles, ent->previous.s_angles);
 		//ent->forcelink = true;
 	}
 }
@@ -768,11 +768,12 @@ void NQD_LinkEntities (void)
 
 		// spawn light flashes, even ones coming from invisible objects
 		if (state->effects & EF_MUZZLEFLASH) {
-			vec3_t		forward;
+			vec3_t		angles, forward;
 			dlight_t	*dl;
 
 			dl = CL_AllocDlight (-num);
-			AngleVectors (state->angles, forward, NULL, NULL);
+			MSG_UnpackAngles (state->s_angles, angles);
+			AngleVectors (angles, forward, NULL, NULL);
 			VectorMA (cur_origin, 18, forward, dl->origin);
 			dl->origin[2] += 16;
 			dl->radius = 200 + (rand()&31);
@@ -816,32 +817,33 @@ void NQD_LinkEntities (void)
 		}
 		else
 		{
-			float	a1, a2;
+			vec3_t	a1, a2;
 
-			for (i=0 ; i<3 ; i++)
+			MSG_UnpackAngles (cent->current.s_angles, a1);
+			MSG_UnpackAngles (cent->previous.s_angles, a2);
+
+			for (i = 0; i < 3; i++)
 			{
-				a1 = cent->current.angles[i];
-				a2 = cent->previous.angles[i];
-				if (a1 - a2 > 180)
-					a1 -= 360;
-				if (a1 - a2 < -180)
-					a1 += 360;
-				ent.angles[i] = a2 + f * (a1 - a2);
+				if (a1[i] - a2[i] > 180)
+					a1[i] -= 360;
+				if (a1[i] - a2[i] < -180)
+					a1[i] += 360;
+				ent.angles[i] = a2[i] + f * (a1[i] - a2[i]);
 			}
 		}
 
 		// calculate origin
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++)
 		{
-			if (cent->current.s_origin[i] - cent->previous.s_origin[i] > 128 * 8) {
+			if (abs(cent->current.s_origin[i] - cent->previous.s_origin[i]) > 128 * 8) {
 				// teleport or something, don't lerp
 				VectorCopy (cur_origin, ent.origin);
 				if (num == nq_viewentity)
 					nq_player_teleported = true;
 				break;
 			}
-			ent.origin[i] = cent->previous.s_origin[i] * 8.0 + 
-				f * (cur_origin[i] - cent->previous.s_origin[i] * 8.0);
+			ent.origin[i] = cent->previous.s_origin[i] * 0.125 + 
+				f * (cur_origin[i] - cent->previous.s_origin[i] * 0.125);
 		}
 
 		if (num == nq_viewentity) {

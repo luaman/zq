@@ -295,7 +295,7 @@ typedef struct entity_state_s
 
 	short	flags;			// nolerp, etc
 	short	s_origin[3];
-	vec3_t	angles;
+	char	s_angles[3];
 	byte	modelindex;
 	byte	frame;
 	byte	colormap;

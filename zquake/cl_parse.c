@@ -848,7 +848,7 @@ void CL_ParseBaseline (entity_state_t *es)
 	for (i=0 ; i<3 ; i++)
 	{
 		es->s_origin[i] = MSG_ReadShort ();
-		es->angles[i] = MSG_ReadAngle ();
+		es->s_angles[i] = MSG_ReadChar ();
 	}
 }
 
@@ -885,7 +885,7 @@ void CL_ParseStatic (void)
 	ent->skinnum = es.skinnum;
 
 	MSG_UnpackOrigin (es.s_origin, ent->origin);
-	VectorCopy (es.angles, ent->angles);
+	MSG_UnpackAngles (es.s_angles, ent->angles);
 	
 	R_AddEfrags (ent);
 }
@@ -1570,7 +1570,7 @@ CL_MuzzleFlash
 void CL_MuzzleFlash (void)
 {
 	vec3_t		forward;
-	vec3_t		origin;
+	vec3_t		origin, angles;
 	dlight_t	*dl;
 	int			i;
 	int			j, num_ent;
@@ -1595,7 +1595,8 @@ void CL_MuzzleFlash (void)
 			if (ent->number == i)
 			{
 				dl = CL_AllocDlight (-i);
-				AngleVectors (ent->angles, forward, NULL, NULL);
+				MSG_UnpackAngles (ent->s_angles, angles);
+				AngleVectors (angles, forward, NULL, NULL);
 				MSG_UnpackOrigin (ent->s_origin, origin);
 				VectorMA (origin, 18, forward, dl->origin);
 				dl->radius = 200 + (rand()&31);
