@@ -822,6 +822,41 @@ void Host_ConnectLocal ()
 
 
 /*
+===================
+Host_FilterTime
+
+Returns false if the time is too short to run a frame
+===================
+*/
+qboolean Host_FilterTime (void)
+{
+	float fps;
+
+	if (cls.timedemo)
+		return true;
+
+	if (cl_maxfps.value)
+		fps = bound (30.0, cl_maxfps.value, 72.0);
+	else
+	{
+		if (cls.demoplayback)
+			return true;
+
+#ifdef QW_BOTH
+		if (sv.state != ss_dead)
+			fps = 72.0;
+		else
+#endif
+			fps = bound (30.0, rate.value/80.0, 72.0);
+	}
+
+	if (realtime - oldrealtime < 1.0/fps)
+		return false;
+
+	return true;
+}
+
+/*
 ==================
 Host_Frame
 
@@ -834,7 +869,6 @@ void Host_Frame (double time)
 	static double		time2 = 0;
 	static double		time3 = 0;
 	int			pass1, pass2, pass3;
-	float fps;
 	float scale;
 
 	if (setjmp (host_abort) )
@@ -844,8 +878,7 @@ void Host_Frame (double time)
 
 	if (!cls.demoplayback)
 		realtime += time;
-	else
-	{
+	else {
 		scale = cl_demotimescale.value;
 		if (scale <= 0) scale = 1;
 		if (scale < 0.1) scale = 0.1;
@@ -856,17 +889,7 @@ void Host_Frame (double time)
 	if (oldrealtime > realtime)
 		oldrealtime = 0;
 
-	if (cl_maxfps.value)
-		fps = max(30.0, min(cl_maxfps.value, 72.0));
-	else
-#ifdef QW_BOTH
-		if (sv.state != ss_dead)
-			fps = 72.0;
-		else
-#endif
-		fps = max(30.0, min(rate.value/80.0, 72.0));
-
-	if (!cls.demoplayback && realtime - oldrealtime < 1.0/fps)
+	if (!Host_FilterTime())
 		return;			// framerate is too high
 
 	host_frametime = realtime - oldrealtime;
