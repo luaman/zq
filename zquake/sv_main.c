@@ -1342,7 +1342,8 @@ void SV_Frame (double time)
 {
 	static double	start, end;
 
-#ifdef QW_BOTH
+#if 0	// disabled for now
+//#ifdef QW_BOTH
 	if (sv.state != ss_active || cls.state != ca_active || (int)maxclients.value > 1 || key_dest == key_game)
 	{
 		sv.paused &= ~2;
