@@ -572,7 +572,7 @@ void VID_Init (unsigned char *palette)
 			char *d = displayname;
 			while (*d && (*d != ':')) d++;
 			if (*d) *d = 0;
-			if (!(!strcasecmp(displayname, "unix") || !*displayname))
+			if (!(!Q_strcasecmp(displayname, "unix") || !*displayname))
 				doShm = false;
 		}
 	}
