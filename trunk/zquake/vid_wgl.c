@@ -1074,6 +1074,8 @@ LONG WINAPI MainWndProc (
 		case WM_RBUTTONUP:
 		case WM_MBUTTONDOWN:
 		case WM_MBUTTONUP:
+		case WM_XBUTTONDOWN:
+		case WM_XBUTTONUP:
 		case WM_MOUSEMOVE:
 			temp = 0;
 
