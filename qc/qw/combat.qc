@@ -103,6 +103,13 @@ void Killed (entity targ, entity attacker)
 	{
 		killed_monsters = killed_monsters + 1;
 		WriteByte (MSG_ALL, SVC_KILLEDMONSTER);
+
+		// in coop, killing a monster gives you a frag
+		if (coop)
+		{
+			if (attacker.classname == "player")
+				attacker.frags = attacker.frags + 1;
+		}
 	}
 
 	ClientObituary(self, attacker);
