@@ -3,6 +3,7 @@
 #include "quakedef.h"
 #include "sound.h"
 #include "cdaudio.h"
+#include "cl_sbar.h"
 
 void CL_FindModelNumbers (void);
 void TP_NewMap (void);
@@ -132,7 +133,6 @@ void NQD_BumpEntityCount (int num)
 
 void NQD_ParseClientdata (int bits)
 {
-	extern void Sbar_Changed (void);
 	int		i, j;
 
 	if (bits & SU_VIEWHEIGHT)
