@@ -1165,7 +1165,7 @@ void W_Attack ()
 	else if (self.weapon == IT_LIGHTNING)
 	{
 		self.attack_finished = time + 0.1;
-		sound (self, CHAN_WEAPON, "weapons/lstart.wav", 1, ATTN_NORM);
+		sound (self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM);
 		player_light1();
 /*
 		player_shot1 ();
