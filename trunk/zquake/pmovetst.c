@@ -17,7 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-#include "quakedef.h"
+
+#include "common.h"
 #include "pmove.h"
 
 extern	vec3_t player_mins;
@@ -26,40 +27,12 @@ extern	vec3_t player_maxs;
 /*
 ==================
 PM_PointContents
-
 ==================
 */
 int PM_PointContents (vec3_t p)
 {
-	float		d;
-	dclipnode_t	*node;
-	mplane_t	*plane;
-	hull_t		*hull;
-	int			num;
-
-	hull = &pmove.physents[0].model->hulls[0];
-
-	num = hull->firstclipnode;
-
-	while (num >= 0)
-	{
-		if (num < hull->firstclipnode || num > hull->lastclipnode)
-			Sys_Error ("PM_PointContents: bad node number");
-	
-		node = hull->clipnodes + num;
-		plane = hull->planes + node->planenum;
-		
-		if (plane->type < 3)
-			d = p[plane->type] - plane->dist;
-		else
-			d = DotProduct (plane->normal, p) - plane->dist;
-		if (d < 0)
-			num = node->children[1];
-		else
-			num = node->children[0];
-	}
-	
-	return num;
+	hull_t *hull = &pmove.physents[0].model->hulls[0];
+	return CM_HullPointContents (hull, hull->firstclipnode, p);
 }
 
 /*

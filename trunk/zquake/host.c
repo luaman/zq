@@ -18,9 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// this should be the only file that includes both server.h and client.h
-
-#include "quakedef.h"
+#include "common.h"
 #include "pmove.h"
 #include "version.h"
 #include <setjmp.h>
@@ -161,8 +159,19 @@ Can only be called when changing levels!
 */
 void Host_ClearMemory ()
 {
-	D_FlushCaches ();
-	Mod_ClearAll ();
+	extern void D_FlushCaches (void);
+	extern void Mod_ClearAll (void);
+
+	// FIXME, move to CL_ClearState
+	if (!dedicated)
+		D_FlushCaches ();
+
+	// FIXME, move to CL_ClearState
+#ifndef SERVERONLY
+	if (!dedicated)
+		Mod_ClearAll ();
+#endif
+
 	CM_InvalidateMap ();
 
 	// any data previously allocated on hunk is no longer valid
@@ -225,7 +234,6 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	Sys_Init ();
 	CM_Init ();
 	PM_Init ();
-	Mod_Init ();
 	Host_InitLocal ();
 
 	SV_Init ();

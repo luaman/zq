@@ -67,6 +67,7 @@ int CM_HullPointContents (hull_t *hull, int num, vec3_t p);
 trace_t CM_HullTrace (hull_t *hull, vec3_t start, vec3_t end);
 cleaf_t *CM_PointInLeaf (const vec3_t p);
 int CM_Leafnum (const cleaf_t *leaf);
+int	CM_LeafAmbientLevel (const cleaf_t *leaf, int ambient_channel);
 byte *CM_LeafPVS (const cleaf_t *leaf);
 byte *CM_LeafPHS (const cleaf_t *leaf);		// only for the server
 byte *CM_FatPVS (vec3_t org);

@@ -1,4 +1,4 @@
-#include "quakedef.h"
+#include "common.h"
 
 void CDAudio_Play(byte track, qboolean looping)
 {
