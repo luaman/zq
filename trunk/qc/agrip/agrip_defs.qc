@@ -30,6 +30,9 @@
 .entity agrip_esr;
 .entity agrip_aux;
 
+// These used to be in qw/defs.qc but were removed:
+.float volume;
+
 // Tutor bot creation functions...
 void (float teem) create_bot;
 

@@ -30,6 +30,7 @@ hooks.qc    // Hook functions (moves accessibility code out of main QC)
 ../qw/server.qc
 ../qw/commands.qc
 
+../qwsp/sp_defs.qc
 tutor_support.qc
 tutor.qc            // a bot that supports team dm
                     // (coop suported via spprogs.dat)

@@ -1,6 +1,7 @@
 ./spprogs.dat
 
 ../qw/defs.qc
+../qwsp/sp_defs.qc
 agrip_defs.qc // Accessibility definitions
 ../qw/subs.qc
 ../qwsp/sp_subs.qc
