@@ -155,9 +155,7 @@ cvar_t		vid_mode = {"vid_mode","0"};
 cvar_t		_vid_default_mode = {"_vid_default_mode","0",CVAR_ARCHIVE};
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
 cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3",CVAR_ARCHIVE};
-cvar_t		vid_wait = {"vid_wait","0"};
 cvar_t		vid_nopageflip = {"vid_nopageflip","0",CVAR_ARCHIVE};
-cvar_t		_vid_wait_override = {"_vid_wait_override","0",CVAR_ARCHIVE};
 cvar_t		vid_config_x = {"vid_config_x","800",CVAR_ARCHIVE};
 cvar_t		vid_config_y = {"vid_config_y","600",CVAR_ARCHIVE};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1",CVAR_ARCHIVE};
@@ -1567,9 +1565,7 @@ void	VID_Init (unsigned char *palette)
 	memset(&devmode, 0, sizeof(devmode));
 
 	Cvar_Register (&vid_mode);
-	Cvar_Register (&vid_wait);
 	Cvar_Register (&vid_nopageflip);
-	Cvar_Register (&_vid_wait_override);
 	Cvar_Register (&_vid_default_mode);
 	Cvar_Register (&_vid_default_mode_win);
 	Cvar_Register (&vid_config_x);
