@@ -702,6 +702,11 @@ void CL_FullServerinfo_f (void)
 			server_version = v;
 		}
 	}
+
+	p = Info_ValueForKey (cl.serverinfo, "*cheats");
+	if (*p)
+		Con_Printf ("== Cheats are enabled ==\n");
+
 	CL_ProcessServerInfo ();
 }
 
