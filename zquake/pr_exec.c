@@ -271,9 +271,9 @@ void PR_RunError (char *error, ...)
 	PR_StackTrace ();
 	Com_Printf ("%s\n", string);
 	
-	pr_depth = 0;		// dump the stack so SV_Error can shutdown functions
+	pr_depth = 0;		// dump the stack so Host_Error can shutdown functions
 
-	SV_Error ("Program error");
+	Host_Error ("Program error");
 }
 
 /*
@@ -335,7 +335,7 @@ int PR_LeaveFunction (void)
 	int		i, c;
 
 	if (pr_depth <= 0)
-		SV_Error ("prog stack underflow");
+		Host_Error ("prog stack underflow");
 
 // restore locals from the stack
 	c = pr_xfunction->locals;
@@ -374,7 +374,7 @@ void PR_ExecuteProgram (func_t fnum)
 	{
 		if (pr_global_struct->self)
 			ED_Print (PROG_TO_EDICT(pr_global_struct->self));
-		SV_Error ("PR_ExecuteProgram: NULL function");
+		Host_Error ("PR_ExecuteProgram: NULL function");
 	}
 	
 	f = &pr_functions[fnum];

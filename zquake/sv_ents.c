@@ -211,9 +211,9 @@ void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qb
 	// write the message
 	//
 	if (!to->number)
-		SV_Error ("Unset entity number");
+		Host_Error ("Unset entity number");
 	if (to->number >= 512)
-		SV_Error ("Entity number >= 512");
+		Host_Error ("Entity number >= 512");
 
 	if (!bits && !force)
 		return;		// nothing to send!

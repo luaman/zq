@@ -65,7 +65,7 @@ void PF_error (void)
 	ed = PROG_TO_EDICT(pr_global_struct->self);
 	ED_Print (ed);
 
-	SV_Error ("Program error");
+	Host_Error ("Program error");
 }
 
 /*
@@ -89,7 +89,7 @@ void PF_objerror (void)
 	ED_Print (ed);
 	ED_Free (ed);
 	
-	SV_Error ("Program error");
+	Host_Error ("Program error");
 }
 
 
@@ -1402,7 +1402,7 @@ sizebuf_t *WriteDest (void)
 		return &sv.datagram;
 	
 	case MSG_ONE:
-		SV_Error("Shouldn't be at MSG_ONE");
+		Host_Error("Shouldn't be at MSG_ONE");
 #if 0
 		ent = PROG_TO_EDICT(pr_global_struct->msg_entity);
 		entnum = NUM_FOR_EDICT(ent);
