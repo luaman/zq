@@ -107,12 +107,6 @@ void R_Envmap_f (void)
 {
 	byte	buffer[256*256*4];
 
-#ifdef _WIN32
-	extern qboolean vid_grabbackbuffer;
-	// make sure GL_BeginRendering doesn't reset draw buffer to GL_BACK
-	vid_grabbackbuffer = 0;
-#endif
-
 	glDrawBuffer  (GL_FRONT);
 	glReadBuffer  (GL_FRONT);
 	envmap = true;
