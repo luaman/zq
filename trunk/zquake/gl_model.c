@@ -551,20 +551,21 @@ void Mod_LoadLighting (lump_t *l)
 	if (!data)
 		goto loadmono;
 
-	if (data[0] != 'Q' || data[1] != 'L' || data[2] != 'I' || data[3] != 'T') {
-		Com_Printf ("Corrupt .lit file (old version?), ignoring\n");
+	if (fs_filesize < 4 || data[0] != 'Q' || data[1] != 'L'
+						|| data[2] != 'I' || data[3] != 'T') {
+		Com_DPrintf ("Corrupt .lit file (old version?), ignoring\n");
 		Hunk_FreeToLowMark (hunkmark);
 		goto loadmono;
 	}
 
 	if ((ver = LittleLong(*(int *)(data + 4))) != 1) {
-		Com_Printf ("Unknown .lit file version (%d)\n", ver);
+		Com_DPrintf ("Unknown .lit file version (%d)\n", ver);
 		Hunk_FreeToLowMark (hunkmark);
 		goto loadmono;
 	}
 
-	if (fs_filesize < l->filelen*3 + 8) {
-		Com_Printf ("Corrupt (truncated) .lit file, ignoring\n");
+	if (fs_filesize != l->filelen*3 + 8) {
+		Com_DPrintf ("Incorrect .lit file size, ignoring\n");
 		Hunk_FreeToLowMark (hunkmark);
 		goto loadmono;
 	}
