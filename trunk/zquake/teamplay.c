@@ -785,6 +785,8 @@ void CL_ExecuteTriggerString (char *text)
 		Cvar_Set_f();
 	else if (!Q_strcasecmp (Cmd_Argv(0), "echo")) 
 		Cmd_Echo_f();
+	else if (!Q_strcasecmp (Cmd_Argv(0), "say")) 
+		Cmd_ForwardToServer();
 	else if (!Q_strcasecmp (Cmd_Argv(0), "say_team")) 
 		Cmd_ForwardToServer();
 	else {
