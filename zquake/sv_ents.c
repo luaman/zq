@@ -225,6 +225,9 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 		// encode pm_type and jump_held into pm_code
 		pm_type = SV_PMTypeForClient (cl);
 		switch (pm_type) {
+		case PM_DEAD:
+			pm_code = PMC_NORMAL;	// plus PF_DEAD
+			break;
 		case PM_NORMAL:
 			pm_code = PMC_NORMAL;
 			if (cl->jump_held)
