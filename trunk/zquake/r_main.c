@@ -42,8 +42,6 @@ int			r_clipflags;
 
 byte		r_warpbuffer[WARP_WIDTH * WARP_HEIGHT];
 
-byte		*r_stack_start;
-
 model_t		*r_worldmodel;
 entity_t	r_worldentity;
 
@@ -182,11 +180,7 @@ R_Init
 void R_Init (unsigned char *palette)
 {
 	extern void R_Draw_Init (void);
-	int		dummy;
 	
-// get stack position so we can guess if we are going to overflow
-	r_stack_start = (byte *)&dummy;
-
 	memcpy (r_palette, palette, 768);
 
 	R_InitTurb ();
@@ -672,7 +666,7 @@ R_RenderView
 r_refdef must be set before the first call
 ================
 */
-void R_RenderView_ (void)
+void R_RenderView (void)
 {
 	if (r_timegraph.value || r_speeds.value || r_dspeeds.value)
 		r_time1 = Sys_DoubleTime ();
@@ -763,26 +757,6 @@ void R_RenderView_ (void)
 	Sys_HighFPPrecision ();
 }
 
-void R_RenderView (void)
-{
-	int		dummy;
-	int		delta;
-	
-	delta = (byte *)&dummy - r_stack_start;
-	if (delta < -10000 || delta > 10000)
-		Sys_Error ("R_RenderView: called without enough stack");
-
-	if ( Hunk_LowMark() & 3 )
-		Sys_Error ("Hunk is misaligned");
-
-	if ( (long)(&dummy) & 3 )
-		Sys_Error ("Stack is misaligned");
-
-	if ( (long)(&r_warpbuffer) & 3 )
-		Sys_Error ("Globals are misaligned");
-
-	R_RenderView_ ();
-}
 
 /*
 ================
