@@ -992,7 +992,7 @@ void PlayQWZDemo (void)
 	si.wShowWindow = SW_HIDE;
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	
-	Q_strncpyz (cmdline, va("%s/%s/qizmo.exe -D %s", com_basedir,
+	Q_strncpyz (cmdline, va("%s/%s/qizmo.exe -q -u -D %s", com_basedir,
 		qizmo_dir.string, qwz_name), sizeof(cmdline));
 	
 	if (!CreateProcess (NULL, cmdline, NULL, NULL,
