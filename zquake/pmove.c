@@ -540,8 +540,8 @@ void PM_AirMove (void)
 	
 	forward[2] = 0;
 	right[2] = 0;
-	VectorNormalizeFast (forward);
-	VectorNormalizeFast (right);
+	VectorNormalize (forward);
+	VectorNormalize (right);
 
 	for (i=0 ; i<2 ; i++)
 		wishvel[i] = forward[i]*fmove + right[i]*smove;
@@ -762,7 +762,7 @@ void CheckWaterJump (void)
 	flatforward[0] = forward[0];
 	flatforward[1] = forward[1];
 	flatforward[2] = 0;
-	VectorNormalizeFast (flatforward);
+	VectorNormalize (flatforward);
 
 	VectorMA (pmove.origin, 24, flatforward, spot);
 	spot[2] += 8;
@@ -871,8 +871,8 @@ void SpectatorMove (void)
 	fmove = pmove.cmd.forwardmove;
 	smove = pmove.cmd.sidemove;
 	
-	VectorNormalizeFast (forward);
-	VectorNormalizeFast (right);
+	VectorNormalize (forward);
+	VectorNormalize (right);
 
 	for (i=0 ; i<3 ; i++)
 		wishvel[i] = forward[i]*fmove + right[i]*smove;
