@@ -308,10 +308,8 @@ void Model_NextDownload (void)
 	CL_FindModelNumbers ();
 	R_NewMap ();
 
-#ifdef GLQUAKE
 	if (cl.sky[0])
 		R_SetSky (cl.sky);
-#endif
 
 	TP_NewMap ();
 	Hunk_Check ();		// make sure nothing is hurt
