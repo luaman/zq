@@ -77,6 +77,11 @@ typedef struct player_info_s
 	int		_topcolor;
 	int		_bottomcolor;
 
+	int		real_topcolor;
+	int		real_bottomcolor;
+	char	team[MAX_INFO_STRING];
+	char	_team[MAX_INFO_STRING];
+
 	int		spectator;
 	byte	translations[VID_GRADES*256];
 	skin_t	*skin;
@@ -339,11 +344,6 @@ extern	cvar_t	cl_gibfilter;
 extern	cvar_t	cl_muzzleflash;
 extern	cvar_t	r_rocketlight;
 extern	cvar_t	r_rockettrail;
-
-extern int cl_teamtopcolor;
-extern int cl_teambottomcolor;
-extern int cl_enemytopcolor;
-extern int cl_enemybottomcolor;
 // <-- Tonik
 
 #define	MAX_STATIC_ENTITIES	128			// torches, etc

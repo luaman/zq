@@ -924,6 +924,115 @@ char *CL_MapName ()
 }
 
 
+/*
+=============================================================================
+						TEAMCOLOR & ENEMYCOLOR
+=============================================================================
+*/
+
+int		cl_teamtopcolor = -1;
+int		cl_teambottomcolor;
+int		cl_enemytopcolor = -1;
+int		cl_enemybottomcolor;
+
+void TP_TeamColor_f (void)
+{
+	int	top, bottom;
+	int	i;
+
+	if (Cmd_Argc() == 1)
+	{
+		if (cl_teamtopcolor < 0)
+			Con_Printf ("\"teamcolor\" is \"off\"\n");
+		else
+			Con_Printf ("\"teamcolor\" is \"%i %i\"\n", 
+				cl_teamtopcolor,
+				cl_teambottomcolor);
+		return;
+	}
+
+	if (!strcmp(Cmd_Argv(1), "off"))
+	{
+		cl_teamtopcolor = -1;
+		for (i = 0; i < MAX_CLIENTS; i++)
+			CL_NewTranslation(i);
+		return;
+	}
+
+	if (Cmd_Argc() == 2)
+		top = bottom = atoi(Cmd_Argv(1));
+	else {
+		top = atoi(Cmd_Argv(1));
+		bottom = atoi(Cmd_Argv(2));
+	}
+	
+	top &= 15;
+	if (top > 13)
+		top = 13;
+	bottom &= 15;
+	if (bottom > 13)
+		bottom = 13;
+	
+//	if (top != cl_teamtopcolor || bottom != cl_teambottomcolor)
+	{
+		cl_teamtopcolor = top;
+		cl_teambottomcolor = bottom;
+
+		for (i = 0; i < MAX_CLIENTS; i++)
+			CL_NewTranslation(i);
+	}
+}
+
+void TP_EnemyColor_f (void)
+{
+	int	top, bottom;
+	int	i;
+
+	if (Cmd_Argc() == 1)
+	{
+		if (cl_enemytopcolor < 0)
+			Con_Printf ("\"enemycolor\" is \"off\"\n");
+		else
+			Con_Printf ("\"enemycolor\" is \"%i %i\"\n", 
+				cl_enemytopcolor,
+				cl_enemybottomcolor);
+		return;
+	}
+
+	if (!strcmp(Cmd_Argv(1), "off"))
+	{
+		cl_enemytopcolor = -1;
+		for (i = 0; i < MAX_CLIENTS; i++)
+			CL_NewTranslation(i);
+		return;
+	}
+
+	if (Cmd_Argc() == 2)
+		top = bottom = atoi(Cmd_Argv(1));
+	else {
+		top = atoi(Cmd_Argv(1));
+		bottom = atoi(Cmd_Argv(2));
+	}
+	
+	top &= 15;
+	if (top > 13)
+		top = 13;
+	bottom &= 15;
+	if (bottom > 13)
+		bottom = 13;
+
+//	if (top != cl_enemytopcolor || bottom != cl_enemybottomcolor)
+	{
+		cl_enemytopcolor = top;
+		cl_enemybottomcolor = bottom;
+
+		for (i = 0; i < MAX_CLIENTS; i++)
+			CL_NewTranslation(i);
+	}
+}
+
+//===================================================================
+
 void CL_NewMap (void)
 {
 	last_health = 0;
