@@ -298,7 +298,8 @@ typedef struct
 // all player information
 	player_info_t	players[MAX_CLIENTS];
 
-	char		sprint_buf[1024];	// Tonik
+	int			sprint_level;
+	char		sprint_buf[1024];
 } client_state_t;
 
 
