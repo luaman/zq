@@ -743,7 +743,7 @@ void	 PR_PrintFunction (char *name)
 		if (!strcmp (name, strings + functions[i].s_name))
 			break;
 	if (i==numfunctions)
-		Error ("No function names \"%s\"", name);
+		Error ("No function named \"%s\"", name);
 	df = functions + i;
 
 	printf ("Statements for %s:\n", name);
@@ -793,7 +793,7 @@ int		 main (int argc, char **argv)
 	}
 
 	if (CheckParm ("-idcomp", 0)) {
-		printf ("compiling in id compatibility mode\n");
+		printf ("Compiling in id compatibility mode\n");
 		opt_idcomp = true;
 	}
 
@@ -813,19 +813,24 @@ int		 main (int argc, char **argv)
 	//   with #ifdef _ZQCC
 	zqcc_value._float = 1;
 	if (PR_AddDefine((const char *)"_ZQCC", &type_const_float, &zqcc_value, true) <= 0)
-		PR_ParseError ("unable to create the internal #define \"_ZQCC\"");
+		Error ("unable to create the internal #define \"_ZQCC\"\n");
 
 	// check for commandline defines:
 	p = 0;
-	while ( (p = CheckParm ("-D", p+1)) > 0 && p < argc-1 )
+	while ( (p = CheckParm ("-D", p+1)) > 0 )
 	{
 		char	*name = NULL;
-		if ( !Q_stricmp(argv[p], "-D") && p < argc-1 )
-			name = argv[++p]; // argv matches completely -> name is an extra parameter
+		if ( !Q_stricmp(argv[p], "-D") )
+		{
+			if ( p < (argc - 1) )
+				name = argv[++p]; // argv matches completely -> name is an extra parameter
+			else
+				Error ("incomplete command line parameter #%d, missing <name> for #define\n", p);
+		}
 		else
 			name = argv[p] + 2; // current argv includes the name
 		if (PR_AddDefine((const char *)name, &type_const_float, &zqcc_value, false) <= 0)
-			PR_ParseError ("unable to create the #define \"%s\"", name);
+			Error ("ERROR: unable to create the #define \"%s\"\n", name);
 		else
 			printf ("Additional #define: %s\n", name);
 	}
@@ -837,7 +842,7 @@ int		 main (int argc, char **argv)
 	if (!src)
 		Error ("No destination filename.  qcc -help for info.\n");
 	strcpy (destfile, com_token);
-	printf ("outputfile: %s\n", destfile);
+	printf ("Outputfile: %s\n", destfile);
 
 	PR_BeginCompilation (malloc (0x100000), 0x100000);
 
@@ -848,7 +853,7 @@ int		 main (int argc, char **argv)
 		if (!src)
 			break;
 		sprintf (filename, "%s%s", sourcedir, com_token);
-		printf ("compiling %s\n", filename);
+		printf ("Compiling %s\n", filename);
 		LoadFile (filename, (void **)&src2);
 
 		if (!PR_CompileFile (src2, filename) )
