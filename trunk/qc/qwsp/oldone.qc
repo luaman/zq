@@ -136,6 +136,8 @@ void() finale_1 =
 	pos = find (world, classname, "info_intermission");
 	if (!pos)
 		error ("no info_intermission");
+	intermission_origin = pos.origin;
+
 	pl = find (world, classname, "misc_teleporttrain");
 	if (!pl)
 		error ("no teleporttrain");
@@ -156,7 +158,7 @@ void() finale_1 =
 		pl.solid = SOLID_NOT;
 		pl.movetype = MOVETYPE_NONE;
 		pl.modelindex = 0;
-		setorigin (pl, pos.origin);
+		setorigin (pl, intermission_origin);
 		pl = find (pl, classname, "player");
 	}	
 	
