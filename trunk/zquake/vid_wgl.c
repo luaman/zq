@@ -108,8 +108,9 @@ HDC		maindc;
 glvert_t glv;
 
 cvar_t	gl_ztrick = {"gl_ztrick","1"};
-
+cvar_t	gl_strings = {"gl_strings", "", CVAR_ROM};
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1"};
+
 qboolean	vid_gammaworks = false;
 qboolean	vid_hwgamma_enabled = false;
 unsigned short *currentgammaramp = NULL;
@@ -617,13 +618,14 @@ void GL_Init (void)
 	Com_Printf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = glGetString (GL_RENDERER);
 	Com_Printf ("GL_RENDERER: %s\n", gl_renderer);
-
 	gl_version = glGetString (GL_VERSION);
 	Com_Printf ("GL_VERSION: %s\n", gl_version);
 	gl_extensions = glGetString (GL_EXTENSIONS);
-	Com_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
+//	Com_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
-//	Com_Printf ("%s %s\n", gl_renderer, gl_version);
+	Cvar_Register (&gl_strings);
+	Cvar_SetROM (&gl_strings, va("GL_VENDOR: %s\nGL_RENDERER: %s\n"
+		"GL_VERSION: %s\nGL_EXTENSIONS: %s", gl_vendor, gl_renderer, gl_version, gl_extensions));
 
     if (strnicmp(gl_renderer,"PowerVR",7)==0)
          fullsbardraw = true;
