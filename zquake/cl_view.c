@@ -498,9 +498,6 @@ void V_SetContentsColor (int contents)
 {
 	if (!v_contentblend.value) {
 		cl.cshifts[CSHIFT_CONTENTS] = cshift_empty;
-#ifdef GLQUAKE
-		cl.cshifts[CSHIFT_CONTENTS].percent *= 100;
-#endif
 		return;
 	}
 
@@ -534,10 +531,8 @@ void V_SetContentsColor (int contents)
 			if (!gl_polyblend.value)
 				cl.cshifts[CSHIFT_CONTENTS].percent = 0;
 			else
-				cl.cshifts[CSHIFT_CONTENTS].percent *= gl_cshiftpercent.value;
+				cl.cshifts[CSHIFT_CONTENTS].percent *= (gl_cshiftpercent.value / 100.0);
 		}
-		else
-			cl.cshifts[CSHIFT_CONTENTS].percent *= 100;
 	}
 
 #endif
@@ -628,12 +623,11 @@ void V_CalcBlend (void)
 
 	for (j=0 ; j<NUM_CSHIFTS ; j++)	
 	{
-		if ((!gl_cshiftpercent.value || !gl_polyblend.value)
-			&& j != CSHIFT_CONTENTS)
+		if ((!gl_cshiftpercent.value || !gl_polyblend.value) && j != CSHIFT_CONTENTS)
 			continue;
 
 		if (j == CSHIFT_CONTENTS)
-			a2 = cl.cshifts[j].percent / 100.0 / 255.0;
+			a2 = cl.cshifts[j].percent / 255.0;
 		else
 			a2 = ((cl.cshifts[j].percent * gl_cshiftpercent.value) / 100.0) / 255.0;
 
