@@ -31,7 +31,6 @@ alight_t	r_viewlighting = {128, 192, viewlightvec};
 float		r_time1;
 int			r_numallocatededges;
 qboolean	r_drawpolys;
-qboolean	r_drawculledpolys;
 qboolean	r_worldpolysbacktofront;
 qboolean	r_recursiveaffinetriangles = true;
 int			r_pixbytes = 1;
@@ -835,7 +834,7 @@ void R_DrawBEntitiesOnList (void)
 			// if the driver wants polygons, deliver those. Z-buffering is on
 			// at this point, so no clipping to the world tree is needed, just
 			// frustum clipping
-				if (r_drawpolys | r_drawculledpolys)
+				if (r_drawpolys)
 				{
 					R_ZDrawSubmodelPolys (clmodel);
 				}
@@ -936,9 +935,6 @@ void R_EdgeDrawing (void)
 
 	R_RenderWorld ();
 
-	if (r_drawculledpolys)
-		R_ScanEdges ();
-
 // only the world can be drawn back to front with no z reads or compares, just
 // z writes, so have the driver turn z compares on now
 	D_TurnZOn ();
@@ -964,7 +960,7 @@ void R_EdgeDrawing (void)
 		VID_LockBuffer ();
 	}
 	
-	if (!(r_drawpolys | r_drawculledpolys))
+	if (!r_drawpolys)
 		R_ScanEdges ();
 }
 
