@@ -104,7 +104,7 @@ void W_LoadWadFile (char *filename)
 
 	wad_base = FS_LoadHeapFile (filename);
 	if (!wad_base)
-		Sys_Error ("W_LoadWadFile: couldn't load %s\n", filename);
+		Sys_Error ("W_LoadWadFile: couldn't load %s", filename);
 
 	wad_filesize = fs_filesize;
 
@@ -114,7 +114,7 @@ void W_LoadWadFile (char *filename)
 	|| header->identification[1] != 'A'
 	|| header->identification[2] != 'D'
 	|| header->identification[3] != '2')
-		Sys_Error ("Wad file %s doesn't have WAD2 id\n",filename);
+		Sys_Error ("Wad file %s doesn't have WAD2 id",filename);
 		
 	wad_numlumps = LittleLong(header->numlumps);
 	infotableofs = LittleLong(header->infotableofs);
@@ -328,11 +328,11 @@ void WAD3_LoadWadFile (char *filename)
 	if (FS_FOpenFile (filename, &file) != -1)
 		goto loaded;
 
-	Host_Error ("Couldn't load halflife wad \"%s\"\n", filename);
+	Host_Error ("Couldn't load halflife wad \"%s\"", filename);
 
 loaded:
 	if (fread(&header, 1, sizeof(wadinfo_t), file) != sizeof(wadinfo_t)) {
-		Com_Printf ("WAD3_LoadWadFile: unable to read wad header");
+		Com_Printf ("WAD3_LoadWadFile: unable to read wad header\n");
 		return;
 	}
 
@@ -349,18 +349,18 @@ loaded:
 
 	infotableofs = LittleLong(header.infotableofs);
 	if (fseek(file, infotableofs, SEEK_SET)) {
-		Com_Printf ("WAD3_LoadWadFile: unable to seek to lump table");
+		Com_Printf ("WAD3_LoadWadFile: unable to seek to lump table\n");
 		return;
 	}
 
 	lowmark = Hunk_LowMark();
 	if (!(lumps = Hunk_Alloc(sizeof(lumpinfo_t) * numlumps))) {
-		Com_Printf ("WAD3_LoadWadFile: unable to allocate temporary memory for lump table");
+		Com_Printf ("WAD3_LoadWadFile: unable to allocate temporary memory for lump table\n");
 		return;
 	}
 
 	if (fread(lumps, 1, sizeof(lumpinfo_t) * numlumps, file) != sizeof(lumpinfo_t) * numlumps) {
-		Com_Printf ("WAD3_LoadWadFile: unable to read lump table");
+		Com_Printf ("WAD3_LoadWadFile: unable to read lump table\n");
 		Hunk_FreeToLowMark(lowmark);
 		return;
 	}
@@ -434,13 +434,13 @@ byte *WAD3_LoadTexture (miptex_t *mt)
 
 		file = texwadlump[i].file;
 		if (fseek(file, texwadlump[i].position, SEEK_SET)) {
-			Com_Printf("WAD3_LoadTexture: corrupt WAD3 file");
+			Com_Printf("WAD3_LoadTexture: corrupt WAD3 file\n");
 			return NULL;
 		}
 		lowmark = Hunk_LowMark();
 		tex = Hunk_Alloc(texwadlump[i].size);
 		if (fread(tex, 1, texwadlump[i].size, file) < texwadlump[i].size) {
-			Com_Printf("WAD3_LoadTexture: corrupt WAD3 file");
+			Com_Printf("WAD3_LoadTexture: corrupt WAD3 file\n");
 			Hunk_FreeToLowMark(lowmark);
 			return NULL;
 		}
