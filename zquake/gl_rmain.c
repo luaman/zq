@@ -340,8 +340,8 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qboolean mtex)
 		{
 			// texture coordinates come from the draw list
 			if (mtex) {
-				qglMultiTexCoord2f (TEXTURE0_ARB, ((float *) order)[0], ((float *) order)[1]);
-				qglMultiTexCoord2f (TEXTURE1_ARB, ((float *) order)[0], ((float *) order)[1]);
+				qglMultiTexCoord2f (GL_TEXTURE0_ARB, ((float *) order)[0], ((float *) order)[1]);
+				qglMultiTexCoord2f (GL_TEXTURE1_ARB, ((float *) order)[0], ((float *) order)[1]);
 			}
 			else {
 				glTexCoord2f (((float *) order)[0], ((float *) order)[1]);
@@ -609,7 +609,7 @@ void R_DrawAliasModel (entity_t *ent)
 		fb_texture = 0;
 
 	if (fb_texture && gl_mtexable && !full_light) {
-		GL_SelectTexture (TEXTURE0_ARB);
+		GL_SelectTexture (GL_TEXTURE0_ARB);
 		GL_Bind (texture);
 		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		GL_EnableMultitexture ();
