@@ -690,7 +690,7 @@ void SV_Gamedir_f (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		Com_Printf ("Current gamedir: %s\n", com_gamedir);
+		Com_Printf ("Current gamedir: %s\n", com_gamedirfile);
 		return;
 	}
 
