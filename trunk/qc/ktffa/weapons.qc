@@ -1235,7 +1235,7 @@ void W_ChangeWeapon ()
 			am = 1;
 	}
 
-	self.impulse = IMPUlSE_NONE;
+	self.impulse = IMPULSE_NONE;
 	
 	if (!(self.items & fl))
 	{	// don't have the weapon or the ammo
