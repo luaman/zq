@@ -2,7 +2,7 @@
 // vi: set ic noai ts=2 sts=2 sw=2 et:
 // by Massa
 
-layout "German"
+keymap_name "German"
 
 // -------------------------------------------------------------------------------------------------------------
 // [ext] keycode <scancode> <key> [<shifted key>] [<alt-gr="right alt" key>]
