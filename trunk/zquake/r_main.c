@@ -921,10 +921,6 @@ void R_EdgeDrawing (void)
 
 	R_RenderWorld ();
 
-// only the world can be drawn back to front with no z reads or compares, just
-// z writes, so have the driver turn z compares on now
-	D_TurnZOn ();
-
 	if (r_dspeeds.value)
 	{
 		rw_time2 = Sys_DoubleTime ();
