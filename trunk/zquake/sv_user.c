@@ -242,6 +242,7 @@ static void Cmd_Soundlist_f (void)
 	SV_AddToReliable (sv_client, msg.data, msg.cursize);
 }
 
+#ifdef VWEP_TEST
 static char *TrimModelName (char *full)
 {
 	static char shortn[MAX_QPATH];
@@ -261,6 +262,7 @@ static char *TrimModelName (char *full)
 
 	return shortn;
 }
+#endif // VWEP_TEST
 
 /*
 ==================
