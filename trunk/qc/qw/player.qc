@@ -625,13 +625,13 @@ void PlayerDie ()
 	agh_player_dietidy();
 #endif
 
-	if (self.health < -40)
+    if (self.health < -40 || self.deathtype == "squish")
 	{
 		GibPlayer ();
 		return;
 	}
 
-	DeathSound();
+    DeathSound();
 	
 	self.angles_x = 0;
 	self.angles_z = 0;
