@@ -99,8 +99,9 @@ cvar_t	gl_nocolors = {"gl_nocolors","0"};
 cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1"};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
 cvar_t	gl_finish = {"gl_finish","0"};
-cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
 cvar_t	gl_fb_depthhack = {"gl_fb_depthhack","1"};
+cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
+cvar_t	gl_fb_models = {"gl_fb_models","1"};
 
 extern	cvar_t	gl_ztrick;
 extern	cvar_t	scr_fov;
@@ -451,7 +452,9 @@ void R_DrawAliasModel (entity_t *ent)
 	vec3_t		mins, maxs;
 	aliashdr_t	*paliashdr;
 	float		an;
-	int			anim;
+	int			anim, skinnum;
+	int			texture;
+	qboolean	full_light;
 
 	clmodel = ent->model;
 
@@ -475,22 +478,20 @@ void R_DrawAliasModel (entity_t *ent)
 		|| !strcmp (clmodel->name, "progs/bolt3.mdl") ) {
 		ambientlight = 210;
 		shadelight = 0;
-
+		full_light = true;
 	} else if (!strcmp (clmodel->name, "progs/flame2.mdl")
 		|| !strcmp (clmodel->name, "progs/flame.mdl") ) {
 		// HACK HACK HACK -- no fullbright colors, so make torches full light
 		ambientlight = 255;
 		shadelight = 0;
+		full_light = true;
 	}
 	else {
 
 		// normal lighting 
 
+		full_light = false;
 		ambientlight = shadelight = R_LightPoint (ent->origin);
-		
-		// always give the gun some light
-		if (ent == &cl.viewent && ambientlight < 24)
-			ambientlight = shadelight = 24;
 		
 		for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
 		{
@@ -512,7 +513,11 @@ void R_DrawAliasModel (entity_t *ent)
 		if (ambientlight + shadelight > 192)
 			shadelight = 192 - ambientlight;
 		
-		// ZOID: never allow players to go totally black
+		// always give the gun some light
+		if (ent == &cl.viewent && ambientlight < 24)
+			ambientlight = shadelight = 24;
+		
+		// never allow players to go totally black
 		if (!strcmp(clmodel->name, "progs/player.mdl")) {
 			if (ambientlight < 8)
 				ambientlight = shadelight = 8;
@@ -540,7 +545,7 @@ void R_DrawAliasModel (entity_t *ent)
 
 	GL_DisableMultitexture();
 
-    glPushMatrix ();
+	glPushMatrix ();
 	R_RotateForEntity (ent);
 
 	if (!strcmp (clmodel->name, "progs/eyes.mdl") ) {
@@ -553,7 +558,13 @@ void R_DrawAliasModel (entity_t *ent)
 	}
 
 	anim = (int)(cl.time*10) & 3;
-    GL_Bind(paliashdr->gl_texturenum[ent->skinnum][anim]);
+	skinnum = ent->skinnum;
+	if ((skinnum >= paliashdr->numskins) || (skinnum < 0)) {
+		Con_DPrintf ("R_DrawAliasModel: no such skin # %d\n", skinnum);
+		skinnum = 0;
+	}
+
+	texture = paliashdr->gl_texturenum[ent->skinnum][anim];
 
 	// we can't dynamically colormap textures, so they are cached
 	// separately for the players.  Heads are just uncolored.
@@ -565,8 +576,10 @@ void R_DrawAliasModel (entity_t *ent)
 			R_TranslatePlayerSkin(i);
 		}
 		if (i >= 0 && i<MAX_CLIENTS)
-		    GL_Bind(playertextures + i);
+		    texture = playertextures + i;
 	}
+
+	GL_Bind (texture);
 
 	if (gl_smoothmodels.value)
 		glShadeModel (GL_SMOOTH);
@@ -578,6 +591,16 @@ void R_DrawAliasModel (entity_t *ent)
 	R_SetupAliasFrame (ent->frame, paliashdr);
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	if (!full_light && gl_fb_models.value) {
+		int	fb_texture = paliashdr->fb_texturenum[skinnum][anim];
+		if (fb_texture) {
+			glEnable (GL_BLEND);
+			GL_Bind (fb_texture);
+			R_SetupAliasFrame (ent->frame, paliashdr);
+			glDisable (GL_BLEND);
+		}
+	}
 
 	glShadeModel (GL_FLAT);
 	if (gl_affinemodels.value)
