@@ -1325,7 +1325,7 @@ qboolean VID_SetWindowedMode (int modenum)
 		mainwindow = CreateWindowEx (
 			 ExWindowStyle,
 			 "WinQuake",
-			 "QuakeWorld",
+			 "ZQuake",
 			 WindowStyle,
 			 0, 0,
 			 WindowRect.right - WindowRect.left,
