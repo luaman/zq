@@ -32,7 +32,6 @@ void Draw_EndDisc ();
 usercmd_t nullcmd; // guarenteed to be zero
 
 static char	*largv[MAX_NUM_ARGVS + 1];
-static char	*argvdummy = " ";
 
 cvar_t	developer = {"developer","0"};
 cvar_t	registered = {"registered","0"};
@@ -917,30 +916,6 @@ skipwhite:
 
 /*
 ================
-COM_CheckParm
-
-Returns the position (1 to argc-1) in the program's argument list
-where the given parameter appears, or 0 if not present
-================
-*/
-int COM_CheckParm (char *parm)
-{
-	int		i;
-	
-	for (i=1 ; i<com_argc ; i++)
-	{
-		if (!com_argv[i])
-			continue;		// NEXTSTEP sometimes clears appkit vars.
-		if (!strcmp (parm,com_argv[i]))
-			return i;
-	}
-		
-	return 0;
-}
-
-
-/*
-================
 COM_CheckRegistered
 
 Checks the existence of gfx/pop.lmp file.
@@ -970,12 +945,37 @@ void COM_InitArgv (int argc, char **argv)
 	for (com_argc=0 ; (com_argc<MAX_NUM_ARGVS) && (com_argc < argc) ;
 		 com_argc++)
 	{
-		largv[com_argc] = argv[com_argc];
+		if (argv[com_argc])
+			largv[com_argc] = argv[com_argc];
+		else
+			largv[com_argc] = "";
 	}
 
-	largv[com_argc] = argvdummy;
+	largv[com_argc] = "";
 	com_argv = largv;
 }
+
+/*
+================
+COM_CheckParm
+
+Returns the position (1 to argc-1) in the program's argument list
+where the given parameter appears, or 0 if not present
+================
+*/
+int COM_CheckParm (char *parm)
+{
+	int		i;
+	
+	for (i=1 ; i<com_argc ; i++)
+	{
+		if (!strcmp(parm, com_argv[i]))
+			return i;
+	}
+		
+	return 0;
+}
+
 
 /*
 ================
@@ -986,6 +986,8 @@ Adds the given string at the end of the current argument list
 */
 void COM_AddParm (char *parm)
 {
+	if (com_argc >= MAX_NUM_ARGVS)
+		return;
 	largv[com_argc++] = parm;
 }
 
