@@ -316,6 +316,27 @@ SOURCE=.\zone.h
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
+# Begin Source File
+
+SOURCE=.\qwcl2.ico
+# End Source File
+# Begin Source File
+
+SOURCE=.\qe3.ico
+# End Source File
+# Begin Source File
+
+SOURCE=.\qwsv2.ico
+# End Source File
+# Begin Source File
+
+SOURCE=.\zquake.bmp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zqds.rc
+# End Source File
+
 # End Group
 # Begin Group "Asm Files"
 
