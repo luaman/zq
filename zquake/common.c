@@ -650,7 +650,7 @@ void COM_CopyFile (char *netpath, char *cachepath)
 
 /*
 ===========
-COM_FindFile
+FS_FOpenFile
 
 Finds the file in the search path.
 Sets fs_filesize and one of handle or file
