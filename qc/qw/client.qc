@@ -517,7 +517,7 @@ void PutClientInServer ()
 
 	self.origin = spot.origin + '0 0 1';
 	self.angles = spot.angles;
-	self.fixangle = TRUE;           // turn this way immediately
+	self.fixangle = true;           // turn this way immediately
 	self.jump_flag = 0;
 
 // oh, this is a hack!

@@ -1,43 +1,43 @@
 void bot_jump ()
 {
 	// TODO check for precision, etc.
-	self.button2 = TRUE;
+	self.button2 = true;
 }
 
 float bot_can_rj (entity e)
 {
 	// this returns true of the bot can rocket/superjump/hook
-	// if your mod doesn't have an RL you can just return FALSE all the time
+	// if your mod doesn't have an RL you can just return false all the time
 	// if it has a hook or some other means for the bot to get to high places
 	// you can check here for that capability
 
 	// am I dumb?
 	if (e.b_skill == 0)
-		return FALSE;
+		return false;
 
 	// quad = bad
 	if (e.items & 4194304)
-		return FALSE;
+		return false;
 
 	// do I have rockets & RL?
 	if (!((e.items & 32) && (e.ammo_rockets > 0)))
-		return FALSE;
+		return false;
 
 	// do I have pent?
 	if (e.items & 1048576)
-		return TRUE;
+		return true;
 
 	if (e.health > 50)
-		return TRUE;
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
 float frik_recognize_plat (float flag)
 {
 	if ((self.classname != "waypoint") && !(self.flags & FL_ONGROUND))
-		return FALSE;
-	traceline(self.origin, self.origin - '0 0 64', TRUE, self);
+		return false;
+	traceline(self.origin, self.origin - '0 0 64', true, self);
 	if (trace_ent != world)
 	{
 		if (flag) // afect bot movement too
@@ -53,10 +53,10 @@ float frik_recognize_plat (float flag)
 					self.keys = self.keys & 960;
 			}
 		}
-		return TRUE;
+		return true;
 	}
 	else
-		return FALSE;
+		return false;
 }
 
 float frik_KeysForDir (vector sdir)
@@ -186,7 +186,7 @@ void frik_obstacles ()
 	start_z = self.origin_z + self.maxs_z;
 	stop = start;
 	stop_z = self.origin_z + self.mins_z;
-	traceline(start, stop - '0 0 256', TRUE, self);
+	traceline(start, stop - '0 0 256', true, self);
 	if (trace_allsolid || trace_startsolid)
 		return;
 	hgt = trace_endpos_z - stop_z;
@@ -202,14 +202,14 @@ void frik_obstacles ()
 	conts = pointcontents(trace_endpos + '0 0 4');
 	start = stop - '0 0 8';
 	stop = start + ang *  256;
-	traceline(start, stop, TRUE, self);
+	traceline(start, stop, true, self);
 	test = vlen(trace_endpos - start);
 	if (test <= 20)
 		return; // it's a walkable gap, do nothing
 	ang_x = self.velocity_y * -1;
 	ang_y = self.velocity_x;
 	ang = normalize(ang);
-	traceline(start - (ang * 10), start + (ang * 10), TRUE, self);
+	traceline(start - (ang * 10), start + (ang * 10), true, self);
 	if ((trace_fraction != 1) || trace_startsolid)
 		return; // gap is only 20 wide, walkable	
 	ang = self.velocity;
@@ -219,7 +219,7 @@ void frik_obstacles ()
 	{
 		if (conts < -3) // bad stuff down dare
 		{
-			frik_obstructed(ang, TRUE);
+			frik_obstructed(ang, true);
 			return;
 		}
 		else
@@ -230,7 +230,7 @@ void frik_obstacles ()
 				if ((stop_z - self.origin_z) < -32)
 					return; // safe to fall
 			}
-			frik_obstructed(ang, FALSE);
+			frik_obstructed(ang, false);
 			return;
 		}
 	}
@@ -238,12 +238,12 @@ void frik_obstacles ()
 	{
 		ang = normalize(ang);
 		//look for a ledge
-		traceline(self.origin, self.origin + (ang * (test + 20)), TRUE, self); 
+		traceline(self.origin, self.origin + (ang * (test + 20)), true, self); 
 		if (trace_fraction != 1)
 		{
 			if (conts < -3) // bad stuff down dare
 			{
-				frik_obstructed(ang, TRUE);
+				frik_obstructed(ang, true);
 				return;
 			}
 			else
@@ -254,7 +254,7 @@ void frik_obstacles ()
 					if ((stop_z - self.origin_z) < -32)
 						return; // safe to fall
 				}
-				frik_obstructed(ang, FALSE);
+				frik_obstructed(ang, false);
 				return;
 			}
 		}
@@ -267,12 +267,12 @@ void frik_obstacles ()
 			{
 				if (conts < -3) // bad stuff down dare
 				{
-					frik_obstructed(ang, TRUE);
+					frik_obstructed(ang, true);
 					return;
 				}
 				else
 				{
-					frik_obstructed(ang, FALSE);
+					frik_obstructed(ang, false);
 					return;
 				}
 			}
@@ -382,7 +382,7 @@ void frik_movetogoal ()
 	self.keys = self.keys & 960 + frik_KeysForDir(way);
 
 	frik_dodge_obstruction();
-	frik_recognize_plat(TRUE);
+	frik_recognize_plat(true);
 
 	if (self.b_aiflags & AI_PRECISION)
 	{
@@ -402,11 +402,11 @@ float frik_walkmove (vector weird)
  	self.keys = self.keys & 960 + frik_KeysForDir(weird);
 
 	frik_dodge_obstruction();
-	frik_recognize_plat(TRUE);
+	frik_recognize_plat(true);
 	if (self.b_aiflags & AI_OBSTRUCTED)
-		return FALSE;
+		return false;
 	else
-		return TRUE;
+		return true;
 }
 
 
@@ -429,7 +429,7 @@ void frik_bot_roam ()
 	float	loopcount, flag, dist;
 
 	loopcount = 26;
-	flag = FALSE;
+	flag = false;
 	while((loopcount > 0) && !flag)
 	{
 		loopcount = loopcount - 1;
@@ -438,26 +438,26 @@ void frik_bot_roam ()
 		ang_y = frik_anglemod(ang_y - 90 + (random() * 180));
 		ang_x = 0; // avoid upward sloping
 		makevectors(ang);
-		traceline(org, org + v_forward * 2300, TRUE, self);
+		traceline(org, org + v_forward * 2300, true, self);
 		if (trace_fraction != 1)
 		{
 			org1 = trace_endpos;
 			ang = normalize(trace_plane_normal);
 			ang_z = 0; // avoid upward sloping
-			traceline(org1, org1 + (ang * 2300), TRUE, self);
+			traceline(org1, org1 + (ang * 2300), true, self);
 			if ((trace_fraction != 1) && (vlen(trace_endpos - org1) >= 64))
 			{
 				org = trace_endpos;
-				traceline(org, self.origin + self.view_ofs, TRUE, self);
+				traceline(org, self.origin + self.view_ofs, true, self);
 				if (trace_fraction != 1)
 				{
 					dist = vlen(org1 - org) /2;
 					org = org1 + (ang * dist);
-					traceline(org, org - '0 0 48', TRUE, self);
+					traceline(org, org - '0 0 48', true, self);
 					if (trace_fraction != 1)
 					{
 						SpawnTempWaypoint(org);
-						flag = TRUE;
+						flag = true;
 					}
 				}
 			}

@@ -273,7 +273,7 @@ void dog_die ()
 ==============
 CheckDogMelee
 
-Returns TRUE if a melee attack would hit right now
+Returns true if a melee attack would hit right now
 ==============
 */
 float CheckDogMelee ()
@@ -281,9 +281,9 @@ float CheckDogMelee ()
 	if (enemy_range == RANGE_MELEE)
 	{	// FIXME: check canreach
 		self.attack_state = AS_MELEE;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 /*
@@ -299,11 +299,11 @@ float CheckDogJump ()
 
 	if (self.origin_z + self.mins_z > self.enemy.origin_z + self.enemy.mins_z
 	+ 0.75 * self.enemy.size_z)
-		return FALSE;
+		return false;
 		
 	if (self.origin_z + self.maxs_z < self.enemy.origin_z + self.enemy.mins_z
 	+ 0.25 * self.enemy.size_z)
-		return FALSE;
+		return false;
 		
 	dist = self.enemy.origin - self.origin;
 	dist_z = 0;
@@ -311,12 +311,12 @@ float CheckDogJump ()
 	d = vlen(dist);
 	
 	if (d < 80)
-		return FALSE;
+		return false;
 		
 	if (d > 150)
-		return FALSE;
+		return false;
 		
-	return TRUE;
+	return true;
 }
 
 float DogCheckAttack ()
@@ -325,16 +325,16 @@ float DogCheckAttack ()
 	if (CheckDogMelee ())
 	{
 		self.attack_state = AS_MELEE;
-		return TRUE;
+		return true;
 	}
 	
 	if (CheckDogJump ())
 	{
 		self.attack_state = AS_MISSILE;
-		return TRUE;
+		return true;
 	}
 	
-	return FALSE;
+	return false;
 }
 
 

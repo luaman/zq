@@ -117,14 +117,14 @@ string PickARandomName (entity ent)
 	float	y, test;
 	string	h;
 	entity	t;
-	y = TRUE;
+	y = true;
 	while(y)
 	{
 		test = ceil(random() * 16);
 		h = BotName(ent, test);
 		t = find(world, netname, h);
 		if (t == world)
-			y = FALSE;
+			y = false;
 	}
 	return h;
 }
@@ -545,23 +545,23 @@ float fisible (entity targ)
 	
 	if (targ.solid == SOLID_BSP)
 	{
-		traceline (spot1, org, TRUE, self);
+		traceline (spot1, org, true, self);
 		if (trace_ent == targ)
-			return TRUE;
+			return true;
 		else if (trace_fraction == 1)
-			return TRUE;
-		return FALSE;
+			return true;
+		return false;
 	}
 	else
 	{
 		pc1 = pointcontents(org);
 		pc2 = pointcontents(spot1);
 		if (targ.classname == "player")
-			thruwater = FALSE;
+			thruwater = false;
 		else if (pc1 == CONTENT_LAVA)
-			return FALSE;
+			return false;
 		else	
-			thruwater = TRUE;
+			thruwater = true;
 	}
 	
 	if (pc1 < -1) // targ's origin is in water or other liquid
@@ -569,51 +569,51 @@ float fisible (entity targ)
 		if (pc2 != pc1)
 		{
 			// look for their head
-			traceline (spot1, org + targ.mins, TRUE, self);
+			traceline (spot1, org + targ.mins, true, self);
 			// cross the water check
 			if (trace_inopen)
 				if (trace_inwater)
 					if (!thruwater)
-						return FALSE;
+						return false;
 			if (trace_ent == targ)
-				return TRUE;
+				return true;
 			else if (trace_fraction == 1)
-				return TRUE;
-			return FALSE;
+				return true;
+			return false;
 		}
 	}
 	else
 	{
 		if (pc2 != pc1)
 		{
-			traceline (spot1, org + targ.maxs, TRUE, self);
+			traceline (spot1, org + targ.maxs, true, self);
 			if (trace_inopen)
 				if (trace_inwater)
 					if (!thruwater)
-						return FALSE;
+						return false;
 			if (trace_ent == targ)
-				return TRUE;
+				return true;
 			else if (trace_fraction == 1)
-				return TRUE;
-			return FALSE;
+				return true;
+			return false;
 		}
 	}
-	traceline (spot1, org, TRUE, self);
+	traceline (spot1, org, true, self);
 	if (trace_ent == targ)
-		return TRUE;
+		return true;
 	else if (trace_fraction == 1)
-		return TRUE;
-	traceline (spot1, org + targ.maxs, TRUE, self);
+		return true;
+	traceline (spot1, org + targ.maxs, true, self);
 	if (trace_ent == targ)
-		return TRUE;
+		return true;
 	else if (trace_fraction == 1)
-		return TRUE;
-	traceline (spot1, org + targ.mins, TRUE, self);
+		return true;
+	traceline (spot1, org + targ.mins, true, self);
 	if (trace_ent == targ)
-		return TRUE;
+		return true;
 	else if (trace_fraction == 1)
-		return TRUE;
-	return FALSE;
+		return true;
+	return false;
 }
 
 
@@ -640,14 +640,14 @@ float wisible (entity targ1, entity targ2)
 	ignore = self;
 	do
 	{
-		traceline (spot1, spot2, TRUE, ignore);
+		traceline (spot1, spot2, true, ignore);
 		spot1 = realorigin(trace_ent);
                 ignore = trace_ent;
 	} while ((trace_ent != world) && (trace_fraction != 1));
 	if (trace_endpos == spot2)
-		return TRUE;
+		return true;
 	else 
-		return FALSE;
+		return false;
 }
 
 
@@ -664,11 +664,11 @@ used when we need just a simple traceline nothing else
 
 float sisible (entity targ)
 {
-	traceline (self.origin, targ.origin, TRUE, self);
+	traceline (self.origin, targ.origin, true, self);
 	if (trace_ent == targ)
-		return TRUE;
+		return true;
 	else if (trace_fraction == 1)
-		return TRUE;
+		return true;
 }
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -712,12 +712,12 @@ float fov (entity targ)
 	yawn = vectoangles(yawn);
 	g = angcomp(self.v_angle_x, yawn_x);
 	if (fabs(g) > 45)
-		return FALSE;
+		return false;
 	g = angcomp(self.v_angle_y, yawn_y);
 	if (fabs(g) > 60)
-		return FALSE;
+		return false;
  
-	return TRUE;
+	return true;
 }
 
 /*

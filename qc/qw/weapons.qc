@@ -66,7 +66,7 @@ void W_FireAxe ()
 
 	makevectors (self.v_angle);
 	source = self.origin + '0 0 16';
-	traceline (source, source + v_forward*64, FALSE, self);
+	traceline (source, source + v_forward*64, false, self);
 	if (trace_fraction == 1.0)
 		return;
 	
@@ -298,13 +298,13 @@ void FireBullets (float shotcount, vector dir, vector spread)
 
 	ClearMultiDamage ();
 
-	traceline (src, src + dir*2048, FALSE, self);
+	traceline (src, src + dir*2048, false, self);
 	puff_org = trace_endpos - dir*4;
 
 	while (shotcount > 0)
 	{
 		direction = dir + crandom()*spread_x*v_right + crandom()*spread_y*v_up;
-		traceline (src, src + direction*2048, FALSE, self);
+		traceline (src, src + direction*2048, false, self);
 		if (trace_fraction != 1.0)
 			TraceAttack (4, direction);
 
@@ -512,7 +512,7 @@ void LightningDamage (vector p1, vector p2, entity from, float damage)
 
 	e1 = e2 = world;
 
-	traceline (p1, p2, FALSE, self);
+	traceline (p1, p2, false, self);
 
 	if (trace_ent.takedamage)
 	{
@@ -528,14 +528,14 @@ void LightningDamage (vector p1, vector p2, entity from, float damage)
 		}
 	}
 
-	traceline (p1 + f, p2 + f, FALSE, self);
+	traceline (p1 + f, p2 + f, false, self);
 	if (trace_ent != e1 && trace_ent.takedamage)
 	{
 		e2 = trace_ent;
 		LightningHit (from, damage);
 	}
 
-	traceline (p1 - f, p2 - f, FALSE, self);
+	traceline (p1 - f, p2 - f, false, self);
 	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage)
 	{
 		LightningHit (from, damage);
@@ -597,7 +597,7 @@ void W_FireLightning ()
 
 	org = self.origin + '0 0 16';
 	
-	traceline (org, org + v_forward*600, TRUE, self);
+	traceline (org, org + v_forward*600, true, self);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
@@ -998,17 +998,17 @@ float W_BestWeapon ()
 float W_CheckNoAmmo ()
 {
 	if (self.currentammo > 0)
-		return TRUE;
+		return true;
 
 	if (self.weapon == IT_AXE)
-		return TRUE;
+		return true;
 
 	self.weapon = W_BestWeapon ();
 
 	W_SetCurrentAmmo ();
 	
 // drop the weapon down
-	return FALSE;
+	return false;
 }
 
 /*

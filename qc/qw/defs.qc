@@ -251,8 +251,8 @@ void		end_sys_fields; 		// flag for structure dumping
 // constants
 //
 
-const float FALSE				= 0;
-const float TRUE				= 1;
+const float false				= 0;
+const float true				= 1;
 
 // edict.flags
 const float FL_FLY				= 1;
@@ -662,9 +662,9 @@ void() coredump 					= #28;		// prints all edicts
 void() traceon						= #29;		// turns statment trace on
 void() traceoff 					= #30;
 void(entity e) eprint				= #31;		// prints an entire edict
-float(float yaw, float dist) walkmove	= #32;	// returns TRUE or FALSE
+float(float yaw, float dist) walkmove	= #32;	// returns true or false
 // #33 was removed
-float() droptofloor = #34;						// TRUE if landed on floor
+float() droptofloor = #34;						// true if landed on floor
 void(float style, string value) lightstyle = #35;
 float(float v) rint					= #36;		// round to nearest int
 float(float v) floor				= #37;		// largest integer <= v
