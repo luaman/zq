@@ -782,16 +782,6 @@ int	memsearch (byte *start, int count, int search)
 }
 
 
-char *CopyString (char *in)
-{
-	char	*out;
-	
-	out = Z_Malloc (strlen(in)+1);
-	strcpy (out, in);
-	return out;
-}
-
-
 /*
 =============================================================================
 

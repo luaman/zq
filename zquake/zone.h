@@ -90,6 +90,7 @@ void *Q_Malloc (size_t size);
 void Z_Free (void *ptr);
 void *Z_Malloc (int size);			// returns 0 filled memory
 void *Z_TagMalloc (int size, int tag);
+char *Z_CopyString(char *s);
 
 void Z_DumpHeap (void);
 void Z_CheckHeap (void);

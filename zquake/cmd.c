@@ -553,7 +553,7 @@ void Cmd_Alias_f (void)
 		a->flags |= ALIAS_ARCHIVE;
 
 // copy the rest of the command line
-	a->value = CopyString (Cmd_MakeArgs(2));
+	a->value = Z_CopyString (Cmd_MakeArgs(2));
 }
 
 

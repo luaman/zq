@@ -523,7 +523,7 @@ void SV_Serverinfo_f (void)
 	if (var)
 	{
 		Z_Free (var->string);	// free the old value string	
-		var->string = CopyString (Cmd_Argv(2));
+		var->string = Z_CopyString (Cmd_Argv(2));
 		var->value = Q_atof (var->string);
 	}
 
