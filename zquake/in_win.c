@@ -123,7 +123,7 @@ static JOYINFOEX	ji;
 
 static HINSTANCE hInstDI;
 
-static qbool	dinput;
+qbool	dinput;
 
 typedef struct MYDATA {
 	LONG  lX;                   // X axis goes here
