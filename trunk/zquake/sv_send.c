@@ -314,7 +314,9 @@ static qbool AllClientsWantSVCParticle (void)
 		// has a chance of receiving and svc_particle he doesn't support
 		if (cl->state < cs_connected)
 			continue;
-		if (!(cl->extensions & Z_EXT_SVC_PARTICLE) || cl->uses_proxy)
+//		if (!(cl->extensions & Z_EXT_SVC_PARTICLE) || cl->uses_proxy)
+//			return false;
+		if (!cl->bot && cl->netchan.remote_address.type != NA_LOOPBACK)
 			return false;
 	}
 	return true;
