@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gl_local.h"
 #include "wad.h"
 #include "crc.h"
-#include "cl_sbar.h"
 
 void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel);
 cvar_t		gl_smoothfont = {"gl_smoothfont", "0", 0, OnChange_gl_smoothfont};

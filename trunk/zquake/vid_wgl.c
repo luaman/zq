@@ -23,7 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cdaudio.h"
 #include "keys.h"
 #include "resource.h"
-#include "cl_sbar.h"
 #include "sound.h"
 #include "winquake.h"
 
@@ -741,7 +740,7 @@ void GL_EndRendering (void)
 		}
 	}
 	if (fullsbardraw)
-		Sbar_Changed();
+		scr_fullupdate = 0;
 }
 
 void VID_SetPalette (unsigned char *palette)
@@ -985,8 +984,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				// Fix for alt-tab bug in NVidia drivers
 				MoveWindow (mainwindow, 0, 0, gdevmode.dmPelsWidth, gdevmode.dmPelsHeight, false);
 				
-				// scr_fullupdate = 0;
-				Sbar_Changed ();
+				scr_fullupdate = 0;
 			}
 		}
 		else if (modestate == MS_WINDOWED && Minimized)

@@ -90,6 +90,7 @@ float		scr_conlines;		// lines of console to display
 
 float		oldscreensize, oldfov, oldsbar;
 
+cvar_t		scr_drawall = {"scr_drawall", "0"};
 cvar_t		scr_viewsize = {"viewsize","100",CVAR_ARCHIVE};
 cvar_t		scr_fov = {"fov","90",CVAR_ARCHIVE};	// 10 - 170
 cvar_t		scr_consize = {"scr_consize","0.5"};
@@ -300,11 +301,8 @@ void SCR_CalcRefdef (void)
 	vrect_t		vrect;
 #endif
 
-	scr_fullupdate = 0;		// force a background redraw
+	scr_fullupdate = 0;		// force a background redraw and sbar redraw
 	vid.recalc_refdef = 0;
-
-// force the status bar to redraw
-	Sbar_Changed ();
 
 //========================================
 	
@@ -449,6 +447,7 @@ SCR_Init
 */
 void SCR_Init (void)
 {
+	Cvar_Register (&scr_drawall);
 	Cvar_Register (&scr_fov);
 	Cvar_Register (&scr_viewsize);
 	Cvar_Register (&scr_consize);
@@ -716,7 +715,6 @@ void SCR_BeginLoadingPlaque (void)
 
 // redraw with no console and the loading plaque
 	scr_fullupdate = 0;
-	Sbar_Changed ();
 	scr_drawloading = true;
 	SCR_UpdateScreen ();
 	scr_drawloading = false;
@@ -953,10 +951,8 @@ void SCR_UpdateScreen (void)
 	if (vid.recalc_refdef)
 		SCR_CalcRefdef ();
 
-	if (gl_contrast.value > 1 && !vid_hwgamma_enabled) {
-		// scr_fullupdate = true;
-		Sbar_Changed ();
-	}
+	if (gl_contrast.value > 1 && !vid_hwgamma_enabled)
+		scr_fullupdate = true;
 
 	//
 	// do 3D refresh drawing, and then update the screen
@@ -976,6 +972,9 @@ void SCR_UpdateScreen (void)
 		R_DrawTile (0, 0, vid.width, vid.height, scr_backtile);
 	else
 		SCR_TileClear (0, vid.height - sb_lines);
+
+	if (scr_fullupdate++ < vid.numpages || scr_drawall.value)
+		Sbar_Changed ();
 
 	if (r_netgraph.value)
 		R_NetGraph ();
@@ -1098,11 +1097,11 @@ void SCR_UpdateScreen (void)
 	//
 	D_EnableBackBufferAccess ();
 
-	if (scr_fullupdate++ < vid.numpages)
+	if (scr_fullupdate++ < vid.numpages || scr_drawall.value)
 	{	// clear the entire screen
 		scr_copyeverything = 1;
-		// FIXME: figure out what actually needs to be cleared
-		R_DrawTile (0, 0, vid.width, vid.height, scr_backtile);
+		// R_DrawTile (0, 0, vid.width, vid.height, scr_backtile);
+		SCR_TileClear (0, vid.height - sb_lines);
 		Sbar_Changed ();
 	}
 	else
