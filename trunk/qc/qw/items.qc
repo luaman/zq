@@ -66,7 +66,7 @@ void q_touch ()
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
 	other.items = other.items | IT_QUAD;
-	self.model = string_null;
+	self.model = "";
 		if (deathmatch == 4)
 		{
 			other.armortype = 0;
@@ -131,7 +131,7 @@ void r_touch ()
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
 	other.items = other.items | IT_INVISIBILITY;
-	self.model = string_null;
+	self.model = "";
 
 // do the apropriate action
 	other.invisible_time = 1;
@@ -324,7 +324,7 @@ void health_touch ()
 
 	stuffcmd (other, "bf\n");
 	
-	self.model = string_null;
+	self.model = "";
 	self.solid = SOLID_NOT;
 
 	// Megahealth = rot down the player's super health
@@ -420,7 +420,7 @@ void armor_touch ()
 	other.items = other.items - (other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + bit;
 
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = "";
 	if (deathmatch && deathmatch != 2)
 	{
 		self.nextthink = time + 20;
@@ -672,7 +672,7 @@ void weapon_touch ()
 		return;
 
 	// remove it in single player, or setup for respawning in deathmatch
-	self.model = string_null;
+	self.model = "";
 	self.solid = SOLID_NOT;
 	if (deathmatch && deathmatch != 2)
 	{
@@ -871,7 +871,7 @@ void ammo_touch ()
 	self = stemp;
 
 // remove it in single player, or setup for respawning in deathmatch
-	self.model = string_null;
+	self.model = "";
 	self.solid = SOLID_NOT;
 	if (deathmatch && deathmatch != 2)
 	{
@@ -1111,7 +1111,7 @@ void key_touch ()
 	if (!coop)
 	{
 		self.solid = SOLID_NOT;
-		self.model = string_null;
+		self.model = "";
 	}
 
 	activator = other;
@@ -1236,7 +1236,7 @@ void sigil_touch ()
 	sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
-	self.model = string_null;
+	self.model = "";
 	serverflags = serverflags | (self.spawnflags & 15);
 	self.classname = "";            // so rune doors won't find it
 	
@@ -1317,7 +1317,7 @@ void powerup_touch ()
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
 	other.items = other.items | self.items;
-	self.model = string_null;
+	self.model = "";
 
 // do the apropriate action
 	if (self.classname == "item_artifact_envirosuit")
