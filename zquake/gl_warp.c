@@ -456,18 +456,21 @@ void R_SetSky (char *name)
 		LoadTGA (pathname, &pic, &width, &height);
 		if (!pic)
 		{
-			Com_Printf ("Couldn't load %s\n", name);
+			Com_Printf ("Couldn't load %s\n", pathname);
 			return;
 		}
-		if (width != 256 || height != 256)
+		if (width > 512 || height > 512)	// just a sanity check
 		{
-			Com_Printf ("Couldn't load %s\n", name);
+			Com_Printf ("Bad image dimensions in %s\n", pathname);
 			free (pic);
 			return;
 		}
 
+		// FIXME, scale image down if larger than gl_max_size
+		// We're gonna run into trouble on a Voodoo
+
 		GL_Bind (skyboxtextures + i);
-		glTexImage2D (GL_TEXTURE_2D, 0, gl_solid_format, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, pic);
+		glTexImage2D (GL_TEXTURE_2D, 0, gl_solid_format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pic);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
