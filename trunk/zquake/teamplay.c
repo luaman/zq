@@ -373,7 +373,7 @@ char *Macro_LastDeath_f (void)
 
 char *Macro_Location2_f (void)
 {
-	if (vars.deathtrigger_time && realtime - vars.deathtrigger_time <= 5)
+	if (vars.deathtrigger_time && cls.realtime - vars.deathtrigger_time <= 5)
 		return vars.lastdeathloc;
 	return Macro_Location_f();
 }
@@ -403,7 +403,7 @@ char *Macro_Date_f (void)
 // returns the last item picked up
 char *Macro_Took_f (void)
 {
-	if (!vars.tooktime || realtime > vars.tooktime + 20)
+	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
 		strncpy (macro_buf, tp_name_nothing.string, sizeof(macro_buf)-1);
 	else
 		strcpy (macro_buf, vars.tookname);
@@ -413,7 +413,7 @@ char *Macro_Took_f (void)
 // returns location of the last item picked up
 char *Macro_TookLoc_f (void)
 {
-	if (!vars.tooktime || realtime > vars.tooktime + 20)
+	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
 		strncpy (macro_buf, tp_name_someplace.string, sizeof(macro_buf)-1);
 	else
 		strcpy (macro_buf, vars.tookloc);
@@ -424,7 +424,7 @@ char *Macro_TookLoc_f (void)
 // %i macro - last item picked up in "name at location" style
 char *Macro_TookAtLoc_f (void)
 {
-	if (!vars.tooktime || realtime > vars.tooktime + 20)
+	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
 		strncpy (macro_buf, tp_name_nothing.string, sizeof(macro_buf)-1);
 	else {
 		strncpy (macro_buf, va("%s %s %s", vars.tookname,
@@ -1210,7 +1210,7 @@ void TP_CheckVersionRequest (char *s)
 		return;
 
 	if (vars.f_version_reply_time
-		&& realtime - vars.f_version_reply_time < 20)
+		&& cls.realtime - vars.f_version_reply_time < 20)
 		return;	// don't reply again if 20 seconds haven't passed
 
 	while (1)
@@ -1235,7 +1235,7 @@ ok:
 	{
 		Cbuf_AddText (va("say ZQuake version %s "
 			QW_PLATFORM ":" QW_RENDERER "\n", VersionString()));
-		vars.f_version_reply_time = realtime;
+		vars.f_version_reply_time = cls.realtime;
 	}
 }
 
@@ -1873,7 +1873,7 @@ static void ExecTookTrigger (char *s, int flag, vec3_t org)
 	if ( !((pkflags|tookflags) & flag) )
 		return;
 
-	vars.tooktime = realtime;
+	vars.tooktime = cls.realtime;
 	strncpy (vars.tookname, s, sizeof(vars.tookname)-1);
 	strncpy (vars.tookloc, TP_LocationName (org), sizeof(vars.tookloc)-1);
 
@@ -2101,7 +2101,7 @@ void TP_StatChanged (int stat, int value)
 		if (value > 0) {
 			if (vars.health <= 0) {
 				extern cshift_t	cshift_empty;
-				vars.respawntrigger_time = realtime;
+				vars.respawntrigger_time = cls.realtime;
 				if (cl.teamfortress)
 					memset (&cshift_empty, 0, sizeof(cshift_empty));
 				if (!cl.spectator && CountTeammates())
@@ -2111,7 +2111,7 @@ void TP_StatChanged (int stat, int value)
 			return;
 		}
 		if (vars.health > 0) {		// We have just died
-			vars.deathtrigger_time = realtime;
+			vars.deathtrigger_time = cls.realtime;
 			strcpy (vars.lastdeathloc, Macro_Location_f());
 			if (!cl.spectator && CountTeammates()) {
 				if (cl.teamfortress && (cl.stats[STAT_ITEMS] & (IT_KEY1|IT_KEY2))

@@ -226,9 +226,9 @@ void CL_PredictMove (void)
 
 	cl.time += cls.frametime;
 
-	playertime = realtime - cls.latency - cl_pushlatency.value*0.001;
-	if (playertime > realtime)
-		playertime = realtime;
+	playertime = cls.realtime - cls.latency - cl_pushlatency.value*0.001;
+	if (playertime > cls.realtime)
+		playertime = cls.realtime;
 
 	if (cl.intermission) {
 		cl.crouch = 0;
