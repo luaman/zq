@@ -449,6 +449,7 @@ void VID_ShiftPalette(unsigned char *p)
 }
 
 void InitHWGamma (void) {
+#ifdef USE_VMODE
 	int xf86vm_gammaramp_size;
 
 	if (COM_CheckParm("-nohwgamma"))
@@ -463,9 +464,11 @@ void InitHWGamma (void) {
 			systemgammaramp[0], systemgammaramp[1], systemgammaramp[2]);
 	}
 	vid_hwgamma_enabled = vid_hwgammacontrol.value && vid_gammaworks; // && fullscreen?
+#endif
 }
 
 void VID_SetDeviceGammaRamp (unsigned short *ramps) {
+#ifdef USE_VMODE
 	if (vid_gammaworks) {
 		currentgammaramp = ramps;
 		if (vid_hwgamma_enabled) {
@@ -473,13 +476,16 @@ void VID_SetDeviceGammaRamp (unsigned short *ramps) {
 			customgamma = true;
 		}
 	}
+#endif
 }
 
 void RestoreHWGamma (void) {
+#ifdef USE_VMODE
 	if (vid_gammaworks && customgamma) {
 		customgamma = false;
 		XF86VidModeSetGammaRamp(dpy, scrnum, 256, systemgammaramp[0], systemgammaramp[1], systemgammaramp[2]);
 	}
+#endif
 }
 
 // oldman: check gamma settings
@@ -801,6 +807,8 @@ void VID_Init(unsigned char *palette)
 	win = XCreateWindow(dpy, root, 0, 0, width, height,
 						0, visinfo->depth, InputOutput,
 						visinfo->visual, mask, &attr);
+	XStoreName(dpy, win, "zquake-glx");
+	
 	XMapWindow(dpy, win);
 
 #ifdef USE_VMODE
