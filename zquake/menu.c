@@ -2910,7 +2910,7 @@ void M_Draw (void)
 	{
 		scr_copyeverything = 1;
 
-		if (scr_con_current)
+		if (scr_con_current == vid.height)
 		{
 			Draw_ConsoleBackground (scr_con_current);
 			VID_UnlockBuffer ();
