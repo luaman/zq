@@ -417,8 +417,6 @@ void VID_Init (unsigned char *palette)
 	if (!mainwindow)
 		Sys_Error ("Couldn't create DIB window");
 
-	S_Init ();
-
 	ShowWindow (mainwindow, SW_SHOWDEFAULT);
 	UpdateWindow (mainwindow);
 
