@@ -198,7 +198,7 @@ sndinitstat SNDDMA_InitDirect (void)
 	shm->samplebits = 16;
 	if (s_khz.value == 44)
 		shm->speed = 44100;
-	if (s_khz.value == 22)
+	else if (s_khz.value == 22)
 		shm->speed = 22050;
 	else
 		shm->speed = 11025;
@@ -431,7 +431,7 @@ qboolean SNDDMA_InitWav (void)
 	shm->samplebits = 16;
 	if (s_khz.value == 44)
 		shm->speed = 44100;
-	if (s_khz.value == 22)
+	else if (s_khz.value == 22)
 		shm->speed = 22050;
 	else
 		shm->speed = 11025;
