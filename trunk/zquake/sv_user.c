@@ -1603,14 +1603,14 @@ void SV_RunCmd (usercmd_t *ucmd)
 	int before, after;
 
 before = PM_TestPlayerPosition (pmove.origin);
-	PlayerMove ();
+	PM_PlayerMove ();
 after = PM_TestPlayerPosition (pmove.origin);
 
 if (sv_player->v.health > 0 && before && !after )
 	Com_Printf ("player %s got stuck in playermove!!!!\n", sv_client->name);
 }
 #else
-	PlayerMove ();
+	PM_PlayerMove ();
 #endif
 
 	sv_client->jump_held = pmove.jump_held;

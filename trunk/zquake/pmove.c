@@ -881,7 +881,7 @@ void PM_SpectatorMove (void)
 
 /*
 =============
-PlayerMove
+PM_PlayerMove
 
 Returns with origin, angles, and velocity modified in place.
 
@@ -889,7 +889,7 @@ Numtouch and touchindex[] will be set if any of the physents
 were contacted during the move.
 =============
 */
-void PlayerMove (void)
+void PM_PlayerMove (void)
 {
 	frametime = pmove.cmd.msec * 0.001;
 	pmove.numtouch = 0;
