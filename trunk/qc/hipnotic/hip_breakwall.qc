@@ -77,7 +77,7 @@ void rubble_use ()
 	sound (self, CHAN_AUTO, "misc/shortexp.wav", 1, ATTN_NORM);
 
 	i = 0;
-	while (i < self.count)
+	do
 	{
 		e = spawn ();
 
@@ -117,7 +117,7 @@ void rubble_use ()
 		setorigin (e, e.origin);
 
 		i = i + 1;
-	}
+	} while (i < self.count);
 }
 
 void func_rubble ()
