@@ -417,7 +417,7 @@ char *va (char *format, ...)
 	_vsnprintf (string[idx], sizeof(string[idx]) - 1, format, argptr);
 	string[idx][sizeof(string[idx]) - 1] = '\0';
 #else
-	vnsprintf (string[idx], sizeof(string[idx]), format, argptr);
+	vsnprintf (string[idx], sizeof(string[idx]), format, argptr);
 #endif // _WIN32
 	va_end (argptr);
 
