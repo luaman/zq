@@ -105,16 +105,13 @@ void D_DisableBackBufferAccess (void);
 void D_EndDirectRect (int x, int y, int width, int height);
 void D_PolysetDraw (void);
 void D_PolysetDrawFinalVerts (finalvert_t *fv, int numverts);
-void D_DrawParticle (particle_t *pparticle);
 void D_DrawSprite (void);
 void D_DrawSurfaces (void);
 void D_DrawZPoint (void);
 void D_EnableBackBufferAccess (void);
-void D_EndParticles (void);
 void D_Init (void);
 void D_ViewChanged (void);
 void D_SetupFrame (void);
-void D_StartParticles (void);
 void D_WarpScreen (void);
 
 void D_FillRect (vrect_t *vrect, int color);
