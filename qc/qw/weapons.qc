@@ -25,6 +25,23 @@
 
 */
 
+// constants for the impulse command
+const float  IMPULSE_WEAPON_FIRST             =   1;
+const float  IMPULSE_AXE                      =   1;
+const float  IMPULSE_SHOTGUN                  =   2;
+const float  IMPULSE_SUPER_SHOTGUN            =   3;
+const float  IMPULSE_NAILGUN                  =   4;
+const float  IMPULSE_SUPER_NAILGUN            =   5;
+const float  IMPULSE_GRENADE_LAUNCHER         =   6;
+const float  IMPULSE_ROCKET_LAUNCHER          =   7;
+const float  IMPULSE_LIGHTNING                =   8;
+const float  IMPULSE_WEAPON_LAST              =   8;
+const float  IMPULSE_CHEAT                    =   9;
+const float  IMPULSE_WEAPONCYCLE_F            =  10;
+const float  IMPULSE_CHEAT_SERVERFLAGS        =  11;
+const float  IMPULSE_WEAPONCYCLE_R            =  12;
+
+
 void T_Damage (entity targ, entity inflictor, entity attacker, float damage);
 void player_run ();
 void T_RadiusDamage (entity bomb, entity attacker, float rad, entity ignore, string dtype);
