@@ -725,8 +725,6 @@ void R_PolyBlend (void)
 {
 	if (vid_hwgamma_enabled)
 		return;
-	if (!gl_polyblend.value)
-		return;
 	if (!v_blend[3])
 		return;
 
