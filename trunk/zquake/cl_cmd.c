@@ -919,6 +919,11 @@ void CL_InitCommands (void)
 	Cmd_AddCommand ("playdemo", CL_PlayDemo_f);
 	Cmd_AddCommand ("timedemo", CL_TimeDemo_f);
 
+// suppress warnings
+// FIXME, some mods seem to stuff 'pushlatency 0' to disable prediction and make a hand-made
+// spectator cam behave better... should we detect that and disable prediction?
+	Cmd_AddLegacyCommand ("pushlatency", "");
+
 //
 // forward to server commands
 //
