@@ -25,18 +25,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef SERVERONLY
 
-#define WM_MOUSEWHEEL                   0x020A
+#ifndef WM_MOUSEWHEEL
+#define WM_MOUSEWHEEL	0x020A
+#endif
 
-#include <ddraw.h>
 #include <dsound.h>
-
-extern	HINSTANCE	global_hInstance;
-
-extern qboolean		DDActive;
 
 extern LPDIRECTSOUND		pDS;
 extern LPDIRECTSOUNDBUFFER	pDSBuf;
 extern DWORD				gSndBufSize;
+
+extern HINSTANCE	global_hInstance;
+
+extern qboolean		DDActive;
+
 
 typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT} modestate_t;
 
