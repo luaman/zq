@@ -302,18 +302,14 @@ void() agh_player_dietidy =
         // Manual destroy the ESR...
         // (This is the safest way.)
 
-        // Kill child objects...
-        self.agrip_esr.aiment.think = SUB_Remove;
-        self.agrip_esr.aiment.nextthink = time + 0.01;
-        self.agrip_esr.enemy.think = SUB_Remove;
-        self.agrip_esr.enemy.nextthink = time + 0.01;
-        self.agrip_esr.goalentity.think = SUB_Remove;
-        self.agrip_esr.goalentity.nextthink = time + 0.01;
+        // Kill child objects (safely)...
+        remove(self.agrip_esr.aiment);
+        remove(self.agrip_esr.enemy);
+        remove(self.agrip_esr.goalentity);
 
         // Destruct the ESR...
         sound(self.agrip_esr.owner, CHAN_AUTO, "toggles/off.wav", 1, ATTN_NORM);
-        self.agrip_esr.think = SUB_Remove;
-        self.agrip_esr.nextthink = time + 0.01;
+        remove(self.agrip_esr);
 
         // Now set the flag back so that it's respawned when I am...
         snap_misc_m2m("ESR: Disabled.\n");
@@ -328,8 +324,7 @@ void() agh_player_dietidy =
     }
 
     // AUX
-    self.agrip_aux.think = SUB_Remove;
-    self.agrip_aux.nextthink = time + 0.1;
+    remove(self.agrip_aux);
 };
 
 void() agh_weapons_impulsecommands =
@@ -352,13 +347,7 @@ void() agh_weapons_impulsecommands =
     //          taken into consideration; otherwise it'll always be an
     //          opponent to us.
     
-#ifdef AGRIP_BOT
-    if( self.impulse == 50 )
-	create_bot(1);
-     
-    if( self.impulse == 51 )
-	create_bot(2);
-#else
+#ifdef FRIKBOT
     if( self.impulse == 50 )
         Cmd_AddBot("", "");
 
