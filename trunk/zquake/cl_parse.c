@@ -266,7 +266,9 @@ void Model_NextDownload (void)
 	}
 
 	// all done
-	cl.worldmodel = cl.model_precache[1];	
+	cl.worldmodel = cl.model_precache[1];
+	if (!cl.worldmodel)
+		Host_Error ("Model_NextDownload: NULL worldmodel");
 	R_NewMap ();
 	TP_NewMap ();
 	Hunk_Check ();		// make sure nothing is hurt
