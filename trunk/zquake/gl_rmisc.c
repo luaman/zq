@@ -194,6 +194,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&gl_fb_depthhack);
 	Cvar_RegisterVariable (&gl_fb_bmodels);
 	Cvar_RegisterVariable (&gl_fb_models);
+	Cvar_RegisterVariable (&gl_colorlights);
 	Cvar_RegisterVariable (&gl_lightmode);
 
 	Cvar_RegisterVariable (&gl_keeptjunctions);
