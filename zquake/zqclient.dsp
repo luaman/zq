@@ -627,25 +627,6 @@ SOURCE=.\gl_rsurf.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\gl_screen.c
-
-!IF  "$(CFG)" == "zqclient - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\gl_warp.c
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
@@ -1030,26 +1011,6 @@ SOURCE=.\r_vars.c
 # Begin Source File
 
 SOURCE=.\sbar.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\screen.c
-
-!IF  "$(CFG)" == "zqclient - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
