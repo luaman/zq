@@ -28,11 +28,14 @@ extern unsigned char d_15to8table[65536];
 extern unsigned d_8to24table2[256];
 extern cvar_t crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
+qboolean OnChange_GL_TextureMode_f (cvar_t *var, char *string);
+
 cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_max_size = {"gl_max_size", "1024"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_lerpimages = {"r_lerpimages", "1"};
 cvar_t		gl_conalpha = {"gl_conalpha", "0.8"};
+cvar_t		gl_texturemode = {"gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", 0, OnChange_GL_TextureMode_f};
 
 byte		*draw_chars;				// 8*8 graphic characters
 mpic_t		*draw_disc;
@@ -334,35 +337,23 @@ glmode_t modes[] = {
 
 /*
 ===============
-Draw_TextureMode_f
+OnChange_GL_TextureMode_f
 ===============
 */
-void Draw_TextureMode_f (void)
+qboolean OnChange_GL_TextureMode_f (cvar_t *var, char *string)
 {
 	int		i;
 	gltexture_t	*glt;
 
-	if (Cmd_Argc() == 1)
+	for (i=0 ; i<6 ; i++)
 	{
-		for (i=0 ; i< 6 ; i++)
-			if (gl_filter_min == modes[i].minimize)
-			{
-				Com_Printf ("%s\n", modes[i].name);
-				return;
-			}
-		Com_Printf ("current filter is unknown???\n");
-		return;
-	}
-
-	for (i=0 ; i< 6 ; i++)
-	{
-		if (!Q_strcasecmp (modes[i].name, Cmd_Argv(1) ) )
+		if (!Q_strcasecmp (modes[i].name, string ) )
 			break;
 	}
 	if (i == 6)
 	{
-		Com_Printf ("bad filter name\n");
-		return;
+		Com_Printf ("bad filter name: %s\n", string);
+		return true;	// don't change the cvar
 	}
 
 	gl_filter_min = modes[i].minimize;
@@ -378,6 +369,8 @@ void Draw_TextureMode_f (void)
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 		}
 	}
+
+	return false;
 }
 
 
@@ -425,14 +418,12 @@ void Draw_Init (void)
 	Cvar_Register (&gl_picmip);
 	Cvar_Register (&gl_lerpimages);
 	Cvar_Register (&gl_conalpha);
+	Cvar_Register (&gl_texturemode);
 
 	// 3dfx can only handle 256 wide textures
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4) ||
 		!Q_strncasecmp ((char *)gl_renderer, "Mesa",4))
 		Cvar_Set (&gl_max_size, "256");
-
-	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
-
 
 	// load the console background and the charset
 	// by hand, because we need to write the version
