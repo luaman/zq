@@ -306,39 +306,39 @@ const float DAMAGE_NO				= 0;
 const float DAMAGE_YES				= 1;
 const float DAMAGE_AIM				= 2;
 
+
 // items
-const float IT_AXE					= 4096;
-const float IT_SHOTGUN				= 1;
-const float IT_SUPER_SHOTGUN		= 2;
-const float IT_NAILGUN				= 4;
-const float IT_SUPER_NAILGUN		= 8;
-const float IT_GRENADE_LAUNCHER		= 16;
-const float IT_ROCKET_LAUNCHER		= 32;
-const float IT_LIGHTNING			= 64;
-//const float IT_EXTRA_WEAPON		= 128;
-const float IT_ALL_WEAPONS			= 4223;
+const float IT_AXE					= 0x1000;
+const float IT_SHOTGUN				= 0x0001;
+const float IT_SUPER_SHOTGUN		= 0x0002;
+const float IT_NAILGUN				= 0x0004;
+const float IT_SUPER_NAILGUN		= 0x0008;
+const float IT_GRENADE_LAUNCHER		= 0x0010;
+const float IT_ROCKET_LAUNCHER		= 0x0020;
+const float IT_LIGHTNING			= 0x0040;
+//const float IT_EXTRA_WEAPON		= 0x0080;
+const float IT_ALL_WEAPONS			= 0x107F;
 
+const float IT_SHELLS				= 0x0100;
+const float IT_NAILS				= 0x0200;
+const float IT_ROCKETS				= 0x0400;
+const float IT_CELLS				= 0x0800;
 
-const float IT_SHELLS				= 256;
-const float IT_NAILS				= 512;
-const float IT_ROCKETS				= 1024;
-const float IT_CELLS				= 2048;
+const float IT_ARMOR1				= 0x2000;
+const float IT_ARMOR2				= 0x4000;
+const float IT_ARMOR3				= 0x8000;
+const float IT_SUPERHEALTH			= 0x010000;
 
-const float IT_ARMOR1				= 8192;
-const float IT_ARMOR2				= 16384;
-const float IT_ARMOR3				= 32768;
-const float IT_SUPERHEALTH			= 65536;
+const float IT_KEY1 				= 0x020000;
+const float IT_KEY2 				= 0x040000;
 
-const float IT_KEY1 				= 131072;
-const float IT_KEY2 				= 262144;
+const float IT_INVISIBILITY 		= 0x080000;
+const float IT_INVULNERABILITY		= 0x100000;
+const float IT_SUIT 				= 0x200000;
+const float IT_QUAD 				= 0x400000;
 
-const float IT_INVISIBILITY 		= 524288;
-const float IT_INVULNERABILITY		= 1048576;
-const float IT_SUIT 				= 2097152;
-const float IT_QUAD 				= 4194304;
 
 // point content values
-
 const float CONTENT_EMPTY			= -1;
 const float CONTENT_SOLID			= -2;
 const float CONTENT_WATER			= -3;
@@ -372,20 +372,20 @@ const float SVC_BIGKICK			= 35;
 const float SVC_MUZZLEFLASH 	= 39;
 
 // temp entities
-const float TE_SPIKE		= 0;
-const float TE_SUPERSPIKE	= 1;
-const float TE_GUNSHOT		= 2;
-const float TE_EXPLOSION	= 3;
-const float TE_TAREXPLOSION = 4;
-const float TE_LIGHTNING1	= 5;
-const float TE_LIGHTNING2	= 6;
-const float TE_WIZSPIKE		= 7;
-const float TE_KNIGHTSPIKE	= 8;
-const float TE_LIGHTNING3	= 9;
-const float TE_LAVASPLASH	= 10;
-const float TE_TELEPORT		= 11;
-const float TE_BLOOD		= 12;
-const float TE_LIGHTNINGBLOOD = 13;
+const float TE_SPIKE			= 0;
+const float TE_SUPERSPIKE		= 1;
+const float TE_GUNSHOT			= 2;
+const float TE_EXPLOSION		= 3;
+const float TE_TAREXPLOSION		= 4;
+const float TE_LIGHTNING1		= 5;
+const float TE_LIGHTNING2		= 6;
+const float TE_WIZSPIKE			= 7;
+const float TE_KNIGHTSPIKE		= 8;
+const float TE_LIGHTNING3		= 9;
+const float TE_LAVASPLASH		= 10;
+const float TE_TELEPORT			= 11;
+const float TE_BLOOD			= 12;
+const float TE_LIGHTNINGBLOOD	= 13;
 
 // sound channels
 // channel 0 never willingly overrides
@@ -664,7 +664,7 @@ void() traceoff 					= #30;
 void(entity e) eprint				= #31;		// prints an entire edict
 float(float yaw, float dist) walkmove	= #32;	// returns TRUE or FALSE
 // #33 was removed
-float() droptofloor = #34;				// TRUE if landed on floor
+float() droptofloor = #34;						// TRUE if landed on floor
 void(float style, string value) lightstyle = #35;
 float(float v) rint					= #36;		// round to nearest int
 float(float v) floor				= #37;		// largest integer <= v
@@ -679,7 +679,7 @@ float(string s) cvar = #45;						// return cvar.value
 void(string s) localcmd = #46;					// put string into local que
 entity(entity e) nextent = #47; 				// for looping through all ents
 // #48 was removed
-void() ChangeYaw = #49; 					// turn towards self.ideal_yaw
+void() ChangeYaw = #49; 						// turn towards self.ideal_yaw
 					    // at self.yaw_speed
 // #50 was removed
 vector(vector v) vectoangles			= #51;
@@ -717,8 +717,9 @@ string(string s) precache_sound2	= #76;		// registered version only
 string(string s) precache_file2 	= #77;		// registered version only
 
 void(entity e) setspawnparms		= #78;		// set parm1... to the
-						// values at level start
-						// for coop respawn
+												// values at level start
+												// for coop respawn
+												
 void(entity killer, entity killee) logfrag = #79;	// add to stats
 
 string(entity e, string key) infokey	= #80;	// get a key value (world = serverinfo)
