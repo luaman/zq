@@ -131,8 +131,8 @@ qboolean CL_GetNQDemoMessage (void)
 
 void NQD_BumpEntityCount (int num)
 {
-	if (num > nq_num_entities)
-		nq_num_entities = num;
+	if (num >= nq_num_entities)
+		nq_num_entities = num + 1;
 }
 
 
@@ -736,27 +736,8 @@ void NQD_LinkEntities (void)
 		if (cent->lastframe != cl_entframecount)
 			continue;		// not present in this frame
 
-		// control powerup glow for bots
-		if (state->modelindex != cl_playerindex || r_powerupglow.value)
-		{
-			// spawn light flashes, even ones coming from invisible objects
-			if ((state->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
-				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_redblue);
-			else if (state->effects & EF_BLUE)
-				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_blue);
-			else if (state->effects & EF_RED)
-				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_red);
-			else if (state->effects & EF_BRIGHTLIGHT) {
-				vec3_t	tmp;
-				VectorCopy (state->origin, tmp);
-				tmp[2] += 16;
-				CL_NewDlight (state->number, tmp, 400 + (rand()&31), 0.1, lt_default);
-			} else if (state->effects & EF_DIMLIGHT)
-				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_default);
-		}
-
-		if (state->effects & EF_MUZZLEFLASH)
-		{
+		// spawn light flashes, even ones coming from invisible objects
+		if (state->effects & EF_MUZZLEFLASH) {
 			vec3_t		forward;
 			dlight_t	*dl;
 
@@ -769,6 +750,16 @@ void NQD_LinkEntities (void)
 			dl->die = cl.time + 0.1;
 			dl->type = lt_muzzleflash;
 		}
+		if (state->effects & EF_BRIGHTLIGHT) {
+			if (state->modelindex != cl_playerindex || r_powerupglow.value) {
+				vec3_t	tmp;
+				VectorCopy (state->origin, tmp);
+				tmp[2] += 16;
+				CL_NewDlight (state->number, tmp, 400 + (rand()&31), 0.1, lt_default);
+			}
+		}
+		if (state->effects & EF_DIMLIGHT)
+			CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_default);
 
 		// if set to invisible, skip
 		if (!state->modelindex)
