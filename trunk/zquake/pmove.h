@@ -46,6 +46,14 @@ typedef struct
 } physent_t;
 
 
+typedef enum {
+	PM_NORMAL,			// normal ground movement
+	PM_OLD_SPECTATOR,	// fly, no clip to world (QW bug)
+	PM_SPECTATOR,		// fly, no clip to world
+	PM_DEAD,			// no acceleration
+	PM_FLY				// fly, bump into walls
+} pmtype_t;
+
 typedef struct
 {
 	int			sequence;	// just for debugging prints
