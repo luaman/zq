@@ -90,6 +90,8 @@ cvar_t	r_grenadetrail = {"r_grenadetrail", "1"};
 cvar_t	r_powerupglow = {"r_powerupglow", "1"};
 cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
 
+cvar_t	cl_staticsounds = {"cl_staticsounds", "1"};
+
 cvar_t	cl_teamskin = {"teamskin", ""};
 cvar_t	cl_enemyskin = {"enemyskin", ""};
 
@@ -1228,6 +1230,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&r_powerupglow);
 	Cvar_RegisterVariable (&r_rocketlight);
 	Cvar_RegisterVariable (&default_fov);
+	Cvar_RegisterVariable (&cl_staticsounds);
 // <-- Tonik
 
 	//
