@@ -266,7 +266,7 @@ void train_wait ()
 		sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	}
 	else
-		self.nextthink = self.ltime + 0.1;
+		self.nextthink = self.ltime + 0.01;     // smoother plat movement
 	
 	self.think = train_next;
 }
@@ -296,7 +296,7 @@ void func_train_find ()
 	setorigin (self, targ.origin - self.mins);
 	if (!self.targetname)
 	{	// not triggered, so start immediately
-		self.nextthink = self.ltime + 0.1;
+		self.nextthink = self.ltime + 0.01;     // smoother plat movement
 		self.think = train_next;
 	}
 }
