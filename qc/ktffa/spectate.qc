@@ -37,18 +37,29 @@ called when a spectator connects to a server
 */
 void() SpectatorConnect =
 {
+	string s;
+
 	bprint (PRINT_MEDIUM, "Spectator ");
 	bprint (PRINT_MEDIUM, self.netname);
 	bprint (PRINT_MEDIUM, " entered the game\n");
 
 	sprint(self, 2, "Welcome to ÀÔÌ‚·Ù ‘Â·ÌÛ ≤Æ≤ ∆∆¡ mod\nType „ÔÌÌ·Ó‰Û for help\n");
 
-	stuffcmd(self, "alias join \"impulse 13\"\n");
-	stuffcmd(self, "alias scores \"impulse 16\"\n");
-	stuffcmd(self, "alias commands \"impulse 17\"\n");
-	stuffcmd(self, "alias about \"impulse 21\"\n");
+	stuffcmd(self, "alias join \"impulse ");
+	s = ftos(KT_IMPULSE_VOTE_CHANGE);
+	stuffcmd(self, s);
+	stuffcmd(self.owner, "\"\nalias scores \"impulse ");
+	s = ftos(KT_IMPULSE_PRINT_SCORES);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\nalias commands \"impulse ");
+	s = ftos(KT_IMPULSE_PRINT_CMDS);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\nalias about \"impulse ");
+	s = ftos(KT_IMPULSE_PRINT_VERSION);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\n");
 
-	self.goalentity = world; // used for impulse 1 below
+	self.goalentity = world; // used for impulse IMPULSE_AXE below
 };
 
 /*
@@ -74,7 +85,7 @@ Called by SpectatorThink if the spectator entered an impulse
 */
 void() SpectatorImpulseCommand =
 {
-	if (self.impulse == 1) {
+	if (self.impulse == IMPULSE_AXE) {
 		// teleport the spectator to the next spawn point
 		// note that if the spectator is tracking, this doesn't do
 		// much
@@ -87,11 +98,11 @@ void() SpectatorImpulseCommand =
 			self.fixangle = true;           // turn this way immediately
 		}
 	}
-	else if(self.impulse == 13) stuffcmd(self, "spectator 0; wait; wait; reconnect\n");
-	else if(self.impulse == 16) PrintScores();
-	else if(self.impulse == 17) PrintSCommands();
-	else if(self.impulse == 21) ShowVersion();
-	self.impulse = 0;
+	else if(self.impulse == KT_IMPULSE_VOTE_CHANGE) stuffcmd(self, "spectator 0; wait; wait; reconnect\n");
+	else if(self.impulse == KT_IMPULSE_PRINT_SCORES) PrintScores();
+	else if(self.impulse == KT_IMPULSE_PRINT_CMDS) PrintSCommands();
+	else if(self.impulse == KT_IMPULSE_PRINT_VERSION) ShowVersion();
+	self.impulse = IMPULSE_NONE;
 };
 
 /*

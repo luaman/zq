@@ -45,7 +45,7 @@ void SpectatorConnect ()
 {
 	bprint (PRINT_MEDIUM, "Spectator ", self.netname, " entered the game\n");
 
-	self.goalentity = world; // used for impulse 1 below
+	self.goalentity = world; // used for impulse IMPULSE_AXE below
 }
 
 /*
@@ -69,7 +69,7 @@ Called by SpectatorThink if the spectator entered an impulse
 */
 void SpectatorImpulseCommand ()
 {
-	if (self.impulse == 1) {
+	if (self.impulse == IMPULSE_AXE) {
 		// teleport the spectator to the next spawn point
 		// note that if the spectator is tracking, this doesn't do much
 		self.goalentity = find(self.goalentity, classname, "info_player_deathmatch");
@@ -82,7 +82,7 @@ void SpectatorImpulseCommand ()
 		}
 	}
 
-	self.impulse = 0;
+	self.impulse = IMPULSE_NONE;
 }
 
 /*
@@ -97,6 +97,6 @@ void SpectatorThink ()
 	// self.origin, etc contains spectator position, so you could
 	// do some neat stuff here
 
-	if (self.impulse)
+	if (self.impulse != IMPULSE_NONE)
 		SpectatorImpulseCommand();
 }
