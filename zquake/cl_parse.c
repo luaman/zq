@@ -111,10 +111,6 @@ char *svc_strings[] =
 	"NEW PROTOCOL"
 };
 
-int	oldparsecountmod;
-int	parsecountmod;
-double	parsecounttime;
-
 int		cl_spikeindex, cl_playerindex, cl_flagindex;
 int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 int		cl_rocketindex, cl_grenadeindex;
@@ -903,19 +899,12 @@ Server information pertaining to this client only, sent every frame
 */
 void CL_ParseClientdata (void)
 {
-	int				i;
 	float		latency;
 	frame_t		*frame;
 
 // calculate simulated time of message
-	oldparsecountmod = parsecountmod;
-
-	i = cls.netchan.incoming_acknowledged;
-	cl.parsecount = i;
-	i &= UPDATE_MASK;
-	parsecountmod = i;
-	frame = &cl.frames[i];
-	parsecounttime = cl.frames[i].senttime;
+	cl.parsecount = cls.netchan.incoming_acknowledged;
+	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
 
 	frame->receivedtime = cls.realtime;
 
@@ -1481,7 +1470,7 @@ void CL_MuzzleFlash (void)
 		return;
 
 	dl = CL_AllocDlight (-i);
-	state = &cl.frames[parsecountmod].playerstate[i-1];
+	state = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[i-1];
 	AngleVectors (state->viewangles, forward, NULL, NULL);
 	VectorMA (state->origin, 18, forward, dl->origin);
 	dl->radius = 200 + (rand()&31);
