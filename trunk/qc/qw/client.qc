@@ -246,6 +246,7 @@ void() execute_changelevel =
 		self.invincible_finished = 0;
 
 		setorigin (other, pos.origin);
+		self.velocity = '0 0 0';
 		other = find (other, classname, "player");
 	}       
 
@@ -1085,6 +1086,7 @@ void() PlayerPostThink =
 	if (intermission_running)
 	{
 		setorigin (self, intermission_origin);
+		self.velocity = '0 0 0';	// don't stray off the intermission spot too far
 		return;
 	}
 
