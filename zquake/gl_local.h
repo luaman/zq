@@ -283,6 +283,7 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
 //
 void R_DrawBrushModel (entity_t *e);
 void R_DrawWorld (void);
+void R_DrawWaterSurfaces (void);
 void GL_BuildLightmaps (void);
 
 //
@@ -290,3 +291,7 @@ void GL_BuildLightmaps (void);
 //
 void R_NetGraph (void);
 
+// r_part.c
+void R_InitParticles (void);
+void R_ClearParticles (void);
+void R_DrawParticles (void);
