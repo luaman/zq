@@ -70,6 +70,7 @@ int 		desired_bits = 16;
 int sound_started=0;
 
 cvar_t bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
+cvar_t s_initsound = {"s_initsound", "1"};
 cvar_t s_volume = {"volume", "0.7", CVAR_ARCHIVE};
 cvar_t s_nosound = {"s_nosound", "0"};
 cvar_t s_precache = {"s_precache", "1"};
@@ -167,6 +168,7 @@ void S_Init (void)
 {
 //	Com_Printf ("\nSound Initialization\n");
 
+	Cvar_Register(&s_initsound);
 	Cvar_Register(&s_nosound);
 	Cvar_Register(&s_volume);
 	Cvar_Register(&s_precache);
@@ -178,7 +180,7 @@ void S_Init (void)
 	Cvar_Register(&s_show);
 	Cvar_Register(&s_mixahead);
 
-	if (COM_CheckParm("-nosound"))
+	if (COM_CheckParm("-nosound") || !s_initsound.value)
 		return;
 
 	if (COM_CheckParm("-simsound"))
