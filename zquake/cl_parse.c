@@ -593,7 +593,6 @@ void CL_ParseServerData (void)
 	char	fn[MAX_OSPATH];
 	qboolean	cflag = false;
 	int protover;
-	extern cshift_t	cshift_empty;
 	
 	Com_DPrintf ("Serverdata packet received.\n");
 //
