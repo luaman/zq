@@ -951,12 +951,10 @@ void CL_NewTranslation (int slot)
 	player = &cl.players[slot];
 	if (player->spectator)
 		return;
-/*
 	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
 	COM_StripExtension(s, s);
-	if (player->skin && !stricmp(s, player->skin->name))
+	if (player->skin && stricmp(s, player->skin->name))
 		player->skin = NULL;
-*/
 
 // teamcolor/enemycolor -->
 	player->topcolor = player->real_topcolor;
@@ -1001,7 +999,7 @@ void CL_NewTranslation (int slot)
 
 	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
 	COM_StripExtension(s, s);
-	if (player->skin && !stricmp(s, player->skin->name))
+	if (player->skin && stricmp(s, player->skin->name))
 		player->skin = NULL;
 
 // teamcolor/enemycolor -->
