@@ -430,8 +430,7 @@ void NET_Init (void)
 	//
 	// init the message buffer
 	//
-	net_message.maxsize = sizeof(net_message_buffer);
-	net_message.data = net_message_buffer;
+	SZ_Init (&net_message, net_message_buffer, sizeof(net_message_buffer));
 }
 
 /*
