@@ -4,3 +4,4 @@ What makes zqcc different from id's qcc
 - semicolon after function body is optional
 - redundant semicolons at file scope are allowed
 - empty statements are allowed
+- empty curly braces are allowed
