@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // net.h -- quake's interface to the networking layer
+#ifndef _NET_H_
+#define _NET_H_
 
 typedef enum {NA_NULL, NA_LOOPBACK, NA_BROADCAST, NA_IP, NA_IPX, NA_BROADCAST_IPX} netadrtype_t;
 
@@ -119,3 +121,4 @@ void Netchan_Setup (netsrc_t sock, netchan_t *chan, netadr_t adr, int qport);
 qbool Netchan_CanPacket (netchan_t *chan);
 qbool Netchan_CanReliable (netchan_t *chan);
 
+#endif /* _NET_H_ */

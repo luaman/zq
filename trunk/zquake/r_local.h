@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // r_local.h -- private refresh defs
+#ifndef _R_LOCAL_H_
+#define _R_LOCAL_H_
 
 #include "r_shared.h"
 
@@ -289,3 +291,5 @@ extern unsigned char	d_15to8table[65536];
 
 // r_misc.c
 void R_Build15to8table (void);
+
+#endif /* _R_LOCAL_H_ */

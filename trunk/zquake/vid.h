@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // vid.h -- video driver defs
+#ifndef _VID_H_
+#define _VID_H_
 
 #define VID_CBITS	6
 #define VID_GRADES	(1 << VID_CBITS)
@@ -97,3 +99,5 @@ qbool VID_Is8bit(void);
 void VID_SetDeviceGammaRamp (unsigned short *ramps);
 extern qbool vid_hwgamma_enabled;
 #endif
+
+#endif /* _VID_H_ */

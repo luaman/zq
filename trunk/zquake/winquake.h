@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // winquake.h: Win32-specific Quake header file
+#ifndef _WINQUAKE_H_
+#define _WINQUAKE_H_
 
 #ifdef _WIN32 
 
@@ -97,3 +99,5 @@ extern int	in_mwheeltype;
 #endif // !SERVERONLY
 
 #endif // _WIN32
+
+#endif /* _WINQUAKE_H_ */

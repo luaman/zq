@@ -23,6 +23,8 @@
 		59 Temple Place - Suite 330
 		Boston, MA  02111-1307, USA
 */
+#ifndef _TEAMPLAY_H_
+#define _TEAMPLAY_H_
 
 extern cvar_t cl_parsesay;
 extern cvar_t cl_triggers;
@@ -67,3 +69,5 @@ void TP_Init ();
 //#define FPD_NO_TEAM_MACROS	1
 #define FPD_NO_FORCE_SKIN	256
 #define FPD_NO_FORCE_COLOR	512
+
+#endif /* _TEAMPLAY_H_ */

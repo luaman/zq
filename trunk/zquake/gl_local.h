@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // gl_local.h -- private refresh defs
+#ifndef _GL_LOCAL_H_
+#define _GL_LOCAL_H_
 
 #include "quakedef.h"		// FIXME
 #include "gl_model.h"
@@ -276,3 +278,5 @@ void R_DrawAliasModel (entity_t *ent);
 // gl_rsprite.c
 //
 void R_DrawSpriteModel (entity_t *ent);
+
+#endif /* _GL_LOCAL_H_ */

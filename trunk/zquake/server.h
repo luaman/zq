@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // server.h - primary header for server
+#ifndef _SERVER_H_
+#define _SERVER_H_
 
 //define	PARANOID			// speed sapping error checking
 
@@ -484,3 +486,4 @@ void SV_Heartbeat_f (void);
 void Master_Shutdown (void);
 void Master_Heartbeat (void);
 
+#endif /* _SERVER_H_ */

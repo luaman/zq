@@ -17,6 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+#ifndef _MENU_H_
+#define _MENU_H_
 
 //
 // the net drivers should just set the apropriate bits in m_activenet,
@@ -38,3 +40,4 @@ void M_DrawTextBox (int x, int y, int width, int lines);
 void M_Menu_Main_f (void);
 void M_Menu_Quit_f (void);
 
+#endif /* _MENU_H_ */

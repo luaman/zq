@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // protocol.h -- communications protocols
+#ifndef _PROTOCOL_H_
+#define _PROTOCOL_H_
 
 #define	PROTOCOL_VERSION	28
 
@@ -326,3 +328,5 @@ typedef struct usercmd_s
 #define BUTTON_ATTACK	(1<<0)
 #define BUTTON_JUMP		(1<<1)
 #define BUTTON_USE		(1<<2)
+
+#endif /* _PROTOCOL_H_ */

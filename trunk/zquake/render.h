@@ -17,8 +17,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-
-// refresh.h -- public interface to refresh functions
+// render.h -- public interface to rendering functions
+#ifndef _RENDER_H_
+#define _RENDER_H_
 
 #define	TOP_RANGE		16			// soldier uniform colors
 #define	BOTTOM_RANGE	96
@@ -203,3 +204,4 @@ void Mod_TouchModel (char *name);
 struct model_s *Mod_ForName (char *name, qbool crash);
 int R_ModelFlags (const struct model_s *model);
 
+#endif /* _RENDER_H_ */

@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // Include file for asm drawing routines.
 //
+#ifndef _ASM_DRAW_H_
+#define _ASM_DRAW_H_
 
 //
 // !!! note that this file must match the corresponding C structures at all
@@ -149,3 +151,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 								// !!! d_polysa.s must be changed to match !!!
 #define mtri_shift			4
 
+#endif /* _ASM_DRAW_H_ */

@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // input.h -- external (non-keyboard) input devices
+#ifndef _INPUT_H_
+#define _INPUT_H_
 
 void IN_Init (void);
 
@@ -73,3 +75,5 @@ extern cvar_t	m_side;
 extern cvar_t	_windowed_mouse;
 
 #define mlook_active	(freelook.value || (in_mlook.state&1))
+
+#endif /* _INPUT_H_ */

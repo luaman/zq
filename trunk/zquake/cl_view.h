@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // cl_view.h
+#ifndef _CL_VIEW_H_
+#define _CL_VIEW_H_
 
 extern	cvar_t		sw_gamma;
 extern	cvar_t		sw_contrast;
@@ -43,3 +45,4 @@ float V_CalcRoll (vec3_t angles, vec3_t velocity);
 void V_StartPitchDrift (void);
 void V_StopPitchDrift (void);
 
+#endif /* _CL_VIEW_H_ */

@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // quakeasm.h: general asm header file
 //
+#ifndef _QUAKEASM_H_
+#define _QUAKEASM_H_
 
 #ifdef _WIN32
 #define __i386__	1
@@ -269,3 +271,5 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #endif	// SERVERONLY
+
+#endif /* _QUAKEASM_H_ */

@@ -18,7 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // sys.h -- non-portable functions
-
+#ifndef _SYS_H_
+#define _SYS_H_
 
 //
 // file IO
@@ -57,3 +58,5 @@ void Sys_HighFPPrecision (void);
 void Sys_SetFPCW (void);
 
 void Sys_Init (void);
+
+#endif /* _SYS_H_ */
