@@ -1,24 +1,31 @@
 /*
-Copyright (C) 1996-1997 Id Software, Inc.
+	player.qc
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+	player functions/definitions
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+	Copyright (C) 1996-1997  Id Software, Inc.
 
-See the GNU General Public License for more details.
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		59 Temple Place - Suite 330
+		Boston, MA  02111-1307, USA
 
 */
-//
-void() bubble_bob;
+
+void bubble_bob ();
 
 /*
 ==============================================================================
@@ -30,7 +37,7 @@ PLAYER
 
 $cd /raid/quake/id1/models/player_4
 $origin 0 -6 24
-$base base
+$base base              
 $skin skin
 
 //
@@ -105,7 +112,7 @@ PLAYER
 ==============================================================================
 */
 
-void() player_run;
+void player_run ();
 
 void()  player_stand1 =[        $axstnd1,       player_stand1   ]
 {
@@ -117,7 +124,7 @@ void()  player_stand1 =[        $axstnd1,       player_stand1   ]
 		return;
 	}
 
-	if (self.weapon == 4096)
+	if (self.weapon == IT_AXE)
 	{
 		if (self.walkframe >= 12)
 			self.walkframe = 0;
@@ -129,8 +136,8 @@ void()  player_stand1 =[        $axstnd1,       player_stand1   ]
 			self.walkframe = 0;
 		self.frame = $stand1 + self.walkframe;
 	}
-	self.walkframe = self.walkframe + 1;
-};
+	self.walkframe = self.walkframe + 1;    
+}
 
 void()  player_run =[   $rockrun1,      player_run      ]
 {
@@ -142,7 +149,7 @@ void()  player_run =[   $rockrun1,      player_run      ]
 		return;
 	}
 
-	if (self.weapon == 4096)
+	if (self.weapon == IT_AXE)
 	{
 		if (self.walkframe >= 6)
 			self.walkframe = 0;
@@ -155,47 +162,51 @@ void()  player_run =[   $rockrun1,      player_run      ]
 		self.frame = self.frame + self.walkframe;
 	}
 	self.walkframe = self.walkframe + 1;
-};
 
-void()muzzleflash =
+#ifdef AGRIP
+	agh_player_footsteps();
+#endif
+}
+
+void muzzleflash ()
 {
-	WriteByte (4, 39);
-	WriteEntity (4, self);
-	multicast (self.origin, 2);
-};
+	WriteByte (MSG_MULTICAST, SVC_MUZZLEFLASH);
+	WriteEntity (MSG_MULTICAST, self);
+	multicast (self.origin, MULTICAST_PVS);
+}
 
 
-void()  player_shot1 =  [$shotatt1, player_shot2        ] {self.weaponframe=1;muzzleflash();};
-void()  player_shot2 =  [$shotatt2, player_shot3        ] {self.weaponframe=2;};
-void()  player_shot3 =  [$shotatt3, player_shot4        ] {self.weaponframe=3;};
-void()  player_shot4 =  [$shotatt4, player_shot5        ] {self.weaponframe=4;};
-void()  player_shot5 =  [$shotatt5, player_shot6        ] {self.weaponframe=5;};
-void()  player_shot6 =  [$shotatt6, player_run  ] {self.weaponframe=6;};
+void()  player_shot1 =  [$shotatt1, player_shot2        ] {self.weaponframe=1;muzzleflash();}
+void()  player_shot2 =  [$shotatt2, player_shot3        ] {self.weaponframe=2;}
+void()  player_shot3 =  [$shotatt3, player_shot4        ] {self.weaponframe=3;}
+void()  player_shot4 =  [$shotatt4, player_shot5        ] {self.weaponframe=4;}
+void()  player_shot5 =  [$shotatt5, player_shot6        ] {self.weaponframe=5;}
+void()  player_shot6 =  [$shotatt6, player_run  ] {self.weaponframe=6;}
 
-void()  player_axe1 =   [$axatt1, player_axe2   ] {self.weaponframe=1;};
-void()  player_axe2 =   [$axatt2, player_axe3   ] {self.weaponframe=2;};
-void()  player_axe3 =   [$axatt3, player_axe4   ] {self.weaponframe=3;W_FireAxe();};
-void()  player_axe4 =   [$axatt4, player_run    ] {self.weaponframe=4;};
+void()  player_axe1 =   [$axatt1, player_axe2   ] {self.weaponframe=1;}
+void()  player_axe2 =   [$axatt2, player_axe3   ] {self.weaponframe=2;}
+void()  player_axe3 =   [$axatt3, player_axe4   ] {self.weaponframe=3;W_FireAxe();}
+void()  player_axe4 =   [$axatt4, player_run    ] {self.weaponframe=4;}
 
-void()  player_axeb1 =  [$axattb1, player_axeb2 ] {self.weaponframe=5;};
-void()  player_axeb2 =  [$axattb2, player_axeb3 ] {self.weaponframe=6;};
-void()  player_axeb3 =  [$axattb3, player_axeb4 ] {self.weaponframe=7;W_FireAxe();};
-void()  player_axeb4 =  [$axattb4, player_run   ] {self.weaponframe=8;};
+void()  player_axeb1 =  [$axattb1, player_axeb2 ] {self.weaponframe=5;}
+void()  player_axeb2 =  [$axattb2, player_axeb3 ] {self.weaponframe=6;}
+void()  player_axeb3 =  [$axattb3, player_axeb4 ] {self.weaponframe=7;W_FireAxe();}
+void()  player_axeb4 =  [$axattb4, player_run   ] {self.weaponframe=8;}
 
-void()  player_axec1 =  [$axattc1, player_axec2 ] {self.weaponframe=1;};
-void()  player_axec2 =  [$axattc2, player_axec3 ] {self.weaponframe=2;};
-void()  player_axec3 =  [$axattc3, player_axec4 ] {self.weaponframe=3;W_FireAxe();};
-void()  player_axec4 =  [$axattc4, player_run   ] {self.weaponframe=4;};
+void()  player_axec1 =  [$axattc1, player_axec2 ] {self.weaponframe=1;}
+void()  player_axec2 =  [$axattc2, player_axec3 ] {self.weaponframe=2;}
+void()  player_axec3 =  [$axattc3, player_axec4 ] {self.weaponframe=3;W_FireAxe();}
+void()  player_axec4 =  [$axattc4, player_run   ] {self.weaponframe=4;}
 
-void()  player_axed1 =  [$axattd1, player_axed2 ] {self.weaponframe=5;};
-void()  player_axed2 =  [$axattd2, player_axed3 ] {self.weaponframe=6;};
-void()  player_axed3 =  [$axattd3, player_axed4 ] {self.weaponframe=7;W_FireAxe();};
-void()  player_axed4 =  [$axattd4, player_run   ] {self.weaponframe=8;};
+void()  player_axed1 =  [$axattd1, player_axed2 ] {self.weaponframe=5;}
+void()  player_axed2 =  [$axattd2, player_axed3 ] {self.weaponframe=6;}
+void()  player_axed3 =  [$axattd3, player_axed4 ] {self.weaponframe=7;W_FireAxe();}
+void()  player_axed4 =  [$axattd4, player_run   ] {self.weaponframe=8;}
 
 
 //============================================================================
 
-void() player_nail1   =[$nailatt1, player_nail2  ]
+void() player_nail1   =[$nailatt1, player_nail2  ] 
 {
 	muzzleflash();
 
@@ -207,7 +218,7 @@ void() player_nail1   =[$nailatt1, player_nail2  ]
 	SuperDamageSound();
 	W_FireSpikes (4);
 	self.attack_finished = time + 0.2;
-};
+}
 void() player_nail2   =[$nailatt2, player_nail1  ]
 {
 	muzzleflash();
@@ -220,11 +231,11 @@ void() player_nail2   =[$nailatt2, player_nail1  ]
 	SuperDamageSound();
 	W_FireSpikes (-4);
 	self.attack_finished = time + 0.2;
-};
+}
 
 //============================================================================
 
-void() player_light1   =[$light1, player_light2  ]
+void() player_light1   =[$light1, player_light2  ] 
 {
 	muzzleflash();
 
@@ -236,7 +247,7 @@ void() player_light1   =[$light1, player_light2  ]
 	SuperDamageSound();
 	W_FireLightning();
 	self.attack_finished = time + 0.2;
-};
+}
 void() player_light2   =[$light2, player_light1  ]
 {
 	muzzleflash();
@@ -249,64 +260,72 @@ void() player_light2   =[$light2, player_light1  ]
 	SuperDamageSound();
 	W_FireLightning();
 	self.attack_finished = time + 0.2;
-};
+}
 
 //============================================================================
 
 
 void() player_rocket1   =[$rockatt1, player_rocket2  ] {self.weaponframe=1;
-	muzzleflash();};
-void() player_rocket2   =[$rockatt2, player_rocket3  ] {self.weaponframe=2;};
-void() player_rocket3   =[$rockatt3, player_rocket4  ] {self.weaponframe=3;};
-void() player_rocket4   =[$rockatt4, player_rocket5  ] {self.weaponframe=4;};
-void() player_rocket5   =[$rockatt5, player_rocket6  ] {self.weaponframe=5;};
-void() player_rocket6   =[$rockatt6, player_run  ] {self.weaponframe=6;};
-void(float num_bubbles) DeathBubbles;
+	muzzleflash();}
+void() player_rocket2   =[$rockatt2, player_rocket3  ] {self.weaponframe=2;}
+void() player_rocket3   =[$rockatt3, player_rocket4  ] {self.weaponframe=3;}
+void() player_rocket4   =[$rockatt4, player_rocket5  ] {self.weaponframe=4;}
+void() player_rocket5   =[$rockatt5, player_rocket6  ] {self.weaponframe=5;}
+void() player_rocket6   =[$rockatt6, player_run  ] {self.weaponframe=6;}
+void DeathBubbles (float num_bubbles);
 
-void() PainSound =
+void PainSound ()
 {
-local float             rs;
+	float	rs;
 
 	if (self.health < 0)
 		return;
 
 	if (damage_attacker.classname == "teledeath")
 	{
-		sound (self, 2, "player/teledth1.wav", 1, 0);
+		sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
 		return;
 	}
 
 // water pain sounds
-	if (self.watertype == -3 && self.waterlevel == 3)
+	if (self.watertype == CONTENT_WATER && self.waterlevel == 3)
 	{
 		DeathBubbles(1);
-		if (match_in_progress != 2) return; // TEAM
+#ifdef KTEAMS
+        if (match_in_progress != 2)
+            return;
+#endif
 		if (random() > 0.5)
-			sound (self, 2, "player/drown1.wav", 1, 1);
+			sound (self, CHAN_VOICE, "player/drown1.wav", 1, ATTN_NORM);
 		else
-			sound (self, 2, "player/drown2.wav", 1, 1);
+			sound (self, CHAN_VOICE, "player/drown2.wav", 1, ATTN_NORM);
 		return;
 	}
 
 // slime pain sounds
-	if (self.watertype == -4)
+	if (self.watertype == CONTENT_SLIME)
 	{
-// FIX ME       put in some steam here
-		if (match_in_progress != 2) return; // TEAM
+#ifdef KTEAMS
+        if (match_in_progress != 2)
+            return;
+#endif
 		if (random() > 0.5)
-			sound (self, 2, "player/lburn1.wav", 1, 1);
+			sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);
 		else
-			sound (self, 2, "player/lburn2.wav", 1, 1);
+			sound (self, CHAN_VOICE, "player/lburn2.wav", 1, ATTN_NORM);
 		return;
 	}
 
-	if (self.watertype == -5)
+	if (self.watertype == CONTENT_LAVA)
 	{
-		if (match_in_progress != 2) return; // TEAM
+#ifdef KTEAMS
+        if (match_in_progress != 2)
+            return;
+#endif
 		if (random() > 0.5)
-			sound (self, 2, "player/lburn1.wav", 1, 1);
+			sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);
 		else
-			sound (self, 2, "player/lburn2.wav", 1, 1);
+			sound (self, CHAN_VOICE, "player/lburn2.wav", 1, ATTN_NORM);
 		return;
 	}
 
@@ -323,10 +342,10 @@ local float             rs;
 	if (self.axhitme == 1)
 	{
 		self.axhitme = 0;
-		sound (self, 2, "player/axhit1.wav", 1, 1);
+		sound (self, CHAN_VOICE, "player/axhit1.wav", 1, ATTN_NORM);
 		return;
 	}
-
+	
 
 	rs = rint((random() * 5) + 1);
 
@@ -344,25 +363,25 @@ local float             rs;
 	else
 		self.noise = "player/pain6.wav";
 
-	sound (self, 2, self.noise, 1, 1);
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	return;
-};
+}
 
-void()  player_pain1 =  [       $pain1, player_pain2    ] {PainSound();self.weaponframe=0;};
-void()  player_pain2 =  [       $pain2, player_pain3    ] {};
-void()  player_pain3 =  [       $pain3, player_pain4    ] {};
-void()  player_pain4 =  [       $pain4, player_pain5    ] {};
-void()  player_pain5 =  [       $pain5, player_pain6    ] {};
-void()  player_pain6 =  [       $pain6, player_run      ] {};
+void()  player_pain1 =  [       $pain1, player_pain2    ] {PainSound();self.weaponframe=0;}
+void()  player_pain2 =  [       $pain2, player_pain3    ] {}
+void()  player_pain3 =  [       $pain3, player_pain4    ] {}
+void()  player_pain4 =  [       $pain4, player_pain5    ] {}
+void()  player_pain5 =  [       $pain5, player_pain6    ] {}
+void()  player_pain6 =  [       $pain6, player_run      ] {}
 
-void()  player_axpain1 =        [       $axpain1,       player_axpain2  ] {PainSound();self.weaponframe=0;};
-void()  player_axpain2 =        [       $axpain2,       player_axpain3  ] {};
-void()  player_axpain3 =        [       $axpain3,       player_axpain4  ] {};
-void()  player_axpain4 =        [       $axpain4,       player_axpain5  ] {};
-void()  player_axpain5 =        [       $axpain5,       player_axpain6  ] {};
-void()  player_axpain6 =        [       $axpain6,       player_run      ] {};
+void()  player_axpain1 =        [       $axpain1,       player_axpain2  ] {PainSound();self.weaponframe=0;}
+void()  player_axpain2 =        [       $axpain2,       player_axpain3  ] {}
+void()  player_axpain3 =        [       $axpain3,       player_axpain4  ] {}
+void()  player_axpain4 =        [       $axpain4,       player_axpain5  ] {}
+void()  player_axpain5 =        [       $axpain5,       player_axpain6  ] {}
+void()  player_axpain6 =        [       $axpain6,       player_run      ] {}
 
-void() player_pain =
+void player_pain ()
 {
 	if (self.weaponframe)
 		return;
@@ -370,29 +389,32 @@ void() player_pain =
 	if (self.invisible_finished > time)
 		return;         // eyes don't have pain frames
 
-	if (self.weapon == 4096)
+	if (self.weapon == IT_AXE)
 		player_axpain1 ();
 	else
 		player_pain1 ();
-};
+}
 
-void() player_diea1;
-void() player_dieb1;
-void() player_diec1;
-void() player_died1;
-void() player_diee1;
-void() player_die_ax1;
+void player_diea1 ();
+void player_dieb1 ();
+void player_diec1 ();
+void player_died1 ();
+void player_diee1 ();
+void player_die_ax1 ();
 
-void() DeathBubblesSpawn =
+void DeathBubblesSpawn ()
 {
-local entity    bubble;
-	if (self.owner.waterlevel != 3)
-		return;
+	entity	bubble;
+	if ((self.owner.waterlevel != 3) && (self.owner.health > 0))
+        {
+                remove(self);       // remove bubble spawner
+                return;
+        }
 	bubble = spawn();
 	setmodel (bubble, "progs/s_bubble.spr");
 	setorigin (bubble, self.owner.origin + '0 0 24');
-	bubble.movetype = 8;
-	bubble.solid = 0;
+	bubble.movetype = MOVETYPE_NOCLIP;
+	bubble.solid = SOLID_NOT;
 	bubble.velocity = '0 0 15';
 	bubble.nextthink = time + 0.5;
 	bubble.think = bubble_bob;
@@ -405,37 +427,36 @@ local entity    bubble;
 	self.air_finished = self.air_finished + 1;
 	if (self.air_finished >= self.bubble_count)
 		remove(self);
-};
+}
 
-void(float num_bubbles) DeathBubbles =
+void DeathBubbles (float num_bubbles)
 {
-local entity    bubble_spawner;
-
+	entity	bubble_spawner;
+	
 	bubble_spawner = spawn();
 	setorigin (bubble_spawner, self.origin);
-	bubble_spawner.movetype = 0;
-	bubble_spawner.solid = 0;
+	bubble_spawner.movetype = MOVETYPE_NONE;
+	bubble_spawner.solid = SOLID_NOT;
 	bubble_spawner.nextthink = time + 0.1;
 	bubble_spawner.think = DeathBubblesSpawn;
 	bubble_spawner.air_finished = 0;
 	bubble_spawner.owner = self;
 	bubble_spawner.bubble_count = num_bubbles;
-	return;
-};
+}
 
 
-void() DeathSound =
+void DeathSound ()
 {
-local float             rs;
+	float	rs;
 
 	// water death sounds
 	if (self.waterlevel == 3)
 	{
 		DeathBubbles(5);
-		sound (self, 2, "player/h2odeath.wav", 1, 0);
+		sound (self, CHAN_VOICE, "player/h2odeath.wav", 1, ATTN_NONE);
 		return;
 	}
-
+	
 	rs = rint ((random() * 4) + 1);
 	if (rs == 1)
 		self.noise = "player/death1.wav";
@@ -448,21 +469,21 @@ local float             rs;
 	if (rs == 5)
 		self.noise = "player/death5.wav";
 
-	sound (self, 2, self.noise, 1, 0);
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NONE);
 	return;
-};
+}
 
 
-void() PlayerDead =
+void PlayerDead ()
 {
 	self.nextthink = -1;
 // allow respawn after a certain time
-	self.deadflag = 2;
-};
+	self.deadflag = DEAD_DEAD;
+}
 
-vector(float dm) VelocityForDamage =
+vector VelocityForDamage (float dm)
 {
-	local vector v;
+	vector	v;
 
 	if (vlen(damage_inflictor.velocity)>0)
 	{
@@ -471,7 +492,7 @@ vector(float dm) VelocityForDamage =
 		v_z = 100 + 240 * random();
 		v_x = v_x + (200 * crandom());
 		v_y = v_y + (200 * crandom());
-		//dprint ("Velocity gib\n");
+		//dprint ("Velocity gib\n");                
 	}
 	else
 	{
@@ -498,19 +519,19 @@ vector(float dm) VelocityForDamage =
 		v = v * 10;
 
 	return v;
-};
+}
 
-void(string gibname, float dm) ThrowGib =
+void ThrowGib (string gibname, float dm)
 {
-	local   entity new;
+	entity	new;
 
 	new = spawn();
 	new.origin = self.origin;
 	setmodel (new, gibname);
-	setsize (new, '0 0 0', '0 0 0');
+	setsize (new, VEC_ORIGIN, VEC_ORIGIN);	// link into world
 	new.velocity = VelocityForDamage (dm);
-	new.movetype = 10;
-        new.solid = 0;
+	new.movetype = MOVETYPE_BOUNCE;
+	new.solid = SOLID_NOT;
 	new.avelocity_x = random()*600;
 	new.avelocity_y = random()*600;
 	new.avelocity_z = random()*600;
@@ -519,75 +540,75 @@ void(string gibname, float dm) ThrowGib =
 	new.nextthink = time + 10 + random()*10;
 	new.frame = 0;
 	new.flags = 0;
-};
+}
 
-void(string gibname, float dm) ThrowHead =
+void ThrowHead (string gibname, float dm)
 {
 	setmodel (self, gibname);
 	self.frame = 0;
 	self.nextthink = -1;
-	self.movetype = 10;
-	self.takedamage = 0;
-        self.solid = 0;
+	self.movetype = MOVETYPE_BOUNCE;
+	self.takedamage = DAMAGE_NO;
+	self.solid = SOLID_NOT;
 	self.view_ofs = '0 0 8';
 	setsize (self, '-16 -16 0', '16 16 56');
 	self.velocity = VelocityForDamage (dm);
 	self.origin_z = self.origin_z - 24;
-	self.flags = self.flags - (self.flags & 512);
+	self.flags = self.flags - (self.flags & FL_ONGROUND);
 	self.avelocity = crandom() * '0 600 0';
-};
+}
 
 
-void() GibPlayer =
+void GibPlayer ()
 {
-		ThrowHead ("progs/h_player.mdl", self.health);
-//team
-	if(match_in_progress == 2) {
-		ThrowGib ("progs/gib1.mdl", self.health);
-		ThrowGib ("progs/gib2.mdl", self.health);
-		ThrowGib ("progs/gib3.mdl", self.health);
-	}
-//team
+	ThrowHead ("progs/h_player.mdl", self.health);
+#ifdef KTEAMS
+    if(match_in_progress == 2) {
+#endif
+	ThrowGib ("progs/gib1.mdl", self.health);
+	ThrowGib ("progs/gib2.mdl", self.health);
+	ThrowGib ("progs/gib3.mdl", self.health);
+#ifdef KTEAMS
+    }
+#endif
 
-	self.deadflag = 2;
+	self.deadflag = DEAD_DEAD;
 
 	if (damage_attacker.classname == "teledeath")
 	{
-		sound (self, 2, "player/teledth1.wav", 1, 0);
+		sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
 		return;
 	}
 
 	if (damage_attacker.classname == "teledeath2")
 	{
-		sound (self, 2, "player/teledth1.wav", 1, 0);
+		sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
 		return;
 	}
-
+		
 	if (random() < 0.5)
-		sound (self, 2, "player/gib.wav", 1, 0);
+		sound (self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NONE);
 	else
-		sound (self, 2, "player/udeath.wav", 1, 0);
-};
+		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+}
 
-void() PlayerDie =
+void PlayerDie ()
 {
-        local   string  s;
-
-	self.items = self.items - (self.items & 524288);
+	float	i;
+	string	s, s2;
+	self.items = self.items - (self.items & IT_INVISIBILITY);
 
 	if ((stof(infokey(world,"dq"))) != 0)
 	{
-		if (self.super_damage_finished > 0 && !k_berzerk)		//team
+		if (self.super_damage_finished > 0)
 		{
 			DropQuad (self.super_damage_finished - time);
-			bprint (0, self.netname);
 			if (deathmatch == 4)
-				bprint (0, " lost an OctaPower with ");
+				s2 = "an OctaPower";
 			else
-        			bprint (0, " lost a quad with ");
+				s2 = "a quad";		// FIXME: "quad" is capitalized in q_touch, but not here
 			s = ftos(rint(self.super_damage_finished - time));
-			bprint (0, s);
-			bprint (0, " seconds remaining\n");
+			bprint (PRINT_LOW, self.netname, " lost ", s2, " with ",  s, " seconds remaining\n");
 		}
 	}
 
@@ -595,11 +616,8 @@ void() PlayerDie =
 	{
 		if (self.invisible_finished > 0)
 		{
-			bprint (0, self.netname);
-			bprint (0, " lost a ring with ");
 			s = ftos(rint(self.invisible_finished - time));
-			bprint (0, s);
-			bprint (0, " seconds remaining\n");
+			bprint (PRINT_LOW, self.netname, " lost a ring with ", s, " seconds remaining\n");
 			DropRing (self.invisible_finished - time);
 		}
 	}
@@ -611,47 +629,60 @@ void() PlayerDie =
 	self.modelindex = modelindex_player;    // don't use eyes
 
 	DropBackpack();
-
+	
 	self.weaponmodel="";
 	self.view_ofs = '0 0 -8';
-	self.deadflag = 1;
-	self.solid = 0;
-	self.flags = self.flags - (self.flags & 512);
-	self.movetype = 6;
+	self.deadflag = DEAD_DYING;
+	self.solid = SOLID_NOT;
+	self.flags = self.flags - (self.flags & FL_ONGROUND);
+	self.movetype = MOVETYPE_TOSS;
 	if (self.velocity_z < 10)
 		self.velocity_z = self.velocity_z + random()*300;
 
-        if (self.health < -40 || self.deathtype == "squish")
+#ifdef AGRIP
+	agh_player_dietidy();
+#endif
+
+#ifdef KTEAMS
+    if (self.health < -40 || self.deathtype == "squish")
+#else
+	if (self.health < -40)
+#endif
 	{
 		GibPlayer ();
 		return;
 	}
 
-	if(match_in_progress == 2)		//team
-		DeathSound();
-
+#ifdef KTEAMS
+    if(match_in_progress == 2)
+#endif
+        DeathSound();
+	
 	self.angles_x = 0;
 	self.angles_z = 0;
-// function part split and called here
-	StartDie();
-};
+#ifdef KTEAMS
+    // function part split and called here
+    StartDie();
+}
 
 // created this function because it is called from client.qc as well
 // was originally part of PlayerDie() and hasn't been altered
-void() StartDie =
+void StartDie ()
 {
-	local float i;
+	float i;
+#endif
 
-	if (self.weapon == 4096)
+	
+	if (self.weapon == IT_AXE)
 	{
 		player_die_ax1 ();
 		return;
 	}
-
-	i = cvar("temp1");
-	if (!i)
-		i = 1 + floor(random()*6);
-
+	
+	// Note that this generates random values in 1..6 range, so player_diee1 is
+	// executed twice as often as other death sequences. Dunno if this should be fixed -- Tonik
+	i = 1 + floor(random()*6);
+	
 	if (i == 1)
 		player_diea1();
 	else if (i == 2)
@@ -662,88 +693,89 @@ void() StartDie =
 		player_died1();
 	else
 		player_diee1();
-};
 
-void() set_suicide_frame =
+}
+
+void set_suicide_frame ()
 {       // used by kill command and diconnect command
 	if (self.model != "progs/player.mdl")
-		return; // allready gibbed
+		return; // already gibbed
 	self.frame = $deatha11;
-	self.solid = 0;
-	self.movetype = 6;
-	self.deadflag = 2;
+	self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_TOSS;
+	self.deadflag = DEAD_DEAD;
 	self.nextthink = -1;
-//team
-	if(match_in_progress != 2) {
-		self.model = string_null;
-	}
-//team
-};
+#ifdef KTEAMS
+    if(match_in_progress != 2)
+        self.model = string_null;
+#endif
+}
 
-void()  player_diea1    =       [       $deatha1,       player_diea2    ] {};
-void()  player_diea2    =       [       $deatha2,       player_diea3    ] {};
-void()  player_diea3    =       [       $deatha3,       player_diea4    ] {};
-void()  player_diea4    =       [       $deatha4,       player_diea5    ] {};
-void()  player_diea5    =       [       $deatha5,       player_diea6    ] {};
-void()  player_diea6    =       [       $deatha6,       player_diea7    ] {};
-void()  player_diea7    =       [       $deatha7,       player_diea8    ] {};
-void()  player_diea8    =       [       $deatha8,       player_diea9    ] {};
-void()  player_diea9    =       [       $deatha9,       player_diea10   ] {};
-void()  player_diea10   =       [       $deatha10,      player_diea11   ] {};
-void()  player_diea11   =       [       $deatha11,      player_diea11 ] {PlayerDead();};
 
-void()  player_dieb1    =       [       $deathb1,       player_dieb2    ] {};
-void()  player_dieb2    =       [       $deathb2,       player_dieb3    ] {};
-void()  player_dieb3    =       [       $deathb3,       player_dieb4    ] {};
-void()  player_dieb4    =       [       $deathb4,       player_dieb5    ] {};
-void()  player_dieb5    =       [       $deathb5,       player_dieb6    ] {};
-void()  player_dieb6    =       [       $deathb6,       player_dieb7    ] {};
-void()  player_dieb7    =       [       $deathb7,       player_dieb8    ] {};
-void()  player_dieb8    =       [       $deathb8,       player_dieb9    ] {};
-void()  player_dieb9    =       [       $deathb9,       player_dieb9    ] {PlayerDead();};
+void()  player_diea1    =       [       $deatha1,       player_diea2    ] {}
+void()  player_diea2    =       [       $deatha2,       player_diea3    ] {}
+void()  player_diea3    =       [       $deatha3,       player_diea4    ] {}
+void()  player_diea4    =       [       $deatha4,       player_diea5    ] {}
+void()  player_diea5    =       [       $deatha5,       player_diea6    ] {}
+void()  player_diea6    =       [       $deatha6,       player_diea7    ] {}
+void()  player_diea7    =       [       $deatha7,       player_diea8    ] {}
+void()  player_diea8    =       [       $deatha8,       player_diea9    ] {}
+void()  player_diea9    =       [       $deatha9,       player_diea10   ] {}
+void()  player_diea10   =       [       $deatha10,      player_diea11   ] {}
+void()  player_diea11   =       [       $deatha11,      player_diea11 ] {PlayerDead();}
 
-void()  player_diec1    =       [       $deathc1,       player_diec2    ] {};
-void()  player_diec2    =       [       $deathc2,       player_diec3    ] {};
-void()  player_diec3    =       [       $deathc3,       player_diec4    ] {};
-void()  player_diec4    =       [       $deathc4,       player_diec5    ] {};
-void()  player_diec5    =       [       $deathc5,       player_diec6    ] {};
-void()  player_diec6    =       [       $deathc6,       player_diec7    ] {};
-void()  player_diec7    =       [       $deathc7,       player_diec8    ] {};
-void()  player_diec8    =       [       $deathc8,       player_diec9    ] {};
-void()  player_diec9    =       [       $deathc9,       player_diec10   ] {};
-void()  player_diec10   =       [       $deathc10,      player_diec11   ] {};
-void()  player_diec11   =       [       $deathc11,      player_diec12   ] {};
-void()  player_diec12   =       [       $deathc12,      player_diec13   ] {};
-void()  player_diec13   =       [       $deathc13,      player_diec14   ] {};
-void()  player_diec14   =       [       $deathc14,      player_diec15   ] {};
-void()  player_diec15   =       [       $deathc15,      player_diec15 ] {PlayerDead();};
+void()  player_dieb1    =       [       $deathb1,       player_dieb2    ] {}
+void()  player_dieb2    =       [       $deathb2,       player_dieb3    ] {}
+void()  player_dieb3    =       [       $deathb3,       player_dieb4    ] {}
+void()  player_dieb4    =       [       $deathb4,       player_dieb5    ] {}
+void()  player_dieb5    =       [       $deathb5,       player_dieb6    ] {}
+void()  player_dieb6    =       [       $deathb6,       player_dieb7    ] {}
+void()  player_dieb7    =       [       $deathb7,       player_dieb8    ] {}
+void()  player_dieb8    =       [       $deathb8,       player_dieb9    ] {}
+void()  player_dieb9    =       [       $deathb9,       player_dieb9    ] {PlayerDead();}
 
-void()  player_died1    =       [       $deathd1,       player_died2    ] {};
-void()  player_died2    =       [       $deathd2,       player_died3    ] {};
-void()  player_died3    =       [       $deathd3,       player_died4    ] {};
-void()  player_died4    =       [       $deathd4,       player_died5    ] {};
-void()  player_died5    =       [       $deathd5,       player_died6    ] {};
-void()  player_died6    =       [       $deathd6,       player_died7    ] {};
-void()  player_died7    =       [       $deathd7,       player_died8    ] {};
-void()  player_died8    =       [       $deathd8,       player_died9    ] {};
-void()  player_died9    =       [       $deathd9,       player_died9    ] {PlayerDead();};
+void()  player_diec1    =       [       $deathc1,       player_diec2    ] {}
+void()  player_diec2    =       [       $deathc2,       player_diec3    ] {}
+void()  player_diec3    =       [       $deathc3,       player_diec4    ] {}
+void()  player_diec4    =       [       $deathc4,       player_diec5    ] {}
+void()  player_diec5    =       [       $deathc5,       player_diec6    ] {}
+void()  player_diec6    =       [       $deathc6,       player_diec7    ] {}
+void()  player_diec7    =       [       $deathc7,       player_diec8    ] {}
+void()  player_diec8    =       [       $deathc8,       player_diec9    ] {}
+void()  player_diec9    =       [       $deathc9,       player_diec10   ] {}
+void()  player_diec10   =       [       $deathc10,      player_diec11   ] {}
+void()  player_diec11   =       [       $deathc11,      player_diec12   ] {}
+void()  player_diec12   =       [       $deathc12,      player_diec13   ] {}
+void()  player_diec13   =       [       $deathc13,      player_diec14   ] {}
+void()  player_diec14   =       [       $deathc14,      player_diec15   ] {}
+void()  player_diec15   =       [       $deathc15,      player_diec15 ] {PlayerDead();}
 
-void()  player_diee1    =       [       $deathe1,       player_diee2    ] {};
-void()  player_diee2    =       [       $deathe2,       player_diee3    ] {};
-void()  player_diee3    =       [       $deathe3,       player_diee4    ] {};
-void()  player_diee4    =       [       $deathe4,       player_diee5    ] {};
-void()  player_diee5    =       [       $deathe5,       player_diee6    ] {};
-void()  player_diee6    =       [       $deathe6,       player_diee7    ] {};
-void()  player_diee7    =       [       $deathe7,       player_diee8    ] {};
-void()  player_diee8    =       [       $deathe8,       player_diee9    ] {};
-void()  player_diee9    =       [       $deathe9,       player_diee9    ] {PlayerDead();};
+void()  player_died1    =       [       $deathd1,       player_died2    ] {}
+void()  player_died2    =       [       $deathd2,       player_died3    ] {}
+void()  player_died3    =       [       $deathd3,       player_died4    ] {}
+void()  player_died4    =       [       $deathd4,       player_died5    ] {}
+void()  player_died5    =       [       $deathd5,       player_died6    ] {}
+void()  player_died6    =       [       $deathd6,       player_died7    ] {}
+void()  player_died7    =       [       $deathd7,       player_died8    ] {}
+void()  player_died8    =       [       $deathd8,       player_died9    ] {}
+void()  player_died9    =       [       $deathd9,       player_died9    ] {PlayerDead();}
 
-void()  player_die_ax1  =       [       $axdeth1,       player_die_ax2  ] {};
-void()  player_die_ax2  =       [       $axdeth2,       player_die_ax3  ] {};
-void()  player_die_ax3  =       [       $axdeth3,       player_die_ax4  ] {};
-void()  player_die_ax4  =       [       $axdeth4,       player_die_ax5  ] {};
-void()  player_die_ax5  =       [       $axdeth5,       player_die_ax6  ] {};
-void()  player_die_ax6  =       [       $axdeth6,       player_die_ax7  ] {};
-void()  player_die_ax7  =       [       $axdeth7,       player_die_ax8  ] {};
-void()  player_die_ax8  =       [       $axdeth8,       player_die_ax9  ] {};
-void()  player_die_ax9  =       [       $axdeth9,       player_die_ax9  ] {PlayerDead();};
+void()  player_diee1    =       [       $deathe1,       player_diee2    ] {}
+void()  player_diee2    =       [       $deathe2,       player_diee3    ] {}
+void()  player_diee3    =       [       $deathe3,       player_diee4    ] {}
+void()  player_diee4    =       [       $deathe4,       player_diee5    ] {}
+void()  player_diee5    =       [       $deathe5,       player_diee6    ] {}
+void()  player_diee6    =       [       $deathe6,       player_diee7    ] {}
+void()  player_diee7    =       [       $deathe7,       player_diee8    ] {}
+void()  player_diee8    =       [       $deathe8,       player_diee9    ] {}
+void()  player_diee9    =       [       $deathe9,       player_diee9    ] {PlayerDead();}
+
+void()  player_die_ax1  =       [       $axdeth1,       player_die_ax2  ] {}
+void()  player_die_ax2  =       [       $axdeth2,       player_die_ax3  ] {}
+void()  player_die_ax3  =       [       $axdeth3,       player_die_ax4  ] {}
+void()  player_die_ax4  =       [       $axdeth4,       player_die_ax5  ] {}
+void()  player_die_ax5  =       [       $axdeth5,       player_die_ax6  ] {}
+void()  player_die_ax6  =       [       $axdeth6,       player_die_ax7  ] {}
+void()  player_die_ax7  =       [       $axdeth7,       player_die_ax8  ] {}
+void()  player_die_ax8  =       [       $axdeth8,       player_die_ax9  ] {}
+void()  player_die_ax9  =       [       $axdeth9,       player_die_ax9  ] {PlayerDead();}

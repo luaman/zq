@@ -98,11 +98,11 @@ void plat_go_up ()
 
 void plat_center_touch ()
 {
-// KTEAMS -->
-// return if countdown or map frozen
+#ifdef KTEAMS
+    // return if countdown or map frozen
 	if(match_in_progress == 1 ||
 		(!match_in_progress && stof(infokey(world, "k_freeze")))) return;
-// <-- KTEAMS                
+#endif
 
 	if (other.classname != "player")
 		return;
@@ -119,11 +119,11 @@ void plat_center_touch ()
 
 void plat_outside_touch ()
 {
-// KTEAMS -->
-// return if countdown or map frozen
+#ifdef KTEAMS
+    // return if countdown or map frozen
 	if(match_in_progress == 1 ||
 		(!match_in_progress && stof(infokey(world, "k_freeze")))) return;
-// <-- KTEAMS                
+#endif
 
 	if (other.classname != "player")
 		return;
@@ -212,7 +212,7 @@ void func_plat ()
 
 
 	self.mangle = self.angles;
-	self.angles = '0 0 0';
+	self.angles = VEC_ORIGIN;
 
 	self.classname = "plat";
 	self.solid = SOLID_BSP;
@@ -279,11 +279,11 @@ void train_wait ()
 	}
 	else
 		self.nextthink = self.ltime + 0.1;
-// KTEAMS -->
-// make trains stop if frozen
+#ifdef KTEAMS
+    // make trains stop if frozen
         if(match_in_progress == 2 || (!stof(infokey(world, "k_freeze")) && !match_in_progress))
             self.think = train_next;
-// <-- KTEAMS            
+#endif
 }
 
 void train_next ()

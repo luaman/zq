@@ -1,23 +1,29 @@
 /*
-Copyright (C) 1996-1997 Id Software, Inc.
+	spectate.qc
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+	spectator functions
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+	Copyright (C) 1996-1997  Id Software, Inc.
 
-See the GNU General Public License for more details.
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		59 Temple Place - Suite 330
+		Boston, MA  02111-1307, USA
 
 */
-// Spectator functions
 // Added Aug11'97 by Zoid <zoid@idsoftware.com>
 //
 // These functions are called from the server if they exist.
@@ -28,9 +34,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //   --- Zoid.
 
+#ifdef KTEAMS
 //team
 //shame about the fecking mess in the spectator code, ill structure the thing later (hopefully)
 // /kK
+// oldman: YOU NEVER DID!
 
 void() ModStatus;
 void() ModStatus2;
@@ -117,8 +125,7 @@ void() ShowCamHelp =
 {
 	sprint(self, 2, "éíðõìóå ²µ next spawnpoint (floatcam)\néíðõìóå ²¶ change camera mode\néíðõìóå ²· zoom out (trackcam)\néíðõìóå ²¸ zoom in  (trackcam)\néíðõìóå ²¹ toggle statusbar (trackcam)\nuse [jump] to change target\n");
 };
-//team
-
+#endif
 
 /*
 ===========
@@ -127,14 +134,15 @@ SpectatorConnect
 called when a spectator connects to a server
 ============
 */
-void() SpectatorConnect =
+void SpectatorConnect ()
 {
-	if(match_in_progress != 2 || stof(infokey(world, "k_ann"))) {	//team
-		bprint (1, "Spectator ");
-		bprint (1, self.netname);
-		bprint (1, " entered the game\n");
-	}
-	self.goalentity = world; // used for impulse 25 below
+#ifdef KTEAMS
+	if(match_in_progress != 2 || stof(infokey(world, "k_ann")))
+#endif
+	bprint (PRINT_MEDIUM, "Spectator ", self.netname, " entered the game\n");
+
+	self.goalentity = world; // used for impulse 1 below
+#ifdef KTEAMS
 	// Added this in for kick code.
 	self.classname = "spectator";
 
@@ -170,10 +178,11 @@ void() SpectatorConnect =
 
 //team
 	StuffMapAliases();
-};
+#endif
+}
 
-//team
-void() SpectatorAdminGain =
+#ifdef KTEAMS
+void SpectatorAdminGain ()
 {
 	stuffcmd(self, "alias forcestart \"impulse 52\"\n");
 	stuffcmd(self, "alias forcebreak \"impulse 53\"\n");
@@ -208,8 +217,8 @@ void() SpectatorAdminGain =
 
 	self.ready = 1;
 	
-};
-//team
+}
+#endif
 
 /*
 ===========
@@ -218,17 +227,18 @@ SpectatorDisconnect
 called when a spectator disconnects from a server
 ============
 */
-void() SpectatorDisconnect =
+void SpectatorDisconnect ()
 {
-	if(match_in_progress != 2 || stof(infokey(world, "k_ann"))) {	//team
-		bprint (1, "Spectator ");
-		bprint (1, self.netname);
-		bprint (1, " left the game\n");
-	}
-	
+#ifdef KTEAMS
+	if(match_in_progress != 2 || stof(infokey(world, "k_ann")))
+#endif
+        bprint (PRINT_MEDIUM, "Spectator ", self.netname, " left the game\n");
+
+#ifdef KTEAMS
 	self.classname = string_null; // Cenobite, so we clear out any specs as they leave
 	if(self.k_kicking) ExitKick(self);
-};
+#endif
+}
 
 /*
 ================
@@ -237,11 +247,10 @@ SpectatorImpulseCommand
 Called by SpectatorThink if the spectator entered an impulse
 ================
 */
-void() SpectatorImpulseCommand =
+void SpectatorImpulseCommand ()
 {
-//team
-
-// Check to see if you kicking first so Camera code doesnt take over
+#ifdef KTEAMS
+    // Check to see if you kicking first so Camera code doesnt take over
 
 	if(self.k_track == 1 && (self.goalentity.classname != "player" || self.goalentity.netname == ""))
     {
@@ -252,7 +261,7 @@ void() SpectatorImpulseCommand =
 	{
 		if(self.k_domapstuff == 0)
 		{
-			local entity stuffem;
+			entity stuffem;
 			
 			stuffem = spawn();
 			stuffem.classname = "StuffCustomMaps";
@@ -309,22 +318,21 @@ void() SpectatorImpulseCommand =
 			WriteString(1, "\n");
 		}
 	} else if(self.impulse == 25 && !self.k_track) {
-//team
+#else    
+	if (self.impulse == IMPULSE_AXE) {
+#endif
 		// teleport the spectator to the next spawn point
-		// note that if the spectator is tracking, this doesn't do
-		// much
-
-
-
+		// note that if the spectator is tracking, this doesn't do much
 		self.goalentity = find(self.goalentity, classname, "info_player_deathmatch");
 		if (self.goalentity == world)
 			self.goalentity = find(self.goalentity, classname, "info_player_deathmatch");
 		if (self.goalentity != world) {
 			setorigin(self, self.goalentity.origin);
 			self.angles = self.goalentity.angles;
-			self.fixangle = 1;           // turn this way immediately
+			self.fixangle = true;			// turn this way immediately
 		}
 	}
+#ifdef KTEAMS
 //team
 	else if(self.impulse == 22) ModStatus();
 	else if(self.impulse == 64) ModStatus2();
@@ -370,9 +378,9 @@ void() SpectatorImpulseCommand =
 
 		else if(self.impulse >= 100 && !match_in_progress) SelectMap();
 	}
-//team
+#endif
 	self.impulse = 0;
-};
+}
 
 /*
 ================
@@ -381,184 +389,15 @@ SpectatorThink
 Called every frame after physics are run
 ================
 */
-void() SpectatorThink =
+void SpectatorThink ()
 {
-//team
-	local float f1, f2, f3;
-	local entity p;
-	local vector v1;
-
-	self.effects = self.goalentity.effects;
-//team
+#ifdef KTEAMS
+    self.effects = self.goalentity.effects;
+#endif
 
 	// self.origin, etc contains spectator position, so you could
 	// do some neat stuff here
 
-	if(self.impulse)
+	if (self.impulse)
 		SpectatorImpulseCommand();
-
-//team
-	if(self.button2 && !self.jump_flag && self.k_track) {
-		if(self.k_track == 1) {
-			TrackNext();
-			if(!self.suicide_time && self.k_track == 1) sprint(self, 2, "--- Tracking ", self.goalentity.netname, "\n");
-		}
-		else TrackNext2();
-		self.jump_flag = 1;
-	}
-	if(!self.button2) self.jump_flag = 0;
-	if(self.k_track == 1) {
-		makevectors(self.goalentity.angles);
-		//if someone should want to edit this code; - traceline takes the following parameters:
-		//1: trace start position, 2: trace end position, 3: 1 = don't stop at entities : 0 = stop on first entity
-		//4: take no notice of this entity (usually self)
-		// /kemiKal
-		if(self.k_666 != -10) {
-			traceline(self.goalentity.origin, self.goalentity.origin - (v_forward * (self.k_666 - 4)), 1, self);
-			if(trace_fraction < 1) trace_endpos = trace_endpos + (v_forward * 4);
-			v1 = trace_endpos;
-			traceline(v1, v1 + (v_up * 32), 1, self);
-			if(trace_fraction == 1) {
-				traceline(v1, v1 + (v_up * 0.4 * (self.k_666 + 10)), 1, self);
-				if(trace_fraction < 1) trace_endpos = trace_endpos - (v_up * 4);
-				setorigin(self, trace_endpos);
-			} else setorigin(self, v1);
-		} else {
-			traceline(self.goalentity.origin, self.goalentity.origin + (v_forward * 14), 1, self);
-			if(trace_fraction < 1) trace_endpos = trace_endpos - (v_forward * 4);
-			setorigin(self, trace_endpos);
-		}
-		self.angles = self.v_angle = self.goalentity.v_angle;
-		self.fixangle = 1;
-		if(time > self.deaths && self.suicide_time && match_in_progress != 1)
-		{
-			msg_entity = self;
-
-		WriteByte(1, 26);
-			WriteShort(1, 2592);
-			WriteShort(1, 2570);
-			WriteShort(1, 2570);
-			WriteShort(1, 2570);
-			WriteShort(1, 2570);
-			WriteShort(1, 2570);
-			if(self.suicide_time == 2) {
-
-
-
-			WriteShort(1, 2570);
-				WriteShort(1, 2570);
-				WriteShort(1, 2570);
-				WriteShort(1, 2570);
-				WriteShort(1, 2570);
-
-			WriteShort(1, 2570);
-				WriteShort(1, 2570);
-
-				WriteShort(1, 2570);
-				WriteShort(1, 2570);
-			}
-			//"health xxx "
-			WriteShort(1, 58856);
-			WriteShort(1, 60641);
-			WriteShort(1, 59636);
-			WriteByte(1, 32);
-			f1 = self.goalentity.health;
-			if(f1 > 0 ) {
-				f3 = floor(f1 / 100);
-				f1 = f1 - (f3 * 100);
-				if(f3) WriteByte(1, f3 + 48);
-				else WriteByte(1, 32);
-				f2 = floor(f1 / 10);
-				f1 = f1 - (f2 * 10);
-				if(f2 || f3) WriteByte(1, f2 + 48);
-				else WriteByte(1, 32);
-				WriteByte(1, f1 + 48);
-				WriteByte(1, 32);
-			} else {
-			//"dead"
-				WriteShort(1, 25956);
-				WriteShort(1, 25697);
-			}
-			f1 = self.goalentity.armorvalue;
-			if(f1 > 0) {
-				WriteByte(1, 32);
-				if(self.goalentity.items & 8192) {
-					//" green armor "
-					WriteByte(1, 32);
-					WriteShort(1, 62183);
-					WriteShort(1, 58853);
-					WriteShort(1, 41198);
-					WriteShort(1, 62177);
-					WriteShort(1, 61421);
-					WriteShort(1, 41202);
-				} else if(self.goalentity.items & 16384) {
-					//"yellow armor "
-					WriteShort(1, 58873);
-					WriteShort(1, 60652);
-					WriteShort(1, 63471);
-					WriteShort(1, 57760);
-					WriteShort(1, 60914);
-					WriteShort(1, 62191);
-					WriteByte(1, 32);
-				} else {
-					//"   red armor "
-					WriteByte(1, 32);
-					WriteShort(1, 8224);
-					WriteShort(1, 58866);
-					WriteShort(1, 41188);
-					WriteShort(1, 62177);
-					WriteShort(1, 61421);
-					WriteShort(1, 41202);
-				}
-				f3 = floor(f1 / 100);
-				f1 = f1 - (f3 * 100);
-				if(f3) WriteByte(1, f3 + 48);
-				else WriteByte(1, 32);
-				f2 = floor(f1 / 10);
-				f1 = f1 - (f2 * 10);
-				if(f2 || f3) WriteByte(1, f2 + 48);
-				else WriteByte(1, 32);
-				WriteByte(1, f1 + 48);
-				WriteByte(1, 32);
-			}
-			WriteByte(1, 10);
-			WriteString(1, self.goalentity.netname);
-			self.deaths = time + 0.5;
-		}
-	} else if(self.k_track == 2) {
-		makevectors(self.goalentity.angles);
-		setorigin(self, self.goalentity.origin);
-		self.angles = self.v_angle = self.goalentity.mangle;
-		self.fixangle = 1;
-		if(time > self.deaths && match_in_progress != 1)
-		{
-			p = find(world, classname, "timer");
-			if(p != world) {
-				msg_entity = self;
-				WriteByte(1, 26);
-				WriteShort(1, 2592);
-				WriteShort(1, 2570);
-				WriteShort(1, 2570);
-				WriteShort(1, 2570);
-				WriteShort(1, 2570);
-				WriteShort(1, 2570);
-				f1 = p.cnt;
-				f2 = p.cnt2;
-				if(f2 == 60) f2 = 0;
-				else f1 = f1 - 1;
-				f3 = floor(f1 / 10);
-				f1 = f1 - (f3 * 10);
-				WriteByte(1, f3 + 176);
-				WriteByte(1, f1 + 176);
-				WriteByte(1, 58);
-				f3 = floor(f2 / 10);
-				f2 = f2 - (f3 * 10);
-				WriteByte(1, f3 + 176);
-				WriteByte(1, f2 + 176);
-				WriteByte(1, 0);
-			}
-			self.deaths = time + 0.5;
-		}
-	}
-//team
-};
+}
