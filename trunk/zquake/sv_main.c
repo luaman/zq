@@ -1046,7 +1046,6 @@ void SV_ReadPackets (void)
 	int			i;
 	client_t	*cl;
 	int			qport;
-	packet_t	*pack;
 
 	while (NET_GetPacket(NS_SERVER))
 	{
@@ -1086,14 +1085,24 @@ void SV_ReadPackets (void)
 			}
 
 			if (svs.clients[i].delay > 0) {
-				if (svs.num_packets == MAX_DELAYED_PACKETS) // packet has to be dropped..
+				if (!svs.free_packets) // packet has to be dropped..
 					break;
-				pack = &svs.packets[svs.num_packets++];
 
-				pack->time = svs.realtime;
-				pack->clientnum = i;
-				SZ_Clear(&pack->msg);
-				SZ_Write(&pack->msg, net_message.data, net_message.cursize);
+				// insert at end of list
+				if (!svs.packets) {
+					svs.last_packet = svs.packets = svs.free_packets;
+				} else {
+					// this works because '=' associates from right to left
+					svs.last_packet = svs.last_packet->next = svs.free_packets;
+				}
+
+				svs.free_packets = svs.free_packets->next;
+				svs.last_packet->next = NULL;
+
+				svs.last_packet->time = svs.realtime;
+				svs.last_packet->clientnum = i;
+				SZ_Clear(&svs.last_packet->msg);
+				SZ_Write(&svs.last_packet->msg, net_message.data, net_message.cursize);
 			} else {
 				if (Netchan_Process(&cl->netchan)) {
 					// this is a valid, sequenced packet, so process it
@@ -1125,12 +1134,14 @@ SV_ReadDelayedPackets
 void SV_ReadDelayedPackets (void)
 {
 	client_t	*cl;
-	int			i, sentcount;
-	packet_t	*pack, *endpack;
+	packet_t	*pack, *prev, *next;
 
-	for (i = sentcount = 0, pack = svs.packets; i < svs.num_packets; i++, pack++) {
-		if (svs.realtime < pack->time + svs.clients[pack->clientnum].delay)
+	for (prev = NULL, pack = svs.packets; pack; pack = next) {
+		if (svs.realtime < pack->time + svs.clients[pack->clientnum].delay) {
+			prev = pack;
+			next = pack->next;
 			continue;
+		}
 
 		SZ_Clear(&net_message);
 		SZ_Write(&net_message, pack->msg.data, pack->msg.cursize);
@@ -1146,27 +1157,14 @@ void SV_ReadDelayedPackets (void)
 			}
 		}
 
-		pack->clientnum = -1;
-		sentcount++;
+		if (prev)
+			prev->next = next = pack->next;
+		else
+			svs.packets = next = pack->next;
+
+		pack->next = svs.free_packets;
+		svs.free_packets = pack;
 	}
-
-	// compactify svs.packets by copying delayed packets from the end of sv.packets to sent packets at the front of svs.packets 
-	for (pack = svs.packets, endpack = svs.packets + svs.num_packets - 1; ; pack++, endpack--) {
-		for ( ; pack < svs.packets + svs.num_packets && pack->clientnum != -1; pack++)
-			;
-		for ( ; endpack >= svs.packets && endpack->clientnum == -1; endpack--)
-			;
-		if (pack >= endpack)
-			break;
-
-		SZ_Clear(&pack->msg);
-		SZ_Write(&pack->msg, endpack->msg.data, endpack->msg.cursize);
-		pack->clientnum = endpack->clientnum;
-		pack->time = endpack->time;
-	}
-
-	svs.num_packets -= sentcount;
-
 }
 
 /*
@@ -1414,6 +1412,8 @@ void SV_InitLocal (void)
 	extern cvar_t	pm_slidefix;
 	extern cvar_t	pm_airstep;
 
+	packet_t		*packet_allocblock;
+
 	SV_InitOperatorCommands	();
 
 	Cvar_Register (&sv_rconPassword);
@@ -1505,10 +1505,16 @@ void SV_InitLocal (void)
 	SZ_Init (&svs.log[1], svs.log_buf[1], sizeof(svs.log_buf[1]));
 	svs.log[1].allowoverflow = true;
 
-	for (i = 0; i < MAX_DELAYED_PACKETS; i++)
-		SZ_Init (&svs.packets[i].msg, svs.packets[i].buf, sizeof(svs.packets[i].buf));
+	packet_allocblock = Hunk_AllocName(MAX_DELAYED_PACKETS * sizeof(packet_t), "delayed_packets");
 
-	svs.num_packets = 0;
+	for (i = 0; i < MAX_DELAYED_PACKETS; i++) {
+		SZ_Init (&packet_allocblock[i].msg, packet_allocblock[i].buf, sizeof(packet_allocblock[i].buf));
+		packet_allocblock[i].next = &packet_allocblock[i + 1];
+	}
+	packet_allocblock[MAX_DELAYED_PACKETS - 1].next = NULL;
+
+	svs.free_packets = &packet_allocblock[0];
+	svs.packets = svs.last_packet = NULL;
 }
 
 
