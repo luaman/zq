@@ -117,6 +117,28 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 
 
 /*
+==================
+CL_CategorizePosition
+
+Used when cl_nopred is 1 to determine whether we are on ground,
+otherwise stepup smoothing code produces ugly jump physics
+==================
+*/
+void CL_CategorizePosition (void)
+{
+	if (cl.spectator) {
+		cl.onground = -1;	// in air
+		return;
+	}
+	VectorCopy (vec3_origin, pmove.velocity);
+	VectorCopy (cl.simorg, pmove.origin);
+	pmove.numtouch = 0;
+	PM_CategorizePosition ();
+	cl.onground = onground;
+}
+
+
+/*
 ==============
 CL_CalcCrouch
 
@@ -228,7 +250,7 @@ void CL_PredictMove (void)
 	{
 		VectorCopy (from->playerstate[cl.playernum].velocity, cl.simvel);
 		VectorCopy (from->playerstate[cl.playernum].origin, cl.simorg);
-		cl.onground = 0;	// FIXME
+		CL_CategorizePosition ();
 		goto out;
 	}
 
