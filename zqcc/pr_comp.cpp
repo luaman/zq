@@ -895,6 +895,9 @@ void PR_ParseDefs (void)
 				continue;
 			}
 
+			if (pr_token_type != tt_immediate && pr_token_type != tt_name)
+				PR_ParseError ("syntax error : '%s'", pr_token);
+
 			if (pr_immediate_type != type)
 				PR_ParseError ("wrong immediate type for %s", name);
 	
