@@ -190,9 +190,11 @@ void door_use ()
 
 void door_trigger_touch ()
 {
+#ifdef KTEAMS
 // return if countdown or map frozen
 	if(match_in_progress == 1 ||
 		(!match_in_progress && stof(infokey(world, "k_freeze")))) return;
+#endif
 	if (other.health <= 0)
 		return;
 
@@ -211,7 +213,11 @@ void door_killed ()
 {
 	entity	oself;
 	
-	if(match_in_progress != 2) return;			//team
+#ifdef KTEAMS
+	if(match_in_progress != 2) 
+       return;
+#endif
+
 	oself = self;
 	self = self.owner;
 	self.health = self.max_health;
@@ -230,9 +236,11 @@ Prints messages and opens key doors
 */
 void door_touch ()
 {
+#ifdef KTEAMS
 // return if countdown or map frozen
 	if(match_in_progress == 1 ||
 		(!match_in_progress && stof(infokey(world, "k_freeze")))) return;
+#endif
 
 	if (other.classname != "player")
 		return;
@@ -603,7 +611,10 @@ void fd_secret_use ()
 {
 	float	temp;
 	
-	if(match_in_progress != 2) return;			//team
+#ifdef KTEAMS
+	if(match_in_progress != 2)
+        return;
+#endif
 	
         self.health = 10000;
 
@@ -620,7 +631,7 @@ void fd_secret_use ()
 		self.th_pain = SUB_Null;
 		self.takedamage = DAMAGE_NO;
 	}
-	self.velocity = '0 0 0';
+	self.velocity = VEC_ORIGIN;
 
 	// Make a sound, wait a little...
 	
@@ -728,9 +739,12 @@ Prints messages
 */
 void secret_touch ()
 {
+#ifdef KTEAMS
 // return if countdown or map frozen
 	if(match_in_progress == 1 ||
 		(!match_in_progress && stof(infokey(world, "k_freeze")))) return;
+#endif
+
 	if (other.classname != "player")
 		return;
 	if (self.attack_finished > time)
@@ -798,7 +812,7 @@ void func_door_secret ()
 		
 	// Magic formula...
 	self.mangle = self.angles;
-	self.angles = '0 0 0';
+	self.angles = VEC_ORIGIN;
 	self.solid = SOLID_BSP;
 	self.movetype = MOVETYPE_PUSH;
 	self.classname = "door";

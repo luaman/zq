@@ -27,12 +27,14 @@
 
 void ClientObituary (entity targ, entity attacker);
 void T_RadiusDamage (entity inflictor, entity attacker, float damage, entity ignore, string dtype);
+#ifdef KTEAMS
 void EndMatch (float skip_log); // KTEAMS
+#endif
 
-// KTEAMS -->
-// void monster_death_use ();
-// void GetMadAtAttacker (entity attacker);
-// <-- KTEAMS
+#ifndef KTEAMS
+void monster_death_use ();
+void GetMadAtAttacker (entity attacker);
+#endif
 
 //============================================================================
 
@@ -89,10 +91,10 @@ void Killed (entity targ, entity attacker)
 	oself = self;
 	self = targ;
 
-// KTEAMS -->
+#ifdef KTEAMS
 	if (self.classname == "player")
-                self.dead_time = time;
-// <-- KTEAMS
+        self.dead_time = time;
+#endif
 
 	if (self.health < -99)
 		self.health = -99;              // don't let sbar look bad if a player
@@ -126,10 +128,10 @@ void Killed (entity targ, entity attacker)
 	self.touch = SUB_Null;
 	self.effects = 0;
 
-// KTEAMS
-//	monster_death_use();
-//
-        self.th_die ();
+#ifndef KTEAMS
+	monster_death_use();
+#endif
+    self.th_die ();
 	
 	self = oself;
 }
@@ -242,14 +244,19 @@ void T_Damage (entity targ, entity inflictor, entity attacker, float damage)
 	}
 		
 // do the damage
+#ifdef KTEAMS
 	if (match_in_progress == 2 || attacker.classname == "teledeath") // KTEAMS
-                targ.health = targ.health - take;
+#endif
+        targ.health = targ.health - take;
 
 	if (targ.health <= 0)
 	{
 		Killed (targ, attacker);
-// KTEAMS: check if sudden death is the case
-                if (k_sudden_death && targ.classname == "player" ) EndMatch(0);
+#ifdef KTEAMS
+        // KTEAMS: check if sudden death is the case
+        if (k_sudden_death && targ.classname == "player" ) 
+            EndMatch(0);
+#endif
 		return;
 	}
 
@@ -257,13 +264,14 @@ void T_Damage (entity targ, entity inflictor, entity attacker, float damage)
 	oldself = self;
 	self = targ;
 
-// KTEAMS -->
-//	if (self.flags & FL_MONSTER)
-//	{
-//		if (attacker != world)
-//			GetMadAtAttacker (attacker);
-//	}
-// <-- KTEAMS
+#ifndef KTEAMS
+  	if (self.flags & FL_MONSTER)
+  	{
+  		if (attacker != world)
+  			GetMadAtAttacker (attacker);
+  	}
+#endif
+
 	if (self.th_pain)
 	{
 		self.th_pain (attacker, take);

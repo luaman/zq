@@ -358,7 +358,9 @@ void() StuffAliases =
  stuffcmd(self.owner, "alias deathmsg impulse 96\n");
  stuffcmd(self.owner, "alias rpickup impulse 97\n");
  stuffcmd(self.owner, "alias official impulse 98\n");
+#ifdef VWEP_TEST
  stuffcmd(self.owner, "alias vwep impulse 99\n");
+#endif
  stuffcmd(self.owner, "alias report impulse 103\n");
  stuffcmd(self.owner, "alias notready break\n");
 };
@@ -1135,8 +1137,9 @@ void() ToggleBerzerk =
 	}
 	localcmd("localinfo k_bzk 1\n");
 	bprint(2, "ΒεςΪεςλ νοδε on\n");
-};
+}
 
+#ifdef VWEP_TEST
 void ToggleVwep ()
 {
     float tmp;
@@ -1156,6 +1159,7 @@ void ToggleVwep ()
     localcmd("localinfo vwep 1\n");
     bprint(2, "vwep νοδε on\nrequires map restart\n");
 }
+#endif
 
 void() ToggleSpecTalk =
 {
@@ -1636,5 +1640,7 @@ void() TeamCommands =
 	else if(self.impulse == 96) Deathmsg();
     else if(self.impulse == 97) RandomPickup();
     else if(self.impulse == 98) SetOfficial();
+#ifdef VWEP_TEST
     else if(self.impulse == 99) ToggleVwep();
-};
+#endif
+}

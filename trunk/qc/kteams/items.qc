@@ -67,6 +67,7 @@ void q_touch ()
 	self.solid = SOLID_NOT;
 	other.items = other.items | IT_QUAD;
 	self.model = "";
+
 		if (deathmatch == 4)
 		{
 			other.armortype = 0;
@@ -108,7 +109,7 @@ void DropQuad (float timeleft)
 	item.movetype = MOVETYPE_TOSS;
 	item.noise = "items/damage.wav";
 	setmodel (item, "progs/quaddama.mdl");
-	setsize (item, '-16 -16 -24', '16 16 32');
+	setsize (item, '-16 -16 -24', '16 16 32');	// link into world
 	item.cnt = time + timeleft;
 	item.touch = q_touch;
 	item.nextthink = time + timeleft;    // remove it with the time left on it
@@ -162,7 +163,7 @@ void DropRing (float timeleft)
 	item.movetype = MOVETYPE_TOSS;
 	item.noise = "items/inv1.wav";
 	setmodel (item, "progs/invisibl.mdl");
-	setsize (item, '-16 -16 -24', '16 16 32');
+	setsize (item, '-16 -16 -24', '16 16 32');	// link into world
 	item.cnt = time + timeleft;
 	item.touch = r_touch;
 	item.nextthink = time + timeleft;    // remove after 30 seconds
@@ -184,7 +185,7 @@ void PlaceItem ()
 	self.flags = FL_ITEM;           // make extra wide
 	self.solid = SOLID_TRIGGER;
 	self.movetype = MOVETYPE_TOSS;  
-	self.velocity = '0 0 0';
+	self.velocity = VEC_ORIGIN;
 	self.origin_z = self.origin_z + 6;
 	oldz = self.origin_z;
 	if (!droptofloor())
@@ -286,7 +287,7 @@ void item_health ()
 		self.healamount = 25;
 		self.healtype = 1;
 	}
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 }
 
@@ -302,7 +303,10 @@ void health_touch ()
 	if (other.classname != "player")
 		return;
 
-	if (match_in_progress != 2) return;  // KTEAMS
+#ifdef KTEAMS
+	if (match_in_progress != 2)
+        return;  // KTEAMS
+#endif
 
 	if (self.healtype == 2) // Megahealth?  Ignore max_health...
 	{
@@ -391,7 +395,10 @@ void armor_touch ()
 	if (other.classname != "player")
 		return;
 
-	if (match_in_progress != 2) return;  // KTEAMS
+#ifdef KTEAMS
+	if (match_in_progress != 2)
+        return;  // KTEAMS
+#endif
 
 	if (deathmatch == 4)
 		if (other.invincible_time > 0)
@@ -572,9 +579,10 @@ void weapon_touch ()
 	if (!(other.flags & FL_CLIENT))
 		return;
 
-// KTEAMS -->
-	if (match_in_progress != 2) return;
-// <-- KTEAMS
+#ifdef KTEAMS
+	if (match_in_progress != 2)
+        return;
+#endif
 
 	if ((stof(infokey(other,"w_switch"))) == 0)
 		w_switch = 8;
@@ -696,9 +704,10 @@ void weapon_touch ()
 */
 void weapon_supershotgun ()
 {
-// KTEAMS
-//	if (deathmatch > 3)
-//		return;
+#ifndef KTEAMS
+	if (deathmatch > 3)
+		return;
+#endif
 
 	precache_model ("progs/g_shot.mdl");
 	setmodel (self, "progs/g_shot.mdl");
@@ -713,9 +722,10 @@ void weapon_supershotgun ()
 */
 void weapon_nailgun ()
 {
-// KTEAMS
-//	if (deathmatch > 3)
-//		return;
+#ifndef KTEAMS
+  	if (deathmatch > 3)
+  		return;
+#endif
 
 	precache_model ("progs/g_nail.mdl");
 	setmodel (self, "progs/g_nail.mdl");
@@ -730,9 +740,10 @@ void weapon_nailgun ()
 */
 void weapon_supernailgun ()
 {
-// KTEAMS
-//	if (deathmatch > 3)
-//		return;
+#ifndef KTEAMS
+  	if (deathmatch > 3)
+  		return;
+#endif
 
 	precache_model ("progs/g_nail2.mdl");
 	setmodel (self, "progs/g_nail2.mdl");
@@ -747,9 +758,10 @@ void weapon_supernailgun ()
 */
 void weapon_grenadelauncher ()
 {
-// KTEAMS
-//      if (deathmatch > 3)
-//		return;
+#ifndef KTEAMS
+    if (deathmatch > 3)
+        return;
+#endif
 
 	precache_model ("progs/g_rock.mdl");
 	setmodel (self, "progs/g_rock.mdl");
@@ -764,9 +776,10 @@ void weapon_grenadelauncher ()
 */
 void weapon_rocketlauncher ()
 {
-// KTEAMS
-//	if (deathmatch > 3)
-//		return;
+#ifndef KTEAMS
+  	if (deathmatch > 3)
+  		return;
+#endif
 
 	precache_model ("progs/g_rock2.mdl");
 	setmodel (self, "progs/g_rock2.mdl");
@@ -782,9 +795,10 @@ void weapon_rocketlauncher ()
 */
 void weapon_lightning ()
 {
-// KTEAMS
-//	if (deathmatch > 3)
-//		return;
+#ifndef KTEAMS
+  	if (deathmatch > 3)
+  		return;
+#endif
 
 	precache_model ("progs/g_light.mdl");
 	setmodel (self, "progs/g_light.mdl");
@@ -815,7 +829,10 @@ void ammo_touch ()
 	if (other.health <= 0)
 		return;
 
-        if (match_in_progress != 2) return;     // KTEAMS
+#ifdef KTEAMS
+        if (match_in_progress != 2)
+            return;     // KTEAMS
+#endif
 
 // if the player was using his best weapon, change up to the new one if better          
 	stemp = self;
@@ -917,9 +934,10 @@ const float WEAPON_BIG2 = 1;
 
 void item_shells ()
 {
-// KTEAMS
-//	if (deathmatch == 4)
-//		return;
+#ifndef KTEAMS
+	if (deathmatch == 4)
+		return;
+#endif
 
 	self.touch = ammo_touch;
 
@@ -937,7 +955,7 @@ void item_shells ()
 	}
 	self.weapon = 1;
 	self.netname = "shells";
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 }
 
@@ -946,9 +964,10 @@ void item_shells ()
 
 void item_spikes ()
 {
-// KTEAMS
-//	if (deathmatch == 4)
-//		return;
+#ifndef KTEAMS
+	if (deathmatch == 4)
+  		return;
+#endif
 
 	self.touch = ammo_touch;
 
@@ -966,7 +985,7 @@ void item_spikes ()
 	}
 	self.weapon = 2;
 	self.netname = "nails";
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 
 }
@@ -976,9 +995,10 @@ void item_spikes ()
 
 void item_rockets ()
 {
-// KTEAMS
-//	if (deathmatch == 4)
-//		return;
+#ifndef KTEAMS
+	if (deathmatch == 4)
+		return;
+#endif
 
 	self.touch = ammo_touch;
 
@@ -996,7 +1016,7 @@ void item_rockets ()
 	}
 	self.weapon = 3;
 	self.netname = "rockets";
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 
 }
@@ -1007,9 +1027,10 @@ void item_rockets ()
 
 void item_cells ()
 {
-// KTEAMS
-//	if (deathmatch == 4)
-//		return;
+#ifndef KTEAMS
+	if (deathmatch == 4)
+		return;
+#endif
 
 	self.touch = ammo_touch;
 
@@ -1027,7 +1048,7 @@ void item_cells ()
 	}
 	self.weapon = 4;
 	self.netname = "cells";
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 
 }
@@ -1044,9 +1065,10 @@ const float WEAPON_BIG = 8;
 
 void item_weapon ()
 {
-// KTEAMS
-//	if (deathmatch == 4)
-//		return;
+#ifndef KTEAMS
+	if (deathmatch == 4)
+		return;
+#endif
 
 	self.touch = ammo_touch;
 
@@ -1104,7 +1126,7 @@ void item_weapon ()
 		self.netname = "rockets";
 	}
 	
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 }
 
@@ -1126,9 +1148,12 @@ void key_touch ()
 	if (other.items & self.items)
 		return;
 
-	if (match_in_progress != 2) return;     // KTEAMS
+#ifdef KTEAMS
+	if (match_in_progress != 2)
+        return;     // KTEAMS
+#endif
             
-        sprint (other, PRINT_LOW, "You got the ", self.netname, "\n");
+    sprint (other, PRINT_LOW, "You got the ", self.netname, "\n");
 
 	sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
@@ -1257,7 +1282,10 @@ void sigil_touch ()
 	if (other.health <= 0)
 		return;
 
-        if (match_in_progress != 2) return;     // KTEAMS
+#ifdef KTEAMS
+    if (match_in_progress != 2)
+        return;     // KTEAMS
+#endif
             
 	centerprint (other, "You got the rune!");
 
@@ -1326,7 +1354,10 @@ void powerup_touch ()
 	if (other.health <= 0)
 		return;
 
-        if (match_in_progress != 2 || !stof(infokey(world, "k_pow"))) return;   // KTEAMS
+#ifdef KTEAMS
+        if (match_in_progress != 2 || !stof(infokey(world, "k_pow")))
+            return;   // KTEAMS
+#endif
             
         sprint (other, PRINT_LOW, "You got the ", self.netname, "\n");
 
@@ -1400,7 +1431,11 @@ void item_artifact_invulnerability ()
 	self.noise = "items/protect.wav";
 	setmodel (self, "progs/invulner.mdl");
 	self.netname = "Pentagram of Protection";
-	if (stof(infokey(world, "k_pow")))      // KTEAMS
+#ifdef KTEAMS
+	if (deathmatch && stof(infokey(world, "k_pow")))      // KTEAMS
+#else
+    if (deathmatch)
+#endif
 		self.effects = self.effects | EF_RED;
 	self.items = IT_INVULNERABILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
@@ -1464,7 +1499,11 @@ void item_artifact_super_damage ()
 	else
 		self.netname = "Quad Damage";
 	self.items = IT_QUAD;
-	if (stof(infokey(world, "k_pow")))      // KTEAMS
+#ifdef KTEAMS
+	if (deathmatch && stof(infokey(world, "k_pow")))      // KTEAMS
+#else
+    if (deathmatch)
+#endif
 		self.effects = self.effects | EF_BLUE;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
@@ -1488,10 +1527,14 @@ void BackpackTouch ()
 	float	acount;
 	float	b_switch;
 
-        if (match_in_progress != 2) return;     // KTEAMS
-            if (deathmatch == 4)
-		if (other.invincible_time > 0)
-			return;
+#ifdef KTEAMS
+    if (match_in_progress != 2)
+        return;     // KTEAMS
+#endif
+
+    if (deathmatch == 4)
+        if (other.invincible_time > 0)
+            return;
 
 	if ((stof(infokey(other,"b_switch"))) == 0)
 		b_switch = 8;
@@ -1646,16 +1689,22 @@ DropBackpack
 void DropBackpack ()
 {
 	entity	item;
-        local float f1;
+#ifdef KTEAMS
+    local float f1;
 
-        if (match_in_progress != 2 || !stof(infokey(world, "dp"))) return;      // KTEAMS
+    f1 = stof(infokey(world, "k_frp"));
 
-        f1 = stof(infokey(world, "k_frp"));
+    if (match_in_progress != 2 || !stof(infokey(world, "dp")))
+        return;      // KTEAMS
+#endif
             
-// still drop if contains weapon with no ammo
-        if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells) 
+        if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells)
             && !(self.weapon & IT_DROPPABLE_WEAPONS)
+#ifdef KTEAMS
             && !(f1 == 2 && (self.lastwepfired & IT_DROPPABLE_WEAPONS))) // KTEAMS
+#else
+            )
+#endif
 		return; // nothing in it
 
 	item = spawn();
@@ -1663,7 +1712,7 @@ void DropBackpack ()
 	
 	item.items = self.weapon;
 
-// KTEAMS -->
+#ifdef KTEAMS
 // drop best weapon in case of fairpacks 1 (KTEAMS)
         if(f1 == 1)
         {
@@ -1679,7 +1728,7 @@ void DropBackpack ()
         if(f1 == 2)
             if(self.lastwepfired & 126)
                 item.items = self.lastwepfired;
-// <-- KTEAMS                
+#endif
         
 	if (item.items == IT_AXE)
 		item.netname = "Axe";
@@ -1713,7 +1762,7 @@ void DropBackpack ()
 	item.solid = SOLID_TRIGGER;
 	item.movetype = MOVETYPE_TOSS;
 	setmodel (item, "progs/backpack.mdl");
-	setsize (item, '-16 -16 0', '16 16 56');
+	setsize (item, '-16 -16 0', '16 16 56');	// link into world
 	item.touch = BackpackTouch;
 	
 	item.nextthink = time + 120;    // remove after 2 minutes
