@@ -365,6 +365,7 @@ void CL_WriteSetDemoMessage (void)
 
 
 // FIXME: same as in sv_user.c. Move to common.c?
+#ifdef VWEP_TEST
 static char *TrimModelName (char *full)
 {
 	static char shortn[MAX_QPATH];
@@ -384,6 +385,7 @@ static char *TrimModelName (char *full)
 
 	return shortn;
 }
+#endif // VWEP_TEST
 
 
 /*
