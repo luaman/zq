@@ -279,11 +279,7 @@ typedef struct
 #define	SOLID_SLIDEBOX			3		// touch on edge, but not an onground
 #define	SOLID_BSP				4		// bsp clip, touch on edge, block
 
-// edict->deadflag values
-#define	DEAD_NO					0
-#define	DEAD_DYING				1
-#define	DEAD_DEAD				2
-
+// edict->takedamage
 #define	DAMAGE_NO				0
 #define	DAMAGE_YES				1
 #define	DAMAGE_AIM				2
@@ -301,14 +297,6 @@ typedef struct
 #define	FL_ONGROUND				512
 #define	FL_PARTIALGROUND		1024	// not all corners are valid
 #define	FL_WATERJUMP			2048	// player jumping out of water
-
-// entity effects
-
-//define	EF_BRIGHTFIELD			1
-//define	EF_MUZZLEFLASH 			2
-#define	EF_BRIGHTLIGHT 			4
-#define	EF_DIMLIGHT 			8
-
 
 #define	SPAWNFLAG_NOT_EASY			256
 #define	SPAWNFLAG_NOT_MEDIUM		512
