@@ -92,30 +92,6 @@ void SV_Quit_f (void)
 	Host_Quit ();
 }
 
-/*
-============
-SV_Logfile_f
-============
-*/
-void SV_Logfile_f (void)
-{
-	char	name[MAX_OSPATH];
-
-	if (sv_logfile)
-	{
-		Com_Printf ("File logging off.\n");
-		fclose (sv_logfile);
-		sv_logfile = NULL;
-		return;
-	}
-
-	sprintf (name, "%s/qconsole.log", com_gamedir);
-	Com_Printf ("Logging text to %s.\n", name);
-	sv_logfile = fopen (name, "w");
-	if (!sv_logfile)
-		Com_Printf ("failed.\n");
-}
-
 #define MAX_LOGFILES	1000
 
 /*
@@ -829,7 +805,6 @@ void SV_InitOperatorCommands (void)
 		Info_SetValueForStarKey (svs.info, "*cheats", "ON", MAX_SERVERINFO_STRING);
 	}
 
-	Cmd_AddCommand ("logfile", SV_Logfile_f);
 	Cmd_AddCommand ("fraglogfile", SV_Fraglogfile_f);
 
 	Cmd_AddCommand ("snap", SV_Snap_f);
