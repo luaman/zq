@@ -98,3 +98,15 @@ void trigger_usekey ()
 
 
 //============================================================================
+
+/*QUAKED trigger_waterfall
+*/
+void trigger_waterfall ()
+{
+	// it simply doesn't work as intended (to prevent the player from
+	// swimming up a waterfall), not even in NetQuake
+	remove (self);
+}
+
+
+//============================================================================
