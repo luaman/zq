@@ -167,7 +167,7 @@ void SV_Fraglogfile_f (void)
 ==================
 SV_SetPlayer
 
-Sets host_client and sv_player to the player with idnum Cmd_Argv(1)
+Sets sv_client and sv_player to the player with idnum Cmd_Argv(1)
 ==================
 */
 qboolean SV_SetPlayer (void)
@@ -184,8 +184,8 @@ qboolean SV_SetPlayer (void)
 			continue;
 		if (cl->userid == idnum)
 		{
-			host_client = cl;
-			sv_player = host_client->edict;
+			sv_client = cl;
+			sv_player = sv_client->edict;
 			return true;
 		}
 	}
@@ -579,7 +579,7 @@ void SV_User_f (void)
 	if (!SV_SetPlayer ())
 		return;
 
-	Info_Print (host_client->userinfo);
+	Info_Print (sv_client->userinfo);
 }
 
 /*

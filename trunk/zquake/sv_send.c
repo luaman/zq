@@ -57,9 +57,9 @@ void SV_FlushRedirect (void)
 	{
 		if (!sv_outputbuf[0])
 			return;
-		ClientReliableWrite_Begin (host_client, svc_print, strlen(sv_outputbuf)+3);
-		ClientReliableWrite_Byte (host_client, PRINT_HIGH);
-		ClientReliableWrite_String (host_client, sv_outputbuf);
+		ClientReliableWrite_Begin (sv_client, svc_print, strlen(sv_outputbuf)+3);
+		ClientReliableWrite_Byte (sv_client, PRINT_HIGH);
+		ClientReliableWrite_String (sv_client, sv_outputbuf);
 	}
 
 	// clear it
@@ -566,16 +566,16 @@ void SV_UpdateToReliableMessages (void)
 	edict_t *ent;
 
 // check for changes to be sent over the reliable streams to all clients
-	for (i=0, host_client = svs.clients ; i<MAX_CLIENTS ; i++, host_client++)
+	for (i=0, sv_client = svs.clients ; i<MAX_CLIENTS ; i++, sv_client++)
 	{
-		if (host_client->state != cs_spawned)
+		if (sv_client->state != cs_spawned)
 			continue;
-		if (host_client->sendinfo)
+		if (sv_client->sendinfo)
 		{
-			host_client->sendinfo = false;
-			SV_FullClientUpdate (host_client, &sv.reliable_datagram);
+			sv_client->sendinfo = false;
+			SV_FullClientUpdate (sv_client, &sv.reliable_datagram);
 		}
-		if (host_client->old_frags != host_client->edict->v.frags)
+		if (sv_client->old_frags != sv_client->edict->v.frags)
 		{
 			for (j=0, client = svs.clients ; j<MAX_CLIENTS ; j++, client++)
 			{
@@ -583,26 +583,26 @@ void SV_UpdateToReliableMessages (void)
 					continue;
 				ClientReliableWrite_Begin(client, svc_updatefrags, 4);
 				ClientReliableWrite_Byte(client, i);
-				ClientReliableWrite_Short(client, host_client->edict->v.frags);
+				ClientReliableWrite_Short(client, sv_client->edict->v.frags);
 			}
 
-			host_client->old_frags = host_client->edict->v.frags;
+			sv_client->old_frags = sv_client->edict->v.frags;
 		}
 
 		// maxspeed/entgravity changes
-		ent = host_client->edict;
+		ent = sv_client->edict;
 
 		val = GetEdictFieldValue(ent, "gravity");
-		if (val && host_client->entgravity != val->_float) {
-			host_client->entgravity = val->_float;
-			ClientReliableWrite_Begin(host_client, svc_entgravity, 5);
-			ClientReliableWrite_Float(host_client, host_client->entgravity);
+		if (val && sv_client->entgravity != val->_float) {
+			sv_client->entgravity = val->_float;
+			ClientReliableWrite_Begin(sv_client, svc_entgravity, 5);
+			ClientReliableWrite_Float(sv_client, sv_client->entgravity);
 		}
 		val = GetEdictFieldValue(ent, "maxspeed");
-		if (val && host_client->maxspeed != val->_float) {
-			host_client->maxspeed = val->_float;
-			ClientReliableWrite_Begin(host_client, svc_maxspeed, 5);
-			ClientReliableWrite_Float(host_client, host_client->maxspeed);
+		if (val && sv_client->maxspeed != val->_float) {
+			sv_client->maxspeed = val->_float;
+			ClientReliableWrite_Begin(sv_client, svc_maxspeed, 5);
+			ClientReliableWrite_Float(sv_client, sv_client->maxspeed);
 		}
 
 	}

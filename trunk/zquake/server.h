@@ -345,8 +345,7 @@ extern	cvar_t	coop;
 extern	server_static_t	svs;				// persistant server info
 extern	server_t		sv;					// local server
 
-extern	client_t	*host_client;
-
+extern	client_t	*sv_client;
 extern	edict_t		*sv_player;
 
 extern	char		localmodels[MAX_MODELS][5];	// inline model names for precache
