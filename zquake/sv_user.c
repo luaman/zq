@@ -125,7 +125,7 @@ void Cmd_New_f (void)
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
 //spawns.  These functions are written to not overflow
 	if (sv_client->num_backbuf) {
-		Com_Printf ("WARNING %s: [SV_New] Back buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "WARNING %s: [SV_New] Back buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
 		sv_client->num_backbuf = 0;
 		SZ_Clear(&sv_client->netchan.message);
 	}
@@ -190,14 +190,14 @@ void Cmd_Soundlist_f (void)
 
 	if (sv_client->state != cs_connected)
 	{
-		Com_Printf ("soundlist not valid -- already spawned\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "soundlist not valid -- already spawned\n");
 		return;
 	}
 
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("Cmd_Soundlist_f from different level\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cmd_Soundlist_f from different level\n");
 		Cmd_New_f ();
 		return;
 	}
@@ -213,7 +213,7 @@ void Cmd_Soundlist_f (void)
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
 //spawns.  These functions are written to not overflow
 	if (sv_client->num_backbuf) {
-		Com_Printf ("WARNING %s: [SV_Soundlist] Back buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "WARNING %s: [SV_Soundlist] Back buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
 		sv_client->num_backbuf = 0;
 		SZ_Clear(&sv_client->netchan.message);
 	}
@@ -267,14 +267,14 @@ void Cmd_Modellist_f (void)
 
 	if (sv_client->state != cs_connected)
 	{
-		Com_Printf ("modellist not valid -- already spawned\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "modellist not valid -- already spawned\n");
 		return;
 	}
 	
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("Cmd_Modellist_f from different level\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cmd_Modellist_f from different level\n");
 		Cmd_New_f ();
 		return;
 	}
@@ -308,7 +308,7 @@ void Cmd_Modellist_f (void)
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
 //spawns.  These functions are written to not overflow
 	if (sv_client->num_backbuf) {
-		Com_Printf ("WARNING %s: [SV_Modellist] Back buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "WARNING %s: [SV_Modellist] Back buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
 		sv_client->num_backbuf = 0;
 		SZ_Clear(&sv_client->netchan.message);
 	}
@@ -340,14 +340,14 @@ void Cmd_PreSpawn_f (void)
 
 	if (sv_client->state != cs_connected)
 	{
-		Com_Printf ("prespawn not valid -- already spawned\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "prespawn not valid -- already spawned\n");
 		return;
 	}
 	
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("Cmd_PreSpawn_f from different level\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cmd_PreSpawn_f from different level\n");
 		Cmd_New_f ();
 		return;
 	}
@@ -375,7 +375,7 @@ void Cmd_PreSpawn_f (void)
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
 //spawns.  These functions are written to not overflow
 	if (sv_client->num_backbuf) {
-		Com_Printf ("WARNING %s: [SV_PreSpawn] Back-buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "WARNING %s: [SV_PreSpawn] Back-buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
 		sv_client->num_backbuf = 0;
 		SZ_Clear(&sv_client->netchan.message);
 	}
@@ -411,14 +411,14 @@ void Cmd_Spawn_f (void)
 
 	if (sv_client->state != cs_connected)
 	{
-		Com_Printf ("Spawn not valid -- already spawned\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Spawn not valid -- already spawned\n");
 		return;
 	}
 
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("Cmd_Spawn_f from different level\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cmd_Spawn_f from different level\n");
 		Cmd_New_f ();
 		return;
 	}
@@ -540,7 +540,7 @@ void Cmd_Begin_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("Cmd_Begin_f from different level\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cmd_Begin_f from different level\n");
 		Cmd_New_f ();
 		return;
 	}
@@ -1139,13 +1139,15 @@ void Cmd_SetInfo_f (void)
 	char oldval[MAX_INFO_STRING];
 
 	if (Cmd_Argc() == 1) {
+		SV_BeginRedirect (RD_CLIENT);
 		Com_Printf ("User info settings:\n");
 		Info_Print (sv_client->userinfo);
+		SV_EndRedirect ();
 		return;
 	}
 
 	if (Cmd_Argc() != 3) {
-		Com_Printf ("usage: setinfo [ <key> <value> ]\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "usage: setinfo [ <key> <value> ]\n");
 		return;
 	}
 
@@ -1154,7 +1156,12 @@ void Cmd_SetInfo_f (void)
 
 	strcpy(oldval, Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)));
 
+	// redirect output so that "Info string length exceeded" goes to the client,
+	// not to the server console
+	SV_BeginRedirect (RD_CLIENT);
 	Info_SetValueForKey (sv_client->userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
+	SV_EndRedirect ();
+
 // name is extracted below in ExtractFromUserInfo
 //	strlcpy (sv_client->name, Info_ValueForKey (sv_client->userinfo, "name")
 //		, sizeof(sv_client->name));
@@ -1189,13 +1196,15 @@ void Cmd_Info_f (void)
 	char oldval[MAX_INFO_STRING];
 
 	if (Cmd_Argc() == 1) {
+		SV_BeginRedirect (RD_CLIENT);
 		Com_Printf ("User info settings:\n");
 		Info_Print (sv_client->userinfo);
+		SV_EndRedirect ();
 		return;
 	}
 
 	if (Cmd_Argc() != 3) {
-		Com_Printf ("usage: info [ <key> <value> ]\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "usage: info [ <key> <value> ]\n");
 		return;
 	}
 
@@ -1214,7 +1223,11 @@ void Cmd_Info_f (void)
 
 	strcpy(oldval, Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)));
 
+	// redirect output so that "Info string length exceeded" goes to the client,
+	// not to the server console
+	SV_BeginRedirect (RD_CLIENT);
 	Info_SetValueForKey (sv_client->userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
+	SV_EndRedirect ();
 
 	if (!strcmp(Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)), oldval))
 		return; // key hasn't changed
@@ -1296,12 +1309,12 @@ void Cmd_Join_f (void)
 		return;		// already a player
 
 	if (!(sv_client->extensions & Z_EXT_JOIN_OBSERVE)) {
-		Com_Printf ("Your QW client doesn't support this command\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Your QW client doesn't support this command\n");
 		return;
 	}
 
 	if (sv_password.string[0] && Q_stricmp(sv_password.string, "none")) {
-		Com_Printf ("This server requires a %s password. Please disconnect, set the password and reconnect as %s.\n", "player", "player");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "This server requires a %s password. Please disconnect, set the password and reconnect as %s.\n", "player", "player");
 		return;
 	}
 
@@ -1312,7 +1325,7 @@ void Cmd_Join_f (void)
 			numclients++;
 	}
 	if (numclients >= maxclients.value) {
-		Com_Printf ("Can't join, all player slots full\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Can't join, all player slots full\n");
 		return;
 	}
 
@@ -1369,12 +1382,12 @@ void Cmd_Observe_f (void)
 		return;		// already a spectator
 
 	if (!(sv_client->extensions & Z_EXT_JOIN_OBSERVE)) {
-		Com_Printf ("Your QW client doesn't support this command\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Your QW client doesn't support this command\n");
 		return;
 	}
 
 	if (sv_spectatorPassword.string[0] && Q_stricmp(sv_spectatorPassword.string, "none")) {
-		Com_Printf ("This server requires a %s password. Please disconnect, set the password and reconnect as %s.\n", "spectator", "spectator");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "This server requires a %s password. Please disconnect, set the password and reconnect as %s.\n", "spectator", "spectator");
 		return;
 	}
 
@@ -1385,7 +1398,7 @@ void Cmd_Observe_f (void)
 			numspectators++;
 	}
 	if (numspectators >= maxspectators.value) {
-		Com_Printf ("Can't join, all spectator slots full\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Can't join, all spectator slots full\n");
 		return;
 	}
 
@@ -1441,7 +1454,7 @@ void Cmd_God_f (void)
 {
 	if (!sv_allow_cheats)
 	{
-		Com_Printf ("Cheats are not allowed on this server\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cheats are not allowed on this server\n");
 		return;
 	}
 
@@ -1465,7 +1478,7 @@ void Cmd_Give_f (void)
 	
 	if (!sv_allow_cheats)
 	{
-		Com_Printf ("Cheats are not allowed on this server\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cheats are not allowed on this server\n");
 		return;
 	}
 	
@@ -1513,7 +1526,7 @@ void Cmd_Noclip_f (void)
 {
 	if (!sv_allow_cheats)
 	{
-		Com_Printf ("Cheats are not allowed on this server\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cheats are not allowed on this server\n");
 		return;
 	}
 
@@ -1544,7 +1557,7 @@ void Cmd_Fly_f (void)
 {
 	if (!sv_allow_cheats)
 	{
-		Com_Printf ("Cheats are not allowed on this server\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cheats are not allowed on this server\n");
 		return;
 	}
 
@@ -1622,13 +1635,11 @@ void SV_ExecuteUserCommand (char *s)
 	sv_player = sv_client->edict;
 	cmd = Cmd_Argv(0);
 
-	SV_BeginRedirect (RD_CLIENT);
-
 	for (u=ucmds ; u->name ; u++)
 		if (!strcmp (cmd, u->name) )
 		{
 			u->func ();
-			goto out;
+			return;
 		}
 
 	for (i = 0, cmdfunc = pr_cmdfunctions; i < pr_numcmdfunctions; i++, cmdfunc++) {
@@ -1638,7 +1649,7 @@ void SV_ExecuteUserCommand (char *s)
 			for (j = 0; j < 8; j++)
 				*(string_t *)&pr_globals[OFS_PARM0 + j*3] = PR_SetString(Cmd_Argv(j + 1));
 			PR_ExecuteProgram (cmdfunc->funcnum);
-			goto out;
+			return;
 		}
 	}
 
@@ -1658,10 +1669,7 @@ void SV_ExecuteUserCommand (char *s)
 	else if (!Q_stricmp(cmd, "observe"))
 		Cmd_Observe_f ();
 	else
-		Com_Printf ("Bad user command: %s\n", cmd);
-
-out:
-	SV_EndRedirect ();
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Bad user command: %s\n", cmd);
 }
 
 /*
