@@ -28,7 +28,6 @@
 */
 
 #include <string.h>		/* XoXus: needed for memset call */
-#include "uint32.h"
 #include "mdfour.h"
 
 /* NOTE: This code makes no attempt to be fast!
