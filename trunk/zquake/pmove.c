@@ -364,7 +364,7 @@ void PM_Friction (void)
 	friction = movevars.friction;
 
 // if the leading edge is over a dropoff, increase friction
-	if (pmove.onground != -1) {
+	if (pmove.onground) {
 		start[0] = stop[0] = pmove.origin[0] + vel[0]/speed*16;
 		start[1] = stop[1] = pmove.origin[1] + vel[1]/speed*16;
 		start[2] = pmove.origin[2] + player_mins[2];
@@ -381,7 +381,7 @@ void PM_Friction (void)
 
 	if (pmove.waterlevel >= 2) // apply water friction
 		drop += speed*movevars.waterfriction*pmove.waterlevel*frametime;
-	else if (pmove.onground != -1) // apply ground friction
+	else if (pmove.onground) // apply ground friction
 	{
 		control = speed < movevars.stopspeed ? movevars.stopspeed : speed;
 		drop += control*friction*frametime;
@@ -555,7 +555,7 @@ void PM_AirMove (void)
 //	if (pmove.waterjumptime)
 //		Con_Printf ("am->%f, %f, %f\n", pmove.velocity[0], pmove.velocity[1], pmove.velocity[2]);
 
-	if ( pmove.onground != -1)
+	if (pmove.onground)
 	{
 		if (pmove.velocity[2] > 0 || !pm_slidefix.value)
 			pmove.velocity[2] = 0;
@@ -579,7 +579,7 @@ void PM_AirMove (void)
 		{
 			// the move didn't block
 			PM_CategorizePosition ();
-			if (pmove.onground != -1)		// but we're on ground now
+			if (pmove.onground)		// but we're on ground now
 			{
 			// This is a hack to fix the jump bug
 				VectorCopy (pmove.origin, original);
@@ -627,16 +627,19 @@ void PM_CategorizePosition (void)
 	point[2] = pmove.origin[2] - 1;
 	if (pmove.velocity[2] > 180)
 	{
-		pmove.onground = -1;
+		pmove.onground = false;
 	}
 	else
 	{
 		tr = PM_PlayerMove (pmove.origin, point);
 		if ( tr.plane.normal[2] < 0.7)
-			pmove.onground = -1;	// too steep
-		else
-			pmove.onground = tr.ent;
-		if (pmove.onground != -1)
+			pmove.onground = false;	// too steep
+		else {
+			pmove.onground = true;
+			pmove.groundent = tr.ent;
+		}
+
+		if (pmove.onground)
 		{
 			pmove.waterjumptime = 0;
 			if (!tr.startsolid && !tr.allsolid)
@@ -695,7 +698,7 @@ void JumpButton (void)
 
 	if (pmove.waterlevel >= 2)
 	{	// swimming, not jumping
-		pmove.onground = -1;
+		pmove.onground = false;
 
 		if (pmove.watertype == CONTENTS_WATER)
 			pmove.velocity[2] = 100;
@@ -706,7 +709,7 @@ void JumpButton (void)
 		return;
 	}
 
-	if (pmove.onground == -1)
+	if (!pmove.onground)
 		return;		// in air, so no effect
 
 #ifdef SERVERONLY
@@ -723,7 +726,7 @@ void JumpButton (void)
 		if (pmove.velocity[2] < 0)
 			pmove.velocity[2] = 0;
 
-	pmove.onground = -1;
+	pmove.onground = false;
 	pmove.velocity[2] += 270;
 
 	pmove.oldbuttons |= BUTTON_JUMP;	// don't jump again until released
