@@ -1127,7 +1127,7 @@ void SV_ReadDelayedPackets (void)
 {
 	int			i;
 	client_t	*cl;
-	packet_t	*pack, *prev, *next;
+	packet_t	*pack, *next;
 
 
 	// check for delayed packets from connected clients
@@ -1137,7 +1137,7 @@ void SV_ReadDelayedPackets (void)
 
 		net_from = cl->netchan.remote_address;
 
-		for (prev = NULL, pack = cl->packets; pack; pack = next) {
+		for (pack = cl->packets; pack; pack = next) {
 			if (svs.realtime < pack->time + cl->delay)
 				break;		// packets are queued up in order of increasing pack->time
 
