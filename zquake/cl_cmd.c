@@ -324,7 +324,6 @@ an unconnected command.
 void CL_Rcon_f (void)
 {
 	char	message[1024];
-	int		i;
 	netadr_t	to;
 	extern cvar_t cl_rconAddress;
 	extern cvar_t *cl_rconPassword;
@@ -342,11 +341,7 @@ void CL_Rcon_f (void)
 		strcat (message, " ");
 	}
 
-	for (i = 1; i < Cmd_Argc(); i++) {
-		if (i > 1)
-			strcat (message, " ");
-		strcat (message, Cmd_Argv(i));
-	}
+	Q_strncatz (message, Cmd_MakeArgs(1), sizeof(message));
 
 	if (cls.state >= ca_connected)
 		to = cls.netchan.remote_address;
@@ -973,11 +968,10 @@ CL_CheckServerCommand
 */
 qboolean CL_LegacyCommand (void)
 {
-	int			i, c;
+	int			c;
 	char		*name;
 	legacyvar_t *lvar;
 	cvar_t		*v;
-	char		string[1024];
 
 	c = Cmd_Argc();
 	name = Cmd_Argv(0);
@@ -1011,14 +1005,7 @@ qboolean CL_LegacyCommand (void)
 		return true;
 	}
 
-	string[0] = 0;
-	for (i=1 ; i < c ; i++)
-	{
-		if (i > 1)
-			strcat (string, " ");
-		strcat (string, Cmd_Argv(i));
-	}
+	Cvar_Set (v, Cmd_MakeArgs(1));
 
-	Cvar_Set (v, string);
 	return true;
 }

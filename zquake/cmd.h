@@ -159,3 +159,4 @@ qboolean Cmd_DeleteAlias (char *name);	// return true if successful
 cmd_alias_t *Cmd_FindAlias (char *name); // returns NULL on failure
 char *Cmd_AliasString (char *name); // returns NULL on failure
 void Cmd_WriteAliases (FILE *f);
+char *Cmd_MakeArgs (int start);

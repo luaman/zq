@@ -490,14 +490,10 @@ Creates a new command that executes a command string (possibly ; separated)
 void Cmd_Alias_f (void)
 {
 	cmd_alias_t	*a;
-	char		cmd[1024];
-	int			i, c;
 	int			key;
 	char		*s;
-//	cvar_t		*var;
 
-	c = Cmd_Argc();
-	if (c == 1)
+	if (Cmd_Argc() == 1)
 	{
 		Com_Printf ("alias <name> <command> : create or modify an alias\n");
 		Com_Printf ("aliaslist : list all aliases\n");
@@ -537,15 +533,7 @@ void Cmd_Alias_f (void)
 		a->flags |= ALIAS_ARCHIVE;
 
 // copy the rest of the command line
-	cmd[0] = 0;		// start out with a null string
-	for (i=2 ; i<c ; i++)
-	{
-		if (i > 2)
-			strcat (cmd, " ");
-		strcat (cmd, Cmd_Argv(i));
-	}
-	
-	a->value = CopyString (cmd);
+	a->value = CopyString (Cmd_MakeArgs(2));
 }
 
 
@@ -701,6 +689,31 @@ char *Cmd_Args (void)
 	if (!cmd_args)
 		return "";
 	return cmd_args;
+}
+
+
+/*
+============
+Cmd_MakeArgs
+
+Returns a single string containing argv(start) to argv(argc()-1)
+Unlike Cmd_Args, shrinks spaces between argvs
+============
+*/
+char *Cmd_MakeArgs (int start)
+{
+	static char	text[1024];
+	int		i;
+
+	text[0] = 0;
+
+	for (i = start; i < Cmd_Argc(); i++) {
+		if (i > start)
+			strcat (text, " ");
+		strcat (text, Cmd_Argv(i));
+	}
+
+	return text;
 }
 
 

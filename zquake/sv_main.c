@@ -701,35 +701,17 @@ Redirect all printfs
 */
 void SVC_RemoteCommand (void)
 {
-	int		i;
-	char	remaining[1024];
-
-
 	if (!Rcon_Validate ()) {
-		Com_Printf ("Bad rcon from %s:\n%s\n"
-			, NET_AdrToString (net_from), net_message.data+4);
+		Com_Printf ("Bad rcon from %s:\n%s\n", NET_AdrToString (net_from), net_message.data+4);
 
 		SV_BeginRedirect (RD_PACKET);
-
-		Com_Printf ("Bad rcon_password.\n");
-
-	} else {
-
-		Com_Printf ("Rcon from %s:\n%s\n"
-			, NET_AdrToString (net_from), net_message.data+4);
+		Com_Printf ("Bad rcon_password\n");
+	}
+	else {
+		Com_Printf ("Rcon from %s:\n%s\n", NET_AdrToString (net_from), net_message.data+4);
 
 		SV_BeginRedirect (RD_PACKET);
-
-		remaining[0] = 0;
-
-		for (i=2 ; i<Cmd_Argc() ; i++)
-		{
-			strcat (remaining, Cmd_Argv(i) );
-			strcat (remaining, " ");
-		}
-
-		Cmd_ExecuteString (remaining);
-
+		Cmd_ExecuteString (Cmd_MakeArgs(2));
 	}
 
 	SV_EndRedirect ();
