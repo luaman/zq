@@ -34,39 +34,6 @@ void CL_Shutdown ();
 void SV_Init (void);
 
 
-#ifdef SERVERONLY
-// these should go to cl_null.c
-void CL_Init (void)
-{
-}
-void CL_Shutdown (void)
-{
-}
-void CL_Frame (double time)
-{
-}
-void CL_Disconnect (void)
-{
-}
-void Con_Init (void)
-{
-}
-#endif
-
-#if !defined(QW_BOTH) && !defined(SERVERONLY)
-// these should go to sv_null.c
-void SV_Init (void)
-{
-}
-void SV_Shutdown (char *finalmsg)
-{
-}
-void SV_Frame (double time)
-{
-}
-#endif
-
-
 int			host_hunklevel;
 qboolean	host_initialized;		// true if into command execution
 
