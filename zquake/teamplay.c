@@ -29,8 +29,9 @@
 #include "pmove.h"
 
 cvar_t	cl_parsesay = {"cl_parsesay", "0"};
+cvar_t	cl_parseFunChars = {"cl_parseFunChars", "1"};
 cvar_t	cl_triggers = {"cl_triggers", "0"};
-cvar_t	tp_forcetriggers = {"tp_forcetriggers", "0"};
+cvar_t	tp_forceTriggers = {"tp_forceTriggers", "0"};
 cvar_t	cl_nofake = {"cl_nofake", "0"};
 cvar_t	cl_loadlocs = {"cl_loadlocs", "0"};
 cvar_t	cl_mapname = {"mapname", "", CVAR_ROM};
@@ -474,19 +475,14 @@ TP_ParseChatString
 Parses %a-like expressions
 =============
 */
-char *TP_ParseMacroString (char *string)
+char *TP_ParseMacroString (char *s)
 {
 	static char	buf[MAX_MACRO_STRING];
-	char	*s;
-	int		i;
+	int		i = 0;
 	char	*macro_string;
-	char	ch;
 
 	if (!cl_parsesay.value)
-		return string;
-
-	s = string;
-	i = 0;
+		return s;
 
 	while (*s && i < MAX_MACRO_STRING-1)
 	{
@@ -571,46 +567,96 @@ char *TP_ParseMacroString (char *string)
 			s += 2;	// skip % and letter
 			continue;
 		}
-		
-		// "fun chars"
-		if (*s == '$')
-		{
-			ch = 0;
-			switch (s[1]) {
-				case '\\': ch = 0x0D; break;
-				case ':': ch = 0x0A; break;
-				case '[': ch = 0x10; break;
-				case ']': ch = 0x11; break;
-				case 'G': ch = 0x86; break;
-				case 'R': ch = 0x87; break;
-				case 'Y': ch = 0x88; break;
-				case 'B': ch = 0x89; break;
-				case '(': ch = 0x80; break;
-				case '=': ch = 0x81; break;
-				case ')': ch = 0x82; break;
-				case 'a': ch = 0x83; break;
-				case '<': ch = 0x1d; break;
-				case '-': ch = 0x1e; break;
-				case '>': ch = 0x1f; break;
-				case ',': ch = 0x1c; break;
-				case '.': ch = 0x9c; break;
-				case 'b': ch = 0x8b; break;
-				case 'c': ch = 0x8d; break;
-			}
-			if (s[1] >= '0' && s[1] <= '9')
-				ch = s[1] - '0' + 0x12;
-			if (ch) {
-				buf[i++] = ch;
-				s += 2;
-				continue;
-			}
-		}
 
 		buf[i++] = *s++;
 	}
 	buf[i] = 0;
 
-	return	buf;
+	return buf;
+}
+
+/*
+==============
+TP_ParseFunChars
+
+Doesn't check for overflows, so strlen(s) should be < MAX_MACRO_STRING
+==============
+*/
+char *TP_ParseFunChars (char *s)
+{
+	static char	buf[MAX_MACRO_STRING];
+	char	*out = buf;
+	char	c;
+
+	if (!cl_parseFunChars.value)
+		return s;
+
+	while (*s) {
+		if (*s == '$' && s[1] == 'x') {
+			int i;
+			// check for $x10, $x8a, etc
+			c = tolower(s[2]);
+			if (c >= '0' && c <= '9')
+				i = (c - '0') << 4;
+			else if (c >= 'a' && c <= 'f')
+				i = (c - 'a' + 10) << 4;
+			else goto skip;
+			c = tolower(s[3]);
+			if (c >= '0' && c <= '9')
+				i += (c - '0');
+			else if (c >= 'a' && c <= 'f')
+				i += (c - 'a' + 10);
+			else goto skip;
+			if (!i)
+				i = ' ';
+			*out++ = i;
+			s += 4;
+			continue;
+		}
+		if (*s == '$' && s[1]) {
+			c = 0;
+			switch (s[1]) {
+				case '\\': c = 0x0D; break;
+				case ':': c = 0x0A; break;
+				case '[': c = 0x10; break;
+				case ']': c = 0x11; break;
+				case 'G': c = 0x86; break;
+				case 'R': c = 0x87; break;
+				case 'Y': c = 0x88; break;
+				case 'B': c = 0x89; break;
+				case '(': c = 0x80; break;
+				case '=': c = 0x81; break;
+				case ')': c = 0x82; break;
+				case 'a': c = 0x83; break;
+				case '<': c = 0x1d; break;
+				case '-': c = 0x1e; break;
+				case '>': c = 0x1f; break;
+				case ',': c = 0x1c; break;
+				case '.': c = 0x9c; break;
+				case 'b': c = 0x8b; break;
+				case 'c': c = 0x8d; break;
+				case '$': c = '$'; break;
+				case '^': c = '^'; break;
+			}
+			if (s[1] >= '0' && s[1] <= '9')
+				c = s[1] - '0' + 0x12;
+			if (c) {
+				*out++ = c;
+				s += 2;
+				continue;
+			}
+		}
+		if (*s == '^' && s[1] && s[1] != ' ') {
+			*out++ = s[1] | 128;
+			s += 2;
+			continue;
+		}
+skip:			
+		*out++ = *s++;
+	}
+	*out = 0;
+
+	return buf;
 }
 
 /*
@@ -1681,7 +1727,7 @@ static int CountTeammates ()
 	player_info_t	*player;
 	char	*myteam;
 
-	if (tp_forcetriggers.value)
+	if (tp_forceTriggers.value)
 		return 1;
 
 	count = 0;
@@ -1960,9 +2006,10 @@ void TP_StatChanged (int stat, int value)
 
 void TP_Init ()
 {
+	Cvar_RegisterVariable (&cl_parseFunChars);
 	Cvar_RegisterVariable (&cl_parsesay);
 	Cvar_RegisterVariable (&cl_triggers);
-	Cvar_RegisterVariable (&tp_forcetriggers);
+	Cvar_RegisterVariable (&tp_forceTriggers);
 	Cvar_RegisterVariable (&cl_nofake);
 	Cvar_RegisterVariable (&cl_loadlocs);
 	Cvar_RegisterVariable (&cl_rocket2grenade);
