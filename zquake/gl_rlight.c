@@ -98,13 +98,16 @@ void R_RenderDlight (dlight_t *light)
 	vec3_t	v;
 	float	rad;
 	float	*bub_sin, *bub_cos;
+	vec3_t	v_right, v_up;
+	float	length;
 
 	bub_sin = bubble_sintable;
 	bub_cos = bubble_costable;
 	rad = light->radius * 0.35;
 
 	VectorSubtract (light->origin, r_origin, v);
-	if (Length (v) < rad)
+	length = VectorNormalize (v);
+	if (length < rad)
 	{	// view is inside the dlight
 		AddLightBlend (1, 0.5, 0, light->radius * 0.0003);
 		return;
@@ -115,16 +118,30 @@ void R_RenderDlight (dlight_t *light)
 //	glColor3f (0.2,0.1,0.05); // changed dimlight effect
 	glColor4f (light->color[0], light->color[1], light->color[2],
 		light->color[3]);
-	for (i=0 ; i<3 ; i++)
-		v[i] = light->origin[i] - vpn[i]*rad;
+
+	v_right[0] = v[1];
+	v_right[1] = -v[0];
+	v_right[2] = 0;
+	VectorNormalize (v_right);
+	CrossProduct (v_right, v, v_up);
+
+	if (length - rad > 8)
+		VectorScale (v, rad, v);
+	else {
+		// make sure the light bubble will not be clipped by
+		// near z clipping plane
+		VectorScale (v, length-8, v);
+	}
+	VectorSubtract (light->origin, v, v);
+
 	glVertex3fv (v);
 	glColor3f (0,0,0);
 	for (i=16 ; i>=0 ; i--)
 	{
 //		a = i/16.0 * M_PI*2;
 		for (j=0 ; j<3 ; j++)
-			v[j] = light->origin[j] + (vright[j]*(*bub_cos) +
-				+ vup[j]*(*bub_sin)) * rad;
+			v[j] = light->origin[j] + (v_right[j]*(*bub_cos) +
+				+ v_up[j]*(*bub_sin)) * rad;
 		bub_sin++; 
 		bub_cos++;
 		glVertex3fv (v);
