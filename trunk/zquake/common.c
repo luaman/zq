@@ -442,6 +442,8 @@ char *COM_FileExtension (char *in)
 	static char exten[8];
 	int		i;
 
+	in = COM_SkipPath (in);
+
 	while (*in && *in != '.')
 		in++;
 	if (!*in)
