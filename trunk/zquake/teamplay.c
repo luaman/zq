@@ -393,16 +393,24 @@ char *CL_ParseMacroString (char *string)
 					if (!macro_string[0])
 						macro_string = "a";
 					if (cl.stats[STAT_ARMOR] < 30)
-						sprintf (mbuf, "\x90%s:%i\x91", macro_string, cl.stats[STAT_ARMOR]);
+						sprintf (mbuf, "\x10%s:%i\x11", macro_string, cl.stats[STAT_ARMOR]);
 					else
 						sprintf (mbuf, "%s:%i", macro_string, cl.stats[STAT_ARMOR]);
 					macro_string = mbuf;
 					break;
 
+				case 'h':
+					if (cl.stats[STAT_HEALTH] >= 50)
+						sprintf (macro_buf, "%i", cl.stats[STAT_HEALTH]);
+					else
+						sprintf (macro_buf, "\x10%i\x11", cl.stats[STAT_HEALTH]);
+					macro_string = macro_buf;
+					break;
+
 				case 'P':
 					macro_string = Macro_Powerups_f();
 					if (macro_string[0])
-						sprintf (mbuf, "\x90%s\x91", macro_string);
+						sprintf (mbuf, "\x10%s\x11", macro_string);
 					else
 						mbuf[0] = 0;
 					macro_string = mbuf;
@@ -459,9 +467,10 @@ char *CL_ParseMacroString (char *string)
 				ch = 0;
 				switch (s[1])
 				{
-				case '\\': ch = 13; break;
-				case '[': ch = 0x90; break;
-				case ']': ch = 0x91; break;
+				case '\\': ch = 0x0D; break;
+				case ':': ch = 0x0A; break;
+				case '[': ch = 0x10; break;
+				case ']': ch = 0x11; break;
 				case 'G': ch = 0x86; break;
 				case 'R': ch = 0x87; break;
 				case 'Y': ch = 0x88; break;
