@@ -361,43 +361,6 @@ InputName=math
 !ENDIF 
 
 # End Source File
-# Begin Source File
-
-SOURCE=.\worlda.s
-
-!IF  "$(CFG)" == "zqds - Win32 Release"
-
-# Begin Custom Build
-OutDir=.\Release-server
-InputPath=.\worlda.s
-InputName=worlda
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zqds - Win32 Debug"
-
-# Begin Custom Build
-OutDir=.\Debug-server
-InputPath=.\worlda.s
-InputName=worlda
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
 # End Group
 # End Target
 # End Project
