@@ -362,6 +362,9 @@ extern	dlight_t		cl_dlights[MAX_DLIGHTS];
 
 extern float	server_version;	// version of server we connected to
 
+extern byte		*host_basepal;
+extern byte		*host_colormap;
+
 //=============================================================================
 
 
