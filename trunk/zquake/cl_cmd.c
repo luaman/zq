@@ -676,7 +676,7 @@ void CL_FullServerinfo_f (void)
 	if (Cmd_Argc() != 2)
 		return;
 
-	strcpy (cl.serverinfo, Cmd_Argv(1));
+	Q_strncpyz (cl.serverinfo, Cmd_Argv(1), sizeof(cl.serverinfo));
 
 	if ((p = Info_ValueForKey(cl.serverinfo, "*z_version")) && *p) {
 #ifdef QW_BOTH
