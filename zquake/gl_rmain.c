@@ -236,8 +236,6 @@ void R_DrawSpriteModel (entity_t *e)
 		right = vright;
 	}
 
-	glColor3f (1,1,1);
-
 	GL_DisableMultitexture();
 
     GL_Bind(frame->gl_texturenum);
@@ -631,14 +629,14 @@ void R_DrawAliasModel (entity_t *ent)
 
 		glDisable (GL_TEXTURE_2D);
 		glEnable (GL_BLEND);
-		glColor4f (0,0,0,0.5);
+		glColor4f (0, 0, 0, 0.5);
 		GL_DrawAliasShadow (paliashdr, lastposenum);
 		glEnable (GL_TEXTURE_2D);
 		glDisable (GL_BLEND);
-		glColor4f (1,1,1,1);
 		glPopMatrix ();
 	}
 
+	glColor3f (1, 1, 1);
 }
 
 //==================================================================================
@@ -754,6 +752,8 @@ void R_PolyBlend (void)
 	glDisable (GL_BLEND);
 	glEnable (GL_TEXTURE_2D);
 	glEnable (GL_ALPHA_TEST);
+
+	glColor3f (1, 1, 1);
 }
 
 /*
@@ -797,6 +797,7 @@ void R_BrightenScreen (void)
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable (GL_TEXTURE_2D);
 	glDisable (GL_BLEND);
+	glColor3f (1, 1, 1);
 }
 
 int SignbitsForPlane (mplane_t *out)
@@ -1183,13 +1184,13 @@ void R_Mirror (void)
 
 	glLoadMatrixf (r_base_world_matrix);
 
-	glColor4f (1,1,1,r_mirroralpha.value);
+	glColor4f (1, 1, 1, r_mirroralpha.value);
 	s = cl.worldmodel->textures[mirrortexturenum]->texturechain;
 	for ( ; s ; s=s->texturechain)
 		R_RenderBrushPoly (s);
 	cl.worldmodel->textures[mirrortexturenum]->texturechain = NULL;
 	glDisable (GL_BLEND);
-	glColor4f (1,1,1,1);
+	glColor3f (1, 1, 1);
 }
 #endif
 

@@ -973,7 +973,6 @@ void R_DrawBrushModel (entity_t *e)
 	if (R_CullBox (mins, maxs))
 		return;
 
-	glColor3f (1, 1, 1);
 	memset (lightmap_polys, 0, sizeof(lightmap_polys));
 //	if (gl_fb_bmodels.value)
 //		memset (fullbright_polys, 0, sizeof(fullbright_polys));
@@ -1188,7 +1187,7 @@ void R_DrawWorld (void)
 	currententity = &ent;
 	currenttexture = -1;
 
-	glColor3f (1,1,1);
+	glColor3f (1, 1, 1);
 	memset (lightmap_polys, 0, sizeof(lightmap_polys));
 	if (gl_fb_bmodels.value)
 		memset (fullbright_polys, 0, sizeof(fullbright_polys));

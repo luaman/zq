@@ -614,6 +614,7 @@ void R_DrawParticles (void)
 	if (alphaTestEnabled)
 		glEnable(GL_ALPHA_TEST);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glColor3f (1, 1, 1);
 #else
 	D_EndParticles ();
 #endif

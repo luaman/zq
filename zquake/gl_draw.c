@@ -606,15 +606,13 @@ void Draw_Crosshair (void)
 	int x, y;
 	int ofs1, ofs2;
 	extern vrect_t		scr_vrect;
-	unsigned char *pColor;
 
 	if (crosshair.value == 2 || crosshair.value == 3 || crosshair.value == 4) {
 		x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value; 
 		y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
 
 		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		pColor = (unsigned char *) &d_8to24table[(byte) crosshaircolor.value];
-		glColor4ubv ( pColor );
+		glColor3ubv ((byte *) &d_8to24table[(byte) crosshaircolor.value]);
 		GL_Bind (crosshairtextures[(int)crosshair.value - 2]);
 
 		if (vid.width == 320) {
@@ -636,6 +634,7 @@ void Draw_Crosshair (void)
 		glEnd ();
 		
 		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glColor3f (1, 1, 1);
 	} else if (crosshair.value)
 		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
 			scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, 
@@ -667,7 +666,6 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 	if (scrap_dirty)
 		Scrap_Upload ();
 	gl = (glpic_t *)pic->data;
-	glColor4f (1,1,1,1);
 	GL_Bind (gl->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (gl->sl, gl->tl);
@@ -697,7 +695,7 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 	glEnable (GL_BLEND);
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace(GL_FRONT);
-	glColor4f (1,1,1,alpha);
+	glColor4f (1, 1, 1, alpha);
 	GL_Bind (gl->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (gl->sl, gl->tl);
@@ -709,7 +707,7 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 	glTexCoord2f (gl->sl, gl->th);
 	glVertex2f (x, y+pic->height);
 	glEnd ();
-	glColor4f (1,1,1,1);
+	glColor3f (1, 1, 1);
 	glEnable(GL_ALPHA_TEST);
 	glDisable (GL_BLEND);
 }
@@ -733,7 +731,6 @@ void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int h
 	newtl = gl->tl + (srcy*oldglheight)/pic->height;
 	newth = newtl + (height*oldglheight)/pic->height;
 	
-	glColor4f (1,1,1,1);
 	GL_Bind (gl->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (newsl, newtl);
@@ -802,7 +799,6 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glColor3f (1,1,1);
 	glBegin (GL_QUADS);
 	glTexCoord2f (0, 0);
 	glVertex2f (x, y);
@@ -861,7 +857,6 @@ refresh window.
 */
 void Draw_TileClear (int x, int y, int w, int h)
 {
-	glColor3f (1,1,1);
 	GL_Bind (*(int *)draw_backtile->data);
 	glBegin (GL_QUADS);
 	glTexCoord2f (x/64.0, y/64.0);
@@ -898,7 +893,7 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 	glVertex2f (x, y+h);
 
 	glEnd ();
-	glColor3f (1,1,1);
+	glColor3f (1, 1, 1);
 	glEnable (GL_TEXTURE_2D);
 }
 //=============================================================================
@@ -922,7 +917,7 @@ void Draw_FadeScreen (void)
 	glVertex2f (0, vid.height);
 
 	glEnd ();
-	glColor4f (1,1,1,1);
+	glColor3f (1, 1, 1);
 	glEnable (GL_TEXTURE_2D);
 	glDisable (GL_BLEND);
 
@@ -985,7 +980,7 @@ void GL_Set2D (void)
 	glEnable (GL_ALPHA_TEST);
 //	glDisable (GL_ALPHA_TEST);
 
-	glColor4f (1,1,1,1);
+	glColor3f (1, 1, 1);
 }
 
 //====================================================================

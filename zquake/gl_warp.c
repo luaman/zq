@@ -983,7 +983,7 @@ void R_DrawSkyBox (void)
 #if 0
 glEnable (GL_BLEND);
 glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-glColor4f (1,1,1,0.5);
+glColor4f (1, 1, 1, 0.5);
 glDisable (GL_DEPTH_TEST);
 #endif
 	for (i=0 ; i<6 ; i++)
@@ -1009,7 +1009,7 @@ skymaxs[1][i] = 1;
 #if 0
 glDisable (GL_BLEND);
 glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-glColor4f (1,1,1,0.5);
+glColor4f (1, 1, 1, 1);
 glEnable (GL_DEPTH_TEST);
 #endif
 }
