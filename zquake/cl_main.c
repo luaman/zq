@@ -582,7 +582,7 @@ void CL_ConnectionlessPacket (void)
 		data[4] = A2A_ACK;
 		data[5] = 0;
 		
-		NET_SendPacket (NS_CLIENT, 6, &data, net_from);
+		NET_SendPacket (NS_CLIENT, sizeof(data), data, net_from);
 		return;
 	}
 
