@@ -589,6 +589,10 @@ void V_CalcPowerupCshift (void)
 }
 
 
+// This is to make things work more or less like they used to work in Quake
+// where cshifts.percent was an int and values dropped faster because of rounding down
+#define FLASHSPEEDADJUST 1.2
+
 /*
 =============
 V_CalcBlend
@@ -613,12 +617,12 @@ void V_CalcBlend (void)
 		V_CalcPowerupCshift ();
 
 // drop the damage value
-	cl.cshifts[CSHIFT_DAMAGE].percent -= cls.frametime*150;
+	cl.cshifts[CSHIFT_DAMAGE].percent -= cls.frametime * (150 * FLASHSPEEDADJUST);
 	if (cl.cshifts[CSHIFT_DAMAGE].percent <= 0)
 		cl.cshifts[CSHIFT_DAMAGE].percent = 0;
 
 // drop the bonus value
-	cl.cshifts[CSHIFT_BONUS].percent -= cls.frametime*100;
+	cl.cshifts[CSHIFT_BONUS].percent -= cls.frametime * (100 * FLASHSPEEDADJUST);
 	if (cl.cshifts[CSHIFT_BONUS].percent <= 0)
 		cl.cshifts[CSHIFT_BONUS].percent = 0;
 
@@ -773,14 +777,14 @@ void V_UpdatePalette (void)
 				prev_cshifts[i].destcolor[j] = cl.cshifts[i].destcolor[j];
 			}
 	}
-	
+
 // drop the damage value
-	cl.cshifts[CSHIFT_DAMAGE].percent -= cls.frametime*150;
+	cl.cshifts[CSHIFT_DAMAGE].percent -= cls.frametime * (150 * FLASHSPEEDADJUST);
 	if (cl.cshifts[CSHIFT_DAMAGE].percent <= 0)
 		cl.cshifts[CSHIFT_DAMAGE].percent = 0;
 
 // drop the bonus value
-	cl.cshifts[CSHIFT_BONUS].percent -= cls.frametime*100;
+	cl.cshifts[CSHIFT_BONUS].percent -= cls.frametime * (100 * FLASHSPEEDADJUST);
 	if (cl.cshifts[CSHIFT_BONUS].percent <= 0)
 		cl.cshifts[CSHIFT_BONUS].percent = 0;
 
