@@ -134,7 +134,7 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 		{
 			hull = &pmove.physents[i].model->hulls[1];
 
-			if (PM_CullTraceBox(tracemins, tracemaxs, pe->origin, pe->model->mins, pe->model->maxs, hull->clip_mins, hull->clip_maxs))
+			if (i > 0 && PM_CullTraceBox(tracemins, tracemaxs, pe->origin, pe->model->mins, pe->model->maxs, hull->clip_mins, hull->clip_maxs))
 				continue;
 
 			VectorSubtract (hull->clip_mins, player_mins, offset);
@@ -144,12 +144,11 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 		{
 			VectorSubtract (pe->mins, player_maxs, mins);
 			VectorSubtract (pe->maxs, player_mins, maxs);
-			hull = CM_HullForBox (mins, maxs);
 
-			// (clip_mins/maxs will be zero, but that's what we want)
-			if (PM_CullTraceBox(tracemins, tracemaxs, pe->origin, pe->model->mins, pe->model->maxs, hull->clip_mins, hull->clip_maxs))
+			if (PM_CullTraceBox(tracemins, tracemaxs, pe->origin, mins, maxs, vec3_origin, vec3_origin))
 				continue;
 
+			hull = CM_HullForBox (mins, maxs);
 			VectorCopy (pe->origin, offset);
 		}
 
