@@ -572,28 +572,6 @@ void FloorDivMod (double numer, double denom, int *quotient,
 }
 
 
-/*
-===================
-GreatestCommonDivisor
-====================
-*/
-int GreatestCommonDivisor (int i1, int i2)
-{
-	if (i1 > i2)
-	{
-		if (i2 == 0)
-			return (i1);
-		return GreatestCommonDivisor (i2, i1 % i2);
-	}
-	else
-	{
-		if (i1 == 0)
-			return (i2);
-		return GreatestCommonDivisor (i1, i2 % i1);
-	}
-}
-
-
 #if !id386
 
 // TODO: move to nonintel.c

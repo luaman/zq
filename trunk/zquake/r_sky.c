@@ -25,10 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "rc_image.h"
 
 
-int		iskyspeed = 8;
-int		iskyspeed2 = 2;
-float	skyspeed, skyspeed2;
-
 float	skyshift;
 
 byte	*r_skysource;
@@ -253,27 +249,14 @@ void R_GenSkyTile16 (void *pdest)
 }
 
 
-/*
-=============
-R_SetSkyFrame
-==============
-*/
-void R_SetSkyFrame (void)
+#define SKYSPEED1	8
+#define SKYSPEED2	2
+
+void R_SetSkyFrame(void)
 {
-	int		g, s1, s2;
-	float	temp, skytime;
-
-	skyspeed = iskyspeed;
-	skyspeed2 = iskyspeed2;
-
-	g = GreatestCommonDivisor (iskyspeed, iskyspeed2);
-	s1 = iskyspeed / g;
-	s2 = iskyspeed2 / g;
-	temp = SKYSIZE * s1 * s2;
-
-	skytime = r_refdef2.time - ((int)(r_refdef2.time / temp) * temp);
-	skyshift = skytime * skyspeed;	
-
+	// this only works if SKYSPEED1 is a multiple of SKYSPEED2
+	assert((SKYSPEED1 % SKYSPEED2) == 0);
+	skyshift = fmod(r_refdef2.time, SKYSIZE * SKYSPEED1 / SKYSPEED2) * SKYSPEED1;
 	r_skymade = 0;
 }
 
