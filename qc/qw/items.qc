@@ -98,8 +98,7 @@ void DropQuad (float timeleft)
 	entity	item;
 
 	item = spawn();
-
-	setorigin (item, self.origin);
+	item.origin = self.origin;
 	
 	item.velocity_z = 300;
 	item.velocity_x = -100 + (random() * 200);
@@ -110,7 +109,7 @@ void DropQuad (float timeleft)
 	item.movetype = MOVETYPE_TOSS;
 	item.noise = "items/damage.wav";
 	setmodel (item, "progs/quaddama.mdl");
-	setsize (item, '-16 -16 -24', '16 16 32');
+	setsize (item, '-16 -16 -24', '16 16 32');	// link into world
 	item.cnt = time + timeleft;
 	item.touch = q_touch;
 	item.nextthink = time + timeleft;    // remove it with the time left on it
@@ -153,7 +152,7 @@ void DropRing (float timeleft)
 	entity	item;
 
 	item = spawn();
-	setorigin (item, self.origin);
+	item.origin = self.origin;
 	
 	item.velocity_z = 300;
 	item.velocity_x = -100 + (random() * 200);
@@ -164,7 +163,7 @@ void DropRing (float timeleft)
 	item.movetype = MOVETYPE_TOSS;
 	item.noise = "items/inv1.wav";
 	setmodel (item, "progs/invisibl.mdl");
-	setsize (item, '-16 -16 -24', '16 16 32');
+	setsize (item, '-16 -16 -24', '16 16 32');	// link into world
 	item.cnt = time + timeleft;
 	item.touch = r_touch;
 	item.nextthink = time + timeleft;    // remove after 30 seconds
@@ -1626,7 +1625,7 @@ void DropBackpack ()
 		return; // nothing in it
 
 	item = spawn();
-  setorigin (item, self.origin - '0 0 24');
+	item.origin = self.origin - '0 0 24';
 	
 	item.items = self.weapon;
 	if (item.items == IT_AXE)
@@ -1661,7 +1660,7 @@ void DropBackpack ()
 	item.solid = SOLID_TRIGGER;
 	item.movetype = MOVETYPE_TOSS;
 	setmodel (item, "progs/backpack.mdl");
-	setsize (item, '-16 -16 0', '16 16 56');
+	setsize (item, '-16 -16 0', '16 16 56');	// link into world
 	item.touch = BackpackTouch;
 	
 	item.nextthink = time + 120;    // remove after 2 minutes
