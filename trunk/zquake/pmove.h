@@ -112,7 +112,6 @@ extern	playermove_t	pmove;
 void PM_PlayerMove (void);
 void PM_Init (void);
 
-int PM_HullPointContents (hull_t *hull, int num, vec3_t p);
 int PM_PointContents (vec3_t point);
 void PM_CategorizePosition (void);
 qboolean PM_TestPlayerPosition (vec3_t point);

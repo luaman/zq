@@ -32,3 +32,5 @@ typedef struct
 	vec3_t		clip_maxs;
 } hull_t;
 
+
+int CM_HullPointContents (hull_t *hull, int num, vec3_t p);
