@@ -1171,7 +1171,7 @@ void V_Init (void)
 #else
 	// this nastyness is to make "gamma foo" in config.cfg work
 	// FIXME: cvar.c should fire OnChange in Cvar_Register!
-	// things will be a bit different then
+	// things will be a bit different then (?)
 	if (!Cvar_FindVar("sw_gamma")) {
 		Cvar_Register (&sw_gamma);
 		Cvar_SetValue (&sw_gamma, gammavar.value);
@@ -1179,7 +1179,13 @@ void V_Init (void)
 		Cvar_Register (&sw_gamma);
 		Cvar_SetValue (&gammavar, sw_gamma.value);
 	}
-	Cvar_Register (&sw_contrast);
+	if (!Cvar_FindVar("sw_contrast")) {
+		Cvar_Register (&sw_contrast);
+		Cvar_SetValue (&sw_contrast, contrast.value);
+	} else {
+		Cvar_Register (&sw_contrast);
+		Cvar_SetValue (&contrast, sw_contrast.value);
+	}
 	BuildGammaTable (sw_gamma.value, sw_contrast.value);
 #endif
 }
