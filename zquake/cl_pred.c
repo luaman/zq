@@ -278,10 +278,9 @@ static void CL_PredictLocalPlayer (void)
 	to = &cl.frames[cl.validsequence & UPDATE_MASK];
 
 	// setup cl.simangles + decide whether to predict local player
-	if (cls.demoplayback && cl.spectator && cl.viewplayernum != cl.playernum) {
+	if (cls.demoplayback && cl.spectator && cam_curtarget != CAM_NOTARGET) {
 		VectorCopy (to->playerstate[cl.viewplayernum].viewangles, cl.simangles);
 		nopred = true;		// FIXME
-
 	} else {
 		VectorCopy (cl.viewangles, cl.simangles);
 		nopred = (cl_nopred.value || cls.netchan.outgoing_sequence - cl.validsequence <= 1);
