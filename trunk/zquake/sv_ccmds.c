@@ -41,43 +41,6 @@ These commands can only be entered from stdin or by a remote operator datagram
 */
 
 /*
-====================
-SV_SetMaster_f
-
-Make a master server current
-====================
-*/
-void SV_SetMaster_f (void)
-{
-	char	data[2];
-	int		i;
-
-	memset (&master_adr, 0, sizeof(master_adr));
-
-	for (i=1 ; i<Cmd_Argc() ; i++)
-	{
-		if (!strcmp(Cmd_Argv(i), "none") || !NET_StringToAdr (Cmd_Argv(i), &master_adr[i-1]))
-		{
-			Com_Printf ("Setting nomaster mode.\n");
-			return;
-		}
-		if (master_adr[i-1].port == 0)
-			master_adr[i-1].port = BigShort (PORT_MASTER);
-
-		Com_Printf ("Master server at %s\n", NET_AdrToString (master_adr[i-1]));
-
-		Com_Printf ("Sending a ping.\n");
-
-		data[0] = A2A_PING;
-		data[1] = 0;
-		NET_SendPacket (NS_SERVER, 2, data, master_adr[i-1]);
-	}
-
-	svs.last_heartbeat = -99999;
-}
-
-
-/*
 ==================
 SV_Quit_f
 ==================
@@ -428,17 +391,6 @@ void SV_ConSay_f(void)
 			continue;
 		SV_ClientPrintf(client, PRINT_CHAT, "%s\n", text);
 	}
-}
-
-
-/*
-==================
-SV_Heartbeat_f
-==================
-*/
-void SV_Heartbeat_f (void)
-{
-	svs.last_heartbeat = -9999;
 }
 
 
