@@ -490,20 +490,18 @@ static void HandleEnter (void)
 	char *p;
 
 	// decide whether to treat the text as chat or command
-	if (cls.state >= ca_connected) {
-		if (keydown[K_CTRL])
-			type = TEAMCHAT;
-		else if (keydown[K_SHIFT])
-			type = (cl_chatmode.value == 1 && CheckForCommand()) ? COMMAND : CHAT;
-		else if (key_lines[edit_line][1] == '\\' || key_lines[edit_line][1] == '/')
-			type = COMMAND;
-		else if (cl_chatmode.value == 1 || (cl_chatmode.value == 2 && !CheckForCommand()))
-			type = CHAT;
-		else
-			type = COMMAND;
-	} else {
+	if (cls.state == ca_disconnected)
 		type = COMMAND;
-	}
+	else if (keydown[K_CTRL])
+		type = TEAMCHAT;
+	else if (keydown[K_SHIFT])
+		type = (cl_chatmode.value == 1 && CheckForCommand()) ? COMMAND : CHAT;
+	else if (key_lines[edit_line][1] == '\\' || key_lines[edit_line][1] == '/')
+		type = COMMAND;
+	else if (cl_chatmode.value == 1 || (cl_chatmode.value == 2 && !CheckForCommand()))
+		type = CHAT;
+	else
+		type = COMMAND;
 
 	// do appropriate action
 	switch (type) {
