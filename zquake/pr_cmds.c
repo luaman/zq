@@ -1667,13 +1667,15 @@ void PF_infokey (void)
 	key = G_STRING(OFS_PARM1);
 
 	if (e1 == 0) {
-		if ((value = Info_ValueForKey (svs.info, key)) == NULL ||
-			!*value)
+		if ((value = Info_ValueForKey (svs.info, key)) == NULL || !*value)
 			value = Info_ValueForKey(localinfo, key);
 	} else if (e1 <= MAX_CLIENTS) {
 		if (!strcmp(key, "ip"))
 			value = strcpy(ov, NET_BaseAdrToString (svs.clients[e1-1].netchan.remote_address));
-		else if (!strcmp(key, "ping")) {
+		else if (!strcmp(key, "*z_ext")) {
+			sprintf(ov, "%d", svs.clients[e1-1].extensions);
+			value = ov;
+		} else if (!strcmp(key, "ping")) {
 			int ping = SV_CalcPing (&svs.clients[e1-1]);
 			sprintf(ov, "%d", ping);
 			value = ov;
