@@ -302,7 +302,7 @@ int	lastposenum;
 GL_DrawAliasFrame
 =============
 */
-void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
+void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qboolean mtex)
 {
 	float 	l;
 	trivertx_t	*verts;
@@ -329,7 +329,14 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 		do
 		{
 			// texture coordinates come from the draw list
-			glTexCoord2f (((float *)order)[0], ((float *)order)[1]);
+			if (mtex) {
+				qglMultiTexCoord2f (TEXTURE0_ARB, ((float *) order)[0], ((float *) order)[1]);
+				qglMultiTexCoord2f (TEXTURE1_ARB, ((float *) order)[0], ((float *) order)[1]);
+			}
+			else {
+				glTexCoord2f (((float *) order)[0], ((float *) order)[1]);
+			}
+
 			order += 2;
 
 			// normals and vertexes come from the frame list
@@ -411,7 +418,7 @@ R_SetupAliasFrame
 
 =================
 */
-void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr)
+void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr, qboolean mtex)
 {
 	int				pose, numposes;
 	float			interval;
@@ -431,10 +438,11 @@ void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr)
 		pose += (int)(cl.time / interval) % numposes;
 	}
 
-	GL_DrawAliasFrame (paliashdr, pose);
+	GL_DrawAliasFrame (paliashdr, pose, mtex);
 }
 
 
+void GL_SelectTexture (GLenum target);
 
 /*
 =================
@@ -451,9 +459,9 @@ void R_DrawAliasModel (entity_t *ent)
 	vec3_t		mins, maxs;
 	aliashdr_t	*paliashdr;
 	int			anim, skinnum;
-	int			texture;
 	qboolean	full_light;
 	model_t		*clmodel = ent->model;
+	int			texture, fb_texture = 0;
 
 	VectorAdd (ent->origin, clmodel->mins, mins);
 	VectorAdd (ent->origin, clmodel->maxs, maxs);
@@ -556,6 +564,7 @@ void R_DrawAliasModel (entity_t *ent)
 	}
 
 	texture = paliashdr->gl_texturenum[skinnum][anim];
+	fb_texture = paliashdr->fb_texturenum[skinnum][anim];
 
 	// we can't dynamically colormap textures, so they are cached
 	// separately for the players.  Heads are just uncolored.
@@ -568,26 +577,42 @@ void R_DrawAliasModel (entity_t *ent)
 			R_TranslatePlayerSkin(i);
 		}
 
-		if (i >= 0 && i < MAX_CLIENTS)
+		if (i >= 0 && i < MAX_CLIENTS) {
 		    texture = playertextures + i;
+			fb_texture = fb_skins[i];
+		}
 	}
 
-	GL_Bind (texture);
+	if (!gl_fb_models.value)
+		fb_texture = 0;
+
+	if (fb_texture && gl_mtexable && !full_light) {
+		GL_SelectTexture (TEXTURE0_ARB);
+		GL_Bind (texture);
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		GL_EnableMultitexture ();
+		GL_Bind (fb_texture);
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	}
+	else
+	{
+		GL_Bind (texture);
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	}
 
 	if (gl_smoothmodels.value)
 		glShadeModel (GL_SMOOTH);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	if (gl_affinemodels.value)
 		glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-	R_SetupAliasFrame (ent->frame, paliashdr);
+	R_SetupAliasFrame (ent->frame, paliashdr, (fb_texture && gl_mtexable && !full_light));
 
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	if (fb_texture && gl_mtexable) {
+		GL_DisableMultitexture ();
+	}
 
-	if (!full_light && gl_fb_models.value) {
-		int	fb_texture = 0;
-		
+	if (!full_light && gl_fb_models.value && !gl_mtexable) {
 		if ((clmodel->modhint == MOD_PLAYER) && ent->scoreboard)
 		{
 			i = ent->scoreboard - cl.players;
@@ -599,9 +624,10 @@ void R_DrawAliasModel (entity_t *ent)
 			fb_texture = paliashdr->fb_texturenum[skinnum][anim];
 
 		if (fb_texture) {
+			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 			glEnable (GL_BLEND);
 			GL_Bind (fb_texture);
-			R_SetupAliasFrame (ent->frame, paliashdr);
+			R_SetupAliasFrame (ent->frame, paliashdr, false);
 			glDisable (GL_BLEND);
 		}
 	}
@@ -1012,10 +1038,6 @@ void R_SetupGL (void)
 
 	glViewport (glx + x, gly + y2, w, h);
     screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
-//	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*180/M_PI;
-//	yfov = (2.0 * tan (scr_fov.value/360*M_PI)) / screenaspect;
-//	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*(scr_fov.value*2)/M_PI;
-//    MYgluPerspective (yfov,  screenaspect,  4,  4096);
     MYgluPerspective (r_refdef.fov_y,  screenaspect,  4,  4096);
 
 	if (mirror)
