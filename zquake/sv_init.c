@@ -276,6 +276,33 @@ unsigned SV_CheckModel(char *mdl)
 	return crc;
 }
 
+cvar_t	sv_loadentfiles = {"sv_loadentfiles", "0"};
+void SV_LoadEntFile (void)
+{
+	char	name[MAX_OSPATH];
+	char	*data;
+	char	crc[32];
+
+	Info_SetValueForStarKey (svs.info,  "*entfile", "", MAX_SERVERINFO_STRING);
+
+	if (!sv_loadentfiles.value)
+		return;
+
+	COM_StripExtension (sv.worldmodel->name, name);
+	strcat (name, ".ent");
+
+	data = (char *) COM_LoadHunkFile (name);
+	if (!data)
+		return;
+
+	sv.worldmodel->entities = data;
+
+	Con_DPrintf ("Loaded entfile %s\n", name);
+
+	sprintf (crc, "%i", CRC_Block ((byte *)data, com_filesize));
+	Info_SetValueForStarKey (svs.info, "*entfile", crc, MAX_SERVERINFO_STRING);
+}
+
 /*
 ================
 SV_SpawnServer
@@ -416,6 +443,9 @@ void SV_SpawnServer (char *server)
 	
 	// run the frame start qc function to let progs check cvars
 	SV_ProgStartFrame ();
+
+	// check for a custom entity file
+	SV_LoadEntFile ();
 
 	// load and spawn all other entities
 	ED_LoadFromFile (sv.worldmodel->entities);
