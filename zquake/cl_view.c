@@ -912,6 +912,49 @@ void V_CalcViewRoll (void)
 
 /*
 ==================
+V_AddViewWeapon
+==================
+*/
+void V_AddViewWeapon (float bob)
+{
+	vec3_t		forward, right, up;
+	entity_t	*view;
+
+	view = &cl.viewent;
+
+	if (view_message->flags & (PF_GIB|PF_DEAD))
+	{
+ 		view->model = NULL;
+		return;
+	}
+
+	view->angles[YAW] = r_refdef.viewangles[YAW];
+	view->angles[PITCH] = -r_refdef.viewangles[PITCH];
+	view->angles[ROLL] = r_refdef.viewangles[ROLL];
+
+	AngleVectors (r_refdef.viewangles, forward, right, up);
+	
+	VectorCopy (r_refdef.vieworg, view->origin);
+	VectorMA (view->origin, bob * 0.4, forward, view->origin);
+
+	// fudge position around to keep amount of weapon visible
+	// roughly equal with different FOV
+	if (scr_viewsize.value == 110)
+		view->origin[2] += 1;
+	else if (scr_viewsize.value == 100)
+		view->origin[2] += 2;
+	else if (scr_viewsize.value == 90)
+		view->origin[2] += 1;
+	else if (scr_viewsize.value == 80)
+		view->origin[2] += 0.5;
+
+	view->model = cl.model_precache[cl.stats[STAT_WEAPON]];
+	view->frame = view_message->weaponframe;
+	view->colormap = vid.colormap;
+}
+
+/*
+==================
 V_CalcIntermissionRefdef
 
 ==================
@@ -941,7 +984,6 @@ V_CalcRefdef
 */
 void V_CalcRefdef (void)
 {
-	entity_t	*view;
 	vec3_t		forward, right, up;
 	float		bob;
 
@@ -996,38 +1038,7 @@ void V_CalcRefdef (void)
 	if (view_message->flags & PF_DEAD)		// PF_GIB will also set PF_DEAD
 		r_refdef.viewangles[ROLL] = 80;	// dead view angle
 
-
-//
-// set up gun position
-//
-	view = &cl.viewent;
-
-	view->angles[YAW] = r_refdef.viewangles[YAW];
-	view->angles[PITCH] = -r_refdef.viewangles[PITCH];
-	view->angles[ROLL] = r_refdef.viewangles[ROLL];
-
-	AngleVectors (r_refdef.viewangles, forward, right, up);
-	
-	VectorCopy (r_refdef.vieworg, view->origin);
-	VectorMA (view->origin, bob * 0.4, forward, view->origin);
-
-	// fudge position around to keep amount of weapon visible
-	// roughly equal with different FOV
-	if (scr_viewsize.value == 110)
-		view->origin[2] += 1;
-	else if (scr_viewsize.value == 100)
-		view->origin[2] += 2;
-	else if (scr_viewsize.value == 90)
-		view->origin[2] += 1;
-	else if (scr_viewsize.value == 80)
-		view->origin[2] += 0.5;
-
-	if (view_message->flags & (PF_GIB|PF_DEAD) )
- 		view->model = NULL;
- 	else
-		view->model = cl.model_precache[cl.stats[STAT_WEAPON]];
-	view->frame = view_message->weaponframe;
-	view->colormap = vid.colormap;
+	V_AddViewWeapon (bob);
 }
 
 /*
