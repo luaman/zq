@@ -74,7 +74,7 @@ unsigned char	d_15to8table[65536];
 static int scr_width, scr_height, scrnum;
 
 #ifdef USE_DGA
-static int dgamouse, dgakeyb;
+static int dgamouse = 0;
 #endif
 
 #ifdef USE_VMODE
@@ -1103,3 +1103,4 @@ void IN_Move (usercmd_t *cmd)
     IN_MouseMove(cmd);
 }
 
+/* vi: set noet ts=4 sts=4 ai sw=4: */
