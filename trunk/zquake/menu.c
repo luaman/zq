@@ -1566,7 +1566,7 @@ void M_MultiPlayer_Draw (void)
 	M_Print (80, 48, "Player Setup");
 	M_Print (80, 56, "Demos");
 #ifdef QW_BOTH
-m	M_Print (80, 64, "New Game");
+	M_Print (80, 64, "New Game");
 #endif
 
 // cursor
