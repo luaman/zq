@@ -277,11 +277,11 @@ def_t *PR_ParseFunctionCall (def_t *func)
 	{
 		do
 		{
-			if (t->num_parms != -1 && arg >= t->num_parms)
+			if (arg >= t->num_parms /* works properly with varargs */)
 				PR_ParseError ("too many parameters");
 			e = PR_Expression (TOP_PRIORITY);
 
-			if (t->num_parms != -1 && ( e->type != t->parm_types[arg] ) )
+			if (arg < (t->num_parms & VA_MASK) && ( e->type != t->parm_types[arg] ) )
 				PR_ParseError ("type mismatch on parm %i", arg);
 		// a vector copy will copy everything
 			def_parms[arg].type = t->parm_types[arg];
@@ -289,11 +289,11 @@ def_t *PR_ParseFunctionCall (def_t *func)
 			arg++;
 		} while (PR_Check (","));
 	
-		if (t->num_parms != -1 && arg != t->num_parms)
+		if (arg < (t->num_parms & VA_MASK))
 			PR_ParseError ("too few parameters");
 		PR_Expect (")");
 	}
-	if (arg >8)
+	if (arg > 8)
 		PR_ParseError ("more than eight parameters");
 		
 
@@ -633,7 +633,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 //
 // define the parms
 //
-	for (i=0 ; i<type->num_parms ; i++)
+	for (i = 0; i < (type->num_parms & VA_MASK); i++)
 	{
 		defs[i] = PR_GetDef (type->parm_types[i], pr_parm_names[i], pr_scope, pr_scope, true);
 		f->parm_ofs[i] = defs[i]->ofs;
@@ -882,7 +882,9 @@ void PR_ParseFunctionBody (type_t *type, char *name, def_t *def)
 		df->first_statement = f->code;
 	df->s_name = CopyString (f->def->name);
 	df->s_file = s_file;
-	df->numparms =  f->def->type->num_parms;
+	// id's qcc would set numparms to -1 for varargs functions
+	// but non-builtin varargs functions don't make sense anyway so don't bother checking
+	df->numparms = f->def->type->num_parms & VA_MASK;
 	df->locals = locals_end - locals_start;
 	df->parm_start = locals_start;
 	for (int i=0 ; i<df->numparms ; i++)

@@ -605,11 +605,11 @@ type_t *PR_GetType (type_t *type)
 		|| check->num_parms != type->num_parms)
 			continue;
 	
-		for (i=0 ; i< type->num_parms ; i++)
+		for (i = 0; i < (type->num_parms & VA_MASK); i++)
 			if (check->parm_types[i] != type->parm_types[i])
 				break;
 			
-		if (i == type->num_parms)
+		if (i == (type->num_parms & VA_MASK))
 			return check;	
 	}
 	
@@ -668,14 +668,14 @@ type_t *PR_ParseFunctionType (type_t *returnType)
 		return PR_GetType (&newtype);
 	}
 
-	if (PR_Check ("...")) {
-		// variable args
-		PR_Expect (")");
-		newtype.num_parms = -1;
-		return PR_GetType (&newtype);
-	}
-
 	do {
+		if (PR_Check ("...")) {
+			// variable args
+			PR_Expect (")");
+			newtype.num_parms |= VA_BIT;
+			return PR_GetType (&newtype);
+		}
+
 		type_t *type = PR_ParseType ();
 		char *name = PR_ParseName ();
 		strcpy (pr_parm_names[newtype.num_parms], name);
