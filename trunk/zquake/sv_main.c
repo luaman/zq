@@ -889,12 +889,11 @@ qbool StringToFilter (char *s, ipfilter_t *f)
 			Com_Printf ("Bad filter address: %s\n", s);
 			return false;
 		}
-		
-		j = 0;
-		while ( isdigit((int)(unsigned char)*s) )
+
+		for (j = 0;  isdigit((int)(unsigned char)*s); s++)
 		{
 			if (j + 1 < sizeof(num))
-				num[j++] = *s++;
+				num[j++] = *s;
 		}
 		num[j] = 0;
 		b[i] = atoi(num);
