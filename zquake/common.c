@@ -1638,7 +1638,7 @@ void FS_InitFilesystem (void)
 	if (i && i < com_argc-1)
 		Q_strncpyz (com_basedir, com_argv[i+1], sizeof(com_basedir));
 	else
-		Q_strncpyz (com_basedir, host_parms.basedir, sizeof(com_basedir));
+		strcpy (com_basedir, ".");
 
 	i = strlen(com_basedir)-1;
 	if ((i >= 0) && (com_basedir[i]=='/' || com_basedir[i]=='\\'))

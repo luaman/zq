@@ -244,7 +244,6 @@ extern qboolean	com_serveractive;	// true if sv.state != ss_dead
 
 typedef struct
 {
-	char	*basedir;
 	int		argc;
 	char	**argv;
 	void	*membase;
