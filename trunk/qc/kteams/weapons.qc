@@ -1402,9 +1402,9 @@ void() ImpulseCommands =
 		return;
 	}
 
-        if (self.impulse >= 100 && !match_in_progress)
+        if (self.impulse >= 200 && !match_in_progress)
                 SelectMap();
-        else if (self.impulse == 99) ReportMe();
+        else if (self.impulse == 103) ReportMe();
 
 	else if(self.k_admin == 1 && self.impulse >= 1 && self.impulse <= 9) {
 		AdminImpBot();
