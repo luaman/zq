@@ -31,8 +31,8 @@ typedef struct
 	qboolean	inopen, inwater;
 	float		fraction;		// time completed, 1.0 = didn't hit anything
 	vec3_t		endpos;			// final position
-	pmplane_t		plane;			// surface normal at impact
-	int			ent;			// entity the surface is on
+	pmplane_t	plane;			// surface normal at impact
+	int			entnum;			// entity the surface is on
 } pmtrace_t;
 
 
