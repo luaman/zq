@@ -1108,7 +1108,7 @@ void Host_Init (quakeparms_t *parms)
 	Com_Printf ("\nClient version %s (Build %04d)\n\n", Z_VERSION, build_number());
 #endif
 
-	Com_Printf ("€ QuakeWorld Initialized ‚\n");	
+	Com_Printf ("€ ZQuake Initialized ‚\n");
 }
 
 
