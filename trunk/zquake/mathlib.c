@@ -570,27 +570,3 @@ void FloorDivMod (double numer, double denom, int *quotient,
 	*quotient = q;
 	*rem = r;
 }
-
-
-#if !id386
-
-// TODO: move to nonintel.c
-
-/*
-===================
-Invert24To16
-
-Inverts an 8.24 value to a 16.16 value
-====================
-*/
-
-fixed16_t Invert24To16(fixed16_t val)
-{
-	if (val < 256)
-		return (0xFFFFFFFF);
-
-	return (fixed16_t)
-			(((double)0x10000 * (double)0x1000000 / (double)val) + 0.5);
-}
-
-#endif
