@@ -257,6 +257,12 @@ void() finale_4 =
 
 //============================================================================
 
+void() nopain =
+{
+	self.health = 40000;		// kill by telefrag
+};
+
+//============================================================================
 
 /*QUAKED monster_oldone (1 0 0) (-16 -16 -24) (16 16 32)
 */
@@ -285,6 +291,7 @@ void() monster_oldone =
 	self.think = old_idle1;
 	self.nextthink = time + 0.1;	
 	self.takedamage = DAMAGE_YES;
+	self.th_pain = nopain;
 	self.th_die = finale_1;
 	shub = self;
 	
