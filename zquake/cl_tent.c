@@ -367,13 +367,13 @@ entity_t *CL_NewTempEntity (void)
 }
 
 
+void vectoangles(vec3_t vec, vec3_t ang);
+
 /*
 =================
 CL_UpdateBeams
 =================
 */
-void vectoangles (v, ang);
-
 void CL_UpdateBeams (void)
 {
 	int			i;
