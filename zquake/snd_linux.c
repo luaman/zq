@@ -32,7 +32,7 @@ qbool SNDDMA_Init(void)
 
 // open /dev/dsp, confirm capability to mmap, and get size of dma buffer
 
-    audio_fd = open("/dev/dsp", O_RDWR);
+    audio_fd = open("/dev/dsp", O_RDWR, O_NONBLOCK);
     if (audio_fd < 0)
 	{
 		perror("/dev/dsp");
