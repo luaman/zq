@@ -596,7 +596,7 @@ char *TP_MacroString (char *s)
 
 /*
 =============
-TP_ParseChatString
+TP_ParseMacroString
 
 Parses %a-like expressions
 =============
@@ -606,6 +606,9 @@ char *TP_ParseMacroString (char *s)
 	static char	buf[MAX_MACRO_STRING];
 	int		i = 0;
 	char	*macro_string;
+
+	if (!cl_parseSay.value)
+		return s;
 
 	while (*s && i < MAX_MACRO_STRING-1)
 	{
@@ -1930,10 +1933,9 @@ static int FindNearestItem (int flags, item_t **pitem)
 		if ( ! (item->itemflag & flags) )
 			continue;
 
-		VectorSubtract (org, ent->origin, v);
+		VectorSubtract (ent->origin, org, v);
 		VectorAdd (v, item->offset, v);
 		dist = VectorLength (v);
-
 //		Con_Printf ("%s %f\n", item->modelname, dist);
 
 		if (dist <= bestdist) {
@@ -1984,7 +1986,7 @@ static void ExecTookTrigger (char *s, int flag, vec3_t org)
 	strncpy (vars.tookloc, TP_LocationName (org), sizeof(vars.tookloc)-1);
 
 	if (tookflags & flag) {
-//		if (CountTeammates())
+		if (CountTeammates())
 			TP_ExecTrigger ("f_took");
 	}
 }
