@@ -444,7 +444,7 @@ void R_ViewChanged (float aspect)
 	extern void		*colormap;
 	extern cvar_t	r_aliastransbase, r_aliastransadj;
 
-	r_refdef.horizontalFieldOfView = 2.0 * tan (r_refdef.fov_x/360*M_PI);
+	r_refdef.horizontalFieldOfView = 2.0 * tan (r_refdef2.fov_x/360*M_PI);
 	r_refdef.fvrectx = (float)r_refdef.vrect.x;
 	r_refdef.fvrectx_adj = (float)r_refdef.vrect.x - 0.5;
 	r_refdef.vrect_x_adj_shift20 = (r_refdef.vrect.x<<20) + (1<<19) - 1;
@@ -620,7 +620,7 @@ void R_SetupFrame (void)
 		r_refdef2.vrect.y != r_oldrefdef2.vrect.y ||
 		r_refdef2.vrect.width != r_oldrefdef2.vrect.width ||
 		r_refdef2.vrect.height != r_oldrefdef2.vrect.height ||
-		r_refdef.fov_x != oldfov_x || r_refdef.fov_y != oldfov_y ||
+		r_refdef2.fov_x != oldfov_x || r_refdef2.fov_y != oldfov_y ||
 		r_dowarp != r_dowarpold ||
 		vid.buffer != old_vid_buffer)
 	{
@@ -628,8 +628,8 @@ void R_SetupFrame (void)
 	}
 
 	r_oldrefdef2 = r_refdef2;
-	oldfov_x = r_refdef.fov_x;
-	oldfov_y = r_refdef.fov_y;
+	oldfov_x = r_refdef2.fov_x;
+	oldfov_y = r_refdef2.fov_y;
 	old_vid_buffer = vid.buffer;
 
 	if (viewchanged)

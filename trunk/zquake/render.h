@@ -124,14 +124,14 @@ typedef struct
 	vec3_t		vieworg;
 	vec3_t		viewangles;
 
-	float		fov_x, fov_y;
-
 	int			ambientlight;
 } refdef_t;
 
 
 typedef struct {
 	vrect_t			vrect;			// subwindow in video for refresh
+
+	float			fov_x, fov_y;
 
 	float			time;
 	qbool			allowCheats;

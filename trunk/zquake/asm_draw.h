@@ -135,13 +135,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define rd_fvrectbottom_adj			88
 #define rd_fvrectright				92
 #define rd_fvrectbottom				96
-#define rd_horizontalFieldOfView	100
-#define rd_xOrigin					104
-#define rd_yOrigin					108
-#define rd_vieworg					112
-#define rd_viewangles				124
-#define rd_ambientlight				136
-#define rd_size						140
+#define rd_xOrigin					100
+#define rd_yOrigin					104
+#define rd_vieworg					108
+#define rd_viewangles				112
+#define rd_ambientlight				124
+#define rd_size						136
 
 // mtriangle_t structure
 // !!! if this is changed, it must be changed in model.h too !!!
