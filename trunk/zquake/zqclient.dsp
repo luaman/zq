@@ -196,6 +196,10 @@ SOURCE=.\cl_pred.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\cl_screen.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\cl_slist.c
 # End Source File
 # Begin Source File
