@@ -305,7 +305,6 @@ void CL_ClearState (void)
 
 	if (!com_serveractive)
 	{
-		D_FlushCaches ();
 		Host_ClearMemory ();
 	}
 
@@ -830,8 +829,6 @@ void CL_BeginLocalConnection (void)
 	// and demo playback is stopped
 	if (!com_serveractive)
 		CL_Disconnect ();
-
-	D_FlushCaches ();
 
 	cl.worldmodel = NULL;
 

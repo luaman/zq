@@ -154,7 +154,10 @@ Can only be called when changing levels!
 */
 void Host_ClearMemory ()
 {
+	D_FlushCaches ();
 	Mod_ClearAll ();
+
+	// any data previously allocated on hunk is no longer valid
 	Hunk_FreeToLowMark (host_hunklevel);
 }
 
