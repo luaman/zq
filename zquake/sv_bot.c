@@ -166,7 +166,6 @@ void SV_ReconnectBots (void)
 }
 
 
-extern double sv_frametime;
 void SV_PreRunCmd (void);
 void SV_RunCmd (usercmd_t *ucmd);
 void SV_PostRunCmd (void);
@@ -178,9 +177,6 @@ void SV_RunBots (void)
 	edict_t		*ent;
 	eval_t		*val;
 	usercmd_t	cmd;
-	int			bot_msec;
-
-	bot_msec = sv_frametime * 1000;		// was set by SV_Physics (), FIXME
 
 	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++) {
 		if (!cl->bot || cl->state != cs_spawned)
@@ -188,14 +184,16 @@ void SV_RunBots (void)
 
 		ent = cl->edict;
 
-		// fake cmd for prediction's sake
+		// fake a client move command for prediction's sake
 		cmd = nullcmd;
-		cmd.msec = bot_msec;
 		VectorCopy (ent->v.v_angle, cmd.angles);
+		cmd.msec = (svs.realtime - cl->cmdtime) * 1000;
+		cl->cmdtime += cmd.msec * 0.001;
+		if (cmd.msec > 255)
+			cmd.msec = 255;
 
 		// update bogus network stuff
 		cl->lastcmd = cmd;
-		cl->cmdtime = svs.realtime;
 		cl->netchan.last_received = curtime;
 		SZ_Clear (&cl->datagram);			// don't overflow
 		SZ_Clear (&cl->netchan.message);	// don't overflow
@@ -211,7 +209,7 @@ void SV_RunBots (void)
 
 		if (BotPreThink) {
 			// let the bots decide what they want to do this frame
-			pr_global_struct->frametime = cmd.msec * 1000;
+			pr_global_struct->frametime = cmd.msec * 0.001;
 			pr_global_struct->time = sv.time;
 			pr_global_struct->self = EDICT_TO_PROG(ent);
 			PR_ExecuteProgram (BotPreThink);
