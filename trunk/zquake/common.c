@@ -1661,6 +1661,13 @@ void FS_InitFilesystem (void)
 
 	// any set gamedirs will be freed up to here
 	com_base_searchpaths = com_searchpaths;
+
+// the user might want to override default game directory
+	i = COM_CheckParm ("-game");
+	if (!i)
+		i = COM_CheckParm ("+gamedir");
+	if (i && i < com_argc-1)
+		FS_SetGamedir (com_argv[i+1]);
 }
 
 
