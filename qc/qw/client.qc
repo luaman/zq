@@ -260,6 +260,34 @@ void execute_changelevel ()
 }
 
 
+/*
+============
+SendIntermissionToClient
+
+If a client connects during intermission, send svc_intermission
+to him personally
+============
+*/
+void SendIntermissionToClient ()
+{
+	msg_entity = self;
+
+// play intermission music
+	WriteByte (MSG_ONE, SVC_CDTRACK);
+	WriteByte (MSG_ONE, 3);
+
+	WriteByte (MSG_ONE, SVC_INTERMISSION);
+	WriteCoord (MSG_ONE, intermission_spot.origin_x);
+	WriteCoord (MSG_ONE, intermission_spot.origin_y);
+	WriteCoord (MSG_ONE, intermission_spot.origin_z);
+	WriteAngle (MSG_ONE, intermission_spot.mangle_x);
+	WriteAngle (MSG_ONE, intermission_spot.mangle_y);
+	WriteAngle (MSG_ONE, intermission_spot.mangle_z);
+	
+	setorigin (self, intermission_spot.origin);
+}
+
+
 void changelevel_touch ()
 {
 	if (other.classname != "player")
@@ -1160,10 +1188,11 @@ void ClientConnect ()
 	{
 		bprint (PRINT_HIGH, self.netname, " entered the game\n");
 	}
-	
-// a client connecting during an intermission can cause problems
+
+	// if the guy started connecting during intermission and
+	// thus missed the svc_intermission, we'd better let him know
 	if (intermission_running)
-		GotoNextMap ();
+		SendIntermissionToClient ();
 }
 
 
