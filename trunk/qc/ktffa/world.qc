@@ -188,6 +188,13 @@ World Types:
 //=======================
 void() worldspawn =
 {
+	local string tmp;
+
+	// Tonik: check if we're running on an 2.3x server
+	tmp = infokey(world, "*version");
+	if (tmp == "2.30" || tmp == "2.33")
+		server_is_2_3x = TRUE;
+
 	lastspawn = world;
 	InitBodyQue ();
 
