@@ -1318,10 +1318,6 @@ POWERUPS
 
 void powerup_touch ()
 {
-    // KTEAMS -->
-    local float f1;
-    // <-- KTEAMS
-    // 
 	if (other.classname != "player")
 		return;
 	if (other.health <= 0)
