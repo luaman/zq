@@ -33,6 +33,7 @@ cvar_t	cl_parsesay = {"cl_parsesay", "0"};
 cvar_t	cl_triggers = {"cl_triggers", "0"};
 cvar_t	cl_nofake = {"cl_nofake", "0"};
 cvar_t	cl_loadlocs = {"cl_loadlocs", "0"};
+cvar_t	cl_mapname = {"mapname", "", CVAR_ROM};
 
 cvar_t	cl_rocket2grenade = {"cl_r2g", "0"};
 
@@ -1068,6 +1069,7 @@ void CL_NewMap (void)
 		if (cl_loadlocs.value && !cls.demoplayback)
 			CL_LoadLocFile (va("%s.loc", mapname), true);
 		strcpy (last_map, mapname);
+		Cvar_SetROM (&cl_mapname, mapname);
 	}
 }
 
@@ -1080,6 +1082,7 @@ void CL_InitTeamplay()
 	Cvar_RegisterVariable (&cl_nofake);
 	Cvar_RegisterVariable (&cl_loadlocs);
 	Cvar_RegisterVariable (&cl_rocket2grenade);
+	Cvar_RegisterVariable (&cl_mapname);
 
 	Cmd_AddCommand ("loadloc", CL_LoadLocFile_f);
 	Cmd_AddCommand ("msg_trigger", CL_MsgTrigger_f);
