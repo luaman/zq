@@ -38,6 +38,9 @@ cvar_t	cl_mapname = {"mapname", "", CVAR_ROM};
 
 cvar_t	cl_rocket2grenade = {"cl_r2g", "0"};
 
+cvar_t	cl_teamskin = {"teamskin", ""};
+cvar_t	cl_enemyskin = {"enemyskin", ""};
+
 
 //===========================================================================
 //								TRIGGERS
@@ -1177,7 +1180,7 @@ Note that sometimes we can't be sure who really sent the message,
 e.g. when there's a player "unnamed" in your team and "(unnamed)"
 in the enemy team. The result will be 3 (1+2)
 
-Never returns 2 if we a spectator.
+Never returns 2 if we are a spectator.
 ======================
 */
 int TP_CategorizeMessage (char *s)
@@ -1229,6 +1232,8 @@ void TP_Init ()
 	Cvar_RegisterVariable (&cl_loadlocs);
 	Cvar_RegisterVariable (&cl_rocket2grenade);
 	Cvar_RegisterVariable (&cl_mapname);
+	Cvar_RegisterVariable (&cl_teamskin);
+	Cvar_RegisterVariable (&cl_enemyskin);
 
 	Cmd_AddCommand ("loadloc", TP_LoadLocFile_f);
 	Cmd_AddCommand ("msg_trigger", TP_MsgTrigger_f);

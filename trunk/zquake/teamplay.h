@@ -31,6 +31,8 @@ extern cvar_t cl_triggers;
 extern cvar_t cl_nofake;
 extern cvar_t cl_loadlocs;
 extern cvar_t cl_rocket2grenade;
+extern cvar_t cl_teamskin;
+extern cvar_t cl_enemyskin;
 
 // triggers
 void TP_StatChanged (int stat, int value);
@@ -60,3 +62,8 @@ char *TP_ParseMacroString(char *string);
 void TP_NewMap ();
 void TP_CheckVersionRequest(char *s);
 void TP_Init ();
+
+
+//#define FPD_NO_TEAM_MACROS	1
+#define FPD_NO_FORCE_SKIN	256
+#define FPD_NO_FORCE_COLOR	512
