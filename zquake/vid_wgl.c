@@ -658,6 +658,7 @@ GL_BeginRendering
 
 =================
 */
+qboolean vid_grabbackbuffer;
 void GL_BeginRendering (int *x, int *y, int *width, int *height)
 {
 	extern cvar_t gl_clear;
@@ -670,6 +671,11 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 //		Sys_Error ("wglMakeCurrent failed");
 
 //	glViewport (*x, *y, *width, *height);
+
+	if (vid_grabbackbuffer) {
+		glDrawBuffer (GL_BACK);
+		vid_grabbackbuffer--;
+	}
 }
 
 
@@ -936,7 +942,13 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			if (vid_canalttab && vid_wassuspended) {
 				vid_wassuspended = false;
 				ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN);
-				ShowWindow(mainwindow, SW_SHOWNORMAL);
+				ShowWindow (mainwindow, SW_SHOWNORMAL);
+				// Tonik: It seems Windows sometimes sets draw buffer to
+				// to GL_FRONT after switching to fullscreen, causing
+				// screen flickering. Grabbing GL_BACK once doesn't help,
+				// 2 is probably ok, but we use 5 just to be sure
+				vid_grabbackbuffer = 2;
+				Sbar_Changed ();
 			}
 		}
 		else if (modestate == MS_WINDOWED && Minimized)
