@@ -597,7 +597,8 @@ void CL_ParseServerData (void)
 		cflag = true;
 	}
 
-	FS_SetGamedir (str);
+	if (!com_serveractive)
+		FS_SetGamedir (str);
 
 	//ZOID--run the autoexec.cfg in the gamedir
 	//if it exists
