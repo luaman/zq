@@ -31,7 +31,7 @@ void bot_map_load ()
 Variables and shtuff
 
 bot.qc has become pretty much a header file
-for all variable in the bot...
+for all variables in the bot...
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
@@ -112,7 +112,7 @@ float WM_EDITOR_DYNLINK	= 6;
 float OPT_NOCHAT	= 2;
 
 // -------globals-----
-float		max_clients;
+float		max_clients = 32;	/* Tonik --- only waypoint code checks it... */
 float		bot_count, b_options;
 float		waypoint_mode, dump_mode; 
 float		waypoints, direct_route;
@@ -123,12 +123,18 @@ entity		b_temp1, b_temp2, b_temp3;
 entity 		player_head, way_head;
 float		busy_waypoints;
 
+
+// ------- Functions exported to the engine ----------
+void	BotConnect ();
+void	BotDisconnect ();
+void	BotPreThink ();
+void	BotPostThink ();
+
+
 // -------Prototypes------
 
 // rankings
 float	ClientBitFlag (float clientno);
-void	BotConnect (float whatbot, float whatskill);
-void	BotDisconnect (entity bot);
 
 // waypointing
 void	DynamicWaypoint ();
@@ -223,53 +229,23 @@ float GetClientNum (entity ent);
 
 void ClientConnected ()
 {
-	float isBot;
-
-	isBot = FALSE;
 	if (stof(infokey(self, "*bot")) != 0)
-		isBot = TRUE;
-
-	if (!isBot) {
-		if (player_head)
-			player_head._last = self;
-
-		self._next = player_head;
-		player_head = self;
-
-		self.ishuman = TRUE;
 		return;
-	}
 
-	bot_count = bot_count + 1;
+	// link him into the player list
+	if (player_head)
+		player_head._last = self;
+	self._next = player_head;
+	player_head = self;
 
-	bot_start_topic(1);
-
-	self.b_clientno = GetClientNum(self);
-//	self.b_clientno = -1;
-
-/*	// players can set skill all weird, so leave these checks in
-	whatskill = rint(whatskill);
-	if (whatskill > 3)
-		whatskill = 3;
-	else if (whatskill < 0)
-		whatskill = 0;
-
-	self.b_skill = whatskill;
-*/
-
-	// FIXME FIXME FIXME
-	self.b_skill = 3;
-
-	self.team = self.b_pants + 1;
+	self.ishuman = TRUE;
 }
 
 
 void ClientDisconnected ()
 {
-	if (!self.ishuman) {
-		BotDisconnect ();
+	if (!self.ishuman)
 		return;
-	}
 
 	if (player_head == self)
 		player_head = self._next;
@@ -320,8 +296,6 @@ BotInit
 
 void BotInit ()
 {
-	max_clients = 32;	//Tonik
-
 	bot_map_load();
 }
 
@@ -385,39 +359,40 @@ float GetClientNum (entity ent)
 	return num;
 }
 
-void BotConnect (float whatbot, float whatskill)
+// called by the engine instead of ClientConnect for bots
+void BotConnect ()
 {
-	entity bot;
-	entity temp;
+	ClientConnect ();
 
-	temp = spawn();
-	if (whatbot)
-		temp.netname = BotName(temp, whatbot);
-	else
-		temp.netname = PickARandomName(temp);
+	bot_count = bot_count + 1;
 
-	bot = testbot(temp.netname, "", temp.b_shirt, temp.b_pants);
+	bot_start_topic(1);
 
-	remove (temp);
+	self.b_clientno = GetClientNum(self);
 
-	if (!bot)
-	{
-		bprint (PRINT_HIGH, "Unable to connect a bot, server is full.\n");
-		return;
-	}
+/*	// players can set skill all weird, so leave these checks in
+	whatskill = rint(whatskill);
+	if (whatskill > 3)
+		whatskill = 3;
+	else if (whatskill < 0)
+		whatskill = 0;
+	self.b_skill = whatskill;
+*/
 
-	bot.ishuman = 0;
-
+	self.b_skill = 3;	// FIXME FIXME, skill should be saved across levels
 }
 
-void BotDisconnect (entity bot)
+// called by the engine instead of ClientDisconnect for bots
+void BotDisconnect ()
 {
+	ClientDisconnect ();
 	bot_count = bot_count - 1;
 }
 
 
 void BotAI ();	// Tonik
 
+// called by the engine instead of PlayerPreThink for bots
 void BotPreThink ()
 {
 	frik_obstacles();
@@ -443,6 +418,13 @@ void BotPreThink ()
 	PlayerPreThink ();
 }
 
+// called by the engine instead of PlayerPostThink for bots
+void BotPostThink ()
+{
+	PlayerPostThink ();		// just call the default function
+}
+
+
 void BotFrame ()
 {
 	local string h;
@@ -463,16 +445,36 @@ related functions.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void Cmd_AddBot (string skill_s)
+void Cmd_AddBot (string botnum_s, string skill_s)
 {
-	float skill;
+	entity bot;
+	entity temp;
+	float whatbot;
 
+/*	float skill;
 	if (skill_s != "")
 		skill = stof(skill_s);
 	else
 		skill = 1;
+*/
 
-	BotConnect (0, skill);
+	whatbot = stof(botnum_s);
+
+	temp = spawn();
+	if (whatbot)
+		temp.netname = BotName(temp, whatbot);
+	else
+		temp.netname = PickARandomName(temp);
+
+	bot = testbot(temp.netname, "", temp.b_shirt, temp.b_pants);
+
+	remove (temp);
+
+	if (!bot)
+	{
+		bprint (PRINT_HIGH, "Unable to connect a bot, server is full.\n");
+		return;
+	}
 }
 
 void Cmd_RemoveBot ()
