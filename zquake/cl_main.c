@@ -92,9 +92,6 @@ cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
 
 cvar_t	cl_staticsounds = {"cl_staticsounds", "1"};
 
-cvar_t	cl_teamskin = {"teamskin", ""};
-cvar_t	cl_enemyskin = {"enemyskin", ""};
-
 cvar_t	default_fov = {"default_fov", "0"};
 // <-- Tonik
 
@@ -739,15 +736,13 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&baseskin);
 	Cvar_RegisterVariable (&noskins);
 
-// Tonik -->
+	// ZQuake cvars
 	Cvar_RegisterVariable (&cl_speedjumpfix);
 	Cvar_RegisterVariable (&cl_demotimescale);
 	Cvar_RegisterVariable (&cl_deadbodyfilter);
 	Cvar_RegisterVariable (&cl_explosion);
 	Cvar_RegisterVariable (&cl_gibfilter);
 	Cvar_RegisterVariable (&cl_muzzleflash);
-	Cvar_RegisterVariable (&cl_teamskin);
-	Cvar_RegisterVariable (&cl_enemyskin);
 	Cvar_RegisterVariable (&r_drawflame);
 	Cvar_RegisterVariable (&r_rockettrail);
 	Cvar_RegisterVariable (&r_grenadetrail);
@@ -755,7 +750,6 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&r_rocketlight);
 	Cvar_RegisterVariable (&default_fov);
 	Cvar_RegisterVariable (&cl_staticsounds);
-// <-- Tonik
 
 	//
 	// info mirrors
