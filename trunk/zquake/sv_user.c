@@ -1707,7 +1707,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 	
 	// mark time so clients will know how much to predict
 	// other players
- 	cl->localtime = sv.time;
+ 	cl->cmdtime = realtime;
 	cl->delta_sequence = -1;	// no delta unless requested
 	while (1)
 	{

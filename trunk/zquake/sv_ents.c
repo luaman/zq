@@ -406,7 +406,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 
 		if (pflags & PF_MSEC)
 		{
-			msec = 1000*(sv.time - cl->localtime);
+			msec = 1000*(realtime - cl->cmdtime);
 			if (msec > 255)
 				msec = 255;
 			MSG_WriteByte (msg, msec);
