@@ -292,6 +292,7 @@ extern type_t	*type_for_etype[8];
 extern def_t	*def_for_type[8];
 
 extern type_t	type_void, type_string, type_float, type_vector, type_entity, type_field, type_function, type_pointer, type_floatfield;
+extern type_t	type_const_string, type_const_float, type_const_vector;
 
 extern def_t	def_void, def_string, def_float, def_vector, def_entity, def_field, def_function, def_pointer;
 

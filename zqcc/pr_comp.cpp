@@ -200,7 +200,7 @@ def_t	*PR_ParseImmediate (void)
 			continue;
 		if (cn->type != pr_immediate_type)
 			continue;
-		if (pr_immediate_type == &type_string)
+		if (pr_immediate_type == &type_const_string)
 		{
 			if (!strcmp(G_STRING(cn->ofs), pr_immediate_string) )
 			{
@@ -208,7 +208,7 @@ def_t	*PR_ParseImmediate (void)
 				return cn;
 			}
 		}
-		else if (pr_immediate_type == &type_float)
+		else if (pr_immediate_type == &type_const_float)
 		{
 			if ( G_FLOAT(cn->ofs) == pr_immediate._float )
 			{
@@ -216,7 +216,7 @@ def_t	*PR_ParseImmediate (void)
 				return cn;
 			}
 		}
-		else if	(pr_immediate_type == &type_vector)
+		else if	(pr_immediate_type == &type_const_vector)
 		{
 			if ( ( G_FLOAT(cn->ofs) == pr_immediate.vector[0] )
 			&& ( G_FLOAT(cn->ofs+1) == pr_immediate.vector[1] )
@@ -244,7 +244,7 @@ def_t	*PR_ParseImmediate (void)
 	cn->ofs = numpr_globals;
 	pr_global_defs[cn->ofs] = cn;
 	numpr_globals += type_size[pr_immediate_type->type];
-	if (pr_immediate_type == &type_string)
+	if (pr_immediate_type == &type_const_string)
 		pr_immediate.string = CopyString (pr_immediate_string);
 	
 	memcpy (pr_globals + cn->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
@@ -605,7 +605,7 @@ void PR_ParseState (void)
 	char	*name;
 	def_t	*s1, *def;
 	
-	if (pr_token_type != tt_immediate || pr_immediate_type != &type_float)
+	if (pr_token_type != tt_immediate || pr_immediate_type != &type_const_float)
 		PR_ParseError ("state frame must be a number");
 	s1 = PR_ParseImmediate ();
 	
@@ -640,7 +640,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 	if (PR_Check ("#"))
 	{
 		if (pr_token_type != tt_immediate
-		|| pr_immediate_type != &type_float
+		|| pr_immediate_type != &type_const_float
 		|| pr_immediate._float != (int)pr_immediate._float)
 			PR_ParseError ("bad builtin immediate");
 		f->builtin = (int)pr_immediate._float;

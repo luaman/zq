@@ -50,6 +50,10 @@ type_t	type_function = {ev_function, &type_void};	// type_function is a void() f
 type_t	type_pointer = {ev_pointer};
 type_t	type_floatfield = {ev_field, &type_float};
 
+type_t	type_const_string = {ev_string, NULL, true};
+type_t	type_const_float = {ev_float, NULL, true};
+type_t	type_const_vector = {ev_vector, NULL, true};
+
 def_t	def_void = {&type_void, "temp"};
 def_t	def_string = {&type_string, "temp"};
 def_t	def_float = {&type_float, "temp"};
@@ -166,7 +170,7 @@ void PR_LexString (void)
 		{
 			pr_token[len] = 0;
 			pr_token_type = tt_immediate;
-			pr_immediate_type = &type_string;
+			pr_immediate_type = &type_const_string;
 			strcpy (pr_immediate_string, pr_token);
 			return;
 		}
@@ -211,7 +215,7 @@ void PR_LexVector (void)
 	
 	pr_file_p++;
 	pr_token_type = tt_immediate;
-	pr_immediate_type = &type_vector;
+	pr_immediate_type = &type_const_vector;
 	for (i=0 ; i<3 ; i++)
 	{
 		pr_immediate.vector[i] = PR_LexNumber ();
@@ -351,7 +355,7 @@ void PR_FindMacro (void)
 		{
 			sprintf (pr_token,"%d", i);
 			pr_token_type = tt_immediate;
-			pr_immediate_type = &type_float;
+			pr_immediate_type = &type_const_float;
 			pr_immediate._float = i;
 			return;
 		}
@@ -481,7 +485,7 @@ void PR_Lex (void)
 		)
 	{
 		pr_token_type = tt_immediate;
-		pr_immediate_type = &type_float;
+		pr_immediate_type = &type_const_float;
 		pr_immediate._float = PR_LexNumber ();
 		return;
 	}
@@ -722,34 +726,36 @@ type_t *PR_ParseType (void)
 	bool constant = PR_Check ("const");
 
 	if (!strcmp (pr_token, "float") )
-		type = &type_float;
+		type = constant ? &type_const_float : &type_float;
 	else if (!strcmp (pr_token, "vector") )
-		type = &type_vector;
+		type = constant ? &type_const_vector : &type_vector;
 	else if (!strcmp (pr_token, "entity") )
 		type = &type_entity;
 	else if (!strcmp (pr_token, "string") )
-		type = &type_string;
+		type = constant ? &type_const_string : &type_string;
 	else if (!strcmp (pr_token, "void") )
 		type = &type_void;
 	else
 	{
 		PR_ParseError ("\"%s\" is not a type", pr_token);
-		type = &type_float;	// shut up compiler warning
+		type = &type_void;	// shut up compiler warning
 	}
 	PR_Lex ();
 	
-	if (!PR_Check ("(")) {
-		if (constant) {
-			type_t	newtype;
-			memset (&newtype, 0, sizeof(newtype));
-			newtype.type = type->type;
-			newtype.constant = true;
-			return PR_GetType (&newtype);
-		}
+	if (PR_Check("(")) {
+		// function type
 
-		return type;
+		// go back to non-const types
+		// FIXME: don't bother?  Or force const types instead?
+		if (type == &type_const_float)
+			type = &type_float;
+		else if (type == &type_const_vector)
+			type = &type_vector;
+		else if (type == &type_const_string)
+			type = &type_string;
+
+		return PR_ParseFunctionType(type);
 	}
 
-// function type
-	return PR_ParseFunctionType(type);
+	return type;
 }
