@@ -751,7 +751,7 @@ void bot_angle_set ()
 			if (self.enemy.flags & FL_ONGROUND)
 				view = self.enemy.velocity * h;
 			else
-				view = (self.enemy.velocity - (sv_gravity * '0 0 1') * h) * h;
+				view = (self.enemy.velocity - (world.gravity * '0 0 1') * h) * h;
 			view = self.enemy.origin + view;  
 			// FIXME: ?
 			traceline(self.enemy.origin, view, FALSE, self);
