@@ -43,3 +43,7 @@ void Con_Init (void)
 void Con_Print (char *text)
 {
 }
+
+void Cmd_ForwardToServer (void)
+{
+}
