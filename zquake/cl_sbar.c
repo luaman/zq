@@ -72,9 +72,9 @@ static int	hipweapons[4] = {HIT_LASER_CANNON_BIT,HIT_MJOLNIR_BIT,4,HIT_PROXIMITY
 static qbool	sb_showscores;
 static qbool	sb_showteamscores;
 
-void Sbar_DeathmatchOverlay (int start);
-void Sbar_TeamOverlay (int start);
-void Sbar_MiniDeathmatchOverlay (void);
+static void Sbar_DeathmatchOverlay (int start);
+static void Sbar_TeamOverlay (int start);
+static void Sbar_MiniDeathmatchOverlay (void);
 
 static int	sbar_xofs;
 
