@@ -651,11 +651,12 @@ drop to full console
 */
 void CL_Changing_f (void)
 {
+	cl.intermission = 0;
+
 	if (cls.download)  // don't change when downloading
 		return;
 
 	S_StopAllSounds (true);
-	cl.intermission = 0;
 	cls.state = ca_connected;	// not active anymore, but not disconnected
 
 	Com_Printf ("\nChanging map...\n");
