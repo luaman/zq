@@ -172,7 +172,7 @@ void() snap_esr_main =
     {
         local string mode;
         mode = infokey(self.owner, "agv_t_esr");
-        objerror("ERROR: ", self.owner.netname, "'s requested ESR mode '", mode, "' is invalid\n");
+        objerror("ESR: ", self.owner.netname, "'s requested ESR mode '", mode, "' is invalid\nPlease report this bug to the developers.  Thank you.\n");
     }
 };
 
