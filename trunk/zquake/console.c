@@ -22,8 +22,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "keys.h"
 
-console_t	con;
+#define		CON_TEXTSIZE	65536
+typedef struct
+{
+	char	text[CON_TEXTSIZE];
+	int		current;		// line where next message will be printed
+	int		display;		// bottom of console displays this line
+	int		numlines;		// number of non-blank text lines, used for backscroling
+} console_t;
 
+static console_t	con;
+
+int			con_x;			// offset in current line for next print
 int			con_ormask;
 int 		con_linewidth;	// characters across screen
 int			con_totallines;		// total lines in console scrollback
@@ -302,7 +312,7 @@ Con_Linefeed
 */
 void Con_Linefeed (void)
 {
-	con.x = 0;
+	con_x = 0;
 	if (con.display == con.current)
 		con.display++;
 	con.current++;
@@ -347,8 +357,8 @@ void Con_Print (char *txt)
 				break;
 
 	// word wrap
-		if (l != con_linewidth && (con.x + l > con_linewidth) )
-			con.x = 0;
+		if (l != con_linewidth && (con_x + l > con_linewidth) )
+			con_x = 0;
 
 		txt++;
 
@@ -359,7 +369,7 @@ void Con_Print (char *txt)
 		}
 
 
-		if (!con.x)
+		if (!con_x)
 		{
 			Con_Linefeed ();
 		// mark time for transparent overlay
@@ -370,20 +380,20 @@ void Con_Print (char *txt)
 		switch (c)
 		{
 		case '\n':
-			con.x = 0;
+			con_x = 0;
 			break;
 
 		case '\r':
-			con.x = 0;
+			con_x = 0;
 			cr = 1;
 			break;
 
 		default:	// display character and advance
 			y = con.current % con_totallines;
-			con.text[y*con_linewidth+con.x] = c | mask | con_ormask;
-			con.x++;
-			if (con.x >= con_linewidth)
-				con.x = 0;
+			con.text[y*con_linewidth+con_x] = c | mask | con_ormask;
+			con_x++;
+			if (con_x >= con_linewidth)
+				con_x = 0;
 			break;
 		}
 
