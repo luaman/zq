@@ -456,12 +456,19 @@ SV_ServerinfoChanged
 Cvar system calls this when a CVAR_SERVERINFO cvar changes
 ==================
 */
-void SV_ServerinfoChanged (char *key, char *string)
+void SV_ServerinfoChanged (char *key, char *str)
 {
-	if (strcmp(string, Info_ValueForKey (svs.info, key)))
+	if ( (!strcmp(key, "pm_bunnyspeedcap") || !strcmp(key, "pm_slidefix")
+		|| !strcmp(key, "samelevel") || !strcmp(key, "watervis") || !strcmp(key, "coop") )
+		&& !strcmp(str, "0") ) {
+		// don't add default values to serverinfo to keep it cleaner
+		str = "";
+	}
+
+	if (strcmp(str, Info_ValueForKey (svs.info, key)))
 	{
-		Info_SetValueForKey (svs.info, key, string, MAX_SERVERINFO_STRING);
-		SV_SendServerInfoChange (key, string);
+		Info_SetValueForKey (svs.info, key, str, MAX_SERVERINFO_STRING);
+		SV_SendServerInfoChange (key, str);
 	}
 }
 
