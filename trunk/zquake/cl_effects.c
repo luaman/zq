@@ -540,3 +540,90 @@ void CL_LinkParticles (void)
 		V_AddParticle (p->org, p->color, p->alpha);
 	}
 }
+
+//============================================================
+
+/*
+===============
+CL_AllocDlight
+
+===============
+*/
+dlight_t *CL_AllocDlight (int key)
+{
+	int		i;
+	dlight_t	*dl;
+
+// first look for an exact key match
+	if (key)
+	{
+		dl = cl_dlights;
+		for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+		{
+			if (dl->key == key)
+			{
+				memset (dl, 0, sizeof(*dl));
+				dl->key = key;
+				return dl;
+			}
+		}
+	}
+
+// then look for anything else
+	dl = cl_dlights;
+	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+	{
+		if (dl->die < cl.time)
+		{
+			memset (dl, 0, sizeof(*dl));
+			dl->key = key;
+			return dl;
+		}
+	}
+
+	dl = &cl_dlights[0];
+	memset (dl, 0, sizeof(*dl));
+	dl->key = key;
+	return dl;
+}
+
+/*
+===============
+CL_NewDlight
+===============
+*/
+void CL_NewDlight (int key, vec3_t origin, float radius, float time,
+				   int type)
+{
+	dlight_t	*dl;
+
+	dl = CL_AllocDlight (key);
+	VectorCopy (origin, dl->origin);
+	dl->radius = radius;
+	dl->die = cl.time + time;
+	dl->type = type;
+}
+
+
+/*
+===============
+CL_DecayLights
+
+===============
+*/
+void CL_DecayLights (void)
+{
+	int			i;
+	dlight_t	*dl;
+
+	dl = cl_dlights;
+	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+	{
+		if (dl->die < cl.time || !dl->radius)
+			continue;
+		
+		dl->radius -= cls.frametime * dl->decay;
+		if (dl->radius < 0)
+			dl->radius = 0;
+	}
+}
