@@ -145,51 +145,58 @@ origin is updated properly
 */
 void CL_CalcCrouch (void)
 {
-	static float oldz = 0;
-	static float extracrouch = 0;
-	static float crouchspeed = 100;
+	static vec3_t	oldorigin;
+	static float	oldz;
+	static float	extracrouch;
+	static float	crouchspeed = 100;
+	int	i;
 
-	if (cl.simorg[2] - oldz > 0			// only smooth when moving up
-		&& cl.simorg[2] - oldz < 40)	// teleported?
-	{
-		if (cl.onground)
-		{
-			// if on steep stairs, increase speed
-			if (cl.simorg[2] - oldz > 20) {
-				if (crouchspeed < 160) {
-					extracrouch = cl.simorg[2] - oldz - host_frametime*200 - 15;
-					if (extracrouch > 5)
-						extracrouch = 5;
-				}
-				crouchspeed = 160;
-			}
+	for (i=0 ; i<3 ; i++)
+		if (fabs(cl.simorg[i] - oldorigin[i]) > 40)
+			break;
 
-			oldz += host_frametime * crouchspeed;
-			if (oldz > cl.simorg[2])
-				oldz = cl.simorg[2];
+	VectorCopy (cl.simorg, oldorigin);
 
-			if (cl.simorg[2] - oldz > 15 + extracrouch)
-				oldz = cl.simorg[2] - 15 - extracrouch;
-			extracrouch -= host_frametime*200;
-			if (extracrouch < 0)
-				extracrouch = 0;
-
-			cl.crouch = oldz - cl.simorg[2];
-		} else {
-			// in air
-			oldz = cl.simorg[2];
-			cl.crouch += host_frametime * 150;
-			if (cl.crouch > 0)
-				cl.crouch = 0;
-			crouchspeed = 100;
-			extracrouch = 0;
-		}
-	}
-	else
-	{
+	if (i < 3) {
+		// possibly teleported or respawned
 		oldz = cl.simorg[2];
-		cl.crouch = extracrouch = 0;
+		extracrouch = 0;
 		crouchspeed = 100;
+		cl.crouch = 0;
+		return;
+	}
+
+	if (cl.onground && cl.simorg[2] - oldz > 0)
+	{
+		if (cl.simorg[2] - oldz > 20) {
+			// if on steep stairs, increase speed
+			if (crouchspeed < 160) {
+				extracrouch = cl.simorg[2] - oldz - host_frametime*200 - 15;
+				if (extracrouch > 5)
+					extracrouch = 5;
+			}
+			crouchspeed = 160;
+		}
+		
+		oldz += host_frametime * crouchspeed;
+		if (oldz > cl.simorg[2])
+			oldz = cl.simorg[2];
+		
+		if (cl.simorg[2] - oldz > 15 + extracrouch)
+			oldz = cl.simorg[2] - 15 - extracrouch;
+		extracrouch -= host_frametime*200;
+		if (extracrouch < 0)
+			extracrouch = 0;
+		
+		cl.crouch = oldz - cl.simorg[2];
+	} else {
+		// in air or moving down
+		oldz = cl.simorg[2];
+		cl.crouch += host_frametime * 150;
+		if (cl.crouch > 0)
+			cl.crouch = 0;
+		crouchspeed = 100;
+		extracrouch = 0;
 	}
 }
 
