@@ -776,8 +776,9 @@ void SV_Snap (int uid)
 	else
 		cl->remote_snap = false;
 
-	ClientReliableWrite_Begin (cl, svc_stufftext, 24);
-	ClientReliableWrite_String (cl, "cmd snap\n");
+	ClientReliableWrite_Begin (cl, svc_stufftext);
+	ClientReliableWrite_String ("cmd snap\n");
+	ClientReliableWrite_End ();
 	Com_Printf ("Requesting snap from user %d...\n", uid);
 }
 

@@ -21,141 +21,191 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "server.h"
 
-// check to see if client block will fit, if not, rotate buffers
-void ClientReliableCheckBlock(client_t *cl, int maxsize)
-{
-	if (cl->num_backbuf ||
-		cl->netchan.message.cursize > 
-		cl->netchan.message.maxsize - maxsize - 1) {
-		// we would probably overflow the buffer, save it for next
-		if (!cl->num_backbuf) {
-			SZ_Init (&cl->backbuf, cl->backbuf_data[0], sizeof(cl->backbuf_data[0]));
-			cl->backbuf.allowoverflow = true;
-			cl->backbuf_size[0] = 0;
-			cl->num_backbuf++;
-		}
+static byte backbuf_data[MAX_MSGLEN];
+static sizebuf_t backbuf;
+static client_t *backbuf_dest;
+static qbool backbuf_write_started = false;
 
-		if (cl->backbuf.cursize > cl->backbuf.maxsize - maxsize - 1) {
-			if (cl->num_backbuf == MAX_BACK_BUFFERS) {
-				Com_Printf ("WARNING: MAX_BACK_BUFFERS for %s\n", cl->name);
-				cl->backbuf.cursize = 0; // don't overflow without allowoverflow set
-				cl->netchan.message.overflowed = true; // this will drop the client
-				return;
-			}
-			SZ_Init (&cl->backbuf, cl->backbuf_data[cl->num_backbuf], sizeof(cl->backbuf_data[cl->num_backbuf]));
-			cl->backbuf.allowoverflow = true;
-			cl->backbuf_size[cl->num_backbuf] = 0;
-			cl->num_backbuf++;
+
+void ClientReliableWrite_Begin0 (client_t *cl)
+{
+	assert (!backbuf_write_started);
+	backbuf_write_started = true;
+	backbuf_dest = cl;
+	SZ_Init (&backbuf, backbuf_data, sizeof(backbuf_data));
+}
+
+void ClientReliableWrite_Begin (client_t *cl, int c)
+{
+	ClientReliableWrite_Begin0 (cl);
+	MSG_WriteByte (&backbuf, c);
+}
+
+void ClientReliableWrite_End (void)
+{
+	assert (backbuf_write_started);
+	backbuf_write_started = false;
+
+	SV_AddToReliable (backbuf_dest, backbuf.data, backbuf.cursize);
+}
+
+void ClientReliableWrite_Angle (float f)
+{
+	assert (backbuf_write_started);
+	MSG_WriteAngle (&backbuf, f);
+}
+
+void ClientReliableWrite_Angle16 (float f)
+{
+	assert (backbuf_write_started);
+	MSG_WriteAngle16 (&backbuf, f);
+}
+
+void ClientReliableWrite_Byte (int c)
+{
+	assert (backbuf_write_started);
+	MSG_WriteByte (&backbuf, c);
+}
+
+void ClientReliableWrite_Char (int c)
+{
+	assert (backbuf_write_started);
+	MSG_WriteChar (&backbuf, c);
+}
+
+void ClientReliableWrite_Float (float f)
+{
+	assert (backbuf_write_started);
+	MSG_WriteFloat (&backbuf, f);
+}
+
+void ClientReliableWrite_Coord (float f)
+{
+	assert (backbuf_write_started);
+	MSG_WriteCoord (&backbuf, f);
+}
+
+void ClientReliableWrite_Long (int c)
+{
+	assert (backbuf_write_started);
+	MSG_WriteLong (&backbuf, c);
+}
+
+void ClientReliableWrite_Short (int c)
+{
+	assert (backbuf_write_started);
+	MSG_WriteShort (&backbuf, c);
+}
+
+void ClientReliableWrite_String (char *s)
+{
+	assert (backbuf_write_started);
+	MSG_WriteString(&backbuf, s);
+}
+
+void ClientReliableWrite_SZ (void *data, int len)
+{
+	assert (backbuf_write_started);
+	SZ_Write (&backbuf, data, len);
+}
+
+
+
+static void SV_AddToBackbuf (client_t *cl, const byte *data, int size)
+{
+	backbuf_block_t *block;
+
+	assert (size >= 0);
+	if (!size)
+		return;
+
+	// allocate new block
+	block = Q_malloc (sizeof(backbuf_block_t)-4 + size);
+
+	// fill it in
+	block->size = size;
+	block->next = NULL;
+	memcpy (block->data, data, size);
+
+	// link it in
+	if (cl->backbuf_head) {
+		assert (cl->backbuf_tail != NULL);
+		cl->backbuf_tail->next = block;
+		cl->backbuf_tail = block;
+	} else {
+		assert (cl->backbuf_tail == NULL);
+		cl->backbuf_head = cl->backbuf_tail = block;
+	}
+
+	// update total
+	cl->backbuf_size += size;
+}
+
+void SV_AddToReliable (client_t *cl, const byte *data, int size)
+{
+	if (!cl->backbuf_size &&
+		cl->netchan.message.cursize + size <= cl->netchan.message.maxsize)
+	{
+		// it will fit
+		SZ_Write (&cl->netchan.message, data, size);
+	}
+	else
+	{	// won't fit, add it to backbuf
+		SV_AddToBackbuf (cl, data, size);
+	}
+}
+
+// flush data from client's reliable buffers to netchan
+void SV_FlushBackbuf (client_t *cl)
+{
+	backbuf_block_t *block;
+
+	block = cl->backbuf_head;
+	while (block) {
+		if (block->size > (cl->netchan.message.maxsize - cl->netchan.message.cursize))
+			break;
+
+		// add to reliable
+		SZ_Write (&cl->netchan.message, block->data, block->size);
+
+		// update total
+		cl->backbuf_size -= block->size;
+
+		// free this block and grab next
+		block = cl->backbuf_head->next;
+		Q_free (cl->backbuf_head);
+		cl->backbuf_head = block;
+		if (!block) {
+			assert (cl->backbuf_size == 0);
+			cl->backbuf_tail = NULL;
+		}
+	}
+
+}
+
+void SV_ClearBackbuf (client_t *cl)
+{
+	backbuf_block_t *block;
+
+	block = cl->backbuf_head;
+	while (block) {
+		// update total
+		cl->backbuf_size -= block->size;
+
+		// free this block and grab next
+		block = cl->backbuf_head->next;
+		Q_free (cl->backbuf_head);
+		cl->backbuf_head = block;
+		if (!block) {
+			assert (cl->backbuf_size == 0);
+			cl->backbuf_tail = NULL;
 		}
 	}
 }
 
-// begin a client block, estimated maximum size
-void ClientReliableWrite_Begin(client_t *cl, int c, int maxsize)
+// clears both cl->netchan.message and backbuf
+void SV_ClearReliable (client_t *cl)
 {
-	ClientReliableCheckBlock(cl, maxsize);
-	ClientReliableWrite_Byte(cl, c);
+	SZ_Clear (&cl->netchan.message);
+	SV_ClearBackbuf (cl);
 }
-
-void ClientReliable_FinishWrite(client_t *cl)
-{
-	if (cl->num_backbuf) {
-		cl->backbuf_size[cl->num_backbuf - 1] = cl->backbuf.cursize;
-
-		if (cl->backbuf.overflowed) {
-			Com_Printf ("WARNING: backbuf [%d] reliable overflow for %s\n",cl->num_backbuf,cl->name);
-			cl->netchan.message.overflowed = true; // this will drop the client
-		}
-	}
-}
-
-void ClientReliableWrite_Angle(client_t *cl, float f)
-{
-	if (cl->num_backbuf) {
-		MSG_WriteAngle(&cl->backbuf, f);
-		ClientReliable_FinishWrite(cl);
-	} else
-		MSG_WriteAngle(&cl->netchan.message, f);
-}
-
-void ClientReliableWrite_Angle16(client_t *cl, float f)
-{
-	if (cl->num_backbuf) {
-		MSG_WriteAngle16(&cl->backbuf, f);
-		ClientReliable_FinishWrite(cl);
-	} else
-		MSG_WriteAngle16(&cl->netchan.message, f);
-}
-
-void ClientReliableWrite_Byte(client_t *cl, int c)
-{
-	if (cl->num_backbuf) {
-		MSG_WriteByte(&cl->backbuf, c);
-		ClientReliable_FinishWrite(cl);
-	} else
-		MSG_WriteByte(&cl->netchan.message, c);
-}
-
-void ClientReliableWrite_Char(client_t *cl, int c)
-{
-	if (cl->num_backbuf) {
-		MSG_WriteChar(&cl->backbuf, c);
-		ClientReliable_FinishWrite(cl);
-	} else
-		MSG_WriteChar(&cl->netchan.message, c);
-}
-
-void ClientReliableWrite_Float(client_t *cl, float f)
-{
-	if (cl->num_backbuf) {
-		MSG_WriteFloat(&cl->backbuf, f);
-		ClientReliable_FinishWrite(cl);
-	} else
-		MSG_WriteFloat(&cl->netchan.message, f);
-}
-
-void ClientReliableWrite_Coord(client_t *cl, float f)
-{
-	if (cl->num_backbuf) {
-		MSG_WriteCoord(&cl->backbuf, f);
-		ClientReliable_FinishWrite(cl);
-	} else
-		MSG_WriteCoord(&cl->netchan.message, f);
-}
-
-void ClientReliableWrite_Long(client_t *cl, int c)
-{
-	if (cl->num_backbuf) {
-		MSG_WriteLong(&cl->backbuf, c);
-		ClientReliable_FinishWrite(cl);
-	} else
-		MSG_WriteLong(&cl->netchan.message, c);
-}
-
-void ClientReliableWrite_Short(client_t *cl, int c)
-{
-	if (cl->num_backbuf) {
-		MSG_WriteShort(&cl->backbuf, c);
-		ClientReliable_FinishWrite(cl);
-	} else
-		MSG_WriteShort(&cl->netchan.message, c);
-}
-
-void ClientReliableWrite_String(client_t *cl, char *s)
-{
-	if (cl->num_backbuf) {
-		MSG_WriteString(&cl->backbuf, s);
-		ClientReliable_FinishWrite(cl);
-	} else
-		MSG_WriteString(&cl->netchan.message, s);
-}
-
-void ClientReliableWrite_SZ(client_t *cl, void *data, int len)
-{
-	if (cl->num_backbuf) {
-		SZ_Write(&cl->backbuf, data, len);
-		ClientReliable_FinishWrite(cl);
-	} else
-		SZ_Write(&cl->netchan.message, data, len);
-}
-

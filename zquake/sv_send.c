@@ -1,4 +1,4 @@
-/*
+	/*
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -57,9 +57,10 @@ void SV_FlushRedirect (void)
 	{
 		if (!sv_outputbuf[0])
 			return;
-		ClientReliableWrite_Begin (sv_client, svc_print, strlen(sv_outputbuf)+3);
-		ClientReliableWrite_Byte (sv_client, PRINT_HIGH);
-		ClientReliableWrite_String (sv_client, sv_outputbuf);
+		ClientReliableWrite_Begin (sv_client, svc_print);
+		ClientReliableWrite_Byte (PRINT_HIGH);
+		ClientReliableWrite_String (sv_outputbuf);
+		ClientReliableWrite_End ();
 	}
 
 	// clear it
@@ -105,9 +106,10 @@ EVENT MESSAGES
 
 static void SV_PrintToClient(client_t *cl, int level, char *string)
 {
-	ClientReliableWrite_Begin (cl, svc_print, strlen(string)+3);
-	ClientReliableWrite_Byte (cl, level);
-	ClientReliableWrite_String (cl, string);
+	ClientReliableWrite_Begin (cl, svc_print);
+	ClientReliableWrite_Byte (level);
+	ClientReliableWrite_String (string);
+	ClientReliableWrite_End ();
 }
 
 
@@ -267,8 +269,7 @@ void SV_Multicast (vec3_t origin, int to)
 
 inrange:
 		if (reliable) {
-			ClientReliableCheckBlock(client, sv.multicast.cursize);
-			ClientReliableWrite_SZ(client, sv.multicast.data, sv.multicast.cursize);
+			SV_AddToReliable (client, sv.multicast.data, sv.multicast.cursize);
 		} else
 			SZ_Write (&client->datagram, sv.multicast.data, sv.multicast.cursize);
 	}
@@ -582,15 +583,17 @@ void SV_UpdateClientStats (client_t *client)
 			client->stats[i] = stats[i];
 			if (stats[i] >=0 && stats[i] <= 255)
 			{
-				ClientReliableWrite_Begin(client, svc_updatestat, 3);
-				ClientReliableWrite_Byte(client, i);
-				ClientReliableWrite_Byte(client, stats[i]);
+				ClientReliableWrite_Begin (client, svc_updatestat);
+				ClientReliableWrite_Byte (i);
+				ClientReliableWrite_Byte (stats[i]);
+				ClientReliableWrite_End ();
 			}
 			else
 			{
-				ClientReliableWrite_Begin(client, svc_updatestatlong, 6);
-				ClientReliableWrite_Byte(client, i);
-				ClientReliableWrite_Long(client, stats[i]);
+				ClientReliableWrite_Begin (client, svc_updatestatlong);
+				ClientReliableWrite_Byte (i);
+				ClientReliableWrite_Long (stats[i]);
+				ClientReliableWrite_End ();
 			}
 		}
 }
@@ -670,9 +673,10 @@ void SV_UpdateToReliableMessages (void)
 			{
 				if (client->state < cs_connected)
 					continue;
-				ClientReliableWrite_Begin(client, svc_updatefrags, 4);
-				ClientReliableWrite_Byte(client, i);
-				ClientReliableWrite_Short(client, ent->v.frags);
+				ClientReliableWrite_Begin (client, svc_updatefrags);
+				ClientReliableWrite_Byte (i);
+				ClientReliableWrite_Short (ent->v.frags);
+				ClientReliableWrite_End ();
 			}
 
 			sv_client->old_frags = ent->v.frags;
@@ -681,14 +685,16 @@ void SV_UpdateToReliableMessages (void)
 		// maxspeed/entgravity changes
 		if (fofs_gravity && sv_client->entgravity != EdictFieldFloat(ent, fofs_gravity)) {
 			sv_client->entgravity = EdictFieldFloat(ent, fofs_gravity);
-			ClientReliableWrite_Begin(sv_client, svc_entgravity, 5);
-			ClientReliableWrite_Float(sv_client, sv_client->entgravity);
+			ClientReliableWrite_Begin (sv_client, svc_entgravity);
+			ClientReliableWrite_Float (sv_client->entgravity);
+			ClientReliableWrite_End ();
 		}
 
 		if (fofs_maxspeed && sv_client->maxspeed != EdictFieldFloat(ent, fofs_maxspeed)) {
 			sv_client->maxspeed = EdictFieldFloat(ent, fofs_maxspeed);
-			ClientReliableWrite_Begin(sv_client, svc_maxspeed, 5);
-			ClientReliableWrite_Float(sv_client, sv_client->maxspeed);
+			ClientReliableWrite_Begin (sv_client, svc_maxspeed);
+			ClientReliableWrite_Float (sv_client->maxspeed);
+			ClientReliableWrite_End ();
 		}
 	}
 
@@ -701,8 +707,7 @@ void SV_UpdateToReliableMessages (void)
 		if (client->state < cs_connected)
 			continue;	// reliables go to all connected or spawned
 
-		ClientReliableCheckBlock(client, sv.reliable_datagram.cursize);
-		ClientReliableWrite_SZ(client, sv.reliable_datagram.data, sv.reliable_datagram.cursize);
+		SV_AddToReliable (client, sv.reliable_datagram.data, sv.reliable_datagram.cursize);
 
 		if (client->state != cs_spawned)
 			continue;	// datagrams only go to spawned
@@ -728,7 +733,7 @@ SV_SendClientMessages
 */
 void SV_SendClientMessages (void)
 {
-	int			i, j;
+	int			i;
 	client_t	*c;
 
 // update frags, names, etc
@@ -746,34 +751,9 @@ void SV_SendClientMessages (void)
 			continue;
 		}
 
-		// check to see if we have a backbuf to stick in the reliable
-		if (c->num_backbuf) {
-			// will it fit?
-			if (c->netchan.message.cursize + c->backbuf_size[0] <
-				c->netchan.message.maxsize) {
-
-				Com_DPrintf ("%s: backbuf %d bytes\n",
-					c->name, c->backbuf_size[0]);
-
-				// it'll fit
-				SZ_Write(&c->netchan.message, c->backbuf_data[0],
-					c->backbuf_size[0]);
-				
-				//move along, move along
-				for (j = 1; j < c->num_backbuf; j++) {
-					memcpy(c->backbuf_data[j - 1], c->backbuf_data[j],
-						c->backbuf_size[j]);
-					c->backbuf_size[j - 1] = c->backbuf_size[j];
-				}
-
-				c->num_backbuf--;
-				if (c->num_backbuf) {
-					SZ_Init (&c->backbuf, c->backbuf_data[c->num_backbuf - 1],
-						sizeof(c->backbuf_data[c->num_backbuf - 1]));
-					c->backbuf.cursize = c->backbuf_size[c->num_backbuf - 1];
-				}
-			}
-		}
+		// flush back-buffered reliable data if room enough
+		// FIXME: do it after Netchan_Transmit/SV_SendClientDatagram?
+		SV_FlushBackbuf (c);
 
 		// if the reliable message overflowed,
 		// drop the client
@@ -803,7 +783,6 @@ void SV_SendClientMessages (void)
 			SV_SendClientDatagram (c);
 		else
 			Netchan_Transmit (&c->netchan, 0, NULL);	// just update reliable
-			
 	}
 }
 
