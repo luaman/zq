@@ -56,7 +56,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 mglfx.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib ole32.lib uuid.lib winmm.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcmt"
+# ADD LINK32 mgllt.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib ole32.lib uuid.lib winmm.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcmt"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
@@ -83,7 +83,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386
-# ADD LINK32 mglfx.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcmt"
+# ADD LINK32 mgllt.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcmt"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
