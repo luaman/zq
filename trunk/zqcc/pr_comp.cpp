@@ -441,6 +441,16 @@ def_t *PR_Term (void)
 		return e2;
 	}
 
+	if (PR_Check("+")) {
+		e = PR_Expression (1 /* FIXME, correct? */);
+		t = e->type->type;
+		if (t != ev_float && t != ev_vector) {
+			PR_ParseError ("type mismatch for +");
+			return NULL;	// shut up compiler
+		}
+		return e;
+	}
+
 	PR_ParseError ("syntax error : '%s'", pr_token);
 	return NULL;	// shut up compiler
 }
