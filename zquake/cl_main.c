@@ -228,6 +228,14 @@ void CL_CheckForResend (void)
 	char	data[2048];
 	double t1, t2;
 
+	if (cls.state == ca_disconnected && com_serveractive) {
+		// if the local server is running and we are not, then connect
+		Q_strncpyz (cls.servername, "local", sizeof(cls.servername));
+		CL_SendConnectPacket ();	// we don't need a challenge on the local server
+		// FIXME: cls.state = ca_connecting so that we don't send the packet twice?
+		return;
+	}
+
 	if (cls.state != ca_disconnected || !connect_time)
 		return;
 	if (cls.realtime - connect_time < 5.0)
@@ -865,10 +873,15 @@ void CL_BeginLocalConnection ()
 
 	cl.worldmodel = NULL;
 
+#if 1
+	if (cls.state == ca_active)
+		cls.state = ca_connected;
+#else
 	if (cls.state < ca_connected)
 		Cmd_ExecuteString ("connect local");
 	else
 		cls.state = ca_connected;
+#endif
 }
 
 
