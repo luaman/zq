@@ -53,7 +53,7 @@ typedef struct
 	float		waterjumptime;
 	qboolean	onground;
 	qboolean	jump_held;
-	int			jump_msec;		// fix bunny-hop flickering
+	int			jump_msec;		// hack for fixing bunny-hop flickering on non-ZQuake servers
 } player_state_t;
 
 
@@ -65,24 +65,24 @@ typedef struct player_info_s
 
 	// scoreboard information
 	char	name[MAX_SCOREBOARDNAME];
+	char	team[MAX_INFO_STRING];
 	float	entertime;
 	int		frags;
 	int		ping;
 	byte	pl;
+	qboolean	spectator;
 
 	// skin information
-	int		topcolor;
+	int		real_topcolor;			// what the server tells us
+	int		real_bottomcolor;
+
+	int		topcolor;				// real, or forced by enemycolor etc
 	int		bottomcolor;
 
+	// FIXME, get rid of these two
 	int		_topcolor;
 	int		_bottomcolor;
 
-	int		real_topcolor;
-	int		real_bottomcolor;
-	char	team[MAX_INFO_STRING];
-	char	_team[MAX_INFO_STRING];
-
-	int		spectator;
 	byte	translations[VID_GRADES*256];
 	skin_t	*skin;
 } player_info_t;

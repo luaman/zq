@@ -843,6 +843,7 @@ void CL_Changing_f (void)
 	S_StopAllSounds (true);
 	cls.state = ca_connected;	// not active anymore, but not disconnected
 
+// some mods expect aliases to persist across map changes
 //	Cmd_RemoveStuffedAliases ();
 
 	Com_Printf ("\nChanging map...\n");

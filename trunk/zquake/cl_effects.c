@@ -587,13 +587,6 @@ void CL_LinkParticles (void)
 
 	for (p=active_particles ; p ; p=p->next)
 	{
-		// blindly add all particles if paused
-		if (cl.paused) 
-		{
-			V_AddParticle (p->org, p->color, p->alpha);
-			continue;
-		}
-
 		for ( ;; )
 		{
 			kill = p->next;
@@ -606,6 +599,8 @@ void CL_LinkParticles (void)
 			}
 			break;
 		}
+
+		V_AddParticle (p->org, p->color, p->alpha);
 
 		p->org[0] += p->vel[0] * frametime;
 		p->org[1] += p->vel[1] * frametime;
@@ -666,8 +661,6 @@ void CL_LinkParticles (void)
 				p->vel[2] -= grav;
 				break;
 		}
-
-		V_AddParticle (p->org, p->color, p->alpha);
 	}
 }
 
