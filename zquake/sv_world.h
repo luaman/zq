@@ -77,8 +77,6 @@ trace_t SV_Trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, 
 // passedict is explicitly excluded from clipping checks (normally NULL)
 
 
-edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin);
-
 int SV_AreaEdicts (vec3_t mins, vec3_t maxs, edict_t **edicts, int max_edicts, int area);
 
 #endif /* _SV_WORLD_H_ */
