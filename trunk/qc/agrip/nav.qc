@@ -477,8 +477,9 @@ void(float direction, float objtype) snap_nav_struct_soundout =
     {
         // It's a SLOPE or DOOR...
         // Sound volume should fall off in direct proportion to the trace farction...
-        // But: Don't make a sound if we're only detecting what is behind us
-        //      OR if the side wall warnings are off and we're detecting right/left.
+        // But:     Don't make a sound if we're only detecting what is behind us
+        // Note:    ALWAYS detect slopes/doors at our sides, even if side wall
+        //          warnings is off!
         if( direction != SNAP_NAV_DIR_BCK )
         {
             // Get sound volume...
