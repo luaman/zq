@@ -206,7 +206,7 @@ void() player_nail1   =[$nailatt1, player_nail2  ]
 {
 	muzzleflash();
 
-	if (!self.button0 || intermission_running || self.impulse != IMPULSE_NONE)
+	if (!self.button0 || intermission_running || self.impulse)
 		{player_run ();return;}
 	self.weaponframe = self.weaponframe + 1;
 	if (self.weaponframe == 9)
@@ -219,7 +219,7 @@ void() player_nail2   =[$nailatt2, player_nail1  ]
 {
 	muzzleflash();
 
-	if (!self.button0 || intermission_running || self.impulse != IMPULSE_NONE)
+	if (!self.button0 || intermission_running || self.impulse)
 		{player_run ();return;}
 	self.weaponframe = self.weaponframe + 1;
 	if (self.weaponframe == 9)

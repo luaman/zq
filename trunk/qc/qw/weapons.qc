@@ -1232,7 +1232,7 @@ void W_ChangeWeapon ()
 			am = 1;
 	}
 
-	self.impulse = IMPULSE_NONE;
+	self.impulse = 0;
 	
 	if (!(self.items & fl))
 	{	// don't have the weapon or the ammo
@@ -1279,7 +1279,7 @@ void CheatCommand ()
 		IT_KEY1 | IT_KEY2;
 
 	self.weapon = IT_ROCKET_LAUNCHER;
-	self.impulse = IMPULSE_NONE;
+	self.impulse = 0;
 	W_SetCurrentAmmo ();
 }
 
@@ -1295,7 +1295,7 @@ void CycleWeaponCommand ()
 	float	it, am;
 	
 	it = self.items;
-	self.impulse = IMPULSE_NONE;
+	self.impulse = 0;
 
 	while (1)
 	{
@@ -1370,7 +1370,7 @@ void CycleWeaponReverseCommand ()
 	float	it, am;
 
 	it = self.items;
-	self.impulse = IMPULSE_NONE;
+	self.impulse = 0;
 
 	while (1)
 	{
@@ -1467,7 +1467,7 @@ void ImpulseCommands ()
 	else if (self.impulse == IMPULSE_WEAPONCYCLE_R)
 		CycleWeaponReverseCommand ();
 
-	self.impulse = IMPULSE_NONE;
+	self.impulse = 0;
 }
 
 /*
@@ -1482,7 +1482,7 @@ void W_WeaponFrame ()
 	if (time < self.attack_finished)
 		return;
 
-	if (self.impulse != IMPULSE_NONE)
+	if (self.impulse)
 		ImpulseCommands ();
 
 // check for attack
