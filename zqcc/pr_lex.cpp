@@ -196,7 +196,43 @@ float PR_LexNumber (void)
 		pr_file_p++;
 	}
 
-	for (;;)
+	// check for hex
+	if (pr_file_p[0] == '0' && (pr_file_p[1] == 'x' || pr_file_p[1] == 'X') )
+	{
+		int ival = 0;
+
+		pr_file_p += 2;
+		while (1)
+		{
+			int c = *pr_file_p;
+
+			if (c >= '0' && c <= '9')
+				ival = (ival << 4) + (c - '0');
+			else if (c >= 'a' && c <= 'f')
+				ival = (ival << 4) + (c - 'a') + 10;
+			else if (c >= 'A' && c <= 'F')
+				ival = (ival << 4) + (c - 'A') + 10;
+			else if ((c >= 'G' && c <= 'Z') || (c >= 'g' && c <= 'z'))
+				PR_ParseError ("syntax error : '%c'", c);
+			else
+				break;	// found a legal non-numeric char
+
+			// FIXME, raise error on 0x, etc ("hex constants must have at least one hex digit")
+
+			pr_file_p++;
+		}
+
+		int len = pr_file_p - token_start;
+		if (len > sizeof(pr_token))
+			PR_ParseError ("constant too long");
+		memcpy (pr_token, token_start, len);
+		pr_token[len] = 0;
+
+		return neg ? -(float)ival : (float)ival;
+	}
+
+	// parse decimal
+	while (1)
 	{
 		int c = *pr_file_p;
 
