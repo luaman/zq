@@ -54,7 +54,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_APPICON             ICON    DISCARDABLE     "qwcl2.ico"
+IDI_APPICON             ICON    DISCARDABLE     "zquake.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

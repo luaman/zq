@@ -1470,11 +1470,11 @@ SOURCE=.\zone.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=.\qwcl2.ico
+SOURCE=.\winquake.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\winquake.rc
+SOURCE=.\zquake.ico
 # End Source File
 # End Group
 # Begin Group "Asm Files"
