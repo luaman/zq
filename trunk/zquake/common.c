@@ -233,6 +233,23 @@ float Q_atof (char *str)
 }
 
 
+// removes trailing zeros
+char *Q_ftos (float value)
+{
+	static char str[128];
+	int	i;
+
+	Q_snprintfz (str, sizeof(str), "%f", value);
+
+	for (i=strlen(str)-1 ; i>0 && str[i]=='0' ; i--)
+		str[i] = 0;
+	if (str[i] == '.')
+		str[i] = 0;
+
+	return str;
+}
+
+
 void Q_strncpyz (char *dest, char *src, size_t size)
 {
 	strncpy (dest, src, size-1);
