@@ -860,11 +860,11 @@ void PM_SpectatorMove (void)
 	currentspeed = DotProduct(pmove.velocity, wishdir);
 	addspeed = wishspeed - currentspeed;
 
-#define QWBUG		// for compatibility with QW clients/servers
-#ifdef QWBUG
-	if (addspeed <= 0)
-		return;
-#endif
+	// Buggy QW spectator mode, kept for compatibility
+	if (pmove.pm_type == PM_OLD_SPECTATOR) {
+		if (addspeed <= 0)
+			return;
+	}
 
 	if (addspeed > 0) {
 		accelspeed = movevars.accelerate*frametime*wishspeed;
