@@ -272,6 +272,8 @@ readnext:
 
 		if (msec)
 		{
+			extern void CL_ParseClientdata ();
+
 			olddemotime = nextdemotime;
 			nextdemotime = demotime;
 			cls.netchan.incoming_sequence++;
@@ -279,7 +281,7 @@ readnext:
 			cls.netchan.frame_latency = 0;
 			cls.netchan.last_received = cls.demotime; // just to happy timeout check
 
-			CL_ParseClientdata();	// @@@Tonik
+			CL_ParseClientdata();
 		}
 	}
 #endif
