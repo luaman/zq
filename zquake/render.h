@@ -162,7 +162,7 @@ void R_DrawPic (int x, int y, mpic_t *pic);
 void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height);
 void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation);
 void R_DrawFilledRect (int x, int y, int w, int h, int c);
-void R_DrawTile (int x, int y, int w, int h);
+void R_DrawTile (int x, int y, int w, int h, mpic_t *pic);
 void R_FadeScreen (void);
 void R_DrawDebugChar (char num);
 void R_BeginDisc (void);
@@ -171,5 +171,3 @@ mpic_t *R_CachePic (char *path);
 mpic_t *R_CacheWadPic (char *name);
 void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha);
 void R_DrawCrosshair (int num, byte color, int crossx, int crossy);
-
-void Draw_Init (void);

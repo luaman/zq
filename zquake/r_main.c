@@ -140,7 +140,7 @@ void R_LoadSky_f (void);
 R_InitTextures
 ==================
 */
-void	R_InitTextures (void)
+void R_InitTextures (void)
 {
 	int		x,y, m;
 	byte	*dest;
@@ -175,6 +175,7 @@ R_Init
 */
 void R_Init (void)
 {
+	extern void R_Draw_Init (void);
 	int		dummy;
 	
 // get stack position so we can guess if we are going to overflow
@@ -227,6 +228,8 @@ void R_Init (void)
 	r_refdef.yOrigin = YCENTERING;
 
 	R_InitTextures ();
+	R_Draw_Init ();
+	Mod_Init ();
 
 // TODO: collect 386-specific code in one place
 #if	id386

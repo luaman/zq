@@ -25,19 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sound.h"
 #include "version.h"
 
-typedef struct {
-	vrect_t	rect;
-	int		width;
-	int		height;
-	byte	*ptexbytes;
-	int		rowbytes;
-} rectdesc_t;
-
-static rectdesc_t	r_rectdesc;
-
 byte		*draw_chars;				// 8*8 graphic characters
 mpic_t		*draw_disc;
-mpic_t		*draw_backtile;
 
 //=============================================================================
 /* Support Routines */
@@ -118,19 +107,13 @@ mpic_t *R_CachePic (char *path)
 
 /*
 ===============
-Draw_Init
+R_Draw_Init
 ===============
 */
-void Draw_Init (void)
+void R_Draw_Init (void)
 {
 	draw_chars = (byte *) R_CacheWadPic ("conchars");
 	draw_disc = R_CacheWadPic ("disc");
-	draw_backtile = R_CacheWadPic ("backtile");
-
-	r_rectdesc.width = draw_backtile->width;
-	r_rectdesc.height = draw_backtile->height;
-	r_rectdesc.ptexbytes = draw_backtile->data;
-	r_rectdesc.rowbytes = draw_backtile->width;
 }
 
 
@@ -876,11 +859,27 @@ This repeats a 64*64 tile graphic to fill the screen around a sized down
 refresh window.
 =============
 */
-void R_DrawTile (int x, int y, int w, int h)
+
+// FIXME: clean this up!
+typedef struct {
+	vrect_t	rect;
+	int		width;
+	int		height;
+	byte	*ptexbytes;
+	int		rowbytes;
+} rectdesc_t;
+static rectdesc_t	r_rectdesc;
+
+void R_DrawTile (int x, int y, int w, int h, mpic_t *pic)
 {
 	int				width, height, tileoffsetx, tileoffsety;
 	byte			*psrc;
 	vrect_t			vr;
+
+	r_rectdesc.width = pic->width;
+	r_rectdesc.rowbytes = pic->width;
+	r_rectdesc.height = pic->height;
+	r_rectdesc.ptexbytes = pic->data;
 
 	r_rectdesc.rect.x = x;
 	r_rectdesc.rect.y = y;

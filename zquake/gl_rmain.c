@@ -119,8 +119,6 @@ qbool vid_hwgamma_enabled = false;	// dummy
 
 
 void R_MarkLeaves (void);
-void R_InitBubble (void);
-void R_InitParticleTexture (void);
 
 
 /*
@@ -1139,6 +1137,9 @@ R_Init
 */
 void R_Init (void)
 {
+	extern void R_InitBubble (void);
+	extern void R_Draw_Init (void);
+
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
 	Cmd_AddCommand ("screenshot", R_ScreenShot_f);
 	Cmd_AddCommand ("loadsky", R_LoadSky_f);
@@ -1190,8 +1191,8 @@ void R_Init (void)
 		Cvar_SetValue(&gl_solidparticles, 1);
 
 	R_InitTextures ();
+	R_Draw_Init ();
 	R_InitBubble ();
-	R_InitParticleTexture ();
 
 	netgraphtexture = texture_extension_number;
 	texture_extension_number++;
@@ -1204,6 +1205,8 @@ void R_Init (void)
 
 	skyboxtextures = texture_extension_number;
 	texture_extension_number += 6;
+
+	Mod_Init ();
 }
 
 
