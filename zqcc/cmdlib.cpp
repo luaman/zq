@@ -27,8 +27,6 @@
 #include <unistd.h>
 #endif
 
-#define PATHSEPARATOR   '/'
-
 // set these before calling CheckParm
 int myargc;
 char **myargv;
@@ -144,6 +142,8 @@ char *strlower (char *start)
 }
 
 
+
+
 /*
 =============================================================================
 
@@ -185,7 +185,7 @@ it checks the beginning of the argument strings, therefore
   the argument "/help" matches the checkstring "/h"
 =================
 */
-int			 CheckParm (char *check, int startarg, qboolean optioncheck)
+int			 CheckParm (char *check, int startarg, qboolean optioncheck, qboolean casesensitive)
 {
 	int		 i, j;
 
@@ -199,8 +199,16 @@ int			 CheckParm (char *check, int startarg, qboolean optioncheck)
 		while ( optioncheck && j < (int)strlen(myargv[i]) && (myargv[i][j] == '-' || myargv[i][j] == '/') )
 			j++;
 
-		if ( !Q_strnicmp(myargv[i] + j, check, strlen(check)) )
-			return i;
+		if (casesensitive)
+		{
+			if ( !strncmp(myargv[i] + j, check, strlen(check)) )
+				return i;
+		}
+		else
+		{
+			if ( !Q_strnicmp(myargv[i] + j, check, strlen(check)) )
+				return i;
+		}
 	}
 
 	return 0;
@@ -364,44 +372,67 @@ void StripExtension (char *path)
 Extract file parts
 ====================
 */
-void ExtractFilePath (char *path, char *dest)
+void ExtractFilePath (const char *path, char *dest, size_t max_size)
 {
-	char    *src;
+	const char *src;
+	size_t      siz;
 
 	src = path + strlen(path) - 1;
 
 //
 // back up until a \ or the start
 //
-	while (src != path && *(src-1) != PATHSEPARATOR)
-		src--;
-
-	memcpy (dest, path, src-path);
-	dest[src-path] = 0;
-}
-
-void ExtractFileBase (char *path, char *dest)
-{
-	char    *src;
-
-	src = path + strlen(path) - 1;
-
-//
-// back up until a \ or the start
-//
-	while (src != path && *(src-1) != PATHSEPARATOR)
-		src--;
-
-	while (*src && *src != '.')
+	if (*src != PATHSEPARATOR)
 	{
-		*dest++ = *src++;
+		while (src != path && *(src-1) != PATHSEPARATOR)
+			src--;
 	}
-	*dest = 0;
+
+	siz = (size_t)(src - path);
+	if ( (size_t)(src - path) > max_size )
+		siz = max_size;
+
+	memcpy (dest, path, siz);
+	dest[siz] = 0;
 }
 
-void ExtractFileExtension (char *path, char *dest)
+void ExtractFileName (const char *path, char *dest, size_t max_size)
 {
-	char    *src;
+	const char *src;
+
+	src = path + strlen(path) - 1;
+
+//
+// back up until a \ or the start
+//
+	while (src != path && *(src-1) != PATHSEPARATOR)
+		src--;
+
+	memcpy (dest, src, max_size);
+	dest[max_size] = 0;
+}
+
+void ExtractFileBase (const char *path, char *dest, size_t max_size)
+{
+	char *src;
+
+	ExtractFileName (path, dest, max_size);
+
+	src = dest + strlen(dest) - 1;
+
+//
+// search for a . in the name:
+//
+	while (src != dest && *src != '.')
+		src--;
+
+	if (*src == '.')
+		*src = 0;
+}
+
+void ExtractFileExtension (const char *path, char *dest, size_t max_size)
+{
+	const char *src;
 
 	src = path + strlen(path) - 1;
 
@@ -416,7 +447,7 @@ void ExtractFileExtension (char *path, char *dest)
 		return;
 	}
 
-	strcpy (dest,src);
+	strlcpy (dest, src, max_size);
 }
 
 
@@ -475,6 +506,57 @@ int Com_HashKey (const char *name)
 
 	return (unsigned int)v % HASH_SIZE;
 }
+
+#ifndef HAVE_STRLCPY
+size_t strlcpy (char *dst, const char *src, size_t size)
+{
+	size_t len = strlen (src);
+
+	if (len < size) {
+		// it'll fit
+		memcpy (dst, src, len + 1);
+		return len;
+	}
+
+	if (size == 0)
+		return len;
+
+	assert (size >= 0);		// if a negative size was passed, then we're fucked
+
+	memcpy (dst, src, size - 1);
+	dst[size - 1] = 0;
+
+	return len;
+}
+#endif
+
+#ifndef HAVE_STRLCAT
+size_t strlcat (char *dst, const char *src, size_t size)
+{
+	size_t dstlen = strlen(dst);
+	size_t srclen = strlen(src);
+	size_t len = dstlen + srclen;
+
+	if (len < size) {
+		// it'll fit
+		memcpy (dst + dstlen, src, srclen + 1);
+		return len;
+	}
+
+	if (dstlen >= size - 1)
+		return srclen + size;
+
+	if (size == 0)
+		return srclen;
+
+	assert (size >= 0);		// if a negative size was passed, then we're fucked
+
+	memcpy (dst + dstlen, src, size - 1 - dstlen);
+	dst[size - 1] = 0;
+
+	return len;
+}
+#endif
 
 
 /*

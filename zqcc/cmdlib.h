@@ -61,37 +61,48 @@ extern char **myargv;
 #ifdef _WIN32
 #define Q_stricmp(s1, s2) _stricmp((s1), (s2))
 #define Q_strnicmp(s1, s2, n) _strnicmp((s1), (s2), (n))
+
+#define PATHSEPARATOR   '\\'
 #else
 #define Q_stricmp(s1, s2) strcasecmp((s1), (s2))
 #define Q_strnicmp(s1, s2, n) strncasecmp((s1), (s2), (n))
+
+#define PATHSEPARATOR   '/'
 #endif
 
 
-char *strupr (char *in);
-char *strlower (char *in);
+char	*strupr (char *in);
+char	*strlower (char *in);
+#ifndef HAVE_STRLCPY
+size_t strlcpy (char *dst, const char *src, size_t size);
+#endif
+#ifndef HAVE_STRLCAT
+size_t strlcat (char *dst, const char *src, size_t size);
+#endif
 
 void	Error (char *error, ...);
-int		CheckParm (char *check, int startarg, qboolean optioncheck);
+int		CheckParm (char *check, int startarg, qboolean optioncheck, qboolean casesensitive);
 
 FILE	*SafeOpenWrite (const char *filename);
 FILE	*SafeOpenRead (const char *filename);
-void 	SafeRead (FILE *f, void *buffer, long count);
-void 	SafeWrite (FILE *f, const void *buffer, long count);
-void 	*SafeMalloc (long size);
+void	SafeRead (FILE *f, void *buffer, long count);
+void	SafeWrite (FILE *f, const void *buffer, long count);
+void	*SafeMalloc (long size);
 
 long	LoadFile (char *filename, void **bufferptr);
 void	SaveFile (char *filename, const void *buffer, long count);
 
-void 	DefaultExtension (char *path, char *extension);
-void 	DefaultPath (char *path, char *basepath);
-void 	StripFilename (char *path);
-void 	StripExtension (char *path);
+void	DefaultExtension (char *path, char *extension);
+void	DefaultPath (char *path, char *basepath);
+void	StripFilename (char *path);
+void	StripExtension (char *path);
 
-void 	ExtractFilePath (char *path, char *dest);
-void 	ExtractFileBase (char *path, char *dest);
-void	ExtractFileExtension (char *path, char *dest);
+void	ExtractFilePath (const char *path, char *dest, size_t max_size);
+void	ExtractFileName (const char *path, char *dest, size_t max_size);
+void	ExtractFileBase (const char *path, char *dest, size_t max_size);
+void	ExtractFileExtension (const char *path, char *dest, size_t max_size);
 
-long 	ParseNum (char *str);
+long	ParseNum (char *str);
 
 short	BigShort (short l);
 short	LittleShort (short l);
@@ -101,13 +112,12 @@ float	BigFloat (float l);
 float	LittleFloat (float l);
 
 
-char *COM_Parse (char *data);
+char	*COM_Parse (char *data);
 
 extern	char	com_token[1024];
 extern	int		com_eof;
 
 const int HASH_SIZE = 64;
-int Com_HashKey (const char *name);
-
+int	Com_HashKey (const char *name);
 
 #endif
