@@ -1451,6 +1451,9 @@ void SV_RunCmd (usercmd_t *ucmd)
 	pmove.cmd = *ucmd;
 	pmove.dead = sv_player->v.health <= 0;
 	pmove.oldbuttons = host_client->oldbuttons;
+#ifndef SERVERONLY
+	pmove.jump_msec = 0;
+#endif
 
 	movevars.entgravity = host_client->entgravity;
 	movevars.maxspeed = host_client->maxspeed;
