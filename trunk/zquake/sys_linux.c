@@ -147,7 +147,7 @@ double		 Sys_DoubleTime (void)
 
 void		 floating_point_exception_handler(int whatever)
 {
-	Sys_Warn("floating point exception\n");
+//	Sys_Warn("floating point exception\n");
 	signal(SIGFPE, floating_point_exception_handler);
 }
 
