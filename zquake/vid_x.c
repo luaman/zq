@@ -437,15 +437,11 @@ void VID_Init (unsigned char *palette)
 	vid.width = 320;
 	vid.height = 240;
 	vid.aspect = 1;
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
 // Tonik: I dunno if it's a bug, but window contents seem to get garbaged
 // every frame, so we need to redraw everything every frame
 	vid.numpages = 0x7FFFFFFF;	// "infinite"
 //	vid.numpages = 2;
 	vid.colormap = host_colormap;
-	//   vid.cbits = VID_CBITS;
-	//   vid.grades = VID_GRADES;
 
 	srandom (getpid ());
 

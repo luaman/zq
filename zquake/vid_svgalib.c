@@ -478,9 +478,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	vid.colormap = (pixel_t *) host_colormap;
 	vid.numpages = 1;
 	
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
-
 	// alloc zbuffer and surface cache
 	if (d_pzbuffer) {
 		D_FlushCaches();

@@ -28,8 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define MAX_MODE_LIST	50
 #define VID_ROW_SIZE	3
-#define WARP_WIDTH		320
-#define WARP_HEIGHT		200
 #define MAXWIDTH		10000
 #define MAXHEIGHT		10000
 #define BASEWIDTH		320
@@ -1804,8 +1802,6 @@ void	VID_Init (unsigned char *palette)
 	if (vid.height < 200)
 		vid.height = 200;
 
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
 
 	if (hwnd_dialog) {

@@ -37,8 +37,6 @@ static SDL_Surface *screen = NULL;
 Uint32 flags = 0; // SDL flags
 int bpp = 8; // 8bpp only
 
-#define WARP_WIDTH		320
-#define WARP_HEIGHT		200
 #define BASEWIDTH       320
 #define BASEHEIGHT      200
 
@@ -353,9 +351,6 @@ void    VID_Init (unsigned char *palette)
 
 	Cvar_Register (&m_filter);
     Cvar_Register (&_windowed_mouse);
-
-    vid.maxwarpwidth = WARP_WIDTH;
-    vid.maxwarpheight = WARP_HEIGHT;
 
     if (!(COM_CheckParm ("-window")) )
         flags |= SDL_FULLSCREEN;
