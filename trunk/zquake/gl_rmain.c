@@ -1134,6 +1134,8 @@ void R_SetupGL (void)
 }
 
 
+void R_LoadSky_f (void);
+
 /*
 ===============
 R_Init
@@ -1142,6 +1144,7 @@ R_Init
 void R_Init (void)
 {
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
+	Cmd_AddCommand ("loadsky", R_LoadSky_f);
 
 	Cvar_Register (&r_norefresh);
 	Cvar_Register (&r_lightmap);

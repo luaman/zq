@@ -378,3 +378,26 @@ void D_FlushCaches (void)
 	if (lightmode == 1)
 		lightmode = 2;
 }
+
+
+void R_LoadSky_f ()
+{
+	if (Cmd_Argc() < 2) {
+		Com_Printf ("loadsky <name> : load a custom skybox\n");
+		return;
+	}
+
+	if (!r_refdef2.allowCheats) {
+		Com_Printf ("This command is cheat protected; start the map with devmap <mapname>\n");
+		return;
+	}
+
+	if (Cmd_Argv(1)[0] == 0) {
+		// loadsky "" clears the skybox
+		r_skyboxloaded = false;
+		return;
+	}
+
+	R_SetSky (Cmd_Argv(1));
+}
+
