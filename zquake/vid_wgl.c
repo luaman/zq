@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "keys.h"
 #include "sound.h"
 #include "sbar.h"
-#include <commctrl.h>
 
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
@@ -701,7 +700,7 @@ void GL_EndRendering (void)
 		Sbar_Changed();
 }
 
-void	VID_SetPalette (unsigned char *palette)
+void VID_SetPalette (unsigned char *palette)
 {
 	byte	*pal;
 	unsigned r,g,b;
@@ -710,9 +709,6 @@ void	VID_SetPalette (unsigned char *palette)
 	int		j,k,l;
 	unsigned short i;
 	unsigned	*table;
-//	FILE *f;
-//	char s[255];
-//	HWND hDlg, hProgress;
 
 //
 // 8 8 8 encoding
@@ -1612,8 +1608,6 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
-
-	InitCommonControls();
 
 	VID_InitDIB (global_hInstance);
 	basenummodes = nummodes = 1;
