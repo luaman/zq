@@ -2129,10 +2129,13 @@ void TP_StatChanged (int stat, int value)
 	{
 		if (value > 0) {
 			if (vars.health <= 0) {
-				extern cshift_t	cshift_empty;
+				// we just respawned
 				vars.respawntrigger_time = cls.realtime;
+
+				// they say custom cshifts are sometimes not cleared when you respawn....
 				if (cl.teamfortress)
-					memset (&cshift_empty, 0, sizeof(cshift_empty));
+					cl.cshifts[CSHIFT_CUSTOM].percent = 0;
+
 				if (!cl.spectator && CountTeammates())
 					TP_ExecTrigger ("f_respawn");
 			}
