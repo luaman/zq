@@ -1825,7 +1825,9 @@ void CL_ParseServerMessage (void)
 		Com_Printf ("------------------\n");
 
 
-	CL_ParseClientdata ();
+	if (!cls.mvdplayback)
+		CL_ParseClientdata ();
+
 	CL_ClearProjectiles ();
 
 //
