@@ -389,6 +389,7 @@ void CL_Disconnect (void)
 void CL_Disconnect_f (void)
 {
 	cl.intermission = 0;
+	SCR_EndLoadingPlaque ();
 	CL_Disconnect ();
 }
 
