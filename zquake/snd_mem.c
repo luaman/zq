@@ -134,21 +134,6 @@ sfxcache_t *S_LoadSound (sfx_t *s)
 	if (!sc)
 		return NULL;
 
-#ifndef ALSA
-#ifdef BIGENDIAN
-	if (info.width == 2) {
-		int i;
-		short *ptr;
-
-		len = info.samples * info.channels;
-		ptr = (short *) (data + info.dataofs);
-
-		for (i = 0; i < len; i++)
-			ptr[i] = LittleShort(ptr[i]);
-	}
-#endif
-#endif
-
 	sc->length = info.samples;
 	sc->loopstart = info.loopstart;
 	sc->speed = info.rate;
