@@ -31,7 +31,7 @@ void Key_WriteBindings (FILE *f);
 void S_StopAllSounds (qboolean clear);
 
 void CL_RSShot (void);
-void SCR_RSShot (void);
+void SCR_RSShot (byte **pcxdata, int *pcxsize);
 cvar_t cl_allowRSShot = {"scr_allowsnap", "1"};
 
 
@@ -95,6 +95,9 @@ void CL_ForwardToServer_f (void)
 
 void CL_RSShot (void)
 {
+	byte	*pcxdata;
+	int		pcxsize;
+
 	if (CL_IsUploading())
 		return; // already one pending
 
@@ -108,9 +111,16 @@ void CL_RSShot (void)
 		return;
 	}
 
-	Com_Printf ("Remote screen shot requested.\n");
+	Com_Printf ("Remote screen shot requested\n");
 
-	SCR_RSShot ();
+	SCR_RSShot (&pcxdata, &pcxsize);
+
+	if (!pcxdata)
+		return;		// couldn't take a screenshot for some reason
+
+	Com_Printf ("Sending shot to server...\n");
+
+	CL_StartUpload(pcxdata, pcxsize);
 }
 
 /*
