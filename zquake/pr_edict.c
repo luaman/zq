@@ -517,7 +517,10 @@ For debugging, prints all the entities in the current server
 void ED_PrintEdicts_f (void)
 {
 	int		i;
-	
+
+	if (sv.state != ss_active)
+		return;
+
 	Com_Printf ("%i entities\n", sv.num_edicts);
 	for (i=0 ; i<sv.num_edicts ; i++)
 	{
@@ -539,6 +542,9 @@ void ED_PrintEdict_f (void)
 {
 	int		i;
 	
+	if (sv.state != ss_active)
+		return;
+
 	i = Q_atoi (Cmd_Argv(1));
 	Com_Printf ("\n EDICT %i:\n",i);
 	ED_PrintNum (i);
@@ -546,16 +552,19 @@ void ED_PrintEdict_f (void)
 
 /*
 =============
-ED_Count_f
+ED_EdictCount_f
 
 For debugging
 =============
 */
-void ED_Count_f (void)
+void ED_EdictCount_f (void)
 {
 	int		i;
 	edict_t	*ent;
 	int		active, models, solid, step;
+
+	if (sv.state != ss_active)
+		return;
 
 	active = models = solid = step = 0;
 	for (i=0 ; i<sv.num_edicts ; i++)
@@ -1135,7 +1144,7 @@ void PR_Init (void)
 {
 	Cmd_AddCommand ("edict", ED_PrintEdict_f);
 	Cmd_AddCommand ("edicts", ED_PrintEdicts_f);
-	Cmd_AddCommand ("edictcount", ED_Count_f);
+	Cmd_AddCommand ("edictcount", ED_EdictCount_f);
 	Cmd_AddCommand ("profile", PR_Profile_f);
 }
 
