@@ -1325,7 +1325,8 @@ int COM_FOpenFile (char *filename, FILE **file)
 		
 	}
 	
-	Sys_Printf ("FindFile: can't find %s\n", filename);
+	if (developer.value)
+		Sys_Printf ("FindFile: can't find %s\n", filename);
 	
 	*file = NULL;
 	com_filesize = -1;
