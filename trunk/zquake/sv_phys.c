@@ -824,7 +824,10 @@ void SV_Physics_Step (edict_t *ent)
 
 		SV_AddGravity (ent, 1.0);
 		SV_CheckVelocity (ent);
-		if (ent->v.solid == SOLID_NOT || ent->v.solid == SOLID_TRIGGER)
+		// Tonik: the check for SOLID_NOT is to fix the way dead bodies and
+		// gibs behave (should not be blocked by players & monsters);
+		// The SOLID_TRIGGER check is disabled lest we break frikbots
+		if (ent->v.solid == SOLID_NOT /* || ent->v.solid == SOLID_TRIGGER*/)
 			SV_FlyMove (ent, sv_frametime, NULL, MOVE_NOMONSTERS);
 		else
 			SV_FlyMove (ent, sv_frametime, NULL, MOVE_NORMAL);
