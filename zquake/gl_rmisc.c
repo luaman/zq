@@ -223,25 +223,24 @@ void R_TranslatePlayerSkin (int playernum)
 					for (j=0 ; j<scaled_width ; j+=4)
 					{
 						if (inrow[frac>>16] < 224)
-							out2[j] = translate[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+							out2[j] = 0xFF;	// transparent
 						else
-							out2[j] = translate[inrow[frac>>16]]; // fullbright 
-
+							out2[j] = translate[inrow[frac>>16]];	// fullbright
 						frac += fracstep;
 						if (inrow[frac>>16] < 224)
-							out2[j+1] = translate[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+							out2[j+1] = 0xFF;
 						else
-							out2[j+1] = translate[inrow[frac>>16]]; // fullbright 
+							out2[j+1] = translate[inrow[frac>>16]];
 						frac += fracstep;
 						if (inrow[frac>>16] < 224)
-							out2[j+2] = translate[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+							out2[j+2] = 0xFF;
 						else
-							out2[j+2] = translate[inrow[frac>>16]]; // fullbright 
+							out2[j+2] = translate[inrow[frac>>16]];
 						frac += fracstep;
 						if (inrow[frac>>16] < 224)
-							out2[j+3] = translate[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+							out2[j+3] = 0xFF;
 						else
-							out2[j+3] = translate[inrow[frac>>16]]; // fullbright 
+							out2[j+3] = translate[inrow[frac>>16]];
 						frac += fracstep;
 					}
 				}
@@ -304,25 +303,24 @@ void R_TranslatePlayerSkin (int playernum)
 				for (j=0 ; j<scaled_width ; j+=4)
 				{
 					if (inrow[frac>>16] < 224)
-						out[j] = translate32[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+						out[j] = translate32[inrow[frac>>16]] & 0x00FFFFFF; // transparent
 					else
-						out[j] = translate32[inrow[frac>>16]]; // fullbright 
-
+						out[j] = translate32[inrow[frac>>16]]; // fullbright
 					frac += fracstep;
 					if (inrow[frac>>16] < 224)
-						out[j+1] = translate32[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+						out[j+1] = translate32[inrow[frac>>16]] & 0x00FFFFFF;
 					else
-						out[j+1] = translate32[inrow[frac>>16]]; // fullbright 
+						out[j+1] = translate32[inrow[frac>>16]];
 					frac += fracstep;
 					if (inrow[frac>>16] < 224)
-						out[j+2] = translate32[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+						out[j+2] = translate32[inrow[frac>>16]] & 0x00FFFFFF;
 					else
-						out[j+2] = translate32[inrow[frac>>16]]; // fullbright 
+						out[j+2] = translate32[inrow[frac>>16]];
 					frac += fracstep;
 					if (inrow[frac>>16] < 224)
-						out[j+3] = translate32[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+						out[j+3] = translate32[inrow[frac>>16]] & 0x00FFFFFF;
 					else
-						out[j+3] = translate32[inrow[frac>>16]]; // fullbright 
+						out[j+3] = translate32[inrow[frac>>16]];
 					frac += fracstep;
 				}
 			}
