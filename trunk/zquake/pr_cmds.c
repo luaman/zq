@@ -59,9 +59,9 @@ static char *PF_VarString (int first)
 	static char out[256];
 	
 	out[0] = 0;
-	for (i=first ; i<pr_argc ; i++)
+	for (i = first; i < pr_argc; i++)
 	{
-		strcat (out, G_STRING((OFS_PARM0+i*3)));
+		strlcat (out, G_STRING((OFS_PARM0 + i*3)), sizeof(out));
 	}
 	return out;
 }
@@ -1811,20 +1811,14 @@ static void PF_strlen (void)
 	G_FLOAT(OFS_RETURN) = strlen(G_STRING(OFS_PARM0));
 }
 
-// string(string s1, string s2) stradd = #115; 
+// string(string s1, string s2, ...) stradd = #115; 
 static void PF_stradd (void)
 {
-	char *s1, *s2;
+	int i;
 
-	s1 = G_STRING(OFS_PARM0);
-	s2 = G_STRING(OFS_PARM1);
-
-	// sequential QC "stradd(s, s2); stradd(s, s3);" is ok,
-	// but don't use "stradd(s, s2); stradd(s3, s);" -
-	// since we're using a static buffer here,
-	// intermediate result will be overwritten.
-	strlcpy (pr_string_temp, s1, sizeof(pr_string_temp));
-	strlcat (pr_string_temp, s2, sizeof(pr_string_temp));
+	pr_string_temp[0] = '\0';
+	for (i = 0; i < pr_argc; i++)
+		strlcat (pr_string_temp, G_STRING(OFS_PARM0 + i * 3), sizeof(pr_string_temp));
 
 	RETURN_STRING(pr_string_temp);
 }
@@ -2152,7 +2146,7 @@ PF_Fixme,			// #111
 PF_Fixme,			// #112
 PF_Fixme,			// #113
 PF_strlen,			// float(string s) strlen							= #114;
-PF_stradd,			// string(string s1, string s2) stradd				= #115; 
+PF_stradd,			// string(string s1, string s2, ...) stradd			= #115; 
 PF_substr,			// string(string s, float start, float count) substr = #116;
 PF_Fixme,			// #117
 PF_strzone,			// string(string s) strzone							= #118
