@@ -318,6 +318,7 @@ const float IT_ROCKET_LAUNCHER		= 0x0020;
 const float IT_LIGHTNING			= 0x0040;
 //const float IT_EXTRA_WEAPON		= 0x0080;
 const float IT_ALL_WEAPONS			= 0x107f;
+const float IT_DROPPABLE_WEAPONS	= 0x007e; // minus axe and shotgun
 
 const float IT_SHELLS				= 0x0100;
 const float IT_NAILS				= 0x0200;
@@ -756,90 +757,87 @@ float T_Heal (entity e, float heal_amount, float ignore); // health function
 // ZQuake additions
 //
 
-.float suicide_time;	// can't suicide sooner than this
+// REMOVED: conflicts with kteams suicide_time
+//.float suicide_time;	// can't suicide sooner than this
 
 //
 // KTEAMS additions
 // 
 
-float match_in_progress = 0;
-float k_maxspeed;
-float k_oldmaxspeed;
-entity k_wowin;
-float k_vbreak;
-// k_velect added
-float k_velect;
-float k_berzerk;
-float k_berzerkenabled;
-float match_over;
-float lock = 0;
-float k_attendees;
-float k_force;
-float k_userid = 0;
-float k_teamid = 0;
-float k_checkx = 0;
-float k_pause = 0;
-float k_pausetime;
-float k_scores1;
-float k_scores2;
-float k_showscores;
-float k_standby;
-float k_whonottime;
-float k_nochange = 0;
-float k_sudden_death;	// to mark if sudden death overtime is currently the case
-float k_captains;	// number of captains
+float framechecks;	    // if timedemo/uptime bugs are tolerated
+float k_attendees;      // stores number of players on server - used in 'ready' checking
+float k_berzerk;        // boolean - whether or not the game is currently in berzerk time
+float k_berzerkenabled; // actually stores the amount of berzerk time at the end of match
+float k_captains;	    // number of captains
 float k_captainturn;	// which captain comes in line to pick
-float framechecks;	// if timedemo/uptime bugs are tolerated
+float k_checkx = 0;
+float k_force;          // used in forcing matchstart
+float k_maxspeed;       // used to store server maxspeed to allow switching by admins
+float k_nochange = 0;   // used to indicate if scores changed since last time 'scores' command was called
+float k_oldmaxspeed;    // used to store old value of maxspeed prior to freezing the map
+float k_pause = 0;
+float k_pausetime;      // stores time at which server was paused
+float k_scores1;        // stores team1 combined score
+float k_scores2;        // stores team2 combined score
+float k_showscores;     // whether or not should print the scores or not
+float k_standby;        // if server is in standy mode
+float k_sudden_death;	// to mark if sudden death overtime is currently the case
+float k_teamid = 0;
+float k_userid = 0;
+float k_vbreak;         // break vote counter
+float k_velect;         // election vote counter
+float k_whonottime;     // NOT_SURE: 
+float lock = 0;         // stores whether players can join when a game is already in progress
+float match_in_progress = 0;    // if a match has begun
+float match_over;       // boolean - whether or not the match stats have been printed at end of game
+string newcomer;        // stores name of last player who joined
 
-string newcomer;
+.float brokenankle;     // if player has just broken his ankle
+.float cnt2;            // NOT_SURE: cnt2 = seconds left?
+.float dead_time;       // time at which player last died - used in autorespawn
+.float deaths;          // number of times player died
+.float efficiency;      // stores player efficiency rating
+.float fraggie;         // NOT_SURE: used to return frags to rejoining players?
+.float friendly;        // number of times player killed teammates
+.float ready;           // if a player is ready or not
+.float suicide_time;    // time at which player last suicided - used to prevent 'kill' flood
+.string killer;         // name of player who last killed player
+.string victim;         // name of player last killed
 
-.float ready;
-.float cnt2;
-.float dead_time;
-.float suicide_time;
-.float k_vote;
+.entity k_lastspawn;    // NOT_SURE: spot at which player last spawned?
+.entity k_playertokick; // player selected to be kicked
+.float k_1spawn;        // NOT_SURE: used in kteams respawn code...
+.float k_666;           // if player has 666 respawn protection
+.float k_accepted;      // NOT_SURE:
+.float k_added;         // NOT_SURE: stores the entered admin code?
+.float k_adminc;        // number of digits of admin code still to enter
+.float k_admin;         // if player is an admin
+.float k_captain;       // if player is team captain
+.float k_domapstuff;    // NOT_SURE: if spec has 'done' map stuff?
+.float k_flag;          // flagvalue to customise settings such as sounds/autoscreenshot
+.float k_kicking;       // if player is in kick mode
+.float k_msgcount;      // NOT_SURE: last time mod printed a message to client?
+.float k_picked;        // NOT_SURE: 
+.float k_pickup;        // NOT_SURE: if player wants pickup game or not?
+.float k_ptime;         // stores player nexttime value when server is paused
+.float k_stuff;         // if player has received stuffed aliases
+.float k_teamnumber;    // team the player is a member of, 1 = team1, 2 = team2
+.float k_teamnum;       // NOT_SURE:
+.float k_track;         // NOT_SURE: something to do with spectator tracking code
+.float k_vote2;         // stores player election vote decision
+.float k_vote;          // stores player map vote decision
+.string kick_ctype;     // if selected player to kick is player or spectator
 
-// k_vote2 & efficiency added
-.float k_vote2;
-.float efficiency;
 
-.float deaths;
 
-.float friendly;
-.float k_666;
-.float k_1spawn;
-.float k_flag;
-.float k_admin;
-.float k_adminc;
-.float k_added;
-.float k_accepted;
-.float k_msgcount;
-.float k_teamnum;
-.float k_track;
-.float k_ptime;
-.float k_stuff;
-.float k_pickup;
-.vector k_oldspeed;
-.entity k_lastspawn;
-.float k_domapstuff;
-.float k_teamnumber;
-// <-- TEAM
-.float k_kicking;
-.entity k_playertokick;
-.string kick_ctype;
-.float k_captain;
-.float k_picked;
+float intermission_running;
+float intermission_exittime;
 
-// required by Zibbo's code
+// Zibbo's frametime checking code
 .float real_time;
 .float uptimebugpolicy;
 .float lastwepfired;
 
-.string victim;
-.string killer;
-
-.float brokenankle;
-.float fraggie;
-
-float intermission_running;
-float intermission_exittime;
+// k_oldspeed is commented out in main code so could probably be deleted
+// from both
+// .vector k_oldspeed;
