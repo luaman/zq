@@ -133,6 +133,7 @@ extern	int	cnttextures[2];
 extern	int	particletexture;
 extern	int	netgraphtexture;
 extern	int	playertextures;
+extern	int	playerfbtextures[MAX_CLIENTS];
 extern	int	skyboxtextures;
 
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
