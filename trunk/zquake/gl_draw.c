@@ -89,6 +89,7 @@ typedef struct
 	char	identifier[64];
 	int		width, height;
 	qboolean	mipmap;
+	int		crc;
 } gltexture_t;
 
 gltexture_t	gltextures[MAX_GLTEXTURES];
@@ -1393,17 +1394,19 @@ GL_LoadTexture
 */
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, qboolean brighten)
 {
-	int			i;
+	int			i, crc;
 	gltexture_t	*glt;
 
 	// see if the texture is already present
-	if (identifier[0])
-	{
-		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
-		{
-			if (!strcmp (identifier, glt->identifier)
-				&& width == glt->width && height == glt->height)
-				return gltextures[i].texnum;
+	if (identifier[0]) {
+		crc = CRC_Block (data, width*height);
+		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++) {
+			if (!strncmp (identifier, glt->identifier, sizeof(glt->identifier)-1)) {
+				if (width == glt->width && height == glt->height && crc == glt->crc)
+					return gltextures[i].texnum;
+				else
+					goto setuptexture;	// reload the texture into the same slot
+			}
 		}
 	}
 	else
@@ -1413,19 +1416,21 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 		Sys_Error ("GL_LoadTexture: numgltextures == MAX_GLTEXTURES");
 	numgltextures++;
 
-	strcpy (glt->identifier, identifier);
+	Q_strncpyz (glt->identifier, identifier, sizeof(glt->identifier));
 	glt->texnum = texture_extension_number;
+	texture_extension_number++;
+
+setuptexture:
 	glt->width = width;
 	glt->height = height;
 	glt->mipmap = mipmap;
+	glt->crc = crc;
 
-	GL_Bind (texture_extension_number);
+	GL_Bind (glt->texnum);
 
 	GL_Upload8 (data, width, height, mipmap, alpha, brighten);
 
-	texture_extension_number++;
-
-	return texture_extension_number-1;
+	return glt->texnum;
 }
 
 /*
