@@ -1013,6 +1013,7 @@ void M_Fps_Key (int k)
 		fps_cursor = FPS_ITEMS - 1;
 		break;
 
+	case K_RIGHTARROW:
 	case K_ENTER:
 		S_LocalSound ("misc/menu2.wav");
 		switch (fps_cursor) {
