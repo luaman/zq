@@ -456,7 +456,7 @@ The "game directory" is the first tree on the search path and directory that all
 	
 */
 
-int	com_filesize;
+int	fs_filesize;
 
 
 //
@@ -654,7 +654,7 @@ void COM_CopyFile (char *netpath, char *cachepath)
 COM_FindFile
 
 Finds the file in the search path.
-Sets com_filesize and one of handle or file
+Sets fs_filesize and one of handle or file
 ===========
 */
 qbool	file_from_pak;		// global indicating file came from a packfile
@@ -693,9 +693,9 @@ int FS_FOpenFile (char *filename, FILE **file)
 					if (!*file)
 						Sys_Error ("Couldn't reopen %s", pak->filename);	
 					fseek (*file, pak->files[i].filepos, SEEK_SET);
-					com_filesize = pak->files[i].filelen;
+					fs_filesize = pak->files[i].filelen;
 					file_from_pak = true;
-					return com_filesize;
+					return fs_filesize;
 				}
 		}
 		else
@@ -718,7 +718,7 @@ int FS_FOpenFile (char *filename, FILE **file)
 		Sys_Printf ("FindFile: can't find %s\n", filename);
 	
 	*file = NULL;
-	com_filesize = -1;
+	fs_filesize = -1;
 	return -1;
 }
 
@@ -743,7 +743,7 @@ byte *FS_LoadFile (char *path, int usehunk)
 	buf = NULL;	// quiet compiler warning
 
 // look for it in the filesystem or pack files
-	len = com_filesize = FS_FOpenFile (path, &h);
+	len = fs_filesize = FS_FOpenFile (path, &h);
 	if (!h)
 		return NULL;
 	
