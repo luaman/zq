@@ -69,9 +69,8 @@ void DrawGLPoly (glpoly_t *p);
 
 void R_RenderFullbrights (void)
 {
-	int         i, j;
+	int         i;
 	glpoly_t   *p;
-	float      *v;
 
 	if (!drawfullbrights || !gl_fb_bmodels.value)
 		return;
@@ -99,7 +98,7 @@ void R_RenderFullbrights (void)
 	glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 //	glColor4f (1, 1, 1, 1);
 
-	for (i = 1; i < MAX_GLTEXTURES; i++) {
+	for (i=1 ; i<MAX_GLTEXTURES ; i++) {
 		if (!fullbright_polys[i])
 			continue;
 		GL_Bind (i);
@@ -121,147 +120,8 @@ void R_RenderFullbrights (void)
 }
 
 
-
-/*
-===============
-R_AddDynamicLights
-===============
-*/
-#if 0
-void R_AddDynamicLights (msurface_t *surf)
-{
-	int			lnum;
-	int			sd, td;
-	float		dist, rad, minlight;
-	vec3_t		impact, local;
-	int			s, t;
-	int			i;
-	int			smax, tmax;
-	mtexinfo_t	*tex;
-
-	smax = (surf->extents[0]>>4)+1;
-	tmax = (surf->extents[1]>>4)+1;
-	tex = surf->texinfo;
-
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
-	{
-		if ( !(surf->dlightbits & (1<<lnum) ) )
-			continue;		// not lit by this light
-
-		rad = cl_dlights[lnum].radius;
-		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) -
-				surf->plane->dist;
-		rad -= fabs(dist);
-		minlight = cl_dlights[lnum].minlight;
-		if (rad < minlight)
-			continue;
-		minlight = rad - minlight;
-
-		for (i=0 ; i<3 ; i++)
-		{
-			impact[i] = cl_dlights[lnum].origin[i] -
-					surf->plane->normal[i]*dist;
-		}
-
-		local[0] = DotProduct (impact, tex->vecs[0]) + tex->vecs[0][3];
-		local[1] = DotProduct (impact, tex->vecs[1]) + tex->vecs[1][3];
-
-		local[0] -= surf->texturemins[0];
-		local[1] -= surf->texturemins[1];
-		
-		for (t = 0 ; t<tmax ; t++)
-		{
-			td = local[1] - t*16;
-			if (td < 0)
-				td = -td;
-			for (s=0 ; s<smax ; s++)
-			{
-				sd = local[0] - s*16;
-				if (sd < 0)
-					sd = -sd;
-				if (sd > td)
-					dist = sd + (td>>1);
-				else
-					dist = td + (sd>>1);
-				if (dist < minlight)
-					blocklights[t*smax + s] += (rad - dist)*256;
-			}
-		}
-	}
-}
-#else
-//Tonik: a noticeable speedup here
-void _R_AddDynamicLights (msurface_t *surf)
-{
-	int			lnum;
-	float		dist;
-	vec3_t		impact;
-	int			local[2];
-	int			s, t;
-	int			i;
-	int			smax, tmax;
-	mtexinfo_t	*tex;
-	int			sd, td;
-	int			_sd, _td;
-	int			irad, idist, iminlight;
-	unsigned	*dest;
-
-	smax = (surf->extents[0]>>4)+1;
-	tmax = (surf->extents[1]>>4)+1;
-	tex = surf->texinfo;
-
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
-	{
-		if ( !(surf->dlightbits & (1<<lnum) ) )
-			continue;		// not lit by this light
-
-		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) -
-				surf->plane->dist;
-		irad = (cl_dlights[lnum].radius - fabs(dist)) * 256;
-		iminlight = cl_dlights[lnum].minlight * 256;
-		if (irad < iminlight)
-			continue;
-		iminlight = irad - iminlight;
-
-		for (i=0 ; i<3 ; i++)
-		{
-			impact[i] = cl_dlights[lnum].origin[i] -
-					surf->plane->normal[i]*dist;
-		}
-
-		local[0] = (DotProduct (impact, tex->vecs[0]) +
-			tex->vecs[0][3] - surf->texturemins[0]) * 256;
-		local[1] = (DotProduct (impact, tex->vecs[1]) +
-			tex->vecs[1][3] - surf->texturemins[1]) * 256;
-		
-		_td = local[1];
-		dest = blocklights;
-		for (t = 0 ; t<tmax ; t++)
-		{
-			td = _td;
-			_td -= 16*256;
-			if (td < 0)
-				td = -td;
-			_sd = local[0];
-			for (s=0 ; s<smax ; s++)
-			{
-				sd = _sd;
-				_sd -= 16*256;
-				if (sd < 0)	sd = -sd;
-				if (sd > td)
-					idist = sd + (td>>1);
-				else
-					idist = td + (sd>>1);
-				if (idist < iminlight)
-					*dest += irad - idist;
-				dest++;
-
-			}
-		}
-
-	}
-}
-#endif
+//=============================================================
+// Dynamic lights
 
 typedef struct dlightinfo_s {
 	int	local[2];
@@ -272,16 +132,20 @@ typedef struct dlightinfo_s {
 static dlightinfo_t dlightlist[MAX_DLIGHTS];
 static int	numdlights;
 
+/*
+===============
+R_BuildDLightList
+===============
+*/
 void R_BuildDLightList (msurface_t *surf)
 {
 	int			lnum;
-	int			sd, td;
 	float		dist;
 	vec3_t		impact;
 	int			i;
 	int			smax, tmax;
 	mtexinfo_t	*tex;
-	int			irad, idist, iminlight;
+	int			irad, iminlight;
 	int			local[2];
 	int			tdmin, sdmin, distmin;
 	dlightinfo_t	*light;
@@ -349,6 +213,13 @@ void R_BuildDLightList (msurface_t *surf)
 	}
 }
 
+/*
+===============
+R_AddDynamicLights
+
+NOTE: R_BuildDLightList must be called first!
+===============
+*/
 void R_AddDynamicLights (msurface_t *surf)
 {
 	int			i;
@@ -395,7 +266,6 @@ void R_AddDynamicLights (msurface_t *surf)
 		}
 	}
 }
-
 
 
 /*
@@ -671,9 +541,6 @@ void R_DrawSequentialPoly (msurface_t *s)
 	float		*v;
 	int			i;
 	texture_t	*t;
-	vec3_t		nv, dir;
-	float		ss, ss2, length;
-	float		s1, t1;
 	glRect_t	*theRect;
 
 	//

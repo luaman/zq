@@ -248,7 +248,6 @@ qpic_t	*Draw_CachePic (char *path)
 	cachepic_t	*pic;
 	int			i;
 	qpic_t		*dat;
-	glpic_t		*gl;
 
 	for (pic=menu_cachepics, i=0 ; i<menu_numcachepics ; pic++, i++)
 		if (!strcmp (path, pic->name))
@@ -405,7 +404,6 @@ Draw_Init
 */
 void Draw_Init (void)
 {
-	int		i;
 	qpic_t	*cb;
 	byte	*dest;
 	int		x;

@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "winquake.h"
 #include "resource.h"
 #include "keys.h"
+#include "sound.h"
 #include <commctrl.h>
 
 #define MAX_MODE_LIST	30
@@ -197,8 +198,8 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 {
-    RECT    rect;
-    int     CenterX, CenterY;
+//	RECT    rect;
+	int     CenterX, CenterY;
 
 	CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
 	CenterY = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
@@ -382,7 +383,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	int				original_mode, temp;
 	qboolean		stat;
     MSG				msg;
-	HDC				hdc;
+//	HDC				hdc;
 
 	if ((windowed && (modenum != 0)) ||
 		(!windowed && (modenum < 1)) ||
@@ -718,13 +719,12 @@ void	VID_SetPalette (unsigned char *palette)
 	unsigned r,g,b;
 	unsigned v;
 	int     r1,g1,b1;
-	int		j,k,l,m;
+	int		j,k,l;
 	unsigned short i;
 	unsigned	*table;
-	FILE *f;
-	char s[255];
-	HWND hDlg, hProgress;
-	float gamma;
+//	FILE *f;
+//	char s[255];
+//	HWND hDlg, hProgress;
 
 //
 // 8 8 8 encoding
@@ -949,9 +949,6 @@ void AppActivate(BOOL fActive, BOOL minimize)
 *
 ****************************************************************************/
 {
-	MSG msg;
-    HDC			hdc;
-    int			i, t;
 	static BOOL	sound_active;
 
 	ActiveApp = fActive;
@@ -1019,6 +1016,17 @@ void AppActivate(BOOL fActive, BOOL minimize)
 		}
 	}
 }
+
+
+/*
+===================================================================
+
+MAIN WINDOW
+
+===================================================================
+*/
+
+LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int IN_MapKey (int key);
 
@@ -1318,8 +1326,7 @@ void VID_DescribeModes_f (void)
 void VID_InitDIB (HINSTANCE hInstance)
 {
 	WNDCLASS		wc;
-	HDC				hdc;
-	int				i;
+//	HDC				hdc;
 
 	/* Register the frame class */
     wc.style         = 0;
@@ -1886,8 +1893,7 @@ void VID_MenuDraw (void)
 {
 	qpic_t		*p;
 	char		*ptr;
-	int			lnummodes, i, j, k, column, row, dup, dupmode;
-	char		temp[100];
+	int			lnummodes, i, k, column, row;
 	vmode_t		*pv;
 
 	p = Draw_CachePic ("gfx/vidmodes.lmp");

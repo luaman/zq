@@ -29,7 +29,7 @@
 // x86 assembly-language sound code
 
 #include "asm_i386.h"
-// #include "quakeasm.h"
+#include "quakeasm.h"
 
 #ifdef id386
 

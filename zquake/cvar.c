@@ -1,5 +1,3 @@
-// Portions Copyright (C) 2000 by Anton Gavrilov (tonik@quake.ru)
-
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -192,6 +190,11 @@ void Cvar_Set (cvar_t *var, char *value)
 #endif
 }
 
+/*
+============
+Cvar_SetROM
+============
+*/
 void Cvar_SetROM (cvar_t *var, char *value)
 {
 	int saved_flags;

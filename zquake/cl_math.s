@@ -28,9 +28,6 @@
 // math.s
 // x86 assembly-language math routines.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include "asm_i386.h"
 #include "quakeasm.h"
 
