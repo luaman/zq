@@ -549,7 +549,11 @@ void CL_SendCmd (void)
 	static int	dropcount = 0;
 	qbool		dontdrop;
 
+#ifdef MVDPLAY
+    if (cls.demoplayback && !cls.mvdplayback)
+#else
 	if (cls.demoplayback)
+#endif
 		return; // sendcmds come from the demo
 
 	// save this command off for prediction
@@ -567,6 +571,13 @@ void CL_SendCmd (void)
 	CL_FinishMove(cmd);
 
 	Cam_FinishMove(cmd);
+
+#ifdef MVDPLAY
+	if (cls.mvdplayback) {
+		cls.netchan.outgoing_sequence++;
+		return;
+	}
+#endif
 
 	SZ_Init (&buf, data, sizeof(data));
 

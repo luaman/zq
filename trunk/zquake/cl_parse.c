@@ -104,6 +104,12 @@ int		cl_spikeindex, cl_playerindex, cl_eyesindex, cl_flagindex;
 int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 int		cl_rocketindex, cl_grenadeindex;
 
+#ifdef MVDPLAY
+int	oldparsecountmod;
+int	parsecountmod;
+double	parsecounttime;
+#endif
+
 //=============================================================================
 
 int packet_latency[NET_TIMINGS];
@@ -679,7 +685,10 @@ void CL_ParseServerData (void)
 	char	fn[MAX_OSPATH];
 	qbool	cflag = false;
 	int		protover;
-	
+#ifdef MVDPLAY
+	extern float	nextdemotime, olddemotime;
+#endif
+
 	Com_DPrintf ("Serverdata packet received.\n");
 //
 // wipe the client_state_t struct
@@ -738,12 +747,22 @@ void CL_ParseServerData (void)
 		Cbuf_AddText (fn);
 	}
 
+#ifdef MVDPLAY
+	if (cls.mvdplayback) {
+		cls.netchan.last_received = nextdemotime = olddemotime = MSG_ReadFloat();
+		cl.playernum = MAX_CLIENTS - 1;
+		cl.spectator = true;
+	} else {
+#endif
 	// parse player slot, high bit means spectator
 	cl.playernum = MSG_ReadByte ();
 	if (cl.playernum & 128) {
 		cl.spectator = true;
 		cl.playernum &= ~128;
 	}
+#ifdef MVDPLAY
+    }
+#endif
 
 	// get the full level name
 	str = MSG_ReadString ();
@@ -988,6 +1007,9 @@ void CL_ParseStartSoundPacket(void)
     int 	channel, ent;
     int 	sound_num;
     int 	volume;
+#ifdef MVDPLAY
+    int     tracknum;
+#endif
     float 	attenuation;  
  	int		i;
 	           
@@ -1014,6 +1036,15 @@ void CL_ParseStartSoundPacket(void)
 	if (ent > MAX_CL_EDICTS)
 		Host_Error ("CL_ParseStartSoundPacket: ent = %i", ent);
 	
+// FIXME oldman
+#ifdef MVDPLAY
+    if (cls.mvdplayback) {
+	    tracknum = Cam_TrackNum();
+	    if (cl.spectator && tracknum != -1 && ent == tracknum + 1)
+		    ent = cl.playernum + 1;
+    }
+#endif
+
     S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
 	if (ent == cl.playernum+1)
 		TP_CheckPickupSound (cl.sound_name[sound_num], pos);
@@ -1029,30 +1060,37 @@ Server information pertaining to this client only, sent every frame
 */
 void CL_ParseClientdata (void)
 {
+	int newparsecount;
 	float		latency;
 	frame_t		*frame;
 
+    newparsecount = cls.netchan.incoming_acknowledged;
+
 // calculate simulated time of message
-	cl.parsecount = cls.netchan.incoming_acknowledged;
+#ifdef MVDPLAY
+    cl.oldparsecount = (cls.mvdplayback) ? newparsecount - 1 : cl.parsecount;
+#endif
+	cl.parsecount = newparsecount;
 	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
+
+#ifdef MVDPLAY
+	if (cls.mvdplayback) {
+        frame->senttime = cls.realtime - cls.frametime;
+    }
+#endif
 
 	frame->receivedtime = cls.realtime;
 
 // calculate latency
 	latency = frame->receivedtime - frame->senttime;
 
-	if (latency < 0 || latency > 1.0)
-	{
-//		Com_Printf ("Odd latency: %5.2f\n", latency);
-	}
-	else
-	{
+	if (latency >= 0 && latency <= 1) {
 	// drift the average latency towards the observed latency
 		if (latency < cls.latency)
 			cls.latency = latency;
 		else
-			cls.latency += 0.001;	// drift up, so correction are needed
-	}	
+			cls.latency += 0.001;	// drift up, so correction is needed
+    }
 }
 
 /*
@@ -1578,6 +1616,14 @@ void CL_SetStat (int stat, int value)
 	if (stat < 0 || stat >= MAX_CL_STATS)
 		Host_Error ("CL_SetStat: %i is invalid", stat);
 
+#ifdef MVDPLAY
+	if (cls.mvdplayback) {
+		cl.players[cls.lastto].stats[stat]=value;
+		if ( Cam_TrackNum() != cls.lastto )
+			return;
+	}
+#endif
+    
 	Sbar_Changed ();
 	
 	if (stat == STAT_ITEMS)
@@ -1867,8 +1913,24 @@ void CL_ParseServerMessage (void)
 			break;
 			
 		case svc_setangle:
+#ifdef MVDPLAY
+			if (cls.mvdplayback) {
+				extern int	fixangle;
+				j = MSG_ReadByte();
+				fixangle |= 1 << j;
+				if (j != Cam_TrackNum())
+					for (i=0; i<3; i++)
+						MSG_ReadAngle();
+			}
+
+			if (!cls.mvdplayback || (cls.mvdplayback && j == Cam_TrackNum()))
+			{
+#endif
 			for (i=0 ; i<3 ; i++)
 				cl.viewangles[i] = MSG_ReadAngle ();
+#ifdef MVDPLAY
+            }
+#endif
 //			cl.viewangles[PITCH] = cl.viewangles[ROLL] = 0;
 			break;
 			
@@ -2019,7 +2081,16 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_nails:
+#ifndef MVDPLAY
 			CL_ParseProjectiles ();
+#else
+            CL_ParseProjectiles (false);
+            break;
+        case svc_nails2:
+			if (!cls.mvdplayback)
+				Host_Error("CL_ParseServerMessage: svc_nails2 without cls.mvdplayback");
+            CL_ParseProjectiles (true);
+#endif
 			break;
 
 		case svc_chokecount:		// some preceding packets were choked

@@ -30,6 +30,13 @@ static struct predicted_player {
 	int		flags;
 	qbool	active;
 	vec3_t	origin;	// predicted origin
+#ifdef MVDPLAY
+	qbool predict;
+	vec3_t	oldo;
+	vec3_t	olda;
+	vec3_t	vel;
+	player_state_t *oldstate;
+#endif
 } predicted_players[MAX_CLIENTS];
 
 /*
@@ -147,6 +154,28 @@ void FlushEntityPacket (void)
 	}
 }
 
+#ifdef MVDPLAY
+void CL_InitEntInter(void)
+{
+	int i;
+	interpolate_t	*ient;
+	packet_entities_t *pack;
+	entity_state_t	*ent;
+
+	pack = &cl.frames[cl.int_packet].packet_entities;
+
+	for (i=0, ient = cl.int_entities, ent = pack->entities; i < pack->num_entities; i++, ent++, ient++)
+	{
+		if (!ient->interpolate)
+			continue;
+
+		VectorCopy(ient->origin, ent->s_origin);
+		VectorCopy(ient->angles, ent->s_angles);
+		ient->interpolate = false;
+	}
+}
+#endif
+
 entity_state_t *CL_GetBaseline (int number)
 {
 	return &cl_entities[number].baseline;
@@ -160,7 +189,9 @@ static void UpdateEntities (void)
 	entity_state_t *ent;
 	centity_t	*cent;
 
+#ifndef MVDPLAY
 	assert (cl.validsequence);
+#endif
 
 	pack = &cl.frames[cl.validsequence & UPDATE_MASK].packet_entities;
 
@@ -205,11 +236,21 @@ void CL_ParsePacketEntities (qbool delta)
 	newp = &cl.frames[newpacket].packet_entities;
 	cl.frames[newpacket].valid = false;	// will set to true after we parse everything
 
+#ifdef MVDPLAY
+	if (cls.mvdplayback)
+		CL_InitEntInter();
+#endif
+
 	if (delta)
 	{
 		from = MSG_ReadByte ();
 
 		oldpacket = cl.frames[newpacket].delta_sequence;
+
+#ifdef MVDPLAY
+		if (cls.mvdplayback)
+			from = oldpacket = (cls.netchan.incoming_sequence-1);
+#endif
 
 		if (cls.netchan.outgoing_sequence - cls.netchan.incoming_sequence >= UPDATE_BACKUP-1)
 		{	// there are no valid frames left, so drop it
@@ -266,7 +307,12 @@ void CL_ParsePacketEntities (qbool delta)
 		{
 			while (oldindex < oldp->num_entities)
 			{	// copy all the rest of the entities from the old packet
+#ifdef MVDPLAY
+				if ((newindex >= MAX_PACKET_ENTITIES && !cls.mvdplayback) ||
+					 newindex >= MVD_MAX_PACKET_ENTITIES)
+#else
 				if (newindex >= MAX_PACKET_ENTITIES)
+#endif
 					Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
 				newp->entities[newindex] = oldp->entities[oldindex];
 				newindex++;
@@ -288,7 +334,12 @@ void CL_ParsePacketEntities (qbool delta)
 			}
 
 			// copy one of the old entities over to the new packet unchanged
+#ifdef MVDPLAY
+			if ((newindex >= MAX_PACKET_ENTITIES && !cls.mvdplayback) ||
+				 newindex >= MVD_MAX_PACKET_ENTITIES)
+#else
 			if (newindex >= MAX_PACKET_ENTITIES)
+#endif
 				Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
 			newp->entities[newindex] = oldp->entities[oldindex];
 			newindex++;
@@ -310,7 +361,12 @@ void CL_ParsePacketEntities (qbool delta)
 				}
 				continue;
 			}
+#ifdef MVDPLAY
+			if ((newindex >= MAX_PACKET_ENTITIES && !cls.mvdplayback) ||
+				 newindex >= MVD_MAX_PACKET_ENTITIES)
+#else
 			if (newindex >= MAX_PACKET_ENTITIES)
+#endif
 				Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
 			CL_ParseDelta (&cl_entities[newnum].baseline, &newp->entities[newindex], word);
 			newindex++;
@@ -332,6 +388,13 @@ void CL_ParsePacketEntities (qbool delta)
 			}
 
 			CL_ParseDelta (&oldp->entities[oldindex], &newp->entities[newindex], word);
+
+#ifdef MVDPLAY
+			if (cls.mvdplayback) {
+				cl.int_entities[newindex].interpolate = true;
+				cl.int_entities[newindex].oldindex = oldindex;
+			}
+#endif
 			newindex++;
 			oldindex++;
 		}
@@ -395,8 +458,10 @@ void CL_LinkPacketEntities (void)
 		state = &pack->entities[pnum];
 		cent = &cl_entities[state->number];
 
+#ifndef MVDPLAY
 		assert(cent->lastframe == cl_entframecount);
 		assert(!memcmp(state, &cent->current, sizeof(*state)));
+#endif
 
 		MSG_UnpackOrigin (state->s_origin, cur_origin);
 
@@ -551,16 +616,37 @@ typedef struct
 	int		modelindex;
 	vec3_t	origin;
 	vec3_t	angles;
+#ifdef MVDPLAY
+    int     num;
+#endif
 } projectile_t;
 
 #define	MAX_PROJECTILES	32
 projectile_t	cl_projectiles[MAX_PROJECTILES];
 int				cl_num_projectiles;
 
+#ifdef MVDPLAY
+projectile_t	cl_oldprojectiles[MAX_PROJECTILES];
+int				cl_num_oldprojectiles;
+#endif
+
 extern int cl_spikeindex;
 
 void CL_ClearProjectiles (void)
 {
+#ifdef MVDPLAY
+	if (cls.mvdplayback) {
+		static int parsecount = 0;
+
+		if (parsecount == cl.parsecount)
+			return;
+
+		parsecount = cl.parsecount;
+		memset(cl.int_projectiles, 0, sizeof(cl.int_projectiles));
+		cl_num_oldprojectiles = cl_num_projectiles;
+		memcpy(cl_oldprojectiles, cl_projectiles, sizeof(cl_projectiles));
+	}
+#endif
 	cl_num_projectiles = 0;
 }
 
@@ -571,15 +657,31 @@ CL_ParseProjectiles
 Nails are passed as efficient temporary entities
 =====================
 */
+#ifdef MVDPLAY
+void CL_ParseProjectiles (qbool nail2)
+#else
 void CL_ParseProjectiles (void)
+#endif
 {
 	int		i, c, j;
 	byte	bits[6];
 	projectile_t	*pr;
 
+#ifdef MVDPLAY
+	int			num;
+	interpolate_t	*inter;
+#endif
+
 	c = MSG_ReadByte ();
 	for (i=0 ; i<c ; i++)
 	{
+#ifdef MVDPLAY
+        if (nail2)
+            num = MSG_ReadByte();
+        else
+            num = 0;
+#endif
+
 		for (j=0 ; j<6 ; j++)
 			bits[j] = MSG_ReadByte ();
 
@@ -595,6 +697,23 @@ void CL_ParseProjectiles (void)
 		pr->origin[2] = ( ( bits[3] + ((bits[4]&15)<<8) ) <<1) - 4096;
 		pr->angles[0] = 360*(bits[4]>>4)/16;
 		pr->angles[1] = 360*bits[5]/256;
+
+#ifdef MVDPLAY
+		pr->num = num;
+		if (!num) 
+			continue;
+
+		for (j = 0; j < cl_num_oldprojectiles; j++)
+			if (cl_oldprojectiles[j].num == num)
+			{
+				inter->interpolate = true;
+				inter->oldindex = j;
+				VectorCopy(pr->origin, inter->origin);
+				if (!cl_oldprojectiles[j].origin[0])
+					Com_Printf("parse:%d, %d, %d\n", j, num, cl_oldprojectiles[j].num);
+				break;
+			}
+#endif
 	}
 }
 
@@ -630,6 +749,33 @@ void CL_LinkProjectiles (void)
 
 extern	int		cl_spikeindex, cl_playerindex, cl_flagindex;
 
+#ifdef MVDPLAY
+int TranslateFlags(int src)
+{
+	int dst = 0;
+
+	if (src & DF_EFFECTS)
+		dst |= PF_EFFECTS;
+	if (src & DF_SKINNUM)
+		dst |= PF_SKINNUM;
+	if (src & DF_DEAD)
+		dst |= PF_DEAD;
+	if (src & DF_GIB)
+		dst |= PF_GIB;
+	if (src & DF_WEAPONFRAME)
+		dst |= PF_WEAPONFRAME;
+	if (src & DF_MODEL)
+		dst |= PF_MODEL;
+
+	return dst;
+}
+#endif
+
+#ifdef MVDPLAY
+extern int parsecountmod;
+extern double parsecounttime;
+#endif
+
 /*
 ===================
 CL_ParsePlayerState
@@ -641,6 +787,9 @@ void CL_ParsePlayerState (void)
 	int			flags;
 	player_info_t	*info;
 	player_state_t	*state;
+#ifdef MVDPLAY
+    player_state_t *prevstate, dummy;
+#endif
 	int			num;
 	int			i;
 
@@ -651,6 +800,70 @@ void CL_ParsePlayerState (void)
 	info = &cl.players[num];
 
 	state = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[num];
+
+#ifdef MVDPLAY
+	if (info->prevcount > cl.parsecount || !cl.parsecount) {
+		prevstate = &dummy;
+	} else {
+		if (cl.parsecount - info->prevcount >= UPDATE_BACKUP-1)
+			prevstate = &dummy;
+		else 
+			prevstate = &cl.frames[info->prevcount&UPDATE_MASK].playerstate[num];
+	}
+
+	info->prevcount = cl.parsecount;
+
+	if (cls.mvdplayback)
+	{
+		if (cls.findtrack && info->stats[STAT_HEALTH] != 0)
+		{
+			extern int autocam;
+			extern int ideal_track;
+
+			autocam = CAM_TRACK;
+			Cam_Lock(num);
+			ideal_track = num;
+			cls.findtrack = false;
+
+		}
+
+		memcpy(state, prevstate, sizeof(player_state_t));
+		flags = MSG_ReadShort ();
+		state->flags = TranslateFlags(flags);
+
+		state->messagenum = cl.parsecount;
+		state->command.msec = 0;
+
+		state->frame = MSG_ReadByte ();
+
+		state->state_time = parsecounttime;
+		state->command.msec = 0;
+
+		for (i=0; i <3; i++)
+			if (flags & (DF_ORIGIN << i))
+				state->origin[i] = MSG_ReadCoord ();
+
+		for (i=0; i <3; i++)
+			if (flags & (DF_ANGLES << i))
+				state->command.angles[i] = MSG_ReadAngle16 ();
+
+
+		if (flags & DF_MODEL)
+			state->modelindex = MSG_ReadByte ();
+			
+		if (flags & DF_SKINNUM)
+			state->skinnum = MSG_ReadByte ();
+			
+		if (flags & DF_EFFECTS)
+			state->effects = MSG_ReadByte ();
+		
+		if (flags & DF_WEAPONFRAME)
+			state->weaponframe = MSG_ReadByte ();
+			
+		VectorCopy (state->command.angles, state->viewangles);
+		return;
+	}
+#endif
 
 	flags = state->flags = MSG_ReadShort ();
 
@@ -1050,6 +1263,281 @@ void CL_SetSolidEntities (void)
 
 }
 
+#ifdef MVDPLAY
+static float timediff;
+extern float nextdemotime;
+
+static float adjustangle(float current, float ideal, float fraction)
+{
+    float move;
+
+    move = ideal - current;
+    if (ideal > current)
+    {
+
+        if (move >= 180)
+            move = move - 360;
+    }
+    else
+    {
+        if (move <= -180)
+            move = move + 360;
+    }
+
+    move *= fraction;
+
+    return (current + move);
+}
+
+#define ISDEAD(i) ( (i) >=41 && (i) <=102 )
+
+void CL_Interpolate(void)
+{
+    int i, j;
+    frame_t	*frame, *oldframe;
+    struct predicted_player *pplayer;
+    player_state_t	*state, *oldstate;
+    float	f;
+
+    if (!cl.validsequence || !timediff)
+        return;
+
+    frame = &cl.frames[cl.parsecount&UPDATE_MASK];
+    oldframe = &cl.frames[(cl.oldparsecount)&UPDATE_MASK];
+
+    f = (cls.realtime - nextdemotime)/(timediff);
+    if (f > 0.0)
+        f = 0.0;
+    if (f < -1.0)
+        f = -1.0;
+
+    // interpolate entities
+    for (i=0; i < frame->packet_entities.num_entities; i++)
+    {
+        if (!cl.int_entities[i].interpolate)
+            continue;
+
+        for (j=0;j<3;j++) {
+            frame->packet_entities.entities[i].s_origin[j] = cl.int_entities[i].origin[j] + f*(cl.int_entities[i].origin[j] - oldframe->packet_entities.entities[cl.int_entities[i].oldindex].s_origin[j]);
+            frame->packet_entities.entities[i].s_angles[j] = adjustangle(oldframe->packet_entities.entities[cl.int_entities[i].oldindex].s_angles[j], cl.int_entities[i].angles[j],1.0+f);
+        }
+    }
+
+    // interpolate nails
+    for (i=0; i < cl_num_projectiles; i++)
+    {
+        if (!cl.int_projectiles[i].interpolate)
+            continue;
+
+        if (!cl_oldprojectiles[cl.int_projectiles[i].oldindex].origin[0]) 
+            Com_Printf("%d %d, %d, %d\n", i, cl.int_projectiles[i].oldindex, cl_projectiles[i].num, i >= cl_num_oldprojectiles);
+        for (j=0;j<3;j++) {
+            cl_projectiles[i].origin[j] = cl.int_projectiles[i].origin[j] + f*(cl.int_projectiles[i].origin[j] - cl_oldprojectiles[cl.int_projectiles[i].oldindex].origin[j]);
+        }
+    }
+
+    // interpolate clients
+    for (i=0, pplayer = predicted_players, state=frame->playerstate, oldstate=oldframe->playerstate; 
+            i < MAX_CLIENTS;
+            i++, pplayer++, state++, oldstate++)
+    {
+        if (pplayer->predict)
+        {
+            for (j=0;j<3;j++) {
+                state->viewangles[j] = adjustangle(oldstate->command.angles[j], pplayer->olda[j], 1.0+f);
+                state->origin[j] = pplayer->oldo[j] + f*(pplayer->oldo[j]-oldstate->origin[j]);
+            }
+            // FIXME: oldman
+#if 0
+            if (i == spec_track) {
+                VectorCopy(pplayer->vel, SpeedVec);
+            }
+#endif
+        }
+    }
+}
+int	fixangle;
+
+void CL_InitInterpolation(float next, float old)
+{
+    float	f;
+    int		i,j;
+    struct predicted_player *pplayer;
+    frame_t	*frame, *oldframe;
+    player_state_t	*state, *oldstate;
+    vec3_t	dist;
+
+    if (!cl.validsequence)
+        return;
+
+    timediff = next-old;
+
+    frame = &cl.frames[cl.parsecount&UPDATE_MASK];
+    oldframe = &cl.frames[(cl.oldparsecount)&UPDATE_MASK];
+
+    if (!timediff) {
+        return;
+    }
+
+    f = (cls.realtime - nextdemotime)/(timediff);
+
+    if (f > 0.0)
+        f = 0.0;
+    if (f < -1.0)
+        f = -1.0;
+
+    // clients
+    for (i=0, pplayer = predicted_players, state=frame->playerstate, oldstate=oldframe->playerstate; 
+            i < MAX_CLIENTS;
+            i++, pplayer++, state++, oldstate++) {
+
+        if (pplayer->predict)
+        {
+            VectorCopy(pplayer->oldo, oldstate->origin);
+            VectorCopy(pplayer->olda, oldstate->command.angles);
+        }
+
+        pplayer->predict = false;
+
+        if (fixangle & 1 << i)
+        {
+            if (i == Cam_TrackNum()) {
+                VectorCopy(cl.viewangles, state->command.angles);
+                VectorCopy(cl.viewangles, state->viewangles);
+            }
+
+            // no angle interpolation
+            VectorCopy(state->command.angles, oldstate->command.angles);
+
+            fixangle &= ~(1 << i);
+            //continue;
+        }
+
+        if (state->messagenum != cl.parsecount) {
+            continue;	// not present this frame
+        }
+
+        if (oldstate->messagenum != cl.oldparsecount || !oldstate->messagenum) {
+            continue;	// not present last frame
+        }
+
+        // we dont interpolate ourself if we are spectating
+        if (i == cl.playernum) {
+            if (cl.spectator)
+                continue;
+        }
+
+        if (!ISDEAD(state->frame) && ISDEAD(oldstate->frame))
+            continue;
+
+        VectorSubtract(state->origin, oldstate->origin, dist);
+        if (VectorLength(dist) > 150)
+            continue;
+
+        VectorCopy(state->origin, pplayer->oldo);
+        VectorCopy(state->command.angles, pplayer->olda);
+
+        pplayer->oldstate = oldstate;
+        pplayer->predict = true;
+
+        for (j=0;j<3;j++) {
+            pplayer->vel[j] = (state->origin[j] - oldstate->origin[j])/timediff;
+        }
+    }
+
+    // entities
+    for (i=0; i < frame->packet_entities.num_entities; i++)
+    {
+        if (!cl.int_entities[i].interpolate)
+            continue;
+
+        VectorCopy(frame->packet_entities.entities[i].s_origin, cl.int_entities[i].origin);
+        VectorCopy(frame->packet_entities.entities[i].s_angles, cl.int_entities[i].angles);
+    }
+
+    // nails
+    for (i=0; i < cl_num_projectiles; i++) {
+        if (!cl.int_projectiles[i].interpolate)
+            continue;
+        VectorCopy(cl.int_projectiles[i].origin, cl_projectiles[i].origin);
+    }
+}
+
+void CL_ClearPredict(void)
+{
+    memset(predicted_players, 0, sizeof(predicted_players));
+    fixangle = 0;
+}
+
+void MVD_Interpolate(void) {
+{
+	int i, j;
+	float f;
+	frame_t	*frame, *oldframe;
+	player_state_t *state, *oldstate, *self, *oldself;
+	entity_state_t *oldents;
+	struct predicted_player *pplayer;
+	static float old;
+
+	self = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[cl.playernum];
+	oldself = &cl.frames[(cls.netchan.outgoing_sequence - 1) & UPDATE_MASK].playerstate[cl.playernum];
+
+	self->messagenum = cl.parsecount;
+
+	VectorCopy(oldself->origin, self->origin);
+	VectorCopy(oldself->velocity, self->velocity);
+	VectorCopy(oldself->viewangles, self->viewangles);
+
+	if (old != nextdemotime) {
+		old = nextdemotime;
+		MVD_InitInterpolation();
+	}
+
+	CL_ParseClientdata();
+
+	cls.netchan.outgoing_sequence = cl.parsecount + 1;
+
+	if (!cl.validsequence)
+		return;
+
+	if (nextdemotime <= olddemotime)
+		return;
+
+	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
+	oldframe = &cl.frames[cl.oldparsecount & UPDATE_MASK];
+	oldents = oldframe->packet_entities.entities;
+
+	f = bound(0, (cls.demotime - olddemotime) / (nextdemotime - olddemotime), 1);
+
+	// interpolate nails
+	for (i = 0; i < cl_num_projectiles; i++)	{
+		if (!cl.int_projectiles[i].interpolate)
+			continue;
+
+		for (j = 0; j < 3; j++) {
+			cl_projectiles[i].origin[j] = cl_oldprojectiles[cl.int_projectiles[i].oldindex].origin[j] +
+				f * (cl.int_projectiles[i].origin[j] - cl_oldprojectiles[cl.int_projectiles[i].oldindex].origin[j]);
+		}
+	}
+
+	// interpolate clients
+	for (i = 0; i < MAX_CLIENTS; i++) {
+		pplayer = &predicted_players[i];
+		state = &frame->playerstate[i];
+		oldstate = &oldframe->playerstate[i];
+
+		if (pplayer->predict) {
+			for (j = 0; j < 3; j++) {
+				state->viewangles[j] = MVD_AdjustAngle(oldstate->command.angles[j], pplayer->olda[j], f);
+				state->origin[j] = oldstate->origin[j] + f * (pplayer->oldo[j] - oldstate->origin[j]);
+				state->velocity[j] = oldstate->velocity[j] + f * (pplayer->oldv[j] - oldstate->velocity[j]);
+			}
+		}
+	}
+}
+
+#endif
+
 /*
 ===
 Calculate the new position of players, without other player clipping
@@ -1099,7 +1587,11 @@ void CL_SetUpPlayerPrediction (qbool dopred)
 		} else {
 			// only predict half the move to minimize overruns
 			msec = 500*(playertime - state->state_time);
+#ifdef MVDPLAY
+			if (msec <= 0 || !cl_predictPlayers.value || !dopred || cls.mvdplayback)
+#else
 			if (msec <= 0 || !cl_predictPlayers.value || !dopred)
+#endif
 			{
 				VectorCopy (state->origin, pplayer->origin);
 			}

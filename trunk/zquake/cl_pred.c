@@ -302,7 +302,11 @@ static void CL_PredictLocalPlayer (void)
 
 	} else {
 		VectorCopy (cl.viewangles, cl.simangles);
+#ifdef MVDPLAY
+		nopred = ((cl_nopred.value && !cls.mvdplayback) || cls.netchan.outgoing_sequence - cl.validsequence <= 1);
+#else
 		nopred = (cl_nopred.value || cls.netchan.outgoing_sequence - cl.validsequence <= 1);
+#endif
 	}
 
 	if (nopred)
