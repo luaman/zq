@@ -1107,10 +1107,6 @@ void R_RenderScene (void)
 	GL_DisableMultitexture();
 
 	R_RenderDlights ();
-
-#ifdef GLTEST
-	Test_Draw ();
-#endif
 }
 
 
