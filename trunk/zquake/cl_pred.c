@@ -87,8 +87,10 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 	VectorCopy (u->angles, pmove.angles);
 	VectorCopy (from->velocity, pmove.velocity);
 
-	if (cl_speedjumpfix.value)
+	if (cl_speedjumpfix.value && (cl.z_ext & Z_EXT_JUMPRELEASED))
 		pmove.jump_msec = from->jump_msec;
+	else
+		pmove.jump_msec = 0;
 	pmove.oldbuttons = from->oldbuttons;
 	pmove.waterjumptime = from->waterjumptime;
 	pmove.dead = cl.stats[STAT_HEALTH] <= 0;

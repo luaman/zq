@@ -1508,8 +1508,9 @@ void SV_InitLocal (void)
 	for (i=0 ; i<MAX_MODELS ; i++)
 		sprintf (localmodels[i], "*%i", i);
 
-	Info_SetValueForStarKey (svs.info, "*z_version", Z_VERSION, MAX_SERVERINFO_STRING);
 	Info_SetValueForStarKey (svs.info, "*version", va("%4.2f", QW_VERSION), MAX_SERVERINFO_STRING);
+	Info_SetValueForStarKey (svs.info, "*z_version", Z_VERSION, MAX_SERVERINFO_STRING);
+	Info_SetValueForStarKey (svs.info, "*z_ext", va("%i", Z_EXT_JUMPRELEASED), MAX_SERVERINFO_STRING);
 	
 	// init fraglog stuff
 	svs.logsequence = 1;

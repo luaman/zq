@@ -384,6 +384,10 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 			pflags &= ~(PF_MSEC|PF_COMMAND);
 			if (ent->v.weaponframe)
 				pflags |= PF_WEAPONFRAME;
+
+			// Z_EXT_JUMPBUTTON protocol extension
+			if (!(client->oldbuttons & BUTTON_JUMP))
+				pflags |= PF_JUMPRELEASED;
 		}
 
 		if (client->spec_track && client->spec_track - 1 == j &&

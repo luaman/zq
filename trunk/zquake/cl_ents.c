@@ -739,6 +739,14 @@ void CL_ParsePlayerinfo (void)
 	else
 		state->weaponframe = 0;
 
+	if (cl.z_ext & Z_EXT_JUMPRELEASED)
+	{
+		if (flags & PF_JUMPRELEASED)
+			state->oldbuttons &= ~BUTTON_JUMP;
+		else
+			state->oldbuttons |= BUTTON_JUMP;
+	}
+
 	VectorCopy (state->command.angles, state->viewangles);
 }
 
