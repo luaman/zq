@@ -165,12 +165,6 @@ typedef struct
 	int		type;
 } dlight_t;
 
-typedef struct
-{
-	int		length;
-	char	map[MAX_STYLESTRING];
-} lightstyle_t;
-
 typedef struct cparticle_s
 {
 	struct cparticle_s *next;

@@ -1123,6 +1123,8 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 	r_refdef2.viewplayernum = cl.viewplayernum;
 	r_refdef2.watervis = (atoi(Info_ValueForKey(cl.serverinfo, "watervis")) != 0);
 
+	r_refdef2.lightstyles = cl_lightstyle;
+
 	r_refdef2.numParticles = cl_numvisparticles;
 	r_refdef2.particles = cl_visparticles;
 
