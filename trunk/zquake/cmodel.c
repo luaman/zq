@@ -981,7 +981,7 @@ cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned
 	header = (dheader_t *)buf;
 
 	i = LittleLong (header->version);
-	if (i != BSPVERSION)
+	if (i != BSPVERSION && i != HL_BSPVERSION)
 		Host_Error ("CM_LoadMap: %s has wrong version number (%i should be %i)", name, i, BSPVERSION);
 
 	// swap all the lumps
