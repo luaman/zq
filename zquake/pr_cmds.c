@@ -681,40 +681,59 @@ stuffcmd (clientent, value)
 void PF_stuffcmd (void)
 {
 	int		entnum;
-	char	*str;
 	client_t	*cl;
-	char	*buf;
+	char	*buf, *str;
+	int		buflen, newlen;
 	int		i;
 	
 	entnum = G_EDICTNUM(OFS_PARM0);
 	if (entnum < 1 || entnum > MAX_CLIENTS)
 		PR_RunError ("Parm 0 not a client");
-	str = G_STRING(OFS_PARM1);	
-	
 	cl = &svs.clients[entnum-1];
+	str = G_STRING(OFS_PARM1);	
 
 	buf = cl->stufftext_buf;
-	if (strlen(buf) + strlen(str) >= MAX_STUFFTEXT)
-		PR_RunError ("stufftext buffer overflow");
-	strcat (buf, str);
 
-	for (i = strlen(buf); i >= 0; i--)
-	{
-		if (buf[i] == '\n')
-		{
-			if (!strcmp(buf, "disconnect\n"))
-			{
-				// so long and thanks for all the fish
-				cl->drop = true;
-				buf[0] = 0;
-				return;
-			}
-			ClientReliableWrite_Begin (cl, svc_stufftext, 2+strlen(buf));
+	if (!strcmp(str, "disconnect\n")) {
+		// so long and thanks for all the fish
+		cl->drop = true;
+		buf[0] = 0;
+		return;
+	}
+
+	buflen = strlen (buf);
+	newlen = strlen (str);
+
+	if (buflen + newlen >= MAX_STUFFTEXT-1) {
+		// flush the buffer because there's no space left
+		if (buflen) {
+			ClientReliableWrite_Begin (cl, svc_stufftext, 2+buflen);
 			ClientReliableWrite_String (cl, buf);
 			buf[0] = 0;
 		}
+		if (newlen >= MAX_STUFFTEXT-1) {
+			ClientReliableWrite_Begin (cl, svc_stufftext, 2+newlen);
+			ClientReliableWrite_String (cl, str);
+			return;
+		}
+	}
+
+	strcat (buf, str);
+	buflen += newlen;
+
+	// flush complete (\n terminated) strings
+	for (i=buflen-1 ; i>=0 ; i--) {
+		if (buf[i] == '\n') {
+			ClientReliableWrite_Begin (cl, svc_stufftext, 2 + (i + 1));
+			ClientReliableWrite_SZ (cl, buf, i+1);
+			ClientReliableWrite_Byte (cl, 0);
+			// move the remainder to buffer beginning
+			strcpy (buf, buf + i + 1);
+			return;
+		}
 	}
 }
+
 
 /*
 =================
