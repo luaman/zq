@@ -252,7 +252,6 @@ void CL_Prespawn (void)
 	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
 	Cvar_ForceSet (&host_mapname, mapname);
 
-	CL_ClearParticles ();
 	CL_FindModelNumbers ();
 	R_NewMap (cl.worldmodel);
 	R_SetSky (cl.sky);
