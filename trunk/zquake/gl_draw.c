@@ -107,6 +107,13 @@ typedef struct
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
+qboolean	mtexenabled = false;
+
+#ifdef _WIN32
+lpMTexFUNC qglMultiTexCoord2f = NULL;
+lpSelTexFUNC qglActiveTexture = NULL;
+#endif
+
 void GL_Bind (int texnum)
 {
 	if (gl_nobind.value)
@@ -121,6 +128,39 @@ void GL_Bind (int texnum)
 #endif
 }
 
+static GLenum oldtarget = GL_TEXTURE0_ARB;
+
+void GL_SelectTexture (GLenum target)
+{
+	if (!gl_mtexable)
+		return;
+#ifndef __linux__ // no multitexture under Linux yet
+	qglActiveTexture (target);
+#endif
+	if (target == oldtarget) 
+		return;
+	cnttextures[oldtarget-GL_TEXTURE0_ARB] = currenttexture;
+	currenttexture = cnttextures[target-GL_TEXTURE0_ARB];
+	oldtarget = target;
+}
+
+void GL_DisableMultitexture (void) 
+{
+	if (mtexenabled) {
+		glDisable (GL_TEXTURE_2D);
+		GL_SelectTexture (GL_TEXTURE0_ARB);
+		mtexenabled = false;
+	}
+}
+
+void GL_EnableMultitexture (void)
+{
+	if (gl_mtexable) {
+		GL_SelectTexture (GL_TEXTURE1_ARB);
+		glEnable (GL_TEXTURE_2D);
+		mtexenabled = true;
+	}
+}
 
 /*
 =============================================================================
@@ -1697,20 +1737,5 @@ int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data)
 	return pic->texnum;
 }
 
-/****************************************/
 
-static GLenum oldtarget = GL_TEXTURE0_ARB;
 
-void GL_SelectTexture (GLenum target) 
-{
-	if (!gl_mtexable)
-		return;
-#ifndef __linux__ // no multitexture under Linux yet
-	qglActiveTexture (target);
-#endif
-	if (target == oldtarget) 
-		return;
-	cnttextures[oldtarget-GL_TEXTURE0_ARB] = currenttexture;
-	currenttexture = cnttextures[target-GL_TEXTURE0_ARB];
-	oldtarget = target;
-}
