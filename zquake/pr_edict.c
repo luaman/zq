@@ -1046,15 +1046,35 @@ void PR_LoadProgs (void)
 
 	progs = NULL;
 	if (!deathmatch.value)
-		progs = (dprograms_t *)FS_LoadHunkFile ("spprogs.dat");
+	{
+		int hunk_mark = Hunk_LowMark ();
+
+		progs = (dprograms_t *) FS_LoadHunkFile ("spprogs.dat");
+
+		if (!file_from_gamedir) {
+			// spprogs.dat is not from gamedir, this is possibly not what we wanted
+			// look for qwprogs.dat in gamedir
+			FILE *f;
+			FS_FOpenFile ("qwprogs.dat", &f);
+			if (f) {
+				fclose (f);
+				// it exists, but where's it from?
+				if (file_from_gamedir) {
+					// throw away spprogs and load qwprogs instead
+					Hunk_FreeToLowMark (hunk_mark);
+					progs = NULL;
+				}
+			}
+		}
+	}
 	if (!progs)
 		progs = (dprograms_t *)FS_LoadHunkFile ("qwprogs.dat");
 	if (!progs)
 		Host_Error ("PR_LoadProgs: couldn't load qwprogs.dat");
-	Com_DPrintf ("Programs occupy %iK.\n", com_filesize/1024);
+	Com_DPrintf ("Programs occupy %iK.\n", fs_filesize/1024);
 
 // add prog crc to the serverinfo
-	sprintf (num, "%i", CRC_Block ((byte *)progs, com_filesize));
+	sprintf (num, "%i", CRC_Block ((byte *)progs, fs_filesize));
 	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
 
 // byte swap the header
