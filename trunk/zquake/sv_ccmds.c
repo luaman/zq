@@ -299,7 +299,6 @@ void SV_Give_f (void)
 
 
 void CL_Disconnect ();
-int UDP_OpenSocket (int, qboolean);
 void Host_ConnectLocal ();
 
 /*
@@ -335,24 +334,7 @@ void SV_Map_f (void)
 	fclose (f);
 
 #ifdef QW_BOTH
-	// An ugly hack to let you run zquake and qwsv or proxy without
-	// changing ports via the command line
-	if  (net_serversocket == -1)
-	{
-		extern int	__serverport;
-		int	i;
-		for (i = 0; i < 10; i++) {
-			net_serversocket = UDP_OpenSocket (__serverport+i, false);
-			if (net_serversocket != -1)
-				break;
-		}
-		if (net_serversocket == -1) {
-			Con_Printf ("Can't start server because server socket could not be opened.\n");
-			return;
-		}
-		if (i)
-			Con_Printf ("Server socket opened on port %i\n", __serverport + i);
-	}
+	NET_Config (true, true);
 
 	// make sure we're not connected to an external server,
 	// and demo playback is stopped

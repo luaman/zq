@@ -1042,22 +1042,8 @@ void Host_Init (quakeparms_t *parms)
 
 	Host_FixupModelNames();
 	
-#ifdef QW_BOTH
-	{
-		int	port, p;
-	
-		port = PORT_SERVER;
-		p = COM_CheckParm ("-port");
-		if (p && p < com_argc)
-		{
-			port = atoi(com_argv[p+1]);
-			//Con_Printf ("Port: %i\n", port);
-		}
-		NET_Init (PORT_CLIENT, port);
-	}
-#else
-	NET_Init (PORT_CLIENT, 0);
-#endif
+	NET_Init ();
+	NET_Config (true, false);
 	Netchan_Init ();
 
 	W_LoadWadFile ("gfx.wad");
