@@ -221,7 +221,6 @@ void EmitWaterPolys (msurface_t *fa)
 
 
 
-
 /*
 =============
 EmitSkyPolys
@@ -262,6 +261,26 @@ void EmitSkyPolys (msurface_t *fa)
 }
 
 /*
+=============
+EmitFlatSkyPoly
+=============
+*/
+void EmitFlatSkyPoly (msurface_t *fa)
+{
+	glpoly_t	*p;
+	float		*v;
+	int			i;
+	
+	for (p=fa->polys ; p ; p=p->next)
+	{
+		glBegin (GL_POLYGON);
+		for (i=0,v=p->verts[0] ; i<p->numverts ; i++, v+=VERTEXSIZE)
+			glVertex3fv (v);
+		glEnd ();
+	}
+}
+
+/*
 ===============
 EmitBothSkyLayers
 
@@ -273,6 +292,17 @@ will have them chained together.
 void EmitBothSkyLayers (msurface_t *fa)
 {
 	GL_DisableMultitexture();
+
+	if (r_fastsky.value) {
+		glDisable (GL_TEXTURE_2D);
+		glColor3ubv ((byte *)&d_8to24table[(byte)r_skycolor.value]);
+
+		EmitFlatSkyPoly (fa);
+
+		glEnable (GL_TEXTURE_2D);
+		glColor3f (1, 1, 1);
+		return;
+	}
 
 	GL_Bind (solidskytexture);
 	speedscale = realtime*8;
@@ -302,22 +332,33 @@ void R_DrawSkyChain (msurface_t *s)
 
 	GL_DisableMultitexture();
 
-	// used when gl_texsort is on
+	if (r_fastsky.value) {
+		glDisable (GL_TEXTURE_2D);
+		glColor3ubv ((byte *)&d_8to24table[(byte)r_skycolor.value]);
+		
+		for (fa=s ; fa ; fa=fa->texturechain)
+			EmitFlatSkyPoly (fa);
+
+		glEnable (GL_TEXTURE_2D);
+		glColor3f (1, 1, 1);
+		return;
+	}
+	
 	GL_Bind(solidskytexture);
 	speedscale = realtime*8;
 	speedscale -= (int)speedscale & ~127 ;
-
+	
 	for (fa=s ; fa ; fa=fa->texturechain)
 		EmitSkyPolys (fa);
-
+	
 	glEnable (GL_BLEND);
 	GL_Bind (alphaskytexture);
 	speedscale = realtime*16;
 	speedscale -= (int)speedscale & ~127 ;
-
+	
 	for (fa=s ; fa ; fa=fa->texturechain)
 		EmitSkyPolys (fa);
-
+	
 	glDisable (GL_BLEND);
 }
 
