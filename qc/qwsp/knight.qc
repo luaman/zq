@@ -161,7 +161,7 @@ void()	knight_painb9	=[	$painb9,	knight_painb10	] {ai_painforward(5);}
 void()	knight_painb10	=[	$painb10,	knight_painb11	] {ai_painforward(0);}
 void()	knight_painb11	=[	$painb11,	knight_run1	] {}
 
-void knight_pain (/*entity attacker, float damage*/)
+void knight_pain ()
 {
 	float	r;
 
