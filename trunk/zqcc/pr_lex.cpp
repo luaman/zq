@@ -501,7 +501,7 @@ void PR_ParseError (char *error, ...)
 	vsprintf (string,error,argptr);
 	va_end (argptr);
 
-	printf ("%s:%i:%s\n", strings + s_file, pr_source_line, string);
+	printf ("%s(%i): error: %s\n", strings + s_file, pr_source_line, string);
 	
 	longjmp (pr_parse_abort, 1);
 }
