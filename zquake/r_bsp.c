@@ -558,7 +558,7 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 
 		if (c)
 		{
-			surf = cl.worldmodel->surfaces + node->firstsurface;
+			surf = r_worldmodel->surfaces + node->firstsurface;
 
 			if (dot < -BACKFACE_EPSILON)
 			{

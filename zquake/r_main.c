@@ -46,6 +46,7 @@ byte		*r_warpbuffer;
 
 byte		*r_stack_start;
 
+model_t		*r_worldmodel;
 entity_t	r_worldentity;
 
 //
@@ -245,17 +246,19 @@ void R_Init (void)
 R_NewMap
 ===============
 */
-void R_NewMap (void)
+void R_NewMap (struct model_s *worldmodel)
 {
 	int		i;
 	
+	r_worldmodel = worldmodel;
+
 	memset (&r_worldentity, 0, sizeof(r_worldentity));
-	r_worldentity.model = cl.worldmodel;
+	r_worldentity.model = r_worldmodel;
 
 // clear out efrags in case the level hasn't been reloaded
 // FIXME: is this one short?
-	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
-		cl.worldmodel->leafs[i].efrags = NULL;
+	for (i = 0; i < r_worldmodel->numleafs; i++)
+		r_worldmodel->leafs[i].efrags = NULL;
 
 	r_viewleaf = NULL;
 
@@ -302,7 +305,7 @@ void R_NewMap (void)
 	r_viewchanged = false;
 	r_skyboxloaded = false;
 
-	R_InitSkyBox (cl.worldmodel);
+	R_InitSkyBox (r_worldmodel);
 }
 
 void R_LoadSky_f ()
@@ -528,13 +531,13 @@ void R_MarkLeaves (void)
 	r_visframecount++;
 	r_oldviewleaf = r_viewleaf;
 
-	vis = Mod_LeafPVS (r_viewleaf, cl.worldmodel);
+	vis = Mod_LeafPVS (r_viewleaf, r_worldmodel);
 		
-	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
+	for (i = 0; i < r_worldmodel->numleafs; i++)
 	{
 		if (vis[i>>3] & (1<<(i&7)))
 		{
-			node = (mnode_t *)&cl.worldmodel->leafs[i+1];
+			node = (mnode_t *) &r_worldmodel->leafs[i+1];
 			do
 			{
 				if (node->visframe == r_visframecount)
@@ -764,7 +767,7 @@ mnode_t *R_FindTopNode (vec3_t mins, vec3_t maxs)
 	int			sides;
 	mnode_t		*node;
 
-	node = cl.worldmodel->nodes;
+	node = r_worldmodel->nodes;
 
 	while (1)
 	{
@@ -985,7 +988,7 @@ void R_RenderView_ (void)
 // done in screen.c
 	Sys_LowFPPrecision ();
 
-	if (!r_worldentity.model || !cl.worldmodel)
+	if (!r_worldentity.model || !r_worldmodel)
 		Sys_Error ("R_RenderView: NULL worldmodel");
 		
 	if (!r_dspeeds.value)

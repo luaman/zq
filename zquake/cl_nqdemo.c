@@ -430,8 +430,9 @@ void NQD_ParseServerData (void)
 
 	CL_ClearParticles ();
 	CL_FindModelNumbers ();
+	R_NewMap (cl.worldmodel);
+
 	TP_NewMap ();
-	R_NewMap ();
 
 	Hunk_Check ();		// make sure nothing is hurt
 

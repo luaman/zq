@@ -324,7 +324,7 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 	lightmap = surf->samples;
 
 // set to full bright if no light data
-	if ((r_fullbright.value && r_refdef2.allowCheats) || !cl.worldmodel->lightdata) {
+	if ((r_fullbright.value && r_refdef2.allowCheats) || !r_worldmodel->lightdata) {
 		for (i=0 ; i<blocksize ; i++)
 			blocklights[i] = 255*256;
 		goto store;
@@ -889,9 +889,9 @@ void R_DrawWaterSurfaces (void)
 		waterchain = NULL;
 	} else {
 
-		for (i=0 ; i<cl.worldmodel->numtextures ; i++)
+		for (i = 0; i < r_worldmodel->numtextures; i++)
 		{
-			t = cl.worldmodel->textures[i];
+			t = r_worldmodel->textures[i];
 			if (!t)
 				continue;
 			s = t->texturechain;
@@ -945,9 +945,9 @@ void DrawTextureChains (void)
 		return;
 	} 
 
-	for (i=0 ; i<cl.worldmodel->numtextures ; i++)
+	for (i = 0; i < r_worldmodel->numtextures; i++)
 	{
-		t = cl.worldmodel->textures[i];
+		t = r_worldmodel->textures[i];
 		if (!t)
 			continue;
 		s = t->texturechain;
@@ -1166,7 +1166,7 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 
 	if (c)
 	{
-		surf = cl.worldmodel->surfaces + node->firstsurface;
+		surf = r_worldmodel->surfaces + node->firstsurface;
 
 		if (dot < 0 -BACKFACE_EPSILON)
 			side = SURF_PLANEBACK;
@@ -1192,7 +1192,7 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 				if (gl_texsort.value)
 				{
 					if (!mirror
-					|| surf->texinfo->texture != cl.worldmodel->textures[mirrortexturenum])
+					|| surf->texinfo->texture != r_worldmodel->textures[mirrortexturenum])
 					{
 						surf->texturechain = surf->texinfo->texture->texturechain;
 						surf->texinfo->texture->texturechain = surf;
@@ -1226,7 +1226,7 @@ void R_DrawWorld (void)
 	entity_t	ent;
 
 	memset (&ent, 0, sizeof(ent));
-	ent.model = cl.worldmodel;
+	ent.model = r_worldmodel;
 
 	VectorCopy (r_refdef.vieworg, modelorg);
 
@@ -1240,7 +1240,7 @@ void R_DrawWorld (void)
 
 	R_ClearSkyBox ();
 
-	R_RecursiveWorldNode (cl.worldmodel->nodes, 15);
+	R_RecursiveWorldNode (r_worldmodel->nodes, 15);
 
 	DrawTextureChains ();
 
@@ -1277,20 +1277,20 @@ void R_MarkLeaves (void)
 	if (r_novis.value)
 	{
 		vis = solid;
-		memset (solid, 0xff, (cl.worldmodel->numleafs+7)>>3);
+		memset (solid, 0xff, (r_worldmodel->numleafs+7)>>3);
 	}
 	else
 	{
-		vis = Mod_LeafPVS (r_viewleaf, cl.worldmodel);
+		vis = Mod_LeafPVS (r_viewleaf, r_worldmodel);
 
 		if (r_viewleaf2) {
 			int			i, count;
 			unsigned	*src, *dest;
 
 			// merge visibility data for two leafs
-			count = (cl.worldmodel->numleafs+7)>>3;
+			count = (r_worldmodel->numleafs+7)>>3;
 			memcpy (solid, vis, count);
-			src = (unsigned *) Mod_LeafPVS (r_viewleaf2, cl.worldmodel);
+			src = (unsigned *) Mod_LeafPVS (r_viewleaf2, r_worldmodel);
 			dest = (unsigned *) solid;
 			count = (count + 3)>>2;
 			for (i=0 ; i<count ; i++)
@@ -1299,11 +1299,11 @@ void R_MarkLeaves (void)
 		}
 	}
 		
-	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
+	for (i = 0; i < r_worldmodel->numleafs; i++)
 	{
 		if (vis[i>>3] & (1<<(i&7)))
 		{
-			node = (mnode_t *)&cl.worldmodel->leafs[i+1];
+			node = (mnode_t *) &r_worldmodel->leafs[i+1];
 			do
 			{
 				if (node->visframe == r_visframecount)
