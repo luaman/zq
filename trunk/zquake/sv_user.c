@@ -1037,52 +1037,6 @@ void SV_PTrack_f (void)
 
 
 /*
-=================
-SV_Rate_f
-
-Change the bandwidth estimate for a client
-=================
-*/
-void SV_Rate_f (void)
-{
-	int		rate;
-	
-	if (Cmd_Argc() != 2)
-	{
-		SV_ClientPrintf (sv_client, PRINT_HIGH, "Current rate is %i\n",
-			(int)(1.0/sv_client->netchan.rate + 0.5));
-		return;
-	}
-	
-	rate = SV_BoundRate (atoi(Cmd_Argv(1)));
-
-	SV_ClientPrintf (sv_client, PRINT_HIGH, "Net rate set to %i\n", rate);
-	sv_client->netchan.rate = 1.0/rate;
-}
-
-
-/*
-=================
-SV_Msg_f
-
-Change the message level for a client
-=================
-*/
-void SV_Msg_f (void)
-{	
-	if (Cmd_Argc() != 2)
-	{
-		SV_ClientPrintf (sv_client, PRINT_HIGH, "Current msg level is %i\n",
-			sv_client->messagelevel);
-		return;
-	}
-	
-	sv_client->messagelevel = atoi(Cmd_Argv(1));
-
-	SV_ClientPrintf (sv_client, PRINT_HIGH, "Msg level set to %i\n", sv_client->messagelevel);
-}
-
-/*
 ==================
 SV_SetInfo_f
 
@@ -1326,9 +1280,7 @@ ucmd_t ucmds[] =
 	{"snap", SV_NoSnap_f},
 	
 // issued by hand at client consoles	
-	{"rate", SV_Rate_f},
 	{"pause", SV_Pause_f},
-	{"msg", SV_Msg_f},
 
 	{"say", SV_Say_f},
 	{"say_team", SV_Say_Team_f},
