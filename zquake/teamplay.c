@@ -895,138 +895,85 @@ typedef struct locdata_s {
 locdata_t locdata[MAX_LOC_ENTRIES];	// FIXME: allocate dynamically?
 int	loc_numentries;
 
-#define SKIPBLANKS(ptr) while (*ptr == ' ' || *ptr == 9 || *ptr == 13) ptr++
-#define SKIPTOEOL(ptr) while (*ptr != 10 && *ptr == 0) ptr++
 
-void TP_LoadLocFile (char *path, qboolean quiet)
+void TP_LoadLocFile (char *filename, qboolean quiet)
 {
+	char	fullpath[MAX_QPATH];
 	char	*buf, *p;
-	int		i, n, sign;
-	int		line;
-	int		nameindex;
-	int		mark;
-	char	locname[MAX_OSPATH];
+	char	line[1024];
+	int		i, argc;
+	int		errorcount = 0;
+	locdata_t	*loc;
 
-	if (!*path)
+	if (!*filename)
 		return;
 
-	strcpy (locname, "locs/");
-	if (strlen(path) + strlen(locname) + 2+4 > MAX_OSPATH)
-	{
-		Com_Printf ("TP_LoadLocFile: path name > MAX_OSPATH\n");
-		return;
-	}
-	strcat (locname, path);
-	if (!strstr(locname, "."))	
-		strcat (locname, ".loc");	// Add default extension
+	Q_snprintfz (fullpath, sizeof(fullpath) - 4, "locs/%s", filename);
+	COM_DefaultExtension (fullpath, ".loc");
 
-	mark = Hunk_LowMark ();
-	buf = (char *) FS_LoadHunkFile (locname);
-
-	if (!buf)
-	{
+	buf = (char *) FS_LoadTempFile (fullpath);
+	if (!buf) {
 		if (!quiet)
-			Com_Printf ("Could not load %s\n", locname);
+			Com_Printf ("Could not load %s\n", fullpath);
 		return;
 	}
-
-// Parse the whole file now
 
 	loc_numentries = 0;
 
+	// parse the file
+	// we rely on the fact that FS_Load*File always appends a 0 at the end
 	p = buf;
-	line = 1;
+	while (1) {
+		if (!*p)
+			break;		// end of file
 
-	while (1)
-	{
-		SKIPBLANKS(p);
-
-		if (*p == 0)
-			goto _endoffile;
-
-		if (*p == 10 || (*p == '/' && p[1] == '/'))
-		{
-			p++;
-			goto _endofline;
-		}
-
-		// parse three ints
-		for (i = 0; i < 3; i++)
-		{
-			n = 0;
-			sign = 1;
-			while (1)
-			{
-				switch (*p++)
-				{
-				case ' ': case 9:
-					goto _next;
-
-				case '-':
-					if (n)
-					{
-						Com_Printf ("Error in loc file on line #%i\n", line);
-						SKIPTOEOL(p);		
-						goto _endofline;
-					}
-					sign = -1;
-					break;
-
-				case '0': case '1': case '2': case '3': case '4':
-				case '5': case '6': case '7': case '8': case '9':
-					n = n*10 + (p[-1] - '0');
-					break;
-
-				default:	// including eol or eof
-					Com_Printf ("Error in loc file on line #%i\n", line);
-					SKIPTOEOL(p);		
-					goto _endofline;
-				}
-			}
-_next:
-			n *= sign;
-			locdata[loc_numentries].coord[i] = n / 8.0;
-
-			SKIPBLANKS(p);
-		}
-
-
-		// parse location name
-
-		nameindex = 0;
-		while (1)
-		{
-			switch (*p)
-			{
-			case 13:
-				p++;
+		// get a line out
+		for (i = 0; i < sizeof(line)-1; ) {
+			char c = *p++;
+			if (!c || c == 10)
 				break;
-
-			case 10: case 0:
-				locdata[loc_numentries].name[nameindex] = 0;
-				loc_numentries++;
-
-				if (loc_numentries >= MAX_LOC_ENTRIES)
-					goto _endoffile;
-
-				// leave the 0 or 10 in buffer, so it is parsed properly
-				goto _endofline;
-
-			default:
-				if (nameindex < MAX_LOC_NAME-1)
-					locdata[loc_numentries].name[nameindex++] = *p;
-				p++;
-			}
+			if (c != 13)
+				line[i++] = c;
 		}
-_endofline:
-		line++;
-	}
-_endoffile:
+		line[i] = 0;
 
-	Hunk_FreeToLowMark (mark);
+		Cmd_TokenizeString (line);
+
+		argc = Cmd_Argc();
+		if (!argc)
+			continue;
+
+		if (argc < 4) {
+			errorcount++;
+			continue;
+		}
+
+		if (atoi(Cmd_Argv(0)) == 0 && Cmd_Argv(0)[0] != '0') {
+			// first token is not a number
+			errorcount++;
+			continue;
+		}
+
+		if (loc_numentries >= MAX_LOC_ENTRIES)
+			continue;
+
+		loc = &locdata[loc_numentries];
+		loc_numentries++;
+
+		for (i = 0; i < 3; i++)
+			loc->coord[i] = atoi(Cmd_Argv(i)) / 8.0;
+
+		loc->name[0] = 0;
+		loc->name[sizeof(loc->name)-1] = 0;	// can't rely on strncat
+		for (i = 3; i < argc; i++) {
+			if (i != 3)
+				strncat (loc->name, " ", sizeof(loc->name)-1);
+			strncat (loc->name, Cmd_Argv(i), sizeof(loc->name)-1);
+		}
+	}
 
 	if (!quiet)
-		Com_Printf ("Loaded %s (%i loc points)\n", locname, loc_numentries);
+		Com_Printf ("Loaded %s (%i points)\n", fullpath, loc_numentries);
 }
 
 void TP_LoadLocFile_f (void)
