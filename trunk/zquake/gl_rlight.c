@@ -276,10 +276,11 @@ LIGHT SAMPLING
 
 mplane_t		*lightplane;
 vec3_t			lightspot;
+static int		lightcolor[3];
 
 int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 {
-	int			r, g, b;
+	int			r;
 	float		front, back, frac;
 	int			side;
 	mplane_t	*plane;
@@ -317,7 +318,7 @@ int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 		return r;		// hit something
 		
 	if ( (back < 0) == side )
-		return -1;		// didn't hit anuthing
+		return -1;		// didn't hit anything
 		
 // check for impact on this node
 	VectorCopy (mid, lightspot);
@@ -334,14 +335,13 @@ int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 		s = DotProduct (mid, tex->vecs[0]) + tex->vecs[0][3];
 		t = DotProduct (mid, tex->vecs[1]) + tex->vecs[1][3];;
 
-		if (s < surf->texturemins[0] ||
-		t < surf->texturemins[1])
+		if (s < surf->texturemins[0] || t < surf->texturemins[1])
 			continue;
 		
 		ds = s - surf->texturemins[0];
 		dt = t - surf->texturemins[1];
 		
-		if ( ds > surf->extents[0] || dt > surf->extents[1] )
+		if (ds > surf->extents[0] || dt > surf->extents[1])
 			continue;
 
 		if (!surf->samples)
@@ -350,26 +350,21 @@ int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 		ds >>= 4;
 		dt >>= 4;
 
-		lightmap = surf->samples;
-		r = g = b = 0;
-		if (lightmap)
+		lightmap = surf->samples + (dt * ((surf->extents[0]>>4)+1) + ds) * 3 /* RGB */;
+
+		for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255;
+				maps++)
 		{
-
-			lightmap += (dt * ((surf->extents[0]>>4)+1) + ds) * 3 /* RGB */;
-
-			for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255;
-					maps++)
-			{
-				scale = d_lightstylevalue[surf->styles[maps]];
-				r += lightmap[0] * scale;
-				g += lightmap[1] * scale;
-				b += lightmap[2] * scale;
-				lightmap += ((surf->extents[0]>>4)+1) *
-						((surf->extents[1]>>4)+1) * 3 /* RGB */;
-			}
-			
-			r = ((r + g + b) / 3) >> 8;
+			scale = d_lightstylevalue[surf->styles[maps]];
+			lightcolor[0] += lightmap[0] * scale;
+			lightcolor[1] += lightmap[1] * scale;
+			lightcolor[2] += lightmap[2] * scale;
+			lightmap += ((surf->extents[0]>>4)+1) *
+					((surf->extents[1]>>4)+1) * 3 /* RGB */;
 		}
+
+		r = max(lightcolor[0], max(lightcolor[1], lightcolor[2])) >> 8;
+		//r = ((lightcolor[0] + lightcolor[1] + lightcolor[2]) / 3) >> 8;
 		
 		return r;
 	}
@@ -378,22 +373,32 @@ int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 	return RecursiveLightPoint (node->children[!side], mid, end);
 }
 
-int R_LightPoint (vec3_t p)
+int R_LightPoint (vec3_t p, /* out */ vec3_t color)
 {
 	vec3_t		end;
 	int			r;
 	
-	if (!r_worldmodel->lightdata)
+	if (!r_worldmodel->lightdata) {
+		VectorSet (color, 255, 255, 255);
 		return 255;
+	}
+
+	VectorClear (lightcolor);
 	
 	end[0] = p[0];
 	end[1] = p[1];
 	end[2] = p[2] - 2048;
-	
+
 	r = RecursiveLightPoint (r_worldmodel->nodes, p, end);
 	
-	if (r == -1)
+	if (r == -1) {
 		r = 0;
+		VectorClear (lightcolor);
+	}
+
+	color[0] = lightcolor[0] / 256.0f;
+	color[1] = lightcolor[1] / 256.0f;
+	color[2] = lightcolor[2] / 256.0f;
 
 	return r;
 }

@@ -351,7 +351,7 @@ float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 vec3_t	shadevector;
 float	shadescale = 0;
 
-float	shadelight, ambientlight;
+vec3_t	shadelight_v, ambientlight_v;
 
 // precalculated dot products for quantized angles
 #define SHADEDOT_QUANT 16
@@ -370,7 +370,8 @@ GL_DrawAliasFrame
 */
 void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qbool mtex)
 {
-	float 	l;
+	int		i;
+	vec3_t	l_v;
 	trivertx_t	*verts;
 	int		*order;
 	int		count;
@@ -406,12 +407,13 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qbool mtex)
 			order += 2;
 
 			// normals and vertexes come from the frame list
-			l = (shadedots[verts->lightnormalindex] * shadelight + ambientlight) / 256;
+			for (i = 0; i < 3; i++) {
+				l_v[i] = (shadedots[verts->lightnormalindex] * shadelight_v[i] + ambientlight_v[i]) / 256.0;
 			
-			if (l > 1)
-				l = 1;
-
-			glColor3f (l, l, l);
+				if (l_v[i] > 1)
+					l_v[i] = 1;
+			}
+			glColor3fv (l_v);
 			glVertex3f (verts->v[0], verts->v[1], verts->v[2]);
 			verts++;
 		} while (--count);
@@ -510,6 +512,18 @@ void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr, qbool mtex)
 
 void GL_SelectTexture (GLenum target);
 
+// Because of poor quality of the lits out there, in many situations
+// I'd prefer the models not to be colored at all.
+// This is an attempt to compromise
+static void DesaturateColor (vec3_t color, float white_level)
+{
+#define white_fraction 0.5
+	int i;
+	for (i = 0; i < 3; i++) {
+		color[i] = color[i] * (1 - white_fraction) + white_level * white_fraction;
+	}
+}
+
 /*
 =================
 R_DrawAliasModel
@@ -528,6 +542,9 @@ void R_DrawAliasModel (entity_t *ent)
 	qbool		full_light;
 	model_t		*clmodel = ent->model;
 	int			texture, fb_texture;
+	vec3_t		lightcolor;
+	float		shadelight, ambientlight;
+	float	original_light;
 
 	VectorAdd (ent->origin, clmodel->mins, mins);
 	VectorAdd (ent->origin, clmodel->maxs, maxs);
@@ -554,23 +571,31 @@ void R_DrawAliasModel (entity_t *ent)
 	if (clmodel->modhint == MOD_THUNDERBOLT) {
 		ambientlight = 210;
 		shadelight = 0;
+		VectorSet (ambientlight_v, 210, 210, 210);
+		VectorClear (shadelight_v);
 		full_light = true;
 	} else if (clmodel->modhint == MOD_FLAME) {
 		ambientlight = 255;
 		shadelight = 0;
+		VectorSet (ambientlight_v, 255, 255, 255);
+		VectorClear (shadelight_v);
 		full_light = true;
 	}
 	else if (clmodel->modhint == MOD_PLAYER && r_fullbrightSkins.value
 		&& cl.allow_fbskins) {
 		ambientlight = shadelight = 128;
+		VectorSet (ambientlight_v, 128, 128, 128);
+		VectorSet (shadelight_v, 128, 128, 128);
 		full_light = true;
 	}
 	else
 	{
 		// normal lighting 
 		full_light = false;
-		ambientlight = shadelight = R_LightPoint (ent->origin);
-		
+		original_light = ambientlight = shadelight = R_LightPoint (ent->origin, lightcolor);
+
+		DesaturateColor (lightcolor, original_light);
+
 		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 		{
 			if (cl_dlights[lnum].die < r_refdef2.time || 
@@ -600,6 +625,14 @@ void R_DrawAliasModel (entity_t *ent)
 		if (clmodel->modhint == MOD_PLAYER) {
 			if (ambientlight < 8)
 				ambientlight = shadelight = 8;
+		}
+
+		if (original_light) {
+			VectorScale (lightcolor, ambientlight / original_light, ambientlight_v);
+			VectorScale (lightcolor, shadelight / original_light, shadelight_v);
+		} else {
+			VectorSet (ambientlight_v, ambientlight, ambientlight, ambientlight);
+			VectorSet (shadelight_v, shadelight, shadelight, shadelight);
 		}
 	}
 
