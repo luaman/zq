@@ -615,8 +615,10 @@ void R_DrawEntitiesOnList (void)
 					lighting.shadelight = 192 - lighting.ambientlight;
 
 				if (r_fullbrightSkins.value && currententity->model->modhint == MOD_PLAYER
-					&& !cl.teamfortress)
-					lighting.ambientlight = lighting.shadelight = 128;
+					&& !cl.teamfortress) {
+					lighting.ambientlight = max (lighting.ambientlight, 100);
+					lighting.shadelight = max (lighting.shadelight, 100);
+				}
 
 				R_AliasDrawModel (&lighting);
 			}
