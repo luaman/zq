@@ -1436,6 +1436,7 @@ void SV_InitLocal (void)
 	extern	cvar_t	sv_friction;
 	extern	cvar_t	sv_waterfriction;
 	extern	cvar_t	sv_nailhack;
+	extern	cvar_t	sv_loadentfiles;
 
 #ifndef QW_BOTH
 	Cvar_Init ();
@@ -1501,6 +1502,7 @@ void SV_InitLocal (void)
 	Cvar_RegisterVariable (&sv_nailhack);
 	Cvar_RegisterVariable (&sv_maxrate);
 	Cvar_RegisterVariable (&sv_fastconnect);
+	Cvar_RegisterVariable (&sv_loadentfiles);
 
 	Cmd_AddCommand ("addip", SV_AddIP_f);
 	Cmd_AddCommand ("removeip", SV_RemoveIP_f);
