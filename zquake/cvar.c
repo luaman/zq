@@ -284,27 +284,27 @@ void Cvar_Register (cvar_t *variable)
 		return;
 	}
 
-	// copy the value off, because future sets will Z_Free it
 	if (old)
 	{
-		Q_strncpyz (string, old->string, sizeof(string));
 		variable->flags |= old->flags & ~CVAR_USER_CREATED;
+		Q_strncpyz (string, old->string, sizeof(string));
 		Cvar_Delete (old->name);
+		variable->string = CopyString (string);
 	}
 	else
-		Q_strncpyz (string, variable->string, sizeof(string));
-
-	variable->string = Z_Malloc (1);
+	{
+		// allocate the string on zone because future sets will Z_Free it
+		variable->string = CopyString (variable->string);
+	}
 	
+	variable->value = Q_atof (variable->string);
+
 	// link the variable in
 	key = Key (variable->name);
 	variable->hash_next = cvar_hash[key];
 	cvar_hash[key] = variable;
 	variable->next = cvar_vars;
 	cvar_vars = variable;
-
-	// set it through the function to be consistent
-	Cvar_Set (variable, string);
 }
 
 
