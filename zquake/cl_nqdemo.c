@@ -402,12 +402,16 @@ void NQD_ParseServerData (void)
 //
 // now we try to load everything else until a cache allocation fails
 //
+	cl.clipmodels[1] = CM_LoadMap (cl.model_name[1], true, NULL, &cl.map_checksum2);
 
-	for (i=1 ; i<nummodels ; i++)
+	for (i = 1; i < nummodels; i++)
 	{
 		cl.model_precache[i] = Mod_ForName (cl.model_name[i], false);
 		if (cl.model_precache[i] == NULL)
 			Host_Error ("Model %s not found", cl.model_name[i]);
+
+		if (cl.model_name[i][0] == '*')
+			cl.clipmodels[i] = CM_InlineModel(cl.model_name[i]);
 	}
 
 	for (i=1 ; i<numsounds ; i++) {
