@@ -111,7 +111,8 @@ typedef enum {false, true} qboolean;
 #define	STAT_SECRETS		13		// bumped on client side by svc_foundsecret
 #define	STAT_MONSTERS		14		// bumped by svc_killedmonster
 #define	STAT_ITEMS			15
-#define	STAT_VIEWHEIGHT		16
+#define	STAT_VIEWHEIGHT		16		// Z_EXT_VIEWHEIGHT extension
+#define STAT_TIME			17		// Z_EXT_TIME extension
 
 
 //

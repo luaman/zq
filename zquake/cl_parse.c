@@ -1434,6 +1434,9 @@ void CL_SetStat (int stat, int value)
 	if (stat == STAT_VIEWHEIGHT && cl.z_ext & Z_EXT_VIEWHEIGHT)
 		cl.viewheight = cl.stats[STAT_VIEWHEIGHT];
 
+	if (stat == STAT_TIME && cl.z_ext & Z_EXT_SERVERTIME)
+		cl.servertime = cl.stats[STAT_TIME] * 0.001;
+
 	TP_StatChanged(stat, value);
 }
 
@@ -1698,6 +1701,7 @@ void CL_ParseServerMessage (void)
 		case svc_intermission:
 			cl.intermission = 1;
 			cl.completed_time = cls.realtime;
+			cl.solo_completed_time = cl.servertime;
 			vid.recalc_refdef = true;	// go to full screen
 			for (i=0 ; i<3 ; i++)
 				cl.simorg[i] = MSG_ReadCoord ();			
@@ -1710,6 +1714,7 @@ void CL_ParseServerMessage (void)
 		case svc_finale:
 			cl.intermission = 2;
 			cl.completed_time = cls.realtime;
+			cl.solo_completed_time = cl.servertime;
 			vid.recalc_refdef = true;	// go to full screen
 			SCR_CenterPrint (MSG_ReadString ());			
 			break;
