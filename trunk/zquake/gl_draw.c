@@ -30,7 +30,7 @@ cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_max_size = {"gl_max_size", "1024"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_conalpha = {"gl_conalpha", "0.8"};
-cvar_t		r_nicefont = { "r_nicefont", "1" };
+cvar_t		r_nicefont = { "r_ocrfont", "0" };
 
 byte		draw_chars1 [128][128] =
 {
@@ -1262,19 +1262,7 @@ static	unsigned	scaled[1024*512];	// [512*256];
 
 	samples = alpha ? gl_alpha_format : gl_solid_format;
 
-#if 0
-	if (mipmap)
-		gluBuild2DMipmaps (GL_TEXTURE_2D, samples, width, height, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-	else if (scaled_width == width && scaled_height == height)
-		glTexImage2D (GL_TEXTURE_2D, 0, samples, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-	else
-	{
-		gluScaleImage (GL_RGBA, width, height, GL_UNSIGNED_BYTE, trans,
-			scaled_width, scaled_height, GL_UNSIGNED_BYTE, scaled);
-		glTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
-	}
-#else
-texels += scaled_width * scaled_height;
+	texels += scaled_width * scaled_height;
 
 	if (scaled_width == width && scaled_height == height)
 	{
@@ -1308,8 +1296,6 @@ texels += scaled_width * scaled_height;
 		}
 	}
 done: ;
-#endif
-
 
 	if (mipmap)
 	{
