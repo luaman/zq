@@ -784,7 +784,7 @@ static void CM_LoadPlanes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("CM_LoadMap: funny lump size");
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*2*sizeof(*out), loadname);	
+	out = Hunk_AllocName (count * sizeof(*out), loadname);	
 	
 	map_planes = out;
 	numplanes = count;
