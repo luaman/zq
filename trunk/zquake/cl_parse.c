@@ -1693,7 +1693,7 @@ void CL_ParseQizmoVoice (void)
 
 	seq |= (bits & 0x30) << 4;	// 10-bit block sequence number, strictly increasing
 	num = bits >> 6;			// 2-bit sample number, bumped at the start of a new sample
-	unknown = bits & 0x0f;		// mysterious 4 bits.  volume multiplier maybe?
+	unknown = bits & 0x0f;		// mysterious 4 bits
 
 	// 32 bytes of voice data follow
 	for (i = 0; i < 32; i++)
