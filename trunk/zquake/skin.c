@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "quakedef.h"
+#include "teamplay.h"
 
 cvar_t		baseskin = {"baseskin", "base"};
 cvar_t		noskins = {"noskins", "0"};
@@ -29,9 +30,6 @@ char		allskins[128];
 #define	MAX_CACHED_SKINS		128
 skin_t		skins[MAX_CACHED_SKINS];
 int			numskins;
-
-extern cvar_t	cl_teamskin;	// Tonik
-extern cvar_t	cl_enemyskin;	// Tonik
 
 /*
 ================
@@ -47,8 +45,6 @@ void Skin_Find (player_info_t *sc)
 	skin_t		*skin;
 	int			i;
 	char		name[128], *s;
-	int			teamplay;	// Tonik
-	char		buf[128];	// Tonik
 
 	if (allskins[0])
 		strcpy (name, allskins);
@@ -61,29 +57,29 @@ void Skin_Find (player_info_t *sc)
 			strcpy (name, baseskin.string);
 	}
 
-	if (strstr (name, "..") || *name == '.')
-		strcpy (name, "base");
+	// ZQuake: check teamskin/enemyskin
+	// FIXME: does this work?
+	if ( !cl.teamfortress && !(cl.fpd & FPD_NO_FORCE_SKIN) )
+	{
+		int teamplay;
 
-// Tonik -->		
-	if (!cl.teamfortress) {
-		strcpy (buf, Info_ValueForKey(cls.userinfo, "team"));
 		teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
 		
 		if (cl_teamskin.string[0] && teamplay && 
-			!strcmp(Info_ValueForKey(sc->userinfo, "team"), buf)
-			&& strlen(cl_teamskin.string) < 128)
+			!strcmp(sc->team, cl.players[cl.playernum].team))
 		{
-			strcpy (name, cl_teamskin.string);
+			strncpy (name, cl_teamskin.string, 127);
 		}
 		
 		if (cl_enemyskin.string[0] && (!teamplay || 
-			strcmp(Info_ValueForKey(sc->userinfo, "team"), buf))
-			&& strlen(cl_enemyskin.string) < 128)
+			strcmp(sc->team, cl.players[cl.playernum].team)))
 		{
-			strcpy (name, cl_enemyskin.string);
+			strncpy (name, cl_enemyskin.string, 127);
 		}
 	}
-// <-- Tonik
+
+	if (strstr (name, "..") || *name == '.')
+		strcpy (name, "base");
 
 	COM_StripExtension (name, name);
 
