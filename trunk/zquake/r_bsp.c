@@ -607,7 +607,6 @@ R_RenderWorld
 */
 void R_RenderWorld (void)
 {
-	int			i;
 	model_t		*clmodel;
 
 	currententity = &r_worldentity;
