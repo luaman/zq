@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include "pmove.h"
+#include "teamplay.h"
 
 void CL_FinishTimeDemo (void);
 
@@ -377,17 +378,8 @@ void CL_WriteSetDemoMessage (void)
 
 
 
-/*
-====================
-CL_Record_f
-
-record <demoname> <server>
-====================
-*/
-void CL_Record_f (void)
+static void CL_Record (void)
 {
-	int		c;
-	char	name[MAX_OSPATH];
 	sizebuf_t	buf;
 	char	buf_data[MAX_MSGLEN];
 	int n, i, j;
@@ -398,36 +390,6 @@ void CL_Record_f (void)
 	extern	char gamedirfile[];
 	int seq = 1;
 
-	c = Cmd_Argc();
-	if (c != 2)
-	{
-		Con_Printf ("record <demoname>\n");
-		return;
-	}
-
-	if (cls.state != ca_active) {
-		Con_Printf ("You must be connected to record.\n");
-		return;
-	}
-
-	if (cls.demorecording)
-		CL_Stop_f();
-  
-	sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
-
-//
-// open the demo file
-//
-	COM_DefaultExtension (name, ".qwd");
-
-	cls.demofile = fopen (name, "wb");
-	if (!cls.demofile)
-	{
-		Con_Printf ("ERROR: couldn't open.\n");
-		return;
-	}
-
-	Con_Printf ("recording to %s.\n", name);
 	cls.demorecording = true;
 
 /*-------------------------------------------------*/
@@ -671,6 +633,149 @@ void CL_Record_f (void)
 
 	// done
 }
+
+/*
+====================
+CL_Record_f
+
+record <demoname>
+====================
+*/
+void CL_Record_f (void)
+{
+	int		c;
+	char	name[MAX_OSPATH];
+
+	c = Cmd_Argc();
+	if (c != 2)
+	{
+		Con_Printf ("record <demoname>\n");
+		return;
+	}
+
+	if (cls.state != ca_active) {
+		Con_Printf ("You must be connected to record.\n");
+		return;
+	}
+
+	if (cls.demorecording)
+		CL_Stop_f();
+  
+	sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
+
+//
+// open the demo file
+//
+	COM_DefaultExtension (name, ".qwd");
+
+	cls.demofile = fopen (name, "wb");
+	if (!cls.demofile)
+	{
+		Con_Printf ("ERROR: couldn't open.\n");
+		return;
+	}
+
+	Con_Printf ("recording to %s.\n", name);
+	CL_Record ();
+}
+
+
+/*
+====================
+CL_EasyRecord_f
+
+easyrecord [demoname]
+====================
+*/
+void CL_EasyRecord_f (void)
+{
+	int		c;
+	char	name[MAX_OSPATH];
+	char	name2[MAX_OSPATH];
+	int		i;
+	FILE	*f;
+
+	c = Cmd_Argc();
+	if (c > 2)
+	{
+		Con_Printf ("record <demoname>\n");
+		return;
+	}
+
+	if (cls.state != ca_active) {
+		Con_Printf ("You must be connected to record.\n");
+		return;
+	}
+
+	if (cls.demorecording)
+		CL_Stop_f();
+  
+	if (c == 2)
+		sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
+	else {
+		// guess game type and write demo name
+		i = CL_CountPlayers();
+		if (atoi(Info_ValueForKey(cl.serverinfo, "teamplay"))
+			&& i >= 3)
+		{
+			// Teamplay
+			sprintf (name, "%s/%s_%s_vs_%s_%s", com_gamedir, 
+				CL_PlayerName(),
+				CL_PlayerTeam(),
+				CL_EnemyTeam(),
+				CL_MapName());
+		} else {
+			if (i == 2) {
+				// Duel
+				sprintf (name, "%s/%s_vs_%s_%s", com_gamedir, 
+					CL_PlayerName(),
+					CL_EnemyName(),
+					CL_MapName());
+			}
+			else if (i > 2) {
+				// FFA
+				sprintf (name, "%s/%s_ffa_%s", com_gamedir, 
+					CL_PlayerName, 
+					CL_MapName());
+			}
+			else {
+				// one player
+				sprintf (name, "%s/%s_%s", com_gamedir,
+					CL_PlayerName(),
+					CL_MapName());
+			}
+		}
+	}
+
+//
+// open the demo file
+//
+	strcpy (name2, name);
+	COM_DefaultExtension (name2, ".qwd");
+
+	f = fopen (name2, "rb");
+	if (f) {
+		i = 0;
+		do {
+			fclose (f);
+			strcpy (name2, va("%s_%02i", name, i));
+			COM_DefaultExtension (name2, ".qwd");
+			f = fopen (name2, "rb");
+			i++;
+		} while (f);
+	}
+
+	cls.demofile = fopen (name2, "wb");
+	if (!cls.demofile)
+	{
+		Con_Printf ("ERROR: couldn't open.\n");
+		return;
+	}
+
+	Con_Printf ("recording to %s.\n", name2);
+	CL_Record ();
+}
+
 
 /*
 ====================
