@@ -62,7 +62,7 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u)
 	movevars.maxspeed = cl.maxspeed;
 	movevars.bunnyspeedcap = cl.bunnyspeedcap;
 
-	PlayerMove ();
+	PM_PlayerMove ();
 
 	to->waterjumptime = pmove.waterjumptime;
 	to->jump_held = pmove.jump_held;
