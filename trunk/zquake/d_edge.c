@@ -221,21 +221,15 @@ void D_DrawSurfaces (void)
 				extern cvar_t r_fastsky;
 				extern cvar_t r_skycolor;
 
-				if (r_fastsky.value) {
-					d_zistepu = d_zistepv = 0;
-					d_ziorigin = -0.9;
+				if (r_fastsky.value)
 					D_DrawSolidSurface (s, (int)r_skycolor.value & 0xFF);
-					D_DrawZSpans (s->spans);
-				}
-				else
-				{
+				else {
 					if (!r_skymade)
-					{
 						R_MakeSky ();
-					}
 					D_DrawSkyScans8 (s->spans);
-					D_DrawZSpans (s->spans);
 				}
+
+				D_DrawZSpans (s->spans);
 			}
 			else if (s->flags & SURF_DRAWBACKGROUND)
 			{
