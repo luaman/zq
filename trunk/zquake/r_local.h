@@ -262,6 +262,7 @@ extern int		r_dlightframecount;
 
 void R_StoreEfrags (efrag_t **ppefrag);
 void R_TimeRefresh_f (void);
+void R_ScreenShot_f (void);
 void R_TimeGraph (void);
 void R_PrintAliasStats (void);
 void R_PrintTimes (void);

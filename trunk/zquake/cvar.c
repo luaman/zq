@@ -149,12 +149,12 @@ void Cvar_Set (cvar_t *var, char *string)
 	}
 
 	if (var->OnChange && !changing) {
+		qboolean cancel = false;
 		changing = true;
-		if (var->OnChange(var, string)) {
-			changing = false;
-			return;
-		}
+		var->OnChange(var, string, &cancel);
 		changing = false;
+		if (cancel)
+			return;
 	}
 
 	Z_Free (var->string);	// free the old value string
