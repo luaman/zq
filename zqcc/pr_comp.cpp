@@ -238,7 +238,7 @@ def_t	*PR_ParseImmediate (void)
 	cn->type = pr_immediate_type;
 	cn->name = "IMMEDIATE";
 	cn->initialized = 1;
-	cn->scope = NULL;		// always share immediates
+	cn->scope = cn->visscope = NULL;	// always share immediates
 
 // copy the immediate to the global area
 	cn->ofs = numpr_globals;
@@ -667,7 +667,7 @@ void PR_ParseState (void)
 	PR_Expect (",");
 
 	name = PR_ParseName ();
-	def = PR_GetDef (&type_function, name, 0);
+	def = PR_GetDef (&type_function, name, NULL, NULL);
 		
 	PR_Expect ("]");
 	
@@ -709,7 +709,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 //
 	for (i=0 ; i<type->num_parms ; i++)
 	{
-		defs[i] = PR_GetDef (type->parm_types[i], pr_parm_names[i], pr_scope, true);
+		defs[i] = PR_GetDef (type->parm_types[i], pr_parm_names[i], pr_scope, pr_scope, true);
 		f->parm_ofs[i] = defs[i]->ofs;
 		if (i > 0 && f->parm_ofs[i] < f->parm_ofs[i-1])
 			Error ("bad parm order");
@@ -751,6 +751,45 @@ def_t *PR_FindDef (char *name, def_t *scope)
 	if (scope) {
 		// search local defs first
 		for (def_t *def = pr.def_head.next ; def ; def = def->next) {
+			if (def->visscope != scope)
+				continue;		// in a different function, or global
+				
+			if (strcmp(def->name, name))
+				continue;
+
+			// found it
+			return def;
+		}
+	}
+
+	// search global defs
+	for (def_t *def = pr.def_head.next ; def ; def = def->next) {
+		if (def->visscope)
+			continue;		// a local def
+			
+		if (strcmp(def->name, name))
+			continue;
+
+		// found it
+		return def;
+	}
+	
+	return NULL;
+}
+
+/*
+============
+PR_FindDef
+
+Returns NULL if no matching def is found
+Doesn't take scope visibility into account
+============
+*/
+def_t *PR_FindDef2 (char *name, def_t *scope)
+{
+	if (scope) {
+		// search local defs first
+		for (def_t *def = pr.def_head.next ; def ; def = def->next) {
 			if (def->scope != scope)
 				continue;		// in a different function, or global
 				
@@ -777,30 +816,6 @@ def_t *PR_FindDef (char *name, def_t *scope)
 	return NULL;
 }
 
-// a special hack for functions
-// functions are special as they're always defined on global scope,
-// but may be declared at local scope
-// for functions, def->scope is visibility scope
-// FIXME: make this crap more generic to allow "extern float f;" at local scope
-def_t *PR_FindAndFixupFuncDef (char *name, def_t *scope)
-{
-	for (def_t *def = pr.def_head.next ; def ; def = def->next) {
-		if (def->type->type != ev_function)
-			continue;
-
-		if (strcmp(def->name, name))
-			continue;
-
-		if (!def->scope)
-			return def;		// already declared at global level
-
-		def->scope = scope;		// hack
-		return def;
-	}
-
-	return NULL;
-}
-
 
 /*
 ============
@@ -809,19 +824,16 @@ PR_GetDef
 A new def will be allocated if it can't be found
 ============
 */
-def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool isParm)
+def_t *PR_GetDef (type_t *type, char *name, def_t *scope, def_t *visscope, bool isParm)
 {
 	def_t		*def;
 	char element[MAX_NAME];
 
 // see if the name is already in use
-	if (type->type == ev_function && !isParm)
-		def = PR_FindAndFixupFuncDef (name, scope);
-	else
-		def = PR_FindDef (name, scope);
+	def = PR_FindDef2 (name, scope);
 
 	if (def) {
-		if (def->scope != scope && def->type->type != ev_function) {
+		if (def->scope != scope) {
 			if (!pr_idcomp)
 				goto allocNew;		// a local def overrides global (ok)
 			else
@@ -836,7 +848,11 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool isParm)
 				PR_ParseError ("redefinition of formal parameter '%s'", name);
 			else
 				PR_Warning (WARN_HIGH, "redefinition of formal parameter '%s'", name);
-		
+
+		// fixup visibility scope
+		if (def->visscope)
+			def->visscope = visscope;
+			
 		return def;
 	}
 
@@ -853,6 +869,7 @@ allocNew:
 	def->type = type;
 	def->isParm = isParm;
 	def->scope = scope;
+	def->visscope = visscope;
 	
 	def->ofs = numpr_globals;
 	pr_global_defs[numpr_globals] = def;
@@ -864,31 +881,33 @@ allocNew:
 	if (type->type == ev_vector)
 	{		
 		sprintf (element, "%s_x",name);
-		PR_GetDef (&type_float, element, scope, isParm);
+		PR_GetDef (&type_float, element, scope, visscope, isParm);
 		
 		sprintf (element, "%s_y",name);
-		PR_GetDef (&type_float, element, scope, isParm);
+		PR_GetDef (&type_float, element, scope, visscope, isParm);
 		
 		sprintf (element, "%s_z",name);
-		PR_GetDef (&type_float, element, scope, isParm);
+		PR_GetDef (&type_float, element, scope, visscope, isParm);
 	}
 	else
 		numpr_globals += type_size[type->type];
 
 	if (type->type == ev_field)
 	{
+		assert (scope == NULL && visscope == NULL);
+
 		*(int *)&pr_globals[def->ofs] = pr.size_fields;
 		
 		if (type->aux_type->type == ev_vector)
 		{
 			sprintf (element, "%s_x",name);
-			PR_GetDef (&type_floatfield, element, scope, isParm);
+			PR_GetDef (&type_floatfield, element, NULL, NULL, isParm);
 			
 			sprintf (element, "%s_y",name);
-			PR_GetDef (&type_floatfield, element, scope, isParm);
+			PR_GetDef (&type_floatfield, element, NULL, NULL, isParm);
 			
 			sprintf (element, "%s_z",name);
-			PR_GetDef (&type_floatfield, element, scope, isParm);
+			PR_GetDef (&type_floatfield, element, NULL, NULL, isParm);
 		}
 		else
 			pr.size_fields += type_size[type->aux_type->type];
@@ -988,6 +1007,9 @@ void PR_ParseDefs (void)
 	int	c_defs = 0;
 	bool qc_style_function_def = false;
 
+	// functions are always global
+	def_t *defscope = (type->type == ev_function) ? NULL : pr_scope;
+
 	do
 	{
 		char *name = PR_ParseName ();
@@ -1000,7 +1022,7 @@ void PR_ParseDefs (void)
 
 			type_t *functionType = PR_ParseFunctionType (type);
 			
-			def_t *def = PR_GetDef (functionType, functionName, pr_scope);
+			def_t *def = PR_GetDef (functionType, functionName, NULL, pr_scope);
 			
 			if (!c_defs && !strcmp(pr_token, "{")) {
 				// C-style function definition
@@ -1011,7 +1033,7 @@ void PR_ParseDefs (void)
 			continue;
 		}
 
-		def_t *def = PR_GetDef (type, name, pr_scope);
+		def_t *def = PR_GetDef (type, name, defscope, pr_scope);
 
 		if (type->type == ev_void) {
 			// end_sys_globals and end_sys_fields are special flags for structure dumping
