@@ -719,7 +719,7 @@ int	PR_WriteProgdefs (char *filename)
 }
 
 
-void PrintFunction (char *name)
+void PR_PrintFunction (char *name)
 {
 	int		i;
 	dstatement_t	*ds;
@@ -746,7 +746,8 @@ void PrintFunction (char *name)
 
 //============================================================================
 
-bool pr_idcomp = false;
+bool opt_idcomp = false;
+bool opt_dumpasm = false;
 
 /*
 ============
@@ -775,7 +776,7 @@ void main (int argc, char **argv)
 
 	if (CheckParm ("-idcomp")) {
 		printf ("compiling in id compatibility mode\n");
-		pr_idcomp = true;
+		opt_idcomp = true;
 	}
 
 	p = CheckParm ("-src");
@@ -799,8 +800,6 @@ void main (int argc, char **argv)
 	strcpy (destfile, com_token);
 	printf ("outputfile: %s\n", destfile);
 	
-	pr_dumpasm = false;
-
 	PR_BeginCompilation (malloc (0x100000), 0x100000);
 
 // compile all the files
@@ -828,7 +827,7 @@ void main (int argc, char **argv)
 		{
 			if (argv[p][0] == '-')
 				break;
-			PrintFunction (argv[p]);
+			PR_PrintFunction (argv[p]);
 		}
 	}
 	

@@ -27,7 +27,6 @@ int			pr_edict_size;
 //========================================
 
 def_t		*pr_scope;		// the function being parsed, or NULL
-bool		pr_dumpasm;
 string_t	s_file;			// filename for function definition
 
 int			locals_end;		// for tracking local variables vs temps
@@ -913,7 +912,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, def_t *visscope, bool 
 
 	if (def) {
 		if (def->scope != scope) {
-			if (!pr_idcomp)
+			if (!opt_idcomp)
 				goto allocNew;		// a local def overrides global (ok)
 			else
 				PR_Warning (WARN_HIGH, "'%s' already declared on global scope");
@@ -923,7 +922,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, def_t *visscope, bool 
 			PR_ParseError ("type mismatch on redeclaration of %s", name);
 
 		if (def->isParm && !isParm)
-			if (!pr_idcomp)
+			if (!opt_idcomp)
 				PR_ParseError ("redefinition of formal parameter '%s'", name);
 			else
 				PR_Warning (WARN_HIGH, "redefinition of formal parameter '%s'", name);
@@ -999,8 +998,8 @@ allocNew:
 			pr.size_fields += type_size[type->aux_type->type];
 	}
 
-//	if (pr_dumpasm)
-//		PR_PrintOfs (def->ofs);
+	if (opt_dumpasm)
+		PR_PrintOfs (def->ofs);
 		
 	return def;
 }
@@ -1030,7 +1029,8 @@ void PR_ParseFunctionBody (type_t *type, char *name, def_t *def)
 	def->initialized = 1;
 	G_FUNCTION(def->ofs) = numfunctions;
 	f->def = def;
-//	if (pr_dumpasm)
+
+//	if (opt_dumpasm)
 //		PR_PrintFunction (def);
 
 // fill in the dfunction

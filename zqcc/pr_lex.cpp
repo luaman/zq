@@ -127,8 +127,9 @@ void PR_NewLine (void)
 	pr_source_line++;
 	pr_line_start = pr_file_p;
 
-//	if (pr_dumpasm)
-//		PR_PrintNextLine ();
+	if (opt_dumpasm)
+		PR_PrintNextLine ();
+
 	if (m)
 		pr_file_p--;
 }
