@@ -258,7 +258,7 @@ void Model_NextDownload (void)
 			Com_Printf ("\nThe required model file '%s' could not be found or downloaded.\n\n"
 				, cl.model_name[i]);
 			Com_Printf ("You may need to download or purchase a %s client "
-				"pack in order to play on this server.\n\n", com_gamedirfile);
+				"pack in order to play on this server.\n\n", cls.gamedirfile);
 			CL_Disconnect ();
 			return;
 		}
@@ -392,7 +392,7 @@ void CL_ParseDownload (void)
 	if (!cls.download)
 	{
 		if (strncmp(cls.downloadtempname,"skins/",6))
-			Q_snprintfz (name, sizeof(name), "%s/%s", com_gamedir, cls.downloadtempname);
+			Q_snprintfz (name, sizeof(name), "%s/%s", cls.gamedir, cls.downloadtempname);
 		else
 			Q_snprintfz (name, sizeof(name), "qw/%s", cls.downloadtempname);
 
@@ -442,8 +442,8 @@ void CL_ParseDownload (void)
 		// rename the temp file to its final name
 		if (strcmp(cls.downloadtempname, cls.downloadname)) {
 			if (strncmp(cls.downloadtempname,"skins/",6)) {
-				sprintf (oldn, "%s/%s", com_gamedir, cls.downloadtempname);
-				sprintf (newn, "%s/%s", com_gamedir, cls.downloadname);
+				sprintf (oldn, "%s/%s", cls.gamedir, cls.downloadtempname);
+				sprintf (newn, "%s/%s", cls.gamedir, cls.downloadname);
 			} else {
 				sprintf (oldn, "qw/%s", cls.downloadtempname);
 				sprintf (newn, "qw/%s", cls.downloadname);

@@ -273,7 +273,7 @@ void CL_Download_f (void)
 	}
 
 	Q_snprintfz (cls.downloadname, sizeof(cls.downloadname),
-		"%s/%s", com_gamedir, Cmd_Argv(1));
+		"%s/%s", cls.gamedir, Cmd_Argv(1));
 
 	p = cls.downloadname;
 	for (;;) {
@@ -560,7 +560,7 @@ void CL_WriteConfig_f (void)
 
 	Com_Printf ("Writing %s\n", name);
 
-	f = fopen (va("%s/%s", com_gamedir, name), "w");
+	f = fopen (va("%s/%s", cls.gamedir, name), "w");
 	if (!f) {
 		Com_Printf ("Couldn't write %s.\n", name);
 		return;
