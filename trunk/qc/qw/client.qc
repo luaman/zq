@@ -392,6 +392,14 @@ void ClientKill ()
 	if (intermission_running)
 		return;
 
+	if (time < self.suicide_time)
+	{
+		sprint (self, PRINT_HIGH, "Only one suicide in 5 seconds\n");
+		return;
+	}
+
+	self.suicide_time = time + 5;
+
 	bprint (PRINT_MEDIUM, self.netname, " suicides\n");
 	set_suicide_frame ();
 	self.modelindex = modelindex_player;
