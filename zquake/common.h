@@ -247,6 +247,8 @@ void MSG_WriteCoord (sizebuf_t *sb, float f);
 void MSG_WriteAngle (sizebuf_t *sb, float f);
 void MSG_WriteAngle16 (sizebuf_t *sb, float f);
 void MSG_WriteDeltaUsercmd (sizebuf_t *sb, struct usercmd_s *from, struct usercmd_s *cmd);
+void MSG_EmitPacketEntities (struct packet_entities_s *from, int delta_sequence, struct packet_entities_s *to,
+							sizebuf_t *msg, struct entity_state_s *(*GetBaseline)(int number));
 
 extern	int			msg_readcount;
 extern	qboolean	msg_badread;		// set if a read goes beyond end of message

@@ -268,7 +268,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // entity_state_t is the information conveyed from the server
 // in an update message
-typedef struct
+typedef struct entity_state_s
 {
 	int		number;			// edict index
 
@@ -284,7 +284,7 @@ typedef struct
 
 
 #define	MAX_PACKET_ENTITIES	64	// doesn't count nails
-typedef struct
+typedef struct packet_entities_s
 {
 	int		num_entities;
 	entity_state_t	entities[MAX_PACKET_ENTITIES];
