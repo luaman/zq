@@ -489,6 +489,9 @@ void SV_UpdateClientStats (client_t *client)
 	// stuff the sigil bits into the high bits of items for sbar
 	stats[STAT_ITEMS] = (int)ent->v.items | ((int)pr_global_struct->serverflags << 28);
 
+	if (ent->v.health > 0)	// viewheight for PF_DEAD & PF_GIB is hardwired
+		stats[STAT_VIEWHEIGHT] = ent->v.view_ofs[2];
+
 	for (i=0 ; i<MAX_CL_STATS ; i++)
 		if (stats[i] != client->stats[i])
 		{

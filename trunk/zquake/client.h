@@ -302,6 +302,7 @@ typedef struct
 
 	qboolean	onground;
 	float		crouch;			// local amount for smoothing stepups
+	float		viewheight;
 
 	int			paused;			// a combination of PAUSED_SERVER and PAUSED_DEMO flags
 

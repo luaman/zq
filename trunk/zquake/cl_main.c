@@ -331,6 +331,8 @@ void CL_ClearState (void)
 
 	cl_entframecount = 0;
 
+	cl.viewheight = DEFAULT_VIEWHEIGHT;
+
 // make sure no centerprint messages are left from previous level
 	scr_centertime_off = 0;
 
