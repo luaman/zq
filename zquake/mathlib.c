@@ -358,6 +358,22 @@ void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 	}
 }
 
+void MakeNormalVectors (/* in */ vec3_t forward, /* out */ vec3_t right, vec3_t up)
+{
+	float		d;
+
+	// this rotate and negate guarantees a vector
+	// not colinear with the original
+	right[1] = -forward[0];
+	right[2] = forward[1];
+	right[0] = forward[2];
+
+	d = DotProduct (right, forward);
+	VectorMA (right, -d, forward, right);
+	VectorNormalize (right);
+	CrossProduct (right, forward, up);
+}
+
 int VectorCompare (vec3_t v1, vec3_t v2)
 {
 	int		i;
