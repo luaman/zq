@@ -329,11 +329,6 @@ void R_LoadSky_f ()
 		return;
 	}
 
-	if (!r_refdef2.allowCheats) {
-		Com_Printf ("This command is cheat protected; start the map with devmap <mapname>\n");
-		return;
-	}
-
 	R_SetSky (Cmd_Argv(1));
 }
 
