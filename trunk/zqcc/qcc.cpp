@@ -18,6 +18,8 @@
 */
 
 #include "qcc.h"
+#include <stdio.h>
+#include <string.h>
 
 #ifdef _WIN32
 #include <io.h>
@@ -26,7 +28,7 @@
 #include <unistd.h>
 #endif
 
-char		destfile[1024];
+static char	destfile[1024];
 
 float		pr_globals[MAX_REGS];
 int			numpr_globals;
@@ -46,6 +48,7 @@ int			numglobaldefs;
 
 ddef_t		fields[MAX_FIELDS];
 int			numfielddefs;
+
 
 // CopyString returns an offset from the string heap
 int		 CopyString (char *str)
@@ -721,7 +724,7 @@ int		 PR_WriteProgdefs (char *filename)
 
 	out += sprintf (out, "#define PROGHEADER_CRC %i\n", crc);
 
-	if (CheckParm("progdefs", 0, true))
+	if (CheckParm("progdefs", 0, true, true))
 	{
 		printf ("writing %s\n", filename);
 		FILE *f = fopen (filename, "w");
@@ -773,39 +776,66 @@ int		 main (int argc, char **argv)
 {
 	char	*src;
 	char	*src2;
-	char	 filename[1024];
-	int		 p, crc;
+	int		 arg, crc;
 	char	 sourcedir[1024];
+	char     progssrc[1024];
+	char	 filename[1024];
 	eval_t	 zqcc_value;
 
 	myargc = argc;
 	myargv = argv;
 
-	if (CheckParm ("?", 0, true) || CheckParm ("h", 0, true))
+	if (CheckParm ("?", 0, true, false) || CheckParm ("h", 0, true, false))
 	{
-		printf ("zqcc looks for progs.src in the current directory.\n");
-		printf ("to look in a different directory: -src <directory>\n");
-		printf ("to enable vanilla id Software code compatibility: -idcomp\n");
-		printf ("to dump progdefs.h: -progdefs\n");
-      	printf ("to #define something: -D <name>\n");
+		printf ("Usage: zqcc [-srcdir <dir>] [-idcomp] [-progdefs] [-D<name>] [-progs <filename>] [-dest <filename>]\n");
+		printf ("Where\n");
+		printf ("  -srcdir <dir>        zqcc looks for progs.src in given directory\n");
+		printf ("  -idcomp <dir>        enable vanilla id software code compatibility\n");
+		printf ("  -progdefs <dir>      dump progdefs.h\n");
+		printf ("  -D<name>             #define <name>\n");
+		printf ("  -progs <filename>    zqcc reads given <filename> instead of default progs.src\n");
+		printf ("  -dest <filename>		force writing to given <filename> instead of the one given in progs.src\n");
+		printf ("  -asm <f1> [<f2>...]  print (pseudo) assembler code for given function(s) to stdout\n");
 		return 0;	// or should I return 1?
 	}
 
-	if (CheckParm ("idcomp", 0, true))
+	if (CheckParm ("idcomp", 0, true, true))
 	{
 		printf ("Compiling in id compatibility mode\n");
 		opt_idcomp = true;
 	}
 
-	p = CheckParm ("src", 0, true);
-	if (p && p < argc-1 )
+	strcpy (sourcedir, "");
+	arg = CheckParm ("src", 0, true, true);
+	if (arg > 0 && arg < argc-1 )
 	{
-		strcpy (sourcedir, argv[p+1]);
-		strcat (sourcedir, "/");
-		printf ("Source directory: %s\n", sourcedir);
+		char *p;
+
+		strcpy (sourcedir, argv[arg+1]);
+		p = sourcedir + strlen(sourcedir) - 1;
+		if ( *p != PATHSEPARATOR)
+		{
+			*++p = PATHSEPARATOR;
+			*++p = 0;
+		}
+		printf ("Source directory:  %s\n", sourcedir);
 	}
-	else
-		strcpy (sourcedir, "");
+
+	strlcpy (progssrc, "progs.src", sizeof(progssrc) - 1 );
+	arg = CheckParm ("progs", 0, true, true);
+	if (arg > 0 && arg < argc-1)
+	{
+		ExtractFileName (argv[arg+1], progssrc, sizeof(progssrc) - 1);
+		printf ("Progs-Sourcefile:  %s\n", progssrc);
+	}
+
+	strcpy (destfile, "");
+	arg = CheckParm ("dest", 0, true, true);
+	if (arg > 0 && arg < argc-1)
+	{
+		strlcpy (destfile, argv[arg+1], sizeof(destfile) - 1);
+		printf ("Forced Outputfile: %s\n", destfile);
+	}
 
 	InitData ();
 
@@ -816,31 +846,39 @@ int		 main (int argc, char **argv)
 		Error ("unable to create the internal #define \"_ZQCC\"\n");
 
 	// check for commandline defines:
-	p = 0;
-	while ( (p = CheckParm ("D", p+1, true)) > 0 )
+	arg = 0;
+	while ( (arg = CheckParm ("D", arg+1, true, true)) > 0 )
 	{
 		char	*name = NULL;
-		if ( !Q_stricmp(argv[p] + 1, "D") )
+		if ( argv[arg][1] != 'D' )
 		{
-			if ( p < (argc - 1) )
-				name = argv[++p]; // argv matches completely -> name is an extra parameter
+			if ( arg < (argc - 1) )
+				name = argv[++arg]; // argv matches completely -> name is an extra parameter
 			else
-				Error ("incomplete command line parameter #%d, missing <name> for #define\n", p);
+				Error ("incomplete command line parameter #%d, missing <name> for #define\n", arg);
 		}
 		else
-			name = argv[p] + 2; // current argv includes the name
+			name = argv[arg] + 2; // current argv includes the name
 		if (PR_AddDefine((const char *)name, &type_const_float, &zqcc_value, false) <= 0)
 			Error ("ERROR: unable to create the #define \"%s\"\n", name);
 	}
 
-	sprintf (filename, "%sprogs.src", sourcedir);
+	sprintf (filename, "%s%s", sourcedir, progssrc);
+	filename[sizeof(filename) - 1] = '\0';
+
 	LoadFile (filename, (void **)&src);
 
+
+	// first valid line in progs.src is the output file:
+	pr_source_line = 0;
 	src = COM_Parse (src);
 	if (!src)
-		Error ("No destination filename.  qcc -help for info.\n");
-	strcpy (destfile, com_token);
-	printf ("Outputfile: %s\n", destfile);
+		Error ("No destination filename.  zqcc -help for info.\n");
+	if (destfile[0] == '\0') // not set as commandline parameter
+	{
+		strlcpy (destfile, com_token, sizeof(destfile) - 1);
+		printf ("Outputfile:       %s\n", destfile);
+	}
 
 	PR_BeginCompilation (malloc (0x100000), 0x100000);
 
@@ -850,26 +888,38 @@ int		 main (int argc, char **argv)
 		src = COM_Parse(src);
 		if (!src)
 			break;
-		sprintf (filename, "%s%s", sourcedir, com_token);
-		printf ("Compiling %s\n", filename);
-		LoadFile (filename, (void **)&src2);
 
-		if (!PR_CompileFile (src2, filename) )
-			exit (1);
+		// this is a hack to enable #defines in progs.src:
+		if ( com_token[0] == '#' )
+		{
+			pr_file_p = src - strlen(com_token);
+			s_file = CopyString (filename);
+
+			PR_LexPrecomp();
+		}
+		else
+		{
+			sprintf (filename, "%s%s", sourcedir, com_token);
+			printf ("Compiling %s\n", filename);
+			LoadFile (filename, (void **)&src2);
+
+			if (!PR_CompileFile (src2, filename) )
+				exit (1);
+		}
 
 	} while (1);
 
 	if (!PR_FinishCompilation ())
 		Error ("compilation errors");
 
-	p = CheckParm ("asm", 0, true);
-	if (p)
+	arg = CheckParm ("asm", 0, true, true);
+	if (arg)
 	{
-		for (p++ ; p<argc ; p++)
+		for (arg++; arg < argc; arg++)
 		{
-			if (argv[p][0] == '-')
+			if (argv[arg][0] == '-')
 				break;
-			PR_PrintFunction (argv[p]);
+			PR_PrintFunction (argv[arg]);
 		}
 	}
 
