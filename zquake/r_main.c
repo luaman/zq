@@ -124,6 +124,7 @@ cvar_t	r_clearcolor = {"r_clearcolor","2"};
 cvar_t	r_waterwarp = {"r_waterwarp","1"};
 cvar_t	r_fullbright = {"r_fullbright","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
+cvar_t	r_drawviewmodel2 = {"r_drawviewmodel2","0"}; // show weapon at fov > 90
 cvar_t	r_drawviewmodel = {"r_drawviewmodel","1"};
 cvar_t	r_aliasstats = {"r_polymodelstats","0"};
 cvar_t	r_dspeeds = {"r_dspeeds","0"};
@@ -209,6 +210,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_fullbright);
 	Cvar_RegisterVariable (&r_drawentities);
 	Cvar_RegisterVariable (&r_drawviewmodel);
+	Cvar_RegisterVariable (&r_drawviewmodel2);
 	Cvar_RegisterVariable (&r_aliasstats);
 	Cvar_RegisterVariable (&r_dspeeds);
 	Cvar_RegisterVariable (&r_reportsurfout);
@@ -631,7 +633,8 @@ void R_DrawViewModel (void)
 	float		add;
 	dlight_t	*dl;
 	
-	if (!r_drawviewmodel.value /*|| r_fov_greater_than_90*/ || !Cam_DrawViewModel())
+	if (!r_drawviewmodel.value || (r_fov_greater_than_90 && !r_drawviewmodel2.value)
+		|| !Cam_DrawViewModel())
 		return;
 
 	if (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)

@@ -76,6 +76,7 @@ void R_MarkLeaves (void);
 cvar_t	r_norefresh = {"r_norefresh","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
 cvar_t	r_drawviewmodel = {"r_drawviewmodel","1"};
+cvar_t	r_drawviewmodel2 = {"r_drawviewmodel2","1"}; // show weapon at fov > 90
 cvar_t	r_speeds = {"r_speeds","0"};
 cvar_t	r_fullbright = {"r_fullbright","0"};
 cvar_t	r_lightmap = {"r_lightmap","0"};
@@ -658,7 +659,9 @@ void R_DrawViewModel (void)
 	dlight_t	*dl;
 	int			ambientlight, shadelight;
 
-	if (!r_drawviewmodel.value || !Cam_DrawViewModel())
+	if (!r_drawviewmodel.value || 
+		(!r_drawviewmodel2.value && scr_fov.value > 90) ||
+		!Cam_DrawViewModel())
 		return;
 
 	if (envmap)
