@@ -39,6 +39,7 @@ typedef struct
 	server_state_t	state;			// precache commands are only valid during load
 
 	double		time;
+	double		old_time;			// bumped by SV_Physics
 	
 	int			lastcheck;			// used by PF_checkclient
 	double		lastchecktime;		// for monster ai 

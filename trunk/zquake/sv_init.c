@@ -460,7 +460,10 @@ void SV_SpawnServer (char *server)
 	// run two frames to allow everything to settle
 	sv_frametime = 0.1;
 	SV_Physics ();
+	sv.time += 0.1;
 	SV_Physics ();
+	sv.time += 0.1;
+	sv.old_time = sv.time;
 
 	// save movement vars
 	SV_SetMoveVars();
