@@ -81,7 +81,7 @@ cvar_t s_ambientfade = {"s_ambientfade", "100"};
 cvar_t s_noextraupdate = {"s_noextraupdate", "0"};
 cvar_t s_show = {"s_show", "0"};
 cvar_t s_mixahead = {"s_mixahead", "0.1", CVAR_ARCHIVE};
-cvar_t s_swapstereo = {"s_swapstereo", "0"};
+cvar_t s_swapstereo = {"s_swapstereo", "0", CVAR_ARCHIVE};
 
 
 // ====================================================================
