@@ -863,43 +863,33 @@ void CL_BeginLocalConnection (void)
 
 /*
 ===================
-CL_FilterTime
+CL_MinFrameTime
 
-Returns false if the time is too short to run a frame
+Can't run a frame if enough time hasn't passed
 ===================
 */
-qboolean CL_FilterTime (double time)
+double CL_MinFrameTime ()
 {
-	float fps, fpscap;
+	double fps, fpscap;
 
 	if (cls.timedemo)
-		return true;
+		return 0;
 
-	if (cls.demoplayback)
-	{
+	if (cls.demoplayback) {
 		if (!cl_maxfps.value)
-			return true;
-		fps = max (30.0, cl_maxfps.value);
+			return 0;
+		fps = max (10.0, cl_maxfps.value);
 	}
-	else
-	{
-		fpscap = cl.maxfps ? max (30.0, cl.maxfps) : 72.0;
+	else {
+		fpscap = cl.maxfps ? max (10.0, cl.maxfps) : 120.0;
 
 		if (cl_maxfps.value)
-			fps = bound (30.0, cl_maxfps.value, fpscap);
+			fps = bound (10.0, cl_maxfps.value, fpscap);
 		else
-		{
-			if (com_serveractive)
-				fps = fpscap;
-			else
-				fps = bound (30.0, rate.value/80.0, fpscap);
-		}
+			fps = fpscap;
 	}
 
-	if (time < 1.0/fps)
-		return false;
-
-	return true;
+	return 1.0/fps;
 }
 
 
@@ -911,20 +901,25 @@ CL_Frame
 */
 void CL_Frame (double time)
 {
-	static double		time1 = 0;
-	static double		time2 = 0;
-	static double		time3 = 0;
-	int			pass1, pass2, pass3;
-	static double extratime;
+	static double	time1 = 0;
+	static double	time2 = 0;
+	static double	time3 = 0;
+	int				pass1, pass2, pass3;
+	static double	extratime = 0.001;
+	double			minframetime;
 
 	extratime += time;
 
-	if (!CL_FilterTime (extratime))
+	minframetime = CL_MinFrameTime();
+	if (extratime < minframetime)
 		return;
 
-	cls.trueframetime = extratime;
+	cls.trueframetime = extratime - 0.001;
+	if (cls.trueframetime < minframetime)
+		cls.trueframetime = minframetime;
+	extratime -= cls.trueframetime;
+
 	cls.frametime = min (cls.trueframetime, 0.2);
-	extratime = 0;
 
 	if (cls.demoplayback) {
 		cls.frametime *= bound (0, cl_demospeed.value, 20);
