@@ -28,10 +28,12 @@
 
 #include "quakedef.h"
 
-cvar_t _cmd_macros = {"_cmd_macros", "0"};
-cvar_t cl_parsesay = {"cl_parsesay", "0"};
-cvar_t cl_triggers = {"cl_triggers", "0"};
-cvar_t cl_nofake = {"cl_nofake", "0"};
+cvar_t	_cmd_macros = {"_cmd_macros", "0"};
+cvar_t	cl_parsesay = {"cl_parsesay", "0"};
+cvar_t	cl_triggers = {"cl_triggers", "0"};
+cvar_t	cl_nofake = {"cl_nofake", "0"};
+cvar_t	cl_loadlocs = {"cl_loadlocs", "0"};
+
 
 //===========================================================================
 //								TRIGGERS
@@ -683,6 +685,7 @@ void CL_InitTeamplay()
 	Cvar_RegisterVariable (&cl_parsesay);
 	Cvar_RegisterVariable (&cl_triggers);
 	Cvar_RegisterVariable (&cl_nofake);
+	Cvar_RegisterVariable (&cl_loadlocs);
 
 	Cmd_Macro_Init();
 	Cmd_AddCommand ("loadloc", CL_LoadLocFile_f);

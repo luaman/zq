@@ -88,7 +88,6 @@ cvar_t	cl_gibfilter = {"cl_gibfilter", "0"};
 cvar_t	r_rocketlight = {"r_rocketlight", "1"};
 cvar_t	r_rockettrail = {"r_rockettrail", "1"};
 cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
-cvar_t	cl_loadlocs = {"cl_loadlocs", "0"};
 
 cvar_t	cl_teamskin = {"teamskin", ""};
 cvar_t	cl_enemyskin = {"enemyskin", ""};
@@ -1309,7 +1308,6 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&cl_explosion);
 	Cvar_RegisterVariable (&cl_gibfilter);
 	Cvar_RegisterVariable (&cl_muzzleflash);
-	Cvar_RegisterVariable (&cl_loadlocs);
 	Cvar_RegisterVariable (&cl_teamskin);
 	Cvar_RegisterVariable (&cl_enemyskin);
 	Cvar_RegisterVariable (&r_drawflame);
