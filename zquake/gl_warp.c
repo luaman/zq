@@ -468,7 +468,7 @@ void R_SetSky (char *name)
 		if (width > 512 || height > 512)	// just a sanity check
 		{
 			Com_Printf ("Bad image dimensions in %s\n", pathname);
-			free (pic);
+			Q_free (pic);	// Q_malloc'ed by LoadTGA
 			r_skyboxloaded = false;
 			return;
 		}
@@ -481,7 +481,7 @@ void R_SetSky (char *name)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		free (pic);
+		Q_free (pic);	// Q_malloc'ed by LoadTGA
 	}
 
 	r_skyboxloaded = true;

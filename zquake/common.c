@@ -1225,7 +1225,7 @@ pack_t *FS_LoadPackFile (char *packfile)
 	if (numpackfiles > MAX_FILES_IN_PACK)
 		Sys_Error ("%s has %i files", packfile, numpackfiles);
 
-	newfiles = Q_Malloc (numpackfiles * sizeof(packfile_t));
+	newfiles = Q_malloc (numpackfiles * sizeof(packfile_t));
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
 	fread (&info, 1, header.dirlen, packhandle);
@@ -1238,7 +1238,7 @@ pack_t *FS_LoadPackFile (char *packfile)
 		newfiles[i].filelen = LittleLong(info[i].filelen);
 	}
 
-	pack = Q_Malloc (sizeof (pack_t));
+	pack = Q_malloc (sizeof (pack_t));
 	strcpy (pack->filename, packfile);
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
@@ -1330,11 +1330,11 @@ void FS_SetGamedir (char *dir)
 		if (com_searchpaths->pack)
 		{
 			fclose (com_searchpaths->pack->handle);
-			free (com_searchpaths->pack->files);
-			free (com_searchpaths->pack);
+			Q_free (com_searchpaths->pack->files);
+			Q_free (com_searchpaths->pack);
 		}
 		next = com_searchpaths->next;
-		free (com_searchpaths);
+		Q_free (com_searchpaths);
 		com_searchpaths = next;
 	}
 
@@ -1351,7 +1351,7 @@ void FS_SetGamedir (char *dir)
 	//
 	// add the directory to the search path
 	//
-	search = Q_Malloc (sizeof(searchpath_t));
+	search = Q_malloc (sizeof(searchpath_t));
 	strcpy (search->filename, com_gamedir);
 	search->pack = NULL;
 	search->next = com_searchpaths;
@@ -1366,7 +1366,7 @@ void FS_SetGamedir (char *dir)
 		pak = FS_LoadPackFile (pakfile);
 		if (!pak)
 			break;
-		search = Q_Malloc (sizeof(searchpath_t));
+		search = Q_malloc (sizeof(searchpath_t));
 		search->pack = pak;
 		search->next = com_searchpaths;
 		com_searchpaths = search;		

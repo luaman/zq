@@ -238,8 +238,8 @@ void GL_ResampleTexture (unsigned *indata, int inwidth, int inheight,
 		out = (byte *) outdata;
 		fstep = (int) (inheight*65536.0f/outheight);
 
-		row1 = Q_Malloc(outwidth*4);
-		row2 = Q_Malloc(outwidth*4);
+		row1 = Q_malloc(outwidth*4);
+		row2 = Q_malloc(outwidth*4);
 		inrow = (byte *) indata;
 		oldy = 0;
 		R_ResampleTextureLerpLine (inrow, row1, inwidth, outwidth);
@@ -295,8 +295,8 @@ void GL_ResampleTexture (unsigned *indata, int inwidth, int inheight,
 				memcpy(out, row1, outwidth * 4);
 			}
 		}
-		free(row1);
-		free(row2);
+		Q_free (row1);
+		Q_free (row2);
 	}
 	else
 	{
@@ -750,7 +750,7 @@ int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data)
 		byte *src, *dest;
 		byte *buf;
 
-		buf = Q_Malloc (glwidth*glheight);
+		buf = Q_malloc (glwidth*glheight);
 
 		memset (buf, 0, glwidth*glheight);
 		src = data;
@@ -768,7 +768,7 @@ int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data)
 		pic->tl = 0;
 		pic->th = (float)pic->height / glheight;
 
-		free (buf);
+		Q_free (buf);
 	}
 
 	return pic->texnum;

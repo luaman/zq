@@ -85,7 +85,10 @@ Zone block
 
 void Memory_Init (void *buf, int size);
 
-void *Q_Malloc (size_t size);
+void *Q_malloc (size_t size);
+char *Q_strdup (const char *src);
+// might be turned into a function that makes sure all Q_*alloc calls are matched with Q_free
+#define Q_free(ptr) free(ptr)
 
 void Z_Free (void *ptr);
 void *Z_Malloc (int size);			// returns 0 filled memory

@@ -689,7 +689,7 @@ void Key_Console (int key)
 			memcpy (key_lines[edit_line] + key_linepos, text, len);
 			key_linepos += len;
 
-			free(text);
+			Q_free (text);	// Q_malloc'ed by Sys_GetClipboardText
 		}
 		return;
 	}
@@ -816,7 +816,7 @@ void Key_Message (int key)
 			memcpy (chat_buffer + chat_linepos, text, len);
 			chat_linepos += len;
 
-			free(text);
+			Q_free (text);	// Q_malloc'ed by Sys_GetClipboardText
 		}
 		return;
 	}

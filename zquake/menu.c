@@ -1658,19 +1658,19 @@ static void ReadDir (void)
 
 	for (i=0 ; i<MAX_DEMO_FILES ; i++)
 		if (dir[i].name) {
-			free(dir[i].name);
+			Q_free (dir[i].name);
 			dir[i].name = NULL;
 		}
 
 	if (demodir[0]) {
-		dir[0].name = strdup ("..");
+		dir[0].name = Q_strdup ("..");
 		dir[0].type = 2;
 		numfiles = 1;
 	}
 
 	h = FindFirstFile (va("%s%s/*.*", com_basedir, demodir), &fd);
 	if (h == INVALID_HANDLE_VALUE) {
-		dir[numfiles].name = strdup ("Error reading directory");
+		dir[numfiles].name = Q_strdup ("Error reading directory");
 		dir[numfiles].type = 3;
 		numfiles++;
 		return;
@@ -1713,7 +1713,7 @@ static void ReadDir (void)
 		numfiles++;
 		for (i=numfiles-1 ; i>pos ; i--)
 			dir[i] = dir[i-1];
-		dir[i].name = strdup(name);
+		dir[i].name = Q_strdup (name);
 		dir[i].type = type;
 		dir[i].size = size;
 		if (numfiles == MAX_DEMO_FILES)
@@ -1736,7 +1736,7 @@ static void ReadDir (void)
 	}
 
 	if (!numfiles) {
-		dir[0].name = strdup("[ no files ]");
+		dir[0].name = Q_strdup ("[ no files ]");
 		dir[0].type = 3;
 		numfiles = 1;
 	}
@@ -1757,18 +1757,18 @@ static void ReadDir (void)
 
 	for (i=0 ; i<MAX_DEMO_FILES ; i++)
 		if (dir[i].name) {
-			free(dir[i].name);
+			Q_free (dir[i].name);
 			dir[i].name = NULL;
 		}
 
 	if (demodir[0]) {
-		dir[0].name = strdup ("..");
+		dir[0].name = Q_strdup ("..");
 		dir[0].type = 2;
 		numfiles = 1;
 	}
 
 	if (!(d = opendir(va("%s%s", com_basedir, demodir)))) {
-		dir[numfiles].name = strdup ("Error reading directory");
+		dir[numfiles].name = Q_strdup ("Error reading directory");
 		dir[numfiles].type = 3;
 		numfiles++;
 		return;
@@ -1814,7 +1814,7 @@ static void ReadDir (void)
 		numfiles++;
 		for (i=numfiles-1 ; i>pos ; i--)
 			dir[i] = dir[i-1];
-		dir[i].name = strdup(name);
+		dir[i].name = Q_strdup (name);
 		dir[i].type = type;
 		dir[i].size = size;
 		if (numfiles == MAX_DEMO_FILES)
@@ -1836,7 +1836,7 @@ static void ReadDir (void)
 	}
 
 	if (!numfiles) {
-		dir[0].name = strdup("[ no files ]");
+		dir[0].name = Q_strdup ("[ no files ]");
 		dir[0].type = 3;
 		numfiles = 1;
 	}

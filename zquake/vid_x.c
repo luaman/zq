@@ -221,7 +221,7 @@ void ResetFrameBuffer(void)
 
 	if (x_framebuffer[0])
 	{
-		free(x_framebuffer[0]->data);
+		Q_free(x_framebuffer[0]->data);	// right?
 		free(x_framebuffer[0]);
 	}
 
@@ -258,7 +258,7 @@ void ResetFrameBuffer(void)
 		x_visinfo->depth,
 		ZPixmap,
 		0,
-		Q_Malloc (mem),
+		Q_malloc (mem),
 		vid.width, vid.height,
 		32,
 		0);

@@ -802,7 +802,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 	fracw = (float)vid.width / (float)w;
 	frach = (float)vid.height / (float)h;
 
-	newbuf = Q_Malloc (w*h);
+	newbuf = Q_malloc (w*h);
 
 	for (y = 0; y < h; y++) {
 		dest = newbuf + (w * y);
@@ -850,7 +850,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 
 	WritePCX (newbuf, w, h, w, host_basepal, pcxdata, pcxsize);
 
-	free(newbuf);
+	Q_free (newbuf);
 
 	// return with pcxdata and pcxsize
 } 
