@@ -158,8 +158,12 @@ void NQD_ParseClientdata (int bits)
 	VectorCopy (nq_mvelocity[0], nq_mvelocity[1]);
 	for (i=0 ; i<3 ; i++)
 	{
-		if (bits & (SU_PUNCH1<<i) )
-			MSG_ReadChar();			// cl.punchangle, ignore
+		if (bits & (SU_PUNCH1<<i) ) {
+			if (i == 0)
+				cl.punchangle = MSG_ReadChar ();
+			else
+				MSG_ReadChar();			// ignore
+		}
 		if (bits & (SU_VELOCITY1<<i) )
 			nq_mvelocity[0][i] = MSG_ReadChar()*16;
 		else

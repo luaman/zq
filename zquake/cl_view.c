@@ -1047,12 +1047,17 @@ void V_CalcRefdef (void)
 
 	if (v_gunkick.value)
 	{
-		// add weapon kick offset
-		AngleVectors (r_refdef.viewangles, forward, NULL, NULL);
-		VectorMA (r_refdef.vieworg, cl.punchangle, forward, r_refdef.vieworg);
+		if (cls.nqdemoplayback)
+			r_refdef.viewangles[PITCH] += cl.punchangle;
+		else
+		{
+			// add weapon kick offset
+			AngleVectors (r_refdef.viewangles, forward, NULL, NULL);
+			VectorMA (r_refdef.vieworg, cl.punchangle, forward, r_refdef.vieworg);
 
-		// add weapon kick angle
-		r_refdef.viewangles[PITCH] += cl.punchangle * 0.5;
+			// add weapon kick angle
+			r_refdef.viewangles[PITCH] += cl.punchangle * 0.5;
+		}
 	}
 
 	if (view_message->flags & PF_DEAD)		// PF_GIB will also set PF_DEAD
@@ -1068,6 +1073,9 @@ DropPunchAngle
 */
 void DropPunchAngle (void)
 {
+	if (cls.nqdemoplayback)
+		return;
+
 	if (cl.ideal_punchangle < cl.punchangle)
 	{
 		if (cl.ideal_punchangle == -2)	// small kick
