@@ -1653,8 +1653,9 @@ void DropBackpack ()
         f1 = stof(infokey(world, "k_frp"));
             
 // still drop if contains weapon with no ammo
-        if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells) && !(self.weapon & 126)
-            && !(f1 == 2 && (self.lastwepfired & 126))) // KTEAMS
+        if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells) 
+            && !(self.weapon & IT_DROPPABLE_WEAPONS)
+            && !(f1 == 2 && (self.lastwepfired & IT_DROPPABLE_WEAPONS))) // KTEAMS
 		return; // nothing in it
 
 	item = spawn();
