@@ -109,7 +109,7 @@ void MSG_WriteString (sizebuf_t *sb, char *s)
 
 void MSG_WriteCoord (sizebuf_t *sb, float f)
 {
-	MSG_WriteShort (sb, Q_rint(f*8));
+	MSG_WriteShort (sb, (int)(f*8));
 }
 
 void MSG_WriteAngle (sizebuf_t *sb, float f)
@@ -569,9 +569,9 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qbool protocol_26)
 
 void MSG_PackOrigin (const vec3_t in, short out[3])
 {
-	out[0] = (short)Q_rint(in[0] * 8);
-	out[1] = (short)Q_rint(in[1] * 8);
-	out[2] = (short)Q_rint(in[2] * 8);
+	out[0] = (short)(in[0] * 8);
+	out[1] = (short)(in[1] * 8);
+	out[2] = (short)(in[2] * 8);
 }
 
 void MSG_UnpackOrigin (const short in[3], vec3_t out)
