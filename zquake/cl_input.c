@@ -492,7 +492,6 @@ void CL_FinishMove (usercmd_t *cmd)
 	if (in_invertview) {
 		cmd->forwardmove = -cmd->forwardmove;
 		cmd->sidemove = -cmd->sidemove;
-		cmd->upmove = -cmd->upmove;
 		cmd->angles[YAW] = anglemod(cmd->angles[YAW] + 180);
 	}
 
