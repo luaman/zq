@@ -201,9 +201,7 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Com_Printf ("%4.1f megs RAM used.\n", host_memsize / (1024*1024.0));
 	
-	Com_Printf ("\nZQuake version %s\n\n", VersionString());
-
-	Com_Printf ("========= ZQuake Initialized =========\n");
+	Com_Printf ("\n========= ZQuake Initialized =========\n");
 
 
 	if (dedicated)
