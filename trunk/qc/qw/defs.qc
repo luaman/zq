@@ -763,21 +763,3 @@ float T_Heal (entity e, float heal_amount, float ignore); // health function
 
 .float suicide_time;	// can't suicide sooner than this
 
-// constants for the impulse commands:
-const float  IMPULSE_NONE                     =   0;
-const float  IMPULSE_WEAPON_FIRST             =   1;
-const float  IMPULSE_AXE                      =   1;
-const float  IMPULSE_SHOTGUN                  =   2;
-const float  IMPULSE_SUPER_SHOTGUN            =   3;
-const float  IMPULSE_NAILGUN                  =   4;
-const float  IMPULSE_SUPER_NAILGUN            =   5;
-const float  IMPULSE_GRENADE_LAUNCHER         =   6;
-const float  IMPULSE_ROCKET_LAUNCHER          =   7;
-const float  IMPULSE_LIGHTNING                =   8;
-const float  IMPULSE_WEAPON_LAST              =   8;
-
-const float  IMPULSE_CHEAT                    =   9;
-const float  IMPULSE_WEAPONCYCLE_F            =  10;
-const float  IMPULSE_CHEAT_SERVERFLAGS        =  11;
-const float  IMPULSE_WEAPONCYCLE_R            =  12;
-
