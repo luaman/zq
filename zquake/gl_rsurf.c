@@ -348,9 +348,7 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 			} else {
 				for (i=0 ; i<size ; i++) {
 					t = lightmap[i] * scale;
-					*bl++ += t;
-					*bl++ += t;
-					*bl++ += t;
+					bl[0] += t; bl[1] += t;	bl[2] += t; bl += 3;
 				}
 			}
 			lightmap += size;	// skip to next lightmap
@@ -370,19 +368,26 @@ store:
 		for (i=0 ; i<tmax ; i++, dest += stride)
 		{
 			if (lightmode == 2)
-				for (j=smax*3 ; j ; j--) {
-					t = *bl++;
-					t = (t >> 8) + (t >> 9);
-					if (t > 255)
-						t = 255;
-					*dest++ = 255-t;
+				for (j=smax; j ; j--) {
+					t = bl[0]; t = (t >> 8) + (t >> 9); if (t > 255) t = 255;
+					dest[0] = 255-t;
+					t = bl[1]; t = (t >> 8) + (t >> 9); if (t > 255) t = 255;
+					dest[1] = 255-t;
+					t = bl[2]; t = (t >> 8) + (t >> 9); if (t > 255) t = 255;
+					dest[2] = 255-t;
+					bl+=3;
+					dest+=3;
 				}
 			else
-				for (j=smax*3 ; j ; j--) {
-					t = *bl++ >> 7;
-					if (t > 255)
-						t = 255;
-					*dest++ = 255-t;
+				for (j=smax*3; j; j--) {
+					t = bl[0]; t = t >> 7; if (t > 255) t = 255;
+					dest[0] = 255-t;
+					t = bl[1]; t = t >> 7; if (t > 255) t = 255;
+					dest[1] = 255-t;
+					t = bl[2]; t = t >> 7; if (t > 255) t = 255;
+					dest[2] = 255-t;
+					bl+=3;
+					dest+=3;
 				}
 		}
 		break;
