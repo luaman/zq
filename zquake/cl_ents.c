@@ -460,7 +460,7 @@ void CL_LinkPacketEntities (void)
 				ent.model = cl.model_precache[cl_grenadeindex];
 
 		// set colormap
-		if (state->colormap && (state->colormap < MAX_CLIENTS)
+		if (state->colormap >= 1 && state->colormap <= MAX_CLIENTS
 			&& state->modelindex == cl_playerindex)
 		{
 			ent.colormap = cl.players[state->colormap-1].translations;
