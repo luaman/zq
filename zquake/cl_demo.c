@@ -195,7 +195,7 @@ qboolean CL_GetDemoMessage (void)
 			cls.td_startframe = host_framecount;
 		}
 		realtime = demotime; // warp
-	} else if (!(cl.paused & 1) && cls.state >= ca_onserver) {	// always grab until fully connected
+	} else if (!(cl.paused & 1) && cls.state >= ca_active) {	// always grab until active
 		if (realtime + 1.0 < demotime) {
 			// too far back
 			realtime = demotime - 1.0;
