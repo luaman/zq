@@ -977,11 +977,15 @@ void PR_LoadProgs (void)
 	for (i=0 ; i<GEFV_CACHESIZE ; i++)
 		gefvCache[i].field[0] = 0;
 
-	progs = (dprograms_t *)COM_LoadHunkFile ("qwprogs.dat");
+	progs = NULL;
+	if (!deathmatch.value)
+		progs = (dprograms_t *)COM_LoadHunkFile ("spprogs.dat");
 	if (!progs)
-		progs = (dprograms_t *)COM_LoadHunkFile ("progs.dat");
+		progs = (dprograms_t *)COM_LoadHunkFile ("zqprogs.dat");
 	if (!progs)
-		SV_Error ("PR_LoadProgs: couldn't load progs.dat");
+		progs = (dprograms_t *)COM_LoadHunkFile ("qwprogs.dat");
+	if (!progs)
+		SV_Error ("PR_LoadProgs: couldn't load qwprogs.dat");
 	Con_DPrintf ("Programs occupy %iK.\n", com_filesize/1024);
 
 // add prog crc to the serverinfo
