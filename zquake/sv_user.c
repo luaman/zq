@@ -1468,6 +1468,8 @@ void SV_RunCmd (usercmd_t *ucmd)
 	edict_t		*ent;
 	int			i, n;
 	int			oldmsec;
+	vec3_t		originalvel;
+	qboolean	onground;
 
 	cmd = *ucmd;
 
@@ -1515,7 +1517,19 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 		pr_global_struct->time = sv.time;
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
+
+		VectorCopy (sv_player->v.velocity, originalvel);
+		onground = (int)sv_player->v.flags & FL_ONGROUND;
+
 		PR_ExecuteProgram (pr_global_struct->PlayerPreThink);
+
+		if (onground && originalvel[2] < 0 && sv_player->v.velocity[2] == 0
+			&& originalvel[0] == sv_player->v.velocity[0]
+			&& originalvel[1] == sv_player->v.velocity[1])
+		{
+			// don't let KTeams mess with physics
+			sv_player->v.velocity[2] = originalvel[2];
+		}
 
 		SV_RunThink (sv_player);
 	}
@@ -1618,12 +1632,27 @@ Done after running a player command.
 */
 void SV_PostRunCmd (void)
 {
+	vec3_t		originalvel;
+	qboolean	onground;
+
 	// run post-think
 
 	if (!host_client->spectator) {
 		pr_global_struct->time = sv.time;
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
+		onground = (int)sv_player->v.flags & FL_ONGROUND;
+		VectorCopy (sv_player->v.velocity, originalvel);
+
 		PR_ExecuteProgram (pr_global_struct->PlayerPostThink);
+
+		if (onground && originalvel[2] < 0 && sv_player->v.velocity[2] == 0
+			&& originalvel[0] == sv_player->v.velocity[0]
+			&& originalvel[1] == sv_player->v.velocity[1])
+		{
+			// don't let KTeams mess with physics
+			sv_player->v.velocity[2] = originalvel[2];
+		}
+
 		SV_RunNewmis ();
 	} else if (SpectatorThink) {
 		pr_global_struct->time = sv.time;
