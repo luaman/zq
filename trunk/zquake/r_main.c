@@ -615,7 +615,8 @@ void R_DrawEntitiesOnList (void)
 				if (lighting.ambientlight + lighting.shadelight > 192)
 					lighting.shadelight = 192 - lighting.ambientlight;
 
-				if (r_fullbrightSkins.value && currententity->model->modhint == MOD_PLAYER)
+				if (r_fullbrightSkins.value && currententity->model->modhint == MOD_PLAYER
+					&& !cl.teamfortress)
 					lighting.ambientlight = lighting.shadelight = 128;
 
 				R_AliasDrawModel (&lighting);
