@@ -830,24 +830,32 @@ Returns false if the time is too short to run a frame
 */
 qboolean Host_FilterTime (void)
 {
-	float fps;
+	float fps, fpscap;
 
 	if (cls.timedemo)
 		return true;
 
-	if (cl_maxfps.value)
-		fps = bound (30.0, cl_maxfps.value, cl.maxfps);
+	if (cls.demoplayback)
+	{
+		if (!cl_maxfps.value)
+			return true;
+		fps = max (30.0, cl_maxfps.value);
+	}
 	else
 	{
-		if (cls.demoplayback)
-			return true;
+		fpscap = cl.maxfps ? bound (30.0, cl.maxfps, 120.0) : 72.0;
 
-#ifdef QW_BOTH
-		if (sv.state != ss_dead)
-			fps = cl.maxfps;
+		if (cl_maxfps.value)
+			fps = bound (30.0, cl_maxfps.value, fpscap);
 		else
+		{
+#ifdef QW_BOTH
+			if (sv.state != ss_dead)
+				fps = fpscap;
+			else
 #endif
-			fps = bound (30.0, rate.value/80.0, cl.maxfps);
+				fps = bound (30.0, rate.value/80.0, fpscap);
+		}
 	}
 
 	if (realtime - oldrealtime < 1.0/fps)
@@ -855,6 +863,7 @@ qboolean Host_FilterTime (void)
 
 	return true;
 }
+
 
 /*
 ==================
