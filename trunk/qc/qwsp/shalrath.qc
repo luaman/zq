@@ -153,7 +153,7 @@ void() ShalMissile =
 	if (flytime < 0.1)
 		flytime = 0.1;
 
-	self.effects = self.effects | EF_MUZZLEFLASH;
+	muzzleflash();
 	sound (self, CHAN_WEAPON, "shalrath/attack2.wav", 1, ATTN_NORM);
 
 	missile = spawn ();
