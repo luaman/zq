@@ -190,7 +190,6 @@ IN_ShowMouse
 */
 void IN_ShowMouse (void)
 {
-
 	if (!mouseshowtoggle)
 	{
 		ShowCursor (TRUE);
@@ -206,7 +205,6 @@ IN_HideMouse
 */
 void IN_HideMouse (void)
 {
-
 	if (mouseshowtoggle)
 	{
 		ShowCursor (FALSE);
@@ -222,7 +220,6 @@ IN_ActivateMouse
 */
 void IN_ActivateMouse (void)
 {
-
 	mouseactivatetoggle = true;
 
 	if (mouseinitialized)
@@ -528,7 +525,6 @@ IN_Shutdown
 */
 void IN_Shutdown (void)
 {
-
 	IN_DeactivateMouse ();
 	IN_ShowMouse ();
 
