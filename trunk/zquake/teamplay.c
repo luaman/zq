@@ -559,6 +559,21 @@ char *TP_ParseMacroString (char *string)
 	return	buf;
 }
 
+/*
+==============
+TP_MacroList
+==============
+*/
+void TP_MacroList_f (void)
+{
+	macro_command_t	*macro;
+	int	i;
+
+	for (macro=macro_commands,i=0 ; macro->name ; macro++,i++)
+		Con_Printf ("%s\n", macro->name);
+
+	Con_Printf ("------------\n%d macros\n", i);
+}
 
 /*
 =============================================================================
@@ -1262,6 +1277,7 @@ void TP_Init ()
 	Cvar_RegisterVariable (&cl_teamskin);
 	Cvar_RegisterVariable (&cl_enemyskin);
 
+	Cmd_AddCommand ("macrolist", TP_MacroList_f);
 	Cmd_AddCommand ("loadloc", TP_LoadLocFile_f);
 	Cmd_AddCommand ("msg_trigger", TP_MsgTrigger_f);
 	Cmd_AddCommand ("teamcolor", TP_TeamColor_f);
