@@ -1413,7 +1413,13 @@ static void IN_LoadKeys_f (void)
 
 	strlcpy (filename, Cmd_Argv(1), sizeof(filename) - 5);
 	COM_DefaultExtension (filename, ".kmap");
-	data = FS_LoadTempFile (filename);
+
+	// check if the given file can be found in subdirectory "keymaps":
+	data = FS_LoadTempFile (va("keymaps/%s", filename));
+	
+	// if not found, recheck in main directory:
+	if (!data)
+	  data = FS_LoadTempFile (filename);
 	if (!data)
 	{
 		Com_Printf ("Couldn't load %s\n", filename);
@@ -1437,31 +1443,31 @@ static void IN_LoadKeys_f (void)
 		ext = false;
 		cmd_shift = 0;
 
-		if ((!strcmp(Cmd_Argv(0), "keymap_name") || !strcmp(Cmd_Argv(0), "layout")) && Cmd_Argc() > 1)
+		if ((!Q_stricmp(Cmd_Argv(0), "keymap_name") || !Q_stricmp(Cmd_Argv(0), "layout")) && Cmd_Argc() > 1)
 		{
 			strlcpy (layout, Cmd_Argv(1), sizeof(layout));
 			continue;
 		}
 
 #if 0
-		if (!strcmp(Cmd_Argv(0), "keymap_version")
+		if (!Q_stricmp(Cmd_Argv(0), "keymap_version")
 		{
 			// do something here
 			continue;
 		}
 #endif
 
-		if (!strcmp(Cmd_Argv(0), "ext")) {
+		if (!Q_stricmp(Cmd_Argv(0), "ext")) {
 			ext = true;
 			cmd_shift++;
 		}
 
-		if (strcmp(Cmd_Argv(cmd_shift), "keycode"))
+		if (Q_stricmp(Cmd_Argv(cmd_shift), "keycode"))
 			continue;	// any unrecognized keywords are silently ignored (FIXME?)
 
 		cmd_shift++;
 
-		if (!strcmp(Cmd_Argv(cmd_shift), "ext")) {
+		if (!Q_stricmp(Cmd_Argv(cmd_shift), "ext")) {
 			ext = true;
 			cmd_shift++;
 		}
