@@ -485,6 +485,8 @@ void SV_SpawnSpectator (void)
 	VectorClear (sv_player->v.view_ofs);
 	sv_player->v.view_ofs[2] = 22;
 	sv_player->v.fixangle = true;
+	sv_player->v.movetype = MOVETYPE_NOCLIP;	// progs can change this to MOVETYPE_FLY, for example
+
 
 	// search for an info_playerstart to spawn the spectator at
 	for (i=MAX_CLIENTS-1 ; i<sv.num_edicts ; i++)
@@ -534,9 +536,6 @@ void Cmd_Begin_f (void)
 				for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
 					(&pr_global_struct->parm1)[i] = sv_client->spawn_parms[i];
 				
-				// progs can change this to MOVETYPE_FLY, for example
-				sv_player->v.movetype = MOVETYPE_NOCLIP;
-
 				// call the spawn function
 				pr_global_struct->time = sv.time;
 				pr_global_struct->self = EDICT_TO_PROG(sv_player);
@@ -1169,6 +1168,24 @@ void Cmd_Snap_f (void)
 }
 
 
+void SetUpClientEdict (client_t *cl, edict_t *ent)
+{
+	eval_t *val;
+
+	memset (&ent->v, 0, progs->entityfields * 4);
+	ent->v.colormap = NUM_FOR_EDICT(ent);
+	ent->v.netname = PR_SetString(cl->name);
+
+	cl->entgravity = 1.0;
+	val = GetEdictFieldValue(ent, "gravity");
+	if (val)
+		val->_float = 1.0;
+	cl->maxspeed = pm_maxspeed.value;
+	val = GetEdictFieldValue(ent, "maxspeed");
+	if (val)
+		val->_float = pm_maxspeed.value;
+}
+
 /*
 ==================
 Cmd_Join_f
@@ -1216,7 +1233,7 @@ void Cmd_Join_f (void)
 		PR_ExecuteProgram (SpectatorDisconnect);
 
 	sv_client->old_frags = 0;
-	sv_client->edict->v.frags = 0;
+	SetUpClientEdict (sv_client, sv_client->edict);
 
 	// turn the spectator into a player
 	sv_client->spectator = false;
@@ -1290,7 +1307,7 @@ void Cmd_Observe_f (void)
 	PR_ExecuteProgram (pr_global_struct->ClientDisconnect);
 
 	sv_client->old_frags = 0;
-	sv_client->edict->v.frags = 0;
+	SetUpClientEdict (sv_client, sv_client->edict);
 
 	// turn the player into a spectator
 	sv_client->spectator = true;
