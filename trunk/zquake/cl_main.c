@@ -73,17 +73,17 @@ cvar_t  localid = {"localid", ""};
 static qboolean allowremotecmd = true;
 
 // ZQuake cvars
-cvar_t	r_rocketlight = {"r_rocketlight", "1"};
-cvar_t	r_rockettrail = {"r_rockettrail", "1"};
-cvar_t	r_grenadetrail = {"r_grenadetrail", "1"};
-cvar_t	r_powerupglow = {"r_powerupglow", "1"};
-cvar_t	cl_deadbodyfilter = {"cl_deadbodyfilter", "0"};
+cvar_t	r_rocketlight = {"r_rocketLight", "1"};
+cvar_t	r_rockettrail = {"r_rocketTrail", "1"};
+cvar_t	r_grenadetrail = {"r_grenadeTrail", "1"};
+cvar_t	r_powerupglow = {"r_powerupGlow", "1"};
+cvar_t	cl_deadbodyfilter = {"cl_deadbodyFilter", "0"};
 cvar_t	cl_explosion = {"cl_explosion", "0"};
-cvar_t	cl_gibfilter = {"cl_gibfilter", "0"};
+cvar_t	cl_gibfilter = {"cl_gibFilter", "0"};
 cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
 cvar_t	cl_speedjumpfix = {"cl_speedjumpfix", "1"};
 cvar_t	cl_demotimescale = {"demotimescale", "1"};
-cvar_t	cl_staticsounds = {"cl_staticsounds", "1"};
+cvar_t	cl_staticsounds = {"cl_staticSounds", "1"};
 cvar_t	cl_trueLightning = {"cl_trueLightning", "0"};
 cvar_t	cl_parseWhiteText = {"cl_parseWhiteText", "1"};
 cvar_t	cl_filterdrawviewmodel = {"cl_filterdrawviewmodel", "0"};
