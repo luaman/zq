@@ -165,4 +165,5 @@ void Key_WriteBindings (FILE *f);
 void Key_SetBinding (int keynum, char *binding);
 void Key_Unbind (int keynum);
 void Key_ClearStates (void);
+int Key_StringToKeynum (char *str);
 char *Key_KeynumToString (int keynum);
