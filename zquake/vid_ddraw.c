@@ -650,6 +650,13 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				if (wParam & MK_MBUTTON)
 					temp |= 4;
 
+				// Win2k/XP let us bind button4 and button5
+				if (wParam & MK_XBUTTON1)
+					temp |= 8;
+
+				if (wParam & MK_XBUTTON2)
+					temp |= 16;
+
 				IN_MouseEvent (temp);
 			}
 			break;

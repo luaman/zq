@@ -81,6 +81,13 @@ extern qbool dinput;
 #define WM_MOUSEWHEEL	0x020A
 #endif
 
+#ifndef MK_XBUTTON1
+#define MK_XBUTTON1		0x20
+#endif
+
+#ifndef MK_XBUTTON2
+#define MK_XBUTTON2		0x40
+#endif
 
 #endif // !SERVERONLY
 
