@@ -116,9 +116,8 @@ int	parsecountmod;
 double	parsecounttime;
 
 int		cl_spikeindex, cl_playerindex, cl_flagindex;
-
-int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index; // Tonik
-int		cl_rocketindex, cl_grenadeindex; // Tonik
+int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
+int		cl_rocketindex, cl_grenadeindex;
 
 //=============================================================================
 
@@ -221,6 +220,35 @@ qboolean CL_CheckOrDownloadFile (char *filename)
 
 	return false;
 }
+void CL_FindModelNumbers (void)
+{
+	int	i;
+
+	cl_playerindex = cl_spikeindex = cl_flagindex = -1;
+	cl_h_playerindex = cl_gib1index = cl_gib2index = cl_gib3index = -1;
+	cl_rocketindex = cl_grenadeindex = -1;
+
+	for (i = 1; i < MAX_MODELS; i++) {
+		if (!strcmp(cl.model_name[i],"progs/spike.mdl"))
+			cl_spikeindex = i;
+		if (!strcmp(cl.model_name[i],"progs/player.mdl"))
+			cl_playerindex = i;
+		if (!strcmp(cl.model_name[i],"progs/flag.mdl"))
+			cl_flagindex = i;
+		else if (!strcmp(cl.model_name[i],"progs/h_player.mdl"))
+			cl_h_playerindex = i;
+		else if (!strcmp(cl.model_name[i],"progs/gib1.mdl"))
+			cl_gib1index = i;
+		else if (!strcmp(cl.model_name[i],"progs/gib2.mdl"))
+			cl_gib2index = i;
+		else if (!strcmp(cl.model_name[i],"progs/gib3.mdl"))
+			cl_gib3index = i;
+		else if (!strcmp(cl.model_name[i],"progs/missile.mdl"))
+			cl_rocketindex = i;
+		else if (!strcmp(cl.model_name[i],"progs/grenade.mdl"))
+			cl_grenadeindex = i;
+	}
+}
 
 /*
 =================
@@ -275,7 +303,7 @@ void Model_NextDownload (void)
 		Host_Error ("Model_NextDownload: NULL worldmodel");
 
 	CL_ClearParticles ();
-
+	CL_FindModelNumbers ();
 	R_NewMap ();
 
 #ifdef GLQUAKE
@@ -327,14 +355,6 @@ void Sound_NextDownload (void)
 
 	// done with sounds, request models now
 	memset (cl.model_precache, 0, sizeof(cl.model_precache));
-	cl_playerindex = -1;
-	cl_spikeindex = -1;
-	cl_flagindex = -1;
-// Tonik -->
-	cl_h_playerindex = -1;
-	cl_gib1index = cl_gib2index = cl_gib3index = -1;
-	cl_rocketindex = cl_grenadeindex = -1;
-// <-- Tonik
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 	MSG_WriteString (&cls.netchan.message, va("modellist %i %i", cl.servercount, 0));
 }
@@ -743,28 +763,6 @@ void CL_ParseModellist (void)
 			Host_Error ("Server sent too many model_precache");
 
 		Q_strncpyz (cl.model_name[nummodels], str, sizeof(cl.model_name[nummodels]));
-
-		if (!strcmp(cl.model_name[nummodels],"progs/spike.mdl"))
-			cl_spikeindex = nummodels;
-		if (!strcmp(cl.model_name[nummodels],"progs/player.mdl"))
-			cl_playerindex = nummodels;
-		if (!strcmp(cl.model_name[nummodels],"progs/flag.mdl"))
-			cl_flagindex = nummodels;
-
-// Tonik -->
-		else if (!strcmp(cl.model_name[nummodels],"progs/h_player.mdl"))
-			cl_h_playerindex = nummodels;
-		else if (!strcmp(cl.model_name[nummodels],"progs/gib1.mdl"))
-			cl_gib1index = nummodels;
-		else if (!strcmp(cl.model_name[nummodels],"progs/gib2.mdl"))
-			cl_gib2index = nummodels;
-		else if (!strcmp(cl.model_name[nummodels],"progs/gib3.mdl"))
-			cl_gib3index = nummodels;
-		else if (!strcmp(cl.model_name[nummodels],"progs/missile.mdl"))
-			cl_rocketindex = nummodels;
-		else if (!strcmp(cl.model_name[nummodels],"progs/grenade.mdl"))
-			cl_grenadeindex = nummodels;
-// <-- Tonik
 	}
 
 	n = MSG_ReadByte();
