@@ -1485,7 +1485,7 @@ void M_Load_Draw (void)
 
 	M_DrawTextBox (60, 10*8, 23, 4);	
 	M_PrintWhite (80, 12*8, "Savegames are not yet");
-	M_PrintWhite (88, 13*8, "supported by ZQuake");
+	M_PrintWhite (88, 13*8, "supported by " PROGRAM);
 }
 
 
@@ -1506,7 +1506,7 @@ void M_Save_Draw (void)
 
 	M_DrawTextBox (60, 10*8, 23, 4);	
 	M_PrintWhite (80, 12*8, "Savegames are not yet");
-	M_PrintWhite (88, 13*8, "supported by ZQuake");
+	M_PrintWhite (88, 13*8, "supported by " PROGRAM);
 }
 
 
@@ -2865,7 +2865,7 @@ void M_SEdit_Key (int key) {
 void M_Quit_Draw (void)
 {
 	static char *quitmsg[] = {
-	"0ZQuake " PROGRAM_VERSION,
+	"0" PROGRAM " " PROGRAM_VERSION,
 	"1based on QuakeWorld by Id Software",
 	"1",
 	"0Programming",
@@ -2877,11 +2877,11 @@ void M_Quit_Draw (void)
 	"1",
 	"0Id Software is not responsible for",
     "0providing technical support for",
-	"0ZQuake.",
+	"0" PROGRAM ".",
 	"1NOTICE: The copyright and trademark",
 	"1 notices appearing  in your copy of",
 	"1Quake(r) are not modified by the use",
-	"1of ZQuake and remain in full force.",
+	"1of " PROGRAM " and remain in full force.",
 	"0QuakeWorld(tm) is a trademark of",
 	"0Id Software, Inc.",
 	"0NIN(r) is a registered trademark",

@@ -905,7 +905,7 @@ void Draw_ConsoleBackground (int lines)
 	else
 		Draw_AlphaPic (0, lines - vid.height, conback, gl_conalpha.value);
 
-	sprintf (ver, "ZQuake %s", PROGRAM_VERSION);
+	sprintf (ver, PROGRAM " %s", PROGRAM_VERSION);
 	Draw_Alt_String (vid.conwidth - strlen(ver)*8 - 8, lines - 10, ver);
 }
 

@@ -403,7 +403,7 @@ void CL_ParsePacketEntities (qboolean delta)
 			host_skipframe = true;
 
 		if (!cls.demoplayback)
-			VID_SetCaption (va("ZQuake: %s", cls.servername));
+			VID_SetCaption (va(PROGRAM ": %s", cls.servername));
 
 		Con_ClearNotify ();
 		TP_ExecTrigger ("f_spawn");
