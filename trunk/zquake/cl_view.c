@@ -278,7 +278,7 @@ void V_DriftPitch (void)
 ============================================================================== 
 */ 
  
-cshift_t	cshift_empty = { {130,80,50}, 0 };
+cshift_t	cshift_empty = { {0,0,0}, 0 };
 cshift_t	cshift_water = { {130,80,50}, 128 };
 cshift_t	cshift_slime = { {0,25,5}, 150 };
 cshift_t	cshift_lava = { {255,80,0}, 150 };
@@ -458,8 +458,7 @@ V_cshift_f
 void V_cshift_f (void)
 {
 	// don't allow cheating in TF
-	if (cls.state >= ca_connected && cl.teamfortress
-	&& cbuf_current != &cbuf_svc)
+	if (cls.state >= ca_connected && cl.teamfortress && cbuf_current != &cbuf_svc)
 		return;
 
 	cshift_empty.destcolor[0] = atoi(Cmd_Argv(1));
