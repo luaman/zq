@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -367,7 +367,7 @@ static qbool IN_InitDInput (void)
 	if (!hInstDI)
 	{
 		hInstDI = LoadLibrary("dinput.dll");
-		
+
 		if (hInstDI == NULL)
 		{
 			Com_Printf ("Couldn't load dinput.dll\n");
@@ -377,7 +377,7 @@ static qbool IN_InitDInput (void)
 
 	if (!pDirectInputCreate)
 	{
-		pDirectInputCreate = (void *)GetProcAddress(hInstDI,"DirectInputCreateA");
+		pDirectInputCreate = (HRESULT (WINAPI *)(HINSTANCE, DWORD, LPDIRECTINPUT *, LPUNKNOWN))GetProcAddress(hInstDI,"DirectInputCreateA");
 
 		if (!pDirectInputCreate)
 		{
@@ -413,7 +413,7 @@ static qbool IN_InitDInput (void)
 		// may fail if DirectX 7 or higher is not installed
 		// So morph c_dfDIMouse2  into c_dfDIMouse and see is that works
 		df.dwDataSize = 16;
-		df.dwNumObjs = 7; 
+		df.dwNumObjs = 7;
 
 		hr = IDirectInputDevice_SetDataFormat(g_pMouse, &df);
 
@@ -458,8 +458,8 @@ IN_StartupMouse
 */
 static void IN_StartupMouse (void)
 {
-	if ( COM_CheckParm ("-nomouse") ) 
-		return; 
+	if ( COM_CheckParm ("-nomouse") )
+		return;
 
 	mouseinitialized = true;
 
@@ -487,16 +487,16 @@ static void IN_StartupMouse (void)
 
 		if (mouseparmsvalid)
 		{
-			if ( COM_CheckParm ("-noforcemspd") ) 
+			if ( COM_CheckParm ("-noforcemspd") )
 				newmouseparms[2] = originalmouseparms[2];
 
-			if ( COM_CheckParm ("-noforcemaccel") ) 
+			if ( COM_CheckParm ("-noforcemaccel") )
 			{
 				newmouseparms[0] = originalmouseparms[0];
 				newmouseparms[1] = originalmouseparms[1];
 			}
 
-			if ( COM_CheckParm ("-noforcemparms") ) 
+			if ( COM_CheckParm ("-noforcemparms") )
 			{
 				newmouseparms[0] = originalmouseparms[0];
 				newmouseparms[1] = originalmouseparms[1];
@@ -587,8 +587,8 @@ void IN_MouseEvent (int mstate)
 			{
 					Key_Event (K_MOUSE1 + i, false);
 			}
-		}	
-			
+		}
+
 		mouse_oldbuttonstate = mstate;
 	}
 }
@@ -692,8 +692,8 @@ static void IN_MouseMove (usercmd_t *cmd)
 			{
 				Key_Event (K_MOUSE1 + i, false);
 			}
-		}	
-			
+		}
+
 		mouse_oldbuttonstate = mstate_di;
 	}
 	else
@@ -730,7 +730,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 
 	if (mlook_active)
 		V_StopPitchDrift ();
-		
+
 	if (mlook_active && !(in_strafe.state & 1))
 	{
 		cl.viewangles[PITCH] += m_pitch.value * mouse_y;
@@ -805,23 +805,23 @@ void IN_ClearStates (void)
 }
 
 
-/* 
-=============== 
-IN_StartupJoystick 
-=============== 
-*/  
-static void IN_StartupJoystick (void) 
-{ 
+/*
+===============
+IN_StartupJoystick
+===============
+*/
+static void IN_StartupJoystick (void)
+{
 	int			numdevs;
 	JOYCAPS		jc;
-	MMRESULT	mmr;
- 
+	MMRESULT	mmr = JOYERR_NOERROR;
+
  	// assume no joystick
-	joy_avail = false; 
+	joy_avail = false;
 
 	// only initialize if the user wants it
-	if (!COM_CheckParm ("-joystick")) 
-		return; 
+	if (!COM_CheckParm ("-joystick"))
+		return;
 
 	Cvar_Register (&joy_name);
 	Cvar_Register (&joy_advanced);
@@ -843,7 +843,7 @@ static void IN_StartupJoystick (void)
 	Cvar_Register (&joy_wwhack2);
 
 	Cmd_AddCommand ("joyadvancedupdate", Joy_AdvancedUpdate_f);
-	
+
 	// verify joystick driver is present
 	if ((numdevs = joyGetNumDevs ()) == 0)
 	{
@@ -860,7 +860,7 @@ static void IN_StartupJoystick (void)
 
 		if ((mmr = joyGetPosEx (joy_id, &ji)) == JOYERR_NOERROR)
 			break;
-	} 
+	}
 
 	// abort startup if we didn't find a valid joystick
 	if (mmr != JOYERR_NOERROR)
@@ -874,7 +874,7 @@ static void IN_StartupJoystick (void)
 	memset (&jc, 0, sizeof(jc));
 	if ((mmr = joyGetDevCaps (joy_id, &jc, sizeof(jc))) != JOYERR_NOERROR)
 	{
-		Com_Printf ("\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr); 
+		Com_Printf ("\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr);
 		return;
 	}
 
@@ -888,10 +888,10 @@ static void IN_StartupJoystick (void)
 	// mark the joystick as available and advanced initialization not completed
 	// this is needed as cvars are not available during initialization
 
-	joy_avail = true; 
+	joy_avail = true;
 	joy_advancedinit = false;
 
-	Com_Printf ("\njoystick detected\n\n"); 
+	Com_Printf ("\njoystick detected\n\n");
 }
 
 
@@ -1008,7 +1008,7 @@ void IN_Commands (void)
 		return;
 	}
 
-	
+
 	// loop through the joystick buttons
 	// key a joystick event or auxillary event for higher number buttons for each state change
 	buttonstate = ji.dwButtons;
@@ -1063,11 +1063,11 @@ void IN_Commands (void)
 }
 
 
-/* 
-=============== 
+/*
+===============
 IN_ReadJoystick
-=============== 
-*/  
+===============
+*/
 static qbool IN_ReadJoystick (void)
 {
 
@@ -1120,9 +1120,9 @@ static void IN_JoyMove (usercmd_t *cmd)
 	// verify joystick is available and that the user wants to use it
 	if (!joy_avail || !in_joystick.value)
 	{
-		return; 
+		return;
 	}
- 
+
 	// collect the joystick data, if possible
 	if (IN_ReadJoystick () != true)
 	{
@@ -1159,7 +1159,7 @@ static void IN_JoyMove (usercmd_t *cmd)
 			}
 		}
 
-		// convert range from -32768..32767 to -1..1 
+		// convert range from -32768..32767 to -1..1
 		fAxisValue /= 32768.0;
 
 		switch (dwAxisMap[i])
@@ -1169,7 +1169,7 @@ static void IN_JoyMove (usercmd_t *cmd)
 			{
 				// user wants forward control to become look control
 				if (fabs(fAxisValue) > joy_pitchthreshold.value)
-				{		
+				{
 					// if mouse invert is on, invert the joystick pitch value
 					// only absolute control support here (joy_advanced is false)
 					if (m_pitch.value < 0.0)
@@ -1416,7 +1416,7 @@ static void IN_LoadKeys_f (void)
 
 	// check if the given file can be found in subdirectory "keymaps":
 	data = FS_LoadTempFile (va("keymaps/%s", filename));
-	
+
 	// if not found, recheck in main directory:
 	if (!data)
 	  data = FS_LoadTempFile (filename);
