@@ -298,8 +298,6 @@ void NQD_ParseServerData (void)
 	char	*str;
 	int		i;
 	int		nummodels, numsounds;
-	char	model_precache[MAX_MODELS][MAX_QPATH];
-	char	sound_precache[MAX_SOUNDS][MAX_QPATH];
 
 	Com_DPrintf ("Serverdata packet received.\n");
 //
@@ -346,7 +344,7 @@ void NQD_ParseServerData (void)
 			Com_Printf ("Server sent too many model precaches\n");
 			return;
 		}
-		strcpy (model_precache[nummodels], str);
+		strcpy (cl.model_name[nummodels], str);
 		Mod_TouchModel (str);
 	}
 
@@ -362,7 +360,7 @@ void NQD_ParseServerData (void)
 			Com_Printf ("Server sent too many sound precaches\n");
 			return;
 		}
-		strcpy (sound_precache[numsounds], str);
+		strcpy (cl.sound_name[numsounds], str);
 		//	S_TouchSound (str);
 	}
 
@@ -372,21 +370,23 @@ void NQD_ParseServerData (void)
 
 	for (i=1 ; i<nummodels ; i++)
 	{
-		cl.model_precache[i] = Mod_ForName (model_precache[i], false);
+		cl.model_precache[i] = Mod_ForName (cl.model_name[i], false);
 		if (cl.model_precache[i] == NULL)
 		{
-			Com_Printf("Model %s not found\n", model_precache[i]);
+			Com_Printf("Model %s not found\n", cl.model_name[i]);
 			return;
 		}
 	}
 
 	for (i=1 ; i<numsounds ; i++) {
-		cl.sound_precache[i] = S_PrecacheSound (sound_precache[i]);
+		cl.sound_precache[i] = S_PrecacheSound (cl.sound_name[i]);
 	}
 
 
 // local state
 	cl.worldmodel = cl.model_precache[1];
+	if (!cl.worldmodel)
+		Host_Error ("NQD_ParseServerData: NULL worldmodel");
 	CL_ClearParticles ();
 	CL_FindModelNumbers ();
 	TP_NewMap ();

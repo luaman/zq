@@ -220,6 +220,8 @@ qboolean CL_CheckOrDownloadFile (char *filename)
 
 	return false;
 }
+
+
 void CL_FindModelNumbers (void)
 {
 	int	i;
@@ -231,9 +233,9 @@ void CL_FindModelNumbers (void)
 	for (i = 1; i < MAX_MODELS; i++) {
 		if (!strcmp(cl.model_name[i],"progs/spike.mdl"))
 			cl_spikeindex = i;
-		if (!strcmp(cl.model_name[i],"progs/player.mdl"))
+		else if (!strcmp(cl.model_name[i],"progs/player.mdl"))
 			cl_playerindex = i;
-		if (!strcmp(cl.model_name[i],"progs/flag.mdl"))
+		else if (!strcmp(cl.model_name[i],"progs/flag.mdl"))
 			cl_flagindex = i;
 		else if (!strcmp(cl.model_name[i],"progs/h_player.mdl"))
 			cl_h_playerindex = i;
