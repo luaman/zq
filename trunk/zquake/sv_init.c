@@ -43,10 +43,10 @@ int SV_ModelIndex (char *name)
 	if (!name || !name[0])
 		return 0;
 
-	for (i=1 ; i<MAX_MODELS && sv.model_precache[i] ; i++)
-		if (!strcmp(sv.model_precache[i], name))
+	for (i=1 ; i<MAX_MODELS && sv.model_name[i] ; i++)
+		if (!strcmp(sv.model_name[i], name))
 			return i;
-	if (i==MAX_MODELS || !sv.model_precache[i])
+	if (i==MAX_MODELS || !sv.model_name[i])
 		Host_Error ("SV_ModelIndex: model %s not precached", name);
 	return i;
 }
@@ -308,24 +308,25 @@ void SV_SpawnServer (char *mapname, qboolean devmap)
 	Q_snprintfz (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", sv.mapname);
 
 	sv.worldmodel = CM_LoadMap (sv.modelname, false, &sv.map_checksum, &sv.map_checksum2);
-	sv.FIXME_worldmodel = Mod_ForName (sv.modelname, true);
+
+	// FIXME: GET RID OF THIS!!!
+	Mod_ForName (sv.modelname, true);
 
 	//
 	// clear physics interaction links
 	//
 	SV_ClearWorld ();
-	
-	sv.sound_precache[0] = pr_strings;
 
-	sv.model_precache[0] = pr_strings;
-	sv.model_precache[1] = sv.modelname;
+	// why so?
+	sv.sound_name[0] = pr_strings;
+	sv.model_name[0] = pr_strings;
+
+	sv.model_name[1] = sv.modelname;
 	sv.models[1] = sv.worldmodel;
-	sv.FIXME_models[1] = sv.FIXME_worldmodel;
-	for (i = 1; i < sv.FIXME_worldmodel->numsubmodels; i++)
+	for (i = 1; i < CM_NumInlineModels(); i++)
 	{
-		sv.model_precache[1+i] = localmodels[i];
+		sv.model_name[1+i] = localmodels[i];
 		sv.models[i+1] = CM_InlineModel (localmodels[i]);
-		sv.FIXME_models[i+1] = Mod_ForName (localmodels[i], false);
 	}
 
 	//check player/eyes models for hacks

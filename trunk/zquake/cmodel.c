@@ -341,6 +341,11 @@ trace_t CM_HullTrace (hull_t *hull, vec3_t start, vec3_t end)
 //===========================================================================
 
 
+int	CM_NumInlineModels (void)
+{
+	return numcmodels;
+}
+
 char *CM_EntityString (void)
 {
 	return map_entitystring;
@@ -352,7 +357,7 @@ int CM_Leafnum (const cleaf_t *leaf)
 	return leaf - map_leafs;
 }
 
-// always returns a valid cleaf pointer
+// always returns a valid cleaf_t pointer
 cleaf_t *CM_PointInLeaf (const vec3_t p)
 {
 	cnode_t		*node;
@@ -379,7 +384,7 @@ cleaf_t *CM_PointInLeaf (const vec3_t p)
 }
 
 
-byte *CM_LeafPVS (cleaf_t *leaf)
+byte *CM_LeafPVS (const cleaf_t *leaf)
 {
 	if (leaf == map_leafs)
 		return map_novis;
@@ -391,7 +396,7 @@ byte *CM_LeafPVS (cleaf_t *leaf)
 /*
 ** only the server may call this
 */
-byte *CM_LeafPHS (cleaf_t *leaf)
+byte *CM_LeafPHS (const cleaf_t *leaf)
 {
 	if (leaf == map_leafs)
 		return map_novis;
@@ -464,6 +469,77 @@ byte *CM_FatPVS (vec3_t org)
 	memset (fatpvs, 0, fatbytes);
 	AddToFatPVS_r (map_nodes);
 	return fatpvs;
+}
+
+
+/*
+** Recursively build a list of leafs touched by a rectangular volume
+*/
+static int leafs_count;
+static int leafs_maxcount;
+static int *leafs_list;
+static int leafs_topnode;
+static vec3_t leafs_mins, leafs_maxs;
+
+static void FindTouchedLeafs_r (const cnode_t *node)
+{
+	mplane_t *splitplane;
+	cleaf_t	*leaf;
+	int sides;
+
+	while (1)
+	{
+		if (node->contents == CONTENTS_SOLID)
+			return;
+
+	// the node is a leaf
+		if (node->contents < 0)
+		{
+			if (leafs_count == leafs_maxcount)
+				return;
+
+			leaf = (cleaf_t *)node;
+			leafs_list[leafs_count++] = leaf - map_leafs;
+			return;
+		}
+		
+	// NODE_MIXED
+		splitplane = node->plane;
+		sides = BOX_ON_PLANE_SIDE (leafs_mins, leafs_maxs, splitplane);
+		
+	// recurse down the contacted sides
+		if (sides == 1)
+			node = node->children[0];
+		else if (sides == 2)
+			node = node->children[1];
+		else
+		{
+			if (leafs_topnode == -1)
+				leafs_topnode = node - map_nodes;
+			FindTouchedLeafs_r (node->children[0]);
+			node = node->children[1];
+		}
+	}
+}
+
+/*
+** Returns an array filled with leaf nums
+*/
+int CM_FindTouchedLeafs (const vec3_t mins, const vec3_t maxs, int leafs[], int maxleafs, int headnode, int *topnode)
+{
+	leafs_count = 0;
+	leafs_maxcount = maxleafs;
+	leafs_list = leafs;
+	leafs_topnode = -1;
+	VectorCopy (mins, leafs_mins);
+	VectorCopy (maxs, leafs_maxs);
+
+	FindTouchedLeafs_r (&map_nodes[headnode]);
+
+	if (topnode)
+		*topnode = leafs_topnode;
+
+	return leafs_count;
 }
 
 

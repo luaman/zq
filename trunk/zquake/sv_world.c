@@ -235,49 +235,18 @@ void SV_TouchLinks ( edict_t *ent, areanode_t *node )
 }
 
 
-/*
-===============
-SV_FindTouchedLeafs
-
-===============
-*/
-void SV_FindTouchedLeafs (edict_t *ent, mnode_t *node)
+void SV_LinkToLeafs (edict_t *ent)
 {
-	mplane_t	*splitplane;
-	mleaf_t		*leaf;
-	int			sides;
-	int			leafnum;
+	int	i, leafnums[MAX_ENT_LEAFS];
 
-	if (node->contents == CONTENTS_SOLID)
-		return;
-	
-// add an efrag if the node is a leaf
-
-	if ( node->contents < 0)
-	{
-		if (ent->num_leafs == MAX_ENT_LEAFS)
-			return;
-
-		leaf = (mleaf_t *)node;
-		leafnum = leaf - sv.FIXME_worldmodel->leafs - 1;
-
-		ent->leafnums[ent->num_leafs] = leafnum;
-		ent->num_leafs++;			
-		return;
+	ent->num_leafs = CM_FindTouchedLeafs (ent->v.absmin, ent->v.absmax, leafnums,
+													MAX_ENT_LEAFS, 0, NULL);
+	for (i = 0; i < ent->num_leafs; i++) {
+		// ent->leafnums are real leafnum minus one (for pvs checks)
+		ent->leafnums[i] = leafnums[i] - 1;
 	}
-	
-// NODE_MIXED
-
-	splitplane = node->plane;
-	sides = BOX_ON_PLANE_SIDE(ent->v.absmin, ent->v.absmax, splitplane);
-	
-// recurse down the contacted sides
-	if (sides & 1)
-		SV_FindTouchedLeafs (ent, node->children[0]);
-		
-	if (sides & 2)
-		SV_FindTouchedLeafs (ent, node->children[1]);
 }
+
 
 /*
 ===============
@@ -325,9 +294,10 @@ void SV_LinkEdict (edict_t *ent, qboolean touch_triggers)
 	}
 	
 // link to PVS leafs
-	ent->num_leafs = 0;
 	if (ent->v.modelindex)
-		SV_FindTouchedLeafs (ent, sv.FIXME_worldmodel->nodes);
+		SV_LinkToLeafs (ent);
+	else
+		ent->num_leafs = 0;
 
 	if (ent->v.solid == SOLID_NOT)
 		return;

@@ -219,7 +219,7 @@ void Cmd_Soundlist_f (void)
 
 	MSG_WriteByte (&sv_client->netchan.message, svc_soundlist);
 	MSG_WriteByte (&sv_client->netchan.message, n);
-	for (s = sv.sound_precache+1 + n ; 
+	for (s = sv.sound_name + 1 + n ; 
 		*s && sv_client->netchan.message.cursize < (MAX_MSGLEN/2); 
 		s++, n++)
 		MSG_WriteString (&sv_client->netchan.message, *s);
@@ -275,7 +275,7 @@ void Cmd_Modellist_f (void)
 
 	MSG_WriteByte (&sv_client->netchan.message, svc_modellist);
 	MSG_WriteByte (&sv_client->netchan.message, n);
-	for (s = sv.model_precache+1+n ; 
+	for (s = sv.model_name + 1 + n ; 
 		*s && sv_client->netchan.message.cursize < (MAX_MSGLEN/2); 
 		s++, n++)
 		MSG_WriteString (&sv_client->netchan.message, *s);
@@ -1629,8 +1629,13 @@ void AddLinksToPmove ( areanode_t *node )
 
 			VectorCopy (check->v.origin, pe->origin);
 			pe->info = NUM_FOR_EDICT(check);
-			if (check->v.solid == SOLID_BSP)
-				pe->model = sv.FIXME_models[(int)(check->v.modelindex)];
+			if (check->v.solid == SOLID_BSP) {
+				if ((unsigned)check->v.modelindex >= MAX_MODELS)
+					Host_Error ("AddLinksToPmove: check->v.modelindex >= MAX_MODELS");
+				pe->model = sv.models[(int)(check->v.modelindex)];
+				if (!pe->model)
+					Host_Error ("SOLID_BSP with a non-bsp model");
+			}
 			else
 			{
 				pe->model = NULL;
@@ -1699,7 +1704,11 @@ void AddAllEntsToPmove (void)
 			VectorCopy (check->v.origin, pe->origin);
 			pmove.physents[pmove.numphysent].info = e;
 			if (check->v.solid == SOLID_BSP)
-				pe->model = sv.FIXME_models[(int)(check->v.modelindex)];
+				if ((unsigned)check->v.modelindex >= MAX_MODELS)
+					Host_Error ("AddLinksToPmove: check->v.modelindex >= MAX_MODELS");
+				pe->model = sv.models[(int)(check->v.modelindex)];
+				if (!pe->model)
+					Host_Error ("SOLID_BSP with a non-bsp model");
 			else
 			{
 				pe->model = NULL;
@@ -1870,7 +1879,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	// build physent list
 	pmove.numphysent = 1;
-	pmove.physents[0].model = sv.FIXME_worldmodel;
+	pmove.physents[0].model = sv.worldmodel;
 	AddLinksToPmove ( sv_areanodes );
 
 	// fill in movevars

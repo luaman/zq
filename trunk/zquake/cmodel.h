@@ -67,10 +67,12 @@ int CM_HullPointContents (hull_t *hull, int num, vec3_t p);
 trace_t CM_HullTrace (hull_t *hull, vec3_t start, vec3_t end);
 cleaf_t *CM_PointInLeaf (const vec3_t p);
 int CM_Leafnum (const cleaf_t *leaf);
-byte *CM_LeafPVS (cleaf_t *leaf);
-byte *CM_LeafPHS (cleaf_t *leaf);		// only for the server
+byte *CM_LeafPVS (const cleaf_t *leaf);
+byte *CM_LeafPHS (const cleaf_t *leaf);		// only for the server
 byte *CM_FatPVS (vec3_t org);
+int CM_FindTouchedLeafs (const vec3_t mins, const vec3_t maxs, int leafs[], int maxleafs, int headnode, int *topnode);
 char *CM_EntityString (void);
+int	CM_NumInlineModels (void);
 cmodel_t *CM_InlineModel (char *name);
 void CM_InvalidateMap (void);
 cmodel_t *CM_LoadMap (char *name, qboolean clientload, unsigned *checksum, unsigned *checksum2);
