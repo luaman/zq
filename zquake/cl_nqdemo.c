@@ -62,23 +62,23 @@ void R_TranslatePlayerSkin (int playernum);
 
 qbool	nq_drawpings;	// for sbar code
 
-qbool	nq_player_teleported;	// hacky
+static qbool	nq_player_teleported;	// hacky
 
-vec3_t	nq_last_fixangle;
+static vec3_t	nq_last_fixangle;
 
-int		nq_num_entities;
-int		nq_viewentity;
-int		nq_forcecdtrack;
-int		nq_signon;
-int		nq_maxclients;
-float	nq_mtime[2];
-vec3_t	nq_mvelocity[2];
-vec3_t	nq_mviewangles[2];
-vec3_t	nq_mviewangles_temp;
-qbool	standard_quake = true;
+static int		nq_num_entities;
+static int		nq_viewentity;
+static int		nq_forcecdtrack;
+static int		nq_signon;
+static int		nq_maxclients;
+static float	nq_mtime[2];
+static vec3_t	nq_mvelocity[2];
+static vec3_t	nq_mviewangles[2];
+static vec3_t	nq_mviewangles_temp;
+static qbool	standard_quake = true;
 
 
-qbool CL_GetNQDemoMessage (void)
+static qbool CL_GetNQDemoMessage (void)
 {
 	int r, i;
 	float f;
@@ -124,14 +124,14 @@ qbool CL_GetNQDemoMessage (void)
 }
 
 
-void NQD_BumpEntityCount (int num)
+static void NQD_BumpEntityCount (int num)
 {
 	if (num >= nq_num_entities)
 		nq_num_entities = num + 1;
 }
 
 
-void NQD_ParseClientdata (int bits)
+static void NQD_ParseClientdata (int bits)
 {
 	int		i, j;
 	extern player_state_t view_message;
@@ -248,7 +248,7 @@ void NQD_ParseClientdata (int bits)
 NQD_ParseUpdatecolors
 ==================
 */
-void NQD_ParseUpdatecolors (void)
+static void NQD_ParseUpdatecolors (void)
 {
 	int	i, colors;
 
@@ -268,7 +268,7 @@ void NQD_ParseUpdatecolors (void)
 NQD_ParsePrint
 ==================
 */
-void NQD_ParsePrint (void)
+static void NQD_ParsePrint (void)
 {
 	extern cvar_t	cl_chatsound;
 
@@ -282,13 +282,13 @@ void NQD_ParsePrint (void)
 
 
 // JPG's ProQuake hacks
-int ReadPQByte (void) {
+static int ReadPQByte (void) {
 	int word;
 	word = MSG_ReadByte() * 16;
 	word += MSG_ReadByte() - 272;
 	return word;
 }
-int ReadPQShort (void) {
+static int ReadPQShort (void) {
 	int word;
 	word = ReadPQByte() * 256;
 	word += ReadPQByte();
@@ -300,7 +300,7 @@ int ReadPQShort (void) {
 NQD_ParseStufftext
 ==================
 */
-void NQD_ParseStufftext (void)
+static void NQD_ParseStufftext (void)
 {
 	char	*s;
 	byte	*p;
@@ -342,7 +342,7 @@ ok:
 NQD_ParseServerData
 ==================
 */
-void NQD_ParseServerData (void)
+static void NQD_ParseServerData (void)
 {
 	char	*str;
 	int		i;
@@ -456,7 +456,7 @@ void NQD_ParseServerData (void)
 NQD_ParseStartSoundPacket
 ==================
 */
-void NQD_ParseStartSoundPacket(void)
+static void NQD_ParseStartSoundPacket(void)
 {
     vec3_t  pos;
     int 	channel, ent;
@@ -503,7 +503,7 @@ If an entities model or origin changes from frame to frame, it must be
 relinked.  Other attributes can change without relinking.
 ==================
 */
-void NQD_ParseUpdate (int bits)
+static void NQD_ParseUpdate (int bits)
 {
 	int			i;
 //	model_t		*model;
@@ -660,7 +660,7 @@ Determines the fraction between the last two messages that the objects
 should be put at.
 ===============
 */
-float NQD_LerpPoint (void)
+static float NQD_LerpPoint (void)
 {
 	float	f, frac;
 
@@ -699,7 +699,7 @@ extern int	cl_playerindex;
 extern int	cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 extern int	cl_rocketindex, cl_grenadeindex;
 
-void NQD_LerpPlayerinfo (float f)
+static void NQD_LerpPlayerinfo (float f)
 {
 	int		i;
 
@@ -943,7 +943,7 @@ extern const int num_svc_strings;
 
 #define SHOWNET(x) {if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);}
 
-void NQD_ParseServerMessage (void)
+static void NQD_ParseServerMessage (void)
 {
 	int		cmd;
 	int		i;
