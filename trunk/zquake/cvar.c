@@ -29,6 +29,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "server.h"
 #endif
 
+extern char *TP_ParseFunChars (char *s);
+
 static cvar_t	*cvar_hash[32];
 static cvar_t	*cvar_vars;
 static char		*cvar_null_string = "";
@@ -181,11 +183,13 @@ void Cvar_Set (cvar_t *var, char *value)
 #ifndef SERVERONLY
 	if (var->flags & CVAR_USERINFO)
 	{
-		Info_SetValueForKey (cls.userinfo, var->name, var->string, MAX_INFO_STRING);
+		char *s;
+		s = TP_ParseFunChars (var->string);
+		Info_SetValueForKey (cls.userinfo, var->name, s, MAX_INFO_STRING);
 		if (cls.state >= ca_connected)
 		{
 			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-			SZ_Print (&cls.netchan.message, va("setinfo \"%s\" \"%s\"\n", var->name, var->string));
+			SZ_Print (&cls.netchan.message, va("setinfo \"%s\" \"%s\"\n", var->name, s));
 		}
 	}
 #endif
