@@ -897,7 +897,7 @@ Draw_ConsoleBackground
 void Draw_ConsoleBackground (int lines)
 {
 	char ver[80];
-	int x, y, i;
+	int x, y/*, i*/;
 
 	if (lines == vid.height)
 		Draw_Pic(0, lines - vid.height, conback);
@@ -917,8 +917,9 @@ void Draw_ConsoleBackground (int lines)
 #endif
 #endif
 		x = vid.conwidth - (strlen(ver)*8 + 11) - (vid.conwidth*8/320)*7;
-		for (i=0 ; i<strlen(ver) ; i++)
-			Draw_Character (x + i * 8, y, ver[i] | 0x80);
+//		for (i=0 ; i<strlen(ver) ; i++)
+//			Draw_Character (x + i * 8, y, ver[i] | 0x80);
+		Draw_Alt_String (x, y, ver);
 	}
 }
 
@@ -1490,13 +1491,11 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	else
 		glt = &gltextures[numgltextures];
 
-	if (numgltextures == MAX_GLTEXTURES)
+	if (numgltextures++ == MAX_GLTEXTURES)
 		Sys_Error ("GL_LoadTexture: numgltextures == MAX_GLTEXTURES");
-	numgltextures++;
 
 	Q_strncpyz (glt->identifier, identifier, sizeof(glt->identifier));
-	glt->texnum = texture_extension_number;
-	texture_extension_number++;
+	glt->texnum = texture_extension_number++;
 
 setuptexture:
 	glt->width = width;
