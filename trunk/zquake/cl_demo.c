@@ -237,7 +237,7 @@ readnext:
 		pcmd->forwardmove = LittleShort(pcmd->forwardmove);
 		pcmd->sidemove    = LittleShort(pcmd->sidemove);
 		pcmd->upmove      = LittleShort(pcmd->upmove);
-		cl.frames[i].senttime = cls.realtime;
+		cl.frames[i].senttime = demotime + (cls.realtime - cls.demotime);
 		cl.frames[i].receivedtime = -1;		// we haven't gotten a reply yet
 		cls.netchan.outgoing_sequence++;
 
