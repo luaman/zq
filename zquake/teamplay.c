@@ -829,6 +829,33 @@ void CL_ExecuteTriggerString (char *text)
 		Con_Printf ("Invalid trigger command: \"%s\"\n", arg0);
 }
 
+
+void CL_ExecuteTriggerBuf (char *text)
+{
+	char	line[1024];
+	int		i, quotes;
+
+	while (*text)
+	{
+		quotes = 0;
+		for (i=0 ; text[i] ; i++)
+		{
+			if (text[i] == '"')
+				quotes++;
+			if ( !(quotes&1) &&  text[i] == ';' )
+				break;	// don't break if inside a quoted string
+			if (text[i] == '\n')
+				break;
+		}
+		memcpy (line, text, i);
+		line[i] = 0;
+		CL_ExecuteTriggerString (line);
+		if (!text[i])
+			break;
+		text += i + 1;
+	}
+}
+
 void CL_SearchForMsgTriggers (char *s)
 {
 	msg_trigger_t	*t;
@@ -839,7 +866,7 @@ void CL_SearchForMsgTriggers (char *s)
 		if (t->string[0] && strstr(s, t->string)) {
 			string = Cmd_AliasString (t->name);
 			if (string)
-				CL_ExecuteTriggerString (string);
+				CL_ExecuteTriggerBuf (string);
 			else
 				Con_Printf ("trigger \"%s\" has no matching alias\n", t->name);
 		}
