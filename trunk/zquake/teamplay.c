@@ -390,6 +390,8 @@ char *Macro_Time (void)
 
 	time (&t);
 	ptm = localtime (&t);
+	if (!ptm)
+		return "#bad date#";
 	strftime (macro_buf, sizeof(macro_buf)-1, "%H:%M", ptm);
 	return macro_buf;
 }
@@ -401,6 +403,8 @@ char *Macro_Date (void)
 
 	time (&t);
 	ptm = localtime (&t);
+	if (!ptm)
+		return "#bad date#";
 	strftime (macro_buf, sizeof(macro_buf)-1, "%d.%m.%y", ptm);
 	return macro_buf;
 }
