@@ -345,6 +345,8 @@ extern	cvar_t	cl_gibfilter;
 extern	cvar_t	cl_muzzleflash;
 extern	cvar_t	r_rocketlight;
 extern	cvar_t	r_rockettrail;
+extern	cvar_t	r_grenadetrail;
+extern	cvar_t	r_powerupglow;
 // <-- Tonik
 
 #define	MAX_STATIC_ENTITIES	128			// torches, etc
