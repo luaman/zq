@@ -942,7 +942,6 @@ CL_NewTranslation
 #ifdef GLQUAKE
 void CL_NewTranslation (int slot)
 {
-	int		teamplay;
 	char	s[512];
 	player_info_t	*player;
 
@@ -964,10 +963,9 @@ void CL_NewTranslation (int slot)
 	player->bottomcolor = player->real_bottomcolor;
 
 	strcpy (s, cl.players[cl.playernum].team);
-	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
 
 	if ( !cl.teamfortress && !(cl.fpd & FPD_NO_FORCE_COLOR) ) {
-		if (cl_teamtopcolor >= 0 && teamplay && 
+		if (cl_teamtopcolor >= 0 && cl.teamplay && 
 			!strcmp(player->team, s))
 		{
 			player->topcolor = cl_teamtopcolor;
@@ -975,7 +973,7 @@ void CL_NewTranslation (int slot)
 		}
 		
 		if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
-			(!teamplay || strcmp(player->team, s)))
+			(!cl.teamplay || strcmp(player->team, s)))
 		{
 			player->topcolor = cl_enemytopcolor;
 			player->bottomcolor = cl_enemybottomcolor;
@@ -988,7 +986,6 @@ void CL_NewTranslation (int slot)
 #else
 void CL_NewTranslation (int slot)
 {
-	int		teamplay;
 	int		i, j;
 	int		top, bottom;
 	byte	*dest, *source;
@@ -1012,10 +1009,9 @@ void CL_NewTranslation (int slot)
 	player->bottomcolor = player->real_bottomcolor;
 
 	strcpy (s, cl.players[cl.playernum].team);
-	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
 
 	if ( !cl.teamfortress && !(cl.fpd & FPD_NO_FORCE_COLOR) ) {
-		if (cl_teamtopcolor >= 0 && teamplay && 
+		if (cl_teamtopcolor >= 0 && cl.teamplay && 
 			!strcmp(player->team, s))
 		{
 			player->topcolor = cl_teamtopcolor;
@@ -1023,7 +1019,7 @@ void CL_NewTranslation (int slot)
 		}
 		
 		if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
-			(!teamplay || strcmp(player->team, s)))
+			(!cl.teamplay || strcmp(player->team, s)))
 		{
 			player->topcolor = cl_enemytopcolor;
 			player->bottomcolor = cl_enemybottomcolor;
@@ -1166,24 +1162,23 @@ Called by CL_FullServerinfo_f and CL_ParseServerInfoChange
 void CL_ProcessServerInfo (void)
 {
 	char	*p;
-	static int old_teamplay = 0;
-	static int old_fpd = 0;
-	int teamplay;	// FIXME: make it cl.teamplay?
+	int teamplay, fpd;
 	int i;
 
-	cl.fpd = Q_atof(Info_ValueForKey(cl.serverinfo, "fpd"));
-	cl.z_ext = Q_atof(Info_ValueForKey(cl.serverinfo, "*z_ext"));
-	teamplay = Q_atof(Info_ValueForKey(cl.serverinfo, "teamplay"));
-	
 	p = Info_ValueForKey(cl.serverinfo, "deathmatch");
 	if (*p)
-		cl.gametype = Q_atof(p) ? GAME_DEATHMATCH : GAME_COOP;
+		cl.gametype = atoi(p) ? GAME_DEATHMATCH : GAME_COOP;
 	else
 		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
 
-	if (teamplay != old_teamplay || cl.fpd != old_fpd) {
-		old_teamplay = teamplay;
-		old_fpd = cl.fpd;
+	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext"));
+	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
+	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
+	fpd = atoi(Info_ValueForKey(cl.serverinfo, "fpd"));
+
+	if (teamplay != cl.teamplay || fpd != cl.fpd) {
+		cl.teamplay = teamplay;
+		cl.fpd = fpd;
 		if (cls.state >= ca_connected) {
 			for (i = 0; i < MAX_CLIENTS ; i++)
 				CL_NewTranslation (i);
