@@ -924,8 +924,6 @@ void R_DrawSky (void)
 {
 	msurface_t	*fa;
 	qbool		ignore_z;
-	extern cvar_t	gl_ztrick;
-	extern int		gl_ztrickframe;
 	extern msurface_t *skychain;
 
 	GL_DisableMultitexture ();
