@@ -626,7 +626,7 @@ void CL_ParseServerData (void)
 
 	// get the full level name
 	str = MSG_ReadString ();
-	strncpy (cl.levelname, str, sizeof(cl.levelname)-1);
+	Q_strncpyz (cl.levelname, str, sizeof(cl.levelname));
 
 	// get the movevars
 	movevars.gravity			= MSG_ReadFloat();
@@ -1062,7 +1062,7 @@ CL_ProcessUserInfo
 */
 void CL_ProcessUserInfo (int slot, player_info_t *player)
 {
-	strncpy (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name)-1);
+	Q_strncpyz (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
 	player->real_topcolor = atoi(Info_ValueForKey (player->userinfo, "topcolor"));
 	player->real_bottomcolor = atoi(Info_ValueForKey (player->userinfo, "bottomcolor"));
 	strcpy (player->team, Info_ValueForKey (player->userinfo, "team"));
@@ -1106,7 +1106,7 @@ void CL_UpdateUserinfo (void)
 
 	player = &cl.players[slot];
 	player->userid = MSG_ReadLong ();
-	strncpy (player->userinfo, MSG_ReadString(), sizeof(player->userinfo)-1);
+	Q_strncpyz (player->userinfo, MSG_ReadString(), sizeof(player->userinfo));
 
 	CL_ProcessUserInfo (slot, player);
 }
@@ -1120,8 +1120,8 @@ void CL_SetInfo (void)
 {
 	int		slot;
 	player_info_t	*player;
-	char key[MAX_MSGLEN];
-	char value[MAX_MSGLEN];
+	char key[MAX_INFO_STRING];
+	char value[MAX_INFO_STRING];
 
 	slot = MSG_ReadByte ();
 	if (slot >= MAX_CLIENTS)
@@ -1129,10 +1129,8 @@ void CL_SetInfo (void)
 
 	player = &cl.players[slot];
 
-	strncpy (key, MSG_ReadString(), sizeof(key) - 1);
-	key[sizeof(key) - 1] = 0;
-	strncpy (value, MSG_ReadString(), sizeof(value) - 1);
-	key[sizeof(value) - 1] = 0;
+	Q_strncpyz (key, MSG_ReadString(), sizeof(key));
+	Q_strncpyz (value, MSG_ReadString(), sizeof(value));
 
 	Con_DPrintf("SETINFO %s: %s=%s\n", player->name, key, value);
 
@@ -1183,13 +1181,11 @@ CL_ParseServerInfoChange
 */
 void CL_ParseServerInfoChange (void)
 {
-	char key[MAX_MSGLEN];
-	char value[MAX_MSGLEN];
+	char key[MAX_INFO_STRING];
+	char value[MAX_INFO_STRING];
 
-	strncpy (key, MSG_ReadString(), sizeof(key) - 1);
-	key[sizeof(key) - 1] = 0;
-	strncpy (value, MSG_ReadString(), sizeof(value) - 1);
-	key[sizeof(value) - 1] = 0;
+	Q_strncpyz (key, MSG_ReadString(), sizeof(key));
+	Q_strncpyz (value, MSG_ReadString(), sizeof(value));
 
 	Con_DPrintf("SERVERINFO: %s=%s\n", key, value);
 

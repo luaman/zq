@@ -1349,7 +1349,7 @@ void M_ScanSaves (void)
 			continue;
 		fscanf (f, "%i\n", &version);
 		fscanf (f, "%79s\n", name);
-		strncpy (m_filenames[i], name, sizeof(m_filenames[i])-1);
+		Q_strncpyz (m_filenames[i], name, sizeof(m_filenames[i]));
 
 	// change _ back to space
 		for (j=0 ; j<SAVEGAME_COMMENT_LENGTH ; j++)
@@ -1597,7 +1597,7 @@ static void ReadDir (void)
 	do {
 		int type, size;
 		int pos;
-		char name[MAX_DEMO_NAME] = "";
+		char name[MAX_DEMO_NAME];
 
 		if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 			if (!strcmp(fd.cFileName, ".") || !strcmp(fd.cFileName, ".."))
@@ -1615,7 +1615,7 @@ static void ReadDir (void)
 			size = fd.nFileSizeLow;
 		}
 
-		strncpy (name, fd.cFileName, MAX_DEMO_NAME-1);
+		Q_strncpyz (name, fd.cFileName, MAX_DEMO_NAME);
 
 		// inclusion sort
 		for (i=0 ; i<numfiles ; i++)
@@ -1675,7 +1675,7 @@ static char *toyellow (char *s)
 {
 	static char buf[20];
 
-	strncpy (buf, s, sizeof(buf)-1);
+	Q_strncpyz (buf, s, sizeof(buf));
 	for (s=buf ; *s ; s++)
 		if (*s >= '0' && *s <= '9')
 			*s = *s - '0' + 18;
@@ -1687,7 +1687,7 @@ void M_Demos_Draw (void)
 	int		i;
 	int		y;
 	direntry_t	*d;
-	char	str[29] = "";
+	char	str[29];
 
 	M_Print (140, 8, "DEMOS");
 	M_Print (16, 16, demodir);
@@ -1696,7 +1696,7 @@ void M_Demos_Draw (void)
 	d = dir + demo_base;
 	for (i=0, y=32 ; i<numfiles-demo_base && i<MAXLINES ; i++, y+=8, d++)
 	{
-		strncpy (str, d->name, sizeof(str)-1);
+		Q_strncpyz (str, d->name, sizeof(str));
 		if (d->type)
 			M_PrintWhite (24, y, str);
 		else
@@ -2210,10 +2210,8 @@ void M_Menu_Setup_f (void)
 	key_dest = key_menu;
 	m_state = m_setup;
 	m_entersound = true;
-	strncpy(setup_name, name.string, sizeof(setup_name));
-	setup_name[15] = 0;
-	strncpy(setup_team, team.string, sizeof(setup_team));
-	setup_team[15] = 0;
+	Q_strncpyz (setup_name, name.string, sizeof(setup_name));
+	Q_strncpyz (setup_team, team.string, sizeof(setup_team));
 	setup_top = setup_oldtop = (int)topcolor.value;
 	setup_bottom = setup_oldbottom = (int)bottomcolor.value;
 }
@@ -2520,7 +2518,7 @@ void M_ServerList_Key (key)
 		m_state = m_main;
 		M_ToggleMenu_f();
 		CL_Disconnect();
-		strncpy(cls.servername,slist[m_multip_cursor].server,sizeof(cls.servername)-1);
+		Q_strncpyz (cls.servername, slist[m_multip_cursor].server, sizeof(cls.servername));
 		CL_BeginServerConnect();
 		break;
 
@@ -2590,10 +2588,8 @@ void M_Menu_SEdit_f (void) {
 	m_entersound = true;
 	m_state = m_sedit;
 	sedit_state = 0;
-	strncpy(serv,slist[m_multip_cursor].server,255);
-	serv[strlen(slist[m_multip_cursor].server) + 1] = 0;
-	strncpy(desc,slist[m_multip_cursor].description,255);
-	desc[strlen(slist[m_multip_cursor].description) + 1] = 0;
+	Q_strncpyz (serv, slist[m_multip_cursor].server, sizeof(serv));
+	Q_strncpyz (desc, slist[m_multip_cursor].description, sizeof(desc));
 	serv_max = strlen(serv) > SERV_L ? strlen(serv) : SERV_L;
 	serv_min = serv_max - (SERV_L);
 	desc_max = strlen(desc) > DESC_L ? strlen(desc) : DESC_L;

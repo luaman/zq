@@ -784,8 +784,7 @@ void CL_EasyRecord_f (void)
 			*p = '_';
 	}
 
-	strncpy (name, va("%s/%s", com_gamedir, name), MAX_OSPATH-1);
-	name[MAX_OSPATH-1] = 0;
+	Q_strncpyz (name, va("%s/%s", com_gamedir, name), MAX_OSPATH);
 
 // find a filename that doesn't exist yet
 	strcpy (name2, name);
@@ -933,7 +932,7 @@ void PlayQWZDemo (void)
 	PROCESS_INFORMATION	pi;
 	char	*name;
 	char	qwz_name[256];
-	char	cmdline[512] = {'\0'};
+	char	cmdline[512];
 	char	*p;
 
 	if (hQizmoProcess) {
@@ -944,12 +943,12 @@ void PlayQWZDemo (void)
 	name = Cmd_Argv(1);
 
 	if (!strncmp(name, "../", 3) || !strncmp(name, "..\\", 3))
-		strncpy (qwz_name, va("%s/%s", com_basedir, name+3), sizeof(qwz_name)-1);
+		Q_strncpyz (qwz_name, va("%s/%s", com_basedir, name+3), sizeof(qwz_name));
 	else
 		if (name[0] == '/' || name[0] == '\\')
-			strncpy (qwz_name, va("%s/%s", com_gamedir, name+1), sizeof(qwz_name)-1);
+			Q_strncpyz (qwz_name, va("%s/%s", com_gamedir, name+1), sizeof(qwz_name));
 		else
-			strncpy (qwz_name, va("%s/%s", com_gamedir, name), sizeof(qwz_name)-1);
+			Q_strncpyz (qwz_name, va("%s/%s", com_gamedir, name), sizeof(qwz_name));
 
 	// check if the file exists
 	cls.demofile = fopen (qwz_name, "rb");
@@ -960,7 +959,7 @@ void PlayQWZDemo (void)
 	}
 	fclose (cls.demofile);
 	
-	strncpy (tempqwd_name, qwz_name, sizeof(tempqwd_name)-4);
+	Q_strncpyz (tempqwd_name, qwz_name, sizeof(tempqwd_name)-4);
 #if 0
 	// the right way
 	strcpy (tempqwd_name + strlen(tempqwd_name) - 4, ".qwd");
@@ -992,8 +991,8 @@ void PlayQWZDemo (void)
 	si.wShowWindow = SW_HIDE;
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	
-	strncpy (cmdline, va("%s/%s/qizmo.exe -D %s", com_basedir,
-		qizmo_dir.string, qwz_name), sizeof(cmdline)-1);
+	Q_strncpyz (cmdline, va("%s/%s/qizmo.exe -D %s", com_basedir,
+		qizmo_dir.string, qwz_name), sizeof(cmdline));
 	
 	if (!CreateProcess (NULL, cmdline, NULL, NULL,
 		FALSE, 0/* | HIGH_PRIORITY_CLASS*/,
@@ -1044,7 +1043,7 @@ void CL_PlayDemo_f (void)
 //
 // open the demo file
 //
-	strncpy (name, Cmd_Argv(1), sizeof(name)-5);
+	Q_strncpyz (name, Cmd_Argv(1), sizeof(name)-4);
 
 #ifdef _WIN32
 	if (strlen(name) > 4 && !Q_strcasecmp(name + strlen(name) - 4, ".qwz")) {
