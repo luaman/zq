@@ -30,7 +30,7 @@ static qboolean	qwz_playback = false;
 static qboolean	qwz_unpacking = false;
 #ifdef _WIN32
 static HANDLE	hQizmoProcess = NULL;
-static char tempqwd_name[256] = {0}; // this file must be deleted
+static char tempqwd_name[256] = ""; // this file must be deleted
 									// after playback is finished
 void CheckQizmoCompletion ();
 void StopQWZPlayback ();
