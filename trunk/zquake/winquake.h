@@ -25,20 +25,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef SERVERONLY
 
-#ifndef WM_MOUSEWHEEL
-#define WM_MOUSEWHEEL	0x020A
-#endif
+//
+// uncategorized Win32 stuff
+//
+extern HINSTANCE	global_hInstance;
+extern HANDLE		hinput, houtput;
+extern qbool		WinNT;
+extern HWND			hwnd_dialog;	// startup screen handle
 
+
+
+//
+// sound
+//
 #include <dsound.h>
 
 extern LPDIRECTSOUND		pDS;
 extern LPDIRECTSOUNDBUFFER	pDSBuf;
 extern DWORD				gSndBufSize;
 
-extern HINSTANCE	global_hInstance;
+void S_BlockSound (void);
+void S_UnblockSound (void);
 
+
+//
+// video
+//
 extern qbool		DDActive;
-
 
 typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT} modestate_t;
 
@@ -47,8 +60,9 @@ extern modestate_t	modestate;
 extern HWND			mainwindow;
 extern qbool		ActiveApp, Minimized;
 
-extern qbool		WinNT;
-
+//
+// input
+//
 void IN_ShowMouse (void);
 void IN_DeactivateMouse (void);
 void IN_HideMouse (void);
@@ -60,14 +74,12 @@ void IN_MouseEvent (int mstate);
 extern int		window_center_x, window_center_y;
 extern RECT		window_rect;
 
-extern HWND		hwnd_dialog;
-
-extern HANDLE	hinput, houtput;
-
 void IN_UpdateClipCursor (void);
 
-void S_BlockSound (void);
-void S_UnblockSound (void);
+#ifndef WM_MOUSEWHEEL
+#define WM_MOUSEWHEEL	0x020A
+#endif
+
 
 #endif // !SERVERONLY
 
