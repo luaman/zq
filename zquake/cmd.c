@@ -123,8 +123,7 @@ void Cbuf_AddTextEx (cbuf_t *cbuf, char *text)
 ============
 Cbuf_InsertText
 
-Adds command text immediately after the current command
-Adds a \n to the text
+Adds command text at the beginning of the buffer
 ============
 */
 void Cbuf_InsertTextEx (cbuf_t *cbuf, char *text)
@@ -135,15 +134,14 @@ void Cbuf_InsertTextEx (cbuf_t *cbuf, char *text)
 
 	len = strlen(text);
 
-	if (len < cbuf->text_start)
+	if (len <= cbuf->text_start)
 	{
-		memcpy (cbuf->text_buf + (cbuf->text_start - len - 1), text, len);
-		cbuf->text_buf[cbuf->text_start-1] = '\n';
-		cbuf->text_start -= len + 1;
+		memcpy (cbuf->text_buf + (cbuf->text_start - len), text, len);
+		cbuf->text_start -= len;
 		return;
 	}
 
-	new_bufsize = cbuf->text_end - cbuf->text_start + len + 1;
+	new_bufsize = cbuf->text_end - cbuf->text_start + len;
 	if (new_bufsize > MAXCMDBUF)
 	{
 		Con_Printf ("Cbuf_InsertText: overflow\n");
@@ -153,9 +151,9 @@ void Cbuf_InsertTextEx (cbuf_t *cbuf, char *text)
 	// Calculate optimal position of text in buffer
 	new_start = (MAXCMDBUF - new_bufsize) / 2;
 
-	memmove (cbuf->text_buf + (new_start + len + 1), cbuf->text_buf + cbuf->text_start, cbuf->text_end-cbuf->text_start);
+	memmove (cbuf->text_buf + (new_start + len), cbuf->text_buf + cbuf->text_start,
+		cbuf->text_end - cbuf->text_start);
 	memcpy (cbuf->text_buf + new_start, text, len);
-	cbuf->text_buf[new_start + len] = '\n';
 	cbuf->text_start = new_start;
 	cbuf->text_end = cbuf->text_start + new_bufsize;
 }
@@ -899,8 +897,8 @@ Can be used to do some zqwcl-specific action, e.g. "_z_cmd exec tonik_z.cfg"
 */
 void Cmd_Z_Cmd_f (void)
 {
-	Cbuf_InsertText (Cmd_Args());
 	Cbuf_InsertText ("\n");
+	Cbuf_InsertText (Cmd_Args());
 }
 
 
@@ -1159,6 +1157,7 @@ void Cmd_If_f (void)
 		}
 	}
 
+	strcat (buf, "\n");
 	Cbuf_InsertText (buf);
 }
 
