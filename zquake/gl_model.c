@@ -320,16 +320,6 @@ model_t *Mod_ForName (char *name, qboolean crash)
 }
 
 
-/*
-===============================================================================
-
-					BRUSHMODEL LOADING
-
-===============================================================================
-*/
-
-byte	*mod_base;
-
 static qboolean HasFullbrights (byte *pixels, int size)
 {
     int i;
@@ -341,6 +331,16 @@ static qboolean HasFullbrights (byte *pixels, int size)
     return false;
 }
 
+
+/*
+===============================================================================
+
+					BRUSHMODEL LOADING
+
+===============================================================================
+*/
+
+byte	*mod_base;
 
 /*
 =================
@@ -1472,9 +1472,8 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 	for (i=0 ; i<numskins ; i++)
 	{
 		if (pskintype->type == ALIAS_SKIN_SINGLE) {
-			Mod_FloodFillSkin( skin, pheader->skinwidth, pheader->skinheight );
+			Mod_FloodFillSkin (skin, pheader->skinwidth, pheader->skinheight);
 
-			// save 8 bit texels for the player model to remap
 			// save 8 bit texels for the player model to remap
 			if (!strcmp(loadmodel->name,"progs/player.mdl"))
 			{
@@ -1482,13 +1481,23 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 					Sys_Error ("Player skin too large");
 				memcpy (player_8bit_texels, (byte *)(pskintype + 1), s);
 			}
-			sprintf (name, "%s_%i", loadmodel->name, i);
+			_snprintf (name, sizeof(name)-1, "%s_%i", loadmodel->name, i);
 			pheader->gl_texturenum[i][0] =
 			pheader->gl_texturenum[i][1] =
 			pheader->gl_texturenum[i][2] =
 			pheader->gl_texturenum[i][3] =
-				GL_LoadTexture (name, pheader->skinwidth, 
-				pheader->skinheight, (byte *)(pskintype + 1), true, false, false);
+				GL_LoadTexture (name, pheader->skinwidth, pheader->skinheight,
+				(byte *)(pskintype + 1), true, false, false);
+
+			if (HasFullbrights((byte *)(pskintype + 1),	pheader->skinwidth*pheader->skinheight))
+				pheader->fb_texturenum[i][0] = pheader->fb_texturenum[i][1] =
+				pheader->fb_texturenum[i][2] = pheader->fb_texturenum[i][3] =
+					GL_LoadTexture (va("@fb_%s", name), pheader->skinwidth, 
+					pheader->skinheight, (byte *)(pskintype + 1), true, 2, false);
+			else
+				pheader->fb_texturenum[i][0] = pheader->fb_texturenum[i][1] =
+				pheader->fb_texturenum[i][2] = pheader->fb_texturenum[i][3] = 0;
+			
 			pskintype = (daliasskintype_t *)((byte *)(pskintype+1) + s);
 		} else {
 			// animating skin group.  yuck.
@@ -1501,11 +1510,19 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 
 			for (j=0 ; j<groupskins ; j++)
 			{
-					Mod_FloodFillSkin( skin, pheader->skinwidth, pheader->skinheight );
-					sprintf (name, "%s_%i_%i", loadmodel->name, i,j);
+					Mod_FloodFillSkin (skin, pheader->skinwidth, pheader->skinheight);
+					_snprintf (name, sizeof(name)-1, "%s_%i_%i", loadmodel->name, i, j);
 					pheader->gl_texturenum[i][j&3] = 
 						GL_LoadTexture (name, pheader->skinwidth, 
 						pheader->skinheight, (byte *)(pskintype), true, false, false);
+
+					if (HasFullbrights((byte *)(pskintype),	pheader->skinwidth*pheader->skinheight))
+						pheader->fb_texturenum[i][j&3] =
+							GL_LoadTexture (va("@fb_%s", name), pheader->skinwidth, 
+							pheader->skinheight, (byte *)(pskintype), true, 2, false);
+					else
+						pheader->fb_texturenum[i][j&3] = 0;
+
 					pskintype = (daliasskintype_t *)((byte *)(pskintype) + s);
 			}
 			k = j;
