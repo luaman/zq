@@ -233,7 +233,7 @@ void main (int argc, char *argv[])
 
 	parms.basedir = ".";
 
-	SV_Init (&parms);
+	Host_Init (&parms);
 
 //
 // main loop
