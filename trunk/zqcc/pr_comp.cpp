@@ -894,7 +894,11 @@ void PR_ParseDefs (void)
 		
 	} while (PR_Check (","));
 
-	PR_Expect (";");
+	if ( !(type->type == ev_function && def->initialized) )
+		PR_Expect (";");	// require semicolon, except is optional after a function body
+
+	while (PR_Check(";"))
+		;	// skip redundant semicolons
 }
 
 /*
@@ -919,6 +923,9 @@ bool PR_CompileFile (char *string, char *filename)
 	PR_NewLine ();
 
 	PR_Lex ();	// read first token
+
+	while (PR_Check(";"))
+		;	// skip redundant semicolons
 
 	while (pr_token_type != tt_eof)
 	{
