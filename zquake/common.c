@@ -1574,11 +1574,8 @@ void Info_RemovePrefixedKeys (char *start, char prefix)
 
 void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 {
-	char	new[1024], *v;
+	char	newstr[1024], *v;
 	int		c;
-#ifndef CLIENTONLY
-	extern cvar_t sv_highchars;
-#endif
 
 	if (strstr (key, "\\") || strstr (value, "\\") )
 	{
@@ -1592,9 +1589,9 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 		return;
 	}
 
-	if (strlen(key) > 63 || strlen(value) > 63)
+	if (strlen(key) >= MAX_INFO_KEY || strlen(value) >= MAX_INFO_KEY)
 	{
-		Com_Printf ("Keys and values must be < 64 characters.\n");
+		Com_Printf ("Keys and values must be < %i characters.\n", MAX_INFO_KEY);
 		return;
 	}
 
@@ -1611,9 +1608,9 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 	if (!value || !strlen(value))
 		return;
 
-	sprintf (new, "\\%s\\%s", key, value);
+	sprintf (newstr, "\\%s\\%s", key, value);
 
-	if ((strlen(new) + strlen(s)) >= maxsize)
+	if ((strlen(newstr) + strlen(s)) >= maxsize)
 	{
 		Com_Printf ("Info string length exceeded\n");
 		return;
@@ -1621,20 +1618,7 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 
 	// only copy ascii values
 	s += strlen(s);
-	v = new;
-#ifndef CLIENTONLY
-	if (!sv_highchars.value) {
-		while (*v) {
-			c = (unsigned char)*v++;
-			if (c == ('\\'|128))
-				continue;
-			c &= 127;
-			if (c >= 32)
-				*s++ = c;
-		}
-	}
-	else
-#endif
+	v = newstr;
 	while (*v) {
 		c = (unsigned char)*v++;
 		if (c > 13)

@@ -47,7 +47,6 @@ cvar_t	allow_download_pakmaps	= {"allow_download_pakmaps", "0"};
 cvar_t	allow_download_gfx		= {"allow_download_gfx", "1"};
 cvar_t	allow_download_other	= {"allow_download_other", "1"};	// make it 0 one day
 
-cvar_t	sv_highchars = {"sv_highchars", "1"};
 cvar_t	sv_phs = {"sv_phs", "1"};
 cvar_t	sv_pausable = {"sv_pausable", "1"};
 cvar_t	sv_maxrate = {"sv_maxrate", "0"};
@@ -626,16 +625,7 @@ void SVC_DirectConnect (void)
 	svs.lastuserid++;	// so every client gets a unique id
 	newcl->userid = svs.lastuserid;
 
-	// works properly
-	if (!sv_highchars.value) {
-		byte *p, *q;
-		for (p = (byte *)newcl->userinfo, q = (byte *)userinfo; 
-			*q && p < (byte *)newcl->userinfo + sizeof(newcl->userinfo)-1; q++)
-			if (*q > 31 && *q <= 127)
-				*p++ = *q;
-	} else
-		strlcpy (newcl->userinfo, userinfo, sizeof(newcl->userinfo));
-
+	strlcpy (newcl->userinfo, userinfo, sizeof(newcl->userinfo));
 
 	Netchan_OutOfBandPrint (NS_SERVER, adr, "%c", S2C_CONNECTION );
 
@@ -1332,7 +1322,6 @@ void SV_InitLocal (void)
 	Cvar_Register (&sv_spectatorPassword);
 
 	Cvar_Register (&sv_aim);
-	Cvar_Register (&sv_highchars);
 	Cvar_Register (&sv_phs);
 	Cvar_Register (&sv_pausable);
 	Cmd_AddLegacyCommand ("pausable", "sv_pausable");
