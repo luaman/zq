@@ -22,19 +22,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef SERVERONLY
 #include "qwsvdef.h"
 #include <winsock.h>
-#include <conio.h>
 #include <limits.h>
 #include <direct.h>		// _mkdir
 #else
 #include "quakedef.h"
 #include "winquake.h"
 #include "resource.h"
-#include <errno.h>
-#include <fcntl.h>
 #include <limits.h>
-#include <io.h>			// _open, etc
 #include <direct.h>		// _mkdir
-#include <conio.h>		// _putch
 #endif
 
 #define MINIMUM_WIN_MEMORY	0x0c00000
@@ -636,6 +631,7 @@ int main (int argc, char **argv)
 	double			newtime, time, oldtime;
 	int				sleep_msec;
 
+	SetConsoleCtrlHandler (HandlerRoutine, TRUE);
 	hinput = GetStdHandle (STD_INPUT_HANDLE);
 	houtput = GetStdHandle (STD_OUTPUT_HANDLE);
 
