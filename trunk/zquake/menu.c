@@ -2110,7 +2110,7 @@ void M_ServerList_Key (key)
 		{
 			if (keydown[K_CTRL])
 			{
-				Server_List_Switch(m_multip_cursor,m_multip_cursor-1);
+				SList_Switch(m_multip_cursor,m_multip_cursor-1);
 				m_multip_cursor--;
 			}
 			else
@@ -2122,8 +2122,8 @@ void M_ServerList_Key (key)
 		S_LocalSound("misc/menu1.wav");
 		if (keydown[K_CTRL])
 		{
-			if (m_multip_cursor != Server_List_Len() - 1) {
-				Server_List_Switch(m_multip_cursor,m_multip_cursor+1);
+			if (m_multip_cursor != SList_Len() - 1) {
+				SList_Switch(m_multip_cursor,m_multip_cursor+1);
 				m_multip_cursor++;
 			}
 		}
@@ -2139,7 +2139,7 @@ void M_ServerList_Key (key)
 
 	case K_END:
 		S_LocalSound("misc/menu1.wav");
-		m_multip_cursor = Server_List_Len() - 1;
+		m_multip_cursor = SList_Len() - 1;
 		break;
 		
 	case K_PGUP:
@@ -2190,30 +2190,30 @@ void M_ServerList_Key (key)
 
 	case K_INS:
 		S_LocalSound("misc/menu2.wav");
-		if (Server_List_Len() < (MAX_SERVER_LIST-1)) {
+		if (SList_Len() < (MAX_SERVER_LIST-1)) {
 			memmove(&slist[m_multip_cursor+1],
 				&slist[m_multip_cursor],
-				(Server_List_Len() - m_multip_cursor)*sizeof(slist[0]));
-			Server_List_Reset_NoFree(m_multip_cursor);
-			Server_List_Set(m_multip_cursor,"127.0.0.1","<BLANK>");
+				(SList_Len() - m_multip_cursor)*sizeof(slist[0]));
+			SList_Reset_NoFree(m_multip_cursor);
+			SList_Set(m_multip_cursor,"127.0.0.1","<BLANK>");
 		}
 		break;
 
 	case K_DEL:
 		S_LocalSound("misc/menu2.wav");
-		if (Server_List_Len() > 0) {
+		if (SList_Len() > 0) {
 			free(slist[m_multip_cursor].server);
 			free(slist[m_multip_cursor].description);
-			if (Server_List_Len()-1 == m_multip_cursor) {
-				Server_List_Reset_NoFree(m_multip_cursor);
+			if (SList_Len()-1 == m_multip_cursor) {
+				SList_Reset_NoFree(m_multip_cursor);
 				m_multip_cursor = !m_multip_cursor ? 0 : m_multip_cursor-1;
 
 			}
 			else {
 				memmove(&slist[m_multip_cursor],
 				&slist[m_multip_cursor+1],
-				(Server_List_Len()-m_multip_cursor-1) * sizeof(slist[0]));
-				Server_List_Reset_NoFree(Server_List_Len()-1);
+				(SList_Len()-m_multip_cursor-1) * sizeof(slist[0]));
+				SList_Reset_NoFree(SList_Len()-1);
 			}
 		}
 		break;
@@ -2287,7 +2287,7 @@ void M_SEdit_Key (int key) {
 			M_Menu_ServerList_f ();
 			break;
 		case K_ENTER:
-			Server_List_Set(m_multip_cursor,serv,desc);
+			SList_Set(m_multip_cursor,serv,desc);
 			M_Menu_ServerList_f ();
 			break;
 		case K_UPARROW:

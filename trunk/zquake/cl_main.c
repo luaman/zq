@@ -1144,9 +1144,6 @@ CL_Init
 */
 void CL_Init (void)
 {
-	FILE *serlist;	// Tonik
-	extern	char	com_basedir[MAX_OSPATH];	// Tonik
-
 	extern	cvar_t		baseskin;
 	extern	cvar_t		noskins;
 	char st[80];
@@ -1304,11 +1301,8 @@ void CL_Init (void)
 	Cmd_AddCommand ("windows", CL_Windows_f);
 #endif
 
-	Server_List_Init();
-	if ((serlist = fopen(va("%s/servers.txt", com_basedir),"r")) != NULL) {
-		Server_List_Load(serlist);
-		fclose(serlist);
-	}
+	SList_Init();
+	SList_Load();
 }
 
 
@@ -1724,7 +1718,7 @@ void Host_Shutdown(void)
 
 	Host_WriteConfiguration (); 
 
-	Server_List_Shutdown ();	// Tonik
+	SList_Shutdown ();
 	CDAudio_Shutdown ();
 	NET_Shutdown ();
 	S_Shutdown();
