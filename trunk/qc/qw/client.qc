@@ -279,6 +279,12 @@ void() changelevel_touch =
 
 	SUB_UseTargets ();
 
+	if ( (self.spawnflags & 1) && !deathmatch )
+	{	// NO_INTERMISSION
+		GotoNextMap();
+		return;
+	}
+
 	self.touch = SUB_Null;
 
 // we can't move people right now, because touch functions are called
