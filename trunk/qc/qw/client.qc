@@ -363,9 +363,31 @@ entity() SelectSpawnPoint =
 	spot = find (world, classname, "testplayerstart");
 	if (spot)
 		return spot;
+
+	if (!deathmatch)
+	{
+		if (coop)
+		{
+			lastspawn = find(lastspawn, classname, "info_player_coop");
+			if (lastspawn == world)
+				lastspawn = find (lastspawn, classname, "info_player_start");
+			if (lastspawn != world)
+				return lastspawn;
+		}
+
+		if (serverflags)
+		{	// return with a rune to start
+			spot = find (world, classname, "info_player_start2");
+			if (spot)
+				return spot;
+		}
+
+		spot = find (world, classname, "info_player_start");
+		if (!spot)
+			error ("PutClientInServer: no info_player_start on level");
+	}
 		
 // choose a info_player_deathmatch point
-
 // ok, find all spots that don't have players nearby
 
 	spots = world;
