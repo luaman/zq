@@ -1130,7 +1130,7 @@ Made up of: clients, packet_entities, nails, and tents
 */
 void CL_EmitEntities (void)
 {
-	static list_index = 0;
+	static int list_index = 0;
 
 	if (cls.state != ca_active)
 		return;
