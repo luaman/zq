@@ -91,11 +91,8 @@ char *COM_FileExtension (char *in)
 	static char exten[8];
 	int		i;
 
-	in = COM_SkipPath (in);
-
-	while (*in && *in != '.')
-		in++;
-	if (!*in)
+	in = strrchr(in, '.');
+	if (!in || strchr(in, '/'))
 		return "";
 	in++;
 	for (i=0 ; i<7 && *in ; i++,in++)
