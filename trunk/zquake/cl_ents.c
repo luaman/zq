@@ -844,19 +844,19 @@ void CL_LinkPlayers (void)
 					VectorCopy (state->origin, org);
 
 				if ((state->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
-					CL_NewDlight (j, org, 200 + (rand()&31), 0.1, lt_redblue);
+					CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_redblue);
 				else if (state->effects & EF_BLUE)
-					CL_NewDlight (j, org, 200 + (rand()&31), 0.1, lt_blue);
+					CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_blue);
 				else if (state->effects & EF_RED)
-					CL_NewDlight (j, org, 200 + (rand()&31), 0.1, lt_red);
+					CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_red);
 				else if (state->effects & EF_BRIGHTLIGHT) {
 					vec3_t	tmp;
 					VectorCopy (org, tmp);
 					tmp[2] += 16;
-					CL_NewDlight (j, tmp, 400 + (rand()&31), 0.1, lt_default);
+					CL_NewDlight (j+1, tmp, 400 + (rand()&31), 0.1, lt_default);
 				}
 				else if (state->effects & EF_DIMLIGHT)
-					CL_NewDlight (j, org, 200 + (rand()&31), 0.1, lt_default);
+					CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_default);
 			}
 #ifdef GLQUAKE
 		}
