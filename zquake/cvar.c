@@ -171,9 +171,11 @@ void Cvar_Set (cvar_t *var, char *value)
 #if defined(SERVERONLY) || defined(QW_BOTH)
 	if (var->flags & CVAR_SERVERINFO)
 	{
-		Info_SetValueForKey (svs.info, var->name, var->string, MAX_SERVERINFO_STRING);
-		SV_SendServerInfoChange(var->name, var->string);
-//		SV_BroadcastCommand ("fullserverinfo \"%s\"\n", svs.info);
+		if (strcmp(var->string, Info_ValueForKey (svs.info, var->name)))
+		{
+			Info_SetValueForKey (svs.info, var->name, var->string, MAX_SERVERINFO_STRING);
+			SV_SendServerInfoChange(var->name, var->string);
+		}
 	}
 #endif
 
