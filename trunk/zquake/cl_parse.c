@@ -966,8 +966,8 @@ void CL_NewTranslation (int slot)
 		player->bottomcolor = cl_teambottomcolor;
 	}
 	
-	if (cl_enemytopcolor >= 0 && (!teamplay || 
-		strcmp(player->team, s)))
+	if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
+		(!teamplay || strcmp(player->team, s)))
 	{
 		player->topcolor = cl_enemytopcolor;
 		player->bottomcolor = cl_enemybottomcolor;
@@ -1010,8 +1010,8 @@ void CL_NewTranslation (int slot)
 		player->bottomcolor = cl_teambottomcolor;
 	}
 	
-	if (cl_enemytopcolor >= 0 && (!teamplay || 
-		strcmp(player->team, s)))
+	if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
+		(!teamplay || strcmp(player->team, s)))
 	{
 		player->topcolor = cl_enemytopcolor;
 		player->bottomcolor = cl_enemybottomcolor;
