@@ -382,6 +382,7 @@ extern cvar_t	developer;
 extern cvar_t	registered;
 
 extern qboolean		com_serveractive;	// true if sv.state != ss_dead
+extern int			CL_ClientState ();	// returns cls.state
 
 extern double		curtime;	// not bounded or scaled, shared by
 								// local client and server
