@@ -660,6 +660,17 @@ void CL_ReadPackets (void)
 		return;
 	}
 
+#ifdef MVDPLAY
+	if (cls.mvdplayback) {
+		while (CL_GetMessage())
+		{
+			MSG_BeginReading();
+			CL_ParseServerMessage ();
+		}
+		return;
+	}
+#endif
+
 	while (CL_GetMessage())
 	{
 		//
@@ -671,11 +682,7 @@ void CL_ReadPackets (void)
 			continue;
 		}
 
-#ifdef MVDPLAY
-		if (net_message.cursize < 8 && !cls.mvdplayback)
-#else
 		if (net_message.cursize < 8)
-#endif
 		{
 			Com_DPrintf ("%s: Runt packet\n", NET_AdrToString(net_from));
 			continue;
@@ -691,12 +698,6 @@ void CL_ReadPackets (void)
 				,NET_AdrToString(net_from));
 			continue;
 		}
-#ifdef MVDPLAY
-        if(cls.mvdplayback) {
-            MSG_BeginReading();
-        }
-        else
-#endif
 		if (!Netchan_Process(&cls.netchan))
 			continue;		// wasn't accepted for some reason
 		CL_ParseServerMessage ();
