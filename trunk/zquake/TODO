@@ -36,4 +36,4 @@ Tonik's (uncategorized)
 - free loaded wad3s every now and then
 - don't Mod_ClearAll, use Mod_TouchModel like NetQuake
 - FTE-style non-transparent protocol extension negotiation
-- revert my fragmented backbuf stuff to QW's solid backbufs (the former give no advantage at all as I've realized)
++ revert my fragmented backbuf stuff to QW's solid backbufs (the former give no advantage at all as I've realized)
