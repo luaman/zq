@@ -133,16 +133,28 @@ typedef struct MYDATA {
 	BYTE  bButtonB;             // Another button goes here
 	BYTE  bButtonC;             // Another button goes here
 	BYTE  bButtonD;             // Another button goes here
+	BYTE  bButtonE;             // Another button goes here
+	BYTE  bButtonF;             // Another button goes here
+	BYTE  bButtonG;             // Another button goes here
+	BYTE  bButtonH;             // Another button goes here
 } MYDATA;
 
+
+// This structure corresponds to c_dfDIMouse2 in dinput8.lib
+// 0x80000000 is something undocumented but must be there, otherwise
+// IDirectInputDevice_SetDataFormat may fail.
 static DIOBJECTDATAFORMAT rgodf[] = {
   { &GUID_XAxis,    FIELD_OFFSET(MYDATA, lX),       DIDFT_AXIS | DIDFT_ANYINSTANCE,   0,},
   { &GUID_YAxis,    FIELD_OFFSET(MYDATA, lY),       DIDFT_AXIS | DIDFT_ANYINSTANCE,   0,},
   { &GUID_ZAxis,    FIELD_OFFSET(MYDATA, lZ),       0x80000000 | DIDFT_AXIS | DIDFT_ANYINSTANCE,   0,},
-  { 0,              FIELD_OFFSET(MYDATA, bButtonA), DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
-  { 0,              FIELD_OFFSET(MYDATA, bButtonB), DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
-  { 0,              FIELD_OFFSET(MYDATA, bButtonC), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
-  { 0,              FIELD_OFFSET(MYDATA, bButtonD), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+  { NULL,           FIELD_OFFSET(MYDATA, bButtonA), DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+  { NULL,           FIELD_OFFSET(MYDATA, bButtonB), DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+  { NULL,           FIELD_OFFSET(MYDATA, bButtonC), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+  { NULL,           FIELD_OFFSET(MYDATA, bButtonD), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+  { NULL,           FIELD_OFFSET(MYDATA, bButtonE), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+  { NULL,           FIELD_OFFSET(MYDATA, bButtonF), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+  { NULL,           FIELD_OFFSET(MYDATA, bButtonG), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+  { NULL,           FIELD_OFFSET(MYDATA, bButtonH), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
 };
 
 #define NUM_OBJECTS (sizeof(rgodf) / sizeof(rgodf[0]))
@@ -391,8 +403,21 @@ static qbool IN_InitDInput (void)
 
 	if (FAILED(hr))
 	{
-		Com_Printf ("Couldn't set DI mouse format\n");
-		return false;
+		// Tonik: haven't tested, but I suppose SetDataFormat(foo, c_dfDIMouse2)
+		// may fail if DirectX 7 or higher is not installed
+		// So morph c_dfDIMouse2  into c_dfDIMouse and see is that works
+		df.dwDataSize = 16;
+		df.dwNumObjs = 7; 
+
+		hr = IDirectInputDevice_SetDataFormat(g_pMouse, &df);
+
+		if (FAILED(hr))
+		{
+			Com_Printf ("Couldn't set DI mouse format\n");
+			return false;
+		}
+
+		// here we could set mouse_buttons to 4 if we cared :)
 	}
 
 // set the cooperativity level.
@@ -470,7 +495,7 @@ static void IN_StartupMouse (void)
 		}
 	}
 
-	mouse_buttons = 4;
+	mouse_buttons = 8;
 
 // if a fullscreen video mode was set before the mouse was initialized,
 // set the mouse state appropriately
@@ -628,31 +653,17 @@ static void IN_MouseMove (usercmd_t *cmd)
 					break;
 
 				case DIMOFS_BUTTON0:
-					if (od.dwData & 0x80)
-						mstate_di |= 1;
-					else
-						mstate_di &= ~1;
-					break;
-
 				case DIMOFS_BUTTON1:
-					if (od.dwData & 0x80)
-						mstate_di |= (1<<1);
-					else
-						mstate_di &= ~(1<<1);
-					break;
-
 				case DIMOFS_BUTTON2:
-					if (od.dwData & 0x80)
-						mstate_di |= (1<<2);
-					else
-						mstate_di &= ~(1<<2);
-					break;
-
 				case DIMOFS_BUTTON3:
+				case DIMOFS_BUTTON0 + 4: // DIMOFS_BUTTON4/5/6/7 are only in
+				case DIMOFS_BUTTON0 + 5: // in DirectX 7 and higher
+				case DIMOFS_BUTTON0 + 6: //
+				case DIMOFS_BUTTON0 + 7: //
 					if (od.dwData & 0x80)
-						mstate_di |= (1<<3);
+						mstate_di |= 1 << (od.dwOfs - DIMOFS_BUTTON0);
 					else
-						mstate_di &= ~(1<<3);
+						mstate_di &= ~(1 << (od.dwOfs - DIMOFS_BUTTON0));
 					break;
 			}
 		}
