@@ -269,8 +269,11 @@ void() changelevel_touch =
 		return;
 	}
 
-	bprint (PRINT_HIGH, other.netname);
-	bprint (PRINT_HIGH," exited the level\n");
+	if (deathmatch || coop)
+	{
+		bprint (PRINT_HIGH, other.netname);
+		bprint (PRINT_HIGH, " exited the level\n");
+	}
 	
 	nextmap = self.map;
 
@@ -1142,8 +1145,11 @@ called when a player connects to a server
 */
 void() ClientConnect =
 {
-	bprint (PRINT_HIGH, self.netname);
-	bprint (PRINT_HIGH, " entered the game\n");
+	if (deathmatch || coop)
+	{
+		bprint (PRINT_HIGH, self.netname);
+		bprint (PRINT_HIGH, " entered the game\n");
+	}
 	
 // a client connecting during an intermission can cause problems
 	if (intermission_running)
