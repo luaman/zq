@@ -504,9 +504,13 @@ float MSG_ReadAngle16 (void)
 	return MSG_ReadShort() * (360.0/65536);
 }
 
-void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move)
+void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qboolean protocol_26)
 {
 	int bits;
+
+// FIXME, Uwe Girlich's Unofficial QWD format description claims that in protocol 26,
+// yaw angle is always sent and bit 0x80 (CM_ANGLE2) is used as CM_MSEC
+// can't check right now if it's indeed so as the high bit appears to be always set
 
 	memcpy (move, from, sizeof(*move));
 
@@ -521,12 +525,24 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move)
 		move->angles[2] = MSG_ReadAngle16 ();
 		
 // read movement
-	if (bits & CM_FORWARD)
-		move->forwardmove = MSG_ReadShort ();
-	if (bits & CM_SIDE)
-		move->sidemove = MSG_ReadShort ();
-	if (bits & CM_UP)
-		move->upmove = MSG_ReadShort ();
+	if (protocol_26)
+	{
+		if (bits & CM_FORWARD)
+			move->forwardmove = MSG_ReadChar ();
+		if (bits & CM_SIDE)
+			move->sidemove = MSG_ReadChar ();
+		if (bits & CM_UP)
+			move->upmove = MSG_ReadChar ();
+	}
+	else
+	{
+		if (bits & CM_FORWARD)
+			move->forwardmove = MSG_ReadShort ();
+		if (bits & CM_SIDE)
+			move->sidemove = MSG_ReadShort ();
+		if (bits & CM_UP)
+			move->upmove = MSG_ReadShort ();
+	}
 	
 // read buttons
 	if (bits & CM_BUTTONS)

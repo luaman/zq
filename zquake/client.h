@@ -248,6 +248,7 @@ typedef struct
 {
 	int			servercount;	// server identification for prespawns
 	char		serverinfo[MAX_SERVERINFO_STRING];
+	qboolean	protocol_26;
 // some important serverinfo keys are mirrored here:
 	int			deathmatch;
 	int			teamplay;
