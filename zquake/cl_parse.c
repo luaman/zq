@@ -1181,8 +1181,10 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 {
 	char	old_team[MAX_INFO_KEY];
 
+#ifdef MVDPLAY
 	if (slot == cl.playernum && cls.mvdplayback)
 		return;
+#endif
 
 	strlcpy (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
 	if (!player->name[0] && player->userid && strlen(player->userinfo) >= MAX_INFO_STRING - 17) {
