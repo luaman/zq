@@ -29,7 +29,7 @@ void bot_map_load ()
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-Variables and shtuff
+Variables and stuff
 
 bot.qc has become pretty much a header file
 for all variables in the bot...
