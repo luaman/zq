@@ -347,7 +347,7 @@ void frik_dodge_obstruction ()
 	
 	// fix the bot
 
-	self.origin = org;
+	setorigin (self, org);
 	self.flags = oflags;
 }
 
