@@ -50,13 +50,18 @@ char *Macro_Location_f (void);	// defined later
 
 #define MAX_LOC_NAME 32
 
+// this structure is cleared after entering a new map
+typedef struct tvars_s {
+	int		health;
+	int		items;
+	int		respawntrigger_time;
+	int		deathtrigger_time;
+	char	lastdeathloc[MAX_LOC_NAME];
+	char	tookitem[32];
+	char	last_tooktrigger[32];
+} tvars_t;
 
-int	last_health = 0;
-int	last_items = 0;
-int	last_respawntrigger = 0;
-int	last_deathtrigger = 0;
-
-char	lastdeathloc[MAX_LOC_NAME];
+tvars_t vars;
 
 void CL_ExecTrigger (char *s)
 {
@@ -77,29 +82,29 @@ void CL_StatChanged (int stat, int value)
 	if (stat == STAT_HEALTH)
 	{
 		if (value > 0) {
-			if (last_health <= 0 /*&& last_health != -999*/
+			if (vars.health <= 0 /*&& last_health != -999*/
 				/* && Q_strcasecmp(Info_ValueForKey(cl.serverinfo, "status"),
 				"standby") */)	// detect Kombat Teams status
 			{
 				extern cshift_t	cshift_empty;
-				last_respawntrigger = realtime;
+				vars.respawntrigger_time = realtime;
 				//if (cl.teamfortress)
 					memset (&cshift_empty, 0, sizeof(cshift_empty));
 				CL_ExecTrigger ("f_respawn");
 			}
-			last_health = value;
+			vars.health = value;
 			return;
 		}
-		if (last_health > 0) {		// We just died
-			last_deathtrigger = realtime;
-			strcpy (lastdeathloc, Macro_Location_f());
+		if (vars.health > 0) {		// We just died
+			vars.deathtrigger_time = realtime;
+			strcpy (vars.lastdeathloc, Macro_Location_f());
 			CL_ExecTrigger ("f_death");
 		}
-		last_health = value;
+		vars.health = value;
 	}
 	else if (stat == STAT_ITEMS)
 	{
-		i = value &~ last_items;
+		i = value &~ vars.items;
 		if (i & IT_WEAPONS && (i & IT_WEAPONS != IT_WEAPONS)
 		|| i & (IT_ARMOR1|IT_ARMOR2|IT_ARMOR3|IT_SUPERHEALTH)
 		|| i & (IT_INVISIBILITY|IT_INVULNERABILITY|IT_SUIT|IT_QUAD))
@@ -107,7 +112,19 @@ void CL_StatChanged (int stat, int value)
 			// ...
 			//CL_ExecTrigger ("f_took");
 		}
-		last_items = value;
+
+		if (i & (IT_KEY1|IT_KEY2)) {
+			if (cl.teamfortress)
+				strcpy (vars.tookitem, "flag");
+			else
+				strcpy (vars.tookitem, "key");
+
+			// TODO: only if tooktriggers are enabled
+			strcpy (vars.last_tooktrigger, vars.tookitem);
+			CL_ExecTrigger ("f_took");
+		}
+
+		vars.items = value;
 	}
 }
 
@@ -118,7 +135,7 @@ void CL_StatChanged (int stat, int value)
 ==========================================================================
 */
 
-#define MAX_MACRO_VALUE	255
+#define MAX_MACRO_VALUE	256
 static char	macro_buf[MAX_MACRO_VALUE];
 
 
@@ -304,15 +321,15 @@ char *Macro_Powerups_f (void)
 
 char *Macro_Location2_f (void)
 {
-	if (last_deathtrigger && realtime - last_deathtrigger <= 5)
-		return lastdeathloc;
+	if (vars.deathtrigger_time && realtime - vars.deathtrigger_time <= 5)
+		return vars.lastdeathloc;
 	return Macro_Location_f();
 }
 
 char *Macro_LastDeath_f (void)
 {
-	if (last_deathtrigger)
-		return lastdeathloc;
+	if (vars.deathtrigger_time)
+		return vars.lastdeathloc;
 	else
 		return "someplace";
 }
@@ -345,7 +362,6 @@ macro_command_t macro_commands[] =
 
 #define MAX_MACRO_STRING 1024
 
-// TODO: rewrite this!
 char *CL_ParseMacroString (char *string)
 {
 	static char	buf[MAX_MACRO_STRING];
@@ -376,6 +392,8 @@ char *CL_ParseMacroString (char *string)
 				case 'c': macro_string = Macro_Cells_f(); break;
 				case 'd': macro_string = Macro_LastDeath_f(); break;
 				case 'h': macro_string = Macro_Health_f(); break;
+				case 'i': macro_string = vars.tookitem; break;
+				case 'I': macro_string = vars.last_tooktrigger; break;
 				case 'l': macro_string = Macro_Location_f(); break;
 				case 'L': macro_string = Macro_Location2_f(); break;
 				case 'P':
@@ -611,7 +629,10 @@ _endoffile:
 
 	Hunk_FreeToLowMark (mark);
 
-	Con_Printf ("Loaded %s (%i locations)\n", locname, loc_numentries);
+	if (quiet)
+		Con_Printf ("Loaded %s\n", locname);
+	else
+		Con_Printf ("Loaded %s (%i locations)\n", locname, loc_numentries);
 }
 
 void CL_LoadLocFile_f (void)
@@ -1035,19 +1056,18 @@ void TP_EnemyColor_f (void)
 
 void CL_NewMap (void)
 {
-	last_health = 0;
+	static char last_map[MAX_QPATH] = {'\0'};
+	char mapname[MAX_QPATH];
 
-	if (cl_loadlocs.value && !cls.demoplayback)
-	{
-		if (!strncmp(cl.worldmodel->name, "maps/", 5))
-		{
-			char	buf[MAX_QPATH];
+	memset (&vars, 0, sizeof(vars));
 
-			loc_numentries = 0;	// clear loc file
-			COM_StripExtension (&cl.worldmodel->name[5], buf);
-			strcat (buf, ".loc");
-			CL_LoadLocFile (buf, true);
-		}
+	COM_StripExtension (COM_SkipPath (cl.worldmodel->name), mapname);
+	if (strcmp(mapname, last_map))
+	{	// map name has changed
+		loc_numentries = 0;	// clear loc file
+		if (cl_loadlocs.value && !cls.demoplayback)
+			CL_LoadLocFile (va("%s.loc", mapname), true);
+		strcpy (last_map, mapname);
 	}
 }
 
