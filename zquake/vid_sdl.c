@@ -454,6 +454,9 @@ void    VID_Init (unsigned char *palette)
 
     // hide the mouse
     SDL_ShowCursor(0);
+
+    // turn on key repeating
+    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
 void    VID_Shutdown (void)
@@ -559,7 +562,6 @@ void Sys_SendKeyEvents(void)
 
     while (SDL_PollEvent( &event )) {
         switch (event.type) {
-
             case SDL_KEYDOWN:
             case SDL_KEYUP:
                 if ( (event.key.keysym.sym == SDLK_z) &&

@@ -571,6 +571,9 @@ void VID_Init(unsigned char *palette)
 
 	// hide the mouse
 	SDL_ShowCursor(0);
+
+    // turn on key repeating
+    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
 void VID_Shutdown(void)
