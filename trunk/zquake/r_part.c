@@ -99,7 +99,10 @@ void R_ReadPointFile_f (void)
 	particle_t	*p;
 	char	name[MAX_OSPATH];
 	extern cvar_t	cl_mapname;
-	
+
+	if (!com_serveractive)
+		return;
+
 	sprintf (name, "maps/%s.pts", cl_mapname.string);
 
 	FS_FOpenFile (name, &f);
