@@ -354,6 +354,116 @@ void CompleteCommand (void)
 
 //===================================================================
 
+// Fuh's CompleteName function
+
+char readableChars[256] = {	'.', '_' , '_' , '_' , '_' , '.' , '_' , '_' , '_' , '_' , 10 , '_' , 12 , '>' , '.' , '.',
+						'[', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '_', '_', '_'};
+
+
+void InitReadableChars(void) {
+	int i;
+	for (i = 32; i < 128; i++)
+		readableChars[i] = readableChars[128 + i] = i;
+	for (i = 0; i < 32; i++)
+		readableChars[128 + i] = readableChars[i];
+	readableChars[128] = '_';
+	readableChars[10 + 128] = 10 + 128;
+	readableChars[12 + 128] = 12 + 128;
+}
+
+char disallowed[] = {'\n', '\f', '\\', '/', '\"', ' ' , ';'};
+
+void RemoveColors(char *name) {
+	char *s = name;
+
+	if (!s || !*s)
+		return;
+
+	while (*s) {
+		*s = readableChars[(unsigned char) *s] & 127;
+		if (strchr(disallowed, *s))
+			*s = '_';
+		s++;
+	}
+	// get rid of whitespace
+	s = name;
+	for (s = name; *s == '_'; s++) ;
+	memmove(name, s, strlen(s) + 1);
+	
+	for (s = name + strlen(name); s > name  &&  (*(s - 1) == '_'); s--) ;
+
+	*s = 0;
+
+	if (!name[0])
+		strcpy(name, "_");
+}
+
+
+int FindBestNick (char *s) {
+	int i, j, bestplayer = -1, best = -1;
+	char name[MAX_SCOREBOARDNAME], *match;
+
+	for (i = 0; i < MAX_CLIENTS; i++) {
+		if (cl.players[i].name[0]) {
+			Q_strncpyz(name, cl.players[i].name, sizeof(name));
+			RemoveColors(name);
+			for (j = 0; j < strlen(name); j++)
+				name[j] = tolower(name[j]);
+			if ((match = strstr(name, s))  &&  (best == -1 || match - name < best)) {
+				best = match - name;
+				bestplayer = i;
+			}
+		}
+	}
+	return bestplayer;
+}
+
+
+
+void CompleteName(void) {
+    char s[MAXCMDLINE], t[MAXCMDLINE], *p, *q;
+    int best, diff, i;
+
+    p = q = key_lines[edit_line] + key_linepos;
+    while (--p >= key_lines[edit_line] + 1)
+        if (!(  (*p >= 32 && *p <= 127) && !strchr(disallowed, *p) )) 
+             break;
+    p++;
+    if (q - p <= 0)
+        return;
+
+    Q_strncpyz(s, p, q - p + 1);
+
+	best = FindBestNick (s);
+    if (best >= 0) {
+        Q_strncpyz(t, cl.players[best].name, sizeof(t));
+		
+		for (i = 0; t[i]; i++) {
+			if ((127 & t[i]) == ' ') {
+				int k;
+
+				if ((k = strlen(t)) < MAXCMDLINE - 2) {
+					memmove(t + 1, t, k + 1);
+					t[k + 2] = 0;
+					t[k + 1] = t[0] = '\"';
+				}
+				break;
+			}
+		}
+		diff = strlen(t) - strlen(s);
+	
+		memmove(q + diff, q, strlen(q) + 1);
+		memmove(p, t, strlen(t));
+		key_linepos += diff;
+		if (!key_lines[edit_line][key_linepos] && key_linepos < MAXCMDLINE - 1) {	
+			key_lines[edit_line][key_linepos] = ' ';
+			key_lines[edit_line][++key_linepos] = 0;
+		}
+	}
+}
+
+//===================================================================
+
 static void AdjustConsoleHeight (int delta)
 {
 	extern cvar_t scr_consize;
@@ -427,8 +537,10 @@ no_lf:
 			return;
 
 		case K_TAB:
-			// command completion
-			CompleteCommand ();
+			if (keydown[K_CTRL])
+				CompleteName ();
+			else
+				CompleteCommand ();
 			return;
 
 		case K_BACKSPACE:
@@ -1015,6 +1127,8 @@ void Key_Init (void)
 	menubound[K_ESCAPE] = true;
 	for (i=0 ; i<12 ; i++)
 		menubound[K_F1+i] = true;
+
+	InitReadableChars ();
 
 //
 // register our functions
