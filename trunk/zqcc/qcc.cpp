@@ -781,13 +781,13 @@ int		 main (int argc, char **argv)
 	myargc = argc;
 	myargv = argv;
 	
-	if (CheckParm ("-?", 0) || CheckParm ("-help",0 ))
+	if (CheckParm ("/?", 0) || CheckParm ("--help", 0) || CheckParm("-h", 0))
 	{
 		printf ("zqcc looks for progs.src in the current directory.\n");
 		printf ("to look in a different directory: -src <directory>\n");
 		printf ("to enable vanilla id Software code compatibility: -idcomp\n");
 		printf ("to dump progdefs.h: -progdefs\n");
-      printf ("to #define something: -D <name>\n");
+      	printf ("to #define something: -D <name>\n");
 		return 0;	// or should I return 1?
 	}
 
