@@ -77,6 +77,7 @@ void S_TransferStereo16 (int endtime)
 	DWORD	dwSize,dwSize2;
 	DWORD	*pbuf2;
 	HRESULT	hresult;
+	extern char *DSoundError (int error);
 #endif
 	
 	snd_vol = s_volume.value*256;
@@ -94,19 +95,17 @@ void S_TransferStereo16 (int endtime)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
-				Com_Printf ("S_TransferStereo16: DS::Lock Sound Buffer Failed\n");
+				Com_Printf ("S_TransferStereo16: Lock failed with error '%s'\n", DSoundError(hresult));
 				S_Shutdown ();
-				S_Startup ();
 				return;
+			}
+			else
+			{
+				pDSBuf->lpVtbl->Restore (pDSBuf);
 			}
 
-			if (++reps > 10000)
-			{
-				Com_Printf ("S_TransferStereo16: DS: couldn't restore buffer\n");
-				S_Shutdown ();
-				S_Startup ();
+			if (++reps > 2)
 				return;
-			}
 		}
 	}
 	else
@@ -159,6 +158,7 @@ void S_TransferPaintBuffer(int endtime)
 	DWORD	dwSize,dwSize2;
 	DWORD	*pbuf2;
 	HRESULT	hresult;
+	extern char *DSoundError (int error);
 #endif
 
 	if (dma.samplebits == 16 && dma.channels == 2)
@@ -184,19 +184,17 @@ void S_TransferPaintBuffer(int endtime)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
-				Com_Printf ("S_TransferPaintBuffer: DS::Lock Sound Buffer Failed\n");
+				Com_Printf ("S_TransferPaintBuffer: Lock failed with error '%s'\n", DSoundError(hresult));
 				S_Shutdown ();
-				S_Startup ();
 				return;
+			}
+			else
+			{
+				pDSBuf->lpVtbl->Restore (pDSBuf);
 			}
 
-			if (++reps > 10000)
-			{
-				Com_Printf ("S_TransferPaintBuffer: DS: couldn't restore buffer\n");
-				S_Shutdown ();
-				S_Startup ();
+			if (++reps > 2)
 				return;
-			}
 		}
 	}
 	else

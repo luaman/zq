@@ -544,6 +544,7 @@ void S_ClearBuffer (void)
 		DWORD	*pData;
 		int		reps;
 		HRESULT	hresult;
+		extern char *DSoundError (int error);
 
 		reps = 0;
 
@@ -551,17 +552,17 @@ void S_ClearBuffer (void)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
-				Com_Printf ("S_ClearBuffer: DS::Lock Sound Buffer Failed\n");
+				Com_Printf ("S_ClearBuffer: Lock failed with error '%s'\n", DSoundError(hresult));
 				S_Shutdown ();
 				return;
+			}
+			else
+			{
+				pDSBuf->lpVtbl->Restore (pDSBuf);
 			}
 
-			if (++reps > 10000)
-			{
-				Com_Printf ("S_ClearBuffer: DS: couldn't restore buffer\n");
-				S_Shutdown ();
+			if (++reps > 2)
 				return;
-			}
 		}
 
 		memset(pData, clear, dma.samples * dma.samplebits/8);

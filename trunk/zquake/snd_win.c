@@ -72,6 +72,24 @@ qbool SNDDMA_InitDirect (void);
 qbool SNDDMA_InitWav (void);
 
 
+/* static */ char *DSoundError (int error)
+{
+	switch (error)
+	{
+	case DSERR_BUFFERLOST:
+		return "DSERR_BUFFERLOST";
+	case DSERR_INVALIDCALL:
+		return "DSERR_INVALIDCALLS";
+	case DSERR_INVALIDPARAM:
+		return "DSERR_INVALIDPARAM";
+	case DSERR_PRIOLEVELNEEDED:
+		return "DSERR_PRIOLEVELNEEDED";
+	}
+
+	return "unknown";
+}
+
+
 /*
 ==================
 S_BlockSound
