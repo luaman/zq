@@ -1046,7 +1046,32 @@ void SV_ReadPackets (void)
 	int			i;
 	client_t	*cl;
 	int			qport;
+	packet_t	*pack, *next;
 
+	// first deal with delayed packets from connected clients
+	for (i = 0, cl=svs.clients; i < MAX_CLIENTS; i++, cl++) {
+		if (cl->state == cs_free)
+			continue;
+
+		net_from = cl->netchan.remote_address;
+
+		for (pack = cl->packets; pack; pack = next) {
+			if (svs.realtime < pack->time + cl->delay)
+				break;		// packets are queued up in order of increasing pack->time
+
+			SZ_Clear(&net_message);
+			SZ_Write(&net_message, pack->msg.data, pack->msg.cursize);
+
+			SV_ExecuteClientMessage (cl);
+
+			cl->packets = next = pack->next;
+			pack->next = svs.free_packets;
+			svs.free_packets = pack;
+		}
+		
+	}
+
+	// now deal with new packets
 	while (NET_GetPacket(NS_SERVER))
 	{
 		if (SV_FilterPacket ())
@@ -1115,40 +1140,6 @@ void SV_ReadPackets (void)
 	}
 }
 
-/*
-=================
-SV_ReadDelayedPackets
-=================
-*/
-void SV_ReadDelayedPackets (void)
-{
-	int			i;
-	client_t	*cl;
-	packet_t	*pack, *next;
-
-	// check for delayed packets from connected clients
-	for (i = 0, cl=svs.clients; i < MAX_CLIENTS; i++, cl++) {
-		if (cl->state == cs_free)
-			continue;
-
-		net_from = cl->netchan.remote_address;
-
-		for (pack = cl->packets; pack; pack = next) {
-			if (svs.realtime < pack->time + cl->delay)
-				break;		// packets are queued up in order of increasing pack->time
-
-			SZ_Clear(&net_message);
-			SZ_Write(&net_message, pack->msg.data, pack->msg.cursize);
-
-			SV_ExecuteClientMessage (cl);
-
-			cl->packets = next = pack->next;
-			pack->next = svs.free_packets;
-			svs.free_packets = pack;
-		}
-		
-	}
-}
 
 /*
 ==================
@@ -1330,9 +1321,6 @@ void SV_Frame (double time)
 
 // get packets
 	SV_ReadPackets ();
-
-// check delayed packets
-	SV_ReadDelayedPackets ();
 
 	if (dedicated)
 	{
