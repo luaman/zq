@@ -1036,6 +1036,17 @@ void COM_Init (void)
 
 
 /*
+================
+COM_Shutdown
+================
+*/
+void COM_Shutdown (void)
+{
+	Cvar_SetValue (&logfile_var, 0);	// close log file
+}
+
+
+/*
 ============
 va
 

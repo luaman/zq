@@ -97,6 +97,7 @@ void Host_Error (char *error, ...)
 
 #ifdef SERVERONLY
 	NET_Shutdown ();
+	COM_Shutdown ();
 	Sys_Error ("%s", string);
 #endif
 
@@ -220,6 +221,7 @@ void Host_Shutdown (void)
 	SV_Shutdown ("Server quit\n");
 	CL_Shutdown ();
 	NET_Shutdown ();
+	COM_Shutdown ();
 }
 
 /*
