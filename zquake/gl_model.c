@@ -924,8 +924,6 @@ void Mod_LoadLeafs (lump_t *l)
 	dleaf_t 	*in;
 	mleaf_t 	*out;
 	int			i, j, count, p;
-	char s[80];
-	qboolean isnotmap = true;
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
@@ -935,9 +933,6 @@ void Mod_LoadLeafs (lump_t *l)
 
 	loadmodel->leafs = out;
 	loadmodel->numleafs = count;
-	sprintf(s, "maps/%s.bsp", Info_ValueForKey(cl.serverinfo,"map"));
-	if (!strcmp(s, loadmodel->name))
-		isnotmap = false;
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
 		for (j=0 ; j<3 ; j++)
@@ -968,11 +963,6 @@ void Mod_LoadLeafs (lump_t *l)
 		{
 			for (j=0 ; j<out->nummarksurfaces ; j++)
 				out->firstmarksurface[j]->flags |= SURF_UNDERWATER;
-		}
-		if (isnotmap)
-		{
-			for (j=0 ; j<out->nummarksurfaces ; j++)
-				out->firstmarksurface[j]->flags |= SURF_DONTWARP;
 		}
 	}	
 }
