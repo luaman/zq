@@ -423,6 +423,7 @@ void CL_Disconnect (void);
 void CL_BeginLocalConnection (void);
 void Con_Init (void);
 void Con_Print (char *txt);
+void Key_Init (void);
 
 void SV_Init (void);
 void SV_Shutdown (char *finalmsg);
