@@ -549,10 +549,8 @@ void PR_ParseStatement (void)
 	
 	if (PR_Check ("{"))
 	{
-		do
-		{
+		while (!PR_Check ("}"))
 			PR_ParseStatement ();
-		} while (!PR_Check ("}"));
 		return;
 	}
 	
