@@ -600,7 +600,6 @@ void CL_ParseServerData (void)
 // wipe the clientState_t struct
 //
 	CL_ClearState ();
-	memset (&cshift_empty, 0, sizeof(cshift_empty));	// Tonik
 
 // parse protocol version number
 // allow 2.2 and 2.29 demos to play
@@ -616,18 +615,6 @@ void CL_ParseServerData (void)
 	str = MSG_ReadString ();
 
 	cl.teamfortress = !Q_stricmp(str, "fortress");
-	if (cl.teamfortress) {
-		extern cvar_t	v_iyaw_cycle, v_iroll_cycle, v_ipitch_cycle,
-			v_iyaw_level, v_iroll_level, v_ipitch_level, v_idlescale;
-		cbuf_current = &cbuf_svc;	// hack
-		Cvar_SetValue (&v_iyaw_cycle, 2);
-		Cvar_SetValue (&v_iroll_cycle, 0.5);
-		Cvar_SetValue (&v_ipitch_cycle, 1);
-		Cvar_SetValue (&v_iyaw_level, 0.3);
-		Cvar_SetValue (&v_iroll_level, 0.1);
-		Cvar_SetValue (&v_ipitch_level, 0.3);
-		Cvar_SetValue (&v_idlescale, 0);
-	}
 
 	if (Q_stricmp(cls.gamedirfile, str)) {
 		// save current config
@@ -668,8 +655,7 @@ void CL_ParseServerData (void)
 
 	// parse player slot, high bit means spectator
 	cl.playernum = MSG_ReadByte ();
-	if (cl.playernum & 128)
-	{
+	if (cl.playernum & 128) {
 		cl.spectator = true;
 		cl.playernum &= ~128;
 	}

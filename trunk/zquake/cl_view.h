@@ -32,6 +32,7 @@ void V_AddEntity (entity_t *ent);
 void V_AddParticle (vec3_t origin, int color, float alpha);
 
 void V_Init (void);
+void V_NewMap (void);
 void V_RenderView (void);
 void V_UpdatePalette (void);
 void V_ParseDamage (void);
