@@ -173,12 +173,8 @@ void *Hunk_AllocName (int size, char *name)
 	
 	if (hunk_size - hunk_low_used - hunk_high_used < size)
 //		Sys_Error ("Hunk_Alloc: failed on %i bytes",size);
-#ifdef _WIN32
-	  	Sys_Error ("Not enough RAM allocated.  Try starting using \"-heapsize 16000\" on the QuakeWorld command line.");
-#else
-	  	Sys_Error ("Not enough RAM allocated.  Try starting using \"-mem 16\" on the QuakeWorld command line.");
-#endif
-	
+	  	Sys_Error ("Not enough RAM allocated.  Try starting using \"-mem 16\" (or more) on the command line.");
+
 	h = (hunk_t *)(hunk_base + hunk_low_used);
 	hunk_low_used += size;
 
