@@ -1068,6 +1068,7 @@ void main (int argc, char **argv)
 	{
 		printf ("qcc looks for progs.src in the current directory.\n");
 		printf ("to look in a different directory: qcc -src <directory>\n");
+		printf ("to dump progdefs.h: qcc -progdefs\n");
 		printf ("to build a clean data tree: qcc -copy <srcdir> <destdir>\n");
 		printf ("to build a clean pak file: qcc -pak <srcdir> <packfile>\n");
 		printf ("to bsp all bmodels: qcc -bspmodels <gamedir>\n");
