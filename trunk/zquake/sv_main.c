@@ -1298,7 +1298,6 @@ void SV_InitLocal (void)
 	extern cvar_t	sv_mapcheck;
 	extern cvar_t	sv_maxpitch;
 	extern cvar_t	sv_minpitch;
-	extern cvar_t	sv_aim;
 	extern cvar_t	sv_nailhack;
 	extern cvar_t	sv_loadentfiles;
 	extern cvar_t	sv_maxvelocity;
@@ -1321,7 +1320,6 @@ void SV_InitLocal (void)
 	Cvar_Register (&sv_password);
 	Cvar_Register (&sv_spectatorPassword);
 
-	Cvar_Register (&sv_aim);
 	Cvar_Register (&sv_phs);
 	Cvar_Register (&sv_pausable);
 	Cmd_AddLegacyCommand ("pausable", "sv_pausable");
