@@ -642,7 +642,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 					break;
 
 				case DIMOFS_Z:
-					if (od.dwData > 0) {
+					if ((int)od.dwData > 0) {
 						Key_Event(K_MWHEELUP, true);
 						Key_Event(K_MWHEELUP, false);
 					} else {
