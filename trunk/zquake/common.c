@@ -787,15 +787,15 @@ void COM_FileBase (char *in, char *out)
 /*
 ==================
 COM_DefaultExtension
+
+If path doesn't have a .EXT, append extension
+(extension should include the .)
 ==================
 */
 void COM_DefaultExtension (char *path, char *extension)
 {
 	char    *src;
-//
-// if path doesn't have a .EXT, append extension
-// (extension should include the .)
-//
+
 	src = path + strlen(path) - 1;
 
 	while (*src != '/' && src != path)
@@ -805,7 +805,27 @@ void COM_DefaultExtension (char *path, char *extension)
 		src--;
 	}
 
-	strcat (path, extension);
+	strncat (path, extension, MAX_OSPATH);
+}
+
+/*
+==================
+COM_ForceExtension
+
+If path doesn't have an extension or has a different extension,
+append(!) specified extension
+Extension should include the .
+==================
+*/
+void COM_ForceExtension (char *path, char *extension)
+{
+	char    *src;
+
+	src = path + strlen(path) - strlen(extension);
+	if (src >= path && !strcmp(src, extension))
+		return;
+
+	strncat (path, extension, MAX_OSPATH);
 }
 
 //============================================================================
