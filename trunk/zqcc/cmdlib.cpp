@@ -423,15 +423,15 @@ long ParseHex (char *hex)
 
 	while (*str)
 	{
+		int  c = (int)(unsigned char)*str;
+
 		num <<= 4;
-		if (*str >= '0' && *str <= '9')
-			num += *str-'0';
-		else if (*str >= 'a' && *str <= 'f')
-			num += 10 + *str-'a';
-		else if (*str >= 'A' && *str <= 'F')
-			num += 10 + *str-'A';
+		if ( isdigit(c) )
+			num += c - (int)'0';
+		else if ( isxdigit(c) )
+			num += 10 + tolower(c) - (int)'a';
 		else
-			Error ("Bad hex number: %s",hex);
+			Error ("Bad hex number: %s", hex);
 		str++;
 	}
 
