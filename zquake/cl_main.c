@@ -919,6 +919,11 @@ void Host_Frame (double time)
 	if (cl_maxfps.value)
 		fps = max(30.0, min(cl_maxfps.value, 72.0));
 	else
+#ifdef QW_BOTH
+		if (sv.state != ss_dead)
+			fps = 72.0;
+		else
+#endif
 		fps = max(30.0, min(rate.value/80.0, 72.0));
 
 	if (!cls.demoplayback && realtime - oldrealtime < 1.0/fps)
@@ -1054,8 +1059,6 @@ void Host_Init (quakeparms_t *parms)
 
 	COM_Init ();
 
-	//Sys_mkdir(va("%s/%s", com_basedir, "qw"));
-
 #ifdef QW_BOTH
 	PR_Init ();
 	SV_InitLocal ();	// register server cvars and commands
@@ -1082,11 +1085,14 @@ void Host_Init (quakeparms_t *parms)
 	Netchan_Init ();
 
 	W_LoadWadFile ("gfx.wad");
+
 	Key_Init ();
 	Con_Init ();	
 	M_Init ();	
 	Mod_Init ();
 	
+	Sys_mkdir(va("%s/%s", com_basedir, "qw"));
+
 //	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Con_Printf ("%4.1f megs RAM used.\n",parms->memsize/ (1024*1024.0));
 	
