@@ -29,11 +29,19 @@ void SNDDMA_Submit_OSS(void);
 
 qbool SNDDMA_Init(void)
 {
+    Cvar_Get ("snd_noalsa", "0", CVAR_ARCHIVE);
     int retval;
 
     // Give user the option to force OSS...
-    if( ! COM_CheckParm("-noalsa") )
-    { 
+    if(     COM_CheckParm("-noalsa")
+        ||  Cvar_VariableValue("snd_noalsa") )
+    {
+        // User wants us to use OSS...
+        Sys_Printf("sound: Using OSS at user's request...\n");
+        retval = SNDDMA_Init_OSS();
+    }
+    else
+    {
         // Try ALSA first...
         Sys_Printf("sound: Attempting to initialise ALSA...\n");
         retval = SNDDMA_Init_ALSA();
@@ -43,15 +51,11 @@ qbool SNDDMA_Init(void)
         }
         else
         {
+            // Fall back to OSS...
             SNDDMA_ALSA = false;
             Sys_Printf("sound: Falling back to OSS...\n");
             retval = SNDDMA_Init_OSS();
         }
-    }
-    else
-    {
-        Sys_Printf("sound: Using OSS at user's request...\n");
-        retval = SNDDMA_Init_OSS();
     }
 
     snd_inited = retval;
