@@ -719,7 +719,7 @@ void CL_ParseModellist (void)
 			break;
 // Tonik -->
 		if (nummodels == 0)
-		if (cl_loadlocs.value)
+		if (cl_loadlocs.value && !cls.demoplayback)
 		{
 			loc_numentries = 0;	// clear loc file
 			if (!strncmp(str, "maps/", 5))
@@ -1298,7 +1298,7 @@ void CL_ParsePrint (int level, char *s)
 		}
 		Con_Printf ("%s", str);
 		con_ormask = 0;
-		CL_SearchForMsgTriggers (str);
+		CL_SearchForMsgTriggers (str, level);
 	}
 
 }
