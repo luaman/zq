@@ -70,11 +70,12 @@ void IN_ActivateMouse (void);
 void IN_RestoreOriginalMouseState (void);
 void IN_SetQuakeMouseState (void);
 void IN_MouseEvent (int mstate);
+void IN_UpdateClipCursor (void);
 
 extern int		window_center_x, window_center_y;
 extern RECT		window_rect;
 
-void IN_UpdateClipCursor (void);
+extern qbool dinput;
 
 #ifndef WM_MOUSEWHEEL
 #define WM_MOUSEWHEEL	0x020A
