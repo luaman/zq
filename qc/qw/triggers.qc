@@ -57,7 +57,7 @@ void() multi_trigger =
 {
 	if (self.nextthink > time)
 	{
-		return;		// allready been triggered
+		return;		// already been triggered
 	}
 
 	if (self.classname == "trigger_secret")
