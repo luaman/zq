@@ -175,7 +175,6 @@ void SV_RunBots (void)
 	int			i;
 	client_t	*cl;
 	edict_t		*ent;
-	eval_t		*val;
 	usercmd_t	cmd;
 
 	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++) {
@@ -184,16 +183,16 @@ void SV_RunBots (void)
 
 		ent = cl->edict;
 
-		// fake a client move command for prediction's sake
+		// create a fake client move command for prediction's sake
 		cmd = nullcmd;
 		VectorCopy (ent->v.v_angle, cmd.angles);
 		cmd.msec = (svs.realtime - cl->cmdtime) * 1000;
 		cl->cmdtime += cmd.msec * 0.001;
 		if (cmd.msec > 255)
 			cmd.msec = 255;
+		cl->lastcmd = cmd;
 
 		// update bogus network stuff
-		cl->lastcmd = cmd;
 		cl->netchan.last_received = curtime;
 		SZ_Clear (&cl->datagram);			// don't overflow
 		SZ_Clear (&cl->netchan.message);	// don't overflow
@@ -202,29 +201,10 @@ void SV_RunBots (void)
 			continue;
 
 		//
-		// run physics
+		// think and run physics
 		//
 		sv_client = cl;
 		sv_player = ent;
-
-		if (BotPreThink) {
-			// let the bots decide what they want to do this frame
-			pr_global_struct->frametime = cmd.msec * 0.001;
-			pr_global_struct->time = sv.time;
-			pr_global_struct->self = EDICT_TO_PROG(ent);
-			PR_ExecuteProgram (BotPreThink);
-		}
-
-		VectorCopy (ent->v.v_angle, cmd.angles);
-		cmd.impulse = ent->v.impulse;
-		cmd.buttons = (ent->v.button0 ? BUTTON_ATTACK : 0) | (ent->v.button2 ? BUTTON_JUMP : 0) | (ent->v.button1 ? BUTTON_USE : 0);
-
-		val = GetEdictFieldValue(ent, "forwardmove");		// FIXME, cache field offset
-		cmd.forwardmove = val ? val->_float : 0;
-		val = GetEdictFieldValue(ent, "sidemove");
-		cmd.sidemove = val ? val->_float : 0;
-		val = GetEdictFieldValue(ent, "upmove");
-		cmd.upmove = val ? val->_float : 0;
 
 		SV_PreRunCmd ();
 		SV_RunCmd (&cmd);

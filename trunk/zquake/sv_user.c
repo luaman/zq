@@ -24,8 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 edict_t	*sv_player;
 
-usercmd_t	cmd;
-
 cvar_t	sv_spectalk = {"sv_spectalk", "1"};
 cvar_t	sv_mapcheck	= {"sv_mapcheck", "1"};
 
@@ -1749,64 +1747,88 @@ SV_RunCmd
 */
 void SV_RunCmd (usercmd_t *ucmd)
 {
-	edict_t		*ent;
 	int			i, n;
-	int			oldmsec;
 	vec3_t		offset;
-
-	cmd = *ucmd;
+	static usercmd_t	tempcmd;
 
 	// chop up very long commands
-	if (cmd.msec > 50)
-	{
+	if (ucmd->msec > 50) {
+		int	oldmsec;
+		tempcmd = *ucmd;
 		oldmsec = ucmd->msec;
-		cmd.msec = oldmsec/2;
-		SV_RunCmd (&cmd);
-		cmd.msec = oldmsec/2;
-		cmd.impulse = 0;
-		SV_RunCmd (&cmd);
+		tempcmd.msec = oldmsec/2;
+		SV_RunCmd (&tempcmd);
+		tempcmd.msec = oldmsec/2;
+		tempcmd.impulse = 0;
+		SV_RunCmd (&tempcmd);
 		return;
 	}
 
-	// clamp pitch angle
+	sv_frametime = ucmd->msec * 0.001;
+
+	if (sv_client->bot)
+	{
+		eval_t *val;
+
+		// bots make their decisions here
+		pr_global_struct->frametime = sv_frametime;
+		pr_global_struct->time = sv.time;
+		pr_global_struct->self = EDICT_TO_PROG(sv_player);
+		if (BotPreThink)
+			PR_ExecuteProgram (BotPreThink);
+		else
+			PR_ExecuteProgram (pr_global_struct->PlayerPreThink);
+
+		// create a move command
+		VectorCopy (sv_player->v.v_angle, ucmd->angles);
+		ucmd->impulse = sv_player->v.impulse;
+		ucmd->buttons = (sv_player->v.button0 ? 1 : 0) | (sv_player->v.button2 ? 2 : 0) | (sv_player->v.button1 ? 4 : 0);
+
+		// FIXME, cache field offset
+		val = GetEdictFieldValue(sv_player, "forwardmove");
+		ucmd->forwardmove = val ? val->_float : 0;
+		val = GetEdictFieldValue(sv_player, "sidemove");
+		ucmd->sidemove = val ? val->_float : 0;
+		val = GetEdictFieldValue(sv_player, "upmove");
+		ucmd->upmove = val ? val->_float : 0;
+
+		SV_RunThink (sv_player);
+	}
+	else
+	{
+		// copy humans' intentions to progs
+		sv_player->v.button0 = ucmd->buttons & 1;
+		sv_player->v.button2 = (ucmd->buttons & 2)>>1;
+		sv_player->v.button1 = (ucmd->buttons & 4)>>2;
+		if (ucmd->impulse)
+			sv_player->v.impulse = ucmd->impulse;
+	}
+
+	// clamp view angles
 	if (ucmd->angles[PITCH] > sv_maxpitch.value)
 		ucmd->angles[PITCH] = sv_maxpitch.value;
 	if (ucmd->angles[PITCH] < sv_minpitch.value)
 		ucmd->angles[PITCH] = sv_minpitch.value;
-
 	if (!sv_player->v.fixangle)
 		VectorCopy (ucmd->angles, sv_player->v.v_angle);
 
-	sv_player->v.button0 = ucmd->buttons & 1;
-	sv_player->v.button2 = (ucmd->buttons & 2)>>1;
-	sv_player->v.button1 = (ucmd->buttons & 4)>>2;
-	if (ucmd->impulse)
-		sv_player->v.impulse = ucmd->impulse;
-
-//
-// angles
-// show 1/3 the pitch angle and all the roll angle	
-	if (sv_player->v.health > 0)
-	{
-		if (!sv_player->v.fixangle)
-		{
+	// model angles
+	// show 1/3 the pitch angle and all the roll angle	
+	if (sv_player->v.health > 0) {
+		if (!sv_player->v.fixangle) {
 			sv_player->v.angles[PITCH] = -sv_player->v.v_angle[PITCH]/3;
 			sv_player->v.angles[YAW] = sv_player->v.v_angle[YAW];
 		}
 		sv_player->v.angles[ROLL] = 0;
 	}
 
-	sv_frametime = ucmd->msec * 0.001;
-	if (sv_frametime > 0.1)
-		sv_frametime = 0.1;
-
-	if (!sv_client->spectator)
+	if (!sv_client->spectator && !sv_client->bot)
 	{
-		qboolean	onground;
+		qboolean	old_onground;
 		vec3_t		originalvel;
 
 		VectorCopy (sv_player->v.velocity, originalvel);
-		onground = (int)sv_player->v.flags & FL_ONGROUND;
+		old_onground = (int)sv_player->v.flags & FL_ONGROUND;
 
 		pr_global_struct->frametime = sv_frametime;
 		pr_global_struct->time = sv.time;
@@ -1814,7 +1836,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 		PR_ExecuteProgram (pr_global_struct->PlayerPreThink);
 
-		if (onground && originalvel[2] < 0 && sv_player->v.velocity[2] == 0
+		if (old_onground && originalvel[2] < 0 && sv_player->v.velocity[2] == 0
 			&& originalvel[0] == sv_player->v.velocity[0]
 			&& originalvel[1] == sv_player->v.velocity[1])
 		{
@@ -1880,8 +1902,9 @@ void SV_RunCmd (usercmd_t *ucmd)
 		SV_LinkEdict (sv_player, true);
 
 		// touch other objects
-		for (i=0 ; i<pmove.numtouch ; i++)
-		{
+		for (i=0 ; i<pmove.numtouch ; i++) {
+			edict_t *ent;
+
 			n = pmove.physents[pmove.touchindex[i]].info;
 			ent = EDICT_NUM(n);
 			if (!ent->v.touch || (playertouch[n/8]&(1<<(n%8))))
