@@ -38,14 +38,14 @@ packet header
 
 The remote connection never knows if it missed a reliable message, the
 local side detects that it has been dropped by seeing a sequence acknowledge
-higher thatn the last reliable sequence, but without the correct evon/odd
+higher than the last reliable sequence, but without the correct even/odd
 bit for the reliable set.
 
 If the sender notices that a reliable message has been dropped, it will be
 retransmitted.  It will not be retransmitted again until a message after
 the retransmit has been acknowledged and the reliable still failed to get there.
 
-if the sequence number is -1, the packet should be handled without a netcon
+If the sequence number is -1, the packet should be handled without a netcon.
 
 The reliable message can be added to at any time by doing
 MSG_Write* (&netchan->message, <data>).
