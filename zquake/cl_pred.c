@@ -93,6 +93,9 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 
 	pmove.cmd = *u;
 
+	movevars.entgravity = cl.entgravity;
+	movevars.maxspeed = cl.maxspeed;
+
 	PlayerMove ();
 
 //for (i=0 ; i<3 ; i++)

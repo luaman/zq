@@ -311,8 +311,13 @@ typedef struct
 // all player information
 	player_info_t	players[MAX_CLIENTS];
 
+// sprint buffer
 	int			sprint_level;
 	char		sprint_buf[1024];
+
+// localized movement vars
+	float		entgravity;
+	float		maxspeed;
 } client_state_t;
 
 extern	client_state_t	cl;
