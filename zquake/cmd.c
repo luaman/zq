@@ -638,8 +638,8 @@ void Cmd_UnAliasAll_f (void)
 
 	for (a=cmd_alias ; a ; a=next) {
 		next = a->next;
-		Z_Free (a->value);
-		Z_Free (a);
+		Q_free (a->value);
+		Q_free (a);
 	}
 	cmd_alias = NULL;
 
