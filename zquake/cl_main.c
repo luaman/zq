@@ -1031,6 +1031,9 @@ void Host_Init (quakeparms_t *parms)
 
 	COM_Init ();
 
+	strcpy (cls.gamedirfile, com_gamedirfile);
+	strcpy (cls.gamedir, com_gamedir);
+
 #ifdef QW_BOTH
 	PR_Init ();
 	SV_InitLocal ();	// register server cvars and commands
