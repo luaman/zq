@@ -1542,13 +1542,33 @@ static int FindNearestItem (int type)
 	return bestidx;
 }
 
+static int CountTeammates ()
+{
+	int	i, count;
+	player_info_t	*player;
+	char	*myteam;
+
+	count = 0;
+	myteam = cl.players[cl.playernum].team;
+	for (i=0, player=cl.players; i < MAX_CLIENTS ; i++, player++) {
+		if (player->name[0] && !player->spectator && (i != cl.playernum)
+									&& !strcmp(player->team, myteam))
+			count++;
+	}
+
+	return count;
+}
+
 static void ExecTookTrigger (char *s, int flag)
 {
 	strcpy (vars.tookitem, s);
 	if (pkflags & (1<<flag))
 	{
-		strcpy (vars.last_tooktrigger, s);
-		TP_ExecTrigger ("f_took");
+		if (CountTeammates () > 0)
+		{
+			strcpy (vars.last_tooktrigger, s);
+			TP_ExecTrigger ("f_took");
+		}
 	}
 }
 
