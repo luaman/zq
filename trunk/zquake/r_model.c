@@ -943,7 +943,7 @@ void Mod_LoadSurfedges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( (count+24)*sizeof(*out), loadname);	
+	out = Hunk_AllocName ( (count+24)*sizeof(*out), loadname);	// +24 for skybox edges
 
 	loadmodel->surfedges = out;
 	loadmodel->numsurfedges = count;
@@ -969,7 +969,7 @@ void Mod_LoadPlanes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( (count+6)*sizeof(*out), loadname);	
+	out = Hunk_AllocName ((count+6)*sizeof(*out), loadname); // +6 for skybox planes
 	
 	loadmodel->planes = out;
 	loadmodel->numplanes = count;
