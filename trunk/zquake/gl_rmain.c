@@ -134,12 +134,12 @@ qboolean R_CullBox (vec3_t mins, vec3_t maxs)
 
 void R_RotateForEntity (entity_t *e)
 {
-    glTranslatef (e->origin[0],  e->origin[1],  e->origin[2]);
+	glTranslatef (e->origin[0],  e->origin[1],  e->origin[2]);
 
-    glRotatef (e->angles[1],  0, 0, 1);
-    glRotatef (-e->angles[0],  0, 1, 0);
+	glRotatef (e->angles[1],  0, 0, 1);
+	glRotatef (-e->angles[0],  0, 1, 0);
 	//ZOID: fixed z angle
-    glRotatef (e->angles[2],  1, 0, 0);
+	glRotatef (e->angles[2],  1, 0, 0);
 }
 
 /*
@@ -617,10 +617,15 @@ void R_DrawAliasModel (entity_t *ent)
 
 	glPopMatrix ();
 
-	if (r_shadows.value && !full_light)
+	if (r_shadows.value && !full_light && ent != &cl.viewent)
 	{
 		glPushMatrix ();
-		R_RotateForEntity (ent);
+
+		glTranslatef (ent->origin[0],  ent->origin[1],  ent->origin[2]);
+		glRotatef (ent->angles[1],  0, 0, 1);
+		//FIXME glRotatef (-ent->angles[0],  0, 1, 0);
+		//FIXME glRotatef (ent->angles[2],  1, 0, 0);
+
 		glDisable (GL_TEXTURE_2D);
 		glEnable (GL_BLEND);
 		glColor4f (0,0,0,0.5);
