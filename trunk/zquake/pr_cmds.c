@@ -787,7 +787,13 @@ void PF_cvar (void)
 	char	*str;
 	
 	str = G_STRING(OFS_PARM0);
-	
+
+	if (!strcmp(str, "pr_checkextension")) {
+		// we do support PF_checkextension
+		G_FLOAT(OFS_RETURN) = 1;
+		return;
+	}
+
 	G_FLOAT(OFS_RETURN) = Cvar_VariableValue (str);
 }
 
@@ -1486,6 +1492,29 @@ void PF_WriteEntity (void)
 
 //=============================================================================
 
+// DP_QC_SINCOSSQRTPOW
+// float(float x) sin = #60
+void PF_sin (void)
+{
+	G_FLOAT(OFS_RETURN) = sin(G_FLOAT(OFS_PARM0));
+}
+
+// DP_QC_SINCOSSQRTPOW
+// float(float x) cos = #61
+void PF_cos (void)
+{
+	G_FLOAT(OFS_RETURN) = cos(G_FLOAT(OFS_PARM0));
+}
+
+// DP_QC_SINCOSSQRTPOW
+// float(float x) sin = #62
+void PF_sqrt (void)
+{
+	G_FLOAT(OFS_RETURN) = sqrt(G_FLOAT(OFS_PARM0));
+}
+
+//=============================================================================
+
 void PF_makestatic (void)
 {
 	edict_t	*ent;
@@ -1663,6 +1692,41 @@ void PF_multicast (void)
 	SV_Multicast (o, to);
 }
 
+// DP_QC_SINCOSSQRTPOW
+// float(float x, float y) pow = #97;
+void PF_pow (void)
+{
+	G_FLOAT(OFS_RETURN) = pow(G_FLOAT(OFS_PARM0), G_FLOAT(OFS_PARM1));
+}
+
+
+/*
+==============
+PF_multicast
+
+float(string extension) checkextension = #99;
+==============
+*/
+void PF_checkextension (void)
+{
+	static char *supported_extensions[] = {
+		"DP_QC_SINCOSSQRTPOW",
+		NULL
+	};
+	char **pstr, *extension;
+	extension = G_STRING(OFS_PARM0);
+
+	for (pstr = supported_extensions; *pstr; pstr++) {
+		if (!Q_stricmp(*pstr, extension)) {
+			G_FLOAT(OFS_RETURN) = 1;	// supported
+			return;
+		}
+	}
+
+	G_FLOAT(OFS_RETURN) = 0;	// not supported
+}
+
+
 // Tonik's experiments -->
 void PF_testbot (void)
 {
@@ -1789,9 +1853,10 @@ PF_WriteAngle,
 PF_WriteString,
 PF_WriteEntity,
 
-PF_Fixme,
-PF_Fixme,
-PF_Fixme,
+PF_sin,			// float(float x) sin = #60
+PF_cos,			// float(float x) cos = #61
+PF_sqrt,		// float(float x) sqrt = #62
+
 PF_Fixme,
 PF_Fixme,
 PF_Fixme,
@@ -1824,6 +1889,20 @@ PF_multicast,
 PF_testbot,			// !!! Temporary! It will be removed !!!
 PF_setinfo,			// !!! Temporary! It will be removed !!!
 PF_precache_vwep_model,			// !!! Temporary! It will be removed !!!
+PF_Fixme,
+PF_Fixme,
+PF_Fixme,
+PF_Fixme,
+PF_Fixme,
+PF_Fixme,
+PF_Fixme,
+PF_Fixme,
+PF_Fixme,
+PF_Fixme,
+PF_Fixme,
+PF_pow,				// float(float x, float y) pow = #97;
+PF_Fixme,
+PF_checkextension,
 };
 
 int pr_numbuiltins = sizeof(pr_builtins)/sizeof(pr_builtins[0]);
