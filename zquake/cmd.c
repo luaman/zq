@@ -245,6 +245,30 @@ void Cbuf_ExecuteEx (cbuf_t *cbuf)
 
 /*
 ===============
+Cbuf_AddEarlyCommands
+
+Set commands are added early, so they are guaranteed to be set before
+the client and server initialize for the first time.
+
+Other commands are added late, after all initialization is complete.
+===============
+*/
+void Cbuf_AddEarlyCommands (void)
+{
+	int		i;
+
+	for (i=0 ; i<COM_Argc()-2 ; i++)
+	{
+		if (Q_strcasecmp(COM_Argv(i), "+set"))
+			continue;
+		Cbuf_AddText (va("set %s %s\n", COM_Argv(i+1), COM_Argv(i+2)));
+		i+=2;
+	}
+}
+
+
+/*
+===============
 Cmd_StuffCmds_f
 
 Adds command line parameters as script statements
