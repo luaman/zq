@@ -387,25 +387,37 @@ void Mod_LoadTextures (lump_t *l)
 		tx->height = mt->height;
 		for (j = 0; j < MIPLEVELS; j++)
 			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
-		// the pixels immediately follow the structures
-		memcpy (tx+1, mt+1, pixels);
 
-		// HACK HACK HACK
-		if (!strcmp(mt->name, "shot1sid") && mt->width==32 && mt->height==32
-			&& CRC_Block((byte*)(mt+1), mt->width*mt->height) == 65393)
-		{	// This texture in b_shell1.bsp has some of the first 32 pixels painted white.
-			// They are invisible in software, but look really ugly in GL. So we just copy
-			// 32 pixels from the bottom to make it look nice.
-			memcpy (tx+1, (byte *)(tx+1) + 32*31, 32);
+		if (mt->offsets[0])
+		{
+			// the pixels immediately follow the structures
+			memcpy (tx+1, mt+1, pixels);
+
+			// HACK HACK HACK
+			if (!strcmp(mt->name, "shot1sid") && mt->width==32 && mt->height==32
+				&& CRC_Block((byte*)(mt+1), mt->width*mt->height) == 65393)
+			{	// This texture in b_shell1.bsp has some of the first 32 pixels painted white.
+				// They are invisible in software, but look really ugly in GL. So we just copy
+				// 32 pixels from the bottom to make it look nice.
+				memcpy (tx+1, (byte *)(tx+1) + 32*31, 32);
+			}
+
+			// just for r_fastturb's sake
+			{
+				byte *data = (byte *) &d_8to24table[*((byte *) mt + mt->offsets[0] + ((mt->height * mt->width) >> 1))];
+				tx->flatcolor3ub = (255 << 24) + (data[0] << 0) + (data[1] << 8) + (data[2] << 16);
+			}
+		}
+		else
+		{
+			tx->width = r_notexture_mip->width;
+			tx->height = r_notexture_mip->height;
+			tx->gl_texturenum = GL_LoadTexture ("r_notexture_mip", tx->width, 
+							tx->height, (byte *)(r_notexture_mip + 1), true, false, true);
+			continue;
 		}
 
-		// just for r_fastturb's sake
-		if (mt->offsets[0]) {
-			byte *data = (byte *) &d_8to24table[*((byte *) mt + mt->offsets[0] + ((mt->height * mt->width) >> 1))];
-			tx->flatcolor3ub = (255 << 24) + (data[0] << 0) + (data[1] << 8) + (data[2] << 16);
-		}
-
-		if (!strncmp(mt->name,"sky",3))	
+		if (!loadmodel->halflifebsp && !strncmp(mt->name,"sky",3))	
 			R_InitSky (tx);
 		else
 		{
@@ -828,6 +840,7 @@ void Mod_LoadFaces (lump_t *l)
 	msurface_t 	*out;
 	int			i, count, surfnum;
 	int			planenum, side;
+	char		turbchar = loadmodel->halflifebsp ? '!' : '*';
 
 	in = (dface_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
@@ -866,15 +879,15 @@ void Mod_LoadFaces (lump_t *l)
 			out->samples = loadmodel->lightdata + (loadmodel->halflifebsp ? i : i * 3);
 		
 	// set the drawing flags flag
-		
+
 		if (!strncmp(out->texinfo->texture->name,"sky", 3))	// sky
 		{
 			out->flags |= (SURF_DRAWSKY | SURF_DRAWTILED);
 			GL_BuildSkySurfacePolys (out);	// build gl polys
 			continue;
 		}
-		
-		if (out->texinfo->texture->name[0] == '*')			// turbulent
+
+		if (out->texinfo->texture->name[0] == turbchar)		// turbulent
 		{
 			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
 			for (i = 0; i < 2; i++)
