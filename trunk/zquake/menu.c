@@ -1268,8 +1268,7 @@ static void StartNewGame (void)
 	Cvar_Set (&teamplay, "0");
 	Cvar_Set (&deathmatch, "0");
 	Cvar_Set (&coop, "0");
-	if (com_serveractive)
-		Cbuf_AddText ("disconnect\n");
+	Host_EndGame ();
 //	Cbuf_AddText ("gamedir qw\n");
 	Cbuf_AddText ("map start\n");
 }
