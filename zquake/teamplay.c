@@ -70,7 +70,6 @@ cvar_t	tp_name_at = {"tp_name_at", "at"};
 void TP_FindModelNumbers (void);
 void TP_FindPoint (void);
 char *TP_LocationName (vec3_t location);
-extern int parsecountmod;
 
 
 #define MAX_LOC_NAME 48
@@ -340,7 +339,7 @@ char *Macro_Powerups_f (void)
 
 char *Macro_Location_f (void)
 {
-	return TP_LocationName (cl.frames[parsecountmod].playerstate[cl.playernum].origin);
+	return TP_LocationName (cl.simorg);
 }
 
 char *Macro_LastDeath_f (void)
@@ -1718,13 +1717,12 @@ static int FindNearestItem (int flags, item_t **pitem)
 	entity_state_t		*ent;
 	int	i, bestidx, bestdist, bestskin;
 	vec3_t	org, v;
-	extern	int oldparsecountmod;
 
-	VectorCopy (cl.frames[(cls.netchan.incoming_sequence)&UPDATE_MASK]
+	VectorCopy (cl.frames[cl.validsequence&UPDATE_MASK]
 		.playerstate[cl.playernum].origin, org);
 
 	// look in previous frame 
-	frame = &cl.frames[oldparsecountmod&UPDATE_MASK];
+	frame = &cl.frames[cl.oldvalidsequence&UPDATE_MASK];
 	pak = &frame->packet_entities;
 	bestdist = 100;
 	bestidx = 0;
@@ -1789,7 +1787,7 @@ static void ExecTookTrigger (char *s, int flag)
 	vars.tooktime = realtime;
 	strncpy (vars.tookname, s, sizeof(vars.tookname)-1);
 	// FIXME: better use the item location, not the player's
-	strncpy (vars.tookloc, TP_LocationName (cl.frames[parsecountmod]
+	strncpy (vars.tookloc, TP_LocationName (cl.frames[cl.parsecount&UPDATE_MASK]
 			.playerstate[cl.playernum].origin), sizeof(vars.tookloc)-1);
 
 	if (tookflags & flag) {
@@ -1821,7 +1819,7 @@ void TP_CheckPickupSound (char *s)
 	return;
 
 more:
-	if (!cl.validsequence)
+	if (!cl.validsequence || !cl.oldvalidsequence)
 		return;
 
 	// weapons
@@ -1881,9 +1879,12 @@ void TP_FindPoint ()
 	VectorCopy (cl.simorg, vieworg);
 	vieworg[2] += 22;	// adjust for view height
 
+	if (!cl.validsequence)
+		goto nothing;
+
 	best = -1;
 
-	pak = &cl.frames[parsecountmod&UPDATE_MASK].packet_entities;
+	pak = &cl.frames[cl.validsequence&UPDATE_MASK].packet_entities;
 	for (i=0,ent=pak->entities ; i<pak->num_entities ; i++,ent++)
 	{
 		vec3_t	v, v2, v3;
@@ -1994,6 +1995,7 @@ ok:
 		Q_strncpyz (vars.pointloc, TP_LocationName (bestent->origin), sizeof(vars.pointloc));
 	}
 	else {
+nothing:
 		Q_strncpyz (vars.pointname, tp_name_nothing.string, sizeof(vars.pointname));
 		vars.pointloc[0] = 0;
 	}
