@@ -618,20 +618,6 @@ static void PF_traceline (void)
 		pr_global_struct->trace_ent = EDICT_TO_PROG(sv.edicts);
 }
 
-/*
-=================
-PF_checkpos
-
-Returns true if the given entity can move to the given position from its
-current position by walking or rolling.
-FIXME: make work...
-scalar checkpos (entity, vector)
-=================
-*/
-static void PF_checkpos (void)
-{
-}
-
 //============================================================================
 
 // Unlike Quake's Mod_LeafPVS, CM_LeafPVS returns a pointer to static data
@@ -924,7 +910,7 @@ PF_dprint
 */
 static void PF_dprint (void)
 {
-	Com_Printf ("%s",PF_VarString(0));
+	Com_Printf ("%s", PF_VarString(0));
 }
 
 static void PF_ftos (void)
@@ -1892,7 +1878,7 @@ static void PF_strunzone (void)
 
 /*
 ==============
-PF_multicast
+PF_checkextension
 
 float(string extension) checkextension = #99;
 ==============
