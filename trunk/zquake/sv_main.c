@@ -1267,12 +1267,14 @@ int SV_BoundRate (int rate)
 {
 	if (!rate)
 		rate = 2500;
-	if (sv_maxrate.value && rate > sv_maxrate.value)
-		rate = sv_maxrate.value;
-	if (rate < 500)
+
+	if (sv_maxrate.value)
+		rate = min(rate, sv_maxrate.value);
+	else
+		rate = min(rate, 10000);
+
+	if (rate < 500)		// not less than 500 no matter what sv_maxrate is
 		rate = 500;
-	if (rate > 10000)
-		rate = 10000;
 
 	return rate;
 }
