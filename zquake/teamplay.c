@@ -924,7 +924,7 @@ void TP_SearchForMsgTriggers (char *s, int level)
 }
 
 
-void TP_CheckVersionRequest(char *s)
+void TP_CheckVersionRequest (char *s)
 {
 	char buf[11];
 	int	i;
@@ -932,7 +932,6 @@ void TP_CheckVersionRequest(char *s)
 	if (vars.f_version_reply_time
 		&& realtime - vars.f_version_reply_time < 10)
 		return;	// don't reply again if 10 seconds haven't passed
-	vars.f_version_reply_time = realtime;
 
 	while (1)
 	{
@@ -954,6 +953,8 @@ ok:
 
 	if (!strncmp(buf, " f_version\n", 11) || !strncmp(buf, " z_version\n", 11))
 		Cbuf_AddText (va("say ZQuake version %s (Build %04d)\n", Z_VERSION, build_number()));
+
+	vars.f_version_reply_time = realtime;
 }
 
 
