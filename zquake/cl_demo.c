@@ -62,6 +62,7 @@ void CL_StopPlayback (void)
 		CL_FinishTimeDemo ();
 
 	memset (cl.cshifts, 0, sizeof(cl.cshifts));
+	cl.stats[STAT_ITEMS] = 0;
 	v_updatepalette = true;
 }
 
