@@ -873,7 +873,6 @@ void M_Keys_Key (int k)
 int		fps_cursor = 0;
 
 extern cvar_t v_bonusflash;
-extern cvar_t cl_rocket2grenade;
 extern cvar_t v_damagecshift;
 extern cvar_t r_fastsky;
 extern cvar_t r_drawflame;
@@ -907,7 +906,7 @@ void M_Fps_Draw (void)
 	M_DrawCheckbox (220, 56, cl_deadbodyfilter.value);
 
 	M_Print (16, 64, "          Rocket model");
-	M_Print (220, 64, cl_rocket2grenade.value ? "grenade" : "normal");
+	M_Print (220, 64, cl_r2g.value ? "grenade" : "normal");
 
 	M_Print (16, 72, "          Rocket trail");
 	M_Print (220, 72, r_rockettrail.value==2 ? "grenade" :
@@ -1012,7 +1011,7 @@ void M_Fps_Key (int k)
 			Cvar_SetValue (&cl_deadbodyfilter, !cl_deadbodyfilter.value);
 			break;
 		case 4:
-			Cvar_SetValue (&cl_rocket2grenade, !cl_rocket2grenade.value);
+			Cvar_SetValue (&cl_r2g, !cl_r2g.value);
 			break;
 		case 5:
 			i = r_rockettrail.value + 1;

@@ -729,7 +729,6 @@ float NQD_LerpPoint (void)
 extern int		cl_playerindex; 
 extern int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 extern int		cl_rocketindex, cl_grenadeindex;
-extern cvar_t	cl_rocket2grenade;
 
 void NQD_LerpPlayerinfo (float f)
 {
@@ -826,7 +825,7 @@ void NQD_LinkEntities (void)
 		if (!model)
 			Host_Error ("CL_LinkPacketEntities: bad modelindex");
 
-		if (cl_rocket2grenade.value && cl_grenadeindex != -1)
+		if (cl_r2g.value && cl_grenadeindex != -1)
 			if (state->modelindex == cl_rocketindex)
 				ent.model = cl.model_precache[cl_grenadeindex];
 

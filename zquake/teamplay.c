@@ -35,7 +35,6 @@ cvar_t	cl_parseSay = {"cl_parseSay", "1"};
 cvar_t	cl_parseFunChars = {"cl_parseFunChars", "1"};
 cvar_t	cl_triggers = {"cl_triggers", "0"};
 cvar_t	tp_forceTriggers = {"tp_forceTriggers", "0"};
-cvar_t	cl_nofake = {"cl_nofake", "2"};
 cvar_t	tp_loadlocs = {"tp_loadlocs", "1"};
 
 cvar_t	cl_teamskin = {"teamskin", ""};
@@ -2355,7 +2354,6 @@ void TP_Init (void)
 	Cvar_Register (&cl_parseSay);
 	Cvar_Register (&cl_triggers);
 	Cvar_Register (&tp_forceTriggers);
-	Cvar_Register (&cl_nofake);
 	Cvar_Register (&tp_loadlocs);
 	Cvar_Register (&cl_teamskin);
 	Cvar_Register (&cl_enemyskin);

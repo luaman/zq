@@ -410,7 +410,7 @@ void CL_LinkPacketEntities (void)
 		if (!model)
 			Host_Error ("CL_LinkPacketEntities: bad modelindex");
 
-		if (cl_rocket2grenade.value && cl_grenadeindex != -1)
+		if (cl_r2g.value && cl_grenadeindex != -1)
 			if (state->modelindex == cl_rocketindex)
 				ent.model = cl.model_precache[cl_grenadeindex];
 
