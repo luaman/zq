@@ -2001,6 +2001,52 @@ static void PF_checkbuiltin (void)
 	G_FLOAT(OFS_RETURN) = 1;	// all are supported
 }
 
+/*
+==============
+PF_checkbuiltinrange
+
+Check a range of builtins by number
+
+float(float start, float num) checkbuiltinrange = #0x5a01;
+==============
+*/
+// ZQ_QC_CHECKBUILTIN
+static void PF_checkbuiltinrange (void)
+{
+	int	i, start, end;
+	builtin_t	*builtins;
+
+	start = G_FLOAT(OFS_PARM0);
+	end = G_FLOAT(OFS_PARM1);
+
+	if (start < 1 || (start >= pr_numbuiltins && start < ZQ_BUILTINS)
+		|| (end >= pr_numbuiltins && end < ZQ_BUILTINS)
+		|| end >= ZQ_BUILTINS + pr_numextbuiltins) {
+		G_FLOAT(OFS_RETURN) = 0;
+		return;
+	}
+
+	if (start < pr_numbuiltins)
+		builtins = pr_builtins;
+	else {
+		builtins = pr_extbuiltins;
+		start -= ZQ_BUILTINS;
+		end -= ZQ_BUILTINS;
+	}
+
+	for (i = start; i < end; i++) {
+		if (builtins[i] == PF_Fixme
+			|| pr_builtins[i] == PF_testbot
+			|| pr_builtins[i] == PF_setinfo
+			|| pr_builtins[i] == PF_precache_vwep_model) {
+			G_FLOAT(OFS_RETURN) = 0;
+			return;
+		}
+	}
+
+	G_FLOAT(OFS_RETURN) = 1;
+}
+
 //=============================================================================
 
 builtin_t pr_builtins[] =
@@ -2146,6 +2192,7 @@ void PF_checkbuiltin (void);
 builtin_t pr_extbuiltins[] =
 {
 	PF_checkbuiltin,
+	PF_checkbuiltinrange,
 };
 
 int pr_numextbuiltins = sizeof(pr_extbuiltins)/sizeof(pr_extbuiltins[0]);
