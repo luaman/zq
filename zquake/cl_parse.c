@@ -1229,6 +1229,10 @@ static void FlushString (char *s, int level, qboolean team, int offset)
 	}
 	else
 		Con_Printf ("%s", s);
+	if (level > 3)
+		return;
+	if (team)
+		level = 4;
 	TP_SearchForMsgTriggers (s + offset, level);
 }
 
@@ -1242,7 +1246,7 @@ void CL_ParsePrint (void)
 	char	*s, str[1024];
 	char	*p;
 	int		len;
-	int		level, flags;
+	int		level, flags=0;
 	int		offset = 0;
 
 	level = MSG_ReadByte ();

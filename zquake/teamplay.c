@@ -988,9 +988,13 @@ void TP_MsgTrigger_f (void)
 
 		strcpy (trig->string, Cmd_Argv(2));
 		if (c == 5 && !Q_strcasecmp (Cmd_Argv(3), "-l")) {
-			trig->level = Q_atoi (Cmd_Argv(4));
-			if ((unsigned)trig->level > PRINT_CHAT)
-				trig->level = PRINT_HIGH;
+			if (!strcmp(Cmd_Argv(4), "t"))
+				trig->level = 4;
+			else {
+				trig->level = Q_atoi (Cmd_Argv(4));
+				if ((unsigned)trig->level > PRINT_CHAT)
+					trig->level = PRINT_HIGH;
+			}
 		}
 	}
 }
@@ -1090,7 +1094,8 @@ void TP_SearchForMsgTriggers (char *s, int level)
 		return;
 
 	for (t=msg_triggers; t; t=t->next)
-		if (t->level == level && t->string[0] && strstr(s, t->string))
+		if ((t->level == level || (t->level == 3 && level == 4))
+			&& t->string[0] && strstr(s, t->string))
 		{
 			if (level == PRINT_CHAT && (
 				strstr (s, "f_version") || strstr (s, "f_system") ||
