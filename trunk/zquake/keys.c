@@ -930,6 +930,7 @@ void Key_Unbind (int keynum)
 
 	// free (and hence Q_free) is safe to call with a NULL argument
 	Q_free (keybindings[keynum]);
+	keybindings[keynum] = NULL;
 }
 
 /*
