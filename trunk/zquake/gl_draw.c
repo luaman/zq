@@ -38,9 +38,10 @@ qpic_t		*draw_backtile;
 
 int			translate_texture;
 int			char_texture;
-int			cs_texture; // crosshair texture
+int			cs2_texture; // crosshair 2 texture
+int			cs3_texture; // crosshair 3 texture
 
-static byte cs_data[64] = {
+static byte cs2_data[64] = {
 	0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff, 0xff,
@@ -48,6 +49,17 @@ static byte cs_data[64] = {
 	0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+};
+
+static byte cs3_data[64] = {
+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xfe, 0xfe, 0xfe, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
 
@@ -407,7 +419,14 @@ void Draw_Init (void)
 	// now turn them into textures
 	char_texture = GL_LoadTexture ("charset", 128, 128, draw_chars, false, true, false);
 //	Draw_CrosshairAdjust();
-	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true, false);
+
+	cs2_texture = GL_LoadTexture ("", 8, 8, cs2_data, false, true, false);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	cs3_texture = GL_LoadTexture ("", 8, 8, cs3_data, false, true, false);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	start = Hunk_LowMark ();
 
@@ -456,9 +475,6 @@ void Draw_Init (void)
 	ncdata = cb->data;
 #endif
 	
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
 	gl = (glpic_t *)conback->data;
 	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, ncdata, false, false, false);
 	gl->sl = 0;
@@ -566,14 +582,17 @@ void Draw_Crosshair(void)
 	extern vrect_t		scr_vrect;
 	unsigned char *pColor;
 
-	if (crosshair.value == 2) {
+	if (crosshair.value == 2 || crosshair.value == 3) {
 		x = scr_vrect.x + scr_vrect.width/2 - 3 + cl_crossx.value; 
 		y = scr_vrect.y + scr_vrect.height/2 - 3 + cl_crossy.value;
 
 		glTexEnvf ( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		pColor = (unsigned char *) &d_8to24table[(byte) crosshaircolor.value];
 		glColor4ubv ( pColor );
-		GL_Bind (cs_texture);
+		if (crosshair.value == 2)
+			GL_Bind (cs2_texture);
+		else
+			GL_Bind (cs3_texture);
 
 		glBegin (GL_QUADS);
 		glTexCoord2f (0, 0);
