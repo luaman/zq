@@ -896,31 +896,14 @@ static void CM_BuildPVS (lump_t *lump_vis, lump_t *lump_leafs)
 ** Expands the PVS and calculates the PHS (potentially hearable set)
 ** Call after CM_BuildPVS (so that map_vis_rowbytes & map_vis_rowlongs are set)
 */
-static void CM_BuildPVSAndPHS (void)
+static void CM_BuildPHS (void)
 {
 	int		i, j, k, l, index;
 	int		bitbyte;
 	unsigned	*dest, *src;
 	byte	*scan;
-	int		c_visible, c_hearable;
-
-	Com_DPrintf ("Building PHS...\n");
-
-
-	// FIXME, all this does is calculate the number of visible leafs
-	// do we really care?
-	c_visible = 0;
-	scan = map_pvs;
-	for (i = 0; i < visleafs; i++, scan += map_vis_rowbytes) {
-		for (j = 0; j < visleafs; j++) {
-			if ( scan[j>>3] & (1<<(j&7)) )
-				c_visible++;
-		}
-	}
-
 
 	map_phs = Hunk_Alloc (map_vis_rowbytes * visleafs);
-	c_hearable = 0;
 	scan = map_pvs;
 	dest = (unsigned *)map_phs;
 	for (i = 0; i < visleafs; i++, dest += map_vis_rowlongs, scan += map_vis_rowbytes)
@@ -948,17 +931,7 @@ static void CM_BuildPVSAndPHS (void)
 					dest[l] |= src[l];
 			}
 		}
-
-		if (i == 0)
-			continue;
-		for (j = 0; j < visleafs; j++) {
-			if ( ((byte *)dest)[j>>3] & (1<<(j&7)) )
-				c_hearable++;
-		}
 	}
-
-	Com_DPrintf ("Average leafs visible / hearable / total: %i / %i / %i\n",
-					c_visible/visleafs, c_hearable/visleafs, visleafs);
 }
 
 
@@ -1047,7 +1020,7 @@ cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned
 	CM_BuildPVS (&header->lumps[LUMP_VISIBILITY], &header->lumps[LUMP_LEAFS]);
 
 	if (!clientload)			// client doesn't need PHS
-		CM_BuildPVSAndPHS ();
+		CM_BuildPHS ();
 
 	strlcpy (map_name, name, sizeof(map_name));
 
