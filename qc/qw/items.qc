@@ -53,7 +53,7 @@ void noclass ()
 
 void q_touch ()
 {
-	string	s;
+	string	s1, s2;
 
 	if (other.classname != "player")
 		return;
@@ -78,15 +78,14 @@ void q_touch ()
 	other.super_time = 1;
 	other.super_damage_finished = self.cnt;
 
-	s=ftos(rint(other.super_damage_finished - time));
-
-	bprint (PRINT_LOW, other.netname);
 	if (deathmatch == 4)
-		bprint (PRINT_LOW, " recovered an OctaPower with ");
-	else 
-		bprint (PRINT_LOW, " recovered a Quad with ");
-	bprint (PRINT_LOW, s);
-	bprint (PRINT_LOW, " seconds remaining!\n");
+		s1 = "an OctaPower";
+	else
+		s1 = "a Quad";
+	s2 = ftos(rint(other.super_damage_finished - time));
+	
+	// FIXME: PRINT_LOW? No wonder no one ever sees these messages...
+	bprint (PRINT_LOW, other.netname, " recovered ", s1, " with ", s2, " seconds remaining!\n");
 
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
@@ -137,12 +136,10 @@ void r_touch ()
 // do the apropriate action
 	other.invisible_time = 1;
 	other.invisible_finished = self.cnt;
-	s=ftos(rint(other.invisible_finished - time));
-	bprint (PRINT_LOW, other.netname);
-	bprint (PRINT_LOW, " recovered a Ring with ");
-	bprint (PRINT_LOW, s);
-	bprint (PRINT_LOW, " seconds remaining!\n");
-      
+	
+	// FIXME: PRINT_LOW? No wonder no one ever sees these messages...
+	s = ftos(rint(other.invisible_finished - time));
+	bprint (PRINT_LOW, other.netname, " recovered a Ring with ", s, " seconds remaining!\n");
 
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
@@ -317,10 +314,8 @@ void health_touch ()
 			return;
 	}
 	
-	sprint(other, PRINT_LOW, "You receive ");
 	s = ftos(self.healamount);
-	sprint(other, PRINT_LOW, s);
-	sprint(other, PRINT_LOW, " health\n");
+	sprint(other, PRINT_LOW, "You receive ", s, " health\n");
 	
 // health touch sound
 	sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
@@ -639,9 +634,7 @@ void weapon_touch ()
 	else
 		objerror ("weapon_touch: unknown classname");
 
-	sprint (other, PRINT_LOW, "You got the ");
-	sprint (other, PRINT_LOW, self.netname);
-	sprint (other, PRINT_LOW, "\n");
+	sprint (other, PRINT_LOW, "You got the ", self.netname, "\n");
 // weapon touch sound
 	sound (other, CHAN_ITEM, "weapons/pkup.wav", 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
@@ -853,9 +846,7 @@ void ammo_touch ()
 
 	bound_other_ammo ();
 	
-	sprint (other, PRINT_LOW, "You got the ");
-	sprint (other, PRINT_LOW, self.netname);
-	sprint (other, PRINT_LOW, "\n");
+	sprint (other, PRINT_LOW, "You got the ", self.netname, "\n");
 // ammo touch sound
 	sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
@@ -1108,9 +1099,7 @@ void key_touch ()
 	if (other.items & self.items)
 		return;
 
-	sprint (other, PRINT_LOW, "You got the ");
-	sprint (other, PRINT_LOW, self.netname);
-	sprint (other,PRINT_LOW, "\n");
+	sprint (other, PRINT_LOW, "You got the ", self.netname, "\n");
 
 	sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
@@ -1306,9 +1295,7 @@ void powerup_touch ()
 	if (other.health <= 0)
 		return;
 
-	sprint (other, PRINT_LOW, "You got the ");
-	sprint (other,PRINT_LOW,  self.netname);
-	sprint (other,PRINT_LOW, "\n");
+	sprint (other, PRINT_LOW, "You got the ", self.netname, "\n");
 
 	if (deathmatch)
 	{

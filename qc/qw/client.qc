@@ -274,8 +274,7 @@ void changelevel_touch ()
 			return;
 		}
 
-		bprint (PRINT_HIGH, other.netname);
-		bprint (PRINT_HIGH, " exited the level\n");
+		bprint (PRINT_HIGH, other.netname, " exited the level\n");
 	}
 	
 	nextmap = self.map;
@@ -359,8 +358,7 @@ void ClientKill ()
 	if (intermission_running)
 		return;
 
-	bprint (PRINT_MEDIUM, self.netname);
-	bprint (PRINT_MEDIUM, " suicides\n");
+	bprint (PRINT_MEDIUM, self.netname, " suicides\n");
 	set_suicide_frame ();
 	self.modelindex = modelindex_player;
 	logfrag (self, self);
@@ -1154,8 +1152,7 @@ void ClientConnect ()
 {
 	if (deathmatch || coop)
 	{
-		bprint (PRINT_HIGH, self.netname);
-		bprint (PRINT_HIGH, " entered the game\n");
+		bprint (PRINT_HIGH, self.netname, " entered the game\n");
 	}
 	
 // a client connecting during an intermission can cause problems
@@ -1176,11 +1173,8 @@ void ClientDisconnect ()
 	string	s;
 
 	// let everyone else know
-	bprint (PRINT_HIGH, self.netname);
-	bprint (PRINT_HIGH, " left the game with ");
 	s = ftos(self.frags);
-	bprint (PRINT_HIGH, s);
-	bprint (PRINT_HIGH, " frags\n");
+	bprint (PRINT_HIGH, self.netname, " left the game with ", s, " frags\n");
 	sound (self, CHAN_BODY, "player/tornoff2.wav", 1, ATTN_NONE);
 	set_suicide_frame ();
 }
@@ -1211,8 +1205,7 @@ void ClientObituary (entity targ, entity attacker)
 		{
 			if (targ.deathtype == "selfwater")
 			{
-				bprint (PRINT_MEDIUM, targ.netname);
-				bprint (PRINT_MEDIUM," electrocutes himself.\n ");
+				bprint (PRINT_MEDIUM, targ.netname, " electrocutes himself.\n ");
 				targ.frags = targ.frags - 1;
 				return;
 			}
@@ -1220,10 +1213,8 @@ void ClientObituary (entity targ, entity attacker)
 
 		if (attacker.classname == "teledeath")
 		{
-			bprint (PRINT_MEDIUM,targ.netname);
-			bprint (PRINT_MEDIUM," was telefragged by ");
-			bprint (PRINT_MEDIUM,attacker.owner.netname);
-			bprint (PRINT_MEDIUM,"\n");
+			bprint (PRINT_MEDIUM, targ.netname, " was telefragged by ",
+						attacker.owner.netname, "\n");
 			logfrag (attacker.owner, targ);
 
 			attacker.owner.frags = attacker.owner.frags + 1;
@@ -1232,10 +1223,7 @@ void ClientObituary (entity targ, entity attacker)
 
 		if (attacker.classname == "teledeath2")
 		{
-			bprint (PRINT_MEDIUM,"Satan's power deflects ");
-			bprint (PRINT_MEDIUM,targ.netname);
-			bprint (PRINT_MEDIUM,"'s telefrag\n");
-
+			bprint (PRINT_MEDIUM, "Satan's power deflects ", targ.netname, "'s telefrag\n");
 			targ.frags = targ.frags - 1;
 			logfrag (targ, targ);
 			return;
@@ -1244,10 +1232,8 @@ void ClientObituary (entity targ, entity attacker)
 		// double 666 telefrag (can happen often in deathmatch 4)
 		if (attacker.classname == "teledeath3") 
 		{
-			bprint (PRINT_MEDIUM,targ.netname);
-			bprint (PRINT_MEDIUM," was telefragged by ");
-			bprint (PRINT_MEDIUM,attacker.owner.netname);
-			bprint (PRINT_MEDIUM, "'s Satan's power\n");
+			bprint (PRINT_MEDIUM, targ.netname, " was telefragged by ",
+						attacker.owner.netname, "'s Satan's power\n");
 			targ.frags = targ.frags - 1;
 			logfrag (targ, targ);
 			return;
@@ -1260,16 +1246,13 @@ void ClientObituary (entity targ, entity attacker)
 			{
 				logfrag (attacker, attacker);
 				attacker.frags = attacker.frags - 1; 
-				bprint (PRINT_MEDIUM,attacker.netname);
-				bprint (PRINT_MEDIUM," squished a teammate\n");
+				bprint (PRINT_MEDIUM, attacker.netname, " squished a teammate\n");
 				return;
 			}
 			else if (attacker.classname == "player" && attacker != targ)
 			{
-				bprint (PRINT_MEDIUM, attacker.netname);
-				bprint (PRINT_MEDIUM," squishes ");
-				bprint (PRINT_MEDIUM,targ.netname);
-				bprint (PRINT_MEDIUM,"\n");
+				bprint (PRINT_MEDIUM, attacker.netname, " squishes ",
+							targ.netname, "\n");
 				logfrag (attacker, targ);
 				attacker.frags = attacker.frags + 1;
 				return;
@@ -1278,8 +1261,7 @@ void ClientObituary (entity targ, entity attacker)
 			{
 				logfrag (targ, targ);
 				targ.frags = targ.frags - 1;            // killed self
-				bprint (PRINT_MEDIUM,targ.netname);
-				bprint (PRINT_MEDIUM," was squished\n");
+				bprint (PRINT_MEDIUM, targ.netname, " was squished\n");
 				return;
 			}
 		}
@@ -1291,22 +1273,21 @@ void ClientObituary (entity targ, entity attacker)
 				// killed self
 				logfrag (attacker, attacker);
 				attacker.frags = attacker.frags - 1;
-				bprint (PRINT_MEDIUM,targ.netname);
 				if (targ.deathtype == "grenade")
-					bprint (PRINT_MEDIUM," tries to put the pin back in\n");
+					bprint (PRINT_MEDIUM, targ.netname, " tries to put the pin back in\n");
 				else if (targ.deathtype == "rocket")
-					bprint (PRINT_MEDIUM," becomes bored with life\n");
+					bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
 				else if (targ.weapon == 64 && targ.waterlevel > 1)
 				{
 					if (targ.watertype == CONTENT_SLIME)
-						bprint (PRINT_MEDIUM," discharges into the slime\n");
+						bprint (PRINT_MEDIUM, targ.netname, " discharges into the slime\n");
 					else if (targ.watertype == CONTENT_LAVA)
-						bprint (PRINT_MEDIUM," discharges into the lava\n");
+						bprint (PRINT_MEDIUM, targ.netname, " discharges into the lava\n");
 					else
-						bprint (PRINT_MEDIUM," discharges into the water.\n");
+						bprint (PRINT_MEDIUM, targ.netname, " discharges into the water.\n");
 				}
 				else
-					bprint (PRINT_MEDIUM," becomes bored with life\n");
+					bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
 				return;
 			}
 			else if ( (teamplay == 2) && (targteam == attackerteam) &&
@@ -1320,8 +1301,7 @@ void ClientObituary (entity targ, entity attacker)
 					deathstring = " gets a frag for the other team\n";
 				else
 					deathstring = " loses another friend\n";
-				bprint (PRINT_MEDIUM, attacker.netname);
-				bprint (PRINT_MEDIUM, deathstring);
+				bprint (PRINT_MEDIUM, attacker.netname, deathstring);
 				attacker.frags = attacker.frags - 1;
 				//ZOID 12-13-96:  killing a teammate logs as suicide
 				logfrag (attacker, attacker);
@@ -1364,10 +1344,8 @@ void ClientObituary (entity targ, entity attacker)
 							deathstring = " was smeared by ";
 						else
 						{
-							bprint (PRINT_MEDIUM, attacker.netname);
-							bprint (PRINT_MEDIUM, " rips ");
-							bprint (PRINT_MEDIUM, targ.netname);
-							bprint (PRINT_MEDIUM, " a new one\n");
+							bprint (PRINT_MEDIUM, attacker.netname, " rips ",
+								targ.netname, " a new one\n");
 							return;
 						}
 						deathstring2 = "'s quad rocket\n";
@@ -1406,10 +1384,8 @@ void ClientObituary (entity targ, entity attacker)
 					else
 						deathstring2 = "'s shaft\n";
 				}
-				bprint (PRINT_MEDIUM,targ.netname);
-				bprint (PRINT_MEDIUM,deathstring);
-				bprint (PRINT_MEDIUM,attacker.netname);
-				bprint (PRINT_MEDIUM,deathstring2);
+				bprint (PRINT_MEDIUM, targ.netname, deathstring,
+										attacker.netname, deathstring2);
 			}
 			return;
 		}
@@ -1419,76 +1395,63 @@ void ClientObituary (entity targ, entity attacker)
 			targ.frags = targ.frags - 1;            // killed self
 			rnum = targ.watertype;
 
-			bprint (PRINT_MEDIUM,targ.netname);
 			if (rnum == -3)
 			{
 				if (random() < 0.5)
-					bprint (PRINT_MEDIUM," sleeps with the fishes\n");
+					deathstring = " sleeps with the fishes\n";
 				else
-					bprint (PRINT_MEDIUM," sucks it down\n");
-				return;
+					deathstring = " sucks it down\n";
 			}
 			else if (rnum == -4)
 			{
 				if (random() < 0.5)
-					bprint (PRINT_MEDIUM," gulped a load of slime\n");
+					deathstring = " gulped a load of slime\n";
 				else
-					bprint (PRINT_MEDIUM," can't exist on slime alone\n");
-				return;
+					deathstring = " can't exist on slime alone\n";
 			}
 			else if (rnum == -5)
 			{
 				if (targ.health < -15)
-				{
-					bprint (PRINT_MEDIUM," burst into flames\n");
-					return;
-				}
-				if (random() < 0.5)
-					bprint (PRINT_MEDIUM," turned into hot slag\n");
+					deathstring = " burst into flames\n";
+				else if (random() < 0.5)
+					deathstring = " turned into hot slag\n";
 				else
-					bprint (PRINT_MEDIUM," visits the Volcano God\n");
-				return;
+					deathstring = " visits the Volcano God\n";
 			}
-
-			if (attacker.classname == "explo_box")
+			else if (attacker.classname == "explo_box")
 			{
-				bprint (PRINT_MEDIUM," blew up\n");
-				return;
+				deathstring = " blew up\n";
 			}
-			if (targ.deathtype == "falling")
+			else if (targ.deathtype == "falling")
 			{
-				bprint (PRINT_MEDIUM," fell to his death\n");
-				return;
+				deathstring = " fell to his death\n";
 			}
-			if (targ.deathtype == "nail" || targ.deathtype == "supernail")
+			else if (targ.deathtype == "nail" || targ.deathtype == "supernail")
 			{
-				bprint (PRINT_MEDIUM," was spiked\n");
-				return;
+				deathstring = " was spiked\n";
 			}
-			if (targ.deathtype == "laser")
+			else if (targ.deathtype == "laser")
 			{
-				bprint (PRINT_MEDIUM," was zapped\n");
-				return;
+				deathstring = " was zapped\n";
 			}
-			if (attacker.classname == "fireball")
+			else if (attacker.classname == "fireball")
 			{
-				bprint (PRINT_MEDIUM," ate a lavaball\n");
-				return;
+				deathstring = " ate a lavaball\n";
 			}
-			if (attacker.classname == "trigger_changelevel")
+			else if (attacker.classname == "trigger_changelevel")
 			{
-				bprint (PRINT_MEDIUM," tried to leave\n");
-				return;
+				deathstring = " tried to leave\n";
 			}
-
-			if (attacker.flags & FL_MONSTER)
+			else if (attacker.flags & FL_MONSTER)
 			{
 				deathstring = ObituaryForMonster(attacker.classname);
-				bprint (PRINT_MEDIUM, deathstring);
-				return;
+			}
+			else
+			{
+				deathstring = " died\n";
 			}
 
-			bprint (PRINT_MEDIUM," died\n");
+			bprint (PRINT_MEDIUM, targ.netname, deathstring);
 		}
 	}
 }
