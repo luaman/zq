@@ -988,8 +988,7 @@ void CL_SetSolidEntities (void)
 			continue;
 		if (!cl.model_precache[state->modelindex])
 			continue;
-		if ( cl.model_precache[state->modelindex]->hulls[1].firstclipnode 
-			|| cl.model_precache[state->modelindex]->clipbox )
+		if (cl.model_precache[state->modelindex]->hulls[1].firstclipnode)
 		{
 			pmove.physents[pmove.numphysent].model = cl.model_precache[state->modelindex];
 			VectorCopy (state->origin, pmove.physents[pmove.numphysent].origin);
