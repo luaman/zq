@@ -398,7 +398,7 @@ byte *CM_LeafPVS (const cleaf_t *leaf)
 	if (leaf == map_leafs)
 		return map_novis;
 
-	return map_pvs + (leaf - map_leafs) * map_vis_rowbytes;
+	return map_pvs + (leaf - 1 - map_leafs) * map_vis_rowbytes;
 }
 
 
@@ -584,7 +584,7 @@ static void CM_LoadSubmodels (lump_t *l)
 
 	in = (dmodel_t *)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Host_Error ("CM::LoadMap: funny lump size");
+		Host_Error ("CM_LoadMap: funny lump size");
 	count = l->filelen / sizeof(*in);
 
 	if (count < 1)
@@ -650,7 +650,7 @@ static void CM_LoadNodes (lump_t *l)
 
 	in = (dnode_t *)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Host_Error ("CM::LoadMap: funny lump size");
+		Host_Error ("CM_LoadMap: funny lump size");
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
 
@@ -686,7 +686,7 @@ static void CM_LoadLeafs (lump_t *l)
 
 	in = (dleaf_t *)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Host_Error ("CM::LoadMap: funny lump size");
+		Host_Error ("CM_LoadMap: funny lump size");
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
 
@@ -714,7 +714,7 @@ static void CM_LoadClipnodes (lump_t *l)
 
 	in = (void *)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Host_Error ("CM::LoadMap: funny lump size");
+		Host_Error ("CM_LoadMap: funny lump size");
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
 
@@ -782,7 +782,7 @@ static void CM_LoadPlanes (lump_t *l)
 	
 	in = (void *)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Host_Error ("CM::LoadMap: funny lump size");
+		Host_Error ("CM_LoadMap: funny lump size");
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*2*sizeof(*out), loadname);	
 	
@@ -862,27 +862,27 @@ static void CM_BuildPVS (lump_t *lump_vis, lump_t *lump_leafs)
 	dleaf_t *in;
 	byte	*scan;
 
-	if (!lump_vis->filelen)
-		visdata = NULL;
-	else {
-		visdata = cmod_base + lump_vis->fileofs;
-		// FIXME, make sure lump_vis->filelen is valid
-	}
-
 	map_vis_rowlongs = (visleafs + 31) >> 5;
 	map_vis_rowbytes = map_vis_rowlongs * 4;
 	map_pvs = Hunk_Alloc (map_vis_rowbytes * visleafs);
 
+	if (!lump_vis->filelen) {
+		memset (map_pvs, 0xff, map_vis_rowbytes * visleafs);
+		return;
+	}
+
+	// FIXME, add checks for lump_vis->filelen and leafs' visofs
+
+	visdata = cmod_base + lump_vis->fileofs;
+
 	// go through all leafs and decompress visibility data
 	in = (dleaf_t *)(cmod_base + lump_leafs->fileofs);
+	in++;	// pvs row 0 is leaf 1
 	scan = map_pvs;
 	for (i = 0; i < visleafs; i++, in++, scan += map_vis_rowbytes)
 	{
 		int p = LittleLong(in->visofs);
-		if (i == 0 || p == -1)
-			// FIXME: we could just use memset here and return a pointer to map_pvs
-			// when needed instead of map_novis?
-			// FIXME, why is row 0 always map_novis anyway?
+		if (p == -1)
 			memcpy (scan, map_novis, map_vis_rowbytes);
 		else
 			memcpy (scan, DecompressVis (visdata + p), map_vis_rowbytes);
@@ -910,8 +910,8 @@ static void CM_BuildPVSAndPHS (void)
 	// FIXME, all this does is calculate the number of visible leafs
 	// do we really care?
 	c_visible = 0;
-	scan = map_pvs + map_vis_rowbytes;	// start from leaf 1
-	for (i = 1; i < visleafs; i++, scan += map_vis_rowbytes) {
+	scan = map_pvs;
+	for (i = 0; i < visleafs; i++, scan += map_vis_rowbytes) {
 		for (j = 0; j < visleafs; j++) {
 			if ( scan[j>>3] & (1<<(j&7)) )
 				c_visible++;
@@ -1001,7 +1001,7 @@ cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned
 	// load the file
 	buf = (unsigned int *)FS_LoadTempFile (name);
 	if (!buf)
-		Host_Error ("CM::LoadMap: %s not found", name);
+		Host_Error ("CM_LoadMap: %s not found", name);
 
 	COM_FileBase (name, loadname);
 
@@ -1009,7 +1009,7 @@ cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned
 
 	i = LittleLong (header->version);
 	if (i != BSPVERSION)
-		Host_Error ("CM::LoadMap: %s has wrong version number (%i should be %i)", name, i, BSPVERSION);
+		Host_Error ("CM_LoadMap: %s has wrong version number (%i should be %i)", name, i, BSPVERSION);
 
 	// swap all the lumps
 	cmod_base = (byte *)header;
