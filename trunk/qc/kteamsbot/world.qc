@@ -451,7 +451,7 @@ void StartFrame ()
 	BotFrame(); // FrikBot
 
 // KTEAMS -->        
-	timelimit = cvar("timelimit") * 60;     // should be * 60 ...
+	timelimit = cvar("timelimit") * 60;     // should be * 60 or should it? (weirdo kteams)
     k_maxspeed = cvar("sv_maxspeed");
 // <-- KTEAMS        
 	fraglimit = cvar("fraglimit");
