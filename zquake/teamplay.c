@@ -270,8 +270,8 @@ char *Macro_BestAmmo_f (void)
 char *Macro_BestWeaponAndAmmo_f (void)
 {
 	char buf[MAX_MACRO_VALUE];
-	_snprintf (buf, MAX_MACRO_VALUE-1, "%s:%s", Macro_BestWeapon_f(),
-		Macro_BestAmmo_f());
+	sprintf (buf, "%s:%s", Macro_BestWeapon_f(), Macro_BestAmmo_f());
+	strcpy (macro_buf, buf);
 	return macro_buf;
 }
 
