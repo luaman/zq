@@ -259,8 +259,6 @@ readnext:
 			cls.mvd_newtime = demotime;
 			cls.netchan.incoming_sequence++;
 			cls.netchan.incoming_acknowledged++;
-			cls.netchan.frame_latency = 0;
-			cls.netchan.last_received = cls.demotime; // just to happy timeout check
 
 			CL_ParseClientdata();
 		}

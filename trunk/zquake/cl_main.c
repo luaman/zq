@@ -706,8 +706,7 @@ void CL_ReadPackets (void)
 	//
 	// check timeout
 	//
-	if (!cls.demoplayback && cls.state >= ca_connected
-	 && curtime - cls.netchan.last_received > cl_timeout.value)
+	if (!cls.demoplayback && cls.state >= ca_connected && curtime - cls.netchan.last_received > cl_timeout.value)
 	{
 		Com_Printf ("\nServer connection timed out.\n");
 		Host_EndGame ();
