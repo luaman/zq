@@ -54,5 +54,7 @@ typedef struct
 } trace_t;
 
 
+hull_t *CM_HullForBox (vec3_t mins, vec3_t maxs);
 int CM_HullPointContents (hull_t *hull, int num, vec3_t p);
 trace_t CM_HullTrace (hull_t *hull, vec3_t start, vec3_t end);
+void CM_Init (void);
