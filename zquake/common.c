@@ -253,6 +253,25 @@ void Q_snprintfz (char *dest, size_t size, char *fmt, ...)
 	dest[size-1] = 0;
 }
 
+
+/*
+==========
+HashKey
+==========
+*/
+int HashKey (char *name)
+{
+	int	v;
+	unsigned char c;
+
+	v = 0;
+	while ( (c = *name++) != 0 )
+		v += c &~ 32;	// make it case insensitive
+
+	return v % 32;
+}
+
+
 /*
 ============================================================================
 
