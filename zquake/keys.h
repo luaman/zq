@@ -17,6 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+#ifndef _KEYS_H_
+#define _KEYS_H_
 
 // these are the key numbers that should be passed to Key_Event
 
@@ -41,9 +43,9 @@ typedef enum {
 	K_RIGHTARROW,
 
 	K_ALT,
-	K_LALT,
-	K_RALT,
-	K_ALTGR,
+	K_LALT,     // Left Alt-Key (can be used to separate the keys for bindings)
+	K_RALT,     // Right Alt-Key (can be used to separate the keys; this can NOT be used if a third level of mappings is needed)
+	K_ALTGR,    // Right Alt-Key (=AltGr Key; this key must be used, if a third level of mappings is needed)
 	K_CTRL,
 	K_LCTRL,
 	K_RCTRL,
@@ -69,10 +71,14 @@ typedef enum {
 	K_HOME,
 	K_END,
 
+	K_WIN,
+	K_LWIN,
+	K_RWIN,
+	K_MENU,
+
 //
 // Keypad stuff..
 //
-
 	KP_NUMLOCK,
 	KP_SLASH,
 	KP_STAR,
@@ -178,4 +184,6 @@ void Key_SetBinding (int keynum, char *binding);
 void Key_Unbind (int keynum);
 void Key_ClearStates (void);
 int Key_StringToKeynum (char *str);
-char *Key_KeynumToString (int keynum);
+char *Key_KeynumToString (int keynum, char *buffer, size_t buf_size);
+
+#endif /* _KEYS_H_ */

@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 // cmd.h -- Command buffer and command execution
+#ifndef _CMD_H_
+#define _CMD_H_
 
 //===========================================================================
 
@@ -163,3 +165,5 @@ cmd_alias_t *Cmd_FindAlias (char *name); // returns NULL on failure
 char *Cmd_AliasString (char *name); // returns NULL on failure
 void Cmd_WriteAliases (FILE *f);
 cmd_alias_t *Alias_Next (cmd_alias_t *alias);	// use to enumerate all aliases
+
+#endif /* _CMD_H_ */

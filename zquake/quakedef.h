@@ -18,7 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // quakedef.h -- primary header for client
-
+#ifndef _QUAKEDEF_H_
+#define _QUAKEDEF_H_
 
 //define	PARANOID			// speed sapping error checking
 
@@ -32,3 +33,5 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cl_view.h"
 
 #include "client.h"
+
+#endif /* _QUAKEDEF_H_ */

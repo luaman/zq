@@ -17,6 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+#ifndef _CL_SBAR_H_
+#define _CL_SBAR_H_
 
 // the status bar is only redrawn if something has changed, but if anything
 // does, the entire thing will be redrawn for the next vid.numpages frames.
@@ -40,3 +42,5 @@ void Sbar_Draw (void);
 
 void Sbar_IntermissionOverlay (void);
 void Sbar_FinaleOverlay (void);
+
+#endif /* _CL_SBAR_H_ */

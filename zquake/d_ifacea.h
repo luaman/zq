@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // Include file for asm driver interface.
 //
+#ifndef _D_IFACEA_H_
+#define _D_IFACEA_H_
 
 //
 // !!! note that this file must match the corresponding C structures in
@@ -96,3 +98,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define atd_seamfixupX16	32
 #define atd_size			36
 
+#endif /* _D_IFACEA_H_ */

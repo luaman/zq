@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // modelgen.h: header file for model generation program
 //
+#ifndef _MODELGEN_H_
+#define _MODELGEN_H_
 
 // *********************************************************
 // * This file must be identical in the modelgen directory *
@@ -132,3 +134,4 @@ typedef struct {
 #define IDPOLYHEADER	(('O'<<24)+('P'<<16)+('D'<<8)+'I')
 														// little-endian "IDPO"
 
+#endif /* _MODELGEN_H_ */

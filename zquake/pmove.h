@@ -17,6 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+#ifndef _PMOVE_H_
+#define _PMOVE_H_
 
 #define	MAX_PHYSENTS	64
 
@@ -100,3 +102,5 @@ void PM_CategorizePosition (void);
 qbool PM_TestPlayerPosition (vec3_t point);
 trace_t PM_PlayerTrace (vec3_t start, vec3_t end);
 trace_t PM_TraceLine (vec3_t start, vec3_t end);
+
+#endif /* _PMOVE_H_ */

@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // q_shared.h -- functions shared by all subsystems
 
+#ifndef _Q_SHARED_H_
+#define _Q_SHARED_H_
+
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>
@@ -170,3 +173,5 @@ char *Q_strdup (const char *src);
 #define	MAX_BIG_MSGLEN	8000		// max length of a demo or loop message, >= MAX_MSGLEN + header
 
 //============================================================================
+
+#endif /* _Q_SHARED_H_ */

@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // common.h  -- general definitions
+#ifndef _COMMON_H_
+#define _COMMON_H_
 
 #include "q_shared.h"
 #include "zone.h"
@@ -322,3 +324,5 @@ void SCR_EndLoadingPlaque (void);
 void SV_Init (void);
 void SV_Shutdown (char *finalmsg);
 void SV_Frame (double time);
+
+#endif /* _COMMON_H_ */

@@ -17,6 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+#ifndef _CDAUDIO_H_
+#define _CDAUDIO_H_
 
 int CDAudio_Init (void);
 void CDAudio_Play (byte track, qbool looping);
@@ -25,3 +27,5 @@ void CDAudio_Pause (void);
 void CDAudio_Resume (void);
 void CDAudio_Shutdown (void);
 void CDAudio_Update (void);
+
+#endif /* _CDAUDIO_H_ */

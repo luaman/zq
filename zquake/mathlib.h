@@ -18,7 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // mathlib.h
-
+#ifndef _MATHLIB_H_
+#define _MATHLIB_H_
 
 #define	PITCH	0		// up / down
 #define	YAW		1		// left / right
@@ -101,3 +102,5 @@ void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, 
 	)										\
 	:										\
 		BoxOnPlaneSide( (emins), (emaxs), (p)))
+
+#endif /* _MATHLIB_H_ */

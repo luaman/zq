@@ -17,6 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+#ifndef _CVAR_H_
+#define _CVAR_H_
 
 // cvar flags
 #define CVAR_ARCHIVE		1
@@ -85,3 +87,5 @@ qbool Cvar_CreateTempVar (void);	// when parsing config.cfg
 void Cvar_CleanUpTempVars (void);	// clean up afterwards
 
 void Cvar_Init (void);
+
+#endif /* _CVAR_H_ */
