@@ -5,7 +5,7 @@ TODO for 0.16:
 x proper directinput with wheel and 3rd button (or make in_dinput default to 0 again)
 - temporarily disable bot support and vwep support for the release
 - fix snd_restart in Linux
-- fix the splitscreen bug in X11
+x fix the splitscreen bug in X11
 
 
 
