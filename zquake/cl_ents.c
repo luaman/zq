@@ -982,6 +982,8 @@ void CL_SetSolidEntities (void)
 		if (!state->modelindex)
 			continue;
 		if (cl.clipmodels[state->modelindex]) {
+			if (pmove.numphysent == MAX_PHYSENTS)
+				break;
 			pmove.physents[pmove.numphysent].model = cl.clipmodels[state->modelindex];
 			VectorCopy (state->origin, pmove.physents[pmove.numphysent].origin);
 			pmove.numphysent++;
@@ -1091,6 +1093,9 @@ void CL_SetSolidPlayers (int playernum)
 
 		if (pplayer->flags & PF_DEAD)
 			continue; // dead players aren't solid
+
+		if (pmove.numphysent == MAX_PHYSENTS)
+			break;
 
 		pent->model = 0;
 		VectorCopy(pplayer->origin, pent->origin);
