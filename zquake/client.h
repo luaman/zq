@@ -501,6 +501,7 @@ void CL_GrenadeTrail (vec3_t start, vec3_t end);
 void CL_RocketTrail (vec3_t start, vec3_t end);
 void CL_TracerTrail (vec3_t start, vec3_t end, int color);
 void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
+void CL_EntityParticles (vec3_t org);
 
 //
 // cl_ents.c

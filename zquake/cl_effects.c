@@ -550,6 +550,67 @@ void CL_TracerTrail (vec3_t start, vec3_t end, int color)
 	}
 }
 
+
+/*
+===============
+CL_EntityParticles
+===============
+*/
+#define NUMVERTEXNORMALS	162
+extern float	r_avertexnormals[NUMVERTEXNORMALS][3];
+#ifdef GLQUAKE	// ouch
+float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
+#include "anorms.h"
+};
+#endif
+vec3_t	avelocities[NUMVERTEXNORMALS];
+void CL_EntityParticles (vec3_t org)
+{
+	int			i;
+	cparticle_t	*p;
+	float		angle;
+	float		sr, sp, sy, cr, cp, cy;
+	vec3_t		forward;
+	const int		count = 50;
+	const float		dist = 64;
+	const float		beamlength = 16;
+
+if (!avelocities[0][0])
+{
+for (i=0 ; i<NUMVERTEXNORMALS*3 ; i++)
+avelocities[0][i] = (rand()&255) * 0.01;
+}
+
+	for (i=0 ; i<NUMVERTEXNORMALS ; i++)
+	{
+		if (!(p = new_particle()))
+			return;
+
+		angle = cl.time * avelocities[i][0];
+		sy = sin(angle);
+		cy = cos(angle);
+		angle = cl.time * avelocities[i][1];
+		sp = sin(angle);
+		cp = cos(angle);
+		angle = cl.time * avelocities[i][2];
+		sr = sin(angle);
+		cr = cos(angle);
+
+		forward[0] = cp*cy;
+		forward[1] = cp*sy;
+		forward[2] = -sp;
+
+		p->die = cl.time + 0.01;
+		p->color = 0x6f;
+		p->type = pt_explode;
+
+		p->org[0] = org[0] + r_avertexnormals[i][0]*dist + forward[0]*beamlength;
+		p->org[1] = org[1] + r_avertexnormals[i][1]*dist + forward[1]*beamlength;
+		p->org[2] = org[2] + r_avertexnormals[i][2]*dist + forward[2]*beamlength;
+	}
+}
+
+
 /*
 ===============
 CL_LinkParticles

@@ -429,6 +429,9 @@ void CL_LinkPacketEntities (void)
 				CL_NewDlight (state->number, state->origin, 200 + flicker, 0.1, lt_default);
 		}
 
+		if (state->effects & EF_BRIGHTFIELD)
+			CL_EntityParticles (state->origin);
+
 		// if set to invisible, skip
 		if (!state->modelindex)
 			continue;
