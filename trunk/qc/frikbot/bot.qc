@@ -124,11 +124,7 @@ entity		b_temp1, b_temp2, b_temp3;
 entity 		player_head, phys_head, way_head;
 float		busy_waypoints;
 
-// -------ProtoTypes------
-// external
-void()				ClientConnect;
-void()				ClientDisconnect;
-void()				SetNewParms;
+// -------Prototypes------
 
 // rankings
 float(float clientno)		ClientBitFlag;
@@ -158,7 +154,6 @@ void(vector whichway, float danger) frik_obstructed;
 void() 				CL_KeyMove;
 
 // ai & misc
-string()				PickARandomName;
 float(entity targ)		fov;
 float(float y1, float y2)	angcomp;
 float(entity targ1, entity targ2)		wisible;
@@ -169,7 +164,8 @@ void(entity ent)			target_drop;
 void(entity ent)			target_add;
 void()				KickABot;
 void(entity targ, float success) bot_lost;
-string(float r)			BotName;
+string(entity ent, float r)		BotName;
+string(entity ent)			PickARandomName;
 float(float v)			frik_anglemod;
 void() bot_chat;
 void(float tpic) bot_start_topic;
@@ -222,25 +218,49 @@ it just links the bot into the mod
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() ClientInRankings =
+float(entity ent) GetClientNum;
+
+void() ClientConnected =
 {
-	local float cno;
-	local float isBot;
+	float isBot;
 
 	isBot = FALSE;
 	if (stof(infokey(self, "*bot")) != 0)
 		isBot = TRUE;
 
-	if (isBot)
+	if (!isBot) {
+		if (player_head)
+			player_head._last = self;
+
+		self._next = player_head;
+		player_head = self;
+
+		self.ishuman = TRUE;
 		return;
+	}
 
-	if (player_head)
-		player_head._last = self;
-	self._next = player_head;
-	player_head = self;
+	bot_count = bot_count + 1;
 
-	self.ishuman = TRUE;
-};
+	bot_start_topic(1);
+
+	self.b_clientno = GetClientNum(self);
+//	self.b_clientno = -1;
+
+/*	// players can set skill all weird, so leave these checks in
+	whatskill = rint(whatskill);
+	if (whatskill > 3)
+		whatskill = 3;
+	else if (whatskill < 0)
+		whatskill = 0;
+
+	self.b_skill = whatskill;
+*/
+
+	// FIXME FIXME FIXME
+	self.b_skill = 3;
+
+	self.team = self.b_pants + 1;
+}
 
 
 void() ClientDisconnected =
@@ -407,51 +427,27 @@ float(entity ent) GetClientNum =
 
 void(float whatbot, float whatskill) BotConnect =
 {
-	local string h;
-	local entity uself;
-	
-	uself = self;
-
-	//Tonik:
+	entity bot;
 	entity temp;
+
 	temp = spawn();
-	self = temp;
-
 	if (whatbot)
-		self.netname = BotName(whatbot);
+		temp.netname = BotName(temp, whatbot);
 	else
-		self.netname = PickARandomName();
+		temp.netname = PickARandomName(temp);
 
-	self = testbot(temp.netname, "", temp.b_shirt, temp.b_pants);
+	bot = testbot(temp.netname, "", temp.b_shirt, temp.b_pants);
 
 	remove (temp);
 
-	self.ishuman = 0;
-
-	if (!self)
+	if (!bot)
 	{
 		bprint (PRINT_HIGH, "Unable to connect a bot, server is full.\n");
-		self = uself;
 		return;
 	}
 
-	bot_count = bot_count + 1;
+	bot.ishuman = 0;
 
-	bot_start_topic(1);
-
-	self.b_clientno = GetClientNum(self);
-//	self.b_clientno = -1;
-
-	// players can set skill all weird, so leave these checks in
-	whatskill = rint(whatskill);
-	if (whatskill > 3)
-		whatskill = 3;
-	else if (whatskill < 0)
-		whatskill = 0;
-
-	self.b_skill = whatskill;
-	self.team = self.b_pants + 1;
-	self = uself;
 };
 
 void(entity bot) BotDisconnect =
