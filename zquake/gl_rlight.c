@@ -100,8 +100,8 @@ void R_RenderDlight (dlight_t *light)
 	float	*bub_sin, *bub_cos;
 
 	// don't draw our own powerup glow and muzzleflashes
-	if (light->key == (cl.viewplayernum - 1) ||
-		light->key == -(cl.viewplayernum - 1)) // muzzleflash keys are negative
+	if (light->key == (cl.viewplayernum + 1) ||
+		light->key == -(cl.viewplayernum + 1)) // muzzleflash keys are negative
 		return;
 
 	rad = light->radius * 0.35;
