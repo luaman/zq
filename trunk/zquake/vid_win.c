@@ -2159,10 +2159,13 @@ void	VID_Init (unsigned char *palette)
 // gets displayed
 
 // keep the window minimized until we're ready for the first real mode set
+
+// FIXME: sound is no longer initialized here so don't really need this.
+// But currently very bad things happen if these lines are removed.
 	hide_window = true;
 	VID_SetMode (MODE_WINDOWED, palette);
 	hide_window = false;
-	S_Init ();
+//	S_Init ();
 
 	vid_initialized = true;
 

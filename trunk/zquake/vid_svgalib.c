@@ -560,8 +560,6 @@ void VID_Init(unsigned char *palette)
 	int i;
 	int w, h, d;
 
-	S_Init(); // sound gets initialized here
-
 	if (svgalib_inited)
 		return;
 
