@@ -1559,7 +1559,12 @@ void CL_ParseServerMessage (void)
 				Host_Error ("Server disconnected\n"
 					"Server version may not be compatible");
 			else
-				Host_EndGame ("Server disconnected");
+			{
+				Com_DPrintf ("Server disconnected\n");
+				// the server will be killed if it tries to kick local player
+				Host_EndGame ();
+				Host_Abort ();
+			}
 			break;
 
 		case svc_time:

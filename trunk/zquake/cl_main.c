@@ -572,10 +572,11 @@ void CL_ConnectionlessPacket (void)
 	if (c == svc_disconnect) {
 		if (cls.demoplayback) {
 			Com_Printf ("\n======== End of demo ========\n\n");
-			Host_EndGame ("End of demo");
+			Host_EndGame ();
+			Host_Abort ();
 		}
 //		else
-//			Host_EndGame ("Server disconnected");
+//			Host_Error ("Server disconnected");
 		return;
 	}
 

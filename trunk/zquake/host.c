@@ -55,20 +55,10 @@ void Host_Abort (void)
 Host_EndGame
 ================
 */
-void Host_EndGame (char *message, ...)
+void Host_EndGame (void)
 {
-	va_list		argptr;
-	char		string[1024];
-	
-	va_start (argptr,message);
-	vsprintf (string,message,argptr);
-	va_end (argptr);
-	Com_DPrintf ("Host_EndGame: %s\n",string);
-
-//	SV_Shutdown ("");	// FIXME
+	SV_Shutdown ("Server was killed");
 	CL_Disconnect ();
-
-	Host_Abort ();
 }
 
 /*
