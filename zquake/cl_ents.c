@@ -214,6 +214,7 @@ void FlushEntityPacket (void)
 
 	memset (&olde, 0, sizeof(olde));
 
+	cl.delta_sequence = 0;
 	cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].invalid = true;
 
 	// read it all, but ignore it
@@ -277,8 +278,10 @@ void CL_ParsePacketEntities (qboolean delta)
 		if (cls.netchan.outgoing_sequence - oldpacket >= UPDATE_BACKUP-1)
 		{	// we can't use this, it is too old
 			FlushEntityPacket ();
-			cl.validsequence = 0;	// FIXME: add cl.delta_sequence and clear it
-									// in FlushEntityPacket; and remove this line?
+			// don't clear cl.validsequence, so that frames can
+			// still be rendered; it is possible that a fresh packet will
+			// be received before (outgoing_sequence - incoming_sequence)
+			// exceeds UPDATE_BACKUP-1
 			return;
 		}
 

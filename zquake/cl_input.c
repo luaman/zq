@@ -557,15 +557,17 @@ void CL_SendCmd (void)
 		seq_hash);
 
 	// request delta compression of entities
-	if (cls.netchan.outgoing_sequence - cl.validsequence >= UPDATE_BACKUP-1)
+	if (cls.netchan.outgoing_sequence - cl.validsequence >= UPDATE_BACKUP-1) {
 		cl.validsequence = 0;
+		cl.delta_sequence = 0;
+	}
 
-	if (cl.validsequence && !cl_nodelta.value && cls.state == ca_active &&
+	if (cl.delta_sequence && !cl_nodelta.value && cls.state == ca_active &&
 		!cls.demorecording)
 	{
-		cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].delta_sequence = cl.validsequence;
+		cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].delta_sequence = cl.delta_sequence;
 		MSG_WriteByte (&buf, clc_delta);
-		MSG_WriteByte (&buf, cl.validsequence&255);
+		MSG_WriteByte (&buf, cl.delta_sequence&255);
 	}
 	else
 		cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].delta_sequence = -1;
