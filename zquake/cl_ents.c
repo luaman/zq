@@ -408,7 +408,7 @@ void CL_LinkPacketEntities (void)
 	int					i;
 	int					pnum;
 
-	pack = &cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].packet_entities;
+	pack = &cl.frames[cl.validsequence&UPDATE_MASK].packet_entities;
 
 	autorotate = anglemod(100*cl.time);
 
