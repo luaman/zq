@@ -95,7 +95,8 @@ qboolean CL_GetNQDemoMessage (void)
 	float f;
 
 	// decide if it is time to grab the next message		
-	if (cls.state == ca_active)	// always grab until fully connected
+	if (cls.state == ca_active				// always grab until fully connected
+		&& !(cl.paused & PAUSED_SERVER))	// or if the game was paused by server
 	{
 		if (cls.timedemo)
 		{
