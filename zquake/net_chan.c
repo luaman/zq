@@ -208,7 +208,7 @@ qboolean Netchan_CanReliable (netchan_t *chan)
 	return Netchan_CanPacket (chan);
 }
 
-#ifdef SERVERONLY
+#ifndef CLIENTONLY
 qboolean ServerPaused(void);
 #endif
 
@@ -297,8 +297,8 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 		chan->cleartime = curtime + send.cursize*chan->rate;
 	else
 		chan->cleartime += send.cursize*chan->rate;
-#ifdef SERVERONLY
-	if (ServerPaused())
+#ifndef CLIENTONLY
+	if (chan->sock == NS_SERVER && ServerPaused())
 		chan->cleartime = curtime;
 #endif
 
