@@ -1044,17 +1044,6 @@ cmodel_t *CM_InlineModel (char *name)
 
 void CM_Init (void)
 {
-	memset (map_novis, 0xff /* FIXME, why not 0? */, sizeof(map_novis));
+	memset (map_novis, 0xff, sizeof(map_novis));
 	CM_InitBoxHull ();
 }
-
-
-// Note to myself
-// Try to understand why we're getting a different "Average leafs visible/hearable/total"
-// output than QW
-// Ok, I nuked Quake's "setup the submodels (FIXME: this is confusing)" code
-// That code effectively overwrites the numleafs value with visleafs
-// What is correct, Quake code or mine?
-// I don't grok this shit
-
-// UPDATE: hopefully now it is fixed?
