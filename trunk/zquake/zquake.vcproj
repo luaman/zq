@@ -3694,7 +3694,7 @@
 				RelativePath="cl_sbar.h">
 			</File>
 			<File
-				RelativePath="screen.h">
+				RelativePath="cl_screen.h">
 			</File>
 			<File
 				RelativePath=".\server.h">

@@ -1373,7 +1373,7 @@ SOURCE=.\render.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\screen.h
+SOURCE=.\cl_screen.h
 # End Source File
 # Begin Source File
 
