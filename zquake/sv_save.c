@@ -74,10 +74,10 @@ void SV_SaveGame_f (void)
 		return;
 	}
 
-/*	if (maxclients.value != 1) {
+	if (deathmatch.value != 0 || coop.value != 0 || maxclients.value != 1) {
 		Com_Printf ("Can't save multiplayer games.\n");
 		return;
-	}	*/
+	}
 
 	for (i = 1; i < MAX_CLIENTS; i++) {
 		if (svs.clients[i].state == cs_spawned)
@@ -94,6 +94,7 @@ void SV_SaveGame_f (void)
 
 	if (svs.clients[0].edict->v.health <= 0) {
 		Com_Printf ("Can't save game with a dead player\n");
+		// in fact, we can, but does it make sense?
 		return;
 	}
 
