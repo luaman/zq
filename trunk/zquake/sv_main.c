@@ -82,14 +82,19 @@ void OnChange_maxclients (cvar_t *var, char *str, qbool *cancel) {
 	*cancel = true;
 }
 
-
-void SV_FreeDelayedPackets (client_t *cl) {
-	while (cl->packets) {
+static void SV_FreeHeadDelayedPacket(client_t *cl) {
+	if (cl->packets) {
 		packet_t *next = cl->packets->next;
 		cl->packets->next = svs.free_packets;
 		svs.free_packets = cl->packets;
 		cl->packets = next;
 	}
+}
+
+
+void SV_FreeDelayedPackets (client_t *cl) {
+	while (cl->packets)
+		SV_FreeHeadDelayedPacket(cl);
 }
 
 /*
@@ -1064,7 +1069,6 @@ void SV_ReadPackets (void)
 	int			i;
 	client_t	*cl;
 	int			qport;
-	packet_t	*next;
 
 	// first deal with delayed packets from connected clients
 	for (i = 0, cl=svs.clients; i < MAX_CLIENTS; i++, cl++) {
@@ -1077,15 +1081,7 @@ void SV_ReadPackets (void)
 			SZ_Clear(&net_message);
 			SZ_Write(&net_message, cl->packets->msg.data, cl->packets->msg.cursize);
 			SV_ExecuteClientMessage(cl);
-			if (!cl->packets)
-				break;			// if SV_ExecuteClientMessage() dropped the client,
-								// cl->packets will have been freed by SV_FreeDelayedPackets() .
-
-			// remove from queue
-			next = cl->packets->next;
-			cl->packets->next = svs.free_packets;
-			svs.free_packets = cl->packets;
-			cl->packets = next;
+			SV_FreeHeadDelayedPacket(cl);
 		}		
 	}
 
