@@ -349,12 +349,23 @@ char *Macro_Time_f (void)
 	struct tm	*ptm;
 
 	macro_buf[0] = 0;
-	t = time(NULL);
-	if (t != -1) {
-		ptm = localtime (&t);
-		if (ptm)
-			strftime(macro_buf, sizeof(macro_buf)-1, "%H:%M", ptm);
-	}
+	time(&t);
+	ptm = localtime(&t);
+	strftime(macro_buf, sizeof(macro_buf)-1, "%H:%M", ptm);
+
+	return macro_buf;
+}
+
+char *Macro_Date_f (void)
+{
+	time_t		t;
+	struct tm	*ptm;
+
+	macro_buf[0] = 0;
+	time(&t);
+	ptm = localtime(&t);
+	strftime(macro_buf, sizeof(macro_buf)-1, "%d.%m.%y", ptm);
+
 	return macro_buf;
 }
 
@@ -382,6 +393,7 @@ macro_command_t macro_commands[] =
 	{"powerups", Macro_Powerups_f},
 	{"location", Macro_Location_f},
 	{"time", Macro_Time_f},
+	{"date", Macro_Date_f},
 	{NULL, NULL}
 };
 
