@@ -162,6 +162,10 @@ void()  player_run =[   $rockrun1,      player_run      ]
 		self.frame = self.frame + self.walkframe;
 	}
 	self.walkframe = self.walkframe + 1;
+
+#ifdef AGRIP
+	agh_player_footsteps();
+#endif
 }
 
 void muzzleflash ()
@@ -572,6 +576,7 @@ void GibPlayer ()
 
 void PlayerDie ()
 {
+	float	i;
 	string	s, s2;
 	self.items = self.items - (self.items & IT_INVISIBILITY);
 
@@ -616,6 +621,10 @@ void PlayerDie ()
 	if (self.velocity_z < 10)
 		self.velocity_z = self.velocity_z + random()*300;
 
+#ifdef AGRIP
+	agh_player_dietidy();
+#endif
+
 	if (self.health < -40)
 	{
 		GibPlayer ();
@@ -657,6 +666,7 @@ void StartDie ()
 		player_died1();
 	else
 		player_diee1();
+
 }
 
 void set_suicide_frame ()
