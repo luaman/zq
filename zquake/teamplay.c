@@ -27,6 +27,7 @@
 */
 
 #include "quakedef.h"
+#include "version.h"
 
 cvar_t	_cmd_macros = {"_cmd_macros", "0"};
 cvar_t	cl_parsesay = {"cl_parsesay", "0"};
@@ -55,8 +56,9 @@ char *Macro_Location_f (void);	// defined later
 typedef struct tvars_s {
 	int		health;
 	int		items;
-	int		respawntrigger_time;
-	int		deathtrigger_time;
+	float	respawntrigger_time;
+	float	deathtrigger_time;
+	float	f_version_reply_time;
 	char	lastdeathloc[MAX_LOC_NAME];
 	char	tookitem[32];
 	char	last_tooktrigger[32];
@@ -919,6 +921,39 @@ void TP_SearchForMsgTriggers (char *s, int level)
 			else
 				Con_Printf ("trigger \"%s\" has no matching alias\n", t->name);
 		}
+}
+
+
+void TP_CheckVersionRequest(char *s)
+{
+	char buf[11];
+	int	i;
+
+	if (vars.f_version_reply_time
+		&& realtime - vars.f_version_reply_time < 10)
+		return;	// don't reply again if 10 seconds haven't passed
+	vars.f_version_reply_time = realtime;
+
+	while (1)
+	{
+		switch (*s++)
+		{
+		case 0:
+		case '\n':
+			return;
+		case ':':
+		case (char)':'|128:
+			goto ok;
+		}
+	}
+	return;
+
+ok:
+	for (i = 0; i < 11 && s[i]; i++)
+		buf[i] = s[i] &~ 128;			// strip high bit
+
+	if (!strncmp(buf, " f_version\n", 11) || !strncmp(buf, " z_version\n", 11))
+		Cbuf_AddText (va("say ZQuake version %s (Build %04d)\n", Z_VERSION, build_number()));
 }
 
 
