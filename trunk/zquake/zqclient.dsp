@@ -635,6 +635,25 @@ SOURCE=.\gl_rsurf.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\gl_texture.c
+
+!IF  "$(CFG)" == "zqclient - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\gl_warp.c
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"

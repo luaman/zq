@@ -2623,6 +2623,9 @@ void M_Draw (void)
 
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
+	{	extern void Sbar_Changed (void);
+	Sbar_Changed ();	// FIXME
+	}
 
 	if (scr_con_current != vid.height)
 		R_FadeScreen ();

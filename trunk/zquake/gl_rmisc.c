@@ -23,64 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "image.h"
 #include <time.h>
 
-/*
-==================
-R_InitTextures
-==================
-*/
-void	R_InitTextures (void)
-{
-	int		x,y, m;
-	byte	*dest;
-
-// create a simple checkerboard texture for the default
-	r_notexture_mip = Hunk_AllocName (sizeof(texture_t) + 16*16+8*8+4*4+2*2, "notexture");
-	
-	r_notexture_mip->width = r_notexture_mip->height = 16;
-	r_notexture_mip->offsets[0] = sizeof(texture_t);
-	r_notexture_mip->offsets[1] = r_notexture_mip->offsets[0] + 16*16;
-	r_notexture_mip->offsets[2] = r_notexture_mip->offsets[1] + 8*8;
-	r_notexture_mip->offsets[3] = r_notexture_mip->offsets[2] + 4*4;
-	
-	for (m=0 ; m<4 ; m++)
-	{
-		dest = (byte *)r_notexture_mip + r_notexture_mip->offsets[m];
-		for (y=0 ; y< (16>>m) ; y++)
-			for (x=0 ; x< (16>>m) ; x++)
-			{
-				if (  (y< (8>>m) ) ^ (x< (8>>m) ) )
-					*dest++ = 0;
-				else
-					*dest++ = 0xff;
-			}
-	}	
-}
-
-void R_InitParticleTexture (void)
-{
-	int		i, x, y;
-	unsigned int	data[32][32];
-
-	particletexture = texture_extension_number++;
-    GL_Bind(particletexture);
-
-	// clear to transparent white
-	for (i=0 ; i<32*32 ; i++)
-		((unsigned *)data)[i] = 0x00FFFFFF;
-
-	// draw a circle in the top left corner
-	for (x=0 ; x<16 ; x++)
-		for (y=0 ; y<16 ; y++) {
-			if ((x - 7.5)*(x - 7.5) + (y - 7.5)*(y - 7.5) <= 8*8)
-				data[y][x] = 0xFFFFFFFF;	// solid white
-		}
-
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	GL_Upload32 ((unsigned *) data, 32, 32, true, true);
-}
-
 
 /*
 ===============

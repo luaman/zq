@@ -112,6 +112,7 @@ cvar_t		gl_triplebuffer = {"gl_triplebuffer", "1", CVAR_ARCHIVE};
 
 qbool		scr_initialized;		// ready to draw
 
+mpic_t		*scr_backtile;
 mpic_t		*scr_ram;
 mpic_t		*scr_net;
 mpic_t		*scr_turtle;
@@ -251,7 +252,7 @@ void SCR_EraseCenterString (void)
 		y = 48;
 
 	scr_copytop = 1;
-	R_DrawTile (0, y, vid.width, min(8*scr_erase_lines, vid.height - y - 1));
+	R_DrawTile (0, y, vid.width, min(8*scr_erase_lines, vid.height - y - 1), scr_backtile);
 }
 
 //=============================================================================
@@ -463,6 +464,7 @@ void SCR_Init (void)
 	Cmd_AddCommand ("sizeup", SCR_SizeUp_f);
 	Cmd_AddCommand ("sizedown", SCR_SizeDown_f);
 
+	scr_backtile = R_CacheWadPic ("backtile");
 	scr_ram = R_CacheWadPic ("ram");
 	scr_net = R_CacheWadPic ("net");
 	scr_turtle = R_CacheWadPic ("turtle");
@@ -770,7 +772,7 @@ void SCR_SetUpToDrawConsole (void)
 	{
 #ifndef GLQUAKE
 		scr_copytop = 1;
-		R_DrawTile (0, (int)scr_con_current, vid.width, vid.height - (int)scr_con_current);
+		R_DrawTile (0, (int)scr_con_current, vid.width, vid.height - (int)scr_con_current, scr_backtile);
 #endif
 		Sbar_Changed ();
 	}
@@ -778,7 +780,7 @@ void SCR_SetUpToDrawConsole (void)
 	{
 #ifndef GLQUAKE
 		scr_copytop = 1;
-		R_DrawTile (0, 0, vid.width, con_notifylines);
+		R_DrawTile (0, 0, vid.width, con_notifylines, scr_backtile);
 #endif
 	}
 	else
@@ -849,30 +851,28 @@ Clear unused areas in GL
 void SCR_TileClear (void)
 {
 	if (cls.state != ca_active && cl.intermission) {
-		R_DrawTile (0, 0, vid.width, vid.height);
+		R_DrawTile (0, 0, vid.width, vid.height, scr_backtile);
 		return;
 	}
 
 	if (r_refdef.vrect.x > 0) {
 		// left
-		R_DrawTile (0, 0, r_refdef.vrect.x, vid.height - sb_lines);
+		R_DrawTile (0, 0, r_refdef.vrect.x, vid.height - sb_lines, scr_backtile);
 		// right
 		R_DrawTile (r_refdef.vrect.x + r_refdef.vrect.width, 0, 
 			vid.width - (r_refdef.vrect.x + r_refdef.vrect.width), 
-			vid.height - sb_lines);
+			vid.height - sb_lines, scr_backtile);
 	}
 	if (r_refdef.vrect.y > 0) {
 		// top
 		R_DrawTile (r_refdef.vrect.x, 0, r_refdef.vrect.width, 
-			r_refdef.vrect.y);
+			r_refdef.vrect.y, scr_backtile);
 	}
 	if (r_refdef.vrect.y + r_refdef.vrect.height < vid.height - sb_lines) {
 		// bottom
-		R_DrawTile (r_refdef.vrect.x,
-			r_refdef.vrect.y + r_refdef.vrect.height, 
-			r_refdef.vrect.width, 
-			vid.height - sb_lines - 
-			(r_refdef.vrect.height + r_refdef.vrect.y));
+		R_DrawTile (r_refdef.vrect.x, r_refdef.vrect.y + r_refdef.vrect.height, 
+			r_refdef.vrect.width, vid.height - sb_lines
+			- (r_refdef.vrect.height + r_refdef.vrect.y), scr_backtile);
 	}
 }
 
@@ -1086,7 +1086,8 @@ void SCR_UpdateScreen (void)
 	if (scr_fullupdate++ < vid.numpages)
 	{	// clear the entire screen
 		scr_copyeverything = 1;
-		R_DrawTile (0,0,vid.width,vid.height);
+		// FIXME: figure out what actually needs to be cleared
+		R_DrawTile (0, 0, vid.width, vid.height, scr_backtile);
 		Sbar_Changed ();
 	}
 	else
@@ -1095,15 +1096,15 @@ void SCR_UpdateScreen (void)
 		{
 			// clear background for counters
 			if (show_speed.value)
-				R_DrawTile (vid.width - 4*8 - 8, 8, 4*8, 8);
+				R_DrawTile (vid.width - 4*8 - 8, 8, 4*8, 8, scr_backtile);
 			if (show_fps.value)
-				R_DrawTile (vid.width - 8*8 - 8, vid.height - sb_lines - 8, 8*8, 8);
+				R_DrawTile (vid.width - 8*8 - 8, vid.height - sb_lines - 8, 8*8, 8, scr_backtile);
 			if (scr_clock.value)
 			{
 				if (scr_clock_y.value < 0)
-					R_DrawTile (8 * scr_clock_x.value, vid.height - sb_lines + 8*scr_clock_y.value, 8*8, 8);
+					R_DrawTile (8 * scr_clock_x.value, vid.height - sb_lines + 8*scr_clock_y.value, 8*8, 8, scr_backtile);
 				else
-					R_DrawTile (8 * scr_clock_x.value, 8*scr_clock_y.value, 8*8, 8);
+					R_DrawTile (8 * scr_clock_x.value, 8*scr_clock_y.value, 8*8, 8, scr_backtile);
 			}
 		}
 	}
