@@ -171,7 +171,7 @@ void CL_Packet_f (void)
 	}
 
 	if (adr.port == 0)
-		adr.port = BigShort (27500);
+		adr.port = BigShort (PORT_SERVER);
 
 	in = Cmd_Argv(2);
 	out = send+4;
@@ -243,7 +243,7 @@ void CL_Rcon_f (void)
 		}
 		NET_StringToAdr (rcon_address.string, &to);
 		if (to.port == 0)
-			to.port = BigShort (27500);
+			to.port = BigShort (PORT_SERVER);
 	}
 	
 	NET_SendPacket (NS_CLIENT, strlen(message)+1, message

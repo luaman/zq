@@ -66,7 +66,7 @@ void SV_SetMaster_f (void)
 			return;
 		}
 		if (master_adr[i-1].port == 0)
-			master_adr[i-1].port = BigShort (27000);
+			master_adr[i-1].port = BigShort (PORT_MASTER);
 
 		Con_Printf ("Master server at %s\n", NET_AdrToString (master_adr[i-1]));
 
