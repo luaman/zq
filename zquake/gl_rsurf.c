@@ -1103,116 +1103,117 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 	int			clipped;
 	mplane_t	*clipplane;
 
-	if (node->contents == CONTENTS_SOLID)
-		return;		// solid
-	if (node->visframe != r_visframecount)
-		return;
-	for (c=0,clipplane=frustum ; c<4 ; c++,clipplane++)
+	while (1)
 	{
-		if (!(clipflags & (1<<c)))
-			continue;	// don't need to clip against it
-		
-		clipped = BoxOnPlaneSide (node->minmaxs, node->minmaxs+3, clipplane);
-		if (clipped == 2)
+		if (node->contents == CONTENTS_SOLID)
+			return;		// solid
+		if (node->visframe != r_visframecount)
 			return;
-		else if (clipped == 1)
-			clipflags &= ~(1<<c);	// node is entirely on screen
-	}
-	
-// if a leaf node, draw stuff
-	if (node->contents < 0)
-	{
-		pleaf = (mleaf_t *)node;
+		for (c=0,clipplane=frustum ; c<4 ; c++,clipplane++)
+		{
+			if (!(clipflags & (1<<c)))
+				continue;	// don't need to clip against it
+			
+			clipped = BoxOnPlaneSide (node->minmaxs, node->minmaxs+3, clipplane);
+			if (clipped == 2)
+				return;
+			else if (clipped == 1)
+				clipflags &= ~(1<<c);	// node is entirely on screen
+		}
 
-		mark = pleaf->firstmarksurface;
-		c = pleaf->nummarksurfaces;
+		if (node->contents < 0)
+			break;
+
+	// node is just a decision point, so go down the apropriate sides
+
+	// find which side of the node we are on
+		plane = node->plane;
+
+		if (plane->type < 3)
+			dot = modelorg[plane->type] - plane->dist;
+		else
+			dot = DotProduct (modelorg, plane->normal) - plane->dist;
+
+		if (dot >= 0)
+			side = 0;
+		else
+			side = 1;
+
+	// recurse down the children, front side first
+		R_RecursiveWorldNode (node->children[side], clipflags);
+
+	// draw stuff
+		c = node->numsurfaces;
 
 		if (c)
 		{
-			do
+			surf = r_worldmodel->surfaces + node->firstsurface;
+
+			if (dot < 0 -BACKFACE_EPSILON)
+				side = SURF_PLANEBACK;
+			else if (dot > BACKFACE_EPSILON)
+				side = 0;
 			{
-				(*mark)->visframe = r_framecount;
-				mark++;
-			} while (--c);
+				for ( ; c ; c--, surf++)
+				{
+					if (surf->visframe != r_framecount)
+						continue;
+
+					if ((dot < 0) ^ !!(surf->flags & SURF_PLANEBACK))
+						continue;		// wrong side
+
+					if ((surf->flags & SURF_DRAWSKY) && r_skyboxloaded)
+					{
+						// just add to visible skybox bounds
+						R_AddSkyBoxSurface (surf);
+						continue;
+					}
+
+					// if sorting by texture, just store it out
+					if (gl_texsort.value)
+					{
+						if (!mirror
+						|| surf->texinfo->texture != r_worldmodel->textures[mirrortexturenum])
+						{
+							surf->texturechain = surf->texinfo->texture->texturechain;
+							surf->texinfo->texture->texturechain = surf;
+						}
+					} else if (surf->flags & SURF_DRAWSKY) {
+						surf->texturechain = skychain;
+						skychain = surf;
+					} else if (surf->flags & SURF_DRAWTURB) {
+						surf->texturechain = waterchain;
+						waterchain = surf;
+					} else
+						R_DrawSequentialPoly (surf);
+
+				}
+			}
+
 		}
 
-	// deal with model fragments in this leaf
-		if (pleaf->efrags)
-			R_StoreEfrags (&pleaf->efrags);
-
-		return;
+		// recurse down the back side
+		node = node->children[!side];
 	}
 
-// node is just a decision point, so go down the apropriate sides
+// if a leaf node, draw stuff
+	pleaf = (mleaf_t *)node;
 
-// find which side of the node we are on
-	plane = node->plane;
-
-	if (plane->type < 3)
-		dot = modelorg[plane->type] - plane->dist;
-	else
-		dot = DotProduct (modelorg, plane->normal) - plane->dist;
-
-	if (dot >= 0)
-		side = 0;
-	else
-		side = 1;
-
-// recurse down the children, front side first
-	R_RecursiveWorldNode (node->children[side], clipflags);
-
-// draw stuff
-	c = node->numsurfaces;
+	mark = pleaf->firstmarksurface;
+	c = pleaf->nummarksurfaces;
 
 	if (c)
 	{
-		surf = r_worldmodel->surfaces + node->firstsurface;
-
-		if (dot < 0 -BACKFACE_EPSILON)
-			side = SURF_PLANEBACK;
-		else if (dot > BACKFACE_EPSILON)
-			side = 0;
+		do
 		{
-			for ( ; c ; c--, surf++)
-			{
-				if (surf->visframe != r_framecount)
-					continue;
-
-				if ((dot < 0) ^ !!(surf->flags & SURF_PLANEBACK))
-					continue;		// wrong side
-
-				if ((surf->flags & SURF_DRAWSKY) && r_skyboxloaded)
-				{
-					// just add to visible skybox bounds
-					R_AddSkyBoxSurface (surf);
-					continue;
-				}
-
-				// if sorting by texture, just store it out
-				if (gl_texsort.value)
-				{
-					if (!mirror
-					|| surf->texinfo->texture != r_worldmodel->textures[mirrortexturenum])
-					{
-						surf->texturechain = surf->texinfo->texture->texturechain;
-						surf->texinfo->texture->texturechain = surf;
-					}
-				} else if (surf->flags & SURF_DRAWSKY) {
-					surf->texturechain = skychain;
-					skychain = surf;
-				} else if (surf->flags & SURF_DRAWTURB) {
-					surf->texturechain = waterchain;
-					waterchain = surf;
-				} else
-					R_DrawSequentialPoly (surf);
-
-			}
-		}
-
+			(*mark)->visframe = r_framecount;
+			mark++;
+		} while (--c);
 	}
 
-	// recurse down the back side
-	R_RecursiveWorldNode (node->children[!side], clipflags);
+// deal with model fragments in this leaf
+	if (pleaf->efrags)
+		R_StoreEfrags (&pleaf->efrags);
 }
 
 
