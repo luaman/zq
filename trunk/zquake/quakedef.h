@@ -115,3 +115,14 @@ void Host_Error (char *error, ...);
 void Host_EndGame (char *message, ...);
 void Host_Frame (double time);
 void Host_Quit (void);
+
+void CL_Init ();
+void CL_Shutdown ();
+void CL_Frame (double time);
+void CL_Disconnect ();
+void Con_Print (char *txt);
+
+void SV_Init (void);
+void SV_Shutdown (char *finalmsg);
+void SV_Frame (double time);
+
