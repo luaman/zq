@@ -1036,6 +1036,9 @@ float WEAPON_SPIKES = 4;
 float WEAPON_BIG = 8;
 void() item_weapon =
 {
+	if (deathmatch == 4)
+		return;
+
 	self.touch = ammo_touch;
 
 	if (self.spawnflags & WEAPON_SHOTGUN)
@@ -1071,7 +1074,7 @@ void() item_weapon =
 			self.aflag = 20;
 		}
 		self.weapon = 2;
-		self.netname = "spikes";
+		self.netname = "nails";
 	}
 
 	if (self.spawnflags & WEAPON_ROCKET)
