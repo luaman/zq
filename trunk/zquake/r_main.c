@@ -31,7 +31,7 @@ float		r_aliasuvscale = 1.0;
 int			r_outofsurfaces;
 int			r_outofedges;
 
-qbool		r_dowarp, r_dowarpold, r_viewchanged;
+qbool		r_dowarp, r_dowarpold;
 
 mvertex_t	*r_pcurrentvertbase;
 
@@ -309,7 +309,6 @@ void R_NewMap (struct model_s *worldmodel)
 	}
 
 	r_dowarpold = false;
-	r_viewchanged = false;
 	r_skyboxloaded = false;
 
 	R_InitSkyBox (r_worldmodel);
@@ -330,40 +329,6 @@ void R_LoadSky_f ()
 	R_SetSky (Cmd_Argv(1));
 }
 
-/*
-===============
-R_SetVrect
-===============
-*/
-void R_SetVrect (vrect_t *pvrectin, vrect_t *pvrect, int lineadj)
-{
-	float	size;
-
-	if (cl.intermission)
-		size = 100.0;
-	else if (scr_viewsize.value >= 100.0)
-		size = 100.0;
-	else
-		size = scr_viewsize.value;
-
-	size /= 100.0;
-
-	pvrect->width = (int)(pvrectin->width * size + 0.5);
-	if (pvrect->width < 96) {
-		size = 96.0 / pvrectin->width;
-		pvrect->width = 96;	// min for icons
-	}
-	pvrect->width &= ~1;
-
-	pvrect->height = (int)(pvrectin->height * size + 0.5);
-	if (pvrect->height > pvrectin->height - lineadj)
-		pvrect->height = pvrectin->height - lineadj;
-	pvrect->height &= ~1;
-
-	pvrect->x = (pvrectin->width - pvrect->width)/2;
-	pvrect->y = (pvrectin->height - lineadj - pvrect->height)/2;
-}
-
 
 /*
 ===============
@@ -373,14 +338,10 @@ Called every time the vid structure or r_refdef changes.
 Guaranteed to be called before the first refresh
 ===============
 */
-void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
+void R_ViewChanged (float aspect)
 {
 	int		i;
 	float	res_scale;
-
-	r_viewchanged = true;
-
-	R_SetVrect (pvrect, &r_refdef.vrect, lineadj);
 
 	r_refdef.horizontalFieldOfView = 2.0 * tan (r_refdef.fov_x/360*M_PI);
 	r_refdef.fvrectx = (float)r_refdef.vrect.x;
