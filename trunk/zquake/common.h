@@ -268,6 +268,10 @@ extern quakeparms_t	host_parms;
 extern qboolean		host_initialized;
 extern qboolean		com_serveractive;	// true if sv.state != ss_dead
 
+extern double		curtime;	// not bounded or scaled, shared by
+								// local client and server
+
+
 void Host_Init (quakeparms_t *parms);
 void Host_Shutdown (void);
 void Host_Frame (double time);
