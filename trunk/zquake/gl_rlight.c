@@ -159,7 +159,7 @@ void R_RenderDlights (void)
 	l = cl_dlights;
 	for (i=0 ; i<MAX_DLIGHTS ; i++, l++)
 	{
-		if (l->die < cl.time || !l->radius)
+		if (l->die < cl.time || !l->radius || !l->color[3])
 			continue;
 		R_RenderDlight (l);
 	}
