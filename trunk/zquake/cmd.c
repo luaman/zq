@@ -1287,6 +1287,11 @@ checkaliases:
 	if (Cmd_LegacyCommand())
 		return;
 
+	if (!host_initialized && Cmd_Argc() > 1) {
+		if (Cvar_CreateTempVar())
+			return;
+	}
+
 	if (cl_warncmd.value || developer.value)
 		Com_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
 }
