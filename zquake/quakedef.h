@@ -51,10 +51,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "model.h"
 #endif
 
-#ifdef GLQUAKE
-#include "gl_local.h"	// FIXME
-#endif
-
 //=============================================================================
 
 extern	double		realtime;			// not bounded in any way, changed at
