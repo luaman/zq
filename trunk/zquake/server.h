@@ -134,7 +134,6 @@ typedef struct client_s
 										// this prevents malicious multiple broadcasts
 	float			lastnametime;		// time of last name change
 	int				lastnamecount;		// time of last name change
-	unsigned		checksum;			// checksum for calcs
 	qboolean		drop;				// lose this guy next opportunity
 	int				lossage;			// loss percentage
 

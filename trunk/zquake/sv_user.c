@@ -333,7 +333,6 @@ void Cmd_PreSpawn_f (void)
 			SV_DropClient (sv_client); 
 			return;
 		}
-		sv_client->checksum = check;
 	}
 
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
