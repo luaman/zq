@@ -896,11 +896,14 @@ void S_Play_f (void)
 	char name[256];
 	sfx_t	*sfx;
 
+	if (!sound_started || s_nosound.value)
+		return;
+
 	for (i=1; i < Cmd_Argc(); i++)
 	{
 		strcpy(name, Cmd_Argv(i));
 		COM_DefaultExtension (name, ".wav");
-		sfx = S_PrecacheSound(name);
+		sfx = S_FindName(name);
 		S_StartSound(hash++, 0, sfx, listener_origin, 1.0, 0.0);
 	}
 }
@@ -912,12 +915,15 @@ void S_PlayVol_f (void)
 	float vol;
 	char name[256];
 	sfx_t	*sfx;
+
+	if (!sound_started || s_nosound.value)
+		return;
 	
 	for (i=1; i < Cmd_Argc(); i+=2)
 	{
 		strcpy(name, Cmd_Argv(i));
 		COM_DefaultExtension (name, ".wav");
-		sfx = S_PrecacheSound(name);
+		sfx = S_FindName(name);
 		vol = Q_atof(Cmd_Argv(i+1));
 		S_StartSound(hash++, 0, sfx, listener_origin, vol, 0.0);
 	}
@@ -952,9 +958,7 @@ void S_LocalSound (char *sound)
 {
 	sfx_t	*sfx;
 
-	if (s_nosound.value)
-		return;
-	if (!sound_started)
+	if (!sound_started || s_nosound.value)
 		return;
 		
 	sfx = S_PrecacheSound (sound);
