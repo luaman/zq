@@ -446,24 +446,6 @@ void V_ParseDamage (void)
 
 /*
 ==================
-V_cshift_f
-==================
-*/
-void V_cshift_f (void)
-{
-	// don't allow cheating in TF
-	if (cls.state >= ca_connected && cl.teamfortress && cbuf_current != &cbuf_svc)
-		return;
-
-	cl.cshifts[CSHIFT_CUSTOM].destcolor[0] = atoi(Cmd_Argv(1));
-	cl.cshifts[CSHIFT_CUSTOM].destcolor[1] = atoi(Cmd_Argv(2));
-	cl.cshifts[CSHIFT_CUSTOM].destcolor[2] = atoi(Cmd_Argv(3));
-	cl.cshifts[CSHIFT_CUSTOM].percent = atoi(Cmd_Argv(4));
-}
-
-
-/*
-==================
 V_BonusFlash_f
 
 When you run over an item, the server sends this command
@@ -1147,7 +1129,6 @@ V_Init
 */
 void V_Init (void)
 {
-	Cmd_AddCommand ("v_cshift", V_cshift_f);	
 	Cmd_AddCommand ("bf", V_BonusFlash_f);
 	Cmd_AddCommand ("centerview", V_StartPitchDrift);
 
