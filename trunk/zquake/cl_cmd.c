@@ -1048,7 +1048,6 @@ void CL_Fov_f (void)
 		Cvar_Set (&scr_fov, Cmd_Argv(1));
 }
 
-
 void CL_R_DrawViewModel_f (void)
 {
 	extern cvar_t cl_filterdrawviewmodel;
@@ -1058,7 +1057,6 @@ void CL_R_DrawViewModel_f (void)
 	Cvar_Command ();
 }
 
-
 // These used to be user-modifiable cvars
 void cmd_v_iyaw_cycle (void) { extern float v_iyaw_cycle; v_iyaw_cycle = Q_atof(Cmd_Argv(1)); }
 void cmd_v_iroll_cycle (void) { extern float v_iroll_cycle; v_iroll_cycle = Q_atof(Cmd_Argv(1)); }
@@ -1067,6 +1065,15 @@ void cmd_v_iyaw_level (void) { extern float v_iyaw_level; v_iyaw_level = Q_atof(
 void cmd_v_iroll_level (void) { extern float v_iroll_level; v_iroll_level = Q_atof(Cmd_Argv(1)); }
 void cmd_v_ipitch_level (void) { extern float v_ipitch_level; v_ipitch_level = Q_atof(Cmd_Argv(1)); }
 void cmd_v_idlescale (void) { extern float v_idlescale; v_idlescale = Q_atof(Cmd_Argv(1)); }
+
+// this used to be a console command
+void V_cshift_f (void)
+{
+	cl.cshifts[CSHIFT_CUSTOM].destcolor[0] = atoi(Cmd_Argv(1));
+	cl.cshifts[CSHIFT_CUSTOM].destcolor[1] = atoi(Cmd_Argv(2));
+	cl.cshifts[CSHIFT_CUSTOM].destcolor[2] = atoi(Cmd_Argv(3));
+	cl.cshifts[CSHIFT_CUSTOM].percent = atoi(Cmd_Argv(4));
+}
 
 
 typedef struct {
@@ -1089,6 +1096,7 @@ svcmd_t svcmds[] =
 	{"v_iroll_level", cmd_v_iroll_level},
 	{"v_ipitch_level", cmd_v_ipitch_level},
 	{"v_idlescale", cmd_v_idlescale},
+	{"v_cshift", V_cshift_f},
 
 	{NULL, NULL}
 };
