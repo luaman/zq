@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 #include <signal.h>
 
-#include "quakedef.h"
+#include "gl_local.h"
 #include "keys.h"
 #include "input.h"
 
@@ -62,7 +62,6 @@ lpMTexFUNC qglMultiTexCoord2f = NULL;
 float vid_gamma = 1.0;
 byte vid_gamma_table[256];
 unsigned short *currentgammaramp = NULL;
-static unsigned short systemgammaramp[3][256];
 qbool vid_gammaworks = false;
 // qbool vid_hwgamma_enabled = false;
 qbool customgamma = false;
@@ -83,6 +82,7 @@ static qbool vidmode_ext = false;
 static XF86VidModeModeInfo **vidmodes;
 static int num_vidmodes;
 static qbool vidmode_active = false;
+static unsigned short systemgammaramp[3][256];
 #endif
 
 cvar_t	vid_ref = {"vid_ref", "gl", CVAR_ROM};
@@ -617,30 +617,29 @@ void RestoreHWGamma (void)
 // check gamma settings
 void Check_Gamma (unsigned char *pal)
 {
-    float inf;
-    unsigned char palette[768];
-    int i;
+	float	f, inf;
+	unsigned char	palette[768];
+	int		i;
 
-    if (vid_gamma != 1)
-    {
-        for (i = 0; i < 256; i++)
-        {
-            inf = 255 * pow((i + 0.5) / 255.5, vid_gamma) + 0.5;
-            if (inf > 255)
-                inf = 255;
-            vid_gamma_table[i] = inf;
-        }
-    }
-    else
-    {
-        for (i = 0; i < 256; i++)
-            vid_gamma_table[i] = i;
-    }
+	if ((i = COM_CheckParm("-gamma")) != 0 && i+1 < com_argc)
+		vid_gamma = bound (0.3, Q_atof(com_argv[i+1]), 1);
+	else
+		vid_gamma = 1;
 
-    for (i = 0; i < 768; i++)
-        palette[i] = vid_gamma_table[pal[i]];
+	Cvar_SetValue (&gl_gamma, vid_gamma);
 
-    memcpy (pal, palette, sizeof(palette));
+	for (i=0 ; i<768 ; i++)
+	{
+		f = pow ( (pal[i]+1)/256.0 , vid_gamma );
+		inf = f*255 + 0.5;
+		if (inf < 0)
+			inf = 0;
+		if (inf > 255)
+			inf = 255;
+		palette[i] = inf;
+	}
+
+	memcpy (pal, palette, sizeof(palette));
 }
 
 void VID_SetPalette (byte *palette)
@@ -804,7 +803,6 @@ void VID_Init(unsigned char *palette)
                        None
                    };
     int width = 640, height = 480;
-    int scrnum;
     XSetWindowAttributes attr;
     unsigned long mask;
     Window root;
