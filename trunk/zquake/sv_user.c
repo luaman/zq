@@ -2187,7 +2187,6 @@ void SV_ExecuteClientMessage (client_t *cl)
 	sv_client = cl;
 	sv_player = sv_client->edict;
 
-//	seq_hash = (cl->netchan.incoming_sequence & 0xffff) ; // ^ QW_CHECK_HASH;
 	seq_hash = cl->netchan.incoming_sequence;
 	
 	// mark time so clients will know how much to predict
