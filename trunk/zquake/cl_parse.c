@@ -1267,6 +1267,7 @@ void CL_ParsePrint (void)
 	int		len;
 	int		level, flags=0;
 	int		offset = 0;
+	extern cvar_t	cl_chatsound;
 	qboolean	suppress_talksound;
 
 	level = MSG_ReadByte ();
@@ -1279,10 +1280,14 @@ void CL_ParsePrint (void)
 		if (flags == 2 && !TP_FilterMessage(s + offset))
 			return;
 
+		suppress_talksound = false;
+
 		if (flags == 2)
 			suppress_talksound = TP_CheckSoundTrigger (s + offset);
-		else
-			suppress_talksound = false;
+
+		if (!cl_chatsound.value ||		// no sound at all
+			(cl_chatsound.value == 2 && flags != 2))	// only play sound in mm2
+			suppress_talksound = true;
 
 		if (!suppress_talksound)
 			S_LocalSound ("misc/talk.wav");
