@@ -438,6 +438,7 @@ void VID_Init (unsigned char *palette)
 
 	vid.width = 320;
 	vid.height = 240;
+	vid.aspect = 1;
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.numpages = 2;
@@ -599,6 +600,8 @@ void VID_Init (unsigned char *palette)
             // Move the viewport to top left
             XF86VidModeSetViewPort(x_disp, scrnum, 0, 0);
             vidmode_active = true;
+			vid.aspect = ((float) vidmodes[best_fit]->vdisplay
+								/ (float) vidmodes[best_fit]->hdisplay) * (320.0 / 240.0);	
         }
         else
         {
@@ -720,7 +723,6 @@ void VID_Init (unsigned char *palette)
 	vid.rowbytes = x_framebuffer[0]->bytes_per_line;
 	vid.buffer = x_framebuffer[0]->data;
 	vid.direct = 0;
-	vid.aspect = ((float) vid.height / (float) vid.width) * (320.0 / 240.0);
 
 //  XSynchronize(x_disp, False);
 
