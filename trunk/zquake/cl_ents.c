@@ -40,6 +40,9 @@ static struct predicted_player {
 #endif
 } predicted_players[MAX_CLIENTS];
 
+
+extern	int		cl_spikeindex, cl_playerindex, cl_flagindex;
+
 /*
 =========================================================================
 
@@ -577,144 +580,103 @@ PROJECTILE PARSING / LINKING
 =========================================================================
 */
 
-typedef struct
-{
-	int		modelindex;
+typedef struct {
+	byte	number;
 	vec3_t	origin;
 	vec3_t	angles;
-#ifdef MVDPLAY
-    int     num;
-#endif
 } projectile_t;
 
-#define	MAX_PROJECTILES	32
-projectile_t	cl_projectiles[MAX_PROJECTILES];
-int				cl_num_projectiles;
+static projectile_t			cl_projectiles[MAX_PROJECTILES];
 
 #ifdef MVDPLAY
-projectile_t	cl_oldprojectiles[MAX_PROJECTILES];
-int				cl_num_oldprojectiles;
+typedef struct {
+	int		newindex;
+	int		sequence[2];
+	vec3_t	origin[2];
+} lerped_projectile_t;
+
+static lerped_projectile_t	cl_lerped_projectiles[256];
 #endif
 
-extern int cl_spikeindex;
 
-void CL_ClearProjectiles (void)
+void CL_ClearProjectiles(void)
 {
 #ifdef MVDPLAY
-	if (cls.mvdplayback) {
-		static int parsecount = 0;
-
-		if (parsecount == cl.parsecount)
-			return;
-
-		parsecount = cl.parsecount;
-		memset(cl.int_projectiles, 0, sizeof(cl.int_projectiles));
-		cl_num_oldprojectiles = cl_num_projectiles;
-		memcpy(cl_oldprojectiles, cl_projectiles, sizeof(cl_projectiles));
-	}
+	memset(cl_projectiles, 0, sizeof(cl_projectiles));
+	memset(cl_lerped_projectiles, 0, sizeof(cl_lerped_projectiles));
 #endif
-	cl_num_projectiles = 0;
 }
 
-/*
-=====================
-CL_ParseProjectiles
-
-Nails are passed as efficient temporary entities
-=====================
-*/
 #ifdef MVDPLAY
-void CL_ParseProjectiles (qbool nail2)
+void CL_ParseProjectiles(qbool tagged)
 #else
-void CL_ParseProjectiles (void)
+void CL_ParseProjectiles(void)
 #endif
 {
-	int		i, c, j;
-	byte	bits[6];
-	projectile_t	*pr;
+	byte bits[6];
+	int i, c, j, num = 0;
+	projectile_t *pr;
 
+	c = MSG_ReadByte();
+
+	for (i = 0; i < c && cl.num_projectiles < MAX_PROJECTILES; i++) {
 #ifdef MVDPLAY
-	int			num;
-	interpolate_t	*inter;
+		num = tagged ? MSG_ReadByte() : 0;
 #endif
 
-	c = MSG_ReadByte ();
-	for (i=0 ; i<c ; i++)
-	{
-#ifdef MVDPLAY
-        if (nail2)
-            num = MSG_ReadByte();
-        else
-            num = 0;
-#endif
+		for (j = 0; j < 6; j++)
+			bits[j] = MSG_ReadByte();
 
-		for (j=0 ; j<6 ; j++)
-			bits[j] = MSG_ReadByte ();
+		pr = &cl_projectiles[cl.num_projectiles++];
 
-		if (cl_num_projectiles == MAX_PROJECTILES)
-			continue;
-
-		pr = &cl_projectiles[cl_num_projectiles];
-#ifdef MVDPLAY
-		inter = &cl.int_projectiles[cl_num_projectiles];
-#endif
-		cl_num_projectiles++;
-
-		pr->modelindex = cl_spikeindex;
-		pr->origin[0] = ( ( bits[0] + ((bits[1]&15)<<8) ) <<1) - 4096;
-		pr->origin[1] = ( ( (bits[1]>>4) + (bits[2]<<4) ) <<1) - 4096;
-		pr->origin[2] = ( ( bits[3] + ((bits[4]&15)<<8) ) <<1) - 4096;
-		pr->angles[0] = 360*(bits[4]>>4)/16;
-		pr->angles[1] = 360*bits[5]/256;
+		pr->origin[0] = (( bits[0] + ((bits[1] & 15) << 8)) << 1) - 4096;
+		pr->origin[1] = (((bits[1] >> 4) + (bits[2] << 4)) << 1) - 4096;
+		pr->origin[2] = ((bits[3] + ((bits[4] & 15) << 8)) << 1) - 4096;
+		pr->angles[0] = 360 * (bits[4] >> 4) / 16;
+		pr->angles[1] = 360 * bits[5] / 256;
 
 #ifdef MVDPLAY
-		pr->num = num;
-		if (!num) 
-			continue;
-
-		for (j = 0; j < cl_num_oldprojectiles; j++)
-			if (cl_oldprojectiles[j].num == num)
-			{
-				inter->interpolate = true;
-				inter->oldindex = j;
-				VectorCopy(pr->origin, inter->origin);
-				break;
-			}
+		if ((pr->number = num)) {
+			int newindex = cl_lerped_projectiles[num].newindex = !cl_lerped_projectiles[num].newindex;
+			cl_lerped_projectiles[num].sequence[newindex] = cl.validsequence;
+			VectorCopy(pr->origin, cl_lerped_projectiles[num].origin[newindex]);
+		}
 #endif
 	}
 }
 
-/*
-=============
-CL_LinkProjectiles
-
-=============
-*/
-void CL_LinkProjectiles (void)
+static void CL_LinkProjectiles(void)
 {
-	int		i;
-	projectile_t	*pr;
-	entity_t		ent;
+	float f;
+	int i;
+	entity_t ent;
+	projectile_t *pr;
 
-	memset (&ent, 0, sizeof(entity_t));
-	ent.colormap = vid.colormap;
+	memset(&ent, 0, sizeof(entity_t));
+	ent.model = cl.model_precache[cl_spikeindex];
 
-	for (i=0, pr=cl_projectiles ; i<cl_num_projectiles ; i++, pr++)
-	{
-		if (pr->modelindex < 1)
-			continue;
+	f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
 
-		ent.model = cl.model_precache[pr->modelindex];
-		VectorCopy (pr->origin, ent.origin);
-		VectorCopy (pr->angles, ent.angles);
-
-		V_AddEntity (&ent);
+	for (i = 0, pr = cl_projectiles; i < cl.num_projectiles; i++, pr++)	{
+#ifdef MVDPLAY
+		int num;
+		if ((num = cl_projectiles[i].number)) {
+			lerped_projectile_t *lpr = &cl_lerped_projectiles[num];
+			if (cl.oldparsecount && lpr->sequence[!lpr->newindex] == cl.oldparsecount) {
+				LerpVector(lpr->origin[!lpr->newindex], lpr->origin[lpr->newindex], f, ent.origin);
+				goto done_origin;
+			}
+		}
+#endif
+		VectorCopy(pr->origin, ent.origin);
+		goto done_origin;		// suppress warning
+done_origin:
+		VectorCopy(pr->angles, ent.angles);
+		V_AddEntity(&ent);
 	}
 }
 
 //========================================
-
-extern	int		cl_spikeindex, cl_playerindex, cl_flagindex;
 
 #ifdef MVDPLAY
 
@@ -1318,12 +1280,6 @@ void MVD_InitInterpolation (void)
             pplayer->vel[j] = (state->origin[j] - oldstate->origin[j]) / (cls.mvd_newtime - cls.mvd_oldtime);
     }
 
-    // nails
-    for (i=0; i < cl_num_projectiles; i++) {
-        if (!cl.int_projectiles[i].interpolate)
-            continue;
-        VectorCopy(cl.int_projectiles[i].origin, cl_projectiles[i].origin);
-    }
 }
 
 void MVD_ClearPredict(void)
@@ -1360,15 +1316,6 @@ void MVD_Interpolate(void)
 
 //Com_Printf ("%f of %f\n", cls.demotime - cls.mvd_oldtime, cls.mvd_newtime - cls.mvd_oldtime);
 	f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
-
-	// interpolate nails
-	for (i = 0; i < cl_num_projectiles; i++)	{
-		if (!cl.int_projectiles[i].interpolate)
-			continue;
-
-		LerpVector (cl_oldprojectiles[cl.int_projectiles[i].oldindex].origin,
-				cl.int_projectiles[i].origin, f, cl_projectiles[i].origin);
-	}
 
 	// interpolate clients
 	for (i = 0; i < MAX_CLIENTS; i++) {

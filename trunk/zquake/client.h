@@ -406,6 +406,7 @@ typedef struct
 	struct efrag_s	*free_efrags;
 	int			num_entities;	// stored bottom up in cl_entities array
 	int			num_statics;	// stored top down in cl_entities
+	int			num_projectiles;
 
 	int			cdtrack;		// cd audio
 
@@ -414,7 +415,6 @@ typedef struct
 
 #ifdef MVDPLAY
 // interpolation stuff
-	interpolate_t	int_projectiles[MAX_PROJECTILES];
 	int			mvd_fixangle;
 #endif
 

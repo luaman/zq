@@ -1085,6 +1085,8 @@ void CL_ParseClientdata (void)
 		else
 			cls.latency += 0.001;	// drift up, so correction is needed
     }
+
+	cl.num_projectiles = 0;
 }
 
 /*
@@ -1832,8 +1834,6 @@ void CL_ParseServerMessage (void)
 	if (!cls.mvdplayback)
 #endif
 		CL_ParseClientdata ();
-
-	CL_ClearProjectiles ();
 
 //
 // parse the message
