@@ -32,13 +32,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 #include "teamplay.h"
 
-#ifdef _WIN32
-#include <winsock.h>
-#else
-#include <netinet/in.h>
-#endif
-
-
 cvar_t	rcon_password = {"rcon_password", ""};
 cvar_t	rcon_address = {"rcon_address", ""};
 
@@ -339,11 +332,9 @@ void CL_Disconnect (void)
 		Netchan_Transmit (&cls.netchan, 6, final);
 		Netchan_Transmit (&cls.netchan, 6, final);
 
-#ifdef QW_BOTH
 		// if running a local server, shut it down
 		if (com_serveractive)
 			SV_Shutdown ("");
-#endif
 	}
 
 	cls.state = ca_disconnected;
@@ -915,10 +906,8 @@ void CL_Frame (double time)
 	// process console commands
 	Cbuf_Execute ();
 
-#ifdef QW_BOTH
 	if (com_serveractive)
 		SV_Frame (cls.frametime);
-#endif
 
 	// fetch results from server
 	CL_ReadPackets ();
