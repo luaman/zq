@@ -835,10 +835,9 @@ PF_cvar
 float cvar(string) = #45
 =================
 */
-static void PF_cvar (void)
-{
-	char	*str;
-	
+static void PF_cvar(void) {
+	char	*str, *temp;
+
 	str = G_STRING(OFS_PARM0);
 
 	if (!Q_stricmp(str, "pr_checkextension")) {
@@ -847,8 +846,12 @@ static void PF_cvar (void)
 		return;
 	}
 
-	G_FLOAT(OFS_RETURN) = Cvar_VariableValue (str);
+	if (!Cvar_FindVar(str) && (temp = Cmd_LegacyCommandValue(str)))
+		str = temp;
+
+	G_FLOAT(OFS_RETURN) = Cvar_VariableValue(str);
 }
+
 
 
 /*
@@ -860,21 +863,16 @@ void cvar_set(string var, string val) = #72
 */
 static void PF_cvar_set (void)
 {
-	char	*var_name, *val;
+	char	*var_name, *val, *temp;
 	cvar_t	*var;
 
 	var_name = G_STRING(OFS_PARM0);
 	val = G_STRING(OFS_PARM1);
 
-	if (!strcmp(var_name, "pausable")) {
-		extern cvar_t sv_pausable;
-		// special handling because we renamed the cvar
-		Cvar_Set (&sv_pausable, val);
-	}
+	if (!(var = Cvar_FindVar(var_name)) && (temp = Cmd_LegacyCommandValue(var_name)))
+		var = Cvar_FindVar(temp);
 
-	var = Cvar_FindVar(var_name);
-	if (!var)
-	{
+	if (!var) {
 		Com_DPrintf ("PF_cvar_set: variable %s not found\n", var_name);
 		return;
 	}
