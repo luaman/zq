@@ -138,7 +138,7 @@ void SpawnMeatSpray (vector org, vector vel)
 	missile.think = SUB_Remove;
 
 	setmodel (missile, "progs/zom_gib.mdl");
-	setsize (missile, '0 0 0', '0 0 0');
+	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);
 	setorigin (missile, org);
 }
 
@@ -472,7 +472,7 @@ void W_FireRocket ()
 	newmis.classname = "rocket";
 
 	setmodel (newmis, "progs/missile.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');
+	setsize (newmis, VEV_ORIGIN, VEV_ORIGIN);
 	setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
 }
 
@@ -580,7 +580,7 @@ void W_FireLightning ()
 			cells = self.ammo_cells;
 			self.ammo_cells = 0;
 			W_SetCurrentAmmo ();
-			T_RadiusDamage (self, self, 35*cells, world,"");
+			T_RadiusDamage (self, self, 35*cells, world, "");
 			return;
 		}
 	}
@@ -647,8 +647,8 @@ void GrenadeTouch ()
 		return;
 	}
 	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);	// bounce sound
-	if (self.velocity == '0 0 0')
-		self.avelocity = '0 0 0';
+	if (self.velocity == VEV_ORIGIN)
+		self.avelocity = VEV_ORIGIN;
 }
 
 /*
@@ -713,7 +713,7 @@ void W_FireGrenade ()
 	newmis.think = GrenadeExplode;
 
 	setmodel (newmis, "progs/grenade.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');
+	setsize (newmis, VEV_ORIGIN, VEV_ORIGIN);
 	setorigin (newmis, self.origin);
 }
 
@@ -752,10 +752,10 @@ void launch_spike (vector org, vector dir)
 	newmis.velocity = dir * 1000;
 }
 
+
 void W_FireSuperSpikes ()
 {
 	vector	dir;
-	entity	old;
 
 	sound (self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
 	self.attack_finished = time + 0.2;
@@ -770,10 +770,10 @@ void W_FireSuperSpikes ()
 	WriteByte (MSG_ONE, SVC_SMALLKICK);
 }
 
+
 void W_FireSpikes (float ox)
 {
 	vector	dir;
-	entity	old;
 
 	makevectors (self.v_angle);
 
@@ -800,7 +800,6 @@ void W_FireSpikes (float ox)
 	msg_entity = self;
 	WriteByte (MSG_ONE, SVC_SMALLKICK);
 }
-
 
 
 void spike_touch ()
@@ -845,8 +844,8 @@ void spike_touch ()
 	}
 
 	remove(self);
-
 }
+
 
 void superspike_touch ()
 {
@@ -857,7 +856,6 @@ void superspike_touch ()
 		return;
 	}
 	self.voided = 1;
-
 
 	if (other.solid == SOLID_TRIGGER)
 		return; // trigger field, do nothing
