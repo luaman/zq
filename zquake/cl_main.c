@@ -945,13 +945,16 @@ void CL_Frame (double time)
 
 	cls.frametime = cls.realtime - oldrealtime;
 
-	if (cls.demoplayback && (cl.paused & 2))
+	if (cls.demoplayback && (cl.paused & PAUSED_DEMO))
 		cls.realtime = oldrealtime;
 
 	oldrealtime = cls.realtime;
 	if (cls.frametime > 0.2)
 		cls.frametime = 0.2;
-		
+
+	if (!cl.paused)
+		cl.time += cls.frametime;
+	
 	// get new key events
 	Sys_SendKeyEvents ();
 

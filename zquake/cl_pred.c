@@ -224,8 +224,6 @@ void CL_PredictMove (void)
 	if (cl.paused)
 		return;
 
-	cl.time += cls.frametime;
-
 	playertime = cls.realtime - cls.latency - cl_pushlatency.value*0.001;
 	if (playertime > cls.realtime)
 		playertime = cls.realtime;

@@ -134,7 +134,7 @@ CL_Pause_f
 void CL_Pause_f (void)
 {
 	if (cls.demoplayback)
-		cl.paused ^= 2;
+		cl.paused ^= PAUSED_DEMO;
 	else
 		Cmd_ForwardToServer();
 }

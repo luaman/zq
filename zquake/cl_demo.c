@@ -172,7 +172,7 @@ qboolean CL_GetDemoMessage (void)
 	if (qwz_unpacking)
 		return 0;
 
-	if (cl.paused & 2)
+	if (cl.paused & PAUSED_DEMO)
 		return 0;
 
 readnext:
@@ -196,7 +196,7 @@ readnext:
 			cls.td_startframe = cls.framecount;
 		}
 		cls.realtime = demotime; // warp
-	} else if (!(cl.paused & 1) && cls.state >= ca_active) {	// always grab until active
+	} else if (!(cl.paused & PAUSED_SERVER) && cls.state >= ca_active) {	// always grab until active
 		if (cls.realtime + 1.0 < demotime) {
 			// too far back
 			cls.realtime = demotime - 1.0;
