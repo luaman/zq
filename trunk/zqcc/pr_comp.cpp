@@ -27,7 +27,7 @@ int			pr_edict_size;
 //========================================
 
 def_t		*pr_scope;		// the function being parsed, or NULL
-boolean	pr_dumpasm;
+qboolean	pr_dumpasm;
 string_t	s_file;			// filename for function definition
 
 int			locals_end;		// for tracking local variables vs temps
@@ -168,7 +168,7 @@ def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 	}
 	else
 	{	// allocate result space
-		var_c = malloc (sizeof(def_t));
+		var_c = (def_t *) malloc (sizeof(def_t));
 		memset (var_c, 0, sizeof(def_t));
 		var_c->ofs = numpr_globals;
 		var_c->type = op->type_c->type;
@@ -231,7 +231,7 @@ def_t	*PR_ParseImmediate (void)
 	}
 	
 // allocate a new one
-	cn = malloc (sizeof(def_t));
+	cn = (def_t *) malloc (sizeof(def_t));
 	cn->next = NULL;
 	pr.def_tail->next = cn;
 	pr.def_tail = cn;
@@ -496,7 +496,7 @@ def_t *PR_Expression (int priority)
 				if (e2->type->aux_type)
 					type_c = e2->type->aux_type->type;
 				else
-					type_c = -1;	// not a field
+					type_c = (etype_t) -1;	// not a field
 			}
 			else
 				type_c = ev_void;
@@ -682,7 +682,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 	function_t	*f;
 	def_t		*defs[MAX_PARMS];
 	
-	f = malloc (sizeof(function_t));
+	f = (function_t *) malloc (sizeof(function_t));
 
 //
 // check for builtin function definition #1, #2, etc
@@ -741,7 +741,7 @@ If type is NULL, it will match any type
 If allocate is true, a new def will be allocated if it can't be found
 ============
 */
-def_t *PR_GetDef (type_t *type, char *name, def_t *scope, boolean allocate)
+def_t *PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate)
 {
 	def_t		*def;
 	char element[MAX_NAME];
@@ -762,13 +762,13 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, boolean allocate)
 		return NULL;
 		
 // allocate a new def
-	def = malloc (sizeof(def_t));
+	def = (def_t *) malloc (sizeof(def_t));
 	memset (def, 0, sizeof(*def));
 	def->next = NULL;
 	pr.def_tail->next = def;
 	pr.def_tail = def;
 	
-	def->name = malloc (strlen(name)+1);
+	def->name = (char *) malloc (strlen(name)+1);
 	strcpy (def->name, name);
 	def->type = type;
 
@@ -903,7 +903,7 @@ PR_CompileFile
 compiles the 0 terminated text, adding defintions to the pr structure
 ============
 */
-boolean	PR_CompileFile (char *string, char *filename)
+qboolean	PR_CompileFile (char *string, char *filename)
 {	
 	if (!pr.memory)
 		Error ("PR_CompileFile: Didn't clear");
