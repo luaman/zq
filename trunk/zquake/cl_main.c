@@ -121,10 +121,8 @@ quakeparms_t host_parms;
 
 qboolean	host_initialized;		// true if into command execution
 
-double		host_frametime;
 double		realtime;				// without any filtering or bounding
 double		oldrealtime;			// last frame run
-int			host_framecount;
 qboolean	host_skipframe;			// used in demo playback
 
 int			host_hunklevel;
@@ -961,14 +959,14 @@ void Host_Frame (double time)
 	if (!Host_FilterTime())
 		return;			// framerate is too high
 
-	host_frametime = realtime - oldrealtime;
+	cls.frametime = realtime - oldrealtime;
 
 	if (cls.demoplayback && (cl.paused & 2))
 		realtime = oldrealtime;
 
 	oldrealtime = realtime;
-	if (host_frametime > 0.2)
-		host_frametime = 0.2;
+	if (cls.frametime > 0.2)
+		cls.frametime = 0.2;
 		
 	// get new key events
 	Sys_SendKeyEvents ();
@@ -981,7 +979,7 @@ void Host_Frame (double time)
 
 #ifdef QW_BOTH
 	if (com_serveractive)
-		SV_Frame(host_frametime);
+		SV_Frame (cls.frametime);
 #endif
 
 	// fetch results from server
@@ -1039,7 +1037,7 @@ void Host_Frame (double time)
 					pass1+pass2+pass3, pass1, pass2, pass3);
 	}
 
-	host_framecount++;
+	cls.framecount++;
 	fps_count++;
 }
 

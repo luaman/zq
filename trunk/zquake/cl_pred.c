@@ -175,20 +175,20 @@ void CL_CalcCrouch (void)
 		if (cl.simorg[2] - oldz > 20) {
 			// if on steep stairs, increase speed
 			if (crouchspeed < 160) {
-				extracrouch = cl.simorg[2] - oldz - host_frametime*200 - 15;
+				extracrouch = cl.simorg[2] - oldz - cls.frametime*200 - 15;
 				if (extracrouch > 5)
 					extracrouch = 5;
 			}
 			crouchspeed = 160;
 		}
 		
-		oldz += host_frametime * crouchspeed;
+		oldz += cls.frametime * crouchspeed;
 		if (oldz > cl.simorg[2])
 			oldz = cl.simorg[2];
 		
 		if (cl.simorg[2] - oldz > 15 + extracrouch)
 			oldz = cl.simorg[2] - 15 - extracrouch;
-		extracrouch -= host_frametime*200;
+		extracrouch -= cls.frametime*200;
 		if (extracrouch < 0)
 			extracrouch = 0;
 		
@@ -196,7 +196,7 @@ void CL_CalcCrouch (void)
 	} else {
 		// in air or moving down
 		oldz = cl.simorg[2];
-		cl.crouch += host_frametime * 150;
+		cl.crouch += cls.frametime * 150;
 		if (cl.crouch > 0)
 			cl.crouch = 0;
 		crouchspeed = 100;
@@ -224,7 +224,7 @@ void CL_PredictMove (void)
 	if (cl.paused)
 		return;
 
-	cl.time += host_frametime;
+	cl.time += cls.frametime;
 
 	playertime = realtime - cls.latency - cl_pushlatency.value*0.001;
 	if (playertime > realtime)

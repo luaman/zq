@@ -1453,7 +1453,7 @@ void CL_ParseServerMessage (void)
 	int			cmd;
 	int			i, j;
 
-	received_framecount = host_framecount;
+	received_framecount = cls.framecount;
 	cl.last_servermessage = realtime;
 	CL_ClearProjectiles ();
 

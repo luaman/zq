@@ -192,7 +192,7 @@ qboolean CL_GetDemoMessage (void)
 		}
 		if (!cls.td_starttime && cls.state == ca_active) {
 			cls.td_starttime = Sys_DoubleTime();
-			cls.td_startframe = host_framecount;
+			cls.td_startframe = cls.framecount;
 		}
 		realtime = demotime; // warp
 	} else if (!(cl.paused & 1) && cls.state >= ca_active) {	// always grab until active
@@ -1041,7 +1041,7 @@ void CL_FinishTimeDemo (void)
 	cls.timedemo = false;
 	
 // the first frame didn't count
-	frames = (host_framecount - cls.td_startframe) - 1;
+	frames = (cls.framecount - cls.td_startframe) - 1;
 	time = Sys_DoubleTime() - cls.td_starttime;
 	if (!time)
 		time = 1;
@@ -1073,6 +1073,6 @@ void CL_TimeDemo_f (void)
 	
 	cls.timedemo = true;
 	cls.td_starttime = 0;
-	cls.td_startframe = host_framecount;
+	cls.td_startframe = cls.framecount;
 	cls.td_lastframe = -1;		// get a new message this frame
 }

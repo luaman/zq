@@ -99,7 +99,7 @@ typedef struct tvars_s {
 	char	tookname[32];
 	char	tookloc[MAX_LOC_NAME];
 	float	tooktime;
-	int		pointframe;		// host_framecount for which pointitem&pointloc are valid
+	int		pointframe;		// cls.framecount for which pointitem & pointloc are valid
 	char	pointname[32];
 	char	pointloc[MAX_LOC_NAME];
 } tvars_t;
@@ -435,14 +435,14 @@ char *Macro_TookAtLoc_f (void)
 // in vars.pointname & vars.pointloc
 char *Macro_PointName_f (void)
 {
-	if (host_framecount != vars.pointframe)
+	if (cls.framecount != vars.pointframe)
 		TP_FindPoint ();
 	return vars.pointname;
 }
 
 char *Macro_PointLocation_f (void)
 {
-	if (host_framecount != vars.pointframe)
+	if (cls.framecount != vars.pointframe)
 		TP_FindPoint ();
 	if (vars.pointloc[0])
 		return vars.pointloc;
@@ -452,7 +452,7 @@ char *Macro_PointLocation_f (void)
 
 char *Macro_PointNameAtLocation_f (void)
 {
-	if (host_framecount != vars.pointframe)
+	if (cls.framecount != vars.pointframe)
 		TP_FindPoint ();
 	if (vars.pointloc[0])
 		return va ("%s %s %s", vars.pointname, tp_name_at.string, vars.pointloc);
@@ -2093,7 +2093,7 @@ nothing:
 		vars.pointloc[0] = 0;
 	}
 
-	vars.pointframe = host_framecount;
+	vars.pointframe = cls.framecount;
 }
 
 
