@@ -3,6 +3,7 @@
 // by Massa
 
 keymap_name "German"
+keymap_version	3
 
 // -------------------------------------------------------------------------------------------------------------
 // [ext] keycode <scancode> <key> [<shifted key>] [<alt-gr="right alt" key>]
