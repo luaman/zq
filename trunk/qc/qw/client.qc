@@ -1170,6 +1170,13 @@ void PlayerPostThink ()
 			self.deathtype = "falling";
 			T_Damage (self, world, world, 5); 
 			sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
+
+			if (self.groundentity.takedamage == DAMAGE_AIM)
+			{
+				// we landed on someone's head, hurt him
+				self.groundentity.deathtype = "stomp";
+				T_Damage (self.groundentity, self, self, 10);
+			}
 		}
 		else
 			sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
@@ -1404,6 +1411,11 @@ void ClientObituary (entity targ, entity attacker)
 						deathstring2 = "'s rocket\n" ;
 					}
 				}
+			}
+			else if (targ.deathtype == "stomp")
+			{
+				deathstring = " was stomped by ";
+				deathstring2 = "\n";
 			}
 			else if (rnum == IT_AXE)
 			{
