@@ -334,16 +334,16 @@ void CL_SlightBloodTrail (vec3_t start, vec3_t end)
 {
 	int		j;
 	vec3_t	vec;
-	float	len, dec;
+	float	len;
 	cparticle_t	*p;
 
-	dec = 3;
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
+	VectorScale (vec, 6, vec);
 
 	while (len > 0)
 	{
-		len -= dec;
+		len -= 6;
 
 		if (!(p = new_particle()))
 			return;
@@ -355,7 +355,6 @@ void CL_SlightBloodTrail (vec3_t start, vec3_t end)
 		VectorClear (p->vel);
 		for (j=0 ; j<3 ; j++)
 			p->org[j] = start[j] + ((rand()%6)-3);
-		len -= dec;
 
 		VectorAdd (start, vec, start);
 	}
@@ -370,16 +369,16 @@ void CL_BloodTrail (vec3_t start, vec3_t end)
 {
 	int		j;
 	vec3_t	vec;
-	float	len, dec;
+	float	len;
 	cparticle_t	*p;
 
-	dec = 3;
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
+	VectorScale (vec, 3, vec);
 
 	while (len > 0)
 	{
-		len -= dec;
+		len -= 3;
 
 		if (!(p = new_particle()))
 			return;
@@ -405,16 +404,16 @@ void CL_VoorTrail (vec3_t start, vec3_t end)
 {
 	int		j;
 	vec3_t	vec;
-	float	len, dec;
+	float	len;
 	cparticle_t	*p;
 
-	dec = 3;
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
+	VectorScale (vec, 3, vec);
 
 	while (len > 0)
 	{
-		len -= dec;
+		len -= 3;
 
 		if (!(p = new_particle()))
 			return;
@@ -441,16 +440,16 @@ void CL_GrenadeTrail (vec3_t start, vec3_t end)
 {
 	int		j;
 	vec3_t	vec;
-	float	len, dec;
+	float	len;
 	cparticle_t	*p;
 
-	dec = 3;
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
+	VectorScale (vec, 3, vec);
 
 	while (len > 0)
 	{
-		len -= dec;
+		len -= 3;
 
 		if (!(p = new_particle()))
 			return;
@@ -477,16 +476,16 @@ void CL_RocketTrail (vec3_t start, vec3_t end)
 {
 	int		j;
 	vec3_t	vec;
-	float	len, dec;
+	float	len;
 	cparticle_t	*p;
 
-	dec = 3;
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
+	VectorScale (vec, 3, vec);
 
 	while (len > 0)
 	{
-		len -= dec;
+		len -= 3;
 
 		if (!(p = new_particle()))
 			return;
@@ -512,17 +511,17 @@ CL_TracerTrail
 void CL_TracerTrail (vec3_t start, vec3_t end, int color)
 {
 	vec3_t	vec;
-	float	len, dec;
+	float	len;
 	cparticle_t	*p;
 	static int tracercount;
 
-	dec = 3;
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
+	VectorScale (vec, 3, vec);
 
 	while (len > 0)
 	{
-		len -= dec;
+		len -= 3;
 
 		if (!(p = new_particle()))
 			return;
