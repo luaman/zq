@@ -684,7 +684,6 @@ SV_Gamedir_f
 Sets the gamedir and path to a different directory.
 ================
 */
-char	gamedirfile[MAX_OSPATH];
 void SV_Gamedir_f (void)
 {
 	char			*dir;
@@ -741,15 +740,15 @@ void SV_Snap (int uid)
 
 	sprintf(pcxname, "%d-00.pcx", uid);
 
-	sprintf(checkname, "%s/snap", gamedirfile);
-	Sys_mkdir(gamedirfile);
+	sprintf(checkname, "%s/snap", com_gamedirfile);
+	Sys_mkdir(com_gamedirfile);
 	Sys_mkdir(checkname);
 		
 	for (i=0 ; i<=99 ; i++) 
 	{ 
 		pcxname[strlen(pcxname) - 6] = i/10 + '0'; 
 		pcxname[strlen(pcxname) - 5] = i%10 + '0'; 
-		sprintf (checkname, "%s/snap/%s", gamedirfile, pcxname);
+		sprintf (checkname, "%s/snap/%s", com_gamedirfile, pcxname);
 		f = fopen (checkname, "rb");
 		if (!f);
 			break;  // file doesn't exist
