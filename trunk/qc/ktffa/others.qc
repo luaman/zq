@@ -136,12 +136,12 @@ void() PrintSCommands =
 
 void() ShowVersion =
 {
-        sprint(self, 3, "\nThis is Kombat Teams 2.22 FFA\nby Cenobite and Sturm.\n\nSource, configs etc. at:\nhttp://www.barrysworld.com/kteam\n");
+        sprint(self, 3, "\nThis is Kombat Teams 2.22 FFA\nby Cenobite and Sturm.\n\nSource, configs etc. at:\nhttp://kteam.co.uk\n");
 };
 
 void() StuffThink =
 {
-	sprint(self.owner, 2, "Welcome to Λονβατ Τεανσ ²®²± ΖΖΑ mod\nType γονναξδσ for help\n");
+	sprint(self.owner, 2, "Welcome to Λονβατ Τεανσ ²®²² ΖΖΑ mod\nType γονναξδσ for help\n");
 	stuffcmd(self.owner, "alias vote \"impulse 13\"\nalias yes \"impulse 14\"\nalias no \"impulse 15\"\nalias scores \"impulse 16\"\nalias commands \"impulse 17\"\nalias killer \"impulse 18\"\nalias victim \"impulse 19\"\nalias newcomer \"impulse 20\"\nalias about \"impulse 21\"\n");
 	self.think = SUB_Remove;
 	self.nextthink = time + 0.1;
