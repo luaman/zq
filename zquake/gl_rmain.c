@@ -142,10 +142,10 @@ void R_RotateForEntity (entity_t *e)
 {
 	glTranslatef (e->origin[0],  e->origin[1],  e->origin[2]);
 
-	glRotatef (e->angles[1],  0, 0, 1);
-	glRotatef (-e->angles[0],  0, 1, 0);
-	//ZOID: fixed z angle
-	glRotatef (e->angles[2],  1, 0, 0);
+	glRotatef (e->angles[1], 0, 0, 1);
+	glRotatef (-e->angles[0], 0, 1, 0);
+	// ZOID: fixed z angle
+	glRotatef (e->angles[2], 1, 0, 0);
 }
 
 /*
@@ -220,7 +220,7 @@ void R_DrawSpriteModel (entity_t *e)
 	mspriteframe_t	*frame;
 	float		*up, *right;
 	vec3_t		v_forward, v_right, v_up;
-	msprite_t		*psprite;
+	msprite_t	*psprite;
 
 	// don't even bother culling, because it's just a single
 	// polygon without a surface cache
@@ -228,7 +228,8 @@ void R_DrawSpriteModel (entity_t *e)
 	psprite = currententity->model->cache.data;
 
 	if (psprite->type == SPR_ORIENTED)
-	{	// bullet marks on walls
+	{
+		// bullet marks on walls
 		AngleVectors (currententity->angles, v_forward, v_right, v_up);
 		up = v_up;
 		right = v_right;
@@ -239,11 +240,8 @@ void R_DrawSpriteModel (entity_t *e)
 		right = vright;
 	}
 
-	GL_DisableMultitexture();
-
     GL_Bind(frame->gl_texturenum);
 
-	glEnable (GL_ALPHA_TEST);
 	glBegin (GL_QUADS);
 
 	glTexCoord2f (0, 1);
@@ -267,8 +265,6 @@ void R_DrawSpriteModel (entity_t *e)
 	glVertex3fv (point);
 	
 	glEnd ();
-
-	glDisable (GL_ALPHA_TEST);
 }
 
 /*
@@ -335,7 +331,11 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 			order += 2;
 
 			// normals and vertexes come from the frame list
-			l = min((shadedots[verts->lightnormalindex] * shadelight + ambientlight) / 256, 1);
+			l = (shadedots[verts->lightnormalindex] * shadelight + ambientlight) / 256;
+			
+			if (l > 1)
+				l = 1;
+
 			glColor3f (l, l, l);
 			glVertex3f (verts->v[0], verts->v[1], verts->v[2]);
 			verts++;
@@ -446,15 +446,12 @@ void R_DrawAliasModel (entity_t *ent)
 	int			lnum;
 	vec3_t		dist;
 	float		add;
-	model_t		*clmodel;
 	vec3_t		mins, maxs;
 	aliashdr_t	*paliashdr;
-	float		an;
 	int			anim, skinnum;
 	int			texture;
 	qboolean	full_light;
-
-	clmodel = ent->model;
+	model_t		*clmodel = ent->model;
 
 	VectorAdd (ent->origin, clmodel->mins, mins);
 	VectorAdd (ent->origin, clmodel->maxs, maxs);
@@ -522,12 +519,6 @@ void R_DrawAliasModel (entity_t *ent)
 	}
 
 	shadedots = r_avertexnormal_dots[((int)(ent->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
-	
-	an = -ent->angles[1] / 180 * M_PI;
-	shadevector[0] = cos(an);
-	shadevector[1] = sin(an);
-	shadevector[2] = 1;
-	VectorNormalize (shadevector);
 
 	//
 	// locate the proper data
@@ -607,10 +598,18 @@ void R_DrawAliasModel (entity_t *ent)
 
 	if (r_shadows.value && !full_light && ent != &cl.viewent)
 	{
+		float an = -ent->angles[1] / 180 * M_PI;
+		
+		shadevector[0] = cos(an);
+		shadevector[1] = sin(an);
+		shadevector[2] = 1;
+		VectorNormalize (shadevector);
+
 		glPushMatrix ();
 
 		glTranslatef (ent->origin[0],  ent->origin[1],  ent->origin[2]);
 		glRotatef (ent->angles[1],  0, 0, 1);
+
 		//FIXME glRotatef (-ent->angles[0],  0, 1, 0);
 		//FIXME glRotatef (ent->angles[2],  1, 0, 0);
 
@@ -628,6 +627,34 @@ void R_DrawAliasModel (entity_t *ent)
 
 //==================================================================================
 
+
+/*
+=============
+R_SetSpritesState
+=============
+*/
+void R_SetSpritesState (qboolean state)
+{
+	static qboolean r_state = false;
+
+	if (r_state == state)
+		return;
+
+	r_state = state;
+
+	if (state) 
+	{
+		GL_DisableMultitexture ();
+		glEnable (GL_ALPHA_TEST);
+//		glDepthMask (GL_FALSE);
+	}
+	else
+	{
+		glDisable (GL_ALPHA_TEST);
+//		glDepthMask (GL_TRUE);
+	}
+}
+
 /*
 =============
 R_DrawEntitiesOnList
@@ -641,39 +668,42 @@ void R_DrawEntitiesOnList (void)
 		return;
 
 	// draw sprites seperately, because of alpha blending
-	for (i=0 ; i<cl_numvisedicts ; i++)
+	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = &cl_visedicts[i];
 
 		switch (currententity->model->type)
 		{
-		case mod_alias:
-			R_DrawAliasModel (currententity);
-			break;
+			case mod_alias:
+				R_DrawAliasModel (currententity);
+				break;
 
-		case mod_brush:
-			R_DrawBrushModel (currententity);
-			break;
+			case mod_brush:
+				R_DrawBrushModel (currententity);
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 	}
 
-	for (i=0 ; i<cl_numvisedicts ; i++)
+	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = &cl_visedicts[i];
 
 		switch (currententity->model->type)
 		{
-		case mod_sprite:
-			R_DrawSpriteModel (currententity);
-			break;
+			case mod_sprite:
+				R_SetSpritesState (true);
+				R_DrawSpriteModel (currententity);
+				break;
 
-		default :
-			break;
+			default:
+				break;
 		}
 	}
+
+	R_SetSpritesState (false);
 }
 
 /*
@@ -1036,7 +1066,6 @@ void R_RenderScene (void)
 #ifdef GLTEST
 	Test_Draw ();
 #endif
-
 }
 
 
