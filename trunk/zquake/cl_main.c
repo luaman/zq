@@ -694,7 +694,7 @@ void CL_InitLocal (void)
 	Cvar_Register (&cl_predictPlayers);
 	Cvar_Register (&cl_solidPlayers);
 
-	Cvar_Get (&cl_rconPassword, "rcon_password", 0);
+	cl_rconPassword = Cvar_Get ("rcon_password", "", 0);
 	Cvar_Register (&cl_rconAddress);
 
 	Cvar_Register (&localid);
