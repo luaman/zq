@@ -935,8 +935,19 @@ void PF_Spawn (void)
 void PF_Remove (void)
 {
 	edict_t	*ed;
-	
+	int		num;
+
 	ed = G_EDICT(OFS_PARM0);
+	num = NUM_FOR_EDICT(ed);
+
+	if (num >= 1 && num <= MAX_CLIENTS) {
+		client_t *cl = svs.clients + num - 1;
+		if (cl->bot) {
+			SV_RemoveBot (cl);
+			return;
+		}
+	}
+
 	ED_Free (ed);
 }
 
@@ -1729,6 +1740,14 @@ void PF_multicast (void)
 }
 
 
+void PF_testbot (void)
+{
+	edict_t	*ed;
+	ed = SV_SpawnBot(G_STRING(OFS_PARM0), G_STRING(OFS_PARM1), (int)G_FLOAT(OFS_PARM2), (int)G_FLOAT(OFS_PARM3));
+	RETURN_EDICT(ed);
+}
+
+
 void PF_Fixme (void)
 {
 	PR_RunError ("unimplemented builtin");
@@ -1830,7 +1849,9 @@ PF_logfrag,
 
 PF_infokey,
 PF_stof,
-PF_multicast
+PF_multicast,
+
+PF_testbot,			// !!! Temporary! It will be removed !!!
 };
 
 int pr_numbuiltins = sizeof(pr_builtins)/sizeof(pr_builtins[0]);

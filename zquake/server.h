@@ -121,6 +121,7 @@ typedef struct
 typedef struct client_s
 {
 	client_state_e	state;
+	qboolean		bot;
 
 	int				userid;							// identifying number
 	char			userinfo[MAX_INFO_STRING];		// infostring
@@ -461,3 +462,11 @@ void ClientReliableWrite_SZ(client_t *cl, void *data, int len);
 //
 void SV_SaveGame_f (void);
 void SV_LoadGame_f (void);
+
+//
+// sv_bot.c
+//
+edict_t *SV_SpawnBot (char *name, char *team, int topcolor, int bottomcolor);
+void SV_RemoveBot (client_t *cl);
+void SV_RunBots (void);
+void SV_ReconnectBots (void);

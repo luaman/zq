@@ -151,6 +151,11 @@ or crashing.
 */
 void SV_DropClient (client_t *drop)
 {
+	if (drop->bot) {
+		SV_RemoveBot (drop);
+		return;
+	}
+
 	// add the disconnect
 	MSG_WriteByte (&drop->netchan.message, svc_disconnect);
 
@@ -214,6 +219,9 @@ int SV_CalcPing (client_t *cl)
 	int			i;
 	int			count;
 	register	client_frame_t *frame;
+
+	if (cl->bot)
+		return 0;
 
 	ping = 0;
 	count = 0;
@@ -1263,6 +1271,8 @@ void SV_Frame (double time)
 // move autonomous things around if enough time has passed
 	if (!sv.paused)
 		SV_Physics ();
+
+	SV_RunBots ();
 
 // get packets
 	SV_ReadPackets ();
