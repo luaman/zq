@@ -697,15 +697,15 @@ void IN_MouseMove (usercmd_t *cmd)
 	mouse_y *= sensitivity.value;
 
 // add mouse X/Y movement to cmd
-	if ( (in_strafe.state & 1) || (lookstrafe.value && (in_mlook.state & 1) ))
+	if ( (in_strafe.state & 1) || (lookstrafe.value && mlook_active))
 		cmd->sidemove += m_side.value * mouse_x;
 	else
 		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
 
-	if (in_mlook.state & 1)
+	if (mlook_active)
 		V_StopPitchDrift ();
 		
-	if ( (in_mlook.state & 1) && !(in_strafe.state & 1))
+	if (mlook_active && !(in_strafe.state & 1))
 	{
 		cl.viewangles[PITCH] += m_pitch.value * mouse_y;
 		if (cl.viewangles[PITCH] > 80)
@@ -1121,7 +1121,7 @@ void IN_JoyMove (usercmd_t *cmd)
 		switch (dwAxisMap[i])
 		{
 		case AxisForward:
-			if ((joy_advanced.value == 0.0) && (in_mlook.state & 1))
+			if ((joy_advanced.value == 0.0) && mlook_active)
 			{
 				// user wants forward control to become look control
 				if (fabs(fAxisValue) > joy_pitchthreshold.value)
@@ -1166,7 +1166,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			break;
 
 		case AxisTurn:
-			if ((in_strafe.state & 1) || (lookstrafe.value && (in_mlook.state & 1)))
+			if ((in_strafe.state & 1) || (lookstrafe.value && mlook_active))
 			{
 				// user wants turn control to become side control
 				if (fabs(fAxisValue) > joy_sidethreshold.value)
@@ -1193,7 +1193,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			break;
 
 		case AxisLook:
-			if (in_mlook.state & 1)
+			if (mlook_active)
 			{
 				if (fabs(fAxisValue) > joy_pitchthreshold.value)
 				{
