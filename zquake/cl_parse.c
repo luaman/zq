@@ -1260,6 +1260,8 @@ void CL_ParsePrint (void)
 	if (level == PRINT_CHAT) {
 		TP_CheckVersionRequest (s);
 		flags = TP_CategorizeMessage (s, &offset);
+		if (flags == 2 && !TP_FilterMessage(s + offset))
+			return;
 		if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
 			for (p = s; *p; p++)
 				if (*p == 13 || (*p == 10 && p[1]))
