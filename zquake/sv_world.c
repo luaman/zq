@@ -260,14 +260,14 @@ int SV_AreaEdicts (vec3_t mins, vec3_t maxs, edict_t **edicts, int max_edicts, i
 			if (mins[node->axis] < node->dist)
 			{
 				localstack[stackdepth++] = node->children[0];
-				goto child1;
+				node = node->children[1];
+				continue;
 			}
 			node = node->children[0];
 			continue;
 		}
 		if (mins[node->axis] < node->dist)
 		{
-child1:
 			node = node->children[1];
 			continue;
 		}
