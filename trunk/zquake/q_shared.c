@@ -371,3 +371,28 @@ void SZ_Print (sizebuf_t *buf, char *data)
 
 //============================================================================
 
+/*
+** Q_malloc
+**
+** Use it instead of malloc so that if memory allocation fails,
+** the program exits with a message saying there's not enough memory
+** instead of crashing after trying to use a NULL pointer
+*/
+void *Q_malloc (size_t size)
+{
+	void *p = malloc(size);
+	if (!p)
+		Sys_Error ("Not enough memory free; check disk space");
+	return p;
+}
+
+char *Q_strdup (const char *src)
+{
+	char *p = strdup(src);
+	if (!p)
+		Sys_Error ("Not enough memory free; check disk space");
+	return p;
+}
+
+
+//============================================================================
