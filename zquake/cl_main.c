@@ -824,7 +824,7 @@ static void CL_CheckGfxWad (void)
 	if (!f) {
 		Sys_Error ("Couldn't find gfx.wad.\n"
 			"Make sure you start " PROGRAM
-			"from your Quake directory or use -basedir <path>");
+			" from your Quake directory or use -basedir <path>");
 	}
 	fclose (f);
 }
