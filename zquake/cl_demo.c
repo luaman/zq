@@ -988,7 +988,6 @@ void CL_PlayDemo_f (void)
 	if (!cls.demofile)
 	{
 		Com_Printf ("ERROR: couldn't open.\n");
-		cls.demonum = -1;		// stop demo loop
 		return;
 	}
 
