@@ -465,7 +465,13 @@ float   framecount;
 float           teamplay;
 float           timelimit;
 float           fraglimit;
+
+//
+// checked in worldspawn() and not changing for the whole game
+//
 float           deathmatch;
+float           skill;
+float           coop;
 
 //================================================
 
