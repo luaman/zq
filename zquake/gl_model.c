@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // gl_model.c -- model loading and caching
 
 #include "gl_local.h"
+#include "rc_wad.h"
 #include "crc.h"
 
 model_t	*loadmodel;
@@ -387,6 +388,16 @@ void Mod_LoadTextures (lump_t *l)
 		tx->height = mt->height;
 		for (j = 0; j < MIPLEVELS; j++)
 			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
+
+		if (loadmodel->halflifebsp) {
+			byte *data;
+			if ((data = WAD3_LoadTexture(mt)) != NULL) {
+				qbool alpha = (tx->name[0] == '{');
+				tx->gl_texturenum = GL_LoadTexture32 (tx->name, tx->width, tx->height, data, true, alpha, true);
+				Q_free (data);
+				continue;
+			}
+		}
 
 		if (mt->offsets[0])
 		{
@@ -1116,6 +1127,71 @@ float RadiusFromBounds (vec3_t mins, vec3_t maxs)
 	return VectorLength (corner);
 }
 
+static void Mod_ParseWadsFromEntityLump(lump_t *l)
+{
+	char *data;
+	char *s, key[1024], value[1024];	
+	int i, j, k;
+
+	if (!l->filelen)
+		return;
+
+	data = mod_base + l->fileofs;
+	data = COM_Parse(data);
+	if (!data)
+		return;
+
+	if (com_token[0] != '{')
+		return; // error
+
+	while (1) {
+		if (!(data = COM_Parse(data)))
+			return; // error
+
+		if (com_token[0] == '}')
+			break; // end of worldspawn
+
+		strlcpy (key, (com_token[0] == '_') ? com_token + 1 : com_token, sizeof(key));
+
+		for (s = key + strlen(key) - 1; s >= key && *s == ' '; s--)		// remove trailing spaces
+			*s = 0;
+
+		if (!(data = COM_Parse(data)))
+			return; // error
+
+		strlcpy (value, com_token, sizeof(value));
+
+//let the server decide
+//		if (!strcmp("sky", key) || !strcmp("skyname", key))
+//			R_SetSky (value);
+
+		if (!strcmp("wad", key)) {
+			j = 0;
+			for (i = 0; i < strlen(value); i++) {
+				if (value[i] != ';' && value[i] != '\\' && value[i] != '/' && value[i] != ':')
+					break;
+			}
+			if (!value[i])
+				continue;
+			for ( ; i < sizeof(value); i++) {
+				// skip path
+				if (value[i] == '\\' || value[i] == '/' || value[i] == ':') {
+					j = i + 1;
+				} else if (value[i] == ';' || value[i] == 0) {
+					k = value[i];
+					value[i] = 0;
+					if (value[j])
+						WAD3_LoadWadFile (value + j);
+					j = i + 1;
+					if (!k)
+						break;
+				}
+			}
+		}
+	}
+}
+
+
 /*
 =================
 Mod_LoadBrushModel
@@ -1145,10 +1221,12 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 
 
 // load into heap
-	
+
 	Mod_LoadVertexes (&header->lumps[LUMP_VERTEXES]);
 	Mod_LoadEdges (&header->lumps[LUMP_EDGES]);
 	Mod_LoadSurfedges (&header->lumps[LUMP_SURFEDGES]);
+	if (loadmodel->halflifebsp)
+		Mod_ParseWadsFromEntityLump (&header->lumps[LUMP_ENTITIES]);
 	Mod_LoadTextures (&header->lumps[LUMP_TEXTURES]);
 	Mod_LoadLighting (&header->lumps[LUMP_LIGHTING]);
 	Mod_LoadPlanes (&header->lumps[LUMP_PLANES]);

@@ -64,4 +64,7 @@ lumpinfo_t *W_GetLumpinfo (char *name, qbool crash);
 
 void SwapPic (qpic_t *pic);
 
+void WAD3_LoadWadFile (char *filename);
+byte *WAD3_LoadTexture (miptex_t *mt);
+
 #endif // _WAD_H
