@@ -120,10 +120,17 @@ void Sys_Error (char *error, ...)
 void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
-	
+	char		text[1024];
+	DWORD		dummy;
+
+	if (!dedicated)
+		return;
+
 	va_start (argptr,fmt);
-	vprintf (fmt, argptr);
+	vsprintf (text, fmt, argptr);
 	va_end (argptr);
+
+	WriteFile (houtput, text, strlen(text), &dummy, NULL);
 }
 
 void Sys_Quit (void)
@@ -133,6 +140,9 @@ void Sys_Quit (void)
 
 	if (qwclsemaphore)
 		CloseHandle (qwclsemaphore);
+
+	if (dedicated)
+		FreeConsole ();
 
 	exit (0);
 }
@@ -208,7 +218,7 @@ char *Sys_ConsoleInput (void)
 	HANDLE	th;
 	char	*clipText, *textCopied;
 
-	for ( ;; )
+	while (1)
 	{
 		if (!GetNumberOfConsoleInputEvents (hinput, &numevents))
 			Sys_Error ("Error getting # of console events");
@@ -224,14 +234,14 @@ char *Sys_ConsoleInput (void)
 
 		if (recs[0].EventType == KEY_EVENT)
 		{
-			if (!recs[0].Event.KeyEvent.bKeyDown)
+			if (recs[0].Event.KeyEvent.bKeyDown)
 			{
 				ch = recs[0].Event.KeyEvent.uChar.AsciiChar;
 
 				switch (ch)
 				{
 					case '\r':
-						WriteFile(houtput, "\r\n", 2, &dummy, NULL);	
+						WriteFile(houtput, "\r\n", 2, &dummy, NULL);
 
 						if (len)
 						{
@@ -242,16 +252,12 @@ char *Sys_ConsoleInput (void)
 						break;
 
 					case '\b':
-						WriteFile(houtput, "\b \b", 3, &dummy, NULL);	
+						WriteFile(houtput, "\b \b", 3, &dummy, NULL);
 						if (len)
-						{
 							len--;
-							putch('\b');
-						}
 						break;
 
 					default:
-						Com_Printf ("Stupid: %d\n", recs[0].Event.KeyEvent.dwControlKeyState);
 						if (((ch=='V' || ch=='v') && (recs[0].Event.KeyEvent.dwControlKeyState & 
 							(LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))) || ((recs[0].Event.KeyEvent.dwControlKeyState 
 							& SHIFT_PRESSED) && (recs[0].Event.KeyEvent.wVirtualKeyCode
@@ -263,7 +269,7 @@ char *Sys_ConsoleInput (void)
 									if (clipText) {
 										textCopied = Q_Malloc (GlobalSize(th)+1);
 										strcpy(textCopied, clipText);
-/* Substitutes a NULL for every token */strtok(textCopied, "\n\r\b");
+										strtok(textCopied, "\n\r\b");
 										i = strlen(textCopied);
 										if (i+len>=256)
 											i=256-len;
@@ -333,21 +339,24 @@ void Sys_Init_ (void)
 
 	// allocate a named semaphore on the client so the
 	// front end can tell if it is alive
-	
-	// mutex will fail if semaphore already exists
-	qwclsemaphore = CreateMutex(
-		NULL,         /* Security attributes */
-		0,            /* owner       */
-		"qwcl"); /* Semaphore name      */
-	if (!qwclsemaphore)
-		Sys_Error ("QWCL is already running on this system");
-	CloseHandle (qwclsemaphore);
-	
-	qwclsemaphore = CreateSemaphore(
-		NULL,         /* Security attributes */
-		0,            /* Initial count       */
-		1,            /* Maximum count       */
-		"qwcl"); /* Semaphore name      */
+
+	if (!dedicated)
+	{
+		// mutex will fail if semaphore already exists
+		qwclsemaphore = CreateMutex(
+			NULL,         /* Security attributes */
+			0,            /* owner       */
+			"qwcl"); /* Semaphore name      */
+		if (!qwclsemaphore)
+			Sys_Error ("QWCL is already running on this system");
+		CloseHandle (qwclsemaphore);
+		
+		qwclsemaphore = CreateSemaphore(
+			NULL,         /* Security attributes */
+			0,            /* Initial count       */
+			1,            /* Maximum count       */
+			"qwcl"); /* Semaphore name      */
+	}
 
 	MaskExceptions ();
 	Sys_SetFPCW ();
@@ -440,27 +449,41 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	ParseCommandLine (lpCmdLine);
 
-	// we need to check for -nohwtimer before Host_Init is called
+	// we need to check some parms before Host_Init is called
 	COM_InitArgv (argc, argv);
 
-	hwnd_dialog = CreateDialog (hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
+#if !defined(CLIENTONLY)
+	dedicated = COM_CheckParm ("-dedicated");
+#endif
 
-	if (hwnd_dialog)
+	if (dedicated)
 	{
-		if (GetWindowRect (hwnd_dialog, &rect))
-		{
-			if (rect.left > (rect.top * 2))
-			{
-				SetWindowPos (hwnd_dialog, 0,
-					(rect.left / 2) - ((rect.right - rect.left) / 2),
-					rect.top, 0, 0,
-					SWP_NOZORDER | SWP_NOSIZE);
-			}
-		}
+		if (!AllocConsole())
+			Sys_Error ("Couldn't allocate dedicated server console");
+		hinput = GetStdHandle (STD_INPUT_HANDLE);
+		houtput = GetStdHandle (STD_OUTPUT_HANDLE);
+	}
+	else
+	{
+		hwnd_dialog = CreateDialog (hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
 
-		ShowWindow (hwnd_dialog, SW_SHOWDEFAULT);
-		UpdateWindow (hwnd_dialog);
-		SetForegroundWindow (hwnd_dialog);
+		if (hwnd_dialog)
+		{
+			if (GetWindowRect (hwnd_dialog, &rect))
+			{
+				if (rect.left > (rect.top * 2))
+				{
+					SetWindowPos (hwnd_dialog, 0,
+						(rect.left / 2) - ((rect.right - rect.left) / 2),
+						rect.top, 0, 0,
+						SWP_NOZORDER | SWP_NOSIZE);
+				}
+			}
+
+			ShowWindow (hwnd_dialog, SW_SHOWDEFAULT);
+			UpdateWindow (hwnd_dialog);
+			SetForegroundWindow (hwnd_dialog);
+		}
 	}
 
 
