@@ -145,7 +145,12 @@ void Netchan_OutOfBandPrint (netsrc_t sock, netadr_t adr, char *format, ...)
 	static char		string[8192];		// ??? why static?
 	
 	va_start (argptr, format);
-	vsprintf (string, format,argptr);
+#ifdef _WIN32
+	_vsnprintf (string, sizeof(string) - 1, format, argptr);
+	string[sizeof(string) - 1] = '\0';
+#else
+	vsnprintf (string, sizeof(string), format, argptr);
+#endif // _WIN32
 	va_end (argptr);
 
 	Netchan_OutOfBand (sock, adr, strlen(string), (byte *)string);

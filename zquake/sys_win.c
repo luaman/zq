@@ -116,7 +116,8 @@ void Sys_Error (char *error, ...)
 #endif
 
 	va_start (argptr, error);
-	vsprintf (text, error, argptr);
+	_vsnprintf (text, sizeof(text) - 1, error, argptr);
+	text[sizeof(text) - 1] = '\0';
 	va_end (argptr);
 
 #ifdef SERVERONLY
@@ -147,7 +148,8 @@ void Sys_Printf (char *fmt, ...)
 #endif
 
 	va_start (argptr,fmt);
-	vsprintf (text, fmt, argptr);
+	_vsnprintf (text, sizeof(text) - 1, fmt, argptr);
+	text[sizeof(text) - 1] = '\0';
 	va_end (argptr);
 
 	WriteFile (houtput, text, strlen(text), &dummy, NULL);

@@ -266,7 +266,12 @@ void PR_RunError (char *error, ...)
 	char		string[1024];
 
 	va_start (argptr,error);
-	vsprintf (string,error,argptr);
+#ifdef _WIN32
+	_vsnprintf (string, sizeof(string) - 1, error, argptr);
+	string[sizeof(string) - 1] = '\0';
+#else
+	vsnprintf (string, sizeof(string), error, argptr);
+#endif // _WIN32
 	va_end (argptr);
 
 	PR_PrintStatement (pr_statements + pr_xstatement);

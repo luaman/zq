@@ -56,8 +56,8 @@ void		 Sys_Printf (char *fmt, ...)
 	char			 text[2048];
 	unsigned char	*p;
 
-	va_start (argptr,fmt);
-	vsprintf (text,fmt,argptr);
+	va_start (argptr, fmt);
+	vsnprintf (text, sizeof(text), fmt, argptr);
 	va_end (argptr);
 
 	if (strlen(text) > sizeof(text))
@@ -99,8 +99,8 @@ void		 Sys_Error (char *error, ...)
 	// change stdin to non blocking
 	fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~O_NDELAY);
 
-	va_start (argptr,error);
-	vsprintf (string,error,argptr);
+	va_start (argptr, error);
+	vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 	fprintf(stderr, "Error: %s\n", string);
 
