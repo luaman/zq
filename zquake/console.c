@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int			con_ormask;
 console_t	con_main;
 console_t	con_chat;
-console_t	*con;			// point to either con_main or con_chat
+console_t	*con = &con_main;		// point to either con_main or con_chat
 
 int 		con_linewidth;	// characters across screen
 int			con_totallines;		// total lines in console scrollback
@@ -49,7 +49,7 @@ extern	int		edit_line;
 extern	int		key_linepos;
 		
 
-qboolean	con_initialized;
+qboolean	con_initialized = false;
 
 
 void Key_ClearTyping (void)
@@ -240,6 +240,9 @@ Con_Init
 */
 void Con_Init (void)
 {
+	if (dedicated)
+		return;
+
 	con = &con_main;
 	con_linewidth = -1;
 	Con_CheckResize ();
