@@ -48,7 +48,8 @@ int SV_ModelIndex (char *name)
 		if (!strcmp(sv.model_name[i], name))
 			return i;
 
-	return i;
+	Host_Error ("SV_ModelIndex: model %s not precached", name);
+	return 0;	// shut up compiler
 }
 
 /*
@@ -299,6 +300,7 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	//
 	SV_ClearWorld ();
 
+	sv.model_name[0] = pr_strings;
 	sv.model_name[1] = sv.modelname;
 	sv.models[1] = sv.worldmodel;
 	for (i = 1; i < CM_NumInlineModels(); i++) {
