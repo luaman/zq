@@ -33,12 +33,12 @@ static int	cam_oldbuttons;
 
 cvar_t cl_hightrack = {"cl_hightrack", "0" };	// track high fragger
 
-void Cam_SetViewPlayer (void)
+int Cam_PlayerNum (void)
 {
 	if (cl.spectator && cam_curtarget != CAM_NOTARGET)
-		cl.viewplayernum = cam_curtarget;
+		return cam_curtarget;
 	else
-		cl.viewplayernum = cl.playernum;
+		return cl.playernum;
 }
 
 // returns true if weapon model should be drawn in camera mode
