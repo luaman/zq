@@ -28,14 +28,16 @@ extern unsigned char d_15to8table[65536];
 extern unsigned d_8to24table2[256];
 extern cvar_t crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
-qboolean OnChange_GL_TextureMode_f (cvar_t *var, char *string);
+qboolean OnChange_gl_texturemode (cvar_t *var, char *string);
+qboolean OnChange_gl_smoothfont (cvar_t *var, char *string);
 
 cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_max_size = {"gl_max_size", "1024"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_lerpimages = {"r_lerpimages", "1"};
 cvar_t		gl_conalpha = {"gl_conalpha", "0.8"};
-cvar_t		gl_texturemode = {"gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", 0, OnChange_GL_TextureMode_f};
+cvar_t		gl_texturemode = {"gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", 0, OnChange_gl_texturemode};
+cvar_t		gl_smoothfont = {"gl_smoothfont", "1", 0, OnChange_gl_smoothfont};
 
 byte		*draw_chars;				// 8*8 graphic characters
 mpic_t		*draw_disc;
@@ -335,12 +337,8 @@ glmode_t modes[] = {
 	{"GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR}
 };
 
-/*
-===============
-OnChange_GL_TextureMode_f
-===============
-*/
-qboolean OnChange_GL_TextureMode_f (cvar_t *var, char *string)
+
+qboolean OnChange_gl_texturemode (cvar_t *var, char *string)
 {
 	int		i;
 	gltexture_t	*glt;
@@ -374,6 +372,29 @@ qboolean OnChange_GL_TextureMode_f (cvar_t *var, char *string)
 }
 
 
+qboolean OnChange_gl_smoothfont (cvar_t *var, char *string)
+{
+	float	newval;
+
+	newval = Q_atof (string);
+	if (!newval == !gl_smoothfont.value || !char_texture)
+		return false;
+
+	if (newval)
+	{
+		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	}
+	else
+	{
+		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
+
+	return false;
+}
+
+
 void Draw_LoadCharset (void)
 {
 	int i;
@@ -399,6 +420,11 @@ void Draw_LoadCharset (void)
 	}
 
 	char_texture = GL_LoadTexture ("charset", 128, 256, buf, false, true, false);
+	if (!gl_smoothfont.value)
+	{
+		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
 }
 
 
@@ -419,6 +445,7 @@ void Draw_Init (void)
 	Cvar_Register (&gl_lerpimages);
 	Cvar_Register (&gl_conalpha);
 	Cvar_Register (&gl_texturemode);
+	Cvar_Register (&gl_smoothfont);
 
 	// 3dfx can only handle 256 wide textures
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4) ||
