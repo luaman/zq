@@ -1075,21 +1075,23 @@ void COM_Shutdown (void)
 ============
 va
 
-does a varargs printf into a temp buffer, so I don't need to have
-varargs versions of all text functions.
-FIXME: make this buffer size safe someday
+does a varargs printf into a temp buffer
 ============
 */
 char *va (char *format, ...)
 {
 	va_list		argptr;
-	static char		string[2][1024];
+	static char		string[2][2048];
 	static int		idx = 0;
 	
 	idx = 1 - idx;
 
 	va_start (argptr, format);
+#ifdef _WIN32
+	_vsnprintf (string[idx], sizeof(string[0])-1, format,argptr);
+#else
 	vsprintf (string[idx], format,argptr);
+#endif
 	va_end (argptr);
 
 	return string[idx];
