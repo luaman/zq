@@ -1,4 +1,4 @@
-/*  Copyright (C) 2004  Matthew T. Atkinson
+/*  Copyright (C) 2004, 2005  Matthew T. Atkinson
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -177,7 +177,7 @@ void() snap_d5k_main =
                 matched = true;
                 
                 if( snap_misc_fovtest(self.goalentity.origin, self.frame) )
-    		    soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/health1.wav", sound_vol, ATTN_NORM);
+    		        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/health1.wav", sound_vol, ATTN_NORM);
                 else if( self.skin )
                     soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/outside-fov.wav", sound_vol, ATTN_NORM);
             }
@@ -202,7 +202,7 @@ void() snap_d5k_main =
                 matched = true;
                 
                 if( snap_misc_fovtest(self.goalentity.origin, self.frame) )
-    	        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/backpack.wav", sound_vol, ATTN_NORM);
+    	            soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/backpack.wav", sound_vol, ATTN_NORM);
                 else if( self.skin )
                     soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/outside-fov.wav", sound_vol, ATTN_NORM);
             }
@@ -214,13 +214,13 @@ void() snap_d5k_main =
                 matched = true;
 
                 if( self.goalentity.state == STATE_BOTTOM )
-    		    soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "buttons/switch04.wav", sound_vol, ATTN_NORM);
+    		        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "buttons/switch04.wav", sound_vol, ATTN_NORM);
                 else if( self.skin )
-    		    soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "buttons/switch04.wav", sound_vol, ATTN_NORM);
+    		        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "buttons/switch04.wav", sound_vol, ATTN_NORM);
             }
             // POWERUP (EnvSuit, Pentogram, RoS, Quad)...
     	    else if(    self.goalentity.classname == "item_artifact_envirosuit"
-    		     && snap_misc_ownervisible(self.goalentity.origin) )
+    		         && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
                 
@@ -230,7 +230,7 @@ void() snap_d5k_main =
                     soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/outside-fov.wav", sound_vol, ATTN_NORM);
             }
             else if(    self.goalentity.classname == "item_artifact_invulnerability"
-    		    &&  snap_misc_ownervisible(self.goalentity.origin) )
+    		         && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
                 
@@ -240,7 +240,7 @@ void() snap_d5k_main =
                     soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/outside-fov.wav", sound_vol, ATTN_NORM);
             }
             else if(    self.goalentity.classname == "item_artifact_invisibility"
-    		     && snap_misc_ownervisible(self.goalentity.origin) )
+    		         && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
                 
@@ -250,7 +250,7 @@ void() snap_d5k_main =
                     soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/outside-fov.wav", sound_vol, ATTN_NORM);
             }
             else if(    self.goalentity.classname == "item_artifact_super_damage"
-    		     && snap_misc_ownervisible(self.goalentity.origin) )
+    		         && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
                 
@@ -260,31 +260,31 @@ void() snap_d5k_main =
                     soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/outside-fov.wav", sound_vol, ATTN_NORM);
             }
             // KEY...
-    	    else if(self.goalentity.classname == "item_key1" ||
-    		    self.goalentity.classname == "item_key2"
-    		    && snap_misc_ownervisible(self.goalentity.origin) )
+    	    else if(    self.goalentity.classname == "item_key1" ||
+    		            self.goalentity.classname == "item_key2"
+    		         && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
                 
     	        // AG_FIXME: sound change needed for key
                 if( snap_misc_fovtest(self.goalentity.origin, self.frame) )
-    		    soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "misc/talk.wav", sound_vol, ATTN_NORM);
+    		        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "misc/talk.wav", sound_vol, ATTN_NORM);
                 else if( self.skin )
                     soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/outside-fov.wav", sound_vol, ATTN_NORM);
             }
             // WEAPON...
-            else if((self.goalentity.classname == "weapon_nailgun") ||
-    		    (self.goalentity.classname == "weapon_supernailgun") ||
-    	            (self.goalentity.classname == "weapon_supershotgun") ||
-    		    (self.goalentity.classname == "weapon_rocketlauncher") ||
-    		    (self.goalentity.classname == "weapon_grenadelauncher") ||
-    		    (self.goalentity.classname == "weapon_lightning")
-    		    && snap_misc_ownervisible(self.goalentity.origin) )
+            else if(    (self.goalentity.classname == "weapon_nailgun") ||
+    		            (self.goalentity.classname == "weapon_supernailgun") ||
+    	                (self.goalentity.classname == "weapon_supershotgun") ||
+    		            (self.goalentity.classname == "weapon_rocketlauncher") ||
+    		            (self.goalentity.classname == "weapon_grenadelauncher") ||
+    		            (self.goalentity.classname == "weapon_lightning")
+    		         && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
                 
                 if( snap_misc_fovtest(self.goalentity.origin, self.frame) )
-    		    soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "weapons/pkup.wav", sound_vol, ATTN_NORM);
+    		        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "weapons/pkup.wav", sound_vol, ATTN_NORM);
                 else if( self.skin )
                     soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/outside-fov.wav", sound_vol, ATTN_NORM);
             }
@@ -305,8 +305,8 @@ void() snap_d5k_main =
             self.nextthink = time + 0.01;
         }
 
-	// Go to next entity in chain retunred by findradius()...
-	self.goalentity = self.goalentity.chain;
+	    // Go to next entity in chain retunred by findradius()...
+	    self.goalentity = self.goalentity.chain;
     }
     else
     {

@@ -1,4 +1,4 @@
-/*  Copyright( C) 2004  Matthew T. Atkinson
+/*  Copyright( C) 2004, 2005  Matthew T. Atkinson
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -245,10 +245,11 @@ void() snap_esr_classic =
             // and is closer than the last potential_hit detected
             // (if this is the first entity to be examined, this would be
             // make sure it is within the whole detection radius).
-            if(     potential_hit.health > 1
-	        &&  potential_hit.classname != "worldspwan"
+            if(     snap_misc_ownervisible(potential_hit.origin)
+                &&  potential_hit.health > 1
                 &&  potential_hit != self.owner
-                &&  potential_hit != world )
+                &&  potential_hit != world 
+	            &&  potential_hit.classname != "worldspwan" )
 	    {
                 // Work out if it is a monster, enemy or friend...
 
@@ -342,7 +343,7 @@ void() snap_esr_classic =
                         e_lower_dist = dist;
                     }
                 }
-	    }
+	        }
         }
 
         // Get the next entity...
