@@ -1336,10 +1336,10 @@ void IN_Move (usercmd_t *cmd)
 	if (mlook_active && !(in_strafe.state & 1))
 	{
 		cl.viewangles[PITCH] += m_pitch.value * mouse_y;
-		if (cl.viewangles[PITCH] > 80)
-			cl.viewangles[PITCH] = 80;
-		if (cl.viewangles[PITCH] < -70)
-			cl.viewangles[PITCH] = -70;
+		if (cl.viewangles[PITCH] > cl.maxpitch)
+			cl.viewangles[PITCH] = cl.maxpitch;
+		if (cl.viewangles[PITCH] < cl.minpitch)
+			cl.viewangles[PITCH] = cl.minpitch;
 	}
 	else
 	{
