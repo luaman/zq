@@ -49,18 +49,19 @@ typedef struct explosion_s
 explosion_t	cl_explosions[MAX_EXPLOSIONS];
 explosion_t cl_explosions_headnode, *cl_free_explosions;
 
-sfx_t			*cl_sfx_wizhit;
-sfx_t			*cl_sfx_knighthit;
-sfx_t			*cl_sfx_tink1;
-sfx_t			*cl_sfx_ric1;
-sfx_t			*cl_sfx_ric2;
-sfx_t			*cl_sfx_ric3;
-sfx_t			*cl_sfx_r_exp3;
+static sfx_t			*cl_sfx_wizhit;
+static sfx_t			*cl_sfx_knighthit;
+static sfx_t			*cl_sfx_tink1;
+static sfx_t			*cl_sfx_ric1;
+static sfx_t			*cl_sfx_ric2;
+static sfx_t			*cl_sfx_ric3;
+static sfx_t			*cl_sfx_r_exp3;
 
-struct model_s	*cl_explo_mod;
-struct model_s	*cl_bolt1_mod;
-struct model_s	*cl_bolt2_mod;
-struct model_s	*cl_bolt3_mod;
+static struct model_s	*cl_explo_mod;
+static struct model_s	*cl_bolt1_mod;
+static struct model_s	*cl_bolt2_mod;
+static struct model_s	*cl_bolt3_mod;
+static struct model_s	*cl_beam_mod;
 
 /*
 =================
@@ -87,7 +88,7 @@ void CL_ClearTEnts (void)
 {
 	int i;
 
-	cl_explo_mod = NULL;
+	cl_explo_mod = cl_beam_mod = NULL;
 	cl_bolt1_mod = cl_bolt2_mod = cl_bolt3_mod = NULL;
 
 	memset (&cl_beams, 0, sizeof(cl_beams));
@@ -153,11 +154,12 @@ void CL_FreeExplosion (explosion_t *ex)
 CL_ParseBeam
 =================
 */
-void CL_ParseBeam (struct model_s *m)
+void CL_ParseBeam (int type)
 {
 	int		ent;
 	vec3_t	start, end;
 	beam_t	*b;
+	struct model_s *m;
 	int		i;
 	
 	ent = MSG_ReadShort ();
@@ -170,10 +172,34 @@ void CL_ParseBeam (struct model_s *m)
 	end[1] = MSG_ReadCoord ();
 	end[2] = MSG_ReadCoord ();
 
-	// an experimental protocol extension
-	if (m == cl_bolt1_mod && (ent >= -33 && ent <= -1)) {
+	// an experimental protocol extension:
+	// TE_LIGHTNING1 with entity in -33..-1 range is a rail trail
+	if (type == 1 && (ent >= -33 && ent <= -1)) {
 		CL_RailTrail (start, end);
 		return;
+	}
+
+	switch (type) {
+	case 1:
+		if (!cl_bolt1_mod)
+			cl_bolt1_mod = Mod_ForName ("progs/bolt.mdl", true);
+		m = cl_bolt1_mod;
+		break;
+	case 2:
+		if (!cl_bolt2_mod)
+			cl_bolt2_mod = Mod_ForName ("progs/bolt2.mdl", true);
+		m = cl_bolt2_mod;
+		break;
+	case 3:
+		if (!cl_bolt3_mod)
+			cl_bolt3_mod = Mod_ForName ("progs/bolt3.mdl", true);
+		m = cl_bolt3_mod;
+		break;
+	case 4: default:
+		if (!cl_beam_mod)
+			cl_beam_mod = Mod_ForName ("progs/beam.mdl", true);
+		m = cl_beam_mod;
+		break;
 	}
 
 	if (ent == cl.viewplayernum + 1)
@@ -339,21 +365,15 @@ void CL_ParseTEnt (void)
 		break;
 
 	case TE_LIGHTNING1:			// lightning bolts
-		if (!cl_bolt1_mod)
-			cl_bolt1_mod = Mod_ForName("progs/bolt.mdl", true);
-		CL_ParseBeam (cl_bolt1_mod);
+		CL_ParseBeam (1);
 		break;
 
 	case TE_LIGHTNING2:			// lightning bolts
-		if (!cl_bolt2_mod)
-			cl_bolt2_mod = Mod_ForName("progs/bolt2.mdl", true);
-		CL_ParseBeam (cl_bolt2_mod);
+		CL_ParseBeam (2);
 		break;
 
 	case TE_LIGHTNING3:			// lightning bolts
-		if (!cl_bolt3_mod)
-			cl_bolt3_mod = Mod_ForName("progs/bolt3.mdl", true);
-		CL_ParseBeam (cl_bolt3_mod);
+		CL_ParseBeam (3);
 		break;
 
 	case TE_LAVASPLASH:	
@@ -409,7 +429,7 @@ void CL_ParseTEnt (void)
 	case TE_LIGHTNINGBLOOD:		// lightning hitting body
 		if (cls.nqdemoplayback) {
 			// NQ_TE_BEAM - grappling hook beam
-			CL_ParseBeam (Mod_ForName("progs/beam.mdl", true));
+			CL_ParseBeam (4);
 			break;
 		}
 		pos[0] = MSG_ReadCoord ();
