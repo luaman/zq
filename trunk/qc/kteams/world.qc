@@ -460,7 +460,17 @@ void StartFrame ()
 // <-- KTEAMS        
 	fraglimit = cvar("fraglimit");
 	teamplay = cvar("teamplay");
-	
+
+// oldman --> don't allow unlimited timelimit + fraglimit
+    if((timelimit == 0) && (fraglimit == 0))
+    {
+        if(stof(infokey(world, "k_timetop")))
+        	timelimit = stof(infokey(world, "k_timetop")) * 60;
+        else
+            timelimit = 1200;   // sensible default if no max set
+    }
+// <-- oldman
+
 	framecount = framecount + 1;
 
 // KTEAMS -->
