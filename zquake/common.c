@@ -937,23 +937,18 @@ void COM_CheckRegistered (void)
 
 /*
 ================
-COM_InitArgv
+COM_AddParm
+
+Adds the given string at the end of the current argument list
 ================
 */
-void COM_InitArgv (int argc, char **argv)
+void COM_AddParm (char *parm)
 {
-	for (com_argc=0 ; (com_argc<MAX_NUM_ARGVS) && (com_argc < argc) ;
-		 com_argc++)
-	{
-		if (argv[com_argc])
-			largv[com_argc] = argv[com_argc];
-		else
-			largv[com_argc] = "";
-	}
-
-	largv[com_argc] = "";
-	com_argv = largv;
+	if (com_argc >= MAX_NUM_ARGVS)
+		return;
+	largv[com_argc++] = parm;
 }
+
 
 /*
 ================
@@ -976,19 +971,43 @@ int COM_CheckParm (char *parm)
 	return 0;
 }
 
+int COM_Argc (void)
+{
+	return com_argc;
+}
+
+char *COM_Argv (int arg)
+{
+	if (arg < 0 || arg >= com_argc)
+		return "";
+	return com_argv[arg];
+}
+
+void COM_ClearArgv (int arg)
+{
+	if (arg < 0 || arg >= com_argc)
+		return;
+	com_argv[arg] = "";
+}
 
 /*
 ================
-COM_AddParm
-
-Adds the given string at the end of the current argument list
+COM_InitArgv
 ================
 */
-void COM_AddParm (char *parm)
+void COM_InitArgv (int argc, char **argv)
 {
-	if (com_argc >= MAX_NUM_ARGVS)
-		return;
-	largv[com_argc++] = parm;
+	for (com_argc=0 ; (com_argc<MAX_NUM_ARGVS) && (com_argc < argc) ;
+		 com_argc++)
+	{
+		if (argv[com_argc])
+			largv[com_argc] = argv[com_argc];
+		else
+			largv[com_argc] = "";
+	}
+
+	largv[com_argc] = "";
+	com_argv = largv;
 }
 
 
