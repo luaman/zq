@@ -375,6 +375,10 @@ void() worldspawn =
 
 	// 63 testing
 	lightstyle(63, "a");
+
+
+	// get game rules
+	deathmatch = cvar("deathmatch");
 };
 
 void() StartFrame =
@@ -382,7 +386,6 @@ void() StartFrame =
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar("fraglimit");
 	teamplay = cvar("teamplay");
-	deathmatch = cvar("deathmatch");
 	
 	framecount = framecount + 1;
 
