@@ -60,6 +60,7 @@ cvar_t	tp_name_cells = {"tp_name_cells", "cells"};
 cvar_t	tp_name_mh = {"tp_name_mh", "mh"};
 cvar_t	tp_name_health = {"tp_name_health", "health"};
 cvar_t	tp_name_backpack = {"tp_name_backpack", "pack"};
+cvar_t	tp_name_flag = {"tp_name_flag", "flag"};
 
 
 //===========================================================================
@@ -117,63 +118,6 @@ void TP_ExecTrigger (char *s)
 		// a single line, so execute it right away
 		Cmd_ExecuteString (astr);
 		return;
-	}
-}
-
-#define	IT_WEAPONS (2|4|8|16|32|64)
-void TP_StatChanged (int stat, int value)
-{
-	int		i;
-
-	if (stat == STAT_HEALTH)
-	{
-		if (value > 0) {
-			if (vars.health <= 0 /*&& last_health != -999*/
-				/* && Q_strcasecmp(Info_ValueForKey(cl.serverinfo, "status"),
-				"standby") */)	// detect Kombat Teams status
-			{
-				extern cshift_t	cshift_empty;
-				vars.respawntrigger_time = realtime;
-				//if (cl.teamfortress)
-					memset (&cshift_empty, 0, sizeof(cshift_empty));
-				if (!cl.spectator)
-					TP_ExecTrigger ("f_respawn");
-			}
-			vars.health = value;
-			return;
-		}
-		if (vars.health > 0) {		// We just died
-			vars.deathtrigger_time = realtime;
-			strcpy (vars.lastdeathloc, Macro_Location_f());
-			if (!cl.spectator)
-				TP_ExecTrigger ("f_death");
-		}
-		vars.health = value;
-	}
-	else if (stat == STAT_ITEMS)
-	{
-		i = value &~ vars.items;
-		if (i & IT_WEAPONS && (i & IT_WEAPONS != IT_WEAPONS)
-		|| i & (IT_ARMOR1|IT_ARMOR2|IT_ARMOR3|IT_SUPERHEALTH)
-		|| i & (IT_INVISIBILITY|IT_INVULNERABILITY|IT_SUIT|IT_QUAD))
-		{
-			// ...
-			//TP_ExecTrigger ("f_took");
-		}
-
-		if (i & (IT_KEY1|IT_KEY2)) {
-			if (cl.teamfortress)
-				strcpy (vars.tookitem, "flag");
-			else
-				strcpy (vars.tookitem, "key");
-
-			// TODO: only if tooktriggers are enabled
-			strcpy (vars.last_tooktrigger, vars.tookitem);
-			if (!cl.spectator)
-				TP_ExecTrigger ("f_took");
-		}
-
-		vars.items = value;
 	}
 }
 
@@ -1327,7 +1271,7 @@ pk_mh, pk_health, pk_lg, pk_rl, pk_gl, pk_sng, pk_ng, pk_ssg, pk_pack,
 pk_cells, pk_rockets, pk_nails, pk_shells, pk_flag, MAX_PKFLAGS};
 
 #define default_pkflags ((1<<pk_quad)|(1<<pk_pent)|(1<<pk_ring)| \
-		(1<<pk_ra)|(1<<pk_ya)|(1<<pk_lg)|(1<<pk_rl)|(1<<pk_mh))
+		(1<<pk_ra)|(1<<pk_ya)|(1<<pk_lg)|(1<<pk_rl)|(1<<pk_mh)|(1<<pk_flag))
 
 int pkflags = default_pkflags;
 
@@ -1653,6 +1597,50 @@ more:
 }
 
 
+#define	IT_WEAPONS (2|4|8|16|32|64)
+void TP_StatChanged (int stat, int value)
+{
+	int		i;
+
+	if (stat == STAT_HEALTH)
+	{
+		if (value > 0) {
+			if (vars.health <= 0 /*&& last_health != -999*/
+				/* && Q_strcasecmp(Info_ValueForKey(cl.serverinfo, "status"),
+				"standby") */)	// detect Kombat Teams status
+			{
+				extern cshift_t	cshift_empty;
+				vars.respawntrigger_time = realtime;
+				//if (cl.teamfortress)
+					memset (&cshift_empty, 0, sizeof(cshift_empty));
+				if (!cl.spectator)
+					TP_ExecTrigger ("f_respawn");
+			}
+			vars.health = value;
+			return;
+		}
+		if (vars.health > 0) {		// We just died
+			vars.deathtrigger_time = realtime;
+			strcpy (vars.lastdeathloc, Macro_Location_f());
+			if (!cl.spectator)
+				TP_ExecTrigger ("f_death");
+		}
+		vars.health = value;
+	}
+	else if (stat == STAT_ITEMS)
+	{
+		i = value &~ vars.items;
+
+		if (i & (IT_KEY1|IT_KEY2)) {
+			if (cl.teamfortress)
+				ExecTookTrigger (tp_name_flag.string, pk_flag);
+		}
+
+		vars.items = value;
+	}
+}
+
+
 void TP_Init ()
 {
 	Cvar_RegisterVariable (&cl_parsesay);
@@ -1685,6 +1673,7 @@ void TP_Init ()
 	Cvar_RegisterVariable (&tp_name_mh);
 	Cvar_RegisterVariable (&tp_name_health);
 	Cvar_RegisterVariable (&tp_name_backpack);
+	Cvar_RegisterVariable (&tp_name_flag);
 
 	Cmd_AddCommand ("macrolist", TP_MacroList_f);
 	Cmd_AddCommand ("loadloc", TP_LoadLocFile_f);
