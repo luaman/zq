@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "teamplay.h"
 
+void Cam_TryLock (void);
 void CL_FinishTimeDemo (void);
 
 // .qwz playback
@@ -241,6 +242,8 @@ qboolean CL_GetDemoMessage (void)
 		fread (cl.viewangles, 12, 1, cls.demofile);
 		for (i = 0; i < 3; i++)
 			cl.viewangles[i] = LittleFloat (cl.viewangles[i]);
+		if (cl.spectator)
+			Cam_TryLock ();
 		break;
 
 	case dem_read:

@@ -551,6 +551,62 @@ void Cam_Reset(void)
 	spec_track = 0;
 }
 
+/*
+===============
+Cam_TryLock
+
+Fixes spectator chasecam demos
+===============
+*/
+void Cam_TryLock (void)
+{
+	int		i, j;
+	player_state_t *state;
+	int		old_autocam, old_spec_track;
+	static	float cam_lastlocktime;
+
+	if (!cl.validsequence)
+		return;
+
+	if (!autocam)
+		cam_lastlocktime = 0;
+
+	old_autocam = autocam;
+	old_spec_track = spec_track;
+
+	state = cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].playerstate;
+	for (i=0 ; i<MAX_CLIENTS ; i++) {
+		if (!cl.players[i].name[0] || cl.players[i].spectator ||
+			state[i].messagenum != cl.parsecount)
+			continue;
+		if (fabs(state[i].command.angles[0] - cl.viewangles[0]) < 2 &&
+			fabs(state[i].command.angles[1] - cl.viewangles[1]) < 2)
+		{
+			for (j=0 ; j<3 ; j++)
+				if (fabs(state[i].origin[j] - state[cl.playernum].origin[j]) > 200)
+					break;	// too far
+			if (j < 3)
+				continue;
+			autocam = CAM_TRACK;
+			spec_track = i;
+			locked = true;
+			cam_lastlocktime = realtime;
+			break;
+		}
+	}
+
+	if (realtime - cam_lastlocktime > 0.3) {
+		// Couldn't lock to any player for 0.3 seconds, so assume
+		// the spectator switched to free spectator mode
+		autocam = CAM_NONE;
+		spec_track = 0;
+		locked = false;
+	}
+
+	if (autocam != old_autocam || spec_track != old_spec_track)
+		Sbar_Changed ();
+}
+
 void CL_InitCam(void)
 {
 	Cvar_RegisterVariable (&cl_hightrack);
