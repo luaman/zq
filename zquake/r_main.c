@@ -132,6 +132,7 @@ cvar_t	r_fullbrightSkins = {"r_fullbrightSkins","0"};
 unsigned char	r_palette[768];
 qbool			d_15to8table_made = false;
 unsigned char	d_15to8table[65536];
+unsigned short	d_8to16table[256];
 
 
 extern cvar_t	scr_fov;

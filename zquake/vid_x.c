@@ -68,7 +68,6 @@ static qbool dgamouse = false;
 #endif
 
 extern viddef_t	 vid; // global video state
-unsigned short	 d_8to16table[256];
 
 static qbool	 doShm;
 static Display	*x_disp;
