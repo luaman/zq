@@ -723,7 +723,7 @@ void SV_Snap (int uid)
 		pcxname[strlen(pcxname) - 5] = i%10 + '0'; 
 		Q_snprintfz (checkname, sizeof(checkname), "%s/snap/%s", com_gamedir, pcxname);
 		f = fopen (checkname, "rb");
-		if (!f);
+		if (!f)
 			break;  // file doesn't exist
 		fclose (f);
 	} 
