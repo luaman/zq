@@ -418,22 +418,6 @@ void CL_FinishMove (usercmd_t *cmd)
 		cmd->buttons |= 2;
 	in_jump.state &= ~2;
 
-// Swimup hack -->
-	if (cmd->buttons & 2 && (cl.stats[STAT_HEALTH] > 0) && CL_KeyState (&in_up))
-	{
-/*		Crashes :(
-		pmove.numtouch = 0;
-		VectorCopy (cl.simvel, pmove.velocity);
-		VectorCopy (cl.simorg, pmove.origin);
-		PM_CategorizePosition();	*/
-		if (waterlevel >= 2)
-		{
-			cmd->upmove = cl_upspeed.value;
-			cmd->buttons &= ~2;
-		}
-	}
-// <-- Swimup hack
-
 	// send milliseconds of time to apply the move
 	ms = host_frametime * 1000;
 	if (ms > 250)
