@@ -566,6 +566,8 @@ void D_FlushCaches (void)
 	lightmode = gl_lightmode.value;
 	if (lightmode < 0 || lightmode > 2)
 		lightmode = 2;
+
+	// FIXME - remove this when gl_lightmode 1 is implemented!
+	if (lightmode == 1)
+		lightmode = 2;
 }
-
-
