@@ -1175,7 +1175,7 @@ void SV_God_f (void)
 {
 	if (!sv_allow_cheats)
 	{
-		Com_Printf ("You must run the server with '+set sv_cheats 1' to enable this command.\n");
+		Com_Printf ("Cheats are not allowed on this server\n");
 		return;
 	}
 
@@ -1199,7 +1199,7 @@ void SV_Give_f (void)
 	
 	if (!sv_allow_cheats)
 	{
-		Com_Printf ("You must run the server with '+set sv_cheats 1' to enable this command.\n");
+		Com_Printf ("Cheats are not allowed on this server\n");
 		return;
 	}
 	
@@ -1247,7 +1247,7 @@ void SV_Noclip_f (void)
 {
 	if (!sv_allow_cheats)
 	{
-		Com_Printf ("You must run the server with '+set sv_cheats 1' to enable this command.\n");
+		Com_Printf ("Cheats are not allowed on this server\n");
 		return;
 	}
 
