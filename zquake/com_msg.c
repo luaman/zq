@@ -185,6 +185,9 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 	int		i;
 	float	miss;
 
+	assert (to->number > 0);
+	assert (to->number < 512);
+
 // send an update
 	bits = 0;
 	
@@ -235,9 +238,10 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 
 	if (!bits && !force)
 		return;		// nothing to send!
+
 	i = to->number | (bits&~511);
-	if (i & U_REMOVE)
-		Sys_Error ("U_REMOVE");
+	assert (!(i & U_REMOVE));
+
 	MSG_WriteShort (msg, i);
 	
 	if (bits & U_MOREBITS)
