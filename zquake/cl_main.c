@@ -73,7 +73,6 @@ cvar_t	cl_deadbodyfilter = {"cl_deadbodyFilter", "0"};
 cvar_t	cl_explosion = {"cl_explosion", "0"};
 cvar_t	cl_gibfilter = {"cl_gibFilter", "0"};
 cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
-cvar_t	cl_speedjumpfix = {"cl_speedjumpfix", "1"};
 cvar_t	cl_demotimescale = {"demotimescale", "1"};
 cvar_t	cl_staticsounds = {"cl_staticSounds", "1"};
 cvar_t	cl_trueLightning = {"cl_trueLightning", "0"};
@@ -692,7 +691,6 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&r_grenadetrail);
 	Cvar_RegisterVariable (&r_powerupglow);
 	Cvar_RegisterVariable (&r_rocketlight);
-	Cvar_RegisterVariable (&cl_speedjumpfix);
 	Cvar_RegisterVariable (&cl_demotimescale);
 	Cvar_RegisterVariable (&cl_deadbodyfilter);
 	Cvar_RegisterVariable (&cl_explosion);
