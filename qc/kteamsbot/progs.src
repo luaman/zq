@@ -1,6 +1,9 @@
 ./qwprogs.dat
 
 defs.qc
+../qw/defs.qc
+../frikbot/defs_frikbot.qc
+../kteams/kt_defs.qc
 
 ../frikbot/map_dm1.qc
 ../frikbot/map_dm2.qc
@@ -24,11 +27,13 @@ bot.qc
 ../kteams/vote.qc
 
 ../kteams/maps.qc
+
 weapons.qc
-world.qc
+../kteams/world.qc
+
 ../kteams/motd.qc
 ../kteams/admin.qc
-client.qc
+../kteams/client.qc
 ../kteams/spectate.qc
 
 ../kteams/captain.qc

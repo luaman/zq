@@ -1,6 +1,6 @@
 // !!! TEMPORARY functions for bot testing !!!
-entity (string name) testbot = #83;
-void (entity e, string key, string value) setinfo = #84;
+/* entity (string name) testbot = #83; */
+/* void (entity e, string key, string value) setinfo = #84; */
 
 void PlayerReady();
 
