@@ -66,14 +66,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qbool m
 int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten);
 int GL_FindTexture (char *identifier);
 
-typedef struct
-{
-	float	x, y, z;
-	float	s, t;
-	float	r, g, b;
-} glvert_t;
 
-extern glvert_t glv;
 
 #ifdef _WIN32
 extern	PROC glArrayElementEXT;

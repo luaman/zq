@@ -102,7 +102,6 @@ float vid_gamma = 1.0;
 HGLRC	baseRC;
 HDC		maindc;
 
-glvert_t glv;
 
 cvar_t	gl_strings = {"gl_strings", "", CVAR_ROM};
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1"};
