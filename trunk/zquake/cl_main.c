@@ -52,6 +52,7 @@ cvar_t  localid = {"localid", ""};
 static qboolean allowremotecmd = true;
 
 // ZQuake cvars
+// FIXME: r_ prefix is wrong, but not changing for compatibility reasons
 cvar_t	r_rocketlight = {"r_rocketLight", "1"};
 cvar_t	r_rockettrail = {"r_rocketTrail", "1"};
 cvar_t	r_grenadetrail = {"r_grenadeTrail", "1"};
