@@ -20,7 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cl_ents.c -- entity parsing and management
 
 #include "quakedef.h"
-#include "winquake.h"
 #include "pmove.h"
 #include "teamplay.h"
 
@@ -402,10 +401,9 @@ void CL_ParsePacketEntities (qboolean delta)
 		if (cls.demoplayback)
 			host_skipframe = true;
 
-#ifdef _WIN32
 		if (!cls.demoplayback)
-			SetWindowText (mainwindow, va("ZQuake: %s", cls.servername));
-#endif
+			VID_SetCaption (va("ZQuake: %s", cls.servername));
+
 		Con_ClearNotify ();
 		TP_ExecTrigger ("f_spawn");
 	}
