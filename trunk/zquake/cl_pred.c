@@ -60,7 +60,7 @@ void CL_NudgePosition (void)
 CL_PredictUsercmd
 ==============
 */
-void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, qboolean spectator)
+void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u)
 {
 	// split up very long moves
 	if (u->msec > 50)
@@ -71,8 +71,8 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 		split = *u;
 		split.msec /= 2;
 
-		CL_PredictUsercmd (from, &temp, &split, spectator);
-		CL_PredictUsercmd (&temp, to, &split, spectator);
+		CL_PredictUsercmd (from, &temp, &split);
+		CL_PredictUsercmd (&temp, to, &split);
 		return;
 	}
 
@@ -87,13 +87,7 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 		pmove.jump_msec = from->jump_msec;
 	pmove.jump_held = from->jump_held;
 	pmove.waterjumptime = from->waterjumptime;
-	if (spectator)
-		pmove.pm_type = PM_OLD_SPECTATOR;
-	else if (cl.stats[STAT_HEALTH] <= 0)
-		pmove.pm_type = PM_DEAD;
-	else
-		pmove.pm_type = PM_NORMAL;
-
+	pmove.pm_type = from->pm_type;
 	pmove.cmd = *u;
 
 	movevars.entgravity = cl.entgravity;
@@ -265,7 +259,7 @@ void CL_PredictMove (void)
 		from = to;
 		to = &cl.frames[(cl.validsequence+i) & UPDATE_MASK];
 		CL_PredictUsercmd (&from->playerstate[cl.playernum]
-			, &to->playerstate[cl.playernum], &to->cmd, cl.spectator);
+			, &to->playerstate[cl.playernum], &to->cmd);
 		cl.onground = pmove.onground;
 	}
 

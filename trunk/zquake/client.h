@@ -49,6 +49,7 @@ typedef struct
 
 	int			flags;			// dead, gib, etc
 
+	int			pm_type;
 	float		waterjumptime;
 	qboolean	onground;
 	qboolean	jump_held;
@@ -488,7 +489,7 @@ void CL_ParsePlayerinfo (void);
 //
 void CL_InitPrediction (void);
 void CL_PredictMove (void);
-void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, qboolean spectator);
+void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u);
 
 //
 // cl_cam.c

@@ -668,13 +668,28 @@ void CL_ParsePlayerinfo (void)
 
 	if (cl.z_ext & Z_EXT_PM_TYPE)
 	{
-		int		pm_type;
+		int pm_code = (flags >> PF_PMC_SHIFT) & PF_PMC_MASK;
 
-		pm_type = (flags >> PF_PMC_SHIFT) & PF_PMC_MASK;
-		if (pm_type == PMC_NORMAL)
+		if (pm_code == PMC_NORMAL || pm_code == PMC_NORMAL_JUMP_HELD) {
+			state->pm_type = PM_NORMAL;
+			state->jump_held = (pm_code == PMC_NORMAL_JUMP_HELD);
+		}
+		else if (pm_code == PMC_OLD_SPECTATOR)
+			state->pm_type = PMC_OLD_SPECTATOR;
+		else {
+			// assume PM_NORMAL
+			state->pm_type = PM_NORMAL;
 			state->jump_held = false;
-		else if (pm_type == PMC_NORMAL_JUMP_HELD)
-			state->jump_held = true;
+		}
+	}
+	else
+	{
+		if (cl.players[num].spectator)
+			state->pm_type = PM_OLD_SPECTATOR;
+		else if (num == cl.playernum && cl.stats[STAT_HEALTH] <= 0)
+			state->pm_type = PM_DEAD;
+		else
+			state->pm_type = PM_NORMAL;
 	}
 
 	VectorCopy (state->command.angles, state->viewangles);
@@ -853,7 +868,7 @@ void CL_LinkPlayers (void)
 
 			oldphysent = pmove.numphysent;
 			CL_SetSolidPlayers (j);
-			CL_PredictUsercmd (state, &exact, &state->command, false);
+			CL_PredictUsercmd (state, &exact, &state->command);
 			pmove.numphysent = oldphysent;
 			VectorCopy (exact.origin, ent.origin);
 		}
@@ -971,7 +986,7 @@ void CL_SetUpPlayerPrediction(qboolean dopred)
 					msec = 255;
 				state->command.msec = msec;
 
-				CL_PredictUsercmd (state, &exact, &state->command, false);
+				CL_PredictUsercmd (state, &exact, &state->command);
 				VectorCopy (exact.origin, pplayer->origin);
 			}
 		}
