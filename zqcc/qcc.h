@@ -244,6 +244,7 @@ struct type_t
 {
 	etype_t		type;
 	type_t		*aux_type;		// return type or field type
+	bool		constant;
 
 // function types are more complex
 	int			num_parms;		// number of required parms ( + VA_BIT if variable parms)
@@ -445,3 +446,6 @@ extern int		numpr_globals;
 extern char		pr_immediate_string[2048];
 
 int	CopyString (char *str);
+
+// don't take const into account
+bool CompareType (type_t *t1, type_t *t2);
