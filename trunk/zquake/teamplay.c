@@ -199,6 +199,14 @@ char *Macro_Weapon_f (void)
 	}
 }
 
+char *Macro_WeaponAndAmmo_f (void)
+{
+	char buf[MAX_MACRO_VALUE];
+	sprintf (buf, "%s:%s", Macro_Weapon_f(), Macro_Ammo_f());
+	strcpy (macro_buf, buf);
+	return macro_buf;
+}
+
 char *Macro_WeaponNum_f (void)
 {
 	switch (cl.stats[STAT_ACTIVEWEAPON])
@@ -548,6 +556,7 @@ char *TP_ParseMacroString (char *s)
 				macro_string = macro_buf;
 				break;
 				
+			case 'p':
 			case 'P':
 				macro_string = Macro_Powerups_f();
 				if (macro_string[0])
@@ -588,8 +597,7 @@ char *TP_ParseMacroString (char *s)
 				case 'P':
 				case 'p': macro_string = Macro_Powerups_f(); break;
 				case 'r': macro_string = Macro_Rockets_f(); break;
-				case 'w': macro_string = Macro_Weapon_f(); break;
-				case 'W': macro_string = Macro_Ammo_f(); break;
+				case 'w': macro_string = Macro_WeaponAndAmmo_f(); break;
 				case 'x': macro_string = Macro_PointName_f(); break;
 				case 'y': macro_string = Macro_PointLocation_f(); break;
 				case 't': macro_string = Macro_PointNameAtLocation_f(); break;
