@@ -643,10 +643,10 @@ extern	int		cl_spikeindex, cl_playerindex, cl_flagindex;
 
 /*
 ===================
-CL_ParsePlayerinfo
+CL_ParsePlayerState
 ===================
 */
-void CL_ParsePlayerinfo (void)
+void CL_ParsePlayerState (void)
 {
 	int			msec;
 	int			flags;
@@ -657,7 +657,7 @@ void CL_ParsePlayerinfo (void)
 
 	num = MSG_ReadByte ();
 	if (num >= MAX_CLIENTS)
-		Host_Error ("CL_ParsePlayerinfo: bad num");
+		Host_Error ("CL_ParsePlayerState: bad num");
 
 	info = &cl.players[num];
 

@@ -41,19 +41,20 @@ typedef struct
 	vec3_t		origin;
 	vec3_t		viewangles;		// only for demos, not from server
 	vec3_t		velocity;
-	int			weaponframe;
+	byte		weaponframe;
 
-	int			modelindex;
-	int			frame;
-	int			skinnum;
-	int			effects;
+	byte		modelindex;
+	byte		frame;
+	byte		skinnum;
+	byte		effects;
+
+	short		flags;			// dead, gib, etc
 
 	byte		vw_index;
 	byte		vw_frame;
 
-	int			flags;			// dead, gib, etc
-
-	int			pm_type;
+	// prediction info
+	byte		pm_type;
 	float		waterjumptime;
 	qbool		onground;
 	qbool		jump_held;
@@ -532,7 +533,7 @@ void CL_ClearProjectiles (void);
 void CL_ParseProjectiles (void);
 void CL_ParsePacketEntities (qbool delta);
 void CL_SetSolidEntities (void);
-void CL_ParsePlayerinfo (void);
+void CL_ParsePlayerState (void);
 
 //
 // cl_pred.c
