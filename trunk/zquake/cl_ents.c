@@ -421,7 +421,7 @@ void CL_LinkPacketEntities (void)
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
 		extern float nextdemotime, olddemotime;
-		f = bound(0, (cls.demotime - nextdemotime) / (nextdemotime - olddemotime), 1);
+		f = bound(0, (cls.demotime - olddemotime) / (nextdemotime - olddemotime), 1);
 	}
 	else
 #endif
@@ -1382,8 +1382,8 @@ void MVD_Interpolate(void)
 	oldframe = &cl.frames[cl.oldparsecount & UPDATE_MASK];
 	oldents = oldframe->packet_entities.entities;
 
-//Com_Printf ("%f of %f\n", cls.demotime - nextdemotime, nextdemotime - olddemotime);
-	f = bound(0, (cls.demotime - nextdemotime) / (nextdemotime - olddemotime), 1);
+//Com_Printf ("%f of %f\n", cls.demotime - olddemotime, nextdemotime - olddemotime);
+	f = bound(0, (cls.demotime - olddemotime) / (nextdemotime - olddemotime), 1);
 
 	// interpolate nails
 	for (i = 0; i < cl_num_projectiles; i++)	{

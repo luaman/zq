@@ -193,18 +193,6 @@ qbool CL_GetDemoMessage (void)
 	if (cl.paused & PAUSED_DEMO)
 		return false;
 
-/*#ifdef MVDPLAY
-    if (cls.mvdplayback) {
-        if (prevtime < nextdemotime)
-            prevtime = nextdemotime;
-
-        if (cls.realtime + 1.0 < nextdemotime) {
-            cls.realtime = nextdemotime - 1.0;
-        }
-    }
-#endif
-*/
-
 readnext:
 	// read the time from the packet
 #ifdef MVDPLAY
@@ -245,7 +233,7 @@ readnext:
 #ifdef MVDPLAY
 		if (cls.mvdplayback)
 		{
-			if (cls.demotime < demotime) {
+			if (msec/* a hack! */ && cls.demotime < nextdemotime) {
 				fseek(cls.demofile, ftell(cls.demofile) - sizeof(msec),
 						SEEK_SET);
 				return false;
