@@ -1346,11 +1346,11 @@ IN_LoadKeys_f
 
 Load a custom keymap from file
 The format is like this:
-layout "Default"
-keycode 27 ] }
-keycode 28 ENTER
-ext keycode 28 KP_ENTER
-keycode 40 ' #34
+keymap_name "Default"
+keycode     27 ] }
+keycode     28 ENTER
+keycode ext 28 KP_ENTER
+keycode     40 ' #34
 ===========
 */
 void IN_LoadKeys_f (void)
@@ -1400,7 +1400,7 @@ void IN_LoadKeys_f (void)
 		ext = false;
 		cmd_shift = 0;
 
-		if (!strcmp(Cmd_Argv(0), "layout") && Cmd_Argc() > 1)
+		if ((!strcmp(Cmd_Argv(0), "keymap_name") || !strcmp(Cmd_Argv(0), "layout")) && Cmd_Argc() > 1)
 		{
 			Q_strncpyz (layout, Cmd_Argv(1), sizeof(layout));
 			continue;
