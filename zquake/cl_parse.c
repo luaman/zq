@@ -1196,18 +1196,22 @@ void CL_ParseServerInfoChange (void)
 
 
 // for CL_ParsePrint
-static void FlushString (char *s, int level)
+static void FlushString (char *s, int level, qboolean team, int offset)
 {
 	if (level == PRINT_CHAT)
 	{
 		char	buf[1024];
 		char	*out = buf, *p, *p1;
 		extern cvar_t	cl_parseWhiteText;
+		qboolean	parsewhite;
 
-		for (p = s; *p; p++) {
-			if  (*p == '{' && cl_parseWhiteText.value) {
+		parsewhite = cl_parseWhiteText.value == 1 ||
+			(cl_parseWhiteText.value == 2 && team);
+
+		for (p=s; *p; p++) {
+			if  (*p == '{' && parsewhite && p-s >= offset) {
 				p1 = strchr (p + 1, '}');
-				if (p1 && (p1 - p > 1)) {
+				if (p1) {
 					memcpy (out, p + 1, p1 - p - 1);
 					out += p1 - p - 1;
 					p = p1;
@@ -1237,15 +1241,16 @@ void CL_ParsePrint (void)
 	char	*s, str[1024];
 	char	*p;
 	int		len;
-	int		level;
+	int		level, flags;
+	int		offset = 0;
 
 	level = MSG_ReadByte ();
 	s = MSG_ReadString ();
 
 	if (level == PRINT_CHAT) {
 		TP_CheckVersionRequest (s);
-		if (cl_nofake.value == 1 || (cl_nofake.value == 2 &&
-								TP_CategorizeMessage(s) != 2)) {
+		flags = TP_CategorizeMessage (s, &offset);
+		if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
 			for (p = s; *p; p++)
 				if (*p == 13 || (*p == 10 && p[1]))
 					*p = ' '; 
@@ -1254,7 +1259,7 @@ void CL_ParsePrint (void)
 	}
 
 	if (cl.sprint_buf[0] && level != cl.sprint_level) {
-		FlushString (cl.sprint_buf, cl.sprint_level);
+		FlushString (cl.sprint_buf, cl.sprint_level, false, 0);
 		cl.sprint_buf[0] = 0;
 	}
 
@@ -1266,7 +1271,7 @@ void CL_ParsePrint (void)
 		memcpy(str, cl.sprint_buf, len);
 		str[len] = '\0';
 		strcpy (cl.sprint_buf, p+1);
-		FlushString (str, level);
+		FlushString (str, level, (flags==2), offset);
 	}
 }
 
