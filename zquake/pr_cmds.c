@@ -1704,12 +1704,12 @@ void PF_multicast (void)
 
 void PF_Fixme (void)
 {
-	PR_RunError ("unimplemented bulitin");
+	PR_RunError ("unimplemented builtin");
 }
 
 
 
-builtin_t pr_builtin[] =
+builtin_t pr_builtins[] =
 {
 	PF_Fixme,
 PF_makevectors,	// void(entity e)	makevectors 		= #1;
@@ -1806,6 +1806,4 @@ PF_stof,
 PF_multicast
 };
 
-builtin_t *pr_builtins = pr_builtin;
-int pr_numbuiltins = sizeof(pr_builtin)/sizeof(pr_builtin[0]);
-
+int pr_numbuiltins = sizeof(pr_builtins)/sizeof(pr_builtins[0]);
