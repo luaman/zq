@@ -1741,11 +1741,11 @@ void SV_ExecuteClientMove (client_t *cl, usercmd_t oldest, usercmd_t oldcmd, use
 			SV_RunCmd (&cl->lastcmd);
 			net_drop--;
 		}
-		if (net_drop > 1)
-			SV_RunCmd (&oldest);
-		if (net_drop > 0)
-			SV_RunCmd (&oldcmd);
 	}
+	if (net_drop > 1)
+		SV_RunCmd (&oldest);
+	if (net_drop > 0)
+		SV_RunCmd (&oldcmd);
 	SV_RunCmd (&newcmd);
 	
 	SV_PostRunCmd();
