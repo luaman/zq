@@ -1089,13 +1089,16 @@ CL_ProcessUserInfo
 */
 void CL_ProcessUserInfo (int slot, player_info_t *player)
 {
+	char	old_team[MAX_INFO_STRING];
+
 	Q_strncpyz (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
 	if (!player->name[0] && player->userid && strlen(player->userinfo) >= MAX_INFO_STRING - 17) {
-		// somebody's trying to hide himself by overloading userinfo
+		// somebody's trying to hide himself by overflowing userinfo
 		strcpy (player->name, " ");
 	}
 	player->real_topcolor = atoi(Info_ValueForKey (player->userinfo, "topcolor"));
 	player->real_bottomcolor = atoi(Info_ValueForKey (player->userinfo, "bottomcolor"));
+	strcpy (old_team, player->team);
 	strcpy (player->team, Info_ValueForKey (player->userinfo, "team"));
 
 	if (Info_ValueForKey (player->userinfo, "*spectator")[0])
@@ -1108,17 +1111,14 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 
 	Sbar_Changed ();
 	if (slot == cl.playernum && (cl_teamtopcolor >= 0 || cl_enemytopcolor >= 0) &&
-		strcmp(player->team, player->_team))
+		strcmp(player->team, old_team))
 	{
 		int i;
-		//strcpy (cl_playerteam, Info_ValueForKey(player->userinfo, "team"));
 		for (i=0 ; i < MAX_CLIENTS ; i++)
 			CL_NewTranslation (i);
 	}
 	else
 		CL_NewTranslation (slot);
-
-	strcpy (player->_team, player->team);
 }
 
 /*
