@@ -563,7 +563,7 @@ void Mod_LoadLighting (lump_t *l)
 		goto loadmono;
 	}
 
-	if (com_filesize < l->filelen*3 + 8) {
+	if (fs_filesize < l->filelen*3 + 8) {
 		Com_Printf ("Corrupt (truncated) .lit file, ignoring\n");
 		Hunk_FreeToLowMark (hunkmark);
 		goto loadmono;
@@ -1498,7 +1498,7 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		unsigned short crc;
 		char st[40];
 
-		crc = CRC_Block (buffer, com_filesize);
+		crc = CRC_Block (buffer, fs_filesize);
 	
 		sprintf(st, "%d", (int) crc);
 		Info_SetValueForKey (cls.userinfo, 

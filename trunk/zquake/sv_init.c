@@ -191,7 +191,7 @@ unsigned SV_CheckModel(char *mdl)
 	buf = (byte *)FS_LoadStackFile (mdl, stackbuf, sizeof(stackbuf));
 	if (!buf)
 		Host_Error ("SV_CheckModel: could not load %s\n", mdl);
-	crc = CRC_Block(buf, com_filesize);
+	crc = CRC_Block(buf, fs_filesize);
 
 	return crc;
 }
@@ -218,7 +218,7 @@ void SV_LoadEntFile (void)
 
 	Com_DPrintf ("Loaded entfile %s\n", name);
 
-	sprintf (crc, "%i", CRC_Block ((byte *)data, com_filesize));
+	sprintf (crc, "%i", CRC_Block ((byte *)data, fs_filesize));
 	Info_SetValueForStarKey (svs.info, "*entfile", crc, MAX_SERVERINFO_STRING);
 }
 

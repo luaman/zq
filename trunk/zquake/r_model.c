@@ -1338,7 +1338,7 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		unsigned short crc;
 		char st[40];
 
-		crc = CRC_Block (buffer, com_filesize);
+		crc = CRC_Block (buffer, fs_filesize);
 	
 		sprintf(st, "%d", (int) crc);
 		Info_SetValueForKey (cls.userinfo, 
