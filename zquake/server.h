@@ -45,12 +45,13 @@ typedef enum {
 // some qc commands are only valid before the server has finished
 // initializing (precache commands, static sounds / objects, etc)
 
-typedef struct
+typedef struct packet_s
 {
 	double		time;
 	int			clientnum;
 	sizebuf_t	msg;
 	byte		buf[MAX_MSGLEN];
+	struct packet_s *next;
 } packet_t;
 
 #define MAX_DELAYED_PACKETS 128
@@ -287,8 +288,7 @@ typedef struct
 
 	challenge_t	challenges[MAX_CHALLENGES];	// to prevent invalid IPs from connecting
 
-	packet_t		packets[MAX_DELAYED_PACKETS];
-	int				num_packets;
+	packet_t		*packets, *last_packet, *free_packets;
 } serverPersistent_t;
 
 //=============================================================================
