@@ -185,10 +185,10 @@ void SV_RunBots (void)
 		cmd = nullcmd;
 		VectorCopy (ent->v.v_angle, cmd.angles);
 		cmd.msec = (svs.realtime - cl->cmdtime) * 1000;
-		cl->cmdtime += cmd.msec * 0.001;
 		if (cmd.msec > 255)
 			cmd.msec = 255;
 		cl->lastcmd = cmd;
+		cl->cmdtime = svs.realtime;
 
 		// update bogus network stuff
 		cl->netchan.last_received = curtime;

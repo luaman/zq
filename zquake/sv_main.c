@@ -1243,8 +1243,8 @@ void SV_Frame (double time)
 // move autonomous things around if enough time has passed
 	if (!sv_paused.value)
 		SV_Physics ();
-
-	SV_RunBots ();
+	else
+		SV_RunBots ();	// just update network stuff, but don't run physics
 
 // get packets
 	SV_ReadPackets ();
