@@ -26,6 +26,7 @@
 
 #include "quakedef.h"
 #include "version.h"
+#include "sound.h"
 #include "pmove.h"
 
 cvar_t	cl_parseSay = {"cl_parseSay", "0"};
@@ -39,6 +40,8 @@ cvar_t	cl_rocket2grenade = {"cl_r2g", "0"};
 
 cvar_t	cl_teamskin = {"teamskin", ""};
 cvar_t	cl_enemyskin = {"enemyskin", ""};
+
+cvar_t  snd_trigger = {"snd_trigger", "~"};
 
 cvar_t	tp_name_axe = {"tp_name_axe", "axe"};
 cvar_t	tp_name_sg = {"tp_name_sg", "sg"};
@@ -603,9 +606,6 @@ char *TP_ParseMacroString (char *s)
 	static char	buf[MAX_MACRO_STRING];
 	int		i = 0;
 	char	*macro_string;
-
-	if (!cl_parseSay.value)
-		return s;
 
 	while (*s && i < MAX_MACRO_STRING-1)
 	{
@@ -1347,7 +1347,7 @@ ok:
 }
 
 
-int	TP_CountPlayers (void)
+int	TP_CountPlayers ()
 {
 	int	i, count;
 
@@ -1360,7 +1360,7 @@ int	TP_CountPlayers (void)
 	return count;
 }
 
-char *TP_EnemyTeam (void)
+char *TP_EnemyTeam ()
 {
 	int			i;
 	char		myteam[MAX_INFO_STRING];
@@ -1379,7 +1379,7 @@ char *TP_EnemyTeam (void)
 	return "";
 }
 
-char *TP_PlayerName (void)
+char *TP_PlayerName ()
 {
 	static char	myname[MAX_INFO_STRING];
 
@@ -1387,7 +1387,7 @@ char *TP_PlayerName (void)
 	return myname;
 }
 
-char *TP_PlayerTeam (void)
+char *TP_PlayerTeam ()
 {
 	static char	myteam[MAX_INFO_STRING];
 
@@ -1395,7 +1395,7 @@ char *TP_PlayerTeam (void)
 	return myteam;
 }
 
-char *TP_EnemyName (void)
+char *TP_EnemyName ()
 {
 	int			i;
 	char		*myname;
@@ -1414,7 +1414,7 @@ char *TP_EnemyName (void)
 	return "";
 }
 
-char *TP_MapName (void)
+char *TP_MapName ()
 {
 	return cl_mapname.string;
 }
@@ -1528,7 +1528,7 @@ void TP_EnemyColor_f (void)
 
 //===================================================================
 
-void TP_NewMap (void)
+void TP_NewMap ()
 {
 	static char last_map[MAX_QPATH] = "";
 	char mapname[MAX_QPATH];
@@ -1908,8 +1908,10 @@ static int FindNearestItem (int flags, item_t **pitem)
 	frame_t		*frame;
 	packet_entities_t	*pak;
 	entity_state_t		*ent;
-	int	i, bestidx, bestdist, bestskin;
+	int	i, bestidx, bestskin;
+	float bestdist, dist;
 	vec3_t	org, v;
+	item_t	*item;
 
 	VectorCopy (cl.frames[cl.validsequence&UPDATE_MASK]
 		.playerstate[cl.playernum].origin, org);
@@ -1917,23 +1919,23 @@ static int FindNearestItem (int flags, item_t **pitem)
 	// look in previous frame 
 	frame = &cl.frames[cl.oldvalidsequence&UPDATE_MASK];
 	pak = &frame->packet_entities;
-	bestdist = 100;
+	bestdist = 100.0f;
 	bestidx = 0;
 	*pitem = NULL;
 	for (i=0,ent=pak->entities ; i<pak->num_entities ; i++,ent++)
 	{
-		int dist;
-		item_t	*item;
-		
 		item = model2item[ent->modelindex];
 		if (!item)
 			continue;
 		if ( ! (item->itemflag & flags) )
 			continue;
 
-		VectorSubtract (ent->origin, org, v);
+		VectorSubtract (org, ent->origin, v);
 		VectorAdd (v, item->offset, v);
 		dist = VectorLength (v);
+
+//		Con_Printf ("%s %f\n", item->modelname, dist);
+
 		if (dist <= bestdist) {
 			bestdist = dist;
 			bestidx = ent->modelindex;
@@ -1949,7 +1951,7 @@ static int FindNearestItem (int flags, item_t **pitem)
 }
 
 
-static int CountTeammates (void)
+static int CountTeammates ()
 {
 	int	i, count;
 	player_info_t	*player;
@@ -1972,41 +1974,119 @@ static int CountTeammates (void)
 	return count;
 }
 
-static void ExecTookTrigger (char *s, int flag)
+static void ExecTookTrigger (char *s, int flag, vec3_t org)
 {
 	if ( !((pkflags|tookflags) & flag) )
 		return;
 
 	vars.tooktime = realtime;
 	strncpy (vars.tookname, s, sizeof(vars.tookname)-1);
-	// FIXME: better use the item location, not the player's
-	strncpy (vars.tookloc, TP_LocationName (cl.frames[cl.parsecount&UPDATE_MASK]
-			.playerstate[cl.playernum].origin), sizeof(vars.tookloc)-1);
+	strncpy (vars.tookloc, TP_LocationName (org), sizeof(vars.tookloc)-1);
 
 	if (tookflags & flag) {
-		if (CountTeammates())
+//		if (CountTeammates())
 			TP_ExecTrigger ("f_took");
 	}
 }
 
-void TP_CheckPickupSound (char *s)
+char *TP_SoundTrigger (char *s)
+{
+	int y, o, i, u, l;
+	qboolean inside = false;
+	char msg[1024], p[1024], snd[MAX_QPATH], *str;
+
+	if (!snd_trigger.string[0]) {
+		S_LocalSound ("misc/talk.wav");
+		return s; // no trigger
+	}
+
+	if (!strstr(s, ".wav")) {
+		S_LocalSound ("misc/talk.wav");
+		return s;
+	}
+
+	strcpy(p, s);
+
+	for (str = snd_trigger.string; *str; *str++)
+	{
+		if (strchr(s, *str))
+		{		
+			// play .wav
+			for (y = 0; s[y]; y++) 
+				if(s[y] == *str) 
+					break; // find starting point
+
+			y++;
+		
+			for (o = 0; s[o]; o++)
+			{
+				if (s[y+o] == '.' && s[y+o+1] == 'w' && s[y+o+2] == 'a' && s[y+o+3] == 'v') 
+					break;
+
+				snd[o] = s[y+o];
+			}
+
+			snd[o] = 0;
+			S_LocalSound (va("%s.wav", snd)); // play sound
+
+			// strip .wav from message
+			i = 0; u = 0; l = 0;
+
+			while (i <= strlen(s))
+			{
+				if (s[i] == *str)
+				{
+					inside = true;
+					l = i;
+				}
+
+				if (s[i] == '.' && s[i+1] == 'w' && s[i+2] == 'a' && s[i+3] == 'v')
+				{
+					inside = false;
+
+					if (s[l-1] == ' ' && s[i+4] == ' ')
+						i = i + 5;
+					else
+						i = i + 4;
+				}
+
+				if (!inside)
+				{
+					msg[u] = s[i];
+					msg[u+1] = '\0';
+					u++;
+				}
+
+				i++;
+			}
+
+			strcpy(s, msg);
+			return s;
+		}
+	}
+
+	S_LocalSound ("misc/talk.wav");
+	return s;
+}
+
+void TP_CheckPickupSound (char *s, vec3_t org)
 {
 	if (cl.spectator)
 		return;
 
 	if (!strcmp(s, "items/damage.wav"))
-		ExecTookTrigger (tp_name_quad.string, it_quad);
+		ExecTookTrigger (tp_name_quad.string, it_quad, org);
 	else if (!strcmp(s, "items/protect.wav"))
-		ExecTookTrigger (tp_name_pent.string, it_pent);
+		ExecTookTrigger (tp_name_pent.string, it_pent, org);
 	else if (!strcmp(s, "items/inv1.wav"))
-		ExecTookTrigger (tp_name_ring.string, it_ring);
+		ExecTookTrigger (tp_name_ring.string, it_ring, org);
 	else if (!strcmp(s, "items/suit.wav"))
-		ExecTookTrigger (tp_name_suit.string, it_suit);
+		ExecTookTrigger (tp_name_suit.string, it_suit, org);
 	else if (!strcmp(s, "items/health1.wav") ||
 			 !strcmp(s, "items/r_item1.wav"))
-		ExecTookTrigger (tp_name_health.string, it_health);
+		ExecTookTrigger (tp_name_health.string, it_health, org);
 	else if (!strcmp(s, "items/r_item2.wav"))
-		ExecTookTrigger (tp_name_mh.string, it_mh);
+		ExecTookTrigger (tp_name_mh.string, it_mh, org);
 	else
 		goto more;
 	return;
@@ -2026,7 +2106,7 @@ more:
 			return;
 		if (!FindNearestItem (it_weapons, &item))
 			return;
-		ExecTookTrigger (item->cvar->string, item->itemflag);
+		ExecTookTrigger (item->cvar->string, item->itemflag, org);
 		return;
 	}
 
@@ -2035,9 +2115,9 @@ more:
 	{
 		item_t	*item;
 		switch (FindNearestItem (it_armor, &item)) {
-			case 1: ExecTookTrigger (tp_name_ga.string, it_ga); break;
-			case 2: ExecTookTrigger (tp_name_ya.string, it_ya); break;
-			case 3: ExecTookTrigger (tp_name_ra.string, it_ra); break;
+			case 1: ExecTookTrigger (tp_name_ga.string, it_ga, org); break;
+			case 2: ExecTookTrigger (tp_name_ya.string, it_ya, org); break;
+			case 3: ExecTookTrigger (tp_name_ra.string, it_ra, org); break;
 		}
 		return;
 	}
@@ -2048,12 +2128,12 @@ more:
 		item_t	*item;
 		if (!FindNearestItem (it_ammo|it_pack, &item))
 			return;
-		ExecTookTrigger (item->cvar->string, item->itemflag);
+		ExecTookTrigger (item->cvar->string, item->itemflag, org);
 	}
 }
 
 
-void TP_FindPoint (void)
+void TP_FindPoint ()
 {
 	packet_entities_t	*pak;
 	entity_state_t		*ent;
@@ -2124,7 +2204,7 @@ void TP_FindPoint (void)
 			// physent list might not have been built yet...
 
 			VectorSubtract (vieworg, entorg, v);
-			VectorNormalizeFast (v);
+			VectorNormalize (v);
 			VectorMA (entorg, radius, v, end);
 			trace = PM_TraceLine (vieworg, end);
 			if (trace.fraction == 1)
@@ -2132,7 +2212,7 @@ void TP_FindPoint (void)
 
 			VectorMA (entorg, radius, right, end);
 			VectorSubtract (vieworg, end, v);
-			VectorNormalizeFast (v);
+			VectorNormalize (v);
 			VectorMA (end, radius, v, end);
 			trace = PM_TraceLine (vieworg, end);
 			if (trace.fraction == 1)
@@ -2140,7 +2220,7 @@ void TP_FindPoint (void)
 
 			VectorMA (entorg, -radius, right, end);
 			VectorSubtract (vieworg, end, v);
-			VectorNormalizeFast (v);
+			VectorNormalize (v);
 			VectorMA (end, radius, v, end);
 			trace = PM_TraceLine (vieworg, end);
 			if (trace.fraction == 1)
@@ -2148,7 +2228,7 @@ void TP_FindPoint (void)
 
 			VectorMA (entorg, radius, up, end);
 			VectorSubtract (vieworg, end, v);
-			VectorNormalizeFast (v);
+			VectorNormalize (v);
 			VectorMA (end, radius, v, end);
 			trace = PM_TraceLine (vieworg, end);
 			if (trace.fraction == 1)
@@ -2158,7 +2238,7 @@ void TP_FindPoint (void)
 			// through floor in some places
 			VectorMA (entorg, -radius/2, up, end);
 			VectorSubtract (vieworg, end, v);
-			VectorNormalizeFast (v);
+			VectorNormalize (v);
 			VectorMA (end, radius, v, end);
 			trace = PM_TraceLine (vieworg, end);
 			if (trace.fraction == 1)
@@ -2196,7 +2276,25 @@ nothing:
 	vars.pointframe = host_framecount;
 }
 
+void TP_WeaponChange(void)
+{
+	if (cl.prev_stat_weapon != cl.stats[STAT_ACTIVEWEAPON]) {
 
+		// spawn or respawn
+		if (!cl.prev_stat_weapon && cl.stats[STAT_ACTIVEWEAPON])
+		{
+			cl.prev_stat_weapon = cl.stats[STAT_ACTIVEWEAPON];
+			return;
+		}
+	
+		if (cl.prev_stat_weapon && cl.stats[STAT_ACTIVEWEAPON])
+		{
+			cl.prev_stat_weapon = cl.stats[STAT_ACTIVEWEAPON];
+			TP_ExecTrigger ("f_weapon_change");
+		}
+	}
+}
+	
 #define	IT_WEAPONS (2|4|8|16|32|64)
 void TP_StatChanged (int stat, int value)
 {
@@ -2235,10 +2333,14 @@ void TP_StatChanged (int stat, int value)
 
 		if (i & (IT_KEY1|IT_KEY2)) {
 			if (cl.teamfortress && !cl.spectator)
-				ExecTookTrigger (tp_name_flag.string, it_flag);
+				ExecTookTrigger (tp_name_flag.string, it_flag,
+				cl.frames[cl.validsequence&UPDATE_MASK].playerstate[cl.playernum].origin);
 		}
 
 		vars.items = value;
+	}
+	else if (stat == STAT_ACTIVEWEAPON) {
+		TP_WeaponChange();
 	}
 }
 
@@ -2332,6 +2434,7 @@ void TP_Init ()
 	Cvar_RegisterVariable (&cl_mapname);
 	Cvar_RegisterVariable (&cl_teamskin);
 	Cvar_RegisterVariable (&cl_enemyskin);
+	Cvar_RegisterVariable (&snd_trigger);
 	Cvar_RegisterVariable (&tp_name_axe);
 	Cvar_RegisterVariable (&tp_name_sg);
 	Cvar_RegisterVariable (&tp_name_ssg);

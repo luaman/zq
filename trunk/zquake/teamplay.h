@@ -31,11 +31,13 @@ extern cvar_t cl_loadlocs;
 extern cvar_t cl_rocket2grenade;
 extern cvar_t cl_teamskin;
 extern cvar_t cl_enemyskin;
+extern cvar_t snd_trigger;
 
 // triggers
 void TP_ExecTrigger (char *s);
+char *TP_SoundTrigger (char *s);
 void TP_StatChanged (int stat, int value);
-void TP_CheckPickupSound (char *s);
+void TP_CheckPickupSound (char *s, vec3_t org);
 
 // message triggers
 void TP_SearchForMsgTriggers (char *s, int level);
