@@ -41,7 +41,7 @@ void Bot_Spawn_And_Begin (client_t *cl)
 
 	// copy spawn parms out of the client_t
 	for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
-		(&pr_global_struct->parm1)[i] = sv_client->spawn_parms[i];
+		(&pr_global_struct->parm1)[i] = cl->spawn_parms[i];
 
 	// call the spawn function
 	pr_global_struct->time = sv.time;
