@@ -108,7 +108,7 @@ cvar_t	gl_ztrick = {"gl_ztrick","1"};
 
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1"};
 qboolean	vid_gammaworks = false;
-qboolean	vid_hwgamma_enabled;	// = vid_gammaworks && vid_hwgammacontrol.value
+qboolean	vid_hwgamma_enabled;
 unsigned short *currentgammaramp = NULL;
 void RestoreHWGamma (void);
 
@@ -682,7 +682,8 @@ void GL_EndRendering (void)
 {
 	static qboolean old_hwgamma_enabled;
 
-	vid_hwgamma_enabled = vid_hwgammacontrol.value && vid_gammaworks;
+	vid_hwgamma_enabled = vid_hwgammacontrol.value && vid_gammaworks
+		&& ActiveApp && !Minimized && modestate == MS_FULLDIB;
 	if (vid_hwgamma_enabled != old_hwgamma_enabled) {
 		old_hwgamma_enabled = vid_hwgamma_enabled;
 		if (vid_hwgamma_enabled && currentgammaramp)
@@ -809,7 +810,7 @@ void VID_SetDeviceGammaRamp (unsigned short *ramps)
 {
 	if (vid_gammaworks) {
 		currentgammaramp = ramps;
-		if (vid_hwgamma_enabled && ActiveApp && !Minimized) {
+		if (vid_hwgamma_enabled) {
 			SetDeviceGammaRamp (maindc, ramps);
 			customgamma = true;
 		}
@@ -819,7 +820,8 @@ void VID_SetDeviceGammaRamp (unsigned short *ramps)
 void InitHWGamma (void)
 {
 	vid_gammaworks = GetDeviceGammaRamp (maindc, systemgammaramp);
-	vid_hwgamma_enabled = vid_gammaworks && vid_hwgammacontrol.value;
+	vid_hwgamma_enabled = vid_hwgammacontrol.value && vid_gammaworks
+		&& ActiveApp && !Minimized && modestate == MS_FULLDIB;
 }
 
 void RestoreHWGamma (void)
@@ -840,7 +842,7 @@ void VID_SetDefaultMode (void)
 }
 
 
-void	VID_Shutdown (void)
+void VID_Shutdown (void)
 {
    	HGLRC hRC;
    	HDC	  hDC;
