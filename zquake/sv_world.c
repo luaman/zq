@@ -507,9 +507,9 @@ edict_t	*SV_TestEntityPosition (edict_t *ent)
 
 	if (ent->v.solid == SOLID_TRIGGER || ent->v.solid == SOLID_NOT)
 		// only clip against bmodels
-		trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, ent->v.origin, MOVE_NOMONSTERS, ent);
+		trace = SV_Trace (ent->v.origin, ent->v.mins, ent->v.maxs, ent->v.origin, MOVE_NOMONSTERS, ent);
 	else
-		trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, ent->v.origin, MOVE_NORMAL, ent);
+		trace = SV_Trace (ent->v.origin, ent->v.mins, ent->v.maxs, ent->v.origin, MOVE_NORMAL, ent);
 	
 	if (trace.startsolid)
 		return sv.edicts;
@@ -823,10 +823,10 @@ boxmaxs[0] = boxmaxs[1] = boxmaxs[2] = 9999;
 
 /*
 ==================
-SV_Move
+SV_Trace
 ==================
 */
-trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, edict_t *passedict)
+trace_t SV_Trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, edict_t *passedict)
 {
 	moveclip_t	clip;
 	int			i;
