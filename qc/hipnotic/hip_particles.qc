@@ -68,13 +68,13 @@ void particlefield_YZ ()
 	v_x = (self.absmin_x + self.absmax_x) * 0.5;
 	v_y = self.absmin_y;
 
-	while (v_y <= self.absmax_y)
+	while (v_y < self.absmax_y)
 	{
 		repl_te = repl_te_base;
 		repl_te_base = TE_BLOOD - repl_te_base;
 
 		v_z = self.absmin_z;
-		while (v_z <= self.absmax_z)
+		while (v_z < self.absmax_z)
 		{
 			particle (v, '0 0 0', self.color, self.count, repl_te, 1);
 			v_z = v_z + STEP;
@@ -122,8 +122,8 @@ void particlefield_touch ()
 
 .color (default 192)
 .count density
-.dmg	when touched
-.noise
+.dmg	when touched (TODO)
+.noise (FIXME?)
 .cnt
 */
 float USE_COUNT = 1;
@@ -176,11 +176,14 @@ void togglewall_touch ()
 	// damage other
 }
 
-//float START_OFF = 1;
 
+/*QUAKED func_particlefield
+.dmg	when touched
+*/
+//float START_OFF = 1;
 void func_togglewall ()
 {
-	if (!(self.spawnflags & START_OFF))
+	if (!(self.spawnflags & 1))
 		self.solid = SOLID_BBOX;
 
 	setmodel (self, self.model);

@@ -39,6 +39,7 @@ void func_oncount_use ()
 */
 void func_oncount ()
 {
+	self.cnt = self.count;
 	self.use = func_oncount_use;
 }
 
