@@ -30,13 +30,14 @@ int		lightmap_bytes;		// 1, 2, or 4
 
 int		lightmap_textures;
 
-unsigned		blocklights[18*18*3];
-
 #define	BLOCK_WIDTH		128
 #define	BLOCK_HEIGHT	128
 
-#define	MAX_LIGHTMAPS	64
-int			active_lightmaps;
+#define MAX_LIGHTMAP_SIZE	4096
+#define	MAX_LIGHTMAPS		64
+
+unsigned int	blocklights[MAX_LIGHTMAP_SIZE*3];
+
 
 typedef struct glRect_s {
 	unsigned char l,t,w,h;
@@ -1385,6 +1386,13 @@ void GL_CreateSurfaceLightmap (msurface_t *surf)
 
 	smax = (surf->extents[0]>>4)+1;
 	tmax = (surf->extents[1]>>4)+1;
+
+	if (smax > BLOCK_WIDTH)
+		Host_Error("GL_CreateSurfaceLightmap: smax = %i > BLOCK_WIDTH", smax);
+	if (tmax > BLOCK_HEIGHT)
+		Host_Error("GL_CreateSurfaceLightmap: tmax = %i > BLOCK_HEIGHT", tmax);
+	if (smax * tmax > MAX_LIGHTMAP_SIZE)
+		Host_Error("GL_CreateSurfaceLightmap: smax * tmax = %i > MAX_LIGHTMAP_SIZE", smax * tmax);
 
 	surf->lightmaptexturenum = AllocBlock (smax, tmax, &surf->light_s, &surf->light_t);
 	base = lightmaps + surf->lightmaptexturenum*lightmap_bytes*BLOCK_WIDTH*BLOCK_HEIGHT;
