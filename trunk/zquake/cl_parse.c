@@ -27,9 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "teamplay.h"
 #include "version.h"
 
-#ifdef GLQUAKE
-#include "gl_local.h"	// FIXME
-#endif
+
+void R_TranslatePlayerSkin (int playernum);
 
 
 char *svc_strings[] =
@@ -1425,12 +1424,6 @@ void CL_MuzzleFlash (void)
 		}
 		return;
 	}
-
-#ifdef GLQUAKE
-	// don't draw our own muzzle flash in gl if flashblending
-	if (i-1 == cl.viewplayernum && gl_flashblend.value)
-		return;
-#endif
 
 	if (cl_muzzleflash.value == 2 && i-1 == cl.viewplayernum)
 		return;
