@@ -700,13 +700,12 @@ void() StartMatch =
 	p = findradius('0 0 0', 999999);
 
 
-        // Check to see if berzerk is set.
-        if(stof(infokey(world, "k_bzk"))) {
-            k_berzerkenabled = stof(infokey(world, "k_btime"));
-        } else {
-                k_berzerkenabled = 0;
-        }
-
+    // Check to see if berzerk is set.
+    if(stof(infokey(world, "k_bzk"))) {
+        k_berzerkenabled = stof(infokey(world, "k_btime"));
+    } else {
+            k_berzerkenabled = 0;
+    }
 
 	while(p) {
 		old = p.chain;
