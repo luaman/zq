@@ -1280,7 +1280,7 @@ void Cmd_Observe_f (void)
 	// count spectators already on server
 	numspectators = 0;
 	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++) {
-		if (cl->state != cs_free && !cl->spectator)
+		if (cl->state != cs_free && cl->spectator)
 			numspectators++;
 	}
 	if (numspectators >= maxspectators.value) {
