@@ -922,6 +922,7 @@ typedef struct {
 	char *oldname;
 } legacyvar_t;
 
+extern cvar_t s_volume;
 extern cvar_t s_nosound;
 extern cvar_t s_precache;
 extern cvar_t s_loadas8bit;
@@ -934,6 +935,7 @@ extern cvar_t cl_demospeed;
 
 legacyvar_t legacyvars[] =
 {
+	{&s_volume, "volume"},
 	{&s_nosound, "nosound"},
 	{&s_precache, "precache"},
 	{&s_loadas8bit, "loadas8bit"},
