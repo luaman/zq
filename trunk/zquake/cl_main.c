@@ -493,6 +493,7 @@ void CL_Disconnect (void)
 	CL_StopUpload();
 
 	memset (cl.cshifts, 0, sizeof(cl.cshifts));
+	cl.stats[STAT_ITEMS] = 0;
 	v_updatepalette = true;
 }
 
