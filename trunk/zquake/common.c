@@ -2029,9 +2029,6 @@ void Com_Printf (char *fmt, ...)
 	vsprintf (msg, fmt, argptr);
 	va_end (argptr);
 
-if(strstr(msg, "aaa"))
-Sys_Printf ("sizeof(chktbl) = %i\n", sizeof(chktbl));
-	
 	if (rd_print)
 	{
 		// add to redirected message
