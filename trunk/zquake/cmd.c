@@ -1095,8 +1095,12 @@ void Cmd_ExpandString (char *data, char *dest)
 			}
 
 #ifndef SERVERONLY
-			str = TP_MacroString (buf);
-			name_length = macro_length;
+			if (dedicated)
+				str = NULL;
+			else {
+				str = TP_MacroString (buf);
+				name_length = macro_length;
+			}
 			if (bestvar && (!str || (strlen(bestvar->name) > macro_length))) {
 				str = bestvar->string;
 				name_length = strlen(bestvar->name);
