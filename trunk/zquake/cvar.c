@@ -472,8 +472,10 @@ void Cvar_Set_f (void)
 			return;
 		}
 
+#if 0
 		// delete alias with the same name if it exists
 		Cmd_DeleteAlias (var_name);
+#endif
 
 		var = Cvar_Create (var_name, Cmd_Argv(2), CVAR_USER_CREATED);
 	}

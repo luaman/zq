@@ -457,7 +457,7 @@ void Cmd_Alias_f (void)
 	int			i, c;
 	int			key;
 	char		*s;
-	cvar_t		*var;
+//	cvar_t		*var;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -474,6 +474,7 @@ void Cmd_Alias_f (void)
 		return;
 	}
 
+#if 0
 	if ( (var = Cvar_FindVar(s)) != NULL ) {
 		if (var->flags & CVAR_USER_CREATED)
 			Cvar_Delete (var->name);
@@ -482,6 +483,7 @@ void Cmd_Alias_f (void)
 			return;
 		}
 	}
+#endif
 
 	key = Key(s);
 
