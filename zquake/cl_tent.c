@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cl_tent.c -- client side temporary entities
 
 #include "quakedef.h"
+#include "pmove.h"
 #include "sound.h"
 
 #define	MAX_BEAMS	8
@@ -32,6 +33,9 @@ typedef struct
 } beam_t;
 
 beam_t		cl_beams[MAX_BEAMS];
+
+static vec3_t	playerbeam_end;
+
 
 #define	MAX_EXPLOSIONS	8
 typedef struct
@@ -128,11 +132,13 @@ void CL_ParseBeam (model_t *m)
 	end[1] = MSG_ReadCoord ();
 	end[2] = MSG_ReadCoord ();
 
+	if (ent == cl.playernum+1)
+		VectorCopy (end, playerbeam_end);	// for cl_trueLightning
+
 // override any beam with the same entity
 	for (i=0, b=cl_beams ; i< MAX_BEAMS ; i++, b++)
 		if (b->entity == ent)
 		{
-			b->entity = ent;
 			b->model = m;
 			b->endtime = cl.time + 0.2;
 			VectorCopy (start, b->start);
@@ -369,6 +375,8 @@ entity_t *CL_NewTempEntity (void)
 CL_UpdateBeams
 =================
 */
+void vectoangles (v, ang);
+
 void CL_UpdateBeams (void)
 {
 	int			i;
@@ -389,9 +397,47 @@ void CL_UpdateBeams (void)
 		if (b->entity == cl.playernum+1)	// entity 0 is the world
 		{
 			VectorCopy (cl.simorg, b->start);
-//			b->start[2] -= 22;	// adjust for view height
+			if (cl_trueLightning.value)
+			{
+				vec3_t	forward, right, up;
+				vec3_t	v, org;
+				vec3_t	ang;
+				float	f, delta;
+				pmtrace_t	trace;
+				
+				f = max(0, min(1, cl_trueLightning.value));
+				
+				VectorSubtract (playerbeam_end, cl.simorg, v);
+				v[2] -= 22;		// adjust for view height
+				vectoangles (v, ang);
+				
+				// lerp pitch
+				ang[0] = -ang[0];
+				if (ang[0] < -180)
+					ang[0] += 360;
+				ang[0] += (cl.viewangles[0] - ang[0])*f;
+				
+				// lerp yaw
+				delta = cl.viewangles[1] - ang[1];
+				if (delta > 180)
+					delta -= 360;
+				if (delta < -180)
+					delta += 360;
+				ang[1] += delta*f;
+				ang[2] = 0;
+				
+				AngleVectors (ang, forward, right, up);
+				VectorScale (forward, 600, forward);
+				VectorCopy (cl.simorg, org);
+				org[2] += 16;
+				VectorAdd (org, forward, b->end);
+				
+				trace = PM_TraceLine (org, b->end);
+				if (trace.fraction < 1)
+					VectorCopy (trace.endpos, b->end);
+			}
 		}
-
+		
 	// calculate pitch and yaw
 		VectorSubtract (b->end, b->start, dist);
 
