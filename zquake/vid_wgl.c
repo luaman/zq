@@ -285,6 +285,9 @@ qbool VID_SetWindowedMode (int modenum)
 	if (vid.width > modelist[modenum].width)
 		vid.width = modelist[modenum].width;
 
+	vid.aspect = ((float)vid.height / (float)vid.width) *
+				((float)vid.realwidth / (float)vid.realheight);
+
 	vid.numpages = 2;
 
 	mainwindow = dibwindow;
@@ -377,6 +380,9 @@ qbool VID_SetFullDIBMode (int modenum)
 		vid.height = modelist[modenum].height;
 	if (vid.width > modelist[modenum].width)
 		vid.width = modelist[modenum].width;
+
+	vid.aspect = ((float)vid.height / (float)vid.width) *
+				(320.0 / 240.0);
 
 	vid.numpages = 2;
 

@@ -1417,8 +1417,7 @@ qbool VID_SetWindowedMode (int modenum)
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.height = DIBHeight;
 	vid.width = DIBWidth;
-	vid.aspect = ((float)vid.height / (float)vid.width) *
-				(320.0 / 240.0);
+	vid.aspect = 1.0;
 
 	vid_stretched = stretched;
 
