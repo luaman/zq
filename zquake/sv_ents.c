@@ -121,7 +121,7 @@ void SV_EmitNailUpdate (sizebuf_t *msg)
 	byte	bits[6];	// [48 bits] xyzpy 12 12 12 4 8 
 	int		n, i;
 	edict_t	*ent;
-	int		x, y, z, p, yaw;
+	int		x, y, z, pitch, yaw;
 
 	if (!numnails)
 		return;
@@ -132,17 +132,17 @@ void SV_EmitNailUpdate (sizebuf_t *msg)
 	for (n=0 ; n<numnails ; n++)
 	{
 		ent = nails[n];
-		x = (int)(ent->v.origin[0]+4096)>>1;
-		y = (int)(ent->v.origin[1]+4096)>>1;
-		z = (int)(ent->v.origin[2]+4096)>>1;
-		p = (int)(16*ent->v.angles[0]/360)&15;
-		yaw = (int)(256*ent->v.angles[1]/360)&255;
+		x = ((int)(ent->v.origin[0] + 4096 + 1) >> 1) & 4095;
+		y = ((int)(ent->v.origin[1] + 4096 + 1) >> 1) & 4095;
+		z = ((int)(ent->v.origin[2] + 4096 + 1) >> 1) & 4095;
+		pitch = (int)(ent->v.angles[0]*(16.0/360.0) + 0.5) & 15;
+		yaw = (int)(ent->v.angles[1]*(256.0/360.0) + 0.5) & 255;
 
 		bits[0] = x;
 		bits[1] = (x>>8) | (y<<4);
 		bits[2] = (y>>4);
 		bits[3] = z;
-		bits[4] = (z>>8) | (p<<4);
+		bits[4] = (z>>8) | (pitch<<4);
 		bits[5] = yaw;
 
 		for (i=0 ; i<6 ; i++)
