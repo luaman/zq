@@ -1667,6 +1667,7 @@ void M_Demos_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
+		Q_strncpyz(prevdir, dir[demo_cursor+demo_base].name, MAX_QPATH);
 		M_Menu_MultiPlayer_f ();
 		break;
 
@@ -1757,6 +1758,7 @@ void M_Demos_Key (int k)
 			key_dest = key_game;
 			m_state = m_none;
 			Cbuf_AddText (va("playdemo \"..%s/%s\"\n", demodir, dir[demo_cursor+demo_base].name));
+			Q_strncpyz(prevdir, dir[demo_cursor+demo_base].name, MAX_QPATH);
 		}
 		break;
 	}
