@@ -1054,23 +1054,17 @@ Server information pertaining to this client only, sent every frame
 */
 void CL_ParseClientdata (void)
 {
-	int newparsecount;
 	float		latency;
 	frame_t		*frame;
 
-    newparsecount = cls.netchan.incoming_acknowledged;
-
 // calculate simulated time of message
-#ifdef MVDPLAY
-    cl.oldparsecount = (cls.mvdplayback) ? newparsecount - 1 : cl.parsecount;
-#endif
-	cl.parsecount = newparsecount;
+    cl.oldparsecount = cl.parsecount;
+	cl.parsecount = cls.netchan.incoming_acknowledged;
 	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
 
 #ifdef MVDPLAY
-	if (cls.mvdplayback) {
+	if (cls.mvdplayback)
         frame->senttime = cls.realtime - cls.frametime;
-    }
 #endif
 
 	frame->receivedtime = cls.realtime;
