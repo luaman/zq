@@ -1575,10 +1575,10 @@ void FS_SetGamedir (char *dir)
 	//
 	Cache_Flush ();
 
-	if (!strcmp(dir,"id1") || !strcmp(dir, "qw"))
-		return;
-
 	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
+
+	if (!strcmp(dir, "id1") || !strcmp(dir, "qw"))
+		return;
 
 	//
 	// add the directory to the search path
