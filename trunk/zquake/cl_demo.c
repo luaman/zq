@@ -33,10 +33,10 @@ void Cam_TryLock (void);
 void CL_FinishTimeDemo (void);
 
 // .qwz playback
-static qboolean	qwz_playback = false;
 static qboolean	qwz_unpacking = false;
 
 #ifdef _WIN32
+static qboolean	qwz_playback = false;
 static HANDLE	hQizmoProcess = NULL;
 static char tempqwd_name[256] = ""; // this file must be deleted
 									// after playback is finished
