@@ -1168,12 +1168,13 @@ CheatCommand
 */
 void() CheatCommand =
 {
-//      if (deathmatch || coop)
+	if (!infokey(world, "*cheats"))
 		return;
 
-	self.ammo_rockets = 100;
-	self.ammo_nails = 200;
 	self.ammo_shells = 100;
+	self.ammo_nails = 200;
+	self.ammo_rockets = 100;
+	self.ammo_cells = 100;
 	self.items = self.items | 
 		IT_AXE |
 		IT_SHOTGUN |
@@ -1182,10 +1183,8 @@ void() CheatCommand =
 		IT_SUPER_NAILGUN |
 		IT_GRENADE_LAUNCHER |
 		IT_ROCKET_LAUNCHER |
+		IT_LIGHTNING |
 		IT_KEY1 | IT_KEY2;
-
-	self.ammo_cells = 200;
-	self.items = self.items | IT_LIGHTNING;
 
 	self.weapon = IT_ROCKET_LAUNCHER;
 	self.impulse = 0;
