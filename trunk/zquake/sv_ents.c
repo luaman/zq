@@ -379,7 +379,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 		{	// only sent origin and velocity to spectators
 			pflags &= PF_VELOCITY1 | PF_VELOCITY2 | PF_VELOCITY3;
 			// Z_EXT_PM_TYPE protocol extension
-			pflags |= PMC_NOCLIP << PF_PMC_SHIFT;
+			pflags |= PMC_OLD_SPECTATOR << PF_PMC_SHIFT;
 		}
 		else if (ent == clent)
 		{	// don't send a lot of data on personal entity

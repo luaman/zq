@@ -169,8 +169,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // player move types
 #define PMC_NORMAL			0		// normal ground movement
 #define PMC_NORMAL_JUMP_HELD	1	// normal ground novement + jump_held
-#define PMC_NOCLIP			2
-#define PMC_FLY				3		// clipped
+#define PMC_OLD_SPECTATOR	2		// fly through walls (QW compatibility mode)
+#define PMC_SPECTATOR		3		// fly through walls
+#define PMC_FLY				4		// clipped
 
 //==============================================
 
