@@ -245,7 +245,7 @@ void() SpectatorImpulseCommand =
 
 	if(self.k_track == 1 && (self.goalentity.classname != "player" || self.goalentity.netname == ""))
         {
-            self.k_track == 0;
+            self.k_track = 0; // oldman: corrected assigment
         }
 
 	if(self.k_admin == 1 && self.impulse >= 1 && self.impulse <=9) 
