@@ -770,7 +770,6 @@ void CL_Init (void)
 	CL_InitTEnts ();
 	CL_InitPrediction ();
 	CL_InitCam ();
-	Pmove_Init ();
 	V_Init ();
 	TP_Init ();
 	Sbar_Init ();
@@ -1079,6 +1078,9 @@ void Host_Init (quakeparms_t *parms)
 	NET_Init ();
 	NET_Config (true, false);
 	Netchan_Init ();
+
+	Sys_Init ();
+	Pmove_Init ();
 
 	W_LoadWadFile ("gfx.wad");
 
