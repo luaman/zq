@@ -2128,8 +2128,10 @@ void	VID_Init (unsigned char *palette)
 		vid_default = windowed_default;
 	}
 
-	if (hwnd_dialog)
+	if (hwnd_dialog) {
 		DestroyWindow (hwnd_dialog);
+		hwnd_dialog = NULL;
+	}
 
 // sound initialization has to go here, preceded by a windowed mode set,
 // so there's a window for DirectSound to work with but we're not yet
@@ -2182,8 +2184,10 @@ void VID_Shutdown (void)
 	DestroyFullscreenWindow ();
 	DestroyFullDIBWindow ();
 
-	if (hwnd_dialog)
+	if (hwnd_dialog) {
 		DestroyWindow (hwnd_dialog);
+		hwnd_dialog = NULL;
+	}
 
 	if (mainwindow)
 		DestroyWindow(mainwindow);

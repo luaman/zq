@@ -122,6 +122,10 @@ void Sys_Error (char *error, ...)
 #ifdef SERVERONLY
 	printf ("ERROR: %s\n", text);
 #else
+	if (hwnd_dialog) {
+		DestroyWindow (hwnd_dialog);
+		hwnd_dialog = NULL;
+	}
 	MessageBox(NULL, text, "Error", 0 /* MB_OK */ );
 
 	if (qwclsemaphore)
