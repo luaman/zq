@@ -1478,6 +1478,10 @@ void CL_ParseServerMessage (void)
 				Host_EndGame ("Server disconnected");
 			break;
 
+		case svc_time:
+			MSG_ReadFloat ();
+			break;
+
 		case svc_print:
 			CL_ParsePrint ();
 			break;
