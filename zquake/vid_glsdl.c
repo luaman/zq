@@ -63,7 +63,7 @@ float vid_gamma = 0.8;
 qbool gl_mtexable = false;
 qbool gl_mtexfbskins = false;
 
-typedef void (GLAPIENTRY *lpMTexFUNC) (GLenum, GLfloat, GLfloat);
+typedef void (APIENTRY *lpMTexFUNC) (GLenum, GLfloat, GLfloat);
 lpMTexFUNC qglMultiTexCoord2f = NULL;
 
 /*-----------------------------------------------------------------------*/
