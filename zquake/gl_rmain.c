@@ -138,6 +138,26 @@ qboolean R_CullBox (vec3_t mins, vec3_t maxs)
 	return false;
 }
 
+/*
+=================
+R_CullSphere
+
+Returns true if the sphere is completely outside the frustum
+=================
+*/
+qboolean R_CullSphere (vec3_t centre, float radius)
+{
+	int		i;
+	mplane_t *p;
+
+	for (i=0,p=frustum ; i<4; i++,p++)
+	{
+		if ( DotProduct (centre, p->normal) - p->dist <= -radius )
+			return true;
+	}
+
+	return false;
+}
 
 void R_RotateForEntity (entity_t *e)
 {
@@ -472,24 +492,20 @@ void R_DrawAliasModel (entity_t *ent)
 	qboolean	full_light;
 	model_t		*clmodel = ent->model;
 	int			texture, fb_texture = 0;
-	float		d;
 
 	VectorAdd (ent->origin, clmodel->mins, mins);
 	VectorAdd (ent->origin, clmodel->maxs, maxs);
 
 	if (ent->angles[0] || ent->angles[1] || ent->angles[2])
 	{
-		for (i=0 ; i<4 ; i++)
-		{
-			d = DotProduct (ent->origin, frustum[i].normal) - frustum[i].dist;
-
-			if (d <= -clmodel->radius)
-				return;
-		}
+		if (R_CullSphere (ent->origin, clmodel->radius))
+			return;
 	}
 	else
+	{
 		if (R_CullBox (mins, maxs))
 			return;
+	}
 
 	VectorCopy (ent->origin, r_entorigin);
 	VectorSubtract (r_origin, r_entorigin, modelorg);
