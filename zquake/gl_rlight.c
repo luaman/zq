@@ -170,10 +170,10 @@ void R_RenderDlights (void)
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_ONE, GL_ONE);
 
-	l = cl_dlights;
-	for (i = 0; i < MAX_DLIGHTS; i++, l++)
+	l = r_refdef2.dlights;
+	for (i = 0; i < r_refdef2.numDlights; i++, l++)
 	{
-		if (l->die < r_refdef2.time || !l->radius || l->type == lt_rocket)
+		if (l->type == lt_rocket)
 			continue;
 		R_RenderDlight (l);
 	}
@@ -255,12 +255,10 @@ void R_PushDlights (void)
 
 	r_dlightframecount = r_framecount + 1;	// because the count hasn't
 											//  advanced yet for this frame
-	l = cl_dlights;
+	l = r_refdef2.dlights;
 
-	for (i=0 ; i<MAX_DLIGHTS ; i++, l++)
+	for (i=0 ; i<r_refdef2.numDlights ; i++, l++)
 	{
-		if (l->die < r_refdef2.time || !l->radius)
-			continue;
 		R_MarkLights ( l, 1<<i, r_worldmodel->nodes );
 	}
 }

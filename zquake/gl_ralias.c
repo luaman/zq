@@ -295,16 +295,13 @@ void R_DrawAliasModel (entity_t *ent)
 
 		DesaturateColor (lightcolor, original_light);
 
-		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
+		for (lnum = 0; lnum < r_refdef2.numDlights; lnum++)
 		{
-			if (cl_dlights[lnum].die < r_refdef2.time || 
-				!cl_dlights[lnum].radius)
-				continue;
 
 			VectorSubtract (ent->origin,
-				cl_dlights[lnum].origin,
+				r_refdef2.dlights[lnum].origin,
 				dist);
-			add = cl_dlights[lnum].radius - VectorLength(dist);
+			add = r_refdef2.dlights[lnum].radius - VectorLength(dist);
 			
 			if (add > 0)
 				ambientlight += add;

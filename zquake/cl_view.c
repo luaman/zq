@@ -1045,17 +1045,6 @@ void DropPunchAngle (void)
 
 /*
 ==================
-V_ClearScene
-==================
-*/
-void V_ClearScene (void)
-{
-	cl_numvisedicts = 0;
-	cl_numvisparticles = 0;
-}
-
-/*
-==================
 V_AddEntity
 ==================
 */
@@ -1065,6 +1054,25 @@ void V_AddEntity (entity_t *ent)
 		return;
 	
 	cl_visedicts[cl_numvisedicts++] = *ent;
+}
+
+/*
+==================
+V_AddDlight
+==================
+*/
+
+void V_AddDlight(int key, vec3_t origin, float	radius, float minlight, dlighttype_t type)
+{
+	if (cl_numvisdlights >= MAX_DLIGHTS)
+		return;
+
+	cl_visdlights[cl_numvisdlights].key = key;
+	VectorCopy (origin, cl_visdlights[cl_numvisdlights].origin);
+	cl_visdlights[cl_numvisdlights].radius = radius;
+	cl_visdlights[cl_numvisdlights].minlight = minlight;
+	cl_visdlights[cl_numvisdlights].type = type;
+	cl_numvisdlights++;
 }
 
 /*
@@ -1084,6 +1092,19 @@ void V_AddParticle (vec3_t origin, int color, float alpha)
 	VectorCopy (origin, cl_visparticles[cl_numvisparticles].org);
 	cl_numvisparticles++;
 }
+
+/*
+==================
+V_ClearScene
+==================
+*/
+void V_ClearScene (void)
+{
+	cl_numvisedicts = 0;
+	cl_numvisparticles = 0;
+	cl_numvisdlights = 0;
+}
+
 
 /*
 ==================
@@ -1130,6 +1151,9 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 	r_refdef2.watervis = (atoi(Info_ValueForKey(cl.serverinfo, "watervis")) != 0);
 
 	r_refdef2.lightstyles = cl_lightstyle;
+
+	r_refdef2.numDlights = cl_numvisdlights;
+	r_refdef2.dlights = cl_visdlights;
 
 	r_refdef2.numParticles = cl_numvisparticles;
 	r_refdef2.particles = cl_visparticles;

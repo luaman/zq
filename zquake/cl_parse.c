@@ -1571,7 +1571,7 @@ void CL_MuzzleFlash (void)
 {
 	vec3_t		forward;
 	vec3_t		origin, angles;
-	dlight_t	*dl;
+	cdlight_t	*dl;
 	int			i;
 	int			j, num_ent;
 	entity_state_t	*ent;
