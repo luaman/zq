@@ -244,7 +244,8 @@ void R_DrawEntitiesOnList (void)
 		switch (currententity->model->type)
 		{
 			case mod_alias:
-				R_DrawAliasModel (currententity);
+				if (!(currententity->renderfx & RF_TRANSLUCENT))
+					R_DrawAliasModel (currententity);
 				break;
 
 			case mod_brush:
@@ -271,8 +272,19 @@ void R_DrawEntitiesOnList (void)
 				break;
 		}
 	}
-
 	R_SetSpritesState (false);
+
+	// draw translucent models
+	glDepthMask (GL_FALSE);		// no z writes
+	for (i = 0; i < cl_numvisedicts; i++)
+	{
+		currententity = &cl_visedicts[i];
+
+		if (currententity->model->type == mod_alias
+				&& (currententity->renderfx & RF_TRANSLUCENT))
+			R_DrawAliasModel (currententity);
+	}
+	glDepthMask (GL_TRUE);
 }
 
 /*
