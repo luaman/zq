@@ -173,9 +173,11 @@ void Cvar_Set (cvar_t *var, char *string)
 			return;
 	}
 
-	Z_Free (var->string);	// free the old value string
-	
-	var->string = Z_CopyString (string);
+	// FIXME, avoid reallocation if the new string has same size?
+
+	Q_free (var->string);
+	var->string = Q_strdup (string);
+
 	var->value = Q_atof (var->string);
 
 #ifndef CLIENTONLY
@@ -266,14 +268,14 @@ void Cvar_Register (cvar_t *var)
 		strlcpy (string, old->string, sizeof(string));
 		Cvar_Delete (old->name);
 		if (!(var->flags & CVAR_ROM))
-			var->string = Z_CopyString (string);
+			var->string = Q_strdup (string);
 		else
-			var->string = Z_CopyString (var->string);
+			var->string = Q_strdup (var->string);
 	}
 	else
 	{
-		// allocate the string on zone because future sets will Z_Free it
-		var->string = Z_CopyString (var->string);
+		// allocate the string on heap because future sets will Q_free it
+		var->string = Q_strdup (var->string);
 	}
 	
 	var->value = Q_atof (var->string);
@@ -412,18 +414,23 @@ cvar_t *Cvar_Get (char *name, char *string, int cvarflags)
 		return var;
 	}
 
-	var = (cvar_t *) Z_Malloc(sizeof(cvar_t));
+	// allocate a new cvar
+	var = (cvar_t *) Q_malloc (sizeof(cvar_t));
+
+	// link it in
 	var->next = cvar_vars;
 	cvar_vars = var;
-
 	key = Com_HashKey (name);
 	var->hash_next = cvar_hash[key];
 	cvar_hash[key] = var;
 
-	var->name = Z_CopyString (name);
-	var->string = Z_CopyString (string);
+	// Q_malloc returns unitialized memory, so make sure all fields
+	// are initialized here
+	var->name = Q_strdup (name);
+	var->string = Q_strdup (string);
 	var->flags = cvarflags | CVAR_DYNAMIC;
 	var->value = Q_atof (var->string);
+	var->OnChange = NULL;
 
 	// FIXME, check userinfo/serverinfo
 
@@ -441,13 +448,12 @@ qbool Cvar_Delete (char *name)
 	cvar_t	*var, *prev;
 	int		key;
 
+	// unlink from hash
 	key = Com_HashKey (name);
-
 	prev = NULL;
 	for (var = cvar_hash[key] ; var ; var=var->hash_next)
 	{
 		if (!Q_stricmp(var->name, name)) {
-			// unlink from hash
 			if (prev)
 				prev->hash_next = var->hash_next;
 			else
@@ -460,20 +466,20 @@ qbool Cvar_Delete (char *name)
 	if (!var)
 		return false;
 
+	// unlink from cvar list and free
 	prev = NULL;
 	for (var = cvar_vars ; var ; var=var->next)
 	{
 		if (!Q_stricmp(var->name, name)) {
-			// unlink from cvar list
 			if (prev)
 				prev->next = var->next;
 			else
 				cvar_vars = var->next;
 
 			// free
-			Z_Free (var->string);
-			Z_Free (var->name);
-			Z_Free (var);
+			Q_free (var->string);
+			Q_free (var->name);
+			Q_free (var);
 			return true;
 		}
 		prev = var;
