@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /G5 /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /D "QW_BOTH" /YX /FD /c
+# ADD CPP /nologo /G5 /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -73,7 +73,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /Gm /GX /ZI /Od /I ".\ZDebug/" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /D "QW_BOTH" /FR"" /YX /Fo"" /FD ".\ZDebug/" /c
+# ADD CPP /nologo /G5 /ML /W3 /Gm /GX /ZI /Od /I ".\ZDebug/" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /FR"" /YX /Fo"" /FD ".\ZDebug/" /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -100,7 +100,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /ML /Gm /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "GLQUAKE" /D "id386" /D "QW_BOTH" /FR /YX /FD /c
+# ADD CPP /nologo /G5 /ML /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -128,7 +128,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G5 /ML /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "GLQUAKE" /FR /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "GLQUAKE" /D "id386" /D "QW_BOTH" /YX /FD /c
+# ADD CPP /nologo /G5 /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -197,6 +197,10 @@ SOURCE=.\cl_slist.c
 # Begin Source File
 
 SOURCE=.\cl_tent.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\cl_view.c
 # End Source File
 # Begin Source File
 
@@ -460,26 +464,6 @@ SOURCE=.\d_zpoint.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\r_draw.c
-
-!IF  "$(CFG)" == "zquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\gl_draw.c
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
@@ -717,26 +701,6 @@ SOURCE=.\menu.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\r_model.c
-
-!IF  "$(CFG)" == "zquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\net_chan.c
 # End Source File
 # Begin Source File
@@ -829,7 +793,7 @@ SOURCE=.\r_bsp.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\r_rast.c
+SOURCE=.\r_draw.c
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
@@ -949,7 +913,47 @@ SOURCE=.\r_misc.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\r_model.c
+
+!IF  "$(CFG)" == "zquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\r_part.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\r_rast.c
+
+!IF  "$(CFG)" == "zquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1117,6 +1121,10 @@ SOURCE=.\sv_user.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\sv_world.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\sys_win.c
 # End Source File
 # Begin Source File
@@ -1168,19 +1176,11 @@ SOURCE=.\vid_win.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\cl_view.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\wad.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\winquake.rc
-# End Source File
-# Begin Source File
-
-SOURCE=.\sv_world.c
 # End Source File
 # Begin Source File
 
@@ -1213,6 +1213,10 @@ SOURCE=.\bspfile.h
 # Begin Source File
 
 SOURCE=.\cdaudio.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cl_view.h
 # End Source File
 # Begin Source File
 
@@ -1304,15 +1308,15 @@ SOURCE=.\draw.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gl_local.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\gl_model.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\gl_warp_sin.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\gl_local.h
 # End Source File
 # Begin Source File
 
@@ -1333,10 +1337,6 @@ SOURCE=.\mathlib.h
 # Begin Source File
 
 SOURCE=.\menu.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_model.h
 # End Source File
 # Begin Source File
 
@@ -1361,6 +1361,10 @@ SOURCE=.\quakedef.h
 # Begin Source File
 
 SOURCE=.\r_local.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\r_model.h
 # End Source File
 # Begin Source File
 
@@ -1401,10 +1405,6 @@ SOURCE=.\version.h
 # Begin Source File
 
 SOURCE=.\vid.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cl_view.h
 # End Source File
 # Begin Source File
 
