@@ -135,7 +135,6 @@ void S_SoundInfo_f (void)
 S_Startup
 ================
 */
-
 void S_Startup (void)
 {
 	int		rc;
@@ -158,6 +157,17 @@ void S_Startup (void)
 	}
 
 	sound_started = 1;
+}
+
+
+/*
+================
+SND_Restart_f
+================
+*/
+void SND_Restart_f (void)
+{
+	// make this work!
 }
 
 
@@ -190,6 +200,7 @@ void S_Init (void)
 	if (COM_CheckParm("-simsound"))
 		fakedma = true;
 
+	Cmd_AddCommand("snd_restart", SND_Restart_f);
 	Cmd_AddCommand("play", S_Play_f);
 	Cmd_AddCommand("playvol", S_PlayVol_f);
 	Cmd_AddCommand("stopsound", S_StopAllSounds_f);
