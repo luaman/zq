@@ -266,8 +266,6 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 
 	SZ_Init (&sv.multicast, sv.multicast_buf, sizeof(sv.multicast_buf));
 	
-	SZ_Init (&sv.master, sv.master_buf, sizeof(sv.master_buf));
-	
 	SZ_Init (&sv.signon, sv.signon_buffers[0], sizeof(sv.signon_buffers[0]));
 	sv.num_signon_buffers = 1;
 
