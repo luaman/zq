@@ -1034,8 +1034,6 @@ Host_Init
 */
 void Host_Init (quakeparms_t *parms)
 {
-	extern char	com_basedir[MAX_OSPATH];
-
 	COM_InitArgv (parms->argc, parms->argv);
 
 	if (COM_CheckParm ("-minmemory"))
