@@ -1340,7 +1340,7 @@ void Cmd_If_f (void)
 		result = strstr(Cmd_Argv(3), Cmd_Argv(1)) == NULL;
 	else {
 		Com_Printf ("unknown operator: %s\n", op);
-		Com_Printf ("valid operators are ==, =, !=, <>, >, <, >=, <=\n");
+		Com_Printf ("valid operators are ==, =, !=, <>, >, <, >=, <=, isin, !isin\n");
 		return;
 	}		
 
