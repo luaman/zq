@@ -700,16 +700,15 @@ void W_FireGrenade ()
 	
 	newmis.touch = GrenadeTouch;
 	
+    newmis.nextthink = time + 2.5;		
+
 // set newmis duration
 	if (deathmatch == 4)
 	{
-		newmis.nextthink = time + 2.5;		
 		self.attack_finished = time + 1.1;
 //		self.health = self.health - 1;
 		T_Damage (self, self, self.owner, 10 );
 	}
-	else
-		newmis.nextthink = time + 2.5;
 
 	newmis.think = GrenadeExplode;
 
