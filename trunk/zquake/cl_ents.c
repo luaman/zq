@@ -280,6 +280,7 @@ void CL_ParsePacketEntities (qboolean delta)
 			return;
 		}
 
+		cl.oldvalidsequence = cl.validsequence;
 		cl.validsequence = cls.netchan.incoming_sequence;
 		oldp = &cl.frames[oldpacket&UPDATE_MASK].packet_entities;
 		full = false;
@@ -288,6 +289,7 @@ void CL_ParsePacketEntities (qboolean delta)
 	{	// this is a full update that we can start delta compressing from now
 		oldp = &dummy;
 		dummy.num_entities = 0;
+		cl.oldvalidsequence = cl.validsequence;
 		cl.validsequence = cls.netchan.incoming_sequence;
 		full = true;
 	}
