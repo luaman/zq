@@ -127,6 +127,7 @@ void W_LoadWadFile (char *filename)
 	{
 		lump_p->filepos = LittleLong(lump_p->filepos);
 		lump_p->size = LittleLong(lump_p->size);
+		lump_p->disksize = LittleLong(lump_p->disksize);
 		W_CleanupName (lump_p->name, lump_p->name);
 
 		if (lump_p->filepos < sizeof(wadinfo_t) ||
