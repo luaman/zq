@@ -1493,6 +1493,24 @@ void CL_MuzzleFlash (void)
 	dl->type = lt_muzzleflash;
 }
 
+void CL_ParseQizmoVoice (void)
+{
+	int i;
+	int	seq, bits;
+	int	num, unknown;
+	
+	// read the two-byte header
+	seq = MSG_ReadByte ();
+	bits = MSG_ReadByte ();
+
+	seq |= (bits & 0x30) << 4;	// 10-bit block sequence number, strictly increasing
+	num = bits >> 6;			// 2-bit sample number, bumped at the start of a new sample
+	unknown = bits & 0x0f;		// mysterious 4 bits.  volume multiplier maybe?
+
+	// 32 bytes of voice data follow
+	for (i = 0; i < 32; i++)
+		MSG_ReadByte ();
+}
 
 #define SHOWNET(x) {if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);}
 /*
@@ -1805,8 +1823,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_qizmovoice:
-			// skip the rest of the packet
-			msg_readcount = net_message.cursize;
+			CL_ParseQizmoVoice ();
 			break;
 		}
 
