@@ -196,7 +196,12 @@ sndinitstat SNDDMA_InitDirect (void)
 
 	shm->channels = 2;
 	shm->samplebits = 16;
-	shm->speed = 11025;
+	if (s_khz.value == 44)
+		shm->speed = 44100;
+	if (s_khz.value == 22)
+		shm->speed = 22050;
+	else
+		shm->speed = 11025;
 
 	memset (&format, 0, sizeof(format));
 	format.wFormatTag = WAVE_FORMAT_PCM;
@@ -424,7 +429,12 @@ qboolean SNDDMA_InitWav (void)
 
 	shm->channels = 2;
 	shm->samplebits = 16;
-	shm->speed = 11025;
+	if (s_khz.value == 44)
+		shm->speed = 44100;
+	if (s_khz.value == 22)
+		shm->speed = 22050;
+	else
+		shm->speed = 11025;
 
 	memset (&format, 0, sizeof(format));
 	format.wFormatTag = WAVE_FORMAT_PCM;
