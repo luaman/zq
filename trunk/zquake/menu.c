@@ -41,9 +41,8 @@ void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
 enum {m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer,
-	m_setup, m_net, m_options, m_video, m_keys, m_help, m_quit,
-	m_serialconfig, m_modemconfig, m_lanconfig, m_gameoptions, 
-	m_search, m_slist, m_sedit, m_fps, m_demos} m_state;
+	m_setup, m_options, m_video, m_keys, m_help, m_quit,
+	m_gameoptions, m_slist, m_sedit, m_fps, m_demos} m_state;
 
 void M_Menu_Main_f (void);
 	void M_Menu_SinglePlayer_f (void);
@@ -100,11 +99,6 @@ void M_Main_Key (int key);
 qboolean	m_entersound;		// play after drawing a frame, so caching
 								// won't disrupt the sound
 qboolean	m_recursiveDraw;
-
-int			m_return_state;
-qboolean	m_return_onerror;
-char		m_return_reason [32];
-
 int			m_topmenu;			// set if a submenu was entered via a
 								// menu_* command
 
@@ -3026,10 +3020,6 @@ void M_Draw (void)
 		M_Setup_Draw ();
 		break;
 
-	case m_net:
-//		M_Net_Draw ();
-		break;
-
 	case m_options:
 		M_Options_Draw ();
 		break;
@@ -3054,27 +3044,11 @@ void M_Draw (void)
 		M_Quit_Draw ();
 		break;
 
-	case m_serialconfig:
-//		M_SerialConfig_Draw ();
-		break;
-
-	case m_modemconfig:
-//		M_ModemConfig_Draw ();
-		break;
-
-	case m_lanconfig:
-//		M_LanConfig_Draw ();
-		break;
-
 #ifdef QW_BOTH
 	case m_gameoptions:
 		M_GameOptions_Draw ();
 		break;
 #endif
-
-	case m_search:
-//		M_Search_Draw ();
-		break;
 
 	case m_slist:
 		M_ServerList_Draw ();
@@ -3139,10 +3113,6 @@ void M_Keydown (int key)
 		M_Setup_Key (key);
 		return;
 
-	case m_net:
-//		M_Net_Key (key);
-		return;
-
 	case m_options:
 		M_Options_Key (key);
 		return;
@@ -3167,27 +3137,11 @@ void M_Keydown (int key)
 		M_Quit_Key (key);
 		return;
 
-	case m_serialconfig:
-//		M_SerialConfig_Key (key);
-		return;
-
-	case m_modemconfig:
-//		M_ModemConfig_Key (key);
-		return;
-
-	case m_lanconfig:
-//		M_LanConfig_Key (key);
-		return;
-
 #ifdef QW_BOTH
 	case m_gameoptions:
 		M_GameOptions_Key (key);
 		return;
 #endif
-
-	case m_search:
-//		M_Search_Key (key);
-		break;
 
 	case m_slist:
 		M_ServerList_Key (key);
