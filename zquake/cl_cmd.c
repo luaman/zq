@@ -96,7 +96,7 @@ Handles both say and say_team
 void CL_Say (qboolean team)
 {
 	extern cvar_t cl_fakename;
-	char	text[1024], *s;
+	char	text[1024], sendtext[1024], *s;
 
 	if (Cmd_Argc() < 2) {
 		if (team)
@@ -114,26 +114,25 @@ void CL_Say (qboolean team)
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 	SZ_Print (&cls.netchan.message, team ? "say_team " : "say ");
 
-	text[0] = 0;
-
 	s = TP_ParseMacroString (Cmd_Args());
-	s = TP_ParseFunChars (s, true);
+	Q_strncpyz (text, TP_ParseFunChars (s, true), sizeof(text));
 
+	sendtext[0] = 0;
 	if (team && cl_fakename.string[0] &&
 		!strchr(s, '\x0d') /* explicit $\ in message overrides cl_fakename */) {
 		char buf[32];
 		Q_strncpyz (buf, cl_fakename.string, sizeof(buf));
-		Q_snprintfz (text, sizeof(text), "\x0d%s: ", TP_ParseFunChars(buf, true));
+		Q_snprintfz (sendtext, sizeof(sendtext), "\x0d%s: ", TP_ParseFunChars(buf, true));
 	}
 
-	Q_strncatz (text, s, sizeof(text));
+	Q_strncatz (sendtext, text, sizeof(sendtext));
 
-	if (text[0] < 32)
+	if (sendtext[0] < 32)
 		SZ_Print (&cls.netchan.message, "\"");	// add quotes so that old servers parse the message correctly
 
-	SZ_Print (&cls.netchan.message, text);
+	SZ_Print (&cls.netchan.message, sendtext);
 
-	if (text[0] < 32)
+	if (sendtext[0] < 32)
 		SZ_Print (&cls.netchan.message, "\"");	// add quotes so that old servers parse the message correctly
 }
 
