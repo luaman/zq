@@ -1552,7 +1552,7 @@ void M_MultiPlayer_Key (int key)
 /* DEMOS MENU */
 
 #define MAX_DEMO_NAME 128
-#define MAX_DEMO_FILES 256
+#define MAX_DEMO_FILES 512
 #define MAXLINES 19	  // maximum number of files visible on screen
 
 typedef struct direntry_s {
@@ -2392,19 +2392,19 @@ int m_multip_maxs;
 int m_multip_horiz;
 int m_multip_state;
 
-void M_Menu_ServerList_f (void) {
+void M_Menu_ServerList_f (void)
+{
 	key_dest = key_menu;
 	m_entersound = true;
-//	m_state = m_multiplayer;
 	m_state = m_slist;
-//	m_multip_cursor = 0;
 	m_multip_mins = 0;
 	m_multip_maxs = 10;
 	m_multip_horiz = 0;
 	m_multip_state = 0;
 }
 
-void M_ServerList_Draw (void) {
+void M_ServerList_Draw (void)
+{
 	int serv;
 	int line = 1;
 	qpic_t *p;
@@ -2765,6 +2765,7 @@ void M_Init (void)
 	Cmd_AddCommand ("menu_save", M_Menu_Save_f);
 #endif
 	Cmd_AddCommand ("menu_multiplayer", M_Menu_MultiPlayer_f);
+	Cmd_AddCommand ("menu_slist", M_Menu_ServerList_f);
 	Cmd_AddCommand ("menu_setup", M_Menu_Setup_f);
 	Cmd_AddCommand ("menu_demos", M_Menu_Demos_f);
 	Cmd_AddCommand ("menu_options", M_Menu_Options_f);
