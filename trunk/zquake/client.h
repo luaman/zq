@@ -342,6 +342,7 @@ extern	cvar_t	cl_deadbodyfilter;
 extern	cvar_t	cl_explosion;
 extern	cvar_t	cl_gibfilter;
 extern	cvar_t	cl_muzzleflash;
+extern	cvar_t	cl_trueLightning;
 extern	cvar_t	r_rocketlight;
 extern	cvar_t	r_rockettrail;
 extern	cvar_t	r_grenadetrail;
