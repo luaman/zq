@@ -327,7 +327,9 @@ lastposenum = posenum;
 			order += 2;
 
 			// normals and vertexes come from the frame list
-			l = shadedots[verts->lightnormalindex] * shadelight;
+			l = (shadedots[verts->lightnormalindex] * shadelight + ambientlight) / 256;
+			if (l > 1)
+				l = 1;
 			glColor3f (l, l, l);
 			glVertex3f (verts->v[0], verts->v[1], verts->v[2]);
 			verts++;
@@ -439,7 +441,7 @@ R_DrawAliasModel
 
 =================
 */
-void R_DrawAliasModel (entity_t *e)
+void R_DrawAliasModel (entity_t *ent)
 {
 	int			i;
 	int			lnum;
@@ -451,72 +453,75 @@ void R_DrawAliasModel (entity_t *e)
 	float		an;
 	int			anim;
 
-	clmodel = currententity->model;
+	clmodel = ent->model;
 
-	VectorAdd (currententity->origin, clmodel->mins, mins);
-	VectorAdd (currententity->origin, clmodel->maxs, maxs);
+	VectorAdd (ent->origin, clmodel->mins, mins);
+	VectorAdd (ent->origin, clmodel->maxs, maxs);
 
 	if (R_CullBox (mins, maxs))
 		return;
 
-
-	VectorCopy (currententity->origin, r_entorigin);
+	VectorCopy (ent->origin, r_entorigin);
 	VectorSubtract (r_origin, r_entorigin, modelorg);
 
 	//
 	// get lighting information
 	//
 
-	ambientlight = shadelight = R_LightPoint (currententity->origin);
+// Tonik: make thunderbolt model look nice
+// FIXME: we don't want to make strcmp's for every model!
+	if (!strcmp (clmodel->name, "progs/bolt.mdl")
+		|| !strcmp (clmodel->name, "progs/bolt2.mdl")
+		|| !strcmp (clmodel->name, "progs/bolt3.mdl") ) {
+		ambientlight = 255;
+		shadelight = 0;
 
-	// always give the gun some light
-	if (e == &cl.viewent && ambientlight < 24)
-		ambientlight = shadelight = 24;
+	} else if (!strcmp (clmodel->name, "progs/flame2.mdl")
+		|| !strcmp (clmodel->name, "progs/flame.mdl") ) {
+		// HACK HACK HACK -- no fullbright colors, so make torches full light
+		ambientlight = 255;
+		shadelight = 0;
+	}
+	else {
 
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
-	{
-		if (cl_dlights[lnum].die >= cl.time)
+		// normal lighting 
+
+		ambientlight = shadelight = R_LightPoint (ent->origin);
+		
+		// always give the gun some light
+		if (ent == &cl.viewent && ambientlight < 24)
+			ambientlight = shadelight = 24;
+		
+		for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
 		{
-			VectorSubtract (currententity->origin,
-							cl_dlights[lnum].origin,
-							dist);
-			add = cl_dlights[lnum].radius - Length(dist);
-
-			if (add > 0) {
-				ambientlight += add;
-				//ZOID models should be affected by dlights as well
-				shadelight += add;
+			if (cl_dlights[lnum].die >= cl.time)
+			{
+				VectorSubtract (ent->origin,
+					cl_dlights[lnum].origin,
+					dist);
+				add = cl_dlights[lnum].radius - Length(dist);
+				
+				if (add > 0)
+					ambientlight += add;
 			}
+		}
+		
+		// clamp lighting so it doesn't overbright as much
+		if (ambientlight > 128)
+			ambientlight = 128;
+		if (ambientlight + shadelight > 192)
+			shadelight = 192 - ambientlight;
+		
+		// ZOID: never allow players to go totally black
+		if (!strcmp(clmodel->name, "progs/player.mdl")) {
+			if (ambientlight < 8)
+				ambientlight = shadelight = 8;
 		}
 	}
 
-	// clamp lighting so it doesn't overbright as much
-	if (ambientlight > 128)
-		ambientlight = 128;
-	if (ambientlight + shadelight > 192)
-		shadelight = 192 - ambientlight;
-
-	// ZOID: never allow players to go totally black
-	if (!strcmp(clmodel->name, "progs/player.mdl")) {
-		if (ambientlight < 8)
-			ambientlight = shadelight = 8;
-
-// Tonik: make thunderbolt model look nice
-// FIXME: we don't want to make strcmp's for every model!
-	} else if (!strcmp (clmodel->name, "progs/bolt.mdl")
-		|| !strcmp (clmodel->name, "progs/bolt2.mdl")
-		|| !strcmp (clmodel->name, "progs/bolt3.mdl") ) {
-		ambientlight = shadelight = 190;
-
-	} else if (!strcmp (clmodel->name, "progs/flame2.mdl")
-		|| !strcmp (clmodel->name, "progs/flame.mdl") )
-		// HACK HACK HACK -- no fullbright colors, so make torches full light
-		ambientlight = shadelight = 256;
-
-	shadedots = r_avertexnormal_dots[((int)(e->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
-	shadelight = shadelight / 200.0;
+	shadedots = r_avertexnormal_dots[((int)(ent->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
 	
-	an = e->angles[1]/180*M_PI;
+	an = ent->angles[1]/180*M_PI;
 	shadevector[0] = cos(-an);
 	shadevector[1] = sin(-an);
 	shadevector[2] = 1;
@@ -525,7 +530,7 @@ void R_DrawAliasModel (entity_t *e)
 	//
 	// locate the proper data
 	//
-	paliashdr = (aliashdr_t *)Mod_Extradata (currententity->model);
+	paliashdr = (aliashdr_t *)Mod_Extradata (ent->model);
 
 	c_alias_polys += paliashdr->numtris;
 
@@ -536,7 +541,7 @@ void R_DrawAliasModel (entity_t *e)
 	GL_DisableMultitexture();
 
     glPushMatrix ();
-	R_RotateForEntity (e);
+	R_RotateForEntity (ent);
 
 	if (!strcmp (clmodel->name, "progs/eyes.mdl") ) {
 		glTranslatef (paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2] - (22 + 8));
@@ -548,15 +553,15 @@ void R_DrawAliasModel (entity_t *e)
 	}
 
 	anim = (int)(cl.time*10) & 3;
-    GL_Bind(paliashdr->gl_texturenum[currententity->skinnum][anim]);
+    GL_Bind(paliashdr->gl_texturenum[ent->skinnum][anim]);
 
 	// we can't dynamically colormap textures, so they are cached
-	// seperately for the players.  Heads are just uncolored.
-	if (currententity->scoreboard && !gl_nocolors.value)
+	// separately for the players.  Heads are just uncolored.
+	if (ent->scoreboard && !gl_nocolors.value)
 	{
-		i = currententity->scoreboard - cl.players;
-		if (!currententity->scoreboard->skin) {
-			Skin_Find(currententity->scoreboard);
+		i = ent->scoreboard - cl.players;
+		if (!ent->scoreboard->skin) {
+			Skin_Find(ent->scoreboard);
 			R_TranslatePlayerSkin(i);
 		}
 		if (i >= 0 && i<MAX_CLIENTS)
@@ -570,7 +575,7 @@ void R_DrawAliasModel (entity_t *e)
 	if (gl_affinemodels.value)
 		glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-	R_SetupAliasFrame (currententity->frame, paliashdr);
+	R_SetupAliasFrame (ent->frame, paliashdr);
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
@@ -583,7 +588,7 @@ void R_DrawAliasModel (entity_t *e)
 	if (r_shadows.value)
 	{
 		glPushMatrix ();
-		R_RotateForEntity (e);
+		R_RotateForEntity (ent);
 		glDisable (GL_TEXTURE_2D);
 		glEnable (GL_BLEND);
 		glColor4f (0,0,0,0.5);
@@ -653,14 +658,6 @@ R_DrawViewModel
 */
 void R_DrawViewModel (void)
 {
-	float		ambient[4], diffuse[4];
-	int			j;
-	int			lnum;
-	vec3_t		dist;
-	float		add;
-	dlight_t	*dl;
-	int			ambientlight, shadelight;
-
 	if (!r_drawviewmodel.value || 
 		(!r_drawviewmodel2.value && scr_fov.value > 90) ||
 		!Cam_DrawViewModel())
@@ -681,33 +678,6 @@ void R_DrawViewModel (void)
 	currententity = &cl.viewent;
 	if (!currententity->model)
 		return;
-
-	j = R_LightPoint (currententity->origin);
-
-	if (j < 24)
-		j = 24;		// always give some light on gun
-	ambientlight = j;
-	shadelight = j;
-
-// add dynamic lights		
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
-	{
-		dl = &cl_dlights[lnum];
-		if (!dl->radius)
-			continue;
-		if (!dl->radius)
-			continue;
-		if (dl->die < cl.time)
-			continue;
-
-		VectorSubtract (currententity->origin, dl->origin, dist);
-		add = dl->radius - Length(dist);
-		if (add > 0)
-			ambientlight += add;
-	}
-
-	ambient[0] = ambient[1] = ambient[2] = ambient[3] = (float)ambientlight / 128;
-	diffuse[0] = diffuse[1] = diffuse[2] = diffuse[3] = (float)shadelight / 128;
 
 	// hack the depth range to prevent view model from poking into walls
 	glDepthRange (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));
