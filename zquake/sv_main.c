@@ -492,7 +492,6 @@ void SVC_DirectConnect (void)
 	netadr_t	adr;
 	int			i;
 	client_t	*cl, *newcl;
-	client_t	temp;
 	edict_t		*ent;
 	int			edictnum;
 	char		*s;
@@ -511,7 +510,6 @@ void SVC_DirectConnect (void)
 	}
 
 	qport = atoi(Cmd_Argv(2));
-
 	challenge = atoi(Cmd_Argv(3));
 
 	// note an extra byte is needed to replace spectator key
@@ -570,25 +568,8 @@ void SVC_DirectConnect (void)
 
 	adr = net_from;
 
-	newcl = &temp;
-	memset (newcl, 0, sizeof(client_t));
-
-	svs.lastuserid++;	// so every client gets a unique id
-	newcl->userid = svs.lastuserid;
-
-	// works properly
-	if (!sv_highchars.value) {
-		byte *p, *q;
-
-		for (p = (byte *)newcl->userinfo, q = (byte *)userinfo; 
-			*q && p < (byte *)newcl->userinfo + sizeof(newcl->userinfo)-1; q++)
-			if (*q > 31 && *q <= 127)
-				*p++ = *q;
-	} else
-		Q_strncpyz (newcl->userinfo, userinfo, sizeof(newcl->userinfo));
-
 	// if there is already a slot for this ip, drop it
-	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
 		if (cl->state == cs_free)
 			continue;
@@ -598,12 +579,12 @@ void SVC_DirectConnect (void)
 		{
 			if (cl->state == cs_connected) {
 				Com_Printf ("%s:dup connect\n", NET_AdrToString (adr));
-				svs.lastuserid--;
 				return;
 			}
 
 			Com_Printf ("%s:reconnect\n", NET_AdrToString (adr));
 			SV_DropClient (cl);
+			// FIXME, set to cs_free so that the slot can be reused right away?
 			break;
 		}
 	}
@@ -638,12 +619,23 @@ void SVC_DirectConnect (void)
 	// build a new connection
 	// accept the new client
 	// this is the only place a client_t is ever initialized
-	*newcl = temp;
+	memset (newcl, 0, sizeof(*newcl));
+	svs.lastuserid++;	// so every client gets a unique id
+	newcl->userid = svs.lastuserid;
+
+	// works properly
+	if (!sv_highchars.value) {
+		byte *p, *q;
+		for (p = (byte *)newcl->userinfo, q = (byte *)userinfo; 
+			*q && p < (byte *)newcl->userinfo + sizeof(newcl->userinfo)-1; q++)
+			if (*q > 31 && *q <= 127)
+				*p++ = *q;
+	} else
+		Q_strncpyz (newcl->userinfo, userinfo, sizeof(newcl->userinfo));
+
 
 	Netchan_OutOfBandPrint (NS_SERVER, adr, "%c", S2C_CONNECTION );
 
-	edictnum = (newcl-svs.clients)+1;
-	
 	Netchan_Setup (NS_SERVER, &newcl->netchan, adr, qport);
 
 	newcl->state = cs_connected;
@@ -658,6 +650,7 @@ void SVC_DirectConnect (void)
 	newcl->extensions = atoi(Info_ValueForKey(newcl->userinfo, "*z_ext"));
 	Info_RemoveKey (newcl->userinfo, "*z_ext");
 
+	edictnum = (newcl - svs.clients) + 1;
 	ent = EDICT_NUM(edictnum);	
 	newcl->edict = ent;
 	
