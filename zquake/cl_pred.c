@@ -187,6 +187,9 @@ void CL_PredictMove (void)
 		return;
 	}
 
+	if (cls.nqdemoplayback)
+		goto out;
+
 	if (!cl.validsequence)
 		return;
 
