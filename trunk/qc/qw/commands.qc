@@ -31,6 +31,8 @@ float	z_ext_clientcommand = 0;
 
 
 void(string item, string amount) Cmd_Give = {
+	local float am;
+
 	if (!infokey(world, "*cheats")) {
 		sprint (self, PRINT_HIGH, "Cheats are not allowed on this server\n");
 		return;
@@ -62,6 +64,10 @@ void(string item, string amount) Cmd_Give = {
 		self.ammo_cells = stof(amount);
 	else if (item == "h" || item == "health")
 		self.health = stof(amount);
+	else if (item == "key1")
+		self.items = self.items | IT_KEY1;
+	else if (item == "key2")
+		self.items = self.items | IT_KEY2;
 	else if (item == "all") {
 		self.items = self.items | IT_ALL_WEAPONS | IT_KEY1 | IT_KEY2;
 		self.ammo_shells = 100;
