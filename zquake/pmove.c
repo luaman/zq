@@ -681,7 +681,7 @@ void PM_CategorizePosition (void)
 		}
 	}
 
-	if (pmove.onground && pmove.pm_type != PM_FLY && pmove.waterlevel < 3)
+	if (pmove.onground && pmove.pm_type != PM_FLY && pmove.waterlevel < 2)
 	{
 		// snap to ground so that we can't jump higher than we're supposed to
 		if (!trace.startsolid && !trace.allsolid)
