@@ -417,9 +417,6 @@ Draw_Init
 void Draw_Init (void)
 {
 	qpic_t	*cb;
-	byte	*dest;
-	int		x;
-	char	ver[40];
 	int		start;
 	int		i;
 
@@ -453,11 +450,6 @@ void Draw_Init (void)
 
 	if (cb->width != 320 || cb->height != 200)
 		Sys_Error ("Draw_Init: conback.lmp size is not 320x200");
-
-	strcpy (ver, Z_VERSION);
-	dest = cb->data + 320 + 320*186 - 11 - 8*strlen(ver);
-	for (x=0 ; x<strlen(ver) ; x++)
-		Draw_CharToConback (ver[x], dest+(x<<3));
 
 	conback->width = cb->width;
 	conback->height = cb->height;
@@ -889,28 +881,14 @@ Draw_ConsoleBackground
 void Draw_ConsoleBackground (int lines)
 {
 	char ver[80];
-	int x, y;
 
 	if (lines == vid.height)
 		Draw_Pic(0, lines - vid.height, conback);
 	else
 		Draw_AlphaPic (0, lines - vid.height, conback, gl_conalpha.value);
 
-	if (!cls.download) {
-#ifdef __linux__
-		sprintf (ver, "LinuxGL (%4.2f) QuakeWorld", LINUX_VERSION);
-#else
-//		sprintf (ver, "GL (%4.2f) QuakeWorld", GLQUAKE_VERSION);
-#ifdef QW_BOTH
-		sprintf (ver, "GL (%4.2f) ZQuake", GLQUAKE_VERSION);
-#else
-		sprintf (ver, "GL (%4.2f) ZQuake client", GLQUAKE_VERSION);
-#endif
-#endif
-		x = vid.conwidth - (strlen(ver)*8 + 11) - (vid.conwidth*8/320)*7;
-		y = lines-14;
-		Draw_Alt_String (x, y, ver);
-	}
+	sprintf (ver, "ZQuake %s", Z_VERSION);
+	Draw_Alt_String (vid.conwidth - strlen(ver)*8 - 8, lines - 10, ver);
 }
 
 
