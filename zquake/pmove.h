@@ -67,8 +67,7 @@ typedef struct
 	int			jump_msec;	// msec since last jump
 #endif
 	float		waterjumptime;
-	qboolean	dead;
-	int			spectator;
+	int			pm_type;
 
 	// world state
 	int			numphysent;

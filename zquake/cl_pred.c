@@ -87,8 +87,12 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 		pmove.jump_msec = from->jump_msec;
 	pmove.jump_held = from->jump_held;
 	pmove.waterjumptime = from->waterjumptime;
-	pmove.dead = cl.stats[STAT_HEALTH] <= 0;
-	pmove.spectator = spectator;
+	if (spectator)
+		pmove.pm_type = PM_OLD_SPECTATOR;
+	else if (cl.stats[STAT_HEALTH] <= 0)
+		pmove.pm_type = PM_DEAD;
+	else
+		pmove.pm_type = PM_NORMAL;
 
 	pmove.cmd = *u;
 

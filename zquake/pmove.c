@@ -380,7 +380,7 @@ void PM_Accelerate (vec3_t wishdir, float wishspeed, float accel)
 	int			i;
 	float		addspeed, accelspeed, currentspeed;
 
-	if (pmove.dead)
+	if (pmove.pm_type == PM_DEAD)
 		return;
 	if (pmove.waterjumptime)
 		return;
@@ -403,7 +403,7 @@ void PM_AirAccelerate (vec3_t wishdir, float wishspeed, float accel)
 	float		addspeed, accelspeed, currentspeed, wishspd = wishspeed;
 	float		originalspeed, newspeed, speedcap;
 		
-	if (pmove.dead)
+	if (pmove.pm_type == PM_DEAD)
 		return;
 	if (pmove.waterjumptime)
 		return;
@@ -649,7 +649,7 @@ PM_CheckJump
 */
 void PM_CheckJump (void)
 {
-	if (pmove.dead)
+	if (pmove.pm_type == PM_DEAD)
 	{
 		pmove.jump_held = true;	// don't jump on respawn
 		return;
@@ -898,7 +898,7 @@ void PlayerMove (void)
 	VectorCopy (pmove.cmd.angles, pmove.angles);
 	AngleVectors (pmove.angles, forward, right, up);
 
-	if (pmove.spectator)
+	if (pmove.pm_type == PM_SPECTATOR || pmove.pm_type == PM_OLD_SPECTATOR)
 	{
 		PM_SpectatorMove ();
 		pmove.onground = false;
@@ -913,7 +913,7 @@ void PlayerMove (void)
 	if (pmove.waterlevel == 2)
 		PM_CheckWaterJump ();
 
-	if (pmove.velocity[2] < 0 || pmove.dead)
+	if (pmove.velocity[2] < 0 || pmove.pm_type == PM_DEAD)
 		pmove.waterjumptime = 0;
 
 	if (pmove.waterjumptime)

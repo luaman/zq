@@ -1564,12 +1564,18 @@ void SV_RunCmd (usercmd_t *ucmd)
 	VectorCopy (sv_player->v.velocity, pmove.velocity);
 	VectorCopy (sv_player->v.v_angle, pmove.angles);
 
-	pmove.spectator = sv_client->spectator;
+	if (sv_client->spectator || (sv_player->v.movetype == MOVETYPE_NOCLIP)) {
+		pmove.pm_type = PM_OLD_SPECTATOR;
+	}
+	else if (sv_player->v.health <= 0)
+		pmove.pm_type = PM_DEAD;
+	else
+		pmove.pm_type = PM_NORMAL;
+
 	pmove.waterjumptime = sv_player->v.teleport_time;
 	pmove.numphysent = 1;
 	pmove.physents[0].model = sv.worldmodel;
 	pmove.cmd = *ucmd;
-	pmove.dead = sv_player->v.health <= 0;
 	pmove.jump_held = sv_client->jump_held;
 #ifndef SERVERONLY
 	pmove.jump_msec = 0;
