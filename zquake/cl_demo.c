@@ -40,8 +40,8 @@ static qboolean	qwz_playback = false;
 static HANDLE	hQizmoProcess = NULL;
 static char tempqwd_name[256] = ""; // this file must be deleted
 									// after playback is finished
-void CheckQizmoCompletion ();
-void StopQWZPlayback ();
+void CheckQizmoCompletion (void);
+void StopQWZPlayback (void);
 #endif
 
 /*
@@ -175,6 +175,7 @@ qboolean CL_GetDemoMessage (void)
 	if (cl.paused & 2)
 		return 0;
 
+readnext:
 	// read the time from the packet
 	fread(&demotime, sizeof(demotime), 1, cls.demofile);
 	demotime = LittleFloat(demotime);
@@ -188,7 +189,7 @@ qboolean CL_GetDemoMessage (void)
 			// rewind back to time
 			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
 					SEEK_SET);
-			return 0;		// already read this frame's message
+			return false;	// already read this frame's message
 		}
 		if (!cls.td_starttime && cls.state == ca_active) {
 			cls.td_starttime = Sys_DoubleTime();
@@ -207,16 +208,19 @@ qboolean CL_GetDemoMessage (void)
 			// rewind back to time
 			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
 					SEEK_SET);
-			return 0;		// don't need another message yet
+			return false;		// don't need another message yet
 		}
 	} else
 		cls.realtime = demotime; // we're warping
 
 	if (cls.state < ca_demostart)
-		Host_Error ("CL_GetDemoMessage: cls.state != ca_active");
+		Host_Error ("CL_GetDemoMessage: cls.state < ca_demostart");
 	
 	// get the msg type
-	fread (&c, sizeof(c), 1, cls.demofile);
+	r = fread (&c, sizeof(c), 1, cls.demofile);
+	if (r != 1) {
+		Host_Error ("Unexpected end of demo");
+	}
 	
 	switch (c) {
 	case dem_cmd :
@@ -225,10 +229,7 @@ qboolean CL_GetDemoMessage (void)
 		pcmd = &cl.frames[i].cmd;
 		r = fread (pcmd, sizeof(*pcmd), 1, cls.demofile);
 		if (r != 1)
-		{
-			CL_Disconnect ();
-			return 0;
-		}
+			Host_Error ("Corrupted demo");
 		// byte order stuff
 		for (j = 0; j < 3; j++)
 			pcmd->angles[j] = LittleFloat(pcmd->angles[j]);
@@ -244,61 +245,31 @@ qboolean CL_GetDemoMessage (void)
 			cl.viewangles[i] = LittleFloat (cl.viewangles[i]);
 		if (cl.spectator)
 			Cam_TryLock ();
-		break;
+		goto readnext;
 
 	case dem_read:
 		// get the next message
 		fread (&net_message.cursize, 4, 1, cls.demofile);
 		net_message.cursize = LittleLong (net_message.cursize);
-	//Com_Printf ("read: %ld bytes\n", net_message.cursize);
 		if (net_message.cursize > MAX_MSGLEN + 8)
 			Host_Error ("Demo message > MAX_MSGLEN");
 		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
 		if (r != 1)
-		{
-			CL_Disconnect ();
-			return 0;
-		}
-		break;
+			Host_Error ("Corrupted demo");
+		return true;
 
 	case dem_set:
 		fread (&i, 4, 1, cls.demofile);
 		cls.netchan.outgoing_sequence = LittleLong(i);
 		fread (&i, 4, 1, cls.demofile);
 		cls.netchan.incoming_sequence = LittleLong(i);
-		break;
+		goto readnext;
 
 	default:
-		Com_Printf ("Corrupted demo.\n");
-		CL_Disconnect ();
-		return 0;
-	}
-
-	return 1;
-}
-
-/*
-====================
-CL_GetMessage
-
-Handles recording and playback of demos, on top of NET_ code
-====================
-*/
-qboolean CL_GetMessage (void)
-{
-#ifdef _WIN32
-	CheckQizmoCompletion ();
-#endif
-
-	if (cls.demoplayback)
-		return CL_GetDemoMessage ();
-
-	if (!NET_GetPacket(NS_CLIENT))
+		Host_Error ("Corrupted demo");
 		return false;
-
-	return true;
+	}
 }
-
 
 /*
 ====================
@@ -332,9 +303,7 @@ void CL_Stop_f (void)
 
 /*
 ====================
-CL_WriteDemoMessage
-
-Dumps the current net message, prefixed by the length and view angles
+CL_WriteRecordDemoMessage
 ====================
 */
 void CL_WriteRecordDemoMessage (sizebuf_t *msg, int seq)
@@ -821,7 +790,7 @@ void CL_EasyRecord_f (void)
 //
 
 #ifdef _WIN32
-static void CheckQizmoCompletion ()
+void CheckQizmoCompletion (void)
 {
 	DWORD ExitCode;
 
@@ -865,7 +834,7 @@ static void CheckQizmoCompletion ()
 	cls.realtime = 0;
 }
 
-static void StopQWZPlayback ()
+static void StopQWZPlayback (void)
 {
 	if (!hQizmoProcess && tempqwd_name[0]) {
 		if (remove (tempqwd_name) != 0)
