@@ -47,7 +47,6 @@ for all variable in the bot...
 .vector	b_dir;
 .float forwardmove, sidemove, upmove;
 .vector dyn_dest;
-.vector	punchangle; // HACK - Don't want to screw with bot_phys
 
 // --------defines-----
 float SVC_UPDATENAME	= 13;
@@ -116,8 +115,7 @@ float		max_clients;
 float		bot_count, b_options;
 float		waypoint_mode, dump_mode; 
 float		waypoints, direct_route;
-float		sv_friction, sv_gravity;
-float		sv_accelerate, sv_maxspeed, sv_stopspeed;
+float		sv_gravity;
 entity		fixer;
 entity		route_table;
 entity		b_temp1, b_temp2, b_temp3;
@@ -473,12 +471,7 @@ void() BotFrame =
 	b_options = stof(h);
 	
 	// for the sake of speed
-	sv_maxspeed = cvar("sv_maxspeed");
 	sv_gravity = cvar("sv_gravity");
-	sv_friction = cvar("sv_friction");
-	sv_accelerate = cvar("sv_accelerate");
-	sv_stopspeed = cvar("sv_stopspeed");
-
 };
 
 /*
