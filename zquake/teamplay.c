@@ -491,7 +491,31 @@ char *Macro_Need (void)
 	}
 
 	if (cl.teamfortress)
-		goto done;	// don't check weapons in TF
+	{
+		// in TF, we have all weapons from the start,
+		// and ammo is checked differently
+		if (cl.stats[STAT_ROCKETS] < tp_need_rockets.value) {
+			if (macro_buf[0])
+				strcat (macro_buf, "/");
+			strcat (macro_buf, "rockets");
+		}
+		if (cl.stats[STAT_SHELLS] < tp_need_shells.value) {
+			if (macro_buf[0])
+				strcat (macro_buf, "/");
+			strcat (macro_buf, "shells");
+		}
+		if (cl.stats[STAT_NAILS] < tp_need_nails.value) {
+			if (macro_buf[0])
+				strcat (macro_buf, "/");
+			strcat (macro_buf, "nails");
+		}
+		if (cl.stats[STAT_CELLS] < tp_need_cells.value) {
+			if (macro_buf[0])
+				strcat (macro_buf, "/");
+			strcat (macro_buf, "cells");
+		}
+		goto done;
+	}
 
 	// check weapon
 	weapon = 0;
