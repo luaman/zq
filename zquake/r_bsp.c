@@ -612,6 +612,10 @@ void R_RenderWorld (void)
 	clmodel = currententity->model;
 	r_pcurrentvertbase = clmodel->vertexes;
 
+	if (r_viewleaf->contents == CONTENTS_SOLID && r_skyboxloaded) {
+		R_EmitSkyBox ();	// instead of solid background
+	}
+
 	R_RecursiveWorldNode (clmodel->nodes, 15);
 }
 
