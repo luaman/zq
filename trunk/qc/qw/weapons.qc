@@ -41,6 +41,10 @@ const float  IMPULSE_WEAPONCYCLE_F            =  10;
 const float  IMPULSE_CHEAT_SERVERFLAGS        =  11;
 const float  IMPULSE_WEAPONCYCLE_R            =  12;
 
+#ifdef FRIKBOT
+const float  IMPULSE_ADDBOT                   = 100;
+const float  IMPULSE_REMOVEBOT                = 101;
+#endif
 
 void T_Damage (entity targ, entity inflictor, entity attacker, float damage);
 void player_run ();
@@ -1000,6 +1004,10 @@ void W_SetCurrentAmmo ()
 		self.currentammo = 0;
 		self.weaponmodel = "progs/v_axe.mdl";
 		self.weaponframe = 0;
+#ifdef VWEP_TEST
+        if(vw_available > 0)
+            self.vw_index = 1;
+#endif
 	}
 	else if (self.weapon == IT_SHOTGUN)
 	{
@@ -1007,6 +1015,10 @@ void W_SetCurrentAmmo ()
 		self.weaponmodel = "progs/v_shot.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | IT_SHELLS;
+#ifdef VWEP_TEST
+        if(vw_available > 0)
+            self.vw_index = 2;
+#endif
 	}
 	else if (self.weapon == IT_SUPER_SHOTGUN)
 	{
@@ -1014,6 +1026,10 @@ void W_SetCurrentAmmo ()
 		self.weaponmodel = "progs/v_shot2.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | IT_SHELLS;
+#ifdef VWEP_TEST
+        if(vw_available > 0)
+            self.vw_index = 3;
+#endif
 	}
 	else if (self.weapon == IT_NAILGUN)
 	{
@@ -1021,6 +1037,10 @@ void W_SetCurrentAmmo ()
 		self.weaponmodel = "progs/v_nail.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | IT_NAILS;
+#ifdef VWEP_TEST
+        if(vw_available > 0)
+            self.vw_index = 4;
+#endif
 	}
 	else if (self.weapon == IT_SUPER_NAILGUN)
 	{
@@ -1028,6 +1048,10 @@ void W_SetCurrentAmmo ()
 		self.weaponmodel = "progs/v_nail2.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | IT_NAILS;
+#ifdef VWEP_TEST
+        if(vw_available > 0)
+            self.vw_index = 5;
+#endif
 	}
 	else if (self.weapon == IT_GRENADE_LAUNCHER)
 	{
@@ -1035,6 +1059,10 @@ void W_SetCurrentAmmo ()
 		self.weaponmodel = "progs/v_rock.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | IT_ROCKETS;
+#ifdef VWEP_TEST
+        if(vw_available > 0)
+            self.vw_index = 6;
+#endif
 	}
 	else if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
@@ -1042,6 +1070,10 @@ void W_SetCurrentAmmo ()
 		self.weaponmodel = "progs/v_rock2.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | IT_ROCKETS;
+#ifdef VWEP_TEST
+        if(vw_available > 0)
+            self.vw_index = 7;
+#endif
 	}
 	else if (self.weapon == IT_LIGHTNING)
 	{
@@ -1049,6 +1081,10 @@ void W_SetCurrentAmmo ()
 		self.weaponmodel = "progs/v_light.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | IT_CELLS;
+#ifdef VWEP_TEST
+        if(vw_available > 0)
+            self.vw_index = 8;
+#endif
 	}
 	else
 	{
@@ -1503,6 +1539,12 @@ void ImpulseCommands ()
 		ServerflagsCommand ();
 	else if (self.impulse == IMPULSE_WEAPONCYCLE_R)
 		CycleWeaponReverseCommand ();
+#ifdef FRIKBOT
+    else if (self.impulse == IMPULSE_ADDBOT)
+        Cmd_AddBot("testbot", "2");
+    else if (self.impulse == IMPULSE_REMOVEBOT)
+        KickABot();
+#endif
 
 #ifdef AGRIP
 	else
