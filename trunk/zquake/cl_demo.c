@@ -741,8 +741,7 @@ void CL_EasyRecord_f (void)
 	} else {
 		// guess game type and write demo name
 		i = TP_CountPlayers();
-		if (atoi(Info_ValueForKey(cl.serverinfo, "teamplay"))
-			&& i >= 3)
+		if (cl.teamplay && i >= 3)
 		{
 			// Teamplay
 			sprintf (name, "%s_%s_vs_%s_%s",
