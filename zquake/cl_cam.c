@@ -33,10 +33,8 @@ static vec3_t desired_position; // where the camera wants to be
 static qboolean locked = false;
 static int oldbuttons;
 
-// track high fragger
-cvar_t cl_hightrack = {"cl_hightrack", "0" };
-
-cvar_t cl_chasecam = {"cl_chasecam", "0"};
+cvar_t cl_hightrack = {"cl_hightrack", "0" };	// track high fragger
+cvar_t cl_chasecam = {"cl_chasecam", "1"};		// "through the eyes" view
 
 vec3_t cam_viewangles;
 double cam_lastviewtime;
