@@ -398,7 +398,7 @@ def_t	*PR_ParseValue (void)
 // look through the defs
 	d = PR_GetDef (NULL, name, pr_scope, false);
 	if (!d)
-		PR_ParseError ("unknown value \"%s\"", name);	
+		PR_ParseError ("'%s' : undeclared identifier", name);	
 	return d;
 }
 
