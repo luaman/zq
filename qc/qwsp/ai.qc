@@ -717,8 +717,6 @@ The monster has an enemy it is trying to kill
 */
 void ai_run (float dist)
 {
-	float	axis;
-	
 	movedist = dist;
 // see if the enemy is dead
 	if (self.enemy.health <= 0 || self.enemy.flags & FL_NOTARGET)
