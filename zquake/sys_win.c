@@ -228,18 +228,17 @@ double Sys_DoubleTime (void)
 	return (now - starttime) / 1000.0;
 }
 
-// if successful, returns malloc'ed string (make sure to free it afterwards)
+// if successful, returns Q_malloc'ed string (make sure to free it afterwards)
 // returns NULL if the operation failed for some reason
 char *Sys_GetClipboardText (void)
 {
 	HANDLE	h;
-	char	*text, *p;
+	char	*text = NULL, *p;
 
 	if (OpenClipboard(NULL)) {
 		if ((h = GetClipboardData(CF_TEXT)) != NULL) {
 			if ((p = GlobalLock(h)) != NULL) {
-				text = Q_malloc (strlen(p) + 1);
-				strcpy (text, p);
+				text = Q_strdup (p);
 				GlobalUnlock(h);
 			}
 		}
