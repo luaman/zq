@@ -419,12 +419,6 @@ void CL_FinishMove (usercmd_t *cmd)
 	static double	msec_balance = 0;
 
 //
-// always dump the first two messages, because they may contain leftover inputs
-// from the last level
-//
-	if (++cl.movemessages <= 2)
-		return;
-//
 // figure button bits
 //	
 	if ( in_attack.state & 3 )
