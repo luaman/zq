@@ -1,5 +1,3 @@
-// Portions Copyright (C) 2000 by Anton Gavrilov (tonik@quake.ru)
-
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -1148,6 +1146,8 @@ void CL_SetInfo (void)
 /*
 ==============
 CL_ProcessServerInfo
+
+Called by CL_FullServerinfo_f and CL_ParseServerInfoChange
 ==============
 */
 void CL_ProcessServerInfo (void)
@@ -1176,10 +1176,10 @@ void CL_ProcessServerInfo (void)
 
 /*
 ==============
-CL_ServerInfo
+CL_ParseServerInfoChange
 ==============
 */
-void CL_ServerInfo (void)
+void CL_ParseServerInfoChange (void)
 {
 	char key[MAX_MSGLEN];
 	char value[MAX_MSGLEN];
@@ -1196,6 +1196,77 @@ void CL_ServerInfo (void)
 	CL_ProcessServerInfo ();
 }
 
+
+/*
+==============
+CL_ParsePrint
+==============
+*/
+void CL_ParsePrint (void)
+{
+	char	*s, str[1024];
+	char	*p;
+	int		len;
+	int		level;
+
+	level = MSG_ReadByte ();
+	s = MSG_ReadString ();
+
+	strncat (cl.sprint_buf, s, sizeof(cl.sprint_buf)-1);
+
+	while ( (p=strchr(cl.sprint_buf, '\n')) != NULL ) {
+		len = p - cl.sprint_buf + 1;
+		memcpy(str, cl.sprint_buf, len);
+		str[len] = '\0';
+		strcpy (cl.sprint_buf, p+1);
+		
+		if (level == PRINT_CHAT)
+		{
+			char *p;
+			int flags;
+
+			flags = TP_CategorizeMessage (str);
+			TP_CheckVersionRequest (str);
+			if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
+				for (p = str; *p; p++)
+					if (*p == 13)
+						*p = '#'; 
+			}
+			con_ormask = 128;
+			S_LocalSound ("misc/talk.wav");
+		}
+		Con_Printf ("%s", str);
+		con_ormask = 0;
+		TP_SearchForMsgTriggers (str, level);
+	}
+
+}
+
+
+/*
+==============
+CL_ParseStufftext
+==============
+*/
+void CL_ParseStufftext (void)
+{
+	char	*s;
+
+	s = MSG_ReadString ();
+
+	Con_DPrintf ("stufftext: %s\n", s);
+	Cbuf_AddTextEx (&cbuf_svc, s);
+
+	// QW servers send this without the ending \n
+	if ( !strcmp (s, "cmd snap") ||
+		// QuakeForge servers up to Beta 6 send this without the \n
+		(!strncmp (s, "r_skyname ", 10) && !strchr (s, '\n')) )
+	{
+		Cbuf_AddTextEx (&cbuf_svc, "\n");
+	}
+}
+
+
 /*
 =====================
 CL_SetStat
@@ -1205,7 +1276,7 @@ void CL_SetStat (int stat, int value)
 {
 	int	j;
 	if (stat < 0 || stat >= MAX_CL_STATS)
-		Host_EndGame ("CL_SetStat: %i is invalid", stat);	// Tonik
+		Host_EndGame ("CL_SetStat: %i is invalid", stat);
 
 	Sbar_Changed ();
 	
@@ -1243,7 +1314,7 @@ void CL_MuzzleFlash (void)
 
 	if ((unsigned)(i-1) >= MAX_CLIENTS)
 	{
-// Tonik: a monster firing...
+		// a monster firing
 		num_ent = cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].packet_entities.num_entities;
 		for (j = 0; j < num_ent; j++)
 		{
@@ -1273,7 +1344,6 @@ void CL_MuzzleFlash (void)
 		return;
 #endif
 
-	// Tonik:
 	if (cl_muzzleflash.value == 2 && i-1 == cl.playernum)
 		return;
 
@@ -1293,42 +1363,6 @@ void CL_MuzzleFlash (void)
 	dl->color[3] = 0.7;
 }
 
-
-void CL_ParsePrint (int level, char *s)
-{
-	char	str[1024];
-	char	*p;
-	int		len;
-
-	strncat (cl.sprint_buf, s, sizeof(cl.sprint_buf)-1);
-
-	while ( (p=strchr(cl.sprint_buf, '\n')) != NULL ) {
-		len = p - cl.sprint_buf + 1;
-		memcpy(str, cl.sprint_buf, len);
-		str[len] = '\0';
-		strcpy (cl.sprint_buf, p+1);
-		
-		if (level == PRINT_CHAT)
-		{
-			char *p;
-			int flags;
-
-			flags = TP_CategorizeMessage (str);
-			TP_CheckVersionRequest (str);
-			if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
-				for (p = str; *p; p++)
-					if (*p == 13)
-						*p = '#'; 
-			}
-			con_ormask = 128;
-			S_LocalSound ("misc/talk.wav");
-		}
-		Con_Printf ("%s", str);
-		con_ormask = 0;
-		TP_SearchForMsgTriggers (str, level);
-	}
-
-}
 
 #define SHOWNET(x) if(cl_shownet.value==2)Con_Printf ("%3i:%s\n", msg_readcount-1, x);
 /*
@@ -1400,9 +1434,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_print:
-			i = MSG_ReadByte ();
-			s = MSG_ReadString ();
-			CL_ParsePrint (i, s);
+			CL_ParsePrint ();
 			break;
 			
 		case svc_centerprint:
@@ -1410,9 +1442,7 @@ void CL_ParseServerMessage (void)
 			break;
 			
 		case svc_stufftext:
-			s = MSG_ReadString ();
-			Con_DPrintf ("stufftext: %s\n", s);
-			Cbuf_AddTextEx (&cbuf_svc, s);
+			CL_ParseStufftext ();
 			break;
 			
 		case svc_damage:
@@ -1560,7 +1590,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_serverinfo:
-			CL_ServerInfo ();
+			CL_ParseServerInfoChange ();
 			break;
 
 		case svc_download:
@@ -1618,5 +1648,3 @@ void CL_ParseServerMessage (void)
 
 	CL_SetSolidEntities ();
 }
-
-
