@@ -21,7 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "pmove.h"
 
-cvar_t	pm_slidefix = {"pm_slidefix","0"};
+cvar_t	pm_slidefix = {"pm_slidefix","0"};	// FIXME: remove?
+cvar_t	pm_ktphysics = {"pm_ktphysics", "0"};	// set this when
+			// playing on a server running Kombat Teams 2.10 or later
 
 movevars_t		movevars;
 
@@ -53,6 +55,7 @@ void PM_InitBoxHull (void);
 void Pmove_Init (void)
 {
 	Cvar_RegisterVariable (&pm_slidefix);
+	Cvar_RegisterVariable (&pm_ktphysics);
 	PM_InitBoxHull ();
 }
 
@@ -706,6 +709,12 @@ void JumpButton (void)
 
 	if ( pmove.oldbuttons & BUTTON_JUMP )
 		return;		// don't pogo stick
+
+// When connected to a Kombat Teams server, "fix" the jumping bug
+// the same way qc code does to minimize prediction errors
+	if (pm_ktphysics.value)
+		if (pmove.velocity[2] < 0)
+			pmove.velocity[2] = 0;
 
 	onground = -1;
 	pmove.velocity[2] += 270;
