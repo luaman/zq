@@ -2033,6 +2033,52 @@ static void PF_multicast (void)
 
 /*
 =================
+PF_tracebox
+
+Like traceline but traces a box of the size specified
+(NOTE: currently the hull size can only be one of the sizes used in the map
+for bmodel collisions, entity collisions will pay attention to the exact size
+specified however, this is a collision code limitation in quake itself,
+and will be fixed eventually).
+
+DP_QC_TRACEBOX
+
+void(vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity ignore) tracebox = #90;
+=================
+*/
+static void PF_tracebox (void)
+{
+        float       *v1, *v2, *mins, *maxs;
+        edict_t     *ent;
+        int          nomonsters;
+        trace_t      trace;
+
+        v1 = G_VECTOR(OFS_PARM0);
+        mins = G_VECTOR(OFS_PARM1);
+        maxs = G_VECTOR(OFS_PARM2);
+        v2 = G_VECTOR(OFS_PARM3);
+        nomonsters = G_FLOAT(OFS_PARM4);
+        ent = G_EDICT(OFS_PARM5);
+
+        trace = SV_Trace (v1, mins, maxs, v2, nomonsters, ent);
+
+        pr_global_struct->trace_allsolid = trace.allsolid;
+        pr_global_struct->trace_startsolid = trace.startsolid;
+        pr_global_struct->trace_fraction = trace.fraction;
+        pr_global_struct->trace_inwater = trace.inwater;
+        pr_global_struct->trace_inopen = trace.inopen;
+        VectorCopy (trace.endpos, pr_global_struct->trace_endpos);
+        VectorCopy (trace.plane.normal, pr_global_struct->trace_plane_normal);
+        pr_global_struct->trace_plane_dist =  trace.plane.dist;
+        if (trace.e.ent)
+                pr_global_struct->trace_ent = EDICT_TO_PROG(trace.e.ent);
+        else
+                pr_global_struct->trace_ent = EDICT_TO_PROG(sv.edicts);
+}
+
+
+/*
+=================
 PF_randomvec
 
 DP_QC_RANDOMVEC
@@ -2318,6 +2364,7 @@ static void PF_checkextension (void)
 		"DP_QC_MINMAXBOUND",
 		"DP_QC_ETOS",
 		"DP_QC_RANDOMVEC",
+		"DP_QC_TRACEBOX",
 		"DP_QC_MULTIPLETEMPSTRINGS",
 		// "FRIK_FILE",		// incomplete (fopen, fclose, fputs, fgets are not implemented)
 		"ZQ_QC_CHECKBUILTIN",
@@ -2661,7 +2708,7 @@ PF_Fixme,
 PF_Fixme,
 PF_Fixme,
 PF_Fixme,
-PF_Fixme,
+PF_tracebox,		// void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity ignore) tracebox = #90;
 PF_randomvec,		// vector() randomvec								= #91;
 PF_Fixme,
 PF_Fixme,
