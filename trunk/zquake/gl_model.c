@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "rc_wad.h"
 #include "crc.h"
 
+//#define HALFLIFEBSP	// enable Half-Life map support
+
 model_t	*loadmodel;
 char	loadname[32];	// for hunk tags
 
@@ -389,6 +391,7 @@ void Mod_LoadTextures (lump_t *l)
 		for (j = 0; j < MIPLEVELS; j++)
 			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
 
+#ifdef HALFLIFEBSP
 		if (loadmodel->halflifebsp) {
 			byte *data;
 			if ((data = WAD3_LoadTexture(mt)) != NULL) {
@@ -398,6 +401,7 @@ void Mod_LoadTextures (lump_t *l)
 				continue;
 			}
 		}
+#endif
 
 		if (mt->offsets[0])
 		{
@@ -556,11 +560,13 @@ void Mod_LoadLighting (lump_t *l)
 		return;
 	}
 
+#ifdef HALFLIFEBSP
 	if (loadmodel->halflifebsp) {
 		loadmodel->lightdata = Hunk_AllocName(l->filelen, loadname);
 		memcpy (loadmodel->lightdata, mod_base + l->fileofs, l->filelen);
 		return;
 	}
+#endif
 
 	// LordHavoc's .lit support
 	if (!gl_loadlitfiles.value || !gl_colorlights.value)
@@ -1203,7 +1209,11 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	header = (dheader_t *)buffer;
 
 	i = LittleLong (header->version);
+#ifdef HALFLIFEBSP
 	if (i != BSPVERSION && i != HL_BSPVERSION)
+#else
+	if (i != BSPVERSION)
+#endif
 		Host_Error ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)", mod->name, i, BSPVERSION);
 
 	loadmodel->halflifebsp = (i == HL_BSPVERSION);
@@ -1220,8 +1230,10 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	Mod_LoadVertexes (&header->lumps[LUMP_VERTEXES]);
 	Mod_LoadEdges (&header->lumps[LUMP_EDGES]);
 	Mod_LoadSurfedges (&header->lumps[LUMP_SURFEDGES]);
+#ifdef HALFLIFEBSP
 	if (loadmodel->halflifebsp)
 		Mod_ParseWadsFromEntityLump (&header->lumps[LUMP_ENTITIES]);
+#endif
 	Mod_LoadTextures (&header->lumps[LUMP_TEXTURES]);
 	Mod_LoadLighting (&header->lumps[LUMP_LIGHTING]);
 	Mod_LoadPlanes (&header->lumps[LUMP_PLANES]);
