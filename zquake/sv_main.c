@@ -1670,60 +1670,10 @@ SV_Init
 */
 void SV_Init (quakeparms_t *parms)
 {
-	COM_InitArgv (parms->argc, parms->argv);
-
-	if (COM_CheckParm ("-minmemory"))
-		parms->memsize = MINIMUM_MEMORY;
-
-	host_parms = *parms;
-
-	if (parms->memsize < MINIMUM_MEMORY)
-		Sys_Error ("Only %4.1f megs of memory reported, can't execute game", parms->memsize / (float)0x100000);
-
-	Memory_Init (parms->membase, parms->memsize);
-
-	Cbuf_Init ();
-	Cmd_Init ();	
-	Cvar_Init ();
-
-	COM_Init ();
-	
 	PR_Init ();
-	Mod_Init ();
+	SV_InitLocal ();
 
-	NET_Init ();
 	NET_Config (false, true);
-	Netchan_Init ();
 
 	svs.last_heartbeat = -99999;		// send immediately
-
-	SV_InitLocal ();
-	Sys_Init ();
-	Pmove_Init ();
-
-	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
-	host_hunklevel = Hunk_LowMark ();
-
-	Cbuf_InsertText ("exec server.cfg\n");
-
-	host_initialized = true;
-	
-	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
-	Com_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));	
-
-	Com_Printf ("\nServer version %s\n\n", Info_ValueForKey(svs.info, "*z_version"));
-
-	Com_Printf ("For help on ZQuake, go to http://zquake.frag.ru/\n\n");
-
-	Com_Printf ("======== QuakeWorld Initialized ========\n");
-	
-// process command line arguments
-	Cmd_StuffCmds_f ();
-	Cbuf_Execute ();
-
-// if a map wasn't specified on the command line, spawn start map
-	if (sv.state == ss_dead)
-		Cmd_ExecuteString ("map start");
-	if (sv.state == ss_dead)
-		SV_Error ("Couldn't spawn a server");
 }

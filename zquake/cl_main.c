@@ -125,7 +125,7 @@ double		realtime;				// without any filtering or bounding
 double		oldrealtime;			// last frame run
 qboolean	host_skipframe;			// used in demo playback
 
-int			host_hunklevel;
+extern int	host_hunklevel;
 
 byte		*host_basepal;
 byte		*host_colormap;
@@ -1050,64 +1050,6 @@ void Host_Frame (double time)
 }
 
 //============================================================================
-
-/*
-====================
-Host_Init
-====================
-*/
-void Host_Init (quakeparms_t *parms)
-{
-	COM_InitArgv (parms->argc, parms->argv);
-
-	if (COM_CheckParm ("-minmemory"))
-		parms->memsize = MINIMUM_MEMORY;
-
-	host_parms = *parms;
-
-	if (parms->memsize < MINIMUM_MEMORY)
-		Sys_Error ("Only %4.1f megs of memory reported, can't execute game", parms->memsize / (float)0x100000);
-
-	Memory_Init (parms->membase, parms->memsize);
-
-	Cbuf_Init ();
-	Cmd_Init ();
-	Cvar_Init ();
-
-	COM_Init ();
-
-#ifdef QW_BOTH
-	PR_Init ();
-	SV_InitLocal ();	// register server cvars and commands
-#endif
-
-	NET_Init ();
-	Netchan_Init ();
-
-	Sys_Init ();
-	Pmove_Init ();
-
-	Con_Init ();
-	Mod_Init ();
-	
-	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
-	Com_Printf ("%4.1f megs RAM used.\n",parms->memsize/ (1024*1024.0));
-	
-	CL_Init ();
-
-	Cbuf_InsertText ("exec quake.rc\n");
-	Cbuf_AddText ("cl_warncmd 1\n");
-
-	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
-	host_hunklevel = Hunk_LowMark ();
-
-	host_initialized = true;
-
-	Com_Printf ("\nClient version %s\n\n", VersionString());
-
-	Com_Printf ("€ ZQuake Initialized ‚\n");
-}
-
 
 /*
 ===============
