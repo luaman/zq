@@ -881,6 +881,7 @@ void CL_ParseStartSoundPacket(void)
 		Host_EndGame ("CL_ParseStartSoundPacket: ent = %i", ent);
 	
     S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
+	TP_CheckPickupSound (cl.sound_name[sound_num]);
 }       
 
 
