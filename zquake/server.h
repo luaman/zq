@@ -48,7 +48,6 @@ typedef enum {
 typedef struct packet_s
 {
 	double		time;
-	int			clientnum;
 	sizebuf_t	msg;
 	byte		buf[MAX_MSGLEN];
 	struct packet_s *next;
@@ -222,7 +221,9 @@ typedef struct client_s
 	char			uploadfn[MAX_QPATH];
 	netadr_t		snap_from;
 	qbool			remote_snap;
+
 	double			delay;
+	packet_t		*packets, *last_packet;
 
 //===== NETWORK ============
 	int				chokecount;
@@ -288,7 +289,7 @@ typedef struct
 
 	challenge_t	challenges[MAX_CHALLENGES];	// to prevent invalid IPs from connecting
 
-	packet_t		*packets, *last_packet, *free_packets;
+	packet_t	*free_packets;
 } serverPersistent_t;
 
 //=============================================================================

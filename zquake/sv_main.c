@@ -1084,25 +1084,24 @@ void SV_ReadPackets (void)
 				cl->netchan.remote_address.port = net_from.port;
 			}
 
-			if (svs.clients[i].delay > 0) {
+			if (cl->delay > 0) {
 				if (!svs.free_packets) // packet has to be dropped..
 					break;
 
 				// insert at end of list
-				if (!svs.packets) {
-					svs.last_packet = svs.packets = svs.free_packets;
+				if (!cl->packets) {
+					cl->last_packet = cl->packets = svs.free_packets;
 				} else {
 					// this works because '=' associates from right to left
-					svs.last_packet = svs.last_packet->next = svs.free_packets;
+					cl->last_packet = cl->last_packet->next = svs.free_packets;
 				}
 
 				svs.free_packets = svs.free_packets->next;
-				svs.last_packet->next = NULL;
+				cl->last_packet->next = NULL;
 
-				svs.last_packet->time = svs.realtime;
-				svs.last_packet->clientnum = i;
-				SZ_Clear(&svs.last_packet->msg);
-				SZ_Write(&svs.last_packet->msg, net_message.data, net_message.cursize);
+				cl->last_packet->time = svs.realtime;
+				SZ_Clear(&cl->last_packet->msg);
+				SZ_Write(&cl->last_packet->msg, net_message.data, net_message.cursize);
 			} else {
 				if (Netchan_Process(&cl->netchan)) {
 					// this is a valid, sequenced packet, so process it
@@ -1133,37 +1132,39 @@ SV_ReadDelayedPackets
 */
 void SV_ReadDelayedPackets (void)
 {
+	int			i;
 	client_t	*cl;
 	packet_t	*pack, *prev, *next;
 
-	for (prev = NULL, pack = svs.packets; pack; pack = next) {
-		if (svs.realtime < pack->time + svs.clients[pack->clientnum].delay) {
-			prev = pack;
-			next = pack->next;
-			continue;
-		}
 
-		SZ_Clear(&net_message);
-		SZ_Write(&net_message, pack->msg.data, pack->msg.cursize);
-		cl = &svs.clients[pack->clientnum];
+	// check for delayed packets from connected clients
+	for (i=0, cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++) {
+		if (cl->state == cs_free)
+			continue;
+
 		net_from = cl->netchan.remote_address;
 
-		if (Netchan_Process(&cl->netchan)) {
-			// this is a valid, sequenced packet, so process it
-			svs.stats.packets++;
-			if (cl->state != cs_zombie) {
-				cl->send_message = true;	// reply at end of frame
-				SV_ExecuteClientMessage (cl);
+		for (prev = NULL, pack = cl->packets; pack; pack = next) {
+			if (svs.realtime < pack->time + cl->delay)
+				break;		// packets are queued up in order of increasing pack->time
+
+			SZ_Clear(&net_message);
+			SZ_Write(&net_message, pack->msg.data, pack->msg.cursize);
+
+			if (Netchan_Process(&cl->netchan)) {
+				// this is a valid, sequenced packet, so process it
+				svs.stats.packets++;
+				if (cl->state != cs_zombie) {
+					cl->send_message = true;	// reply at end of frame
+					SV_ExecuteClientMessage (cl);
+				}
 			}
+
+			cl->packets = next = pack->next;
+			pack->next = svs.free_packets;
+			svs.free_packets = pack;
 		}
-
-		if (prev)
-			prev->next = next = pack->next;
-		else
-			svs.packets = next = pack->next;
-
-		pack->next = svs.free_packets;
-		svs.free_packets = pack;
+		
 	}
 }
 
@@ -1514,7 +1515,6 @@ void SV_InitLocal (void)
 	packet_allocblock[MAX_DELAYED_PACKETS - 1].next = NULL;
 
 	svs.free_packets = &packet_allocblock[0];
-	svs.packets = svs.last_packet = NULL;
 }
 
 
