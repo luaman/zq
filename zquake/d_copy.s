@@ -1,5 +1,7 @@
 /*
-	d_copy.S - x86 assembly-language screen copying code.
+	d_copy.s
+
+        x86 assembly language screen copying code
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -20,8 +22,6 @@
 		Free Software Foundation, Inc.
 		59 Temple Place - Suite 330
 		Boston, MA  02111-1307, USA
-
-	$Id$
 */
 
 #include "asm_i386.h"
