@@ -26,8 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "bothdefs.h"
-
 #ifdef _WIN32
 #pragma warning( disable : 4244 4127 4201 4214 4514 4305 4115 4018)
 #endif
@@ -40,6 +38,11 @@ typedef unsigned char 		byte;
 
 typedef enum {false, true} qboolean;
 
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
+
+
 #ifndef min
 #define min(a,b) ((a) < (b) ? (a) : (b))
 #endif
@@ -50,6 +53,122 @@ typedef enum {false, true} qboolean;
 //#define bound(a,b,c) (max((a), min((b), (c))))
 #define bound(a,b,c) ((a) >= (c) ? (a) : \
 					(b) < (a) ? (a) : (b) > (c) ? (c) : (b))
+
+
+//============================================================================
+
+#if id386
+#define UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
+#else
+#define UNALIGNED_OK	0
+#endif
+
+// !!! if this is changed, it must be changed in d_ifacea.h too !!!
+#define CACHE_SIZE	32		// used to align key data structures
+
+#define UNUSED(x)	(x = x)	// for pesky compiler / lint warnings
+
+//============================================================================
+
+#define	MINIMUM_MEMORY	0x550000
+
+#define	MAX_QPATH		64			// max length of a quake game pathname
+#define	MAX_OSPATH		128			// max length of a filesystem pathname
+
+#define	ON_EPSILON		0.1			// point on plane side epsilon
+
+#define	MAX_MSGLEN		1450		// max length of a reliable message
+#define	MAX_DATAGRAM	1450		// max length of unreliable message
+
+//
+// per-level limits
+//
+#define	MAX_EDICTS		768			// FIXME: ouch! ouch! ouch!
+#define	MAX_LIGHTSTYLES	64
+#define	MAX_MODELS		256			// these are sent over the net as bytes
+#define	MAX_SOUNDS		256			// so they cannot be blindly increased
+
+#define	SAVEGAME_COMMENT_LENGTH	39
+
+#define	MAX_STYLESTRING	64
+
+//
+// stats are integers communicated to the client by the server
+//
+#define	MAX_CL_STATS		32
+#define	STAT_HEALTH			0
+//define	STAT_FRAGS			1
+#define	STAT_WEAPON			2
+#define	STAT_AMMO			3
+#define	STAT_ARMOR			4
+//define	STAT_WEAPONFRAME	5
+#define	STAT_SHELLS			6
+#define	STAT_NAILS			7
+#define	STAT_ROCKETS		8
+#define	STAT_CELLS			9
+#define	STAT_ACTIVEWEAPON	10
+#define	STAT_TOTALSECRETS	11
+#define	STAT_TOTALMONSTERS	12
+#define	STAT_SECRETS		13		// bumped on client side by svc_foundsecret
+#define	STAT_MONSTERS		14		// bumped by svc_killedmonster
+#define	STAT_ITEMS			15
+#define	STAT_VIEWHEIGHT		16
+
+
+//
+// item flags
+//
+#define	IT_SHOTGUN				1
+#define	IT_SUPER_SHOTGUN		2
+#define	IT_NAILGUN				4
+#define	IT_SUPER_NAILGUN		8
+
+#define	IT_GRENADE_LAUNCHER		16
+#define	IT_ROCKET_LAUNCHER		32
+#define	IT_LIGHTNING			64
+#define	IT_SUPER_LIGHTNING		128
+
+#define	IT_SHELLS				256
+#define	IT_NAILS				512
+#define	IT_ROCKETS				1024
+#define	IT_CELLS				2048
+
+#define	IT_AXE					4096
+
+#define	IT_ARMOR1				8192
+#define	IT_ARMOR2				16384
+#define	IT_ARMOR3				32768
+
+#define	IT_SUPERHEALTH			65536
+
+#define	IT_KEY1					131072
+#define	IT_KEY2					262144
+
+#define	IT_INVISIBILITY			524288
+
+#define	IT_INVULNERABILITY		1048576
+#define	IT_SUIT					2097152
+#define	IT_QUAD					4194304
+
+#define	IT_SIGIL1				(1<<28)
+
+#define	IT_SIGIL2				(1<<29)
+#define	IT_SIGIL3				(1<<30)
+#define	IT_SIGIL4				(1<<31)
+
+//
+// print flags
+//
+#define	PRINT_LOW			0		// pickup messages
+#define	PRINT_MEDIUM			1		// death messages
+#define	PRINT_HIGH			2		// critical messages
+#define	PRINT_CHAT			3		// chat messages
+
+
+// game types sent by serverinfo
+// these determine which intermission screen plays
+#define	GAME_COOP			0
+#define	GAME_DEATHMATCH		1
 
 
 #define	MAX_INFO_STRING	196
@@ -90,12 +209,6 @@ void InsertLinkAfter (link_t *l, link_t *after);
 // ent = STRUCT_FROM_LINK(link,entity_t,order)
 // FIXME: remove this mess!
 #define	STRUCT_FROM_LINK(l,t,m) ((t *)((byte *)l - (int)&(((t *)0)->m)))
-
-//============================================================================
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
 
 //============================================================================
 
