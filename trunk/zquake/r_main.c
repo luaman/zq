@@ -40,7 +40,7 @@ int			r_maxsurfsseen, r_maxedgesseen, r_cnumsurfs;
 qbool		r_surfsonstack;
 int			r_clipflags;
 
-byte		*r_warpbuffer;
+byte		r_warpbuffer[WARP_WIDTH * WARP_HEIGHT];
 
 byte		*r_stack_start;
 
@@ -674,10 +674,6 @@ r_refdef must be set before the first call
 */
 void R_RenderView_ (void)
 {
-	byte	warpbuffer[WARP_WIDTH * WARP_HEIGHT];
-
-	r_warpbuffer = warpbuffer;
-
 	if (r_timegraph.value || r_speeds.value || r_dspeeds.value)
 		r_time1 = Sys_DoubleTime ();
 
