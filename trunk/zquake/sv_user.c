@@ -1809,6 +1809,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 
 		case clc_stringcmd:	
 			s = MSG_ReadString ();
+			s[1023] = 0;
 			SV_ExecuteUserCommand (s);
 			break;
 
