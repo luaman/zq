@@ -182,6 +182,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_shadows);
 	Cvar_RegisterVariable (&r_mirroralpha);
 	Cvar_RegisterVariable (&r_wateralpha);
+	Cvar_RegisterVariable (&r_waterwarp);
 	Cvar_RegisterVariable (&r_dynamic);
 	Cvar_RegisterVariable (&r_novis);
 	Cvar_RegisterVariable (&r_speeds);
