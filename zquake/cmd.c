@@ -471,7 +471,7 @@ void Cmd_Alias_f (void)
 	{
 		Con_Printf ("Current alias commands:\n");
 		for (a = cmd_alias ; a ; a=a->next)
-			Con_Printf ("%s : %s\n", a->name, a->value);
+			Con_Printf ("%s : %s\n\n", a->name, a->value);
 		return;
 	}
 
@@ -523,7 +523,6 @@ void Cmd_Alias_f (void)
 			strcat (cmd, " ");
 		strcat (cmd, Cmd_Argv(i));
 	}
-	strcat (cmd, "\n");
 	
 	a->value = CopyString (cmd);
 }
@@ -1028,11 +1027,16 @@ void Cmd_ExecuteString (char *text)
 		if (!Q_strcasecmp (cmd_argv[0], a->name))
 		{
 #ifndef SERVERONLY
-			if (cbuf_current == &cbuf_svc)
+			if (cbuf_current == &cbuf_svc) {
 				Cbuf_AddText (a->value);
+				Cbuf_AddText ("\n");
+			}
 			else
 #endif
+			{
+				Cbuf_InsertText ("\n");
 				Cbuf_InsertText (a->value);
+			}
 			return;
 		}
 	}
