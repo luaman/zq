@@ -24,7 +24,7 @@
 		Boston, MA  02111-1307, USA
 */
 
-#include "quakedef.h"
+#include "common.h"
 #include "version.h"
 
 static char *date = __DATE__ ;

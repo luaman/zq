@@ -19,15 +19,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // common.c -- misc functions used in client and server
 
-#include <ctype.h>
-
-#ifdef SERVERONLY 
-#include "qwsvdef.h"
-#else
-#include "quakedef.h"
-#endif
-
+#include "common.h"
 #include "crc.h"
+
+
+void Draw_BeginDisc ();
+void Draw_EndDisc ();
+
 
 #define MAX_NUM_ARGVS	50
 
