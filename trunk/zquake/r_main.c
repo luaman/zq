@@ -168,7 +168,7 @@ void R_InitTextures (void)
 				if (  (y< (8>>m) ) ^ (x< (8>>m) ) )
 					*dest++ = 0;
 				else
-					*dest++ = 0xff;
+					*dest++ = 15;
 			}
 	}	
 }
