@@ -176,13 +176,15 @@ typedef struct
 	
 // network stuff
 	netchan_t	netchan;
+	int			qport;
+	char		servername[MAX_OSPATH];	// name of server from original connect
 
 // private userinfo for sending to masterless servers
 	char		userinfo[MAX_INFO_STRING];
 
-	char		servername[MAX_OSPATH];	// name of server from original connect
-
-	int			qport;
+// on a local server these may differ from com_gamedirfile and com_gamedir
+	char		gamedirfile[MAX_QPATH];
+	char		gamedir[MAX_OSPATH];
 
 	FILE		*download;		// file transfer from server
 	char		downloadtempname[MAX_OSPATH];
