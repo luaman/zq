@@ -34,6 +34,7 @@ cvar_t	cl_triggers = {"cl_triggers", "0"};
 cvar_t	cl_nofake = {"cl_nofake", "0"};
 cvar_t	cl_loadlocs = {"cl_loadlocs", "0"};
 
+cvar_t	cl_rocket2grenade = {"cl_r2g", "0"};
 
 //===========================================================================
 //								TRIGGERS
@@ -813,6 +814,86 @@ void CL_SearchForMsgTriggers (char *s)
 		}
 }
 
+
+int	CL_CountPlayers ()
+{
+	int	i, count;
+
+	count = 0;
+	for (i = 0; i < MAX_CLIENTS ; i++) {
+		if (cl.players[i].name[0] && !cl.players[i].spectator)
+			count++;
+	}
+
+	return count;
+}
+
+char *CL_EnemyTeam ()
+{
+	int			i;
+	char		myteam[MAX_INFO_STRING];
+	static char	enemyteam[MAX_INFO_STRING];
+
+	strcpy (myteam, Info_ValueForKey(cls.userinfo, "team"));
+
+	for (i = 0; i < MAX_CLIENTS ; i++) {
+		if (cl.players[i].name[0] && !cl.players[i].spectator)
+		{
+			strcpy (enemyteam, Info_ValueForKey(cl.players[i].userinfo, "team"));
+			if (strcmp(myteam, enemyteam) != 0)
+				return enemyteam;
+		}
+	}
+	return "";
+}
+
+char *CL_PlayerName ()
+{
+	static char	myname[MAX_INFO_STRING];
+
+	strcpy (myname, Info_ValueForKey(cl.players[cl.playernum].userinfo, "name"));
+	return myname;
+}
+
+char *CL_PlayerTeam ()
+{
+	static char	myteam[MAX_INFO_STRING];
+
+	strcpy (myteam, Info_ValueForKey(cl.players[cl.playernum].userinfo, "team"));
+	return myteam;
+}
+
+char *CL_EnemyName ()
+{
+	int			i;
+	char		*myname;
+	static char	enemyname[MAX_INFO_STRING];
+
+	myname = CL_PlayerName ();
+
+	for (i = 0; i < MAX_CLIENTS ; i++) {
+		if (cl.players[i].name[0] && !cl.players[i].spectator)
+		{
+			strcpy (enemyname, Info_ValueForKey(cl.players[i].userinfo, "name"));
+			if (strcmp(enemyname, myname) != 0)
+				return enemyname;
+		}
+	}
+	return "";
+}
+
+
+char *CL_MapName ()
+{
+	static char mapname[MAX_INFO_STRING];
+
+	// FIXME: take map name from modellist?
+	strcpy (mapname, Info_ValueForKey (cl.serverinfo, "map"));
+
+	return mapname;
+}
+
+
 void CL_InitTeamplay()
 {
 	Cvar_RegisterVariable (&_cmd_macros);
@@ -820,6 +901,7 @@ void CL_InitTeamplay()
 	Cvar_RegisterVariable (&cl_triggers);
 	Cvar_RegisterVariable (&cl_nofake);
 	Cvar_RegisterVariable (&cl_loadlocs);
+	Cvar_RegisterVariable (&cl_rocket2grenade);
 
 	Cmd_Macro_Init();
 	Cmd_AddCommand ("loadloc", CL_LoadLocFile_f);

@@ -30,6 +30,7 @@ extern cvar_t cl_parsesay;
 extern cvar_t cl_triggers;
 extern cvar_t cl_nofake;
 extern cvar_t cl_loadlocs;
+extern cvar_t cl_rocket2grenade;
 
 extern int		loc_numentries;		// Tonik
 
@@ -40,5 +41,12 @@ void CL_ExecTrigger (char *s);
 void Cmd_Macro_Init (void);
 void CL_LoadLocFile (char *path, qboolean quiet);
 char *CL_ParseMacroString(char *string);
+
+int CL_CountPlayers();
+char *CL_MapName();
+char *CL_PlayerName();
+char *CL_PlayerTeam();
+char *CL_EnemyName();
+char *CL_EnemyTeam();
 
 void CL_InitTeamplay ();
