@@ -28,9 +28,7 @@
 void(entity targ, entity attacker) ClientObituary;
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
 
-/*SERVER
 void() monster_death_use;
-*/
 
 //============================================================================
 
@@ -112,9 +110,7 @@ void(entity targ, entity attacker) Killed =
 	self.touch = SUB_Null;
 	self.effects = 0;
 
-/*SERVER
 	monster_death_use();
-*/
 	self.th_die ();
 	
 	self = oself;

@@ -42,3 +42,5 @@ void() monster_enforcer = {remove(self);};
 void() monster_oldone = {remove(self);};
 void() event_lightning = {remove(self);};
 void() path_corner = {};
+
+void() monster_death_use = {};
