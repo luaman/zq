@@ -372,9 +372,18 @@ Kick a user off of the server
 */
 void SV_Kick_f (void)
 {
-	int			i;
+	int			i, j;
 	client_t	*cl;
 	int			uid;
+	int			c;
+	int			saved_state;
+	char		reason[80] = "";
+
+	c = Cmd_Argc ();
+	if (c < 2) {
+		Con_Printf ("kick <userid> [reason]\n");
+		return;
+	}
 
 	uid = atoi(Cmd_Argv(1));
 	
@@ -384,10 +393,24 @@ void SV_Kick_f (void)
 			continue;
 		if (cl->userid == uid)
 		{
-			SV_BroadcastPrintf (PRINT_HIGH, "%s was kicked\n", cl->name);
-			// print directly, because the dropped client won't get the
-			// SV_BroadcastPrintf message
-			SV_ClientPrintf (cl, PRINT_HIGH, "You were kicked from the game\n");
+			if (c > 2) {
+				strcpy (reason, " (");
+				for (j=2 ; j<c; j++) {
+					strncat (reason, Cmd_Argv(j), sizeof(reason)-4);
+					if (j < c-1)
+						strncat (reason, " ", sizeof(reason)-4);
+				}
+				if (strlen(reason) < 3)
+					reason[0] = '\0';
+				else
+					strncat (reason, ")", sizeof(reason));
+			}
+
+			saved_state = cl->state;
+			cl->state = cs_free; // HACK: don't broadcast to this client
+			SV_BroadcastPrintf (PRINT_HIGH, "%s was kicked%s\n", cl->name, reason);
+			cl->state = saved_state;
+			SV_ClientPrintf (cl, PRINT_HIGH, "You were kicked from the game%s\n", reason);
 			SV_DropClient (cl); 
 			return;
 		}
