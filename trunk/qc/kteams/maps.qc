@@ -116,7 +116,7 @@ void() StuffCustomMaps =
 
 		stuffcmd(self.owner, "\necho Aliases downloaded...\n");
 
-                // Tell the world we already have stuffed the map aliases.
+        // Tell the world we already have stuffed the map aliases.
 		self.owner.k_stuff=1;
 
 		// no more maps in localinfo so setup for removing entity and return.
