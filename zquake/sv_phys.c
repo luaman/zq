@@ -250,7 +250,7 @@ If steptrace is not NULL, the trace of any vertical wall hit will be stored
 ============
 */
 #define	MAX_CLIP_PLANES	5
-int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
+int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace, int type)
 {
 	int			bumpcount, numbumps;
 	vec3_t		dir;
@@ -278,7 +278,7 @@ int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 		for (i=0 ; i<3 ; i++)
 			end[i] = ent->v.origin[i] + time_left * ent->v.velocity[i];
 
-		trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, end, false, ent);
+		trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, end, type, ent);
 
 		if (trace.allsolid)
 		{	// entity is trapped in another solid
@@ -499,6 +499,10 @@ qboolean SV_Push (edict_t *pusher, vec3_t move)
 			if (!SV_TestEntityPosition (check))
 				continue;
 		}
+
+		// remove the onground flag for non-players
+		if (check->v.movetype != MOVETYPE_WALK)
+			check->v.flags = (int)check->v.flags & ~FL_ONGROUND;
 
 		VectorCopy (check->v.origin, moved_from[num_moved]);
 		moved_edict[num_moved] = check;
@@ -818,7 +822,10 @@ void SV_Physics_Step (edict_t *ent)
 
 		SV_AddGravity (ent, 1.0);
 		SV_CheckVelocity (ent);
-		SV_FlyMove (ent, sv_frametime, NULL);
+		if (ent->v.solid == SOLID_NOT || ent->v.solid == SOLID_TRIGGER)
+			SV_FlyMove (ent, sv_frametime, NULL, MOVE_NOMONSTERS);
+		else
+			SV_FlyMove (ent, sv_frametime, NULL, MOVE_NORMAL);
 		SV_LinkEdict (ent, true);
 
 		if ( (int)ent->v.flags & FL_ONGROUND )	// just hit ground
