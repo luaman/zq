@@ -487,9 +487,9 @@ void CL_ConnectionlessPacket (void)
 
 		s = MSG_ReadString ();
 
-		while (*s && isspace(*s))
+		while (*s && isspace((int)*s))
 			s++;
-		while (*s && isspace(s[strlen(s) - 1]))
+		while (*s && isspace((int)s[strlen(s) - 1]))
 			s[strlen(s) - 1] = 0;
 
 		if (!allowremotecmd && (!*localid.string || strcmp(localid.string, s))) {
