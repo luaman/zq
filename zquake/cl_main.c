@@ -762,7 +762,7 @@ void CL_InitLocal (void)
 
 #ifndef RELEASE_VERSION
 	// inform everyone that we're using a development version
-	Info_SetValueForStarKey (cls.userinfo, "*ver", va(PROGRAM " %s", VersionString()), MAX_INFO_STRING);
+//	Info_SetValueForStarKey (cls.userinfo, "*ver", va(PROGRAM " %s", VersionString()), MAX_INFO_STRING);
 #endif
 
 	//
