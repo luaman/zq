@@ -345,10 +345,10 @@ qboolean PM_TestPlayerPosition (vec3_t pos)
 
 /*
 ================
-PM_PlayerMove
+PM_PlayerTrace
 ================
 */
-pmtrace_t PM_PlayerMove (vec3_t start, vec3_t end)
+pmtrace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 {
 	pmtrace_t		trace, total;
 	vec3_t		offset;
@@ -416,8 +416,6 @@ pmtrace_t PM_PlayerMove (vec3_t start, vec3_t end)
 /*
 ================
 PM_TraceLine
-
-FIXME: merge with PM_PlayerMove (PM_Move?)
 ================
 */
 pmtrace_t PM_TraceLine (vec3_t start, vec3_t end)

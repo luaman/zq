@@ -116,7 +116,7 @@ int PM_SlideMove (void)
 		for (i=0 ; i<3 ; i++)
 			end[i] = pmove.origin[i] + time_left * pmove.velocity[i];
 
-		trace = PM_PlayerMove (pmove.origin, end);
+		trace = PM_PlayerTrace (pmove.origin, end);
 
 		if (trace.startsolid || trace.allsolid)
 		{	// entity is trapped in another solid
@@ -240,7 +240,7 @@ void PM_StepSlideMove (void)
 
 	// first try moving directly to the next spot
 	VectorCopy (dest, start);
-	trace = PM_PlayerMove (pmove.origin, dest);
+	trace = PM_PlayerTrace (pmove.origin, dest);
 	if (trace.fraction == 1)
 	{
 		VectorCopy (trace.endpos, pmove.origin);
@@ -263,7 +263,7 @@ void PM_StepSlideMove (void)
 // move up a stair height
 	VectorCopy (pmove.origin, dest);
 	dest[2] += STEPSIZE;
-	trace = PM_PlayerMove (pmove.origin, dest);
+	trace = PM_PlayerTrace (pmove.origin, dest);
 	if (!trace.startsolid && !trace.allsolid)
 	{
 		VectorCopy (trace.endpos, pmove.origin);
@@ -274,7 +274,7 @@ void PM_StepSlideMove (void)
 // press down the stepheight
 	VectorCopy (pmove.origin, dest);
 	dest[2] -= STEPSIZE;
-	trace = PM_PlayerMove (pmove.origin, dest);
+	trace = PM_PlayerTrace (pmove.origin, dest);
 	if (trace.fraction != 1 && trace.plane.normal[2] < MIN_STEP_NORMAL)
 		goto usedown;
 	if (!trace.startsolid && !trace.allsolid)
@@ -341,7 +341,7 @@ void PM_Friction (void)
 		start[2] = pmove.origin[2] + player_mins[2];
 		stop[2] = start[2] - 34;
 
-		trace = PM_PlayerMove (start, stop);
+		trace = PM_PlayerTrace (start, stop);
 
 		if (trace.fraction == 1)
 			friction *= 2;
@@ -491,7 +491,7 @@ void PM_WaterMove (void)
 	VectorMA (pmove.origin, frametime, pmove.velocity, dest);
 	VectorCopy (dest, start);
 	start[2] += STEPSIZE + 1;
-	trace = PM_PlayerMove (start, dest);
+	trace = PM_PlayerTrace (start, dest);
 	if (!trace.startsolid && !trace.allsolid &&
 		(trace.fraction == 1 || trace.plane.normal[2] > MIN_STEP_NORMAL))
 	{	// walked up the step
@@ -587,7 +587,7 @@ void PM_CategorizePosition (void)
 	}
 	else
 	{
-		trace = PM_PlayerMove (pmove.origin, point);
+		trace = PM_PlayerTrace (pmove.origin, point);
 		if (trace.fraction == 1 || trace.plane.normal[2] < MIN_STEP_NORMAL)
 			pmove.onground = false;
 		else
