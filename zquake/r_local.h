@@ -265,7 +265,6 @@ extern mleaf_t	*r_viewleaf, *r_oldviewleaf;
 
 extern int		r_clipflags;
 extern int		r_dlightframecount;
-extern qboolean	r_fov_greater_than_90;
 
 void R_StoreEfrags (efrag_t **ppefrag);
 void R_TimeRefresh_f (void);

@@ -46,8 +46,6 @@ byte		*r_warpbuffer;
 
 byte		*r_stack_start;
 
-qboolean	r_fov_greater_than_90;
-
 entity_t	r_worldentity;
 
 //
@@ -469,11 +467,6 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 			(2.0 / r_refdef.horizontalFieldOfView);
 	r_aliastransition = r_aliastransbase.value * res_scale;
 	r_resfudge = r_aliastransadj.value * res_scale;
-
-	if (scr_fov.value <= 90.0)
-		r_fov_greater_than_90 = false;
-	else
-		r_fov_greater_than_90 = true;
 
 // TODO: collect 386-specific code in one place
 #if id386
