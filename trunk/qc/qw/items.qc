@@ -852,8 +852,15 @@ void ammo_touch ()
 	{
 		stemp = self;
 		self = other;
-		self.weapon = W_BestWeapon();
-		W_SetCurrentAmmo ();
+		
+// ammopickup-weaponchange bugfix
+                best = stof(infokey(self, "w_switch"));
+                if(!best) best = 8;
+                if(WeaponCode(W_BestWeapon()) <= best)
+                {                
+                        self.weapon = W_BestWeapon();
+		        W_SetCurrentAmmo ();
+                }
 		self = stemp;
 	}
 
@@ -1609,7 +1616,8 @@ void DropBackpack ()
 {
 	entity	item;
 
-	if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells))
+// still drop if contains weapon with no ammo
+        if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells) && !(self.weapon & 126))
 		return; // nothing in it
 
 	item = spawn();
