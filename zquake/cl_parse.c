@@ -593,7 +593,7 @@ void CL_ParseServerData (void)
 	
 	Com_DPrintf ("Serverdata packet received.\n");
 //
-// wipe the clientState_t struct
+// wipe the client_state_t struct
 //
 	CL_ClearState ();
 

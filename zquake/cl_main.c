@@ -94,8 +94,8 @@ cvar_t	w_switch = {"w_switch", "", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	b_switch = {"b_switch", "", CVAR_ARCHIVE|CVAR_USERINFO};
 
 
-clientPersistent_t	cls;
-clientState_t	cl;
+client_persistent_t	cls;
+client_state_t		cl;
 
 centity_t		cl_entities[MAX_CL_EDICTS];
 efrag_t			cl_efrags[MAX_EFRAGS];
