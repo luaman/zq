@@ -819,6 +819,9 @@ void CL_Init (void)
 
 void CL_BeginLocalConnection ()
 {
+	S_StopAllSounds (true);
+	SCR_BeginLoadingPlaque ();
+
 	// make sure we're not connected to an external server,
 	// and demo playback is stopped
 	if (!com_serveractive)
@@ -826,13 +829,13 @@ void CL_BeginLocalConnection ()
 
 	D_FlushCaches ();
 
-	S_StopAllSounds (true);
 	cl.worldmodel = NULL;
 
 	if (cls.state < ca_connected)
 		Cmd_ExecuteString ("connect local");
 	else
 		cls.state = ca_connected;
+
 }
 
 
