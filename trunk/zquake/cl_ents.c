@@ -697,7 +697,7 @@ void CL_ParsePlayerinfo (void)
 	int			i;
 
 	num = MSG_ReadByte ();
-	if (num > MAX_CLIENTS)
+	if (num >= MAX_CLIENTS)
 		Sys_Error ("CL_ParsePlayerinfo: bad num");
 
 	info = &cl.players[num];
