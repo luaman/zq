@@ -895,6 +895,7 @@ char *trigger_commands[] = {
 	"record",
 	"easyrecord",
 	"stop"
+	"if"
 };
 
 #define NUM_TRIGGER_COMMANDS (sizeof(trigger_commands)/sizeof(trigger_commands[0]))
