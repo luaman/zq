@@ -688,9 +688,22 @@ void CL_ParsePlayerinfo (void)
 		else if (pm_code == PMC_OLD_SPECTATOR)
 			state->pm_type = PMC_OLD_SPECTATOR;
 		else {
-			// assume PM_NORMAL
-			state->pm_type = PM_NORMAL;
-			state->jump_held = false;
+			if (cl.z_ext & Z_EXT_PM_TYPE_NEW) {
+				if (pm_code == PMC_SPECTATOR)
+					state->pm_type = PM_SPECTATOR;
+				else if (pm_code == PMC_FLY)
+					state->pm_type = PM_FLY;
+				else {
+					// assume PM_NORMAL
+					state->pm_type = PM_NORMAL;
+					state->jump_held = false;
+				}
+			}
+			else {
+				// assume PM_NORMAL
+				state->pm_type = PM_NORMAL;
+				state->jump_held = false;
+			}
 		}
 	}
 	else
