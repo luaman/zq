@@ -403,7 +403,10 @@ def_t *PR_Expression (int priority)
 			if (op->name[0] == '.')
 			{
 				char *name = PR_ParseName ();
-				
+
+				if (e->type != &type_entity)
+					PR_ParseError ("left of '.%s' must have entity type", name);
+
 				e2 = PR_FindDef (name, pr_scope);
 				if (!e2 || e2->type->type != ev_field)
 					PR_ParseError ("'%s' is not a field", name);
