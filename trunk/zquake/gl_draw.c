@@ -77,7 +77,9 @@ static byte crosshairdata[3][64] = {
 };
 
 
-int GL_LoadPicTexture (mpic_t *pic, byte *data);
+int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data);
+void Draw_LoadConback (void);
+void Draw_LoadCharset (void);
 
 mpic_t	conback_data;
 mpic_t	*conback = &conback_data;
@@ -203,6 +205,7 @@ typedef struct cachepic_s
 {
 	char		name[MAX_QPATH];
 	mpic_t		pic;
+	qboolean	valid;
 } cachepic_t;
 
 #define	MAX_CACHED_PICS		128
@@ -213,6 +216,26 @@ byte		menuplyr_pixels[4096];
 
 int		pic_texels;
 int		pic_count;
+
+/*
+ideally all mpic_t's should have a flushcount field that would be
+checked against a global gl_flushcount; the pic would be reloaded
+if the two don't match.
+currently, the pics are only updated when Draw_CachePic is called,
+and wad pics are never updated.
+*/
+void Draw_FlushCache (void)
+{
+	int i;
+
+	for (i = 0; i < numcachepics; i++)
+		cachepics[i].valid = false;		// force it to be reloaded
+
+	// I hope this doesn't cause texture memory leaks
+	Draw_LoadConback ();
+	Draw_LoadCharset ();
+}
+
 
 mpic_t *Draw_CacheWadPic (char *name)
 {
@@ -231,7 +254,7 @@ mpic_t *Draw_CacheWadPic (char *name)
 
 		texnum = memchr(p->data, 255, p->width*p->height) != NULL;
 		if (!Scrap_AllocBlock (texnum, p->width, p->height, &x, &y)) {
-			GL_LoadPicTexture (pic, p->data);
+			GL_LoadPicTexture (name, pic, p->data);
 			return pic;
 		}
 		k = 0;
@@ -249,7 +272,7 @@ mpic_t *Draw_CacheWadPic (char *name)
 		pic_texels += p->width*p->height;
 	}
 	else
-		GL_LoadPicTexture (pic, p->data);
+		GL_LoadPicTexture (name, pic, p->data);
 
 	return pic;
 }
@@ -267,7 +290,7 @@ mpic_t *Draw_CachePic (char *path)
 	qpic_t		*dat;
 
 	for (pic=cachepics, i=0 ; i<numcachepics ; pic++, i++)
-		if (!strcmp (path, pic->name))
+		if (!strcmp (path, pic->name) && pic->valid)
 			return &pic->pic;
 
 	if (numcachepics == MAX_CACHED_PICS)
@@ -292,7 +315,9 @@ mpic_t *Draw_CachePic (char *path)
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
 
-	GL_LoadPicTexture (&pic->pic, dat->data);
+	GL_LoadPicTexture (path, &pic->pic, dat->data);
+
+	pic->valid = true;
 
 	return &pic->pic;
 }
@@ -419,12 +444,37 @@ void Draw_LoadCharset (void)
 		dest += 128*8*2;
 	}
 
-	char_texture = GL_LoadTexture ("charset", 128, 256, buf, false, true, false);
+	char_texture = GL_LoadTexture ("pic:charset", 128, 256, buf, false, true, false);
 	if (!gl_smoothfont.value)
 	{
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
+}
+
+void Draw_LoadConback (void)
+{
+	qpic_t	*cb;
+	int		start;
+
+	start = Hunk_LowMark ();
+
+	cb = (qpic_t *)FS_LoadHunkFile ("gfx/conback.lmp");	
+	if (!cb)
+		Sys_Error ("Couldn't load gfx/conback.lmp");
+	SwapPic (cb);
+
+	if (cb->width != 320 || cb->height != 200)
+		Sys_Error ("Draw_Init: conback.lmp size is not 320x200");
+
+	conback->width = cb->width;
+	conback->height = cb->height;
+	GL_LoadPicTexture ("conback", conback, cb->data);
+	conback->width = vid.conwidth;
+	conback->height = vid.conheight;
+
+	// free loaded console
+	Hunk_FreeToLowMark (start);
 }
 
 
@@ -435,8 +485,6 @@ Draw_Init
 */
 void Draw_Init (void)
 {
-	qpic_t	*cb;
-	int		start;
 	int		i;
 
 	Cvar_Register (&gl_nobind);
@@ -459,25 +507,7 @@ void Draw_Init (void)
 
 	Draw_LoadCharset ();
 
-	start = Hunk_LowMark ();
-
-	cb = (qpic_t *)FS_LoadHunkFile ("gfx/conback.lmp");	
-	if (!cb)
-		Sys_Error ("Couldn't load gfx/conback.lmp");
-	SwapPic (cb);
-
-	if (cb->width != 320 || cb->height != 200)
-		Sys_Error ("Draw_Init: conback.lmp size is not 320x200");
-
-	conback->width = cb->width;
-	conback->height = cb->height;
-	GL_LoadPicTexture (conback, cb->data);
-	conback->width = vid.conwidth;
-	conback->height = vid.conheight;
-
-	// free loaded console
-	Hunk_FreeToLowMark (start);
-
+	Draw_LoadConback ();
 
 	// save a texture slot for translated picture
 	translate_texture = texture_extension_number++;
@@ -1613,10 +1643,13 @@ GL_LoadPicTexture
 
 ================
 */
-int GL_LoadPicTexture (mpic_t *pic, byte *data)
+int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data)
 {
 	int		glwidth, glheight;
 	int		i;
+	char	fullname[64] = "pic:";
+
+	Q_strncpyz (fullname + 4, name, sizeof(fullname)-4);
 
 	for (glwidth = 1 ; glwidth < pic->width ; glwidth<<=1)
 		;
@@ -1625,7 +1658,7 @@ int GL_LoadPicTexture (mpic_t *pic, byte *data)
 
 	if (glwidth == pic->width && glheight == pic->height)
 	{
-		pic->texnum = GL_LoadTexture ("", glwidth, glheight, data,
+		pic->texnum = GL_LoadTexture (fullname, glwidth, glheight, data,
 						false, true, false);
 		pic->sl = 0;
 		pic->sh = 1;

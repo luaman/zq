@@ -23,8 +23,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "crc.h"
 
 
-void Draw_BeginDisc ();
-void Draw_EndDisc ();
+void Draw_BeginDisc (void);
+void Draw_EndDisc (void);
+void Draw_FlushCache (void);
 
 
 #define MAX_NUM_ARGVS	50
@@ -1635,7 +1636,7 @@ void FS_SetGamedir (char *dir)
 	sprintf (com_gamedir, "%s/%s", com_basedir, dir);
 
 	if (!strcmp(dir, "id1") || !strcmp(dir, "qw"))
-		return;
+		goto breakOut;
 
 	//
 	// add the directory to the search path
@@ -1660,6 +1661,11 @@ void FS_SetGamedir (char *dir)
 		search->next = com_searchpaths;
 		com_searchpaths = search;		
 	}
+
+breakOut:
+#ifdef GLQUAKE
+	Draw_FlushCache ();
+#endif
 }
 
 /*
