@@ -1155,7 +1155,7 @@ void VID_Update (vrect_t *rects)
 			ResetFrameBuffer ();
 		vid.rowbytes = x_framebuffer[0]->bytes_per_line;
 		vid.buffer = x_framebuffer[current_framebuffer]->data;
-		vid.recalc_refdef = 1;	// force a surface cache flush
+		SCR_InvalidateScreen ();
 		Con_CheckResize ();
 		Con_Clear_f ();
 		return;

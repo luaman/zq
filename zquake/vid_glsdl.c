@@ -573,8 +573,7 @@ void VID_Init(unsigned char *palette)
 
 	Com_Printf ("Video mode %dx%dx%d initialized.\n", width, height, bpp);
 
-	vid.recalc_refdef = 1;       // force a surface cache flush
-
+	SCR_InvalidateScreen ();
 }
 
 void VID_Shutdown(void)

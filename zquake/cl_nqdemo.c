@@ -1052,7 +1052,6 @@ static void NQD_ParseServerMessage (void)
 
 		case svc_serverdata:
 			NQD_ParseServerData ();
-			vid.recalc_refdef = true;	// leave intermission full screen
 			break;
 
 		case svc_setangle:
@@ -1174,14 +1173,12 @@ static void NQD_ParseServerMessage (void)
 		case svc_intermission:
 			cl.intermission = 1;
 			cl.completed_time = cl.time;
-			vid.recalc_refdef = true;	// go to full screen
 			VectorCopy (nq_last_fixangle, cl.simangles);
 			break;
 
 		case svc_finale:
 			cl.intermission = 2;
 			cl.completed_time = cl.time;
-			vid.recalc_refdef = true;	// go to full screen
 			SCR_CenterPrint (MSG_ReadString ());
 			VectorCopy (nq_last_fixangle, cl.simangles);
 			break;
@@ -1189,7 +1186,6 @@ static void NQD_ParseServerMessage (void)
 		case nq_svc_cutscene:
 			cl.intermission = 3;
 			cl.completed_time = cl.time;
-			vid.recalc_refdef = true;	// go to full screen
 			SCR_CenterPrint (MSG_ReadString ());
 			VectorCopy (nq_last_fixangle, cl.simangles);
 			break;

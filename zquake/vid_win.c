@@ -348,7 +348,7 @@ int VID_Suspend (MGLDC *dc, int flags)
 		in_mode_set = false;
 
 		block_drawing = false;
-//		vid.recalc_refdef = 1;
+//		SCR_InvalidateScreen ();
 		force_mode_set = 1;
 		i = msg_suppress_1;
 		msg_suppress_1 = 1;
@@ -396,7 +396,7 @@ int VID_Suspend (MGLDC *dc, int flags)
 
 		in_mode_set = false;
 
-		vid.recalc_refdef = 1;
+		SCR_InvalidateScreen ();
 
 		block_drawing = false;
 
@@ -1769,7 +1769,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	VID_SetPalette (palette);
 
 	in_mode_set = false;
-	vid.recalc_refdef = 1;
+	SCR_InvalidateScreen ();
 
 	return true;
 }
