@@ -665,6 +665,7 @@ void SV_Gamedir_f (void)
 
 	FS_SetGamedir (dir);
 
+#if 0
 	// Tonik: this is to fight lame admins having all sorts of shit in their servers'
 	// *gamedir, causing nuisance like configs and downloads being written
 	// where you don't really want them to be.
@@ -675,6 +676,7 @@ void SV_Gamedir_f (void)
 		Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
 	else
 		Info_SetValueForStarKey (svs.info, "*gamedir", "", MAX_SERVERINFO_STRING);
+#endif
 }
 
 /*
