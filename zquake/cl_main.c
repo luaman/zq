@@ -891,7 +891,12 @@ double CL_MinFrameTime ()
 		if (cl_maxfps.value)
 			fps = bound (30.0, cl_maxfps.value, fpscap);
 		else
-			fps = fpscap;
+		{
+			if (com_serveractive)
+				fps = fpscap;
+			else
+				fps = bound (30.0, rate.value/80.0, fpscap);
+		}
 	}
 
 	return 1.0/fps;
