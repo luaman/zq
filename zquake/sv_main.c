@@ -45,7 +45,7 @@ int			current_skill;			// for entity spawnflags checking
 
 netadr_t	master_adr[MAX_MASTERS];	// address of group servers
 
-client_t	*host_client;			// current client
+client_t	*sv_client;					// current client
 
 #ifdef QW_BOTH
 cvar_t	sv_mintic = {"sv_mintic","0"};		//

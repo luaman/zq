@@ -158,19 +158,19 @@ void SV_SaveSpawnparms (void)
 	// serverflags is the only game related thing maintained
 	svs.serverflags = pr_global_struct->serverflags;
 
-	for (i=0, host_client = svs.clients ; i<MAX_CLIENTS ; i++, host_client++)
+	for (i=0, sv_client = svs.clients ; i<MAX_CLIENTS ; i++, sv_client++)
 	{
-		if (host_client->state != cs_spawned)
+		if (sv_client->state != cs_spawned)
 			continue;
 
 		// needs to reconnect
-		host_client->state = cs_connected;
+		sv_client->state = cs_connected;
 
 		// call the progs to get default spawn parms for the new client
-		pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
+		pr_global_struct->self = EDICT_TO_PROG(sv_client->edict);
 		PR_ExecuteProgram (pr_global_struct->SetChangeParms);
 		for (j=0 ; j<NUM_SPAWN_PARMS ; j++)
-			host_client->spawn_parms[j] = (&pr_global_struct->parm1)[j];
+			sv_client->spawn_parms[j] = (&pr_global_struct->parm1)[j];
 	}
 }
 
