@@ -40,6 +40,7 @@ static char	*argvdummy = " ";
 static char	*safeargvs[NUM_SAFE_ARGVS] =
 	{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse"};
 
+cvar_t	developer = {"developer","0"};
 cvar_t	registered = {"registered","0"};
 
 void COM_InitFilesystem (void);
@@ -1000,7 +1001,9 @@ COM_Init
 */
 void COM_Init (void)
 {
+	Cvar_Register (&developer);
 	Cvar_Register (&registered);
+
 	Cmd_AddCommand ("path", COM_Path_f);
 
 	COM_InitFilesystem ();
