@@ -671,7 +671,11 @@ void CL_ReadPackets (void)
 			continue;
 		}
 
+#ifdef MVDPLAY
+		if (net_message.cursize < 8 && !cls.mvdplayback)
+#else
 		if (net_message.cursize < 8)
+#endif
 		{
 			Com_DPrintf ("%s: Runt packet\n", NET_AdrToString(net_from));
 			continue;
@@ -687,6 +691,12 @@ void CL_ReadPackets (void)
 				,NET_AdrToString(net_from));
 			continue;
 		}
+#ifdef MVDPLAY
+        if(cls.mvdplayback) {
+            MSG_BeginReading();
+        }
+        else
+#endif
 		if (!Netchan_Process(&cls.netchan))
 			continue;		// wasn't accepted for some reason
 		CL_ParseServerMessage ();
@@ -1039,6 +1049,33 @@ void CL_Frame (double time)
 
 	// fetch results from server
 	CL_ReadPackets ();
+
+#ifdef MVDPLAY
+	if (cls.mvdplayback)
+	{
+		static float	old;
+		extern	float	nextdemotime, olddemotime;
+
+		player_state_t *self, *oldself;
+		self = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[cl.playernum];
+		oldself = &cl.frames[(cls.netchan.outgoing_sequence-1) & UPDATE_MASK].playerstate[cl.playernum];
+		self->messagenum = cl.parsecount;
+		VectorCopy(oldself->origin, self->origin);
+		VectorCopy(oldself->velocity, self->velocity);
+		VectorCopy(oldself->viewangles, self->viewangles);
+
+		if (old != nextdemotime) // FIXME: use oldparcecount != cl.parsecount?
+		{
+			old = nextdemotime;
+			CL_InitInterpolation(nextdemotime, olddemotime);
+		}
+
+		CL_ParseClientdata();
+		
+		cls.netchan.outgoing_sequence = cl.parsecount+1;
+		CL_Interpolate();
+	}
+#endif
 
 	// process stuffed commands
 	Cbuf_ExecuteEx (&cbuf_svc);

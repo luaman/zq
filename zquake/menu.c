@@ -1693,7 +1693,10 @@ static void ReadDir (void)
 		{
 			i = strlen(fd.cFileName);
 			if (i < 5 || (Q_stricmp(fd.cFileName+i-4, ".qwd") && Q_stricmp(fd.cFileName+i-4, ".dem")
-				&& Q_stricmp(fd.cFileName+i-4, ".qwz")))
+#ifdef MVDPLAY
+                && Q_stricmp(fd.cFileName+i-4, ".mvd")
+#endif
+				&& Q_stricmp(fd.cFileName+i-4, ".qwz") ))
 				continue;
 			type = 0;
 			size = fd.nFileSizeLow;
@@ -1794,6 +1797,9 @@ static void ReadDir (void)
 		{
 			i = strlen(dstruct->d_name);
 			if (i < 5 || (Q_stricmp(dstruct->d_name+i-4, ".qwd") && Q_stricmp(dstruct->d_name+i-4, ".dem")
+#ifdef MVDPLAY
+                && Q_stricmp(dstruct->d_name+i-4, ".mvd")
+#endif
 				/* && Q_stricmp(dstruct->d_name+i-4, ".qwz")*/ ))
 				continue;
 			type = 0;

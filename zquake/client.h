@@ -102,6 +102,11 @@ typedef struct player_info_s
 
 	byte	translations[VID_GRADES*256];
 	skin_t	*skin;
+
+#ifdef MVDPLAY
+	int		stats[MAX_CL_STATS];	// health, etc
+	int		prevcount; // for delta update from previous
+#endif
 } player_info_t;
 
 
@@ -243,6 +248,12 @@ typedef struct
 	qbool		demorecording;
 	qbool		demoplayback;
 	qbool		nqdemoplayback;
+#ifdef MVDPLAY
+	qbool   	mvdplayback; // playing mvd 
+	int			lastto;
+	int			lasttype;
+	qbool   	findtrack;
+#endif
 	FILE		*demofile;
 	byte		demomessage_data[MAX_MSGLEN * 2 /* FIXME */];
 	sizebuf_t	demomessage;
@@ -258,6 +269,19 @@ typedef struct
 } client_persistent_t;
 
 extern client_persistent_t	cls;
+
+#ifdef MVDPLAY
+typedef struct
+{
+	qbool    	interpolate;
+	vec3_t		origin;
+	vec3_t		angles;
+	int			oldindex;
+} interpolate_t;
+
+#define	MAX_PROJECTILES	32
+
+#endif
 
 
 // cl.paused flags
@@ -293,6 +317,9 @@ typedef struct
 	qbool		allow_frj;
 
 	int			parsecount;		// server message counter
+#ifdef MVDPLAY
+	int			oldparsecount;	// previouse server message used for interpolation (Highlander)
+#endif
 	int			validsequence;	// this is the sequence number of the last good
 								// packetentity_t we got.  If this is 0, we can't
 								// render a frame yet
@@ -382,6 +409,14 @@ typedef struct
 
 // all player information
 	player_info_t	players[MAX_CLIENTS];
+
+#ifdef MVDPLAY
+// interpolation stuff
+	interpolate_t	int_entities[MVD_MAX_PACKET_ENTITIES];
+	interpolate_t	int_projectiles[MAX_PROJECTILES];
+	int				int_packet;
+	int				int_prevnum[MAX_CLIENTS];
+#endif
 
 // sprint buffer
 	int			sprint_level;
@@ -545,10 +580,20 @@ void CL_SetSolidPlayers (int playernum);
 void CL_SetUpPlayerPrediction (qbool dopred);
 void CL_EmitEntities (void);
 void CL_ClearProjectiles (void);
+#ifdef MVDPLAY
+void CL_ParseProjectiles (qbool nail2);
+#else
 void CL_ParseProjectiles (void);
+#endif
 void CL_ParsePacketEntities (qbool delta);
 void CL_SetSolidEntities (void);
 void CL_ParsePlayerState (void);
+#ifdef MVDPLAY
+void CL_InitInterpolation(float cur, float old);
+void CL_ClearPredict(void);
+void CL_Interpolate(void);
+#endif
+
 
 //
 // cl_pred.c
@@ -560,6 +605,13 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u);
 //
 // cl_cam.c
 //
+#ifdef MVDPLAY
+#define CAM_NONE	0
+#define CAM_TRACK	1
+
+extern	int		spec_track; // player# of who we are tracking
+#endif
+
 extern qbool	cam_track;
 extern int		cam_target;		// playernum of who we're tracking or wish to track
 extern qbool	cam_locked;
@@ -571,6 +623,12 @@ void Cam_FinishMove (usercmd_t *cmd);
 void Cam_Reset (void);
 void Cam_SetViewPlayer (void);
 void CL_InitCam (void);
+#ifdef MVDPLAY
+int Cam_TrackNum(void);
+void Cam_Lock(int playernum);
+void Cam_TryLock (void);
+void Cam_SetViewPlayer (void);
+#endif
 
 //
 // skin.c

@@ -28,6 +28,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define dem_read	1
 #define dem_set		2
 
+#ifdef MVDPLAY
+#define dem_multiple	3
+#define	dem_single		4
+#define dem_stats		5
+#define dem_all			6
+#endif
 
 void Cam_TryLock (void);
 void CL_FinishTimeDemo (void);
@@ -74,6 +80,9 @@ void CL_StopPlayback (void)
 	cls.demofile = NULL;
 	cls.demoplayback = false;
 	cls.nqdemoplayback = false;
+#ifdef MVDPLAY
+	cls.mvdplayback = 0;
+#endif
 
 #ifdef _WIN32
 	if (qwz_playback)
@@ -156,6 +165,12 @@ void CL_WriteDemoMessage (sizebuf_t *msg)
 	fflush (cls.demofile);
 }
 
+#ifdef MVDPLAY
+static float	demotime;
+static float	prevtime;
+float			olddemotime, nextdemotime;
+#endif
+
 /*
 ====================
 CL_GetDemoMessage
@@ -169,17 +184,51 @@ qbool CL_GetDemoMessage (void)
 	float	demotime;
 	byte	c;
 	usercmd_t *pcmd;
+#ifdef MVDPLAY
+	int		size, tracknum;
+	byte	newtime;
+#endif
 
 	if (qwz_unpacking)
-		return 0;
+		return false;
 
 	if (cl.paused & PAUSED_DEMO)
-		return 0;
+		return false;
+
+#ifdef MVDPLAY
+    if (cls.mvdplayback) {
+        if (prevtime < nextdemotime)
+            prevtime = nextdemotime;
+
+        if (cls.realtime + 1.0 < nextdemotime) {
+            cls.realtime = nextdemotime - 1.0;
+        }
+    }
+#endif
 
 readnext:
 	// read the time from the packet
+#ifdef MVDPLAY
+    if (cls.mvdplayback) {
+        fread(&newtime, sizeof(newtime), 1, cls.demofile);
+        // XXX: this byte swap is not needed
+        /* newtime = LittleFloat(newtime); */
+        demotime =  prevtime + newtime * 0.001;
+        if (cls.demotime - nextdemotime > 0.0001 && nextdemotime != demotime) {
+            olddemotime = nextdemotime;
+            cls.netchan.incoming_sequence++;
+            cls.netchan.incoming_acknowledged++;
+            cls.netchan.frame_latency = 0;
+            cls.netchan.last_received = cls.demotime; // just to happy timeout check
+        nextdemotime = demotime;
+        }
+	} else {
+#endif
 	fread(&demotime, sizeof(demotime), 1, cls.demofile);
 	demotime = LittleFloat(demotime);
+#ifdef MVDPLAY
+    }
+#endif
 
 // decide if it is time to grab the next message		
 	if (cls.timedemo) {
@@ -188,6 +237,12 @@ readnext:
 		else if (demotime > cls.td_lastframe) {
 			cls.td_lastframe = demotime;
 			// rewind back to time
+#ifdef MVDPLAY
+			if (cls.mvdplayback) {
+				fseek(cls.demofile, ftell(cls.demofile) - sizeof(newtime),
+					SEEK_SET);
+			} else 
+#endif
 			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
 					SEEK_SET);
 			return false;	// already read this frame's message
@@ -198,14 +253,20 @@ readnext:
 		}
 		cls.demotime = demotime; // warp
 	} else if (!(cl.paused & PAUSED_SERVER) && cls.state >= ca_active) {	// always grab until active
-		if (cls.demotime + 1.0 < demotime) {
-			// too far back
-			cls.demotime = demotime - 1.0;
-			// rewind back to time
-			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
-					SEEK_SET);
-			return 0;
-		} else if (cls.demotime < demotime) {
+#ifdef MVDPLAY
+			if (cls.mvdplayback)
+			{
+                if(nextdemotime < demotime) {
+                    fseek(cls.demofile, ftell(cls.demofile) - sizeof(newtime),
+                            SEEK_SET);
+                    return false;
+                }
+			}
+            else
+#endif
+		if (cls.demotime < demotime) {
+            if (cls.demotime + 1.0 < demotime)
+                cls.demotime = demotime - 1.0; // too far back
 			// rewind back to time
 			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
 					SEEK_SET);
@@ -213,6 +274,11 @@ readnext:
 		}
 	} else
 		cls.demotime = demotime; // we're warping
+
+#ifdef MVDPLAY
+    if(cls.mvdplayback)
+        prevtime = demotime;
+#endif
 
 	if (cls.state < ca_demostart)
 		Host_Error ("CL_GetDemoMessage: cls.state < ca_demostart");
@@ -223,14 +289,18 @@ readnext:
 		Host_Error ("Unexpected end of demo");
 	}
 	
+#ifdef MVDPLAY
+    switch (c&7) {
+#else
 	switch (c) {
+#endif
 	case dem_cmd :
 		// user sent input
 		i = cls.netchan.outgoing_sequence & UPDATE_MASK;
 		pcmd = &cl.frames[i].cmd;
 		r = fread (pcmd, sizeof(*pcmd), 1, cls.demofile);
 		if (r != 1)
-			Host_Error ("Corrupted demo");
+			Host_Error ("Corrupted demo 1");
 		// byte order stuff
 		for (j = 0; j < 3; j++)
 			pcmd->angles[j] = LittleFloat(pcmd->angles[j]);
@@ -245,10 +315,13 @@ readnext:
 		for (i = 0; i < 3; i++)
 			cl.viewangles[i] = LittleFloat (cl.viewangles[i]);
 		if (cl.spectator)
-			Cam_TryLock ();
+			Cam_TryLock();
 		goto readnext;
 
 	case dem_read:
+#ifdef MVDPLAY
+readit:
+#endif
 		// get the next message
 		fread (&net_message.cursize, 4, 1, cls.demofile);
 		net_message.cursize = LittleLong (net_message.cursize);
@@ -256,7 +329,25 @@ readnext:
 			Host_Error ("Demo message > MAX_BIG_MSGLEN");
 		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
 		if (r != 1)
-			Host_Error ("Corrupted demo");
+			Host_Error ("Corrupted demo 2");
+
+#ifdef MVDPLAY
+		if (cls.mvdplayback) {
+			switch(cls.lasttype) {
+			case dem_multiple:
+				tracknum = Cam_TrackNum();
+				if (tracknum == -1 || !(cls.lastto & (1 << tracknum)))
+					goto readnext;	
+				break;
+			case dem_single:
+				tracknum = Cam_TrackNum();
+				if (tracknum == -1 || cls.lastto != spec_track)
+					goto readnext;
+				break;
+			}
+		}
+#endif
+
 		return true;
 
 	case dem_set:
@@ -264,10 +355,45 @@ readnext:
 		cls.netchan.outgoing_sequence = LittleLong(i);
 		fread (&i, 4, 1, cls.demofile);
 		cls.netchan.incoming_sequence = LittleLong(i);
+#ifdef MVDPLAY
+		if (cls.mvdplayback)
+			cls.netchan.incoming_acknowledged = cls.netchan.incoming_sequence;
+        goto readnext;
+#else
 		goto readnext;
+#endif
+
+#ifdef MVDPLAY
+	case dem_multiple:
+		r = fread (&i, 4, 1, cls.demofile);
+		if (r != 1)
+		{
+			CL_StopPlayback ();
+			return 0;
+		}
+
+		cls.lastto = LittleLong(i);
+		cls.lasttype = dem_multiple;
+		goto readit;
+
+	case dem_single:
+		cls.lastto = c>>3;
+		cls.lasttype = dem_single;
+		goto readit;
+
+	case dem_stats:
+		cls.lastto = c>>3;
+		cls.lasttype = dem_stats;
+		goto readit;
+
+	case dem_all:
+		cls.lastto = 0;
+		cls.lasttype = dem_all;
+		goto readit;
+#endif
 
 	default:
-		Host_Error ("Corrupted demo");
+		Host_Error ("Corrupted demo 3 -> c='%d'", c);
 		return false;
 	}
 }
@@ -406,6 +532,12 @@ static void CL_Record (void)
 	player_info_t *player;
 	int seq = 1;
 
+#ifdef MVDPLAY
+	if (cls.mvdplayback) {
+		Com_Printf ("Can't record while playing MVD demo.\n");
+		return;
+	}
+#endif
 	cls.demorecording = true;
 
 /*-------------------------------------------------*/
@@ -1070,10 +1202,21 @@ try_again:
 		NQD_StartPlayback ();
 	}
 
+#ifdef MVDPLAY
+	cls.mvdplayback = !Q_stricmp(COM_FileExtension(name), "mvd");
+#endif
+
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
 	Netchan_Setup (NS_CLIENT, &cls.netchan, net_null, 0);
 	cls.demotime = 0;
+#ifdef MVDPLAY
+	olddemotime = 0;
+	cls.findtrack = true;
+	cls.lasttype = 0;
+	cls.lastto = 0;
+	CL_ClearPredict();
+#endif
 }
 
 /*
