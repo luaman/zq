@@ -82,7 +82,7 @@ cvar_t	r_fastsky = {"r_fastsky", "0"};
 cvar_t	r_skycolor = {"r_skycolor", "4"};
 cvar_t	r_fastturb = {"r_fastturb", "0"};
 
-cvar_t	gl_subdivide_size = {"gl_subdivide_size", "128", CVAR_ARCHIVE};
+cvar_t	gl_subdivide_size = {"gl_subdivide_size", "64", CVAR_ARCHIVE};
 cvar_t	gl_clear = {"gl_clear","0"};
 cvar_t	gl_cull = {"gl_cull","1"};
 cvar_t	gl_texsort = {"gl_texsort","1"};
