@@ -710,7 +710,7 @@ TP_ParseFunChars
 Doesn't check for overflows, so strlen(s) should be < MAX_MACRO_STRING
 ==============
 */
-char *TP_ParseFunChars (char *s)
+char *TP_ParseFunChars (char *s, qboolean chat)
 {
 	static char	buf[MAX_MACRO_STRING];
 	char	*out = buf;
@@ -775,7 +775,7 @@ char *TP_ParseFunChars (char *s)
 				continue;
 			}
 		}
-		if (*s == '^' && s[1] && s[1] != ' ') {
+		if (!chat && *s == '^' && s[1] && s[1] != ' ') {
 			*out++ = s[1] | 128;
 			s += 2;
 			continue;
