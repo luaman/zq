@@ -12,6 +12,8 @@ LOAD / SAVE GAME
 
 extern cvar_t	maxclients;
 
+void CL_BeginLocalConnection ();
+
 #define	SAVEGAME_COMMENT_LENGTH	39
 #define	SAVEGAME_VERSION	6
 
@@ -156,7 +158,7 @@ void SV_LoadGame_f (void)
 	edict_t	*ent;
 	int		entnum;
 	int		version;
-	float			spawn_parms[NUM_SPAWN_PARMS];
+	float	spawn_parms[NUM_SPAWN_PARMS];
 
 	if (Cmd_Argc() != 2) {
 		Com_Printf ("load <savename> : load a game\n");
@@ -203,8 +205,10 @@ void SV_LoadGame_f (void)
 	fscanf (f, "%s\n",mapname);
 	fscanf (f, "%f\n",&time);
 
-	CL_Disconnect_f ();
-	
+	SV_Shutdown ("loading a savegame\n");
+
+	CL_BeginLocalConnection ();
+
 	SV_SpawnServer (mapname, false);
 	if (sv.state != ss_active)
 	{
@@ -255,13 +259,12 @@ void SV_LoadGame_f (void)
 		}
 		else
 		{	// parse an edict
-
 			ent = EDICT_NUM(entnum);
 			memset (&ent->v, 0, progs->entityfields * 4);
 			ent->free = false;
 			ED_ParseEdict (start, ent);
 	
-		// link it into the bsp tree
+			// link it into the bsp tree
 			if (!ent->free)
 				SV_LinkEdict (ent, false);
 		}
@@ -274,11 +277,7 @@ void SV_LoadGame_f (void)
 
 	fclose (f);
 
+	// FIXME: this assumes the player is using client slot #0
 	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 		svs.clients->spawn_parms[i] = spawn_parms[i];
-
-	// FIXME: is this ok?
-	if (cls.state > ca_connected)
-		cls.state = ca_connected;
-	Cbuf_AddText ("connect local\n");
 }
