@@ -594,8 +594,7 @@ void SVC_DirectConnect (void)
 	challenge = atoi(Cmd_Argv(3));
 
 	// note an extra byte is needed to replace spectator key
-	strncpy (userinfo, Cmd_Argv(4), sizeof(userinfo)-2);
-	userinfo[sizeof(userinfo) - 2] = 0;
+	Q_strncpyz (userinfo, Cmd_Argv(4), sizeof(userinfo)-1);
 
 	// see if the challenge is valid
 	for (i=0 ; i<MAX_CHALLENGES ; i++)
@@ -662,7 +661,7 @@ void SVC_DirectConnect (void)
 			if (*q > 31 && *q <= 127)
 				*p++ = *q;
 	} else
-		strncpy (newcl->userinfo, userinfo, sizeof(newcl->userinfo)-1);
+		Q_strncpyz (newcl->userinfo, userinfo, sizeof(newcl->userinfo));
 
 	// if there is already a slot for this ip, drop it
 	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
@@ -1287,7 +1286,7 @@ SV_CheckVars
 */
 void SV_CheckVars (void)
 {
-	static char pw[MAX_INFO_STRING], spw[MAX_INFO_STRING];
+	static char pw[MAX_INFO_STRING]="", spw[MAX_INFO_STRING]="";
 	static float old_maxrate = 0;
 	int			v;
 
@@ -1295,8 +1294,8 @@ void SV_CheckVars (void)
 	if (strcmp(password.string, pw) ||
 		strcmp(spectator_password.string, spw))
 	{
-		strncpy (pw, password.string, sizeof(pw)-1);
-		strncpy (spw, spectator_password.string, sizeof(spw)-1);
+		Q_strncpyz (pw, password.string, sizeof(pw));
+		Q_strncpyz (spw, spectator_password.string, sizeof(spw));
 		Cvar_Set (&password, pw);
 		Cvar_Set (&spectator_password, spw);
 		
@@ -1617,8 +1616,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	val = Info_ValueForKey (cl->userinfo, "name");
 
 	// trim user name
-	strncpy(newname, val, sizeof(newname) - 1);
-	newname[sizeof(newname) - 1] = 0;
+	Q_strncpyz (newname, val, sizeof(newname));
 
 	for (p = newname; (*p == ' ' || *p == '\r' || *p == '\n') && *p; p++)
 		;
@@ -1692,7 +1690,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	}
 
 
-	strncpy (cl->name, val, sizeof(cl->name)-1);	
+	Q_strncpyz (cl->name, val, sizeof(cl->name));
 
 	// rate
 	val = Info_ValueForKey (cl->userinfo, "rate");

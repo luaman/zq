@@ -554,7 +554,7 @@ void CL_WriteConfig_f (void)
 		return;
 	}
 
-	strncpy (name, Cmd_Argv(1), sizeof(name)-1);
+	Q_strncpyz (name, Cmd_Argv(1), sizeof(name));
 	COM_ForceExtension (name, ".cfg");
 
 	Con_Printf ("Writing %s\n", name);

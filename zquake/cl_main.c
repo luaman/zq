@@ -268,7 +268,7 @@ void CL_Connect_f (void)
 
 	CL_Disconnect ();
 
-	strncpy (cls.servername, server, sizeof(cls.servername)-1);
+	Q_strncpyz (cls.servername, server, sizeof(cls.servername));
 	CL_BeginServerConnect();
 }
 
@@ -497,8 +497,7 @@ void CL_ConnectionlessPacket (void)
 #endif
 		s = MSG_ReadString ();
 
-		strncpy(cmdtext, s, sizeof(cmdtext) - 1);
-		cmdtext[sizeof(cmdtext) - 1] = 0;
+		Q_strncpyz (cmdtext, s, sizeof(cmdtext));
 
 		s = MSG_ReadString ();
 

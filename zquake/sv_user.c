@@ -747,16 +747,14 @@ void SV_Say (qboolean team)
 	int		j, tmp;
 	char	*p;
 	char	text[2048];
-	char	t1[32], *t2;
+	char	t1[32] = "";
+	char	*t2;
 
 	if (Cmd_Argc () < 2)
 		return;
 
 	if (team)
-	{
-		strncpy (t1, Info_ValueForKey (host_client->userinfo, "team"), 31);
-		t1[31] = 0;
-	}
+		Q_strncpyz (t1, Info_ValueForKey (host_client->userinfo, "team"), sizeof(t1));
 
 	if (host_client->spectator && (!sv_spectalk.value || team))
 		sprintf (text, "[SPEC] %s: ", host_client->name);
@@ -1093,8 +1091,8 @@ void SV_SetInfo_f (void)
 
 	Info_SetValueForKey (host_client->userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
 // name is extracted below in ExtractFromUserInfo
-//	strncpy (host_client->name, Info_ValueForKey (host_client->userinfo, "name")
-//		, sizeof(host_client->name)-1);	
+//	Q_strncpyz (host_client->name, Info_ValueForKey (host_client->userinfo, "name")
+//		, sizeof(host_client->name));
 //	SV_FullClientUpdate (host_client, &sv.reliable_datagram);
 //	host_client->sendinfo = true;
 

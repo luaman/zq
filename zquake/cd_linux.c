@@ -378,10 +378,8 @@ int CDAudio_Init(void)
 	if (COM_CheckParm("-nocdaudio"))
 		return -1;
 
-	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1) {
-		strncpy(cd_dev, com_argv[i + 1], sizeof(cd_dev));
-		cd_dev[sizeof(cd_dev) - 1] = 0;
-	}
+	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)
+		Q_strncpyz (cd_dev, com_argv[i + 1], sizeof(cd_dev));
 
 	if ((cdfile = open(cd_dev, O_RDONLY)) == -1) {
 		Con_Printf("CDAudio_Init: open of \"%s\" failed (%i)\n", cd_dev, errno);
