@@ -51,7 +51,7 @@ typedef struct
 
 	float		waterjumptime;
 	qboolean	onground;
-	int			oldbuttons;
+	qboolean	jump_held;
 	int			jump_msec;		// fix bunny-hop flickering
 } player_state_t;
 

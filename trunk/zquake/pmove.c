@@ -651,13 +651,13 @@ void PM_CheckJump (void)
 {
 	if (pmove.dead)
 	{
-		pmove.oldbuttons |= BUTTON_JUMP;	// don't jump on respawn
+		pmove.jump_held = true;	// don't jump on respawn
 		return;
 	}
 
 	if (!(pmove.cmd.buttons & BUTTON_JUMP))
 	{
-		pmove.oldbuttons &= ~BUTTON_JUMP;
+		pmove.jump_held = false;
 		return;
 	}
 
@@ -681,10 +681,10 @@ void PM_CheckJump (void)
 		return;		// in air, so no effect
 
 #ifdef SERVERONLY
-	if (pmove.oldbuttons & BUTTON_JUMP)
+	if (pmove.jump_held)
 		return;		// don't pogo stick
 #else
-	if (pmove.oldbuttons & BUTTON_JUMP && !pmove.jump_msec)
+	if (pmove.jump_held && !pmove.jump_msec)
 		return;		// don't pogo stick
 #endif
 
@@ -709,7 +709,7 @@ void PM_CheckJump (void)
 				+ 270 * movevars.ktjump;
 	}
 
-	pmove.oldbuttons |= BUTTON_JUMP;	// don't jump again until released
+	pmove.jump_held = true;		// don't jump again until released
 
 #ifndef SERVERONLY
 	pmove.jump_msec = pmove.cmd.msec;
@@ -753,7 +753,7 @@ void PM_CheckWaterJump (void)
 	VectorScale (flatforward, 50, pmove.velocity);
 	pmove.velocity[2] = 310;
 	pmove.waterjumptime = 2;	// safety net
-	pmove.oldbuttons |= BUTTON_JUMP;	// don't jump again until released
+	pmove.jump_held = true;		// don't jump again until released
 }
 
 /*

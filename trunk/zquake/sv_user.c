@@ -1570,7 +1570,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 	pmove.physents[0].model = sv.worldmodel;
 	pmove.cmd = *ucmd;
 	pmove.dead = sv_player->v.health <= 0;
-	pmove.oldbuttons = sv_client->oldbuttons;
+	pmove.jump_held = sv_client->jump_held;
 #ifndef SERVERONLY
 	pmove.jump_msec = 0;
 #endif
@@ -1607,7 +1607,7 @@ if (sv_player->v.health > 0 && before && !after )
 	PlayerMove ();
 #endif
 
-	sv_client->oldbuttons = pmove.oldbuttons;
+	sv_client->jump_held = pmove.jump_held;
 	sv_player->v.teleport_time = pmove.waterjumptime;
 	sv_player->v.waterlevel = pmove.waterlevel;
 	sv_player->v.watertype = pmove.watertype;
