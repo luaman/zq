@@ -93,7 +93,8 @@ void TP_StatChanged (int stat, int value)
 				vars.respawntrigger_time = realtime;
 				//if (cl.teamfortress)
 					memset (&cshift_empty, 0, sizeof(cshift_empty));
-				TP_ExecTrigger ("f_respawn");
+				if (!cl.spectator)
+					TP_ExecTrigger ("f_respawn");
 			}
 			vars.health = value;
 			return;
@@ -101,7 +102,8 @@ void TP_StatChanged (int stat, int value)
 		if (vars.health > 0) {		// We just died
 			vars.deathtrigger_time = realtime;
 			strcpy (vars.lastdeathloc, Macro_Location_f());
-			TP_ExecTrigger ("f_death");
+			if (!cl.spectator)
+				TP_ExecTrigger ("f_death");
 		}
 		vars.health = value;
 	}
@@ -124,7 +126,8 @@ void TP_StatChanged (int stat, int value)
 
 			// TODO: only if tooktriggers are enabled
 			strcpy (vars.last_tooktrigger, vars.tookitem);
-			TP_ExecTrigger ("f_took");
+			if (!cl.spectator)
+				TP_ExecTrigger ("f_took");
 		}
 
 		vars.items = value;
