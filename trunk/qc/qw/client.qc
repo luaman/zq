@@ -320,6 +320,9 @@ Player entered the suicide command
 */
 void() ClientKill =
 {
+	if (intermission_running)
+		return;
+
 	bprint (PRINT_MEDIUM, self.netname);
 	bprint (PRINT_MEDIUM, " suicides\n");
 	set_suicide_frame ();
