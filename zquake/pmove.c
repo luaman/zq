@@ -218,23 +218,12 @@ Each intersection will try to step over the obstruction instead of
 sliding along it.
 =============
 */
-void PM_StepSlideMove (qboolean fly)
+void PM_StepSlideMove (void)
 {
 	vec3_t	start, dest;
 	pmtrace_t	trace;
 	vec3_t	original, originalvel, down, up, downvel;
 	float	downdist, updist;
-
-	if (!fly) {
-		if (!movevars.slidefix)
-			pmove.velocity[2] = 0;
-
-		if (!pmove.velocity[0] && !pmove.velocity[1])
-		{
-			pmove.velocity[2] = 0;
-			return;
-		}
-	}
 
 	// first try just moving to the destination	
 	dest[0] = pmove.origin[0] + pmove.velocity[0]*frametime;
@@ -475,7 +464,7 @@ void PM_WaterMove (void)
 	for (i=0 ; i<3 ; i++)
 		wishvel[i] = forward[i]*pmove.cmd.forwardmove + right[i]*pmove.cmd.sidemove;
 
-	if (!pmove.cmd.forwardmove && !pmove.cmd.sidemove && !pmove.cmd.upmove)
+	if (pmove.pm_type != PM_FLY && !pmove.cmd.forwardmove && !pmove.cmd.sidemove && !pmove.cmd.upmove)
 		wishvel[2] -= 60;		// drift towards bottom
 	else
 		wishvel[2] += pmove.cmd.upmove;
@@ -535,7 +524,7 @@ void PM_FlyMove ()
 	
 	PM_Accelerate (wishdir, wishspeed, movevars.accelerate);
 	
-	PM_StepSlideMove (true);
+	PM_StepSlideMove ();
 }
 
 
@@ -583,7 +572,17 @@ void PM_AirMove (void)
 			pmove.velocity[2] = 0;
 		PM_Accelerate (wishdir, wishspeed, movevars.accelerate);
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * frametime;
-		PM_StepSlideMove (false);
+
+		if (!movevars.slidefix)
+			pmove.velocity[2] = 0;
+
+		if (!pmove.velocity[0] && !pmove.velocity[1])
+		{
+			pmove.velocity[2] = 0;
+			return;
+		}
+
+		PM_StepSlideMove ();
 	}
 	else
 	{	// not on ground, so little effect on velocity
