@@ -58,7 +58,7 @@ void Draw_Fill (int x, int y, int w, int h, int c);
 void Draw_FadeScreen (void);
 void Draw_String (int x, int y, char *str);
 void Draw_Alt_String (int x, int y, char *str);
-mpic_t *Draw_PicFromWad (char *name);
 mpic_t *Draw_CachePic (char *path);
+mpic_t *Draw_CacheWadPic (char *name);
 void Draw_Crosshair(void);
 void Draw_TextBox (int x, int y, int width, int lines);

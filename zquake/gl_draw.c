@@ -208,7 +208,7 @@ byte		menuplyr_pixels[4096];
 int		pic_texels;
 int		pic_count;
 
-mpic_t *Draw_PicFromWad (char *name)
+mpic_t *Draw_CacheWadPic (char *name)
 {
 	qpic_t	*p;
 	mpic_t	*pic;
@@ -254,7 +254,7 @@ mpic_t *Draw_PicFromWad (char *name)
 Draw_CachePic
 ================
 */
-mpic_t	*Draw_CachePic (char *path)
+mpic_t *Draw_CachePic (char *path)
 {
 	cachepic_t	*pic;
 	int			i;
@@ -485,8 +485,8 @@ void Draw_Init (void)
 	//
 	// get the other pics we need
 	//
-	draw_disc = Draw_PicFromWad ("disc");
-	draw_backtile = Draw_PicFromWad ("backtile");
+	draw_disc = Draw_CacheWadPic ("disc");
+	draw_backtile = Draw_CacheWadPic ("backtile");
 }
 
 
