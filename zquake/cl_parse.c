@@ -1250,7 +1250,7 @@ static void FlushString (char *s, int level, qboolean team, int offset)
 {
 	if (level == PRINT_CHAT)
 	{
-		char	buf[1024];
+		char	buf[2048];
 		char	*out = buf, *p, *p1;
 		extern cvar_t	cl_parseWhiteText;
 		qboolean	parsewhite;
@@ -1293,7 +1293,7 @@ CL_ParsePrint
 */
 void CL_ParsePrint (void)
 {
-	char	*s, str[1024];
+	char	*s, str[2048];
 	char	*p;
 	int		len;
 	int		level, flags=0;
