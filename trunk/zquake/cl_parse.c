@@ -684,7 +684,7 @@ void CL_ParseServerData (void)
 	FILE	*f;
 	char	fn[MAX_OSPATH];
 	qbool	cflag = false;
-	int		i, protover;
+	int		protover;
 #ifdef MVDPLAY
 	extern float	nextdemotime, olddemotime;
 #endif
@@ -749,6 +749,7 @@ void CL_ParseServerData (void)
 
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
+		int i;
 		cls.netchan.last_received = nextdemotime = olddemotime = MSG_ReadFloat();
 		cl.playernum = MAX_CLIENTS - 1;
 		cl.spectator = true;
