@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern unsigned char d_15to8table[65536];
 extern unsigned d_8to24table2[256];
 
-void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel);
+static void	OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel);
 
 cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
@@ -848,3 +848,4 @@ void R_InitTextures (void)
 	R_InitParticleTexture ();
 }
 
+/* vi: set noet ts=4 sts=4 ai sw=4: */
