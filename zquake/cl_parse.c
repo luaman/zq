@@ -748,8 +748,6 @@ void CL_ParseServerData (void)
 		cls.mvd_newtime = cls.mvd_oldtime = MSG_ReadFloat();
 		cl.playernum = MAX_CLIENTS - 1;
 		cl.spectator = true;
-		for (i = 0; i < UPDATE_BACKUP; i++)
-			cl.frames[i].playerstate[cl.playernum].pm_type = PM_SPECTATOR;
 	} else
 #endif
 	{
