@@ -109,7 +109,6 @@ typedef struct
 typedef struct
 {
 	float		vecs[2][4];
-	float		mipadjust;
 	texture_t	*texture;
 	int			flags;
 } mtexinfo_t;
@@ -192,7 +191,7 @@ typedef struct mleaf_s
 
 	msurface_t	**firstmarksurface;
 	int			nummarksurfaces;
-	int			key;			// BSP sequence number for leaf's contents
+
 	byte		ambient_sound_level[NUM_AMBIENTS];
 } mleaf_t;
 
