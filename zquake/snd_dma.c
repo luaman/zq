@@ -75,6 +75,7 @@ cvar_t s_volume = {"volume", "0.7", CVAR_ARCHIVE};
 cvar_t s_nosound = {"s_nosound", "0"};
 cvar_t s_precache = {"s_precache", "1"};
 cvar_t s_loadas8bit = {"s_loadas8bit", "0"};
+cvar_t s_khz = {"s_khz", "11"};
 cvar_t s_ambientlevel = {"s_ambientlevel", "0.3"};
 cvar_t s_ambientfade = {"s_ambientfade", "100"};
 cvar_t s_noextraupdate = {"s_noextraupdate", "0"};
@@ -173,6 +174,7 @@ void S_Init (void)
 	Cvar_Register(&s_volume);
 	Cvar_Register(&s_precache);
 	Cvar_Register(&s_loadas8bit);
+	Cvar_Register(&s_khz);
 	Cvar_Register(&bgmvolume);
 	Cvar_Register(&s_ambientlevel);
 	Cvar_Register(&s_ambientfade);
