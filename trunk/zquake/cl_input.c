@@ -350,11 +350,17 @@ void CL_AdjustAngles (void)
 
 	if (!(in_strafe.state & 1))
 	{
-		yawspeed = cl_yawspeed.value;
-		if (!cl.allow_frj)
+		if (cl.allow_frj)
+			yawspeed = speed * cl_yawspeed.value;
+		else {
+			yawspeed = cl_yawspeed.value;
+			if (in_speed.state & 1)
+				yawspeed *= cl_anglespeedkey.value;
 			yawspeed = bound (-1000, yawspeed, 1000);
-		cl.viewangles[YAW] -= speed*yawspeed*CL_KeyState (&in_right);
-		cl.viewangles[YAW] += speed*yawspeed*CL_KeyState (&in_left);
+			yawspeed *= cls.frametime;
+		}
+		cl.viewangles[YAW] -= yawspeed * CL_KeyState (&in_right);
+		cl.viewangles[YAW] += yawspeed * CL_KeyState (&in_left);
 		cl.viewangles[YAW] = anglemod(cl.viewangles[YAW]);
 	}
 	if (in_klook.state & 1)
