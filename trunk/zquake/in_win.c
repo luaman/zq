@@ -1328,6 +1328,16 @@ int IN_MapKey (int key)
 	return key;
 }
 
+/*
+===========
+IN_LoadKeys_f
+
+Load a custom keymap from file
+layout "Default"
+keycode 28 ENTER
+ext keycode 28 KP_ENTER
+===========
+*/
 void IN_LoadKeys_f (void)
 {
 	int n, keynum;
