@@ -28,6 +28,15 @@ typedef struct
 } skin_t;
 
 
+#define MAX_STATIC_SOUNDS	256
+typedef struct
+{
+	vec3_t		org;
+	int			sound_num;
+	int			vol;
+	int			atten;
+} static_sound_t;
+
 // player_state_t is the information needed by a player entity
 // to do move prediction and to generate a drawable entity
 typedef struct
@@ -356,6 +365,9 @@ typedef struct
 
 	cmodel_t	*clipmodels[MAX_MODELS];
 	unsigned	map_checksum2;
+
+	static_sound_t	static_sounds[MAX_STATIC_SOUNDS];
+	int			num_static_sounds;
 
 	char		levelname[40];	// for display on solo scoreboard
 	int			playernum;

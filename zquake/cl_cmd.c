@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "winquake.h"
 #include "menu.h"
+#include "sound.h"
 #include "teamplay.h"
 #include "version.h"
 
@@ -879,7 +880,20 @@ void CL_Observe_f (void)
 		Cmd_ExecuteString("reconnect");
 }
 
+void CL_SND_Restart_f (void)
+{
+	int i;
+	static_sound_t *ss;
+	extern cvar_t cl_staticsounds;
 
+	S_Restart ();
+
+	if (!cl_staticsounds.value)
+		return;
+
+	for (i = 0, ss = cl.static_sounds; i < cl.num_static_sounds; i++, ss++)
+		S_StaticSound (cl.sound_precache[ss->sound_num], ss->org, ss->vol, ss->atten);
+}
 
 void CL_InitCommands (void)
 {
@@ -906,6 +920,7 @@ void CL_InitCommands (void)
 	Cmd_AddCommand ("writeconfig", CL_WriteConfig_f);
 	Cmd_AddCommand ("startdemos", CL_StartDemos_f);
 	Cmd_AddCommand ("pointfile", CL_ReadPointFile_f);	
+	Cmd_AddCommand ("snd_restart", CL_SND_Restart_f);
 
 // client info setting
 	Cmd_AddCommand ("color", CL_Color_f);
