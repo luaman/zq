@@ -115,7 +115,7 @@ void CL_Say_f (void)
 		SZ_Print (&cls.netchan.message, " ");
 
 		s = TP_ParseMacroString (Cmd_Args());
-		s = TP_ParseFunChars (s);
+		s = TP_ParseFunChars (s, true);
 		if (*s && *s < 32)
 		{
 			SZ_Print (&cls.netchan.message, "\"");

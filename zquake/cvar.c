@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "server.h"
 #endif
 
-extern char *TP_ParseFunChars (char *s);
+extern char *TP_ParseFunChars (char *s, qboolean chat);
 
 static cvar_t	*cvar_hash[32];
 /*static*/ cvar_t	*cvar_vars;
@@ -203,7 +203,7 @@ void Cvar_Set (cvar_t *var, char *value)
 	if (var->flags & CVAR_USERINFO)
 	{
 		char *s;
-		s = TP_ParseFunChars (var->string);
+		s = TP_ParseFunChars (var->string, false);
 		Info_SetValueForKey (cls.userinfo, var->name, s, MAX_INFO_STRING);
 		if (cls.state >= ca_connected)
 		{
