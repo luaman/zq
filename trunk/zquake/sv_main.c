@@ -307,6 +307,30 @@ void SV_FullClientUpdateToClient (client_t *client, client_t *cl)
 		SV_FullClientUpdate (client, &cl->netchan.message);
 }
 
+/*
+===================
+SV_GenerateUserID
+
+Returns a unique userid in 1..99 range
+===================
+*/
+int SV_GenerateUserID (void)
+{
+	int			i;
+	client_t	*cl;
+
+	do {
+		svs.lastuserid++;
+		if (svs.lastuserid == 100)
+			svs.lastuserid = 1;
+		for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
+			if (cl->state != cs_free && cl->userid == svs.lastuserid)
+				break;
+	} while (i != MAX_CLIENTS);
+	
+	return svs.lastuserid;
+}
+
 
 /*
 ==============================================================================
@@ -618,8 +642,7 @@ void SVC_DirectConnect (void)
 	// accept the new client
 	// this is the only place a client_t is ever initialized
 	memset (newcl, 0, sizeof(*newcl));
-	svs.lastuserid++;	// so every client gets a unique id
-	newcl->userid = svs.lastuserid;
+	newcl->userid = SV_GenerateUserID();
 
 	strlcpy (newcl->userinfo, userinfo, sizeof(newcl->userinfo));
 
