@@ -647,15 +647,19 @@ void CL_ParseProjectiles(void)
 
 static void CL_LinkProjectiles(void)
 {
-	float f;
 	int i;
 	entity_t ent;
 	projectile_t *pr;
+#ifdef MVDPLAY
+	float f;
+#endif
 
 	memset(&ent, 0, sizeof(entity_t));
 	ent.model = cl.model_precache[cl_spikeindex];
 
+#ifdef MVDPLAY
 	f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
+#endif
 
 	for (i = 0, pr = cl_projectiles; i < cl.num_projectiles; i++, pr++)	{
 #ifdef MVDPLAY

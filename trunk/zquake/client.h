@@ -281,9 +281,10 @@ typedef struct
 	int			oldindex;
 } interpolate_t;
 
-#define	MAX_PROJECTILES	32
-
 #endif
+
+
+#define	MAX_PROJECTILES	32
 
 
 // cl.paused flags
@@ -319,9 +320,7 @@ typedef struct
 	qbool		allow_frj;
 
 	int			parsecount;		// server message counter
-#ifdef MVDPLAY
-	int			oldparsecount;	// previouse server message used for interpolation (Highlander)
-#endif
+	int			oldparsecount;	// previouse server message counter
 	int			validsequence;	// this is the sequence number of the last good
 								// packetentity_t we got.  If this is 0, we can't
 								// render a frame yet
