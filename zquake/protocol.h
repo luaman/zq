@@ -268,7 +268,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define Z_EXT_PF_ONGROUND	(1<<6)	// server: PF_ONGROUND is valid for all svc_playerinfo
 
 // experimental bits
-#define Z_EXT_SVC_PARTICLE	(1<<30)	// whether the client or server supports NQ's svc_particle
 #define Z_EXT_VWEP			(1<<31)	// fake bit (not 'officially' supported yet)
 
 #define SUPPORTED_EXTENSIONS (Z_EXT_PM_TYPE|Z_EXT_PM_TYPE_NEW|	\
