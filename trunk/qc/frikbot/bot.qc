@@ -229,28 +229,19 @@ float GetClientNum (entity ent);
 
 void ClientConnected ()
 {
-/* oldman: this stops the bots being listed in player list...hence why they
- * dont attack each other. Whats it for? :)
- */ 
-
-// 	if (stof(infokey(self, "*bot")) != 0
-// 		return; 
-
 	// link him into the player list
 	if (player_head)
 		player_head._last = self;
 	self._next = player_head;
 	player_head = self;
 
-	self.ishuman = true;
+ 	if (!stof(infokey(self, "*bot")))
+		self.ishuman = true;
 }
 
 
 void ClientDisconnected ()
 {
-/* 	if (!self.ishuman)
- 		return; */
-
 	if (player_head == self)
 		player_head = self._next;
 	if (self._next)
