@@ -153,10 +153,10 @@ Finds the closest, fisible, waypoint to e
 
 entity FindWayPoint (entity start)
 {
-	local entity t;
-	local vector org;
-	local float dst, tdst;
-	local entity best;
+	entity	t;
+	vector	org;
+	float	dst, tdst;
+	entity	best;
 
 	org = realorigin(self);
 
@@ -205,7 +205,8 @@ entity way_foot; // Ugh. Do I need a foot for this or not?
 
 entity make_waypoint (vector org)
 {
-	local entity point;
+	entity	point;
+
 	point = spawn();
 	point.classname = "waypoint";
 	point.search_time = time; // don't double back for me;
@@ -245,8 +246,8 @@ very good all things considered.
 
 void DynamicWaypoint ()
 {
-	local entity t;
-	local float dist, dynlink, dynpoint, editor;
+	entity	t;
+	float	dist, dynlink, dynpoint, editor;
 
 	if (self.teleport_time > self.portal_time)
 	{
@@ -452,8 +453,8 @@ Waypoint Loading from file
 
 void ClearAllWays ()
 {
+	entity	t, n;
 
-	local entity t, n;
 	t = way_head;
 	while(t)
 	{
@@ -468,7 +469,8 @@ void ClearAllWays ()
 
 entity WaypointForNum (float num)
 {
-	local entity t;
+	entity	t;
+
 	if (!num)
 		return world;
 
@@ -510,7 +512,7 @@ void FixWaypoints ()
 
 void delete_waypoint (entity what)
 {
-	local entity t;
+	entity	t;
 
 	if (way_head == what)
 		way_head = what._next;
@@ -546,9 +548,10 @@ in bot_ai.qc
 
 entity FindThing (string s)
 {
-	local entity t;
-	local float tdst, dst;
-	local entity best;
+	entity	t;
+	float	tdst, dst;
+	entity	best;
+
 	dst = 100000;
 	best = world;
 	t = find (world, classname, s);
@@ -581,8 +584,9 @@ an object.
 entity FindRoute (entity lastone)
 {
 	// kinda like FindWaypoint, only of this bots route though
-	local entity t, best;
-	local float dst, tdst, flag;
+	entity	t, best;
+	float	dst, tdst, flag;
+
 	flag = ClientBitFlag(self.b_clientno);
 	t = way_head;
 	dst = 100000;
@@ -613,8 +617,8 @@ Route & path table management
 void ClearRouteTable ()
 {
 	// cleans up route table
+	entity	t;
 
-	local entity t;
 	t = way_head;
 	while (t)
 	{
@@ -627,8 +631,8 @@ void ClearRouteTable ()
 
 void ClearMyRoute ()
 {
-	local float flag;
-	local entity t;
+	float	flag;
+	entity	t;
 
 	flag = ClientBitFlag(self.b_clientno);
 
@@ -656,8 +660,8 @@ different bot.
 
 void mark_path (entity this)
 {
-	local entity t, oself;
-	local float flag;
+	entity	t, oself;
+	float	flag;
 
 	ClearMyRoute();
 
@@ -704,7 +708,7 @@ tripping the runaway loop counter
 
 void FollowLink (entity e2, float b_bit)
 {
-	local float dist;
+	float	dist;
 	
 	if (self.b_aiflags & b_bit)
 		dist = self.items;
@@ -736,7 +740,7 @@ void FollowLink (entity e2, float b_bit)
 
 void WaypointThink ()
 {
-	local entity oself;
+	entity	oself;
 
 	if (self.items == -1)
 		return;
@@ -912,7 +916,8 @@ void waypoint ()
 
 void make_way (vector org, vector bit1, float bit4, float flargs)
 {
-	local entity y;
+	entity	y;
+
 	waypoint_mode = WM_LOADED;
 	y = make_waypoint(org);
 	y.b_aiflags = flargs;
@@ -938,7 +943,7 @@ Temporary Marker code
 
 void SpawnTempWaypoint (vector org)
 {	
-	local entity tep;
+	entity	tep;
 
 	if (!self.temp_way)
 		self.temp_way = tep = spawn();

@@ -65,7 +65,7 @@ is gone too.
 
 void target_drop (entity ent)
 {
-	local float tg;
+	float	tg;
 	
 	tg = target_onstack(ent);
 	if (tg == 1)
@@ -150,7 +150,8 @@ removed.
 */
 void bot_check_lost (entity targ)
 {
-	local vector dist;
+	vector	dist;
+
 	dist = realorigin(targ) - self.origin;
 	dist_z = 0;
 	if (targ == world)
@@ -285,8 +286,8 @@ based b_aiflags.
 
 void bot_handle_ai ()
 {
-	local entity newt;
-	local vector v;
+	entity	newt;
+	vector	v;
 
 	// handle ai flags -- note, not all aiflags are handled
 	// here, just those that perform some sort of action
@@ -457,9 +458,8 @@ confused
 
 void bot_path ()
 {
-
-	local entity jj, tele;
-	local vector org;
+	entity	jj, tele;
+	vector	org;
 
 	bot_check_lost(self.target1);
 	if (!self.target1)
@@ -563,7 +563,7 @@ the bot finds things it wants to kill/grab.
 
 float priority_for_thing (entity thing)
 {
-	local float thisp;
+	float	thisp;
 	thisp = 0;
 	// This is the most executed function in the bot. Careful what you do here.
 
@@ -679,8 +679,8 @@ float priority_for_thing (entity thing)
 
 void bot_look_for_crap (float scope)
 {
-	local entity foe, best;
-	local float thatp, bestp, dist;
+	entity	foe, best;
+	float	thatp, bestp, dist;
 
 	if (scope == 1)
 		foe = findradius(self.origin, 13000);
@@ -731,8 +731,8 @@ generally making the bot look good.
 
 void bot_angle_set ()
 {
-	local float h;
-	local vector view;
+	float	h;
+	vector	view;
 	
 	if (self.enemy)
 	{
