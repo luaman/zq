@@ -77,6 +77,20 @@ void R_RenderFullbrights (void)
 	GL_DisableMultitexture ();
 
 	glDepthMask (0);	// don't bother writing Z
+	if (gl_fb_depthhack.value)
+	{
+		float			depthdelta;
+		extern cvar_t	gl_ztrick;
+		extern int		gl_ztrickframe;
+
+		if (gl_ztrick.value)
+			depthdelta = gl_ztrickframe ? - 1.0/16384 : 1.0/16384;
+		else
+			depthdelta = -1.0/8192;
+
+		// hack depth range to prevent flickering of fullbrights
+		glDepthRange (gldepthmin + depthdelta, gldepthmax + depthdelta);
+	}
 
 	glEnable (GL_BLEND);
 //	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -92,7 +106,14 @@ void R_RenderFullbrights (void)
 		}
 		fullbright_polys[i] = NULL;
 	}
+
+
+	glDisable (GL_BLEND);
+	glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	
 	glDepthMask (1);
+	if (gl_fb_depthhack.value)
+		glDepthRange (gldepthmin, gldepthmax);
 
 	drawfullbrights = false;
 }

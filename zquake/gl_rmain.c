@@ -102,6 +102,7 @@ cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1"};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
 cvar_t	gl_finish = {"gl_finish","0"};
 cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
+cvar_t	gl_fb_depthhack = {"gl_fb_depthhack","1"};
 
 extern	cvar_t	gl_ztrick;
 extern	cvar_t	scr_fov;
@@ -961,6 +962,7 @@ void R_RenderScene (void)
 R_Clear
 =============
 */
+int gl_ztrickframe = 0;
 void R_Clear (void)
 {
 	if (r_mirroralpha.value != 1.0)
@@ -975,13 +977,11 @@ void R_Clear (void)
 	}
 	else if (gl_ztrick.value)
 	{
-		static int trickframe;
-
 		if (gl_clear.value)
 			glClear (GL_COLOR_BUFFER_BIT);
 
-		trickframe++;
-		if (trickframe & 1)
+		gl_ztrickframe = !gl_ztrickframe;
+		if (gl_ztrickframe)
 		{
 			gldepthmin = 0;
 			gldepthmax = 0.49999;
