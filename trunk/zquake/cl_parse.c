@@ -773,6 +773,7 @@ void CL_ParseBaseline (entity_state_t *es)
 	es->frame = MSG_ReadByte ();
 	es->colormap = MSG_ReadByte();
 	es->skinnum = MSG_ReadByte();
+
 	for (i=0 ; i<3 ; i++)
 	{
 		es->origin[i] = MSG_ReadCoord ();

@@ -306,14 +306,14 @@ void EmitBothSkyLayers (msurface_t *fa)
 
 	GL_Bind (solidskytexture);
 	speedscale = realtime*8;
-	speedscale -= (int)speedscale & ~127 ;
+	speedscale -= (int)speedscale & ~127;
 
 	EmitSkyPolys (fa);
 
 	glEnable (GL_BLEND);
 	GL_Bind (alphaskytexture);
 	speedscale = realtime*16;
-	speedscale -= (int)speedscale & ~127 ;
+	speedscale -= (int)speedscale & ~127;
 
 	EmitSkyPolys (fa);
 
@@ -346,7 +346,7 @@ void R_DrawSkyChain (msurface_t *s)
 	
 	GL_Bind(solidskytexture);
 	speedscale = realtime*8;
-	speedscale -= (int)speedscale & ~127 ;
+	speedscale -= (int)speedscale & ~127;
 	
 	for (fa=s ; fa ; fa=fa->texturechain)
 		EmitSkyPolys (fa);
@@ -354,7 +354,7 @@ void R_DrawSkyChain (msurface_t *s)
 	glEnable (GL_BLEND);
 	GL_Bind (alphaskytexture);
 	speedscale = realtime*16;
-	speedscale -= (int)speedscale & ~127 ;
+	speedscale -= (int)speedscale & ~127;
 	
 	for (fa=s ; fa ; fa=fa->texturechain)
 		EmitSkyPolys (fa);
@@ -424,6 +424,15 @@ void LoadPCX (FILE *f)
 	fread (&pcxbuf, 1, sizeof(pcxbuf), f);
 
 	pcx = &pcxbuf;
+
+	pcx->xmax = LittleShort (pcx->xmax);
+	pcx->xmin = LittleShort (pcx->xmin);
+	pcx->ymax = LittleShort (pcx->ymax);
+	pcx->ymin = LittleShort (pcx->ymin);
+	pcx->hres = LittleShort (pcx->hres);
+	pcx->vres = LittleShort (pcx->vres);
+	pcx->bytes_per_line = LittleShort (pcx->bytes_per_line);
+	pcx->palette_type = LittleShort (pcx->palette_type);
 
 	if (pcx->manufacturer != 0x0a
 		|| pcx->version != 5
