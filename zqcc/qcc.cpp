@@ -200,10 +200,10 @@ strofs = (strofs+3)&~3;
 	progs.numstatements = numstatements;
 	for (i = 0; i < numstatements; i++)
 	{
-		statements[i].op = LittleShort(statements[i].op);
-		statements[i].a = LittleShort(statements[i].a);
-		statements[i].b = LittleShort(statements[i].b);
-		statements[i].c = LittleShort(statements[i].c);
+		statements[i].op = (unsigned short)(LittleShort((short)statements[i].op));
+		statements[i].a = (unsigned short)(LittleShort((short)statements[i].a));
+		statements[i].b = (unsigned short)(LittleShort((short)statements[i].b));
+		statements[i].c = (unsigned short)(LittleShort((short)statements[i].c));
 	}
 	SafeWrite (f, statements, numstatements*sizeof(dstatement_t));
 
@@ -211,12 +211,12 @@ strofs = (strofs+3)&~3;
 	progs.numfunctions = numfunctions;
 	for (i = 0; i < numfunctions; i++)
 	{
-	functions[i].first_statement = LittleLong (functions[i].first_statement);
-	functions[i].parm_start = LittleLong (functions[i].parm_start);
-	functions[i].s_name = LittleLong (functions[i].s_name);
-	functions[i].s_file = LittleLong (functions[i].s_file);
-	functions[i].numparms = LittleLong (functions[i].numparms);
-	functions[i].locals = LittleLong (functions[i].locals);
+		functions[i].first_statement = LittleLong (functions[i].first_statement);
+		functions[i].parm_start = LittleLong (functions[i].parm_start);
+		functions[i].s_name = LittleLong (functions[i].s_name);
+		functions[i].s_file = LittleLong (functions[i].s_file);
+		functions[i].numparms = LittleLong (functions[i].numparms);
+		functions[i].locals = LittleLong (functions[i].locals);
 	}
 	SafeWrite (f, functions, numfunctions*sizeof(dfunction_t));
 
@@ -735,9 +735,9 @@ int		 PR_WriteProgdefs (char *filename)
 
 void	 PR_PrintFunction (char *name)
 {
-	int		i;
-	dstatement_t	*ds;
-	dfunction_t		*df;
+	int				 i;
+	dstatement_t	*ds	= NULL;
+	dfunction_t		*df	= NULL;
 
 	for (i=0 ; i<numfunctions ; i++)
 		if (!strcmp (name, strings + functions[i].s_name))

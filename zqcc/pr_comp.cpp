@@ -46,12 +46,12 @@ opcode_t pr_opcodes[] =
  {"*", "MUL_V", 2, false, ev_vector, ev_vector, ev_float},
  {"*", "MUL_FV", 2, false, ev_float, ev_vector, ev_vector},
  {"*", "MUL_VF", 2, false, ev_vector, ev_float, ev_vector},
- 
+
  {"/", "DIV", 2, false, ev_float, ev_float, ev_float},
 
  {"+", "ADD_F", 3, false, ev_float, ev_float, ev_float},
  {"+", "ADD_V", 3, false, ev_vector, ev_vector, ev_vector},
-  
+
  {"-", "SUB_F", 3, false, ev_float, ev_float, ev_float},
  {"-", "SUB_V", 3, false, ev_vector, ev_vector, ev_vector},
 
@@ -60,13 +60,13 @@ opcode_t pr_opcodes[] =
  {"==", "EQ_S", 4, false, ev_string, ev_string, ev_float},
  {"==", "EQ_E", 4, false, ev_entity, ev_entity, ev_float},
  {"==", "EQ_FNC", 4, false, ev_function, ev_function, ev_float},
- 
+
  {"!=", "NE_F", 4, false, ev_float, ev_float, ev_float},
  {"!=", "NE_V", 4, false, ev_vector, ev_vector, ev_float},
  {"!=", "NE_S", 4, false, ev_string, ev_string, ev_float},
  {"!=", "NE_E", 4, false, ev_entity, ev_entity, ev_float},
  {"!=", "NE_FNC", 4, false, ev_function, ev_function, ev_float},
- 
+
  {"<=", "LE", 4, false, ev_float, ev_float, ev_float},
  {">=", "GE", 4, false, ev_float, ev_float, ev_float},
  {"<", "LT", 4, false, ev_float, ev_float, ev_float},
@@ -96,31 +96,31 @@ opcode_t pr_opcodes[] =
  {"=", "STOREP_FNC", 5, true, ev_pointer, ev_function, ev_function},
 
  {"<RETURN>", "RETURN", -1, false, ev_void, ev_void, ev_void},
-  
+
  {"!", "NOT_F", -1, false, ev_float, ev_void, ev_float},
  {"!", "NOT_V", -1, false, ev_vector, ev_void, ev_float},
  {"!", "NOT_S", -1, false, ev_vector, ev_void, ev_float},
  {"!", "NOT_ENT", -1, false, ev_entity, ev_void, ev_float},
  {"!", "NOT_FNC", -1, false, ev_function, ev_void, ev_float},
-  
+
   {"<IF>", "IF", -1, false, ev_float, ev_float, ev_void},
   {"<IFNOT>", "IFNOT", -1, false, ev_float, ev_float, ev_void},
-  
+
 // calls returns REG_RETURN
  {"<CALL0>", "CALL0", -1, false, ev_function, ev_void, ev_void},
  {"<CALL1>", "CALL1", -1, false, ev_function, ev_void, ev_void},
- {"<CALL2>", "CALL2", -1, false, ev_function, ev_void, ev_void}, 
- {"<CALL3>", "CALL3", -1, false, ev_function, ev_void, ev_void}, 
+ {"<CALL2>", "CALL2", -1, false, ev_function, ev_void, ev_void},
+ {"<CALL3>", "CALL3", -1, false, ev_function, ev_void, ev_void},
  {"<CALL4>", "CALL4", -1, false, ev_function, ev_void, ev_void},
  {"<CALL5>", "CALL5", -1, false, ev_function, ev_void, ev_void},
  {"<CALL6>", "CALL6", -1, false, ev_function, ev_void, ev_void},
  {"<CALL7>", "CALL7", -1, false, ev_function, ev_void, ev_void},
  {"<CALL8>", "CALL8", -1, false, ev_function, ev_void, ev_void},
-  
+
  {"<STATE>", "STATE", -1, false, ev_float, ev_float, ev_void},
-  
+
  {"<GOTO>", "GOTO", -1, false, ev_float, ev_void, ev_void},
-  
+
  {"&&", "AND", 6, false, ev_float, ev_float, ev_float},
  {"||", "OR", 6, false, ev_float, ev_float, ev_float},
 
@@ -149,21 +149,21 @@ Emits a primitive statement, returning the var it places it's value in
 */
 def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 {
-	dstatement_t	*statement;
-	def_t			*var_c;
-	
+	dstatement_t	*statement	= NULL;
+	def_t			*var_c		= NULL;
+
 	statement = &statements[numstatements];
 	numstatements++;
-	
+
 	statement_linenums[statement-statements] = pr_source_line;
-	statement->op = op - pr_opcodes;
-	statement->a = var_a ? var_a->ofs : 0;
-	statement->b = var_b ? var_b->ofs : 0;
+	statement->op = (unsigned short)(op - pr_opcodes);
+	statement->a = var_a ? (unsigned short)var_a->ofs : (unsigned short)0;
+	statement->b = var_b ? (unsigned short)var_b->ofs : (unsigned short)0;
 	if (op->type_c == ev_void || op->right_associative)
 	{
 		var_c = NULL;
-		statement->c = 0;			// ifs, gotos, and assignments
-									// don't need vars allocated
+		statement->c = (unsigned short)0;  // ifs, gotos, and assignments
+		                                   // don't need vars allocated
 	}
 	else
 	{	// allocate result space
@@ -172,7 +172,7 @@ def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 		var_c->ofs = numpr_globals;
 		var_c->type = type_for_etype[op->type_c];
 
-		statement->c = numpr_globals;
+		statement->c = (unsigned short)numpr_globals;
 		numpr_globals += type_size[op->type_c];
 
 		if (numpr_globals > MAX_REGS)
@@ -194,7 +194,7 @@ def_t *PR_NewDef (int hash)
 //	def->next = NULL;
 	pr.def_tail->next = def;
 	pr.def_tail = def;
-	
+
 	// link into hash bucket
 //	def->hash_next = NULL;
 	pr.def_hash_tail[hash]->hash_next = def;
@@ -269,7 +269,7 @@ def_t *PR_GetImmediate (type_t *type, eval_t val, char *string = NULL /* for ev_
 			}
 		}
 	}
-	
+
 // allocate a new def
 	def = PR_NewDef(hash);
 
@@ -286,9 +286,9 @@ def_t *PR_GetImmediate (type_t *type, eval_t val, char *string = NULL /* for ev_
 	numpr_globals += type_size[type->type];
 	if (type == &type_const_string)
 		val.string = CopyString (string);
-	
+
 	memcpy (pr_globals + def->ofs, &val, 4*type_size[type->type]);
-	
+
 	return def;
 }
 
@@ -321,7 +321,7 @@ def_t *PR_ParseFunctionCall (def_t *func)
 	def_t		*e;
 	int			arg;
 	type_t		*t;
-	
+
 	t = func->type;
 
 	if (t->type != ev_function)
@@ -344,17 +344,17 @@ def_t *PR_ParseFunctionCall (def_t *func)
 			PR_Statement (&pr_opcodes[OP_STORE_V], e, &def_parms[arg]);
 			arg++;
 		} while (PR_Check (","));
-	
+
 		if (arg < (t->num_parms & VA_MASK))
 			PR_ParseError ("too few parameters");
 		PR_Expect (")");
 	}
 	if (arg > 8)
 		PR_ParseError ("more than eight parameters");
-		
+
 
 	PR_Statement (&pr_opcodes[OP_CALL0+arg], func, 0);
-	
+
 	def_ret.type = t->aux_type;
 	return &def_ret;
 }
@@ -370,17 +370,17 @@ def_t	*PR_ParseValue (void)
 {
 	def_t		*d;
 	char		*name;
-	
+
 // if the token is an immediate, allocate a constant for it
 	if (pr_token_type == tt_immediate)
 		return PR_ParseImmediate ();
-	
+
 	name = PR_ParseName ();
-	
+
 // look through the defs
 	d = PR_FindDef (name, pr_scope);
 	if (!d)
-		PR_ParseError ("'%s' : undeclared identifier", name);	
+		PR_ParseError ("'%s' : undeclared identifier", name);
 	return d;
 }
 
@@ -418,7 +418,7 @@ def_t *PR_Term (void)
 		}
 		return e2;
 	}
-	
+
 	if (PR_Check ("("))
 	{
 		e = PR_Expression (TOP_PRIORITY);
@@ -555,12 +555,12 @@ def_t *PR_Expression (int priority)
 	opcode_t	*op, *oldop;
 	def_t		*e, *e2;
 	etype_t		type_a, type_b, type_c;
-	
+
 	if (priority == 0)
 		return PR_Term ();
-		
+
 	e = PR_Expression (priority-1);
-		
+
 	while (1)
 	{
 		if (priority == 1 && PR_Check ("(") )
@@ -611,7 +611,7 @@ def_t *PR_Expression (int priority)
 			// if last statement is an indirect, change it to an address of
 				if ( (unsigned)(statements[numstatements-1].op - OP_LOAD_F) < 6 )
 				{
-					statements[numstatements-1].op = OP_ADDRESS;
+					statements[numstatements-1].op = (unsigned short)OP_ADDRESS;
 					def_pointer.type->aux_type = e->type;
 					e->type = def_pointer.type;
 				}
@@ -631,7 +631,7 @@ def_t *PR_Expression (int priority)
 				if (!op->name || strcmp (op->name , oldop->name))
 					PR_ParseError ("type mismatch for %s", oldop->name);
 			}
-			
+
 			if (type_a == ev_pointer && type_b != e->type->aux_type->type)
 				PR_ParseError ("type mismatch for %s", op->name);
 
@@ -663,13 +663,13 @@ def_t *PR_Expression (int priority)
 				e = PR_Statement (op, e2, e);
 			else
 				e = PR_Statement (op, e, e2);
-			
+
 			break;
 		}
 		if (!op->name)
 			break;	// next token isn't at this priority level
 	}
-	
+
 	return e;
 }
 
@@ -682,19 +682,20 @@ PR_ParseStatement
 */
 void PR_ParseStatement (void)
 {
-	def_t				*e;
-	dstatement_t		*patch1, *patch2;
+	def_t			*e		= NULL;
+	dstatement_t	*patch1	= NULL;
+	dstatement_t	*patch2	= NULL;
 
 	if (PR_Check(";"))
 		return;
-	
+
 	if (PR_Check ("{"))
 	{
 		while (!PR_Check ("}"))
 			PR_ParseStatement ();
 		return;
 	}
-	
+
 	if (PR_Check("return"))
 	{
 		if (PR_Check (";"))
@@ -705,9 +706,9 @@ void PR_ParseStatement (void)
 		e = PR_Expression (TOP_PRIORITY);
 		PR_Expect (";");
 		PR_Statement (&pr_opcodes[OP_RETURN], e, 0);
-		return;		
+		return;
 	}
-	
+
 	if (PR_Check("while"))
 	{
 		PR_Expect ("(");
@@ -719,10 +720,10 @@ void PR_ParseStatement (void)
 		PR_ParseStatement ();
 		junkdef.ofs = patch2 - &statements[numstatements];
 		PR_Statement (&pr_opcodes[OP_GOTO], &junkdef, 0);
-		patch1->b = &statements[numstatements] - patch1;
+		patch1->b = (unsigned short)(&statements[numstatements] - patch1);
 		return;
 	}
-	
+
 	if (PR_Check("do"))
 	{
 		patch1 = &statements[numstatements];
@@ -736,7 +737,7 @@ void PR_ParseStatement (void)
 		PR_Statement (&pr_opcodes[OP_IF], e, &junkdef);
 		return;
 	}
-	
+
 	if ( PR_Check("local") || !strcmp(pr_token, "const") || !strcmp(pr_token, "float") || !strcmp(pr_token, "vector")
 		|| !strcmp(pr_token, "entity") || !strcmp(pr_token, "string") || !strcmp(pr_token, "void"))
 	{
@@ -744,29 +745,29 @@ void PR_ParseStatement (void)
 		locals_end = numpr_globals;
 		return;
 	}
-	
+
 	if (PR_Check("if"))
 	{
 		PR_Expect ("(");
 		e = PR_Expression (TOP_PRIORITY);
 		PR_Expect (")");
-		
+
 		patch1 = &statements[numstatements];
 		PR_Statement (&pr_opcodes[OP_IFNOT], e, 0);
-		
+
 		PR_ParseStatement ();
-		
+
 		if (PR_Check ("else"))
 		{
 			patch2 = &statements[numstatements];
 			PR_Statement (&pr_opcodes[OP_GOTO], 0, 0);
-			patch1->b = &statements[numstatements] - patch1;
+			patch1->b = (unsigned short)(&statements[numstatements] - patch1);
 			PR_ParseStatement ();
-			patch2->a = &statements[numstatements] - patch2;
+			patch2->a = (unsigned short)(&statements[numstatements] - patch2);
 		}
 		else
-			patch1->b = &statements[numstatements] - patch1;
-		
+			patch1->b = (unsigned short)(&statements[numstatements] - patch1);
+
 		return;
 	}
 
@@ -800,18 +801,18 @@ void PR_ParseState (void)
 {
 	char	*name;
 	def_t	*s1, *def;
-	
+
 	if (pr_token_type != tt_immediate || pr_immediate_type != &type_const_float)
 		PR_ParseError ("state frame must be a number");
 	s1 = PR_ParseImmediate ();
-	
+
 	PR_Expect (",");
 
 	name = PR_ParseName ();
 	def = PR_GetDef (&type_function, name, NULL, NULL);
-		
+
 	PR_Expect ("]");
-	
+
 	PR_Statement (&pr_opcodes[OP_STATE], s1, def);
 }
 
@@ -827,7 +828,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 	int			i;
 	function_t	*f;
 	def_t		*defs[MAX_PARMS];
-	
+
 	f = (function_t *) malloc (sizeof(function_t));
 
 //
@@ -843,7 +844,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 		PR_Lex ();
 		return f;
 	}
-	
+
 	f->builtin = 0;
 //
 // define the parms
@@ -855,7 +856,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 		if (i > 0 && f->parm_ofs[i] < f->parm_ofs[i-1])
 			Error ("bad parm order");
 	}
-	
+
 	f->code = numstatements;
 
 //
@@ -863,7 +864,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 //
 	if (PR_Check ("["))
 		PR_ParseState ();
-		
+
 //
 // parse regular statements
 //
@@ -871,7 +872,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 
 	while (!PR_Check("}"))
 		PR_ParseStatement ();
-	
+
 // emit an end of statements opcode
 	PR_Statement (pr_opcodes, 0,0);
 
@@ -896,7 +897,7 @@ def_t *PR_FindDef (char *name, def_t *scope)
 		for (def_t *def = pr.def_hash_head[hash].hash_next ; def ; def = def->hash_next) {
 			if (def->visscope != scope)
 				continue;		// in a different function, or global
-				
+
 			if (strcmp(def->name, name))
 				continue;
 
@@ -909,14 +910,14 @@ def_t *PR_FindDef (char *name, def_t *scope)
 	for (def_t *def = pr.def_hash_head[hash].hash_next ; def ; def = def->hash_next) {
 		if (def->visscope)
 			continue;		// a local def
-			
+
 		if (strcmp(def->name, name))
 			continue;
 
 		// found it
 		return def;
 	}
-	
+
 	return NULL;
 }
 
@@ -957,7 +958,7 @@ def_t *PR_FindDef2 (char *name, def_t *scope, int hash)
 		// found it
 		return def;
 	}
-	
+
 	return NULL;
 }
 
@@ -1000,7 +1001,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, def_t *visscope, bool 
 		// fixup visibility scope
 		if (def->visscope)
 			def->visscope = visscope;
-			
+
 		return def;
 	}
 
@@ -1017,7 +1018,7 @@ allocNew:
 
 	if (numpr_globals + type_size[type->type] > MAX_REGS)
 		Error ("numpr_globals > MAX_REGS");
-	
+
 	def->ofs = numpr_globals;
 	pr_global_defs[numpr_globals] = def;
 
@@ -1026,13 +1027,13 @@ allocNew:
 // .origin can be accessed as .origin_x, .origin_y, and .origin_z
 //
 	if (type->type == ev_vector)
-	{		
+	{
 		sprintf (element, "%s_x",name);
 		PR_GetDef (&type_float, element, scope, visscope, isParm);
-		
+
 		sprintf (element, "%s_y",name);
 		PR_GetDef (&type_float, element, scope, visscope, isParm);
-		
+
 		sprintf (element, "%s_z",name);
 		PR_GetDef (&type_float, element, scope, visscope, isParm);
 	}
@@ -1044,15 +1045,15 @@ allocNew:
 		assert (scope == NULL && visscope == NULL);
 
 		*(int *)&pr_globals[def->ofs] = pr.size_fields;
-		
+
 		if (type->aux_type->type == ev_vector)
 		{
 			sprintf (element, "%s_x",name);
 			PR_GetDef (&type_floatfield, element, NULL, NULL, isParm);
-			
+
 			sprintf (element, "%s_y",name);
 			PR_GetDef (&type_floatfield, element, NULL, NULL, isParm);
-			
+
 			sprintf (element, "%s_z",name);
 			PR_GetDef (&type_floatfield, element, NULL, NULL, isParm);
 		}
@@ -1062,7 +1063,7 @@ allocNew:
 
 	if (opt_dumpasm)
 		PR_PrintOfs (def->ofs);
-		
+
 	return def;
 }
 
@@ -1177,9 +1178,9 @@ void PR_ParseDefs (void)
 			strcpy (functionName, name);
 
 			type_t *functionType = PR_ParseFunctionType (type);
-			
+
 			def_t *def = PR_GetDef (functionType, functionName, NULL, pr_scope);
-			
+
 			if (!c_defs && !strcmp(pr_token, "{")) {
 				// C-style function definition
 				PR_ParseFunctionBody (functionType, functionName, def);
@@ -1187,7 +1188,7 @@ void PR_ParseDefs (void)
 					;	// skip redundant semicolons
 				return;
 			}
-					
+
 			continue;
 		}
 
@@ -1198,7 +1199,7 @@ void PR_ParseDefs (void)
 			if (strcmp(name, "end_sys_globals") && strcmp(name, "end_sys_fields"))
 				PR_ParseError ("'%s' : illegal use of type 'void'", name);
 		}
-		
+
 		// check for an initialization
 		if (PR_Check("=")) {
 			if (type->type == ev_function) {
@@ -1210,7 +1211,7 @@ void PR_ParseDefs (void)
 				// variable initialization
 				PR_ParseInitialization (type, name, def);
 		}
-		
+
 	} while (c_defs++, PR_Check (","));
 
 	if (qc_style_function_def && c_defs == 1)
@@ -1230,17 +1231,17 @@ compiles the 0 terminated text, adding defintions to the pr structure
 ============
 */
 bool PR_CompileFile (char *string, char *filename)
-{	
+{
 	if (!pr.memory)
 		Error ("PR_CompileFile: Didn't clear");
 
 	PR_ClearGrabMacros ();	// clear the frame macros
-		
+
 	pr_file_p = string;
 	s_file = CopyString (filename);
 
 	pr_source_line = 0;
-	
+
 	PR_NewLine ();
 
 	PR_Lex ();	// read first token
@@ -1256,13 +1257,13 @@ bool PR_CompileFile (char *string, char *filename)
 				return false;
 			PR_SkipToSemicolon ();
 			if (pr_token_type == tt_eof)
-				return false;		
+				return false;
 		}
 
 		pr_scope = NULL;	// outside all functions
-		
+
 		PR_ParseDefs ();
 	}
-	
+
 	return (pr_error_count == 0);
 }
