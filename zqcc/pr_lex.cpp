@@ -187,9 +187,7 @@ PR_LexNumber
 float PR_LexNumber (void)
 {
 	bool	neg = false;
-	double	adj = 0.1;
 	bool	dot = false;
-	double	val = 0;
 
 	char *token_start = pr_file_p;
 
@@ -202,18 +200,10 @@ float PR_LexNumber (void)
 	{
 		int c = *pr_file_p;
 
-		if (c == '.' && !dot) {
+		if (c >= '0' && c <= '9') {
+		}
+		else if (c == '.' && !dot)
 			dot = true;
-		}
-		else if (c >= '0' && c <= '9')
-		{
-			if (dot) {
-				val = val + adj * (c - '0');
-				adj *= 0.1;
-			}
-			else
-				val = val * 10 + (c - '0');
-		}
 		else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
 			PR_ParseError ("syntax error : '%c'", c);
 		else
@@ -222,16 +212,13 @@ float PR_LexNumber (void)
 		pr_file_p++;
 	}
 
-	if (neg)
-		val = -val;
-
 	int len = pr_file_p - token_start;
 	if (len > sizeof(pr_token))
 		PR_ParseError ("constant too long");
 	memcpy (pr_token, token_start, len);
 	pr_token[len] = 0;
 
-	return (float)val;
+	return atof(pr_token);
 }
 
 /*
