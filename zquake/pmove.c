@@ -668,8 +668,10 @@ void PM_CategorizePosition (void)
 		}
 	}
 
-	// snap to ground unless underwater
-	if (pmove.onground && pmove.waterlevel < 3)
+	// snap to ground unless in fly mode or underwater
+	// FIXME: remove this code?
+	// donno how much it will affect prediction though
+	if (pmove.onground && pmove.pm_type != PM_FLY && pmove.waterlevel < 3)
 	{
 		if (!trace.startsolid && !trace.allsolid)
 			VectorCopy (trace.endpos, pmove.origin);
