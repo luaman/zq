@@ -372,22 +372,23 @@ extern	clientState_t	cl;
 //
 // cvars
 //
-extern  cvar_t	cl_warncmd;
-extern	cvar_t	cl_shownet;
-extern	cvar_t	cl_sbar;
-extern	cvar_t	cl_hudswap;
+extern cvar_t	cl_warncmd;
+extern cvar_t	cl_shownet;
+extern cvar_t	cl_sbar;
+extern cvar_t	cl_hudswap;
 
 
 // ZQuake cvars
-extern	cvar_t	cl_deadbodyfilter;
-extern	cvar_t	cl_explosion;
-extern	cvar_t	cl_gibfilter;
-extern	cvar_t	cl_muzzleflash;
-extern	cvar_t	cl_trueLightning;
-extern	cvar_t	r_rocketlight;
-extern	cvar_t	r_rockettrail;
-extern	cvar_t	r_grenadetrail;
-extern	cvar_t	r_powerupglow;
+extern cvar_t	cl_r2g;
+extern cvar_t	cl_gibfilter;
+extern cvar_t	cl_deadbodyfilter;
+extern cvar_t	cl_explosion;
+extern cvar_t	cl_muzzleflash;
+extern cvar_t	cl_trueLightning;
+extern cvar_t	r_rocketlight;
+extern cvar_t	r_rockettrail;
+extern cvar_t	r_grenadetrail;
+extern cvar_t	r_powerupglow;
 
 #define	MAX_EFRAGS		512
 #define	MAX_STATIC_ENTITIES	128			// torches, etc

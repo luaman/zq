@@ -1329,7 +1329,7 @@ void CL_ParsePrint (void)
 	int		len;
 	int		level, flags=0;
 	int		offset = 0;
-	extern cvar_t	cl_chatsound;
+	extern cvar_t	cl_chatsound, cl_nofake;
 	qboolean	suppress_talksound;
 
 	level = MSG_ReadByte ();
