@@ -225,6 +225,7 @@ typedef struct
 	int			gametype;		// GAME_COOP or GAME_DEATHMATCH
 	qboolean	teamfortress;	// true if gamedir is "fortress"
 	int			fpd;			// FAQ proxy flags
+	int			prev_stat_weapon;	// previos weapon num
 
 	int			parsecount;		// server message counter
 	int			validsequence;	// this is the sequence number of the last good
