@@ -316,7 +316,7 @@ void PR_LexWhitespace (void)
 
 //============================================================================
 
-#define	MAX_FRAMES	256
+const int MAX_FRAMES = 256;
 
 char	pr_framemacros[MAX_FRAMES][16];
 int		pr_nummacros;

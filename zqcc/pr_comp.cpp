@@ -131,8 +131,8 @@ opcode_t pr_opcodes[] =
  {NULL}
 };
 
-#define	TOP_PRIORITY	6
-#define	NOT_PRIORITY	4
+const int TOP_PRIORITY = 6;
+const int NOT_PRIORITY = 4;
 
 def_t *PR_Expression (int priority);
 
