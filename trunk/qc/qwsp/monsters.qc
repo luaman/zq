@@ -153,9 +153,6 @@ void flymonster_start_go ()
 	self.view_ofs = '0 0 25';
 	self.use = monster_use;
 
-	self.flags = self.flags | FL_FLY;
-	self.flags = self.flags | FL_MONSTER;
-
 	if (!walkmove(0,0))
 	{
 		dprint ("flymonster in wall at: ");
@@ -188,7 +185,8 @@ void flymonster_start_go ()
 
 void flymonster_start ()
 {
-        self.flags = self.flags | FL_FLY;
+// set FL_FLY early so that we're not affected by gravity
+	self.flags = self.flags | (FL_FLY | FL_MONSTER);
         
 // spread think times so they don't all happen at same time
 	self.nextthink = time + 0.1 + random()*0.5;		// add constant as random can return 0
@@ -213,9 +211,6 @@ void swimmonster_start_go ()
 	self.view_ofs = '0 0 10';
 	self.use = monster_use;
 	
-	self.flags = self.flags | FL_SWIM;
-	self.flags = self.flags | FL_MONSTER;
-
 	if (self.target)
 	{
 		self.goalentity = self.movetarget = find(world, targetname, self.target);
@@ -241,7 +236,8 @@ void swimmonster_start_go ()
 
 void swimmonster_start ()
 {
-        self.flags = self.flags | FL_SWIM;
+// set FL_SWIM early so that we're not affected by gravity
+	self.flags = self.flags | (FL_SWIM | FL_MONSTER);
     
 // spread think times so they don't all happen at same time
 	self.nextthink = time + 0.1 + random()*0.5;		// add constant as random can return 0
