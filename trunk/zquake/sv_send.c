@@ -298,7 +298,7 @@ static qbool AllClientsWantSVCParticle (void)
 		// has a chance of receiving and svc_particle he doesn't support
 		if (cl->state < cs_connected)
 			continue;
-		if (!(cl->extensions & Z_EXT_SVC_PARTICLE))
+		if (!(cl->extensions & Z_EXT_SVC_PARTICLE) || cl->uses_proxy)
 			return false;
 	}
 	return true;
