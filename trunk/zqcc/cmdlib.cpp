@@ -27,7 +27,7 @@
 #include <unistd.h>
 #endif
 
-#define PATHSEPERATOR   '/'
+#define PATHSEPARATOR   '/'
 
 // set these before calling CheckParm
 int myargc;
@@ -310,7 +310,7 @@ void DefaultExtension (char *path, char *extension)
 //
 	src = path + strlen(path) - 1;
 
-	while (*src != PATHSEPERATOR && src != path)
+	while (*src != PATHSEPARATOR && src != path)
 	{
 		if (*src == '.')
 			return;                 // it has an extension
@@ -325,7 +325,7 @@ void DefaultPath (char *path, char *basepath)
 {
 	char    temp[128];
 
-	if (path[0] == PATHSEPERATOR)
+	if (path[0] == PATHSEPARATOR)
 		return;                   // absolute path location
 	strcpy (temp,path);
 	strcpy (path,basepath);
@@ -338,7 +338,7 @@ void StripFilename (char *path)
 	int             length;
 
 	length = strlen(path)-1;
-	while (length > 0 && path[length] != PATHSEPERATOR)
+	while (length > 0 && path[length] != PATHSEPARATOR)
 		length--;
 	path[length] = 0;
 }
@@ -373,7 +373,7 @@ void ExtractFilePath (char *path, char *dest)
 //
 // back up until a \ or the start
 //
-	while (src != path && *(src-1) != PATHSEPERATOR)
+	while (src != path && *(src-1) != PATHSEPARATOR)
 		src--;
 
 	memcpy (dest, path, src-path);
@@ -389,7 +389,7 @@ void ExtractFileBase (char *path, char *dest)
 //
 // back up until a \ or the start
 //
-	while (src != path && *(src-1) != PATHSEPERATOR)
+	while (src != path && *(src-1) != PATHSEPARATOR)
 		src--;
 
 	while (*src && *src != '.')
@@ -597,4 +597,3 @@ float	LittleFloat (float l)
 
 
 #endif
-
