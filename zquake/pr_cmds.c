@@ -530,16 +530,15 @@ void PF_sound (void)
 
 /*
 =================
-PF_break
+PF_debugbreak
 
-break()
+debugbreak()
 =================
 */
-void PF_break (void)
+void PF_debugbreak (void)
 {
-	Com_Printf ("break statement\n");
-	*(int *)-4 = 0;	// dump to debugger
-	//	PR_RunError ("break statement");
+	assert (false);		// drop to debugger
+	PR_RunError ("break statement");	// just in case debugbreak is called in a release build
 }
 
 /*
@@ -1788,7 +1787,7 @@ PF_setorigin,	// void(entity e, vector o) setorigin	= #2;
 PF_setmodel,	// void(entity e, string m) setmodel	= #3;
 PF_setsize,	// void(entity e, vector min, vector max) setsize = #4;
 PF_Fixme,	// void(entity e, vector min, vector max) setabssize = #5;
-PF_break,	// void() break						= #6;
+PF_debugbreak,	// void() debugbreak						= #6;
 PF_random,	// float() random						= #7;
 PF_sound,	// void(entity e, float chan, string samp) sound = #8;
 PF_normalize,	// vector(vector v) normalize			= #9;
