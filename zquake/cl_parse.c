@@ -1334,19 +1334,16 @@ void CL_ParsePrint (int level, char *s)
 		if (level == PRINT_CHAT)
 		{
 			char *p;
-			// Tonik:
-			CL_CheckVersionRequest(str);
-			if (cl_nofake.value) {
-				for (p = str; *p; p++) {
-					switch (*p)	{
-					case 13: *p = '#'; 
-					case 10: break;
-					default:
-						*p |= 128;
-					}
-				}
-			} else
-				con_ormask = 128;
+			int flags;
+
+			flags = Team_CategorizeMessage (str);
+			CL_CheckVersionRequest (str);
+			if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
+				for (p = str; *p; p++)
+					if (*p == 13)
+						*p = '#'; 
+			}
+			con_ormask = 128;
 			S_LocalSound ("misc/talk.wav");
 		}
 		Con_Printf ("%s", str);
