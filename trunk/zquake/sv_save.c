@@ -201,7 +201,10 @@ void SV_LoadGame_f (void)
 	fscanf (f, "%s\n",mapname);
 	fscanf (f, "%f\n",&time);
 
-	SV_Shutdown ("loading a savegame\n");
+	Host_EndGame ();
+
+	// clear disconnect messages from loopback so that they don't break connection process
+	NET_ClearLoopback ();
 
 	CL_BeginLocalConnection ();
 

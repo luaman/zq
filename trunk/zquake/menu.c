@@ -2716,7 +2716,7 @@ void M_ServerList_Key (key)
 		}
 		m_state = m_main;
 		M_ToggleMenu_f();
-		CL_Disconnect();
+		Host_EndGame ();
 		Q_strncpyz (cls.servername, slist[m_multip_cursor].server, sizeof(cls.servername));
 		CL_BeginServerConnect();
 		break;

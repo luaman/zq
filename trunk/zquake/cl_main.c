@@ -283,7 +283,7 @@ void CL_Connect_f (void)
 	
 	server = Cmd_Argv (1);
 
-	CL_Disconnect ();
+	Host_EndGame ();
 
 	Q_strncpyz (cls.servername, server, sizeof(cls.servername));
 	CL_BeginServerConnect();
@@ -376,10 +376,6 @@ void CL_Disconnect (void)
 		Netchan_Transmit (&cls.netchan, 6, final);
 		Netchan_Transmit (&cls.netchan, 6, final);
 		Netchan_Transmit (&cls.netchan, 6, final);
-
-		// if running a local server, shut it down
-		if (com_serveractive)
-			SV_Shutdown ("");
 	}
 
 	cls.state = ca_disconnected;
@@ -397,8 +393,7 @@ void CL_Disconnect (void)
 void CL_Disconnect_f (void)
 {
 	cl.intermission = 0;
-	SCR_EndLoadingPlaque ();
-	CL_Disconnect ();
+	Host_EndGame ();
 }
 
 
@@ -428,7 +423,7 @@ void CL_Reconnect_f (void)
 		return;
 	}
 
-	CL_Disconnect();
+	CL_Disconnect();	// FIXME: replace with Host_EndGame?
 	CL_BeginServerConnect();
 }
 
@@ -654,7 +649,7 @@ void CL_ReadPackets (void)
 	 && curtime - cls.netchan.last_received > cl_timeout.value)
 	{
 		Com_Printf ("\nServer connection timed out.\n");
-		CL_Disconnect ();
+		Host_EndGame ();
 		return;
 	}
 	
