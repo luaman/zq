@@ -38,7 +38,7 @@ void(entity p) SetPlayerParams =
 		infocolor = infokey(world, "captcolor2");
 	}
 
-	bprint4(2, p.netname, " set to team ", infoteam, "‘\n");
+	bprint(2, p.netname, " set to team ", infoteam, "‘\n");
 
 	stuffcmd(p, "break\nteam \"");
 	stuffcmd(p, infoteam);
@@ -56,7 +56,7 @@ void() PrintCaptainInTurn =
 	p = find(world, classname, "player");
 	while(p != world && p.k_captain != k_captainturn)
 		p = find(p, classname, "player");
-	bprint2(2, p.netname, " is picking\n");
+	bprint(2, p.netname, " is picking\n");
 };
 
 void() CheckFinishCaptain =
@@ -114,7 +114,7 @@ void() CaptainPickPlayer =
 		return;
 	}
 	SetPlayerParams(p);
-	sprint3(p, 2, "You were picked by ", self.netname, "\nTime to go ready\n");
+	sprint(p, 2, "You were picked by ", self.netname, "\nTime to go ready\n");
 	CheckFinishCaptain();
 	if(k_captains) PrintCaptainInTurn();
 };
@@ -137,7 +137,7 @@ void() ExitCaptain =
 		k_captains = k_captains - 1;
 		if(floor(k_captains)) tmp = "1‘";
 		else tmp = "No";
-		bprint2(2, tmp, " captain present\n");
+		bprint(2, tmp, " captain present\n");
 	}
 };
 
@@ -150,11 +150,11 @@ void() BecomeCaptain =
 // s: check if we are being elected or we are a captain already
 	if(self.k_captain) {
 		if(self.k_captain > 10) {
-			bprint2(2, self.netname, " aborts election");
+			bprint(2, self.netname, " aborts election");
 			bprint(3, "\n");
 			AbortElect();
 		} else {
-			bprint2(2, self.netname, " is no longer a captain.\n");
+			bprint(2, self.netname, " is no longer a captain.\n");
 			ExitCaptain();
 		}
 		return;
@@ -200,7 +200,7 @@ void() BecomeCaptain =
 		p = find(p, classname, "player");
 	tmp = infokey(p, "team");
 	if(infokey(self, "team") == tmp) {
-		sprint3(self, 2, "A γαπταιξ with team ", tmp, "‘ already exists\nChoose a new team name\n");
+		sprint(self, 2, "A γαπταιξ with team ", tmp, "‘ already exists\nChoose a new team name\n");
 		return;
 	}
 // check if a captain already has the same colors
@@ -214,7 +214,7 @@ void() BecomeCaptain =
 // announce the election
 	k_velect = 1;
 	k_captains = k_captains + 0.5;
-	bprint2(2, self.netname, " has requested ");
+	bprint(2, self.netname, " has requested ");
 	bprint(3, "captain");
 	bprint(2, " status\nType ωεσ in console to approve\n");
 	sprint(self, 2, "Type γαπταιξ to abort election\n");

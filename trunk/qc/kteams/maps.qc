@@ -238,7 +238,7 @@ void() SelectMap =
 	}
 	f3 = 0;
 	if(!k_vbreak) {
-		bprint2(3, self.netname, " suggests map ");
+		bprint(3, self.netname, " suggests map ");
 		k_vbreak = self.impulse;
 		self.k_vote = self.impulse;
 	} else {
@@ -246,8 +246,8 @@ void() SelectMap =
 			if(self.k_vote != self.impulse) {
 				f1 = CountPlayers();
 
-			if(f1 < 3) bprint2(3, self.netname, " agrees to map ");
-				else bprint2(3, self.netname, " agrees on map ");
+			if(f1 < 3) bprint(3, self.netname, " agrees to map ");
+				else bprint(3, self.netname, " agrees on map ");
 				self.k_vote = self.impulse;
 			} else {
 				sprint(self, 2, "--- your vote is still good ---\n");
@@ -259,14 +259,14 @@ void() SelectMap =
 				p.k_vote = 0;
 				p = find(p, classname, "player");
 			}
-			bprint2(3, self.netname, " would rather play on ");
+			bprint(3, self.netname, " would rather play on ");
 			k_vbreak = self.impulse;
 			self.k_vote = self.impulse;
 		}
 	}
 	if(!f3) {
 		s2 = GetMapName(self.impulse);
-		bprint2(2, s2, "\n");
+		bprint(2, s2, "\n");
 	}
 	f1 = CountPlayers();
 	f2 = (floor(f1 / 2)) + 1;

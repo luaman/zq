@@ -73,7 +73,7 @@ void() CheckAll =
 					sprint(p, 2, "\nYour עבפו setting is too high for this server.\n");
 					tmp=ftos(maxrate);
 					sprint(p, 2, "Rate set to ");
-					sprint2(p, 3, tmp, "\n");
+					sprint(p, 3, tmp, "\n");
 			
 					stuffcmd(p, "rate ");
 					stuffcmd(p, tmp);
@@ -85,7 +85,7 @@ void() CheckAll =
 					sprint(p, 2, "\nYour עבפו setting is too low for this server.\n");
 					tmp=ftos(minrate);
 					sprint(p, 2, "Rate set to ");
-					sprint2(p, 3, tmp, "\n");
+					sprint(p, 3, tmp, "\n");
 			
 					stuffcmd(p, "rate ");
 					stuffcmd(p, tmp);
@@ -115,7 +115,7 @@ void() CheckConnectRate=
 			sprint(self, 2, "\nYour עבפו setting is too high for this server.\n");
 			tmp=ftos(maxrate);
 			sprint(self, 2, "Rate set to ");
-			sprint2(self, 3, tmp, "\n");
+			sprint(self, 3, tmp, "\n");
 	
 			stuffcmd(self, "rate ");
 			stuffcmd(self, tmp);
@@ -127,7 +127,7 @@ void() CheckConnectRate=
 			sprint(self, 2, "\nYour עבפו setting is too low for this server.\n");
 			tmp=ftos(minrate);
 			sprint(self, 2, "Rate set to ");
-			sprint2(self, 3, tmp, "\n");
+			sprint(self, 3, tmp, "\n");
 			
 			stuffcmd(self, "rate ");
 			stuffcmd(self, tmp);
@@ -752,12 +752,6 @@ void() PutClientInServer =
 	}
 //team
 
-// Set Rocket Jump Modifiers
-	if (stof(infokey(world, "rj")) != 0)
-	{
-		rj = stof(infokey(world, "rj"));
-	}
-
 	if (deathmatch == 4 && match_in_progress == 2)	//team
 	{
 		self.ammo_shells = 0;
@@ -1182,12 +1176,12 @@ void() PlayerPreThink =
 		self.real_time = time;
 		if(r > 103 && !match_in_progress) {
 			sprint(self, 2, "WARNING: QW clients up to 2.30 have a timer related bug which is caused by too long uptime. Either reboot your machine or upgrade to QWCL 2.33.\n");
-			dprint4(self.netname, "%speed%", tmp, "\n");
+			dprint(self.netname, "%speed%", tmp, "\n");
 			if(r > 105)
 				self.uptimebugpolicy = self.uptimebugpolicy + 1;
 		}
 		if(self.uptimebugpolicy > 3) {
-			bprint3(2, "\n", self.netname, " gets kicked for too long uptime\n");
+			bprint(2, "\n", self.netname, " gets kicked for too long uptime\n");
 			sprint(self, 2, "Reboot your machine to get rid of this bug\n");
 			self.classname = "";
 			stuffcmd(self, "disconnect\n");
@@ -1204,7 +1198,7 @@ void() PlayerPreThink =
 		
 		if( fps > 74 )
 		{
-			bprint3( 2, "\nWARNING: ", self.netname, " is using the timedemo bug and has abnormally high frame rates, " );
+			bprint( 2, "\nWARNING: ", self.netname, " is using the timedemo bug and has abnormally high frame rates, " );
 
 			local float peak;
 			local string str;
@@ -1212,22 +1206,22 @@ void() PlayerPreThink =
 			peak = floor( 72 * 13 / ( self.fLowestFrameTime * 1000 ) );
 			str = ftos( peak );
 			
-			bprint3( 2, "highest FPS = ", str, " (frametime was ");
+			bprint( 2, "highest FPS = ", str, " (frametime was ");
 		
 			str = ftos( self.fLowestFrameTime * 1000 );
 			
-			bprint2( 2, str, "), " );
+			bprint( 2, str, "), " );
 				
 			str = ftos( fps );
 			
-			bprint3( 2, "average FPS = ", str, "!\n");
+			bprint( 2, "average FPS = ", str, "!\n");
 			
 			self.fIllegalFPSWarnings = self.fIllegalFPSWarnings + 1;
 			
                         if( self.fIllegalFPSWarnings > 3 )
 			{
 				// kick the player from server!
-                                bprint2(2, self.netname, " gets kicked for timedemo cheating\n");
+                                bprint(2, self.netname, " gets kicked for timedemo cheating\n");
                                 self.classname = "";
                                 stuffcmd(self, "disconnect\n");
                         }
@@ -1507,7 +1501,7 @@ void() PlayerPostThink =
 		s1 = infokey(self, "team");
 		if(s1 != s2)
 		{
-			bprint2(2, self.netname, " gets kicked for changing team\n");
+			bprint(2, self.netname, " gets kicked for changing team\n");
 			self.k_accepted = 0;
 			f1 = 1;
 			f2 = 0;
@@ -1652,7 +1646,7 @@ void() ClientConnect =
 				tmp = infokey(p, "team");
 				if(tmp == infokey(self, "team")) {
 					sprint(self, 2, "Team picking in progress\n");
-					bprint4(2, self.netname, " is set to team ", tmp, "‘\n");
+					bprint(2, self.netname, " is set to team ", tmp, "‘\n");
 					tmp = infokey(p, "topcolor");
 					stuffcmd(self, "color ");
 					stuffcmd(self, tmp);
@@ -1703,7 +1697,7 @@ void() ClientDisconnect =
 		{
 			s1 = ftos(self.frags);
 
-			bprint4(2, self.netname, " left the game with ", s1, " frags\n");
+			bprint(2, self.netname, " left the game with ", s1, " frags\n");
 			sound(self, 4, "player/tornoff2.wav", 1, 0);
 			f1 = 1;
 			f2 = 0;
@@ -1829,7 +1823,7 @@ void(entity targ, entity attacker) ClientObituary =
 		{
 // team --> no points for telefragging teammate
 			if(match_in_progress != 2) {
-				bprint2(1,targ.netname, " was telefragged\n");
+				bprint(1,targ.netname, " was telefragged\n");
 				return;
 			}
 			attackerteam2 = infokey(attacker.owner, "team");

@@ -278,7 +278,7 @@ void() SpectatorImpulseCommand =
 			}
 			if(self.k_track == 1) {
 				sprint(self, 2, "--- Trackcam ---");
-				if(!self.suicide_time) sprint3(self, 2, " : showing ", self.goalentity.netname, "\n");
+				if(!self.suicide_time) sprint(self, 2, " : showing ", self.goalentity.netname, "\n");
 				else sprint(self, 2, "\n");
 				self.deaths = time; 	//.deaths is used for spectators as a counter for centerprinted stuff
 			}
@@ -401,7 +401,7 @@ void() SpectatorThink =
 	if(self.button2 && !self.jump_flag && self.k_track) {
 		if(self.k_track == 1) {
 			TrackNext();
-			if(!self.suicide_time && self.k_track == 1) sprint3(self, 2, "--- Tracking ", self.goalentity.netname, "\n");
+			if(!self.suicide_time && self.k_track == 1) sprint(self, 2, "--- Tracking ", self.goalentity.netname, "\n");
 		}
 		else TrackNext2();
 		self.jump_flag = 1;

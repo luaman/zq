@@ -47,7 +47,7 @@ void() ChangeOvertime =
 
 		bprint(2, "Οφεςτινε: time based\n");
 		tmp = ftos(f2);
-		bprint3(2, "Οφεςτινε μεξητθ ισ ", tmp, " νιξυτε");
+		bprint(2, "Οφεςτινε μεξητθ ισ ", tmp, " νιξυτε");
 		if (f1 == 1) bprint(2, "\n");
 		else bprint(2, "σ\n");
 		localcmd("localinfo k_overtime 1\n");
@@ -86,11 +86,11 @@ void() ChangeOvertimeUp =
 
         if (f1==1)
         {
-               bprint3(2, "Οφεςτινε μεξητθ σετ το ", tmp, " νιξυτε\n");
+               bprint(2, "Οφεςτινε μεξητθ σετ το ", tmp, " νιξυτε\n");
         }
 	else
         {
-               bprint3(2, "Οφεςτινε μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+               bprint(2, "Οφεςτινε μεξητθ σετ το ", tmp, " νιξυτεσ\n");
         }
 
 	localcmd("localinfo k_exttime ");
@@ -151,8 +151,8 @@ void() ListWhoNot =
 			if(p.netname != "" && !p.ready) {
 				tmp = infokey(p, "team");
 				if(p.k_admin == 2) bprint(2, " ");
-				bprint3(2, "", tmp, "‘ ");
-				bprint2(2, p.netname, " is not ready\n");
+				bprint(2, "", tmp, "‘ ");
+				bprint(2, p.netname, " is not ready\n");
 			}
 			p = find(p, classname, "player");
 		}
@@ -235,9 +235,9 @@ void(string name) SendMessage =
 	if(p != world) {
 		s1 = infokey(self, "premsg");
 		s2 = infokey(self, "postmsg");
-		bprint3(3, self.netname, ": ", s1);
+		bprint(3, self.netname, ": ", s1);
 		bprint(2, name);
-		bprint2(3, s2, "\n");
+		bprint(3, s2, "\n");
 	} else
 		stuffcmd(self, "echo No name to display\n");
 };			
@@ -256,9 +256,9 @@ void() ShowMaps =
 		s2 = infokey(world, s1);
 		while(s2 != "") {
 			if(f1 & 1) {
-				sprint2(self, 2, s2, "\n");
+				sprint(self, 2, s2, "\n");
 			} else {
-				sprint2(self, 2, s2, "   ");
+				sprint(self, 2, s2, "   ");
 			}
 			f1 = f1 + 1;
 			s1 = ftos(f1);
@@ -403,17 +403,17 @@ void() ModStatus =
 	local string tmp;
 
 	tmp = ftos(k_maxspeed);
-	sprint3(self, 2, "Ναψσπεεδ       ", tmp, "\n");
+	sprint(self, 2, "Ναψσπεεδ       ", tmp, "\n");
 	tmp = ftos(deathmatch);
-	sprint3(self, 2, "Δεατθνατγθ     ", tmp, "   ");
+	sprint(self, 2, "Δεατθνατγθ     ", tmp, "   ");
 	tmp = ftos(teamplay);
-	sprint3(self, 2, "Τεανπμαω       ", tmp, "\n");
+	sprint(self, 2, "Τεανπμαω       ", tmp, "\n");
 	tmp = ftos(timelimit);
-	sprint3(self, 2, "Τινεμινιτ      ", tmp, " ");
+	sprint(self, 2, "Τινεμινιτ      ", tmp, " ");
 	if(timelimit < 10) sprint(self, 2, "  ");
 	else if(timelimit < 100) sprint(self, 2, " ");
 	tmp = ftos(fraglimit);
-	sprint3(self, 2, "Ζςαημινιτ      ", tmp, "\n");
+	sprint(self, 2, "Ζςαημινιτ      ", tmp, "\n");
 	PrintToggle1("Ποχεςυπσ       ", "k_pow");
 	PrintToggle2("Òεσπαχξ     ", "k_666");
 	PrintToggle1("Δςοπ Ρυαδ      ", "dq");
@@ -426,14 +426,14 @@ void() ModStatus =
 	if(match_in_progress == 1) {
 		p = find(world, classname, "timer");
 		tmp = ftos(p.cnt2);
-		sprint3(self, 2, "The match will start in ", tmp, " second");
+		sprint(self, 2, "The match will start in ", tmp, " second");
 		if(p.cnt2 != 1) sprint(self, 2, "s");
 		sprint(self, 2, "\n");
 		return;
 	}
 	if(k_velect) {
 		tmp = ftos(k_velect);
-		sprint3(self, 2, "Election in progress\n", tmp, "‘ votes received\n");
+		sprint(self, 2, "Election in progress\n", tmp, "‘ votes received\n");
 	}
 	if(k_captains == 2)
 		sprint(self, 2, "Team picking in progress\n");
@@ -445,7 +445,7 @@ void() ModStatus =
 		else {
 			p = find(world, classname, "timer");
 			tmp = ftos(p.cnt - 1);
-			sprint3(self, 2, "Match in progress\n", tmp, "‘ full minute");
+			sprint(self, 2, "Match in progress\n", tmp, "‘ full minute");
 			if(p.cnt != 1) sprint(self, 2, "s");
 			sprint(self, 2, " left\n");
 		}
@@ -474,11 +474,11 @@ void() ModStatus2 =
 	if(!match_in_progress) {
 		f1 = CountRTeams();
 		tmp = ftos(f1);
-		sprint2(self, 2, "Τεανιξζο (γυς: ", tmp);
+		sprint(self, 2, "Τεανιξζο (γυς: ", tmp);
 		tmp = infokey(world, "k_lockmin");
-		sprint2(self, 2, " νιξ: ", tmp);
+		sprint(self, 2, " νιξ: ", tmp);
 		tmp = infokey(world, "k_lockmax");
-		sprint3(self, 2, " ναψ: ", tmp, ")\n");
+		sprint(self, 2, " ναψ: ", tmp, ")\n");
 	}
 	sprint(self, 2, "Σπεγταμλ: ");
       if(!stof(infokey(world, "k_spectalk"))) sprint(self, 2, "off\n");
@@ -492,22 +492,22 @@ void() ModStatus2 =
 	else if(f1 == 1) {
 		f1 = stof(infokey(world, "k_exttime"));
 		tmp = infokey(world, "k_exttime");
-		sprint2(self, 2, tmp, " minute");
+		sprint(self, 2, tmp, " minute");
 		if(f1 != 1) sprint(self, 2, "s");
 	} else
 		sprint(self, 2, "sudden death");
 
 	f1 = stof(infokey(world, "fpd"));
-	sprint2(self, 2, "\n", "ΡιΪνο μαη: ");
+	sprint(self, 2, "\n", "ΡιΪνο μαη: ");
 	if(f1 & 8) sprint(self, 2, "off");
 	else sprint(self, 2, "on");
-	sprint2(self, 2, "\n", "ΡιΪνο τινεςσ: ");
+	sprint(self, 2, "\n", "ΡιΪνο τινεςσ: ");
 	if(f1 & 2) sprint(self, 2, "off");
 	else sprint(self, 2, "on");
-	sprint2(self, 2, "\n", "ΡιΪνο εξενω ςεποςτιξη: ");
+	sprint(self, 2, "\n", "ΡιΪνο εξενω ςεποςτιξη: ");
 	if(f1 & 32) sprint(self, 2, "off");
 	else sprint(self, 2, "on");
-	sprint2(self, 2, "\n", "ΡιΪνο ποιξτιξη: ");
+	sprint(self, 2, "\n", "ΡιΪνο ποιξτιξη: ");
 	if(f1 & 128) sprint(self, 2, "off\n");
 	else sprint(self, 2, "on\n");
 
@@ -545,7 +545,7 @@ void() ModStatusVote =
 
 	if(match_in_progress == 2) {
 		s1 = ftos(k_vbreak);
-		sprint2(self, 2, s1, " φοτε(σ) ζος στοππιξη\n");
+		sprint(self, 2, s1, " φοτε(σ) ζος στοππιξη\n");
 	} else {
 		f1 = 0;
 		f2 = 0;
@@ -558,16 +558,16 @@ void() ModStatusVote =
 			p = find(p, classname, "player");
 		}
 		s1 = ftos(f1);
-		sprint2(self, 2, s1, " φοτε(σ) ζος α πιγλυπ ηανε\n");
+		sprint(self, 2, s1, " φοτε(σ) ζος α πιγλυπ ηανε\n");
 		if(k_vbreak) {
 			s1 = ftos(f2);
-			sprint2(self, 2, s1, " φοτε(σ) ζος ναπ ");
+			sprint(self, 2, s1, " φοτε(σ) ζος ναπ ");
 			s1 = GetMapName(k_vbreak);
-			sprint2(self, 2, s1, "\n");
+			sprint(self, 2, s1, "\n");
 		} 
 		if(k_velect) {
 			s1 = ftos(k_velect);
-			sprint2(self, 2, s1, " φοτε(σ) ζος εμεγτιοξ\n");
+			sprint(self, 2, s1, " φοτε(σ) ζος εμεγτιοξ\n");
 		}
 	}
 	sprint(self, 2, "--------------\n");
@@ -587,7 +587,7 @@ void() PlayerStatus =
 				if(p.ready) {
 					tmp = infokey(p, "team");
 					if(tmp == "") sprint(self, 2, " is ready\n");
-					else sprint3(self, 2, " is in team ", tmp, "‘\n");
+					else sprint(self, 2, " is in team ", tmp, "‘\n");
 				} else sprint(self, 3, " is not ready\n");
 			}
 			p = find(p, classname, "player");
@@ -608,8 +608,8 @@ void() PlayerStatusS =
 			sprint(self, 2, "");
 
 			tmp = infokey(p, "skin");
-			sprint2(self, 2, tmp, "‘ ");
-			sprint2(self, 2, p.netname, "\n");
+			sprint(self, 2, tmp, "‘ ");
+			sprint(self, 2, p.netname, "\n");
 		}
 		p = find(p, classname, "player");
 	}
@@ -635,7 +635,7 @@ void() PlayerStatusN =
 		while(p != world) {
 			if(p.netname != "" && !p.ready) {
 				if(p.k_admin == 2) sprint(self, 2, " ");
-				sprint2(self, 2, p.netname, " is not ready\n");
+				sprint(self, 2, p.netname, " is not ready\n");
 			}
 			p = find(p, classname, "player");
 		}
@@ -658,7 +658,7 @@ void() ResetOptions =
 		localcmd("exec configs/");
 		localcmd(s1);
 		localcmd(".cfg\n");
-		bprint5(2, "*** \"", s1, "\" server setup by ", self.netname, "\n");
+		bprint(2, "*** \"", s1, "\" server setup by ", self.netname, "\n");
 	}
 };
 
@@ -677,8 +677,8 @@ void() VotePickup =
 		return;
 	}
 	self.k_pickup = 1 - self.k_pickup;
-	if(self.k_pickup) bprint2(2, self.netname, " σαωσ pickup!!\n");
-	else bprint2(2, self.netname, " σαωσ no pickup\n");
+	if(self.k_pickup) bprint(2, self.netname, " σαωσ pickup!!\n");
+	else bprint(2, self.netname, " σαωσ no pickup\n");
 	f1 = 0;
 	p = find(world, classname, "player");
 	while(p != world) {
@@ -752,14 +752,14 @@ void() ReportMe =
 			if(t1 == t2) {
 				if(flag) {
 					t1 = infokey(self, "k_nick");
-					sprint2(p, 3, t1, "  ");
-				} else sprint3(p, 3, pa1, self.netname, pa2);
+					sprint(p, 3, t1, "  ");
+				} else sprint(p, 3, pa1, self.netname, pa2);
 				if(self.armorvalue != 0) {
 					av = ftos(self.armorvalue);
-					sprint2(p, 3, at, av);
+					sprint(p, 3, at, av);
 				} else sprint(p, 3, "a:0");
 				h = ftos(self.health);
-				sprint4(p, 3, "  h:", h, "  ", wt);
+				sprint(p, 3, "  h:", h, "  ", wt);
 				wa = ftos(f1);
 				sprint(p, 3, wa);
 				if(self.items & 524288) sprint(p, 3, "  …εωεσ…‘");
@@ -890,7 +890,7 @@ void() ChangeDM =
 	else if(deathmatch == 3) tmp = "•";
 	else if(deathmatch == 4) tmp = "–";
 	else tmp = "—";
-	bprint3(2, "Deathmatch ", tmp, "\n");
+	bprint(2, "Deathmatch ", tmp, "\n");
 };
 
 void() ChangeTP =
@@ -916,7 +916,7 @@ void() ChangeTP =
 	else if(teamplay == 1) tmp = "“";
 	else if(teamplay == 2) tmp = "”";
 	else tmp = "•";
-	bprint3(2, "Teamplay ", tmp, "\n");
+	bprint(2, "Teamplay ", tmp, "\n");
 };
 
 void(float t) TimeDown =
@@ -931,7 +931,7 @@ void(float t) TimeDown =
 	timelimit = timelimit - t;
 	if(timelimit < 5) timelimit = 5;
 	tmp = ftos(timelimit);
-	bprint3(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+	bprint(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
 	cvar_set("timelimit", tmp);
 };
 
@@ -949,7 +949,7 @@ void(float t) TimeUp =
 	top = stof(infokey(world, "k_timetop"));
 	if(timelimit > top) timelimit = top;
 	tmp = ftos(timelimit);
-	bprint3(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+	bprint(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
 	cvar_set("timelimit", tmp);
 };
 
@@ -970,7 +970,7 @@ void(float t) TimeSet =
 
 	if(timelimit > top) timelimit = top;
 	tmp = ftos(timelimit);
-	bprint3(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+	bprint(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
 	cvar_set("timelimit", tmp);
 };
 
@@ -986,7 +986,7 @@ void() FragsDown =
 	fraglimit = fraglimit - 10;
 	if(fraglimit < 0) fraglimit = 0;
 	tmp = ftos(fraglimit);
-	bprint3(2, "Ζςαημινιτ σετ το ", tmp, "\n");
+	bprint(2, "Ζςαημινιτ σετ το ", tmp, "\n");
 	cvar_set("fraglimit", tmp);
 };
 
@@ -1002,7 +1002,7 @@ void() FragsUp =
 	fraglimit = fraglimit + 10;
 	if(fraglimit > 100) fraglimit = 100;
 	tmp = ftos(fraglimit);
-	bprint3(2, "Ζςαημινιτ σετ το ", tmp, "\n");
+	bprint(2, "Ζςαημινιτ σετ το ", tmp, "\n");
 	cvar_set("fraglimit", tmp);
 };
 
@@ -1189,7 +1189,7 @@ void() ShowRules =
 	else sprint(self, 2, "Bind ςεποςτ to a key.\nPressing that key will send\nyour status to your teammates.\nTyping σγοςεσ during game\nwill print time left and teamscores.\nAlso available during game\nare στατσ and εζζιγιεξγω.\n\nRemember that telefragging a teammate\ndoes not result in frags.\n");
 	if(stof(infokey(world, "k_bzk")) != 0) {
 		s1 = infokey(world, "k_btime");
-		sprint3(self, 2, "\nBERZERK mode is activated!\nThis means that when only ", s1, " seconds\nremains of the game, all players\ngets QUAD/OCTA powered.\n");
+		sprint(self, 2, "\nBERZERK mode is activated!\nThis means that when only ", s1, " seconds\nremains of the game, all players\ngets QUAD/OCTA powered.\n");
 	}
 	sprint(self, 2, "\n");
 };
@@ -1283,13 +1283,13 @@ void() PrintScores =
 
 		if(f1) {
 			tmp = ftos(f1);
-			sprint3(self, 2, "", tmp, "‘ full minute");
+			sprint(self, 2, "", tmp, "‘ full minute");
 			if(f1 > 1)
 			sprint(self, 2, "s");
 		}
 		else {
 		tmp = ftos(f2);
-		sprint3(self, 2, "", tmp, "‘ second");
+		sprint(self, 2, "", tmp, "‘ second");
 		if(f2 > 1)
 			sprint(self, 2, "s");
 		}
@@ -1299,22 +1299,22 @@ void() PrintScores =
 	if(k_showscores) {
 		if(k_scores1 > k_scores2) {
 			tmp = infokey(world, "k_team1");
-			sprint3(self, 2, "Τεαν ", tmp, "‘ = ");
+			sprint(self, 2, "Τεαν ", tmp, "‘ = ");
 			tmp = ftos(k_scores1);
-			sprint2(self, 2, tmp, "\n");
+			sprint(self, 2, tmp, "\n");
 			tmp = infokey(world, "k_team2");
-			sprint3(self, 2, "Τεαν ", tmp, "‘ = ");
+			sprint(self, 2, "Τεαν ", tmp, "‘ = ");
 			tmp = ftos(k_scores2);
-			sprint2(self, 2, tmp, "\n");
+			sprint(self, 2, tmp, "\n");
 		} else {
 			tmp = infokey(world, "k_team2");
-			sprint3(self, 2, "Τεαν ", tmp, "‘ = ");
+			sprint(self, 2, "Τεαν ", tmp, "‘ = ");
 			tmp = ftos(k_scores2);
-			sprint2(self, 2, tmp, "\n");
+			sprint(self, 2, tmp, "\n");
 			tmp = infokey(world, "k_team1");
-			sprint3(self, 2, "Τεαν ", tmp, "‘ = ");
+			sprint(self, 2, "Τεαν ", tmp, "‘ = ");
 			tmp = ftos(k_scores1);
-			sprint2(self, 2, tmp, "\n");
+			sprint(self, 2, tmp, "\n");
 		}
 	}
 };
@@ -1347,15 +1347,15 @@ void() PlayerStats =
 				tmp = infokey(p, "team");
 				tmp2 = infokey(p2, "team");
 				if(tmp == tmp2) {
-					sprint3(self, 2, "", tmp2, "‘ ");
-					sprint2(self, 2, p2.netname, ": ");
+					sprint(self, 2, "", tmp2, "‘ ");
+					sprint(self, 2, p2.netname, ": ");
 					tmp = ftos(p2.frags);
-					sprint2(self, 2, tmp, " (");
+					sprint(self, 2, tmp, " (");
 					tmp = ftos(p2.frags - p2.deaths);
-					sprint2(self, 2, tmp, ") ");
+					sprint(self, 2, tmp, ") ");
 					if(!stof(infokey(world, "k_duel")) && f1 && teamplay) {
 						tmp = ftos(p2.friendly);
-						sprint2(self, 2, tmp, " ");
+						sprint(self, 2, tmp, " ");
 					}
 					if(p2.frags < 1)
 						p2.efficiency = 0;
@@ -1364,7 +1364,7 @@ void() PlayerStats =
 					tmp = ftos(p2.efficiency);
 					if(floor(p2.efficiency) == p2.efficiency) sprint(self, 2, " ");
 					else sprint(self, 2, "");
-					sprint2(self, 2, tmp, "%\n");
+					sprint(self, 2, tmp, "%\n");
 					p2.ready = 0;
 				}
 				p2 = find(p2, classname, "player");
@@ -1511,10 +1511,10 @@ void() ToggleFreeze =
 	f1 = stof(infokey(world, "k_freeze"));
 	if(f1) {
 		localcmd("localinfo k_freeze 0\n");
-		bprint2(2, self.netname, " unfreezes map\n");
+		bprint(2, self.netname, " unfreezes map\n");
 	} else {
 		localcmd("localinfo k_freeze 1\n");
-		bprint2(2, self.netname, " freezes map\n");
+		bprint(2, self.netname, " freezes map\n");
 	}
 };
 
