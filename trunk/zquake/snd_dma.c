@@ -821,16 +821,8 @@ void GetSoundtime (void)
 	soundtime = buffers*fullsamples + samplepos/dma.channels;
 }
 
-
-extern void IN_Accumulate (void);
-
 void S_ExtraUpdate (void)
 {
-
-#ifdef _WIN32
-	IN_Accumulate ();
-#endif
-
 	if (s_noextraupdate.value)
 		return;		// don't pollute timings
 	S_Update_();

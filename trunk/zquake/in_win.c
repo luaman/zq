@@ -45,7 +45,7 @@ static int		mouse_buttons = 0;
 static int		mouse_oldbuttonstate = 0;
 static POINT	current_pos;
 static double	mouse_x = 0.0, mouse_y = 0.0;
-static int		old_mouse_x = 0, old_mouse_y = 0, mx_accum = 0, my_accum = 0;
+static int		old_mouse_x = 0, old_mouse_y = 0;
 
 static qbool	restore_spi = false;
 static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 0};
@@ -699,10 +699,8 @@ static void IN_MouseMove (usercmd_t *cmd)
 	else
 	{
 		GetCursorPos (&current_pos);
-		mx = current_pos.x - window_center_x + mx_accum;
-		my = current_pos.y - window_center_y + my_accum;
-		mx_accum = 0;
-		my_accum = 0;
+		mx = current_pos.x - window_center_x;
+		my = current_pos.y - window_center_y;
 
 		// if the mouse has moved, force it to the center, so there's room to move
 		if (mx || my)
@@ -767,39 +765,13 @@ void IN_Move (usercmd_t *cmd)
 
 
 /*
-===========
-IN_Accumulate
-===========
-*/
-void IN_Accumulate (void)
-{
-	if (in_mouseactive)
-	{
-		GetCursorPos (&current_pos);
-
-		mx_accum += current_pos.x - window_center_x;
-		my_accum += current_pos.y - window_center_y;
-
-	// force the mouse to the center, so there's room to move
-		SetCursorPos (window_center_x, window_center_y);
-	}
-}
-
-
-/*
 ===================
 IN_ClearStates
 ===================
 */
 void IN_ClearStates (void)
 {
-
-	if (in_mouseactive)
-	{
-		mx_accum = 0;
-		my_accum = 0;
-		mouse_oldbuttonstate = 0;
-	}
+	mouse_oldbuttonstate = 0;
 }
 
 
