@@ -568,6 +568,9 @@ void Cmd_Alias_f (void)
 	}
 	strcpy (a->name, s);
 
+	if (!Q_strcasecmp(Cmd_Argv(0), "aliasa"))
+		a->flags |= ALIAS_ARCHIVE;
+
 // copy the rest of the command line
 	cmd[0] = 0;		// start out with a null string
 	for (i=2 ; i<c ; i++)
@@ -672,6 +675,15 @@ void Cmd_UnAliasAll_f (void)
 	}
 }
 
+
+void Cmd_WriteAliases (FILE *f)
+{
+	cmd_alias_t	*a;
+
+	for (a = cmd_alias ; a ; a=a->next)
+		if (a->flags & ALIAS_ARCHIVE)
+			fprintf (f, "aliasa %s \"%s\"\n", a->name, a->value);
+}
 
 /*
 =============================================================================

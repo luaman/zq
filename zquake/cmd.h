@@ -145,14 +145,18 @@ void Cmd_StuffCmds_f (void);
 
 #define	MAX_ALIAS_NAME	32
 
+#define ALIAS_ARCHIVE	1
+
 typedef struct cmd_alias_s
 {
 	struct cmd_alias_s	*hash_next;
 	struct cmd_alias_s	*next;
 	char	name[MAX_ALIAS_NAME];
 	char	*value;
+	int		flags;
 } cmd_alias_t;
 
 qboolean Cmd_DeleteAlias (char *name);	// return true if successful
 cmd_alias_t *Cmd_FindAlias (char *name); // returns NULL on failure
 char *Cmd_AliasString (char *name); // returns NULL on failure
+void Cmd_WriteAliases (FILE *f);
