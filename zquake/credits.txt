@@ -8,7 +8,7 @@ Dabb - nVidia alt-tabbing fix
 Andrew Tridgell - mdfour.c
 Victor 'Vic' Luchits - mtex fb rendering for alias models, fullbrights on .pcx
     player skins and more...
-'Massa' - keymaps
-A 'Fuh' Nourai - extra teamplay stuff
+Matthias 'Massa' Mohr - keymaps
+A 'Fuh' Nourai - extra teamplay stuff, nickname completion
 Dominic 'oldman' Evans - linux and mac ports, qc stuff
 Anton 'Tonik' Gavrilov - everything else
