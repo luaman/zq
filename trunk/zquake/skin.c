@@ -65,21 +65,23 @@ void Skin_Find (player_info_t *sc)
 		strcpy (name, "base");
 
 // Tonik -->		
-	strcpy (buf, Info_ValueForKey(cls.userinfo, "team"));
-	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
-
-	if (cl_teamskin.string[0] && teamplay && 
-	!strcmp(Info_ValueForKey(sc->userinfo, "team"), buf)
-	&& strlen(cl_teamskin.string) < 128)
-	{
-		strcpy (name, cl_teamskin.string);
-	}
-
-	if (cl_enemyskin.string[0] && (!teamplay || 
-	strcmp(Info_ValueForKey(sc->userinfo, "team"), buf))
-	&& strlen(cl_enemyskin.string) < 128)
-	{
-		strcpy (name, cl_enemyskin.string);
+	if (!cl.teamfortress) {
+		strcpy (buf, Info_ValueForKey(cls.userinfo, "team"));
+		teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
+		
+		if (cl_teamskin.string[0] && teamplay && 
+			!strcmp(Info_ValueForKey(sc->userinfo, "team"), buf)
+			&& strlen(cl_teamskin.string) < 128)
+		{
+			strcpy (name, cl_teamskin.string);
+		}
+		
+		if (cl_enemyskin.string[0] && (!teamplay || 
+			strcmp(Info_ValueForKey(sc->userinfo, "team"), buf))
+			&& strlen(cl_enemyskin.string) < 128)
+		{
+			strcpy (name, cl_enemyskin.string);
+		}
 	}
 // <-- Tonik
 
