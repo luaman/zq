@@ -76,7 +76,11 @@ sfx_t		*ambient_sfx[NUM_AMBIENTS];
 cvar_t bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
 cvar_t s_initsound = {"s_initsound", "1"};
 cvar_t s_volume = {"s_volume", "0.7", CVAR_ARCHIVE};
+#if defined (hpux) || defined(sun)
+cvar_t s_nosound = {"s_nosound", "1"};
+#else
 cvar_t s_nosound = {"s_nosound", "0"};
+#endif
 cvar_t s_precache = {"s_precache", "1"};
 cvar_t s_loadas8bit = {"s_loadas8bit", "0"};
 cvar_t s_khz = {"s_khz", "22", CVAR_ARCHIVE};
@@ -196,7 +200,7 @@ void S_Init (void)
 		Cmd_AddCommand("soundinfo", S_SoundInfo_f);
 	}
 
-	if (!s_initsound.value || COM_CheckParm("-nosound")) {
+	if (!s_initsound.value || COM_CheckParm("-nosound") || s_nosound.value) {
 		Com_Printf ("sound initialization skipped\n");
 		return;
 	}
