@@ -528,13 +528,10 @@ LINE TESTING IN HULLS
 // 1/32 epsilon to keep floating point happy
 #define	DIST_EPSILON	(0.03125)
 
-/*
-==================
-SV_RecursiveHullCheck
+static hull_t	trace_hull;
+static trace_t	trace_trace;
 
-==================
-*/
-qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t *trace)
+static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
 {
 	dclipnode_t	*node;
 	mplane_t	*plane;
@@ -550,25 +547,25 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	{
 		if (num != CONTENTS_SOLID)
 		{
-			trace->allsolid = false;
+			trace_trace.allsolid = false;
 			if (num == CONTENTS_EMPTY)
-				trace->inopen = true;
+				trace_trace.inopen = true;
 			else
-				trace->inwater = true;
+				trace_trace.inwater = true;
 		}
 		else
-			trace->startsolid = true;
+			trace_trace.startsolid = true;
 		return true;		// empty
 	}
 
-	if (num < hull->firstclipnode || num > hull->lastclipnode)
-		Host_Error ("SV_RecursiveHullCheck: bad node number");
+	if (num < trace_hull.firstclipnode || num > trace_hull.lastclipnode)
+		Host_Error ("RecursiveHullCheck: bad node number");
 
 //
 // find the point distances
 //
-	node = hull->clipnodes + num;
-	plane = hull->planes + node->planenum;
+	node = trace_hull.clipnodes + num;
+	plane = trace_hull.planes + node->planenum;
 
 	if (plane->type < 3)
 	{
@@ -583,14 +580,14 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	
 #if 1
 	if (t1 >= 0 && t2 >= 0)
-		return SV_RecursiveHullCheck (hull, node->children[0], p1f, p2f, p1, p2, trace);
+		return RecursiveHullTrace (node->children[0], p1f, p2f, p1, p2);
 	if (t1 < 0 && t2 < 0)
-		return SV_RecursiveHullCheck (hull, node->children[1], p1f, p2f, p1, p2, trace);
+		return RecursiveHullTrace (node->children[1], p1f, p2f, p1, p2);
 #else
 	if ( (t1 >= DIST_EPSILON && t2 >= DIST_EPSILON) || (t2 > t1 && t1 >= 0) )
-		return SV_RecursiveHullCheck (hull, node->children[0], p1f, p2f, p1, p2, trace);
+		return RecursiveHullTrace (node->children[0], p1f, p2f, p1, p2);
 	if ( (t1 <= -DIST_EPSILON && t2 <= -DIST_EPSILON) || (t2 < t1 && t1 <= 0) )
-		return SV_RecursiveHullCheck (hull, node->children[1], p1f, p2f, p1, p2, trace);
+		return RecursiveHullTrace (node->children[1], p1f, p2f, p1, p2);
 #endif
 
 // put the crosspoint DIST_EPSILON pixels on the near side
@@ -610,7 +607,7 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	side = (t1 < 0);
 
 // move up to the node
-	if (!SV_RecursiveHullCheck (hull, node->children[side], p1f, midf, p1, mid, trace) )
+	if (!RecursiveHullTrace(node->children[side], p1f, midf, p1, mid))
 		return false;
 
 #ifdef PARANOID
@@ -622,12 +619,12 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	}
 #endif
 	
-	if (SV_HullPointContents (hull, node->children[side^1], mid)
+	if (SV_HullPointContents (&trace_hull, node->children[side^1], mid)
 	!= CONTENTS_SOLID)
 // go past the node
-		return SV_RecursiveHullCheck (hull, node->children[side^1], midf, p2f, mid, p2, trace);
+		return RecursiveHullTrace (node->children[side^1], midf, p2f, mid, p2);
 	
-	if (trace->allsolid)
+	if (trace_trace.allsolid)
 		return false;		// never got out of the solid area
 		
 //==================
@@ -635,23 +632,23 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 //==================
 	if (!side)
 	{
-		VectorCopy (plane->normal, trace->plane.normal);
-		trace->plane.dist = plane->dist;
+		VectorCopy (plane->normal, trace_trace.plane.normal);
+		trace_trace.plane.dist = plane->dist;
 	}
 	else
 	{
-		VectorNegate (plane->normal, trace->plane.normal);
-		trace->plane.dist = -plane->dist;
+		VectorNegate (plane->normal, trace_trace.plane.normal);
+		trace_trace.plane.dist = -plane->dist;
 	}
 
-	while (SV_HullPointContents (hull, hull->firstclipnode, mid)
+	while (SV_HullPointContents (&trace_hull, trace_hull.firstclipnode, mid)
 	== CONTENTS_SOLID)
 	{ // shouldn't really happen, but does occasionally
 		frac -= 0.1;
 		if (frac < 0)
 		{
-			trace->fraction = midf;
-			VectorCopy (mid, trace->endpos);
+			trace_trace.fraction = midf;
+			VectorCopy (mid, trace_trace.endpos);
 			Com_DPrintf ("backup past 0\n");
 			return false;
 		}
@@ -660,10 +657,27 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 			mid[i] = p1[i] + frac*(p2[i] - p1[i]);
 	}
 
-	trace->fraction = midf;
-	VectorCopy (mid, trace->endpos);
+	trace_trace.fraction = midf;
+	VectorCopy (mid, trace_trace.endpos);
 
 	return false;
+}
+
+// trace a line through the supplied clipping hull
+// does not fill trace.ent
+trace_t SV_HullTrace (hull_t *hull, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
+{
+	// fill in a default trace
+	memset (&trace_trace, 0, sizeof(trace_trace));
+	trace_trace.fraction = 1;
+	trace_trace.allsolid = true;
+	VectorCopy (end, trace_trace.endpos);
+
+	trace_hull = *hull;
+
+	RecursiveHullTrace (hull->firstclipnode, 0, 1, start, end);
+
+	return trace_trace;
 }
 
 
@@ -682,12 +696,6 @@ trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec3_t max
 	vec3_t		start_l, end_l;
 	hull_t		*hull;
 
-// fill in a default trace
-	memset (&trace, 0, sizeof(trace_t));
-	trace.fraction = 1;
-	trace.allsolid = true;
-	VectorCopy (end, trace.endpos);
-
 // get the clipping hull
 	hull = SV_HullForEntity (ent, mins, maxs, offset);
 
@@ -695,14 +703,13 @@ trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec3_t max
 	VectorSubtract (end, offset, end_l);
 
 // trace a line through the apropriate clipping hull
-	SV_RecursiveHullCheck (hull, hull->firstclipnode, 0, 1, start_l, end_l, &trace);
+	trace = SV_HullTrace (hull, start_l, mins, maxs, end_l);
 
 // fix trace up by the offset
-	if (trace.fraction != 1)
-		VectorAdd (trace.endpos, offset, trace.endpos);
+	VectorAdd (trace.endpos, offset, trace.endpos);
 
 // did we clip the move?
-	if (trace.fraction < 1 || trace.startsolid  )
+	if (trace.fraction < 1 || trace.startsolid )
 		trace.ent = ent;
 
 	return trace;
