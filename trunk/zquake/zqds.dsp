@@ -226,19 +226,11 @@ SOURCE=.\bspfile.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\client.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\cmd.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\common.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\console.h
 # End Source File
 # Begin Source File
 
@@ -283,14 +275,6 @@ SOURCE=.\protocol.h
 # Begin Source File
 
 SOURCE=.\quakedef.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\qwsvdef.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_model.h
 # End Source File
 # Begin Source File
 
