@@ -643,10 +643,10 @@ void R_DrawAliasModel (entity_t *ent)
 		float an = -ent->angles[1] / 180 * M_PI;
 		
 		if (!shadescale)
-			shadescale = Q_RSqrt (2);
+			shadescale = 1/sqrt(2);
 
-		shadevector[0] = Q_cos(an) * shadescale;
-		shadevector[1] = Q_sin(an) * shadescale;
+		shadevector[0] = cos(an) * shadescale;
+		shadevector[1] = sin(an) * shadescale;
 		shadevector[2] = shadescale;
 
 		glPushMatrix ();
@@ -711,7 +711,7 @@ void R_DrawEntitiesOnList (void)
 	if (!r_drawentities.value)
 		return;
 
-	// draw sprites seperately, because of alpha blending
+	// draw sprites separately, because of alpha blending
 	for (i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = &cl_visedicts[i];
@@ -986,7 +986,7 @@ void MYgluPerspective( GLdouble fovy, GLdouble aspect,
 {
 	GLdouble xmin, xmax, ymin, ymax;
 	
-	ymax = zNear * Q_tan( fovy * M_PI / 360.0 );
+	ymax = zNear * tan( fovy * M_PI / 360.0 );
 	ymin = -ymax;
 	
 	xmin = ymin * aspect;
@@ -1201,8 +1201,8 @@ void R_Mirror (void)
 	d = DotProduct (vpn, mirror_plane->normal);
 	VectorMA (vpn, -2*d, mirror_plane->normal, vpn);
 
-	r_refdef.viewangles[0] = -Q_asin (vpn[2])/M_PI*180;
-	r_refdef.viewangles[1] = Q_atan2 (vpn[1], vpn[0])/M_PI*180;
+	r_refdef.viewangles[0] = -asin (vpn[2])/M_PI*180;
+	r_refdef.viewangles[1] = atan2 (vpn[1], vpn[0])/M_PI*180;
 	r_refdef.viewangles[2] = -r_refdef.viewangles[2];
 
 	ent = &cl_entities[cl.viewentity];
