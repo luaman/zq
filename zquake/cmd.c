@@ -755,6 +755,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	cmd_hash_array[key] = cmd;
 }
 
+
 /*
 ============
 Cmd_Exists
