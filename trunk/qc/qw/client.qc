@@ -925,6 +925,10 @@ void PlayerPreThink ()
 {
 	if (intermission_running)
 	{
+// 1998-12-24 Palette shift during intermission fix by Maddes -->
+		self.items = self.items - (self.items &
+		(IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD) );
+// 1998-12-24 Palette shift during intermission fix by Maddes <--
 		IntermissionThink ();   // otherwise a button could be missed between
 		return;                                 // the think tics
 	}
