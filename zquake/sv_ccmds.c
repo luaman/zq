@@ -18,12 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#ifdef SERVERONLY
 #include "qwsvdef.h"
-#else
-#include "quakedef.h"
-#include "server.h"
-#endif
 
 cvar_t		sv_cheats = {"sv_cheats", "0"};
 qboolean	sv_allow_cheats = false;
@@ -239,7 +234,7 @@ void SV_Kick_f (void)
 	if (c < 2) {
 #ifndef SERVERONLY
 		// some mods use a "kick" alias for their own needs, sigh
-		if (cls.state >= ca_onserver && Cmd_FindAlias("kick")) {
+		if (CL_ClientState() && Cmd_FindAlias("kick")) {
 			Cmd_ExecuteString (Cmd_AliasString("kick"));
 			return;
 		}
@@ -298,7 +293,7 @@ void SV_Status_f (void)
 #ifndef SERVERONLY
 	// some mods use a "status" alias for their own needs, sigh
 	if (!sv_redirected && !Q_strcasecmp(Cmd_Argv(0), "status")
-		&& cls.state >= ca_onserver && Cmd_FindAlias("status")) {
+		&& CL_ClientState() && Cmd_FindAlias("status")) {
 		Cmd_ExecuteString (Cmd_AliasString("status"));
 		return;
 	}
@@ -664,7 +659,7 @@ void SV_Gamedir_f (void)
 	}
 
 #ifndef SERVERONLY
-	if (cls.state >= ca_connected)
+	if (CL_ClientState())
 	{
 		Com_Printf ("you must disconnect before changing gamedir\n");
 		return;
