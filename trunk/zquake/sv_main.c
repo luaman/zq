@@ -639,6 +639,10 @@ void SVC_DirectConnect (void)
 	newcl->extensions = atoi(Info_ValueForKey(newcl->userinfo, "*z_ext"));
 	Info_RemoveKey (newcl->userinfo, "*z_ext");
 
+//@@VWep test
+	newcl->extensions |= atoi(Info_ValueForKey(newcl->userinfo, "*vwtest")) ? Z_EXT_VWEP : 0;
+	Info_RemoveKey (newcl->userinfo, "*vwtest");
+
 	edictnum = (newcl - svs.clients) + 1;
 	ent = EDICT_NUM(edictnum);	
 	ent->inuse = true;
@@ -1385,6 +1389,8 @@ void SV_InitLocal (void)
 
 	Info_SetValueForStarKey (svs.info, "*version", va(PROGRAM " %s", VersionString()), MAX_SERVERINFO_STRING);
 	Info_SetValueForStarKey (svs.info, "*z_ext", va("%i", SUPPORTED_EXTENSIONS), MAX_SERVERINFO_STRING);
+//@@VWep test
+	Info_SetValueForStarKey (svs.info, "*vwtest", "1", MAX_SERVERINFO_STRING);
 
 	if (strcmp(com_gamedirfile, "qw"))
 		Info_SetValueForStarKey (svs.info, "*gamedir", com_gamedirfile, MAX_SERVERINFO_STRING);

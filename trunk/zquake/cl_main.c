@@ -773,6 +773,9 @@ void CL_InitLocal (void)
 //	Info_SetValueForStarKey (cls.userinfo, "*ver", va(PROGRAM " %s", VersionString()), MAX_INFO_STRING);
 #endif
 
+//@@VWep test
+	Info_SetValueForStarKey (cls.userinfo, "*vwtest", "1", MAX_INFO_STRING);
+
 	//
 	// info mirrors
 	//

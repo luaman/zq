@@ -234,6 +234,26 @@ void Cmd_Soundlist_f (void)
 		MSG_WriteByte (&sv_client->netchan.message, 0);
 }
 
+static char *TrimModelName (char *full)
+{
+	static char shortn[MAX_QPATH];
+	int len;
+
+	if (!strncmp(full, "progs/", 6) && !strchr(full + 6, '/'))
+		strlcpy (shortn, full + 6, sizeof(shortn));		// strip progs/
+	else
+		strlcpy (shortn, full, sizeof(shortn));
+
+	len = strlen(shortn);
+	if (len > 4 && !strcmp(shortn + len - 4, ".mdl")
+		&& strchr(shortn, '.') == shortn + len - 4)
+	{	// strip .mdl
+		shortn[len - 4] = '\0';
+	}
+
+	return shortn;
+}
+
 /*
 ==================
 Cmd_Modellist_f
@@ -243,6 +263,7 @@ void Cmd_Modellist_f (void)
 {
 	char		**s;
 	unsigned	n;
+	int			i;
 
 	if (sv_client->state != cs_connected)
 	{
@@ -265,6 +286,24 @@ void Cmd_Modellist_f (void)
 		SV_DropClient (sv_client);
 		return;
 	}
+
+//@@VWep test
+	if (n == 0 && (sv_client->extensions & Z_EXT_VWEP) && sv.vw_model_name[0]) {
+		// send VWep precaches
+		// pray we don't overflow
+		for (i = 0, s = sv.vw_model_name; i < MAX_VWEP_MODELS; s++, i++) {
+			if (!sv.vw_model_name[i] || !sv.vw_model_name[i][0])
+				continue;
+			MSG_WriteByte (&sv_client->netchan.message, svc_serverinfo);
+			MSG_WriteString (&sv_client->netchan.message, "#vw");
+			MSG_WriteString (&sv_client->netchan.message, va("%i %s", i, TrimModelName(*s)));
+		}
+		// send end-of-list messsage
+		MSG_WriteByte (&sv_client->netchan.message, svc_serverinfo);
+		MSG_WriteString (&sv_client->netchan.message, "#vw");
+		MSG_WriteString (&sv_client->netchan.message, "");
+	}
+
 
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
 //spawns.  These functions are written to not overflow
