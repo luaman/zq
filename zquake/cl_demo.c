@@ -988,7 +988,7 @@ void PlayQWZDemo (void)
 		return;
 	}
 	
-	Con_Printf ("unpacking %s...\n", name);
+	Con_Printf ("Unpacking %s...\n", COM_SkipPath(name));
 	
 	// start Qizmo to unpack the demo
 	memset (&si, 0, sizeof(si));
@@ -1059,7 +1059,7 @@ void CL_PlayDemo_f (void)
 
 	COM_DefaultExtension (name, ".qwd");
 
-	Con_Printf ("Playing demo from %s.\n", name);
+	Con_Printf ("Playing demo from %s.\n", COM_SkipPath(name));
 
 	if (!strncmp(name, "../", 3) || !strncmp(name, "..\\", 3))
 		cls.demofile = fopen (va("%s/%s", com_basedir, name+3), "rb");
