@@ -1796,6 +1796,8 @@ static void AddLinksToPmove ( areanode_t *node )
 }
 
 
+/* is this still used for something ???? */
+#if 0
 /*
 ================
 AddAllEntsToPmove
@@ -1861,6 +1863,7 @@ static void AddAllEntsToPmove (void)
 		}
 	}
 }
+#endif /* #if 0 */
 
 
 
@@ -2281,3 +2284,5 @@ void SV_ExecuteClientMessage (client_t *cl)
 		}
 	}
 }
+
+/* vi: set noet ts=4 sts=4 ai sw=4: */
