@@ -39,8 +39,9 @@ static char		*cvar_null_string = "";
 /*
 ==========
 Key
-==========
+
 Returns hash key for a string
+==========
 */
 static int Key (char *name)
 {
@@ -171,7 +172,16 @@ void Cvar_Set (cvar_t *var, char *value)
 		return;
 
 	if (var->flags & CVAR_ROM)
+	{
+		Com_Printf ("\"%s\" is write protected\n", var->name);
 		return;
+	}
+
+	if ((var->flags & CVAR_INIT) && host_initialized)
+	{
+		Com_Printf ("\"%s\" cannot be changed from the console\n", var->name);
+		return;
+	}
 
 	if (var->OnChange && !changing) {
 		changing = true;
@@ -594,24 +604,6 @@ void Cvar_Inc_f (void)
 	Cvar_SetValue (var, var->value + delta);
 }
 
-//#define CVAR_DEBUG
-#ifdef CVAR_DEBUG
-static void Cvar_Hash_Print_f (void)
-{
-	int		i, count;
-	cvar_t	*cvar;
-
-	Com_Printf ("Cvar hash:\n");
-	for (i = 0; i<32; i++)
-	{
-		count = 0;
-		for (cvar = cvar_hash[i]; cvar; cvar=cvar->hash_next, count++);
-		Com_Printf ("%i: %i\n", i, count);
-	}
-
-}
-#endif
-
 void Cvar_Init (void)
 {
 	Cmd_AddCommand ("cvarlist", Cvar_CvarList_f);
@@ -619,8 +611,4 @@ void Cvar_Init (void)
 	Cmd_AddCommand ("set", Cvar_Set_f);
 	Cmd_AddCommand ("seta", Cvar_Seta_f);
 	Cmd_AddCommand ("inc", Cvar_Inc_f);
-
-#ifdef CVAR_DEBUG
-	Cmd_AddCommand ("cvar_hash_print", Cvar_Hash_Print_f);
-#endif
 }
