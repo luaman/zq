@@ -919,6 +919,7 @@ void PlayerMove (void)
 	if (pmove.spectator)
 	{
 		SpectatorMove ();
+		pmove.onground = false;
 		return;
 	}
 
