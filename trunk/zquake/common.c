@@ -30,15 +30,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "crc.h"
 
 #define MAX_NUM_ARGVS	50
-#define NUM_SAFE_ARGVS	6
 
 usercmd_t nullcmd; // guarenteed to be zero
 
-static char	*largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
+static char	*largv[MAX_NUM_ARGVS + 1];
 static char	*argvdummy = " ";
-
-static char	*safeargvs[NUM_SAFE_ARGVS] =
-	{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse"};
 
 cvar_t	developer = {"developer","0"};
 cvar_t	registered = {"registered","0"};
@@ -973,28 +969,10 @@ COM_InitArgv
 */
 void COM_InitArgv (int argc, char **argv)
 {
-	qboolean	safe;
-	int			i;
-
-	safe = false;
-
 	for (com_argc=0 ; (com_argc<MAX_NUM_ARGVS) && (com_argc < argc) ;
 		 com_argc++)
 	{
 		largv[com_argc] = argv[com_argc];
-		if (!strcmp ("-safe", argv[com_argc]))
-			safe = true;
-	}
-
-	if (safe)
-	{
-	// force all the safe-mode switches. Note that we reserved extra space in
-	// case we need to add these, so we don't need an overflow check
-		for (i=0 ; i<NUM_SAFE_ARGVS ; i++)
-		{
-			largv[com_argc] = safeargvs[i];
-			com_argc++;
-		}
 	}
 
 	largv[com_argc] = argvdummy;
