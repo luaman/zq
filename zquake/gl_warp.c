@@ -311,7 +311,7 @@ void EmitFlatPoly (msurface_t *fa)
 	glpoly_t	*p;
 	float		*v;
 	int			i;
-	
+
 	for (p=fa->polys ; p ; p=p->next)
 	{
 		glBegin (GL_POLYGON);
