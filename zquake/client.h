@@ -142,7 +142,7 @@ typedef struct
 	float	die;				// stop lighting after this time
 	float	decay;				// drop this each second
 	float	minlight;			// don't add when contributing less
-//	int		type;
+	int		type;
 } dlight_t;
 
 typedef struct
@@ -166,8 +166,6 @@ typedef struct cparticle_s
 	float		die;
 	ptype_t		type;
 } cparticle_t;
-
-#define	MAX_EFRAGS		512
 
 #define	MAX_DEMOS		8
 #define	MAX_DEMONAME	16
@@ -382,6 +380,7 @@ extern	cvar_t	r_rockettrail;
 extern	cvar_t	r_grenadetrail;
 extern	cvar_t	r_powerupglow;
 
+#define	MAX_EFRAGS		512
 #define	MAX_STATIC_ENTITIES	128			// torches, etc
 
 // FIXME, allocate dynamically
@@ -462,6 +461,10 @@ void CL_UpdateTEnts (void);
 //
 // cl_effects.c
 //
+dlight_t *CL_AllocDlight (int key);
+void CL_NewDlight (int key, vec3_t origin, float radius, float time, int type);
+void CL_DecayLights (void);
+
 void CL_InitParticles (void);
 void CL_ClearParticles (void);
 void CL_LinkParticles (void);
@@ -477,10 +480,6 @@ void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
 //
 // cl_ents.c
 //
-dlight_t *CL_AllocDlight (int key);
-void CL_NewDlight (int key, vec3_t origin, float radius, float time, int type);
-void CL_DecayLights (void);
-
 void CL_SetSolidPlayers (int playernum);
 void CL_SetUpPlayerPrediction(qboolean dopred);
 void CL_EmitEntities (void);
