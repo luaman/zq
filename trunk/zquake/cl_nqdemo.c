@@ -4,6 +4,13 @@
 #include "sound.h"
 #include "cdaudio.h"
 
+// FIXME, get rid of
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "r_model.h"
+#endif
+
 void CL_FindModelNumbers (void);
 void TP_NewMap (void);
 void CL_ParseBaseline (entity_state_t *es);

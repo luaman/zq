@@ -926,97 +926,6 @@ void Mod_LoadLeafs (lump_t *l)
 
 /*
 =================
-Mod_LoadClipnodes
-=================
-*/
-void Mod_LoadClipnodes (lump_t *l)
-{
-	dclipnode_t *in, *out;
-	int			i, count;
-	hull_t		*hull;
-
-	in = (dclipnode_t *)(mod_base + l->fileofs);
-	if (l->filelen % sizeof(*in))
-		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
-	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-
-	loadmodel->clipnodes = out;
-	loadmodel->numclipnodes = count;
-
-	hull = &loadmodel->hulls[1];
-	hull->clipnodes = out;
-	hull->firstclipnode = 0;
-	hull->lastclipnode = count-1;
-	hull->planes = loadmodel->planes;
-	hull->clip_mins[0] = -16;
-	hull->clip_mins[1] = -16;
-	hull->clip_mins[2] = -24;
-	hull->clip_maxs[0] = 16;
-	hull->clip_maxs[1] = 16;
-	hull->clip_maxs[2] = 32;
-
-	hull = &loadmodel->hulls[2];
-	hull->clipnodes = out;
-	hull->firstclipnode = 0;
-	hull->lastclipnode = count-1;
-	hull->planes = loadmodel->planes;
-	hull->clip_mins[0] = -32;
-	hull->clip_mins[1] = -32;
-	hull->clip_mins[2] = -24;
-	hull->clip_maxs[0] = 32;
-	hull->clip_maxs[1] = 32;
-	hull->clip_maxs[2] = 64;
-
-	for (i=0 ; i<count ; i++, out++, in++)
-	{
-		out->planenum = LittleLong(in->planenum);
-		out->children[0] = LittleShort(in->children[0]);
-		out->children[1] = LittleShort(in->children[1]);
-	}
-}
-
-/*
-=================
-Mod_MakeHull0
-
-Deplicate the drawing hull structure as a clipping hull
-=================
-*/
-void Mod_MakeHull0 (void)
-{
-	mnode_t		*in, *child;
-	dclipnode_t *out;
-	int			i, j, count;
-	hull_t		*hull;
-	
-	hull = &loadmodel->hulls[0];	
-	
-	in = loadmodel->nodes;
-	count = loadmodel->numnodes;
-	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
-
-	hull->clipnodes = out;
-	hull->firstclipnode = 0;
-	hull->lastclipnode = count-1;
-	hull->planes = loadmodel->planes;
-
-	for (i=0 ; i<count ; i++, out++, in++)
-	{
-		out->planenum = in->plane - loadmodel->planes;
-		for (j=0 ; j<2 ; j++)
-		{
-			child = in->children[j];
-			if (child->contents < 0)
-				out->children[j] = child->contents;
-			else
-				out->children[j] = child - loadmodel->nodes;
-		}
-	}
-}
-
-/*
-=================
 Mod_LoadMarksurfaces
 =================
 */
@@ -1131,7 +1040,7 @@ Mod_LoadBrushModel
 */
 void Mod_LoadBrushModel (model_t *mod, void *buffer)
 {
-	int			i, j;
+	int			i;
 	dheader_t	*header;
 	dmodel_t 	*bm;
 	
@@ -1156,30 +1065,20 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 
 // load into heap
 	
-	if (!dedicated)
-	{
-		Mod_LoadVertexes (&header->lumps[LUMP_VERTEXES]);
-		Mod_LoadEdges (&header->lumps[LUMP_EDGES]);
-		Mod_LoadSurfedges (&header->lumps[LUMP_SURFEDGES]);
-		Mod_LoadTextures (&header->lumps[LUMP_TEXTURES]);
-		Mod_LoadLighting (&header->lumps[LUMP_LIGHTING]);
-	}
+	Mod_LoadVertexes (&header->lumps[LUMP_VERTEXES]);
+	Mod_LoadEdges (&header->lumps[LUMP_EDGES]);
+	Mod_LoadSurfedges (&header->lumps[LUMP_SURFEDGES]);
+	Mod_LoadTextures (&header->lumps[LUMP_TEXTURES]);
+	Mod_LoadLighting (&header->lumps[LUMP_LIGHTING]);
 	Mod_LoadPlanes (&header->lumps[LUMP_PLANES]);
-	if (!dedicated)
-	{
-		Mod_LoadTexinfo (&header->lumps[LUMP_TEXINFO]);
-		Mod_LoadFaces (&header->lumps[LUMP_FACES]);
-		Mod_LoadMarksurfaces (&header->lumps[LUMP_MARKSURFACES]);
-	}
+	Mod_LoadTexinfo (&header->lumps[LUMP_TEXINFO]);
+	Mod_LoadFaces (&header->lumps[LUMP_FACES]);
+	Mod_LoadMarksurfaces (&header->lumps[LUMP_MARKSURFACES]);
 	Mod_LoadVisibility (&header->lumps[LUMP_VISIBILITY]);
 	Mod_LoadLeafs (&header->lumps[LUMP_LEAFS]);
 	Mod_LoadNodes (&header->lumps[LUMP_NODES]);
-	Mod_LoadClipnodes (&header->lumps[LUMP_CLIPNODES]);
-//	Mod_LoadEntities (&header->lumps[LUMP_ENTITIES]);
 	Mod_LoadSubmodels (&header->lumps[LUMP_MODELS]);
 
-	Mod_MakeHull0 ();
-	
 	mod->numframes = 2;		// regular and alternate animation
 	
 //
@@ -1189,16 +1088,13 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	{
 		bm = &mod->submodels[i];
 
-		mod->hulls[0].firstclipnode = bm->headnode[0];
-		for (j=1 ; j<MAX_MAP_HULLS ; j++)
-		{
-			mod->hulls[j].firstclipnode = bm->headnode[j];
-			mod->hulls[j].lastclipnode = mod->numclipnodes-1;
-		}
-		
 		mod->firstmodelsurface = bm->firstface;
 		mod->nummodelsurfaces = bm->numfaces;
 		
+		mod->firstnode = bm->headnode[0];
+		if ((unsigned)mod->firstnode > loadmodel->numnodes)
+			Host_Error ("Inline model %i has bad firstnode", i);
+
 		VectorCopy (bm->maxs, mod->maxs);
 		VectorCopy (bm->mins, mod->mins);
 
