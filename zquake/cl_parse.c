@@ -793,13 +793,6 @@ void CL_ParseStatic (void)
 
 	CL_ParseBaseline (&es);
 		
-// Tonik -->
-	if (!r_drawflame.value)
-	if (!strcmp(cl.model_precache[es.modelindex]->name, "progs/flame.mdl")
-	|| !strcmp(cl.model_precache[es.modelindex]->name, "progs/flame2.mdl"))
-		return;
-// <-- Tonik
-
 	i = cl.num_statics;
 	if (i >= MAX_STATIC_ENTITIES)
 		Host_EndGame ("Too many static entities");

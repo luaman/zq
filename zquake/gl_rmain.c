@@ -477,23 +477,18 @@ void R_DrawAliasModel (entity_t *ent)
 	// get lighting information
 	//
 
-// Tonik: make thunderbolt model look nice
-// FIXME: we don't want to make strcmp's for every model!
-	if (!strcmp (clmodel->name, "progs/bolt.mdl")
-		|| !strcmp (clmodel->name, "progs/bolt2.mdl")
-		|| !strcmp (clmodel->name, "progs/bolt3.mdl") ) {
+// make thunderbolt and torches full light
+	if (clmodel->modhint == MOD_THUNDERBOLT) {
 		ambientlight = 210;
 		shadelight = 0;
 		full_light = true;
-	} else if (!strcmp (clmodel->name, "progs/flame2.mdl")
-		|| !strcmp (clmodel->name, "progs/flame.mdl") ) {
-		// HACK HACK HACK -- no fullbright colors, so make torches full light
+	} else if (clmodel->modhint == MOD_FLAME) {
 		ambientlight = 255;
 		shadelight = 0;
 		full_light = true;
 	}
-	else {
-
+	else
+	{
 		// normal lighting 
 
 		full_light = false;
@@ -524,7 +519,7 @@ void R_DrawAliasModel (entity_t *ent)
 			ambientlight = shadelight = 24;
 		
 		// never allow players to go totally black
-		if (!strcmp(clmodel->name, "progs/player.mdl")) {
+		if (clmodel->modhint == MOD_PLAYER) {
 			if (ambientlight < 8)
 				ambientlight = shadelight = 8;
 		}
@@ -554,7 +549,7 @@ void R_DrawAliasModel (entity_t *ent)
 	glPushMatrix ();
 	R_RotateForEntity (ent);
 
-	if (!strcmp (clmodel->name, "progs/eyes.mdl") ) {
+	if (clmodel->modhint == MOD_EYES) {
 		glTranslatef (paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2] - (22 + 8));
 	// double size of eyes, since they are really hard to see in gl
 		glScalef (paliashdr->scale[0]*2, paliashdr->scale[1]*2, paliashdr->scale[2]*2);
@@ -614,7 +609,7 @@ void R_DrawAliasModel (entity_t *ent)
 
 	glPopMatrix ();
 
-	if (r_shadows.value)
+	if (r_shadows.value && !full_light)
 	{
 		glPushMatrix ();
 		R_RotateForEntity (ent);
