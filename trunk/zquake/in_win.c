@@ -1340,9 +1340,8 @@ ext keycode 28 KP_ENTER
 */
 void IN_LoadKeys_f (void)
 {
-	int n, keynum;
+	int n, keynum, count, shift;
 	qboolean ext;
-	int shift;
 	char *data;
 	char filename[MAX_QPATH];
 	char layout[64] = "custom";
@@ -1371,6 +1370,7 @@ void IN_LoadKeys_f (void)
 
 	keymap_active = false;
 
+	count = 0;
 	data = strtok (data, "\r\n");
 	for ( ; data; data = strtok (NULL, "\r\n"))
 	{
@@ -1421,9 +1421,15 @@ void IN_LoadKeys_f (void)
 				keymap[n] = keynum;
 			else
 				keymap[n + 128] = keynum;
+			count++;
 		}
 		else
 			Com_Printf ("\"%s\" is not a valid key\n", Cmd_Argv(shift + 1));
+	}
+
+	if (!count) {
+		Com_Printf ("No keycodes loaded -- not a valid .kmap file?\n");
+		return;
 	}
 
 	// some keys are hard-wired
