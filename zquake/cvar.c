@@ -475,7 +475,7 @@ qboolean Cvar_Delete (char *name)
 		prev = var;
 	}
 
-	Sys_Error ("Cvar list broken");
+	assert(!"Cvar list broken");
 	return false;	// shut up compiler
 }
 

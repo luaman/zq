@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <assert.h>
 
 #ifdef _WIN32
 #pragma warning( disable : 4244 4127 4201 4214 4514 4305 4115 4018)
@@ -63,9 +64,6 @@ typedef enum {false, true} qboolean;
 #else
 #define UNALIGNED_OK	0
 #endif
-
-// !!! if this is changed, it must be changed in d_ifacea.h too !!!
-#define CACHE_SIZE	32		// used to align key data structures
 
 #define UNUSED(x)	(x = x)	// for pesky compiler / lint warnings
 

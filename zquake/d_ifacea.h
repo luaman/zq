@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // !!! if this is changed, it must be changed in r_shared.h too !!!
 #define	MAXHEIGHT	1024
 
-// !!! if this is changed, it must be changed in quakedef.h too !!!
+// !!! if this is changed, it must be changed in r_local.h too !!!
 #define CACHE_SIZE	32		// used to align key data structures
 
 // particle_t structure
