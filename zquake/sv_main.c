@@ -589,7 +589,7 @@ void SVC_DirectConnect (void)
 
 	adr = net_from;
 
-	// if there is already a slot for this ip, drop it
+	// if there is already a slot for this ip, reuse it
 	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
 		if (cl->state == cs_free)
@@ -604,8 +604,12 @@ void SVC_DirectConnect (void)
 			}
 
 			Com_Printf ("%s:reconnect\n", NET_AdrToString (adr));
-			SV_DropClient (cl);
-			// FIXME, set to cs_free so that the slot can be reused right away?
+			if (cl->state == cs_spawned)
+			{
+				SV_DropClient (cl);
+				SV_ClearReliable (cl);	// don't send the disconnect
+			}
+			cl->state = cs_free;
 			break;
 		}
 	}
