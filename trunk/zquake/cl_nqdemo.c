@@ -282,6 +282,15 @@ void NQD_ParsePrint (void)
 }
 
 
+// JPG's ProQuake hacks
+int ReadPQByte (void) {
+	int msvc_optimizations_are_buggy = MSG_ReadByte() * 16 + MSG_ReadByte() - 272;
+	return msvc_optimizations_are_buggy;
+}
+int ReadPQShort (void) {
+	return ReadPQByte() * 256 + ReadPQByte();
+}
+
 /*
 ==================
 NQD_ParseStufftext
@@ -291,7 +300,23 @@ void NQD_ParseStufftext (void)
 {
 	char	*s;
 	byte	*p;
-	
+
+	if (msg_readcount + 2 <= net_message.cursize &&
+		net_message.data[msg_readcount] == 1 && net_message.data[msg_readcount + 1] == 7)
+	{
+		int num, ping;
+		MSG_ReadByte();
+		MSG_ReadByte();
+		while (ping = ReadPQShort())
+		{
+			num = ping / 4096;
+			if ((unsigned int)num >= nq_maxclients)
+				Host_Error ("Bad ProQuake message");
+			cl.players[num].ping = ping & 4095;
+		}
+		// fall through to stufftext parsing (yes that's how it's intended by JPG)
+	}
+
 	s = MSG_ReadString ();
 	Com_DPrintf ("stufftext: %s\n", s);
 
@@ -299,7 +324,7 @@ void NQD_ParseStufftext (void)
 		if (*p > 32 && *p < 128)
 			goto ok;
 	}
-	// ignore ProQuake stuff
+	// ignore weird ProQuake stuff
 	return;
 
 ok:
