@@ -448,8 +448,6 @@ void PM_WaterMove (void)
 	vec3_t	wishvel;
 	float	wishspeed;
 	vec3_t	wishdir;
-	vec3_t	start, dest;
-	pmtrace_t	trace;
 
 //
 // user intentions
@@ -465,8 +463,7 @@ void PM_WaterMove (void)
 	VectorCopy (wishvel, wishdir);
 	wishspeed = VectorNormalize(wishdir);
 
-	if (wishspeed > movevars.maxspeed)
-	{
+	if (wishspeed > movevars.maxspeed) {
 		VectorScale (wishvel, movevars.maxspeed/wishspeed, wishvel);
 		wishspeed = movevars.maxspeed;
 	}
@@ -477,19 +474,7 @@ void PM_WaterMove (void)
 //
 	PM_Accelerate (wishdir, wishspeed, movevars.wateraccelerate);
 
-// assume it is a stair or a slope, so press down from stepheight above
-	VectorMA (pmove.origin, frametime, pmove.velocity, dest);
-	VectorCopy (dest, start);
-	start[2] += STEPSIZE + 1;
-	trace = PM_PlayerTrace (start, dest);
-	if (!trace.startsolid && !trace.allsolid &&
-		(trace.fraction == 1 || trace.plane.normal[2] >= MIN_STEP_NORMAL))
-	{	// walked up the step
-		VectorCopy (trace.endpos, pmove.origin);
-		return;
-	}
-	
-	PM_SlideMove ();
+	PM_StepSlideMove ();
 }
 
 
