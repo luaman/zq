@@ -1128,6 +1128,7 @@ float RadiusFromBounds (vec3_t mins, vec3_t maxs)
 	return VectorLength (corner);
 }
 
+#ifdef HALFLIFEBSP
 static void Mod_ParseWadsFromEntityLump(lump_t *l)
 {
 	char *data;
@@ -1191,6 +1192,7 @@ static void Mod_ParseWadsFromEntityLump(lump_t *l)
 		}
 	}
 }
+#endif /* HALFLIFEBSP */
 
 
 /*
