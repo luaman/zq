@@ -275,42 +275,6 @@ void() ClientDisconnected =
 	if (self._last)
 		self._last._next = self._next;
 };
-/*
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-BotPreFrame & BotPostFrame, used to make the
-bot easier to install
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-*/
-float () BotPreFrame =
-{
-//wtf?
-
-//	if (self.b_clientno == -1)
-//		return TRUE;
-
-
-if (self.ishuman)
-return;
-
-	if (self.b_frags != self.frags)
-	{
-		if (self.b_frags > self.frags)
-		{
-			if (pointcontents(self.origin) == CONTENT_LAVA)
-				bot_start_topic(10);
-			else
-				bot_start_topic(9);
-		}
-		else
-			bot_start_topic(2);
-		self.b_frags = self.frags;
-	}
-
-	DynamicWaypoint();
-	return FALSE;
-};
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -461,6 +425,22 @@ void BotPreThink (entity self)
 	frik_obstacles();
 	CL_KeyMove();
 	BotAI ();
+
+	if (self.b_frags != self.frags)
+	{
+		if (self.b_frags > self.frags)
+		{
+			if (pointcontents(self.origin) == CONTENT_LAVA)
+				bot_start_topic(10);
+			else
+				bot_start_topic(9);
+		}
+		else
+			bot_start_topic(2);
+		self.b_frags = self.frags;
+	}
+
+	DynamicWaypoint();
 }
 
 void() BotFrame =
