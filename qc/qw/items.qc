@@ -67,12 +67,13 @@ void q_touch ()
 	self.solid = SOLID_NOT;
 	other.items = other.items | IT_QUAD;
 	self.model = "";
-		if (deathmatch == 4)
-		{
-			other.armortype = 0;
-			other.armorvalue = 0 * 0.01;
-			other.ammo_cells = 0;
-		}
+
+	if (deathmatch == 4)
+	{
+		other.armortype = 0;
+		other.armorvalue = 0 * 0.01;
+		other.ammo_cells = 0;
+	}
 
 // do the apropriate action
 	other.super_time = 1;
