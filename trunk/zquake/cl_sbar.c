@@ -57,7 +57,7 @@ static qbool	sb_showscores;
 static qbool	sb_showteamscores;
 
 void Sbar_DeathmatchOverlay (int start);
-void Sbar_TeamOverlay (void);
+void Sbar_TeamOverlay (int start);
 void Sbar_MiniDeathmatchOverlay (void);
 
 static qbool largegame = false;
@@ -891,13 +891,13 @@ void Sbar_Draw (void)
 	// if we're dead show team scores in team games
 	if (cl.stats[STAT_HEALTH] <= 0 && !cl.spectator)
 		if (cl.teamplay && !sb_showscores)
-			Sbar_TeamOverlay();
+			Sbar_TeamOverlay (0);
 		else
 			Sbar_DeathmatchOverlay (0);
 	else if (sb_showscores)
 		Sbar_DeathmatchOverlay (0);
 	else if (sb_showteamscores)
-		Sbar_TeamOverlay();
+		Sbar_TeamOverlay (0);
 
 #ifdef GLQUAKE
 	if (sb_showscores || sb_showteamscores ||
@@ -962,7 +962,7 @@ team frags
 added by Zoid
 ==================
 */
-static void Sbar_TeamOverlay (void)
+static void Sbar_TeamOverlay (int start)
 {
 	mpic_t			*pic;
 	int				i, k, l;
@@ -977,7 +977,7 @@ static void Sbar_TeamOverlay (void)
 		return;
 
 	if (!cl.teamplay) {
-		Sbar_DeathmatchOverlay(0);
+		Sbar_DeathmatchOverlay (start);
 		return;
 	}
 
@@ -986,10 +986,13 @@ static void Sbar_TeamOverlay (void)
 
 	xofs = (vid.width - 320)>>1;
 
-	pic = R_CachePic ("gfx/ranking.lmp");
-	R_DrawPic (xofs + 160 - GetPicWidth(pic)/2, 0, pic);
+	if (!start) {
+		pic = R_CachePic ("gfx/ranking.lmp");
+		R_DrawPic (xofs + 160 - GetPicWidth(pic)/2, 0, pic);
+		y = 24;
+	} else
+		y = start;
 
-	y = 24;
 	x = xofs + 36;
 	R_DrawString (x, y, "low/avg/high team total players");
 	y += 8;
@@ -1403,16 +1406,23 @@ void Sbar_IntermissionOverlay (void)
 	if (cl.gametype == GAME_DEATHMATCH)
 	{
 		if (cl.teamplay && !sb_showscores)
-			Sbar_TeamOverlay ();
+			Sbar_TeamOverlay (0);
 		else
 			Sbar_DeathmatchOverlay (0);
 		return;
 	}
-
 	xofs = (vid.width - 320)>>1;
 
 	pic = R_CachePic ("gfx/complete.lmp");
 	R_DrawPic (xofs + 64, 24, pic);
+
+	// in coop, pressing TAB shows player frags instead of totals
+	if ((sb_showscores || sb_showteamscores) && cl.maxclients > 1
+		&& atoi(Info_ValueForKey(cl.serverinfo, "coop")))
+	{
+		Sbar_TeamOverlay (48);
+		return;
+	}
 
 	pic = R_CachePic ("gfx/inter.lmp");
 	R_DrawPic (xofs, 56, pic);
