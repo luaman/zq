@@ -463,8 +463,9 @@ particle(origin, dir, color, count [,replacement_te [,replacement_count]]) = #47
 static void PF_particle (void)
 {
 	float	*org, *dir;
-	float	color = 0.0, count = 0.0;
-	int		replacement_te = 0, replacement_count = 0;
+	float	color, count;
+	int		replacement_te;
+	int		replacement_count = 0 /* suppress compiler warning */;
 			
 	org = G_VECTOR(OFS_PARM0);
 	dir = G_VECTOR(OFS_PARM1);
@@ -2325,11 +2326,11 @@ static void PF_checkextension (void)
 		"DP_QC_ETOS",
 		"DP_QC_RANDOMVEC",
 		"DP_QC_TRACEBOX",
-		// "FRIK_FILE",		// incomplete (fopen, fclose, fputs, fgets are not implemented)
 		"ZQ_QC_CHECKBUILTIN",
 		"ZQ_MOVETYPE_NOCLIP",
 		"ZQ_MOVETYPE_FLY",
 		"ZQ_MOVETYPE_NONE",
+		"ZQ_QC_PARTICLE",
 		NULL
 	};
 	char **pstr, *extension;
