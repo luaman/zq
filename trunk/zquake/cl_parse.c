@@ -1195,6 +1195,38 @@ void CL_ParseServerInfoChange (void)
 }
 
 
+// for CL_ParsePrint
+static void FlushString (char *s, int level)
+{
+	if (level == PRINT_CHAT)
+	{
+		char	buf[1024];
+		char	*out = buf, *p, *p1;
+		extern cvar_t	cl_parseWhiteText;
+
+		for (p = s; *p; p++) {
+			if  (*p == '{' && cl_parseWhiteText.value) {
+				p1 = strchr (p + 1, '}');
+				if (p1 && (p1 - p > 1)) {
+					memcpy (out, p + 1, p1 - p - 1);
+					out += p1 - p - 1;
+					p = p1;
+					continue;
+				}
+			}
+			if (*p != 10 && *p != 13)
+				*out++ = *p | 128;	// convert to red
+			else
+				*out++ = *p;
+		}
+		*out = 0;
+		Con_Printf ("%s", buf);
+	}
+	else
+		Con_Printf ("%s", s);
+	TP_SearchForMsgTriggers (s, level);
+}
+
 /*
 ==============
 CL_ParsePrint
@@ -1210,34 +1242,32 @@ void CL_ParsePrint (void)
 	level = MSG_ReadByte ();
 	s = MSG_ReadString ();
 
+	if (level == PRINT_CHAT) {
+		TP_CheckVersionRequest (s);
+		if (cl_nofake.value == 1 || (cl_nofake.value == 2 &&
+								TP_CategorizeMessage(s) != 2)) {
+			for (p = s; *p; p++)
+				if (*p == 13 || (*p == 10 && p[1]))
+					*p = ' '; 
+		}
+		S_LocalSound ("misc/talk.wav");
+	}
+
+	if (cl.sprint_buf[0] && level != cl.sprint_level) {
+		FlushString (cl.sprint_buf, cl.sprint_level);
+		cl.sprint_buf[0] = 0;
+	}
+
 	strncat (cl.sprint_buf, s, sizeof(cl.sprint_buf)-1);
+	cl.sprint_level = level;
 
 	while ( (p=strchr(cl.sprint_buf, '\n')) != NULL ) {
 		len = p - cl.sprint_buf + 1;
 		memcpy(str, cl.sprint_buf, len);
 		str[len] = '\0';
 		strcpy (cl.sprint_buf, p+1);
-		
-		if (level == PRINT_CHAT)
-		{
-			char *p;
-			int flags;
-
-			flags = TP_CategorizeMessage (str);
-			TP_CheckVersionRequest (str);
-			if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
-				for (p = str; *p; p++)
-					if (*p == 13)
-						*p = '#'; 
-			}
-			con_ormask = 128;
-			S_LocalSound ("misc/talk.wav");
-		}
-		Con_Printf ("%s", str);
-		con_ormask = 0;
-		TP_SearchForMsgTriggers (str, level);
+		FlushString (str, level);
 	}
-
 }
 
 
