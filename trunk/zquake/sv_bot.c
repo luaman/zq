@@ -156,19 +156,12 @@ void SV_RunBots (void)
 	client_t	*cl;
 	edict_t		*ent;
 	usercmd_t	cmd;
-	int			num_bots_spawned = 0;
 
 	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++) {
 		if (!cl->bot)
 			continue;
 
 		if (cl->state == cs_connected) {
-			if (num_bots_spawned > 3)
-				continue;			// don't spawn them all at once
-
-			if (sv.time < 1.4)
-				continue;			// give the local player a chance to reconnect
-
 			if (!cl->cmdtime /* FIXME, a good idea to check this particular field? */) {
 				// call the progs to get default spawn parms for the new client
 				PR_ExecuteProgram (pr_global_struct->SetNewParms);
@@ -177,7 +170,6 @@ void SV_RunBots (void)
 			}
 
 			Bot_Spawn_And_Begin (cl);
-			num_bots_spawned++;
 		}
 
 		if (cl->state != cs_spawned)
@@ -199,12 +191,12 @@ void SV_RunBots (void)
 		SZ_Clear (&cl->datagram);			// don't overflow
 		SZ_Clear (&cl->netchan.message);	// don't overflow
 
-		if (sv_paused.value)
-			continue;
-
 		//
 		// think and run physics
 		//
+		if (sv_paused.value)
+			continue;
+
 		sv_client = cl;
 		sv_player = ent;
 

@@ -170,8 +170,17 @@ void SV_SaveSpawnparms (void)
 		if (sv_client->state != cs_spawned)
 			continue;
 
-		// needs to reconnect
-		sv_client->state = cs_connected;
+		if (sv_client->bot) {
+			// bots are kicked on map change
+			sv_client->state = cs_free;
+			sv_client->bot = false;
+			sv_client->name[0] = 0;
+			memset (sv_client->userinfo, 0, sizeof(sv_client->userinfo));
+		}
+		else {
+			// needs to reconnect
+			sv_client->state = cs_connected;
+		}
 
 		// call the progs to get default spawn parms for the new client
 		pr_global_struct->self = EDICT_TO_PROG(sv_client->edict);
