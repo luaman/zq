@@ -374,7 +374,6 @@ typedef struct
 	int			viewplayernum;	// either playernum or spec_track (in chase camera mode)
 
 // refresh related state
-	struct model_s	*worldmodel;	// cl_entitites[0].model
 	struct efrag_s	*free_efrags;
 	int			num_entities;	// stored bottom up in cl_entities array
 	int			num_statics;	// stored top down in cl_entities

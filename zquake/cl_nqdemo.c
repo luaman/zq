@@ -427,8 +427,7 @@ static void NQD_ParseServerData (void)
 
 
 // local state
-	cl.worldmodel = cl.model_precache[1];
-	if (!cl.worldmodel)
+	if (!cl.model_precache[1])
 		Host_Error ("NQD_ParseServerData: NULL worldmodel");
 
 	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
@@ -436,7 +435,7 @@ static void NQD_ParseServerData (void)
 
 	CL_ClearParticles ();
 	CL_FindModelNumbers ();
-	R_NewMap (cl.worldmodel);
+	R_NewMap (cl.model_precache[1]);
 
 	TP_NewMap ();
 
