@@ -593,8 +593,6 @@ void CheckArrayExtensions (void)
 	Sys_Error ("Vertex array extension not present");
 }
 
-int		texture_extension_number = 1;
-
 void CheckMultiTextureExtensions (void) 
 {
 	if (strstr(gl_extensions, "GL_ARB_multitexture ") && !COM_CheckParm("-nomtex")) {

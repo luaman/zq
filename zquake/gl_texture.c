@@ -33,6 +33,8 @@ cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_lerpimages = {"r_lerpimages", "1"};
 cvar_t		gl_texturemode = {"gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", 0, OnChange_gl_texturemode};
 
+int		texture_extension_number = 1;
+
 int		gl_lightmap_format = 4;
 int		gl_solid_format = 3;
 int		gl_alpha_format = 4;
