@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// r_draw.c
+// r_rast.c
 
 #include "quakedef.h"
 #include "r_local.h"
