@@ -37,6 +37,7 @@ extern cvar_t	sv_pausable;
 extern cvar_t	pm_bunnyspeedcap;
 extern cvar_t	pm_ktjump;
 extern cvar_t	pm_slidefix;
+extern cvar_t	pm_airstep;
 
 extern double	sv_frametime;
 
@@ -1634,7 +1635,8 @@ void SV_RunCmd (usercmd_t *ucmd)
 	movevars.maxspeed = sv_client->maxspeed;
 	movevars.bunnyspeedcap = pm_bunnyspeedcap.value;
 	movevars.ktjump = pm_ktjump.value;
-	movevars.slidefix = pm_slidefix.value;
+	movevars.slidefix = (pm_slidefix.value != 0);
+	movevars.airstep = (pm_airstep.value != 0);
 
 
 	// do the move

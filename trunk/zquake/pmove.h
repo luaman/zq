@@ -99,7 +99,8 @@ typedef struct {
 	float	entgravity;
 	float	bunnyspeedcap;
 	float	ktjump;
-	int		slidefix;
+	qboolean	slidefix;
+	qboolean	airstep;
 } movevars_t;
 
 

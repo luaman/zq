@@ -283,11 +283,20 @@ void PM_StepSlideMove (void)
 usedown:
 		VectorCopy (down, pmove.origin);
 		VectorCopy (downvel, pmove.velocity);
-	} else // copy z value from slide move
-		pmove.velocity[2] = downvel[2];
+		return;
+	}
+	
+	// copy z value from slide move
+	pmove.velocity[2] = downvel[2];
 
-// if at a dead stop, retry the move with nudges to get around lips
-
+	if (!pmove.onground && pmove.waterlevel < 2 && (blocked & BLOCKED_STEP)) {
+		float scale;
+		// in pm_airstep mode, walking up a 16 unit high step
+		// will kill 16% of horizontal velocity
+		scale = 1 - 0.01*(pmove.origin[2] - original[2]);
+		pmove.velocity[0] *= scale;
+		pmove.velocity[1] *= scale;
+	}
 }
 
 
@@ -569,7 +578,10 @@ void PM_AirMove (void)
 		// add gravity
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * frametime;
 
-		PM_SlideMove ();
+		if (movevars.airstep)
+			PM_StepSlideMove ();
+		else
+			PM_SlideMove ();
 	}
 }
 
