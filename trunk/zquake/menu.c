@@ -2723,9 +2723,7 @@ void M_Draw (void)
 		m_entersound = false;
 	}
 
-	VID_UnlockBuffer ();
 	S_ExtraUpdate ();
-	VID_LockBuffer ();
 }
 
 
