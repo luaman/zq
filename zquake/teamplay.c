@@ -92,6 +92,8 @@ char *TP_LocationName (vec3_t location);
 typedef struct tvars_s {
 	int		health;
 	int		items;
+	int		olditems;
+	int		stat_framecounts[MAX_CL_STATS];
 	int		activeweapon;
 	float	respawntrigger_time;
 	float	deathtrigger_time;
@@ -1915,13 +1917,46 @@ more:
 	if (!strcmp(s, "weapons/pkup.wav"))
 	{
 		item_t	*item;
-		if (!FindNearestItem (it_weapons, &item))
-			return;
-		ExecTookTrigger (item->cvar->string, item->itemflag, org);
+		if (FindNearestItem (it_weapons, &item)) {
+			ExecTookTrigger (item->cvar->string, item->itemflag, org);
+		}
+		else {
+			// we don't know what entity caused the sound, try to guess...
+			if (vars.stat_framecounts[STAT_ITEMS] == cls.framecount) {
+				if (vars.items & ~vars.olditems & IT_LIGHTNING)
+					ExecTookTrigger (tp_name_lg.string, it_lg, cl.simorg);
+				else if (vars.items & ~vars.olditems & IT_ROCKET_LAUNCHER)
+					ExecTookTrigger (tp_name_rl.string, it_rl, cl.simorg);
+				else if (vars.items & ~vars.olditems & IT_GRENADE_LAUNCHER)
+					ExecTookTrigger (tp_name_gl.string, it_gl, cl.simorg);
+				else if (vars.items & ~vars.olditems & IT_SUPER_NAILGUN)
+					ExecTookTrigger (tp_name_sng.string, it_sng, cl.simorg);
+				else if (vars.items & ~vars.olditems & IT_NAILGUN)
+					ExecTookTrigger (tp_name_ng.string, it_ng, cl.simorg);
+				else if (vars.items & ~vars.olditems & IT_SUPER_SHOTGUN)
+					ExecTookTrigger (tp_name_ssg.string, it_ssg, cl.simorg);
+			}
+		}
 		return;
 	}
 
 	// armor
+	if (!strcmp(s, "items/armor1.wav"))	{
+		item_t	*item;
+		qboolean armor_updated;
+		int armortype;
+
+		armor_updated = (vars.stat_framecounts[STAT_ARMOR] == cls.framecount);
+		armortype = FindNearestItem (it_armor, &item);
+		if (armortype == 1 || (!armortype && armor_updated && cl.stats[STAT_ARMOR] == 100))
+			ExecTookTrigger (tp_name_ga.string, it_ga, org);
+		else if (armortype == 2 || (!armortype && armor_updated && cl.stats[STAT_ARMOR] == 150))
+			ExecTookTrigger (tp_name_ya.string, it_ya, org);
+		else if (armortype == 3 || (!armortype && armor_updated && cl.stats[STAT_ARMOR] == 200))
+			ExecTookTrigger (tp_name_ra.string, it_ra, org);
+		return;
+	}
+
 	if (!strcmp(s, "items/armor1.wav"))
 	{
 		item_t	*item;
@@ -2137,6 +2172,7 @@ void TP_StatChanged (int stat, int value)
 				cl.frames[cl.validsequence&UPDATE_MASK].playerstate[cl.playernum].origin);
 		}
 
+		vars.olditems = vars.items;
 		vars.items = value;
 	}
 	else if (stat == STAT_ACTIVEWEAPON)
@@ -2145,6 +2181,8 @@ void TP_StatChanged (int stat, int value)
 			TP_ExecTrigger ("f_weaponchange");
 		vars.activeweapon = cl.stats[STAT_ACTIVEWEAPON];
 	}
+
+	vars.stat_framecounts[stat] = cls.framecount;
 }
 
 
