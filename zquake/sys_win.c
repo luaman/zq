@@ -175,7 +175,7 @@ void Sys_InitDoubleTime (void)
 {
 	__int64 freq;
 
-	if (!COM_CheckParm("-nohwtimer") &&
+	if (WinNT && !COM_CheckParm("-nohwtimer") &&
 		QueryPerformanceFrequency ((LARGE_INTEGER *)&freq) && freq > 0)
 	{
 		// hardware timer available
@@ -374,20 +374,13 @@ void Sys_Init (void)
 	timeBeginPeriod (1);
 
 	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
-
 	if (!GetVersionEx (&vinfo))
 		Sys_Error ("Couldn't get OS info");
-
 	if ((vinfo.dwMajorVersion < 4) ||
-		(vinfo.dwPlatformId == VER_PLATFORM_WIN32s))
-	{
-		Sys_Error ("QuakeWorld requires at least Win95 or NT 4.0");
+		(vinfo.dwPlatformId == VER_PLATFORM_WIN32s)) {
+		Sys_Error (PROGRAM " requires at least Win95 or NT 4.0");
 	}
-
-	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
-		WinNT = true;
-	else
-		WinNT = false;
+	WinNT = (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT);
 
 	Cvar_Register (&sys_sleep);
 	Cvar_Register (&sys_nostdout);
@@ -427,7 +420,7 @@ void Sys_Init_ (void)
 			0,            /* owner       */
 			"qwcl"); /* Semaphore name      */
 		if (!qwclsemaphore)
-			Sys_Error ("QWCL is already running on this system");
+			Sys_Error ("QuakeWorld is already running on this system");
 		CloseHandle (qwclsemaphore);
 		
 		qwclsemaphore = CreateSemaphore(
@@ -440,23 +433,16 @@ void Sys_Init_ (void)
 	MaskExceptions ();
 	Sys_SetFPCW ();
 
-	Sys_InitDoubleTime ();
-
 	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
-
 	if (!GetVersionEx (&vinfo))
 		Sys_Error ("Couldn't get OS info");
-
 	if ((vinfo.dwMajorVersion < 4) ||
-		(vinfo.dwPlatformId == VER_PLATFORM_WIN32s))
-	{
-		Sys_Error ("QuakeWorld requires at least Win95 or NT 4.0");
+		(vinfo.dwPlatformId == VER_PLATFORM_WIN32s)) {
+		Sys_Error (PROGRAM " requires at least Win95 or NT 4.0");
 	}
-	
-	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
-		WinNT = true;
-	else
-		WinNT = false;
+	WinNT = (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT);
+
+	Sys_InitDoubleTime ();
 }
 #endif
 
