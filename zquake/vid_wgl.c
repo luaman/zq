@@ -1572,8 +1572,8 @@ static void Check_Gamma (unsigned char *pal)
 
 	if (vid_gamma < 0.3)
 		vid_gamma = 0.3;
-	if (vid_gamma > 3)
-		vid_gamma = 3;
+	if (vid_gamma > 1)
+		vid_gamma = 1;
 
 	Cvar_SetValue (&gl_gamma, vid_gamma);
 
