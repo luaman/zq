@@ -78,12 +78,10 @@ cvar_t	allow_download_sounds = {"allow_download_sounds", "1"};
 cvar_t	allow_download_maps = {"allow_download_maps", "1"};
 
 cvar_t	sv_highchars = {"sv_highchars", "1"};
-
 cvar_t	sv_phs = {"sv_phs", "1"};
-
 cvar_t	pausable = {"pausable", "1"};
-
 cvar_t	sv_maxrate = {"sv_maxrate", "0"};
+cvar_t	sv_fastconnect = {"sv_fastconnect", "1"};
 
 //
 // game rules mirrored in svs.info
@@ -95,13 +93,14 @@ cvar_t	samelevel = {"samelevel","0",CVAR_SERVERINFO};
 cvar_t	maxclients = {"maxclients","8",CVAR_SERVERINFO};
 cvar_t	maxspectators = {"maxspectators","8",CVAR_SERVERINFO};
 cvar_t	deathmatch = {"deathmatch","1",CVAR_SERVERINFO};			// 0, 1, or 2
-cvar_t	spawn = {"spawn","0",CVAR_SERVERINFO};
+cvar_t	hostname = {"hostname","unnamed",CVAR_SERVERINFO};
 cvar_t	watervis = {"watervis","0",CVAR_SERVERINFO};
-// not mirrored
+
 cvar_t	skill = {"skill", "1"};
 cvar_t	coop = {"coop", "0"};
 
-cvar_t	hostname = {"hostname","unnamed",CVAR_SERVERINFO};
+cvar_t	spawn = {"spawn","0"};			// FIXME: remove?
+
 
 FILE	*sv_logfile;
 FILE	*sv_fraglogfile;
@@ -343,7 +342,8 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 
 	i = client - svs.clients;
 
-//Sys_Printf("SV_FullClientUpdate:  Updated frags for client %d\n", i);
+	if (client->state == cs_free && sv_fastconnect.value)
+		return;
 
 	MSG_WriteByte (buf, svc_updatefrags);
 	MSG_WriteByte (buf, i);
@@ -1447,14 +1447,11 @@ void SV_InitLocal (void)
 #endif
 	Cvar_RegisterVariable (&spectator_password);
 
-	Cvar_RegisterVariable (&sv_nailhack);
-
 	Cvar_RegisterVariable (&sv_mintic);
 	Cvar_RegisterVariable (&sv_maxtic);
 
 	Cvar_RegisterVariable (&skill);
 	Cvar_RegisterVariable (&coop);
-
 	Cvar_RegisterVariable (&fraglimit);
 	Cvar_RegisterVariable (&timelimit);
 	Cvar_RegisterVariable (&teamplay);
@@ -1463,8 +1460,9 @@ void SV_InitLocal (void)
 	Cvar_RegisterVariable (&maxspectators);
 	Cvar_RegisterVariable (&hostname);
 	Cvar_RegisterVariable (&deathmatch);
-	Cvar_RegisterVariable (&spawn);
+	
 	Cvar_RegisterVariable (&watervis);
+	Cvar_RegisterVariable (&spawn);
 
 #ifndef QW_BOTH
 	Cvar_RegisterVariable (&developer);
@@ -1495,12 +1493,12 @@ void SV_InitLocal (void)
 	Cvar_RegisterVariable (&allow_download_maps);
 
 	Cvar_RegisterVariable (&sv_highchars);
-
 	Cvar_RegisterVariable (&sv_phs);
-
 	Cvar_RegisterVariable (&pausable);
 
+	Cvar_RegisterVariable (&sv_nailhack);
 	Cvar_RegisterVariable (&sv_maxrate);
+	Cvar_RegisterVariable (&sv_fastconnect);
 
 	Cmd_AddCommand ("addip", SV_AddIP_f);
 	Cmd_AddCommand ("removeip", SV_RemoveIP_f);
@@ -1610,8 +1608,6 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	client_t	*client;
 	int		dupc = 1;
 	char	newname[80];
-	extern cvar_t	sv_maxrate;
-
 
 	// name for C code
 	val = Info_ValueForKey (cl->userinfo, "name");
