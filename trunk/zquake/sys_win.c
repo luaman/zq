@@ -59,19 +59,6 @@ FILE IO
 ===============================================================================
 */
 
-int	Sys_FileTime (char *path)
-{
-	FILE	*f;
-	
-	f = fopen(path, "rb");
-	if (f)
-	{
-		fclose(f);
-		return 1;
-	}
-	
-	return -1;
-}
 
 void Sys_mkdir (char *path)
 {

@@ -26,19 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <errno.h>
 
 
-int			 Sys_FileTime (char *path)
-{
-	FILE	*f;
-
-	f = fopen(path, "rb");
-	if (f)
-	{
-		fclose(f);
-		return 1;
-	}
-
-	return -1;
-}
 
 void		 Sys_mkdir (char *path)
 {
