@@ -352,6 +352,7 @@ void PR_Lex (void);
 // reads the next token into pr_token and classifies its type
 
 type_t *PR_ParseType (void);
+type_t *PR_ParseFunctionType (type_t *returnType);
 char *PR_ParseName (void);
 
 bool PR_Check (char *string);

@@ -625,26 +625,65 @@ void PR_SkipToSemicolon (void)
 
 /*
 ============
+PR_ParseFunctionType
+
+Parses parms in a function declaration , after '(' and till ')'
+============
+*/
+char pr_parm_names[MAX_PARMS][MAX_NAME];
+
+type_t *PR_ParseFunctionType (type_t *returnType)
+{
+	type_t	newtype;
+	memset (&newtype, 0, sizeof(newtype));
+	newtype.type = ev_function;
+	newtype.aux_type = returnType;
+	newtype.num_parms = 0;
+
+	if (PR_Check (")")) {
+		// empty args
+		return PR_FindType (&newtype);
+	}
+
+	if (PR_Check ("...")) {
+		// variable args
+		PR_Expect (")");
+		newtype.num_parms = -1;
+		return PR_FindType (&newtype);
+	}
+
+	do {
+		type_t *type = PR_ParseType ();
+		char *name = PR_ParseName ();
+		strcpy (pr_parm_names[newtype.num_parms], name);
+		newtype.parm_types[newtype.num_parms] = type;
+		newtype.num_parms++;
+	} while (PR_Check (","));
+	
+	PR_Expect (")");
+	
+	return PR_FindType(&newtype);
+}
+
+/*
+============
 PR_ParseType
 
 Parses a variable type, including field and functions types
 ============
 */
-char	pr_parm_names[MAX_PARMS][MAX_NAME];
-
 type_t *PR_ParseType (void)
 {
-	type_t	newtype;
-	type_t	*type;
-	char	*name;
-	
 	if (PR_Check ("."))
 	{
+		type_t	newtype;
 		memset (&newtype, 0, sizeof(newtype));
 		newtype.type = ev_field;
 		newtype.aux_type = PR_ParseType ();
 		return PR_FindType (&newtype);
 	}
+
+	type_t	*type;
 	
 	if (!strcmp (pr_token, "float") )
 		type = &type_float;
@@ -667,29 +706,7 @@ type_t *PR_ParseType (void)
 	
 	if (!PR_Check ("("))
 		return type;
-	
-// function type
-	memset (&newtype, 0, sizeof(newtype));
-	newtype.type = ev_function;
-	newtype.aux_type = type;	// return type
-	newtype.num_parms = 0;
-	if (!PR_Check (")"))
-	{
-		if (PR_Check ("..."))
-			newtype.num_parms = -1;	// variable args
-		else
-			do
-			{
-				type = PR_ParseType ();
-				name = PR_ParseName ();
-				strcpy (pr_parm_names[newtype.num_parms], name);
-				newtype.parm_types[newtype.num_parms] = type;
-				newtype.num_parms++;
-			} while (PR_Check (","));
-	
-		PR_Expect (")");
-	}
-	
-	return PR_FindType (&newtype);
-}
 
+// function type
+	return PR_ParseFunctionType(type);
+}
