@@ -366,7 +366,7 @@ void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross)
 
 double sqrt(double x);
 
-vec_t Length(vec3_t v)
+vec_t VectorLength (vec3_t v)
 {
 	float	length;
 	
