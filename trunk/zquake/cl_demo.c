@@ -326,6 +326,22 @@ readit:
 		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
 		if (r != 1)
 			Host_Error ("Unexpected end of demo");
+
+#ifdef MVDPLAY
+		if (cls.mvdplayback) {
+			switch(cls.lasttype) {
+			case dem_multiple:
+				if (!cam_locked || !(cls.lastto & (1 << cam_target)))
+					goto readnext;	
+				break;
+			case dem_single:
+				if (!cam_locked || cls.lastto != cam_target)
+					goto readnext;
+				break;
+			}
+		}
+#endif
+
 		return true;
 
 	case dem_set:
