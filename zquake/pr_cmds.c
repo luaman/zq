@@ -21,8 +21,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "server.h"
 #include "sv_world.h"
 
+
 #define	RETURN_EDICT(e) (((int *)pr_globals)[OFS_RETURN] = EDICT_TO_PROG(e))
 #define	RETURN_STRING(s) (((int *)pr_globals)[OFS_RETURN] = PR_SetString(s))
+
+// Used when returning a string
+// Let us hope it's large enough (no crashes, but result may be truncated)
+// Well, QW had 128...
+static char	pr_string_temp[512];
+
 
 /*
 ===============================================================================
@@ -897,8 +904,6 @@ static void PF_dprint (void)
 {
 	Com_Printf ("%s",PF_VarString(0));
 }
-
-static char	pr_string_temp[128];
 
 static void PF_ftos (void)
 {
@@ -1778,6 +1783,55 @@ static void PF_pow (void)
 }
 
 
+// float(string s) strlen = #114;
+static void PF_strlen (void)
+{
+	G_FLOAT(OFS_RETURN) = strlen(G_STRING(OFS_PARM0));
+}
+
+// string(string s1, string s2) strcat = #115; 
+static void PF_strcat (void)
+{
+	char *s1, *s2;
+
+	s1 = G_STRING(OFS_PARM0);
+	s2 = G_STRING(OFS_PARM1);
+
+	// sequential QC "strcat(s, s2); strcat(s, s3);" is ok,
+	// but don't use "strcat(s, s2); strcat(s3, s);" -
+	// since we're using a static buffer here,
+	// intermediate result will be overwritten.
+	strlcpy (pr_string_temp, s1, sizeof(pr_string_temp));
+	strlcat (pr_string_temp, s2, sizeof(pr_string_temp));
+
+	RETURN_STRING(pr_string_temp);
+}
+
+// string(string s, float start, float count) substr = #116;
+static void PF_substr (void)
+{
+	int		start, count;
+	char	*s;
+
+	s = G_STRING(OFS_PARM0);
+	start = (int)G_FLOAT(OFS_PARM1);
+	count = (int)G_FLOAT(OFS_PARM2);
+
+	if (start < 0)
+		Host_Error ("PF_substr: start < 0");
+
+	if (count <= 0 || strlen(s) <= start) {
+		G_INT(OFS_RETURN) = 0;
+		return;
+	}
+
+	// up to count characters, or until buffer size is exceeded
+	strlcpy (pr_string_temp, s + start, min(count + 1, sizeof(pr_string_temp)));
+
+	RETURN_STRING(pr_string_temp);
+}
+
+
 /*
 ==============
 PF_multicast
@@ -1791,6 +1845,9 @@ static void PF_checkextension (void)
 		"DP_QC_SINCOSSQRTPOW",
 		"DP_QC_MINMAXBOUND",
 		"ZQ_QC_CHECKBUILTIN",
+		"ZQ_MOVETYPE_NOCLIP",
+		"ZQ_MOVETYPE_FLY",
+		"ZQ_MOVETYPE_NONE",
 		NULL
 	};
 	char **pstr, *extension;
@@ -2016,6 +2073,23 @@ PF_bound,			// float(float min, float value, float max) bound	= #96;
 PF_pow,				// float(float x, float y) pow						= #97;
 PF_Fixme,
 PF_checkextension,	// float(string name) checkextension				= #99;
+PF_Fixme,			// #100
+PF_Fixme,			// #101
+PF_Fixme,			// #102
+PF_Fixme,			// #103
+PF_Fixme,			// #104
+PF_Fixme,			// #105
+PF_Fixme,			// #106
+PF_Fixme,			// #107
+PF_Fixme,			// #108
+PF_Fixme,			// #109
+PF_Fixme,			// #110
+PF_Fixme,			// #111
+PF_Fixme,			// #112
+PF_Fixme,			// #113
+PF_strlen,			// float(string s) strlen							= #114;
+PF_strcat,			// string(string s1, string s2) strcat				= #115; 
+PF_substr,			// string(string s, float start, float count) substr = #116;
 };
 
 int pr_numbuiltins = sizeof(pr_builtins)/sizeof(pr_builtins[0]);
