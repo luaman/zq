@@ -610,7 +610,7 @@ void SV_Gamedir (void)
 	if (strstr(dir, "..") || strstr(dir, "/")
 		|| strstr(dir, "\\") || strstr(dir, ":") )
 	{
-		Com_Printf ("*Gamedir should be a single filename, not a path\n");
+		Com_Printf ("*gamedir should be a single filename, not a path\n");
 		return;
 	}
 
@@ -705,9 +705,17 @@ void SV_Gamedir_f (void)
 	if (strstr(dir, "..") || strstr(dir, "/")
 		|| strstr(dir, "\\") || strstr(dir, ":") )
 	{
-		Com_Printf ("Gamedir should be a single filename, not a path\n");
+		Com_Printf ("gamedir should be a single filename, not a path\n");
 		return;
 	}
+
+#ifndef SERVERONLY
+	if (cls.state >= ca_connected)
+	{
+		Com_Printf ("you must disconnect before changing gamedir\n");
+		return;
+	}
+#endif
 
 	FS_SetGamedir (dir);
 	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
