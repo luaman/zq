@@ -35,6 +35,7 @@ int 	*snd_p, snd_linear_count, snd_vol;
 short	*snd_out;
 
 void Snd_WriteLinearBlastStereo16 (void);
+void Snd_WriteLinearBlastStereo16_SwapStereo (void);
 
 #if	!id386
 void Snd_WriteLinearBlastStereo16 (void)
@@ -50,7 +51,6 @@ void Snd_WriteLinearBlastStereo16 (void)
 		snd_out[i+1] = bound (-32768, val, 32767);
 	}
 }
-#endif
 
 void Snd_WriteLinearBlastStereo16_SwapStereo (void)
 {
@@ -65,6 +65,7 @@ void Snd_WriteLinearBlastStereo16_SwapStereo (void)
 		snd_out[i+1] = bound (-32768, val, 32767);
 	}
 }
+#endif
 
 void S_TransferStereo16 (int endtime)
 {
