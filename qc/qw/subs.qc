@@ -26,16 +26,16 @@
 */
 
 
-void() SUB_Null = {}
+void SUB_Null () {}
 
-void() SUB_Remove = {remove(self);}
+void SUB_Remove () {remove(self);}
 
 
 /*
 QuakeEd only writes a single float for angles (bad idea), so up and down are
 just constant angles.
 */
-void() SetMovedir =
+void SetMovedir ()
 {
 	if (self.angles == '0 -1 0')
 		self.movedir = '0 0 1';
@@ -55,7 +55,7 @@ void() SetMovedir =
 InitTrigger
 ================
 */
-void() InitTrigger =
+void InitTrigger ()
 {
 // trigger angles are used for one-way touches.  An angle of 0 is assumed
 // to mean no restrictions, so use a yaw of 360 instead.
@@ -76,7 +76,7 @@ calculate self.velocity and self.nextthink to reach dest from
 self.origin traveling at speed
 ===============
 */
-void(entity ent, vector tdest, float tspeed, void() func) SUB_CalcMoveEnt =
+void SUB_CalcMoveEnt (entity ent, vector tdest, float tspeed, void() func)
 {
 	entity	stemp;
 	stemp = self;
@@ -86,7 +86,7 @@ void(entity ent, vector tdest, float tspeed, void() func) SUB_CalcMoveEnt =
 	self = stemp;
 }
 
-void(vector tdest, float tspeed, void() func) SUB_CalcMove =
+void SUB_CalcMove (vector tdest, float tspeed, void() func)
 {
 	vector	vdestdelta;
 	float	len, traveltime;
@@ -129,7 +129,7 @@ void(vector tdest, float tspeed, void() func) SUB_CalcMove =
 After moving, set origin to exact final destination
 ============
 */
-void()  SUB_CalcMoveDone =
+void SUB_CalcMoveDone ()
 {
 	setorigin(self, self.finaldest);
 	self.velocity = '0 0 0';
@@ -149,7 +149,7 @@ self.angles rotating
 The calling function should make sure self.think is valid
 ===============
 */
-void(entity ent, vector destangle, float tspeed, void() func) SUB_CalcAngleMoveEnt =
+void SUB_CalcAngleMoveEnt (entity ent, vector destangle, float tspeed, void() func)
 {
 	entity	stemp;
 	stemp = self;
@@ -158,7 +158,7 @@ void(entity ent, vector destangle, float tspeed, void() func) SUB_CalcAngleMoveE
 	self = stemp;
 }
 
-void(vector destangle, float tspeed, void() func) SUB_CalcAngleMove =
+void SUB_CalcAngleMove (vector destangle, float tspeed, void() func)
 {
 	vector	destdelta;
 	float	len, traveltime;
@@ -191,7 +191,7 @@ void(vector destangle, float tspeed, void() func) SUB_CalcAngleMove =
 After rotating, set angle to exact final angle
 ============
 */
-void() SUB_CalcAngleMoveDone =
+void SUB_CalcAngleMoveDone ()
 {
 	self.angles = self.finalangle;
 	self.avelocity = '0 0 0';
@@ -203,7 +203,7 @@ void() SUB_CalcAngleMoveDone =
 
 //=============================================================================
 
-void() DelayThink =
+void DelayThink ()
 {
 	activator = self.enemy;
 	SUB_UseTargets ();
@@ -229,7 +229,7 @@ match (string)self.target and call their .use function
 
 ==============================
 */
-void() SUB_UseTargets =
+void SUB_UseTargets ()
 {
 	entity	t, stemp, otemp, act;
 

@@ -25,10 +25,9 @@
 
 */
 
-void() button_wait;
-void() button_return;
+void button_return ();
 
-void() button_wait =
+void button_wait ()
 {
 	self.state = STATE_TOP;
 	self.nextthink = self.ltime + self.wait;
@@ -38,12 +37,12 @@ void() button_wait =
 	self.frame = 1;			// use alternate textures
 }
 
-void() button_done =
+void button_done ()
 {
 	self.state = STATE_BOTTOM;
 }
 
-void() button_return =
+void button_return ()
 {
 	self.state = STATE_DOWN;
 	SUB_CalcMove (self.pos1, self.speed, button_done);
@@ -53,12 +52,12 @@ void() button_return =
 }
 
 
-void() button_blocked =
-{	// do nothing, just don't ome all the way back out
+void button_blocked ()
+{	// do nothing, just don't come all the way back out
 }
 
 
-void() button_fire =
+void button_fire ()
 {
 	if (self.state == STATE_UP || self.state == STATE_TOP)
 		return;
@@ -70,13 +69,13 @@ void() button_fire =
 }
 
 
-void() button_use =
+void button_use ()
 {
 	self.enemy = activator;
 	button_fire ();
 }
 
-void() button_touch =
+void button_touch ()
 {
 	if (other.classname != "player")
 		return;
@@ -84,7 +83,7 @@ void() button_touch =
 	button_fire ();
 }
 
-void() button_killed =
+void button_killed ()
 {
 	self.enemy = damage_attacker;
 	self.health = self.max_health;
@@ -108,7 +107,7 @@ When a button is touched, it moves some distance in the direction of its angle, 
 2) metallic click
 3) in-out
 */
-void() func_button =
+void func_button ()
 {
 	if (self.sounds == 0)
 	{

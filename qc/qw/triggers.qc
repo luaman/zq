@@ -26,7 +26,7 @@
 */
 
 
-void() trigger_reactivate =
+void trigger_reactivate ()
 {
 	self.solid = SOLID_TRIGGER;
 }
@@ -37,7 +37,7 @@ float	SPAWNFLAG_NOMESSAGE = 1;
 float	SPAWNFLAG_NOTOUCH = 1;
 
 // the wait time has passed, so set back up for another activation
-void() multi_wait =
+void multi_wait ()
 {
 	if (self.max_health)
 	{
@@ -51,7 +51,7 @@ void() multi_wait =
 // the trigger was just touched/killed/used
 // self.enemy should be set to the activator so it can be held through a delay
 // so wait for the delay time before firing
-void() multi_trigger =
+void multi_trigger ()
 {
 	if (self.nextthink > time)
 	{
@@ -90,19 +90,19 @@ void() multi_trigger =
 	}
 }
 
-void() multi_killed =
+void multi_killed ()
 {
 	self.enemy = damage_attacker;
 	multi_trigger();
 }
 
-void() multi_use =
+void multi_use ()
 {
 	self.enemy = activator;
 	multi_trigger();
 }
 
-void() multi_touch =
+void multi_touch ()
 {
 	if (other.classname != "player")
 		return;
@@ -132,7 +132,7 @@ sounds
 4)
 set "message" to text string
 */
-void() trigger_multiple =
+void trigger_multiple ()
 {
 	if (self.sounds == 1)
 	{
@@ -189,7 +189,7 @@ sounds
 4)
 set "message" to text string
 */
-void() trigger_once =
+void trigger_once ()
 {
 	self.wait = -1;
 	trigger_multiple();
@@ -200,7 +200,7 @@ void() trigger_once =
 /*QUAKED trigger_relay (.5 .5 .5) (-8 -8 -8) (8 8 8)
 This fixed size trigger cannot be touched, it can only be fired by other events.  It can contain killtargets, targets, delays, and messages.
 */
-void() trigger_relay =
+void trigger_relay ()
 {
 	self.use = SUB_UseTargets;
 }
@@ -217,7 +217,7 @@ sounds
 4)
 set "message" to text string
 */
-void() trigger_secret =
+void trigger_secret ()
 {
 	total_secrets = total_secrets + 1;
 	self.wait = -1;
@@ -243,7 +243,7 @@ void() trigger_secret =
 //=============================================================================
 
 
-void() counter_use =
+void counter_use ()
 {
 	self.count = self.count - 1;
 	if (self.count < 0)
@@ -280,7 +280,7 @@ If nomessage is not set, t will print "1 more.. " etc when triggered and "sequen
 
 After the counter has been triggered "count" times (default 2), it will fire all of its targets and remove itself.
 */
-void() trigger_counter =
+void trigger_counter ()
 {
 	self.wait = -1;
 	if (!self.count)
@@ -301,7 +301,7 @@ TELEPORT TRIGGERS
 float	PLAYER_ONLY	= 1;
 float	SILENT = 2;
 
-void(entity ent) play_teleport =
+void play_teleport (entity ent)
 {
 	float	v;
 	string	tmpstr;
@@ -321,7 +321,7 @@ void(entity ent) play_teleport =
 	sound (ent, CHAN_VOICE, tmpstr, 1, ATTN_NORM);
 }
 
-void(vector org) spawn_tfog =
+void spawn_tfog (vector org)
 {
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_TELEPORT);
@@ -332,7 +332,7 @@ void(vector org) spawn_tfog =
 }
 
 
-void() tdeath_touch =
+void tdeath_touch ()
 {
 	entity	other2;
 
@@ -374,7 +374,7 @@ void() tdeath_touch =
 }
 
 
-void(vector org, entity death_owner) spawn_tdeath =
+void spawn_tdeath (vector org, entity death_owner)
 {
 	entity	death;
 
@@ -393,7 +393,7 @@ void(vector org, entity death_owner) spawn_tdeath =
 	force_retouch = 2;		// make sure even still objects get hit
 }
 
-void() teleport_touch =
+void teleport_touch ()
 {
 	entity	t;
 	vector	oldorg;
@@ -466,7 +466,7 @@ void() teleport_touch =
 /*QUAKED info_teleport_destination (.5 .5 .5) (-8 -8 -8) (8 8 32)
 This is the destination marker for a teleporter.  It should have a "targetname" field with the same value as a teleporter's "target" field.
 */
-void() info_teleport_destination =
+void info_teleport_destination ()
 {
 // this does nothing, just serves as a target spot
 	self.mangle = self.angles;
@@ -477,7 +477,7 @@ void() info_teleport_destination =
 		objerror ("no targetname");
 }
 
-void() teleport_use =
+void teleport_use ()
 {
 	self.nextthink = time + 0.2;
 	force_retouch = 2;		// make sure even still objects get hit
@@ -489,7 +489,7 @@ Any object touching this will be transported to the corresponding info_teleport_
 
 If the trigger_teleport has a targetname, it will only teleport entities when it has been fired.
 */
-void() trigger_teleport =
+void trigger_teleport ()
 {
 	vector	o;
 
@@ -517,7 +517,7 @@ trigger_setskill
 ==============================================================================
 */
 
-void() trigger_skill_touch =
+void trigger_skill_touch ()
 {
 	if (other.classname != "player")
 		return;
@@ -529,7 +529,7 @@ void() trigger_skill_touch =
 sets skill level to the value of "message".
 Only used on start map.
 */
-void() trigger_setskill =
+void trigger_setskill ()
 {
 	if (deathmatch)
 	{
@@ -550,7 +550,7 @@ ONLY REGISTERED TRIGGERS
 ==============================================================================
 */
 
-void() trigger_onlyregistered_touch =
+void trigger_onlyregistered_touch ()
 {
 	if (other.classname != "player")
 		return;
@@ -577,7 +577,7 @@ void() trigger_onlyregistered_touch =
 /*QUAKED trigger_onlyregistered (.5 .5 .5) ?
 Only fires if playing the registered version, otherwise prints the message
 */
-void() trigger_onlyregistered =
+void trigger_onlyregistered ()
 {
 	precache_sound ("misc/talk.wav");
 	InitTrigger ();
@@ -586,13 +586,13 @@ void() trigger_onlyregistered =
 
 //============================================================================
 
-void() hurt_on =
+void hurt_on ()
 {
 	self.solid = SOLID_TRIGGER;
 	self.nextthink = -1;
 }
 
-void() hurt_touch =
+void hurt_touch ()
 {
 	if (other.takedamage)
 	{
@@ -610,7 +610,7 @@ Any object touching this will be hurt
 set dmg to damage amount
 defalt dmg = 5
 */
-void() trigger_hurt =
+void trigger_hurt ()
 {
 	InitTrigger ();
 	self.touch = hurt_touch;
@@ -622,7 +622,7 @@ void() trigger_hurt =
 
 float PUSH_ONCE = 1;
 
-void() trigger_push_touch =
+void trigger_push_touch ()
 {
 	if (other.classname == "grenade")
 		other.velocity = self.speed * self.movedir * 10;
@@ -646,7 +646,7 @@ void() trigger_push_touch =
 /*QUAKED trigger_push (.5 .5 .5) ? PUSH_ONCE
 Pushes the player
 */
-void() trigger_push =
+void trigger_push ()
 {
 	InitTrigger ();
 	precache_sound ("ambience/windfly.wav");
@@ -657,7 +657,7 @@ void() trigger_push =
 
 //============================================================================
 
-void() trigger_monsterjump_touch =
+void trigger_monsterjump_touch ()
 {
 	if ( other.flags & (FL_MONSTER | FL_FLY | FL_SWIM) != FL_MONSTER )
 		return;
@@ -679,7 +679,7 @@ Walking monsters that touch this will jump in the direction of the trigger's ang
 "speed" default to 200, the speed thrown forward
 "height" default to 200, the speed thrown upwards
 */
-void() trigger_monsterjump =
+void trigger_monsterjump ()
 {
 	if (!self.speed)
 		self.speed = 200;

@@ -92,23 +92,23 @@ entity		msg_entity;			// destination of single entity writes
 //
 // required prog functions
 //
-void()		main;				// only for testing
+void		main ();			// only for testing
 
-void()		StartFrame;
+void		StartFrame ();
 
-void()		PlayerPreThink;
-void()		PlayerPostThink;
+void		PlayerPreThink ();
+void		PlayerPostThink ();
 
-void()		ClientKill;
-void()		ClientConnect;
-void()		PutClientInServer;	// call after setting the parm1... parms
-void()		ClientDisconnect;
+void		ClientKill ();
+void		ClientConnect ();
+void		PutClientInServer ();	// call after setting the parm1... parms
+void		ClientDisconnect ();
 
-void()		SetNewParms;		// called when a client first connects to
+void		SetNewParms ();		// called when a client first connects to
 								// a server. sets parms so they can be
 								// saved off for restarts
 
-void()		SetChangeParms; 	// call to set parms for self so they can
+void		SetChangeParms (); 	// call to set parms for self so they can
 								// be saved for a level transition
 
 
@@ -739,23 +739,22 @@ void(vector where, float set) multicast = #82;	// sends the temp message to a se
 //
 // subs.qc
 //
-void(vector tdest, float tspeed, void() func) SUB_CalcMove;
-void(entity ent, vector tdest, float tspeed, void() func) SUB_CalcMoveEnt;
-void(vector destangle, float tspeed, void() func) SUB_CalcAngleMove;
-void()	SUB_CalcMoveDone;
-void() SUB_CalcAngleMoveDone;
-void() SUB_Null;
-void() SUB_UseTargets;
-void() SUB_Remove;
+void SUB_CalcMove (vector tdest, float tspeed, void() func);
+void SUB_CalcMoveEnt (entity ent, vector tdest, float tspeed, void() func);
+void SUB_CalcAngleMove (vector destangle, float tspeed, void() func);
+void SUB_CalcMoveDone ();
+void SUB_CalcAngleMoveDone ();
+void SUB_Null ();
+void SUB_UseTargets ();
+void SUB_Remove ();
 
 //
 //	combat.qc
 //
-void(entity targ, entity inflictor, entity attacker, float damage) T_Damage;
+void T_Damage (entity targ, entity inflictor, entity attacker, float damage);
 
 
-float (entity e, float healamount, float ignore) T_Heal; // health function
+float T_Heal (entity e, float healamount, float ignore); // health function
 
-float(entity targ, entity inflictor) CanDamage;
-
+float CanDamage (entity targ, entity inflictor);
 

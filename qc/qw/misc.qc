@@ -28,7 +28,7 @@
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for spotlights, etc.
 */
-void() info_null =
+void info_null ()
 {
 	remove(self);
 }
@@ -36,7 +36,7 @@ void() info_null =
 /*QUAKED info_notnull (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for lightning.
 */
-void() info_notnull =
+void info_notnull ()
 {
 }
 
@@ -44,7 +44,7 @@ void() info_notnull =
 
 float START_OFF = 1;
 
-void() light_use =
+void light_use ()
 {
 	if (self.spawnflags & START_OFF)
 	{
@@ -64,7 +64,7 @@ Default light value is 300
 Default style is 0
 If targeted, it will toggle between on or off.
 */
-void() light =
+void light ()
 {
 	if (!self.targetname)
 	{       // inert light
@@ -89,7 +89,7 @@ Default style is 0
 If targeted, it will toggle between on or off.
 Makes steady fluorescent humming sound
 */
-void() light_fluoro =
+void light_fluoro ()
 {
 	if (self.style >= 32)
 	{
@@ -110,7 +110,7 @@ Default light value is 300
 Default style is 10
 Makes sparking, broken fluorescent sound
 */
-void() light_fluorospark =
+void light_fluorospark ()
 {
 	if (!self.style)
 		self.style = 10;
@@ -124,14 +124,14 @@ Sphere globe light.
 Default light value is 300
 Default style is 0
 */
-void() light_globe =
+void light_globe ()
 {
 	precache_model ("progs/s_light.spr");
 	setmodel (self, "progs/s_light.spr");
 	makestatic (self);
 }
 
-void() FireAmbient =
+void FireAmbient ()
 {
 	precache_sound ("ambience/fire1.wav");
 // attenuate fast
@@ -143,7 +143,7 @@ Short wall torch
 Default light value is 200
 Default style is 0
 */
-void() light_torch_small_walltorch =
+void light_torch_small_walltorch ()
 {
 	precache_model ("progs/flame.mdl");
 	setmodel (self, "progs/flame.mdl");
@@ -154,7 +154,7 @@ void() light_torch_small_walltorch =
 /*QUAKED light_flame_large_yellow (0 1 0) (-10 -10 -12) (12 12 18)
 Large yellow flame ball
 */
-void() light_flame_large_yellow =
+void light_flame_large_yellow ()
 {
 	precache_model ("progs/flame2.mdl");
 	setmodel (self, "progs/flame2.mdl");
@@ -166,7 +166,7 @@ void() light_flame_large_yellow =
 /*QUAKED light_flame_small_yellow (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
 Small yellow flame ball
 */
-void() light_flame_small_yellow =
+void light_flame_small_yellow ()
 {
 	precache_model ("progs/flame2.mdl");
 	setmodel (self, "progs/flame2.mdl");
@@ -177,7 +177,7 @@ void() light_flame_small_yellow =
 /*QUAKED light_flame_small_white (0 1 0) (-10 -10 -40) (10 10 40) START_OFF
 Small white flame ball
 */
-void() light_flame_small_white =
+void light_flame_small_white ()
 {
 	precache_model ("progs/flame2.mdl");
 	setmodel (self, "progs/flame2.mdl");
@@ -192,9 +192,10 @@ void() light_flame_small_white =
 Lava Balls
 */
 
-void() fire_fly;
-void() fire_touch;
-void() misc_fireball =
+void fire_fly ();
+void fire_touch ();
+
+void misc_fireball ()
 {
 	precache_model ("progs/lavaball.mdl");
 	self.classname = "fireball";
@@ -204,7 +205,7 @@ void() misc_fireball =
 		self.speed = 1000;
 }
 
-void() fire_fly =
+void fire_fly ()
 {
 	entity	fireball;
 
@@ -228,7 +229,7 @@ void() fire_fly =
 }
 
 
-void() fire_touch =
+void fire_touch ()
 {
 	T_Damage (other, self, self, 20);
 	remove(self);
@@ -237,7 +238,7 @@ void() fire_touch =
 //============================================================================
 
 
-void() barrel_explode =
+void barrel_explode ()
 {
 	self.takedamage = DAMAGE_NO;
 	self.classname = "explo_box";
@@ -258,7 +259,7 @@ void() barrel_explode =
 TESTING THING
 */
 
-void() misc_explobox =
+void misc_explobox ()
 {
 	float	oldz;
 	
@@ -291,7 +292,7 @@ void() misc_explobox =
 Smaller exploding box, REGISTERED ONLY
 */
 
-void() misc_explobox2 =
+void misc_explobox2 ()
 {
 	float	oldz;
 	
@@ -322,7 +323,7 @@ void() misc_explobox2 =
 float SPAWNFLAG_SUPERSPIKE      = 1;
 float SPAWNFLAG_LASER = 2;
 
-void() Laser_Touch =
+void Laser_Touch ()
 {
 	vector	org;
 	
@@ -358,7 +359,7 @@ void() Laser_Touch =
 	remove(self);   
 }
 
-void(vector org, vector vec) LaunchLaser =
+void LaunchLaser (vector org, vector vec)
 {
 	if (self.classname == "monster_enforcer")
 		sound (self, CHAN_WEAPON, "enforcer/enfire.wav", 1, ATTN_NORM);
@@ -384,7 +385,7 @@ void(vector org, vector vec) LaunchLaser =
 	newmis.touch = Laser_Touch;
 }
 
-void() spikeshooter_use =
+void spikeshooter_use ()
 {
 	if (self.spawnflags & SPAWNFLAG_LASER)
 	{
@@ -401,7 +402,7 @@ void() spikeshooter_use =
 	}
 }
 
-void() shooter_think =
+void shooter_think ()
 {
 	spikeshooter_use ();
 	self.nextthink = time + self.wait;
@@ -414,7 +415,7 @@ When triggered, fires a spike in the direction set in QuakeEd.
 Laser is only for REGISTERED.
 */
 
-void() trap_spikeshooter =
+void trap_spikeshooter ()
 {
 	SetMovedir ();
 	self.use = spikeshooter_use;
@@ -435,7 +436,7 @@ Continuously fires spikes.
 "wait" time between spike (1.0 default)
 "nextthink" delay before firing first spike, so multiple shooters can be stagered.
 */
-void() trap_shooter =
+void trap_shooter ()
 {
 	trap_spikeshooter ();
 	
@@ -455,21 +456,21 @@ void() trap_shooter =
 */
 
 
-void() make_bubbles;
-void() bubble_remove;
-void() bubble_bob;
+void make_bubbles ();
+void bubble_remove ();
+void bubble_bob ();
 
 /*QUAKED air_bubbles (0 .5 .8) (-8 -8 -8) (8 8 8)
 
 testing air bubbles
 */
 
-void() air_bubbles =
+void air_bubbles ()
 {
 	remove (self);
 }
 
-void() make_bubbles =
+void make_bubbles ()
 {
 	entity	bubble;
 
@@ -490,7 +491,7 @@ void() make_bubbles =
 	self.think = make_bubbles;
 }
 
-void() bubble_split =
+void bubble_split ()
 {
 	entity	bubble;
 
@@ -513,7 +514,7 @@ void() bubble_split =
 		remove (self);
 }
 
-void() bubble_remove =
+void bubble_remove ()
 {
 	if (other.classname == self.classname)
 	{
@@ -523,7 +524,7 @@ void() bubble_remove =
 	remove(self);
 }
 
-void() bubble_bob =
+void bubble_bob ()
 {
 	float	rnd1, rnd2, rnd3;
 
@@ -568,8 +569,7 @@ void() bubble_bob =
 Just for the debugging level.  Don't use
 */
 
-void() viewthing =
-
+void viewthing ()
 {
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_NOT;
@@ -586,7 +586,7 @@ SIMPLE BMODELS
 ==============================================================================
 */
 
-void() func_wall_use =
+void func_wall_use ()
 {       // change to alternate textures
 	self.frame = 1 - self.frame;
 }
@@ -594,7 +594,7 @@ void() func_wall_use =
 /*QUAKED func_wall (0 .5 .8) ?
 This is just a solid wall if not inhibitted
 */
-void() func_wall =
+void func_wall ()
 {
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_PUSH;  // so it doesn't get pushed by anything
@@ -607,7 +607,7 @@ void() func_wall =
 /*QUAKED func_illusionary (0 .5 .8) ?
 A simple entity that looks solid but lets you walk through it.
 */
-void() func_illusionary =
+void func_illusionary ()
 {
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;
@@ -619,7 +619,7 @@ void() func_illusionary =
 /*QUAKED func_episodegate (0 .5 .8) ? E1 E2 E3 E4
 This bmodel will appear if the episode has already been completed, so players can't reenter it.
 */
-void() func_episodegate =
+void func_episodegate ()
 
 {
 	if (!(serverflags & self.spawnflags))
@@ -635,7 +635,7 @@ void() func_episodegate =
 /*QUAKED func_bossgate (0 .5 .8) ?
 This bmodel appears unless players have all of the episode sigils.
 */
-void() func_bossgate =
+void func_bossgate ()
 
 {
 	if ( (serverflags & 15) == 15)
@@ -650,7 +650,7 @@ void() func_bossgate =
 //============================================================================
 /*QUAKED ambient_suck_wind (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
-void() ambient_suck_wind =
+void ambient_suck_wind ()
 {
 	precache_sound ("ambience/suck1.wav");
 	ambientsound (self.origin, "ambience/suck1.wav", 1, ATTN_STATIC);
@@ -658,7 +658,7 @@ void() ambient_suck_wind =
 
 /*QUAKED ambient_drone (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
-void() ambient_drone =
+void ambient_drone ()
 {
 	precache_sound ("ambience/drone6.wav");
 	ambientsound (self.origin, "ambience/drone6.wav", 0.5, ATTN_STATIC);
@@ -666,49 +666,49 @@ void() ambient_drone =
 
 /*QUAKED ambient_flouro_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
-void() ambient_flouro_buzz =
+void ambient_flouro_buzz ()
 {
 	precache_sound ("ambience/buzz1.wav");
 	ambientsound (self.origin, "ambience/buzz1.wav", 1, ATTN_STATIC);
 }
 /*QUAKED ambient_drip (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
-void() ambient_drip =
+void ambient_drip ()
 {
 	precache_sound ("ambience/drip1.wav");
 	ambientsound (self.origin, "ambience/drip1.wav", 0.5, ATTN_STATIC);
 }
 /*QUAKED ambient_comp_hum (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
-void() ambient_comp_hum =
+void ambient_comp_hum ()
 {
 	precache_sound ("ambience/comp1.wav");
 	ambientsound (self.origin, "ambience/comp1.wav", 1, ATTN_STATIC);
 }
 /*QUAKED ambient_thunder (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
-void() ambient_thunder =
+void ambient_thunder ()
 {
 	precache_sound ("ambience/thunder1.wav");
 	ambientsound (self.origin, "ambience/thunder1.wav", 0.5, ATTN_STATIC);
 }
 /*QUAKED ambient_light_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
-void() ambient_light_buzz =
+void ambient_light_buzz ()
 {
 	precache_sound ("ambience/fl_hum1.wav");
 	ambientsound (self.origin, "ambience/fl_hum1.wav", 0.5, ATTN_STATIC);
 }
 /*QUAKED ambient_swamp1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
-void() ambient_swamp1 =
+void ambient_swamp1 ()
 {
 	precache_sound ("ambience/swamp1.wav");
 	ambientsound (self.origin, "ambience/swamp1.wav", 0.5, ATTN_STATIC);
 }
 /*QUAKED ambient_swamp2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
-void() ambient_swamp2 =
+void ambient_swamp2 ()
 {
 	precache_sound ("ambience/swamp2.wav");
 	ambientsound (self.origin, "ambience/swamp2.wav", 0.5, ATTN_STATIC);
@@ -716,7 +716,7 @@ void() ambient_swamp2 =
 
 //============================================================================
 
-void() noise_think =
+void noise_think ()
 {
 	self.nextthink = time + 0.5;
 	sound (self, 1, "enforcer/enfire.wav", 1, ATTN_NORM);
@@ -733,7 +733,7 @@ void() noise_think =
 For optimzation testing, starts a lot of sounds.
 */
 
-void() misc_noisemaker =
+void misc_noisemaker ()
 
 {
 	precache_sound2 ("enforcer/enfire.wav");

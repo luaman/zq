@@ -30,7 +30,8 @@
 float	z_ext_clientcommand = 0;
 
 
-void(string item, string amount) Cmd_Give = {
+void Cmd_Give (string item, string amount)
+{
 	float	am;
 
 	if (!infokey(world, "*cheats")) {

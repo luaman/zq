@@ -52,10 +52,10 @@ THINK FUNCTIONS
 =============================================================================
 */
 
-void() door_go_down;
-void() door_go_up;
+void door_go_down ();
+void door_go_up ();
 
-void() door_blocked =
+void door_blocked ()
 {
 	other.deathtype = "squish";
 	T_Damage (other, self, self.goalentity, self.dmg);
@@ -72,7 +72,7 @@ void() door_blocked =
 }
 
 
-void() door_hit_top =
+void door_hit_top ()
 {
 	sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.state = STATE_TOP;
@@ -82,13 +82,13 @@ void() door_hit_top =
 	self.nextthink = self.ltime + self.wait;
 }
 
-void() door_hit_bottom =
+void door_hit_bottom ()
 {
 	sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.state = STATE_BOTTOM;
 }
 
-void() door_go_down =
+void door_go_down ()
 {
 	sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	if (self.max_health)
@@ -101,7 +101,7 @@ void() door_go_down =
 	SUB_CalcMove (self.pos1, self.speed, door_hit_bottom);
 }
 
-void() door_go_up =
+void door_go_up ()
 {
 	if (self.state == STATE_UP)
 		return;         // already going up
@@ -128,7 +128,7 @@ ACTIVATION FUNCTIONS
 =============================================================================
 */
 
-void() door_fire =
+void door_fire ()
 {
 	entity	oself;
 	entity	starte;
@@ -172,7 +172,7 @@ void() door_fire =
 }
 
 
-void() door_use =
+void door_use ()
 {
 	entity	oself;
 
@@ -187,7 +187,7 @@ void() door_use =
 }
 
 
-void() door_trigger_touch =
+void door_trigger_touch ()
 {
 	if (other.health <= 0)
 		return;
@@ -203,7 +203,7 @@ void() door_trigger_touch =
 }
 
 
-void() door_killed =
+void door_killed ()
 {
 	entity	oself;
 	
@@ -223,7 +223,7 @@ door_touch
 Prints messages and opens key doors
 ================
 */
-void() door_touch =
+void door_touch ()
 {
 	if (other.classname != "player")
 		return;
@@ -300,7 +300,7 @@ SPAWNING FUNCTIONS
 */
 
 
-entity(vector fmins, vector fmaxs) spawn_field =
+entity spawn_field (vector fmins, vector fmaxs)
 {
 	entity	trigger;
 	vector	t1, t2;
@@ -343,7 +343,7 @@ LinkDoors
 
 =============
 */
-void() LinkDoors =
+void LinkDoors ()
 {
 	entity	t, starte;
 	vector	cmins, cmaxs;
@@ -446,10 +446,8 @@ Key doors are always wait -1.
 4)      screechy metal
 */
 
-void() func_door =
-
+void func_door ()
 {
-
 	if (world.worldtype == 0)
 	{
 		precache_sound ("doors/medtry.wav");
@@ -577,13 +575,13 @@ SECRET DOORS
 =============================================================================
 */
 
-void() fd_secret_move1;
-void() fd_secret_move2;
-void() fd_secret_move3;
-void() fd_secret_move4;
-void() fd_secret_move5;
-void() fd_secret_move6;
-void() fd_secret_done;
+void fd_secret_move1 ();
+void fd_secret_move2 ();
+void fd_secret_move3 ();
+void fd_secret_move4 ();
+void fd_secret_move5 ();
+void fd_secret_move6 ();
+void fd_secret_done ();
 
 float SECRET_OPEN_ONCE = 1;             // stays open
 float SECRET_1ST_LEFT = 2;              // 1st move is left of arrow
@@ -592,7 +590,7 @@ float SECRET_NO_SHOOT = 8;              // only opened by trigger
 float SECRET_YES_SHOOT = 16;    // shootable even if targeted
 
 
-void () fd_secret_use =
+void fd_secret_use ()
 {
 	float	temp;
 	
@@ -717,7 +715,7 @@ secret_touch
 Prints messages
 ================
 */
-void() secret_touch =
+void secret_touch ()
 {
 	if (other.classname != "player")
 		return;
