@@ -795,7 +795,11 @@ void CL_ParseStatic (void)
 	entity_state_t	es;
 
 	CL_ParseBaseline (&es);
-		
+
+	if (!cl.model_precache[es.modelindex])
+		return;		// a Host_Error would be more appropriate, but we
+					// tolerate this just to be compatible with QW 2.30
+
 	if (cl.num_statics >= MAX_STATIC_ENTITIES)
 		Host_Error ("Too many static entities");
 	ent = &cl_static_entities[cl.num_statics];
@@ -803,8 +807,6 @@ void CL_ParseStatic (void)
 
 // copy it to the current state
 	ent->model = cl.model_precache[es.modelindex];
-	if (!ent->model)
-		Host_Error ("CL_ParseStatic: bad modelindex");
 	ent->frame = es.frame;
 	ent->colormap = vid.colormap;
 	ent->skinnum = es.skinnum;

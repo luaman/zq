@@ -282,11 +282,16 @@ void NQD_ParsePrint (void)
 
 // JPG's ProQuake hacks
 int ReadPQByte (void) {
-	int msvc_optimizations_are_buggy = MSG_ReadByte() * 16 + MSG_ReadByte() - 272;
-	return msvc_optimizations_are_buggy;
+	int word;
+	word = MSG_ReadByte() * 16;
+	word += MSG_ReadByte() - 272;
+	return word;
 }
 int ReadPQShort (void) {
-	return ReadPQByte() * 256 + ReadPQByte();
+	int word;
+	word = ReadPQByte() * 256;
+	word += ReadPQByte();
+	return word;
 }
 
 /*
