@@ -1231,6 +1231,46 @@ ok:
 		Cbuf_AddText (va("say ZQuake version %s (Build %04d)\n", Z_VERSION, build_number()));
 }
 
+
+void CL_ParsePrint (int level, char *s)
+{
+	char	str[1024];
+	char	*p;
+	int		len;
+
+	strncat (cl.sprint_buf, s, sizeof(cl.sprint_buf)-1);
+
+	while ( (p=strchr(cl.sprint_buf, '\n')) != NULL ) {
+		len = p - cl.sprint_buf + 1;
+		memcpy(str, cl.sprint_buf, len);
+		str[len] = '\0';
+		strcpy (cl.sprint_buf, p+1);
+		
+		if (level == PRINT_CHAT)
+		{
+			char *p;
+			// Tonik:
+			CL_CheckVersionRequest(str);
+			if (cl_nofake.value) {
+				for (p = str; *p; p++) {
+					switch (*p)	{
+					case 13: *p = '#'; 
+					case 10: break;
+					default:
+						*p |= 128;
+					}
+				}
+			} else
+				con_ormask = 128;
+			S_LocalSound ("misc/talk.wav");
+		}
+		Con_Printf ("%s", str);
+		CL_SearchForMsgTriggers (str);
+		con_ormask = 0;
+	}
+
+}
+
 #define SHOWNET(x) if(cl_shownet.value==2)Con_Printf ("%3i:%s\n", msg_readcount-1, x);
 /*
 =====================
@@ -1303,6 +1343,7 @@ void CL_ParseServerMessage (void)
 		case svc_print:
 			i = MSG_ReadByte ();
 			s = MSG_ReadString ();
+#if 0
 			if (i == PRINT_CHAT)
 			{
 				char *p;
@@ -1324,6 +1365,9 @@ void CL_ParseServerMessage (void)
 			Con_Printf ("%s", s);
 			CL_SearchForMsgTriggers (s);
 			con_ormask = 0;
+#else
+			CL_ParsePrint (i, s);
+#endif
 			break;
 			
 		case svc_centerprint:
