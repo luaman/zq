@@ -1287,13 +1287,14 @@ void SV_Frame (double time)
 // get packets
 	SV_ReadPackets ();
 
-#ifdef SERVERONLY
-// check for commands typed to the host
-	SV_GetConsoleCommands ();
-	
-// process console commands
-	Cbuf_Execute ();
-#endif
+	if (dedicated)
+	{
+	// check for commands typed to the host
+		SV_GetConsoleCommands ();
+		
+	// process console commands
+		Cbuf_Execute ();
+	}
 
 	SV_CheckVars ();
 
@@ -1341,11 +1342,12 @@ void SV_InitLocal (void)
 
 	SV_InitOperatorCommands	();
 	SV_UserInit ();
-	
-#ifdef SERVERONLY
-	Cvar_Register (&rcon_password);
-	Cvar_Register (&password);
-#endif
+
+	if (dedicated)
+	{
+		Cvar_Register (&rcon_password);
+		Cvar_Register (&password);
+	}
 	Cvar_Register (&spectator_password);
 
 	Cvar_Register (&sv_mintic);
@@ -1611,9 +1613,8 @@ void SV_Init (void)
 	PR_Init ();
 	SV_InitLocal ();
 
-#ifdef SERVERONLY
-	NET_ServerConfig (true);
-#endif
+	if (dedicated)
+		NET_ServerConfig (true);
 
 	svs.last_heartbeat = -99999;		// send immediately
 }

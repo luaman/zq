@@ -202,7 +202,8 @@ void SV_Map_f (void)
 	NET_ServerConfig (true);
 
 #ifndef SERVERONLY
-	CL_BeginLocalConnection ();
+	if (!dedicated)
+		CL_BeginLocalConnection ();
 #endif
 
 	SV_BroadcastCommand ("changing\n");
@@ -794,12 +795,13 @@ void SV_InitOperatorCommands (void)
 	Cmd_AddCommand ("setmaster", SV_SetMaster_f);
 	Cmd_AddCommand ("heartbeat", SV_Heartbeat_f);
 
-#ifdef SERVERONLY
-	Cmd_AddCommand ("say", SV_ConSay_f);
-	Cmd_AddCommand ("quit", SV_Quit_f);
-	Cmd_AddCommand ("user", SV_User_f);
-	Cmd_AddCommand ("serverinfo", SV_Serverinfo_f);
-#endif
+	if (dedicated)
+	{
+		Cmd_AddCommand ("say", SV_ConSay_f);
+		Cmd_AddCommand ("quit", SV_Quit_f);
+		Cmd_AddCommand ("user", SV_User_f);
+		Cmd_AddCommand ("serverinfo", SV_Serverinfo_f);
+	}
 
 	Cmd_AddCommand ("localinfo", SV_Localinfo_f);
 	Cmd_AddCommand ("gamedir", SV_Gamedir_f);
