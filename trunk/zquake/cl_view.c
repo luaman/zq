@@ -59,9 +59,6 @@ cvar_t	v_quadcshift = {"v_quadcshift", "1"};
 cvar_t	v_suitcshift = {"v_suitcshift", "1"};
 cvar_t	v_ringcshift = {"v_ringcshift", "1"};
 cvar_t	v_pentcshift = {"v_pentcshift", "1"};
-#ifdef GLQUAKE
-cvar_t	v_dlightcshift = {"v_dlightcshift", "1"};
-#endif
 
 cvar_t	v_bonusflash = {"cl_bonusflash", "1"};
 
@@ -656,26 +653,6 @@ void V_CalcBlend (void)
 		v_blend[3] = 0;
 }
 
-void V_AddLightBlend (float r, float g, float b, float a2)
-{
-	float	a;
-
-	if (!gl_polyblend.value || !gl_cshiftpercent.value || !v_dlightcshift.value)
-		return;
-
-	a2 = a2 * bound(0, v_dlightcshift.value, 1) * gl_cshiftpercent.value / 100.0;
-
-	v_blend[3] = a = v_blend[3] + a2*(1-v_blend[3]);
-
-	if (!a)
-		return;
-
-	a2 = a2/a;
-
-	v_blend[0] = v_blend[0]*(1-a2) + r*a2;
-	v_blend[1] = v_blend[1]*(1-a2) + g*a2;
-	v_blend[2] = v_blend[2]*(1-a2) + b*a2;
-}
 #endif
 
 
@@ -1231,9 +1208,6 @@ void V_Init (void)
 	Cvar_Register (&v_suitcshift);
 	Cvar_Register (&v_ringcshift);
 	Cvar_Register (&v_pentcshift);
-#ifdef GLQUAKE
-	Cvar_Register (&v_dlightcshift);
-#endif
 
 #ifdef GLQUAKE
 	Cvar_Register (&gl_gamma);
