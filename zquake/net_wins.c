@@ -399,6 +399,8 @@ void NET_ServerConfig (qboolean enable)
 			Com_Printf ("WARNING: Couldn't allocate server socket.\n");
 #endif
 		}
+		if (dedicated)
+			SetConsoleTitle (va("zqds: %i", port));
 	}
 	else
 	{
