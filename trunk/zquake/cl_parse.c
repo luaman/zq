@@ -741,7 +741,8 @@ void CL_ParseServerData (void)
 	}
 
 #ifdef MVDPLAY
-	if (cls.mvdplayback) {
+	if (cls.mvdplayback)
+	{
 		int i;
 		// FIXME
 		cls.mvd_newtime = cls.mvd_oldtime = MSG_ReadFloat();
@@ -749,17 +750,16 @@ void CL_ParseServerData (void)
 		cl.spectator = true;
 		for (i = 0; i < UPDATE_BACKUP; i++)
 			cl.frames[i].playerstate[cl.playernum].pm_type = PM_SPECTATOR;
-	} else {
+	} else
 #endif
-	// parse player slot, high bit means spectator
-	cl.playernum = MSG_ReadByte ();
-	if (cl.playernum & 128) {
-		cl.spectator = true;
-		cl.playernum &= ~128;
-	}
-#ifdef MVDPLAY
+	{
+		// parse player slot, high bit means spectator
+		cl.playernum = MSG_ReadByte ();
+		if (cl.playernum & 128) {
+			cl.spectator = true;
+			cl.playernum &= ~128;
+		}
     }
-#endif
 
 	// get the full level name
 	str = MSG_ReadString ();
