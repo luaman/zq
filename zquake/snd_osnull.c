@@ -17,15 +17,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-// snd_osnull.c -- empty stub for SNDDMA_xx functions for OS which don't support sound
+// snd_osnull.c -- empty stub for SNDDMA_xx functions for OS which don't
+//   support sound (or where it have not been ported - yet :-)
 
 #include <stdio.h>
 
 #include "quakedef.h"
 #include "sound.h"
 
-int audio_fd;
-int snd_inited;
+static int			 snd_inited = 0;
 
 qbool SNDDMA_Init(void)
 {
@@ -33,15 +33,18 @@ qbool SNDDMA_Init(void)
 	return 0;
 }
 
+
 int SNDDMA_GetDMAPos(void)
 {
-	if (!snd_inited) return 0;
+	return (snd_inited);
 }
+
 
 void SNDDMA_Shutdown(void)
 {
 	snd_inited = 0;
 }
+
 
 /*
 ==============
