@@ -100,7 +100,8 @@ string BotName (entity ent, float r)
 		ent.b_shirt = 9;
 		return "Gypsy";
 	}
-	else if (r == 16)
+
+	// if (r == 16)
 	{
 		ent.b_pants = 5;
 		ent.b_shirt = 10;
