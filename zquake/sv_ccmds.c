@@ -68,6 +68,9 @@ void SV_Fraglogfile_f (void)
 		Com_Printf ("Frag file logging off.\n");
 		fclose (sv_fraglogfile);
 		sv_fraglogfile = NULL;
+                #ifdef AGRIP
+                Info_SetValueForStarKey(svs.info, "*fraglogging", "OFF", MAX_SERVERINFO_STRING);
+                #endif
 		return;
 	}
 
@@ -93,6 +96,9 @@ void SV_Fraglogfile_f (void)
 	}
 
 	Com_Printf ("Logging frags to %s.\n", name);
+        #ifdef AGRIP
+        Info_SetValueForStarKey(svs.info, "*fraglogging", "ON", MAX_SERVERINFO_STRING);
+        #endif
 }
 
 
