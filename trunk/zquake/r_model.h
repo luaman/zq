@@ -202,7 +202,6 @@ typedef struct mspriteframe_s
 {
 	int		width;
 	int		height;
-	void	*pcachespot;			// remove?
 	float	up, down, left, right;
 	byte	pixels[4];
 } mspriteframe_t;
@@ -253,7 +252,6 @@ typedef struct
 typedef struct
 {
 	aliasskintype_t		type;
-	void				*pcachespot;
 	int					skin;
 } maliasskindesc_t;
 
