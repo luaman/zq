@@ -827,6 +827,9 @@ void CL_Init (void)
 
 	SList_Init ();
 	SList_Load ();
+
+	// bring up the main menu
+	M_Menu_Main_f ();
 }
 
 
