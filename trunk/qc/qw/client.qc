@@ -544,9 +544,12 @@ void() PutClientInServer =
 	self.velocity = '0 0 0';
 
 	player_stand1 ();
-	
-	makevectors(self.angles);
-	spawn_tfog (self.origin + v_forward*20);
+
+	if (deathmatch || coop)
+	{	
+		makevectors(self.angles);
+		spawn_tfog (self.origin + v_forward*20);
+	}
 
 	spawn_tdeath (self.origin, self);
 
