@@ -1100,11 +1100,7 @@ void Host_Init (quakeparms_t *parms)
 
 	host_initialized = true;
 
-#ifdef RELEASE_VERSION
-	Com_Printf ("\nClient version %s\n\n", Z_VERSION);
-#else
-	Com_Printf ("\nClient version %s (Build %04d)\n\n", Z_VERSION, build_number());
-#endif
+	Com_Printf ("\nClient version %s\n\n", VersionString());
 
 	Com_Printf ("€ ZQuake Initialized ‚\n");
 }
