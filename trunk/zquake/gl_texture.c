@@ -624,7 +624,7 @@ void GL_Upload8 (byte *data, int width, int height, qbool mipmap, qbool alpha, q
 		{
 			p = data[i];
 			if (p < 224)
-				trans[i] = table[p] & BigLong(0xFFFFFF00); // transparent 
+				trans[i] = table[p] & LittleLong(0x00FFFFFF); // transparent 
 			else
 				trans[i] = table[p];	// fullbright
 		}
