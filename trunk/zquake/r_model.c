@@ -1162,15 +1162,21 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	
 // load into heap
 
-	Mod_LoadVertexes (&header->lumps[LUMP_VERTEXES]);
-	Mod_LoadEdges (&header->lumps[LUMP_EDGES]);
-	Mod_LoadSurfedges (&header->lumps[LUMP_SURFEDGES]);
-	Mod_LoadTextures (&header->lumps[LUMP_TEXTURES]);
-	Mod_LoadLighting (&header->lumps[LUMP_LIGHTING]);
+	if (!dedicated)
+	{
+		Mod_LoadVertexes (&header->lumps[LUMP_VERTEXES]);
+		Mod_LoadEdges (&header->lumps[LUMP_EDGES]);
+		Mod_LoadSurfedges (&header->lumps[LUMP_SURFEDGES]);
+		Mod_LoadTextures (&header->lumps[LUMP_TEXTURES]);
+		Mod_LoadLighting (&header->lumps[LUMP_LIGHTING]);
+	}
 	Mod_LoadPlanes (&header->lumps[LUMP_PLANES]);
-	Mod_LoadTexinfo (&header->lumps[LUMP_TEXINFO]);
-	Mod_LoadFaces (&header->lumps[LUMP_FACES]);
-	Mod_LoadMarksurfaces (&header->lumps[LUMP_MARKSURFACES]);
+	if (!dedicated)
+	{
+		Mod_LoadTexinfo (&header->lumps[LUMP_TEXINFO]);
+		Mod_LoadFaces (&header->lumps[LUMP_FACES]);
+		Mod_LoadMarksurfaces (&header->lumps[LUMP_MARKSURFACES]);
+	}
 	Mod_LoadVisibility (&header->lumps[LUMP_VISIBILITY]);
 	Mod_LoadLeafs (&header->lumps[LUMP_LEAFS]);
 	Mod_LoadNodes (&header->lumps[LUMP_NODES]);

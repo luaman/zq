@@ -93,11 +93,12 @@ void Host_Error (char *error, ...)
 	cls.demonum = -1;
 #endif
 
-#ifdef SERVERONLY
-	NET_Shutdown ();
-	COM_Shutdown ();
-	Sys_Error ("%s", string);
-#endif
+	if (dedicated)
+	{
+		NET_Shutdown ();
+		COM_Shutdown ();
+		Sys_Error ("%s", string);
+	}
 
 	if (!host_initialized)
 		Sys_Error ("Host_Error: %s", string);
@@ -149,11 +150,10 @@ void Host_Frame (double time)
 
 	curtime += time;
 
-#ifdef SERVERONLY
-	SV_Frame (time);
-#endif
-
-	CL_Frame (time);	// will also call SV_Frame
+	if (dedicated)
+		SV_Frame (time);
+	else
+		CL_Frame (time);	// will also call SV_Frame
 }
 
 /*
@@ -164,6 +164,11 @@ Host_Init
 void Host_Init (int argc, char **argv, int default_memsize)
 {
 	COM_InitArgv (argc, argv);
+
+#if !defined(CLIENTONLY) && !defined(SERVERONLY)
+	if (COM_CheckParm("-dedicated"))
+		dedicated = true;
+#endif
 
 	Host_InitMemory (default_memsize);
 
@@ -200,27 +205,27 @@ void Host_Init (int argc, char **argv, int default_memsize)
 
 	Com_Printf ("========= ZQuake Initialized =========\n");
 
-#ifdef SERVERONLY
 
-	Cbuf_AddText ("exec server.cfg\n");
-	Cmd_StuffCmds_f ();		// process command line arguments
-	Cbuf_Execute ();
+	if (dedicated)
+	{
+		Cbuf_AddText ("exec server.cfg\n");
+		Cmd_StuffCmds_f ();		// process command line arguments
+		Cbuf_Execute ();
 
-// if a map wasn't specified on the command line, spawn start map
-	if (!com_serveractive)
-		Cmd_ExecuteString ("map start");
-	if (!com_serveractive)
-		Host_Error ("Couldn't spawn a server");
-
-#else
-
-	Cbuf_AddText ("exec default.cfg\n");
-	Cbuf_AddText ("exec config.cfg\n");
-	Cbuf_AddText ("exec autoexec.cfg\n");
-	Cmd_StuffCmds_f ();		// process command line arguments
-	Cbuf_AddText ("cl_warncmd 1\n");
-
-#endif
+	// if a map wasn't specified on the command line, spawn start map
+		if (!com_serveractive)
+			Cmd_ExecuteString ("map start");
+		if (!com_serveractive)
+			Host_Error ("Couldn't spawn a server");
+	}
+	else
+	{
+		Cbuf_AddText ("exec default.cfg\n");
+		Cbuf_AddText ("exec config.cfg\n");
+		Cbuf_AddText ("exec autoexec.cfg\n");
+		Cmd_StuffCmds_f ();		// process command line arguments
+		Cbuf_AddText ("cl_warncmd 1\n");
+	}
 }
 
 
