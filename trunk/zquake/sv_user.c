@@ -36,6 +36,8 @@ extern int fp_messages, fp_persecond, fp_secondsdead;
 extern char fp_msg[];
 extern cvar_t pausable;
 
+extern double	sv_frametime;
+
 cvar_t	pm_bunnyspeedcap = {"pm_bunnyspeedcap", "", CVAR_SERVERINFO};
 
 

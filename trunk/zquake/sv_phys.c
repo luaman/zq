@@ -52,6 +52,8 @@ cvar_t	sv_wateraccelerate	 = { "sv_wateraccelerate", "10"};
 cvar_t	sv_friction			 = { "sv_friction", "4"};      
 cvar_t	sv_waterfriction	 = { "sv_waterfriction", "4"};      
 
+double	sv_frametime;
+
 
 #define	MOVE_EPSILON	0.01
 
@@ -927,6 +929,9 @@ void SV_Physics (void)
 			sv_frametime = sv_maxtic.value;
 		sv.old_time = sv.time;
 	}
+	else
+		sv_frametime = 0.1;		// initialization frame
+
 	pr_global_struct->frametime = sv_frametime;
 
 	SV_ProgStartFrame ();
