@@ -1084,7 +1084,7 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 	else
 		player->spectator = false;
 
-	if (slot == cl.playernum)
+	if (slot == cl.playernum && player->name[0])
 		cl.spectator = player->spectator;
 
 	Sbar_Changed ();
