@@ -599,7 +599,7 @@ reasons for that:
 1. So that partially stuffed commands are always executed properly
 2. Not to let players cheat in TF (v_cshift etc don't work in console)
 3. To hide some commands the user doesn't need to know about, like
-changin, fullserverinfo, nextul, stopul
+changing, fullserverinfo, nextul, stopul
 ==============================================================================
 */
 
@@ -649,7 +649,11 @@ void CL_FullServerinfo_f (void)
 	if ((p = Info_ValueForKey(cl.serverinfo, "*z_version")) && *p) {
 		v = Q_atof(p);
 		if (v) {
-			Con_Printf("ZQuake Version %s Server\n", p);
+#ifdef QW_BOTH
+			// only print version if connecting to a remote server
+			if (sv.state == ss_dead)
+#endif
+				Con_Printf("ZQuake Version %s Server\n", p);
 			server_version = 2.40;
 		}
 	}
