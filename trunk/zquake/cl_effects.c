@@ -697,7 +697,7 @@ void CL_RailTrail (vec3_t start, vec3_t end, int color)
 
 		p->alpha = 1.0;
 		p->alphavel = -1.0 / (0.6+frand()*0.2);
-		p->color = 0x0 + rand()&15;
+		p->color = 0x0 + (rand()&15);
 
 		for (j=0 ; j<3 ; j++)
 		{
@@ -726,15 +726,14 @@ void CL_EntityParticles (vec3_t org)
 	float		angle;
 	float		sr, sp, sy, cr, cp, cy;
 	vec3_t		forward;
-	const int		count = 50;
 	const float		dist = 64;
 	const float		beamlength = 16;
 
 if (!avelocities[0][0])
 {
-for (i=0 ; i<NUMVERTEXNORMALS*3 ; i++)
-avelocities[0][i] = (rand()&255) * 0.01;
-}
+	for (i=0 ; i<NUMVERTEXNORMALS*3 ; i++)
+		avelocities[0][i] = (rand()&255) * 0.01;
+	}
 
 	for (i=0 ; i<NUMVERTEXNORMALS ; i++)
 	{
