@@ -50,8 +50,6 @@ type_t	type_function = {ev_function, &type_void};	// type_function is a void() f
 type_t	type_pointer = {ev_pointer};
 type_t	type_floatfield = {ev_field, &type_float};
 
-int		type_size[8] = {1,1,1,3,1,1,1,1};
-
 def_t	def_void = {&type_void, "temp"};
 def_t	def_string = {&type_string, "temp"};
 def_t	def_float = {&type_float, "temp"};
@@ -63,6 +61,8 @@ def_t	def_pointer = {&type_pointer, "temp"};
 
 def_t	def_ret, def_parms[MAX_PARMS];
 
+int		type_size[8] = {1,1,1,3,1,1,1,1};
+type_t	*type_for_etype[8] = {&type_void, &type_string, &type_float, &type_vector, &type_entity, &type_field, &type_function, &type_pointer};
 def_t	*def_for_type[8] = {&def_void, &def_string, &def_float, &def_vector, &def_entity, &def_field, &def_function, &def_pointer};
 
 void PR_LexWhitespace (void);
