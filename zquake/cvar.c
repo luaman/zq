@@ -69,7 +69,7 @@ cvar_t *Cvar_FindVar (char *var_name)
 	key = Key (var_name);
 	
 	for (var=cvar_hash[key] ; var ; var=var->hash_next)
-		if (!strcmp (var_name, var->name))
+		if (!Q_strcasecmp (var_name, var->name))
 			return var;
 
 	return NULL;
