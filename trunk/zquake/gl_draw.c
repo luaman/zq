@@ -30,6 +30,7 @@ extern cvar_t crosshair, cl_crossx, cl_crossy, crosshaircolor;
 cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_max_size = {"gl_max_size", "1024"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
+cvar_t		gl_lerpimages = {"r_lerpimages", "1"};
 cvar_t		gl_conalpha = {"gl_conalpha", "0.8"};
 
 byte		*draw_chars;				// 8*8 graphic characters
@@ -424,6 +425,7 @@ void Draw_Init (void)
 	Cvar_RegisterVariable (&gl_nobind);
 	Cvar_RegisterVariable (&gl_max_size);
 	Cvar_RegisterVariable (&gl_picmip);
+	Cvar_RegisterVariable (&gl_lerpimages);
 	Cvar_RegisterVariable (&gl_conalpha);
 
 	// 3dfx can only handle 256 wide textures
@@ -1068,32 +1070,139 @@ int GL_FindTexture (char *identifier)
 	return -1;
 }
 
+
+void R_ResampleTextureLerpLine (byte *in, byte *out, int inwidth,
+		int outwidth)
+{
+	int		j, xi, oldx = 0, f, fstep, endx;
+	fstep = (int) (inwidth*65536.0f/outwidth);
+	endx = (inwidth-1);
+	for (j = 0,f = 0;j < outwidth;j++, f += fstep)
+	{
+		xi = (int) f >> 16;
+		if (xi != oldx)
+		{
+			in += (xi - oldx) * 4;
+			oldx = xi;
+		}
+		if (xi < endx)
+		{
+			int lerp = f & 0xFFFF;
+			*out++ = (byte) ((((in[4] - in[0]) * lerp) >> 16) + in[0]);
+			*out++ = (byte) ((((in[5] - in[1]) * lerp) >> 16) + in[1]);
+			*out++ = (byte) ((((in[6] - in[2]) * lerp) >> 16) + in[2]);
+			*out++ = (byte) ((((in[7] - in[3]) * lerp) >> 16) + in[3]);
+		}
+		else // last pixel of the line has no pixel to lerp to
+		{
+			*out++ = in[0];
+			*out++ = in[1];
+			*out++ = in[2];
+			*out++ = in[3];
+		}
+	}
+}
+
 /*
 ================
 GL_ResampleTexture
 ================
 */
-void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
+void GL_ResampleTexture (unsigned *indata, int inwidth, int inheight,
+		unsigned *outdata, int outwidth, int outheight)
 {
-	int		i, j;
-	unsigned	*inrow;
-	unsigned	frac, fracstep;
-
-	fracstep = inwidth*0x10000/outwidth;
-	for (i=0 ; i<outheight ; i++, out += outwidth)
+	if (gl_lerpimages.value)
 	{
-		inrow = in + inwidth*(i*inheight/outheight);
-		frac = fracstep >> 1;
-		for (j=0 ; j<outwidth ; j+=4)
+		int		i, j, yi, oldy, f, fstep, endy = (inheight-1);
+		byte	*inrow, *out, *row1, *row2;
+		out = (byte *) outdata;
+		fstep = (int) (inheight*65536.0f/outheight);
+
+		row1 = Q_Malloc(outwidth*4);
+		row2 = Q_Malloc(outwidth*4);
+		inrow = (byte *) indata;
+		oldy = 0;
+		R_ResampleTextureLerpLine (inrow, row1, inwidth, outwidth);
+		R_ResampleTextureLerpLine (inrow + inwidth*4, row2, inwidth,
+				outwidth);
+		for (i = 0, f = 0;i < outheight;i++,f += fstep)
 		{
-			out[j] = inrow[frac>>16];
-			frac += fracstep;
-			out[j+1] = inrow[frac>>16];
-			frac += fracstep;
-			out[j+2] = inrow[frac>>16];
-			frac += fracstep;
-			out[j+3] = inrow[frac>>16];
-			frac += fracstep;
+			yi = f >> 16;
+			if (yi < endy)
+			{
+				int lerp = f & 0xFFFF;
+				if (yi != oldy)
+				{
+					inrow = (byte *)indata + inwidth*4*yi;
+					if (yi == oldy+1)
+						memcpy(row1, row2, outwidth*4);
+					else
+						R_ResampleTextureLerpLine (inrow, row1, inwidth,
+								outwidth);
+					R_ResampleTextureLerpLine (inrow + inwidth*4, row2,
+							inwidth, outwidth);
+					oldy = yi;
+				}
+				for (j=outwidth ; j ; j--)
+				{
+					out[0] = (byte) ((((row2[ 0] - row1[ 0]) * lerp) >> 16)
+							+ row1[ 0]);
+					out[1] = (byte) ((((row2[ 1] - row1[ 1]) * lerp) >> 16)
+							+ row1[ 1]);
+					out[2] = (byte) ((((row2[ 2] - row1[ 2]) * lerp) >> 16)
+							+ row1[ 2]);
+					out[3] = (byte) ((((row2[ 3] - row1[ 3]) * lerp) >> 16)
+							+ row1[ 3]);
+					out += 4;
+					row1 += 4;
+					row2 += 4;
+				}
+				row1 -= outwidth*4;
+				row2 -= outwidth*4;
+			}
+			else
+			{
+				if (yi != oldy)
+				{
+					inrow = (byte *)indata + inwidth*4*yi;
+					if (yi == oldy+1)
+						memcpy(row1, row2, outwidth*4);
+					else
+						R_ResampleTextureLerpLine (inrow, row1, inwidth,
+								outwidth);
+					oldy = yi;
+				}
+				memcpy(out, row1, outwidth * 4);
+			}
+		}
+		free(row1);
+		free(row2);
+	}
+	else
+	{
+		int i, j;
+		unsigned frac, fracstep;
+		unsigned int *inrow, *out;
+		out = outdata;
+
+		fracstep = inwidth*0x10000/outwidth;
+		for (i = 0;i < outheight;i++)
+		{
+			inrow = (int *)indata + inwidth*(i*inheight/outheight);
+			frac = fracstep >> 1;
+			for (j = outwidth >> 2 ; j ; j--)
+			{
+				out[0] = inrow[frac >> 16]; frac += fracstep;
+				out[1] = inrow[frac >> 16]; frac += fracstep;
+				out[2] = inrow[frac >> 16]; frac += fracstep;
+				out[3] = inrow[frac >> 16]; frac += fracstep;
+				out += 4;
+			}
+			for (j = outwidth & 3 ; j ; j--)
+			{
+				*out = inrow[frac >> 16]; frac += fracstep;
+				out++;
+			}
 		}
 	}
 }
