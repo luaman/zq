@@ -126,7 +126,7 @@ otherwise stepup smoothing code produces ugly jump physics
 void CL_CategorizePosition (void)
 {
 	if (cl.spectator) {
-		cl.onground = -1;	// in air
+		cl.onground = false;	// in air
 		return;
 	}
 	VectorClear (pmove.velocity);
@@ -155,7 +155,7 @@ void CL_CalcCrouch (void)
 	if (cl.simorg[2] - oldz > 0			// only smooth when moving up
 		&& cl.simorg[2] - oldz < 40)	// teleported?
 	{
-		if (cl.onground != -1)
+		if (cl.onground)
 		{
 			// if on steep stairs, increase speed
 			if (cl.simorg[2] - oldz > 20) {
