@@ -144,9 +144,7 @@ void SV_Shutdown (char *finalmsg)
 	SV_FinalMessage (finalmsg);
 
 	Master_Shutdown ();
-#ifdef QW_BOTH
-	NET_Config (true, false);
-#endif
+	NET_ServerConfig (false);
 
 	if (sv_logfile)
 	{
@@ -1631,7 +1629,7 @@ void SV_Init (quakeparms_t *parms)
 	PR_Init ();
 	SV_InitLocal ();
 
-	NET_Config (false, true);
+	NET_ServerConfig (true);
 
 	svs.last_heartbeat = -99999;		// send immediately
 }

@@ -329,17 +329,12 @@ int UDP_OpenSocket (int port)
 
 /*
 ====================
-NET_Config
+NET_ClientConfig
 ====================
 */
-void NET_Config (qboolean client, qboolean server)
+void NET_ClientConfig (qboolean enable)
 {
-#if defined(QW_BOTH) || defined(SERVERONLY)
-	int		i, port;
-#endif
-
-#ifndef SERVERONLY
-	if (client)
+	if (enable)
 	{
 		if (ip_sockets[NS_CLIENT] == -1)
 		{
@@ -355,10 +350,18 @@ void NET_Config (qboolean client, qboolean server)
 			ip_sockets[NS_CLIENT] = -1;
 		}
 	}
-#endif
+}
 
-#if defined(QW_BOTH) || defined(SERVERONLY)
-	if (server)
+/*
+====================
+NET_ServerConfig
+====================
+*/
+void NET_ServerConfig (qboolean enable)
+{
+	int		i, port;
+
+	if (enable)
 	{
 		if (ip_sockets[NS_SERVER] != -1)
 			return;
@@ -387,7 +390,6 @@ void NET_Config (qboolean client, qboolean server)
 			ip_sockets[NS_SERVER] = -1;
 		}
 	}
-#endif
 }
 
 
@@ -440,5 +442,6 @@ NET_Shutdown
 */
 void NET_Shutdown (void)
 {
-	NET_Config (false, false);
+	NET_ClientConfig (false);
+	NET_ServerConfig (false);
 }

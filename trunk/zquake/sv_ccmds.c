@@ -227,9 +227,9 @@ void SV_Map_f (void)
 	}
 	fclose (f);
 
-#ifdef QW_BOTH
-	NET_Config (true, true);
+	NET_ServerConfig (true);
 
+#ifdef QW_BOTH
 	// make sure we're not connected to an external server,
 	// and demo playback is stopped
 	if (sv.state == ss_dead)
