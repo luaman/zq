@@ -239,6 +239,12 @@ void Q_strncpyz (char *dest, char *src, size_t size)
 	dest[size-1] = 0;
 }
 
+void Q_strncatz (char *dest, char *src, size_t size)
+{
+	strncat (dest, src, size-1);
+	dest[size-1] = 0;
+}
+
 void Q_snprintfz (char *dest, size_t size, char *fmt, ...)
 {
 	va_list		argptr;
