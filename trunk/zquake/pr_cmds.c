@@ -848,12 +848,23 @@ char	pr_string_temp[128];
 void PF_ftos (void)
 {
 	float	v;
+	int	i;
+
 	v = G_FLOAT(OFS_PARM0);
-	
+
 	if (v == (int)v)
-		sprintf (pr_string_temp, "%d",(int)v);
+		sprintf (pr_string_temp, "%d", (int)v);
 	else
-		sprintf (pr_string_temp, "%5.1f",v);
+	{
+		_snprintf (pr_string_temp, sizeof(pr_string_temp)-1, "%f", v);
+		pr_string_temp[sizeof(pr_string_temp)-1] = 0;
+
+		for (i=strlen(pr_string_temp)-1 ; i>0 && pr_string_temp[i]=='0' ; i--)
+			pr_string_temp[i] = 0;
+		if (pr_string_temp[i] == '.')
+			pr_string_temp[i] = 0;
+	}
+
 	G_INT(OFS_RETURN) = PR_SetString(pr_string_temp);
 }
 
