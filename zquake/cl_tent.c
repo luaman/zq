@@ -446,7 +446,7 @@ void CL_UpdateBeams (void)
 			continue;
 
 	// if coming from the player, update the start position
-		if (b->entity == cl.viewplayernum + 1)
+		if (b->entity == cl.viewplayernum + 1 && !cl.intermission)
 		{
 			VectorCopy (cl.simorg, b->start);
 			b->start[2] += cl.crouch;
