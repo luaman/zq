@@ -535,6 +535,42 @@ void CL_Serverinfo_f (void)
 		Cmd_ForwardToServer();	
 }
 
+
+/*
+===============
+CL_WriteConfig_f
+
+Writes key bindings and archived cvars to a custom config file
+===============
+*/
+void CL_WriteConfig_f (void)
+{
+	FILE	*f;
+	char	name[MAX_QPATH];
+
+	if (Cmd_Argc() != 2) {
+		Con_Printf ("usage: writeconfig <filename>\n");
+		return;
+	}
+
+	strncpy (name, Cmd_Argv(1), sizeof(name)-1);
+	COM_ForceExtension (name, ".cfg");
+
+	Con_Printf ("Writing %s\n", name);
+
+	f = fopen (va("%s/%s", com_gamedir, name), "w");
+	if (!f) {
+		Con_Printf ("Couldn't write %s.\n", name);
+		return;
+	}
+	
+	Key_WriteBindings (f);
+	Cvar_WriteVariables (f);
+
+	fclose (f);
+}
+
+
 void Host_Savegame_f(void);
 void Host_Loadgame_f(void);
 
@@ -555,6 +591,7 @@ void CL_InitCommands (void)
 	Cmd_AddCommand ("user", CL_User_f);
 	Cmd_AddCommand ("users", CL_Users_f);
 	Cmd_AddCommand ("version", CL_Version_f);
+	Cmd_AddCommand ("writeconfig", CL_WriteConfig_f);
 
 // client info setting
 	Cmd_AddCommand ("color", CL_Color_f);
