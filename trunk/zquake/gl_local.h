@@ -181,7 +181,6 @@ extern	int		gl_lightmap_format;
 extern	int		gl_solid_format;
 extern	int		gl_alpha_format;
 
-extern	cvar_t	gl_max_size;
 extern	cvar_t	gl_playermip;
 
 extern	int			mirrortexturenum;	// quake texturenum, not gltexturenum
@@ -194,6 +193,8 @@ extern	const char *gl_vendor;
 extern	const char *gl_renderer;
 extern	const char *gl_version;
 extern	const char *gl_extensions;
+
+extern	int		gl_max_texsize;
 
 void R_TranslatePlayerSkin (int playernum);
 

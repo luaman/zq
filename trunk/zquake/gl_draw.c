@@ -32,7 +32,6 @@ qboolean OnChange_gl_texturemode (cvar_t *var, char *string);
 qboolean OnChange_gl_smoothfont (cvar_t *var, char *string);
 
 cvar_t		gl_nobind = {"gl_nobind", "0"};
-cvar_t		gl_max_size = {"gl_max_size", "1024"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_lerpimages = {"r_lerpimages", "1"};
 cvar_t		gl_conalpha = {"gl_conalpha", "0.8"};
@@ -532,7 +531,6 @@ void Draw_Init (void)
 	int		i;
 
 	Cvar_Register (&gl_nobind);
-	Cvar_Register (&gl_max_size);
 	Cvar_Register (&gl_picmip);
 	Cvar_Register (&gl_lerpimages);
 	Cvar_Register (&gl_conalpha);
@@ -540,11 +538,7 @@ void Draw_Init (void)
 	Cvar_Register (&gl_smoothfont);
 
 	// get the maximum texture size from driver
-	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &i);
-
-	gl_max_texsize = gl_max_size.value;
-	if (gl_max_texsize > i)
-		gl_max_texsize = i;
+	glGetIntegerv (GL_MAX_TEXTURE_SIZE, (GLint *) &gl_max_texsize);
 
 	// load the console background and the charset
 	// by hand, because we need to write the version
