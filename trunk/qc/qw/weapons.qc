@@ -1045,6 +1045,10 @@ float W_BestWeapon ()
 {
 	float	it;
 
+#ifdef AGRIP
+	soundtoclient (self, self, CHAN_AUTO, "ammo-out.wav", 1, ATTN_NORM);
+#endif
+
 	it = self.items;
 
 	if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & IT_LIGHTNING) )
@@ -1234,13 +1238,21 @@ void W_ChangeWeapon ()
 	
 	if (!(self.items & fl))
 	{	// don't have the weapon or the ammo
+#ifndef AGRIP
 		sprint (self, PRINT_HIGH, "no weapon.\n");
+#else
+		soundtoclient (self, self, CHAN_WEAPON, "deny.wav", 1, ATTN_NORM);
+#endif
 		return;
 	}
 
 	if (am)
 	{	// don't have the ammo
+#ifndef AGRIP
 		sprint (self, PRINT_HIGH, "not enough ammo.\n");
+#else
+		soundtoclient (self, self, CHAN_WEAPON, "ammo-out.wav", 1, ATTN_NORM);
+#endif
 		return;
 	}
 
@@ -1249,6 +1261,10 @@ void W_ChangeWeapon ()
 //
 	self.weapon = fl;
 	W_SetCurrentAmmo ();
+
+#ifdef AGRIP
+	snap_misc_weaponswitch();
+#endif
 }
 
 /*
@@ -1349,6 +1365,9 @@ void CycleWeaponCommand ()
 		if ( (self.items & self.weapon) && am == 0)
 		{
 			W_SetCurrentAmmo ();
+#ifdef AGRIP
+			snap_misc_weaponswitch();
+#endif
 			return;
 		}
 	}
@@ -1424,6 +1443,9 @@ void CycleWeaponReverseCommand ()
 		if ( (it & self.weapon) && am == 0)
 		{
 			W_SetCurrentAmmo ();
+#ifdef AGRIP
+			snap_misc_weaponswitch();
+#endif
 			return;
 		}
 	}
@@ -1464,6 +1486,11 @@ void ImpulseCommands ()
 		ServerflagsCommand ();
 	else if (self.impulse == IMPULSE_WEAPONCYCLE_R)
 		CycleWeaponReverseCommand ();
+
+#ifdef AGRIP
+	else
+		agh_weapons_impulsecommands();
+#endif
 
 	self.impulse = 0;
 }
