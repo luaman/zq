@@ -330,6 +330,7 @@ typedef struct model_s
 //
 	int			firstmodelsurface, nummodelsurfaces;
 
+	// FIXME, don't really need these two
 	int			numsubmodels;
 	dmodel_t	*submodels;
 
@@ -346,6 +347,7 @@ typedef struct model_s
 	medge_t		*edges;
 
 	int			numnodes;
+	int			firstnode;
 	mnode_t		*nodes;
 
 	int			numtexinfo;
@@ -357,13 +359,8 @@ typedef struct model_s
 	int			numsurfedges;
 	int			*surfedges;
 
-	int			numclipnodes;
-	dclipnode_t	*clipnodes;
-
 	int			nummarksurfaces;
 	msurface_t	**marksurfaces;
-
-	hull_t		hulls[MAX_MAP_HULLS];
 
 	int			numtextures;
 	texture_t	**textures;

@@ -23,6 +23,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "teamplay.h"
 
+// FIXME, get rid of
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "r_model.h"
+#endif
 
 extern cvar_t	cl_predictPlayers;
 extern cvar_t	cl_solidPlayers;
@@ -971,16 +977,11 @@ void CL_SetSolidEntities (void)
 	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
 	pak = &frame->packet_entities;
 
-	for (i=0 ; i<pak->num_entities ; i++)
-	{
+	for (i=0 ; i<pak->num_entities ; i++) {
 		state = &pak->entities[i];
-
 		if (!state->modelindex)
 			continue;
-		if (!cl.model_precache[state->modelindex])
-			continue;
-		if (cl.model_precache[state->modelindex]->hulls[1].firstclipnode)
-		{
+		if (cl.clipmodels[state->modelindex]) {
 			pmove.physents[pmove.numphysent].model = cl.clipmodels[state->modelindex];
 			VectorCopy (state->origin, pmove.physents[pmove.numphysent].origin);
 			pmove.numphysent++;

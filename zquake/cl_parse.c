@@ -27,6 +27,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "teamplay.h"
 #include "version.h"
 
+// FIXME, only for Mod_ForName
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "r_model.h"
+#endif
+
 
 void R_TranslatePlayerSkin (int playernum);
 
@@ -257,6 +264,7 @@ void Model_NextDownload (void)
 {
 	char	*s;
 	int		i;
+	char	mapname[MAX_QPATH];
 
 	if (cls.downloadnumber == 0)
 	{
@@ -304,6 +312,10 @@ void Model_NextDownload (void)
 	cl.worldmodel = cl.model_precache[1];
 	if (!cl.worldmodel)
 		Host_Error ("Model_NextDownload: NULL worldmodel");
+
+
+	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
+	Cvar_ForceSet (&host_mapname, mapname);
 
 	CL_ClearParticles ();
 	CL_FindModelNumbers ();

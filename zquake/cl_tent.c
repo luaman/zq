@@ -23,11 +23,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "sound.h"
 
+// FIXME, just for Mod_ForName
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "r_model.h"
+#endif
+
 #define	MAX_BEAMS	32
 typedef struct
 {
 	int		entity;
-	model_t	*model;
+	struct model_s	*model;
 	float	endtime;
 	vec3_t	start, end;
 } beam_t;
@@ -43,7 +50,7 @@ typedef struct explosion_s
 	struct explosion_s *prev, *next;
 	vec3_t	origin;
 	float	start;
-	model_t	*model;
+	struct model_s	*model;
 } explosion_t;
 
 explosion_t	cl_explosions[MAX_EXPLOSIONS];
@@ -57,10 +64,10 @@ sfx_t			*cl_sfx_ric2;
 sfx_t			*cl_sfx_ric3;
 sfx_t			*cl_sfx_r_exp3;
 
-model_t			*cl_explo_mod;
-model_t			*cl_bolt1_mod;
-model_t			*cl_bolt2_mod;
-model_t			*cl_bolt3_mod;
+struct model_s	*cl_explo_mod;
+struct model_s	*cl_bolt1_mod;
+struct model_s	*cl_bolt2_mod;
+struct model_s	*cl_bolt3_mod;
 
 /*
 =================
@@ -153,7 +160,7 @@ void CL_FreeExplosion (explosion_t *ex)
 CL_ParseBeam
 =================
 */
-void CL_ParseBeam (model_t *m)
+void CL_ParseBeam (struct model_s *m)
 {
 	int		ent;
 	vec3_t	start, end;

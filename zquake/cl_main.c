@@ -30,6 +30,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 #include "teamplay.h"
 
+// FIXME, only for Mod_Init
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "r_model.h"
+#endif
+
 cvar_t	*cl_rconPassword;
 cvar_t	cl_rconAddress = {"rcon_address", ""};
 

@@ -854,7 +854,7 @@ void R_DrawBEntitiesOnList (void)
 				}
 
 				R_MarkLights (&cl_dlights[k], 1<<k,
-					clmodel->nodes + clmodel->hulls[0].firstclipnode);
+					clmodel->nodes + clmodel->firstnode);
 			}
 		}
 

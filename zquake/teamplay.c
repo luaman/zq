@@ -1388,23 +1388,21 @@ void TP_EnemyColor_f (void)
 
 void TP_NewMap (void)
 {
-	static char last_map[MAX_QPATH] = "";
-	char mapname[MAX_QPATH];
+	static char last_map[MAX_QPATH];
 	char locname[MAX_OSPATH];
 
 	memset (&vars, 0, sizeof(vars));
 	TP_FindModelNumbers ();
 
-	COM_StripExtension (COM_SkipPath (cl.worldmodel->name), mapname);
-	if (strcmp(mapname, last_map))
+	// FIXME, just try to load the loc file no matter what?
+	if (strcmp(host_mapname.string, last_map))
 	{	// map name has changed
 		loc_numentries = 0;	// clear loc file
 		if (tp_loadlocs.value && cl.deathmatch && !cls.demoplayback) {
-			Q_snprintfz (locname, sizeof(locname), "%s.loc", mapname);
+			Q_snprintfz (locname, sizeof(locname), "%s.loc", host_mapname.string);
 			TP_LoadLocFile (locname, true);
 		}
-		strcpy (last_map, mapname);
-		Cvar_ForceSet (&host_mapname, mapname);
+		strlcpy (last_map, host_mapname.string, sizeof(last_map));
 	}
 
 	TP_ExecTrigger ("f_newmap");
