@@ -1,0 +1,12 @@
+ CREDITS
+
+id Software and QuakeWorld development team -- QW 2.40 source
+
+Brian Koropoff (?) - server list
+Forest 'LordHavoc' Hale - MSG_WriteAngle fix
+Dabb - nVidia alt-tabbing fix
+? - mdfour.c
+Victor Luchits - mtex fb rendering for alias models, fullbrights on .pcx
+    player skins and more...
+
+Someone else? Let me know if I forgot to thank someone...
