@@ -381,7 +381,8 @@ extern	def_t	*pr_scope;
 extern	int		pr_error_count;
 
 void PR_NewLine (void);
-def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool allocate);
+def_t *PR_FindDef (char *name, def_t *scope);
+def_t *PR_GetDef (type_t *type, char *name, def_t *scope);
 
 void PR_PrintDefs (void);
 
