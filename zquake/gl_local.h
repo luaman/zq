@@ -228,13 +228,11 @@ void GL_EnableMultitexture(void);
 // gl_warp.c
 //
 void GL_SubdivideSurface (msurface_t *fa);
+void GL_BuildSkySurfacePolys (msurface_t *fa);
 void EmitBothSkyLayers (msurface_t *fa);
 void EmitWaterPolys (msurface_t *fa);
-void EmitSkyPolys (msurface_t *fa);
-void R_DrawSkyChain (msurface_t *s);
-void R_AddSkyBoxSurface (msurface_t *fa);
-void R_ClearSkyBox (void);
-void R_DrawSkyBox (void);
+void R_ClearSky (void);
+void R_DrawSky (void);			// skybox or classic sky
 void R_InitSky (texture_t *mt);	// classic Quake sky
 extern qbool	r_skyboxloaded;
 

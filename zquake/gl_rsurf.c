@@ -56,6 +56,8 @@ byte		lightmaps[4*MAX_LIGHTMAPS*BLOCK_WIDTH*BLOCK_HEIGHT];
 msurface_t  *skychain = NULL;
 msurface_t  *waterchain = NULL;
 
+msurface_t	*worldchain = NULL;
+
 void R_RenderDynamicLightmaps (msurface_t *fa);
 
 glpoly_t	*fullbright_polys[MAX_GLTEXTURES];
@@ -498,81 +500,16 @@ void R_DrawSequentialPoly (msurface_t *s)
 	int			i, lnum;
 	texture_t	*t;
 
-	//
-	// normal lightmaped poly
-	//
-	if (!(s->flags & (SURF_DRAWSKY|SURF_DRAWTURB)))
-	{
-		R_RenderDynamicLightmaps (s);
-		if (gl_mtexable) {
-			p = s->polys;
-
-			t = R_TextureAnimation (s->texinfo->texture);
-			lnum = s->lightmaptexturenum;
-
-			// Binds world to texture env 0
-			GL_SelectTexture (GL_TEXTURE0_ARB);
-			GL_Bind (t->gl_texturenum);
-			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-			// Binds lightmap to texenv 1
-			GL_EnableMultitexture (); // Same as SelectTexture (TEXTURE1)
-			GL_Bind (lightmap_textures + lnum);
-
-			if (lightmap_modified[lnum])
-				R_UploadLightMap (lnum);
-
-			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-			glBegin (GL_POLYGON);
-			v = p->verts[0];
-			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
-			{
-				qglMultiTexCoord2f (GL_TEXTURE0_ARB, v[3], v[4]);
-				qglMultiTexCoord2f (GL_TEXTURE1_ARB, v[5], v[6]);
-				glVertex3fv (v);
-			}
-			glEnd ();
-		} else {
-			p = s->polys;
-
-			t = R_TextureAnimation (s->texinfo->texture);
-			lnum = s->lightmaptexturenum;
-
-			GL_Bind (t->gl_texturenum);
-			glBegin (GL_POLYGON);
-			v = p->verts[0];
-			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
-			{
-				glTexCoord2f (v[3], v[4]);
-				glVertex3fv (v);
-			}
-			glEnd ();
-
-			GL_Bind (lightmap_textures + lnum);
-
-			if (lightmap_modified[lnum])
-				R_UploadLightMap (lnum);
-
-			glEnable (GL_BLEND);
-			glBlendFunc (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
-			glBegin (GL_POLYGON);
-			v = p->verts[0];
-			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
-			{
-				glTexCoord2f (v[5], v[6]);
-				glVertex3fv (v);
-			}
-			glEnd ();
-			glDisable (GL_BLEND);
-			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (s->flags & SURF_DRAWSKY)
+	{	// This is a bmodel, otherwise it would've been linked into
+		// the sky texture chain
+		// We don't subdivide sky surfaces, so it is going to look bad
+		// if it's large enough... but who's using sky textures in bmodels?
+		if (!r_skyboxloaded)
+			EmitBothSkyLayers (s);
+		else {
+			// hmm... no luck
 		}
-
-		if (t->fb_texturenum) {
-			s->polys->fb_chain = fullbright_polys[t->fb_texturenum];
-			fullbright_polys[t->fb_texturenum] = s->polys;
-			drawfullbrights = true;
-		}
-		
 		return;
 	}
 
@@ -588,25 +525,76 @@ void R_DrawSequentialPoly (msurface_t *s)
 	}
 
 	//
-	// subdivided sky warp
+	// normal lightmapped poly
 	//
-	if (s->flags & SURF_DRAWSKY)
-	{
-		GL_DisableMultitexture ();
-		GL_Bind (solidskytexture);
-		speedscale = r_refdef2.time*8;
-		speedscale -= (int)speedscale & ~127;
+	R_RenderDynamicLightmaps (s);
+	if (gl_mtexable) {
+		p = s->polys;
 
-		EmitSkyPolys (s);
+		t = R_TextureAnimation (s->texinfo->texture);
+		lnum = s->lightmaptexturenum;
+
+		// Binds world to texture env 0
+		GL_SelectTexture (GL_TEXTURE0_ARB);
+		GL_Bind (t->gl_texturenum);
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+		// Binds lightmap to texenv 1
+		GL_EnableMultitexture (); // Same as SelectTexture (TEXTURE1)
+		GL_Bind (lightmap_textures + lnum);
+
+		if (lightmap_modified[lnum])
+			R_UploadLightMap (lnum);
+
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
+		glBegin (GL_POLYGON);
+		v = p->verts[0];
+		for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
+		{
+			qglMultiTexCoord2f (GL_TEXTURE0_ARB, v[3], v[4]);
+			qglMultiTexCoord2f (GL_TEXTURE1_ARB, v[5], v[6]);
+			glVertex3fv (v);
+		}
+		glEnd ();
+	} else {
+		p = s->polys;
+
+		t = R_TextureAnimation (s->texinfo->texture);
+		lnum = s->lightmaptexturenum;
+
+		GL_Bind (t->gl_texturenum);
+		glBegin (GL_POLYGON);
+		v = p->verts[0];
+		for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
+		{
+			glTexCoord2f (v[3], v[4]);
+			glVertex3fv (v);
+		}
+		glEnd ();
+
+		GL_Bind (lightmap_textures + lnum);
+
+		if (lightmap_modified[lnum])
+			R_UploadLightMap (lnum);
 
 		glEnable (GL_BLEND);
-		GL_Bind (alphaskytexture);
-		speedscale = r_refdef2.time*16;
-		speedscale -= (int)speedscale & ~127;
-		EmitSkyPolys (s);
-
+		glBlendFunc (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+		glBegin (GL_POLYGON);
+		v = p->verts[0];
+		for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
+		{
+			glTexCoord2f (v[5], v[6]);
+			glVertex3fv (v);
+		}
+		glEnd ();
 		glDisable (GL_BLEND);
-		return;
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	if (t->fb_texturenum) {
+		s->polys->fb_chain = fullbright_polys[t->fb_texturenum];
+		fullbright_polys[t->fb_texturenum] = s->polys;
+		drawfullbrights = true;
 	}
 }
 
@@ -700,8 +688,15 @@ void R_RenderBrushPoly (msurface_t *fa)
 	c_brush_polys++;
 
 	if (fa->flags & SURF_DRAWSKY)
-	{	// warp texture, no lightmaps
-		EmitBothSkyLayers (fa);
+	{	// This is a bmodel, otherwise it would've been linked into
+		// the sky texture chain
+		// We don't subdivide sky surfaces, so it is going to look bad
+		// if it's large enough... but who's using sky textures in bmodels?
+		if (!r_skyboxloaded)
+			EmitBothSkyLayers (fa);
+		else {
+			// hmm... no luck
+		}
 		return;
 	}
 		
@@ -918,13 +913,12 @@ void DrawTextureChains (void)
 	texture_t	*t;
 
 	if (!gl_texsort.value) {
-		GL_DisableMultitexture();
+		// render all world textures
+		for (s = worldchain; s; s = s->texturechain)
+			R_DrawSequentialPoly (s);
+		worldchain = NULL;
 
-		if (skychain) {
-			R_DrawSkyChain(skychain);
-			skychain = NULL;
-		}
-
+		GL_DisableMultitexture();	// FIXME, not needed any more?
 		return;
 	} 
 
@@ -936,15 +930,11 @@ void DrawTextureChains (void)
 		s = t->texturechain;
 		if (!s)
 			continue;
-		if (i == skytexturenum) {
-			R_DrawSkyChain (s);
-		}
-		else {
-			if ((s->flags & SURF_DRAWTURB) && wateralpha != 1.0)
-				continue;	// draw translucent water later
-			for ( ; s ; s=s->texturechain)
-				R_RenderBrushPoly (s);
-		}
+		if ((s->flags & SURF_DRAWTURB) && wateralpha != 1.0)
+			continue;	// draw translucent water later
+
+		for ( ; s ; s=s->texturechain)
+			R_RenderBrushPoly (s);
 
 		t->texturechain = NULL;
 	}
@@ -1139,25 +1129,22 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 				if ((surf->flags & SURF_PLANEBACK) != sidebit)
 					continue;		// wrong side
 
-				if ((surf->flags & SURF_DRAWSKY) && r_skyboxloaded)
-				{
-					// just add to visible skybox bounds
-					R_AddSkyBoxSurface (surf);
+				if (surf->flags & SURF_DRAWSKY) {
+					surf->texturechain = skychain;
+					skychain = surf;
 					continue;
 				}
 
-				// if sorting by texture, just store it out
 				if (gl_texsort.value) {
 					surf->texturechain = surf->texinfo->texture->texturechain;
 					surf->texinfo->texture->texturechain = surf;
-				} else if (surf->flags & SURF_DRAWSKY) {
-					surf->texturechain = skychain;
-					skychain = surf;
 				} else if (surf->flags & SURF_DRAWTURB) {
 					surf->texturechain = waterchain;
 					waterchain = surf;
-				} else
-					R_DrawSequentialPoly (surf);
+				} else	{
+					surf->texturechain = worldchain;
+					worldchain = surf;
+				}
 			}
 
 		}
@@ -1209,17 +1196,17 @@ void R_DrawWorld (void)
 	if (gl_fb_bmodels.value)
 		memset (fullbright_polys, 0, sizeof(fullbright_polys));
 
-	R_ClearSkyBox ();
+	R_ClearSky ();
 
 	R_RecursiveWorldNode (r_worldmodel->nodes, 15);
+
+	R_DrawSky ();
 
 	DrawTextureChains ();
 
 	R_BlendLightmaps ();
 
 	R_RenderFullbrights ();
-
-	R_DrawSkyBox ();
 }
 
 
