@@ -115,8 +115,6 @@ double			connect_time = 0;		// for connection retransmits
 
 qboolean	host_skipframe;			// used in demo playback
 
-extern int	host_hunklevel;
-
 byte		*host_basepal;
 byte		*host_colormap;
 
@@ -308,8 +306,7 @@ void CL_ClearState (void)
 	if (!com_serveractive)
 	{
 		D_FlushCaches ();
-		Mod_ClearAll ();
-		Hunk_FreeToLowMark (host_hunklevel);
+		Host_ClearMemory ();
 	}
 
 	CL_ClearTEnts ();

@@ -323,8 +323,7 @@ void SV_SpawnServer (char *server, qboolean devmap)
 	com_serveractive = false;
 	sv.paused = false;
 
-	Mod_ClearAll ();
-	Hunk_FreeToLowMark (host_hunklevel);
+	Host_ClearMemory ();
 
 	if (deathmatch.value)
 		Cvar_Set (&coop, "0");

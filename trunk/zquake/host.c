@@ -146,6 +146,21 @@ void Host_InitMemory (int memsize)
 
 /*
 ===============
+Host_ClearMemory
+
+Free hunk memory up to host_hunklevel
+Can only be called when changing levels!
+===============
+*/
+void Host_ClearMemory ()
+{
+	Mod_ClearAll ();
+	Hunk_FreeToLowMark (host_hunklevel);
+}
+
+
+/*
+===============
 Host_Frame
 ===============
 */
