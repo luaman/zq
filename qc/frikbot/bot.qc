@@ -284,19 +284,6 @@ void BotSayTeam (string h)
 	// FBX QW doesn't support teamplay...yet
 }
 
-/*
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-BotInit
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-*/
-
-
-void BotInit ()
-{
-	bot_map_load();
-}
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -366,6 +353,10 @@ void BotConnect ()
 	bot_count = bot_count + 1;
 
 	bot_start_topic(1);
+
+	// load the waypoints if not loaded yet
+	if (waypoint_mode < WM_LOADED)
+		bot_map_load();
 
 	self.b_clientno = GetClientNum(self);
 
