@@ -596,20 +596,23 @@ void SVC_DirectConnect (void)
 	Q_strncpyz (userinfo, Cmd_Argv(4), sizeof(userinfo)-1);
 
 	// see if the challenge is valid
-	for (i=0 ; i<MAX_CHALLENGES ; i++)
+	if (net_from.type != NA_LOOPBACK)
 	{
-		if (NET_CompareBaseAdr (net_from, svs.challenges[i].adr))
+		for (i=0 ; i<MAX_CHALLENGES ; i++)
 		{
-			if (challenge == svs.challenges[i].challenge)
-				break;		// good
-			Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nBad challenge.\n", A2C_PRINT);
+			if (NET_CompareBaseAdr (net_from, svs.challenges[i].adr))
+			{
+				if (challenge == svs.challenges[i].challenge)
+					break;		// good
+				Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nBad challenge.\n", A2C_PRINT);
+				return;
+			}
+		}
+		if (i == MAX_CHALLENGES)
+		{
+			Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nNo challenge for address.\n", A2C_PRINT);
 			return;
 		}
-	}
-	if (i == MAX_CHALLENGES)
-	{
-		Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nNo challenge for address.\n", A2C_PRINT);
-		return;
 	}
 
 	// check for password or spectator_password
