@@ -383,6 +383,7 @@ void Com_DPrintf (char *fmt, ...);
 #include "sys.h"
 #include "net.h"
 #include "protocol.h"
+#include "cmodel.h"
 
 //============================================================================
 

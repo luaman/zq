@@ -40,7 +40,7 @@ typedef struct
 typedef struct
 {
 	vec3_t	origin;
-	model_t	*model;		// only for bsp models
+	struct model_s	*model;		// only for bsp models
 	vec3_t	mins, maxs;	// only for non-bsp models
 	int		info;		// for client or server to identify
 } physent_t;
