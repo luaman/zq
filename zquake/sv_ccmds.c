@@ -721,10 +721,11 @@ SV_Snap
 */
 void SV_Snap (int uid)
 {
-	client_t *cl;
+	client_t	*cl;
 	char		pcxname[80]; 
 	char		checkname[MAX_OSPATH];
 	int			i;
+	FILE		*f;
 
 	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
@@ -749,8 +750,10 @@ void SV_Snap (int uid)
 		pcxname[strlen(pcxname) - 6] = i/10 + '0'; 
 		pcxname[strlen(pcxname) - 5] = i%10 + '0'; 
 		sprintf (checkname, "%s/snap/%s", gamedirfile, pcxname);
-		if (Sys_FileTime(checkname) == -1)
-			break;	// file doesn't exist
+		f = fopen (checkname, "rb");
+		if (!f);
+			break;  // file doesn't exist
+		fclose (f);
 	} 
 	if (i==100) 
 	{
