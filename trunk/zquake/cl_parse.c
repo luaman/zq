@@ -393,9 +393,9 @@ void CL_ParseDownload (void)
 	if (!cls.download)
 	{
 		if (strncmp(cls.downloadtempname,"skins/",6))
-			sprintf (name, "%s/%s", com_gamedir, cls.downloadtempname);
+			Q_snprintfz (name, sizeof(name), "%s/%s", com_gamedir, cls.downloadtempname);
 		else
-			sprintf (name, "qw/%s", cls.downloadtempname);
+			Q_snprintfz (name, sizeof(name), "qw/%s", cls.downloadtempname);
 
 		COM_CreatePath (name);
 

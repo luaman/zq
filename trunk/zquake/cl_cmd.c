@@ -272,7 +272,8 @@ void CL_Download_f (void)
 		return;
 	}
 
-	sprintf (cls.downloadname, "%s/%s", com_gamedir, Cmd_Argv(1));
+	Q_snprintfz (cls.downloadname, sizeof(cls.downloadname),
+		"%s/%s", com_gamedir, Cmd_Argv(1));
 
 	p = cls.downloadname;
 	for (;;) {

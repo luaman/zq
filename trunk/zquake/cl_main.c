@@ -360,7 +360,7 @@ Called to play the next demo in the demo loop
 */
 void CL_NextDemo (void)
 {
-	char	str[1024];
+	char	str[MAX_OSPATH];
 
 	if (cls.demonum == -1)
 		return;		// don't play demos
@@ -376,7 +376,7 @@ void CL_NextDemo (void)
 		}
 	}
 
-	sprintf (str,"playdemo %s\n", cls.demos[cls.demonum]);
+	Q_snprintfz (str, sizeof(str), "playdemo %s\n", cls.demos[cls.demonum]);
 	Cbuf_InsertText (str);
 	cls.demonum++;
 }
