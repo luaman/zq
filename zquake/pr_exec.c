@@ -598,16 +598,16 @@ while (1)
 
 	case OP_IFNOT:
 		if (!a->_int)
-			s += st->b - 1;	// offset the s++
+			s += (short)st->b - 1;	// offset the s++
 		break;
 
 	case OP_IF:
 		if (a->_int)
-			s += st->b - 1;	// offset the s++
+			s += (short)st->b - 1;	// offset the s++
 		break;
 
 	case OP_GOTO:
-		s += st->a - 1;	// offset the s++
+		s += (short)st->a - 1;	// offset the s++
 		break;
 
 	case OP_CALL0:
