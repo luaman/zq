@@ -606,7 +606,6 @@ void Cam_Reset (void);
 void CL_InitCam (void);
 void Cam_TryLock (void);
 #ifdef MVDPLAY
-int Cam_TrackNum(void);
 void Cam_Lock(int playernum);
 #endif
 

@@ -62,13 +62,6 @@ qbool Cam_DrawPlayer (int playernum)
 }
 
 #ifdef MVDPLAY
-int Cam_TrackNum(void)
-{
-	if (!cam_track)
-		return -1;
-	return cam_target;	// or cam_curtarget?
-}
-
 void Cam_Lock (int playernum)
 {
 	cam_track = true;

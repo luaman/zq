@@ -1001,9 +1001,6 @@ void CL_ParseStartSoundPacket(void)
     int 	channel, ent;
     int 	sound_num;
     int 	volume;
-#ifdef MVDPLAY
-    int     tracknum;
-#endif
     float 	attenuation;  
  	int		i;
 	           
@@ -1033,8 +1030,7 @@ void CL_ParseStartSoundPacket(void)
 // FIXME oldman
 #ifdef MVDPLAY
     if (cls.mvdplayback) {
-	    tracknum = Cam_TrackNum();
-	    if (cl.spectator && tracknum != -1 && ent == tracknum + 1)
+	    if (cl.spectator && cam_curtarget != CAM_NOTARGET && ent == cam_curtarget + 1)
 		    ent = cl.playernum + 1;
     }
 #endif
@@ -1613,7 +1609,7 @@ void CL_SetStat (int stat, int value)
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
 		cl.players[cls.mvd_lastto].stats[stat]=value;
-		if (Cam_TrackNum() != cls.mvd_lastto)
+		if (cam_curtarget != cls.mvd_lastto)
 			return;
 	}
 #endif
@@ -1924,7 +1920,7 @@ bad_message:
 				cl.mvd_fixangle |= 1 << j;
 				for (i = 0; i < 3; i++)
 					ang[i] = MSG_ReadAngle();
-				if (j == Cam_TrackNum())
+				if (j == cam_curtarget)
 					VectorCopy (ang, cl.viewangles);
 			}
 			else
