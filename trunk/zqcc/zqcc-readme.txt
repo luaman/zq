@@ -5,3 +5,4 @@ What makes zqcc different from id's qcc
 - redundant semicolons at file scope are allowed
 - empty statements are allowed
 - empty curly braces are allowed
+- variables of type 'void' are forbidden, except for end_sys_fields and end_sys_globals

@@ -552,7 +552,7 @@ char *PR_ParseName (void)
 	static char	ident[MAX_NAME];
 	
 	if (pr_token_type != tt_name)
-		PR_ParseError ("not a name");
+		PR_ParseError ("'%s' : not a name", pr_token);
 	if (strlen(pr_token) >= MAX_NAME-1)
 		PR_ParseError ("name too long");
 	strcpy (ident, pr_token);
