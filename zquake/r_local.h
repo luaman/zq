@@ -198,8 +198,6 @@ extern mvertex_t	*r_ptverts, *r_ptvertsmax;
 extern vec3_t			sbaseaxis[3], tbaseaxis[3];
 extern float			entity_rotation[3][3];
 
-extern int		reinit_surfcache;
-
 extern int		r_currentkey;
 extern int		r_currentbkey;
 

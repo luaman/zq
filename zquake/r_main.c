@@ -93,9 +93,6 @@ int		r_wholepolycount;
 int			*pfrustum_indexes[4];
 int			r_frustum_indexes[4*6];
 
-int		reinit_surfcache = 1;	// if 1, surface cache is currently empty and
-								// must be reinitialized for current cache size
-
 mleaf_t		*r_viewleaf, *r_oldviewleaf;
 
 texture_t	*r_notexture_mip;
