@@ -352,7 +352,7 @@ static void AdjustConsoleHeight (int delta)
 	extern cvar_t scr_consize;
 	int		height;
 
-	if (cls.state != ca_active)
+	if (cls.state != ca_active && !cl.intermission)
 		return;
 	height = (scr_consize.value * vid.height + delta + 5) / 10;
 	height *= 10;
