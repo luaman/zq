@@ -131,9 +131,6 @@ void Sys_Quit (void)
 
 void Sys_Init(void)
 {
-#if id386
-	Sys_SetFPCW();
-#endif
 }
 
 void Sys_Error (char *error, ...)
@@ -380,7 +377,9 @@ int main (int c, char **v)
 	if (COM_CheckParm("-nostdout"))
 		nostdout = 1;
 
-	Sys_Init();
+#if id386
+	Sys_SetFPCW();
+#endif
 
     Host_Init(&parms);
 
