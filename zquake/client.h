@@ -175,7 +175,8 @@ typedef struct
 	cactive_t	state;
 
 	int			framecount;		// incremented every frame, never reset
-	double		frametime;
+	double		realtime;		// scaled by cl_demospeed, reset when starting a demo
+	double		frametime;		// time since last frame, scaled by cl_demospeed
 
 // network stuff
 	netchan_t	netchan;
