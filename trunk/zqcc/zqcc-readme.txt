@@ -45,10 +45,9 @@ What makes zqcc different from id's qcc
       prints out the given message and continue compilation;
         "#pragma message" is a compatibility synonym for "#message"
     5.) Limits for preprocessor defines:
-      - May not be used in progs.src
       - max. 128 defines are allowed
-      - defines may only be used in #ifdef etc., may not be used as constants
-          (maybe in future)
+			- in progs.src only allowed after first valid line (after definition of the output filename)
+      - defines may only be used in #ifdef etc., may not be used as constants (maybe in future)
       - only simple defines may be used; arithmetics, parentheses etc. are not allowed.
       - reserved defines (=internally defined) may not be changed or undefined.
 
