@@ -636,6 +636,8 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_RBUTTONUP:
 		case WM_MBUTTONDOWN:
 		case WM_MBUTTONUP:
+		case WM_XBUTTONDOWN:
+		case WM_XBUTTONUP:
 		case WM_MOUSEMOVE:
 			if (!in_mode_set)
 			{

@@ -83,10 +83,12 @@ extern qbool dinput;
 
 #ifndef MK_XBUTTON1
 #define MK_XBUTTON1		0x20
+#define MK_XBUTTON2		0x40
 #endif
 
-#ifndef MK_XBUTTON2
-#define MK_XBUTTON2		0x40
+#ifndef WM_XBUTTONDOWN
+#define WM_XBUTTONDOWN	0x020B
+#define WM_XBUTTONUP	0x020C
 #endif
 
 #endif // !SERVERONLY
