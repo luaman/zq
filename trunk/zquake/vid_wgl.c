@@ -715,12 +715,10 @@ void GL_EndRendering (void)
 
 void VID_SetPalette (unsigned char *palette)
 {
-	byte	*pal;
-	unsigned r,g,b;
-	unsigned v;
-	int     r1,g1,b1;
-	int		j,k,l;
-	unsigned short i;
+	int			i;
+	byte		*pal;
+	unsigned	r,g,b;
+	unsigned	v;
 	unsigned	*table;
 
 //
@@ -755,32 +753,6 @@ void VID_SetPalette (unsigned char *palette)
 		*table++ = (255<<24) + (r<<0) + (g<<8) + (b<<16);
 	}
 	d_8to24table2[255] = 0;	// 255 is transparent
-
-	// JACK: 3D distance calcs - k is last closest, l is the distance.
-	// FIXME: Precalculate this and cache to disk.
-	for (i=0; i < (1<<15); i++) {
-		/* Maps
-			000000000000000
-			000000000011111 = Red  = 0x1F
-			000001111100000 = Blue = 0x03E0
-			111110000000000 = Grn  = 0x7C00
-		*/
-		r = ((i & 0x1F) << 3)+4;
-		g = ((i & 0x03E0) >> 2)+4;
-		b = ((i & 0x7C00) >> 7)+4;
-		pal = (unsigned char *)d_8to24table;
-		for (v=0,k=0,l=10000*10000; v<256; v++,pal+=4) {
-			r1 = r-pal[0];
-			g1 = g-pal[1];
-			b1 = b-pal[2];
-			j = (r1*r1)+(g1*g1)+(b1*b1);
-			if (j<l) {
-				k=v;
-				l=j;
-			}
-		}
-		d_15to8table[i]=k;
-	}
 }
 
 void VID_ShiftPalette (unsigned char *palette)
@@ -1524,6 +1496,42 @@ qboolean VID_Is8bit() {
 
 #define GL_SHARED_TEXTURE_PALETTE_EXT 0x81FB
 
+void VID_Build15to8table (void)
+{
+	byte	*pal;
+	unsigned r,g,b;
+	unsigned v;
+	int     r1,g1,b1;
+	int		j,k,l;
+	int		i;
+
+	// 3D distance calcs - k is last closest, l is the distance.
+	// FIXME: Precalculate this and cache to disk ?
+	for (i=0; i < (1<<15); i++) {
+		/* Maps
+			000000000000000
+			000000000011111 = Red  = 0x1F
+			000001111100000 = Blue = 0x03E0
+			111110000000000 = Grn  = 0x7C00
+		*/
+		r = ((i & 0x1F) << 3)+4;
+		g = ((i & 0x03E0) >> 2)+4;
+		b = ((i & 0x7C00) >> 7)+4;
+		pal = (unsigned char *)d_8to24table;
+		for (v=0,k=0,l=10000*10000; v<256; v++,pal+=4) {
+			r1 = r-pal[0];
+			g1 = g-pal[1];
+			b1 = b-pal[2];
+			j = (r1*r1)+(g1*g1)+(b1*b1);
+			if (j<l) {
+				k=v;
+				l=j;
+			}
+		}
+		d_15to8table[i]=k;
+	}
+}
+
 void VID_Init8bitPalette() 
 {
 	// Check for 8bit Extensions and initialize them.
@@ -1538,7 +1546,7 @@ void VID_Init8bitPalette()
 
 	Con_SafePrintf("8-bit GL extensions enabled.\n");
     glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
-	oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
+	oldPalette = (char *) d_8to24table;
 	newPalette = thePalette;
 	for (i=0;i<256;i++) {
 		*newPalette++ = *oldPalette++;
@@ -1549,6 +1557,8 @@ void VID_Init8bitPalette()
 	glColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE,
 		(void *) thePalette);
 	is8bit = TRUE;
+
+	VID_Build15to8table ();
 }
 
 static void Check_Gamma (unsigned char *pal)
