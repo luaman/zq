@@ -23,7 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 
 cvar_t	cl_nodelta = {"cl_nodelta","0"};
-cvar_t	cl_c2spps = {"cl_c2spps","0"};				// Tonik
+cvar_t	cl_c2spps = {"cl_c2spps","0"};
+cvar_t	cl_c2sImpulseBackup = {"cl_c2sImpulseBackup","3"};
 
 /*
 ===============================================================================
@@ -532,19 +533,22 @@ void CL_SendCmd (void)
 
 	i = (cls.netchan.outgoing_sequence-2) & UPDATE_MASK;
 	cmd = &cl.frames[i].cmd;
-//	dontdrop = dontdrop || cmd->impulse;
+	if (cl_c2sImpulseBackup.value >= 2)
+		dontdrop = dontdrop || cmd->impulse;
 	MSG_WriteDeltaUsercmd (&buf, &nullcmd, cmd);
 	oldcmd = cmd;
 
 	i = (cls.netchan.outgoing_sequence-1) & UPDATE_MASK;
 	cmd = &cl.frames[i].cmd;
-	dontdrop = dontdrop || cmd->impulse;
+	if (cl_c2sImpulseBackup.value >= 3)
+		dontdrop = dontdrop || cmd->impulse;
 	MSG_WriteDeltaUsercmd (&buf, oldcmd, cmd);
 	oldcmd = cmd;
 
 	i = (cls.netchan.outgoing_sequence) & UPDATE_MASK;
 	cmd = &cl.frames[i].cmd;
-	dontdrop = dontdrop || cmd->impulse;
+	if (cl_c2sImpulseBackup.value >= 1)
+		dontdrop = dontdrop || cmd->impulse;
 	MSG_WriteDeltaUsercmd (&buf, oldcmd, cmd);
 
 	// calculate a checksum over the move commands
@@ -666,6 +670,7 @@ void CL_InitInput (void)
 	Cvar_RegisterVariable (&m_side);
 
 	Cvar_RegisterVariable (&cl_nodelta);
+	Cvar_RegisterVariable (&cl_c2sImpulseBackup);
 	Cvar_RegisterVariable (&cl_c2spps);
 }
 
