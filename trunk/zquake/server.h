@@ -71,7 +71,6 @@ typedef struct
 	char		*sound_name[MAX_SOUNDS];	// NULL terminated
 	char		*lightstyles[MAX_LIGHTSTYLES];
 	cmodel_t	*models[MAX_MODELS];
-	char		*entitystring;		// entfile may override
 
 	int			num_edicts;			// increases towards MAX_EDICTS
 	edict_t		*edicts;			// can NOT be array indexed, because
