@@ -256,6 +256,7 @@ void GL_Set2D (void);
 // gl_rmain.c
 //
 qboolean R_CullBox (vec3_t mins, vec3_t maxs);
+qboolean R_CullSphere (vec3_t centre, float radius);
 void R_RotateForEntity (entity_t *e);
 void R_PolyBlend (void);
 void R_BrightenScreen (void);

@@ -1037,21 +1037,19 @@ void R_DrawBrushModel (entity_t *e)
 	if (e->angles[0] || e->angles[1] || e->angles[2])
 	{
 		rotated = true;
-		for (i=0 ; i<3 ; i++)
-		{
-			mins[i] = e->origin[i] - clmodel->radius;
-			maxs[i] = e->origin[i] + clmodel->radius;
-		}
+
+		if (R_CullSphere (e->origin, clmodel->radius))
+			return;
 	}
 	else
 	{
 		rotated = false;
 		VectorAdd (e->origin, clmodel->mins, mins);
 		VectorAdd (e->origin, clmodel->maxs, maxs);
-	}
 
-	if (R_CullBox (mins, maxs))
-		return;
+		if (R_CullBox (mins, maxs))
+			return;
+	}
 
 	memset (lightmap_polys, 0, sizeof(lightmap_polys));
 //	if (gl_fb_bmodels.value)
