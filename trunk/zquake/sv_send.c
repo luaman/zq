@@ -364,10 +364,11 @@ already running on that entity/channel pair.
 An attenuation of 0 will play full volume everywhere in the level.
 Larger attenuations will drop off.  (max 4 attenuation)
 
+If to_client is not NULL, the message will be sent to one client only
 ==================
 */  
 void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
-    float attenuation)
+    float attenuation, client_t *to_client)
 {       
 	int         sound_num;
 	int			field_mask;
@@ -376,6 +377,8 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
 	vec3_t		origin;
 	qbool		use_phs;
 	qbool		reliable = false;
+	byte		buf_data[MAX_MSGLEN];
+	sizebuf_t	buf, *msg;
 
 	if (volume < 0 || volume > 255)
 		Host_Error ("SV_StartSound: volume = %i", volume);
@@ -432,20 +435,39 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
 		VectorCopy (entity->v.origin, origin);
 	}
 
-	MSG_WriteByte (&sv.multicast, svc_sound);
-	MSG_WriteShort (&sv.multicast, channel);
-	if (channel & SND_VOLUME)
-		MSG_WriteByte (&sv.multicast, volume);
-	if (channel & SND_ATTENUATION)
-		MSG_WriteByte (&sv.multicast, attenuation*64);
-	MSG_WriteByte (&sv.multicast, sound_num);
-	for (i=0 ; i<3 ; i++)
-		MSG_WriteCoord (&sv.multicast, origin[i]);
+	if (to_client) {
+		// to one
+		msg = &buf;
+		SZ_Init (&buf, buf_data, sizeof(buf_data));
+	}
+	else // to all
+		msg = &sv.multicast;
 
-	if (use_phs)
-		SV_Multicast (origin, reliable ? MULTICAST_PHS_R : MULTICAST_PHS);
-	else
-		SV_Multicast (origin, reliable ? MULTICAST_ALL_R : MULTICAST_ALL);
+	MSG_WriteByte (msg, svc_sound);
+	MSG_WriteShort (msg, channel);
+	if (channel & SND_VOLUME)
+		MSG_WriteByte (msg, volume);
+	if (channel & SND_ATTENUATION)
+		MSG_WriteByte (msg, attenuation*64);
+	MSG_WriteByte (msg, sound_num);
+	for (i=0 ; i<3 ; i++)
+		MSG_WriteCoord (msg, origin[i]);
+
+	if (to_client) {
+		// to one
+		// No PHS/range checks just to keep the code cleaner
+		if (reliable)
+			SV_AddToReliable (to_client, msg->data, msg->cursize);
+		else
+			SZ_Write (&to_client->datagram, msg->data, msg->cursize);
+	}
+	else {
+		// to all
+		if (use_phs)
+			SV_Multicast (origin, reliable ? MULTICAST_PHS_R : MULTICAST_PHS);
+		else
+			SV_Multicast (origin, reliable ? MULTICAST_ALL_R : MULTICAST_ALL);
+	}
 }           
 
 
