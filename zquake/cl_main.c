@@ -757,7 +757,6 @@ void CL_Init (void)
 	Draw_Init ();
 	SCR_Init ();
 	R_Init ();
-	R_InitTextures ();
 
 	S_Init ();
 	
