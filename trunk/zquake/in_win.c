@@ -1266,6 +1266,7 @@ static byte scantokey[128] =
 // user defined keymap
 byte keymap[256];	// 128-255 are extended scancodes
 byte shiftkeymap[256];	// generated when shift is pressed
+byte altgrkeymap[256];	// generated when Alt-GR is pressed
 qboolean keymap_active = false;
 
 extern void Key_EventEx (int key, int shiftkey, qboolean down);
@@ -1291,7 +1292,9 @@ void IN_TranslateKeyEvent (int lKeyData, qboolean down)
 	if (keymap_active)
 	{
 		key = keymap[scancode + (extended ? 128 : 0)];
-		if (keydown[K_SHIFT])
+		if (keydown[K_ALTGR])
+			shiftkey = altgrkeymap[scancode + (extended ? 128 : 0)];
+		else if (keydown[K_SHIFT])
 			shiftkey = shiftkeymap[scancode + (extended ? 128 : 0)];
 		else
 			shiftkey = key;
@@ -1427,13 +1430,11 @@ void IN_LoadKeys_f (void)
 		}
 
 		keynum = Key_StringToKeynum(Cmd_Argv(cmd_shift + 1));
-		if (keynum > 0)
-		{
+		if (keynum > 0) {
 			keymap[ext ? n + 128 : n] = keynum;
 			count++;
 
-			if (Cmd_Argc() > cmd_shift + 2)
-			{
+			if (Cmd_Argc() > cmd_shift + 2) {
 				// user defined shifted key
 				keynum = Key_StringToKeynum(Cmd_Argv(cmd_shift + 2));
 				if (keynum > 0)
@@ -1444,11 +1445,26 @@ void IN_LoadKeys_f (void)
 				else
 					Com_Printf ("\"%s\" is not a valid key\n", Cmd_Argv(cmd_shift + 2));
 			}
-			else
-			{
+			else {
 				if (keynum >= 'a' && keynum <= 'z')
 					keynum += 'A' - 'a';	// convert to upper case
 				shiftkeymap[ext ? n + 128 : n] = keynum;
+			}
+
+			// Massa - third level of keys:
+			if (Cmd_Argc() > cmd_shift + 3) {
+					// user defined altgr key
+					keynum = Key_StringToKeynum(Cmd_Argv(cmd_shift + 3));
+					if (keynum > 0) {
+							altgrkeymap[ext ? n + 128 : n] = keynum;
+							count++;
+					}
+					else
+						Com_Printf ("\"%s\" is not a valid key\n", Cmd_Argv(cmd_shift + 3));
+			}
+			else {
+				// if not given, use the same value as for the shifted key
+				altgrkeymap[ext ? n + 128 : n] = keymap[ext ? n + 128 : n];
 			}
 		}
 		else
