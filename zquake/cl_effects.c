@@ -23,6 +23,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ABSOLUTE_MIN_PARTICLES	512		// no fewer than this no matter what's
 										// on the command line
 
+enum
+{
+	pt_static, pt_grav, pt_fire, pt_explode, pt_explode2, pt_blob, pt_blob2
+};
+
 int		ramp1[8] = {0x6f, 0x6d, 0x6b, 0x69, 0x67, 0x65, 0x63, 0x61};
 int		ramp2[8] = {0x6f, 0x6e, 0x6d, 0x6c, 0x6b, 0x6a, 0x68, 0x66};
 int		ramp3[8] = {0x6d, 0x6b, 6, 5, 4, 3};
@@ -77,7 +82,7 @@ void CL_ClearParticles (void)
 
 static cparticle_t *new_particle (void)
 {
-	cparticle_t	*p;
+	cparticle_t *p;
 
 	if (!free_particles)
 		return NULL;
@@ -85,13 +90,16 @@ static cparticle_t *new_particle (void)
 	p = free_particles;
 	free_particles = p->next;
 	p->next = active_particles;
-	p->alpha = 1.0f;
-	VectorClear (p->vel);
 	active_particles = p;
 
 	return p;
 }
 
+/*
+===============
+CL_ReadPointFile_f
+===============
+*/
 void CL_ReadPointFile_f (void)
 {
 	FILE	*f;
@@ -131,6 +139,7 @@ void CL_ReadPointFile_f (void)
 
 		p->die = 99999;
 		p->color = (-c)&15;
+		p->alpha = 1.0f;
 		p->type = pt_static;
 		VectorClear (p->vel);
 		VectorCopy (org, p->org);
@@ -157,24 +166,14 @@ void CL_ParticleExplosion (vec3_t org)
 
 		p->die = cl.time + 5;
 		p->color = ramp1[0];
+		p->alpha = 1.0f;
 		p->ramp = rand()&3;
-		if (i & 1)
+		p->type = (i & 1) ? pt_explode : pt_explode2;
+
+		for (j=0 ; j<3 ; j++)
 		{
-			p->type = pt_explode;
-			for (j=0 ; j<3 ; j++)
-			{
-				p->org[j] = org[j] + ((rand()%32)-16);
-				p->vel[j] = (rand()%512)-256;
-			}
-		}
-		else
-		{
-			p->type = pt_explode2;
-			for (j=0 ; j<3 ; j++)
-			{
-				p->org[j] = org[j] + ((rand()%32)-16);
-				p->vel[j] = (rand()%512)-256;
-			}
+			p->org[j] = org[j] + ((rand()%32)-16);
+			p->vel[j] = (rand()%512)-256;
 		}
 	}
 }
@@ -195,26 +194,23 @@ void CL_BlobExplosion (vec3_t org)
 			return;
 
 		p->die = cl.time + 1 + (rand()&8)*0.05;
+		p->alpha = 1.0f;
 
 		if (i & 1)
 		{
 			p->type = pt_blob;
 			p->color = 66 + rand()%6;
-			for (j=0 ; j<3 ; j++)
-			{
-				p->org[j] = org[j] + ((rand()%32)-16);
-				p->vel[j] = (rand()%512)-256;
-			}
 		}
 		else
 		{
 			p->type = pt_blob2;
 			p->color = 150 + rand()%6;
-			for (j=0 ; j<3 ; j++)
-			{
-				p->org[j] = org[j] + ((rand()%32)-16);
-				p->vel[j] = (rand()%512)-256;
-			}
+		}
+
+		for (j=0 ; j<3 ; j++)
+		{
+			p->org[j] = org[j] + ((rand()%32)-16);
+			p->vel[j] = (rand()%512)-256;
 		}
 	}
 }
@@ -244,11 +240,12 @@ void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count)
 
 		p->die = cl.time + 0.1*(rand()%5);
 		p->color = (color&~7) + (rand()&7);
+		p->alpha = 1.0f;
 		p->type = pt_grav;
 		for (j=0 ; j<3 ; j++)
 		{
 			p->org[j] = org[j] + scale*((rand()&15)-8);
-			p->vel[j] = dir[j]*15;// + (rand()%300)-150;
+			p->vel[j] = dir[j]*15;
 		}
 	}
 }
@@ -274,6 +271,7 @@ void CL_LavaSplash (vec3_t org)
 		
 				p->die = cl.time + 2 + (rand()&31) * 0.02;
 				p->color = 224 + (rand()&7);
+				p->alpha = 1.0f;
 				p->type = pt_grav;
 
 				dir[0] = j*8 + (rand()&7);
@@ -311,6 +309,7 @@ void CL_TeleportSplash (vec3_t org)
 		
 				p->die = cl.time + 0.2 + (rand()&7) * 0.02;
 				p->color = 7 + (rand()&7);
+				p->alpha = 1.0f;
 				p->type = pt_grav;
 
 				dir[0] = j*8;
@@ -329,95 +328,226 @@ void CL_TeleportSplash (vec3_t org)
 
 /*
 ===============
+CL_SlightBloodTrail
+===============
+*/
+void CL_SlightBloodTrail (vec3_t start, vec3_t end)
+{
+	int		j;
+	vec3_t	vec;
+	float	len, dec;
+	cparticle_t	*p;
+
+	dec = 3;
+	VectorSubtract (end, start, vec);
+	len = VectorNormalize (vec);
+
+	while (len > 0)
+	{
+		len -= dec;
+
+		if (!(p = new_particle()))
+			return;
+
+		p->die = cl.time + 2;
+		p->type = pt_grav;
+		p->color = 67 + (rand()&3);
+		p->alpha = 1.0f;
+		VectorClear (p->vel);
+		for (j=0 ; j<3 ; j++)
+			p->org[j] = start[j] + ((rand()%6)-3);
+		len -= dec;
+
+		VectorAdd (start, vec, start);
+	}
+}
+
+/*
+===============
+CL_BloodTrail
+===============
+*/
+void CL_BloodTrail (vec3_t start, vec3_t end)
+{
+	int		j;
+	vec3_t	vec;
+	float	len, dec;
+	cparticle_t	*p;
+
+	dec = 3;
+	VectorSubtract (end, start, vec);
+	len = VectorNormalize (vec);
+
+	while (len > 0)
+	{
+		len -= dec;
+
+		if (!(p = new_particle()))
+			return;
+
+		p->die = cl.time + 2;
+		p->type = pt_grav;
+		p->color = 67 + (rand()&3);
+		p->alpha = 1.0f;
+		VectorClear (p->vel);
+		for (j=0 ; j<3 ; j++)
+			p->org[j] = start[j] + ((rand()%6)-3);
+
+		VectorAdd (start, vec, start);
+	}
+}
+
+/*
+===============
+CL_VoorTrail
+===============
+*/
+void CL_VoorTrail (vec3_t start, vec3_t end)
+{
+	int		j;
+	vec3_t	vec;
+	float	len, dec;
+	cparticle_t	*p;
+
+	dec = 3;
+	VectorSubtract (end, start, vec);
+	len = VectorNormalize (vec);
+
+	while (len > 0)
+	{
+		len -= dec;
+
+		if (!(p = new_particle()))
+			return;
+
+		p->die = cl.time + 2;
+		p->color = 9*16 + 8 + (rand()&3);
+		p->alpha = 1.0f;
+		p->type = pt_static;
+		p->die = cl.time + 0.3;
+		VectorClear (p->vel);
+		for (j=0 ; j<3 ; j++)
+			p->org[j] = start[j] + ((rand()&15)-8);
+
+		VectorAdd (start, vec, start);
+	}
+}
+
+/*
+===============
+CL_GrenadeTrail
+===============
+*/
+void CL_GrenadeTrail (vec3_t start, vec3_t end)
+{
+	int		j;
+	vec3_t	vec;
+	float	len, dec;
+	cparticle_t	*p;
+
+	dec = 3;
+	VectorSubtract (end, start, vec);
+	len = VectorNormalize (vec);
+
+	while (len > 0)
+	{
+		len -= dec;
+
+		if (!(p = new_particle()))
+			return;
+
+		p->die = cl.time + 2;
+		p->ramp = (rand()&3) + 2;
+		p->color = ramp3[(int)p->ramp];
+		p->alpha = 1.0f;
+		p->type = pt_fire;
+		VectorClear (p->vel);
+		for (j=0 ; j<3 ; j++)
+			p->org[j] = start[j] + ((rand()%6)-3);
+
+		VectorAdd (start, vec, start);
+	}
+}
+
+/*
+===============
 CL_RocketTrail
 ===============
 */
-void CL_RocketTrail (vec3_t start, vec3_t end, int type)
+void CL_RocketTrail (vec3_t start, vec3_t end)
 {
+	int		j;
 	vec3_t	vec;
-	float	len;
-	int			j;
+	float	len, dec;
 	cparticle_t	*p;
 
+	dec = 3;
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
-	VectorScale (vec, 3, vec);
+
 	while (len > 0)
 	{
-		len -= 3;
+		len -= dec;
+
+		if (!(p = new_particle()))
+			return;
+
+		p->die = cl.time + 2;
+		p->ramp = (rand()&3);
+		p->color = ramp3[(int)p->ramp];
+		p->alpha = 1.0f;
+		p->type = pt_fire;
+		VectorClear (p->vel);
+		for (j=0 ; j<3 ; j++)
+			p->org[j] = start[j] + ((rand()%6)-3);
+
+		VectorAdd (start, vec, start);
+	}
+}
+
+/*
+===============
+CL_TracerTrail
+===============
+*/
+void CL_TracerTrail (vec3_t start, vec3_t end, int color)
+{
+	vec3_t	vec;
+	float	len, dec;
+	cparticle_t	*p;
+	static int tracercount;
+
+	dec = 3;
+	VectorSubtract (end, start, vec);
+	len = VectorNormalize (vec);
+
+	while (len > 0)
+	{
+		len -= dec;
 
 		if (!(p = new_particle()))
 			return;
 		
-		VectorClear (p->vel);
-		p->die = cl.time + 2;
+		p->die = cl.time + 0.5;
+		p->type = pt_static;
+		p->color = color + ((tracercount&4)<<1);
+		p->alpha = 1.0f;
 
-		if (type == 4)
-		{	// slight blood
-			p->type = pt_slowgrav;
-			p->color = 67 + (rand()&3);
-			for (j=0 ; j<3 ; j++)
-				p->org[j] = start[j] + ((rand()%6)-3);
-			len -= 3;
-		}
-		else if (type == 2)
-		{	// blood
-			p->type = pt_slowgrav;
-			p->color = 67 + (rand()&3);
-			for (j=0 ; j<3 ; j++)
-				p->org[j] = start[j] + ((rand()%6)-3);
-		}
-		else if (type == 6)
-		{	// voor trail
-			p->color = 9*16 + 8 + (rand()&3);
-			p->type = pt_static;
-			p->die = cl.time + 0.3;
-			for (j=0 ; j<3 ; j++)
-				p->org[j] = start[j] + ((rand()&15)-8);
-		}
-		else if (type == 1)
-		{	// smoke
-			p->ramp = (rand()&3) + 2;
-			p->color = ramp3[(int)p->ramp];
-			p->type = pt_fire;
-			for (j=0 ; j<3 ; j++)
-				p->org[j] = start[j] + ((rand()%6)-3);
-		}
-		else if (type == 0)
-		{	// rocket trail
-			p->ramp = (rand()&3);
-			p->color = ramp3[(int)p->ramp];
-			p->type = pt_fire;
-			for (j=0 ; j<3 ; j++)
-				p->org[j] = start[j] + ((rand()%6)-3);
-		}
-		else if (type == 3 || type == 5)
-		{	// tracer
-			static int tracercount;
+		tracercount++;
 
-			p->die = cl.time + 0.5;
-			p->type = pt_static;
-			if (type == 3)
-				p->color = 52 + ((tracercount&4)<<1);
-			else
-				p->color = 230 + ((tracercount&4)<<1);
-			
-			tracercount++;
-
-			VectorCopy (start, p->org);
-			if (tracercount & 1)
-			{
-				p->vel[0] = 30*vec[1];
-				p->vel[1] = 30*-vec[0];
-			}
-			else
-			{
-				p->vel[0] = 30*-vec[1];
-				p->vel[1] = 30*vec[0];
-			}
-			
+		VectorCopy (start, p->org);
+		if (tracercount & 1)
+		{
+			p->vel[0] = 30*vec[1];
+			p->vel[1] = 30*-vec[0];
+		}
+		else
+		{
+			p->vel[0] = 30*-vec[1];
+			p->vel[1] = 30*vec[0];
 		}
 
+		p->vel[2] = 0;
 		VectorAdd (start, vec, start);
 	}
 }
@@ -436,7 +566,14 @@ void CL_LinkParticles (void)
 	float			dvel;
 	float			frametime;
 
-	for ( ;; )
+	frametime = cls.frametime;
+	time1 = frametime * 5;
+	time2 = frametime * 10; // 15;
+	time3 = frametime * 15;
+	grav = frametime * 800 * 0.05;
+	dvel = 4 * frametime;
+
+	for ( ;; ) 
 	{
 		kill = active_particles;
 		if (kill && kill->die < cl.time)
@@ -448,13 +585,6 @@ void CL_LinkParticles (void)
 		}
 		break;
 	}
-
-	frametime = cls.frametime;
-	time1 = frametime * 5;
-	time2 = frametime * 10; // 15;
-	time3 = frametime * 15;
-	grav = frametime * 800 * 0.05;
-	dvel = 4 * frametime;
 
 	for (p=active_particles ; p ; p=p->next)
 	{
@@ -492,8 +622,10 @@ void CL_LinkParticles (void)
 				if (p->ramp >= 6)
 					p->die = -1;
 				else
+				{
 					p->color = ramp3[(int)p->ramp];
-				p->alpha = (6-p->ramp)/6;
+					p->alpha = (6-p->ramp)/6;
+				}
 				p->vel[2] += grav;
 				break;
 
@@ -532,7 +664,6 @@ void CL_LinkParticles (void)
 				break;
 
 			case pt_grav:
-			case pt_slowgrav:
 				p->vel[2] -= grav;
 				break;
 		}
