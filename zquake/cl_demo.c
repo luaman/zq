@@ -1000,6 +1000,7 @@ try_again:
 
 	if (!cls.demofile) {
 		Com_Printf ("ERROR: couldn't open \"%s\"\n", Cmd_Argv(1));
+		cls.playdemos = 0;
 		return;
 	}
 
@@ -1064,4 +1065,71 @@ void CL_TimeDemo_f (void)
 	cls.td_starttime = 0;
 	cls.td_startframe = cls.framecount;
 	cls.td_lastframe = -1;		// get a new message this frame
+}
+
+/*
+** Start next demo in loop
+*/
+void CL_NextDemo (void)
+{
+	if (!cls.playdemos)
+		return;
+
+	cls.demonum++;
+	if (cls.demonum >= MAX_DEMOS || !cls.demos[cls.demonum][0])
+	{
+		if (cls.playdemos == 2)
+			cls.demonum = 0;		// start again
+		else {
+			// stop demo loop
+			cls.playdemos = 0;
+			return;
+		}
+	}
+
+	SCR_BeginLoadingPlaque ();	// ok to call here?
+	Cbuf_InsertText (va("playdemo \"%s\"\n", cls.demos[cls.demonum]));
+}
+
+/*
+** Start demo loop
+*/
+void CL_StartDemos_f (void)
+{
+	int	i, num, c;
+
+	c = Cmd_Argc();
+	if (c < 2) {
+		Com_Printf ("usage: startdemos [-noloop] demo1 demo2 ...\n");
+		return;
+	}
+
+	cls.playdemos = 2;
+
+	num = 0;
+	for (i = 1; i < c; i++) {
+		if (!strcmp(Cmd_Argv(i), "-loop"))
+			continue;
+		if (!strcmp(Cmd_Argv(i), "-noloop")) {
+			cls.playdemos = 1;
+			continue;
+		}
+		Q_strncpyz (cls.demos[num], Cmd_Argv(i), sizeof(cls.demos[0]));
+		num++;
+		if (num == MAX_DEMOS)
+			break;
+	}
+	
+	if (!num) {
+		cls.playdemos = 0;
+		return;
+	}
+
+	if (num < MAX_DEMOS)
+		cls.demos[num][0] = 0;
+
+	cls.demonum = 0;
+	Cbuf_InsertText (va("playdemo \"%s\"\n", cls.demos[0]));
+
+	SCR_BeginLoadingPlaque ();
 }

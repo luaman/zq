@@ -424,6 +424,7 @@ void CL_Init (void);
 void CL_Shutdown (void);
 void CL_Frame (double time);
 void CL_Disconnect (void);
+void CL_HandleHostError (void);
 void CL_BeginLocalConnection (void);
 void Con_Init (void);
 void Con_Print (char *txt);

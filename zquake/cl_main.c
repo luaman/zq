@@ -399,9 +399,14 @@ void CL_Disconnect (void)
 void CL_Disconnect_f (void)
 {
 	cl.intermission = 0;
+	cls.playdemos = 0;	// stop demo loop
 	Host_EndGame ();
 }
 
+void CL_HandleHostError (void)
+{
+	cls.playdemos = 0;	// stop demo loop
+}
 
 /*
 =================
@@ -573,6 +578,7 @@ void CL_ConnectionlessPacket (void)
 	if (c == svc_disconnect) {
 		if (cls.demoplayback) {
 			Com_Printf ("\n======== End of demo ========\n\n");
+			CL_NextDemo ();
 			Host_EndGame ();
 			Host_Abort ();
 		}
