@@ -1439,7 +1439,7 @@ SOURCE=.\qe3.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\quakeworld.bmp
+SOURCE=.\zquake.bmp
 # End Source File
 # Begin Source File
 
