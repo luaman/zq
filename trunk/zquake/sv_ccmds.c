@@ -88,9 +88,9 @@ SV_Quit_f
 */
 void SV_Quit_f (void)
 {
-	SV_FinalMessage ("server shutdown\n");
 	Con_Printf ("Shutting down.\n");
-	SV_Shutdown ();
+	SV_Shutdown ("Server quit\n");
+	NET_Shutdown ();
 	Sys_Quit ();
 }
 

@@ -362,8 +362,7 @@ extern	FILE		*sv_fraglogfile;
 //
 // sv_main.c
 //
-void SV_Shutdown (void);
-void SV_ShutdownServer (void);
+void SV_Shutdown (char *finalmsg);
 void SV_Frame (double time);
 void SV_FinalMessage (char *message);
 void SV_DropClient (client_t *drop);
