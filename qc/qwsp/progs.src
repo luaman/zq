@@ -18,6 +18,7 @@ monsters.qc
 ../qw/triggers.qc
 ../qw/plats.qc
 ../qw/misc.qc
+../qw/commands.qc
 
 ogre.qc
 demon.qc
