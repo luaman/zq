@@ -366,6 +366,8 @@ void CL_Disconnect (void)
 // stop sounds (especially looping!)
 	S_StopAllSounds (true);
 	
+	Cmd_RemoveStuffedAliases ();
+
 	if (cls.demorecording && cls.state != ca_disconnected)
 		CL_Stop_f ();
 
