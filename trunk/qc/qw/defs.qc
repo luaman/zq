@@ -631,7 +631,9 @@ void(entity e, vector min, vector max) setsize = #4;
 // #5 was removed
 void() debugbreak					= #6;		// drop to debugger
 float() random						= #7;		// returns 0 - 1
+#ifndef FRIKBOT
 void(entity e, float chan, string samp, float vol, float atten) sound = #8;
+#endif
 vector(vector v) normalize			= #9;
 void(string e, ...) error			= #10;
 void(string e, ...) objerror 		= #11;
@@ -674,7 +676,9 @@ float(entity e) checkbottom			= #40;		// true if self is on ground
 float(vector v) pointcontents		= #41;		// returns a CONTENT_*
 // #42 was removed
 float(float f) fabs = #43;
+#ifndef FRIKBOT
 vector(entity e, float speed) aim = #44;		// returns the shooting vector
+#endif
 float(string s) cvar = #45;						// return cvar.value
 void(string s) localcmd = #46;					// put string into local que
 entity(entity e) nextent = #47; 				// for looping through all ents

@@ -1,6 +1,7 @@
 ./qwprogs.dat
 
-defs.qc
+defs_frikbot.qc
+../qw/defs.qc
 
 map_dm1.qc
 map_dm2.qc
@@ -21,8 +22,8 @@ bot_move.qc
 ../qw/combat.qc
 ../qw/items.qc
 ../qw/weapons.qc
-world.qc
-client.qc
+../qw/world.qc
+../qw/client.qc
 ../qw/spectate.qc
 ../qw/player.qc
 ../qw/doors.qc

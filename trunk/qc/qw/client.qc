@@ -1200,6 +1200,10 @@ called when a player connects to a server
 */
 void ClientConnect ()
 {
+#ifdef FRIKBOT
+	ClientConnected(); // FrikBot
+#endif
+
 	if (deathmatch || coop)
 	{
 		bprint (PRINT_HIGH, self.netname, " entered the game\n");
@@ -1222,6 +1226,10 @@ called when a player disconnects from a server
 void ClientDisconnect ()
 {
 	string	s;
+
+#ifdef FRIKBOT
+	ClientDisconnected(); // FrikBot
+#endif
 
 	// let everyone else know
 	s = ftos(self.frags);

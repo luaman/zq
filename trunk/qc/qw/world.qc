@@ -239,6 +239,10 @@ void worldspawn ()
 
 void StartFrame ()
 {
+#ifdef FRIKBOT
+	BotFrame(); // FrikBot
+#endif
+
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar("fraglimit");
 	teamplay = cvar("teamplay");
