@@ -246,7 +246,7 @@ strofs = (strofs+3)&~3;
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 	SafeWrite (f, pr_globals, numpr_globals*4);
 
-	printf ("%6i TOTAL SIZE\n", ftell(f));
+	printf ("%6ld TOTAL SIZE\n", ftell(f));
 
 	progs.entityfields = pr.size_fields;
 
@@ -254,7 +254,7 @@ strofs = (strofs+3)&~3;
 	progs.crc = crc;
 	
 // byte swap the header and write it out
-	for (i = 0; i < sizeof(progs)/4; i++)
+	for (i = 0; i < (int)sizeof(progs)/4; i++)
 		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );		
 	fseek (f, 0, SEEK_SET);
 	SafeWrite (f, &progs, sizeof(progs));
@@ -395,7 +395,7 @@ char	*PR_GlobalStringNoContents (gofs_t ofs)
 	def = pr_global_defs[ofs];
 	if (!def)
 //		Error ("PR_GlobalString: no def for %i", ofs);
-		sprintf (line,"%i(???)", ofs);
+		sprintf (line,"%i(?""?""?)", ofs);	// separate '?''s to stop gcc complaining about trigraphs
 	else
 		sprintf (line,"%i(%s)", ofs, def->name);
 	

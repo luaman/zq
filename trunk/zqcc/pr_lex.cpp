@@ -233,7 +233,7 @@ float PR_LexNumber (void)
 		}
 
 		int len = pr_file_p - token_start;
-		if (len > sizeof(pr_token))
+		if (len > (int)sizeof(pr_token))
 			PR_ParseError ("constant too long");
 		memcpy (pr_token, token_start, len);
 		pr_token[len] = 0;
@@ -259,7 +259,7 @@ float PR_LexNumber (void)
 	}
 
 	int len = pr_file_p - token_start;
-	if (len > sizeof(pr_token))
+	if (len > (int)sizeof(pr_token))
 		PR_ParseError ("constant too long");
 	memcpy (pr_token, token_start, len);
 	pr_token[len] = 0;
@@ -628,7 +628,7 @@ static void          PR_LexPrecomp (void)
 	{
 		if (pr_immediate_type != &type_string && pr_immediate_type != &type_const_string)
 		  PR_ParseError ("Q541: Message must be a string");
-		printf ("Message on %s(%ld): %s\n", s_file + strings, pr_source_line, pr_immediate_string);
+		printf ("Message on %s(%ld): %s\n", s_file + strings, (long)pr_source_line, pr_immediate_string);
 		PR_Lex();
 		return;
 	}
@@ -639,13 +639,13 @@ static void          PR_LexPrecomp (void)
 		{
 			if (pr_immediate_type != &type_string && pr_immediate_type != &type_const_string)
 				PR_ParseError ("Q541: Message must be a string");
-			printf ("Message on %s(%ld): %s\n", s_file + strings, pr_source_line, pr_immediate_string);
+			printf ("Message on %s(%ld): %s\n", s_file + strings, (long)pr_source_line, pr_immediate_string);
 			PR_Lex();
 			return;
 		}
 
 		// unknown pragma directive
-		printf ("Warning on %s(%ld): unknown #pragma \"%s\" (will be ignored)", s_file + strings, pr_source_line, pr_token);
+		printf ("Warning on %s(%ld): unknown #pragma \"%s\" (will be ignored)", s_file + strings, (long)pr_source_line, pr_token);
 
 		// skip to the end of the line
 		while (PR_SimpleGetToken ())
