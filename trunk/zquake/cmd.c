@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef SERVERONLY
 void Cmd_ForwardToServer (void);
+qboolean CL_CheckServerCommand (void);
 #endif
 
 cvar_t cl_warncmd = {"cl_warncmd", "0"};
@@ -334,8 +335,13 @@ void Cmd_Exec_f (void)
 	}
 	if (!Cvar_Command () && (cl_warncmd.value || developer.value))
 		Con_Printf ("execing %s\n",Cmd_Argv(1));
-	
-	Cbuf_InsertText (f);
+
+#ifndef SERVERONLY
+	if (cbuf_current == &cbuf_svc)
+		Cbuf_AddText (f);
+	else
+#endif
+		Cbuf_InsertText (f);
 	Hunk_FreeToLowMark (mark);
 }
 
@@ -953,16 +959,19 @@ void Cmd_ExecuteString (char *text)
 	int				key;
 	static char		buf[1024];
 
-#if 0
-	Cmd_TokenizeString (text);
-#else
 	Cmd_ExpandString (text, buf);
 	Cmd_TokenizeString (buf);
-#endif
 			
 // execute the command line
 	if (!Cmd_Argc())
 		return;		// no tokens
+
+#ifndef SERVERONLY
+	if (cbuf_current == &cbuf_svc) {
+		if (CL_CheckServerCommand())
+			return;
+	}
+#endif
 
 	key = Key (cmd_argv[0]);
 
@@ -990,7 +999,12 @@ void Cmd_ExecuteString (char *text)
 	{
 		if (!Q_strcasecmp (cmd_argv[0], a->name))
 		{
-			Cbuf_InsertText (a->value);
+#ifndef SERVERONLY
+			if (cbuf_current == &cbuf_svc)
+				Cbuf_AddText (a->value);
+			else
+#endif
+				Cbuf_InsertText (a->value);
 			return;
 		}
 	}

@@ -483,52 +483,6 @@ void CL_SetInfo_f (void)
 
 /*
 ==================
-CL_FullServerinfo_f
-
-Sent by server when serverinfo changes
-==================
-*/
-void CL_FullServerinfo_f (void)
-{
-	char *p;
-	float v;
-
-// Tonik: don't let players fake serverinfo
-	if (cbuf_current != &cbuf_svc)
-		return;
-
-	if (Cmd_Argc() != 2)
-	{
-		//Con_Printf ("usage: fullserverinfo <complete info string>\n");
-		return;
-	}
-
-	strcpy (cl.serverinfo, Cmd_Argv(1));
-
-	server_version = 0;
-
-	if ((p = Info_ValueForKey(cl.serverinfo, "*z_version")) && *p) {
-		v = Q_atof(p);
-		if (v) {
-			Con_Printf("ZQuake Version %s Server\n", p);
-			server_version = 2.40;
-		}
-	}
-	if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p) {
-		v = Q_atof(p);
-		if (v) {
-			if (!server_version)
-				Con_Printf("Version %1.2f Server\n", v);
-			server_version = v;
-		}
-	}
-
-	CL_ProcessServerInfo ();
-}
-
-
-/*
-==================
 CL_Quit_f
 ==================
 */
@@ -540,32 +494,6 @@ void CL_Quit_f (void)
 	CL_Disconnect ();
 	Sys_Quit ();
 #endif
-}
-
-
-/*
-=================
-CL_Changing_f
-
-Just sent as a hint to the client that they should
-drop to full console
-=================
-*/
-void CL_Changing_f (void)
-{
-	if (cbuf_current != &cbuf_svc) {
-		Con_Printf ("changing is not valid from console\n");
-		return;
-	}
-
-	if (cls.download)  // don't change when downloading
-		return;
-
-	S_StopAllSounds (true);
-	cl.intermission = 0;
-	cls.state = ca_connected;	// not active anymore, but not disconnected
-
-	Con_Printf ("\nChanging map...\n");
 }
 
 
@@ -651,16 +579,142 @@ void CL_InitCommands (void)
 //
 	Cmd_AddCommand ("kill", NULL);
 
-// commands stuffed by server
-	Cmd_AddCommand ("changing", CL_Changing_f);
-	Cmd_AddCommand ("fullserverinfo", CL_FullServerinfo_f);
-	Cmd_AddCommand ("nextul", CL_NextUpload);
-	Cmd_AddCommand ("stopul", CL_StopUpload);
-
 //
 //  Windows commands
 //
 #ifdef _WINDOWS
 	Cmd_AddCommand ("windows", CL_Windows_f);
 #endif
+}
+
+
+/*
+==============================================================================
+
+SERVER COMMANDS
+
+Server commands are commands stuffed by server into client's cbuf
+We use a separate command buffer for them -- there are several
+reasons for that:
+1. So that partially stuffed commands are always executed properly
+2. Not to let players cheat in TF (v_cshift etc don't work in console)
+3. To hide some commands the user doesn't need to know about, like
+changin, fullserverinfo, nextul, stopul
+==============================================================================
+*/
+
+/*
+=================
+CL_Changing_f
+
+Just sent as a hint to the client that they should
+drop to full console
+=================
+*/
+void CL_Changing_f (void)
+{
+	if (cls.download)  // don't change when downloading
+		return;
+
+	S_StopAllSounds (true);
+	cl.intermission = 0;
+	cls.state = ca_connected;	// not active anymore, but not disconnected
+
+	Con_Printf ("\nChanging map...\n");
+}
+
+
+/*
+==================
+CL_FullServerinfo_f
+
+Sent by server when serverinfo changes
+==================
+*/
+void CL_FullServerinfo_f (void)
+{
+	char *p;
+	float v;
+
+	if (Cmd_Argc() != 2)
+	{
+		//Con_Printf ("usage: fullserverinfo <complete info string>\n");
+		return;
+	}
+
+	strcpy (cl.serverinfo, Cmd_Argv(1));
+
+	server_version = 0;
+
+	if ((p = Info_ValueForKey(cl.serverinfo, "*z_version")) && *p) {
+		v = Q_atof(p);
+		if (v) {
+			Con_Printf("ZQuake Version %s Server\n", p);
+			server_version = 2.40;
+		}
+	}
+	if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p) {
+		v = Q_atof(p);
+		if (v) {
+			if (!server_version)
+				Con_Printf("Version %1.2f Server\n", v);
+			server_version = v;
+		}
+	}
+
+	CL_ProcessServerInfo ();
+}
+
+
+void CL_Fov_f (void)
+{
+	extern cvar_t scr_fov, default_fov;
+
+	if (Cmd_Argc() == 1)
+	{
+		Con_Printf ("\"fov\" is \"%s\"\n", scr_fov.string);
+		return;
+	}
+
+	if (Q_atof(Cmd_Argv(1)) == 90.0 && default_fov.value)
+		Cvar_SetValue (&scr_fov, default_fov.value);
+	else
+		Cvar_Set (&scr_fov, Cmd_Argv(1));
+}
+
+typedef struct {
+	char	*name;
+	void	(*func) (void);
+} svcmd_t;
+
+svcmd_t svcmds[] =
+{
+	{"changing", CL_Changing_f},
+	{"fullserverinfo", CL_FullServerinfo_f},
+	{"nextul", CL_NextUpload},
+	{"stopul", CL_StopUpload},
+	{"fov", CL_Fov_f},
+	{NULL, NULL}
+};
+
+/*
+================
+CL_CheckServerCommand
+
+Called by Cmd_ExecuteString if cbuf_current==&cbuf_svc
+================
+*/
+qboolean CL_CheckServerCommand ()
+{
+	svcmd_t	*cmd;
+	char	*s;
+
+	s = Cmd_Argv (0);
+	for (cmd=svcmds ; cmd->name ; cmd++)
+		if (!strcmp (s, cmd->name) ) {
+			cmd->func ();
+			return true;
+		}
+
+	return false;
 }
