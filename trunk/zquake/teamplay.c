@@ -1,7 +1,7 @@
 /*
 	teamplay.c
 
-	Teamplay enhancements ("proxy features")
+	Teamplay enhancements
 
 	Copyright (C) 2000-2001       Anton Gavrilov
 
@@ -26,13 +26,14 @@
 
 #include "quakedef.h"
 #include "version.h"
+#include "pmove.h"
 
 cvar_t	cl_parsesay = {"cl_parsesay", "0"};
 cvar_t	cl_triggers = {"cl_triggers", "0"};
+cvar_t	tp_forcetriggers = {"tp_forcetriggers", "0"};
 cvar_t	cl_nofake = {"cl_nofake", "0"};
 cvar_t	cl_loadlocs = {"cl_loadlocs", "0"};
 cvar_t	cl_mapname = {"mapname", "", CVAR_ROM};
-
 cvar_t	cl_rocket2grenade = {"cl_r2g", "0"};
 
 cvar_t	cl_teamskin = {"teamskin", ""};
@@ -57,20 +58,20 @@ cvar_t	tp_name_shells = {"tp_name_shells", "shells"};
 cvar_t	tp_name_nails = {"tp_name_nails", "nails"};
 cvar_t	tp_name_rockets = {"tp_name_rockets", "rockets"};
 cvar_t	tp_name_cells = {"tp_name_cells", "cells"};
-cvar_t	tp_name_mh = {"tp_name_mh", "mh"};
+cvar_t	tp_name_mh = {"tp_name_mh", "mega"};
 cvar_t	tp_name_health = {"tp_name_health", "health"};
 cvar_t	tp_name_backpack = {"tp_name_backpack", "pack"};
 cvar_t	tp_name_flag = {"tp_name_flag", "flag"};
-
-
-//===========================================================================
-//								TRIGGERS
-//===========================================================================
+cvar_t	tp_name_nothing = {"tp_name_nothing", ""};
+cvar_t	tp_name_at = {"tp_name_at", "at"};
 
 char *Macro_Location_f (void);
 void TP_FindModelNumbers (void);
+void TP_FindPoint (void);
+extern int parsecountmod;
 
-#define MAX_LOC_NAME 32
+
+#define MAX_LOC_NAME 48
 
 // this structure is cleared after entering a new map
 typedef struct tvars_s {
@@ -82,9 +83,16 @@ typedef struct tvars_s {
 	char	lastdeathloc[MAX_LOC_NAME];
 	char	tookitem[32];
 	char	last_tooktrigger[32];
+	int		pointframe;		// host_framecount for which pointitem&pointloc are valid
+	char	pointname[32];
+	char	pointloc[MAX_LOC_NAME];
 } tvars_t;
 
 tvars_t vars;
+
+//===========================================================================
+//								TRIGGERS
+//===========================================================================
 
 void TP_ExecTrigger (char *s)
 {
@@ -313,8 +321,7 @@ char *Macro_Powerups_f (void)
 
 	effects = cl.frames[cl.parsecount&UPDATE_MASK].playerstate[cl.playernum].effects;
 	if ( (effects & (EF_FLAG1|EF_FLAG2)) ||		// CTF
-		(cl.teamfortress && cl.stats[STAT_ITEMS] & (IT_KEY1|IT_KEY2) // TF
-		/*&& (effects & EF_DIMLIGHT))*/) )
+		(cl.teamfortress && cl.stats[STAT_ITEMS] & (IT_KEY1|IT_KEY2)) ) // TF
 	{
 		if (macro_buf[0])
 			strcat(macro_buf, "/");
@@ -344,10 +351,9 @@ char *Macro_Time_f (void)
 	time_t		t;
 	struct tm	*ptm;
 
-	macro_buf[0] = 0;
-	time(&t);
-	ptm = localtime(&t);
-	strftime(macro_buf, sizeof(macro_buf)-1, "%H:%M", ptm);
+	time (&t);
+	ptm = localtime (&t);
+	strftime (macro_buf, sizeof(macro_buf)-1, "%H:%M", ptm);
 	return macro_buf;
 }
 
@@ -356,10 +362,9 @@ char *Macro_Date_f (void)
 	time_t		t;
 	struct tm	*ptm;
 
-	macro_buf[0] = 0;
-	time(&t);
-	ptm = localtime(&t);
-	strftime(macro_buf, sizeof(macro_buf)-1, "%d.%m.%y", ptm);
+	time (&t);
+	ptm = localtime (&t);
+	strftime (macro_buf, sizeof(macro_buf)-1, "%d.%m.%y", ptm);
 	return macro_buf;
 }
 
@@ -376,6 +381,30 @@ char *Macro_Took_f (void)
 	strcpy (macro_buf, vars.last_tooktrigger);
 	return macro_buf;
 }
+
+// pointing calculations are CPU expensive, so the results are cached
+// in vars.pointname & vars.pointloc
+char *Macro_PointName_f (void)
+{
+	if (host_framecount != vars.pointframe)
+		TP_FindPoint ();
+	return vars.pointname;
+}
+
+char *Macro_PointLocation_f (void)
+{
+	if (host_framecount != vars.pointframe)
+		TP_FindPoint ();
+	return vars.pointloc;
+}
+
+char *Macro_PointNameAtLocation_f (void)
+{
+	if (host_framecount != vars.pointframe)
+		TP_FindPoint ();
+	return va ("%s %s %s", vars.pointname, tp_name_at.string, vars.pointloc);
+}
+
 
 typedef struct
 {
@@ -528,6 +557,9 @@ char *TP_ParseMacroString (char *string)
 				case 'r': macro_string = Macro_Rockets_f(); break;
 				case 'w': macro_string = Macro_Weapon_f(); break;
 				case 'W': macro_string = Macro_Ammo_f(); break;
+				case 'x': macro_string = Macro_PointName_f(); break;
+				case 'y': macro_string = Macro_PointLocation_f(); break;
+				case 't': macro_string = Macro_PointNameAtLocation_f(); break;
 				default: 
 					buf[i++] = *s++;
 					continue;
@@ -544,8 +576,7 @@ char *TP_ParseMacroString (char *string)
 		if (*s == '$')
 		{
 			ch = 0;
-			switch (s[1])
-			{
+			switch (s[1]) {
 				case '\\': ch = 0x0D; break;
 				case ':': ch = 0x0A; break;
 				case '[': ch = 0x10; break;
@@ -554,8 +585,20 @@ char *TP_ParseMacroString (char *string)
 				case 'R': ch = 0x87; break;
 				case 'Y': ch = 0x88; break;
 				case 'B': ch = 0x89; break;
+				case '(': ch = 0x80; break;
+				case '=': ch = 0x81; break;
+				case ')': ch = 0x82; break;
+				case 'a': ch = 0x83; break;
+				case '<': ch = 0x1d; break;
+				case '-': ch = 0x1e; break;
+				case '>': ch = 0x1f; break;
+				case ',': ch = 0x1c; break;
+				case '.': ch = 0x9c; break;
+				case 'b': ch = 0x8b; break;
+				case 'c': ch = 0x8d; break;
 			}
-			
+			if (s[1] >= '0' && s[1] <= '9')
+				ch = s[1] - '0' + 0x12;
 			if (ch) {
 				buf[i++] = ch;
 				s += 2;
@@ -753,37 +796,37 @@ void TP_LoadLocFile_f (void)
 	TP_LoadLocFile (Cmd_Argv(1), false);
 }
 
-extern int parsecountmod;
-char *Macro_Location_f (void)
+char *TP_LocationName (vec3_t location)
 {
-	int		i;
-	int		min_num;
-	vec_t	min_dist;
-	vec3_t	vec;
-	vec3_t	org;
+	int		i, minnum;
+	float	dist, mindist;
+	vec3_t	vec, org;
 	
 	if (!loc_numentries || (cls.state != ca_active))
 		return "someplace";
 
-	VectorCopy (cl.frames[parsecountmod].playerstate[cl.playernum].origin, org);
+	VectorCopy (location, org);
 	for (i = 0; i < 3; i++)
 		org[i] *= 8;
 
-	min_num = 0;
-	min_dist = 9999999;
+	minnum = 0;
+	mindist = 9999999;
 
-	for (i = 0; i < loc_numentries; i++)
-	{
-//    	Con_DPrintf ("%f %f %f: %s\n", locdata[i].coord[0], locdata[i].coord[1], locdata[i].coord[2], locdata[i].name);
+	for (i = 0; i < loc_numentries; i++) {
 		VectorSubtract (org, locdata[i].coord, vec);
-		if (Length(vec) < min_dist)
-		{
-			min_num = i;
-			min_dist = Length(vec);
+		dist = Length (vec);
+		if (dist < mindist) {
+			minnum = i;
+			mindist = dist;
 		}
 	}
 
-	return locdata[min_num].name;
+	return locdata[minnum].name;
+}
+
+char *Macro_Location_f (void)
+{
+	return TP_LocationName (cl.frames[parsecountmod].playerstate[cl.playernum].origin);
 }
 
 /*
@@ -1216,7 +1259,7 @@ void TP_EnemyColor_f (void)
 
 void TP_NewMap ()
 {
-	static char last_map[MAX_QPATH] = {'\0'};
+	static char last_map[MAX_QPATH] = "";
 	char mapname[MAX_QPATH];
 
 	memset (&vars, 0, sizeof(vars));
@@ -1298,47 +1341,53 @@ int TP_CategorizeMessage (char *s)
 // Pickup triggers
 //
 
-// symbolic names used in tp_took command
+// symbolic names used in tp_took, tp_pickup, tp_point commands
 char *pknames[] = {"quad", "pent", "ring", "suit", "ra", "ya",	"ga",
 "mh", "health", "lg", "rl", "gl", "sng", "ng", "ssg", "pack",
 "cells", "rockets", "nails", "shells", "flag"};
 
-#define pk_quad		(1<<0)
-#define pk_pent		(1<<1)
-#define pk_ring		(1<<2)
-#define pk_suit		(1<<3)
-#define pk_ra		(1<<4)
-#define pk_ya		(1<<5)
-#define pk_ga		(1<<6)
-#define pk_mh		(1<<7)
-#define pk_health	(1<<8)
-#define pk_lg		(1<<9)
-#define pk_rl		(1<<10)
-#define pk_gl		(1<<11)
-#define pk_sng		(1<<12)
-#define pk_ng		(1<<13)
-#define pk_ssg		(1<<14)
-#define pk_pack		(1<<15)
-#define pk_cells	(1<<16)
-#define pk_rockets	(1<<17)
-#define pk_nails	(1<<18)
-#define pk_shells	(1<<19)
-#define pk_flag		(1<<20)
-#define NUM_PKFLAGS 21
-		
-/*enum {pk_quad, pk_pent, pk_ring, pk_suit, pk_ra, pk_ya, pk_ga,
-pk_mh, pk_health, pk_lg, pk_rl, pk_gl, pk_sng, pk_ng, pk_ssg, pk_pack,
-pk_cells, pk_rockets, pk_nails, pk_shells, pk_flag, MAX_PKFLAGS};
-#define default_pkflags ((1<<pk_quad)|(1<<pk_pent)|(1<<pk_ring)| \
-		(1<<pk_ra)|(1<<pk_ya)|(1<<pk_lg)|(1<<pk_rl)|(1<<pk_mh)|(1<<pk_flag))
-*/
-#define default_pkflags (pk_quad|pk_pent|pk_ring|pk_ra|pk_ya|pk_lg| \
-			pk_rl|pk_mh|pk_flag)
+#define it_quad		(1<<0)
+#define it_pent		(1<<1)
+#define it_ring		(1<<2)
+#define it_suit		(1<<3)
+#define it_ra		(1<<4)
+#define it_ya		(1<<5)
+#define it_ga		(1<<6)
+#define it_mh		(1<<7)
+#define it_health	(1<<8)
+#define it_lg		(1<<9)
+#define it_rl		(1<<10)
+#define it_gl		(1<<11)
+#define it_sng		(1<<12)
+#define it_ng		(1<<13)
+#define it_ssg		(1<<14)
+#define it_pack		(1<<15)
+#define it_cells	(1<<16)
+#define it_rockets	(1<<17)
+#define it_nails	(1<<18)
+#define it_shells	(1<<19)
+#define it_flag		(1<<20)
+#define NUM_ITEMFLAGS 21
+
+#define it_powerups	(it_quad|it_pent|it_ring)
+#define it_weapons	(it_lg|it_rl|it_gl|it_sng|it_ng|it_ssg)
+#define it_armor	(it_ra|it_ya|it_ga)
+#define it_ammo		(it_cells|it_rockets|it_nails|it_shells)
+
+#define default_pkflags (it_powerups|it_suit|it_armor|it_weapons|it_mh| \
+				it_rockets|it_pack|it_flag)
+
+#define default_tookflags (it_powerups|it_ra|it_ya|it_lg|it_rl|it_mh|it_flag)
+
+#define default_pointflags (it_powerups|it_suit|it_armor|it_mh| \
+				it_lg|it_rl|it_gl|it_sng|it_rockets|it_pack|it_flag)
 
 int pkflags = default_pkflags;
+int tookflags = default_tookflags;
+int pointflags = default_pointflags;
 
 
-void TP_TookTrigger_f (void)
+static void FlagCommand (int *flags, int defaultflags)
 {
 	int		i, j, c;
 	char	*p;
@@ -1349,10 +1398,10 @@ void TP_TookTrigger_f (void)
 	c = Cmd_Argc ();
 	if (c == 1)
 	{
-		if (!pkflags)
+		if (!*flags)
 			strcpy (str, "nothing");
-		for (i=0 ; i<NUM_PKFLAGS ; i++)
-			if (pkflags & (1<<i))
+		for (i=0 ; i<NUM_ITEMFLAGS ; i++)
+			if (*flags & (1<<i))
 			{
 				if (*str)
 					strcat (str, " ");
@@ -1363,7 +1412,7 @@ void TP_TookTrigger_f (void)
 	}
 
 	if (*Cmd_Argv(1) != '+' && *Cmd_Argv(1) != '-')
-		pkflags = 0;
+		*flags = 0;
 
 	for (i=1 ; i<c ; i++)
 	{
@@ -1377,7 +1426,7 @@ void TP_TookTrigger_f (void)
 		}
 
 		flag = 0;
-		for (j=0 ; j<NUM_PKFLAGS ; j++) {
+		for (j=0 ; j<NUM_ITEMFLAGS ; j++) {
 			if (!Q_strncasecmp (p, pknames[j], 3)) {
 				flag = 1<<j;
 				break;
@@ -1386,24 +1435,39 @@ void TP_TookTrigger_f (void)
 
 		if (!flag) {
 			if (!Q_strcasecmp (p, "armor"))
-				flag = pk_ra|pk_ya|pk_ga;
+				flag = it_ra|it_ya|it_ga;
 			else if (!Q_strcasecmp (p, "weapons"))
-				flag = pk_lg|pk_rl|pk_gl|pk_sng|pk_ng|pk_ssg;
+				flag = it_lg|it_rl|it_gl|it_sng|it_ng|it_ssg;
 			else if (!Q_strcasecmp (p, "powerups"))
-				flag = pk_quad|pk_pent|pk_ring;
+				flag = it_quad|it_pent|it_ring;
 			else if (!Q_strcasecmp (p, "ammo"))
-				flag = pk_cells|pk_rockets|pk_nails|pk_shells;
+				flag = it_cells|it_rockets|it_nails|it_shells;
 			else if (!Q_strcasecmp (p, "default"))
-				flag = default_pkflags;
+				flag = defaultflags;
 			else if (!Q_strcasecmp (p, "all"))
-				flag = (1<<NUM_PKFLAGS)-1;
+				flag = (1<<NUM_ITEMFLAGS)-1;
 		}
 
 		if (removeflag)
-			pkflags &= ~flag;
+			*flags &= ~flag;
 		else
-			pkflags |= flag;
+			*flags |= flag;
 	}
+}
+
+void TP_Took_f (void)
+{
+	FlagCommand (&tookflags, default_tookflags);
+}
+
+void TP_Pickup_f (void)
+{
+	FlagCommand (&pkflags, default_pkflags);
+}
+
+void TP_Point_f (void)
+{
+	FlagCommand (&pointflags, default_pointflags);
 }
 
 
@@ -1451,68 +1515,120 @@ void TP_FindSoundNumbers (void)
 }
 */
 
-// model numbers
-int tp_armorindex;	// armor
-int tp_packindex;	// backpack
-int tp_ssgindex, tp_ngindex, tp_sngindex, tp_glindex,
-	tp_rlindex, tp_lgindex;		// weapons
-int tp_shells1index, tp_shells2index,
-	tp_nails1index, tp_nails2index,
-	tp_rockets1index, tp_rockets2index,
-	tp_cells1index, tp_cells2index;	// ammo
+typedef struct {
+	int		itemflag;
+	cvar_t	*cvar;
+	char	*modelname;
+	vec3_t	offset;		// offset of model graphics center
+	float	radius;		// model graphics radius
+	int		flags;		// TODO: "NOPICKUP" (disp), "TEAMENEMY" (flag, disp)
+} item_t;
+
+item_t	tp_items[] = {
+	{	it_quad,	&tp_name_quad,	"progs/quaddama.mdl",
+		{0, 0, 24},	25,
+	},
+	{	it_pent,	&tp_name_pent,	"progs/invulner.mdl",
+		{0, 0, 22},	25,
+	},
+	{	it_ring,	&tp_name_ring,	"progs/invisibl.mdl",
+		{0, 0, 16},	12,
+	},
+	{	it_suit,	&tp_name_suit,	"progs/suit.mdl",
+		{0, 0, 24}, 20,
+	},
+	{	it_lg,		&tp_name_lg,	"progs/g_light.mdl",
+		{0, 0, 30},	20,
+	},
+	{	it_rl,		&tp_name_rl,	"progs/g_rock2.mdl",
+		{0, 0, 30},	20,
+	},
+	{	it_gl,		&tp_name_gl,	"progs/g_rock.mdl",
+		{0, 0, 30},	20,
+	},
+	{	it_sng,		&tp_name_sng,	"progs/g_nail2.mdl",
+		{0, 0, 30},	20,
+	},
+	{	it_ng,		&tp_name_ng,	"progs/g_nail.mdl",
+		{0, 0, 30},	20,
+	},
+	{	it_ssg,		&tp_name_ssg,	"progs/g_shot.mdl",
+		{0, 0, 30},	20,
+	},
+	{	it_cells,	&tp_name_cells,	"maps/b_batt0.bsp",
+		{16, 16, 24},	18,
+	},
+	{	it_cells,	&tp_name_cells,	"maps/b_batt1.bsp",
+		{16, 16, 24},	18,
+	},
+	{	it_rockets,	&tp_name_rockets,"maps/b_rock0.bsp",
+		{8, 8, 20},	18,
+	},
+	{	it_rockets,	&tp_name_rockets,"maps/b_rock1.bsp",
+		{16, 8, 20},	18,
+	},
+	{	it_nails,	&tp_name_nails,	"maps/b_nail0.bsp",
+		{16, 16, 10},	18,
+	},
+	{	it_nails,	&tp_name_nails,	"maps/b_nail1.bsp",
+		{16, 16, 10},	18,
+	},
+	{	it_shells,	&tp_name_shells,"maps/b_shell0.bsp",
+		{16, 16, 10},	18,
+	},
+	{	it_shells,	&tp_name_shells,"maps/b_shell1.bsp",
+		{16, 16, 10},	18,
+	},
+	{	it_health,	&tp_name_health,"maps/b_bh10.bsp",
+		{16, 16, 8},	18,
+	},
+	{	it_health,	&tp_name_health,"maps/b_bh25.bsp",
+		{16, 16, 8},	18,
+	},
+	{	it_mh,		&tp_name_mh,	"maps/b_bh100.bsp",
+		{16, 16, 14},	20,
+	},
+	{	it_pack,	&tp_name_backpack, "progs/backpack.mdl",
+		{0, 0, 18},	18,
+	},
+	{	it_flag,	&tp_name_flag,	"progs/tf_flag.mdl",
+		{0, 0, 14},	25,
+	},
+	{	it_flag,	&tp_name_flag,	"progs/tf_stan.mdl",
+		{0, 0, 45},	40,
+	},
+	{	it_ra|it_ya|it_ga, NULL,	"progs/armor.mdl",
+		{0, 0, 24},	22,
+	}
+
+};
+
+#define NUMITEMS (sizeof(tp_items) / sizeof(tp_items[0]))
+
+item_t	*model2item[MAX_MODELS];
 
 void TP_FindModelNumbers (void)
 {
-	int		i;
+	int		i, j;
 	char	*s;
-	
-	tp_ssgindex = tp_ngindex = tp_sngindex =
-	tp_glindex = tp_rlindex = tp_lgindex = tp_packindex =
-	tp_armorindex = tp_shells1index = tp_shells2index =
-	tp_nails1index = tp_nails2index = tp_rockets1index =
-	tp_rockets2index = tp_cells1index = tp_cells2index = -1;
+	item_t	*item;
 
-	// model 0 is world
-	for (i=1 ; i<MAX_MODELS ; i++)
-	{
+	for (i=0 ; i<MAX_MODELS ; i++) {
+		model2item[i] = NULL;
 		s = cl.model_name[i];
-		if (!strcmp(s, "progs/g_shot.mdl"))
-			tp_ssgindex = i;
-		else if (!strcmp(s, "progs/g_nail.mdl"))
-			tp_ngindex = i;
-		else if (!strcmp(s, "progs/g_nail2.mdl"))
-			tp_sngindex = i;
-		else if (!strcmp(s, "progs/g_rock.mdl"))
-			tp_glindex = i;
-		else if (!strcmp(s, "progs/g_rock2.mdl"))
-			tp_rlindex = i;
-		else if (!strcmp(s, "progs/g_light.mdl"))
-			tp_lgindex = i;
-		else if (!strcmp(s, "progs/armor.mdl"))
-			tp_armorindex = i;
-		else if (!strcmp(s, "progs/backpack.mdl"))
-			tp_packindex = i;
-		else if (!strcmp(s, "maps/b_shell0.bsp"))
-			tp_shells1index = i;
-		else if (!strcmp(s, "maps/b_shell1.bsp"))
-			tp_shells2index = i;
-		else if (!strcmp(s, "maps/b_nail0.bsp"))
-			tp_nails1index = i;
-		else if (!strcmp(s, "maps/b_nail1.bsp"))
-			tp_nails2index = i;
-		else if (!strcmp(s, "maps/b_rock0.bsp"))
-			tp_rockets1index = i;
-		else if (!strcmp(s, "maps/b_rock1.bsp"))
-			tp_rockets2index = i;
-		else if (!strcmp(s, "maps/b_batt0.bsp"))
-			tp_cells1index = i;
-		else if (!strcmp(s, "maps/b_batt1.bsp"))
-			tp_cells2index = i;
+		if (!s)
+			continue;
+		for (j=0, item=tp_items ; j<NUMITEMS ; j++, item++)
+			if (!strcmp(s, item->modelname))
+				model2item[i] = item;
 	}
 }
 
 
-static int FindNearestItem (int type)
+// on success, result is non-zero
+// on failure, result is zero
+// for armors, returns skinnum+1 on success
+static int FindNearestItem (int flags, item_t **pitem)
 {
 	frame_t		*frame;
 	packet_entities_t	*pak;
@@ -1527,50 +1643,46 @@ static int FindNearestItem (int type)
 	// look in previous frame 
 	frame = &cl.frames[oldparsecountmod&UPDATE_MASK];
 	pak = &frame->packet_entities;
-	bestdist = 250;
+	bestdist = 100;
 	bestidx = 0;
+	*pitem = NULL;
 	for (i=0,ent=pak->entities ; i<pak->num_entities ; i++,ent++)
 	{
-		int j, dist;
+		int dist;
+		item_t	*item;
 		
-		j = ent->modelindex;
-		switch (type)
-		{
-		case 0:	// weapon
-			if (j != tp_ssgindex && j != tp_ngindex && j != tp_sngindex
-				&& j != tp_glindex && j != tp_rlindex && j != tp_lgindex)
-				continue;
-			break;
-		case 1:	// armor
-			if (j != tp_armorindex)
-				continue;
-			break;
-		case 2:	// ammo or backpack
-			if (j != tp_packindex && j != tp_shells1index && j != tp_shells2index
-				&& j != tp_nails1index && j != tp_nails2index 
-				&& j != tp_rockets1index && j != tp_rockets2index
-				&& j != tp_cells1index && j != tp_cells2index)
-				continue;
-		}
-		VectorSubtract (ent->origin, org, v);
-		if ((dist = Length(v)) > bestdist)
+		item = model2item[ent->modelindex];
+		if (!item)
 			continue;
-		bestdist = dist;
-		bestidx = j;
-		bestskin = ent->skinnum;
+		if ( ! (item->itemflag & flags) )
+			continue;
+
+		VectorSubtract (ent->origin, org, v);
+		VectorAdd (v, item->offset, v);
+		dist = Length (v);
+		if (dist <= bestdist) {
+			bestdist = dist;
+			bestidx = ent->modelindex;
+			bestskin = ent->skinnum;
+			*pitem = item;
+		}
 	}
 
-	if (type == 1 && bestidx)	// armor
-		return -(bestskin + 1);	// -1=green, -2=yellow, -3=red
+	if (bestidx && (*pitem)->itemflag == it_armor)
+		return bestskin + 1;	// 1=green, 2=yellow, 3=red
 
 	return bestidx;
 }
+
 
 static int CountTeammates ()
 {
 	int	i, count;
 	player_info_t	*player;
 	char	*myteam;
+
+	if (tp_forcetriggers.value)
+		return 1;
 
 	count = 0;
 	myteam = cl.players[cl.playernum].team;
@@ -1585,11 +1697,11 @@ static int CountTeammates ()
 
 static void ExecTookTrigger (char *s, int flag)
 {
+	if ( !((pkflags|tookflags) & flag) )
+		return;
 	strcpy (vars.tookitem, s);
-	if (pkflags & flag)
-	{
-		if (CountTeammates () > 0)
-		{
+	if (tookflags & flag) {
+		if (CountTeammates()) {
 			strcpy (vars.last_tooktrigger, s);
 			TP_ExecTrigger ("f_took");
 		}
@@ -1598,24 +1710,22 @@ static void ExecTookTrigger (char *s, int flag)
 
 void TP_CheckPickupSound (char *s)
 {
-	int		idx;
-
 	if (cl.spectator || !atoi(Info_ValueForKey(cl.serverinfo, "teamplay")))
 		return;
 
 	if (!strcmp(s, "items/damage.wav"))
-		ExecTookTrigger (tp_name_quad.string, pk_quad);
+		ExecTookTrigger (tp_name_quad.string, it_quad);
 	else if (!strcmp(s, "items/protect.wav"))
-		ExecTookTrigger (tp_name_pent.string, pk_pent);
+		ExecTookTrigger (tp_name_pent.string, it_pent);
 	else if (!strcmp(s, "items/inv1.wav"))
-		ExecTookTrigger (tp_name_ring.string, pk_ring);
+		ExecTookTrigger (tp_name_ring.string, it_ring);
 	else if (!strcmp(s, "items/suit.wav"))
-		ExecTookTrigger (tp_name_suit.string, pk_suit);
+		ExecTookTrigger (tp_name_suit.string, it_suit);
 	else if (!strcmp(s, "items/health1.wav") ||
 			 !strcmp(s, "items/r_item1.wav"))
-		ExecTookTrigger (tp_name_health.string, pk_health);
+		ExecTookTrigger (tp_name_health.string, it_health);
 	else if (!strcmp(s, "items/r_item2.wav"))
-		ExecTookTrigger (tp_name_mh.string, pk_mh);
+		ExecTookTrigger (tp_name_mh.string, it_mh);
 	else
 		goto more;
 	return;
@@ -1628,35 +1738,25 @@ more:
 	if (!strcmp(s, "weapons/pkup.wav"))
 	{
 		int	deathmatch;
+		item_t	*item;
 
 		deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
 		if (deathmatch == 2 || deathmatch == 3)
 			return;
-		idx = FindNearestItem(0);
-		if (idx == tp_ssgindex)
-			ExecTookTrigger (tp_name_ssg.string, pk_ssg);
-		else if (idx == tp_ngindex)
-			ExecTookTrigger (tp_name_ng.string, pk_ng);
-		else if (idx == tp_sngindex)
-			ExecTookTrigger (tp_name_sng.string, pk_sng);
-		else if (idx == tp_glindex)
-			ExecTookTrigger (tp_name_gl.string, pk_gl);
-		else if (idx == tp_rlindex)
-			ExecTookTrigger (tp_name_rl.string, pk_rl);
-		else if (idx == tp_lgindex)
-			ExecTookTrigger (tp_name_lg.string, pk_lg);
+		if (!FindNearestItem (it_weapons, &item))
+			return;
+		ExecTookTrigger (item->cvar->string, item->itemflag);
 		return;
 	}
 
 	// armor
 	if (!strcmp(s, "items/armor1.wav"))
 	{
-		idx = FindNearestItem (1);
-
-		switch (idx) {
-			case -1: ExecTookTrigger (tp_name_ga.string, pk_ga); break;
-			case -2: ExecTookTrigger (tp_name_ya.string, pk_ya); break;
-			case -3: ExecTookTrigger (tp_name_ra.string, pk_ra); break;
+		item_t	*item;
+		switch (FindNearestItem (it_armor, &item)) {
+			case 1: ExecTookTrigger (tp_name_ga.string, it_ga); break;
+			case 2: ExecTookTrigger (tp_name_ya.string, it_ya); break;
+			case 3: ExecTookTrigger (tp_name_ra.string, it_ra); break;
 		}
 		return;
 	}
@@ -1664,19 +1764,151 @@ more:
 	// backpack or ammo
 	if (!strcmp (s, "weapons/lock4.wav"))
 	{
-		idx = FindNearestItem (2);
-		if (idx == tp_packindex)
-			ExecTookTrigger (tp_name_backpack.string, pk_pack);
-		else if (idx == tp_shells1index || idx == tp_shells2index)
-			ExecTookTrigger (tp_name_shells.string, pk_shells);
-		else if (idx == tp_nails1index || idx == tp_nails2index)
-			ExecTookTrigger (tp_name_nails.string, pk_nails);
-		else if (idx == tp_rockets1index || idx == tp_rockets2index)
-			ExecTookTrigger (tp_name_rockets.string, pk_rockets);
-		else if (idx == tp_cells1index || idx == tp_cells2index)
-			ExecTookTrigger (tp_name_cells.string, pk_cells);
-		return;
+		item_t	*item;
+		if (!FindNearestItem (it_ammo|it_pack, &item))
+			return;
+		ExecTookTrigger (item->cvar->string, item->itemflag);
 	}
+}
+
+
+void TP_FindPoint ()
+{
+	packet_entities_t	*pak;
+	entity_state_t		*ent;
+	int	i;
+	vec3_t	forward, right, up;
+	float	best;
+	entity_state_t	*bestent;
+	vec3_t	ang;
+	vec3_t	vieworg, entorg;
+	item_t	*item, *bestitem;
+
+	ang[0] = cl.viewangles[0];
+	ang[1] = cl.viewangles[1];
+	ang[2] = 0;
+	AngleVectors (ang, forward, right, up);
+	VectorCopy (cl.simorg, vieworg);
+	vieworg[2] += 22;	// adjust for view height
+
+	best = -1;
+
+	pak = &cl.frames[parsecountmod&UPDATE_MASK].packet_entities;
+	for (i=0,ent=pak->entities ; i<pak->num_entities ; i++,ent++)
+	{
+		vec3_t	v, v2, v3;
+		float dist, miss, rank;
+
+		item = model2item[ent->modelindex];
+		if (!item)
+			continue;
+		if (! (item->itemflag & pointflags) )
+			continue;
+
+		VectorAdd (ent->origin, item->offset, entorg);
+		VectorSubtract (entorg, vieworg, v);
+
+		dist = DotProduct (v, forward);
+		if (dist < 10)
+			continue;
+		VectorScale (forward, dist, v2);
+		VectorSubtract (v2, v, v3);
+		miss = Length (v3);
+		if (miss > 300)
+			continue;
+		if (miss > dist*1.7)
+			continue;		// over 60 degrees off
+		if (dist < 3000.0/8.0)
+			rank = miss * (dist*8.0*0.0002f + 0.3f);
+		else
+			rank = miss;
+		
+		if (rank < best || best < 0) {
+			// check if we can actually see the object
+			vec3_t	end;
+			pmtrace_t	trace;
+			float	radius;
+
+			radius = item->radius;
+			if (ent->effects & (EF_BLUE|EF_RED|EF_DIMLIGHT|EF_BRIGHTLIGHT))
+				radius = 200;
+
+			if (dist <= radius)
+				goto ok;
+
+			// FIXME: is it ok to use PM_TraceLine here?
+			// physent list might not have been built yet...
+
+			VectorSubtract (vieworg, entorg, v);
+			VectorNormalize (v);
+			VectorMA (entorg, radius, v, end);
+			trace = PM_TraceLine (vieworg, end);
+			if (trace.fraction == 1)
+				goto ok;
+
+			VectorMA (entorg, radius, right, end);
+			VectorSubtract (vieworg, end, v);
+			VectorNormalize (v);
+			VectorMA (end, radius, v, end);
+			trace = PM_TraceLine (vieworg, end);
+			if (trace.fraction == 1)
+				goto ok;
+
+			VectorMA (entorg, -radius, right, end);
+			VectorSubtract (vieworg, end, v);
+			VectorNormalize (v);
+			VectorMA (end, radius, v, end);
+			trace = PM_TraceLine (vieworg, end);
+			if (trace.fraction == 1)
+				goto ok;
+
+			VectorMA (entorg, radius, up, end);
+			VectorSubtract (vieworg, end, v);
+			VectorNormalize (v);
+			VectorMA (end, radius, v, end);
+			trace = PM_TraceLine (vieworg, end);
+			if (trace.fraction == 1)
+				goto ok;
+
+			// use half the radius, otherwise it's possible to see
+			// through floor in some places
+			VectorMA (entorg, -radius/2, up, end);
+			VectorSubtract (vieworg, end, v);
+			VectorNormalize (v);
+			VectorMA (end, radius, v, end);
+			trace = PM_TraceLine (vieworg, end);
+			if (trace.fraction == 1)
+				goto ok;
+
+			continue;	// not visible
+ok:
+			best = rank;
+			bestent = ent;
+			bestitem = item;
+		}
+	}
+
+	if (best >= 0) {
+		char *p;
+		if (!bestitem->cvar) {
+			// armors are special
+			switch (bestent->skinnum) {
+				case 0: p = tp_name_ga.string; break;
+				case 1: p = tp_name_ya.string; break;
+				default: p = tp_name_ra.string;
+			}
+		} else
+			p = bestitem->cvar->string;
+
+		Q_strncpyz (vars.pointname, p, sizeof(vars.pointname));
+		Q_strncpyz (vars.pointloc, TP_LocationName (bestent->origin), sizeof(vars.pointloc));
+	}
+	else {
+		Q_strncpyz (vars.pointname, tp_name_nothing.string, sizeof(vars.pointname));
+		vars.pointloc[0] = 0;
+	}
+
+	vars.pointframe = host_framecount;
 }
 
 
@@ -1688,25 +1920,27 @@ void TP_StatChanged (int stat, int value)
 	if (stat == STAT_HEALTH)
 	{
 		if (value > 0) {
-			if (vars.health <= 0 /*&& last_health != -999*/
-				/* && Q_strcasecmp(Info_ValueForKey(cl.serverinfo, "status"),
-				"standby") */)	// detect Kombat Teams status
-			{
+			if (vars.health <= 0) {
 				extern cshift_t	cshift_empty;
 				vars.respawntrigger_time = realtime;
-				//if (cl.teamfortress)
+				if (cl.teamfortress)
 					memset (&cshift_empty, 0, sizeof(cshift_empty));
-				if (!cl.spectator)
+				if (!cl.spectator && CountTeammates())
 					TP_ExecTrigger ("f_respawn");
 			}
 			vars.health = value;
 			return;
 		}
-		if (vars.health > 0) {		// We just died
+		if (vars.health > 0) {		// We have just died
 			vars.deathtrigger_time = realtime;
 			strcpy (vars.lastdeathloc, Macro_Location_f());
-			if (!cl.spectator)
-				TP_ExecTrigger ("f_death");
+			if (!cl.spectator && CountTeammates()) {
+				if (cl.teamfortress && (cl.stats[STAT_ITEMS] & (IT_KEY1|IT_KEY2))
+					&& Cmd_FindAlias("f_flagdeath"))
+					TP_ExecTrigger ("f_flagdeath");
+				else
+					TP_ExecTrigger ("f_death");
+			}
 		}
 		vars.health = value;
 	}
@@ -1716,7 +1950,7 @@ void TP_StatChanged (int stat, int value)
 
 		if (i & (IT_KEY1|IT_KEY2)) {
 			if (cl.teamfortress && !cl.spectator)
-				ExecTookTrigger (tp_name_flag.string, pk_flag);
+				ExecTookTrigger (tp_name_flag.string, it_flag);
 		}
 
 		vars.items = value;
@@ -1728,6 +1962,7 @@ void TP_Init ()
 {
 	Cvar_RegisterVariable (&cl_parsesay);
 	Cvar_RegisterVariable (&cl_triggers);
+	Cvar_RegisterVariable (&tp_forcetriggers);
 	Cvar_RegisterVariable (&cl_nofake);
 	Cvar_RegisterVariable (&cl_loadlocs);
 	Cvar_RegisterVariable (&cl_rocket2grenade);
@@ -1757,11 +1992,15 @@ void TP_Init ()
 	Cvar_RegisterVariable (&tp_name_health);
 	Cvar_RegisterVariable (&tp_name_backpack);
 	Cvar_RegisterVariable (&tp_name_flag);
+	Cvar_RegisterVariable (&tp_name_nothing);
+	Cvar_RegisterVariable (&tp_name_at);
 
 	Cmd_AddCommand ("macrolist", TP_MacroList_f);
 	Cmd_AddCommand ("loadloc", TP_LoadLocFile_f);
 	Cmd_AddCommand ("msg_trigger", TP_MsgTrigger_f);
 	Cmd_AddCommand ("teamcolor", TP_TeamColor_f);
 	Cmd_AddCommand ("enemycolor", TP_EnemyColor_f);
-	Cmd_AddCommand ("tp_took", TP_TookTrigger_f);
+	Cmd_AddCommand ("tp_took", TP_Took_f);
+	Cmd_AddCommand ("tp_pickup", TP_Pickup_f);
+	Cmd_AddCommand ("tp_point", TP_Point_f);
 }
