@@ -1334,6 +1334,9 @@ void Key_Init (void)
 {
 	int		i;
 
+	if (dedicated)
+		return;
+
 	for (i=0 ; i<32 ; i++)
 	{
 		key_lines[i][0] = ']';
