@@ -486,10 +486,16 @@ Cmd_AliasList_f
 void Cmd_AliasList_f (void)
 {
 	cmd_alias_t	*a;
+	int			c;
 
-	Com_Printf ("Current alias commands:\n");
-	for (a = cmd_alias ; a ; a=a->next)
-		Com_Printf ("%s : %s\n\n", a->name, a->value);
+	c = Cmd_Argc();
+
+	if (c == 1)
+		Com_Printf ("Current alias commands:\n");
+	for (a = cmd_alias ; a ; a=a->next) {
+		if (c == 1 || Q_glob_match(Cmd_Argv(1), a->name))
+			Com_Printf ("%s : %s\n\n", a->name, a->value);
+	}
 }
 
 /*
