@@ -165,7 +165,7 @@ void Netchan_Setup (netsrc_t sock, netchan_t *chan, netadr_t adr, int qport)
 	chan->remote_address = adr;
 	chan->qport = qport;
 
-	chan->last_received = realtime;
+	chan->last_received = curtime;
 
 	SZ_Init (&chan->message, chan->message_buf, sizeof(chan->message_buf));
 	chan->message.allowoverflow = true;
@@ -184,7 +184,7 @@ Returns true if the bandwidth choke isn't active
 #define	MAX_BACKUP	200
 qboolean Netchan_CanPacket (netchan_t *chan)
 {
-	if (chan->cleartime < realtime + MAX_BACKUP*chan->rate)
+	if (chan->cleartime < curtime + MAX_BACKUP*chan->rate)
 		return true;
 	return false;
 }
@@ -281,7 +281,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 // send the datagram
 	i = chan->outgoing_sequence & (MAX_LATENT-1);
 	chan->outgoing_size[i] = send.cursize;
-	chan->outgoing_time[i] = realtime;
+	chan->outgoing_time[i] = curtime;
 
 	//zoid, no input in demo playback mode
 #ifndef SERVERONLY
@@ -289,13 +289,13 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 #endif
 		NET_SendPacket (chan->sock, send.cursize, send.data, chan->remote_address);
 
-	if (chan->cleartime < realtime)
-		chan->cleartime = realtime + send.cursize*chan->rate;
+	if (chan->cleartime < curtime)
+		chan->cleartime = curtime + send.cursize*chan->rate;
 	else
 		chan->cleartime += send.cursize*chan->rate;
 #ifdef SERVERONLY
 	if (ServerPaused())
-		chan->cleartime = realtime;
+		chan->cleartime = curtime;
 #endif
 
 	if (showpackets.value)
@@ -395,10 +395,10 @@ qboolean Netchan_Process (netchan_t *chan)
 	chan->frame_latency = chan->frame_latency*OLD_AVG
 		+ (chan->outgoing_sequence-sequence_ack)*(1.0-OLD_AVG);
 	chan->frame_rate = chan->frame_rate*OLD_AVG
-		+ (realtime-chan->last_received)*(1.0-OLD_AVG);		
+		+ (curtime - chan->last_received)*(1.0-OLD_AVG);		
 	chan->good_count += 1;
 
-	chan->last_received = realtime;
+	chan->last_received = curtime;
 
 	return true;
 }

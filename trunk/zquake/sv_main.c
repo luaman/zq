@@ -1134,7 +1134,7 @@ void SV_CheckTimeouts (void)
 	float	droptime;
 	int	nclients;
 	
-	droptime = realtime - timeout.value;
+	droptime = curtime - timeout.value;
 	nclients = 0;
 
 	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
