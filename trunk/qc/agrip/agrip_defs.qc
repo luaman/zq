@@ -26,7 +26,7 @@
 //    must disable it by commenting out the #define line below.
 
 // Turn on accessibility features...
-#define ACCESSIBILITY
+#define AGRIP
 
 // Define our helper objects...
 // These really work as fields for each entity in the gaem
