@@ -364,7 +364,7 @@ extern float	server_version;	// version of server we connected to
 // cl_main
 //
 void CL_Init (void);
-void Host_WriteConfiguration (void);
+void CL_WriteConfiguration (void);
 void CL_ClearState (void);
 void CL_ReadPackets (void);
 void CL_BeginServerConnect(void);

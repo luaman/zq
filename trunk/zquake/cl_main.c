@@ -784,12 +784,12 @@ void Host_Error (char *error, ...)
 
 /*
 ===============
-Host_WriteConfiguration
+CL_WriteConfiguration
 
 Writes key bindings and archived cvars to config.cfg
 ===============
 */
-void Host_WriteConfiguration (void)
+void CL_WriteConfiguration (void)
 {
 	FILE	*f;
 
@@ -1140,7 +1140,7 @@ void Host_Shutdown (void)
 	SV_Shutdown ("Server quit\n");
 #endif
 
-	Host_WriteConfiguration (); 
+	CL_WriteConfiguration (); 
 
 	SList_Shutdown ();
 	CDAudio_Shutdown ();
