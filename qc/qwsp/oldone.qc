@@ -126,17 +126,16 @@ void() old_thrash20       =[      $shake20, old_thrash20      ] {finale_4();}
 
 void finale_1 ()
 {
-	entity	pos, pl;
+	entity	pl;
 	entity	timer;
 
 	intermission_exittime = time + 10000000;	// never allow exit
 	intermission_running = 1;
 
 	// find the intermission spot
-	pos = find (world, classname, "info_intermission");
-	if (!pos)
+	intermission_spot = find (world, classname, "info_intermission");
+	if (!intermission_spot)
 		error ("no info_intermission");
-	intermission_origin = pos.origin;
 
 	pl = find (world, classname, "misc_teleporttrain");
 	if (!pl)
@@ -146,12 +145,12 @@ void finale_1 ()
 	// svc_finale is broken in QW, so send svc_intermission first to set view angles
 	// and origin, then send svc_finale to set cl.intermission to 2.
 	WriteByte (MSG_ALL, SVC_INTERMISSION);
-	WriteCoord (MSG_ALL, intermission_origin_x);
-	WriteCoord (MSG_ALL, intermission_origin_y);
-	WriteCoord (MSG_ALL, intermission_origin_z);
-	WriteAngle (MSG_ALL, pos.mangle_x);
-	WriteAngle (MSG_ALL, pos.mangle_y);
-	WriteAngle (MSG_ALL, pos.mangle_z);
+	WriteCoord (MSG_ALL, intermission_spot.origin_x);
+	WriteCoord (MSG_ALL, intermission_spot.origin_y);
+	WriteCoord (MSG_ALL, intermission_spot.origin_z);
+	WriteAngle (MSG_ALL, intermission_spot.mangle_x);
+	WriteAngle (MSG_ALL, intermission_spot.mangle_y);
+	WriteAngle (MSG_ALL, intermission_spot.mangle_z);
 
 	WriteByte (MSG_ALL, SVC_FINALE);
 	WriteString (MSG_ALL, "");
@@ -160,7 +159,7 @@ void finale_1 ()
 	while (pl != world)
 	{
 		pl.view_ofs = '0 0 0';
-		pl.angles = other.v_angle = pos.mangle;
+		pl.angles = other.v_angle = intermission_spot.mangle;
 		pl.fixangle = true;		// turn this way immediately
 		pl.map = self.map;
 		pl.nextthink = time + 0.5;
@@ -168,7 +167,7 @@ void finale_1 ()
 		pl.solid = SOLID_NOT;
 		pl.movetype = MOVETYPE_NONE;
 		pl.modelindex = 0;
-		setorigin (pl, intermission_origin);
+		setorigin (pl, intermission_spot.origin);
 		pl = find (pl, classname, "player");
 	}	
 	

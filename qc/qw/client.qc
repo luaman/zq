@@ -48,9 +48,11 @@ float   modelindex_eyes, modelindex_player;
 
 string nextmap;
 
+float	ignore_changeparms;
+
 float   intermission_running;
 float   intermission_exittime;
-vector	intermission_origin;
+entity	intermission_spot;
 
 /*QUAKED info_intermission (1 0.5 0.5) (-16 -16 -16) (16 16 16)
 This is the camera point for the intermission.
@@ -65,6 +67,9 @@ void info_intermission ()
 
 void SetChangeParms ()
 {
+	if (ignore_changeparms)
+		return;
+
 	if (self.health <= 0)
 	{
 		SetNewParms ();
@@ -213,27 +218,24 @@ Take the players to the intermission spot
 */
 void execute_changelevel ()
 {
-	entity	pos;
-
 	intermission_running = 1;
 	
 // enforce a wait time before allowing changelevel
 	intermission_exittime = time + 5;
 
-	pos = FindIntermission ();
-	intermission_origin = pos.origin;
+	intermission_spot = FindIntermission ();
 
 // play intermission music
 	WriteByte (MSG_ALL, SVC_CDTRACK);
 	WriteByte (MSG_ALL, 3);
 
 	WriteByte (MSG_ALL, SVC_INTERMISSION);
-	WriteCoord (MSG_ALL, pos.origin_x);
-	WriteCoord (MSG_ALL, pos.origin_y);
-	WriteCoord (MSG_ALL, pos.origin_z);
-	WriteAngle (MSG_ALL, pos.mangle_x);
-	WriteAngle (MSG_ALL, pos.mangle_y);
-	WriteAngle (MSG_ALL, pos.mangle_z);
+	WriteCoord (MSG_ALL, intermission_spot.origin_x);
+	WriteCoord (MSG_ALL, intermission_spot.origin_y);
+	WriteCoord (MSG_ALL, intermission_spot.origin_z);
+	WriteAngle (MSG_ALL, intermission_spot.mangle_x);
+	WriteAngle (MSG_ALL, intermission_spot.mangle_y);
+	WriteAngle (MSG_ALL, intermission_spot.mangle_z);
 	
 	other = find (world, classname, "player");
 	while (other != world)
@@ -250,7 +252,7 @@ void execute_changelevel ()
 		other.invisible_finished = 0;
 		other.invincible_finished = 0;
 
-		setorigin (other, pos.origin);
+		setorigin (other, intermission_spot.origin);
 		other.velocity = '0 0 0';
 		other = find (other, classname, "player");
 	}       
@@ -340,7 +342,11 @@ void respawn ()
 		PutClientInServer ();
 	}
 	else
-	{	// restart the entire server
+	{
+		// let the stats stay as they were when the player
+		// entered the level
+		ignore_changeparms = true;
+		// restart the entire server
 		changelevel (mapname);
 	}
 }
@@ -1110,7 +1116,7 @@ void PlayerPostThink ()
 {
 	if (intermission_running)
 	{
-		setorigin (self, intermission_origin);
+		setorigin (self, intermission_spot.origin);
 		self.velocity = '0 0 0';	// don't stray off the intermission spot too far
 		return;
 	}
