@@ -343,10 +343,6 @@ struct opcode_t
 
 extern opcode_t		pr_opcodes[99];		// sized by initialization
 
-extern bool			pr_idcomp;			// to allow vanilla id Software code to compile
-
-extern bool			pr_dumpasm;
-
 extern def_t		*pr_global_defs[MAX_REGS];	// to find def for a global variable
 
 enum token_type_t
@@ -398,6 +394,8 @@ def_t *PR_FindDef (char *name, def_t *scope);
 def_t *PR_GetDef (type_t *type, char *name, def_t *scope, def_t *visscope, bool isParm = false);
 
 void PR_PrintDefs (void);
+void PR_PrintOfs (gofs_t ofs);
+void PR_PrintFunction (char *name);
 
 void PR_SkipToSemicolon (void);
 
@@ -415,8 +413,6 @@ char *PR_ValueString (etype_t type, void *val);
 void PR_ClearGrabMacros (void);
 
 bool PR_CompileFile (char *string, char *filename);
-
-extern bool	pr_dumpasm;
 
 extern string_t	s_file;			// filename for function definition
 
@@ -454,3 +450,7 @@ int	CopyString (char *str);
 
 // don't take const into account
 bool CompareType (type_t *t1, type_t *t2);
+
+// compilation options
+extern bool		opt_idcomp;			// to allow vanilla id Software code to compile
+extern bool		opt_dumpasm;

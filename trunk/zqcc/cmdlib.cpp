@@ -500,7 +500,7 @@ long ParseNum (char *str)
 /*
 ** Com_HashKey
 */
-int Com_HashKey (char *name)
+int Com_HashKey (const char *name)
 {
 	int	v;
 	unsigned char c;
