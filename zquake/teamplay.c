@@ -81,7 +81,10 @@ void CL_StatChanged (int stat, int value)
 				/* && Q_strcasecmp(Info_ValueForKey(cl.serverinfo, "status"),
 				"standby") */)	// detect Kombat Teams status
 			{
+				extern cshift_t	cshift_empty;
 				last_respawntrigger = realtime;
+				//if (cl.teamfortress)
+					memset (&cshift_empty, 0, sizeof(cshift_empty));
 				CL_ExecTrigger ("f_respawn");
 			}
 			last_health = value;
