@@ -910,25 +910,12 @@ Key_SetBinding
 */
 void Key_SetBinding (int keynum, char *binding)
 {
-	char	*new;
-	int		l;
-			
 	if (keynum == -1)
 		return;
 
-// free old bindings
-	if (keybindings[keynum])
-	{
-		Z_Free (keybindings[keynum]);
-		keybindings[keynum] = NULL;
-	}
-			
-// allocate memory for new binding
-	l = strlen (binding);	
-	new = Z_Malloc (l+1);
-	strcpy (new, binding);
-	new[l] = 0;
-	keybindings[keynum] = new;	
+	// free (and hence Q_free) is safe to call with a NULL argument
+	Q_free (keybindings[keynum]);
+	keybindings[keynum] = Q_strdup(binding);
 }
 
 /*
@@ -941,10 +928,8 @@ void Key_Unbind (int keynum)
 	if (keynum == -1)
 		return;
 
-	if (keybindings[keynum]) {
-		Z_Free (keybindings[keynum]);
-		keybindings[keynum] = NULL;
-	}
+	// free (and hence Q_free) is safe to call with a NULL argument
+	Q_free (keybindings[keynum]);
 }
 
 /*
