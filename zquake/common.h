@@ -177,11 +177,13 @@ char *COM_Parse (char *data);
 extern	int		com_argc;
 extern	char	**com_argv;
 
+void COM_Init (void);
+void COM_Shutdown (void);
+
+void COM_InitArgv (int argc, char **argv);
 int COM_CheckParm (char *parm);
 void COM_AddParm (char *parm);
 
-void COM_Init (void);
-void COM_InitArgv (int argc, char **argv);
 
 char *COM_SkipPath (char *pathname);
 void COM_StripExtension (char *in, char *out);
