@@ -32,18 +32,12 @@ typedef struct
 	int		numlines;		// number of non-blank text lines, used for backscroling
 } console_t;
 
-extern	console_t	con_main;
-extern	console_t	con_chat;
-extern	console_t	*con;			// point to either con_main or con_chat
+extern	console_t	con;
 
-extern	int			con_ormask;
-
-extern int con_totallines;
-extern qboolean con_initialized;
-extern byte *con_chars;
-extern	int	con_notifylines;		// scan lines to clear for notify lines
-
-void Con_DrawCharacter (int cx, int line, int num);
+extern int		con_ormask;
+extern int		con_totallines;
+extern qboolean	con_initialized;
+extern int		con_notifylines;	// scan lines to clear for notify lines
 
 void Con_CheckResize (void);
 void Con_Init (void);
