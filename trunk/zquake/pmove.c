@@ -702,10 +702,7 @@ void JumpButton (void)
 	// we mix vanilla QW and KTeams physics here so that prediction
 	// errors are reasonable no matter what server we play on
 	if (pmove.velocity[2] < 270)
-		pmove.velocity[2] = pmove.velocity[2] * 0.4 + 270 * 0.6;
-
-	if (pmove.velocity[2] < 190)
-		pmove.velocity[2] = 190;
+		pmove.velocity[2] = pmove.velocity[2] * 0.5 + 270 * 0.5;
 
 	pmove.oldbuttons |= BUTTON_JUMP;	// don't jump again until released
 
