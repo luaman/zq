@@ -905,6 +905,8 @@ void R_DrawWaterSurfaces (void)
 		glEnable (GL_BLEND);
 		glColor4f (1, 1, 1, wateralpha);
 		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		if (wateralpha < 0.9)
+			glDepthMask (GL_FALSE);
 	}
 
 	if (!gl_texsort.value) {
@@ -947,6 +949,8 @@ void R_DrawWaterSurfaces (void)
 
 		glColor3f (1, 1, 1);
 		glDisable (GL_BLEND);
+		if (wateralpha < 0.9)
+			glDepthMask (GL_TRUE);
 	}
 
 }
