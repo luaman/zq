@@ -227,7 +227,6 @@ void Model_NextDownload (void)
 {
 	char	*s;
 	int		i;
-	extern	char gamedirfile[];
 
 	if (cls.downloadnumber == 0)
 	{
@@ -259,7 +258,7 @@ void Model_NextDownload (void)
 			Com_Printf ("\nThe required model file '%s' could not be found or downloaded.\n\n"
 				, cl.model_name[i]);
 			Com_Printf ("You may need to download or purchase a %s client "
-				"pack in order to play on this server.\n\n", gamedirfile);
+				"pack in order to play on this server.\n\n", com_gamedirfile);
 			CL_Disconnect ();
 			return;
 		}
@@ -556,7 +555,6 @@ void CL_ParseServerData (void)
 	FILE	*f;
 	char	fn[MAX_OSPATH];
 	qboolean	cflag = false;
-	extern	char	gamedirfile[MAX_OSPATH];
 	int protover;
 	extern cshift_t	cshift_empty;
 	
@@ -593,7 +591,7 @@ void CL_ParseServerData (void)
 		Cvar_SetValue (&v_idlescale, 0);
 	}
 
-	if (Q_strcasecmp(gamedirfile, str)) {
+	if (Q_strcasecmp(com_gamedirfile, str)) {
 		// save current config
 		Host_WriteConfiguration (); 
 		cflag = true;
