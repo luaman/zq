@@ -241,6 +241,7 @@ void R_StoreEfrags (efrag_t **ppefrag)
 	entity_t	*pent;
 	model_t		*model;
 	efrag_t		*pefrag;
+	extern cvar_t	r_drawflame;
 
 	for (pefrag = *ppefrag ; pefrag ; pefrag = pefrag->leafnext)
 	{

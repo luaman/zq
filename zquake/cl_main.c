@@ -75,14 +75,13 @@ cvar_t  localid = {"localid", ""};
 
 static qboolean allowremotecmd = true;
 
-// Tonik -->
+// ZQuake cvars
 cvar_t	cl_speedjumpfix = {"cl_speedjumpfix", "1"};
 
 cvar_t	cl_demotimescale = {"demotimescale", "1"};
 
 cvar_t	cl_deadbodyfilter = {"cl_deadbodyfilter", "0"};
 cvar_t	cl_explosion = {"cl_explosion", "0"};
-cvar_t	r_drawflame = {"r_drawflame", "1"};
 cvar_t	cl_gibfilter = {"cl_gibfilter", "0"};
 cvar_t	r_rocketlight = {"r_rocketlight", "1"};
 cvar_t	r_rockettrail = {"r_rockettrail", "1"};
@@ -93,7 +92,7 @@ cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
 cvar_t	cl_staticsounds = {"cl_staticsounds", "1"};
 
 cvar_t	default_fov = {"default_fov", "0"};
-// <-- Tonik
+
 
 //
 // info mirrors
@@ -728,7 +727,6 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&cl_explosion);
 	Cvar_RegisterVariable (&cl_gibfilter);
 	Cvar_RegisterVariable (&cl_muzzleflash);
-	Cvar_RegisterVariable (&r_drawflame);
 	Cvar_RegisterVariable (&r_rockettrail);
 	Cvar_RegisterVariable (&r_grenadetrail);
 	Cvar_RegisterVariable (&r_powerupglow);

@@ -335,12 +335,11 @@ extern	cvar_t	m_yaw;
 extern	cvar_t	m_forward;
 extern	cvar_t	m_side;
 
-extern cvar_t		_windowed_mouse;
+extern	cvar_t	_windowed_mouse;
 
 extern	cvar_t	name;
 
-// Tonik -->
-extern	cvar_t	r_drawflame;
+// ZQuake cvars
 extern	cvar_t	cl_deadbodyfilter;
 extern	cvar_t	cl_explosion;
 extern	cvar_t	cl_gibfilter;
@@ -349,7 +348,6 @@ extern	cvar_t	r_rocketlight;
 extern	cvar_t	r_rockettrail;
 extern	cvar_t	r_grenadetrail;
 extern	cvar_t	r_powerupglow;
-// <-- Tonik
 
 #define	MAX_STATIC_ENTITIES	128			// torches, etc
 
@@ -362,7 +360,6 @@ extern	entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 extern	lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
 extern	dlight_t		cl_dlights[MAX_DLIGHTS];
 
-extern	qboolean	nomaster;
 extern float	server_version;	// version of server we connected to
 
 //=============================================================================
