@@ -407,10 +407,9 @@ def_t *PR_Term (void)
 			e2 = PR_Statement (&pr_opcodes[OP_NOT_V], e, 0);
 		else if (t == ev_function)
 			e2 = PR_Statement (&pr_opcodes[OP_NOT_FNC], e, 0);
-		else
-		{
-			e2 = NULL;		// shut up compiler warning;
+		else {
 			PR_ParseError ("type mismatch for !");
+			return NULL;	// shut up compiler
 		}
 		return e2;
 	}
@@ -420,6 +419,26 @@ def_t *PR_Term (void)
 		e = PR_Expression (TOP_PRIORITY);
 		PR_Expect (")");
 		return e;
+	}
+
+	if (PR_Check("-")) {
+		e = PR_Expression (1 /* FIXME, correct? */);
+		t = e->type->type;
+		if (t == ev_float) {
+			eval_t v;
+			v._float = 0;
+			def_t *imm = PR_GetImmediate (&type_const_float, v);
+			e2 = PR_Statement (&pr_opcodes[OP_SUB_F], imm, e);
+		} else if (t == ev_vector) {
+			eval_t v;
+			v.vector[0] = v.vector[1] = v.vector[2] = 0;
+			def_t *imm = PR_GetImmediate (&type_const_vector, v);
+			e2 = PR_Statement (&pr_opcodes[OP_SUB_V], imm, e);
+		} else {
+			PR_ParseError ("type mismatch for -");
+			return NULL;	// shut up compiler
+		}
+		return e2;
 	}
 
 	PR_ParseError ("syntax error : '%s'", pr_token);
