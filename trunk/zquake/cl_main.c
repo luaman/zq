@@ -91,6 +91,7 @@ cvar_t	cl_staticsounds = {"cl_staticsounds", "1"};
 
 cvar_t	default_fov = {"default_fov", "0"};
 
+cvar_t	qizmo_dir = {"qizmo_dir", "qizmo"};
 
 //
 // info mirrors
@@ -729,8 +730,9 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&r_grenadetrail);
 	Cvar_RegisterVariable (&r_powerupglow);
 	Cvar_RegisterVariable (&r_rocketlight);
-	Cvar_RegisterVariable (&default_fov);
 	Cvar_RegisterVariable (&cl_staticsounds);
+	Cvar_RegisterVariable (&default_fov);
+	Cvar_RegisterVariable (&qizmo_dir);
 
 	//
 	// info mirrors
