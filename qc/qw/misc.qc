@@ -199,7 +199,7 @@ void misc_fireball ()
 {
 	precache_model ("progs/lavaball.mdl");
 	self.classname = "fireball";
-	self.nextthink = time + (random() * 5);
+	self.nextthink = time + 0.1 + (random() * 5);   // add 0.1 constant as random() can return 0
 	self.think = fire_fly;
 	if (!self.speed)
 		self.speed = 1000;
