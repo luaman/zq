@@ -513,10 +513,9 @@ void Cmd_UnAlias_f (void)
 			prev->next = a->next;
 			hash_prev->next = a->hash_next;
 			if (a == cmd_alias)
-			{
 				cmd_alias = a->next;
+			if (a == cmd_alias_hash[key])
 				cmd_alias_hash[key] = a->hash_next;
-			}
 			Z_Free (a);			
 			return;
 		}
