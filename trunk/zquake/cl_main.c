@@ -348,7 +348,6 @@ void CL_Disconnect (void)
 // stop sounds (especially looping!)
 	S_StopAllSounds (true);
 	
-// if running a local server, shut it down
 	if (cls.demoplayback)
 		CL_StopPlayback ();
 	else if (cls.state != ca_disconnected)
@@ -365,8 +364,9 @@ void CL_Disconnect (void)
 		cls.state = ca_disconnected;
 
 #ifdef QW_BOTH
+		// if running a local server, shut it down
 		if (sv.state != ss_dead)
-			SV_ShutdownServer(false);
+			SV_ShutdownServer();
 #endif
 
 		cls.demoplayback = cls.demorecording = cls.timedemo = false;
@@ -877,7 +877,7 @@ void Host_ForceReconnect()
 void Host_ConnectLocal()
 {
 	if (cls.state == ca_disconnected)
-		Cbuf_AddText ("connect local\n");
+		Cmd_ExecuteString ("connect local\n");
 }
 
 
