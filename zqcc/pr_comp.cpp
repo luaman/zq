@@ -216,25 +216,53 @@ def_t *PR_GetImmediate (type_t *type, eval_t val, char *string = NULL /* for ev_
 	char *name = "IMMEDIATE";
 	int hash = Com_HashKey (name);
 
-// check for a constant with the same value
-	for (def=pr.def_head.next ; def ; def=def->next)
-	{
-		if (def->type != type || !def->initialized)
-			continue;
+	if (opt_mergeconstants) {
+		// check for any constant with the same value
+		for (def=pr.def_head.next ; def ; def=def->next)
+		{
+			if (def->type != type || !def->initialized)
+				continue;
 
-		if (type == &type_const_string) {
-			if (!strcmp(G_STRING(def->ofs), string) )
-				return def;
+			if (type == &type_const_string) {
+				if (!strcmp(G_STRING(def->ofs), string) )
+					return def;
+			}
+			else if (type == &type_const_float) {
+				if ( G_FLOAT(def->ofs) == val._float )
+					return def;
+			}
+			else /*if (type == &type_const_vector)*/ {
+				if ( ( G_FLOAT(def->ofs) == val.vector[0] )
+				&& ( G_FLOAT(def->ofs+1) == val.vector[1] )
+				&& ( G_FLOAT(def->ofs+2) == val.vector[2] ) ) {
+					return def;
+				}
+			}
 		}
-		else if (type == &type_const_float) {
-			if ( G_FLOAT(def->ofs) == val._float )
-				return def;
-		}
-		else /*if (type == &type_const_vector)*/ {
-			if ( ( G_FLOAT(def->ofs) == val.vector[0] )
-			&& ( G_FLOAT(def->ofs+1) == val.vector[1] )
-			&& ( G_FLOAT(def->ofs+2) == val.vector[2] ) ) {
-				return def;
+	} else {
+		// check for an immediate with the same value
+		for (def = pr.def_hash_head[hash].hash_next ; def ; def=def->hash_next)
+		{
+			if (def->type != type || !def->initialized)
+				continue;
+
+			if (strcmp(def->name, name))	// is it indeed an immediate?
+				continue;
+
+			if (type == &type_const_string) {
+				if (!strcmp(G_STRING(def->ofs), string) )
+					return def;
+			}
+			else if (type == &type_const_float) {
+				if ( G_FLOAT(def->ofs) == val._float )
+					return def;
+			}
+			else /*if (type == &type_const_vector)*/ {
+				if ( ( G_FLOAT(def->ofs) == val.vector[0] )
+				&& ( G_FLOAT(def->ofs+1) == val.vector[1] )
+				&& ( G_FLOAT(def->ofs+2) == val.vector[2] ) ) {
+					return def;
+				}
 			}
 		}
 	}
