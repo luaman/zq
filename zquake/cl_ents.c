@@ -418,7 +418,14 @@ void CL_LinkPacketEntities (void)
 
 	memset (&ent, 0, sizeof(ent));
 
-	f = 1.0f;		// FIXME: no interpolation right now
+#ifdef MVDPLAY
+	if (cls.mvdplayback) {
+		extern float nextdemotime, olddemotime;
+		f = bound(0, (cls.demotime - nextdemotime) / (nextdemotime - olddemotime), 1);
+	}
+	else
+#endif
+		f = 1.0f;		// FIXME: no interpolation right now
 
 
 	for (pnum=0 ; pnum<pack->num_entities ; pnum++)
