@@ -44,9 +44,7 @@ typedef struct
 	double		lastchecktime;		// for monster ai 
 
 	qboolean	paused;				// are we paused?
-#ifdef QW_BOTH
 	qboolean	loadgame;			// handle connections specially
-#endif
 
 	//check player/eyes models for hacks
 	unsigned	model_player_checksum;
