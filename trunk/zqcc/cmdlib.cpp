@@ -196,7 +196,7 @@ int			 CheckParm (char *check, int startarg, qboolean optioncheck)
 	{
 		/* were looking for an option and remove all leading '-' or '/' will be removed */
 		j = 0;
-		while ( option && j < (int)strlen(myargv[i]) && (myargv[i][j] == '-' || myargv[i][j] == '/') )
+		while ( optioncheck && j < (int)strlen(myargv[i]) && (myargv[i][j] == '-' || myargv[i][j] == '/') )
 			j++;
 
 		if ( !Q_strnicmp(myargv[i] + j, check, strlen(check)) )
