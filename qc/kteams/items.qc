@@ -232,7 +232,7 @@ float (entity e, float heal_amount, float ignore) T_Heal =
 		return 0;
 	if ((!ignore) && (e.health >= other.max_health))
 		return 0;
-	healamount = ceil(heal_amount);
+	heal_amount = ceil(heal_amount);
 
 	e.health = e.health + heal_amount;
 	if ((!ignore) && (e.health >= other.max_health))
