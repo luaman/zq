@@ -212,7 +212,7 @@ char *Sys_ConsoleInput (void)
 {
 	static char	text[256];
 	static int		len;
-	INPUT_RECORD	recs[1024];
+	INPUT_RECORD	rec;
 	int		i, dummy;
 	int		ch, numread, numevents;
 	HANDLE	th;
@@ -226,17 +226,17 @@ char *Sys_ConsoleInput (void)
 		if (numevents <= 0)
 			break;
 
-		if (!ReadConsoleInput(hinput, recs, 1, &numread))
+		if (!ReadConsoleInput(hinput, &rec, 1, &numread))
 			Sys_Error ("Error reading console input");
 
 		if (numread != 1)
 			Sys_Error ("Couldn't read console input");
 
-		if (recs[0].EventType == KEY_EVENT)
+		if (rec.EventType == KEY_EVENT)
 		{
-			if (recs[0].Event.KeyEvent.bKeyDown)
+			if (rec.Event.KeyEvent.bKeyDown)
 			{
-				ch = recs[0].Event.KeyEvent.uChar.AsciiChar;
+				ch = rec.Event.KeyEvent.uChar.AsciiChar;
 
 				switch (ch)
 				{
@@ -258,9 +258,9 @@ char *Sys_ConsoleInput (void)
 						break;
 
 					default:
-						if (((ch=='V' || ch=='v') && (recs[0].Event.KeyEvent.dwControlKeyState & 
-							(LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))) || ((recs[0].Event.KeyEvent.dwControlKeyState 
-							& SHIFT_PRESSED) && (recs[0].Event.KeyEvent.wVirtualKeyCode
+						if (((ch=='V' || ch=='v') && (rec.Event.KeyEvent.dwControlKeyState & 
+							(LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))) || ((rec.Event.KeyEvent.dwControlKeyState 
+							& SHIFT_PRESSED) && (rec.Event.KeyEvent.wVirtualKeyCode
 							==VK_INSERT))) {
 							if (OpenClipboard(NULL)) {
 								th = GetClipboardData(CF_TEXT);
