@@ -10,6 +10,7 @@ ai.qc
 ../qw/weapons.qc
 ../qw/world.qc
 ../qw/client.qc
+client.qc
 ../qw/player.qc
 monsters.qc
 ../qw/doors.qc

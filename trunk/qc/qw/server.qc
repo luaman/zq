@@ -45,3 +45,8 @@ void() path_corner = {};
 
 void() monster_death_use = {};
 void(entity attacker) GetMadAtAttacker = {};
+
+void() ExitIntermission =
+{
+	GotoNextMap ();
+};
