@@ -219,7 +219,7 @@ SV_KillServer_f
 */
 void SV_KillServer_f (void)
 {
-	SV_Shutdown ("server was killed\n");
+	SV_Shutdown ("Server was killed\n");
 }
 
 
