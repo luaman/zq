@@ -628,32 +628,70 @@ void R_AliasSetupSkin (void)
 R_AliasSetupLighting
 ================
 */
-void R_AliasSetupLighting (alight_t *plighting)
+void R_AliasSetupLighting (void)
 {
+	int			j, lnum;
+// FIXME: remove and do real lighting
+	float		lightvec[3] = {-1, 0, 0};
+	vec3_t		dist;
+	float		add;
+
+	j = R_LightPoint (currententity->origin);
+
+	r_ambientlight = j;
+	r_shadelight = j;
+
+	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	{
+		if (cl_dlights[lnum].die < r_refdef2.time || !cl_dlights[lnum].radius)
+			continue;
+
+		VectorSubtract (currententity->origin, cl_dlights[lnum].origin, dist);
+		add = cl_dlights[lnum].radius - VectorLength(dist);
+		if (add > 0)
+			r_ambientlight += add;
+	}
+
+// clamp lighting so it doesn't overbright as much
+	if (r_ambientlight > 128)
+		r_ambientlight = 128;
+	if (r_ambientlight + r_shadelight > 192)
+		r_shadelight = 192 - r_ambientlight;
+
+// always give the gun some light
+	if ((currententity->renderfx & RF_WEAPONMODEL) && r_ambientlight < 24)
+		r_shadelight = r_ambientlight = 24;		// always give some light on gun
+
+// never allow players to go totally black
+	if ((currententity->model->modhint == MOD_PLAYER || currententity->renderfx & RF_PLAYERMODEL)
+		&& r_ambientlight < 8) {
+			r_ambientlight = r_shadelight = 8;
+	}
+
+	if ((currententity->model->modhint == MOD_PLAYER || currententity->renderfx & RF_PLAYERMODEL)
+		&& r_fullbrightSkins.value && r_refdef2.allow_fbskins) {
+			r_ambientlight = max (r_ambientlight, 100);
+			r_shadelight = max (r_shadelight, 100);
+	}
 
 // guarantee that no vertex will ever be lit below LIGHT_MIN, so we don't have
 // to clamp off the bottom
-	r_ambientlight = plighting->ambientlight;
-
 	if (r_ambientlight < LIGHT_MIN)
 		r_ambientlight = LIGHT_MIN;
 
 	r_ambientlight = (255 - r_ambientlight) << VID_CBITS;
-
 	if (r_ambientlight < LIGHT_MIN)
 		r_ambientlight = LIGHT_MIN;
 
-	r_shadelight = plighting->shadelight;
-
 	if (r_shadelight < 0)
 		r_shadelight = 0;
-
-	r_shadelight *= VID_GRADES;
+	else
+		r_shadelight *= VID_GRADES;
 
 // rotate the lighting vector into the model's frame of reference
-	r_plightvec[0] = DotProduct (plighting->plightvec, alias_forward);
-	r_plightvec[1] = -DotProduct (plighting->plightvec, alias_right);
-	r_plightvec[2] = DotProduct (plighting->plightvec, alias_up);
+	r_plightvec[0] = DotProduct (lightvec, alias_forward);
+	r_plightvec[1] = -DotProduct (lightvec, alias_right);
+	r_plightvec[2] = DotProduct (lightvec, alias_up);
 }
 
 /*
@@ -714,11 +752,16 @@ void R_AliasSetupFrame (void)
 R_AliasDrawModel
 ================
 */
-void R_AliasDrawModel (alight_t *plighting)
+void R_AliasDrawModel (void)
 {
 	finalvert_t		finalverts[MAXALIASVERTS +
 						((CACHE_SIZE - 1) / sizeof(finalvert_t)) + 1];
 	auxvert_t		auxverts[MAXALIASVERTS];
+
+// see if the bounding box lets us trivially reject, also sets
+// trivial accept status
+	if (!R_AliasCheckBBox ())
+		return;
 
 	r_amodels_drawn++;
 
@@ -732,7 +775,7 @@ void R_AliasDrawModel (alight_t *plighting)
 
 	R_AliasSetupSkin ();
 	R_AliasSetUpTransform (currententity->trivial_accept);
-	R_AliasSetupLighting (plighting);
+	R_AliasSetupLighting ();
 	R_AliasSetupFrame ();
 
 	if (!currententity->colormap)

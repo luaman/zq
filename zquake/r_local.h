@@ -27,16 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define BMODEL_FULLY_CLIPPED	0x10 // value returned by R_BmodelCheckBBox ()
 									 //  if bbox is trivially rejected
-
-//===========================================================================
-// viewmodel lighting
-
-typedef struct {
-	int			ambientlight;
-	int			shadelight;
-	float		*plightvec;
-} alight_t;
-
 //===========================================================================
 // clipped bmodel edges
 
@@ -69,6 +59,7 @@ extern cvar_t	r_numsurfs;
 extern cvar_t	r_reportedgeout;
 extern cvar_t	r_maxedges;
 extern cvar_t	r_numedges;
+extern cvar_t	r_fullbrightSkins;
 
 #define XCENTERING	(1.0 / 2.0)
 #define YCENTERING	(1.0 / 2.0)
@@ -153,7 +144,7 @@ void R_DrawSolidClippedSubmodelPolygons (model_t *pmodel);
 
 void R_AddPolygonEdges (emitpoint_t *pverts, int numverts, int miplevel);
 surf_t *R_GetSurf (void);
-void R_AliasDrawModel (alight_t *plighting);
+void R_AliasDrawModel (void);
 void R_BeginEdgeFrame (void);
 void R_ScanEdges (void);
 void D_DrawSurfaces (void);
