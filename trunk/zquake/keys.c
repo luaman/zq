@@ -222,24 +222,24 @@ qboolean CheckForCommand (void)
 //===================================================================
 //  Advanced command completion
 //
-#define ROWWIDTH 20
-#define MINROWWIDTH 18		// the last row may be slightly smaller
+#define COLUMNWIDTH 20
+#define MINCOLUMNWIDTH 18	// the last column may be slightly smaller
 
 static void PaddedPrint (char *s)
 {
 	extern int con_linewidth;
-	int	nextrowx = 0;
+	int	nextcolx = 0;
 
 	if (con->x)
-		nextrowx = (int)((con->x + ROWWIDTH)/ROWWIDTH)*ROWWIDTH;
+		nextcolx = (int)((con->x + COLUMNWIDTH)/COLUMNWIDTH)*COLUMNWIDTH;
 
-	if (nextrowx > con_linewidth - MINROWWIDTH
-		|| (con->x && nextrowx + strlen(s) >= con_linewidth))
+	if (nextcolx > con_linewidth - MINCOLUMNWIDTH
+		|| (con->x && nextcolx + strlen(s) >= con_linewidth))
 		Con_Printf ("\n");
 
 	if (con->x)
 		Con_Printf (" ");
-	while (con->x % ROWWIDTH)
+	while (con->x % COLUMNWIDTH)
 		Con_Printf (" ");
 	Con_Printf ("%s", s);
 }
