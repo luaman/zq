@@ -127,6 +127,7 @@ cvar_t	r_waterwarp = {"r_waterwarp","1"};
 cvar_t	r_fullbright = {"r_fullbright","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
 cvar_t	r_drawviewmodel = {"r_drawviewmodel","2"};
+cvar_t	r_drawflame = {"r_drawflame","1"};
 cvar_t	r_aliasstats = {"r_polymodelstats","0"};
 cvar_t	r_dspeeds = {"r_dspeeds","0"};
 cvar_t	r_drawflat = {"r_drawflat", "0"};
@@ -215,6 +216,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_fullbright);
 	Cvar_RegisterVariable (&r_drawentities);
 	Cvar_RegisterVariable (&r_drawviewmodel);
+	Cvar_RegisterVariable (&r_drawflame);
 	Cvar_RegisterVariable (&r_aliasstats);
 	Cvar_RegisterVariable (&r_dspeeds);
 	Cvar_RegisterVariable (&r_reportsurfout);

@@ -184,6 +184,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_fullbright);
 	Cvar_RegisterVariable (&r_drawentities);
 	Cvar_RegisterVariable (&r_drawviewmodel);
+	Cvar_RegisterVariable (&r_drawflame);
 	Cvar_RegisterVariable (&r_shadows);
 	Cvar_RegisterVariable (&r_mirroralpha);
 	Cvar_RegisterVariable (&r_wateralpha);
