@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "pmove.h"
 
-cvar_t	pm_jumpfix = {"pm_jumpfix","1"};
 cvar_t	pm_slidefix = {"pm_slidefix","0"};	// FIXME: remove?
-cvar_t	pm_ktphysics = {"pm_ktphysics", "0"};	// set this when
-			// playing on a server running Kombat Teams 2.10 or later
 
 movevars_t		movevars;
 
@@ -42,14 +39,7 @@ void PM_InitBoxHull (void);
 
 void Pmove_Init (void)
 {
-#if defined(SERVERONLY) || defined(QW_BOTH)
-	Cvar_Register (&pm_jumpfix);
-#else
-	pm_jumpfix.value = 1;
-#endif
-
 	Cvar_Register (&pm_slidefix);
-	Cvar_Register (&pm_ktphysics);
 	PM_InitBoxHull ();
 }
 
@@ -507,7 +497,6 @@ void PM_AirMove (void)
 	float		fmove, smove;
 	vec3_t		wishdir;
 	float		wishspeed;
-	vec3_t		original;
 
 	fmove = pmove.cmd.forwardmove;
 	smove = pmove.cmd.sidemove;
@@ -552,25 +541,7 @@ void PM_AirMove (void)
 		// add gravity
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * frametime;
 
-		i = PM_FlyMove();
-		if (!i && pm_jumpfix.value)
-		{
-			// the move didn't block
-			PM_CategorizePosition ();
-			if (pmove.onground)		// but we're on ground now
-			{
-			// This is a hack to fix the jump bug
-				VectorCopy (pmove.origin, original);
-				// Calculate correct velocity
-				if ( ! PM_FlyMove() )
-				{
-					// This shouldn't probably happen (?)
-					if (pmove.velocity[2] < 0)
-						pmove.velocity[2] = 0;
-				}
-				VectorCopy (original, pmove.origin);
-			}
-		}
+		PM_FlyMove();
 	}
 }
 
