@@ -1412,9 +1412,9 @@ void() ImpulseCommands =
 	else if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
         else if (self.impulse == 100)
-                testbot("frikbot");
+                Cmd_AddBot("heh", "3"); 
         else if (self.impulse == 101)
-                testbot("zbot");
+                Cmd_AddBot("heh2", "1");
         else if (self.impulse == 102)
                 KickABot();
 
