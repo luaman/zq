@@ -62,6 +62,8 @@ void SV_FlushRedirect (void)
 	}
 	else if (sv_redirected == RD_CLIENT)
 	{
+		if (!outputbuf[0])
+			return;
 		ClientReliableWrite_Begin (host_client, svc_print, strlen(outputbuf)+3);
 		ClientReliableWrite_Byte (host_client, PRINT_HIGH);
 		ClientReliableWrite_String (host_client, outputbuf);
