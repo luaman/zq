@@ -1217,7 +1217,7 @@ void CL_CheckVersionRequest(char *s)
 		case '\n':
 			return;
 		case ':':
-		case ':'|128:
+		case (char)':'|128:
 			goto ok;
 		}
 	}
@@ -1225,7 +1225,10 @@ void CL_CheckVersionRequest(char *s)
 
 ok:
 	for (i = 0; i < 11 && s[i]; i++)
+	{
 		buf[i] = s[i] &~ 128;			// strip high bit
+		Con_Printf ("%i --> %i\n", (int)s[i], (int)buf[i]);
+	}
 
 	if (!strncmp(buf, " f_version\n", 11) || !strncmp(buf, " z_version\n", 11))
 		Cbuf_AddText (va("say ZQuake version %s (Build %04d)\n", Z_VERSION, build_number()));
@@ -1307,6 +1310,7 @@ void CL_ParseServerMessage (void)
 			{
 				char *p;
 				// Tonik:
+				CL_CheckVersionRequest(s);
 				if (cl_nofake.value) {
 					for (p = s; *p; p++) {
 						switch (*p)	{
@@ -1318,7 +1322,6 @@ void CL_ParseServerMessage (void)
 					}
 				} else
 					con_ormask = 128;
-				CL_CheckVersionRequest(s);	// Tonik
 				S_LocalSound ("misc/talk.wav");
 			}
 			Con_Printf ("%s", s);
