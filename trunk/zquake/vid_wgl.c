@@ -112,6 +112,7 @@ HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
 
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
+unsigned	d_8to24table2[256];
 unsigned char d_15to8table[65536];
 
 float		gldepthmin, gldepthmax;
@@ -442,7 +443,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 // ourselves at the top of the z order, then grab the foreground again,
 // Who knows if it helps, but it probably doesn't hurt
 	SetForegroundWindow (mainwindow);
-	VID_SetPalette (palette);
+//	VID_SetPalette (palette);
 	vid_modenum = modenum;
 	Cvar_SetValue (&vid_mode, (float)vid_modenum);
 
@@ -466,7 +467,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	if (!msg_suppress_1)
 		Con_SafePrintf ("Video mode %s initialized.\n", VID_GetModeDescription (vid_modenum));
 
-	VID_SetPalette (palette);
+//	VID_SetPalette (palette);
 
 	vid.recalc_refdef = 1;
 
@@ -732,7 +733,20 @@ void	VID_SetPalette (unsigned char *palette)
 		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
 		*table++ = v;
 	}
-	d_8to24table[255] &= 0xffffff;	// 255 is transparent
+	d_8to24table[255] &= 0;	// 255 is transparent
+
+// Tonik: create a brighter palette for bmodel textures
+	pal = palette;
+	table = d_8to24table2;
+	for (i=0 ; i<256 ; i++)
+	{
+		r = pal[0] * (2.0/1.5);	if (r > 255) r = 255;
+		g = pal[1] * (2.0/1.5); if (g > 255) g = 255;
+		b = pal[2] * (2.0/1.5); if (b > 255) b = 255;
+		pal += 3;
+		*table++ = (255<<24) + (r<<0) + (g<<8) + (b<<16);
+	}
+	d_8to24table2[255] &= 0;	// 255 is transparent
 
 	// JACK: 3D distance calcs - k is last closest, l is the distance.
 	// FIXME: Precalculate this and cache to disk.
