@@ -175,24 +175,18 @@ command from the console or progs.
 */
 void SV_Map_f (void)
 {
-	char	level[MAX_QPATH];
 	char	expanded[MAX_QPATH];
 	FILE	*f;
-	qbool	devmap;
 
-	if (Cmd_Argc() != 2)
-	{
-		Com_Printf ("map <levelname> : continue game on a new level\n");
+	if (Cmd_Argc() != 2) {
+		Com_Printf ("map <mapname> : continue game on a new map\n");
 		return;
 	}
-	devmap = !Q_stricmp (Cmd_Argv(0), "devmap");
-	strcpy (level, Cmd_Argv(1));
 
 	// check to make sure the level exists
-	Q_snprintfz (expanded, sizeof(expanded), "maps/%s.bsp", level);
+	Q_snprintfz (expanded, sizeof(expanded), "maps/%s.bsp", Cmd_Argv(1));
 	FS_FOpenFile (expanded, &f);
-	if (!f)
-	{
+	if (!f) {
 		Com_Printf ("Can't find %s\n", expanded);
 		return;
 	}
@@ -206,7 +200,7 @@ void SV_Map_f (void)
 	SV_BroadcastCommand ("changing\n");
 	SV_SendMessagesToAll ();
 
-	SV_SpawnServer (level, devmap);
+	SV_SpawnServer (Cmd_Argv(1), !Q_stricmp(Cmd_Argv(0), "devmap"));
 
 	SV_BroadcastCommand ("reconnect\n");
 }
