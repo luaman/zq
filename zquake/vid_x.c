@@ -40,6 +40,10 @@ typedef unsigned int PIXEL24;
 #include <X11/keysym.h>
 #include <X11/extensions/XShm.h>
 
+#ifdef USE_VMODE
+#include <X11/extensions/xf86vmode.h>
+#endif
+
 #ifdef USE_DGA
 #include <X11/extensions/xf86dga.h>
 #endif
@@ -65,6 +69,14 @@ static qbool input_grabbed = false;
 
 #ifdef USE_DGA
 static qbool dgamouse = false;
+#endif
+
+#ifdef USE_VMODE
+static int scrnum;
+static qbool vidmode_ext = false;
+static XF86VidModeModeInfo **vidmodes;
+static int num_vidmodes;
+static qbool vidmode_active = false;
 #endif
 
 extern viddef_t vid;			// global video state
@@ -425,7 +437,7 @@ void VID_Init (unsigned char *palette)
 	Cvar_Register (&vid_ref);
 
 	vid.width = 320;
-	vid.height = 200;
+	vid.height = 240;
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.numpages = 2;
@@ -542,6 +554,62 @@ void VID_Init (unsigned char *palette)
 
 	x_vis = x_visinfo->visual;
 
+#ifdef USE_VMODE
+{
+	// check vmode extensions supported
+	int MajorVersion, MinorVersion;
+	if (!XF86VidModeQueryVersion(x_disp, &MajorVersion, &MinorVersion))
+		vidmode_ext = false;
+	else
+	{
+		Com_Printf("Using XFree86-VidModeExtension Version %d.%d\n", MajorVersion, MinorVersion);
+		vidmode_ext = true;
+    }
+
+    if (vidmode_ext && !COM_CheckParm("-window"))
+    {
+        int best_fit, best_dist, dist, x, y;
+
+		scrnum = DefaultScreen(x_disp);
+
+        XF86VidModeGetAllModeLines(x_disp, scrnum, &num_vidmodes, &vidmodes);
+
+        best_dist = 9999999;
+        best_fit = -1;
+
+        for (i = 0; i < num_vidmodes; i++)
+        {
+            if (vid.width > vidmodes[i]->hdisplay || vid.height > vidmodes[i]->vdisplay)
+                continue;
+
+            x = vid.width - vidmodes[i]->hdisplay;
+            y = vid.height - vidmodes[i]->vdisplay;
+            dist = x * x + y * y;
+            if (dist < best_dist)
+            {
+                best_dist = dist;
+                best_fit = i;
+            }
+        }
+
+        if (best_fit != -1)
+        {
+            // change to the mode
+            XF86VidModeSwitchToMode(x_disp, scrnum, vidmodes[best_fit]);
+            // Move the viewport to top left
+            XF86VidModeSetViewPort(x_disp, scrnum, 0, 0);
+            vidmode_active = true;
+        }
+        else
+        {
+        	Com_Printf ("Couldn't find an appropriate fullscreen video mode\n");
+        	vidmode_active = false;
+        }
+    }
+}
+#endif	// USE_VMODE
+
+
 // setup attributes for main window
 	{
 		int attribmask = CWEventMask | CWColormap | CWBorderPixel;
@@ -557,6 +625,18 @@ void VID_Init (unsigned char *palette)
 			ButtonPressMask | ButtonReleaseMask;
 		attribs.border_pixel = 0;
 		attribs.colormap = tmpcmap;
+
+    // if fullscreen, disable window manager decoration
+#ifdef USE_VMODE
+    if (vidmode_active)
+    {
+        attribmask = CWBackPixel | CWColormap | CWSaveUnder | CWBackingStore |
+               CWEventMask | CWOverrideRedirect;
+        attribs.override_redirect = True;
+        attribs.backing_store = NotUseful;
+        attribs.save_under = False;
+    }
+#endif
 
 // create the main window
 	 	x_win = XCreateWindow (x_disp, XRootWindow (x_disp, x_visinfo->screen),
@@ -684,8 +764,6 @@ void VID_SetPalette (unsigned char *palette)
 	}
 }
 
-
-// Called at shutdown
 void VID_Shutdown (void)
 {
 	static void uninstall_grabs ();
@@ -698,6 +776,18 @@ void VID_Shutdown (void)
 	uninstall_grabs ();
 
 	XAutoRepeatOn (x_disp);
+
+#ifdef USE_VMODE
+    if (x_disp)
+    {
+//        if (x_win)
+//          XDestroyWindow(x_disp, x_win);
+		if (vidmode_active)
+			XF86VidModeSwitchToMode(x_disp, scrnum, vidmodes[0]);
+		vidmode_active = false;
+    }
+#endif
+
 	XCloseDisplay (x_disp);
 }
 
@@ -912,17 +1002,15 @@ static void install_grabs (void)
 		XF86DGADirectVideo (x_disp, DefaultScreen (x_disp),
 							XF86DGADirectMouse);
 		dgamouse = true;
-		XWarpPointer (x_disp, None, x_win, 0, 0, 0, 0, 0, 0);	// oldman: this should be here really
+		XWarpPointer (x_disp, None, x_win, 0, 0, 0, 0, 0, 0);
 	}
 	else
 #endif
 		XWarpPointer (x_disp, None, x_win,
 					  0, 0, 0, 0, vid.width / 2, vid.height / 2);
 
-#if 0
 	XGrabKeyboard (x_disp, x_win,
 				   False, GrabModeAsync, GrabModeAsync, CurrentTime);
-#endif
 }
 
 static void uninstall_grabs (void)
@@ -935,9 +1023,7 @@ static void uninstall_grabs (void)
 #endif
 
 	XUngrabPointer (x_disp, CurrentTime);
-#if 0
 	XUngrabKeyboard (x_disp, CurrentTime);
-#endif
 
 	// show cursor again
 	XUndefineCursor (x_disp, x_win);
@@ -1038,7 +1124,11 @@ void GetEvent (void)
 			oktodraw = true;
 	}
 
-	grab_input = _windowed_mouse.value != 0;
+#ifdef USE_VMODE
+    grab_input = _windowed_mouse.value != 0 || vidmode_active;
+#else
+    grab_input = _windowed_mouse.value != 0;
+#endif
 
 	if (grab_input && !input_grabbed)
 	{
@@ -1050,25 +1140,6 @@ void GetEvent (void)
 		/* ungrab the pointer */
 		uninstall_grabs ();
 	}
-
-#if 0
-	if (old_windowed_mouse != _windowed_mouse.value)
-	{
-		old_windowed_mouse = _windowed_mouse.value;
-
-		if (!_windowed_mouse.value)
-		{
-			/* ungrab the pointer */
-			XUngrabPointer (x_disp, CurrentTime);
-		}
-		else
-		{
-			/* grab the pointer */
-			XGrabPointer (x_disp, x_win, True, 0, GrabModeAsync,
-						  GrabModeAsync, x_win, None, CurrentTime);
-		}
-	}
-#endif
 }
 
 
