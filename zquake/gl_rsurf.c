@@ -321,29 +321,9 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 store:
 	switch (gl_lightmap_format)
 	{
-	case GL_RGBA:
-		stride -= (smax<<2);
-		bl = blocklights;
-		for (i=0 ; i<tmax ; i++, dest += stride)
-		{
-			for (j=0 ; j<smax ; j++)
-			{
-				t = *bl++;
-				if (lightmode == 2)
-					t = (t >> 8) + (t >> 9);
-				else
-					t >>= 7;
-				if (t > 255)
-					t = 255;
-				dest[3] = 255-t;
-				dest += 4;
-			}
-		}
-		break;
-	case GL_ALPHA:
 	case GL_LUMINANCE:
-	case GL_INTENSITY:
 		bl = blocklights;
+		stride -= smax;
 		for (i=0 ; i<tmax ; i++, dest += stride)
 		{
 			if (lightmode == 2)
@@ -352,14 +332,14 @@ store:
 					t = (t >> 8) + (t >> 9);
 					if (t > 255)
 						t = 255;
-					dest[j] = 255-t;
+					*dest++ = 255-t;
 				}
 			else
 				for (j=0 ; j<smax ; j++) {
 					t = *bl++ >> 7;
 					if (t > 255)
 						t = 255;
-					dest[j] = 255-t;
+					*dest++ = 255-t;
 				}
 		}
 		break;
@@ -615,15 +595,7 @@ void R_BlendLightmaps (void)
 		return;
 
 	glDepthMask (0);		// don't bother writing Z
-
-	if (gl_lightmap_format == GL_LUMINANCE)
-		glBlendFunc (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
-	else if (gl_lightmap_format == GL_INTENSITY)
-	{
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		glColor4f (0,0,0,1);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
+	glBlendFunc (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
 
 	if (!r_lightmap.value)
 	{
@@ -672,14 +644,7 @@ void R_BlendLightmaps (void)
 	}
 
 	glDisable (GL_BLEND);
-	if (gl_lightmap_format == GL_LUMINANCE)
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	else if (gl_lightmap_format == GL_INTENSITY)
-	{
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glColor4f (1,1,1,1);
-	}
-
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask (1);		// back to normal Z buffering
 }
 
@@ -1526,28 +1491,10 @@ void GL_BuildLightmaps (void)
 	}
 
 	gl_lightmap_format = GL_LUMINANCE;
-	if (COM_CheckParm ("-lm_1"))
-		gl_lightmap_format = GL_LUMINANCE;
-	if (COM_CheckParm ("-lm_a"))
-		gl_lightmap_format = GL_ALPHA;
-	if (COM_CheckParm ("-lm_i"))
-		gl_lightmap_format = GL_INTENSITY;
-	if (COM_CheckParm ("-lm_2"))
-		gl_lightmap_format = GL_RGBA4;
-	if (COM_CheckParm ("-lm_4"))
-		gl_lightmap_format = GL_RGBA;
 
 	switch (gl_lightmap_format)
 	{
-	case GL_RGBA:
-		lightmap_bytes = 4;
-		break;
-	case GL_RGBA4:
-		lightmap_bytes = 2;
-		break;
 	case GL_LUMINANCE:
-	case GL_INTENSITY:
-	case GL_ALPHA:
 		lightmap_bytes = 1;
 		break;
 	}
