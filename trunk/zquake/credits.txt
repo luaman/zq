@@ -11,3 +11,4 @@ Victor 'Vic' Luchits - mtex fb rendering for alias models, fullbrights on .pcx
 'Massa' - keymaps
 A 'Fuh' Nourai - extra teamplay stuff
 Anton 'Tonik' Gavrilov - everything else
+oldman - linux and mac ports, qc stuff
