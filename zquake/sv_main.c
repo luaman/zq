@@ -666,6 +666,9 @@ void SVC_DirectConnect (void)
 	newcl->extensions |= atoi(Info_ValueForKey(newcl->userinfo, "*vwtest")) ? Z_EXT_VWEP : 0;
 	Info_RemoveKey (newcl->userinfo, "*vwtest");
 
+	// See if the client is using a proxy. The best test I can come up with for now...
+	newcl->uses_proxy = *Info_ValueForKey(newcl->userinfo, "Qizmo") ? true : false;
+
 	edictnum = (newcl - svs.clients) + 1;
 	ent = EDICT_NUM(edictnum);	
 	ent->inuse = true;

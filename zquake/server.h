@@ -150,6 +150,7 @@ typedef struct client_s
 	int				messagelevel;		// for filtering printed messages
 	qbool			spectator;			// non-interactive
 	int				extensions;			// what ZQuake extensions the client supports
+	qbool			uses_proxy;			// if true, disable any non-standard protocols
 
 	qbool			sendinfo;			// at end of frame, send info to all
 										// this prevents malicious multiple broadcasts
