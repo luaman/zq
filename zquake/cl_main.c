@@ -779,6 +779,9 @@ void Host_Error (char *error, ...)
 	CL_Disconnect ();
 	cls.demonum = -1;
 
+	if (!host_initialized)
+		Sys_Error ("Host_Error: %s", string);
+
 	inerror = false;
 
 	longjmp (host_abort, 1);
