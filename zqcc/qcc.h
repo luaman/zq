@@ -69,10 +69,10 @@ simple types: void, float, vector, string, or entity
 
 vector types:
 	vector		org;	// also creates org_x, org_y, and org_z float defs
-	
-	
+
+
 A function type is specified as: 	simpletype ( type name {,type name} )
-The names are ignored except when the function is initialized.	
+The names are ignored except when the function is initialized.
 	void()		think;
 	entity()	FindTarget;
 	void(vector destination, float speed, void() callback)	SUB_CalcMove;
@@ -82,19 +82,19 @@ A field type is specified as:  .type
 	.vector		origin;
 	.string		netname;
 	.void()		think, touch, use;
-	
+
 
 names
 -----
 Names are a maximum of 64 characters, must begin with A-Z,a-z, or _, and can continue with those characters or 0-9.
 
-There are two levels of scoping: global, and function.  The parameter list of a function and any vars declared inside a function with the "local" statement are only visible within that function, 
+There are two levels of scoping: global, and function.  The parameter list of a function and any vars declared inside a function with the "local" statement are only visible within that function,
 
 
 immediates
 ----------
 Float immediates must begin with 0-9 or minus sign.  .5 is illegal.
-	
+
 A parsing ambiguity is present with negative constants. "a-5" will be parsed as "a", then "-5", causing an error.  Seperate the - from the digits with a space "a - 5" to get the proper behavior.
 	12
 	1.6
@@ -104,7 +104,7 @@ A parsing ambiguity is present with negative constants. "a-5" will be parsed as 
 Vector immediates are three float immediates enclosed in single quotes.
 	'0 0 0'
 	'20.5 -10 0.00001'
-	
+
 String immediates are characters enclosed in double quotes.  The string cannot contain explicit newlines, but the escape character \n can embed one.  The \" escape can be used to include a quote in the string.
 	"maps/jrwiz1.bsp"
 	"sound/nin/pain.wav"
@@ -120,13 +120,13 @@ statement:
 	while ( <expression> ) <statement>;
 	do <statement> while ( <expression> );
 	<function name> ( <function parms> );
-	
+
 expression:
 	combiations of names and these operators with standard C precedence:
 	"&&", "||", "<=", ">=","==", "!=", "!", "*", "/", "-", "+", "=", ".", "<", ">", "&", "|"
 	Parenthesis can be used to alter order of operation.
 	The & and | operations perform integral bit ops on floats
-	
+
 A built in function immediate is a number sign followed by an integer.
 	#1
 	#12
@@ -172,10 +172,10 @@ There are three global variables that are set before beginning code execution:
 						// entities in the world are simulated sequentially,
 						// time is NOT strictly increasing.  An impact late
 						// in one entity's time slice may set time higher
-						// than the think function of the next entity. 
+						// than the think function of the next entity.
 						// The difference is limited to 0.1 seconds.
 Execution is also caused by a few uncommon events, like the addition of a new client to an existing server.
-	
+
 There is a runnaway counter that stops a program if 100000 statements are executed, assuming it is in an infinite loop.
 
 It is acceptable to change the system set global variables.  This is usually done to pose as another entity by changing self and calling a function.
@@ -233,11 +233,11 @@ There are no ++ / -- operators, or operate/assign operators.
 
 // offsets are always multiplied by 4 before using
 typedef int	gofs_t;				// offset in global data block
-struct def_t;
+struct		def_t;
 
 // varargs bit is hacked into type->num_parms
-const int VA_BIT = 16;
-const int VA_MASK = 15;
+const int	 VA_BIT = 16;
+const int	 VA_MASK = 15;
 
 
 struct type_t
@@ -286,7 +286,7 @@ union eval_t
 	func_t				function;
 	int					_int;
 	union eval_s		*ptr;
-};	
+};
 
 extern int		type_size[8];
 extern type_t	*type_for_etype[8];
@@ -317,7 +317,7 @@ struct pr_info_t
 	int			max_memory;
 	int			current_memory;
 	type_t		*types;
-	
+
 	def_t		def_head;		// unused head of linked list
 	def_t		*def_tail;		// add new defs after this and move it
 
@@ -337,6 +337,15 @@ struct opcode_t
 	bool		right_associative;
 	etype_t		type_a, type_b, type_c;
 };
+
+typedef struct	 define_s
+{
+	char		*name;
+	bool		 defined;
+	eval_t		 value;
+	type_t		*type;
+	bool		 reserved;
+}				 define_t;
 
 //============================================================================
 
@@ -426,6 +435,8 @@ const int MAX_FIELDS		= 1024;
 const int MAX_STATEMENTS	= 65536;
 const int MAX_FUNCTIONS		= 8192;
 
+const int MAX_DEFINES		= 128;
+
 const int MAX_SOUNDS		= 1024;
 const int MAX_MODELS		= 1024;
 const int MAX_FILES			= 1024;
@@ -441,15 +452,21 @@ extern int		statement_linenums[MAX_STATEMENTS];
 extern dfunction_t	functions[MAX_FUNCTIONS];
 extern int		numfunctions;
 
-extern float	pr_globals[MAX_REGS];
+extern float		pr_globals[MAX_REGS];
 extern int		numpr_globals;
 
 extern char		pr_immediate_string[2048];
 
 int	CopyString (char *str);
 
+/* Functions for Preprocessor defines */
+void	 PR_InitDefines (void);
+int		 PR_AddDefine (const char *name, const type_t *type, const eval_t *value, bool reserved);
+void	 PR_DelDefine (const char *name, bool overrideReserved);
+int		 PR_FindDefine (const char *name, bool fullDefined);
+
 // don't take const into account
-bool CompareType (type_t *t1, type_t *t2);
+bool	CompareType (type_t *t1, type_t *t2);
 
 // compilation options
 extern bool		opt_idcomp;			// to allow vanilla id Software code to compile
