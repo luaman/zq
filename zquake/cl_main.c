@@ -1117,7 +1117,7 @@ FIXME: this is a callback from Sys_Quit and Sys_Error.  It would be better
 to run quit through here before the final handoff to the sys code.
 ===============
 */
-void Host_Shutdown(void)
+void Host_Shutdown (void)
 {
 	static qboolean isdown = false;
 	
@@ -1128,11 +1128,13 @@ void Host_Shutdown(void)
 	}
 	isdown = true;
 
-	Host_WriteConfiguration (); 
+	CL_Disconnect ();
 
 #ifdef QW_BOTH
 	SV_Shutdown ("Server quit\n");
 #endif
+
+	Host_WriteConfiguration (); 
 
 	SList_Shutdown ();
 	CDAudio_Shutdown ();
@@ -1141,4 +1143,10 @@ void Host_Shutdown(void)
 	IN_Shutdown ();
 	if (host_basepal)
 		VID_Shutdown();
+}
+
+void Host_Quit (void)
+{
+	Host_Shutdown ();
+	Sys_Quit ();
 }

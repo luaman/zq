@@ -116,4 +116,4 @@ void Host_Shutdown(void);
 void Host_Error (char *error, ...);
 void Host_EndGame (char *message, ...);
 void Host_Frame (double time);
-void Host_Quit_f (void);
+void Host_Quit (void);

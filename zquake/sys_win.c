@@ -142,8 +142,6 @@ void Sys_Printf (char *fmt, ...)
 
 void Sys_Quit (void)
 {
-	Host_Shutdown();
-
 	if (tevent)
 		CloseHandle (tevent);
 
@@ -329,7 +327,7 @@ void Sys_SendKeyEvents (void)
 		scr_skipupdate = 0;
 
 		if (!GetMessage (&msg, NULL, 0, 0))
-			Sys_Quit ();
+			Host_Quit ();
       	TranslateMessage (&msg);
       	DispatchMessage (&msg);
 	}
