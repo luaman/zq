@@ -1333,7 +1333,7 @@ int COM_FOpenFile (char *filename, FILE **file)
 ============
 COM_LoadFile
 
-Filename are reletive to the quake directory.
+Filename are relative to the quake directory.
 Always appends a 0 byte to the loaded data.
 ============
 */
