@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -38,8 +38,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
-int noconinput = 0;
-int nostdout = 0;
+int			 noconinput	= 0;
+int			 nostdout	= 0;
 
 // BSD only defines FNDELAY:
 #ifndef O_NDELAY
@@ -50,11 +50,11 @@ int nostdout = 0;
 // General routines
 // =======================================================================
 
-void Sys_Printf (char *fmt, ...)
+void		 Sys_Printf (char *fmt, ...)
 {
-	va_list		argptr;
-	char		text[2048];
-	unsigned char		*p;
+	va_list			 argptr;
+	char			 text[2048];
+	unsigned char	*p;
 
 	va_start (argptr,fmt);
 	vsprintf (text,fmt,argptr);
@@ -63,8 +63,8 @@ void Sys_Printf (char *fmt, ...)
 	if (strlen(text) > sizeof(text))
 		Sys_Error("memory overwrite in Sys_Printf");
 
-    if (nostdout)
-        return;
+	if (nostdout)
+		return;
 
 	for (p = (unsigned char *)text; *p; p++)
 		if ((*p > 128 || *p < 32) && *p != 10 && *p != 13 && *p != 9)
@@ -73,33 +73,36 @@ void Sys_Printf (char *fmt, ...)
 			putc(*p, stdout);
 }
 
-void Sys_Quit (void)
+
+void		 Sys_Quit (void)
 {
-    fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~O_NDELAY);
+	fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~O_NDELAY);
 	exit(0);
 }
 
-void Sys_Init(void)
+
+void		 Sys_Init(void)
 {
 }
 
-void Sys_Error (char *error, ...)
-{ 
-    va_list     argptr;
-    char        string[1024];
 
-// change stdin to non blocking
-    fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~O_NDELAY);
-    
-    va_start (argptr,error);
-    vsprintf (string,error,argptr);
-    va_end (argptr);
+void		 Sys_Error (char *error, ...)
+{
+	va_list	 argptr;
+	char	 string[1024];
+
+	// change stdin to non blocking
+	fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~O_NDELAY);
+
+	va_start (argptr,error);
+	vsprintf (string,error,argptr);
+	va_end (argptr);
 	fprintf(stderr, "Error: %s\n", string);
 
 	Host_Shutdown ();
 	exit (1);
+}
 
-} 
 
 /*
 ============
@@ -108,56 +111,56 @@ Sys_FileTime
 returns -1 if not present
 ============
 */
-int	Sys_FileTime (char *path)
+int			 Sys_FileTime (char *path)
 {
-	struct	stat	buf;
-	
+	struct stat	 buf;
+
 	if (stat (path,&buf) == -1)
 		return -1;
-	
+
 	return buf.st_mtime;
 }
 
 
-void Sys_mkdir (char *path)
+void		 Sys_mkdir (char *path)
 {
-    mkdir (path, 0777);
+	mkdir (path, 0777);
 }
 
 
-double Sys_DoubleTime (void)
+double		 Sys_DoubleTime (void)
 {
-    struct timeval tp;
-    struct timezone tzp; 
-    static int      secbase; 
-    
-    gettimeofday(&tp, &tzp);  
+	struct timeval	 tp;
+	struct timezone	 tzp;
+	static int		 secbase	= 0;
 
-    if (!secbase)
-    {
-        secbase = tp.tv_sec;
-        return tp.tv_usec/1000000.0;
-    }
+	gettimeofday(&tp, &tzp);
 
-    return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
+	if (!secbase)
+	{
+		secbase = tp.tv_sec;
+		return tp.tv_usec/1000000.0;
+	}
+
+	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
 }
 
-void floating_point_exception_handler(int whatever)
+void		 floating_point_exception_handler(int whatever)
 {
-//	Sys_Warn("floating point exception\n");
+	Sys_Warn("floating point exception\n");
 	signal(SIGFPE, floating_point_exception_handler);
 }
 
-char *Sys_GetClipboardText (void)
+char		*Sys_GetClipboardText (void)
 {
 	return NULL;
 }
 
-char *Sys_ConsoleInput(void)
+char		*Sys_ConsoleInput(void)
 {
 #if 0
-    static char text[256];
-    int     len;
+	static char	 text[256]	= "\0";
+	int		 len;
 
 	if (cls.state == ca_dedicated) {
 		len = read (0, text, sizeof(text));
@@ -172,23 +175,31 @@ char *Sys_ConsoleInput(void)
 }
 
 #if !id386
-void Sys_HighFPPrecision (void)
+void		 Sys_HighFPPrecision (void)
 {
 }
 
-void Sys_LowFPPrecision (void)
+void		 Sys_LowFPPrecision (void)
 {
 }
 #endif
 
-int		skipframes;
 
-int main (int argc, char **argv)
+int			 main (int argc, char **argv)
 {
-	double		time, oldtime, newtime;
+	double	 time, oldtime, newtime;
 
-//	signal(SIGFPE, floating_point_exception_handler);
+#ifdef PARANOID
+	signal(SIGFPE, floating_point_exception_handler);
+#else
 	signal(SIGFPE, SIG_IGN);
+#endif
+
+#ifdef hpux
+	// makes it possible to access unaligned pointers (e.g. inside structures)
+	//   must be linked with libhpp.a to work (add -lhppa to LDFLAGS)
+	allow_unaligned_data_access();
+#endif
 
 	// we need to check for -noconinput and -nostdout
 	// before Host_Init is called
@@ -205,19 +216,18 @@ int main (int argc, char **argv)
 	Sys_SetFPCW();
 #endif
 
-    Host_Init (argc, argv, 16*1024*1024);
+	Host_Init (argc, argv, 16*1024*1024);
 
-    oldtime = Sys_DoubleTime ();
-    while (1)
-    {
-// find time spent rendering last frame
-        newtime = Sys_DoubleTime ();
-        time = newtime - oldtime;
+	oldtime = Sys_DoubleTime ();
+	while (1)
+	{
+		// find time spent rendering last frame
+		newtime = Sys_DoubleTime ();
+		time = newtime - oldtime;
 
 		Host_Frame(time);
 		oldtime = newtime;
-    }
-
+	}
 }
 
 
@@ -226,22 +236,20 @@ int main (int argc, char **argv)
 Sys_MakeCodeWriteable
 ================
 */
-void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
+void		 Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
-
-	int r;
-	unsigned long addr;
-	int psize = getpagesize();
+	int		 r;
+	unsigned long	 addr;
+	int		 psize = getpagesize();
 
 	addr = (startaddr & ~(psize-1)) - psize;
 
 //	fprintf(stderr, "writable code %lx(%lx)-%lx, length=%lx\n", startaddr,
-//			addr, startaddr+length, length);
+//	        addr, startaddr+length, length);
 
 	r = mprotect((char*)addr, length + startaddr - addr + psize, 7);
 
 	if (r < 0)
-    		Sys_Error("Protection change failed");
-
+		Sys_Error("Protection change failed");
 }
 
