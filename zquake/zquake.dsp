@@ -188,6 +188,10 @@ SOURCE=.\cl_main.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\cl_nqdemo.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\cl_parse.c
 # End Source File
 # Begin Source File
