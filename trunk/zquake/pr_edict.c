@@ -32,6 +32,9 @@ globalvars_t	*pr_global_struct;
 float			*pr_globals;			// same as pr_global_struct
 int				pr_edict_size;	// in bytes
 
+pr_cmdfunction_t	pr_cmdfunctions[MAX_PR_CMDFUNCTIONS];
+int				pr_numcmdfunctions;
+
 int		type_size[8] = {1,sizeof(void *)/4,1,3,1,1,sizeof(void *)/4,sizeof(void *)/4};
 
 ddef_t *ED_FieldAtOfs (int ofs);
@@ -976,6 +979,35 @@ void ED_LoadFromFile (char *data)
 
 /*
 ===============
+PR_FindCmdFunctions
+
+Enumerate all Cmd_* functions (z_ext_clientcommand extension)
+===============
+*/
+void PR_FindCmdFunctions (void)
+{
+	int	i;
+	dfunction_t	*func;
+	char	*name;
+
+	pr_numcmdfunctions = 0;
+
+	for (i=0 ; i<progs->numfunctions ; i++)
+	{
+		func = &pr_functions[i];
+		name = PR_GetString(func->s_name);
+		if (!strncmp(name, "Cmd_", 4)) {
+			Q_strncpyz (pr_cmdfunctions[pr_numcmdfunctions].name, name + 4, sizeof(pr_cmdfunctions[0].name));
+			pr_cmdfunctions[pr_numcmdfunctions].funcnum = i;
+			pr_numcmdfunctions++;
+			if (pr_numcmdfunctions == MAX_PR_CMDFUNCTIONS)
+				break;
+		}
+	}
+}
+
+/*
+===============
 PR_LoadProgs
 ===============
 */
@@ -1073,6 +1105,8 @@ void PR_LoadProgs (void)
 		SpectatorThink = (func_t)(f - pr_functions);
 	if ((f = ED_FindFunction ("SpectatorDisconnect")) != NULL)
 		SpectatorDisconnect = (func_t)(f - pr_functions);
+
+	PR_FindCmdFunctions ();
 }
 
 
