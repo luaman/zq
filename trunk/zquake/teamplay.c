@@ -91,6 +91,7 @@ char *TP_LocationName (vec3_t location);
 typedef struct tvars_s {
 	int		health;
 	int		items;
+	int		activeweapon;
 	float	respawntrigger_time;
 	float	deathtrigger_time;
 	float	f_version_reply_time;
@@ -2278,26 +2279,7 @@ nothing:
 	vars.pointframe = host_framecount;
 }
 
-void TP_WeaponChange(void)
-{
-	if (cl.prev_stat_weapon != cl.stats[STAT_ACTIVEWEAPON]) {
 
-		// spawn or respawn
-		if (!cl.prev_stat_weapon && cl.stats[STAT_ACTIVEWEAPON])
-		{
-			cl.prev_stat_weapon = cl.stats[STAT_ACTIVEWEAPON];
-			return;
-		}
-	
-		if (cl.prev_stat_weapon && cl.stats[STAT_ACTIVEWEAPON])
-		{
-			cl.prev_stat_weapon = cl.stats[STAT_ACTIVEWEAPON];
-			TP_ExecTrigger ("f_weapon_change");
-		}
-	}
-}
-	
-#define	IT_WEAPONS (2|4|8|16|32|64)
 void TP_StatChanged (int stat, int value)
 {
 	int		i;
@@ -2341,10 +2323,14 @@ void TP_StatChanged (int stat, int value)
 
 		vars.items = value;
 	}
-	else if (stat == STAT_ACTIVEWEAPON) {
-		TP_WeaponChange();
+	else if (stat == STAT_ACTIVEWEAPON)
+	{
+		if (cl.stats[STAT_ACTIVEWEAPON] != vars.activeweapon)
+			TP_ExecTrigger ("f_weaponchange");
+		vars.activeweapon = cl.stats[STAT_ACTIVEWEAPON];
 	}
 }
+
 
 #define MAX_FILTER_LENGTH 4
 char filter_strings[8][MAX_FILTER_LENGTH+1];
