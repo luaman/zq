@@ -49,7 +49,6 @@ void Con_CheckResize (void);
 void Con_Init (void);
 void Con_DrawConsole (int lines);
 void Con_Print (char *txt);
-void Con_SafePrintf (char *fmt, ...);
 void Con_Clear_f (void);
 void Con_DrawNotify (void);
 void Con_ClearNotify (void);
