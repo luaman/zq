@@ -405,6 +405,22 @@ cmd_alias_t *Cmd_FindAlias (char *name)
 }
 
 
+// Tonik 31.08.00 --- for message triggers:
+char *Cmd_AliasString (char *name)
+{
+	int			key;
+	cmd_alias_t *alias;
+
+	key = Key (name);
+	for (alias = cmd_alias_hash[key] ; alias ; alias = alias->hash_next)
+	{
+		if (!strcmp(name, alias->name))
+			return alias->value;
+	}
+	return NULL;
+}
+
+
 /*
 ===============
 Cmd_Alias_f
@@ -481,7 +497,7 @@ void Cmd_Alias_f (void)
 	a->value = CopyString (cmd);
 }
 
-// Tonik:
+
 void Cmd_UnAlias_f (void)
 {
 	cmd_alias_t	*a, *prev, *hash_prev;
@@ -941,7 +957,7 @@ void Cmd_Z_Cmd_f (void)
 
 
 // dest must point to a 1024-byte buffer
-static void Cmd_ExpandString (char *data, char *dest)
+void Cmd_ExpandString (char *data, char *dest)
 {
 	unsigned int	c;
 	char	buf[255];
