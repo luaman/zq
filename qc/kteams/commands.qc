@@ -358,10 +358,9 @@ void() StuffAliases =
  stuffcmd(self.owner, "alias deathmsg impulse 96\n");
  stuffcmd(self.owner, "alias rpickup impulse 97\n");
  stuffcmd(self.owner, "alias official impulse 98\n");
-
- stuffcmd(self.owner, "alias report impulse 99\n");
-	stuffcmd(self.owner, "alias notready break\n");
- stuffcmd(self.owner, "alias vwep impulse 103\n");
+ stuffcmd(self.owner, "alias vwep impulse 99\n");
+ stuffcmd(self.owner, "alias report impulse 103\n");
+ stuffcmd(self.owner, "alias notready break\n");
 };
 
 void(string tog, string key) PrintToggle1 =
@@ -1553,7 +1552,7 @@ float() CaptainImpulses =
 
 void() TeamCommands =
 {
-	if(self.impulse < 20 || self.impulse > 98) return;
+	if(self.impulse < 20 || self.impulse > 99) return;
 	if(self.impulse == 86) ShowCmds();
 	else if(self.impulse == 67) PrintScores();
 	else if(self.impulse == 22) PlayerStats();
@@ -1637,5 +1636,5 @@ void() TeamCommands =
 	else if(self.impulse == 96) Deathmsg();
     else if(self.impulse == 97) RandomPickup();
     else if(self.impulse == 98) SetOfficial();
-    else if(self.impulse == 103) ToggleVwep();
+    else if(self.impulse == 99) ToggleVwep();
 };
