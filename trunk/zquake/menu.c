@@ -2865,7 +2865,7 @@ void M_SEdit_Key (int key) {
 void M_Quit_Draw (void)
 {
 	static char *quitmsg[] = {
-	"0ZQuake " Z_VERSION,
+	"0ZQuake " PROGRAM_VERSION,
 	"1based on QuakeWorld by Id Software",
 	"1",
 	"0Programming",

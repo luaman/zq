@@ -86,9 +86,9 @@ char *VersionString (void)
 	static char str[32];
 
 #ifdef RELEASE_VERSION
-	sprintf (str, "%s", Z_VERSION);
+	sprintf (str, "%s", PROGRAM_VERSION);
 #else
-	sprintf (str, "%s (build %i)", Z_VERSION, build_number());
+	sprintf (str, "%s (build %i)", PROGRAM_VERSION, build_number());
 #endif
 
 	return str;

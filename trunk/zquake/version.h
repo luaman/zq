@@ -1,7 +1,7 @@
 // version.h
 
 #define	QW_VERSION	2.40
-#define Z_VERSION	"0.15dev"
+#define PROGRAM_VERSION	"0.15dev"
 
 // #define RELEASE_VERSION
 

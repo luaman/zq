@@ -833,10 +833,10 @@ void Draw_ConsoleBackground (int lines)
 // hack the version number directly into the pic
 
 	if (cls.download) {
-		strcpy (ver, Z_VERSION);
+		strcpy (ver, PROGRAM_VERSION);
 		dest = conback->data + 320 + 320*186 - 11 - 8*strlen(ver);
 	} else {
-		sprintf (ver, "ZQuake %s", Z_VERSION);
+		sprintf (ver, "ZQuake %s", PROGRAM_VERSION);
 		dest = conback->data + 320 - (strlen(ver)*8 + 11) + 320*186;
 	}
 
