@@ -930,7 +930,7 @@ Doesn't take scope visibility into account
 */
 def_t *PR_FindDef2 (char *name, def_t *scope, int hash)
 {
-	assert ((unsigned int)hash < HASH_SIZE);
+	assert ((unsigned int)hash < (unsigned int)HASH_SIZE);
 
 	if (scope) {
 		// search local defs first
@@ -1171,7 +1171,7 @@ void PR_ParseDefs (void)
 
 			char functionName[MAX_NAME];
 
-			if (strlen(name) >= MAX_NAME)
+			if (strlen(name) >= (size_t)MAX_NAME)
 				PR_ParseError ("name of function \"%s\" is too long (max. %d chars)", name, (int)(MAX_NAME - 1));
 
 			strcpy (functionName, name);
