@@ -450,19 +450,41 @@ static void PF_random (void)
 =================
 PF_particle
 
-particle(origin, color, count)
+particle(origin, dir, color, count [,replacement_te [,replacement_count]])
 =================
 */
 static void PF_particle (void)
 {
 	float	*org, *dir;
 	float	color, count;
+	int		replacement_te, replacement_count;
 			
 	org = G_VECTOR(OFS_PARM0);
 	dir = G_VECTOR(OFS_PARM1);
 	color = G_FLOAT(OFS_PARM2);
 	count = G_FLOAT(OFS_PARM3);
-	SV_StartParticle (org, dir, color, count);
+
+	// Progs should provide a tempentity code and particle count for the case
+	// when a client doesn't support svc_particle
+	if (pr_argc >= 5) {
+		replacement_te = G_FLOAT(OFS_PARM4);
+		replacement_count = (pr_argc >= 6) ? G_FLOAT(OFS_PARM5) : 1;
+	} else {
+		// To aid porting of NQ mods, if the extra arguments are not provided, try
+		// to figure out what progs want by inspecting color and count
+		if (count == 255) {
+			replacement_te = TE_EXPLOSION;		// count is not used
+		} else if (color == 73) {
+			replacement_te = TE_BLOOD;
+			replacement_count = 1;	// FIXME: use count / <some value>?
+		} else if (color == 225) {
+			replacement_te = TE_LIGHTNINGBLOOD;	// count is not used
+		} else {
+			replacement_te = 0;		// don't send anything
+		}
+	}
+
+	SV_StartParticle (org, dir, color, count, replacement_te, replacement_count);
 }
 
 
