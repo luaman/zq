@@ -827,12 +827,6 @@ void RestoreHWGamma (void)
 //=================================================================
 
 
-void VID_SetDefaultMode (void)
-{
-	IN_DeactivateMouse ();
-}
-
-
 void VID_Shutdown (void)
 {
    	HGLRC hRC;
