@@ -874,7 +874,16 @@ void Cmd_Z_Cmd_f (void)
 }
 
 
-// dest must point to a 1024-byte buffer
+/*
+================
+Cmd_ExpandString
+
+Expands all $cvar expressions to cvar values
+If not SERVERONLY, also expands $macro expressions
+Note: dest must point to a 1024 byte buffer
+================
+*/
+char *TP_MacroString (char *s);
 void Cmd_ExpandString (char *data, char *dest)
 {
 	unsigned int	c;
@@ -882,14 +891,19 @@ void Cmd_ExpandString (char *data, char *dest)
 	int		i, len;
 	cvar_t	*var, *bestvar;
 	int		quotes = 0;
+	char	*str;
+	int		name_length;
+#ifndef SERVERONLY
+	extern int	macro_length;
+#endif
 
 	len = 0;
 
-// parse a regular word
 	while ( (c = *data) != 0)
 	{
 		if (c == '"')
 			quotes++;
+
 		if (c == '$' && !(quotes&1))
 		{
 			data++;
@@ -909,21 +923,36 @@ void Cmd_ExpandString (char *data, char *dest)
 					bestvar = var;
 			}
 
-			if (bestvar)
+#ifndef SERVERONLY
+			str = TP_MacroString (buf);
+			name_length = macro_length;
+			if (bestvar && (!str || (strlen(bestvar->name) > macro_length))) {
+				str = bestvar->string;
+				name_length = strlen(bestvar->name);
+			}
+#else
+			if (bestvar) {
+				str = bestvar->string;
+				name_length = strlen(bestvar->name);
+			} else
+				str = NULL;
+#endif
+
+			if (str)
 			{
 				// check buffer size
-				if (len + strlen(bestvar->string) >= 1024-1)
+				if (len + strlen(str) >= 1024-1)
 					break;
 
-				strcpy(&dest[len], bestvar->string);
-				len += strlen(bestvar->string);
-				i = strlen(bestvar->name);
+				strcpy(&dest[len], str);
+				len += strlen(str);
+				i = name_length;
 				while (buf[i])
 					dest[len++] = buf[i++];
 			}
 			else
 			{
-				// no matching cvar name was found
+				// no matching cvar or macro
 				dest[len++] = '$';
 				if (len + strlen(buf) >= 1024-1)
 					break;
@@ -943,6 +972,7 @@ void Cmd_ExpandString (char *data, char *dest)
 
 	dest[len] = 0;
 }
+
 
 /*
 ============

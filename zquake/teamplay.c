@@ -29,7 +29,6 @@
 #include "quakedef.h"
 #include "version.h"
 
-cvar_t	_cmd_macros = {"_cmd_macros", "0"};
 cvar_t	cl_parsesay = {"cl_parsesay", "0"};
 cvar_t	cl_triggers = {"cl_triggers", "0"};
 cvar_t	cl_nofake = {"cl_nofake", "0"};
@@ -344,6 +343,21 @@ char *Macro_LastDeath_f (void)
 		return "someplace";
 }
 
+char *Macro_Time_f (void)
+{
+	time_t		t;
+	struct tm	*ptm;
+
+	macro_buf[0] = 0;
+	t = time(NULL);
+	if (t != -1) {
+		ptm = localtime (&t);
+		if (ptm)
+			strftime(macro_buf, sizeof(macro_buf)-1, "%H:%M", ptm);
+	}
+	return macro_buf;
+}
+
 typedef struct
 {
 	char	*name;
@@ -367,21 +381,56 @@ macro_command_t macro_commands[] =
 	{"bestammo", Macro_BestAmmo_f},
 	{"powerups", Macro_Powerups_f},
 	{"location", Macro_Location_f},
+	{"time", Macro_Time_f},
 	{NULL, NULL}
 };
 
 #define MAX_MACRO_STRING 1024
 
+/*
+==============
+TP_MacroString
+
+returns NULL if no matching macro was found
+==============
+*/
+int macro_length;	// length of macro name
+
+char *TP_MacroString (char *s)
+{
+	static char	buf[MAX_MACRO_STRING];
+	macro_command_t	*macro;
+
+	macro = macro_commands;
+	while (macro->name) {
+		if (!Q_strncasecmp(s, macro->name, strlen(macro->name)))
+		{
+			macro_length = strlen(macro->name);
+			return macro->func();
+		}
+		macro++;
+	}
+
+	macro_length = 0;
+	return NULL;
+}
+
+/*
+=============
+TP_ParseChatString
+
+Parses %a-like expressions
+=============
+*/
 char *TP_ParseMacroString (char *string)
 {
 	static char	buf[MAX_MACRO_STRING];
 	char	*s;
 	int		i;
-	macro_command_t	*macro;
 	char	*macro_string;
 	char	ch;
 
-	if (!_cmd_macros.value && !cl_parsesay.value)
+	if (!cl_parsesay.value)
 		return string;
 
 	s = string;
@@ -389,60 +438,58 @@ char *TP_ParseMacroString (char *string)
 
 	while (*s && i < MAX_MACRO_STRING-1)
 	{
-		if (cl_parsesay.value == 1)
+		// check %[P], etc
+		if (*s == '%' && s[1]=='[' && s[2] && s[3]==']')
 		{
-			// check %[P], etc
-			if (*s == '%' && s[1]=='[' && s[2] && s[3]==']')
-			{
-				static char mbuf[MAX_MACRO_VALUE];
-				switch (s[2]) {
-				case 'a':
-					macro_string = Macro_ArmorType_f();
-					if (!macro_string[0])
-						macro_string = "a";
-					if (cl.stats[STAT_ARMOR] < 30)
-						sprintf (mbuf, "\x10%s:%i\x11", macro_string, cl.stats[STAT_ARMOR]);
-					else
-						sprintf (mbuf, "%s:%i", macro_string, cl.stats[STAT_ARMOR]);
-					macro_string = mbuf;
-					break;
-
-				case 'h':
-					if (cl.stats[STAT_HEALTH] >= 50)
-						sprintf (macro_buf, "%i", cl.stats[STAT_HEALTH]);
-					else
-						sprintf (macro_buf, "\x10%i\x11", cl.stats[STAT_HEALTH]);
-					macro_string = macro_buf;
-					break;
-
-				case 'P':
-					macro_string = Macro_Powerups_f();
-					if (macro_string[0])
-						sprintf (mbuf, "\x10%s\x11", macro_string);
-					else
-						mbuf[0] = 0;
-					macro_string = mbuf;
-					break;
-
-				// todo: %[w], %[h], %[b]
-
-				default:
-					buf[i++] = *s++;
-					continue;
-				}
-				if (i + strlen(macro_string) >= MAX_MACRO_STRING-1)
-					Sys_Error("TP_ParseMacroString: macro string length > MAX_MACRO_STRING)");
-				strcpy (&buf[i], macro_string);
-				i += strlen(macro_string);
-				s += 4;	// skip %[<char>]
+			static char mbuf[MAX_MACRO_VALUE];
+			switch (s[2]) {
+			case 'a':
+				macro_string = Macro_ArmorType_f();
+				if (!macro_string[0])
+					macro_string = "a";
+				if (cl.stats[STAT_ARMOR] < 30)
+					sprintf (mbuf, "\x10%s:%i\x11", macro_string, cl.stats[STAT_ARMOR]);
+				else
+					sprintf (mbuf, "%s:%i", macro_string, cl.stats[STAT_ARMOR]);
+				macro_string = mbuf;
+				break;
+				
+			case 'h':
+				if (cl.stats[STAT_HEALTH] >= 50)
+					sprintf (macro_buf, "%i", cl.stats[STAT_HEALTH]);
+				else
+					sprintf (macro_buf, "\x10%i\x11", cl.stats[STAT_HEALTH]);
+				macro_string = macro_buf;
+				break;
+				
+			case 'P':
+				macro_string = Macro_Powerups_f();
+				if (macro_string[0])
+					sprintf (mbuf, "\x10%s\x11", macro_string);
+				else
+					mbuf[0] = 0;
+				macro_string = mbuf;
+				break;
+				
+				// todo: %[w], %[b]
+				
+			default:
+				buf[i++] = *s++;
 				continue;
 			}
-			
-			// check %a, etc
-			if (*s == '%')
+			if (i + strlen(macro_string) >= MAX_MACRO_STRING-1)
+				Sys_Error("TP_ParseMacroString: macro string length > MAX_MACRO_STRING)");
+			strcpy (&buf[i], macro_string);
+			i += strlen(macro_string);
+			s += 4;	// skip %[<char>]
+			continue;
+		}
+		
+		// check %a, etc
+		if (*s == '%')
+		{
+			switch (s[1])
 			{
-				switch (s[1])
-				{
 				case 'a': macro_string = Macro_Armor_f(); break;
 				case 'A': macro_string = Macro_ArmorType_f(); break;
 				case 'b': macro_string = Macro_BestWeaponAndAmmo_f(); break;
@@ -461,20 +508,21 @@ char *TP_ParseMacroString (char *string)
 				default: 
 					buf[i++] = *s++;
 					continue;
-				}
-				if (i + strlen(macro_string) >= MAX_MACRO_STRING-1)
-					Sys_Error("TP_ParseMacroString: macro string length > MAX_MACRO_STRING)");
-				strcpy (&buf[i], macro_string);
-					i += strlen(macro_string);
-				s += 2;	// skip % and letter
-				continue;
 			}
-
-			if (*s == '$')
+			if (i + strlen(macro_string) >= MAX_MACRO_STRING-1)
+				Sys_Error("TP_ParseMacroString: macro string length > MAX_MACRO_STRING)");
+			strcpy (&buf[i], macro_string);
+			i += strlen(macro_string);
+			s += 2;	// skip % and letter
+			continue;
+		}
+		
+		// "fun chars"
+		if (*s == '$')
+		{
+			ch = 0;
+			switch (s[1])
 			{
-				ch = 0;
-				switch (s[1])
-				{
 				case '\\': ch = 0x0D; break;
 				case ':': ch = 0x0A; break;
 				case '[': ch = 0x10; break;
@@ -483,53 +531,16 @@ char *TP_ParseMacroString (char *string)
 				case 'R': ch = 0x87; break;
 				case 'Y': ch = 0x88; break;
 				case 'B': ch = 0x89; break;
-				}
-
-				if (ch) 
-				{
-					buf[i++] = ch;
-					s += 2;
-					continue;
-				}
-
 			}
-		}
-
-		if (_cmd_macros.value)
-		if (*s == '$')
-		{	
-			s++;
-
-			if (*s == '$') {
-				buf[i++] = '$';
-				s++;
+			
+			if (ch) {
+				buf[i++] = ch;
+				s += 2;
 				continue;
 			}
-
-			// macro search
-			if (_cmd_macros.value) {
-				macro = macro_commands;
-				while (macro->name) {
-					if (!strncmp(s, macro->name, strlen(macro->name)))
-					{
-						macro_string = macro->func();
-						if (i + strlen(macro_string) >= MAX_MACRO_STRING-1) // !!! is this right?
-							Sys_Error("TP_ParseMacroString: macro string length > MAX_MACRO_STRING)");
-						strcpy (&buf[i], macro_string);
-						i += strlen(macro_string);
-						s += strlen(macro->name);
-						goto _continue;
-					}
-					macro++;
-				}
-			}
-
-			buf[i++] = '$';
 		}
 
 		buf[i++] = *s++;
-
-		_continue: ;
 	}
 	buf[i] = 0;
 
@@ -1228,7 +1239,6 @@ int TP_CategorizeMessage (char *s)
 
 void TP_Init ()
 {
-	Cvar_RegisterVariable (&_cmd_macros);
 	Cvar_RegisterVariable (&cl_parsesay);
 	Cvar_RegisterVariable (&cl_triggers);
 	Cvar_RegisterVariable (&cl_nofake);
