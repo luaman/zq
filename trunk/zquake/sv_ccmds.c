@@ -305,6 +305,23 @@ void SV_Map_f (void)
 	char	expanded[MAX_QPATH];
 	FILE	*f;
 
+	if (Cmd_Argc() != 2)
+	{
+		Con_Printf ("map <levelname> : continue game on a new level\n");
+		return;
+	}
+	strcpy (level, Cmd_Argv(1));
+
+	// check to make sure the level exists
+	sprintf (expanded, "maps/%s.bsp", level);
+	COM_FOpenFile (expanded, &f);
+	if (!f)
+	{
+		Con_Printf ("Can't find %s\n", expanded);
+		return;
+	}
+	fclose (f);
+
 #ifdef QW_BOTH
 	// An ugly hack to let you run zquake and qwsv or proxy without
 	// changing ports via the command line
@@ -324,29 +341,15 @@ void SV_Map_f (void)
 		if (i)
 			Con_Printf ("Server socket opened on port %i\n", __serverport + i);
 	}
+
+	// make sure we're not connected to an external server,
+	// and demo playback is stopped
+	if (sv.state == ss_dead)
+		CL_Disconnect();
+
+	Host_ForceReconnect();	// FIXME: remove?
 #endif
 
-	if (Cmd_Argc() != 2)
-	{
-		Con_Printf ("map <levelname> : continue game on a new level\n");
-		return;
-	}
-	strcpy (level, Cmd_Argv(1));
-
-	// check to make sure the level exists
-	sprintf (expanded, "maps/%s.bsp", level);
-	COM_FOpenFile (expanded, &f);
-	if (!f)
-	{
-		Con_Printf ("Can't find %s\n", expanded);
-		return;
-	}
-	fclose (f);
-
-#ifdef QW_BOTH
-//	cls.state = ca_connected;
-	Host_ForceReconnect();	// !!! FIXME...
-#endif
 	SV_BroadcastCommand ("changing\n");
 	SV_SendMessagesToAll ();
 
