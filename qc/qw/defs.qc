@@ -763,3 +763,9 @@ float T_Heal (entity e, float heal_amount, float ignore); // health function
 
 .float suicide_time;	// can't suicide sooner than this
 
+// vwep
+#ifdef VWEP_TEST
+void (float index, string model) precache_vwep_model = #85; 
+.float vw_index; 
+.float vw_frame; 
+#endif
