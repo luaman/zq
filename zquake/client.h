@@ -130,7 +130,7 @@ typedef struct
 // clientState_t should hold all pieces of the client state
 //
 
-#define	MAX_DLIGHTS		64
+#define	MAX_DLIGHTS		32
 
 typedef enum { lt_default, lt_blue, lt_red, lt_redblue, lt_muzzleflash,
 lt_explosion, lt_rocket, NUM_DLIGHTTYPES } dlighttype_t;
