@@ -1501,7 +1501,7 @@ void CL_ParseServerMessage (void)
 			break;
 			
 		case svc_serverdata:
-			Cbuf_Execute ();		// make sure any stuffed commands are done
+			Cbuf_ExecuteEx (&cbuf_svc);		// make sure any stuffed commands are done
 			CL_ParseServerData ();
 			vid.recalc_refdef = true;	// leave full screen intermission
 			break;
