@@ -156,10 +156,9 @@ qboolean CL_GetDemoMessage (void)
 	byte	c;
 	usercmd_t *pcmd;
 
-// Tonik -->
-	if (cl.paused & 1)
+// Tonik:
+	if (cl.paused & 2)
 		return 0;
-// <-- Tonik
 
 	// read the time from the packet
 	fread(&demotime, sizeof(demotime), 1, cls.demofile);
@@ -181,7 +180,7 @@ qboolean CL_GetDemoMessage (void)
 			cls.td_startframe = host_framecount;
 		}
 		realtime = demotime; // warp
-	} else if (!(cl.paused & 2) && cls.state >= ca_onserver) {	// always grab until fully connected
+	} else if (!(cl.paused & 1) && cls.state >= ca_onserver) {	// always grab until fully connected
 		if (realtime + 1.0 < demotime) {
 			// too far back
 			realtime = demotime - 1.0;
@@ -700,7 +699,7 @@ void CL_EasyRecord_f (void)
 	c = Cmd_Argc();
 	if (c > 2)
 	{
-		Con_Printf ("record <demoname>\n");
+		Con_Printf ("easyrecord <demoname>\n");
 		return;
 	}
 
@@ -716,7 +715,12 @@ void CL_EasyRecord_f (void)
 
 	if (c == 2)
 		sprintf (name, "%s", Cmd_Argv(1));
-	else {
+	else if (cl.spectator) {
+		// FIXME: if tracking a player, use his name
+		sprintf (name, "spec_%s_%s",
+			TP_PlayerName(),
+			TP_MapName());
+	} else {
 		// guess game type and write demo name
 		i = TP_CountPlayers();
 		if (atoi(Info_ValueForKey(cl.serverinfo, "teamplay"))

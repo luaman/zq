@@ -1060,7 +1060,7 @@ void CL_NewTranslation (int slot)
 
 /*
 ==============
-CL_ProcessServerinfo
+CL_ProcessUserInfo
 ==============
 */
 void CL_ProcessUserInfo (int slot, player_info_t *player)
@@ -1192,6 +1192,8 @@ void CL_ServerInfo (void)
 	Con_DPrintf("SERVERINFO: %s=%s\n", key, value);
 
 	Info_SetValueForKey (cl.serverinfo, key, value, MAX_SERVERINFO_STRING);
+
+	CL_ProcessServerInfo ();
 }
 
 /*
@@ -1604,10 +1606,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_setpause:
-			if (cls.demoplayback)
-				cl.paused = (MSG_ReadByte () != 0) * 2;
-			else
-				cl.paused = (MSG_ReadByte () != 0);
+			cl.paused = (cl.paused &~ 1) | (MSG_ReadByte () != 0);
 			if (cl.paused)	// FIXME
 				CDAudio_Pause ();
 			else
