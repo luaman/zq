@@ -171,6 +171,168 @@ void MSG_WriteDeltaUsercmd (sizebuf_t *buf, usercmd_t *from, usercmd_t *cmd)
 }
 
 
+/*
+==================
+MSG_WriteDeltaEntity
+
+Writes part of a packetentities message.
+Can delta from either a baseline or a previous packet_entity
+==================
+*/
+void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qboolean force)
+{
+	int		bits;
+	int		i;
+	float	miss;
+
+// send an update
+	bits = 0;
+	
+	for (i=0 ; i<3 ; i++)
+	{
+		miss = to->origin[i] - from->origin[i];
+		if ( miss < -0.1 || miss > 0.1 )
+			bits |= U_ORIGIN1<<i;
+	}
+
+	if ( to->angles[0] != from->angles[0] )
+		bits |= U_ANGLE1;
+		
+	if ( to->angles[1] != from->angles[1] )
+		bits |= U_ANGLE2;
+		
+	if ( to->angles[2] != from->angles[2] )
+		bits |= U_ANGLE3;
+		
+	if ( to->colormap != from->colormap )
+		bits |= U_COLORMAP;
+		
+	if ( to->skinnum != from->skinnum )
+		bits |= U_SKIN;
+		
+	if ( to->frame != from->frame )
+		bits |= U_FRAME;
+	
+	if ( to->effects != from->effects )
+		bits |= U_EFFECTS;
+	
+	if ( to->modelindex != from->modelindex )
+		bits |= U_MODEL;
+
+	if (bits & 511)
+		bits |= U_MOREBITS;
+
+	if (to->flags & U_SOLID)
+		bits |= U_SOLID;
+
+	//
+	// write the message
+	//
+	if (!to->number)
+		Host_Error ("Unset entity number");
+	if (to->number >= 512)
+		Host_Error ("Entity number >= 512");
+
+	if (!bits && !force)
+		return;		// nothing to send!
+	i = to->number | (bits&~511);
+	if (i & U_REMOVE)
+		Sys_Error ("U_REMOVE");
+	MSG_WriteShort (msg, i);
+	
+	if (bits & U_MOREBITS)
+		MSG_WriteByte (msg, bits&255);
+	if (bits & U_MODEL)
+		MSG_WriteByte (msg,	to->modelindex);
+	if (bits & U_FRAME)
+		MSG_WriteByte (msg, to->frame);
+	if (bits & U_COLORMAP)
+		MSG_WriteByte (msg, to->colormap);
+	if (bits & U_SKIN)
+		MSG_WriteByte (msg, to->skinnum);
+	if (bits & U_EFFECTS)
+		MSG_WriteByte (msg, to->effects);
+	if (bits & U_ORIGIN1)
+		MSG_WriteCoord (msg, to->origin[0]);		
+	if (bits & U_ANGLE1)
+		MSG_WriteAngle(msg, to->angles[0]);
+	if (bits & U_ORIGIN2)
+		MSG_WriteCoord (msg, to->origin[1]);
+	if (bits & U_ANGLE2)
+		MSG_WriteAngle(msg, to->angles[1]);
+	if (bits & U_ORIGIN3)
+		MSG_WriteCoord (msg, to->origin[2]);
+	if (bits & U_ANGLE3)
+		MSG_WriteAngle(msg, to->angles[2]);
+}
+
+/*
+=============
+MSG_EmitPacketEntities
+
+Writes a delta update of a packet_entities_t to the message.
+=============
+*/
+void MSG_EmitPacketEntities (packet_entities_t *from, int delta_sequence, packet_entities_t *to,
+							sizebuf_t *msg, entity_state_t *(*GetBaseline)(int number))
+{
+	int		oldindex, newindex;
+	int		oldnum, newnum;
+	int		oldmax;
+
+	if (from) {
+		oldmax = from->num_entities;
+
+		MSG_WriteByte (msg, svc_deltapacketentities);
+		MSG_WriteByte (msg, delta_sequence);
+	}
+	else {
+		oldmax = 0;	// no delta update
+		from = NULL;
+
+		MSG_WriteByte (msg, svc_packetentities);
+	}
+
+	newindex = 0;
+	oldindex = 0;
+//Com_Printf ("---%i to %i ----\n", client->delta_sequence & UPDATE_MASK
+//			, client->netchan.outgoing_sequence & UPDATE_MASK);
+	while (newindex < to->num_entities || oldindex < oldmax)
+	{
+		newnum = newindex >= to->num_entities ? 9999 : to->entities[newindex].number;
+		oldnum = oldindex >= oldmax ? 9999 : from->entities[oldindex].number;
+
+		if (newnum == oldnum)
+		{	// delta update from old position
+//Com_Printf ("delta %i\n", newnum);
+			MSG_WriteDeltaEntity (&from->entities[oldindex], &to->entities[newindex], msg, false);
+			oldindex++;
+			newindex++;
+			continue;
+		}
+
+		if (newnum < oldnum)
+		{	// this is a new entity, send it from the baseline
+//Com_Printf ("baseline %i\n", newnum);
+			MSG_WriteDeltaEntity (GetBaseline(newnum), &to->entities[newindex], msg, true);
+			newindex++;
+			continue;
+		}
+
+		if (newnum > oldnum)
+		{	// the old entity isn't present in the new message
+//Com_Printf ("remove %i\n", oldnum);
+			MSG_WriteShort (msg, oldnum | U_REMOVE);
+			oldindex++;
+			continue;
+		}
+	}
+
+	MSG_WriteShort (msg, 0);	// end of packetentities
+}
+
+//===========================================================================
+
 //
 // reading functions
 //
