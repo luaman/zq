@@ -1710,8 +1710,13 @@ void CL_MuzzleFlash (void)
 	}
 	else
 	{
-		int parsecount = cls.mvdplayback ? cl.oldparsecount : cl.parsecount;
-		state = &cl.frames[parsecount & UPDATE_MASK].playerstate[i-1];
+#ifdef MVDPLAY
+		if (cls.mvdplayback)
+			state = &cl.frames[cl.oldparsecount & UPDATE_MASK].playerstate[i-1];
+		else
+#endif
+			state = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[i-1];
+
 		VectorCopy (state->origin, origin);
 		VectorCopy (state->viewangles, angles);
 	}
