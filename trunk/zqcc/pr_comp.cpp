@@ -709,7 +709,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 //
 	for (i=0 ; i<type->num_parms ; i++)
 	{
-		defs[i] = PR_GetDef (type->parm_types[i], pr_parm_names[i], pr_scope);
+		defs[i] = PR_GetDef (type->parm_types[i], pr_parm_names[i], pr_scope, true);
 		f->parm_ofs[i] = defs[i]->ofs;
 		if (i > 0 && f->parm_ofs[i] < f->parm_ofs[i-1])
 			Error ("bad parm order");
@@ -769,7 +769,7 @@ PR_GetDef
 A new def will be allocated if it can't be found
 ============
 */
-def_t *PR_GetDef (type_t *type, char *name, def_t *scope)
+def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool isParm)
 {
 	def_t		*def;
 	char element[MAX_NAME];
@@ -778,7 +778,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope)
 	def = PR_FindDef (name, scope);
 
 	if (def && def->type != type)
-		PR_ParseError ("type mismatch on redeclaration of %s",name);
+		PR_ParseError ("type mismatch on redeclaration of %s", name);
 
 	if (def)
 		return def;
@@ -793,7 +793,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope)
 	def->name = (char *) malloc (strlen(name)+1);
 	strcpy (def->name, name);
 	def->type = type;
-
+	def->isParm = isParm;
 	def->scope = scope;
 	
 	def->ofs = numpr_globals;
@@ -806,13 +806,13 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope)
 	if (type->type == ev_vector)
 	{		
 		sprintf (element, "%s_x",name);
-		PR_GetDef (&type_float, element, scope);
+		PR_GetDef (&type_float, element, scope, isParm);
 		
 		sprintf (element, "%s_y",name);
-		PR_GetDef (&type_float, element, scope);
+		PR_GetDef (&type_float, element, scope, isParm);
 		
 		sprintf (element, "%s_z",name);
-		PR_GetDef (&type_float, element, scope);
+		PR_GetDef (&type_float, element, scope, isParm);
 	}
 	else
 		numpr_globals += type_size[type->type];
@@ -824,13 +824,13 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope)
 		if (type->aux_type->type == ev_vector)
 		{
 			sprintf (element, "%s_x",name);
-			PR_GetDef (&type_floatfield, element, scope);
+			PR_GetDef (&type_floatfield, element, scope, isParm);
 			
 			sprintf (element, "%s_y",name);
-			PR_GetDef (&type_floatfield, element, scope);
+			PR_GetDef (&type_floatfield, element, scope, isParm);
 			
 			sprintf (element, "%s_z",name);
-			PR_GetDef (&type_floatfield, element, scope);
+			PR_GetDef (&type_floatfield, element, scope, isParm);
 		}
 		else
 			pr.size_fields += type_size[type->aux_type->type];
