@@ -459,11 +459,11 @@ void Mod_LoadTextures (lump_t *l)
 		memset (anims, 0, sizeof(anims));
 		memset (altanims, 0, sizeof(altanims));
 
-		max = tx->name[1];
+		max = (int)(unsigned char)tx->name[1];
 		altmax = 0;
-		if (max >= 'a' && max <= 'z')
+		if ( islower(max) )
 			max -= 'a' - 'A';
-		if (max >= '0' && max <= '9')
+		if ( isdigit(max) )
 		{
 			max -= '0';
 			altmax = 0;
@@ -488,10 +488,10 @@ void Mod_LoadTextures (lump_t *l)
 			if (strcmp (tx2->name+2, tx->name+2))
 				continue;
 
-			num = tx2->name[1];
-			if (num >= 'a' && num <= 'z')
+			num = (int)(unsigned char)tx2->name[1];
+			if ( islower(num) )
 				num -= 'a' - 'A';
-			if (num >= '0' && num <= '9')
+			if ( isdigit(num) )
 			{
 				num -= '0';
 				anims[num] = tx2;

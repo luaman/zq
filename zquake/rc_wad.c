@@ -57,11 +57,11 @@ static void W_CleanupName (char *in, char *out)
 	
 	for (i=0 ; i<16 ; i++ )
 	{
-		c = in[i];
+		c = (int)(unsigned char)in[i];
 		if (!c)
 			break;
 			
-		if (c >= 'A' && c <= 'Z')
+		if ( isupper(c) )
 			c += ('a' - 'A');
 		out[i] = c;
 	}

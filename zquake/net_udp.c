@@ -180,7 +180,7 @@ qbool NET_StringToAdr (char *s, netadr_t *a)
 			sadr.sin_port = htons((short)atoi(colon+1));	
 		}
 	
-	if (copy[0] >= '0' && copy[0] <= '9')
+	if ( isdigit((int)(unsigned char)copy[0]) )
 	{
 		*(int *)&sadr.sin_addr = inet_addr(copy);
 	}

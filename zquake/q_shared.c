@@ -53,13 +53,11 @@ int Q_atoi (char *str)
 		str += 2;
 		while (1)
 		{
-			c = *str++;
-			if (c >= '0' && c <= '9')
+			c = (int)(unsigned char)*str++;
+			if ( isdigit(c) )
 				val = (val<<4) + c - '0';
-			else if (c >= 'a' && c <= 'f')
-				val = (val<<4) + c - 'a' + 10;
-			else if (c >= 'A' && c <= 'F')
-				val = (val<<4) + c - 'A' + 10;
+			else if ( isxdigit(c) )
+				val = (val<<4) + tolower(c) - 'a' + 10;
 			else
 				return val*sign;
 		}
@@ -78,8 +76,8 @@ int Q_atoi (char *str)
 //
 	while (1)
 	{
-		c = *str++;
-		if (c <'0' || c > '9')
+		c = (int)(unsigned char)*str++;
+		if ( !isdigit(c) )
 			return val*sign;
 		val = val*10 + c - '0';
 	}
@@ -113,13 +111,11 @@ float Q_atof (char *str)
 		str += 2;
 		while (1)
 		{
-			c = *str++;
-			if (c >= '0' && c <= '9')
+			c = (int)(unsigned char)*str++;
+			if ( isdigit(c) )
 				val = (val*16) + c - '0';
-			else if (c >= 'a' && c <= 'f')
-				val = (val*16) + c - 'a' + 10;
-			else if (c >= 'A' && c <= 'F')
-				val = (val*16) + c - 'A' + 10;
+			else if ( isxdigit(c) )
+				val = (val*16) + tolower(c) - 'a' + 10;
 			else
 				return val*sign;
 		}
@@ -146,7 +142,7 @@ float Q_atof (char *str)
 			decimal = total;
 			continue;
 		}
-		if (c <'0' || c > '9')
+		if ( !isdigit(c) )
 			break;
 		val = val*10 + c - '0';
 		total++;

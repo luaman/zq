@@ -755,8 +755,8 @@ int XLateKey(XKeyEvent *ev)
 #endif
 
 		default:
-			key = *(unsigned char*)buf;
-			if (key >= 'A' && key <= 'Z')
+			key = (int)*(unsigned char*)buf;
+			if ( isupper(key) )
 				key = key - 'A' + 'a';
 //			fprintf(stdout, "case 0x0%x: key = ___;break;/* [%c] */\n", keysym);
 			break;

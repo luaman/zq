@@ -1322,7 +1322,7 @@ void CL_ParseVWepPrecache (char *str)
 
 	num = atoi(str);
 
-	if (str[0] < '0' || str[0] > '9')
+	if ( !isdigit((int)(unsigned char)str[0]) )
 		return;		// not a vwep model message
 
 	if ((unsigned)num >= MAX_MODELS)
