@@ -89,8 +89,6 @@ cvar_t	watervis = {"watervis","0",CVAR_SERVERINFO};
 cvar_t	skill = {"skill", "1"};
 cvar_t	coop = {"coop", "0"};
 
-
-FILE	*sv_logfile;
 FILE	*sv_fraglogfile;
 
 void SV_AcceptClient (netadr_t adr, int userid, char *userinfo);
@@ -146,15 +144,10 @@ void SV_Shutdown (char *finalmsg)
 	Master_Shutdown ();
 	NET_ServerConfig (false);
 
-	if (sv_logfile)
-	{
-		fclose (sv_logfile);
-		sv_logfile = NULL;
-	}
 	if (sv_fraglogfile)
 	{
 		fclose (sv_fraglogfile);
-		sv_logfile = NULL;
+		sv_fraglogfile = NULL;
 	}
 
 	memset (&sv, 0, sizeof(sv));
