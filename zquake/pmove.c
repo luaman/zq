@@ -650,11 +650,23 @@ void PM_CategorizePosition (void)
 
 /*
 =============
-JumpButton
+PM_CheckJump
 =============
 */
-void JumpButton (void)
+void PM_CheckJump (void)
 {
+	if (pmove.dead)
+	{
+		pmove.oldbuttons |= BUTTON_JUMP;	// don't jump on respawn
+		return;
+	}
+
+	if (!(pmove.cmd.buttons & BUTTON_JUMP))
+	{
+		pmove.oldbuttons &= ~BUTTON_JUMP;
+		return;
+	}
+
 	if (pmove.waterjumptime)
 	{
 		pmove.waterjumptime -= frametime;
@@ -713,10 +725,10 @@ void JumpButton (void)
 
 /*
 =============
-CheckWaterJump
+PM_CheckWaterJump
 =============
 */
-void CheckWaterJump (void)
+void PM_CheckWaterJump (void)
 {
 	vec3_t	spot;
 	int		cont;
@@ -911,9 +923,9 @@ void PlayerMove (void)
 	PM_CategorizePosition ();
 
 	if (pmove.waterlevel == 2)
-		CheckWaterJump ();
+		PM_CheckWaterJump ();
 
-	if (pmove.velocity[2] < 0)
+	if (pmove.velocity[2] < 0 || pmove.dead)
 		pmove.waterjumptime = 0;
 
 #ifndef SERVERONLY
@@ -924,15 +936,7 @@ void PlayerMove (void)
 	}
 #endif
 
-	if (pmove.dead)
-		pmove.oldbuttons |= BUTTON_JUMP;
-	else
-	{
-		if (pmove.cmd.buttons & BUTTON_JUMP)
-			JumpButton ();
-		else if (!pmove.dead)
-			pmove.oldbuttons &= ~BUTTON_JUMP;
-	}
+	PM_CheckJump ();
 
 	PM_Friction ();
 
