@@ -758,20 +758,13 @@ R_DrawViewModel
 void R_DrawViewModel (void)
 {
 	if (!r_drawviewmodel.value || 
-		(r_drawviewmodel.value == 2 && scr_fov.value > 90) ||
-		!Cam_DrawViewModel())
+		(r_drawviewmodel.value == 2 && scr_fov.value > 90))
 		return;
 
 	if (envmap)
 		return;
 
 	if (!r_drawentities.value)
-		return;
-
-	if (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)
-		return;
-
-	if (cl.stats[STAT_HEALTH] <= 0)
 		return;
 
 	currententity = &cl.viewent;
