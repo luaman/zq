@@ -585,13 +585,13 @@ bool PR_FinishCompilation (void)
 // check to make sure all functions prototyped have code
 	for (d=pr.def_head.next ; d ; d=d->next)
 	{
-		if (d->type->type == ev_function && !d->scope)// function parms are ok
+		if (d->type->type == ev_function && !d->isParm) // function parms are ok
 		{
 //			f = G_FUNCTION(d->ofs);
 //			if (!f || (!f->code && !f->builtin) )
 			if (!d->initialized)
 			{
-				printf ("function %s was not defined\n",d->name);
+				printf ("function %s was not defined\n", d->name);
 				errors = true;
 			}
 		}
