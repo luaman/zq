@@ -1095,6 +1095,8 @@ void PR_ParseInitialization (type_t *type, char *name, def_t *def)
 		PR_ParseError ("wrong immediate type for %s", name);
 
 	def->initialized = 1;
+	if (type == &type_const_string || type == &type_string)
+		pr_immediate.string = CopyString (pr_immediate_string);
 	memcpy (pr_globals + def->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
 	PR_Lex ();
 }
