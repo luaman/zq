@@ -1102,7 +1102,8 @@ void Cmd_ExecuteString (char *text)
 				// if the alias value is a command or cvar and
 				// the alias is called with parameters, add them
 				if (Cmd_Argc() > 1 && !strchr(a->value, ' ') && !strchr(a->value, '\t')
-					&& (Cvar_FindVar(a->value) || Cmd_FindCommand(a->value)))
+					&& (Cvar_FindVar(a->value) || (Cmd_FindCommand(a->value)
+					&& a->value[0] != '+' && a->value[0] != '-')))
 				{
 					Cbuf_InsertText (Cmd_Args());
 					Cbuf_InsertText (" ");
