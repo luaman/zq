@@ -47,7 +47,7 @@ cvar_t	rcon_address = {"rcon_address", ""};
 
 cvar_t	cl_timeout = {"cl_timeout", "60"};
 
-cvar_t	cl_shownet = {"cl_shownet","0"};	// can be 0, 1, or 2
+cvar_t	cl_shownet = {"cl_shownet", "0"};	// can be 0, 1, or 2
 
 cvar_t	cl_sbar		= {"cl_sbar", "0", CVAR_ARCHIVE};
 cvar_t	cl_hudswap	= {"cl_hudswap", "0", CVAR_ARCHIVE};
@@ -113,7 +113,7 @@ int				cl_numvisedicts, cl_oldnumvisedicts;
 entity_t		*cl_visedicts, *cl_oldvisedicts;
 entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
 
-double			connect_time = -1;		// for connection retransmits
+double			connect_time = 0;		// for connection retransmits
 
 quakeparms_t host_parms;
 
@@ -152,31 +152,27 @@ void CL_SendConnectPacket (void)
 	netadr_t	adr;
 	char	data[2048];
 	double t1, t2;
-// JACK: Fixed bug where DNS lookups would cause two connects real fast
-//       Now, adds lookup time to the connect time.
-//		 Should I add it to realtime instead?!?!
 
 	if (cls.state != ca_disconnected)
 		return;
 
+// JACK: Fixed bug where DNS lookups would cause two connects real fast
+// Now, adds lookup time to the connect time.
 	t1 = Sys_DoubleTime ();
-
 	if (!NET_StringToAdr (cls.servername, &adr))
 	{
 		Con_Printf ("Bad server address\n");
-		connect_time = -1;
+		connect_time = 0;
 		return;
 	}
+	t2 = Sys_DoubleTime ();
+	connect_time = realtime + t2 - t1;	// for retransmit requests
 
 	if (adr.port == 0)
-		adr.port = BigShort (27500);
-	t2 = Sys_DoubleTime ();
-
-	connect_time = realtime+t2-t1;	// for retransmit requests
+		adr.port = BigShort (PORT_SERVER);
 
 	cls.qport = Cvar_VariableValue("qport");
 
-//	Con_Printf ("Connecting to %s...\n", cls.servername);
 	sprintf (data, "\xff\xff\xff\xff" "connect %i %i %i \"%s\"\n",
 		PROTOCOL_VERSION, cls.qport, cls.challenge, cls.userinfo);
 	NET_SendPacket (NS_CLIENT, strlen(data), data, adr);
@@ -195,26 +191,23 @@ void CL_CheckForResend (void)
 	char	data[2048];
 	double t1, t2;
 
-	if (connect_time == -1)
+	if (cls.state != ca_disconnected || !connect_time)
 		return;
-	if (cls.state != ca_disconnected)
-		return;
-	if (connect_time && realtime - connect_time < 5.0)
+	if (realtime - connect_time < 5.0)
 		return;
 
 	t1 = Sys_DoubleTime ();
 	if (!NET_StringToAdr (cls.servername, &adr))
 	{
 		Con_Printf ("Bad server address\n");
-		connect_time = -1;
+		connect_time = 0;
 		return;
 	}
 	t2 = Sys_DoubleTime ();
+	connect_time = realtime + t2 - t1;	// for retransmit requests
 
 	if (adr.port == 0)
-		adr.port = BigShort (27500);
-
-	connect_time = realtime+t2-t1;	// for retransmit requests
+		adr.port = BigShort (PORT_SERVER);
 
 	Con_Printf ("Connecting to %s...\n", cls.servername);
 	sprintf (data, "\xff\xff\xff\xff" "getchallenge\n");
@@ -223,7 +216,7 @@ void CL_CheckForResend (void)
 
 void CL_BeginServerConnect(void)
 {
-	connect_time = 0;
+	connect_time = -999;	// CL_CheckForResend() will fire immediately
 	CL_CheckForResend();
 }
 
@@ -267,14 +260,12 @@ void CL_ClearState (void)
 	Con_DPrintf ("Clearing memory\n");
 #ifdef QW_BOTH
 	if (sv.state == ss_dead) // connecting to a remote server
+#endif
 	{
-#endif
-	D_FlushCaches ();
-	Mod_ClearAll ();
-	Hunk_FreeToLowMark (host_hunklevel);
-#ifdef QW_BOTH
+		D_FlushCaches ();
+		Mod_ClearAll ();
+		Hunk_FreeToLowMark (host_hunklevel);
 	}
-#endif
 
 	CL_ClearTEnts ();
 
@@ -310,11 +301,12 @@ void CL_Disconnect (void)
 {
 	byte	final[10];
 
-	connect_time = -1;
+	connect_time = 0;
 	server_version = 0;
+	cl.teamfortress = false;
 
 #ifdef _WIN32
-	SetWindowText (mainwindow, "ZQuake: disconnected");
+	SetWindowText (mainwindow, "ZQuake");
 #endif
 
 // stop sounds (especially looping!)
@@ -354,8 +346,6 @@ void CL_Disconnect (void)
 	}
 
 	CL_StopUpload();
-
-	cl.teamfortress = false;
 }
 
 void CL_Disconnect_f (void)
@@ -417,7 +407,7 @@ void CL_Reconnect_f (void)
 	}
 
 	if (!*cls.servername) {
-		Con_Printf("No server to reconnect to...\n");
+		Con_Printf("No server to reconnect to.\n");
 		return;
 	}
 
@@ -585,7 +575,7 @@ void CL_ReadPackets (void)
 
 		if (net_message.cursize < 8)
 		{
-			Con_Printf ("%s: Runt packet\n",NET_AdrToString(net_from));
+			Con_DPrintf ("%s: Runt packet\n", NET_AdrToString(net_from));
 			continue;
 		}
 
@@ -595,7 +585,7 @@ void CL_ReadPackets (void)
 		if (!cls.demoplayback && 
 			!NET_CompareAdr (net_from, cls.netchan.remote_address))
 		{
-			Con_DPrintf ("%s:sequenced packet without connection\n"
+			Con_DPrintf ("%s: sequenced packet without connection\n"
 				,NET_AdrToString(net_from));
 			continue;
 		}
@@ -1102,7 +1092,6 @@ void Host_Init (quakeparms_t *parms)
 
 //	S_Init ();		// S_Init is now done as part of VID. Sigh.
 	
-	cls.state = ca_disconnected;
 	Sbar_Init ();
 	CL_Init ();
 #else
@@ -1115,7 +1104,6 @@ void Host_Init (quakeparms_t *parms)
 	S_Init();
 #endif
 
-	cls.state = ca_disconnected;
 	CDAudio_Init ();
 	Sbar_Init ();
 	CL_Init ();
