@@ -203,8 +203,8 @@ void Host_Init (int argc, char **argv, int default_memsize)
 
 #ifdef SERVERONLY
 
-	Cmd_StuffCmds_f ();		// process command line arguments
 	Cbuf_AddText ("exec server.cfg\n");
+	Cmd_StuffCmds_f ();		// process command line arguments
 	Cbuf_Execute ();
 
 // if a map wasn't specified on the command line, spawn start map
