@@ -95,10 +95,10 @@ int		numnails;
 
 extern	int	sv_nailmodel, sv_supernailmodel, sv_playermodel;
 
-#ifdef QW_BOTH
-cvar_t	sv_nailhack	= {"sv_nailhack", "1"};
-#else
+#ifdef SERVERONLY
 cvar_t	sv_nailhack	= {"sv_nailhack", "0"};
+#else
+cvar_t	sv_nailhack	= {"sv_nailhack", "1"};
 #endif
 
 qboolean SV_AddNailUpdate (edict_t *ent)

@@ -28,7 +28,7 @@ netadr_t	master_adr[MAX_MASTERS];	// address of group servers
 
 client_t	*sv_client;					// current client
 
-#ifdef QW_BOTH
+#ifndef SERVERONLY
 cvar_t	sv_mintic = {"sv_mintic","0"};		//
 #else										//
 cvar_t	sv_mintic = {"sv_mintic","0.03"};	// bound the size of the
@@ -39,7 +39,7 @@ cvar_t	timeout = {"timeout","65"};		// seconds without any message
 cvar_t	zombietime = {"zombietime", "2"};	// seconds to sink messages
 											// after disconnect
 
-#ifndef QW_BOTH
+#ifdef SERVERONLY
 cvar_t	rcon_password = {"rcon_password", ""};	// password for remote server commands
 cvar_t	password = {"password", ""};	// password for entering the game
 #else
@@ -1287,7 +1287,7 @@ void SV_Frame (double time)
 // get packets
 	SV_ReadPackets ();
 
-#ifndef QW_BOTH
+#ifdef SERVERONLY
 // check for commands typed to the host
 	SV_GetConsoleCommands ();
 	
@@ -1342,7 +1342,7 @@ void SV_InitLocal (void)
 	SV_InitOperatorCommands	();
 	SV_UserInit ();
 	
-#ifndef QW_BOTH
+#ifdef SERVERONLY
 	Cvar_Register (&rcon_password);
 	Cvar_Register (&password);
 #endif
