@@ -206,10 +206,10 @@ void EmitWaterPolys (msurface_t *fa)
 			os = v[3];
 			ot = v[4];
 
-			s = os + turbsin[(int)((ot*0.125+cl.time) * TURBSCALE) & 255];
+			s = os + turbsin[(int)((ot*0.125+r_refdef2.time) * TURBSCALE) & 255];
 			s *= (1.0/64);
 
-			t = ot + turbsin[(int)((os*0.125+cl.time) * TURBSCALE) & 255];
+			t = ot + turbsin[(int)((os*0.125+r_refdef2.time) * TURBSCALE) & 255];
 			t *= (1.0/64);
 
 			glTexCoord2f (s, t);
@@ -304,14 +304,14 @@ void EmitBothSkyLayers (msurface_t *fa)
 	}
 
 	GL_Bind (solidskytexture);
-	speedscale = cl.time*8;
+	speedscale = r_refdef2.time*8;
 	speedscale -= (int)speedscale & ~127;
 
 	EmitSkyPolys (fa);
 
 	glEnable (GL_BLEND);
 	GL_Bind (alphaskytexture);
-	speedscale = cl.time*16;
+	speedscale = r_refdef2.time*16;
 	speedscale -= (int)speedscale & ~127;
 
 	EmitSkyPolys (fa);
@@ -343,7 +343,7 @@ void R_DrawSkyChain (msurface_t *s)
 	}
 	
 	GL_Bind(solidskytexture);
-	speedscale = cl.time*8;
+	speedscale = r_refdef2.time*8;
 	speedscale -= (int)speedscale & ~127;
 	
 	for (fa=s ; fa ; fa=fa->texturechain)
@@ -351,7 +351,7 @@ void R_DrawSkyChain (msurface_t *s)
 	
 	glEnable (GL_BLEND);
 	GL_Bind (alphaskytexture);
-	speedscale = cl.time*16;
+	speedscale = r_refdef2.time*16;
 	speedscale -= (int)speedscale & ~127;
 	
 	for (fa=s ; fa ; fa=fa->texturechain)

@@ -60,6 +60,7 @@ vec3_t	r_origin;
 // screen size info
 //
 refdef_t	r_refdef;
+refdef2_t	r_refdef2;
 float		xcenter, ycenter;
 float		xscale, yscale;
 float		xscaleinv, yscaleinv;
@@ -568,7 +569,7 @@ void R_DrawEntitiesOnList (void)
 
 				for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
 				{
-					if (cl_dlights[lnum].die < cl.time ||
+					if (cl_dlights[lnum].die < r_refdef2.time ||
 						!cl_dlights[lnum].radius)
 						continue;
 
@@ -642,7 +643,7 @@ void R_DrawViewModel (void)
 	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
 	{
 		dl = &cl_dlights[lnum];
-		if (!dl->radius || dl->die < cl.time)
+		if (!dl->radius || dl->die < r_refdef2.time)
 			continue;
 
 		VectorSubtract (currententity->origin, dl->origin, dist);
@@ -824,7 +825,7 @@ void R_DrawBEntitiesOnList (void)
 		{
 			for (k=0 ; k<MAX_DLIGHTS ; k++)
 			{
-				if ((cl_dlights[k].die < cl.time) ||
+				if ((cl_dlights[k].die < r_refdef2.time) ||
 					(!cl_dlights[k].radius))
 				{
 					continue;

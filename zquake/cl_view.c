@@ -1167,6 +1167,10 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 	}
 
 	R_PushDlights ();
+
+	r_refdef2.time = cl.time;
+	r_refdef2.allowCheats = false;
+
 	R_RenderView ();
 }
 

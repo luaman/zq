@@ -344,7 +344,7 @@ texture_t *R_TextureAnimation (texture_t *base)
 	if (!base->anim_total)
 		return base;
 
-	relative = (int)(cl.time*10) % base->anim_total;
+	relative = (int)(r_refdef2.time*10) % base->anim_total;
 
 	count = 0;	
 	while (base->anim_min > relative || base->anim_max <= relative)
@@ -731,7 +731,7 @@ void R_GenTurbTile (pixel_t *pbasetex, void *pdest)
 	int		i, j, s, t;
 	byte	*pd;
 	
-	turb = sintable + ((int)(cl.time*SPEED)&(CYCLE-1));
+	turb = sintable + ((int)(r_refdef2.time*SPEED)&(CYCLE-1));
 	pd = (byte *)pdest;
 
 	for (i=0 ; i<TILE_SIZE ; i++)
@@ -757,7 +757,7 @@ void R_GenTurbTile16 (pixel_t *pbasetex, void *pdest)
 	int				i, j, s, t;
 	unsigned short	*pd;
 
-	turb = sintable + ((int)(cl.time*SPEED)&(CYCLE-1));
+	turb = sintable + ((int)(r_refdef2.time*SPEED)&(CYCLE-1));
 	pd = (unsigned short *)pdest;
 
 	for (i=0 ; i<TILE_SIZE ; i++)
