@@ -147,7 +147,7 @@ void SV_Fraglogfile_f (void)
 		{	// can't read it, so create this one
 			sv_fraglogfile = fopen (name, "w");
 			if (!sv_fraglogfile)
-				i=1000;	// give error
+				i=MAX_LOGFILES;	// give error
 			break;
 		}
 		fclose (sv_fraglogfile);
@@ -903,7 +903,7 @@ void SV_Snap_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("Usage:  snap <userid>\n");
+		Con_Printf ("Usage: snap <userid>\n");
 		return;
 	}
 
