@@ -37,7 +37,9 @@ int			r_numparticles;
 
 vec3_t			r_pright, r_pup, r_ppn;
 
+#ifdef GLQUAKE
 float	r_partscale = 0.04f;
+#endif
 
 /*
 ===============
