@@ -27,6 +27,8 @@ int			skytexturenum;
 #define	GL_RGBA4	0
 #endif
 
+float	wateralpha;		// 1 if watervis is disabled by server,
+						// otherwise equal to r_wateralpha.value
 
 int		lightmap_bytes;		// 1, 2, or 4
 
@@ -925,7 +927,7 @@ void R_DrawWaterSurfaces (void)
 	msurface_t	*s;
 	texture_t	*t;
 
-	if (r_wateralpha.value == 1.0)
+	if (wateralpha == 1.0)
 		return;
 
 	//
@@ -934,7 +936,7 @@ void R_DrawWaterSurfaces (void)
     glLoadMatrixf (r_world_matrix);
 
 	glEnable (GL_BLEND);
-	glColor4f (1,1,1,r_wateralpha.value);
+	glColor4f (1,1,1,wateralpha);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	for (i=0 ; i<cl.worldmodel->numtextures ; i++)
@@ -974,7 +976,7 @@ void R_DrawWaterSurfaces (void)
 	msurface_t	*s;
 	texture_t	*t;
 
-	if (r_wateralpha.value == 1.0 && gl_texsort.value)
+	if (wateralpha == 1.0 && gl_texsort.value)
 		return;
 
 	//
@@ -983,10 +985,10 @@ void R_DrawWaterSurfaces (void)
 
     glLoadMatrixf (r_world_matrix);
 
-	if (r_wateralpha.value < 1.0) {
+	if (wateralpha < 1.0) {
 		glEnable (GL_BLEND);
-		glColor4f (1,1,1,r_wateralpha.value);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glColor4f (1, 1, 1, wateralpha);
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	}
 
 	if (!gl_texsort.value) {
@@ -1024,7 +1026,7 @@ void R_DrawWaterSurfaces (void)
 
 	}
 
-	if (r_wateralpha.value < 1.0) {
+	if (wateralpha < 1.0) {
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 		glColor4f (1,1,1,1);
@@ -1074,7 +1076,7 @@ void DrawTextureChains (void)
 		}
 		else
 		{
-			if ((s->flags & SURF_DRAWTURB) && r_wateralpha.value != 1.0)
+			if ((s->flags & SURF_DRAWTURB) && wateralpha != 1.0)
 				continue;	// draw translucent water later
 			for ( ; s ; s=s->texturechain)
 				R_RenderBrushPoly (s);
@@ -1373,9 +1375,10 @@ void R_MarkLeaves (void)
 	byte	*vis;
 	mnode_t	*node;
 	int		i;
-	byte	solid[4096];
+	byte	solid[MAX_MAP_LEAFS/8];
 
-	if (r_oldviewleaf == r_viewleaf && !r_novis.value)
+	if (!r_novis.value && r_oldviewleaf == r_viewleaf
+		&& r_oldviewleaf2 == r_viewleaf2)	// watervis hack
 		return;
 	
 	if (mirror)
@@ -1390,7 +1393,24 @@ void R_MarkLeaves (void)
 		memset (solid, 0xff, (cl.worldmodel->numleafs+7)>>3);
 	}
 	else
+	{
 		vis = Mod_LeafPVS (r_viewleaf, cl.worldmodel);
+
+		if (r_viewleaf2) {
+			int			i, count;
+			unsigned	*src, *dest;
+
+			// merge visibility data for two leafs
+			count = (cl.worldmodel->numleafs+7)>>3;
+			memcpy (solid, vis, count);
+			src = (unsigned *) Mod_LeafPVS (r_viewleaf2, cl.worldmodel);
+			dest = (unsigned *) solid;
+			count = (count + 3)>>2;
+			for (i=0 ; i<count ; i++)
+				*dest++ |= *src++;
+			vis = solid;
+		}
+	}
 		
 	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
 	{

@@ -175,9 +175,13 @@ R_Init
 */
 void R_Init (void)
 {	
-	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);	
-	Cmd_AddCommand ("envmap", R_Envmap_f);	
+	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
+	Cmd_AddCommand ("envmap", R_Envmap_f);
 	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
+
+	Cvar_RegisterVariable (&r_watervishack);
+	if (gl_vendor && strstr(gl_vendor, "3Dfx"))
+		Cvar_SetValue (&r_watervishack, 0);
 
 	Cvar_RegisterVariable (&r_norefresh);
 	Cvar_RegisterVariable (&r_lightmap);

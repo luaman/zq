@@ -65,6 +65,7 @@ float	r_base_world_matrix[16];
 refdef_t	r_refdef;
 
 mleaf_t		*r_viewleaf, *r_oldviewleaf;
+mleaf_t		*r_viewleaf2, *r_oldviewleaf2;	// for watervis hack
 
 texture_t	*r_notexture_mip;
 
@@ -86,6 +87,7 @@ cvar_t	r_wateralpha = {"r_wateralpha","1"};
 cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
+cvar_t	r_watervishack = {"r_watervishack", "1"};
 
 cvar_t	gl_clear = {"gl_clear","0"};
 cvar_t	gl_cull = {"gl_cull","1"};
@@ -811,11 +813,15 @@ R_SetupFrame
 */
 void R_SetupFrame (void)
 {
+	extern float	wateralpha;
+
 // don't allow cheats in multiplayer
 	r_fullbright.value = 0;
 	r_lightmap.value = 0;
 	if (!atoi(Info_ValueForKey(cl.serverinfo, "watervis")))
-		r_wateralpha.value = 1;
+		wateralpha = 1;
+	else
+		wateralpha = r_wateralpha.value;
 
 	R_AnimateLight ();
 
@@ -829,6 +835,32 @@ void R_SetupFrame (void)
 // current viewleaf
 	r_oldviewleaf = r_viewleaf;
 	r_viewleaf = Mod_PointInLeaf (r_origin, cl.worldmodel);
+
+	if (r_watervishack.value) {
+		vec3_t	testorigin;
+		mleaf_t	*testleaf;
+
+		r_oldviewleaf2 = r_viewleaf2;
+		r_viewleaf2 = NULL;
+		VectorCopy (r_origin, testorigin);
+		if (r_viewleaf->contents <= CONTENTS_WATER  &&
+			r_viewleaf->contents >= CONTENTS_LAVA) {
+			// Test the point 10 units above. 10 seems to be enough
+			// for fov values up to 140
+			testorigin[2] += 10;
+			testleaf = Mod_PointInLeaf (testorigin, cl.worldmodel);
+			if (testleaf->contents == CONTENTS_EMPTY)
+				r_viewleaf2 = testleaf;
+		}
+		else if (r_viewleaf->contents == CONTENTS_EMPTY) {
+			testorigin[2] -= 10;
+			testleaf = Mod_PointInLeaf (testorigin, cl.worldmodel);
+			if (testleaf->contents <= CONTENTS_WATER &&
+				testleaf->contents >= CONTENTS_LAVA)
+				r_viewleaf2 = testleaf;
+		}
+	} else
+		r_viewleaf2 = r_oldviewleaf2 = NULL;
 
 	V_SetContentsColor (r_viewleaf->contents);
 	V_CalcBlend ();
