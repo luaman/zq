@@ -400,6 +400,8 @@ void Sys_Init_ (void)
 ==============================================================================
 */
 
+#define MAX_NUM_ARGVS	50
+
 int		argc;
 char	*argv[MAX_NUM_ARGVS];
 static char	*empty_string = "";
