@@ -540,6 +540,11 @@ void S_StopAllSounds_f (void)
 	S_StopAllSounds (true);
 }
 
+
+#ifdef _WIN32
+extern char *DSoundError (int error);
+#endif
+
 void S_ClearBuffer (void)
 {
 	int		clear;
@@ -563,7 +568,6 @@ void S_ClearBuffer (void)
 		DWORD	*pData;
 		int		reps;
 		HRESULT	hresult;
-		extern char *DSoundError (int error);
 
 		reps = 0;
 
@@ -818,9 +822,10 @@ void GetSoundtime (void)
 }
 
 
+extern void IN_Accumulate (void);
+
 void S_ExtraUpdate (void)
 {
-	extern void IN_Accumulate (void);
 
 #ifdef _WIN32
 	IN_Accumulate ();

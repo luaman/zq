@@ -266,8 +266,8 @@ char *Sys_ConsoleInput (void)
 	static char	text[256];
 	static int		len;
 	INPUT_RECORD	rec;
-	int		i, dummy;
-	int		ch, numread, numevents;
+	int		i, ch;
+	DWORD   dummy, numread, numevents;
 	HANDLE	hclipdata;
 	char	*clipText;
 
