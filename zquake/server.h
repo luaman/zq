@@ -467,6 +467,6 @@ void SV_LoadGame_f (void);
 //
 // sv_bot.c
 //
-edict_t *SV_SpawnBot (char *name, char *team, int topcolor, int bottomcolor);
+edict_t *SV_CreateBot (char *name);
 void SV_RemoveBot (client_t *cl);
 void SV_RunBots (void);

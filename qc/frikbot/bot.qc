@@ -1,5 +1,6 @@
-//TEST TEST TEST
-entity (string name, string team, float topcolor, float bottomcolor) testbot = #83;
+// !!! TEMPORARY functions for bot testing !!!
+entity (string name) testbot = #83;
+void (entity e, string key, string value) setinfo = #84;
 
 
 void DeveloperLightning (entity e1, entity e2, float flag)
@@ -435,7 +436,6 @@ related functions.
 void Cmd_AddBot (string botnum_s, string skill_s)
 {
 	entity bot;
-	entity temp;
 	float whatbot;
 
 /*	float skill;
@@ -447,21 +447,27 @@ void Cmd_AddBot (string botnum_s, string skill_s)
 
 	whatbot = stof(botnum_s);
 
-	temp = spawn();
-	if (whatbot)
-		temp.netname = BotName(temp, whatbot);
-	else
-		temp.netname = PickARandomName(temp);
-
-	bot = testbot(temp.netname, "", temp.b_shirt, temp.b_pants);
-
-	remove (temp);
+	bot = testbot("newbot");
 
 	if (!bot)
 	{
 		bprint (PRINT_HIGH, "Unable to connect a bot, server is full.\n");
 		return;
 	}
+
+	if (whatbot)
+		bot.netname = BotName(bot, whatbot);
+	else
+		bot.netname = PickARandomName(bot);
+
+	setinfo (bot, "name", bot.netname);
+
+	string tmp;
+	tmp = ftos(bot.b_shirt);
+	setinfo (bot, "topcolor", tmp);
+
+	tmp = ftos(bot.b_pants);
+	setinfo (bot, "bottomcolor", tmp);
 }
 
 void Cmd_RemoveBot ()
