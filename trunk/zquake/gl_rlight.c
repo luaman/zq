@@ -247,10 +247,10 @@ loc0:
 		// compare to minimum light
 		if ((s*s+t*t+dist*dist) < maxdist)
 		{
-			if (surf->dlightframe != r_framecount) // not dynamic until now
+			if (surf->dlightframe != r_dlightframecount) // not dynamic until now
 			{
 				surf->dlightbits = bit;
-				surf->dlightframe = r_framecount;
+				surf->dlightframe = r_dlightframecount;
 			}
 			else // already dynamic
 				surf->dlightbits |= bit;
