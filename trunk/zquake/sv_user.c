@@ -26,9 +26,6 @@ edict_t	*sv_player;
 
 usercmd_t	cmd;
 
-cvar_t	sv_rollspeed = {"sv_rollspeed", "200"};
-cvar_t	sv_rollangle = {"sv_rollangle", "2.0"};
-
 cvar_t	sv_spectalk = {"sv_spectalk", "1"};
 
 cvar_t	sv_mapcheck	= {"sv_mapcheck", "1"};
@@ -1322,41 +1319,6 @@ USER CMD EXECUTION
 ===========================================================================
 */
 
-/*
-===============
-SV_CalcRoll
-
-Used by view and sv_user
-===============
-*/
-float SV_CalcRoll (vec3_t angles, vec3_t velocity)
-{
-	vec3_t	forward, right, up;
-	float	sign;
-	float	side;
-	float	value;
-	
-	AngleVectors (angles, forward, right, up);
-	side = DotProduct (velocity, right);
-	sign = side < 0 ? -1 : 1;
-	side = fabs(side);
-	
-	value = sv_rollangle.value;
-
-	if (side < sv_rollspeed.value)
-		side = side * value / sv_rollspeed.value;
-	else
-		side = value;
-	
-	return side*sign;
-	
-}
-
-
-
-
-//============================================================================
-
 vec3_t	pmove_mins, pmove_maxs;
 
 /*
@@ -1537,8 +1499,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 			sv_player->v.angles[PITCH] = -sv_player->v.v_angle[PITCH]/3;
 			sv_player->v.angles[YAW] = sv_player->v.v_angle[YAW];
 		}
-		sv_player->v.angles[ROLL] = 
-			SV_CalcRoll (sv_player->v.angles, sv_player->v.velocity)*4;
+		sv_player->v.angles[ROLL] = 0;
 	}
 
 	sv_frametime = ucmd->msec * 0.001;
@@ -1827,8 +1788,6 @@ SV_UserInit
 */
 void SV_UserInit (void)
 {
-	Cvar_Register (&sv_rollspeed);
-	Cvar_Register (&sv_rollangle);
 	Cvar_Register (&sv_spectalk);
 	Cvar_Register (&sv_mapcheck);
 }
