@@ -1242,7 +1242,7 @@ void MVD_InitInterpolation (void)
 
         if (cl.mvd_fixangle & 1 << i)
         {
-            if (i == Cam_TrackNum()) {
+            if (i == cam_curtarget) {
                 VectorCopy(cl.viewangles, state->command.angles);
                 VectorCopy(cl.viewangles, state->viewangles);
             }
