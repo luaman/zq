@@ -751,7 +751,7 @@ void CL_EasyRecord_f (void)
 				TP_PlayerName(),
 				TP_PlayerTeam(),
 				TP_EnemyTeam(),
-				TP_MapName);
+				TP_MapName());
 		} else {
 			if (i == 2) {
 				// Duel
@@ -763,7 +763,7 @@ void CL_EasyRecord_f (void)
 			else if (i > 2) {
 				// FFA
 				sprintf (name, "%s_ffa_%s",
-					TP_PlayerName, 
+					TP_PlayerName(), 
 					TP_MapName());
 			}
 			else {
