@@ -388,8 +388,8 @@ void SV_Kick_f (void)
 	if (c < 2) {
 #ifdef QW_BOTH
 		// some mods use a "kick" alias for their own needs, sigh
-		if (cls.state >= ca_onserver && Cmd_FindAlias(Cmd_Argv(0))) {
-			Cmd_ExecuteString (Cmd_AliasString(Cmd_Argv(0)));
+		if (cls.state >= ca_onserver && Cmd_FindAlias("kick")) {
+			Cmd_ExecuteString (Cmd_AliasString("kick"));
 			return;
 		}
 #endif
@@ -444,6 +444,14 @@ void SV_Status_f (void)
 	float		cpu, avg, pak;
 	char		*s;
 
+#ifdef QW_BOTH
+	// some mods use a "status" alias for their own needs, sigh
+	if (!sv_redirected && !Q_strcasecmp(Cmd_Argv(0), "status")
+		&& cls.state >= ca_onserver && Cmd_FindAlias("status")) {
+		Cmd_ExecuteString (Cmd_AliasString("status"));
+		return;
+	}
+#endif
 
 	cpu = (svs.stats.latched_active+svs.stats.latched_idle);
 	if (cpu)
@@ -936,10 +944,9 @@ void SV_InitOperatorCommands (void)
 	Cmd_AddCommand ("snap", SV_Snap_f);
 	Cmd_AddCommand ("snapall", SV_SnapAll_f);
 	Cmd_AddCommand ("kick", SV_Kick_f);
+	Cmd_AddCommand ("status", SV_Status_f);
 #ifdef QW_BOTH
 	Cmd_AddCommand ("serverstatus", SV_Status_f);
-#else
-	Cmd_AddCommand ("status", SV_Status_f);
 #endif
 
 	Cmd_AddCommand ("map", SV_Map_f);
