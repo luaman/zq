@@ -797,3 +797,15 @@ void SCR_DrawConsole (void)
 }
 
 
+/*
+==================
+SCR_InvalidateScreen
+
+Force full redraw next time SCR_UpdateScreen is called
+==================
+*/
+void SCR_InvalidateScreen (void)
+{
+	scr_fullupdate = 0;
+}
+

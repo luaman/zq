@@ -2889,8 +2889,10 @@ LONG WINAPI MainWndProc (
 		case WM_PAINT:
 			hdc = BeginPaint(hWnd, &ps);
 
-			if (!in_mode_set && host_initialized)
-				SCR_UpdateWholeScreen ();
+			if (!in_mode_set && host_initialized) {
+				SCR_InvalidateScreen ();
+				SCR_UpdateScreen ();
+			}
 
 			EndPaint(hWnd, &ps);
 			break;
