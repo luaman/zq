@@ -240,15 +240,21 @@ void PM_StepSlideMove (qbool in_air)
 	if (in_air) {
 		// don't let us step up unless it's indeed a step we bumped in
 		// (that is, there's solid ground below)
-		VectorCopy (pmove.origin, dest);
+		float *org;
+
+		if (!(blocked & BLOCKED_STEP))
+			return;
+
+		org = (pmove.velocity < 0) ? pmove.origin : original;	// cryptic, eh?
+		VectorCopy (org, dest);
 		dest[2] -= STEPSIZE;
-		trace = PM_PlayerTrace (pmove.origin, dest);
+		trace = PM_PlayerTrace (org, dest);
 		if (trace.fraction == 1 || trace.plane.normal[2] < MIN_STEP_NORMAL)
 			return;
 
 		// adjust stepsize, otherwise it would be possible to walk up a
 		// a step higher than STEPSIZE
-		stepsize = STEPSIZE - (pmove.origin[2] - trace.endpos[2]);
+		stepsize = STEPSIZE - (org[2] - trace.endpos[2]);
 	}
 	else
 		stepsize = STEPSIZE;
