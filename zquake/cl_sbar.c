@@ -29,6 +29,7 @@ int			sb_updates;			// if >= vid.numpages, no update needed
 int			sb_lines;			// scan lines to draw
 qbool		sb_drawinventory;
 qbool		sb_drawmain;
+qbool		sb_oldmanssbar;		// cl_sbar 2: solid sbar, but viewrect is y-centered
 
 
 #define STAT_MINUS		10	// num frame for '-' stats digit
@@ -838,7 +839,7 @@ void Sbar_Draw (void)
 	qbool	inventory_area_drawn = false;
 
 	headsup = !cl_sbar.value;
-	if ((sb_updates >= vid.numpages) && !headsup)
+	if ((sb_updates >= vid.numpages) && !headsup && !sb_oldmanssbar)
 		return;
 
 	if (scr_con_current == vid.height)
