@@ -191,7 +191,7 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 	bits = 0;
 	
 	for (i = 0; i < 3; i++)
-		if (to->origin[i] != from->origin[i])
+		if (to->s_origin[i] != from->s_origin[i])
 			bits |= U_ORIGIN1<<i;
 
 	if ( to->angles[0] != from->angles[0] )
@@ -253,15 +253,15 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 	if (bits & U_EFFECTS)
 		MSG_WriteByte (msg, to->effects);
 	if (bits & U_ORIGIN1)
-		MSG_WriteCoord (msg, to->origin[0]);		
+		MSG_WriteShort (msg, to->s_origin[0]);
 	if (bits & U_ANGLE1)
 		MSG_WriteAngle(msg, to->angles[0]);
 	if (bits & U_ORIGIN2)
-		MSG_WriteCoord (msg, to->origin[1]);
+		MSG_WriteShort (msg, to->s_origin[1]);
 	if (bits & U_ANGLE2)
 		MSG_WriteAngle(msg, to->angles[1]);
 	if (bits & U_ORIGIN3)
-		MSG_WriteCoord (msg, to->origin[2]);
+		MSG_WriteShort (msg, to->s_origin[2]);
 	if (bits & U_ANGLE3)
 		MSG_WriteAngle(msg, to->angles[2]);
 }
@@ -565,3 +565,18 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qbool protocol_26)
 		move->msec = MSG_ReadByte ();		// always sent
 }
 
+//===========================================================================
+
+void MSG_PackOrigin (const vec3_t in, short out[3])
+{
+	out[0] = (short)(in[0] * 8);
+	out[1] = (short)(in[1] * 8);
+	out[2] = (short)(in[2] * 8);
+}
+
+void MSG_UnpackOrigin (const short in[3], vec3_t out)
+{
+	out[0] = in[0] * 0.125;
+	out[1] = in[1] * 0.125;
+	out[2] = in[2] * 0.125;
+}

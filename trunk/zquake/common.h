@@ -170,6 +170,9 @@ float MSG_ReadAngle (void);
 float MSG_ReadAngle16 (void);
 void MSG_ReadDeltaUsercmd (struct usercmd_s *from, struct usercmd_s *cmd, qbool protocol_26);
 
+void MSG_PackOrigin (const vec3_t in, short out[3]);
+void MSG_UnpackOrigin (const short in[3], vec3_t out);
+
 //============================================================================
 
 extern	char	com_token[1024];

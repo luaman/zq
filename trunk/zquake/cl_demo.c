@@ -571,8 +571,8 @@ static void CL_Record (void)
 			MSG_WriteByte (&buf, es->skinnum);
 			for (j=0 ; j<3 ; j++)
 			{
-				MSG_WriteCoord(&buf, es->origin[j]);
-				MSG_WriteAngle(&buf, es->angles[j]);
+				MSG_WriteShort (&buf, es->s_origin[j]);
+				MSG_WriteAngle (&buf, es->angles[j]);
 			}
 
 			if (buf.cursize > MAX_MSGLEN/2) {

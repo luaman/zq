@@ -87,19 +87,19 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 		to->effects = MSG_ReadByte();
 
 	if (bits & U_ORIGIN1)
-		to->origin[0] = MSG_ReadCoord ();
+		to->s_origin[0] = MSG_ReadShort ();
 		
 	if (bits & U_ANGLE1)
 		to->angles[0] = MSG_ReadAngle();
 
 	if (bits & U_ORIGIN2)
-		to->origin[1] = MSG_ReadCoord ();
+		to->s_origin[1] = MSG_ReadShort ();
 		
 	if (bits & U_ANGLE2)
 		to->angles[1] = MSG_ReadAngle();
 
 	if (bits & U_ORIGIN3)
-		to->origin[2] = MSG_ReadCoord ();
+		to->s_origin[2] = MSG_ReadShort ();
 		
 	if (bits & U_ANGLE3)
 		to->angles[2] = MSG_ReadAngle();
@@ -178,7 +178,7 @@ static void UpdateEntities (void)
 		} else {
 			// not in previous message
 			cent->previous = *ent;
-			VectorCopy (ent->origin, cent->lerp_origin);
+			MSG_UnpackOrigin (ent->s_origin, cent->lerp_origin);
 		}
 
 		cent->current = *ent;
@@ -390,6 +390,7 @@ void CL_LinkPacketEntities (void)
 	float				f;
 	struct model_s		*model;
 	int					modelflags;
+	vec3_t				cur_origin;
 	vec3_t				old_origin;
 	float				autorotate, flicker;
 	int					i;
@@ -412,28 +413,30 @@ void CL_LinkPacketEntities (void)
 		assert(cent->lastframe == cl_entframecount);
 		assert(!memcmp(state, &cent->current, sizeof(*state)));
 
+		MSG_UnpackOrigin (state->s_origin, cur_origin);
+
 		// control powerup glow for bots
 		if (state->modelindex != cl_playerindex || r_powerupglow.value)
 		{
 			flicker = r_lightflicker.value ? (rand() & 31) : 10;
 			// spawn light flashes, even ones coming from invisible objects
 			if ((state->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
-				CL_NewDlight (state->number, state->origin, 200 + flicker, 0.1, lt_redblue);
+				CL_NewDlight (state->number, cur_origin, 200 + flicker, 0.1, lt_redblue);
 			else if (state->effects & EF_BLUE)
-				CL_NewDlight (state->number, state->origin, 200 + flicker, 0.1, lt_blue);
+				CL_NewDlight (state->number, cur_origin, 200 + flicker, 0.1, lt_blue);
 			else if (state->effects & EF_RED)
-				CL_NewDlight (state->number, state->origin, 200 + flicker, 0.1, lt_red);
+				CL_NewDlight (state->number, cur_origin, 200 + flicker, 0.1, lt_red);
 			else if (state->effects & EF_BRIGHTLIGHT) {
 				vec3_t	tmp;
-				VectorCopy (state->origin, tmp);
+				VectorCopy (cur_origin, tmp);
 				tmp[2] += 16;
 				CL_NewDlight (state->number, tmp, 400 + flicker, 0.1, lt_default);
 			} else if (state->effects & EF_DIMLIGHT)
-				CL_NewDlight (state->number, state->origin, 200 + flicker, 0.1, lt_default);
+				CL_NewDlight (state->number, cur_origin, 200 + flicker, 0.1, lt_default);
 		}
 
 		if (state->effects & EF_BRIGHTFIELD)
-			CL_EntityParticles (state->origin);
+			CL_EntityParticles (cur_origin);
 
 		// if set to invisible, skip
 		if (!state->modelindex)
@@ -502,8 +505,8 @@ void CL_LinkPacketEntities (void)
 
 		// calculate origin
 		for (i=0 ; i<3 ; i++)
-			ent.origin[i] = cent->previous.origin[i] + 
-				f * (cent->current.origin[i] - cent->previous.origin[i]);
+			ent.origin[i] = cent->previous.s_origin[i] * 8.0 + 
+				f * (cur_origin[i] - cent->previous.s_origin[i] * 8.0);
 
 		// add automatic particle trails
 		if (modelflags & ~MF_ROTATE)
@@ -932,7 +935,7 @@ void CL_LinkPlayers (void)
 
 		cent = &cl_entities[j+1];
 		cent->previous = cent->current;
-		VectorCopy (state->origin, cent->current.origin);
+		MSG_PackOrigin (state->origin, cent->current.s_origin);
 
 		// the player object never gets added
 		if (j == cl.playernum)
@@ -1043,7 +1046,7 @@ void CL_SetSolidEntities (void)
 			if (pmove.numphysent == MAX_PHYSENTS)
 				break;
 			pmove.physents[pmove.numphysent].model = cl.clipmodels[state->modelindex];
-			VectorCopy (state->origin, pmove.physents[pmove.numphysent].origin);
+			MSG_UnpackOrigin (state->s_origin, pmove.physents[pmove.numphysent].origin);
 			pmove.numphysent++;
 		}
 	}

@@ -294,7 +294,7 @@ typedef struct entity_state_s
 	int		number;			// edict index
 
 	int		flags;			// nolerp, etc
-	vec3_t	origin;
+	short	s_origin[3];
 	vec3_t	angles;
 	int		modelindex;
 	int		frame;

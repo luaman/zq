@@ -134,6 +134,7 @@ void NQD_BumpEntityCount (int num)
 void NQD_ParseClientdata (int bits)
 {
 	int		i, j;
+	extern player_state_t view_message;
 
 	if (bits & SU_VIEWHEIGHT)
 		cl.viewheight = MSG_ReadChar ();
@@ -174,9 +175,9 @@ void NQD_ParseClientdata (int bits)
 //	cl.inwater = (bits & SU_INWATER) != 0;
 
 	if (bits & SU_WEAPONFRAME)
-/*@@@	cl.stats[STAT_WEAPONFRAME] =*/ MSG_ReadByte ();
-/*	else
-		cl.stats[STAT_WEAPONFRAME] = 0;*/
+		view_message.weaponframe = MSG_ReadByte ();
+	else
+		view_message.weaponframe = 0;
 
 	if (bits & SU_ARMOR)
 		i = MSG_ReadByte ();
@@ -612,27 +613,27 @@ void NQD_ParseUpdate (int bits)
 		state->effects = 0;
 
 	if (bits & NQ_U_ORIGIN1)
-		state->origin[0] = MSG_ReadCoord ();
+		state->s_origin[0] = MSG_ReadShort ();
 	else
-		state->origin[0] = ent->baseline.origin[0];
+		state->s_origin[0] = ent->baseline.s_origin[0];
 	if (bits & NQ_U_ANGLE1)
 		state->angles[0] = MSG_ReadAngle();
 	else
 		state->angles[0] = ent->baseline.angles[0];
 
 	if (bits & NQ_U_ORIGIN2)
-		state->origin[1] = MSG_ReadCoord ();
+		state->s_origin[1] = MSG_ReadShort ();
 	else
-		state->origin[1] = ent->baseline.origin[1];
+		state->s_origin[1] = ent->baseline.s_origin[1];
 	if (bits & NQ_U_ANGLE2)
 		state->angles[1] = MSG_ReadAngle();
 	else
 		state->angles[1] = ent->baseline.angles[1];
 
 	if (bits & NQ_U_ORIGIN3)
-		state->origin[2] = MSG_ReadCoord ();
+		state->s_origin[2] = MSG_ReadShort ();
 	else
-		state->origin[2] = ent->baseline.origin[2];
+		state->s_origin[2] = ent->baseline.s_origin[2];
 	if (bits & NQ_U_ANGLE3)
 		state->angles[2] = MSG_ReadAngle();
 	else
@@ -643,8 +644,8 @@ void NQD_ParseUpdate (int bits)
 
 	if ( forcelink )
 	{	// didn't have an update last message
-		VectorCopy (state->origin, ent->previous.origin);
-		VectorCopy (state->origin, ent->lerp_origin);
+		VectorCopy (state->s_origin, ent->previous.s_origin);
+		MSG_UnpackOrigin (state->s_origin, ent->lerp_origin);
 		VectorCopy (state->angles, ent->previous.angles);
 		//ent->forcelink = true;
 	}
@@ -738,6 +739,7 @@ void NQD_LinkEntities (void)
 	float				f;
 	struct model_s		*model;
 	int					modelflags;
+	vec3_t				cur_origin;
 	vec3_t				old_origin;
 	float				autorotate;
 	int					i;
@@ -759,8 +761,10 @@ void NQD_LinkEntities (void)
 		if (cent->lastframe != cl_entframecount)
 			continue;		// not present in this frame
 
+		MSG_UnpackOrigin (state->s_origin, cur_origin);
+
 		if (state->effects & EF_BRIGHTFIELD)
-			CL_EntityParticles (state->origin);
+			CL_EntityParticles (cur_origin);
 
 		// spawn light flashes, even ones coming from invisible objects
 		if (state->effects & EF_MUZZLEFLASH) {
@@ -769,7 +773,7 @@ void NQD_LinkEntities (void)
 
 			dl = CL_AllocDlight (-num);
 			AngleVectors (state->angles, forward, NULL, NULL);
-			VectorMA (state->origin, 18, forward, dl->origin);
+			VectorMA (cur_origin, 18, forward, dl->origin);
 			dl->origin[2] += 16;
 			dl->radius = 200 + (rand()&31);
 			dl->minlight = 32;
@@ -779,13 +783,13 @@ void NQD_LinkEntities (void)
 		if (state->effects & EF_BRIGHTLIGHT) {
 			if (state->modelindex != cl_playerindex || r_powerupglow.value) {
 				vec3_t	tmp;
-				VectorCopy (state->origin, tmp);
+				VectorCopy (cur_origin, tmp);
 				tmp[2] += 16;
 				CL_NewDlight (state->number, tmp, 400 + (rand()&31), 0.1, lt_default);
 			}
 		}
 		if (state->effects & EF_DIMLIGHT)
-			CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_default);
+			CL_NewDlight (state->number, cur_origin, 200 + (rand()&31), 0.1, lt_default);
 
 		// if set to invisible, skip
 		if (!state->modelindex)
@@ -829,15 +833,15 @@ void NQD_LinkEntities (void)
 		// calculate origin
 		for (i=0 ; i<3 ; i++)
 		{
-			if (cent->current.origin[i] - cent->previous.origin[i] > 128) {
+			if (cent->current.s_origin[i] - cent->previous.s_origin[i] > 128 * 8) {
 				// teleport or something, don't lerp
-				VectorCopy (cent->current.origin, ent.origin);
+				VectorCopy (cur_origin, ent.origin);
 				if (num == nq_viewentity)
 					nq_player_teleported = true;
 				break;
 			}
-			ent.origin[i] = cent->previous.origin[i] + 
-				f * (cent->current.origin[i] - cent->previous.origin[i]);
+			ent.origin[i] = cent->previous.s_origin[i] * 8.0 + 
+				f * (cur_origin[i] - cent->previous.s_origin[i] * 8.0);
 		}
 
 		if (num == nq_viewentity) {
