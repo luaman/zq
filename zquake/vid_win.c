@@ -2646,7 +2646,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 		if (!Minimized)
 			VID_SetPalette (vid_curpal);
 
-		scr_fullupdate = 0;
+		SCR_InvalidateScreen ();
 
 		ReleaseDC(NULL,hdc);
 	}
@@ -2973,7 +2973,7 @@ LONG WINAPI MainWndProc (
 
 			ReleaseDC(NULL,hdc);
 
-			scr_fullupdate = 0;
+			SCR_InvalidateScreen ();
 
 			if (vid_initialized && !in_mode_set && windc && MGL_activatePalette(windc,false) && !Minimized)
 			{

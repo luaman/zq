@@ -726,7 +726,7 @@ void GL_EndRendering (void)
 		}
 	}
 	if (fullsbardraw)
-		scr_fullupdate = 0;
+		SCR_InvalidateScreen ();
 }
 
 void VID_SetPalette (unsigned char *palette)
@@ -970,7 +970,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				// Fix for alt-tab bug in NVidia drivers
 				MoveWindow (mainwindow, 0, 0, gdevmode.dmPelsWidth, gdevmode.dmPelsHeight, false);
 
-				scr_fullupdate = 0;
+				SCR_InvalidateScreen ();
 			}
 		}
 		else if (modestate == MS_WINDOWED && Minimized)

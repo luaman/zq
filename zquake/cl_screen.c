@@ -118,7 +118,7 @@ mpic_t		*scr_ram;
 mpic_t		*scr_net;
 mpic_t		*scr_turtle;
 
-int			scr_fullupdate;
+static int	scr_fullupdate;		// set to 0 to force full redraw
 
 int			clearconsole;
 int			clearnotify;

@@ -2623,8 +2623,7 @@ void M_Draw (void)
 	if (m_state == m_none || key_dest != key_menu)
 		return;
 
-	scr_copyeverything = 1;
-	scr_fullupdate = 0;
+	SCR_InvalidateScreen ();
 
 	if (scr_con_current != vid.height)
 		R_FadeScreen ();
