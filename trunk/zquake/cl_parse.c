@@ -636,14 +636,14 @@ void CL_ParseServerData (void)
 	// get the movevars
 	movevars.gravity			= MSG_ReadFloat();
 	movevars.stopspeed          = MSG_ReadFloat();
-	movevars.maxspeed           = MSG_ReadFloat();
+	cl.maxspeed                 = MSG_ReadFloat();
 	movevars.spectatormaxspeed  = MSG_ReadFloat();
 	movevars.accelerate         = MSG_ReadFloat();
 	movevars.airaccelerate      = MSG_ReadFloat();
 	movevars.wateraccelerate    = MSG_ReadFloat();
 	movevars.friction           = MSG_ReadFloat();
 	movevars.waterfriction      = MSG_ReadFloat();
-	movevars.entgravity         = MSG_ReadFloat();
+	cl.entgravity               = MSG_ReadFloat();
 
 	// separate the printfs so the server message can have a color
 	Com_Printf ("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
@@ -1693,11 +1693,11 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_maxspeed :
-			movevars.maxspeed = MSG_ReadFloat();
+			cl.maxspeed = MSG_ReadFloat();
 			break;
 
 		case svc_entgravity :
-			movevars.entgravity = MSG_ReadFloat();
+			cl.entgravity = MSG_ReadFloat();
 			break;
 
 		case svc_setpause:
