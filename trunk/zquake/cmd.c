@@ -259,7 +259,7 @@ void Cbuf_AddEarlyCommands (void)
 
 	for (i=0 ; i<COM_Argc()-2 ; i++)
 	{
-		if (Q_strcasecmp(COM_Argv(i), "+set"))
+		if (Q_stricmp(COM_Argv(i), "+set"))
 			continue;
 		Cbuf_AddText (va("set %s %s\n", COM_Argv(i+1), COM_Argv(i+2)));
 		i+=2;
@@ -420,7 +420,7 @@ cmd_alias_t *Cmd_FindAlias (char *name)
 	key = HashKey (name);
 	for (alias = cmd_alias_hash[key] ; alias ; alias = alias->hash_next)
 	{
-		if (!Q_strcasecmp(name, alias->name))
+		if (!Q_stricmp(name, alias->name))
 			return alias;
 	}
 	return NULL;
@@ -434,7 +434,7 @@ char *Cmd_AliasString (char *name)
 	key = HashKey (name);
 	for (alias = cmd_alias_hash[key] ; alias ; alias = alias->hash_next)
 	{
-		if (!Q_strcasecmp(name, alias->name))
+		if (!Q_stricmp(name, alias->name))
 			return alias->value;
 	}
 	return NULL;
@@ -524,7 +524,7 @@ void Cmd_Alias_f (void)
 	// if the alias already exists, reuse it
 	for (a = cmd_alias_hash[key] ; a ; a=a->hash_next)
 	{
-		if (!Q_strcasecmp(a->name, s))
+		if (!Q_stricmp(a->name, s))
 		{
 			Z_Free (a->value);
 			break;
@@ -541,7 +541,7 @@ void Cmd_Alias_f (void)
 	}
 	strcpy (a->name, s);
 
-	if (!Q_strcasecmp(Cmd_Argv(0), "aliasa"))
+	if (!Q_stricmp(Cmd_Argv(0), "aliasa"))
 		a->flags |= ALIAS_ARCHIVE;
 
 // copy the rest of the command line
@@ -567,7 +567,7 @@ qboolean Cmd_DeleteAlias (char *name)
 	prev = NULL;
 	for (a = cmd_alias_hash[key] ; a ; a = a->hash_next)
 	{
-		if (!Q_strcasecmp(a->name, name))
+		if (!Q_stricmp(a->name, name))
 		{
 			// unlink from hash
 			if (prev)
@@ -585,7 +585,7 @@ qboolean Cmd_DeleteAlias (char *name)
 	prev = NULL;
 	for (a = cmd_alias ; a ; a = a->next)
 	{
-		if (!Q_strcasecmp(a->name, name))
+		if (!Q_stricmp(a->name, name))
 		{
 			// unlink from alias list
 			if (prev)
@@ -791,7 +791,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 // fail if the command already exists
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
-		if (!Q_strcasecmp (cmd_name, cmd->name))
+		if (!Q_stricmp (cmd_name, cmd->name))
 		{
 			Com_Printf ("Cmd_AddCommand: %s already defined\n", cmd_name);
 			return;
@@ -821,7 +821,7 @@ qboolean Cmd_Exists (char *cmd_name)
 	key = HashKey (cmd_name);
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
-		if (!Q_strcasecmp (cmd_name, cmd->name))
+		if (!Q_stricmp (cmd_name, cmd->name))
 			return true;
 	}
 
@@ -842,7 +842,7 @@ cmd_function_t *Cmd_FindCommand (char *cmd_name)
 	key = HashKey (cmd_name);
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
-		if (!Q_strcasecmp (cmd_name, cmd->name))
+		if (!Q_stricmp (cmd_name, cmd->name))
 			return cmd;
 	}
 
@@ -868,18 +868,18 @@ char *Cmd_CompleteCommand (char *partial)
 
 // check for exact match
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-		if (!Q_strcasecmp (partial, cmd->name))
+		if (!Q_stricmp (partial, cmd->name))
 			return cmd->name;
 	for (alias=cmd_alias ; alias ; alias=alias->next)
-		if (!Q_strcasecmp (partial, alias->name))
+		if (!Q_stricmp (partial, alias->name))
 			return alias->name;
 
 // check for partial match
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-		if (!Q_strncasecmp (partial, cmd->name, len))
+		if (!Q_strnicmp (partial, cmd->name, len))
 			return cmd->name;
 	for (alias=cmd_alias ; alias ; alias=alias->next)
-		if (!Q_strncasecmp (partial, alias->name, len))
+		if (!Q_strnicmp (partial, alias->name, len))
 			return alias->name;
 
 	return NULL;
@@ -895,7 +895,7 @@ int Cmd_CompleteCountPossible (char *partial)
 		return 0;
 
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-		if (!Q_strncasecmp (partial, cmd->name, len))
+		if (!Q_strnicmp (partial, cmd->name, len))
 			c++;
 
 	return c;
@@ -911,7 +911,7 @@ int Cmd_AliasCompleteCountPossible (char *partial)
 		return 0;
 
 	for (alias=cmd_alias ; alias ; alias=alias->next)
-		if (!Q_strncasecmp (partial, alias->name, len))
+		if (!Q_strnicmp (partial, alias->name, len))
 			c++;
 
 	return c;
@@ -1079,7 +1079,7 @@ void Cmd_ExecuteString (char *text)
 // check functions
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
-		if (!Q_strcasecmp (cmd_argv[0], cmd->name))
+		if (!Q_stricmp (cmd_argv[0], cmd->name))
 		{
 			if (cmd->function)
 				cmd->function ();
@@ -1103,7 +1103,7 @@ if ( ! (!strcmp(Cmd_Argv(0), "skill") && Cmd_Argc() == 1 && Cmd_FindAlias("skill
 // check alias
 	for (a=cmd_alias_hash[key] ; a ; a=a->hash_next)
 	{
-		if (!Q_strcasecmp (cmd_argv[0], a->name))
+		if (!Q_stricmp (cmd_argv[0], a->name))
 		{
 #ifndef SERVERONLY
 			if (cbuf_current == &cbuf_svc) {
@@ -1195,9 +1195,9 @@ void Cmd_If_f (void)
 	if (result)
 	{
 		for (i=4; i < c ; i++) {
-			if ((i == 4) && !Q_strcasecmp(Cmd_Argv(i), "then"))
+			if ((i == 4) && !Q_stricmp(Cmd_Argv(i), "then"))
 				continue;
-			if (!Q_strcasecmp(Cmd_Argv(i), "else"))
+			if (!Q_stricmp(Cmd_Argv(i), "else"))
 				break;
 			if (buf[0])
 				strcat (buf, " ");
@@ -1207,7 +1207,7 @@ void Cmd_If_f (void)
 	else
 	{
 		for (i=4; i < c ; i++) {
-			if (!Q_strcasecmp(Cmd_Argv(i), "else"))
+			if (!Q_stricmp(Cmd_Argv(i), "else"))
 				break;
 		}
 
@@ -1242,7 +1242,7 @@ int Cmd_CheckParm (char *parm)
 		Sys_Error ("Cmd_CheckParm: NULL");
 
 	for (i = 1; i < Cmd_Argc (); i++)
-		if (! Q_strcasecmp (parm, Cmd_Argv (i)))
+		if (! Q_stricmp (parm, Cmd_Argv (i)))
 			return i;
 			
 	return 0;

@@ -186,7 +186,7 @@ void SV_Map_f (void)
 		Com_Printf ("map <levelname> : continue game on a new level\n");
 		return;
 	}
-	devmap = !Q_strcasecmp (Cmd_Argv(0), "devmap");
+	devmap = !Q_stricmp (Cmd_Argv(0), "devmap");
 	strcpy (level, Cmd_Argv(1));
 
 	// check to make sure the level exists
@@ -293,7 +293,7 @@ void SV_Status_f (void)
 
 #ifndef SERVERONLY
 	// some mods use a "status" alias for their own needs, sigh
-	if (!sv_redirected && !Q_strcasecmp(Cmd_Argv(0), "status")
+	if (!sv_redirected && !Q_stricmp(Cmd_Argv(0), "status")
 		&& CL_ClientState() && Cmd_FindAlias("status")) {
 		Cmd_ExecuteString (Cmd_AliasString("status"));
 		return;

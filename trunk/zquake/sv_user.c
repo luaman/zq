@@ -695,13 +695,13 @@ void SV_BeginDownload_f (void)
 		// leading slash bad as well, must be in subdir
 		|| *name == '/'
 		// next up, skin check
-		|| (!Q_strncasecmp(name, "skins/", 6) && !allow_download_skins.value)
+		|| (!Q_strnicmp(name, "skins/", 6) && !allow_download_skins.value)
 		// now models
-		|| (!Q_strncasecmp(name, "progs/", 6) && !allow_download_models.value)
+		|| (!Q_strnicmp(name, "progs/", 6) && !allow_download_models.value)
 		// now sounds
-		|| (!Q_strncasecmp(name, "sound/", 6) && !allow_download_sounds.value)
+		|| (!Q_strnicmp(name, "sound/", 6) && !allow_download_sounds.value)
 		// now maps (note special case for maps, must not be in pak)
-		|| (!Q_strncasecmp(name, "maps/", 5) && !allow_download_maps.value)
+		|| (!Q_strnicmp(name, "maps/", 5) && !allow_download_maps.value)
 		// MUST be in a subdirectory	
 		|| !strstr (name, "/") )	
 	{	// don't allow anything with .. path

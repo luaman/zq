@@ -71,7 +71,7 @@ void CL_ForwardToServer_f (void)
 		return;
 	}
 
-	if (Q_strcasecmp(Cmd_Argv(1), "snap") == 0) {
+	if (Q_stricmp(Cmd_Argv(1), "snap") == 0) {
 		SCR_RSShot_f ();
 		return;
 	}
@@ -447,7 +447,7 @@ void CL_FullInfo_f (void)
 		if (*s)
 			s++;
 
-		if (!Q_strcasecmp(key, pmodel_name) || !Q_strcasecmp(key, emodel_name))
+		if (!Q_stricmp(key, pmodel_name) || !Q_stricmp(key, emodel_name))
 			continue;
 
 		Info_SetValueForKey (cls.userinfo, key, value, MAX_INFO_STRING);
@@ -473,7 +473,7 @@ void CL_SetInfo_f (void)
 		Com_Printf ("usage: setinfo [ <key> <value> ]\n");
 		return;
 	}
-	if (!Q_strcasecmp(Cmd_Argv(1), pmodel_name) || !strcmp(Cmd_Argv(1), emodel_name))
+	if (!Q_stricmp(Cmd_Argv(1), pmodel_name) || !strcmp(Cmd_Argv(1), emodel_name))
 		return;
 
 	Info_SetValueForKey (cls.userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
@@ -860,8 +860,8 @@ qboolean CL_LegacyCommand (void)
 
 	// Cheat commands. They are not added to normal command list
 	// so they are invisible to user and an alias can override them
-	if (!Q_strcasecmp(name, "god") || !Q_strcasecmp(name, "give") ||
-		!Q_strcasecmp(name, "noclip"))
+	if (!Q_stricmp(name, "god") || !Q_stricmp(name, "give") ||
+		!Q_stricmp(name, "noclip"))
 	{
 		Cmd_ForwardToServer ();
 		return true;
@@ -869,11 +869,11 @@ qboolean CL_LegacyCommand (void)
 
 	// this is to suppress the warning message when a mod stuffs
 	// "play <sound.wav>" to the console but sound is not initialized
-	if (!Q_strcasecmp(name, "play"))
+	if (!Q_stricmp(name, "play"))
 		return true;
 
 	for (lvar=legacyvars ; lvar->var ; lvar++) {
-		if (!Q_strcasecmp(lvar->oldname, name))
+		if (!Q_stricmp(lvar->oldname, name))
 			break;
 	}
 	if (!lvar->var)

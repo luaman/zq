@@ -572,23 +572,23 @@ char *Macro_TF_Skin (void)
 	if (!cl.teamfortress)
 		strcpy(macro_buf, myskin);
 	else {
-		if (!Q_strcasecmp(myskin, "tf_demo"))
+		if (!Q_stricmp(myskin, "tf_demo"))
 			strcpy(macro_buf, "demoman");
-		else if (!Q_strcasecmp(myskin, "tf_eng"))
+		else if (!Q_stricmp(myskin, "tf_eng"))
 			strcpy (macro_buf, "engineer");
-		else if (!Q_strcasecmp(myskin, "tf_hwguy"))
+		else if (!Q_stricmp(myskin, "tf_hwguy"))
 			strcpy(macro_buf, "hwguy");
-		else if (!Q_strcasecmp(myskin, "tf_medic"))
+		else if (!Q_stricmp(myskin, "tf_medic"))
 			strcpy(macro_buf, "medic");
-		else if (!Q_strcasecmp(myskin, "tf_pyro"))
+		else if (!Q_stricmp(myskin, "tf_pyro"))
 			strcpy(macro_buf, "pyro");
-		else if (!Q_strcasecmp(myskin, "tf_scout"))
+		else if (!Q_stricmp(myskin, "tf_scout"))
 			strcpy(macro_buf, "scout");
-		else if (!Q_strcasecmp(myskin, "tf_snipe"))
+		else if (!Q_stricmp(myskin, "tf_snipe"))
 			strcpy(macro_buf, "sniper");
-		else if (!Q_strcasecmp(myskin, "tf_sold"))
+		else if (!Q_stricmp(myskin, "tf_sold"))
 			strcpy(macro_buf, "soldier");
-		else if (!Q_strcasecmp(myskin, "tf_spy"))
+		else if (!Q_stricmp(myskin, "tf_spy"))
 			strcpy(macro_buf, "spy");
 		else
 			strcpy(macro_buf, myskin);
@@ -650,7 +650,7 @@ char *TP_MacroString (char *s)
 
 	macro = macro_commands;
 	while (macro->name) {
-		if (!Q_strncasecmp(s, macro->name, strlen(macro->name)))
+		if (!Q_strnicmp(s, macro->name, strlen(macro->name)))
 		{
 			macro_length = strlen(macro->name);
 			return macro->func();
@@ -1151,7 +1151,7 @@ void TP_MsgTrigger_f (void)
 		}
 
 		strcpy (trig->string, Cmd_Argv(2));
-		if (c == 5 && !Q_strcasecmp (Cmd_Argv(3), "-l")) {
+		if (c == 5 && !Q_stricmp (Cmd_Argv(3), "-l")) {
 			if (!strcmp(Cmd_Argv(4), "t"))
 				trig->level = 4;
 			else {
@@ -1206,7 +1206,7 @@ void TP_ExecuteTriggerString (char *text)
 	arg0 = Cmd_Argv(0);
 
 	for (i=0; i < NUM_TRIGGER_COMMANDS ; i++)
-		if (!Q_strcasecmp(arg0, trigger_commands[i]))
+		if (!Q_stricmp(arg0, trigger_commands[i]))
 		{
 			cmd = Cmd_FindCommand (arg0);
 			if (cmd) {
@@ -1671,24 +1671,24 @@ static void FlagCommand (int *flags, int defaultflags)
 
 		flag = 0;
 		for (j=0 ; j<NUM_ITEMFLAGS ; j++) {
-			if (!Q_strncasecmp (p, pknames[j], 3)) {
+			if (!Q_strnicmp (p, pknames[j], 3)) {
 				flag = 1<<j;
 				break;
 			}
 		}
 
 		if (!flag) {
-			if (!Q_strcasecmp (p, "armor"))
+			if (!Q_stricmp (p, "armor"))
 				flag = it_ra|it_ya|it_ga;
-			else if (!Q_strcasecmp (p, "weapons"))
+			else if (!Q_stricmp (p, "weapons"))
 				flag = it_lg|it_rl|it_gl|it_sng|it_ng|it_ssg;
-			else if (!Q_strcasecmp (p, "powerups"))
+			else if (!Q_stricmp (p, "powerups"))
 				flag = it_quad|it_pent|it_ring;
-			else if (!Q_strcasecmp (p, "ammo"))
+			else if (!Q_stricmp (p, "ammo"))
 				flag = it_cells|it_rockets|it_nails|it_shells;
-			else if (!Q_strcasecmp (p, "default"))
+			else if (!Q_stricmp (p, "default"))
 				flag = defaultflags;
-			else if (!Q_strcasecmp (p, "all"))
+			else if (!Q_stricmp (p, "all"))
 				flag = (1<<NUM_ITEMFLAGS)-1;
 		}
 
