@@ -32,7 +32,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ===============================================================================
 */
 
-static char *PF_VarString (int	first)
+/*
+=================
+PF_Fixme
+
+Progs attempted to call a non-existent builtin function
+=================
+*/
+static void PF_Fixme (void)
+{
+	PR_RunError ("unimplemented builtin");
+}
+
+
+// strcat all builtin parms starting with 'first' into a temp buffer
+static char *PF_VarString (int first)
 {
 	int		i;
 	static char out[256];
@@ -1776,6 +1790,7 @@ static void PF_checkextension (void)
 	static char *supported_extensions[] = {
 		"DP_QC_SINCOSSQRTPOW",
 		"DP_QC_MINMAXBOUND",
+		"ZQ_QC_CHECKBUILTIN",
 		NULL
 	};
 	char **pstr, *extension;
@@ -1847,12 +1862,45 @@ static void PF_precache_vwep_model (void)
 // <-- Tonik's experiments
 
 
-static void PF_Fixme (void)
+/*
+==============
+PF_checkbuiltin
+
+Check presence of a builtin by number rather than by name
+Up to 8 builtins can be checked with one call; result will be 1
+only if all supplied builtins are supported.
+
+float(float num, ...) checkbuiltin = #0x5a00;
+==============
+*/
+// ZQ_QC_CHECKBUILTIN
+static void PF_checkbuiltin (void)
 {
-	PR_RunError ("unimplemented builtin");
+	int i, num;
+	float *f;
+
+	for (i = 0, f = &G_FLOAT(OFS_PARM0); i < pr_argc; i++, f += 3) {
+		num = *f;
+		// check extended builtins
+		if (num < ZQ_BUILTINS || num - ZQ_BUILTINS >= pr_numextbuiltins
+			|| pr_extbuiltins[num - ZQ_BUILTINS] == PF_Fixme) {
+			// check standard builtins
+			if (num < 0 || num > pr_numbuiltins || pr_builtins[num] == PF_Fixme
+				// I'm being paranoid here
+				|| pr_builtins[num] == PF_testbot
+				|| pr_builtins[num] == PF_setinfo
+				|| pr_builtins[num] == PF_precache_vwep_model)
+			{
+				G_FLOAT(OFS_RETURN) = 0;
+				return;
+			}
+		}
+	}
+
+	G_FLOAT(OFS_RETURN) = 1;	// all are supported
 }
 
-
+//=============================================================================
 
 builtin_t pr_builtins[] =
 {
@@ -1971,3 +2019,13 @@ PF_checkextension,	// float(string name) checkextension				= #99;
 };
 
 int pr_numbuiltins = sizeof(pr_builtins)/sizeof(pr_builtins[0]);
+
+void PF_checkbuiltin (void);
+
+builtin_t pr_extbuiltins[] =
+{
+	PF_checkbuiltin,
+};
+
+int pr_numextbuiltins = sizeof(pr_extbuiltins)/sizeof(pr_extbuiltins[0]);
+

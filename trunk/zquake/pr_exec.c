@@ -624,10 +624,14 @@ while (1)
 		newf = &pr_functions[a->function];
 
 		if (newf->first_statement < 0)
-		{	// negative statements are built in functions
+		{	// negative statements are built-in functions
 			i = -newf->first_statement;
-			if (i >= pr_numbuiltins)
-				PR_RunError ("Bad builtin call number");
+			if (i >= pr_numbuiltins) {
+				if (i < ZQ_BUILTINS || i >= ZQ_BUILTINS + pr_numextbuiltins)
+					PR_RunError ("Bad builtin call number");
+				pr_extbuiltins[i - ZQ_BUILTINS] ();
+				break;
+			}
 			pr_builtins[i] ();
 			break;
 		}
