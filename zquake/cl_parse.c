@@ -1431,6 +1431,9 @@ void CL_SetStat (int stat, int value)
 
 	cl.stats[stat] = value;
 
+	if (stat == STAT_VIEWHEIGHT && cl.z_ext & Z_EXT_VIEWHEIGHT)
+		cl.viewheight = cl.stats[STAT_VIEWHEIGHT];
+
 	TP_StatChanged(stat, value);
 }
 

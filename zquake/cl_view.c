@@ -1030,7 +1030,7 @@ void V_CalcRefdef (void)
 		r_refdef.vieworg[2] -= 16;	// corpse view height
 	else
 	{
-		r_refdef.vieworg[2] += 22;	// normal view height
+		r_refdef.vieworg[2] += cl.viewheight;	// normal view height
 
 		r_refdef.vieworg[2] += bob;
 
