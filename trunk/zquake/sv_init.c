@@ -307,7 +307,7 @@ This is only called from the SV_Map_f() function.
 */
 void D_FlushCaches ();
 
-void SV_SpawnServer (char *server)
+void SV_SpawnServer (char *server, qboolean devmap)
 {
 	edict_t		*ent;
 	int			i;
@@ -340,11 +340,11 @@ void SV_SpawnServer (char *server)
 		current_skill = 3;
 	Cvar_Set (&skill, va("%d", (int)current_skill));
 
-	if (sv_cheats.value && !sv_allow_cheats) {
+	if ((sv_cheats.value || devmap) && !sv_allow_cheats) {
 		sv_allow_cheats = true;
 		Info_SetValueForStarKey (svs.info, "*cheats", "ON", MAX_SERVERINFO_STRING);
 	}
-	else if (!sv_cheats.value && sv_allow_cheats) {
+	else if ((!sv_cheats.value && !devmap) && sv_allow_cheats) {
 		sv_allow_cheats = false;
 		Info_SetValueForStarKey (svs.info, "*cheats", "", MAX_SERVERINFO_STRING);
 	}

@@ -184,12 +184,14 @@ void SV_Map_f (void)
 	char	level[MAX_QPATH];
 	char	expanded[MAX_QPATH];
 	FILE	*f;
+	qboolean	devmap;
 
 	if (Cmd_Argc() != 2)
 	{
 		Com_Printf ("map <levelname> : continue game on a new level\n");
 		return;
 	}
+	devmap = !Q_strcasecmp (Cmd_Argv(0), "devmap");
 	strcpy (level, Cmd_Argv(1));
 
 	// check to make sure the level exists
@@ -211,7 +213,7 @@ void SV_Map_f (void)
 	SV_BroadcastCommand ("changing\n");
 	SV_SendMessagesToAll ();
 
-	SV_SpawnServer (level);
+	SV_SpawnServer (level, devmap);
 
 	SV_BroadcastCommand ("reconnect\n");
 }
@@ -792,6 +794,7 @@ void SV_InitOperatorCommands (void)
 	Cmd_AddCommand ("serverstatus", SV_Status_f);
 
 	Cmd_AddCommand ("map", SV_Map_f);
+	Cmd_AddCommand ("devmap", SV_Map_f);
 
 	Cmd_AddCommand ("setmaster", SV_SetMaster_f);
 	Cmd_AddCommand ("heartbeat", SV_Heartbeat_f);
