@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _WINQUAKE_H_
 #define _WINQUAKE_H_
 
-#ifdef _WIN32 
+#ifdef _WIN32
 
 #include <windows.h>
 
@@ -31,7 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // uncategorized Win32 stuff
 //
 extern HINSTANCE	global_hInstance;
-extern HANDLE		hinput, houtput;
 extern qbool		WinNT;
 extern HWND			hwnd_dialog;	// startup screen handle
 
