@@ -29,6 +29,7 @@ void(entity targ, entity attacker) ClientObituary;
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
 
 void() monster_death_use;
+void(entity attacker) GetMadAtAttacker;
 
 //============================================================================
 
@@ -225,23 +226,12 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	oldself = self;
 	self = targ;
 
-/*SERVER
-	if ( (self.flags & FL_MONSTER) && attacker != world)
+	if (self.flags & FL_MONSTER)
 	{
-	// get mad unless of the same class (except for soldiers)
-		if (self != attacker && attacker != self.enemy)
-		{
-			if ( (self.classname != attacker.classname) 
-			|| (self.classname == "monster_army" ) )
-			{
-				if (self.enemy.classname == "player")
-					self.oldenemy = self.enemy;
-				self.enemy = attacker;
-				FoundTarget ();
-			}
-		}
+		if (attacker != world)
+			GetMadAtAttacker (attacker);
 	}
-*/
+
 	if (self.th_pain)
 	{
 		self.th_pain (attacker, take);

@@ -44,3 +44,4 @@ void() event_lightning = {remove(self);};
 void() path_corner = {};
 
 void() monster_death_use = {};
+void(entity attacker) GetMadAtAttacker = {};
