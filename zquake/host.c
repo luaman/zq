@@ -118,6 +118,7 @@ void Host_Error (char *error, ...)
 	va_start (argptr,error);
 	vsprintf (string,error,argptr);
 	va_end (argptr);
+
 	Com_Printf ("\n===========================\n");
 	Com_Printf ("Host_Error: %s\n",string);
 	Com_Printf ("===========================\n\n");
@@ -126,6 +127,11 @@ void Host_Error (char *error, ...)
 	CL_Disconnect ();
 #ifndef SERVERONLY		// FIXME
 	cls.demonum = -1;
+#endif
+
+#ifdef SERVERONLY
+	NET_Shutdown ();
+	Sys_Error ("%s", string);
 #endif
 
 	if (!host_initialized)
