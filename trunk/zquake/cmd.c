@@ -1041,6 +1041,91 @@ void Cmd_ExecuteString (char *text)
 		Con_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
 }
 
+
+static qboolean is_numeric (char *c)
+{	
+	return (*c >= '0' && *c <= '9') ||
+		((*c == '-' || *c == '+') && (c[1] == '.' || (c[1]>='0' && c[1]<='9'))) ||
+		(*c == '.' && (c[1]>='0' && c[1]<='9'));
+}
+/*
+================
+Cmd_If_f
+================
+*/
+void Cmd_If_f (void)
+{
+	int		i, c;
+	char	*op;
+	qboolean	result;
+	char	buf[256];
+
+	c = Cmd_Argc ();
+	if (c < 5) {
+		Con_Printf ("usage: if <expr1> <op> <expr2> <command> [else <command>]\n");
+		return;
+	}
+
+	op = Cmd_Argv (2);
+	if (!strcmp(op, "==") || !strcmp(op, "=") || !strcmp(op, "!=")
+		|| !strcmp(op, "<>"))
+	{
+		if (is_numeric(Cmd_Argv(1)) && is_numeric(Cmd_Argv(3)))
+			result = Q_atof(Cmd_Argv(1)) == Q_atof(Cmd_Argv(3));
+		else
+			result = !strcmp(Cmd_Argv(1), Cmd_Argv(3));
+
+		if (op[0] != '=')
+			result = !result;
+	}
+	else if (!strcmp(op, ">"))
+		result = Q_atof(Cmd_Argv(1)) > Q_atof(Cmd_Argv(3));
+	else if (!strcmp(op, "<"))
+		result = Q_atof(Cmd_Argv(1)) < Q_atof(Cmd_Argv(3));
+	else if (!strcmp(op, ">="))
+		result = Q_atof(Cmd_Argv(1)) >= Q_atof(Cmd_Argv(3));
+	else if (!strcmp(op, "<="))
+		result = Q_atof(Cmd_Argv(1)) <= Q_atof(Cmd_Argv(3));
+	else {
+		Con_Printf ("unknown operator: %s\n", op);
+		Con_Printf ("valid operators are ==, =, !=, <>, >, <, >=, <=\n");
+		return;
+	}
+
+	buf[0] = '\0';
+	if (result)
+	{
+		for (i=4; i < c ; i++) {
+			if ((i == 4) && !Q_strcasecmp(Cmd_Argv(i), "then"))
+				continue;
+			if (!Q_strcasecmp(Cmd_Argv(i), "else"))
+				break;
+			if (buf[0])
+				strcat (buf, " ");
+			strcat (buf, Cmd_Argv(i));
+		}
+	}
+	else
+	{
+		for (i=4; i < c ; i++) {
+			if (!Q_strcasecmp(Cmd_Argv(i), "else"))
+				break;
+		}
+
+		if (i == c)
+			return;
+		
+		for (i++ ; i < c ; i++) {
+			if (buf[0])
+				strcat (buf, " ");
+			strcat (buf, Cmd_Argv(i));
+		}
+	}
+
+	Cbuf_InsertText (buf);
+}
+
+
 /*
 ================
 Cmd_CheckParm
@@ -1082,5 +1167,6 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("cmdlist", Cmd_CmdList_f);
 	Cmd_AddCommand ("unaliasall", Cmd_UnAliasAll_f);
 	Cmd_AddCommand ("unalias", Cmd_UnAlias_f);
+	Cmd_AddCommand ("if", Cmd_If_f);
 	Cmd_AddCommand ("_z_cmd", Cmd_Z_Cmd_f);	// ZQuake
 }
