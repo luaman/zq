@@ -19,7 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cmodel.c
 
-#include "common.h"
+//#include "common.h"
+#include "quakedef.h"
 
 
 /*
@@ -286,8 +287,563 @@ trace_t CM_HullTrace (hull_t *hull, vec3_t start, vec3_t end)
 //===========================================================================
 
 
-
 void CM_Init (void)
 {
 	CM_InitBoxHull ();
 }
+
+#if 0
+static char			loadname[32];	// for hunk tags
+
+static char			map_name[MAX_QPATH];
+static unsigned int	map_checksum, map_checksum2;
+
+static int			numcmodels;
+static dmodel_t		map_cmodels[MAX_MAP_MODELS];
+
+static mplane_t		*map_planes;
+static int			numplanes;
+
+static mnode_t		*map_nodes;
+static int			numnodes;
+
+static dclipnode_t	*map_clipnodes;
+static int			numclipnodes;
+
+static mleaf_t		*map_leafs;
+static int			numleafs;
+
+static byte			*map_visdata;
+static byte			map_novis[MAX_MAP_LEAFS/8];
+
+static char			*map_entitystring;
+
+static byte			*cmod_base;		// for CM::Load* functions
+
+
+/*void CM_Init (void)
+{
+	memset (map_novis, 0xff, sizeof(mod_novis));
+}
+*/
+
+char *CM_EntityString (void)
+{
+	return map_entitystring;
+}
+
+mleaf_t *CM_PointInLeaf (vec3_t p, model_t *model)
+{
+	mnode_t		*node;
+	float		d;
+	mplane_t	*plane;
+	
+	if (!model || !model->nodes)
+		Host_Error ("CM_PointInLeaf: bad model");
+
+	node = model->nodes;
+	while (1)
+	{
+		if (node->contents < 0)
+			return (mleaf_t *)node;
+		plane = node->plane;
+		d = DotProduct (p,plane->normal) - plane->dist;
+		if (d > 0)
+			node = node->children[0];
+		else
+			node = node->children[1];
+	}
+	
+	return NULL;	// never reached
+}
+
+
+/*
+===================
+CM_DecompressVis
+===================
+*/
+byte *CM_DecompressVis (byte *in, model_t *model)
+{
+	static byte	decompressed[MAX_MAP_LEAFS/8];
+	int		c;
+	byte	*out;
+	int		row;
+
+	row = (model->numleafs+7)>>3;	
+	out = decompressed;
+
+	if (!in)
+	{	// no vis info, so make all visible
+		while (row)
+		{
+			*out++ = 0xff;
+			row--;
+		}
+		return decompressed;		
+	}
+
+	do
+	{
+		if (*in)
+		{
+			*out++ = *in++;
+			continue;
+		}
+	
+		c = in[1];
+		in += 2;
+		while (c)
+		{
+			*out++ = 0;
+			c--;
+		}
+	} while (out - decompressed < row);
+	
+	return decompressed;
+}
+
+byte *CM_LeafPVS (mleaf_t *leaf, model_t *model)
+{
+	if (leaf == model->leafs)
+		return map_novis;
+	return CM_DecompressVis (leaf->compressed_vis, model);
+}
+
+/*
+===============================================================================
+
+					BRUSHMODEL LOADING
+
+===============================================================================
+*/
+
+void CM_LoadVisibility (lump_t *l)
+{
+	if (!l->filelen)
+	{
+		map_visdata = NULL;
+		return;
+	}
+	map_visdata = Hunk_AllocName ( l->filelen, loadname);	
+	memcpy (map_visdata, cmod_base + l->fileofs, l->filelen);
+}
+
+
+void CM_LoadEntities (lump_t *l)
+{
+	if (!l->filelen)
+	{
+		map_entitystring = NULL;
+		return;
+	}
+	map_entitystring = Hunk_AllocName ( l->filelen, loadname);	
+	memcpy (map_entitystring, cmod_base + l->fileofs, l->filelen);
+}
+
+
+/*
+=================
+CM_LoadSubmodels
+=================
+*/
+void CM_LoadSubmodels (lump_t *l)
+{
+	dmodel_t	*in;
+	dmodel_t	*out;
+	int			i, j, count;
+
+	in = (void *)(cmod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Host_Error ("CM::LoadMap: funny lump size");
+	count = l->filelen / sizeof(*in);
+
+	if (count < 1)
+		Host_Error ("Map with no models");
+	if (count > MAX_MAP_MODELS)
+		Host_Error ("Map has too many models");
+
+	out = map_cmodels;
+	numcmodels = count;
+
+	for (i=0 ; i<count ; i++, in++, out++)
+	{
+		for (j=0 ; j<3 ; j++)
+		{	// spread the mins / maxs by a pixel
+			out->mins[j] = LittleFloat (in->mins[j]) - 1;
+			out->maxs[j] = LittleFloat (in->maxs[j]) + 1;
+			out->origin[j] = LittleFloat (in->origin[j]);
+		}
+		for (j=0 ; j<MAX_MAP_HULLS ; j++)
+			out->headnode[j] = LittleLong (in->headnode[j]);
+		out->visleafs = LittleLong (in->visleafs);
+		out->firstface = LittleLong (in->firstface);
+		out->numfaces = LittleLong (in->numfaces);
+	}
+}
+
+/*
+=================
+CM_SetParent
+=================
+*/
+void CM_SetParent (mnode_t *node, mnode_t *parent)
+{
+	node->parent = parent;
+	if (node->contents < 0)
+		return;
+	CM_SetParent (node->children[0], node);
+	CM_SetParent (node->children[1], node);
+}
+
+/*
+=================
+CM_LoadNodes
+=================
+*/
+void CM_LoadNodes (lump_t *l)
+{
+	int			i, j, count, p;
+	dnode_t		*in;
+	mnode_t 	*out;
+
+	in = (void *)(cmod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Host_Error ("CM::LoadMap: funny lump size");
+	count = l->filelen / sizeof(*in);
+	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+
+	map_nodes = out;
+	numnodes = count;
+
+	for (i = 0; i < count; i++, in++, out++)
+	{
+		for (j=0 ; j<3 ; j++)
+		{
+			out->minmaxs[j] = LittleShort (in->mins[j]);
+			out->minmaxs[3+j] = LittleShort (in->maxs[j]);
+		}
+	
+		p = LittleLong(in->planenum);
+		out->plane = map_planes + p;
+
+		out->firstsurface = LittleShort (in->firstface);
+		out->numsurfaces = LittleShort (in->numfaces);
+		
+		for (j=0 ; j<2 ; j++)
+		{
+			p = LittleShort (in->children[j]);
+			if (p >= 0)
+				out->children[j] = map_nodes + p;
+			else
+				out->children[j] = (mnode_t *)(map_leafs + (-1 - p));
+		}
+	}
+	
+	CM_SetParent (map_nodes, NULL);		// sets nodes and leafs
+}
+
+/*
+=================
+CM_LoadLeafs
+=================
+*/
+void CM_LoadLeafs (lump_t *l)
+{
+	dleaf_t 	*in;
+	mleaf_t 	*out;
+	int			i, j, count, p;
+
+	in = (dleaf_t *)(cmod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Host_Error ("CM::LoadMap: funny lump size");
+	count = l->filelen / sizeof(*in);
+	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+
+	map_leafs = out;
+	numleafs = count;
+
+	for (i = 0; i < count; i++, in++, out++)
+	{
+		for (j=0 ; j<3 ; j++)
+		{
+			out->minmaxs[j] = LittleShort (in->mins[j]);
+			out->minmaxs[3+j] = LittleShort (in->maxs[j]);
+		}
+
+		p = LittleLong(in->contents);
+		out->contents = p;
+
+		p = LittleLong(in->visofs);
+		if (p == -1)
+			out->compressed_vis = NULL;
+		else
+			out->compressed_vis = map_visdata + p;
+		out->efrags = NULL;
+		
+		for (j=0 ; j<4 ; j++)
+			out->ambient_sound_level[j] = in->ambient_level[j];
+	}	
+}
+
+/*
+=================
+CM_LoadClipnodes
+=================
+*/
+void CM_LoadClipnodes (lump_t *l)
+{
+	dclipnode_t *in, *out;
+	int			i, count;
+//	hull_t		*hull;
+
+	in = (void *)(cmod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Host_Error ("CM::LoadMap: funny lump size");
+	count = l->filelen / sizeof(*in);
+	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+
+	map_clipnodes = out;
+	numclipnodes = count;
+
+/*	hull = &loadmodel->hulls[1];
+	hull->clipnodes = out;
+	hull->firstclipnode = 0;
+	hull->lastclipnode = count-1;
+	hull->planes = loadmodel->planes;
+	hull->clip_mins[0] = -16;
+	hull->clip_mins[1] = -16;
+	hull->clip_mins[2] = -24;
+	hull->clip_maxs[0] = 16;
+	hull->clip_maxs[1] = 16;
+	hull->clip_maxs[2] = 32;
+
+	hull = &loadmodel->hulls[2];
+	hull->clipnodes = out;
+	hull->firstclipnode = 0;
+	hull->lastclipnode = count-1;
+	hull->planes = loadmodel->planes;
+	hull->clip_mins[0] = -32;
+	hull->clip_mins[1] = -32;
+	hull->clip_mins[2] = -24;
+	hull->clip_maxs[0] = 32;
+	hull->clip_maxs[1] = 32;
+	hull->clip_maxs[2] = 64;
+*/
+
+	for (i=0 ; i<count ; i++, out++, in++)
+	{
+		out->planenum = LittleLong(in->planenum);
+		out->children[0] = LittleShort(in->children[0]);
+		out->children[1] = LittleShort(in->children[1]);
+	}
+}
+
+/*
+=================
+CM_MakeHull0
+
+Deplicate the drawing hull structure as a clipping hull
+=================
+*/
+void CM_MakeHull0 (void)
+{
+#if 0 // FIXME
+	mnode_t		*in, *child;
+	dclipnode_t *out;
+	int			i, j, count;
+	hull_t		*hull;
+
+	hull = &loadmodel->hulls[0];	
+	
+	in = loadmodel->nodes;
+	count = loadmodel->numnodes;
+	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+
+	hull->clipnodes = out;
+	hull->firstclipnode = 0;
+	hull->lastclipnode = count-1;
+	hull->planes = loadmodel->planes;
+
+	for (i=0 ; i<count ; i++, out++, in++)
+	{
+		out->planenum = in->plane - loadmodel->planes;
+		for (j=0 ; j<2 ; j++)
+		{
+			child = in->children[j];
+			if (child->contents < 0)
+				out->children[j] = child->contents;
+			else
+				out->children[j] = child - loadmodel->nodes;
+		}
+	}
+#endif
+}
+
+/*
+=================
+CM_LoadPlanes
+=================
+*/
+void CM_LoadPlanes (lump_t *l)
+{
+	int			i, j;
+	mplane_t	*out;
+	dplane_t 	*in;
+	int			count;
+	int			bits;
+	
+	in = (void *)(cmod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Host_Error ("CM::LoadMap: funny lump size");
+	count = l->filelen / sizeof(*in);
+	out = Hunk_AllocName ( count*2*sizeof(*out), loadname);	
+	
+	map_planes = out;
+	numplanes = count;
+
+	for (i = 0; i < count; i++, in++, out++)
+	{
+		bits = 0;
+		for (j=0 ; j<3 ; j++)
+		{
+			out->normal[j] = LittleFloat (in->normal[j]);
+			if (out->normal[j] < 0)
+				bits |= 1<<j;
+		}
+
+		out->dist = LittleFloat (in->dist);
+		out->type = LittleLong (in->type);
+		out->signbits = bits;
+	}
+}
+
+/*
+** hunk was reset by host, so the data is no longer valid
+*/
+void CM_InvalidateMap (void)
+{
+	map_name[0] = 0;
+}
+
+/*
+** CM_LoadMap
+*/
+void CM_LoadMap (char *name, qboolean clientload, unsigned *checksum, unsigned *checksum2)
+{
+	int			i, j;
+	dheader_t	*header;
+	dmodel_t 	*bm;
+	unsigned int *buf;
+
+	if (map_name[0]) {
+		assert(!strcmp(name, map_name));
+
+		*checksum = map_checksum;
+		*checksum = map_checksum2;
+//		return &map_cmodels[0];		// still have the right version
+		return;
+	}
+
+	// load the file
+	buf = (unsigned int *)FS_LoadTempFile (name);
+	if (!buf)
+		Host_Error ("CM::LoadMap: %s not found", name);
+
+	COM_FileBase (name, loadname);
+
+	header = (dheader_t *)buf;
+
+	i = LittleLong (header->version);
+	if (i != BSPVERSION)
+		Host_Error ("CM::LoadMap: %s has wrong version number (%i should be %i)", name, i, BSPVERSION);
+
+	// swap all the lumps
+	cmod_base = (byte *)header;
+
+	for (i=0 ; i<sizeof(dheader_t)/4 ; i++)
+		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
+
+	// checksum all of the map, except for entities
+	map_checksum = map_checksum2 = 0;
+	for (i = 0; i < HEADER_LUMPS; i++) {
+		if (i == LUMP_ENTITIES)
+			continue;
+		map_checksum ^= LittleLong(Com_BlockChecksum(cmod_base + header->lumps[i].fileofs, 
+			header->lumps[i].filelen));
+
+		if (i == LUMP_VISIBILITY || i == LUMP_LEAFS || i == LUMP_NODES)
+			continue;
+		map_checksum2 ^= LittleLong(Com_BlockChecksum(cmod_base + header->lumps[i].fileofs, 
+			header->lumps[i].filelen));
+	}
+	*checksum = map_checksum;
+	*checksum2 = map_checksum2;
+
+	// load into heap
+	CM_LoadPlanes (&header->lumps[LUMP_PLANES]);
+	CM_LoadVisibility (&header->lumps[LUMP_VISIBILITY]);
+	CM_LoadLeafs (&header->lumps[LUMP_LEAFS]);
+	CM_LoadNodes (&header->lumps[LUMP_NODES]);
+	CM_LoadClipnodes (&header->lumps[LUMP_CLIPNODES]);
+	CM_LoadEntities (&header->lumps[LUMP_ENTITIES]);
+	CM_LoadSubmodels (&header->lumps[LUMP_MODELS]);
+
+	CM_MakeHull0 ();
+
+	Q_strncpyz (map_name, name, MAX_QPATH);
+
+/*
+//
+// set up the submodels (FIXME: this is confusing)
+//
+	for (i=0 ; i<mod->numsubmodels ; i++)
+	{
+		bm = &mod->submodels[i];
+
+		mod->hulls[0].firstclipnode = bm->headnode[0];
+		for (j=1 ; j<MAX_MAP_HULLS ; j++)
+		{
+			mod->hulls[j].firstclipnode = bm->headnode[j];
+			mod->hulls[j].lastclipnode = mod->numclipnodes-1;
+		}
+		
+		mod->firstmodelsurface = bm->firstface;
+		mod->nummodelsurfaces = bm->numfaces;
+		
+		VectorCopy (bm->maxs, mod->maxs);
+		VectorCopy (bm->mins, mod->mins);
+	
+		mod->numleafs = bm->visleafs;
+
+		if (i < mod->numsubmodels-1)
+		{	// duplicate the basic information
+			char	name[10];
+
+			sprintf (name, "*%i", i+1);
+			loadmodel = CM_FindName (name);
+			*loadmodel = *mod;
+			strcpy (loadmodel->name, name);
+			mod = loadmodel;
+		}
+	}
+*/
+}
+
+#if 0
+dmodel_t* CM_InlineModel (char *name)
+{
+	int		num;
+
+	if (!name || name[0] != '*')
+		Host_Error ("CM_InlineModel: bad name");
+
+	num = atoi (name+1);
+	if (num < 1 || num >= numcmodels)
+		Host_Error ("CM_InlineModel: bad number");
+
+	return &map_cmodels[num];
+}
+#endif
+
+#endif
