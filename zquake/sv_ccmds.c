@@ -30,7 +30,8 @@ cvar_t		sv_cheats = {"sv_cheats", "0"};
 qboolean	sv_allow_cheats = false;
 
 int fp_messages=4, fp_persecond=4, fp_secondsdead=10;
-char fp_msg[255] = { 0 };
+cvar_t sv_floodprotmsg = {"floodprotmsg", ""};
+
 extern cvar_t cl_warncmd;
 extern redirect_t sv_redirected;
 
@@ -637,18 +638,6 @@ void SV_Floodprot_f (void)
 	fp_secondsdead = arg3;
 }
 
-void SV_Floodprotmsg_f (void)
-{
-	if (Cmd_Argc() == 1) {
-		Com_Printf ("Current msg: %s\n", fp_msg);
-		return;
-	} else if (Cmd_Argc() != 2) {
-		Com_Printf ("Usage: floodprotmsg \"<message>\"\n");
-		return;
-	}
-	sprintf(fp_msg, "%s", Cmd_Argv(1));
-}
-  
 /*
 ================
 SV_Gamedir_f
@@ -829,7 +818,7 @@ void SV_InitOperatorCommands (void)
 	Cmd_AddCommand ("gamedir", SV_Gamedir_f);
 	Cmd_AddCommand ("sv_gamedir", SV_Gamedir);
 	Cmd_AddCommand ("floodprot", SV_Floodprot_f);
-	Cmd_AddCommand ("floodprotmsg", SV_Floodprotmsg_f);
+	Cvar_Register (&sv_floodprotmsg);
 
 	cl_warncmd.value = 1;
 }

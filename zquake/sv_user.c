@@ -33,7 +33,7 @@ cvar_t	sv_mapcheck	= {"sv_mapcheck", "1"};
 extern	vec3_t	player_mins;
 
 extern int fp_messages, fp_persecond, fp_secondsdead;
-extern char fp_msg[];
+extern cvar_t sv_floodprotmsg;
 extern cvar_t pausable;
 
 extern double	sv_frametime;
@@ -779,9 +779,9 @@ void SV_Say (qboolean team)
 		if (!sv.paused &&
 			sv_client->whensaid[tmp] && (realtime-sv_client->whensaid[tmp] < fp_persecond)) {
 			sv_client->lockedtill = realtime + fp_secondsdead;
-			if (fp_msg[0])
+			if (sv_floodprotmsg.string[0])
 				SV_ClientPrintf(sv_client, PRINT_CHAT,
-					"FloodProt: %s\n", fp_msg);
+					"FloodProt: %s\n", sv_floodprotmsg.string);
 			else
 				SV_ClientPrintf(sv_client, PRINT_CHAT,
 					"FloodProt: You can't talk for %d seconds.\n", fp_secondsdead);
