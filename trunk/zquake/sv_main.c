@@ -125,9 +125,6 @@ SV_ShutdownServer
 */
 void SV_ShutdownServer (void)
 {
-	char	info[MAX_SERVERINFO_STRING];
-	int		spawncount;
-
 	Master_Shutdown ();
 	if (sv_logfile)
 	{
@@ -145,12 +142,8 @@ void SV_ShutdownServer (void)
 	memset (&sv, 0, sizeof(sv));
 	sv.state = ss_dead;
 
-	// Clear svs, but preserve serverinfo and spawncount
-	memcpy (info, svs.info, sizeof(info));
-	spawncount = svs.spawncount;
-	memset (&svs, 0, sizeof(svs));
-	memcpy (svs.info, info, sizeof(svs.info));
-	svs.spawncount = spawncount;
+	memset (svs.clients, 0, sizeof(svs.clients));
+	//memset (svs.challenges, 0, sizeof(svs.challenges));
 }
 #endif
 
@@ -440,7 +433,7 @@ SV_CheckLog
 
 ===================
 */
-#define	LOG_HIGHWATER	4096
+#define	LOG_HIGHWATER	(MAX_DATAGRAM - 128)
 #define	LOG_FLUSH		10*60
 void SV_CheckLog (void)
 {
