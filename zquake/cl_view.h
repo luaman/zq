@@ -27,6 +27,10 @@ extern float v_blend[4];
 void V_AddLightBlend (float r, float g, float b, float a2);
 #endif
 
+void V_ClearScene (void);
+void V_AddEntity (entity_t *ent);
+void V_AddParticle (vec3_t origin, int color, float alpha);
+
 void V_Init (void);
 void V_RenderView (void);
 void V_UpdatePalette (void);

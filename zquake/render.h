@@ -23,6 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	TOP_RANGE		16			// soldier uniform colors
 #define	BOTTOM_RANGE	96
 
+#define	MAX_VISEDICTS			256
+#define MAX_PARTICLES			2048	// default max # of particles at one
+										// time
+
 //=============================================================================
 
 typedef struct efrag_s
@@ -32,7 +36,6 @@ typedef struct efrag_s
 	struct entity_s		*entity;
 	struct efrag_s		*entnext;
 } efrag_t;
-
 
 typedef struct entity_s
 {
@@ -52,9 +55,6 @@ typedef struct entity_s
 	int						visframe;		// last frame this entity was
 											// found in an active leaf
 											// only used for static objects
-											
-	int						dlightframe;	// dynamic lighting
-	int						dlightbits;
 	
 // FIXME: could turn these into a union
 	int						trivial_accept;
@@ -62,6 +62,14 @@ typedef struct entity_s
 											//  that splits bmodel, or NULL if
 											//  not split
 } entity_t;
+
+// !!! if this is changed, it must be changed in d_ifacea.h too !!!
+typedef struct particle_s
+{
+	vec3_t		org;
+	int			color;
+	float		alpha;
+} particle_t;
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct
@@ -118,15 +126,6 @@ void R_AddEfrags (entity_t *ent);
 void R_RemoveEfrags (entity_t *ent);
 
 void R_NewMap (void);
-
-
-void R_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
-void R_RocketTrail (vec3_t start, vec3_t end, int type);
-void R_EntityParticles (entity_t *ent);
-void R_BlobExplosion (vec3_t org);
-void R_ParticleExplosion (vec3_t org);
-void R_LavaSplash (vec3_t org);
-void R_TeleportSplash (vec3_t org);
 
 void R_PushDlights (void);
 

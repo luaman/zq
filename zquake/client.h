@@ -142,7 +142,21 @@ typedef struct
 	char	map[MAX_STYLESTRING];
 } lightstyle_t;
 
+typedef enum {
+	pt_static, pt_grav, pt_slowgrav, pt_fire, pt_explode, pt_explode2, pt_blob, pt_blob2
+} ptype_t;
 
+typedef struct cparticle_s
+{
+	vec3_t		org;
+	int			color;
+	float		alpha;
+	struct cparticle_s	*next;
+	vec3_t		vel;
+	float		ramp;
+	float		die;
+	ptype_t		type;
+} cparticle_t;
 
 #define	MAX_EFRAGS		512
 
@@ -150,11 +164,11 @@ typedef struct
 #define	MAX_DEMONAME	16
 
 typedef enum {
-ca_disconnected, 	// full screen console with no connection
-ca_demostart,		// starting up a demo
-ca_connected,		// netchan_t established, waiting for svc_serverdata
-ca_onserver,		// processing data lists, donwloading, etc
-ca_active			// everything is in, so frames can be rendered
+	ca_disconnected, 	// full screen console with no connection
+	ca_demostart,		// starting up a demo
+	ca_connected,		// netchan_t established, waiting for svc_serverdata
+	ca_onserver,		// processing data lists, donwloading, etc
+	ca_active			// everything is in, so frames can be rendered
 } cactive_t;
 
 typedef enum {
@@ -389,10 +403,12 @@ void CL_Disconnect_f (void);
 void CL_NextDemo (void);
 
 
-#define			MAX_VISEDICTS	256
 extern	int				cl_numvisedicts, cl_oldnumvisedicts;
 extern	entity_t		*cl_visedicts, *cl_oldvisedicts;
 extern	entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
+
+extern	int				cl_numvisparticles;
+extern	particle_t		cl_visparticles[MAX_PARTICLES];
 
 extern char emodel_name[], pmodel_name[];
 
@@ -434,6 +450,20 @@ void CL_ClearTEnts (void);
 void CL_ParseTEnt (void);
 void CL_UpdateTEnts (void);
 
+//
+// cl_effects.c
+//
+void CL_InitParticles (void);
+void CL_ClearParticles (void);
+void CL_LinkParticles (void);
+void CL_ReadPointFile_f (void);
+
+void CL_BlobExplosion (vec3_t org);
+void CL_ParticleExplosion (vec3_t org);
+void CL_LavaSplash (vec3_t org);
+void CL_TeleportSplash (vec3_t org);
+void CL_RocketTrail (vec3_t start, vec3_t end, int type);
+void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
 
 //
 // cl_ents.c

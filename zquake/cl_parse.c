@@ -272,11 +272,16 @@ void Model_NextDownload (void)
 	cl.worldmodel = cl.model_precache[1];
 	if (!cl.worldmodel)
 		Host_Error ("Model_NextDownload: NULL worldmodel");
+
+	CL_ClearParticles ();
+
 	R_NewMap ();
+
 #ifdef GLQUAKE
 	if (cl.sky[0])
 		R_SetSky (cl.sky);
 #endif
+
 	TP_NewMap ();
 	Hunk_Check ();		// make sure nothing is hurt
 
@@ -1520,8 +1525,6 @@ void CL_ParseServerMessage (void)
 		if (cmd == -1)
 		{
 			msg_readcount++;	// so the EOM showner has the right value
-			if (!svc_strings[cmd])
-				Host_Error ("CL_ParseServerMessage: Illegible server message");
 			SHOWNET("END OF MESSAGE");
 			break;
 		}
@@ -1539,7 +1542,6 @@ void CL_ParseServerMessage (void)
 			break;
 			
 		case svc_nop:
-//			Com_Printf ("svc_nop\n");
 			break;
 			
 		case svc_disconnect:
