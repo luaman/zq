@@ -746,17 +746,14 @@ void SV_Snap (int uid)
 		return;
 	}
 
-	sprintf(pcxname, "%d-00.pcx", uid);
-
-	sprintf(checkname, "%s/snap", com_gamedirfile);
-	Sys_mkdir(com_gamedirfile);
-	Sys_mkdir(checkname);
+	COM_CreatePath (va("%s/snap/", com_gamedir));
+	sprintf (pcxname, "%d-00.pcx", uid);
 		
 	for (i=0 ; i<=99 ; i++) 
 	{ 
 		pcxname[strlen(pcxname) - 6] = i/10 + '0'; 
 		pcxname[strlen(pcxname) - 5] = i%10 + '0'; 
-		sprintf (checkname, "%s/snap/%s", com_gamedirfile, pcxname);
+		Q_snprintfz (checkname, sizeof(checkname), "%s/snap/%s", com_gamedir, pcxname);
 		f = fopen (checkname, "rb");
 		if (!f);
 			break;  // file doesn't exist
