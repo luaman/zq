@@ -31,6 +31,11 @@ float	z_ext_clientcommand = 0;
 
 
 void(string item, string amount) Cmd_Give = {
+	if (!infokey(world, "*cheats")) {
+		sprint (self, PRINT_HIGH, "Cheats are not allowed on this server\n");
+		return;
+	}
+
 	if (item == "2")
 		self.items = self.items | IT_SHOTGUN;
 	else if (item == "3")
