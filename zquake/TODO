@@ -1,0 +1,29 @@
+Windows Client
+--------------
+
+.
+
+Linux Client
+------------
+ 
+* Add the fix for non-dga keyboard input under Linux -
+  http://www.shovelbeating.org/~windsok/keyboard.htm 
+
+* Fix up HWGamma, affects the whole screen for gamma and blends, need to
+  restore the gamma etc when you alt tab, lose focus, minimise etc.
+  
+* Speaking of alt-tab, work out how to make alt-tabbing work with GLX
+  client.
+ 
+* ALSA support maybe - oss emulation seems to work fine but native code is
+  always better.
+  
+* Consider SDL for input
+
+Windows/Linux Server
+--------------------
+
+* All rcon to save settings to a config? e.g. rcon writeconfig?
+
+* Maplist - return *.bsp from id1/maps and $gamedir/maps
+
