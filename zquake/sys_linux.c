@@ -419,7 +419,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 	r = mprotect((char*)addr, length + startaddr - addr + psize, 7);
 
 	if (r < 0)
-    		Sys_Error("Protection change failed\n");
+    		Sys_Error("Protection change failed");
 
 }
 

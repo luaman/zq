@@ -203,7 +203,7 @@ void SV_Error (char *error, ...)
 #else
 	SV_Shutdown ();
 
-	Sys_Error ("SV_Error: %s\n",string);
+	Sys_Error ("SV_Error: %s",string);
 #endif
 }
 

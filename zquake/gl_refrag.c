@@ -224,7 +224,7 @@ void R_StoreEfrags (efrag_t **ppefrag)
 			break;
 
 		default:	
-			Sys_Error ("R_StoreEfrags: Bad entity type %d\n", model->type);
+			Sys_Error ("R_StoreEfrags: Bad entity type %d", model->type);
 		}
 	}
 }
