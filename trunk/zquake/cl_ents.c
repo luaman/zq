@@ -690,7 +690,7 @@ void CL_AddFlagModels (entity_t *ent, int team)
 {
 	int		i;
 	float	f;
-	vec3_t	v_forward, v_right, v_up;
+	vec3_t	v_forward, v_right;
 	entity_t	newent;
 
 	if (cl_flagindex == -1)
@@ -726,7 +726,7 @@ void CL_AddFlagModels (entity_t *ent, int team)
 	newent.skinnum = team;
 	newent.colormap = vid.colormap;
 
-	AngleVectors (ent->angles, v_forward, v_right, v_up);
+	AngleVectors (ent->angles, v_forward, v_right, NULL);
 	v_forward[2] = -v_forward[2]; // reverse z component
 	for (i=0 ; i<3 ; i++)
 		newent.origin[i] = ent->origin[i] - f*v_forward[i] + 22*v_right[i];

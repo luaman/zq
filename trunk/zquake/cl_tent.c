@@ -378,7 +378,7 @@ void CL_UpdateBeams (void)
 			b->start[2] += cl.crouch;
 			if (cl_trueLightning.value && cl.allow_truelightning)
 			{
-				vec3_t	forward, right, up;
+				vec3_t	forward;
 				vec3_t	v, org;
 				vec3_t	ang;
 				float	f, delta;
@@ -405,7 +405,7 @@ void CL_UpdateBeams (void)
 				ang[1] += delta*f;
 				ang[2] = 0;
 				
-				AngleVectors (ang, forward, right, up);
+				AngleVectors (ang, forward, NULL, NULL);
 				VectorScale (forward, 600, forward);
 				VectorCopy (cl.simorg, org);
 				org[2] += 16;

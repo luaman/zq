@@ -97,11 +97,11 @@ V_CalcRoll
 */
 float V_CalcRoll (vec3_t angles, vec3_t velocity)
 {
-	vec3_t	forward, right, up;
+	vec3_t	right;
 	float	sign;
 	float	side;
 	
-	AngleVectors (angles, forward, right, up);
+	AngleVectors (angles, NULL, right, NULL);
 	side = DotProduct (velocity, right);
 	sign = side < 0 ? -1 : 1;
 	side = fabs(side);
@@ -383,7 +383,7 @@ void V_ParseDamage (void)
 	int		armor, blood;
 	vec3_t	from;
 	int		i;
-	vec3_t	forward, right, up;
+	vec3_t	forward, right;
 	float	side;
 	float	count;
 	float	fraction;
@@ -435,7 +435,7 @@ void V_ParseDamage (void)
 	VectorSubtract (from, cl.simorg, from);
 	VectorNormalize (from);
 	
-	AngleVectors (cl.simangles, forward, right, up);
+	AngleVectors (cl.simangles, forward, right, NULL);
 
 	side = DotProduct (from, right);
 	v_dmg_roll = count*side*v_kickroll.value;
@@ -933,7 +933,7 @@ V_AddViewWeapon
 */
 void V_AddViewWeapon (float bob)
 {
-	vec3_t		forward, right, up;
+	vec3_t		forward;
 	entity_t	*view;
 	extern cvar_t	scr_fov;
 
@@ -953,7 +953,7 @@ void V_AddViewWeapon (float bob)
 	view->angles[PITCH] = -r_refdef.viewangles[PITCH];
 	view->angles[ROLL] = r_refdef.viewangles[ROLL];
 
-	AngleVectors (r_refdef.viewangles, forward, right, up);
+	AngleVectors (r_refdef.viewangles, forward, NULL, NULL);
 	
 	VectorCopy (r_refdef.vieworg, view->origin);
 	VectorMA (view->origin, bob * 0.4, forward, view->origin);
@@ -1005,7 +1005,7 @@ V_CalcRefdef
 */
 void V_CalcRefdef (void)
 {
-	vec3_t		forward, right, up;
+	vec3_t		forward;
 	float		bob;
 
 	V_DriftPitch ();
@@ -1049,7 +1049,7 @@ void V_CalcRefdef (void)
 	if (v_gunkick.value)
 	{
 		// add weapon kick offset
-		AngleVectors (r_refdef.viewangles, forward, right, up);
+		AngleVectors (r_refdef.viewangles, forward, NULL, NULL);
 		VectorMA (r_refdef.vieworg, cl.punchangle, forward, r_refdef.vieworg);
 
 		// add weapon kick angle
