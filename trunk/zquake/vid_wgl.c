@@ -1033,11 +1033,13 @@ LONG WINAPI MainWndProc (
     LPARAM  lParam)
 {
     LONG    lRet = 1;
-	int		fwKeys, xPos, yPos, fActive, fMinimized, temp;
+	int		fActive, fMinimized, temp;
 	extern unsigned int uiWheelMessage;
 
-	if ( uMsg == uiWheelMessage )
+	if ( uMsg == uiWheelMessage ) {
 		uMsg = WM_MOUSEWHEEL;
+		wParam <<= 16;
+	}
 
     switch (uMsg)
     {
@@ -1377,7 +1379,7 @@ VID_InitFullDIB
 void VID_InitFullDIB (HINSTANCE hInstance)
 {
 	DEVMODE	devmode;
-	int		i, modenum, cmodes, originalnummodes, existingmode, numlowresmodes;
+	int		i, modenum, originalnummodes, existingmode, numlowresmodes;
 	int		j, bpp, done;
 	BOOL	stat;
 
@@ -1593,7 +1595,6 @@ void	VID_Init (unsigned char *palette)
 {
 	int		i, existingmode;
 	int		basenummodes, width, height, bpp, findbpp, done;
-	byte	*ptmp;
 	char	gldir[MAX_OSPATH];
 	HDC		hdc;
 	DEVMODE	devmode;
