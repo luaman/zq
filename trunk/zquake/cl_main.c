@@ -404,8 +404,6 @@ void CL_ClearState (void)
 {
 	int			i;
 
-	CL_NewMap();	// Triggers...
-	
 	S_StopAllSounds (true);
 
 	Con_DPrintf ("Clearing memory\n");
@@ -917,6 +915,11 @@ drop to full console
 */
 void CL_Changing_f (void)
 {
+	if (cbuf_current != &cbuf_svc) {
+		Con_Printf ("changing is not valid from console\n");
+		return;
+	}
+
 	if (cls.download)  // don't change when downloading
 		return;
 
