@@ -791,7 +791,7 @@ void() StartMatch =
 	k_showscores = 0;
 
 	self.k_teamnum = time + 3;  //dirty i know, but why waste space?
-	self.cnt = timelimit;
+	self.cnt = timelimit / 60;  //oldman: add a stupid divide by 60 here to fix kteams?
 	self.cnt2 = 60;
 	localcmd("\nserverinfo status \"");
 	tmp = ftos(timelimit);
