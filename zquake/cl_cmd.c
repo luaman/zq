@@ -1054,6 +1054,16 @@ void CL_R_DrawViewModel_f (void)
 }
 
 
+// These used to be user-modifiable cvars
+void cmd_v_iyaw_cycle (void) { extern float v_iyaw_cycle; v_iyaw_cycle = Q_atof(Cmd_Argv(1)); }
+void cmd_v_iroll_cycle (void) { extern float v_iroll_cycle; v_iroll_cycle = Q_atof(Cmd_Argv(1)); }
+void cmd_v_ipitch_cycle (void) { extern float v_ipitch_cycle; v_ipitch_cycle = Q_atof(Cmd_Argv(1)); }
+void cmd_v_iyaw_level (void) { extern float v_iyaw_level; v_iyaw_level = Q_atof(Cmd_Argv(1)); }
+void cmd_v_iroll_level (void) { extern float v_iroll_level; v_iroll_level = Q_atof(Cmd_Argv(1)); }
+void cmd_v_ipitch_level (void) { extern float v_ipitch_level; v_ipitch_level = Q_atof(Cmd_Argv(1)); }
+void cmd_v_idlescale (void) { extern float v_idlescale; v_idlescale = Q_atof(Cmd_Argv(1)); }
+
+
 typedef struct {
 	char	*name;
 	void	(*func) (void);
@@ -1067,6 +1077,14 @@ svcmd_t svcmds[] =
 	{"stopul", CL_StopUpload},
 	{"fov", CL_Fov_f},
 	{"r_drawviewmodel", CL_R_DrawViewModel_f},
+	{"v_iyaw_cycle", cmd_v_iyaw_cycle},
+	{"v_iroll_cycle", cmd_v_iroll_cycle},
+	{"v_ipitch_cycle", cmd_v_ipitch_cycle},
+	{"v_iyaw_level", cmd_v_iyaw_level},
+	{"v_iroll_level", cmd_v_iroll_level},
+	{"v_ipitch_level", cmd_v_ipitch_level},
+	{"v_idlescale", cmd_v_idlescale},
+
 	{NULL, NULL}
 };
 

@@ -48,15 +48,6 @@ cvar_t	v_gunkick = {"v_gunkick", "0"};
 
 cvar_t	cl_drawgun = {"r_drawviewmodel", "1"};
 
-void OnChange_v_idle (cvar_t *var, char *value, qboolean *cancel);
-cvar_t	v_iyaw_cycle = {"v_iyaw_cycle", "2", 0, OnChange_v_idle};
-cvar_t	v_iroll_cycle = {"v_iroll_cycle", "0.5", 0, OnChange_v_idle};
-cvar_t	v_ipitch_cycle = {"v_ipitch_cycle", "1", 0, OnChange_v_idle};
-cvar_t	v_iyaw_level = {"v_iyaw_level", "0.3", 0, OnChange_v_idle};
-cvar_t	v_iroll_level = {"v_iroll_level", "0.1", 0, OnChange_v_idle};
-cvar_t	v_ipitch_level = {"v_ipitch_level", "0.3", 0, OnChange_v_idle};
-cvar_t	v_idlescale = {"v_idlescale", "0", 0, OnChange_v_idle};
-
 cvar_t	crosshair = {"crosshair", "2", CVAR_ARCHIVE};
 cvar_t	crosshaircolor = {"crosshaircolor", "79", CVAR_ARCHIVE};
 cvar_t  cl_crossx = {"cl_crossx", "0", CVAR_ARCHIVE};
@@ -79,12 +70,28 @@ float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 frame_t		*view_frame;
 player_state_t		*view_message;
 
+// idle swaying for intermission and TF
+float	v_iyaw_cycle = 2;
+float	v_iroll_cycle = 0.5;
+float	v_ipitch_cycle = 1;
+float	v_iyaw_level = 0.3;
+float	v_iroll_level = 0.1;
+float	v_ipitch_level = 0.3;
+float	v_idlescale = 0;
 
-void OnChange_v_idle (cvar_t *var, char *value, qboolean *cancel)
+
+void V_NewMap (void)
 {
-	// Don't allow cheating in TF
-	if (cl.teamfortress && cls.state >= ca_connected && cbuf_current != &cbuf_svc)
-		*cancel = true;
+	extern cshift_t cshift_empty;	// FIXME, just move its definition higher and get rid of the extern
+	memset (&cshift_empty, 0, sizeof(cshift_empty));
+
+	v_iyaw_cycle = 2;
+	v_iroll_cycle = 0.5;
+	v_ipitch_cycle = 1;
+	v_iyaw_level = 0.3;
+	v_iroll_level = 0.1;
+	v_ipitch_level = 0.3;
+	v_idlescale = 0;
 }
 
 /*
@@ -883,9 +890,9 @@ Idle swaying
 */
 void V_AddIdle (void)
 {
-	r_refdef.viewangles[ROLL] += v_idlescale.value * sin(cl.time*v_iroll_cycle.value) * v_iroll_level.value;
-	r_refdef.viewangles[PITCH] += v_idlescale.value * sin(cl.time*v_ipitch_cycle.value) * v_ipitch_level.value;
-	r_refdef.viewangles[YAW] += v_idlescale.value * sin(cl.time*v_iyaw_cycle.value) * v_iyaw_level.value;
+	r_refdef.viewangles[ROLL] += v_idlescale * sin(cl.time*v_iroll_cycle) * v_iroll_level;
+	r_refdef.viewangles[PITCH] += v_idlescale * sin(cl.time*v_ipitch_cycle) * v_ipitch_level;
+	r_refdef.viewangles[YAW] += v_idlescale * sin(cl.time*v_iyaw_cycle) * v_iyaw_level;
 }
 
 
@@ -990,10 +997,10 @@ void V_CalcIntermissionRefdef (void)
 	cl.viewent.model = NULL;
 
 // always idle in intermission
-	old = v_idlescale.value;
-	v_idlescale.value = 1;
+	old = v_idlescale;
+	v_idlescale = 1;
 	V_AddIdle ();
-	v_idlescale.value = old;
+	v_idlescale = old;
 }
 
 /*
@@ -1199,14 +1206,6 @@ void V_Init (void)
 
 	Cvar_Register (&v_centermove);
 	Cvar_Register (&v_centerspeed);
-
-	Cvar_Register (&v_idlescale);
-	Cvar_Register (&v_iyaw_cycle);
-	Cvar_Register (&v_iroll_cycle);
-	Cvar_Register (&v_ipitch_cycle);
-	Cvar_Register (&v_iyaw_level);
-	Cvar_Register (&v_iroll_level);
-	Cvar_Register (&v_ipitch_level);
 
 	Cvar_Register (&crosshaircolor);
 	Cvar_Register (&crosshair);

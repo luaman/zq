@@ -330,10 +330,10 @@ void CL_ClearState (void)
 	memset (cl_entities, 0, sizeof(cl_entities));
 
 	cl_numvisedicts = 0;
-
 	cl_entframecount = 0;
-
 	cl.viewheight = DEFAULT_VIEWHEIGHT;
+
+	V_NewMap ();
 
 // make sure no centerprint messages are left from previous level
 	scr_centertime_off = 0;
