@@ -1179,6 +1179,8 @@ void TP_NewMap ()
 		strcpy (last_map, mapname);
 		Cvar_SetROM (&cl_mapname, mapname);
 	}
+
+	TP_ExecTrigger ("f_newmap");
 }
 
 /*
