@@ -43,6 +43,7 @@ int			cnttextures[2] = {-1, -1};     // cached
 
 int			particletexture;	// little dot for particles
 int			playertextures;		// up to 16 color translated skins
+int			playerfbtextures[MAX_CLIENTS];
 int			skyboxtextures;
 
 int			mirrortexturenum;	// quake texturenum, not gltexturenum
@@ -491,7 +492,7 @@ void R_DrawAliasModel (entity_t *ent)
 	int			anim, skinnum;
 	qboolean	full_light;
 	model_t		*clmodel = ent->model;
-	int			texture, fb_texture = 0;
+	int			texture, fb_texture;
 
 	VectorAdd (ent->origin, clmodel->mins, mins);
 	VectorAdd (ent->origin, clmodel->maxs, maxs);
@@ -580,8 +581,6 @@ void R_DrawAliasModel (entity_t *ent)
 	// draw all the triangles
 	//
 
-	GL_DisableMultitexture();
-
 	glPushMatrix ();
 	R_RotateForEntity (ent);
 
@@ -611,31 +610,18 @@ void R_DrawAliasModel (entity_t *ent)
 		i = ent->scoreboard - cl.players;
 
 		if (!ent->scoreboard->skin) {
-			Skin_Find(ent->scoreboard);
-			R_TranslatePlayerSkin(i);
+			Skin_Find (ent->scoreboard);
+			R_TranslatePlayerSkin (i);
 		}
 
 		if (i >= 0 && i < MAX_CLIENTS) {
 		    texture = playertextures + i;
-			fb_texture = fb_skins[i];
+			fb_texture = playerfbtextures[i];
 		}
 	}
 
-	if (!gl_fb_models.value)
+	if (full_light || !gl_fb_models.value) {
 		fb_texture = 0;
-
-	if (fb_texture && gl_mtexable && !full_light) {
-		GL_SelectTexture (GL_TEXTURE0_ARB);
-		GL_Bind (texture);
-		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		GL_EnableMultitexture ();
-		GL_Bind (fb_texture);
-		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-	}
-	else
-	{
-		GL_Bind (texture);
-		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	}
 
 	if (gl_smoothmodels.value)
@@ -644,28 +630,34 @@ void R_DrawAliasModel (entity_t *ent)
 	if (gl_affinemodels.value)
 		glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-	R_SetupAliasFrame (ent->frame, paliashdr, (fb_texture && gl_mtexable && !full_light));
-
 	if (fb_texture && gl_mtexable) {
+		GL_SelectTexture (GL_TEXTURE0_ARB);
+		GL_Bind (texture);
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+		GL_EnableMultitexture ();
+		GL_Bind (fb_texture);
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+		R_SetupAliasFrame (ent->frame, paliashdr, true);
+
 		GL_DisableMultitexture ();
 	}
+	else
+	{
+		GL_DisableMultitexture();
+		GL_Bind (texture);
+		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-	if (!full_light && gl_fb_models.value && !gl_mtexable) {
-		if ((clmodel->modhint == MOD_PLAYER) && ent->scoreboard)
-		{
-			i = ent->scoreboard - cl.players;
-
-			if (i >= 0 && i < MAX_CLIENTS)
-				fb_texture = fb_skins[i];
-		}
-		else
-			fb_texture = paliashdr->fb_texturenum[skinnum][anim];
+		R_SetupAliasFrame (ent->frame, paliashdr, false);
 
 		if (fb_texture) {
 			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 			glEnable (GL_BLEND);
 			GL_Bind (fb_texture);
+
 			R_SetupAliasFrame (ent->frame, paliashdr, false);
+
 			glDisable (GL_BLEND);
 		}
 	}
@@ -1205,7 +1197,7 @@ void R_Init (void)
 	playertextures = texture_extension_number;
 	texture_extension_number += MAX_CLIENTS;
 
-	// fullbright skins
+	// add room for fullbright skins
 	texture_extension_number += MAX_CLIENTS;
 
 	skyboxtextures = texture_extension_number;

@@ -81,8 +81,6 @@ void R_InitParticleTexture (void)
 }
 
 
-int fb_skins[MAX_CLIENTS];
-
 /*
 ===============
 R_TranslatePlayerSkin
@@ -239,11 +237,11 @@ void R_TranslatePlayerSkin (int playernum)
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
 
+		playerfbtextures[playernum] = 0;
 		if (Img_HasFullbrights ((byte *)original, inwidth*inheight))
 		{
-			fb_skins[playernum] = playertextures + playernum + MAX_CLIENTS;
-
-			GL_Bind(fb_skins[playernum]);
+			playerfbtextures[playernum] = playertextures + playernum + MAX_CLIENTS;
+			GL_Bind (playerfbtextures[playernum]);
 
 			out = pixels;
 			memset(pixels, 0, sizeof(pixels));
@@ -287,8 +285,6 @@ void R_TranslatePlayerSkin (int playernum)
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
-		else
-			fb_skins[playernum] = 0;
 	}
 }
 
