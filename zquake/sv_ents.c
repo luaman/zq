@@ -387,7 +387,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 			if (ent->v.weaponframe)
 				pflags |= PF_WEAPONFRAME;
 			// Z_EXT_PM_TYPE protocol extension
-			if (client->oldbuttons & BUTTON_JUMP)
+			if (cl->oldbuttons & BUTTON_JUMP)
 				pflags |= PM_NORMAL_JUMP_HELD << PF_PM_TYPE_SHIFT;
 		}
 
