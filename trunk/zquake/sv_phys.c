@@ -51,8 +51,8 @@ cvar_t	pm_wateraccelerate	 = {"sv_wateraccelerate", "10"};
 cvar_t	pm_friction			 = {"sv_friction", "4"};
 cvar_t	pm_waterfriction	 = {"sv_waterfriction", "4"};
 cvar_t	pm_ktjump			 = {"pm_ktjump", "0.5", CVAR_SERVERINFO};
-cvar_t	pm_bunnyspeedcap	 = {"pm_bunnyspeedcap", "", CVAR_SERVERINFO};
-cvar_t	pm_slidefix			 = {"pm_slidefix", "", CVAR_SERVERINFO};
+cvar_t	pm_bunnyspeedcap	 = {"pm_bunnyspeedcap", "0", CVAR_SERVERINFO};
+cvar_t	pm_slidefix			 = {"pm_slidefix", "0", CVAR_SERVERINFO};
 
 double	sv_frametime;
 
