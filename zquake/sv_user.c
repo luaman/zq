@@ -1405,6 +1405,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	sv_player->v.button0 = ucmd->buttons & 1;
 	sv_player->v.button2 = (ucmd->buttons & 2)>>1;
+	sv_player->v.button1 = (ucmd->buttons & 4)>>2;
 	if (ucmd->impulse)
 		sv_player->v.impulse = ucmd->impulse;
 
