@@ -718,6 +718,9 @@ CL_Init
 */
 void CL_Init (void)
 {
+	if (dedicated)
+		return;
+
 	cls.state = ca_disconnected;
 
 	strcpy (cls.gamedirfile, com_gamedirfile);
