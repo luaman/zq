@@ -181,11 +181,14 @@ Checks for the given parameter in the program's command line arguments
 Returns the argument number (1 to argc-1) or 0 if not present
 =================
 */
-int CheckParm (char *check)
+int			 CheckParm (char *check, int startarg)
 {
-	int             i;
+	int		 i;
 
-	for (i = 1;i<myargc;i++)
+	if (startarg <= 0)
+		startarg = 1;
+
+	for (i = startarg;i < myargc; i++)
 	{
 		if ( !Q_stricmp(check, myargv[i]) )
 			return i;
