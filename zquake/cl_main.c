@@ -1248,8 +1248,8 @@ void CL_Init (void)
 	Info_SetValueForKey (cls.userinfo, "msg", "1", MAX_INFO_STRING);
 //	sprintf (st, "%4.2f", (float)VERSION);
 //	Info_SetValueForStarKey (cls.userinfo, "*ver", st, MAX_INFO_STRING);
-//	sprintf (st, "%4.2f-%04d", (float)Z_VERSION, build_number());
-	sprintf (st, "%s-%04d", Z_VERSION, build_number());
+//	sprintf (st, "%s-%04d", Z_VERSION, build_number());
+	sprintf (st, "%s", Z_VERSION);
 	Info_SetValueForStarKey (cls.userinfo, "*z_ver", st, MAX_INFO_STRING);
 
 	CL_InitInput ();
