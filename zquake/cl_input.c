@@ -307,13 +307,14 @@ float CL_KeyState (kbutton_t *key)
 
 //==========================================================================
 
-cvar_t	cl_upspeed = {"cl_upspeed", "400"};
-cvar_t	cl_forwardspeed = {"cl_forwardspeed", "400", CVAR_ARCHIVE};
-cvar_t	cl_backspeed = {"cl_backspeed", "400", CVAR_ARCHIVE};
-cvar_t	cl_sidespeed = {"cl_sidespeed", "400", CVAR_ARCHIVE};
+cvar_t	cl_upspeed = {"cl_upspeed", "200"};
+cvar_t	cl_forwardspeed = {"cl_forwardspeed", "200", CVAR_ARCHIVE};
+cvar_t	cl_backspeed = {"cl_backspeed", "200", CVAR_ARCHIVE};
+cvar_t	cl_sidespeed = {"cl_sidespeed", "200", CVAR_ARCHIVE};
 
-cvar_t	cl_movespeedkey = {"cl_movespeedkey","2.0",CVAR_ARCHIVE};
-cvar_t	cl_anglespeedkey = {"cl_anglespeedkey","1.5"};
+cvar_t	cl_run = {"cl_run", "0", CVAR_ARCHIVE};
+cvar_t	cl_movespeedkey = {"cl_movespeedkey", "2.0", CVAR_ARCHIVE};
+cvar_t	cl_anglespeedkey = {"cl_anglespeedkey", "1.5"};
 
 cvar_t	cl_yawspeed = {"cl_yawspeed","140"};
 cvar_t	cl_pitchspeed = {"cl_pitchspeed","150"};
@@ -426,7 +427,7 @@ void CL_BaseMove (usercmd_t *cmd)
 //
 // adjust for speed key
 //
-	if (in_speed.state & 1)
+	if ((in_speed.state & 1) ^ (cl_run.value != 0))
 	{
 		cmd->forwardmove *= cl_movespeedkey.value;
 		cmd->sidemove *= cl_movespeedkey.value;
@@ -458,7 +459,7 @@ void CL_FinishMove (usercmd_t *cmd)
 //
 // figure button bits
 //	
-	if ( in_attack.state & 3 )
+	if (in_attack.state & 3)
 		cmd->buttons |= 1;
 	in_attack.state &= ~2;
 	
@@ -690,6 +691,7 @@ void CL_InitInput (void)
 	Cvar_Register (&cl_forwardspeed);
 	Cvar_Register (&cl_backspeed);
 	Cvar_Register (&cl_sidespeed);
+	Cvar_Register (&cl_run);
 	Cvar_Register (&cl_movespeedkey);
 	Cvar_Register (&cl_yawspeed);
 	Cvar_Register (&cl_pitchspeed);
