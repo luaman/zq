@@ -174,7 +174,7 @@ Returns true if the file exists, otherwise it attempts
 to start a download from the server.
 ===============
 */
-qboolean	CL_CheckOrDownloadFile (char *filename)
+qboolean CL_CheckOrDownloadFile (char *filename)
 {
 	FILE	*f;
 
@@ -491,7 +491,7 @@ void CL_NextUpload(void)
 	MSG_WriteByte (&cls.netchan.message, percent);
 	SZ_Write (&cls.netchan.message, buffer, r);
 
-Con_DPrintf ("UPLOAD: %6d: %d written\n", upload_pos - r, r);
+	Con_DPrintf ("UPLOAD: %6d: %d written\n", upload_pos - r, r);
 
 	if (upload_pos != upload_size)
 		return;
@@ -512,7 +512,7 @@ void CL_StartUpload (byte *data, int size)
 	if (upload_data)
 		free(upload_data);
 
-Con_DPrintf("Upload starting of %d...\n", size);
+	Con_DPrintf("Upload starting of %d...\n", size);
 
 	upload_data = Q_Malloc (size);
 	memcpy(upload_data, data, size);
@@ -718,9 +718,10 @@ void CL_ParseModellist (void)
 		str = MSG_ReadString ();
 		if (!str[0])
 			break;
-		nummodels++;
-		if (nummodels==MAX_MODELS)
+
+		if (++nummodels==MAX_MODELS)
 			Host_EndGame ("Server sent too many model_precache");
+
 		strcpy (cl.model_name[nummodels], str);
 
 		if (!strcmp(cl.model_name[nummodels],"progs/spike.mdl"))
@@ -794,15 +795,13 @@ like torches
 void CL_ParseStatic (void)
 {
 	entity_t *ent;
-	int		i;
 	entity_state_t	es;
 
 	CL_ParseBaseline (&es);
 		
-	i = cl.num_statics;
-	if (i >= MAX_STATIC_ENTITIES)
+	if (cl.num_statics >= MAX_STATIC_ENTITIES)
 		Host_EndGame ("Too many static entities");
-	ent = &cl_static_entities[i];
+	ent = &cl_static_entities[cl.num_statics];
 	cl.num_statics++;
 
 // copy it to the current state
