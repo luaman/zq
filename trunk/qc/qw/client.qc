@@ -309,12 +309,30 @@ void() set_suicide_frame;
 // called by ClientKill and DeadThink
 void() respawn =
 {
-	// make a copy of the dead body for appearances sake
-	CopyToBodyQue (self);
-	// set default spawn parms
-	SetNewParms ();
-	// respawn              
-	PutClientInServer ();
+	if (coop)
+	{
+		// make a copy of the dead body for appearances sake
+		CopyToBodyQue (self);
+		// get the spawn parms as they were at level start
+		setspawnparms (self);
+		// respawn
+		PutClientInServer ();
+	}
+	else if (deathmatch)
+	{
+		// make a copy of the dead body for appearances sake
+		CopyToBodyQue (self);
+		// set default spawn parms
+		SetNewParms ();
+		// respawn
+		PutClientInServer ();
+	}
+	else
+	{	// restart the entire server
+		localcmd ("map ");
+		localcmd (mapname);
+		localcmd ("\n");
+	}
 };
 
 
