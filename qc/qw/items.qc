@@ -99,7 +99,7 @@ void DropQuad (float timeleft)
 
 	item = spawn();
 
-	setorigin (item, self.origin),
+	setorigin (item, self.origin);
 	
 	item.velocity_z = 300;
 	item.velocity_x = -100 + (random() * 200);
@@ -153,7 +153,7 @@ void DropRing (float timeleft)
 	entity	item;
 
 	item = spawn();
-	setorigin (item, self.origin),
+	setorigin (item, self.origin);
 	
 	item.velocity_z = 300;
 	item.velocity_x = -100 + (random() * 200);
