@@ -471,21 +471,16 @@ void CL_ConnectionlessPacket (void)
 
 	c = MSG_ReadByte ();
 
-	if (c == A2C_PRINT && net_message.data[msg_readcount] == '\\')
-	{
-		extern double qstat_senttime;
-		extern void CL_PrintQStatReply (char *s);
+	if (c == S2C_CHALLENGE) {
+		Com_Printf ("%s: challenge\n", NET_AdrToString(net_from));
 
-		if (qstat_senttime && curtime - qstat_senttime < 10)
-		{
-			CL_PrintQStatReply (MSG_ReadString());
-			return;
-		}
+		s = MSG_ReadString ();
+		cls.challenge = atoi(s);
+		CL_SendConnectPacket ();
+		return;
 	}
 
-//	Com_DPrintf ("%s", net_message.data + 5);
-	if (c == S2C_CONNECTION)
-	{
+	if (c == S2C_CONNECTION) {
 		if (!com_serveractive || developer.value)
 			Com_Printf ("%s: connection\n", NET_AdrToString(net_from));
 		if (cls.state >= ca_connected)
@@ -503,9 +498,9 @@ void CL_ConnectionlessPacket (void)
 		allowremotecmd = false; // localid required now for remote cmds
 		return;
 	}
-	// remote command from gui front end
-	if (c == A2C_CLIENT_COMMAND)
-	{
+
+	// remote command from GUI frontend
+	if (c == A2C_CLIENT_COMMAND) {
 		char	cmdtext[2048];
 
 		Com_Printf ("%s: client command\n", NET_AdrToString(net_from));
@@ -515,12 +510,13 @@ void CL_ConnectionlessPacket (void)
 			Com_Printf ("Command packet from remote host.  Ignored.\n");
 			return;
 		}
+
 #ifdef _WIN32
 		ShowWindow (mainwindow, SW_RESTORE);
 		SetForegroundWindow (mainwindow);
 #endif
-		s = MSG_ReadString ();
 
+		s = MSG_ReadString ();
 		strlcpy (cmdtext, s, sizeof(cmdtext));
 
 		s = MSG_ReadString ();
@@ -554,9 +550,19 @@ void CL_ConnectionlessPacket (void)
 		allowremotecmd = false;
 		return;
 	}
+
 	// print command from somewhere
-	if (c == A2C_PRINT)
-	{
+	if (c == A2C_PRINT) {
+		if (net_message.data[msg_readcount] == '\\') {
+			extern double qstat_senttime;
+			extern void CL_PrintQStatReply (char *s);
+
+			if (qstat_senttime && curtime - qstat_senttime < 10) {
+				CL_PrintQStatReply (MSG_ReadString());
+				return;
+			}
+		}
+
 		Com_Printf ("%s: print\n", NET_AdrToString(net_from));
 
 		s = MSG_ReadString ();
@@ -565,8 +571,7 @@ void CL_ConnectionlessPacket (void)
 	}
 
 	// ping from somewhere
-	if (c == A2A_PING)
-	{
+	if (c == A2A_PING) {
 		char	data[6];
 
 		Com_Printf ("%s: ping\n", NET_AdrToString(net_from));
@@ -582,15 +587,6 @@ void CL_ConnectionlessPacket (void)
 		return;
 	}
 
-	if (c == S2C_CHALLENGE) {
-		Com_Printf ("%s: challenge\n", NET_AdrToString(net_from));
-
-		s = MSG_ReadString ();
-		cls.challenge = atoi(s);
-		CL_SendConnectPacket ();
-		return;
-	}
-
 	if (c == svc_disconnect) {
 		if (cls.demoplayback) {
 			Com_Printf ("\n======== End of demo ========\n\n");
@@ -598,12 +594,10 @@ void CL_ConnectionlessPacket (void)
 			Host_EndGame ();
 			Host_Abort ();
 		}
-//		else
-//			Host_Error ("Server disconnected");
 		return;
 	}
 
-	Com_Printf ("unknown:  %c\n", c);
+	Com_Printf ("Bad connectionless command: 0x%X\n", c);
 }
 
 
