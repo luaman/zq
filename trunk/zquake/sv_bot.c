@@ -143,8 +143,6 @@ void SV_RemoveBot (client_t *cl)
 	cl->edict->v.frags = 0;
 	memset (cl->userinfo, 0, sizeof(cl->userinfo));
 
-	SV_ClearBackbuf (cl);	// just in case
-
 // send notification to all remaining clients
 	SV_FullClientUpdate (cl, &sv.reliable_datagram);
 }

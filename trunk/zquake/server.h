@@ -29,12 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define	MAX_SIGNON_BUFFERS	10
 
-typedef struct backbuf_block_s {
-	int		size;
-	struct backbuf_block_s	*next;
-	byte	data[4];		// variable sized
-} backbuf_block_t;
-
 typedef struct
 {
 	int		original;	// what entity is currently using this translation slot
@@ -174,10 +168,11 @@ typedef struct client_s
 	sizebuf_t		datagram;
 	byte			datagram_buf[MAX_DATAGRAM];
 
-	// backbuffers for client reliable data
-	int				backbuf_size;		// total size of all data in backbuf blocks
-	backbuf_block_t *backbuf_head;
-	backbuf_block_t *backbuf_tail;
+	// back buffers for client reliable data
+	sizebuf_t		backbuf;
+	int				num_backbuf;
+	int				backbuf_size[MAX_BACK_BUFFERS];
+	byte			backbuf_data[MAX_BACK_BUFFERS][MAX_MSGLEN];
 
 	// stufftext and sprint messages are buffered to reduce traffic
 	char			stufftext_buf[MAX_STUFFTEXT];
