@@ -313,6 +313,8 @@ void CL_ClearState (void)
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
 	memset (cl_baselines, 0, sizeof(cl_baselines));
 
+	cl_numvisedicts = cl_oldnumvisedicts = 0;
+
 // make sure no centerprint messages are left from previous level
 	scr_centertime_off = 0;
 
