@@ -410,7 +410,7 @@ void DeathBubblesSpawn ()
 	bubble.frame = 0;
 	bubble.cnt = 0;
 	setsize (bubble, '-8 -8 -8', '8 8 8');
-	self.nextthink = time + 0.01;
+	self.nextthink = time + 0.1;
 	self.think = DeathBubblesSpawn;
 	self.air_finished = self.air_finished + 1;
 	if (self.air_finished >= self.bubble_count)
@@ -425,7 +425,7 @@ void DeathBubbles (float num_bubbles)
 	setorigin (bubble_spawner, self.origin);
 	bubble_spawner.movetype = MOVETYPE_NONE;
 	bubble_spawner.solid = SOLID_NOT;
-	bubble_spawner.nextthink = time + 0.01;
+	bubble_spawner.nextthink = time + 0.1;
 	bubble_spawner.think = DeathBubblesSpawn;
 	bubble_spawner.air_finished = 0;
 	bubble_spawner.owner = self;
