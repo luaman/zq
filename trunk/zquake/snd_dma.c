@@ -690,7 +690,7 @@ S_UpdateAmbientSounds
 */
 void S_UpdateAmbientSounds (void)
 {
-	cleaf_t		*leaf;
+	struct cleaf_s *leaf;
 	float		vol;
 	int			ambient_channel;
 	channel_t	*chan;

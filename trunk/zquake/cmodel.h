@@ -60,28 +60,15 @@ typedef struct {
 	hull_t	hulls[MAX_MAP_HULLS];
 } cmodel_t;
 
-#ifdef _WIN32
-typedef struct cleaf_s cleaf_t;
-#else
-typedef struct cleaf_s
-{
-// common with node
-	int			contents;		// a negative contents number
-	struct cnode_s  *parent;
-
-// leaf specific
-	byte		ambient_sound_level[NUM_AMBIENTS];
-} cleaf_t;
-#endif
 
 hull_t *CM_HullForBox (vec3_t mins, vec3_t maxs);
 int CM_HullPointContents (hull_t *hull, int num, vec3_t p);
 trace_t CM_HullTrace (hull_t *hull, vec3_t start, vec3_t end);
-cleaf_t *CM_PointInLeaf (const vec3_t p);
-int CM_Leafnum (const cleaf_t *leaf);
-int	CM_LeafAmbientLevel (const cleaf_t *leaf, int ambient_channel);
-byte *CM_LeafPVS (const cleaf_t *leaf);
-byte *CM_LeafPHS (const cleaf_t *leaf);		// only for the server
+struct cleaf_s *CM_PointInLeaf (const vec3_t p);
+int CM_Leafnum (const struct cleaf_s *leaf);
+int	CM_LeafAmbientLevel (const struct cleaf_s *leaf, int ambient_channel);
+byte *CM_LeafPVS (const struct cleaf_s *leaf);
+byte *CM_LeafPHS (const struct cleaf_s *leaf);		// only for the server
 byte *CM_FatPVS (vec3_t org);
 int CM_FindTouchedLeafs (const vec3_t mins, const vec3_t maxs, int leafs[], int maxleafs, int headnode, int *topnode);
 char *CM_EntityString (void);

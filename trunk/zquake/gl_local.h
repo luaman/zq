@@ -100,14 +100,12 @@ texture_t *R_TextureAnimation (texture_t *base);
 
 //====================================================
 
-#ifdef _WIN32
 typedef struct mpic_s
 {
 	int			width, height;
 	int			texnum;
 	float		sl, tl, sh, th;
-} mpic_t;
-#endif
+} /* mpic_t */;
 
 //====================================================
 
