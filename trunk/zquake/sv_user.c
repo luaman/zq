@@ -1937,7 +1937,10 @@ void SV_PostRunCmd (void)
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
 		VectorCopy (sv_player->v.velocity, originalvel);
 
-		PR_ExecuteProgram (pr_global_struct->PlayerPostThink);
+		if (sv_client->bot && BotPostThink)
+			PR_ExecuteProgram (BotPostThink);
+		else
+			PR_ExecuteProgram (pr_global_struct->PlayerPostThink);
 
 		if (onground && originalvel[2] < 0 && sv_player->v.velocity[2] == 0
 			&& originalvel[0] == sv_player->v.velocity[0]

@@ -137,10 +137,8 @@ extern	qboolean	pr_trace;
 extern	dfunction_t	*pr_xfunction;
 extern	int			pr_xstatement;
 
-extern func_t SpectatorConnect;
-extern func_t SpectatorThink;
-extern func_t SpectatorDisconnect;
-extern func_t BotPreThink;
+extern func_t SpectatorConnect, SpectatorDisconnect, SpectatorThink;
+extern func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
 
 void PR_RunError (char *error, ...);
 

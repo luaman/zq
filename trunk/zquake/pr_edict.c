@@ -51,10 +51,8 @@ typedef struct {
 
 static gefv_cache	gefvCache[GEFV_CACHESIZE] = {{NULL, ""}, {NULL, ""}};
 
-func_t SpectatorConnect;
-func_t SpectatorThink;
-func_t SpectatorDisconnect;
-func_t BotPreThink;
+func_t SpectatorConnect, SpectatorThink, SpectatorDisconnect;
+func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
 
 
 /*
@@ -1119,7 +1117,8 @@ void PR_LoadProgs (void)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 
 	// find optional QC-exported functions
-	SpectatorConnect = SpectatorThink = SpectatorDisconnect = BotPreThink = 0;
+	SpectatorConnect = SpectatorThink = SpectatorDisconnect = 0;
+	BotConnect = BotDisconnect = BotPreThink = BotPostThink = 0;
 
 	if ((f = ED_FindFunction ("SpectatorConnect")) != NULL)
 		SpectatorConnect = (func_t)(f - pr_functions);
@@ -1127,8 +1126,14 @@ void PR_LoadProgs (void)
 		SpectatorThink = (func_t)(f - pr_functions);
 	if ((f = ED_FindFunction ("SpectatorDisconnect")) != NULL)
 		SpectatorDisconnect = (func_t)(f - pr_functions);
+	if ((f = ED_FindFunction ("BotConnect")) != NULL)
+		BotConnect = (func_t)(f - pr_functions);
+	if ((f = ED_FindFunction ("BotDisconnect")) != NULL)
+		BotDisconnect = (func_t)(f - pr_functions);
 	if ((f = ED_FindFunction ("BotPreThink")) != NULL)
 		BotPreThink = (func_t)(f - pr_functions);
+	if ((f = ED_FindFunction ("BotPostThink")) != NULL)
+		BotPostThink = (func_t)(f - pr_functions);
 
 	PR_CheckExtensions ();
 	PR_FindCmdFunctions ();
