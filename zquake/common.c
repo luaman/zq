@@ -49,7 +49,7 @@ qboolean com_serveractive = false;
 void FS_InitFilesystem (void);
 void COM_Path_f (void);
 
-char	gamedirfile[MAX_OSPATH];
+char	com_gamedirfile[MAX_QPATH];
 
 /*
 
@@ -1498,9 +1498,9 @@ void FS_AddGameDirectory (char *dir)
 	char			*p;
 
 	if ((p = strrchr(dir, '/')) != NULL)
-		strcpy(gamedirfile, ++p);
+		strcpy(com_gamedirfile, ++p);
 	else
-		strcpy(gamedirfile, p);
+		strcpy(com_gamedirfile, p);
 	strcpy (com_gamedir, dir);
 
 //
@@ -1550,9 +1550,9 @@ void FS_SetGamedir (char *dir)
 		return;
 	}
 
-	if (!strcmp(gamedirfile, dir))
+	if (!strcmp(com_gamedirfile, dir))
 		return;		// still the same
-	strcpy (gamedirfile, dir);
+	Q_strncpyz (com_gamedirfile, dir, sizeof(com_gamedirfile));
 
 	//
 	// free up any current game dir info
