@@ -291,13 +291,13 @@ ONCHANGE(ch_gamma, gl_gamma)	ONCHANGE(ch_contrast, gl_contrast)
 ONCHANGE(ch_gamma, sw_gamma)	ONCHANGE(ch_contrast, sw_contrast)
 #endif
 
-cvar_t		gamma = {"gamma", "1", CVAR_ARCHIVE, ch_gamma};
+cvar_t		gammavar = {"gamma", "1", CVAR_ARCHIVE, ch_gamma};
 cvar_t		contrast = {"contrast", "1", 0, ch_contrast};
 
 
 #ifdef	GLQUAKE
 
-ONCHANGE(ch_gl_gamma, gamma)	ONCHANGE(ch_gl_contrast, contrast)
+ONCHANGE(ch_gl_gamma, gammavar)	ONCHANGE(ch_gl_contrast, contrast)
 
 cvar_t		gl_gamma = {"gl_gamma", "1", CVAR_USER_ARCHIVE, ch_gl_gamma};
 cvar_t		gl_contrast = {"gl_contrast", "1", CVAR_USER_ARCHIVE, ch_gl_contrast};
@@ -310,7 +310,7 @@ unsigned short	ramps[3][256];
 
 #else
 
-ONCHANGE(ch_sw_gamma, gamma)	ONCHANGE(ch_sw_contrast, contrast)
+ONCHANGE(ch_sw_gamma, gammavar)	ONCHANGE(ch_sw_contrast, contrast)
 
 cvar_t		sw_gamma = {"sw_gamma", "1", CVAR_USER_ARCHIVE, ch_sw_gamma};
 cvar_t		sw_contrast = {"sw_contrast", "1", CVAR_USER_ARCHIVE, ch_sw_contrast};
@@ -1170,6 +1170,6 @@ void V_Init (void)
 
 	// gamma and contrast are just shortcuts to sw_ or gl_ equivalents
 	// for compatibility and easier access from the console
-	Cvar_Register (&gamma);
+	Cvar_Register (&gammavar);
 	Cvar_Register (&contrast);
 }
