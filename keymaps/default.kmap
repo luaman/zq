@@ -34,7 +34,7 @@ keycode 25 p
 keycode 26 [ {
 keycode 27 ] }
 keycode 28 ENTER
-ext keycode 28 KP_ENTER
+keycode ext 28 KP_ENTER
 keycode 29 CTRL
 keycode 30 a
 keycode 31 s
@@ -60,7 +60,7 @@ keycode 50 m
 keycode 51 , <
 keycode 52 . >
 keycode 53 / ?
-ext keycode 53 KP_SLASH
+keycode ext 53 KP_SLASH
 keycode 54 SHIFT
 keycode 55 KP_STAR
 keycode 56 ALT
@@ -77,30 +77,30 @@ keycode 66 F8
 keycode 67 F9
 keycode 68 F10
 keycode 69 PAUSE
-ext keycode 69 NUMLOCK
+keycode ext 69 NUMLOCK
 keycode 70 SCRLCK
 keycode 71 KP_HOME
-ext keycode 71 HOME
+keycode ext 71 HOME
 keycode 72 KP_UPARROW
-ext keycode 72 UPARROW
+keycode ext 72 UPARROW
 keycode 73 KP_PGUP
-ext keycode 73 PGUP
+keycode ext 73 PGUP
 keycode 74 KP_MINUS
 keycode 75 KP_LEFTARROW
-ext keycode 75 LEFTARROW
+keycode ext 75 LEFTARROW
 keycode 76 KP_5
 keycode 77 KP_RIGHTARROW
-ext keycode 77 RIGHTARROW
+keycode ext 77 RIGHTARROW
 keycode 78 KP_PLUS
 keycode 79 KP_END
-ext keycode 79 END
+keycode ext 79 END
 keycode 80 KP_DOWNARROW
-ext keycode 80 DOWNARROW
+keycode ext 80 DOWNARROW
 keycode 81 KP_PGDN
-ext keycode 81 PGDN
+keycode ext 81 PGDN
 keycode	82 KP_INS
-ext keycode 82 INS
+keycode ext 82 INS
 keycode	83 KP_DEL
-ext keycode 83 DEL
+keycode ext 83 DEL
 keycode 87 F11
 keycode 88 F12
