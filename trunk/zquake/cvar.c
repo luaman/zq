@@ -175,7 +175,7 @@ void Cvar_Set (cvar_t *var, char *string)
 
 	Z_Free (var->string);	// free the old value string
 	
-	var->string = CopyString (string);
+	var->string = Z_CopyString (string);
 	var->value = Q_atof (var->string);
 
 #ifndef CLIENTONLY
@@ -266,14 +266,14 @@ void Cvar_Register (cvar_t *var)
 		Q_strncpyz (string, old->string, sizeof(string));
 		Cvar_Delete (old->name);
 		if (!(var->flags & CVAR_ROM))
-			var->string = CopyString (string);
+			var->string = Z_CopyString (string);
 		else
-			var->string = CopyString (var->string);
+			var->string = Z_CopyString (var->string);
 	}
 	else
 	{
 		// allocate the string on zone because future sets will Z_Free it
-		var->string = CopyString (var->string);
+		var->string = Z_CopyString (var->string);
 	}
 	
 	var->value = Q_atof (var->string);
@@ -420,8 +420,8 @@ cvar_t *Cvar_Get (char *name, char *string, int cvarflags)
 	var->hash_next = cvar_hash[key];
 	cvar_hash[key] = var;
 
-	var->name = CopyString (name);
-	var->string = CopyString (string);
+	var->name = Z_CopyString (name);
+	var->string = Z_CopyString (string);
 	var->flags = cvarflags | CVAR_DYNAMIC;
 	var->value = Q_atof (var->string);
 

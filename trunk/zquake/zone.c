@@ -281,6 +281,16 @@ void Z_CheckHeap (void)
 	}
 }
 
+char *Z_CopyString (char *in)
+{
+	char	*out;
+	
+	out = Z_Malloc (strlen(in)+1);
+	strcpy (out, in);
+	return out;
+}
+
+
 //============================================================================
 
 #define	HUNK_SENTINAL	0x1df001ed
