@@ -514,7 +514,7 @@ void Con_DrawNotify (void)
 ================
 Con_DrawConsole
 
-Draws the console with the solid background
+Draws console text and download bar if needed
 ================
 */
 void Con_DrawConsole (int lines)
@@ -528,10 +528,6 @@ void Con_DrawConsole (int lines)
 	if (lines <= 0)
 		return;
 
-// draw the background
-	Draw_ConsoleBackground (lines);
-
-// draw the text
 	con_vislines = lines;
 	
 // changed to line things up better

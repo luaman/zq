@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "menu.h"
 #include "sbar.h"
 #include "sound.h"
+#include "version.h"
 #include <time.h>
 
 /*
@@ -93,6 +94,7 @@ cvar_t		scr_viewsize = {"viewsize","100",CVAR_ARCHIVE};
 cvar_t		scr_fov = {"fov","90",CVAR_ARCHIVE};	// 10 - 170
 cvar_t		scr_consize = {"scr_consize","0.5"};
 cvar_t		scr_conspeed = {"scr_conspeed","1000"};
+cvar_t		scr_conalpha = {"scr_conalpha", "0.8"};
 cvar_t		scr_centertime = {"scr_centertime","2"};
 cvar_t		scr_showram = {"showram","1"};
 cvar_t		scr_showturtle = {"showturtle","0"};
@@ -439,6 +441,7 @@ void SCR_Init (void)
 	Cvar_Register (&scr_viewsize);
 	Cvar_Register (&scr_consize);
 	Cvar_Register (&scr_conspeed);
+	Cvar_Register (&scr_conalpha);
 	Cvar_Register (&scr_showram);
 	Cvar_Register (&scr_showturtle);
 	Cvar_Register (&scr_showpause);
@@ -789,17 +792,35 @@ SCR_DrawConsole
 */
 void SCR_DrawConsole (void)
 {
-	if (scr_con_current)
-	{
-		scr_copyeverything = 1;
-		Con_DrawConsole (scr_con_current);
-		clearconsole = 0;
-	}
-	else
-	{
+	const char *ver = PROGRAM " " PROGRAM_VERSION;
+	float	alpha;
+	mpic_t	*conback;
+
+	if (!scr_con_current) {
+		// console is up, draw notify instead
 		if (key_dest == key_game || key_dest == key_message)
 			Con_DrawNotify ();	// only draw notify in game
+		return;
 	}
+
+	// draw the background
+	if (scr_con_current == vid.height)
+		alpha = 1.0f;	// non-transparent if full screen
+	else
+		alpha = bound (0.0f, scr_conalpha.value, 1.0f);
+
+	conback = R_CachePic ("gfx/conback.lmp");
+	R_DrawStretchPic (0, scr_con_current - vid.height, vid.width, vid.height, conback, alpha);
+
+	// draw version string
+	Draw_Alt_String (vid.width - strlen(ver)*8 - 8, scr_con_current - 10, ver);
+
+	// draw console text
+	if (key_dest != key_menu)
+		Con_DrawConsole (scr_con_current);
+
+	clearconsole = 0;
+	scr_copyeverything = 1;
 }
 
 

@@ -677,79 +677,64 @@ void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
 }
 
 
-void Draw_CharToConback (int num, byte *dest)
+//
+// negative y values are allowed
+//
+void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha)
 {
-	int		row, col;
-	byte	*source;
-	int		drawline;
-	int		x;
+	int			i, j;
+	byte		*src, *dest;
+	int			startline;
+	unsigned	frac, fracstep;
 
-	row = num>>4;
-	col = num&15;
-	source = draw_chars + (row<<10) + (col<<3);
+	if (!alpha)
+		return;
 
-	drawline = 8;
-
-	while (drawline--)
-	{
-		for (x=0 ; x<8 ; x++)
-			if (source[x])
-				dest[x] = 0x60 + source[x];
-		source += 128;
-		dest += 320;
+	if ((x < 0) || (x + width > vid.width) || (y + height > vid.height)) {
+		Sys_Error ("R_DrawStretchPic: bad coordinates");
 	}
 
-}
+	if (y + height <= 0)
+		return;			// completely outside the screen
 
+	startline = (y >= 0) ? 0 : -y;
 
-void R_DrawConsoleBackground (int lines, const char *ver)
-{
-	int				x, y, v;
-	byte			*src, *dest;
-	unsigned short	*pusdest;
-	int				f, fstep;
-	mpic_t			*conback;
-	static			char saveback[320*8];
-
-	conback = R_CachePic ("gfx/conback.lmp");
-
-// hack the version number directly into the pic
-	memcpy (saveback, conback->data + 320*186, 320*8);
-	dest = conback->data + 320 + 320*186 - 11 - strlen(ver)*8;
-	for (x=0 ; x<strlen(ver) ; x++)
-		Draw_CharToConback (ver[x], dest+(x<<3));
-	
-// draw the pic
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer;
+		dest = vid.buffer + (y + startline) * vid.rowbytes + x;
+		fracstep = pic->width * 0x10000 / width;
 
-		for (y=0 ; y<lines ; y++, dest += vid.rowbytes)
+		for (i = startline; i < height; i++)
 		{
-			v = (vid.conheight - lines + y)*200/vid.conheight;
-			src = conback->data + v*320;
-			if (vid.conwidth == 320)
-				memcpy (dest, src, vid.conwidth);
-			else
-			{
-				f = 0;
-				fstep = 320*0x10000/vid.conwidth;
-				for (x=0 ; x<vid.conwidth ; x+=4)
+			src = pic->data + pic->width * (i * pic->height / height);
+			if (width == pic->width) {
+				memcpy (dest, src, width);
+				src += pic->width;
+				dest += vid.rowbytes;
+			}
+			else {
+				frac = fracstep >> 1;
+				for (j = width >> 2; j; j--)
 				{
-					dest[x] = src[f>>16];
-					f += fstep;
-					dest[x+1] = src[f>>16];
-					f += fstep;
-					dest[x+2] = src[f>>16];
-					f += fstep;
-					dest[x+3] = src[f>>16];
-					f += fstep;
+					dest[0] = src[frac>>16];	frac += fracstep;
+					dest[1] = src[frac>>16];	frac += fracstep;
+					dest[2] = src[frac>>16];	frac += fracstep;
+					dest[3] = src[frac>>16];	frac += fracstep;
+					dest += 4;
 				}
+				for (j = width & 3; j; j--)
+				{
+					*dest = src[frac>>16];	frac += fracstep;
+					dest++;
+				}
+				src += pic->width;
+				dest += vid.rowbytes - width;
 			}
 		}
 	}
-	else
-	{
+	else {
+/*		unsigned short	*pusdest;
+
 		pusdest = (unsigned short *)vid.buffer;
 
 		for (y=0 ; y<lines ; y++, pusdest += (vid.rowbytes >> 1))
@@ -758,25 +743,23 @@ void R_DrawConsoleBackground (int lines, const char *ver)
 		// FIXME: does the endian switching go away in production?
 			v = (vid.conheight - lines + y)*200/vid.conheight;
 			src = conback->data + v*320;
-			f = 0;
-			fstep = 320*0x10000/vid.conwidth;
+			frac = 0;
+			fracstep = 320*0x10000/vid.conwidth;
 			for (x=0 ; x<vid.conwidth ; x+=4)
 			{
-				pusdest[x] = d_8to16table[src[f>>16]];
-				f += fstep;
-				pusdest[x+1] = d_8to16table[src[f>>16]];
-				f += fstep;
-				pusdest[x+2] = d_8to16table[src[f>>16]];
-				f += fstep;
-				pusdest[x+3] = d_8to16table[src[f>>16]];
-				f += fstep;
+				pusdest[x] = d_8to16table[src[frac>>16]];
+				frac += fracstep;
+				pusdest[x+1] = d_8to16table[src[frac>>16]];
+				frac += fracstep;
+				pusdest[x+2] = d_8to16table[src[frac>>16]];
+				frac += fracstep;
+				pusdest[x+3] = d_8to16table[src[frac>>16]];
+				frac += fracstep;
 			}
 		}
+*/
 	}
-	// put it back
-	memcpy(conback->data + 320*186, saveback, 320*8);
 }
-
 
 /*
 ==============

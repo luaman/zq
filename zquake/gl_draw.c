@@ -32,7 +32,6 @@ void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel);
 cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_lerpimages = {"r_lerpimages", "1"};
-cvar_t		gl_conalpha = {"gl_conalpha", "0.8"};
 cvar_t		gl_texturemode = {"gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", 0, OnChange_gl_texturemode};
 cvar_t		gl_smoothfont = {"gl_smoothfont", "1", 0, OnChange_gl_smoothfont};
 
@@ -75,11 +74,7 @@ static byte crosshairdata[3][64] = {
 
 
 int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data);
-void Draw_LoadConback (void);
 void Draw_LoadCharset (void);
-
-mpic_t	conback_data;
-mpic_t	*conback = &conback_data;
 
 int		gl_lightmap_format = 4;
 int		gl_solid_format = 3;
@@ -273,11 +268,10 @@ void Draw_FlushCache (void)
 		cachepics[i].valid = false;		// force it to be reloaded
 
 	// I hope this doesn't cause texture memory leaks
-	Draw_LoadConback ();
 	Draw_LoadCharset ();
 }
 
-
+// FIXME, calling R_CacheWadPic more than once for the same pic will allocate a new pic every time
 mpic_t *R_CacheWadPic (char *name)
 {
 	qpic_t	*p;
@@ -363,30 +357,6 @@ mpic_t *R_CachePic (char *path)
 	return &pic->pic;
 }
 
-
-void Draw_CharToConback (int num, byte *dest)
-{
-	int		row, col;
-	byte	*source;
-	int		drawline;
-	int		x;
-
-	row = num>>4;
-	col = num&15;
-	source = draw_chars + (row<<10) + (col<<3);
-
-	drawline = 8;
-
-	while (drawline--)
-	{
-		for (x=0 ; x<8 ; x++)
-			if (source[x] != 255)
-				dest[x] = 0x60 + source[x];
-		source += 128;
-		dest += 320;
-	}
-
-}
 
 typedef struct
 {
@@ -490,31 +460,6 @@ static void Draw_LoadCharset (void)
 	}
 }
 
-void Draw_LoadConback (void)
-{
-	qpic_t	*cb;
-	int		start;
-
-	start = Hunk_LowMark ();
-
-	cb = (qpic_t *)FS_LoadHunkFile ("gfx/conback.lmp");	
-	if (!cb)
-		Sys_Error ("Couldn't load gfx/conback.lmp");
-	SwapPic (cb);
-
-	if (cb->width != 320 || cb->height != 200)
-		Sys_Error ("Draw_Init: conback.lmp size is not 320x200");
-
-	conback->width = cb->width;
-	conback->height = cb->height;
-	GL_LoadPicTexture ("conback", conback, cb->data);
-	conback->width = vid.conwidth;
-	conback->height = vid.conheight;
-
-	// free loaded console
-	Hunk_FreeToLowMark (start);
-}
-
 
 /*
 ===============
@@ -528,7 +473,6 @@ void Draw_Init (void)
 	Cvar_Register (&gl_nobind);
 	Cvar_Register (&gl_picmip);
 	Cvar_Register (&gl_lerpimages);
-	Cvar_Register (&gl_conalpha);
 	Cvar_Register (&gl_texturemode);
 	Cvar_Register (&gl_smoothfont);
 
@@ -541,8 +485,6 @@ void Draw_Init (void)
 	// it into a texture
 
 	Draw_LoadCharset ();
-
-	Draw_LoadConback ();
 
 	// save a texture slot for translated picture
 	translate_texture = texture_extension_number++;
@@ -725,11 +667,7 @@ void R_DrawPic (int x, int y, mpic_t *pic)
 	glEnd ();
 }
 
-/*
-=============
-Draw_AlphaPic
-=============
-*/
+// not really used any more
 void Draw_AlphaPic (int x, int y, mpic_t *pic, float alpha)
 {
 	if (scrap_dirty)
@@ -835,15 +773,31 @@ void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
 }
 
 
-void R_DrawConsoleBackground (int lines, const char *ver)
+void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha)
 {
-	if (lines == vid.height)
-		R_DrawPic (0, lines - vid.height, conback);
-	else
-		Draw_AlphaPic (0, lines - vid.height, conback, gl_conalpha.value);
-
-	// FIXME, Draw_Alt_String is in client
-	Draw_Alt_String (vid.conwidth - strlen(ver)*8 - 8, lines - 10, ver);
+	if (!alpha)
+		return;
+	if (scrap_dirty)
+		Scrap_Upload ();
+	glDisable(GL_ALPHA_TEST);
+	glEnable (GL_BLEND);
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glCullFace(GL_FRONT);
+	glColor4f (1, 1, 1, alpha);
+	GL_Bind (pic->texnum);
+	glBegin (GL_QUADS);
+	glTexCoord2f (pic->sl, pic->tl);
+	glVertex2f (x, y);
+	glTexCoord2f (pic->sh, pic->tl);
+	glVertex2f (x + width, y);
+	glTexCoord2f (pic->sh, pic->th);
+	glVertex2f (x + width, y + height);
+	glTexCoord2f (pic->sl, pic->th);
+	glVertex2f (x, y + height);
+	glEnd ();
+	glColor3f (1, 1, 1);
+	glEnable(GL_ALPHA_TEST);
+	glDisable (GL_BLEND);
 }
 
 

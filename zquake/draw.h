@@ -45,5 +45,4 @@ extern	mpic_t		*draw_disc;	// also used on sbar
 
 void Draw_Alt_String (int x, int y, const char *str);
 void Draw_TextBox (int x, int y, int width, int lines);
-void Draw_ConsoleBackground (int lines);
 void Draw_Crosshair (void);

@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cl_draw.h - 2d drawing functions which don't belong to refresh
 
 #include "quakedef.h"
-#include "version.h"
 
 /*
 ================
@@ -96,29 +95,6 @@ void Draw_TextBox (int x, int y, int width, int lines)
 	}
 	p = R_CachePic ("gfx/box_br.lmp");
 	R_DrawPic (cx, cy+8, p);
-}
-
-
-/*
-================
-Draw_ConsoleBackground
-================
-*/
-void Draw_ConsoleBackground (int lines)
-{
-	char	ver[100];
-
-#ifdef GLQUAKE
-	sprintf (ver, PROGRAM " %s", PROGRAM_VERSION);
-#else
-	if (cls.download) {
-		strcpy (ver, PROGRAM_VERSION);
-	} else {
-		sprintf (ver, PROGRAM " %s", PROGRAM_VERSION);
-	}
-#endif
-
-	R_DrawConsoleBackground (lines, ver);
 }
 
 
