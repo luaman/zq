@@ -54,6 +54,7 @@ typedef struct
 	float		waterjumptime;
 	int			onground;		// -1 = in air, else pmove entity number
 	int			oldbuttons;
+	int			jump_msec;		// fix bunny-hop flickering
 } player_state_t;
 
 

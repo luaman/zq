@@ -55,6 +55,7 @@ typedef struct
 	vec3_t	angles;
 	vec3_t	velocity;
 	int		oldbuttons;
+	int		jump_msec;	// msec since last jump
 	float		waterjumptime;
 	qboolean	dead;
 	int		spectator;
