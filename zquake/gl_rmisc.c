@@ -394,12 +394,6 @@ void R_LoadSky_f ()
 		return;
 	}
 
-	if (Cmd_Argv(1)[0] == 0) {
-		// loadsky "" clears the skybox
-		r_skyboxloaded = false;
-		return;
-	}
-
 	R_SetSky (Cmd_Argv(1));
 }
 

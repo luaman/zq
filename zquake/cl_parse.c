@@ -307,9 +307,7 @@ void Model_NextDownload (void)
 	CL_ClearParticles ();
 	CL_FindModelNumbers ();
 	R_NewMap ();
-
-	if (cl.sky[0])
-		R_SetSky (cl.sky);
+	R_SetSky (cl.sky);
 
 	TP_NewMap ();
 	Hunk_Check ();		// make sure nothing is hurt
@@ -1229,12 +1227,14 @@ void CL_ProcessServerInfo (void)
 		}
 	}
 
-	// skybox (FIXME, allow dynamic updates, like loadsky)
-	if (cls.state < ca_active)
-	{
-		strcpy (cl.sky, Info_ValueForKey(cl.serverinfo, "sky"));
+	// parse skybox
+	if (strcmp(cl.sky, (p = Info_ValueForKey(cl.serverinfo, "sky")))) {
+		// sky has changed
+		strcpy (cl.sky, p);
 		if (strstr(cl.sky, ".."))
 			cl.sky[0] = 0;
+		if (cls.state >= ca_onserver && cl.worldmodel)
+			R_SetSky (cl.sky);
 	}
 }
 
