@@ -400,19 +400,17 @@ void COM_Shutdown (void)
 ============
 va
 
-does a varargs printf into a temp buffer
-(8 different are available)
+Does a varargs printf into a temp buffer
+2 buffers are used to allow subsequent va calls
 ============
 */
 char *va (char *format, ...)
 {
 	va_list argptr;
-	static char string[8][2048];
+	static char string[2][2048];
 	static int idx = 0;
 	
-	idx++;
-	if (idx >= 8)
-		idx = 0;
+	idx = 1 - idx;
 
 	va_start (argptr, format);
 #ifdef _WIN32
