@@ -1073,9 +1073,16 @@ void Cmd_ExecuteString (char *text)
 		}
 	}
 
+// some bright guy decided to use "skill" as a mod command in Custom TF, sigh
+if ( ! (!strcmp(Cmd_Argv(0), "skill") && Cmd_Argc() == 1 && Cmd_FindAlias("skill")))
+{
+
+
 // check cvars
 	if (Cvar_Command())
 		return;
+
+}
 
 // check alias
 	for (a=cmd_alias_hash[key] ; a ; a=a->hash_next)
