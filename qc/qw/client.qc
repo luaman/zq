@@ -243,14 +243,14 @@ void() execute_changelevel =
 		other.modelindex = 0;
 
 		other.effects = 0;
-		other.items = self.items - (self.items & (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD));
-		self.super_damage_finished = 0;
-		self.radsuit_finished = 0;
-		self.invisible_finished = 0;
-		self.invincible_finished = 0;
+		other.items = other.items - (other.items & (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD));
+		other.super_damage_finished = 0;
+		other.radsuit_finished = 0;
+		other.invisible_finished = 0;
+		other.invincible_finished = 0;
 
 		setorigin (other, pos.origin);
-		self.velocity = '0 0 0';
+		other.velocity = '0 0 0';
 		other = find (other, classname, "player");
 	}       
 
