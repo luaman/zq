@@ -1149,35 +1149,30 @@ CL_ProcessServerInfo
 Called by CL_FullServerinfo_f and CL_ParseServerInfoChange
 ==============
 */
-void TP_CheckFPD ();
 void CL_ProcessServerInfo (void)
 {
 	char	*p;
-	static int _teamplay = 0;
-	static int _fpd = 0;
+	static int old_teamplay = 0;
+	static int old_fpd = 0;
 	int teamplay;	// FIXME: make it cl.teamplay?
 	int i;
 
-	if ((p = Info_ValueForKey(cl.serverinfo, "fpd")) != NULL)
-		cl.fpd = Q_atof(p);
-	else
-		cl.fpd = 0;
+	cl.fpd = Q_atof(Info_ValueForKey(cl.serverinfo, "fpd"));
+	teamplay = Q_atof(Info_ValueForKey(cl.serverinfo, "teamplay"));
 	
-	if ((p = Info_ValueForKey(cl.serverinfo, "deathmatch")) != NULL)
-		cl.gametype = Q_atof(p) ? 1 : 0;
+	p = Info_ValueForKey(cl.serverinfo, "deathmatch");
+	if (*p)
+		cl.gametype = Q_atof(p) ? GAME_DEATHMATCH : GAME_COOP;
 	else
 		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
 
-	if ((p = Info_ValueForKey(cl.serverinfo, "teamplay")) != NULL)
-		teamplay = Q_atof(p);
-	else 
-		teamplay = 0;
-
-	if (teamplay != _teamplay || cl.fpd != _fpd) {
-		_teamplay = teamplay;
-		_fpd = cl.fpd;
-		for (i = 0; i < MAX_CLIENTS ; i++)
-			CL_NewTranslation (i);
+	if (teamplay != old_teamplay || cl.fpd != old_fpd) {
+		old_teamplay = teamplay;
+		old_fpd = cl.fpd;
+		if (cls.state >= ca_connected) {
+			for (i = 0; i < MAX_CLIENTS ; i++)
+				CL_NewTranslation (i);
+		}
 	}
 }
 
