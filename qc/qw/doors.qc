@@ -724,7 +724,7 @@ void secret_touch ()
 
 	self.attack_finished = time + 2;
 	
-	if (self.message)
+	if (self.message != "")
 	{
 		centerprint (other, self.message);
 		sound (other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM);
