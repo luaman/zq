@@ -690,6 +690,22 @@ void Key_SetBinding (int keynum, char *binding)
 
 /*
 ===================
+Key_Unbind
+===================
+*/
+void Key_Unbind (int keynum)
+{
+	if (keynum == -1)
+		return;
+
+	if (keybindings[keynum]) {
+		Z_Free (keybindings[keynum]);
+		keybindings[keynum] = NULL;
+	}
+}
+
+/*
+===================
 Key_Unbind_f
 ===================
 */
@@ -710,7 +726,7 @@ void Key_Unbind_f (void)
 		return;
 	}
 
-	Key_SetBinding (b, "");
+	Key_Unbind (b);
 }
 
 void Key_Unbindall_f (void)
@@ -719,7 +735,7 @@ void Key_Unbindall_f (void)
 	
 	for (i=0 ; i<256 ; i++)
 		if (keybindings[i])
-			Key_SetBinding (i, "");
+			Key_Unbind (i);
 }
 
 
@@ -768,6 +784,22 @@ void Key_Bind_f (void)
 	Key_SetBinding (b, cmd);
 }
 
+
+/*
+===================
+Key_BindList_f
+===================
+*/
+void Key_BindList_f (void)
+{
+	int		i;
+
+	for (i=0 ; i<256 ; i++)
+		if (keybindings[i])
+			Con_Printf ("%s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+}
+
+
 /*
 ============
 Key_WriteBindings
@@ -781,7 +813,12 @@ void Key_WriteBindings (FILE *f)
 
 	for (i=0 ; i<256 ; i++)
 		if (keybindings[i])
-			fprintf (f, "bind %s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+		{
+			if (i == ';')
+				fprintf (f, "bind \";\" \"%s\"\n", keybindings[i]);
+			else
+				fprintf (f, "bind %s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+		}
 }
 
 
@@ -860,6 +897,7 @@ void Key_Init (void)
 //
 // register our functions
 //
+	Cmd_AddCommand ("bindlist",Key_BindList_f);
 	Cmd_AddCommand ("bind",Key_Bind_f);
 	Cmd_AddCommand ("unbind",Key_Unbind_f);
 	Cmd_AddCommand ("unbindall",Key_Unbindall_f);
@@ -907,9 +945,6 @@ void Key_Event (int key, qboolean down)
 				|| (key_dest == key_game && cls.state == ca_active))
 				return;	// ignore most autorepeats
 		}
-			
-		if (key >= 200 && !keybindings[key])
-			Con_Printf ("%s is unbound, hit F4 to set.\n", Key_KeynumToString (key) );
 	}
 
 //
@@ -967,6 +1002,7 @@ void Key_Event (int key, qboolean down)
 //
 // during demo playback, most keys bring up the main menu
 //
+#if 0
 	if (cls.demoplayback && down && consolekeys[key] && key_dest == key_game
 		&& key != K_ALT && key != K_CTRL && key != K_SHIFT
 		&& key != K_INS && key != K_DEL && key != K_HOME
@@ -975,6 +1011,7 @@ void Key_Event (int key, qboolean down)
 		M_ToggleMenu_f ();
 		return;
 	}
+#endif
 
 //
 // if not a consolekey, send to the interpreter no matter what mode is
