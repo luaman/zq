@@ -43,6 +43,8 @@ static char	*safeargvs[NUM_SAFE_ARGVS] =
 cvar_t	developer = {"developer","0"};
 cvar_t	registered = {"registered","0"};
 
+qboolean	com_debuglog;
+
 void COM_InitFilesystem (void);
 void COM_Path_f (void);
 
@@ -1008,6 +1010,8 @@ void COM_Init (void)
 
 	COM_InitFilesystem ();
 	COM_CheckRegistered ();
+
+	com_debuglog = COM_CheckParm("-condebug");
 }
 
 
@@ -2018,3 +2022,80 @@ byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence)
 	return crc;
 }
 
+
+/*
+================
+Con_Printf
+
+All console printing must go through this in order to be logged to disk
+================
+*/
+#define	MAXPRINTMSG	4096
+// FIXME: make a buffer size safe vsprintf?
+void Con_Printf (char *fmt, ...)
+{
+#if defined(QW_BOTH) || defined(SERVERONLY)
+	extern qboolean	sv_redirected;
+	extern FILE *	sv_logfile;
+	extern char		outputbuf[8000];
+	void SV_FlushRedirect ();
+#endif
+	va_list		argptr;
+	char		msg[MAXPRINTMSG];
+	
+	va_start (argptr, fmt);
+	vsprintf (msg, fmt, argptr);
+	va_end (argptr);
+	
+#if defined(QW_BOTH) || defined(SERVERONLY)
+	// add to redirected message
+	if (sv_redirected)
+	{
+		if (strlen (msg) + strlen(outputbuf) > sizeof(outputbuf) - 1)
+			SV_FlushRedirect ();
+		strcat (outputbuf, msg);
+		return;
+	}
+
+	if (sv_logfile)
+		fprintf (sv_logfile, "%s", msg);
+#endif
+
+	// also echo to debugging console
+	Sys_Printf ("%s", msg);
+
+#ifndef SERVERONLY	
+	// log all messages to file
+	if (com_debuglog) {
+		char        msg2[MAX_OSPATH + 32];
+
+		_snprintf (msg2, sizeof (msg2), "%s/qconsole.log", com_gamedir);
+		Sys_DebugLog (msg2, "%s", msg);
+	}
+
+	// write it to the scrollable buffer
+	Con_Print (msg);
+#endif
+}
+
+/*
+================
+Con_DPrintf
+
+A Con_Printf that only shows up if the "developer" cvar is set
+================
+*/
+void Con_DPrintf (char *fmt, ...)
+{
+	va_list		argptr;
+	char		msg[MAXPRINTMSG];
+		
+	if (!developer.value)
+		return;			// don't confuse non-developers with techie stuff...
+
+	va_start (argptr,fmt);
+	vsprintf (msg, fmt, argptr);
+	va_end (argptr);
+	
+	Con_Printf ("%s", msg);
+}

@@ -43,8 +43,6 @@ float		con_times[NUM_CON_TIMES];	// realtime time the line was generated
 int			con_vislines;
 int			con_notifylines;		// scan lines to clear for notify lines
 
-qboolean	con_debuglog;
-
 #define		MAXCMDLINE	256
 extern	char	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;
@@ -242,8 +240,6 @@ Con_Init
 */
 void Con_Init (void)
 {
-	con_debuglog = COM_CheckParm("-condebug");
-
 	con = &con_main;
 	con_linewidth = -1;
 	Con_CheckResize ();
@@ -287,8 +283,6 @@ void Con_Linefeed (void)
 Con_Print
 
 Handles cursor positioning, line wrapping, etc
-All console printing must go through this in order to be logged to disk
-If no console is visible, the notify window will pop up.
 ================
 */
 void Con_Print (char *txt)
@@ -297,6 +291,10 @@ void Con_Print (char *txt)
 	int		c, l;
 	static int	cr;
 	int		mask;
+
+	if (!con_initialized)
+		return;
+	
 
 	if (txt[0] == 1 || txt[0] == 2)
 	{
@@ -358,101 +356,6 @@ void Con_Print (char *txt)
 	}
 }
 
-
-/*
-================
-Con_Printf
-
-Handles cursor positioning, line wrapping, etc
-================
-*/
-#define	MAXPRINTMSG	4096
-// FIXME: make a buffer size safe vsprintf?
-void Con_Printf (char *fmt, ...)
-{
-#ifdef QW_BOTH
-	extern qboolean	sv_redirected;
-	extern FILE *	sv_logfile;
-	extern char		outputbuf[8000];
-	void SV_FlushRedirect ();
-#endif
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-	
-	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
-	va_end (argptr);
-	
-#ifdef QW_BOTH
-	// add to redirected message
-	if (sv_redirected)
-	{
-		if (strlen (msg) + strlen(outputbuf) > sizeof(outputbuf) - 1)
-			SV_FlushRedirect ();
-		strcat (outputbuf, msg);
-		return;
-	}
-
-	if (sv_logfile)
-		fprintf (sv_logfile, "%s", msg);
-#endif
-
-// also echo to debugging console
-	Sys_Printf ("%s", msg);	// also echo to debugging console
-
-// log all messages to file
-	if (con_debuglog) {
-		char        msg2[MAX_OSPATH + 32];
-
-		_snprintf (msg2, sizeof (msg2), "%s/qconsole.log", com_gamedir);
-		Sys_DebugLog (msg2, "%s", msg);
-	}
-	
-	if (!con_initialized)
-		return;
-		
-// write it to the scrollable buffer
-	Con_Print (msg);
-
-#if 0	// Tonik	
-// update the screen immediately if the console is displayed
-	if (cls.state != ca_active)
-	{
-		static qboolean	inupdate;
-
-	// protect against infinite loop if something in SCR_UpdateScreen calls
-	// Con_Printd
-		if (!inupdate)
-		{
-			inupdate = true;
-			SCR_UpdateScreen ();
-			inupdate = false;
-		}
-	}
-#endif	// Tonik
-}
-
-/*
-================
-Con_DPrintf
-
-A Con_Printf that only shows up if the "developer" cvar is set
-================
-*/
-void Con_DPrintf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-		
-	if (!developer.value)
-		return;			// don't confuse non-developers with techie stuff...
-
-	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
-	va_end (argptr);
-	
-	Con_Printf ("%s", msg);
-}
 
 /*
 ==============================================================================
