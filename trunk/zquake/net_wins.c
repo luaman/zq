@@ -260,21 +260,21 @@ qboolean NET_GetPacket (netsrc_t sock)
 
 	if (ret == -1)
 	{
-		int errno = WSAGetLastError();
+		int err = WSAGetLastError();
 
-		if (errno == WSAEWOULDBLOCK)
+		if (err == WSAEWOULDBLOCK)
 			return false;
-		if (errno == WSAEMSGSIZE) {
+		if (err == WSAEMSGSIZE) {
 			Com_Printf ("Warning:  Oversize packet from %s\n",
 				NET_AdrToString (net_from));
 			return false;
 		}
-		if (errno == 10054) {
+		if (err == 10054) {
 			Com_DPrintf ("NET_GetPacket: Error 10054 from %s\n", NET_AdrToString (net_from));
 			return false;
 		}
 
-		Sys_Error ("NET_GetPacket: %s", strerror(errno));
+		Sys_Error ("NET_GetPacket: %s", strerror(err));
 	}
 
 	net_message.cursize = ret;
@@ -323,7 +323,7 @@ void NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to)
 			Com_DPrintf ("NET_SendPacket Warning: %i\n", err);
 		else
 #endif
-			Com_Printf ("NET_SendPacket ERROR: %i\n", errno);
+			Com_Printf ("NET_SendPacket ERROR: %i\n", err);
 	}
 }
 
