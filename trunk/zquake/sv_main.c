@@ -1611,7 +1611,9 @@ void SV_Init (void)
 	PR_Init ();
 	SV_InitLocal ();
 
+#ifdef SERVERONLY
 	NET_ServerConfig (true);
+#endif
 
 	svs.last_heartbeat = -99999;		// send immediately
 }
