@@ -166,7 +166,7 @@ typedef enum {
 } dltype_t;		// download type
 
 //
-// the client_static_t structure is persistant through an arbitrary number
+// the client_static_t structure is persistent through an arbitrary number
 // of server connections
 //
 typedef struct
@@ -309,40 +309,17 @@ typedef struct
 	char		sprint_buf[1024];
 } client_state_t;
 
+extern	client_state_t	cl;
+
 
 //
 // cvars
 //
 extern  cvar_t	cl_warncmd;
-extern	cvar_t	cl_upspeed;
-extern	cvar_t	cl_forwardspeed;
-extern	cvar_t	cl_backspeed;
-extern	cvar_t	cl_sidespeed;
-
-extern	cvar_t	cl_movespeedkey;
-
-extern	cvar_t	cl_yawspeed;
-extern	cvar_t	cl_pitchspeed;
-
-extern	cvar_t	cl_anglespeedkey;
-
 extern	cvar_t	cl_shownet;
 extern	cvar_t	cl_sbar;
 extern	cvar_t	cl_hudswap;
 
-extern	cvar_t	cl_pitchdriftspeed;
-extern	cvar_t	lookspring;
-extern	cvar_t	lookstrafe;
-extern	cvar_t	sensitivity;
-
-extern	cvar_t	m_pitch;
-extern	cvar_t	m_yaw;
-extern	cvar_t	m_forward;
-extern	cvar_t	m_side;
-
-extern	cvar_t	_windowed_mouse;
-
-extern	cvar_t	name;
 
 // ZQuake cvars
 extern	cvar_t	cl_deadbodyfilter;
@@ -356,8 +333,6 @@ extern	cvar_t	r_grenadetrail;
 extern	cvar_t	r_powerupglow;
 
 #define	MAX_STATIC_ENTITIES	128			// torches, etc
-
-extern	client_state_t	cl;
 
 // FIXME, allocate dynamically
 extern	entity_state_t	cl_baselines[MAX_EDICTS];
@@ -376,15 +351,13 @@ extern float	server_version;	// version of server we connected to
 //
 void CL_Init (void);
 void Host_WriteConfiguration (void);
-
-void CL_EstablishConnection (char *host);
-
+void CL_ClearState (void);
+void CL_ReadPackets (void);
+void CL_BeginServerConnect(void);
 void CL_Disconnect (void);
 void CL_Disconnect_f (void);
 void CL_NextDemo (void);
-qboolean CL_DemoBehind(void);
 
-void CL_BeginServerConnect(void);
 
 #define			MAX_VISEDICTS	256
 extern	int				cl_numvisedicts, cl_oldnumvisedicts;
@@ -393,37 +366,6 @@ extern	entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
 
 extern char emodel_name[], pmodel_name[], prespawn_name[], modellist_name[], soundlist_name[];
 
-//
-// cl_input
-//
-typedef struct
-{
-	int		down[2];		// key nums holding it down
-	int		state;			// low bit is down state
-} kbutton_t;
-
-extern	kbutton_t	in_mlook, in_klook;
-extern 	kbutton_t 	in_strafe;
-extern 	kbutton_t 	in_speed;
-
-void CL_InitInput (void);
-void CL_SendCmd (void);
-void CL_SendMove (usercmd_t *cmd);
-
-void CL_ParseTEnt (void);
-void CL_UpdateTEnts (void);
-
-void CL_ClearState (void);
-
-void CL_ReadPackets (void);
-
-int  CL_ReadFromServer (void);
-void CL_WriteToServer (usercmd_t *cmd);
-void CL_BaseMove (usercmd_t *cmd);
-
-
-float CL_KeyState (kbutton_t *key);
-char *Key_KeynumToString (int keynum);
 
 //
 // cl_demo.c
@@ -448,24 +390,11 @@ extern int	packet_latency[NET_TIMINGS];
 int CL_CalcNet (void);
 void CL_ParseServerMessage (void);
 void CL_NewTranslation (int slot);
-qboolean	CL_CheckOrDownloadFile (char *filename);
+qboolean CL_CheckOrDownloadFile (char *filename);
 qboolean CL_IsUploading(void);
 void CL_NextUpload(void);
 void CL_StartUpload (byte *data, int size);
 void CL_StopUpload(void);
-
-//
-// view.c
-//
-void V_StartPitchDrift (void);
-void V_StopPitchDrift (void);
-
-void V_RenderView (void);
-void V_UpdatePalette (void);
-void V_Register (void);
-void V_ParseDamage (void);
-void V_SetContentsColor (int contents);
-void V_CalcBlend (void);
 
 
 //
@@ -473,6 +402,9 @@ void V_CalcBlend (void);
 //
 void CL_InitTEnts (void);
 void CL_ClearTEnts (void);
+void CL_ParseTEnt (void);
+void CL_UpdateTEnts (void);
+
 
 //
 // cl_ents.c
