@@ -188,6 +188,7 @@ void CL_SendConnectPacket (void)
 	netadr_t	adr;
 	char	data[2048];
 	double t1, t2;
+	char	biguserinfo[MAX_INFO_STRING + 32];
 
 	if (cls.state != ca_disconnected)
 		return;
@@ -209,8 +210,12 @@ void CL_SendConnectPacket (void)
 
 	cls.qport = Cvar_VariableValue("qport");
 
+	// let the server know what extensions we support
+	strcpy (biguserinfo, cls.userinfo);
+	Info_SetValueForStarKey (biguserinfo, "*z_ext", va("%i", Z_EXT_PM_TYPE), sizeof(biguserinfo));
+
 	sprintf (data, "\xff\xff\xff\xff" "connect %i %i %i \"%s\"\n",
-		PROTOCOL_VERSION, cls.qport, cls.challenge, cls.userinfo);
+		PROTOCOL_VERSION, cls.qport, cls.challenge, biguserinfo);
 	NET_SendPacket (NS_CLIENT, strlen(data), data, adr);
 }
 
@@ -727,6 +732,7 @@ void CL_InitLocal (void)
 	Cvar_Register (&qizmo_dir);
 
 #ifndef RELEASE_VERSION
+	// inform everyone that we're using a development version
 	Info_SetValueForStarKey (cls.userinfo, "*z_ver", PROGRAM_VERSION, MAX_INFO_STRING);
 #endif
 
