@@ -254,7 +254,7 @@ struct def_t
 	gofs_t		ofs;
 	bool		isParm;			// the def is a function parameter if true
 	def_t		*scope;			// function the var was defined in, or NULL
-	int			initialized;	// 1 when a declaration included "= immediate"
+	bool		initialized;	// true when a declaration included "= immediate"
 };
 
 //============================================================================
