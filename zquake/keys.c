@@ -41,10 +41,11 @@ keydest_t	key_dest;
 
 char	*keybindings[256];
 qbool	consolekeys[256];	// if true, can't be rebound while in console
-qbool	menubound[256];	// if true, can't be rebound while in menu
+qbool	menubound[256];		// if true, can't be rebound while in menu
 int		keyshift[256];		// key to map to if shift held down in console
 int		key_repeats[256];	// if > 1, it is autorepeating
 qbool	keydown[256];
+qbool	keyactive[256];
 
 typedef struct
 {
@@ -275,6 +276,8 @@ extern int Cmd_CompleteCountPossible (char *partial);
 extern int Cmd_AliasCompleteCountPossible (char *partial);
 extern int Cvar_CompleteCountPossible (char *partial);
 
+extern cmd_function_t *cmd_functions;
+
 void CompleteCommand (void)
 {
 	char	*cmd, *s;
@@ -295,7 +298,6 @@ void CompleteCommand (void)
 		cmd_function_t	*cmd;
 		cmd_alias_t *alias;
 		cvar_t	*var;
-		extern cmd_function_t *cmd_functions;
 
 		Com_Printf ("\n");
 
@@ -694,7 +696,8 @@ void Key_Console (int key)
 				len = MAXCMDLINE-1 - strlen(key_lines[edit_line]);
 
 			memmove (key_lines[edit_line] + key_linepos + len,
-				key_lines[edit_line] + key_linepos, strlen(key_lines[edit_line] + key_linepos) + 1 /* move trailing zero */);
+			         key_lines[edit_line] + key_linepos,
+			         strlen(key_lines[edit_line] + key_linepos) + 1 /* move trailing zero */);
 			memcpy (key_lines[edit_line] + key_linepos, text, len);
 			key_linepos += len;
 
@@ -1493,24 +1496,26 @@ void Key_EventEx (int key, int shiftkey, qbool down)
 // key up events only generate commands if the game key binding is
 // a button command (leading + sign).  These will occur even in console mode,
 // to keep the character from continuing an action started before a console
-// switch.  Button commands include the kenum as a parameter, so multiple
-// downs can be matched with ups
+// switch.  Button commands include the keynum as a parameter,
+// so multiple downs can be matched with ups
 //
 	if (!down)
 	{
 		kb = keybindings[key];
-		if (kb && kb[0] == '+')
+		if (kb && kb[0] == '+' && keyactive[key])
 		{
 			sprintf (cmd, "-%s %i\n", kb+1, key);
 			Cbuf_AddText (cmd);
+			keyactive[key] = false;
 		}
 		if (shiftkey != key)
 		{
 			kb = keybindings[shiftkey];
-			if (kb && kb[0] == '+')
+			if (kb && kb[0] == '+' && keyactive[keyshift[key]])
 			{
 				sprintf (cmd, "-%s %i\n", kb+1, key);
 				Cbuf_AddText (cmd);
+				keyactive[keyshift[key]] = false;
 			}
 		}
 		return;
@@ -1544,6 +1549,7 @@ void Key_EventEx (int key, int shiftkey, qbool down)
 			{	// button commands add keynum as a parm
 				sprintf (cmd, "%s %i\n", kb, key);
 				Cbuf_AddText (cmd);
+				keyactive[key] = true;
 			}
 			else
 			{
@@ -1594,10 +1600,11 @@ void Key_ClearStates (void)
 {
 	int		i;
 
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		keydown[i] = false;
 		key_repeats[i] = false;
+		keyactive[i] = false;
 	}
 }
 
