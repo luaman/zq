@@ -194,8 +194,21 @@ void S_Init (void)
 	Cvar_Register(&s_mixahead);
 	Cvar_Register(&s_swapstereo);
 
-	if (COM_CheckParm("-nosound") || !s_initsound.value)
+	// compatibility with old configs
+	Cmd_AddLegacyCommand ("volume", "s_volume");
+	Cmd_AddLegacyCommand ("nosound", "s_nosound");
+	Cmd_AddLegacyCommand ("precache", "s_precache");
+	Cmd_AddLegacyCommand ("loadas8bit", "s_loadas8bit");
+	Cmd_AddLegacyCommand ("ambient_level", "s_ambientlevel");
+	Cmd_AddLegacyCommand ("ambient_fade", "s_ambientfade");
+	Cmd_AddLegacyCommand ("snd_noextraupdate", "s_noextraupdate");
+	Cmd_AddLegacyCommand ("snd_show", "s_show");
+	Cmd_AddLegacyCommand ("_snd_mixahead", "s_mixahead");
+
+	if (COM_CheckParm("-nosound") || !s_initsound.value) {
+		Cmd_AddLegacyCommand ("play", "");	// just suppress warnings
 		return;
+	}
 
 	if (COM_CheckParm("-simsound"))
 		fakedma = true;

@@ -718,6 +718,7 @@ void CL_InitLocal (void)
 	Cvar_Register (&r_powerupglow);
 	Cvar_Register (&r_rocketlight);
 	Cvar_Register (&cl_demospeed);
+	Cmd_AddLegacyCommand ("demotimescale", "cl_demospeed");
 	Cvar_Register (&cl_deadbodyfilter);
 	Cvar_Register (&cl_explosion);
 	Cvar_Register (&cl_gibfilter);

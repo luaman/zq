@@ -796,6 +796,10 @@ void CL_InitCommands (void)
 // forward to server commands
 //
 	Cmd_AddCommand ("kill", NULL);
+	Cmd_AddCommand ("god", NULL);
+	Cmd_AddCommand ("give", NULL);
+	Cmd_AddCommand ("noclip", NULL);
+	Cmd_AddCommand ("fly", NULL);
 
 //
 //  Windows commands
@@ -958,92 +962,4 @@ qboolean CL_CheckServerCommand ()
 		}
 
 	return false;
-}
-
-/*
-==============================================================================
-
-"LEGACY" COMMANDS (QuakeWorld compatibility)
-
-==============================================================================
-*/
-
-typedef struct {
-	cvar_t	*var;
-	char *oldname;
-} legacyvar_t;
-
-extern cvar_t s_volume;
-extern cvar_t s_nosound;
-extern cvar_t s_precache;
-extern cvar_t s_loadas8bit;
-extern cvar_t s_ambientlevel;
-extern cvar_t s_ambientfade;
-extern cvar_t s_noextraupdate;
-extern cvar_t s_show;
-extern cvar_t s_mixahead;
-extern cvar_t cl_demospeed;
-
-legacyvar_t legacyvars[] =
-{
-	{&s_volume, "volume"},
-	{&s_nosound, "nosound"},
-	{&s_precache, "precache"},
-	{&s_loadas8bit, "loadas8bit"},
-	{&s_ambientlevel, "ambient_level"},
-	{&s_ambientfade, "ambient_fade"},
-	{&s_noextraupdate, "snd_noextraupdate"},
-	{&s_show, "snd_show"},
-	{&s_mixahead, "_snd_mixahead"},
-	{&cl_demospeed, "demotimescale"},
-	{NULL, NULL}
-};
-
-/*
-================
-CL_CheckServerCommand
-================
-*/
-qboolean CL_LegacyCommand (void)
-{
-	int			c;
-	char		*name;
-	legacyvar_t *lvar;
-	cvar_t		*v;
-
-	c = Cmd_Argc();
-	name = Cmd_Argv(0);
-
-	// Cheat commands. They are not added to normal command list
-	// so they are invisible to user and an alias can override them
-	if (!Q_stricmp(name, "god") || !Q_stricmp(name, "give") ||
-		!Q_stricmp(name, "noclip") || !Q_stricmp(name, "fly"))
-	{
-		Cmd_ForwardToServer ();
-		return true;
-	}
-
-	// this is to suppress the warning message when a mod stuffs
-	// "play <sound.wav>" to the console but sound is not initialized
-	if (!Q_stricmp(name, "play"))
-		return true;
-
-	for (lvar=legacyvars ; lvar->var ; lvar++) {
-		if (!Q_stricmp(lvar->oldname, name))
-			break;
-	}
-	if (!lvar->var)
-		return false;
-
-	v = lvar->var;
-
-	if (c == 1)
-	{
-		Com_Printf ("\"%s\" is \"%s\"\n", v->name, v->string);
-		return true;
-	}
-
-	Cvar_Set (v, Cmd_MakeArgs(1));
-
-	return true;
 }
