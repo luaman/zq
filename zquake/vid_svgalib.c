@@ -80,13 +80,6 @@ cvar_t		vid_waitforrefresh = {"vid_waitforrefresh","0",CVAR_ARCHIVE};
  
 char	*framebuffer_ptr;
 
-cvar_t  mouse_button_commands[3] =
-{
-    {"mouse1","+attack"},
-    {"mouse2","+strafe"},
-    {"mouse3","+forward"},
-};
-
 int     mouse_buttons;
 int     mouse_buttonstate;
 int     mouse_oldbuttonstate;
@@ -805,9 +798,6 @@ void IN_Init(void)
 
 	if (UseMouse)
 	{
-		Cvar_Register (&mouse_button_commands[0]);
-		Cvar_Register (&mouse_button_commands[1]);
-		Cvar_Register (&mouse_button_commands[2]);
 		Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
 		mouse_buttons = 3;
