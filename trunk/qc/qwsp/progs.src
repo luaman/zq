@@ -2,6 +2,7 @@
 
 ../qw/defs.qc
 ../qw/subs.qc
+subs.qc
 fight.qc
 ai.qc
 ../qw/combat.qc
