@@ -378,8 +378,12 @@ void CL_Disconnect (void)
 		final[0] = clc_stringcmd;
 		strcpy (final+1, "drop");
 		Netchan_Transmit (&cls.netchan, 6, final);
-		Netchan_Transmit (&cls.netchan, 6, final);
-		Netchan_Transmit (&cls.netchan, 6, final);
+		// don't choke the loopback buffers
+		if (cls.netchan.remote_address.type != NA_LOOPBACK)
+		{
+			Netchan_Transmit (&cls.netchan, 6, final);
+			Netchan_Transmit (&cls.netchan, 6, final);
+		}
 	}
 
 	Cam_Reset();
