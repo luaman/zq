@@ -462,7 +462,7 @@ A download message has been received from the server
 void CL_ParseDownload (void)
 {
 	int		size, percent;
-	byte	name[1024];
+	char	name[1024];
 	int		r;
 
 
@@ -493,13 +493,13 @@ void CL_ParseDownload (void)
 	if (!cls.download)
 	{
 		if (strncmp(cls.downloadtempname,"skins/",6))
-			Q_snprintfz ((char *)name, sizeof(name), "%s/%s", cls.gamedir, cls.downloadtempname);
+			Q_snprintfz (name, sizeof(name), "%s/%s", cls.gamedir, cls.downloadtempname);
 		else
-			Q_snprintfz ((char *)name, sizeof(name), "qw/%s", cls.downloadtempname);
+			Q_snprintfz (name, sizeof(name), "qw/%s", cls.downloadtempname);
 
-		COM_CreatePath ((char *)name);
+		COM_CreatePath (name);
 
-		cls.download = fopen ((const char *)name, "wb");
+		cls.download = fopen (name, "wb");
 		if (!cls.download)
 		{
 			msg_readcount += size;
