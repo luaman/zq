@@ -931,6 +931,7 @@ void NQD_LinkEntities (void)
 
 
 extern char *svc_strings[];
+extern const int num_svc_strings;
 
 #define SHOWNET(x) {if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);}
 
@@ -986,7 +987,8 @@ void NQD_ParseServerMessage (void)
 			continue;
 		}
 
-		SHOWNET(svc_strings[cmd]);
+		if (cmd < num_svc_strings)
+			SHOWNET(svc_strings[cmd]);
 	
 	// other commands
 		switch (cmd)
