@@ -689,6 +689,10 @@ SOURCE=.\gl_warp.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\host.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\image.c
 # End Source File
 # Begin Source File
