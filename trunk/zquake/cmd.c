@@ -191,7 +191,12 @@ void Cbuf_ExecuteEx (cbuf_t *cbuf)
 			if (text[i] == '\n')
 				break;
 		}
-			
+
+// don't execute lines without ending \n; this fixes problems with
+// partially stuffed aliases not being executed properly
+		if (i == cursize)
+			break;
+
 		memcpy (line, text, i);
 		line[i] = 0;
 		
