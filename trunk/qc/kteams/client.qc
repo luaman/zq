@@ -38,6 +38,7 @@ string ObituaryForMonster (string attacker_class);
 
 float   modelindex_eyes, modelindex_player;
 
+#ifdef KTEAMS
 // ILLEGALFPS[abortelect
 .float fAverageFrameTime;
 .float fFrameCount;
@@ -46,7 +47,6 @@ float   modelindex_eyes, modelindex_player;
 .float fIllegalFPSWarnings;
 // ILLEGALFPS]
 
-// KTEAMS -->
 void EndMatch(float skip_log);
 void StuffAliases();
 float CountALLPlayers();
@@ -144,6 +144,7 @@ void CheckConnectRate ()
 		}
 	}
 }
+#endif
 
 /*
 =============================================================================
@@ -205,17 +206,19 @@ void SetChangeParms ()
 
 void SetNewParms ()
 {
-// KTEAMS -->
+#ifdef KTEAMS
 	if(match_in_progress == 2) 
     {
+#endif
 		parm1 = 1 | 4096;
-		parm8 = 1;
 		parm2 = 100;
 		parm3 = 0;
 		parm4 = 25;
 		parm5 = 0;
 		parm6 = 0;
 		parm7 = 0;
+		parm8 = 1;
+#ifdef KTEAMS
 	} 
     else 
     {
@@ -228,22 +231,25 @@ void SetNewParms ()
 		parm7 = 100;
 		parm8 = 32;
 	}
+#endif
 
 	parm9 = 0;
+#ifdef KTEAMS
 	parm11 = 0;
 	parm12 = 0;
 	parm13 = 0;
-// <-- KTEAMS
+#endif
 }
 
 void DecodeLevelParms ()
 {
-// KTEAMS -->
-/*
-	if(serverflags) {
-		if(world.model == "maps/start.bsp") SetNewParms ();         // take away all stuff on starting new episode
+#ifndef KTEAMS
+	if (serverflags)
+    {
+		if (world.model == "maps/start.bsp")
+            SetNewParms ();         // take away all stuff on starting new episode
 	}
-*/
+#endif
 	self.items = parm1;
 	self.health = parm2;
 	self.armorvalue = parm3;
@@ -253,13 +259,14 @@ void DecodeLevelParms ()
 	self.ammo_cells = parm7;
 	self.weapon = parm8;
     self.armortype = parm9 * 0.01;
+#ifdef KTEAMS
 	self.k_admin = parm11;
 
     if(parm12) 
         self.k_accepted = parm12;
 	
     self.k_stuff = parm13;
-//<-- KTEAMS
+#endif
 }
 
 /*
@@ -302,9 +309,10 @@ void GotoNextMap ()
 {
     string newmap;
 
-// KTEAMS: check at levelchange
+#ifdef KTEAMS
 	if(k_velect) 
         AbortElect();
+#endif
 
 //ZOID: 12-13-96, samelevel is overloaded, only 1 works for same level
 
@@ -312,8 +320,7 @@ void GotoNextMap ()
 		changelevel (nextmap);
 	else if (cvar("samelevel") == 1)	// if samelevel is set, stay on same level
 		changelevel (mapname);
-	else 
-    {
+	else {
 		// configurable map lists, see if the current map exists as a
 		// serverinfo/localinfo var
 		newmap = infokey(world, mapname);
@@ -388,40 +395,77 @@ void execute_changelevel ()
 		other.invisible_finished = 0;
 		other.invincible_finished = 0;
 
+#ifdef KTEAMS
 // KTEAMS: make players invisible
         other.model = string_null;
 		// take screenshot if requested
         if(stof(infokey(other, "k_flags")) & 2)
 			stuffcmd(other, "wait; wait; wait; wait; wait; wait; screenshot\n");
+#endif
         
         setorigin (other, intermission_spot.origin);
-        other.velocity = '0 0 0';
+		other.velocity = VEC_ORIGIN;
 		other = find (other, classname, "player");
 	}
-
 }
 
-void() changelevel_touch =
+
+/*
+============
+SendIntermissionToClient
+
+If a client connects during intermission, send svc_intermission
+to him personally
+============
+*/
+void SendIntermissionToClient ()
+{
+	msg_entity = self;
+
+// play intermission music
+	WriteByte (MSG_ONE, SVC_CDTRACK);
+	WriteByte (MSG_ONE, 3);
+
+	WriteByte (MSG_ONE, SVC_INTERMISSION);
+	WriteCoord (MSG_ONE, intermission_spot.origin_x);
+	WriteCoord (MSG_ONE, intermission_spot.origin_y);
+	WriteCoord (MSG_ONE, intermission_spot.origin_z);
+	WriteAngle (MSG_ONE, intermission_spot.mangle_x);
+	WriteAngle (MSG_ONE, intermission_spot.mangle_y);
+	WriteAngle (MSG_ONE, intermission_spot.mangle_z);
+	
+	setorigin (self, intermission_spot.origin);
+}
+
+
+void changelevel_touch ()
 {
 	if (other.classname != "player")
 		return;
 
-
-// if "noexit" is set, blow up the player trying to leave
-//ZOID, 12-13-96, noexit isn't supported in QW.  Overload samelevel
-//      if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
+	if (deathmatch || coop)
+	{
+		// if "noexit" is set, blow up the player trying to leave
+		// ZOID, 12-13-96, noexit isn't supported in QW.  Overload samelevel
+		//      if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
 	if ((cvar("samelevel") == 2) || ((cvar("samelevel") == 3) && (mapname != "start")))
 	{
 		T_Damage (other, self, self, 50000);
 		return;
 	}
 
-	bprint (2, other.netname);
-	bprint (2," exited the level\n");
+		bprint (PRINT_HIGH, other.netname, " exited the level\n");
+	}
 
 	nextmap = self.map;
 
 	SUB_UseTargets ();
+
+	if ( (self.spawnflags & 1) && !deathmatch )
+	{	// NO_INTERMISSION
+		GotoNextMap();
+		return;
+	}
 
 	self.touch = SUB_Null;
 
@@ -493,34 +537,38 @@ ClientKill
 Player entered the suicide command
 ============
 */
-void() ClientKill =
+void ClientKill ()
 {
     if (intermission_running)
         return;
 
-// KTEAMS -->
+#ifdef KTEAMS
 	if(k_pause || k_standby) 
         return;
-	if((time < self.suicide_time + 10) && stof(infokey(world, "k_kfp"))) {
-		sprint(self, 2, "Only one suicide in 10 seconds\n");
+#endif
+
+	if (time < self.suicide_time)
+	{
+		sprint (self, PRINT_HIGH, "Only one suicide in 5 seconds\n");
 		return;
 	}
-	self.suicide_time = time;
+
+	self.suicide_time = time + 5;
+#ifdef KTEAMS
     k_nochange = 0;
-// <-- KTEAM
+#endif
+
     bprint (PRINT_MEDIUM, self.netname, " suicides\n");
 	set_suicide_frame ();
 	self.modelindex = modelindex_player;
 	logfrag (self, self);
+#ifdef KTEAMS
 	if(match_in_progress == 2)	// KTEAMS
+#endif
 		self.frags = self.frags - 2;    // extra penalty
 	respawn ();
 }
 
-float CheckSpawnPoint (vector v)
-{
-	return 0;
-}
 
 /*
 ============
@@ -535,9 +583,10 @@ entity SelectSpawnPoint ()
 	float   numspots, totalspots;
 	float   pcount;
 	entity spots;
-	local	float	k_nspots;	// KTEAMS
-	local	vector	v1;			// KTEAMS
-
+#ifdef KTEAMS
+	float	k_nspots;	// KTEAMS
+	vector	v1;			// KTEAMS
+#endif
 
 	numspots = 0;
 	totalspots = 0;
@@ -547,6 +596,30 @@ entity SelectSpawnPoint ()
 	if (spot)
 		return spot;
 
+	if (!deathmatch)
+	{
+		if (coop)
+		{
+			lastspawn = find(lastspawn, classname, "info_player_coop");
+			if (lastspawn == world)
+				lastspawn = find (lastspawn, classname, "info_player_start");
+			if (lastspawn != world)
+				return lastspawn;
+		}
+
+		if (serverflags)
+		{	// return with a rune to start
+			spot = find (world, classname, "info_player_start2");
+			if (spot)
+				return spot;
+		}
+
+		spot = find (world, classname, "info_player_start");
+		if (!spot)
+			error ("PutClientInServer: no info_player_start on level");
+		return spot;
+	}
+		
 // choose a info_player_deathmatch point
 // ok, find all spots that don't have players nearby
 
@@ -556,37 +629,39 @@ entity SelectSpawnPoint ()
 	{
 		totalspots = totalspots + 1;
 
-        thing = findradius(spot.origin, 84);
-        pcount = 0;
-		while(thing) 
+		thing=findradius(spot.origin, 84);
+		pcount=0;               
+		while (thing)
         {
-// KTEAMS
-			if(thing.classname == "player") {
-				if(!(stof(infokey(world, "k_spw")) == 2 && match_in_progress == 2 && !thing.k_1spawn) &&
-					thing.health > 0) pcount = pcount + 1;
+            if(thing.classname == "player") 
+            {
+#ifdef KTEAMS
+                if(!(stof(infokey(world, "k_spw")) == 2 && match_in_progress == 2 && !thing.k_1spawn) &&
+                        thing.health > 0) 
+#endif
+                    pcount = pcount + 1;
 			}
-// KTEAMS
-			thing = thing.chain;
+            thing = thing.chain;
 		}
-// KTEAMS
+#ifdef KTEAMS
 		if(stof(infokey(world, "k_spw")) && match_in_progress == 2 && self.k_lastspawn == spot)
 		 pcount = pcount + 1;
-// KTEAMS
+#endif
         if (pcount == 0) {
         	spot.goalentity = spots;
         	spots = spot;
         	numspots = numspots + 1;
 		}
+
 		// Get the next spot in the chain
 		spot = find (spot, classname, "info_player_deathmatch");
 	}
+#ifdef KTEAMS
+    if(match_in_progress == 2) self.k_1spawn = 200;
+    k_nspots = totalspots;
+#endif
 
-// KTEAMS
-	if(match_in_progress == 2) self.k_1spawn = 200;
-	k_nspots = totalspots;
-// KTEAMS
-
-totalspots = totalspots - 1;
+    totalspots=totalspots - 1;
 	if (!numspots) {
 		// ack, they are all full, just pick one at random
 //		bprint (PRINT_HIGH, "Ackk! All spots are full. Selecting random spawn spot\n");
@@ -596,7 +671,7 @@ totalspots = totalspots - 1;
 			totalspots = totalspots - 1;
 			spot = find (spot, classname, "info_player_deathmatch");
 		}
-// KTEAMS
+#ifdef KTEAMS
 		if(k_nspots > 2 && match_in_progress == 2) self.k_lastspawn = spot;
 		pcount = stof(infokey(world, "k_spw"));
 		if(!match_in_progress || (pcount > 0 && (!k_checkx || pcount == 1))) {
@@ -605,19 +680,18 @@ totalspots = totalspots - 1;
 			while(thing) {
 				if(thing.classname == "player" && thing.health > 0) {
 					v1 = thing.origin - (v_up * 15);
-					traceline(v1, v1 + (v_forward * 160), 0, thing);
+					traceline(v1, v1 + (v_forward * 160), false, thing);
 					v1 = trace_endpos;
-					traceline(v1, v1 + (v_forward * 30), 0, thing);
+					traceline(v1, v1 + (v_forward * 30), false, thing);
 					if(trace_fraction < 1) v1 = trace_endpos - (v_forward * 35);
 					setorigin(thing, v1 + (v_up * 15));
 				} else if(thing.classname == "teledeath") remove(thing);
 				thing = thing.chain;
 			}
 		}
-// KTEAMS
+#endif
 		return spot;
     }
-
 
 // We now have the number of spots available on the map in numspots
 
@@ -632,11 +706,12 @@ totalspots = totalspots - 1;
 		spot = spot.goalentity;
 		numspots = numspots - 1;
 	}
-// KTEAMS
+#ifdef KTEAMS
 	if(k_nspots > 2 && match_in_progress == 2) 
         self.k_lastspawn = spot;
-// KTEAMS
+#endif
  	return spot;
+
 }
 
 
@@ -670,16 +745,15 @@ void PutClientInServer ()
 	self.invincible_finished = 0;
 	self.effects = 0;
 
+#ifdef KTEAMS
 // the spawn falling damage bug workaround
 	self.jump_flag = 0;
 	self.swim_flag = 0;
 
-	if(stof(infokey(world, "k_sready")) && !match_in_progress && !self.ready)
-		self.effects = 64;
-	else 
-        self.effects = 0;
-
 // KTEAMS
+    self.effects = 0;
+#endif
+
 	self.invincible_time = 0;
 
 	DecodeLevelParms ();
@@ -700,6 +774,15 @@ void PutClientInServer ()
 	self.angles = spot.angles;
 	self.fixangle = true;           // turn this way immediately
 	self.jump_flag = 0;
+	self.swim_flag = 0;
+
+#ifdef AGRIP
+	// Stop the player from spawning at a bad angle...
+	if (self.angles_y != -90 && self.angles_y != 90
+		&& self.angles_y != 0 &&  self.angles_y != 180
+							&& self.angles_y != -180)
+		self.angles_y = -90;
+#endif
 
 // oh, this is a hack!
 	setmodel (self, "progs/eyes.mdl");
@@ -708,6 +791,7 @@ void PutClientInServer ()
 	setmodel (self, "progs/player.mdl");
 	modelindex_player = self.modelindex;
 
+// set size and link into world
 	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 	
 	self.view_ofs = '0 0 22';
@@ -715,29 +799,37 @@ void PutClientInServer ()
 // Mod - Xian (May.20.97)
 // Bug where player would have velocity from their last kill
 
-	self.velocity = '0 0 0';
+	self.velocity = VEC_ORIGIN;
 
 	player_stand1 ();
 
-//team
+    if (deathmatch || coop)
+    {
+#ifdef KTEAMS
 	if(!self.k_accepted && match_in_progress == 2) {
 		self.takedamage = 0;
 		self.solid = 0;
 		self.movetype = 0;
 		self.modelindex = 0;
 		self.model = string_null;
-	} else {
-		self.k_accepted = 2;
-		self.takedamage = 2;
-		self.solid = 3;
-		self.movetype = 3;
-		setmodel (self, "progs/player.mdl");
-		modelindex_player = self.modelindex;
-		player_stand1 ();
-		makevectors(self.angles);
-		play_teleport (self);
-		spawn_tfog (self.origin + v_forward*20);
-		spawn_tdeath (self.origin, self);
+    } 
+    else {
+        self.k_accepted = 2;
+        self.takedamage = 2;
+        self.solid = 3;
+        self.movetype = 3;
+        setmodel (self, "progs/player.mdl");
+        modelindex_player = self.modelindex;
+        player_stand1 ();
+    }
+#endif
+        makevectors(self.angles);
+        play_teleport (self);
+        spawn_tfog (self.origin + v_forward*20);
+    }
+
+    spawn_tdeath (self.origin, self);
+#ifdef KTEAMS
 //berzerk will not affect players that logs in during berzerk
 //spawn666 will not affect the first spawn of players connecting to a game in progress
 		if(match_in_progress == 2) {
@@ -754,10 +846,13 @@ void PutClientInServer ()
 				self.items = self.items | 1048576;
 			}
 		}
-	}
-//team
+#endif
 
-	if (deathmatch == 4 && match_in_progress == 2)	//team
+#ifdef KTEAMS
+	if (deathmatch == 4 && match_in_progress == 2)
+#else
+    if (deathmatch == 4)
+#endif
 	{
 		self.ammo_shells = 0;
 		if (stof(infokey(world, "axe")) == 0)
@@ -782,7 +877,11 @@ void PutClientInServer ()
 		self.invincible_finished = time + 3;
 	}
 
-	if (deathmatch == 5 && match_in_progress == 2)	//team
+#ifdef KTEAMS
+	if (deathmatch == 5 && match_in_progress == 2)
+#else
+    if (deathmatch == 5)
+#endif
 	{
 		self.ammo_nails = 80;
 		self.ammo_shells = 30;
@@ -803,7 +902,9 @@ void PutClientInServer ()
 		self.invincible_finished = time + 3;
 	}
 
-
+#ifdef AGRIP
+	agh_client_startdevs();
+#endif
 }
 
 
@@ -922,10 +1023,12 @@ Exit deathmatch games upon conditions
 */
 void CheckRules ()
 {
-// TEAM -->
-	if(fraglimit && self.frags >= fraglimit) 
+    if (deathmatch && fraglimit && self.frags >= fraglimit)
+#ifdef KTEAMS
         EndMatch(0);
-// <-- TEAM
+#else
+        NextLevel ();
+#endif
 }
 
 //============================================================================
@@ -934,20 +1037,23 @@ void PlayerDeathThink ()
 {
     float             forward;
 
-	if(k_standby)   // KTEAMS
+#ifdef KTEAMS
+    if(k_standby)
         return;
+#endif
 
 	if ((self.flags & FL_ONGROUND))
 	{
 		forward = vlen (self.velocity);
 		forward = forward - 20;
 		if (forward <= 0)
-			self.velocity = '0 0 0';
+			self.velocity = VEC_ORIGIN;
 		else    
 			self.velocity = forward * normalize(self.velocity);
 	}
 
-//team   autospawn
+#ifdef KTEAMS
+//autospawn
 	if((time - self.dead_time) > 5 && match_in_progress) {
 		self.deadflag = 3;
 		self.button0 = 0;
@@ -956,7 +1062,7 @@ void PlayerDeathThink ()
 		respawn();
 		return;
 	}
-//team
+#endif
 
 // wait for all buttons released
 	if (self.deadflag == DEAD_DEAD)
@@ -1010,13 +1116,15 @@ void PlayerJump ()
 // player jumping sound
 	sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
 
-		if (server_is_2_3x) {
-			// if and only if running on a 2.30 or 2.33 server,
-			// fix the jump bug via QC
-			// newer servers should have an engine-side fix
-			if (self.velocity_z < 0)
-				self.velocity_z = 0;
-		}
+#ifdef KTEAMS
+    if (server_is_2_3x) {
+        // if and only if running on a 2.30 or 2.33 server,
+        // fix the jump bug via QC
+        // newer servers should have an engine-side fix
+        if (self.velocity_z < 0)
+            self.velocity_z = 0;
+    }
+#endif
 }
 
 
@@ -1106,9 +1214,10 @@ void WaterMove ()
 	}
 }
 
-void() CheckWaterJump =
+#ifdef KTEAMS
+void CheckWaterJump ()
 {
-	local vector start, end;
+	vector start, end;
 
 // check for a jump-out-of-water
 	makevectors (self.angles);
@@ -1117,28 +1226,26 @@ void() CheckWaterJump =
 	v_forward_z = 0;
 	normalize(v_forward);
 	end = start + v_forward*24;
-	traceline (start, end, 1, self);
+	traceline (start, end, true, self);
 	if (trace_fraction < 1)
 	{       // solid at waist
 		start_z = start_z + self.maxs_z - 8;
 		end = start + v_forward*24;
 		self.movedir = trace_plane_normal * -50;
-		traceline (start, end, 1, self);
+		traceline (start, end, true, self);
 		if (trace_fraction == 1)
 		{       // open at eye level
-
-		self.flags = self.flags | 2048;
+            self.flags = self.flags | FL_WATERJUMP;
 			self.velocity_z = 225;
-			self.flags = self.flags - (self.flags & 4096);
+			self.flags = self.flags - (self.flags & FL_JUMPRELEASED);
 			self.teleport_time = time + 2;  // safety net
 			return;
 		}
 	}
-};
+}
+#endif
 
 /*
-
-
 ================
 PlayerPreThink
 
@@ -1147,8 +1254,9 @@ Called every frame before physics are run
 */
 void PlayerPreThink ()
 {
-	local   float   r;
-	local string tmp;
+#ifdef KTEAMS
+	float   r;
+	string tmp;
 
 // ILLEGALFPS[
 
@@ -1184,7 +1292,7 @@ void PlayerPreThink ()
 // s: changed to 15 for more accurate calculation (lag screws it up)
 		self.fDisplayIllegalFPS = time + 15;
 		
-		local float fps;
+		float fps;
 		
 		fps = floor( 72 * 13 / ( self.fAverageFrameTime / self.fFrameCount * 1000 ) );
 		
@@ -1226,6 +1334,7 @@ void PlayerPreThink ()
 		self.fLowestFrameTime = 0.013;
 	}
 // ILLEGALFPS]
+#endif
 
 	if (intermission_running)
 	{
@@ -1233,10 +1342,12 @@ void PlayerPreThink ()
 		return;                                 // the think tics
 	}
 
+#ifdef KTEAMS
 	if (self.view_ofs == '0 0 0')
 		return;         // intermission or finale
 
-	if(!self.k_accepted || k_pause) return;	//team
+	if(!self.k_accepted || k_pause) return;
+#endif
 
 	makevectors (self.v_angle);             // is this still used
 
@@ -1253,13 +1364,15 @@ void PlayerPreThink ()
 
 	if (self.deadflag == DEAD_DYING) 
     {
-// Sometimes (rarely) the death animation functions in player.qc aren't
-// invoked on death for some reason (couldn't figure out why). This leads to a
-// state when the player stands still after dying and can't respawn or even
-// suicide and has to reconnect. This is checked and fixed here
-                if((self.dead_time + 0.1) < time
-                        && self.frame < 41 || self.frame > 102)
-                                StartDie();
+#ifdef KTEAMS
+        // Sometimes (rarely) the death animation functions in player.qc aren't
+        // invoked on death for some reason (couldn't figure out why). This leads to a
+        // state when the player stands still after dying and can't respawn or even
+        // suicide and has to reconnect. This is checked and fixed here
+        if((self.dead_time + 0.1) < time
+                && self.frame < 41 || self.frame > 102)
+            StartDie();
+#endif
 		return; // dying, so do nothing
 	}
 
@@ -1272,7 +1385,7 @@ void PlayerPreThink ()
 
 // teleporters can force a non-moving pause time        
 	if (time < self.pausetime)
-		self.velocity = '0 0 0';
+		self.velocity = VEC_ORIGIN;
 
 	if(time > self.attack_finished && self.currentammo == 0 && self.weapon != IT_AXE)
 	{
@@ -1339,7 +1452,11 @@ void CheckPowerups ()
 	if (self.invincible_finished)
 	{
 // sound and screen flash when items starts to run out
+#ifdef KTEAMS
 		if(self.invincible_finished < time + 3 && !self.k_666)		//team
+#else
+		if(self.invincible_finished < time + 3)
+#endif
 		{
 			if (self.invincible_time == 1)
 			{
@@ -1361,9 +1478,15 @@ void CheckPowerups ()
 			self.items = self.items - IT_INVULNERABILITY;
 			self.invincible_time = 0;
 			self.invincible_finished = 0;
+#ifdef KTEAMS
 			self.k_666 = 0;		//team
+#endif
 		}
+#ifdef KTEAMS
 		if(self.invincible_finished > time && !self.k_666) // KTeAMS
+#else
+        if(self.invincible_finished > time)
+#endif
         {
 			self.effects = self.effects | EF_DIMLIGHT;
 			self.effects = self.effects | EF_RED;
@@ -1381,7 +1504,11 @@ void CheckPowerups ()
 
 // sound and screen flash when items starts to run out
 
+#ifdef KTEAMS
 		if(self.super_damage_finished < time + 3 && !k_berzerk)	//team
+#else
+		if(self.super_damage_finished < time + 3)
+#endif
 		{
 			if (self.super_time == 1)
 			{
@@ -1401,7 +1528,11 @@ void CheckPowerups ()
 			}
 		}
 
-		if(self.super_damage_finished < time && !k_berzerk)	//team
+#ifdef KTEAMS
+        if(self.super_damage_finished < time && !k_berzerk)	//team
+#else
+		if(self.super_damage_finished < time)
+#endif
 		{       // just stopped
 			self.items = self.items - IT_QUAD;
 			if (deathmatch == 4)
@@ -1469,11 +1600,20 @@ Called every frame after physics are run
 */
 void PlayerPostThink ()
 {
-	local string s1, s2;	//team
-	local float f1, f2;	//team
-	local entity ghost;	//team
+#ifdef KTEAMS
+	string s1, s2;
+	float f1, f2;
+	entity ghost;
+#endif
 
-//team
+    if (intermission_running)
+    {
+        setorigin (self, intermission_spot.origin);
+        self.velocity = VEC_ORIGIN;	// don't stray off the intermission spot too far
+        return;
+    }
+    
+#ifdef KTEAMS
 // check if player tried to change team
 	if(k_captains == 2 && self.k_msgcount < time) {
 // get the strings to compare
@@ -1554,10 +1694,11 @@ void PlayerPostThink ()
 
 	if (self.view_ofs == '0 0 0')
 		return;         // intermission or finale
+#endif
 	if (self.deadflag)
 		return;
 
-//team
+#ifdef KTEAMS
 	if(!self.k_accepted && match_in_progress == 2) return;
 	if(self.k_1spawn) self.k_1spawn = self.k_1spawn - 1;
 //team
@@ -1567,14 +1708,15 @@ void PlayerPostThink ()
 // and playing the leave water sound if the player died underwater.
 
         WaterMove ();
-
+#endif
 // check to see if player landed and play landing sound
-	if ((self.jump_flag < -300) && (self.flags & 512) )
+	if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) )
 	{
+#ifdef KTEAMS
 // Falling often results in 5-5 points of damage through 2 frames.
 // This fixes the bug
                 self.velocity_z = 0;
-
+#endif
 		if (self.watertype == CONTENT_WATER)
 			sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
 		else if (self.jump_flag < -650)
@@ -1599,6 +1741,10 @@ void PlayerPostThink ()
 	CheckPowerups ();
 
 	W_WeaponFrame ();
+
+#ifdef AGRIP
+	snap_misc_blockedtest();
+#endif
 }
 
 
@@ -1611,10 +1757,27 @@ called when a player connects to a server
 */
 void ClientConnect ()
 {
-	local float f1 = 0;
-	local entity p;
-	local string tmp;
+#ifdef KTEAMS
+	float f1 = 0;
+	entity p;
+	string tmp;
+#endif
 
+#ifdef FRIKBOT
+	ClientConnected(); // FrikBot
+#endif
+
+	if (deathmatch || coop)
+    {
+        bprint (PRINT_HIGH, self.netname, " entered the game\n");
+    }
+
+	// if the guy started connecting during intermission and
+	// thus missed the svc_intermission, we'd better let him know
+	if (intermission_running)
+		SendIntermissionToClient ();
+
+#ifdef KTEAMS
 // ILLEGALFPS[
 	// delay on checking/displaying illegal FPS.
 	self.fAverageFrameTime = 0;
@@ -1624,15 +1787,9 @@ void ClientConnect ()
 	self.fIllegalFPSWarnings = 0;
 // ILLEGALFPS]
 
-	// TEAM -->
-
 	self.fraggie = 0;
 	MakeMOTD();
 	CheckConnectRate();
-
-	// a client connecting during an intermission can cause problems
-	if(intermission_running)
-		GotoNextMap();
 
 	if(k_captains == 2) {
 // in case of team picking, pick player if there's a captain with his/her team
@@ -1671,8 +1828,8 @@ void ClientConnect ()
 			}
 		}
 	}
-// <-- TEAM
-};
+#endif
+}
 
 /*
 ===========
@@ -1683,25 +1840,39 @@ called when a player disconnects from a server
 */
 void ClientDisconnect ()
 {
-//kombat teams gained control over this
-	local entity ghost;
-	local float f1, f2;
-	local string s1;
+    string s;
+#ifdef KTEAMS
+	entity ghost;
+	float f1, f2;
+#endif
 
+#ifdef FRIKBOT
+	ClientDisconnected(); // FrikBot
+#endif
+#ifdef AGRIP
+	agh_player_dietidy(); // tidy up before leaving
+#endif
+
+#ifdef KTEAMS
 	if(self.k_accepted == 2) {
 		set_suicide_frame();
 		if(match_in_progress == 2 && self.ready) 
 		{
-			s1 = ftos(self.frags);
+#endif
+			s = ftos(self.frags);
+            bprint (PRINT_HIGH, self.netname, " left the game with ", s, " frags\n");
+            sound (self, CHAN_BODY, "player/tornoff2.wav", 1, ATTN_NONE);
 
-			bprint(2, self.netname, " left the game with ", s1, " frags\n");
-			sound(self, 4, "player/tornoff2.wav", 1, 0);
+#ifndef KTEAMS
+            set_suicide_frame ();
+            self.classname = "";	// don't turn up in find()
+#else
 			f1 = 1;
 			f2 = 0;
 			while(f1 < k_userid && !f2) {
-				s1 = ftos(f1);
-				s1 = infokey(world, s1);
-				if(s1 == "") f2 = 1;
+				s = ftos(f1);
+				s = infokey(world, s);
+				if(s == "") f2 = 1;
 				else f1 = f1 + 1;
 			}
 			if(!f2) k_userid = k_userid + 1;
@@ -1714,9 +1885,9 @@ void ClientDisconnect ()
 			ghost.deaths = self.deaths;
 			ghost.friendly = self.friendly;
 			ghost.ready = 0;
-			s1 = ftos(f1);
+			s = ftos(f1);
 			localcmd("localinfo ");
-			localcmd(s1);
+			localcmd(s);
 
 			localcmd(" \"");
 			localcmd(self.netname);
@@ -1765,17 +1936,17 @@ void ClientDisconnect ()
         if(stof(infokey(world, "k_autoreset")))
         localcmd("exec configs/reset.cfg\n");
 
-        s1 = infokey(world, "k_defmap");
-        if(s1 != "" && s1 != mapname) {
+        s = infokey(world, "k_defmap");
+        if(s != "" && s != mapname) {
 
                 if(match_in_progress) EndMatch(1);
                 localcmd("map ");
-                localcmd(s1);
+                localcmd(s);
                 localcmd("\n");
 		}
 	}
-//team
-};
+#endif
+}
 
 /*
 ===========
@@ -1789,72 +1960,72 @@ void ClientObituary (entity targ, entity attacker)
 	float rnum;
 	string deathstring, deathstring2;
 	string attackerteam, targteam;
-	local string attackerteam2;	//team
+#ifdef KTEAMS
+	string attackerteam2;	//team
 
 	// Set it so it should update scores at next attempt.
 	k_nochange = 0;
+#endif
 
+    if (targ.classname != "player")
+		return;
+    
 	rnum = random();
 	//ZOID 12-13-96: self.team doesn't work in QW.  Use keys
 	attackerteam = infokey(attacker, "team");
 	targteam = infokey(targ, "team");
 
-	if (targ.classname == "player")
-	{
+    if (deathmatch > 3)
+    {
+        if (targ.deathtype == "selfwater")
+        {
+#ifdef KTEAMS
+            if(infokey(targ,"gender") == "f") 
+                bprint (PRINT_MEDIUM, targ.netname, " electrocutes herself.\n ");
+            else 
+#endif
+                bprint (PRINT_MEDIUM, targ.netname, " electrocutes himself.\n ");
+            targ.frags = targ.frags - 1;
+            return;
+        }
+    }
 
-		if (deathmatch > 3)
+    if (attacker.classname == "teledeath")
 		{
-			if (targ.deathtype == "selfwater")
-			{
-				bprint (1, targ.netname);
-///team
-				if(infokey(targ,"gender") == "f") bprint(1," electrocutes herself.\n");
-				else bprint(1," electrocutes himself.\n");
-///team
-				targ.frags = targ.frags - 1;
-				return;
-			}
-		}
-
-		if (attacker.classname == "teledeath")
-		{
-// team --> no points for telefragging teammate
+#ifdef KTEAMS
 			if(match_in_progress != 2) {
-				bprint(1,targ.netname, " was telefragged\n");
+				bprint(PRINT_MEDIUM,targ.netname, " was telefragged\n");
 				return;
 			}
 			attackerteam2 = infokey(attacker.owner, "team");
 			if(teamplay && targteam == attackerteam2 && attackerteam2 != "" && targ != attacker.owner)
 			{
-				bprint(1,targ.netname);
-				if(infokey(targ,"gender") == "f") bprint (1," was telefragged by her teammate\n");
-				else bprint(1," was telefragged by his teammate\n");
+				bprint(PRINT_MEDIUM, targ.netname);
+				if(infokey(targ,"gender") == "f") 
+                    bprint (PRINT_MEDIUM," was telefragged by her teammate\n");
+				else 
+                    bprint(PRINT_MEDIUM," was telefragged by his teammate\n");
 				targ.deaths = targ.deaths + 1;
 				return;
 			}
-			bprint(1,targ.netname);
-			bprint(1," was telefragged by ");
+#endif
+            bprint (PRINT_MEDIUM, targ.netname, " was telefragged by ",
+                    attacker.owner.netname, "\n");
+            logfrag (attacker.owner, targ);
 
-			bprint(1,attacker.owner.netname);
-			bprint(1,"\n");
-
-
-			attacker.owner.frags = attacker.owner.frags + 1;
+            attacker.owner.frags = attacker.owner.frags + 1;
+#ifdef KTEAMS
 			targ.deaths = targ.deaths + 1;
 			attacker.owner.victim = targ.netname;
 			targ.killer = attacker.owner.netname;
-			logfrag (attacker.owner, targ);
-// <-- team
+#endif
 			return;
 		}
 
 		if (attacker.classname == "teledeath2")
 		{
-			bprint (1,"Satan's power deflects ");
-			bprint (1,targ.netname);
-			bprint (1,"'s telefrag\n");
-
-	            targ.frags = targ.frags - 1;
+		bprint (PRINT_MEDIUM, "Satan's power deflects ", targ.netname, "'s telefrag\n");
+            targ.frags = targ.frags - 1;
 			logfrag (targ, targ);
 			return;
 		}
@@ -1862,10 +2033,8 @@ void ClientObituary (entity targ, entity attacker)
 		// double 666 telefrag (can happen often in deathmatch 4)
 		if (attacker.classname == "teledeath3")
 		{
-			bprint (1,targ.netname);
-			bprint (1," was telefragged by ");
-			bprint (1,attacker.owner.netname);
-			bprint (1, "'s Satan's power\n");
+		bprint (PRINT_MEDIUM, targ.netname, " was telefragged by ",
+					attacker.owner.netname, "'s Satan's power\n");
 			targ.frags = targ.frags - 1;
 			logfrag (targ, targ);
 			return;
@@ -1878,85 +2047,96 @@ void ClientObituary (entity targ, entity attacker)
 			{
 				logfrag (attacker, attacker);
 				attacker.frags = attacker.frags - 1;
+#ifdef KTEAMS
 				attacker.friendly = attacker.friendly + 1;		//team
-				bprint (1,attacker.netname);
-				bprint (1," squished a teammate\n");
+#endif
+                bprint (PRINT_MEDIUM, attacker.netname, " squished a teammate\n");
 				return;
 			}
 			else if (attacker.classname == "player" && attacker != targ)
 			{
-				bprint (1, attacker.netname);
-				bprint (1," squishes ");
-				bprint (1,targ.netname);
-				bprint (1,"\n");
+			bprint (PRINT_MEDIUM, attacker.netname, " squishes ",
+						targ.netname, "\n");
 				logfrag (attacker, targ);
 				attacker.frags = attacker.frags + 1;
-				targ.deaths = targ.deaths + 1;	// team
+#ifdef KTEAMS
+				targ.deaths = targ.deaths + 1;
 				attacker.victim = targ.netname;
 				targ.killer = attacker.netname;
+#endif
 				return;
 			}
 			else
 			{
 				logfrag (targ, targ);
 				targ.frags = targ.frags - 1;            // killed self
-				bprint (1,targ.netname);
-				bprint (1," was squished\n");
+                bprint (PRINT_MEDIUM, targ.netname, " was squished\n");
 				return;
 			}
 		}
 
-		if (attacker.classname == "player") {
-
-// included big part starts to handle optional new death messages :p
-
+        if (attacker.classname == "player") 
+        {
+#ifdef KTEAMS
+            // included big part starts to handle optional new death messages :p
 			if(stof(infokey(world, "k_deathmsg"))) {
+#endif
 				if (targ == attacker)
 				{
 					// killed self
 					logfrag (attacker, attacker);
 						attacker.frags = attacker.frags - 1;
-					bprint (1,targ.netname);
-
 					if (targ.deathtype == "grenade")
-						bprint (1, " tries to put the pin back in\n");
+                        bprint (PRINT_MEDIUM, targ.netname, " tries to put the pin back in\n");
 					else if (targ.deathtype == "rocket")
 					{
+#ifdef KTEAMS
 						if (rnum < 0.50)
-							bprint (1, " becomes bored with life\n");
+                            bprint (PRINT_MEDIUM, targ.netname, " discovers blast radius\n");
 						else
-							bprint (1, " discovers blast radius\n");
+#endif
+                            bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
 					}
 					else if (targ.weapon == 64 && targ.waterlevel > 1)
 					{
-						if (targ.watertype == -4)
-							bprint (1," discharges into the slime\n");
-						else if (targ.watertype == -5)
-							bprint (1," discharges into the lava\n");
+                        if (targ.watertype == CONTENT_SLIME)
+                            bprint (PRINT_MEDIUM, targ.netname, " discharges into the slime\n");
+                        else if (targ.watertype == CONTENT_LAVA)
+                            bprint (PRINT_MEDIUM, targ.netname, " discharges into the lava\n");
+#ifdef KTEAMS
 						else if (random() < 0.5)
-							bprint (1," discharges into the water.\n");
+                            bprint (PRINT_MEDIUM, targ.netname, " heats up the water.\n");
+#endif
 						else
-							bprint (1," heats up the water\n");
-						return;
+                            bprint (PRINT_MEDIUM, targ.netname, " discharges into the water.\n");
 					}
 					else
-						bprint (1," becomes bored with life\n");
+                        bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
+                    return;
 				}
-				else if ( (teamplay == 2) && (targteam == attackerteam) && (attackerteam != "") )
+                else if ( ((teamplay == 2) && (targteam == attackerteam) &&
+                            (attackerteam != "")) || coop )
 				{
-///team
-					if(rnum < 0.25) deathstring = " mows down a teammate\n";
-					else if(rnum < 0.50) if(infokey(attacker.owner, "gender") == "f") deathstring = " checks her glasses\n";
-						else deathstring = " checks his glasses\n";
+                    if (coop)
+                        rnum = rnum * 0.5;	// only use the first two messages
+					if(rnum < 0.25) 
+#ifdef KTEAMS
+                        if(infokey(attacker.owner, "gender") == "f") 
+                            deathstring = " checks her glasses\n";
+						else 
+#endif
+                            deathstring = " checks his glasses\n";
+					else if(rnum < 0.50) 
+						deathstring = " loses another friend\n";
 					else if (rnum < 0.75)
 						deathstring = " gets a frag for the other team\n";
-///team
 					else
-						deathstring = " loses another friend\n";
-					bprint (1, attacker.netname);
-					bprint (1, deathstring);
+                        deathstring = " mows down a teammate\n";
+					bprint (PRINT_MEDIUM, attacker.netname, deathstring);
 					attacker.frags = attacker.frags - 1;
+#ifdef KTEAMS
 					attacker.friendly = attacker.friendly + 1;
+#endif
 					//ZOID 12-13-96:  killing a teammate logs as suicide
 					logfrag (attacker, attacker);
 					return;
@@ -1965,6 +2145,7 @@ void ClientObituary (entity targ, entity attacker)
 				{
 					logfrag (attacker, targ);
 					attacker.frags = attacker.frags + 1;
+#ifdef KTEAMS
 					targ.deaths = targ.deaths + 1;          //team
 					attacker.victim = targ.netname;
 					targ.killer = attacker.netname;
@@ -2010,10 +2191,10 @@ void ClientObituary (entity targ, entity attacker)
 								deathstring = " was smeared by ";
 							else
 							{
-								bprint (1, attacker.netname);
-								bprint (1, " rips ");
-								bprint (1, targ.netname);
-								bprint (1, " a new one\n");
+								bprint (PRINT_MEDIUM, attacker.netname);
+								bprint (PRINT_MEDIUM, " rips ");
+								bprint (PRINT_MEDIUM, targ.netname);
+								bprint (PRINT_MEDIUM, " a new one\n");
 								return;
 							}
 							deathstring2 = "'s quad rocket\n";
@@ -2072,10 +2253,10 @@ void ClientObituary (entity targ, entity attacker)
 						else
 							deathstring2 = "'s shaft\n";
 					}
-					bprint (1,targ.netname);
-					bprint (1,deathstring);
-					bprint (1,attacker.netname);
-					bprint (1,deathstring2);
+					bprint (PRINT_MEDIUM,targ.netname);
+					bprint (PRINT_MEDIUM,deathstring);
+					bprint (PRINT_MEDIUM,attacker.netname);
+					bprint (PRINT_MEDIUM,deathstring2);
 				}
 				return;
 // included big part ends
@@ -2086,25 +2267,25 @@ void ClientObituary (entity targ, entity attacker)
 					// killed self
 					logfrag (attacker, attacker);
 					attacker.frags = attacker.frags - 1;
-					bprint (1,targ.netname);
+					bprint (PRINT_MEDIUM,targ.netname);
 
 					if (targ.deathtype == "grenade")
-						bprint (1," tries to put the pin back in\n");
+						bprint (PRINT_MEDIUM," tries to put the pin back in\n");
 					else if (targ.deathtype == "rocket")
-						bprint (1," becomes bored with life\n");
+						bprint (PRINT_MEDIUM," becomes bored with life\n");
 					else if (targ.weapon == 64 && targ.waterlevel > 1)
 
 					{
 						if (targ.watertype == -4)
-							bprint (1," discharges into the slime\n");
+							bprint (PRINT_MEDIUM," discharges into the slime\n");
 						else if (targ.watertype == -5)
-							bprint (1," discharges into the lava\n");
+							bprint (PRINT_MEDIUM," discharges into the lava\n");
 						else
-	        					bprint (1," discharges into the water.\n");
+	        					bprint (PRINT_MEDIUM," discharges into the water.\n");
 						return;
 					}
 	                                else
-						bprint (1," becomes bored with life\n");
+						bprint (PRINT_MEDIUM," becomes bored with life\n");
 	                        }
 				else if ( (teamplay == 2) && (targteam == attackerteam) && (attackerteam != "") )
 				{
@@ -2120,8 +2301,8 @@ void ClientObituary (entity targ, entity attacker)
 // removed by kombat teams
 ///team
 					else deathstring = " loses another friend\n";
-					bprint (1, attacker.netname);
-					bprint (1, deathstring);
+					bprint (PRINT_MEDIUM, attacker.netname);
+					bprint (PRINT_MEDIUM, deathstring);
 					attacker.frags = attacker.frags - 1;
 					attacker.friendly = attacker.friendly + 1;		//team
 					//ZOID 12-13-96:  killing a teammate logs as suicide
@@ -2135,13 +2316,14 @@ void ClientObituary (entity targ, entity attacker)
 					targ.deaths = targ.deaths + 1;		//team
 					attacker.victim = targ.netname;
 					targ.killer = attacker.netname;
+#endif
 	   				rnum = attacker.weapon;
 					if (targ.deathtype == "nail")
 					{
 						deathstring = " was nailed by ";
 						deathstring2 = "\n";
 					}
-					if (targ.deathtype == "supernail")
+			else if (targ.deathtype == "supernail")
 					{
 						deathstring = " was punctured by ";
 						deathstring2 = "\n";
@@ -2149,7 +2331,6 @@ void ClientObituary (entity targ, entity attacker)
 					else if (targ.deathtype == "grenade")
 					{
 						deathstring = " eats ";
-
 						deathstring2 = "'s pineapple\n";
 						if (targ.health < -40)
 						{
@@ -2168,20 +2349,16 @@ void ClientObituary (entity targ, entity attacker)
 								deathstring = " was smeared by ";
 							else
 							{
-								bprint (1, attacker.netname);
-								bprint (1, " rips ");
-								bprint (1, targ.netname);
-								bprint (1, " a new one\n");
+						bprint (PRINT_MEDIUM, attacker.netname, " rips ",
+							targ.netname, " a new one\n");
 								return;
 							}
-
 	       						deathstring2 = "'s quad rocket\n";
 						}
 						else
 	                                        {
 							deathstring = " rides ";
 							deathstring2 = "'s rocket\n";
-	
 							if (targ.health < -40)
 	                                                {
 								deathstring = " was gibbed by ";
@@ -2189,22 +2366,27 @@ void ClientObituary (entity targ, entity attacker)
 							}
 						}
 					}
-					else if (rnum == 4096)
+			else if (targ.deathtype == "stomp")
+			{
+				deathstring = " was stomped by ";
+				deathstring2 = "\n";
+			}
+			else if (rnum == IT_AXE)
 					{
 						deathstring = " was ax-murdered by ";
 						deathstring2 = "\n";
 					}
-					else if (rnum == 1)
+			else if (rnum == IT_SHOTGUN)
 					{
 						deathstring = " chewed on ";
 						deathstring2 = "'s boomstick\n";
 					}
-					else if (rnum == 2)
+			else if (rnum == IT_SUPER_SHOTGUN)
 					{
 						deathstring = " ate 2 loads of ";
 						deathstring2 = "'s buckshot\n";
 					}
-					else if (rnum == 64)
+			else if (rnum == IT_LIGHTNING)
 					{
 						deathstring = " accepts ";
 						if (attacker.waterlevel > 1)
@@ -2212,10 +2394,8 @@ void ClientObituary (entity targ, entity attacker)
 						else
 							deathstring2 = "'s shaft\n";
 					}
-					bprint (1,targ.netname);
-					bprint (1,deathstring);
-					bprint (1,attacker.netname);
-					bprint (1,deathstring2);
+			bprint (PRINT_MEDIUM, targ.netname, deathstring,
+									attacker.netname, deathstring2);
 				}
 				return;
 			}
@@ -2226,74 +2406,72 @@ void ClientObituary (entity targ, entity attacker)
                                 targ.frags = targ.frags - 1;            // killed self
 			rnum = targ.watertype;
 
-			bprint (1,targ.netname);
 			if (rnum == -3)
 			{
 				if (random() < 0.5)
-					bprint (1," sleeps with the fishes\n");
+				deathstring = " sleeps with the fishes\n";
 				else
-					bprint (1," sucks it down\n");
-				return;
+				deathstring = " sucks it down\n";
 			}
 			else if (rnum == -4)
 			{
 				if (random() < 0.5)
-					bprint (1," gulped a load of slime\n");
+				deathstring = " gulped a load of slime\n";
 				else
-					bprint (1," can't exist on slime alone\n");
-				return;
+				deathstring = " can't exist on slime alone\n";
 			}
 			else if (rnum == -5)
 			{
 				if (targ.health < -15)
-				{
-					bprint (1," burst into flames\n");
-					return;
-				}
-				if (random() < 0.5)
-					bprint (1," turned into hot slag\n");
+				deathstring = " burst into flames\n";
+			else if (random() < 0.5)
+				deathstring = " turned into hot slag\n";
 				else
-					bprint (1," visits the Volcano God\n");
-				return;
+				deathstring = " visits the Volcano God\n";
 			}
-			if (attacker.classname == "explo_box")
+		else if (attacker.classname == "explo_box")
 			{
-				bprint (1," blew up\n");
-				return;
+			deathstring = " blew up\n";
 			}
-			if (targ.deathtype == "falling")
+        else if (targ.deathtype == "falling")
 			{
+#ifdef KTEAMS
 				rnum = stof(infokey(world, "k_deathmsg"));
 				if(random() < 0.5 && rnum)
-					bprint(1, " cratered\n");
+					deathstring = " cratered\n";
 				else {
-					if(infokey(targ,"gender") == "f") bprint(1," fell to her death\n");
-					else bprint(1," fell to his death\n");
+					if(infokey(targ,"gender") == "f") 
+                        deathstring = " fell to her death\n";
+					else 
+#endif
+                        deathstring = " fell to his death\n";
 				}
-				return;
 			}
-			if (targ.deathtype == "nail" || targ.deathtype == "supernail")
+            else if (targ.deathtype == "nail" || targ.deathtype == "supernail")
 			{
-				bprint (1," was spiked\n");
-				return;
+                deathstring = " was spiked\n";
 			}
-			if (targ.deathtype == "laser")
+		else if (targ.deathtype == "laser")
  			{
-				bprint (1," was zapped\n");
- 				return;
+			deathstring = " was zapped\n";
  			}
-			if (attacker.classname == "fireball")
+		else if (attacker.classname == "fireball")
 			{
-				bprint (1," ate a lavaball\n");
-				return;
+			deathstring = " ate a lavaball\n";
 			}
-			if (attacker.classname == "trigger_changelevel")
+		else if (attacker.classname == "trigger_changelevel")
 			{
-				bprint (1," tried to leave\n");
-				return;
+			deathstring = " tried to leave\n";
+		}
+		else if (attacker.flags & FL_MONSTER)
+		{
+			deathstring = ObituaryForMonster(attacker.classname);
+		}
+		else
+		{
+			deathstring = " died\n";
 			}
 
-			bprint (1," died\n");
+		bprint (PRINT_MEDIUM, targ.netname, deathstring);
 		}
-	}
 }
