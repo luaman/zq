@@ -489,7 +489,7 @@ static void HandleEnter (void)
 	enum {COMMAND, CHAT, TEAMCHAT} type;
 	char *p;
 
-	//decide whether to treat the text as chat or command
+	// decide whether to treat the text as chat or command
 	if (cls.state >= ca_connected) {
 		if (keydown[K_CTRL])
 			type = TEAMCHAT;
@@ -505,7 +505,7 @@ static void HandleEnter (void)
 		type = COMMAND;
 	}
 
-	//do appropriate action
+	// do appropriate action
 	switch (type) {
 	case CHAT:
 	case TEAMCHAT:
@@ -514,7 +514,7 @@ static void HandleEnter (void)
 				break;
 		}
 		if (!*p)
-			break;		//just whitespace
+			break;		// just whitespace
 
 		Cbuf_AddText(type == TEAMCHAT ? "say_team " : "say ");
 		Cbuf_AddText(key_lines[edit_line] + 1);
@@ -522,7 +522,7 @@ static void HandleEnter (void)
 		break;
 
 	case COMMAND:
-		p = key_lines[edit_line] + 1;	//skip the "]" prompt char
+		p = key_lines[edit_line] + 1;	// skip the "]" prompt char
 		if (*p == '\\' || (*p == '/' && p[1] != '/'))
 			p++;
 		Cbuf_AddText(p);
@@ -530,7 +530,7 @@ static void HandleEnter (void)
 		break;
 	}
 
-	//echo to the console and cycle command history
+	// echo to the console and cycle command history
 	Com_Printf("%s\n", key_lines[edit_line]);
 	edit_line = (edit_line + 1) & 31;
 	history_line = edit_line;
@@ -539,8 +539,8 @@ static void HandleEnter (void)
 	key_linepos = 1;
 
 	if (cls.state == ca_disconnected)
-		SCR_UpdateScreen();	//force an update, because the command
-							//may take some time
+		SCR_UpdateScreen();	// force an update, because the command
+							// may take some time
 }
 
 /*
