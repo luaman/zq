@@ -579,13 +579,47 @@ void R_SetupFrame (void)
 	D_SetupFrame ();
 }
 
-void R_32To8bit (byte *in, int width, int height, byte *out)
+void R_32To8bit (unsigned int *in, int inwidth, int inheight, byte *out, int outwidth, int outheight)
 {
-	int i;
 	extern unsigned char d_15to8table[65536];
 
-	for (i = 0; i < width * height; i++, in += 4, out++)
-		*out = d_15to8table[((in[0]>>3)<<0) + ((in[1]>>3)<<5) + ((in[2]>>3)<<10)];
+	assert(outwidth <= inwidth && outheight <= inheight);
+
+	if (inwidth == outwidth && inheight == outheight) {
+		int	i;
+		for (i = inwidth*inheight; i; i--, in++)
+			*out++ = d_15to8table[((*in & 0xf8)>>3) +	((*in & 0xf800)>>6) + ((*in & 0xf80000)>>9)];
+	}
+	else
+	{	// scale down
+		int i, j, pix;
+		unsigned frac, fracstep;
+		unsigned int *inrow;
+
+		fracstep = (inwidth * 0x10000) / outwidth;
+		for (i = 0; i < outheight; i++)
+		{
+			inrow = (int *)in + inwidth*(i*inheight/outheight);
+			frac = fracstep >> 1;
+			for (j = outwidth >> 2 ; j ; j--)
+			{
+				pix = inrow[frac >> 16]; frac += fracstep;
+				out[0] = d_15to8table[((pix & 0xf8)>>3) + ((pix & 0xf800)>>6) + ((pix & 0xf80000)>>9)];
+				pix = inrow[frac >> 16]; frac += fracstep;
+				out[1] = d_15to8table[((pix & 0xf8)>>3) + ((pix & 0xf800)>>6) + ((pix & 0xf80000)>>9)];
+				pix = inrow[frac >> 16]; frac += fracstep;
+				out[2] = d_15to8table[((pix & 0xf8)>>3) + ((pix & 0xf800)>>6) + ((pix & 0xf80000)>>9)];
+				pix = inrow[frac >> 16]; frac += fracstep;
+				out[3] = d_15to8table[((pix & 0xf8)>>3) + ((pix & 0xf800)>>6) + ((pix & 0xf80000)>>9)];
+				out += 4;
+			}
+			for (j = outwidth & 3 ; j ; j--)
+			{
+				pix = inrow[frac >> 16]; frac += fracstep;
+				*out++ = d_15to8table[((pix & 0xf8)>>3) + ((pix & 0xf800)>>6) + ((pix & 0xf80000)>>9)];
+			}
+		}
+	}
 }
 
 

@@ -301,14 +301,13 @@ void R_SetSky (char *name)
 		Q_snprintfz (pathname, sizeof(pathname), "env/%s%s.tga", name, suf[r_skysideimage[i]]);
 		LoadTGA (pathname, &pic, &width, &height);
 
-		if (!pic)
-		{
-			Com_Printf ("Couldn't load %s\n", name);
+		if (!pic) {
+			Com_Printf ("Couldn't load %s\n", pathname);
 			return;
 		}
-		if (width != 256 || height != 256)
-		{
-			Com_Printf ("Couldn't load %s\n", name);
+
+		if (width > 512 || height > 512 || width < 256 || height < 256) {
+			Com_Printf ("Bad image dimensions in %s\n", pathname);
 			free (pic);
 			return;
 		}
@@ -317,7 +316,7 @@ void R_SetSky (char *name)
 		r_skytexinfo[i].texture->width = 256;
 		r_skytexinfo[i].texture->height = 256;
 		r_skytexinfo[i].texture->offsets[0] = i;
-		R_32To8bit (pic, 256, 256, r_skypixels[i]);
+		R_32To8bit ((unsigned int *)pic, width, height, r_skypixels[i], 256, 256);
 		free (pic);
 	}
 
