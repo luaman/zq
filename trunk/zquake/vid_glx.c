@@ -94,6 +94,7 @@ static float mouse_x, mouse_y;
 static float old_mouse_x, old_mouse_y;
 
 cvar_t	m_filter = {"m_filter", "0"};
+cvar_t	gl_strings = {"gl_strings", "", CVAR_ROM};
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol", "1"};
 
 /*-----------------------------------------------------------------------*/
@@ -111,11 +112,28 @@ qbool gl_mtexable = false;
 qbool gl_mtexfbskins = false;
 
 /*-----------------------------------------------------------------------*/
+
+// direct draw software compatibility 
+
+void VID_UnlockBuffer()
+{
+}
+
+void VID_LockBuffer()
+{
+}
+
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
-{}
+{
+}
 
 void D_EndDirectRect (int x, int y, int width, int height)
-{}
+{
+}
+
+void VID_SetCaption (char *text)
+{
+}
 
 static int XLateKey(XKeyEvent *ev)
 {
@@ -565,7 +583,30 @@ void InitSig(void)
 }
 
 void VID_ShiftPalette(unsigned char *p)
-{}
+{
+}
+
+/*
+======================
+VID_SetDeviceGammaRamp
+
+Note: ramps must point to a static array
+======================
+*/
+void VID_SetDeviceGammaRamp (unsigned short *ramps)
+{
+#ifdef USE_VMODE
+    if (vid_gammaworks)
+    {
+        currentgammaramp = ramps;
+        if (vid_hwgamma_enabled)
+        {
+            XF86VidModeSetGammaRamp(dpy, scrnum, 256, ramps, ramps + 256, ramps + 512);
+            customgamma = true;
+        }
+    }
+#endif
+}
 
 void InitHWGamma (void)
 {
@@ -588,21 +629,6 @@ void InitHWGamma (void)
 #endif
 }
 
-void VID_SetDeviceGammaRamp (unsigned short *ramps)
-{
-#ifdef USE_VMODE
-    if (vid_gammaworks)
-    {
-        currentgammaramp = ramps;
-        if (vid_hwgamma_enabled)
-        {
-            XF86VidModeSetGammaRamp(dpy, scrnum, 256, ramps, ramps + 256, ramps + 512);
-            customgamma = true;
-        }
-    }
-#endif
-}
-
 void RestoreHWGamma (void)
 {
 #ifdef USE_VMODE
@@ -613,6 +639,8 @@ void RestoreHWGamma (void)
     }
 #endif
 }
+
+//=================================================================
 
 // check gamma settings
 void Check_Gamma (unsigned char *pal)
@@ -687,13 +715,14 @@ void GL_Init (void)
     Com_Printf ("GL_VENDOR: %s\n", gl_vendor);
     gl_renderer = glGetString (GL_RENDERER);
     Com_Printf ("GL_RENDERER: %s\n", gl_renderer);
-
     gl_version = glGetString (GL_VERSION);
     Com_Printf ("GL_VERSION: %s\n", gl_version);
     gl_extensions = glGetString (GL_EXTENSIONS);
-    Com_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
+//  Com_Printf ("GL_EXTENSIONS: %s\n", gl_extensions); 
 
-    //	Com_Printf ("%s %s\n", gl_renderer, gl_version);
+	Cvar_Register (&gl_strings);
+	Cvar_ForceSet (&gl_strings, va("GL_VENDOR: %s\nGL_RENDERER: %s\n"
+		"GL_VERSION: %s\nGL_EXTENSIONS: %s", gl_vendor, gl_renderer, gl_version, gl_extensions));
 
     glClearColor (1,0,0,0);
     glCullFace(GL_FRONT);
@@ -1073,11 +1102,3 @@ void IN_Move (usercmd_t *cmd)
     IN_MouseMove(cmd);
 }
 
-
-void VID_UnlockBuffer()
-{}
-void VID_LockBuffer()
-{}
-
-void VID_SetCaption (char *text)
-{}
