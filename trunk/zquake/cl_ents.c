@@ -651,12 +651,11 @@ void CL_ParseProjectiles (void)
 		for (j=0 ; j<6 ; j++)
 			bits[j] = MSG_ReadByte ();
 
-continue;	// @@@ Tonik - until this function is fixed
-
 		if (cl_num_projectiles == MAX_PROJECTILES)
 			continue;
 
 		pr = &cl_projectiles[cl_num_projectiles];
+		inter = &cl.int_projectiles[cl_num_projectiles++];	//fuh : mvd
 		cl_num_projectiles++;
 
 		pr->modelindex = cl_spikeindex;
@@ -677,8 +676,6 @@ continue;	// @@@ Tonik - until this function is fixed
 				inter->interpolate = true;
 				inter->oldindex = j;
 				VectorCopy(pr->origin, inter->origin);
-				if (!cl_oldprojectiles[j].origin[0])
-					Com_Printf("parse:%d, %d, %d\n", j, num, cl_oldprojectiles[j].num);
 				break;
 			}
 #endif
