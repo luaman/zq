@@ -246,6 +246,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // ZQuake protocol extensions (*z_ext serverinfo key)
 //
 #define Z_EXT_PM_TYPE		(1<<0)
+#define Z_EXT_VIEWHEIGHT	(1<<1)
 
 
 /*
