@@ -147,7 +147,7 @@ void MSG_ReadDeltaUsercmd (struct usercmd_s *from, struct usercmd_s *cmd);
 int	Q_atoi (char *str);
 float Q_atof (char *str);
 
-
+void Q_strncpyz (char *dest, char *src, size_t size);
 
 //============================================================================
 
