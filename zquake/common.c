@@ -1280,7 +1280,6 @@ int COM_FOpenFile (char *filename, FILE **file)
 	char		netpath[MAX_OSPATH];
 	pack_t		*pak;
 	int			i;
-	int			findtime;
 
 	file_from_pak = 0;
 		
@@ -1311,16 +1310,15 @@ int COM_FOpenFile (char *filename, FILE **file)
 		}
 		else
 		{		
-			sprintf (netpath, "%s/%s",search->filename, filename);
-			
-			findtime = Sys_FileTime (netpath);
-			if (findtime == -1)
+			Q_snprintfz (netpath, sizeof(netpath), "%s/%s", search->filename, filename);
+
+			*file = fopen (netpath, "rb");
+			if (!*file)
 				continue;
 			
 			if (developer.value)
 				Sys_Printf ("FindFile: %s\n",netpath);
 
-			*file = fopen (netpath, "rb");
 			return COM_filelength (*file);
 		}
 		
