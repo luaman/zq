@@ -1816,42 +1816,6 @@ void VID_UnlockBuffer (void)
 }
 
 
-int VID_ForceUnlockedAndReturnState (void)
-{
-	int	lk;
-
-	if (!lockcount)
-		return 0;
-
-	lk = lockcount;
-
-	if (dibdc)
-	{
-		lockcount = 0;
-	}
-	else
-	{
-		lockcount = 1;
-		VID_UnlockBuffer ();
-	}
-
-	return lk;
-}
-
-
-void VID_ForceLockState (int lk)
-{
-
-	if (!dibdc && lk)
-	{
-		lockcount = 0;
-		VID_LockBuffer ();
-	}
-
-	lockcount = lk;
-}
-
-
 void	VID_SetPalette (unsigned char *palette)
 {
 	INT			i;
@@ -2222,7 +2186,9 @@ void VID_Shutdown (void)
 	if (!vid_initialized)
 		return;
 
-	VID_ForceUnlockedAndReturnState ();
+	// unlock if locked
+	if (lockcount > 0)
+		MGL_endDirectAccess();
 
 	if (modestate == MS_FULLDIB)
 		ChangeDisplaySettings (NULL, CDS_FULLSCREEN);
