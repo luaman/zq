@@ -354,10 +354,15 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	// this is the frame we are creating
 	frame = &client->frames[client->netchan.incoming_sequence & UPDATE_MASK];
 
-	// find the client's PVS
-	clent = client->edict;
-	VectorAdd (clent->v.origin, clent->v.view_ofs, org);
-	pvs = CM_FatPVS (org);
+	if (sv.intermission_running && sv.intermission_origin_valid) {
+		pvs = CM_FatPVS (sv.intermission_origin);
+	}
+	else {
+		// find the client's PVS
+		clent = client->edict;
+		VectorAdd (clent->v.origin, clent->v.view_ofs, org);
+		pvs = CM_FatPVS (org);
+	}
 
 	// send over the players in the PVS
 	SV_WritePlayersToClient (client, pvs, msg);

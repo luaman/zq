@@ -1486,6 +1486,8 @@ void CheckIntermission (void)
 	if ( (msg->cursize == 2 && msg->data[0] == svc_cdtrack)	/* QW progs send svc_cdtrack first */
 		|| msg->cursize == 0  /* just in case */ )
 	{
+		sv.intermission_running = true;
+		sv.intermission_hunt = 1;	// start looking for WriteCoord's
 		// prefix the svc_intermission message with an sv.time update
 		// to make sure intermission screen has the right value
 		MSG_WriteByte (&sv.reliable_datagram, svc_updatestatlong);
@@ -1553,8 +1555,20 @@ void PF_WriteCoord (void)
 		client_t *cl = Write_GetClient();
 		ClientReliableCheckBlock(cl, 2);
 		ClientReliableWrite_Coord(cl, G_FLOAT(OFS_PARM1));
-	} else
+	}
+	else
+	{
+		if (sv.intermission_hunt) {
+			sv.intermission_origin[sv.intermission_hunt - 1] = G_FLOAT(OFS_PARM1);
+			sv.intermission_hunt++;
+			if (sv.intermission_hunt == 4) {
+				sv.intermission_origin_valid = true;
+				sv.intermission_hunt = 0;
+			}
+		}
+
 		MSG_WriteCoord (WriteDest(), G_FLOAT(OFS_PARM1));
+	}
 }
 
 void PF_WriteString (void)
