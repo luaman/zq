@@ -212,7 +212,8 @@ void CL_SendConnectPacket (void)
 
 	// let the server know what extensions we support
 	strcpy (biguserinfo, cls.userinfo);
-	Info_SetValueForStarKey (biguserinfo, "*z_ext", va("%i", Z_EXT_PM_TYPE|Z_EXT_PM_TYPE_NEW), sizeof(biguserinfo));
+	Info_SetValueForStarKey (biguserinfo, "*z_ext", va("%i",
+		Z_EXT_PM_TYPE|Z_EXT_PM_TYPE_NEW|Z_EXT_VIEWHEIGHT|Z_EXT_SERVERTIME), sizeof(biguserinfo));
 
 	sprintf (data, "\xff\xff\xff\xff" "connect %i %i %i \"%s\"\n",
 		PROTOCOL_VERSION, cls.qport, cls.challenge, biguserinfo);
@@ -929,8 +930,10 @@ void CL_Frame (double time)
 	}
 
 	cls.realtime += cls.frametime;
-	if (!cl.paused)
+	if (!cl.paused) {
 		cl.time += cls.frametime;
+		cl.servertime += cls.frametime;
+	}
 
 	// get new key events
 	Sys_SendKeyEvents ();

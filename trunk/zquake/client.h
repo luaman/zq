@@ -246,7 +246,6 @@ extern clientPersistent_t	cls;
 typedef struct
 {
 	int			servercount;	// server identification for prespawns
-
 	char		serverinfo[MAX_SERVERINFO_STRING];
 // some important serverinfo keys are mirrored here:
 	int			deathmatch;
@@ -276,6 +275,7 @@ typedef struct
 	frame_t		frames[UPDATE_BACKUP];
 
 // information for local display
+	double		servertime;			// for display on solo status bar
 	int			stats[MAX_CL_STATS];	// health, etc
 	float		item_gettime[32];	// cl.time of acquiring item, for blinking
 	float		faceanimtime;		// use anim frame if cl.time < this
@@ -289,7 +289,7 @@ typedef struct
 
 // the client simulates or interpolates movement to get these values
 	double		time;			// this is the time value that the client
-								// is rendering at.  always <= realtime
+								// is rendering at
 	vec3_t		simorg;
 	vec3_t		simvel;
 	vec3_t		simangles;
@@ -311,7 +311,8 @@ typedef struct
 	float		rollangle;		// smooth out rollangle changes when strafing
 	
 	int			intermission;	// don't change view angle, full screen, etc
-	int			completed_time;	// latched from time at intermission start
+	float		completed_time;	// latched from time at intermission start
+	int			solo_completed_time;	// to draw on intermission screen
 	
 //
 // information that is static for the entire time connected to a server

@@ -549,6 +549,8 @@ void Cmd_Begin_f (void)
 			MSG_WriteAngle (&sv_client->netchan.message, ent->v.v_angle[i]);
 		MSG_WriteAngle (&sv_client->netchan.message, 0);
 	}
+
+	sv_client->lastservertimeupdate = -99;	// update immediately
 }
 
 //=============================================================================
@@ -946,6 +948,8 @@ void SV_TogglePause (const char *msg)
 			continue;
 		ClientReliableWrite_Begin (cl, svc_setpause, 2);
 		ClientReliableWrite_Byte (cl, sv.paused ? 1 : 0);
+
+		cl->lastservertimeupdate = -99;	// force an update to be sent
 	}
 }
 

@@ -680,6 +680,7 @@ void SVC_DirectConnect (void)
 		Com_Printf ("Spectator %s connected\n", newcl->name);
 	else
 		Com_DPrintf ("Client %s connected\n", newcl->name);
+
 	newcl->sendinfo = true;
 }
 
@@ -1391,7 +1392,7 @@ void SV_InitLocal (void)
 	Info_SetValueForStarKey (svs.info, "*version", va("%4.2f", QW_VERSION), MAX_SERVERINFO_STRING);
 	Info_SetValueForStarKey (svs.info, "*z_version", VersionString(), MAX_SERVERINFO_STRING);
 	Info_SetValueForStarKey (svs.info, "*z_ext", va("%i",
-		Z_EXT_PM_TYPE | Z_EXT_PM_TYPE_NEW | Z_EXT_VIEWHEIGHT), MAX_SERVERINFO_STRING);
+		Z_EXT_PM_TYPE | Z_EXT_PM_TYPE_NEW | Z_EXT_VIEWHEIGHT | Z_EXT_SERVERTIME), MAX_SERVERINFO_STRING);
 	
 	// init fraglog stuff
 	svs.logsequence = 1;

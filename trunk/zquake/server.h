@@ -103,7 +103,7 @@ typedef enum
 					// connection for a couple seconds
 	cs_connected,	// has been assigned to a client_t, but not in game yet
 	cs_spawned		// client is fully in game
-} sv_client_state_t;
+} client_state_e;
 
 typedef struct
 {
@@ -120,12 +120,15 @@ typedef struct
 
 typedef struct client_s
 {
-	sv_client_state_t	state;
-	int				extensions;			// what ZQuake extensions the client supports
-	int				spectator;			// non-interactive
+	client_state_e	state;
 
 	int				userid;							// identifying number
 	char			userinfo[MAX_INFO_STRING];		// infostring
+	char			name[32];			// for printing to other people
+										// extracted from userinfo
+	int				messagelevel;		// for filtering printed messages
+	qboolean		spectator;			// non-interactive
+	int				extensions;			// what ZQuake extensions the client supports
 
 	qboolean		sendinfo;			// at end of frame, send info to all
 										// this prevents malicious multiple broadcasts
@@ -137,15 +140,12 @@ typedef struct client_s
 
 	usercmd_t		lastcmd;			// for filling in big drops and partial predictions
 	double			cmdtime;			// realtime of last message
-	qboolean		jump_held;
 
+	qboolean		jump_held;
 	float			maxspeed;			// localized maxspeed
 	float			entgravity;			// localized ent gravity
 
 	edict_t			*edict;				// EDICT_NUM(clientnum+1)
-	char			name[32];			// for printing to other people
-										// extracted from userinfo
-	int				messagelevel;		// for filtering printed messages
 
 	// the datagram is written to after every frame, but only cleared
 	// when it is sent out to the client.  overflow is tolerated.
@@ -170,10 +170,10 @@ typedef struct client_s
 	float			spawn_parms[NUM_SPAWN_PARMS];
 
 // client known data for deltas	
-	int				old_frags;
-	
 	int				stats[MAX_CL_STATS];
+	int				old_frags;
 
+	double			lastservertimeupdate;	// last svs.realtime we sent STAT_TIME to the client
 
 	client_frame_t	frames[UPDATE_BACKUP];	// updates can be deltad from here
 

@@ -452,6 +452,18 @@ void SV_WriteClientdataToMessage (client_t *client, sizebuf_t *msg)
 			MSG_WriteAngle (msg, ent->v.angles[i]);
 		ent->v.fixangle = 0;
 	}
+
+	// Z_EXT_TIME protocol extension
+	// every now and then, send an update so that extrapolation
+	// on client side doesn't stray too far off
+	if (svs.realtime - client->lastservertimeupdate > 10)
+	{
+		MSG_WriteByte (msg, svc_updatestatlong);
+		MSG_WriteByte (msg, STAT_TIME);
+		MSG_WriteLong (msg, (int)(sv.time * 1000));
+
+		client->lastservertimeupdate = svs.realtime;
+	}
 }
 
 /*
