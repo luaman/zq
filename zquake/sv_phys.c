@@ -59,8 +59,6 @@ cvar_t	pm_airstep			 = {"pm_airstep", "0", CVAR_SERVERINFO};
 double	sv_frametime;
 
 
-#define	MOVE_EPSILON	0.01
-
 void SV_Physics_Toss (edict_t *ent);
 
 /*
