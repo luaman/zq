@@ -953,6 +953,8 @@ void PR_ParseDefs (void)
 			if (!c_defs && !strcmp(pr_token, "{")) {
 				// C-style function definition
 				PR_ParseFunctionBody (functionType, functionName, def);
+				while (PR_Check(";"))
+					;	// skip redundant semicolons
 				return;
 			}
 					
