@@ -38,6 +38,8 @@ void(string item, string amount) Cmd_Give = {
 		return;
 	}
 
+	am = stof(amount);
+
 	if (item == "")
 		return;
 	else if (item == "2")
@@ -55,19 +57,60 @@ void(string item, string amount) Cmd_Give = {
 	else if (item == "8")
 		self.items = self.items | IT_LIGHTNING;
 	else if (item == "s" || item == "shells")
-		self.ammo_shells = stof(amount);
+		self.ammo_shells = am;
 	else if (item == "n" || item == "nails")
-		self.ammo_nails = stof(amount);
+		self.ammo_nails = am;
 	else if (item == "r" || item == "rockets")
-		self.ammo_rockets = stof(amount);
+		self.ammo_rockets =am;
 	else if (item == "c" || item == "cells")
-		self.ammo_cells = stof(amount);
-	else if (item == "h" || item == "health")
-		self.health = stof(amount);
+		self.ammo_cells = am;
+	else if (item == "h" || item == "health") {
+		if (amount == "")
+			am = 100;
+		self.health = am;
+	}
+	else if (item == "ga") {
+		if (amount == "")
+			am = 100;
+		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+		if (am > 0) {
+			self.items = self.items | IT_ARMOR1;
+			self.armorvalue = am;
+			self.armortype = 0.3;
+		}
+		else
+			self.armorvalue = 0;
+	}
+	else if (item == "ya") {
+		if (amount == "")
+			am = 150;
+		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+		if (am > 0) {
+			self.items = self.items | IT_ARMOR2;
+			self.armorvalue = am;
+			self.armortype = 0.6;
+		}
+		else
+			self.armorvalue = 0;
+	}
+	else if (item == "ra") {
+		if (amount == "")
+			am = 200;
+		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+		if (am > 0) {
+			self.items = self.items | IT_ARMOR3;
+			self.armorvalue = am;
+			self.armortype = 0.8;
+		}
+		else
+			self.armorvalue = 0;
+	}
 	else if (item == "key1")
 		self.items = self.items | IT_KEY1;
 	else if (item == "key2")
 		self.items = self.items | IT_KEY2;
+	else if (item == "rune")
+		serverflags = (serverflags * 2 + 1) & 15;
 	else if (item == "all") {
 		self.items = self.items | IT_ALL_WEAPONS | IT_KEY1 | IT_KEY2;
 		self.ammo_shells = 100;
