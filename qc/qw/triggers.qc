@@ -421,15 +421,18 @@ local vector	org;
 	if (other.health <= 0 || other.solid != SOLID_SLIDEBOX)
 		return;
 
+	t = find (world, targetname, self.target);
+	if (!t)
+	{
+		// objerror ("couldn't find target");
+		return;
+	}
+
 	SUB_UseTargets ();
 
 // put a tfog where the player was
 	spawn_tfog (other.origin);
 
-	t = find (world, targetname, self.target);
-	if (!t)
-		objerror ("couldn't find target");
-		
 // spawn a tfog flash in front of the destination
 	makevectors (t.mangle);
 	org = t.origin + 32 * v_forward;
