@@ -871,7 +871,9 @@ void V_AddViewWeapon (float bob)
 
 	if (!cl_drawgun.value || (cl_drawgun.value == 2 && scr_fov.value > 90)
 		|| view_message.flags & (PF_GIB|PF_DEAD)
+#ifndef GLQUAKE
 		|| (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)
+#endif
 		|| !Cam_DrawViewModel())
 		return;
 
@@ -883,6 +885,13 @@ void V_AddViewWeapon (float bob)
 	ent.frame = view_message.weaponframe;
 	ent.colormap = vid.colormap;
 	ent.renderfx = RF_WEAPONMODEL;
+
+#ifdef GLQUAKE
+	if (cl.stats[STAT_ITEMS] & IT_INVISIBILITY) {
+		ent.renderfx |= RF_TRANSLUCENT;
+		ent.alpha = 0.5;
+	}
+#endif
 
 	ent.angles[YAW] = r_refdef.viewangles[YAW];
 	ent.angles[PITCH] = -r_refdef.viewangles[PITCH];
