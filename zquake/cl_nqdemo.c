@@ -72,6 +72,8 @@ void R_TranslatePlayerSkin (int playernum);
 
 //=========================================================================================
 
+qboolean	nq_drawpings;	// for sbar code
+
 int		nq_num_entities;
 int		nq_viewentity;
 int		nq_forcecdtrack;
@@ -313,6 +315,7 @@ void NQD_ParseStufftext (void)
 			if ((unsigned int)num >= nq_maxclients)
 				Host_Error ("Bad ProQuake message");
 			cl.players[num].ping = ping & 4095;
+			nq_drawpings = true;
 		}
 		// fall through to stufftext parsing (yes that's how it's intended by JPG)
 	}
@@ -440,6 +443,7 @@ void NQD_ParseServerData (void)
 
 	nq_signon = 0;
 	nq_num_entities = 0;
+	nq_drawpings = false;	// unless we have the ProQuake extension
 	cl.servertime_works = true;
 	cls.state = ca_onserver;
 }
@@ -563,6 +567,7 @@ void NQD_ParseUpdate (int bits)
 	ent = &cl_entities[num];
 	ent->previous = ent->current;
 	state = &ent->current;
+	state->number = num;
 
 	if (ent->lastframe != cl_entframecount-1)
 		forcelink = true;	// no previous frame to lerp from
