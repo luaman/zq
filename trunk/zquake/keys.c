@@ -219,27 +219,133 @@ qboolean CheckForCommand (void)
 	return true;
 }
 
+//===================================================================
+//  Advanced command completion
+//
+#define ROWWIDTH 20
+#define MINROWWIDTH 18		// the last row may be slightly smaller
+
+static void PaddedPrint (char *s)
+{
+	extern int con_linewidth;
+	int	nextrowx = 0;
+
+	if (con->x)
+		nextrowx = (int)((con->x + ROWWIDTH)/ROWWIDTH)*ROWWIDTH;
+
+	if (nextrowx > con_linewidth - MINROWWIDTH
+		|| (con->x && nextrowx + strlen(s) >= con_linewidth))
+		Con_Printf ("\n");
+
+	if (con->x)
+		Con_Printf (" ");
+	while (con->x % ROWWIDTH)
+		Con_Printf (" ");
+	Con_Printf ("%s", s);
+}
+
+static char	compl_common[64];
+static int	compl_clen;
+static int	compl_len;
+
+static void FindCommonSubString (char *s)
+{
+	if (!compl_clen) {
+		Q_strncpyz (compl_common, s, sizeof(compl_common));
+		compl_clen = strlen (compl_common);
+	} else {
+		while (compl_clen > compl_len && Q_strncasecmp(s, compl_common, compl_clen))
+			compl_clen--;
+	}
+}
+
 void CompleteCommand (void)
 {
 	char	*cmd, *s;
+	extern int Cmd_CompleteCountPossible (char *partial);
+	extern int Cmd_AliasCompleteCountPossible (char *partial);
+	extern int Cvar_CompleteCountPossible (char *partial);
+	int		c, a, v;
 
 	s = key_lines[edit_line]+1;
 	if (*s == '\\' || *s == '/')
 		s++;
 
-	cmd = Cmd_CompleteCommand (s);
+	compl_len = strlen (s);
+	compl_clen = 0;
 
-	if (!cmd)
-		cmd = Cvar_CompleteVariable (s);
-	if (!cmd)
+	c = Cmd_CompleteCountPossible (s);
+	a = Cmd_AliasCompleteCountPossible (s);
+	v = Cvar_CompleteCountPossible (s);
+
+	if (c + a + v > 1) {
+		cmd_function_t	*cmd;
+		cmd_alias_t *alias;
+		cvar_t	*var;
+		extern cmd_function_t *cmd_functions;
+		extern cmd_alias_t *cmd_alias;
+		extern cvar_t *cvar_vars;
+
+		Con_Printf ("\n");
+
+		if (c) {
+			Con_Printf ("\x02" "commands:\n");
+			for (cmd=cmd_functions ; cmd ; cmd=cmd->next) {
+				if (!Q_strncasecmp (s, cmd->name, compl_len)) {
+					PaddedPrint (cmd->name);
+					FindCommonSubString (cmd->name);
+				}
+			}
+			if (con->x)
+				Con_Printf ("\n");
+		}
+
+		if (v) {
+			Con_Printf ("\x02" "variables:\n");
+			for (var=cvar_vars ; var ; var=var->next) {
+				if (!Q_strncasecmp (s, var->name, compl_len)) {
+					PaddedPrint (var->name);
+					FindCommonSubString (var->name);
+				}
+			}
+			if (con->x)
+				Con_Printf ("\n");
+		}
+
+		if (a) {
+			Con_Printf ("\x02" "aliases:\n");
+			for (alias=cmd_alias ; alias ; alias=alias->next)
+				if (!Q_strncasecmp (s, alias->name, compl_len)) {
+					PaddedPrint (alias->name);
+					FindCommonSubString (alias->name);
+				}
+			if (con->x)
+				Con_Printf ("\n");
+		}
+
+	}
+
+	if (c + a + v == 1) {
+		cmd = Cmd_CompleteCommand (s);
+		if (!cmd)
+			cmd = Cvar_CompleteVariable (s);
+		if (!cmd)
+			return;	// this should never happen
+	} else if (compl_clen) {
+		compl_common[compl_clen] = 0;
+		cmd = compl_common;
+	} else
 		return;
 
 	key_lines[edit_line][1] = '/';
 	strcpy (key_lines[edit_line]+2, cmd);
 	key_linepos = strlen(cmd)+2;
-	key_lines[edit_line][key_linepos++] = ' ';
+	if (c + a + v == 1)
+		key_lines[edit_line][key_linepos++] = ' ';
 	key_lines[edit_line][key_linepos] = 0;
 }
+
+//===================================================================
 
 static void AdjustConsoleHeight (int delta)
 {
