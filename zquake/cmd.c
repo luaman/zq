@@ -1025,25 +1025,49 @@ int Cmd_AliasCompleteCountPossible (char *partial)
 }
 
 
+/*
+===========
+Cmd_CmdList_f
+
+cmdlist [pattern [pattern2 ...]]
+
+List commands matching any of the wildcards, or all commands
+if no wildcard is specified
+===========
+*/
 void Cmd_CmdList_f (void)
 {
 	cmd_function_t	*cmd;
-	int	i;
+	int	i, c, count;
 
-	for (cmd=cmd_functions, i=0 ; cmd ; cmd=cmd->next, i++)
+	c = Cmd_Argc();
+	
+	count = 0;
+	for (cmd = cmd_functions; cmd; cmd = cmd->next)
+	{
+		if (c >= 2) {
+			for (i = 1; i < c; i++)
+				if (Q_glob_match (Cmd_Argv(i), cmd->name))
+					goto ok;
+			continue;	// doesn't match any wildcards
+		}
+ok:
 		Com_Printf ("%s\n", cmd->name);
+		count++;
+	}
 
-	Com_Printf ("------------\n%d commands\n", i);
+	Com_Printf ("------------\n%d %scommands\n", count, c < 2 ? "" : "matching ");
 }
 
 
 /*
 ===========
 Cmd_Z_Cmd_f
-===========
+
 _z_cmd <command>
 Just executes the rest of the string.
 Can be used to do some ZQuake-specific action, e.g. "_z_cmd exec tonik_z.cfg"
+===========
 */
 void Cmd_Z_Cmd_f (void)
 {
