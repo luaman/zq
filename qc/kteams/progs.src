@@ -2,7 +2,7 @@
 
 defs.qc
 
-subs.qc
+../qw/subs.qc
 combat.qc
 items.qc
 

@@ -198,11 +198,11 @@ void(float skip_log) EndMatch =
 		{
 			if(p.netname != "" && p.k_accepted == 2) 
 			{
-				dprint2("%", p.netname);
+				dprint("%", p.netname);
 				tmp = infokey(p, "team");
-				dprint2("%t%", tmp);
+				dprint("%t%", tmp);
 				tmp = ftos(p.frags);
-				dprint2("%fr%", tmp);
+				dprint("%fr%", tmp);
 				p.ready = 0;
 // take away powerups so scoreboard looks normal
 				p.items = p.items - (p.items & 7864320);
@@ -216,10 +216,10 @@ void(float skip_log) EndMatch =
 			p = find(p, classname, "player");
 		}
 		tmp = ftos(fraglimit);
-		dprint2("%fl%", tmp);
+		dprint("%fl%", tmp);
 		tmp = ftos(timelimit);
-		dprint2("%tl%", tmp);
-		dprint2("%map%", mapname);
+		dprint("%tl%", tmp);
+		dprint("%map%", mapname);
 		dprint("\n");
 
                 if(!stof(infokey(world, "k_duel")) && teamplay) {
@@ -243,7 +243,7 @@ void(float skip_log) EndMatch =
 					p2 = p;
 					f1 = 0;
 					tmp = infokey(p, "team");
-					bprint3(2, "Р", tmp, "С: ");
+					bprint(2, "Р", tmp, "С: ");
 					while (p2 != world) {
 						tmp = infokey(p, "team");
 						tmp2 = infokey(p2, "team");
@@ -272,7 +272,7 @@ void(float skip_log) EndMatch =
 					if(f2) {
 						bprint(2, " + (");
 						tmp = ftos(f2);
-						bprint2(2, tmp, ") = ");
+						bprint(2, tmp, ") = ");
 						tmp = ftos(f1 + f2);
 						bprint(2, tmp);
 					}
@@ -280,7 +280,7 @@ void(float skip_log) EndMatch =
 						tmp = ftos((f1 + f2)/sumfrags * 100);
 					else
 						tmp = "0";
-					bprint3(2, " П", tmp, "%\n");
+					bprint(2, " П", tmp, "%\n");
 				}
 				p = find(p, classname, "player");
 			}
@@ -318,15 +318,15 @@ void(float skip_log) EndMatch =
 					tmp = infokey(p, "team");
 					tmp2 = infokey(p2, "team");
 					if(tmp == tmp2) {
-						bprint3(2, "Р", tmp2, "С ");
-						bprint2(2, p2.netname, ": ");
+						bprint(2, "Р", tmp2, "С ");
+						bprint(2, p2.netname, ": ");
 						tmp = ftos(p2.frags);
-						bprint2(2, tmp, " (");
+						bprint(2, tmp, " (");
 						tmp = ftos(p2.frags - p2.deaths);
-						bprint2(2, tmp, ") ");
+						bprint(2, tmp, ") ");
                                                 if(!stof(infokey(world, "k_duel")) && f1 && teamplay) {
 							tmp = ftos(p2.friendly);
-							bprint2(2, tmp, " ");
+							bprint(2, tmp, " ");
 						}
 						if(p2.frags < 1)
 							p2.efficiency = 0;
@@ -335,7 +335,7 @@ void(float skip_log) EndMatch =
 						tmp = ftos(p2.efficiency);
 						if(floor(p2.efficiency) == p2.efficiency) bprint(2, "П ");
 						else bprint(2, "П");
-						bprint2(2, tmp, "%\n");
+						bprint(2, tmp, "%\n");
 						if (maxfrags < p2.frags) maxfrags = p2.frags;
 						if (maxdeaths < p2.deaths) maxdeaths = p2.deaths;
 						if (maxfriend < p2.friendly) maxfriend = p2.friendly;
@@ -350,7 +350,7 @@ void(float skip_log) EndMatch =
 
                 if(!stof(infokey(world, "k_duel"))) {
 // Print the high score table
-			bprint3(2, "\n", mapname, " фпр угптету:\nFrags      : ");
+			bprint(2, "\n", mapname, " фпр угптету:\nFrags      : ");
 			tmp = ftos(maxfrags);
 			f1 = 0;
 			p = find(world, classname, "player");
@@ -359,7 +359,7 @@ void(float skip_log) EndMatch =
 					if(p.frags == maxfrags) {
 						if(f1) bprint(2, "             ");
 						f1 = 1;
-						bprint4(2, p.netname, " Р", tmp, "С\n");
+						bprint(2, p.netname, " Р", tmp, "С\n");
 					}
 				p = find(p, classname, "player");
 			}
@@ -372,7 +372,7 @@ void(float skip_log) EndMatch =
 					if(p.deaths == maxdeaths) {
 						if(f1) bprint(2, "             ");
 						f1 = 1;
-						bprint4(2, p.netname, " Р", tmp, "С\n");
+						bprint(2, p.netname, " Р", tmp, "С\n");
 					}
 				p = find(p, classname, "player");
 			}
@@ -386,7 +386,7 @@ void(float skip_log) EndMatch =
 						if(p.friendly == maxfriend) {
 							if(f1) bprint(2, "             ");
 							f1 = 1;
-							bprint4(2, p.netname, " Р", tmp, "С\n");
+							bprint(2, p.netname, " Р", tmp, "С\n");
 						}
 					p = find(p, classname, "player");
 				}
@@ -400,7 +400,7 @@ void(float skip_log) EndMatch =
 					if(p.efficiency == maxeffi) {
 						if(f1) bprint(2, "             ");
 						f1 = 1;
-						bprint4(2, p.netname, " Р", tmp, "%С\n");
+						bprint(2, p.netname, " Р", tmp, "%С\n");
 					}
 				p = find(p, classname, "player");
 			}
@@ -571,7 +571,7 @@ void() TimerThink =
 							self.cnt = k_exttime;
 							self.cnt2 = 60;
 							tmp = ftos(k_exttime);
-							bprint3(2, "Р", tmp, "С minute");
+							bprint(2, "Р", tmp, "С minute");
 							if(k_exttime != 1) bprint(2, "'s");
 							bprint(2, " overtime follows\n");
 							self.nextthink = time + 1;
@@ -601,7 +601,7 @@ void() TimerThink =
 						self.cnt = k_exttime;
 						self.cnt2 = 60;
 						tmp = ftos(k_exttime);
-						bprint3(2, "Р", tmp, "С minute");
+						bprint(2, "Р", tmp, "С minute");
 						if(k_exttime != 1) bprint(2, "'s");
 						bprint(2, " overtime follows\n");
 						self.nextthink = time + 1;
@@ -625,7 +625,7 @@ void() TimerThink =
 		}
 
 		tmp = ftos(self.cnt);
-		bprint3(2, "Р", tmp, "С minute");
+		bprint(2, "Р", tmp, "С minute");
 		if(self.cnt != 1) bprint(2, "s");
 		bprint(2, " remaining\n");
 		self.nextthink = time + 1;
@@ -635,18 +635,18 @@ void() TimerThink =
 			} else if(k_scores1 > k_scores2) {
 				f1 = k_scores1 - k_scores2;
 				tmp = infokey(world, "k_team1");
-				bprint3(2, "‘ебн Р", tmp, "С leads by ");
+				bprint(2, "‘ебн Р", tmp, "С leads by ");
 				tmp = ftos(f1);
-				bprint2(2, tmp, " frag");
+				bprint(2, tmp, " frag");
 // changed output to plural only if necessary :) (no (s))
                                 if(f1 == 1) bprint(2, "\n");
 				else bprint(2, "s\n");
 			} else {
 				tmp = infokey(world, "k_team2");
-				bprint3(2, "‘ебн Р", tmp, "С leads by ");
+				bprint(2, "‘ебн Р", tmp, "С leads by ");
 				f1 = k_scores2 - k_scores1;
 				tmp = ftos(f1);
-				bprint2(2, tmp, " frag");
+				bprint(2, tmp, " frag");
 // changed output to plural only if necessary :) (no (s))
                                 if(f1 == 1) bprint(2, "\n");
 				else bprint(2, "s\n");
@@ -674,7 +674,7 @@ void() TimerThink =
 		}
 */
 		tmp = ftos(self.cnt2);
-		bprint3(2, "Р", tmp, "С second");
+		bprint(2, "Р", tmp, "С second");
 		if(self.cnt2 != 1) bprint(2, "s");
 		bprint(2, "\n");
 	}
@@ -737,8 +737,8 @@ void() StartMatch =
 	while(p != world) {
 		if(p.netname != "") {
 		tmp = infokey(p, "team");
-			dprint2("%", p.netname);
-			dprint2("%t%", tmp);
+			dprint("%", p.netname);
+			dprint("%t%", tmp);
 			p.k_teamnum = 0;
 			if(tmp != "") {
 				f1 = 665;
@@ -1138,7 +1138,7 @@ void() IdlebotThink =
 				s1 = ftos(self.attack_finished);
 				p = find(world, classname, "player");
 				while(p != world) {
-					if(p.netname != "" && !p.ready) sprint3(p, 3, "console: ", s1, " seconds to go ready\n");
+					if(p.netname != "" && !p.ready) sprint(p, 3, "console: ", s1, " seconds to go ready\n");
 					p = find(p, classname, "player");
 				}
 			}
@@ -1172,7 +1172,7 @@ void() IdlebotCheck =
 			bprint(2, "\nserver activates the idle bot\n");
 			p = find(world, classname, "player");
 			while(p != world) {
-				if(p.netname != "" && !p.ready) sprint3(p, 3, "console: ", s1, " seconds to go ready\n");
+				if(p.netname != "" && !p.ready) sprint(p, 3, "console: ", s1, " seconds to go ready\n");
 				p = find(p, classname, "player");
 			}
 		}
@@ -1221,9 +1221,9 @@ void() PlayerReady =
 	self.k_vote = 0;
 	self.effects = self.effects - (self.effects & 64);
 	self.k_teamnum = 0;
-	bprint2(2, self.netname, " is ready Р");
+	bprint(2, self.netname, " is ready Р");
 	tmp = infokey(self, "team");
-	bprint2(2, tmp, "С\n");
+	bprint(2, tmp, "С\n");
 	nready = 0;
 	p = find(world, classname, "player");
 	while(p != world) {
@@ -1265,7 +1265,7 @@ void() PlayerReady =
 		}
 	} else if(nready == k_attendees && nready >=2 && !k_force) {
 		s1 = infokey(world, "k_membercount");
-		bprint3(2, "”етцет чбофу бф мебуф ", s1, " рмбщету йо ебги фебн\nWaiting...\n");
+		bprint(2, "”етцет чбофу бф мебуф ", s1, " рмбщету йо ебги фебн\nWaiting...\n");
 		return;
 	}
 	if(stof(infokey(world, "k_idletime")) && !k_force) IdlebotCheck();
@@ -1279,7 +1279,7 @@ void() PlayerBreak =
 	if(!self.ready) return;
 	if(!match_in_progress) {
 		self.ready = 0;
-		bprint2(2, self.netname, " is not ready\n");
+		bprint(2, self.netname, " is not ready\n");
 		if(stof(infokey(world, "k_sready"))) self.effects = self.effects + 64;
 		return;
 	}
@@ -1287,7 +1287,7 @@ void() PlayerBreak =
 		p = find(world, classname, "timer");
 		if(p.cnt2 > 1) {
 			self.ready = 0;
-			bprint2(2, self.netname, " stops the countdown\n");
+			bprint(2, self.netname, " stops the countdown\n");
 			if(stof(infokey(world, "k_sready"))) self.effects = self.effects + 64;
 
 			StopTimer();
@@ -1295,7 +1295,7 @@ void() PlayerBreak =
 		return;
 	}
 	if(self.k_vote) {
-		bprint2(2, self.netname, " чйфидтбчу ");
+		bprint(2, self.netname, " чйфидтбчу ");
 		if(infokey(self, "gender") == "f") bprint(2, "иет ");
 		else bprint(2, "ийу ");
 		bprint(3, "vote\n");
@@ -1303,7 +1303,7 @@ void() PlayerBreak =
 		k_vbreak = k_vbreak - 1;
 		return;
 	}
-	bprint2(3, self.netname, " votes for stopping the match\n");
+	bprint(3, self.netname, " votes for stopping the match\n");
 	self.k_vote = 1;
 	k_vbreak = k_vbreak + 1;
 	f1 = CountPlayers();

@@ -34,7 +34,7 @@ void() MOTDThink =
 	}
 	s1 = infokey(world, "k_motd1");
 	s2 = infokey(world, "k_motd2");
-	centerprint5(self.owner, "Welcome to\n\n", s1, "\n", s2, "\n\n€‚\n\nRunning Λονβατ Τεανσ ²®²±\nby kemiKal, Cenobite, Sturm and Fang\nType \"γονναξδσ\" for help");
+	centerprint(self.owner, "Welcome to\n\n", s1, "\n", s2, "\n\n€‚\n\nRunning Λονβατ Τεανσ ²®²±\nby kemiKal, Cenobite, Sturm and Fang\nType \"γονναξδσ\" for help");
 	self.nextthink = time + 0.7;
 };
 
@@ -48,7 +48,7 @@ void() SMOTDThink =
 	}
 	s1 = infokey(world, "k_motd1");
 	s2 = infokey(world, "k_motd2");
-	centerprint5(self.owner, "Welcome to\n\n", s1, "\n", s2, "\n\n€‚\n\nRunning Λονβατ Τεανσ ²®²±\nby kemiKal, Cenobite, Sturm and Fang\nType \"γονναξδσ\" for help");
+	centerprint(self.owner, "Welcome to\n\n", s1, "\n", s2, "\n\n€‚\n\nRunning Λονβατ Τεανσ ²®²±\nby kemiKal, Cenobite, Sturm and Fang\nType \"γονναξδσ\" for help");
 	self.nextthink = time + 0.7;
 };
 
@@ -180,7 +180,7 @@ void() MOTDStuff =
 		if(f2 == k_userid) 
 		{
 			t2 = infokey(self.owner, "team");
-			bprint4(2, self.owner.netname, " arrives late ", t2, "‘\n");
+			bprint(2, self.owner.netname, " arrives late ", t2, "‘\n");
 		} 
 		else 
 		{
@@ -210,7 +210,7 @@ void() MOTDStuff =
 				localcmd(t2);
 				localcmd(" \"\"\n");
 				t2 = infokey(self.owner, "team");
-				bprint4(2, self.owner.netname, " rejoins the game ", t2, "‘\n");
+				bprint(2, self.owner.netname, " rejoins the game ", t2, "‘\n");
 				self.owner.fraggie = p.frags;
 				self.owner.deaths = p.deaths;
 				self.owner.friendly = p.friendly;

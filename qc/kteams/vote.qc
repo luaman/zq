@@ -85,7 +85,7 @@ void() VoteAdmin =
 		return;
 	}
 	if(self.k_admin == 1.5) {
-		bprint2(2, self.netname, " aborts election!");
+		bprint(2, self.netname, " aborts election!");
 		bprint(3, "\n");
 		AbortElect();
 		return;
@@ -103,7 +103,7 @@ void() VoteAdmin =
 	if(self.classname == "spectator" && match_in_progress)
 		return;
 
-	bprint2(2, self.netname, " has requested admin rights!\nType ");
+	bprint(2, self.netname, " has requested admin rights!\nType ");
 	bprint(3, "yes");
 	bprint(2, " in console to approve\n");
 	self.k_admin = 1.5;
@@ -133,7 +133,7 @@ void() VoteYes =
 	}
 // register the vote
 	k_velect = k_velect + 1;
-	bprint2(2, self.netname, " gives ");
+	bprint(2, self.netname, " gives ");
 	if(infokey(self, "gender") == "f") bprint(2, "her");
 		else bprint(2, "his");
 	bprint(2, " vote\n");
@@ -144,7 +144,7 @@ void() VoteYes =
 		while(p.k_admin != 1.5 && p.k_captain < 10) p = find(p, classname, "player");
 		if(p.k_admin == 1.5) {
 // s: election was admin election
-			bprint2(2, p.netname, " ηαιξσ αδνιξ στατυσ!");
+			bprint(2, p.netname, " ηαιξσ αδνιξ στατυσ!");
 			bprint(3, "\n");
 			sprint(p, 2, "Please give up admin rights when you're done.\n");
 			sprint(p, 2, "Type γονναξδσ for info\n");
@@ -154,7 +154,7 @@ void() VoteYes =
 // s: election was captain election
 			p.k_captain = p.k_captain - 10;
 			k_captains = floor(k_captains) + 1;
-			bprint2(2, p.netname, " becomes a ");
+			bprint(2, p.netname, " becomes a ");
 			bprint(3, "captain\n");
 
 // s: if both captains are already elected, start choosing players
@@ -168,7 +168,7 @@ void() VoteYes =
 	self.k_vote2 = 1;
 	f1 = f2 - k_velect;
 	tmp = ftos(f1);
-	bprint3(2, "", tmp, "‘ more vote");
+	bprint(2, "", tmp, "‘ more vote");
 	if(f1 > 1) bprint(2, "s");
 	bprint(2, " needed\n");
 };
@@ -180,7 +180,7 @@ void() VoteNo =
 
 // withdraw one's vote
 	if(!k_velect || self.k_admin == 1.5 || !self.k_vote2) return;
-	bprint2(2, self.netname, " withdraws ");
+	bprint(2, self.netname, " withdraws ");
 	if(infokey(self, "gender") == "f") bprint(2, "her");
 		else bprint(2, "his");
 	bprint(2, " vote\n");
@@ -190,7 +190,7 @@ void() VoteNo =
 	f2 = (floor(f1 / 2)) + 1;
 	f1 = f2 - k_velect;
 	tmp = ftos(f1);
-	bprint3(2, "", tmp, "‘ more vote");
+	bprint(2, "", tmp, "‘ more vote");
 	if(f1 > 1) bprint(2, "s");
 	bprint(2, " needed\n");
 };

@@ -219,8 +219,8 @@ void() NextClient =
 			(self.kick_ctype == "player" &&
 			 self.k_playertokick.k_accepted == 2))) loop = 0;
 	}
-	sprint3(self, 2, "Kick ", self.kick_ctype, " ");
-	sprint2(self, 2, self.k_playertokick.netname, "?\n");
+	sprint(self, 2, "Kick ", self.kick_ctype, " ");
+	sprint(self, 2, self.k_playertokick.netname, "?\n");
 };
 
 void() YesKick =
@@ -229,7 +229,7 @@ void() YesKick =
 
 	if(self.k_kicking) {
 		if(self.k_playertokick.classname != "" && self.k_playertokick != self) {
-			bprint4(2, self.k_playertokick.netname, " was kicked by ", self.netname, "\n");
+			bprint(2, self.k_playertokick.netname, " was kicked by ", self.netname, "\n");
 			sprint(self.k_playertokick, 2, "You were kicked from the server\n");
 			oldtokick = self.k_playertokick;
 			NextClient();
@@ -237,7 +237,7 @@ void() YesKick =
 			stuffcmd(oldtokick, "disconnect\n");
 		}
 		else if(self.k_playertokick == self) {
-			bprint2(2, self.netname, " kicked ");
+			bprint(2, self.netname, " kicked ");
 			if(infokey(self, "gender") == "f")
 				bprint(2, "herself\n");
 			else
@@ -277,7 +277,7 @@ void() ReqAdmin =
 		return;
 	}
 	if(self.k_admin == 2) {
-		bprint2(2, self.netname, " is no longer an admin.\n");
+		bprint(2, self.netname, " is no longer an admin.\n");
 		if(self.k_kicking) ExitKick(self);
 		self.k_admin = 0;
 		return;
@@ -313,7 +313,7 @@ void() AdminImpBot =
 	self.k_adminc = self.k_adminc - 1;
 	if(!self.k_adminc) {
 		if(self.k_added == stof(infokey(world, "k_admincode"))) {
-			bprint2(2, self.netname, " ηαιξσ αδνιξ στατυσ!");
+			bprint(2, self.netname, " ηαιξσ αδνιξ στατυσ!");
 			bprint(3, "\n");
 			sprint(self, 2, "Type γονναξδσ for info\n");
 			self.k_admin = 2;
@@ -324,7 +324,7 @@ void() AdminImpBot =
 	} else {
 
 	s1 = ftos(self.k_adminc);
-		sprint2(self, 2, s1, " νοςε το ηο\n");
+		sprint(self, 2, s1, " νοςε το ηο\n");
 	}
 };
 
@@ -336,12 +336,12 @@ void() ReadyThink =
 
 	if(self.owner.classname == "player" && !self.owner.ready) {
 		k_force = 0;
-		bprint2(2, self.owner.netname, " interrupts countdown\n");
+		bprint(2, self.owner.netname, " interrupts countdown\n");
 		remove(self);
 		return;
 	}
 	if(self.owner.classname != "player" && !k_force) {
-		bprint2(2, self.owner.netname, " interrupts countdown\n");
+		bprint(2, self.owner.netname, " interrupts countdown\n");
 		remove(self);
 		return;
 	}
@@ -369,21 +369,21 @@ void() ReadyThink =
 		if(p.netname != "") {
 			if(p.ready)
 				if(i1 == 1)
-					centerprint2(p, tmp, " second to gamestart");
+					centerprint(p, tmp, " second to gamestart");
 				else
-					centerprint2(p, tmp, " seconds to gamestart");
+					centerprint(p, tmp, " seconds to gamestart");
 			else
 				if(i1 == 1)
 					if(!stof(infokey(world, "k_duel")))
-						centerprint2(p, tmp, " second to gamestart\nΚοιξ αξ εψιστιξη τεαν!");
+						centerprint(p, tmp, " second to gamestart\nΚοιξ αξ εψιστιξη τεαν!");
 					else
-						centerprint2(p, tmp, " second to gamestart\nΗο ςεαδω!");
+						centerprint(p, tmp, " second to gamestart\nΗο ςεαδω!");
 
 				else
 					if(!stof(infokey(world, "k_duel")))
-						centerprint2(p, tmp, " seconds to gamestart\nΚοιξ αξ εψιστιξη τεαν!");
+						centerprint(p, tmp, " seconds to gamestart\nΚοιξ αξ εψιστιξη τεαν!");
 					else
-						centerprint2(p, tmp, " seconds to gamestart\nΗο ςεαδω!");
+						centerprint(p, tmp, " seconds to gamestart\nΗο ςεαδω!");
 		}
 		p = find(p, classname, "player");
 	}
@@ -391,9 +391,9 @@ void() ReadyThink =
 	while(p != world) {
 		if(p.netname != "")
 			if(i1 == 1)
-				centerprint2(p, tmp, " second to gamestart");
+				centerprint(p, tmp, " second to gamestart");
 			else
-				centerprint2(p, tmp, " seconds to gamestart");
+				centerprint(p, tmp, " seconds to gamestart");
 		p = find(p, classname, "spectator");
 	}
 	self.nextthink = time + 1;
@@ -415,7 +415,7 @@ void() AdminForceStart =
 	f1 = CountRTeams();
 	if(f1 < k_lockmin) {
 			tmp = ftos(k_lockmin - f1);
-			sprint2(self, 2, tmp, " more team");
+			sprint(self, 2, tmp, " more team");
 			if((k_lockmin - f1) != 1) sprint(self, 2, "s");
 			sprint(self, 2, " required.\n");
 			return;
@@ -423,14 +423,14 @@ void() AdminForceStart =
 	if(f1 > k_lockmax) {
 			sprint(self, 2, "Get rid of ");
 			tmp = ftos(f1 - k_lockmax);
-			sprint2(self, 2, tmp, " team");
+			sprint(self, 2, tmp, " team");
 			if((f1 - k_lockmax) != 1) sprint(self, 2, "s");
 			sprint(self, 2, "!\n");
 			return;
 	}
 	f1 = CountPlayers();
 	if(f1) {
-		bprint2(2, self.netname, " forces matchstart!\n");
+		bprint(2, self.netname, " forces matchstart!\n");
 		k_force = 1;
 		mess = spawn();
 		mess.classname = "mess";
@@ -457,7 +457,7 @@ void() BotForceStart =
 				f1 = f1 + 1;
 			} else {
 				p.k_accepted = 0;
-				bprint2(2, p.netname, " was kicked by IDLE BOT\n");
+				bprint(2, p.netname, " was kicked by IDLE BOT\n");
 				sprint(p, 2, "Bye bye! Pay attention next time.\n");
 				p.classname = "";
 				stuffcmd(p, "disconnect\n");
@@ -487,7 +487,7 @@ void() AdminMatchStart =
 				f1 = f1 + 1;
 			} else {
 				p.k_accepted = 0;
-				bprint2(2, p.netname, " was kicked by admin forcestart\n");
+				bprint(2, p.netname, " was kicked by admin forcestart\n");
 				sprint(p, 2, "Bye bye! Pay attention next time.\n");
 				p.classname = "";
 				stuffcmd(p, "disconnect\n");
@@ -526,7 +526,7 @@ void() AdminForceBreak =
 	dprint("%forcebreak%");
 	dprint(self.netname);
 	dprint("\n");
-	bprint2(2, self.netname, " forces a break!\nMATCH OVER!!\n");
+	bprint(2, self.netname, " forces a break!\nMATCH OVER!!\n");
 	EndMatch(0);
 };
 
@@ -563,7 +563,7 @@ void() ToggleMapLock =
 	tmp = stof(infokey(world, "k_lockmap"));
 	if(tmp != 0) {
 		localcmd("localinfo k_lockmap 0\n");
-		if(!match_in_progress) bprint2(2, self.netname, " unlocks map.\n");
+		if(!match_in_progress) bprint(2, self.netname, " unlocks map.\n");
 		else sprint(self, 2, "Map unlocked.\n");
 		return;
 	}
@@ -581,7 +581,7 @@ void() ToggleMaster =
 	f1 = stof(infokey(world, "k_master"));
 	f1 = 1 - f1;
 	if(f1) {
-		bprint2(2, self.netname, " sets mastermode!\nPlayers may ξοτ alter settings\n");
+		bprint(2, self.netname, " sets mastermode!\nPlayers may ξοτ alter settings\n");
 	} else bprint(2,"Mastermode disabled\nPlayers can now alter settings\n");
 	s1 = ftos(f1);
 	localcmd("localinfo k_master ");
@@ -599,7 +599,7 @@ void() AdminForcePause =
 	k_pause = 1 - k_pause;
 	WriteByte(2, 24);
 	if(k_pause) {
-		bprint2(2, self.netname, " issues a pause");
+		bprint(2, self.netname, " issues a pause");
 		bprint(3, "\n");
 		k_pausetime = time;
 		k_oldmaxspeed = k_maxspeed;
