@@ -218,6 +218,11 @@ typedef struct
 
 extern clientPersistent_t	cls;
 
+
+// cl.paused flags
+#define PAUSED_SERVER	1
+#define PAUSED_DEMO		2
+
 //
 // the clientState_t structure is wiped completely at every
 // server signon
@@ -282,7 +287,7 @@ typedef struct
 	qboolean	onground;
 	float		crouch;			// local amount for smoothing stepups
 
-	qboolean	paused;			// send over by server
+	int			paused;			// a combination of PAUSED_SERVER and PAUSED_DEMO flags
 
 	float		ideal_punchangle;	// temporary view kick from weapon firing
 	float		punchangle;		// drifts towards ideal_punchangle

@@ -1756,8 +1756,12 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_setpause:
-			cl.paused = (cl.paused &~ 1) | (MSG_ReadByte () != 0);
-			if (cl.paused)	// FIXME
+			if (MSG_ReadByte() != 0)
+				cl.paused |= PAUSED_SERVER;
+			else
+				cl.paused &= ~PAUSED_SERVER;
+
+			if (cl.paused)
 				CDAudio_Pause ();
 			else
 				CDAudio_Resume ();
