@@ -1571,6 +1571,7 @@ int	demo_base = 0;
 
 static void ReadDir (void)
 {
+#ifdef _WIN32		// FIXME
 	HANDLE	h;
 	WIN32_FIND_DATA fd;
 	int		i;
@@ -1579,7 +1580,6 @@ static void ReadDir (void)
 	demo_base = 0;
 	demo_cursor = 0;
 
-#ifdef _WIN32		// FIXME
 	if (demodir[0]) {
 		strcpy (dir[0].name, "..");
 		dir[0].type = 2;
@@ -1631,21 +1631,23 @@ static void ReadDir (void)
 			break;
 	} while ( FindNextFile(h, &fd) );
 	FindClose (h);
-#endif	// _WIN32
 
 	if (!numfiles) {
 		strcpy (dir[0].name, "[ no files ]");
 		dir[0].type = 3;
 		numfiles = 1;
 	}
+#endif	// _WIN32
 }
 
 void M_Menu_Demos_f (void)
 {
+#ifdef _WIN32
 	m_entersound = true;
 	m_state = m_demos;
 	key_dest = key_menu;
 	ReadDir ();
+#endif
 }
 
 static char *toyellow (char *s)
