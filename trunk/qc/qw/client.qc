@@ -561,6 +561,7 @@ void PutClientInServer ()
 	self.angles = spot.angles;
 	self.fixangle = true;           // turn this way immediately
 	self.jump_flag = 0;
+	self.swim_flag = 0;
 
 // oh, this is a hack!
 	setmodel (self, "progs/eyes.mdl");
