@@ -67,9 +67,9 @@ cvar_t	tp_name_nothing = {"tp_name_nothing", "nothing"};
 cvar_t	tp_name_someplace = {"tp_name_someplace", "someplace"};
 cvar_t	tp_name_at = {"tp_name_at", "at"};
 
-char *Macro_Location_f (void);
 void TP_FindModelNumbers (void);
 void TP_FindPoint (void);
+char *TP_LocationName (vec3_t location);
 extern int parsecountmod;
 
 
@@ -136,6 +136,10 @@ void TP_ExecTrigger (char *s)
 #define MAX_MACRO_VALUE	256
 static char	macro_buf[MAX_MACRO_VALUE] = "";
 
+char *Macro_Quote_f (void)
+{
+	return "\"";
+}
 
 char *Macro_Health_f (void)
 {
@@ -334,11 +338,9 @@ char *Macro_Powerups_f (void)
 	return macro_buf;
 }
 
-char *Macro_Location2_f (void)
+char *Macro_Location_f (void)
 {
-	if (vars.deathtrigger_time && realtime - vars.deathtrigger_time <= 5)
-		return vars.lastdeathloc;
-	return Macro_Location_f();
+	return TP_LocationName (cl.frames[parsecountmod].playerstate[cl.playernum].origin);
 }
 
 char *Macro_LastDeath_f (void)
@@ -347,6 +349,13 @@ char *Macro_LastDeath_f (void)
 		return vars.lastdeathloc;
 	else
 		return tp_name_someplace.string;
+}
+
+char *Macro_Location2_f (void)
+{
+	if (vars.deathtrigger_time && realtime - vars.deathtrigger_time <= 5)
+		return vars.lastdeathloc;
+	return Macro_Location_f();
 }
 
 char *Macro_Time_f (void)
@@ -444,6 +453,7 @@ typedef struct
 // _before_ the shorter ones like "armor" to be parsed properly
 macro_command_t macro_commands[] =
 {
+	{"qt", Macro_Quote_f},
 	{"health", Macro_Health_f},
 	{"armortype", Macro_ArmorType_f},
 	{"armor", Macro_Armor_f},
@@ -458,6 +468,7 @@ macro_command_t macro_commands[] =
 	{"bestammo", Macro_BestAmmo_f},
 	{"powerups", Macro_Powerups_f},
 	{"location", Macro_Location_f},
+	{"deathloc", Macro_LastDeath_f},
 	{"time", Macro_Time_f},
 	{"date", Macro_Date_f},
 	{"tookatloc", Macro_TookAtLoc_f},
@@ -889,11 +900,6 @@ char *TP_LocationName (vec3_t location)
 	}
 
 	return locdata[minnum].name;
-}
-
-char *Macro_Location_f (void)
-{
-	return TP_LocationName (cl.frames[parsecountmod].playerstate[cl.playernum].origin);
 }
 
 /*
