@@ -673,7 +673,7 @@ void CL_ParsePlayerState (void)
 		state->state_time = cl.frames[cl.parsecount & UPDATE_MASK].senttime;
 
 	if (flags & PF_COMMAND)
-		MSG_ReadDeltaUsercmd (&nullcmd, &state->command, cl.protocol_26);
+		MSG_ReadDeltaUsercmd (&nullcmd, &state->command, cl.protocol);
 
 #ifdef VWEP_TEST
 	if (cl.z_ext & Z_EXT_VWEP) {

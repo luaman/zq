@@ -506,7 +506,7 @@ Movement is packed into a byte instead of a short.
 */
 #define	CM_MSEC	(1<<7)		// same as CM_ANGLE2
 
-void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qbool protocol_26)
+void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, int protocol)
 {
 	int bits;
 
@@ -518,7 +518,7 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qbool protocol_26)
 	if (bits & CM_ANGLE1)
 		move->angles[0] = MSG_ReadAngle16 ();
 
-	if (protocol_26)
+	if (protocol < 27)
 		move->angles[1] = MSG_ReadAngle16 ();		// always sent
 	else
 	{
@@ -530,7 +530,7 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qbool protocol_26)
 		move->angles[2] = MSG_ReadAngle16 ();
 		
 // read movement
-	if (protocol_26)
+	if (protocol < 27)
 	{
 		if (bits & CM_FORWARD)
 			move->forwardmove = MSG_ReadChar() << 3;
@@ -557,7 +557,7 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qbool protocol_26)
 		move->impulse = MSG_ReadByte ();
 
 // read time to run command
-	if (protocol_26) {
+	if (protocol < 27) {
 		if (bits & CM_MSEC)
 			move->msec = MSG_ReadByte ();
 	}
