@@ -728,6 +728,7 @@ void CL_Init (void)
 	Sys_mkdir(va("%s/%s", com_basedir, "qw"));
 
 	Key_Init ();
+	V_Init ();
 
 #ifdef __linux__
 	IN_Init ();
@@ -754,7 +755,6 @@ void CL_Init (void)
 	CL_InitTEnts ();
 	CL_InitPrediction ();
 	CL_InitCam ();
-	V_Init ();
 	TP_Init ();
 	Sbar_Init ();
 	M_Init ();	
