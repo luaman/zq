@@ -551,9 +551,7 @@ void CL_SendCmd (void)
 		cl.delta_sequence = 0;
 	}
 
-	if (cl.delta_sequence && !cl_nodelta.value && cls.state == ca_active &&
-		!cls.demorecording)
-	{
+	if (cl.delta_sequence && !cl_nodelta.value && cls.state == ca_active) {
 		cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].delta_sequence = cl.delta_sequence;
 		MSG_WriteByte (&buf, clc_delta);
 		MSG_WriteByte (&buf, cl.delta_sequence&255);
