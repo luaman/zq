@@ -748,15 +748,15 @@ void Draw_TextBox (int x, int y, int width, int lines)
 	cx = x;
 	cy = y;
 	p = Draw_CachePic ("gfx/box_tl.lmp");
-	Draw_TransPic (cx, cy, p);
+	Draw_Pic (cx, cy, p);
 	p = Draw_CachePic ("gfx/box_ml.lmp");
 	for (n = 0; n < lines; n++)
 	{
 		cy += 8;
-		Draw_TransPic (cx, cy, p);
+		Draw_Pic (cx, cy, p);
 	}
 	p = Draw_CachePic ("gfx/box_bl.lmp");
-	Draw_TransPic (cx, cy+8, p);
+	Draw_Pic (cx, cy+8, p);
 
 	// draw middle
 	cx += 8;
@@ -764,17 +764,17 @@ void Draw_TextBox (int x, int y, int width, int lines)
 	{
 		cy = y;
 		p = Draw_CachePic ("gfx/box_tm.lmp");
-		Draw_TransPic (cx, cy, p);
+		Draw_Pic (cx, cy, p);
 		p = Draw_CachePic ("gfx/box_mm.lmp");
 		for (n = 0; n < lines; n++)
 		{
 			cy += 8;
 			if (n == 1)
 				p = Draw_CachePic ("gfx/box_mm2.lmp");
-			Draw_TransPic (cx, cy, p);
+			Draw_Pic (cx, cy, p);
 		}
 		p = Draw_CachePic ("gfx/box_bm.lmp");
-		Draw_TransPic (cx, cy+8, p);
+		Draw_Pic (cx, cy+8, p);
 		width -= 2;
 		cx += 16;
 	}
@@ -782,15 +782,15 @@ void Draw_TextBox (int x, int y, int width, int lines)
 	// draw right side
 	cy = y;
 	p = Draw_CachePic ("gfx/box_tr.lmp");
-	Draw_TransPic (cx, cy, p);
+	Draw_Pic (cx, cy, p);
 	p = Draw_CachePic ("gfx/box_mr.lmp");
 	for (n = 0; n < lines; n++)
 	{
 		cy += 8;
-		Draw_TransPic (cx, cy, p);
+		Draw_Pic (cx, cy, p);
 	}
 	p = Draw_CachePic ("gfx/box_br.lmp");
-	Draw_TransPic (cx, cy+8, p);
+	Draw_Pic (cx, cy+8, p);
 }
 
 
@@ -814,6 +814,13 @@ Draw_Pic
 */
 void Draw_Pic (int x, int y, mpic_t *pic)
 {
+/*	if ((x < 0) || (x + pic->width > vid.width) ||
+		(y < 0) || (y + pic->height > vid.height))
+	{
+		Sys_Error ("Draw_Pic: bad coordinates");
+	}
+*/
+
 	if (scrap_dirty)
 		Scrap_Upload ();
 	GL_Bind (pic->texnum);
@@ -888,23 +895,6 @@ void Draw_SubPic(int x, int y, mpic_t *pic, int srcx, int srcy, int width, int h
 	glVertex2f (x, y+height);
 	glEnd ();
 }
-
-/*
-=============
-Draw_TransPic
-=============
-*/
-void Draw_TransPic (int x, int y, mpic_t *pic)
-{
-	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
-		 (unsigned)(y + pic->height) > vid.height)
-	{
-		Sys_Error ("Draw_TransPic: bad coordinates");
-	}
-		
-	Draw_Pic (x, y, pic);
-}
-
 
 /*
 =============
