@@ -181,11 +181,6 @@ extern int		*pfrustum_indexes[4];
 extern int			ubasestep, errorterm, erroradjustup, erroradjustdown;
 extern int			vstartscan;
 
-extern fixed16_t	sadjust, tadjust;
-extern fixed16_t	bbextents, bbextentt;
-
-extern float			entity_rotation[3][3];
-
 extern int		r_currentkey;
 extern int		r_currentbkey;
 
