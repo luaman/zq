@@ -545,12 +545,14 @@ void CL_ParseServerData (void)
 	qboolean	cflag = false;
 	extern	char	gamedirfile[MAX_OSPATH];
 	int protover;
+	extern cshift_t	cshift_empty;
 	
 	Con_DPrintf ("Serverdata packet received.\n");
 //
 // wipe the client_state_t struct
 //
 	CL_ClearState ();
+	memset (&cshift_empty, 0, sizeof(cshift_empty));	// Tonik
 
 // parse protocol version number
 // allow 2.2 and 2.29 demos to play
