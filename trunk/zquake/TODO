@@ -3,7 +3,7 @@ TODO for 0.16:
 - do something to make zquake-gl (Win32) start up in 640x480 by default instead of 640x400!
 x proper directinput with wheel and 3rd button (or make in_dinput default to 0 again)
 - temporarily disable bot support and vwep support for the release
-- fix snd_restart in Linux
+x fix snd_restart in Linux
 x fix the splitscreen bug in X11
 - fuh's fixes for new cl_cam code (look up on zq board)
 
