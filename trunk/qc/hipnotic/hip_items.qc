@@ -39,12 +39,15 @@ void weapon_laser_gun ()
 	}
 
 	precache_model ("progs/v_laserg.mdl");
-	precache_model ("progs/lasrspik.mdl");
-
 	precache_model ("progs/g_laserg.mdl");
+	precache_model ("progs/lasrspik.mdl");
+	precache_sound ("hipweap/laserg.wav");
+	precache_sound ("hipweap/laserric.wav");
+        precache_sound ("enforcer/enfstop.wav");
+
 	setmodel (self, "progs/g_laserg.mdl");
 	self.weapon = 3;	// mmm
-	self.netname = "Laser gun";
+	self.netname = "Laser cannon";
 //	self.touch = weapon_touch;
 	self.touch = test_touch;
 	setsize (self, '-16 -16 0', '16 16 56');

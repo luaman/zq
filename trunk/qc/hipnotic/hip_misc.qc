@@ -95,3 +95,104 @@ void ambient_riftpower ()
 }
 
 //============================================================================
+
+void play_sound_think ()
+{
+	sound (self, self.impulse, self.noise, self.volume, self.speed);
+	self.nextthink = self.delay + random() * self.wait;
+}
+
+/*QUAKED play_sound
+.noise
+.volume
+.impulse (channel)
+.speed (attenuation)
+.wait
+.delay
+
+Not really used on hipnotic maps at all...
+*/
+void play_sound ()
+{
+	if (!self.volume)
+		self.volume = 1;
+	if (!self.speed)
+		self.speed = ATTN_NORM;
+	if (!self.wait)
+		self.wait = 20;
+	if (!self.delay)
+		self.delay = 2;
+
+	precache_sound (self.noise);
+
+	self.think = play_sound_think;
+	self.nextthink = self.delay + random() * self.wait;
+}
+
+
+//============================================================================
+
+void play_sound_use ();
+
+void play_sound_on_use ()
+{
+	sound (self, self.impulse, self.noise, 0, self.speed);
+	self.use = play_sound_use;
+}
+
+void play_sound_use ()
+{
+	sound (self, self.impulse, self.noise, self.volume, self.speed);
+
+	if (self.spawnflags & 1)
+		self.use = play_sound_on_use;
+}
+
+
+/*QUAKED play_sound_triggered
+.noise
+.volume
+.impulse (channel)
+.speed (attenuation)
+.wait
+.delay
+
+TOGGLE == 1 - TODO
+*/
+void play_sound_triggered ()
+{
+	if (!self.volume)
+		self.volume = 1;
+	if (!self.speed)
+		self.speed = ATTN_NORM;
+	else if (self.speed == -1)
+		self.speed = ATTN_NONE;
+
+	precache_sound (self.noise);
+
+	self.use = play_sound_use;
+
+	if (!self.impulse)
+		self.impulse = 7;
+}
+
+//============================================================================
+
+/*QUAKED random_thunder
+Not used on hipnotic maps
+*/
+void random_thunder ()
+{
+	self.noise = "ambience/thunder1.wav";
+	play_sound ();
+}
+
+/*QUAKED random_thunder_triggered
+*/
+void random_thunder_triggered ()
+{
+	self.noise = "ambience/thunder1.wav";
+	play_sound_triggered ();
+}
+
+//============================================================================
