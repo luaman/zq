@@ -449,10 +449,6 @@ void CL_LinkPacketEntities (void)
 			|| s1->modelindex == cl_gib2index || s1->modelindex == cl_gib3index)
 			continue;
 
-		if (cl_rocket2grenade.value && cl_grenadeindex != -1)
-			if (s1->modelindex == cl_rocketindex)
-				s1->modelindex = cl_grenadeindex;
-
 		// if set to invisible, skip
 		if (!s1->modelindex)
 			continue;
@@ -467,9 +463,13 @@ void CL_LinkPacketEntities (void)
 		ent->keynum = s1->number;
 		ent->model = model = cl.model_precache[s1->modelindex];
 
+		if (cl_rocket2grenade.value && cl_grenadeindex != -1)
+			if (s1->modelindex == cl_rocketindex)
+				ent->model = cl.model_precache[cl_grenadeindex];
+
 		// set colormap
 		if (s1->colormap && (s1->colormap < MAX_CLIENTS) 
-			&& !strcmp(ent->model->name,"progs/player.mdl") )
+			&& ent->model->modhint == MOD_PLAYER)
 		{
 			ent->colormap = cl.players[s1->colormap-1].translations;
 			ent->scoreboard = &cl.players[s1->colormap-1];
