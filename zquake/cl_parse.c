@@ -1332,6 +1332,10 @@ void CL_ParseStufftext (void)
 	{
 		Cbuf_AddTextEx (&cbuf_svc, "\n");
 	}
+
+	// Execute stuffed commands immediately when starting a demo
+	if (cls.demoplayback && cls.state != ca_active)
+		Cbuf_ExecuteEx (&cbuf_svc); // FIXME: execute cbuf_main too?
 }
 
 
