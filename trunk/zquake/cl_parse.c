@@ -1816,8 +1816,6 @@ void CL_ParseServerMessage (void)
 	int			i, j;
 	int			old_readcount;
 
-	CL_ClearProjectiles ();
-
 //
 // if recording demos, copy the message out
 //
@@ -1831,6 +1829,7 @@ void CL_ParseServerMessage (void)
 
 
 	CL_ParseClientdata ();
+	CL_ClearProjectiles ();
 
 //
 // parse the message
