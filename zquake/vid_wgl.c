@@ -749,9 +749,9 @@ void	VID_SetPalette (unsigned char *palette)
 
 	for (i=0 ; i<256 ; i++)
 	{
-		r = min(pal[0] * t, 255);
-		g = min(pal[1] * t, 255);
-		b = min(pal[2] * t, 255);
+		r = pal[0] * (2.0 / 1.5); if (r > 255) r = 255;
+		g = pal[1] * (2.0 / 1.5); if (g > 255) g = 255;
+		b = pal[2] * (2.0 / 1.5); if (b > 255) b = 255;
 		pal += 3;
 		*table++ = (255<<24) + (r<<0) + (g<<8) + (b<<16);
 	}
