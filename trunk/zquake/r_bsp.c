@@ -619,16 +619,6 @@ void R_RenderWorld (void)
 	r_pcurrentvertbase = clmodel->vertexes;
 
 	R_RecursiveWorldNode (clmodel->nodes, 15);
-
-// if the driver wants the polygons back to front, play the visible ones back
-// in that order
-	if (r_worldpolysbacktofront)
-	{
-		for (i=numbtofpolys-1 ; i>=0 ; i--)
-		{
-			R_RenderPoly (btofpolys[i].psurf, btofpolys[i].clipflags);
-		}
-	}
 }
 
 
