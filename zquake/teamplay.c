@@ -40,7 +40,21 @@ cvar_t	cl_rocket2grenade = {"cl_r2g", "0"};
 //								TRIGGERS
 //===========================================================================
 
+// Defined later...
+char *Cmd_Macro_Location_f (void);
+
 void *Cmd_FindAlias(s);	 // hmm
+
+#define MAX_LOC_NAME 32
+
+
+
+int	last_health = 0;
+int	last_items = 0;
+int	last_respawntrigger = 0;
+int	last_deathtrigger = 0;
+
+char	lastdeathloc[MAX_LOC_NAME];
 
 void CL_ExecTrigger (char *s)
 {
@@ -55,15 +69,7 @@ void CL_ExecTrigger (char *s)
 	}
 }
 
-
-int	last_health = 0;
-int	last_items = 0;
-int	last_respawntrigger = 0;
-int	last_deathtrigger = 0;
-
-
 #define	IT_WEAPONS (2|4|8|16|32|64)
-
 void CL_StatChanged (int stat, int value)
 {
 	int		i;
@@ -71,7 +77,9 @@ void CL_StatChanged (int stat, int value)
 	if (stat == STAT_HEALTH)
 	{
 		if (value > 0) {
-			if (last_health <= 0 /*&& last_health != -999*/)
+			if (last_health <= 0 /*&& last_health != -999*/
+				/* && Q_strcasecmp(Info_ValueForKey(cl.serverinfo, "status"),
+				"standby") */)	// detect Kombat Teams status
 			{
 				last_respawntrigger = realtime;
 				CL_ExecTrigger ("f_respawn");
@@ -81,6 +89,7 @@ void CL_StatChanged (int stat, int value)
 		}
 		if (last_health > 0) {		// We just died
 			last_deathtrigger = realtime;
+			strcpy (lastdeathloc, Cmd_Macro_Location_f());
 			CL_ExecTrigger ("f_death");
 		}
 		last_health = value;
@@ -93,7 +102,7 @@ void CL_StatChanged (int stat, int value)
 		|| i & (IT_INVISIBILITY|IT_INVULNERABILITY|IT_SUIT|IT_QUAD))
 		{
 			// ...
-			CL_ExecTrigger ("f_took");
+			//CL_ExecTrigger ("f_took");
 		}
 		last_items = value;
 	}
@@ -337,8 +346,20 @@ char *Cmd_Macro_Powerups_f (void)
 	return macro_buf;
 }
 
-// Defined later...
-char *Cmd_Macro_Location_f (void);
+char *Cmd_Macro_Location2_f (void)
+{
+	if (last_deathtrigger && realtime - last_deathtrigger <= 5)
+		return lastdeathloc;
+	return Cmd_Macro_Location_f();
+}
+
+char *Cmd_Macro_LastDeath_f (void)
+{
+	if (last_deathtrigger)
+		return lastdeathloc;
+	else
+		return "someplace";
+}
 
 
 #define MAX_MACRO_STRING 1024
@@ -371,9 +392,10 @@ char *CL_ParseMacroString (char *string)
 				case 'a': macro_string = Cmd_Macro_Armor_f(); break;
 				case 'A': macro_string = Cmd_Macro_ArmorType_f(); break;
 				case 'c': macro_string = Cmd_Macro_Cells_f(); break;
+				case 'd': macro_string = Cmd_Macro_LastDeath_f(); break;
 				case 'h': macro_string = Cmd_Macro_Health_f(); break;
 				case 'l': macro_string = Cmd_Macro_Location_f(); break;
-				case 'L': macro_string = Cmd_Macro_Location_f(); break;//FIXME!!!
+				case 'L': macro_string = Cmd_Macro_Location2_f(); break;
 				case 'P': macro_string = Cmd_Macro_Powerups_f(); break;
 				case 'r': macro_string = Cmd_Macro_Rockets_f(); break;
 				case 'w': macro_string = Cmd_Macro_Weapon_f(); break;
@@ -488,8 +510,6 @@ void Cmd_Macro_Init (void)
 
 =============================================================================
 */
-
-#define MAX_LOC_NAME 32
 
 typedef struct locdata_s {
 	vec3_t coord;
@@ -668,7 +688,7 @@ char *Cmd_Macro_Location_f (void)
 
 	for (i = 0; i < loc_numentries; i++)
 	{
-    	Con_DPrintf ("%f %f %f: %s\n", locdata[i].coord[0], locdata[i].coord[1], locdata[i].coord[2], locdata[i].name);
+//    	Con_DPrintf ("%f %f %f: %s\n", locdata[i].coord[0], locdata[i].coord[1], locdata[i].coord[2], locdata[i].name);
 		VectorSubtract (org, locdata[i].coord, vec);
 		if (Length(vec) < min_dist)
 		{
