@@ -867,6 +867,11 @@ qboolean CL_LegacyCommand (void)
 		return true;
 	}
 
+	// this is to suppress the warning message when a mod stuffs
+	// "play <sound.wav>" to the console but sound is not initialized
+	if (!Q_strcasecmp(name, "play"))
+		return true;
+
 	for (lvar=legacyvars ; lvar->var ; lvar++) {
 		if (!Q_strcasecmp(lvar->oldname, name))
 			break;
