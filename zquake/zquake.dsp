@@ -56,7 +56,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 mgllt.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib ole32.lib uuid.lib winmm.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcmt"
+# ADD LINK32 mgllt.lib advapi32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcmt"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
@@ -83,7 +83,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386
-# ADD LINK32 mgllt.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcmt"
+# ADD LINK32 mgllt.lib advapi32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcmt"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
@@ -111,7 +111,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib e:\msdev\projects\scitech\lib\win32\vc\mgllt.lib /nologo /subsystem:windows /debug /machine:I386
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\Debug-gl/zquake-gl.exe"
+# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\Debug-gl/zquake-gl.exe"
 # SUBTRACT LINK32 /incremental:no /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
@@ -140,7 +140,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 e:\msdev\projects\winquake\dxsdk\sdk\lib\dxguid.lib winmm.lib wsock32.lib opengl32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386 /out:"GLDebug/glzquake.exe"
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:".\Release-gl/zquake-gl.exe"
+# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:".\Release-gl/zquake-gl.exe"
 # SUBTRACT LINK32 /debug /nodefaultlib
 
 !ENDIF 
@@ -699,10 +699,6 @@ SOURCE=.\host.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\rc_image.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\in_win.c
 # End Source File
 # Begin Source File
@@ -1098,6 +1094,14 @@ SOURCE=.\r_vars.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\rc_image.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\rc_wad.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\skin.c
 # End Source File
 # Begin Source File
@@ -1218,10 +1222,6 @@ SOURCE=.\vid_win.c
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\rc_wad.c
 # End Source File
 # Begin Source File
 
@@ -1369,10 +1369,6 @@ SOURCE=.\gl_warp_sin.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\rc_image.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\input.h
 # End Source File
 # Begin Source File
@@ -1425,6 +1421,14 @@ SOURCE=.\r_shared.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\rc_image.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\rc_wad.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\render.h
 # End Source File
 # Begin Source File
@@ -1454,10 +1458,6 @@ SOURCE=.\version.h
 # Begin Source File
 
 SOURCE=.\vid.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\rc_wad.h
 # End Source File
 # Begin Source File
 

@@ -56,7 +56,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 mgllt.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcmt" /out:".\Release-client/zq-client.exe"
+# ADD LINK32 mgllt.lib advapi32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcmt" /out:".\Release-client/zq-client.exe"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
@@ -83,7 +83,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386
-# ADD LINK32 mgllt.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcmt" /out:".\Debug-client/zq-client.exe"
+# ADD LINK32 mgllt.lib advapi32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcmt" /out:".\Debug-client/zq-client.exe"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
@@ -111,7 +111,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib e:\msdev\projects\scitech\lib\win32\vc\mgllt.lib /nologo /subsystem:windows /debug /machine:I386
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 comctl32.lib glu32.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\Debug-client-gl/zq-client-gl.exe"
+# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\Debug-client-gl/zq-client-gl.exe"
 # SUBTRACT LINK32 /incremental:no /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
@@ -140,7 +140,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 e:\msdev\projects\winquake\dxsdk\sdk\lib\dxguid.lib winmm.lib wsock32.lib opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"GLDebug/glqwcl.exe"
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 comctl32.lib glu32.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:".\Release-client-gl/zq-client-gl.exe"
+# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:".\Release-client-gl/zq-client-gl.exe"
 # SUBTRACT LINK32 /debug /nodefaultlib
 
 !ENDIF 
@@ -201,6 +201,10 @@ SOURCE=.\cl_parse.c
 # Begin Source File
 
 SOURCE=.\cl_pred.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\cl_sbar.c
 # End Source File
 # Begin Source File
 
@@ -325,26 +329,6 @@ SOURCE=.\d_modech.c
 # Begin Source File
 
 SOURCE=.\d_polyse.c
-
-!IF  "$(CFG)" == "zqclient - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_scan.c
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
 
@@ -715,10 +699,6 @@ SOURCE=.\host.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\rc_image.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\in_win.c
 # End Source File
 # Begin Source File
@@ -999,6 +979,26 @@ SOURCE=.\r_rast.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\r_scan.c
+
+!IF  "$(CFG)" == "zqclient - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\r_sky.c
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
@@ -1079,7 +1079,11 @@ SOURCE=.\r_vars.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\cl_sbar.c
+SOURCE=.\rc_image.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\rc_wad.c
 # End Source File
 # Begin Source File
 
@@ -1158,10 +1162,6 @@ SOURCE=.\vid_win.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\rc_wad.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\winquake.rc
 # End Source File
 # Begin Source File
@@ -1195,6 +1195,10 @@ SOURCE=.\bspfile.h
 # Begin Source File
 
 SOURCE=.\cdaudio.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cl_sbar.h
 # End Source File
 # Begin Source File
 
@@ -1302,10 +1306,6 @@ SOURCE=.\gl_warp_sin.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\rc_image.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\input.h
 # End Source File
 # Begin Source File
@@ -1362,11 +1362,15 @@ SOURCE=.\r_shared.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\render.h
+SOURCE=.\rc_image.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cl_sbar.h
+SOURCE=.\rc_wad.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\render.h
 # End Source File
 # Begin Source File
 
@@ -1395,10 +1399,6 @@ SOURCE=.\version.h
 # Begin Source File
 
 SOURCE=.\vid.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\rc_wad.h
 # End Source File
 # Begin Source File
 
@@ -1501,144 +1501,6 @@ InputName=cl_math
 # End Source File
 # Begin Source File
 
-SOURCE=.\r_draw8.s
-
-!IF  "$(CFG)" == "zqclient - Win32 Release"
-
-# Begin Custom Build
-OutDir=.\Release-client
-InputPath=.\r_draw8.s
-InputName=r_draw8
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
-
-# Begin Custom Build
-OutDir=.\Debug-client
-InputPath=.\r_draw8.s
-InputName=r_draw8
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_draw16.s
-
-!IF  "$(CFG)" == "zqclient - Win32 Release"
-
-# Begin Custom Build
-OutDir=.\Release-client
-InputPath=.\r_draw16.s
-InputName=r_draw16
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
-
-# Begin Custom Build
-OutDir=.\Debug-client
-InputPath=.\r_draw16.s
-InputName=r_draw16
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_parta.s
-
-!IF  "$(CFG)" == "zqclient - Win32 Release"
-
-# Begin Custom Build
-OutDir=.\Release-client
-InputPath=.\r_parta.s
-InputName=r_parta
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
-
-# Begin Custom Build
-OutDir=.\Debug-client
-InputPath=.\r_parta.s
-InputName=r_parta
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\d_polysa.s
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
@@ -1662,52 +1524,6 @@ InputName=d_polysa
 OutDir=.\Debug-client
 InputPath=.\d_polysa.s
 InputName=d_polysa
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_scana.s
-
-!IF  "$(CFG)" == "zqclient - Win32 Release"
-
-# Begin Custom Build
-OutDir=.\Release-client
-InputPath=.\r_scana.s
-InputName=r_scana
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
-
-# Begin Custom Build
-OutDir=.\Debug-client
-InputPath=.\r_scana.s
-InputName=r_scana
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -1982,6 +1798,98 @@ InputName=r_aliasa
 # End Source File
 # Begin Source File
 
+SOURCE=.\r_draw16.s
+
+!IF  "$(CFG)" == "zqclient - Win32 Release"
+
+# Begin Custom Build
+OutDir=.\Release-client
+InputPath=.\r_draw16.s
+InputName=r_draw16
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
+
+# Begin Custom Build
+OutDir=.\Debug-client
+InputPath=.\r_draw16.s
+InputName=r_draw16
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\r_draw8.s
+
+!IF  "$(CFG)" == "zqclient - Win32 Release"
+
+# Begin Custom Build
+OutDir=.\Release-client
+InputPath=.\r_draw8.s
+InputName=r_draw8
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
+
+# Begin Custom Build
+OutDir=.\Debug-client
+InputPath=.\r_draw8.s
+InputName=r_draw8
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\r_drawa.s
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
@@ -2051,6 +1959,98 @@ InputName=r_edgea
 OutDir=.\Debug-client
 InputPath=.\r_edgea.s
 InputName=r_edgea
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\r_parta.s
+
+!IF  "$(CFG)" == "zqclient - Win32 Release"
+
+# Begin Custom Build
+OutDir=.\Release-client
+InputPath=.\r_parta.s
+InputName=r_parta
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
+
+# Begin Custom Build
+OutDir=.\Debug-client
+InputPath=.\r_parta.s
+InputName=r_parta
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\r_scana.s
+
+!IF  "$(CFG)" == "zqclient - Win32 Release"
+
+# Begin Custom Build
+OutDir=.\Release-client
+InputPath=.\r_scana.s
+InputName=r_scana
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
+
+# Begin Custom Build
+OutDir=.\Debug-client
+InputPath=.\r_scana.s
+InputName=r_scana
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
