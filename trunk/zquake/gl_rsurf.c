@@ -311,7 +311,7 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 {
 	int			smax, tmax;
 	int			t;
-	int			i, j, size, blocksize;
+	int			i, j, size, blocksize, lightmapsize;
 	byte		*lightmap;
 	unsigned	scale;
 	int			maps;
@@ -323,6 +323,7 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 	tmax = (surf->extents[1]>>4)+1;
 	size = smax*tmax;
 	blocksize = size * lightmap_bytes;
+	lightmapsize = size * 3;	// always three components, even if monochrome
 	lightmap = surf->samples;
 
 // set to full bright if no light data
@@ -349,7 +350,7 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 				for (i = 0; i < blocksize; i++)
 					*bl++ += lightmap[i] * scale;
 			}
-			lightmap += blocksize;	// skip to next lightmap
+			lightmap += lightmapsize;	// skip to next lightmap
 		}
 
 // add all the dynamic lights
