@@ -84,7 +84,7 @@ void() SpectatorImpulseCommand =
 		if (self.goalentity != world) {
 			setorigin(self, self.goalentity.origin);
 			self.angles = self.goalentity.angles;
-			self.fixangle = TRUE;           // turn this way immediately
+			self.fixangle = true;           // turn this way immediately
 		}
 	}
 	else if(self.impulse == 13) stuffcmd(self, "spectator 0; wait; wait; reconnect\n");
