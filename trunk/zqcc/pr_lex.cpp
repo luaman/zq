@@ -563,13 +563,13 @@ char *PR_ParseName (void)
 
 /*
 ============
-PR_FindType
+PR_GetType
 
 Returns a preexisting complex type that matches the parm, or allocates
 a new one and copies it out.
 ============
 */
-type_t *PR_FindType (type_t *type)
+type_t *PR_GetType (type_t *type)
 {
 	def_t	*def;
 	type_t	*check;
@@ -642,14 +642,14 @@ type_t *PR_ParseFunctionType (type_t *returnType)
 
 	if (PR_Check (")")) {
 		// empty args
-		return PR_FindType (&newtype);
+		return PR_GetType (&newtype);
 	}
 
 	if (PR_Check ("...")) {
 		// variable args
 		PR_Expect (")");
 		newtype.num_parms = -1;
-		return PR_FindType (&newtype);
+		return PR_GetType (&newtype);
 	}
 
 	do {
@@ -662,7 +662,7 @@ type_t *PR_ParseFunctionType (type_t *returnType)
 	
 	PR_Expect (")");
 	
-	return PR_FindType(&newtype);
+	return PR_GetType(&newtype);
 }
 
 /*
@@ -680,7 +680,7 @@ type_t *PR_ParseType (void)
 		memset (&newtype, 0, sizeof(newtype));
 		newtype.type = ev_field;
 		newtype.aux_type = PR_ParseType ();
-		return PR_FindType (&newtype);
+		return PR_GetType (&newtype);
 	}
 
 	type_t	*type;
