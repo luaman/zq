@@ -475,7 +475,7 @@ void R_DrawAliasModel (entity_t *ent)
 	if (!strcmp (clmodel->name, "progs/bolt.mdl")
 		|| !strcmp (clmodel->name, "progs/bolt2.mdl")
 		|| !strcmp (clmodel->name, "progs/bolt3.mdl") ) {
-		ambientlight = 255;
+		ambientlight = 210;
 		shadelight = 0;
 
 	} else if (!strcmp (clmodel->name, "progs/flame2.mdl")
