@@ -1062,9 +1062,6 @@ void CL_Frame (double time)
 //	if (!(com_serveractive && !cls.demorecording))
 		CL_SendToServer ();
 
-	// see if using autocam and set cl.viewplayernum
-	Cam_SetViewPlayer ();
-
 	// predict all players
 	CL_PredictMovement ();
 

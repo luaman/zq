@@ -385,7 +385,6 @@ typedef struct
 
 	char		levelname[40];	// for display on solo scoreboard
 	int			playernum;
-	int			viewplayernum;	// either playernum or spec_track (in chase camera mode)
 
 // refresh related state
 	struct efrag_s	*free_efrags;
@@ -599,10 +598,10 @@ extern int		cam_curtarget;	// who we're tracking, or CAM_NOTARGET
 
 qbool Cam_DrawViewModel (void);
 qbool Cam_DrawPlayer (int playernum);
+int Cam_PlayerNum (void);
 int Cam_TargetCount (void);
 void Cam_FinishMove (usercmd_t *cmd);
 void Cam_Reset (void);
-void Cam_SetViewPlayer (void);
 void CL_InitCam (void);
 void Cam_TryLock (void);
 #ifdef MVDPLAY

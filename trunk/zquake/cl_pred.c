@@ -90,7 +90,7 @@ otherwise stepup smoothing code produces ugly jump physics
 */
 void CL_CategorizePosition (void)
 {
-	if (cl.spectator && cl.playernum == cl.viewplayernum) {
+	if (cl.spectator && cam_curtarget == CAM_NOTARGET) {
 		cl.onground = false;	// in air
 		return;
 	}
@@ -279,7 +279,7 @@ static void CL_PredictLocalPlayer (void)
 
 	// setup cl.simangles + decide whether to predict local player
 	if (cls.demoplayback && cl.spectator && cam_curtarget != CAM_NOTARGET) {
-		VectorCopy (to->playerstate[cl.viewplayernum].viewangles, cl.simangles);
+		VectorCopy (to->playerstate[Cam_PlayerNum()].viewangles, cl.simangles);
 		nopred = true;		// FIXME
 	} else {
 		VectorCopy (cl.viewangles, cl.simangles);
@@ -288,10 +288,10 @@ static void CL_PredictLocalPlayer (void)
 
 	if (nopred)
 	{
-		VectorCopy (to->playerstate[cl.viewplayernum].velocity, cl.simvel);
-		VectorCopy (to->playerstate[cl.viewplayernum].origin, cl.simorg);
+		VectorCopy (to->playerstate[Cam_PlayerNum()].velocity, cl.simvel);
+		VectorCopy (to->playerstate[Cam_PlayerNum()].origin, cl.simorg);
 		if (cl.z_ext & Z_EXT_PF_ONGROUND)
-			cl.onground = to->playerstate[cl.viewplayernum].onground;
+			cl.onground = to->playerstate[Cam_PlayerNum()].onground;
 		else
 			CL_CategorizePosition ();
 		goto out;

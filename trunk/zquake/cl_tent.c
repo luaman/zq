@@ -202,7 +202,7 @@ void CL_ParseBeam (int type)
 		break;
 	}
 
-	if (ent == cl.viewplayernum + 1)
+	if (ent == Cam_PlayerNum() + 1)
 		VectorCopy (end, playerbeam_end);	// for cl_trueLightning
 
 // override any beam with the same entity
@@ -469,7 +469,7 @@ void CL_UpdateBeams (void)
 			continue;
 
 	// if coming from the player, update the start position
-		if (b->entity == cl.viewplayernum + 1 && !cl.intermission)
+		if (b->entity == Cam_PlayerNum() + 1 && !cl.intermission)
 		{
 			VectorCopy (cl.simorg, b->start);
 			b->start[2] += cl.crouch;

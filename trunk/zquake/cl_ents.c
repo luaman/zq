@@ -1059,9 +1059,9 @@ void CL_LinkPlayers (void)
 			continue;	// not present this frame
 
 		// spawn light flashes, even ones coming from invisible objects
-		if (r_powerupglow.value && !(r_powerupglow.value == 2 && j == cl.viewplayernum))
+		if (r_powerupglow.value && !(r_powerupglow.value == 2 && j == Cam_PlayerNum()))
 		{
-			if (j == cl.viewplayernum) {
+			if (j == Cam_PlayerNum()) {
 				VectorCopy (cl.simorg, org);
 			} else
 				VectorCopy (state->origin, org);
