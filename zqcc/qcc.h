@@ -258,6 +258,7 @@ struct def_t
 	type_t		*type;
 	char		*name;
 	def_t		*next;
+	def_t		*hash_next;
 	gofs_t		ofs;
 	bool		isParm;			// if true, the def is a function parameter
 	def_t		*scope;			// function the def was defined in, or NULL
@@ -319,7 +320,10 @@ struct pr_info_t
 	
 	def_t		def_head;		// unused head of linked list
 	def_t		*def_tail;		// add new defs after this and move it
-	
+
+	def_t		def_hash_head[HASH_SIZE];
+	def_t		*def_hash_tail[HASH_SIZE];
+
 	int			size_fields;
 };
 

@@ -509,6 +509,8 @@ void PR_BeginCompilation (void *memory, int memsize)
 	
 	numpr_globals = RESERVED_OFS;
 	pr.def_tail = &pr.def_head;
+	for (i = 0; i < HASH_SIZE; i++)
+		pr.def_hash_tail[i] = &pr.def_hash_head[i];
 	
 	for (i=0 ; i<RESERVED_OFS ; i++)
 		pr_global_defs[i] = &def_void;

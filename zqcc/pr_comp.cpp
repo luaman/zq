@@ -226,11 +226,21 @@ def_t *PR_GetImmediate (type_t *type, eval_t val, char *string = NULL /* for ev_
 	
 // allocate a new constant
 	cn = (def_t *) malloc (sizeof(def_t));
+	cn->name = "IMMEDIATE";
+
+	int hash = Com_HashKey (cn->name);
+
+	// link into defs list
 	cn->next = NULL;
 	pr.def_tail->next = cn;
 	pr.def_tail = cn;
+	
+	// link into hash
+	cn->hash_next = NULL;
+	pr.def_hash_tail[hash]->hash_next = cn;
+	pr.def_hash_tail[hash] = cn;
+
 	cn->type = type;
-	cn->name = "IMMEDIATE";
 	cn->initialized = 1;
 	cn->scope = cn->visscope = NULL;	// always share immediates
 
@@ -810,9 +820,11 @@ Returns NULL if no matching def is found
 */
 def_t *PR_FindDef (char *name, def_t *scope)
 {
+	int	hash = Com_HashKey (name);
+
 	if (scope) {
 		// search local defs first
-		for (def_t *def = pr.def_head.next ; def ; def = def->next) {
+		for (def_t *def = pr.def_hash_head[hash].hash_next ; def ; def = def->hash_next) {
 			if (def->visscope != scope)
 				continue;		// in a different function, or global
 				
@@ -825,7 +837,7 @@ def_t *PR_FindDef (char *name, def_t *scope)
 	}
 
 	// search global defs
-	for (def_t *def = pr.def_head.next ; def ; def = def->next) {
+	for (def_t *def = pr.def_hash_head[hash].hash_next ; def ; def = def->hash_next) {
 		if (def->visscope)
 			continue;		// a local def
 			
@@ -841,20 +853,22 @@ def_t *PR_FindDef (char *name, def_t *scope)
 
 /*
 ============
-PR_FindDef
+PR_FindDef2
 
 Returns NULL if no matching def is found
 Doesn't take scope visibility into account
 ============
 */
-def_t *PR_FindDef2 (char *name, def_t *scope)
+def_t *PR_FindDef2 (char *name, def_t *scope, int hash)
 {
+	assert ((unsigned int)hash < HASH_SIZE);
+
 	if (scope) {
 		// search local defs first
-		for (def_t *def = pr.def_head.next ; def ; def = def->next) {
+		for (def_t *def = pr.def_hash_head[hash].hash_next ; def ; def = def->hash_next) {
 			if (def->scope != scope)
 				continue;		// in a different function, or global
-				
+
 			if (strcmp(def->name, name))
 				continue;
 
@@ -864,10 +878,10 @@ def_t *PR_FindDef2 (char *name, def_t *scope)
 	}
 
 	// search global defs
-	for (def_t *def = pr.def_head.next ; def ; def = def->next) {
+	for (def_t *def = pr.def_hash_head[hash].hash_next ; def ; def = def->hash_next) {
 		if (def->scope)
 			continue;		// a local def
-			
+
 		if (strcmp(def->name, name))
 			continue;
 
@@ -888,11 +902,14 @@ A new def will be allocated if it can't be found
 */
 def_t *PR_GetDef (type_t *type, char *name, def_t *scope, def_t *visscope, bool isParm)
 {
-	def_t		*def;
-	char element[MAX_NAME];
+	def_t	*def;
+	char	element[MAX_NAME];
+	int		hash;
+
+	hash = Com_HashKey (name);
 
 // see if the name is already in use
-	def = PR_FindDef2 (name, scope);
+	def = PR_FindDef2 (name, scope, hash);
 
 	if (def) {
 		if (def->scope != scope) {
@@ -922,10 +939,17 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, def_t *visscope, bool 
 allocNew:
 	def = (def_t *) malloc (sizeof(def_t));
 	memset (def, 0, sizeof(*def));
+
+	// link into defs list
 	def->next = NULL;
 	pr.def_tail->next = def;
 	pr.def_tail = def;
 	
+	// link into hash
+	def->hash_next = NULL;
+	pr.def_hash_tail[hash]->hash_next = def;
+	pr.def_hash_tail[hash] = def;
+
 	def->name = (char *) malloc (strlen(name)+1);
 	strcpy (def->name, name);
 	def->type = type;
