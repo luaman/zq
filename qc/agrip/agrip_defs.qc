@@ -1,0 +1,38 @@
+/*  Copyright (C) 2004  Matthew T. Atkinson
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+    See file, 'COPYING', for details.
+*/
+
+/* $AGRIP-START */
+/* AGRIP Definitions */
+
+// NOTES
+//  * AudioQuake currently supports the QWSP and QW game modes.
+//  * The bot can't be used with QW so if you want to compile qwprogs.dat, you
+//    must disable it by commenting out the #define line below.
+
+// Turn on accessibility features...
+#define ACCESSIBILITY
+
+// Define our helper objects...
+// These really work as fields for each entity in the gaem
+.entity agrip_nav;
+.entity agrip_d5k;
+.entity agrip_esr;
+.entity agrip_aux;
+
+/* $AGRIP-END */
