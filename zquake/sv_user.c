@@ -2176,26 +2176,25 @@ void SV_ExecuteClientMessage (client_t *cl)
 	byte	checksum, calculatedChecksum;
 	int		seq_hash;
 
-	if (!Netchan_Process(&cl->netchan) || cl->state == cs_zombie)
+	if (!Netchan_Process(&cl->netchan))
+		return;
+	if (cl->state == cs_zombie)
 		return;
 
+	// this is a valid, sequenced packet, so process it
 	svs.stats.packets++;
-
 	cl->send_message = true;	// reply at end of frame
 
 	// calc ping time
 	frame = &cl->frames[cl->netchan.incoming_acknowledged & UPDATE_MASK];
 	frame->ping_time = svs.realtime - frame->senttime;
 
-	if (frame->ping_time*999 > sv_minping.value) {
+	// update delay based on ping and sv_minping
+	if (frame->ping_time * 1000 > sv_minping.value + 1)
 		cl->delay -= 0.001;
-		if (cl->delay < 0)
-			cl->delay = 0;
-	} else if (frame->ping_time*1001 < sv_minping.value) {
+	else if (frame->ping_time * 1000 < sv_minping.value - 1)
 		cl->delay += 0.001;
-		if (cl->delay > 1)
-			cl->delay = 1;
-	}
+	cl->delay = bound(0, cl->delay, 1);
 
 	// make sure the reply sequence number matches the incoming
 	// sequence number 
