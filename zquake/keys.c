@@ -20,9 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "keys.h"
 #include "menu.h"
-#ifdef _WINDOWS
-#include <windows.h>
-#endif
+
 /*
 
 key up events are sent even if in console mode
@@ -670,40 +668,34 @@ void Key_Console (int key)
 				key_linepos = strlen(key_lines[edit_line]);
 			return;
 	}
-#ifdef _WIN32
-	if ((key=='V' || key=='v') && keydown[K_CTRL])
+
+	if ((key == 'V' || key == 'v') && keydown[K_CTRL]
+		|| ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
 	{
-		HANDLE	th;
-		char	*clipText;
-	
-		if (OpenClipboard(NULL)) {
-			th = GetClipboardData(CF_TEXT);
-			if (th) {
-				clipText = GlobalLock(th);
-				if (clipText) {
-					for (i=0; clipText[i]; i++)
-						if (clipText[i]=='\n' || clipText[i]=='\r' || clipText[i]=='\b')
-							break;
-					if (i + strlen(key_lines[edit_line]) > MAXCMDLINE-1)
-						i = MAXCMDLINE-1 - strlen(key_lines[edit_line]);
-					if (i > 0)
-					{	// insert the string
-						memmove (key_lines[edit_line] + key_linepos + i,
-							key_lines[edit_line] + key_linepos, strlen(key_lines[edit_line]) - key_linepos + 1);
-						memcpy (key_lines[edit_line] + key_linepos, clipText, i);
-						key_linepos += i;
-					}
-				}
-				GlobalUnlock(th);
+		int	len;
+		char *p;
+		char *text = Sys_GetClipboardText();
+		if (text) {
+			for (p = text; *p; p++) {
+				if (*p == '\n' || *p == '\r' || *p == '\t')
+					*p = ' ';
 			}
-			CloseClipboard();
+			len = p - text;
+			if (len + strlen(key_lines[edit_line]) > MAXCMDLINE-1)
+				len = MAXCMDLINE-1 - strlen(key_lines[edit_line]);
+
+			memmove (key_lines[edit_line] + key_linepos + len,
+				key_lines[edit_line] + key_linepos, strlen(key_lines[edit_line] + key_linepos) + 1 /* move trailing zero */);
+			memcpy (key_lines[edit_line] + key_linepos, text, len);
+			key_linepos += len;
+
+			free(text);
 		}
 		return;
 	}
-#endif
 
 	if (key < 32 || key > 127)
-		return;	// non printable
+		return;	// non-printable
 
 	if (keydown[K_CTRL]) {
 		if (key >= '0' && key <= '9')
@@ -730,13 +722,13 @@ void Key_Console (int key)
 	}
 
 	if (keydown[K_ALT])
-		key |= 128;		// red char
+		key |= 128;		// brown char
 
 	i = strlen(key_lines[edit_line]);
 	if (i >= MAXCMDLINE-1)
 		return;
 
-	// This also moves the ending \0
+	// This also moves the trailing zero
 	memmove (key_lines[edit_line]+key_linepos+1, key_lines[edit_line]+key_linepos, i-key_linepos+1);
 	key_lines[edit_line][key_linepos] = key;
 	key_linepos++;
@@ -804,42 +796,33 @@ void Key_Message (int key)
 		return;
 	}
 
-#ifdef _WIN32
-	// FIXME: make a separate function to use it here and in Key_Console
-	if ((key=='V' || key=='v') && keydown[K_CTRL])
+	if ((key == 'V' || key == 'v') && keydown[K_CTRL]
+		|| ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
 	{
-		HANDLE	th;
-		char	*clipText;
-		int		i;
-	
-		if (OpenClipboard(NULL)) {
-			th = GetClipboardData(CF_TEXT);
-			if (th) {
-				clipText = GlobalLock(th);
-				if (clipText) {
-					for (i=0; clipText[i]; i++)
-						if (clipText[i]=='\n' || clipText[i]=='\r' || clipText[i]=='\b')
-							break;
-					if (i + strlen(chat_buffer) > sizeof(chat_buffer)-1)
-						i = sizeof(chat_buffer)-1 - strlen(chat_buffer);
-					if (i > 0)
-					{	// insert the string
-						memmove (chat_buffer + chat_linepos + i,
-							chat_buffer + chat_linepos, strlen(chat_buffer) - chat_linepos + 1);
-						memcpy (chat_buffer + chat_linepos, clipText, i);
-						chat_linepos += i;
-					}
-				}
-				GlobalUnlock(th);
+		int	len;
+		char *p;
+		char *text = Sys_GetClipboardText();
+		if (text) {
+			for (p = text; *p; p++) {
+				if (*p == '\n' || *p == '\r' || *p == '\t')
+					*p = ' ';
 			}
-			CloseClipboard();
+			len = p - text;
+			if (len + strlen(chat_buffer) > sizeof(chat_buffer)-1)
+				len = sizeof(chat_buffer)-1 - strlen(chat_buffer);
+
+			memmove (chat_buffer + chat_linepos + len,
+				chat_buffer + chat_linepos, strlen(chat_buffer + chat_linepos) + 1 /* move trailing zero */);
+			memcpy (chat_buffer + chat_linepos, text, len);
+			chat_linepos += len;
+
+			free(text);
 		}
 		return;
 	}
-#endif
 
 	if (key < 32 || key > 127)
-		return;	// non printable
+		return;	// non-printable
 
 	len = strlen(chat_buffer);
 
