@@ -26,13 +26,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define RELEASE_VERSION
 
-#define QW_PLATFORM	"Linux"
-
 #ifdef _WIN32
 #define QW_PLATFORM	"Win32"
 #endif
 #ifdef __APPLE__
 #define QW_PLATFORM "MacOSX"
+#endif
+#ifndef QW_PLATFORM
+#define QW_PLATFORM	"Linux"
 #endif
 
 #ifdef GLQUAKE
