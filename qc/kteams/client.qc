@@ -987,8 +987,6 @@ local float             forward;
 
 void() PlayerJump =
 {
-	local vector end;
-
 	if (self.flags & 2048)
 		return;
 
