@@ -1334,11 +1334,15 @@ void Cmd_If_f (void)
 		result = Q_atof(Cmd_Argv(1)) >= Q_atof(Cmd_Argv(3));
 	else if (!strcmp(op, "<="))
 		result = Q_atof(Cmd_Argv(1)) <= Q_atof(Cmd_Argv(3));
+	else if (!strcmp(op, "isin"))
+		result = strstr(Cmd_Argv(3), Cmd_Argv(1)) != NULL;
+	else if (!strcmp(op, "!isin"))
+		result = strstr(Cmd_Argv(3), Cmd_Argv(1)) == NULL;
 	else {
 		Com_Printf ("unknown operator: %s\n", op);
 		Com_Printf ("valid operators are ==, =, !=, <>, >, <, >=, <=\n");
 		return;
-	}
+	}		
 
 	buf[0] = '\0';
 	if (result)
