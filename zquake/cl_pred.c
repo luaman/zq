@@ -18,7 +18,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 #include "quakedef.h"
-#include "winquake.h"
 #include "pmove.h"
 #include "teamplay.h"
 
@@ -233,17 +232,6 @@ void CL_PredictMove (void)
 	// this is the last valid frame received from the server
 	from = &cl.frames[cl.validsequence & UPDATE_MASK];
 
-	// we can now render a frame
-	if (cls.state == ca_onserver)
-	{	// first update is the final signon stage
-		cls.state = ca_active;
-#ifdef _WIN32
-		SetWindowText (mainwindow, va("ZQuake: %s", cls.servername));
-#endif
-		Con_ClearNotify ();
-		TP_ExecTrigger ("f_spawn");
-	}
-
 	if (cl_nopred.value)
 	{
 		VectorCopy (from->playerstate[cl.playernum].velocity, cl.simvel);
@@ -252,12 +240,10 @@ void CL_PredictMove (void)
 		goto out;
 	}
 
-	// predict forward until cl.time <= to->senttime
 	oldphysent = pmove.numphysent;
 	CL_SetSolidPlayers (cl.playernum);
 
-//	to = &cl.frames[cls.netchan.incoming_sequence & UPDATE_MASK];
-
+	// predict forward until cl.time <= to->senttime
 	for (i=1 ; i<UPDATE_BACKUP-1 && cl.validsequence+i <
 			cls.netchan.outgoing_sequence; i++)
 	{
