@@ -148,7 +148,7 @@ extern cvar_t	s_swapstereo;
 extern cvar_t	bgmvolume;
 
 extern qbool	snd_initialized;
-extern qbool	snd_blocked;
+extern int		snd_blocked;
 
 void S_LocalSound (char *s);
 sfxcache_t *S_LoadSound (sfx_t *s);

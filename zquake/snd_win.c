@@ -578,8 +578,8 @@ int SNDDMA_Init(void)
 			{
 				snd_isdirect = true;
 
-				if (snd_firsttime)
-					Com_Printf ("DirectSound initialized\n");
+//				if (snd_firsttime)
+				Com_Printf ("DirectSound initialized\n");
 			}
 			else
 			{
