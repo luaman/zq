@@ -107,6 +107,8 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 	if (bits & U_SOLID)
 	{
 		// FIXME
+		// oldman: is this not used?
+		// to->solid = MSG_ReadShort ();
 	}
 }
 
