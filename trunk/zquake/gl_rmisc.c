@@ -160,46 +160,46 @@ void R_Init (void)
 	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
 #endif
 
-	Cvar_RegisterVariable (&r_watervishack);
-	Cvar_RegisterVariable (&r_norefresh);
-	Cvar_RegisterVariable (&r_lightmap);
-	Cvar_RegisterVariable (&r_fullbright);
-	Cvar_RegisterVariable (&r_drawentities);
-	Cvar_RegisterVariable (&r_drawviewmodel);
-	Cvar_RegisterVariable (&r_drawflame);
-	Cvar_RegisterVariable (&r_shadows);
-	Cvar_RegisterVariable (&r_mirroralpha);
-	Cvar_RegisterVariable (&r_wateralpha);
-	Cvar_RegisterVariable (&r_dynamic);
-	Cvar_RegisterVariable (&r_novis);
-	Cvar_RegisterVariable (&r_speeds);
-	Cvar_RegisterVariable (&r_netgraph);
-	Cvar_RegisterVariable (&r_fullbrightSkins);
-	Cvar_RegisterVariable (&r_skycolor);
-	Cvar_RegisterVariable (&r_fastsky);
+	Cvar_Register (&r_watervishack);
+	Cvar_Register (&r_norefresh);
+	Cvar_Register (&r_lightmap);
+	Cvar_Register (&r_fullbright);
+	Cvar_Register (&r_drawentities);
+	Cvar_Register (&r_drawviewmodel);
+	Cvar_Register (&r_drawflame);
+	Cvar_Register (&r_shadows);
+	Cvar_Register (&r_mirroralpha);
+	Cvar_Register (&r_wateralpha);
+	Cvar_Register (&r_dynamic);
+	Cvar_Register (&r_novis);
+	Cvar_Register (&r_speeds);
+	Cvar_Register (&r_netgraph);
+	Cvar_Register (&r_fullbrightSkins);
+	Cvar_Register (&r_skycolor);
+	Cvar_Register (&r_fastsky);
 
-	Cvar_RegisterVariable (&gl_clear);
-	Cvar_RegisterVariable (&gl_texsort);
+	Cvar_Register (&gl_clear);
+	Cvar_Register (&gl_texsort);
  
  	if (gl_mtexable)
 		Cvar_SetValue (&gl_texsort, 0);
 
-	Cvar_RegisterVariable (&gl_cull);
-	Cvar_RegisterVariable (&gl_smoothmodels);
-	Cvar_RegisterVariable (&gl_affinemodels);
-	Cvar_RegisterVariable (&gl_polyblend);
-	Cvar_RegisterVariable (&gl_flashblend);
-	Cvar_RegisterVariable (&gl_playermip);
-	Cvar_RegisterVariable (&gl_nocolors);
-	Cvar_RegisterVariable (&gl_finish);
-	Cvar_RegisterVariable (&gl_fb_depthhack);
-	Cvar_RegisterVariable (&gl_fb_bmodels);
-	Cvar_RegisterVariable (&gl_fb_models);
-	Cvar_RegisterVariable (&gl_colorlights);
-	Cvar_RegisterVariable (&gl_lightmode);
+	Cvar_Register (&gl_cull);
+	Cvar_Register (&gl_smoothmodels);
+	Cvar_Register (&gl_affinemodels);
+	Cvar_Register (&gl_polyblend);
+	Cvar_Register (&gl_flashblend);
+	Cvar_Register (&gl_playermip);
+	Cvar_Register (&gl_nocolors);
+	Cvar_Register (&gl_finish);
+	Cvar_Register (&gl_fb_depthhack);
+	Cvar_Register (&gl_fb_bmodels);
+	Cvar_Register (&gl_fb_models);
+	Cvar_Register (&gl_colorlights);
+	Cvar_Register (&gl_lightmode);
 
-	Cvar_RegisterVariable (&gl_keeptjunctions);
-	Cvar_RegisterVariable (&gl_reporttjunctions);
+	Cvar_Register (&gl_keeptjunctions);
+	Cvar_Register (&gl_reporttjunctions);
 
 	R_InitBubble();
 	

@@ -485,31 +485,31 @@ IN_Init
 void IN_Init (void)
 {
 	// mouse variables
-	Cvar_RegisterVariable (&m_filter);
+	Cvar_Register (&m_filter);
 
 	// keyboard variables
-	Cvar_RegisterVariable (&cl_keypad);
+	Cvar_Register (&cl_keypad);
 
 	// joystick variables
-	Cvar_RegisterVariable (&in_joystick);
-	Cvar_RegisterVariable (&joy_name);
-	Cvar_RegisterVariable (&joy_advanced);
-	Cvar_RegisterVariable (&joy_advaxisx);
-	Cvar_RegisterVariable (&joy_advaxisy);
-	Cvar_RegisterVariable (&joy_advaxisz);
-	Cvar_RegisterVariable (&joy_advaxisr);
-	Cvar_RegisterVariable (&joy_advaxisu);
-	Cvar_RegisterVariable (&joy_advaxisv);
-	Cvar_RegisterVariable (&joy_forwardthreshold);
-	Cvar_RegisterVariable (&joy_sidethreshold);
-	Cvar_RegisterVariable (&joy_pitchthreshold);
-	Cvar_RegisterVariable (&joy_yawthreshold);
-	Cvar_RegisterVariable (&joy_forwardsensitivity);
-	Cvar_RegisterVariable (&joy_sidesensitivity);
-	Cvar_RegisterVariable (&joy_pitchsensitivity);
-	Cvar_RegisterVariable (&joy_yawsensitivity);
-	Cvar_RegisterVariable (&joy_wwhack1);
-	Cvar_RegisterVariable (&joy_wwhack2);
+	Cvar_Register (&in_joystick);
+	Cvar_Register (&joy_name);
+	Cvar_Register (&joy_advanced);
+	Cvar_Register (&joy_advaxisx);
+	Cvar_Register (&joy_advaxisy);
+	Cvar_Register (&joy_advaxisz);
+	Cvar_Register (&joy_advaxisr);
+	Cvar_Register (&joy_advaxisu);
+	Cvar_Register (&joy_advaxisv);
+	Cvar_Register (&joy_forwardthreshold);
+	Cvar_Register (&joy_sidethreshold);
+	Cvar_Register (&joy_pitchthreshold);
+	Cvar_Register (&joy_yawthreshold);
+	Cvar_Register (&joy_forwardsensitivity);
+	Cvar_Register (&joy_sidesensitivity);
+	Cvar_Register (&joy_pitchsensitivity);
+	Cvar_Register (&joy_yawsensitivity);
+	Cvar_Register (&joy_wwhack1);
+	Cvar_Register (&joy_wwhack2);
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 	Cmd_AddCommand ("joyadvancedupdate", Joy_AdvancedUpdate_f);

@@ -656,62 +656,62 @@ void CL_Init (void)
 //
 // register our commands
 //
-	Cvar_RegisterVariable (&show_fps);
-	Cvar_RegisterVariable (&host_speeds);
-	Cvar_RegisterVariable (&developer);
+	Cvar_Register (&show_fps);
+	Cvar_Register (&host_speeds);
+	Cvar_Register (&developer);
 
-	Cvar_RegisterVariable (&cl_warncmd);
-	Cvar_RegisterVariable (&cl_shownet);
-	Cvar_RegisterVariable (&cl_sbar);
-	Cvar_RegisterVariable (&cl_hudswap);
-	Cvar_RegisterVariable (&cl_maxfps);
-	Cvar_RegisterVariable (&cl_timeout);
-	Cvar_RegisterVariable (&cl_writecfg);
+	Cvar_Register (&cl_warncmd);
+	Cvar_Register (&cl_shownet);
+	Cvar_Register (&cl_sbar);
+	Cvar_Register (&cl_hudswap);
+	Cvar_Register (&cl_maxfps);
+	Cvar_Register (&cl_timeout);
+	Cvar_Register (&cl_writecfg);
 
-	Cvar_RegisterVariable (&rcon_password);
-	Cvar_RegisterVariable (&rcon_address);
+	Cvar_Register (&rcon_password);
+	Cvar_Register (&rcon_address);
 
-	Cvar_RegisterVariable (&entlatency);
-	Cvar_RegisterVariable (&cl_predict_players);
-	Cvar_RegisterVariable (&cl_solid_players);
+	Cvar_Register (&entlatency);
+	Cvar_Register (&cl_predict_players);
+	Cvar_Register (&cl_solid_players);
 
-	Cvar_RegisterVariable (&localid);
+	Cvar_Register (&localid);
 
-	Cvar_RegisterVariable (&baseskin);
-	Cvar_RegisterVariable (&noskins);
+	Cvar_Register (&baseskin);
+	Cvar_Register (&noskins);
 
 	// ZQuake cvars
-	Cvar_RegisterVariable (&r_rockettrail);
-	Cvar_RegisterVariable (&r_grenadetrail);
-	Cvar_RegisterVariable (&r_powerupglow);
-	Cvar_RegisterVariable (&r_rocketlight);
-	Cvar_RegisterVariable (&cl_demospeed);
-	Cvar_RegisterVariable (&cl_deadbodyfilter);
-	Cvar_RegisterVariable (&cl_explosion);
-	Cvar_RegisterVariable (&cl_gibfilter);
-	Cvar_RegisterVariable (&cl_muzzleflash);
-	Cvar_RegisterVariable (&cl_staticsounds);
-	Cvar_RegisterVariable (&cl_trueLightning);
-	Cvar_RegisterVariable (&cl_parseWhiteText);
-	Cvar_RegisterVariable (&cl_filterdrawviewmodel);
-	Cvar_RegisterVariable (&cl_oldPL);
-	Cvar_RegisterVariable (&cl_demoPingInterval);
-	Cvar_RegisterVariable (&default_fov);
-	Cvar_RegisterVariable (&qizmo_dir);
+	Cvar_Register (&r_rockettrail);
+	Cvar_Register (&r_grenadetrail);
+	Cvar_Register (&r_powerupglow);
+	Cvar_Register (&r_rocketlight);
+	Cvar_Register (&cl_demospeed);
+	Cvar_Register (&cl_deadbodyfilter);
+	Cvar_Register (&cl_explosion);
+	Cvar_Register (&cl_gibfilter);
+	Cvar_Register (&cl_muzzleflash);
+	Cvar_Register (&cl_staticsounds);
+	Cvar_Register (&cl_trueLightning);
+	Cvar_Register (&cl_parseWhiteText);
+	Cvar_Register (&cl_filterdrawviewmodel);
+	Cvar_Register (&cl_oldPL);
+	Cvar_Register (&cl_demoPingInterval);
+	Cvar_Register (&default_fov);
+	Cvar_Register (&qizmo_dir);
 
 	//
 	// info mirrors
 	//
-	Cvar_RegisterVariable (&name);
-	Cvar_RegisterVariable (&password);
-	Cvar_RegisterVariable (&spectator);
-	Cvar_RegisterVariable (&skin);
-	Cvar_RegisterVariable (&team);
-	Cvar_RegisterVariable (&topcolor);
-	Cvar_RegisterVariable (&bottomcolor);
-	Cvar_RegisterVariable (&rate);
-	Cvar_RegisterVariable (&msg);
-	Cvar_RegisterVariable (&noaim);
+	Cvar_Register (&name);
+	Cvar_Register (&password);
+	Cvar_Register (&spectator);
+	Cvar_Register (&skin);
+	Cvar_Register (&team);
+	Cvar_Register (&topcolor);
+	Cvar_Register (&bottomcolor);
+	Cvar_Register (&rate);
+	Cvar_Register (&msg);
+	Cvar_Register (&noaim);
 
 
 	CL_InitCommands ();

@@ -253,8 +253,8 @@ void Con_Init (void)
 //
 // register our commands
 //
-	Cvar_RegisterVariable (&_con_notifylines);
-	Cvar_RegisterVariable (&con_notifytime);
+	Cvar_Register (&_con_notifylines);
+	Cvar_Register (&con_notifytime);
 
 	Cmd_AddCommand ("toggleconsole", Con_ToggleConsole_f);
 	Cmd_AddCommand ("togglechat", Con_ToggleChat_f);

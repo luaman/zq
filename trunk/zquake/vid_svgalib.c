@@ -574,9 +574,9 @@ void VID_Init(unsigned char *palette)
 
 		VID_InitModes();
 
-		Cvar_RegisterVariable (&vid_mode);
-		Cvar_RegisterVariable (&vid_redrawfull);
-		Cvar_RegisterVariable (&vid_waitforrefresh);
+		Cvar_Register (&vid_mode);
+		Cvar_Register (&vid_redrawfull);
+		Cvar_Register (&vid_waitforrefresh);
 		
 		Cmd_AddCommand("vid_nummodes", VID_NumModes_f);
 		Cmd_AddCommand("vid_describemode", VID_DescribeMode_f);
@@ -849,13 +849,13 @@ void IN_Init(void)
 	char *mousedev;
 	int mouserate;
 
-	Cvar_RegisterVariable (&m_filter);
+	Cvar_Register (&m_filter);
 
 	if (UseMouse)
 	{
-		Cvar_RegisterVariable (&mouse_button_commands[0]);
-		Cvar_RegisterVariable (&mouse_button_commands[1]);
-		Cvar_RegisterVariable (&mouse_button_commands[2]);
+		Cvar_Register (&mouse_button_commands[0]);
+		Cvar_Register (&mouse_button_commands[1]);
+		Cvar_Register (&mouse_button_commands[2]);
 		Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
 		mouse_buttons = 3;

@@ -1010,7 +1010,7 @@ void Key_Init (void)
 	Cmd_AddCommand ("unbind",Key_Unbind_f);
 	Cmd_AddCommand ("unbindall",Key_Unbindall_f);
 
-	Cvar_RegisterVariable (&cl_chatmode);
+	Cvar_Register (&cl_chatmode);
 }
 
 /*

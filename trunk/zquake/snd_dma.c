@@ -167,16 +167,16 @@ void S_Init (void)
 {
 //	Con_Printf("\nSound Initialization\n");
 
-	Cvar_RegisterVariable(&s_nosound);
-	Cvar_RegisterVariable(&s_volume);
-	Cvar_RegisterVariable(&s_precache);
-	Cvar_RegisterVariable(&s_loadas8bit);
-	Cvar_RegisterVariable(&bgmvolume);
-	Cvar_RegisterVariable(&s_ambientlevel);
-	Cvar_RegisterVariable(&s_ambientfade);
-	Cvar_RegisterVariable(&s_noextraupdate);
-	Cvar_RegisterVariable(&s_show);
-	Cvar_RegisterVariable(&s_mixahead);
+	Cvar_Register(&s_nosound);
+	Cvar_Register(&s_volume);
+	Cvar_Register(&s_precache);
+	Cvar_Register(&s_loadas8bit);
+	Cvar_Register(&bgmvolume);
+	Cvar_Register(&s_ambientlevel);
+	Cvar_Register(&s_ambientfade);
+	Cvar_Register(&s_noextraupdate);
+	Cvar_Register(&s_show);
+	Cvar_Register(&s_mixahead);
 
 	if (COM_CheckParm("-nosound"))
 		return;
