@@ -672,7 +672,8 @@ char *TP_ParseFunChars (char *s)
 				case ',': c = 0x1c; break;
 				case '.': c = 0x9c; break;
 				case 'b': c = 0x8b; break;
-				case 'c': c = 0x8d; break;
+				case 'c':
+				case 'd': c = 0x8d; break;
 				case '$': c = '$'; break;
 				case '^': c = '^'; break;
 			}
