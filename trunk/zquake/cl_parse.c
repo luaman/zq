@@ -1188,10 +1188,10 @@ void CL_ProcessServerInfo (void)
 	if (cl.z_ext & Z_EXT_PM_TYPE)
 	{
 		cl.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
-		p = Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap");
+		movevars.slidefix = Q_atoi(Info_ValueForKey(cl.serverinfo, "pm_slidefix"));
+		p = Info_ValueForKey(cl.serverinfo, "pm_ktjump");
 		if (*p)
 			movevars.ktjump = Q_atof(p);
-		movevars.slidefix = Q_atoi(Info_ValueForKey(cl.serverinfo, "pm_slidefix"));
 	}
 
 	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
