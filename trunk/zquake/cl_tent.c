@@ -458,8 +458,7 @@ void CL_UpdateBeams (void)
 	vec3_t		dist, org;
 	float		d, dec;
 	entity_t	ent;
-	float		yaw, pitch;
-	float		forward;
+	vec3_t		angles;
 
 	dec = 30;
 	memset (&ent, 0, sizeof(entity_t));
@@ -519,26 +518,7 @@ void CL_UpdateBeams (void)
 
 	// calculate pitch and yaw
 		VectorSubtract (b->end, b->start, dist);
-
-		if (dist[1] == 0 && dist[0] == 0)
-		{
-			yaw = 0;
-			if (dist[2] > 0)
-				pitch = 90;
-			else
-				pitch = 270;
-		}
-		else
-		{
-			yaw = atan2(dist[1], dist[0]) * 180 / M_PI;
-			if (yaw < 0)
-				yaw += 360;
-	
-			forward = sqrt (dist[0]*dist[0] + dist[1]*dist[1]);
-			pitch = atan2(dist[2], forward) * 180 / M_PI;
-			if (pitch < 0)
-				pitch += 360;
-		}
+		vectoangles (dist, angles);
 
 	// add new entities for the lightning
 		VectorCopy (b->start, org);
@@ -549,9 +529,9 @@ void CL_UpdateBeams (void)
 		{
 			VectorCopy (org, ent.origin);
 			ent.model = b->model;
-			ent.angles[0] = pitch;
-			ent.angles[1] = yaw;
-			ent.angles[2] = rand()%360;
+			ent.angles[PITCH] = angles[PITCH];
+			ent.angles[YAW] = angles[YAW];
+			ent.angles[ROLL] = rand()%360;
 
 			V_AddEntity (&ent);
 
