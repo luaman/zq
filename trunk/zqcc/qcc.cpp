@@ -748,6 +748,7 @@ void PR_PrintFunction (char *name)
 
 bool opt_idcomp = false;
 bool opt_dumpasm = false;
+bool opt_mergeconstants = false;
 
 /*
 ============
