@@ -204,86 +204,40 @@ void R_TranslatePlayerSkin (int playernum)
 			}
 
 			GL_Upload8_EXT ((byte *)pixels, scaled_width, scaled_height, false, false);
-
-			if (Img_HasFullbrights ((byte *)original, inwidth*inheight))
-			{
-				fb_skins[playernum] = playertextures + playernum + MAX_CLIENTS;
-
-				GL_Bind(fb_skins[playernum]);
-
-				out2 = (byte *)pixels;
-				memset(pixels, 0, sizeof(pixels));
-				fracstep = tinwidth*0x10000/scaled_width;
-
-				// make all non-fullbright colors transparent
-				for (i=0 ; i<scaled_height ; i++, out2 += scaled_width)
-				{
-					inrow = original + inwidth*(i*tinheight/scaled_height);
-					frac = fracstep >> 1;
-					for (j=0 ; j<scaled_width ; j+=4)
-					{
-						if (inrow[frac>>16] < 224)
-							out2[j] = 0xFF;	// transparent
-						else
-							out2[j] = translate[inrow[frac>>16]];	// fullbright
-						frac += fracstep;
-						if (inrow[frac>>16] < 224)
-							out2[j+1] = 0xFF;
-						else
-							out2[j+1] = translate[inrow[frac>>16]];
-						frac += fracstep;
-						if (inrow[frac>>16] < 224)
-							out2[j+2] = 0xFF;
-						else
-							out2[j+2] = translate[inrow[frac>>16]];
-						frac += fracstep;
-						if (inrow[frac>>16] < 224)
-							out2[j+3] = 0xFF;
-						else
-							out2[j+3] = translate[inrow[frac>>16]];
-						frac += fracstep;
-					}
-				}
-
-				GL_Upload8_EXT ((byte *)pixels, scaled_width, scaled_height, false, false);
-			}
-			else {
-				fb_skins[playernum] = 0;
-			}
-
-			return;
 		}
-
-		for (i=0 ; i<256 ; i++)
-			translate32[i] = d_8to24table[translate[i]];
-
-		out = pixels;
-		memset(pixels, 0, sizeof(pixels));
-		fracstep = tinwidth*0x10000/scaled_width;
-		for (i=0 ; i<scaled_height ; i++, out += scaled_width)
+		else
 		{
-			inrow = original + inwidth*(i*tinheight/scaled_height);
-			frac = fracstep >> 1;
-			for (j=0 ; j<scaled_width ; j+=4)
+			for (i=0 ; i<256 ; i++)
+				translate32[i] = d_8to24table[translate[i]];
+
+			out = pixels;
+			memset(pixels, 0, sizeof(pixels));
+			fracstep = tinwidth*0x10000/scaled_width;
+			for (i=0 ; i<scaled_height ; i++, out += scaled_width)
 			{
-				out[j] = translate32[inrow[frac>>16]];
-				frac += fracstep;
-				out[j+1] = translate32[inrow[frac>>16]];
-				frac += fracstep;
-				out[j+2] = translate32[inrow[frac>>16]];
-				frac += fracstep;
-				out[j+3] = translate32[inrow[frac>>16]];
-				frac += fracstep;
+				inrow = original + inwidth*(i*tinheight/scaled_height);
+				frac = fracstep >> 1;
+				for (j=0 ; j<scaled_width ; j+=4)
+				{
+					out[j] = translate32[inrow[frac>>16]];
+					frac += fracstep;
+					out[j+1] = translate32[inrow[frac>>16]];
+					frac += fracstep;
+					out[j+2] = translate32[inrow[frac>>16]];
+					frac += fracstep;
+					out[j+3] = translate32[inrow[frac>>16]];
+					frac += fracstep;
+				}
 			}
+
+			glTexImage2D (GL_TEXTURE_2D, 0, gl_solid_format, 
+				scaled_width, scaled_height, 0, GL_RGBA, 
+				GL_UNSIGNED_BYTE, pixels);
+
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
-
-		glTexImage2D (GL_TEXTURE_2D, 0, gl_solid_format, 
-			scaled_width, scaled_height, 0, GL_RGBA, 
-			GL_UNSIGNED_BYTE, pixels);
-
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		if (Img_HasFullbrights ((byte *)original, inwidth*inheight))
 		{
@@ -333,9 +287,8 @@ void R_TranslatePlayerSkin (int playernum)
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
-		else {
+		else
 			fb_skins[playernum] = 0;
-		}
 	}
 }
 
