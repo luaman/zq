@@ -595,7 +595,8 @@ void PR_ParseStatement (void)
 		return;
 	}
 	
-	if (PR_Check("local"))
+	if ( PR_Check("local") || !strcmp(pr_token, "float") || !strcmp(pr_token, "vector")
+		|| !strcmp(pr_token, "entity") || !strcmp(pr_token, "string") || !strcmp(pr_token, "void"))
 	{
 		PR_ParseDefs ();
 		locals_end = numpr_globals;
