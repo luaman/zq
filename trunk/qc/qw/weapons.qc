@@ -1348,6 +1348,9 @@ Just for development
 */
 void() ServerflagsCommand =
 {
+	if (!infokey(world, "*cheats"))
+		return;
+
 	serverflags = serverflags * 2 + 1;
 };
 
