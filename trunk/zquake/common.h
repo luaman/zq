@@ -186,7 +186,8 @@ typedef enum {false, true} qboolean;
 #define	GAME_DEATHMATCH		1
 
 
-#define	MAX_INFO_STRING	196
+#define MAX_INFO_KEY			64
+#define	MAX_INFO_STRING			196
 #define	MAX_SERVERINFO_STRING	512
 #define	MAX_LOCALINFO_STRING	32768
 
