@@ -413,7 +413,16 @@ void Cmd_Echo_f (void)
 */
 
 static cmd_alias_t	*cmd_alias_hash[32];
-/*static*/ cmd_alias_t	*cmd_alias;
+static cmd_alias_t	*cmd_alias;
+
+// use to enumerate all aliases
+cmd_alias_t *Alias_Next (cmd_alias_t *alias)
+{
+	if (alias)
+		return alias->next;
+	else
+		return cmd_alias;
+}
 
 cmd_alias_t *Cmd_FindAlias (char *name)
 {

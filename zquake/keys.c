@@ -294,8 +294,6 @@ void CompleteCommand (void)
 		cmd_alias_t *alias;
 		cvar_t	*var;
 		extern cmd_function_t *cmd_functions;
-		extern cmd_alias_t *cmd_alias;
-		extern cvar_t *cvar_vars;
 
 		Com_Printf ("\n");
 
@@ -313,7 +311,7 @@ void CompleteCommand (void)
 
 		if (v) {
 			Com_Printf ("\x02" "variables:\n");
-			for (var=cvar_vars ; var ; var=var->next) {
+			for (var = Cvar_Next(NULL); var; var=Cvar_Next(var)) {
 				if (!Q_strnicmp (s, var->name, compl_len)) {
 					PaddedPrint (var->name);
 					FindCommonSubString (var->name);
@@ -325,7 +323,7 @@ void CompleteCommand (void)
 
 		if (a) {
 			Com_Printf ("\x02" "aliases:\n");
-			for (alias=cmd_alias ; alias ; alias=alias->next)
+			for (alias=Alias_Next(NULL); alias; alias=Alias_Next(alias))
 				if (!Q_strnicmp (s, alias->name, compl_len)) {
 					PaddedPrint (alias->name);
 					FindCommonSubString (alias->name);

@@ -25,7 +25,23 @@ extern void CL_UserinfoChanged (char *key, char *string);
 extern void SV_ServerinfoChanged (char *key, char *string);
 
 static cvar_t	*cvar_hash[32];
-/*static*/ cvar_t	*cvar_vars;
+static cvar_t	*cvar_vars;
+
+
+/*
+============
+Cvar_Next
+
+Use this to walk through all vars
+============
+*/
+cvar_t *Cvar_Next (cvar_t *var)
+{
+	if (var)
+		return var->next;
+	else
+		return cvar_vars;
+}
 
 
 /*

@@ -110,6 +110,7 @@ char 	*Cmd_CompleteCommand (char *partial);
 int	Cmd_Argc (void);
 char *Cmd_Argv (int arg);
 char *Cmd_Args (void);
+char *Cmd_MakeArgs (int start);
 // The functions that execute commands get their parameters with these
 // functions. Cmd_Argv () will return an empty string, not a NULL
 // if arg > argc, so string operations are always safe.
@@ -159,4 +160,4 @@ qboolean Cmd_DeleteAlias (char *name);	// return true if successful
 cmd_alias_t *Cmd_FindAlias (char *name); // returns NULL on failure
 char *Cmd_AliasString (char *name); // returns NULL on failure
 void Cmd_WriteAliases (FILE *f);
-char *Cmd_MakeArgs (int start);
+cmd_alias_t *Alias_Next (cmd_alias_t *alias);	// use to enumerate all aliases

@@ -77,4 +77,7 @@ void Cvar_WriteVariables (FILE *f);
 cvar_t *Cvar_FindVar (char *name);
 qboolean Cvar_Delete (char *name);
 
+// Use this to walk through all vars
+cvar_t *Cvar_Next (cvar_t *var);
+
 void Cvar_Init (void);
