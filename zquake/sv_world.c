@@ -42,8 +42,6 @@ typedef struct
 } moveclip_t;
 
 
-int SV_HullPointContents (hull_t *hull, int num, vec3_t p);
-
 /*
 ===============================================================================
 
@@ -444,47 +442,13 @@ POINT TESTING IN HULLS
 
 /*
 ==================
-SV_HullPointContents
-
-==================
-*/
-int SV_HullPointContents (hull_t *hull, int num, vec3_t p)
-{
-	float		d;
-	dclipnode_t	*node;
-	mplane_t	*plane;
-
-	while (num >= 0)
-	{
-		if (num < hull->firstclipnode || num > hull->lastclipnode)
-			Host_Error ("SV_HullPointContents: bad node number");
-	
-		node = hull->clipnodes + num;
-		plane = hull->planes + node->planenum;
-		
-		if (plane->type < 3)
-			d = p[plane->type] - plane->dist;
-		else
-			d = DotProduct (plane->normal, p) - plane->dist;
-		if (d < 0)
-			num = node->children[1];
-		else
-			num = node->children[0];
-	}
-	
-	return num;
-}
-
-
-/*
-==================
 SV_PointContents
 
 ==================
 */
 int SV_PointContents (vec3_t p)
 {
-	return SV_HullPointContents (&sv.worldmodel->hulls[0], sv.worldmodel->hulls[0].firstclipnode, p);
+	return CM_HullPointContents (&sv.worldmodel->hulls[0], sv.worldmodel->hulls[0].firstclipnode, p);
 }
 
 //===========================================================================
@@ -607,7 +571,7 @@ static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, ve
 		return false;
 
 #ifdef PARANOID
-	if (SV_HullPointContents (sv_hullmodel, mid, node->children[side])
+	if (CM_HullPointContents (sv_hullmodel, mid, node->children[side])
 	== CONTENTS_SOLID)
 	{
 		Com_Printf ("mid PointInHullSolid\n");
@@ -615,7 +579,7 @@ static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, ve
 	}
 #endif
 	
-	if (SV_HullPointContents (&trace_hull, node->children[side^1], mid)
+	if (CM_HullPointContents (&trace_hull, node->children[side^1], mid)
 	!= CONTENTS_SOLID)
 // go past the node
 		return RecursiveHullTrace (node->children[side^1], midf, p2f, mid, p2);
@@ -637,7 +601,7 @@ static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, ve
 		trace_trace.plane.dist = -plane->dist;
 	}
 
-	while (SV_HullPointContents (&trace_hull, trace_hull.firstclipnode, mid)
+	while (CM_HullPointContents (&trace_hull, trace_hull.firstclipnode, mid)
 	== CONTENTS_SOLID)
 	{ // shouldn't really happen, but does occasionally
 		frac -= 0.1;
@@ -887,7 +851,7 @@ edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin)
 	
 // check world first
 	hull = &sv.worldmodel->hulls[1];
-	if ( SV_HullPointContents (hull, hull->firstclipnode, origin) != CONTENTS_EMPTY )
+	if (CM_HullPointContents (hull, hull->firstclipnode, origin) != CONTENTS_EMPTY)
 		return sv.edicts;
 
 // check all entities
@@ -921,7 +885,7 @@ edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin)
 		VectorSubtract (origin, offset, offset);
 	
 	// test the point
-		if ( SV_HullPointContents (hull, hull->firstclipnode, offset) != CONTENTS_EMPTY )
+		if (CM_HullPointContents (hull, hull->firstclipnode, offset) != CONTENTS_EMPTY)
 			return check;
 	}
 

@@ -87,39 +87,6 @@ hull_t	*PM_HullForBox (vec3_t mins, vec3_t maxs)
 
 /*
 ==================
-PM_HullPointContents
-
-==================
-*/
-int PM_HullPointContents (hull_t *hull, int num, vec3_t p)
-{
-	float		d;
-	dclipnode_t	*node;
-	mplane_t	*plane;
-
-	while (num >= 0)
-	{
-		if (num < hull->firstclipnode || num > hull->lastclipnode)
-			Sys_Error ("PM_HullPointContents: bad node number");
-	
-		node = hull->clipnodes + num;
-		plane = hull->planes + node->planenum;
-		
-		if (plane->type < 3)
-			d = p[plane->type] - plane->dist;
-		else
-			d = DotProduct (plane->normal, p) - plane->dist;
-		if (d < 0)
-			num = node->children[1];
-		else
-			num = node->children[0];
-	}
-	
-	return num;
-}
-
-/*
-==================
 PM_PointContents
 
 ==================
@@ -139,7 +106,7 @@ int PM_PointContents (vec3_t p)
 	while (num >= 0)
 	{
 		if (num < hull->firstclipnode || num > hull->lastclipnode)
-			Sys_Error ("PM_HullPointContents: bad node number");
+			Sys_Error ("PM_PointContents: bad node number");
 	
 		node = hull->clipnodes + num;
 		plane = hull->planes + node->planenum;
@@ -251,7 +218,7 @@ static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, ve
 		return false;
 
 #ifdef PARANOID
-	if (PM_HullPointContents (pm_hullmodel, mid, node->children[side])
+	if (CM_HullPointContents (pm_hullmodel, mid, node->children[side])
 	== CONTENTS_SOLID)
 	{
 		Com_Printf ("mid PointInHullSolid\n");
@@ -259,7 +226,7 @@ static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, ve
 	}
 #endif
 	
-	if (PM_HullPointContents (&trace_hull, node->children[side^1], mid)
+	if (CM_HullPointContents (&trace_hull, node->children[side^1], mid)
 	!= CONTENTS_SOLID)
 // go past the node
 		return RecursiveHullTrace (node->children[side^1], midf, p2f, mid, p2);
@@ -281,7 +248,7 @@ static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, ve
 		trace_trace.plane.dist = -plane->dist;
 	}
 
-	while (PM_HullPointContents (&trace_hull, trace_hull.firstclipnode, mid)
+	while (CM_HullPointContents (&trace_hull, trace_hull.firstclipnode, mid)
 	== CONTENTS_SOLID)
 	{ // shouldn't really happen, but does occasionally
 		frac -= 0.1;
@@ -342,7 +309,7 @@ qboolean PM_TestPlayerPosition (vec3_t pos)
 
 		VectorSubtract (pos, pe->origin, test);
 
-		if (PM_HullPointContents (hull, hull->firstclipnode, test) == CONTENTS_SOLID)
+		if (CM_HullPointContents (hull, hull->firstclipnode, test) == CONTENTS_SOLID)
 			return false;
 	}
 

@@ -770,6 +770,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\cmodel.c">
+			</File>
+			<File
 				RelativePath="com_msg.c">
 				<FileConfiguration
 					Name="Debug|Win32">
