@@ -105,15 +105,15 @@ void R_NetGraph (void)
 		for (x = 0; x < NET_TIMINGS; x++)
 			ngraph_pixels[y][x] = d_8to24table[ngraph_texels[y][x]];
 
-	x =	-(int)((vid.width - 320)>>1);
+	x =	0;
 	y = vid.height - sb_lines - 24 - NET_GRAPHHEIGHT - 1;
 
 	if (r_netgraph.value != 2 && r_netgraph.value != 3)
-		M_DrawTextBox (x, y, NET_TIMINGS/8, NET_GRAPHHEIGHT/8 + 1);
+		Draw_TextBox (x, y, NET_TIMINGS/8, NET_GRAPHHEIGHT/8 + 1);
 
 	if (r_netgraph.value != 3) {
-		sprintf(st, "%3i%% packet loss", lost);
-		Draw_String(8, y + 8, st);
+		sprintf (st, "%3i%% packet loss", lost);
+		Draw_String (8, y + 8, st);
 	}
 
 	x = 8;
@@ -125,9 +125,9 @@ void R_NetGraph (void)
 		NET_TIMINGS, NET_GRAPHHEIGHT, 0, GL_RGBA, 
 		GL_UNSIGNED_BYTE, ngraph_pixels);
 
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glBegin (GL_QUADS);
 	glTexCoord2f (0, 0);

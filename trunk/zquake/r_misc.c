@@ -222,11 +222,11 @@ void R_NetGraph (void)
 	else
 		w = NET_TIMINGS;
 
-	x =	-(int)((vid.width - 320)>>1);
+	x =	0;
 	y = vid.height - sb_lines - 24 - (int)r_graphheight.value*2 - 2;
 
 	if (r_netgraph.value != 2 && r_netgraph.value != 3)
-		M_DrawTextBox (x, y, (w+7)/8, ((int)r_graphheight.value*2+7)/8 + 1);
+		Draw_TextBox (x, y, (w+7)/8, ((int)r_graphheight.value*2+7)/8 + 1);
 
 	y2 = y + 8;
 	y = vid.height - sb_lines - 8 - 2;
