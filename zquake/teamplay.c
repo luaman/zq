@@ -41,7 +41,7 @@ cvar_t	cl_rocket2grenade = {"cl_r2g", "0"};
 cvar_t	cl_teamskin = {"teamskin", ""};
 cvar_t	cl_enemyskin = {"enemyskin", ""};
 
-cvar_t  snd_trigger = {"snd_trigger", "~"};
+cvar_t  tp_soundtrigger = {"tp_soundtrigger", "~"};
 
 cvar_t	tp_name_axe = {"tp_name_axe", "axe"};
 cvar_t	tp_name_sg = {"tp_name_sg", "sg"};
@@ -1999,13 +1999,13 @@ static void ExecTookTrigger (char *s, int flag, vec3_t org)
 	}
 }
 
-char *snd_trigger (char *s)
+char *TP_SoundTrigger (char *s)
 {
 	int y, o, i, u, l;
 	qboolean inside = false;
 	char msg[1024], p[1024], snd[MAX_QPATH], *str;
 
-	if (!snd_trigger.string[0]) {
+	if (!tp_soundtrigger.string[0]) {
 		S_LocalSound ("misc/talk.wav");
 		return s; // no trigger
 	}
@@ -2017,7 +2017,7 @@ char *snd_trigger (char *s)
 
 	strcpy(p, s);
 
-	for (str = snd_trigger.string; *str; *str++)
+	for (str = tp_soundtrigger.string; *str; *str++)
 	{
 		if (strchr(s, *str))
 		{		
@@ -2424,7 +2424,7 @@ void TP_Init ()
 	Cvar_RegisterVariable (&cl_mapname);
 	Cvar_RegisterVariable (&cl_teamskin);
 	Cvar_RegisterVariable (&cl_enemyskin);
-	Cvar_RegisterVariable (&snd_trigger);
+	Cvar_RegisterVariable (&tp_soundtrigger);
 	Cvar_RegisterVariable (&tp_name_axe);
 	Cvar_RegisterVariable (&tp_name_sg);
 	Cvar_RegisterVariable (&tp_name_ssg);
