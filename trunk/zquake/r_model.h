@@ -330,12 +330,6 @@ typedef struct model_s
 	float		radius;
 
 //
-// solid volume for clipping (sent from server)
-//
-	qboolean	clipbox;
-	vec3_t		clipmins, clipmaxs;
-
-//
 // brush model
 //
 	int			firstmodelsurface, nummodelsurfaces;
