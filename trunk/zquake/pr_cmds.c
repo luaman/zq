@@ -1743,8 +1743,33 @@ void PF_multicast (void)
 void PF_testbot (void)
 {
 	edict_t	*ed;
-	ed = SV_SpawnBot(G_STRING(OFS_PARM0), G_STRING(OFS_PARM1), (int)G_FLOAT(OFS_PARM2), (int)G_FLOAT(OFS_PARM3));
+	ed = SV_CreateBot (G_STRING(OFS_PARM0));
 	RETURN_EDICT(ed);
+}
+
+void PF_setinfo (void)
+{
+	int entnum;
+	char *key, *value;
+
+	entnum = G_EDICTNUM(OFS_PARM0);
+
+	if (entnum < 1 || entnum > MAX_CLIENTS)
+		PR_RunError ("Entity is not a client");
+
+	key = G_STRING(OFS_PARM1);
+	value = G_STRING(OFS_PARM2);
+
+	Info_SetValueForKey (svs.clients[entnum-1].userinfo, key, value, MAX_INFO_STRING);
+
+	// FIXME?
+	SV_ExtractFromUserinfo (&svs.clients[entnum-1]);
+
+	// FIXME
+	MSG_WriteByte (&sv.reliable_datagram, svc_setinfo);
+	MSG_WriteByte (&sv.reliable_datagram, entnum - 1);
+	MSG_WriteString (&sv.reliable_datagram, key);
+	MSG_WriteString (&sv.reliable_datagram, value);
 }
 
 
@@ -1852,6 +1877,7 @@ PF_stof,
 PF_multicast,
 
 PF_testbot,			// !!! Temporary! It will be removed !!!
+PF_setinfo,			// !!! Temporary! It will be removed !!!
 };
 
 int pr_numbuiltins = sizeof(pr_builtins)/sizeof(pr_builtins[0]);

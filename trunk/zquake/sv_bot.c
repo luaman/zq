@@ -55,7 +55,7 @@ void Bot_Spawn_And_Begin (client_t *cl)
 	cl->sendinfo = true;
 }
 
-edict_t *SV_SpawnBot (char *name, char *team, int topcolor, int bottomcolor)
+edict_t *SV_CreateBot (char *name)
 {
 	extern cvar_t	maxclients;
 	int			i, numclients;
@@ -92,9 +92,6 @@ edict_t *SV_SpawnBot (char *name, char *team, int topcolor, int bottomcolor)
 
 	Info_SetValueForStarKey (newcl->userinfo, "*bot", "1", MAX_INFO_STRING);
 	Info_SetValueForKey (newcl->userinfo, "name", newcl->name, MAX_INFO_STRING);
-	Info_SetValueForKey (newcl->userinfo, "team", team, MAX_INFO_STRING);
-	Info_SetValueForKey (newcl->userinfo, "topcolor", va("%i", topcolor), MAX_INFO_STRING);
-	Info_SetValueForKey (newcl->userinfo, "bottomcolor", va("%i", bottomcolor), MAX_INFO_STRING);
 
 	// set up the edict
 	ent = EDICT_NUM((newcl - svs.clients) + 1);
@@ -105,7 +102,6 @@ edict_t *SV_SpawnBot (char *name, char *team, int topcolor, int bottomcolor)
 	SetUpClientEdict (newcl, ent);
 
 	// the bot will spawn next time SV_RunBots is run
-	newcl->state = cs_connected;
 
 //	newcl->sendinfo = true;
 
