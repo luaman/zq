@@ -102,12 +102,6 @@ void SV_SaveGame_f (void)
 		return;
 	}
 
-	if (svs.clients[0].edict->v.health <= 0) {
-		Com_Printf ("Can't save game with a dead player\n");
-		// in fact, we can, but does it make sense?
-		return;
-	}
-
 	sprintf (name, "%s/save/%s", com_gamedir, Cmd_Argv(1));
 	COM_DefaultExtension (name, ".sav");
 	
