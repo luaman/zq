@@ -42,10 +42,10 @@ int SNDDMA_GetDMAPos_ALSA (void);
 
 void SNDDMA_Init_Cvars_ALSA (void)
 {
-    Cvar_Get ("snd_stereo", "1", CVAR_ROM);
-    Cvar_Get ("snd_rate", "0", CVAR_ROM);
-    Cvar_Get ("snd_device", "plug:hw", CVAR_ROM);
-    Cvar_Get ("snd_bits", "0", CVAR_ROM);
+    Cvar_Get ("snd_stereo", "1", CVAR_ARCHIVE);
+    Cvar_Get ("snd_rate", "0", CVAR_ARCHIVE);
+    Cvar_Get ("snd_device", "plug:hw", CVAR_ARCHIVE);
+    Cvar_Get ("snd_bits", "0", CVAR_ARCHIVE);
 }
 
 qbool SNDDMA_Init_ALSA (void)
