@@ -1288,34 +1288,6 @@ void CL_MuzzleFlash (void)
 }
 
 
-void CL_CheckVersionRequest(char *s)
-{
-	char buf[11];
-	int	i;
-
-	while (1)
-	{
-		switch (*s++)
-		{
-		case 0:
-		case '\n':
-			return;
-		case ':':
-		case (char)':'|128:
-			goto ok;
-		}
-	}
-	return;
-
-ok:
-	for (i = 0; i < 11 && s[i]; i++)
-		buf[i] = s[i] &~ 128;			// strip high bit
-
-	if (!strncmp(buf, " f_version\n", 11) || !strncmp(buf, " z_version\n", 11))
-		Cbuf_AddText (va("say ZQuake version %s (Build %04d)\n", Z_VERSION, build_number()));
-}
-
-
 void CL_ParsePrint (int level, char *s)
 {
 	char	str[1024];
@@ -1336,7 +1308,7 @@ void CL_ParsePrint (int level, char *s)
 			int flags;
 
 			flags = TP_CategorizeMessage (str);
-			CL_CheckVersionRequest (str);
+			TP_CheckVersionRequest (str);
 			if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
 				for (p = str; *p; p++)
 					if (*p == 13)

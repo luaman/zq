@@ -58,4 +58,5 @@ void TP_EnemyColor_f (void);
 void TP_LoadLocFile (char *path, qboolean quiet);
 char *TP_ParseMacroString(char *string);
 void TP_NewMap ();
+void TP_CheckVersionRequest(char *s);
 void TP_Init ();
