@@ -161,22 +161,29 @@ char		*Sys_GetClipboardText (void)
 	return NULL;
 }
 
+// these are referenced by net_udp.c
+qbool do_stdin = true, stdin_ready;
+
 char		*Sys_ConsoleInput(void)
 {
-#if 0
-	static char	 text[256]	= "\0";
-	int		 len;
+	static char	text[256];
+	char	dummy[256];
+	int	len;
 
-	if (cls.state == ca_dedicated) {
-		len = read (0, text, sizeof(text));
-		if (len < 1)
-			return NULL;
-		text[len-1] = 0;    // rip off the /n and terminate
+	if (!dedicated || noconinput)
+		return NULL;
 
-		return text;
-	}
-#endif
-	return NULL;
+	len = read (0, text, sizeof(text));
+	if (len < 1)
+		return NULL;
+
+	// Tonik: if the line was longer than 256 chars,
+	// through away the remainder (FIXME)
+	while (read (0, dummy, sizeof(dummy)) > 0) {};
+
+	text[len-1] = 0;    // rip off the /n and terminate
+
+	return text;
 }
 
 #if !id386
@@ -226,6 +233,9 @@ int			 main (int argc, char **argv)
 	oldtime = Sys_DoubleTime ();
 	while (1)
 	{
+		if (dedicated)
+			NET_Sleep (10);
+
 		// find time spent rendering last frame
 		newtime = Sys_DoubleTime ();
 		time = newtime - oldtime;
