@@ -65,7 +65,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //define	svc_version			4	// [long] server version
 #define	svc_setview			5	// [short] entity number
 #define	svc_sound			6	// <see code>
-//define	svc_time			7	// [float] server time
+#define	svc_time			7	// [float] server time
 #define	svc_print			8	// [byte] id [string] null terminated string
 #define	svc_stufftext		9	// [string] stuffed into client's console buffer
 								// the string should be \n terminated
