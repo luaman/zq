@@ -847,6 +847,7 @@ void VID_Init(unsigned char *palette)
     Cvar_Register (&vid_mode);
     Cvar_Register (&vid_hwgammacontrol);
     Cvar_Register (&_windowed_mouse);
+    Cvar_Register (&m_filter);
 
     vid.maxwarpwidth = WARP_WIDTH;
     vid.maxwarpheight = WARP_HEIGHT;
