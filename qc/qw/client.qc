@@ -32,6 +32,7 @@ void() player_pain;
 void() player_stand1;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
+void() ExitIntermission;
 
 float   modelindex_eyes, modelindex_player;
 
@@ -195,7 +196,7 @@ void() IntermissionThink =
 	if (!self.button0 && !self.button1 && !self.button2)
 		return;
 	
-	GotoNextMap ();
+	ExitIntermission ();
 };
 
 /*
