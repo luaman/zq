@@ -285,6 +285,38 @@ if (sides == 0)
 #endif
 
 
+
+void vectoangles(vec3_t vec, vec3_t ang)
+{
+	float	forward;
+	float	yaw, pitch;
+	
+	if (vec[1] == 0 && vec[0] == 0)
+	{
+		yaw = 0;
+		if (vec[2] > 0)
+			pitch = 90;
+		else
+			pitch = 270;
+	}
+	else
+	{
+		yaw = atan2(vec[1], vec[0]) * 180 / M_PI;
+		if (yaw < 0)
+			yaw += 360;
+
+		forward = sqrt (vec[0]*vec[0] + vec[1]*vec[1]);
+		pitch = atan2(vec[2], forward) * 180 / M_PI;
+		if (pitch < 0)
+			pitch += 360;
+	}
+
+	ang[0] = pitch;
+	ang[1] = yaw;
+	ang[2] = 0;
+}
+
+
 void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 {
 	float		angle;

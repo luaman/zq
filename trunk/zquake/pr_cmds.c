@@ -403,35 +403,7 @@ vector vectoangles(vector)
 */
 void PF_vectoangles (void)
 {
-	float	*value1;
-	float	forward;
-	float	yaw, pitch;
-	
-	value1 = G_VECTOR(OFS_PARM0);
-
-	if (value1[1] == 0 && value1[0] == 0)
-	{
-		yaw = 0;
-		if (value1[2] > 0)
-			pitch = 90;
-		else
-			pitch = 270;
-	}
-	else
-	{
-		yaw = atan2(value1[1], value1[0]) * 180 / M_PI;
-		if (yaw < 0)
-			yaw += 360;
-
-		forward = sqrt (value1[0]*value1[0] + value1[1]*value1[1]);
-		pitch = atan2(value1[2], forward) * 180 / M_PI;
-		if (pitch < 0)
-			pitch += 360;
-	}
-
-	G_FLOAT(OFS_RETURN+0) = pitch;
-	G_FLOAT(OFS_RETURN+1) = yaw;
-	G_FLOAT(OFS_RETURN+2) = 0;
+	vectoangles (G_VECTOR(OFS_PARM0), G_VECTOR(OFS_RETURN));
 }
 
 /*
