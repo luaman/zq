@@ -45,7 +45,8 @@ static Display *x_disp = NULL;
 static Window x_win;
 static GLXContext ctx = NULL;
 
-static float old_windowed_mouse = 0, mouse_x, mouse_y, old_mouse_x, old_mouse_y;
+static float mouse_x, mouse_y, old_mouse_x, old_mouse_y;
+static qbool input_grabbed =  false;
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
@@ -86,8 +87,7 @@ static unsigned short systemgammaramp[3][256];
 #endif
 
 cvar_t	vid_ref = {"vid_ref", "gl", CVAR_ROM};
-void OnChange_windowed_mouse(cvar_t *var, char *str, qbool *cancel);
-cvar_t	_windowed_mouse = {"_windowed_mouse", "1", CVAR_ARCHIVE, OnChange_windowed_mouse};
+cvar_t	_windowed_mouse = {"_windowed_mouse", "1", CVAR_ARCHIVE};
 cvar_t	vid_mode = {"vid_mode","0"};
 
 static float mouse_x, mouse_y;
@@ -354,6 +354,8 @@ static void install_grabs(void)
 {
     int MajorVersion, MinorVersion;
 
+    input_grabbed = true;
+
     // don't show mouse cursor icon
     XDefineCursor(x_disp, x_win, CreateNullCursor(x_disp, x_win));
 
@@ -387,6 +389,8 @@ static void install_grabs(void)
 
 static void uninstall_grabs(void)
 {
+    input_grabbed = false;
+
 #ifdef USE_DGA
     XF86DGADirectVideo(x_disp, DefaultScreen(x_disp), 0);
     dgamouse = false;
@@ -400,26 +404,11 @@ static void uninstall_grabs(void)
 
 }
 
-void OnChange_windowed_mouse(cvar_t *var, char *str, qbool *cancel)
-{
-#ifdef USE_VMODE
-    if (vidmode_active && !Q_atof(str))
-    {
-        Com_Printf("Cannot turn %s off when using -fullscreen mode\n", var->name);
-        *cancel = true;
-    }
-    else
-    {
-        *cancel = false;
-    }
-#endif
-    *cancel = false;
-}
-
 static void GetEvent(void)
 {
     XEvent event;
     int b;
+    qbool grab_input;
 
     if (!x_disp)
         return;
@@ -434,7 +423,7 @@ static void GetEvent(void)
         break;
 
     case MotionNotify:
-        if (_windowed_mouse.value)
+        if (input_grabbed)
         {
 #ifdef USE_DGA
             if (dgamouse)
@@ -443,8 +432,8 @@ static void GetEvent(void)
                 mouse_y += event.xmotion.y_root;
             }
             else
-            {
 #endif
+            {
                 mouse_x = (float) ((int)event.xmotion.x - (int)(vid.width/2));
                 mouse_y = (float) ((int)event.xmotion.y - (int)(vid.height/2));
 
@@ -453,9 +442,7 @@ static void GetEvent(void)
                 XWarpPointer(x_disp, None, x_win, 0, 0, 0, 0,
                              (vid.width/2), (vid.height/2));
                 XSelectInput(x_disp, x_win, X_MASK);
-#ifdef USE_DGA
             }
-#endif
         }
         break;
 
@@ -484,25 +471,18 @@ static void GetEvent(void)
         break;
     }
 
-    if (old_windowed_mouse != _windowed_mouse.value)
-    {
-        old_windowed_mouse = _windowed_mouse.value;
-
+    grab_input = _windowed_mouse.value != 0
 #ifdef USE_VMODE
-        if ((!_windowed_mouse.value) && (!vidmode_active))
-        {
-#else
-        if (!_windowed_mouse.value)
-        {
+                 || vidmode_active;
 #endif
-            /* ungrab the pointer */
-            uninstall_grabs();
-        }
-        else
-        {
-            /* grab the pointer */
-            install_grabs();
-        }
+
+    if (grab_input && !input_grabbed) {
+        /* grab the pointer */
+        install_grabs();
+    }
+    else if (!grab_input && input_grabbed) {
+        /* ungrab the pointer */
+        uninstall_grabs();
     }
 }
 
