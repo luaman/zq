@@ -796,6 +796,7 @@ extern cvar_t s_ambientfade;
 extern cvar_t s_noextraupdate;
 extern cvar_t s_show;
 extern cvar_t s_mixahead;
+extern cvar_t cl_demospeed;
 
 legacyvar_t legacyvars[] =
 {
@@ -807,6 +808,7 @@ legacyvar_t legacyvars[] =
 	{&s_noextraupdate, "snd_noextraupdate"},
 	{&s_show, "snd_show"},
 	{&s_mixahead, "_snd_mixahead"},
+	{&cl_demospeed, "demotimescale"},
 	{NULL, NULL}
 };
 
