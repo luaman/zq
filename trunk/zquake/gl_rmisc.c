@@ -22,8 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "gl_local.h"
 
-extern void R_InitBubble();
-
 /*
 ==================
 R_InitTextures
@@ -82,72 +80,6 @@ void R_InitParticleTexture (void)
 	GL_Upload32 ((unsigned *) data, 32, 32, true, true);
 }
 
-
-/*
-===============
-R_Init
-===============
-*/
-void R_Init (void)
-{
-	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
-#ifndef CLIENTONLY
-	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
-#endif
-
-	Cvar_Register (&r_norefresh);
-	Cvar_Register (&r_lightmap);
-	Cvar_Register (&r_fullbright);
-	Cvar_Register (&r_drawentities);
-	Cvar_Register (&r_drawflame);
-	Cvar_Register (&r_shadows);
-	Cvar_Register (&r_mirroralpha);
-	Cvar_Register (&r_wateralpha);
-	Cvar_Register (&r_dynamic);
-	Cvar_Register (&r_novis);
-	Cvar_Register (&r_speeds);
-	Cvar_Register (&r_netgraph);
-	Cvar_Register (&r_fullbrightSkins);
-	Cvar_Register (&r_skycolor);
-	Cvar_Register (&r_fastsky);
-
-	Cvar_Register (&gl_clear);
-	Cvar_Register (&gl_texsort);
- 
- 	if (gl_mtexable)
-		Cvar_SetValue (&gl_texsort, 0);
-
-	Cvar_Register (&gl_cull);
-	Cvar_Register (&gl_smoothmodels);
-	Cvar_Register (&gl_affinemodels);
-	Cvar_Register (&gl_polyblend);
-	Cvar_Register (&gl_flashblend);
-	Cvar_Register (&gl_playermip);
-	Cvar_Register (&gl_nocolors);
-	Cvar_Register (&gl_finish);
-	Cvar_Register (&gl_fb_depthhack);
-	Cvar_Register (&gl_fb_bmodels);
-	Cvar_Register (&gl_fb_models);
-	Cvar_Register (&gl_colorlights);
-	Cvar_Register (&gl_lightmode);
-
-	Cvar_Register (&gl_keeptjunctions);
-	Cvar_Register (&gl_reporttjunctions);
-
-	R_InitTextures ();
-	R_InitBubble ();
-	R_InitParticles ();
-	R_InitParticleTexture ();
-
-	netgraphtexture = texture_extension_number;
-	texture_extension_number++;
-
-	playertextures = texture_extension_number;
-	texture_extension_number += MAX_CLIENTS;
-
-	// fullbrights
-	texture_extension_number += MAX_CLIENTS;
-}
 
 int fb_skins[MAX_CLIENTS];
 
