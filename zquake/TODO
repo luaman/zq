@@ -9,6 +9,8 @@ Linux Client
 * Add the fix for non-dga keyboard input under Linux -
   http://www.shovelbeating.org/~windsok/keyboard.htm 
 
+* Add strider's evdev input support
+
 * Fix up HWGamma, affects the whole screen for gamma and blends, need to
   restore the gamma etc when you alt tab, lose focus, minimise etc.
   
@@ -23,7 +25,7 @@ Linux Client
 Windows/Linux Server
 --------------------
 
-* All rcon to save settings to a config? e.g. rcon writeconfig?
+* Allow rcon to save settings to a config? e.g. rcon writeconfig?
 
 * Maplist - return *.bsp from id1/maps and $gamedir/maps
 
