@@ -1132,7 +1132,8 @@ void CL_SetInfo (void)
 	Q_strncpyz (key, MSG_ReadString(), sizeof(key));
 	Q_strncpyz (value, MSG_ReadString(), sizeof(value));
 
-	Con_DPrintf("SETINFO %s: %s=%s\n", player->name, key, value);
+	if (!cl.teamfortress)	// don't allow cheating in TF
+		Con_DPrintf("SETINFO %s: %s=%s\n", player->name, key, value);
 
 	Info_SetValueForKey (player->userinfo, key, value, MAX_INFO_STRING);
 
