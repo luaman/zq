@@ -289,6 +289,7 @@ based b_aiflags.
 
 void bot_handle_ai ()
 {
+    entity  b_temp;
 	entity	newt;
 	vector	v;
 
@@ -302,12 +303,12 @@ void bot_handle_ai ()
 
 	if (self.b_aiflags & AI_DOORFLAG) // was on a door when spawned
 	{
-		b_temp3 = self;
+		b_temp = self;
 		self = self.last_way;
 		if (!frik_recognize_plat(false)) // if there is nothing there now
 		{
 			newt = FindThing("door"); // this is likely the door responsible (crossfingers)
-			self = b_temp3;
+			self = b_temp;
 
 			if (self.b_aiflags & AI_DOOR_NO_OPEN)
 			{
@@ -339,7 +340,7 @@ void bot_handle_ai ()
 			}
 		}
 		else
-			self = b_temp3;
+			self = b_temp;
 	}
 
 	if (self.b_aiflags & AI_JUMP)
@@ -383,17 +384,17 @@ void bot_handle_ai ()
 		// simple, but effective
 		// this can probably be used for a lot of different
 		// things, not just trains (door elevators come to mind)
-		b_temp3 = self;
+		b_temp = self;
 		self = self.last_way;
 	
 		if (!frik_recognize_plat(false)) // if there is nothing there now
 		{
-			self = b_temp3;
+			self = b_temp;
 			self.keys = self.keys & 960;
 		}
 		else
 		{
-			self = b_temp3;
+			self = b_temp;
 			if (frik_recognize_plat(false))
 			{
 				v = realorigin(trace_ent) + trace_ent.origin - self.origin;

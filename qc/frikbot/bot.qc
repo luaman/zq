@@ -40,17 +40,16 @@ for all variables in the bot...
 // ----- entity fields ---
 .float	wallhug, keys, oldkeys, ishuman;
 .float	b_frags, b_clientno, b_shirt, b_pants; 
-.float	priority, ai_time, b_sound, missile_speed;
+.float	ai_time, b_sound, missile_speed;
 .float	portal_time, b_skill;
 .float	b_aiflags, b_num, b_chattime;
-.float	b_menu, b_menu_time, b_menu_value;
 .float	route_failed, dyn_flags, dyn_time;
 .float	dyn_plat;
 .entity	temp_way, last_way;
 .entity	target1, target2, target3, target4;
 .entity	_next, _last;
 .entity	current_way;
-.vector	b_angle, b_dest, mouse_emu, obs_dir;
+.vector	b_angle, mouse_emu, obs_dir;
 .vector	b_dir;
 .float	forwardmove, sidemove, upmove;
 .vector	dyn_dest;
@@ -115,11 +114,10 @@ float OPT_NOCHAT	= 2;
 // -------globals-----
 float		max_clients = 32;	/* Tonik --- only waypoint code checks it... */
 float		bot_count, b_options;
-float		waypoint_mode, dump_mode; 
+float		waypoint_mode;
 float		waypoints, direct_route;
 entity		fixer;
 entity		route_table;
-entity		b_temp1, b_temp2, b_temp3;
 entity 		player_head, way_head;
 float		busy_waypoints;
 

@@ -362,7 +362,7 @@ blah
 */
 void frik_movetogoal ()
 {
-	vector	way, start, stop, ang;
+	vector	way;
 	float	g;
 
 	if (self.target1 == world)
