@@ -236,8 +236,11 @@ float	FloatSwap (float f);
 //============================================================================
 
 struct usercmd_s;
+struct entity_state_s;
+struct packet_entities_s;
 
 extern struct usercmd_s nullcmd;
+
 
 void MSG_WriteChar (sizebuf_t *sb, int c);
 void MSG_WriteByte (sizebuf_t *sb, int c);
