@@ -97,7 +97,7 @@ static int	windowed_default;
 unsigned char	vid_curpal[256*3];
 static qboolean fullsbardraw = false;
 
-static float vid_gamma = 1.0;
+float vid_gamma = 1.0;
 
 HGLRC	baseRC;
 HDC		maindc;
@@ -106,9 +106,14 @@ glvert_t glv;
 
 cvar_t	gl_ztrick = {"gl_ztrick","1"};
 
+cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1"};
+qboolean	vid_gammaworks = false;
+qboolean	vid_hwgamma_enabled;	// = vid_gammaworks && vid_hwgammacontrol.value
+unsigned short *currentgammaramp = NULL;
+void RestoreHWGamma (void);
+
 HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
 
-//viddef_t	vid;				// global video state
 
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
@@ -661,26 +666,31 @@ GL_BeginRendering
 qboolean vid_grabbackbuffer;
 void GL_BeginRendering (int *x, int *y, int *width, int *height)
 {
-	extern cvar_t gl_clear;
-
 	*x = *y = 0;
 	*width = WindowRect.right - WindowRect.left;
 	*height = WindowRect.bottom - WindowRect.top;
-
-//    if (!wglMakeCurrent( maindc, baseRC ))
-//		Sys_Error ("wglMakeCurrent failed");
-
-//	glViewport (*x, *y, *width, *height);
 
 	if (vid_grabbackbuffer) {
 		glDrawBuffer (GL_BACK);
 		vid_grabbackbuffer--;
 	}
+
 }
 
 
 void GL_EndRendering (void)
 {
+	static qboolean old_hwgamma_enabled;
+
+	vid_hwgamma_enabled = vid_hwgammacontrol.value && vid_gammaworks;
+	if (vid_hwgamma_enabled != old_hwgamma_enabled) {
+		old_hwgamma_enabled = vid_hwgamma_enabled;
+		if (vid_hwgamma_enabled && currentgammaramp)
+			VID_SetDeviceGammaRamp (currentgammaramp);
+		else
+			RestoreHWGamma ();
+	}
+
 	if (!scr_skipupdate || block_drawing)
 		SwapBuffers(maindc);
 
@@ -739,7 +749,7 @@ void	VID_SetPalette (unsigned char *palette)
 		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
 		*table++ = v;
 	}
-	d_8to24table[255] &= 0;	// 255 is transparent
+	d_8to24table[255] = 0;	// 255 is transparent
 
 // Tonik: create a brighter palette for bmodel textures
 	pal = palette;
@@ -752,7 +762,7 @@ void	VID_SetPalette (unsigned char *palette)
 		pal += 3;
 		*table++ = (255<<24) + (r<<0) + (g<<8) + (b<<16);
 	}
-	d_8to24table2[255] &= 0;	// 255 is transparent
+	d_8to24table2[255] = 0;	// 255 is transparent
 
 	// JACK: 3D distance calcs - k is last closest, l is the distance.
 	// FIXME: Precalculate this and cache to disk.
@@ -781,16 +791,47 @@ void	VID_SetPalette (unsigned char *palette)
 	}
 }
 
-BOOL	gammaworks;
-
-void	VID_ShiftPalette (unsigned char *palette)
+void VID_ShiftPalette (unsigned char *palette)
 {
-	extern	byte ramps[3][256];
-	
-//	VID_SetPalette (palette);
-
-//	gammaworks = SetDeviceGammaRamp (maindc, ramps);
 }
+
+static byte	systemgammaramp[3][256][2];
+static qboolean customgamma = false;
+
+/*
+======================
+VID_SetDeviceGammaRamp
+
+Note: ramps must point to a static array
+======================
+*/
+void VID_SetDeviceGammaRamp (unsigned short *ramps)
+{
+	if (vid_gammaworks) {
+		currentgammaramp = ramps;
+		if (vid_hwgamma_enabled && ActiveApp && !Minimized) {
+			SetDeviceGammaRamp (maindc, ramps);
+			customgamma = true;
+		}
+	}
+}
+
+void InitHWGamma (void)
+{
+	vid_gammaworks = GetDeviceGammaRamp (maindc, systemgammaramp);
+	vid_hwgamma_enabled = vid_gammaworks && vid_hwgammacontrol.value;
+}
+
+void RestoreHWGamma (void)
+{
+	if (vid_gammaworks && customgamma) {
+		customgamma = false;
+		SetDeviceGammaRamp (maindc, systemgammaramp);
+	}
+}
+
+
+//=================================================================
 
 
 void VID_SetDefaultMode (void)
@@ -939,6 +980,10 @@ void AppActivate(BOOL fActive, BOOL minimize)
 		{
 			IN_ActivateMouse ();
 			IN_HideMouse ();
+
+			if (vid_canalttab && !Minimized && currentgammaramp)
+				VID_SetDeviceGammaRamp (currentgammaramp);
+
 			if (vid_canalttab && vid_wassuspended) {
 				vid_wassuspended = false;
 				ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN);
@@ -966,6 +1011,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 		{
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
+			RestoreHWGamma ();
 			if (vid_canalttab) { 
 				ShowWindow (mainwindow, SW_MINIMIZE);
 				ChangeDisplaySettings (NULL, 0);
@@ -1521,6 +1567,13 @@ static void Check_Gamma (unsigned char *pal)
 	} else
 		vid_gamma = Q_atof(com_argv[i+1]);
 
+	if (vid_gamma < 0.3)
+		vid_gamma = 0.3;
+	if (vid_gamma > 3)
+		vid_gamma = 3;
+
+	Cvar_SetValue (&gl_gamma, vid_gamma);
+
 	for (i=0 ; i<768 ; i++)
 	{
 		f = pow ( (pal[i]+1)/256.0 , vid_gamma );
@@ -1562,6 +1615,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_stretch_by_2);
 	Cvar_RegisterVariable (&_windowed_mouse);
 	Cvar_RegisterVariable (&gl_ztrick);
+	Cvar_RegisterVariable (&vid_hwgammacontrol);
 
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);
@@ -1771,13 +1825,15 @@ void	VID_Init (unsigned char *palette)
 
 	VID_SetMode (vid_default, palette);
 
-    maindc = GetDC(mainwindow);
+	maindc = GetDC(mainwindow);
 	bSetupPixelFormat(maindc);
 
-    baseRC = wglCreateContext( maindc );
+	InitHWGamma ();
+
+	baseRC = wglCreateContext( maindc );
 	if (!baseRC)
 		Sys_Error ("Could not initialize GL (wglCreateContext failed).\n\nMake sure you in are 65535 color mode, and try running -window.");
-    if (!wglMakeCurrent( maindc, baseRC ))
+	if (!wglMakeCurrent( maindc, baseRC ))
 		Sys_Error ("wglMakeCurrent failed");
 
 	GL_Init ();
