@@ -1826,7 +1826,7 @@ void	VID_Init (unsigned char *palette)
 	GL_Init ();
 
 	sprintf (gldir, "%s/glquake", com_gamedir);
-	Sys_mkdir (gldir);
+//	Sys_mkdir (gldir);
 
 	vid_realmode = vid_modenum;
 
