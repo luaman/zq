@@ -1486,12 +1486,12 @@ if (sv_player->v.health > 0 && before && !after )
 
 	host_client->oldbuttons = pmove.oldbuttons;
 	sv_player->v.teleport_time = pmove.waterjumptime;
-	sv_player->v.waterlevel = waterlevel;
-	sv_player->v.watertype = watertype;
-	if (onground != -1)
+	sv_player->v.waterlevel = pmove.waterlevel;
+	sv_player->v.watertype = pmove.watertype;
+	if (pmove.onground != -1)
 	{
 		sv_player->v.flags = (int)sv_player->v.flags | FL_ONGROUND;
-		sv_player->v.groundentity = EDICT_TO_PROG(EDICT_NUM(pmove.physents[onground].info));
+		sv_player->v.groundentity = EDICT_TO_PROG(EDICT_NUM(pmove.physents[pmove.onground].info));
 	}
 	else
 		sv_player->v.flags = (int)sv_player->v.flags & ~FL_ONGROUND;

@@ -61,6 +61,9 @@ typedef struct
 	float		waterjumptime;
 	qboolean	dead;
 	int		spectator;
+	int		onground;	// -1 when in air, otherwise ground entity index
+	int		waterlevel;
+	int		watertype;
 
 	// world state
 	int		numphysent;
@@ -90,9 +93,6 @@ typedef struct {
 
 extern	movevars_t		movevars;
 extern	playermove_t	pmove;
-extern	int		onground;
-extern	int		waterlevel;
-extern	int		watertype;
 
 void PlayerMove (void);
 void Pmove_Init (void);
