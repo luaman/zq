@@ -1125,7 +1125,7 @@ void Cmd_If_f (void)
 		result = Q_atof(Cmd_Argv(1)) <= Q_atof(Cmd_Argv(3));
 	else {
 		Con_Printf ("unknown operator: %s\n", op);
-		Con_Printf ("valid operators are ==, =, !=, <>, >, <, >=, <=\n");
+		Con_Printf ("valid operators are ==, =, !=, <>, >, <, >=, <=, &\n");
 		return;
 	}
 
