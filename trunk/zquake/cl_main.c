@@ -1337,6 +1337,7 @@ void CL_Init (void)
 	Cmd_AddCommand ("changing", CL_Changing_f);
 	Cmd_AddCommand ("disconnect", CL_Disconnect_f);
 	Cmd_AddCommand ("record", CL_Record_f);
+	Cmd_AddCommand ("easyrecord", CL_EasyRecord_f);
 	Cmd_AddCommand ("rerecord", CL_ReRecord_f);
 	Cmd_AddCommand ("stop", CL_Stop_f);
 	Cmd_AddCommand ("playdemo", CL_PlayDemo_f);
