@@ -317,7 +317,7 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 }
 
 // passed to qsort
-static int __cdecl entity_state_compare (const void *p1, const void *p2)
+static int entity_state_compare (const void *p1, const void *p2)
 {
 	return ((entity_state_t *) p1)->number - ((entity_state_t *) p2)->number;
 }
