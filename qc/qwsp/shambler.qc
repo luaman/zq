@@ -133,9 +133,9 @@ void() sham_smash10    =[      $smash10,      sham_smash11   ] {
 void() sham_smash11    =[      $smash11,      sham_smash12   ] {ai_charge(5);}
 void() sham_smash12    =[      $smash12,      sham_run1	   ] {ai_charge(4);}
 
-void() sham_swingr1;
+void sham_swingr1 ();
 
-void(float side) ShamClaw =
+void ShamClaw (float side)
 {
 	vector	delta;
 	float	ldmg;
@@ -192,7 +192,7 @@ if (random()<0.5)
 	self.think = sham_swingl1;
 }
 
-void() sham_melee =
+void sham_melee ()
 {
 	float	chance;
 	
@@ -208,7 +208,7 @@ void() sham_melee =
 
 //============================================================================
 
-void() CastLightning =
+void CastLightning ()
 {
 	vector	org, dir;
 	
@@ -289,7 +289,7 @@ void() sham_pain4       =[      $pain4, sham_pain5      ] {}
 void() sham_pain5       =[      $pain5, sham_pain6      ] {}
 void() sham_pain6       =[      $pain6, sham_run1      ] {}
 
-void(entity attacker, float damage)	sham_pain =
+void sham_pain (entity attacker, float damage)
 {
 	sound (self, CHAN_VOICE, "shambler/shurt2.wav", 1, ATTN_NORM);
 
@@ -321,7 +321,7 @@ void() sham_death9      =[      $death9,       sham_death10    ] {}
 void() sham_death10     =[      $death10,      sham_death11    ] {}
 void() sham_death11     =[      $death11,      sham_death11    ] {}
 
-void() sham_die =
+void sham_die ()
 {
 // check for gib
 	if (self.health < -60)
@@ -344,7 +344,7 @@ void() sham_die =
 
 /*QUAKED monster_shambler (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 */
-void() monster_shambler =
+void monster_shambler ()
 {
 	if (deathmatch)
 	{

@@ -224,7 +224,7 @@ HEALTH BOX
 // T_Heal: add health to an entity, limiting health to max_health
 // "ignore" will ignore max_health limit
 //
-float (entity e, float healamount, float ignore) T_Heal =
+float T_Heal (entity e, float healamount, float ignore)
 {
 	if (e.health <= 0)
 		return 0;
@@ -517,7 +517,7 @@ float RankForWeapon (float w)
 	return 7;
 }
 
-float (float w) WeaponCode =
+float WeaponCode (float w)
 {
 	if (w == IT_SUPER_SHOTGUN)
 		return 3;

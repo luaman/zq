@@ -57,7 +57,7 @@ $frame paind17 paind18 paind19
 
 
 
-void() enforcer_fire =
+void enforcer_fire ()
 {
 	vector	org;
 
@@ -168,7 +168,7 @@ void()	enf_paind17	=[	$paind17,	enf_paind18	] {ai_pain(1);}
 void()	enf_paind18	=[	$paind18,	enf_paind19	] {}
 void()	enf_paind19	=[	$paind19,	enf_run1	] {}
 
-void(entity attacker, float damage)	enf_pain =
+void enf_pain (entity attacker, float damage)
 {
 	float	r;
 
@@ -241,7 +241,7 @@ void()	enf_fdie10	=[	$fdeath10,	enf_fdie11	] {}
 void()	enf_fdie11	=[	$fdeath11,	enf_fdie11	] {}
 
 
-void() enf_die =
+void enf_die ()
 {
 // check for gib
 	if (self.health < -35)
@@ -266,7 +266,7 @@ void() enf_die =
 /*QUAKED monster_enforcer (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 
 */
-void() monster_enforcer =
+void monster_enforcer ()
 {
 	if (deathmatch)
 	{

@@ -70,11 +70,11 @@ $frame magicc1 magicc2 magicc3 magicc4 magicc5 magicc6 magicc7 magicc8
 $frame magicc9 magicc10 magicc11
 
 
-void() hknight_char_a1;
-void() hknight_run1;
-void() hk_idle_sound;
+void hknight_char_a1 ();
+void hknight_run1 ();
+void hk_idle_sound ();
 
-void(float offset) hknight_shot =
+void hknight_shot (float offset)
 {
 	vector	offang;
 	vector	org, vec;
@@ -98,17 +98,17 @@ void(float offset) hknight_shot =
 	sound (self, CHAN_WEAPON, "hknight/attack1.wav", 1, ATTN_NORM);
 }
 
-void() CheckForCharge =
+void CheckForCharge ()
 {
-// check for mad charge
-if (!enemy_vis)
-	return;
-if (time < self.attack_finished)
-	return;	
-if ( fabs(self.origin_z - self.enemy.origin_z) > 20)
-	return;		// too much height change
-if ( vlen (self.origin - self.enemy.origin) < 80)
-	return;		// use regular attack
+	// check for mad charge
+	if (!enemy_vis)
+		return;
+	if (time < self.attack_finished)
+		return;	
+	if ( fabs(self.origin_z - self.enemy.origin_z) > 20)
+		return;		// too much height change
+	if ( vlen (self.origin - self.enemy.origin) < 80)
+		return;		// use regular attack
 
 // charge		
 	SUB_AttackFinished (2);
@@ -116,7 +116,7 @@ if ( vlen (self.origin - self.enemy.origin) < 80)
 
 }
 
-void() CheckContinueCharge =
+void CheckContinueCharge ()
 {
 	if (time > self.attack_finished)
 	{
@@ -215,7 +215,7 @@ void()	hknight_dieb7	=[	$deathb7,	hknight_dieb8	] {}
 void()	hknight_dieb8	=[	$deathb8,	hknight_dieb9	] {}
 void()	hknight_dieb9	=[	$deathb9,	hknight_dieb9	] {}
 
-void() hknight_die =
+void hknight_die ()
 {
 // check for gib
 	if (self.health < -40)
@@ -367,13 +367,13 @@ void()	hknight_watk22	=[	$w_attack22,	hknight_run1	] {ai_charge(3);}
 
 //============================================================================
 
-void() hk_idle_sound =
+void hk_idle_sound ()
 {
 	if (random() < 0.2)
 		sound (self, CHAN_VOICE, "hknight/idle.wav", 1, ATTN_NORM);
 }
 
-void(entity attacker, float damage)	hknight_pain =
+void hknight_pain (entity attacker, float damage)
 {
 	if (self.pain_finished > time)
 		return;
@@ -396,7 +396,7 @@ void(entity attacker, float damage)	hknight_pain =
 
 float	hknight_type;
 
-void() hknight_melee =
+void hknight_melee ()
 {
 	hknight_type = hknight_type + 1;
 
@@ -414,7 +414,7 @@ void() hknight_melee =
 
 /*QUAKED monster_hell_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 */
-void() monster_hell_knight =
+void monster_hell_knight ()
 {
 	if (deathmatch)
 	{

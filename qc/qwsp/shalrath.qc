@@ -39,8 +39,8 @@ $frame death1 death2 death3 death4 death5 death6 death7
 $frame	walk1 walk2 walk3 walk4 walk5 walk6 walk7 walk8 walk9 walk10
 $frame	walk11 walk12
 
-void() shalrath_pain;
-void() ShalMissile;
+void shalrath_pain ();
+void ShalMissile ();
 void() shal_stand     =[      $walk1,       shal_stand    ] {ai_stand();}
 
 void() shal_walk1     =[      $walk2,       shal_walk2    ] {
@@ -105,7 +105,7 @@ void() shal_death6      =[      $death6,        shal_death7     ] {}
 void() shal_death7      =[      $death7,        shal_death7    ] {}
 
 
-void() shalrath_pain =
+void shalrath_pain ()
 {
 	if (self.pain_finished > time)
 		return;
@@ -115,7 +115,7 @@ void() shalrath_pain =
 	self.pain_finished = time + 3;
 }
 
-void() shalrath_die =
+void shalrath_die ()
 {
 // check for gib
 	if (self.health < -90)
@@ -139,9 +139,9 @@ void() shalrath_die =
 ShalMissile
 ================
 */
-void() ShalMissileTouch;
-void() ShalHome;
-void() ShalMissile =
+void ShalMissileTouch ();
+void ShalHome ();
+void ShalMissile ()
 {
 	entity	missile;
 	vector	dir;
@@ -174,7 +174,7 @@ void() ShalMissile =
 	missile.touch = ShalMissileTouch;
 }
 
-void() ShalHome =
+void ShalHome ()
 {
 	vector	dir, vtemp;
 	vtemp = self.enemy.origin + '0 0 10';
@@ -192,7 +192,7 @@ void() ShalHome =
 	self.think = ShalHome;	
 }
 
-void() ShalMissileTouch =
+void ShalMissileTouch ()
 {
 	if (other == self.owner)
 		return;		// don't explode on owner
@@ -216,7 +216,7 @@ void() ShalMissileTouch =
 
 /*QUAKED monster_shalrath (1 0 0) (-32 -32 -24) (32 32 48) Ambush
 */
-void() monster_shalrath =
+void monster_shalrath ()
 {
 	if (deathmatch)
 	{

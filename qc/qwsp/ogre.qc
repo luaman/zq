@@ -68,7 +68,7 @@ $frame pull1 pull2 pull3 pull4 pull5 pull6 pull7 pull8 pull9 pull10 pull11
 //=============================================================================
 
 
-void() OgreGrenadeExplode =
+void OgreGrenadeExplode ()
 {
 	T_RadiusDamage (self, self.owner, 40, world, "ogre");
 	sound (self, CHAN_VOICE, "weapons/r_exp3.wav", 1, ATTN_NORM);
@@ -83,7 +83,7 @@ void() OgreGrenadeExplode =
 	remove (self);
 }
 
-void() OgreGrenadeTouch =
+void OgreGrenadeTouch ()
 {
 	if (other == self.owner)
 		return;		// don't explode on owner
@@ -102,7 +102,7 @@ void() OgreGrenadeTouch =
 OgreFireGrenade
 ================
 */
-void() OgreFireGrenade =
+void OgreFireGrenade ()
 {
 	entity	missile;
 	
@@ -148,7 +148,7 @@ chainsaw
 FIXME
 ================
 */
-void(float side) chainsaw =
+void chainsaw (float side)
 {
 	vector	delta;
 	float	ldmg;
@@ -328,7 +328,7 @@ void()	ogre_paine14=[	$paine14,	ogre_paine15	] {}
 void()	ogre_paine15=[	$paine15,	ogre_run1	] {}
 
 
-void(entity attacker, float damage)	ogre_pain =
+void ogre_pain (entity attacker, float damage)
 {
 	float	r;
 
@@ -397,7 +397,7 @@ void()	ogre_bdie8	=[	$bdeath8,	ogre_bdie9	] {}
 void()	ogre_bdie9	=[	$bdeath9,	ogre_bdie10	] {}
 void()	ogre_bdie10	=[	$bdeath10,	ogre_bdie10	] {}
 
-void() ogre_die =
+void ogre_die ()
 {
 // check for gib
 	if (self.health < -80)
@@ -418,7 +418,7 @@ void() ogre_die =
 		ogre_bdie1 ();
 }
 
-void() ogre_melee =
+void ogre_melee ()
 {
 	if (random() > 0.5)
 		ogre_smash1 ();
@@ -430,7 +430,7 @@ void() ogre_melee =
 /*QUAKED monster_ogre (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 
 */
-void() monster_ogre =
+void monster_ogre ()
 {
 	if (deathmatch)
 	{
@@ -468,7 +468,7 @@ void() monster_ogre =
 	walkmonster_start();
 }
 
-void() monster_ogre_marksman =
+void monster_ogre_marksman ()
 {
 	monster_ogre ();
 }

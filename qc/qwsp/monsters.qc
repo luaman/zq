@@ -36,7 +36,7 @@ monster_use
 Using a monster makes it angry at the current activator
 ================
 */
-void() monster_use =
+void monster_use ()
 {
 	if (self.enemy)
 		return;
@@ -64,7 +64,7 @@ When a mosnter dies, it fires all of its targets with the current
 enemy as activator.
 ================
 */
-void() monster_death_use =
+void monster_death_use ()
 {
 // fall to ground
 	if (self.flags & FL_FLY)
@@ -82,7 +82,7 @@ void() monster_death_use =
 
 //============================================================================
 
-void() walkmonster_start_go =
+void walkmonster_start_go ()
 {
 	self.origin_z = self.origin_z + 1;	// raise off floor a bit
 	droptofloor();
@@ -132,7 +132,7 @@ void() walkmonster_start_go =
 }
 
 
-void() walkmonster_start =
+void walkmonster_start ()
 {
 // delay drop to floor to make sure all doors have been spawned
 // spread think times so they don't all happen at same time
@@ -143,7 +143,7 @@ void() walkmonster_start =
 
 
 
-void() flymonster_start_go =
+void flymonster_start_go ()
 {
 	self.takedamage = DAMAGE_AIM;
 
@@ -186,7 +186,7 @@ void() flymonster_start_go =
 	}
 }
 
-void() flymonster_start =
+void flymonster_start ()
 {
 // spread think times so they don't all happen at same time
 	self.nextthink = self.nextthink + random()*0.5;
@@ -195,7 +195,7 @@ void() flymonster_start =
 }
 
 
-void() swimmonster_start_go =
+void swimmonster_start_go ()
 {
 	if (deathmatch)
 	{
@@ -237,7 +237,7 @@ void() swimmonster_start_go =
 	self.nextthink = self.nextthink + random()*0.5;
 }
 
-void() swimmonster_start =
+void swimmonster_start ()
 {
 // spread think times so they don't all happen at same time
 	self.nextthink = self.nextthink + random()*0.5;

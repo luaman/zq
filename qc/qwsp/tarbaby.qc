@@ -104,9 +104,9 @@ void()	tbaby_run25	=[	$run25,		tbaby_run1	] {ai_run(2);}
 //============================================================================
 
 
-void()	tbaby_jump1;
+void tbaby_jump1 ();
 
-void()	Tar_JumpTouch =
+void Tar_JumpTouch ()
 {
 	float	ldmg;
 
@@ -207,7 +207,7 @@ void()	tbaby_die2	=[	$exp,		tbaby_run1	]
 
 /*QUAKED monster_tarbaby (1 0 0) (-16 -16 -24) (16 16 24) Ambush
 */
-void() monster_tarbaby =
+void monster_tarbaby ()
 {
 	if (deathmatch)
 	{
