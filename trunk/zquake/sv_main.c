@@ -78,8 +78,8 @@ void Master_Shutdown (void);
 
 // handles both maxclients and maxspectators
 void OnChange_maxclients (cvar_t *var, char *str, qboolean *cancel) {
-	int num = Q_atof(str);
-	num = bound(0, num, 32);
+	int num = Q_atoi(str);
+	num = bound(0, num, MAX_CLIENTS);
 	Cvar_SetValue (var, num);
 	*cancel = true;
 }
@@ -622,12 +622,6 @@ void SVC_DirectConnect (void)
 	}
 
 	// if at server limits, refuse connection
-	if ( maxclients.value > MAX_CLIENTS )
-		Cvar_SetValue (&maxclients, MAX_CLIENTS);
-	if (maxspectators.value > MAX_CLIENTS)
-		Cvar_SetValue (&maxspectators, MAX_CLIENTS);
-	if (maxspectators.value + maxclients.value > MAX_CLIENTS)
-		Cvar_SetValue (&maxspectators, MAX_CLIENTS - maxclients.value);
 	if ( (spectator && spectators >= (int)maxspectators.value)
 		|| (!spectator && clients >= (int)maxclients.value) )
 	{
