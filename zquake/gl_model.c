@@ -381,7 +381,9 @@ void Mod_LoadTextures (lump_t *l)
 		
 		if ( (mt->width & 15) || (mt->height & 15) )
 			Sys_Error ("Texture %s is not 16 aligned", mt->name);
-		pixels = mt->width*mt->height/64*85;
+//		pixels = mt->width*mt->height/64*85;
+		pixels = mt->width*mt->height;	// Tonik: we don't need
+								// precalculated mip textures in GL
 		tx = Hunk_AllocName (sizeof(texture_t) + pixels, loadname);
 		loadmodel->textures[i] = tx;
 
@@ -391,8 +393,16 @@ void Mod_LoadTextures (lump_t *l)
 		for (j=0 ; j<MIPLEVELS ; j++)
 			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
 		// the pixels immediately follow the structures
-		memcpy ( tx+1, mt+1, pixels);
+		memcpy (tx+1, mt+1, pixels);
 		
+		// HACK HACK HACK
+		if (!strcmp(mt->name, "shot1sid") && mt->width==32 && mt->height==32
+			&& CRC_Block((byte*)(mt+1), mt->width*mt->height) == 65393)
+		{	// This texture in b_shell1.bsp has some of the first 32 pixels painted white.
+			// They are invisible in software, but look really ugly in GL. So we just copy
+			// 32 pixels from the bottom to make it look nice.
+			memcpy (tx+1, (byte *)(tx+1) + 32*31, 32);
+		}
 
 		if (!strncmp(mt->name,"sky",3))	
 			R_InitSky (tx);
