@@ -22,6 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 
+#ifndef i386
+#include "d_local.h"
+#endif
+
 vec3_t		r_pright, r_pup, r_ppn;
 
 void D_DrawParticle (particle_t *pparticle);
