@@ -75,7 +75,7 @@ cvar_t	hostname = {"hostname","unnamed",CVAR_SERVERINFO};
 cvar_t	watervis = {"watervis","0",CVAR_SERVERINFO};
 
 cvar_t	skill = {"skill", "1"};
-cvar_t	coop = {"coop", "0"};
+cvar_t	coop = {"coop", "0", CVAR_SERVERINFO};
 
 FILE	*sv_fraglogfile;
 
