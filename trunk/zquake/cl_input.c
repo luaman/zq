@@ -396,6 +396,7 @@ void CL_FinishMove (usercmd_t *cmd)
 {
 	int		i;
 	int		ms;
+	static double	msec_balance = 0;
 
 //
 // always dump the first two messages, because they may contain leftover inputs
@@ -415,10 +416,17 @@ void CL_FinishMove (usercmd_t *cmd)
 	in_jump.state &= ~2;
 
 	// send milliseconds of time to apply the move
+#if 0
 	ms = host_frametime * 1000;
+#else
+	msec_balance += host_frametime * 990;
+	ms = msec_balance;
+	msec_balance -= ms;
+#endif
 	if (ms > 250)
 		ms = 100;		// time was unreasonable
 	cmd->msec = ms;
+
 
 	VectorCopy (cl.viewangles, cmd->angles);
 
