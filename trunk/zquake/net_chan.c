@@ -75,6 +75,8 @@ to the new value before sending out any replies.
 
 */
 
+#include <time.h>
+
 cvar_t	showpackets = {"showpackets", "0"};
 cvar_t	showdrop = {"showdrop", "0"};
 cvar_t	qport = {"qport", "0"};

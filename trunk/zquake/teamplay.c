@@ -28,6 +28,8 @@
 #include "version.h"
 #include "sound.h"
 #include "pmove.h"
+#include <time.h>
+
 
 cvar_t	cl_parseSay = {"cl_parseSay", "0"};
 cvar_t	cl_parseFunChars = {"cl_parseFunChars", "1"};
