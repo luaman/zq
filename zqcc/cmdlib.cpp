@@ -190,7 +190,7 @@ int			 CheckParm (char *check, int startarg)
 
 	for (i = startarg;i < myargc; i++)
 	{
-		if ( !Q_stricmp(check, myargv[i]) )
+		if ( !Q_strnicmp(myargv[i], check, strlen(check)) )
 			return i;
 	}
 
