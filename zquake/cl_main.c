@@ -305,7 +305,6 @@ void CL_ClearState (void)
 #endif
 
 	CL_ClearTEnts ();
-	memset (cl_baselines, 0, sizeof(cl_baselines));
 
 // wipe the entire cl structure
 	memset (&cl, 0, sizeof(cl));
@@ -316,6 +315,7 @@ void CL_ClearState (void)
 	memset (cl_efrags, 0, sizeof(cl_efrags));
 	memset (cl_dlights, 0, sizeof(cl_dlights));
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
+	memset (cl_baselines, 0, sizeof(cl_baselines));
 
 //
 // allocate the efrags and chain together into a free list
@@ -628,9 +628,6 @@ void CL_ReadPackets (void)
 		if (!Netchan_Process(&cls.netchan))
 			continue;		// wasn't accepted for some reason
 		CL_ParseServerMessage ();
-
-//		if (cls.demoplayback && cls.state >= ca_active && !CL_DemoBehind())
-//			return;
 	}
 
 	//
