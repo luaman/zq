@@ -842,8 +842,6 @@ void R_DrawBEntitiesOnList (void)
 
 		VectorCopy (currententity->origin, r_entorigin);
 		VectorSubtract (r_origin, r_entorigin, modelorg);
-	// FIXME: is this needed?
-		VectorCopy (modelorg, r_worldmodelorg);
 
 		r_pcurrentvertbase = clmodel->vertexes;
 
