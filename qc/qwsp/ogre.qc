@@ -106,7 +106,7 @@ void() OgreFireGrenade =
 {
 	local	entity missile, mpuff;
 	
-	self.effects = self.effects | EF_MUZZLEFLASH;
+	muzzleflash();
 
 	sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
 

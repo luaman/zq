@@ -209,10 +209,14 @@ void() Wiz_FastFire =
 {
 	local vector		vec;
 	local vector		dst;
+	local entity		oself;
 
 	if (self.owner.health > 0)
 	{
-		self.owner.effects = self.owner.effects | EF_MUZZLEFLASH;
+		oself = self;
+		self = self.owner;
+		muzzleflash();
+		self = oself;
 
 		makevectors (self.enemy.angles);	
 		dst = self.enemy.origin - 13*self.movedir;
