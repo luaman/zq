@@ -1406,7 +1406,6 @@ void M_SinglePlayer_Key (key)
 //=============================================================================
 /* LOAD/SAVE MENU */
 
-/*
 int		load_cursor;		// 0 < load_cursor < MAX_SAVEGAMES
 
 #define	MAX_SAVEGAMES		12
@@ -1424,7 +1423,7 @@ void M_ScanSaves (void)
 	{
 		strcpy (m_filenames[i], "--- UNUSED SLOT ---");
 		loadable[i] = false;
-		sprintf (name, "%s/s%i.sav", com_gamedir, i);
+		sprintf (name, "%s/save/s%i.sav", com_gamedir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
@@ -1440,80 +1439,99 @@ void M_ScanSaves (void)
 		fclose (f);
 	}
 }
-*/
 
+#ifndef CLIENTONLY
 void M_Menu_Load_f (void)
 {
 	M_EnterMenu (m_load);
-//	M_ScanSaves ();
+	M_ScanSaves ();
 }
 
 
 void M_Menu_Save_f (void)
 {
-/*	if (!sv.active)
+	if (sv.state != ss_active)
 		return;
 	if (cl.intermission)
 		return;
-	if (svs.maxclients != 1)
-		return;
-*/
-	M_EnterMenu (m_save);
-//	M_ScanSaves ();
-}
 
+	M_EnterMenu (m_save);
+	M_ScanSaves ();
+}
+#endif
 
 
 void M_Load_Draw (void)
 {
-//	int		i;
+	int		i;
 	mpic_t	*p;
 
 	p = Draw_CachePic ("gfx/p_load.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
 
-/*	for (i=0 ; i< MAX_SAVEGAMES; i++)
+	for (i = 0; i < MAX_SAVEGAMES; i++)
 		M_Print (16, 32 + 8*i, m_filenames[i]);
 
 // line cursor
 	M_DrawCharacter (8, 32 + load_cursor*8, 12+((int)(curtime*4)&1));
-*/
-
-	M_DrawTextBox (60, 10*8, 23, 4);	
-	M_PrintWhite (80, 12*8, "Savegames are not yet");
-	M_PrintWhite (88, 13*8, "supported by " PROGRAM);
 }
 
 
 void M_Save_Draw (void)
 {
-//	int		i;
+	int		i;
 	mpic_t	*p;
 
 	p = Draw_CachePic ("gfx/p_save.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
 
-/*	for (i=0 ; i<MAX_SAVEGAMES ; i++)
+	for (i = 0; i < MAX_SAVEGAMES ; i++)
 		M_Print (16, 32 + 8*i, m_filenames[i]);
 
 // line cursor
 	M_DrawCharacter (8, 32 + load_cursor*8, 12+((int)(curtime*4)&1));
-*/
-
-	M_DrawTextBox (60, 10*8, 23, 4);	
-	M_PrintWhite (80, 12*8, "Savegames are not yet");
-	M_PrintWhite (88, 13*8, "supported by " PROGRAM);
 }
 
 
 void M_Load_Key (int key)
 {
-	switch (key) {
+	switch (key)
+	{
 	case K_BACKSPACE:
 		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-	case K_ENTER:
 		M_LeaveMenu (m_singleplayer);
+		break;
+
+	case K_ENTER:
+		S_LocalSound ("misc/menu2.wav");
+		if (!loadable[load_cursor])
+			return;
+		m_state = m_none;
+		key_dest = key_game;
+
+		// SV_Loadgame_f can't bring up the loading plaque because too much
+		// stack space has been used, so do it now
+		SCR_BeginLoadingPlaque ();
+
+		// issue the load command
+		Cbuf_AddText (va ("load s%i\n", load_cursor) );
+		return;
+
+	case K_UPARROW:
+	case K_LEFTARROW:
+		S_LocalSound ("misc/menu1.wav");
+		load_cursor--;
+		if (load_cursor < 0)
+			load_cursor = MAX_SAVEGAMES-1;
+		break;
+
+	case K_DOWNARROW:
+	case K_RIGHTARROW:
+		S_LocalSound ("misc/menu1.wav");
+		load_cursor++;
+		if (load_cursor >= MAX_SAVEGAMES)
+			load_cursor = 0;
 		break;
 	}
 }
@@ -1524,8 +1542,29 @@ void M_Save_Key (int key)
 	case K_BACKSPACE:
 		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-	case K_ENTER:
 		M_LeaveMenu (m_singleplayer);
+		break;
+
+	case K_ENTER:
+		m_state = m_none;
+		key_dest = key_game;
+		Cbuf_AddText (va("save s%i\n", load_cursor));
+		return;
+
+	case K_UPARROW:
+	case K_LEFTARROW:
+		S_LocalSound ("misc/menu1.wav");
+		load_cursor--;
+		if (load_cursor < 0)
+			load_cursor = MAX_SAVEGAMES-1;
+		break;
+
+	case K_DOWNARROW:
+	case K_RIGHTARROW:
+		S_LocalSound ("misc/menu1.wav");
+		load_cursor++;
+		if (load_cursor >= MAX_SAVEGAMES)
+			load_cursor = 0;
 		break;
 	}
 }
