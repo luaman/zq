@@ -318,7 +318,11 @@ void Cvar_CvarList_f (void)
 	int i;
 
 	for (var=cvar_vars, i=0 ; var ; var=var->next, i++)
-		Con_Printf("%s\n",var->name);
+		Con_Printf("%c%c%c %s\n",
+			var->flags & CVAR_ARCHIVE ? '*' : ' ',
+			var->flags & CVAR_USERINFO ? 'u' : ' ',
+			var->flags & CVAR_SERVERINFO ? 's' : ' ',
+			var->name);
 
 	Con_Printf ("------------\n%d variables\n", i);
 }
@@ -380,6 +384,9 @@ void Cvar_Set_f (void)
 			Con_Printf ("\"%s\" is a command\n", var_name);
 			return;
 		}
+
+		// delete alias with the same name if it exists
+		Cmd_DeleteAlias (var_name);
 
 		var = Cvar_Create (var_name, Cmd_Argv(2), CVAR_USER_CREATED);
 	}
