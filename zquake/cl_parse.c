@@ -1144,6 +1144,15 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 		CL_NewTranslation (slot);
 }
 
+static void CL_PlayerLeaveSlot(player_info_t *player)
+{
+	if (cl.spectator && cls.demoplayback)
+	{
+		Cam_Unlock ();
+		Cam_TryLock ();
+	}
+}
+
 /*
 ==============
 CL_UpdateUserinfo
@@ -1152,6 +1161,7 @@ CL_UpdateUserinfo
 void CL_UpdateUserinfo (void)
 {
 	int		slot;
+	qbool	was_empty_slot;
 	player_info_t	*player;
 
 	slot = MSG_ReadByte ();
@@ -1159,10 +1169,15 @@ void CL_UpdateUserinfo (void)
 		Host_Error ("CL_ParseServerMessage: svc_updateuserinfo > MAX_CLIENTS");
 
 	player = &cl.players[slot];
+	was_empty_slot = !player->name[0];
+
 	player->userid = MSG_ReadLong ();
 	strlcpy (player->userinfo, MSG_ReadString(), sizeof(player->userinfo));
 
 	CL_ProcessUserInfo (slot, player);
+
+	if (!player->name[0] && !was_empty_slot)
+		CL_PlayerLeaveSlot(player);
 }
 
 /*
@@ -1609,13 +1624,25 @@ void CL_MuzzleFlash (void)
 		return;
 	}
 
-	if (cl_muzzleflash.value == 2 && i-1 == cl.viewplayernum)
-		return;
+
+	if (i - 1 == cl.viewplayernum)
+	{
+		if (cl_muzzleflash.value == 2)
+			return;
+
+		VectorCopy (cl.simorg, origin);
+		VectorCopy (cl.simangles, angles);
+	}
+	else
+	{
+		state = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[i-1];
+		VectorCopy (state->origin, origin);
+		VectorCopy (state->viewangles, angles);
+	}
 
 	dl = CL_AllocDlight (-i);
-	state = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[i-1];
-	AngleVectors (state->viewangles, forward, NULL, NULL);
-	VectorMA (state->origin, 18, forward, dl->origin);
+	AngleVectors (angles, forward, NULL, NULL);
+	VectorMA (origin, 18, forward, dl->origin);
 	dl->radius = 200 + (rand()&31);
 	dl->minlight = 32;
 	dl->die = cl.time + 0.1;
