@@ -684,7 +684,7 @@ void CL_ParseServerData (void)
 	FILE	*f;
 	char	fn[MAX_OSPATH];
 	qbool	cflag = false;
-	int		protover;
+	int		i, protover;
 #ifdef MVDPLAY
 	extern float	nextdemotime, olddemotime;
 #endif
@@ -752,6 +752,8 @@ void CL_ParseServerData (void)
 		cls.netchan.last_received = nextdemotime = olddemotime = MSG_ReadFloat();
 		cl.playernum = MAX_CLIENTS - 1;
 		cl.spectator = true;
+		for (i = 0; i < UPDATE_BACKUP; i++)
+			cl.frames[i].playerstate[cl.playernum].pm_type = PM_SPECTATOR;
 	} else {
 #endif
 	// parse player slot, high bit means spectator
