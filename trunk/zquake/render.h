@@ -27,6 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MAX_PARTICLES			2048	// default max # of particles at one
 										// time
 
+// entity->renderfx
+#define RF_WEAPONMODEL	1
+
 //=============================================================================
 
 typedef struct efrag_s
@@ -44,7 +47,8 @@ typedef struct entity_s
 	struct model_s			*model;			// NULL = no model
 	int						frame;
 	byte					*colormap;
-	int						skinnum;		// for Alias models
+	int						skinnum;		// for alias models
+	int						renderfx;		// RF_WEAPONMODEL, etc
 
 	struct player_info_s	*scoreboard;	// identify player
 
@@ -103,6 +107,7 @@ typedef struct
 typedef struct {
 	float		time;
 	qbool		allowCheats;
+	qbool		allow_fbskins;
 	qbool		watervis;
 	int			numParticles;
 	particle_t	*particles;

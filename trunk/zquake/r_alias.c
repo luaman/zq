@@ -753,10 +753,9 @@ void R_AliasDrawModel (alight_t *plighting)
 
 	acolormap = currententity->colormap;
 
-	if (currententity != &cl.viewent)
-		ziscale = (float)0x8000 * (float)0x10000;
-	else
-		ziscale = (float)0x8000 * (float)0x10000 * 3.0;
+	ziscale = (float)0x8000 * (float)0x10000;
+	if (currententity->renderfx & RF_WEAPONMODEL)
+		ziscale *= 3.0;		// hack depth range to prevent model from poking into walls
 
 	if (currententity->trivial_accept)
 		R_AliasPrepareUnclippedPoints ();

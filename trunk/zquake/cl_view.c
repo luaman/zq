@@ -866,43 +866,47 @@ V_AddViewWeapon
 void V_AddViewWeapon (float bob)
 {
 	vec3_t		forward;
-	entity_t	*view;
+	entity_t	ent;
 	extern cvar_t	scr_fov;
 
-	view = &cl.viewent;
+	memset (&ent, 0, sizeof(ent));
 
 	if (!cl_drawgun.value || (cl_drawgun.value == 2 && scr_fov.value > 90)
 		|| view_message.flags & (PF_GIB|PF_DEAD)
 		|| (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)
 		|| !Cam_DrawViewModel())
 	{
- 		view->model = NULL;
+ 		ent.model = NULL;
 		return;
 	}
 
-	view->angles[YAW] = r_refdef.viewangles[YAW];
-	view->angles[PITCH] = -r_refdef.viewangles[PITCH];
-	view->angles[ROLL] = r_refdef.viewangles[ROLL];
+	ent.angles[YAW] = r_refdef.viewangles[YAW];
+	ent.angles[PITCH] = -r_refdef.viewangles[PITCH];
+	ent.angles[ROLL] = r_refdef.viewangles[ROLL];
 
 	AngleVectors (r_refdef.viewangles, forward, NULL, NULL);
 	
-	VectorCopy (r_refdef.vieworg, view->origin);
-	VectorMA (view->origin, bob * 0.4, forward, view->origin);
+	VectorCopy (r_refdef.vieworg, ent.origin);
+	VectorMA (ent.origin, bob * 0.4, forward, ent.origin);
 
 	// fudge position around to keep amount of weapon visible
 	// roughly equal with different FOV
 	if (scr_viewsize.value == 110)
-		view->origin[2] += 1;
+		ent.origin[2] += 1;
 	else if (scr_viewsize.value == 100)
-		view->origin[2] += 2;
+		ent.origin[2] += 2;
 	else if (scr_viewsize.value == 90)
-		view->origin[2] += 1;
+		ent.origin[2] += 1;
 	else if (scr_viewsize.value == 80)
-		view->origin[2] += 0.5;
+		ent.origin[2] += 0.5;
 
-	view->model = cl.model_precache[cl.stats[STAT_WEAPON]];
-	view->frame = view_message.weaponframe;
-	view->colormap = vid.colormap;
+	ent.model = cl.model_precache[cl.stats[STAT_WEAPON]];
+	ent.frame = view_message.weaponframe;
+	ent.colormap = vid.colormap;
+
+	ent.renderfx = RF_WEAPONMODEL;
+
+	V_AddEntity (&ent);
 }
 
 /*
@@ -917,9 +921,6 @@ void V_CalcIntermissionRefdef (void)
 
 	VectorCopy (cl.simorg, r_refdef.vieworg);
 	VectorCopy (cl.simangles, r_refdef.viewangles);
-
-// we don't draw weapon in intermission
-	cl.viewent.model = NULL;
 
 // always idle in intermission
 	old = v_idlescale;
@@ -1109,6 +1110,7 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 
 	r_refdef2.time = cl.time;
 //	r_refdef2.allowCheats = false;
+	r_refdef2.allow_fbskins = cl.allow_fbskins;
 	r_refdef2.watervis = (atoi(Info_ValueForKey(cl.serverinfo, "watervis")) != 0);
 
 	r_refdef2.numParticles = cl_numvisparticles;
