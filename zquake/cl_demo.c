@@ -1215,7 +1215,7 @@ try_again:
 	cls.findtrack = true;
 	cls.lasttype = 0;
 	cls.lastto = 0;
-	CL_ClearPredict();
+	MVD_ClearPredict();
 #endif
 }
 

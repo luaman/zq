@@ -1067,13 +1067,13 @@ void CL_Frame (double time)
 		if (old != nextdemotime) // FIXME: use oldparcecount != cl.parsecount?
 		{
 			old = nextdemotime;
-			CL_InitInterpolation(nextdemotime, olddemotime);
+			MVD_InitInterpolation(nextdemotime, olddemotime);
 		}
 
 		CL_ParseClientdata();
 		
 		cls.netchan.outgoing_sequence = cl.parsecount+1;
-		CL_Interpolate();
+		MVD_Interpolate();
 	}
 #endif
 

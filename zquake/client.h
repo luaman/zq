@@ -589,9 +589,9 @@ void CL_ParsePacketEntities (qbool delta);
 void CL_SetSolidEntities (void);
 void CL_ParsePlayerState (void);
 #ifdef MVDPLAY
-void CL_InitInterpolation(float cur, float old);
-void CL_ClearPredict(void);
-void CL_Interpolate(void);
+void MVD_InitInterpolation(float cur, float old);
+void MVD_ClearPredict(void);
+void MVD_Interpolate(void);
 #endif
 
 
@@ -626,9 +626,8 @@ void CL_InitCam (void);
 #ifdef MVDPLAY
 int Cam_TrackNum(void);
 void Cam_Lock(int playernum);
-void Cam_TryLock (void);
-void Cam_SetViewPlayer (void);
 #endif
+void Cam_TryLock (void);
 
 //
 // skin.c
