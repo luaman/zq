@@ -622,7 +622,7 @@ void GL_Init (void)
 //	Com_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	Cvar_Register (&gl_strings);
-	Cvar_SetROM (&gl_strings, va("GL_VENDOR: %s\nGL_RENDERER: %s\n"
+	Cvar_ForceSet (&gl_strings, va("GL_VENDOR: %s\nGL_RENDERER: %s\n"
 		"GL_VERSION: %s\nGL_EXTENSIONS: %s", gl_vendor, gl_renderer, gl_version, gl_extensions));
 
     if (strnicmp(gl_renderer,"PowerVR",7)==0)

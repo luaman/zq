@@ -21,12 +21,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 
-extern void CL_UserinfoChanged (char *key, char *value);
-extern void SV_ServerinfoChanged (char *key, char *value);
+extern void CL_UserinfoChanged (char *key, char *string);
+extern void SV_ServerinfoChanged (char *key, char *string);
 
 static cvar_t	*cvar_hash[32];
 /*static*/ cvar_t	*cvar_vars;
-static char		*cvar_null_string = "";
 
 
 /*
@@ -34,15 +33,15 @@ static char		*cvar_null_string = "";
 Cvar_FindVar
 ============
 */
-cvar_t *Cvar_FindVar (char *var_name)
+cvar_t *Cvar_FindVar (char *name)
 {
 	cvar_t	*var;
 	int		key;
 
-	key = Com_HashKey (var_name);
+	key = Com_HashKey (name);
 	
 	for (var=cvar_hash[key] ; var ; var=var->hash_next)
-		if (!Q_stricmp (var_name, var->name))
+		if (!Q_stricmp (name, var->name))
 			return var;
 
 	return NULL;
@@ -53,11 +52,9 @@ cvar_t *Cvar_FindVar (char *var_name)
 Cvar_VariableValue
 ============
 */
-float Cvar_VariableValue (char *var_name)
+float Cvar_VariableValue (char *name)
 {
-	cvar_t	*var;
-	
-	var = Cvar_FindVar (var_name);
+	cvar_t	*var = Cvar_FindVar (name);
 	if (!var)
 		return 0;
 	return Q_atof (var->string);
@@ -69,13 +66,11 @@ float Cvar_VariableValue (char *var_name)
 Cvar_VariableString
 ============
 */
-char *Cvar_VariableString (char *var_name)
+char *Cvar_VariableString (char *name)
 {
-	cvar_t *var;
-	
-	var = Cvar_FindVar (var_name);
+	cvar_t *var = Cvar_FindVar (name);
 	if (!var)
-		return cvar_null_string;
+		return "";
 	return var->string;
 }
 
@@ -133,7 +128,7 @@ int Cvar_CompleteCountPossible (char *partial)
 Cvar_Set
 ============
 */
-void Cvar_Set (cvar_t *var, char *value)
+void Cvar_Set (cvar_t *var, char *string)
 {
 	static qboolean	changing = false;
 
@@ -155,7 +150,7 @@ void Cvar_Set (cvar_t *var, char *value)
 
 	if (var->OnChange && !changing) {
 		changing = true;
-		if (var->OnChange(var, value)) {
+		if (var->OnChange(var, string)) {
 			changing = false;
 			return;
 		}
@@ -164,7 +159,7 @@ void Cvar_Set (cvar_t *var, char *value)
 
 	Z_Free (var->string);	// free the old value string
 	
-	var->string = CopyString (value);
+	var->string = CopyString (string);
 	var->value = Q_atof (var->string);
 
 #ifndef CLIENTONLY
@@ -180,10 +175,10 @@ void Cvar_Set (cvar_t *var, char *value)
 
 /*
 ============
-Cvar_SetROM
+Cvar_ForceSet
 ============
 */
-void Cvar_SetROM (cvar_t *var, char *value)
+void Cvar_ForceSet (cvar_t *var, char *string)
 {
 	int saved_flags;
 
@@ -192,7 +187,7 @@ void Cvar_SetROM (cvar_t *var, char *value)
 
 	saved_flags = var->flags;
 	var->flags &= ~CVAR_ROM;
-	Cvar_Set (var, value);
+	Cvar_Set (var, string);
 	var->flags = saved_flags;
 }
 
@@ -296,19 +291,19 @@ Handles variable inspection and changing from the console
 qboolean Cvar_Command (void)
 {
 	int			i, c;
-	cvar_t		*v;
+	cvar_t		*var;
 	char		string[1024];
 
 // check variables
-	v = Cvar_FindVar (Cmd_Argv(0));
-	if (!v)
+	var = Cvar_FindVar (Cmd_Argv(0));
+	if (!var)
 		return false;
 		
 // perform a variable print or set
 	c = Cmd_Argc();
 	if (c == 1)
 	{
-		Com_Printf ("\"%s\" is \"%s\"\n", v->name, v->string);
+		Com_Printf ("\"%s\" is \"%s\"\n", var->name, var->string);
 		return true;
 	}
 
@@ -320,7 +315,7 @@ qboolean Cvar_Command (void)
 		strcat (string, Cmd_Argv(i));
 	}
 
-	Cvar_Set (v, string);
+	Cvar_Set (var, string);
 	return true;
 }
 
@@ -403,27 +398,27 @@ Cvar_Create
 */
 cvar_t *Cvar_Create (char *name, char *string, int cvarflags)
 {
-	cvar_t		*v;
+	cvar_t		*var;
 	int			key;
 
-	v = Cvar_FindVar(name);
-	if (v)
-		return v;
-	v = (cvar_t *) Z_Malloc(sizeof(cvar_t));
-	// Cvar doesn't exist, so we create it
-	v->next = cvar_vars;
-	cvar_vars = v;
+	var = Cvar_FindVar(name);
+	if (var)
+		return var;
+
+	var = (cvar_t *) Z_Malloc(sizeof(cvar_t));
+	var->next = cvar_vars;
+	cvar_vars = var;
 
 	key = Com_HashKey (name);
-	v->hash_next = cvar_hash[key];
-	cvar_hash[key] = v;
+	var->hash_next = cvar_hash[key];
+	cvar_hash[key] = var;
 
-	v->name = CopyString (name);
-	v->string = CopyString (string);
-	v->flags = cvarflags;
-	v->value = Q_atof (v->string);
+	var->name = CopyString (name);
+	var->string = CopyString (string);
+	var->flags = cvarflags;
+	var->value = Q_atof (var->string);
 
-	return v;
+	return var;
 }
 
 /*
@@ -485,7 +480,7 @@ static qboolean cvar_seta = false;
 void Cvar_Set_f (void)
 {
 	cvar_t *var;
-	char *var_name;
+	char *name;
 
 	if (Cmd_Argc() != 3)
 	{
@@ -493,8 +488,8 @@ void Cvar_Set_f (void)
 		return;
 	}
 
-	var_name = Cmd_Argv (1);
-	var = Cvar_FindVar (var_name);
+	name = Cmd_Argv (1);
+	var = Cvar_FindVar (name);
 
 	if (var)
 	{
@@ -502,18 +497,18 @@ void Cvar_Set_f (void)
 	}
 	else
 	{
-		if (Cmd_Exists(var_name))
+		if (Cmd_Exists(name))
 		{
-			Com_Printf ("\"%s\" is a command\n", var_name);
+			Com_Printf ("\"%s\" is a command\n", name);
 			return;
 		}
 
 #if 0
 		// delete alias with the same name if it exists
-		Cmd_DeleteAlias (var_name);
+		Cmd_DeleteAlias (name);
 #endif
 
-		var = Cvar_Create (var_name, Cmd_Argv(2), CVAR_USER_CREATED);
+		var = Cvar_Create (name, Cmd_Argv(2), CVAR_USER_CREATED);
 	}
 
 	if (cvar_seta)
