@@ -94,62 +94,6 @@ void SV_EndRedirect (void)
 }
 
 
-#ifndef QW_BOTH
-/*
-================
-Con_Printf
-
-Handles cursor positioning, line wrapping, etc
-================
-*/
-#define	MAXPRINTMSG	4096
-// FIXME: make a buffer size safe vsprintf?
-void Con_Printf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-	
-	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
-	va_end (argptr);
-
-	// add to redirected message
-	if (sv_redirected)
-	{
-		if (strlen (msg) + strlen(outputbuf) > sizeof(outputbuf) - 1)
-			SV_FlushRedirect ();
-		strcat (outputbuf, msg);
-		return;
-	}
-
-	Sys_Printf ("%s", msg);	// also echo to debugging console
-	if (sv_logfile)
-		fprintf (sv_logfile, "%s", msg);
-}
-
-/*
-================
-Con_DPrintf
-
-A Con_Printf that only shows up if the "developer" cvar is set
-================
-*/
-void Con_DPrintf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-
-	if (!developer.value)
-		return;
-
-	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
-	va_end (argptr);
-	
-	Con_Printf ("%s", msg);
-}
-#endif	// QW_BOTH
-
 /*
 =============================================================================
 
