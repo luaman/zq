@@ -32,7 +32,6 @@ float	speedscale;		// for top sky and bottom sky
 
 msurface_t	*warpface;
 
-extern cvar_t gl_subdivide_size;
 
 void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
 {
