@@ -885,14 +885,20 @@ SV_RunNewmis
 void SV_RunNewmis (void)
 {
 	edict_t	*ent;
+	double save_frametime;
 
 	if (!pr_global_struct->newmis)
 		return;
+
 	ent = PROG_TO_EDICT(pr_global_struct->newmis);
-	sv_frametime = 0.05;
 	pr_global_struct->newmis = 0;
-	
-	SV_RunEntity (ent);		
+
+	save_frametime = sv_frametime;
+	sv_frametime = 0.05;
+
+	SV_RunEntity (ent);
+
+	sv_frametime = save_frametime;
 }
 
 /*
