@@ -863,7 +863,7 @@ qboolean CL_FilterTime (void)
 	}
 	else
 	{
-		fpscap = cl.maxfps ? bound (30.0, cl.maxfps, 120.0) : 72.0;
+		fpscap = cl.maxfps ? max (30.0, cl.maxfps) : 72.0;
 
 		if (cl_maxfps.value)
 			fps = bound (30.0, cl_maxfps.value, fpscap);
