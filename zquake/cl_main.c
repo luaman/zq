@@ -77,14 +77,16 @@ cvar_t	qizmo_dir = {"qizmo_dir", "qizmo"};
 //
 cvar_t	password = {"password", "", CVAR_USERINFO};
 cvar_t	spectator = {"spectator", "", CVAR_USERINFO};
-cvar_t	name = {"name","player", CVAR_ARCHIVE|CVAR_USERINFO};
-cvar_t	team = {"team","", CVAR_ARCHIVE|CVAR_USERINFO};
-cvar_t	skin = {"skin","", CVAR_ARCHIVE|CVAR_USERINFO};
+cvar_t	name = {"name", "player", CVAR_ARCHIVE|CVAR_USERINFO};
+cvar_t	team = {"team", "", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	topcolor = {"topcolor","0", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	bottomcolor = {"bottomcolor","0", CVAR_ARCHIVE|CVAR_USERINFO};
-cvar_t	rate = {"rate","2500", CVAR_ARCHIVE|CVAR_USERINFO};
-cvar_t	noaim = {"noaim","0", CVAR_ARCHIVE|CVAR_USERINFO};
-cvar_t	msg = {"msg","1", CVAR_ARCHIVE|CVAR_USERINFO};
+cvar_t	skin = {"skin", "", CVAR_ARCHIVE|CVAR_USERINFO};
+cvar_t	rate = {"rate", "2500", CVAR_ARCHIVE|CVAR_USERINFO};
+cvar_t	msg = {"msg", "1", CVAR_ARCHIVE|CVAR_USERINFO};
+cvar_t	noaim = {"noaim", "0", CVAR_ARCHIVE|CVAR_USERINFO};
+cvar_t	w_switch = {"w_switch", "", CVAR_ARCHIVE|CVAR_USERINFO};
+cvar_t	b_switch = {"b_switch", "", CVAR_ARCHIVE|CVAR_USERINFO};
 
 
 client_static_t	cls;
@@ -650,12 +652,11 @@ void CL_InitLocal (void)
 	Cvar_Register (&cl_maxfps);
 	Cvar_Register (&cl_timeout);
 	Cvar_Register (&cl_writecfg);
+	Cvar_Register (&cl_predictPlayers);
+	Cvar_Register (&cl_solidPlayers);
 
 	Cvar_Register (&rcon_password);
 	Cvar_Register (&rcon_address);
-
-	Cvar_Register (&cl_predictPlayers);
-	Cvar_Register (&cl_solidPlayers);
 
 	Cvar_Register (&localid);
 
@@ -683,23 +684,25 @@ void CL_InitLocal (void)
 	Cvar_Register (&default_fov);
 	Cvar_Register (&qizmo_dir);
 
-	//
-	// info mirrors
-	//
-	Cvar_Register (&name);
-	Cvar_Register (&password);
-	Cvar_Register (&spectator);
-	Cvar_Register (&skin);
-	Cvar_Register (&team);
-	Cvar_Register (&topcolor);
-	Cvar_Register (&bottomcolor);
-	Cvar_Register (&rate);
-	Cvar_Register (&msg);
-	Cvar_Register (&noaim);
-
 #ifndef RELEASE_VERSION
 	Info_SetValueForStarKey (cls.userinfo, "*z_ver", Z_VERSION, MAX_INFO_STRING);
 #endif
+
+	//
+	// info mirrors
+	//
+	Cvar_Register (&password);
+	Cvar_Register (&spectator);
+	Cvar_Register (&name);
+	Cvar_Register (&team);
+	Cvar_Register (&topcolor);
+	Cvar_Register (&bottomcolor);
+	Cvar_Register (&skin);
+	Cvar_Register (&rate);
+	Cvar_Register (&msg);
+	Cvar_Register (&noaim);
+	Cvar_Register (&w_switch);
+	Cvar_Register (&b_switch);
 
 	CL_InitCommands ();
 
