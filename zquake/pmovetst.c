@@ -24,6 +24,32 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern	vec3_t player_mins;
 extern	vec3_t player_maxs;
 
+
+static void PM_TraceBounds (vec3_t start, vec3_t end, vec3_t boxmins, vec3_t boxmaxs)
+{
+	int i;
+
+	for (i = 0; i < 3; i++) {
+		if (end[i] > start[i]) {
+			boxmins[i] = start[i] - 1;
+			boxmaxs[i] = end[i] + 1;
+		} else {
+			boxmins[i] = end[i] - 1;
+			boxmaxs[i] = start[i] + 1;
+		}
+	}
+}
+
+static qbool PM_CullTraceBox (vec3_t mins, vec3_t maxs, vec3_t offset, vec3_t emins, vec3_t emaxs, vec3_t hullmins, vec3_t hullmaxs)
+{
+	return
+	(	mins[0] > offset[0] + emaxs[0] + hullmaxs[0] || maxs[0] < offset[0] + emins[0] + hullmins[0] ||
+		mins[1] > offset[1] + emaxs[1] + hullmaxs[1] || maxs[1] < offset[1] + emins[1] + hullmins[1] ||
+		mins[2] > offset[2] + emaxs[2] + hullmaxs[2] || maxs[2] < offset[2] + emins[2] + hullmins[2]
+	);
+}
+
+
 /*
 ==================
 PM_PointContents
@@ -89,13 +115,15 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 	hull_t		*hull;
 	int			i;
 	physent_t	*pe;
-	vec3_t		mins, maxs;
+	vec3_t		mins, maxs, tracemins, tracemaxs;
 
 // fill in a default trace
 	memset (&total, 0, sizeof(trace_t));
 	total.fraction = 1;
 	total.e.entnum = -1;
 	VectorCopy (end, total.endpos);
+
+	PM_TraceBounds(start, end, tracemins, tracemaxs);
 
 	for (i=0 ; i< pmove.numphysent ; i++)
 	{
@@ -105,6 +133,10 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 		if (pe->model)
 		{
 			hull = &pmove.physents[i].model->hulls[1];
+
+			if (PM_CullTraceBox(tracemins, tracemaxs, pe->origin, pe->model->mins, pe->model->maxs, hull->clip_mins, hull->clip_maxs))
+				continue;
+
 			VectorSubtract (hull->clip_mins, player_mins, offset);
 			VectorAdd (offset, pe->origin, offset);
 		}
@@ -113,6 +145,11 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 			VectorSubtract (pe->mins, player_maxs, mins);
 			VectorSubtract (pe->maxs, player_mins, maxs);
 			hull = CM_HullForBox (mins, maxs);
+
+			// (clip_mins/maxs will be zero, but that's what we want)
+			if (PM_CullTraceBox(tracemins, tracemaxs, pe->origin, pe->model->mins, pe->model->maxs, hull->clip_mins, hull->clip_maxs))
+				continue;
+
 			VectorCopy (pe->origin, offset);
 		}
 
