@@ -474,7 +474,8 @@ void R_DrawParticles (void)
 	GL_Bind(particletexture);
 	
 	glEnable (GL_BLEND);
-	glDepthMask (GL_FALSE);
+	if (!gl_solidparticles.value)
+		glDepthMask (GL_FALSE);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBegin (GL_TRIANGLES);
 

@@ -106,6 +106,7 @@ cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
 cvar_t	gl_fb_models = {"gl_fb_models","1"};
 cvar_t	gl_colorlights = {"gl_colorlights","1"};
 cvar_t	gl_lightmode = {"gl_lightmode","2"};
+cvar_t	gl_solidparticles = {"gl_solidparticles", "0"};
 
 int		lightmode = 2;
 
@@ -1113,9 +1114,6 @@ void R_Init (void)
 	Cvar_Register (&gl_subdivide_size);
 	Cvar_Register (&gl_clear);
 	Cvar_Register (&gl_texsort);
- 	if (gl_mtexable)
-		Cvar_SetValue (&gl_texsort, 0);
-
 	Cvar_Register (&gl_cull);
 	Cvar_Register (&gl_ztrick);
 	Cvar_Register (&gl_smoothmodels);
@@ -1130,8 +1128,17 @@ void R_Init (void)
 	Cvar_Register (&gl_fb_models);
 	Cvar_Register (&gl_colorlights);
 	Cvar_Register (&gl_lightmode);
-
 	Cvar_Register (&gl_keeptjunctions);
+	Cvar_Register (&gl_solidparticles);
+
+	// assume gl_texsort 0 is faster if the card supports multitexture
+ 	if (gl_mtexable)
+		Cvar_SetValue (&gl_texsort, 0);
+
+	// this minigl driver seems to slow us down if the particles
+	// are drawn WITHOUT Z buffer bits
+	if (!strcmp(gl_vendor, "METABYTE/WICKED3D"))
+		Cvar_SetValue(&gl_solidparticles, 1);
 
 	R_InitTextures ();
 	R_InitBubble ();
