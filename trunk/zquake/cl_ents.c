@@ -166,15 +166,20 @@ static void UpdateEntities (void)
 	for (i = 0; i < pack->num_entities; i++) {
 		ent = &pack->entities[i];
 		cent = &cl_entities[ent->number];
-		cent->previous = cent->current;
-		cent->current = *ent;
+
 		cent->prevframe = cent->lastframe;
 		cent->lastframe = cl_entframecount;
 
-		if (cent->prevframe != cl_oldentframecount) {
+		if (cent->prevframe == cl_oldentframecount) {
+			// move along, move along
+			cent->previous = cent->current;
+		} else {
 			// not in previous message
+			cent->previous = *ent;
 			VectorCopy (cent->current.origin, cent->lerp_origin);
 		}
+
+		cent->current = *ent;
 	}
 }
 
@@ -364,9 +369,9 @@ void CL_ParsePacketEntities (qboolean delta)
 }
 
 
-extern	int		cl_playerindex; 
-extern	int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
-extern	int		cl_rocketindex, cl_grenadeindex;
+extern int	cl_playerindex; 
+extern int	cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
+extern int	cl_rocketindex, cl_grenadeindex;
 
 /*
 ===============
