@@ -577,7 +577,7 @@ void PM_CategorizePosition (void)
 // if the player hull point one unit down is solid, the player
 // is on ground
 
-// see if standing on something solid	
+// see if standing on something solid
 	point[0] = pmove.origin[0];
 	point[1] = pmove.origin[1];
 	point[2] = pmove.origin[2] - 1;
@@ -590,17 +590,12 @@ void PM_CategorizePosition (void)
 		trace = PM_PlayerMove (pmove.origin, point);
 		if (trace.fraction == 1 || trace.plane.normal[2] < MIN_STEP_NORMAL)
 			pmove.onground = false;
-		else {
+		else
+		{
 			pmove.onground = true;
 			pmove.groundent = trace.ent;
 			groundplane = trace.plane;
-		}
-
-		if (pmove.onground)
-		{
 			pmove.waterjumptime = 0;
-			if (!trace.startsolid && !trace.allsolid)
-				VectorCopy (trace.endpos, pmove.origin);
 		}
 
 		// standing on an entity other than the world
@@ -619,7 +614,7 @@ void PM_CategorizePosition (void)
 	pmove.waterlevel = 0;
 	pmove.watertype = CONTENTS_EMPTY;
 
-	point[2] = pmove.origin[2] + player_mins[2] + 1;	
+	point[2] = pmove.origin[2] + player_mins[2] + 1;
 	cont = PM_PointContents (point);
 
 	if (cont <= CONTENTS_WATER)
@@ -636,6 +631,13 @@ void PM_CategorizePosition (void)
 			if (cont <= CONTENTS_WATER)
 				pmove.waterlevel = 3;
 		}
+	}
+
+	// snap to ground unless underwater
+	if (pmove.onground && pmove.waterlevel < 3)
+	{
+		if (!trace.startsolid && !trace.allsolid)
+			VectorCopy (trace.endpos, pmove.origin);
 	}
 }
 
