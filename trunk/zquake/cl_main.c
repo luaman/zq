@@ -314,7 +314,7 @@ void CL_ClearState (void)
 	memset (cl_efrags, 0, sizeof(cl_efrags));
 	memset (cl_dlights, 0, sizeof(cl_dlights));
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
-	
+
 //
 // allocate the efrags and chain together into a free list
 //
@@ -753,7 +753,6 @@ void CL_Init (void)
 	Cmd_AddCommand ("disconnect", CL_Disconnect_f);
 	Cmd_AddCommand ("connect", CL_Connect_f);
 	Cmd_AddCommand ("reconnect", CL_Reconnect_f);
-	Cmd_AddCommand ("writecfg", Host_WriteConfiguration);
 
 	SList_Init();
 	SList_Load();
@@ -1110,7 +1109,7 @@ void Host_Init (quakeparms_t *parms)
 
 	Cbuf_InsertText ("exec quake.rc\n");
 //	Cbuf_AddText ("echo Type connect <internet address> or use GameSpy to connect to a game.\n");
-//	Cbuf_AddText ("cl_warncmd 1\n");
+	Cbuf_AddText ("cl_warncmd 1\n");
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
@@ -1124,7 +1123,6 @@ void Host_Init (quakeparms_t *parms)
 #endif
 
 	Con_Printf ("ÄÅÅÅÅÅÅ QuakeWorld Initialized ÅÅÅÅÅÅÇ\n");	
-	key_dest = key_console;
 }
 
 
