@@ -2176,6 +2176,13 @@ void SV_ExecuteClientMessage (client_t *cl)
 	byte	checksum, calculatedChecksum;
 	int		seq_hash;
 
+	if (!Netchan_Process(&cl->netchan) || cl->state == cs_zombie)
+		return;
+
+	svs.stats.packets++;
+
+	cl->send_message = true;	// reply at end of frame
+
 	// calc ping time
 	frame = &cl->frames[cl->netchan.incoming_acknowledged & UPDATE_MASK];
 	frame->ping_time = svs.realtime - frame->senttime;
