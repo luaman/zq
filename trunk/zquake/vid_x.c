@@ -689,6 +689,9 @@ void VID_Shutdown (void)
 {
 	static void uninstall_grabs ();
 
+	if (!x_disp)
+		return;
+
 	Com_Printf ("VID_Shutdown\n");
 	
 	uninstall_grabs();
