@@ -48,8 +48,8 @@ netadr_t	master_adr[MAX_MASTERS];	// address of group servers
 
 client_t	*host_client;			// current client
 
-#if 0	// #ifdef QW_BOTH
-cvar_t	sv_mintic = {"sv_mintic","0.014"};	//
+#ifdef QW_BOTH
+cvar_t	sv_mintic = {"sv_mintic","0"};		//
 #else										//
 cvar_t	sv_mintic = {"sv_mintic","0.03"};	// bound the size of the
 #endif										// physics time tic 
