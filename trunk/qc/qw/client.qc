@@ -1229,272 +1229,270 @@ ClientObituary
 called when a player dies
 ============
 */
-
 void ClientObituary (entity targ, entity attacker)
 {
 	float	rnum;
 	string	deathstring, deathstring2;
 	string	attackerteam, targteam;
 
+	if (targ.classname != "player")
+		return;
+
 	rnum = random();
 	//ZOID 12-13-96: self.team doesn't work in QW.  Use keys
 	attackerteam = infokey(attacker, "team");
 	targteam = infokey(targ, "team");
 
-	if (targ.classname == "player")
+	if (deathmatch > 3)	
 	{
-
-		if (deathmatch > 3)	
+		if (targ.deathtype == "selfwater")
 		{
-			if (targ.deathtype == "selfwater")
-			{
-				bprint (PRINT_MEDIUM, targ.netname, " electrocutes himself.\n ");
-				targ.frags = targ.frags - 1;
-				return;
-			}
-		}
-
-		if (attacker.classname == "teledeath")
-		{
-			bprint (PRINT_MEDIUM, targ.netname, " was telefragged by ",
-						attacker.owner.netname, "\n");
-			logfrag (attacker.owner, targ);
-
-			attacker.owner.frags = attacker.owner.frags + 1;
-			return;
-		}
-
-		if (attacker.classname == "teledeath2")
-		{
-			bprint (PRINT_MEDIUM, "Satan's power deflects ", targ.netname, "'s telefrag\n");
+			bprint (PRINT_MEDIUM, targ.netname, " electrocutes himself.\n ");
 			targ.frags = targ.frags - 1;
-			logfrag (targ, targ);
 			return;
 		}
+	}
 
-		// double 666 telefrag (can happen often in deathmatch 4)
-		if (attacker.classname == "teledeath3") 
+	if (attacker.classname == "teledeath")
+	{
+		bprint (PRINT_MEDIUM, targ.netname, " was telefragged by ",
+					attacker.owner.netname, "\n");
+		logfrag (attacker.owner, targ);
+
+		attacker.owner.frags = attacker.owner.frags + 1;
+		return;
+	}
+
+	if (attacker.classname == "teledeath2")
+	{
+		bprint (PRINT_MEDIUM, "Satan's power deflects ", targ.netname, "'s telefrag\n");
+		targ.frags = targ.frags - 1;
+		logfrag (targ, targ);
+		return;
+	}
+
+	// double 666 telefrag (can happen often in deathmatch 4)
+	if (attacker.classname == "teledeath3") 
+	{
+		bprint (PRINT_MEDIUM, targ.netname, " was telefragged by ",
+					attacker.owner.netname, "'s Satan's power\n");
+		targ.frags = targ.frags - 1;
+		logfrag (targ, targ);
+		return;
+	}
+
+
+	if (targ.deathtype == "squish")
+	{
+		if (teamplay && targteam == attackerteam && attackerteam != "" && targ != attacker)
 		{
-			bprint (PRINT_MEDIUM, targ.netname, " was telefragged by ",
-						attacker.owner.netname, "'s Satan's power\n");
-			targ.frags = targ.frags - 1;
-			logfrag (targ, targ);
+			logfrag (attacker, attacker);
+			attacker.frags = attacker.frags - 1; 
+			bprint (PRINT_MEDIUM, attacker.netname, " squished a teammate\n");
 			return;
 		}
-	
-
-		if (targ.deathtype == "squish")
+		else if (attacker.classname == "player" && attacker != targ)
 		{
-			if (teamplay && targteam == attackerteam && attackerteam != "" && targ != attacker)
-			{
-				logfrag (attacker, attacker);
-				attacker.frags = attacker.frags - 1; 
-				bprint (PRINT_MEDIUM, attacker.netname, " squished a teammate\n");
-				return;
-			}
-			else if (attacker.classname == "player" && attacker != targ)
-			{
-				bprint (PRINT_MEDIUM, attacker.netname, " squishes ",
-							targ.netname, "\n");
-				logfrag (attacker, targ);
-				attacker.frags = attacker.frags + 1;
-				return;
-			}
-			else
-			{
-				logfrag (targ, targ);
-				targ.frags = targ.frags - 1;            // killed self
-				bprint (PRINT_MEDIUM, targ.netname, " was squished\n");
-				return;
-			}
-		}
-
-		if (attacker.classname == "player")
-		{
-			if (targ == attacker)
-			{
-				// killed self
-				logfrag (attacker, attacker);
-				attacker.frags = attacker.frags - 1;
-				if (targ.deathtype == "grenade")
-					bprint (PRINT_MEDIUM, targ.netname, " tries to put the pin back in\n");
-				else if (targ.deathtype == "rocket")
-					bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
-				else if (targ.weapon == 64 && targ.waterlevel > 1)
-				{
-					if (targ.watertype == CONTENT_SLIME)
-						bprint (PRINT_MEDIUM, targ.netname, " discharges into the slime\n");
-					else if (targ.watertype == CONTENT_LAVA)
-						bprint (PRINT_MEDIUM, targ.netname, " discharges into the lava\n");
-					else
-						bprint (PRINT_MEDIUM, targ.netname, " discharges into the water.\n");
-				}
-				else
-					bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
-				return;
-			}
-			else if ( (teamplay == 2) && (targteam == attackerteam) &&
-				(attackerteam != "") )
-			{
-				if (rnum < 0.25)
-					deathstring = " mows down a teammate\n";
-				else if (rnum < 0.50)
-					deathstring = " checks his glasses\n";
-				else if (rnum < 0.75)
-					deathstring = " gets a frag for the other team\n";
-				else
-					deathstring = " loses another friend\n";
-				bprint (PRINT_MEDIUM, attacker.netname, deathstring);
-				attacker.frags = attacker.frags - 1;
-				//ZOID 12-13-96:  killing a teammate logs as suicide
-				logfrag (attacker, attacker);
-				return;
-			}
-			else
-			{
-				logfrag (attacker, targ);
-				attacker.frags = attacker.frags + 1;
-
-				rnum = attacker.weapon;
-				if (targ.deathtype == "nail")
-				{
-					deathstring = " was nailed by ";
-					deathstring2 = "\n";
-				}
-				else if (targ.deathtype == "supernail")
-				{
-					deathstring = " was punctured by ";
-					deathstring2 = "\n";
-				}
-				else if (targ.deathtype == "grenade")
-				{
-					deathstring = " eats ";
-					deathstring2 = "'s pineapple\n";
-					if (targ.health < -40)
-					{
-						deathstring = " was gibbed by ";
-						deathstring2 = "'s grenade\n";
-					}
-				}
-				else if (targ.deathtype == "rocket")
-				{
-					if (attacker.super_damage_finished > 0 && targ.health < -40)
-					{
-						rnum = random();
-						if (rnum < 0.3)
-							deathstring = " was brutalized by ";
-						else if (rnum < 0.6)
-							deathstring = " was smeared by ";
-						else
-						{
-							bprint (PRINT_MEDIUM, attacker.netname, " rips ",
-								targ.netname, " a new one\n");
-							return;
-						}
-						deathstring2 = "'s quad rocket\n";
-					}
-					else
-					{
-						deathstring = " rides ";
-						deathstring2 = "'s rocket\n";
-						if (targ.health < -40)
-						{
-							deathstring = " was gibbed by ";
-							deathstring2 = "'s rocket\n" ;
-						}
-					}
-				}
-				else if (rnum == IT_AXE)
-				{
-					deathstring = " was ax-murdered by ";
-					deathstring2 = "\n";
-				}
-				else if (rnum == IT_SHOTGUN)
-				{
-					deathstring = " chewed on ";
-					deathstring2 = "'s boomstick\n";
-				}
-				else if (rnum == IT_SUPER_SHOTGUN)
-				{
-					deathstring = " ate 2 loads of ";
-					deathstring2 = "'s buckshot\n";
-				}
-				else if (rnum == IT_LIGHTNING)
-				{
-					deathstring = " accepts ";
-					if (attacker.waterlevel > 1)
-						deathstring2 = "'s discharge\n";
-					else
-						deathstring2 = "'s shaft\n";
-				}
-				bprint (PRINT_MEDIUM, targ.netname, deathstring,
-										attacker.netname, deathstring2);
-			}
+			bprint (PRINT_MEDIUM, attacker.netname, " squishes ",
+						targ.netname, "\n");
+			logfrag (attacker, targ);
+			attacker.frags = attacker.frags + 1;
 			return;
 		}
 		else
 		{
 			logfrag (targ, targ);
 			targ.frags = targ.frags - 1;            // killed self
-			rnum = targ.watertype;
+			bprint (PRINT_MEDIUM, targ.netname, " was squished\n");
+			return;
+		}
+	}
 
-			if (rnum == -3)
+	if (attacker.classname == "player")
+	{
+		if (targ == attacker)
+		{
+			// killed self
+			logfrag (attacker, attacker);
+			attacker.frags = attacker.frags - 1;
+			if (targ.deathtype == "grenade")
+				bprint (PRINT_MEDIUM, targ.netname, " tries to put the pin back in\n");
+			else if (targ.deathtype == "rocket")
+				bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
+			else if (targ.weapon == 64 && targ.waterlevel > 1)
 			{
-				if (random() < 0.5)
-					deathstring = " sleeps with the fishes\n";
+				if (targ.watertype == CONTENT_SLIME)
+					bprint (PRINT_MEDIUM, targ.netname, " discharges into the slime\n");
+				else if (targ.watertype == CONTENT_LAVA)
+					bprint (PRINT_MEDIUM, targ.netname, " discharges into the lava\n");
 				else
-					deathstring = " sucks it down\n";
-			}
-			else if (rnum == -4)
-			{
-				if (random() < 0.5)
-					deathstring = " gulped a load of slime\n";
-				else
-					deathstring = " can't exist on slime alone\n";
-			}
-			else if (rnum == -5)
-			{
-				if (targ.health < -15)
-					deathstring = " burst into flames\n";
-				else if (random() < 0.5)
-					deathstring = " turned into hot slag\n";
-				else
-					deathstring = " visits the Volcano God\n";
-			}
-			else if (attacker.classname == "explo_box")
-			{
-				deathstring = " blew up\n";
-			}
-			else if (targ.deathtype == "falling")
-			{
-				deathstring = " fell to his death\n";
-			}
-			else if (targ.deathtype == "nail" || targ.deathtype == "supernail")
-			{
-				deathstring = " was spiked\n";
-			}
-			else if (targ.deathtype == "laser")
-			{
-				deathstring = " was zapped\n";
-			}
-			else if (attacker.classname == "fireball")
-			{
-				deathstring = " ate a lavaball\n";
-			}
-			else if (attacker.classname == "trigger_changelevel")
-			{
-				deathstring = " tried to leave\n";
-			}
-			else if (attacker.flags & FL_MONSTER)
-			{
-				deathstring = ObituaryForMonster(attacker.classname);
+					bprint (PRINT_MEDIUM, targ.netname, " discharges into the water.\n");
 			}
 			else
-			{
-				deathstring = " died\n";
-			}
-
-			bprint (PRINT_MEDIUM, targ.netname, deathstring);
+				bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
+			return;
 		}
+		else if ( (teamplay == 2) && (targteam == attackerteam) &&
+			(attackerteam != "") )
+		{
+			if (rnum < 0.25)
+				deathstring = " mows down a teammate\n";
+			else if (rnum < 0.50)
+				deathstring = " checks his glasses\n";
+			else if (rnum < 0.75)
+				deathstring = " gets a frag for the other team\n";
+			else
+				deathstring = " loses another friend\n";
+			bprint (PRINT_MEDIUM, attacker.netname, deathstring);
+			attacker.frags = attacker.frags - 1;
+			//ZOID 12-13-96:  killing a teammate logs as suicide
+			logfrag (attacker, attacker);
+			return;
+		}
+		else
+		{
+			logfrag (attacker, targ);
+			attacker.frags = attacker.frags + 1;
+
+			rnum = attacker.weapon;
+			if (targ.deathtype == "nail")
+			{
+				deathstring = " was nailed by ";
+				deathstring2 = "\n";
+			}
+			else if (targ.deathtype == "supernail")
+			{
+				deathstring = " was punctured by ";
+				deathstring2 = "\n";
+			}
+			else if (targ.deathtype == "grenade")
+			{
+				deathstring = " eats ";
+				deathstring2 = "'s pineapple\n";
+				if (targ.health < -40)
+				{
+					deathstring = " was gibbed by ";
+					deathstring2 = "'s grenade\n";
+				}
+			}
+			else if (targ.deathtype == "rocket")
+			{
+				if (attacker.super_damage_finished > 0 && targ.health < -40)
+				{
+					rnum = random();
+					if (rnum < 0.3)
+						deathstring = " was brutalized by ";
+					else if (rnum < 0.6)
+						deathstring = " was smeared by ";
+					else
+					{
+						bprint (PRINT_MEDIUM, attacker.netname, " rips ",
+							targ.netname, " a new one\n");
+						return;
+					}
+					deathstring2 = "'s quad rocket\n";
+				}
+				else
+				{
+					deathstring = " rides ";
+					deathstring2 = "'s rocket\n";
+					if (targ.health < -40)
+					{
+						deathstring = " was gibbed by ";
+						deathstring2 = "'s rocket\n" ;
+					}
+				}
+			}
+			else if (rnum == IT_AXE)
+			{
+				deathstring = " was ax-murdered by ";
+				deathstring2 = "\n";
+			}
+			else if (rnum == IT_SHOTGUN)
+			{
+				deathstring = " chewed on ";
+				deathstring2 = "'s boomstick\n";
+			}
+			else if (rnum == IT_SUPER_SHOTGUN)
+			{
+				deathstring = " ate 2 loads of ";
+				deathstring2 = "'s buckshot\n";
+			}
+			else if (rnum == IT_LIGHTNING)
+			{
+				deathstring = " accepts ";
+				if (attacker.waterlevel > 1)
+					deathstring2 = "'s discharge\n";
+				else
+					deathstring2 = "'s shaft\n";
+			}
+			bprint (PRINT_MEDIUM, targ.netname, deathstring,
+									attacker.netname, deathstring2);
+		}
+		return;
+	}
+	else
+	{
+		logfrag (targ, targ);
+		targ.frags = targ.frags - 1;            // killed self
+		rnum = targ.watertype;
+
+		if (rnum == -3)
+		{
+			if (random() < 0.5)
+				deathstring = " sleeps with the fishes\n";
+			else
+				deathstring = " sucks it down\n";
+		}
+		else if (rnum == -4)
+		{
+			if (random() < 0.5)
+				deathstring = " gulped a load of slime\n";
+			else
+				deathstring = " can't exist on slime alone\n";
+		}
+		else if (rnum == -5)
+		{
+			if (targ.health < -15)
+				deathstring = " burst into flames\n";
+			else if (random() < 0.5)
+				deathstring = " turned into hot slag\n";
+			else
+				deathstring = " visits the Volcano God\n";
+		}
+		else if (attacker.classname == "explo_box")
+		{
+			deathstring = " blew up\n";
+		}
+		else if (targ.deathtype == "falling")
+		{
+			deathstring = " fell to his death\n";
+		}
+		else if (targ.deathtype == "nail" || targ.deathtype == "supernail")
+		{
+			deathstring = " was spiked\n";
+		}
+		else if (targ.deathtype == "laser")
+		{
+			deathstring = " was zapped\n";
+		}
+		else if (attacker.classname == "fireball")
+		{
+			deathstring = " ate a lavaball\n";
+		}
+		else if (attacker.classname == "trigger_changelevel")
+		{
+			deathstring = " tried to leave\n";
+		}
+		else if (attacker.flags & FL_MONSTER)
+		{
+			deathstring = ObituaryForMonster(attacker.classname);
+		}
+		else
+		{
+			deathstring = " died\n";
+		}
+
+		bprint (PRINT_MEDIUM, targ.netname, deathstring);
 	}
 }
