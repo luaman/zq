@@ -562,14 +562,17 @@ void PM_AirMove (void)
 	
 	if (pmove.onground)
 	{
-		if (movevars.slidefix) {
+		if (movevars.slidefix)
+		{
 			pmove.velocity[2] = min(pmove.velocity[2], 0);	// bound above by 0
-			PM_Accelerate(wishdir, wishspeed, movevars.accelerate);
+			PM_Accelerate (wishdir, wishspeed, movevars.accelerate);
 			// add gravity
 			pmove.velocity[2] -= movevars.entgravity * movevars.gravity * pm_frametime;
-		} else {
+		}
+		else
+		{
 			pmove.velocity[2] = 0;
-			PM_Accelerate(wishdir, wishspeed, movevars.accelerate);
+			PM_Accelerate (wishdir, wishspeed, movevars.accelerate);
 		}
 
 		if (!pmove.velocity[0] && !pmove.velocity[1]) {
