@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <libc.h>
 #endif
 
-#if defined(__linux__) || defined(sun) || defined(darwin)
+#if defined(__linux__) || defined(sun) || defined(darwin) || defined(unix)
 #include <sys/stat.h>
 #include <unistd.h>
 #include <sys/time.h>
@@ -221,7 +221,7 @@ void Sys_Init (void)
 main
 =============
 */
-void main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
 	double	time, oldtime, newtime;
 
@@ -247,5 +247,6 @@ void main (int argc, char *argv[])
 		if (sys_extrasleep.value)
 			usleep (sys_extrasleep.value);
 	}	
+	return (0);
 }
 
