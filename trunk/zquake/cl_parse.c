@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 void R_TranslatePlayerSkin (int playernum);
+void R_SetSky (char *name);
 
 
 char *svc_strings[] =
@@ -273,6 +274,10 @@ void Model_NextDownload (void)
 	if (!cl.worldmodel)
 		Host_Error ("Model_NextDownload: NULL worldmodel");
 	R_NewMap ();
+#ifdef GLQUAKE
+	if (cl.sky[0])
+		R_SetSky (cl.sky);
+#endif
 	TP_NewMap ();
 	Hunk_Check ();		// make sure nothing is hurt
 
@@ -1205,6 +1210,13 @@ void CL_ProcessServerInfo (void)
 			for (i = 0; i < MAX_CLIENTS ; i++)
 				CL_NewTranslation (i);
 		}
+	}
+
+	if (cls.state < ca_active)
+	{
+		strcpy (cl.sky, Info_ValueForKey(cl.serverinfo, "sky"));
+		if (strstr(cl.sky, ".."))
+			cl.sky[0] = 0;
 	}
 }
 
