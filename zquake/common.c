@@ -767,30 +767,41 @@ char *COM_FileExtension (char *in)
 /*
 ============
 COM_FileBase
+
+Extract file name without extension, to be used for hunk tags
+(up to 32 characters, including trailing zero)
 ============
 */
 void COM_FileBase (char *in, char *out)
 {
-	char *s, *s2;
+	char *p, *start, *end;
+	int	length;
+
+	end = in + strlen(in);
+	start = in;
+
+	for (p = end-1 ; p > in ; p--)
+	{
+		if (*p == '.')
+			end = p;
+		else if (*p == '/')
+		{
+			start = p + 1;
+			break;
+		}
+	}
 	
-	s = in + strlen(in) - 1;
-	
-	while (s != in && *s != '.')
-		s--;
-	
-	for (s2 = s ; *s2 && *s2 != '/' ; s2--)
-	;
-	
-	if (s-s2 < 2)
-		strcpy (out,"?model?");
+	length = end - start;
+	if (length <= 0)
+		strcpy (out, "?empty filename?");
 	else
 	{
-		s--;
-		strncpy (out,s2+1, s-s2);
-		out[s-s2] = 0;
+		if (length > 31)
+			length = 31;
+		memcpy (out, start, length);
+		out[length] = 0;
 	}
 }
-
 
 /*
 ==================
