@@ -676,7 +676,7 @@ void R_LoadSkys (void)
 	{
 		GL_Bind (SKY_TEX + i);
 		sprintf (name, "gfx/env/bkgtst%s.tga", suf[i]);
-		COM_FOpenFile (name, &f);
+		FS_FOpenFile (name, &f);
 		if (!f)
 		{
 			Com_Printf ("Couldn't load %s\n", name);

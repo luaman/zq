@@ -1269,7 +1269,7 @@ static void CheckSPGame (void)
 {
 	FILE	*f;
 
-	COM_FOpenFile ("spprogs.dat", &f);
+	FS_FOpenFile ("spprogs.dat", &f);
 	if (f) {
 		fclose (f);
 		m_singleplayer_notavail = false;
