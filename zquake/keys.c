@@ -731,7 +731,7 @@ int Key_StringToKeynum (char *str)
 	if (!str || !str[0])
 		return -1;
 	if (!str[1])
-		return str[0];
+		return (int)(unsigned char)str[0];
 
 	for (kn=keynames ; kn->name ; kn++)
 	{
