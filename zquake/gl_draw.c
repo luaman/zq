@@ -32,8 +32,8 @@ cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_conalpha = {"gl_conalpha", "0.8"};
 
 byte		*draw_chars;				// 8*8 graphic characters
-qpic_t		*draw_disc;
-qpic_t		*draw_backtile;
+mpic_t		*draw_disc;
+mpic_t		*draw_backtile;
 
 int			translate_texture;
 int			char_texture;
@@ -69,16 +69,10 @@ static byte crosshairdata[3][64] = {
 };
 
 
-typedef struct
-{
-	int		texnum;
-	float	sl, tl, sh, th;
-} glpic_t;
+int GL_LoadPicTexture (mpic_t *pic, byte *data);
 
-int GL_LoadPicTexture (qpic_t *pic, byte *data);
-
-byte		conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
-qpic_t		*conback = (qpic_t *)&conback_buffer;
+mpic_t	conback_data;
+mpic_t	*conback = &conback_data;
 
 int		gl_lightmap_format = 4;
 int		gl_solid_format = 3;
@@ -200,8 +194,7 @@ void Scrap_Upload (void)
 typedef struct cachepic_s
 {
 	char		name[MAX_QPATH];
-	qpic_t		pic;
-	byte		padding[32];	// for appended glpic
+	mpic_t		pic;
 } cachepic_t;
 
 #define	MAX_CACHED_PICS		128
@@ -213,13 +206,13 @@ byte		menuplyr_pixels[4096];
 int		pic_texels;
 int		pic_count;
 
-qpic_t *Draw_PicFromWad (char *name)
+mpic_t *Draw_PicFromWad (char *name)
 {
 	qpic_t	*p;
-	glpic_t	*gl;
+	mpic_t	*pic;
 
 	p = W_GetLumpName (name);
-	gl = (glpic_t *)p->data;
+	pic = (mpic_t *)p;
 
 	// load little ones into the scrap
 	if (p->width < 64 && p->height < 64)
@@ -230,27 +223,27 @@ qpic_t *Draw_PicFromWad (char *name)
 
 		texnum = memchr(p->data, 255, p->width*p->height) != NULL;
 		if (!Scrap_AllocBlock (texnum, p->width, p->height, &x, &y)) {
-			GL_LoadPicTexture (p, p->data);
-			return p;
+			GL_LoadPicTexture (pic, p->data);
+			return pic;
 		}
 		k = 0;
 		for (i=0 ; i<p->height ; i++)
 			for (j=0 ; j<p->width ; j++, k++)
 				scrap_texels[texnum][(y+i)*BLOCK_WIDTH + x + j] = p->data[k];
 		texnum += scrap_texnum;
-		gl->texnum = texnum;
-		gl->sl = (x+0.01)/(float)BLOCK_WIDTH;
-		gl->sh = (x+p->width-0.01)/(float)BLOCK_WIDTH;
-		gl->tl = (y+0.01)/(float)BLOCK_WIDTH;
-		gl->th = (y+p->height-0.01)/(float)BLOCK_WIDTH;
+		pic->texnum = texnum;
+		pic->sl = (x+0.01)/(float)BLOCK_WIDTH;
+		pic->sh = (x+p->width-0.01)/(float)BLOCK_WIDTH;
+		pic->tl = (y+0.01)/(float)BLOCK_WIDTH;
+		pic->th = (y+p->height-0.01)/(float)BLOCK_WIDTH;
 
 		pic_count++;
 		pic_texels += p->width*p->height;
 	}
 	else
-		GL_LoadPicTexture (p, p->data);
+		GL_LoadPicTexture (pic, p->data);
 
-	return p;
+	return pic;
 }
 
 
@@ -259,7 +252,7 @@ qpic_t *Draw_PicFromWad (char *name)
 Draw_CachePic
 ================
 */
-qpic_t	*Draw_CachePic (char *path)
+mpic_t	*Draw_CachePic (char *path)
 {
 	cachepic_t	*pic;
 	int			i;
@@ -554,7 +547,7 @@ void Draw_String (int x, int y, char *str)
 
 	glBegin (GL_QUADS);
 
-	while (*str) // stop rendering when out of characters or room
+	while (*str) // stop rendering when out of characters
 	{
 		if ((num = *str++) != 32) // skip spaces
 		{
@@ -593,9 +586,9 @@ void Draw_Alt_String (int x, int y, char *str)
 
 	glBegin (GL_QUADS);
 
-	while (*str) // stop rendering when out of characters or room
+	while (*str) // stop rendering when out of characters
 	{
-		if ((num = *str++|0x80) != 32) // skip spaces
+		if ((num = *str++|0x80) != 32|0x80) // skip spaces
 		{
 			frow = (float) (num >> 4)*0.0625;
 			fcol = (float) (num & 15)*0.0625;
@@ -663,7 +656,7 @@ Draw_TextBox
 */
 void Draw_TextBox (int x, int y, int width, int lines)
 {
-	qpic_t	*p;
+	mpic_t	*p;
 	int		cx, cy;
 	int		n;
 
@@ -735,22 +728,19 @@ void Draw_DebugChar (char num)
 Draw_Pic
 =============
 */
-void Draw_Pic (int x, int y, qpic_t *pic)
+void Draw_Pic (int x, int y, mpic_t *pic)
 {
-	glpic_t			*gl;
-
 	if (scrap_dirty)
 		Scrap_Upload ();
-	gl = (glpic_t *)pic->data;
-	GL_Bind (gl->texnum);
+	GL_Bind (pic->texnum);
 	glBegin (GL_QUADS);
-	glTexCoord2f (gl->sl, gl->tl);
+	glTexCoord2f (pic->sl, pic->tl);
 	glVertex2f (x, y);
-	glTexCoord2f (gl->sh, gl->tl);
+	glTexCoord2f (pic->sh, pic->tl);
 	glVertex2f (x+pic->width, y);
-	glTexCoord2f (gl->sh, gl->th);
+	glTexCoord2f (pic->sh, pic->th);
 	glVertex2f (x+pic->width, y+pic->height);
-	glTexCoord2f (gl->sl, gl->th);
+	glTexCoord2f (pic->sl, pic->th);
 	glVertex2f (x, y+pic->height);
 	glEnd ();
 }
@@ -760,27 +750,24 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 Draw_AlphaPic
 =============
 */
-void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
+void Draw_AlphaPic (int x, int y, mpic_t *pic, float alpha)
 {
-	glpic_t			*gl;
-
 	if (scrap_dirty)
 		Scrap_Upload ();
-	gl = (glpic_t *)pic->data;
 	glDisable(GL_ALPHA_TEST);
 	glEnable (GL_BLEND);
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace(GL_FRONT);
 	glColor4f (1, 1, 1, alpha);
-	GL_Bind (gl->texnum);
+	GL_Bind (pic->texnum);
 	glBegin (GL_QUADS);
-	glTexCoord2f (gl->sl, gl->tl);
+	glTexCoord2f (pic->sl, pic->tl);
 	glVertex2f (x, y);
-	glTexCoord2f (gl->sh, gl->tl);
+	glTexCoord2f (pic->sh, pic->tl);
 	glVertex2f (x+pic->width, y);
-	glTexCoord2f (gl->sh, gl->th);
+	glTexCoord2f (pic->sh, pic->th);
 	glVertex2f (x+pic->width, y+pic->height);
-	glTexCoord2f (gl->sl, gl->th);
+	glTexCoord2f (pic->sl, pic->th);
 	glVertex2f (x, y+pic->height);
 	glEnd ();
 	glColor3f (1, 1, 1);
@@ -788,26 +775,24 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 	glDisable (GL_BLEND);
 }
 
-void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
+void Draw_SubPic(int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
 {
-	glpic_t			*gl;
 	float newsl, newtl, newsh, newth;
 	float oldglwidth, oldglheight;
 
 	if (scrap_dirty)
 		Scrap_Upload ();
-	gl = (glpic_t *)pic->data;
 	
-	oldglwidth = gl->sh - gl->sl;
-	oldglheight = gl->th - gl->tl;
+	oldglwidth = pic->sh - pic->sl;
+	oldglheight = pic->th - pic->tl;
 
-	newsl = gl->sl + (srcx*oldglwidth)/pic->width;
+	newsl = pic->sl + (srcx*oldglwidth)/pic->width;
 	newsh = newsl + (width*oldglwidth)/pic->width;
 
-	newtl = gl->tl + (srcy*oldglheight)/pic->height;
+	newtl = pic->tl + (srcy*oldglheight)/pic->height;
 	newth = newtl + (height*oldglheight)/pic->height;
 	
-	GL_Bind (gl->texnum);
+	GL_Bind (pic->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (newsl, newtl);
 	glVertex2f (x, y);
@@ -825,9 +810,8 @@ void Draw_SubPic(int x, int y, qpic_t *pic, int srcx, int srcy, int width, int h
 Draw_TransPic
 =============
 */
-void Draw_TransPic (int x, int y, qpic_t *pic)
+void Draw_TransPic (int x, int y, mpic_t *pic)
 {
-
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
 	{
@@ -845,7 +829,7 @@ Draw_TransPicTranslate
 Only used for the player color selection menu
 =============
 */
-void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
+void Draw_TransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
 {
 	int				v, u, c;
 	unsigned		trans[64*64], *dest;
@@ -897,14 +881,13 @@ Draw_ConsoleBackground
 void Draw_ConsoleBackground (int lines)
 {
 	char ver[80];
-	int x, y/*, i*/;
+	int x, y;
 
 	if (lines == vid.height)
 		Draw_Pic(0, lines - vid.height, conback);
 	else
 		Draw_AlphaPic (0, lines - vid.height, conback, gl_conalpha.value);
 
-	y = lines-14;
 	if (!cls.download) {
 #ifdef __linux__
 		sprintf (ver, "LinuxGL (%4.2f) QuakeWorld", LINUX_VERSION);
@@ -917,8 +900,7 @@ void Draw_ConsoleBackground (int lines)
 #endif
 #endif
 		x = vid.conwidth - (strlen(ver)*8 + 11) - (vid.conwidth*8/320)*7;
-//		for (i=0 ; i<strlen(ver) ; i++)
-//			Draw_Character (x + i * 8, y, ver[i] | 0x80);
+		y = lines-14;
 		Draw_Alt_String (x, y, ver);
 	}
 }
@@ -934,7 +916,7 @@ refresh window.
 */
 void Draw_TileClear (int x, int y, int w, int h)
 {
-	GL_Bind (*(int *)draw_backtile->data);
+	GL_Bind (draw_backtile->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (x/64.0, y/64.0);
 	glVertex2f (x, y);
@@ -1491,11 +1473,13 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	else
 		glt = &gltextures[numgltextures];
 
-	if (numgltextures++ == MAX_GLTEXTURES)
+	if (numgltextures == MAX_GLTEXTURES)
 		Sys_Error ("GL_LoadTexture: numgltextures == MAX_GLTEXTURES");
+	numgltextures++;
 
 	Q_strncpyz (glt->identifier, identifier, sizeof(glt->identifier));
-	glt->texnum = texture_extension_number++;
+	glt->texnum = texture_extension_number;
+	texture_extension_number++;
 
 setuptexture:
 	glt->width = width;
@@ -1515,20 +1499,15 @@ setuptexture:
 ================
 GL_LoadPicTexture
 
-NOTE: qpic_t must point to a buffer that will fit both
-qpic_t and appended glpic_t
-
-FIXME: this is messy
-Merge qpic_t and glpic_t into one struct (dpic_t)?
 ================
 */
-int GL_LoadPicTexture (qpic_t *pic, byte *data)
+int GL_LoadPicTexture (mpic_t *pic, byte *data)
 {
-	glpic_t	*gl;
+//	glpic_t	*gl;
 	int		glwidth, glheight;
 	int		i;
 
-	gl = (glpic_t *)pic->data;
+//	gl = (glpic_t *)pic->data;
 
 	for (glwidth = 1 ; glwidth < pic->width ; glwidth<<=1)
 		;
@@ -1537,12 +1516,12 @@ int GL_LoadPicTexture (qpic_t *pic, byte *data)
 
 	if (glwidth == pic->width && glheight == pic->height)
 	{
-		gl->texnum = GL_LoadTexture ("", glwidth, glheight, data,
+		pic->texnum = GL_LoadTexture ("", glwidth, glheight, data,
 						false, true, false);
-		gl->sl = 0;
-		gl->sh = 1;
-		gl->tl = 0;
-		gl->th = 1;
+		pic->sl = 0;
+		pic->sh = 1;
+		pic->tl = 0;
+		pic->th = 1;
 	}
 	else
 	{
@@ -1560,17 +1539,17 @@ int GL_LoadPicTexture (qpic_t *pic, byte *data)
 			dest += glwidth;
 		}
 
-		gl->texnum = GL_LoadTexture ("", glwidth, glheight, buf,
+		pic->texnum = GL_LoadTexture ("", glwidth, glheight, buf,
 						false, true, false);
-		gl->sl = 0;
-		gl->sh = (float)pic->width / glwidth;
-		gl->tl = 0;
-		gl->th = (float)pic->height / glheight;
+		pic->sl = 0;
+		pic->sh = (float)pic->width / glwidth;
+		pic->tl = 0;
+		pic->th = (float)pic->height / glheight;
 
 		free (buf);
 	}
 
-	return gl->texnum;
+	return pic->texnum;
 }
 
 /****************************************/
