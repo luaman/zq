@@ -71,7 +71,7 @@ float(entity targ, entity inflictor) CanDamage =
 		return TRUE;
 
 	return FALSE;
-};
+}
 
 
 /*
@@ -115,7 +115,7 @@ void(entity targ, entity attacker) Killed =
 	self.th_die ();
 	
 	self = oself;
-};
+}
 
 
 /*
@@ -238,7 +238,7 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	}
 
 	self = oldself;
-};
+}
 
 /*
 ============
@@ -279,7 +279,7 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
 		}
 		head = head.chain;
 	}
-};
+}
 
 /*
 ============
@@ -311,5 +311,5 @@ void(entity attacker, float damage) T_BeamDamage =
 		}
 		head = head.chain;
 	}
-};
+}
 

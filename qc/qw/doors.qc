@@ -69,7 +69,7 @@ void() door_blocked =
 		else
 			door_go_down ();
 	}
-};
+}
 
 
 void() door_hit_top =
@@ -80,13 +80,13 @@ void() door_hit_top =
 		return;         // don't come down automatically
 	self.think = door_go_down;
 	self.nextthink = self.ltime + self.wait;
-};
+}
 
 void() door_hit_bottom =
 {
 	sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.state = STATE_BOTTOM;
-};
+}
 
 void() door_go_down =
 {
@@ -99,7 +99,7 @@ void() door_go_down =
 	
 	self.state = STATE_DOWN;
 	SUB_CalcMove (self.pos1, self.speed, door_hit_bottom);
-};
+}
 
 void() door_go_up =
 {
@@ -117,7 +117,7 @@ void() door_go_up =
 	SUB_CalcMove (self.pos2, self.speed, door_hit_top);
 
 	SUB_UseTargets();
-};
+}
 
 
 /*
@@ -169,7 +169,7 @@ void() door_fire =
 		self = self.enemy;
 	} while ( (self != starte) && (self != world) );
 	self = oself;
-};
+}
 
 
 void() door_use =
@@ -184,7 +184,7 @@ void() door_use =
 	self = self.owner;
 	door_fire ();
 	self = oself;
-};
+}
 
 
 void() door_trigger_touch =
@@ -200,7 +200,7 @@ void() door_trigger_touch =
 
 	self = self.owner;
 	door_use ();
-};
+}
 
 
 void() door_killed =
@@ -213,7 +213,7 @@ void() door_killed =
 	self.takedamage = DAMAGE_NO;    // wil be reset upon return
 	door_use ();
 	self = oself;
-};
+}
 
 
 /*
@@ -289,7 +289,7 @@ void() door_touch =
 	if (self.enemy)
 		self.enemy.touch = SUB_Null;    // get paired door
 	door_use ();
-};
+}
 
 /*
 =============================================================================
@@ -315,7 +315,7 @@ entity(vector fmins, vector fmaxs) spawn_field =
 	t2 = fmaxs;
 	setsize (trigger, t1 - '60 60 8', t2 + '60 60 8');
 	return (trigger);
-};
+}
 
 
 float (entity e1, entity e2) EntitiesTouching =
@@ -333,7 +333,7 @@ float (entity e1, entity e2) EntitiesTouching =
 	if (e1.maxs_z < e2.mins_z)
 		return FALSE;
 	return TRUE;
-};
+}
 
 
 /*
@@ -418,7 +418,7 @@ void() LinkDoors =
 		}
 	} while (1 );
 
-};
+}
 
 
 /*QUAKED func_door (0 .5 .8) ? START_OPEN x DOOR_DONT_LINK GOLD_KEY SILVER_KEY TOGGLE
@@ -567,7 +567,7 @@ void() func_door =
 // the sizes can be detected properly.
 	self.think = LinkDoors;
 	self.nextthink = self.ltime + 0.1;
-};
+}
 
 /*
 =============================================================================
@@ -640,7 +640,7 @@ void () fd_secret_use =
 	self.dest2 = self.dest1 + v_forward * self.t_length;
 	SUB_CalcMove(self.dest1, self.speed, fd_secret_move1);
 	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
-};
+}
 
 // Wait after first movement...
 void () fd_secret_move1 = 
@@ -648,14 +648,14 @@ void () fd_secret_move1 =
 	self.nextthink = self.ltime + 1.0;
 	self.think = fd_secret_move2;
 	sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-};
+}
 
 // Start moving sideways w/sound...
 void () fd_secret_move2 =
 {
 	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	SUB_CalcMove(self.dest2, self.speed, fd_secret_move3);
-};
+}
 
 // Wait here until time to go back...
 void () fd_secret_move3 =
@@ -666,14 +666,14 @@ void () fd_secret_move3 =
 		self.nextthink = self.ltime + self.wait;
 		self.think = fd_secret_move4;
 	}
-};
+}
 
 // Move backward...
 void () fd_secret_move4 =
 {
 	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	SUB_CalcMove(self.dest1, self.speed, fd_secret_move5);          
-};
+}
 
 // Wait 1 second...
 void () fd_secret_move5 = 
@@ -681,13 +681,13 @@ void () fd_secret_move5 =
 	self.nextthink = self.ltime + 1.0;
 	self.think = fd_secret_move6;
 	sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-};
+}
 
 void () fd_secret_move6 =
 {
 	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	SUB_CalcMove(self.oldorigin, self.speed, fd_secret_done);
-};
+}
 
 void () fd_secret_done =
 {
@@ -699,7 +699,7 @@ void () fd_secret_done =
 		self.th_die = fd_secret_use;
 	}
 	sound(self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-};
+}
 
 void () secret_blocked =
 {
@@ -708,7 +708,7 @@ void () secret_blocked =
 	self.attack_finished = time + 0.5;
 	other.deathtype = "squish";
 	T_Damage (other, self, self, self.dmg);
-};
+}
 
 /*
 ================
@@ -731,7 +731,7 @@ void() secret_touch =
 		centerprint (other, self.message);
 		sound (other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM);
 	}
-};
+}
 
 
 /*QUAKED func_door_secret (0 .5 .8) ? open_once 1st_left 1st_down no_shoot always_shoot
@@ -806,4 +806,4 @@ void () func_door_secret =
 	self.oldorigin = self.origin;
 	if (!self.wait)
 		self.wait = 5;          // 5 seconds before closing
-};
+}

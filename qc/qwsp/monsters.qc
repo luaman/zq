@@ -26,7 +26,7 @@
 //		self.nextthink = time + nexttime;
 //		self.think = nextthink
 //		<code>
-// };
+// }
 
 
 /*
@@ -54,7 +54,7 @@ void() monster_use =
 	self.enemy = activator;
 	self.nextthink = time + 0.1;
 	self.think = FoundTarget;
-};
+}
 
 /*
 ================
@@ -77,7 +77,7 @@ void() monster_death_use =
 
 	activator = self.enemy;
 	SUB_UseTargets ();
-};
+}
 
 
 //============================================================================
@@ -129,7 +129,7 @@ void() walkmonster_start_go =
 
 // spread think times so they don't all happen at same time
 	self.nextthink = self.nextthink + random()*0.5;
-};
+}
 
 
 void() walkmonster_start =
@@ -139,7 +139,7 @@ void() walkmonster_start =
 	self.nextthink = self.nextthink + random()*0.5;
 	self.think = walkmonster_start_go;
 	total_monsters = total_monsters + 1;
-};
+}
 
 
 
@@ -184,7 +184,7 @@ void() flymonster_start_go =
 		self.pausetime = 99999999;
 		self.th_stand ();
 	}
-};
+}
 
 void() flymonster_start =
 {
@@ -192,7 +192,7 @@ void() flymonster_start =
 	self.nextthink = self.nextthink + random()*0.5;
 	self.think = flymonster_start_go;
 	total_monsters = total_monsters + 1;
-};
+}
 
 
 void() swimmonster_start_go =
@@ -235,7 +235,7 @@ void() swimmonster_start_go =
 
 // spread think times so they don't all happen at same time
 	self.nextthink = self.nextthink + random()*0.5;
-};
+}
 
 void() swimmonster_start =
 {
@@ -243,6 +243,6 @@ void() swimmonster_start =
 	self.nextthink = self.nextthink + random()*0.5;
 	self.think = swimmonster_start_go;
 	total_monsters = total_monsters + 1;
-};
+}
 
 

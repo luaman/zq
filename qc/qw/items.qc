@@ -35,7 +35,7 @@ void() SUB_regen =
 	self.solid = SOLID_TRIGGER;     // allow it to be touched again
 	sound (self, CHAN_VOICE, "items/itembk2.wav", 1, ATTN_NORM);    // play respawn sound
 	setorigin (self, self.origin);
-};
+}
 
 
 
@@ -48,7 +48,7 @@ void() noclass =
 	dprint (vtos(self.origin));
 	dprint ("\n");
 	remove (self);
-};
+}
 
 void() q_touch;
 
@@ -91,7 +91,7 @@ local string    s;
 
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
-};
+}
 
 
 void(float timeleft) DropQuad =
@@ -115,7 +115,7 @@ void(float timeleft) DropQuad =
 	item.touch = q_touch;
 	item.nextthink = time + timeleft;    // remove it with the time left on it
 	item.think = SUB_Remove;
-};
+}
 
 
 void() r_touch;
@@ -149,7 +149,7 @@ local string    s;
 
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
-};
+}
 
 
 void(float timeleft) DropRing =
@@ -173,7 +173,7 @@ void(float timeleft) DropRing =
 	item.touch = r_touch;
 	item.nextthink = time + timeleft;    // remove after 30 seconds
 	item.think = SUB_Remove;
-};
+}
 
 /*
 ============
@@ -201,7 +201,7 @@ void() PlaceItem =
 		remove(self);
 		return;
 	}
-};
+}
 
 /*
 ============
@@ -214,7 +214,7 @@ void() StartItem =
 {
 	self.nextthink = time + 0.2;    // items start after other solids
 	self.think = PlaceItem;
-};
+}
 
 /*
 =========================================================================
@@ -242,7 +242,7 @@ float (entity e, float healamount, float ignore) T_Heal =
 	if (e.health > 250)
 		e.health = 250;
 	return 1;
-};
+}
 
 /*QUAKED item_health (.3 .3 1) (0 0 0) (32 32 32) rotten megahealth
 Health box. Normally gives 25 points.
@@ -293,7 +293,7 @@ void() item_health =
 	}
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
-};
+}
 
 
 void() health_touch =
@@ -355,7 +355,7 @@ void() health_touch =
 	
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
-};      
+}      
 
 void() item_megahealth_rot =
 {
@@ -377,7 +377,7 @@ void() item_megahealth_rot =
 		self.nextthink = time + 20;
 		self.think = SUB_regen;
 	}
-};
+}
 
 /*
 ===============================================================================
@@ -442,7 +442,7 @@ void() armor_touch =
 	
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
-};
+}
 
 
 /*QUAKED item_armor1 (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -456,7 +456,7 @@ void() item_armor1 =
 	self.skin = 0;
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
-};
+}
 
 /*QUAKED item_armor2 (0 .5 .8) (-16 -16 0) (16 16 32)
 */
@@ -469,7 +469,7 @@ void() item_armor2 =
 	self.skin = 1;
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
-};
+}
 
 /*QUAKED item_armorInv (0 .5 .8) (-16 -16 0) (16 16 32)
 */
@@ -482,7 +482,7 @@ void() item_armorInv =
 	self.skin = 2;
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
-};
+}
 
 /*
 ===============================================================================
@@ -502,7 +502,7 @@ void() bound_other_ammo =
 		other.ammo_rockets = 100;               
 	if (other.ammo_cells > 100)
 		other.ammo_cells = 100;         
-};
+}
 
 
 float(float w) RankForWeapon =
@@ -520,7 +520,7 @@ float(float w) RankForWeapon =
 	if (w == IT_NAILGUN)
 		return 6;
 	return 7;
-};
+}
 
 float (float w) WeaponCode =
 {
@@ -537,7 +537,7 @@ float (float w) WeaponCode =
 	if (w == IT_LIGHTNING)
 		return 8;
 	return 1;
-};
+}
 
 /*
 =============
@@ -556,7 +556,7 @@ void(float new_weapon) Deathmatch_Weapon =
 	nr = RankForWeapon (new_weapon);
 	if ( nr < or )
 		self.weapon = new_weapon;
-};
+}
 
 /*
 =============
@@ -692,7 +692,7 @@ void() weapon_touch =
 
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
-};
+}
 
 
 /*QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -710,7 +710,7 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-};
+}
 
 /*QUAKED weapon_nailgun (0 .5 .8) (-16 -16 0) (16 16 32)
 */
@@ -727,7 +727,7 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-};
+}
 
 /*QUAKED weapon_supernailgun (0 .5 .8) (-16 -16 0) (16 16 32)
 */
@@ -744,7 +744,7 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-};
+}
 
 /*QUAKED weapon_grenadelauncher (0 .5 .8) (-16 -16 0) (16 16 32)
 */
@@ -761,7 +761,7 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-};
+}
 
 /*QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
 */
@@ -778,7 +778,7 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-};
+}
 
 
 /*QUAKED weapon_lightning (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -796,7 +796,7 @@ if (deathmatch <= 3)
 	setsize (self, '-16 -16 0', '16 16 56');
 	StartItem ();
 }
-};
+}
 
 
 /*
@@ -898,7 +898,7 @@ local float             best;
 
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
-};
+}
 
 
 
@@ -931,7 +931,7 @@ void() item_shells =
 	self.netname = "shells";
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
-};
+}
 
 /*QUAKED item_spikes (0 .5 .8) (0 0 0) (32 32 32) big
 */
@@ -960,7 +960,7 @@ void() item_spikes =
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
 
-};
+}
 
 /*QUAKED item_rockets (0 .5 .8) (0 0 0) (32 32 32) big
 */
@@ -989,7 +989,7 @@ void() item_rockets =
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
 
-};
+}
 
 
 /*QUAKED item_cells (0 .5 .8) (0 0 0) (32 32 32) big
@@ -1019,7 +1019,7 @@ void() item_cells =
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
 
-};
+}
 
 
 /*QUAKED item_weapon (0 .5 .8) (0 0 0) (32 32 32) shotgun rocket spikes big
@@ -1093,7 +1093,7 @@ void() item_weapon =
 	
 	setsize (self, '0 0 0', '32 32 56');
 	StartItem ();
-};
+}
 
 
 /*
@@ -1129,7 +1129,7 @@ void() key_touch =
 
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
-};
+}
 
 
 void() key_setsounds =
@@ -1149,7 +1149,7 @@ void() key_setsounds =
 		precache_sound2 ("misc/basekey.wav");
 		self.noise = "misc/basekey.wav";
 	}
-};
+}
 
 /*QUAKED item_key1 (0 .5 .8) (-16 -16 -24) (16 16 32)
 SILVER key
@@ -1187,7 +1187,7 @@ void() item_key1 =
 	self.items = IT_KEY1;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
-};
+}
 
 /*QUAKED item_key2 (0 .5 .8) (-16 -16 -24) (16 16 32)
 GOLD key
@@ -1225,7 +1225,7 @@ void() item_key2 =
 	self.items = IT_KEY2;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
-};
+}
 
 
 
@@ -1255,7 +1255,7 @@ void() sigil_touch =
 	
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
-};
+}
 
 
 /*QUAKED item_sigil (0 .5 .8) (-16 -16 -24) (16 16 32) E1 E2 E3 E4
@@ -1294,7 +1294,7 @@ void() item_sigil =
 	self.touch = sigil_touch;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
-};
+}
 
 /*
 ===============================================================================
@@ -1367,7 +1367,7 @@ void() powerup_touch =
 
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
-};
+}
 
 
 
@@ -1390,7 +1390,7 @@ void() item_artifact_invulnerability =
 	self.items = IT_INVULNERABILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
-};
+}
 
 /*QUAKED item_artifact_envirosuit (0 .5 .8) (-16 -16 -24) (16 16 32)
 Player takes no damage from water or slime for 30 seconds
@@ -1408,7 +1408,7 @@ void() item_artifact_envirosuit =
 	self.items = IT_SUIT;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
-};
+}
 
 
 /*QUAKED item_artifact_invisibility (0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -1428,7 +1428,7 @@ void() item_artifact_invisibility =
 	self.items = IT_INVISIBILITY;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
-};
+}
 
 
 /*QUAKED item_artifact_super_damage (0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -1453,7 +1453,7 @@ void() item_artifact_super_damage =
 		self.effects = self.effects | EF_BLUE;
 	setsize (self, '-16 -16 -24', '16 16 32');
 	StartItem ();
-};
+}
 
 
 
@@ -1620,7 +1620,7 @@ void() BackpackTouch =
 	}
 
 	W_SetCurrentAmmo ();
-};
+}
 
 /*
 ===============
@@ -1675,6 +1675,6 @@ void() DropBackpack =
 	
 	item.nextthink = time + 120;    // remove after 2 minutes
 	item.think = SUB_Remove;
-};
+}
 
 

@@ -47,12 +47,12 @@ void() W_Precache =
 	precache_sound ("weapons/grenade.wav");		// grenade launcher
 	precache_sound ("weapons/bounce.wav");		// grenade bounce
 	precache_sound ("weapons/shotgn2.wav");		// super shotgun
-};
+}
 
 float() crandom =
 {
 	return 2*(random() - 0.5);
-};
+}
 
 /*
 ================
@@ -93,7 +93,7 @@ void() W_FireAxe =
 		WriteCoord (MSG_MULTICAST, org_z);
 		multicast (org, MULTICAST_PVS);
 	}
-};
+}
 
 
 //============================================================================
@@ -109,7 +109,7 @@ vector() wall_velocity =
 	vel = vel * 200;
 	
 	return vel;
-};
+}
 
 
 /*
@@ -140,7 +140,7 @@ void(vector org, vector vel) SpawnMeatSpray =
 	setmodel (missile, "progs/zom_gib.mdl");
 	setsize (missile, '0 0 0', '0 0 0');
 	setorigin (missile, org);
-};
+}
 
 /*
 ================
@@ -156,7 +156,7 @@ void(vector org, float damage) SpawnBlood =
 	WriteCoord (MSG_MULTICAST, org_y);
 	WriteCoord (MSG_MULTICAST, org_z);
 	multicast (org, MULTICAST_PVS);
-};
+}
 
 /*
 ================
@@ -169,7 +169,7 @@ void(float damage) spawn_touchblood =
 
 	vel = wall_velocity () * 0.2;
 	SpawnBlood (self.origin + vel*0.01, damage);
-};
+}
 
 /*
 ==============================================================================
@@ -196,14 +196,14 @@ void() ClearMultiDamage =
 	multi_damage = 0;
 	blood_count = 0;
 	puff_count = 0;
-};
+}
 
 void() ApplyMultiDamage =
 {
 	if (!multi_ent)
 		return;
 	T_Damage (multi_ent, self, self, multi_damage);
-};
+}
 
 void(entity hit, float damage) AddMultiDamage =
 {
@@ -218,7 +218,7 @@ void(entity hit, float damage) AddMultiDamage =
 	}
 	else
 		multi_damage = multi_damage + damage;
-};
+}
 
 void() Multi_Finish =
 {
@@ -243,7 +243,7 @@ void() Multi_Finish =
 		WriteCoord (MSG_MULTICAST, blood_org_z);
 		multicast (puff_org, MULTICAST_PVS);
 	}
-};
+}
 
 /*
 ==============================================================================
@@ -276,7 +276,7 @@ void(float damage, vector dir) TraceAttack =
 	{
 		puff_count = puff_count + 1;
 	}
-};
+}
 
 /*
 ================
@@ -312,7 +312,7 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 	}
 	ApplyMultiDamage ();
 	Multi_Finish ();
-};
+}
 
 /*
 ================
@@ -333,7 +333,7 @@ void() W_FireShotgun =
 
 	dir = aim (self, 100000);
 	FireBullets (6, dir, '0.04 0.04 0');
-};
+}
 
 
 /*
@@ -360,7 +360,7 @@ void() W_FireSuperShotgun =
 		self.currentammo = self.ammo_shells = self.ammo_shells - 2;
 	dir = aim (self, 100000);
 	FireBullets (14, dir, '0.14 0.08 0');
-};
+}
 
 
 /*
@@ -431,7 +431,7 @@ void() T_MissileTouch =
 	multicast (self.origin, MULTICAST_PHS);
 
 	remove(self);
-};
+}
 
 
 
@@ -473,7 +473,7 @@ void() W_FireRocket =
 	setmodel (newmis, "progs/missile.mdl");
 	setsize (newmis, '0 0 0', '0 0 0');
 	setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
-};
+}
 
 /*
 ===============================================================================
@@ -491,7 +491,7 @@ void(entity from, float damage) LightningHit =
 	multicast (trace_endpos, MULTICAST_PVS);
 
 	T_Damage (trace_ent, from, from, damage);
-};
+}
 
 /*
 =================
@@ -540,7 +540,7 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 	{
 		LightningHit (from, damage);
 	}
-};
+}
 
 
 void() W_FireLightning =
@@ -611,7 +611,7 @@ void() W_FireLightning =
 	multicast (org, MULTICAST_PHS);
 
 	LightningDamage (self.origin, trace_endpos + v_forward*4, self, 30);
-};
+}
 
 
 //=============================================================================
@@ -634,7 +634,7 @@ void() GrenadeExplode =
 	multicast (self.origin, MULTICAST_PHS);
 
 	remove (self);
-};
+}
 
 void() GrenadeTouch =
 {
@@ -648,7 +648,7 @@ void() GrenadeTouch =
 	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);	// bounce sound
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
-};
+}
 
 /*
 ================
@@ -707,7 +707,7 @@ void() W_FireGrenade =
 	setmodel (newmis, "progs/grenade.mdl");
 	setsize (newmis, '0 0 0', '0 0 0');
 	setorigin (newmis, self.origin);
-};
+}
 
 
 //=============================================================================
@@ -742,7 +742,7 @@ void(vector org, vector dir) launch_spike =
 	setorigin (newmis, org);
 
 	newmis.velocity = dir * 1000;
-};
+}
 
 void() W_FireSuperSpikes =
 {
@@ -760,7 +760,7 @@ void() W_FireSuperSpikes =
 	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
 	msg_entity = self;
 	WriteByte (MSG_ONE, SVC_SMALLKICK);
-};
+}
 
 void(float ox) W_FireSpikes =
 {
@@ -791,7 +791,7 @@ void(float ox) W_FireSpikes =
 
 	msg_entity = self;
 	WriteByte (MSG_ONE, SVC_SMALLKICK);
-};
+}
 
 
 
@@ -838,7 +838,7 @@ void() spike_touch =
 
 	remove(self);
 
-};
+}
 
 void() superspike_touch =
 {
@@ -878,7 +878,7 @@ void() superspike_touch =
 	}
 
 	remove(self);
-};
+}
 
 
 /*
@@ -956,7 +956,7 @@ void() W_SetCurrentAmmo =
 		self.weaponmodel = "";
 		self.weaponframe = 0;
 	}
-};
+}
 
 float() W_BestWeapon =
 {
@@ -984,7 +984,7 @@ float() W_BestWeapon =
 */
 
 	return IT_AXE;
-};
+}
 
 float() W_CheckNoAmmo =
 {
@@ -1000,7 +1000,7 @@ float() W_CheckNoAmmo =
 	
 // drop the weapon down
 	return FALSE;
-};
+}
 
 /*
 ============
@@ -1080,7 +1080,7 @@ void() W_Attack =
 		sound (self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM);
 		player_light1();
 	}
-};
+}
 
 /*
 ============
@@ -1161,7 +1161,7 @@ void() W_ChangeWeapon =
 //
 	self.weapon = fl;
 	W_SetCurrentAmmo ();
-};
+}
 
 /*
 ============
@@ -1191,7 +1191,7 @@ void() CheatCommand =
 	self.weapon = IT_ROCKET_LAUNCHER;
 	self.impulse = 0;
 	W_SetCurrentAmmo ();
-};
+}
 
 /*
 ============
@@ -1265,7 +1265,7 @@ void() CycleWeaponCommand =
 		}
 	}
 
-};
+}
 
 
 /*
@@ -1339,7 +1339,7 @@ void() CycleWeaponReverseCommand =
 			return;
 		}
 	}
-};
+}
 
 
 /*
@@ -1355,7 +1355,7 @@ void() ServerflagsCommand =
 		return;
 
 	serverflags = serverflags * 2 + 1;
-};
+}
 
 
 /*
@@ -1379,7 +1379,7 @@ void() ImpulseCommands =
 		CycleWeaponReverseCommand ();
 
 	self.impulse = 0;
-};
+}
 
 /*
 ============
@@ -1402,7 +1402,7 @@ void() W_WeaponFrame =
 		SuperDamageSound ();
 		W_Attack ();
 	}
-};
+}
 
 /*
 ========
@@ -1421,5 +1421,4 @@ void() SuperDamageSound =
 			sound (self, CHAN_BODY, "items/damage3.wav", 1, ATTN_NORM);
 		}
 	}
-	return;
-};
+}

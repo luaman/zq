@@ -48,7 +48,7 @@ void() SpectatorConnect =
 	bprint (PRINT_MEDIUM, " entered the game\n");
 
 	self.goalentity = world; // used for impulse 1 below
-};
+}
 
 /*
 ===========
@@ -62,7 +62,7 @@ void() SpectatorDisconnect =
 	bprint (PRINT_MEDIUM, "Spectator ");
 	bprint (PRINT_MEDIUM, self.netname);
 	bprint (PRINT_MEDIUM, " left the game\n");
-};
+}
 
 /*
 ================
@@ -87,7 +87,7 @@ void() SpectatorImpulseCommand =
 	}
 
 	self.impulse = 0;
-};
+}
 
 /*
 ================
@@ -103,4 +103,4 @@ void() SpectatorThink =
 
 	if (self.impulse)
 		SpectatorImpulseCommand();
-};
+}

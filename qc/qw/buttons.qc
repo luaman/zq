@@ -36,12 +36,12 @@ void() button_wait =
 	activator = self.enemy;
 	SUB_UseTargets();
 	self.frame = 1;			// use alternate textures
-};
+}
 
 void() button_done =
 {
 	self.state = STATE_BOTTOM;
-};
+}
 
 void() button_return =
 {
@@ -50,12 +50,12 @@ void() button_return =
 	self.frame = 0;			// use normal textures
 	if (self.health)
 		self.takedamage = DAMAGE_YES;	// can be shot again
-};
+}
 
 
 void() button_blocked =
 {	// do nothing, just don't ome all the way back out
-};
+}
 
 
 void() button_fire =
@@ -67,14 +67,14 @@ void() button_fire =
 
 	self.state = STATE_UP;
 	SUB_CalcMove (self.pos2, self.speed, button_wait);
-};
+}
 
 
 void() button_use =
 {
 	self.enemy = activator;
 	button_fire ();
-};
+}
 
 void() button_touch =
 {
@@ -82,7 +82,7 @@ void() button_touch =
 		return;
 	self.enemy = other;
 	button_fire ();
-};
+}
 
 void() button_killed =
 {
@@ -90,7 +90,7 @@ void() button_killed =
 	self.health = self.max_health;
 	self.takedamage = DAMAGE_NO;	// wil be reset upon return
 	button_fire ();
-};
+}
 
 
 /*QUAKED func_button (0 .5 .8) ?
@@ -160,5 +160,5 @@ void() func_button =
 
 	self.pos1 = self.origin;
 	self.pos2 = self.pos1 + self.movedir*(fabs(self.movedir*self.size) - self.lip);
-};
+}
 

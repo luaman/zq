@@ -26,9 +26,9 @@
 */
 
 
-void() SUB_Null = {};
+void() SUB_Null = {}
 
-void() SUB_Remove = {remove(self);};
+void() SUB_Remove = {remove(self);}
 
 
 /*
@@ -48,7 +48,7 @@ void() SetMovedir =
 	}
 	
 	self.angles = '0 0 0';
-};
+}
 
 /*
 ================
@@ -66,7 +66,7 @@ void() InitTrigger =
 	self.movetype = MOVETYPE_NONE;
 	self.modelindex = 0;
 	self.model = "";
-};
+}
 
 /*
 =============
@@ -84,7 +84,7 @@ local entity	stemp;
 
 	SUB_CalcMove (tdest, tspeed, func);
 	self = stemp;
-};
+}
 
 void(vector tdest, float tspeed, void() func) SUB_CalcMove =
 {
@@ -122,7 +122,7 @@ local float		len, traveltime;
 
 // scale the destdelta vector by the time spent traveling to get velocity
 	self.velocity = vdestdelta * (1/traveltime);	// qcc won't take vec/float	
-};
+}
 
 /*
 ============
@@ -136,7 +136,7 @@ void()  SUB_CalcMoveDone =
 	self.nextthink = -1;
 	if (self.think1)
 		self.think1();
-};
+}
 
 
 /*
@@ -156,7 +156,7 @@ local entity		stemp;
 	self = ent;
 	SUB_CalcAngleMove (destangle, tspeed, func);
 	self = stemp;
-};
+}
 
 void(vector destangle, float tspeed, void() func) SUB_CalcAngleMove =
 {
@@ -184,7 +184,7 @@ local float		len, traveltime;
 	self.think1 = func;
 	self.finalangle = destangle;
 	self.think = SUB_CalcAngleMoveDone;
-};
+}
 
 /*
 ============
@@ -198,7 +198,7 @@ void() SUB_CalcAngleMoveDone =
 	self.nextthink = -1;
 	if (self.think1)
 		self.think1();
-};
+}
 
 
 //=============================================================================
@@ -208,7 +208,7 @@ void() DelayThink =
 	activator = self.enemy;
 	SUB_UseTargets ();
 	remove(self);
-};
+}
 
 /*
 ==============================
@@ -306,5 +306,5 @@ void() SUB_UseTargets =
 	}
 	
 
-};
+}
 
