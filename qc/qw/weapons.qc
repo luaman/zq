@@ -374,6 +374,7 @@ ROCKETS
 void T_MissileTouch ()
 {
 	float	damg;
+	vector neworigin;
 
 //	if (deathmatch == 4)
 //	{
@@ -417,11 +418,11 @@ void T_MissileTouch ()
 	// don't do radius damage to the other, because all the damage
 	// was done in the impact
 
-
 	T_RadiusDamage (self, self.owner, 120, other, "rocket");
 
 //	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
-  setorigin (self, self.origin - 8 * normalize(self.velocity));
+  neworigin = self.origin - 8 * normalize(self.velocity);
+  setorigin (self, neworigin);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
@@ -472,7 +473,7 @@ void W_FireRocket ()
 
 	setmodel (newmis, "progs/missile.mdl");
 	setsize (newmis, '0 0 0', '0 0 0');
-	setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
+	setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
 }
 
 /*
