@@ -469,6 +469,7 @@ This is also called on Host_Error, so it shouldn't cause any errors
 */
 void CL_Disconnect (void)
 {
+	extern qboolean	v_updatepalette;
 	byte	final[10];
 
 	connect_time = -1;
@@ -513,6 +514,7 @@ void CL_Disconnect (void)
 	CL_StopUpload();
 
 	memset (cl.cshifts, 0, sizeof(cl.cshifts));
+	v_updatepalette = true;
 }
 
 void CL_Disconnect_f (void)

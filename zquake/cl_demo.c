@@ -48,6 +48,8 @@ Called when a demo file runs out, or the user starts a game
 */
 void CL_StopPlayback (void)
 {
+	extern qboolean	v_updatepalette;
+
 	if (!cls.demoplayback)
 		return;
 
@@ -60,6 +62,7 @@ void CL_StopPlayback (void)
 		CL_FinishTimeDemo ();
 
 	memset (cl.cshifts, 0, sizeof(cl.cshifts));
+	v_updatepalette = true;
 }
 
 #define dem_cmd		0
