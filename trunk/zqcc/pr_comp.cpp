@@ -543,6 +543,9 @@ void PR_ParseStatement (void)
 {
 	def_t				*e;
 	dstatement_t		*patch1, *patch2;
+
+	if (PR_Check(";"))
+		return;
 	
 	if (PR_Check ("{"))
 	{
