@@ -204,7 +204,7 @@ void Cmd_Soundlist_f (void)
 	}
 
 	n = atoi(Cmd_Argv(2));
-	if (n >= MAX_SOUNDS) {
+	if (n >= (MAX_SOUNDS - 1)) {
 		SV_ClientPrintf (sv_client, PRINT_HIGH, 
 			"Cmd_Soundlist_f: Invalid soundlist index\n");
 		SV_DropClient (sv_client);
@@ -260,7 +260,7 @@ void Cmd_Modellist_f (void)
 	}
 
 	n = atoi(Cmd_Argv(2));
-	if (n >= MAX_MODELS) {
+	if (n >= (MAX_MODELS - 1)) {
 		SV_ClientPrintf (sv_client, PRINT_HIGH, 
 			"Cmd_Modellist_f: Invalid modellist index\n");
 		SV_DropClient (sv_client);
