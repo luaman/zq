@@ -692,12 +692,6 @@ JumpButton
 */
 void JumpButton (void)
 {
-	if (pmove.dead)
-	{
-		pmove.oldbuttons |= BUTTON_JUMP;	// don't jump again until released
-		return;
-	}
-
 	if (pmove.waterjumptime)
 	{
 		pmove.waterjumptime -= frametime;
@@ -957,10 +951,15 @@ void PlayerMove (void)
 	}
 #endif
 
-	if (pmove.cmd.buttons & BUTTON_JUMP)
-		JumpButton ();
+	if (pmove.dead)
+		pmove.oldbuttons |= BUTTON_JUMP;
 	else
-		pmove.oldbuttons &= ~BUTTON_JUMP;
+	{
+		if (pmove.cmd.buttons & BUTTON_JUMP)
+			JumpButton ();
+		else if (!pmove.dead)
+			pmove.oldbuttons &= ~BUTTON_JUMP;
+	}
 
 	PM_Friction ();
 
