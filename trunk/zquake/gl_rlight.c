@@ -59,20 +59,6 @@ DYNAMIC LIGHTS BLEND RENDERING
 =============================================================================
 */
 
-void AddLightBlend (float r, float g, float b, float a2)
-{
-	float	a;
-
-	v_blend[3] = a = v_blend[3] + a2*(1-v_blend[3]);
-
-	a2 = a2/a;
-
-	v_blend[0] = v_blend[1]*(1-a2) + r*a2;
-	v_blend[1] = v_blend[1]*(1-a2) + g*a2;
-	v_blend[2] = v_blend[2]*(1-a2) + b*a2;
-//Con_Printf("AddLightBlend(): %4.2f %4.2f %4.2f %4.6f\n", v_blend[0], v_blend[1], v_blend[2], v_blend[3]);
-}
-
 float bubble_sintable[17], bubble_costable[17];
 
 void R_InitBubble() {
@@ -109,7 +95,7 @@ void R_RenderDlight (dlight_t *light)
 	length = VectorNormalize (v);
 	if (length < rad)
 	{	// view is inside the dlight
-		AddLightBlend (1, 0.5, 0, light->radius * 0.0003);
+		V_AddLightBlend (1, 0.5, 0, light->radius * 0.0003);
 		return;
 	}
 
