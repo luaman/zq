@@ -1082,8 +1082,9 @@ void NQD_ParseServerMessage (void)
 			nq_viewentity = MSG_ReadShort ();
 			if (nq_viewentity <= nq_maxclients)
 				cl.playernum = nq_viewentity - 1;
-			else
-				Host_Error ("svc_setview is not supported for non-player entities");
+			else	{
+				// just let cl.playernum stay where it was
+			}
 			break;
 
 		case svc_lightstyle:
