@@ -805,9 +805,9 @@ Doesn't check for overflows, so strlen(s) should be < MAX_MACRO_STRING
 */
 char *TP_ParseFunChars (char *s, qbool chat)
 {
-	static char	buf[MAX_MACRO_STRING];
-	char	*out = buf;
-	char	c;
+	static char	 buf[MAX_MACRO_STRING];
+	char		*out = buf;
+	int			 c;
 
 	if (!cl_parseFunChars.value)
 		return s;
@@ -818,19 +818,19 @@ char *TP_ParseFunChars (char *s, qbool chat)
 			// check for $x10, $x8a, etc
 			c = tolower((int)(unsigned char)s[2]);
 			if ( isdigit(c) )
-				i = (c - '0') << 4;
+				i = (c - (int)'0') << 4;
 			else if ( isxdigit(c) )
-				i = (c - 'a' + 10) << 4;
+				i = (c - (int)'a' + 10) << 4;
 			else goto skip;
 			c = tolower((int)(unsigned char)s[3]);
 			if ( isdigit(c) )
-				i += (c - '0');
+				i += (c - (int)'0');
 			else if ( isxdigit(c) )
-				i += (c - 'a' + 10);
+				i += (c - (int)'a' + 10);
 			else goto skip;
 			if (!i)
-				i = ' ';
-			*out++ = i;
+				i = (int)' ';
+			*out++ = (char)i;
 			s += 4;
 			continue;
 		}
@@ -861,9 +861,9 @@ char *TP_ParseFunChars (char *s, qbool chat)
 				case '^': c = '^'; break;
 			}
 			if ( isdigit((int)(unsigned char)s[1]) )
-				c = s[1] - '0' + 0x12;
+				c = s[1] - (int)'0' + 0x12;
 			if (c) {
-				*out++ = c;
+				*out++ = (char)c;
 				s += 2;
 				continue;
 			}
