@@ -746,15 +746,15 @@ void SCR_EndLoadingPlaque (void)
 
 
 /*
-==================
-SCR_SetUpToDrawConsole
-==================
+** SCR_RunConsole
+**
+** Scroll it up or down
 */
-void SCR_SetUpToDrawConsole (void)
+void SCR_RunConsole (void)
 {
 	Con_CheckResize ();
-	
-// decide on the height of the console
+
+	// decide on the height of the console
 	if (cls.state != ca_active && !cl.intermission)
 	{
 		scr_conlines = vid.height;		// full screen
@@ -769,21 +769,26 @@ void SCR_SetUpToDrawConsole (void)
 	}
 	else
 		scr_conlines = 0;				// none visible
-	
-	if (scr_conlines < scr_con_current)
-	{
+
+	// scroll it up or down
+	if (scr_con_current > scr_conlines) {
 		scr_con_current -= scr_conspeed.value*cls.trueframetime*vid.height/320;
-		if (scr_conlines > scr_con_current)
-			scr_con_current = scr_conlines;
-
+		scr_con_current = max (scr_con_current, scr_conlines);
 	}
-	else if (scr_conlines > scr_con_current)
-	{
+	else if (scr_con_current < scr_conlines) {
 		scr_con_current += scr_conspeed.value*cls.trueframetime*vid.height/320;
-		if (scr_conlines < scr_con_current)
-			scr_con_current = scr_conlines;
+		scr_con_current = min (scr_con_current, scr_conlines);
 	}
+}
 
+
+/*
+==================
+SCR_SetUpToDrawConsole
+==================
+*/
+void SCR_SetUpToDrawConsole (void)
+{
 	if (clearconsole++ < vid.numpages)
 	{
 #ifndef GLQUAKE
@@ -802,7 +807,7 @@ void SCR_SetUpToDrawConsole (void)
 	else
 		con_notifylines = 0;
 }
-	
+
 /*
 ==================
 SCR_DrawConsole
