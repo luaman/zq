@@ -1773,8 +1773,8 @@ static int FindNearestItem (int flags, item_t **pitem)
 	frame_t		*frame;
 	packet_entities_t	*pak;
 	entity_state_t		*ent;
-	int	i, bestidx, bestskin;
-	float bestdist, dist;
+	int	i = 0, bestidx = 0, bestskin = 0;
+	float bestdist = 0.0, dist = 0.0;
 	vec3_t	org, v;
 	item_t	*item;
 
@@ -1974,11 +1974,11 @@ void TP_FindPoint (void)
 	entity_state_t		*ent;
 	int	i;
 	vec3_t	forward, right, up;
-	float	best;
-	entity_state_t	*bestent;
+	float	best = 0.0;
+	entity_state_t	*bestent = NULL;
 	vec3_t	ang;
 	vec3_t	vieworg, entorg;
-	item_t	*item, *bestitem;
+	item_t	*item = NULL, *bestitem = NULL;
 
 	ang[0] = cl.viewangles[0];
 	ang[1] = cl.viewangles[1];
@@ -2409,3 +2409,5 @@ void TP_Init (void)
 	Cmd_AddCommand ("tp_pickup", TP_Pickup_f);
 	Cmd_AddCommand ("tp_point", TP_Point_f);
 }
+
+/* vi: set noet ts=4 sts=4 ai sw=4: */

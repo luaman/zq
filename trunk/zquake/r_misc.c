@@ -698,13 +698,13 @@ Find closest color in the palette for named color
 */
 int MipColor(int r, int g, int b)
 {
-	int i;
-	float dist;
-	int best;
+	int i = 0;
+	float dist = 0.0;
+	int best = -1;
 	float bestdist;
-	int r1, g1, b1;
+	int r1 = 0, g1 = 0, b1 = 0;
 	static int lr = -1, lg = -1, lb = -1;
-	static int lastbest;
+	static int lastbest = -1;
 
 	if (r == lr && g == lg && b == lb)
 		return lastbest;
@@ -903,3 +903,4 @@ void R_Build15to8table (void)
 	}
 }
 
+/* vi: set noet ts=4 sts=4 ai sw=4: */

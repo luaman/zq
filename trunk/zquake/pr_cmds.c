@@ -456,8 +456,8 @@ particle(origin, dir, color, count [,replacement_te [,replacement_count]])
 static void PF_particle (void)
 {
 	float	*org, *dir;
-	float	color, count;
-	int		replacement_te, replacement_count;
+	float	color = 0.0, count = 0.0;
+	int		replacement_te = 0, replacement_count = 0;
 			
 	org = G_VECTOR(OFS_PARM0);
 	dir = G_VECTOR(OFS_PARM1);
