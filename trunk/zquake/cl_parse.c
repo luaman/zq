@@ -1828,7 +1828,9 @@ void CL_ParseServerMessage (void)
 		Com_Printf ("------------------\n");
 
 
+#ifdef MVDPLAY
 	if (!cls.mvdplayback)
+#endif
 		CL_ParseClientdata ();
 
 	CL_ClearProjectiles ();
@@ -1865,7 +1867,9 @@ void CL_ParseServerMessage (void)
 		switch (cmd)
 		{
 		default:
+#ifdef MVDPLAY
 bad_message:
+#endif
 			Host_Error ("CL_ParseServerMessage: Illegible server message");
 			break;
 			

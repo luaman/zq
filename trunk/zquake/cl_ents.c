@@ -655,7 +655,9 @@ void CL_ParseProjectiles (void)
 			continue;
 
 		pr = &cl_projectiles[cl_num_projectiles];
-		inter = &cl.int_projectiles[cl_num_projectiles++];	//fuh : mvd
+#ifdef MVDPLAY
+		inter = &cl.int_projectiles[cl_num_projectiles];
+#endif
 		cl_num_projectiles++;
 
 		pr->modelindex = cl_spikeindex;
