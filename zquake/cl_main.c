@@ -714,13 +714,45 @@ void CL_Init (void)
 {
 	cls.state = ca_disconnected;
 
-	CL_InitLocal ();
+	Key_Init ();
 
+	host_basepal = (byte *)FS_LoadHunkFile ("gfx/palette.lmp");
+	if (!host_basepal)
+		Sys_Error ("Couldn't load gfx/palette.lmp");
+	host_colormap = (byte *)FS_LoadHunkFile ("gfx/colormap.lmp");
+	if (!host_colormap)
+		Sys_Error ("Couldn't load gfx/colormap.lmp");
+
+#ifdef __linux__
+	IN_Init ();
+#endif
+
+	VID_Init (host_basepal);
+
+#ifndef __linux__
+	IN_Init ();
+#endif
+
+
+	Draw_Init ();
+	SCR_Init ();
+	R_Init ();
+	R_InitTextures ();
+
+	S_Init ();
+	
+	CDAudio_Init ();
+
+	CL_InitLocal ();
 	CL_InitInput ();
 	CL_InitTEnts ();
 	CL_InitPrediction ();
 	CL_InitCam ();
 	Pmove_Init ();
+	V_Init ();
+	TP_Init ();
+	Sbar_Init ();
+	M_Init ();	
 
 	SList_Init ();
 	SList_Load ();
@@ -1030,8 +1062,6 @@ void Host_Init (quakeparms_t *parms)
 	Cbuf_Init ();
 	Cmd_Init ();
 	Cvar_Init ();
-	V_Init ();
-	TP_Init ();
 
 	COM_Init ();
 
@@ -1051,43 +1081,15 @@ void Host_Init (quakeparms_t *parms)
 
 	W_LoadWadFile ("gfx.wad");
 
-	Key_Init ();
-	Con_Init ();	
-	M_Init ();	
+	Con_Init ();
 	Mod_Init ();
 	
 	Sys_mkdir(va("%s/%s", com_basedir, "qw"));
 
-//	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
+	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Com_Printf ("%4.1f megs RAM used.\n",parms->memsize/ (1024*1024.0));
 	
-	R_InitTextures ();
- 
-	host_basepal = (byte *)FS_LoadHunkFile ("gfx/palette.lmp");
-	if (!host_basepal)
-		Sys_Error ("Couldn't load gfx/palette.lmp");
-	host_colormap = (byte *)FS_LoadHunkFile ("gfx/colormap.lmp");
-	if (!host_colormap)
-		Sys_Error ("Couldn't load gfx/colormap.lmp");
-
-#ifdef __linux__
-	IN_Init ();
-#endif
-
-	VID_Init (host_basepal);
-	Draw_Init ();
-	SCR_Init ();
-	R_Init ();
-
-	S_Init ();
-	
-	CDAudio_Init ();
-	Sbar_Init ();
 	CL_Init ();
-
-#ifndef __linux__
-	IN_Init ();
-#endif
 
 	Cbuf_InsertText ("exec quake.rc\n");
 //	Cbuf_AddText ("echo Type connect <internet address> or use GameSpy to connect to a game.\n");
