@@ -887,7 +887,7 @@ void SV_Pings_f (void)
 		ClientReliableWrite_Begin (sv_client, svc_updateping, 4);
 		ClientReliableWrite_Byte (sv_client, j);
 		ClientReliableWrite_Short (sv_client, SV_CalcPing(client));
-		ClientReliableWrite_Begin (sv_client, svc_updatepl, 4);
+		ClientReliableWrite_Begin (sv_client, svc_updatepl, 3);
 		ClientReliableWrite_Byte (sv_client, j);
 		ClientReliableWrite_Byte (sv_client, client->lossage);
 	}
