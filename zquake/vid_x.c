@@ -62,10 +62,6 @@ int				 p_mouse_y;
 extern viddef_t	 vid; // global video state
 unsigned short	 d_8to16table[256];
 
-int				 num_shades = 32;
-
-int				 vid_buffersize;
-
 static qbool	 doShm;
 static Display	*x_disp;
 static Colormap	 x_cmap;
@@ -880,14 +876,6 @@ static int XLateKey(XKeyEvent *ev)
     return key;
 }
 
-struct
-{
-	int key;
-	int down;
-} keyq[64];
-int keyq_head=0;
-int keyq_tail=0;
-
 int config_notify=0;
 int config_notify_width;
 int config_notify_height;
@@ -900,14 +888,8 @@ void GetEvent(void)
 	XNextEvent(x_disp, &x_event);
 	switch(x_event.type) {
 	case KeyPress:
-		keyq[keyq_head].key = XLateKey(&x_event.xkey);
-		keyq[keyq_head].down = true;
-		keyq_head = (keyq_head + 1) & 63;
-		break;
 	case KeyRelease:
-		keyq[keyq_head].key = XLateKey(&x_event.xkey);
-		keyq[keyq_head].down = false;
-		keyq_head = (keyq_head + 1) & 63;
+		Key_Event(XLateKey(&x_event.xkey), x_event.type == KeyPress);
 		break;
 
 	case MotionNotify:
@@ -1067,23 +1049,6 @@ void			 VID_Update (vrect_t *rects)
 	}
 }
 
-int Sys_OpenWindow(void)
-{
-	return 0;
-}
-
-void Sys_EraseWindow(int window)
-{
-}
-
-void Sys_DrawCircle(int window, int x, int y, int r)
-{
-}
-
-void Sys_DisplayWindow(int window)
-{
-}
-
 void Sys_SendKeyEvents(void)
 {
 	// get events from x server
@@ -1091,11 +1056,6 @@ void Sys_SendKeyEvents(void)
 	{
 		while (XPending(x_disp))
 			GetEvent();
-		while (keyq_head != keyq_tail)
-		{
-			Key_Event(keyq[keyq_tail].key, keyq[keyq_tail].down);
-			keyq_tail = (keyq_tail + 1) & 63;
-		}
 	}
 }
 
