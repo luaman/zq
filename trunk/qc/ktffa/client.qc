@@ -1182,7 +1182,7 @@ void() PlayerPreThink =
 		
 		fps = floor( 72 * 13 / ( self.fAverageFrameTime / self.fFrameCount * 1000 ) );
 		
-		if( fps > 72 )
+		if( fps > current_maxfps )
 		{
 			bprint3( PRINT_HIGH, "\nWARNING: ", self.netname, " is using the timedemo bug and has abnormally high frame rates, " );
 
