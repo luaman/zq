@@ -283,7 +283,7 @@ void CL_Connect_f (void)
 	if (Cmd_Argc() != 2)
 	{
 		Com_Printf ("usage: connect <server>\n");
-		return;	
+		return;
 	}
 	
 	server = Cmd_Argv (1);
@@ -457,8 +457,8 @@ void CL_ConnectionlessPacket (void)
 	char	*s;
 	int		c;
 
-    MSG_BeginReading ();
-    MSG_ReadLong ();        // skip the -1
+	MSG_BeginReading ();
+	MSG_ReadLong ();		// skip the -1
 
 	c = MSG_ReadByte ();
 
@@ -855,7 +855,7 @@ void CL_Init (void)
 	TP_Init ();
 	SCR_Init ();
 	Sbar_Init ();
-	M_Init ();	
+	M_Init ();
 
 	NET_ClientConfig (true);
 
@@ -1025,13 +1025,13 @@ void CL_Frame (double time)
 
 		// Set up prediction for other players
 		CL_SetUpPlayerPrediction(false);
-		
+
 		// do client side motion prediction
 		CL_PredictMove ();
-		
+
 		// Set up prediction for other players
 		CL_SetUpPlayerPrediction(true);
-		
+
 		// build a refresh entity list
 		CL_EmitEntities ();
 	}
@@ -1044,16 +1044,15 @@ void CL_Frame (double time)
 
 	if (host_speeds.value)
 		time2 = Sys_DoubleTime ();
-		
+
 	// update audio
-	if (cls.state == ca_active)
-	{
+	if (cls.state == ca_active) {
 		S_Update (r_origin, vpn, vright, vup);
 		CL_DecayLights ();
 	}
 	else
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
-	
+
 	CDAudio_Update();
 
 	if (host_speeds.value)
@@ -1081,7 +1080,7 @@ void CL_Shutdown (void)
 {
 	CL_Disconnect ();
 
-	CL_WriteConfiguration (); 
+	CL_WriteConfiguration ();
 
 	CDAudio_Shutdown ();
 	S_Shutdown();
