@@ -24,12 +24,12 @@
 		Boston, MA  02111-1307, USA
 
 */
-void() W_SetCurrentAmmo;
+void W_SetCurrentAmmo ();
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
 
 
-void() SUB_regen =
+void SUB_regen ()
 {
 	self.model = self.mdl;          // restore original model
 	self.solid = SOLID_TRIGGER;     // allow it to be touched again
@@ -42,7 +42,7 @@ void() SUB_regen =
 /*QUAKED noclass (0 0 0) (-8 -8 -8) (8 8 8)
 prints a warning message when spawned
 */
-void() noclass =
+void noclass ()
 {
 	dprint ("noclass spawned at");
 	dprint (vtos(self.origin));
@@ -50,9 +50,8 @@ void() noclass =
 	remove (self);
 }
 
-void() q_touch;
 
-void() q_touch =
+void q_touch ()
 {
 	string	s;
 
@@ -94,7 +93,7 @@ void() q_touch =
 }
 
 
-void(float timeleft) DropQuad =
+void DropQuad (float timeleft)
 {
 	entity	item;
 
@@ -118,7 +117,7 @@ void(float timeleft) DropQuad =
 }
 
 
-void() r_touch =
+void r_touch ()
 {
 	string	s;
 
@@ -150,7 +149,7 @@ void() r_touch =
 }
 
 
-void(float timeleft) DropRing =
+void DropRing (float timeleft)
 {
 	entity	item;
 
@@ -180,7 +179,7 @@ PlaceItem
 plants the object on the floor
 ============
 */
-void() PlaceItem =
+void PlaceItem ()
 {
 	float	oldz;
 
@@ -208,7 +207,7 @@ StartItem
 Sets the clipping size and plants the object on the floor
 ============
 */
-void() StartItem =
+void StartItem ()
 {
 	self.nextthink = time + 0.2;    // items start after other solids
 	self.think = PlaceItem;
@@ -253,10 +252,10 @@ one point per second.
 float   H_ROTTEN = 1;
 float   H_MEGA = 2;
 .float  healamount, healtype;
-void() health_touch;
-void() item_megahealth_rot;
+void health_touch ();
+void item_megahealth_rot ();
 
-void() item_health =
+void item_health ()
 {       
 	self.touch = health_touch;
 
@@ -294,7 +293,7 @@ void() item_health =
 }
 
 
-void() health_touch =
+void health_touch ()
 {
 	string	s;
 	
@@ -355,7 +354,7 @@ void() health_touch =
 	SUB_UseTargets();                               // fire all targets / killtargets
 }      
 
-void() item_megahealth_rot =
+void item_megahealth_rot ()
 {
 	other = self.owner;
 	
@@ -385,9 +384,7 @@ ARMOR
 ===============================================================================
 */
 
-void() armor_touch;
-
-void() armor_touch =
+void armor_touch ()
 {
 	float	type, value, bit;
 	
@@ -446,7 +443,7 @@ void() armor_touch =
 /*QUAKED item_armor1 (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 
-void() item_armor1 =
+void item_armor1 ()
 {
 	self.touch = armor_touch;
 	precache_model ("progs/armor.mdl");
@@ -459,7 +456,7 @@ void() item_armor1 =
 /*QUAKED item_armor2 (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 
-void() item_armor2 =
+void item_armor2 ()
 {
 	self.touch = armor_touch;
 	precache_model ("progs/armor.mdl");
@@ -472,7 +469,7 @@ void() item_armor2 =
 /*QUAKED item_armorInv (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 
-void() item_armorInv =
+void item_armorInv ()
 {
 	self.touch = armor_touch;
 	precache_model ("progs/armor.mdl");
@@ -490,7 +487,7 @@ WEAPONS
 ===============================================================================
 */
 
-void() bound_other_ammo =
+void bound_other_ammo ()
 {
 	if (other.ammo_shells > 100)
 		other.ammo_shells = 100;
@@ -503,7 +500,7 @@ void() bound_other_ammo =
 }
 
 
-float(float w) RankForWeapon =
+float RankForWeapon (float w)
 {
 	if (w == IT_LIGHTNING)
 		return 1;
@@ -545,7 +542,7 @@ Switch to new_weapon if better than self.weapon
 Only be called if we have enough ammo for new_weapon so don't bother checking
 =============
 */
-void(float new_weapon) Deathmatch_Weapon =
+void Deathmatch_Weapon (float new_weapon)
 {
 	float	or, nr;
 
@@ -561,9 +558,9 @@ void(float new_weapon) Deathmatch_Weapon =
 weapon_touch
 =============
 */
-float() W_BestWeapon;
+float W_BestWeapon ();
 
-void() weapon_touch =
+void weapon_touch ()
 {
 	float	hadammo, best, new;
 	entity	stemp;
@@ -696,7 +693,7 @@ void() weapon_touch =
 /*QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 
-void() weapon_supershotgun =
+void weapon_supershotgun ()
 {
 if (deathmatch <= 3)
 {
@@ -713,7 +710,7 @@ if (deathmatch <= 3)
 /*QUAKED weapon_nailgun (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 
-void() weapon_nailgun =
+void weapon_nailgun ()
 {
 if (deathmatch <= 3)
 {
@@ -730,7 +727,7 @@ if (deathmatch <= 3)
 /*QUAKED weapon_supernailgun (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 
-void() weapon_supernailgun =
+void weapon_supernailgun ()
 {
 if (deathmatch <= 3)
 {
@@ -747,7 +744,7 @@ if (deathmatch <= 3)
 /*QUAKED weapon_grenadelauncher (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 
-void() weapon_grenadelauncher =
+void weapon_grenadelauncher ()
 {
 if (deathmatch <= 3)
 {
@@ -764,7 +761,7 @@ if (deathmatch <= 3)
 /*QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 
-void() weapon_rocketlauncher =
+void weapon_rocketlauncher ()
 {
 if (deathmatch <= 3)
 {
@@ -782,7 +779,7 @@ if (deathmatch <= 3)
 /*QUAKED weapon_lightning (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 
-void() weapon_lightning =
+void weapon_lightning ()
 {
 if (deathmatch <= 3)
 {
@@ -805,7 +802,7 @@ AMMO
 ===============================================================================
 */
 
-void() ammo_touch =
+void ammo_touch ()
 {
 	entity	stemp;
 	float	best;
@@ -906,7 +903,7 @@ float WEAPON_BIG2 = 1;
 /*QUAKED item_shells (0 .5 .8) (0 0 0) (32 32 32) big
 */
 
-void() item_shells =
+void item_shells ()
 {
 	if (deathmatch == 4)
 		return;
@@ -934,7 +931,7 @@ void() item_shells =
 /*QUAKED item_spikes (0 .5 .8) (0 0 0) (32 32 32) big
 */
 
-void() item_spikes =
+void item_spikes ()
 {
 	if (deathmatch == 4)
 		return;
@@ -963,7 +960,7 @@ void() item_spikes =
 /*QUAKED item_rockets (0 .5 .8) (0 0 0) (32 32 32) big
 */
 
-void() item_rockets =
+void item_rockets ()
 {
 	if (deathmatch == 4)
 		return;
@@ -993,7 +990,7 @@ void() item_rockets =
 /*QUAKED item_cells (0 .5 .8) (0 0 0) (32 32 32) big
 */
 
-void() item_cells =
+void item_cells ()
 {
 	if (deathmatch == 4)
 		return;
@@ -1028,7 +1025,7 @@ float WEAPON_SHOTGUN = 1;
 float WEAPON_ROCKET = 2;
 float WEAPON_SPIKES = 4;
 float WEAPON_BIG = 8;
-void() item_weapon =
+void item_weapon ()
 {
 	if (deathmatch == 4)
 		return;
@@ -1102,7 +1099,7 @@ KEYS
 ===============================================================================
 */
 
-void() key_touch =
+void key_touch ()
 {
 	if (other.classname != "player")
 		return;
@@ -1130,7 +1127,7 @@ void() key_touch =
 }
 
 
-void() key_setsounds =
+void key_setsounds ()
 {
 	if (world.worldtype == 0)
 	{
@@ -1160,7 +1157,7 @@ following:
 2: base
 */
 
-void() item_key1 =
+void item_key1 ()
 {
 	if (world.worldtype == 0)
 	{
@@ -1198,7 +1195,7 @@ following:
 2: base
 */
 
-void() item_key2 =
+void item_key2 ()
 {
 	if (world.worldtype == 0)
 	{
@@ -1235,7 +1232,7 @@ END OF LEVEL RUNES
 ===============================================================================
 */
 
-void() sigil_touch =
+void sigil_touch ()
 {
 	if (other.classname != "player")
 		return;
@@ -1260,7 +1257,7 @@ void() sigil_touch =
 End of level sigil, pick up to end episode and return to jrstart.
 */
 
-void() item_sigil =
+void item_sigil ()
 {
 	if (!self.spawnflags)
 		objerror ("no spawnflags");
@@ -1302,7 +1299,7 @@ POWERUPS
 ===============================================================================
 */
 
-void() powerup_touch =
+void powerup_touch ()
 {
 	if (other.classname != "player")
 		return;
@@ -1372,7 +1369,7 @@ void() powerup_touch =
 /*QUAKED item_artifact_invulnerability (0 .5 .8) (-16 -16 -24) (16 16 32)
 Player is invulnerable for 30 seconds
 */
-void() item_artifact_invulnerability =
+void item_artifact_invulnerability ()
 {
 	self.touch = powerup_touch;
 
@@ -1393,7 +1390,7 @@ void() item_artifact_invulnerability =
 /*QUAKED item_artifact_envirosuit (0 .5 .8) (-16 -16 -24) (16 16 32)
 Player takes no damage from water or slime for 30 seconds
 */
-void() item_artifact_envirosuit =
+void item_artifact_envirosuit ()
 {
 	self.touch = powerup_touch;
 
@@ -1412,7 +1409,7 @@ void() item_artifact_envirosuit =
 /*QUAKED item_artifact_invisibility (0 .5 .8) (-16 -16 -24) (16 16 32)
 Player is invisible for 30 seconds
 */
-void() item_artifact_invisibility =
+void item_artifact_invisibility ()
 {
 	self.touch = powerup_touch;
 
@@ -1432,7 +1429,7 @@ void() item_artifact_invisibility =
 /*QUAKED item_artifact_super_damage (0 .5 .8) (-16 -16 -24) (16 16 32)
 The next attack from the player will do 4x damage
 */
-void() item_artifact_super_damage =
+void item_artifact_super_damage ()
 {
 	self.touch = powerup_touch;
 
@@ -1463,7 +1460,7 @@ PLAYER BACKPACKS
 ===============================================================================
 */
 
-void() BackpackTouch =
+void BackpackTouch ()
 {
 	string	s;
 	float	best, new;
@@ -1625,7 +1622,7 @@ void() BackpackTouch =
 DropBackpack
 ===============
 */
-void() DropBackpack =
+void DropBackpack ()
 {
 	entity	item;
 

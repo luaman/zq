@@ -25,10 +25,10 @@
 
 */
 
-void() InitBodyQue;
-void() NextLevel;
+void InitBodyQue ();
+void NextLevel ();
 
-void() main =
+void main ()
 {
 /*
 	dprint ("main function\n");
@@ -197,7 +197,7 @@ World Types:
 2: base
 */
 //=======================
-void() worldspawn =
+void worldspawn ()
 {
 	string	s;
 
@@ -386,7 +386,7 @@ void() worldspawn =
 	coop = cvar("coop");
 }
 
-void() StartFrame =
+void StartFrame ()
 {
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar("fraglimit");
@@ -408,12 +408,12 @@ BODY QUE
 
 entity  bodyque_head;
 
-void() bodyque =
+void bodyque ()
 {	// just here so spawn functions don't complain after the world
 	// creates bodyques
 }
 
-void() InitBodyQue =
+void InitBodyQue ()
 {
 	bodyque_head = spawn();
 	bodyque_head.classname = "bodyque";
@@ -429,7 +429,7 @@ void() InitBodyQue =
 
 // make a body que entry for the given ent so the ent can be
 // respawned elsewhere
-void(entity ent) CopyToBodyQue =
+void CopyToBodyQue (entity ent)
 {
 	bodyque_head.angles = ent.angles;
 	bodyque_head.model = ent.model;

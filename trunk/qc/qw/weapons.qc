@@ -25,15 +25,15 @@
 
 */
 
-void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
-void () player_run;
-void(entity bomb, entity attacker, float rad, entity ignore, string dtype) T_RadiusDamage;
-void(vector org, float damage) SpawnBlood;
-void() SuperDamageSound;
+void T_Damage (entity targ, entity inflictor, entity attacker, float damage);
+void player_run ();
+void T_RadiusDamage (entity bomb, entity attacker, float rad, entity ignore, string dtype);
+void SpawnBlood (vector org, float damage);
+void SuperDamageSound ();
 
 
 // called by worldspawn
-void() W_Precache =
+void W_Precache ()
 {
 	precache_sound ("weapons/r_exp3.wav");		// new rocket explosion
 	precache_sound ("weapons/rocket1i.wav");	// spike gun
@@ -49,7 +49,7 @@ void() W_Precache =
 	precache_sound ("weapons/shotgn2.wav");		// super shotgun
 }
 
-float() crandom =
+float crandom ()
 {
 	return 2*(random() - 0.5);
 }
@@ -59,7 +59,7 @@ float() crandom =
 W_FireAxe
 ================
 */
-void() W_FireAxe =
+void W_FireAxe ()
 {
 	vector	source;
 	vector	org;
@@ -99,7 +99,7 @@ void() W_FireAxe =
 //============================================================================
 
 
-vector() wall_velocity =
+vector wall_velocity ()
 {
 	vector	vel;
 	
@@ -117,7 +117,7 @@ vector() wall_velocity =
 SpawnMeatSpray
 ================
 */
-void(vector org, vector vel) SpawnMeatSpray =
+void SpawnMeatSpray (vector org, vector vel)
 {
 	entity	missile;
 
@@ -147,7 +147,7 @@ void(vector org, vector vel) SpawnMeatSpray =
 SpawnBlood
 ================
 */
-void(vector org, float damage) SpawnBlood =
+void SpawnBlood (vector org, float damage)
 {
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_BLOOD);
@@ -163,7 +163,7 @@ void(vector org, float damage) SpawnBlood =
 spawn_touchblood
 ================
 */
-void(float damage) spawn_touchblood =
+void spawn_touchblood (float damage)
 {
 	vector	vel;
 
@@ -190,7 +190,7 @@ float	blood_count;
 vector	puff_org;
 float	puff_count;
 
-void() ClearMultiDamage =
+void ClearMultiDamage ()
 {
 	multi_ent = world;
 	multi_damage = 0;
@@ -198,14 +198,14 @@ void() ClearMultiDamage =
 	puff_count = 0;
 }
 
-void() ApplyMultiDamage =
+void ApplyMultiDamage ()
 {
 	if (!multi_ent)
 		return;
 	T_Damage (multi_ent, self, self, multi_damage);
 }
 
-void(entity hit, float damage) AddMultiDamage =
+void AddMultiDamage (entity hit, float damage)
 {
 	if (!hit)
 		return;
@@ -220,7 +220,7 @@ void(entity hit, float damage) AddMultiDamage =
 		multi_damage = multi_damage + damage;
 }
 
-void() Multi_Finish =
+void Multi_Finish ()
 {
 	if (puff_count)
 	{
@@ -256,7 +256,7 @@ BULLETS
 TraceAttack
 ================
 */
-void(float damage, vector dir) TraceAttack =
+void TraceAttack (float damage, vector dir)
 {
 	vector	vel, org;
 	
@@ -286,7 +286,7 @@ Used by shotgun, super shotgun, and enemy soldier firing
 Go to the trouble of combining multiple pellets into a single damage call.
 ================
 */
-void(float shotcount, vector dir, vector spread) FireBullets =
+void FireBullets (float shotcount, vector dir, vector spread)
 {
 	vector	direction;
 	vector	src;
@@ -319,7 +319,7 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 W_FireShotgun
 ================
 */
-void() W_FireShotgun =
+void W_FireShotgun ()
 {
 	vector	dir;
 
@@ -341,7 +341,7 @@ void() W_FireShotgun =
 W_FireSuperShotgun
 ================
 */
-void() W_FireSuperShotgun =
+void W_FireSuperShotgun ()
 {
 	vector	dir;
 
@@ -371,7 +371,7 @@ ROCKETS
 ==============================================================================
 */
 
-void() T_MissileTouch =
+void T_MissileTouch ()
 {
 	float	damg;
 
@@ -440,7 +440,7 @@ void() T_MissileTouch =
 W_FireRocket
 ================
 */
-void() W_FireRocket =
+void W_FireRocket ()
 {
 	if (deathmatch != 4)
 		self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
@@ -481,7 +481,7 @@ LIGHTNING
 ===============================================================================
 */
 
-void(entity from, float damage) LightningHit =
+void LightningHit (entity from, float damage)
 {
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_LIGHTNINGBLOOD);
@@ -498,7 +498,7 @@ void(entity from, float damage) LightningHit =
 LightningDamage
 =================
 */
-void(vector p1, vector p2, entity from, float damage) LightningDamage =
+void LightningDamage (vector p1, vector p2, entity from, float damage)
 {
 	entity	e1, e2;
 	vector	f;
@@ -543,7 +543,7 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 }
 
 
-void() W_FireLightning =
+void W_FireLightning ()
 {
 	vector	org;
 	float	cells;
@@ -617,7 +617,7 @@ void() W_FireLightning =
 //=============================================================================
 
 
-void() GrenadeExplode =
+void GrenadeExplode ()
 {
 	if (self.voided) {
 		return;
@@ -636,7 +636,7 @@ void() GrenadeExplode =
 	remove (self);
 }
 
-void() GrenadeTouch =
+void GrenadeTouch ()
 {
 	if (other == self.owner)
 		return;			// don't explode on owner
@@ -655,7 +655,7 @@ void() GrenadeTouch =
 W_FireGrenade
 ================
 */
-void() W_FireGrenade =
+void W_FireGrenade ()
 {       
 	if (deathmatch != 4)
 		self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
@@ -712,8 +712,8 @@ void() W_FireGrenade =
 
 //=============================================================================
 
-void() spike_touch;
-void() superspike_touch;
+void spike_touch ();
+void superspike_touch ();
 
 
 /*
@@ -723,7 +723,7 @@ launch_spike
 Used for both the player and the ogre
 ===============
 */
-void(vector org, vector dir) launch_spike =
+void launch_spike (vector org, vector dir)
 {
 	newmis = spawn ();
 	newmis.voided=0;
@@ -744,7 +744,7 @@ void(vector org, vector dir) launch_spike =
 	newmis.velocity = dir * 1000;
 }
 
-void() W_FireSuperSpikes =
+void W_FireSuperSpikes ()
 {
 	vector	dir;
 	entity	old;
@@ -762,7 +762,7 @@ void() W_FireSuperSpikes =
 	WriteByte (MSG_ONE, SVC_SMALLKICK);
 }
 
-void(float ox) W_FireSpikes =
+void W_FireSpikes (float ox)
 {
 	vector	dir;
 	entity	old;
@@ -795,7 +795,7 @@ void(float ox) W_FireSpikes =
 
 
 
-void() spike_touch =
+void spike_touch ()
 {
 	if (other == self.owner)
 		return;
@@ -840,7 +840,7 @@ void() spike_touch =
 
 }
 
-void() superspike_touch =
+void superspike_touch ()
 {
 	if (other == self.owner)
 		return;
@@ -889,7 +889,7 @@ PLAYER WEAPON USE
 ===============================================================================
 */
 
-void() W_SetCurrentAmmo =
+void W_SetCurrentAmmo ()
 {
 	player_run ();		// get out of any weapon firing states
 
@@ -958,7 +958,7 @@ void() W_SetCurrentAmmo =
 	}
 }
 
-float() W_BestWeapon =
+float W_BestWeapon ()
 {
 	float	it;
 
@@ -986,7 +986,7 @@ float() W_BestWeapon =
 	return IT_AXE;
 }
 
-float() W_CheckNoAmmo =
+float W_CheckNoAmmo ()
 {
 	if (self.currentammo > 0)
 		return TRUE;
@@ -1009,16 +1009,16 @@ W_Attack
 An attack impulse can be triggered now
 ============
 */
-void()	player_axe1;
-void()	player_axeb1;
-void()	player_axec1;
-void()	player_axed1;
-void()	player_shot1;
-void()	player_nail1;
-void()	player_light1;
-void()	player_rocket1;
+void player_axe1 ();
+void player_axeb1 ();
+void player_axec1 ();
+void player_axed1 ();
+void player_shot1 ();
+void player_nail1 ();
+void player_light1 ();
+void player_rocket1 ();
 
-void() W_Attack =
+void W_Attack ()
 {
 	float	r;
 
@@ -1088,7 +1088,7 @@ W_ChangeWeapon
 
 ============
 */
-void() W_ChangeWeapon =
+void W_ChangeWeapon ()
 {
 	float	it, am, fl;
 	
@@ -1168,7 +1168,7 @@ void() W_ChangeWeapon =
 CheatCommand
 ============
 */
-void() CheatCommand =
+void CheatCommand ()
 {
 	if (!infokey(world, "*cheats"))
 		return;
@@ -1200,7 +1200,7 @@ CycleWeaponCommand
 Go to the next weapon with ammo
 ============
 */
-void() CycleWeaponCommand =
+void CycleWeaponCommand ()
 {
 	float	it, am;
 	
@@ -1275,7 +1275,7 @@ CycleWeaponReverseCommand
 Go to the prev weapon with ammo
 ============
 */
-void() CycleWeaponReverseCommand =
+void CycleWeaponReverseCommand ()
 {
 	float	it, am;
 
@@ -1349,7 +1349,7 @@ ServerflagsCommand
 Just for development
 ============
 */
-void() ServerflagsCommand =
+void ServerflagsCommand ()
 {
 	if (!infokey(world, "*cheats"))
 		return;
@@ -1364,7 +1364,7 @@ ImpulseCommands
 
 ============
 */
-void() ImpulseCommands =
+void ImpulseCommands ()
 {
 	if (self.impulse >= 1 && self.impulse <= 8)
 		W_ChangeWeapon ();
@@ -1388,7 +1388,7 @@ W_WeaponFrame
 Called every frame so impulse events can be handled as well as possible
 ============
 */
-void() W_WeaponFrame =
+void W_WeaponFrame ()
 {
 	if (time < self.attack_finished)
 		return;
@@ -1411,7 +1411,7 @@ SuperDamageSound
 Plays sound if needed
 ========
 */
-void() SuperDamageSound =
+void SuperDamageSound ()
 {
 	if (self.super_damage_finished > time)
 	{

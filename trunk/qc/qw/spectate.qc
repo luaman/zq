@@ -41,7 +41,7 @@ SpectatorConnect
 called when a spectator connects to a server
 ============
 */
-void() SpectatorConnect =
+void SpectatorConnect ()
 {
 	bprint (PRINT_MEDIUM, "Spectator ");
 	bprint (PRINT_MEDIUM, self.netname);
@@ -57,7 +57,7 @@ SpectatorDisconnect
 called when a spectator disconnects from a server
 ============
 */
-void() SpectatorDisconnect =
+void SpectatorDisconnect ()
 {
 	bprint (PRINT_MEDIUM, "Spectator ");
 	bprint (PRINT_MEDIUM, self.netname);
@@ -71,7 +71,7 @@ SpectatorImpulseCommand
 Called by SpectatorThink if the spectator entered an impulse
 ================
 */
-void() SpectatorImpulseCommand =
+void SpectatorImpulseCommand ()
 {
 	if (self.impulse == 1) {
 		// teleport the spectator to the next spawn point
@@ -96,7 +96,7 @@ SpectatorThink
 Called every frame after physics are run
 ================
 */
-void() SpectatorThink =
+void SpectatorThink ()
 {
 	// self.origin, etc contains spectator position, so you could
 	// do some neat stuff here

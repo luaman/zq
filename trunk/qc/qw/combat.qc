@@ -25,11 +25,11 @@
 
 */
 
-void(entity targ, entity attacker) ClientObituary;
-void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
+void ClientObituary (entity targ, entity attacker);
+void T_RadiusDamage (entity inflictor, entity attacker, float damage, entity ignore, string dtype);
 
-void() monster_death_use;
-void(entity attacker) GetMadAtAttacker;
+void monster_death_use ();
+void GetMadAtAttacker (entity attacker);
 
 //============================================================================
 
@@ -41,7 +41,7 @@ Returns true if the inflictor can directly damage the target.  Used for
 explosions and melee attacks.
 ============
 */
-float(entity targ, entity inflictor) CanDamage =
+float CanDamage (entity targ, entity inflictor)
 {
 // bmodels need special checking because their origin is 0,0,0
 	if (targ.movetype == MOVETYPE_PUSH)
@@ -79,7 +79,7 @@ float(entity targ, entity inflictor) CanDamage =
 Killed
 ============
 */
-void(entity targ, entity attacker) Killed =
+void Killed (entity targ, entity attacker)
 {
 	entity	oself;
 
@@ -126,7 +126,7 @@ The damage is coming from inflictor, but get mad at attacker
 This should be the only function that ever reduces health.
 ============
 */
-void(entity targ, entity inflictor, entity attacker, float damage) T_Damage =
+void T_Damage (entity targ, entity inflictor, entity attacker, float damage)
 {
 	vector	dir;
 	entity	oldself;
@@ -245,7 +245,7 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 T_RadiusDamage
 ============
 */
-void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage =
+void T_RadiusDamage (entity inflictor, entity attacker, float damage, entity ignore, string dtype)
 {
 	float	points;
 	entity	head;
@@ -286,7 +286,7 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
 T_BeamDamage
 ============
 */
-void(entity attacker, float damage) T_BeamDamage =
+void T_BeamDamage (entity attacker, float damage)
 {
 	float	points;
 	entity	head;

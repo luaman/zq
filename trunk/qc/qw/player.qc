@@ -25,7 +25,7 @@
 
 */
 
-void() bubble_bob;
+void bubble_bob ();
 
 /*
 ==============================================================================
@@ -112,7 +112,7 @@ PLAYER
 ==============================================================================
 */
 
-void() player_run;
+void player_run ();
 
 void()  player_stand1 =[        $axstnd1,       player_stand1   ]
 {
@@ -164,7 +164,7 @@ void()  player_run =[   $rockrun1,      player_run      ]
 	self.walkframe = self.walkframe + 1;
 }
 
-void()muzzleflash =
+void muzzleflash ()
 {
 	WriteByte (MSG_MULTICAST, SVC_MUZZLEFLASH);
 	WriteEntity (MSG_MULTICAST, self);
@@ -268,9 +268,9 @@ void() player_rocket3   =[$rockatt3, player_rocket4  ] {self.weaponframe=3;}
 void() player_rocket4   =[$rockatt4, player_rocket5  ] {self.weaponframe=4;}
 void() player_rocket5   =[$rockatt5, player_rocket6  ] {self.weaponframe=5;}
 void() player_rocket6   =[$rockatt6, player_run  ] {self.weaponframe=6;}
-void(float num_bubbles) DeathBubbles;
+void DeathBubbles (float num_bubbles);
 
-void() PainSound =
+void PainSound ()
 {
 	float	rs;
 
@@ -366,7 +366,7 @@ void()  player_axpain4 =        [       $axpain4,       player_axpain5  ] {}
 void()  player_axpain5 =        [       $axpain5,       player_axpain6  ] {}
 void()  player_axpain6 =        [       $axpain6,       player_run      ] {}
 
-void() player_pain =
+void player_pain ()
 {
 	if (self.weaponframe)
 		return;
@@ -380,14 +380,14 @@ void() player_pain =
 		player_pain1 ();
 }
 
-void() player_diea1;
-void() player_dieb1;
-void() player_diec1;
-void() player_died1;
-void() player_diee1;
-void() player_die_ax1;
+void player_diea1 ();
+void player_dieb1 ();
+void player_diec1 ();
+void player_died1 ();
+void player_diee1 ();
+void player_die_ax1 ();
 
-void() DeathBubblesSpawn =
+void DeathBubblesSpawn ()
 {
 	entity	bubble;
 	if (self.owner.waterlevel != 3)
@@ -411,7 +411,7 @@ void() DeathBubblesSpawn =
 		remove(self);
 }
 
-void(float num_bubbles) DeathBubbles =
+void DeathBubbles (float num_bubbles)
 {
 	entity	bubble_spawner;
 	
@@ -428,7 +428,7 @@ void(float num_bubbles) DeathBubbles =
 }
 
 
-void() DeathSound =
+void DeathSound ()
 {
 	float	rs;
 
@@ -457,14 +457,14 @@ void() DeathSound =
 }
 
 
-void() PlayerDead =
+void PlayerDead ()
 {
 	self.nextthink = -1;
 // allow respawn after a certain time
 	self.deadflag = DEAD_DEAD;
 }
 
-vector(float dm) VelocityForDamage =
+vector VelocityForDamage (float dm)
 {
 	vector	v;
 
@@ -504,7 +504,7 @@ vector(float dm) VelocityForDamage =
 	return v;
 }
 
-void(string gibname, float dm) ThrowGib =
+void ThrowGib (string gibname, float dm)
 {
 	entity	new;
 
@@ -525,7 +525,7 @@ void(string gibname, float dm) ThrowGib =
 	new.flags = 0;
 }
 
-void(string gibname, float dm) ThrowHead =
+void ThrowHead (string gibname, float dm)
 {
 	setmodel (self, gibname);
 	self.frame = 0;
@@ -542,7 +542,7 @@ void(string gibname, float dm) ThrowHead =
 }
 
 
-void() GibPlayer =
+void GibPlayer ()
 {
 	ThrowHead ("progs/h_player.mdl", self.health);
 	ThrowGib ("progs/gib1.mdl", self.health);
@@ -569,7 +569,7 @@ void() GibPlayer =
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
 }
 
-void() PlayerDie =
+void PlayerDie ()
 {
 	float	i;
 	string	s;
@@ -655,7 +655,7 @@ void() PlayerDie =
 
 }
 
-void() set_suicide_frame =
+void set_suicide_frame ()
 {       // used by kill command and diconnect command
 	if (self.model != "progs/player.mdl")
 		return; // already gibbed

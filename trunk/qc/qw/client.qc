@@ -26,15 +26,15 @@
 */
 
 // prototypes
-void () W_WeaponFrame;
-void() W_SetCurrentAmmo;
-void() player_pain;
-void() player_stand1;
-void (entity ent) play_teleport;
-void (vector org) spawn_tfog;
-void (vector org, entity death_owner) spawn_tdeath;
-void() ExitIntermission;
-string(string attacker_class) ObituaryForMonster;
+void W_WeaponFrame ();
+void W_SetCurrentAmmo ();
+void player_pain ();
+void player_stand1 ();
+void play_teleport (entity ent);
+void spawn_tfog (vector org);
+void spawn_tdeath (vector org, entity death_owner);
+void ExitIntermission ();
+string ObituaryForMonster (string attacker_class);
 
 float   modelindex_eyes, modelindex_player;
 
@@ -56,14 +56,14 @@ vector	intermission_origin;
 This is the camera point for the intermission.
 Use mangle instead of angle, so you can set pitch or roll as well as yaw.  'pitch roll yaw'
 */
-void() info_intermission =
+void info_intermission ()
 {
 	self.angles = self.mangle;      // so C can get at it
 }
 
 
 
-void() SetChangeParms =
+void SetChangeParms ()
 {
 	if (self.health <= 0)
 	{
@@ -94,7 +94,7 @@ void() SetChangeParms =
 	parm9 = self.armortype * 100;
 }
 
-void() SetNewParms =
+void SetNewParms ()
 {
 	parm1 = IT_SHOTGUN | IT_AXE;
 	parm2 = 100;
@@ -107,7 +107,7 @@ void() SetNewParms =
 	parm9 = 0;
 }
 
-void() DecodeLevelParms =
+void DecodeLevelParms ()
 {
 	if (serverflags)
 	{
@@ -133,7 +133,7 @@ FindIntermission
 Returns the entity to view from
 ============
 */
-entity() FindIntermission =
+entity FindIntermission ()
 {
 	entity	spot;
 	float	cyc;
@@ -162,7 +162,7 @@ entity() FindIntermission =
 }
 
 
-void() GotoNextMap =
+void GotoNextMap ()
 {
 	string	newmap;
 
@@ -192,7 +192,7 @@ IntermissionThink
 When the player presses attack or jump, change to the next level
 ============
 */
-void() IntermissionThink =
+void IntermissionThink ()
 {
 	if (time < intermission_exittime)
 		return;
@@ -211,7 +211,7 @@ The global "nextmap" has been set previously.
 Take the players to the intermission spot
 ============
 */
-void() execute_changelevel =
+void execute_changelevel ()
 {
 	entity	pos;
 
@@ -258,7 +258,7 @@ void() execute_changelevel =
 }
 
 
-void() changelevel_touch =
+void changelevel_touch ()
 {
 	if (other.classname != "player")
 		return;
@@ -299,7 +299,7 @@ void() changelevel_touch =
 /*QUAKED trigger_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
 When the player touches this, he gets sent to the map listed in the "map" variable.  Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
 */
-void() trigger_changelevel =
+void trigger_changelevel ()
 {
 	if (!self.map)
 		objerror ("chagnelevel trigger doesn't have map");
@@ -317,10 +317,10 @@ void() trigger_changelevel =
 =============================================================================
 */
 
-void() set_suicide_frame;
+void set_suicide_frame ();
 
 // called by ClientKill and DeadThink
-void() respawn =
+void respawn ()
 {
 	if (coop)
 	{
@@ -354,7 +354,7 @@ ClientKill
 Player entered the suicide command
 ============
 */
-void() ClientKill =
+void ClientKill ()
 {
 	if (intermission_running)
 		return;
@@ -376,7 +376,7 @@ SelectSpawnPoint
 Returns the entity to spawn at
 ============
 */
-entity() SelectSpawnPoint =
+entity SelectSpawnPoint ()
 {
 	entity	spot, thing;
 	float	numspots, totalspots;
@@ -472,8 +472,8 @@ entity() SelectSpawnPoint =
 }
 
 
-void() DecodeLevelParms;
-void() PlayerDie;
+void DecodeLevelParms ();
+void PlayerDie ();
 
 /*
 ===========
@@ -482,7 +482,7 @@ PutClientInServer
 called each time a player enters a new level
 ============
 */
-void() PutClientInServer =
+void PutClientInServer ()
 {
 	entity	spot;
 
@@ -611,7 +611,7 @@ void() PutClientInServer =
 /*QUAKED info_player_start (1 0 0) (-16 -16 -24) (16 16 24)
 The normal starting point for a level.
 */
-void() info_player_start =
+void info_player_start ()
 {
 }
 
@@ -619,21 +619,21 @@ void() info_player_start =
 /*QUAKED info_player_start2 (1 0 0) (-16 -16 -24) (16 16 24)
 Only used on start map for the return point from an episode.
 */
-void() info_player_start2 =
+void info_player_start2 ()
 {
 }
 
 /*QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 24)
 potential spawning position for deathmatch games
 */
-void() info_player_deathmatch =
+void info_player_deathmatch ()
 {
 }
 
 /*QUAKED info_player_coop (1 0 1) (-16 -16 -24) (16 16 24)
 potential spawning position for coop games
 */
-void() info_player_coop =
+void info_player_coop ()
 {
 }
 
@@ -648,7 +648,7 @@ RULES
 /*
 go to the next level for deathmatch
 */
-void() NextLevel =
+void NextLevel ()
 {
 	entity	o;
 
@@ -712,7 +712,7 @@ CheckRules
 Exit deathmatch games upon conditions
 ============
 */
-void() CheckRules =
+void CheckRules ()
 {       
 	if (deathmatch && fraglimit && self.frags >= fraglimit)
 		NextLevel ();
@@ -720,7 +720,7 @@ void() CheckRules =
 
 //============================================================================
 
-void() PlayerDeathThink =
+void PlayerDeathThink ()
 {
 	float	forward;
 
@@ -754,7 +754,7 @@ void() PlayerDeathThink =
 }
 
 
-void() PlayerJump =
+void PlayerJump ()
 {
 	if (self.flags & FL_WATERJUMP)
 		return;
@@ -796,7 +796,7 @@ WaterMove
 */
 .float  dmgtime;
 
-void() WaterMove =
+void WaterMove ()
 {
 //dprint (ftos(self.waterlevel));
 	if (self.movetype == MOVETYPE_NOCLIP)
@@ -881,7 +881,7 @@ PlayerPreThink
 Called every frame before physics are run
 ================
 */
-void() PlayerPreThink =
+void PlayerPreThink ()
 {
 	if (intermission_running)
 	{
@@ -930,7 +930,7 @@ CheckPowerups
 Check for turning off powerups
 ================
 */
-void() CheckPowerups =
+void CheckPowerups ()
 {
 	if (self.health <= 0)
 		return;
@@ -1108,7 +1108,7 @@ PlayerPostThink
 Called every frame after physics are run
 ================
 */
-void() PlayerPostThink =
+void PlayerPostThink ()
 {
 	if (intermission_running)
 	{
@@ -1150,7 +1150,7 @@ ClientConnect
 called when a player connects to a server
 ============
 */
-void() ClientConnect =
+void ClientConnect ()
 {
 	if (deathmatch || coop)
 	{
@@ -1171,7 +1171,7 @@ ClientDisconnect
 called when a player disconnects from a server
 ============
 */
-void() ClientDisconnect =
+void ClientDisconnect ()
 {
 	string	s;
 
@@ -1193,7 +1193,7 @@ called when a player dies
 ============
 */
 
-void(entity targ, entity attacker) ClientObituary =
+void ClientObituary (entity targ, entity attacker)
 {
 	float	rnum;
 	string	deathstring, deathstring2;
