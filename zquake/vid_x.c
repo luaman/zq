@@ -41,6 +41,7 @@ typedef unsigned short PIXEL;
 
 #include "quakedef.h"
 #include "d_local.h"
+#include "input.h"
 #include "keys.h"
 
 cvar_t		_windowed_mouse = {"_windowed_mouse","0",CVAR_ARCHIVE};
