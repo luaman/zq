@@ -930,6 +930,8 @@ void Host_Frame (double time)
 
 	if (cls.state >= ca_onserver)	// !!! Tonik
 	{
+		Cam_SetViewPlayer ();
+
 		// Set up prediction for other players
 		CL_SetUpPlayerPrediction(false);
 		

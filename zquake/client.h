@@ -296,6 +296,7 @@ typedef struct
 
 	char		levelname[40];	// for display on solo scoreboard
 	int			playernum;
+	int			viewplayernum;	// either playernum or spec_track (in chase camera mode)
 
 // refresh related state
 	struct model_s	*worldmodel;	// cl_entitites[0].model
@@ -443,12 +444,13 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 extern int	autocam;
 extern int	spec_track; // player# of who we are tracking
 
-qboolean Cam_DrawViewModel(void);
-qboolean Cam_DrawPlayer(int playernum);
-void Cam_Track(usercmd_t *cmd);
-void Cam_FinishMove(usercmd_t *cmd);
-void Cam_Reset(void);
-void CL_InitCam(void);
+qboolean Cam_DrawViewModel (void);
+qboolean Cam_DrawPlayer (int playernum);
+void Cam_Track (usercmd_t *cmd);
+void Cam_FinishMove (usercmd_t *cmd);
+void Cam_Reset (void);
+void Cam_SetViewPlayer (void);
+void CL_InitCam (void);
 
 //
 // skin.c
