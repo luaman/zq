@@ -148,6 +148,32 @@ int CL_ClientState ()
 
 
 /*
+==================
+CL_UserinfoChanged
+
+Cvar system calls this when a CVAR_USERINFO cvar changes
+==================
+*/
+void CL_UserinfoChanged (char *key, char *string)
+{
+	char *s;
+
+	s = TP_ParseFunChars (string, false);
+
+	if (strcmp(s, Info_ValueForKey (cls.userinfo, key)))
+	{
+		Info_SetValueForKey (cls.userinfo, key, s, MAX_INFO_STRING);
+
+		if (cls.state >= ca_connected)
+		{
+			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+			SZ_Print (&cls.netchan.message, va("setinfo \"%s\" \"%s\"\n", key, s));
+		}
+	}
+}
+
+
+/*
 =======================
 CL_SendConnectPacket
 

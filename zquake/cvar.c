@@ -19,10 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cvar.c -- dynamic variable tracking
 
-#include "quakedef.h"
+#include "common.h"
 
+extern void CL_UserinfoChanged (char *key, char *value);
 extern void SV_ServerinfoChanged (char *key, char *value);
-extern char *TP_ParseFunChars (char *s, qboolean chat);
 
 static cvar_t	*cvar_hash[32];
 /*static*/ cvar_t	*cvar_vars;
@@ -194,16 +194,7 @@ void Cvar_Set (cvar_t *var, char *value)
 
 #ifndef SERVERONLY
 	if (var->flags & CVAR_USERINFO)
-	{
-		char *s;
-		s = TP_ParseFunChars (var->string, false);
-		Info_SetValueForKey (cls.userinfo, var->name, s, MAX_INFO_STRING);
-		if (cls.state >= ca_connected)
-		{
-			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-			SZ_Print (&cls.netchan.message, va("setinfo \"%s\" \"%s\"\n", var->name, s));
-		}
-	}
+		CL_UserinfoChanged (var->name, var->string);
 #endif
 }
 
@@ -310,11 +301,7 @@ void Cvar_Register (cvar_t *var)
 
 #ifndef SERVERONLY
 	if (var->flags & CVAR_USERINFO)
-	{
-		char *s;
-		s = TP_ParseFunChars (var->string, false);
-		Info_SetValueForKey (cls.userinfo, var->name, s, MAX_INFO_STRING);
-	}
+		CL_UserinfoChanged (var->name, var->string);
 #endif
 }
 
