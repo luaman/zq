@@ -19,29 +19,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // common.h  -- general definitions
 
+
+#include "bothdefs.h"
+
+
 typedef unsigned char 		byte;
 #define _DEF_BYTE_
 
-// KJB Undefined true and false defined in SciTech's DEBUG.H header
-#undef true
-#undef false
-
-typedef enum {false, true}	qboolean;
-
+typedef enum {false, true} qboolean;
 
 #ifndef min
 #define min(a,b) ((a) < (b) ? (a) : (b))
 #endif
-
 #ifndef max
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
-#ifndef bound
 //#define bound(a,b,c) (max((a), min((b), (c))))
 #define bound(a,b,c) ((a) >= (c) ? (a) : \
 					(b) < (a) ? (a) : (b) > (c) ? (c) : (b))
-#endif
 
 
 #define	MAX_INFO_STRING	196
@@ -234,9 +230,19 @@ void Com_DPrintf (char *fmt, ...);
 
 //============================================================================
 
-extern qboolean	com_serveractive;	// true if sv.state != ss_dead
+//
+// include frequently used headers
+//
+#include "mathlib.h"
+#include "zone.h"
+#include "cvar.h"
+#include "cmd.h"
+#include "sys.h"
+#include "net.h"
+#include "protocol.h"
 
-//=============================================================================
+//============================================================================
+
 
 // the host system specifies the base of the directory tree, the
 // command line parms passed to the program, and the amount of memory
@@ -255,8 +261,8 @@ typedef struct
 // host
 //
 extern quakeparms_t	host_parms;
-
 extern qboolean		host_initialized;
+extern qboolean		com_serveractive;	// true if sv.state != ss_dead
 
 void Host_Init (quakeparms_t *parms);
 void Host_Shutdown (void);
