@@ -78,8 +78,7 @@ void SV_FlushRedirect (void)
 ==================
 SV_BeginRedirect
 
-  Send Con_Printf data to the remote client
-  instead of the console
+Send Con_Printf data to the remote client instead of the console
 ==================
 */
 void SV_BeginRedirect (redirect_t rd)
@@ -352,9 +351,9 @@ Larger attenuations will drop off.  (max 4 attenuation)
 void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
     float attenuation)
 {       
-    int         sound_num;
-    int			field_mask;
-    int			i;
+	int         sound_num;
+	int			field_mask;
+	int			i;
 	int			ent;
 	vec3_t		origin;
 	qboolean	use_phs;
@@ -370,16 +369,16 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
 		SV_Error ("SV_StartSound: channel = %i", channel);
 
 // find precache number for sound
-    for (sound_num=1 ; sound_num<MAX_SOUNDS
-        && sv.sound_precache[sound_num] ; sound_num++)
-        if (!strcmp(sample, sv.sound_precache[sound_num]))
-            break;
+	for (sound_num=1 ; sound_num<MAX_SOUNDS
+		&& sv.sound_precache[sound_num] ; sound_num++)
+		if (!strcmp(sample, sv.sound_precache[sound_num]))
+			break;
     
-    if ( sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num] )
-    {
-        Con_Printf ("SV_StartSound: %s not precacheed\n", sample);
-        return;
-    }
+	if ( sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num] )
+	{
+		Con_Printf ("SV_StartSound: %s not precached\n", sample);
+		return;
+	}
     
 	ent = NUM_FOR_EDICT(entity);
 
@@ -689,10 +688,10 @@ void SV_UpdateToReliableMessages (void)
 	SZ_Clear (&sv.datagram);
 }
 
+
 #ifdef _WIN32
 #pragma optimize( "", off )
 #endif
-
 
 
 /*
