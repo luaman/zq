@@ -1734,8 +1734,11 @@ void SV_Init (quakeparms_t *parms)
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Con_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));	
 
-//	Con_Printf ("\nServer Version %4.2f (Build %04d)\n\n", VERSION, build_number());
+#ifdef RELEASE_VERSION
+	Con_Printf ("\nServer Version %s\n\n", Z_VERSION);
+#else
 	Con_Printf ("\nServer Version %s (Build %04d)\n\n", Z_VERSION, build_number());
+#endif
 
 	Con_Printf ("For help on ZQuake, go to http://zquake.da.ru/\n\n");
 
