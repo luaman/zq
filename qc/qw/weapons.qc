@@ -656,7 +656,9 @@ W_FireGrenade
 ================
 */
 void W_FireGrenade ()
-{       
+{
+	vector	ang;
+	
 	if (deathmatch != 4)
 		self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 	
@@ -674,12 +676,19 @@ void W_FireGrenade ()
 
 // set newmis speed
 
-	makevectors (self.v_angle);
-
 	if (self.v_angle_x)
-		newmis.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
-	else
 	{
+		ang = self.v_angle;
+		// limit pitch in case the server allows pitch angles < -70,
+		// so that grenades still go straight up and not behind
+		if (ang_x < -70)
+			ang_x = -70;
+		makevectors (ang);
+	
+		newmis.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
+	}
+	else
+	{	// assume the player is not using the mouse.	FIXME: remove?
 		newmis.velocity = aim(self, 10000);
 		newmis.velocity = newmis.velocity * 600;
 		newmis.velocity_z = 200;
