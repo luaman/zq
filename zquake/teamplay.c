@@ -296,8 +296,9 @@ char *Macro_Powerups_f (void)
 	}
 
 	effects = cl.frames[cl.parsecount&UPDATE_MASK].playerstate[cl.playernum].effects;
-	if ( (effects & (EF_FLAG1|EF_FLAG2)) ||
-		(cl.teamfortress && (effects & EF_DIMLIGHT)) )	//FIXME
+	if ( (effects & (EF_FLAG1|EF_FLAG2)) ||		// CTF
+		(cl.teamfortress && cl.stats[STAT_ITEMS] & (IT_KEY1|IT_KEY2) // TF
+		/*&& (effects & EF_DIMLIGHT))*/) )
 	{
 		if (macro_buf[0])
 			strcat(macro_buf, "/");
