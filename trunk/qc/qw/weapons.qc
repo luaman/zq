@@ -891,6 +891,84 @@ void superspike_touch ()
 
 
 /*
+float(entity ent) EntityNum =
+{
+	float num = 1;
+	entity e;
+	
+	e = world;
+	do {
+		e = nextent(e);
+		
+	} while (e != ent);
+
+	return num;
+}
+
+void() W_FireRail =
+{
+	float entnum;
+	vector org, pos, end;
+	vector dir;
+	entity ignore, old_ignore;
+
+	makevectors(self.v_angle);
+
+	dir = v_forward;
+
+	org = self.origin + v_forward * 10 + '0 0 16';
+	pos = org;
+	end = org + v_forward*2048;
+
+	ignore = old_ignore = self;
+
+	do
+	{
+		traceline (pos, end, false, ignore);
+		pos = trace_endpos;
+
+		if (trace_ent == old_ignore || trace_ent == self) {
+			// may happen if the entities are touching.
+			// we don't want to apply damage twice or kill ourselves,
+			// so move forward a little bit and retry
+			pos = pos + dir;
+		}
+		else
+		{
+			// go right through all players and monsters,
+			// but not through explosive boxes etc which are SOLID_BBOX
+			if (trace_ent.solid == SOLID_SLIDEBOX) {
+				old_ignore = ignore;
+				ignore = trace_ent;
+			}
+			else
+				ignore = world;
+
+			if (trace_ent.takedamage) {
+				T_Damage (trace_ent, self, self, 100);
+			}
+		}
+	} while (ignore);
+
+//	sound (self, CHAN_AUTO, "weapons/railgun.wav", 1, ATTN_NORM);
+	sound (self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM);
+
+	entnum = EntityNum(self);
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_LIGHTNING1);
+	WriteShort (MSG_MULTICAST, -1 - entnum);
+	WriteCoord (MSG_MULTICAST, org_x);
+	WriteCoord (MSG_MULTICAST, org_y);
+	WriteCoord (MSG_MULTICAST, org_z);
+	WriteCoord (MSG_MULTICAST, pos_x);
+	WriteCoord (MSG_MULTICAST, pos_y);
+	WriteCoord (MSG_MULTICAST, pos_z);
+	multicast (org, MULTICAST_PHS);
+}
+*/
+
+
+/*
 ===============================================================================
 
 PLAYER WEAPON USE
@@ -1088,6 +1166,11 @@ void W_Attack ()
 		self.attack_finished = time + 0.1;
 		sound (self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM);
 		player_light1();
+/*
+		player_shot1 ();
+		self.attack_finished = time + 1.5;	// tune this!
+		W_FireRail ();
+*/
 	}
 }
 
