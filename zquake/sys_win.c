@@ -47,20 +47,6 @@ void Sys_PopFPCW (void);
 void Sys_PushFPCW_SetHigh (void);
 
 
-void Sys_DebugLog (char *file, char *fmt, ...)
-{
-    va_list argptr; 
-    static char data[1024];
-    int fd;
-    
-    va_start(argptr, fmt);
-    vsprintf(data, fmt, argptr);
-    va_end(argptr);
-    fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
-    write(fd, data, strlen(data));
-    close(fd);
-};
-
 /*
 ===============================================================================
 
