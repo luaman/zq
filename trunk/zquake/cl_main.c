@@ -1698,6 +1698,7 @@ void Host_Init (quakeparms_t *parms)
 	Cmd_Init ();
 	Cvar_Init ();
 	V_Init ();
+	CL_InitTeamplay ();
 
 	COM_Init ();
 

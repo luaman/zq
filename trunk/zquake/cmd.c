@@ -550,7 +550,7 @@ static	char		*cmd_null_string = "";
 static	char		*cmd_args = NULL;
 
 static cmd_function_t	*cmd_hash_array[32];
-static	cmd_function_t	*cmd_functions;		// possible commands to execute
+static cmd_function_t	*cmd_functions;		// possible commands to execute
 
 /*
 ============
@@ -738,7 +738,7 @@ _return:
 Cmd_AddCommand
 ============
 */
-void	Cmd_AddCommand (char *cmd_name, xcommand_t function)
+void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 {
 	cmd_function_t	*cmd;
 	int	key;
@@ -913,7 +913,6 @@ void Cmd_ForwardToServer (void)
 #endif
 
 
-// Tonik -->
 void Cmd_CmdList_f (void)
 {
 	cmd_function_t	*cmd;
@@ -924,6 +923,7 @@ void Cmd_CmdList_f (void)
 
 	Con_Printf ("------------\n%d commands\n", i);
 }
+
 
 /*
 ===========
@@ -938,7 +938,6 @@ void Cmd_Z_Cmd_f (void)
 	Cbuf_InsertText (Cmd_Args());
 	Cbuf_InsertText ("\n");
 }
-// <-- Tonik
 
 
 // dest must point to a 1024-byte buffer
@@ -1040,8 +1039,6 @@ void	Cmd_ExecuteString (char *text)
 
 	key = Key (cmd_argv[0]);
 
-	// FIXME: make Key () case-insensitive!!!
-
 // check functions
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
@@ -1055,6 +1052,10 @@ void	Cmd_ExecuteString (char *text)
 		}
 	}
 
+// check cvars
+	if (Cvar_Command())
+		return;
+
 // check alias
 	for (a=cmd_alias_hash[key] ; a ; a=a->hash_next)
 	{
@@ -1064,11 +1065,9 @@ void	Cmd_ExecuteString (char *text)
 			return;
 		}
 	}
-	
-// check cvars
-	if (!Cvar_Command () && (cl_warncmd.value || developer.value))
+
+	if (cl_warncmd.value || developer.value)
 		Con_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
-	
 }
 
 /*
@@ -1113,15 +1112,7 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("unalias", Cmd_UnAlias_f);
 	Cmd_AddCommand ("_z_cmd", Cmd_Z_Cmd_f);	// ZQuake
 
-#ifdef WINDOWS
-	Cmd_AddCommand ("dir", Cmd_Dir_f);
-#endif
-
 #ifndef SERVERONLY
 	Cmd_AddCommand ("cmd", Cmd_ForwardToServer_f);
-#endif
-
-#ifndef SERVERONLY
-	CL_InitTeamplay ();
 #endif
 }
