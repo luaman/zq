@@ -412,10 +412,7 @@ typedef struct
 
 #ifdef MVDPLAY
 // interpolation stuff
-	interpolate_t	int_entities[MVD_MAX_PACKET_ENTITIES];
 	interpolate_t	int_projectiles[MAX_PROJECTILES];
-	int				int_packet;
-	int				int_prevnum[MAX_CLIENTS];
 #endif
 
 // sprint buffer
@@ -589,7 +586,7 @@ void CL_ParsePacketEntities (qbool delta);
 void CL_SetSolidEntities (void);
 void CL_ParsePlayerState (void);
 #ifdef MVDPLAY
-void MVD_InitInterpolation(float cur, float old);
+void MVD_InitInterpolation(void);
 void MVD_ClearPredict(void);
 void MVD_Interpolate(void);
 #endif

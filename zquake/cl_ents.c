@@ -155,28 +155,6 @@ void FlushEntityPacket (void)
 	}
 }
 
-#ifdef MVDPLAY
-void CL_InitEntInter(void)
-{
-	int i;
-	interpolate_t	*ient;
-	packet_entities_t *pack;
-	entity_state_t	*ent;
-
-	pack = &cl.frames[cl.int_packet].packet_entities;
-
-	for (i=0, ient = cl.int_entities, ent = pack->entities; i < pack->num_entities; i++, ent++, ient++)
-	{
-		if (!ient->interpolate)
-			continue;
-
-		VectorCopy(ient->origin, ent->s_origin);
-		VectorCopy(ient->angles, ent->s_angles);
-		ient->interpolate = false;
-	}
-}
-#endif
-
 entity_state_t *CL_GetBaseline (int number)
 {
 	return &cl_entities[number].baseline;
@@ -236,11 +214,6 @@ void CL_ParsePacketEntities (qbool delta)
 	newpacket = cls.netchan.incoming_sequence&UPDATE_MASK;
 	newp = &cl.frames[newpacket].packet_entities;
 	cl.frames[newpacket].valid = false;	// will set to true after we parse everything
-
-#ifdef MVDPLAY
-	if (cls.mvdplayback)
-		CL_InitEntInter();
-#endif
 
 	if (delta)
 	{
@@ -390,12 +363,6 @@ void CL_ParsePacketEntities (qbool delta)
 
 			CL_ParseDelta (&oldp->entities[oldindex], &newp->entities[newindex], word);
 
-#ifdef MVDPLAY
-			if (cls.mvdplayback) {
-				cl.int_entities[newindex].interpolate = true;
-				cl.int_entities[newindex].oldindex = oldindex;
-			}
-#endif
 			newindex++;
 			oldindex++;
 		}
@@ -791,7 +758,8 @@ void CL_ParsePlayerState (void)
 	player_info_t	*info;
 	player_state_t	*state;
 #ifdef MVDPLAY
-    player_state_t *prevstate, dummy;
+    player_state_t *prevstate;
+	static player_state_t dummy;	// all zeroes
 #endif
 	int			num;
 	int			i;
@@ -1261,8 +1229,7 @@ void CL_SetSolidEntities (void)
 }
 
 #ifdef MVDPLAY
-static float timediff;
-extern float nextdemotime;
+extern float nextdemotime, olddemotime;
 
 static float adjustangle(float current, float ideal, float fraction)
 {
@@ -1290,33 +1257,25 @@ static float adjustangle(float current, float ideal, float fraction)
 
 int	fixangle;
 
-void MVD_InitInterpolation(float next, float old)
+void MVD_InitInterpolation (void)
 {
-    float	f;
     int		i,j;
     struct predicted_player *pplayer;
     frame_t	*frame, *oldframe;
     player_state_t	*state, *oldstate;
     vec3_t	dist;
+	float timediff;
 
     if (!cl.validsequence)
         return;
 
-    timediff = next-old;
+    timediff = nextdemotime - olddemotime;
+    if (!timediff)
+		// shouldn't happen?
+        return;
 
     frame = &cl.frames[cl.parsecount&UPDATE_MASK];
     oldframe = &cl.frames[(cl.oldparsecount)&UPDATE_MASK];
-
-    if (!timediff) {
-        return;
-    }
-
-    f = (cls.realtime - nextdemotime)/(timediff);
-
-    if (f > 0.0)
-        f = 0.0;
-    if (f < -1.0)
-        f = -1.0;
 
     // clients
     for (i=0, pplayer = predicted_players, state=frame->playerstate, oldstate=oldframe->playerstate; 
@@ -1377,15 +1336,17 @@ void MVD_InitInterpolation(float next, float old)
         }
     }
 
+/*
     // entities
     for (i=0; i < frame->packet_entities.num_entities; i++)
     {
         if (!cl.int_entities[i].interpolate)
             continue;
 
-        VectorCopy(frame->packet_entities.entities[i].s_origin, cl.int_entities[i].origin);
-        VectorCopy(frame->packet_entities.entities[i].s_angles, cl.int_entities[i].angles);
+        MSG_UnpackOrigin (frame->packet_entities.entities[i].s_origin, cl.int_entities[i].origin);
+        MSG_UnpackAngles (frame->packet_entities.entities[i].s_angles, cl.int_entities[i].angles);
     }
+*/
 
     // nails
     for (i=0; i < cl_num_projectiles; i++) {
@@ -1406,27 +1367,15 @@ void MVD_Interpolate(void)
 	int i, j;
 	float f;
 	frame_t	*frame, *oldframe;
-	player_state_t *state, *oldstate, *self, *oldself;
 	entity_state_t *oldents;
+	player_state_t *state, *oldstate;
 	struct predicted_player *pplayer;
 	static float old;
-	extern float olddemotime;
 
-	self = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[cl.playernum];
-	oldself = &cl.frames[(cls.netchan.outgoing_sequence - 1) & UPDATE_MASK].playerstate[cl.playernum];
-
-	self->messagenum = cl.parsecount;
-
-	VectorCopy(oldself->origin, self->origin);
-	VectorCopy(oldself->velocity, self->velocity);
-	VectorCopy(oldself->viewangles, self->viewangles);
-
-//	if (old != nextdemotime) {
-//		old = nextdemotime;
-//		MVD_InitInterpolation (nextdemotime, olddemotime);
-//	}
-
-	CL_ParseClientdata();
+	if (old != nextdemotime) {
+		old = nextdemotime;
+		MVD_InitInterpolation ();
+	}
 
 	cls.netchan.outgoing_sequence = cl.parsecount + 1;
 
@@ -1436,13 +1385,12 @@ void MVD_Interpolate(void)
 	if (nextdemotime <= olddemotime)
 		return;
 
-//Com_Printf ("%f of %f\n", cls.demotime - olddemotime, nextdemotime - olddemotime);
-
 	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
 	oldframe = &cl.frames[cl.oldparsecount & UPDATE_MASK];
 	oldents = oldframe->packet_entities.entities;
 
-	f = bound(0, (cls.demotime - olddemotime) / (nextdemotime - olddemotime), 1);
+//Com_Printf ("%f of %f\n", cls.demotime - nextdemotime, nextdemotime - olddemotime);
+	f = bound(0, (cls.demotime - nextdemotime) / (nextdemotime - olddemotime), 1);
 
 	// interpolate nails
 	for (i = 0; i < cl_num_projectiles; i++)	{

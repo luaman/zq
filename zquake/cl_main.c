@@ -1053,29 +1053,7 @@ void CL_Frame (double time)
 
 #ifdef MVDPLAY
 	if (cls.mvdplayback)
-	{
-		static float	old;
-		extern	float	nextdemotime, olddemotime;
-
-		player_state_t *self, *oldself;
-		self = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[cl.playernum];
-		oldself = &cl.frames[(cls.netchan.outgoing_sequence-1) & UPDATE_MASK].playerstate[cl.playernum];
-		self->messagenum = cl.parsecount;
-		VectorCopy(oldself->origin, self->origin);
-		VectorCopy(oldself->velocity, self->velocity);
-		VectorCopy(oldself->viewangles, self->viewangles);
-
-		if (old != nextdemotime) // FIXME: use oldparcecount != cl.parsecount?
-		{
-			old = nextdemotime;
-			MVD_InitInterpolation(nextdemotime, olddemotime);
-		}
-
-		CL_ParseClientdata();
-		
-		cls.netchan.outgoing_sequence = cl.parsecount+1;
-		MVD_Interpolate();
-	}
+		MVD_Interpolate ();
 #endif
 
 	// process stuffed commands
