@@ -721,7 +721,7 @@ int		 PR_WriteProgdefs (char *filename)
 
 	out += sprintf (out, "#define PROGHEADER_CRC %i\n", crc);
 
-	if (CheckParm("-progdefs", 0))
+	if (CheckParm("progdefs", 0, true))
 	{
 		printf ("writing %s\n", filename);
 		FILE *f = fopen (filename, "w");
@@ -781,8 +781,7 @@ int		 main (int argc, char **argv)
 	myargc = argc;
 	myargv = argv;
 
-	if (CheckParm ("/?", 0) || CheckParm("-?", 0) ||
-	    CheckParm ("--h", 0) || CheckParm("-h", 0) || CheckParm("/h", 0))
+	if (CheckParm ("?", 0, true) || CheckParm ("h", 0, true))
 	{
 		printf ("zqcc looks for progs.src in the current directory.\n");
 		printf ("to look in a different directory: -src <directory>\n");
@@ -792,12 +791,13 @@ int		 main (int argc, char **argv)
 		return 0;	// or should I return 1?
 	}
 
-	if (CheckParm ("-idcomp", 0)) {
+	if (CheckParm ("idcomp", 0, true))
+	{
 		printf ("Compiling in id compatibility mode\n");
 		opt_idcomp = true;
 	}
 
-	p = CheckParm ("-src", 0);
+	p = CheckParm ("src", 0, true);
 	if (p && p < argc-1 )
 	{
 		strcpy (sourcedir, argv[p+1]);
@@ -817,10 +817,10 @@ int		 main (int argc, char **argv)
 
 	// check for commandline defines:
 	p = 0;
-	while ( (p = CheckParm ("-D", p+1)) > 0 )
+	while ( (p = CheckParm ("D", p+1, true)) > 0 )
 	{
 		char	*name = NULL;
-		if ( !Q_stricmp(argv[p], "-D") )
+		if ( !Q_stricmp(argv[p] + 1, "D") )
 		{
 			if ( p < (argc - 1) )
 				name = argv[++p]; // argv matches completely -> name is an extra parameter
@@ -864,7 +864,7 @@ int		 main (int argc, char **argv)
 	if (!PR_FinishCompilation ())
 		Error ("compilation errors");
 
-	p = CheckParm ("-asm", 0);
+	p = CheckParm ("asm", 0, true);
 	if (p)
 	{
 		for (p++ ; p<argc ; p++)
