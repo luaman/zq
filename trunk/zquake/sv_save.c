@@ -203,9 +203,6 @@ void SV_LoadGame_f (void)
 
 	Host_EndGame ();
 
-	// clear disconnect messages from loopback so that they don't break connection process
-	NET_ClearLoopback ();
-
 	CL_BeginLocalConnection ();
 
 	SV_SpawnServer (mapname, false);

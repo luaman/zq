@@ -62,6 +62,9 @@ void Host_EndGame (void)
 #endif
 	SV_Shutdown ("Server was killed");
 	CL_Disconnect ();
+
+	// clear disconnect messages from loopback
+	NET_ClearLoopback ();
 }
 
 /*
