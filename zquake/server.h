@@ -458,3 +458,8 @@ void ClientReliableWrite_Short(client_t *cl, int c);
 void ClientReliableWrite_String(client_t *cl, char *s);
 void ClientReliableWrite_SZ(client_t *cl, void *data, int len);
 
+//
+// sv_save.c
+//
+void SV_SaveGame_f (void);
+void SV_LoadGame_f (void);

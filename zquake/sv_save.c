@@ -17,12 +17,12 @@ extern cvar_t	maxclients;
 
 /*
 ===============
-Host_SavegameComment
+SV_SavegameComment
 
 Writes a SAVEGAME_COMMENT_LENGTH character comment describing the current 
 ===============
 */
-void Host_SavegameComment (char *text)
+void SV_SavegameComment (char *text)
 {
 	int		i;
 	char	kills[20];
@@ -42,10 +42,10 @@ void Host_SavegameComment (char *text)
 
 /*
 ===============
-Host_Savegame_f
+SV_SaveGame_f
 ===============
 */
-void Host_Savegame_f (void)
+void SV_SaveGame_f (void)
 {
 	char	name[256];
 	FILE	*f;
@@ -109,7 +109,7 @@ void Host_Savegame_f (void)
 	}
 	
 	fprintf (f, "%i\n", SAVEGAME_VERSION);
-	Host_SavegameComment (comment);
+	SV_SavegameComment (comment);
 	fprintf (f, "%s\n", comment);
 	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
 		fprintf (f, "%f\n", svs.clients->spawn_parms[i]);
@@ -141,10 +141,10 @@ void Host_Savegame_f (void)
 
 /*
 ===============
-Host_Loadgame_f
+SV_LoadGame_f
 ===============
 */
-void Host_Loadgame_f (void)
+void SV_LoadGame_f (void)
 {
 	char	name[MAX_OSPATH];
 	FILE	*f;
