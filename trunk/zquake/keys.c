@@ -1071,8 +1071,13 @@ void Key_Event (int key, qboolean down)
 			M_Keydown (key);
 			break;
 		case key_game:
-		case key_console:
 			M_ToggleMenu_f ();
+			break;
+		case key_console:
+			if (cls.state == ca_active || cl.intermission)
+				Con_ToggleConsole_f ();
+			else
+				M_ToggleMenu_f ();
 			break;
 		default:
 			Sys_Error ("Bad key_dest");
