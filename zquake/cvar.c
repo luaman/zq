@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern char *TP_ParseFunChars (char *s);
 
 static cvar_t	*cvar_hash[32];
-static cvar_t	*cvar_vars;
+/*static*/ cvar_t	*cvar_vars;
 static char		*cvar_null_string = "";
 
 
@@ -132,6 +132,25 @@ char *Cvar_CompleteVariable (char *partial)
 			return cvar->name;
 
 	return NULL;
+}
+
+int Cvar_CompleteCountPossible (char *partial)
+{
+	cvar_t	*cvar;
+	int		len;
+	int		c = 0;
+	
+	len = strlen(partial);
+	
+	if (!len)
+		return 0;
+		
+	// check partial match
+	for (cvar=cvar_vars ; cvar ; cvar=cvar->next)
+		if (!Q_strncasecmp (partial, cvar->name, len))
+			c++;
+
+	return c;
 }
 
 
