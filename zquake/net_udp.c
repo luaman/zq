@@ -40,9 +40,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <libc.h>
 #endif
 
+netadr_t	net_from;
+netadr_t	net_null = {NA_NULL};
 netadr_t	net_local_adr;
 
-netadr_t	net_from;
 sizebuf_t	net_message;
 
 byte		net_message_buffer[MAX_BIG_MSGLEN];
@@ -84,7 +85,9 @@ void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 
 qboolean NET_CompareBaseAdr (netadr_t a, netadr_t b)
 {
-	if (a.type == NA_LOOPBACK && b.type == NA_LOOPBACK)
+	if (a.type != b.type)
+		return false;
+	if (a.type == NA_LOOPBACK)
 		return true;
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
 		return true;
@@ -93,7 +96,9 @@ qboolean NET_CompareBaseAdr (netadr_t a, netadr_t b)
 
 qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 {
-	if (a.type == NA_LOOPBACK && b.type == NA_LOOPBACK)
+	if (a.type != b.type)
+		return false;
+	if (a.type == NA_LOOPBACK)
 		return true;
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] && a.port == b.port)
 		return true;
@@ -113,6 +118,8 @@ char *NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
+	if (a.type == NA_NULL)
+		return "null";
 	if (a.type == NA_LOOPBACK)
 		return "loopback";
 
@@ -125,6 +132,11 @@ char *NET_BaseAdrToString (netadr_t a)
 {
 	static	char	s[64];
 	
+	if (a.type == NA_NULL)
+		return "null";
+	if (a.type == NA_LOOPBACK)
+		return "loopback";
+
 	sprintf (s, "%i.%i.%i.%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3]);
 
 	return s;
@@ -283,8 +295,10 @@ void NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to)
 	struct sockaddr_in	addr;
 	int		net_socket;
 
-	if (to.type == NA_LOOPBACK)
-	{
+	if (to.type == NA_NULL)
+		return;
+
+	if (to.type == NA_LOOPBACK)	{
 		NET_SendLoopPacket (sock, length, data, to);
 		return;
 	}
