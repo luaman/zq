@@ -99,6 +99,15 @@ char		m_return_reason [32];
 //=============================================================================
 /* Support Routines */
 
+#ifdef GLQUAKE
+cvar_t	scr_scaleMenu = {"scr_scaleMenu","1"};
+int		menuwidth = 320;
+int		menuheight = 240;
+#else
+#define menuwidth vid.width
+#define menuheight vid.height
+#endif
+
 cvar_t	scr_centerMenu = {"scr_centerMenu","1"};
 int		m_yofs = 0;
 
@@ -111,7 +120,7 @@ Draws one solid graphics character
 */
 void M_DrawCharacter (int cx, int line, int num)
 {
-	Draw_Character (cx + ((vid.width - 320)>>1), line + m_yofs, num);
+	Draw_Character (cx + ((menuwidth - 320)>>1), line + m_yofs, num);
 }
 
 void M_Print (int cx, int cy, char *str)
@@ -136,12 +145,12 @@ void M_PrintWhite (int cx, int cy, char *str)
 
 void M_DrawTransPic (int x, int y, qpic_t *pic)
 {
-	Draw_TransPic (x + ((vid.width - 320)>>1), y + m_yofs, pic);
+	Draw_TransPic (x + ((menuwidth - 320)>>1), y + m_yofs, pic);
 }
 
 void M_DrawPic (int x, int y, qpic_t *pic)
 {
-	Draw_Pic (x + ((vid.width - 320)>>1), y + m_yofs, pic);
+	Draw_Pic (x + ((menuwidth - 320)>>1), y + m_yofs, pic);
 }
 
 byte identityTable[256];
@@ -174,13 +183,13 @@ void M_BuildTranslationTable(int top, int bottom)
 
 void M_DrawTransPicTranslate (int x, int y, qpic_t *pic)
 {
-	Draw_TransPicTranslate (x + ((vid.width - 320)>>1), y + m_yofs, pic, translationTable);
+	Draw_TransPicTranslate (x + ((menuwidth - 320)>>1), y + m_yofs, pic, translationTable);
 }
 
 
 void M_DrawTextBox (int x, int y, int width, int lines)
 {
-	Draw_TextBox (x + ((vid.width - 320)>>1), y + m_yofs, width, lines);
+	Draw_TextBox (x + ((menuwidth - 320)>>1), y + m_yofs, width, lines);
 }
 
 //=============================================================================
@@ -2698,6 +2707,9 @@ void M_Quit_Draw (void)
 void M_Init (void)
 {
 	Cvar_RegisterVariable (&scr_centerMenu);
+#ifdef GLQUAKE
+	Cvar_RegisterVariable (&scr_scaleMenu);
+#endif
 
 	Cmd_AddCommand ("togglemenu", M_ToggleMenu_f);
 
@@ -2747,8 +2759,21 @@ void M_Draw (void)
 		m_recursiveDraw = false;
 	}
 
+#ifdef GLQUAKE
+	if (scr_scaleMenu.value) {
+		menuwidth = 320;
+		menuheight = min (vid.height, 240);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity ();
+		glOrtho  (0, menuwidth, menuheight, 0, -99999, 99999);
+	} else {
+		menuwidth = vid.width;
+		menuheight = vid.height;
+	}
+#endif
+
 	if (scr_centerMenu.value)
-		m_yofs = (vid.height - 200) / 2;
+		m_yofs = (menuheight - 200) / 2;
 	else
 		m_yofs = 0;
 
@@ -2842,6 +2867,14 @@ void M_Draw (void)
 	case m_demos:
 		M_Demos_Draw ();
 	}
+
+#ifdef GLQUAKE
+	if (scr_scaleMenu.value) {
+		glMatrixMode (GL_PROJECTION);
+		glLoadIdentity ();
+		glOrtho  (0, vid.width, vid.height, 0, -99999, 99999);
+	}
+#endif
 
 	if (m_entersound)
 	{
