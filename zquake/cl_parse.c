@@ -1225,10 +1225,7 @@ void CL_CheckVersionRequest(char *s)
 
 ok:
 	for (i = 0; i < 11 && s[i]; i++)
-	{
 		buf[i] = s[i] &~ 128;			// strip high bit
-		Con_Printf ("%i --> %i\n", (int)s[i], (int)buf[i]);
-	}
 
 	if (!strncmp(buf, " f_version\n", 11) || !strncmp(buf, " z_version\n", 11))
 		Cbuf_AddText (va("say ZQuake version %s (Build %04d)\n", Z_VERSION, build_number()));
