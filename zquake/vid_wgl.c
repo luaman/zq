@@ -837,14 +837,16 @@ void VID_Shutdown (void)
 
 	if (vid_initialized)
 	{
+		RestoreHWGamma ();
+
 		vid_canalttab = false;
 		hRC = wglGetCurrentContext();
     	hDC = wglGetCurrentDC();
 
     	wglMakeCurrent(NULL, NULL);
 
-    	if (hRC)
-    	    wglDeleteContext(hRC);
+		if (hRC)
+			wglDeleteContext(hRC);
 
 		if (hDC && dibwindow)
 			ReleaseDC(dibwindow, hDC);
