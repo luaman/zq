@@ -1604,16 +1604,6 @@ void VID_RestoreOldMode (int original_mode)
 }
 
 
-void VID_SetDefaultMode (void)
-{
-
-	if (vid_initialized)
-		VID_SetMode (0, vid_curpal);
-
-	IN_DeactivateMouse ();
-}
-
-
 int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int				original_mode, temp /*, dummy */;
