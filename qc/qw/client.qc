@@ -241,10 +241,10 @@ void execute_changelevel ()
 	while (other != world)
 	{
 		other.takedamage = DAMAGE_NO;
+		other.flags = other.flags | FL_NOTARGET;
 		other.solid = SOLID_NOT;
 		other.movetype = MOVETYPE_NONE;
 		other.modelindex = 0;
-
 		other.effects = 0;
 		other.items = other.items - (other.items & (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD));
 		other.super_damage_finished = 0;
