@@ -434,7 +434,7 @@ void Draw_Init (void)
 		Sys_Error ("Couldn't load gfx/conback.lmp");
 	SwapPic (cb);
 
-//	sprintf (ver, "%4.2f", VERSION);
+//	sprintf (ver, "%4.2f", QW_VERSION);
 	strcpy (ver, Z_VERSION);
 	dest = cb->data + 320 + 320*186 - 11 - 8*strlen(ver);
 	for (x=0 ; x<strlen(ver) ; x++)

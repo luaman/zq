@@ -2423,7 +2423,7 @@ void M_Quit_Draw (void)
 	char *cmsg[] = {
 //    0123456789012345678901234567890123456789
 	"0            QuakeWorld",
-	"1    version " VSTR2(VERSION) " by id Software",
+	"1    version " VSTR2(QW_VERSION) " by id Software",
 	"0Programming",
 	"1 John Carmack    Michael Abrash",
 	"1 John Cash       Christian Antkow",

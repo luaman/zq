@@ -580,7 +580,7 @@ void SVC_DirectConnect (void)
 	version = atoi(Cmd_Argv(1));
 	if (version != PROTOCOL_VERSION)
 	{
-		Netchan_OutOfBandPrint (net_serversocket, net_from, "%c\nServer is version %4.2f.\n", A2C_PRINT, VERSION);
+		Netchan_OutOfBandPrint (net_serversocket, net_from, "%c\nServer is version %4.2f.\n", A2C_PRINT, QW_VERSION);
 		Con_Printf ("* rejected connect from version %i\n", version);
 		return;
 	}
@@ -1458,7 +1458,7 @@ void SV_InitLocal (void)
 		sprintf (localmodels[i], "*%i", i);
 
 	Info_SetValueForStarKey (svs.info, "*z_version", Z_VERSION, MAX_SERVERINFO_STRING);
-	Info_SetValueForStarKey (svs.info, "*version", va("%4.2f", VERSION), MAX_SERVERINFO_STRING);
+	Info_SetValueForStarKey (svs.info, "*version", va("%4.2f", QW_VERSION), MAX_SERVERINFO_STRING);
 	
 	// init fraglog stuff
 	svs.logsequence = 1;
