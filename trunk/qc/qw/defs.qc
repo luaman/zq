@@ -444,6 +444,8 @@ const float MULTICAST_PVS_R	= 5;		// within sight, reliable
 //
 float	movedist;
 
+string  string_null;    // null string, nothing should be held here
+
 entity	activator;		// the entity that activated a trigger or brush
 
 entity	damage_attacker;	// set by T_Damage
