@@ -231,6 +231,10 @@ void SNDDMA_Shutdown(void)
 {
 	if (snd_inited)
 	{
+		if (dma.buffer) {
+			// close it properly, so we can go and restart it later.
+			munmap(dma.buffer, dma.samples * (dma.samplebits/8));
+		}
 		close(audio_fd);
 		snd_inited = 0;
 	}
@@ -246,4 +250,3 @@ Send sound to device if buffer isn't really the dma buffer
 void SNDDMA_Submit(void)
 {
 }
-
