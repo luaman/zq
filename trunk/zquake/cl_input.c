@@ -166,10 +166,16 @@ void IN_JumpUp (void) {KeyUp(&in_jump);}
 
 void IN_FRJDown (void)
 {
+	IN_JumpDown ();
+
+	if (!cl.allow_frj && cls.state == ca_active) {
+		Com_Printf ("frj not allowed on this server\n");
+		return;
+	}
+
 	in_invertview = true;
 	in_impulse = 7;
 	IN_AttackDown ();
-	IN_JumpDown ();
 }
 
 void IN_FRJUp (void)
@@ -335,6 +341,7 @@ void CL_AdjustAngles (void)
 {
 	float	speed;
 	float	up, down;
+	float	yawspeed;
 	
 	if (in_speed.state & 1)
 		speed = cls.frametime * cl_anglespeedkey.value;
@@ -343,8 +350,11 @@ void CL_AdjustAngles (void)
 
 	if (!(in_strafe.state & 1))
 	{
-		cl.viewangles[YAW] -= speed*cl_yawspeed.value*CL_KeyState (&in_right);
-		cl.viewangles[YAW] += speed*cl_yawspeed.value*CL_KeyState (&in_left);
+		yawspeed = cl_yawspeed.value;
+		if (!cl.allow_frj)
+			yawspeed = bound (-1000, yawspeed, 1000);
+		cl.viewangles[YAW] -= speed*yawspeed*CL_KeyState (&in_right);
+		cl.viewangles[YAW] += speed*yawspeed*CL_KeyState (&in_left);
 		cl.viewangles[YAW] = anglemod(cl.viewangles[YAW]);
 	}
 	if (in_klook.state & 1)
