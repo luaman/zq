@@ -460,7 +460,7 @@ SOURCE=.\d_zpoint.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\draw.c
+SOURCE=.\r_draw.c
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
