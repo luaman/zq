@@ -26,51 +26,45 @@ float() CountPlayers;
 
 void() StuffMapAliases =
 {
-
-
-	stuffcmd(self, "alias e1m1 impulse 100\n");
-	stuffcmd(self, "alias e1m2 impulse 101\n");
-	stuffcmd(self, "alias e1m3 impulse 102\n");
-	stuffcmd(self, "alias e1m4 impulse 103\n");
-	stuffcmd(self, "alias e1m5 impulse 104\n");
-	stuffcmd(self, "alias e1m6 impulse 105\n");
-	stuffcmd(self, "alias e1m7 impulse 106\n");
-	stuffcmd(self, "alias e1m8 impulse 107\n");
-	stuffcmd(self, "alias e2m1 impulse 108\n");
-	stuffcmd(self, "alias e2m2 impulse 109\n");
-	stuffcmd(self, "alias e2m3 impulse 110\n");
-	stuffcmd(self, "alias e2m4 impulse 111\n");
-	stuffcmd(self, "alias e2m5 impulse 112\n");
-	stuffcmd(self, "alias e2m6 impulse 113\n");
-	stuffcmd(self, "alias e2m7 impulse 114\n");
-	stuffcmd(self, "alias e3m1 impulse 115\n");
-	stuffcmd(self, "alias e3m2 impulse 116\n");
-	stuffcmd(self, "alias e3m3 impulse 117\n");
-	stuffcmd(self, "alias e3m4 impulse 118\n");
-	stuffcmd(self, "alias e3m5 impulse 119\n");
-	stuffcmd(self, "alias e3m6 impulse 120\n");
-	stuffcmd(self, "alias e3m7 impulse 121\n");
-	stuffcmd(self, "alias e4m1 impulse 122\n");
-	stuffcmd(self, "alias e4m2 impulse 123\n");
-	stuffcmd(self, "alias e4m3 impulse 124\n");
-	stuffcmd(self, "alias e4m4 impulse 125\n");
-	stuffcmd(self, "alias e4m5 impulse 126\n");
-	stuffcmd(self, "alias e4m6 impulse 127\n");
-	stuffcmd(self, "alias e4m7 impulse 128\n");
-	stuffcmd(self, "alias e4m8 impulse 129\n");
-	stuffcmd(self, "alias dm1 impulse 130\n");
-	stuffcmd(self, "alias dm2 impulse 131\n");
-	stuffcmd(self, "alias dm3 impulse 132\n");
-	stuffcmd(self, "alias dm4 impulse 133\n");
-	stuffcmd(self, "alias dm5 impulse 134\n");
-	stuffcmd(self, "alias dm6 impulse 135\n");
-	stuffcmd(self, "alias start impulse 136\n");
-	stuffcmd(self, "alias end impulse 137\n");
-
+	stuffcmd(self, "alias e1m1 impulse 200\n");
+	stuffcmd(self, "alias e1m2 impulse 201\n");
+	stuffcmd(self, "alias e1m3 impulse 202\n");
+	stuffcmd(self, "alias e1m4 impulse 203\n");
+	stuffcmd(self, "alias e1m5 impulse 204\n");
+	stuffcmd(self, "alias e1m6 impulse 205\n");
+	stuffcmd(self, "alias e1m7 impulse 206\n");
+	stuffcmd(self, "alias e1m8 impulse 207\n");
+	stuffcmd(self, "alias e2m1 impulse 208\n");
+	stuffcmd(self, "alias e2m2 impulse 209\n");
+	stuffcmd(self, "alias e2m3 impulse 210\n");
+	stuffcmd(self, "alias e2m4 impulse 211\n");
+	stuffcmd(self, "alias e2m5 impulse 212\n");
+	stuffcmd(self, "alias e2m6 impulse 213\n");
+	stuffcmd(self, "alias e2m7 impulse 214\n");
+	stuffcmd(self, "alias e3m1 impulse 215\n");
+	stuffcmd(self, "alias e3m2 impulse 216\n");
+	stuffcmd(self, "alias e3m3 impulse 217\n");
+	stuffcmd(self, "alias e3m4 impulse 218\n");
+	stuffcmd(self, "alias e3m5 impulse 219\n");
+	stuffcmd(self, "alias e3m6 impulse 220\n");
+	stuffcmd(self, "alias e3m7 impulse 221\n");
+	stuffcmd(self, "alias e4m1 impulse 222\n");
+	stuffcmd(self, "alias e4m2 impulse 223\n");
+	stuffcmd(self, "alias e4m3 impulse 224\n");
+	stuffcmd(self, "alias e4m4 impulse 225\n");
+	stuffcmd(self, "alias e4m5 impulse 226\n");
+	stuffcmd(self, "alias e4m6 impulse 227\n");
+	stuffcmd(self, "alias e4m7 impulse 228\n");
+	stuffcmd(self, "alias e4m8 impulse 229\n");
+	stuffcmd(self, "alias dm1 impulse 230\n");
+	stuffcmd(self, "alias dm2 impulse 231\n");
+	stuffcmd(self, "alias dm3 impulse 232\n");
+	stuffcmd(self, "alias dm4 impulse 233\n");
+	stuffcmd(self, "alias dm5 impulse 234\n");
+	stuffcmd(self, "alias dm6 impulse 235\n");
+	stuffcmd(self, "alias start impulse 236\n");
+	stuffcmd(self, "alias end impulse 237\n");
 };
-
-
-
 
 void() StuffCustomMaps =
 {
@@ -78,11 +72,11 @@ void() StuffCustomMaps =
 	local string s1, s2;
 
 	if(self.cnt == -1)
-		self.cnt = 137 + 1;
+		self.cnt = 237 + 1;
 
 	f1 = self.cnt;
 	f3 = f1 + 10;
-	f2 = 999 + self.cnt - 137;
+	f2 = 999 + self.cnt - 237;
 	s1 = ftos(f2);
 	s2 = infokey(world, s1);
 	
@@ -140,84 +134,84 @@ string(float f2) GetMapName =
 	local string s1, s2;
 
 	
-	 if (f2 == 100)
+	 if (f2 == 200)
 		return "e1m1";
-	 else if (f2 == 101)
+	 else if (f2 == 201)
 		return "e1m2";
-	 else if (f2 == 102)
+	 else if (f2 == 202)
 		return "e1m3";
-	 else if (f2 == 103)
+	 else if (f2 == 203)
 		return "e1m4";
-	 else if (f2 == 104)
+	 else if (f2 == 204)
 		return "e1m5";
-	 else if (f2 == 105)
+	 else if (f2 == 205)
 		return "e1m6";
-	 else if (f2 == 106)
+	 else if (f2 == 206)
 		return "e1m7";
-	 else if (f2 == 107)
+	 else if (f2 == 207)
 		return "e1m8";
-	 else if (f2 == 108)
+	 else if (f2 == 208)
 		return "e2m1";
-	 else if (f2 == 109)
+	 else if (f2 == 209)
 		return "e2m2";
-	 else if (f2 == 110)
+	 else if (f2 == 210)
 		return "e2m3";
-	 else if (f2 == 111)
+	 else if (f2 == 211)
 		return "e2m4";
-	 else if (f2 == 112)
+	 else if (f2 == 212)
 		return "e2m5";
-	 else if (f2 == 113)
+	 else if (f2 == 213)
 		return "e2m6";
-	 else if (f2 == 114)
+	 else if (f2 == 214)
 		return "e2m7";
-	 else if (f2 == 115)
+	 else if (f2 == 215)
 		return "e3m1";
-	 else if (f2 == 116)
+	 else if (f2 == 216)
 		return "e3m2";
-	 else if (f2 == 117)
+	 else if (f2 == 217)
 		return "e3m3";
-	 else if (f2 == 118)
+	 else if (f2 == 218)
 		return "e3m4";
-	 else if (f2 == 119)
+	 else if (f2 == 219)
 		return "e3m5";
-	 else if (f2 == 120)
+	 else if (f2 == 220)
 		return "e3m6";
-	 else if (f2 == 121)
+	 else if (f2 == 221)
 		return "e3m7";
-	 else if (f2 == 122)
+	 else if (f2 == 222)
 		return "e4m1";
-	 else if (f2 == 123)
+	 else if (f2 == 223)
 		return "e4m2";
-	 else if (f2 == 124)
+	 else if (f2 == 224)
 		return "e4m3";
-	 else if (f2 == 125)
+	 else if (f2 == 225)
 		return "e4m4";
-	 else if (f2 == 126)
+	 else if (f2 == 226)
 		return "e4m5";
-	 else if (f2 == 127)
+	 else if (f2 == 227)
 		return "e4m6";
-	 else if (f2 == 128)
+	 else if (f2 == 228)
 		return "e4m7";
-	 else if (f2 == 129)
+	 else if (f2 == 229)
 		return "e4m8";
-	 else if (f2 == 130)
+	 else if (f2 == 230)
 		return "dm1";
-	 else if (f2 == 131)
+	 else if (f2 == 231)
 		return "dm2";
-	 else if (f2 == 132)
+	 else if (f2 == 232)
 		return "dm3";
-	 else if (f2 == 133)
+	 else if (f2 == 233)
 		return "dm4";
-	 else if (f2 == 134)
+	 else if (f2 == 234)
 		return "dm5";
-	 else if (f2 == 135)
+	 else if (f2 == 235)
 		return "dm6";
-	 else if (f2 == 136)
+	 else if (f2 == 236)
 		return "start";
-	 else if (f2 == 137)
+	 else if (f2 == 237)
 		return "end";
 	 else {
-		f1 = f2 + 999 - 137;
+		f1 = f2 + 999 - 237;
 		s1 = ftos(f1);
 		s2 = infokey(world, s1);
 		return s2;
