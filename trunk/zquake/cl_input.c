@@ -120,7 +120,7 @@ void IN_KLookUp (void) {KeyUp(&in_klook);}
 void IN_MLookDown (void) {KeyDown(&in_mlook);}
 void IN_MLookUp (void) {
 KeyUp(&in_mlook);
-if ( !(in_mlook.state&1) &&  lookspring.value)
+if (!mlook_active &&  lookspring.value)
 	V_StartPitchDrift();
 }
 void IN_UpDown(void) {KeyDown(&in_up);}
@@ -290,9 +290,10 @@ cvar_t	cl_anglespeedkey = {"cl_anglespeedkey","1.5"};
 cvar_t	cl_yawspeed = {"cl_yawspeed","140"};
 cvar_t	cl_pitchspeed = {"cl_pitchspeed","150"};
 
-cvar_t	lookspring = {"lookspring","0", CVAR_ARCHIVE};
-cvar_t	lookstrafe = {"lookstrafe","0", CVAR_ARCHIVE};
-cvar_t	sensitivity = {"sensitivity","3", CVAR_ARCHIVE};
+cvar_t	lookspring = {"lookspring","0",CVAR_ARCHIVE};
+cvar_t	lookstrafe = {"lookstrafe","0",CVAR_ARCHIVE};
+cvar_t	sensitivity = {"sensitivity","3",CVAR_ARCHIVE};
+cvar_t	freelook = {"freelook","1",CVAR_ARCHIVE};
 
 cvar_t	m_pitch = {"m_pitch","0.022", CVAR_ARCHIVE};
 cvar_t	m_yaw = {"m_yaw","0.022"};
@@ -657,6 +658,7 @@ void CL_InitInput (void)
 	Cvar_RegisterVariable (&lookspring);
 	Cvar_RegisterVariable (&lookstrafe);
 	Cvar_RegisterVariable (&sensitivity);
+	Cvar_RegisterVariable (&freelook);
 
 	Cvar_RegisterVariable (&m_pitch);
 	Cvar_RegisterVariable (&m_yaw);

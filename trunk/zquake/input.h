@@ -60,6 +60,7 @@ extern cvar_t	cl_anglespeedkey;
 extern cvar_t	cl_yawspeed;
 extern cvar_t	cl_pitchspeed;
 
+extern cvar_t	freelook;
 extern cvar_t	sensitivity;
 extern cvar_t	lookspring;
 extern cvar_t	lookstrafe;
@@ -70,3 +71,5 @@ extern cvar_t	m_forward;
 extern cvar_t	m_side;
 
 extern cvar_t	_windowed_mouse;
+
+#define mlook_active	(freelook.value || (in_mlook.state&1))
