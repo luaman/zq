@@ -884,14 +884,15 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	
 	if (host_initialized)	// because hunk allocation would get stomped
 		assert(!"Cmd_AddCommand after host_initialized");
-		
+
+#if 0
 // fail if the command is a variable name
-	if (Cvar_FindVar(cmd_name))
-	{
+	if (Cvar_FindVar(cmd_name)) {
 		Com_Printf ("Cmd_AddCommand: %s already defined as a var\n", cmd_name);
 		return;
 	}
-	
+#endif
+
 	key = Com_HashKey (cmd_name);
 
 // fail if the command already exists

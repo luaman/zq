@@ -249,18 +249,19 @@ void Cvar_Register (cvar_t *var)
 
 	// first check to see if it has already been defined
 	old = Cvar_FindVar (var->name);
-	if (old && !(old->flags & CVAR_DYNAMIC))
-	{
+
+	if (old && !(old->flags & CVAR_DYNAMIC)) {
 		Com_Printf ("Can't register variable %s, already defined\n", var->name);
 		return;
 	}
-	
+
+#if 0
 	// check for overlap with a command
-	if (Cmd_Exists (var->name))
-	{
+	if (Cmd_Exists (var->name)) {
 		Com_Printf ("Cvar_Register: %s is a command\n", var->name);
 		return;
 	}
+#endif
 
 	if (old)
 	{
