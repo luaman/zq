@@ -2629,7 +2629,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="sbar.c">
+				RelativePath="cl_sbar.c">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -3246,7 +3246,7 @@
 				RelativePath="render.h">
 			</File>
 			<File
-				RelativePath="sbar.h">
+				RelativePath="cl_sbar.h">
 			</File>
 			<File
 				RelativePath="screen.h">

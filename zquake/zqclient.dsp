@@ -1079,7 +1079,7 @@ SOURCE=.\r_vars.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\sbar.c
+SOURCE=.\cl_sbar.c
 # End Source File
 # Begin Source File
 
@@ -1366,7 +1366,7 @@ SOURCE=.\render.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\sbar.h
+SOURCE=.\cl_sbar.h
 # End Source File
 # Begin Source File
 

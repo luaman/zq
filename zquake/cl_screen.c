@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "keys.h"
 #include "image.h"
 #include "menu.h"
-#include "sbar.h"
+#include "cl_sbar.h"
 #include "sound.h"
 #include "version.h"
 #include <time.h>
