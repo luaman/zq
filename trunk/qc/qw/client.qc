@@ -562,6 +562,14 @@ void PutClientInServer ()
 	self.jump_flag = 0;
 	self.swim_flag = 0;
 
+#ifdef AGRIP
+	// Stop the player from spawning at a bad angle...
+	if (self.angles_y != -90 && self.angles_y != 90
+		&& self.angles_y != 0 &&  self.angles_y != 180
+							&& self.angles_y != -180)
+		self.angles_y = -90;
+#endif
+
 // oh, this is a hack!
 	setmodel (self, "progs/eyes.mdl");
 	modelindex_eyes = self.modelindex;
@@ -636,7 +644,9 @@ void PutClientInServer ()
 		self.invincible_finished = time + 3;
 	}
 
-
+#ifdef AGRIP
+	agh_client_startdevs();
+#endif
 }
 
 
@@ -1188,6 +1198,10 @@ void PlayerPostThink ()
 	CheckPowerups ();
 
 	W_WeaponFrame ();
+
+#ifdef AGRIP
+	snap_misc_blockedtest();
+#endif
 }
 
 
@@ -1229,6 +1243,9 @@ void ClientDisconnect ()
 
 #ifdef FRIKBOT
 	ClientDisconnected(); // FrikBot
+#endif
+#ifdef AGRIP
+	agh_player_dietidy(); // tidy up before leaving
 #endif
 
 	// let everyone else know
