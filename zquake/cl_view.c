@@ -869,16 +869,20 @@ void V_AddViewWeapon (float bob)
 	entity_t	ent;
 	extern cvar_t	scr_fov;
 
-	memset (&ent, 0, sizeof(ent));
-
 	if (!cl_drawgun.value || (cl_drawgun.value == 2 && scr_fov.value > 90)
 		|| view_message.flags & (PF_GIB|PF_DEAD)
 		|| (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)
 		|| !Cam_DrawViewModel())
-	{
- 		ent.model = NULL;
 		return;
-	}
+
+	memset (&ent, 0, sizeof(ent));
+
+	ent.model = cl.model_precache[cl.stats[STAT_WEAPON]];
+	if (!ent.model)
+		return;
+	ent.frame = view_message.weaponframe;
+	ent.colormap = vid.colormap;
+	ent.renderfx = RF_WEAPONMODEL;
 
 	ent.angles[YAW] = r_refdef.viewangles[YAW];
 	ent.angles[PITCH] = -r_refdef.viewangles[PITCH];
@@ -899,12 +903,6 @@ void V_AddViewWeapon (float bob)
 		ent.origin[2] += 1;
 	else if (scr_viewsize.value == 80)
 		ent.origin[2] += 0.5;
-
-	ent.model = cl.model_precache[cl.stats[STAT_WEAPON]];
-	ent.frame = view_message.weaponframe;
-	ent.colormap = vid.colormap;
-
-	ent.renderfx = RF_WEAPONMODEL;
 
 	V_AddEntity (&ent);
 }
