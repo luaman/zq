@@ -74,8 +74,14 @@ keyname_t keynames[] =
 	{"RIGHTARROW", K_RIGHTARROW},
 
 	{"ALT", K_ALT},
+	{"LALT", K_LALT},
+	{"RALT", K_RALT},
 	{"CTRL", K_CTRL},
+	{"LCTRL", K_LCTRL},
+	{"RCTRL", K_RCTRL},
 	{"SHIFT", K_SHIFT},
+	{"LSHIFT", K_LSHIFT},
+	{"RSHIFT", K_RSHIFT},
 	
 	// Keypad stuff..
 
@@ -1039,6 +1045,13 @@ void Key_EventEx (int key, int shiftkey, qboolean down)
 	char	cmd[1024];
 
 //	Com_Printf ("%i : %i\n", key, down); //@@@
+
+	if (key == K_LALT || key == K_RALT)
+		Key_EventEx (K_ALT, K_ALT, down);
+	else if (key == K_LCTRL || key == K_RCTRL)
+		Key_EventEx (K_CTRL, K_CTRL, down);
+	else if (key == K_LSHIFT || key == K_RSHIFT)
+		Key_EventEx (K_SHIFT, K_SHIFT, down);
 
 	keydown[key] = down;
 
