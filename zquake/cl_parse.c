@@ -930,95 +930,56 @@ void CL_ParseClientdata (void)
 CL_NewTranslation
 =====================
 */
+void CL_NewTranslation (int slot)
+{
+	char	s[512];
+	player_info_t	*player;
+
+	if (slot >= MAX_CLIENTS)
+		Sys_Error ("CL_NewTranslation: slot >= MAX_CLIENTS");
+
+	player = &cl.players[slot];
+	if (player->spectator)
+		return;
+
+	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
+	COM_StripExtension(s, s);
+	if (player->skin && Q_stricmp(s, player->skin->name))
+		player->skin = NULL;
+
+// teamcolor/enemycolor -->
+	player->topcolor = player->real_topcolor;
+	player->bottomcolor = player->real_bottomcolor;
+
+	strcpy (s, cl.players[cl.playernum].team);
+
+	if ( !cl.teamfortress && !(cl.fpd & FPD_NO_FORCE_COLOR) ) {
+		if (cl_teamtopcolor >= 0 && cl.teamplay && 
+			!strcmp(player->team, s))
+		{
+			player->topcolor = cl_teamtopcolor;
+			player->bottomcolor = cl_teambottomcolor;
+		}
+		
+		if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
+			(!cl.teamplay || strcmp(player->team, s)))
+		{
+			player->topcolor = cl_enemytopcolor;
+			player->bottomcolor = cl_enemybottomcolor;
+		}
+	}
+// <--
+
 #ifdef GLQUAKE
-void CL_NewTranslation (int slot)
-{
-	char	s[512];
-	player_info_t	*player;
-
-	if (slot > MAX_CLIENTS)
-		Sys_Error ("CL_NewTranslation: slot > MAX_CLIENTS");
-
-	player = &cl.players[slot];
-	if (player->spectator)
-		return;
-	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
-	COM_StripExtension(s, s);
-	if (player->skin && Q_stricmp(s, player->skin->name))
-		player->skin = NULL;
-
-// teamcolor/enemycolor -->
-	player->topcolor = player->real_topcolor;
-	player->bottomcolor = player->real_bottomcolor;
-
-	strcpy (s, cl.players[cl.playernum].team);
-
-	if ( !cl.teamfortress && !(cl.fpd & FPD_NO_FORCE_COLOR) ) {
-		if (cl_teamtopcolor >= 0 && cl.teamplay && 
-			!strcmp(player->team, s))
-		{
-			player->topcolor = cl_teamtopcolor;
-			player->bottomcolor = cl_teambottomcolor;
-		}
-		
-		if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
-			(!cl.teamplay || strcmp(player->team, s)))
-		{
-			player->topcolor = cl_enemytopcolor;
-			player->bottomcolor = cl_enemybottomcolor;
-		}
-	}
-// <--
-
 	R_TranslatePlayerSkin(slot);
-}
 #else
-void CL_NewTranslation (int slot)
-{
-	int		i, j;
-	int		top, bottom;
-	byte	*dest, *source;
-	player_info_t	*player;
-	char	s[512];
-
-	if (slot > MAX_CLIENTS)
-		Sys_Error ("CL_NewTranslation: slot > MAX_CLIENTS");
-
-	player = &cl.players[slot];
-	if (player->spectator)
-		return;
-
-	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
-	COM_StripExtension(s, s);
-	if (player->skin && Q_stricmp(s, player->skin->name))
-		player->skin = NULL;
-
-// teamcolor/enemycolor -->
-	player->topcolor = player->real_topcolor;
-	player->bottomcolor = player->real_bottomcolor;
-
-	strcpy (s, cl.players[cl.playernum].team);
-
-	if ( !cl.teamfortress && !(cl.fpd & FPD_NO_FORCE_COLOR) ) {
-		if (cl_teamtopcolor >= 0 && cl.teamplay && 
-			!strcmp(player->team, s))
-		{
-			player->topcolor = cl_teamtopcolor;
-			player->bottomcolor = cl_teambottomcolor;
-		}
-		
-		if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
-			(!cl.teamplay || strcmp(player->team, s)))
-		{
-			player->topcolor = cl_enemytopcolor;
-			player->bottomcolor = cl_enemybottomcolor;
-		}
-	}
-// <--
-
 	if (player->_topcolor != player->topcolor ||
 		player->_bottomcolor != player->bottomcolor || !player->skin)
 	{
+		int		i, j;
+		int		top, bottom;
+		byte	*dest, *source;
+
 		player->_topcolor = player->topcolor;
 		player->_bottomcolor = player->bottomcolor;
 
@@ -1049,8 +1010,9 @@ void CL_NewTranslation (int slot)
 					dest[BOTTOM_RANGE+j] = source[bottom+15-j];		
 		}
 	}
+#endif
 }
-#endif	// !GLQUAKE
+
 
 /*
 ==============
