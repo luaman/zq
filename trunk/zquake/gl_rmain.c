@@ -65,6 +65,7 @@ float	r_base_world_matrix[16];
 // screen size info
 //
 refdef_t	r_refdef;
+refdef2_t	r_refdef2;
 
 mleaf_t		*r_viewleaf, *r_oldviewleaf;
 mleaf_t		*r_viewleaf2, *r_oldviewleaf2;	// for watervis hack
@@ -210,7 +211,7 @@ mspriteframe_t *R_GetSpriteFrame (entity_t *currententity)
 		numframes = pspritegroup->numframes;
 		fullinterval = pintervals[numframes-1];
 
-		time = cl.time;
+		time = r_refdef2.time;
 
 		// when loading in Mod_LoadSpriteGroup, we guaranteed all interval values
 		// are positive, so we don't have to worry about division by 0
@@ -466,7 +467,7 @@ void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr, qboolean mtex)
 	if (numposes > 1)
 	{
 		interval = paliashdr->frames[frame].interval;
-		pose += (int)(cl.time / interval) % numposes;
+		pose += (int)(r_refdef2.time / interval) % numposes;
 	}
 
 	GL_DrawAliasFrame (paliashdr, pose, mtex);
@@ -538,7 +539,7 @@ void R_DrawAliasModel (entity_t *ent)
 		
 		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 		{
-			if (cl_dlights[lnum].die < cl.time || 
+			if (cl_dlights[lnum].die < r_refdef2.time || 
 				!cl_dlights[lnum].radius)
 				continue;
 
@@ -593,7 +594,7 @@ void R_DrawAliasModel (entity_t *ent)
 		glScalef (paliashdr->scale[0], paliashdr->scale[1], paliashdr->scale[2]);
 	}
 
-	anim = (int)(cl.time*10) & 3;
+	anim = (int)(r_refdef2.time*10) & 3;
 	skinnum = ent->skinnum;
 	if ((skinnum >= paliashdr->numskins) || (skinnum < 0)) {
 		Com_DPrintf ("R_DrawAliasModel: no such skin # %d\n", skinnum);

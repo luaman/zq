@@ -460,7 +460,7 @@ texture_t *R_TextureAnimation (texture_t *base)
 	if (!base->anim_total)
 		return base;
 
-	relative = (int)(cl.time*10) % base->anim_total;
+	relative = (int)(r_refdef2.time*10) % base->anim_total;
 
 	count = 0;	
 	while (base->anim_min > relative || base->anim_max <= relative)
@@ -599,14 +599,14 @@ void R_DrawSequentialPoly (msurface_t *s)
 	{
 		GL_DisableMultitexture ();
 		GL_Bind (solidskytexture);
-		speedscale = cl.time*8;
+		speedscale = r_refdef2.time*8;
 		speedscale -= (int)speedscale & ~127;
 
 		EmitSkyPolys (s);
 
 		glEnable (GL_BLEND);
 		GL_Bind (alphaskytexture);
-		speedscale = cl.time*16;
+		speedscale = r_refdef2.time*16;
 		speedscale -= (int)speedscale & ~127;
 		EmitSkyPolys (s);
 
@@ -1041,7 +1041,7 @@ void R_DrawBrushModel (entity_t *e)
 	{
 		for (k = 0; k < MAX_DLIGHTS; k++)
 		{
-			if ((cl_dlights[k].die < cl.time) ||
+			if ((cl_dlights[k].die < r_refdef2.time) ||
 				!cl_dlights[k].radius)
 				continue;
 
