@@ -54,10 +54,6 @@ cvar_t	sv_mintic = {"sv_mintic","0.03"};	// bound the size of the
 #endif										// physics time tic 
 cvar_t	sv_maxtic = {"sv_maxtic","0.1"};	//
 
-#ifndef QW_BOTH
-cvar_t	developer = {"developer","0"};		// show extra messages
-#endif
-
 cvar_t	timeout = {"timeout","65"};		// seconds without any message
 cvar_t	zombietime = {"zombietime", "2"};	// seconds to sink messages
 											// after disconnect
@@ -1446,10 +1442,6 @@ void SV_InitLocal (void)
 	Cvar_Register (&deathmatch);
 	
 	Cvar_Register (&watervis);
-
-#ifndef QW_BOTH
-	Cvar_Register (&developer);
-#endif
 
 	Cvar_Register (&timeout);
 	Cvar_Register (&zombietime);

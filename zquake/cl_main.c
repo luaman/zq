@@ -133,7 +133,6 @@ byte		*host_colormap;
 
 cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
 cvar_t	show_fps = {"show_fps","0"};			// set for running times
-cvar_t	developer = {"developer","0"};
 
 int			fps_count;
 
@@ -659,7 +658,6 @@ void CL_Init (void)
 //
 	Cvar_Register (&show_fps);
 	Cvar_Register (&host_speeds);
-	Cvar_Register (&developer);
 
 	Cvar_Register (&cl_warncmd);
 	Cvar_Register (&cl_shownet);
