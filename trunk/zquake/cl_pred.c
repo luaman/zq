@@ -163,6 +163,7 @@ void CL_PredictMove (void)
 	{
 		VectorCopy (from->playerstate[cl.playernum].velocity, cl.simvel);
 		VectorCopy (from->playerstate[cl.playernum].origin, cl.simorg);
+		cl.onground = 0;	// :(
 		return;
 	}
 
@@ -178,6 +179,7 @@ void CL_PredictMove (void)
 		to = &cl.frames[(cls.netchan.incoming_sequence+i) & UPDATE_MASK];
 		CL_PredictUsercmd (&from->playerstate[cl.playernum]
 			, &to->playerstate[cl.playernum], &to->cmd, cl.spectator);
+		cl.onground = onground;
 		if (to->senttime >= cl.time)
 			break;
 		from = to;
