@@ -1,6 +1,7 @@
 // ZQuake keymap, version 3
 
 keymap_name "Default"
+keymap_version	3
 
 // keycode [ext] <scancode> <key> [<shifted key> [<altgr key>]]
 // a-z are converted to uppercase by default, for everything else you must
