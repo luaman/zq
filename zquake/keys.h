@@ -43,6 +43,7 @@ typedef enum {
 	K_ALT,
 	K_LALT,
 	K_RALT,
+	K_ALTGR,
 	K_CTRL,
 	K_LCTRL,
 	K_RCTRL,
