@@ -19,9 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // vid_wgl.c -- Windows 9x/NT OpenGL driver
 
-#include "quakedef.h"
-#include "cdaudio.h"
 #include "gl_local.h"
+#include "cdaudio.h"
 #include "keys.h"
 #include "resource.h"
 #include "sbar.h"

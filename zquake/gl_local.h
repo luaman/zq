@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // gl_local.h -- private refresh defs
 
+#include "quakedef.h"		// FIXME
+
 // disable data conversion warnings
 
 #pragma warning(disable : 4244)     // MIPS
