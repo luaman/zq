@@ -57,6 +57,8 @@ void Pmove_Init (void)
 {
 #if defined(SERVERONLY) || defined(QW_BOTH)
 	Cvar_RegisterVariable (&pm_jumpfix);
+#else
+	pm_jumpfix.value = 1;
 #endif
 	Cvar_RegisterVariable (&pm_slidefix);
 	Cvar_RegisterVariable (&pm_ktphysics);
