@@ -17,8 +17,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+// sv_ccmds.c - server console commands
 
-#include "qwsvdef.h"
+#include "server.h"
 
 cvar_t		sv_cheats = {"sv_cheats", "0"};
 qboolean	sv_allow_cheats = false;

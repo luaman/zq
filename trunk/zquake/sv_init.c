@@ -18,7 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include "qwsvdef.h"
+#include "server.h"
+#include "sv_world.h"
 #include "crc.h"
 
 serverPersistent_t	svs;			// persistent server info

@@ -30,9 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "keys.h"
 #include "sound.h"
 #include "version.h"
-#ifndef CLIENTONLY
-#include "server.h"
-#endif
 
 #ifndef _WIN32
 #include <dirent.h>
@@ -1196,7 +1193,7 @@ int	m_singleplayer_cursor;
 qboolean m_singleplayer_confirm;
 qboolean m_singleplayer_notavail;
 
-extern	cvar_t	maxclients;
+extern	cvar_t	maxclients, teamplay, deathmatch, coop, skill, fraglimit, timelimit;
 
 void M_Menu_SinglePlayer_f (void)
 {
@@ -1426,7 +1423,7 @@ void M_Menu_Load_f (void)
 
 void M_Menu_Save_f (void)
 {
-	if (sv.state != ss_active)
+	if (!com_serveractive)
 		return;
 	if (cl.intermission)
 		return;

@@ -17,9 +17,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-// server.h
+// server.h - primary header for server
 
+//define	PARANOID			// speed sapping error checking
+
+#include "common.h"
 #include "progs.h"
+
 
 #define	MAX_MASTERS	8				// max recipients for heartbeat packets
 
@@ -324,14 +328,12 @@ typedef struct
 
 //============================================================================
 
-extern	cvar_t	sv_mintic, sv_maxtic;
-extern	cvar_t	pm_maxspeed;
-
-extern	cvar_t	sv_fastconnect;
-
 extern	netadr_t	master_adr[MAX_MASTERS];	// address of the master server
 
-extern	int		current_skill;
+extern	cvar_t	sv_mintic, sv_maxtic;
+extern	cvar_t	maxclients;
+extern	cvar_t	sv_fastconnect;
+extern	cvar_t	pm_maxspeed;
 
 extern	cvar_t	teamplay;
 extern	cvar_t	deathmatch;
@@ -339,6 +341,8 @@ extern	cvar_t	fraglimit;
 extern	cvar_t	timelimit;
 extern	cvar_t	skill;
 extern	cvar_t	coop;
+
+extern	int		current_skill;
 
 extern	serverPersistent_t	svs;			// persistent server info
 extern	server_t		sv;					// local server
