@@ -132,7 +132,7 @@ void CL_ParseBeam (model_t *m)
 	end[1] = MSG_ReadCoord ();
 	end[2] = MSG_ReadCoord ();
 
-	if (ent == cl.playernum+1)
+	if (ent == cl.playernum+1 || (cl.spectator && ent == spec_track+1))
 		VectorCopy (end, playerbeam_end);	// for cl_trueLightning
 
 // override any beam with the same entity
@@ -391,7 +391,7 @@ void CL_UpdateBeams (void)
 			continue;
 
 	// if coming from the player, update the start position
-		if (b->entity == cl.playernum+1)	// entity 0 is the world
+		if (b->entity == cl.playernum+1 || (cl.spectator && b->entity == spec_track+1))
 		{
 			VectorCopy (cl.simorg, b->start);
 			b->start[2] += cl.crouch;
