@@ -217,8 +217,7 @@ void R_DrawSpriteModel (entity_t *e)
 {
 	vec3_t	point;
 	mspriteframe_t	*frame;
-	float		*up, *right;
-	vec3_t		v_forward, v_right, v_up;
+	vec3_t		forward, right, up;
 	msprite_t	*psprite;
 
 	// don't even bother culling, because it's just a single
@@ -229,14 +228,25 @@ void R_DrawSpriteModel (entity_t *e)
 	if (psprite->type == SPR_ORIENTED)
 	{
 		// bullet marks on walls
-		AngleVectors (currententity->angles, v_forward, v_right, v_up);
-		up = v_up;
-		right = v_right;
+		AngleVectors (currententity->angles, forward, right, up);
+	}
+	else if (psprite->type == SPR_FACING_UPRIGHT)
+	{
+		VectorSet (up, 0, 0, 1);
+		right[0] = e->origin[1] - r_origin[1];
+		right[1] = -(e->origin[0] - r_origin[0]);
+		right[2] = 0;
+		VectorNormalize (right);
+	}
+	else if (psprite->type == SPR_VP_PARALLEL_UPRIGHT)
+	{
+		VectorSet (up, 0, 0, 1);
+		VectorCopy (vright, right);
 	}
 	else
 	{	// normal sprite
-		up = vup;
-		right = vright;
+		VectorCopy (vup, up);
+		VectorCopy (vright, right);
 	}
 
     GL_Bind(frame->gl_texturenum);
