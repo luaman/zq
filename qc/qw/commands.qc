@@ -52,7 +52,16 @@ void(string item, string amount) Cmd_Give = {
 	else if (item == "h" || item == "health")
 		self.health = stof(amount);
 	else if (item == "all") {
-		self.items = self.items | (IT_AXE|IT_SHOTGUN|IT_SUPER_SHOTGUN|IT
+		self.items = self.items | IT_ALL_WEAPONS | IT_KEY1 | IT_KEY2;
+		self.ammo_shells = 100;
+		self.ammo_nails = 200;
+		self.ammo_rockets = 100;
+		self.ammo_cells = 100;
+		if (self.health < 100)
+			self.health = 100;
+		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) | IT_ARMOR3;
+		self.armortype = 0.8;
+		self.armorvalue = 200;
 	}
 	else {
 		sprint (self, PRINT_HIGH, "no such item: ");
