@@ -790,7 +790,8 @@ char *trigger_commands[] = {
 	"say_team",
 	"alias",
 	"msg_trigger",
-	"inc"
+	"inc",
+	"bind"
 };
 
 #define NUM_TRIGGER_COMMANDS (sizeof(trigger_commands)/sizeof(trigger_commands[0]))
