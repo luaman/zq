@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 enum
 {
-	pt_static, pt_grav, pt_fire, pt_explode, pt_explode2, pt_blob, pt_blob2
+	pt_static, pt_grav, pt_fire, pt_explode, pt_explode2, pt_blob, pt_blob2, pt_rail
 };
 
 int		ramp1[8] = {0x6f, 0x6d, 0x6b, 0x69, 0x67, 0x65, 0x63, 0x61};
@@ -34,8 +34,14 @@ int		ramp3[8] = {0x6d, 0x6b, 6, 5, 4, 3};
 
 cparticle_t	*active_particles, *free_particles;
 
+// processed locally
 cparticle_t	*cl_particles;
-int			cl_numparticles;
+int			cl_numparticles;	// should be named cl_maxparticles?
+
+// sent to the renderer
+int				cl_numvisparticles;
+particle_t		*cl_visparticles;	// allocated on hunk
+
 
 /*
 ===============
@@ -59,7 +65,8 @@ void CL_InitParticles (void)
 		cl_numparticles = MAX_PARTICLES;
 	}
 
-	cl_particles = (cparticle_t *)Hunk_AllocName (cl_numparticles * sizeof(cparticle_t), "particles");
+	cl_particles = (cparticle_t *) Hunk_AllocName (cl_numparticles * sizeof(cparticle_t), "particles");
+	cl_visparticles = (particle_t *) Hunk_AllocName (cl_numparticles * sizeof(particle_t), "visparticles");
 }
 
 
@@ -596,6 +603,114 @@ void CL_TracerTrail (vec3_t start, vec3_t end, int color)
 }
 
 
+float crand(void)
+{
+	return (rand()&32767)* (2.0/32767) - 1;
+}
+
+float frand(void)
+{
+	return (rand()&32767)* (1.0/32767);
+}
+
+
+/*
+===============
+CL_RailTrail
+===============
+*/
+void CL_RailTrail (vec3_t start, vec3_t end)
+{
+	vec3_t		move;
+	vec3_t		vec;
+	float		len;
+	int			j;
+	cparticle_t	*p;
+	float		dec;
+	vec3_t		right, up;
+	int			i;
+	float		d, c, s;
+	vec3_t		dir;
+	byte		clr = 208;	// blue
+
+	VectorCopy (start, move);
+	VectorSubtract (end, start, vec);
+	len = VectorNormalize (vec);
+
+	MakeNormalVectors (vec, right, up);
+
+	// blue spiral
+	for (i=0 ; i<len ; i++)
+	{
+		if (!free_particles)
+			return;
+
+		p = free_particles;
+		free_particles = p->next;
+		p->next = active_particles;
+		active_particles = p;
+		
+		p->type = pt_rail;
+
+		//p->time = cl.time;
+		p->die = cl.time + 2;
+
+		d = i * 0.1;
+		c = cos(d);
+		s = sin(d);
+
+		VectorScale (right, c, dir);
+		VectorMA (dir, s, up, dir);
+
+		p->alpha = 1.0;
+		p->alphavel = -1.0 / (1+frand()*0.2);
+		p->color = clr + (rand()&7);
+		for (j=0 ; j<3 ; j++)
+		{
+			p->org[j] = move[j] + dir[j]*3;
+			p->vel[j] = dir[j]*6;
+		}
+
+		VectorAdd (move, vec, move);
+	}
+
+	dec = 1.5;		// Q2 uses 0.75, but I don't want that many particles
+	VectorScale (vec, dec, vec);
+	VectorCopy (start, move);
+
+	// white core
+	while (len > 0)
+	{
+		len -= dec;
+
+		if (!free_particles)
+			return;
+		p = free_particles;
+		free_particles = p->next;
+		p->next = active_particles;
+		active_particles = p;
+
+		p->type = pt_rail;
+
+//		p->time = cl.time;
+		p->die = cl.time + 2;	// will die when alpha runs out
+
+		p->alpha = 1.0;
+		p->alphavel = -1.0 / (0.6+frand()*0.2);
+		p->color = 0x0 + rand()&15;
+
+		for (j=0 ; j<3 ; j++)
+		{
+			p->org[j] = move[j] + crand()* 2;	// Q2 has crand()* 3
+			p->vel[j] = crand()*3;
+		}
+
+		VectorAdd (move, vec, move);
+	}
+
+}
+
+
 /*
 ===============
 CL_EntityParticles
@@ -759,6 +874,12 @@ void CL_LinkParticles (void)
 
 			case pt_grav:
 				p->vel[2] -= grav;
+				break;
+
+			case pt_rail:
+				p->alpha += p->alphavel * cls.frametime;
+				if (p->alpha <= 0)
+					p->die = 0;	// die next frame :)
 				break;
 		}
 	}

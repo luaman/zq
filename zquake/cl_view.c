@@ -1059,7 +1059,9 @@ V_AddParticle
 */
 void V_AddParticle (vec3_t origin, int color, float alpha)
 {
-	if (cl_numvisparticles >= MAX_PARTICLES)
+	extern int cl_numparticles;
+
+	if (cl_numvisparticles >= cl_numparticles)
 		return;
 	
 	cl_visparticles[cl_numvisparticles].color = color;
