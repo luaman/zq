@@ -76,6 +76,7 @@ cvar_t	allow_download_skins = {"allow_download_skins", "1"};
 cvar_t	allow_download_models = {"allow_download_models", "1"};
 cvar_t	allow_download_sounds = {"allow_download_sounds", "1"};
 cvar_t	allow_download_maps = {"allow_download_maps", "1"};
+cvar_t	allow_download_pakmaps = {"allow_download_pakmaps", "0"};
 
 cvar_t	sv_highchars = {"sv_highchars", "1"};
 cvar_t	sv_phs = {"sv_phs", "1"};
@@ -1491,6 +1492,7 @@ void SV_InitLocal (void)
 	Cvar_RegisterVariable (&allow_download_models);
 	Cvar_RegisterVariable (&allow_download_sounds);
 	Cvar_RegisterVariable (&allow_download_maps);
+	Cvar_RegisterVariable (&allow_download_pakmaps);
 
 	Cvar_RegisterVariable (&sv_highchars);
 	Cvar_RegisterVariable (&sv_phs);

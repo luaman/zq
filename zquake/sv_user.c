@@ -669,6 +669,7 @@ void SV_BeginDownload_f (void)
 	extern cvar_t	allow_download_models;
 	extern cvar_t	allow_download_sounds;
 	extern cvar_t	allow_download_maps;
+	extern cvar_t	allow_download_pakmaps;
 	extern int		file_from_pak;	// did file come from pak?
 
 	name = Cmd_Argv(1);
@@ -714,9 +715,8 @@ void SV_BeginDownload_f (void)
 	host_client->downloadcount = 0;
 
 	if (!host_client->download
-		// special check for maps, if it came from a pak file, don't allow
-		// download  ZOID
-		|| (strncmp(name, "maps/", 5) == 0 && file_from_pak))
+		// special check for maps that came from a pak file
+		|| (!strncmp(name, "maps/", 5) && file_from_pak && !allow_download_pakmaps.value))
 	{
 		if (host_client->download) {
 			fclose(host_client->download);
