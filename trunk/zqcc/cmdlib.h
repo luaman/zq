@@ -110,6 +110,8 @@ char *COM_Parse (char *data);
 extern	char	com_token[1024];
 extern	int		com_eof;
 
+const int HASH_SIZE = 64;
+int Com_HashKey (char *name);
 
 
 #endif

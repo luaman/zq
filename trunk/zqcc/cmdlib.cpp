@@ -497,6 +497,21 @@ long ParseNum (char *str)
 }
 
 
+/*
+** Com_HashKey
+*/
+int Com_HashKey (char *name)
+{
+	int	v;
+	unsigned char c;
+
+	v = 0;
+	while ( (c = *name++) != 0 )
+		v += c;
+
+	return (unsigned int)v % HASH_SIZE;
+}
+
 
 /*
 ============================================================================
