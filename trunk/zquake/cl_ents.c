@@ -820,14 +820,8 @@ void CL_ParsePlayerState (void)
 	{
 		if (cls.findtrack && info->stats[STAT_HEALTH] != 0)
 		{
-			extern int autocam;
-			extern int ideal_track;
-
-			autocam = CAM_TRACK;
-			Cam_Lock(num);
-			ideal_track = num;
+			Cam_Lock (num);
 			cls.findtrack = false;
-
 		}
 
 		memcpy(state, prevstate, sizeof(player_state_t));
