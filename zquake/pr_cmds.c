@@ -26,29 +26,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	RETURN_STRING(s) (((int *)pr_globals)[OFS_RETURN] = PR_SetString(s))
 
 
-/*
-=================
-PR_GetTempString
-
-Returns a pointer to the next temporary buffer for string operations
-(this prevents overwritten buffers in up to STRINGTEMP_BUFFERS succesive calls).
-By cycling through 16 buffers, we support the DP_QC_MULTIPLETEMPSTRINGS extension .
-=================
-*/
-#define STRINGTEMP_BUFFERS	16			// number of temporaray buffers
-#define	STRINGTEMP_LENGTH	512			// length of each buffer (original QW had only 128...)
-static char	*PR_GetTempString(void)
-{
-	char		*s = NULL;
-	static char	 pr_string_temp[STRINGTEMP_BUFFERS][STRINGTEMP_LENGTH];
-	static int	 pr_string_tempindex = 0;
-
-	s = pr_string_temp[pr_string_tempindex];
-	pr_string_tempindex = (pr_string_tempindex + 1) % STRINGTEMP_BUFFERS;
-	s[0] = '\0';
-	return s;
-}
-
+// Used when returning a string
+// Let us hope it's large enough (no crashes, but result may be truncated)
+// Well, QW had 128...
+static char	pr_string_temp[512];
 
 /*
 ===============================================================================
@@ -967,29 +948,25 @@ void ftos(string s) = #26
 */
 static void PF_ftos (void)
 {
-	float v;
-	int i;
-	char *string_temp;
-
-	string_temp = PR_GetTempString();
+	float	v;
+	int	i;
 
 	v = G_FLOAT(OFS_PARM0);
 
 	if (v == (int)v)
-		Q_snprintfz (string_temp, STRINGTEMP_LENGTH, "%d", (int)v);
+		Q_snprintfz (pr_string_temp, sizeof(pr_string_temp), "%d", (int)v);
 	else
 	{
-		Q_snprintfz (string_temp, STRINGTEMP_LENGTH, "%f", v);
+		Q_snprintfz (pr_string_temp, sizeof(pr_string_temp), "%f", v);
 
-		for (i = strlen(string_temp) - 1; i > 0 && string_temp[i] == '0'; i--)
-			string_temp[i] = 0;
-		if (string_temp[i] == '.')
-			string_temp[i] = 0;
+		for (i=strlen(pr_string_temp)-1 ; i>0 && pr_string_temp[i]=='0' ; i--)
+			pr_string_temp[i] = 0;
+		if (pr_string_temp[i] == '.')
+			pr_string_temp[i] = 0;
 	}
 
-	G_INT(OFS_RETURN) = PR_SetString(string_temp);
+	G_INT(OFS_RETURN) = PR_SetString(pr_string_temp);
 }
-
 
 /*
 =================
@@ -1015,14 +992,8 @@ void vtos(string s) = #27
 */
 static void PF_vtos (void)
 {
-	char *string_temp;
-
-	string_temp = PR_GetTempString();
-
-	Q_snprintfz (string_temp, STRINGTEMP_LENGTH,
-	             "'%5.1f %5.1f %5.1f'",
-	             G_VECTOR(OFS_PARM0)[0], G_VECTOR(OFS_PARM0)[1], G_VECTOR(OFS_PARM0)[2]);
-	G_INT(OFS_RETURN) = PR_SetString(string_temp);
+	sprintf (pr_string_temp, "'%5.1f %5.1f %5.1f'", G_VECTOR(OFS_PARM0)[0], G_VECTOR(OFS_PARM0)[1], G_VECTOR(OFS_PARM0)[2]);
+	G_INT(OFS_RETURN) = PR_SetString(pr_string_temp);
 }
 
 
@@ -1829,13 +1800,9 @@ string etos(entity ent) = #65
 */
 static void PF_etos (void)
 {
-	char *string_temp;
+	Q_snprintfz (pr_string_temp, sizeof(pr_string_temp), "entity %i", G_EDICTNUM(OFS_PARM0));
 
-	string_temp = PR_GetTempString();
-
-	Q_snprintfz (string_temp, STRINGTEMP_LENGTH, "entity %i", G_EDICTNUM(OFS_PARM0));
-
-	G_INT(OFS_RETURN) = PR_SetString(string_temp);
+	G_INT(OFS_RETURN) = PR_SetString(pr_string_temp);
 }
 
 //=============================================================================
@@ -2205,15 +2172,12 @@ string stradd(string s1, string s2, ...) = #115;
 static void PF_stradd (void)
 {
 	int i;
-	char *string_temp;
-	
-	string_temp = PR_GetTempString();
 
-	string_temp[0] = '\0';
+	pr_string_temp[0] = '\0';
 	for (i = 0; i < pr_argc; i++)
-		strlcat (string_temp, G_STRING(OFS_PARM0 + i * 3), STRINGTEMP_LENGTH);
+		strlcat (pr_string_temp, G_STRING(OFS_PARM0 + i * 3), sizeof(pr_string_temp));
 
-	RETURN_STRING(string_temp);
+	RETURN_STRING(pr_string_temp);
 }
 
 
@@ -2229,9 +2193,6 @@ static void PF_substr (void)
 {
 	int		start, count;
 	char	*s;
-	char	*string_temp;
-
-	string_temp = PR_GetTempString();
 
 	s = G_STRING(OFS_PARM0);
 	start = (int)G_FLOAT(OFS_PARM1);
@@ -2246,9 +2207,9 @@ static void PF_substr (void)
 	}
 
 	// up to count characters, or until buffer size is exceeded
-	strlcpy (string_temp, s + start, min(count + 1, STRINGTEMP_LENGTH));
+	strlcpy (pr_string_temp, s + start, min(count + 1, sizeof(pr_string_temp)));
 
-	RETURN_STRING(string_temp);
+	RETURN_STRING(pr_string_temp);
 }
 
 
@@ -2365,7 +2326,6 @@ static void PF_checkextension (void)
 		"DP_QC_ETOS",
 		"DP_QC_RANDOMVEC",
 		"DP_QC_TRACEBOX",
-		"DP_QC_MULTIPLETEMPSTRINGS",
 		// "FRIK_FILE",		// incomplete (fopen, fclose, fputs, fgets are not implemented)
 		"ZQ_QC_CHECKBUILTIN",
 		"ZQ_MOVETYPE_NOCLIP",
