@@ -275,6 +275,7 @@ CL_ClearState
 void CL_ClearState (void)
 {
 	int			i;
+	extern float	scr_centertime_off;
 
 	S_StopAllSounds (true);
 
@@ -299,6 +300,9 @@ void CL_ClearState (void)
 	memset (cl_dlights, 0, sizeof(cl_dlights));
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
 	memset (cl_baselines, 0, sizeof(cl_baselines));
+
+// make sure no centerprint messages are left from previous level
+	scr_centertime_off = 0;
 
 //
 // allocate the efrags and chain together into a free list
