@@ -50,8 +50,8 @@ qbool			r_leftclipped, r_rightclipped;
 static qbool	makeleftedge, makerightedge;
 qbool			r_nearzionly;
 
-int		sintable[1280];
-int		intsintable[1280];
+int		sintable[CYCLE * 2];
+int		intsintable[MAXWIDTH + CYCLE + 4];
 
 mvertex_t	r_leftenter, r_leftexit;
 mvertex_t	r_rightenter, r_rightexit;

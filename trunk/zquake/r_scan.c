@@ -44,45 +44,51 @@ D_WarpScreen
 void D_WarpScreen (void)
 {
 	int		w, h;
-	int		u,v;
+	int		u, v, u2, v2;
 	byte	*dest;
 	int		*turb;
 	int		*col;
 	byte	**row;
-	byte	*rowptr[1024 * 2];
-	int		column[1280 * 2];
-	float	wratio, hratio;
 
-	w = r_refdef.vrect.width;
-	h = r_refdef.vrect.height;
+	static int	cached_width, cached_height;
+	static byte	*rowptr[MAXHEIGHT + AMP2 * 2];
+	static int	column[MAXWIDTH + AMP2 * 2];
 
-	wratio = w / (float)r_refdef2.vrect.width;
-	hratio = h / (float)r_refdef2.vrect.height;
+	w = r_refdef2.vrect.width;
+	h = r_refdef2.vrect.height;
 
-	for (v = 0; v < r_refdef2.vrect.height + AMP2*2; v++)
+	if (w != cached_width || h != cached_height)
 	{
-		rowptr[v] = d_viewbuffer + (screenwidth * (int)((float)v * hratio * h / (h + AMP2 * 2)));
-	}
+		cached_width = w;
+		cached_height = h;
 
-	for (u = 0; u < r_refdef2.vrect.width + AMP2*2; u++)
-	{
-		column[u] = (int)((float)u * wratio * w / (w + AMP2 * 2));
+		for (v = 0; v < h + AMP2 * 2; v++)
+		{
+			v2 = (int)((float)v * r_refdef.vrect.height / (h + AMP2 * 2));
+			rowptr[v] = r_warpbuffer + WARP_WIDTH * v2;
+		}
+
+		for (u = 0; u < w + AMP2 * 2; u++)
+		{
+			u2 = (int)((float)u * r_refdef.vrect.width / (w + AMP2 * 2));
+			column[u] = u2;
+		}
 	}
 
 	turb = intsintable + ((int)(r_refdef2.time*SPEED)&(CYCLE-1));
 	dest = vid.buffer + r_refdef2.vrect.y * vid.rowbytes + r_refdef2.vrect.x;
 
-	for (v = 0; v < r_refdef2.vrect.height ; v++, dest += vid.rowbytes)
+	for (v = 0; v < h; v++, dest += vid.rowbytes)
 	{
-		col = &column[turb[v&(CYCLE-1)]];
+		col = &column[turb[v]];
 		row = &rowptr[v];
 
-		for (u = 0; u < r_refdef2.vrect.width; u += 4)
+		for (u = 0; u < w; u += 4)
 		{
-			dest[u+0] = row[turb[(u+0)&(CYCLE-1)]][col[u+0]];
-			dest[u+1] = row[turb[(u+1)&(CYCLE-1)]][col[u+1]];
-			dest[u+2] = row[turb[(u+2)&(CYCLE-1)]][col[u+2]];
-			dest[u+3] = row[turb[(u+3)&(CYCLE-1)]][col[u+3]];
+			dest[u+0] = row[turb[u + 0]] [col[u + 0]] ;
+			dest[u+1] = row[turb[u + 1]] [col[u + 1]];
+			dest[u+2] = row[turb[u + 2]] [col[u + 2]];
+			dest[u+3] = row[turb[u + 3]] [col[u + 3]];
 		}
 	}
 }
@@ -443,3 +449,5 @@ void D_DrawZSpans (espan_t *pspan)
 }
 
 #endif
+
+
