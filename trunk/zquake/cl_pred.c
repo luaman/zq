@@ -20,7 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "pmove.h"
 
-cvar_t	cl_nopred = {"cl_nopred","0"};
+cvar_t	cl_nopred = {"cl_nopred", "0"};
+cvar_t	cl_nolerp = {"cl_nolerp", "0"};
 
 /*
 ==============
@@ -166,6 +167,99 @@ void CL_CalcCrouch (void)
 	}
 }
 
+// for .qwd demo playback
+static void CL_LerpMove (float msgtime)
+{
+	static int		lastsequence = 0;
+	static vec3_t	lerp_angles[3];
+	static vec3_t	lerp_origin[3];
+	static float	lerp_times[3];
+	static qbool	nolerp[2];
+	static float	demo_latency = 0.01;
+	float	frac;
+	float	simtime;
+	int		i;
+	int		from, to;
+
+	if (cl_nolerp.value)
+		return;
+
+	if (cls.netchan.outgoing_sequence < lastsequence) {
+		// reset
+		lastsequence = -1;
+		lerp_times[0] = -1;
+		demo_latency = 0.01;
+	}
+
+	if (cls.netchan.outgoing_sequence > lastsequence) {
+		lastsequence = cls.netchan.outgoing_sequence;
+		// move along
+		lerp_times[2] = lerp_times[1];
+		lerp_times[1] = lerp_times[0];
+		lerp_times[0] = msgtime;
+
+		VectorCopy (lerp_origin[1], lerp_origin[2]);
+		VectorCopy (lerp_origin[0], lerp_origin[1]);
+		VectorCopy (cl.simorg, lerp_origin[0]);
+
+		VectorCopy (lerp_angles[1], lerp_angles[2]);
+		VectorCopy (lerp_angles[0], lerp_angles[1]);
+		VectorCopy (cl.simangles, lerp_angles[0]);
+
+		nolerp[1] = nolerp[0];
+		nolerp[0] = false;
+		for (i = 0; i < 3; i++)
+			if (fabs(lerp_origin[0][i] - lerp_origin[1][i]) > 40)
+				break;
+		if (i < 3)
+			nolerp[0] = true;	// a teleport or something
+	}
+
+	simtime = cls.realtime - demo_latency;
+
+	// adjust latency
+	if (simtime > lerp_times[0]) {
+		// Com_DPrintf ("HIGH clamp\n");
+		demo_latency = cls.realtime - lerp_times[0];
+	}
+	else if (simtime < lerp_times[2]) {
+		// Com_DPrintf ("   low clamp\n");
+		demo_latency = cls.realtime - lerp_times[2];
+	} else {
+		// drift towards ideal latency
+		float ideal_latency = (lerp_times[0] - lerp_times[2]) * 0.6;
+		if (demo_latency > ideal_latency)
+			demo_latency = max(demo_latency - cls.frametime * 0.1, ideal_latency);
+	}
+
+	// decide where to lerp from
+	if (simtime > lerp_times[1]) {
+		from = 1;
+		to = 0;
+	} else {
+		from = 2;
+		to = 1;
+	}
+
+	if (nolerp[to])
+		return;
+
+	frac = (simtime - lerp_times[from]) / (lerp_times[to] - lerp_times[from]);
+	frac = bound (0, frac, 1);
+
+	for (i = 0; i < 3; i++)
+		cl.simorg[i] = lerp_origin[from][i] + (lerp_origin[to][i] - lerp_origin[from][i]) * frac;
+
+	for (i = 0; i < 3; i++) {
+		float delta = lerp_angles[to][i] - lerp_angles[from][i];
+		if (delta > 180)
+			delta -= 360;
+		else if (delta < -180)
+			delta += 360;
+		cl.simangles[i] = lerp_angles[from][i] + delta * frac;
+	}
+
+}
 
 /*
 ==============
@@ -240,6 +334,9 @@ void CL_PredictMove (void)
 	VectorCopy (to->playerstate[cl.playernum].velocity, cl.simvel);
 	VectorCopy (to->playerstate[cl.playernum].origin, cl.simorg);
 
+	if (cls.demoplayback)
+		CL_LerpMove (to->senttime);
+
 out:
 	CL_CalcCrouch ();
 }
@@ -253,5 +350,6 @@ CL_InitPrediction
 void CL_InitPrediction (void)
 {
 	Cvar_Register (&cl_nopred);
+	Cvar_Register (&cl_nolerp);
 }
 
