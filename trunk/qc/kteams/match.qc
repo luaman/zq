@@ -540,7 +540,7 @@ void() TimerThink =
 				f4 = CountPlayers();
 				k_exttime = stof(infokey(world, "k_exttime"));
 				
-                                // Overtime.
+                // Overtime.
 				// Ok we have now decided that the game is ending so decide overtime wise here what to do.
 				// Check to see if duel first
 				if(f4 == 2)
@@ -1082,7 +1082,9 @@ void() StartTimer =
 	timer.cnt = 0;
 	timer.cnt2 = stof(infokey(world, "k_count"));
 	timer.cnt2 = timer.cnt2 + 1;
-	timer.nextthink = time + 0.1;
+	if(timer.cnt2 == 0)
+        timer.cnt2 = 5; // at the least we want a 5 second countdown
+    timer.nextthink = time + 0.1;
 	timer.think = TimerStartThink;
 	match_in_progress = 1;
 	localcmd("serverinfo status Countdown\n");
