@@ -1200,6 +1200,7 @@ void CL_EmitEntities (void)
 		CL_LinkPacketEntities ();
 		CL_LinkProjectiles ();
 	}
+	CL_LinkDlights ();
 	CL_LinkParticles ();
 
 	CL_UpdateTEnts ();

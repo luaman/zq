@@ -101,7 +101,6 @@ centity_t		cl_entities[MAX_CL_EDICTS];
 efrag_t			cl_efrags[MAX_EFRAGS];
 entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
-dlight_t		cl_dlights[MAX_DLIGHTS];
 
 // refresh list
 // this is double buffered so the last frame
@@ -316,6 +315,7 @@ void CL_ClearState (void)
 	}
 
 	CL_ClearTEnts ();
+	CL_ClearDlights ();
 	CL_ClearParticles ();
 
 // wipe the entire cl structure
@@ -325,7 +325,6 @@ void CL_ClearState (void)
 
 // clear other arrays	
 	memset (cl_efrags, 0, sizeof(cl_efrags));
-	memset (cl_dlights, 0, sizeof(cl_dlights));
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
 	memset (cl_entities, 0, sizeof(cl_entities));
 
@@ -1053,10 +1052,6 @@ void CL_Frame (double time)
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
 
 	CDAudio_Update();
-
-	// advance local effects for next frame
-	if (cls.state == ca_active)
-		CL_DecayLights ();
 
 	if (host_speeds.value)
 	{

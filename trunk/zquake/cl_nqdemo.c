@@ -769,7 +769,7 @@ void NQD_LinkEntities (void)
 		// spawn light flashes, even ones coming from invisible objects
 		if (state->effects & EF_MUZZLEFLASH) {
 			vec3_t		angles, forward;
-			dlight_t	*dl;
+			cdlight_t	*dl;
 
 			dl = CL_AllocDlight (-num);
 			MSG_UnpackAngles (state->s_angles, angles);
