@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir ".\Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
+# ADD BASE CPP /nologo /W3 /GX- /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
 # ADD CPP /nologo /G5 /W3 /GX- /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
@@ -72,8 +72,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir ".\Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /Gm /GX- /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /FR"" /YX /Fo"" /FD /c
+# ADD BASE CPP /nologo /W3 /Gm /GX- /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
+# ADD CPP /nologo /G5 /ML /W3 /GX- /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /FR"" /YX /Fo"" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -84,6 +84,35 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386
 # ADD LINK32 mgllt.lib advapi32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcmt"
+# SUBTRACT LINK32 /pdb:none
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir ".\Release-GL"
+# PROP BASE Intermediate_Dir ".\Release-GL"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir ".\Release-GL"
+# PROP Intermediate_Dir ".\Release-GL"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /G5 /GX- /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "GLQUAKE" /FR /YX /c
+# ADD CPP /nologo /G5 /W3 /GX- /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /YX /FD /c
+# SUBTRACT CPP /Fr
+# ADD BASE MTL /nologo /D "NDEBUG" /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG" /d "GLQUAKE"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 e:\msdev\projects\winquake\dxsdk\sdk\lib\dxguid.lib winmm.lib wsock32.lib opengl32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386 /out:"GLDebug/glzquake.exe"
+# SUBTRACT BASE LINK32 /nodefaultlib
+# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcmt" /out:".\Release-GL/zquake-gl.exe"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
@@ -99,7 +128,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir ".\Debug-GL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /ML /Gm /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /c
+# ADD BASE CPP /nologo /ML /Gm /GX- /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /c
 # ADD CPP /nologo /G5 /ML /W3 /GX- /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -111,37 +140,8 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib e:\msdev\projects\scitech\lib\win32\vc\mgllt.lib /nologo /subsystem:windows /debug /machine:I386
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\Debug-GL/zquake-gl.exe"
-# SUBTRACT LINK32 /incremental:no /nodefaultlib
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir ".\Release-GL"
-# PROP BASE Intermediate_Dir ".\Release-GL"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 0
-# PROP Output_Dir ".\Release-GL"
-# PROP Intermediate_Dir ".\Release-GL"
-# PROP Ignore_Export_Lib 0
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /G5 /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "GLQUAKE" /FR /YX /c
-# ADD CPP /nologo /G5 /W3 /GX- /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /YX /FD /c
-# SUBTRACT CPP /Fr
-# ADD BASE MTL /nologo /D "NDEBUG" /win32
-# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG" /d "GLQUAKE"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 e:\msdev\projects\winquake\dxsdk\sdk\lib\dxguid.lib winmm.lib wsock32.lib opengl32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386 /out:"GLDebug/glzquake.exe"
-# SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /machine:I386 /out:".\Release-GL/zquake-gl.exe"
-# SUBTRACT LINK32 /debug /nodefaultlib
+# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcmt" /out:".\Debug-GL/zquake-gl.exe"
+# SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
 
@@ -149,8 +149,8 @@ LINK32=link.exe
 
 # Name "zquake - Win32 Release"
 # Name "zquake - Win32 Debug"
-# Name "zquake - Win32 GLDebug"
 # Name "zquake - Win32 GLRelease"
+# Name "zquake - Win32 GLDebug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
@@ -254,13 +254,13 @@ SOURCE=.\d_edge.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -274,13 +274,13 @@ SOURCE=.\d_fill.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -294,13 +294,13 @@ SOURCE=.\d_init.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -314,13 +314,13 @@ SOURCE=.\d_modech.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -334,13 +334,13 @@ SOURCE=.\d_polyse.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -354,13 +354,13 @@ SOURCE=.\d_sky.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -374,13 +374,13 @@ SOURCE=.\d_sprite.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -394,13 +394,13 @@ SOURCE=.\d_surf.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -414,13 +414,13 @@ SOURCE=.\d_vars.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -434,13 +434,13 @@ SOURCE=.\d_zpoint.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -458,9 +458,9 @@ SOURCE=.\gl_draw.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -477,9 +477,9 @@ SOURCE=.\gl_mesh.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -496,9 +496,9 @@ SOURCE=.\gl_model.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -515,9 +515,9 @@ SOURCE=.\gl_ngraph.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -534,9 +534,9 @@ SOURCE=.\gl_ralias.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -553,9 +553,9 @@ SOURCE=.\gl_refrag.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -572,9 +572,9 @@ SOURCE=.\gl_rlight.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -591,9 +591,9 @@ SOURCE=.\gl_rmain.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -610,9 +610,9 @@ SOURCE=.\gl_rmisc.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -629,9 +629,9 @@ SOURCE=.\gl_rsprite.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -648,9 +648,9 @@ SOURCE=.\gl_rsurf.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -667,9 +667,9 @@ SOURCE=.\gl_texture.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -686,9 +686,9 @@ SOURCE=.\gl_warp.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -761,13 +761,13 @@ SOURCE=.\r_aclip.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -781,13 +781,13 @@ SOURCE=.\r_alias.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -801,13 +801,13 @@ SOURCE=.\r_bsp.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -821,13 +821,13 @@ SOURCE=.\r_draw.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -841,13 +841,13 @@ SOURCE=.\r_edge.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -861,13 +861,13 @@ SOURCE=.\r_efrag.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -881,13 +881,13 @@ SOURCE=.\r_light.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -901,13 +901,13 @@ SOURCE=.\r_main.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -921,13 +921,13 @@ SOURCE=.\r_misc.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -941,13 +941,13 @@ SOURCE=.\r_model.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -961,13 +961,13 @@ SOURCE=.\r_part.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -981,13 +981,13 @@ SOURCE=.\r_rast.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1001,13 +1001,13 @@ SOURCE=.\r_scan.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1021,13 +1021,13 @@ SOURCE=.\r_sky.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1041,13 +1041,13 @@ SOURCE=.\r_sprite.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1061,13 +1061,13 @@ SOURCE=.\r_surf.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1081,13 +1081,13 @@ SOURCE=.\r_vars.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1197,9 +1197,9 @@ SOURCE=.\vid_wgl.c
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 !ENDIF 
 
@@ -1212,13 +1212,13 @@ SOURCE=.\vid_win.c
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1296,13 +1296,13 @@ SOURCE=.\d_iface.h
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1316,13 +1316,13 @@ SOURCE=.\d_ifacea.h
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1336,13 +1336,13 @@ SOURCE=.\d_local.h
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1483,6 +1483,17 @@ SOURCE=.\qwsv2.ico
 # Begin Source File
 
 SOURCE=.\winquake.rc
+
+!IF  "$(CFG)" == "zquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Asm Files"
@@ -1522,10 +1533,10 @@ InputName=cl_math
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Debug-GL
+OutDir=.\Release-GL
 InputPath=.\cl_math.s
 InputName=cl_math
 
@@ -1537,10 +1548,10 @@ InputName=cl_math
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Release-GL
+OutDir=.\Debug-GL
 InputPath=.\cl_math.s
 InputName=cl_math
 
@@ -1589,13 +1600,13 @@ InputName=d_polysa
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1635,13 +1646,13 @@ InputName=d_spr8
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1681,13 +1692,13 @@ InputName=d_varsa
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1727,10 +1738,10 @@ InputName=math
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Debug-GL
+OutDir=.\Release-GL
 InputPath=.\math.s
 InputName=math
 
@@ -1742,10 +1753,10 @@ InputName=math
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Release-GL
+OutDir=.\Debug-GL
 InputPath=.\math.s
 InputName=math
 
@@ -1794,13 +1805,13 @@ InputName=r_aclipa
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1840,13 +1851,13 @@ InputName=r_aliasa
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1886,13 +1897,13 @@ InputName=r_draw16
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1932,13 +1943,13 @@ InputName=r_draw8
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1978,13 +1989,13 @@ InputName=r_drawa
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -2024,13 +2035,13 @@ InputName=r_edgea
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -2070,13 +2081,13 @@ InputName=r_parta
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -2116,13 +2127,13 @@ InputName=r_scana
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -2162,13 +2173,13 @@ InputName=r_varsa
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -2208,10 +2219,10 @@ InputName=snd_mixa
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Debug-GL
+OutDir=.\Release-GL
 InputPath=.\snd_mixa.s
 InputName=snd_mixa
 
@@ -2223,10 +2234,10 @@ InputName=snd_mixa
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Release-GL
+OutDir=.\Debug-GL
 InputPath=.\snd_mixa.s
 InputName=snd_mixa
 
@@ -2275,13 +2286,13 @@ InputName=surf16
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -2321,13 +2332,13 @@ InputName=surf8
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -2367,10 +2378,10 @@ InputName=sys_x86
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Debug-GL
+OutDir=.\Release-GL
 InputPath=.\sys_x86.s
 InputName=sys_x86
 
@@ -2382,10 +2393,10 @@ InputName=sys_x86
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Release-GL
+OutDir=.\Debug-GL
 InputPath=.\sys_x86.s
 InputName=sys_x86
 
