@@ -66,7 +66,7 @@ void() ChangeOvertime =
 
 void() ChangeOvertimeUp =
 {
-	local float f1,f2;
+	local float f1;
 	local string tmp;
 
 	if(match_in_progress) return;
@@ -401,7 +401,6 @@ void() ModStatus =
 {
 	local entity p;
 	local string tmp;
-	local float n, f1, k_lockmin, k_lockmax;
 
 	tmp = ftos(k_maxspeed);
 	sprint3(self, 2, "Ќбшуреед       ", tmp, "\n");
@@ -645,7 +644,6 @@ void() PlayerStatusN =
 
 void() ResetOptions =
 {
-	local entity p;
 	local string s1;
 
 	if(match_in_progress) return;
@@ -706,7 +704,7 @@ void() VotePickup =
 void() ReportMe =
 {
 	local entity p;
-	local string t1, t2, h, at, av, r, wt, wa, pa1, pa2;
+	local string t1, t2, h, at, av, wt, wa, pa1, pa2;
 	local float f1, flag;
 
 	flag = 0;
@@ -1238,7 +1236,7 @@ void(string sndname) TeamSay =
 void() PrintScores =
 {
 	local string tmp, tmp2;
-	local entity p, p2;
+	local entity p;
 	local float f1, f2;
 
 	if(match_in_progress != 2) {

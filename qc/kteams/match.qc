@@ -169,7 +169,7 @@ float(float memcnt) CheckMembers =
 
 void(float skip_log) EndMatch =
 {
-	local entity p, p2, old;
+	local entity p, p2;
 
 	local string tmp, tmp2, s1;
 	local float f1, f2, sumfrags, maxfrags, maxdeaths, maxfriend, maxeffi;
@@ -859,9 +859,7 @@ void() TimerStartThink =
 // Called every second during the countdown.
 {
 	local entity p;
-
-	local string tmp;
-	local float show, num, f1, f2, f3;
+	local float num, f1, f2, f3;
 
 	self.cnt2 = self.cnt2 - 1;
 	if(self.cnt2 == 1)
@@ -1094,7 +1092,7 @@ void() StopTimer =
 // Whenever a countdown or match stops, remove the timer and reset everything.
 
 {
-	local entity t,p;
+	local entity t;
 
 	k_force = 0;
 	match_in_progress = 0;
@@ -1193,7 +1191,7 @@ void() PlayerReady =
 // Called by a player to inform that (s)he is ready for a match.
 {
 	local entity p;
-	local float nready, f1, k_lockmin, k_lockmax, f2, f3;
+	local float nready, f1, k_lockmin, k_lockmax;
 	local string tmp, s1, s2;
 
 	if(intermission_running || match_in_progress == 2) return;

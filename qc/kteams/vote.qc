@@ -68,9 +68,7 @@ void() ElectThink =
 
 void() VoteAdmin =
 {
-	local float f1, f2;
-	local string tmp;
-	local entity p, electguard;
+	local entity electguard;
 
 // Check if voteadmin is allowed
 	if(!stof(infokey(world, "k_allowvoteadmin"))) {
