@@ -18,7 +18,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifdef QW_BOTH
+#include "quakedef.h"
+#include "server.h"
+#else
 #include "qwsvdef.h"
+#endif
 
 qboolean	sv_allow_cheats;
 
@@ -381,6 +386,13 @@ void SV_Kick_f (void)
 
 	c = Cmd_Argc ();
 	if (c < 2) {
+#ifdef QW_BOTH
+		// some mods use a "kick" alias for their own needs, sigh
+		if (cls.state >= ca_onserver && Cmd_FindAlias(Cmd_Argv(0))) {
+			Cmd_ExecuteString (Cmd_AliasString(Cmd_Argv(0)));
+			return;
+		}
+#endif
 		Con_Printf ("kick <userid> [reason]\n");
 		return;
 	}
