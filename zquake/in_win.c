@@ -34,6 +34,9 @@ HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion,
 // mouse variables
 cvar_t	m_filter = {"m_filter","0"};
 
+// compatibility with old Quake -- setting to 0 disables KP_* codes
+cvar_t	cl_keypad = {"cl_keypad","1"};
+
 int			mouse_buttons;
 int			mouse_oldbuttonstate;
 POINT		current_pos;
@@ -484,6 +487,9 @@ void IN_Init (void)
 {
 	// mouse variables
 	Cvar_RegisterVariable (&m_filter);
+
+	// keyboard variables
+	Cvar_RegisterVariable (&cl_keypad);
 
 	// joystick variables
 	Cvar_RegisterVariable (&in_joystick);
@@ -1227,4 +1233,83 @@ void IN_JoyMove (usercmd_t *cmd)
 		cl.viewangles[PITCH] = 80.0;
 	if (cl.viewangles[PITCH] < -70.0)
 		cl.viewangles[PITCH] = -70.0;
+}
+
+//==========================================================================
+
+static byte scantokey[128] =
+{
+//  0       1        2       3       4       5       6       7
+//  8       9        A       B       C       D       E       F
+	0  ,   K_ESCAPE,'1',    '2',    '3',    '4',    '5',    '6',
+	'7',    '8',    '9',    '0',    '-',    '=',    K_BACKSPACE, 9,   // 0
+	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i',
+	'o',    'p',    '[',    ']',    K_ENTER,K_CTRL, 'a',    's',      // 1
+	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';',
+	'\'',   '`',    K_SHIFT,'\\',   'z',    'x',    'c',    'v',      // 2
+	'b',    'n',    'm',    ',',    '.',    '/',    K_SHIFT,KP_STAR,
+	K_ALT,  ' ',  K_CAPSLOCK,K_F1,  K_F2,   K_F3,   K_F4,   K_F5,     // 3
+	K_F6,   K_F7,   K_F8,   K_F9,   K_F10,  K_PAUSE,K_SCRLCK,K_HOME,
+	K_UPARROW,K_PGUP,KP_MINUS,K_LEFTARROW,KP_5,K_RIGHTARROW,KP_PLUS,K_END, // 4
+	K_DOWNARROW,K_PGDN,K_INS,K_DEL, 0,      0,      0,      K_F11,
+	K_F12,  0,      0,      0,      0,      0,      0,      0,        // 5
+	0,      0,      0,      0,      0,      0,      0,      0,
+	0,      0,      0,      0,      0,      0,      0,      0,
+	0,      0,      0,      0,      0,      0,      0,      0,
+	0,      0,      0,      0,      0,      0,      0,      0
+};
+
+
+/*
+=======
+IN_MapKey
+
+Map from windows to quake keynums
+=======
+*/
+int IN_MapKey (int key)
+{
+	int		extended;
+	extern cvar_t	cl_keypad;
+
+	extended = (key >> 24) & 1;
+
+	key = (key>>16)&255;
+	if (key > 127)
+		return 0;
+
+	key = scantokey[key];
+
+	if (cl_keypad.value) {
+		if (extended) {
+			switch (key) {
+				case K_ENTER:		return KP_ENTER;
+				case '/':			return KP_SLASH;
+				case K_PAUSE:		return KP_NUMLOCK;
+			};
+		} else {
+			switch (key) {
+				case K_HOME:		return KP_HOME;
+				case K_UPARROW:		return KP_UPARROW;
+				case K_PGUP:		return KP_PGUP;
+				case K_LEFTARROW:	return KP_LEFTARROW;
+				case K_RIGHTARROW:	return KP_RIGHTARROW;
+				case K_END:			return KP_END;
+				case K_DOWNARROW:	return KP_DOWNARROW;
+				case K_PGDN:		return KP_PGDN;
+				case K_INS:			return KP_INS;
+				case K_DEL:			return KP_DEL;
+			}
+		}
+	} else {
+		// cl_keypad 0, compatibility mode
+		switch (key) {
+			case KP_STAR:	return '*';
+			case KP_MINUS:	return '-';
+			case KP_5:		return '5';
+			case KP_PLUS:	return '+';
+		}
+	}
+
+	return key;
 }

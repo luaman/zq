@@ -87,15 +87,15 @@ keyname_t keynames[] =
 	{"KP_NUMLOCK", KP_NUMLOCK},
 	{"KP_SLASH", KP_SLASH},
 	{"KP_DIVIDE", KP_SLASH},
-	{"KP_STAR", '*'},
-	{"KP_MULTIPLY", '*'},
+	{"KP_STAR", KP_STAR},
+	{"KP_MULTIPLY", KP_STAR},
 
 	{"KP_MINUS", KP_MINUS},
 
 	{"KP_HOME", KP_HOME},
 	{"KP_UPARROW", KP_UPARROW},
 	{"KP_PGUP", KP_PGUP},
-	{"KP_PLUS", '+'},
+	{"KP_PLUS", KP_PLUS},
 
 	{"KP_LEFTARROW", KP_LEFTARROW},
 	{"KP_5", KP_5},

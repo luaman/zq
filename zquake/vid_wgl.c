@@ -852,77 +852,6 @@ BOOL bSetupPixelFormat(HDC hDC)
 }
 
 
-//==========================================================================
-
-byte        scantokey[128] =
-{
-//  0       1        2       3       4       5       6       7
-//  8       9        A       B       C       D       E       F
-	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6',
-	'7',    '8',    '9',    '0',    '-',    '=',    K_BACKSPACE, 9,   // 0
-	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i',
-	'o',    'p',    '[',    ']',    13,		K_CTRL, 'a',    's',      // 1
-	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';',
-	'\'',   '`',    K_SHIFT,'\\',   'z',    'x',    'c',    'v',      // 2
-	'b',    'n',    'm',    ',',    '.',    '/',    K_SHIFT,'*',
-	K_ALT,  ' ',  K_CAPSLOCK,K_F1,  K_F2,   K_F3,   K_F4,   K_F5,     // 3
-	K_F6,   K_F7,   K_F8,   K_F9,   K_F10,  K_PAUSE,K_SCRLCK,KP_HOME,
-	KP_UPARROW,KP_PGUP,KP_MINUS,KP_LEFTARROW,KP_5,KP_RIGHTARROW,'+',KP_END, // 4
-	KP_DOWNARROW,KP_PGDN,KP_INS,KP_DEL,0,   0,      0,      K_F11,
-	K_F12,  0,      0,      0,      0,      0,      0,      0,        // 5
-	0,      0,      0,      0,      0,      0,      0,      0,
-	0,      0,      0,      0,      0,      0,      0,      0,
-	0,      0,      0,      0,      0,      0,      0,      0,
-	0,      0,      0,      0,      0,      0,      0,      0
-};
-
-byte        extscantokey[128] =
-{
-//  0       1        2       3       4       5       6       7
-//  8       9        A       B       C       D       E       F
-	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6',
-	'7',    '8',    '9',    '0',    '-',    '=',    K_BACKSPACE, 9,   // 0
-	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i',
-	'o',    'p',    '[',    ']',    KP_ENTER,K_CTRL,'a',    's',      // 1
-	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';',
-	'\'',   '`',    K_SHIFT,'\\',   'z',    'x',    'c',    'v',      // 2
-	'b',    'n',    'm',    ',',    '.',    KP_SLASH,K_SHIFT,'*',
-	K_ALT,  ' ',    K_CAPSLOCK,K_F1,K_F2,   K_F3,   K_F4,   K_F5,     // 3
-	K_F6,   K_F7,   K_F8,   K_F9,   K_F10,  KP_NUMLOCK,0,   K_HOME,
-	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',  K_END,    // 4
-	K_DOWNARROW,K_PGDN,K_INS,K_DEL, 0,      0,      0,      K_F11,
-	K_F12,  0,      0,      0,      0,      0,      0,      0,        // 5
-	0,      0,      0,      0,      0,      0,      0,      0,
-	0,      0,      0,      0,      0,      0,      0,      0,
-	0,      0,      0,      0,      0,      0,      0,      0,
-	0,      0,      0,      0,      0,      0,      0,      0
-};
-
-
-
-/*
-=======
-MapKey
-
-Map from windows to quake keynums
-=======
-*/
-int MapKey (int key)
-{
-	int extended;
-
-	extended = (key >> 24) & 1;
-
-	key = (key>>16)&255;
-	if (key > 127)
-		return 0;
-
-	if (extended)
-		return extscantokey[key];
-	else
-		return scantokey[key];
-}
-
 /*
 ===================================================================
 
@@ -1022,6 +951,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 	}
 }
 
+int IN_MapKey (int key);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (
@@ -1055,12 +985,12 @@ LONG WINAPI MainWndProc (
 
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
-			Key_Event (MapKey(lParam), true);
+			Key_Event (IN_MapKey(lParam), true);
 			break;
 			
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
-			Key_Event (MapKey(lParam), false);
+			Key_Event (IN_MapKey(lParam), false);
 			break;
 
 		case WM_SYSCHAR:
