@@ -1103,7 +1103,10 @@ LONG WINAPI MainWndProc (
 		// Its delta is either positive or neg, and we generate the proper
 		// Event.
 		case WM_MOUSEWHEEL: 
-			if (!in_dinput_wheel_works) {
+			if (in_mwheeltype != MWHEEL_DINPUT)
+			{
+				in_mwheeltype = MWHEEL_WINDOWMSG;
+
 				if ((short) HIWORD(wParam) > 0) {
 					Key_Event(K_MWHEELUP, true);
 					Key_Event(K_MWHEELUP, false);
