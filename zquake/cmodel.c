@@ -21,24 +21,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 
+#undef cnode_t		// HP-UX defines this
 
-typedef struct mycnode_s
+
+typedef struct cnode_s
 {
 // common with leaf
 	int			contents;		// 0, to differentiate from leafs
-	struct mycnode_s	*parent;
+	struct cnode_s	*parent;
 
 // node specific
 	mplane_t	*plane;
-	struct mycnode_s	*children[2];	
-} mycnode_t;
+	struct cnode_s	*children[2];	
+} cnode_t;
 
 
 typedef struct cleaf_s
 {
 // common with node
 	int			contents;		// a negative contents number
-	struct mycnode_s	*parent;
+	struct cnode_s	*parent;
 
 // leaf specific
 	byte		ambient_sound_level[NUM_AMBIENTS];
@@ -57,7 +59,7 @@ static cmodel_t		map_cmodels[MAX_MAP_MODELS];
 static mplane_t		*map_planes;
 static int			numplanes;
 
-static mycnode_t		*map_nodes;
+static cnode_t		*map_nodes;
 static int			numnodes;
 
 static dclipnode_t	*map_clipnodes;
@@ -371,7 +373,7 @@ int	CM_LeafAmbientLevel (const cleaf_t *leaf, int ambient_channel)
 // always returns a valid cleaf_t pointer
 cleaf_t *CM_PointInLeaf (const vec3_t p)
 {
-	mycnode_t		*node;
+	cnode_t		*node;
 	float		d;
 	mplane_t	*plane;
 	
@@ -429,7 +431,7 @@ static int	fatbytes;
 static byte	fatpvs[MAX_MAP_LEAFS/8];
 static vec3_t	fatpvs_org;
 
-static void AddToFatPVS_r (mycnode_t *node)
+static void AddToFatPVS_r (cnode_t *node)
 {
 	int		i;
 	byte	*pvs;
@@ -492,7 +494,7 @@ static int *leafs_list;
 static int leafs_topnode;
 static vec3_t leafs_mins, leafs_maxs;
 
-static void FindTouchedLeafs_r (const mycnode_t *node)
+static void FindTouchedLeafs_r (const cnode_t *node)
 {
 	mplane_t *splitplane;
 	cleaf_t	*leaf;
@@ -644,7 +646,7 @@ static void CM_LoadSubmodels (lump_t *l)
 CM_SetParent
 =================
 */
-static void CM_SetParent (mycnode_t *node, mycnode_t *parent)
+static void CM_SetParent (cnode_t *node, cnode_t *parent)
 {
 	node->parent = parent;
 	if (node->contents < 0)
@@ -662,7 +664,7 @@ static void CM_LoadNodes (lump_t *l)
 {
 	int			i, j, count, p;
 	dnode_t		*in;
-	mycnode_t 	*out;
+	cnode_t 	*out;
 
 	in = (dnode_t *)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
@@ -684,7 +686,7 @@ static void CM_LoadNodes (lump_t *l)
 			if (p >= 0)
 				out->children[j] = map_nodes + p;
 			else
-				out->children[j] = (mycnode_t *)(map_leafs + (-1 - p));
+				out->children[j] = (cnode_t *)(map_leafs + (-1 - p));
 		}
 	}
 	
@@ -754,7 +756,7 @@ Deplicate the drawing hull structure as a clipping hull
 */
 static void CM_MakeHull0 (void)
 {
-	mycnode_t		*in, *child;
+	cnode_t		*in, *child;
 	dclipnode_t *out;
 	int			i, j, count;
 
