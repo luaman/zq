@@ -274,13 +274,13 @@ void NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to)
 		return;
 	}
 
-	NetadrToSockadr (&to, &addr);
-
 	net_socket = ip_sockets[sock];
 	if (net_socket == -1)
 		return;
 
-	ret = sendto (net_socket, data, length, 0, (struct sockaddr *)&addr, sizeof(addr) );
+	NetadrToSockadr (&to, &addr);
+
+	ret = sendto (net_socket, data, length, 0, (struct sockaddr *)&addr, sizeof(addr));
 	if (ret == -1)
 	{
 		int err = WSAGetLastError();
@@ -329,7 +329,7 @@ int UDP_OpenSocket (int port)
 		address.sin_port = htons((short)port);
 
 	if (bind (newsocket, (void *)&address, sizeof(address)) == -1)
-			return -1;
+		return -1;
 
 	return newsocket;
 }
@@ -399,21 +399,21 @@ void NET_Config (qboolean client, qboolean server)
 
 /*
 ====================
-NET_Shutdown
+NET_Sleep
 
 Sleeps msec or until the server socket is ready
 ====================
 */
 void NET_Sleep (int msec)
 {
-    struct timeval timeout;
+	struct timeval timeout;
 	fd_set	fdset;
 	int i;
 
-	FD_ZERO(&fdset);
+	FD_ZERO (&fdset);
 	i = 0;
 	if (ip_sockets[NS_SERVER] != -1) {
-		FD_SET(ip_sockets[NS_SERVER], &fdset); // network socket
+		FD_SET (ip_sockets[NS_SERVER], &fdset); // network socket
 		i = ip_sockets[NS_SERVER];
 	}
 
@@ -425,7 +425,7 @@ void NET_Sleep (int msec)
 */
 	timeout.tv_sec = msec/1000;
 	timeout.tv_usec = (msec%1000)*1000;
-	select(i+1, &fdset, NULL, NULL, &timeout);
+	select (i+1, &fdset, NULL, NULL, &timeout);
 }
 
 
