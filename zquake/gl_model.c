@@ -556,23 +556,6 @@ void Mod_LoadVisibility (lump_t *l)
 
 /*
 =================
-Mod_LoadEntities
-=================
-*/
-void Mod_LoadEntities (lump_t *l)
-{
-	if (!l->filelen)
-	{
-		loadmodel->entities = NULL;
-		return;
-	}
-	loadmodel->entities = Hunk_AllocName ( l->filelen, loadname);	
-	memcpy (loadmodel->entities, mod_base + l->fileofs, l->filelen);
-}
-
-
-/*
-=================
 Mod_LoadVertexes
 =================
 */
@@ -1173,22 +1156,6 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	for (i=0 ; i<sizeof(dheader_t)/4 ; i++)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
-// checksum all of the map, except for entities
-	mod->checksum = 0;
-	mod->checksum2 = 0;
-
-	for (i = 0; i < HEADER_LUMPS; i++) {
-		if (i == LUMP_ENTITIES)
-			continue;
-		mod->checksum ^= Com_BlockChecksum(mod_base + header->lumps[i].fileofs, 
-			header->lumps[i].filelen);
-
-		if (i == LUMP_VISIBILITY || i == LUMP_LEAFS || i == LUMP_NODES)
-			continue;
-		mod->checksum2 ^= Com_BlockChecksum(mod_base + header->lumps[i].fileofs, 
-			header->lumps[i].filelen);
-	}
-	
 
 // load into heap
 	
@@ -1211,7 +1178,7 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	Mod_LoadLeafs (&header->lumps[LUMP_LEAFS]);
 	Mod_LoadNodes (&header->lumps[LUMP_NODES]);
 	Mod_LoadClipnodes (&header->lumps[LUMP_CLIPNODES]);
-	Mod_LoadEntities (&header->lumps[LUMP_ENTITIES]);
+//	Mod_LoadEntities (&header->lumps[LUMP_ENTITIES]);
 	Mod_LoadSubmodels (&header->lumps[LUMP_MODELS]);
 
 	Mod_MakeHull0 ();

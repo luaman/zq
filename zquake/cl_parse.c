@@ -277,7 +277,7 @@ void Model_NextDownload (void)
 			return;		// started a download
 	}
 
-	cl.clipmodels[1] = CM_LoadMap (cl.model_name[1], true, &cl.map_checksum, &cl.map_checksum2);
+	cl.clipmodels[1] = CM_LoadMap (cl.model_name[1], true, NULL, &cl.map_checksum2);
 
 	for (i=1 ; i<MAX_MODELS ; i++)
 	{
@@ -315,7 +315,7 @@ void Model_NextDownload (void)
 
 	// done with modellist, request first of static signon messages
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-	MSG_WriteString (&cls.netchan.message, va("prespawn %i 0 %i", cl.servercount, cl.worldmodel->checksum2));
+	MSG_WriteString (&cls.netchan.message, va("prespawn %i 0 %i", cl.servercount, cl.map_checksum2));
 }
 
 /*

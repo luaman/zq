@@ -23,6 +23,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 
 
+typedef struct cnode_s
+{
+// common with leaf
+	int			contents;		// 0, to differentiate from leafs
+	struct cnode_s	*parent;
+
+// node specific
+	mplane_t	*plane;
+	struct cnode_s	*children[2];	
+} cnode_t;
+
+
+typedef struct cleaf_s
+{
+// common with node
+	int			contents;		// a negative contents number
+	struct cnode_s	*parent;
+
+// leaf specific
+	byte		*compressed_vis;
+	byte		ambient_sound_level[NUM_AMBIENTS];
+} cleaf_t;
+
+
+
 static char			loadname[32];	// for hunk tags
 
 static char			map_name[MAX_QPATH];
@@ -34,13 +59,13 @@ static cmodel_t		map_cmodels[MAX_MAP_MODELS];
 static mplane_t		*map_planes;
 static int			numplanes;
 
-static mnode_t		*map_nodes;
+static cnode_t		*map_nodes;
 static int			numnodes;
 
 static dclipnode_t	*map_clipnodes;
 static int			numclipnodes;
 
-static mleaf_t		*map_leafs;
+static cleaf_t		*map_leafs;
 static int			numleafs;
 
 static byte			*map_visdata;
@@ -319,10 +344,9 @@ char *CM_EntityString (void)
 	return map_entitystring;
 }
 
-// FIXME: return leaf num?
-mleaf_t *CM_PointInLeaf (const vec3_t p)
+cleaf_t *CM_PointInLeaf (const vec3_t p)
 {
-	mnode_t		*node;
+	cnode_t		*node;
 	float		d;
 	mplane_t	*plane;
 	
@@ -333,7 +357,7 @@ mleaf_t *CM_PointInLeaf (const vec3_t p)
 	while (1)
 	{
 		if (node->contents < 0)
-			return (mleaf_t *)node;
+			return (cleaf_t *)node;
 		plane = node->plane;
 		d = DotProduct (p,plane->normal) - plane->dist;
 		if (d > 0)
@@ -351,14 +375,14 @@ mleaf_t *CM_PointInLeaf (const vec3_t p)
 CM_DecompressVis
 ===================
 */
-byte *CM_DecompressVis (byte *in, model_t *model)
+byte *CM_DecompressVis (byte *in)
 {
 	static byte	decompressed[MAX_MAP_LEAFS/8];
 	int		c;
 	byte	*out;
 	int		row;
 
-	row = (model->numleafs+7)>>3;	
+	row = (numleafs + 7) >> 3;	
 	out = decompressed;
 
 	if (!in)
@@ -391,11 +415,11 @@ byte *CM_DecompressVis (byte *in, model_t *model)
 	return decompressed;
 }
 
-byte *CM_LeafPVS (mleaf_t *leaf, model_t *model)
+byte *CM_LeafPVS (cleaf_t *leaf)
 {
-	if (leaf == model->leafs)
+	if (leaf == map_leafs)
 		return map_novis;
-	return CM_DecompressVis (leaf->compressed_vis, model);
+	return CM_DecompressVis (leaf->compressed_vis);
 }
 
 
@@ -411,10 +435,9 @@ crosses a waterline.
 */
 static int	fatbytes;
 static byte	fatpvs[MAX_MAP_LEAFS/8];
-static model_t *fatpvs_model;	// should go away when proper CM is implemented
 static vec3_t	fatpvs_org;
 
-static void AddToFatPVS_r (mnode_t *node)
+static void AddToFatPVS_r (cnode_t *node)
 {
 	int		i;
 	byte	*pvs;
@@ -428,7 +451,7 @@ static void AddToFatPVS_r (mnode_t *node)
 		{
 			if (node->contents != CONTENTS_SOLID)
 			{
-				pvs = Mod_LeafPVS ( (mleaf_t *)node, fatpvs_model);
+				pvs = CM_LeafPVS ( (cleaf_t *)node);
 				for (i=0 ; i<fatbytes ; i++)
 					fatpvs[i] |= pvs[i];
 			}
@@ -457,14 +480,13 @@ Calculates a PVS that is the inclusive or of all leafs within 8 pixels of the
 given point.
 =============
 */
-byte *CM_FatPVS (vec3_t org, struct model_s *model)
+byte *CM_FatPVS (vec3_t org)
 {
-	fatpvs_model = model;		// should go away when proper CM is implemented
 	VectorCopy (org, fatpvs_org);
 
-	fatbytes = (model->numleafs+31)>>3;
+	fatbytes = (numleafs+31)>>3;
 	memset (fatpvs, 0, fatbytes);
-	AddToFatPVS_r (model->nodes);
+	AddToFatPVS_r (map_nodes);
 	return fatpvs;
 }
 
@@ -532,6 +554,8 @@ static void CM_LoadSubmodels (lump_t *l)
 			out->origin[j] = LittleFloat (in->origin[j]);
 		}
 		for (j = 0; j < MAX_MAP_HULLS; j++) {
+			out->hulls[j].planes = map_planes;
+			out->hulls[j].clipnodes = map_clipnodes;
 			out->hulls[j].firstclipnode = LittleLong (in->headnode[j]);
 			out->hulls[j].lastclipnode = numclipnodes - 1;
 		}
@@ -552,7 +576,7 @@ static void CM_LoadSubmodels (lump_t *l)
 CM_SetParent
 =================
 */
-static void CM_SetParent (mnode_t *node, mnode_t *parent)
+static void CM_SetParent (cnode_t *node, cnode_t *parent)
 {
 	node->parent = parent;
 	if (node->contents < 0)
@@ -570,7 +594,7 @@ static void CM_LoadNodes (lump_t *l)
 {
 	int			i, j, count, p;
 	dnode_t		*in;
-	mnode_t 	*out;
+	cnode_t 	*out;
 
 	in = (dnode_t *)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
@@ -583,25 +607,16 @@ static void CM_LoadNodes (lump_t *l)
 
 	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j=0 ; j<3 ; j++)
-		{
-			out->minmaxs[j] = LittleShort (in->mins[j]);
-			out->minmaxs[3+j] = LittleShort (in->maxs[j]);
-		}
-	
 		p = LittleLong(in->planenum);
 		out->plane = map_planes + p;
 
-		out->firstsurface = LittleShort (in->firstface);
-		out->numsurfaces = LittleShort (in->numfaces);
-		
 		for (j=0 ; j<2 ; j++)
 		{
 			p = LittleShort (in->children[j]);
 			if (p >= 0)
 				out->children[j] = map_nodes + p;
 			else
-				out->children[j] = (mnode_t *)(map_leafs + (-1 - p));
+				out->children[j] = (cnode_t *)(map_leafs + (-1 - p));
 		}
 	}
 	
@@ -616,7 +631,7 @@ CM_LoadLeafs
 static void CM_LoadLeafs (lump_t *l)
 {
 	dleaf_t 	*in;
-	mleaf_t 	*out;
+	cleaf_t 	*out;
 	int			i, j, count, p;
 
 	in = (dleaf_t *)(cmod_base + l->fileofs);
@@ -630,12 +645,6 @@ static void CM_LoadLeafs (lump_t *l)
 
 	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (j=0 ; j<3 ; j++)
-		{
-			out->minmaxs[j] = LittleShort (in->mins[j]);
-			out->minmaxs[3+j] = LittleShort (in->maxs[j]);
-		}
-
 		p = LittleLong(in->contents);
 		out->contents = p;
 
@@ -644,7 +653,6 @@ static void CM_LoadLeafs (lump_t *l)
 			out->compressed_vis = NULL;
 		else
 			out->compressed_vis = map_visdata + p;
-		out->efrags = NULL;
 		
 		for (j=0 ; j<4 ; j++)
 			out->ambient_sound_level[j] = in->ambient_level[j];
@@ -687,22 +695,22 @@ Deplicate the drawing hull structure as a clipping hull
 */
 static void CM_MakeHull0 (void)
 {
-	mnode_t		*in, *child;
+	cnode_t		*in, *child;
 	dclipnode_t *out;
 	int			i, j, count;
-	hull_t		*hull;
 
 	in = map_nodes;
 	count = numnodes;
 	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
 
-	hull = &map_cmodels[0].hulls[0];
-	hull->clipnodes = out;
-	hull->firstclipnode = 0;
-	hull->lastclipnode = count-1;
-	hull->planes = map_planes;
+	// fix up hull 0 in all cmodels
+	for (i = 0; i < numcmodels; i++) {
+		map_cmodels[i].hulls[0].clipnodes = out;
+		map_cmodels[i].hulls[0].lastclipnode = count - 1;
+	}
 
-	for (i=0 ; i<count ; i++, out++, in++)
+	// build clipnodes from nodes
+	for (i = 0; i < count; i++, out++, in++)
 	{
 		out->planenum = in->plane - map_planes;
 		for (j = 0; j < 2; j++)
@@ -774,8 +782,9 @@ cmodel_t *CM_LoadMap (char *name, qboolean clientload, unsigned *checksum, unsig
 	if (map_name[0]) {
 		assert(!strcmp(name, map_name));
 
-		*checksum = map_checksum;
-		*checksum = map_checksum2;
+		if (checksum)
+			*checksum = map_checksum;
+		*checksum2 = map_checksum2;
 		return &map_cmodels[0];		// still have the right version
 	}
 
@@ -811,7 +820,8 @@ cmodel_t *CM_LoadMap (char *name, qboolean clientload, unsigned *checksum, unsig
 		map_checksum2 ^= LittleLong(Com_BlockChecksum(cmod_base + header->lumps[i].fileofs, 
 			header->lumps[i].filelen));
 	}
-	*checksum = map_checksum;
+	if (checksum)
+		*checksum = map_checksum;
 	*checksum2 = map_checksum2;
 
 	// load into heap
@@ -825,8 +835,7 @@ cmodel_t *CM_LoadMap (char *name, qboolean clientload, unsigned *checksum, unsig
 
 	CM_MakeHull0 ();
 
-	if (!clientload)
-	{ // client doesn't need PHS
+	if (!clientload) {	// client doesn't need PHS
 //		MakePHS ();
 	}
 

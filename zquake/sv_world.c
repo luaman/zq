@@ -54,7 +54,7 @@ testing object's origin to get a point to use with the returned hull.
 */
 hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset)
 {
-	model_t		*model;
+	cmodel_t	*model;
 	vec3_t		size;
 	vec3_t		hullmins, hullmaxs;
 	hull_t		*hull;
@@ -65,9 +65,11 @@ hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset)
 		if (ent->v.movetype != MOVETYPE_PUSH)
 			Host_Error ("SOLID_BSP without MOVETYPE_PUSH");
 
-		model = sv.FIXME_models[ (int)ent->v.modelindex ];
+		if ((unsigned)ent->v.modelindex >= MAX_MODELS)
+			Host_Error ("SV_HullForEntity: ent.modelindex >= MAX_MODELS");
 
-		if (!model || model->type != mod_brush)
+		model = sv.models[(int)ent->v.modelindex];
+		if (!model)
 			Host_Error ("SOLID_BSP with a non-bsp model");
 
 		VectorSubtract (maxs, mins, size);

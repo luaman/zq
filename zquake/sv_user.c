@@ -322,12 +322,11 @@ void Cmd_PreSpawn_f (void)
 
 //		Com_DPrintf ("Client check = %d\n", check);
 
-		if (sv_mapcheck.value && check != sv.FIXME_worldmodel->checksum &&
-			check != sv.FIXME_worldmodel->checksum2) {
+		if (sv_mapcheck.value && check != sv.map_checksum && check != sv.map_checksum2) {
 			SV_ClientPrintf (sv_client, PRINT_HIGH, 
 				"Map model file does not match (%s), %i != %i/%i.\n"
 				"You may need a new version of the map, or the proper install files.\n",
-				sv.modelname, check, sv.FIXME_worldmodel->checksum, sv.FIXME_worldmodel->checksum2);
+				sv.modelname, check, sv.map_checksum, sv.map_checksum2);
 			SV_DropClient (sv_client); 
 			return;
 		}
@@ -336,7 +335,7 @@ void Cmd_PreSpawn_f (void)
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
 //spawns.  These functions are written to not overflow
 	if (sv_client->num_backbuf) {
-		Com_Printf ("WARNING %s: [SV_PreSpawn] Back buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
+		Com_Printf ("WARNING %s: [SV_PreSpawn] Back-buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
 		sv_client->num_backbuf = 0;
 		SZ_Clear(&sv_client->netchan.message);
 	}

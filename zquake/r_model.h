@@ -338,10 +338,6 @@ typedef struct model_s
 
 	byte		*visdata;
 	byte		*lightdata;
-	char		*entities;
-
-	unsigned	checksum;		// for world models only
-	unsigned	checksum2;		// for world models only
 
 //
 // additional model data

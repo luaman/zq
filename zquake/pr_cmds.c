@@ -623,7 +623,7 @@ int PF_newcheckclient (int check)
 	int		i;
 	byte	*pvs;
 	edict_t	*ent;
-	mleaf_t	*leaf;
+	cleaf_t	*leaf;
 	vec3_t	org;
 
 // cycle to the next one
@@ -661,8 +661,8 @@ int PF_newcheckclient (int check)
 
 // get the PVS for the entity
 	VectorAdd (ent->v.origin, ent->v.view_ofs, org);
-	leaf = Mod_PointInLeaf (org, sv.FIXME_worldmodel);
-	pvs = Mod_LeafPVS (leaf, sv.FIXME_worldmodel);
+	leaf = CM_PointInLeaf (org);
+	pvs = CM_LeafPVS (leaf);
 	memcpy (checkpvs, pvs, (sv.FIXME_worldmodel->numleafs+7)>>3 );
 
 	return i;

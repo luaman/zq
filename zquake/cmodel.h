@@ -60,12 +60,16 @@ typedef struct {
 	hull_t	hulls[MAX_MAP_HULLS];
 } cmodel_t;
 
+typedef struct cleaf_s cleaf_t;
 
 hull_t *CM_HullForBox (vec3_t mins, vec3_t maxs);
 int CM_HullPointContents (hull_t *hull, int num, vec3_t p);
 trace_t CM_HullTrace (hull_t *hull, vec3_t start, vec3_t end);
-//mleaf_t *CM_PointInLeaf (const vec3_t p);
-byte *CM_FatPVS (vec3_t org, struct model_s *model);
+cleaf_t *CM_PointInLeaf (const vec3_t p);
+byte *CM_LeafPVS (cleaf_t *leaf);
+byte *CM_FatPVS (vec3_t org);
+char *CM_EntityString (void);
 cmodel_t *CM_InlineModel (char *name);
+void CM_InvalidateMap (void);
 cmodel_t *CM_LoadMap (char *name, qboolean clientload, unsigned *checksum, unsigned *checksum2);
 void CM_Init (void);
