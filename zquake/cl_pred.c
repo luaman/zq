@@ -350,7 +350,15 @@ void CL_PredictMovement (void)
 	if (cls.mvdplayback && !cam_track)
 	{
 		player_state_t	state;
-		
+
+		if (cl.paused)
+			return;
+
+		if (cl.intermission) {
+			cl.crouch = 0;
+			return;
+		}
+
 		memset (&state, 0, sizeof(state));
 		state.pm_type = PM_SPECTATOR;
 		VectorCopy (cl.simorg, state.origin);
