@@ -68,6 +68,8 @@ extern qboolean mouseactive; // from in_win.c
 #define NO_MODE					(MODE_WINDOWED - 1)
 #define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 3)
 
+cvar_t		vid_ref = {"vid_ref", "soft", CVAR_ROM};
+
 // Note that 0 is MODE_WINDOWED
 cvar_t		vid_mode = {"vid_mode","0"};
 // Note that 0 is MODE_WINDOWED
@@ -2042,6 +2044,7 @@ void	VID_Init (unsigned char *palette)
 	int		basenummodes;
 	byte	*ptmp;
 
+	Cvar_Register (&vid_ref);
 	Cvar_Register (&vid_mode);
 	Cvar_Register (&vid_nopageflip);
 	Cvar_Register (&_vid_default_mode);

@@ -44,6 +44,7 @@ typedef unsigned short PIXEL;
 #include "input.h"
 #include "keys.h"
 
+cvar_t		vid_ref = {"vid_ref", "soft", CVAR_ROM};
 cvar_t		_windowed_mouse = {"_windowed_mouse","0",CVAR_ARCHIVE};
 cvar_t		m_filter = {"m_filter","0",CVAR_ARCHIVE};
 float old_windowed_mouse;
@@ -360,11 +361,12 @@ void ResetSharedFrameBuffers(void)
 
 void VID_Init (unsigned char *palette)
 {
-
    int pnum, i;
    XVisualInfo template;
    int num_visuals;
    int template_mask;
+
+   Cvar_Register (&vid_ref);
 
    ignorenext=0;
    vid.width = 320;

@@ -150,6 +150,7 @@ qboolean gl_mtexable = false;
 
 //====================================
 
+cvar_t		vid_ref = {"vid_ref", "gl", CVAR_ROM};
 cvar_t		vid_mode = {"vid_mode","0"};
 // Note that 0 is MODE_WINDOWED
 cvar_t		_vid_default_mode = {"_vid_default_mode","0",CVAR_ARCHIVE};
@@ -1564,6 +1565,7 @@ void	VID_Init (unsigned char *palette)
 
 	memset(&devmode, 0, sizeof(devmode));
 
+	Cvar_Register (&vid_ref);
 	Cvar_Register (&vid_mode);
 	Cvar_Register (&vid_nopageflip);
 	Cvar_Register (&_vid_default_mode);

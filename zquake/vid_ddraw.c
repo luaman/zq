@@ -49,6 +49,7 @@ byte	surfcache[320*200*4];
 unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 
+cvar_t	vid_ref = {"vid_ref", "soft", CVAR_ROM};
 cvar_t	_windowed_mouse = {"_windowed_mouse", "0"};
 
 static HICON	hIcon;
@@ -358,6 +359,8 @@ void VID_Init (unsigned char *palette)
 	DWORD		WindowStyle, ExWindowStyle;
 	WNDCLASS		wc;
 //	HDC				hdc;
+
+	Cvar_Register (&vid_ref);
 
 	vid.maxwarpwidth = vid.width = vid.conwidth = BASEWIDTH;
 	vid.maxwarpheight = vid.height = vid.conheight = BASEHEIGHT;
