@@ -47,6 +47,16 @@ typedef enum {
 
 typedef struct
 {
+	double		time;
+	int			clientnum;
+	sizebuf_t	msg;
+	byte		buf[MAX_MSGLEN];
+} packet_t;
+
+#define MAX_DELAYED_PACKETS 128
+
+typedef struct
+{
 	server_state_t	state;			// precache commands are only valid during load
 
 	double		time;
@@ -211,6 +221,7 @@ typedef struct client_s
 	char			uploadfn[MAX_QPATH];
 	netadr_t		snap_from;
 	qbool			remote_snap;
+	double			delay;
 
 //===== NETWORK ============
 	int				chokecount;
@@ -275,6 +286,9 @@ typedef struct
 	byte		log_buf[2][MAX_DATAGRAM];
 
 	challenge_t	challenges[MAX_CHALLENGES];	// to prevent invalid IPs from connecting
+
+	packet_t		packets[MAX_DELAYED_PACKETS];
+	int				num_packets;
 } serverPersistent_t;
 
 //=============================================================================

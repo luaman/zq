@@ -27,6 +27,7 @@ edict_t	*sv_player;
 
 cvar_t	sv_spectalk = {"sv_spectalk", "1"};
 cvar_t	sv_mapcheck	= {"sv_mapcheck", "1"};
+cvar_t	sv_minping	= {"sv_minping", "0"};
 
 static void SV_ExecuteUserCommand (char *s);
 static void OnChange_sv_maxpitch (cvar_t *var, char *str, qbool *cancel);
@@ -2178,6 +2179,16 @@ void SV_ExecuteClientMessage (client_t *cl)
 	// calc ping time
 	frame = &cl->frames[cl->netchan.incoming_acknowledged & UPDATE_MASK];
 	frame->ping_time = svs.realtime - frame->senttime;
+
+	if (frame->ping_time*999 > sv_minping.value) {
+		cl->delay -= 0.001;
+		if (cl->delay < 0)
+			cl->delay = 0;
+	} else if (frame->ping_time*1001 < sv_minping.value) {
+		cl->delay += 0.001;
+		if (cl->delay > 300)
+			cl->delay = 300;
+	}
 
 	// make sure the reply sequence number matches the incoming
 	// sequence number 
