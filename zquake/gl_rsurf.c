@@ -1274,9 +1274,7 @@ void R_DrawWorld (void)
 	if (gl_fb_bmodels.value)
 		memset (fullbright_polys, 0, sizeof(fullbright_polys));
 
-#ifdef QUAKE2
 	R_ClearSkyBox ();
-#endif
 
 	R_RecursiveWorldNode (cl.worldmodel->nodes);
 
@@ -1286,9 +1284,7 @@ void R_DrawWorld (void)
 
 	R_RenderFullbrights ();
 
-#ifdef QUAKE2
 	R_DrawSkyBox ();
-#endif
 }
 
 
