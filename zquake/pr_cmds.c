@@ -1273,95 +1273,16 @@ void PF_nextent (void)
 =============
 PF_aim
 
-Pick a vector for the player to shoot along
+Used to pick a vector for the player to shoot along. Now a stub.
+
 vector aim(entity, missilespeed)
 =============
 */
-//cvar_t	sv_aim = {"sv_aim", "0.93"};
-cvar_t	sv_aim = {"sv_aim", "2"};
 void PF_aim (void)
 {
-	edict_t	*ent, *check, *bestent;
-	vec3_t	start, dir, end, bestdir;
-	int		i, j;
-	trace_t	tr;
-	float	dist, bestdist;
-	float	speed;
-	char	*noaim;
-
-	ent = G_EDICT(OFS_PARM0);
-	speed = G_FLOAT(OFS_PARM1);
-
-	VectorCopy (ent->v.origin, start);
-	start[2] += 20;
-
-// noaim option
-	i = NUM_FOR_EDICT(ent);
-	if (i>0 && i<MAX_CLIENTS)
-	{
-		noaim = Info_ValueForKey (svs.clients[i-1].userinfo, "noaim");
-		if (atoi(noaim) > 0)
-		{
-			VectorCopy (pr_global_struct->v_forward, G_VECTOR(OFS_RETURN));
-			return;
-		}
-	}
-
-// try sending a trace straight
-	VectorCopy (pr_global_struct->v_forward, dir);
-	VectorMA (start, 2048, dir, end);
-	tr = SV_Trace (start, vec3_origin, vec3_origin, end, false, ent);
-	if (tr.ent && tr.ent->v.takedamage == DAMAGE_AIM
-	&& (!teamplay.value || ent->v.team <=0 || ent->v.team != tr.ent->v.team) )
-	{
-		VectorCopy (pr_global_struct->v_forward, G_VECTOR(OFS_RETURN));
-		return;
-	}
-
-
-// try all possible entities
-	VectorCopy (dir, bestdir);
-	bestdist = sv_aim.value;
-	bestent = NULL;
-	
-	check = NEXT_EDICT(sv.edicts);
-	for (i=1 ; i<sv.num_edicts ; i++, check = NEXT_EDICT(check) )
-	{
-		if (check->v.takedamage != DAMAGE_AIM)
-			continue;
-		if (check == ent)
-			continue;
-		if (teamplay.value && ent->v.team > 0 && ent->v.team == check->v.team)
-			continue;	// don't aim at teammate
-		for (j=0 ; j<3 ; j++)
-			end[j] = check->v.origin[j]
-			+ 0.5*(check->v.mins[j] + check->v.maxs[j]);
-		VectorSubtract (end, start, dir);
-		VectorNormalize (dir);
-		dist = DotProduct (dir, pr_global_struct->v_forward);
-		if (dist < bestdist)
-			continue;	// to far to turn
-		tr = SV_Trace (start, vec3_origin, vec3_origin, end, false, ent);
-		if (tr.ent == check)
-		{	// can shoot at this one
-			bestdist = dist;
-			bestent = check;
-		}
-	}
-	
-	if (bestent)
-	{
-		VectorSubtract (bestent->v.origin, ent->v.origin, dir);
-		dist = DotProduct (dir, pr_global_struct->v_forward);
-		VectorScale (pr_global_struct->v_forward, dist, end);
-		end[2] = dir[2];
-		VectorNormalize (end);
-		VectorCopy (end, G_VECTOR(OFS_RETURN));	
-	}
-	else
-	{
-		VectorCopy (bestdir, G_VECTOR(OFS_RETURN));
-	}
+//	ent = G_EDICT(OFS_PARM0);
+//	speed = G_FLOAT(OFS_PARM1);
+	VectorCopy (pr_global_struct->v_forward, G_VECTOR(OFS_RETURN));
 }
 
 /*
