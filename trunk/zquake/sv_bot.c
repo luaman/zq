@@ -30,12 +30,8 @@ void Bot_Spawn_And_Begin (client_t *cl)
 	int i;
 	edict_t	*ent = cl->edict;
 
-	// spawn
 	// set colormap, name, entgravity and maxspeed
 	SetUpClientEdict (cl, ent);
-
-//=================
-	// begin
 
 	cl->state = cs_spawned;
 
@@ -55,6 +51,8 @@ void Bot_Spawn_And_Begin (client_t *cl)
 	pr_global_struct->time = sv.time;
 	pr_global_struct->self = EDICT_TO_PROG(ent);
 	PR_ExecuteProgram (pr_global_struct->PutClientInServer);
+
+	cl->sendinfo = true;
 }
 
 edict_t *SV_SpawnBot (char *name, char *team, int topcolor, int bottomcolor)
@@ -102,21 +100,14 @@ edict_t *SV_SpawnBot (char *name, char *team, int topcolor, int bottomcolor)
 	ent = EDICT_NUM((newcl - svs.clients) + 1);
 	newcl->edict = ent;
 
-	// call the progs to get default spawn parms for the new client
-	PR_ExecuteProgram (pr_global_struct->SetNewParms);
-	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
-		newcl->spawn_parms[i] = (&pr_global_struct->parm1)[i];
-
 	Com_DPrintf ("Bot %s connected\n", newcl->name);
 
-	newcl->sendinfo = true;
+	SetUpClientEdict (newcl, ent);
 
+	// the bot will spawn next time SV_RunBots is run
+	newcl->state = cs_connected;
 
-
-//=================
-	// spawn
-
-	Bot_Spawn_And_Begin (newcl);
+//	newcl->sendinfo = true;
 
 	return ent;
 }
@@ -156,22 +147,6 @@ void SV_RemoveBot (client_t *cl)
 }
 
 
-void SV_ReconnectBots (void)
-{
-	int i;
-	client_t *cl;
-
-	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++) {
-		if (cl->state == cs_free || !cl->bot)
-			continue;
-
-		assert (cl->state == cs_connected);
-
-		Bot_Spawn_And_Begin (cl);
-	}
-}
-
-
 void SV_PreRunCmd (void);
 void SV_RunCmd (usercmd_t *ucmd);
 void SV_PostRunCmd (void);
@@ -182,9 +157,31 @@ void SV_RunBots (void)
 	client_t	*cl;
 	edict_t		*ent;
 	usercmd_t	cmd;
+	int			num_bots_spawned = 0;
 
 	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++) {
-		if (!cl->bot || cl->state != cs_spawned)
+		if (!cl->bot)
+			continue;
+
+		if (cl->state == cs_connected) {
+			if (num_bots_spawned > 3)
+				continue;			// don't spawn them all at once
+
+			if (sv.time < 1.4)
+				continue;			// give the local player a chance to reconnect
+
+			if (!cl->cmdtime /* FIXME, a good idea to check this particular field? */) {
+				// call the progs to get default spawn parms for the new client
+				PR_ExecuteProgram (pr_global_struct->SetNewParms);
+				for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+					cl->spawn_parms[i] = (&pr_global_struct->parm1)[i];
+			}
+
+			Bot_Spawn_And_Begin (cl);
+			num_bots_spawned++;
+		}
+
+		if (cl->state != cs_spawned)
 			continue;
 
 		ent = cl->edict;

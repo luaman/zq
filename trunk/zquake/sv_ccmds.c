@@ -208,7 +208,6 @@ void SV_Map_f (void)
 	SV_SpawnServer (level, devmap);
 
 	SV_BroadcastCommand ("reconnect\n");
-	SV_ReconnectBots ();
 }
 
 
