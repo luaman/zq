@@ -85,107 +85,107 @@ keymap_name "German"
 //            to use the third level of keymappings you need to have one key defined with name ALTGR !
 // -------------------------------------------------------------------------------------------------------------
 
-    keycode 001 ESCAPE
-    keycode 002 1         !
-    keycode 003 2         #34
-    keycode 004 3                             // second level (with Shift key) is here normally paragraph char "§"
-    keycode 005 4         $
-    keycode 006 5         %
-    keycode 007 6         &
-    keycode 008 7         /         {
-    keycode 009 8         (         [
-    keycode 010 9         )         ]
-    keycode 011 0         =         }
-    keycode 012 \         ?         \         // this is normally the german double s "ß" = "ss"
-    keycode 013 '         #96                 // this is normally "´"
-    keycode 014 BACKSPACE
-    keycode 015 TAB
-    keycode 016 q         Q         @
-    keycode 017 w
-    keycode 018 e                             // third level is here normally "€" = "EUR" character
-    keycode 019 r
-    keycode 020 t
-    keycode 021 z
-    keycode 022 u
-    keycode 023 i
-    keycode 024 o
-    keycode 025 p
-    keycode 026 @                             // this is normally the german umlaut "ü" = "ue"
-    keycode 027 +         *         ~
-    keycode 028 ENTER
-ext keycode 028 KP_ENTER
-    keycode 029 CTRL                          // left CTRL, if you want a different mapping, use LCTRL
-ext keycode 029 CTRL                          // right CTRL, if you want different mapping, use RCTRL
-    keycode 030 a
-    keycode 031 s
-    keycode 032 d
-    keycode 033 f
-    keycode 034 g
-    keycode 035 h
-    keycode 036 j
-    keycode 037 k
-    keycode 038 l
-    keycode 039 {         <                   // this is normally the german umlaut "ö" = "oe"
-    keycode 040 }         >                   // this is normally the german umlaut "ä" = "ae"
-    keycode 041 ~         ^                   // normally this is first level "^", second level is degree char "°"
-    keycode 042 SHIFT                         // left SHIFT; if you want a different mapping, use L_SHIFT
-    keycode 043 #         '
-    keycode 044 y
-    keycode 045 x
-    keycode 046 c
-    keycode 047 v
-    keycode 048 b
-    keycode 049 n
-    keycode 050 m                             // third level is normally the "mikro" char
-    keycode 051 ,         ;
-    keycode 052 .         :
-    keycode 053 -         _
-ext keycode 053 KP_SLASH
-    keycode 054 SHIFT                         // right SHIFT; if you want a different mapping, use R_SHIFT
-    keycode 055 KP_STAR
-    keycode 056 ALT                           // left ALT
-ext keycode 056 ALTGR                         // right ALT = ALT-GR=key for third level
-    keycode 057 SPACE
-    keycode 058 CAPSLOCK
-    keycode 059 F1
-    keycode 060 F2
-    keycode 061 F3
-    keycode 062 F4
-    keycode 063 F5
-    keycode 064 F6
-    keycode 065 F7
-    keycode 066 F8
-    keycode 067 F9
-    keycode 068 F10
-    keycode 069 PAUSE
-ext keycode 069 NUMLOCK
-    keycode 070 SCRLCK
-    keycode 071 KP_HOME
-ext keycode 071 HOME
-    keycode 072 KP_UPARROW
-ext keycode 072 UPARROW
-    keycode 073 KP_PGUP
-ext keycode 073 PGUP
-    keycode 074 KP_MINUS
-    keycode 075 KP_LEFTARROW
-ext keycode 075 LEFTARROW
-    keycode 076 KP_5
-    keycode 077 KP_RIGHTARROW
-ext keycode 077 RIGHTARROW
-    keycode 078 KP_PLUS
-    keycode 079 KP_END
-ext keycode 079 END
-    keycode 080 KP_DOWNARROW
-ext keycode 080 DOWNARROW
-    keycode 081 KP_PGDN
-ext keycode 081 PGDN
-    keycode 082 KP_INS
-ext keycode 082 INS
-    keycode 083 KP_DEL
-ext keycode 083 DEL
-    keycode 086 <         >         |         // only present on international keyboards, the key is right to the left shift-key
-    keycode 087 F11
-    keycode 088 F12
-//ext keycode 091 L_WIN                         // left WIN-Key
-//ext keycode 092 R_WIN                         // right WIN-Key
-//ext keycode 093 MENU                          // MENU-Key
+keycode 	001 ESCAPE
+keycode 	002 1	!
+keycode 	003 2	#34
+keycode 	004 3							// second level (with Shift key) is here normally paragraph char "§"
+keycode 	005 4	$
+keycode 	006 5	%
+keycode 	007 6	&
+keycode 	008 7	/	{
+keycode 	009 8	(	[
+keycode 	010 9	)	]
+keycode 	011 0	=	}
+keycode 	012 \	?	\					// this is normally the german double s "ß" = "ss"
+keycode 	013 '	#96 					// this is normally "´"
+keycode 	014 BACKSPACE
+keycode 	015 TAB
+keycode 	016 q	Q	@
+keycode 	017 w
+keycode 	018 e							// third level is here normally "€" = "EUR" character
+keycode 	019 r
+keycode 	020 t
+keycode 	021 z
+keycode 	022 u
+keycode 	023 i
+keycode 	024 o
+keycode 	025 p
+keycode 	026 @							// this is normally the german umlaut "ü" = "ue"
+keycode 	027 +	*	~
+keycode 	028 ENTER
+keycode ext 028 KP_ENTER
+keycode 	029 CTRL						// left CTRL, if you want a different mapping, use LCTRL
+keycode ext 029 CTRL						// right CTRL, if you want different mapping, use RCTRL
+keycode 	030 a
+keycode 	031 s
+keycode 	032 d
+keycode 	033 f
+keycode 	034 g
+keycode 	035 h
+keycode 	036 j
+keycode 	037 k
+keycode 	038 l
+keycode 	039 {	<						// this is normally the german umlaut "ö" = "oe"
+keycode 	040 }	>						// this is normally the german umlaut "ä" = "ae"
+keycode 	041 ~	^						// normally this is first level "^", second level is degree char "°"
+keycode 	042 SHIFT						// left SHIFT; if you want a different mapping, use L_SHIFT
+keycode 	043 #	'
+keycode 	044 y
+keycode 	045 x
+keycode 	046 c
+keycode 	047 v
+keycode 	048 b
+keycode 	049 n
+keycode 	050 m							// third level is normally the "mikro" char
+keycode 	051 ,	;
+keycode 	052 .	:
+keycode 	053 -	_
+keycode ext 053 KP_SLASH
+keycode 	054 SHIFT						// right SHIFT; if you want a different mapping, use R_SHIFT
+keycode 	055 KP_STAR
+keycode 	056 ALT 						// left ALT
+keycode ext 056 ALTGR						// right ALT = ALT-GR=key for third level
+keycode 	057 SPACE
+keycode 	058 CAPSLOCK
+keycode 	059 F1
+keycode 	060 F2
+keycode 	061 F3
+keycode 	062 F4
+keycode 	063 F5
+keycode 	064 F6
+keycode 	065 F7
+keycode 	066 F8
+keycode 	067 F9
+keycode 	068 F10
+keycode 	069 PAUSE
+keycode ext 069 NUMLOCK
+keycode 	070 SCRLCK
+keycode 	071 KP_HOME
+keycode ext 071 HOME
+keycode 	072 KP_UPARROW
+keycode ext 072 UPARROW
+keycode 	073 KP_PGUP
+keycode ext 073 PGUP
+keycode 	074 KP_MINUS
+keycode 	075 KP_LEFTARROW
+keycode ext 075 LEFTARROW
+keycode 	076 KP_5
+keycode 	077 KP_RIGHTARROW
+keycode ext 077 RIGHTARROW
+keycode 	078 KP_PLUS
+keycode 	079 KP_END
+keycode ext 079 END
+keycode 	080 KP_DOWNARROW
+keycode ext 080 DOWNARROW
+keycode 	081 KP_PGDN
+keycode ext 081 PGDN
+keycode 	082 KP_INS
+keycode ext 082 INS
+keycode 	083 KP_DEL
+keycode ext 083 DEL
+keycode 	086 <	>	|					// only present on international keyboards, the key is right to the left shift-key
+keycode 	087 F11
+keycode 	088 F12
+// keycode	ext 091 L_WIN						  // left WIN-Key
+// keycode	ext 092 R_WIN						  // right WIN-Key
+// keycode	ext 093 MENU						  // MENU-Key
