@@ -29,3 +29,10 @@ Windows/Linux Server
 
 * Maplist - return *.bsp from id1/maps and $gamedir/maps
 
+
+Tonik's (uncategorized)
+--------------
+
+- free loaded wad3s every now and then
+- don't Mod_ClearAll, use Mod_TouchModel like NetQuake
+- FTE-style non-transparent protocol extension negotiation
