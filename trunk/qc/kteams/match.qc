@@ -1080,10 +1080,11 @@ void() StartTimer =
 	timer.owner = world;
 	timer.classname = "timer";
 	timer.cnt = 0;
-	timer.cnt2 = stof(infokey(world, "k_count"));
+	if(stof(infokey(world, "k_count")))
+        timer.cnt2 = stof(infokey(world, "k_count"));
+    else
+        timer.cnt2 = 3; // at the least we want a 3 second countdown
 	timer.cnt2 = timer.cnt2 + 1;
-	if(timer.cnt2 == 0)
-        timer.cnt2 = 5; // at the least we want a 5 second countdown
     timer.nextthink = time + 0.1;
 	timer.think = TimerStartThink;
 	match_in_progress = 1;
