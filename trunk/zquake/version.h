@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _VERSION_H_
 
 #define	QW_VERSION	2.40
-#define PROGRAM_VERSION	"0.16"
+#define PROGRAM_VERSION	"0.17"
 
 #define RELEASE_VERSION
 
