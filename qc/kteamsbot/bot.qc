@@ -374,6 +374,9 @@ void BotConnect ()
 */
 
 	self.b_skill = 3;	// FIXME FIXME, skill should be saved across levels
+
+	self.ready = 0; 
+	PlayerReady();
 }
 
 // called by the engine instead of ClientDisconnect for bots
@@ -471,9 +474,6 @@ void Cmd_AddBot (string botnum_s, string skill_s)
 
 	tmp = ftos(bot.b_pants);
 	setinfo (bot, "bottomcolor", tmp);
-
-	self.ready = 0; 
-	PlayerReady();
 }
 
 void Cmd_RemoveBot ()
