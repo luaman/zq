@@ -840,4 +840,6 @@ int main (int argc, char **argv)
 	
 // write data file
 	WriteData (crc);
+
+	return 0;
 }
