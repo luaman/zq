@@ -459,7 +459,10 @@ void PR_Lex (void)
 
 // if the first character is a valid identifier, parse until a non-id
 // character is reached
-	if ( (c >= '0' && c <= '9') || ( c=='-' && pr_file_p[1]>='0' && pr_file_p[1] <='9') )
+	if ( isdigit(c) || 
+		( c=='.' && isdigit(pr_file_p[1]) ) ||
+		( c=='-' && (isdigit(pr_file_p[1]) || pr_file_p[1]=='.') )
+		)
 	{
 		pr_token_type = tt_immediate;
 		pr_immediate_type = &type_float;
