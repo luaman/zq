@@ -747,7 +747,7 @@ void T_Damage (entity targ, entity inflictor, entity attacker, float damage);
 float CanDamage (entity targ, entity inflictor);
 
 // items.qc
-float T_Heal (entity e, float healamount, float ignore); // health function
+float T_Heal (entity e, float heal_amount, float ignore); // health function
 
 
 //============================================================================
