@@ -126,8 +126,8 @@ void() old_thrash20       =[      $shake20, old_thrash20      ] {finale_4();}
 
 void() finale_1 =
 {
-	local entity	pos, pl;
-	local entity	timer;
+	entity	pos, pl;
+	entity	timer;
 
 	intermission_exittime = time + 10000000;	// never allow exit
 	intermission_running = 1;
@@ -183,7 +183,7 @@ void() finale_1 =
 
 void() finale_2 =
 {
-	local vector	o;
+	vector	o;
 
 	// start a teleport splash inside shub
 
@@ -210,11 +210,11 @@ void() finale_3 =
 
 void() finale_4 =
 {
-	// throw tons of meat chunks	
-	local	vector	oldo;
-	local	float	x, y, z;
-	local	float	r;
-	local entity	n;
+	// throw tons of meat chunks
+	vector	oldo;
+	float	x, y, z;
+	float	r;
+	entity	n;
 
 	sound (self, CHAN_VOICE, "boss2/pop2.wav", 1, ATTN_NORM);
 	

@@ -31,7 +31,7 @@ float	z_ext_clientcommand = 0;
 
 
 void(string item, string amount) Cmd_Give = {
-	local float am;
+	float	am;
 
 	if (!infokey(world, "*cheats")) {
 		sprint (self, PRINT_HIGH, "Cheats are not allowed on this server\n");

@@ -76,8 +76,8 @@ void() hk_idle_sound;
 
 void(float offset) hknight_shot =
 {
-	local	vector	offang;
-	local	vector	org, vec;
+	vector	offang;
+	vector	org, vec;
 	
 	offang = vectoangles (self.enemy.origin - self.origin);
 	offang_y = offang_y + offset * 6;

@@ -206,7 +206,7 @@ void() misc_fireball =
 
 void() fire_fly =
 {
-local entity    fireball;
+	entity	fireball;
 
 	fireball = spawn();
 	fireball.solid = SOLID_TRIGGER;
@@ -260,7 +260,7 @@ TESTING THING
 
 void() misc_explobox =
 {
-	local float     oldz;
+	float	oldz;
 	
 	self.solid = SOLID_BBOX;
 	self.movetype = MOVETYPE_NONE;
@@ -293,7 +293,7 @@ Smaller exploding box, REGISTERED ONLY
 
 void() misc_explobox2 =
 {
-	local float     oldz;
+	float	oldz;
 	
 	self.solid = SOLID_BBOX;
 	self.movetype = MOVETYPE_NONE;
@@ -324,7 +324,7 @@ float SPAWNFLAG_LASER = 2;
 
 void() Laser_Touch =
 {
-	local vector org;
+	vector	org;
 	
 	if (other == self.owner)
 		return;         // don't explode on owner
@@ -471,7 +471,7 @@ void() air_bubbles =
 
 void() make_bubbles =
 {
-local entity    bubble;
+	entity	bubble;
 
 	bubble = spawn();
 	setmodel (bubble, "progs/s_bubble.spr");
@@ -492,7 +492,8 @@ local entity    bubble;
 
 void() bubble_split =
 {
-local entity    bubble;
+	entity	bubble;
+
 	bubble = spawn();
 	setmodel (bubble, "progs/s_bubble.spr");
 	setorigin (bubble, self.origin);
@@ -524,7 +525,7 @@ void() bubble_remove =
 
 void() bubble_bob =
 {
-local float             rnd1, rnd2, rnd3;
+	float	rnd1, rnd2, rnd3;
 
 	self.cnt = self.cnt + 1;
 	if (self.cnt == 4)

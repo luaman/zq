@@ -161,7 +161,7 @@ void()	army_painc13=[	$painc13,	army_run1] {}
 
 void(entity attacker, float damage)	army_pain =
 {
-	local float r;
+	float	r;
 	
 	if (self.pain_finished > time)
 		return;
@@ -191,8 +191,8 @@ void(entity attacker, float damage)	army_pain =
 
 void() army_fire =
 {
-	local	vector	dir;
-	local	entity	en;
+	vector	dir;
+	entity	en;
 	
 	ai_face();
 	

@@ -54,7 +54,7 @@ void() q_touch;
 
 void() q_touch =
 {
-local string    s;
+	string	s;
 
 	if (other.classname != "player")
 		return;
@@ -96,7 +96,7 @@ local string    s;
 
 void(float timeleft) DropQuad =
 {
-	local entity    item;
+	entity	item;
 
 	item = spawn();
 	item.origin = self.origin;
@@ -118,11 +118,9 @@ void(float timeleft) DropQuad =
 }
 
 
-void() r_touch;
-
 void() r_touch =
 {
-local string    s;
+	string	s;
 
 	if (other.classname != "player")
 		return;
@@ -154,7 +152,7 @@ local string    s;
 
 void(float timeleft) DropRing =
 {
-	local entity    item;
+	entity	item;
 
 	item = spawn();
 	item.origin = self.origin;
@@ -184,7 +182,7 @@ plants the object on the floor
 */
 void() PlaceItem =
 {
-	local float     oldz;
+	float	oldz;
 
 	self.mdl = self.model;          // so it can be restored on respawn
 	self.flags = FL_ITEM;           // make extra wide
@@ -298,7 +296,7 @@ void() item_health =
 
 void() health_touch =
 {
-	local   string  s;
+	string	s;
 	
 	if (deathmatch == 4)
 		if (other.invincible_time > 0)
@@ -391,7 +389,7 @@ void() armor_touch;
 
 void() armor_touch =
 {
-	local   float   type, value, bit;
+	float	type, value, bit;
 	
 	if (other.health <= 0)
 		return;
@@ -549,7 +547,7 @@ Only be called if we have enough ammo for new_weapon so don't bother checking
 */
 void(float new_weapon) Deathmatch_Weapon =
 {
-	local float or, nr;
+	float	or, nr;
 
 // change self.weapon if desired
 	or = RankForWeapon (self.weapon);
@@ -567,12 +565,12 @@ float() W_BestWeapon;
 
 void() weapon_touch =
 {
-	local   float   hadammo, best, new;
-	local   entity  stemp;
-	local   float   leave;
+	float	hadammo, best, new;
+	entity	stemp;
+	float	leave;
 
 	// For client weapon_switch
-	local   float   w_switch;
+	float	w_switch;
 
 	if (!(other.flags & FL_CLIENT))
 		return;
@@ -809,8 +807,8 @@ AMMO
 
 void() ammo_touch =
 {
-local entity    stemp;
-local float             best;
+	entity	stemp;
+	float	best;
 
 	if (other.classname != "player")
 		return;
@@ -1467,11 +1465,11 @@ PLAYER BACKPACKS
 
 void() BackpackTouch =
 {
-	local string    s;
-	local   float   best, new;
-	local           entity  stemp;
-	local   float   acount;
-	local   float   b_switch;
+	string	s;
+	float	best, new;
+	entity	stemp;
+	float	acount;
+	float	b_switch;
 
 	if (deathmatch == 4)
 		if (other.invincible_time > 0)
@@ -1629,7 +1627,7 @@ DropBackpack
 */
 void() DropBackpack =
 {
-	local entity    item;
+	entity	item;
 
 	if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells))
 		return; // nothing in it

@@ -104,7 +104,7 @@ OgreFireGrenade
 */
 void() OgreFireGrenade =
 {
-	local	entity missile;
+	entity	missile;
 	
 	muzzleflash();
 
@@ -150,8 +150,8 @@ FIXME
 */
 void(float side) chainsaw =
 {
-local vector	delta;
-local float 	ldmg;
+	vector	delta;
+	float	ldmg;
 
 	if (!self.enemy)
 		return;
@@ -330,7 +330,7 @@ void()	ogre_paine15=[	$paine15,	ogre_run1	] {}
 
 void(entity attacker, float damage)	ogre_pain =
 {
-	local float	r;
+	float	r;
 
 // don't make multiple pain sounds right after each other
 	if (self.pain_finished > time)
