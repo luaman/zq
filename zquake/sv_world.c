@@ -294,7 +294,7 @@ void SV_LinkEdict (edict_t *ent, qbool touch_triggers)
 	if (ent == sv.edicts)
 		return;		// don't add the world
 
-	if (ent->free)
+	if (!ent->inuse)
 		return;
 
 // set the abs box
@@ -625,7 +625,7 @@ edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin)
 	check = NEXT_EDICT(sv.edicts);
 	for (e=1 ; e<sv.num_edicts ; e++, check = NEXT_EDICT(check))
 	{
-		if (check->free)
+		if (!check->inuse)
 			continue;
 		if (check->v.solid != SOLID_BSP &&
 			check->v.solid != SOLID_BBOX &&

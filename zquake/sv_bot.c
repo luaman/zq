@@ -30,6 +30,8 @@ void Bot_Spawn_And_Begin (client_t *cl)
 	int i;
 	edict_t	*ent = cl->edict;
 
+	ent->inuse = true;
+
 	// set colormap, name, entgravity and maxspeed
 	SetUpClientEdict (cl, ent);
 
@@ -94,6 +96,7 @@ edict_t *SV_CreateBot (char *name)
 
 	// set up the edict
 	ent = EDICT_NUM((newcl - svs.clients) + 1);
+	ent->inuse = true;
 	newcl->edict = ent;
 
 	Com_DPrintf ("Bot %s connected\n", newcl->name);
@@ -133,8 +136,9 @@ void SV_RemoveBot (client_t *cl)
 	cl->state = cs_free;		// we don't have zombie bots :)
 	cl->bot = false;
 	cl->old_frags = 0;
-	cl->edict->v.frags = 0;
 	cl->name[0] = 0;
+	cl->edict->inuse = false;
+	cl->edict->v.frags = 0;
 	memset (cl->userinfo, 0, sizeof(cl->userinfo));
 
 // send notification to all remaining clients

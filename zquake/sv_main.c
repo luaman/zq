@@ -204,6 +204,7 @@ void SV_DropClient (client_t *drop)
 
 	drop->old_frags = 0;
 	drop->edict->v.frags = 0;
+	drop->edict->inuse = false;
 	drop->name[0] = 0;
 	memset (drop->userinfo, 0, sizeof(drop->userinfo));
 
@@ -640,6 +641,7 @@ void SVC_DirectConnect (void)
 
 	edictnum = (newcl - svs.clients) + 1;
 	ent = EDICT_NUM(edictnum);	
+	ent->inuse = true;
 	newcl->edict = ent;
 	
 	// parse some info from the info strings

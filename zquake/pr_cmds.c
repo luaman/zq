@@ -620,7 +620,7 @@ int PF_newcheckclient (int check)
 		if (i == check)
 			break;	// didn't find anything else
 
-		if (ent->free)
+		if (!ent->inuse)
 			continue;
 		if (ent->v.health <= 0)
 			continue;
@@ -669,7 +669,7 @@ void PF_checkclient (void)
 
 // return check if it might be visible	
 	ent = EDICT_NUM(sv.lastcheck);
-	if (ent->free || ent->v.health <= 0)
+	if (!ent->inuse || ent->v.health <= 0)
 	{
 		RETURN_EDICT(sv.edicts);
 		return;
@@ -848,7 +848,7 @@ void PF_findradius (void)
 	ent = NEXT_EDICT(sv.edicts);
 	for (i=1 ; i<sv.num_edicts ; i++, ent = NEXT_EDICT(ent))
 	{
-		if (ent->free)
+		if (!ent->inuse)
 			continue;
 		if (ent->v.solid == SOLID_NOT)
 			continue;
@@ -958,7 +958,7 @@ void PF_Find (void)
 	for (e++ ; e < sv.num_edicts ; e++)
 	{
 		ed = EDICT_NUM(e);
-		if (ed->free)
+		if (!ed->inuse)
 			continue;
 		t = E_STRING(ed,f);
 		if (!t)
@@ -1232,7 +1232,7 @@ void PF_nextent (void)
 			return;
 		}
 		ent = EDICT_NUM(i);
-		if (!ent->free)
+		if (ent->inuse || i <= MAX_CLIENTS /* compatibility */)
 		{
 			RETURN_EDICT(ent);
 			return;
