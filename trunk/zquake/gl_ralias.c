@@ -361,7 +361,7 @@ void R_DrawAliasModel (entity_t *ent)
 
 	// we can't dynamically colormap textures, so they are cached
 	// separately for the players.  Heads are just uncolored.
-	if (ent->scoreboard && !gl_nocolors.value)
+	if (ent->scoreboard && clmodel->modhint == MOD_PLAYER && !gl_nocolors.value)
 	{
 		i = ent->scoreboard - cl.players;
 
