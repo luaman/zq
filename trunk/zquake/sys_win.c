@@ -203,7 +203,6 @@ char *Sys_ConsoleInput (void)
 	static char	text[256];
 	static int		len;
 	INPUT_RECORD	recs[1024];
-//	int		count;
 	int		i, dummy;
 	int		ch, numread, numevents;
 	HANDLE	th;
@@ -297,11 +296,6 @@ char *Sys_ConsoleInput (void)
 
 	return NULL;
 }
-
-void Sys_Sleep (void)
-{
-}
-
 
 void Sys_SendKeyEvents (void)
 {
