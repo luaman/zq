@@ -32,8 +32,7 @@ extern cvar_t cl_nofake;
 extern cvar_t cl_loadlocs;
 extern cvar_t cl_rocket2grenade;
 
-extern int		loc_numentries;
-
+// triggers
 void CL_StatChanged (int stat, int value);
 void CL_NewMap (void);
 void CL_ExecTrigger (char *s);
@@ -41,13 +40,23 @@ void CL_ExecTrigger (char *s);
 void CL_LoadLocFile (char *path, qboolean quiet);
 char *CL_ParseMacroString(char *string);
 
+// message triggers
 void CL_SearchForMsgTriggers (char *s, int level);
 
+// used by easyrecord command
 int CL_CountPlayers();
 char *CL_MapName();
 char *CL_PlayerName();
 char *CL_PlayerTeam();
 char *CL_EnemyName();
 char *CL_EnemyTeam();
+
+// teamcolor&enemycolor
+extern int cl_teamtopcolor;
+extern int cl_teambottomcolor;
+extern int cl_enemytopcolor;
+extern int cl_enemybottomcolor;
+void TP_TeamColor_f (void);
+void TP_EnemyColor_f (void);
 
 void CL_InitTeamplay ();

@@ -940,21 +940,51 @@ void CL_ParseClientdata (void)
 CL_NewTranslation
 =====================
 */
+#ifdef GLQUAKE
 void CL_NewTranslation (int slot)
 {
-#ifdef GLQUAKE
+	int		teamplay;
+	char	s[512];
+	player_info_t	*player;
+
 	if (slot > MAX_CLIENTS)
 		Sys_Error ("CL_NewTranslation: slot > MAX_CLIENTS");
 
-	R_TranslatePlayerSkin(slot);
-#else
+// teamcolor/enemycolor -->
+	player = &cl.players[slot];
 
-	int		teamplay;						// Tonik
+	player->topcolor = player->real_topcolor;
+	player->bottomcolor = player->real_bottomcolor;
+
+	strcpy (s, cl.players[cl.playernum].team);
+	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
+
+	if (cl_teamtopcolor >= 0 && teamplay && 
+		!strcmp(player->team, s))
+	{
+		player->topcolor = cl_teamtopcolor;
+		player->bottomcolor = cl_teambottomcolor;
+	}
+	
+	if (cl_enemytopcolor >= 0 && (!teamplay || 
+		strcmp(player->team, s)))
+	{
+		player->topcolor = cl_enemytopcolor;
+		player->bottomcolor = cl_enemybottomcolor;
+	}
+// <--
+
+	R_TranslatePlayerSkin(slot);
+}
+#else
+void CL_NewTranslation (int slot)
+{
+	int		teamplay;
 	int		i, j;
 	int		top, bottom;
 	byte	*dest, *source;
 	player_info_t	*player;
-	char s[512];
+	char	s[512];
 
 	if (slot > MAX_CLIENTS)
 		Sys_Error ("CL_NewTranslation: slot > MAX_CLIENTS");
@@ -966,6 +996,28 @@ void CL_NewTranslation (int slot)
 	if (player->skin && !stricmp(s, player->skin->name))
 		player->skin = NULL;
 
+// teamcolor/enemycolor -->
+	player->topcolor = player->real_topcolor;
+	player->bottomcolor = player->real_bottomcolor;
+
+	strcpy (s, cl.players[cl.playernum].team);
+	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
+
+	if (cl_teamtopcolor >= 0 && teamplay && 
+		!strcmp(player->team, s))
+	{
+		player->topcolor = cl_teamtopcolor;
+		player->bottomcolor = cl_teambottomcolor;
+	}
+	
+	if (cl_enemytopcolor >= 0 && (!teamplay || 
+		strcmp(player->team, s)))
+	{
+		player->topcolor = cl_enemytopcolor;
+		player->bottomcolor = cl_enemybottomcolor;
+	}
+// <--
+
 	if (player->_topcolor != player->topcolor ||
 		player->_bottomcolor != player->bottomcolor || !player->skin)
 	{
@@ -975,35 +1027,15 @@ void CL_NewTranslation (int slot)
 		dest = player->translations;
 		source = vid.colormap;
 		memcpy (dest, vid.colormap, sizeof(player->translations));
-
-//*** Tonik: some changes here (teamcolor, enemycolor)
 		top = player->topcolor;
-		bottom = player->bottomcolor;
-
-		strcpy (s, Info_ValueForKey(cls.userinfo, "team"));
-		teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
-
-		if (cl_teamtopcolor >= 0 && teamplay && 
-			!strcmp(Info_ValueForKey(player->userinfo, "team"), s))
-		{
-			top = cl_teamtopcolor;
-			bottom = cl_teambottomcolor;
-		}
-		
-		if (cl_enemytopcolor >= 0 && (!teamplay || 
-			strcmp(Info_ValueForKey(player->userinfo, "team"), s)))
-		{
-			top = cl_enemytopcolor;
-			bottom = cl_enemybottomcolor;
-		}
 		if (top > 13 || top < 0)
 			top = 13;
 		top *= 16;
+		bottom = player->bottomcolor;
 		if (bottom > 13 || bottom < 0)
 			bottom = 13;
 		bottom *= 16;
-//*** 
-		
+
 		for (i=0 ; i<VID_GRADES ; i++, dest += 256, source+=256)
 		{
 			if (top < 128)	// the artists made some backwards ranges.  sigh.
@@ -1019,19 +1051,21 @@ void CL_NewTranslation (int slot)
 					dest[BOTTOM_RANGE+j] = source[bottom+15-j];		
 		}
 	}
-#endif
 }
+#endif	// !GLQUAKE
 
 /*
 ==============
-CL_UpdateUserinfo
+CL_ProcessServerinfo
 ==============
 */
 void CL_ProcessUserInfo (int slot, player_info_t *player)
 {
 	strncpy (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name)-1);
-	player->topcolor = atoi(Info_ValueForKey (player->userinfo, "topcolor"));
-	player->bottomcolor = atoi(Info_ValueForKey (player->userinfo, "bottomcolor"));
+	player->real_topcolor = atoi(Info_ValueForKey (player->userinfo, "topcolor"));
+	player->real_bottomcolor = atoi(Info_ValueForKey (player->userinfo, "bottomcolor"));
+	strcpy (player->team, Info_ValueForKey (player->userinfo, "team"));
+
 	if (Info_ValueForKey (player->userinfo, "*spectator")[0])
 		player->spectator = true;
 	else
@@ -1041,7 +1075,18 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 		Skin_Find (player);
 
 	Sbar_Changed ();
-	CL_NewTranslation (slot);
+	if (slot == cl.playernum && (cl_teamtopcolor >= 0 || cl_enemytopcolor >= 0) &&
+		strcmp(player->team, player->_team))
+	{
+		int i;
+		//strcpy (cl_playerteam, Info_ValueForKey(player->userinfo, "team"));
+		for (i=0 ; i < MAX_CLIENTS ; i++)
+			CL_NewTranslation (i);
+	}
+	else
+		CL_NewTranslation (slot);
+
+	strcpy (player->_team, player->team);
 }
 
 /*
@@ -1095,6 +1140,36 @@ void CL_SetInfo (void)
 	CL_ProcessUserInfo (slot, player);
 }
 
+
+/*
+==============
+CL_ProcessServerInfo
+==============
+*/
+void CL_ProcessServerInfo (void)
+{
+	char	*p;
+	static int _teamplay = 0;
+	int teamplay;
+	int i;
+
+	if (p = Info_ValueForKey(cl.serverinfo, "deathmatch"))
+		cl.gametype = Q_atof(p) ? 1 : 0;
+	else
+		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
+
+	if (p = Info_ValueForKey(cl.serverinfo, "teamplay"))
+		teamplay = Q_atof(p);
+	else 
+		teamplay = 0;
+
+	if (teamplay != _teamplay) {
+		_teamplay = teamplay;
+		for (i = 0; i < MAX_CLIENTS ; i++)
+			CL_NewTranslation (i);
+	}
+}
+
 /*
 ==============
 CL_ServerInfo
@@ -1102,9 +1177,6 @@ CL_ServerInfo
 */
 void CL_ServerInfo (void)
 {
-//	int		slot;
-//	player_info_t	*player;
-	char	*p;
 	char key[MAX_MSGLEN];
 	char value[MAX_MSGLEN];
 
@@ -1116,11 +1188,6 @@ void CL_ServerInfo (void)
 	Con_DPrintf("SERVERINFO: %s=%s\n", key, value);
 
 	Info_SetValueForKey (cl.serverinfo, key, value, MAX_SERVERINFO_STRING);
-
-	if (p = Info_ValueForKey(cl.serverinfo, "deathmatch"))
-		cl.gametype = Q_atof(p) ? 1 : 0;
-	else
-		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
 }
 
 /*
@@ -1132,7 +1199,6 @@ void CL_SetStat (int stat, int value)
 {
 	int	j;
 	if (stat < 0 || stat >= MAX_CL_STATS)
-//		Sys_Error ("CL_SetStat: %i is invalid", stat);
 		Host_EndGame ("CL_SetStat: %i is invalid", stat);	// Tonik
 
 	Sbar_Changed ();

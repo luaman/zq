@@ -92,11 +92,6 @@ cvar_t	cl_teamskin = {"teamskin", ""};
 cvar_t	cl_enemyskin = {"enemyskin", ""};
 
 cvar_t	default_fov = {"default_fov", "0"};
-
-int cl_teamtopcolor = -1;
-int cl_teambottomcolor;
-int cl_enemytopcolor = -1;
-int cl_enemybottomcolor;
 // <-- Tonik
 
 //
@@ -387,6 +382,8 @@ void CL_Rcon_f (void)
 			return;
 		}
 		NET_StringToAdr (rcon_address.string, &to);
+		if (to.port == 0)
+			to.port = BigShort (27500);
 	}
 	
 	NET_SendPacket (net_clientsocket, strlen(message)+1, message
@@ -603,104 +600,8 @@ void CL_Color_f (void)
 	Cvar_Set (&bottomcolor, num);
 }
 
-// Tonik -->
-void CL_ForceTeamColor_f (void)
-{
-	int	top, bottom;
-	int	i;
 
-	if (Cmd_Argc() == 1)
-	{
-		if (cl_teamtopcolor < 0)
-			Con_Printf ("\"teamcolor\" is \"off\"\n");
-		else
-			Con_Printf ("\"teamcolor\" is \"%i %i\"\n", 
-				cl_teamtopcolor,
-				cl_teambottomcolor);
-		return;
-	}
-
-	if (!strcmp(Cmd_Argv(1), "off"))
-	{
-		cl_teamtopcolor = -1;
-		return;
-	}
-
-	if (Cmd_Argc() == 2)
-		top = bottom = atoi(Cmd_Argv(1));
-	else {
-		top = atoi(Cmd_Argv(1));
-		bottom = atoi(Cmd_Argv(2));
-	}
-	
-	top &= 15;
-	if (top > 13)
-		top = 13;
-	bottom &= 15;
-	if (bottom > 13)
-		bottom = 13;
-	
-	if (top != cl_teamtopcolor || bottom != cl_teambottomcolor)
-	{
-		cl_teamtopcolor = top;
-		cl_teambottomcolor = bottom;
-
-		for (i = 0; i < MAX_CLIENTS; i++) {
-			cl.players[i]._topcolor = -1; // force an update
-			CL_NewTranslation(i);
-		}
-	}
-}
-
-void CL_ForceEnemyColor_f (void)
-{
-	int	top, bottom;
-	int	i;
-
-	if (Cmd_Argc() == 1)
-	{
-		if (cl_enemytopcolor < 0)
-			Con_Printf ("\"enemycolor\" is \"off\"\n");
-		else
-			Con_Printf ("\"enemycolor\" is \"%i %i\"\n", 
-				cl_enemytopcolor,
-				cl_enemybottomcolor);
-		return;
-	}
-
-	if (!strcmp(Cmd_Argv(1), "off"))
-	{
-		cl_enemytopcolor = -1;
-		return;
-	}
-
-	if (Cmd_Argc() == 2)
-		top = bottom = atoi(Cmd_Argv(1));
-	else {
-		top = atoi(Cmd_Argv(1));
-		bottom = atoi(Cmd_Argv(2));
-	}
-	
-	top &= 15;
-	if (top > 13)
-		top = 13;
-	bottom &= 15;
-	if (bottom > 13)
-		bottom = 13;
-	
-	if (top != cl_enemytopcolor || bottom != cl_enemybottomcolor)
-	{
-		cl_enemytopcolor = top;
-		cl_enemybottomcolor = bottom;
-
-		for (i = 0; i < MAX_CLIENTS; i++) {
-			cl.players[i]._topcolor = -1; // force an update
-			CL_NewTranslation(i);
-		}
-	}
-}
-// <-- Tonik
-
+void CL_ProcessServerInfo (void);
 
 /*
 ==================
@@ -739,10 +640,8 @@ void CL_FullServerinfo_f (void)
 			server_version = v;
 		}
 	}
-	if ((p = Info_ValueForKey(cl.serverinfo, "deathmatch")) && *p)
-		cl.gametype = Q_atof(p) ? GAME_DEATHMATCH : GAME_COOP;
-	else
-		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
+
+	CL_ProcessServerInfo ();
 }
 
 /*
@@ -852,6 +751,9 @@ void CL_Packet_f (void)
 		Con_Printf ("Bad address\n");
 		return;
 	}
+
+	if (adr.port == 0)
+		adr.port = BigShort (27500);
 
 	in = Cmd_Argv(2);
 	out = send+4;
@@ -1319,8 +1221,8 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&r_rockettrail);
 	Cvar_RegisterVariable (&r_rocketlight);
 	Cvar_RegisterVariable (&default_fov);
-	Cmd_AddCommand ("teamcolor", CL_ForceTeamColor_f);
-	Cmd_AddCommand ("enemycolor", CL_ForceEnemyColor_f);
+	Cmd_AddCommand ("teamcolor", TP_TeamColor_f);
+	Cmd_AddCommand ("enemycolor", TP_EnemyColor_f);
 // <-- Tonik
 
 	//
