@@ -663,7 +663,7 @@ void R_DrawViewModel (void)
 	VectorCopy (currententity->origin, r_entorigin);
 	VectorSubtract (r_origin, r_entorigin, modelorg);
 
-	VectorInverse (vup, viewlightvec);
+	VectorNegate (vup, viewlightvec);
 
 	j = R_LightPoint (currententity->origin);
 
