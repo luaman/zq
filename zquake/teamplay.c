@@ -151,60 +151,60 @@ void TP_ExecTrigger (char *s)
 #define MAX_MACRO_VALUE	256
 static char	macro_buf[MAX_MACRO_VALUE] = "";
 
-char *Macro_Quote_f (void)
+char *Macro_Quote (void)
 {
 	return "\"";
 }
 
-char *Macro_Latency_f (void)
+char *Macro_Latency (void)
 {
 	sprintf(macro_buf, "%i", Q_rint(cls.latency*1000));
 	return macro_buf;
 }
 
-char *Macro_Health_f (void)
+char *Macro_Health (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_HEALTH]);
 	return macro_buf;
 }
 
-char *Macro_Armor_f (void)
+char *Macro_Armor (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_ARMOR]);
 	return macro_buf;
 }
 
-char *Macro_Shells_f (void)
+char *Macro_Shells (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_SHELLS]);
 	return macro_buf;
 }
 
-char *Macro_Nails_f (void)
+char *Macro_Nails (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_NAILS]);
 	return macro_buf;
 }
 
-char *Macro_Rockets_f (void)
+char *Macro_Rockets (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_ROCKETS]);
 	return macro_buf;
 }
 
-char *Macro_Cells_f (void)
+char *Macro_Cells (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_CELLS]);
 	return macro_buf;
 }
 
-char *Macro_Ammo_f (void)
+char *Macro_Ammo (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_AMMO]);
 	return macro_buf;
 }
 
-char *Macro_Weapon_f (void)
+char *Macro_Weapon (void)
 {
 	switch (cl.stats[STAT_ACTIVEWEAPON])
 	{
@@ -221,15 +221,15 @@ char *Macro_Weapon_f (void)
 	}
 }
 
-char *Macro_WeaponAndAmmo_f (void)
+char *Macro_WeaponAndAmmo (void)
 {
 	char buf[MAX_MACRO_VALUE];
-	sprintf (buf, "%s:%s", Macro_Weapon_f(), Macro_Ammo_f());
+	sprintf (buf, "%s:%s", Macro_Weapon(), Macro_Ammo());
 	strcpy (macro_buf, buf);
 	return macro_buf;
 }
 
-char *Macro_WeaponNum_f (void)
+char *Macro_WeaponNum (void)
 {
 	switch (cl.stats[STAT_ACTIVEWEAPON])
 	{
@@ -268,7 +268,7 @@ int	_Macro_BestWeapon (void)
 		return 0;
 }
 
-char *Macro_BestWeapon_f (void)
+char *Macro_BestWeapon (void)
 {
 	switch (_Macro_BestWeapon())
 	{
@@ -285,7 +285,7 @@ char *Macro_BestWeapon_f (void)
 	}
 }
 
-char *Macro_BestAmmo_f (void)
+char *Macro_BestAmmo (void)
 {
 	switch (_Macro_BestWeapon())
 	{
@@ -311,15 +311,15 @@ char *Macro_BestAmmo_f (void)
 }
 
 // needed for %b parsing
-char *Macro_BestWeaponAndAmmo_f (void)
+char *Macro_BestWeaponAndAmmo (void)
 {
 	char buf[MAX_MACRO_VALUE];
-	sprintf (buf, "%s:%s", Macro_BestWeapon_f(), Macro_BestAmmo_f());
+	sprintf (buf, "%s:%s", Macro_BestWeapon(), Macro_BestAmmo());
 	strcpy (macro_buf, buf);
 	return macro_buf;
 }
 
-char *Macro_ArmorType_f (void)
+char *Macro_ArmorType (void)
 {
 	if (cl.stats[STAT_ITEMS] & IT_ARMOR1)
 		return "g";
@@ -331,7 +331,7 @@ char *Macro_ArmorType_f (void)
 		return "";	// no armor at all
 }
 
-char *Macro_Powerups_f (void)
+char *Macro_Powerups (void)
 {
 	int effects;
 
@@ -364,12 +364,12 @@ char *Macro_Powerups_f (void)
 	return macro_buf;
 }
 
-char *Macro_Location_f (void)
+char *Macro_Location (void)
 {
 	return TP_LocationName (cl.simorg);
 }
 
-char *Macro_LastDeath_f (void)
+char *Macro_LastDeath (void)
 {
 	if (vars.deathtrigger_time)
 		return vars.lastdeathloc;
@@ -377,14 +377,14 @@ char *Macro_LastDeath_f (void)
 		return tp_name_someplace.string;
 }
 
-char *Macro_Location2_f (void)
+char *Macro_Location2 (void)
 {
 	if (vars.deathtrigger_time && cls.realtime - vars.deathtrigger_time <= 5)
 		return vars.lastdeathloc;
-	return Macro_Location_f();
+	return Macro_Location();
 }
 
-char *Macro_Time_f (void)
+char *Macro_Time (void)
 {
 	time_t		t;
 	struct tm	*ptm;
@@ -395,7 +395,7 @@ char *Macro_Time_f (void)
 	return macro_buf;
 }
 
-char *Macro_Date_f (void)
+char *Macro_Date (void)
 {
 	time_t		t;
 	struct tm	*ptm;
@@ -407,7 +407,7 @@ char *Macro_Date_f (void)
 }
 
 // returns the last item picked up
-char *Macro_Took_f (void)
+char *Macro_Took (void)
 {
 	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
 		strncpy (macro_buf, tp_name_nothing.string, sizeof(macro_buf)-1);
@@ -417,7 +417,7 @@ char *Macro_Took_f (void)
 }
 
 // returns location of the last item picked up
-char *Macro_TookLoc_f (void)
+char *Macro_TookLoc (void)
 {
 	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
 		strncpy (macro_buf, tp_name_someplace.string, sizeof(macro_buf)-1);
@@ -428,7 +428,7 @@ char *Macro_TookLoc_f (void)
 
 
 // %i macro - last item picked up in "name at location" style
-char *Macro_TookAtLoc_f (void)
+char *Macro_TookAtLoc (void)
 {
 	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
 		strncpy (macro_buf, tp_name_nothing.string, sizeof(macro_buf)-1);
@@ -441,14 +441,14 @@ char *Macro_TookAtLoc_f (void)
 
 // pointing calculations are CPU expensive, so the results are cached
 // in vars.pointname & vars.pointloc
-char *Macro_PointName_f (void)
+char *Macro_PointName (void)
 {
 	if (cls.framecount != vars.pointframe)
 		TP_FindPoint ();
 	return vars.pointname;
 }
 
-char *Macro_PointLocation_f (void)
+char *Macro_PointLocation (void)
 {
 	if (cls.framecount != vars.pointframe)
 		TP_FindPoint ();
@@ -458,7 +458,7 @@ char *Macro_PointLocation_f (void)
 		return tp_name_someplace.string;
 }
 
-char *Macro_PointNameAtLocation_f (void)
+char *Macro_PointNameAtLocation (void)
 {
 	if (cls.framecount != vars.pointframe)
 		TP_FindPoint ();
@@ -468,7 +468,7 @@ char *Macro_PointNameAtLocation_f (void)
 		return vars.pointname;
 }
 
-char *Macro_Need_f (void)
+char *Macro_Need (void)
 {
 	int i, weapon;
 	char	*needammo = NULL;
@@ -550,28 +550,28 @@ typedef struct
 // _before_ the shorter ones like "armor" to be parsed properly
 macro_command_t macro_commands[] =
 {
-	{"qt", Macro_Quote_f},
-	{"latency", Macro_Latency_f},
-	{"health", Macro_Health_f},
-	{"armortype", Macro_ArmorType_f},
-	{"armor", Macro_Armor_f},
-	{"shells", Macro_Shells_f},
-	{"nails", Macro_Nails_f},
-	{"rockets", Macro_Rockets_f},
-	{"cells", Macro_Cells_f},
-	{"weaponnum", Macro_WeaponNum_f},
-	{"weapon", Macro_Weapon_f},
-	{"ammo", Macro_Ammo_f},
-	{"bestweapon", Macro_BestWeapon_f},
-	{"bestammo", Macro_BestAmmo_f},
-	{"powerups", Macro_Powerups_f},
-	{"location", Macro_Location_f},
-	{"deathloc", Macro_LastDeath_f},
-	{"time", Macro_Time_f},
-	{"date", Macro_Date_f},
-	{"tookatloc", Macro_TookAtLoc_f},
-	{"tookloc", Macro_TookLoc_f},
-	{"took", Macro_Took_f},
+	{"qt", Macro_Quote},
+	{"latency", Macro_Latency},
+	{"health", Macro_Health},
+	{"armortype", Macro_ArmorType},
+	{"armor", Macro_Armor},
+	{"shells", Macro_Shells},
+	{"nails", Macro_Nails},
+	{"rockets", Macro_Rockets},
+	{"cells", Macro_Cells},
+	{"weaponnum", Macro_WeaponNum},
+	{"weapon", Macro_Weapon},
+	{"ammo", Macro_Ammo},
+	{"bestweapon", Macro_BestWeapon},
+	{"bestammo", Macro_BestAmmo},
+	{"powerups", Macro_Powerups},
+	{"location", Macro_Location},
+	{"deathloc", Macro_LastDeath},
+	{"time", Macro_Time},
+	{"date", Macro_Date},
+	{"tookatloc", Macro_TookAtLoc},
+	{"tookloc", Macro_TookLoc},
+	{"took", Macro_Took},
 	{NULL, NULL}
 };
 
@@ -628,7 +628,7 @@ char *TP_ParseMacroString (char *s)
 			static char mbuf[MAX_MACRO_VALUE];
 			switch (s[2]) {
 			case 'a':
-				macro_string = Macro_ArmorType_f();
+				macro_string = Macro_ArmorType();
 				if (!macro_string[0])
 					macro_string = "a";
 				if (cl.stats[STAT_ARMOR] < 30)
@@ -648,7 +648,7 @@ char *TP_ParseMacroString (char *s)
 				
 			case 'p':
 			case 'P':
-				macro_string = Macro_Powerups_f();
+				macro_string = Macro_Powerups();
 				if (macro_string[0])
 					sprintf (mbuf, "\x10%s\x11", macro_string);
 				else
@@ -675,23 +675,23 @@ char *TP_ParseMacroString (char *s)
 		{
 			switch (s[1])
 			{
-				case 'a': macro_string = Macro_Armor_f(); break;
-				case 'A': macro_string = Macro_ArmorType_f(); break;
-				case 'b': macro_string = Macro_BestWeaponAndAmmo_f(); break;
-				case 'c': macro_string = Macro_Cells_f(); break;
-				case 'd': macro_string = Macro_LastDeath_f(); break;
-				case 'h': macro_string = Macro_Health_f(); break;
-				case 'i': macro_string = Macro_TookAtLoc_f(); break;
-				case 'l': macro_string = Macro_Location_f(); break;
-				case 'L': macro_string = Macro_Location2_f(); break;
+				case 'a': macro_string = Macro_Armor(); break;
+				case 'A': macro_string = Macro_ArmorType(); break;
+				case 'b': macro_string = Macro_BestWeaponAndAmmo(); break;
+				case 'c': macro_string = Macro_Cells(); break;
+				case 'd': macro_string = Macro_LastDeath(); break;
+				case 'h': macro_string = Macro_Health(); break;
+				case 'i': macro_string = Macro_TookAtLoc(); break;
+				case 'l': macro_string = Macro_Location(); break;
+				case 'L': macro_string = Macro_Location2(); break;
 				case 'P':
-				case 'p': macro_string = Macro_Powerups_f(); break;
-				case 'r': macro_string = Macro_Rockets_f(); break;
-				case 'u': macro_string = Macro_Need_f(); break;
-				case 'w': macro_string = Macro_WeaponAndAmmo_f(); break;
-				case 'x': macro_string = Macro_PointName_f(); break;
-				case 'y': macro_string = Macro_PointLocation_f(); break;
-				case 't': macro_string = Macro_PointNameAtLocation_f(); break;
+				case 'p': macro_string = Macro_Powerups(); break;
+				case 'r': macro_string = Macro_Rockets(); break;
+				case 'u': macro_string = Macro_Need(); break;
+				case 'w': macro_string = Macro_WeaponAndAmmo(); break;
+				case 'x': macro_string = Macro_PointName(); break;
+				case 'y': macro_string = Macro_PointLocation(); break;
+				case 't': macro_string = Macro_PointNameAtLocation(); break;
 				default: 
 					buf[i++] = *s++;
 					continue;
@@ -2128,7 +2128,7 @@ void TP_StatChanged (int stat, int value)
 		}
 		if (vars.health > 0) {		// We have just died
 			vars.deathtrigger_time = cls.realtime;
-			strcpy (vars.lastdeathloc, Macro_Location_f());
+			strcpy (vars.lastdeathloc, Macro_Location());
 			if (!cl.spectator && CountTeammates()) {
 				if (cl.teamfortress && (cl.stats[STAT_ITEMS] & (IT_KEY1|IT_KEY2))
 					&& Cmd_FindAlias("f_flagdeath"))
