@@ -274,7 +274,7 @@ const int MAX_ERRORS = 10;
 
 const int MAX_NAME = 64;		// chars long
 
-const int MAX_REGS = 16384;
+const int MAX_REGS = 65536;
 
 //=============================================================================
 
