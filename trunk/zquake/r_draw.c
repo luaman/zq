@@ -728,8 +728,8 @@ void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float a
 			v = (vid.conheight - lines + y)*200/vid.conheight;
 			src = conback->data + v*320;
 			frac = 0;
-			fracstep = 320*0x10000/vid.conwidth;
-			for (x=0 ; x<vid.conwidth ; x+=4)
+			fracstep = 320*0x10000/vid.width;
+			for (x=0 ; x<vid.width ; x+=4)
 			{
 				pusdest[x] = d_8to16table[src[frac>>16]];
 				frac += fracstep;

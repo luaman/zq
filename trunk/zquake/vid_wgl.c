@@ -280,12 +280,10 @@ qbool VID_SetWindowedMode (int modenum)
 	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
 
-	if (vid.conheight > modelist[modenum].height)
-		vid.conheight = modelist[modenum].height;
-	if (vid.conwidth > modelist[modenum].width)
-		vid.conwidth = modelist[modenum].width;
-	vid.width = vid.conwidth;
-	vid.height = vid.conheight;
+	if (vid.height > modelist[modenum].height)
+		vid.height = modelist[modenum].height;
+	if (vid.width > modelist[modenum].width)
+		vid.width = modelist[modenum].width;
 
 	vid.numpages = 2;
 
@@ -375,12 +373,10 @@ qbool VID_SetFullDIBMode (int modenum)
 	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
 
-	if (vid.conheight > modelist[modenum].height)
-		vid.conheight = modelist[modenum].height;
-	if (vid.conwidth > modelist[modenum].width)
-		vid.conwidth = modelist[modenum].width;
-	vid.width = vid.conwidth;
-	vid.height = vid.conheight;
+	if (vid.height > modelist[modenum].height)
+		vid.height = modelist[modenum].height;
+	if (vid.width > modelist[modenum].width)
+		vid.width = modelist[modenum].width;
 
 	vid.numpages = 2;
 
@@ -1774,22 +1770,22 @@ void	VID_Init (unsigned char *palette)
 	vid_initialized = true;
 
 	if ((i = COM_CheckParm("-conwidth")) != 0)
-		vid.conwidth = Q_atoi(com_argv[i+1]);
+		vid.width = Q_atoi(com_argv[i+1]);
 	else
-		vid.conwidth = 640;
+		vid.width = 640;
 
-	vid.conwidth &= 0xfff8; // make it a multiple of eight
+	vid.width &= 0xfff8; // make it a multiple of eight
 
-	if (vid.conwidth < 320)
-		vid.conwidth = 320;
+	if (vid.width < 320)
+		vid.width = 320;
 
 	// pick a conheight that matches with correct aspect
-	vid.conheight = vid.conwidth*3 / 4;
+	vid.height = vid.width * 3 / 4;
 
 	if ((i = COM_CheckParm("-conheight")) != 0)
-		vid.conheight = Q_atoi(com_argv[i+1]);
-	if (vid.conheight < 200)
-		vid.conheight = 200;
+		vid.height = Q_atoi(com_argv[i+1]);
+	if (vid.height < 200)
+		vid.height = 200;
 
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;

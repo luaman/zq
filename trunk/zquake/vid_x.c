@@ -587,8 +587,6 @@ void VID_Init (unsigned char *palette)
 	vid.rowbytes = x_framebuffer[0]->bytes_per_line;
 	vid.buffer = x_framebuffer[0]->data;
 	vid.direct = 0;
-	vid.conwidth = vid.width;
-	vid.conheight = vid.height;
 	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 
 //	XSynchronize(x_disp, False);
@@ -894,8 +892,6 @@ void	VID_Update (vrect_t *rects)
 			ResetFrameBuffer();
 		vid.rowbytes = x_framebuffer[0]->bytes_per_line;
 		vid.buffer = x_framebuffer[current_framebuffer]->data;
-		vid.conwidth = vid.width;
-		vid.conheight = vid.height;
 		vid.recalc_refdef = 1;				// force a surface cache flush
 		Con_CheckResize();
 		Con_Clear_f();
