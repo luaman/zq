@@ -703,6 +703,10 @@ static void IN_MouseMove (usercmd_t *cmd)
 		my = current_pos.y - window_center_y + my_accum;
 		mx_accum = 0;
 		my_accum = 0;
+
+		// if the mouse has moved, force it to the center, so there's room to move
+		if (mx || my)
+			SetCursorPos (window_center_x, window_center_y);
 	}
 
 	if (m_filter.value)
@@ -742,12 +746,6 @@ static void IN_MouseMove (usercmd_t *cmd)
 	else
 	{
 		cmd->forwardmove -= m_forward.value * mouse_y;
-	}
-
-// if the mouse has moved, force it to the center, so there's room to move
-	if (mx || my)
-	{
-		SetCursorPos (window_center_x, window_center_y);
 	}
 }
 
