@@ -44,11 +44,10 @@ int SV_ModelIndex (char *name)
 	if (!name || !name[0])
 		return 0;
 
-	for (i=1 ; i<MAX_MODELS && sv.model_name[i] ; i++)
+	for (i = 1; i < MAX_MODELS && sv.model_name[i]; i++)
 		if (!strcmp(sv.model_name[i], name))
 			return i;
-	if (i==MAX_MODELS || !sv.model_name[i])
-		Host_Error ("SV_ModelIndex: model %s not precached", name);
+
 	return i;
 }
 
@@ -293,7 +292,6 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 
 	// why so?
 	sv.sound_name[0] = pr_strings;
-	sv.model_name[0] = pr_strings;
 
 	sv.model_name[1] = sv.modelname;
 	sv.models[1] = sv.worldmodel;

@@ -193,7 +193,7 @@ static void PF_setmodel (void)
 	m = G_STRING(OFS_PARM1);
 
 // check to see if model was properly precached
-	for (i=0, check = sv.model_name ; *check ; i++, check++)
+	for (i = 1, check = sv.model_name + 1; i < MAX_MODELS && *check ; i++, check++)
 		if (!strcmp(*check, m))
 			break;
 
@@ -1050,10 +1050,9 @@ static void PF_precache_model (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 
-	for (i=1 ; i<MAX_MODELS ; i++)
+	for (i = 1; i < MAX_MODELS; i++)
 	{
-		if (!sv.model_name[i])
-		{
+		if (!sv.model_name[i]) {
 			sv.model_name[i] = s;
 			return;
 		}
