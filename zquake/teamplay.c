@@ -1795,7 +1795,8 @@ static int FindNearestItem (int flags, item_t **pitem)
 		if ( ! (item->itemflag & flags) )
 			continue;
 
-		VectorSubtract (ent->origin, org, v);
+		MSG_UnpackOrigin (ent->s_origin, v);
+		VectorSubtract (v, org, v);
 		VectorAdd (v, item->offset, v);
 		dist = VectorLength (v);
 //		Com_Printf ("%s %f\n", item->modelname, dist);
@@ -2011,7 +2012,8 @@ void TP_FindPoint (void)
 			}
 		}
 
-		VectorAdd (ent->origin, item->offset, entorg);
+		MSG_UnpackOrigin (ent->s_origin, entorg);
+		VectorAdd (entorg, item->offset, entorg);
 		VectorSubtract (entorg, vieworg, v);
 
 		dist = DotProduct (v, forward);
@@ -2107,8 +2109,9 @@ ok:
 			p = bestitem->cvar->string;
 
 		strlcpy (vars.pointname, p, sizeof(vars.pointname));
-		strlcpy (vars.pointloc, TP_LocationName (bestent->origin), sizeof(vars.pointloc));
-		VectorCopy (bestent->origin, vars.pointorg);
+		MSG_UnpackOrigin (bestent->s_origin, entorg);
+		strlcpy (vars.pointloc, TP_LocationName (entorg), sizeof(vars.pointloc));
+		VectorCopy (entorg, vars.pointorg);
 	}
 	else {
 nothing:

@@ -406,7 +406,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 
 		state->number = SV_TranslateEntnum(e);
 		state->flags = 0;
-		VectorCopy (ent->v.origin, state->origin);
+		MSG_PackOrigin (ent->v.origin, state->s_origin);
 		VectorCopy (ent->v.angles, state->angles);
 		state->modelindex = ent->v.modelindex;
 		state->frame = ent->v.frame;
