@@ -26,7 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "qwsvdef.h"
 #endif
 
-qboolean	sv_allow_cheats;
+cvar_t		sv_cheats = {"sv_cheats", "0"};
+qboolean	sv_allow_cheats = false;
 
 int fp_messages=4, fp_persecond=4, fp_secondsdead=10;
 char fp_msg[255] = { 0 };
@@ -924,7 +925,7 @@ void SV_SnapAll_f (void)
 	{
 		if (cl->state < cs_connected || cl->spectator)
 			continue;
-		SV_Snap(cl->userid);
+		SV_Snap (cl->userid);
 	}
 }
 
@@ -935,9 +936,12 @@ SV_InitOperatorCommands
 */
 void SV_InitOperatorCommands (void)
 {
+	Cvar_RegisterVariable (&sv_cheats);
+
 	if (COM_CheckParm ("-cheats"))
 	{
 		sv_allow_cheats = true;
+		Cvar_SetValue (&sv_cheats, 1);
 		Info_SetValueForStarKey (svs.info, "*cheats", "ON", MAX_SERVERINFO_STRING);
 	}
 
