@@ -220,6 +220,10 @@ SOURCE=.\cmd.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\cmodel.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\com_msg.c
 # End Source File
 # Begin Source File
