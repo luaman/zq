@@ -26,9 +26,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Cmd_ForwardToServer (void);
 
-static qboolean	cmd_wait;
+//static qboolean	cmd_wait;
 
 cvar_t cl_warncmd = {"cl_warncmd", "0"};
+
+cbuf_t	cbuf_main;
+#ifndef SERVERONLY
+cbuf_t	cbuf_svc;
+#endif
+
+cbuf_t	*cbuf_current = NULL;
 
 //=============================================================================
 
@@ -43,7 +50,8 @@ bind g "impulse 5 ; +attack ; wait ; -attack ; impulse 2"
 */
 void Cmd_Wait_f (void)
 {
-	cmd_wait = true;
+	if (cbuf_current)
+		cbuf_current->wait = true;
 }
 
 /*
@@ -55,11 +63,13 @@ void Cmd_Wait_f (void)
 */
 
 
-#define MAXCMDBUF 16384
-static byte	cmd_text_buf[MAXCMDBUF];
-static int	cmd_text_start, cmd_text_end;
+//#define MAXCMDBUF 16384
+//static byte	cmd_text_buf[MAXCMDBUF];
+//static int	cmd_text_start, cmd_text_end;
 
-
+void Cbuf_AddText (char *text) { Cbuf_AddTextEx (&cbuf_main, text); }
+void Cbuf_InsertText (char *text) { Cbuf_InsertTextEx (&cbuf_main, text); }
+void Cbuf_Execute () { Cbuf_ExecuteEx (&cbuf_main); }
 
 /*
 ============
@@ -68,7 +78,12 @@ Cbuf_Init
 */
 void Cbuf_Init (void)
 {
-	cmd_text_start = cmd_text_end = MAXCMDBUF / 2;
+	cbuf_main.text_start = cbuf_main.text_end = MAXCMDBUF / 2;
+	cbuf_main.wait = false;
+#ifndef SERVERONLY
+	cbuf_svc.text_start = cbuf_svc.text_end = MAXCMDBUF / 2;
+	cbuf_svc.wait = false;
+#endif
 }
 
 /*
@@ -78,7 +93,7 @@ Cbuf_AddText
 Adds command text at the end of the buffer
 ============
 */
-void Cbuf_AddText (char *text)
+void Cbuf_AddTextEx (cbuf_t *cbuf, char *text)
 {
 	int		len;
 	int		new_start;
@@ -86,14 +101,14 @@ void Cbuf_AddText (char *text)
 	
 	len = strlen (text);
 
-	if (cmd_text_end + len <= MAXCMDBUF)
+	if (cbuf->text_end + len <= MAXCMDBUF)
 	{
-		memcpy (cmd_text_buf + cmd_text_end, text, len);
-		cmd_text_end += len;
+		memcpy (cbuf->text_buf + cbuf->text_end, text, len);
+		cbuf->text_end += len;
 		return;
 	}
 
-	new_bufsize = cmd_text_end-cmd_text_start+len;
+	new_bufsize = cbuf->text_end-cbuf->text_start+len;
 	if (new_bufsize > MAXCMDBUF)
 	{
 		Con_Printf ("Cbuf_AddText: overflow\n");
@@ -103,10 +118,10 @@ void Cbuf_AddText (char *text)
 	// Calculate optimal position of text in buffer
 	new_start = (MAXCMDBUF - new_bufsize) / 2;
 
-	memcpy (cmd_text_buf + new_start, cmd_text_buf + cmd_text_start, cmd_text_end-cmd_text_start);
-	memcpy (cmd_text_buf + new_start + cmd_text_end-cmd_text_start, text, len);
-	cmd_text_start = new_start;
-	cmd_text_end = cmd_text_start + new_bufsize;
+	memcpy (cbuf->text_buf + new_start, cbuf->text_buf + cbuf->text_start, cbuf->text_end-cbuf->text_start);
+	memcpy (cbuf->text_buf + new_start + cbuf->text_end-cbuf->text_start, text, len);
+	cbuf->text_start = new_start;
+	cbuf->text_end = cbuf->text_start + new_bufsize;
 }
 
 
@@ -119,7 +134,7 @@ Adds a \n to the text
 FIXME: actually change the command buffer to do less copying
 ============
 */
-void Cbuf_InsertText (char *text)
+void Cbuf_InsertTextEx (cbuf_t *cbuf, char *text)
 {
 	int		len;
 	int		new_start;
@@ -127,15 +142,15 @@ void Cbuf_InsertText (char *text)
 
 	len = strlen(text);
 
-	if (len < cmd_text_start)
+	if (len < cbuf->text_start)
 	{
-		memcpy (cmd_text_buf + (cmd_text_start - len - 1), text, len);
-		cmd_text_buf[cmd_text_start-1] = '\n';
-		cmd_text_start -= len + 1;
+		memcpy (cbuf->text_buf + (cbuf->text_start - len - 1), text, len);
+		cbuf->text_buf[cbuf->text_start-1] = '\n';
+		cbuf->text_start -= len + 1;
 		return;
 	}
 
-	new_bufsize = cmd_text_end - cmd_text_start + len + 1;
+	new_bufsize = cbuf->text_end - cbuf->text_start + len + 1;
 	if (new_bufsize > MAXCMDBUF)
 	{
 		Con_Printf ("Cbuf_InsertText: overflow\n");
@@ -145,11 +160,11 @@ void Cbuf_InsertText (char *text)
 	// Calculate optimal position of text in buffer
 	new_start = (MAXCMDBUF - new_bufsize) / 2;
 
-	memmove (cmd_text_buf + (new_start + len + 1), cmd_text_buf + cmd_text_start, cmd_text_end-cmd_text_start);
-	memcpy (cmd_text_buf + new_start, text, len);
-	cmd_text_buf[new_start + len] = '\n';
-	cmd_text_start = new_start;
-	cmd_text_end = cmd_text_start + new_bufsize;
+	memmove (cbuf->text_buf + (new_start + len + 1), cbuf->text_buf + cbuf->text_start, cbuf->text_end-cbuf->text_start);
+	memcpy (cbuf->text_buf + new_start, text, len);
+	cbuf->text_buf[new_start + len] = '\n';
+	cbuf->text_start = new_start;
+	cbuf->text_end = cbuf->text_start + new_bufsize;
 }
 
 /*
@@ -157,7 +172,7 @@ void Cbuf_InsertText (char *text)
 Cbuf_Execute
 ============
 */
-void Cbuf_Execute (void)
+void Cbuf_ExecuteEx (cbuf_t *cbuf)
 {
 	int		i;
 	char	*text;
@@ -165,12 +180,14 @@ void Cbuf_Execute (void)
 	int		quotes;
 	int		cursize;
 
-	while (cmd_text_end > cmd_text_start)
+	cbuf_current = cbuf;
+
+	while (cbuf->text_end > cbuf->text_start)
 	{
 // find a \n or ; line break
-		text = (char *)cmd_text_buf + cmd_text_start;
+		text = (char *)cbuf->text_buf + cbuf->text_start;
 
-		cursize = cmd_text_end - cmd_text_start;
+		cursize = cbuf->text_end - cbuf->text_start;
 		quotes = 0;
 		for (i=0 ; i< cursize ; i++)
 		{
@@ -191,24 +208,26 @@ void Cbuf_Execute (void)
 
 		if (i == cursize)
 		{
-			cmd_text_start = cmd_text_end = MAXCMDBUF/2;
+			cbuf->text_start = cbuf->text_end = MAXCMDBUF/2;
 		}
 		else
 		{
 			i++;
-			cmd_text_start += i;
+			cbuf->text_start += i;
 		}
 
 // execute the command line
 		Cmd_ExecuteString (line);
 		
-		if (cmd_wait)
+		if (cbuf->wait)
 		{	// skip out while text still remains in buffer, leaving it
 			// for next frame
-			cmd_wait = false;
+			cbuf->wait = false;
 			break;
 		}
 	}
+
+	cbuf_current = NULL;
 }
 
 /*

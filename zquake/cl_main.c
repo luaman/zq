@@ -1589,6 +1589,7 @@ void Host_Frame (double time)
 
 	// process console commands
 	Cbuf_Execute ();
+	Cbuf_ExecuteEx (&cbuf_svc);
 
 #ifdef QW_BOTH
 	if (sv.state == ss_active)

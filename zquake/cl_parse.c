@@ -564,6 +564,8 @@ void CL_ParseServerData (void)
 	// game directory
 	str = MSG_ReadString ();
 
+	cl.teamfortress = (strcmp(str, "fortress") == 0);
+
 	if (stricmp(gamedirfile, str)) {
 		// save current config
 		Host_WriteConfiguration (); 
@@ -1383,7 +1385,7 @@ void CL_ParseServerMessage (void)
 		case svc_stufftext:
 			s = MSG_ReadString ();
 			Con_DPrintf ("stufftext: %s\n", s);
-			Cbuf_AddText (s);
+			Cbuf_AddTextEx (&cbuf_svc, s);
 			break;
 			
 		case svc_damage:
