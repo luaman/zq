@@ -86,8 +86,10 @@ typedef struct {
 	float	entgravity;
 	float	bunnyspeedcap;
 	float	ktjump;
-	qbool	slidefix;
+	qbool	slidefix;		// NQ-style movement down ramps
 	qbool	airstep;
+	qbool	pground;		// NQ-style "onground" flag handling.
+							// p is for persistent (accross frames)
 } movevars_t;
 
 

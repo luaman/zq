@@ -413,7 +413,8 @@ Cvar system calls this when a CVAR_SERVERINFO cvar changes
 */
 void SV_ServerinfoChanged (char *key, char *str)
 {
-	if ( (!strcmp(key, "pm_bunnyspeedcap") || !strcmp(key, "pm_slidefix") || !strcmp(key, "pm_airstep")
+	if ( (!strcmp(key, "pm_bunnyspeedcap") || !strcmp(key, "pm_slidefix")
+		|| !strcmp(key, "pm_airstep") || !strcmp(key, "pm_pground")
 		|| !strcmp(key, "samelevel") || !strcmp(key, "watervis") || !strcmp(key, "coop") )
 		&& !strcmp(str, "0") ) {
 		// don't add default values to serverinfo to keep it cleaner

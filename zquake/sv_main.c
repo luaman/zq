@@ -1398,6 +1398,7 @@ void SV_InitLocal (void)
 	extern cvar_t	pm_ktjump;
 	extern cvar_t	pm_slidefix;
 	extern cvar_t	pm_airstep;
+	extern cvar_t	pm_pground;
 	packet_t		*packet_freeblock;	// initialise delayed packet free block
 
 	SV_InitOperatorCommands	();
@@ -1455,6 +1456,7 @@ void SV_InitLocal (void)
 	Cvar_Register (&pm_ktjump);
 	Cvar_Register (&pm_slidefix);
 	Cvar_Register (&pm_airstep);
+	Cvar_Register (&pm_pground);
 
 	Cvar_Register (&allow_download);
 	Cvar_Register (&allow_download_skins);
