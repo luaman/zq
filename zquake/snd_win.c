@@ -228,24 +228,16 @@ sndinitstat SNDDMA_InitDirect (void)
 		}
 	}
 
-	while ((hresult = iDirectSoundCreate(NULL, &pDS, NULL)) != DS_OK)
+	if ((hresult = iDirectSoundCreate(NULL, &pDS, NULL)) != DS_OK)
 	{
-		if (hresult != DSERR_ALLOCATED)
+		if (hresult == DSERR_ALLOCATED)
 		{
-			Con_SafePrintf ("DirectSound create failed\n");
-			return SIS_FAILURE;
-		}
-
-		if (MessageBox (NULL,
-						"The sound hardware is in use by another app.\n\n"
-					    "Select Retry to try to start sound again or Cancel to run Quake with no sound.",
-						"Sound not available",
-						MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
-		{
-			Con_SafePrintf ("DirectSoundCreate failure\n"
-							"  hardware already in use\n");
+			Con_SafePrintf ("DirectSoundCreate failed, hardware already in use\n");
 			return SIS_NOTAVAIL;
 		}
+
+		Con_SafePrintf ("DirectSound create failed\n");
+		return SIS_FAILURE;
 	}
 
 	dscaps.dwSize = sizeof(dscaps);
@@ -446,26 +438,16 @@ qboolean SNDDMA_InitWav (void)
 		*format.nBlockAlign; 
 	
 	/* Open a waveform device for output using window callback. */ 
-	while ((hr = waveOutOpen((LPHWAVEOUT)&hWaveOut, WAVE_MAPPER, 
+	if ((hr = waveOutOpen((LPHWAVEOUT)&hWaveOut, WAVE_MAPPER, 
 					&format, 
 					0, 0L, CALLBACK_NULL)) != MMSYSERR_NOERROR)
 	{
-		if (hr != MMSYSERR_ALLOCATED)
-		{
+		if (hr == MMSYSERR_ALLOCATED)
+			Con_SafePrintf ("waveOutOpen failed, hardware already in use\n");
+		else
 			Con_SafePrintf ("waveOutOpen failed\n");
-			return false;
-		}
 
-		if (MessageBox (NULL,
-						"The sound hardware is in use by another app.\n\n"
-					    "Select Retry to try to start sound again or Cancel to run Quake with no sound.",
-						"Sound not available",
-						MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
-		{
-			Con_SafePrintf ("waveOutOpen failure;\n"
-							"  hardware already in use\n");
-			return false;
-		}
+		return false;
 	} 
 
 	/* 
@@ -588,14 +570,11 @@ int SNDDMA_Init(void)
 	}
 
 // if DirectSound didn't succeed in initializing, try to initialize
-// waveOut sound, unless DirectSound failed because the hardware is
-// already allocated (in which case the user has already chosen not
-// to have sound)
-	if (!dsound_init && (stat != SIS_NOTAVAIL))
+// waveOut sound
+	if (!dsound_init)
 	{
 		if (snd_firsttime || snd_iswave)
 		{
-
 			snd_iswave = SNDDMA_InitWav ();
 
 			if (snd_iswave)
