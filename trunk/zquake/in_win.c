@@ -125,6 +125,13 @@ static HINSTANCE hInstDI;
 
 qbool	dinput;
 
+// Some drivers send DIMOFS_Z, some send WM_MOUSEWHEEL, and some send both.
+// To get the mouse wheel to work in any case but avoid duplication,
+// we will shut off WM_MOUSEWHEEL when the first DIMOFS_Z event is received.
+// The first event could be duplicated if we receive a WM_MOUSEWHEEL before
+// DIMOFS_Z, but I that shouldn't be (much of) a problem.
+qbool	in_dinput_wheel_works;
+
 typedef struct MYDATA {
 	LONG  lX;                   // X axis goes here
 	LONG  lY;                   // Y axis goes here
@@ -457,6 +464,11 @@ static void IN_StartupMouse (void)
 
 	mouseinitialized = true;
 
+	mouse_buttons = 8;
+
+	// assume false until we get a DIMOFS_Z
+	in_dinput_wheel_works = false;
+
 	if (in_dinput.value || COM_CheckParm ("-dinput"))
 	{
 		dinput = IN_InitDInput ();
@@ -494,8 +506,6 @@ static void IN_StartupMouse (void)
 			}
 		}
 	}
-
-	mouse_buttons = 8;
 
 // if a fullscreen video mode was set before the mouse was initialized,
 // set the mouse state appropriately
@@ -649,6 +659,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 						Key_Event(K_MWHEELDOWN, true);
 						Key_Event(K_MWHEELDOWN, false);
 					}
+					in_dinput_wheel_works = true;	// ignore WM_MOUSEWHEEL
 					break;
 
 				case DIMOFS_BUTTON0:
