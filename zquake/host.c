@@ -172,9 +172,9 @@ void Host_Init (quakeparms_t *parms)
 	
 	Com_Printf ("\nZQuake version %s\n\n", VersionString());
 
-#ifdef SERVERONLY
-
 	Com_Printf ("========= ZQuake Initialized =========\n");
+
+#ifdef SERVERONLY
 
 	Cbuf_InsertText ("exec server.cfg\n");
 	
@@ -189,8 +189,6 @@ void Host_Init (quakeparms_t *parms)
 		Host_Error ("Couldn't spawn a server");
 
 #else
-
-	Com_Printf ("€ ZQuake Initialized ‚\n");
 
 	Cbuf_InsertText ("exec quake.rc\n");
 	Cbuf_AddText ("cl_warncmd 1\n");
