@@ -1090,6 +1090,53 @@ void DropPunchAngle (void)
 	}
 }
 
+/*
+==================
+V_ClearScene
+==================
+*/
+void V_ClearScene (void)
+{
+	static int list_index = 0;
+
+	// swap visedict lists
+	cl_oldnumvisedicts = cl_numvisedicts;
+	cl_oldvisedicts = cl_visedicts_list[list_index];
+	list_index = 1 - list_index;
+	cl_visedicts = cl_visedicts_list[list_index];
+
+	cl_numvisedicts = 0;
+	cl_numvisparticles = 0;
+}
+
+/*
+==================
+V_AddEntity
+==================
+*/
+void V_AddEntity (entity_t *ent)
+{
+	if (cl_numvisedicts >= MAX_VISEDICTS)
+		return;
+	
+	cl_visedicts[cl_numvisedicts++] = *ent;
+}
+
+/*
+==================
+V_AddParticle
+==================
+*/
+void V_AddParticle (vec3_t origin, int color, float alpha)
+{
+	if (cl_numvisparticles >= MAX_PARTICLES)
+		return;
+	
+	cl_visparticles[cl_numvisparticles].color = color;
+	cl_visparticles[cl_numvisparticles].alpha = alpha;
+	VectorCopy (origin, cl_visparticles[cl_numvisparticles].org);
+	cl_numvisparticles++;
+}
 
 /*
 ==================

@@ -172,6 +172,10 @@ SOURCE=.\cl_demo.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\cl_effects.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\cl_ents.c
 # End Source File
 # Begin Source File
@@ -934,6 +938,21 @@ SOURCE=.\r_model.c
 # Begin Source File
 
 SOURCE=.\r_part.c
+
+!IF  "$(CFG)" == "zquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

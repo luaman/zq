@@ -726,6 +726,10 @@ void CL_InitCommands (void)
 	Cmd_AddCommand ("version", CL_Version_f);
 	Cmd_AddCommand ("writeconfig", CL_WriteConfig_f);
 
+#ifndef CLIENTONLY
+	Cmd_AddCommand ("pointfile", CL_ReadPointFile_f);	
+#endif
+
 // client info setting
 	Cmd_AddCommand ("color", CL_Color_f);
 	Cmd_AddCommand ("fullinfo", CL_FullInfo_f);

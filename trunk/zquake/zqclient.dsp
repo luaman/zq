@@ -921,6 +921,19 @@ SOURCE=.\r_model.c
 # Begin Source File
 
 SOURCE=.\r_part.c
+
+!IF  "$(CFG)" == "zqclient - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

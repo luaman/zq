@@ -808,6 +808,65 @@ void R_DrawViewModel (void)
 	glDepthRange (gldepthmin, gldepthmax);
 }
 
+/*
+===============
+R_DrawParticles
+===============
+*/
+void R_DrawParticles (void)
+{
+	int				i;
+	byte			color[4];
+	vec3_t			up, right;
+	float			dist, scale;
+	particle_t		*p;
+	float			r_partscale;
+	
+	r_partscale = 0.004 * tan (r_refdef.fov_x * (M_PI/180) * 0.5f);
+
+	VectorScale (vup, 1.5, up);
+	VectorScale (vright, 1.5, right);
+
+	GL_Bind (particletexture);
+	
+	glEnable (GL_BLEND);
+	if (!gl_solidparticles.value)
+		glDepthMask (GL_FALSE);
+	glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glBegin (GL_TRIANGLES);
+
+	for (i = 0, p = cl_visparticles; i < cl_numvisparticles; i++, p++)
+	{
+		// hack a scale up to keep particles from disapearing
+		dist = (p->org[0] - r_origin[0])*vpn[0] + (p->org[1] - r_origin[1])*vpn[1]
+			+ (p->org[2] - r_origin[2])*vpn[2];
+		scale = 1 + dist * r_partscale;
+
+		*(int *)color = d_8to24table[p->color];
+		color[3] = p->alpha * 255;
+
+		glColor4ubv (color);
+
+		glTexCoord2f (0, 0);
+		glVertex3fv (p->org);
+
+		glTexCoord2f (1, 0);
+		glVertex3f (p->org[0] + up[0]*scale, 
+			p->org[1] + up[1]*scale, 
+			p->org[2] + up[2]*scale);
+
+		glTexCoord2f (0, 1);
+		glVertex3f (p->org[0] + right[0]*scale,
+			p->org[1] + right[1]*scale, 
+			p->org[2] + right[2]*scale);
+	}
+
+	glEnd ();
+	glDisable (GL_BLEND);
+	glDepthMask (GL_TRUE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glColor3f (1, 1, 1);
+}
 
 /*
 ============
@@ -1090,9 +1149,6 @@ R_Init
 void R_Init (void)
 {
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
-#ifndef CLIENTONLY
-	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
-#endif
 
 	Cvar_Register (&r_norefresh);
 	Cvar_Register (&r_lightmap);
@@ -1141,7 +1197,6 @@ void R_Init (void)
 
 	R_InitTextures ();
 	R_InitBubble ();
-	R_InitParticles ();
 	R_InitParticleTexture ();
 
 	netgraphtexture = texture_extension_number;

@@ -107,6 +107,9 @@ int				cl_numvisedicts, cl_oldnumvisedicts;
 entity_t		*cl_visedicts, *cl_oldvisedicts;
 entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
 
+int				cl_numvisparticles;
+particle_t		cl_visparticles[MAX_PARTICLES];
+
 double			connect_time = 0;		// for connection retransmits
 
 qboolean	host_skipframe;			// used in demo playback
@@ -829,6 +832,8 @@ void CL_Init (void)
 	CL_InitTEnts ();
 	CL_InitPrediction ();
 	CL_InitCam ();
+	CL_InitParticles ();
+
 	TP_Init ();
 	Sbar_Init ();
 	M_Init ();	
@@ -860,7 +865,6 @@ void CL_BeginLocalConnection ()
 		Cmd_ExecuteString ("connect local");
 	else
 		cls.state = ca_connected;
-
 }
 
 

@@ -180,9 +180,6 @@ void R_Init (void)
 	R_InitTurb ();
 	
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
-#ifndef CLIENTONLY
-	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
-#endif
 
 	Cvar_Register (&r_draworder);
 	Cvar_Register (&r_speeds);
@@ -224,7 +221,6 @@ void R_Init (void)
 	r_refdef.yOrigin = YCENTERING;
 
 	R_InitTextures ();
-	R_InitParticles ();
 
 // TODO: collect 386-specific code in one place
 #if	id386
@@ -253,7 +249,6 @@ void R_NewMap (void)
 		cl.worldmodel->leafs[i].efrags = NULL;
 		 	
 	r_viewleaf = NULL;
-	R_ClearParticles ();
 
 	r_cnumsurfs = r_maxsurfs.value;
 
