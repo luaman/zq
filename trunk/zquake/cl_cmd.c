@@ -1015,7 +1015,7 @@ void CL_FullServerinfo_f (void)
 
 	p = Info_ValueForKey (cl.serverinfo, "*cheats");
 	if (*p) {
-		Com_Printf ("== Cheats are enabled ==\n");
+		Com_Printf ("*** cheats are enabled ***\n");
 		// allow renderer cheats only if running a local server
 		r_refdef2.allowCheats = com_serveractive;
 	} else
