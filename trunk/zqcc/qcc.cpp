@@ -48,9 +48,9 @@ ddef_t		fields[MAX_FIELDS];
 int			numfielddefs;
 
 // CopyString returns an offset from the string heap
-int	CopyString (char *str)
+int		 CopyString (char *str)
 {
-	int		old;
+	int		 old;
 	
 	old = strofs;
 	strcpy (strings+strofs, str);
@@ -58,7 +58,7 @@ int	CopyString (char *str)
 	return old;
 }
 
-void PrintStrings (void)
+void	 PrintStrings (void)
 {
 	int		i, l, j;
 	
@@ -81,7 +81,7 @@ void PrintStrings (void)
 }
 
 
-void PrintFunctions (void)
+void	 PrintFunctions (void)
 {
 	int		i,j;
 	dfunction_t	*d;
@@ -96,7 +96,7 @@ void PrintFunctions (void)
 	}
 }
 
-void PrintFields (void)
+void	 PrintFields (void)
 {
 	int		i;
 	ddef_t	*d;
@@ -108,7 +108,7 @@ void PrintFields (void)
 	}
 }
 
-void PrintGlobals (void)
+void	 PrintGlobals (void)
 {
 	int		i;
 	ddef_t	*d;
@@ -121,7 +121,7 @@ void PrintGlobals (void)
 }
 
 
-void InitData (void)
+void	 InitData (void)
 {
 	int		i;
 	
@@ -134,10 +134,13 @@ void InitData (void)
 	def_ret.ofs = OFS_RETURN;
 	for (i=0 ; i<MAX_PARMS ; i++)
 		def_parms[i].ofs = OFS_PARM0 + 3*i;
+
+	// Initialize the preprocessor define-structures:
+	PR_InitDefines();
 }
 
 
-void WriteData (int crc)
+void	 WriteData (int crc)
 {
 	def_t		*def;
 	ddef_t		*dd;
@@ -256,9 +259,7 @@ strofs = (strofs+3)&~3;
 	fseek (f, 0, SEEK_SET);
 	SafeWrite (f, &progs, sizeof(progs));
 	fclose (f);
-	
 }
-
 
 
 /*
@@ -268,7 +269,7 @@ PR_String
 Returns a string suitable for printing (no newlines, max 60 chars length)
 ===============
 */
-char *PR_String (char *string)
+char	*PR_String (char *string)
 {
 	static char buf[80];
 	char	*s;
@@ -306,8 +307,7 @@ char *PR_String (char *string)
 }
 
 
-
-def_t *PR_DefForFieldOfs (gofs_t ofs)
+def_t	*PR_DefForFieldOfs (gofs_t ofs)
 {
 	def_t	*d;
 	
@@ -322,6 +322,7 @@ def_t *PR_DefForFieldOfs (gofs_t ofs)
 	return NULL;
 }
 
+
 /*
 ============
 PR_ValueString
@@ -329,7 +330,7 @@ PR_ValueString
 Returns a string describing *data in a type specific manner
 =============
 */
-char *PR_ValueString (etype_t type, void *val)
+char	*PR_ValueString (etype_t type, void *val)
 {
 	static char	line[256];
 	def_t		*def;
@@ -374,6 +375,7 @@ char *PR_ValueString (etype_t type, void *val)
 	return line;
 }
 
+
 /*
 ============
 PR_GlobalString
@@ -382,7 +384,7 @@ Returns a string with a description and the contents of a global,
 padded to 20 field width
 ============
 */
-char *PR_GlobalStringNoContents (gofs_t ofs)
+char	*PR_GlobalStringNoContents (gofs_t ofs)
 {
 	int		i;
 	def_t	*def;
@@ -405,7 +407,8 @@ char *PR_GlobalStringNoContents (gofs_t ofs)
 	return line;
 }
 
-char *PR_GlobalString (gofs_t ofs)
+
+char	*PR_GlobalString (gofs_t ofs)
 {
 	char	*s;
 	int		i;
@@ -433,22 +436,24 @@ char *PR_GlobalString (gofs_t ofs)
 	return line;
 }
 
+
 /*
 ============
 PR_PrintOfs
 ============
 */
-void PR_PrintOfs (gofs_t ofs)
+void	 PR_PrintOfs (gofs_t ofs)
 {
 	printf ("%s\n",PR_GlobalString(ofs));
 }
+
 
 /*
 =================
 PR_PrintStatement
 =================
 */
-void PR_PrintStatement (dstatement_t *s)
+void	 PR_PrintStatement (dstatement_t *s)
 {
 	int		i;
 	
@@ -486,7 +491,7 @@ void PR_PrintStatement (dstatement_t *s)
 PR_PrintDefs
 ============
 */
-void PR_PrintDefs (void)
+void	 PR_PrintDefs (void)
 {
 	def_t	*d;
 	
@@ -502,9 +507,9 @@ PR_BeginCompilation
 called before compiling a batch of files, clears the pr struct
 ==============
 */
-void PR_BeginCompilation (void *memory, int memsize)
+void	 PR_BeginCompilation (void *memory, int memsize)
 {
-	int		i;
+	int		 i;
 	
 	pr.memory = (char *) memory;
 	pr.max_memory = memsize;
@@ -523,6 +528,7 @@ void PR_BeginCompilation (void *memory, int memsize)
 	pr_error_count = 0;
 }
 
+
 /*
 ==============
 PR_FinishCompilation
@@ -531,7 +537,7 @@ called after all files are compiled to check for errors
 Returns false if errors were detected.
 ==============
 */
-bool PR_FinishCompilation (void)
+bool	 PR_FinishCompilation (void)
 {
 	def_t		*d;
 	bool		errors;
@@ -555,6 +561,7 @@ bool PR_FinishCompilation (void)
 
 	return !errors;
 }
+
 
 //=============================================================================
 
@@ -603,20 +610,24 @@ static unsigned short crctable[256] =
 	0x6e17,	0x7e36,	0x4e55,	0x5e74,	0x2e93,	0x3eb2,	0x0ed1,	0x1ef0
 };
 
-void CRC_Init(unsigned short *crcvalue)
+void	 CRC_Init(unsigned short *crcvalue)
 {
 	*crcvalue = CRC_INIT_VALUE;
 }
 
-void CRC_ProcessByte(unsigned short *crcvalue, byte data)
+
+void	 CRC_ProcessByte(unsigned short *crcvalue, byte data)
 {
 	*crcvalue = (*crcvalue << 8) ^ crctable[(*crcvalue >> 8) ^ data];
 }
 
-unsigned short CRC_Value(unsigned short crcvalue)
+
+unsigned short	 CRC_Value(unsigned short crcvalue)
 {
 	return crcvalue ^ CRC_XOR_VALUE;
 }
+
+
 //=============================================================================
 
 /*
@@ -628,7 +639,7 @@ Returns a crc of the header, to be stored in the progs file for comparison
 at load time.
 ============
 */
-int	PR_WriteProgdefs (char *filename)
+int		 PR_WriteProgdefs (char *filename)
 {
 	def_t	*d;
 	char	buf[65536], *out;	// FIXME, add buffer size checks
@@ -721,7 +732,7 @@ int	PR_WriteProgdefs (char *filename)
 }
 
 
-void PR_PrintFunction (char *name)
+void	 PR_PrintFunction (char *name)
 {
 	int		i;
 	dstatement_t	*ds;
@@ -748,22 +759,23 @@ void PR_PrintFunction (char *name)
 
 //============================================================================
 
-bool opt_idcomp = false;
-bool opt_dumpasm = false;
-bool opt_mergeconstants = false;
+bool	 opt_idcomp			= false;
+bool	 opt_dumpasm		= false;
+bool	 opt_mergeconstants	= false;
 
 /*
 ============
 main
 ============
 */
-int main (int argc, char **argv)
+int		 main (int argc, char **argv)
 {
 	char	*src;
 	char	*src2;
-	char	filename[1024];
-	int		p, crc;
-	char	sourcedir[1024];
+	char	 filename[1024];
+	int		 p, crc;
+	char	 sourcedir[1024];
+	eval_t	 zqcc_value;
 
 	myargc = argc;
 	myargv = argv;
@@ -793,7 +805,13 @@ int main (int argc, char **argv)
 		strcpy (sourcedir, "");
 
 	InitData ();
-	
+  
+	// set the define _ZQCC, so that it's possible to detect the compiler
+	//   with #ifdef _ZQCC
+	zqcc_value._float = 1;
+	if (PR_AddDefine((const char *)"_ZQCC", &type_const_float, &zqcc_value, true) <= 0)
+		PR_ParseError ("unable to create the internal #define \"_ZQCC\"");
+
 	sprintf (filename, "%sprogs.src", sourcedir);
 	LoadFile (filename, (void **)&src);
 	
