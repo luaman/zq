@@ -1367,7 +1367,7 @@ void CL_MuzzleFlash (void)
 			ent = &cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].packet_entities.entities[j];
 			if (ent->number == i)
 			{
-				dl = CL_AllocDlight (i);
+				dl = CL_AllocDlight (-i);
 				AngleVectors (ent->angles, forward, right, up);
 				VectorMA (ent->origin, 18, forward, dl->origin);
 				dl->radius = 200 + (rand()&31);
@@ -1389,7 +1389,7 @@ void CL_MuzzleFlash (void)
 	if (cl_muzzleflash.value == 2 && i-1 == cl.playernum)
 		return;
 
-	dl = CL_AllocDlight (i);
+	dl = CL_AllocDlight (-i);
 	state = &cl.frames[parsecountmod].playerstate[i-1];
 	AngleVectors (state->viewangles, forward, right, up);
 	VectorMA (state->origin, 18, forward, dl->origin);
