@@ -21,11 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
-int			skytexturenum;
-
-#ifndef GL_RGBA4
-#define	GL_RGBA4	0
-#endif
+int		skytexturenum;
 
 float	wateralpha;		// 1 if watervis is disabled by server,
 						// otherwise equal to r_wateralpha.value
@@ -96,7 +92,6 @@ void R_RenderFullbrights (void)
 	glEnable (GL_BLEND);
 //	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-//	glColor4f (1, 1, 1, 1);
 
 	for (i=1 ; i<MAX_GLTEXTURES ; i++) {
 		if (!fullbright_polys[i])
@@ -453,18 +448,18 @@ void R_DrawSequentialPoly (msurface_t *s)
 
 			t = R_TextureAnimation (s->texinfo->texture);
 			// Binds world to texture env 0
-			GL_SelectTexture(TEXTURE0_ARB);
+			GL_SelectTexture (TEXTURE0_ARB);
 			GL_Bind (t->gl_texturenum);
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 			// Binds lightmap to texenv 1
-			GL_EnableMultitexture(); // Same as SelectTexture (TEXTURE1)
+			GL_EnableMultitexture (); // Same as SelectTexture (TEXTURE1)
 			GL_Bind (lightmap_textures + s->lightmaptexturenum);
 			i = s->lightmaptexturenum;
 			if (lightmap_modified[i])
 			{
 				lightmap_modified[i] = false;
 				theRect = &lightmap_rectchange[i];
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, theRect->t, 
+				glTexSubImage2D (GL_TEXTURE_2D, 0, 0, theRect->t, 
 					BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 					lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
 				theRect->l = BLOCK_WIDTH;
@@ -472,8 +467,8 @@ void R_DrawSequentialPoly (msurface_t *s)
 				theRect->h = 0;
 				theRect->w = 0;
 			}
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-			glBegin(GL_POLYGON);
+			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
+			glBegin (GL_POLYGON);
 			v = p->verts[0];
 			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
 			{
@@ -497,7 +492,22 @@ void R_DrawSequentialPoly (msurface_t *s)
 			glEnd ();
 
 			GL_Bind (lightmap_textures + s->lightmaptexturenum);
+			i = s->lightmaptexturenum;
+			if (lightmap_modified[i])
+			{
+				lightmap_modified[i] = false;
+				theRect = &lightmap_rectchange[i];
+				glTexSubImage2D (GL_TEXTURE_2D, 0, 0, theRect->t, 
+					BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
+					lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
+				theRect->l = BLOCK_WIDTH;
+				theRect->t = BLOCK_HEIGHT;
+				theRect->h = 0;
+				theRect->w = 0;
+			}
+
 			glEnable (GL_BLEND);
+			glBlendFunc (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
 			glBegin (GL_POLYGON);
 			v = p->verts[0];
 			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
@@ -506,8 +516,8 @@ void R_DrawSequentialPoly (msurface_t *s)
 				glVertex3fv (v);
 			}
 			glEnd ();
-
 			glDisable (GL_BLEND);
+			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		if (t->fb_texturenum) {
@@ -524,7 +534,7 @@ void R_DrawSequentialPoly (msurface_t *s)
 	//
 	if (s->flags & SURF_DRAWTURB)
 	{
-		GL_DisableMultitexture();
+		GL_DisableMultitexture ();
 		GL_Bind (s->texinfo->texture->gl_texturenum);
 		EmitWaterPolys (s);
 		return;
@@ -535,7 +545,7 @@ void R_DrawSequentialPoly (msurface_t *s)
 	//
 	if (s->flags & SURF_DRAWSKY)
 	{
-		GL_DisableMultitexture();
+		GL_DisableMultitexture ();
 		GL_Bind (solidskytexture);
 		speedscale = realtime*8;
 		speedscale -= (int)speedscale & ~127;
@@ -612,16 +622,6 @@ void R_BlendLightmaps (void)
 		{
 			lightmap_modified[i] = false;
 			theRect = &lightmap_rectchange[i];
-//			theRect->l = 0;
-//			theRect->t = 0;
-//			theRect->w = BLOCK_WIDTH;
-//			theRect->h = BLOCK_HEIGHT;
-//			glTexImage2D (GL_TEXTURE_2D, 0, lightmap_bytes
-//			, BLOCK_WIDTH, BLOCK_HEIGHT, 0, 
-//			gl_lightmap_format, GL_UNSIGNED_BYTE, lightmaps+i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
-//			glTexImage2D (GL_TEXTURE_2D, 0, lightmap_bytes
-//				, BLOCK_WIDTH, theRect->h, 0, 
-//				gl_lightmap_format, GL_UNSIGNED_BYTE, lightmaps+(i*BLOCK_HEIGHT+theRect->t)*BLOCK_WIDTH*lightmap_bytes);
 			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, theRect->t, 
 				BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
@@ -647,6 +647,7 @@ void R_BlendLightmaps (void)
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask (1);		// back to normal Z buffering
 }
+
 
 /*
 ================
@@ -732,6 +733,7 @@ void R_RenderBrushPoly (msurface_t *fa)
 	R_BuildLightMap (fa, base, BLOCK_WIDTH*lightmap_bytes);
 }
 
+
 /*
 ================
 R_RenderDynamicLightmaps
@@ -794,6 +796,7 @@ void R_RenderDynamicLightmaps (msurface_t *fa)
 	base += fa->light_t * BLOCK_WIDTH * lightmap_bytes + fa->light_s * lightmap_bytes;
 	R_BuildLightMap (fa, base, BLOCK_WIDTH*lightmap_bytes);
 }
+
 
 /*
 ================
@@ -873,7 +876,7 @@ void R_DrawWaterSurfaces (void)
 	if (wateralpha < 1.0) {
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-		glColor4f (1,1,1,1);
+		glColor3f (1, 1, 1);
 		glDisable (GL_BLEND);
 	}
 
@@ -929,6 +932,7 @@ void DrawTextureChains (void)
 	}
 }
 
+
 /*
 =================
 R_DrawBrushModel
@@ -969,7 +973,7 @@ void R_DrawBrushModel (entity_t *e)
 	if (R_CullBox (mins, maxs))
 		return;
 
-	glColor3f (1,1,1);
+	glColor3f (1, 1, 1);
 	memset (lightmap_polys, 0, sizeof(lightmap_polys));
 //	if (gl_fb_bmodels.value)
 //		memset (fullbright_polys, 0, sizeof(fullbright_polys));
@@ -1165,7 +1169,6 @@ void R_RecursiveWorldNode (mnode_t *node)
 // recurse down the back side
 	R_RecursiveWorldNode (node->children[!side]);
 }
-
 
 
 /*
