@@ -126,7 +126,7 @@ int CL_CalcNet (void)
 	int		a, i;
 	frame_t	*frame;
 	int lost;
-//	char st[80];
+	int packetcount;
 
 	for (i=cls.netchan.outgoing_sequence-UPDATE_BACKUP+1
 		; i <= cls.netchan.outgoing_sequence
@@ -137,6 +137,8 @@ int CL_CalcNet (void)
 			packet_latency[i&NET_TIMINGSMASK] = 9999;	// dropped
 		else if (frame->receivedtime == -2)
 			packet_latency[i&NET_TIMINGSMASK] = 10000;	// choked
+		else if (frame->receivedtime == -3)
+			packet_latency[i&NET_TIMINGSMASK] = -1;	// choked by c2spps
 		else if (frame->invalid)
 			packet_latency[i&NET_TIMINGSMASK] = 9998;	// invalid delta
 		else
@@ -144,13 +146,19 @@ int CL_CalcNet (void)
 	}
 
 	lost = 0;
+	packetcount = 0;
 	for (a=0 ; a<NET_TIMINGS ; a++)
 	{
 		i = (cls.netchan.outgoing_sequence-a) & NET_TIMINGSMASK;
 		if (packet_latency[i] == 9999)
 			lost++;
+		if (packet_latency[i] != -1)	// don't count packets choked by c2spps
+			packetcount++;
 	}
-	return lost * 100 / NET_TIMINGS;
+	if (packetcount == 0)
+		return 100;
+	else
+		return lost * 100 / packetcount;
 }
 
 //=============================================================================

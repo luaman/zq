@@ -471,7 +471,9 @@ void CL_SendCmd (void)
 	int			checksumIndex;
 	int			lost;
 	int			seq_hash;
-	static float	pps_balance;
+	static float	pps_balance = 0;
+	static int		dropcount = 0;
+
 
 	if (cls.demoplayback)
 		return; // sendcmds come from the demo
@@ -552,21 +554,29 @@ void CL_SendCmd (void)
 		CL_WriteDemoCmd(cmd);
 
 	if (cl_c2spps.value) {
+		// never drop more than 2 messages in a row -- that'll cause PL
 		pps_balance += host_frametime;
-		if (pps_balance > 0) {
+		if (pps_balance > 0 || dropcount >= 2) {
 			float	pps;
 			pps = cl_c2spps.value;
 			if (pps < 10) pps = 10;
 			if (pps > 72) pps = 72;
 			pps_balance -= 1 / pps;
-			// hmmm
-			if (pps_balance > 0)
-				pps_balance = 0;
+			// bound pps_balance. FIXME: is there a better way?
+			if (pps_balance > 0.1) pps_balance = 0.1;
+			if (pps_balance < -0.1) pps_balance = -0.1;
+			dropcount = 0;
 		} else {
+			// don't count this message when calculating PL
+			cl.frames[i].receivedtime = -3;
 			// drop this message
 			cls.netchan.outgoing_sequence++;
+			dropcount++;
 			return;
 		}
+	} else {
+		pps_balance = 0;
+		dropcount = 0;
 	}
 
 //
