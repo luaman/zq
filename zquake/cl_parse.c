@@ -1361,7 +1361,7 @@ void CL_ParsePrint (void)
 		return;
 	}
 
-	strncat (cl.sprint_buf, s, sizeof(cl.sprint_buf)-1);
+	Q_strncatz (cl.sprint_buf, s, sizeof(cl.sprint_buf));
 	cl.sprint_level = level;
 
 	if ( (p=strrchr(cl.sprint_buf, '\n')) != NULL ) {
