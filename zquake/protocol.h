@@ -291,16 +291,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // in an update message
 typedef struct entity_state_s
 {
-	int		number;			// edict index
+	short	number;			// edict index
 
-	int		flags;			// nolerp, etc
+	short	flags;			// nolerp, etc
 	short	s_origin[3];
 	vec3_t	angles;
-	int		modelindex;
-	int		frame;
-	int		colormap;
-	int		skinnum;
-	int		effects;
+	byte	modelindex;
+	byte	frame;
+	byte	colormap;
+	byte	skinnum;
+	byte	effects;
 } entity_state_t;
 
 
