@@ -1176,33 +1176,36 @@ void CL_ProcessServerInfo (void)
 	int teamplay, fpd;
 	int i;
 
+	// game type (sbar code checks it)
 	p = Info_ValueForKey(cl.serverinfo, "deathmatch");
 	if (*p)
 		cl.gametype = atoi(p) ? GAME_DEATHMATCH : GAME_COOP;
 	else
 		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
 
+	// server side fps restriction
 	cl.maxfps = Q_atof(Info_ValueForKey(cl.serverinfo, "maxfps"));
+
+	// ZQuake extension bits
 	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext"));
-	movevars.ktjump = 0.5;
-	if (cl.z_ext & Z_EXT_PM_TYPE)
-	{
-		cl.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
-		movevars.slidefix = Q_atoi(Info_ValueForKey(cl.serverinfo, "pm_slidefix"));
-		p = Info_ValueForKey(cl.serverinfo, "pm_ktjump");
-		if (*p)
-			movevars.ktjump = Q_atof(p);
-	}
 
+	// movement vars for prediction
+	cl.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
+	movevars.slidefix = Q_atoi(Info_ValueForKey(cl.serverinfo, "pm_slidefix"));
+	p = Info_ValueForKey(cl.serverinfo, "pm_ktjump");
+	if (*p)
+		movevars.ktjump = Q_atof(p);
+	else
+		movevars.ktjump = 0.5;
+
+	// fpd restrictions
+	fpd = cls.demoplayback ? 0 : atoi(Info_ValueForKey(cl.serverinfo, "fpd"));
+
+	// deathmatch and teamplay
 	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
-
 	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
 
-	if (cls.demoplayback)
-		fpd = 0;
-	else
-		fpd = atoi(Info_ValueForKey(cl.serverinfo, "fpd"));
-
+	// update skins if needed
 	if (teamplay != cl.teamplay || fpd != cl.fpd) {
 		cl.teamplay = teamplay;
 		cl.fpd = fpd;
@@ -1212,6 +1215,7 @@ void CL_ProcessServerInfo (void)
 		}
 	}
 
+	// skybox
 	if (cls.state < ca_active)
 	{
 		strcpy (cl.sky, Info_ValueForKey(cl.serverinfo, "sky"));
