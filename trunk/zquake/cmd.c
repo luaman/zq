@@ -1270,6 +1270,8 @@ void Cmd_If_f (void)
 	}
 
 	strcat (buf, "\n");
+	if (!cbuf_current)
+		cbuf_current = &cbuf_main;
 	Cbuf_InsertTextEx (cbuf_current, buf);
 }
 
