@@ -292,6 +292,7 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 				cmd.angles[0] = 0;
 			}
 
+			cmd.msec = 0;		// unlike qwsv, but no one really needs this
 			cmd.buttons = 0;	// never send buttons
 			cmd.impulse = 0;	// never send impulses
 
