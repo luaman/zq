@@ -154,8 +154,10 @@ int PM_FlyMove (void)
 			 break;		// moved the entire distance
 
 		// save entity for contact
-		pmove.touchindex[pmove.numtouch] = trace.ent;
-		pmove.numtouch++;
+		if (pmove.numtouch < MAX_PHYSENTS) {
+			pmove.touchindex[pmove.numtouch] = trace.ent;
+			pmove.numtouch++;
+		}
 
 		if (trace.plane.normal[2] > 0.7)
 		{
@@ -623,8 +625,10 @@ void PM_CategorizePosition (void)
 		// standing on an entity other than the world
 		if (tr.ent > 0)
 		{
-			pmove.touchindex[pmove.numtouch] = tr.ent;
-			pmove.numtouch++;
+			if (pmove.numtouch < MAX_PHYSENTS) {
+				pmove.touchindex[pmove.numtouch] = tr.ent;
+				pmove.numtouch++;
+			}
 		}
 	}
 
