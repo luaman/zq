@@ -31,7 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 PR_GetTempString
 
 Returns a pointer to the next temporary buffer for string operations
-(this prevents overwritten buffers in up to STRINGTEMP_BUFFERS succesive calls)
+(this prevents overwritten buffers in up to STRINGTEMP_BUFFERS succesive calls).
+By cycling through 16 buffers, we support the DP_QC_MULTIPLETEMPSTRINGS extension .
 =================
 */
 #define STRINGTEMP_BUFFERS	16			// number of temporaray buffers
@@ -2317,6 +2318,7 @@ static void PF_checkextension (void)
 		"DP_QC_MINMAXBOUND",
 		"DP_QC_ETOS",
 		"DP_QC_RANDOMVEC",
+		"DP_QC_MULTIPLETEMPSTRINGS",
 		// "FRIK_FILE",		// incomplete (fopen, fclose, fputs, fgets are not implemented)
 		"ZQ_QC_CHECKBUILTIN",
 		"ZQ_MOVETYPE_NOCLIP",
