@@ -25,7 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void R_BeginDisc (void);
 void R_EndDisc (void);
-void Draw_FlushCache (void);
 
 
 #define MAX_NUM_ARGVS	50
@@ -993,9 +992,10 @@ void FS_SetGamedir (char *dir)
 	}
 
 breakOut:;
-#ifdef GLQUAKE
-	Draw_FlushCache ();
-#endif
+	{
+		extern void R_FlushPics (void);
+		R_FlushPics ();
+	}
 }
 
 /*

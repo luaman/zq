@@ -168,6 +168,7 @@ void R_BeginDisc (void);
 void R_EndDisc (void);
 mpic_t *R_CachePic (char *path);
 mpic_t *R_CacheWadPic (char *name);
+void R_FlushPics (void);
 void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha);
 void R_DrawCrosshair (int num, byte color, int crossx, int crossy);
 
