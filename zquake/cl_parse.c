@@ -1651,10 +1651,10 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_smallkick:
-			cl.punchangle = -2;
+			cl.ideal_punchangle = -2;
 			break;
 		case svc_bigkick:
-			cl.punchangle = -4;
+			cl.ideal_punchangle = -4;
 			break;
 
 		case svc_muzzleflash:

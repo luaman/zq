@@ -282,7 +282,8 @@ typedef struct
 
 	qboolean	paused;			// send over by server
 
-	float		punchangle;		// temporary view kick from weapon firing
+	float		ideal_punchangle;	// temporary view kick from weapon firing
+	float		punchangle;		// drifts towards ideal_punchangle
 	float		rollangle;		// smooth out rollangle changes when strafing
 	
 	int			intermission;	// don't change view angle, full screen, etc
