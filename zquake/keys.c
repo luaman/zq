@@ -384,6 +384,7 @@ Interactive line editing and console scrollback
 void Key_Console (int key)
 {
 	int i;
+	char *p;
 
 	switch (key) {
 	    case K_ENTER:
@@ -398,6 +399,13 @@ void Key_Console (int key)
 			{
 				if (cls.state < ca_connected)	// can happen if cl_chatmode is 1
 					goto no_lf;					// drop the whole line
+
+				for (p = key_lines[edit_line] + 1; *p; p++) {
+					if (*p != ' ')
+						break;
+				}
+				if (!*p)
+					goto no_lf;		// just whitespace
 
 				// convert to a chat message
 				if (keydown[K_CTRL])
