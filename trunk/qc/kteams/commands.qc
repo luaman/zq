@@ -19,8 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // commands.qc
 
-string(float f2) GetMapName;
-void(string name) SendMessage;
+string GetMapName(float f2);
+void SendMessage(string name);
 
 void() ChangeOvertime =
 {

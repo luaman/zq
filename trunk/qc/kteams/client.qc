@@ -46,24 +46,24 @@ float   modelindex_eyes, modelindex_player;
 .float fIllegalFPSWarnings;
 // ILLEGALFPS]
 
-// TEAM -->
-void(float skip_log) EndMatch;
-void() StuffAliases;
-float() CountALLPlayers;
-void() IdlebotCheck;
-void() CheckAll;
-void() CheckConnectRate;
-void() PlayerStats;
-void() StartDie;
-void() ExitCaptain;
-void() CheckFinishCaptain;
-// <-- TEAM
+// KTEAMS -->
+void EndMatch(float skip_log);
+void StuffAliases();
+float CountALLPlayers();
+void IdlebotCheck();
+void CheckAll();
+void CheckConnectRate();
+void PlayerStats();
+void StartDie();
+void ExitCaptain();
+void CheckFinishCaptain();
+// <-- KTEAMS
 
-void() CheckAll =
+void CheckAll ()
 {
-	local float player_rate,maxrate=0,minrate=0;
-      local string tmp;
-	local entity p;
+	float player_rate, maxrate=0, minrate=0;
+    string tmp;
+	entity p;
 
 	maxrate = stof(infokey(world, "k_maxrate"));
 	minrate = stof(infokey(world, "k_minrate"));
@@ -104,12 +104,12 @@ void() CheckAll =
 			p = find(p, classname, "player");
 		}
 	}
-};
+}
 
-void() CheckConnectRate=
+void CheckConnectRate ()
 {
-        local float player_rate,maxrate=0,minrate=0;
-        local string tmp;
+    float player_rate,maxrate=0,minrate=0;
+    string tmp;
 
 	// This is used to check a players rate.  If above allowed setting then it kicks em off.
 	player_rate = stof(infokey(self, "rate"));
@@ -119,7 +119,7 @@ void() CheckConnectRate=
 
 	if(maxrate  || minrate)
 	{
-	      if (player_rate > maxrate)
+	    if (player_rate > maxrate)
 		{
 			sprint(self, 2, "\nYour עבפו setting is too high for this server.\n");
 			tmp=ftos(maxrate);
@@ -143,7 +143,7 @@ void() CheckConnectRate=
 			stuffcmd(self, "\n");
 		}
 	}
-};
+}
 
 /*
 =============================================================================
@@ -170,11 +170,11 @@ void info_intermission ()
 	self.angles = self.mangle;      // so C can get at it
 }
 
-
 void SetChangeParms ()
 {
-// TEAM -->
-	if(match_in_progress == 2) {
+// KTEAMS -->
+	if(match_in_progress == 2) 
+    {
 		parm1 = 1 | 4096;
 		parm8 = 1;
 		parm2 = 100;
@@ -183,7 +183,9 @@ void SetChangeParms ()
 		parm5 = 0;
 		parm6 = 0;
 		parm7 = 0;
-	} else {
+	} 
+    else 
+    {
 		parm1 = 4096 | 1 | 2 | 4 | 8 | 32 | 16 | 64;
 		parm2 = 100;
 		parm3 = 0;
@@ -193,17 +195,19 @@ void SetChangeParms ()
 		parm7 = 100;
 		parm8 = 32;
 	}
-        parm9 = 0;
+    
+    parm9 = 0;
 	parm11 = self.k_admin;
 	parm12 = self.k_accepted;
 	parm13 = self.k_stuff;
-// <-- TEAM
-};
+// <-- KTEAMS
+}
 
 void SetNewParms ()
 {
-//team
-	if(match_in_progress == 2) {
+// KTEAMS -->
+	if(match_in_progress == 2) 
+    {
 		parm1 = 1 | 4096;
 		parm8 = 1;
 		parm2 = 100;
@@ -212,7 +216,9 @@ void SetNewParms ()
 		parm5 = 0;
 		parm6 = 0;
 		parm7 = 0;
-	} else {
+	} 
+    else 
+    {
 		parm1 = 4096 | 1 | 2 | 4 | 8 | 32 | 16 | 64;
 		parm2 = 100;
 		parm3 = 0;
@@ -227,12 +233,12 @@ void SetNewParms ()
 	parm11 = 0;
 	parm12 = 0;
 	parm13 = 0;
-//team
+// <-- KTEAMS
 }
 
 void DecodeLevelParms ()
 {
-//KTEAMS -->
+// KTEAMS -->
 /*
 	if(serverflags) {
 		if(world.model == "maps/start.bsp") SetNewParms ();         // take away all stuff on starting new episode
@@ -248,9 +254,11 @@ void DecodeLevelParms ()
 	self.weapon = parm8;
     self.armortype = parm9 * 0.01;
 	self.k_admin = parm11;
-	if(parm12) 
+
+    if(parm12) 
         self.k_accepted = parm12;
-	self.k_stuff = parm13;
+	
+    self.k_stuff = parm13;
 //<-- KTEAMS
 }
 
@@ -295,7 +303,8 @@ void GotoNextMap ()
     string newmap;
 
 // KTEAMS: check at levelchange
-	if(k_velect) AbortElect();
+	if(k_velect) 
+        AbortElect();
 
 //ZOID: 12-13-96, samelevel is overloaded, only 1 works for same level
 
@@ -303,7 +312,8 @@ void GotoNextMap ()
 		changelevel (nextmap);
 	else if (cvar("samelevel") == 1)	// if samelevel is set, stay on same level
 		changelevel (mapname);
-	else {
+	else 
+    {
 		// configurable map lists, see if the current map exists as a
 		// serverinfo/localinfo var
 		newmap = infokey(world, mapname);
