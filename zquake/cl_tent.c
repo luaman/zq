@@ -365,7 +365,10 @@ void CL_ParseTEnt (void)
 		break;
 
 	case TE_GUNSHOT:			// bullet hitting wall
-		cnt = MSG_ReadByte ();
+		if (cls.nqdemoplayback)
+			cnt = 1;
+		else
+			cnt = MSG_ReadByte ();
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();

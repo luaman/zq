@@ -1722,7 +1722,7 @@ static void ReadDir (void)
 		else
 		{
 			i = strlen(fd.cFileName);
-			if (i < 5 || (Q_stricmp(fd.cFileName+i-4, ".qwd")
+			if (i < 5 || (Q_stricmp(fd.cFileName+i-4, ".qwd") && Q_stricmp(fd.cFileName+i-4, ".dem")
 				&& Q_stricmp(fd.cFileName+i-4, ".qwz")))
 				continue;
 			type = 0;
@@ -1823,7 +1823,7 @@ static void ReadDir (void)
 		else
 		{
 			i = strlen(dstruct->d_name);
-			if (i < 5 || (Q_stricmp(dstruct->d_name+i-4, ".qwd")
+			if (i < 5 || (Q_stricmp(dstruct->d_name+i-4, ".qwd") && Q_stricmp(fd.cFileName+i-4, ".dem")
 				/* && Q_stricmp(dstruct->d_name+i-4, ".qwz")*/ ))
 				continue;
 			type = 0;

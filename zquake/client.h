@@ -218,6 +218,7 @@ typedef struct
 // entering a map (and clearing clientState_t)
 	qboolean	demorecording;
 	qboolean	demoplayback;
+	qboolean	nqdemoplayback;
 	FILE		*demofile;
 	byte		demomessage_data[MAX_MSGLEN * 2 /* FIXME */];
 	sizebuf_t	demomessage;
@@ -431,6 +432,13 @@ void CL_EasyRecord_f (void);
 void CL_Stop_f (void);
 void CL_PlayDemo_f (void);
 void CL_TimeDemo_f (void);
+
+//
+// cl_nqdemo.c
+//
+void NQD_ReadPackets (void);
+void NQD_StartPlayback (void);
+void NQD_LinkEntities (void);
 
 //
 // cl_parse.c
