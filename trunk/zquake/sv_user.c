@@ -2157,7 +2157,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 	{
 		if (msg_badread)
 		{
-			Com_Printf ("SV_ReadClientMessage: badread\n");
+			SV_ClientPrintf (sv_client, PRINT_HIGH, "SV_ReadClientMessage: badread\n");
 			SV_DropClient (cl);
 			return;
 		}	
@@ -2169,7 +2169,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 		switch (c)
 		{
 		default:
-			Com_Printf ("SV_ReadClientMessage: unknown command char\n");
+			SV_ClientPrintf (sv_client, PRINT_HIGH, "SV_ReadClientMessage: unknown command char\n");
 			SV_DropClient (cl);
 			return;
 						
