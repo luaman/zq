@@ -39,7 +39,6 @@ typedef struct efrag_s
 
 typedef struct entity_s
 {
-	int						keynum;			// for matching entities in different frames
 	vec3_t					origin;
 	vec3_t					angles;	
 	struct model_s			*model;			// NULL = no model
@@ -48,8 +47,6 @@ typedef struct entity_s
 	int						skinnum;		// for Alias models
 
 	struct player_info_s	*scoreboard;	// identify player
-
-	float					syncbase;
 
 	struct efrag_s			*efrag;			// linked list of efrags (FIXME)
 	int						visframe;		// last frame this entity was

@@ -362,7 +362,7 @@ void CL_ParsePacketEntities (qboolean delta)
 			}
 			if (newindex >= MAX_PACKET_ENTITIES)
 				Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
-			CL_ParseDelta (&cl_baselines[newnum], &newp->entities[newindex], word);
+			CL_ParseDelta (&cl_entities[newnum].baseline, &newp->entities[newindex], word);
 			newindex++;
 			continue;
 		}
@@ -423,8 +423,9 @@ CL_LinkPacketEntities
 void CL_LinkPacketEntities (void)
 {
 	entity_t			ent;
+	centity_t			*cent;
 	packet_entities_t	*pack;
-	entity_state_t		*s1, *s2;
+	entity_state_t		*state;
 	float				f;
 	model_t				*model;
 	vec3_t				old_origin;
@@ -434,62 +435,64 @@ void CL_LinkPacketEntities (void)
 
 	pack = &cl.frames[cl.validsequence&UPDATE_MASK].packet_entities;
 
-	autorotate = anglemod(100*cl.time);
-
-	f = 0;		// FIXME: no interpolation right now
+	autorotate = anglemod (100*cl.time);
 
 	memset (&ent, 0, sizeof(ent));
 
 	for (pnum=0 ; pnum<pack->num_entities ; pnum++)
 	{
-		s1 = &pack->entities[pnum];
-		s2 = s1;	// FIXME: no interpolation right now
+		state = &pack->entities[pnum];
+		cent = &cl_entities[state->number];
 
 		// control powerup glow for bots
-		if (s1->modelindex != cl_playerindex || r_powerupglow.value)
+		if (state->modelindex != cl_playerindex || r_powerupglow.value)
 		{
 			// spawn light flashes, even ones coming from invisible objects
-			if ((s1->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
-				CL_NewDlight (s1->number, s1->origin, 200 + (rand()&31), 0.1, lt_redblue);
-			else if (s1->effects & EF_BLUE)
-				CL_NewDlight (s1->number, s1->origin, 200 + (rand()&31), 0.1, lt_blue);
-			else if (s1->effects & EF_RED)
-				CL_NewDlight (s1->number, s1->origin, 200 + (rand()&31), 0.1, lt_red);
-			else if (s1->effects & EF_BRIGHTLIGHT) {
+			if ((state->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
+				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_redblue);
+			else if (state->effects & EF_BLUE)
+				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_blue);
+			else if (state->effects & EF_RED)
+				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_red);
+			else if (state->effects & EF_BRIGHTLIGHT) {
 				vec3_t	tmp;
-				VectorCopy (s1->origin, tmp);
+				VectorCopy (state->origin, tmp);
 				tmp[2] += 16;
-				CL_NewDlight (s1->number, tmp, 400 + (rand()&31), 0.1, lt_default);
-			} else if (s1->effects & EF_DIMLIGHT)
-				CL_NewDlight (s1->number, s1->origin, 200 + (rand()&31), 0.1, lt_default);
+				CL_NewDlight (state->number, tmp, 400 + (rand()&31), 0.1, lt_default);
+			} else if (state->effects & EF_DIMLIGHT)
+				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_default);
 		}
 
-		if (cl_deadbodyfilter.value && s1->modelindex == cl_playerindex
-			&& ( (i=s1->frame)==49 || i==60 || i==69 || i==84 || i==93 || i==102) )
+		// if set to invisible, skip
+		if (!state->modelindex)
+			continue;
+
+		f = 1.0f;		// FIXME: no interpolation right now
+
+		cent->previous = cent->current;
+		cent->current = *state;
+
+		if (cl_deadbodyfilter.value && state->modelindex == cl_playerindex
+			&& ( (i=state->frame)==49 || i==60 || i==69 || i==84 || i==93 || i==102) )
 			continue;
 
 		if (cl_gibfilter.value)
-		if (s1->modelindex == cl_h_playerindex || s1->modelindex == cl_gib1index
-			|| s1->modelindex == cl_gib2index || s1->modelindex == cl_gib3index)
+		if (state->modelindex == cl_h_playerindex || state->modelindex == cl_gib1index
+			|| state->modelindex == cl_gib2index || state->modelindex == cl_gib3index)
 			continue;
 
-		// if set to invisible, skip
-		if (!s1->modelindex)
-			continue;
-
-		ent.keynum = s1->number;
-		ent.model = model = cl.model_precache[s1->modelindex];
+		ent.model = model = cl.model_precache[state->modelindex];
 
 		if (cl_rocket2grenade.value && cl_grenadeindex != -1)
-			if (s1->modelindex == cl_rocketindex)
+			if (state->modelindex == cl_rocketindex)
 				ent.model = cl.model_precache[cl_grenadeindex];
 
 		// set colormap
-		if (s1->colormap && (s1->colormap < MAX_CLIENTS) 
+		if (state->colormap && (state->colormap < MAX_CLIENTS) 
 			&& ent.model->modhint == MOD_PLAYER)
 		{
-			ent.colormap = cl.players[s1->colormap-1].translations;
-			ent.scoreboard = &cl.players[s1->colormap-1];
+			ent.colormap = cl.players[state->colormap-1].translations;
+			ent.scoreboard = &cl.players[state->colormap-1];
 		}
 		else
 		{
@@ -498,10 +501,10 @@ void CL_LinkPacketEntities (void)
 		}
 
 		// set skin
-		ent.skinnum = s1->skinnum;
+		ent.skinnum = state->skinnum;
 		
 		// set frame
-		ent.frame = s1->frame;
+		ent.frame = state->frame;
 
 		// rotate binary objects locally
 		if (model->flags & EF_ROTATE)
@@ -516,8 +519,8 @@ void CL_LinkPacketEntities (void)
 
 			for (i=0 ; i<3 ; i++)
 			{
-				a1 = s1->angles[i];
-				a2 = s2->angles[i];
+				a1 = cent->current.angles[i];
+				a2 = cent->previous.angles[i];
 				if (a1 - a2 > 180)
 					a1 -= 360;
 				if (a1 - a2 < -180)
@@ -528,33 +531,28 @@ void CL_LinkPacketEntities (void)
 
 		// calculate origin
 		for (i=0 ; i<3 ; i++)
-			ent.origin[i] = s2->origin[i] + f * (s1->origin[i] - s2->origin[i]);
+			ent.origin[i] = cent->previous.origin[i] + 
+				f * (cent->current.origin[i] - cent->previous.origin[i]);
 
 		// add automatic particle trails
 		if ((model->flags & ~EF_ROTATE))
 		{
-			// scan the old entity display list for a matching
-			for (i=0 ; i<cl_oldnumvisedicts ; i++)
-			{
-				if (cl_oldvisedicts[i].keynum == ent.keynum)
-				{
-					VectorCopy (cl_oldvisedicts[i].origin, old_origin);
-					break;
-				}
-			}
-
-			if (i == cl_oldnumvisedicts)
+			if (cl_entframecount == 1 || cent->lastframe != cl_entframecount-1)
 			{	// not in last message
-				V_AddEntity (&ent);
-				continue;
+				VectorCopy (ent.origin, old_origin);
+			}
+			else
+			{
+				VectorCopy (cent->lerp_origin, old_origin);
+
+				for (i=0 ; i<3 ; i++)
+					if ( abs(old_origin[i] - ent.origin[i]) > 128)
+					{	// no trail if too far
+						VectorCopy (ent.origin, old_origin);
+						break;
+					}
 			}
 
-			for (i=0 ; i<3 ; i++)
-				if ( abs(old_origin[i] - ent.origin[i]) > 128)
-				{	// no trail if too far
-					VectorCopy (ent.origin, old_origin);
-					break;
-				}
 			if (model->flags & EF_ROCKET)
 			{
 				if (r_rockettrail.value) {
@@ -565,7 +563,7 @@ void CL_LinkPacketEntities (void)
 				}
 
 				if (r_rocketlight.value)
-					CL_NewDlight (s1->number, ent.origin, 200, 0.1, lt_rocket);
+					CL_NewDlight (state->number, ent.origin, 200, 0.1, lt_rocket);
 			}
 			else if (model->flags & EF_GRENADE && r_grenadetrail.value)
 				CL_RocketTrail (old_origin, ent.origin, 1);
@@ -581,6 +579,8 @@ void CL_LinkPacketEntities (void)
 				CL_RocketTrail (old_origin, ent.origin, 6);
 		}
 
+		VectorCopy (ent.origin, cent->lerp_origin);
+		cent->lastframe = cl_entframecount;
 		V_AddEntity (&ent);
 	}
 }
@@ -842,6 +842,7 @@ void CL_LinkPlayers (void)
 	player_state_t	exact;
 	double			playertime;
 	entity_t		ent;
+	centity_t		*cent;
 	int				msec;
 	frame_t			*frame;
 	int				oldphysent;
@@ -886,11 +887,15 @@ void CL_LinkPlayers (void)
 				CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_default);
 		}
 
-		// the player object never gets added
-		if (j == cl.playernum)
+		if (!state->modelindex)
 			continue;
 
-		if (!state->modelindex)
+		cent = &cl_entities[j+1];
+		cent->previous = cent->current;
+		VectorCopy (state->origin, cent->current.origin);
+
+		// the player object never gets added
+		if (j == cl.playernum)
 			continue;
 
 		if (cl_deadbodyfilter.value && state->modelindex == cl_playerindex
@@ -899,8 +904,6 @@ void CL_LinkPlayers (void)
 		
 		if (!Cam_DrawPlayer(j))
 			continue;
-
-		ent.keynum = 0;
 
 		ent.model = cl.model_precache[state->modelindex];
 		ent.skinnum = state->skinnum;
@@ -920,7 +923,7 @@ void CL_LinkPlayers (void)
 		ent.angles[ROLL] = V_CalcRoll (ent.angles, state->velocity)*4;
 
 		// only predict half the move to minimize overruns
-		msec = 500*(playertime - state->state_time);
+		msec = 500 * (playertime - state->state_time);
 		if (msec <= 0 || !cl_predictPlayers.value)
 		{
 			VectorCopy (state->origin, ent.origin);
@@ -944,6 +947,8 @@ void CL_LinkPlayers (void)
 		else if (state->effects & EF_FLAG2)
 			CL_AddFlagModels (&ent, 1);
 
+		VectorCopy (ent.origin, cent->lerp_origin);
+		cent->lastframe = cl_entframecount;
 		V_AddEntity (&ent);
 	}
 }
@@ -1117,6 +1122,8 @@ void CL_EmitEntities (void)
 		return;
 	if (!cl.validsequence)
 		return;
+
+	cl_entframecount++;
 
 	V_ClearScene ();
 

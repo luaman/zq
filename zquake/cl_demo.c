@@ -516,7 +516,7 @@ static void CL_Record (void)
 
 	memset(&blankes, 0, sizeof(blankes));
 	for (i = 0; i < MAX_EDICTS; i++) {
-		es = cl_baselines + i;
+		es = &cl_entities[i].baseline;
 
 		if (memcmp(es, &blankes, sizeof(blankes))) {
 			MSG_WriteByte (&buf,svc_spawnbaseline);		

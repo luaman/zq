@@ -1633,7 +1633,7 @@ void CL_ParseServerMessage (void)
 			
 		case svc_spawnbaseline:
 			i = MSG_ReadShort ();
-			CL_ParseBaseline (&cl_baselines[i]);
+			CL_ParseBaseline (&cl_entities[i].baseline);
 			break;
 		case svc_spawnstatic:
 			CL_ParseStatic ();
