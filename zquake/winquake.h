@@ -29,10 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <ddraw.h>
 #include <dsound.h>
-#ifndef GLQUAKE
-#pragma warning( disable : 4229 )  // mgraph gets this
-#include <mgraph.h>
-#endif
 
 extern	HINSTANCE	global_hInstance;
 
