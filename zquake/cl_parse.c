@@ -1194,6 +1194,7 @@ void CL_ProcessServerInfo (void)
 	else
 		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
 
+	cl.maxclients = Q_atoi(Info_ValueForKey(cl.serverinfo, "maxclients"));
 
 	cl.maxfps = Q_atof(Info_ValueForKey(cl.serverinfo, "maxfps"));
 

@@ -250,6 +250,7 @@ typedef struct
 	char		serverinfo[MAX_SERVERINFO_STRING];
 	qboolean	protocol_26;
 // some important serverinfo keys are mirrored here:
+	int			maxclients;
 	int			deathmatch;
 	int			teamplay;
 	int			gametype;		// GAME_COOP or GAME_DEATHMATCH
