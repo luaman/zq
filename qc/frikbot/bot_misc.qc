@@ -498,7 +498,7 @@ void KickABot ()
 	{
 		if (!ty.ishuman) {
 			
-			remove(ty);
+			stuffcmd (ty, "disconnect\n");
 			ty = world;
 		}
 		else
