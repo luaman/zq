@@ -439,6 +439,8 @@ void BotPreThink ()
 	}
 
 	DynamicWaypoint();
+
+	PlayerPreThink ();
 }
 
 void BotFrame ()
