@@ -905,7 +905,7 @@ float(entity ent) EntityNum =
 	return num;
 }
 
-void() W_FireRail =
+void() W_FireRailgun =
 {
 	float entnum;
 	vector org, pos, end;
@@ -1169,7 +1169,7 @@ void W_Attack ()
 /*
 		player_shot1 ();
 		self.attack_finished = time + 1.5;	// tune this!
-		W_FireRail ();
+		W_FireRailgun ();
 */
 	}
 }
