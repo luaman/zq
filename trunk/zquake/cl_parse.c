@@ -1229,7 +1229,7 @@ static void FlushString (char *s, int level, qboolean team, int offset)
 	}
 	else
 		Con_Printf ("%s", s);
-	TP_SearchForMsgTriggers (s, level);
+	TP_SearchForMsgTriggers (s + offset, level);
 }
 
 /*
