@@ -893,7 +893,8 @@ qbool StringToFilter (char *s, ipfilter_t *f)
 		j = 0;
 		while ( isdigit((int)(unsigned char)*s) )
 		{
-			num[j++] = *s++;
+			if (j + 1 < sizeof(num))
+				num[j++] = *s++;
 		}
 		num[j] = 0;
 		b[i] = atoi(num);
@@ -1086,8 +1087,7 @@ void SV_ReadPackets (void)
 			cl->packets = next = pack->next;
 			pack->next = svs.free_packets;
 			svs.free_packets = pack;
-		}
-		
+		}		
 	}
 
 	// now deal with new packets
