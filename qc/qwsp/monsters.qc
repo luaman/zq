@@ -128,9 +128,7 @@ void walkmonster_start_go ()
 	}
 
 // spread think times so they don't all happen at same time
-	// use current time to set nextthink, not previous value
-        self.nextthink = time + 0.1 + random()*0.5;   // add constant as random can return 0
-        
+	self.nextthink = time + 0.1 + random()*0.5;		// add constant as random can return 0
 }
 
 
@@ -138,8 +136,7 @@ void walkmonster_start ()
 {
 // delay drop to floor to make sure all doors have been spawned
 // spread think times so they don't all happen at same time
-	// use current time to set nextthink, not previous value
-	self.nextthink = time + 0.1 + random()*0.5;   // add constant as random can return 0
+	self.nextthink = time + 0.1 + random()*0.5;		// add constant as random can return 0
 	self.think = walkmonster_start_go;
 	total_monsters = total_monsters + 1;
 }
@@ -194,8 +191,7 @@ void flymonster_start ()
         self.flags = self.flags | FL_FLY;
         
 // spread think times so they don't all happen at same time
-        // use current time to set new value of self.nextthink
-        self.nextthink = time + 0.1 + random()*0.5;        // add constant as random can return 0
+	self.nextthink = time + 0.1 + random()*0.5;		// add constant as random can return 0
 	self.think = flymonster_start_go;
 	total_monsters = total_monsters + 1;
 }
@@ -240,7 +236,7 @@ void swimmonster_start_go ()
 	}
 
 // spread think times so they don't all happen at same time
-	self.nextthink = time + 0.1 + random()*0.5;
+	self.nextthink = time + 0.1 + random()*0.5;		// add constant as random can return 0
 }
 
 void swimmonster_start ()
@@ -248,7 +244,7 @@ void swimmonster_start ()
         self.flags = self.flags | FL_SWIM;
     
 // spread think times so they don't all happen at same time
-	self.nextthink = time + 0.1 + random()*0.5;
+	self.nextthink = time + 0.1 + random()*0.5;		// add constant as random can return 0
 	self.think = swimmonster_start_go;
 	total_monsters = total_monsters + 1;
 }
