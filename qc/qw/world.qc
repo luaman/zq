@@ -394,7 +394,7 @@ void() StartFrame =
 	
 	framecount = framecount + 1;
 
-	if (timelimit && time >= timelimit)
+	if (deathmatch && timelimit && time >= timelimit)
 		NextLevel ();
 };
 
