@@ -76,6 +76,8 @@ static int			map_vis_rowlongs;			// map_vis_rowbytes / 4
 
 static char			*map_entitystring;
 
+static qbool		map_halflife;
+
 static byte			*cmod_base;					// for CM_Load* functions
 
 
@@ -615,11 +617,25 @@ static void CM_LoadSubmodels (lump_t *l)
 		VectorClear (out->hulls[0].clip_mins);
 		VectorClear (out->hulls[0].clip_maxs);
 
-		VectorSet (out->hulls[1].clip_mins, -16, -16, -24);
-		VectorSet (out->hulls[1].clip_maxs, 16, 16, 32);
+		if (map_halflife)
+		{
+			VectorSet (out->hulls[1].clip_mins, -16, -16, -32);
+			VectorSet (out->hulls[1].clip_maxs, 16, 16, 32);
 
-		VectorSet (out->hulls[2].clip_mins, -32, -32, -24);
-		VectorSet (out->hulls[2].clip_maxs, 32, 32, 64);
+			VectorSet (out->hulls[2].clip_mins, -32, -32, -32);
+			VectorSet (out->hulls[2].clip_maxs, 32, 32, 32);
+			// not really used
+			VectorSet (out->hulls[3].clip_mins, -16, -16, -18);
+			VectorSet (out->hulls[3].clip_maxs, 16, 16, 18);
+		}
+		else
+		{
+			VectorSet (out->hulls[1].clip_mins, -16, -16, -24);
+			VectorSet (out->hulls[1].clip_maxs, 16, 16, 32);
+
+			VectorSet (out->hulls[2].clip_mins, -32, -32, -24);
+			VectorSet (out->hulls[2].clip_maxs, 32, 32, 64);
+		}
 	}
 }
 
@@ -984,9 +1000,11 @@ cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned
 	if (i != BSPVERSION && i != HL_BSPVERSION)
 		Host_Error ("CM_LoadMap: %s has wrong version number (%i should be %i)", name, i, BSPVERSION);
 
+	map_halflife = (i == HL_BSPVERSION);
+
 	// let progs know if we've loaded a Half-Life map
 	if (!clientload)
-		Cvar_ForceSet(Cvar_Get("sv_halflifebsp", "0", CVAR_ROM), (i == HL_BSPVERSION) ? "1" : "0");
+		Cvar_ForceSet(Cvar_Get("sv_halflifebsp", "0", CVAR_ROM), map_halflife ? "1" : "0");
 
 	// swap all the lumps
 	cmod_base = (byte *)header;
