@@ -2186,8 +2186,8 @@ void SV_ExecuteClientMessage (client_t *cl)
 			cl->delay = 0;
 	} else if (frame->ping_time*1001 < sv_minping.value) {
 		cl->delay += 0.001;
-		if (cl->delay > 300)
-			cl->delay = 300;
+		if (cl->delay > 1)
+			cl->delay = 1;
 	}
 
 	// make sure the reply sequence number matches the incoming
