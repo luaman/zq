@@ -318,6 +318,7 @@ typedef struct
 // localized movement vars
 	float		entgravity;
 	float		maxspeed;
+	float		bunnyspeedcap;
 } client_state_t;
 
 extern	client_state_t	cl;
