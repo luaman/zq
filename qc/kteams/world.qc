@@ -436,7 +436,7 @@ void StartFrame ()
 {
 // KTEAMS -->        
 	timelimit = cvar("timelimit") * 60;     // this should be 60...
-        k_maxspeed = cvar("sv_maxspeed");
+    k_maxspeed = cvar("sv_maxspeed");
 // <-- KTEAMS        
 	fraglimit = cvar("fraglimit");
 	teamplay = cvar("teamplay");
