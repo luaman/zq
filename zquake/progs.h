@@ -149,15 +149,20 @@ extern	qbool		pr_trace;
 extern	dfunction_t	*pr_xfunction;
 extern	int			pr_xstatement;
 
+
 extern func_t SpectatorConnect, SpectatorDisconnect, SpectatorThink;
 extern func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
+
+extern int	fofs_gravity, fofs_maxspeed;
+extern int	fofs_forwardmove, fofs_sidemove, fofs_upmove;
+
+#define EdictFieldFloat(ed, fieldoffset) ((eval_t *)((byte *)&(ed)->v + (fieldoffset)))->_float
+
 
 void PR_RunError (char *error, ...);
 
 void ED_PrintEdicts_f (void);
 void ED_PrintNum (int ent);
-
-eval_t *GetEdictFieldValue(edict_t *ed, char *field);
 
 //
 // PR strings stuff
