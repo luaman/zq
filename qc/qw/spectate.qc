@@ -69,7 +69,7 @@ Called by SpectatorThink if the spectator entered an impulse
 */
 void SpectatorImpulseCommand ()
 {
-	if (self.impulse == 1) {
+	if (self.impulse == IMPULSE_AXE) {
 		// teleport the spectator to the next spawn point
 		// note that if the spectator is tracking, this doesn't do much
 		self.goalentity = find(self.goalentity, classname, "info_player_deathmatch");
