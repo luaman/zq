@@ -108,7 +108,6 @@ entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
 
 double			connect_time = 0;		// for connection retransmits
 
-double		oldrealtime;			// last frame run
 qboolean	host_skipframe;			// used in demo playback
 
 extern int	host_hunklevel;
@@ -871,7 +870,7 @@ CL_FilterTime
 Returns false if the time is too short to run a frame
 ===================
 */
-qboolean CL_FilterTime (void)
+qboolean CL_FilterTime (double time)
 {
 	float fps, fpscap;
 
@@ -899,7 +898,7 @@ qboolean CL_FilterTime (void)
 		}
 	}
 
-	if (cls.realtime - oldrealtime < 1.0/fps)
+	if (time < 1.0/fps)
 		return false;
 
 	return true;
@@ -918,43 +917,30 @@ void CL_Frame (double time)
 	static double		time2 = 0;
 	static double		time3 = 0;
 	int			pass1, pass2, pass3;
-	float scale;
+	static double extratime;
 
-	// decide the simulation time
+	extratime += time;
 
-	if (host_skipframe) {
+	if (!CL_FilterTime (extratime))
+		return;
+
+	cls.trueframetime = extratime;
+	cls.frametime = min (cls.trueframetime, 0.2);
+	extratime = 0;
+
+	if (cls.demoplayback) {
+		cls.frametime *= bound (0, cl_demospeed.value, 20);
+		if (cl.paused & PAUSED_DEMO)
+			cls.frametime = 0;
+		if (!host_skipframe)
+			cls.demotime += cls.frametime;
 		host_skipframe = false;
-		time = 0;
 	}
 
-	if (!cls.demoplayback)
-		cls.realtime += time;
-	else {
-		scale = cl_demospeed.value;
-		if (scale <= 0) scale = 1;
-		if (scale < 0.1) scale = 0.1;
-		if (scale > 10) scale = 1;
-		cls.realtime += time*scale;
-	}
-
-	if (oldrealtime > cls.realtime)
-		oldrealtime = 0;
-
-	if (!CL_FilterTime())
-		return;			// framerate is too high
-
-	cls.frametime = cls.realtime - oldrealtime;
-
-	if (cls.demoplayback && (cl.paused & PAUSED_DEMO))
-		cls.realtime = oldrealtime;
-
-	oldrealtime = cls.realtime;
-	if (cls.frametime > 0.2)
-		cls.frametime = 0.2;
-
+	cls.realtime += cls.frametime;
 	if (!cl.paused)
 		cl.time += cls.frametime;
-	
+
 	// get new key events
 	Sys_SendKeyEvents ();
 

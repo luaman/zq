@@ -195,23 +195,23 @@ readnext:
 			cls.td_starttime = Sys_DoubleTime();
 			cls.td_startframe = cls.framecount;
 		}
-		cls.realtime = demotime; // warp
+		cls.demotime = demotime; // warp
 	} else if (!(cl.paused & PAUSED_SERVER) && cls.state >= ca_active) {	// always grab until active
-		if (cls.realtime + 1.0 < demotime) {
+		if (cls.demotime + 1.0 < demotime) {
 			// too far back
-			cls.realtime = demotime - 1.0;
+			cls.demotime = demotime - 1.0;
 			// rewind back to time
 			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
 					SEEK_SET);
 			return 0;
-		} else if (cls.realtime < demotime) {
+		} else if (cls.demotime < demotime) {
 			// rewind back to time
 			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
 					SEEK_SET);
 			return false;		// don't need another message yet
 		}
 	} else
-		cls.realtime = demotime; // we're warping
+		cls.demotime = demotime; // we're warping
 
 	if (cls.state < ca_demostart)
 		Host_Error ("CL_GetDemoMessage: cls.state < ca_demostart");
@@ -236,7 +236,7 @@ readnext:
 		pcmd->forwardmove = LittleShort(pcmd->forwardmove);
 		pcmd->sidemove    = LittleShort(pcmd->sidemove);
 		pcmd->upmove      = LittleShort(pcmd->upmove);
-		cl.frames[i].senttime = demotime;
+		cl.frames[i].senttime = cls.realtime;
 		cl.frames[i].receivedtime = -1;		// we haven't gotten a reply yet
 		cls.netchan.outgoing_sequence++;
 
@@ -831,7 +831,7 @@ void CheckQizmoCompletion (void)
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
 	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
-	cls.realtime = 0;
+	cls.demotime = 0;
 }
 
 static void StopQWZPlayback (void)
@@ -903,7 +903,7 @@ void PlayQWZDemo (void)
 		cls.demoplayback = true;
 		cls.state = ca_demostart;
 		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
-		cls.realtime = 0;
+		cls.demotime = 0;
 		return;
 	}
 	
@@ -938,7 +938,7 @@ void PlayQWZDemo (void)
 	cls.demofile = NULL;
 	cls.state = ca_demostart;
 	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
-	cls.realtime = 0;
+	cls.demotime = 0;
 }
 #endif
 
@@ -995,7 +995,7 @@ void CL_PlayDemo_f (void)
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
 	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
-	cls.realtime = 0;
+	cls.demotime = 0;
 }
 
 /*
