@@ -1409,7 +1409,7 @@ void TP_FindModelNumbers (void)
 	tp_glindex = tp_rlindex = tp_lgindex = tp_packindex =
 	tp_armorindex = tp_shells1index = tp_shells2index =
 	tp_nails1index = tp_nails2index = tp_rockets1index =
-	tp_rockets2index = tp_cells1index = tp_cells2index = 0;
+	tp_rockets2index = tp_cells1index = tp_cells2index = -1;
 
 	// model 0 is world
 	for (i=1 ; i<MAX_MODELS ; i++)
@@ -1429,6 +1429,8 @@ void TP_FindModelNumbers (void)
 			tp_lgindex = i;
 		else if (!strcmp(s, "progs/armor.mdl"))
 			tp_armorindex = i;
+		else if (!strcmp(s, "progs/backpack.mdl"))
+			tp_packindex = i;
 		else if (!strcmp(s, "maps/b_shell0.bsp"))
 			tp_shells1index = i;
 		else if (!strcmp(s, "maps/b_shell1.bsp"))
