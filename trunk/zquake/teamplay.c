@@ -156,6 +156,12 @@ char *Macro_Quote_f (void)
 	return "\"";
 }
 
+char *Macro_Latency_f (void)
+{
+	sprintf(macro_buf, "%i", Q_rint(cls.latency*1000));
+	return macro_buf;
+}
+
 char *Macro_Health_f (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_HEALTH]);
@@ -545,6 +551,7 @@ typedef struct
 macro_command_t macro_commands[] =
 {
 	{"qt", Macro_Quote_f},
+	{"latency", Macro_Latency_f},
 	{"health", Macro_Health_f},
 	{"armortype", Macro_ArmorType_f},
 	{"armor", Macro_Armor_f},
