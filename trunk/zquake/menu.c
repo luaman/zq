@@ -329,16 +329,16 @@ void M_Main_Key (int key)
 			CL_NextDemo ();
 		break;
 		
-	case K_DOWNARROW:
-		S_LocalSound ("misc/menu1.wav");
-		if (++m_main_cursor >= MAIN_ITEMS)
-			m_main_cursor = 0;
-		break;
-
 	case K_UPARROW:
 		S_LocalSound ("misc/menu1.wav");
 		if (--m_main_cursor < 0)
 			m_main_cursor = MAIN_ITEMS - 1;
+		break;
+
+	case K_DOWNARROW:
+		S_LocalSound ("misc/menu1.wav");
+		if (++m_main_cursor >= MAIN_ITEMS)
+			m_main_cursor = 0;
 		break;
 
 	case K_HOME:
@@ -385,7 +385,7 @@ void M_Main_Key (int key)
 //=============================================================================
 /* OPTIONS MENU */
 
-#define	OPTIONS_ITEMS	16
+#define	OPTIONS_ITEMS	17
 
 #define	SLIDER_RANGE	10
 
@@ -483,7 +483,7 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue (&cl_hudswap, !cl_hudswap.value);
 		break;
 
-	case 15:	// _windowed_mouse
+	case 16:	// _windowed_mouse
 		Cvar_SetValue (&_windowed_mouse, !_windowed_mouse.value);
 		break;
 	}
@@ -570,15 +570,17 @@ void M_Options_Draw (void)
 	M_Print (16, 136, "      HUD on left side");
 	M_DrawCheckbox (220, 136, cl_hudswap.value);
 
+	M_Print (16, 144, "          FPS settings");
+
 	if (vid_menudrawfn)
-		M_Print (16, 144, "         Video Options");
+		M_Print (16, 152, "         Video Options");
 
 #ifdef _WIN32
 	if (modestate == MS_WINDOWED)
 	{
 #endif
-		M_Print (16, 152, "             Use Mouse");
-		M_DrawCheckbox (220, 152, _windowed_mouse.value);
+		M_Print (16, 160, "             Use Mouse");
+		M_DrawCheckbox (220, 160, _windowed_mouse.value);
 #ifdef _WIN32
 	}
 #endif
@@ -612,6 +614,9 @@ void M_Options_Key (int k)
 			Cbuf_AddText ("exec default.cfg\n");
 			break;
 		case 14:
+			M_Menu_Fps_f ();
+			break;
+		case 15:
 			M_Menu_Video_f ();
 			break;
 		default:
@@ -655,22 +660,22 @@ void M_Options_Key (int k)
 		break;
 	}
 
-	if (options_cursor == 14 && vid_menudrawfn == NULL)
+	if (options_cursor == 15 && vid_menudrawfn == NULL)
 	{
 		if (k == K_UPARROW || k == K_END || k == K_PGDN)
-			options_cursor = 13;
+			options_cursor = 14;
 		else
 			options_cursor = 0;
 	}
 
-	if ((options_cursor == 15) 
+	if ((options_cursor == 16) 
 #ifdef _WIN32
 	&& (modestate != MS_WINDOWED)
 #endif
 	)
 	{
 		if (k == K_UPARROW || k == K_END || k == K_PGDN)
-			options_cursor = 14;
+			options_cursor = 15;
 		else
 			options_cursor = 0;
 	}
@@ -885,12 +890,17 @@ void M_Keys_Key (int k)
 //=============================================================================
 /* FPS SETTINGS MENU */
 
+#ifdef GLQUAKE
 #define	FPS_ITEMS	10
+#else
+#define	FPS_ITEMS	11
+#endif
 int		fps_cursor = 0;
 
 extern cvar_t v_bonusflash;
 extern cvar_t cl_rocket2grenade;
 extern cvar_t v_damagecshift;
+extern cvar_t r_fastsky;
 
 void M_Menu_Fps_f (void)
 {
@@ -927,7 +937,8 @@ void M_Fps_Draw (void)
 	M_Print (220, 64, cl_rocket2grenade.value ? "grenade" : "normal");
 
 	M_Print (16, 72, "          Rocket trail");
-	M_Print (220, 72, r_rockettrail.value ? "on" : "off");//FIXME
+	M_Print (220, 72, r_rockettrail.value==2 ? "grenade" :
+		r_rockettrail.value ? "normal" : "off");
 
 	M_Print (16, 80, "          Rocket light");
 	M_DrawCheckbox (220, 80, r_rocketlight.value);
@@ -938,8 +949,17 @@ void M_Fps_Draw (void)
 	M_Print (16, 96, "        Pickup flashes");
 	M_DrawCheckbox (220, 96, v_bonusflash.value);
 
-	M_Print (16, 104, "     Draw flame models");
-	M_DrawCheckbox (220, 104, r_drawflame.value);
+	M_Print (16, 104, "         Powerup glow");
+	M_Print (220, 104, r_powerupglow.value==2 ? "own off" :
+		r_powerupglow.value ? "on" : "off");
+
+#ifndef GLQUAKE
+	M_Print (16, 112, "             Fast sky");
+	M_DrawCheckbox (220, 112, r_fastsky.value);
+#endif
+
+//	M_Print (16, 120, "     Draw flame models");
+//	M_DrawCheckbox (220, 120, r_drawflame.value);
 
 // cursor
 	M_DrawCharacter (200, 32 + fps_cursor*8, 12+((int)(realtime*4)&1));
@@ -988,7 +1008,7 @@ void M_Fps_Key (int k)
 			i = cl_explosion.value + 1;
 			if (i > 3 || i < 0)
 				i = 0;
-			Cvar_SetValue (&cl_explosion, (float)i);
+			Cvar_SetValue (&cl_explosion, i);
 			break;
 		case 1:
 			Cvar_SetValue (&cl_muzzleflash, cl_muzzleflash.value==2 ? 1 :
@@ -1004,7 +1024,10 @@ void M_Fps_Key (int k)
 			Cvar_SetValue (&cl_rocket2grenade, !cl_rocket2grenade.value);
 			break;
 		case 5:
-			Cvar_SetValue (&r_rockettrail, !r_rockettrail.value);
+			i = r_rockettrail.value + 1;
+			if (i < 0 || i > 2)
+				i = 0;
+			Cvar_SetValue (&r_rockettrail, i);
 			break;
 		case 6:
 			Cvar_SetValue (&r_rocketlight, !r_rocketlight.value);
@@ -1016,8 +1039,19 @@ void M_Fps_Key (int k)
 			Cvar_SetValue (&v_bonusflash, !v_bonusflash.value);
 			break;
 		case 9:
-			Cvar_SetValue (&r_drawflame, !r_drawflame.value);
+			i = r_powerupglow.value + 1;
+				if (i < 0 || i > 2)
+					i = 0;
+			Cvar_SetValue (&r_powerupglow, i);
 			break;
+#ifndef GLQUAKE
+		case 10:
+			Cvar_SetValue (&r_fastsky, !r_fastsky.value);
+			break;
+#endif
+//		case 11:
+//			Cvar_SetValue (&r_drawflame, !r_drawflame.value);
+//			break;
 			
 		}
 		break;
@@ -1798,6 +1832,16 @@ void M_GameOptions_Key (int key)
 			gameoptions_cursor = 0;
 		break;
 
+	case K_HOME:
+		S_LocalSound ("misc/menu1.wav");
+		gameoptions_cursor = 0;
+		break;
+
+	case K_END:
+		S_LocalSound ("misc/menu1.wav");
+		gameoptions_cursor = NUM_GAMEOPTIONS-1;
+		break;
+
 	case K_LEFTARROW:
 		if (gameoptions_cursor == 0)
 			break;
@@ -1957,6 +2001,16 @@ void M_Setup_Key (int k)
 		setup_cursor++;
 		if (setup_cursor >= NUM_SETUP_CMDS)
 			setup_cursor = 0;
+		break;
+
+	case K_HOME:
+		S_LocalSound ("misc/menu1.wav");
+		setup_cursor = 0;
+		break;
+
+	case K_END:
+		S_LocalSound ("misc/menu1.wav");
+		setup_cursor = NUM_SETUP_CMDS-1;
 		break;
 
 	case K_LEFTARROW:
