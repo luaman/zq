@@ -114,7 +114,7 @@ pz:				.long	0
 izistep:				.long	0
 
 //-------------------------------------------------------
-// local variables for d_draw16.s
+// local variables for r_draw16.s
 //-------------------------------------------------------
 
 .globl	reciprocal_table_16, entryvec_table_16
@@ -149,7 +149,7 @@ entryvec_table_16:	.long	0, Entry2_16, Entry3_16, Entry4_16
 					.long	Entry13_16, Entry14_16, Entry15_16, Entry16_16
 
 //-------------------------------------------------------
-// local variables for d_parta.s
+// local variables for r_parta.s
 //-------------------------------------------------------
 .globl	DP_Count, DP_u, DP_v, DP_32768, DP_Color, DP_Pix, DP_EntryTable
 DP_Count:		.long	0

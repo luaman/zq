@@ -1113,7 +1113,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="d_scan.c">
+				RelativePath="r_scan.c">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -3346,7 +3346,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="d_draw.s">
+				RelativePath="r_draw8.s">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -3383,7 +3383,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="d_draw16.s">
+				RelativePath="r_draw16.s">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -3420,7 +3420,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="d_parta.s">
+				RelativePath="r_parta.s">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -3494,7 +3494,7 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="d_scana.s">
+				RelativePath="r_scana.s">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool

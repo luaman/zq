@@ -254,6 +254,7 @@ void R_BrightenScreen (void);
 
 // gl_rmisc.c
 void R_ScreenShot_f (void);
+void R_LoadSky_f (void);
 
 //
 // gl_rlight.c
@@ -286,3 +287,12 @@ void GL_BuildLightmaps (void);
 //
 void R_NetGraph (void);
 
+//
+// gl_ralias.c
+//
+void R_DrawAliasModel (entity_t *ent);
+
+//
+// gl_rsprite.c
+//
+void R_DrawSpriteModel (entity_t *ent);
