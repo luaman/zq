@@ -211,7 +211,7 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	NET_Init ();
 	Netchan_Init ();
 	Sys_Init ();
-	Pmove_Init ();
+	PM_Init ();
 	Mod_Init ();
 	
 	SV_Init ();

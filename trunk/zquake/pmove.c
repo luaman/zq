@@ -34,7 +34,7 @@ vec3_t	player_maxs = {16, 16, 32};
 
 void PM_InitBoxHull (void);
 
-void Pmove_Init (void)
+void PM_Init (void)
 {
 	PM_InitBoxHull ();
 }
