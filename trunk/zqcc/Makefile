@@ -17,9 +17,8 @@ profile:
 clean:
 	rm -f *.o $(EXES)
 
-.c.o: ; cc -c $(CFLAGS) -o $@ $*.c
-pp
+.c.o: ; g++ -c $(CFLAGS) -o $@ $*.cpp
 
 QCCFILES = qcc.o pr_lex.o pr_comp.o cmdlib.o
 zqcc : $(QCCFILES)
-	cc $(CFLAGS) -o zqcc $(QCCFILES)
+	g++ $(CFLAGS) -o zqcc $(QCCFILES)
