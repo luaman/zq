@@ -172,7 +172,6 @@ void R_GenTile (msurface_t *psurf, void *pdest);
 #define	SKYSIZE			(1 << SKYSHIFT)
 #define SKYMASK			(SKYSIZE - 1)
 
-extern float	skyspeed, skyspeed2;
 extern float	skyshift;
 
 extern int		c_surf;
