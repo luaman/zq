@@ -74,6 +74,8 @@ void R_TranslatePlayerSkin (int playernum);
 
 qboolean	nq_drawpings;	// for sbar code
 
+qboolean	nq_player_teleported;	// hacky
+
 int		nq_num_entities;
 int		nq_viewentity;
 int		nq_forcecdtrack;
@@ -740,6 +742,33 @@ extern int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 extern int		cl_rocketindex, cl_grenadeindex;
 extern cvar_t	cl_rocket2grenade;
 
+void NQD_LerpPlayerinfo (float f)
+{
+	int		i;
+
+	if (nq_player_teleported) {
+		VectorCopy (nq_mvelocity[0], cl.simvel);
+		VectorCopy (nq_mviewangles[0], cl.viewangles);
+		VectorCopy (nq_mviewangles[0], cl.simangles);
+		return;
+	}
+
+	for (i=0 ; i<3 ; i++)
+		cl.simvel[i] = nq_mvelocity[1][i] + 
+			f * (nq_mvelocity[0][i] - nq_mvelocity[1][i]);
+
+	for (i = 0; i < 3; i++)
+	{
+		float	d;
+		d = nq_mviewangles[0][i] - nq_mviewangles[1][i];
+		if (d > 180)
+			d -= 360;
+		else if (d < -180)
+			d += 360;
+		cl.viewangles[i] = cl.simangles[i] = nq_mviewangles[1][i] + f*d;
+	}
+}
+
 void NQD_LinkEntities (void)
 {
 	entity_t			ent;
@@ -754,25 +783,7 @@ void NQD_LinkEntities (void)
 
 	f = NQD_LerpPoint ();
 
-//
-// interpolate player info
-//
-	for (i=0 ; i<3 ; i++)
-		cl.simvel[i] = nq_mvelocity[1][i] + 
-			f * (nq_mvelocity[0][i] - nq_mvelocity[1][i]);
-
-// interpolate the angles	
-	for (i = 0; i < 3; i++)
-	{
-		float	d;
-		d = nq_mviewangles[0][i] - nq_mviewangles[1][i];
-		if (d > 180)
-			d -= 360;
-		else if (d < -180)
-			d += 360;
-		cl.viewangles[i] = cl.simangles[i] = nq_mviewangles[1][i] + f*d;
-	}
-	
+	NQD_LerpPlayerinfo (f);
 
 	autorotate = anglemod (100*cl.time);
 
@@ -850,8 +861,17 @@ void NQD_LinkEntities (void)
 
 		// calculate origin
 		for (i=0 ; i<3 ; i++)
+		{
+			if (cent->current.origin[i] - cent->previous.origin[i] > 128) {
+				// teleport or something, don't lerp
+				VectorCopy (cent->current.origin, ent.origin);
+				if (num == nq_viewentity)
+					nq_player_teleported = true;
+				break;
+			}
 			ent.origin[i] = cent->previous.origin[i] + 
 				f * (cent->current.origin[i] - cent->previous.origin[i]);
+		}
 
 		if (num == nq_viewentity) {
 			VectorCopy (ent.origin, cent->lerp_origin);	// FIXME?
@@ -954,17 +974,17 @@ void NQD_ParseServerMessage (void)
 	int			cmd;
 	int			i;
 
+	nq_player_teleported = false;		// OMG, it's a hack!
+
 	cl_entframecount++;		// FIXME?
 
-//
-// if recording demos, copy the message out
-//
 	if (cl_shownet.value == 1)
 		Com_Printf ("%i ", net_message.cursize);
 	else if (cl_shownet.value == 2)
 		Com_Printf ("------------------\n");
 	
 	cl.onground = false;	// unless the server says otherwise	
+
 //
 // parse the message
 //
