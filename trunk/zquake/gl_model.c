@@ -1555,8 +1555,20 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	daliasskintype_t	*pskintype;
 	int					start, end, total;
 
-	if (!strcmp(loadmodel->name, "progs/player.mdl") ||
-		!strcmp(loadmodel->name, "progs/eyes.mdl")) {
+// some models are special
+	if(!strcmp(mod->name, "progs/player.mdl"))
+		mod->modhint = MOD_PLAYER;
+	else if(!strcmp(mod->name, "progs/eyes.mdl"))
+		mod->modhint = MOD_EYES;
+	else if (!strcmp(mod->name, "progs/flame.mdl") ||
+		!strcmp(mod->name, "progs/flame2.mdl"))
+		mod->modhint = MOD_FLAME;
+	else if (!strcmp(mod->name, "progs/bolt.mdl") ||
+		!strcmp(mod->name, "progs/bolt2.mdl") ||
+		!strcmp(mod->name, "progs/bolt3.mdl"))
+		mod->modhint = MOD_THUNDERBOLT;
+
+	if (mod->modhint == MOD_PLAYER || mod->modhint == MOD_EYES) {
 		unsigned short crc;
 		byte *p;
 		int len;
@@ -1568,13 +1580,13 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	
 		sprintf(st, "%d", (int) crc);
 		Info_SetValueForKey (cls.userinfo, 
-			!strcmp(loadmodel->name, "progs/player.mdl") ? pmodel_name : emodel_name,
+			mod->modhint == MOD_PLAYER ? pmodel_name : emodel_name,
 			st, MAX_INFO_STRING);
 
 		if (cls.state >= ca_connected) {
 			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 			sprintf(st, "setinfo %s %d", 
-				!strcmp(loadmodel->name, "progs/player.mdl") ? pmodel_name : emodel_name,
+				mod->modhint == MOD_PLAYER ? pmodel_name : emodel_name,
 				(int)crc);
 			SZ_Print (&cls.netchan.message, st);
 		}
