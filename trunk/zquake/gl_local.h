@@ -177,8 +177,6 @@ extern	int		gl_alpha_format;
 
 extern	cvar_t	gl_playermip;
 
-extern	float	r_world_matrix[16];
-
 extern	const char *gl_vendor;
 extern	const char *gl_renderer;
 extern	const char *gl_version;
