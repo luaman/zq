@@ -111,7 +111,7 @@ cvar_t	gl_ztrick = {"gl_ztrick","1"};
 
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1"};
 qboolean	vid_gammaworks = false;
-qboolean	vid_hwgamma_enabled;
+qboolean	vid_hwgamma_enabled = false;
 unsigned short *currentgammaramp = NULL;
 void RestoreHWGamma (void);
 
@@ -810,6 +810,8 @@ void VID_SetDeviceGammaRamp (unsigned short *ramps)
 
 void InitHWGamma (void)
 {
+	if (COM_CheckParm("-nohwgamma"))
+		return;
 	vid_gammaworks = GetDeviceGammaRamp (maindc, systemgammaramp);
 	vid_hwgamma_enabled = vid_hwgammacontrol.value && vid_gammaworks
 		&& ActiveApp && !Minimized && modestate == MS_FULLDIB;
