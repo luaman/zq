@@ -971,7 +971,9 @@ void SV_Physics (void)
 	}
 	
 	if (pr_global_struct->force_retouch)
-		pr_global_struct->force_retouch--;	
+		pr_global_struct->force_retouch--;
+
+	SV_RunBots ();
 }
 
 void SV_SetMoveVars(void)
