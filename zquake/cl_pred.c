@@ -243,6 +243,7 @@ void CL_PredictMove (void)
 #ifdef _WIN32
 		SetWindowText (mainwindow, va("QuakeWorld: %s", cls.servername));
 #endif
+		Con_ClearNotify ();
 		TP_ExecTrigger ("f_spawn");
 	}
 
