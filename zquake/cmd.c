@@ -1318,10 +1318,11 @@ checkaliases:
 			return;
 	}
 
-	if (cbuf_current != &cbuf_svc) {
+#ifndef SERVERONLY
+	if (cbuf_current != &cbuf_svc)
+#endif
 		if (cl_warncmd.value || developer.value)
 			Com_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
-	}
 }
 
 
