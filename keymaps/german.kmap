@@ -1,0 +1,191 @@
+// ZQuake keymap
+// vi: set ic noai ts=2 sts=2 sw=2 et:
+// by Massa
+
+layout "German"
+
+// -------------------------------------------------------------------------------------------------------------
+// [ext] keycode <scancode> <key> [<shifted key>] [<alt-gr="right alt" key>]
+// ext         means, that the extended flag is set for this (raw) scancode
+// scancode is a number 1 - 127
+// key is      a character which should be displayed or
+//             a special name (like ESCAPE, TAB, ...)
+//             a number >= 32 and <= 127, prefixed with # which represents the decimal value in the ASCII-table
+// Note: a-z are converted to uppercase by default,
+//       for everything else you must specify a <shifted key>
+//       if no shifted key is given, the same character will be used as given for unshifted key
+// -------------------------------------------------------------------------------------------------------------
+// The following names for keys are known (some are only present on 102-104 key keyboards):
+//
+// ALT              = normal (left) Alt-Key; this is NOT the switch-key for the third level of keymappings
+// ALTGR            = Alt-GR-Key (=right Alt-Key); this IS the switch-key for the third level of keymappings
+// BACKSPACE
+// CAPSLOCK
+// CTRL             = Control-Key (use this if you don't want to use left and right key separately
+// LCTRL           = Left Control-Key (use this, if you want to have separate key-mappings for left and right key
+// RCTRL           = Right Control-Key (use this, if you want to have separate key-mappings for left and right key
+// DEL              = Delete
+// DOWNARROW        = Cursor down
+// END              = End
+// ENTER
+// ESCAPE
+// F1 ... F12       = Function keys F1 - F12
+// HOME             = Home
+// INS              = Insert
+// LEFTARROW        = Cursor left
+// KP_0             = '0' at keypad (same as KP_INS)
+// KP_1             = '1' at keypad (same as KP_END)
+// KP_2             = '2' at keypad (same as KP_DOWNARROW)
+// KP_3             = '3' at keypad (same as KP_PGDN)
+// KP_4             = '4' at keypad (same as KP_LEFTARROW)
+// KP_5             = '5' at keypad
+// KP_6             = '6' at keypad (same as KP_RIGHTARROW)
+// KP_7             = '7' at keypad (same as KP_HOME)
+// KP_8             = '8' at keypad (same as KP_UPARROW)
+// KP_9             = '9' at keypad (same as KP_PGUP)
+// KP_DEL           = Del at keypad
+// KP_DIVIDE        = '/' at keypad (same as KP_SLASH)
+// KP_DOWNARROW     = Cursor down at keypad (same as KP_2)
+// KP_END           = End at keypad (same as KP_1)
+// KP_ENTER         = Enter at keypad
+// KP_HOME          = Keypad-Home (same as KP_7)
+// KP_INS           = Insert at keypad (same as KP_0)
+// KP_LEFTARROW     = Cursor left at keypad (same as KP_4)
+// KP_MINUS         = '-' at keypad
+// KP_MULTIPLY      = '*' at keypad (same as KP_STAR)
+// KP_NUMLCK        = Keypad-Numlock (same as NUMLOCK)
+// KP_NUMLOCK       = Keypad-Numlock (same as NUMLOCK)
+// KP_PGDN          = Page down at keypad (same as KP_3)
+// KP_PGUP          = Page-Up at keypad (same as KP_9)
+// KP_PLUS          = '+' at keypad
+// KP_RIGHTARROW    = Cursor right at keypad (same as KP_6)
+// KP_SLASH         = '/' at keypad (same as KP_DIVIDE)
+// KP_STAR          = '*' at keypad (same as KP_MULTIPLY)
+// KP_UPARROW       = Cursor up at keypad (same as KP_8)
+// MENU             = Windows-Menu key
+// NUMLOCK
+// PAUSE
+// PGDN             = Page down
+// PGUP             = Page up
+// PRINTSCR
+// RIGHTARROW       = Cursor right
+// SCRLCK           = Scroll-Lock (same as SCROLLOCK)
+// SCROLLOCK        = Scroll-Lock (same as SCRLCK)
+// SHIFT            = Shift-Key (this is the switch-key for the second level of keymappings)
+// L_SHIFT          = Left Shift-Key (use this, if you want to have separate key-mappings for left and right key)
+// R_SHIFT          = Right Shift-Key (use this, if you want to have separate key-mappings for left and right key)
+// SPACE
+// TAB
+// UPARROW          = Cursor up
+// WIN              = Windows-Key (use this, if you don't want to have separate key-mappings for left and right key)
+// L_WIN            = Left Windows-Key (use this, if you want to have separate key-mappings for left and right key)
+// R_WIN            = Right Windows-Key (use this, if you want to have separate key-mappings for left and right key)
+// -------------------------------------------------------------------------------------------------------------
+// Attention: to use the second level of keymappings you need to have one key defined with name SHIFT !
+//            to use the third level of keymappings you need to have one key defined with name ALTGR !
+// -------------------------------------------------------------------------------------------------------------
+
+    keycode 001 ESCAPE
+    keycode 002 1         !
+    keycode 003 2         #34
+    keycode 004 3                             // second level (with Shift key) is here normally paragraph char "§"
+    keycode 005 4         $
+    keycode 006 5         %
+    keycode 007 6         &
+    keycode 008 7         /         {
+    keycode 009 8         (         [
+    keycode 010 9         )         ]
+    keycode 011 0         =         }
+    keycode 012 \         ?         \         // this is normally the german double s "ß" = "ss"
+    keycode 013 '         #96                 // this is normally "´"
+    keycode 014 BACKSPACE
+    keycode 015 TAB
+    keycode 016 q         Q         @
+    keycode 017 w
+    keycode 018 e                             // third level is here normally "€" = "EUR" character
+    keycode 019 r
+    keycode 020 t
+    keycode 021 z
+    keycode 022 u
+    keycode 023 i
+    keycode 024 o
+    keycode 025 p
+    keycode 026 @                             // this is normally the german umlaut "ü" = "ue"
+    keycode 027 +         *         ~
+    keycode 028 ENTER
+ext keycode 028 KP_ENTER
+    keycode 029 CTRL                          // left CTRL, if you want a different mapping, use LCTRL
+ext keycode 029 CTRL                          // right CTRL, if you want different mapping, use RCTRL
+    keycode 030 a
+    keycode 031 s
+    keycode 032 d
+    keycode 033 f
+    keycode 034 g
+    keycode 035 h
+    keycode 036 j
+    keycode 037 k
+    keycode 038 l
+    keycode 039 {         <                   // this is normally the german umlaut "ö" = "oe"
+    keycode 040 }         >                   // this is normally the german umlaut "ä" = "ae"
+    keycode 041 ~         ^                   // normally this is first level "^", second level is degree char "°"
+    keycode 042 SHIFT                         // left SHIFT; if you want a different mapping, use L_SHIFT
+    keycode 043 #         '
+    keycode 044 y
+    keycode 045 x
+    keycode 046 c
+    keycode 047 v
+    keycode 048 b
+    keycode 049 n
+    keycode 050 m                             // third level is normally the "mikro" char
+    keycode 051 ,         ;
+    keycode 052 .         :
+    keycode 053 -         _
+ext keycode 053 KP_SLASH
+    keycode 054 SHIFT                         // right SHIFT; if you want a different mapping, use R_SHIFT
+    keycode 055 KP_STAR
+    keycode 056 ALT                           // left ALT
+ext keycode 056 ALTGR                         // right ALT = ALT-GR=key for third level
+    keycode 057 SPACE
+    keycode 058 CAPSLOCK
+    keycode 059 F1
+    keycode 060 F2
+    keycode 061 F3
+    keycode 062 F4
+    keycode 063 F5
+    keycode 064 F6
+    keycode 065 F7
+    keycode 066 F8
+    keycode 067 F9
+    keycode 068 F10
+    keycode 069 PAUSE
+ext keycode 069 NUMLOCK
+    keycode 070 SCRLCK
+    keycode 071 KP_HOME
+ext keycode 071 HOME
+    keycode 072 KP_UPARROW
+ext keycode 072 UPARROW
+    keycode 073 KP_PGUP
+ext keycode 073 PGUP
+    keycode 074 KP_MINUS
+    keycode 075 KP_LEFTARROW
+ext keycode 075 LEFTARROW
+    keycode 076 KP_5
+    keycode 077 KP_RIGHTARROW
+ext keycode 077 RIGHTARROW
+    keycode 078 KP_PLUS
+    keycode 079 KP_END
+ext keycode 079 END
+    keycode 080 KP_DOWNARROW
+ext keycode 080 DOWNARROW
+    keycode 081 KP_PGDN
+ext keycode 081 PGDN
+    keycode 082 KP_INS
+ext keycode 082 INS
+    keycode 083 KP_DEL
+ext keycode 083 DEL
+    keycode 086 <         >         |         // only present on international keyboards, the key is right to the left shift-key
+    keycode 087 F11
+    keycode 088 F12
+//ext keycode 091 L_WIN                         // left WIN-Key
+//ext keycode 092 R_WIN                         // right WIN-Key
+//ext keycode 093 MENU                          // MENU-Key
