@@ -287,7 +287,6 @@ void R_32To8bit (unsigned int *in, int inwidth, int inheight, byte *out, int out
 
 //=========================================================
 
-#ifdef _WIN32
 typedef struct mpic_s
 {
 	int			width;
@@ -295,8 +294,7 @@ typedef struct mpic_s
 	byte		alpha;
 	byte		pad;
 	byte		data[4];	// variable sized
-} mpic_t;
-#endif
+} /* mpic_t */;
 
 //=========================================================
 
