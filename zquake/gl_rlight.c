@@ -108,10 +108,8 @@ void R_RenderDlight (dlight_t *light)
 	VectorSubtract (light->origin, r_origin, v);
 	length = VectorNormalize (v);
 
-	if (length < rad)
-	{
+	if (length < rad) {
 		// view is inside the dlight
-		V_AddLightBlend (1, 0.5, 0, light->radius * 0.0003);
 		return;
 	}
 

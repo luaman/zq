@@ -24,7 +24,6 @@ extern	cvar_t		sw_contrast;
 
 #ifdef GLQUAKE
 extern float v_blend[4];
-void V_AddLightBlend (float r, float g, float b, float a2);
 #endif
 
 void V_ClearScene (void);
