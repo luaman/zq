@@ -361,6 +361,7 @@ void() StuffAliases =
 
  stuffcmd(self.owner, "alias report impulse 99\n");
 	stuffcmd(self.owner, "alias notready break\n");
+ stuffcmd(self.owner, "alias vwep impulse 103\n");
 };
 
 void(string tog, string key) PrintToggle1 =
@@ -1137,6 +1138,26 @@ void() ToggleBerzerk =
 	bprint(2, "ΒεςΪεςλ νοδε on\n");
 };
 
+void ToggleVwep ()
+{
+    float tmp;
+
+    if(match_in_progress)
+        return;
+    if(stof(infokey(world, "k_master")) && self.k_admin < 2) {
+        sprint(self, 3, "console: command is locked\n");
+        return;
+    }
+    tmp = stof(infokey(world, "vwep"));
+    if(tmp != 0) {
+        localcmd("localinfo vwep 0\n");
+        bprint(2, "vwep νοδε off\n");   //TODO: change vwep for red text version
+        return;
+    }
+    localcmd("localinfo vwep 1\n");
+    bprint(2, "vwep νοδε on\n");
+}
+
 void() ToggleSpecTalk =
 {
 	local float tmp, tmp2;
@@ -1616,4 +1637,5 @@ else if(self.impulse == 38) ToggleSpecTalk();
 	else if(self.impulse == 96) Deathmsg();
         else if(self.impulse == 97) RandomPickup();
         else if(self.impulse == 98) SetOfficial();
+        else if(self.impulse == 103) ToggleVwep();
 };
