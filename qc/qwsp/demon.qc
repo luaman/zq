@@ -265,8 +265,8 @@ CheckDemonJump
 */
 float()	CheckDemonJump =
 {
-	local	vector	dist;
-	local	float	d;
+	vector	dist;
+	float	d;
 
 	if (self.origin_z + self.mins_z > self.enemy.origin_z + self.enemy.mins_z
 	+ 0.75 * self.enemy.size_z)
@@ -317,8 +317,8 @@ float()	DemonCheckAttack =
 
 void(float side)	Demon_Melee =
 {
-	local	float	ldmg;
-	local vector	delta;
+	float	ldmg;
+	vector	delta;
 	
 	ai_face ();
 	walkmove (self.ideal_yaw, 12);	// allow a little closing
@@ -341,7 +341,7 @@ void(float side)	Demon_Melee =
 
 void()	Demon_JumpTouch =
 {
-	local	float	ldmg;
+	float	ldmg;
 
 	if (self.health <= 0)
 		return;

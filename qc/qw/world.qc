@@ -199,7 +199,7 @@ World Types:
 //=======================
 void() worldspawn =
 {
-	local string s;
+	string	s;
 
 	lastspawn = world;
 	InitBodyQue ();

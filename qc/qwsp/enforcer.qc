@@ -59,7 +59,7 @@ $frame paind17 paind18 paind19
 
 void() enforcer_fire =
 {
-	local vector org;
+	vector	org;
 
 	muzzleflash();
 	makevectors (self.angles);
@@ -170,7 +170,7 @@ void()	enf_paind19	=[	$paind19,	enf_run1	] {}
 
 void(entity attacker, float damage)	enf_pain =
 {
-	local float r;
+	float	r;
 
 	r = random ();
 	if (self.pain_finished > time)

@@ -36,8 +36,8 @@ float PLAT_LOW_TRIGGER = 1;
 
 void() plat_spawn_inside_trigger =
 {
-	local entity	trigger;
-	local vector	tmin, tmax;
+	entity	trigger;
+	vector	tmin, tmax;
 
 //
 // middle trigger
@@ -273,7 +273,7 @@ void() train_wait =
 
 void() train_next =
 {
-	local entity	targ;
+	entity	targ;
 
 	targ = find (world, targetname, self.target);
 	self.target = targ.target;
@@ -288,9 +288,8 @@ void() train_next =
 }
 
 void() func_train_find =
-
 {
-	local entity	targ;
+	entity	targ;
 
 	targ = find (world, targetname, self.target);
 	self.target = targ.target;

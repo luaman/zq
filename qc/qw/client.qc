@@ -135,8 +135,8 @@ Returns the entity to view from
 */
 entity() FindIntermission =
 {
-	local   entity spot;
-	local   float cyc;
+	entity	spot;
+	float	cyc;
 
 // look for info_intermission first
 	spot = find (world, classname, "info_intermission");
@@ -164,7 +164,7 @@ entity() FindIntermission =
 
 void() GotoNextMap =
 {
-	local string newmap;
+	string	newmap;
 
 //ZOID: 12-13-96, samelevel is overloaded, only 1 works for same level
 
@@ -213,7 +213,7 @@ Take the players to the intermission spot
 */
 void() execute_changelevel =
 {
-	local entity    pos;
+	entity	pos;
 
 	intermission_running = 1;
 	
@@ -378,10 +378,10 @@ Returns the entity to spawn at
 */
 entity() SelectSpawnPoint =
 {
-	local   entity spot, thing;
-	local   float   numspots, totalspots;
-	local   float   pcount;
-	local entity spots;
+	entity	spot, thing;
+	float	numspots, totalspots;
+	float	pcount;
+	entity	spots;
 
 	numspots = 0;
 	totalspots = 0;
@@ -484,7 +484,7 @@ called each time a player enters a new level
 */
 void() PutClientInServer =
 {
-	local   entity spot;
+	entity	spot;
 
 	self.classname = "player";
 	self.health = 100;
@@ -650,7 +650,7 @@ go to the next level for deathmatch
 */
 void() NextLevel =
 {
-	local entity o;
+	entity	o;
 
 	if (nextmap != "")
 		return; // already done
@@ -722,7 +722,7 @@ void() CheckRules =
 
 void() PlayerDeathThink =
 {
-	local float             forward;
+	float	forward;
 
 	if ((self.flags & FL_ONGROUND))
 	{
@@ -1173,7 +1173,7 @@ called when a player disconnects from a server
 */
 void() ClientDisconnect =
 {
-	local string s;
+	string	s;
 
 	// let everyone else know
 	bprint (PRINT_HIGH, self.netname);
@@ -1195,9 +1195,9 @@ called when a player dies
 
 void(entity targ, entity attacker) ClientObituary =
 {
-	local   float rnum;
-	local   string deathstring, deathstring2;
-	local   string  attackerteam, targteam;
+	float	rnum;
+	string	deathstring, deathstring2;
+	string	attackerteam, targteam;
 
 	rnum = random();
 	//ZOID 12-13-96: self.team doesn't work in QW.  Use keys
