@@ -370,12 +370,7 @@ int CDAudio_Init(void)
 {
 	int i;
 
-#if 0
-	if (cls.state == ca_dedicated)
-		return -1;
-#endif
-
-	if (COM_CheckParm("-nocdaudio"))
+	if (!COM_CheckParm("-cdaudio"))
 		return -1;
 
 	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)
