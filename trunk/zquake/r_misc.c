@@ -78,12 +78,12 @@ void R_TimeRefresh_f (void)
 	if (cls.state != ca_active)
 		return;
 
-	startangle = r_refdef.viewangles[1];
+	startangle = r_refdef2.viewangles[1];
 	
 	start = Sys_DoubleTime ();
 	for (i=0 ; i<128 ; i++)
 	{
-		r_refdef.viewangles[1] = i/128.0*360.0;
+		r_refdef2.viewangles[1] = i/128.0*360.0;
 
 		VID_LockBuffer ();
 
@@ -102,7 +102,7 @@ void R_TimeRefresh_f (void)
 	time = stop-start;
 	Com_Printf ("%f seconds (%f fps)\n", time, 128/time);
 	
-	r_refdef.viewangles[1] = startangle;
+	r_refdef2.viewangles[1] = startangle;
 }
 
 /*
@@ -176,7 +176,7 @@ void R_TimeGraph (void)
 
 	a = (r_time2-r_time1)/0.01;
 //a = fabs(mouse_y * 0.05);
-//a = (int)((r_refdef.vieworg[2] + 1024)/1)%(int)r_graphheight.value;
+//a = (int)((r_refdef2.vieworg[2] + 1024)/1)%(int)r_graphheight.value;
 //a = (int)((pmove.velocity[2] + 500)/10);
 //a = fabs(velocity[0])/20;
 //a = ((int)fabs(origin[0])/8)%20;
@@ -602,10 +602,10 @@ void R_SetupFrame (void)
 	r_framecount++;
 
 // build the transformation matrix for the given view angles
-	VectorCopy (r_refdef.vieworg, modelorg);
-	VectorCopy (r_refdef.vieworg, r_origin);
+	VectorCopy (r_refdef2.vieworg, modelorg);
+	VectorCopy (r_refdef2.vieworg, r_origin);
 
-	AngleVectors (r_refdef.viewangles, vpn, vright, vup);
+	AngleVectors (r_refdef2.viewangles, vpn, vright, vup);
 
 // current viewleaf
 	r_oldviewleaf = r_viewleaf;

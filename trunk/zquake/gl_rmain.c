@@ -56,7 +56,6 @@ vec3_t	r_origin;
 //
 // screen size info
 //
-refdef_t	r_refdef;
 refdef2_t	r_refdef2;
 
 mleaf_t		*r_viewleaf, *r_oldviewleaf;
@@ -474,9 +473,9 @@ void R_SetupFrame (void)
 	r_framecount++;
 
 // build the transformation matrix for the given view angles
-	VectorCopy (r_refdef.vieworg, r_origin);
+	VectorCopy (r_refdef2.vieworg, r_origin);
 
-	AngleVectors (r_refdef.viewangles, vpn, vright, vup);
+	AngleVectors (r_refdef2.viewangles, vpn, vright, vup);
 
 // current viewleaf
 	r_oldviewleaf = r_viewleaf;
@@ -577,10 +576,10 @@ void R_SetupGL (void)
 
 	glRotatef (-90,  1, 0, 0);		// put Z going up
 	glRotatef (90,	0, 0, 1);		// put Z going up
-	glRotatef (-r_refdef.viewangles[2],  1, 0, 0);
-	glRotatef (-r_refdef.viewangles[0],  0, 1, 0);
-	glRotatef (-r_refdef.viewangles[1],  0, 0, 1);
-	glTranslatef (-r_refdef.vieworg[0],  -r_refdef.vieworg[1],	-r_refdef.vieworg[2]);
+	glRotatef (-r_refdef2.viewangles[2],  1, 0, 0);
+	glRotatef (-r_refdef2.viewangles[0],  0, 1, 0);
+	glRotatef (-r_refdef2.viewangles[1],  0, 0, 1);
+	glTranslatef (-r_refdef2.vieworg[0], -r_refdef2.vieworg[1], -r_refdef2.vieworg[2]);
 
 	//
 	// set drawing parms

@@ -955,7 +955,7 @@ void R_DrawBrushModel (entity_t *e)
 //	if (gl_fb_bmodels.value)
 //		memset (fullbright_polys, 0, sizeof(fullbright_polys));
 
-	VectorSubtract (r_refdef.vieworg, e->origin, modelorg);
+	VectorSubtract (r_refdef2.vieworg, e->origin, modelorg);
 	if (rotated)
 	{
 		vec3_t	temp;
@@ -1154,7 +1154,7 @@ void R_DrawWorld (void)
 	memset (&ent, 0, sizeof(ent));
 	ent.model = r_worldmodel;
 
-	VectorCopy (r_refdef.vieworg, modelorg);
+	VectorCopy (r_refdef2.vieworg, modelorg);
 
 	currententity = &ent;
 	currenttexture = -1;

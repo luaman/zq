@@ -800,18 +800,18 @@ void V_BoundOffsets (void)
 // absolutely bound refresh relative to entity clipping hull
 // so the view can never be inside a solid wall
 
-	if (r_refdef.vieworg[0] < cl.simorg[0] - 14)
-		r_refdef.vieworg[0] = cl.simorg[0] - 14;
-	else if (r_refdef.vieworg[0] > cl.simorg[0] + 14)
-		r_refdef.vieworg[0] = cl.simorg[0] + 14;
-	if (r_refdef.vieworg[1] < cl.simorg[1] - 14)
-		r_refdef.vieworg[1] = cl.simorg[1] - 14;
-	else if (r_refdef.vieworg[1] > cl.simorg[1] + 14)
-		r_refdef.vieworg[1] = cl.simorg[1] + 14;
-	if (r_refdef.vieworg[2] < cl.simorg[2] - 22)
-		r_refdef.vieworg[2] = cl.simorg[2] - 22;
-	else if (r_refdef.vieworg[2] > cl.simorg[2] + 30)
-		r_refdef.vieworg[2] = cl.simorg[2] + 30;
+	if (r_refdef2.vieworg[0] < cl.simorg[0] - 14)
+		r_refdef2.vieworg[0] = cl.simorg[0] - 14;
+	else if (r_refdef2.vieworg[0] > cl.simorg[0] + 14)
+		r_refdef2.vieworg[0] = cl.simorg[0] + 14;
+	if (r_refdef2.vieworg[1] < cl.simorg[1] - 14)
+		r_refdef2.vieworg[1] = cl.simorg[1] - 14;
+	else if (r_refdef2.vieworg[1] > cl.simorg[1] + 14)
+		r_refdef2.vieworg[1] = cl.simorg[1] + 14;
+	if (r_refdef2.vieworg[2] < cl.simorg[2] - 22)
+		r_refdef2.vieworg[2] = cl.simorg[2] - 22;
+	else if (r_refdef2.vieworg[2] > cl.simorg[2] + 30)
+		r_refdef2.vieworg[2] = cl.simorg[2] + 30;
 }
 
 /*
@@ -823,9 +823,9 @@ Idle swaying
 */
 void V_AddIdle (void)
 {
-	r_refdef.viewangles[ROLL] += v_idlescale * sin(cl.time*v_iroll_cycle) * v_iroll_level;
-	r_refdef.viewangles[PITCH] += v_idlescale * sin(cl.time*v_ipitch_cycle) * v_ipitch_level;
-	r_refdef.viewangles[YAW] += v_idlescale * sin(cl.time*v_iyaw_cycle) * v_iyaw_level;
+	r_refdef2.viewangles[ROLL] += v_idlescale * sin(cl.time*v_iroll_cycle) * v_iroll_level;
+	r_refdef2.viewangles[PITCH] += v_idlescale * sin(cl.time*v_ipitch_cycle) * v_ipitch_level;
+	r_refdef2.viewangles[YAW] += v_idlescale * sin(cl.time*v_iyaw_cycle) * v_iyaw_level;
 }
 
 
@@ -854,12 +854,12 @@ void V_CalcViewRoll (void)
 		if (cl.rollangle < side)
 			cl.rollangle = side;
 	}
-	r_refdef.viewangles[ROLL] += cl.rollangle;
+	r_refdef2.viewangles[ROLL] += cl.rollangle;
 
 	if (v_dmg_time > 0 && v_kicktime.value > 0)
 	{
-		r_refdef.viewangles[ROLL] += v_dmg_time/v_kicktime.value*v_dmg_roll;
-		r_refdef.viewangles[PITCH] += v_dmg_time/v_kicktime.value*v_dmg_pitch;
+		r_refdef2.viewangles[ROLL] += v_dmg_time/v_kicktime.value*v_dmg_roll;
+		r_refdef2.viewangles[PITCH] += v_dmg_time/v_kicktime.value*v_dmg_pitch;
 		v_dmg_time -= cls.frametime;
 	}
 }
@@ -900,13 +900,13 @@ void V_AddViewWeapon (float bob)
 	}
 #endif
 
-	ent.angles[YAW] = r_refdef.viewangles[YAW];
-	ent.angles[PITCH] = -r_refdef.viewangles[PITCH];
-	ent.angles[ROLL] = r_refdef.viewangles[ROLL];
+	ent.angles[YAW] = r_refdef2.viewangles[YAW];
+	ent.angles[PITCH] = -r_refdef2.viewangles[PITCH];
+	ent.angles[ROLL] = r_refdef2.viewangles[ROLL];
 
-	AngleVectors (r_refdef.viewangles, forward, NULL, up);
+	AngleVectors (r_refdef2.viewangles, forward, NULL, up);
 	
-	VectorCopy (r_refdef.vieworg, ent.origin);
+	VectorCopy (r_refdef2.vieworg, ent.origin);
 	VectorMA (ent.origin, bob * 0.4, forward, ent.origin);
 
 	// fudge position around to keep amount of weapon visible
@@ -933,8 +933,8 @@ void V_CalcIntermissionRefdef (void)
 {
 	float		old;
 
-	VectorCopy (cl.simorg, r_refdef.vieworg);
-	VectorCopy (cl.simangles, r_refdef.viewangles);
+	VectorCopy (cl.simorg, r_refdef2.vieworg);
+	VectorCopy (cl.simangles, r_refdef2.viewangles);
 
 // always idle in intermission
 	old = v_idlescale;
@@ -961,54 +961,54 @@ void V_CalcRefdef (void)
 //	
 // set up the refresh position
 //
-	VectorCopy (cl.simorg, r_refdef.vieworg);
+	VectorCopy (cl.simorg, r_refdef2.vieworg);
 
 	// never let it sit exactly on a node line, because a water plane can
 	// dissapear when viewed with the eye exactly on it.
 	// the server protocol only specifies to 1/8 pixel, so add 1/16 in each axis
-	r_refdef.vieworg[0] += 1.0/16;
-	r_refdef.vieworg[1] += 1.0/16;
-	r_refdef.vieworg[2] += 1.0/16;
+	r_refdef2.vieworg[0] += 1.0/16;
+	r_refdef2.vieworg[1] += 1.0/16;
+	r_refdef2.vieworg[2] += 1.0/16;
 
 	// add view height
 	if (view_message.flags & PF_GIB)
-		r_refdef.vieworg[2] += 8;	// gib view height
+		r_refdef2.vieworg[2] += 8;	// gib view height
 	else if (view_message.flags & PF_DEAD)
-		r_refdef.vieworg[2] -= 16;	// corpse view height
+		r_refdef2.vieworg[2] -= 16;	// corpse view height
 	else
 	{
-		r_refdef.vieworg[2] += cl.viewheight;	// normal view height
+		r_refdef2.vieworg[2] += cl.viewheight;	// normal view height
 
-		r_refdef.vieworg[2] += bob;
+		r_refdef2.vieworg[2] += bob;
 
 		// smooth out stair step ups
-		r_refdef.vieworg[2] += cl.crouch;
+		r_refdef2.vieworg[2] += cl.crouch;
 	}
 
 //
 // set up refresh view angles
 //
-	VectorCopy (cl.simangles, r_refdef.viewangles);
+	VectorCopy (cl.simangles, r_refdef2.viewangles);
 	V_CalcViewRoll ();
 	V_AddIdle ();
 
 	if (v_kickback.value)
 	{
 		if (cls.nqdemoplayback)
-			r_refdef.viewangles[PITCH] += cl.punchangle;
+			r_refdef2.viewangles[PITCH] += cl.punchangle;
 		else
 		{
 			// add weapon kick offset
-			AngleVectors (r_refdef.viewangles, forward, NULL, NULL);
-			VectorMA (r_refdef.vieworg, cl.punchangle, forward, r_refdef.vieworg);
+			AngleVectors (r_refdef2.viewangles, forward, NULL, NULL);
+			VectorMA (r_refdef2.vieworg, cl.punchangle, forward, r_refdef2.vieworg);
 
 			// add weapon kick angle
-			r_refdef.viewangles[PITCH] += cl.punchangle * 0.5;
+			r_refdef2.viewangles[PITCH] += cl.punchangle * 0.5;
 		}
 	}
 
 	if (view_message.flags & PF_DEAD)		// PF_GIB will also set PF_DEAD
-		r_refdef.viewangles[ROLL] = 80;	// dead view angle
+		r_refdef2.viewangles[ROLL] = 80;	// dead view angle
 
 	V_AddViewWeapon (bob);
 }

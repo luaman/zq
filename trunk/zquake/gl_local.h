@@ -119,7 +119,6 @@ extern	vec3_t	r_origin;
 //
 // screen size info
 //
-extern	refdef_t	r_refdef;
 extern	mleaf_t		*r_viewleaf, *r_oldviewleaf;
 extern	mleaf_t		*r_viewleaf2, *r_oldviewleaf2;	// for watervis hack
 extern	texture_t	*r_notexture_mip;
