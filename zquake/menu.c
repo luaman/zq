@@ -340,6 +340,18 @@ void M_Main_Key (int key)
 			m_main_cursor = MAIN_ITEMS - 1;
 		break;
 
+	case K_HOME:
+	case K_PGUP:
+		S_LocalSound ("misc/menu1.wav");
+		m_main_cursor = 0;
+		break;
+
+	case K_END:
+	case K_PGDN:
+		S_LocalSound ("misc/menu1.wav");
+		m_main_cursor = MAIN_ITEMS - 1;
+		break;
+	
 	case K_ENTER:
 		m_entersound = true;
 
@@ -621,6 +633,18 @@ void M_Options_Key (int k)
 			options_cursor = 0;
 		break;	
 
+	case K_HOME:
+	case K_PGUP:
+		S_LocalSound ("misc/menu1.wav");
+		options_cursor = 0;
+		break;
+
+	case K_END:
+	case K_PGDN:
+		S_LocalSound ("misc/menu1.wav");
+		options_cursor = OPTIONS_ITEMS-1;
+		break;
+
 	case K_LEFTARROW:
 		M_AdjustSliders (-1);
 		break;
@@ -632,7 +656,7 @@ void M_Options_Key (int k)
 
 	if (options_cursor == 14 && vid_menudrawfn == NULL)
 	{
-		if (k == K_UPARROW)
+		if (k == K_UPARROW || k == K_END || k == K_PGDN)
 			options_cursor = 13;
 		else
 			options_cursor = 0;
@@ -644,7 +668,7 @@ void M_Options_Key (int k)
 #endif
 	)
 	{
-		if (k == K_UPARROW)
+		if (k == K_UPARROW || k == K_END || k == K_PGDN)
 			options_cursor = 14;
 		else
 			options_cursor = 0;
@@ -830,11 +854,13 @@ void M_Keys_Key (int k)
 		break;
 
 	case K_HOME:
+	case K_PGUP:
 		S_LocalSound ("misc/menu1.wav");
 		keys_cursor = 0;
 		break;
 
 	case K_END:
+	case K_PGDN:
 		S_LocalSound ("misc/menu1.wav");
 		keys_cursor = NUMCOMMANDS - 1;
 		break;
@@ -1029,6 +1055,18 @@ void M_SinglePlayer_Key (int key)
 		S_LocalSound ("misc/menu1.wav");
 		if (--m_singleplayer_cursor < 0)
 			m_singleplayer_cursor = SINGLEPLAYER_ITEMS - 1;
+		break;
+
+	case K_HOME:
+	case K_PGUP:
+		S_LocalSound ("misc/menu1.wav");
+		m_singleplayer_cursor = 0;
+		break;
+
+	case K_END:
+	case K_PGDN:
+		S_LocalSound ("misc/menu1.wav");
+		m_singleplayer_cursor = SINGLEPLAYER_ITEMS - 1;
 		break;
 
 	case K_ENTER:
@@ -1279,6 +1317,18 @@ void M_MultiPlayer_Key (int key)
 		S_LocalSound ("misc/menu1.wav");
 		if (--m_multiplayer_cursor < 0)
 			m_multiplayer_cursor = MULTIPLAYER_ITEMS - 1;
+		break;
+
+	case K_HOME:
+	case K_PGUP:
+		S_LocalSound ("misc/menu1.wav");
+		m_multiplayer_cursor = 0;
+		break;
+
+	case K_END:
+	case K_PGDN:
+		S_LocalSound ("misc/menu1.wav");
+		m_multiplayer_cursor = MULTIPLAYER_ITEMS - 1;
 		break;
 
 	case K_ENTER:
@@ -2239,6 +2289,7 @@ void M_Init (void)
 	Cmd_AddCommand ("menu_keys", M_Menu_Keys_f);
 	Cmd_AddCommand ("menu_video", M_Menu_Video_f);
 	Cmd_AddCommand ("help", M_Menu_Help_f);
+	Cmd_AddCommand ("menu_help", M_Menu_Help_f);
 	Cmd_AddCommand ("menu_quit", M_Menu_Quit_f);
 }
 
