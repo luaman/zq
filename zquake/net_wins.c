@@ -220,6 +220,13 @@ void NET_SendLoopPacket (netsrc_t sock, int length, void *data, netadr_t to)
 	loop->msgs[i].datalen = length;
 }
 
+
+void NET_ClearLoopback (void)
+{
+	loopbacks[0].send = loopbacks[0].get = 0;
+	loopbacks[1].send = loopbacks[1].get = 0;
+}
+
 //=============================================================================
 
 qboolean NET_GetPacket (netsrc_t sock)
