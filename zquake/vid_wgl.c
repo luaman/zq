@@ -1567,18 +1567,9 @@ static void Check_Gamma (unsigned char *pal)
 	unsigned char	palette[768];
 	int		i;
 
-	if ((i = COM_CheckParm("-gamma")) == 0) {
-		if ((gl_renderer && strstr(gl_renderer, "Voodoo")) ||
-			(gl_vendor && strstr(gl_vendor, "3Dfx")))
-			vid_gamma = 1;
-		else
-			vid_gamma = 0.7; // default to 0.7 on non-3dfx hardware
-	} else
-		vid_gamma = Q_atof(com_argv[i+1]);
-
-	if (vid_gamma < 0.3)
-		vid_gamma = 0.3;
-	if (vid_gamma > 1)
+	if ((i = COM_CheckParm("-gamma")) != 0 && i+1 < com_argc)
+		vid_gamma = bound (0.3, Q_atof(com_argv[i+1]), 1);
+	else
 		vid_gamma = 1;
 
 	Cvar_SetValue (&gl_gamma, vid_gamma);
