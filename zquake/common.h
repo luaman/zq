@@ -235,3 +235,44 @@ void Com_DPrintf (char *fmt, ...);
 //============================================================================
 
 extern qboolean	com_serveractive;	// true if sv.state != ss_dead
+
+//=============================================================================
+
+// the host system specifies the base of the directory tree, the
+// command line parms passed to the program, and the amount of memory
+// available for the program to use
+
+typedef struct
+{
+	char	*basedir;
+	int		argc;
+	char	**argv;
+	void	*membase;
+	int		memsize;
+} quakeparms_t;
+
+
+//
+// host
+//
+extern quakeparms_t	host_parms;
+
+extern qboolean		host_initialized;
+
+void Host_Init (quakeparms_t *parms);
+void Host_Shutdown (void);
+void Host_Frame (double time);
+void Host_Error (char *error, ...);
+void Host_EndGame (char *message, ...);
+void Host_Quit (void);
+
+void CL_Init (void);
+void CL_Shutdown (void);
+void CL_Frame (double time);
+void CL_Disconnect ();
+void Con_Init (void);
+void Con_Print (char *txt);
+
+void SV_Init (void);
+void SV_Shutdown (char *finalmsg);
+void SV_Frame (double time);
