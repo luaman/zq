@@ -546,7 +546,7 @@ void Mod_LoadVertexes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( (count+2)*sizeof(*out), loadname);	
+	out = Hunk_AllocName ( (count+8)*sizeof(*out), loadname);	
 
 	loadmodel->vertexes = out;
 	loadmodel->numvertexes = count;
@@ -610,7 +610,7 @@ void Mod_LoadEdges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( (count + 13) * sizeof(*out), loadname);	
+	out = Hunk_AllocName ( (count + 12) * sizeof(*out), loadname);	
 
 	loadmodel->edges = out;
 	loadmodel->numedges = count;
