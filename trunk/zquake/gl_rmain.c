@@ -90,6 +90,8 @@ cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
 cvar_t	r_watervishack = {"r_watervishack", "1"};
 cvar_t	r_fullbrightSkins = {"r_fullbrightSkins", "0"};
+cvar_t	r_fastsky = {"r_fastsky", "0"};
+cvar_t	r_skycolor = {"r_skycolor", "4"};
 
 cvar_t	gl_clear = {"gl_clear","0"};
 cvar_t	gl_cull = {"gl_cull","1"};

@@ -142,8 +142,8 @@ void R_Envmap_f (void)
 	COM_WriteFile ("env5.rgb", buffer, sizeof(buffer));		
 
 	envmap = false;
-	glDrawBuffer  (GL_BACK);
-	glReadBuffer  (GL_BACK);
+	glDrawBuffer (GL_BACK);
+	glReadBuffer (GL_BACK);
 	GL_EndRendering ();
 }
 
@@ -153,7 +153,7 @@ R_Init
 ===============
 */
 void R_Init (void)
-{	
+{
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
 	Cmd_AddCommand ("envmap", R_Envmap_f);
 #ifdef QW_BOTH
@@ -175,6 +175,8 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_speeds);
 	Cvar_RegisterVariable (&r_netgraph);
 	Cvar_RegisterVariable (&r_fullbrightSkins);
+	Cvar_RegisterVariable (&r_skycolor);
+	Cvar_RegisterVariable (&r_fastsky);
 
 	Cvar_RegisterVariable (&gl_clear);
 	Cvar_RegisterVariable (&gl_texsort);
