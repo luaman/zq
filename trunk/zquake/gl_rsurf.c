@@ -368,14 +368,21 @@ store:
 		stride -= smax * 3;
 		for (i=0 ; i<tmax ; i++, dest += stride)
 		{
-			for (j=smax*3 ; j ; j--)
-			{
-				t = *bl++;
-				t = (t >> 8) + (t >> 9);
-				if (t > 255)
-					t = 255;
-				*dest++ = 255-t;
-			}
+			if (lightmode == 2)
+				for (j=smax*3 ; j ; j--) {
+					t = *bl++;
+					t = (t >> 8) + (t >> 9);
+					if (t > 255)
+						t = 255;
+					*dest++ = 255-t;
+				}
+			else
+				for (j=smax*3 ; j ; j--) {
+					t = *bl++ >> 7;
+					if (t > 255)
+						t = 255;
+					*dest++ = 255-t;
+				}
 		}
 		break;
 	case GL_LUMINANCE:
