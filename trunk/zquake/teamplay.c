@@ -788,6 +788,7 @@ void S_PlayVol (void);
 void Cvar_Set_f (void);
 void Cmd_Echo_f (void);
 void Cmd_Alias_f (void);
+void Cvar_Inc_f (void);
 
 void CL_ExecuteTriggerString (char *text)
 {	
@@ -805,6 +806,7 @@ void CL_ExecuteTriggerString (char *text)
 	if (!Cmd_Argc())
 		return;		// no tokens
 
+// FIXME: rewrite this!	
 	if (!Q_strcasecmp (Cmd_Argv(0), "play"))
 		S_Play();
 	else if (!Q_strcasecmp (Cmd_Argv(0), "playvol")) 
@@ -821,6 +823,8 @@ void CL_ExecuteTriggerString (char *text)
 		Cmd_Alias_f();
 	else if (!Q_strcasecmp (Cmd_Argv(0), "msg_trigger")) 
 		CL_MsgTrigger_f();
+	else if (!Q_strcasecmp (Cmd_Argv(0), "inc")) 
+		Cvar_Inc_f();
 	else {
 		// check cvars
 		if (!Cvar_Command () && (cl_warncmd.value || developer.value))
