@@ -371,7 +371,6 @@ float OgreCheckAttack ()
 {
 	vector	spot1, spot2;
 	entity	targ;
-	float	chance;
 
 	if (enemy_range == RANGE_MELEE)
 	{
@@ -411,13 +410,6 @@ float OgreCheckAttack ()
 	if (enemy_range == RANGE_FAR)
 		return false;
 		
-	else if (enemy_range == RANGE_NEAR)
-		chance = 0.10;
-	else if (enemy_range == RANGE_MID)
-		chance = 0.05;
-	else
-		chance = 0;
-
 	self.attack_state = AS_MISSILE;
 	SUB_AttackFinished (1 + 2*random());
 	return true;
