@@ -34,10 +34,21 @@ byte		net_message_buffer[MAX_UDP_PACKET];
 
 WSADATA		winsockdata;
 
-int			loop_c2s_messageLength;
-char		loop_c2s_message[MAX_UDP_PACKET];
-int			loop_s2c_messageLength;
-char		loop_s2c_message[MAX_UDP_PACKET];
+#define	MAX_LOOPBACK	4	// must be a power of two
+
+typedef struct
+{
+	byte	data[MAX_UDP_PACKET];
+	int		datalen;
+} loopmsg_t;
+
+typedef struct
+{
+	loopmsg_t	msgs[MAX_LOOPBACK];
+	unsigned int	get, send;
+} loopback_t;
+
+loopback_t	loopbacks[2];
 
 //=============================================================================
 
@@ -151,6 +162,56 @@ qboolean NET_StringToAdr (char *s, netadr_t *a)
 }
 
 
+/*
+=============================================================================
+
+LOOPBACK BUFFERS FOR LOCAL PLAYER
+
+=============================================================================
+*/
+
+qboolean NET_GetLoopPacket (netsrc_t sock)
+{
+	int		i;
+	loopback_t	*loop;
+
+	loop = &loopbacks[sock];
+
+	if (loop->send - loop->get > MAX_LOOPBACK)
+		loop->get = loop->send - MAX_LOOPBACK;
+
+	if ((int)(loop->send - loop->get) <= 0)
+		return false;
+
+	i = loop->get & (MAX_LOOPBACK-1);
+	loop->get++;
+
+	memcpy (net_message.data, loop->msgs[i].data, loop->msgs[i].datalen);
+	net_message.cursize = loop->msgs[i].datalen;
+	memset (&net_from, 0, sizeof(net_from));
+	net_from.type = NA_LOOPBACK;
+	return true;
+
+}
+
+
+void NET_SendLoopPacket (netsrc_t sock, int length, void *data, netadr_t to)
+{
+	int		i;
+	loopback_t	*loop;
+
+	loop = &loopbacks[sock^1];
+
+	i = loop->send & (MAX_LOOPBACK-1);
+	loop->send++;
+
+	if (length > sizeof(loop->msgs[i].data))
+		Sys_Error ("Outgoing loopback packet size > MAX_UDP_PACKET");
+
+	memcpy (loop->msgs[i].data, data, length);
+	loop->msgs[i].datalen = length;
+}
+
 //=============================================================================
 
 qboolean NET_GetPacket (netsrc_t sock)
@@ -160,25 +221,8 @@ qboolean NET_GetPacket (netsrc_t sock)
 	int		fromlen;
 	int		net_socket;
 
-	if (sock == NS_CLIENT && loop_s2c_messageLength > 0)
-	{
-		memcpy (net_message_buffer, loop_s2c_message, loop_s2c_messageLength);
-		net_message.cursize = loop_s2c_messageLength;
-		loop_s2c_messageLength = 0;
-		memset (&net_from, 0, sizeof(net_from));
-		net_from.type = NA_LOOPBACK;
-		return net_message.cursize;
-	}
-
-	if (sock == NS_SERVER && loop_c2s_messageLength > 0)
-	{
-		memcpy (net_message_buffer, loop_c2s_message, loop_c2s_messageLength);
-		net_message.cursize = loop_c2s_messageLength;
-		loop_c2s_messageLength = 0;
-		memset (&net_from, 0, sizeof(net_from));
-		net_from.type = NA_LOOPBACK;
-		return net_message.cursize;
-	}
+	if (NET_GetLoopPacket (sock))
+		return true;
 
 	if (sock == NS_CLIENT)
 		net_socket = net_clientsocket;
@@ -228,23 +272,8 @@ void NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to)
 
 	if (to.type == NA_LOOPBACK)
 	{
-		if (sock == NS_CLIENT)
-		{
-//			if (loop_c2s_messageLength)
-//				Con_Printf ("Warning: NET_SendPacket: loop_c2s: NET_SendPacket without NET_GetPacket\n");
-			memcpy (loop_c2s_message, data, length);
-			loop_c2s_messageLength = length;
-			return;
-		}
-		else if (sock == NS_SERVER)
-		{
-//			if (loop_s2c_messageLength)
-//				Con_Printf ("Warning: NET_SendPacket: loop_s2c: NET_SendPacket without NET_GetPacket\n");
-			memcpy (loop_s2c_message, data, length);
-			loop_s2c_messageLength = length;
-			return;
-		}
-		Sys_Error("NET_SendPacket: loopback: unknown socket");
+		NET_SendLoopPacket (sock, length, data, to);
+		return;
 	}
 
 	NetadrToSockadr (&to, &addr);
