@@ -389,7 +389,7 @@ void Con_DrawInput (void)
 		text[i] = ' ';
 
 	// add the cursor frame
-	if ( (int)(realtime*con_cursorspeed) & 1 )
+	if ( (int)(curtime*con_cursorspeed) & 1 )
 		text[key_linepos] = 11;
 
 	//	prestep if horizontally scrolling
@@ -467,7 +467,7 @@ void Con_DrawNotify (void)
 		s = strcpy (temp, chat_buffer);
 
 		// add the cursor frame
-		if ( (int)(realtime*con_cursorspeed) & 1 ) {
+		if ( (int)(curtime*con_cursorspeed) & 1 ) {
 			if (chat_linepos == strlen(s))
 				s[chat_linepos+1] = '\0';
 			s[chat_linepos] = 11;
