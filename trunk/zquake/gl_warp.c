@@ -783,10 +783,18 @@ void R_DrawSkyBox (void)
 	if (!r_skyboxloaded)
 		return;
 
-	for (i=0 ; i<6 ; i++)
+	if (r_viewleaf->contents == CONTENTS_SOLID) {
+		// always draw if we're in a solid leaf (probably outside the level)
+		// FIXME, don't really have to add all six planes every time
+		for (i = 0; i < 6; i++) {
+			skymins[0][i] = skymins[1][i] = -1;
+			skymaxs[0][i] = skymaxs[1][i] = 1;
+		}
+	}
+
+	for (i = 0; i < 6; i++)
 	{
-		if (skymins[0][i] >= skymaxs[0][i]
-		|| skymins[1][i] >= skymaxs[1][i])
+		if ((skymins[0][i] >= skymaxs[0][i]	|| skymins[1][i] >= skymaxs[1][i]))
 			continue;
 
 		GL_Bind (skyboxtextures + skytexorder[i]);
