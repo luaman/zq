@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	MAX_MAP_PLANES		8192
 #define	MAX_MAP_NODES		32767		// because negative shorts are contents
 #define	MAX_MAP_CLIPNODES	32767		//
-#define	MAX_MAP_LEAFS		32767		// 
+#define	MAX_MAP_LEAFS		32767		//
 #define	MAX_MAP_VERTS		65535
 #define	MAX_MAP_FACES		65535
 #define	MAX_MAP_MARKSURFACES 65535
@@ -90,7 +90,7 @@ typedef struct
 
 typedef struct
 {
-	int			version;	
+	int			version;
 	lump_t		lumps[HEADER_LUMPS];
 } dheader_t;
 
@@ -181,7 +181,7 @@ typedef struct
 	short		side;
 
 	int			firstedge;		// we must support > 64k edges
-	short		numedges;	
+	short		numedges;
 	short		texinfo;
 
 // lighting info
@@ -274,3 +274,4 @@ void	PrintBSPFileSizes (void);
 #endif
 
 #endif // __bspfile_h
+

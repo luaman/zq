@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // cl_screen.h
+#ifndef _CL_SCREEN_H_
+#define _CL_SCREEN_H_
 
 void SCR_Init (void);
 void SCR_RegisterPics (void);
@@ -46,3 +48,6 @@ extern	int		scr_copyeverything;
 
 extern qbool	scr_skipupdate;
 extern qbool	block_drawing;
+
+#endif /* _CL_SCREEN_H_ */
+

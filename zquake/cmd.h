@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -167,3 +167,4 @@ void Cmd_WriteAliases (FILE *f);
 cmd_alias_t *Alias_Next (cmd_alias_t *alias);	// use to enumerate all aliases
 
 #endif /* _CMD_H_ */
+

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -349,11 +349,11 @@ typedef struct
 	float		ideal_punchangle;	// temporary view kick from weapon firing
 	float		punchangle;		// drifts towards ideal_punchangle
 	float		rollangle;		// smooth out rollangle changes when strafing
-	
+
 	int			intermission;	// don't change view angle, full screen, etc
 	float		completed_time;	// latched from time at intermission start
 	int			solo_completed_time;	// to draw on intermission screen
-	
+
 //
 // information that is static for the entire time connected to a server
 //
@@ -585,3 +585,4 @@ void Skin_NextDownload (void);
 #define RSSHOT_HEIGHT 200
 
 #endif /* _CLIENT_H_ */
+

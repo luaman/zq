@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -31,7 +31,7 @@ typedef union eval_s
 	func_t			function;
 	int				_int;
 	int				edict;
-} eval_t;	
+} eval_t;
 
 
 typedef struct link_s
@@ -51,12 +51,12 @@ typedef struct edict_s
 {
 	qbool		inuse;
 	link_t		area;				// linked to a division node or leaf
-	
+
 	int			num_leafs;
 	short		leafnums[MAX_ENT_LEAFS];	// for pvs checks, already -1
 
 	entity_state_t	baseline;
-	
+
 	float		freetime;			// sv.time when the object was freed
 	double		lastruntime;		// sv.time when SV_RunEntity was last
 									// called for this edict
@@ -183,3 +183,4 @@ void PR_InitStrings (void);
 void PR_FreeStrings (void);
 
 #endif /* _PROGS_H_ */
+

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -46,7 +46,7 @@ typedef struct efrag_s
 typedef struct entity_s
 {
 	vec3_t					origin;
-	vec3_t					angles;	
+	vec3_t					angles;
 	struct model_s			*model;			// NULL = no model
 	int						frame;
 	byte					*colormap;
@@ -60,7 +60,7 @@ typedef struct entity_s
 	int						visframe;		// last frame this entity was
 											// found in an active leaf
 											// only used for static objects
-	
+
 // FIXME: could turn these into a union
 	int						trivial_accept;
 	struct mnode_s			*topnode;		// for bmodels, first world node
@@ -94,7 +94,7 @@ typedef struct
 										// right and bottom edges, for clamping
 	float		fvrectright;			// rightmost edge, for Alias clamping
 	float		fvrectbottom;			// bottommost edge, for Alias clamping
-	float		horizontalFieldOfView;	// at Z = 1.0, this many X is visible 
+	float		horizontalFieldOfView;	// at Z = 1.0, this many X is visible
 										// 2.0 = 90 degrees
 	float		xOrigin;			// should probably always be 0.5
 	float		yOrigin;			// between be around 0.3 to 0.5
@@ -103,7 +103,7 @@ typedef struct
 	vec3_t		viewangles;
 
 	float		fov_x, fov_y;
-	
+
 	int			ambientlight;
 } refdef_t;
 
@@ -202,3 +202,4 @@ struct model_s *Mod_ForName (char *name, qbool crash);
 int R_ModelFlags (const struct model_s *model);
 
 #endif /* _RENDER_H_ */
+
