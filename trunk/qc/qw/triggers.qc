@@ -25,8 +25,6 @@
 
 */
 
-entity stemp, otemp, old;
-
 
 void() trigger_reactivate =
 {
