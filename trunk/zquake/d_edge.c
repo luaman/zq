@@ -195,6 +195,31 @@ void D_DrawSurfaces (void)
 			
 			D_DrawZSpans (s->spans);
 		}
+		else if (s->flags & SURF_DRAWSKYBOX)
+		{
+			extern byte	r_skypixels[6][256*256];
+
+			pface = s->data;
+			miplevel = 0;
+			cacheblock = (byte *)(r_skypixels[pface->texinfo->texture->offsets[0]]);
+			cachewidth = 256;
+
+			d_zistepu = s->d_zistepu;
+			d_zistepv = s->d_zistepv;
+			d_ziorigin = s->d_ziorigin;
+
+			D_CalcGradients (pface);
+
+			(*d_drawspans) (s->spans);
+			
+			// set up a gradient for the background surface that places it
+			// effectively at infinity distance from the viewpoint
+			d_zistepu = 0;
+			d_zistepv = 0;
+			d_ziorigin = -0.9;
+
+			D_DrawZSpans (s->spans);
+		}
 		else if (s->flags & SURF_DRAWBACKGROUND)
 		{
 			// set up a gradient for the background surface that places it

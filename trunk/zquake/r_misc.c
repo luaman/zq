@@ -579,15 +579,13 @@ void R_SetupFrame (void)
 	D_SetupFrame ();
 }
 
-
-/*
-===============
-R_SetSky
-===============
-*/
-void R_SetSky (char *name)
+void R_32To8bit (byte *in, int width, int height, byte *out)
 {
-	// not implemented yet
+	int i;
+	extern unsigned char d_15to8table[65536];
+
+	for (i = 0; i < width * height; i++, in += 4, out++)
+		*out = d_15to8table[((in[0]>>3)<<0) + ((in[1]>>3)<<5) + ((in[2]>>3)<<10)];
 }
 
 
@@ -598,76 +596,6 @@ void R_SetSky (char *name)
  
 ============================================================================== 
 */ 
-
-
-/* 
-============== 
-WritePCXfile 
-============== 
-*/
-void WritePCXfile (byte *data, int width, int height, int rowbytes, byte *palette,	// [in]
-				   byte **pcxdata, int *pcxsize)									// [out]
-{
-	int		i, j;
-	pcx_t	*pcx;
-	byte		*pack;
-
-	assert (pcxdata != NULL);
-	assert (pcxsize != NULL);
-
-	pcx = Hunk_TempAlloc (width*height*2+1000);
-	if (!pcx) {
-		Com_Printf ("WritePCXfile: not enough memory\n");
-		*pcxdata = NULL;
-		*pcxsize = 0;
-		return;
-	} 
- 
-	pcx->manufacturer = 0x0a;	// PCX id
-	pcx->version = 5;			// 256 color
- 	pcx->encoding = 1;		// uncompressed
-	pcx->bits_per_pixel = 8;		// 256 color
-	pcx->xmin = 0;
-	pcx->ymin = 0;
-	pcx->xmax = LittleShort((short)(width-1));
-	pcx->ymax = LittleShort((short)(height-1));
-	pcx->hres = LittleShort((short)width);
-	pcx->vres = LittleShort((short)height);
-	memset (pcx->palette,0,sizeof(pcx->palette));
-	pcx->color_planes = 1;		// chunky image
-	pcx->bytes_per_line = LittleShort((short)width);
-	pcx->palette_type = LittleShort(2);		// not a grey scale
-	memset (pcx->filler,0,sizeof(pcx->filler));
-
-// pack the image
-	pack = &pcx->data;
-	
-	for (i=0 ; i<height ; i++)
-	{
-		for (j=0 ; j<width ; j++)
-		{
-			if ( (*data & 0xc0) != 0xc0)
-				*pack++ = *data++;
-			else
-			{
-				*pack++ = 0xc1;
-				*pack++ = *data++;
-			}
-		}
-
-		data += rowbytes - width;
-	}
-			
-// write the palette
-	*pack++ = 0x0c;	// palette ID byte
-	for (i=0 ; i<768 ; i++)
-		*pack++ = *palette++;
-
-	// fill results
-	*pcxdata = (byte *) pcx;
-	*pcxsize = pack - (byte *)pcx;
-} 
- 
 
 
 /* 
@@ -718,7 +646,7 @@ void R_ScreenShot_f (void)
 // 
 	D_EnableBackBufferAccess ();
 
-	WritePCXfile (vid.buffer, vid.width, vid.height, vid.rowbytes,
+	WritePCX (vid.buffer, vid.width, vid.height, vid.rowbytes,
 				  current_pal, &pcxdata, &pcxsize);
 
 	D_DisableBackBufferAccess ();
@@ -886,7 +814,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 	Q_strncpyz (st, name.string, sizeof(st));
 	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, 20, w);
 
-	WritePCXfile (newbuf, w, h, w, host_basepal, pcxdata, pcxsize);
+	WritePCX (newbuf, w, h, w, host_basepal, pcxdata, pcxsize);
 
 	free(newbuf);
 

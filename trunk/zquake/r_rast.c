@@ -69,6 +69,146 @@ int				r_ceilv1;
 
 qboolean	r_lastvertvalid;
 
+// I just copied this data from a box map...
+int skybox_planes[12] = {2,-128, 0,-128, 2,128, 1,128, 0,128, 1,-128};
+
+int box_surfedges[24] = { 1,2,3,4,  -1,5,6,7,  8,9,-6,10,  -2,-7,-9,11,
+  12,-3,-11,-8,  -12,-10,-5,-4};
+int box_edges[24] = { 1,2, 2,3, 3,4, 4,1, 1,5, 5,6, 6,2, 7,8, 8,6, 5,7, 8,3, 7,4};
+
+int	box_faces[6] = {0,0,2,2,2,0};
+
+vec3_t	box_vecs[6][2] = {
+	{	{0,-1,0}, {-1,0,0} },
+	{ {0,1,0}, {0,0,-1} },
+	{	{0,-1,0}, {1,0,0} },
+	{ {1,0,0}, {0,0,-1} },
+	{ {0,-1,0}, {0,0,-1} },
+	{ {-1,0,0}, {0,0,-1} }
+};
+
+float	box_verts[8][3] = {
+	{-1,-1,-1},
+	{-1,1,-1},
+	{1,1,-1},
+	{1,-1,-1},
+	{-1,-1,1},
+	{-1,1,1},
+	{1,-1,1},
+	{1,1,1}
+};
+
+int				r_skyframe;
+msurface_t		*r_skyfaces;
+mvertex_t		*r_skyverts;
+mplane_t		*r_skyplanes;
+mtexinfo_t		*r_skytexinfo;
+qboolean		r_skyboxloaded;
+
+/*
+================
+R_InitSkyBox
+
+================
+*/
+void R_InitSkyBox (model_t *loadmodel)
+{
+	int			i;
+	medge_t		*skyedges;
+	int			*skysurfedges;
+
+	r_skyplanes = loadmodel->planes + loadmodel->numplanes;
+	loadmodel->numplanes += 6;
+	r_skytexinfo = loadmodel->texinfo + loadmodel->numtexinfo;
+	loadmodel->numtexinfo += 6;
+	r_skyfaces = loadmodel->surfaces + loadmodel->numsurfaces;
+	loadmodel->numsurfaces += 6;
+	r_skyverts = loadmodel->vertexes + loadmodel->numvertexes;
+	loadmodel->numvertexes += 8;
+	skyedges = loadmodel->edges + loadmodel->numedges;
+	loadmodel->numedges += 12;
+	skysurfedges = loadmodel->surfedges + loadmodel->numsurfedges;
+	loadmodel->numsurfedges += 24;
+
+	memset (r_skyfaces, 0, 6*sizeof(*r_skyfaces));
+	for (i=0 ; i<6 ; i++)
+	{
+		r_skyplanes[i].normal[skybox_planes[i*2]] = 1;
+		r_skyplanes[i].dist = skybox_planes[i*2+1];
+
+		VectorCopy (box_vecs[i][0], r_skytexinfo[i].vecs[0]);
+		VectorCopy (box_vecs[i][1], r_skytexinfo[i].vecs[1]);
+
+		r_skyfaces[i].plane = &r_skyplanes[i];
+		r_skyfaces[i].numedges = 4;
+		r_skyfaces[i].flags = box_faces[i] | SURF_DRAWSKYBOX;
+		r_skyfaces[i].firstedge = loadmodel->numsurfedges-24+i*4;
+		r_skyfaces[i].texinfo = &r_skytexinfo[i];
+		r_skyfaces[i].texturemins[0] = -128;
+		r_skyfaces[i].texturemins[1] = -128;
+		r_skyfaces[i].extents[0] = 256;
+		r_skyfaces[i].extents[1] = 256;
+	}
+
+	for (i=0 ; i<24 ; i++)
+		if (box_surfedges[i] > 0)
+			skysurfedges[i] = loadmodel->numedges-13 + box_surfedges[i];
+		else
+			skysurfedges[i] = - (loadmodel->numedges-13 + -box_surfedges[i]);
+
+	for(i=0 ; i<12 ; i++)
+	{
+		skyedges[i].v[0] = loadmodel->numvertexes-9+box_edges[i*2+0];
+		skyedges[i].v[1] = loadmodel->numvertexes-9+box_edges[i*2+1];
+		skyedges[i].cachededgeoffset = 0;
+	}
+}
+
+/*
+================
+R_EmitSkyBox
+================
+*/
+void R_EmitSkyBox (void)
+{
+	int		i, j;
+	int		oldkey;
+
+	if (insubmodel)
+		return;		// submodels should never have skies
+	if (r_skyframe == r_framecount)
+		return;		// already set this frame
+
+	r_skyframe = r_framecount;
+
+	// set the eight fake vertexes
+	for (i=0 ; i<8 ; i++)
+		for (j=0 ; j<3 ; j++)
+			r_skyverts[i].position[j] = r_origin[j] + box_verts[i][j]*128;
+
+	// set the six fake planes
+	for (i=0 ; i<6 ; i++)
+		if (skybox_planes[i*2+1] > 0)
+			r_skyplanes[i].dist = r_origin[skybox_planes[i*2]]+128;
+		else
+			r_skyplanes[i].dist = r_origin[skybox_planes[i*2]]-128;
+
+	// fix texture offsets
+	for (i=0 ; i<6 ; i++)
+	{
+		r_skytexinfo[i].vecs[0][3] = -DotProduct (r_origin, r_skytexinfo[i].vecs[0]);
+		r_skytexinfo[i].vecs[1][3] = -DotProduct (r_origin, r_skytexinfo[i].vecs[1]);
+	}
+
+	// emit the six faces
+	oldkey = r_currentkey;
+	r_currentkey = 0x7ffffff0;
+ 	for (i=0 ; i<6 ; i++)
+	{
+		R_RenderFace (r_skyfaces + i, 15);
+	}
+	r_currentkey = oldkey;		// bsp sorting order
+}
 
 #if	!id386
 
@@ -392,6 +532,14 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 	vec3_t		p_normal;
 	medge_t		*pedges, tedge;
 	clipplane_t	*pclip;
+
+	// sky surfaces encountered in the world will cause the
+	// environment box surfaces to be emited
+	if ((fa->flags & SURF_DRAWSKY) && r_skyboxloaded)
+	{
+		R_EmitSkyBox ();	
+		return;
+	}
 
 // skip out if no more surfs
 	if ((surface_p) >= surf_max)

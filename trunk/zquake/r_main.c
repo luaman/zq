@@ -133,6 +133,7 @@ extern cvar_t	scr_fov;
 
 void R_NetGraph (void);
 void R_ZGraph (void);
+void R_LoadSky_f (void);
 
 /*
 ==================
@@ -183,6 +184,7 @@ void R_Init (void)
 	
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
 	Cmd_AddCommand ("screenshot", R_ScreenShot_f);
+	Cmd_AddCommand ("loadsky", R_LoadSky_f);
 
 	Cvar_Register (&r_draworder);
 	Cvar_Register (&r_speeds);
@@ -251,7 +253,7 @@ void R_NewMap (void)
 // FIXME: is this one short?
 	for (i=0 ; i<cl.worldmodel->numleafs ; i++)
 		cl.worldmodel->leafs[i].efrags = NULL;
-		 	
+
 	r_viewleaf = NULL;
 
 	r_cnumsurfs = r_maxsurfs.value;
@@ -295,8 +297,31 @@ void R_NewMap (void)
 
 	r_dowarpold = false;
 	r_viewchanged = false;
+	r_skyboxloaded = false;
+
+	R_InitSkyBox (cl.worldmodel);
 }
 
+void R_LoadSky_f ()
+{
+	if (Cmd_Argc() < 2) {
+		Com_Printf ("loadsky <name> : load a custom skybox\n");
+		return;
+	}
+
+	if (!r_refdef2.allowCheats) {
+		Com_Printf ("This command is cheat protected; start the map with devmap <mapname>\n");
+		return;
+	}
+
+	if (Cmd_Argv(1)[0] == 0) {
+		// loadsky "" clears the skybox
+		r_skyboxloaded = false;
+		return;
+	}
+
+	R_SetSky (Cmd_Argv(1));
+}
 
 /*
 ===============
@@ -869,7 +894,6 @@ void R_DrawBEntitiesOnList (void)
 
 	insubmodel = false;
 }
-
 
 /*
 ================
