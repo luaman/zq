@@ -608,7 +608,6 @@ void CL_InitCommands (void)
 // demo recording & playback
 	Cmd_AddCommand ("record", CL_Record_f);
 	Cmd_AddCommand ("easyrecord", CL_EasyRecord_f);
-	Cmd_AddCommand ("rerecord", CL_ReRecord_f);
 	Cmd_AddCommand ("stop", CL_Stop_f);
 	Cmd_AddCommand ("playdemo", CL_PlayDemo_f);
 	Cmd_AddCommand ("timedemo", CL_TimeDemo_f);

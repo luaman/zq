@@ -383,7 +383,6 @@ void CL_WriteDemoCmd (usercmd_t *pcmd);
 void CL_Stop_f (void);
 void CL_Record_f (void);
 void CL_EasyRecord_f (void);
-void CL_ReRecord_f (void);
 void CL_PlayDemo_f (void);
 void CL_TimeDemo_f (void);
 
