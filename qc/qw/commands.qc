@@ -106,6 +106,11 @@ void Cmd_Give (string item, string amount)
 		else
 			self.armorvalue = 0;
 	}
+	else if (item == "quad") {
+		self.items = self.items | IT_QUAD;
+		self.super_time = 1;
+		self.super_damage_finished = time + 30;
+	}
 	else if (item == "key1")
 		self.items = self.items | IT_KEY1;
 	else if (item == "key2")
