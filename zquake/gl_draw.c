@@ -25,7 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern unsigned char d_15to8table[65536];
 extern unsigned d_8to24table2[256];
-extern cvar_t crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
 void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel);
 void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel);
@@ -260,7 +259,7 @@ int		pic_count;
 ideally all mpic_t's should have a flushcount field that would be
 checked against a global gl_flushcount; the pic would be reloaded
 if the two don't match.
-currently, the pics are only updated when Draw_CachePic is called,
+currently, the pics are only updated when R_CachePic is called,
 and wad pics are never updated.
 */
 void Draw_FlushCache (void)
@@ -279,7 +278,7 @@ void Draw_FlushCache (void)
 }
 
 
-mpic_t *Draw_CacheWadPic (char *name)
+mpic_t *R_CacheWadPic (char *name)
 {
 	qpic_t	*p;
 	mpic_t	*pic;
@@ -322,10 +321,10 @@ mpic_t *Draw_CacheWadPic (char *name)
 
 /*
 ================
-Draw_CachePic
+R_CachePic
 ================
 */
-mpic_t *Draw_CachePic (char *path)
+mpic_t *R_CachePic (char *path)
 {
 	cachepic_t	*pic;
 	int			i;
@@ -345,7 +344,7 @@ mpic_t *Draw_CachePic (char *path)
 //
 	dat = (qpic_t *)FS_LoadTempFile (path);	
 	if (!dat)
-		Sys_Error ("Draw_CachePic: failed to load %s", path);
+		Sys_Error ("R_CachePic: failed to load %s", path);
 	SwapPic (dat);
 
 	// HACK HACK HACK --- we need to keep the bytes for
@@ -395,7 +394,7 @@ typedef struct
 	int	minimize, maximize;
 } glmode_t;
 
-glmode_t modes[] = {
+static glmode_t modes[] = {
 	{"GL_NEAREST", GL_NEAREST, GL_NEAREST},
 	{"GL_LINEAR", GL_LINEAR, GL_LINEAR},
 	{"GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST},
@@ -405,7 +404,7 @@ glmode_t modes[] = {
 };
 
 
-void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel)
+static void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel)
 {
 	int		i;
 	gltexture_t	*glt;
@@ -438,7 +437,7 @@ void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel)
 }
 
 
-void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
+static void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 {
 	float	newval;
 
@@ -459,7 +458,7 @@ void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 }
 
 
-void Draw_LoadCharset (void)
+static void Draw_LoadCharset (void)
 {
 	int i;
 	char	buf[128*256];
@@ -562,22 +561,22 @@ void Draw_Init (void)
 	//
 	// get the other pics we need
 	//
-	draw_disc = Draw_CacheWadPic ("disc");
-	draw_backtile = Draw_CacheWadPic ("backtile");
+	draw_disc = R_CacheWadPic ("disc");
+	draw_backtile = R_CacheWadPic ("backtile");
 }
 
 
 
 /*
 ================
-Draw_Character
+R_DrawChar
 
 Draws one 8*8 graphics character with 0 being transparent.
 It can be clipped to the top of the screen to allow the console to be
 smoothly scrolled off.
 ================
 */
-void Draw_Character (int x, int y, int num)
+void R_DrawChar (int x, int y, int num)
 {
 	int				row, col;
 	float			frow, fcol;
@@ -610,12 +609,7 @@ void Draw_Character (int x, int y, int num)
 	glEnd ();
 }
 
-/*
-================
-Draw_String
-================
-*/
-void Draw_String (int x, int y, char *str)
+void R_DrawString (int x, int y, const char *str)
 {
 	float			frow, fcol;
 	int num;
@@ -651,60 +645,20 @@ void Draw_String (int x, int y, char *str)
 	glEnd ();
 }
 
-/*
-================
-Draw_Alt_String
-================
-*/
-void Draw_Alt_String (int x, int y, char *str)
-{
-	float			frow, fcol;
-	int num;
 
-	if (y <= -8)
-		return;			// totally off screen
-	if (!*str)
-		return;
-
-	GL_Bind (char_texture);
-
-	glBegin (GL_QUADS);
-
-	while (*str) // stop rendering when out of characters
-	{
-		if ((num = *str++|0x80) != (32|0x80)) // skip spaces
-		{
-			frow = (float) (num >> 4)*0.0625;
-			fcol = (float) (num & 15)*0.0625;
-			glTexCoord2f (fcol, frow);
-			glVertex2f (x, y);
-			glTexCoord2f (fcol + 0.0625, frow);
-			glVertex2f (x+8, y);
-			glTexCoord2f (fcol + 0.0625, frow + 0.03125);
-			glVertex2f (x+8, y+8);
-			glTexCoord2f (fcol, frow + 0.03125);
-			glVertex2f (x, y+8);
-		}
-
-		x += 8;
-	}
-
-	glEnd ();
-}
-
-void Draw_Crosshair (void)
+void R_DrawCrosshair (int num, byte color, int crossx, int crossy)
 {
 	int		x, y;
 	int		ofs1, ofs2;
 	extern vrect_t scr_vrect;
 
-	if (crosshair.value == 2 || crosshair.value == 3 || crosshair.value == 4) {
-		x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value; 
-		y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
+	x = scr_vrect.x + scr_vrect.width/2 + crossx; 
+	y = scr_vrect.y + scr_vrect.height/2 + crossy;
 
+	if (num == 2 || num == 3 || num == 4) {
 		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		glColor3ubv ((byte *) &d_8to24table[(byte) crosshaircolor.value]);
-		GL_Bind (crosshairtextures[(int)crosshair.value - 2]);
+		glColor3ubv ((byte *) &d_8to24table[(byte) color]);
+		GL_Bind (crosshairtextures[num - 2]);
 
 		if (vid.width == 320) {
 			ofs1 = 3;//3.5;
@@ -726,98 +680,33 @@ void Draw_Crosshair (void)
 		
 		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glColor3f (1, 1, 1);
-	} else if (crosshair.value)
-		Draw_Character (scr_vrect.x + scr_vrect.width/2-4 + cl_crossx.value, 
-			scr_vrect.y + scr_vrect.height/2-4 + cl_crossy.value, 
-			'+');
+	}
+	else {
+		R_DrawChar (x - 4, y - 4, '+');
+	}
 }
 
 
 /*
 ================
-Draw_TextBox
-================
-*/
-void Draw_TextBox (int x, int y, int width, int lines)
-{
-	mpic_t	*p;
-	int		cx, cy;
-	int		n;
-
-	// draw left side
-	cx = x;
-	cy = y;
-	p = Draw_CachePic ("gfx/box_tl.lmp");
-	Draw_Pic (cx, cy, p);
-	p = Draw_CachePic ("gfx/box_ml.lmp");
-	for (n = 0; n < lines; n++)
-	{
-		cy += 8;
-		Draw_Pic (cx, cy, p);
-	}
-	p = Draw_CachePic ("gfx/box_bl.lmp");
-	Draw_Pic (cx, cy+8, p);
-
-	// draw middle
-	cx += 8;
-	while (width > 0)
-	{
-		cy = y;
-		p = Draw_CachePic ("gfx/box_tm.lmp");
-		Draw_Pic (cx, cy, p);
-		p = Draw_CachePic ("gfx/box_mm.lmp");
-		for (n = 0; n < lines; n++)
-		{
-			cy += 8;
-			if (n == 1)
-				p = Draw_CachePic ("gfx/box_mm2.lmp");
-			Draw_Pic (cx, cy, p);
-		}
-		p = Draw_CachePic ("gfx/box_bm.lmp");
-		Draw_Pic (cx, cy+8, p);
-		width -= 2;
-		cx += 16;
-	}
-
-	// draw right side
-	cy = y;
-	p = Draw_CachePic ("gfx/box_tr.lmp");
-	Draw_Pic (cx, cy, p);
-	p = Draw_CachePic ("gfx/box_mr.lmp");
-	for (n = 0; n < lines; n++)
-	{
-		cy += 8;
-		Draw_Pic (cx, cy, p);
-	}
-	p = Draw_CachePic ("gfx/box_br.lmp");
-	Draw_Pic (cx, cy+8, p);
-}
-
-
-/*
-================
-Draw_DebugChar
+R_DrawDebugChar
 
 Draws a single character directly to the upper right corner of the screen.
 This is for debugging lockups by drawing different chars in different parts
 of the code.
 ================
 */
-void Draw_DebugChar (char num)
+void R_DrawDebugChar (char num)
 {
 }
 
-/*
-=============
-Draw_Pic
-=============
-*/
-void Draw_Pic (int x, int y, mpic_t *pic)
+
+void R_DrawPic (int x, int y, mpic_t *pic)
 {
 /*	if ((x < 0) || (x + pic->width > vid.width) ||
 		(y < 0) || (y + pic->height > vid.height))
 	{
-		Sys_Error ("Draw_Pic: bad coordinates");
+		Sys_Error ("R_DrawPic: bad coordinates");
 	}
 */
 
@@ -866,7 +755,7 @@ void Draw_AlphaPic (int x, int y, mpic_t *pic, float alpha)
 	glDisable (GL_BLEND);
 }
 
-void Draw_SubPic(int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
+void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
 {
 	float newsl, newtl, newsh, newth;
 	float oldglwidth, oldglheight;
@@ -898,12 +787,12 @@ void Draw_SubPic(int x, int y, mpic_t *pic, int srcx, int srcy, int width, int h
 
 /*
 =============
-Draw_TransPicTranslate
+R_DrawTransPicTranslate
 
 Only used for the player color selection menu
 =============
 */
-void Draw_TransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
+void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
 {
 	int				v, u, c;
 	unsigned		trans[64*64], *dest;
@@ -946,35 +835,27 @@ void Draw_TransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
 }
 
 
-/*
-================
-Draw_ConsoleBackground
-
-================
-*/
-void Draw_ConsoleBackground (int lines)
+void R_DrawConsoleBackground (int lines, const char *ver)
 {
-	char ver[80];
-
 	if (lines == vid.height)
-		Draw_Pic(0, lines - vid.height, conback);
+		R_DrawPic (0, lines - vid.height, conback);
 	else
 		Draw_AlphaPic (0, lines - vid.height, conback, gl_conalpha.value);
 
-	sprintf (ver, PROGRAM " %s", PROGRAM_VERSION);
+	// FIXME, Draw_Alt_String is in client
 	Draw_Alt_String (vid.conwidth - strlen(ver)*8 - 8, lines - 10, ver);
 }
 
 
 /*
 =============
-Draw_TileClear
+R_DrawTile
 
 This repeats a 64*64 tile graphic to fill the screen around a sized down
 refresh window.
 =============
 */
-void Draw_TileClear (int x, int y, int w, int h)
+void R_DrawTile (int x, int y, int w, int h)
 {
 	GL_Bind (draw_backtile->texnum);
 	glBegin (GL_QUADS);
@@ -992,12 +873,12 @@ void Draw_TileClear (int x, int y, int w, int h)
 
 /*
 =============
-Draw_Fill
+R_DrawFilledRect
 
 Fills a box of pixels with a single color
 =============
 */
-void Draw_Fill (int x, int y, int w, int h, int c)
+void R_DrawFilledRect (int x, int y, int w, int h, int c)
 {
 	glDisable (GL_TEXTURE_2D);
 	glColor3f (host_basepal[c*3]/255.0,
@@ -1017,13 +898,8 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 }
 //=============================================================================
 
-/*
-================
-Draw_FadeScreen
 
-================
-*/
-void Draw_FadeScreen (void)
+void R_FadeScreen (void)
 {
 	glEnable (GL_BLEND);
 	glDisable (GL_TEXTURE_2D);
@@ -1047,31 +923,31 @@ void Draw_FadeScreen (void)
 
 /*
 ================
-Draw_BeginDisc
+R_BeginDisc
 
 Draws the little blue disc in the corner of the screen.
 Call before beginning any disc IO.
 ================
 */
-void Draw_BeginDisc (void)
+void R_BeginDisc (void)
 {
 	if (!draw_disc)
 		return;
 	glDrawBuffer  (GL_FRONT);
-	Draw_Pic (vid.width - 24, 0, draw_disc);
+	R_DrawPic (vid.width - 24, 0, draw_disc);
 	glDrawBuffer  (GL_BACK);
 }
 
 
 /*
 ================
-Draw_EndDisc
+R_EndDisc
 
 Erases the disc icon.
 Call after completing any disc IO
 ================
 */
-void Draw_EndDisc (void)
+void R_EndDisc (void)
 {
 }
 

@@ -53,7 +53,7 @@ cachepic_t	cachepics[MAX_CACHED_PICS];
 int			numcachepics;
 
 
-mpic_t *Draw_CacheWadPic (char *name)
+mpic_t *R_CacheWadPic (char *name)
 {
 	qpic_t	*p;
 	mpic_t	*pic;
@@ -68,10 +68,10 @@ mpic_t *Draw_CacheWadPic (char *name)
 
 /*
 ================
-Draw_CachePic
+R_CachePic
 ================
 */
-mpic_t *Draw_CachePic (char *path)
+mpic_t *R_CachePic (char *path)
 {
 	cachepic_t	*pic;
 	int			i;
@@ -102,7 +102,7 @@ mpic_t *Draw_CachePic (char *path)
 	dat = (qpic_t *)pic->cache.data;
 	if (!dat)
 	{
-		Sys_Error ("Draw_CachePic: failed to load %s", path);
+		Sys_Error ("R_CachePic: failed to load %s", path);
 	}
 
 	SwapPic (dat);
@@ -123,9 +123,9 @@ Draw_Init
 */
 void Draw_Init (void)
 {
-	draw_chars = (byte *) Draw_CacheWadPic ("conchars");
-	draw_disc = Draw_CacheWadPic ("disc");
-	draw_backtile = Draw_CacheWadPic ("backtile");
+	draw_chars = (byte *) R_CacheWadPic ("conchars");
+	draw_disc = R_CacheWadPic ("disc");
+	draw_backtile = R_CacheWadPic ("backtile");
 
 	r_rectdesc.width = draw_backtile->width;
 	r_rectdesc.height = draw_backtile->height;
@@ -137,14 +137,14 @@ void Draw_Init (void)
 
 /*
 ================
-Draw_Character
+R_DrawChar
 
 Draws one 8*8 graphics character with 0 being transparent.
 It can be clipped to the top of the screen to allow the console to be
 smoothly scrolled off.
 ================
 */
-void Draw_Character (int x, int y, int num)
+void R_DrawChar (int x, int y, int num)
 {
 	byte			*dest;
 	byte			*source;
@@ -233,37 +233,17 @@ void Draw_Character (int x, int y, int num)
 	}
 }
 
-/*
-================
-Draw_String
-================
-*/
-void Draw_String (int x, int y, char *str)
+void R_DrawString (int x, int y, const char *str)
 {
 	while (*str)
 	{
-		Draw_Character (x, y, *str);
+		R_DrawChar (x, y, *str);
 		str++;
 		x += 8;
 	}
 }
 
-/*
-================
-Draw_Alt_String
-================
-*/
-void Draw_Alt_String (int x, int y, char *str)
-{
-	while (*str)
-	{
-		Draw_Character (x, y, (*str) | 0x80);
-		str++;
-		x += 8;
-	}
-}
-
-void Draw_Pixel(int x, int y, byte color)
+void R_DrawPixel (int x, int y, byte color)
 {
 	byte			*dest;
 	unsigned short	*pusdest;
@@ -282,112 +262,46 @@ void Draw_Pixel(int x, int y, byte color)
 	}
 }
 
-void Draw_Crosshair(void)
+void R_DrawCrosshair (int num, byte color, int crossx, int crossy)
 {
-	int x, y;
-	extern cvar_t crosshair, cl_crossx, cl_crossy, crosshaircolor;
-	extern vrect_t		scr_vrect;
-	byte c = (byte)crosshaircolor.value;
+	int	x, y;
+	extern vrect_t		scr_vrect;	// FIXME
 
-	if (!crosshair.value)
-		return;
+	x = scr_vrect.x + scr_vrect.width/2 + crossx; 
+	y = scr_vrect.y + scr_vrect.height/2 + crossy;
 
-	x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value; 
-	y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
-
-	if (crosshair.value == 2) {
-		Draw_Pixel(x - 1, y, c);
-		Draw_Pixel(x - 3, y, c);
-		Draw_Pixel(x + 1, y, c);
-		Draw_Pixel(x + 3, y, c);
-		Draw_Pixel(x, y - 1, c);
-		Draw_Pixel(x, y - 3, c);
-		Draw_Pixel(x, y + 1, c);
-		Draw_Pixel(x, y + 3, c);
-	} else if (crosshair.value == 3) {
-		Draw_Pixel(x, y, c);
-		Draw_Pixel(x - 1, y, c);
-		Draw_Pixel(x + 1, y, c);
-		Draw_Pixel(x, y - 1, c);
-		Draw_Pixel(x, y + 1, c);
-	} else if (crosshair.value == 4) {
-		Draw_Pixel(x, y, c);
+	if (num == 2) {
+		R_DrawPixel (x - 1, y, color);
+		R_DrawPixel (x - 3, y, color);
+		R_DrawPixel (x + 1, y, color);
+		R_DrawPixel (x + 3, y, color);
+		R_DrawPixel (x, y - 1, color);
+		R_DrawPixel (x, y - 3, color);
+		R_DrawPixel (x, y + 1, color);
+		R_DrawPixel (x, y + 3, color);
+	} else if (num == 3) {
+		R_DrawPixel (x, y, color);
+		R_DrawPixel (x - 1, y, color);
+		R_DrawPixel (x + 1, y, color);
+		R_DrawPixel (x, y - 1, color);
+		R_DrawPixel (x, y + 1, color);
+	} else if (num == 4) {
+		R_DrawPixel (x, y, color);
 	} else
-		Draw_Character (x - 4, y - 4, '+');
+		R_DrawChar (x - 4, y - 4, '+');
 }
 
 
 /*
 ================
-Draw_TextBox
-================
-*/
-void Draw_TextBox (int x, int y, int width, int lines)
-{
-	mpic_t	*p;
-	int		cx, cy;
-	int		n;
-
-	// draw left side
-	cx = x;
-	cy = y;
-	p = Draw_CachePic ("gfx/box_tl.lmp");
-	Draw_Pic (cx, cy, p);
-	p = Draw_CachePic ("gfx/box_ml.lmp");
-	for (n = 0; n < lines; n++)
-	{
-		cy += 8;
-		Draw_Pic (cx, cy, p);
-	}
-	p = Draw_CachePic ("gfx/box_bl.lmp");
-	Draw_Pic (cx, cy+8, p);
-
-	// draw middle
-	cx += 8;
-	while (width > 0)
-	{
-		cy = y;
-		p = Draw_CachePic ("gfx/box_tm.lmp");
-		Draw_Pic (cx, cy, p);
-		p = Draw_CachePic ("gfx/box_mm.lmp");
-		for (n = 0; n < lines; n++)
-		{
-			cy += 8;
-			if (n == 1)
-				p = Draw_CachePic ("gfx/box_mm2.lmp");
-			Draw_Pic (cx, cy, p);
-		}
-		p = Draw_CachePic ("gfx/box_bm.lmp");
-		Draw_Pic (cx, cy+8, p);
-		width -= 2;
-		cx += 16;
-	}
-
-	// draw right side
-	cy = y;
-	p = Draw_CachePic ("gfx/box_tr.lmp");
-	Draw_Pic (cx, cy, p);
-	p = Draw_CachePic ("gfx/box_mr.lmp");
-	for (n = 0; n < lines; n++)
-	{
-		cy += 8;
-		Draw_Pic (cx, cy, p);
-	}
-	p = Draw_CachePic ("gfx/box_br.lmp");
-	Draw_Pic (cx, cy+8, p);
-}
-
-
-/*
-================
-Draw_DebugChar
+R_DrawDebugChar
 
 Draws a single character directly to the upper right corner of the screen.
 This is for debugging lockups by drawing different chars in different parts
 of the code.
 ================
 */
-void Draw_DebugChar (char num)
+void R_DrawDebugChar (char num)
 {
 	byte			*dest;
 	byte			*source;
@@ -421,12 +335,8 @@ void Draw_DebugChar (char num)
 	}
 }
 
-/*
-=============
-Draw_SolidPic
-=============
-*/
-static void Draw_SolidPic (int x, int y, mpic_t *pic)
+
+static void R_DrawSolidPic (int x, int y, mpic_t *pic)
 {
 	byte			*dest, *source;
 	unsigned short	*pusdest;
@@ -464,12 +374,7 @@ static void Draw_SolidPic (int x, int y, mpic_t *pic)
 }
 
 
-/*
-=============
-Draw_TransPic
-=============
-*/
-static void Draw_TransPic (int x, int y, mpic_t *pic)
+static void R_DrawTransPic (int x, int y, mpic_t *pic)
 {
 	byte	*dest, *source, tbyte;
 	unsigned short	*pusdest;
@@ -545,88 +450,22 @@ static void Draw_TransPic (int x, int y, mpic_t *pic)
 }
 
 
-/*
-=============
-Draw_Pic
-=============
-*/
-void Draw_Pic (int x, int y, mpic_t *pic)
+void R_DrawPic (int x, int y, mpic_t *pic)
 {
 	if ((x < 0) || (x + pic->width > vid.width) ||
 		(y < 0) || (y + pic->height > vid.height))
 	{
-		Sys_Error ("Draw_Pic: bad coordinates");
+		Sys_Error ("R_DrawPic: bad coordinates");
 	}
 
 	if (pic->alpha)
-		Draw_TransPic (x, y, pic);
+		R_DrawTransPic (x, y, pic);
 	else
-		Draw_SolidPic (x, y, pic);
+		R_DrawSolidPic (x, y, pic);
 }
 
 
-void Draw_TransSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height);
-
-/*
-=============
-Draw_SubPic
-=============
-*/
-void Draw_SubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
-{
-	byte			*dest, *source;
-	unsigned short	*pusdest;
-	int				v, u;
-
-	if ((x < 0) || (x + width > vid.width) ||
-		(y < 0) || (y + height > vid.height))
-	{
-		Sys_Error ("Draw_Pic: bad coordinates");
-	}
-
-	if (pic->alpha) {
-		Draw_TransSubPic (x, y, pic, srcx, srcy, width, height);
-		return;
-	}
-
-	source = pic->data + srcy * pic->width + srcx;
-
-	if (r_pixbytes == 1)
-	{
-		dest = vid.buffer + y * vid.rowbytes + x;
-
-		for (v=0 ; v<height ; v++)
-		{
-			memcpy (dest, source, width);
-			dest += vid.rowbytes;
-			source += pic->width;
-		}
-	}
-	else
-	{
-	// FIXME: pretranslate at load time?
-		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
-
-		for (v=0 ; v<height ; v++)
-		{
-			for (u=srcx ; u<(srcx+width) ; u++)
-			{
-				pusdest[u] = d_8to16table[source[u]];
-			}
-
-			pusdest += vid.rowbytes >> 1;
-			source += pic->width;
-		}
-	}
-}
-
-
-/*
-=============
-Draw_TransSubPic
-=============
-*/
-static void Draw_TransSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
+static void R_DrawTransSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
 {
 	byte	*dest, *source, tbyte;
 	unsigned short	*pusdest;
@@ -702,12 +541,61 @@ static void Draw_TransSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int
 }
 
 
+void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
+{
+	byte			*dest, *source;
+	unsigned short	*pusdest;
+	int				v, u;
+
+	if ((x < 0) || (x + width > vid.width) ||
+		(y < 0) || (y + height > vid.height))
+	{
+		Sys_Error ("R_DrawPic: bad coordinates");
+	}
+
+	if (pic->alpha) {
+		R_DrawTransSubPic (x, y, pic, srcx, srcy, width, height);
+		return;
+	}
+
+	source = pic->data + srcy * pic->width + srcx;
+
+	if (r_pixbytes == 1)
+	{
+		dest = vid.buffer + y * vid.rowbytes + x;
+
+		for (v=0 ; v<height ; v++)
+		{
+			memcpy (dest, source, width);
+			dest += vid.rowbytes;
+			source += pic->width;
+		}
+	}
+	else
+	{
+	// FIXME: pretranslate at load time?
+		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
+
+		for (v=0 ; v<height ; v++)
+		{
+			for (u=srcx ; u<(srcx+width) ; u++)
+			{
+				pusdest[u] = d_8to16table[source[u]];
+			}
+
+			pusdest += vid.rowbytes >> 1;
+			source += pic->width;
+		}
+	}
+}
+
+
 /*
 =============
-Draw_TransPicTranslate
+R_DrawTransPicTranslate
 =============
 */
-void Draw_TransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
+void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
 {
 	byte	*dest, *source, tbyte;
 	unsigned short	*pusdest;
@@ -813,35 +701,21 @@ void Draw_CharToConback (int num, byte *dest)
 
 }
 
-/*
-================
-Draw_ConsoleBackground
 
-================
-*/
-void Draw_ConsoleBackground (int lines)
+void R_DrawConsoleBackground (int lines, const char *ver)
 {
 	int				x, y, v;
 	byte			*src, *dest;
 	unsigned short	*pusdest;
 	int				f, fstep;
 	mpic_t			*conback;
-	char			ver[100];
 	static			char saveback[320*8];
 
-	conback = Draw_CachePic ("gfx/conback.lmp");
+	conback = R_CachePic ("gfx/conback.lmp");
 
 // hack the version number directly into the pic
-
-	if (cls.download) {
-		strcpy (ver, PROGRAM_VERSION);
-		dest = conback->data + 320 + 320*186 - 11 - 8*strlen(ver);
-	} else {
-		sprintf (ver, PROGRAM " %s", PROGRAM_VERSION);
-		dest = conback->data + 320 - (strlen(ver)*8 + 11) + 320*186;
-	}
-
 	memcpy (saveback, conback->data + 320*186, 320*8);
+	dest = conback->data + 320 + 320*186 - 11 - strlen(ver)*8;
 	for (x=0 ; x<strlen(ver) ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
 	
@@ -1013,13 +887,13 @@ void R_DrawRect16 (vrect_t *prect, int rowbytes, byte *psrc,
 
 /*
 =============
-Draw_TileClear
+R_DrawTile
 
 This repeats a 64*64 tile graphic to fill the screen around a sized down
 refresh window.
 =============
 */
-void Draw_TileClear (int x, int y, int w, int h)
+void R_DrawTile (int x, int y, int w, int h)
 {
 	int				width, height, tileoffsetx, tileoffsety;
 	byte			*psrc;
@@ -1086,12 +960,12 @@ void Draw_TileClear (int x, int y, int w, int h)
 
 /*
 =============
-Draw_Fill
+R_DrawFilledRect
 
 Fills a box of pixels with a single color
 =============
 */
-void Draw_Fill (int x, int y, int w, int h, int c)
+void R_DrawFilledRect (int x, int y, int w, int h, int c)
 {
 	byte			*dest;
 	unsigned short	*pusdest;
@@ -1100,8 +974,7 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 
 	if (x < 0 || x + w > vid.width ||
 		y < 0 || y + h > vid.height) {
-		Com_Printf ("Bad Draw_Fill(%d, %d, %d, %d, %c)\n",
-			x, y, w, h, c);
+		Sys_Error ("Bad R_DrawFilledRect (%d, %d, %d, %d, %c)", x, y, w, h, c);
 		return;
 	}
 
@@ -1124,13 +997,7 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 }
 //=============================================================================
 
-/*
-================
-Draw_FadeScreen
-
-================
-*/
-void Draw_FadeScreen (void)
+void R_FadeScreen (void)
 {
 	int			x,y;
 	byte		*pbuf;
@@ -1162,13 +1029,13 @@ void Draw_FadeScreen (void)
 
 /*
 ================
-Draw_BeginDisc
+R_BeginDisc
 
 Draws the little blue disc in the corner of the screen.
 Call before beginning any disc IO.
 ================
 */
-void Draw_BeginDisc (void)
+void R_BeginDisc (void)
 {
 
 	D_BeginDirectRect (vid.width - 24, 0, draw_disc->data, 24, 24);
@@ -1177,13 +1044,13 @@ void Draw_BeginDisc (void)
 
 /*
 ================
-Draw_EndDisc
+R_EndDisc
 
 Erases the disc icon.
 Call after completing any disc IO
 ================
 */
-void Draw_EndDisc (void)
+void R_EndDisc (void)
 {
 
 	D_EndDirectRect (vid.width - 24, 0, 24, 24);

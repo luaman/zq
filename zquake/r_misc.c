@@ -242,7 +242,7 @@ void R_NetGraph (void)
 
 	if (r_netgraph.value != 3) {
 		sprintf(st, "%3i%% packet loss", lost);
-		Draw_String(8, y2, st);
+		R_DrawString (8, y2, st);
 	}
 }
 

@@ -112,13 +112,17 @@ typedef struct {
 //
 // refresh
 //
-extern refdef_t	r_refdef;
-extern refdef2_t r_refdef2;
-extern vec3_t	r_origin, vpn, vright, vup;
+extern refdef_t		r_refdef;
+extern refdef2_t	r_refdef2;
 
-extern	struct texture_s	*r_notexture_mip;
+// FIXME, only used by sound code in client -- make private to refresh?
+extern vec3_t		r_origin, vpn, vright, vup;
 
-extern	entity_t	r_worldentity;
+// FIXME, move these to *_local.h
+extern struct texture_s	*r_notexture_mip;
+extern entity_t		r_worldentity;
+void R_InitSky (struct texture_s *mt);	// classic Quake sky
+
 
 void R_Init (void);
 void R_InitTextures (void);
@@ -126,7 +130,6 @@ void R_InitEfrags (void);
 void R_RenderView (void);		// must set r_refdef first
 void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect);
 								// called whenever r_refdef or vid change
-void R_InitSky (struct texture_s *mt);	// classic Quake sky
 void R_SetSky (char *name);				// Quake2 skybox
 
 void R_AddEfrags (entity_t *ent);
@@ -148,4 +151,26 @@ extern qbool	r_cache_thrash;	// set if thrashing the surface cache
 int	D_SurfaceCacheForRes (int width, int height);
 void D_FlushCaches (void);
 void D_InitCaches (void *buffer, int size);
+
 void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
+
+// 2D drawing functions
+void R_DrawChar (int x, int y, int num);
+void R_DrawString (int x, int y, const char *str);
+void R_DrawPixel (int x, int y, byte color);
+void R_DrawPic (int x, int y, mpic_t *pic);
+void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height);
+void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation);
+void R_DrawFilledRect (int x, int y, int w, int h, int c);
+void R_DrawTile (int x, int y, int w, int h);
+void R_FadeScreen (void);
+void R_DrawDebugChar (char num);
+void R_BeginDisc (void);
+void R_EndDisc (void);
+mpic_t *R_CachePic (char *path);
+mpic_t *R_CacheWadPic (char *name);
+
+void R_DrawConsoleBackground (int lines, const char *ver);
+void R_DrawCrosshair (int num, byte color, int crossx, int crossy);
+
+void Draw_Init (void);

@@ -172,6 +172,10 @@ SOURCE=.\cl_demo.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\cl_draw.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\cl_effects.c
 # End Source File
 # Begin Source File
