@@ -1268,6 +1268,35 @@ void SV_Noclip_f (void)
 }
 
 
+/*
+==================
+SV_Fly_f
+==================
+*/
+void SV_Fly_f (void)
+{
+	if (!sv_allow_cheats)
+	{
+		Com_Printf ("Cheats are not allowed on this server\n");
+		return;
+	}
+
+	if (sv_player->v.solid != SOLID_SLIDEBOX)
+		return;		// dead players don't fly
+
+	if (sv_player->v.movetype != MOVETYPE_FLY)
+	{
+		sv_player->v.movetype = MOVETYPE_FLY;
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "flymode ON\n");
+	}
+	else
+	{
+		sv_player->v.movetype = MOVETYPE_WALK;
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "flymode OFF\n");
+	}
+}
+
+
 //=============================================================================
 
 
@@ -1355,6 +1384,8 @@ void SV_ExecuteUserCommand (char *s)
 		SV_Give_f ();
 	else if (!Q_stricmp(cmd, "noclip"))
 		SV_Noclip_f ();
+	else if (!Q_stricmp(cmd, "fly"))
+		SV_Fly_f ();
 	else
 		Com_Printf ("Bad user command: %s\n", cmd);
 
@@ -1514,6 +1545,9 @@ int SV_PMTypeForClient (client_t *cl)
 			return PM_SPECTATOR;
 		return PM_OLD_SPECTATOR;
 	}
+
+	if (sv_player->v.movetype == MOVETYPE_FLY)
+		return PM_FLY;
 
 	if (sv_player->v.health <= 0)
 		return PM_DEAD;
