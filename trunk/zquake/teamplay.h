@@ -55,7 +55,8 @@ extern int cl_enemytopcolor;
 extern int cl_enemybottomcolor;
 
 void TP_LoadLocFile (char *path, qboolean quiet);
-char *TP_ParseMacroString(char *string);
+char *TP_ParseMacroString (char *s);
+char *TP_ParseFunChars (char *s);
 void TP_NewMap ();
 void TP_CheckVersionRequest(char *s);
 int TP_CategorizeMessage (char *s);
