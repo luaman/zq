@@ -220,6 +220,9 @@ void() finale_4 =
 	
 	oldo = self.origin;
 
+	// In QW, we only spawn 18 gibs as opposed to 50 in NetQuake
+	// 50 is too much for QW's MAX_PACKET_ENTITIES = 64
+
 	z = 16;
 	while (z <= 144)
 	{
@@ -240,9 +243,9 @@ void() finale_4 =
 					ThrowGib ("progs/gib2.mdl", -999);
 				else
 					ThrowGib ("progs/gib3.mdl", -999);
-				y = y + 32;
+				y = y + 64;
 			}
-			x = x + 32;
+			x = x + 64;
 		}
 		z = z + 96;
 	}
