@@ -48,8 +48,6 @@ Called when a demo file runs out, or the user starts a game
 */
 void CL_StopPlayback (void)
 {
-	extern qboolean	v_updatepalette;
-
 	if (!cls.demoplayback)
 		return;
 
@@ -64,7 +62,6 @@ void CL_StopPlayback (void)
 	cl.teamfortress = false;
 	memset (cl.cshifts, 0, sizeof(cl.cshifts));
 	cl.stats[STAT_ITEMS] = 0;
-	v_updatepalette = true;
 }
 
 #define dem_cmd		0
