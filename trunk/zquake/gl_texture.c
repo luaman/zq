@@ -90,7 +90,7 @@ void GL_SelectTexture (GLenum target)
 {
 	if (!gl_mtexable)
 		return;
-#ifndef __linux__ // no multitexture under Linux yet
+#ifdef _WIN32 // no multitexture under Linux or Darwin yet
 	qglActiveTexture (target);
 #endif
 	if (target == oldtarget) 
