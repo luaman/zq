@@ -121,6 +121,7 @@ int packet_latency[NET_TIMINGS];
 
 int CL_CalcNet (void)
 {
+	extern cvar_t cl_oldPL;
 	int		a, i;
 	frame_t	*frame;
 	int lost;
@@ -147,6 +148,10 @@ int CL_CalcNet (void)
 	packetcount = 0;
 	for (a=0 ; a<NET_TIMINGS ; a++)
 	{
+		if (!cl_oldPL.value && a < UPDATE_BACKUP && (realtime -
+			cl.frames[(cls.netchan.outgoing_sequence-a)&UPDATE_MASK].senttime) < cls.latency)
+			continue;
+
 		i = (cls.netchan.outgoing_sequence-a) & NET_TIMINGSMASK;
 		if (packet_latency[i] == 9999)
 			lost++;

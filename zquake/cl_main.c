@@ -89,6 +89,7 @@ cvar_t	cl_staticsounds = {"cl_staticSounds", "1"};
 cvar_t	cl_trueLightning = {"cl_trueLightning", "0"};
 cvar_t	cl_parseWhiteText = {"cl_parseWhiteText", "2"};
 cvar_t	cl_filterdrawviewmodel = {"cl_filterdrawviewmodel", "0"};
+cvar_t	cl_oldPL = {"cl_oldPL", "0"};
 cvar_t	default_fov = {"default_fov", "0"};
 cvar_t	qizmo_dir = {"qizmo_dir", "qizmo"};
 
@@ -725,6 +726,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&cl_trueLightning);
 	Cvar_RegisterVariable (&cl_parseWhiteText);
 	Cvar_RegisterVariable (&cl_filterdrawviewmodel);
+	Cvar_RegisterVariable (&cl_oldPL);
 	Cvar_RegisterVariable (&default_fov);
 	Cvar_RegisterVariable (&qizmo_dir);
 
