@@ -28,14 +28,10 @@ netadr_t	master_adr[MAX_MASTERS];	// address of group servers
 
 client_t	*sv_client;					// current client
 
-#ifndef SERVERONLY
-cvar_t	sv_mintic = {"sv_mintic","0"};		//
-#else										//
-cvar_t	sv_mintic = {"sv_mintic","0.013"};	// bound the size of the
-#endif										// physics time tic 
-cvar_t	sv_maxtic = {"sv_maxtic","0.1"};	//
+cvar_t	sv_mintic = {"sv_mintic", "0.013"};	// bound the size of the
+cvar_t	sv_maxtic = {"sv_maxtic", "0.1"};	// physics time tic
 
-cvar_t	sv_timeout = {"timeout","65"};		// seconds without any message
+cvar_t	sv_timeout = {"timeout", "65"};		// seconds without any message
 cvar_t	sv_zombietime = {"zombietime", "2"};	// seconds to sink messages
 											// after disconnect
 
@@ -1363,6 +1359,8 @@ void SV_InitLocal (void)
 	Cvar_Register (&sv_maxrate);
 	Cvar_Register (&sv_fastconnect);
 	Cvar_Register (&sv_loadentfiles);
+	if (!dedicated)
+		sv_mintic.string = "0";		// a value of 0 will tie physics tics to screen updates
 	Cvar_Register (&sv_mintic);
 	Cvar_Register (&sv_maxtic);
 	Cvar_Register (&sv_timeout);
