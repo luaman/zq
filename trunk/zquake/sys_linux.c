@@ -173,30 +173,16 @@ void Sys_LowFPPrecision (void)
 
 int		skipframes;
 
-int main (int c, char **v)
+int main (int argc, char **argv)
 {
-
 	double		time, oldtime, newtime;
-	quakeparms_t parms;
-	int j;
-
-//	static char cwd[1024];
 
 //	signal(SIGFPE, floating_point_exception_handler);
 	signal(SIGFPE, SIG_IGN);
 
-	memset(&parms, 0, sizeof(parms));
-
-	COM_InitArgv(c, v);
-	parms.argc = com_argc;
-	parms.argv = com_argv;
-
-	parms.memsize = 16*1024*1024;
-
-	j = COM_CheckParm("-mem");
-	if (j)
-		parms.memsize = (int) (Q_atof(com_argv[j+1]) * 1024 * 1024);
-	parms.membase = Q_Malloc (parms.memsize);
+	// we need to check for -noconinput and -nostdout
+	// before Host_Init is called
+	COM_InitArgv (argc, argv);
 
 	noconinput = COM_CheckParm("-noconinput");
 	if (!noconinput)
@@ -209,7 +195,7 @@ int main (int c, char **v)
 	Sys_SetFPCW();
 #endif
 
-    Host_Init(&parms);
+    Host_Init (argc, argv, 16*1024*1024);
 
     oldtime = Sys_DoubleTime ();
     while (1)

@@ -248,31 +248,19 @@ void Com_DPrintf (char *fmt, ...);
 extern cvar_t	developer;
 extern cvar_t	registered;
 
-// the host system specifies the base of the directory tree, the
-// command line parms passed to the program, and the amount of memory
-// available for the program to use
-
-typedef struct
-{
-	int		argc;
-	char	**argv;
-	void	*membase;
-	int		memsize;
-} quakeparms_t;
-
-
-//
-// host
-//
-extern quakeparms_t	host_parms;
-extern qboolean		host_initialized;
 extern qboolean		com_serveractive;	// true if sv.state != ss_dead
 
 extern double		curtime;	// not bounded or scaled, shared by
 								// local client and server
 
+//
+// host
+//
+extern qboolean		host_initialized;
+extern int			host_memsize;
 
-void Host_Init (quakeparms_t *parms);
+
+void Host_Init (int argc, char **argv, int default_memsize);
 void Host_Shutdown (void);
 void Host_Frame (double time);
 void Host_Error (char *error, ...);
