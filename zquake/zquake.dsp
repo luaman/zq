@@ -40,8 +40,8 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir ".\ZRelease"
-# PROP Intermediate_Dir ".\ZRelease"
+# PROP Output_Dir ".\Release"
+# PROP Intermediate_Dir ".\Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
@@ -55,8 +55,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 mglfx.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcmt"
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /machine:I386
+# ADD LINK32 mglfx.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib ole32.lib uuid.lib winmm.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libcmt"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
@@ -68,12 +68,12 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".\ZDebug"
-# PROP Intermediate_Dir ".\ZDebug"
+# PROP Output_Dir ".\Debug"
+# PROP Intermediate_Dir ".\Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /Gm /GX /ZI /Od /I ".\ZDebug/" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /FR"" /YX /Fo"" /FD ".\ZDebug/" /c
+# ADD CPP /nologo /G5 /ML /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /FR"" /YX /Fo"" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -82,8 +82,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386
-# ADD LINK32 mglfx.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcmt"
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386
+# ADD LINK32 mglfx.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"libcmt"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
@@ -95,8 +95,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".\ZGLDebug"
-# PROP Intermediate_Dir ".\ZGLDebug"
+# PROP Output_Dir ".\Debug-gl"
+# PROP Intermediate_Dir ".\Debug-gl"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /ML /Gm /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /c
@@ -109,9 +109,9 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib e:\msdev\projects\scitech\lib\win32\vc\mgllt.lib /nologo /subsystem:windows /debug /machine:I386
+# ADD BASE LINK32 opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib e:\msdev\projects\scitech\lib\win32\vc\mgllt.lib /nologo /subsystem:windows /debug /machine:I386
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 comctl32.lib glu32.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\ZGLDebug/zquake-gl.exe"
+# ADD LINK32 dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\Debug-gl/zquake-gl.exe"
 # SUBTRACT LINK32 /incremental:no /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
@@ -123,8 +123,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".\ZGLRelease"
-# PROP Intermediate_Dir ".\ZGLRelease"
+# PROP Output_Dir ".\Release-gl"
+# PROP Intermediate_Dir ".\Release-gl"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G5 /ML /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "GLQUAKE" /FR /YX /c
@@ -138,9 +138,9 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 e:\msdev\projects\winquake\dxsdk\sdk\lib\dxguid.lib winmm.lib wsock32.lib opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"GLDebug/glzquake.exe"
+# ADD BASE LINK32 e:\msdev\projects\winquake\dxsdk\sdk\lib\dxguid.lib winmm.lib wsock32.lib opengl32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib /nologo /subsystem:windows /debug /machine:I386 /out:"GLDebug/glzquake.exe"
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 comctl32.lib glu32.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:".\ZGLRelease/zquake-gl.exe"
+# ADD LINK32 dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib advapi32.lib shell32.lib uuid.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:".\Release-gl/zquake-gl.exe"
 # SUBTRACT LINK32 /debug /nodefaultlib
 
 !ENDIF 
@@ -1445,7 +1445,7 @@ SOURCE=.\cl_math.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\cl_math.s
 InputName=cl_math
 
@@ -1460,7 +1460,7 @@ InputName=cl_math
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\cl_math.s
 InputName=cl_math
 
@@ -1475,7 +1475,7 @@ InputName=cl_math
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\ZGLDebug
+OutDir=.\Debug-gl
 InputPath=.\cl_math.s
 InputName=cl_math
 
@@ -1490,7 +1490,7 @@ InputName=cl_math
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\ZGLRelease
+OutDir=.\Release-gl
 InputPath=.\cl_math.s
 InputName=cl_math
 
@@ -1512,7 +1512,7 @@ SOURCE=.\d_draw.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\d_draw.s
 InputName=d_draw
 
@@ -1527,7 +1527,7 @@ InputName=d_draw
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\d_draw.s
 InputName=d_draw
 
@@ -1558,7 +1558,7 @@ SOURCE=.\d_draw16.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\d_draw16.s
 InputName=d_draw16
 
@@ -1573,7 +1573,7 @@ InputName=d_draw16
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\d_draw16.s
 InputName=d_draw16
 
@@ -1604,7 +1604,7 @@ SOURCE=.\d_parta.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\d_parta.s
 InputName=d_parta
 
@@ -1619,7 +1619,7 @@ InputName=d_parta
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\d_parta.s
 InputName=d_parta
 
@@ -1650,7 +1650,7 @@ SOURCE=.\d_polysa.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\d_polysa.s
 InputName=d_polysa
 
@@ -1665,7 +1665,7 @@ InputName=d_polysa
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\d_polysa.s
 InputName=d_polysa
 
@@ -1696,7 +1696,7 @@ SOURCE=.\d_scana.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\d_scana.s
 InputName=d_scana
 
@@ -1711,7 +1711,7 @@ InputName=d_scana
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\d_scana.s
 InputName=d_scana
 
@@ -1742,7 +1742,7 @@ SOURCE=.\d_spr8.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\d_spr8.s
 InputName=d_spr8
 
@@ -1757,7 +1757,7 @@ InputName=d_spr8
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\d_spr8.s
 InputName=d_spr8
 
@@ -1788,7 +1788,7 @@ SOURCE=.\d_varsa.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\d_varsa.s
 InputName=d_varsa
 
@@ -1803,7 +1803,7 @@ InputName=d_varsa
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\d_varsa.s
 InputName=d_varsa
 
@@ -1834,7 +1834,7 @@ SOURCE=.\math.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\math.s
 InputName=math
 
@@ -1849,7 +1849,7 @@ InputName=math
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\math.s
 InputName=math
 
@@ -1864,7 +1864,7 @@ InputName=math
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\ZGLDebug
+OutDir=.\Debug-gl
 InputPath=.\math.s
 InputName=math
 
@@ -1879,7 +1879,7 @@ InputName=math
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\ZGLRelease
+OutDir=.\Release-gl
 InputPath=.\math.s
 InputName=math
 
@@ -1901,7 +1901,7 @@ SOURCE=.\r_aclipa.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\r_aclipa.s
 InputName=r_aclipa
 
@@ -1916,7 +1916,7 @@ InputName=r_aclipa
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\r_aclipa.s
 InputName=r_aclipa
 
@@ -1947,7 +1947,7 @@ SOURCE=.\r_aliasa.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\r_aliasa.s
 InputName=r_aliasa
 
@@ -1962,7 +1962,7 @@ InputName=r_aliasa
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\r_aliasa.s
 InputName=r_aliasa
 
@@ -1993,7 +1993,7 @@ SOURCE=.\r_drawa.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\r_drawa.s
 InputName=r_drawa
 
@@ -2008,7 +2008,7 @@ InputName=r_drawa
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\r_drawa.s
 InputName=r_drawa
 
@@ -2039,7 +2039,7 @@ SOURCE=.\r_edgea.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\r_edgea.s
 InputName=r_edgea
 
@@ -2054,7 +2054,7 @@ InputName=r_edgea
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\r_edgea.s
 InputName=r_edgea
 
@@ -2085,7 +2085,7 @@ SOURCE=.\r_varsa.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\r_varsa.s
 InputName=r_varsa
 
@@ -2100,7 +2100,7 @@ InputName=r_varsa
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\r_varsa.s
 InputName=r_varsa
 
@@ -2131,7 +2131,7 @@ SOURCE=.\snd_mixa.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\snd_mixa.s
 InputName=snd_mixa
 
@@ -2146,7 +2146,7 @@ InputName=snd_mixa
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\snd_mixa.s
 InputName=snd_mixa
 
@@ -2161,7 +2161,7 @@ InputName=snd_mixa
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\ZGLDebug
+OutDir=.\Debug-gl
 InputPath=.\snd_mixa.s
 InputName=snd_mixa
 
@@ -2176,7 +2176,7 @@ InputName=snd_mixa
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\ZGLRelease
+OutDir=.\Release-gl
 InputPath=.\snd_mixa.s
 InputName=snd_mixa
 
@@ -2198,7 +2198,7 @@ SOURCE=.\surf16.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\surf16.s
 InputName=surf16
 
@@ -2213,7 +2213,7 @@ InputName=surf16
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\surf16.s
 InputName=surf16
 
@@ -2244,7 +2244,7 @@ SOURCE=.\surf8.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\surf8.s
 InputName=surf8
 
@@ -2259,7 +2259,7 @@ InputName=surf8
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\surf8.s
 InputName=surf8
 
@@ -2290,7 +2290,7 @@ SOURCE=.\sys_x86.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\sys_x86.s
 InputName=sys_x86
 
@@ -2305,7 +2305,7 @@ InputName=sys_x86
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\sys_x86.s
 InputName=sys_x86
 
@@ -2320,7 +2320,7 @@ InputName=sys_x86
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\ZGLDebug
+OutDir=.\Debug-gl
 InputPath=.\sys_x86.s
 InputName=sys_x86
 
@@ -2335,7 +2335,7 @@ InputName=sys_x86
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\ZGLRelease
+OutDir=.\Release-gl
 InputPath=.\sys_x86.s
 InputName=sys_x86
 
@@ -2357,7 +2357,7 @@ SOURCE=.\worlda.s
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
 # Begin Custom Build
-OutDir=.\ZRelease
+OutDir=.\Release
 InputPath=.\worlda.s
 InputName=worlda
 
@@ -2372,7 +2372,7 @@ InputName=worlda
 !ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
 
 # Begin Custom Build
-OutDir=.\ZDebug
+OutDir=.\Debug
 InputPath=.\worlda.s
 InputName=worlda
 
@@ -2387,7 +2387,7 @@ InputName=worlda
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\ZGLDebug
+OutDir=.\Debug-gl
 InputPath=.\worlda.s
 InputName=worlda
 
@@ -2402,7 +2402,7 @@ InputName=worlda
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\ZGLRelease
+OutDir=.\Release-gl
 InputPath=.\worlda.s
 InputName=worlda
 
