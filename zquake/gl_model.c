@@ -1593,7 +1593,7 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		mod->modhint = MOD_NORMAL;
 
 	if (mod->modhint == MOD_PLAYER || mod->modhint == MOD_EYES)
-		mod->crc = CRC_Block (buffer, fs_filesize) + 1;
+		mod->crc = CRC_Block (buffer, fs_filesize);
 	
 	start = Hunk_LowMark ();
 
