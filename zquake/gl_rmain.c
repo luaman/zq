@@ -265,7 +265,7 @@ void R_DrawEntitiesOnList (void)
 	// draw translucent models
 	if (draw_translucent)
 	{
-		glDepthMask (GL_FALSE);		// no z writes
+//		glDepthMask (GL_FALSE);		// no z writes
 		for (i = 0; i < cl_numvisedicts; i++)
 		{
 			currententity = &cl_visedicts[i];
@@ -274,7 +274,7 @@ void R_DrawEntitiesOnList (void)
 					&& (currententity->renderfx & RF_TRANSLUCENT))
 				R_DrawAliasModel (currententity);
 		}
-		glDepthMask (GL_TRUE);
+//		glDepthMask (GL_TRUE);
 	}
 }
 
