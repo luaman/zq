@@ -793,8 +793,16 @@ void CL_WriteConfiguration (void)
 
 //============================================================================
 
-void Host_ConnectLocal ()
+void CL_BeginLocalConnection ()
 {
+	// make sure we're not connected to an external server,
+	// and demo playback is stopped
+	if (!com_serveractive)
+		CL_Disconnect ();
+
+	S_StopAllSounds (true);
+	cl.worldmodel = NULL;
+
 	if (cls.state < ca_connected)
 		Cmd_ExecuteString ("connect local");
 	else
