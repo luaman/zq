@@ -603,23 +603,26 @@ void CL_ParseServerData (void)
 	if (!com_serveractive)
 		FS_SetGamedir (str);
 
-	// ZOID--run the autoexec.cfg in the gamedir
-	// if it exists
-	// Tonik -- FIXME: this will not work right on a local server
-	// if cls.gamedir differs from com_gamedir
+	// run config.cfg and frontend.cfg in the gamedir if they exist
 	if (cflag) {
 		int cl_warncmd_val = cl_warncmd.value;
 		Q_snprintfz (fn, sizeof(fn), "%s/%s", cls.gamedir, "config.cfg");
 		if ((f = fopen(fn, "r")) != NULL) {
 			fclose(f);
 			Cbuf_AddText ("cl_warncmd 0\n");
-			Cbuf_AddText ("exec config.cfg\n");
+			if (!strcmp(cls.gamedirfile, com_gamedirfile))
+				Cbuf_AddText ("exec config.cfg\n");
+			else
+				Cbuf_AddText (va("exec ../%s/config.cfg\n", cls.gamedirfile));
 		}
 		Q_snprintfz (fn, sizeof(fn), "%s/%s", cls.gamedir, "frontend.cfg");
 		if ((f = fopen(fn, "r")) != NULL) {
 			fclose(f);
 			Cbuf_AddText ("cl_warncmd 0\n");
-			Cbuf_AddText ("exec frontend.cfg\n");
+			if (!strcmp(cls.gamedirfile, com_gamedirfile))
+				Cbuf_AddText ("exec frontend.cfg\n");
+			else
+				Cbuf_AddText (va("exec ../%s/frontend.cfg\n", cls.gamedirfile));
 		}
 		Q_snprintfz (fn, sizeof(fn), "cl_warncmd %d\n", cl_warncmd_val);
 		Cbuf_AddText (fn);
