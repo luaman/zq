@@ -625,11 +625,10 @@ void Cmd_UnAlias_f (void)
 		return;
 	}
 
-	Cmd_DeleteAlias (s);
-#if 0
-	if (!Cmd_DeleteAlias(s))
-		Com_Printf ("Unknown alias \"%s\"\n", s);
-#endif
+	if (!Cmd_DeleteAlias(s)) {
+		if (cl_warncmd.value || developer.value)
+			Com_Printf ("No such alias: \"%s\"\n", s);
+	}
 }
 
 // remove all aliases
