@@ -109,7 +109,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	.extern C(d_pix_min)
 	.extern C(d_pix_max)
 	.extern C(d_y_aspect_shift)
-	.extern C(screenwidth)
+	.extern C(r_screenwidth)
 	.extern C(r_leftclipped)
 	.extern C(r_leftenter)
 	.extern C(r_rightclipped)

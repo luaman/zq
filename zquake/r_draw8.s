@@ -187,7 +187,7 @@ LSpanLoop:
 
 	movl	C(tadjust),%edx
 	movl	C(sadjust),%esi
-	movl	C(d_scantable)(,%eax,4),%edi	// v * screenwidth
+	movl	C(d_scantable)(,%eax,4),%edi	// v * r_screenwidth
 	addl	%ecx,%edi
 	movl	espan_t_u(%ebx),%ecx
 	addl	%ecx,%edi				// pdest = &pdestspan[scans->u];
