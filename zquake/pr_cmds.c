@@ -400,7 +400,7 @@ static void PF_vlen (void)
 	
 	value1 = G_VECTOR(OFS_PARM0);
 
-	new = value1[0] * value1[0] + value1[1] * value1[1] + value1[2]*value1[2];
+	new = DotProduct(value1, value1);
 	
 	G_FLOAT(OFS_RETURN) = (new) ? sqrt(new) : 0;
 }
@@ -842,9 +842,9 @@ static void PF_cvar (void)
 	
 	str = G_STRING(OFS_PARM0);
 
-	if (!strcmp(str, "pr_checkextension")) {
+	if (!Q_stricmp(str, "pr_checkextension")) {
 		// we do support PF_checkextension
-		G_FLOAT(OFS_RETURN) = 1;
+		G_FLOAT(OFS_RETURN) = 1.0;
 		return;
 	}
 
@@ -937,8 +937,8 @@ static void PF_dprint (void)
 
 static void PF_ftos (void)
 {
-	float	v;
-	int	i;
+	float v;
+	int i;
 	char *string_temp;
 
 	string_temp = PR_GetTempString();
@@ -951,7 +951,7 @@ static void PF_ftos (void)
 	{
 		Q_snprintfz (string_temp, STRINGTEMP_LENGTH, "%f", v);
 
-		for (i=strlen(string_temp) - 1; i > 0 && string_temp[i] == '0'; i--)
+		for (i = strlen(string_temp) - 1; i > 0 && string_temp[i] == '0'; i--)
 			string_temp[i] = 0;
 		if (string_temp[i] == '.')
 			string_temp[i] = 0;
@@ -1566,6 +1566,20 @@ static void PF_sqrt (void)
 	G_FLOAT(OFS_RETURN) = sqrt(G_FLOAT(OFS_PARM0));
 }
 
+
+// DP_QC_ETOS
+// string etos(entity ent) = #65
+static void PF_etos (void)
+{
+	char *string_temp;
+
+	string_temp = PR_GetTempString();
+
+	Q_snprintfz (string_temp, STRINGTEMP_LENGTH, "entity %i", G_EDICTNUM(OFS_PARM0));
+
+	G_INT(OFS_RETURN) = PR_SetString(string_temp);
+}
+
 //=============================================================================
 
 static void PF_makestatic (void)
@@ -1745,6 +1759,24 @@ static void PF_multicast (void)
 	SV_Multicast (o, to);
 }
 
+
+// DP_QC_RANDOMVEC
+// vector randomvec() = #91
+static void PF_randomvec (void)
+{
+	vec3_t temp;
+
+	do
+	{
+		temp[0] = (rand() & 0x7fff) * (2.0 / 0x7fff) - 1.0;
+		temp[1] = (rand() & 0x7fff) * (2.0 / 0x7fff) - 1.0;
+		temp[2] = (rand() & 0x7fff) * (2.0 / 0x7fff) - 1.0;
+	} while (DotProduct(temp, temp) >= 1);
+
+	VectorCopy (temp, G_VECTOR(OFS_RETURN));
+}
+
+
 /*
 =================
 PF_min
@@ -1754,7 +1786,7 @@ float min(float a, float b, ...)
 =================
 */
 // DP_QC_MINMAXBOUND
-void PF_min (void)
+static void PF_min (void)
 {
 	int i;
 	float min, *f;
@@ -1863,6 +1895,38 @@ static void PF_substr (void)
 }
 
 
+// returns vector value from a string
+// vector stov(string s) = #117
+// FRIK_FILE
+void PF_stov(void)
+{
+	int		 i;
+	char	*s		= NULL;
+	float	*out	= NULL;
+
+	s = PF_VarString(0);
+	out = G_VECTOR(OFS_RETURN);
+	VectorClear(out);
+
+	if (*s == '\'')
+		s++;
+
+	for (i = 0; i < 3; i++)
+	{
+		// ignore whitespaces:
+		while (*s == ' ' || *s == '\t')
+			s++;
+		out[i] = atof (s);
+		if (!out[i] && *s != '-' && *s != '+' && (*s < '0' || *s > '9'))
+			break; // not a number
+		while (*s && *s != ' ' && *s !='\t' && *s != '\'')
+			s++;
+		if (*s == '\'')
+			break;
+	}
+}
+
+
 // string(string s) strzone = #118
 static void PF_strzone (void)
 {
@@ -1918,6 +1982,9 @@ static void PF_checkextension (void)
 		"DP_HALFLIFE_MAP_CVAR",
 		"DP_QC_SINCOSSQRTPOW",
 		"DP_QC_MINMAXBOUND",
+		"DP_QC_ETOS",
+		"DP_QC_RANDOMVEC",
+		// "FRIK_FILE",		// incomplete (fopen, fclose, fputs, fgets are not implemented)
 		"ZQ_QC_CHECKBUILTIN",
 		"ZQ_MOVETYPE_NOCLIP",
 		"ZQ_MOVETYPE_FLY",
@@ -1929,12 +1996,12 @@ static void PF_checkextension (void)
 
 	for (pstr = supported_extensions; *pstr; pstr++) {
 		if (!Q_stricmp(*pstr, extension)) {
-			G_FLOAT(OFS_RETURN) = 1;	// supported
+			G_FLOAT(OFS_RETURN) = 1.0;	// supported
 			return;
 		}
 	}
 
-	G_FLOAT(OFS_RETURN) = 0;	// not supported
+	G_FLOAT(OFS_RETURN) = 0.0;	// not supported
 }
 
 
@@ -2144,6 +2211,11 @@ static void PF_mapfunction (void)
 
 //=============================================================================
 
+#define EMPTY_BUILTIN_X10	PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme
+#define EMPTY_BUILTIN_X20	EMPTY_BUILTIN_X10, EMPTY_BUILTIN_X10
+#define EMPTY_BUILTIN_X50	EMPTY_BUILTIN_X20, EMPTY_BUILTIN_X20, EMPTY_BUILTIN_X10
+#define EMPTY_BUILTIN_X100	EMPTY_BUILTIN_X50, EMPTY_BUILTIN_X50
+
 builtin_t pr_builtins[] =
 {
 PF_Fixme,
@@ -2214,7 +2286,7 @@ PF_sqrt,			// float(float x) sqrt = #62
 
 PF_Fixme,
 PF_Fixme,
-PF_Fixme,
+PF_etos,			// string(entity ent) etos				= #65
 PF_Fixme,
 
 SV_MoveToGoal,
@@ -2249,7 +2321,7 @@ PF_Fixme,
 PF_Fixme,
 PF_Fixme,
 PF_Fixme,
-PF_Fixme,
+PF_randomvec,		// vector() randomvec								= #91;
 PF_Fixme,
 PF_Fixme,
 PF_min,				// float(float a, float b, ...) min					= #94;
@@ -2258,16 +2330,7 @@ PF_bound,			// float(float min, float value, float max) bound	= #96;
 PF_pow,				// float(float x, float y) pow						= #97;
 PF_Fixme,
 PF_checkextension,	// float(string name) checkextension				= #99;
-PF_Fixme,			// #100
-PF_Fixme,			// #101
-PF_Fixme,			// #102
-PF_Fixme,			// #103
-PF_Fixme,			// #104
-PF_Fixme,			// #105
-PF_Fixme,			// #106
-PF_Fixme,			// #107
-PF_Fixme,			// #108
-PF_Fixme,			// #109
+EMPTY_BUILTIN_X10,
 PF_Fixme,			// #110
 PF_Fixme,			// #111
 PF_Fixme,			// #112
@@ -2275,7 +2338,7 @@ PF_Fixme,			// #113
 PF_strlen,			// float(string s) strlen							= #114;
 PF_stradd,			// string(string s1, string s2, ...) stradd			= #115; 
 PF_substr,			// string(string s, float start, float count) substr = #116;
-PF_Fixme,			// #117
+PF_stov,			// vector(string s) stov							= #117
 PF_strzone,			// string(string s) strzone							= #118
 PF_strunzone,		// void(string s) strunzone							= #119
 };
