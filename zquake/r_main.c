@@ -764,7 +764,7 @@ R_DrawBEntitiesOnList
 */
 void R_DrawBEntitiesOnList (void)
 {
-	int			i, j, k, clipflags;
+	int			i, k, clipflags;
 	vec3_t		oldorigin;
 	model_t		*clmodel;
 	float		minmaxs[6];
@@ -786,85 +786,77 @@ void R_DrawBEntitiesOnList (void)
 
 	// see if the bounding box lets us trivially reject, also sets
 	// trivial accept status
-		for (j=0 ; j<3 ; j++)
-		{
-			minmaxs[j] = currententity->origin[j] +
-					clmodel->mins[j];
-			minmaxs[3+j] = currententity->origin[j] +
-					clmodel->maxs[j];
-		}
+		VectorAdd (clmodel->mins, currententity->origin, minmaxs);
+		VectorAdd (clmodel->maxs, currententity->origin, (minmaxs+3));
 
 		clipflags = R_BmodelCheckBBox (clmodel, minmaxs);
 
-		if (clipflags != BMODEL_FULLY_CLIPPED)
+		if (clipflags == BMODEL_FULLY_CLIPPED)
+			continue;		// off the edge of the screen
+
+		VectorCopy (currententity->origin, r_entorigin);
+		VectorSubtract (r_origin, r_entorigin, modelorg);
+	// FIXME: is this needed?
+		VectorCopy (modelorg, r_worldmodelorg);
+
+		r_pcurrentvertbase = clmodel->vertexes;
+
+	// FIXME: stop transforming twice
+		R_RotateBmodel ();
+
+	// calculate dynamic lighting for bmodel if it's not an
+	// instanced model
+		if (clmodel->firstmodelsurface != 0)
 		{
-			VectorCopy (currententity->origin, r_entorigin);
-			VectorSubtract (r_origin, r_entorigin, modelorg);
-		// FIXME: is this needed?
-			VectorCopy (modelorg, r_worldmodelorg);
-	
-			r_pcurrentvertbase = clmodel->vertexes;
-	
-		// FIXME: stop transforming twice
-			R_RotateBmodel ();
-
-		// calculate dynamic lighting for bmodel if it's not an
-		// instanced model
-			if (clmodel->firstmodelsurface != 0)
+			for (k=0 ; k<MAX_DLIGHTS ; k++)
 			{
-				for (k=0 ; k<MAX_DLIGHTS ; k++)
+				if ((cl_dlights[k].die < cl.time) ||
+					(!cl_dlights[k].radius))
 				{
-					if ((cl_dlights[k].die < cl.time) ||
-						(!cl_dlights[k].radius))
-					{
-						continue;
-					}
-
-					R_MarkLights (&cl_dlights[k], 1<<k,
-						clmodel->nodes + clmodel->hulls[0].firstclipnode);
-				}
-			}
-
-			r_pefragtopnode = NULL;
-
-			for (j=0 ; j<3 ; j++)
-			{
-				r_emins[j] = minmaxs[j];
-				r_emaxs[j] = minmaxs[3+j];
-			}
-
-			R_SplitEntityOnNode2 (cl.worldmodel->nodes);
-
-			if (r_pefragtopnode)
-			{
-				currententity->topnode = r_pefragtopnode;
-
-				if (r_pefragtopnode->contents >= 0)
-				{
-				// not a leaf; has to be clipped to the world BSP
-					r_clipflags = clipflags;
-					R_DrawSolidClippedSubmodelPolygons (clmodel);
-				}
-				else
-				{
-				// falls entirely in one leaf, so we just put all the
-				// edges in the edge list and let 1/z sorting handle
-				// drawing order
-					R_DrawSubmodelPolygons (clmodel, clipflags);
+					continue;
 				}
 
-				currententity->topnode = NULL;
+				R_MarkLights (&cl_dlights[k], 1<<k,
+					clmodel->nodes + clmodel->hulls[0].firstclipnode);
 			}
-
-		// put back world rotation and frustum clipping		
-		// FIXME: R_RotateBmodel should just work off base_vxx
-			VectorCopy (base_vpn, vpn);
-			VectorCopy (base_vup, vup);
-			VectorCopy (base_vright, vright);
-			VectorCopy (base_modelorg, modelorg);
-			VectorCopy (oldorigin, modelorg);
-			R_TransformFrustum ();
 		}
+
+		r_pefragtopnode = NULL;
+
+		VectorCopy (minmaxs, r_emins);
+		VectorCopy ((minmaxs+3), r_emaxs);
+
+		R_SplitEntityOnNode2 (cl.worldmodel->nodes);
+
+		if (r_pefragtopnode)
+		{
+			currententity->topnode = r_pefragtopnode;
+
+			if (r_pefragtopnode->contents >= 0)
+			{
+			// not a leaf; has to be clipped to the world BSP
+				r_clipflags = clipflags;
+				R_DrawSolidClippedSubmodelPolygons (clmodel);
+			}
+			else
+			{
+			// falls entirely in one leaf, so we just put all the
+			// edges in the edge list and let 1/z sorting handle
+			// drawing order
+				R_DrawSubmodelPolygons (clmodel, clipflags);
+			}
+
+			currententity->topnode = NULL;
+		}
+
+	// put back world rotation and frustum clipping		
+	// FIXME: R_RotateBmodel should just work off base_vxx
+		VectorCopy (base_vpn, vpn);
+		VectorCopy (base_vup, vup);
+		VectorCopy (base_vright, vright);
+		VectorCopy (base_modelorg, modelorg);
+		VectorCopy (oldorigin, modelorg);
+		R_TransformFrustum ();
 	}
 
 	insubmodel = false;
