@@ -45,9 +45,7 @@ void R_AnimateLight (void)
 			continue;
 		}
 		k = i % cl_lightstyle[j].length;
-		k = cl_lightstyle[j].map[k] - 'a';
-		k = k*22;
-		d_lightstylevalue[j] = k;
+		d_lightstylevalue[j] = (cl_lightstyle[j].map[k] - 'a')*22;
 	}	
 }
 
