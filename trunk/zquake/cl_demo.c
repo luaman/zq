@@ -293,7 +293,7 @@ qboolean CL_GetMessage (void)
 	if (cls.demoplayback)
 		return CL_GetDemoMessage ();
 
-	if (!NET_GetPacket(net_clientsocket))
+	if (!NET_GetPacket(NS_CLIENT))
 		return false;
 
 	CL_WriteDemoMessage (&net_message);
@@ -866,7 +866,7 @@ static void CheckQizmoCompletion ()
 	// start playback
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
-	Netchan_Setup (&cls.netchan, net_from, 0, net_clientsocket);
+	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
 	realtime = 0;
 }
 
@@ -934,7 +934,7 @@ void PlayQWZDemo (void)
 		// .qwd already exists, so just play it
 		cls.demoplayback = true;
 		cls.state = ca_demostart;
-		Netchan_Setup (&cls.netchan, net_from, 0, net_clientsocket);
+		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
 		realtime = 0;
 		return;
 	}
@@ -969,7 +969,7 @@ void PlayQWZDemo (void)
 	cls.demoplayback = true;
 	cls.demofile = NULL;
 	cls.state = ca_demostart;
-	Netchan_Setup (&cls.netchan, net_from, 0, net_clientsocket);
+	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
 	realtime = 0;
 }
 #endif
@@ -1026,7 +1026,7 @@ void CL_PlayDemo_f (void)
 
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
-	Netchan_Setup (&cls.netchan, net_from, 0, net_clientsocket);
+	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
 	realtime = 0;
 }
 

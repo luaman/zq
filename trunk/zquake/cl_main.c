@@ -193,7 +193,7 @@ void CL_SendConnectPacket (void)
 //	Con_Printf ("Connecting to %s...\n", cls.servername);
 	sprintf (data, "\xff\xff\xff\xff" "connect %i %i %i \"%s\"\n",
 		PROTOCOL_VERSION, cls.qport, cls.challenge, cls.userinfo);
-	NET_SendPacket (net_clientsocket, strlen(data), data, adr);
+	NET_SendPacket (NS_CLIENT, strlen(data), data, adr);
 }
 
 /*
@@ -232,7 +232,7 @@ void CL_CheckForResend (void)
 
 	Con_Printf ("Connecting to %s...\n", cls.servername);
 	sprintf (data, "\xff\xff\xff\xff" "getchallenge\n");
-	NET_SendPacket (net_clientsocket, strlen(data), data, adr);
+	NET_SendPacket (NS_CLIENT, strlen(data), data, adr);
 }
 
 void CL_BeginServerConnect(void)
@@ -467,7 +467,7 @@ void CL_ConnectionlessPacket (void)
 				Con_Printf ("Dup connect received.  Ignored.\n");
 			return;
 		}
-		Netchan_Setup (&cls.netchan, net_from, cls.qport, net_clientsocket);
+		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, cls.qport);
 		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
 		MSG_WriteString (&cls.netchan.message, "new");	
 		cls.state = ca_connected;
@@ -551,7 +551,7 @@ void CL_ConnectionlessPacket (void)
 		data[4] = A2A_ACK;
 		data[5] = 0;
 		
-		NET_SendPacket (net_clientsocket, 6, &data, net_from);
+		NET_SendPacket (NS_CLIENT, 6, &data, net_from);
 		return;
 	}
 

@@ -190,7 +190,7 @@ void CL_Packet_f (void)
 	}
 	*out = 0;
 
-	NET_SendPacket (net_clientsocket, out-send, send, adr);
+	NET_SendPacket (NS_CLIENT, out-send, send, adr);
 }
 
 
@@ -246,7 +246,7 @@ void CL_Rcon_f (void)
 			to.port = BigShort (27500);
 	}
 	
-	NET_SendPacket (net_clientsocket, strlen(message)+1, message
+	NET_SendPacket (NS_CLIENT, strlen(message)+1, message
 		, to);
 }
 
