@@ -25,13 +25,9 @@ edict_t	*sv_player;
 
 usercmd_t	cmd;
 
-#ifdef QW_BOTH
 cvar_t	sv_rollspeed = {"sv_rollspeed", "200"};
 cvar_t	sv_rollangle = {"sv_rollangle", "2.0"};
-#else
-cvar_t	sv_rollspeed = {"cl_rollspeed", "200"};
-cvar_t	sv_rollangle = {"cl_rollangle", "2.0"};
-#endif
+
 cvar_t	sv_spectalk = {"sv_spectalk", "1"};
 
 cvar_t	sv_mapcheck	= {"sv_mapcheck", "1"};
@@ -352,6 +348,9 @@ void SV_Spawn_f (void)
 // send all current light styles
 	for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
 	{
+		if ((!sv.lightstyles[i] || !sv.lightstyles[i][0])
+			&& sv_fastconnect.value)
+			continue;		// don't send empty lightstyle strings
 		ClientReliableWrite_Begin (host_client, svc_lightstyle, 
 			3 + (sv.lightstyles[i] ? strlen(sv.lightstyles[i]) : 1));
 		ClientReliableWrite_Byte (host_client, (char)i);
