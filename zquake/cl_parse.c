@@ -1270,9 +1270,9 @@ void CL_ParsePrint (void)
 
 		if (flags == 2 && !TP_FilterMessage(s + offset))
 			return;
-		else {
+
+		if (flags == 2)
 			s = TP_SoundTrigger (s);
-		}
 
 		if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
 			for (p = s; *p; p++)
