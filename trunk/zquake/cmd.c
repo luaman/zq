@@ -466,7 +466,7 @@ void Cmd_Alias_f (void)
 	// if the alias allready exists, reuse it
 	for (a = cmd_alias_hash[key] ; a ; a=a->hash_next)
 	{
-		if (!strcmp(s, a->name))
+		if (!Q_strcasecmp(a->name, s))
 		{
 			Z_Free (a->value);
 			break;
@@ -481,12 +481,12 @@ void Cmd_Alias_f (void)
 		a->hash_next = cmd_alias_hash[key];
 		cmd_alias_hash[key] = a;
 	}
-	strcpy (a->name, s);	
+	strcpy (a->name, s);
 
 // copy the rest of the command line
 	cmd[0] = 0;		// start out with a null string
 	c = Cmd_Argc();
-	for (i=2 ; i< c ; i++)
+	for (i=2 ; i < c ; i++)
 	{
 		strcat (cmd, Cmd_Argv(i));
 		if (i != c)
@@ -498,11 +498,57 @@ void Cmd_Alias_f (void)
 }
 
 
+qboolean Cmd_DeleteAlias (char *name)
+{
+	cmd_alias_t	*a, *prev;
+	int			key;
+
+	key = Key (name);
+
+	prev = NULL;
+	for (a = cmd_alias_hash[key] ; a ; a = a->hash_next)
+	{
+		if (!Q_strcasecmp(a->name, name))
+		{
+			// unlink from hash
+			if (prev)
+				prev->hash_next = a->hash_next;
+			else
+				cmd_alias_hash[key] = a->hash_next;
+			break;
+		}
+		prev = a;
+	}
+
+	if (!a)
+		return false;	// not found
+
+	prev = NULL;
+	for (a = cmd_alias ; a ; a = a->next)
+	{
+		if (!Q_strcasecmp(a->name, name))
+		{
+			// unlink from alias list
+			if (prev)
+				prev->next = a->next;
+			else
+				cmd_alias = a->next;
+
+			// free
+			Z_Free (a->value);
+			Z_Free (a);			
+			return true;
+		}
+		prev = a;
+	}
+
+	Sys_Error ("Cmd_DeleteAlias: alias list broken");
+	return false;	// shut up compiler
+}
+
 void Cmd_UnAlias_f (void)
 {
-	cmd_alias_t	*a, *prev, *hash_prev;
 	char		*s;
-	int			key;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -517,28 +563,8 @@ void Cmd_UnAlias_f (void)
 		return;
 	}
 
-	key = Key (s);
-
-	prev = cmd_alias;
-	hash_prev = cmd_alias_hash[key];
-	for (a = cmd_alias_hash[key] ; a ; a = a->hash_next)
-	{
-		if (!strcmp(s, a->name))
-		{
-			Z_Free (a->value);
-			prev->next = a->next;
-			hash_prev->next = a->hash_next;
-			if (a == cmd_alias)
-				cmd_alias = a->next;
-			if (a == cmd_alias_hash[key])
-				cmd_alias_hash[key] = a->hash_next;
-			Z_Free (a);			
-			return;
-		}
-		prev = a;
-		hash_prev = a;
-	}
-	Con_Printf ("Unknown alias \"%s\"\n", s);
+	if (!Cmd_DeleteAlias(s))
+		Con_Printf ("Unknown alias \"%s\"\n", s);
 }
 
 
