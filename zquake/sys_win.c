@@ -144,7 +144,7 @@ void Sys_Init (void)
 
 	if (!COM_CheckParm("-allowmultiple"))
 	{
-		// mutex will fail if semephore allready exists
+		// mutex will fail if semaphore already exists
 		qwclsemaphore = CreateMutex(
 			NULL,         /* Security attributes */
 			0,            /* owner       */

@@ -135,7 +135,7 @@ void SV_Soundlist_f (void)
 
 	if (host_client->state != cs_connected)
 	{
-		Con_Printf ("soundlist not valid -- allready spawned\n");
+		Con_Printf ("soundlist not valid -- already spawned\n");
 		return;
 	}
 
@@ -185,7 +185,7 @@ void SV_Modellist_f (void)
 
 	if (host_client->state != cs_connected)
 	{
-		Con_Printf ("modellist not valid -- allready spawned\n");
+		Con_Printf ("modellist not valid -- already spawned\n");
 		return;
 	}
 	
@@ -234,7 +234,7 @@ void SV_PreSpawn_f (void)
 
 	if (host_client->state != cs_connected)
 	{
-		Con_Printf ("prespawn not valid -- allready spawned\n");
+		Con_Printf ("prespawn not valid -- already spawned\n");
 		return;
 	}
 	
@@ -309,7 +309,7 @@ void SV_Spawn_f (void)
 
 	if (host_client->state != cs_connected)
 	{
-		Con_Printf ("Spawn not valid -- allready spawned\n");
+		Con_Printf ("Spawn not valid -- already spawned\n");
 		return;
 	}
 
@@ -886,7 +886,7 @@ void SV_Kill_f (void)
 {
 	if (sv_player->v.health <= 0)
 	{
-		SV_ClientPrintf (host_client, PRINT_HIGH, "Can't suicide -- allready dead!\n");
+		SV_ClientPrintf (host_client, PRINT_HIGH, "Can't suicide -- already dead!\n");
 		return;
 	}
 	

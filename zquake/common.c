@@ -1334,7 +1334,7 @@ int COM_FOpenFile (char *filename, FILE **file)
 COM_LoadFile
 
 Filename are reletive to the quake directory.
-Allways appends a 0 byte to the loaded data.
+Always appends a 0 byte to the loaded data.
 ============
 */
 cache_user_t *loadcache;
