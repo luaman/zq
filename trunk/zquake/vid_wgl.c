@@ -918,6 +918,7 @@ ClearAllStates
 */
 void ClearAllStates (void)
 {
+	extern void IN_ClearStates (void);
 	extern qboolean keydown[256];
 	int		i;
 	
