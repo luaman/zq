@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef QW_BOTH
 #include "quakedef.h"
 #include "server.h"
+#include "sound.h"
 #else
 #include "qwsvdef.h"
 #endif
@@ -356,6 +357,8 @@ void SV_Map_f (void)
 	if (sv.state == ss_dead)
 		CL_Disconnect();
 
+	S_StopAllSounds (true);
+	cl.worldmodel = NULL;
 	Host_ConnectLocal ();
 #endif
 
