@@ -209,6 +209,11 @@ qboolean CheckForCommand (void)
 			command[i] = s[i];
 	command[i] = 0;
 
+	// FIXME
+	if (!Q_strcasecmp(command, "god") || !Q_strcasecmp(command, "give") ||
+		!Q_strcasecmp(command, "noclip"))
+		return true;
+
 	cmd = Cmd_CompleteCommand (command);
 	if (!cmd || Q_strcasecmp (cmd, command))
 		cmd = Cvar_CompleteVariable (command);
