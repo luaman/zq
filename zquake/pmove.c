@@ -341,17 +341,13 @@ void PM_Friction (void)
 		friction = movevars.friction;
 
 		// if the leading edge is over a dropoff, increase friction
-		if (pmove.onground) {
-			start[0] = stop[0] = pmove.origin[0] + pmove.velocity[0]/speed*16;
-			start[1] = stop[1] = pmove.origin[1] + pmove.velocity[1]/speed*16;
-			start[2] = pmove.origin[2] + player_mins[2];
-			stop[2] = start[2] - 34;
-
-			trace = PM_PlayerTrace (start, stop);
-
-			if (trace.fraction == 1)
-				friction *= 2;
-		}
+		start[0] = stop[0] = pmove.origin[0] + pmove.velocity[0]/speed*16;
+		start[1] = stop[1] = pmove.origin[1] + pmove.velocity[1]/speed*16;
+		start[2] = pmove.origin[2] + player_mins[2];
+		stop[2] = start[2] - 34;
+		trace = PM_PlayerTrace (start, stop);
+		if (trace.fraction == 1)
+			friction *= 2;
 
 		control = speed < movevars.stopspeed ? movevars.stopspeed : speed;
 		drop = control*friction*frametime;
