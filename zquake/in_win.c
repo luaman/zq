@@ -36,7 +36,7 @@ HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion,
 
 // mouse variables
 cvar_t	m_filter = {"m_filter", "0"};
-cvar_t	in_dinput = {"in_dinput", "0"};
+cvar_t	in_dinput = {"in_dinput", "1", CVAR_ARCHIVE};
 
 // compatibility with old Quake -- setting to 0 disables KP_* codes
 cvar_t	cl_keypad = {"cl_keypad","1"};
