@@ -34,7 +34,7 @@ cvar_t	cl_parseFunChars = {"cl_parseFunChars", "1"};
 cvar_t	cl_triggers = {"cl_triggers", "0"};
 cvar_t	tp_forceTriggers = {"tp_forceTriggers", "0"};
 cvar_t	cl_nofake = {"cl_nofake", "0"};
-cvar_t	cl_loadlocs = {"cl_loadlocs", "0"};
+cvar_t	tp_loadlocs = {"tp_loadlocs", "1"};
 cvar_t	cl_mapname = {"mapname", "", CVAR_ROM};
 cvar_t	cl_rocket2grenade = {"cl_r2g", "0"};
 
@@ -1438,7 +1438,7 @@ void TP_NewMap ()
 	if (strcmp(mapname, last_map))
 	{	// map name has changed
 		loc_numentries = 0;	// clear loc file
-		if (cl_loadlocs.value && !cls.demoplayback) {
+		if (tp_loadlocs.value && cl.deathmatch && !cls.demoplayback) {
 			char locname[MAX_OSPATH];
 			_snprintf (locname, MAX_OSPATH, "%s.loc", mapname);
 			TP_LoadLocFile (locname, true);
@@ -2313,7 +2313,7 @@ void TP_Init ()
 	Cvar_RegisterVariable (&cl_triggers);
 	Cvar_RegisterVariable (&tp_forceTriggers);
 	Cvar_RegisterVariable (&cl_nofake);
-	Cvar_RegisterVariable (&cl_loadlocs);
+	Cvar_RegisterVariable (&tp_loadlocs);
 	Cvar_RegisterVariable (&cl_rocket2grenade);
 	Cvar_RegisterVariable (&cl_mapname);
 	Cvar_RegisterVariable (&cl_teamskin);
