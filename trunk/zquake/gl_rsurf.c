@@ -622,14 +622,14 @@ void R_DrawSequentialPoly (msurface_t *s)
 	{
 		GL_DisableMultitexture ();
 		GL_Bind (solidskytexture);
-		speedscale = realtime*8;
+		speedscale = cl.time*8;
 		speedscale -= (int)speedscale & ~127;
 
 		EmitSkyPolys (s);
 
 		glEnable (GL_BLEND);
 		GL_Bind (alphaskytexture);
-		speedscale = realtime*16;
+		speedscale = cl.time*16;
 		speedscale -= (int)speedscale & ~127;
 		EmitSkyPolys (s);
 
