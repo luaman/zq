@@ -1845,7 +1845,7 @@ void	VID_Init (unsigned char *palette)
 extern void M_Menu_Options_f (void);
 extern void M_Print (int cx, int cy, char *str);
 extern void M_PrintWhite (int cx, int cy, char *str);
-extern void M_DrawCharacter (int cx, int line, int num);
+extern void M_DrawChar (int cx, int line, int num);
 extern void M_DrawPic (int x, int y, mpic_t *pic);
 
 static int	vid_line, vid_wmodes;
@@ -1875,7 +1875,7 @@ void VID_MenuDraw (void)
 	int			lnummodes, i, k, column, row;
 	vmode_t		*pv;
 
-	p = Draw_CachePic ("gfx/vidmodes.lmp");
+	p = R_CachePic ("gfx/vidmodes.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
 
 	vid_wmodes = 0;

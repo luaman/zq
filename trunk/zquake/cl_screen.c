@@ -201,7 +201,7 @@ void SCR_DrawCenterString (void)
 		x = (vid.width - l*8)/2;
 		for (j=0 ; j<l ; j++, x+=8)
 		{
-			Draw_Character (x, y, start[j]);	
+			R_DrawChar (x, y, start[j]);	
 			if (!remaining--)
 				return;
 		}
@@ -249,7 +249,7 @@ void SCR_EraseCenterString (void)
 		y = 48;
 
 	scr_copytop = 1;
-	Draw_TileClear (0, y, vid.width, min(8*scr_erase_lines, vid.height - y - 1));
+	R_DrawTile (0, y, vid.width, min(8*scr_erase_lines, vid.height - y - 1));
 }
 
 //=============================================================================
@@ -460,9 +460,9 @@ void SCR_Init (void)
 	Cmd_AddCommand ("sizeup", SCR_SizeUp_f);
 	Cmd_AddCommand ("sizedown", SCR_SizeDown_f);
 
-	scr_ram = Draw_CacheWadPic ("ram");
-	scr_net = Draw_CacheWadPic ("net");
-	scr_turtle = Draw_CacheWadPic ("turtle");
+	scr_ram = R_CacheWadPic ("ram");
+	scr_net = R_CacheWadPic ("net");
+	scr_turtle = R_CacheWadPic ("turtle");
 
 	scr_initialized = true;
 }
@@ -481,7 +481,7 @@ void SCR_DrawRam (void)
 	if (!r_cache_thrash)
 		return;
 
-	Draw_Pic (scr_vrect.x+32, scr_vrect.y, scr_ram);
+	R_DrawPic (scr_vrect.x+32, scr_vrect.y, scr_ram);
 }
 
 /*
@@ -506,7 +506,7 @@ void SCR_DrawTurtle (void)
 	if (count < 3)
 		return;
 
-	Draw_Pic (scr_vrect.x, scr_vrect.y, scr_turtle);
+	R_DrawPic (scr_vrect.x, scr_vrect.y, scr_turtle);
 }
 
 /*
@@ -521,7 +521,7 @@ void SCR_DrawNet (void)
 	if (cls.demoplayback)
 		return;
 
-	Draw_Pic (scr_vrect.x+64, scr_vrect.y, scr_net);
+	R_DrawPic (scr_vrect.x+64, scr_vrect.y, scr_net);
 }
 
 void SCR_DrawFPS (void)
@@ -546,8 +546,8 @@ void SCR_DrawFPS (void)
 	sprintf(st, "%3d FPS", lastfps);
 	x = vid.width - strlen(st) * 8 - 8;
 	y = vid.height - sb_lines - 8;
-//	Draw_TileClear(x, y, strlen(st) * 8, 8);
-	Draw_String(x, y, st);
+//	R_DrawTile (x, y, strlen(st) * 8, 8);
+	R_DrawString(x, y, st);
 }
 
 
@@ -588,7 +588,7 @@ void SCR_DrawSpeed (void)
 		sprintf(st, "%3d", (int)display_speed);
 		x = vid.width - strlen(st) * 8 - 8;
 		y = 8;
-		Draw_String(x, y, st);
+		R_DrawString(x, y, st);
 	}
 
 	if (cls.realtime - lastrealtime >= 0.1)
@@ -638,9 +638,9 @@ void SCR_DrawClock (void)
 	}
 
 	if (scr_clock_y.value < 0)
-		Draw_String (8 * scr_clock_x.value, vid.height - sb_lines + 8*scr_clock_y.value, str);
+		R_DrawString (8 * scr_clock_x.value, vid.height - sb_lines + 8*scr_clock_y.value, str);
 	else
-		Draw_String (8 * scr_clock_x.value, 8*scr_clock_y.value, str);
+		R_DrawString (8 * scr_clock_x.value, 8*scr_clock_y.value, str);
 }
 
 
@@ -659,8 +659,8 @@ void SCR_DrawPause (void)
 	if (!cl.paused)
 		return;
 
-	pic = Draw_CachePic ("gfx/pause.lmp");
-	Draw_Pic ( (vid.width - pic->width)/2, 
+	pic = R_CachePic ("gfx/pause.lmp");
+	R_DrawPic ( (vid.width - pic->width)/2, 
 		(vid.height - 48 - pic->height)/2, pic);
 }
 
@@ -677,8 +677,8 @@ void SCR_DrawLoading (void)
 	if (!scr_drawloading)
 		return;
 		
-	pic = Draw_CachePic ("gfx/loading.lmp");
-	Draw_Pic ( (vid.width - pic->width)/2, 
+	pic = R_CachePic ("gfx/loading.lmp");
+	R_DrawPic ( (vid.width - pic->width)/2, 
 		(vid.height - 48 - pic->height)/2, pic);
 }
 
@@ -767,7 +767,7 @@ void SCR_SetUpToDrawConsole (void)
 	{
 #ifndef GLQUAKE
 		scr_copytop = 1;
-		Draw_TileClear (0, (int)scr_con_current, vid.width, vid.height - (int)scr_con_current);
+		R_DrawTile (0, (int)scr_con_current, vid.width, vid.height - (int)scr_con_current);
 #endif
 		Sbar_Changed ();
 	}
@@ -775,7 +775,7 @@ void SCR_SetUpToDrawConsole (void)
 	{
 #ifndef GLQUAKE
 		scr_copytop = 1;
-		Draw_TileClear (0, 0, vid.width, con_notifylines);
+		R_DrawTile (0, 0, vid.width, con_notifylines);
 #endif
 	}
 	else
@@ -828,26 +828,26 @@ Clear unused areas in GL
 void SCR_TileClear (void)
 {
 	if (cls.state != ca_active && cl.intermission) {
-		Draw_TileClear (0, 0, vid.width, vid.height);
+		R_DrawTile (0, 0, vid.width, vid.height);
 		return;
 	}
 
 	if (r_refdef.vrect.x > 0) {
 		// left
-		Draw_TileClear (0, 0, r_refdef.vrect.x, vid.height - sb_lines);
+		R_DrawTile (0, 0, r_refdef.vrect.x, vid.height - sb_lines);
 		// right
-		Draw_TileClear (r_refdef.vrect.x + r_refdef.vrect.width, 0, 
+		R_DrawTile (r_refdef.vrect.x + r_refdef.vrect.width, 0, 
 			vid.width - (r_refdef.vrect.x + r_refdef.vrect.width), 
 			vid.height - sb_lines);
 	}
 	if (r_refdef.vrect.y > 0) {
 		// top
-		Draw_TileClear (r_refdef.vrect.x, 0, r_refdef.vrect.width, 
+		R_DrawTile (r_refdef.vrect.x, 0, r_refdef.vrect.width, 
 			r_refdef.vrect.y);
 	}
 	if (r_refdef.vrect.y + r_refdef.vrect.height < vid.height - sb_lines) {
 		// bottom
-		Draw_TileClear (r_refdef.vrect.x,
+		R_DrawTile (r_refdef.vrect.x,
 			r_refdef.vrect.y + r_refdef.vrect.height, 
 			r_refdef.vrect.width, 
 			vid.height - sb_lines - 
@@ -1065,7 +1065,7 @@ void SCR_UpdateScreen (void)
 	if (scr_fullupdate++ < vid.numpages)
 	{	// clear the entire screen
 		scr_copyeverything = 1;
-		Draw_TileClear (0,0,vid.width,vid.height);
+		R_DrawTile (0,0,vid.width,vid.height);
 		Sbar_Changed ();
 	}
 	else
@@ -1074,15 +1074,15 @@ void SCR_UpdateScreen (void)
 		{
 			// clear background for counters
 			if (show_speed.value)
-				Draw_TileClear(vid.width - 4*8 - 8, 8, 4*8, 8);
+				R_DrawTile (vid.width - 4*8 - 8, 8, 4*8, 8);
 			if (show_fps.value)
-				Draw_TileClear(vid.width - 8*8 - 8, vid.height - sb_lines - 8, 8*8, 8);
+				R_DrawTile (vid.width - 8*8 - 8, vid.height - sb_lines - 8, 8*8, 8);
 			if (scr_clock.value)
 			{
 				if (scr_clock_y.value < 0)
-					Draw_TileClear (8 * scr_clock_x.value, vid.height - sb_lines + 8*scr_clock_y.value, 8*8, 8);
+					R_DrawTile (8 * scr_clock_x.value, vid.height - sb_lines + 8*scr_clock_y.value, 8*8, 8);
 				else
-					Draw_TileClear (8 * scr_clock_x.value, 8*scr_clock_y.value, 8*8, 8);
+					R_DrawTile (8 * scr_clock_x.value, 8*scr_clock_y.value, 8*8, 8);
 			}
 		}
 	}

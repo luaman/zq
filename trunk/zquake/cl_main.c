@@ -120,6 +120,7 @@ entity_t		cl_visedicts[MAX_VISEDICTS];
 int				cl_entframecount, cl_oldentframecount;
 
 int				cl_numvisparticles;
+// FIXME, allocate dynamically so that -particles works
 particle_t		cl_visparticles[MAX_PARTICLES];
 
 double			connect_time = 0;		// for connection retransmits

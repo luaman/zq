@@ -23,8 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "crc.h"
 
 
-void Draw_BeginDisc (void);
-void Draw_EndDisc (void);
+void R_BeginDisc (void);
+void R_EndDisc (void);
 void Draw_FlushCache (void);
 
 
@@ -1151,12 +1151,12 @@ byte *FS_LoadFile (char *path, int usehunk)
 		
 	((byte *)buf)[len] = 0;
 #ifndef SERVERONLY
-	Draw_BeginDisc ();
+	R_BeginDisc ();
 #endif
 	fread (buf, 1, len, h);
 	fclose (h);
 #ifndef SERVERONLY
-	Draw_EndDisc ();
+	R_EndDisc ();
 #endif
 
 	return buf;

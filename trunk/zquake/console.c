@@ -417,7 +417,7 @@ void Con_DrawInput (void)
 		text += 1 + key_linepos - con_linewidth;
 
 	// draw it
-	Draw_String(8, con_vislines-22, text);
+	R_DrawString (8, con_vislines-22, text);
 }
 
 
@@ -461,7 +461,7 @@ void Con_DrawNotify (void)
 		scr_copytop = 1;
 
 		for (x = 0 ; x < con_linewidth ; x++)
-			Draw_Character ( (x+1)<<3, v, text[x]);
+			R_DrawChar ( (x+1)<<3, v, text[x]);
 
 		v += 8;
 	}
@@ -475,10 +475,10 @@ void Con_DrawNotify (void)
 		scr_copytop = 1;
 	
 		if (chat_team) {
-			Draw_String (8, v, "say_team:");
+			R_DrawString (8, v, "say_team:");
 			skip = 11;
 		} else {
-			Draw_String (8, v, "say:");
+			R_DrawString (8, v, "say:");
 			skip = 5;
 		}
 
@@ -500,7 +500,7 @@ void Con_DrawNotify (void)
 		x = 0;
 		while (s[x] && x+skip < (vid.width>>3))
 		{
-			Draw_Character ( (x+skip)<<3, v, s[x]);
+			R_DrawChar ( (x+skip)<<3, v, s[x]);
 			x++;
 		}
 		v += 8;
@@ -546,7 +546,7 @@ void Con_DrawConsole (int lines)
 	{
 	// draw arrows to show the buffer is backscrolled
 		for (x=0 ; x<con_linewidth ; x+=4)
-			Draw_Character ( (x+1)<<3, y, '^');
+			R_DrawChar ( (x+1)<<3, y, '^');
 	
 		y -= 8;
 		rows--;
@@ -563,7 +563,7 @@ void Con_DrawConsole (int lines)
 		text = con.text + (row % con_totallines)*con_linewidth;
 
 		for (x=0 ; x<con_linewidth ; x++)
-			Draw_Character ( (x+1)<<3, y, text[x]);
+			R_DrawChar ( (x+1)<<3, y, text[x]);
 	}
 
 	// draw the download bar
@@ -605,8 +605,8 @@ void Con_DrawConsole (int lines)
 		// draw it
 		y = con_vislines-22 + 8;
 //		for (i = 0; i < strlen(dlbar); i++)
-//			Draw_Character ( (i+1)<<3, y, dlbar[i]);
-		Draw_String (8, y, dlbar);
+//			R_DrawChar ( (i+1)<<3, y, dlbar[i]);
+		R_DrawString (8, y, dlbar);
 	}
 
 

@@ -3060,7 +3060,7 @@ LONG WINAPI MainWndProc (
 extern void M_Menu_Options_f (void);
 extern void M_Print (int cx, int cy, char *str);
 extern void M_PrintWhite (int cx, int cy, char *str);
-extern void M_DrawCharacter (int cx, int line, int num);
+extern void M_DrawChar (int cx, int line, int num);
 extern void M_DrawPic (int x, int y, mpic_t *pic);
 
 static int	vid_line, vid_wmodes;
@@ -3094,7 +3094,7 @@ void VID_MenuDraw (void)
 	vmode_t		*pv;
 	modedesc_t	tmodedesc;
 
-	p = Draw_CachePic ("gfx/vidmodes.lmp");
+	p = R_CachePic ("gfx/vidmodes.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
 
 	for (i=0 ; i<3 ; i++)
@@ -3258,7 +3258,7 @@ void VID_MenuDraw (void)
 		if (vid_line >= 3)
 			row += 3*8;
 
-		M_DrawCharacter (column, row, 12+((int)(curtime*4)&1));
+		M_DrawChar (column, row, 12+((int)(curtime*4)&1));
 	}
 }
 
