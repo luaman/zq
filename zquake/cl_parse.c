@@ -1478,7 +1478,7 @@ void CL_MuzzleFlash (void)
 }
 
 
-#define SHOWNET(x) if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);
+#define SHOWNET(x) {if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);}
 /*
 =====================
 CL_ParseServerMessage
@@ -1521,11 +1521,16 @@ void CL_ParseServerMessage (void)
 		if (cmd == -1)
 		{
 			msg_readcount++;	// so the EOM showner has the right value
+			if (!svc_strings[cmd])
+				Host_Error ("CL_ParseServerMessage: Illegible server message");
 			SHOWNET("END OF MESSAGE");
 			break;
 		}
 
-		SHOWNET(svc_strings[cmd]);
+		if (cmd == svc_qizmovoice)
+			SHOWNET("svc_qizmovoice")
+		else if (cmd < sizeof(svc_strings)/sizeof(svc_strings[0]))
+			SHOWNET(svc_strings[cmd]);
 	
 	// other commands
 		switch (cmd)
@@ -1770,6 +1775,10 @@ void CL_ParseServerMessage (void)
 				CDAudio_Resume ();
 			break;
 
+		case svc_qizmovoice:
+			// skip the rest of the packet
+			msg_readcount = net_message.cursize;
+			break;
 		}
 	}
 
