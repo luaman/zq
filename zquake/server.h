@@ -53,7 +53,6 @@ typedef struct
 	int			lastcheck;			// used by PF_checkclient
 	double		lastchecktime;		// for monster ai 
 
-	qbool		paused;				// are we paused?
 	qbool		loadgame;			// handle connections specially
 
 	//check player/eyes models for hacks
@@ -335,6 +334,7 @@ typedef struct
 
 extern	netadr_t	master_adr[MAX_MASTERS];	// address of the master server
 
+extern	cvar_t	sv_paused;		// 1 - normal, 2 - auto (single player), 3 - both
 extern	cvar_t	sv_mintic, sv_maxtic;
 extern	cvar_t	maxclients;
 extern	cvar_t	sv_fastconnect;

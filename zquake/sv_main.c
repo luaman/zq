@@ -47,6 +47,7 @@ cvar_t	allow_download_other	= {"allow_download_other", "1"};	// make it 0 one da
 
 cvar_t	sv_phs = {"sv_phs", "1"};
 cvar_t	sv_pausable = {"sv_pausable", "1"};
+cvar_t	sv_paused = {"sv_paused", "0", CVAR_ROM};
 cvar_t	sv_maxrate = {"sv_maxrate", "0"};
 cvar_t	sv_fastconnect = {"sv_fastconnect", "0"};
 
@@ -83,12 +84,6 @@ void OnChange_maxclients (cvar_t *var, char *str, qbool *cancel) {
 	Cvar_SetValue (var, num);
 	*cancel = true;
 }
-
-qbool ServerPaused(void)
-{
-	return sv.paused;
-}
-
 
 /*
 ==================
@@ -1112,7 +1107,7 @@ void SV_CheckTimeouts (void)
 			cl->state = cs_free;	// can now be reused
 		}
 	}
-	if (sv.paused && !nclients) {
+	if (sv_paused.value && !nclients) {
 		// nobody left, unpause the server
 		SV_TogglePause("Pause released since no players are left.\n");
 	}
@@ -1233,7 +1228,7 @@ void SV_Frame (double time)
 	rand ();
 
 // decide the simulation time
-	if (!sv.paused)
+	if (!sv_paused.value)
 	{
 		svs.realtime += time;
 		sv.time += time;
@@ -1246,7 +1241,7 @@ void SV_Frame (double time)
 	SV_CheckLog ();
 
 // move autonomous things around if enough time has passed
-	if (!sv.paused)
+	if (!sv_paused.value)
 		SV_Physics ();
 
 	SV_RunBots ();
@@ -1321,6 +1316,7 @@ void SV_InitLocal (void)
 	Cvar_Register (&sv_spectatorPassword);
 
 	Cvar_Register (&sv_phs);
+	Cvar_Register (&sv_paused);
 	Cvar_Register (&sv_pausable);
 	Cmd_AddLegacyCommand ("pausable", "sv_pausable");
 	Cvar_Register (&sv_nailhack);
@@ -1548,7 +1544,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	}
 	
 	if (strncmp(val, cl->name, strlen(cl->name))) {
-		if (!sv.paused) {
+		if (!sv_paused.value) {
 			if (!cl->lastnametime || svs.realtime - cl->lastnametime > 5) {
 				cl->lastnamecount = 0;
 				cl->lastnametime = svs.realtime;

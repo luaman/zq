@@ -656,6 +656,7 @@ DrawPause
 */
 void SCR_DrawPause (void)
 {
+	extern cvar_t sv_paused;
 	mpic_t	*pic;
 
 	if (!scr_showpause.value)		// turn off for screenshots
@@ -663,6 +664,11 @@ void SCR_DrawPause (void)
 
 	if (!cl.paused)
 		return;
+
+#ifndef CLIENTONLY
+	if (sv_paused.value == 2)
+		return;		// auto-paused in single player
+#endif
 
 	pic = R_CachePic ("gfx/pause.lmp");
 	R_DrawPic ( (vid.width - pic->width)/2, 

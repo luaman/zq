@@ -879,6 +879,27 @@ void CL_BeginLocalConnection (void)
 }
 
 
+// automatically pause the game when going into the menus in single player
+static void CL_CheckAutoPause (void)
+{
+#ifndef CLIENTONLY
+	extern void SV_TogglePause (const char *msg);
+	extern cvar_t sv_paused;
+
+	if (com_serveractive && cls.state == ca_active && !cl.deathmatch && cl.maxclients == 1
+		&& (key_dest == key_menu /*|| key_dest == key_console*/))
+	{
+		if (!((int)sv_paused.value & 2))
+			SV_TogglePause (NULL);
+	}
+	else {
+		if ((int)sv_paused.value & 2)
+			SV_TogglePause (NULL);
+	}
+#endif
+}
+
+
 /*
 ===================
 CL_MinFrameTime
@@ -886,7 +907,7 @@ CL_MinFrameTime
 Can't run a frame if enough time hasn't passed
 ===================
 */
-double CL_MinFrameTime ()
+static double CL_MinFrameTime ()
 {
 	double fps, fpscap;
 
@@ -969,6 +990,7 @@ void CL_Frame (double time)
 
 	// process console commands
 	Cbuf_Execute ();
+	CL_CheckAutoPause ();
 
 	if (com_serveractive)
 		SV_Frame (cls.frametime);

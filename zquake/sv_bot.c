@@ -195,7 +195,7 @@ void SV_RunBots (void)
 		SZ_Clear (&cl->datagram);			// don't overflow
 		SZ_Clear (&cl->netchan.message);	// don't overflow
 
-		if (sv.paused)
+		if (sv_paused.value)
 			continue;
 
 		//
