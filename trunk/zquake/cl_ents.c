@@ -716,7 +716,7 @@ void CL_ParsePlayerinfo (void)
 guess_pm_type:
 		if (cl.players[num].spectator)
 			state->pm_type = PM_OLD_SPECTATOR;
-		else if (num == cl.playernum && cl.stats[STAT_HEALTH] <= 0)
+		else if (flags & PF_DEAD)
 			state->pm_type = PM_DEAD;
 		else
 			state->pm_type = PM_NORMAL;

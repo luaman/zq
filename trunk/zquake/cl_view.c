@@ -64,8 +64,7 @@ cvar_t	v_bonusflash = {"cl_bonusflash", "1"};
 
 float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
-frame_t		*view_frame;
-player_state_t		*view_message;
+player_state_t		view_message;
 
 // idle swaying for intermission and TF
 float	v_iyaw_cycle = 2;
@@ -874,9 +873,8 @@ void V_AddViewWeapon (float bob)
 	view = &cl.viewent;
 
 	if (!cl_drawgun.value || (cl_drawgun.value == 2 && scr_fov.value > 90)
-		|| view_message->flags & (PF_GIB|PF_DEAD)
+		|| view_message.flags & (PF_GIB|PF_DEAD)
 		|| (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)
-		|| (cl.stats[STAT_HEALTH] <= 0)
 		|| !Cam_DrawViewModel())
 	{
  		view->model = NULL;
@@ -904,7 +902,7 @@ void V_AddViewWeapon (float bob)
 		view->origin[2] += 0.5;
 
 	view->model = cl.model_precache[cl.stats[STAT_WEAPON]];
-	view->frame = view_message->weaponframe;
+	view->frame = view_message.weaponframe;
 	view->colormap = vid.colormap;
 }
 
@@ -959,9 +957,9 @@ void V_CalcRefdef (void)
 	r_refdef.vieworg[2] += 1.0/16;
 
 	// add view height
-	if (view_message->flags & PF_GIB)
+	if (view_message.flags & PF_GIB)
 		r_refdef.vieworg[2] += 8;	// gib view height
-	else if (view_message->flags & PF_DEAD)
+	else if (view_message.flags & PF_DEAD)
 		r_refdef.vieworg[2] -= 16;	// corpse view height
 	else
 	{
@@ -995,7 +993,7 @@ void V_CalcRefdef (void)
 		}
 	}
 
-	if (view_message->flags & PF_DEAD)		// PF_GIB will also set PF_DEAD
+	if (view_message.flags & PF_DEAD)		// PF_GIB will also set PF_DEAD
 		r_refdef.viewangles[ROLL] = 80;	// dead view angle
 
 	V_AddViewWeapon (bob);
@@ -1095,8 +1093,8 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 		return;
 	}
 
-	view_frame = &cl.frames[cl.validsequence & UPDATE_MASK];
-	view_message = &view_frame->playerstate[cl.viewplayernum];
+	if (cl.validsequence)
+		view_message = cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cl.viewplayernum];
 
 	DropPunchAngle ();
 	if (cl.intermission)
