@@ -442,6 +442,7 @@ extern byte		*host_colormap;
 void CL_Init (void);
 void CL_WriteConfiguration (void);
 void CL_ClearState (void);
+void CL_Spawn (void);
 void CL_ReadPackets (void);
 void CL_BeginServerConnect(void);
 void CL_Disconnect (void);

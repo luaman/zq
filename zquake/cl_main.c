@@ -113,7 +113,7 @@ int				cl_entframecount, cl_oldentframecount;
 
 double			connect_time = 0;		// for connection retransmits
 
-qbool		host_skipframe;			// used in demo playback
+static qbool	host_skipframe;			// used in demo playback
 
 byte		*host_basepal;
 byte		*host_colormap;
@@ -291,6 +291,29 @@ void CL_Connect_f (void)
 
 	strlcpy (cls.servername, server, sizeof(cls.servername));
 	CL_BeginServerConnect();
+}
+
+/*
+=====================
+CL_Spawn
+
+=====================
+*/
+void CL_Spawn (void)
+{		
+	// first update is the final signon stage
+	cls.state = ca_active;
+
+	if (cls.demoplayback)
+		host_skipframe = true;
+
+	if (!cls.demoplayback)
+		VID_SetCaption (va(PROGRAM ": %s", cls.servername));
+
+	Con_ClearNotify ();
+	SCR_EndLoadingPlaque ();
+
+	TP_ExecTrigger ("f_spawn");
 }
 
 
