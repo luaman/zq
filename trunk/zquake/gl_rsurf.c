@@ -30,7 +30,7 @@ int		lightmap_bytes;		// 1, 2, or 4
 
 int		lightmap_textures;
 
-unsigned		blocklights[18*18];
+unsigned		blocklights[18*18*3];
 
 #define	BLOCK_WIDTH		128
 #define	BLOCK_HEIGHT	128
@@ -119,9 +119,10 @@ void R_RenderFullbrights (void)
 // Dynamic lights
 
 typedef struct dlightinfo_s {
-	int	local[2];
+	int local[2];
 	int rad;
-	int	minlight;	// rad - minlight
+	int minlight;	// rad - minlight
+	int type;
 } dlightinfo_t;
 
 static dlightinfo_t dlightlist[MAX_DLIGHTS];
@@ -129,10 +130,10 @@ static int	numdlights;
 
 /*
 ===============
-R_BuildDLightList
+R_BuildDlightList
 ===============
 */
-void R_BuildDLightList (msurface_t *surf)
+void R_BuildDlightList (msurface_t *surf)
 {
 	int			lnum;
 	float		dist;
@@ -203,16 +204,27 @@ void R_BuildDLightList (msurface_t *surf)
 			light->rad = irad;
 			light->local[0] = local[0];
 			light->local[1] = local[1];
+			light->type = cl_dlights[lnum].type;
 			numdlights++;
 		}
 	}
 }
 
+int dlightcolor[NUM_DLIGHTTYPES][3] = {
+	{ 100, 90, 80 },	// dimlight or brightlight
+	{ 0, 0, 128 },		// blue
+	{ 128, 0, 0 },		// red
+	{ 128, 0, 128 },	// red + blue
+	{ 100, 50, 10 },		// muzzleflash
+	{ 100, 50, 10 },		// explosion
+	{ 90, 60, 7 }		// rocket
+};
+
 /*
 ===============
 R_AddDynamicLights
 
-NOTE: R_BuildDLightList must be called first!
+NOTE: R_BuildDlightList must be called first!
 ===============
 */
 void R_AddDynamicLights (msurface_t *surf)
@@ -225,12 +237,20 @@ void R_AddDynamicLights (msurface_t *surf)
 	int			irad, idist, iminlight;
 	dlightinfo_t	*light;
 	unsigned	*dest;
+	int			color[3];
+	int			tmp;
 
 	smax = (surf->extents[0]>>4)+1;
 	tmax = (surf->extents[1]>>4)+1;
 
 	for (i=0,light=dlightlist ; i<numdlights ; i++,light++)
 	{
+		if (lightmap_bytes != 1) {
+			color[0] = dlightcolor[light->type][0];
+			color[1] = dlightcolor[light->type][1];
+			color[2] = dlightcolor[light->type][2];
+		}
+
 		irad = light->rad;
 		iminlight = light->minlight;
 
@@ -242,18 +262,35 @@ void R_AddDynamicLights (msurface_t *surf)
 			if (td < 0)	td = -td;
 			_td -= 16;
 			_sd = light->local[0];
-			for (s=0 ; s<smax ; s++)
-			{
-				sd = _sd;
-				if (sd < 0)	sd = -sd;
-				_sd -= 16;
-				if (sd > td)
-					idist = (sd<<8) + (td<<7);
-				else
-					idist = (td<<8) + (sd<<7);
-				if (idist < iminlight)
-					*dest += irad - idist;
-				dest++;
+			if (lightmap_bytes == 1) {
+				for (s=0 ; s<smax ; s++) {
+					sd = _sd < 0 ? -_sd : _sd;
+					_sd -= 16;
+					if (sd > td)
+						idist = (sd<<8) + (td<<7);
+					else
+						idist = (td<<8) + (sd<<7);
+					if (idist < iminlight)
+						*dest += irad - idist;
+					dest++;
+				}
+			}
+			else {
+				for (s=0 ; s<smax ; s++) {
+					sd = _sd < 0 ? -_sd : _sd;
+					_sd -= 16;
+					if (sd > td)
+						idist = (sd<<8) + (td<<7);
+					else
+						idist = (td<<8) + (sd<<7);
+					if (idist < iminlight) {
+						tmp = (irad - idist) >> 7;
+						dest[0] += tmp * color[0];
+						dest[1] += tmp * color[1];
+						dest[2] += tmp * color[2];
+					}
+					dest += 3;
+				}
 			}
 		}
 	}
@@ -271,7 +308,7 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 {
 	int			smax, tmax;
 	int			t;
-	int			i, j, size;
+	int			i, j, size, blocksize;
 	byte		*lightmap;
 	unsigned	scale;
 	int			maps;
@@ -282,19 +319,19 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 	smax = (surf->extents[0]>>4)+1;
 	tmax = (surf->extents[1]>>4)+1;
 	size = smax*tmax;
+	blocksize = size * lightmap_bytes;
 	lightmap = surf->samples;
 
 // set to full bright if no light data
 	if (/* r_fullbright.value || */ !cl.worldmodel->lightdata)
 	{
-		for (i=0 ; i<size ; i++)
+		for (i=0 ; i<blocksize ; i++)
 			blocklights[i] = 255*256;
 		goto store;
 	}
 
 // clear to no light
-	for (i=0 ; i<size ; i++)
-		blocklights[i] = 0;
+	memset (blocklights, 0, blocksize * sizeof(int));
 
 // add all the lightmaps
 	if (lightmap)
@@ -303,8 +340,18 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 		{
 			scale = d_lightstylevalue[surf->styles[maps]];
 			surf->cached_light[maps] = scale;	// 8.8 fraction
-			for (i=0 ; i<size ; i++)
-				blocklights[i] += lightmap[i] * scale;
+			bl = blocklights;
+			if (lightmap_bytes == 1) {
+				for (i=0 ; i<size ; i++)
+					*bl++ += lightmap[i] * scale;
+			} else {
+				for (i=0 ; i<size ; i++) {
+					t = lightmap[i] * scale;
+					*bl++ += t;
+					*bl++ += t;
+					*bl++ += t;
+				}
+			}
 			lightmap += size;	// skip to next lightmap
 		}
 
@@ -316,6 +363,21 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 store:
 	switch (gl_lightmap_format)
 	{
+	case GL_RGB:
+		bl = blocklights;
+		stride -= smax * 3;
+		for (i=0 ; i<tmax ; i++, dest += stride)
+		{
+			for (j=smax*3 ; j ; j--)
+			{
+				t = *bl++;
+				t = (t >> 8) + (t >> 9);
+				if (t > 255)
+					t = 255;
+				*dest++ = 255-t;
+			}
+		}
+		break;
 	case GL_LUMINANCE:
 		bl = blocklights;
 		stride -= smax;
@@ -703,7 +765,7 @@ void R_RenderBrushPoly (msurface_t *fa)
 		}
 
 	if (fa->dlightframe == r_framecount)
-		R_BuildDLightList (fa);
+		R_BuildDlightList (fa);
 	else
 		numdlights = 0;
 
@@ -767,7 +829,7 @@ void R_RenderDynamicLightmaps (msurface_t *fa)
 		}
 		
 	if (fa->dlightframe == r_framecount)
-		R_BuildDLightList (fa);
+		R_BuildDlightList (fa);
 	else
 		numdlights = 0;
 	
@@ -1492,13 +1554,12 @@ void GL_BuildLightmaps (void)
 		texture_extension_number += MAX_LIGHTMAPS;
 	}
 
-	gl_lightmap_format = GL_LUMINANCE;
-
-	switch (gl_lightmap_format)
-	{
-	case GL_LUMINANCE:
+	if (gl_colorlights.value) {
+		gl_lightmap_format = GL_RGB;
+		lightmap_bytes = 3;
+	} else {
+		gl_lightmap_format = GL_LUMINANCE;
 		lightmap_bytes = 1;
-		break;
 	}
 
 	for (j=1 ; j<MAX_MODELS ; j++)
