@@ -209,7 +209,7 @@ void V_DriftPitch (void)
 {
 	float		delta, move;
 
-	if (!cl.onground || cls.demoplayback )
+	if (!cl.onground || cls.demoplayback)
 	{
 		cl.driftmove = 0;
 		cl.pitchvel = 0;
@@ -276,30 +276,52 @@ void V_DriftPitch (void)
 ============================================================================== 
 */ 
  
- 
 cshift_t	cshift_empty = { {130,80,50}, 0 };
 cshift_t	cshift_water = { {130,80,50}, 128 };
 cshift_t	cshift_slime = { {0,25,5}, 150 };
 cshift_t	cshift_lava = { {255,80,0}, 150 };
 
-cvar_t		v_gamma = {"gamma", "1", CVAR_ARCHIVE};
-cvar_t		v_contrast = {"contrast", "1", CVAR_ARCHIVE};
+#define ONCHANGE(FUNC, VAR)									\
+qboolean FUNC (cvar_t *var, char *string) {					\
+	Cvar_SetValue (&VAR, Q_atof(string)); return false;	}	\
+
+#ifdef GLQUAKE
+ONCHANGE(ch_gamma, gl_gamma)	ONCHANGE(ch_contrast, gl_contrast)
+#else
+ONCHANGE(ch_gamma, sw_gamma)	ONCHANGE(ch_contrast, sw_contrast)
+#endif
+
+cvar_t		gamma = {"gamma", "1", CVAR_ARCHIVE, ch_gamma};
+cvar_t		contrast = {"contrast", "1", 0, ch_contrast};
+
+
+#ifdef	GLQUAKE
+
+ONCHANGE(ch_gl_gamma, gamma)	ONCHANGE(ch_gl_contrast, contrast)
+
+cvar_t		gl_gamma = {"gl_gamma", "1", CVAR_USER_ARCHIVE, ch_gl_gamma};
+cvar_t		gl_contrast = {"gl_contrast", "1", CVAR_USER_ARCHIVE, ch_gl_contrast};
+cvar_t		gl_cshiftpercent = {"gl_cshiftpercent", "100"};
+cvar_t		gl_hwblend = {"gl_hwblend","1"};
+
+
+float		v_blend[4];		// rgba 0.0 - 1.0
+unsigned short	ramps[3][256];
+
+#else
+
+ONCHANGE(ch_sw_gamma, gamma)	ONCHANGE(ch_sw_contrast, contrast)
+
+cvar_t		sw_gamma = {"sw_gamma", "1", CVAR_USER_ARCHIVE, ch_sw_gamma};
+cvar_t		sw_contrast = {"sw_contrast", "1", CVAR_USER_ARCHIVE, ch_sw_contrast};
 
 byte		gammatable[256];	// palette is sent through this
 
 byte		current_pal[768];	// Tonik: used for screenshots
 
+#endif
 
-#ifdef	GLQUAKE
 
-cvar_t		gl_cshiftpercent = {"gl_cshiftpercent", "100"};
-cvar_t		gl_gamma = {"gl_gamma","1",CVAR_ARCHIVE};
-cvar_t		gl_contrast = {"gl_contrast","1",CVAR_ARCHIVE};
-cvar_t		gl_hwblend = {"gl_hwblend","1"};
-float		v_blend[4];		// rgba 0.0 - 1.0
-unsigned short	ramps[3][256];
-
-#endif	// GLQUAKE
 
 
 #ifndef GLQUAKE
@@ -338,12 +360,12 @@ qboolean V_CheckGamma (void)
 	static float old_gamma;
 	static float old_contrast;
 	
-	if (v_gamma.value == old_gamma && v_contrast.value == old_contrast)
+	if (sw_gamma.value == old_gamma && sw_contrast.value == old_contrast)
 		return false;
-	old_gamma = v_gamma.value;
-	old_contrast = v_contrast.value;
+	old_gamma = sw_gamma.value;
+	old_contrast = sw_contrast.value;
 	
-	BuildGammaTable (v_gamma.value, v_contrast.value);
+	BuildGammaTable (sw_gamma.value, sw_contrast.value);
 	vid.recalc_refdef = 1;				// force a surface cache flush
 	
 	return true;
@@ -1160,17 +1182,19 @@ void V_Init (void)
 	Cvar_Register (&v_dlightcshift);
 #endif
 
-	Cvar_Register (&v_gamma);
-	Cvar_Register (&v_contrast);
 #ifdef GLQUAKE
 	Cvar_Register (&gl_gamma);
 	Cvar_Register (&gl_contrast);
 	Cvar_Register (&gl_cshiftpercent);
 	Cvar_Register (&gl_hwblend);
+#else
+	Cvar_Register (&sw_gamma);
+	Cvar_Register (&sw_contrast);
+	BuildGammaTable (sw_gamma.value, sw_contrast.value);
 #endif
 
-#ifndef GLQUAKE
-	BuildGammaTable (v_gamma.value, v_contrast.value);
-#endif
-
+	// gamma and contrast are just shortcuts to sw_ or gl_ equivalents
+	// for compatibility and easier access from the console
+	Cvar_Register (&gamma);
+	Cvar_Register (&contrast);
 }

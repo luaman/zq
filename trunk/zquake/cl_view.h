@@ -19,8 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_view.h
 
-extern	cvar_t		v_gamma;
-extern	cvar_t		v_contrast;
+extern	cvar_t		sw_gamma;
+extern	cvar_t		sw_contrast;
 
 #ifdef GLQUAKE
 extern float v_blend[4];

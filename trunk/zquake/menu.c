@@ -365,13 +365,8 @@ void M_Main_Key (int key)
 
 int		options_cursor;
 
-#ifdef GLQUAKE
-#define gamma		gl_gamma
-#define contrast	gl_contrast
-#else
-#define gamma		v_gamma
-#define contrast	v_contrast
-#endif
+extern cvar_t	gamma;
+extern cvar_t	contrast;
 
 void M_Menu_Options_f (void)
 {
