@@ -338,9 +338,6 @@ void CL_PredictMovement (void)
 	if (cls.state != ca_active)
 		return;
 
-	if (cl.paused)
-		return;
-
 	if (cl.intermission) {
 		cl.crouch = 0;
 		return;
@@ -365,6 +362,9 @@ void CL_PredictMovement (void)
 		return;
 	}
 #endif
+
+	if (cl.paused)
+		return;
 
 	// set up prediction for other players
 	CL_SetUpPlayerPrediction (false);
