@@ -24,7 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "teamplay.h"
 
 extern	cvar_t	cl_predict_players;
-extern	cvar_t	cl_predict_players2;
 extern	cvar_t	cl_solid_players;
 
 static struct predicted_player {
@@ -917,7 +916,7 @@ void CL_LinkPlayers (void)
 
 		// only predict half the move to minimize overruns
 		msec = 500*(playertime - state->state_time);
-		if (msec <= 0 || (!cl_predict_players.value && !cl_predict_players2.value))
+		if (msec <= 0 || !cl_predict_players.value)
 		{
 			VectorCopy (state->origin, ent->origin);
 //Con_DPrintf ("nopredict\n");
@@ -1037,9 +1036,7 @@ void CL_SetUpPlayerPrediction(qboolean dopred)
 		} else {
 			// only predict half the move to minimize overruns
 			msec = 500*(playertime - state->state_time);
-			if (msec <= 0 ||
-				(!cl_predict_players.value && !cl_predict_players2.value) ||
-				!dopred)
+			if (msec <= 0 || !cl_predict_players.value || !dopred)
 			{
 				VectorCopy (state->origin, pplayer->origin);
 	//Con_DPrintf ("nopredict\n");
