@@ -369,7 +369,6 @@ void Cmd_Spawn_f (void)
 	int		i;
 	client_t	*client;
 	edict_t	*ent;
-	eval_t *val;
 
 	if (sv_client->state != cs_connected)
 	{
@@ -421,13 +420,12 @@ void Cmd_Spawn_f (void)
 	}
 
 	sv_client->entgravity = 1.0;
-	val = GetEdictFieldValue(ent, "gravity");
-	if (val)
-		val->_float = 1.0;
+	if (fofs_gravity)
+		EdictFieldFloat(ent, fofs_gravity) = 1.0;
+
 	sv_client->maxspeed = pm_maxspeed.value;
-	val = GetEdictFieldValue(ent, "maxspeed");
-	if (val)
-		val->_float = pm_maxspeed.value;
+	if (fofs_maxspeed)
+		EdictFieldFloat(ent, fofs_maxspeed) = pm_maxspeed.value;
 
 	//
 	// force stats to be updated
@@ -1224,20 +1222,17 @@ void Cmd_Snap_f (void)
 
 void SetUpClientEdict (client_t *cl, edict_t *ent)
 {
-	eval_t *val;
-
 	memset (&ent->v, 0, progs->entityfields * 4);
 	ent->v.colormap = NUM_FOR_EDICT(ent);
 	ent->v.netname = PR_SetString(cl->name);
 
 	cl->entgravity = 1.0;
-	val = GetEdictFieldValue(ent, "gravity");
-	if (val)
-		val->_float = 1.0;
+	if (fofs_gravity)
+		EdictFieldFloat(ent, fofs_gravity) = 1.0;
+
 	cl->maxspeed = pm_maxspeed.value;
-	val = GetEdictFieldValue(ent, "maxspeed");
-	if (val)
-		val->_float = pm_maxspeed.value;
+	if (fofs_maxspeed)
+		EdictFieldFloat(ent, fofs_maxspeed) = pm_maxspeed.value;
 }
 
 /*
@@ -1847,8 +1842,6 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	if (sv_client->bot)
 	{
-		eval_t *val;
-
 		// bots make their decisions here
 		pr_global_struct->frametime = sv_frametime;
 		pr_global_struct->time = sv.time;
@@ -1863,13 +1856,9 @@ void SV_RunCmd (usercmd_t *ucmd)
 		ucmd->impulse = sv_player->v.impulse;
 		ucmd->buttons = (sv_player->v.button0 ? 1 : 0) | (sv_player->v.button2 ? 2 : 0) | (sv_player->v.button1 ? 4 : 0);
 
-		// FIXME, cache field offset
-		val = GetEdictFieldValue(sv_player, "forwardmove");
-		ucmd->forwardmove = val ? val->_float : 0;
-		val = GetEdictFieldValue(sv_player, "sidemove");
-		ucmd->sidemove = val ? val->_float : 0;
-		val = GetEdictFieldValue(sv_player, "upmove");
-		ucmd->upmove = val ? val->_float : 0;
+		ucmd->forwardmove = fofs_forwardmove ? EdictFieldFloat(sv_player, fofs_forwardmove) : 0;
+		ucmd->sidemove = fofs_sidemove ? EdictFieldFloat(sv_player, fofs_sidemove) : 0;
+		ucmd->upmove = fofs_upmove ? EdictFieldFloat (sv_player, fofs_upmove) : 0;
 
 		SV_RunThink (sv_player);
 	}

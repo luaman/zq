@@ -39,21 +39,15 @@ int				pr_numcmdfunctions;
 
 int		type_size[8] = {1,sizeof(void *)/4,1,3,1,1,sizeof(void *)/4,sizeof(void *)/4};
 
-ddef_t *ED_FieldAtOfs (int ofs);
-qbool	ED_ParseEpair (void *base, ddef_t *key, char *s);
-
-#define	MAX_FIELD_LEN	64
-#define GEFV_CACHESIZE	2
-
-typedef struct {
-	ddef_t	*pcache;
-	char	field[MAX_FIELD_LEN];
-} gefv_cache;
-
-static gefv_cache	gefvCache[GEFV_CACHESIZE] = {{NULL, ""}, {NULL, ""}};
-
 func_t SpectatorConnect, SpectatorThink, SpectatorDisconnect;
 func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
+
+int		fofs_maxspeed, fofs_gravity;
+int		fofs_forwardmove, fofs_sidemove, fofs_upmove;
+
+
+ddef_t *ED_FieldAtOfs (int ofs);
+qbool	ED_ParseEpair (void *base, ddef_t *key, char *s);
 
 
 /*
@@ -238,36 +232,23 @@ dfunction_t *ED_FindFunction (char *name)
 	return NULL;
 }
 
-eval_t *GetEdictFieldValue(edict_t *ed, char *field)
+func_t ED_FindFunctionOffset (char *name)
 {
-	ddef_t			*def = NULL;
-	int				i;
-	static int		rep = 0;
+	dfunction_t *func;
 
-	for (i=0 ; i<GEFV_CACHESIZE ; i++)
-	{
-		if (!strcmp(field, gefvCache[i].field))
-		{
-			def = gefvCache[i].pcache;
-			goto Done;
-		}
-	}
-
-	def = ED_FindField (field);
-
-	if (strlen(field) < MAX_FIELD_LEN)
-	{
-		gefvCache[rep].pcache = def;
-		strcpy (gefvCache[rep].field, field);
-		rep ^= 1;
-	}
-
-Done:
-	if (!def)
-		return NULL;
-
-	return (eval_t *)((char *)&ed->v + def->ofs*4);
+	func = ED_FindFunction (name);
+	return func ? (func_t)(func - pr_functions) : 0;
 }
+
+int ED_FindFieldOffset (char *field)
+{
+	ddef_t *d;
+	d = ED_FindField(field);
+	if (!d)
+		return 0;
+	return d->ofs*4;
+}
+
 
 /*
 ============
@@ -1027,11 +1008,6 @@ void PR_LoadProgs (void)
 {
 	int		i;
 	char	num[32];
-	dfunction_t *f;
-
-// flush the non-C variable lookup cache
-	for (i=0 ; i<GEFV_CACHESIZE ; i++)
-		gefvCache[i].field[0] = 0;
 
 	progs = NULL;
 	if (!deathmatch.value)
@@ -1127,23 +1103,20 @@ void PR_LoadProgs (void)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 
 	// find optional QC-exported functions
-	SpectatorConnect = SpectatorThink = SpectatorDisconnect = 0;
-	BotConnect = BotDisconnect = BotPreThink = BotPostThink = 0;
+	SpectatorConnect = ED_FindFunctionOffset ("SpectatorConnect");
+	SpectatorThink = ED_FindFunctionOffset ("SpectatorThink");
+	SpectatorDisconnect = ED_FindFunctionOffset ("SpectatorDisconnect");
+	BotConnect = ED_FindFunctionOffset ("BotConnect");
+	BotDisconnect = ED_FindFunctionOffset ("BotDisconnect");
+	BotPreThink = ED_FindFunctionOffset ("BotPreThink");
+	BotPostThink = ED_FindFunctionOffset ("BotPostThink");
 
-	if ((f = ED_FindFunction ("SpectatorConnect")) != NULL)
-		SpectatorConnect = (func_t)(f - pr_functions);
-	if ((f = ED_FindFunction ("SpectatorThink")) != NULL)
-		SpectatorThink = (func_t)(f - pr_functions);
-	if ((f = ED_FindFunction ("SpectatorDisconnect")) != NULL)
-		SpectatorDisconnect = (func_t)(f - pr_functions);
-	if ((f = ED_FindFunction ("BotConnect")) != NULL)
-		BotConnect = (func_t)(f - pr_functions);
-	if ((f = ED_FindFunction ("BotDisconnect")) != NULL)
-		BotDisconnect = (func_t)(f - pr_functions);
-	if ((f = ED_FindFunction ("BotPreThink")) != NULL)
-		BotPreThink = (func_t)(f - pr_functions);
-	if ((f = ED_FindFunction ("BotPostThink")) != NULL)
-		BotPostThink = (func_t)(f - pr_functions);
+	// find optional QC-exported fields
+	fofs_maxspeed = ED_FindFieldOffset ("maxspeed");
+	fofs_gravity = ED_FindFieldOffset ("gravity");
+	fofs_forwardmove = ED_FindFieldOffset ("forwardmove");
+	fofs_sidemove = ED_FindFieldOffset ("sidemove");
+	fofs_upmove = ED_FindFieldOffset ("upmove");
 
 	PR_CheckExtensions ();
 	PR_FindCmdFunctions ();
