@@ -1196,7 +1196,7 @@ void SV_CheckTimeouts (void)
 			cl->state = cs_free;	// can now be reused
 		}
 	}
-	if (sv_paused.value && !nclients) {
+	if (((int) sv_paused.value & 1) && !nclients) {
 		// nobody left, unpause the server
 		SV_TogglePause("Pause released since no players are left.\n");
 	}
