@@ -1426,64 +1426,64 @@ void SV_InitLocal (void)
 	SV_UserInit ();
 	
 #ifndef QW_BOTH
-	Cvar_RegisterVariable (&rcon_password);
-	Cvar_RegisterVariable (&password);
+	Cvar_Register (&rcon_password);
+	Cvar_Register (&password);
 #endif
-	Cvar_RegisterVariable (&spectator_password);
+	Cvar_Register (&spectator_password);
 
-	Cvar_RegisterVariable (&sv_mintic);
-	Cvar_RegisterVariable (&sv_maxtic);
+	Cvar_Register (&sv_mintic);
+	Cvar_Register (&sv_maxtic);
 
-	Cvar_RegisterVariable (&skill);
-	Cvar_RegisterVariable (&coop);
-	Cvar_RegisterVariable (&fraglimit);
-	Cvar_RegisterVariable (&timelimit);
-	Cvar_RegisterVariable (&teamplay);
-	Cvar_RegisterVariable (&samelevel);
-	Cvar_RegisterVariable (&maxclients);
-	Cvar_RegisterVariable (&maxspectators);
-	Cvar_RegisterVariable (&hostname);
-	Cvar_RegisterVariable (&deathmatch);
+	Cvar_Register (&skill);
+	Cvar_Register (&coop);
+	Cvar_Register (&fraglimit);
+	Cvar_Register (&timelimit);
+	Cvar_Register (&teamplay);
+	Cvar_Register (&samelevel);
+	Cvar_Register (&maxclients);
+	Cvar_Register (&maxspectators);
+	Cvar_Register (&hostname);
+	Cvar_Register (&deathmatch);
 	
-	Cvar_RegisterVariable (&watervis);
+	Cvar_Register (&watervis);
 
 #ifndef QW_BOTH
-	Cvar_RegisterVariable (&developer);
+	Cvar_Register (&developer);
 #endif
 
-	Cvar_RegisterVariable (&timeout);
-	Cvar_RegisterVariable (&zombietime);
+	Cvar_Register (&timeout);
+	Cvar_Register (&zombietime);
 
-	Cvar_RegisterVariable (&sv_maxvelocity);
-	Cvar_RegisterVariable (&sv_gravity);
-	Cvar_RegisterVariable (&sv_stopspeed);
-	Cvar_RegisterVariable (&sv_maxspeed);
-	Cvar_RegisterVariable (&sv_spectatormaxspeed);
-	Cvar_RegisterVariable (&sv_accelerate);
-	Cvar_RegisterVariable (&sv_airaccelerate);
-	Cvar_RegisterVariable (&sv_wateraccelerate);
-	Cvar_RegisterVariable (&sv_friction);
-	Cvar_RegisterVariable (&sv_waterfriction);
+	Cvar_Register (&sv_maxvelocity);
+	Cvar_Register (&sv_gravity);
+	Cvar_Register (&sv_stopspeed);
+	Cvar_Register (&sv_maxspeed);
+	Cvar_Register (&sv_spectatormaxspeed);
+	Cvar_Register (&sv_accelerate);
+	Cvar_Register (&sv_airaccelerate);
+	Cvar_Register (&sv_wateraccelerate);
+	Cvar_Register (&sv_friction);
+	Cvar_Register (&sv_waterfriction);
 
-	Cvar_RegisterVariable (&sv_aim);
+	Cvar_Register (&sv_aim);
 
-	Cvar_RegisterVariable (&filterban);
+	Cvar_Register (&filterban);
 	
-	Cvar_RegisterVariable (&allow_download);
-	Cvar_RegisterVariable (&allow_download_skins);
-	Cvar_RegisterVariable (&allow_download_models);
-	Cvar_RegisterVariable (&allow_download_sounds);
-	Cvar_RegisterVariable (&allow_download_maps);
-	Cvar_RegisterVariable (&allow_download_pakmaps);
+	Cvar_Register (&allow_download);
+	Cvar_Register (&allow_download_skins);
+	Cvar_Register (&allow_download_models);
+	Cvar_Register (&allow_download_sounds);
+	Cvar_Register (&allow_download_maps);
+	Cvar_Register (&allow_download_pakmaps);
 
-	Cvar_RegisterVariable (&sv_highchars);
-	Cvar_RegisterVariable (&sv_phs);
-	Cvar_RegisterVariable (&pausable);
+	Cvar_Register (&sv_highchars);
+	Cvar_Register (&sv_phs);
+	Cvar_Register (&pausable);
 
-	Cvar_RegisterVariable (&sv_nailhack);
-	Cvar_RegisterVariable (&sv_maxrate);
-	Cvar_RegisterVariable (&sv_fastconnect);
-	Cvar_RegisterVariable (&sv_loadentfiles);
+	Cvar_Register (&sv_nailhack);
+	Cvar_Register (&sv_maxrate);
+	Cvar_Register (&sv_fastconnect);
+	Cvar_Register (&sv_loadentfiles);
 
 	Cmd_AddCommand ("addip", SV_AddIP_f);
 	Cmd_AddCommand ("removeip", SV_RemoveIP_f);

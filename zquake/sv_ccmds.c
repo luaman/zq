@@ -919,7 +919,7 @@ SV_InitOperatorCommands
 */
 void SV_InitOperatorCommands (void)
 {
-	Cvar_RegisterVariable (&sv_cheats);
+	Cvar_Register (&sv_cheats);
 
 	if (COM_CheckParm ("-cheats"))
 	{

@@ -1710,8 +1710,8 @@ SV_UserInit
 */
 void SV_UserInit (void)
 {
-	Cvar_RegisterVariable (&sv_rollspeed);
-	Cvar_RegisterVariable (&sv_rollangle);
-	Cvar_RegisterVariable (&sv_spectalk);
-	Cvar_RegisterVariable (&sv_mapcheck);
+	Cvar_Register (&sv_rollspeed);
+	Cvar_Register (&sv_rollangle);
+	Cvar_Register (&sv_spectalk);
+	Cvar_Register (&sv_mapcheck);
 }

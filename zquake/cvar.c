@@ -257,12 +257,12 @@ void Cvar_SetValue (cvar_t *var, float value)
 
 /*
 ============
-Cvar_RegisterVariable
+Cvar_Register
 
 Adds a freestanding variable to the variable list.
 ============
 */
-void Cvar_RegisterVariable (cvar_t *variable)
+void Cvar_Register (cvar_t *variable)
 {
 	char	value[512];
 	int		key;
@@ -277,7 +277,7 @@ void Cvar_RegisterVariable (cvar_t *variable)
 // check for overlap with a command
 	if (Cmd_Exists (variable->name))
 	{
-		Con_Printf ("Cvar_RegisterVariable: %s is a command\n", variable->name);
+		Con_Printf ("Cvar_Register: %s is a command\n", variable->name);
 		return;
 	}
 		

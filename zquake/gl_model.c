@@ -48,7 +48,7 @@ Mod_Init
 */
 void Mod_Init (void)
 {
-	Cvar_RegisterVariable (&gl_subdivide_size);
+	Cvar_Register (&gl_subdivide_size);
 	memset (mod_novis, 0xff, sizeof(mod_novis));
 }
 

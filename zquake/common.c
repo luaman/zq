@@ -1000,7 +1000,7 @@ COM_Init
 */
 void COM_Init (void)
 {
-	Cvar_RegisterVariable (&registered);
+	Cvar_Register (&registered);
 	Cmd_AddCommand ("path", COM_Path_f);
 
 	COM_InitFilesystem ();

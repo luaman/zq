@@ -1041,8 +1041,8 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void IN_Init (void)
 {
-	Cvar_RegisterVariable (&_windowed_mouse);
-	Cvar_RegisterVariable (&m_filter);
+	Cvar_Register (&_windowed_mouse);
+	Cvar_Register (&m_filter);
    if ( COM_CheckParm ("-nomouse") )
      return;
    mouse_x = mouse_y = 0.0;

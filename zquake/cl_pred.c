@@ -318,7 +318,7 @@ CL_InitPrediction
 */
 void CL_InitPrediction (void)
 {
-	Cvar_RegisterVariable (&cl_pushlatency);
-	Cvar_RegisterVariable (&cl_nopred);
+	Cvar_Register (&cl_pushlatency);
+	Cvar_Register (&cl_nopred);
 }
 

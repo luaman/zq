@@ -32,7 +32,7 @@ cvar_t	r_draworder = {"r_draworder","1"};
 cvar_t	scr_screensize = {"screensize","1",CVAR_ARCHIVE};
 
 Cvars must be registered before use, or they will have a 0 value instead of the float interpretation of the string.  Generally, all cvar_t declarations should be registered in the apropriate init function before any console commands are executed:
-Cvar_RegisterVariable (&host_framerate);
+Cvar_Register (&host_framerate);
 
 
 C code usually just references a cvar in place:
@@ -72,7 +72,7 @@ typedef struct cvar_s
 } cvar_t;
 
 
-void 	Cvar_RegisterVariable (cvar_t *variable);
+void 	Cvar_Register (cvar_t *variable);
 // registers a cvar that already has the name, string, and optionally the
 // archive elements set.
 

@@ -203,8 +203,8 @@ is marked
 */
 void Sys_Init (void)
 {
-	Cvar_RegisterVariable (&sys_nostdout);
-	Cvar_RegisterVariable (&sys_extrasleep);
+	Cvar_Register (&sys_nostdout);
+	Cvar_Register (&sys_extrasleep);
 }
 
 /*

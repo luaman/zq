@@ -46,17 +46,17 @@ void PM_InitBoxHull (void);
 void Pmove_Init (void)
 {
 #ifndef SERVERONLY
-	Cvar_RegisterVariable (&pm_jumpfixtime);
+	Cvar_Register (&pm_jumpfixtime);
 #endif
 
 #if defined(SERVERONLY) || defined(QW_BOTH)
-	Cvar_RegisterVariable (&pm_jumpfix);
+	Cvar_Register (&pm_jumpfix);
 #else
 	pm_jumpfix.value = 1;
 #endif
 
-	Cvar_RegisterVariable (&pm_slidefix);
-	Cvar_RegisterVariable (&pm_ktphysics);
+	Cvar_Register (&pm_slidefix);
+	Cvar_Register (&pm_ktphysics);
 	PM_InitBoxHull ();
 }
 

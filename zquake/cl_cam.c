@@ -515,6 +515,6 @@ void Cam_TryLock (void)
 
 void CL_InitCam(void)
 {
-	Cvar_RegisterVariable (&cl_hightrack);
-	Cvar_RegisterVariable (&cl_chasecam);
+	Cvar_Register (&cl_hightrack);
+	Cvar_Register (&cl_chasecam);
 }

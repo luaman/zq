@@ -422,11 +422,11 @@ void Draw_Init (void)
 	int		start;
 	int		i;
 
-	Cvar_RegisterVariable (&gl_nobind);
-	Cvar_RegisterVariable (&gl_max_size);
-	Cvar_RegisterVariable (&gl_picmip);
-	Cvar_RegisterVariable (&gl_lerpimages);
-	Cvar_RegisterVariable (&gl_conalpha);
+	Cvar_Register (&gl_nobind);
+	Cvar_Register (&gl_max_size);
+	Cvar_Register (&gl_picmip);
+	Cvar_Register (&gl_lerpimages);
+	Cvar_Register (&gl_conalpha);
 
 	// 3dfx can only handle 256 wide textures
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4) ||

@@ -2923,9 +2923,9 @@ void M_Quit_Draw (void)
 
 void M_Init (void)
 {
-	Cvar_RegisterVariable (&scr_centerMenu);
+	Cvar_Register (&scr_centerMenu);
 #ifdef GLQUAKE
-	Cvar_RegisterVariable (&scr_scaleMenu);
+	Cvar_Register (&scr_scaleMenu);
 #endif
 
 	Cmd_AddCommand ("togglemenu", M_ToggleMenu_f);

@@ -647,28 +647,28 @@ void CL_InitInput (void)
 	Cmd_AddCommand ("+mlook", IN_MLookDown);
 	Cmd_AddCommand ("-mlook", IN_MLookUp);
 
-	Cvar_RegisterVariable (&cl_upspeed);
-	Cvar_RegisterVariable (&cl_forwardspeed);
-	Cvar_RegisterVariable (&cl_backspeed);
-	Cvar_RegisterVariable (&cl_sidespeed);
-	Cvar_RegisterVariable (&cl_movespeedkey);
-	Cvar_RegisterVariable (&cl_yawspeed);
-	Cvar_RegisterVariable (&cl_pitchspeed);
-	Cvar_RegisterVariable (&cl_anglespeedkey);
+	Cvar_Register (&cl_upspeed);
+	Cvar_Register (&cl_forwardspeed);
+	Cvar_Register (&cl_backspeed);
+	Cvar_Register (&cl_sidespeed);
+	Cvar_Register (&cl_movespeedkey);
+	Cvar_Register (&cl_yawspeed);
+	Cvar_Register (&cl_pitchspeed);
+	Cvar_Register (&cl_anglespeedkey);
 
-	Cvar_RegisterVariable (&lookspring);
-	Cvar_RegisterVariable (&lookstrafe);
-	Cvar_RegisterVariable (&sensitivity);
-	Cvar_RegisterVariable (&freelook);
+	Cvar_Register (&lookspring);
+	Cvar_Register (&lookstrafe);
+	Cvar_Register (&sensitivity);
+	Cvar_Register (&freelook);
 
-	Cvar_RegisterVariable (&m_pitch);
-	Cvar_RegisterVariable (&m_yaw);
-	Cvar_RegisterVariable (&m_forward);
-	Cvar_RegisterVariable (&m_side);
+	Cvar_Register (&m_pitch);
+	Cvar_Register (&m_yaw);
+	Cvar_Register (&m_forward);
+	Cvar_Register (&m_side);
 
-	Cvar_RegisterVariable (&cl_nodelta);
-	Cvar_RegisterVariable (&cl_c2sImpulseBackup);
-	Cvar_RegisterVariable (&cl_c2spps);
+	Cvar_Register (&cl_nodelta);
+	Cvar_Register (&cl_c2sImpulseBackup);
+	Cvar_Register (&cl_c2spps);
 }
 
 /*

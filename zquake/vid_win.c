@@ -2109,22 +2109,22 @@ void	VID_Init (unsigned char *palette)
 	int		basenummodes;
 	byte	*ptmp;
 
-	Cvar_RegisterVariable (&vid_mode);
-	Cvar_RegisterVariable (&vid_wait);
-	Cvar_RegisterVariable (&vid_nopageflip);
-	Cvar_RegisterVariable (&_vid_wait_override);
-	Cvar_RegisterVariable (&_vid_default_mode);
-	Cvar_RegisterVariable (&_vid_default_mode_win);
-	Cvar_RegisterVariable (&vid_config_x);
-	Cvar_RegisterVariable (&vid_config_y);
-	Cvar_RegisterVariable (&vid_stretch_by_2);
-	Cvar_RegisterVariable (&_windowed_mouse);
-	Cvar_RegisterVariable (&vid_fullscreen_mode);
-	Cvar_RegisterVariable (&vid_windowed_mode);
-	Cvar_RegisterVariable (&block_switch);
-	Cvar_RegisterVariable (&vid_window_x);
-	Cvar_RegisterVariable (&vid_window_y);
-	Cvar_RegisterVariable (&vid_resetonswitch);
+	Cvar_Register (&vid_mode);
+	Cvar_Register (&vid_wait);
+	Cvar_Register (&vid_nopageflip);
+	Cvar_Register (&_vid_wait_override);
+	Cvar_Register (&_vid_default_mode);
+	Cvar_Register (&_vid_default_mode_win);
+	Cvar_Register (&vid_config_x);
+	Cvar_Register (&vid_config_y);
+	Cvar_Register (&vid_stretch_by_2);
+	Cvar_Register (&_windowed_mouse);
+	Cvar_Register (&vid_fullscreen_mode);
+	Cvar_Register (&vid_windowed_mode);
+	Cvar_Register (&block_switch);
+	Cvar_Register (&vid_window_x);
+	Cvar_Register (&vid_window_y);
+	Cvar_Register (&vid_resetonswitch);
 
 	Cmd_AddCommand ("vid_testmode", VID_TestMode_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
