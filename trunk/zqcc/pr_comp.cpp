@@ -387,9 +387,12 @@ PR_Term
 */
 def_t *PR_Term (void)
 {
+	if (pr_token_type != tt_punct)
+		return PR_ParseValue ();
+
 	def_t	*e, *e2;
 	etype_t	t;
-	
+
 	if (PR_Check ("!"))
 	{
 		e = PR_Expression (NOT_PRIORITY);
@@ -418,8 +421,9 @@ def_t *PR_Term (void)
 		PR_Expect (")");
 		return e;
 	}
-	
-	return PR_ParseValue ();
+
+	PR_ParseError ("syntax error : '%s'", pr_token);
+	return NULL;	// shut up compiler
 }
 
 bool PR_Calc (int opcode, const eval_t *a, const eval_t *b, eval_t *c)
