@@ -322,6 +322,6 @@ Sets all skins to one specific one
 */
 void Skin_AllSkins_f (void)
 {
-	strcpy (allskins, Cmd_Argv(1));
+	Q_strncpyz (allskins, Cmd_Argv(1), sizeof(allskins));
 	Skin_Skins_f ();
 }
