@@ -177,6 +177,7 @@ void SV_SaveSpawnparms (void)
 			sv_client->bot = false;
 			sv_client->name[0] = 0;
 			memset (sv_client->userinfo, 0, sizeof(sv_client->userinfo));
+			SV_FreeDelayedPackets(sv_client);
 		}
 		else {
 			// needs to reconnect
@@ -218,11 +219,12 @@ This is only called from the SV_Map_f() function.
 */
 void SV_SpawnServer (char *mapname, qbool devmap)
 {
-	edict_t		*ent;
-	int			i;
-	char		*entitystring;
+	edict_t			*ent;
+	int				i;
+	char			*entitystring;
 	extern qbool	sv_allow_cheats;
 	extern cvar_t	sv_cheats;
+	packet_t		*packet_freeblock;
 
 	Com_DPrintf ("SpawnServer: %s\n", mapname);
 
@@ -258,6 +260,16 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 
 	// wipe the entire per-level structure
 	memset (&sv, 0, sizeof(sv));
+
+	// initialise delayed packet free block
+	packet_freeblock = Hunk_AllocName(MAX_DELAYED_PACKETS * sizeof(packet_t), "delayed_packets");
+
+	for (i = 0; i < MAX_DELAYED_PACKETS; i++) {
+		SZ_Init (&packet_freeblock[i].msg, packet_freeblock[i].buf, sizeof(packet_freeblock[i].buf));
+		packet_freeblock[i].next = &packet_freeblock[i + 1];
+	}
+	packet_freeblock[MAX_DELAYED_PACKETS - 1].next = NULL;
+	sv.free_packets = &packet_freeblock[0];
 
 	SZ_Init (&sv.datagram, sv.datagram_buf, sizeof(sv.datagram_buf));
 	sv.datagram.allowoverflow = true;
