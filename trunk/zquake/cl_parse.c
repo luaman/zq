@@ -568,7 +568,19 @@ void CL_ParseServerData (void)
 	// game directory
 	str = MSG_ReadString ();
 
-	cl.teamfortress = (strcmp(str, "fortress") == 0);
+	cl.teamfortress = !Q_strcasecmp(str, "fortress");
+	if (cl.teamfortress) {
+		extern cvar_t	v_iyaw_cycle, v_iroll_cycle, v_ipitch_cycle,
+			v_iyaw_level, v_iroll_level, v_ipitch_level, v_idlescale;
+		cbuf_current = &cbuf_svc;	// hack
+		Cvar_SetValue (&v_iyaw_cycle, 2);
+		Cvar_SetValue (&v_iroll_cycle, 0.5);
+		Cvar_SetValue (&v_ipitch_cycle, 1);
+		Cvar_SetValue (&v_iyaw_level, 0.3);
+		Cvar_SetValue (&v_iroll_level, 0.1);
+		Cvar_SetValue (&v_ipitch_level, 0.3);
+		Cvar_SetValue (&v_idlescale, 0);
+	}
 
 	if (stricmp(gamedirfile, str)) {
 		// save current config
