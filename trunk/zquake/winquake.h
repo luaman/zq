@@ -76,7 +76,9 @@ extern int		window_center_x, window_center_y;
 extern RECT		window_rect;
 
 extern qbool	dinput;
-extern qbool	in_dinput_wheel_works;
+
+enum { MWHEEL_UNKNOWN, MWHEEL_DINPUT, MWHEEL_WINDOWMSG };
+extern int	in_mwheeltype;
 
 #ifndef WM_MOUSEWHEEL
 #define WM_MOUSEWHEEL	0x020A
