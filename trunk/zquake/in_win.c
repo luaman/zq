@@ -469,7 +469,7 @@ static void IN_StartupMouse (void)
 		}
 	}
 
-	mouse_buttons = 3;
+	mouse_buttons = 4;
 
 // if a fullscreen video mode was set before the mouse was initialized,
 // set the mouse state appropriately
@@ -634,6 +634,13 @@ static void IN_MouseMove (usercmd_t *cmd)
 						mstate_di |= (1<<2);
 					else
 						mstate_di &= ~(1<<2);
+					break;
+
+				case DIMOFS_BUTTON3:
+					if (od.dwData & 0x80)
+						mstate_di |= (1<<3);
+					else
+						mstate_di &= ~(1<<3);
 					break;
 			}
 		}
