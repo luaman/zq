@@ -51,3 +51,15 @@ string newcomer;
 
 float server_is_2_3x;	// if true, fix the jump bug via QC
 float current_maxfps;	// current value of serverinfo maxfps
+
+// constants for the impulse commands:
+const float  KT_IMPULSE_VOTE_CHANGE           =  13;
+const float  KT_IMPULSE_VOTE_YES              =  14;
+const float  KT_IMPULSE_VOTE_NO               =  15;
+const float  KT_IMPULSE_PRINT_SCORES          =  16;
+const float  KT_IMPULSE_PRINT_CMDS            =  17;
+const float  KT_IMPULSE_MSG_KILLER            =  18;
+const float  KT_IMPULSE_MSG_VICTIM            =  19;
+const float  KT_IMPULSE_MSG_NEWCOMER          =  20;
+const float  KT_IMPULSE_PRINT_VERSION         =  21;
+

@@ -1188,54 +1188,54 @@ void W_ChangeWeapon ()
 	it = self.items;
 	am = 0;
 	
-	if (self.impulse == 1)
+	if (self.impulse == IMPULSE_AXE)
 	{
 		fl = IT_AXE;
 	}
-	else if (self.impulse == 2)
+	else if (self.impulse == IMPULSE_SHOTGUN)
 	{
 		fl = IT_SHOTGUN;
 		if (self.ammo_shells < 1)
 			am = 1;
 	}
-	else if (self.impulse == 3)
+	else if (self.impulse == IMPULSE_SUPER_SHOTGUN)
 	{
 		fl = IT_SUPER_SHOTGUN;
 		if (self.ammo_shells < 2)
 			am = 1;
 	}
-	else if (self.impulse == 4)
+	else if (self.impulse == IMPULSE_NAILGUN)
 	{
 		fl = IT_NAILGUN;
 		if (self.ammo_nails < 1)
 			am = 1;
 	}
-	else if (self.impulse == 5)
+	else if (self.impulse == IMPULSE_SUPER_NAILGUN)
 	{
 		fl = IT_SUPER_NAILGUN;
 		if (self.ammo_nails < 2)
 			am = 1;
 	}
-	else if (self.impulse == 6)
+	else if (self.impulse == IMPULSE_GRENADE_LAUNCHER)
 	{
 		fl = IT_GRENADE_LAUNCHER;
 		if (self.ammo_rockets < 1)
 			am = 1;
 	}
-	else if (self.impulse == 7)
+	else if (self.impulse == IMPULSE_ROCKET_LAUNCHER)
 	{
 		fl = IT_ROCKET_LAUNCHER;
 		if (self.ammo_rockets < 1)
 			am = 1;
 	}
-	else if (self.impulse == 8)
+	else if (self.impulse == IMPULSE_LIGHTNING)
 	{
 		fl = IT_LIGHTNING;
 		if (self.ammo_cells < 1)
 			am = 1;
 	}
 
-	self.impulse = 0;
+	self.impulse = IMPUlSE_NONE;
 	
 	if (!(self.items & fl))
 	{	// don't have the weapon or the ammo
@@ -1282,7 +1282,7 @@ void CheatCommand ()
 		IT_KEY1 | IT_KEY2;
 
 	self.weapon = IT_ROCKET_LAUNCHER;
-	self.impulse = 0;
+	self.impulse = IMPULSE_NONE;
 	W_SetCurrentAmmo ();
 }
 
@@ -1298,7 +1298,7 @@ void CycleWeaponCommand ()
 	float	it, am;
 	
 	it = self.items;
-	self.impulse = 0;
+	self.impulse = IMPULSE_NONE;
 
 	while (1)
 	{
@@ -1373,7 +1373,7 @@ void CycleWeaponReverseCommand ()
 	float	it, am;
 
 	it = self.items;
-	self.impulse = 0;
+	self.impulse = IMPULSE_NONE;
 
 	while (1)
 	{
@@ -1459,40 +1459,52 @@ ImpulseCommands
 */
 void ImpulseCommands ()
 {
-	if (self.impulse >= 1 && self.impulse <= 8)
+	if (self.impulse >= IMPULSE_WEAPON_FIRST && self.impulse <= IMPULSE_WEAPON_LAST)
 		W_ChangeWeapon ();
-
-	if (self.impulse == 9)
+	else
+	if (self.impulse == IMPULSE_CHEAT)
 		CheatCommand ();
-	if (self.impulse == 10)
+	else
+	if (self.impulse == IMPULSE_WEAPONCYCLE_F)
 		CycleWeaponCommand ();
-	if (self.impulse == 11)
+	else
+	if (self.impulse == IMPULSE_CHEAT_SERVERFLAGS)
 		ServerflagsCommand ();
-	if (self.impulse == 12)
+	else
+	if (self.impulse == IMPULSE_WEAPONCYCLE_R)
 		CycleWeaponReverseCommand ();
 
 // KTFFA --> 
-	if (self.impulse == 13)
+  else
+	if (self.impulse == KT_IMPULSE_VOTE_CHANGE)
 		VoteChange();
-	if (self.impulse == 14)
+	else
+	if (self.impulse == KT_IMPULSE_VOTE_YES)
 		VoteYes();
-	if (self.impulse == 15)
+	else
+	if (self.impulse == KT_IMPULSE_VOTE_NO)
 		VoteNo();
-	if (self.impulse == 16)
+	else
+	if (self.impulse == KT_IMPULSE_PRINT_SCORES)
 		PrintScores();
-	if (self.impulse == 17)
+	else
+	if (self.impulse == KT_IMPULSE_PRINT_CMDS)
 		PrintCommands();
-	if (self.impulse == 18)
+	else
+	if (self.impulse == KT_IMPULSE_MSG_KILLER)
 		SendMessage(self.killer);
-	if (self.impulse == 19)
+	else
+	if (self.impulse == KT_IMPULSE_MSG_VICTIM)
 		SendMessage(self.victim);
-	if (self.impulse == 20)
+	else
+	if (self.impulse == KT_IMPULSE_MSG_NEWCOMER)
 		SendMessage(newcomer);
-	if (self.impulse == 21)
+	else
+	if (self.impulse == KT_IMPULSE_PRINT_VERSION)
 		ShowVersion();
 // <-- KTFFA
 
-	self.impulse = 0;
+	self.impulse = IMPULSE_NONE;
 }
 
 /*
@@ -1507,7 +1519,7 @@ void W_WeaponFrame ()
 	if (time < self.attack_finished)
 		return;
 
-	if (self.impulse)
+	if (self.impulse != IMPULSE_NONE)
 		ImpulseCommands ();
 
 // check for attack

@@ -141,8 +141,39 @@ void() ShowVersion =
 
 void() StuffThink =
 {
+	string	s;
+
 	sprint(self.owner, 2, "Welcome to ÀÔÌ‚·Ù ‘Â·ÌÛ ≤Æ≤≤ ∆∆¡ mod\nType „ÔÌÌ·Ó‰Û for help\n");
-	stuffcmd(self.owner, "alias vote \"impulse 13\"\nalias yes \"impulse 14\"\nalias no \"impulse 15\"\nalias scores \"impulse 16\"\nalias commands \"impulse 17\"\nalias killer \"impulse 18\"\nalias victim \"impulse 19\"\nalias newcomer \"impulse 20\"\nalias about \"impulse 21\"\n");
+
+	stuffcmd(self.owner, "alias vote \"impulse ");
+	s = ftos(KT_IMPULSE_VOTE_CHANGE);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\nalias yes \"impulse ");
+	s = ftos(KT_IMPULSE_VOTE_YES);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\nalias no \"impulse ");
+	s = ftos(KT_IMPULSE_VOTE_NO);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\nalias scores \"impulse ");
+	s = ftos(KT_IMPULSE_PRINT_SCORES);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\nalias commands \"impulse ");
+	s = ftos(KT_IMPULSE_PRINT_CMDS);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\nalias killer \"impulse ");
+	s = ftos(KT_IMPULSE_MSG_KILLER);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\nalias victim \"impulse ");
+	s = ftos(KT_IMPULSE_MSG_VICTIM);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\nalias newcomer \"impulse ");
+	s = ftos(KT_IMPULSE_MSG_NEWCOMER);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\nalias about \"impulse ");
+	s = ftos(KT_IMPULSE_PRINT_VERSION);
+	stuffcmd(self.owner, s);
+	stuffcmd(self.owner, "\"\n");
+
 	self.think = SUB_Remove;
 	self.nextthink = time + 0.1;
 };
