@@ -77,6 +77,10 @@ static void Sbar_DeathmatchOverlay (int start);
 static void Sbar_TeamOverlay (int start);
 static void Sbar_MiniDeathmatchOverlay (void);
 
+#ifdef AGRIP
+#define R_DrawString(a, b, c)   Sys_Printf("%s ", c)
+#endif
+
 static int	sbar_xofs;
 
 cvar_t	scr_centerSbar = {"scr_centerSbar", "1", CVAR_ARCHIVE};
@@ -1062,6 +1066,10 @@ void Sbar_Draw (void)
 
 	if (sb_drawmain && cl.gametype == GAME_DEATHMATCH && !scr_centerSbar.value)
 		Sbar_MiniDeathmatchOverlay ();
+
+#ifdef AGRIP
+    Sbar_DontShowScores();
+#endif
 }
 
 //=============================================================================
