@@ -285,22 +285,24 @@ void CL_ParsePacketEntities (qboolean delta)
 
 		oldpacket = cl.frames[newpacket].delta_sequence;
 
+		if (cls.netchan.outgoing_sequence - cls.netchan.incoming_sequence >= UPDATE_BACKUP-1)
+		{	// there are no valid frames left, so drop it
+			FlushEntityPacket ();
+			return;
+		}
+
 		if ( (from&UPDATE_MASK) != (oldpacket&UPDATE_MASK) )
 			Con_DPrintf ("WARNING: from mismatch\n");
-	}
-	else
-		oldpacket = -1;
 
-	full = false;
-	if (oldpacket != -1)
-	{
 		if (cls.netchan.outgoing_sequence - oldpacket >= UPDATE_BACKUP-1)
 		{	// we can't use this, it is too old
 			FlushEntityPacket ();
 			return;
 		}
+
 		cl.validsequence = cls.netchan.incoming_sequence;
 		oldp = &cl.frames[oldpacket&UPDATE_MASK].packet_entities;
+		full = false;
 	}
 	else
 	{	// this is a full update that we can start delta compressing from now
