@@ -349,12 +349,7 @@ void Cmd_Echo_f (void)
 	int		i;
 	
 	for (i=1 ; i<Cmd_Argc() ; i++)
-#ifdef SERVERONLY
 		Con_Printf ("%s ",Cmd_Argv(i));
-#else
-	// if (cl_parseecho.value) ... else ....
-		Con_Printf ("%s ", CL_ParseMacroString(Cmd_Argv(i)));	// Tonik
-#endif
 	Con_Printf ("\n");
 }
 
@@ -969,7 +964,7 @@ void Cmd_ForwardToServer (void)
 			!Q_strcasecmp(Cmd_Argv(0), "say_team"))
 		{
 			char		*s;
-			s = CL_ParseMacroString(Cmd_Args());
+			s = TP_ParseMacroString(Cmd_Args());
 			if (*s && *s < 32 && *s != 10)
 			{
 				SZ_Print (&cls.netchan.message, "\"");

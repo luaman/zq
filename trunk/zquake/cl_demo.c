@@ -720,35 +720,35 @@ void CL_EasyRecord_f (void)
 		sprintf (name, "%s", Cmd_Argv(1));
 	else {
 		// guess game type and write demo name
-		i = CL_CountPlayers();
+		i = TP_CountPlayers();
 		if (atoi(Info_ValueForKey(cl.serverinfo, "teamplay"))
 			&& i >= 3)
 		{
 			// Teamplay
 			sprintf (name, "%s_%s_vs_%s_%s",
-				CL_PlayerName(),
-				CL_PlayerTeam(),
-				CL_EnemyTeam(),
-				CL_MapName());
+				TP_PlayerName(),
+				TP_PlayerTeam(),
+				TP_EnemyTeam(),
+				TP_MapName);
 		} else {
 			if (i == 2) {
 				// Duel
 				sprintf (name, "%s_vs_%s_%s",
-					CL_PlayerName(),
-					CL_EnemyName(),
-					CL_MapName());
+					TP_PlayerName(),
+					TP_EnemyName(),
+					TP_MapName());
 			}
 			else if (i > 2) {
 				// FFA
 				sprintf (name, "%s_ffa_%s",
-					CL_PlayerName, 
-					CL_MapName());
+					TP_PlayerName, 
+					TP_MapName());
 			}
 			else {
 				// one player
 				sprintf (name, "%s_%s",
-					CL_PlayerName(),
-					CL_MapName());
+					TP_PlayerName(),
+					TP_MapName());
 			}
 		}
 	}
