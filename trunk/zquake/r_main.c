@@ -30,7 +30,6 @@ vec3_t		viewlightvec;
 alight_t	r_viewlighting = {128, 192, viewlightvec};
 float		r_time1;
 int			r_numallocatededges;
-qboolean	r_drawpolys;
 qboolean	r_worldpolysbacktofront;
 qboolean	r_recursiveaffinetriangles = true;
 int			r_pixbytes = 1;
@@ -831,45 +830,35 @@ void R_DrawBEntitiesOnList (void)
 					}
 				}
 
-			// if the driver wants polygons, deliver those. Z-buffering is on
-			// at this point, so no clipping to the world tree is needed, just
-			// frustum clipping
-				if (r_drawpolys)
+				r_pefragtopnode = NULL;
+
+				for (j=0 ; j<3 ; j++)
 				{
-					R_ZDrawSubmodelPolys (clmodel);
+					r_emins[j] = minmaxs[j];
+					r_emaxs[j] = minmaxs[3+j];
 				}
-				else
+
+				R_SplitEntityOnNode2 (cl.worldmodel->nodes);
+
+				if (r_pefragtopnode)
 				{
-					r_pefragtopnode = NULL;
+					currententity->topnode = r_pefragtopnode;
 
-					for (j=0 ; j<3 ; j++)
+					if (r_pefragtopnode->contents >= 0)
 					{
-						r_emins[j] = minmaxs[j];
-						r_emaxs[j] = minmaxs[3+j];
+					// not a leaf; has to be clipped to the world BSP
+						r_clipflags = clipflags;
+						R_DrawSolidClippedSubmodelPolygons (clmodel);
+					}
+					else
+					{
+					// falls entirely in one leaf, so we just put all the
+					// edges in the edge list and let 1/z sorting handle
+					// drawing order
+						R_DrawSubmodelPolygons (clmodel, clipflags);
 					}
 
-					R_SplitEntityOnNode2 (cl.worldmodel->nodes);
-
-					if (r_pefragtopnode)
-					{
-						currententity->topnode = r_pefragtopnode;
-	
-						if (r_pefragtopnode->contents >= 0)
-						{
-						// not a leaf; has to be clipped to the world BSP
-							r_clipflags = clipflags;
-							R_DrawSolidClippedSubmodelPolygons (clmodel);
-						}
-						else
-						{
-						// falls entirely in one leaf, so we just put all the
-						// edges in the edge list and let 1/z sorting handle
-						// drawing order
-							R_DrawSubmodelPolygons (clmodel, clipflags);
-						}
-	
-						currententity->topnode = NULL;
-					}
+					currententity->topnode = NULL;
 				}
 
 			// put back world rotation and frustum clipping		
@@ -960,8 +949,7 @@ void R_EdgeDrawing (void)
 		VID_LockBuffer ();
 	}
 	
-	if (!r_drawpolys)
-		R_ScanEdges ();
+	R_ScanEdges ();
 }
 
 

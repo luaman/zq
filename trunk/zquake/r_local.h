@@ -215,7 +215,6 @@ extern int			numbtofpolys;
 extern btofpoly_t	*pbtofpolys;
 
 void	R_InitTurb (void);
-void	R_ZDrawSubmodelPolys (model_t *clmodel);
 
 //=========================================================
 // Alias models
