@@ -30,7 +30,7 @@ int bpp = 0;
 
 unsigned short	d_8to16table[256];
 unsigned		d_8to24table[256];
-unsigned        d_8to24table2[256];
+unsigned		d_8to24table2[256];
 unsigned char	d_15to8table[65536];
 
 cvar_t	_windowed_mouse = {"_windowed_mouse", "1", CVAR_ARCHIVE};
@@ -48,7 +48,7 @@ cvar_t	gl_strings = {"gl_strings", "", CVAR_ROM};
 
 static int scr_width, scr_height;
 
-float		gldepthmin, gldepthmax;
+float gldepthmin, gldepthmax;
 
 const char *gl_vendor;
 const char *gl_renderer;
@@ -260,26 +260,26 @@ static void install_grabs(void)
 	SDL_Event event;
 
 #if 0
-    if(!fullscreen)
-        SDL_WarpMouse(scr_width/2, scr_height/2);
+	if(!fullscreen)
+		SDL_WarpMouse(scr_width/2, scr_height/2);
 #endif
 
-    /* Com_Printf("installing grabs!\n"); */
+	/* Com_Printf("installing grabs!\n"); */
 	SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(SDL_DISABLE);
 
 	mouse_active = true;
 
-    /* FIXME: check this doesn't do damage */
+	/* FIXME: check this doesn't do damage */
 	/* remove junk from SDL event queue */
-    while (SDL_PollEvent(&event)) {
-        /* do nothing */
-    }
+	while (SDL_PollEvent(&event)) {
+		/* do nothing */
+	}
 }
 
 static void uninstall_grabs(void)
 {
-    /* Com_Printf("uninstalling grabs!\n"); */
+	/* Com_Printf("uninstalling grabs!\n"); */
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
 	SDL_ShowCursor(SDL_ENABLE);
 
@@ -293,11 +293,11 @@ void HotKey_ToggleFullScreen(void)
 	screen = SDL_GetVideoSurface();
 	if ( SDL_WM_ToggleFullScreen(screen) ) {
 		printf("Toggled fullscreen mode - now %s\n",
-		    (screen->flags&SDL_FULLSCREEN) ? "fullscreen" : "windowed");
+			(screen->flags&SDL_FULLSCREEN) ? "fullscreen" : "windowed");
 	} else {
 		Com_Printf("Unable to toggle fullscreen mode\n");
-        flags ^= SDL_FULLSCREEN;
-        screen = SDL_SetVideoMode(screen->w, screen->h, bpp, flags);
+		flags ^= SDL_FULLSCREEN;
+		screen = SDL_SetVideoMode(screen->w, screen->h, bpp, flags);
 	}
 }
 
@@ -345,7 +345,7 @@ void IN_ActivateMouse( void )
 	if (!mouse_avail || !screen)
 		return;
 #endif
-    /* Com_Printf("IN_ActivateMouse entered\n"); */
+	/* Com_Printf("IN_ActivateMouse entered\n"); */
 
 	if (!mouse_active) {
 		mouse_x = mouse_y = 0; // don't spazz
@@ -361,38 +361,38 @@ GL_Init
 */
 void GL_Init (void)
 {
-    gl_vendor = glGetString (GL_VENDOR);
-    Com_Printf ("GL_VENDOR: %s\n", gl_vendor);
-    gl_renderer = glGetString (GL_RENDERER);
-    Com_Printf ("GL_RENDERER: %s\n", gl_renderer);
-    gl_version = glGetString (GL_VERSION);
-    Com_Printf ("GL_VERSION: %s\n", gl_version);
-    gl_extensions = glGetString (GL_EXTENSIONS);
+	gl_vendor = glGetString (GL_VENDOR);
+	Com_Printf ("GL_VENDOR: %s\n", gl_vendor);
+	gl_renderer = glGetString (GL_RENDERER);
+	Com_Printf ("GL_RENDERER: %s\n", gl_renderer);
+	gl_version = glGetString (GL_VERSION);
+	Com_Printf ("GL_VERSION: %s\n", gl_version);
+	gl_extensions = glGetString (GL_EXTENSIONS);
 //  Com_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	Cvar_Register (&gl_strings);
 	Cvar_ForceSet (&gl_strings, va("GL_VENDOR: %s\nGL_RENDERER: %s\n"
 		"GL_VERSION: %s\nGL_EXTENSIONS: %s", gl_vendor, gl_renderer, gl_version, gl_extensions));
 
-    glClearColor (1,0,0,0);
-    glCullFace(GL_FRONT);
-    glEnable(GL_TEXTURE_2D);
+	glClearColor (1,0,0,0);
+	glCullFace(GL_FRONT);
+	glEnable(GL_TEXTURE_2D);
 
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, 0.666);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.666);
 
-    glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-    glShadeModel (GL_FLAT);
+	glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+	glShadeModel (GL_FLAT);
 
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    //	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 /*
@@ -413,26 +413,26 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 
 void GL_EndRendering (void)
 {
-    Uint8 appstate;
+	Uint8 appstate;
 
 	glFlush();
 	SDL_GL_SwapBuffers();
 
-    //react on appstate changes
-    appstate = SDL_GetAppState();
+	//react on appstate changes
+	appstate = SDL_GetAppState();
 
-    if( !( appstate & SDL_APPMOUSEFOCUS ) || !( appstate & SDL_APPINPUTFOCUS ) ) {
-        if(mouse_active == true) {
-            /* Com_Printf("appstate nonfocused: %d\n", appstate); */
-            uninstall_grabs();
-        }
-    }
-    else if( ( appstate & SDL_APPMOUSEFOCUS ) && ( appstate & SDL_APPINPUTFOCUS ) ) {
-        if(mouse_active == false) {
-            /* Com_Printf("appstate focused: %d\n", appstate); */
-            install_grabs();
-        }
-    }
+	if( !( appstate & SDL_APPMOUSEFOCUS ) || !( appstate & SDL_APPINPUTFOCUS ) ) {
+		if(mouse_active == true) {
+			/* Com_Printf("appstate nonfocused: %d\n", appstate); */
+			uninstall_grabs();
+		}
+	}
+	else if( ( appstate & SDL_APPMOUSEFOCUS ) && ( appstate & SDL_APPINPUTFOCUS ) ) {
+		if(mouse_active == false) {
+			/* Com_Printf("appstate focused: %d\n", appstate); */
+			install_grabs();
+		}
+	}
 }
 
 void VID_Init8bitPalette(void) {}
@@ -468,22 +468,22 @@ void VID_Init(unsigned char *palette)
 {
 	int i;
 	int width = 640, height = 400;
-    /* Information about the current video settings. */
-    const SDL_VideoInfo* info = NULL;
+	/* Information about the current video settings. */
+	const SDL_VideoInfo* info = NULL;
 
-    flags = SDL_OPENGL;           // to use open gl
-    /* flags |= SDL_GL_DOUBLEBUFFER; // have a double buffer (SDL_Flip();) */
-    flags |= SDL_HWPALETTE;       // use hardware palette
-    /* flags |= SDL_ANYFORMAT;       // use anything as last resort */
-    flags |= SDL_SWSURFACE;
+	flags = SDL_OPENGL;		   // to use open gl
+	/* flags |= SDL_GL_DOUBLEBUFFER; // have a double buffer (SDL_Flip();) */
+	flags |= SDL_HWPALETTE;	   // use hardware palette
+	/* flags |= SDL_ANYFORMAT;	   // use anything as last resort */
+	flags |= SDL_SWSURFACE;
 
 	Cvar_Register (&m_filter);
-    Cvar_Register (&_windowed_mouse);
+	Cvar_Register (&_windowed_mouse);
 
 	vid.colormap = host_colormap;
 
 	if (!(COM_CheckParm("-window")) )
-        flags |= SDL_FULLSCREEN;
+		flags |= SDL_FULLSCREEN;
 
 	if ((i = COM_CheckParm("-bpp")) != 0)
 		bpp = atoi(com_argv[i+1]);
@@ -499,7 +499,7 @@ void VID_Init(unsigned char *palette)
 	else
 		vid.width = 640;
 
-    vid.width &= 0xfff8; // make it a multiple of eight
+	vid.width &= 0xfff8; // make it a multiple of eight
 
 	if (vid.width < 320)
 		vid.width = 320;
@@ -512,41 +512,41 @@ void VID_Init(unsigned char *palette)
 	if (vid.height < 200)
 		vid.height = 200;
 
-    // Load the SDL library
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-        Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
+	// Load the SDL library
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
 
-    /* get some video information. */
-    info = SDL_GetVideoInfo( );
+	/* get some video information. */
+	info = SDL_GetVideoInfo( );
 
-    /* if bpp wasn't set on cmdline use current display mode */
-    if (bpp == 0)
-        bpp = info->vfmt->BitsPerPixel;
+	/* if bpp wasn't set on cmdline use current display mode */
+	if (bpp == 0)
+		bpp = info->vfmt->BitsPerPixel;
 
-    if (bpp >= 32)
-    {
-        SDL_GL_SetAttribute (SDL_GL_RED_SIZE, 8);
-        SDL_GL_SetAttribute (SDL_GL_GREEN_SIZE, 8);
-        SDL_GL_SetAttribute (SDL_GL_BLUE_SIZE, 8);
-        SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, 24);
-    }
-    else {
-        SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-        SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-        SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-        SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
-    }
+	if (bpp >= 32)
+	{
+		SDL_GL_SetAttribute (SDL_GL_RED_SIZE, 8);
+		SDL_GL_SetAttribute (SDL_GL_GREEN_SIZE, 8);
+		SDL_GL_SetAttribute (SDL_GL_BLUE_SIZE, 8);
+		SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, 24);
+	}
+	else {
+		SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
+		SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
+		SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+		SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
+	}
 
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
 	if (!(screen = SDL_SetVideoMode(width, height, bpp, flags) )) {
-        Sys_Error("VID: Couldn't set video mode: %s\n", SDL_GetError());
+		Sys_Error("VID: Couldn't set video mode: %s\n", SDL_GetError());
 	}
 
 	scr_width = width;
 	scr_height = height;
-    vid.realwidth = width;
-    vid.realheight = height;
+	vid.realwidth = width;
+	vid.realheight = height;
 
 	if (vid.height > height)
 		vid.height = height;
@@ -560,75 +560,75 @@ void VID_Init(unsigned char *palette)
 
 	GL_Init();
 
-    Check_Gamma(palette);
+	Check_Gamma(palette);
 
 	VID_SetPalette(palette);
-    SDL_WM_SetCaption("zquake-glsdl","zquake-glsdl");
+	SDL_WM_SetCaption("zquake-glsdl","zquake-glsdl");
 
 	Com_Printf ("Video mode %dx%dx%d initialized.\n", width, height, bpp);
 
 	SCR_InvalidateScreen ();
 
-    // hide the mouse
-    SDL_ShowCursor(0);
+	// hide the mouse
+	SDL_ShowCursor(0);
 }
 
 void VID_Shutdown(void)
 {
 	IN_DeactivateMouse();
-    SDL_Quit();
+	SDL_Quit();
 
 	screen = NULL;
 }
 
 void VID_ShiftPalette(unsigned char *palette)
 {
-    VID_SetPalette(palette);
+	VID_SetPalette(palette);
 }
 
 void VID_SetPalette (byte *palette)
 {
-    int i;
-    byte *pal, *table;
+	int i;
+	byte *pal, *table;
 
-    // 8 8 8 encoding
-    pal = palette;
-    table = (byte *)d_8to24table;
-    for (i = 0; i < 256; i++)
-    {
-        *table++ = *pal++;
-        *table++ = *pal++;
-        *table++ = *pal++;
-        *table++ = 255;
-    }
-    d_8to24table[255] = 0;	// 255 is transparent
+	// 8 8 8 encoding
+	pal = palette;
+	table = (byte *)d_8to24table;
+	for (i = 0; i < 256; i++)
+	{
+		*table++ = *pal++;
+		*table++ = *pal++;
+		*table++ = *pal++;
+		*table++ = 255;
+	}
+	d_8to24table[255] = 0;	// 255 is transparent
 
-    // Tonik: create a brighter palette for bmodel textures
-    pal = palette;
-    table = (byte *)d_8to24table2;
+	// Tonik: create a brighter palette for bmodel textures
+	pal = palette;
+	table = (byte *)d_8to24table2;
 
-    for (i = 1; i < 256; i++)
-    {
-        pal[0] = min(pal[0] * (2.0 / 1.5), 255);
-        pal[1] = min(pal[1] * (2.0 / 1.5), 255);
-        pal[2] = min(pal[2] * (2.0 / 1.5), 255);
-        *table++ = *pal++;
-        *table++ = *pal++;
-        *table++ = *pal++;
-        *table++ = 255;
-    }
-    d_8to24table2[255] = 0;	// 255 is transparent
+	for (i = 1; i < 256; i++)
+	{
+		pal[0] = min(pal[0] * (2.0 / 1.5), 255);
+		pal[1] = min(pal[1] * (2.0 / 1.5), 255);
+		pal[2] = min(pal[2] * (2.0 / 1.5), 255);
+		*table++ = *pal++;
+		*table++ = *pal++;
+		*table++ = *pal++;
+		*table++ = 255;
+	}
+	d_8to24table2[255] = 0;	// 255 is transparent
 }
 
 void Sys_SendKeyEvents(void)
 {
-    SDL_Event event;
+	SDL_Event event;
 
-    /* Check if there's a pending event. */
-    while( SDL_PollEvent( &event ) ) {
+	/* Check if there's a pending event. */
+	while( SDL_PollEvent( &event ) ) {
 		switch (event.type) {
 #if 0
-	    case SDL_ACTIVEEVENT:
+		case SDL_ACTIVEEVENT:
 		printf( "app %s ", event.active.gain ? "gained" : "lost" );
 		if ( event.active.state & SDL_APPACTIVE ) {
 			printf( "active " );
@@ -643,19 +643,19 @@ void Sys_SendKeyEvents(void)
 
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
-        if ( (event.key.keysym.sym == SDLK_z) &&
-		     (event.key.keysym.mod & KMOD_CTRL) ) {
+		if ( (event.key.keysym.sym == SDLK_z) &&
+			 (event.key.keysym.mod & KMOD_CTRL) ) {
 			HotKey_Iconify();
 		}
-        else if ( (event.key.keysym.sym == SDLK_RETURN) &&
-                (event.key.keysym.mod & KMOD_ALT) &&
-                (event.type == SDL_KEYDOWN) ) {
-            HotKey_ToggleFullScreen();
-        }
-        else {
+		else if ( (event.key.keysym.sym == SDLK_RETURN) &&
+				(event.key.keysym.mod & KMOD_ALT) &&
+				(event.type == SDL_KEYDOWN) ) {
+			HotKey_ToggleFullScreen();
+		}
+		else {
 			Key_Event(SDL_LateKey(&event.key.keysym), event.type == SDL_KEYDOWN);
-        }
-        break;
+		}
+		break;
 
 		case SDL_MOUSEMOTION:
 			if (mouse_active) {
@@ -695,7 +695,7 @@ void Sys_SendKeyEvents(void)
 			break;
 #endif
 		}
-    }
+	}
 }
 
 #if 0
@@ -707,15 +707,15 @@ void Force_CenterView_f (void)
 
 void IN_Init(void)
 {
-    if ( COM_CheckParm ("-nomouse") )
-        return;
-    mouse_x = mouse_y = 0;
-    mouse_avail = 1;
+	if ( COM_CheckParm ("-nomouse") )
+		return;
+	mouse_x = mouse_y = 0;
+	mouse_avail = 1;
 }
 
 void IN_Shutdown(void)
 {
-    mouse_avail = 0;
+	mouse_avail = 0;
 }
 
 /*
@@ -725,35 +725,35 @@ IN_Commands
 */
 void IN_Commands (void)
 {
-    int i;
-    int mouse_buttonstate;
+	int i;
+	int mouse_buttonstate;
 
-    if (!mouse_avail) return;
+	if (!mouse_avail) return;
 
-    i = SDL_GetMouseState(NULL, NULL);
-    /* Quake swaps the second and third buttons */
-    mouse_buttonstate = (i & ~0x06) | ((i & 0x02)<<1) | ((i & 0x04)>>1);
-    for (i=0 ; i<3 ; i++) {
-        if ( (mouse_buttonstate & (1<<i)) && !(mouse_oldbuttonstate & (1<<i)) )
-            Key_Event (K_MOUSE1 + i, true);
+	i = SDL_GetMouseState(NULL, NULL);
+	/* Quake swaps the second and third buttons */
+	mouse_buttonstate = (i & ~0x06) | ((i & 0x02)<<1) | ((i & 0x04)>>1);
+	for (i=0 ; i<3 ; i++) {
+		if ( (mouse_buttonstate & (1<<i)) && !(mouse_oldbuttonstate & (1<<i)) )
+			Key_Event (K_MOUSE1 + i, true);
 
-        if ( !(mouse_buttonstate & (1<<i)) && (mouse_oldbuttonstate & (1<<i)) )
-            Key_Event (K_MOUSE1 + i, false);
-    }
+		if ( !(mouse_buttonstate & (1<<i)) && (mouse_oldbuttonstate & (1<<i)) )
+			Key_Event (K_MOUSE1 + i, false);
+	}
 
-    if ( (mouse_buttonstate & (1<<3)) && !(mouse_oldbuttonstate & (1<<3)) )
-        Key_Event (K_MWHEELUP, true);
+	if ( (mouse_buttonstate & (1<<3)) && !(mouse_oldbuttonstate & (1<<3)) )
+		Key_Event (K_MWHEELUP, true);
 
-    if ( (mouse_buttonstate & (1<<3)) && (mouse_oldbuttonstate & (1<<3)) )
-        Key_Event (K_MWHEELUP, false);
+	if ( (mouse_buttonstate & (1<<3)) && (mouse_oldbuttonstate & (1<<3)) )
+		Key_Event (K_MWHEELUP, false);
 
-    if ( (mouse_buttonstate & (1<<4)) && !(mouse_oldbuttonstate & (1<<4)) )
-        Key_Event (K_MWHEELDOWN, true);
+	if ( (mouse_buttonstate & (1<<4)) && !(mouse_oldbuttonstate & (1<<4)) )
+		Key_Event (K_MWHEELDOWN, true);
 
-    if ( (mouse_buttonstate & (1<<4)) && (mouse_oldbuttonstate & (1<<4)) )
-        Key_Event (K_MWHEELDOWN, true);
+	if ( (mouse_buttonstate & (1<<4)) && (mouse_oldbuttonstate & (1<<4)) )
+		Key_Event (K_MWHEELDOWN, true);
 
-    mouse_oldbuttonstate = mouse_buttonstate;
+	mouse_oldbuttonstate = mouse_buttonstate;
 }
 
 /*
@@ -813,9 +813,9 @@ void D_EndDirectRect (int x, int y, int width, int height) {}
 qbool VID_Is8bit(void) { return false; }
 
 void VID_SetCaption (char *text) {
-    SDL_WM_SetCaption(text, text);
+	SDL_WM_SetCaption(text, text);
 }
 void VID_SetDeviceGammaRamp (unsigned short *ramps) {
-    SDL_SetGammaRamp (ramps, ramps + 256, ramps + 512);
+	SDL_SetGammaRamp (ramps, ramps + 256, ramps + 512);
 }
 
