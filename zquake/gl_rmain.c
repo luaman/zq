@@ -43,6 +43,7 @@ int			cnttextures[2] = {-1, -1};     // cached
 
 int			particletexture;	// little dot for particles
 int			playertextures;		// up to 16 color translated skins
+int			skyboxtextures;
 
 int			mirrortexturenum;	// quake texturenum, not gltexturenum
 qboolean	mirror;
@@ -1120,8 +1121,11 @@ void R_Init (void)
 	playertextures = texture_extension_number;
 	texture_extension_number += MAX_CLIENTS;
 
-	// fullbrights
+	// fullbright skins
 	texture_extension_number += MAX_CLIENTS;
+
+	skyboxtextures = texture_extension_number;
+	texture_extension_number += 6;
 }
 
 

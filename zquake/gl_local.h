@@ -152,8 +152,9 @@ extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 extern	int	currenttexture;
 extern	int	cnttextures[2];
 extern	int	particletexture;
-extern	int	netgraphtexture;	// netgraph texture
+extern	int	netgraphtexture;
 extern	int	playertextures;
+extern	int	skyboxtextures;
 
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 
@@ -241,7 +242,7 @@ void EmitBothSkyLayers (msurface_t *fa);
 void EmitWaterPolys (msurface_t *fa);
 void EmitSkyPolys (msurface_t *fa);
 void R_DrawSkyChain (msurface_t *s);
-void R_DrawSkyboxChain (msurface_t *s);
+void R_AddSkyBoxSurface (msurface_t *fa);
 void R_ClearSkyBox (void);
 void R_DrawSkyBox (void);
 extern qboolean	r_skyboxloaded;

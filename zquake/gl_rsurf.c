@@ -1224,6 +1224,13 @@ void R_RecursiveWorldNode (mnode_t *node)
 				if ((dot < 0) ^ !!(surf->flags & SURF_PLANEBACK))
 					continue;		// wrong side
 
+				if ((surf->flags & SURF_DRAWSKY) && r_skyboxloaded)
+				{
+					// just add to visible skybox bounds
+					R_AddSkyBoxSurface (surf);
+					continue;
+				}
+
 				// if sorting by texture, just store it out
 				if (gl_texsort.value)
 				{
