@@ -938,7 +938,7 @@ void CL_Frame (double time)
 	cls.frametime = min (cls.trueframetime, 0.2);
 
 	if (cls.demoplayback) {
-		cls.frametime *= bound (0, cl_demospeed.value, 20);
+		cls.frametime *= bound (0, cl_demospeed.value, 100);
 		if (cl.paused & PAUSED_DEMO)
 			cls.frametime = 0;
 		if (!host_skipframe)
