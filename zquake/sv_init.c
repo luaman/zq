@@ -191,11 +191,7 @@ void SV_CalcPHS (void)
 	byte	*scan;
 	int		count, vcount;
 
-#ifdef QW_BOTH
-//	if (dedicated)
-	if (false)
-#endif
-	Com_Printf ("Building PHS...\n");
+	Com_DPrintf ("Building PHS...\n");
 
 	num = sv.worldmodel->numleafs;
 	rowwords = (num+31)>>5;
@@ -254,11 +250,7 @@ void SV_CalcPHS (void)
 				count++;
 	}
 
-#ifdef QW_BOTH
-//	if (dedicated)
-	if (false)
-#endif
-	Com_Printf ("Average leafs visible / hearable / total: %i / %i / %i\n"
+	Com_DPrintf ("Average leafs visible / hearable / total: %i / %i / %i\n"
 		, vcount/num, count/num, num);
 }
 
