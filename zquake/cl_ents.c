@@ -151,6 +151,33 @@ entity_state_t *CL_GetBaseline (int number)
 	return &cl_entities[number].baseline;
 }
 
+// bump lastframe and copy current state to previous
+static void UpdateEntities (void)
+{
+	int		i;
+	packet_entities_t *pack;
+	entity_state_t *ent;
+	centity_t	*cent;
+
+	assert (cl.validsequence);
+
+	pack = &cl.frames[cl.validsequence & UPDATE_MASK].packet_entities;
+
+	for (i = 0; i < pack->num_entities; i++) {
+		ent = &pack->entities[i];
+		cent = &cl_entities[ent->number];
+		cent->previous = cent->current;
+		cent->current = *ent;
+		cent->prevframe = cent->lastframe;
+		cent->lastframe = cl_entframecount;
+
+		if (cent->prevframe != cl_oldentframecount) {
+			// not in previous message
+			VectorCopy (cent->current.origin, cent->lerp_origin);
+		}
+	}
+}
+
 /*
 ==================
 CL_ParsePacketEntities
@@ -306,6 +333,10 @@ void CL_ParsePacketEntities (qboolean delta)
 
 	newp->num_entities = newindex;
 
+	cl_oldentframecount = cl_entframecount;
+	cl_entframecount++;
+	UpdateEntities ();
+
 	if (cls.demorecording) {
 		// write uncompressed packetentities to the demo
 		MSG_EmitPacketEntities (NULL, -1, newp, &cls.demomessage, CL_GetBaseline);
@@ -330,8 +361,6 @@ void CL_ParsePacketEntities (qboolean delta)
 
 		SCR_EndLoadingPlaque ();
 	}
-
-	cl_entframecount++;
 }
 
 
@@ -364,10 +393,16 @@ void CL_LinkPacketEntities (void)
 
 	memset (&ent, 0, sizeof(ent));
 
+	f = 1.0f;		// FIXME: no interpolation right now
+
+
 	for (pnum=0 ; pnum<pack->num_entities ; pnum++)
 	{
 		state = &pack->entities[pnum];
 		cent = &cl_entities[state->number];
+
+		assert(cent->lastframe != cl_entframecount);
+		assert(!memcmp(state, &cent->current, sizeof(*state)));
 
 		// control powerup glow for bots
 		if (state->modelindex != cl_playerindex || r_powerupglow.value)
@@ -393,18 +428,12 @@ void CL_LinkPacketEntities (void)
 		if (!state->modelindex)
 			continue;
 
-		f = 1.0f;		// FIXME: no interpolation right now
-
-		cent->previous = cent->current;
-		cent->current = *state;
-
 		if (cl_deadbodyfilter.value && state->modelindex == cl_playerindex
 			&& ( (i=state->frame)==49 || i==60 || i==69 || i==84 || i==93 || i==102) )
 			continue;
 
-		if (cl_gibfilter.value)
-		if (state->modelindex == cl_h_playerindex || state->modelindex == cl_gib1index
-			|| state->modelindex == cl_gib2index || state->modelindex == cl_gib3index)
+		if (cl_gibfilter.value && (state->modelindex == cl_h_playerindex
+			|| state->modelindex == cl_gib1index || state->modelindex == cl_gib2index || state->modelindex == cl_gib3index))
 			continue;
 
 		ent.model = model = cl.model_precache[state->modelindex];
@@ -463,23 +492,16 @@ void CL_LinkPacketEntities (void)
 				f * (cent->current.origin[i] - cent->previous.origin[i]);
 
 		// add automatic particle trails
-		if ((model->flags & ~EF_ROTATE))
+		if (model->flags & ~EF_ROTATE)
 		{
-			if (cl_entframecount == 1 || cent->lastframe != cl_entframecount-1)
-			{	// not in last message
-				VectorCopy (ent.origin, old_origin);
-			}
-			else
-			{
-				VectorCopy (cent->lerp_origin, old_origin);
+			VectorCopy (cent->lerp_origin, old_origin);
 
-				for (i=0 ; i<3 ; i++)
-					if ( abs(old_origin[i] - ent.origin[i]) > 128)
-					{	// no trail if too far
-						VectorCopy (ent.origin, old_origin);
-						break;
-					}
-			}
+			for (i=0 ; i<3 ; i++)
+				if (abs(old_origin[i] - ent.origin[i]) > 128)
+				{	// no trail if too far
+					VectorCopy (ent.origin, old_origin);
+					break;
+				}
 
 			if (model->flags & EF_ROCKET)
 			{
@@ -508,7 +530,6 @@ void CL_LinkPacketEntities (void)
 		}
 
 		VectorCopy (ent.origin, cent->lerp_origin);
-		cent->lastframe = cl_entframecount;
 		V_AddEntity (&ent);
 	}
 }
@@ -911,7 +932,6 @@ void CL_LinkPlayers (void)
 			CL_AddFlagModels (&ent, 1);
 
 		VectorCopy (ent.origin, cent->lerp_origin);
-		cent->lastframe = cl_entframecount;
 		V_AddEntity (&ent);
 	}
 }

@@ -110,6 +110,7 @@ typedef struct
 	entity_state_t	current;
 
 	int				lastframe;
+	int				prevframe;
 	vec3_t			lerp_origin;
 } centity_t;
 
@@ -422,7 +423,7 @@ void CL_Disconnect (void);
 void CL_Disconnect_f (void);
 void CL_NextDemo (void);
 
-extern	int				cl_entframecount;
+extern	int				cl_entframecount, cl_oldentframecount;
 
 extern	int				cl_numvisedicts;
 extern	entity_t		cl_visedicts[MAX_VISEDICTS];

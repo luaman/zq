@@ -107,10 +107,11 @@ dlight_t		cl_dlights[MAX_DLIGHTS];
 // refresh list
 // this is double buffered so the last frame
 // can be scanned for oldorigins of trailing objects
-int				cl_entframecount;
-
 int				cl_numvisedicts;
 entity_t		cl_visedicts[MAX_VISEDICTS];
+
+// used to determine if an entity was present in the last or previous message
+int				cl_entframecount, cl_oldentframecount;
 
 int				cl_numvisparticles;
 particle_t		cl_visparticles[MAX_PARTICLES];
@@ -331,6 +332,7 @@ void CL_ClearState (void)
 	memset (cl_entities, 0, sizeof(cl_entities));
 
 	cl_numvisedicts = 0;
+	cl_oldentframecount = -1;
 	cl_entframecount = 0;
 	cl.viewheight = DEFAULT_VIEWHEIGHT;
 
