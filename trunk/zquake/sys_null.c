@@ -36,10 +36,6 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 }
 
 
-void Sys_DebugLog(char *file, char *fmt, ...)
-{
-}
-
 void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
