@@ -393,7 +393,7 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 
 	R_SetVrect (pvrect, &r_refdef.vrect, lineadj);
 
-	r_refdef.horizontalFieldOfView = 2.0 * Q_tan (r_refdef.fov_x/360*M_PI);
+	r_refdef.horizontalFieldOfView = 2.0 * tan (r_refdef.fov_x/360*M_PI);
 	r_refdef.fvrectx = (float)r_refdef.vrect.x;
 	r_refdef.fvrectx_adj = (float)r_refdef.vrect.x - 0.5;
 	r_refdef.vrect_x_adj_shift20 = (r_refdef.vrect.x<<20) + (1<<19) - 1;
@@ -477,9 +477,9 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	screenedge[3].type = PLANE_ANYZ;
 	
 	for (i=0 ; i<4 ; i++)
-		VectorNormalizeFast (screenedge[i].normal);
+		VectorNormalize (screenedge[i].normal);
 
-	res_scale = Q_sqrt ((double)(r_refdef.vrect.width * r_refdef.vrect.height) /
+	res_scale = sqrt ((double)(r_refdef.vrect.width * r_refdef.vrect.height) /
 			          (320.0 * 152.0)) *
 			(2.0 / r_refdef.horizontalFieldOfView);
 	r_aliastransition = r_aliastransbase.value * res_scale;
@@ -661,8 +661,7 @@ void R_DrawViewModel (void)
 	VectorCopy (currententity->origin, r_entorigin);
 	VectorSubtract (r_origin, r_entorigin, modelorg);
 
-	VectorCopy (vup, viewlightvec);
-	VectorInverse (viewlightvec, viewlightvec);
+	VectorInverse (vup, viewlightvec);
 
 	j = R_LightPoint (currententity->origin);
 
@@ -675,11 +674,7 @@ void R_DrawViewModel (void)
 	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
 	{
 		dl = &cl_dlights[lnum];
-		if (!dl->radius)
-			continue;
-		if (!dl->radius)
-			continue;
-		if (dl->die < cl.time)
+		if (!dl->radius || dl->die < cl.time)
 			continue;
 
 		VectorSubtract (currententity->origin, dl->origin, dist);
@@ -1090,13 +1085,13 @@ void R_RenderView (void)
 		Sys_Error ("R_RenderView: called without enough stack");
 
 	if ( Hunk_LowMark() & 3 )
-		Sys_Error ("Hunk is missaligned");
+		Sys_Error ("Hunk is misaligned");
 
 	if ( (long)(&dummy) & 3 )
-		Sys_Error ("Stack is missaligned");
+		Sys_Error ("Stack is misaligned");
 
 	if ( (long)(&r_warpbuffer) & 3 )
-		Sys_Error ("Globals are missaligned");
+		Sys_Error ("Globals are misaligned");
 
 	R_RenderView_ ();
 }
