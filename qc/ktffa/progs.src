@@ -1,9 +1,9 @@
 ./qwprogs.dat
 
 defs.qc
-subs.qc
+../qw/subs.qc
 combat.qc
-items.qc
+../qw/items.qc
 
 vote.qc
 others.qc
@@ -13,10 +13,10 @@ world.qc
 client.qc
 spectate.qc
 player.qc
-doors.qc
-buttons.qc
+../qw/doors.qc
+../qw/buttons.qc
 triggers.qc
-plats.qc
-misc.qc
+../qw/plats.qc
+../qw/misc.qc
 
-server.qc
+../qw/server.qc

@@ -393,7 +393,7 @@ void() ClientKill =
 
 float(vector v) CheckSpawnPoint =
 {
-	return FALSE;
+	return false;
 };
 
 /*
@@ -472,9 +472,9 @@ totalspots = totalspots - 1;
 		while(thing) {
 			if(thing.classname == "player" && thing.health > 0) {
 				v1 = thing.origin - (v_up * 15);
-				traceline(v1, v1 + (v_forward * 160), FALSE, thing);
+				traceline(v1, v1 + (v_forward * 160), false, thing);
 				v1 = trace_endpos;
-				traceline(v1, v1 + (v_forward * 30), FALSE, thing);
+				traceline(v1, v1 + (v_forward * 30), false, thing);
 				if(trace_fraction < 1) v1 = trace_endpos - (v_forward * 35);
 				setorigin(thing, v1 + (v_up * 15));
 			} else if(thing.classname == "teledeath") remove(thing);
@@ -611,7 +611,7 @@ void() PutClientInServer =
 
 	self.origin = spot.origin + '0 0 1';
 	self.angles = spot.angles;
-	self.fixangle = TRUE;           // turn this way immediately
+	self.fixangle = true;           // turn this way immediately
 
 // oh, this is a hack!
 	setmodel (self, "progs/eyes.mdl");
@@ -637,11 +637,6 @@ void() PutClientInServer =
 
 	spawn_tdeath (self.origin, self);
 
-	// Set Rocket Jump Modifiers
-	if (stof(infokey(world, "rj")) != 0)
-	{                
-		rj = stof(infokey(world, "rj"));
-	}
 
 	if (deathmatch == 4)
 	{
@@ -787,11 +782,11 @@ void() NextLevel =
 	p = find(world, classname, "player");
 	while(p != world) {
 		if(p.netname != "") {
-			bprint2(2, p.netname, ": ");
+			bprint(2, p.netname, ": ");
 			tmp = ftos(p.frags);
-			bprint2(2, tmp, " (");
+			bprint(2, tmp, " (");
 			tmp = ftos(p.frags - p.deaths);
-			bprint2(2, tmp, ") ");
+			bprint(2, tmp, ") ");
 			if(p.frags < 1)
 				p.efficiency = 0;
 			else
@@ -801,7 +796,7 @@ void() NextLevel =
 				bprint(2, " ");
 			else
 				bprint(2, "");
-			bprint2(2, tmp, "%\n");
+			bprint(2, tmp, "%\n");
 			if (maxfrags < p.frags) maxfrags = p.frags;
 			if (maxdeaths < p.deaths) maxdeaths = p.deaths;
 			if (maxeffi < p.efficiency) maxeffi = p.efficiency;
@@ -809,7 +804,7 @@ void() NextLevel =
 		p = find(p, classname, "player");
 	}
 // Print the high score table
-	bprint3(2, "\n", mapname, " ôïð óãïòåòó:\nFrags     : ");
+	bprint(2, "\n", mapname, " ôïð óãïòåòó:\nFrags     : ");
 	tmp = ftos(maxfrags);
 	f1 = 0;
 	p = find(world, classname, "player");
@@ -818,7 +813,7 @@ void() NextLevel =
 			if(p.frags == maxfrags) {
 				if(f1) bprint(2, "            ");
 				f1 = 1;
-				bprint4(2, p.netname, " ", tmp, "‘\n");
+				bprint(2, p.netname, " ", tmp, "‘\n");
 			}
 		p = find(p, classname, "player");
 	}
@@ -831,7 +826,7 @@ void() NextLevel =
 			if(p.deaths == maxdeaths) {
 				if(f1) bprint(2, "            ");
 				f1 = 1;
-				bprint4(2, p.netname, " ", tmp, "‘\n");
+				bprint(2, p.netname, " ", tmp, "‘\n");
 			}
 		p = find(p, classname, "player");
 	}
@@ -844,7 +839,7 @@ void() NextLevel =
 			if(p.efficiency == maxeffi) {
 				if(f1) bprint(2, "            ");
 				f1 = 1;
-				bprint4(2, p.netname, " ", tmp, "%‘\n");
+				bprint(2, p.netname, " ", tmp, "%‘\n");
 			}
 		p = find(p, classname, "player");
 	}
@@ -1096,13 +1091,13 @@ void() CheckWaterJump =
 	v_forward_z = 0;
 	normalize(v_forward);
 	end = start + v_forward*24;
-	traceline (start, end, TRUE, self);
+	traceline (start, end, true, self);
 	if (trace_fraction < 1)
 	{       // solid at waist
 		start_z = start_z + self.maxs_z - 8;
 		end = start + v_forward*24;
 		self.movedir = trace_plane_normal * -50;
-		traceline (start, end, TRUE, self);
+		traceline (start, end, true, self);
 		if (trace_fraction == 1)
 		{       // open at eye level
 			self.flags = self.flags | FL_WATERJUMP;
@@ -1153,12 +1148,12 @@ void() PlayerPreThink =
 		self.real_time = time;
 		if(r > 103) {
 			sprint(self, PRINT_HIGH, "WARNING: QW clients up to 2.30 have a timer related bug which is caused by too long uptime. Either reboot your machine or upgrade to QWCL 2.33.\n");
-			dprint4(self.netname, "%speed%", tmp, "\n");
+			dprint(self.netname, "%speed%", tmp, "\n");
 			if(r > 105)
 				self.uptimebugpolicy = self.uptimebugpolicy + 1;
 		}
 		if(self.uptimebugpolicy > 3) {
-			bprint3(PRINT_HIGH, "\n", self.netname, " gets kicked for too long uptime\n");
+			bprint(PRINT_HIGH, "\n", self.netname, " gets kicked for too long uptime\n");
 			sprint(self, PRINT_HIGH, "Reboot your machine to get rid of this bug\n");
 			self.classname = "";
 			stuffcmd(self, "disconnect\n");
@@ -1174,7 +1169,7 @@ void() PlayerPreThink =
 		
 		if( fps > current_maxfps )
 		{
-			bprint3( PRINT_HIGH, "\nWARNING: ", self.netname, " is using the timedemo bug and has abnormally high frame rates, " );
+			bprint( PRINT_HIGH, "\nWARNING: ", self.netname, " is using the timedemo bug and has abnormally high frame rates, " );
 
 			local float peak;
 			local string str;
@@ -1182,15 +1177,15 @@ void() PlayerPreThink =
 			peak = floor( 72 * 13 / ( self.fLowestFrameTime * 1000 ) );
 			str = ftos( peak );
 			
-			bprint3( PRINT_HIGH, "highest FPS = ", str, " (frametime was ");
+			bprint( PRINT_HIGH, "highest FPS = ", str, " (frametime was ");
 		
 			str = ftos( self.fLowestFrameTime * 1000 );
 			
-			bprint2( PRINT_HIGH, str, "), " );
+			bprint( PRINT_HIGH, str, "), " );
 				
 			str = ftos( fps );
 			
-			bprint3( PRINT_HIGH, "average FPS = ", str, "!\n");
+			bprint( PRINT_HIGH, "average FPS = ", str, "!\n");
 			
 			self.fIllegalFPSWarnings = self.fIllegalFPSWarnings + 1;
 			
@@ -1198,7 +1193,7 @@ void() PlayerPreThink =
 			{
 				// kick the player from server!
 				// s: changed the text a bit :)
-                                bprint2(PRINT_HIGH, self.netname, " gets kicked for timedemo cheating\n");
+                                bprint(PRINT_HIGH, self.netname, " gets kicked for timedemo cheating\n");
                                 self.classname = "";
                                 stuffcmd(self, "disconnect\n");
                         }

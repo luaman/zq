@@ -1,31 +1,33 @@
 /*
-Copyright (C) 1996-1997 Id Software, Inc.
+	combat.qc
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+	damage, obit, etc related functions
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+	Copyright (C) 1996-1997  Id Software, Inc.
 
-See the GNU General Public License for more details.
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		59 Temple Place - Suite 330
+		Boston, MA  02111-1307, USA
 
 */
 
-void() T_MissileTouch;
-void() info_player_start;
-void(entity targ, entity attacker) ClientObituary;
-void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
+void ClientObituary (entity targ, entity attacker);
+void T_RadiusDamage (entity inflictor, entity attacker, float damage, entity ignore, string dtype);
 
-/*SERVER
-void() monster_death_use;
-*/
 
 //============================================================================
 
@@ -37,37 +39,37 @@ Returns true if the inflictor can directly damage the target.  Used for
 explosions and melee attacks.
 ============
 */
-float(entity targ, entity inflictor) CanDamage =
+float CanDamage (entity targ, entity inflictor)
 {
 // bmodels need special checking because their origin is 0,0,0
 	if (targ.movetype == MOVETYPE_PUSH)
 	{
-		traceline(inflictor.origin, 0.5 * (targ.absmin + targ.absmax), TRUE, self);
+		traceline(inflictor.origin, 0.5 * (targ.absmin + targ.absmax), true, self);
 		if (trace_fraction == 1)
-			return TRUE;
+			return true;
 		if (trace_ent == targ)
-			return TRUE;
-		return FALSE;
+			return true;
+		return false;
 	}
 	
-	traceline(inflictor.origin, targ.origin, TRUE, self);
+	traceline(inflictor.origin, targ.origin, true, self);
 	if (trace_fraction == 1)
-		return TRUE;
-	traceline(inflictor.origin, targ.origin + '15 15 0', TRUE, self);
+		return true;
+	traceline(inflictor.origin, targ.origin + '15 15 0', true, self);
 	if (trace_fraction == 1)
-		return TRUE;
-	traceline(inflictor.origin, targ.origin + '-15 -15 0', TRUE, self);
+		return true;
+	traceline(inflictor.origin, targ.origin + '-15 -15 0', true, self);
 	if (trace_fraction == 1)
-		return TRUE;
-	traceline(inflictor.origin, targ.origin + '-15 15 0', TRUE, self);
+		return true;
+	traceline(inflictor.origin, targ.origin + '-15 15 0', true, self);
 	if (trace_fraction == 1)
-		return TRUE;
-	traceline(inflictor.origin, targ.origin + '15 -15 0', TRUE, self);
+		return true;
+	traceline(inflictor.origin, targ.origin + '15 -15 0', true, self);
 	if (trace_fraction == 1)
-		return TRUE;
+		return true;
 
-	return FALSE;
-};
+	return false;
+}
 
 
 /*
@@ -75,9 +77,9 @@ float(entity targ, entity inflictor) CanDamage =
 Killed
 ============
 */
-void(entity targ, entity attacker) Killed =
+void Killed (entity targ, entity attacker)
 {
-	local entity oself;
+	entity	oself;
 
 	oself = self;
 	self = targ;
@@ -104,6 +106,13 @@ void(entity targ, entity attacker) Killed =
 	{
 		killed_monsters = killed_monsters + 1;
 		WriteByte (MSG_ALL, SVC_KILLEDMONSTER);
+
+		// in coop, killing a monster gives you a frag
+		if (coop)
+		{
+			if (attacker.classname == "player")
+				attacker.frags = attacker.frags + 1;
+		}
 	}
 
 	ClientObituary(self, attacker);
@@ -111,14 +120,10 @@ void(entity targ, entity attacker) Killed =
 	self.takedamage = DAMAGE_NO;
 	self.touch = SUB_Null;
 	self.effects = 0;
-
-/*SERVER
-	monster_death_use();
-*/
 	self.th_die ();
 	
 	self = oself;
-};
+}
 
 
 /*
@@ -129,13 +134,13 @@ The damage is coming from inflictor, but get mad at attacker
 This should be the only function that ever reduces health.
 ============
 */
-void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
+void T_Damage (entity targ, entity inflictor, entity attacker, float damage)
 {
-	local   vector  dir;
-	local   entity  oldself;
-	local   float   save;
-	local   float   take;
-	local   string  attackerteam, targteam;
+	vector	dir;
+	entity	oldself;
+	float	save;
+	float	take;
+	string	attackerteam, targteam;
 
 
 	if (!targ.takedamage)
@@ -146,11 +151,14 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 
 
 // check for quad damage powerup on the attacker
-	if (attacker.super_damage_finished > time && inflictor.classname != "door")
-	if (deathmatch == 4)
-		damage = damage * 8;
-	else
-		damage = damage * 4;
+	if (attacker.super_damage_finished > time && inflictor.classname != "door"
+		&& targ.deathtype != "stomp")
+	{
+		if (deathmatch == 4)
+			damage = damage * 8;
+		else
+			damage = damage * 4;
+	}
 
 // save damage based on the target's armor level
 
@@ -183,20 +191,7 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 	{
 		dir = targ.origin - (inflictor.absmin + inflictor.absmax) * 0.5;
 		dir = normalize(dir);
-		// Set kickback for smaller weapons
-//Zoid -- use normal NQ kickback
-//		// Read: only if it's not yourself doing the damage
-//		if ( (damage < 60) & ((attacker.classname == "player") & (targ.classname == "player")) & ( attacker.netname != targ.netname)) 
-//			targ.velocity = targ.velocity + dir * damage * 11;
-//		else                        
-		// Otherwise, these rules apply to rockets and grenades                        
-		// for blast velocity
-			targ.velocity = targ.velocity + dir * damage * 8;
-		
-		// Rocket Jump modifiers
-		if ( (rj > 1) & ((attacker.classname == "player") & (targ.classname == "player")) & ( attacker.netname == targ.netname)) 
-			targ.velocity = targ.velocity + dir * damage * rj;
-
+		targ.velocity = targ.velocity + dir * damage * 8;
 	}
 
 
@@ -206,19 +201,37 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 		return;
 	if (targ.invincible_finished >= time)
 	{
-		if (self.invincible_sound < time)
+		if (targ.invincible_sound < time)
 		{
 			sound (targ, CHAN_ITEM, "items/protect3.wav", 1, ATTN_NORM);
-			self.invincible_sound = time + 2;
+			targ.invincible_sound = time + 2;
 		}
 		return;
 	}
 
 // team play damage avoidance
-//ZOID 12-13-96: self.team doesn't work in QW.  Use keys
-	attackerteam = infokey(attacker, "team");
-	targteam = infokey(targ, "team");
+	if (teamplay == 1 || teamplay == 3)
+	{
+		attackerteam = infokey(attacker, "team");
+		targteam = infokey(targ, "team");
 
+		if ((targteam == attackerteam) && (attacker.classname == "player")
+			&& (inflictor.classname != "door"))
+		{
+			if (teamplay == 1)
+			{	// no damage from self or teammates
+				if (attackerteam != "" || targ == attacker)
+					return;
+			}
+			else
+			{
+				// teamplay 3 - no damage from teammates
+				if (attackerteam != "" && targ != attacker)
+					return;
+			}
+		}
+	}
+		
 // do the damage
 	targ.health = targ.health - take;
 
@@ -232,51 +245,30 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 	oldself = self;
 	self = targ;
 
-/*SERVER
-	if ( (self.flags & FL_MONSTER) && attacker != world)
-	{
-	// get mad unless of the same class (except for soldiers)
-		if (self != attacker && attacker != self.enemy)
-		{
-			if ( (self.classname != attacker.classname) 
-			|| (self.classname == "monster_army" ) )
-			{
-				if (self.enemy.classname == "player")
-					self.oldenemy = self.enemy;
-				self.enemy = attacker;
-				FoundTarget ();
-			}
-		}
-	}
-*/
+
 	if (self.th_pain)
 	{
 		self.th_pain (attacker, take);
 	}
 
 	self = oldself;
-};
+}
 
 /*
 ============
 T_RadiusDamage
 ============
 */
-void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage =
+void T_RadiusDamage (entity inflictor, entity attacker, float damage, entity ignore, string dtype)
 {
-	local   float   points;
-	local   entity  head;
-	local   vector  org;
+	float	points;
+	entity	head;
+	vector	org;
 
 	head = findradius(inflictor.origin, damage+40);
 	
 	while (head)
 	{
-		//bprint (PRINT_HIGH, head.classname);
-		//bprint (PRINT_HIGH, " | ");
-		//bprint (PRINT_HIGH, head.netname);
-		//bprint (PRINT_HIGH, "\n");
-	
 		if (head != ignore)
 		{
 			if (head.takedamage)
@@ -301,17 +293,17 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
 		}
 		head = head.chain;
 	}
-};
+}
 
 /*
 ============
 T_BeamDamage
 ============
 */
-void(entity attacker, float damage) T_BeamDamage =
+void T_BeamDamage (entity attacker, float damage)
 {
-	local   float   points;
-	local   entity  head;
+	float	points;
+	entity	head;
 	
 	head = findradius(attacker.origin, damage+40);
 	
@@ -333,5 +325,5 @@ void(entity attacker, float damage) T_BeamDamage =
 		}
 		head = head.chain;
 	}
-};
+}
 

@@ -69,7 +69,7 @@ void() VoteChange =
 	bprint(2, self.netname);
 	bprint(2, " votes for mapchange\n");
 	tmp = ftos(floor(f1 / 2));
-	bprint3(2, "", tmp, "‘ total vote");
+	bprint(2, "", tmp, "‘ total vote");
 	if(tmp != "1") bprint(2, "s");
 	bprint(2, " needed\nType ");
 	bprint(3, "yes");
@@ -124,7 +124,7 @@ void() VoteYes =
 	self.k_voted = 1;
 	f1 = f2 - k_vote;
 	tmp = ftos(f1);
-	bprint3(2, "", tmp, "‘ more vote");
+	bprint(2, "", tmp, "‘ more vote");
 	if(f1 > 1) bprint(2, "s");
 	bprint(2, " needed\n");
 };
