@@ -88,7 +88,6 @@ cvar_t	r_wateralpha = {"r_wateralpha","1"};
 cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
-cvar_t	r_netgraphBox = {"r_netgraphBox","1"};
 cvar_t	r_watervishack = {"r_watervishack", "1"};
 cvar_t	r_fullbrightSkins = {"r_fullbrightSkins", "0"};
 

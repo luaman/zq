@@ -118,7 +118,6 @@ cvar_t	r_draworder = {"r_draworder","0"};
 cvar_t	r_speeds = {"r_speeds","0"};
 cvar_t	r_timegraph = {"r_timegraph","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
-cvar_t	r_netgraphBox = {"r_netgraphBox","1"};
 cvar_t	r_zgraph = {"r_zgraph","0"};
 cvar_t	r_graphheight = {"r_graphheight","15"};
 cvar_t	r_clearcolor = {"r_clearcolor","2"};
@@ -206,7 +205,6 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_draworder);
 	Cvar_RegisterVariable (&r_speeds);
 	Cvar_RegisterVariable (&r_timegraph);
-	Cvar_RegisterVariable (&r_netgraphBox);
 	Cvar_RegisterVariable (&r_netgraph);
 	Cvar_RegisterVariable (&r_zgraph);
 	Cvar_RegisterVariable (&r_graphheight);

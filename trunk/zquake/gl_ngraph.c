@@ -108,9 +108,10 @@ void R_NetGraph (void)
 	x =	-(int)((vid.width - 320)>>1);
 	y = vid.height - sb_lines - 24 - NET_GRAPHHEIGHT - 1;
 
-	if (r_netgraphBox.value) {
+	if (r_netgraph.value != 2 && r_netgraph.value != 3)
 		M_DrawTextBox (x, y, NET_TIMINGS/8, NET_GRAPHHEIGHT/8 + 1);
 
+	if (r_netgraph.value != 3) {
 		sprintf(st, "%3i%% packet loss", lost);
 		Draw_String(8, y + 8, st);
 	}
