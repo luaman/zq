@@ -377,10 +377,17 @@ void SV_Spawn_f (void)
 	// set up the edict
 	ent = sv_client->edict;
 
-	memset (&ent->v, 0, progs->entityfields * 4);
-	ent->v.colormap = NUM_FOR_EDICT(ent);
-	ent->v.team = 0;	// FIXME
-	ent->v.netname = PR_SetString(sv_client->name);
+	if (sv.loadgame) {
+		// loaded games are already fully initialized
+		// if this is the last client to be connected, unpause
+		sv.paused = false;
+	}
+	else {
+		memset (&ent->v, 0, progs->entityfields * 4);
+		ent->v.colormap = NUM_FOR_EDICT(ent);
+		ent->v.team = 0;	// FIXME
+		ent->v.netname = PR_SetString(sv_client->name);
+	}
 
 	sv_client->entgravity = 1.0;
 	val = GetEdictFieldValue(ent, "gravity");
@@ -468,40 +475,43 @@ void SV_Begin_f (void)
 		SV_New_f ();
 		return;
 	}
-
-	if (sv_client->spectator)
+	
+	if (!sv.loadgame)
 	{
-		SV_SpawnSpectator ();
-
-		if (SpectatorConnect) {
+		if (sv_client->spectator)
+		{
+			SV_SpawnSpectator ();
+			
+			if (SpectatorConnect) {
+				// copy spawn parms out of the client_t
+				for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
+					(&pr_global_struct->parm1)[i] = sv_client->spawn_parms[i];
+				
+				// call the spawn function
+				pr_global_struct->time = sv.time;
+				pr_global_struct->self = EDICT_TO_PROG(sv_player);
+				PR_ExecuteProgram (SpectatorConnect);
+			}
+		}
+		else
+		{
 			// copy spawn parms out of the client_t
 			for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
 				(&pr_global_struct->parm1)[i] = sv_client->spawn_parms[i];
-	
+			
 			// call the spawn function
 			pr_global_struct->time = sv.time;
 			pr_global_struct->self = EDICT_TO_PROG(sv_player);
-			PR_ExecuteProgram (SpectatorConnect);
+			PR_ExecuteProgram (pr_global_struct->ClientConnect);
+			
+			//		if (sv.loadgame)
+			//			memcpy (sv_client->spawn_parms, spawn_parms, sizeof(spawn_parms));
+			
+			// actually spawn the player
+			pr_global_struct->time = sv.time;
+			pr_global_struct->self = EDICT_TO_PROG(sv_player);
+			PR_ExecuteProgram (pr_global_struct->PutClientInServer);	
 		}
-	}
-	else
-	{
-		// copy spawn parms out of the client_t
-		for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
-			(&pr_global_struct->parm1)[i] = sv_client->spawn_parms[i];
-
-		// call the spawn function
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(sv_player);
-		PR_ExecuteProgram (pr_global_struct->ClientConnect);
-
-//		if (sv.loadgame)
-//			memcpy (sv_client->spawn_parms, spawn_parms, sizeof(spawn_parms));
-
-		// actually spawn the player
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(sv_player);
-		PR_ExecuteProgram (pr_global_struct->PutClientInServer);	
 	}
 
 	// clear the net statistics, because connecting gives a bogus picture
@@ -528,19 +538,20 @@ void SV_Begin_f (void)
 		SV_ClientPrintf(sv_client, PRINT_HIGH, "Server is paused.\n");
 	}
 
-#if 0
-//
-// send a fixangle over the reliable channel to make sure it gets there
-// Never send a roll angle, because savegames can catch the server
-// in a state where it is expecting the client to correct the angle
-// and it won't happen if the game was just loaded, so you wind up
-// with a permanent head tilt
-	ent = EDICT_NUM( 1 + (sv_client - svs.clients) );
-	MSG_WriteByte (&sv_client->netchan.message, svc_setangle);
-	for (i=0 ; i < 2 ; i++)
-		MSG_WriteAngle (&sv_client->netchan.message, ent->v.v_angle[i]);
-	MSG_WriteAngle (&sv_client->netchan.message, 0 );
-#endif
+	if (sv.loadgame) {
+		// send a fixangle over the reliable channel to make sure it gets there
+		// Never send a roll angle, because savegames can catch the server
+		// in a state where it is expecting the client to correct the angle
+		// and it won't happen if the game was just loaded, so you wind up
+		// with a permanent head tilt
+		edict_t *ent;
+
+		ent = EDICT_NUM( 1 + (sv_client - svs.clients) );
+		MSG_WriteByte (&sv_client->netchan.message, svc_setangle);
+		for (i=0 ; i < 2 ; i++)
+			MSG_WriteAngle (&sv_client->netchan.message, ent->v.v_angle[i]);
+		MSG_WriteAngle (&sv_client->netchan.message, 0);
+	}
 }
 
 //=============================================================================
