@@ -47,3 +47,7 @@ void Con_Print (char *text)
 void Cmd_ForwardToServer (void)
 {
 }
+
+void D_FlushCaches (void)
+{
+}
