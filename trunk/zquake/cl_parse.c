@@ -1168,8 +1168,10 @@ void CL_ProcessServerInfo (void)
 
 	cl.maxfps = Q_atof(Info_ValueForKey(cl.serverinfo, "maxfps"));
 	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext"));
-	cl.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
+	if (cl.z_ext & Z_EXT_PM_TYPE)
+		cl.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
 	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
+
 	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
 
 	if (cls.demoplayback)
