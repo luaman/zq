@@ -46,8 +46,6 @@ extern cvar_t	pm_airstep;
 
 extern double	sv_frametime;
 
-char *Q_ftos (float value);
-
 //
 // pitch clamping
 //
