@@ -134,9 +134,6 @@ typedef struct mpic_s
 extern refdef_t		r_refdef;
 extern refdef2_t	r_refdef2;
 
-// FIXME, only used by sound code in client -- make private to refresh?
-extern vec3_t		r_origin, vpn, vright, vup;
-
 void R_Init (unsigned char *palette);
 void R_InitTextures (void);
 void R_InitEfrags (void);

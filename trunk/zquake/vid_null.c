@@ -12,7 +12,6 @@ byte	vid_buffer[BASEWIDTH*BASEHEIGHT];
 short	zbuffer[BASEWIDTH*BASEHEIGHT];
 byte	surfcache[256*1024];
 
-unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 
 

@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define stringify(m) { #m, m }
 
-unsigned short       d_8to16table[256];
 static byte		*vid_surfcache;
 static int		VID_highhunkmark;
 

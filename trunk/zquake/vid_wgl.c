@@ -113,10 +113,7 @@ qbool	vid_hwgamma_enabled = false;
 unsigned short *currentgammaramp = NULL;
 void RestoreHWGamma (void);
 
-HWND WINAPI InitializeWindow (HINSTANCE hInstance, int nCmdShow);
 
-
-unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 unsigned	d_8to24table2[256];
 unsigned char d_15to8table[65536];

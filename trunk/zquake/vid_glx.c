@@ -67,7 +67,6 @@ qbool vid_gammaworks = false;
 // qbool vid_hwgamma_enabled = false;
 qbool customgamma = false;
 
-unsigned short	d_8to16table[256];
 unsigned d_8to24table[256];
 unsigned d_8to24table2[256];
 unsigned char	d_15to8table[65536];
