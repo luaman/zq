@@ -40,6 +40,10 @@ typedef unsigned int	 PIXEL24;
 #include <X11/keysym.h>
 #include <X11/extensions/XShm.h>
 
+#ifdef USE_DGA
+#include <X11/extensions/xf86dga.h>
+#endif
+
 #include "quakedef.h"
 #include "d_local.h"
 #include "input.h"
@@ -48,7 +52,6 @@ typedef unsigned int	 PIXEL24;
 cvar_t			 vid_ref			= {"vid_ref", "soft", CVAR_ROM};
 cvar_t			 _windowed_mouse	= {"_windowed_mouse","0",CVAR_ARCHIVE};
 cvar_t			 m_filter			= {"m_filter","0",CVAR_ARCHIVE};
-float			 old_windowed_mouse;
 
 qbool			 mouse_avail		= false;
 int				 mouse_buttons		= 3;
@@ -58,6 +61,11 @@ float			 mouse_x, mouse_y;
 float			 old_mouse_x, old_mouse_y;
 int				 p_mouse_x;
 int				 p_mouse_y;
+static qbool input_grabbed =  false;
+
+#ifdef USE_DGA
+static qbool dgamouse = false;
+#endif
 
 extern viddef_t	 vid; // global video state
 unsigned short	 d_8to16table[256];
@@ -584,9 +592,6 @@ void VID_Init (unsigned char *palette)
 
 	}
 
-// inviso cursor
-	XDefineCursor(x_disp, x_win, CreateNullCursor(x_disp, x_win));
-
 // create the GC
 	{
 		XGCValues xgcvalues;
@@ -682,7 +687,12 @@ void			 VID_SetPalette (unsigned char *palette)
 // Called at shutdown
 void VID_Shutdown (void)
 {
+	static void uninstall_grabs ();
+
 	Com_Printf ("VID_Shutdown\n");
+	
+	uninstall_grabs();
+	
 	XAutoRepeatOn(x_disp);
 	XCloseDisplay(x_disp);
 }
@@ -876,6 +886,64 @@ static int XLateKey(XKeyEvent *ev)
     return key;
 }
 
+static void install_grabs (void)
+{
+    int MajorVersion, MinorVersion;
+
+    input_grabbed = true;
+
+    // don't show mouse cursor icon
+    XDefineCursor(x_disp, x_win, CreateNullCursor(x_disp, x_win));
+
+    XGrabPointer(x_disp, x_win,
+                 True,
+                 0,
+                 GrabModeAsync, GrabModeAsync,
+                 x_win,
+                 None,
+                 CurrentTime);
+
+#ifdef USE_DGA
+    if (!COM_CheckParm("-nodga") &&
+            XF86DGAQueryVersion(x_disp, &MajorVersion, &MinorVersion)) {
+        // let us hope XF86DGADirectMouse will work
+        XF86DGADirectVideo(x_disp, DefaultScreen(x_disp), XF86DGADirectMouse);
+        dgamouse = true;
+        XWarpPointer(x_disp, None, x_win, 0, 0, 0, 0, 0, 0); // oldman: this should be here really
+    }
+    else
+#endif
+        XWarpPointer(x_disp, None, x_win,
+                     0, 0, 0, 0,
+                     vid.width / 2, vid.height / 2);
+
+#if 0
+    XGrabKeyboard(x_disp, x_win,
+                  False,
+                  GrabModeAsync, GrabModeAsync,
+                  CurrentTime);
+#endif
+}
+
+static void uninstall_grabs (void)
+{
+    input_grabbed = false;
+
+#ifdef USE_DGA
+    XF86DGADirectVideo(x_disp, DefaultScreen(x_disp), 0);
+    dgamouse = false;
+#endif
+
+    XUngrabPointer(x_disp, CurrentTime);
+#if 0
+    XUngrabKeyboard(x_disp, CurrentTime);
+#endif
+
+    // show cursor again
+    XUndefineCursor(x_disp, x_win);
+
+}
+
 int config_notify=0;
 int config_notify_width;
 int config_notify_height;
@@ -884,6 +952,7 @@ void GetEvent(void)
 {
 	XEvent x_event;
 	int b;
+	qbool grab_input;
    
 	XNextEvent(x_disp, &x_event);
 	switch(x_event.type) {
@@ -893,23 +962,33 @@ void GetEvent(void)
 		break;
 
 	case MotionNotify:
-		if (_windowed_mouse.value) {
-			mouse_x = (float) ((int)x_event.xmotion.x - (int)(vid.width/2));
-			mouse_y = (float) ((int)x_event.xmotion.y - (int)(vid.height/2));
+		if (input_grabbed) {
+#ifdef USE_DGA
+        		if (dgamouse)
+			{
+				mouse_x += x_event.xmotion.x_root;
+				mouse_y += x_event.xmotion.y_root;
+			}
+			else
+#endif
+			{
+				mouse_x = (float) ((int)x_event.xmotion.x - (int)(vid.width/2));
+				mouse_y = (float) ((int)x_event.xmotion.y - (int)(vid.height/2));
 //printf("m: x=%d,y=%d, mx=%3.2f,my=%3.2f\n", 
 //	x_event.xmotion.x, x_event.xmotion.y, mouse_x, mouse_y);
 
-			/* move the mouse to the window center again */
-			XSelectInput(x_disp,x_win,StructureNotifyMask|KeyPressMask
-				|KeyReleaseMask|ExposureMask
-				|ButtonPressMask
-				|ButtonReleaseMask);
-			XWarpPointer(x_disp,None,x_win,0,0,0,0, 
-				(vid.width/2),(vid.height/2));
-			XSelectInput(x_disp,x_win,StructureNotifyMask|KeyPressMask
-				|KeyReleaseMask|ExposureMask
-				|PointerMotionMask|ButtonPressMask
-				|ButtonReleaseMask);
+				/* move the mouse to the window center again */
+				XSelectInput(x_disp,x_win,StructureNotifyMask|KeyPressMask
+					|KeyReleaseMask|ExposureMask
+					|ButtonPressMask
+					|ButtonReleaseMask);
+				XWarpPointer(x_disp,None,x_win,0,0,0,0, 
+					(vid.width/2),(vid.height/2));
+				XSelectInput(x_disp,x_win,StructureNotifyMask|KeyPressMask
+					|KeyReleaseMask|ExposureMask
+					|PointerMotionMask|ButtonPressMask
+					|ButtonReleaseMask);
+			}
 		} else {
 			mouse_x = (float) (x_event.xmotion.x-p_mouse_x);
 			mouse_y = (float) (x_event.xmotion.y-p_mouse_y);
@@ -953,7 +1032,19 @@ void GetEvent(void)
 		if (doShm && x_event.type == x_shmeventtype)
 			oktodraw = true;
 	}
+
+    grab_input = _windowed_mouse.value != 0;
+
+    if (grab_input && !input_grabbed) {
+        /* grab the pointer */
+        install_grabs();
+    }
+    else if (!grab_input && input_grabbed) {
+        /* ungrab the pointer */
+        uninstall_grabs();
+    }
    
+#if 0
 	if (old_windowed_mouse != _windowed_mouse.value) {
 		old_windowed_mouse = _windowed_mouse.value;
 
@@ -966,6 +1057,7 @@ void GetEvent(void)
 				GrabModeAsync,x_win,None,CurrentTime);
 		}
 	}
+#endif
 }
 
 
