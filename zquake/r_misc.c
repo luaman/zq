@@ -32,15 +32,14 @@ R_CheckVariables
 */
 void R_CheckVariables (void)
 {
-#if 0
-	static float	oldbright;
+	static qboolean	oldbright = false;
+	qboolean fullbright;
 
-	if (r_fullbright.value != oldbright)
-	{
+	fullbright = (r_fullbright.value && r_refdef2.allowCheats);
+	if (fullbright != oldbright) {
 		oldbright = r_fullbright.value;
 		D_FlushCaches ();	// so all lighting changes
 	}
-#endif
 }
 
 
@@ -458,7 +457,6 @@ void R_SetupFrame (void)
 
 	// don't allow cheats in multiplayer
 	r_draworder.value = 0;
-	r_fullbright.value = 0;
 	r_ambient.value = 0;
 
 	if (r_numsurfs.value)

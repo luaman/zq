@@ -325,8 +325,7 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 	lightmap = surf->samples;
 
 // set to full bright if no light data
-	if (/* r_fullbright.value || */ !cl.worldmodel->lightdata)
-	{
+	if ((r_fullbright.value && r_refdef2.allowCheats) || !cl.worldmodel->lightdata) {
 		for (i=0 ; i<blocksize ; i++)
 			blocklights[i] = 255*256;
 		goto store;
@@ -648,11 +647,9 @@ void R_BlendLightmaps (void)
 	glpoly_t	*p;
 	float		*v;
 
-#if 0
-	if (r_fullbright.value)
-		return;
-#endif
 	if (!gl_texsort.value)
+		return;
+	if (r_fullbright.value && r_refdef2.allowCheats)
 		return;
 
 	glDepthMask (GL_FALSE);		// don't bother writing Z

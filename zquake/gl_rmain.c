@@ -990,7 +990,6 @@ void R_SetupFrame (void)
 	extern float	wateralpha;
 
 // don't allow cheats in multiplayer
-	r_fullbright.value = 0;
 	r_lightmap.value = 0;
 	if (!atoi(Info_ValueForKey(cl.serverinfo, "watervis")))
 		wateralpha = 1;
