@@ -26,12 +26,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "winquake.h"
 #endif
 
-void S_Play(void);
-void S_PlayVol(void);
-void S_SoundList(void);
-void S_Update_();
-void S_StopAllSounds(qboolean clear);
-void S_StopAllSoundsC(void);
+void S_Play_f (void);
+void S_PlayVol_f (void);
+void S_SoundList_f (void);
+void S_Update_ ();
+void S_StopAllSounds (qboolean clear);
+void S_StopAllSoundsC (void);
 
 // QuakeWorld hack...
 #define	viewentity	playernum+1
@@ -190,10 +190,10 @@ void S_Init (void)
 	if (COM_CheckParm("-simsound"))
 		fakedma = true;
 
-	Cmd_AddCommand("play", S_Play);
-	Cmd_AddCommand("playvol", S_PlayVol);
+	Cmd_AddCommand("play", S_Play_f);
+	Cmd_AddCommand("playvol", S_PlayVol_f);
 	Cmd_AddCommand("stopsound", S_StopAllSoundsC);
-	Cmd_AddCommand("soundlist", S_SoundList);
+	Cmd_AddCommand("soundlist", S_SoundList_f);
 	Cmd_AddCommand("soundinfo", S_SoundInfo_f);
 
 	if (host_parms.memsize < 0x800000)
@@ -911,30 +911,23 @@ console functions
 ===============================================================================
 */
 
-void S_Play(void)
+void S_Play_f (void)
 {
 	static int hash=345;
 	int 	i;
 	char name[256];
 	sfx_t	*sfx;
 	
-	i = 1;
-	while (i<Cmd_Argc())
+	for (i=1; i < Cmd_Argc(); i++)
 	{
-		if (!strrchr(Cmd_Argv(i), '.'))
-		{
-			strcpy(name, Cmd_Argv(i));
-			strcat(name, ".wav");
-		}
-		else
-			strcpy(name, Cmd_Argv(i));
+		strcpy(name, Cmd_Argv(i));
+		COM_DefaultExtension (name, ".wav");
 		sfx = S_PrecacheSound(name);
-		S_StartSound(hash++, 0, sfx, listener_origin, 1.0, 1.0);
-		i++;
+		S_StartSound(hash++, 0, sfx, listener_origin, 1.0, 0.0);
 	}
 }
 
-void S_PlayVol(void)
+void S_PlayVol_f (void)
 {
 	static int hash=543;
 	int i;
@@ -942,24 +935,17 @@ void S_PlayVol(void)
 	char name[256];
 	sfx_t	*sfx;
 	
-	i = 1;
-	while (i<Cmd_Argc())
+	for (i=1; i < Cmd_Argc(); i+=2)
 	{
-		if (!strrchr(Cmd_Argv(i), '.'))
-		{
-			strcpy(name, Cmd_Argv(i));
-			strcat(name, ".wav");
-		}
-		else
-			strcpy(name, Cmd_Argv(i));
+		strcpy(name, Cmd_Argv(i));
+		COM_DefaultExtension (name, ".wav");
 		sfx = S_PrecacheSound(name);
 		vol = Q_atof(Cmd_Argv(i+1));
-		S_StartSound(hash++, 0, sfx, listener_origin, vol, 1.0);
-		i+=2;
+		S_StartSound(hash++, 0, sfx, listener_origin, vol, 0.0);
 	}
 }
 
-void S_SoundList(void)
+void S_SoundList_f (void)
 {
 	int		i;
 	sfx_t	*sfx;
@@ -999,7 +985,7 @@ void S_LocalSound (char *sound)
 		Con_Printf ("S_LocalSound: can't cache %s\n", sound);
 		return;
 	}
-	S_StartSound (cl.viewentity, -1, sfx, vec3_origin, 1, 1);
+	S_StartSound (cl.viewentity, -1, sfx, vec3_origin, 1, 0);
 }
 
 
