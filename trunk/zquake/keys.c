@@ -76,6 +76,7 @@ keyname_t keynames[] =
 	{"ALT", K_ALT},
 	{"LALT", K_LALT},
 	{"RALT", K_RALT},
+	{"ALTGR", K_ALTGR},
 	{"CTRL", K_CTRL},
 	{"LCTRL", K_LCTRL},
 	{"RCTRL", K_RCTRL},
