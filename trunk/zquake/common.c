@@ -552,8 +552,10 @@ char *MSG_ReadString (void)
 	l = 0;
 	do
 	{
-		c = MSG_ReadChar ();
-		if (c == -1 || c == 0)
+		c = MSG_ReadByte ();
+		if (c == 255)			// skip these to avoid security problems
+			continue;			// with old clients and servers
+		if (c == -1 || c == 0)		// msg_badread or end of string
 			break;
 		string[l] = c;
 		l++;
@@ -572,7 +574,9 @@ char *MSG_ReadStringLine (void)
 	l = 0;
 	do
 	{
-		c = MSG_ReadChar ();
+		c = MSG_ReadByte ();
+		if (c == 255)
+			continue;
 		if (c == -1 || c == 0 || c == '\n')
 			break;
 		string[l] = c;
