@@ -92,6 +92,7 @@ cvar_t	gl_subdivide_size = {"gl_subdivide_size", "128", CVAR_ARCHIVE};
 cvar_t	gl_clear = {"gl_clear","0"};
 cvar_t	gl_cull = {"gl_cull","1"};
 cvar_t	gl_texsort = {"gl_texsort","1"};
+cvar_t	gl_ztrick = {"gl_ztrick", "1"};
 cvar_t	gl_smoothmodels = {"gl_smoothmodels","1"};
 cvar_t	gl_affinemodels = {"gl_affinemodels","0"};
 cvar_t	gl_polyblend = {"gl_polyblend","1"};
@@ -108,7 +109,6 @@ cvar_t	gl_lightmode = {"gl_lightmode","2"};
 
 int		lightmode = 2;
 
-extern	cvar_t	gl_ztrick;
 
 #ifndef _WIN32
 qboolean vid_hwgamma_enabled = false;	// dummy
@@ -1095,6 +1095,7 @@ void R_Init (void)
 		Cvar_SetValue (&gl_texsort, 0);
 
 	Cvar_Register (&gl_cull);
+	Cvar_Register (&gl_ztrick);
 	Cvar_Register (&gl_smoothmodels);
 	Cvar_Register (&gl_affinemodels);
 	Cvar_Register (&gl_polyblend);
