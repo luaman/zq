@@ -240,31 +240,21 @@ int	_Cmd_Macro_BestWeapon (void)
 {
 	int	best;
 
-// TODO: calculate best weapon depending on user defined weapon priority
-	
 	best = 0;
-
 	if (cl.stats[STAT_ITEMS] & IT_AXE)
 		best = IT_AXE;
-
 	if (cl.stats[STAT_ITEMS] & IT_SHOTGUN && cl.stats[STAT_SHELLS] >= 1)
 		best = IT_SHOTGUN;
-
 	if (cl.stats[STAT_ITEMS] & IT_SUPER_SHOTGUN && cl.stats[STAT_SHELLS] >= 2)
 		best = IT_SUPER_SHOTGUN;
-
 	if (cl.stats[STAT_ITEMS] & IT_NAILGUN && cl.stats[STAT_NAILS] >= 1)
 		best = IT_NAILGUN;
-
 	if (cl.stats[STAT_ITEMS] & IT_SUPER_NAILGUN && cl.stats[STAT_NAILS] >= 2)
 		best = IT_SUPER_NAILGUN;
-
 	if (cl.stats[STAT_ITEMS] & IT_GRENADE_LAUNCHER && cl.stats[STAT_ROCKETS] >= 1)
 		best = IT_GRENADE_LAUNCHER;
-
 	if (cl.stats[STAT_ITEMS] & IT_LIGHTNING && cl.stats[STAT_CELLS] >= 1)
 		best = IT_LIGHTNING;
-
 	if (cl.stats[STAT_ITEMS] & IT_ROCKET_LAUNCHER && cl.stats[STAT_ROCKETS] >= 1)
 		best = IT_ROCKET_LAUNCHER;
 
@@ -703,8 +693,13 @@ char *Cmd_Macro_Location_f (void)
 	return locdata[min_num].name;
 }
 
-//-----------------------------------------------------
-// message triggers
+/*
+=============================================================================
+
+							MESSAGE TRIGGERS
+
+=============================================================================
+*/
 
 typedef struct msg_trigger_s {
 	char name[32];
@@ -783,55 +778,56 @@ void CL_MsgTrigger_f (void)
 	}
 }
 
-void S_Play (void);
-void S_PlayVol (void);
-void Cvar_Set_f (void);
-void Cmd_Echo_f (void);
-void Cmd_Alias_f (void);
-void Cvar_Inc_f (void);
+char *trigger_commands[] = {
+	"play",
+	"playvol",
+	"set",
+	"echo",
+	"say",
+	"say_team",
+	"alias",
+	"msg_trigger",
+	"inc"
+};
+
+#define NUM_TRIGGER_COMMANDS (sizeof(trigger_commands)/sizeof(trigger_commands[0]))
 
 void CL_ExecuteTriggerString (char *text)
-{	
-	static	// FIXME
-	char			buf[1024];
+{
+	char	buf[1024];
+	char	*arg0;
+	int		i;
+	cmd_function_t	*cmd;
 
-#if 0
-	Cmd_TokenizeString (text);
-#else
 	Cmd_ExpandString (text, buf);
 	Cmd_TokenizeString (buf);
-#endif
 			
-// execute the command line
 	if (!Cmd_Argc())
 		return;		// no tokens
 
-// FIXME: rewrite this!	
-	if (!Q_strcasecmp (Cmd_Argv(0), "play"))
-		S_Play();
-	else if (!Q_strcasecmp (Cmd_Argv(0), "playvol")) 
-		S_PlayVol();
-	else if (!Q_strcasecmp (Cmd_Argv(0), "set")) 
-		Cvar_Set_f();
-	else if (!Q_strcasecmp (Cmd_Argv(0), "echo")) 
-		Cmd_Echo_f();
-	else if (!Q_strcasecmp (Cmd_Argv(0), "say")) 
-		Cmd_ForwardToServer();
-	else if (!Q_strcasecmp (Cmd_Argv(0), "say_team")) 
-		Cmd_ForwardToServer();
-	else if (!Q_strcasecmp (Cmd_Argv(0), "alias")) 
-		Cmd_Alias_f();
-	else if (!Q_strcasecmp (Cmd_Argv(0), "msg_trigger")) 
-		CL_MsgTrigger_f();
-	else if (!Q_strcasecmp (Cmd_Argv(0), "inc")) 
-		Cvar_Inc_f();
-	else {
-		// check cvars
-		if (!Cvar_Command () && (cl_warncmd.value || developer.value))
-			Con_Printf ("Invalid trigger command \"%s\"\n", Cmd_Argv(0));
-	}
-}
+// check cvars
+	if (Cvar_Command())
+		return;
 
+// check commands
+	arg0 = Cmd_Argv(0);
+
+	for (i=0; i < NUM_TRIGGER_COMMANDS ; i++)
+		if (!Q_strcasecmp(arg0, trigger_commands[i]))
+		{
+			cmd = Cmd_FindCommand (arg0);
+			if (cmd) {
+				if (!cmd->function)
+					Cmd_ForwardToServer ();
+				else
+					cmd->function ();
+				return;
+			}
+		}
+
+	if (cl_warncmd.value || developer.value)
+		Con_Printf ("Invalid trigger command: \"%s\"\n", arg0);
+}
 
 void CL_SearchForMsgTriggers (char *s)
 {
