@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -51,16 +51,16 @@ typedef struct
 
 	double		time;
 	double		old_time;			// bumped by SV_Physics
-	
+
 	int			lastcheck;			// used by PF_checkclient
-	double		lastchecktime;		// for monster ai 
+	double		lastchecktime;		// for monster ai
 
 	qbool		loadgame;			// handle connections specially
 
 	//check player/eyes models for hacks
 	unsigned	model_player_checksum;
 	unsigned	eyes_player_checksum;
-	
+
 	char		sky[32];			// skybox file name ("unit1_", etc)
 
 	char		mapname[64];		// "e1m1", "dm6", etc
@@ -97,7 +97,7 @@ typedef struct
 
 	// the signon buffer will be sent to each client as they connect
 	// includes the entity baselines, the static entities, etc
-	// large levels will have >MAX_DATAGRAM sized signons, so 
+	// large levels will have >MAX_DATAGRAM sized signons, so
 	// multiple signon messages are kept
 	sizebuf_t	signon;
 	int			num_signon_buffers;
@@ -187,7 +187,7 @@ typedef struct client_s
 // spawn parms are carried from level to level
 	float			spawn_parms[NUM_SPAWN_PARMS];
 
-// client known data for deltas	
+// client known data for deltas
 	int				stats[MAX_CL_STATS];
 	int				old_frags;
 
@@ -209,7 +209,7 @@ typedef struct client_s
 	char			uploadfn[MAX_QPATH];
 	netadr_t		snap_from;
 	qbool			remote_snap;
- 
+
 //===== NETWORK ============
 	int				chokecount;
 	int				delta_sequence;		// -1 = no compression
@@ -259,7 +259,7 @@ typedef struct
 	int			lastuserid;			// userid of last spawned client
 	client_t	clients[MAX_CLIENTS];
 	int			serverflags;		// episode completion information
-	
+
 	double		last_heartbeat;
 	int			heartbeat_sequence;
 	svstats_t	stats;
@@ -487,3 +487,4 @@ void Master_Shutdown (void);
 void Master_Heartbeat (void);
 
 #endif /* _SERVER_H_ */
+

@@ -71,3 +71,4 @@ void TP_Init ();
 #define FPD_NO_FORCE_COLOR	512
 
 #endif /* _TEAMPLAY_H_ */
+

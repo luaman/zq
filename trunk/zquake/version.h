@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef _WIN32
 #define QW_PLATFORM	"Win32"
-#else 
+#else
 #define QW_PLATFORM	"Linux"
 #endif
 
@@ -44,3 +44,4 @@ void CL_Version_f (void);
 char *VersionString (void);
 
 #endif /* _VERSION_H_ */
+

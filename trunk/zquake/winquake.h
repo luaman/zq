@@ -100,3 +100,4 @@ extern int	in_mwheeltype;
 #endif // _WIN32
 
 #endif /* _WINQUAKE_H_ */
+
