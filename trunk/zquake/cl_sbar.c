@@ -1439,7 +1439,7 @@ static void Sbar_MiniDeathmatchOverlay (void)
 		return; // no one there?
 
 // draw the text
-	sb_height = cl_sbar.value ? sb_lines :
+	sb_height = (cl_sbar.value == 1) ? sb_lines :
 		(sb_drawinventory ? 24 + 16 + 8 : sb_drawmain ? 24 : 0);
 	y = vid.height - sb_height - 1;
 	numlines = sb_height/8;
