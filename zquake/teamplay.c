@@ -1500,8 +1500,8 @@ int TP_CategorizeMessage (char *s, int *offset)
 			!strncmp(player->name, s+1, len))
 		{
 			// no team messages in teamplay 0, except for our own
-			if (i == cl.playernum || ( atoi(Info_ValueForKey(cl.serverinfo, "teamplay"))
-				&& !strcmp(cl.players[cl.playernum].team, player->team)) )
+			if (i == cl.playernum || ( cl.teamplay &&
+				!strcmp(cl.players[cl.playernum].team, player->team)) )
 				flags |= 2;
 			*offset = len + 4;
 		}
@@ -1857,7 +1857,7 @@ static int CountTeammates ()
 	if (tp_forceTriggers.value)
 		return 1;
 
-	if (!atoi(Info_ValueForKey(cl.serverinfo, "teamplay")))
+	if (!cl.teamplay)
 		return 0;
 
 	count = 0;
@@ -1881,9 +1881,7 @@ static void ExecTookTrigger (char *s, int flag, vec3_t org)
 	strncpy (vars.tookloc, TP_LocationName (org), sizeof(vars.tookloc)-1);
 
 	if (flag & it_weapons) {
-		int	deathmatch;
-		deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
-		if (deathmatch == 2 || deathmatch == 3)
+		if (cl.deathmatch == 2 || cl.deathmatch == 3)
 			return;
 	}
 
