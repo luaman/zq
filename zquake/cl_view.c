@@ -865,7 +865,7 @@ V_AddViewWeapon
 */
 void V_AddViewWeapon (float bob)
 {
-	vec3_t		forward;
+	vec3_t		forward, up;
 	entity_t	ent;
 	extern cvar_t	scr_fov;
 
@@ -888,7 +888,7 @@ void V_AddViewWeapon (float bob)
 	ent.angles[PITCH] = -r_refdef.viewangles[PITCH];
 	ent.angles[ROLL] = r_refdef.viewangles[ROLL];
 
-	AngleVectors (r_refdef.viewangles, forward, NULL, NULL);
+	AngleVectors (r_refdef.viewangles, forward, NULL, up);
 	
 	VectorCopy (r_refdef.vieworg, ent.origin);
 	VectorMA (ent.origin, bob * 0.4, forward, ent.origin);
@@ -896,13 +896,13 @@ void V_AddViewWeapon (float bob)
 	// fudge position around to keep amount of weapon visible
 	// roughly equal with different FOV
 	if (scr_viewsize.value == 110)
-		ent.origin[2] += 1;
+		VectorMA (ent.origin, 1, up, ent.origin);
 	else if (scr_viewsize.value == 100)
-		ent.origin[2] += 2;
+		VectorMA (ent.origin, 2, up, ent.origin);
 	else if (scr_viewsize.value == 90)
-		ent.origin[2] += 1;
+		VectorMA (ent.origin, 1, up, ent.origin);
 	else if (scr_viewsize.value == 80)
-		ent.origin[2] += 0.5;
+		VectorMA (ent.origin, 0.5, up, ent.origin);
 
 	V_AddEntity (&ent);
 }
