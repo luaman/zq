@@ -268,6 +268,7 @@ CL_PredictLocalPlayer
 */
 static void CL_PredictLocalPlayer (void)
 {
+	qbool		nopred;
 	int			i;
 	frame_t		*from = NULL, *to;
 	int			oldphysent;
@@ -283,25 +284,30 @@ static void CL_PredictLocalPlayer (void)
 	if (cls.nqdemoplayback)
 		goto out;
 
-	if (!cl.validsequence)
-		return;
-
-	if (cls.netchan.outgoing_sequence - cl.validsequence >= UPDATE_BACKUP-1)
+	if (!cl.validsequence || cls.netchan.outgoing_sequence - cl.validsequence >= UPDATE_BACKUP-1)
 		return;
 
 	if (cam_track && !cls.demoplayback /* FIXME */)
 		return;
 
-	VectorCopy (cl.viewangles, cl.simangles);
 
 	// this is the last valid frame received from the server
 	to = &cl.frames[cl.validsequence & UPDATE_MASK];
 
-	// FIXME...
+	// setup cl.simangles + decide whether to predict local player
 	if (cls.demoplayback && cl.spectator && cl.viewplayernum != cl.playernum) {
+		VectorCopy (to->playerstate[cl.viewplayernum].viewangles, cl.simangles);
+		nopred = true;		// FIXME
+
+	} else {
+		VectorCopy (cl.viewangles, cl.simangles);
+		nopred = (cl_nopred.value || cls.netchan.outgoing_sequence - cl.validsequence <= 1);
+	}
+
+	if (nopred)
+	{
 		VectorCopy (to->playerstate[cl.viewplayernum].velocity, cl.simvel);
 		VectorCopy (to->playerstate[cl.viewplayernum].origin, cl.simorg);
-		VectorCopy (to->playerstate[cl.viewplayernum].viewangles, cl.simangles);
 		if (cl.z_ext & Z_EXT_PF_ONGROUND)
 			cl.onground = !!(to->playerstate[cl.viewplayernum].flags & PF_ONGROUND);
 		else
@@ -309,23 +315,12 @@ static void CL_PredictLocalPlayer (void)
 		goto out;
 	}
 
-	if (cl_nopred.value || cl.validsequence + 1 >= cls.netchan.outgoing_sequence)
-	{
-		VectorCopy (to->playerstate[cl.playernum].velocity, cl.simvel);
-		VectorCopy (to->playerstate[cl.playernum].origin, cl.simorg);
-		if (cl.z_ext & Z_EXT_PF_ONGROUND)
-			cl.onground = !!(to->playerstate[cl.playernum].flags & PF_ONGROUND);
-		else
-			CL_CategorizePosition ();
-		goto out;
-	}
 
 	oldphysent = pmove.numphysent;
 	CL_SetSolidPlayers (cl.playernum);
 
 	// run frames
-	for (i=1 ; i<UPDATE_BACKUP-1 && cl.validsequence+i <
-			cls.netchan.outgoing_sequence; i++)
+	for (i=1 ; i < cls.netchan.outgoing_sequence - cl.validsequence; i++)
 	{
 		from = to;
 		to = &cl.frames[(cl.validsequence+i) & UPDATE_MASK];
