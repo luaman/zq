@@ -62,7 +62,7 @@ if self.enemy maintains its current velocity
 0.1 is moderately accurate, 0.0 is totally accurate
 =============
 */
-void(entity missile, float mspeed, float accuracy) LaunchMissile =
+void LaunchMissile (entity missile, float mspeed, float accuracy)
 {
 	vector	vec, move;
 	float	fly;
@@ -96,15 +96,15 @@ void(entity missile, float mspeed, float accuracy) LaunchMissile =
 }
 
 
-void() wiz_run1;
-void() wiz_side1;
+void wiz_run1 ();
+void wiz_side1 ();
 
 /*
 =================
 WizardCheckAttack
 =================
 */
-float()	WizardCheckAttack =
+float WizardCheckAttack ()
 {
 	vector	spot1, spot2;
 	entity	targ;
@@ -183,7 +183,7 @@ float()	WizardCheckAttack =
 WizardAttackFinished
 =================
 */
-void() WizardAttackFinished =
+void WizardAttackFinished ()
 {
 	if (enemy_range >= RANGE_MID || !enemy_vis)
 	{
@@ -205,7 +205,7 @@ FAST ATTACKS
 ==============================================================================
 */
 
-void() Wiz_FastFire =
+void Wiz_FastFire ()
 {
 	vector	vec;
 	vector	dst;
@@ -235,7 +235,7 @@ void() Wiz_FastFire =
 }
 
 
-void() Wiz_StartFast =
+void Wiz_StartFast ()
 {
 	entity	missile;
 	
@@ -266,7 +266,7 @@ void() Wiz_StartFast =
 
 
 
-void() Wiz_idlesound =
+void Wiz_idlesound ()
 {
 	float	wr;
 	wr = random() * 5;
@@ -360,7 +360,7 @@ void()	wiz_death6	=[	$death6,		wiz_death7	] {}
 void()	wiz_death7	=[	$death7,		wiz_death8	] {}
 void()	wiz_death8	=[	$death8,		wiz_death8	] {}
 
-void() wiz_die =
+void wiz_die ()
 {
 // check for gib
 	if (self.health < -40)
@@ -377,7 +377,7 @@ void() wiz_die =
 }
 
 
-void(entity attacker, float damage) Wiz_Pain =
+void Wiz_Pain (entity attacker, float damage)
 {
 	sound (self, CHAN_VOICE, "wizard/wpain.wav", 1, ATTN_NORM);
 	if (random()*70 > damage)
@@ -387,14 +387,14 @@ void(entity attacker, float damage) Wiz_Pain =
 }
 
 
-void() Wiz_Missile =
+void Wiz_Missile ()
 {
 	wiz_fast1();
 }
 
 /*QUAKED monster_wizard (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 */
-void() monster_wizard =
+void monster_wizard ()
 {
 	if (deathmatch)
 	{

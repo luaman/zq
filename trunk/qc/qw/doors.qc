@@ -318,7 +318,7 @@ entity spawn_field (vector fmins, vector fmaxs)
 }
 
 
-float (entity e1, entity e2) EntitiesTouching =
+float EntitiesTouching (entity e1, entity e2)
 {
 	if (e1.mins_x > e2.maxs_x)
 		return FALSE;
@@ -641,7 +641,7 @@ void fd_secret_use ()
 }
 
 // Wait after first movement...
-void () fd_secret_move1 = 
+void fd_secret_move1 ()
 {
 	self.nextthink = self.ltime + 1.0;
 	self.think = fd_secret_move2;
@@ -649,14 +649,14 @@ void () fd_secret_move1 =
 }
 
 // Start moving sideways w/sound...
-void () fd_secret_move2 =
+void fd_secret_move2 ()
 {
 	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	SUB_CalcMove(self.dest2, self.speed, fd_secret_move3);
 }
 
 // Wait here until time to go back...
-void () fd_secret_move3 =
+void fd_secret_move3 ()
 {
 	sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 	if (!(self.spawnflags & SECRET_OPEN_ONCE))
@@ -667,27 +667,27 @@ void () fd_secret_move3 =
 }
 
 // Move backward...
-void () fd_secret_move4 =
+void fd_secret_move4 ()
 {
 	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	SUB_CalcMove(self.dest1, self.speed, fd_secret_move5);          
 }
 
 // Wait 1 second...
-void () fd_secret_move5 = 
+void fd_secret_move5 ()
 {
 	self.nextthink = self.ltime + 1.0;
 	self.think = fd_secret_move6;
 	sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 }
 
-void () fd_secret_move6 =
+void fd_secret_move6 ()
 {
 	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	SUB_CalcMove(self.oldorigin, self.speed, fd_secret_done);
 }
 
-void () fd_secret_done =
+void fd_secret_done ()
 {
 	if (!self.targetname || self.spawnflags&SECRET_YES_SHOOT)
 	{
@@ -699,7 +699,7 @@ void () fd_secret_done =
 	sound(self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 }
 
-void () secret_blocked =
+void secret_blocked ()
 {
 	if (time < self.attack_finished)
 		return;
@@ -749,7 +749,7 @@ If a secret door has a targetname, it will only be opened by its button or trigg
 3) base
 */
 
-void () func_door_secret =
+void func_door_secret ()
 {
 	if (self.sounds == 0)
 		self.sounds = 3;

@@ -29,10 +29,10 @@ $base base
 $skin skin
 $scale 1
 
-void() finale_1;
-void() finale_2;
-void() finale_3;
-void() finale_4;
+void finale_1 ();
+void finale_2 ();
+void finale_3 ();
+void finale_4 ();
 
 
 entity	shub;
@@ -124,7 +124,7 @@ void() old_thrash20       =[      $shake20, old_thrash20      ] {finale_4();}
 
 //============================================================================
 
-void() finale_1 =
+void finale_1 ()
 {
 	entity	pos, pl;
 	entity	timer;
@@ -181,7 +181,7 @@ void() finale_1 =
 	timer.think = finale_2;	
 }
 
-void() finale_2 =
+void finale_2 ()
 {
 	vector	o;
 
@@ -200,7 +200,7 @@ void() finale_2 =
 	self.think = finale_3;
 }
 
-void() finale_3 =
+void finale_3 ()
 {
 	// start shub thrashing wildly
 	shub.think = old_thrash1;
@@ -208,7 +208,7 @@ void() finale_3 =
 	lightstyle(0, "abcdefghijklmlkjihgfedcb");	
 }
 
-void() finale_4 =
+void finale_4 ()
 {
 	// throw tons of meat chunks
 	vector	oldo;
@@ -271,7 +271,7 @@ void() finale_4 =
 
 //============================================================================
 
-void() nopain =
+void nopain ()
 {
 	self.health = 40000;		// kill by telefrag
 }
@@ -280,7 +280,7 @@ void() nopain =
 
 /*QUAKED monster_oldone (1 0 0) (-16 -16 -24) (16 16 32)
 */
-void() monster_oldone =
+void monster_oldone ()
 {
 	if (deathmatch)
 	{

@@ -161,7 +161,7 @@ void()	knight_painb9	=[	$painb9,	knight_painb10	] {ai_painforward(5);}
 void()	knight_painb10	=[	$painb10,	knight_painb11	] {ai_painforward(0);}
 void()	knight_painb11	=[	$painb11,	knight_run1	] {}
 
-void(entity attacker, float damage)	knight_pain =
+void knight_pain (entity attacker, float damage)
 {
 	float	r;
 
@@ -228,7 +228,7 @@ void()	knight_dieb10 = [	$deathb10,	knight_dieb11] {}
 void()	knight_dieb11 = [	$deathb11,	knight_dieb11] {}
 
 
-void() knight_die =
+void knight_die ()
 {
 // check for gib
 	if (self.health < -40)
@@ -252,7 +252,7 @@ void() knight_die =
 
 /*QUAKED monster_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 */
-void() monster_knight =
+void monster_knight ()
 {
 	if (deathmatch)
 	{

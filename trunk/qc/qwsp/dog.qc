@@ -49,8 +49,8 @@ $frame stand1 stand2 stand3 stand4 stand5 stand6 stand7 stand8 stand9
 $frame walk1 walk2 walk3 walk4 walk5 walk6 walk7 walk8
 
 
-void() dog_leap1;
-void() dog_run1;
+void dog_leap1 ();
+void dog_run1 ();
 
 /*
 ================
@@ -58,7 +58,7 @@ dog_bite
 
 ================
 */
-void() dog_bite =
+void dog_bite ()
 {
 	vector	delta;
 	float	ldmg;
@@ -80,7 +80,7 @@ void() dog_bite =
 	T_Damage (self.enemy, self, self, ldmg);
 }
 
-void()	Dog_JumpTouch =
+void Dog_JumpTouch ()
 {
 	float	ldmg;
 
@@ -213,7 +213,7 @@ void() dog_painb14	=[	$painb14 ,	dog_painb15	] {}
 void() dog_painb15	=[	$painb15 ,	dog_painb16	] {}
 void() dog_painb16	=[	$painb16 ,	dog_run1	] {}
 
-void() dog_pain =
+void dog_pain ()
 {
 	sound (self, CHAN_VOICE, "dog/dpain1.wav", 1, ATTN_NORM);
 
@@ -244,7 +244,7 @@ void() dog_dieb8		=[	$deathb8,	dog_dieb9	] {}
 void() dog_dieb9		=[	$deathb9,	dog_dieb9	] {}
 
 
-void() dog_die =
+void dog_die ()
 {
 // check for gib
 	if (self.health < -35)
@@ -276,7 +276,7 @@ CheckDogMelee
 Returns TRUE if a melee attack would hit right now
 ==============
 */
-float()	CheckDogMelee =
+float CheckDogMelee ()
 {
 	if (enemy_range == RANGE_MELEE)
 	{	// FIXME: check canreach
@@ -292,7 +292,7 @@ CheckDogJump
 
 ==============
 */
-float()	CheckDogJump =
+float CheckDogJump ()
 {
 	vector	dist;
 	float	d;
@@ -319,7 +319,7 @@ float()	CheckDogJump =
 	return TRUE;
 }
 
-float()	DogCheckAttack =
+float DogCheckAttack ()
 {
 // if close enough for slashing, go for it
 	if (CheckDogMelee ())
@@ -343,7 +343,7 @@ float()	DogCheckAttack =
 /*QUAKED monster_dog (1 0 0) (-32 -32 -24) (32 32 40) Ambush
 
 */
-void() monster_dog =
+void monster_dog ()
 {
 	if (deathmatch)
 	{

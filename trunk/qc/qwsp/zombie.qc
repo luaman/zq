@@ -155,7 +155,7 @@ ATTACKS
 =============================================================================
 */
 
-void() ZombieGrenadeTouch =
+void ZombieGrenadeTouch ()
 {
 	if (other == self.owner)
 		return;		// don't explode on owner
@@ -177,7 +177,7 @@ void() ZombieGrenadeTouch =
 ZombieFireGrenade
 ================
 */
-void(vector st) ZombieFireGrenade =
+void ZombieFireGrenade (vector st)
 {
 	entity	missile, mpuff;
 	vector	org;
@@ -256,7 +256,7 @@ void() zombie_attc10	=[	$attc10,	zombie_attc11	] {ai_face();}
 void() zombie_attc11	=[	$attc11,	zombie_attc12	] {ai_face();}
 void() zombie_attc12	=[	$attc12,	zombie_run1		] {ai_face();ZombieFireGrenade('-12 -19 29');}
 
-void() zombie_missile =
+void zombie_missile ()
 {
 	float	r;
 	
@@ -402,7 +402,7 @@ void() zombie_paine28	=[	$paine28,	zombie_paine29	] {ai_pain(1);}
 void() zombie_paine29	=[	$paine29,	zombie_paine30	] {}
 void() zombie_paine30	=[	$paine30,	zombie_run1		] {}
 
-void() zombie_die =
+void zombie_die ()
 {
 	sound (self, CHAN_VOICE, "zombie/z_gib.wav", 1, ATTN_NORM);
 	ThrowHead ("progs/h_zombie.mdl", self.health);
@@ -430,7 +430,7 @@ A hit of less than 10 points of damage (winged by a shotgun) will be ignored.
 FIXME: don't use pain_finished because of nightmare hack
 =================
 */
-void(entity attacker, float take) zombie_pain =
+void zombie_pain (entity attacker, float take)
 {
 	float	r;
 
@@ -485,7 +485,7 @@ void(entity attacker, float take) zombie_pain =
 
 If crucified, stick the bounding box 12 pixels back into a wall to look right.
 */
-void() monster_zombie =
+void monster_zombie ()
 {
 	if (deathmatch)
 	{

@@ -53,9 +53,9 @@ $frame shockc1 shockc2 shockc3 shockc4 shockc5 shockc6 shockc7 shockc8
 $frame shockc9 shockc10
 
 
-void(vector p) boss_missile;
+void boss_missile (vector p);
 
-void() boss_face =
+void boss_face ()
 {
 	
 // go for another player if multi player
@@ -210,7 +210,7 @@ void() boss_death10 = [$death9, boss_death10]
 	remove (self);
 }
 
-void(vector p) boss_missile =
+void boss_missile (vector p)
 {
 	vector	offang;
 	vector	org, vec, d;
@@ -250,7 +250,7 @@ void(vector p) boss_missile =
 }
 
 
-void() boss_awake =
+void boss_awake ()
 {
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
@@ -279,7 +279,7 @@ void() boss_awake =
 
 /*QUAKED monster_boss (1 0 0) (-128 -128 -24) (128 128 256)
 */
-void() monster_boss =
+void monster_boss ()
 {
 	if (deathmatch)
 	{
@@ -307,7 +307,7 @@ void() monster_boss =
 entity	le1, le2;
 float	lightning_end;
 
-void() lightning_fire =
+void lightning_fire ()
 {
 	vector	p1, p2;
 	
@@ -343,7 +343,7 @@ void() lightning_fire =
 	WriteCoord (MSG_ALL, p2_z);
 }
 
-void() lightning_use =
+void lightning_use ()
 {
 	if (lightning_end >= time + 1)
 		return;
@@ -395,7 +395,7 @@ void() lightning_use =
 /*QUAKED event_lightning (0 1 1) (-16 -16 -16) (16 16 16)
 Just for boss level.
 */
-void() event_lightning =
+void event_lightning ()
 {
 	self.use = lightning_use;
 }

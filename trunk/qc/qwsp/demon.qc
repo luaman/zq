@@ -49,7 +49,7 @@ $frame attacka9 attacka10 attacka11 attacka12 attacka13 attacka14 attacka15
 
 //============================================================================
 
-void()	Demon_JumpTouch;
+void Demon_JumpTouch ();
 
 void()	demon1_stand1	=[	$stand1,	demon1_stand2	] {ai_stand();}
 void()	demon1_stand2	=[	$stand2,	demon1_stand3	] {ai_stand();}
@@ -139,7 +139,7 @@ void()	demon1_pain4	=[	$pain4,		demon1_pain5	] {}
 void()	demon1_pain5	=[	$pain5,		demon1_pain6	] {}
 void()	demon1_pain6	=[	$pain6,		demon1_run1	] {}
 
-void(entity attacker, float damage)	demon1_pain =
+void demon1_pain (entity attacker, float damage)
 {
 	if (self.touch == Demon_JumpTouch)
 		return;
@@ -168,7 +168,7 @@ void()	demon1_die7		=[	$death7,		demon1_die8	] {}
 void()	demon1_die8		=[	$death8,		demon1_die9	] {}
 void()	demon1_die9		=[	$death9,		demon1_die9 ] {}
 
-void() demon_die =
+void demon_die ()
 {
 // check for gib
 	if (self.health < -80)
@@ -186,7 +186,7 @@ void() demon_die =
 }
 
 
-void() Demon_MeleeAttack =
+void Demon_MeleeAttack ()
 {
 	demon1_atta1 ();
 }
@@ -195,7 +195,7 @@ void() Demon_MeleeAttack =
 /*QUAKED monster_demon1 (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 
 */
-void() monster_demon1 =
+void monster_demon1 ()
 {
 	if (deathmatch)
 	{
@@ -247,7 +247,7 @@ CheckDemonMelee
 Returns TRUE if a melee attack would hit right now
 ==============
 */
-float()	CheckDemonMelee =
+float CheckDemonMelee ()
 {
 	if (enemy_range == RANGE_MELEE)
 	{	// FIXME: check canreach
@@ -263,7 +263,7 @@ CheckDemonJump
 
 ==============
 */
-float()	CheckDemonJump =
+float CheckDemonJump ()
 {
 	vector	dist;
 	float	d;
@@ -293,7 +293,7 @@ float()	CheckDemonJump =
 	return TRUE;
 }
 
-float()	DemonCheckAttack =
+float DemonCheckAttack ()
 {
 // if close enough for slashing, go for it
 	if (CheckDemonMelee ())
@@ -315,7 +315,7 @@ float()	DemonCheckAttack =
 
 //===========================================================================
 
-void(float side)	Demon_Melee =
+void Demon_Melee (float side)
 {
 	float	ldmg;
 	vector	delta;
@@ -339,7 +339,7 @@ void(float side)	Demon_Melee =
 }
 
 
-void()	Demon_JumpTouch =
+void Demon_JumpTouch ()
 {
 	float	ldmg;
 

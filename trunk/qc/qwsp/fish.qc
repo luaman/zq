@@ -36,7 +36,7 @@ $frame swim18
 $frame pain1 pain2 pain3 pain4 pain5 pain6 pain7 pain8 
 $frame pain9 
 
-void() swimmonster_start;
+void swimmonster_start ();
 
 void() f_stand1  =[      $swim1, f_stand2 ] {ai_stand();}
 void() f_stand2  =[      $swim2, f_stand3 ] {ai_stand();}
@@ -89,7 +89,7 @@ void() f_run7  =[      $swim13, f_run8 ] {ai_run(12);}
 void() f_run8  =[      $swim15, f_run9 ] {ai_run(12);}
 void() f_run9  =[      $swim17, f_run1 ] {ai_run(12);}
 
-void() fish_melee =
+void fish_melee ()
 {
 	vector	delta;
 	float	ldmg;
@@ -160,7 +160,7 @@ void() f_pain7  =[      $pain7, f_pain8 ] {ai_pain(6);}
 void() f_pain8  =[      $pain8, f_pain9 ] {ai_pain(6);}
 void() f_pain9  =[      $pain9, f_run1 ] {ai_pain(6);}
 
-void(entity attacker, float damage)	fish_pain =
+void fish_pain (entity attacker, float damage)
 {
 
 // fish always do pain frames
@@ -171,7 +171,7 @@ void(entity attacker, float damage)	fish_pain =
 
 /*QUAKED monster_fish (1 0 0) (-16 -16 -24) (16 16 24) Ambush
 */
-void() monster_fish =
+void monster_fish ()
 {
 	if (deathmatch)
 	{

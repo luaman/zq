@@ -61,7 +61,7 @@ SOLDIER CODE
 ==============================================================================
 */
 
-void() army_fire;
+void army_fire ();
 
 void()	army_stand1	=[	$stand1,	army_stand2	] {ai_stand();}
 void()	army_stand2	=[	$stand2,	army_stand3	] {ai_stand();}
@@ -159,7 +159,7 @@ void()	army_painc11=[	$painc11,	army_painc12] {ai_painforward(6);}
 void()	army_painc12=[	$painc12,	army_painc13] {ai_painforward(8);}
 void()	army_painc13=[	$painc13,	army_run1] {}
 
-void(entity attacker, float damage)	army_pain =
+void army_pain (entity attacker, float damage)
 {
 	float	r;
 	
@@ -189,7 +189,7 @@ void(entity attacker, float damage)	army_pain =
 }
 
 
-void() army_fire =
+void army_fire ()
 {
 	vector	dir;
 	entity	en;
@@ -235,7 +235,7 @@ void()	army_cdie10	=[	$deathc10,	army_cdie11	] {}
 void()	army_cdie11	=[	$deathc11,	army_cdie11	] {}
 
 
-void() army_die =
+void army_die ()
 {
 // check for gib
 	if (self.health < -35)
@@ -259,7 +259,7 @@ void() army_die =
 
 /*QUAKED monster_army (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 */
-void() monster_army =
+void monster_army ()
 {	
 	if (deathmatch)
 	{
