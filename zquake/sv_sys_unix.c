@@ -163,6 +163,13 @@ void Sys_Quit (void)
 
 int do_stdin = 1;
 
+
+char *Sys_GetClipboardText (void)
+{
+	return NULL;
+}
+
+
 /*
 ================
 Sys_ConsoleInput
