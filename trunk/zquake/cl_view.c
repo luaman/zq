@@ -49,7 +49,7 @@ cvar_t	v_kickpitch = {"v_kickpitch", "0.6"};
 
 cvar_t	cl_drawgun = {"r_drawviewmodel", "1"};
 
-cvar_t	v_gunkick = {"v_gunkick", "1"};
+cvar_t	v_gunkick = {"v_gunkick", "0"};
 
 qboolean V_OnIdleChange (cvar_t *var, char *value);
 cvar_t	v_iyaw_cycle = {"v_iyaw_cycle", "2", 0, V_OnIdleChange};
