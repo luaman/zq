@@ -755,6 +755,8 @@ void SCR_RunConsole (void)
 	Con_CheckResize ();
 
 	// decide on the height of the console
+	if (scr_disabled_for_loading)
+		scr_conlines = 0;
 	if (cls.state != ca_active && !cl.intermission)
 	{
 		scr_conlines = vid.height;		// full screen
@@ -992,7 +994,8 @@ void SCR_UpdateScreen (void)
 	if (scr_drawloading)
 	{
 		SCR_DrawLoading ();
-		Sbar_Draw ();
+		if (!cl.intermission)
+			Sbar_Draw ();
 	}
 	else
 	{
