@@ -1047,13 +1047,18 @@ void CL_Frame (double time)
 
 	// update audio
 	if (cls.state == ca_active) {
-		S_Update (r_origin, vpn, vright, vup);
-		CL_DecayLights ();
+		vec3_t forward, right, up;
+		AngleVectors (r_refdef.viewangles, forward, right, up);
+		S_Update (r_refdef.vieworg, forward, right, up);
 	}
 	else
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
 
 	CDAudio_Update();
+
+	// advance local effects for next frame
+	if (cls.state == ca_active)
+		CL_DecayLights ();
 
 	if (host_speeds.value)
 	{
