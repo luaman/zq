@@ -204,10 +204,6 @@ qbool Netchan_CanReliable (netchan_t *chan)
 	return Netchan_CanPacket (chan);
 }
 
-#ifndef CLIENTONLY
-qbool ServerPaused(void);
-#endif
-
 /*
 ===============
 Netchan_Transmit
@@ -220,6 +216,7 @@ A 0 length will still generate a packet and deal with the reliable messages.
 */
 void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 {
+	extern cvar_t sv_paused;
 	sizebuf_t	send;
 	byte		send_buf[MAX_MSGLEN + PACKET_HEADER];
 	qbool		send_reliable;
@@ -290,7 +287,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 	else
 		chan->cleartime += send.cursize*chan->rate;
 #ifndef CLIENTONLY
-	if (chan->sock == NS_SERVER && ServerPaused())
+	if (chan->sock == NS_SERVER && sv_paused.value)
 		chan->cleartime = curtime;
 #endif
 

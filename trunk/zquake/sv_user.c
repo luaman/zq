@@ -411,7 +411,7 @@ void Cmd_Spawn_f (void)
 	if (sv.loadgame) {
 		// loaded games are already fully initialized
 		// if this is the last client to be connected, unpause
-		sv.paused = false;
+		Cvar_ForceSet (&sv_paused, "0");
 	}
 	else {
 		memset (&ent->v, 0, progs->entityfields * 4);
@@ -561,9 +561,9 @@ void Cmd_Begin_f (void)
 		SV_BroadcastPrintf (PRINT_HIGH, "%s WARNING: non standard player/eyes model detected\n", sv_client->name);
 
 	// if we are paused, tell the client
-	if (sv.paused) {
+	if (sv_paused.value) {
 		ClientReliableWrite_Begin (sv_client, svc_setpause, 2);
-		ClientReliableWrite_Byte (sv_client, sv.paused);
+		ClientReliableWrite_Byte (sv_client, sv_paused.value ? 1 : 0);
 		SV_ClientPrintf(sv_client, PRINT_HIGH, "Server is paused.\n");
 	}
 
@@ -833,7 +833,7 @@ void SV_Say (qbool team)
 	}
 
 	if (fp_messages) {
-		if (!sv.paused && svs.realtime < sv_client->lockedtill) {
+		if (!sv_paused.value && svs.realtime < sv_client->lockedtill) {
 			SV_ClientPrintf(sv_client, PRINT_CHAT,
 				"You can't talk for %d more seconds\n", 
 					(int) (sv_client->lockedtill - svs.realtime));
@@ -842,7 +842,7 @@ void SV_Say (qbool team)
 		tmp = sv_client->whensaidhead - fp_messages + 1;
 		if (tmp < 0)
 			tmp = 10+tmp;
-		if (!sv.paused &&
+		if (!sv_paused.value &&
 			sv_client->whensaid[tmp] && (svs.realtime - sv_client->whensaid[tmp] < fp_persecond)) {
 			sv_client->lockedtill = svs.realtime + fp_secondsdead;
 			if (sv_floodprotmsg.string[0])
@@ -976,8 +976,14 @@ void SV_TogglePause (const char *msg)
 {
 	int i;
 	client_t *cl;
+	int	newval;
 
-	sv.paused = !sv.paused;
+	if (!msg)
+		newval = (int)sv_paused.value ^ 2;
+	else
+		newval = (int)sv_paused.value ^ 1;
+
+	Cvar_ForceSet (&sv_paused, va("%i", newval));
 
 	if (msg)
 		SV_BroadcastPrintf (PRINT_HIGH, "%s", msg);
@@ -988,7 +994,7 @@ void SV_TogglePause (const char *msg)
 		if (cl->state < cs_connected)
 			continue;
 		ClientReliableWrite_Begin (cl, svc_setpause, 2);
-		ClientReliableWrite_Byte (cl, sv.paused ? 1 : 0);
+		ClientReliableWrite_Byte (cl, sv_paused.value ? 1 : 0);
 
 		cl->lastservertimeupdate = -99;	// force an update to be sent
 	}
@@ -1014,7 +1020,7 @@ void Cmd_Pause_f (void)
 		return;
 	}
 
-	if (!sv.paused)
+	if (!((int)sv_paused.value & 1))
 		sprintf (st, "%s paused the game\n", sv_client->name);
 	else
 		sprintf (st, "%s unpaused the game\n", sv_client->name);
@@ -2045,7 +2051,7 @@ void SV_ExecuteClientMove (client_t *cl, usercmd_t oldest, usercmd_t oldcmd, use
 {
 	int		net_drop;
 
-	if (sv.paused)
+	if (sv_paused.value)
 		return;
 
 	SV_PreRunCmd();
