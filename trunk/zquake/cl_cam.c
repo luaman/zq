@@ -110,13 +110,14 @@ qboolean Cam_DrawPlayer(int playernum)
 
 void Cam_Unlock(void)
 {
-	if (autocam) {
-		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message, "ptrack");
-		autocam = CAM_NONE;
-		locked = false;
-		Sbar_Changed();
-	}
+	if (!autocam)
+		return;
+
+	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+	MSG_WriteString (&cls.netchan.message, "ptrack");
+	autocam = CAM_NONE;
+	locked = false;
+	Sbar_Changed();
 }
 
 void Cam_Lock(int playernum)
@@ -184,17 +185,14 @@ static qboolean Cam_IsVisible(player_state_t *player, vec3_t vec)
 {
 	pmtrace_t trace;
 	vec3_t v;
-	float d;
 
 	trace = Cam_DoTrace(player->origin, vec);
 	if (trace.fraction != 1 || /*trace.inopen ||*/ trace.inwater)
 		return false;
 	// check distance, don't let the player get too far away or too close
 	VectorSubtract(player->origin, vec, v);
-	d = vlen(v);
-	if (d < 16)
-		return false;
-	return true;
+
+	return ((v[0]*v[0]+v[1]*v[1]+v[2]*v[2]) >= 256);
 }
 
 static qboolean InitFlyby(player_state_t *self, player_state_t *player, int checkvis) 
