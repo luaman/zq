@@ -17,7 +17,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-// vid_ddraw.c - experimental win32 DirectDraw vid driver
+// vid_ddraw.c - experimental Win32 DirectDraw vid driver
 
 #include "quakedef.h"
 #include "winquake.h"
@@ -111,11 +111,6 @@ void VID_Update (vrect_t *rects)
 	HRESULT rval;
 	RECT r;
 	DDSURFACEDESC ddsd;
-	static int old_host_framecount;
-
-//	if (host_framecount == old_host_framecount)
-//		return;
-	old_host_framecount = host_framecount;
 
 	r.left = 0;
 	r.top = 0;
