@@ -318,7 +318,7 @@ char *Sys_ConsoleInput (void)
 								if (th) {
 									clipText = GlobalLock(th);
 									if (clipText) {
-										textCopied = malloc(GlobalSize(th)+1);
+										textCopied = Q_Malloc (GlobalSize(th)+1);
 										strcpy(textCopied, clipText);
 /* Substitutes a NULL for every token */strtok(textCopied, "\n\r\b");
 										i = strlen(textCopied);
@@ -508,10 +508,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			parms.memsize = Q_atoi (com_argv[t]) * 1024;
 	}
 
-	parms.membase = malloc (parms.memsize);
-
-	if (!parms.membase)
-		Sys_Error ("Not enough memory free; check disk space\n");
+	parms.membase = Q_Malloc (parms.memsize);
 
 	tevent = CreateEvent(NULL, FALSE, FALSE, NULL);
 

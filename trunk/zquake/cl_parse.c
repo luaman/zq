@@ -509,7 +509,7 @@ void CL_StartUpload (byte *data, int size)
 
 Con_DPrintf("Upload starting of %d...\n", size);
 
-	upload_data = malloc(size);
+	upload_data = Q_Malloc (size);
 	memcpy(upload_data, data, size);
 	upload_size = size;
 	upload_pos = 0;
