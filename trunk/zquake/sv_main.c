@@ -1103,12 +1103,17 @@ void SV_SendBan (void)
 /*
 =================
 SV_FilterPacket
+
+Returns true if net_from.ip is banned
 =================
 */
 qboolean SV_FilterPacket (void)
 {
 	int		i;
 	unsigned	in;
+
+	if (net_from.type == NA_LOOPBACK)
+		return false;	// the local client can't be banned
 	
 	in = *(unsigned *)net_from.ip;
 
