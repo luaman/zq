@@ -56,44 +56,29 @@ void	R_InitTextures (void)
 	}	
 }
 
-byte	dottexture[8][8] =
-{
-	{0,1,1,0,0,0,0,0},
-	{1,1,1,1,0,0,0,0},
-	{1,1,1,1,0,0,0,0},
-	{0,1,1,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0},
-};
 void R_InitParticleTexture (void)
 {
-	int		x,y;
-	byte	data[8][8][4];
+	int		i, x, y;
+	unsigned int	data[32][32];
 
-	//
-	// particle texture
-	//
 	particletexture = texture_extension_number++;
     GL_Bind(particletexture);
 
-	for (x=0 ; x<8 ; x++)
-	{
-		for (y=0 ; y<8 ; y++)
-		{
-			data[y][x][0] = 255;
-			data[y][x][1] = 255;
-			data[y][x][2] = 255;
-			data[y][x][3] = dottexture[x][y]*255;
+	// clear to transparent white
+	for (i=0 ; i<32*32 ; i++)
+		((unsigned *)data)[i] = 0x00FFFFFF;
+
+	// draw a circle in the top left corner
+	for (x=0 ; x<16 ; x++)
+		for (y=0 ; y<16 ; y++) {
+			if ((x - 7.5)*(x - 7.5) + (y - 7.5)*(y - 7.5) <= 8*8)
+				data[y][x] = 0xFFFFFFFF;	// solid white
 		}
-	}
-	glTexImage2D (GL_TEXTURE_2D, 0, gl_alpha_format, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	GL_Upload32 ((unsigned *) data, 32, 32, true, true);
 }
 
 /*
