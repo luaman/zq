@@ -138,9 +138,17 @@ SND_Restart_f
 */
 void SND_Restart_f (void)
 {
+	int		i;
+
 	S_Shutdown ();
+
+	// flush all sounds
+	for (i = 0; i < num_sfx; i++) {
+		if (known_sfx[i].cache.data)
+			Cache_Free (&known_sfx[i].cache);
+	}
+
 	S_Init ();
-	// FIXME, clean up known_sfx?
 }
 
 
