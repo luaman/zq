@@ -30,6 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 qboolean	dedicated = false;
 #endif
 
+cvar_t		host_mapname = {"mapname", "", CVAR_ROM};
+
 double		curtime;
 
 qboolean	host_initialized;		// true if into command execution
@@ -114,6 +116,13 @@ void Host_Error (char *error, ...)
 	Host_Abort ();
 }
 
+
+// init whatever commands/cvars we need
+// not many, really
+void Host_InitLocal (void)
+{
+	Cvar_Register (&host_mapname);
+}
 
 /*
 ===============
@@ -214,7 +223,8 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	Sys_Init ();
 	PM_Init ();
 	Mod_Init ();
-	
+	Host_InitLocal ();
+
 	SV_Init ();
 	CL_Init ();
 

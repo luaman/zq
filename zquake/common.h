@@ -406,6 +406,7 @@ extern double		curtime;	// not bounded or scaled, shared by
 extern qboolean		host_initialized;
 extern int			host_memsize;
 
+extern cvar_t		host_mapname;
 
 void Host_Init (int argc, char **argv, int default_memsize);
 void Host_ClearMemory ();

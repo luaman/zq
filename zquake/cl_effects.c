@@ -108,12 +108,11 @@ void CL_ReadPointFile_f (void)
 	int		c;
 	cparticle_t	*p;
 	char	name[MAX_OSPATH];
-	extern cvar_t	cl_mapname;
 
 	if (!com_serveractive && !r_refdef2.allowCheats)
 		return;
 
-	sprintf (name, "maps/%s.pts", cl_mapname.string);
+	sprintf (name, "maps/%s.pts", host_mapname.string);
 
 	FS_FOpenFile (name, &f);
 	if (!f)
