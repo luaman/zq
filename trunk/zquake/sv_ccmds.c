@@ -676,6 +676,8 @@ void SV_Gamedir_f (void)
 		Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
 	else
 		Info_SetValueForStarKey (svs.info, "*gamedir", "", MAX_SERVERINFO_STRING);
+#else
+	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
 #endif
 }
 
