@@ -462,6 +462,19 @@ void CL_ConnectionlessPacket (void)
     MSG_ReadLong ();        // skip the -1
 
 	c = MSG_ReadByte ();
+
+	if (c == A2C_PRINT && net_message.data[msg_readcount] == '\\')
+	{
+		extern double qstat_senttime;
+		extern void CL_PrintQStatReply (char *s);
+
+		if (qstat_senttime && curtime - qstat_senttime < 10)
+		{
+			CL_PrintQStatReply (MSG_ReadString());
+			return;
+		}
+	}
+
 	if (!cls.demoplayback)
 		Com_Printf ("%s: ", NET_AdrToString (net_from));
 //	Com_DPrintf ("%s", net_message.data + 5);
