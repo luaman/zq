@@ -171,6 +171,9 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	FS_InitFilesystem ();
 	COM_CheckRegistered ();
 
+	Cbuf_AddEarlyCommands ();
+	Cbuf_Execute ();
+
 	Con_Init ();
 	NET_Init ();
 	Netchan_Init ();
