@@ -302,7 +302,7 @@ ONCHANGE(ch_gl_gamma, gamma)	ONCHANGE(ch_gl_contrast, contrast)
 cvar_t		gl_gamma = {"gl_gamma", "1", CVAR_USER_ARCHIVE, ch_gl_gamma};
 cvar_t		gl_contrast = {"gl_contrast", "1", CVAR_USER_ARCHIVE, ch_gl_contrast};
 cvar_t		gl_cshiftpercent = {"gl_cshiftpercent", "100"};
-cvar_t		gl_hwblend = {"gl_hwblend","1"};
+cvar_t		gl_hwblend = {"gl_hwblend","0"};
 
 
 float		v_blend[4];		// rgba 0.0 - 1.0
