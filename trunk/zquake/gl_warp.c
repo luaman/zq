@@ -217,13 +217,20 @@ void GL_BuildSkySurfacePolys (msurface_t *fa)
 //=========================================================
 
 
-
 // speed up sin calculations - Ed
 float	turbsin[] =
 {
 	#include "gl_warp_sin.h"
 };
 #define TURBSCALE (256.0 / (2 * M_PI))
+
+
+#define TURBWARP_OLD(s, t)	\
+	((s + turbsin[(int) ((t * 0.125 + r_refdef2.time) * TURBSCALE) & 255]) * 1 / 64.0f)
+
+#define TURBWARP_NEW(s, t)	\
+	((s + turbsin[(int) ((t * 2) + r_refdef2.time * TURBSCALE) & 255]) * 1 / 64.0f)
+
 
 /*
 =============
@@ -237,7 +244,6 @@ void EmitWaterPolys (msurface_t *fa)
 	glpoly_t	*p;
 	float		*v;
 	int			i;
-	float		s, t, os, ot;
 
 
 	for (p=fa->polys ; p ; p=p->next)
@@ -245,23 +251,12 @@ void EmitWaterPolys (msurface_t *fa)
 		glBegin (GL_POLYGON);
 		for (i=0,v=p->verts[0] ; i<p->numverts ; i++, v+=VERTEXSIZE)
 		{
-			os = v[3];
-			ot = v[4];
-
-			s = os + turbsin[(int)((ot*0.125+r_refdef2.time) * TURBSCALE) & 255];
-			s *= (1.0/64);
-
-			t = ot + turbsin[(int)((os*0.125+r_refdef2.time) * TURBSCALE) & 255];
-			t *= (1.0/64);
-
-			glTexCoord2f (s, t);
+			glTexCoord2f (TURBWARP_NEW(v[3], v[4]), TURBWARP_NEW(v[4], v[3]));
 			glVertex3fv (v);
 		}
 		glEnd ();
 	}
 }
-
-
 
 /*
 =============
