@@ -218,13 +218,14 @@ Each intersection will try to step over the obstruction instead of
 sliding along it.
 =============
 */
-void PM_StepSlideMove (void)
+void PM_StepSlideMove (qbool in_air)
 {
 	vec3_t	dest;
 	trace_t	trace;
 	vec3_t	original, originalvel, down, up, downvel;
 	float	downdist, updist;
 	int		blocked;
+	float	stepsize;
 
 	// try sliding forward both on ground and up 16 pixels
 	// take the move that goes farthest
@@ -236,6 +237,22 @@ void PM_StepSlideMove (void)
 	if (!blocked)
 		return;		// moved the entire distance
 
+	if (in_air) {
+		// don't let us step up unless it's indeed a step we bumped in
+		// (that is, there's solid ground below)
+		VectorCopy (pmove.origin, dest);
+		dest[2] -= STEPSIZE;
+		trace = PM_PlayerTrace (pmove.origin, dest);
+		if (trace.fraction == 1 || trace.plane.normal[2] < MIN_STEP_NORMAL)
+			return;
+
+		// adjust stepsize, otherwise it would be possible to walk up a
+		// a step higher than STEPSIZE
+		stepsize = STEPSIZE - (pmove.origin[2] - trace.endpos[2]);
+	}
+	else
+		stepsize = STEPSIZE;
+
 	VectorCopy (pmove.origin, down);
 	VectorCopy (pmove.velocity, downvel);
 
@@ -244,7 +261,7 @@ void PM_StepSlideMove (void)
 
 // move up a stair height
 	VectorCopy (pmove.origin, dest);
-	dest[2] += STEPSIZE;
+	dest[2] += stepsize;
 	trace = PM_PlayerTrace (pmove.origin, dest);
 	if (!trace.startsolid && !trace.allsolid)
 	{
@@ -255,7 +272,7 @@ void PM_StepSlideMove (void)
 
 // press down the stepheight
 	VectorCopy (pmove.origin, dest);
-	dest[2] -= STEPSIZE;
+	dest[2] -= stepsize;
 	trace = PM_PlayerTrace (pmove.origin, dest);
 	if (trace.fraction != 1 && trace.plane.normal[2] < MIN_STEP_NORMAL)
 		goto usedown;
@@ -476,7 +493,7 @@ void PM_WaterMove (void)
 //
 	PM_Accelerate (wishdir, wishspeed, movevars.wateraccelerate);
 
-	PM_StepSlideMove ();
+	PM_StepSlideMove (false);
 }
 
 
@@ -504,7 +521,7 @@ void PM_FlyMove ()
 	
 	PM_Accelerate (wishdir, wishspeed, movevars.accelerate);
 	
-	PM_StepSlideMove ();
+	PM_StepSlideMove (false);
 }
 
 
@@ -562,7 +579,7 @@ void PM_AirMove (void)
 			return;
 		}
 
-		PM_StepSlideMove ();
+		PM_StepSlideMove (false);
 	}
 	else
 	{	// not on ground, so little effect on velocity
@@ -572,7 +589,7 @@ void PM_AirMove (void)
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * frametime;
 
 		if (movevars.airstep)
-			PM_StepSlideMove ();
+			PM_StepSlideMove (true);
 		else
 			PM_SlideMove ();
 	}
