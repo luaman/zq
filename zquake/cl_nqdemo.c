@@ -257,8 +257,8 @@ void NQD_ParseUpdatecolors (void)
 	if (i >= nq_maxclients)
 		Host_Error ("CL_ParseServerMessage: svc_updatecolors > NQ_MAX_CLIENTS");
 	colors = MSG_ReadByte ();
-	cl.players[i].bottomcolor = cl.players[i].real_bottomcolor = max(colors & 15, 13);
-	cl.players[i].topcolor = cl.players[i].real_topcolor = max((colors >> 4) & 15, 13);
+	cl.players[i].bottomcolor = cl.players[i].real_bottomcolor = min(colors & 15, 13);
+	cl.players[i].topcolor = cl.players[i].real_topcolor = min((colors >> 4) & 15, 13);
 	CL_NewTranslation (i);
 	Sbar_Changed ();
 }
