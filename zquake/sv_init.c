@@ -290,9 +290,6 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	//
 	SV_ClearWorld ();
 
-	// why so?
-	sv.sound_name[0] = pr_strings;
-
 	sv.model_name[1] = sv.modelname;
 	sv.models[1] = sv.worldmodel;
 	for (i = 1; i < CM_NumInlineModels(); i++) {

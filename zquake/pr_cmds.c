@@ -502,15 +502,19 @@ static void PF_ambientsound (void)
 	float 		vol, attenuation;
 	int			i, soundnum;
 
-	pos = G_VECTOR (OFS_PARM0);			
+	pos = G_VECTOR (OFS_PARM0);
 	samp = G_STRING(OFS_PARM1);
 	vol = G_FLOAT(OFS_PARM2);
 	attenuation = G_FLOAT(OFS_PARM3);
-	
+
 // check to see if samp was properly precached
-	for (soundnum=0, check = sv.sound_name ; *check ; check++, soundnum++)
-		if (!strcmp(*check,samp))
+	for (soundnum = 1, check = sv.sound_name + 1;
+		soundnum < MAX_SOUNDS && *check;
+		check++, soundnum++)
+	{
+		if (!strcmp(*check, samp))
 			break;
+	}
 			
 	if (!*check)
 	{
@@ -519,13 +523,10 @@ static void PF_ambientsound (void)
 	}
 
 // add an svc_spawnambient command to the level signon packet
-
-	MSG_WriteByte (&sv.signon,svc_spawnstaticsound);
-	for (i=0 ; i<3 ; i++)
-		MSG_WriteCoord(&sv.signon, pos[i]);
-
+	MSG_WriteByte (&sv.signon, svc_spawnstaticsound);
+	for (i = 0; i < 3; i++)
+		MSG_WriteCoord (&sv.signon, pos[i]);
 	MSG_WriteByte (&sv.signon, soundnum);
-
 	MSG_WriteByte (&sv.signon, vol*255);
 	MSG_WriteByte (&sv.signon, attenuation*64);
 
@@ -1025,10 +1026,9 @@ static void PF_precache_sound (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 	
-	for (i=0 ; i<MAX_SOUNDS ; i++)
+	for (i = 1; i < MAX_SOUNDS; i++)
 	{
-		if (!sv.sound_name[i])
-		{
+		if (!sv.sound_name[i]) {
 			sv.sound_name[i] = s;
 			return;
 		}
