@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 
 extern unsigned char d_15to8table[65536];
+extern unsigned d_8to24table2[256];
 extern cvar_t crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
 cvar_t		gl_nobind = {"gl_nobind", "0"};
@@ -165,7 +166,7 @@ void Scrap_Upload (void)
 {
 	scrap_uploads++;
 	GL_Bind(scrap_texnum);
-	GL_Upload8 (scrap_texels[0], BLOCK_WIDTH, BLOCK_HEIGHT, false, true);
+	GL_Upload8 (scrap_texels[0], BLOCK_WIDTH, BLOCK_HEIGHT, false, true, false);
 	scrap_dirty = false;
 }
 
@@ -404,9 +405,9 @@ void Draw_Init (void)
 			draw_chars[i] = 255;	// proper transparent color
 
 	// now turn them into textures
-	char_texture = GL_LoadTexture ("charset", 128, 128, draw_chars, false, true);
+	char_texture = GL_LoadTexture ("charset", 128, 128, draw_chars, false, true, false);
 //	Draw_CrosshairAdjust();
-	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true);
+	cs_texture = GL_LoadTexture ("crosshair", 8, 8, cs_data, false, true, false);
 
 	start = Hunk_LowMark ();
 
@@ -459,7 +460,7 @@ void Draw_Init (void)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	gl = (glpic_t *)conback->data;
-	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, ncdata, false, false);
+	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, ncdata, false, false, false);
 	gl->sl = 0;
 	gl->sh = 1;
 	gl->tl = 0;
@@ -1263,12 +1264,18 @@ extern qboolean VID_Is8bit();
 GL_Upload8
 ===============
 */
-void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha)
+void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean brighten)
 {
 static	unsigned	trans[640*480];		// FIXME, temporary
 	int			i, s;
 	qboolean	noalpha;
 	int			p;
+	unsigned	*table;
+
+	if (brighten)
+		table = d_8to24table2;
+	else
+		table = d_8to24table;
 
 	s = width*height;
 	// if there are no transparent pixels, make it a 3 component
@@ -1281,7 +1288,7 @@ static	unsigned	trans[640*480];		// FIXME, temporary
 			p = data[i];
 			if (p == 255)
 				noalpha = false;
-			trans[i] = d_8to24table[p];
+			trans[i] = table[p];
 		}
 
 		if (alpha && noalpha)
@@ -1293,10 +1300,10 @@ static	unsigned	trans[640*480];		// FIXME, temporary
 			Sys_Error ("GL_Upload8: s&3");
 		for (i=0 ; i<s ; i+=4)
 		{
-			trans[i] = d_8to24table[data[i]];
-			trans[i+1] = d_8to24table[data[i+1]];
-			trans[i+2] = d_8to24table[data[i+2]];
-			trans[i+3] = d_8to24table[data[i+3]];
+			trans[i] = table[data[i]];
+			trans[i+1] = table[data[i+1]];
+			trans[i+2] = table[data[i+2]];
+			trans[i+3] = table[data[i+3]];
 		}
 	}
 
@@ -1313,7 +1320,7 @@ static	unsigned	trans[640*480];		// FIXME, temporary
 GL_LoadTexture
 ================
 */
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha)
+int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, qboolean brighten)
 {
 	int			i;
 	gltexture_t	*glt;
@@ -1340,7 +1347,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 
 	GL_Bind(texture_extension_number );
 
-	GL_Upload8 (data, width, height, mipmap, alpha);
+	GL_Upload8 (data, width, height, mipmap, alpha, brighten);
 
 	texture_extension_number++;
 
@@ -1354,7 +1361,7 @@ GL_LoadPicTexture
 */
 int GL_LoadPicTexture (qpic_t *pic)
 {
-	return GL_LoadTexture ("", pic->width, pic->height, pic->data, false, true);
+	return GL_LoadTexture ("", pic->width, pic->height, pic->data, false, true, false);
 }
 
 /****************************************/
