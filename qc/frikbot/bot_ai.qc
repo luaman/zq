@@ -151,6 +151,7 @@ removed.
 void bot_check_lost (entity targ)
 {
 	vector	dist;
+    string targ_team, self_team;
 
 	dist = realorigin(targ) - self.origin;
 	dist_z = 0;
@@ -191,9 +192,11 @@ void bot_check_lost (entity targ)
 	}
 	else if (targ.classname == "player")
 	{
+		targ_team = infokey (targ, "team");
+		self_team = infokey (self, "team");
 		if (targ.health <= 0)
 			bot_lost(targ, true);
-		else if ((coop) || (teamplay && targ.team == self.team))
+		else if ((coop) || (teamplay && targ_team == self_team))
 		{
 			if (targ.target1.classname == "player")
 			{
@@ -563,6 +566,8 @@ the bot finds things it wants to kill/grab.
 float priority_for_thing (entity thing)
 {
 	float	thisp;
+    string thing_team, self_team;
+    
 	thisp = 0;
 	// This is the most executed function in the bot. Careful what you do here.
 
@@ -633,6 +638,8 @@ float priority_for_thing (entity thing)
 				return 0;
 			else
 			{
+                thing_team = infokey (thing, "team");
+                self_team = infokey (self, "team");
 				if (thing.items & IT_INVISIBILITY) //FIXME
 					thisp = 2;
 				else if (coop)
@@ -642,7 +649,7 @@ float priority_for_thing (entity thing)
 						if (!thing.target1.ishuman)
 							return 0;
 				}
-				else if (teamplay && thing.team == self.team)
+				else if (teamplay && thing_team == self_team)
 				{
 					thisp = 100;
 					if (thing.target1.classname == "player")
