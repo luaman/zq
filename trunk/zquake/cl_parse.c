@@ -1672,6 +1672,8 @@ void CL_ParseServerMessage (void)
 			
 		case svc_spawnbaseline:
 			i = MSG_ReadShort ();
+			if (i >= MAX_EDICTS)
+				Host_Error ("svc_spawnbaseline: ent > MAX_EDICTS");
 			CL_ParseBaseline (&cl_entities[i].baseline);
 			break;
 		case svc_spawnstatic:
@@ -1715,7 +1717,7 @@ void CL_ParseServerMessage (void)
 			cl.solo_completed_time = cl.servertime;
 			vid.recalc_refdef = true;	// go to full screen
 			for (i=0 ; i<3 ; i++)
-				cl.simorg[i] = MSG_ReadCoord ();			
+				cl.simorg[i] = MSG_ReadCoord ();
 			for (i=0 ; i<3 ; i++)
 				cl.simangles[i] = MSG_ReadAngle ();
 			VectorClear (cl.simvel);
