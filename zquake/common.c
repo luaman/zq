@@ -1042,7 +1042,8 @@ COM_Shutdown
 */
 void COM_Shutdown (void)
 {
-	Cvar_SetValue (&logfile_var, 0);	// close log file
+	if (logfile_var.value)
+		Cvar_SetValue (&logfile_var, 0);	// close log file
 }
 
 
