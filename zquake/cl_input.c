@@ -456,7 +456,8 @@ void CL_SendCmd (void)
 	int			lost;
 	int			seq_hash;
 	static float	pps_balance = 0;
-	static int		dropcount = 0;
+	static int	dropcount = 0;
+	qboolean	dontdrop;
 
 
 	if (cls.demoplayback)
@@ -501,18 +502,23 @@ void CL_SendCmd (void)
 	lost = CL_CalcNet();
 	MSG_WriteByte (&buf, (byte)lost);
 
+	dontdrop = false;
+
 	i = (cls.netchan.outgoing_sequence-2) & UPDATE_MASK;
 	cmd = &cl.frames[i].cmd;
+//	dontdrop = dontdrop || cmd->impulse;
 	MSG_WriteDeltaUsercmd (&buf, &nullcmd, cmd);
 	oldcmd = cmd;
 
 	i = (cls.netchan.outgoing_sequence-1) & UPDATE_MASK;
 	cmd = &cl.frames[i].cmd;
+	dontdrop = dontdrop || cmd->impulse;
 	MSG_WriteDeltaUsercmd (&buf, oldcmd, cmd);
 	oldcmd = cmd;
 
 	i = (cls.netchan.outgoing_sequence) & UPDATE_MASK;
 	cmd = &cl.frames[i].cmd;
+	dontdrop = dontdrop || cmd->impulse;
 	MSG_WriteDeltaUsercmd (&buf, oldcmd, cmd);
 
 	// calculate a checksum over the move commands
@@ -538,9 +544,10 @@ void CL_SendCmd (void)
 		CL_WriteDemoCmd(cmd);
 
 	if (cl_c2spps.value) {
-		// never drop more than 2 messages in a row -- that'll cause PL
 		pps_balance += host_frametime;
-		if (pps_balance > 0 || dropcount >= 2) {
+		// never drop more than 2 messages in a row -- that'll cause PL
+		// and don't drop if one of the last two movemessages have an impulse
+		if (pps_balance > 0 || dropcount >= 2 || dontdrop) {
 			float	pps;
 			pps = cl_c2spps.value;
 			if (pps < 10) pps = 10;
