@@ -249,7 +249,7 @@ void main (int argc, char *argv[])
 		time = newtime - oldtime;
 		oldtime = newtime;
 		
-		SV_Frame (time);		
+		Host_Frame (time);		
 		
 	// extrasleep is just a way to generate a fucked up connection on purpose
 		if (sys_extrasleep.value)
