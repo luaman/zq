@@ -68,6 +68,24 @@ def_t	*def_for_type[8] = {&def_void, &def_string, &def_float, &def_vector, &def_
 void PR_LexWhitespace (void);
 
 
+// don't take const into account
+bool CompareType (type_t *t1, type_t *t2)
+{
+	if (t1->type != t2->type
+	|| t1->aux_type != t2->aux_type
+	|| t1->num_parms != t2->num_parms)
+		return false;
+
+	if (t1->type != ev_function)
+		return true;
+
+	for (int i = 0; i < (t1->num_parms & VA_MASK); i++)
+		if (t1->parm_types[i] != t2->parm_types[i])
+			return false;
+
+	return true;
+}
+
 /*
 ==============
 PR_PrintNextLine
@@ -599,7 +617,8 @@ type_t *PR_GetType (type_t *type)
 	{
 		if (check->type != type->type
 		|| check->aux_type != type->aux_type
-		|| check->num_parms != type->num_parms)
+		|| check->num_parms != type->num_parms
+		|| check->constant != type->constant)
 			continue;
 	
 		for (i = 0; i < (type->num_parms & VA_MASK); i++)
@@ -700,7 +719,7 @@ type_t *PR_ParseType (void)
 
 	type_t	*type;
 
-	PR_Check ("const");		// ignore
+	bool constant = PR_Check ("const");
 
 	if (!strcmp (pr_token, "float") )
 		type = &type_float;
@@ -719,8 +738,17 @@ type_t *PR_ParseType (void)
 	}
 	PR_Lex ();
 	
-	if (!PR_Check ("("))
+	if (!PR_Check ("(")) {
+		if (constant) {
+			type_t	newtype;
+			memset (&newtype, 0, sizeof(newtype));
+			newtype.type = type->type;
+			newtype.constant = true;
+			return PR_GetType (&newtype);
+		}
+
 		return type;
+	}
 
 // function type
 	return PR_ParseFunctionType(type);

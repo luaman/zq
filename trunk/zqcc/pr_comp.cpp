@@ -281,7 +281,7 @@ def_t *PR_ParseFunctionCall (def_t *func)
 				PR_ParseError ("too many parameters");
 			e = PR_Expression (TOP_PRIORITY);
 
-			if (arg < (t->num_parms & VA_MASK) && ( e->type != t->parm_types[arg] ) )
+			if (arg < (t->num_parms & VA_MASK) && !CompareType(e->type, t->parm_types[arg]))
 				PR_ParseError ("type mismatch on parm %i", arg);
 		// a vector copy will copy everything
 			def_parms[arg].type = t->parm_types[arg];
@@ -432,6 +432,9 @@ def_t *PR_Expression (int priority)
 
 			if (op->right_associative)
 			{
+				if (e->type->constant)
+					PR_ParseError ("assignment to constant");
+
 			// if last statement is an indirect, change it to an address of
 				if ( (unsigned)(statements[numstatements-1].op - OP_LOAD_F) < 6 )
 				{
@@ -443,7 +446,7 @@ def_t *PR_Expression (int priority)
 			}
 			else
 				e2 = PR_Expression (priority-1);
-				
+
 		// type check
 			type_a = e->type->type;
 			type_b = e2->type->type;
@@ -926,7 +929,7 @@ void PR_ParseInitialization (type_t *type, char *name, def_t *def)
 		PR_ParseError ("initializer is not a constant");
 	}
 
-	if (pr_immediate_type != type)
+	if (!CompareType(pr_immediate_type, type))
 		PR_ParseError ("wrong immediate type for %s", name);
 
 	def->initialized = 1;
