@@ -313,7 +313,6 @@ float ShamCheckAttack ()
 {
 	vector	spot1, spot2;
 	entity	targ;
-	float	chance;
 
 	if (enemy_range == RANGE_MELEE)
 	{

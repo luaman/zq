@@ -179,7 +179,7 @@ ZombieFireGrenade
 */
 void ZombieFireGrenade (vector st)
 {
-	entity	missile, mpuff;
+	entity	missile;
 	vector	org;
 
 	sound (self, CHAN_WEAPON, "zombie/z_shot1.wav", 1, ATTN_NORM);
