@@ -29,7 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 void R_TranslatePlayerSkin (int playernum);
-void R_SetSky (char *name);
 
 
 char *svc_strings[] =
@@ -38,7 +37,7 @@ char *svc_strings[] =
 	"svc_nop",
 	"svc_disconnect",
 	"svc_updatestat",
-	"svc_version",		// [long] server version
+	"OBSOLETE svc_version",		// [long] server version
 	"svc_setview",		// [short] entity number
 	"svc_sound",			// <see code>
 	"svc_time",			// [float] server time
@@ -49,12 +48,12 @@ char *svc_strings[] =
 	
 	"svc_serverdata",		// [long] version ...
 	"svc_lightstyle",		// [byte] [string]
-	"svc_updatename",		// [byte] [string]
+	"OBSOLETE svc_updatename",		// [byte] [string]
 	"svc_updatefrags",	// [byte] [short]
 	"svc_clientdata",		// <shortbits + data>
 	"svc_stopsound",		// <see code>
-	"svc_updatecolors",	// [byte] [byte]
-	"svc_particle",		// [vec3] <variable>
+	"OBSOLETE svc_updatecolors",	// [byte] [byte]
+	"OBSOLETE svc_particle",		// [vec3] <variable>
 	"svc_damage",			// [byte] impact [byte] blood [vec3] from
 	
 	"svc_spawnstatic",
@@ -63,7 +62,7 @@ char *svc_strings[] =
 	
 	"svc_temp_entity",		// <variable>
 	"svc_setpause",
-	"svc_signonnum",
+	"OBSOLETE svc_signonnum",
 	"svc_centerprint",
 	"svc_killedmonster",
 	"svc_foundsecret",

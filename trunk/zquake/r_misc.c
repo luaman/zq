@@ -599,3 +599,13 @@ r_refdef.viewangles[2]=    0;
 	D_SetupFrame ();
 }
 
+
+/*
+===============
+R_SetSky
+===============
+*/
+void R_SetSky (char *name)
+{
+	// not implemented yet
+}
