@@ -537,7 +537,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		if (!AllocConsole())
 			Sys_Error ("Couldn't allocate dedicated server console");
 		SetConsoleCtrlHandler (HandlerRoutine, TRUE);
-		SetConsoleTitle ("zqds");
 		hinput = GetStdHandle (STD_INPUT_HANDLE);
 		houtput = GetStdHandle (STD_OUTPUT_HANDLE);
 	}
