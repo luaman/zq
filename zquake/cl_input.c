@@ -482,7 +482,6 @@ void CL_SendCmd (void)
 	usercmd_t	*cmd, *oldcmd;
 	int			checksumIndex;
 	int			lost;
-	int			seq_hash;
 	static float	pps_balance = 0;
 	static int	dropcount = 0;
 	qboolean	dontdrop;
@@ -495,9 +494,6 @@ void CL_SendCmd (void)
 	cmd = &cl.frames[i].cmd;
 	cl.frames[i].senttime = realtime;
 	cl.frames[i].receivedtime = -1;		// we haven't gotten a reply yet
-
-//	seq_hash = (cls.netchan.outgoing_sequence & 0xffff) ; // ^ QW_CHECK_HASH;
-	seq_hash = cls.netchan.outgoing_sequence;
 
 	// get basic movement from keyboard
 	CL_BaseMove (cmd);
@@ -513,12 +509,9 @@ void CL_SendCmd (void)
 
 	Cam_FinishMove(cmd);
 
-// send this and the previous cmds in the message, so
-// if the last packet was dropped, it can be recovered
-	buf.maxsize = 128;
-	buf.cursize = 0;
-	buf.data = data;
+	SZ_Init (&buf, data, sizeof(data));
 
+	// begin a client move command
 	MSG_WriteByte (&buf, clc_move);
 
 	// save the position for a checksum byte
@@ -529,6 +522,8 @@ void CL_SendCmd (void)
 	lost = CL_CalcNet();
 	MSG_WriteByte (&buf, (byte)lost);
 
+	// send this and the previous two cmds in the message, so
+	// if the last packet was dropped, it can be recovered
 	dontdrop = false;
 
 	i = (cls.netchan.outgoing_sequence-2) & UPDATE_MASK;
@@ -554,7 +549,7 @@ void CL_SendCmd (void)
 	// calculate a checksum over the move commands
 	buf.data[checksumIndex] = COM_BlockSequenceCRCByte(
 		buf.data + checksumIndex + 1, buf.cursize - checksumIndex - 1,
-		seq_hash);
+		cls.netchan.outgoing_sequence);
 
 	// request delta compression of entities
 	if (cls.netchan.outgoing_sequence - cl.validsequence >= UPDATE_BACKUP-1) {
@@ -573,7 +568,7 @@ void CL_SendCmd (void)
 		cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].delta_sequence = -1;
 
 	if (cls.demorecording)
-		CL_WriteDemoCmd(cmd);
+		CL_WriteDemoCmd (cmd);
 
 	if (cl_c2spps.value) {
 		pps_balance += host_frametime;
