@@ -222,6 +222,8 @@ typedef struct
 
 	char		serverinfo[MAX_SERVERINFO_STRING];
 // some important serverinfo keys are mirrored here:
+	int			deathmatch;
+	int			teamplay;
 	int			gametype;		// GAME_COOP or GAME_DEATHMATCH
 	qboolean	teamfortress;	// true if gamedir is "fortress"
 	int			fpd;			// FAQ proxy flags
