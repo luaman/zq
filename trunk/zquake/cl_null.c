@@ -36,6 +36,10 @@ void CL_Disconnect (void)
 {
 }
 
+void CL_BeginLocalConnection (void)
+{
+}
+
 void Con_Init (void)
 {
 }
