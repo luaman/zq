@@ -44,6 +44,11 @@ void PM_Init (void)
 
 #define pm_flyfriction 4
 
+#define BLOCKED_FLOOR	1
+#define BLOCKED_STEP	2
+#define BLOCKED_OTHER	4
+#define BLOCKED_ANY		7
+
 /*
 ==================
 PM_ClipVelocity
@@ -140,14 +145,12 @@ int PM_SlideMove (void)
 			pmove.numtouch++;
 		}
 
-		if (trace.plane.normal[2] > MIN_STEP_NORMAL)
-		{
-			blocked |= 1;		// floor
-		}
-		if (!trace.plane.normal[2])
-		{
-			blocked |= 2;		// step
-		}
+		if (trace.plane.normal[2] >= MIN_STEP_NORMAL)
+			blocked |= BLOCKED_FLOOR;
+		else if (!trace.plane.normal[2])
+			blocked |= BLOCKED_STEP;
+		else
+			blocked |= BLOCKED_OTHER;
 
 		time_left -= time_left * trace.fraction;
 		
@@ -193,7 +196,7 @@ int PM_SlideMove (void)
 		}
 
 //
-// if original velocity is against the original velocity, stop dead
+// if velocity is against the original velocity, stop dead
 // to avoid tiny occilations in sloping corners
 //
 		if (DotProduct (pmove.velocity, primal_velocity) <= 0)
@@ -490,7 +493,7 @@ void PM_WaterMove (void)
 	start[2] += STEPSIZE + 1;
 	trace = PM_PlayerTrace (start, dest);
 	if (!trace.startsolid && !trace.allsolid &&
-		(trace.fraction == 1 || trace.plane.normal[2] > MIN_STEP_NORMAL))
+		(trace.fraction == 1 || trace.plane.normal[2] >= MIN_STEP_NORMAL))
 	{	// walked up the step
 		VectorCopy (trace.endpos, pmove.origin);
 		return;
