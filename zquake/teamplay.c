@@ -348,7 +348,6 @@ char *Macro_Time_f (void)
 	time(&t);
 	ptm = localtime(&t);
 	strftime(macro_buf, sizeof(macro_buf)-1, "%H:%M", ptm);
-
 	return macro_buf;
 }
 
@@ -361,7 +360,20 @@ char *Macro_Date_f (void)
 	time(&t);
 	ptm = localtime(&t);
 	strftime(macro_buf, sizeof(macro_buf)-1, "%d.%m.%y", ptm);
+	return macro_buf;
+}
 
+// returns the last item picked up
+char *Macro_Item_f (void)
+{
+	strcpy (macro_buf, vars.tookitem);
+	return macro_buf;
+}
+
+// returns the last item that triggered f_took
+char *Macro_Took_f (void)
+{
+	strcpy (macro_buf, vars.last_tooktrigger);
 	return macro_buf;
 }
 
@@ -391,6 +403,8 @@ macro_command_t macro_commands[] =
 	{"location", Macro_Location_f},
 	{"time", Macro_Time_f},
 	{"date", Macro_Date_f},
+	{"item", Macro_Item_f},
+	{"took", Macro_Took_f},
 	{NULL, NULL}
 };
 
@@ -781,14 +795,15 @@ char *Macro_Location_f (void)
 */
 
 typedef struct msg_trigger_s {
-	char name[32];
-	char string[64];
+	char	name[32];
+	char	string[64];
+	int		level;
 	struct msg_trigger_s *next;
 } msg_trigger_t;
 
 static msg_trigger_t *msg_triggers;
 
-msg_trigger_t *CL_FindTrigger (char *name)
+msg_trigger_t *TP_FindTrigger (char *name)
 {
 	msg_trigger_t *t;
 
@@ -808,8 +823,8 @@ void TP_MsgTrigger_f (void)
 
 	c = Cmd_Argc();
 
-	if (c > 3) {
-		Con_Printf ("msg_trigger <trigger name> \"string\"\n");
+	if (c > 5) {
+		Con_Printf ("msg_trigger <trigger name> \"string\" [-l <level>]\n");
 		return;
 	}
 
@@ -829,7 +844,7 @@ void TP_MsgTrigger_f (void)
 	}
 
 	if (c == 2) {
-		trig = CL_FindTrigger (name);
+		trig = TP_FindTrigger (name);
 		if (trig)
 			Con_Printf ("%s: \"%s\"\n", trig->name, trig->string);
 		else
@@ -837,13 +852,13 @@ void TP_MsgTrigger_f (void)
 		return;
 	}
 
-	if (c == 3) {
+	if (c >= 3) {
 		if (strlen(Cmd_Argv(2)) > 63) {
 			Con_Printf ("trigger string too long\n");
 			return;
 		}
 		
-		trig = CL_FindTrigger (name);
+		trig = TP_FindTrigger (name);
 
 		if (!trig) {
 			// allocate new trigger
@@ -851,9 +866,15 @@ void TP_MsgTrigger_f (void)
 			trig->next = msg_triggers;
 			msg_triggers = trig;
 			strcpy (trig->name, name);
+			trig->level = PRINT_HIGH;
 		}
 
 		strcpy (trig->string, Cmd_Argv(2));
+		if (c == 5 && !Q_strcasecmp (Cmd_Argv(3), "-l")) {
+			trig->level = Q_atoi (Cmd_Argv(4));
+			if ((unsigned)trig->level > PRINT_CHAT)
+				trig->level = PRINT_HIGH;
+		}
 	}
 }
 
@@ -950,11 +971,14 @@ void TP_SearchForMsgTriggers (char *s, int level)
 	if (cls.demoplayback)
 		return;
 
-	if (level != PRINT_HIGH)	// FIXME
-		return;
-
 	for (t=msg_triggers; t; t=t->next)
-		if (t->string[0] && strstr(s, t->string)) {
+		if (t->level == level && t->string[0] && strstr(s, t->string))
+		{
+			if (level == PRINT_CHAT && (
+				strstr (s, "f_version") || strstr (s, "f_system") ||
+				strstr (s, "f_speed") || strstr (s, "f_modified")))
+				continue; 	// don't let llamas fake proxy replies
+
 			string = Cmd_AliasString (t->name);
 			if (string)
 				TP_ExecuteTriggerBuf (string);
