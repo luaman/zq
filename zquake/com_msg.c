@@ -504,13 +504,15 @@ float MSG_ReadAngle16 (void)
 	return MSG_ReadShort() * (360.0/65536);
 }
 
+/*
+Protocol 26 (QW 2.20?) always sends yaw angle, and msec is optional.
+Movement is packed into a byte instead of a short.
+*/
+#define	CM_MSEC	(1<<7)		// same as CM_ANGLE2
+
 void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qboolean protocol_26)
 {
 	int bits;
-
-// FIXME, Uwe Girlich's Unofficial QWD format description claims that in protocol 26,
-// yaw angle is always sent and bit 0x80 (CM_ANGLE2) is used as CM_MSEC
-// can't check right now if it's indeed so as the high bit appears to be always set
 
 	memcpy (move, from, sizeof(*move));
 
@@ -519,8 +521,15 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qboolean protocol_2
 // read current angles
 	if (bits & CM_ANGLE1)
 		move->angles[0] = MSG_ReadAngle16 ();
-	if (bits & CM_ANGLE2)
-		move->angles[1] = MSG_ReadAngle16 ();
+
+	if (protocol_26)
+		move->angles[1] = MSG_ReadAngle16 ();		// always sent
+	else
+	{
+		if (bits & CM_ANGLE2)
+			move->angles[1] = MSG_ReadAngle16 ();
+	}
+
 	if (bits & CM_ANGLE3)
 		move->angles[2] = MSG_ReadAngle16 ();
 		
@@ -528,11 +537,11 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qboolean protocol_2
 	if (protocol_26)
 	{
 		if (bits & CM_FORWARD)
-			move->forwardmove = MSG_ReadChar ();
+			move->forwardmove = MSG_ReadChar() << 3;
 		if (bits & CM_SIDE)
-			move->sidemove = MSG_ReadChar ();
+			move->sidemove = MSG_ReadChar() << 3;
 		if (bits & CM_UP)
-			move->upmove = MSG_ReadChar ();
+			move->upmove = MSG_ReadChar() << 3;
 	}
 	else
 	{
@@ -552,7 +561,11 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qboolean protocol_2
 		move->impulse = MSG_ReadByte ();
 
 // read time to run command
-	move->msec = MSG_ReadByte ();
+	if (protocol_26) {
+		if (bits & CM_MSEC)
+			move->msec = MSG_ReadByte ();
+	}
+	else
+		move->msec = MSG_ReadByte ();		// always sent
 }
-
 
