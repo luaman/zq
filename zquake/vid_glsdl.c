@@ -472,7 +472,6 @@ void VID_Init(unsigned char *palette)
     const SDL_VideoInfo* info = NULL;
 
     flags = SDL_OPENGL;           // to use open gl
-    flags |= SDL_FULLSCREEN;      // fullscreen by default
     /* flags |= SDL_GL_DOUBLEBUFFER; // have a double buffer (SDL_Flip();) */
     flags |= SDL_HWPALETTE;       // use hardware palette
     /* flags |= SDL_ANYFORMAT;       // use anything as last resort */
@@ -483,7 +482,7 @@ void VID_Init(unsigned char *palette)
 
 	vid.colormap = host_colormap;
 
-	if ((i = COM_CheckParm("-window")) != 0)
+	if (!(COM_CheckParm("-window")) )
         flags |= SDL_FULLSCREEN;
 
 	if ((i = COM_CheckParm("-bpp")) != 0)
@@ -569,6 +568,9 @@ void VID_Init(unsigned char *palette)
 	Com_Printf ("Video mode %dx%dx%d initialized.\n", width, height, bpp);
 
 	SCR_InvalidateScreen ();
+
+    // hide the mouse
+    SDL_ShowCursor(0);
 }
 
 void VID_Shutdown(void)
