@@ -172,7 +172,6 @@ extern	cvar_t	r_wateralpha;
 extern	cvar_t	r_dynamic;
 extern	cvar_t	r_novis;
 extern	cvar_t	r_netgraph;
-extern	cvar_t	r_watervishack;
 extern	cvar_t	r_fullbrightSkins;
 extern	cvar_t	r_fastsky;
 extern	cvar_t	r_skycolor;
