@@ -725,7 +725,7 @@ void SV_Snap (int uid)
 
 	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 	{
-		if (!cl->state)
+		if (cl->state < cs_connected)
 			continue;
 		if (cl->userid == uid)
 			break;

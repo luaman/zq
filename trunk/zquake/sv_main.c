@@ -1071,9 +1071,10 @@ void SV_ReadPackets (void)
 			if (Netchan_Process(&cl->netchan))
 			{	// this is a valid, sequenced packet, so process it
 				svs.stats.packets++;
-				cl->send_message = true;	// reply at end of frame
-				if (cl->state != cs_zombie)
+				if (cl->state != cs_zombie) {
+					cl->send_message = true;	// reply at end of frame
 					SV_ExecuteClientMessage (cl);
+				}
 			}
 			break;
 		}

@@ -990,7 +990,7 @@ void SV_TogglePause (const char *msg)
 	// send notification to all clients
 	for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
 	{
-		if (!cl->state)
+		if (cl->state < cs_connected)
 			continue;
 		ClientReliableWrite_Begin (cl, svc_setpause, 2);
 		ClientReliableWrite_Byte (cl, sv.paused ? 1 : 0);
