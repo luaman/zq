@@ -975,7 +975,6 @@ type_t *PR_ParseFunctionType (type_t *returnType)
 			return PR_GetType (&newtype);
 		}
 
-		newtype.num_parms++;
 		if (newtype.num_parms >= MAX_PARMS)
 			PR_ParseError ("too many parameters (max. %d allowed)", (int)MAX_PARMS);
 
@@ -983,6 +982,7 @@ type_t *PR_ParseFunctionType (type_t *returnType)
 		char *name = PR_ParseName ();
 		strcpy (pr_parm_names[newtype.num_parms], name);
 		newtype.parm_types[newtype.num_parms] = type;
+		newtype.num_parms++;
 	} while (PR_Check (","));
 
 	PR_Expect (")");
