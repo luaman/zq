@@ -231,8 +231,8 @@ float GetClientNum (entity ent);
 
 void ClientConnected ()
 {
-	if (stof(infokey(self, "*bot")) != 0)
-		return;
+/* 	if (stof(infokey(self, "*bot")) != 0) */
+/* 		return; */
 
 	// link him into the player list
 	if (player_head)
@@ -246,8 +246,8 @@ void ClientConnected ()
 
 void ClientDisconnected ()
 {
-	if (!self.ishuman)
-		return;
+/*     if (!self.ishuman) */
+/* 		return; */
 
 	if (player_head == self)
 		player_head = self._next;
