@@ -337,9 +337,17 @@ void Sys_SendKeyEvents (void)
 /*
 ================
 Sys_Init
+
+Quake calls this so the system can register variables before host_hunklevel
+is marked
 ================
 */
 void Sys_Init (void)
+{
+}
+
+
+void Sys_Init_ (void)
 {
 	OSVERSIONINFO	vinfo;
 
@@ -516,7 +524,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	if (!tevent)
 		Sys_Error ("Couldn't create event");
 
-	Sys_Init ();
+	Sys_Init_ ();
 
 // because sound is off until we become active
 	S_BlockSound ();
