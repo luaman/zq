@@ -21,7 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define _BSD
 
-typedef unsigned short PIXEL;
+typedef unsigned short	 PIXEL16;
+typedef unsigned int	 PIXEL24;
 
 #include <ctype.h>
 #include <sys/time.h>
@@ -44,133 +45,204 @@ typedef unsigned short PIXEL;
 #include "input.h"
 #include "keys.h"
 
-cvar_t		vid_ref = {"vid_ref", "soft", CVAR_ROM};
-cvar_t		_windowed_mouse = {"_windowed_mouse","0",CVAR_ARCHIVE};
-cvar_t		m_filter = {"m_filter","0",CVAR_ARCHIVE};
-float old_windowed_mouse;
+cvar_t			 vid_ref			= {"vid_ref", "soft", CVAR_ROM};
+cvar_t			 _windowed_mouse	= {"_windowed_mouse","0",CVAR_ARCHIVE};
+cvar_t			 m_filter			= {"m_filter","0",CVAR_ARCHIVE};
+float			 old_windowed_mouse;
 
 // not used
-int		VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes, VGA_planar;
-byte	*VGA_pagebase;
+int				 VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes, VGA_planar;
+byte			*VGA_pagebase;
 
-
-qbool	mouse_avail;
-int		mouse_buttons=3;
-int		mouse_oldbuttonstate;
-int		mouse_buttonstate;
-float	mouse_x, mouse_y;
-float	old_mouse_x, old_mouse_y;
-int		p_mouse_x;
-int		p_mouse_y;
-int		ignorenext;
-int		bits_per_pixel;
+qbool			 mouse_avail		= false;
+int				 mouse_buttons		= 3;
+int				 mouse_oldbuttonstate;
+int				 mouse_buttonstate;
+float			 mouse_x, mouse_y;
+float			 old_mouse_x, old_mouse_y;
+int				 p_mouse_x;
+int				 p_mouse_y;
+int				 ignorenext;
+int				 bits_per_pixel;
 
 typedef struct
 {
-	int input;
-	int output;
+	int			 input;
+	int			 output;
 } keymap_t;
 
-extern viddef_t vid; // global video state
-unsigned short d_8to16table[256];
+extern viddef_t	 vid; // global video state
+unsigned short	 d_8to16table[256];
 
-int		num_shades=32;
+int				 num_shades = 32;
 
-int		vid_buffersize;
+int				 vid_buffersize;
 
-static qbool			doShm;
-static Display			*x_disp;
-static Colormap			x_cmap;
-static Window			x_win;
-static GC				x_gc;
-static Visual			*x_vis;
-static XVisualInfo		*x_visinfo;
-//static XImage			*x_image;
+static qbool	 doShm;
+static Display	*x_disp;
+static Colormap	 x_cmap;
+static Window	 x_win;
+static GC		 x_gc;
+static Visual	*x_vis;
+static XVisualInfo	*x_visinfo;
+//static XImage	*x_image;
 
-static int				x_shmeventtype;
-//static XShmSegmentInfo	x_shminfo;
+static int		 x_shmeventtype;
+//static XShmSegmentInfo	 x_shminfo;
 
-static qbool			oktodraw = false;
+static qbool	 oktodraw = false;
 
-int XShmQueryExtension(Display *);
-int XShmGetEventBase(Display *);
+int				 XShmQueryExtension(Display *);
+int				 XShmGetEventBase(Display *);
 
-int current_framebuffer;
-static XImage			*x_framebuffer[2] = { 0, 0 };
-static XShmSegmentInfo	x_shminfo[2];
+int				 current_framebuffer;
+static XImage	*x_framebuffer[2] = { 0, 0 };
+static XShmSegmentInfo	 x_shminfo[2];
 
-static int verbose=0;
+static int		 verbose = 0;
 
-static byte current_palette[768];
+static byte		 current_palette[768];
 
-static long X11_highhunkmark;
-static long X11_buffersize;
+static long		 X11_highhunkmark;
+static long		 X11_buffersize;
 
-int vid_surfcachesize;
-void *vid_surfcache;
+int				 vid_surfcachesize;
+void			*vid_surfcache;
 
-void (*vid_menudrawfn)(void);
-void (*vid_menukeyfn)(int key);
-void VID_MenuKey (int key);
+static PIXEL16	 st2d_8to16table[256];
+static PIXEL24	 st2d_8to24table[256];
+static int		 shiftmask_fl=0;
+static long		 r_shift,g_shift,b_shift;
+static unsigned long	 r_mask,g_mask,b_mask;
 
-static PIXEL st2d_8to16table[256];
-static int shiftmask_fl=0;
-static long r_shift,g_shift,b_shift;
-static unsigned long r_mask,g_mask,b_mask;
+static void		 shiftmask_init ();
+static PIXEL16	 xlib_rgb16 (int r, int g, int b);
+static PIXEL24	 xlib_rgb24 (int r, int g, int b);
+static void		 st2_fixup (XImage *framebuf, int x, int y, int width, int height);
+static void		 st3_fixup (XImage *framebuf, int x, int y, int width, int height);
 
-void shiftmask_init()
+
+static void		 shiftmask_init ()
 {
-    unsigned int x;
-    r_mask=x_vis->red_mask;
-    g_mask=x_vis->green_mask;
-    b_mask=x_vis->blue_mask;
-    for(r_shift=-8,x=1;x<r_mask;x=x<<1)r_shift++;
-    for(g_shift=-8,x=1;x<g_mask;x=x<<1)g_shift++;
-    for(b_shift=-8,x=1;x<b_mask;x=x<<1)b_shift++;
-    shiftmask_fl=1;
+	unsigned int	 x;
+	r_mask = x_vis->red_mask;
+	g_mask = x_vis->green_mask;
+	b_mask = x_vis->blue_mask;
+
+	if (r_mask > (1 << 31) || g_mask > (1 << 31) || b_mask > (1 << 31))
+		Sys_Error("XGetVisualInfo returned bogus rgb mask");
+
+    for (r_shift = -8, x = 1; x < r_mask; x = x << 1 )
+		r_shift++;
+    for (g_shift = -8, x = 1; x < g_mask; x = x << 1 )
+		g_shift++;
+    for (b_shift = -8, x = 1; x < b_mask; x = x << 1 )
+		b_shift++;
+
+	shiftmask_fl=1;
 }
 
-PIXEL xlib_rgb(int r,int g,int b)
+
+static PIXEL16	 xlib_rgb16 (int r, int g, int b)
 {
-    PIXEL p;
-    if(shiftmask_fl==0) shiftmask_init();
-    p=0;
+	PIXEL16	 p;
 
-    if(r_shift>0) {
-        p=(r<<(r_shift))&r_mask;
-    } else if(r_shift<0) {
-        p=(r>>(-r_shift))&r_mask;
-    } else p|=(r&r_mask);
+	if (shiftmask_fl == 0)
+		shiftmask_init();
+	p = 0;
 
-    if(g_shift>0) {
-        p|=(g<<(g_shift))&g_mask;
-    } else if(g_shift<0) {
-        p|=(g>>(-g_shift))&g_mask;
-    } else p|=(g&g_mask);
+	if (r_shift > 0)
+		p = (r << (r_shift)) & r_mask;
+	else if (r_shift < 0)
+		p = (r >> (-r_shift)) & r_mask;
+	else
+		p |= (r & r_mask);
 
-    if(b_shift>0) {
-        p|=(b<<(b_shift))&b_mask;
-    } else if(b_shift<0) {
-        p|=(b>>(-b_shift))&b_mask;
-    } else p|=(b&b_mask);
+	if (g_shift > 0)
+		p |= (g << (g_shift)) & g_mask;
+	else if (g_shift < 0)
+		p |= (g >> (-g_shift)) & g_mask;
+	else
+		p |= (g & g_mask);
 
-    return p;
+	if (b_shift > 0)
+		p |= (b << (b_shift)) & b_mask;
+	else if (b_shift < 0)
+		p |= (b >> (-b_shift)) & b_mask;
+	else
+		p |= (b & b_mask);
+
+	return p;
 }
 
-void st2_fixup( XImage *framebuf, int x, int y, int width, int height)
+
+static PIXEL24	 xlib_rgb24 (int r, int g, int b)
 {
-	int xi,yi;
-	unsigned char *src;
-	PIXEL *dest;
+	PIXEL24	 p;
 
-	if( (x<0)||(y<0) )return;
+	if (shiftmask_fl == 0)
+		shiftmask_init();
+	p = 0;
 
-	for (yi = y; yi < (y+height); yi++) {
+	if (r_shift > 0)
+		p = (r << (r_shift)) & r_mask;
+	else if (r_shift < 0)
+		p = (r >> (-r_shift)) & r_mask;
+	else
+		p |= (r & r_mask);
+
+	if (g_shift > 0)
+		p |= (g << (g_shift)) & g_mask;
+	else if (g_shift < 0)
+		p |= (g >> (-g_shift)) & g_mask;
+	else
+		p |= (g & g_mask);
+
+	if (b_shift > 0)
+		p |= (b << (b_shift)) & b_mask;
+	else if (b_shift < 0)
+		p |= (b >> (-b_shift)) & b_mask;
+	else
+		p |= (b & b_mask);
+
+	return p;
+}
+
+
+static void		 st2_fixup (XImage *framebuf, int x, int y, int width, int height)
+{
+	int				 xi,yi;
+	unsigned char	*src;
+	PIXEL16			*dest;
+
+	if( (x < 0) || (y < 0) )
+		return;
+
+	for (yi = y; yi < (y + height); yi++)
+	{
 		src = &framebuf->data [yi * framebuf->bytes_per_line];
-		dest = (PIXEL*)src;
-		for(xi = (x+width-1); xi >= x; xi--) {
+		dest = (PIXEL16 *)src;
+		for (xi = (x + width - 1); xi >= x; xi--)
 			dest[xi] = st2d_8to16table[src[xi]];
-		}
+	}
+}
+
+
+static void		 st3_fixup (XImage *framebuf, int x, int y, int width, int height)
+{
+	int				 xi,yi;
+	unsigned char	*src;
+	PIXEL24			*dest;
+
+	if( (x < 0) || (y < 0) )
+		return;
+
+	for (yi = y; yi < (y + height); yi++)
+	{
+		src = &framebuf->data [yi * framebuf->bytes_per_line];
+		dest = (PIXEL24 *)src;
+		for (xi = (x + width - 1); xi >= x; xi--)
+			dest[xi] = st2d_8to24table[src[xi]];
 	}
 }
 
@@ -591,42 +663,42 @@ void VID_Init (unsigned char *palette)
 
 }
 
-void VID_ShiftPalette(unsigned char *p)
+void VID_ShiftPalette (unsigned char *p)
 {
 	VID_SetPalette(p);
 }
 
 
 
-void VID_SetPalette(unsigned char *palette)
+void			 VID_SetPalette (unsigned char *palette)
 {
+	int			 i;
+	XColor		 colors[256];
 
-	int i;
-	XColor colors[256];
-
-	for(i=0;i<256;i++)
-		st2d_8to16table[i]= xlib_rgb(palette[i*3],
-			palette[i*3+1],palette[i*3+2]);
+	for (i = 0; i < 256; i++)
+	{
+		st2d_8to16table[i] = xlib_rgb16 (palette[i * 3], palette[i * 3 + 1], palette[i * 3 + 2]);
+		st2d_8to24table[i] = xlib_rgb24 (palette[i * 3], palette[i * 3 + 1], palette[i * 3 + 2]);
+	}
 
 	if (x_visinfo->class == PseudoColor && x_visinfo->depth == 8)
 	{
 		if (palette != current_palette)
 			memcpy(current_palette, palette, 768);
-		for (i=0 ; i<256 ; i++)
+		for (i = 0 ; i < 256; i++)
 		{
 			colors[i].pixel = i;
 			colors[i].flags = DoRed|DoGreen|DoBlue;
-			colors[i].red = palette[i*3] * 257;
-			colors[i].green = palette[i*3+1] * 257;
-			colors[i].blue = palette[i*3+2] * 257;
+			colors[i].red = palette[i * 3] * 257;
+			colors[i].green = palette[i * 3 + 1] * 257;
+			colors[i].blue = palette[i * 3 + 2] * 257;
 		}
 		XStoreColors(x_disp, x_cmap, colors, 256);
 	}
-
 }
 
-// Called at shutdown
 
+// Called at shutdown
 void VID_Shutdown (void)
 {
 	Com_Printf ("VID_Shutdown\n");
@@ -871,13 +943,11 @@ void GetEvent(void)
 	}
 }
 
+
 // flushes the given rectangles from the view buffer to the screen
-
-void	VID_Update (vrect_t *rects)
+void			 VID_Update (vrect_t *rects)
 {
-
-// if the window changes dimension, skip this frame
-
+	// if the window changes dimension, skip this frame
 	if (config_notify)
 	{
 		fprintf(stderr, "config notify\n");
@@ -898,19 +968,31 @@ void	VID_Update (vrect_t *rects)
 
 	if (doShm)
 	{
-
 		while (rects)
 		{
-			if (x_visinfo->depth != 8)
-				st2_fixup( x_framebuffer[current_framebuffer], 
-					rects->x, rects->y, rects->width,
-					rects->height);
+			if (x_visinfo->depth == 24)
+			{
+				st3_fixup (x_framebuffer[current_framebuffer], 
+				           rects->x, rects->y, rects->width,
+				           rects->height);
+			}
+			else if (x_visinfo->depth == 16)
+			{
+				st2_fixup (x_framebuffer[current_framebuffer], 
+				           rects->x, rects->y, rects->width,
+				           rects->height);
+			}
+
 			if (!XShmPutImage(x_disp, x_win, x_gc,
-				x_framebuffer[current_framebuffer], rects->x, rects->y,
-				rects->x, rects->y, rects->width, rects->height, True))
-					Sys_Error("VID_Update: XShmPutImage failed\n");
+			                  x_framebuffer[current_framebuffer], rects->x, rects->y,
+			                  rects->x, rects->y, rects->width, rects->height, True))
+			{
+				Sys_Error("VID_Update: XShmPutImage failed\n");
+			}
+
 			oktodraw = false;
-			while (!oktodraw) GetEvent();
+			while (!oktodraw)
+				GetEvent();
 			rects = rects->pnext;
 		}
 		current_framebuffer = !current_framebuffer;
@@ -921,37 +1003,45 @@ void	VID_Update (vrect_t *rects)
 	{
 		while (rects)
 		{
-			if (x_visinfo->depth != 8)
-				st2_fixup( x_framebuffer[current_framebuffer], 
-					rects->x, rects->y, rects->width,
-					rects->height);
+			if (x_visinfo->depth == 24)
+			{
+				st3_fixup (x_framebuffer[current_framebuffer], 
+				           rects->x, rects->y, rects->width,
+				           rects->height);
+			}
+			else if (x_visinfo->depth == 16)
+			{
+				st2_fixup (x_framebuffer[current_framebuffer], 
+				           rects->x, rects->y, rects->width,
+				           rects->height);
+			}
+
 			XPutImage(x_disp, x_win, x_gc, x_framebuffer[0], rects->x,
-				rects->y, rects->x, rects->y, rects->width, rects->height);
+			          rects->y, rects->x, rects->y, rects->width, rects->height);
 			rects = rects->pnext;
 		}
 		XSync(x_disp, False);
 	}
-
 }
 
 static int dither;
 
 void VID_DitherOn(void)
 {
-    if (dither == 0)
-    {
+	if (dither == 0)
+	{
 		vid.recalc_refdef = 1;
-        dither = 1;
-    }
+		dither = 1;
+	}
 }
 
 void VID_DitherOff(void)
 {
-    if (dither)
-    {
+	if (dither)
+	{
 		vid.recalc_refdef = 1;
-        dither = 0;
-    }
+		dither = 0;
+	}
 }
 
 int Sys_OpenWindow(void)
@@ -973,10 +1063,11 @@ void Sys_DisplayWindow(int window)
 
 void Sys_SendKeyEvents(void)
 {
-// get events from x server
+	// get events from x server
 	if (x_disp)
 	{
-		while (XPending(x_disp)) GetEvent();
+		while (XPending(x_disp))
+			GetEvent();
 		while (keyq_head != keyq_tail)
 		{
 			Key_Event(keyq[keyq_tail].key, keyq[keyq_tail].down);
@@ -988,7 +1079,6 @@ void Sys_SendKeyEvents(void)
 #if 0
 char *Sys_ConsoleInput (void)
 {
-
 	static char	text[256];
 	int		len;
 	fd_set  readfds;
@@ -1012,7 +1102,6 @@ char *Sys_ConsoleInput (void)
 	}
 
 	return 0;
-	
 }
 #endif
 
@@ -1028,26 +1117,29 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void IN_Init (void)
 {
+	mouse_avail = false;
 	Cvar_Register (&_windowed_mouse);
 	Cvar_Register (&m_filter);
-   if ( COM_CheckParm ("-nomouse") )
-     return;
-   mouse_x = mouse_y = 0.0;
-   mouse_avail = 1;
+	if ( COM_CheckParm ("-nomouse") )
+		return;
+	mouse_x = mouse_y = 0.0;
+	mouse_avail = true;
 }
 
 void IN_Shutdown (void)
 {
-   mouse_avail = 0;
+	mouse_avail = false;
 }
 
 void IN_Commands (void)
 {
 	int i;
    
-	if (!mouse_avail) return;
+	if (!mouse_avail)
+		return;
    
-	for (i=0 ; i<mouse_buttons ; i++) {
+	for (i = 0; i < mouse_buttons; i++)
+	{
 		if ( (mouse_buttonstate & (1<<i)) && !(mouse_oldbuttonstate & (1<<i)) )
 			Key_Event (K_MOUSE1 + i, true);
 
