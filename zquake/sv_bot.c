@@ -82,7 +82,7 @@ edict_t *SV_CreateBot (char *name)
 	memset (newcl, 0, sizeof(*newcl));
 	newcl->state = cs_connected;
 	newcl->bot = true;
-	newcl->userid = ++svs.lastuserid;
+	newcl->userid = SV_GenerateUserID();
 	newcl->extensions = SUPPORTED_EXTENSIONS;	// bots always use latest ZQuake :-)
 	strlcpy (newcl->name, name, sizeof(newcl->name));
 

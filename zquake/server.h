@@ -373,6 +373,7 @@ void SV_FinalMessage (char *message);
 void SV_DropClient (client_t *drop);
 void SV_InitLocal (void);
 
+int SV_GenerateUserID (void);
 int SV_CalcPing (client_t *cl);
 void SV_FullClientUpdate (client_t *client, sizebuf_t *buf);
 void SV_FullClientUpdateToClient (client_t *client, client_t *cl);

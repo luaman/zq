@@ -1329,8 +1329,6 @@ void Cmd_Join_f (void)
 	sv_client->spectator = false;
 	Info_RemoveKey (sv_client->userinfo, "*spectator");
 
-	// FIXME, bump the client's userid?
-
 	// call the progs to get default spawn parms for the new client
 	PR_ExecuteProgram (pr_global_struct->SetNewParms);
 	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
@@ -1402,8 +1400,6 @@ void Cmd_Observe_f (void)
 	// turn the player into a spectator
 	sv_client->spectator = true;
 	Info_SetValueForStarKey (sv_client->userinfo, "*spectator", "1", MAX_INFO_STRING);
-
-	// FIXME, bump the client's userid?
 
 	// call the progs to get default spawn parms for the new client
 	PR_ExecuteProgram (pr_global_struct->SetNewParms);
