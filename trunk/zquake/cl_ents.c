@@ -109,6 +109,7 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 		// FIXME
 		// oldman: is this not used?
 		// to->solid = MSG_ReadShort ();
+		// Tonik: no, it is not used (alas!)
 	}
 }
 
