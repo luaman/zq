@@ -1398,11 +1398,11 @@ void CL_MuzzleFlash (void)
 
 #ifdef GLQUAKE
 	// don't draw our own muzzle flash in gl if flashblending
-	if (i-1 == cl.playernum && gl_flashblend.value)
+	if (i-1 == cl.viewplayernum && gl_flashblend.value)
 		return;
 #endif
 
-	if (cl_muzzleflash.value == 2 && i-1 == cl.playernum)
+	if (cl_muzzleflash.value == 2 && i-1 == cl.viewplayernum)
 		return;
 
 	dl = CL_AllocDlight (-i);
