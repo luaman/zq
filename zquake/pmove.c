@@ -214,12 +214,13 @@ int PM_SlideMove (void)
 
 /*
 =============
-PM_GroundMove
+PM_StepSlideMove
 
-Player is on ground, with no upwards velocity
+Each intersection will try to step over the obstruction instead of
+sliding along it.
 =============
 */
-void PM_GroundMove (void)
+void PM_StepSlideMove (void)
 {
 	vec3_t	start, dest;
 	pmtrace_t	trace;
@@ -345,9 +346,8 @@ void PM_Friction (void)
 
 		trace = PM_PlayerMove (start, stop);
 
-		if (trace.fraction == 1) {
+		if (trace.fraction == 1)
 			friction *= 2;
-		}
 	}
 
 	drop = 0;
@@ -453,7 +453,6 @@ void PM_AirAccelerate (vec3_t wishdir, float wishspeed, float accel)
 /*
 ===================
 PM_WaterMove
-
 ===================
 */
 void PM_WaterMove (void)
@@ -551,15 +550,11 @@ void PM_AirMove (void)
 			pmove.velocity[2] = 0;
 		PM_Accelerate (wishdir, wishspeed, movevars.accelerate);
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * frametime;
-		PM_GroundMove ();
+		PM_StepSlideMove ();
 	}
 	else
 	{	// not on ground, so little effect on velocity
-#if 0
-		PM_AirAccelerate (wishdir, wishspeed, movevars.airaccelerate);
-#else
 		PM_AirAccelerate (wishdir, wishspeed, movevars.accelerate);
-#endif
 
 		// add gravity
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * frametime;
@@ -668,12 +663,7 @@ void PM_CheckJump (void)
 	}
 
 	if (pmove.waterjumptime)
-	{
-		pmove.waterjumptime -= frametime;
-		if (pmove.waterjumptime < 0)
-			pmove.waterjumptime = 0;
 		return;
-	}
 
 	if (pmove.waterlevel >= 2)
 	{	// swimming, not jumping
@@ -737,9 +727,9 @@ void PM_CheckWaterJump (void)
 	if (pmove.waterjumptime)
 		return;
 
-	// ZOID, don't hop out if we just jumped in
+	// don't hop out if we just jumped in
 	if (pmove.velocity[2] < -180)
-		return; // only hop out if we are moving up
+		return;
 
 	// see if near an edge
 	flatforward[0] = forward[0];
@@ -765,28 +755,24 @@ void PM_CheckWaterJump (void)
 
 /*
 =================
-NudgePosition
+PM_NudgePosition
 
 If pmove.origin is in a solid position,
 try nudging slightly on all axis to
 allow for the cut precision of the net coordinates
 =================
 */
-void NudgePosition (void)
+void PM_NudgePosition (void)
 {
 	vec3_t	base;
 	int		x, y, z;
 	int		i;
-	static int		sign[3] = {0, -1, 1};
+	static int	sign[3] = {0, -1, 1};
 
 	VectorCopy (pmove.origin, base);
 
 	for (i=0 ; i<3 ; i++)
 		pmove.origin[i] = ((int)(pmove.origin[i]*8)) * 0.125;
-//	pmove.origin[2] += 0.124;
-
-//	if (pmove.dead)
-//		return;		// might be a squished point, so don't bother
 
 	for (z=0 ; z<=2 ; z++)
 	{
@@ -905,6 +891,8 @@ void PlayerMove (void)
 	frametime = pmove.cmd.msec * 0.001;
 	pmove.numtouch = 0;
 
+	// take angles directly from command
+	VectorCopy (pmove.cmd.angles, pmove.angles);
 	AngleVectors (pmove.angles, forward, right, up);
 
 	if (pmove.spectator)
@@ -914,10 +902,7 @@ void PlayerMove (void)
 		return;
 	}
 
-	NudgePosition ();
-
-	// take angles directly from command
-	VectorCopy (pmove.cmd.angles, pmove.angles);
+	PM_NudgePosition ();
 
 	// set onground, watertype, and waterlevel
 	PM_CategorizePosition ();
@@ -927,6 +912,13 @@ void PlayerMove (void)
 
 	if (pmove.velocity[2] < 0 || pmove.dead)
 		pmove.waterjumptime = 0;
+
+	if (pmove.waterjumptime)
+	{
+		pmove.waterjumptime -= frametime;
+		if (pmove.waterjumptime < 0)
+			pmove.waterjumptime = 0;
+	}
 
 #ifndef SERVERONLY
 	if (pmove.jump_msec) {
