@@ -91,6 +91,7 @@ int		gl_alpha_format = 4;
 int		gl_filter_min = GL_LINEAR_MIPMAP_NEAREST;
 int		gl_filter_max = GL_LINEAR;
 
+int		gl_max_texsize;
 
 int		texels;
 
@@ -538,10 +539,12 @@ void Draw_Init (void)
 	Cvar_Register (&gl_texturemode);
 	Cvar_Register (&gl_smoothfont);
 
-	// 3dfx can only handle 256 wide textures
-	if (!Q_strnicmp ((char *)gl_renderer, "3dfx",4) ||
-		!Q_strnicmp ((char *)gl_renderer, "Mesa",4))
-		Cvar_Set (&gl_max_size, "256");
+	// get the maximum texture size from driver
+	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &i);
+
+	gl_max_texsize = gl_max_size.value;
+	if (gl_max_texsize > i)
+		gl_max_texsize = i;
 
 	// load the console background and the charset
 	// by hand, because we need to write the version
@@ -1387,10 +1390,10 @@ static	unsigned	scaled[1024*512];	// [512*256];
 		scaled_height >>= (int)gl_picmip.value;
 	}
 
-	if (scaled_width > gl_max_size.value)
-		scaled_width = gl_max_size.value;
-	if (scaled_height > gl_max_size.value)
-		scaled_height = gl_max_size.value;
+	if (scaled_width > gl_max_texsize)
+		scaled_width = gl_max_texsize;
+	if (scaled_height > gl_max_texsize)
+		scaled_height = gl_max_texsize;
 	if (scaled_width < 1)
 		scaled_width = 1;
 	if (scaled_height < 1)
@@ -1401,19 +1404,7 @@ static	unsigned	scaled[1024*512];	// [512*256];
 
 	samples = alpha ? gl_alpha_format : gl_solid_format;
 
-#if 0
-	if (mipmap)
-		gluBuild2DMipmaps (GL_TEXTURE_2D, samples, width, height, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-	else if (scaled_width == width && scaled_height == height)
-		glTexImage2D (GL_TEXTURE_2D, 0, samples, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
-	else
-	{
-		gluScaleImage (GL_RGBA, width, height, GL_UNSIGNED_BYTE, trans,
-			scaled_width, scaled_height, GL_UNSIGNED_BYTE, scaled);
-		glTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
-	}
-#else
-texels += scaled_width * scaled_height;
+	texels += scaled_width * scaled_height;
 
 	if (scaled_width == width && scaled_height == height)
 	{
@@ -1447,7 +1438,6 @@ texels += scaled_width * scaled_height;
 		}
 	}
 done: ;
-#endif
 
 
 	if (mipmap)
@@ -1495,10 +1485,10 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 		scaled_height >>= (int)gl_picmip.value;
 	}
 
-	if (scaled_width > gl_max_size.value)
-		scaled_width = gl_max_size.value;
-	if (scaled_height > gl_max_size.value)
-		scaled_height = gl_max_size.value;
+	if (scaled_width > gl_max_texsize)
+		scaled_width = gl_max_texsize;
+	if (scaled_height > gl_max_texsize)
+		scaled_height = gl_max_texsize;
 	if (scaled_width < 1)
 		scaled_width = 1;
 	if (scaled_height < 1)
