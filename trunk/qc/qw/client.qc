@@ -1332,17 +1332,19 @@ void ClientObituary (entity targ, entity attacker)
 				bprint (PRINT_MEDIUM, targ.netname, " becomes bored with life\n");
 			return;
 		}
-		else if ( (teamplay == 2) && (targteam == attackerteam) &&
-			(attackerteam != "") )
+		else if ( ((teamplay == 2) && (targteam == attackerteam) &&
+			(attackerteam != "")) || coop )
 		{
+			if (coop)
+				rnum = rnum * 0.5;	// only use the first two messages
 			if (rnum < 0.25)
-				deathstring = " mows down a teammate\n";
-			else if (rnum < 0.50)
 				deathstring = " checks his glasses\n";
+			else if (rnum < 0.50)
+				deathstring = " loses another friend\n";
 			else if (rnum < 0.75)
 				deathstring = " gets a frag for the other team\n";
 			else
-				deathstring = " loses another friend\n";
+				deathstring = " mows down a teammate\n";
 			bprint (PRINT_MEDIUM, attacker.netname, deathstring);
 			attacker.frags = attacker.frags - 1;
 			//ZOID 12-13-96:  killing a teammate logs as suicide
