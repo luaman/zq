@@ -3095,7 +3095,7 @@ void VID_MenuDraw (void)
 	modedesc_t	tmodedesc;
 
 	p = R_CachePic ("gfx/vidmodes.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 
 	for (i=0 ; i<3 ; i++)
 	{

@@ -30,6 +30,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 #include "teamplay.h"
 
+
+void W_LoadWadFile (char *filename);	// FIXME, should be done by renderer
+
 cvar_t	*cl_rconPassword;
 cvar_t	cl_rconAddress = {"rcon_address", ""};
 
