@@ -425,12 +425,12 @@ void M_AdjustSliders (int dir)
 		}
 		break;
 	
-	case 10:	// invert mouse
-		Cvar_SetValue (&m_pitch, -m_pitch.value);
+	case 10:	// mouse look
+		Cvar_SetValue (&freelook, !freelook.value);
 		break;
 	
-	case 11:	// lookspring
-		Cvar_SetValue (&lookspring, !lookspring.value);
+	case 11:	// invert mouse
+		Cvar_SetValue (&m_pitch, -m_pitch.value);
 		break;
 	
 	case 12:	// lookstrafe
@@ -521,11 +521,11 @@ void M_Options_Draw (void)
 	M_Print (16, 104,  "            Always Run");
 	M_DrawCheckbox (220, 104, cl_forwardspeed.value > 200);
 
-	M_Print (16, 112, "          Invert Mouse");
-	M_DrawCheckbox (220, 112, m_pitch.value < 0);
+	M_Print (16, 112, "            Mouse look");
+	M_DrawCheckbox (220, 112, freelook.value);
 
-	M_Print (16, 120, "            Lookspring");
-	M_DrawCheckbox (220, 120, lookspring.value);
+	M_Print (16, 120, "          Invert Mouse");
+	M_DrawCheckbox (220, 120, m_pitch.value < 0);
 
 	M_Print (16, 128, "            Lookstrafe");
 	M_DrawCheckbox (220, 128, lookstrafe.value);
@@ -930,7 +930,7 @@ void M_Fps_Draw (void)
 
 	M_PrintWhite (16, 136, "            Fast mode");
 
-	M_PrintWhite (16, 144, "        Hight quality");
+	M_PrintWhite (16, 144, "         High quality");
 
 // cursor
 	M_DrawCharacter (200, 32 + fps_cursor*8, 12+((int)(realtime*4)&1));
@@ -949,6 +949,10 @@ void M_Fps_Key (int k)
 	case K_UPARROW:
 		S_LocalSound ("misc/menu1.wav");
 		fps_cursor--;
+#ifndef GLQUAKE
+		if (fps_cursor == 12)
+			fps_cursor = 11;
+#endif
 		if (fps_cursor < 0)
 			fps_cursor = FPS_ITEMS - 1;
 		break;
@@ -956,12 +960,10 @@ void M_Fps_Key (int k)
 	case K_DOWNARROW:
 		S_LocalSound ("misc/menu1.wav");
 		fps_cursor++;
-
 #ifndef GLQUAKE
 		if (fps_cursor == 12)
 			fps_cursor = 13;
 #endif
-
 		if (fps_cursor >= FPS_ITEMS)
 			fps_cursor = 0;
 		break;
@@ -1041,12 +1043,10 @@ void M_Fps_Key (int k)
 			Cvar_SetValue (&cl_muzzleflash, 0);
 			Cvar_SetValue (&cl_gibfilter, 1);
 			Cvar_SetValue (&cl_deadbodyfilter, 1);
-			Cvar_SetValue (&r_rockettrail, 0);
 			Cvar_SetValue (&r_rocketlight, 0);
 			Cvar_SetValue (&r_powerupglow, 0);
 			Cvar_SetValue (&r_drawflame, 0);
 			Cvar_SetValue (&r_fastsky, 1);
-
 #ifdef GLQUAKE
 			Cvar_SetValue (&gl_flashblend, 1);
 #endif
@@ -1058,21 +1058,14 @@ void M_Fps_Key (int k)
 			Cvar_SetValue (&cl_muzzleflash, 1);
 			Cvar_SetValue (&cl_gibfilter, 0);
 			Cvar_SetValue (&cl_deadbodyfilter, 0);
-			Cvar_SetValue (&r_rockettrail, 1);
 			Cvar_SetValue (&r_rocketlight, 1);
-			Cvar_SetValue (&r_powerupglow, 1);
+			Cvar_SetValue (&r_powerupglow, 2);
 			Cvar_SetValue (&r_drawflame, 1);
 			Cvar_SetValue (&r_fastsky, 0);
-
 #ifdef GLQUAKE
 			Cvar_SetValue (&gl_flashblend, 0);
 #endif
-
-			break;
-
 		}
-		break;
-
 	}
 }
 
