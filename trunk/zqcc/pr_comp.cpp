@@ -174,6 +174,9 @@ def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 
 		statement->c = numpr_globals;
 		numpr_globals += type_size[op->type_c];
+
+		if (numpr_globals > MAX_REGS)
+			Error ("numpr_globals > MAX_REGS");
 	}
 
 	if (op->right_associative)
@@ -276,6 +279,8 @@ def_t *PR_GetImmediate (type_t *type, eval_t val, char *string = NULL /* for ev_
 	def->scope = def->visscope = NULL;	// always share immediates
 
 // copy the immediate to the global area
+	if (numpr_globals + type_size[type->type] > MAX_REGS)
+		Error ("numpr_globals > MAX_REGS");
 	def->ofs = numpr_globals;
 	pr_global_defs[def->ofs] = def;
 	numpr_globals += type_size[type->type];
@@ -1009,6 +1014,9 @@ allocNew:
 	def->isParm = isParm;
 	def->scope = scope;
 	def->visscope = visscope;
+
+	if (numpr_globals + type_size[type->type] > MAX_REGS)
+		Error ("numpr_globals > MAX_REGS");
 	
 	def->ofs = numpr_globals;
 	pr_global_defs[numpr_globals] = def;
