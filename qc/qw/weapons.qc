@@ -472,7 +472,7 @@ void W_FireRocket ()
 	newmis.classname = "rocket";
 
 	setmodel (newmis, "progs/missile.mdl");
-	setsize (newmis, VEV_ORIGIN, VEV_ORIGIN);
+	setsize (newmis, '0 0 0', '0 0 0');
 	setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
 }
 
@@ -647,8 +647,8 @@ void GrenadeTouch ()
 		return;
 	}
 	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);	// bounce sound
-	if (self.velocity == VEV_ORIGIN)
-		self.avelocity = VEV_ORIGIN;
+	if (self.velocity == '0 0 0')
+		self.avelocity = '0 0 0';
 }
 
 /*
@@ -713,7 +713,7 @@ void W_FireGrenade ()
 	newmis.think = GrenadeExplode;
 
 	setmodel (newmis, "progs/grenade.mdl");
-	setsize (newmis, VEV_ORIGIN, VEV_ORIGIN);
+	setsize (newmis, '0 0 0', '0 0 0');
 	setorigin (newmis, self.origin);
 }
 
