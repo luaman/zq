@@ -78,7 +78,7 @@ static void Sbar_TeamOverlay (int start);
 static void Sbar_MiniDeathmatchOverlay (void);
 
 #ifdef AGRIP
-#define R_DrawString(a, b, c)   Sys_Printf("%s ", c)
+#define R_DrawString(a, b, c)   Sys_Printf("%s\n", c)
 #endif
 
 static int	sbar_xofs;
@@ -987,6 +987,10 @@ void Sbar_Draw (void)
 	qbool	headsup;
 	qbool	inventory_area_drawn = false;
 
+#ifdef AGRIP
+        if (cl.stats[STAT_HEALTH] <= 0) return;
+#endif
+
 	headsup = !cl_sbar.value || sb_oldmanssbar2;
 	if ((sb_updates >= vid.numpages) && !headsup && !sb_oldmanssbar)
 		return;
@@ -1069,6 +1073,7 @@ void Sbar_Draw (void)
 
 #ifdef AGRIP
     Sbar_DontShowScores();
+    Sbar_DontShowTeamScores();
 #endif
 }
 
