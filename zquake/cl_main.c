@@ -138,6 +138,11 @@ static void CL_FixupModelNames (void)
 
 //============================================================================
 
+int CL_ClientState ()
+{
+	return cls.state;
+}
+
 
 /*
 =======================
