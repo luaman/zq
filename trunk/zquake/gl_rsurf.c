@@ -834,20 +834,6 @@ void R_RenderDynamicLightmaps (msurface_t *fa)
 
 /*
 ================
-R_MirrorChain
-================
-*/
-void R_MirrorChain (msurface_t *s)
-{
-	if (mirror)
-		return;
-	mirror = true;
-	mirror_plane = s->plane;
-}
-
-
-/*
-================
 R_DrawWaterSurfaces
 ================
 */
@@ -950,15 +936,10 @@ void DrawTextureChains (void)
 		s = t->texturechain;
 		if (!s)
 			continue;
-		if (i == skytexturenum)
+		if (i == skytexturenum) {
 			R_DrawSkyChain (s);
-		else if (i == mirrortexturenum && r_mirroralpha.value != 1.0)
-		{
-			R_MirrorChain (s);
-			continue;
 		}
-		else
-		{
+		else {
 			if ((s->flags & SURF_DRAWTURB) && wateralpha != 1.0)
 				continue;	// draw translucent water later
 			for ( ; s ; s=s->texturechain)
@@ -1167,14 +1148,9 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 					}
 
 					// if sorting by texture, just store it out
-					if (gl_texsort.value)
-					{
-						if (!mirror
-						|| surf->texinfo->texture != r_worldmodel->textures[mirrortexturenum])
-						{
-							surf->texturechain = surf->texinfo->texture->texturechain;
-							surf->texinfo->texture->texturechain = surf;
-						}
+					if (gl_texsort.value) {
+						surf->texturechain = surf->texinfo->texture->texturechain;
+						surf->texinfo->texture->texturechain = surf;
 					} else if (surf->flags & SURF_DRAWSKY) {
 						surf->texturechain = skychain;
 						skychain = surf;
@@ -1266,9 +1242,6 @@ void R_MarkLeaves (void)
 		&& r_oldviewleaf2 == r_viewleaf2)	// watervis hack
 		return;
 	
-	if (mirror)
-		return;
-
 	r_visframecount++;
 	r_oldviewleaf = r_viewleaf;
 
