@@ -1474,6 +1474,7 @@ void CL_MuzzleFlash (void)
 	dl->type = lt_muzzleflash;
 }
 
+void CL_WriteDemoMessage (sizebuf_t *msg);
 
 #define SHOWNET(x) if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);
 /*
@@ -1767,4 +1768,6 @@ void CL_ParseServerMessage (void)
 	}
 
 	CL_SetSolidEntities ();
+
+	CL_WriteDemoMessage (&net_message);
 }

@@ -348,7 +348,7 @@ void CL_Disconnect (void)
 // stop sounds (especially looping!)
 	S_StopAllSounds (true);
 	
-	if (cls.demorecording)
+	if (cls.demorecording && cls.state != ca_disconnected)
 		CL_Stop_f ();
 
 	if (cls.demoplayback)
