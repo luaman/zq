@@ -29,7 +29,7 @@ Will be world if not currently angry at anyone.
 
 .movetarget
 The next path spot to walk toward.  If .enemy, ignore .movetarget.
-When an enemy is killed, the monster will try to return to it's path.
+When an enemy is killed, the monster will try to return to its path.
 
 .huntt_ime
 Set to time + something when the player is in sight, but movement straight for
@@ -42,7 +42,7 @@ to 45 deg / state.  If the enemy is in view and hunt_time is not active,
 this will be the exact line towards the enemy.
 
 .pausetime
-A monster will leave it's stand state and head towards it's .movetarget when
+A monster will leave its stand state and head towards its .movetarget when
 time > .pausetime.
 
 walkmove(angle, speed) primitive is all or nothing
@@ -76,7 +76,7 @@ float(float v) anglemod =
 
 MOVETARGET CODE
 
-The angle of the movetarget effects standing and bowing direction, but has no effect on movement, which allways heads to the next target.
+The angle of the movetarget affects standing and bowing direction, but has no effect on movement, which always heads to the next target.
 
 targetname
 must be present.  The name of this movetarget.
@@ -511,7 +511,7 @@ void(float dist) ai_painforward =
 =============
 ai_walk
 
-The monster is walking it's beat
+The monster is walking its beat
 =============
 */
 void(float dist) ai_walk =
