@@ -486,14 +486,14 @@ Cmd_AliasList_f
 void Cmd_AliasList_f (void)
 {
 	cmd_alias_t	*a;
-	int			c;
+	char *pattern;
 
-	c = Cmd_Argc();
+	pattern = Cmd_Argc() > 1 ? Cmd_Argv(1) : NULL;
 
-	if (c == 1)
+	if (!pattern)
 		Com_Printf ("Current alias commands:\n");
-	for (a = cmd_alias ; a ; a=a->next) {
-		if (c == 1 || Q_glob_match(Cmd_Argv(1), a->name))
+	for (a = cmd_alias; a; a = a->next) {
+		if (!pattern || Q_glob_match(pattern, a->name))
 			Com_Printf ("%s : %s\n\n", a->name, a->value);
 	}
 }
@@ -1044,25 +1044,20 @@ if no wildcard is specified
 void Cmd_CmdList_f (void)
 {
 	cmd_function_t	*cmd;
-	int	i, c, count;
+	int	count;
+	char *pattern;
 
-	c = Cmd_Argc();
+	pattern = Cmd_Argc() > 1 ? Cmd_Argv(1) : NULL;
 	
 	count = 0;
-	for (cmd = cmd_functions; cmd; cmd = cmd->next)
-	{
-		if (c >= 2) {
-			for (i = 1; i < c; i++)
-				if (Q_glob_match (Cmd_Argv(i), cmd->name))
-					goto ok;
-			continue;	// doesn't match any wildcards
-		}
-ok:
+	for (cmd = cmd_functions; cmd; cmd = cmd->next) {
+		if (pattern && !Q_glob_match(pattern, cmd->name))
+			continue;
 		Com_Printf ("%s\n", cmd->name);
 		count++;
 	}
 
-	Com_Printf ("------------\n%d %scommands\n", count, c < 2 ? "" : "matching ");
+	Com_Printf ("------------\n%d %scommands\n", count, pattern ? "matching " : "");
 }
 
 
