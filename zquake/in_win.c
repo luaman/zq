@@ -373,6 +373,7 @@ static qbool IN_InitDInput (void)
 
 	if (FAILED(hr))
 	{
+		Com_Printf ("DirectInputCreate failed\n");
 		return false;
 	}
 
