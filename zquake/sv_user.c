@@ -122,7 +122,8 @@ void SV_New_f (void)
 	// append skybox name if there's enough room
 	if (sv.sky[0] && !strstr(sv.sky, ".."))
 	{
-		if (strlen(info) + 5 + strlen(sv.sky) < MAX_SERVERINFO_STRING)
+		if (!strstr(svs.info, "\\sky\\") &&
+			strlen(info) + 5 + strlen(sv.sky) < MAX_SERVERINFO_STRING)
 		{
 			strcat (info, "\\sky\\");
 			strcat (info, sv.sky);
