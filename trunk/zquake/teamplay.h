@@ -41,7 +41,7 @@ void CL_ExecTrigger (char *s);
 void CL_LoadLocFile (char *path, qboolean quiet);
 char *CL_ParseMacroString(char *string);
 
-void CL_SearchForMsgTriggers (char *s);
+void CL_SearchForMsgTriggers (char *s, int level);
 
 int CL_CountPlayers();
 char *CL_MapName();
