@@ -31,16 +31,26 @@ qbool SNDDMA_Init(void)
 {
     int retval;
 
-    Sys_Printf("Attempting to init ALSA...\n");
-    retval = SNDDMA_Init_ALSA();
-    if( retval )
-    {
-        SNDDMA_ALSA = true;
+    // Give user the option to force OSS...
+    if( ! COM_CheckParm("-noalsa") )
+    { 
+        // Try ALSA first...
+        Sys_Printf("sound: Attempting to initialise ALSA...\n");
+        retval = SNDDMA_Init_ALSA();
+        if( retval )
+        {
+            SNDDMA_ALSA = true;
+        }
+        else
+        {
+            SNDDMA_ALSA = false;
+            Sys_Printf("sound: Falling back to OSS...\n");
+            retval = SNDDMA_Init_OSS();
+        }
     }
     else
     {
-        SNDDMA_ALSA = false;
-        Sys_Printf("Falling back to OSS...\n");
+        Sys_Printf("sound: Using OSS at user's request...\n");
         retval = SNDDMA_Init_OSS();
     }
 
