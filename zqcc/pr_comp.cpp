@@ -319,7 +319,7 @@ PR_ParseFunctionCall
 def_t *PR_ParseFunctionCall (def_t *func)
 {
 	def_t		*e;
-	int			arg;
+	int			 arg;
 	type_t		*t;
 
 	t = func->type;
@@ -327,19 +327,19 @@ def_t *PR_ParseFunctionCall (def_t *func)
 	if (t->type != ev_function)
 		PR_ParseError ("not a function");
 
-// copy the arguments to the global parameter variables
+	// copy the arguments to the global parameter variables
 	arg = 0;
 	if (!PR_Check(")"))
 	{
 		do
 		{
-			if (arg >= t->num_parms /* works properly with varargs */)
+			if (arg >= t->num_parms || arg >= MAX_PARMS /* works properly with varargs */)
 				PR_ParseError ("too many parameters");
 			e = PR_Expression (TOP_PRIORITY);
 
 			if (arg < (t->num_parms & VA_MASK) && !CompareType(e->type, t->parm_types[arg]))
 				PR_ParseError ("type mismatch on parm %i", arg);
-		// a vector copy will copy everything
+			// a vector copy will copy everything
 			def_parms[arg].type = t->parm_types[arg];
 			PR_Statement (&pr_opcodes[OP_STORE_V], e, &def_parms[arg]);
 			arg++;
@@ -349,15 +349,15 @@ def_t *PR_ParseFunctionCall (def_t *func)
 			PR_ParseError ("too few parameters");
 		PR_Expect (")");
 	}
-	if (arg > 8)
-		PR_ParseError ("more than eight parameters");
-
+	if (arg > MAX_PARMS)
+		PR_ParseError ("more than %d parameters", (int)MAX_PARMS);
 
 	PR_Statement (&pr_opcodes[OP_CALL0+arg], func, 0);
 
 	def_ret.type = t->aux_type;
 	return &def_ret;
 }
+
 
 /*
 ============
@@ -460,6 +460,7 @@ def_t *PR_Term (void)
 	return NULL;	// shut up compiler
 }
 
+
 bool PR_Calc (int opcode, const eval_t *a, const eval_t *b, eval_t *c)
 {
 	switch (opcode) {
@@ -544,6 +545,7 @@ bool PR_Calc (int opcode, const eval_t *a, const eval_t *b, eval_t *c)
 
 	return true;
 }
+
 
 /*
 ==============
@@ -816,6 +818,7 @@ void PR_ParseState (void)
 	PR_Statement (&pr_opcodes[OP_STATE], s1, def);
 }
 
+
 /*
 ============
 PR_ParseImmediateStatements
@@ -920,6 +923,7 @@ def_t *PR_FindDef (char *name, def_t *scope)
 
 	return NULL;
 }
+
 
 /*
 ============
@@ -1114,6 +1118,7 @@ void PR_ParseFunctionBody (type_t *type, char *name, def_t *def)
 		df->parm_size[i] = type_size[f->def->type->parm_types[i]->type];
 }
 
+
 /*
 ================
 PR_ParseInitialization
@@ -1142,6 +1147,7 @@ void PR_ParseInitialization (type_t *type, char *name, def_t *def)
 	memcpy (pr_globals + def->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
 	PR_Lex ();
 }
+
 
 /*
 ================
@@ -1222,6 +1228,7 @@ void PR_ParseDefs (void)
 	while (PR_Check(";"))
 		;	// skip redundant semicolons
 }
+
 
 /*
 ============
