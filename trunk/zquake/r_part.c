@@ -37,7 +37,7 @@ int			r_numparticles;
 
 vec3_t			r_pright, r_pup, r_ppn;
 
-float			scalefactor = 0.04f;
+float	r_partscale = 0.04f;
 
 /*
 ===============
@@ -524,7 +524,7 @@ void R_DrawParticles (void)
 		// hack a scale up to keep particles from disapearing
 		dist = (p->org[0] - r_origin[0])*vpn[0] + (p->org[1] - r_origin[1])*vpn[1]
 			+ (p->org[2] - r_origin[2])*vpn[2];
-		scale = 1 + dist * scalefactor;
+		scale = 1 + dist * r_partscale;
 
 		at = (byte *)&d_8to24table[(int)p->color];
 		if (p->type==pt_fire)
