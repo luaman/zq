@@ -748,9 +748,24 @@ Returns NULL if no matching def is found
 */
 def_t *PR_FindDef (char *name, def_t *scope)
 {
+	if (scope) {
+		// search local defs first
+		for (def_t *def = pr.def_head.next ; def ; def = def->next) {
+			if (def->scope != scope)
+				continue;		// in a different function, or global
+				
+			if (strcmp(def->name, name))
+				continue;
+
+			// found it
+			return def;
+		}
+	}
+
+	// search global defs
 	for (def_t *def = pr.def_head.next ; def ; def = def->next) {
-		if (def->scope && def->scope != scope)
-			continue;		// in a different function
+		if (def->scope)
+			continue;		// a local def
 			
 		if (strcmp(def->name, name))
 			continue;
@@ -778,20 +793,27 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool isParm)
 	def = PR_FindDef (name, scope);
 
 	if (def) {
+		if (def->scope != scope) {
+			if (!pr_idcomp)
+				goto allocNew;		// a local def overrides global (ok)
+			else
+				PR_Warning (WARN_HIGH, "'%s' already declared on global scope");
+		}
+
 		if (def->type != type)
 			PR_ParseError ("type mismatch on redeclaration of %s", name);
 
 		if (def->isParm && !isParm)
-#if 1 // so that id's original QC code compiles
-			PR_Warning (WARN_HIGH, "redefinition of formal parameter '%s'", name);
-#else
-			PR_ParseError ("redefinition of formal parameter '%s'", name);
-#endif
+			if (!pr_idcomp)
+				PR_ParseError ("redefinition of formal parameter '%s'", name);
+			else
+				PR_Warning (WARN_HIGH, "redefinition of formal parameter '%s'", name);
 		
 		return def;
 	}
 
 // allocate a new def
+allocNew:
 	def = (def_t *) malloc (sizeof(def_t));
 	memset (def, 0, sizeof(*def));
 	def->next = NULL;

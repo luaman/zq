@@ -329,6 +329,8 @@ struct opcode_t
 
 extern opcode_t		pr_opcodes[99];		// sized by initialization
 
+extern bool			pr_idcomp;			// to allow vanilla id Software code to compile
+
 extern bool			pr_dumpasm;
 
 extern def_t		*pr_global_defs[MAX_REGS];	// to find def for a global variable
@@ -373,18 +375,6 @@ extern jmp_buf		pr_parse_abort;		// longjump with this on parse error
 extern int			pr_source_line;
 extern char			*pr_file_p;
 
-void *PR_Malloc (int size);
-
-
-/*const int OFS_NULL		= 0;
-const int OFS_RETURN	= 1;
-const int OFS_PARM0		= 4;		// leave 3 ofs for each parm to hold vectors
-const int OFS_PARM1		= 7;
-const int OFS_PARM2		= 10;
-const int OFS_PARM3		= 13;
-const int OFS_PARM4		= 16;
-const int RESERVED_OFS	= 28;
-*/
 
 extern def_t	*pr_scope;
 extern int		pr_error_count;
