@@ -128,8 +128,8 @@ enum {
 
 struct dstatement_t
 {
-	unsigned short	op;
-	short	a,b,c;
+	unsigned short	 op;
+	unsigned short	 a,b,c;
 };
 
 struct ddef_t
