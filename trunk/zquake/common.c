@@ -401,21 +401,24 @@ void COM_Shutdown (void)
 va
 
 does a varargs printf into a temp buffer
+(8 different are available)
 ============
 */
 char *va (char *format, ...)
 {
-	va_list		argptr;
-	static char		string[2][2048];
-	static int		idx = 0;
+	va_list argptr;
+	static char string[8][2048];
+	static int idx = 0;
 	
-	idx = 1 - idx;
+	idx++;
+	if (idx >= 8)
+		idx = 0;
 
 	va_start (argptr, format);
 #ifdef _WIN32
-	_vsnprintf (string[idx], sizeof(string[0])-1, format,argptr);
+	_vsnprintf (string[idx], sizeof(string[idx]) - 1, format, argptr);
 #else
-	vsprintf (string[idx], format,argptr);
+	vsprintf (string[idx], format, argptr);
 #endif
 	va_end (argptr);
 
@@ -427,7 +430,7 @@ char *va (char *format, ...)
 int	memsearch (byte *start, int count, int search)
 {
 	int		i;
-	
+
 	for (i=0 ; i<count ; i++)
 		if (start[i] == search)
 			return i;
