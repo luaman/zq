@@ -711,7 +711,7 @@ void CL_InitLocal (void)
 	Cvar_Register (&qizmo_dir);
 
 #ifndef RELEASE_VERSION
-	Info_SetValueForStarKey (cls.userinfo, "*z_ver", Z_VERSION, MAX_INFO_STRING);
+	Info_SetValueForStarKey (cls.userinfo, "*z_ver", PROGRAM_VERSION, MAX_INFO_STRING);
 #endif
 
 	//
