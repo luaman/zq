@@ -419,6 +419,25 @@ store:
 	}
 }
 
+/*
+===============
+R_UploadLightMap
+===============
+*/
+void R_UploadLightMap (int lightmapnum)
+{
+	glRect_t	*theRect;
+
+	lightmap_modified[lightmapnum] = false;
+	theRect = &lightmap_rectchange[lightmapnum];
+	glTexSubImage2D (GL_TEXTURE_2D, 0, 0, theRect->t, 
+		BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
+		lightmaps+(lightmapnum*BLOCK_HEIGHT + theRect->t)*BLOCK_WIDTH*lightmap_bytes);
+	theRect->l = BLOCK_WIDTH;
+	theRect->t = BLOCK_HEIGHT;
+	theRect->h = 0;
+	theRect->w = 0;
+}
 
 /*
 ===============
@@ -455,7 +474,6 @@ texture_t *R_TextureAnimation (texture_t *base)
 
 	return base;
 }
-
 
 /*
 =============================================================
@@ -509,9 +527,8 @@ void R_DrawSequentialPoly (msurface_t *s)
 {
 	glpoly_t	*p;
 	float		*v;
-	int			i;
+	int			i, lnum;
 	texture_t	*t;
-	glRect_t	*theRect;
 
 	//
 	// normal lightmaped poly
@@ -523,26 +540,20 @@ void R_DrawSequentialPoly (msurface_t *s)
 			p = s->polys;
 
 			t = R_TextureAnimation (s->texinfo->texture);
+			lnum = s->lightmaptexturenum;
+
 			// Binds world to texture env 0
 			GL_SelectTexture (GL_TEXTURE0_ARB);
 			GL_Bind (t->gl_texturenum);
 			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
 			// Binds lightmap to texenv 1
 			GL_EnableMultitexture (); // Same as SelectTexture (TEXTURE1)
-			GL_Bind (lightmap_textures + s->lightmaptexturenum);
-			i = s->lightmaptexturenum;
-			if (lightmap_modified[i])
-			{
-				lightmap_modified[i] = false;
-				theRect = &lightmap_rectchange[i];
-				glTexSubImage2D (GL_TEXTURE_2D, 0, 0, theRect->t, 
-					BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
-					lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
-				theRect->l = BLOCK_WIDTH;
-				theRect->t = BLOCK_HEIGHT;
-				theRect->h = 0;
-				theRect->w = 0;
-			}
+			GL_Bind (lightmap_textures + lnum);
+
+			if (lightmap_modified[lnum])
+				R_UploadLightMap (lnum);
+
 			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
 			glBegin (GL_POLYGON);
 			v = p->verts[0];
@@ -557,6 +568,8 @@ void R_DrawSequentialPoly (msurface_t *s)
 			p = s->polys;
 
 			t = R_TextureAnimation (s->texinfo->texture);
+			lnum = s->lightmaptexturenum;
+
 			GL_Bind (t->gl_texturenum);
 			glBegin (GL_POLYGON);
 			v = p->verts[0];
@@ -567,20 +580,10 @@ void R_DrawSequentialPoly (msurface_t *s)
 			}
 			glEnd ();
 
-			GL_Bind (lightmap_textures + s->lightmaptexturenum);
-			i = s->lightmaptexturenum;
-			if (lightmap_modified[i])
-			{
-				lightmap_modified[i] = false;
-				theRect = &lightmap_rectchange[i];
-				glTexSubImage2D (GL_TEXTURE_2D, 0, 0, theRect->t, 
-					BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
-					lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
-				theRect->l = BLOCK_WIDTH;
-				theRect->t = BLOCK_HEIGHT;
-				theRect->h = 0;
-				theRect->w = 0;
-			}
+			GL_Bind (lightmap_textures + lnum);
+
+			if (lightmap_modified[lnum])
+				R_UploadLightMap (lnum);
 
 			glEnable (GL_BLEND);
 			glBlendFunc (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
@@ -671,7 +674,6 @@ void R_BlendLightmaps (void)
 	int			i, j;
 	glpoly_t	*p;
 	float		*v;
-	glRect_t	*theRect;
 
 #if 0
 	if (r_fullbright.value)
@@ -695,17 +697,8 @@ void R_BlendLightmaps (void)
 			continue;
 		GL_Bind(lightmap_textures+i);
 		if (lightmap_modified[i])
-		{
-			lightmap_modified[i] = false;
-			theRect = &lightmap_rectchange[i];
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, theRect->t, 
-				BLOCK_WIDTH, theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
-				lightmaps+(i* BLOCK_HEIGHT + theRect->t) *BLOCK_WIDTH*lightmap_bytes);
-			theRect->l = BLOCK_WIDTH;
-			theRect->t = BLOCK_HEIGHT;
-			theRect->h = 0;
-			theRect->w = 0;
-		}
+			R_UploadLightMap (i);
+
 		for ( ; p ; p=p->chain)
 		{
 			glBegin (GL_POLYGON);
@@ -959,7 +952,6 @@ void R_DrawWaterSurfaces (void)
 		if (wateralpha < 0.9)
 			glDepthMask (GL_TRUE);
 	}
-
 }
 
 
@@ -1133,21 +1125,31 @@ void R_DrawBrushModel (entity_t *e)
 R_RecursiveWorldNode
 ================
 */
-void R_RecursiveWorldNode (mnode_t *node)
+void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 {
 	int			c, side;
 	mplane_t	*plane;
 	msurface_t	*surf, **mark;
 	mleaf_t		*pleaf;
-	double		dot;
+	float		dot;
+	int			clipped;
+	mplane_t	*clipplane;
 
 	if (node->contents == CONTENTS_SOLID)
 		return;		// solid
-
 	if (node->visframe != r_visframecount)
 		return;
-	if (R_CullBox (node->minmaxs, node->minmaxs+3))
-		return;
+	for (c=0,clipplane=frustum ; c<4 ; c++,clipplane++)
+	{
+		if (!(clipflags & (1<<c)))
+			continue;	// don't need to clip against it
+		
+		clipped = BoxOnPlaneSide (node->minmaxs, node->minmaxs+3, clipplane);
+		if (clipped == 2)
+			return;
+		else if (clipped == 1)
+			clipflags &= ~(1<<c);	// node is entirely on screen
+	}
 	
 // if a leaf node, draw stuff
 	if (node->contents < 0)
@@ -1178,21 +1180,10 @@ void R_RecursiveWorldNode (mnode_t *node)
 // find which side of the node we are on
 	plane = node->plane;
 
-	switch (plane->type)
-	{
-	case PLANE_X:
-		dot = modelorg[0] - plane->dist;
-		break;
-	case PLANE_Y:
-		dot = modelorg[1] - plane->dist;
-		break;
-	case PLANE_Z:
-		dot = modelorg[2] - plane->dist;
-		break;
-	default:
+	if (plane->type < 3)
+		dot = modelorg[plane->type] - plane->dist;
+	else
 		dot = DotProduct (modelorg, plane->normal) - plane->dist;
-		break;
-	}
 
 	if (dot >= 0)
 		side = 0;
@@ -1200,7 +1191,7 @@ void R_RecursiveWorldNode (mnode_t *node)
 		side = 1;
 
 // recurse down the children, front side first
-	R_RecursiveWorldNode (node->children[side]);
+	R_RecursiveWorldNode (node->children[side], clipflags);
 
 // draw stuff
 	c = node->numsurfaces;
@@ -1253,7 +1244,7 @@ void R_RecursiveWorldNode (mnode_t *node)
 	}
 
 	// recurse down the back side
-	R_RecursiveWorldNode (node->children[!side]);
+	R_RecursiveWorldNode (node->children[!side], clipflags);
 }
 
 
@@ -1281,7 +1272,7 @@ void R_DrawWorld (void)
 
 	R_ClearSkyBox ();
 
-	R_RecursiveWorldNode (cl.worldmodel->nodes);
+	R_RecursiveWorldNode (cl.worldmodel->nodes, 15);
 
 	DrawTextureChains ();
 
