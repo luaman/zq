@@ -224,15 +224,17 @@ sprint(clientent, value)
 */
 void PF_sprint (void)
 {
-	char		*s;
-	client_t	*client;
+	client_t	*cl;
 	int			entnum;
 	int			level;
+	char		*buf, *str;
+	int			buflen, newlen;
+	int			i;
 	
 	entnum = G_EDICTNUM(OFS_PARM0);
 	level = G_FLOAT(OFS_PARM1);
 
-	s = PF_VarString(2);
+	str = PF_VarString(2);
 	
 	if (entnum < 1 || entnum > MAX_CLIENTS)
 	{
@@ -240,9 +242,40 @@ void PF_sprint (void)
 		return;
 	}
 		
-	client = &svs.clients[entnum-1];
+	cl = &svs.clients[entnum-1];
 	
-	SV_ClientPrintf (client, level, "%s", s);
+	buf = cl->sprint_buf;
+	buflen = strlen (buf);
+	newlen = strlen (str);
+
+	if (buflen + newlen >= sizeof(cl->sprint_buf) || (buflen && level != cl->sprint_level)) {
+		// flush the buffer because there's no space left
+		// (or sprint level has changed)
+		if (buflen) {
+			SV_ClientPrintf (cl, cl->sprint_level, "%s", buf);
+			buf[0] = 0;
+		}
+		if (newlen >= sizeof(cl->sprint_buf)) {
+			SV_ClientPrintf (cl, cl->sprint_level, "%s", buf);
+			return;
+		}
+	}
+
+	strcat (buf, str);
+	cl->sprint_level = level;
+	buflen += newlen;
+
+	// flush complete (\n terminated) strings
+	for (i=buflen-1 ; i>=0 ; i--) {
+		if (buf[i] == '\n') {
+			buf[i] = 0;
+			SV_ClientPrintf (cl, cl->sprint_level, "%s\n", buf);
+			// move the remainder to buffer beginning
+			strcpy (buf, buf + i + 1);
+			return;
+		}
+	}
+
 }
 
 
