@@ -60,7 +60,19 @@ typedef struct {
 	hull_t	hulls[MAX_MAP_HULLS];
 } cmodel_t;
 
+#ifdef _WIN32
 typedef struct cleaf_s cleaf_t;
+#else
+typedef struct cleaf_s
+{
+// common with node
+	int			contents;		// a negative contents number
+	struct cnode_s  *parent;
+
+// leaf specific
+	byte		ambient_sound_level[NUM_AMBIENTS];
+} cleaf_t;
+#endif
 
 hull_t *CM_HullForBox (vec3_t mins, vec3_t maxs);
 int CM_HullPointContents (hull_t *hull, int num, vec3_t p);
