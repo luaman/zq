@@ -492,27 +492,8 @@ void IN_Init (void)
 
 	// joystick variables
 	Cvar_Register (&in_joystick);
-	Cvar_Register (&joy_name);
-	Cvar_Register (&joy_advanced);
-	Cvar_Register (&joy_advaxisx);
-	Cvar_Register (&joy_advaxisy);
-	Cvar_Register (&joy_advaxisz);
-	Cvar_Register (&joy_advaxisr);
-	Cvar_Register (&joy_advaxisu);
-	Cvar_Register (&joy_advaxisv);
-	Cvar_Register (&joy_forwardthreshold);
-	Cvar_Register (&joy_sidethreshold);
-	Cvar_Register (&joy_pitchthreshold);
-	Cvar_Register (&joy_yawthreshold);
-	Cvar_Register (&joy_forwardsensitivity);
-	Cvar_Register (&joy_sidesensitivity);
-	Cvar_Register (&joy_pitchsensitivity);
-	Cvar_Register (&joy_yawsensitivity);
-	Cvar_Register (&joy_wwhack1);
-	Cvar_Register (&joy_wwhack2);
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
-	Cmd_AddCommand ("joyadvancedupdate", Joy_AdvancedUpdate_f);
 
 	uiWheelMessage = RegisterWindowMessage ( "MSWHEEL_ROLLMSG" );
 
@@ -790,17 +771,38 @@ IN_StartupJoystick
 */  
 void IN_StartupJoystick (void) 
 { 
-	int			/*i,*/ numdevs;
+	int			numdevs;
 	JOYCAPS		jc;
 	MMRESULT	mmr;
  
  	// assume no joystick
 	joy_avail = false; 
 
-	// abort startup if user requests no joystick
-	if ( COM_CheckParm ("-nojoy") ) 
+	// only initialize if the user wants it
+	if (!COM_CheckParm ("-joystick")) 
 		return; 
- 
+
+	Cvar_Register (&joy_name);
+	Cvar_Register (&joy_advanced);
+	Cvar_Register (&joy_advaxisx);
+	Cvar_Register (&joy_advaxisy);
+	Cvar_Register (&joy_advaxisz);
+	Cvar_Register (&joy_advaxisr);
+	Cvar_Register (&joy_advaxisu);
+	Cvar_Register (&joy_advaxisv);
+	Cvar_Register (&joy_forwardthreshold);
+	Cvar_Register (&joy_sidethreshold);
+	Cvar_Register (&joy_pitchthreshold);
+	Cvar_Register (&joy_yawthreshold);
+	Cvar_Register (&joy_forwardsensitivity);
+	Cvar_Register (&joy_sidesensitivity);
+	Cvar_Register (&joy_pitchsensitivity);
+	Cvar_Register (&joy_yawsensitivity);
+	Cvar_Register (&joy_wwhack1);
+	Cvar_Register (&joy_wwhack2);
+
+	Cmd_AddCommand ("joyadvancedupdate", Joy_AdvancedUpdate_f);
+	
 	// verify joystick driver is present
 	if ((numdevs = joyGetNumDevs ()) == 0)
 	{
