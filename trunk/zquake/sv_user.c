@@ -957,7 +957,6 @@ SV_Pause_f
 */
 void SV_Pause_f (void)
 {
-//	client_t *cl;
 	char st[sizeof(sv_client->name) + 32];
 
 	if (!sv_pausable.value) {
@@ -1366,8 +1365,6 @@ USER CMD EXECUTION
 ===========================================================================
 */
 
-vec3_t	pmove_mins, pmove_maxs;
-
 /*
 ====================
 AddLinksToPmove
@@ -1381,6 +1378,13 @@ void AddLinksToPmove ( areanode_t *node )
 	int			pl;
 	int			i;
 	physent_t	*pe;
+	vec3_t		pmove_mins, pmove_maxs;
+
+	for (i=0 ; i<3 ; i++)
+	{
+		pmove_mins[i] = pmove.origin[i] - 256;
+		pmove_maxs[i] = pmove.origin[i] + 256;
+	}
 
 	pl = EDICT_TO_PROG(sv_player);
 
@@ -1448,6 +1452,13 @@ void AddAllEntsToPmove (void)
 	int			i;
 	physent_t	*pe;
 	int			pl;
+	vec3_t		pmove_mins, pmove_maxs;
+
+	for (i=0 ; i<3 ; i++)
+	{
+		pmove_mins[i] = pmove.origin[i] - 256;
+		pmove_maxs[i] = pmove.origin[i] + 256;
+	}
 
 	pl = EDICT_TO_PROG(sv_player);
 	check = NEXT_EDICT(sv.edicts);
@@ -1513,7 +1524,6 @@ void SV_RunCmd (usercmd_t *ucmd)
 	int			i, n;
 	int			oldmsec;
 	vec3_t		originalvel;
-	qboolean	onground;
 
 	cmd = *ucmd;
 
@@ -1557,13 +1567,14 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	if (!sv_client->spectator)
 	{
-		pr_global_struct->frametime = sv_frametime;
-
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(sv_player);
+		qboolean	onground;
 
 		VectorCopy (sv_player->v.velocity, originalvel);
 		onground = (int)sv_player->v.flags & FL_ONGROUND;
+
+		pr_global_struct->frametime = sv_frametime;
+		pr_global_struct->time = sv.time;
+		pr_global_struct->self = EDICT_TO_PROG(sv_player);
 
 		PR_ExecuteProgram (pr_global_struct->PlayerPreThink);
 
@@ -1606,31 +1617,9 @@ void SV_RunCmd (usercmd_t *ucmd)
 	movevars.ktjump = pm_ktjump.value;
 	movevars.slidefix = pm_slidefix.value;
 
-	for (i=0 ; i<3 ; i++)
-	{
-		pmove_mins[i] = pmove.origin[i] - 256;
-		pmove_maxs[i] = pmove.origin[i] + 256;
-	}
-#if 1
 	AddLinksToPmove ( sv_areanodes );
-#else
-	AddAllEntsToPmove ();
-#endif
 
-#if 0
-{
-	int before, after;
-
-before = PM_TestPlayerPosition (pmove.origin);
 	PM_PlayerMove ();
-after = PM_TestPlayerPosition (pmove.origin);
-
-if (sv_player->v.health > 0 && before && !after )
-	Com_Printf ("player %s got stuck in playermove!!!!\n", sv_client->name);
-}
-#else
-	PM_PlayerMove ();
-#endif
 
 	sv_client->jump_held = pmove.jump_held;
 	sv_player->v.teleport_time = pmove.waterjumptime;
@@ -1646,14 +1635,7 @@ if (sv_player->v.health > 0 && before && !after )
 	for (i=0 ; i<3 ; i++)
 		sv_player->v.origin[i] = pmove.origin[i] - (sv_player->v.mins[i] - player_mins[i]);
 
-#if 0
-	// truncate velocity the same way the net protocol will
-	for (i=0 ; i<3 ; i++)
-		sv_player->v.velocity[i] = (int)pmove.velocity[i];
-#else
 	VectorCopy (pmove.velocity, sv_player->v.velocity);
-#endif
-
 	VectorCopy (pmove.angles, sv_player->v.v_angle);
 
 	if (!sv_client->spectator)
@@ -1685,14 +1667,15 @@ Done after running a player command.
 void SV_PostRunCmd (void)
 {
 	vec3_t		originalvel;
-	qboolean	onground;
 
 	// run post-think
 
 	if (!sv_client->spectator) {
+		qboolean	onground;
+		onground = (int)sv_player->v.flags & FL_ONGROUND;
+
 		pr_global_struct->time = sv.time;
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
-		onground = (int)sv_player->v.flags & FL_ONGROUND;
 		VectorCopy (sv_player->v.velocity, originalvel);
 
 		PR_ExecuteProgram (pr_global_struct->PlayerPostThink);
@@ -1706,7 +1689,8 @@ void SV_PostRunCmd (void)
 		}
 
 		SV_RunNewmis ();
-	} else if (SpectatorThink) {
+	}
+	else if (SpectatorThink) {
 		pr_global_struct->time = sv.time;
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
 		PR_ExecuteProgram (SpectatorThink);
