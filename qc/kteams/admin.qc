@@ -19,17 +19,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // admin.qc
 
-float() CountPlayers;
-float() CountRTeams;
-void() AdminMatchStart;
-void() StopTimer;
-void() NextLevel;
-void(float skip_log) EndMatch;
+float CountPlayers();
+float CountRTeams();
+void AdminMatchStart();
+void StopTimer();
+void NextLevel();
+void EndMatch(float skip_log);
 
-void() NextClient;
-void(entity kicker) ExitKick;
-void() Deathmsg;
-void() RandomPickup;
+void NextClient();
+void ExitKick(entity kicker);
+void Deathmsg();
+void RandomPickup();
 
 // This is designed for pickup games and creates totally random teams(ish)
 // It creates teams thus :
@@ -40,10 +40,10 @@ void() RandomPickup;
 // It does this until alreadyset = ineachteam.  Once that is done it loops through players and checks if
 // we have found enough players for the team.  If it has then it sets all others to blue.  
 // Else it adds next player.  Once we have found enough players then we loop through again setting teams.
-void() RandomPickup =
+void RandomPickup ()
 {
-	local entity p;
-	local float f1=0, ineachteam=0, alreadyset=0;
+	entity p;
+	float f1=0, ineachteam=0, alreadyset=0;
 
 	if(self.k_admin != 2) {
 		sprint(self, 2, "You are not an admin\n");
@@ -137,12 +137,12 @@ void() RandomPickup =
 	}
 
 	bprint(3, "console: random pickup game it is then\n");
-};
+}
 
 // This toggle's between different messages
-void() Deathmsg =
+void Deathmsg ()
 {
-	local float tmp;
+	float tmp;
 
 	if(self.k_admin != 2) {
 		sprint(self, 2, "You are not an admin\n");
@@ -161,19 +161,19 @@ void() Deathmsg =
 		bprint(2, "enabled\n");
 		localcmd("localinfo k_deathmsg 1\n");
 	}
-};
+}
 
 
-void() KickThink =
+void KickThink ()
 {
 	sprint(self.owner, 2, "Your λιγλ mode has timed out.\n");
 	self.nextthink = -1;
 	ExitKick(self.owner);
-};
+}
 
-void() AdminKick =
+void AdminKick ()
 {
-	local entity kickguard;
+	entity kickguard;
 
 	if(self.k_captain) {
 		sprint(self, 2, "Exit γαπταιξ mode first\n");
@@ -203,9 +203,9 @@ void() AdminKick =
 	}
 };
 
-void() NextClient =
+void NextClient ()
 {
-	local float loop = 1;
+	float loop = 1;
 
 	while(loop) {
 		self.k_playertokick = find(self.k_playertokick, classname, self.kick_ctype);
@@ -223,9 +223,9 @@ void() NextClient =
 	sprint(self, 2, self.k_playertokick.netname, "?\n");
 };
 
-void() YesKick =
+void YesKick ()
 {
-	local entity oldtokick;
+	entity oldtokick;
 
 	if(self.k_kicking) {
 		if(self.k_playertokick.classname != "" && self.k_playertokick != self) {
@@ -247,14 +247,14 @@ void() YesKick =
 			stuffcmd(self, "disconnect\n");
 		}
 	}
-};
+}
 
-void() DontKick =
+void DontKick ()
 {
 	if (self.k_kicking) NextClient();
-};
+}
 
-void(entity kicker) ExitKick =
+void ExitKick (entity kicker)
 {
 	local entity childkick;
 
@@ -267,9 +267,9 @@ void(entity kicker) ExitKick =
 		if(kicker.classname != "")
 			sprint(kicker, 2, "Kicking process terminated\n");
 	}
-};
+}
 
-void() ReqAdmin =
+void ReqAdmin ()
 {
 //  admin state=1.5 check for election
 	if(self.k_admin == 1.5) {
@@ -292,12 +292,12 @@ void() ReqAdmin =
 	self.k_added = 0;
 // You can now use numbers to enter code
 	sprint(self, 2, "Use ξυνβεςσ or ινπυμσεσ to enter code\n");
-};
+}
 
-void() AdminImpBot =
+void AdminImpBot ()
 {
-	local float coef, i1;
-	local string s1;
+	float coef, i1;
+	string s1;
 
 	if(self.k_adminc == 0) {
 		self.k_admin = 0;
@@ -326,13 +326,13 @@ void() AdminImpBot =
 	s1 = ftos(self.k_adminc);
 		sprint(self, 2, s1, " νοςε το ηο\n");
 	}
-};
+}
 
-void() ReadyThink =
+void ReadyThink ()
 {
-	local float i1;
-	local string tmp;
-	local entity p;
+	float i1;
+	string tmp;
+	entity p;
 
 	if(self.owner.classname == "player" && !self.owner.ready) {
 		k_force = 0;
@@ -397,13 +397,13 @@ void() ReadyThink =
 		p = find(p, classname, "spectator");
 	}
 	self.nextthink = time + 1;
-};
+}
 
-void() AdminForceStart =
+void AdminForceStart ()
 {
-	local entity mess;
-	local float f1, k_lockmin, k_lockmax;
-	local string tmp;
+	entity mess;
+	float f1, k_lockmin, k_lockmax;
+	string tmp;
 
 	if(match_in_progress || self.k_admin != 2) return;
 	if(self.classname == "player" && !self.ready) {
@@ -440,13 +440,13 @@ void() AdminForceStart =
 		mess.attack_finished = 10 + 1;
 	}
 	else sprint(self, 2, "Can't issue! More players needed.\n");
-};
+}
 
 
-void() BotForceStart =
+void BotForceStart ()
 {
-	local entity p;
-	local float f1;
+	entity p;
+	float f1;
 
 	bprint(2, "server is tired of waiting\nmatch WILL commence!\n");
 	f1 = 0;
@@ -472,12 +472,12 @@ void() BotForceStart =
 		StopTimer();
 		NextLevel();
 	}
-};
+}
 
-void() AdminMatchStart =
+void AdminMatchStart ()
 {
-	local entity p;
-	local float f1;
+	entity p;
+	float f1;
 
 	f1 = 0;
 	p = find(world, classname, "player");
@@ -502,11 +502,11 @@ void() AdminMatchStart =
 		StopTimer();
 		NextLevel();
 	}
-};
+}
 
-void() AdminForceBreak =
+void AdminForceBreak ()
 {
-	local string tmp;
+	string tmp;
 
 	if(self.k_admin == 2 && self.classname != "player" && !match_in_progress) {
 		k_force = 0;
@@ -528,12 +528,12 @@ void() AdminForceBreak =
 	dprint("\n");
 	bprint(2, self.netname, " forces a break!\nMATCH OVER!!\n");
 	EndMatch(0);
-};
+}
 
-void() TogglePreWar =
+void TogglePreWar ()
 {
-	local entity p;
-	local float tmp;
+	entity p;
+	float tmp;
 
 	if(self.k_admin != 2) return;
 	tmp = stof(infokey(world, "k_prewar"));
@@ -553,11 +553,11 @@ void() TogglePreWar =
 	localcmd("localinfo k_prewar 1\n");
 	if(!match_in_progress) bprint(2, "Players may fire before match.\n");
 	else sprint(self, 2, "Players may fire before match.\n");
-};
+}
 
-void() ToggleMapLock =
+void ToggleMapLock ()
 {
-	local float tmp;
+	float tmp;
 
 	if(self.k_admin != 2) return;
 	tmp = stof(infokey(world, "k_lockmap"));
@@ -570,12 +570,12 @@ void() ToggleMapLock =
 	localcmd("localinfo k_lockmap 1\n");
 	if(!match_in_progress) bprint(2, "Map is locked!\n");
 	else sprint(self, 2, "Map is locked!\n");
-};
+}
 
-void() ToggleMaster =
+void ToggleMaster ()
 {
-	local float f1;
-	local string s1;
+	float f1;
+	string s1;
 
 	if(self.k_admin != 2) return;
 	f1 = stof(infokey(world, "k_master"));
@@ -587,13 +587,13 @@ void() ToggleMaster =
 	localcmd("localinfo k_master ");
 	localcmd(s1);
 	localcmd("\n");
-};
+}
 
-void() AdminForcePause =
+void AdminForcePause ()
 {
-	local entity e1;
-	local float f1;
-	local string s1;
+	entity e1;
+	float f1;
+	string s1;
 
 	if(self.k_admin != 2 || match_in_progress != 2) return;
 	k_pause = 1 - k_pause;
@@ -636,4 +636,5 @@ void() AdminForcePause =
 			e1 = nextent(e1);
 		}
 	}
-};
+}
+
