@@ -215,8 +215,9 @@ void CL_PrintQStatReply (char *s)
 	s = strtok (s, "\n");
 
 	Com_Printf ("hostname   %s\n", Info_ValueForKey(s, "hostname"));
-	if (*(p = Info_ValueForKey(s, "*gamedir")))
+	if (*(p = Info_ValueForKey(s, "*gamedir")) && strcmp(p, "qw"))
 		Com_Printf ("gamedir    %s\n", p);
+	Com_Printf ("map        %s\n", Info_ValueForKey(s, "map"));
 	if (*(p = Info_ValueForKey(s, "status")))
 		Com_Printf ("status     %s\n", p);
 	//	Com_Printf ("deathmatch %s\n", Info_ValueForKey(s, "deathmatch"));
