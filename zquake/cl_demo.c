@@ -165,11 +165,6 @@ void CL_WriteDemoMessage (sizebuf_t *msg)
 	fflush (cls.demofile);
 }
 
-#ifdef MVDPLAY
-static float	prevtime;
-float			olddemotime, nextdemotime;
-#endif
-
 /*
 ====================
 CL_GetDemoMessage
@@ -198,7 +193,7 @@ readnext:
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
 		fread(&msec, sizeof(msec), 1, cls.demofile);
-		demotime = prevtime + msec * 0.001;
+		demotime = cls.mvd_newtime + msec * 0.001;
 	}
 	else
 #endif
@@ -233,7 +228,7 @@ readnext:
 #ifdef MVDPLAY
 		if (cls.mvdplayback)
 		{
-			if (msec/* a hack! */ && cls.demotime < nextdemotime) {
+			if (msec/* a hack! */ && cls.demotime < cls.mvd_newtime) {
 				fseek(cls.demofile, ftell(cls.demofile) - sizeof(msec),
 						SEEK_SET);
 				return false;
@@ -256,14 +251,12 @@ readnext:
 #ifdef MVDPLAY
 	if (cls.mvdplayback)
 	{
-		prevtime = demotime;
-
 		if (msec)
 		{
 			extern void CL_ParseClientdata ();
 
-			olddemotime = nextdemotime;
-			nextdemotime = demotime;
+			cls.mvd_oldtime = cls.mvd_newtime;
+			cls.mvd_newtime = demotime;
 			cls.netchan.incoming_sequence++;
 			cls.netchan.incoming_acknowledged++;
 			cls.netchan.frame_latency = 0;
@@ -1195,8 +1188,9 @@ try_again:
 	cls.state = ca_demostart;
 	Netchan_Setup (NS_CLIENT, &cls.netchan, net_null, 0);
 	cls.demotime = 0;
+
 #ifdef MVDPLAY
-	olddemotime = 0;
+	cls.mvd_newtime = cls.mvd_oldtime = 0;
 	cls.mvd_findtarget = true;
 	cls.mvd_lasttype = 0;
 	cls.mvd_lastto = 0;
