@@ -1183,8 +1183,23 @@ void CL_ProcessServerInfo (void)
 	else
 		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
 
-	// server side fps restriction
+
 	cl.maxfps = Q_atof(Info_ValueForKey(cl.serverinfo, "maxfps"));
+
+	p = Info_ValueForKey (cl.serverinfo, "fbskins");
+	if (*p)
+		cl.allow_fbskins = !!Q_atoi(p);
+	else
+		cl.allow_fbskins = !cl.teamfortress; // for TF, fbskins are disabled by default
+
+	p = Info_ValueForKey (cl.serverinfo, "truelightning");
+	if (*p)
+		cl.allow_truelightning = !!Q_atoi(p);
+	else
+		cl.allow_truelightning = true;	// allowed by default
+
+	fpd = cls.demoplayback ? 0 : atoi(Info_ValueForKey(cl.serverinfo, "fpd"));
+
 
 	// ZQuake extension bits
 	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext"));
@@ -1197,9 +1212,6 @@ void CL_ProcessServerInfo (void)
 		movevars.ktjump = Q_atof(p);
 	else
 		movevars.ktjump = 0.5;
-
-	// fpd restrictions
-	fpd = cls.demoplayback ? 0 : atoi(Info_ValueForKey(cl.serverinfo, "fpd"));
 
 	// deathmatch and teamplay
 	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));

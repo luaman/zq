@@ -593,7 +593,7 @@ void R_DrawEntitiesOnList (void)
 					lighting.shadelight = 192 - lighting.ambientlight;
 
 				if (r_fullbrightSkins.value && currententity->model->modhint == MOD_PLAYER
-					&& !cl.teamfortress) {
+					&& cl.allow_fbskins) {
 					lighting.ambientlight = max (lighting.ambientlight, 100);
 					lighting.shadelight = max (lighting.shadelight, 100);
 				}

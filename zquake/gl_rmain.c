@@ -486,7 +486,7 @@ void R_DrawAliasModel (entity_t *ent)
 		full_light = true;
 	}
 	else if (clmodel->modhint == MOD_PLAYER && r_fullbrightSkins.value
-		&& !cl.teamfortress) {
+		&& cl.allow_fbskins) {
 		ambientlight = shadelight = 128;
 		full_light = true;
 	}

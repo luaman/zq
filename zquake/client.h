@@ -235,6 +235,8 @@ typedef struct
 	int			fpd;			// FAQ proxy flags
 	int			z_ext;			// ZQuake protocol extensions flags
 	float		maxfps;
+	qboolean	allow_fbskins;
+	qboolean	allow_truelightning;
 
 	int			parsecount;		// server message counter
 	int			validsequence;	// this is the sequence number of the last good
