@@ -782,8 +782,6 @@ void CL_MsgTrigger_f (void)
 
 void CL_ExecuteTriggerString (char *text)
 {	
-//	cmd_function_t	*cmd;
-	int				key;
 	static	// FIXME
 	char			buf[1024];
 
@@ -810,6 +808,8 @@ void CL_ExecuteTriggerString (char *text)
 		Cmd_ForwardToServer();
 	else if (!Q_strcasecmp (Cmd_Argv(0), "say_team")) 
 		Cmd_ForwardToServer();
+	else if (!Q_strcasecmp (Cmd_Argv(0), "alias")) 
+		Cmd_Alias_f();
 	else {
 		// check cvars
 		if (!Cvar_Command () && (cl_warncmd.value || developer.value))
