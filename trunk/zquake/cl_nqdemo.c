@@ -727,9 +727,9 @@ void NQD_LinkEntities (void)
 //
 // interpolate player info
 //
-/*	for (i=0 ; i<3 ; i++)
-		cl.velocity[i] = cl.mvelocity[1][i] + 
-			frac * (cl.mvelocity[0][i] - cl.mvelocity[1][i]);*/
+	for (i=0 ; i<3 ; i++)
+		cl.simvel[i] = nq_mvelocity[1][i] + 
+			f * (nq_mvelocity[0][i] - nq_mvelocity[1][i]);
 
 // interpolate the angles	
 	for (i = 0; i < 3; i++)
