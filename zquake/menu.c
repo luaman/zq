@@ -276,6 +276,9 @@ void M_ToggleMenu_f (void)
 	}*/
 	else
 	{
+		// hide console
+		scr_conlines = 0;
+		scr_con_current = 0;
 		M_Menu_Main_f ();
 	}
 }
@@ -2526,7 +2529,7 @@ void M_Draw (void)
 
 		if (scr_con_current)
 		{
-			Draw_ConsoleBackground (vid.height);
+			Draw_ConsoleBackground (scr_con_current);
 			VID_UnlockBuffer ();
 			S_ExtraUpdate ();
 			VID_LockBuffer ();
