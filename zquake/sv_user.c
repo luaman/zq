@@ -1095,7 +1095,7 @@ static void Cmd_Pause_f (void)
 	}
 
 	if (sv_client->spectator) {
-		SV_ClientPrintf (sv_client, PRINT_HIGH, "Spectators can not pause.\n");
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Spectators cannot pause.\n");
 		return;
 	}
 
