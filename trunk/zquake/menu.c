@@ -28,6 +28,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "server.h"
 #endif
 
+#ifdef GLQUAKE
+#include "gl_local.h"
+#endif
+
 #ifndef _WIN32
 #include <dirent.h>
 #include <sys/stat.h>

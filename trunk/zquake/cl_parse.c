@@ -27,6 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "teamplay.h"
 #include "version.h"
 
+#ifdef GLQUAKE
+#include "gl_local.h"	// FIXME
+#endif
+
+
 char *svc_strings[] =
 {
 	"svc_bad",
