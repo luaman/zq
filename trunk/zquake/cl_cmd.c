@@ -156,8 +156,9 @@ void CL_Say (qboolean team)
 	sendtext[0] = 0;
 	if (team && cl_fakename.string[0] &&
 		!strchr(s, '\x0d') /* explicit $\ in message overrides cl_fakename */) {
-		char buf[32];
-		Q_strncpyz (buf, cl_fakename.string, sizeof(buf));
+		char buf[1024];
+		Cmd_ExpandString (cl_fakename.string, buf);
+		strcpy (buf, TP_ParseMacroString (buf));
 		Q_snprintfz (sendtext, sizeof(sendtext), "\x0d%s: ", TP_ParseFunChars(buf, true));
 	}
 
