@@ -166,6 +166,7 @@ local float 	ldmg;
 		return;
 		
 	ldmg = (random() + random() + random()) * 4;
+	self.enemy.deathtype = "ogre";
 	T_Damage (self.enemy, self, self, ldmg);
 	
 	if (side)
