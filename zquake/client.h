@@ -552,7 +552,7 @@ void CL_ParsePlayerState (void);
 // cl_pred.c
 //
 void CL_InitPrediction (void);
-void CL_PredictMove (void);
+void CL_PredictMovement (void);
 void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u);
 
 //
