@@ -1181,8 +1181,8 @@ void PR_ParseDefs (void)
 
 			def_t *def = PR_GetDef (functionType, functionName, NULL, pr_scope);
 
-			if (!c_defs && !strcmp(pr_token, "{")) {
-				// C-style function definition
+			if ((!c_defs && !strcmp(pr_token, "{")) || PR_Check("=")) {
+				// C-style function definition (including builtin function definition #1, #2, etc.)
 				PR_ParseFunctionBody (functionType, functionName, def);
 				while (PR_Check(";"))
 					;	// skip redundant semicolons
