@@ -78,6 +78,7 @@ typedef enum {false, true} qboolean;
 
 #define	MAX_MSGLEN		1450		// max length of a reliable message
 #define	MAX_DATAGRAM	1450		// max length of unreliable message
+#define	MAX_BIG_MSGLEN	8000		// max length of a demo or loop message, >= MAX_MSGLEN + header
 
 //
 // per-level limits
