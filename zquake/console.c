@@ -66,10 +66,24 @@ void Con_ToggleConsole_f (void)
 	if (key_dest == key_console)
 	{
 		if (cls.state == ca_active || cl.intermission)
+#ifndef AGRIP
 			key_dest = key_game;
+#else
+                {
+                        key_dest = key_game;
+                        Com_Printf("!Exiting console.\n");
+                }
+#endif
 	}
 	else
+#ifndef AGRIP
 		key_dest = key_console;
+#else
+        {
+                key_dest = key_console;
+                Com_Printf("!Entering console.\n");
+        }
+#endif
 	
 	SCR_EndLoadingPlaque ();
 	Con_ClearNotify ();

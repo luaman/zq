@@ -141,14 +141,27 @@ void Sys_Printf (char *fmt, ...)
 	char		text[1024];
 	DWORD		dummy;
 
+#ifndef AGRIP
 	if (!dedicated)
 		return;
+#endif
 
 	va_start (argptr,fmt);
 	vsprintf (text, fmt, argptr);
 	va_end (argptr);
 
 	WriteFile (houtput, text, strlen(text), &dummy, NULL);
+
+#ifdef AGRIP
+{
+	unsigned char *p = NULL;
+	for (p = (unsigned char *)text; *p; p++) {
+		if (!((*p > 128 || *p < 32) && *p != 10 && *p != 13 && *p != 9))
+			putc(*p, stdout);
+	}
+	fflush(stdout);
+}
+#endif
 }
 
 void Sys_Quit (void)

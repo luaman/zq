@@ -238,7 +238,14 @@ void COM_CheckRegistered (void);
 //============================================================================
 
 #define MAX_INFO_KEY			64
-#define	MAX_INFO_STRING			196
+
+#ifndef AGRIP
+    #define	MAX_INFO_STRING			196
+#else
+// AGRIP needs large userinfo strings (FIXME)
+    #define	MAX_INFO_STRING			1024
+#endif
+
 #define	MAX_SERVERINFO_STRING	512
 #define	MAX_LOCALINFO_STRING	32768
 
