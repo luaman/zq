@@ -1046,6 +1046,7 @@ void NQD_ParseServerMessage (void)
 
 		case svc_disconnect:
 			Com_Printf ("\n======== End of demo ========\n\n");
+			CL_NextDemo ();
 			Host_EndGame ();
 			Host_Abort ();
 			break;

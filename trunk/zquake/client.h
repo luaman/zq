@@ -180,6 +180,9 @@ typedef enum {
 	dl_single
 } dltype_t;		// download type
 
+
+#define	MAX_DEMOS	8
+
 //
 // the clientPersistent_t structure is persistent through an arbitrary number
 // of server connections
@@ -213,6 +216,11 @@ typedef struct
 	int			downloadnumber;
 	dltype_t	downloadtype;
 	int			downloadpercent;
+
+// demo loop control
+	int			playdemos;			// 1 = play all and stop, 2 = loop
+	int			demonum;			// demo being played
+	char		demos[MAX_DEMOS][MAX_QPATH];
 
 // demo recording info must be here, because record is started before
 // entering a map (and clearing clientState_t)
@@ -434,6 +442,8 @@ void CL_EasyRecord_f (void);
 void CL_Stop_f (void);
 void CL_PlayDemo_f (void);
 void CL_TimeDemo_f (void);
+void CL_NextDemo (void);
+void CL_StartDemos_f (void);
 
 //
 // cl_nqdemo.c

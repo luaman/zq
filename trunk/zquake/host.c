@@ -100,6 +100,7 @@ void Host_Error (char *error, ...)
 	
 	SV_Shutdown (va("server crashed: %s\n", string));
 	CL_Disconnect ();
+	CL_HandleHostError ();		// stop demo loop
 
 	if (dedicated)
 	{

@@ -756,7 +756,6 @@ void CL_WriteConfig_f (void)
 	CL_WriteConfig (name);
 }
 
-
 void CL_InitCommands (void)
 {
 	Cvar_Register (&cl_allowRSShot);
@@ -778,6 +777,7 @@ void CL_InitCommands (void)
 	Cmd_AddCommand ("users", CL_Users_f);
 	Cmd_AddCommand ("version", CL_Version_f);
 	Cmd_AddCommand ("writeconfig", CL_WriteConfig_f);
+	Cmd_AddCommand ("startdemos", CL_StartDemos_f);
 	Cmd_AddCommand ("pointfile", CL_ReadPointFile_f);	
 
 // client info setting
