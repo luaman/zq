@@ -703,9 +703,6 @@ void CL_WriteConfig_f (void)
 }
 
 
-void Host_Savegame_f(void);
-void Host_Loadgame_f(void);
-
 void CL_InitCommands (void)
 {
 // general commands
@@ -734,11 +731,6 @@ void CL_InitCommands (void)
 	Cmd_AddCommand ("color", CL_Color_f);
 	Cmd_AddCommand ("fullinfo", CL_FullInfo_f);
 	Cmd_AddCommand ("setinfo", CL_SetInfo_f);
-
-#if 0
-	Cmd_AddCommand ("save", Host_Savegame_f);
-	Cmd_AddCommand ("load", Host_Loadgame_f);
-#endif
 
 // demo recording & playback
 	Cmd_AddCommand ("record", CL_Record_f);
