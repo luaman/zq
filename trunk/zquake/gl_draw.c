@@ -228,6 +228,9 @@ void Draw_FlushCache (void)
 {
 	int i;
 
+	if (!draw_chars)
+		return;		// not initialized yet
+
 	for (i = 0; i < numcachepics; i++)
 		cachepics[i].valid = false;		// force it to be reloaded
 
