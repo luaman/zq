@@ -655,8 +655,7 @@ void R_BlendLightmaps (void)
 	glDepthMask (GL_FALSE);		// don't bother writing Z
 	glBlendFunc (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
 
-	if (!r_lightmap.value)
-	{
+	if (!(r_lightmap.value && r_refdef2.allowCheats)) {
 		glEnable (GL_BLEND);
 	}
 

@@ -989,12 +989,8 @@ void R_SetupFrame (void)
 	mleaf_t	*leaf;
 	extern float	wateralpha;
 
-// don't allow cheats in multiplayer
-	r_lightmap.value = 0;
-	if (!atoi(Info_ValueForKey(cl.serverinfo, "watervis")))
-		wateralpha = 1;
-	else
-		wateralpha = r_wateralpha.value;
+	// use wateralpha only if the server allows
+	wateralpha = r_refdef2.watervis ? r_wateralpha.value : 1;
 
 	R_AnimateLight ();
 

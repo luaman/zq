@@ -1184,6 +1184,7 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 
 	r_refdef2.time = cl.time;
 //	r_refdef2.allowCheats = false;
+	r_refdef2.watervis = (atoi(Info_ValueForKey(cl.serverinfo, "watervis")) != 0);
 
 	r_refdef2.numParticles = cl_numvisparticles;
 	r_refdef2.particles = cl_visparticles;
