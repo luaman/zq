@@ -48,14 +48,14 @@ cvar_t	v_gunkick = {"v_gunkick", "0"};
 
 cvar_t	cl_drawgun = {"r_drawviewmodel", "1"};
 
-qboolean Change_v_idle (cvar_t *var, char *value);
-cvar_t	v_iyaw_cycle = {"v_iyaw_cycle", "2", 0, Change_v_idle};
-cvar_t	v_iroll_cycle = {"v_iroll_cycle", "0.5", 0, Change_v_idle};
-cvar_t	v_ipitch_cycle = {"v_ipitch_cycle", "1", 0, Change_v_idle};
-cvar_t	v_iyaw_level = {"v_iyaw_level", "0.3", 0, Change_v_idle};
-cvar_t	v_iroll_level = {"v_iroll_level", "0.1", 0, Change_v_idle};
-cvar_t	v_ipitch_level = {"v_ipitch_level", "0.3", 0, Change_v_idle};
-cvar_t	v_idlescale = {"v_idlescale", "0", 0, Change_v_idle};
+void OnChange_v_idle (cvar_t *var, char *value, qboolean *cancel);
+cvar_t	v_iyaw_cycle = {"v_iyaw_cycle", "2", 0, OnChange_v_idle};
+cvar_t	v_iroll_cycle = {"v_iroll_cycle", "0.5", 0, OnChange_v_idle};
+cvar_t	v_ipitch_cycle = {"v_ipitch_cycle", "1", 0, OnChange_v_idle};
+cvar_t	v_iyaw_level = {"v_iyaw_level", "0.3", 0, OnChange_v_idle};
+cvar_t	v_iroll_level = {"v_iroll_level", "0.1", 0, OnChange_v_idle};
+cvar_t	v_ipitch_level = {"v_ipitch_level", "0.3", 0, OnChange_v_idle};
+cvar_t	v_idlescale = {"v_idlescale", "0", 0, OnChange_v_idle};
 
 cvar_t	crosshair = {"crosshair", "2", CVAR_ARCHIVE};
 cvar_t	crosshaircolor = {"crosshaircolor", "79", CVAR_ARCHIVE};
@@ -80,13 +80,11 @@ frame_t		*view_frame;
 player_state_t		*view_message;
 
 
-qboolean Change_v_idle (cvar_t *var, char *value)
+void OnChange_v_idle (cvar_t *var, char *value, qboolean *cancel)
 {
 	// Don't allow cheating in TF
-	if (cl.teamfortress && cls.state >= ca_connected &&
-		cbuf_current != &cbuf_svc)
-		return true;
-	return false;
+	if (cl.teamfortress && cls.state >= ca_connected && cbuf_current != &cbuf_svc)
+		*cancel = true;
 }
 
 /*
@@ -282,8 +280,9 @@ cshift_t	cshift_slime = { {0,25,5}, 150 };
 cshift_t	cshift_lava = { {255,80,0}, 150 };
 
 #define ONCHANGE(FUNC, VAR)									\
-qboolean FUNC (cvar_t *var, char *string) {					\
-	Cvar_SetValue (&VAR, Q_atof(string)); return false;	}	\
+void FUNC (cvar_t *var, char *string, qboolean *cancel) {	\
+	Cvar_SetValue (&VAR, Q_atof(string));					\
+}
 
 #ifdef GLQUAKE
 ONCHANGE(ch_gamma, gl_gamma)	ONCHANGE(ch_contrast, gl_contrast)

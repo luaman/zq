@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include "gl_local.h"
+#include "image.h"
+#include <time.h>
 
 /*
 ==================
@@ -401,3 +403,333 @@ void R_LoadSky_f ()
 	R_SetSky (Cmd_Argv(1));
 }
 
+
+/* 
+============================================================================== 
+ 
+						SCREEN SHOTS 
+ 
+============================================================================== 
+*/ 
+
+typedef struct _TargaHeader {
+	unsigned char   id_length, colormap_type, image_type;
+	unsigned short  colormap_index, colormap_length;
+	unsigned char   colormap_size;
+	unsigned short  x_origin, y_origin, width, height;
+	unsigned char   pixel_size, attributes;
+} TargaHeader;
+
+
+/* 
+================== 
+R_ScreenShot_f
+================== 
+*/  
+void R_ScreenShot_f (void)
+{
+	byte	*buffer;
+	char	pcxname[MAX_OSPATH]; 
+	char	checkname[MAX_OSPATH];
+	int		i, c, temp;
+	FILE	*f;
+
+	if (Cmd_Argc() == 2) {
+		Q_strncpyz (pcxname, Cmd_Argv(1), sizeof(pcxname));
+		COM_ForceExtension (pcxname, ".tga");
+	}
+	else
+	{
+		// 
+		// find a file name to save it to 
+		// 
+		strcpy(pcxname,"quake00.tga");
+		
+		for (i = 0; i <= 99; i++) 
+		{ 
+			pcxname[5] = i/10 + '0'; 
+			pcxname[6] = i%10 + '0'; 
+			sprintf (checkname, "%s/%s", cls.gamedir, pcxname);
+			f = fopen (checkname, "rb");
+			if (!f)
+				break;  // file doesn't exist
+			fclose (f);
+		} 
+		if (i==100) 
+		{
+			Com_Printf ("R_ScreenShot_f: Couldn't create a TGA file\n"); 
+			return;
+		}
+	}		
+
+	buffer = Q_Malloc (vid.width * vid.height * 3 + 18);
+	memset (buffer, 0, 18);
+	buffer[2] = 2;          // uncompressed type
+	buffer[12] = vid.width&255;
+	buffer[13] = vid.width>>8;
+	buffer[14] = vid.height&255;
+	buffer[15] = vid.height>>8;
+	buffer[16] = 24;        // pixel size
+
+	glReadPixels (0, 0, vid.width, vid.height, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 ); 
+
+	// swap rgb to bgr
+	c = 18 + vid.width * vid.height * 3;
+	for (i=18 ; i<c ; i+=3)
+	{
+		temp = buffer[i];
+		buffer[i] = buffer[i+2];
+		buffer[i+2] = temp;
+	}
+	COM_WriteFile (va("%s/%s", cls.gamedirfile, pcxname), buffer, vid.width*vid.height*3 + 18 );
+
+	free (buffer);
+	Com_Printf ("Wrote %s\n", pcxname);
+} 
+
+/* 
+============== 
+WritePCXfile 
+============== 
+*/ 
+void WritePCXfile (byte *data, int width, int height, int rowbytes, byte *palette,	// [in]
+				   byte **pcxdata, int *pcxsize)									// [out]
+{
+	int		i, j;
+	pcx_t	*pcx;
+	byte		*pack;
+	  
+	pcx = Hunk_TempAlloc (width*height*2+1000);
+	if (!pcx) {
+		Com_Printf ("WritePCXfile: not enough memory\n");
+		*pcxdata = NULL;
+		*pcxsize = 0;
+		return;
+	} 
+ 
+	pcx->manufacturer = 0x0a;	// PCX id
+	pcx->version = 5;			// 256 color
+ 	pcx->encoding = 1;		// uncompressed
+	pcx->bits_per_pixel = 8;		// 256 color
+	pcx->xmin = 0;
+	pcx->ymin = 0;
+	pcx->xmax = LittleShort((short)(width-1));
+	pcx->ymax = LittleShort((short)(height-1));
+	pcx->hres = LittleShort((short)width);
+	pcx->vres = LittleShort((short)height);
+	memset (pcx->palette,0,sizeof(pcx->palette));
+	pcx->color_planes = 1;		// chunky image
+	pcx->bytes_per_line = LittleShort((short)width);
+	pcx->palette_type = LittleShort(2);		// not a grey scale
+	memset (pcx->filler,0,sizeof(pcx->filler));
+
+// pack the image
+	pack = &pcx->data;
+
+	data += rowbytes * (height - 1);
+
+	for (i=0 ; i<height ; i++)
+	{
+		for (j=0 ; j<width ; j++)
+		{
+			if ( (*data & 0xc0) != 0xc0)
+				*pack++ = *data++;
+			else
+			{
+				*pack++ = 0xc1;
+				*pack++ = *data++;
+			}
+		}
+
+		data += rowbytes - width;
+		data -= rowbytes * 2;
+	}
+			
+// write the palette
+	*pack++ = 0x0c;	// palette ID byte
+	for (i=0 ; i<768 ; i++)
+		*pack++ = *palette++;
+		
+	// fill results
+	*pcxdata = (byte *) pcx;
+	*pcxsize = pack - (byte *)pcx;
+} 
+ 
+
+
+/*
+Find closest color in the palette for named color
+*/
+int MipColor(int r, int g, int b)
+{
+	int i;
+	float dist;
+	int best;
+	float bestdist;
+	int r1, g1, b1;
+	static int lr = -1, lg = -1, lb = -1;
+	static int lastbest;
+
+	if (r == lr && g == lg && b == lb)
+		return lastbest;
+
+	bestdist = 256*256*3;
+
+	for (i = 0; i < 256; i++) {
+		r1 = host_basepal[i*3] - r;
+		g1 = host_basepal[i*3+1] - g;
+		b1 = host_basepal[i*3+2] - b;
+		dist = r1*r1 + g1*g1 + b1*b1;
+		if (dist < bestdist) {
+			bestdist = dist;
+			best = i;
+		}
+	}
+	lr = r; lg = g; lb = b;
+	lastbest = best;
+	return best;
+}
+
+// from gl_draw.c
+extern byte		*draw_chars;				// 8*8 graphic characters
+
+void R_DrawCharToSnap (int num, byte *dest, int width)
+{
+	int		row, col;
+	byte	*source;
+	int		drawline;
+	int		x;
+
+	row = num>>4;
+	col = num&15;
+	source = draw_chars + (row<<10) + (col<<3);
+
+	drawline = 8;
+
+	while (drawline--)
+	{
+		for (x=0 ; x<8 ; x++)
+			if (source[x])
+				dest[x] = source[x];
+			else
+				dest[x] = 98;
+		source += 128;
+		dest -= width;
+	}
+
+}
+
+void R_DrawStringToSnap (const char *s, byte *buf, int x, int y, int width)
+{
+	byte *dest;
+	const unsigned char *p;
+
+	dest = buf + ((y * width) + x);
+
+	p = (const unsigned char *)s;
+	while (*p) {
+		R_DrawCharToSnap(*p++, dest, width);
+		dest += 8;
+	}
+}
+
+
+/* 
+================== 
+R_RSShot
+
+Memory pointed to by pcxdata is allocated using Hunk_TempAlloc
+Never store this pointer for later use!
+
+On failure (not enough memory), *pcxdata will be set to NULL
+================== 
+*/  
+void R_RSShot (byte **pcxdata, int *pcxsize)
+{ 
+	int     x, y;
+	unsigned char	*src, *dest;
+	unsigned char	*newbuf;
+	int w, h;
+	int dx, dy, dex, dey, nx;
+	int r, b, g;
+	int count;
+	float fracw, frach;
+	char st[80];
+	time_t now;
+	extern cvar_t name;
+
+// 
+// save the pcx file 
+// 
+	newbuf = Q_Malloc (vid.height * vid.width * 3);
+
+	glReadPixels (0, 0, vid.width, vid.height, GL_RGB, GL_UNSIGNED_BYTE, newbuf);
+
+	w = min (vid.width, RSSHOT_WIDTH);
+	h = min (vid.height, RSSHOT_HEIGHT);
+
+	fracw = (float)vid.width / (float)w;
+	frach = (float)vid.height / (float)h;
+
+	for (y = 0; y < h; y++) {
+		dest = newbuf + (w*3 * y);
+
+		for (x = 0; x < w; x++) {
+			r = g = b = 0;
+
+			dx = x * fracw;
+			dex = (x + 1) * fracw;
+			if (dex == dx) dex++; // at least one
+			dy = y * frach;
+			dey = (y + 1) * frach;
+			if (dey == dy) dey++; // at least one
+
+			count = 0;
+			for (/* */; dy < dey; dy++) {
+				src = newbuf + (vid.width * 3 * dy) + dx * 3;
+				for (nx = dx; nx < dex; nx++) {
+					r += *src++;
+					g += *src++;
+					b += *src++;
+					count++;
+				}
+			}
+			r /= count;
+			g /= count;
+			b /= count;
+			*dest++ = r;
+			*dest++ = g;
+			*dest++ = b;
+		}
+	}
+
+	// convert to eight bit
+	for (y = 0; y < h; y++) {
+		src = newbuf + (w * 3 * y);
+		dest = newbuf + (w * y);
+
+		for (x = 0; x < w; x++) {
+			*dest++ = MipColor(src[0], src[1], src[2]);
+			src += 3;
+		}
+	}
+
+	time(&now);
+	strcpy(st, ctime(&now));
+	st[strlen(st) - 1] = 0;
+	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, h - 1, w);
+
+	Q_strncpyz (st, cls.servername, sizeof(st));
+	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, h - 11, w);
+
+	Q_strncpyz (st, name.string, sizeof(st));
+	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, h - 21, w);
+
+	WritePCXfile (newbuf, w, h, w, host_basepal, pcxdata, pcxsize);
+
+	free(newbuf);
+
+	// return with pcxdata and pcxsize
+} 
+
+//=============================================================================

@@ -242,6 +242,9 @@ void R_RotateForEntity (entity_t *e);
 void R_PolyBlend (void);
 void R_BrightenScreen (void);
 
+// gl_rmisc.c
+void R_ScreenShot_f (void);
+
 //
 // gl_rlight.c
 //

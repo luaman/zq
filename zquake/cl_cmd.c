@@ -31,7 +31,6 @@ void Key_WriteBindings (FILE *f);
 void S_StopAllSounds (qboolean clear);
 
 void CL_RSShot (void);
-void SCR_RSShot (byte **pcxdata, int *pcxsize);
 cvar_t cl_allowRSShot = {"scr_allowsnap", "1"};
 
 
@@ -113,7 +112,7 @@ void CL_RSShot (void)
 
 	Com_Printf ("Remote screen shot requested\n");
 
-	SCR_RSShot (&pcxdata, &pcxsize);
+	R_RSShot (&pcxdata, &pcxsize);
 
 	if (!pcxdata)
 		return;		// couldn't take a screenshot for some reason

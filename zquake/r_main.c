@@ -181,6 +181,7 @@ void R_Init (void)
 	R_InitTurb ();
 	
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
+	Cmd_AddCommand ("screenshot", R_ScreenShot_f);
 
 	Cvar_Register (&r_draworder);
 	Cvar_Register (&r_speeds);

@@ -32,7 +32,7 @@ typedef struct cvar_s
 	char	*name;
 	char	*string;
 	int		flags;
-	qboolean	(*OnChange)(struct cvar_s *var, char *value);
+	void	(*OnChange)(struct cvar_s *var, char *value, qboolean *cancel);
 	float	value;
 	struct cvar_s *hash_next;
 	struct cvar_s *next;

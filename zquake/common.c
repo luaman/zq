@@ -39,7 +39,7 @@ cvar_t	registered = {"registered","0"};
 
 qboolean com_serveractive = false;
 
-qboolean OnChange_logfile_var (cvar_t *var, char *string);
+void OnChange_logfile_var (cvar_t *var, char *string, qboolean *cancel);
 cvar_t	logfile_var = {"logfile", "0", 0, OnChange_logfile_var};
 FILE	*logfile;
 
@@ -2090,16 +2090,13 @@ void Com_EndRedirect (void)
 	rd_print = NULL;
 }
 
-qboolean OnChange_logfile_var (cvar_t *var, char *string)
+void OnChange_logfile_var (cvar_t *var, char *string, qboolean *cancel)
 {
-	// close logfile if it's open
-	if (!Q_atof(string) && logfile)
-	{
+	if (!Q_atof(string) && logfile) {
+		// close logfile if it's opened
 		fclose (logfile);
 		logfile = NULL;
 	}
-
-	return false;
 }
 
 /*

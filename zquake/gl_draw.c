@@ -28,8 +28,8 @@ extern unsigned char d_15to8table[65536];
 extern unsigned d_8to24table2[256];
 extern cvar_t crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
-qboolean OnChange_gl_texturemode (cvar_t *var, char *string);
-qboolean OnChange_gl_smoothfont (cvar_t *var, char *string);
+void OnChange_gl_texturemode (cvar_t *var, char *string, qboolean *cancel);
+void OnChange_gl_smoothfont (cvar_t *var, char *string, qboolean *cancel);
 
 cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
@@ -406,7 +406,7 @@ glmode_t modes[] = {
 };
 
 
-qboolean OnChange_gl_texturemode (cvar_t *var, char *string)
+void OnChange_gl_texturemode (cvar_t *var, char *string, qboolean *cancel)
 {
 	int		i;
 	gltexture_t	*glt;
@@ -419,7 +419,8 @@ qboolean OnChange_gl_texturemode (cvar_t *var, char *string)
 	if (i == 6)
 	{
 		Com_Printf ("bad filter name: %s\n", string);
-		return true;	// don't change the cvar
+		*cancel = true;		// don't change the cvar
+		return;	
 	}
 
 	gl_filter_min = modes[i].minimize;
@@ -435,18 +436,16 @@ qboolean OnChange_gl_texturemode (cvar_t *var, char *string)
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 		}
 	}
-
-	return false;
 }
 
 
-qboolean OnChange_gl_smoothfont (cvar_t *var, char *string)
+void OnChange_gl_smoothfont (cvar_t *var, char *string, qboolean *cancel)
 {
 	float	newval;
 
 	newval = Q_atof (string);
 	if (!newval == !gl_smoothfont.value || !char_texture)
-		return false;
+		return;
 
 	if (newval)
 	{
@@ -458,8 +457,6 @@ qboolean OnChange_gl_smoothfont (cvar_t *var, char *string)
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
-
-	return false;
 }
 
 

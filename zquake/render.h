@@ -135,6 +135,9 @@ void R_NewMap (void);
 
 void R_PushDlights (void);
 
+// memory pointed to by pcxdata is allocated using Hunk_TempAlloc
+// never store this pointer for later use!
+void R_RSShot (byte **pcxdata, int *pcxsize);
 
 //
 // surface cache related
