@@ -789,7 +789,6 @@ void(float ox) W_FireSpikes =
 .float hit_z;
 void() spike_touch =
 {
-local float rand;
 	if (other == self.owner)
 		return;
 
@@ -835,7 +834,6 @@ local float rand;
 
 void() superspike_touch =
 {
-local float rand;
 	if (other == self.owner)
 		return;
 

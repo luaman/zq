@@ -371,7 +371,7 @@ void() worldspawn =
 
 void() StartFrame =
 {
-	local entity timer, ent;
+	local entity timer;
 
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar("fraglimit");
@@ -421,8 +421,6 @@ void() bodyque =
 
 void() InitBodyQue =
 {
-	local entity    e;
-	
 	bodyque_head = spawn();
 	bodyque_head.classname = "bodyque";
 	bodyque_head.owner = spawn();
