@@ -1021,7 +1021,7 @@ CL_ProcessUserInfo
 */
 void CL_ProcessUserInfo (int slot, player_info_t *player)
 {
-	char	old_team[MAX_INFO_STRING];
+	char	old_team[MAX_INFO_KEY];
 
 	strlcpy (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
 	if (!player->name[0] && player->userid && strlen(player->userinfo) >= MAX_INFO_STRING - 17) {
@@ -1083,8 +1083,8 @@ void CL_SetInfo (void)
 {
 	int		slot;
 	player_info_t	*player;
-	char key[MAX_INFO_STRING];
-	char value[MAX_INFO_STRING];
+	char key[MAX_INFO_KEY];
+	char value[MAX_INFO_KEY];
 
 	slot = MSG_ReadByte ();
 	if (slot >= MAX_CLIENTS)
@@ -1193,8 +1193,8 @@ CL_ParseServerInfoChange
 */
 void CL_ParseServerInfoChange (void)
 {
-	char key[MAX_INFO_STRING];
-	char value[MAX_INFO_STRING];
+	char key[MAX_INFO_KEY];
+	char value[MAX_INFO_KEY];
 
 	strlcpy (key, MSG_ReadString(), sizeof(key));
 	strlcpy (value, MSG_ReadString(), sizeof(value));
