@@ -1158,19 +1158,28 @@ void V_Init (void)
 	Cvar_Register (&v_ringcshift);
 	Cvar_Register (&v_pentcshift);
 
+	// gamma and contrast are just shortcuts to sw_ or gl_ equivalents
+	// for compatibility and easier access from the console
+	Cvar_Register (&gammavar);
+	Cvar_Register (&contrast);
+
 #ifdef GLQUAKE
 	Cvar_Register (&gl_gamma);
 	Cvar_Register (&gl_contrast);
 	Cvar_Register (&gl_cshiftpercent);
 	Cvar_Register (&gl_hwblend);
 #else
-	Cvar_Register (&sw_gamma);
+	// this nastyness is to make "gamma foo" in config.cfg work
+	// FIXME: cvar.c should fire OnChange in Cvar_Register!
+	// things will be a bit different then
+	if (!Cvar_FindVar("sw_gamma")) {
+		Cvar_Register (&sw_gamma);
+		Cvar_SetValue (&sw_gamma, gammavar.value);
+	} else {
+		Cvar_Register (&sw_gamma);
+		Cvar_SetValue (&gammavar, sw_gamma.value);
+	}
 	Cvar_Register (&sw_contrast);
 	BuildGammaTable (sw_gamma.value, sw_contrast.value);
 #endif
-
-	// gamma and contrast are just shortcuts to sw_ or gl_ equivalents
-	// for compatibility and easier access from the console
-	Cvar_Register (&gammavar);
-	Cvar_Register (&contrast);
 }
