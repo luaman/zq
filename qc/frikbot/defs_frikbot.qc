@@ -25,3 +25,4 @@
 
 */
 #define FRIKBOT
+#define VWEP_TEST
