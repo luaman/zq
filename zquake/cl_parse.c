@@ -96,20 +96,9 @@ char *svc_strings[] =
 	"svc_setinfo",
 	"svc_serverinfo",
 	"svc_updatepl",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL",
-	"NEW PROTOCOL"
 };
+
+const int num_svc_strings = sizeof(svc_strings)/sizeof(svc_strings[0]);
 
 int		cl_spikeindex, cl_playerindex, cl_flagindex;
 int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
@@ -1556,7 +1545,7 @@ void CL_ParseServerMessage (void)
 
 		if (cmd == svc_qizmovoice)
 			SHOWNET("svc_qizmovoice")
-		else if (cmd < sizeof(svc_strings)/sizeof(svc_strings[0]))
+		else if (cmd < num_svc_strings)
 			SHOWNET(svc_strings[cmd]);
 	
 	// other commands
