@@ -118,6 +118,7 @@ void SV_Logfile_f (void)
 		Con_Printf ("failed.\n");
 }
 
+#define MAX_LOGFILES	1000
 
 /*
 ============
@@ -138,7 +139,7 @@ void SV_Fraglogfile_f (void)
 	}
 
 	// find an unused name
-	for (i=0 ; i<1000 ; i++)
+	for (i=0 ; i<MAX_LOGFILES ; i++)
 	{
 		sprintf (name, "%s/frag_%i.log", com_gamedir, i);
 		sv_fraglogfile = fopen (name, "r");
@@ -151,9 +152,9 @@ void SV_Fraglogfile_f (void)
 		}
 		fclose (sv_fraglogfile);
 	}
-	if (i==1000)
+	if (i==MAX_LOGFILES)
 	{
-		Con_Printf ("Can't open any logfiles.\n");
+		Con_Printf ("Couldn't open any logfiles.\n");
 		sv_fraglogfile = NULL;
 		return;
 	}
