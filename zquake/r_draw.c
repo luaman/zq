@@ -105,6 +105,11 @@ mpic_t *R_CachePic (char *path)
 }
 
 
+void R_FlushPics (void)
+{
+	// not needed (yet)
+}
+
 
 /*
 ===============

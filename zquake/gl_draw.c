@@ -168,7 +168,7 @@ if the two don't match.
 currently, the pics are only updated when R_CachePic is called,
 and wad pics are never updated.
 */
-void Draw_FlushCache (void)
+void R_FlushPics (void)
 {
 	int i;
 
