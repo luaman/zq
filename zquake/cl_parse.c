@@ -1263,6 +1263,7 @@ void CL_ParsePrint (void)
 	int		len;
 	int		level, flags=0;
 	int		offset = 0;
+	qboolean	suppress_talksound;
 
 	level = MSG_ReadByte ();
 	s = MSG_ReadString ();
@@ -1275,7 +1276,12 @@ void CL_ParsePrint (void)
 			return;
 
 		if (flags == 2)
-			s = TP_SoundTrigger (s);
+			suppress_talksound = TP_CheckSoundTrigger (s + offset);
+		else
+			suppress_talksound = false;
+
+		if (!suppress_talksound)
+			S_LocalSound ("misc/talk.wav");
 
 		if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
 			for (p = s; *p; p++)
