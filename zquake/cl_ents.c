@@ -848,9 +848,9 @@ void CL_LinkPlayers (void)
 
 		// spawn light flashes, even ones coming from invisible objects
 #ifdef GLQUAKE
-		if (!gl_flashblend.value || j != cl.playernum) {
+		if (!gl_flashblend.value || j != cl.viewplayernum) {
 #endif
-			if (r_powerupglow.value && !(r_powerupglow.value == 2 && j == cl.playernum))
+			if (r_powerupglow.value && !(r_powerupglow.value == 2 && j == cl.viewplayernum))
 			{
 				if (j == cl.playernum) {
 					VectorCopy (cl.simorg, org);
