@@ -567,8 +567,10 @@ void CL_ConnectionlessPacket (void)
 	}
 
 	if (c == svc_disconnect) {
-		if (cls.demoplayback)
+		if (cls.demoplayback) {
+			Con_Printf ("\n======== End of demo ========\n\n");
 			Host_EndGame ("End of demo");
+		}
 //		else
 //			Host_EndGame ("Server disconnected");
 		return;
@@ -733,8 +735,6 @@ void CL_Init (void)
 /*
 ================
 Host_EndGame
-
-Call this to drop to a console without exiting the qwcl
 ================
 */
 void Host_EndGame (char *message, ...)
@@ -745,9 +745,7 @@ void Host_EndGame (char *message, ...)
 	va_start (argptr,message);
 	vsprintf (string,message,argptr);
 	va_end (argptr);
-	Con_Printf ("\n===========================\n");
-	Con_Printf ("Host_EndGame: %s\n",string);
-	Con_Printf ("===========================\n\n");
+	Con_DPrintf ("Host_EndGame: %s\n",string);
 	
 	CL_Disconnect ();
 
@@ -758,7 +756,7 @@ void Host_EndGame (char *message, ...)
 ================
 Host_Error
 
-This shuts down the client and exits qwcl
+This shuts down both the client and server
 ================
 */
 void Host_Error (char *error, ...)
@@ -774,15 +772,16 @@ void Host_Error (char *error, ...)
 	va_start (argptr,error);
 	vsprintf (string,error,argptr);
 	va_end (argptr);
+	Con_Printf ("\n===========================\n");
 	Con_Printf ("Host_Error: %s\n",string);
+	Con_Printf ("\n===========================\n");
 	
 	CL_Disconnect ();
 	cls.demonum = -1;
 
 	inerror = false;
 
-// FIXME
-	Sys_Error ("Host_Error: %s\n",string);
+	longjmp (host_abort, 1);
 }
 
 
