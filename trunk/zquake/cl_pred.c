@@ -22,7 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "teamplay.h"
 
 cvar_t	cl_nopred = {"cl_nopred","0"};
-cvar_t	cl_pushlatency = {"pushlatency","-999"};
 
 /*
 =================
@@ -213,20 +212,11 @@ CL_PredictMove
 void CL_PredictMove (void)
 {
 	int			i;
-	float		f;
 	frame_t		*from = NULL, *to;
 	int			oldphysent;
-	double		playertime;
-
-	if (cl_pushlatency.value > 0)
-		Cvar_Set (&cl_pushlatency, "0");
 
 	if (cl.paused)
 		return;
-
-	playertime = cls.realtime - cls.latency - cl_pushlatency.value*0.001;
-	if (playertime > cls.realtime)
-		playertime = cls.realtime;
 
 	if (cl.intermission) {
 		cl.crouch = 0;
@@ -264,7 +254,7 @@ void CL_PredictMove (void)
 	oldphysent = pmove.numphysent;
 	CL_SetSolidPlayers (cl.playernum);
 
-	// predict forward until playertime <= to->senttime
+	// run frames
 	for (i=1 ; i<UPDATE_BACKUP-1 && cl.validsequence+i <
 			cls.netchan.outgoing_sequence; i++)
 	{
@@ -273,40 +263,13 @@ void CL_PredictMove (void)
 		CL_PredictUsercmd (&from->playerstate[cl.playernum]
 			, &to->playerstate[cl.playernum], &to->cmd, cl.spectator);
 		cl.onground = pmove.onground;
-		if (to->senttime >= playertime)
-			break;
 	}
 
 	pmove.numphysent = oldphysent;
 
-	// now interpolate some fraction of the final frame
-	if (to->senttime == from->senttime)
-		f = 0;
-	else
-	{
-		f = (playertime - from->senttime) / (to->senttime - from->senttime);
-
-		if (f < 0)
-			f = 0;
-		if (f > 1)
-			f = 1;
-	}
-
-	for (i=0 ; i<3 ; i++)
-		if ( fabs(from->playerstate[cl.playernum].origin[i] - to->playerstate[cl.playernum].origin[i]) > 128)
-		{	// teleported, so don't lerp
-			VectorCopy (to->playerstate[cl.playernum].velocity, cl.simvel);
-			VectorCopy (to->playerstate[cl.playernum].origin, cl.simorg);
-			goto out;
-		}
-		
-	for (i=0 ; i<3 ; i++)
-	{
-		cl.simorg[i] = from->playerstate[cl.playernum].origin[i] 
-			+ f*(to->playerstate[cl.playernum].origin[i] - from->playerstate[cl.playernum].origin[i]);
-		cl.simvel[i] = from->playerstate[cl.playernum].velocity[i] 
-			+ f*(to->playerstate[cl.playernum].velocity[i] - from->playerstate[cl.playernum].velocity[i]);
-	}
+	// copy results out for rendering
+	VectorCopy (to->playerstate[cl.playernum].velocity, cl.simvel);
+	VectorCopy (to->playerstate[cl.playernum].origin, cl.simorg);
 
 out:
 	CL_CalcCrouch ();
@@ -320,7 +283,6 @@ CL_InitPrediction
 */
 void CL_InitPrediction (void)
 {
-	Cvar_Register (&cl_pushlatency);
 	Cvar_Register (&cl_nopred);
 }
 
