@@ -198,7 +198,7 @@ void SV_CalcPHS (void)
 
 	Com_DPrintf ("Building PHS...\n");
 
-	num = sv.worldmodel->numleafs;
+	num = sv.FIXME_worldmodel->numleafs;
 	rowwords = (num+31)>>5;
 	rowbytes = rowwords*4;
 
@@ -207,7 +207,7 @@ void SV_CalcPHS (void)
 	vcount = 0;
 	for (i=0 ; i<num ; i++, scan+=rowbytes)
 	{
-		memcpy (scan, Mod_LeafPVS(sv.worldmodel->leafs+i, sv.worldmodel),
+		memcpy (scan, Mod_LeafPVS(sv.FIXME_worldmodel->leafs+i, sv.FIXME_worldmodel),
 			rowbytes);
 		if (i == 0)
 			continue;
@@ -285,14 +285,14 @@ void SV_LoadEntFile (void)
 	if (!sv_loadentfiles.value)
 		return;
 
-	COM_StripExtension (sv.worldmodel->name, name);
+	COM_StripExtension (sv.FIXME_worldmodel->name, name);
 	strcat (name, ".ent");
 
 	data = (char *) FS_LoadHunkFile (name);
 	if (!data)
 		return;
 
-	sv.worldmodel->entities = data;
+	sv.FIXME_worldmodel->entities = data;
 
 	Com_DPrintf ("Loaded entfile %s\n", name);
 
@@ -385,7 +385,9 @@ void SV_SpawnServer (char *server, qboolean devmap)
 	strlcpy (sv.name, server, sizeof(sv.name));
 	Cvar_ForceSet (&host_mapname, sv.name);
 	Q_snprintfz (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", server);
-	sv.worldmodel = Mod_ForName (sv.modelname, true);
+
+	sv.worldmodel = CM_LoadMap (sv.modelname, false, &sv.map_checksum, &sv.map_checksum2);
+	sv.FIXME_worldmodel = Mod_ForName (sv.modelname, true);
 	SV_CalcPHS ();
 
 	//
@@ -398,10 +400,12 @@ void SV_SpawnServer (char *server, qboolean devmap)
 	sv.model_precache[0] = pr_strings;
 	sv.model_precache[1] = sv.modelname;
 	sv.models[1] = sv.worldmodel;
-	for (i=1 ; i<sv.worldmodel->numsubmodels ; i++)
+	sv.FIXME_models[1] = sv.FIXME_worldmodel;
+	for (i = 1; i < sv.FIXME_worldmodel->numsubmodels; i++)
 	{
 		sv.model_precache[1+i] = localmodels[i];
-		sv.models[i+1] = Mod_ForName (localmodels[i], false);
+		sv.models[i+1] = CM_InlineModel (localmodels[i]);
+		sv.FIXME_models[i+1] = Mod_ForName (localmodels[i], false);
 	}
 
 	//check player/eyes models for hacks
@@ -419,7 +423,7 @@ void SV_SpawnServer (char *server, qboolean devmap)
 
 	ent = EDICT_NUM(0);
 	ent->free = false;
-	ent->v.model = PR_SetString(sv.worldmodel->name);
+	ent->v.model = PR_SetString(sv.FIXME_worldmodel->name);
 	ent->v.modelindex = 1;		// world model
 	ent->v.solid = SOLID_BSP;
 	ent->v.movetype = MOVETYPE_PUSH;
@@ -435,7 +439,7 @@ void SV_SpawnServer (char *server, qboolean devmap)
 	SV_LoadEntFile ();
 
 	// load and spawn all other entities
-	ED_LoadFromFile (sv.worldmodel->entities);
+	ED_LoadFromFile (sv.FIXME_worldmodel->entities);
 
 	// look up some model indexes for specialized message compression
 	SV_FindModelNumbers ();

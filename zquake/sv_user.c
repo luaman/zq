@@ -322,12 +322,12 @@ void Cmd_PreSpawn_f (void)
 
 //		Com_DPrintf ("Client check = %d\n", check);
 
-		if (sv_mapcheck.value && check != sv.worldmodel->checksum &&
-			check != sv.worldmodel->checksum2) {
+		if (sv_mapcheck.value && check != sv.FIXME_worldmodel->checksum &&
+			check != sv.FIXME_worldmodel->checksum2) {
 			SV_ClientPrintf (sv_client, PRINT_HIGH, 
 				"Map model file does not match (%s), %i != %i/%i.\n"
 				"You may need a new version of the map, or the proper install files.\n",
-				sv.modelname, check, sv.worldmodel->checksum, sv.worldmodel->checksum2);
+				sv.modelname, check, sv.FIXME_worldmodel->checksum, sv.FIXME_worldmodel->checksum2);
 			SV_DropClient (sv_client); 
 			return;
 		}
@@ -1631,7 +1631,7 @@ void AddLinksToPmove ( areanode_t *node )
 			VectorCopy (check->v.origin, pe->origin);
 			pe->info = NUM_FOR_EDICT(check);
 			if (check->v.solid == SOLID_BSP)
-				pe->model = sv.models[(int)(check->v.modelindex)];
+				pe->model = sv.FIXME_models[(int)(check->v.modelindex)];
 			else
 			{
 				pe->model = NULL;
@@ -1700,7 +1700,7 @@ void AddAllEntsToPmove (void)
 			VectorCopy (check->v.origin, pe->origin);
 			pmove.physents[pmove.numphysent].info = e;
 			if (check->v.solid == SOLID_BSP)
-				pe->model = sv.models[(int)(check->v.modelindex)];
+				pe->model = sv.FIXME_models[(int)(check->v.modelindex)];
 			else
 			{
 				pe->model = NULL;
@@ -1871,7 +1871,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	// build physent list
 	pmove.numphysent = 1;
-	pmove.physents[0].model = sv.worldmodel;
+	pmove.physents[0].model = sv.FIXME_worldmodel;
 	AddLinksToPmove ( sv_areanodes );
 
 	// fill in movevars

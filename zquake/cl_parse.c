@@ -277,6 +277,8 @@ void Model_NextDownload (void)
 			return;		// started a download
 	}
 
+	cl.clipmodels[1] = CM_LoadMap (cl.model_name[1], true, &cl.map_checksum, &cl.map_checksum2);
+
 	for (i=1 ; i<MAX_MODELS ; i++)
 	{
 		if (!cl.model_name[i][0])
@@ -293,6 +295,9 @@ void Model_NextDownload (void)
 			Host_EndGame ();
 			return;
 		}
+
+		if (cl.model_name[i][0] == '*')
+			cl.clipmodels[i] = CM_InlineModel(cl.model_name[i]);
 	}
 
 	// all done
