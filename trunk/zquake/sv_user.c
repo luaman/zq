@@ -44,6 +44,7 @@ extern cvar_t	pm_bunnyspeedcap;
 extern cvar_t	pm_ktjump;
 extern cvar_t	pm_slidefix;
 extern cvar_t	pm_airstep;
+extern cvar_t	pm_pground;
 
 extern double	sv_frametime;
 
@@ -2016,6 +2017,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 	pmove.waterjumptime = sv_player->v.teleport_time;
 	pmove.cmd = *ucmd;
 	pmove.pm_type = SV_PMTypeForClient (sv_client);
+	pmove.onground = ((int)sv_player->v.flags & FL_ONGROUND) != 0;
 	pmove.jump_held = sv_client->jump_held;
 #ifndef SERVERONLY
 	pmove.jump_msec = 0;
@@ -2033,6 +2035,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 	movevars.ktjump = pm_ktjump.value;
 	movevars.slidefix = (pm_slidefix.value != 0);
 	movevars.airstep = (pm_airstep.value != 0);
+	movevars.pground = (pm_pground.value != 0);
 
 
 	// do the move

@@ -226,7 +226,7 @@ Each intersection will try to step over the obstruction instead of
 sliding along it.
 =============
 */
-void PM_StepSlideMove (qbool in_air)
+int PM_StepSlideMove (qbool in_air)
 {
 	vec3_t	dest;
 	trace_t	trace;
@@ -243,7 +243,7 @@ void PM_StepSlideMove (qbool in_air)
 	blocked = PM_SlideMove ();
 
 	if (!blocked)
-		return;		// moved the entire distance
+		return blocked;		// moved the entire distance
 
 	if (in_air) {
 		// don't let us step up unless it's indeed a step we bumped in
@@ -251,14 +251,14 @@ void PM_StepSlideMove (qbool in_air)
 		float *org;
 
 		if (!(blocked & BLOCKED_STEP))
-			return;
+			return blocked;
 
 		org = (pmove.velocity < 0) ? pmove.origin : original;	// cryptic, eh?
 		VectorCopy (org, dest);
 		dest[2] -= STEPSIZE;
 		trace = PM_PlayerTrace (org, dest);
 		if (trace.fraction == 1 || trace.plane.normal[2] < MIN_STEP_NORMAL)
-			return;
+			return blocked;
 
 		// adjust stepsize, otherwise it would be possible to walk up a
 		// a step higher than STEPSIZE
@@ -311,7 +311,7 @@ void PM_StepSlideMove (qbool in_air)
 usedown:
 		VectorCopy (down, pmove.origin);
 		VectorCopy (downvel, pmove.velocity);
-		return;
+		return blocked;
 	}
 	
 	// copy z value from slide move
@@ -325,6 +325,8 @@ usedown:
 		pmove.velocity[0] *= scale;
 		pmove.velocity[1] *= scale;
 	}
+
+	return blocked;
 }
 
 
@@ -600,16 +602,25 @@ void PM_AirMove (void)
 		PM_StepSlideMove(false);
 	}
 	else
-	{	// not on ground, so little effect on velocity
+	{
+		int blocked;
+		
+		// not on ground, so little effect on velocity
 		PM_AirAccelerate (wishdir, wishspeed, movevars.accelerate);
 
 		// add gravity
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * pm_frametime;
 
 		if (movevars.airstep)
-			PM_StepSlideMove (true);
+			blocked = PM_StepSlideMove (true);
 		else
-			PM_SlideMove ();
+			blocked = PM_SlideMove ();
+
+		if (movevars.pground)
+		{
+			if (blocked & BLOCKED_FLOOR)
+				pmove.onground = true;
+		}
 	}
 }
 
@@ -638,7 +649,7 @@ void PM_CategorizePosition (void)
 	{
 		pmove.onground = false;
 	}
-	else
+	else if (!movevars.pground || pmove.onground)
 	{
 		trace = PM_PlayerTrace (pmove.origin, point);
 		if (trace.fraction == 1 || trace.plane.normal[2] < MIN_STEP_NORMAL)

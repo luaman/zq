@@ -55,6 +55,7 @@ cvar_t	pm_ktjump			 = {"pm_ktjump", "0", CVAR_SERVERINFO};
 cvar_t	pm_bunnyspeedcap	 = {"pm_bunnyspeedcap", "0", CVAR_SERVERINFO};
 cvar_t	pm_slidefix			 = {"pm_slidefix", "0", CVAR_SERVERINFO};
 cvar_t	pm_airstep			 = {"pm_airstep", "0", CVAR_SERVERINFO};
+cvar_t	pm_pground			 = {"pm_pground", "0", CVAR_SERVERINFO};
 
 double	sv_frametime;
 
