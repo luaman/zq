@@ -878,13 +878,13 @@ double CL_MinFrameTime ()
 	if (cls.demoplayback) {
 		if (!cl_maxfps.value)
 			return 0;
-		fps = max (10.0, cl_maxfps.value);
+		fps = max (30.0, cl_maxfps.value);
 	}
 	else {
-		fpscap = cl.maxfps ? max (10.0, cl.maxfps) : 120.0;
+		fpscap = cl.maxfps ? max (30.0, cl.maxfps) : 72.0;
 
 		if (cl_maxfps.value)
-			fps = bound (10.0, cl_maxfps.value, fpscap);
+			fps = bound (30.0, cl_maxfps.value, fpscap);
 		else
 			fps = fpscap;
 	}
