@@ -23,12 +23,12 @@ void R_TranslatePlayerSkin (int playernum);
 #define	NQ_U_ORIGIN1	(1<<1)
 #define	NQ_U_ORIGIN2	(1<<2)
 #define	NQ_U_ORIGIN3	(1<<3)
-#define	NQ_U_ANGLE2	(1<<4)
-#define	NQ_U_NOLERP	(1<<5)		// don't interpolate movement
+#define	NQ_U_ANGLE2		(1<<4)
+#define	NQ_U_NOLERP		(1<<5)		// don't interpolate movement
 #define	NQ_U_FRAME		(1<<6)
-#define NQ_U_SIGNAL	(1<<7)		// just differentiates from other updates
-#define	NQ_U_ANGLE1	(1<<8)
-#define	NQ_U_ANGLE3	(1<<9)
+#define NQ_U_SIGNAL		(1<<7)		// just differentiates from other updates
+#define	NQ_U_ANGLE1		(1<<8)
+#define	NQ_U_ANGLE3		(1<<9)
 #define	NQ_U_MODEL		(1<<10)
 #define	NQ_U_COLORMAP	(1<<11)
 #define	NQ_U_SKIN		(1<<12)
@@ -688,9 +688,9 @@ float NQD_LerpPoint (void)
 
 
 
-extern int		cl_playerindex; 
-extern int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
-extern int		cl_rocketindex, cl_grenadeindex;
+extern int	cl_playerindex; 
+extern int	cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
+extern int	cl_rocketindex, cl_grenadeindex;
 
 void NQD_LerpPlayerinfo (float f)
 {
