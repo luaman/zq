@@ -227,7 +227,6 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_aliastransbase);
 	Cvar_RegisterVariable (&r_aliastransadj);
 	Cvar_RegisterVariable (&r_fullbrightSkins);
-	Cvar_RegisterVariable (&r_nicefont);
 
 	Cvar_SetValue (&r_maxedges, (float)NUMSTACKEDGES);
 	Cvar_SetValue (&r_maxsurfs, (float)NUMSTACKSURFACES);

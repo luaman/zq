@@ -177,7 +177,6 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_fullbrightSkins);
 	Cvar_RegisterVariable (&r_skycolor);
 	Cvar_RegisterVariable (&r_fastsky);
-	Cvar_RegisterVariable (&r_nicefont);
 
 	Cvar_RegisterVariable (&gl_clear);
 	Cvar_RegisterVariable (&gl_texsort);
