@@ -886,16 +886,22 @@ void CL_LinkParticles (void)
 
 //============================================================
 
+static cdlight_t	cl_dlights[MAX_DLIGHTS];
+
+// sent to the renderer
+int				cl_numvisdlights;
+dlight_t		cl_visdlights[MAX_DLIGHTS];
+
 /*
 ===============
 CL_AllocDlight
 
 ===============
 */
-dlight_t *CL_AllocDlight (int key)
+cdlight_t *CL_AllocDlight (int key)
 {
 	int		i;
-	dlight_t	*dl;
+	cdlight_t	*dl;
 
 // first look for an exact key match
 	if (key)
@@ -935,10 +941,9 @@ dlight_t *CL_AllocDlight (int key)
 CL_NewDlight
 ===============
 */
-void CL_NewDlight (int key, vec3_t origin, float radius, float time,
-				   int type)
+void CL_NewDlight (int key, vec3_t origin, float radius, float time, dlighttype_t type)
 {
-	dlight_t	*dl;
+	cdlight_t	*dl;
 
 	dl = CL_AllocDlight (key);
 	VectorCopy (origin, dl->origin);
@@ -950,23 +955,33 @@ void CL_NewDlight (int key, vec3_t origin, float radius, float time,
 
 /*
 ===============
-CL_DecayLights
+CL_LinkDlights
 
 ===============
 */
-void CL_DecayLights (void)
+void CL_LinkDlights (void)
 {
 	int			i;
-	dlight_t	*dl;
+	cdlight_t	*dl;
 
 	dl = cl_dlights;
 	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
 	{
-		if (dl->die < cl.time || !dl->radius)
-			continue;
-		
 		dl->radius -= cls.frametime * dl->decay;
-		if (dl->radius < 0)
-			dl->radius = 0;
+		if (dl->die < cl.time || dl->radius <= 0)
+			continue;
+
+		V_AddDlight(dl->key, dl->origin, dl->radius, dl->minlight, dl->type);
 	}
+}
+
+/*
+===============
+CL_ClearDlights
+
+===============
+*/
+void CL_ClearDlights (void)
+{
+	memset (cl_dlights, 0, sizeof(cl_dlights));
 }
