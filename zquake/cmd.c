@@ -65,6 +65,20 @@ void Cbuf_AddText (char *text) { Cbuf_AddTextEx (&cbuf_main, text); }
 void Cbuf_InsertText (char *text) { Cbuf_InsertTextEx (&cbuf_main, text); }
 void Cbuf_Execute () { Cbuf_ExecuteEx (&cbuf_main); }
 
+
+//fuh : ideally we should have 'cbuf_t *Cbuf_Register(int maxsize, int flags, qbool (*blockcmd)(void))
+//fuh : so that cbuf_svc and cbuf_safe can be registered outside cmd.c in cl_* .c
+//fuh : flags can be used to deal with newline termination etc for cbuf_svc, and *blockcmd can be used for blocking cmd's for cbuf_svc
+//fuh : this way cmd.c would be independant of '#ifdef CLIENTONLY's'.
+//fuh : I'll take care of that one day.
+static void Cbuf_Register (cbuf_t *cbuf, int maxsize) {
+	assert(!host_initialized);
+	cbuf->maxsize = maxsize;
+	cbuf->text_buf = Hunk_Alloc(maxsize);
+	cbuf->text_start = cbuf->text_end = (cbuf->maxsize >> 1);
+	cbuf->wait = false;
+}
+
 /*
 ============
 Cbuf_Init
@@ -72,13 +86,10 @@ Cbuf_Init
 */
 void Cbuf_Init (void)
 {
-	cbuf_main.text_start = cbuf_main.text_end = MAXCMDBUF / 2;
-	cbuf_main.wait = false;
+	Cbuf_Register(&cbuf_main, 1 << 16);
 #ifndef SERVERONLY
-	cbuf_safe.text_start = cbuf_safe.text_end = MAXCMDBUF / 2;
-	cbuf_safe.wait = false;
-	cbuf_svc.text_start = cbuf_svc.text_end = MAXCMDBUF / 2;
-	cbuf_svc.wait = false;
+	Cbuf_Register(&cbuf_svc, 1 << 13);
+	Cbuf_Register(&cbuf_safe, 1 << 11);
 #endif
 }
 
@@ -97,7 +108,7 @@ void Cbuf_AddTextEx (cbuf_t *cbuf, char *text)
 	
 	len = strlen (text);
 
-	if (cbuf->text_end + len <= MAXCMDBUF)
+	if (cbuf->text_end + len <= cbuf->maxsize)
 	{
 		memcpy (cbuf->text_buf + cbuf->text_end, text, len);
 		cbuf->text_end += len;
@@ -105,14 +116,14 @@ void Cbuf_AddTextEx (cbuf_t *cbuf, char *text)
 	}
 
 	new_bufsize = cbuf->text_end-cbuf->text_start+len;
-	if (new_bufsize > MAXCMDBUF)
+	if (new_bufsize > cbuf->maxsize)
 	{
 		Com_Printf ("Cbuf_AddText: overflow\n");
 		return;
 	}
 
 	// Calculate optimal position of text in buffer
-	new_start = (MAXCMDBUF - new_bufsize) / 2;
+	new_start = (cbuf->maxsize - new_bufsize) / 2;
 
 	memcpy (cbuf->text_buf + new_start, cbuf->text_buf + cbuf->text_start, cbuf->text_end-cbuf->text_start);
 	memcpy (cbuf->text_buf + new_start + cbuf->text_end-cbuf->text_start, text, len);
@@ -144,14 +155,14 @@ void Cbuf_InsertTextEx (cbuf_t *cbuf, char *text)
 	}
 
 	new_bufsize = cbuf->text_end - cbuf->text_start + len;
-	if (new_bufsize > MAXCMDBUF)
+	if (new_bufsize > cbuf->maxsize)
 	{
 		Com_Printf ("Cbuf_InsertText: overflow\n");
 		return;
 	}
 
 	// Calculate optimal position of text in buffer
-	new_start = (MAXCMDBUF - new_bufsize) / 2;
+	new_start = (cbuf->maxsize - new_bufsize) / 2;
 
 	memmove (cbuf->text_buf + (new_start + len), cbuf->text_buf + cbuf->text_start,
 		cbuf->text_end - cbuf->text_start);
@@ -219,7 +230,7 @@ void Cbuf_ExecuteEx (cbuf_t *cbuf)
 
 		if (i == cursize)
 		{
-			cbuf->text_start = cbuf->text_end = MAXCMDBUF/2;
+			cbuf->text_start = cbuf->text_end = cbuf->maxsize/2;
 		}
 		else
 		{
