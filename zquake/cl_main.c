@@ -141,6 +141,26 @@ jmp_buf 	host_abort;
 
 float	server_version = 0;	// version of server we connected to
 
+
+// emodel and pmodel are encrypted to prevent llamas from easily hacking them
+char emodel_name[] = { 'e'^0xe5, 'm'^0xe5, 'o'^0xe5, 'd'^0xe5, 'e'^0xe5, 'l'^0xe5, 0 };
+char pmodel_name[] = { 'p'^0xe5, 'm'^0xe5, 'o'^0xe5, 'd'^0xe5, 'e'^0xe5, 'l'^0xe5, 0 };
+
+static void simple_crypt (char *buf, int len)
+{
+	while (len--)
+		*buf++ ^= 0xe5;
+}
+
+static void CL_FixupModelNames (void)
+{
+	simple_crypt (emodel_name, sizeof(emodel_name) - 1);
+	simple_crypt (pmodel_name, sizeof(pmodel_name) - 1);
+}
+
+//============================================================================
+
+
 /*
 =======================
 CL_SendConnectPacket
@@ -744,6 +764,7 @@ void CL_Init (void)
 	CDAudio_Init ();
 
 	CL_InitLocal ();
+	CL_FixupModelNames ();
 	CL_InitInput ();
 	CL_InitTEnts ();
 	CL_InitPrediction ();
@@ -1021,25 +1042,6 @@ void Host_Frame (double time)
 
 //============================================================================
 
-// emodel and pmodel are encrypted to prevent llamas from easily hacking them
-
-char emodel_name[] = { 'e'^0xe5, 'm'^0xe5, 'o'^0xe5, 'd'^0xe5, 'e'^0xe5, 'l'^0xe5, 0 };
-char pmodel_name[] = { 'p'^0xe5, 'm'^0xe5, 'o'^0xe5, 'd'^0xe5, 'e'^0xe5, 'l'^0xe5, 0 };
-
-static void simple_crypt (char *buf, int len)
-{
-	while (len--)
-		*buf++ ^= 0xe5;
-}
-
-void Host_FixupModelNames (void)
-{
-	simple_crypt (emodel_name, sizeof(emodel_name) - 1);
-	simple_crypt (pmodel_name, sizeof(pmodel_name) - 1);
-}
-
-//============================================================================
-
 /*
 ====================
 Host_Init
@@ -1073,8 +1075,6 @@ void Host_Init (quakeparms_t *parms)
 	SV_InitLocal ();	// register server cvars and commands
 #endif
 
-	Host_FixupModelNames();
-	
 	NET_Init ();
 	NET_Config (true, false);
 	Netchan_Init ();
