@@ -144,7 +144,7 @@ byte *Skin_Cache (skin_t *skin)
 	raw = COM_LoadTempFile (name);
 	if (!raw)
 	{
-		Con_Printf ("Couldn't load skin %s\n", name);
+		Com_Printf ("Couldn't load skin %s\n", name);
 		sprintf (name, "skins/%s.pcx", baseskin.string);
 		raw = COM_LoadTempFile (name);
 		if (!raw)
@@ -170,7 +170,7 @@ byte *Skin_Cache (skin_t *skin)
 		|| pcx->ymax >= 200)
 	{
 		skin->failedload = true;
-		Con_Printf ("Bad skin %s\n", name);
+		Com_Printf ("Bad skin %s\n", name);
 		return NULL;
 	}
 	
@@ -189,7 +189,7 @@ byte *Skin_Cache (skin_t *skin)
 			{
 				Cache_Free (&skin->cache);
 				skin->failedload = true;
-				Con_Printf ("Skin %s was malformed.  You should delete it.\n", name);
+				Com_Printf ("Skin %s was malformed.  You should delete it.\n", name);
 				return NULL;
 			}
 			dataByte = *raw++;
@@ -201,7 +201,7 @@ byte *Skin_Cache (skin_t *skin)
 				{
 					Cache_Free (&skin->cache);
 					skin->failedload = true;
-					Con_Printf ("Skin %s was malformed.  You should delete it.\n", name);
+					Com_Printf ("Skin %s was malformed.  You should delete it.\n", name);
 					return NULL;
 				}
 				dataByte = *raw++;
@@ -213,7 +213,7 @@ byte *Skin_Cache (skin_t *skin)
 			if (runLength + x > pcx->xmax + 2) {
 				Cache_Free (&skin->cache);
 				skin->failedload = true;
-				Con_Printf ("Skin %s was malformed.  You should delete it.\n", name);
+				Com_Printf ("Skin %s was malformed.  You should delete it.\n", name);
 				return NULL;
 			}
 			while(runLength-- > 0)
@@ -226,7 +226,7 @@ byte *Skin_Cache (skin_t *skin)
 	{
 		Cache_Free (&skin->cache);
 		skin->failedload = true;
-		Con_Printf ("Skin %s was malformed.  You should delete it.\n", name);
+		Com_Printf ("Skin %s was malformed.  You should delete it.\n", name);
 		return NULL;
 	}
 
@@ -247,7 +247,7 @@ void Skin_NextDownload (void)
 	int			i;
 
 	if (cls.downloadnumber == 0)
-		Con_Printf ("Checking skins...\n");
+		Com_Printf ("Checking skins...\n");
 	cls.downloadtype = dl_skin;
 
 	for ( 

@@ -77,7 +77,7 @@ void KeyDown (kbutton_t *b)
 		b->down[1] = k;
 	else
 	{
-		Con_Printf ("Three keys down for a button!\n");
+		Com_Printf ("Three keys down for a button!\n");
 		return;
 	}
 	

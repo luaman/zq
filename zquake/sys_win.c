@@ -278,7 +278,7 @@ char *Sys_ConsoleInput (void)
 						break;
 
 					default:
-						Con_Printf("Stupid: %d\n", recs[0].Event.KeyEvent.dwControlKeyState);
+						Com_Printf ("Stupid: %d\n", recs[0].Event.KeyEvent.dwControlKeyState);
 						if (((ch=='V' || ch=='v') && (recs[0].Event.KeyEvent.dwControlKeyState & 
 							(LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))) || ((recs[0].Event.KeyEvent.dwControlKeyState 
 							& SHIFT_PRESSED) && (recs[0].Event.KeyEvent.wVirtualKeyCode

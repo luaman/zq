@@ -161,7 +161,7 @@ void CL_SendConnectPacket (void)
 	t1 = Sys_DoubleTime ();
 	if (!NET_StringToAdr (cls.servername, &adr))
 	{
-		Con_Printf ("Bad server address\n");
+		Com_Printf ("Bad server address\n");
 		connect_time = 0;
 		return;
 	}
@@ -199,7 +199,7 @@ void CL_CheckForResend (void)
 	t1 = Sys_DoubleTime ();
 	if (!NET_StringToAdr (cls.servername, &adr))
 	{
-		Con_Printf ("Bad server address\n");
+		Com_Printf ("Bad server address\n");
 		connect_time = 0;
 		return;
 	}
@@ -209,7 +209,7 @@ void CL_CheckForResend (void)
 	if (adr.port == 0)
 		adr.port = BigShort (PORT_SERVER);
 
-	Con_Printf ("Connecting to %s...\n", cls.servername);
+	Com_Printf ("Connecting to %s...\n", cls.servername);
 	sprintf (data, "\xff\xff\xff\xff" "getchallenge\n");
 	NET_SendPacket (NS_CLIENT, strlen(data), data, adr);
 }
@@ -232,7 +232,7 @@ void CL_Connect_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("usage: connect <server>\n");
+		Com_Printf ("usage: connect <server>\n");
 		return;	
 	}
 	
@@ -257,7 +257,7 @@ void CL_ClearState (void)
 
 	S_StopAllSounds (true);
 
-	Con_DPrintf ("Clearing memory\n");
+	Com_DPrintf ("Clearing memory\n");
 #ifdef QW_BOTH
 	if (sv.state == ss_dead) // connecting to a remote server
 #endif
@@ -371,7 +371,7 @@ void CL_NextDemo (void)
 		cls.demonum = 0;
 		if (!cls.demos[cls.demonum][0])
 		{
-//			Con_Printf ("No demos listed with startdemos\n");
+//			Com_Printf ("No demos listed with startdemos\n");
 			cls.demonum = -1;
 			return;
 		}
@@ -398,14 +398,14 @@ void CL_Reconnect_f (void)
 	S_StopAllSounds (true);
 
 	if (cls.state == ca_connected) {
-		Con_Printf ("reconnecting...\n");
+		Com_Printf ("reconnecting...\n");
 		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
 		MSG_WriteString (&cls.netchan.message, "new");
 		return;
 	}
 
 	if (!*cls.servername) {
-		Con_Printf("No server to reconnect to.\n");
+		Com_Printf ("No server to reconnect to.\n");
 		return;
 	}
 
@@ -430,22 +430,22 @@ void CL_ConnectionlessPacket (void)
 
 	c = MSG_ReadByte ();
 	if (!cls.demoplayback)
-		Con_Printf ("%s: ", NET_AdrToString (net_from));
-//	Con_DPrintf ("%s", net_message.data + 5);
+		Com_Printf ("%s: ", NET_AdrToString (net_from));
+//	Com_DPrintf ("%s", net_message.data + 5);
 	if (c == S2C_CONNECTION)
 	{
-		Con_Printf ("connection\n");
+		Com_Printf ("connection\n");
 		if (cls.state >= ca_connected)
 		{
 			if (!cls.demoplayback)
-				Con_Printf ("Dup connect received.  Ignored.\n");
+				Com_Printf ("Dup connect received.  Ignored.\n");
 			return;
 		}
 		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, cls.qport);
 		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
 		MSG_WriteString (&cls.netchan.message, "new");	
 		cls.state = ca_connected;
-		Con_Printf ("Connected.\n");
+		Com_Printf ("Connected.\n");
 		allowremotecmd = false; // localid required now for remote cmds
 		return;
 	}
@@ -454,12 +454,12 @@ void CL_ConnectionlessPacket (void)
 	{
 		char	cmdtext[2048];
 
-		Con_Printf ("client command\n");
+		Com_Printf ("client command\n");
 
 		if ((*(unsigned *)net_from.ip != *(unsigned *)net_local_adr.ip
 			&& *(unsigned *)net_from.ip != htonl(INADDR_LOOPBACK)) )
 		{
-			Con_Printf ("Command packet from remote host.  Ignored.\n");
+			Com_Printf ("Command packet from remote host.  Ignored.\n");
 			return;
 		}
 #ifdef _WIN32
@@ -479,19 +479,19 @@ void CL_ConnectionlessPacket (void)
 
 		if (!allowremotecmd && (!*localid.string || strcmp(localid.string, s))) {
 			if (!*localid.string) {
-				Con_Printf("===========================\n");
-				Con_Printf("Command packet received from local host, but no "
+				Com_Printf ("===========================\n");
+				Com_Printf ("Command packet received from local host, but no "
 					"localid has been set.  You may need to upgrade your server "
 					"browser.\n");
-				Con_Printf("===========================\n");
+				Com_Printf ("===========================\n");
 				return;
 			}
-			Con_Printf("===========================\n");
-			Con_Printf("Invalid localid on command packet received from local host. "
+			Com_Printf ("===========================\n");
+			Com_Printf ("Invalid localid on command packet received from local host. "
 				"\n|%s| != |%s|\n"
 				"You may need to reload your server browser and QuakeWorld.\n",
 				s, localid.string);
-			Con_Printf("===========================\n");
+			Com_Printf ("===========================\n");
 			Cvar_Set(&localid, "");
 			return;
 		}
@@ -504,10 +504,10 @@ void CL_ConnectionlessPacket (void)
 	// print command from somewhere
 	if (c == A2C_PRINT)
 	{
-		Con_Printf ("print\n");
+		Com_Printf ("print\n");
 
 		s = MSG_ReadString ();
-		Con_Printf ("%s", s);
+		Com_Printf ("%s", s);
 		return;
 	}
 
@@ -516,7 +516,7 @@ void CL_ConnectionlessPacket (void)
 	{
 		char	data[6];
 
-		Con_Printf ("ping\n");
+		Com_Printf ("ping\n");
 
 		data[0] = 0xff;
 		data[1] = 0xff;
@@ -530,7 +530,7 @@ void CL_ConnectionlessPacket (void)
 	}
 
 	if (c == S2C_CHALLENGE) {
-		Con_Printf ("challenge\n");
+		Com_Printf ("challenge\n");
 
 		s = MSG_ReadString ();
 		cls.challenge = atoi(s);
@@ -540,7 +540,7 @@ void CL_ConnectionlessPacket (void)
 
 	if (c == svc_disconnect) {
 		if (cls.demoplayback) {
-			Con_Printf ("\n======== End of demo ========\n\n");
+			Com_Printf ("\n======== End of demo ========\n\n");
 			Host_EndGame ("End of demo");
 		}
 //		else
@@ -548,7 +548,7 @@ void CL_ConnectionlessPacket (void)
 		return;
 	}
 
-	Con_Printf ("unknown:  %c\n", c);
+	Com_Printf ("unknown:  %c\n", c);
 }
 
 
@@ -573,7 +573,7 @@ void CL_ReadPackets (void)
 
 		if (net_message.cursize < 8)
 		{
-			Con_DPrintf ("%s: Runt packet\n", NET_AdrToString(net_from));
+			Com_DPrintf ("%s: Runt packet\n", NET_AdrToString(net_from));
 			continue;
 		}
 
@@ -583,7 +583,7 @@ void CL_ReadPackets (void)
 		if (!cls.demoplayback && 
 			!NET_CompareAdr (net_from, cls.netchan.remote_address))
 		{
-			Con_DPrintf ("%s: sequenced packet without connection\n"
+			Com_DPrintf ("%s: sequenced packet without connection\n"
 				,NET_AdrToString(net_from));
 			continue;
 		}
@@ -598,7 +598,7 @@ void CL_ReadPackets (void)
 	if (!cls.demoplayback && cls.state >= ca_connected
 	 && realtime - cls.netchan.last_received > cl_timeout.value)
 	{
-		Con_Printf ("\nServer connection timed out.\n");
+		Com_Printf ("\nServer connection timed out.\n");
 		CL_Disconnect ();
 		return;
 	}
@@ -737,7 +737,7 @@ void Host_EndGame (char *message, ...)
 	va_start (argptr,message);
 	vsprintf (string,message,argptr);
 	va_end (argptr);
-	Con_DPrintf ("Host_EndGame: %s\n",string);
+	Com_DPrintf ("Host_EndGame: %s\n",string);
 	
 	CL_Disconnect ();
 
@@ -764,9 +764,9 @@ void Host_Error (char *error, ...)
 	va_start (argptr,error);
 	vsprintf (string,error,argptr);
 	va_end (argptr);
-	Con_Printf ("\n===========================\n");
-	Con_Printf ("Host_Error: %s\n",string);
-	Con_Printf ("===========================\n\n");
+	Com_Printf ("\n===========================\n");
+	Com_Printf ("Host_Error: %s\n",string);
+	Com_Printf ("===========================\n\n");
 	
 	CL_Disconnect ();
 	cls.demonum = -1;
@@ -796,7 +796,7 @@ void Host_WriteConfiguration (void)
 		f = fopen (va("%s/config.cfg",com_gamedir), "w");
 		if (!f)
 		{
-			Con_Printf ("Couldn't write config.cfg.\n");
+			Com_Printf ("Couldn't write config.cfg.\n");
 			return;
 		}
 		
@@ -978,7 +978,7 @@ void Host_Frame (double time)
 		time3 = Sys_DoubleTime ();
 		pass2 = (time2 - time1)*1000;
 		pass3 = (time3 - time2)*1000;
-		Con_Printf ("%3i tot %3i server %3i gfx %3i snd\n",
+		Com_Printf ("%3i tot %3i server %3i gfx %3i snd\n",
 					pass1+pass2+pass3, pass1, pass2, pass3);
 	}
 
@@ -1054,8 +1054,8 @@ void Host_Init (quakeparms_t *parms)
 	
 	Sys_mkdir(va("%s/%s", com_basedir, "qw"));
 
-//	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-	Con_Printf ("%4.1f megs RAM used.\n",parms->memsize/ (1024*1024.0));
+//	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
+	Com_Printf ("%4.1f megs RAM used.\n",parms->memsize/ (1024*1024.0));
 	
 	R_InitTextures ();
  
@@ -1103,12 +1103,12 @@ void Host_Init (quakeparms_t *parms)
 	host_initialized = true;
 
 #ifdef RELEASE_VERSION
-	Con_Printf ("\nClient version %s\n\n", Z_VERSION);
+	Com_Printf ("\nClient version %s\n\n", Z_VERSION);
 #else
-	Con_Printf ("\nClient version %s (Build %04d)\n\n", Z_VERSION, build_number());
+	Com_Printf ("\nClient version %s (Build %04d)\n\n", Z_VERSION, build_number());
 #endif
 
-	Con_Printf ("ÄÅÅÅÅÅÅ QuakeWorld Initialized ÅÅÅÅÅÅÇ\n");	
+	Com_Printf ("ÄÅÅÅÅÅÅ QuakeWorld Initialized ÅÅÅÅÅÅÇ\n");	
 }
 
 

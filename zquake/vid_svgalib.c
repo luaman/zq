@@ -269,12 +269,12 @@ void VID_DescribeMode_f (void)
 	
 	modenum = Q_atoi (Cmd_Argv(1));
 	if ((modenum >= num_modes) || (modenum < 0 ) || !modes[modenum].width)
-		Con_Printf("Invalid video mode: %d!\n",modenum);
-	Con_Printf("%d: %d x %d - ",modenum,modes[modenum].width,modes[modenum].height);
+		Com_Printf ("Invalid video mode: %d!\n",modenum);
+	Com_Printf ("%d: %d x %d - ",modenum,modes[modenum].width,modes[modenum].height);
 	if (modes[modenum].bytesperpixel == 0)
-		Con_Printf("ModeX\n");
+		Com_Printf ("ModeX\n");
 	else
-		Con_Printf("%d bpp\n", modes[modenum].bytesperpixel<<3);
+		Com_Printf ("%d bpp\n", modes[modenum].bytesperpixel<<3);
 }
 
 void VID_DescribeModes_f (void)
@@ -283,11 +283,11 @@ void VID_DescribeModes_f (void)
 	
 	for (i=0;i<num_modes;i++)
 		if (modes[i].width) {
-			Con_Printf("%d: %d x %d - ", i, modes[i].width,modes[i].height);
+			Com_Printf ("%d: %d x %d - ", i, modes[i].width,modes[i].height);
 			if (modes[i].bytesperpixel == 0)
-				Con_Printf("ModeX\n");
+				Com_Printf ("ModeX\n");
 			else
-				Con_Printf("%d bpp\n", modes[i].bytesperpixel<<3);
+				Com_Printf ("%d bpp\n", modes[i].bytesperpixel<<3);
 		}
 }
 
@@ -307,15 +307,15 @@ int VID_NumModes ()
 
 void VID_NumModes_f (void)
 {
-	Con_Printf("%d modes\n",VID_NumModes());
+	Com_Printf ("%d modes\n",VID_NumModes());
 }
 
 void VID_Debug_f (void)
 {
-	Con_Printf("mode: %d\n",current_mode);
-	Con_Printf("height x width: %d x %d\n",vid.height,vid.width);
-	Con_Printf("bpp: %d\n",modes[current_mode].bytesperpixel*8);
-	Con_Printf("vid.aspect: %f\n",vid.aspect);
+	Com_Printf ("mode: %d\n",current_mode);
+	Com_Printf ("height x width: %d x %d\n",vid.height,vid.width);
+	Com_Printf ("bpp: %d\n",modes[current_mode].bytesperpixel*8);
+	Com_Printf ("vid.aspect: %f\n",vid.aspect);
 }
 
 
@@ -421,7 +421,7 @@ void keyhandler(int scancode, int state)
 	int sc;
 
 	sc = scancode & 0x7f;
-//	Con_Printf("scancode=%x (%d%s)\n", scancode, sc, scancode&0x80?"+128":"");
+//	Com_Printf ("scancode=%x (%d%s)\n", scancode, sc, scancode&0x80?"+128":"");
 	Key_Event(scantokey[sc], state == KEY_EVENTPRESS);
 
 }
@@ -480,7 +480,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	{
 		Cvar_SetValue (&vid_mode, (float)current_mode);
 		
-		Con_Printf("No such video mode: %d\n",modenum);
+		Com_Printf ("No such video mode: %d\n",modenum);
 		
 		return 0;
 	}
@@ -876,7 +876,7 @@ void IN_Init(void)
 //			mousedev, mice[mtype].name, mouserate);
 		if (mouse_init(mousedev, mtype, mouserate))
 		{
-			Con_Printf("No mouse found\n");
+			Com_Printf ("No mouse found\n");
 			UseMouse = 0;
 		}
 		else

@@ -79,7 +79,7 @@ void SV_CheckAllEnts (void)
 			continue;
 
 		if (SV_TestEntityPosition (check))
-			Con_Printf ("entity in invalid position\n");
+			Com_Printf ("entity in invalid position\n");
 	}
 }
 
@@ -100,12 +100,12 @@ void SV_CheckVelocity (edict_t *ent)
 	{
 		if (IS_NAN(ent->v.velocity[i]))
 		{
-			Con_DPrintf ("Got a NaN velocity on %s\n", PR_GetString(ent->v.classname));
+			Com_DPrintf ("Got a NaN velocity on %s\n", PR_GetString(ent->v.classname));
 			ent->v.velocity[i] = 0;
 		}
 		if (IS_NAN(ent->v.origin[i]))
 		{
-			Con_DPrintf ("Got a NaN origin on %s\n", PR_GetString(ent->v.classname));
+			Com_DPrintf ("Got a NaN origin on %s\n", PR_GetString(ent->v.classname));
 			ent->v.origin[i] = 0;
 		}
 /*		if (ent->v.velocity[i] > sv_maxvelocity.value)
@@ -355,7 +355,7 @@ int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 		{	// go along the crease
 			if (numplanes != 2)
 			{
-//				Con_Printf ("clip velocity, numplanes == %i\n",numplanes);
+//				Com_Printf ("clip velocity, numplanes == %i\n",numplanes);
 				VectorClear (ent->v.velocity);
 				return 7;
 			}
@@ -625,7 +625,7 @@ VectorSubtract (ent->v.origin, oldorg, move);
 l = VectorLength(move);
 if (l > 1.0/64)
 {
-//	Con_Printf ("**** snap: %f\n", Length (l));
+//	Com_Printf ("**** snap: %f\n", Length (l));
 	VectorCopy (oldorg, ent->v.origin);
 	SV_Push (ent, move);
 }

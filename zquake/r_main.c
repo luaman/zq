@@ -1068,10 +1068,10 @@ SetVisibilityByPassages ();
 		R_PrintDSpeeds ();
 
 	if (r_reportsurfout.value && r_outofsurfaces)
-		Con_Printf ("Short %d surfaces\n", r_outofsurfaces);
+		Com_Printf ("Short %d surfaces\n", r_outofsurfaces);
 
 	if (r_reportedgeout.value && r_outofedges)
-		Con_Printf ("Short roughly %d edges\n", r_outofedges * 2 / 3);
+		Com_Printf ("Short roughly %d edges\n", r_outofedges * 2 / 3);
 
 // back to high floating-point precision
 	Sys_HighFPPrecision ();

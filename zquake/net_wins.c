@@ -238,12 +238,12 @@ qboolean NET_GetPacket (netsrc_t sock)
 		if (errno == WSAEWOULDBLOCK)
 			return false;
 		if (errno == WSAEMSGSIZE) {
-			Con_Printf ("Warning:  Oversize packet from %s\n",
+			Com_Printf ("Warning:  Oversize packet from %s\n",
 				NET_AdrToString (net_from));
 			return false;
 		}
 		if (errno == 10054) {
-			Con_DPrintf ("NET_GetPacket: Error 10054 from %s\n", NET_AdrToString (net_from));
+			Com_DPrintf ("NET_GetPacket: Error 10054 from %s\n", NET_AdrToString (net_from));
 			return false;
 		}
 
@@ -253,7 +253,7 @@ qboolean NET_GetPacket (netsrc_t sock)
 	net_message.cursize = ret;
 	if (ret == sizeof(net_message_buffer) )
 	{
-		Con_Printf ("Oversize packet from %s\n", NET_AdrToString (net_from));
+		Com_Printf ("Oversize packet from %s\n", NET_AdrToString (net_from));
 		return false;
 	}
 
@@ -291,10 +291,10 @@ void NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to)
 
 #ifndef SERVERONLY
 		if (err == WSAEADDRNOTAVAIL)
-			Con_DPrintf("NET_SendPacket Warning: %i\n", err);
+			Com_DPrintf ("NET_SendPacket Warning: %i\n", err);
 		else
 #endif
-			Con_Printf ("NET_SendPacket ERROR: %i\n", errno);
+			Com_Printf ("NET_SendPacket ERROR: %i\n", errno);
 	}
 }
 
@@ -318,7 +318,7 @@ int UDP_OpenSocket (int port)
 // check for interface binding option
 	if ((i = COM_CheckParm("-ip")) != 0 && i < com_argc) {
 		address.sin_addr.s_addr = inet_addr(com_argv[i+1]);
-		Con_Printf ("Binding to IP Interface Address of %s\n",
+		Com_Printf ("Binding to IP Interface Address of %s\n",
 				inet_ntoa(address.sin_addr));
 	} else
 		address.sin_addr.s_addr = INADDR_ANY;
@@ -384,7 +384,7 @@ void NET_Config (qboolean client, qboolean server)
 #ifdef SERVERONLY
 			Sys_Error ("Couldn't allocate server socket");
 #else
-			Con_Printf ("WARNING: Couldn't allocate server socket.\n");
+			Com_Printf ("WARNING: Couldn't allocate server socket.\n");
 #endif
 		}
 	}
@@ -452,7 +452,7 @@ void NET_Init (void)
 	//
 	SZ_Init (&net_message, net_message_buffer, sizeof(net_message_buffer));
 
-	Con_Printf("Winsock initialized.\n");
+	Com_Printf ("Winsock initialized.\n");
 }
 
 /*

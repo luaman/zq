@@ -106,7 +106,7 @@ void Cbuf_AddTextEx (cbuf_t *cbuf, char *text)
 	new_bufsize = cbuf->text_end-cbuf->text_start+len;
 	if (new_bufsize > MAXCMDBUF)
 	{
-		Con_Printf ("Cbuf_AddText: overflow\n");
+		Com_Printf ("Cbuf_AddText: overflow\n");
 		return;
 	}
 
@@ -145,7 +145,7 @@ void Cbuf_InsertTextEx (cbuf_t *cbuf, char *text)
 	new_bufsize = cbuf->text_end - cbuf->text_start + len;
 	if (new_bufsize > MAXCMDBUF)
 	{
-		Con_Printf ("Cbuf_InsertText: overflow\n");
+		Com_Printf ("Cbuf_InsertText: overflow\n");
 		return;
 	}
 
@@ -326,7 +326,7 @@ void Cmd_Exec_f (void)
 
 	if (Cmd_Argc () != 2)
 	{
-		Con_Printf ("exec <filename> : execute a script file\n");
+		Com_Printf ("exec <filename> : execute a script file\n");
 		return;
 	}
 
@@ -345,12 +345,12 @@ void Cmd_Exec_f (void)
 		}
 
 		if (!f) {
-			Con_Printf ("couldn't exec %s\n", Cmd_Argv(1));
+			Com_Printf ("couldn't exec %s\n", Cmd_Argv(1));
 			return;
 		}
 	}
 	if (!Cvar_Command () && (cl_warncmd.value || developer.value))
-		Con_Printf ("execing %s\n", name);
+		Com_Printf ("execing %s\n", name);
 
 #ifndef SERVERONLY
 	if (cbuf_current == &cbuf_svc) {
@@ -379,8 +379,8 @@ void Cmd_Echo_f (void)
 	int		i;
 	
 	for (i=1 ; i<Cmd_Argc() ; i++)
-		Con_Printf ("%s ",Cmd_Argv(i));
-	Con_Printf ("\n");
+		Com_Printf ("%s ",Cmd_Argv(i));
+	Com_Printf ("\n");
 }
 
 /*
@@ -461,16 +461,16 @@ void Cmd_Viewalias_f(void)
 
 	if (Cmd_Argc() < 2)
 	{
-		Con_Printf ("viewalias <aliasname> : view body of alias\n");
+		Com_Printf ("viewalias <aliasname> : view body of alias\n");
 		return;
 	}
 
 	alias = Cmd_FindAlias(Cmd_Argv(1));
 
 	if (alias)
-		Con_Printf ("%s : \"%s\"\n", Cmd_Argv(1), alias->value);
+		Com_Printf ("%s : \"%s\"\n", Cmd_Argv(1), alias->value);
 	else
-		Con_Printf ("No such alias: %s\n", Cmd_Argv(1));
+		Com_Printf ("No such alias: %s\n", Cmd_Argv(1));
 }
 
 /*
@@ -502,16 +502,16 @@ void Cmd_Alias_f (void)
 	c = Cmd_Argc();
 	if (c == 1)
 	{
-		Con_Printf ("Current alias commands:\n");
+		Com_Printf ("Current alias commands:\n");
 		for (a = cmd_alias ; a ; a=a->next)
-			Con_Printf ("%s : %s\n\n", a->name, a->value);
+			Com_Printf ("%s : %s\n\n", a->name, a->value);
 		return;
 	}
 
 	s = Cmd_Argv(1);
 	if (strlen(s) >= MAX_ALIAS_NAME)
 	{
-		Con_Printf ("Alias name is too long\n");
+		Com_Printf ("Alias name is too long\n");
 		return;
 	}
 
@@ -520,7 +520,7 @@ void Cmd_Alias_f (void)
 		if (var->flags & CVAR_USER_CREATED)
 			Cvar_Delete (var->name);
 		else {
-//			Con_Printf ("%s is a variable\n");
+//			Com_Printf ("%s is a variable\n");
 			return;
 		}
 	}
@@ -615,21 +615,21 @@ void Cmd_UnAlias_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("unalias <alias>: erase an existing alias\n");
+		Com_Printf ("unalias <alias>: erase an existing alias\n");
 		return;
 	}
 
 	s = Cmd_Argv(1);
 	if (strlen(s) >= MAX_ALIAS_NAME)
 	{
-		Con_Printf ("Alias name is too long\n");
+		Com_Printf ("Alias name is too long\n");
 		return;
 	}
 
 	Cmd_DeleteAlias (s);
 #if 0
 	if (!Cmd_DeleteAlias(s))
-		Con_Printf ("Unknown alias \"%s\"\n", s);
+		Com_Printf ("Unknown alias \"%s\"\n", s);
 #endif
 }
 
@@ -777,7 +777,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 // fail if the command is a variable name
 	if (Cvar_FindVar(cmd_name))
 	{
-		Con_Printf ("Cmd_AddCommand: %s already defined as a var\n", cmd_name);
+		Com_Printf ("Cmd_AddCommand: %s already defined as a var\n", cmd_name);
 		return;
 	}
 	
@@ -788,7 +788,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	{
 		if (!Q_strcasecmp (cmd_name, cmd->name))
 		{
-			Con_Printf ("Cmd_AddCommand: %s already defined\n", cmd_name);
+			Com_Printf ("Cmd_AddCommand: %s already defined\n", cmd_name);
 			return;
 		}
 	}
@@ -919,9 +919,9 @@ void Cmd_CmdList_f (void)
 	int	i;
 
 	for (cmd=cmd_functions, i=0 ; cmd ; cmd=cmd->next, i++)
-		Con_Printf("%s\n", cmd->name);
+		Com_Printf ("%s\n", cmd->name);
 
-	Con_Printf ("------------\n%d commands\n", i);
+	Com_Printf ("------------\n%d commands\n", i);
 }
 
 
@@ -1127,7 +1127,7 @@ void Cmd_ExecuteString (char *text)
 #endif
 
 	if (cl_warncmd.value || developer.value)
-		Con_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
+		Com_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
 }
 
 
@@ -1151,7 +1151,7 @@ void Cmd_If_f (void)
 
 	c = Cmd_Argc ();
 	if (c < 5) {
-		Con_Printf ("usage: if <expr1> <op> <expr2> <command> [else <command>]\n");
+		Com_Printf ("usage: if <expr1> <op> <expr2> <command> [else <command>]\n");
 		return;
 	}
 
@@ -1176,8 +1176,8 @@ void Cmd_If_f (void)
 	else if (!strcmp(op, "<="))
 		result = Q_atof(Cmd_Argv(1)) <= Q_atof(Cmd_Argv(3));
 	else {
-		Con_Printf ("unknown operator: %s\n", op);
-		Con_Printf ("valid operators are ==, =, !=, <>, >, <, >=, <=\n");
+		Com_Printf ("unknown operator: %s\n", op);
+		Com_Printf ("valid operators are ==, =, !=, <>, >, <, >=, <=\n");
 		return;
 	}
 

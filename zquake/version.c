@@ -72,7 +72,7 @@ CL_Version_f
 */
 void CL_Version_f (void)
 {
-	Con_Printf ("QW version %4.2f\n", QW_VERSION);
-	Con_Printf ("ZQuake version %s (Build %04d)\n", Z_VERSION, build_number());
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
+	Com_Printf ("QW version %4.2f\n", QW_VERSION);
+	Com_Printf ("ZQuake version %s (Build %04d)\n", Z_VERSION, build_number());
+	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
 }

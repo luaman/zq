@@ -1928,10 +1928,10 @@ void Mod_Print (void)
 	int		i;
 	model_t	*mod;
 
-	Con_Printf ("Cached models:\n");
+	Com_Printf ("Cached models:\n");
 	for (i=0, mod=mod_known ; i < mod_numknown ; i++, mod++)
 	{
-		Con_Printf ("%8p : %s\n",mod->cache.data, mod->name);
+		Com_Printf ("%8p : %s\n",mod->cache.data, mod->name);
 	}
 }
 

@@ -112,18 +112,18 @@ void S_SoundInfo_f (void)
 {
 	if (!sound_started || !shm)
 	{
-		Con_Printf ("sound system not started\n");
+		Com_Printf ("sound system not started\n");
 		return;
 	}
 	
-    Con_Printf("%5d stereo\n", shm->channels - 1);
-    Con_Printf("%5d samples\n", shm->samples);
-    Con_Printf("%5d samplepos\n", shm->samplepos);
-    Con_Printf("%5d samplebits\n", shm->samplebits);
-    Con_Printf("%5d submission_chunk\n", shm->submission_chunk);
-    Con_Printf("%5d speed\n", shm->speed);
-    Con_Printf("0x%x dma buffer\n", shm->buffer);
-	Con_Printf("%5d total_channels\n", total_channels);
+    Com_Printf ("%5d stereo\n", shm->channels - 1);
+    Com_Printf ("%5d samples\n", shm->samples);
+    Com_Printf ("%5d samplepos\n", shm->samplepos);
+    Com_Printf ("%5d samplebits\n", shm->samplebits);
+    Com_Printf ("%5d submission_chunk\n", shm->submission_chunk);
+    Com_Printf ("%5d speed\n", shm->speed);
+    Com_Printf ("0x%x dma buffer\n", shm->buffer);
+	Com_Printf ("%5d total_channels\n", total_channels);
 }
 
 
@@ -147,7 +147,7 @@ void S_Startup (void)
 		if (!rc)
 		{
 #ifndef	_WIN32
-			Con_Printf("S_Startup: SNDDMA_Init failed.\n");
+			Com_Printf ("S_Startup: SNDDMA_Init failed.\n");
 #endif
 			sound_started = 0;
 			return;
@@ -165,7 +165,7 @@ S_Init
 */
 void S_Init (void)
 {
-//	Con_Printf("\nSound Initialization\n");
+//	Com_Printf ("\nSound Initialization\n");
 
 	Cvar_Register(&s_nosound);
 	Cvar_Register(&s_volume);
@@ -193,7 +193,7 @@ void S_Init (void)
 	if (host_parms.memsize < 0x800000)
 	{
 		Cvar_Set (&s_loadas8bit, "1");
-		Con_Printf ("loading all sounds as 8bit\n");
+		Com_Printf ("loading all sounds as 8bit\n");
 	}
 
 
@@ -224,7 +224,7 @@ void S_Init (void)
 		shm->buffer = Hunk_AllocName(1<<16, "shmbuf");
 	}
 
-//	Con_Printf ("Sound sampling rate: %i\n", shm->speed);
+//	Com_Printf ("Sound sampling rate: %i\n", shm->speed);
 
 	// provides a tick sound until washed clean
 
@@ -583,14 +583,14 @@ void S_ClearBuffer (void)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
-				Con_Printf ("S_ClearBuffer: DS::Lock Sound Buffer Failed\n");
+				Com_Printf ("S_ClearBuffer: DS::Lock Sound Buffer Failed\n");
 				S_Shutdown ();
 				return;
 			}
 
 			if (++reps > 10000)
 			{
-				Con_Printf ("S_ClearBuffer: DS: couldn't restore buffer\n");
+				Com_Printf ("S_ClearBuffer: DS: couldn't restore buffer\n");
 				S_Shutdown ();
 				return;
 			}
@@ -624,7 +624,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 
 	if (total_channels == MAX_CHANNELS)
 	{
-		Con_Printf ("total_channels == MAX_CHANNELS\n");
+		Com_Printf ("total_channels == MAX_CHANNELS\n");
 		return;
 	}
 
@@ -637,7 +637,7 @@ void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation)
 
 	if (sc->loopstart == -1)
 	{
-		Con_Printf ("Sound %s not looped\n", sfx->name);
+		Com_Printf ("Sound %s not looped\n", sfx->name);
 		return;
 	}
 	
@@ -793,11 +793,11 @@ void S_Update (vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 		for (i=0 ; i<total_channels; i++, ch++)
 			if (ch->sfx && (ch->leftvol || ch->rightvol) )
 			{
-				//Con_Printf ("%3i %3i %s\n", ch->leftvol, ch->rightvol, ch->sfx->name);
+				//Com_Printf ("%3i %3i %s\n", ch->leftvol, ch->rightvol, ch->sfx->name);
 				total++;
 			}
 		
-		Con_Printf ("----(%i)----\n", total);
+		Com_Printf ("----(%i)----\n", total);
 	}
 
 // mix some sound
@@ -863,7 +863,7 @@ void S_Update_ (void)
 // check to make sure that we haven't overshot
 	if (paintedtime < soundtime)
 	{
-		//Con_Printf ("S_Update_ : overflow\n");
+		//Com_Printf ("S_Update_ : overflow\n");
 		paintedtime = soundtime;
 	}
 
@@ -881,7 +881,7 @@ void S_Update_ (void)
 		if (pDSBuf)
 		{
 			if (pDSBuf->lpVtbl->GetStatus (pDSBuf, &dwStatus) != DD_OK)
-				Con_Printf ("Couldn't get sound buffer status\n");
+				Com_Printf ("Couldn't get sound buffer status\n");
 			
 			if (dwStatus & DSBSTATUS_BUFFERLOST)
 				pDSBuf->lpVtbl->Restore (pDSBuf);
@@ -955,12 +955,12 @@ void S_SoundList_f (void)
 		size = sc->length*sc->width*(sc->stereo+1);
 		total += size;
 		if (sc->loopstart >= 0)
-			Con_Printf ("L");
+			Com_Printf ("L");
 		else
-			Con_Printf (" ");
-		Con_Printf("(%2db) %6i : %s\n",sc->width*8,  size, sfx->name);
+			Com_Printf (" ");
+		Com_Printf ("(%2db) %6i : %s\n",sc->width*8,  size, sfx->name);
 	}
-	Con_Printf ("Total resident: %i\n", total);
+	Com_Printf ("Total resident: %i\n", total);
 }
 
 
@@ -976,7 +976,7 @@ void S_LocalSound (char *sound)
 	sfx = S_PrecacheSound (sound);
 	if (!sfx)
 	{
-		Con_Printf ("S_LocalSound: can't cache %s\n", sound);
+		Com_Printf ("S_LocalSound: can't cache %s\n", sound);
 		return;
 	}
 	S_StartSound (cl.playernum+1, -1, sfx, vec3_origin, 1, 0);

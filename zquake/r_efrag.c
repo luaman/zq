@@ -113,7 +113,7 @@ void R_SplitEntityOnNode (mnode_t *node)
 		ef = cl.free_efrags;
 		if (!ef)
 		{
-			Con_Printf ("Too many efrags!\n");
+			Com_Printf ("Too many efrags!\n");
 			return;		// no free fragments...
 		}
 		cl.free_efrags = cl.free_efrags->entnext;

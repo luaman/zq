@@ -1636,7 +1636,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	if (!force_mode_set && (modenum == vid_modenum))
 		return true;
 
-// so Con_Printfs don't mess us up by forcing vid and snd updates
+// so Com_Printfs don't mess us up by forcing vid and snd updates
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 	in_mode_set = true;
@@ -1935,7 +1935,7 @@ VID_DescribeCurrentMode_f
 */
 void VID_DescribeCurrentMode_f (void)
 {
-	Con_Printf ("%s\n", VID_GetExtModeDescription (vid_modenum));
+	Com_Printf ("%s\n", VID_GetExtModeDescription (vid_modenum));
 }
 
 
@@ -1948,9 +1948,9 @@ void VID_NumModes_f (void)
 {
 
 	if (nummodes == 1)
-		Con_Printf ("%d video mode is available\n", nummodes);
+		Com_Printf ("%d video mode is available\n", nummodes);
 	else
-		Con_Printf ("%d video modes are available\n", nummodes);
+		Com_Printf ("%d video modes are available\n", nummodes);
 }
 
 
@@ -1965,7 +1965,7 @@ void VID_DescribeMode_f (void)
 	
 	modenum = Q_atoi (Cmd_Argv(1));
 
-	Con_Printf ("%s\n", VID_GetExtModeDescription (modenum));
+	Com_Printf ("%s\n", VID_GetExtModeDescription (modenum));
 }
 
 
@@ -1992,18 +1992,18 @@ void VID_DescribeModes_f (void)
 
 		if (VID_CheckAdequateMem (pv->width, pv->height))
 		{
-			Con_Printf ("%2d: %s\n", i, pinfo);
+			Com_Printf ("%2d: %s\n", i, pinfo);
 		}
 		else
 		{
-			Con_Printf ("**: %s\n", pinfo);
+			Com_Printf ("**: %s\n", pinfo);
 			na = true;
 		}
 	}
 
 	if (na)
 	{
-		Con_Printf ("\n[**: not enough system RAM for mode]\n");
+		Com_Printf ("\n[**: not enough system RAM for mode]\n");
 	}
 }
 

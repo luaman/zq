@@ -799,9 +799,9 @@ void TP_MacroList_f (void)
 	int	i;
 
 	for (macro=macro_commands,i=0 ; macro->name ; macro++,i++)
-		Con_Printf ("%s\n", macro->name);
+		Com_Printf ("%s\n", macro->name);
 
-	Con_Printf ("------------\n%d macros\n", i);
+	Com_Printf ("------------\n%d macros\n", i);
 }
 
 /*
@@ -840,7 +840,7 @@ void TP_LoadLocFile (char *path, qboolean quiet)
 	strcpy (locname, "locs/");
 	if (strlen(path) + strlen(locname) + 2+4 > MAX_OSPATH)
 	{
-		Con_Printf ("TP_LoadLocFile: path name > MAX_OSPATH\n");
+		Com_Printf ("TP_LoadLocFile: path name > MAX_OSPATH\n");
 		return;
 	}
 	strcat (locname, path);
@@ -853,7 +853,7 @@ void TP_LoadLocFile (char *path, qboolean quiet)
 	if (!buf)
 	{
 		if (!quiet)
-			Con_Printf ("Could not load %s\n", locname);
+			Com_Printf ("Could not load %s\n", locname);
 		return;
 	}
 
@@ -892,7 +892,7 @@ void TP_LoadLocFile (char *path, qboolean quiet)
 				case '-':
 					if (n)
 					{
-						Con_Printf ("Error in loc file on line #%i\n", line);
+						Com_Printf ("Error in loc file on line #%i\n", line);
 						SKIPTOEOL(p);		
 						goto _endofline;
 					}
@@ -905,7 +905,7 @@ void TP_LoadLocFile (char *path, qboolean quiet)
 					break;
 
 				default:	// including eol or eof
-					Con_Printf ("Error in loc file on line #%i\n", line);
+					Com_Printf ("Error in loc file on line #%i\n", line);
 					SKIPTOEOL(p);		
 					goto _endofline;
 				}
@@ -953,16 +953,16 @@ _endoffile:
 	Hunk_FreeToLowMark (mark);
 
 	if (quiet)
-		Con_Printf ("Loaded %s\n", locname);
+		Com_Printf ("Loaded %s\n", locname);
 	else
-		Con_Printf ("Loaded %s (%i locations)\n", locname, loc_numentries);
+		Com_Printf ("Loaded %s (%i locations)\n", locname, loc_numentries);
 }
 
 void TP_LoadLocFile_f (void)
 {
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("loadloc <filename> : load a loc file\n");
+		Com_Printf ("loadloc <filename> : load a loc file\n");
 		return;
 	}
 
@@ -1031,37 +1031,37 @@ void TP_MsgTrigger_f (void)
 	c = Cmd_Argc();
 
 	if (c > 5) {
-		Con_Printf ("msg_trigger <trigger name> \"string\" [-l <level>]\n");
+		Com_Printf ("msg_trigger <trigger name> \"string\" [-l <level>]\n");
 		return;
 	}
 
 	if (c == 1) {
 		if (!msg_triggers)
-			Con_Printf ("no triggers defined\n");
+			Com_Printf ("no triggers defined\n");
 		else
 		for (trig=msg_triggers; trig; trig=trig->next)
-			Con_Printf ("%s : \"%s\"\n", trig->name, trig->string);
+			Com_Printf ("%s : \"%s\"\n", trig->name, trig->string);
 		return;
 	}
 
 	name = Cmd_Argv(1);
 	if (strlen(name) > 31) {
-		Con_Printf ("trigger name too long\n");
+		Com_Printf ("trigger name too long\n");
 		return;
 	}
 
 	if (c == 2) {
 		trig = TP_FindTrigger (name);
 		if (trig)
-			Con_Printf ("%s: \"%s\"\n", trig->name, trig->string);
+			Com_Printf ("%s: \"%s\"\n", trig->name, trig->string);
 		else
-			Con_Printf ("trigger \"%s\" not found\n", name);
+			Com_Printf ("trigger \"%s\" not found\n", name);
 		return;
 	}
 
 	if (c >= 3) {
 		if (strlen(Cmd_Argv(2)) > 63) {
-			Con_Printf ("trigger string too long\n");
+			Com_Printf ("trigger string too long\n");
 			return;
 		}
 		
@@ -1145,7 +1145,7 @@ void TP_ExecuteTriggerString (char *text)
 		}
 
 	if (cl_warncmd.value || developer.value)
-		Con_Printf ("Invalid trigger command: \"%s\"\n", arg0);
+		Com_Printf ("Invalid trigger command: \"%s\"\n", arg0);
 }
 
 
@@ -1196,7 +1196,7 @@ void TP_SearchForMsgTriggers (char *s, int level)
 			if (string)
 				TP_ExecuteTriggerBuf (string);
 			else
-				Con_Printf ("trigger \"%s\" has no matching alias\n", t->name);
+				Com_Printf ("trigger \"%s\" has no matching alias\n", t->name);
 		}
 }
 
@@ -1336,9 +1336,9 @@ void TP_TeamColor_f (void)
 	if (Cmd_Argc() == 1)
 	{
 		if (cl_teamtopcolor < 0)
-			Con_Printf ("\"teamcolor\" is \"off\"\n");
+			Com_Printf ("\"teamcolor\" is \"off\"\n");
 		else
-			Con_Printf ("\"teamcolor\" is \"%i %i\"\n", 
+			Com_Printf ("\"teamcolor\" is \"%i %i\"\n", 
 				cl_teamtopcolor,
 				cl_teambottomcolor);
 		return;
@@ -1384,9 +1384,9 @@ void TP_EnemyColor_f (void)
 	if (Cmd_Argc() == 1)
 	{
 		if (cl_enemytopcolor < 0)
-			Con_Printf ("\"enemycolor\" is \"off\"\n");
+			Com_Printf ("\"enemycolor\" is \"off\"\n");
 		else
-			Con_Printf ("\"enemycolor\" is \"%i %i\"\n", 
+			Com_Printf ("\"enemycolor\" is \"%i %i\"\n", 
 				cl_enemytopcolor,
 				cl_enemybottomcolor);
 		return;
@@ -1582,7 +1582,7 @@ static void FlagCommand (int *flags, int defaultflags)
 					strcat (str, " ");
 				strcat (str, pknames[i]);
 			}
-		Con_Printf ("%s\n", str);
+		Com_Printf ("%s\n", str);
 		return;
 	}
 
@@ -1833,7 +1833,7 @@ static int FindNearestItem (int flags, item_t **pitem)
 		VectorSubtract (ent->origin, org, v);
 		VectorAdd (v, item->offset, v);
 		dist = VectorLength (v);
-//		Con_Printf ("%s %f\n", item->modelname, dist);
+//		Com_Printf ("%s %f\n", item->modelname, dist);
 
 		if (dist <= bestdist) {
 			bestdist = dist;
@@ -2274,12 +2274,12 @@ void TP_MsgFilter_f (void)
 	c = Cmd_Argc ();
 	if (c == 1) {
 		if (!num_filters) {
-			Con_Printf ("No filters defined\n");
+			Com_Printf ("No filters defined\n");
 			return;
 		}
 		for (i=0 ; i<num_filters ; i++)
-			Con_Printf ("%s#%s", i ? " " : "", filter_strings[i]);
-		Con_Printf ("\n");
+			Com_Printf ("%s#%s", i ? " " : "", filter_strings[i]);
+		Com_Printf ("\n");
 		return;
 	}
 
@@ -2292,11 +2292,11 @@ void TP_MsgFilter_f (void)
 	for (i=1 ; i < c ; i++) {
 		s = Cmd_Argv(i);
 		if (*s != '#') {
-			Con_Printf ("A filter must start with \"#\"\n");
+			Com_Printf ("A filter must start with \"#\"\n");
 			return;
 		}
 		if (strchr(s+1, ' ')) {
-			Con_Printf ("A filter may not contain spaces\n");
+			Com_Printf ("A filter may not contain spaces\n");
 			return;
 		}
 		Q_strncpyz (filter_strings[num_filters], s+1, sizeof(filter_strings[0]));

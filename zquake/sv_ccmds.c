@@ -62,15 +62,15 @@ void SV_SetMaster_f (void)
 	{
 		if (!strcmp(Cmd_Argv(i), "none") || !NET_StringToAdr (Cmd_Argv(i), &master_adr[i-1]))
 		{
-			Con_Printf ("Setting nomaster mode.\n");
+			Com_Printf ("Setting nomaster mode.\n");
 			return;
 		}
 		if (master_adr[i-1].port == 0)
 			master_adr[i-1].port = BigShort (PORT_MASTER);
 
-		Con_Printf ("Master server at %s\n", NET_AdrToString (master_adr[i-1]));
+		Com_Printf ("Master server at %s\n", NET_AdrToString (master_adr[i-1]));
 
-		Con_Printf ("Sending a ping.\n");
+		Com_Printf ("Sending a ping.\n");
 
 		data[0] = A2A_PING;
 		data[1] = 0;
@@ -88,7 +88,7 @@ SV_Quit_f
 */
 void SV_Quit_f (void)
 {
-	Con_Printf ("Shutting down.\n");
+	Com_Printf ("Shutting down.\n");
 	SV_Shutdown ("Server quit\n");
 	NET_Shutdown ();
 	Sys_Quit ();
@@ -105,17 +105,17 @@ void SV_Logfile_f (void)
 
 	if (sv_logfile)
 	{
-		Con_Printf ("File logging off.\n");
+		Com_Printf ("File logging off.\n");
 		fclose (sv_logfile);
 		sv_logfile = NULL;
 		return;
 	}
 
 	sprintf (name, "%s/qconsole.log", com_gamedir);
-	Con_Printf ("Logging text to %s.\n", name);
+	Com_Printf ("Logging text to %s.\n", name);
 	sv_logfile = fopen (name, "w");
 	if (!sv_logfile)
-		Con_Printf ("failed.\n");
+		Com_Printf ("failed.\n");
 }
 
 #define MAX_LOGFILES	1000
@@ -132,7 +132,7 @@ void SV_Fraglogfile_f (void)
 
 	if (sv_fraglogfile)
 	{
-		Con_Printf ("Frag file logging off.\n");
+		Com_Printf ("Frag file logging off.\n");
 		fclose (sv_fraglogfile);
 		sv_fraglogfile = NULL;
 		return;
@@ -154,12 +154,12 @@ void SV_Fraglogfile_f (void)
 	}
 	if (i==MAX_LOGFILES)
 	{
-		Con_Printf ("Couldn't open any logfiles.\n");
+		Com_Printf ("Couldn't open any logfiles.\n");
 		sv_fraglogfile = NULL;
 		return;
 	}
 
-	Con_Printf ("Logging frags to %s.\n", name);
+	Com_Printf ("Logging frags to %s.\n", name);
 }
 
 
@@ -189,7 +189,7 @@ qboolean SV_SetPlayer (void)
 			return true;
 		}
 	}
-	Con_Printf ("Userid %i is not on the server\n", idnum);
+	Com_Printf ("Userid %i is not on the server\n", idnum);
 	return false;
 }
 
@@ -214,7 +214,7 @@ void SV_Map_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("map <levelname> : continue game on a new level\n");
+		Com_Printf ("map <levelname> : continue game on a new level\n");
 		return;
 	}
 	strcpy (level, Cmd_Argv(1));
@@ -224,7 +224,7 @@ void SV_Map_f (void)
 	COM_FOpenFile (expanded, &f);
 	if (!f)
 	{
-		Con_Printf ("Can't find %s\n", expanded);
+		Com_Printf ("Can't find %s\n", expanded);
 		return;
 	}
 	fclose (f);
@@ -276,7 +276,7 @@ void SV_Kick_f (void)
 			return;
 		}
 #endif
-		Con_Printf ("kick <userid> [reason]\n");
+		Com_Printf ("kick <userid> [reason]\n");
 		return;
 	}
 
@@ -311,7 +311,7 @@ void SV_Kick_f (void)
 		}
 	}
 
-	Con_Printf ("Couldn't find user number %i\n", uid);
+	Com_Printf ("Couldn't find user number %i\n", uid);
 }
 
 
@@ -342,91 +342,91 @@ void SV_Status_f (void)
 	avg = 1000*svs.stats.latched_active / STATFRAMES;
 	pak = (float)svs.stats.latched_packets/ STATFRAMES;
 
-	Con_Printf ("net address      : %s\n",NET_AdrToString (net_local_adr));
-	Con_Printf ("cpu utilization  : %3i%%\n",(int)cpu);
-	Con_Printf ("avg response time: %i ms\n",(int)avg);
-	Con_Printf ("packets/frame    : %5.2f (%d)\n", pak, num_prstr);
+	Com_Printf ("net address      : %s\n",NET_AdrToString (net_local_adr));
+	Com_Printf ("cpu utilization  : %3i%%\n",(int)cpu);
+	Com_Printf ("avg response time: %i ms\n",(int)avg);
+	Com_Printf ("packets/frame    : %5.2f (%d)\n", pak, num_prstr);
 	
 // min fps lat drp
 	if (sv_redirected != RD_NONE) {
 		// most remote clients are 40 columns
 		//           0123456789012345678901234567890123456789
-		Con_Printf ("name               userid frags\n");
-        Con_Printf ("  address          rate ping drop\n");
-		Con_Printf ("  ---------------- ---- ---- -----\n");
+		Com_Printf ("name               userid frags\n");
+        Com_Printf ("  address          rate ping drop\n");
+		Com_Printf ("  ---------------- ---- ---- -----\n");
 		for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
 		{
 			if (!cl->state)
 				continue;
 
-			Con_Printf ("%-16.16s  ", cl->name);
+			Com_Printf ("%-16.16s  ", cl->name);
 
-			Con_Printf ("%6i %5i", cl->userid, (int)cl->edict->v.frags);
+			Com_Printf ("%6i %5i", cl->userid, (int)cl->edict->v.frags);
 			if (cl->spectator)
-				Con_Printf(" (s)\n");
+				Com_Printf (" (s)\n");
 			else			
-				Con_Printf("\n");
+				Com_Printf ("\n");
 
 			s = NET_BaseAdrToString ( cl->netchan.remote_address);
-			Con_Printf ("  %-16.16s", s);
+			Com_Printf ("  %-16.16s", s);
 			if (cl->state == cs_connected)
 			{
-				Con_Printf ("CONNECTING\n");
+				Com_Printf ("CONNECTING\n");
 				continue;
 			}
 			if (cl->state == cs_zombie)
 			{
-				Con_Printf ("ZOMBIE\n");
+				Com_Printf ("ZOMBIE\n");
 				continue;
 			}
-			Con_Printf ("%4i %4i %5.2f\n"
+			Com_Printf ("%4i %4i %5.2f\n"
 				, (int)(1000*cl->netchan.frame_rate)
 				, (int)SV_CalcPing (cl)
 				, 100.0*cl->netchan.drop_count / cl->netchan.incoming_sequence);
 		}
 	} else {
-		Con_Printf ("frags userid address         name            rate ping drop  qport\n");
-		Con_Printf ("----- ------ --------------- --------------- ---- ---- ----- -----\n");
+		Com_Printf ("frags userid address         name            rate ping drop  qport\n");
+		Com_Printf ("----- ------ --------------- --------------- ---- ---- ----- -----\n");
 		for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
 		{
 			if (!cl->state)
 				continue;
-			Con_Printf ("%5i %6i ", (int)cl->edict->v.frags,  cl->userid);
+			Com_Printf ("%5i %6i ", (int)cl->edict->v.frags,  cl->userid);
 
 			s = NET_BaseAdrToString ( cl->netchan.remote_address);
-			Con_Printf ("%s", s);
+			Com_Printf ("%s", s);
 			l = 16 - strlen(s);
 			for (j=0 ; j<l ; j++)
-				Con_Printf (" ");
+				Com_Printf (" ");
 			
-			Con_Printf ("%s", cl->name);
+			Com_Printf ("%s", cl->name);
 			l = 16 - strlen(cl->name);
 			for (j=0 ; j<l ; j++)
-				Con_Printf (" ");
+				Com_Printf (" ");
 			if (cl->state == cs_connected)
 			{
-				Con_Printf ("CONNECTING\n");
+				Com_Printf ("CONNECTING\n");
 				continue;
 			}
 			if (cl->state == cs_zombie)
 			{
-				Con_Printf ("ZOMBIE\n");
+				Com_Printf ("ZOMBIE\n");
 				continue;
 			}
-			Con_Printf ("%4i %4i %3.1f %4i"
+			Com_Printf ("%4i %4i %3.1f %4i"
 				, (int)(1000*cl->netchan.frame_rate)
 				, (int)SV_CalcPing (cl)
 				, 100.0*cl->netchan.drop_count / cl->netchan.incoming_sequence
 				, cl->netchan.qport);
 			if (cl->spectator)
-				Con_Printf(" (s)\n");
+				Com_Printf (" (s)\n");
 			else			
-				Con_Printf("\n");
+				Com_Printf ("\n");
 
 				
 		}
 	}
-	Con_Printf ("\n");
+	Com_Printf ("\n");
 }
 
 /*
@@ -498,20 +498,20 @@ void SV_Serverinfo_f (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		Con_Printf ("Server info settings:\n");
+		Com_Printf ("Server info settings:\n");
 		Info_Print (svs.info);
 		return;
 	}
 
 	if (Cmd_Argc() != 3)
 	{
-		Con_Printf ("usage: serverinfo [ <key> <value> ]\n");
+		Com_Printf ("usage: serverinfo [ <key> <value> ]\n");
 		return;
 	}
 
 	if (Cmd_Argv(1)[0] == '*')
 	{
-		Con_Printf ("Star variables cannot be changed.\n");
+		Com_Printf ("Star variables cannot be changed.\n");
 		return;
 	}
 	Info_SetValueForKey (svs.info, Cmd_Argv(1), Cmd_Argv(2), MAX_SERVERINFO_STRING);
@@ -541,20 +541,20 @@ void SV_Localinfo_f (void)
 {
 	if (Cmd_Argc() == 1)
 	{
-		Con_Printf ("Local info settings:\n");
+		Com_Printf ("Local info settings:\n");
 		Info_Print (localinfo);
 		return;
 	}
 
 	if (Cmd_Argc() != 3)
 	{
-		Con_Printf ("usage: localinfo [ <key> <value> ]\n");
+		Com_Printf ("usage: localinfo [ <key> <value> ]\n");
 		return;
 	}
 
 	if (Cmd_Argv(1)[0] == '*')
 	{
-		Con_Printf ("Star variables cannot be changed.\n");
+		Com_Printf ("Star variables cannot be changed.\n");
 		return;
 	}
 	Info_SetValueForKey (localinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_LOCALINFO_STRING);
@@ -572,7 +572,7 @@ void SV_User_f (void)
 {
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("Usage: info <userid>\n");
+		Com_Printf ("Usage: info <userid>\n");
 		return;
 	}
 
@@ -595,13 +595,13 @@ void SV_Gamedir (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		Con_Printf ("Current *gamedir: %s\n", Info_ValueForKey (svs.info, "*gamedir"));
+		Com_Printf ("Current *gamedir: %s\n", Info_ValueForKey (svs.info, "*gamedir"));
 		return;
 	}
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("Usage: sv_gamedir <newgamedir>\n");
+		Com_Printf ("Usage: sv_gamedir <newgamedir>\n");
 		return;
 	}
 
@@ -610,7 +610,7 @@ void SV_Gamedir (void)
 	if (strstr(dir, "..") || strstr(dir, "/")
 		|| strstr(dir, "\\") || strstr(dir, ":") )
 	{
-		Con_Printf ("*Gamedir should be a single filename, not a path\n");
+		Com_Printf ("*Gamedir should be a single filename, not a path\n");
 		return;
 	}
 
@@ -632,17 +632,17 @@ void SV_Floodprot_f (void)
 	if (Cmd_Argc() == 1)
 	{
 		if (fp_messages) {
-			Con_Printf ("Current floodprot settings: \nAfter %d msgs per %d seconds, silence for %d seconds\n", 
+			Com_Printf ("Current floodprot settings: \nAfter %d msgs per %d seconds, silence for %d seconds\n", 
 				fp_messages, fp_persecond, fp_secondsdead);
 			return;
 		} else
-			Con_Printf ("No floodprots enabled.\n");
+			Com_Printf ("No floodprots enabled.\n");
 	}
 
 	if (Cmd_Argc() != 4)
 	{
-		Con_Printf ("Usage: floodprot <# of messages> <per # of seconds> <seconds to silence>\n");
-		Con_Printf ("Use floodprotmsg to set a custom message to say to the flooder.\n");
+		Com_Printf ("Usage: floodprot <# of messages> <per # of seconds> <seconds to silence>\n");
+		Com_Printf ("Use floodprotmsg to set a custom message to say to the flooder.\n");
 		return;
 	}
 
@@ -651,12 +651,12 @@ void SV_Floodprot_f (void)
 	arg3 = atoi(Cmd_Argv(3));
 
 	if (arg1<=0 || arg2 <= 0 || arg3<=0) {
-		Con_Printf ("All values must be positive numbers\n");
+		Com_Printf ("All values must be positive numbers\n");
 		return;
 	}
 	
 	if (arg1 > 10) {
-		Con_Printf ("Can only track up to 10 messages.\n");
+		Com_Printf ("Can only track up to 10 messages.\n");
 		return;
 	}
 
@@ -668,10 +668,10 @@ void SV_Floodprot_f (void)
 void SV_Floodprotmsg_f (void)
 {
 	if (Cmd_Argc() == 1) {
-		Con_Printf("Current msg: %s\n", fp_msg);
+		Com_Printf ("Current msg: %s\n", fp_msg);
 		return;
 	} else if (Cmd_Argc() != 2) {
-		Con_Printf("Usage: floodprotmsg \"<message>\"\n");
+		Com_Printf ("Usage: floodprotmsg \"<message>\"\n");
 		return;
 	}
 	sprintf(fp_msg, "%s", Cmd_Argv(1));
@@ -691,13 +691,13 @@ void SV_Gamedir_f (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		Con_Printf ("Current gamedir: %s\n", com_gamedir);
+		Com_Printf ("Current gamedir: %s\n", com_gamedir);
 		return;
 	}
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("Usage: gamedir <newdir>\n");
+		Com_Printf ("Usage: gamedir <newdir>\n");
 		return;
 	}
 
@@ -706,7 +706,7 @@ void SV_Gamedir_f (void)
 	if (strstr(dir, "..") || strstr(dir, "/")
 		|| strstr(dir, "\\") || strstr(dir, ":") )
 	{
-		Con_Printf ("Gamedir should be a single filename, not a path\n");
+		Com_Printf ("Gamedir should be a single filename, not a path\n");
 		return;
 	}
 
@@ -734,7 +734,7 @@ void SV_Snap (int uid)
 			break;
 	}
 	if (i >= MAX_CLIENTS) {
-		Con_Printf ("userid not found\n");
+		Com_Printf ("userid not found\n");
 		return;
 	}
 
@@ -754,7 +754,7 @@ void SV_Snap (int uid)
 	} 
 	if (i==100) 
 	{
-		Con_Printf ("Snap: Couldn't create a file, clean some out.\n"); 
+		Com_Printf ("Snap: Couldn't create a file, clean some out.\n"); 
 		return;
 	}
 	strcpy(cl->uploadfn, checkname);
@@ -767,7 +767,7 @@ void SV_Snap (int uid)
 
 	ClientReliableWrite_Begin (cl, svc_stufftext, 24);
 	ClientReliableWrite_String (cl, "cmd snap\n");
-	Con_Printf ("Requesting snap from user %d...\n", uid);
+	Com_Printf ("Requesting snap from user %d...\n", uid);
 }
 
 /*
@@ -781,7 +781,7 @@ void SV_Snap_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("Usage: snap <userid>\n");
+		Com_Printf ("Usage: snap <userid>\n");
 		return;
 	}
 

@@ -61,7 +61,7 @@ void PF_error (void)
 	edict_t	*ed;
 	
 	s = PF_VarString(0);
-	Con_Printf ("======SERVER ERROR in %s:\n%s\n", PR_GetString(pr_xfunction->s_name) ,s);
+	Com_Printf ("======SERVER ERROR in %s:\n%s\n", PR_GetString(pr_xfunction->s_name) ,s);
 	ed = PROG_TO_EDICT(pr_global_struct->self);
 	ED_Print (ed);
 
@@ -84,7 +84,7 @@ void PF_objerror (void)
 	edict_t	*ed;
 	
 	s = PF_VarString(0);
-	Con_Printf ("======OBJECT ERROR in %s:\n%s\n", PR_GetString(pr_xfunction->s_name),s);
+	Com_Printf ("======OBJECT ERROR in %s:\n%s\n", PR_GetString(pr_xfunction->s_name),s);
 	ed = PROG_TO_EDICT(pr_global_struct->self);
 	ED_Print (ed);
 	ED_Free (ed);
@@ -239,7 +239,7 @@ void PF_sprint (void)
 	
 	if (entnum < 1 || entnum > MAX_CLIENTS)
 	{
-		Con_Printf ("tried to sprint to a non-client\n");
+		Com_Printf ("tried to sprint to a non-client\n");
 		return;
 	}
 		
@@ -307,7 +307,7 @@ void PF_centerprint (void)
 	
 	if (entnum < 1 || entnum > MAX_CLIENTS)
 	{
-		Con_Printf ("tried to sprint to a non-client\n");
+		Com_Printf ("tried to sprint to a non-client\n");
 		return;
 	}
 		
@@ -479,7 +479,7 @@ void PF_ambientsound (void)
 			
 	if (!*check)
 	{
-		Con_Printf ("no precache: %s\n", samp);
+		Com_Printf ("no precache: %s\n", samp);
 		return;
 	}
 
@@ -537,7 +537,7 @@ break()
 */
 void PF_break (void)
 {
-Con_Printf ("break statement\n");
+Com_Printf ("break statement\n");
 *(int *)-4 = 0;	// dump to debugger
 //	PR_RunError ("break statement");
 }
@@ -825,7 +825,7 @@ void PF_cvar_set (void)
 	var = Cvar_FindVar(var_name);
 	if (!var)
 	{
-		Con_DPrintf ("PF_cvar_set: variable %s not found\n", var_name);
+		Com_DPrintf ("PF_cvar_set: variable %s not found\n", var_name);
 		return;
 	}
 
@@ -881,7 +881,7 @@ PF_dprint
 */
 void PF_dprint (void)
 {
-	Con_Printf ("%s",PF_VarString(0));
+	Com_Printf ("%s",PF_VarString(0));
 }
 
 char	pr_string_temp[128];

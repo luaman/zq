@@ -97,7 +97,7 @@ void CL_WriteDemoCmd (usercmd_t *pcmd)
 	byte	c;
 	usercmd_t cmd;
 
-//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
 
 	fl = LittleFloat((float)realtime);
 	fwrite (&fl, sizeof(fl), 1, cls.demofile);
@@ -137,7 +137,7 @@ void CL_WriteDemoMessage (sizebuf_t *msg)
 	float	fl;
 	byte	c;
 
-//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
 
 	if (!cls.demorecording)
 		return;
@@ -250,7 +250,7 @@ qboolean CL_GetDemoMessage (void)
 		// get the next message
 		fread (&net_message.cursize, 4, 1, cls.demofile);
 		net_message.cursize = LittleLong (net_message.cursize);
-	//Con_Printf("read: %ld bytes\n", net_message.cursize);
+	//Com_Printf ("read: %ld bytes\n", net_message.cursize);
 		if (net_message.cursize > MAX_MSGLEN + 8)
 			Host_Error ("Demo message > MAX_MSGLEN");
 		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
@@ -269,7 +269,7 @@ qboolean CL_GetDemoMessage (void)
 		break;
 
 	default:
-		Con_Printf ("Corrupted demo.\n");
+		Com_Printf ("Corrupted demo.\n");
 		CL_Disconnect ();
 		return 0;
 	}
@@ -313,7 +313,7 @@ void CL_Stop_f (void)
 {
 	if (!cls.demorecording)
 	{
-		Con_Printf ("Not recording a demo.\n");
+		Com_Printf ("Not recording a demo.\n");
 		return;
 	}
 
@@ -328,7 +328,7 @@ void CL_Stop_f (void)
 	fclose (cls.demofile);
 	cls.demofile = NULL;
 	cls.demorecording = false;
-	Con_Printf ("Completed demo\n");
+	Com_Printf ("Completed demo\n");
 }
 
 
@@ -346,7 +346,7 @@ void CL_WriteRecordDemoMessage (sizebuf_t *msg, int seq)
 	float	fl;
 	byte	c;
 
-//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
 
 	if (!cls.demorecording)
 		return;
@@ -376,7 +376,7 @@ void CL_WriteSetDemoMessage (void)
 	float	fl;
 	byte	c;
 
-//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
 
 	if (!cls.demorecording)
 		return;
@@ -668,12 +668,12 @@ void CL_Record_f (void)
 	c = Cmd_Argc();
 	if (c != 2)
 	{
-		Con_Printf ("record <demoname>\n");
+		Com_Printf ("record <demoname>\n");
 		return;
 	}
 
 	if (cls.state != ca_active && cls.state != ca_disconnected) {
-		Con_Printf ("Cannot record while connecting.\n");
+		Com_Printf ("Cannot record while connecting.\n");
 		return;
 	}
 
@@ -690,11 +690,11 @@ void CL_Record_f (void)
 	cls.demofile = fopen (name, "wb");
 	if (!cls.demofile)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
+		Com_Printf ("ERROR: couldn't open.\n");
 		return;
 	}
 
-	Con_Printf ("recording to %s.\n", name);
+	Com_Printf ("recording to %s.\n", name);
 
 	if (cls.state == ca_active)
 		CL_Record ();
@@ -722,12 +722,12 @@ void CL_EasyRecord_f (void)
 	c = Cmd_Argc();
 	if (c > 2)
 	{
-		Con_Printf ("easyrecord <demoname>\n");
+		Com_Printf ("easyrecord <demoname>\n");
 		return;
 	}
 
 	if (cls.state != ca_active) {
-		Con_Printf ("You must be connected to record.\n");
+		Com_Printf ("You must be connected to record.\n");
 		return;
 	}
 
@@ -810,11 +810,11 @@ void CL_EasyRecord_f (void)
 	cls.demofile = fopen (name2, "wb");
 	if (!cls.demofile)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
+		Com_Printf ("ERROR: couldn't open.\n");
 		return;
 	}
 
-	Con_Printf ("recording to %s.\n", name2);
+	Com_Printf ("recording to %s.\n", name2);
 	CL_Record ();
 }
 
@@ -832,7 +832,7 @@ static void CheckQizmoCompletion ()
 		return;
 
 	if (!GetExitCodeProcess (hQizmoProcess, &ExitCode)) {
-		Con_Printf ("WARINING: GetExitCodeProcess failed\n");
+		Com_Printf ("WARINING: GetExitCodeProcess failed\n");
 		hQizmoProcess = NULL;
 		qwz_unpacking = false;
 		qwz_playback = false;
@@ -855,7 +855,7 @@ static void CheckQizmoCompletion ()
 	
 	cls.demofile = fopen (tempqwd_name, "rb");
 	if (!cls.demofile) {
-		Con_Printf ("Couldn't open %s\n", tempqwd_name);
+		Com_Printf ("Couldn't open %s\n", tempqwd_name);
 		qwz_playback = false;
 		cls.demoplayback = cls.timedemo = false;
 		return;
@@ -872,7 +872,7 @@ static void StopQWZPlayback ()
 {
 	if (!hQizmoProcess && tempqwd_name[0]) {
 		if (remove (tempqwd_name) != 0)
-			Con_Printf ("Couldn't delete %s\n", tempqwd_name);
+			Com_Printf ("Couldn't delete %s\n", tempqwd_name);
 		tempqwd_name[0] = '\0';
 	}
 	qwz_playback = false;
@@ -890,7 +890,7 @@ void PlayQWZDemo (void)
 	char	*p;
 
 	if (hQizmoProcess) {
-		Con_Printf ("Cannot unpack -- Qizmo still running!\n");
+		Com_Printf ("Cannot unpack -- Qizmo still running!\n");
 		return;
 	}
 	
@@ -908,7 +908,7 @@ void PlayQWZDemo (void)
 	cls.demofile = fopen (qwz_name, "rb");
 	if (!cls.demofile)
 	{
-		Con_Printf ("Couldn't open %s\n", name);
+		Com_Printf ("Couldn't open %s\n", name);
 		return;
 	}
 	fclose (cls.demofile);
@@ -937,7 +937,7 @@ void PlayQWZDemo (void)
 		return;
 	}
 	
-	Con_Printf ("Unpacking %s...\n", COM_SkipPath(name));
+	Com_Printf ("Unpacking %s...\n", COM_SkipPath(name));
 	
 	// start Qizmo to unpack the demo
 	memset (&si, 0, sizeof(si));
@@ -952,7 +952,7 @@ void PlayQWZDemo (void)
 		FALSE, 0/* | HIGH_PRIORITY_CLASS*/,
 		NULL, va("%s/%s", com_basedir, qizmo_dir.string), &si, &pi))
 	{
-		Con_Printf ("Couldn't execute %s/%s/qizmo.exe\n",
+		Com_Printf ("Couldn't execute %s/%s/qizmo.exe\n",
 			com_basedir, qizmo_dir.string);
 		return;
 	}
@@ -985,7 +985,7 @@ void CL_PlayDemo_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("play <demoname> : plays a demo\n");
+		Com_Printf ("play <demoname> : plays a demo\n");
 		return;
 	}
 
@@ -1008,7 +1008,7 @@ void CL_PlayDemo_f (void)
 
 	COM_DefaultExtension (name, ".qwd");
 
-	Con_Printf ("Playing demo from %s.\n", COM_SkipPath(name));
+	Com_Printf ("Playing demo from %s.\n", COM_SkipPath(name));
 
 	if (!strncmp(name, "../", 3) || !strncmp(name, "..\\", 3))
 		cls.demofile = fopen (va("%s/%s", com_basedir, name+3), "rb");
@@ -1017,7 +1017,7 @@ void CL_PlayDemo_f (void)
 
 	if (!cls.demofile)
 	{
-		Con_Printf ("ERROR: couldn't open.\n");
+		Com_Printf ("ERROR: couldn't open.\n");
 		cls.demonum = -1;		// stop demo loop
 		return;
 	}
@@ -1046,7 +1046,7 @@ void CL_FinishTimeDemo (void)
 	time = Sys_DoubleTime() - cls.td_starttime;
 	if (!time)
 		time = 1;
-	Con_Printf ("%i frames %5.1f seconds %5.1f fps\n", frames, time, frames/time);
+	Com_Printf ("%i frames %5.1f seconds %5.1f fps\n", frames, time, frames/time);
 }
 
 /*
@@ -1060,7 +1060,7 @@ void CL_TimeDemo_f (void)
 {
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("timedemo <demoname> : gets demo speeds\n");
+		Com_Printf ("timedemo <demoname> : gets demo speeds\n");
 		return;
 	}
 
