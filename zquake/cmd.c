@@ -166,9 +166,9 @@ Cbuf_Execute
 */
 void Cbuf_ExecuteEx (cbuf_t *cbuf)
 {
-	int		i;
+	int		i, j;
 	char	*text;
-	char	line[1024];
+	char	line[1024], *src, *dest;
 	int		quotes;
 	int		cursize;
 
@@ -198,11 +198,16 @@ void Cbuf_ExecuteEx (cbuf_t *cbuf)
 			break;
 #endif
 
-		memcpy (line, text, i);
-		line[i] = 0;
-		if (i > 0 && line[i-1] == '\r')
-			line[i-1] = 0;	// remove DOS ending CR
-		
+		// Copy text to line, skipping carriage return chars
+		src = text;
+		dest = line;
+		j = min (i, sizeof(line)-1);
+		for ( ; j ; j--, src++) {
+			if (*src != 13)
+				*dest++ = *src;
+		}
+		*dest = 0;
+
 // delete the text from the command buffer and move remaining commands down
 // this is necessary because commands (exec, alias) can insert data at the
 // beginning of the text buffer
