@@ -380,23 +380,32 @@ void Cvar_Toggle_f (void)
 /*
 ===============
 Cvar_CvarList_f
+
+Lists all cvars
 ===============
-List all cvars
-TODO: allow cvar name mask as a parameter, e.g. cvarlist cl_*
 */
 void Cvar_CvarList_f (void)
 {
 	cvar_t	*var;
-	int i;
+	int count;
+	char *pattern;
 
-	for (var=cvar_vars, i=0 ; var ; var=var->next, i++)
+	pattern = (Cmd_Argc() > 1) ? Cmd_Argv(1) : NULL;
+
+	count = 0;
+	for (var = cvar_vars; var; var = var->next) {
+		if (pattern && !Q_glob_match(pattern, var->name))
+			continue;
+
 		Com_Printf ("%c%c%c %s\n",
 			var->flags & (CVAR_ARCHIVE|CVAR_USER_ARCHIVE) ? '*' : ' ',
 			var->flags & CVAR_USERINFO ? 'u' : ' ',
 			var->flags & CVAR_SERVERINFO ? 's' : ' ',
 			var->name);
+		count++;
+	}
 
-	Com_Printf ("------------\n%d variables\n", i);
+	Com_Printf ("------------\n%d %svariables\n", count, pattern ? "matching " : "");
 }
 
 /*
