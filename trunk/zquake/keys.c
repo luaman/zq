@@ -775,7 +775,7 @@ void Key_Event (int key, qboolean down)
 			if ((key != K_BACKSPACE && key != K_DEL
 				&& key != K_LEFTARROW && key != K_RIGHTARROW
 				&& key != K_UPARROW && key != K_DOWNARROW
-				&& key != K_PGUP && key != K_PGDN)
+				&& key != K_PGUP && key != K_PGDN && (key < 32 || key > 126 || key == '`'))
 				|| (key_dest == key_game && cls.state == ca_active))
 				return;	// ignore most autorepeats
 		}
