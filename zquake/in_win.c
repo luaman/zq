@@ -642,13 +642,12 @@ static void IN_MouseMove (usercmd_t *cmd)
 					break;
 
 				case DIMOFS_Z:
-					// dunno if it's right to check this bit, but it seems to work
-					if (od.dwData & 0x80) {
-						Key_Event(K_MWHEELDOWN, true);
-						Key_Event(K_MWHEELDOWN, false);
-					} else {
+					if (od.dwData > 0) {
 						Key_Event(K_MWHEELUP, true);
 						Key_Event(K_MWHEELUP, false);
+					} else {
+						Key_Event(K_MWHEELDOWN, true);
+						Key_Event(K_MWHEELDOWN, false);
 					}
 					break;
 
@@ -660,6 +659,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 				case DIMOFS_BUTTON0 + 5: // in DirectX 7 and higher
 				case DIMOFS_BUTTON0 + 6: //
 				case DIMOFS_BUTTON0 + 7: //
+Com_Printf ("%i\n", od.dwData);
 					if (od.dwData & 0x80)
 						mstate_di |= 1 << (od.dwOfs - DIMOFS_BUTTON0);
 					else
