@@ -825,6 +825,77 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool allocate)
 	return def;
 }
 
+
+/*
+================
+PR_ParseFunctionBody
+================
+*/
+void PR_ParseFunctionBody (type_t *type, char *name, def_t *def)
+{
+	function_t	*f;
+	dfunction_t	*df;
+	int			locals_start;
+
+	if (pr_scope)
+		PR_ParseError ("'%s': local function definitions are illegal", name);
+
+	if (def->initialized)
+		PR_ParseError ("function '%s' already has a body", name);
+
+	locals_start = locals_end = numpr_globals;
+	pr_scope = def;
+	f = PR_ParseImmediateStatements (type);
+	pr_scope = NULL;
+	def->initialized = 1;
+	G_FUNCTION(def->ofs) = numfunctions;
+	f->def = def;
+//	if (pr_dumpasm)
+//		PR_PrintFunction (def);
+
+// fill in the dfunction
+	df = &functions[numfunctions];
+	numfunctions++;
+	if (f->builtin)
+		df->first_statement = -f->builtin;
+	else
+		df->first_statement = f->code;
+	df->s_name = CopyString (f->def->name);
+	df->s_file = s_file;
+	df->numparms =  f->def->type->num_parms;
+	df->locals = locals_end - locals_start;
+	df->parm_start = locals_start;
+	for (int i=0 ; i<df->numparms ; i++)
+		df->parm_size[i] = type_size[f->def->type->parm_types[i]->type];
+}
+
+/*
+================
+PR_ParseInitialization
+
+"<type> <name> = " was parsed, parse the rest
+================
+*/
+void PR_ParseInitialization (type_t *type, char *name, def_t *def)
+{
+	if (def->initialized)
+		PR_ParseError ("%s redeclared", name);
+
+	if (pr_token_type != tt_immediate && pr_token_type != tt_name)
+		PR_ParseError ("syntax error : '%s'", pr_token);
+
+	if (pr_token_type == tt_name) {
+		// FIXME
+	}
+
+	if (pr_immediate_type != type)
+		PR_ParseError ("wrong immediate type for %s", name);
+
+	def->initialized = 1;
+	memcpy (pr_globals + def->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
+	PR_Lex ();
+}
+
 /*
 ================
 PR_ParseDefs
@@ -834,24 +905,38 @@ Called at the outer layer and when a local statement is hit
 */
 void PR_ParseDefs (void)
 {
-	char		*name;
-	type_t		*type;
-	def_t		*def;
-	function_t	*f;
-	dfunction_t	*df;
-	int			i;
-	int			locals_start;
+	type_t *type = PR_ParseType ();
 
-	type = PR_ParseType ();
-	
-	if (pr_scope && (type->type == ev_field || type->type == ev_function) )
-		PR_ParseError ("fields and functions must be global");
-		
+	if (pr_scope && type->type == ev_field)
+		PR_ParseError ("'%s': local field definitions are illegal", pr_token);
+
+	int	c_defs = 0;
+	bool qc_style_function_def = false;
+
 	do
 	{
-		name = PR_ParseName ();
+		char *name = PR_ParseName ();
 
-		def = PR_GetDef (type, name, pr_scope, true);
+		if (type->type != ev_function && PR_Check("(")) {
+			// C-style function declaration
+
+			char functionName[MAX_NAME];
+			strcpy (functionName, name);
+
+			type_t *functionType = PR_ParseFunctionType (type);
+			
+			def_t *def = PR_GetDef (functionType, functionName, pr_scope, true);
+			
+			if (!c_defs && !strcmp(pr_token, "{")) {
+				// C-style function definition
+				PR_ParseFunctionBody (functionType, functionName, def);
+				return;
+			}
+					
+			continue;
+		}
+
+		def_t *def = PR_GetDef (type, name, pr_scope, true);
 
 		if (type->type == ev_void) {
 			// end_sys_globals and end_sys_fields are special flags for structure dumping
@@ -859,61 +944,24 @@ void PR_ParseDefs (void)
 				PR_ParseError ("'%s' : illegal use of type 'void'", name);
 		}
 		
-// check for an initialization
-		if ( PR_Check ("=") )
-		{
-			if (def->initialized)
-				PR_ParseError ("%s redeclared", name);
-	
-			if (type->type == ev_function)
-			{
-				locals_start = locals_end = numpr_globals;
-				pr_scope = def;
-				f = PR_ParseImmediateStatements (type);
-				pr_scope = NULL;
-				def->initialized = 1;
-				G_FUNCTION(def->ofs) = numfunctions;
-				f->def = def;
-//				if (pr_dumpasm)
-//					PR_PrintFunction (def);
-
-		// fill in the dfunction
-				df = &functions[numfunctions];
-				numfunctions++;
-				if (f->builtin)
-					df->first_statement = -f->builtin;
-				else
-					df->first_statement = f->code;
-				df->s_name = CopyString (f->def->name);
-				df->s_file = s_file;
-				df->numparms =  f->def->type->num_parms;
-				df->locals = locals_end - locals_start;
-				df->parm_start = locals_start;
-				for (i=0 ; i<df->numparms ; i++)
-					df->parm_size[i] = type_size[f->def->type->parm_types[i]->type];
-				
-				continue;
+		// check for an initialization
+		if (PR_Check("=")) {
+			if (type->type == ev_function) {
+				// QuakeC-style function definition
+				qc_style_function_def = true;
+				PR_ParseFunctionBody (type, name, def);
 			}
-
-			if (pr_token_type != tt_immediate && pr_token_type != tt_name)
-				PR_ParseError ("syntax error : '%s'", pr_token);
-
-			if (pr_token_type == tt_name) {
-				// FIXME
-			}
-
-			if (pr_immediate_type != type)
-				PR_ParseError ("wrong immediate type for %s", name);
-	
-			def->initialized = 1;
-			memcpy (pr_globals + def->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
-			PR_Lex ();
+			else
+				// variable initialization
+				PR_ParseInitialization (type, name, def);
 		}
 		
-	} while (PR_Check (","));
+	} while (c_defs++, PR_Check (","));
 
-	if ( !(type->type == ev_function && def->initialized) )
-		PR_Expect (";");	// require semicolon, except is optional after a function body
+	if (qc_style_function_def && c_defs == 1)
+		;	// allow void() func = {} without semicolon
+	else
+		PR_Expect (";");
 
 	while (PR_Check(";"))
 		;	// skip redundant semicolons
