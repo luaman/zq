@@ -794,6 +794,7 @@ void ammo_touch ()
 {
 	entity	stemp;
 	float	best;
+	float	w_switch;
 
 	if (other.classname != "player")
 		return;
@@ -847,20 +848,22 @@ void ammo_touch ()
 	stuffcmd (other, "bf\n");
 
 // change to a better weapon if appropriate
-
-	if ( other.weapon == best )
+	if (other.weapon == best)
 	{
 		stemp = self;
 		self = other;
-		
-// ammopickup-weaponchange bugfix
-                best = stof(infokey(self, "w_switch"));
-                if(!best) best = 8;
-                if(WeaponCode(W_BestWeapon()) <= best)
-                {                
-                        self.weapon = W_BestWeapon();
-		        W_SetCurrentAmmo ();
-                }
+
+	// obey w_switch setting (or should it be a_switch?)
+		w_switch = stof(infokey(self, "w_switch"));
+		if (!w_switch)
+			w_switch = 8;
+		best = W_BestWeapon();
+		if (WeaponCode(best) <= w_switch)
+		{
+			self.weapon = best;
+			W_SetCurrentAmmo ();
+		}
+
 		self = stemp;
 	}
 
