@@ -176,9 +176,6 @@ void R_Init (void)
 #endif
 
 	Cvar_RegisterVariable (&r_watervishack);
-	if (gl_vendor && strstr(gl_vendor, "3Dfx"))
-		Cvar_SetValue (&r_watervishack, 0);
-
 	Cvar_RegisterVariable (&r_norefresh);
 	Cvar_RegisterVariable (&r_lightmap);
 	Cvar_RegisterVariable (&r_fullbright);
@@ -198,7 +195,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&gl_texsort);
  
  	if (gl_mtexable)
-		Cvar_SetValue (&gl_texsort, 0.0);
+		Cvar_SetValue (&gl_texsort, 0);
 
 	Cvar_RegisterVariable (&gl_cull);
 	Cvar_RegisterVariable (&gl_smoothmodels);
