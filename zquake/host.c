@@ -23,11 +23,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "pmove.h"
 #include "version.h"
+#include <setjmp.h>
 
 #if defined(QW_BOTH) || defined(SERVERONLY)
 #include "server.h"
 #endif
 
+void CL_Frame (double time);
 void CL_Shutdown ();
 void SV_Init (void);
 void SV_Error (char *error, ...);
@@ -39,6 +41,12 @@ void CL_Init (void)
 {
 }
 void CL_Shutdown (void)
+{
+}
+void CL_Frame (double time)
+{
+}
+void CL_Disconnect (void)
 {
 }
 void Con_Init (void)
@@ -54,6 +62,9 @@ void SV_Init (void)
 void SV_Shutdown (char *finalmsg)
 {
 }
+void SV_Frame (double time)
+{
+}
 #endif
 
 
@@ -62,42 +73,86 @@ qboolean	host_initialized;		// true if into command execution
 
 quakeparms_t host_parms;
 
+jmp_buf 	host_abort;
+
+
 
 /*
-===============
-Host_Shutdown
-
-FIXME: this is a callback from Sys_Quit and Sys_Error.  It would be better
-to run quit through here before the final handoff to the sys code.
-===============
+================
+Host_EndGame
+================
 */
-void Host_Shutdown (void)
+void Host_EndGame (char *message, ...)
 {
-	static qboolean isdown = false;
+	va_list		argptr;
+	char		string[1024];
 	
-	if (isdown)
-	{
-		printf ("recursive shutdown\n");
-		return;
-	}
-	isdown = true;
+	va_start (argptr,message);
+	vsprintf (string,message,argptr);
+	va_end (argptr);
+	Com_DPrintf ("Host_EndGame: %s\n",string);
 
-	SV_Shutdown ("Server quit\n");
-	CL_Shutdown ();
-	NET_Shutdown ();
+//	SV_Shutdown ("");	// FIXME
+	CL_Disconnect ();
+
+	longjmp (host_abort, 1);
 }
 
 /*
-===============
-Host_Quit
-===============
+================
+Host_Error
+
+This shuts down both the client and server
+================
 */
-void Host_Quit (void)
+void Host_Error (char *error, ...)
 {
-	Host_Shutdown ();
-	Sys_Quit ();
+	va_list		argptr;
+	char		string[1024];
+	static	qboolean inerror = false;
+	
+	if (inerror)
+		Sys_Error ("Host_Error: recursively entered");
+	inerror = true;
+	
+	va_start (argptr,error);
+	vsprintf (string,error,argptr);
+	va_end (argptr);
+	Com_Printf ("\n===========================\n");
+	Com_Printf ("Host_Error: %s\n",string);
+	Com_Printf ("===========================\n\n");
+	
+	SV_Shutdown (va("server crashed: %s\n", string));
+	CL_Disconnect ();
+#ifndef SERVERONLY		// FIXME
+	cls.demonum = -1;
+#endif
+
+	if (!host_initialized)
+		Sys_Error ("Host_Error: %s", string);
+
+	inerror = false;
+
+	longjmp (host_abort, 1);
 }
 
+
+/*
+===============
+Host_Frame
+===============
+*/
+void Host_Frame (double time)
+{
+	if (setjmp (host_abort))
+		return;			// something bad happened, or the server disconnected
+
+#ifdef SERVERONLY
+	SV_Frame (time);
+#endif
+
+	CL_Frame (time);	// will also call SV_Frame
+}
 
 /*
 ====================
@@ -169,3 +224,40 @@ void Host_Init (quakeparms_t *parms)
 
 #endif
 }
+
+
+/*
+===============
+Host_Shutdown
+
+FIXME: this is a callback from Sys_Quit and Sys_Error.  It would be better
+to run quit through here before the final handoff to the sys code.
+===============
+*/
+void Host_Shutdown (void)
+{
+	static qboolean isdown = false;
+	
+	if (isdown)
+	{
+		printf ("recursive shutdown\n");
+		return;
+	}
+	isdown = true;
+
+	SV_Shutdown ("Server quit\n");
+	CL_Shutdown ();
+	NET_Shutdown ();
+}
+
+/*
+===============
+Host_Quit
+===============
+*/
+void Host_Quit (void)
+{
+	Host_Shutdown ();
+	Sys_Quit ();
+}
+
