@@ -733,6 +733,9 @@ int Key_StringToKeynum (char *str)
 	if (!str[1])
 		return (int)(unsigned char)str[0];
 
+	if (str[0] == '#')
+		return Q_atoi(str + 1);
+
 	for (kn=keynames ; kn->name ; kn++)
 	{
 		if (!Q_stricmp(str,kn->name))
@@ -1025,7 +1028,7 @@ Called by the system between frames for both key up and key down events
 Should NOT be called during an interrupt!
 ===================
 */
-void Key_Event (int key, qboolean down)
+void Key_EventEx (int key, int shiftkey, qboolean down)
 {
 	char	*kb;
 	char	cmd[1024];
@@ -1099,9 +1102,9 @@ void Key_Event (int key, qboolean down)
 			sprintf (cmd, "-%s %i\n", kb+1, key);
 			Cbuf_AddText (cmd);
 		}
-		if (keyshift[key] != key)
+		if (shiftkey != key)
 		{
-			kb = keybindings[keyshift[key]];
+			kb = keybindings[shiftkey];
 			if (kb && kb[0] == '+')
 			{
 				sprintf (cmd, "-%s %i\n", kb+1, key);
@@ -1153,8 +1156,7 @@ void Key_Event (int key, qboolean down)
 	if (!down)
 		return;		// other systems only care about key down events
 
-	if (keydown[K_SHIFT])
-		key = keyshift[key];
+	key = shiftkey;
 
 	switch (key_dest)
 	{
@@ -1172,6 +1174,14 @@ void Key_Event (int key, qboolean down)
 	default:
 		Sys_Error ("Bad key_dest");
 	}
+}
+
+void Key_Event (int key, qboolean down)
+{
+	if (keydown[K_SHIFT])
+		Key_EventEx (key, keyshift[key], down);
+	else
+		Key_EventEx (key, key, down);
 }
 
 /*
