@@ -760,8 +760,14 @@ float T_Heal (entity e, float heal_amount, float ignore); // health function
 // REMOVED: conflicts with kteams suicide_time
 //.float suicide_time;	// can't suicide sooner than this
 
+// vwep
+void (float index, string model) precache_vwep_model = #85; 
+.float vw_index; 
+.float vw_frame; 
+
+
 //
-// KTEAMS additions
+// kteams additions
 // 
 
 float framechecks;	    // if timedemo/uptime bugs are tolerated

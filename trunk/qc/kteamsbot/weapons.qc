@@ -890,6 +890,7 @@ void() W_SetCurrentAmmo =
 		self.currentammo = 0;
 		self.weaponmodel = "progs/v_axe.mdl";
 		self.weaponframe = 0;
+        self.vw_index = 1;
 	}
 	else if (self.weapon == 1)
 	{
@@ -897,13 +898,15 @@ void() W_SetCurrentAmmo =
 		self.weaponmodel = "progs/v_shot.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | 256;
-	}
+        self.vw_index = 2;
+    }
 	else if (self.weapon == 2)
 	{
 		self.currentammo = self.ammo_shells;
 		self.weaponmodel = "progs/v_shot2.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | 256;
+        self.vw_index = 3;
 	}
 	else if (self.weapon == 4)
 	{
@@ -911,6 +914,7 @@ void() W_SetCurrentAmmo =
 		self.weaponmodel = "progs/v_nail.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | 512;
+        self.vw_index = 4;
 	}
 	else if (self.weapon == 8)
 	{
@@ -918,6 +922,7 @@ void() W_SetCurrentAmmo =
 		self.weaponmodel = "progs/v_nail2.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | 512;
+        self.vw_index = 5;
 	}
 	else if (self.weapon == 16)
 	{
@@ -925,6 +930,7 @@ void() W_SetCurrentAmmo =
 		self.weaponmodel = "progs/v_rock.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | 1024;
+        self.vw_index = 6;
 	}
 	else if (self.weapon == 32)
 	{
@@ -932,6 +938,7 @@ void() W_SetCurrentAmmo =
 		self.weaponmodel = "progs/v_rock2.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | 1024;
+        self.vw_index = 7;
 	}
 	else if (self.weapon == 64)
 	{
@@ -939,6 +946,7 @@ void() W_SetCurrentAmmo =
 		self.weaponmodel = "progs/v_light.mdl";
 		self.weaponframe = 0;
 		self.items = self.items | 2048;
+        self.vw_index = 8;
 	}
 	else
 	{
@@ -1412,11 +1420,11 @@ void() ImpulseCommands =
 	else if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
         else if (self.impulse == 100)
-                Cmd_AddBot("heh", "3"); 
+            Cmd_AddBot("heh", "3"); 
         else if (self.impulse == 101)
-                Cmd_AddBot("heh2", "1");
+            Cmd_AddBot("heh2", "1");
         else if (self.impulse == 102)
-                KickABot();
+            KickABot();
 
 // TEAM -->
         else
@@ -1438,7 +1446,14 @@ void() W_WeaponFrame =
 	if (time < self.attack_finished)
 		return;
 
-	ImpulseCommands();
+// update vwep frame
+    if(stof(infokey(world, "vwep")))
+    {
+        self.vw_frame = self.frame;
+    }
+
+    if (self.impulse)
+        ImpulseCommands();
 
 // check for attack
 	if (self.button0 && !intermission_running)
@@ -1455,6 +1470,7 @@ void() W_WeaponFrame =
 		SuperDamageSound ();
 		W_Attack ();
 	}
+
 };
 
 /*
