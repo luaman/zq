@@ -1631,7 +1631,8 @@ void CL_ParseParticleEffect (void)
 {
 	vec3_t		org, dir;
 	int			i, count, color;
-	
+	int			replacement_te;
+
 	for (i = 0; i < 3; i++)
 		org[i] = MSG_ReadCoord ();
 	for (i = 0; i < 3; i++)
@@ -1639,6 +1640,32 @@ void CL_ParseParticleEffect (void)
 	count = MSG_ReadByte ();
 	color = MSG_ReadByte ();
 
+	if (cls.demorecording) {
+		// Don't write the svc_particle message to the demo, other clients
+		// may not support it. Use "best approximation" if possible.
+		if (count == 255)
+			replacement_te = TE_EXPLOSION;
+		else if (color == 73)
+			replacement_te = TE_BLOOD;
+		else if (color == 225) {
+			replacement_te = TE_LIGHTNINGBLOOD;
+		} else
+			replacement_te = 0;		// don't write anything
+
+		if (replacement_te) {
+			MSG_WriteByte (&cls.demomessage, svc_temp_entity);
+			MSG_WriteByte (&cls.demomessage, replacement_te);
+			if (replacement_te == TE_BLOOD)
+				MSG_WriteByte (&cls.demomessage, 1 /* FIXME: use count / <some value>?*/);
+			MSG_WriteCoord (&cls.demomessage, org[0]);
+			MSG_WriteCoord (&cls.demomessage, org[1]);
+			MSG_WriteCoord (&cls.demomessage, org[2]);
+		}
+
+		cls.demomessage_skipwrite = true;
+	}
+
+	// now run the effect
 	if (count == 255)
 		CL_ParticleExplosion (org);
 	else
