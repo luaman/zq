@@ -30,19 +30,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sound.h"
 #include "version.h"
 #include "teamplay.h"
-#ifdef _WIN32
-#include <winsock.h>
-#else
-#include <netinet/in.h>
-#endif
 
 #ifdef QW_BOTH
 #include "server.h"
 #endif
 
-
-// we need to declare some mouse variables here, because the menu system
-// references them even when on a unix system.
+#ifdef _WIN32
+#include <winsock.h>
+#else
+#include <netinet/in.h>
+#endif
 
 
 cvar_t	rcon_password = {"rcon_password", ""};
@@ -57,15 +54,6 @@ cvar_t	cl_hudswap	= {"cl_hudswap", "0", CVAR_ARCHIVE};
 cvar_t	cl_maxfps	= {"cl_maxfps", "0", CVAR_ARCHIVE};
 
 cvar_t	cl_writecfg = {"cl_writecfg", "1"};
-
-cvar_t	lookspring = {"lookspring","0", CVAR_ARCHIVE};
-cvar_t	lookstrafe = {"lookstrafe","0", CVAR_ARCHIVE};
-cvar_t	sensitivity = {"sensitivity","3", CVAR_ARCHIVE};
-
-cvar_t	m_pitch = {"m_pitch","0.022", CVAR_ARCHIVE};
-cvar_t	m_yaw = {"m_yaw","0.022"};
-cvar_t	m_forward = {"m_forward","1"};
-cvar_t	m_side = {"m_side","0.8"};
 
 cvar_t	entlatency = {"entlatency", "20"};
 cvar_t	cl_predict_players = {"cl_predict_players", "1"};
@@ -677,28 +665,12 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&developer);
 
 	Cvar_RegisterVariable (&cl_warncmd);
-	Cvar_RegisterVariable (&cl_upspeed);
-	Cvar_RegisterVariable (&cl_forwardspeed);
-	Cvar_RegisterVariable (&cl_backspeed);
-	Cvar_RegisterVariable (&cl_sidespeed);
-	Cvar_RegisterVariable (&cl_movespeedkey);
-	Cvar_RegisterVariable (&cl_yawspeed);
-	Cvar_RegisterVariable (&cl_pitchspeed);
-	Cvar_RegisterVariable (&cl_anglespeedkey);
 	Cvar_RegisterVariable (&cl_shownet);
 	Cvar_RegisterVariable (&cl_sbar);
 	Cvar_RegisterVariable (&cl_hudswap);
 	Cvar_RegisterVariable (&cl_maxfps);
 	Cvar_RegisterVariable (&cl_timeout);
 	Cvar_RegisterVariable (&cl_writecfg);
-	Cvar_RegisterVariable (&lookspring);
-	Cvar_RegisterVariable (&lookstrafe);
-	Cvar_RegisterVariable (&sensitivity);
-
-	Cvar_RegisterVariable (&m_pitch);
-	Cvar_RegisterVariable (&m_yaw);
-	Cvar_RegisterVariable (&m_forward);
-	Cvar_RegisterVariable (&m_side);
 
 	Cvar_RegisterVariable (&rcon_password);
 	Cvar_RegisterVariable (&rcon_address);

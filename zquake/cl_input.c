@@ -285,11 +285,20 @@ cvar_t	cl_backspeed = {"cl_backspeed","200",CVAR_ARCHIVE};
 cvar_t	cl_sidespeed = {"cl_sidespeed","350",CVAR_ARCHIVE};
 
 cvar_t	cl_movespeedkey = {"cl_movespeedkey","2.0",CVAR_ARCHIVE};
+cvar_t	cl_anglespeedkey = {"cl_anglespeedkey","1.5"};
 
 cvar_t	cl_yawspeed = {"cl_yawspeed","140"};
 cvar_t	cl_pitchspeed = {"cl_pitchspeed","150"};
 
-cvar_t	cl_anglespeedkey = {"cl_anglespeedkey","1.5"};
+cvar_t	lookspring = {"lookspring","0", CVAR_ARCHIVE};
+cvar_t	lookstrafe = {"lookstrafe","0", CVAR_ARCHIVE};
+cvar_t	sensitivity = {"sensitivity","3", CVAR_ARCHIVE};
+
+cvar_t	m_pitch = {"m_pitch","0.022", CVAR_ARCHIVE};
+cvar_t	m_yaw = {"m_yaw","0.022"};
+cvar_t	m_forward = {"m_forward","1"};
+cvar_t	m_side = {"m_side","0.8"};
+
 
 
 /*
@@ -635,6 +644,24 @@ void CL_InitInput (void)
 	Cmd_AddCommand ("-klook", IN_KLookUp);
 	Cmd_AddCommand ("+mlook", IN_MLookDown);
 	Cmd_AddCommand ("-mlook", IN_MLookUp);
+
+	Cvar_RegisterVariable (&cl_upspeed);
+	Cvar_RegisterVariable (&cl_forwardspeed);
+	Cvar_RegisterVariable (&cl_backspeed);
+	Cvar_RegisterVariable (&cl_sidespeed);
+	Cvar_RegisterVariable (&cl_movespeedkey);
+	Cvar_RegisterVariable (&cl_yawspeed);
+	Cvar_RegisterVariable (&cl_pitchspeed);
+	Cvar_RegisterVariable (&cl_anglespeedkey);
+
+	Cvar_RegisterVariable (&lookspring);
+	Cvar_RegisterVariable (&lookstrafe);
+	Cvar_RegisterVariable (&sensitivity);
+
+	Cvar_RegisterVariable (&m_pitch);
+	Cvar_RegisterVariable (&m_yaw);
+	Cvar_RegisterVariable (&m_forward);
+	Cvar_RegisterVariable (&m_side);
 
 	Cvar_RegisterVariable (&cl_nodelta);
 	Cvar_RegisterVariable (&cl_c2spps);
