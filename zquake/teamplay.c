@@ -1048,6 +1048,9 @@ char *TP_LocationName (vec3_t location)
 =============================================================================
 */
 
+// FIXME, we don't provide a way to remove triggers
+// allocated heap memory is not freed when the engine shuts down
+
 typedef struct msg_trigger_s {
 	char	name[32];
 	char	string[64];
@@ -1116,14 +1119,14 @@ void TP_MsgTrigger_f (void)
 
 		if (!trig) {
 			// allocate new trigger
-			trig = Z_Malloc (sizeof(msg_trigger_t));
+			trig = Q_malloc (sizeof(msg_trigger_t));
 			trig->next = msg_triggers;
 			msg_triggers = trig;
-			strcpy (trig->name, name);
+			strcpy (trig->name, name);	// safe (length checked earlier)
 			trig->level = PRINT_HIGH;
 		}
 
-		strcpy (trig->string, Cmd_Argv(2));
+		strcpy (trig->string, Cmd_Argv(2));	// safe (length checked earlier)
 		if (c == 5 && !Q_stricmp (Cmd_Argv(3), "-l")) {
 			if (!strcmp(Cmd_Argv(4), "t"))
 				trig->level = 4;
@@ -1221,8 +1224,8 @@ int	TP_CountPlayers (void)
 char *TP_EnemyTeam (void)
 {
 	int			i;
-	char		myteam[MAX_INFO_STRING];
-	static char	enemyteam[MAX_INFO_STRING];
+	char		myteam[MAX_INFO_KEY];
+	static char	enemyteam[MAX_INFO_KEY];
 
 	strcpy (myteam, Info_ValueForKey(cls.userinfo, "team"));
 
@@ -1239,16 +1242,14 @@ char *TP_EnemyTeam (void)
 
 char *TP_PlayerName (void)
 {
-	static char	myname[MAX_INFO_STRING];
-
+	static char	myname[MAX_INFO_KEY];
 	strcpy (myname, Info_ValueForKey(cl.players[cl.playernum].userinfo, "name"));
 	return myname;
 }
 
 char *TP_PlayerTeam (void)
 {
-	static char	myteam[MAX_INFO_STRING];
-
+	static char	myteam[MAX_INFO_KEY];
 	strcpy (myteam, Info_ValueForKey(cl.players[cl.playernum].userinfo, "team"));
 	return myteam;
 }
@@ -1257,7 +1258,7 @@ char *TP_EnemyName (void)
 {
 	int			i;
 	char		*myname;
-	static char	enemyname[MAX_INFO_STRING];
+	static char	enemyname[MAX_INFO_KEY];
 
 	myname = TP_PlayerName ();
 
@@ -1265,7 +1266,7 @@ char *TP_EnemyName (void)
 		if (cl.players[i].name[0] && !cl.players[i].spectator)
 		{
 			strcpy (enemyname, Info_ValueForKey(cl.players[i].userinfo, "name"));
-			if (strcmp(enemyname, myname) != 0)
+			if (!strcmp(enemyname, myname))
 				return enemyname;
 		}
 	}
