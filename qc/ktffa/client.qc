@@ -304,8 +304,6 @@ void() execute_changelevel =
 
 void() changelevel_touch =
 {
-	local entity    pos;
-
 	if (other.classname != "player")
 		return;
 
@@ -409,12 +407,11 @@ Returns the entity to spawn at
 // SpawnSafety
 entity() SelectSpawnPoint =
 {
-    local   entity  spot, newspot, thing;
+    local   entity  spot, thing;
 	local	entity spots;
 	local   float   numspots, totalspots;
-	local   float   rnum, pcount;
+	local   float   pcount;
 	local	float	k_nspots;	//team
-	local	string	t1;			//team
 	local	vector	v1;			//team
 
 
@@ -574,7 +571,6 @@ called each time a player enters a new level
 void() PutClientInServer =
 {
 	local   entity spot;
-	local 	string	s;
 
 	self.classname = "player";
 	self.health = 100;
@@ -750,8 +746,8 @@ go to the next level for deathmatch
 */
 void() NextLevel =
 {
-	local entity p, o;
-	local string newmap, tmp;
+	local entity p;
+	local string tmp;
 	local float f1, maxfrags, maxdeaths, maxeffi;
 
 	if (nextmap != "")
@@ -928,7 +924,6 @@ void() CheckRules =
 
 void() PlayerDeathThink =
 {
-	local entity    old_self;
 	local float             forward;
 
 	if ((self.flags & FL_ONGROUND))
@@ -963,7 +958,7 @@ void() PlayerDeathThink =
 
 void() PlayerJump =
 {
-	local vector start, end;
+	local vector end;
 
 	if (self.flags & FL_WATERJUMP)
 		return;
@@ -1132,7 +1127,6 @@ Called every frame before physics are run
 */
 void() PlayerPreThink =
 {
-	local   float   mspeed, aspeed;
 	local   float   r;
 	local	string tmp;
 
@@ -1454,9 +1448,6 @@ Called every frame after physics are run
 */
 void() PlayerPostThink =
 {
-	local   float   mspeed, aspeed;
-	local   float   r;
-
 //dprint ("post think\n");
 	if (self.view_ofs == '0 0 0')
 		return;         // intermission or finale
@@ -1579,7 +1570,6 @@ void(entity targ, entity attacker) ClientObituary =
 {
 	local   float rnum;
 	local   string deathstring, deathstring2;
-	local   string s;
 	local   string  attackerteam, targteam;
 
 	rnum = random();
