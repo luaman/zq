@@ -98,7 +98,6 @@ cvar_t		scr_showram = {"showram","1"};
 cvar_t		scr_showturtle = {"showturtle","0"};
 cvar_t		scr_showpause = {"showpause","1"};
 cvar_t		scr_printspeed = {"scr_printspeed","8"};
-cvar_t		scr_allowsnap = {"scr_allowsnap","1"};
 cvar_t		scr_clock = {"cl_clock","0"};
 cvar_t		scr_clock_x = {"cl_clock_x","0"};
 cvar_t		scr_clock_y = {"cl_clock_y","-1"};
@@ -445,7 +444,6 @@ void SCR_Init (void)
 	Cvar_Register (&scr_showpause);
 	Cvar_Register (&scr_centertime);
 	Cvar_Register (&scr_printspeed);
-	Cvar_Register (&scr_allowsnap);
 	Cvar_Register (&scr_clock_x);
 	Cvar_Register (&scr_clock_y);
 	Cvar_Register (&scr_clock);
