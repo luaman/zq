@@ -170,6 +170,12 @@ void CL_ParseBeam (struct model_s *m)
 	end[1] = MSG_ReadCoord ();
 	end[2] = MSG_ReadCoord ();
 
+	// an experimental protocol extension
+	if (m == cl_bolt1_mod && (ent >= -33 && ent <= -1)) {
+		CL_RailTrail (start, end);
+		return;
+	}
+
 	if (ent == cl.viewplayernum + 1)
 		VectorCopy (end, playerbeam_end);	// for cl_trueLightning
 
