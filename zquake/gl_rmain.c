@@ -317,12 +317,12 @@ void R_DrawParticles (void)
 		glTexCoord2f (0, 0);
 		glVertex3fv (p->org);
 
-		glTexCoord2f (1, 0);
+		glTexCoord2f (0.9, 0);
 		glVertex3f (p->org[0] + up[0]*scale, 
 			p->org[1] + up[1]*scale, 
 			p->org[2] + up[2]*scale);
 
-		glTexCoord2f (0, 1);
+		glTexCoord2f (0, 0.9);
 		glVertex3f (p->org[0] + right[0]*scale,
 			p->org[1] + right[1]*scale, 
 			p->org[2] + right[2]*scale);
