@@ -291,15 +291,15 @@ void Cmd_StuffCmds_f (void)
 		
 // build the combined string to parse from
 	s = 0;
-	for (i=1 ; i<com_argc ; i++)
+	for (i = 1; i < com_argc; i++)
 		s += strlen (com_argv[i]) + 1;
 
 	if (!s)
 		return;
 		
-	text = Z_Malloc (s+1);
+	text = Q_malloc (s+1);
 	text[0] = 0;
-	for (i=1 ; i<com_argc ; i++)
+	for (i = 1; i < com_argc; i++)
 	{
 		strcat (text, com_argv[i]);
 		if (i != com_argc-1)
@@ -307,10 +307,10 @@ void Cmd_StuffCmds_f (void)
 	}
 	
 // pull out the commands
-	build = Z_Malloc (s+1);
+	build = Q_malloc (s+1);
 	build[0] = 0;
 	
-	for (i=0 ; i<s-1 ; i++)
+	for (i = 0; i < s-1; i++)
 	{
 		if (text[i] == '+')
 		{
@@ -332,8 +332,8 @@ void Cmd_StuffCmds_f (void)
 	if (build[0])
 		Cbuf_AddText (build);
 	
-	Z_Free (text);
-	Z_Free (build);
+	Q_free (text);
+	Q_free (build);
 }
 
 
