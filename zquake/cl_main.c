@@ -76,7 +76,7 @@ cvar_t	qizmo_dir = {"qizmo_dir", "qizmo"};
 //
 cvar_t	password = {"password", "", CVAR_USERINFO};
 cvar_t	spectator = {"spectator", "", CVAR_USERINFO};
-cvar_t	name = {"name","unnamed", CVAR_ARCHIVE|CVAR_USERINFO};
+cvar_t	name = {"name","player", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	team = {"team","", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	skin = {"skin","", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	topcolor = {"topcolor","0", CVAR_ARCHIVE|CVAR_USERINFO};
