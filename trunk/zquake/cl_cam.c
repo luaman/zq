@@ -10,37 +10,31 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
 
-See the included (GNU.txt) GNU General Public License for more details.
+See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-/* ZOID
- *
- * Player camera tracking in Spectator mode
- *
- * This takes over player controls for spectator automatic camera.
- * Player moves as a spectator, but the camera tracks and enemy player
- */
+// cl_cam.c - client-side spectator functions
 
 #include "quakedef.h"
 #include "pmove.h"
 #include "sbar.h"
 
-static vec3_t desired_position; // where the camera wants to be
-static qboolean locked = false;
-static int oldbuttons;
+
+#define NOTARGET	-1
+
+qboolean	cam_track;
+int			cam_target;
+qboolean	cam_locked;
+static int	cam_curtarget;		// playernum or NOTARGET
+
+static int	cam_oldbuttons;
 
 cvar_t cl_hightrack = {"cl_hightrack", "0" };	// track high fragger
-cvar_t cl_chasecam = {"cl_chasecam", "1"};		// "through the eyes" view
 
-vec3_t cam_viewangles;
-double cam_lastviewtime;
-
-int spec_track = 0; // player# of who we are tracking
-int autocam = CAM_NONE;
 
 void vectoangles(vec3_t vec, vec3_t ang)
 {
@@ -74,385 +68,190 @@ void vectoangles(vec3_t vec, vec3_t ang)
 
 void Cam_SetViewPlayer (void)
 {
-	if (cl.spectator && autocam && locked && cl_chasecam.value)
-		cl.viewplayernum = spec_track;
+	if (cl.spectator && cam_curtarget != NOTARGET)
+		cl.viewplayernum = cam_curtarget;
 	else
 		cl.viewplayernum = cl.playernum;
 }
 
 // returns true if weapon model should be drawn in camera mode
-qboolean Cam_DrawViewModel(void)
+qboolean Cam_DrawViewModel (void)
 {
 	if (!cl.spectator)
 		return true;
 
-	if (autocam && locked && cl_chasecam.value)
+	if (cam_curtarget != NOTARGET)
 		return true;
+
 	return false;
 }
 
-// returns true if we should draw this player, we don't if we are chase camming
-qboolean Cam_DrawPlayer(int playernum)
+// returns true if we should draw this player, we don't if we are chase-camming
+qboolean Cam_DrawPlayer (int playernum)
 {
-	if (cl.spectator && autocam && locked && cl_chasecam.value && 
-		spec_track == playernum)
+	if (cl.spectator && cam_curtarget == playernum)
 		return false;
 	return true;
 }
 
-void Cam_Unlock(void)
+int Cam_TargetCount (void)
 {
-	if (!autocam)
-		return;
-
-	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-	MSG_WriteString (&cls.netchan.message, "ptrack");
-	autocam = CAM_NONE;
-	locked = false;
-	Sbar_Changed();
+	int	i, count = 0;
+	for (i = 0; i < MAX_CLIENTS; i++) {
+		if (i == cl.playernum || !cl.players[i].name[0] || cl.players[i].spectator)
+			continue;
+		count++;
+	}
+	// could cache the count and only update at players' connect/disconnect
+	return count;
 }
 
-void Cam_Lock(int playernum)
+
+static void Cam_SendUnlockCommand (void)
+{
+	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+	MSG_WriteString (&cls.netchan.message, "ptrack");
+}
+
+static void Cam_SendPTrackCommand (int playernum)
 {
 	char st[40];
 
 	sprintf(st, "ptrack %i", playernum);
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 	MSG_WriteString (&cls.netchan.message, st);
-	spec_track = playernum;
-	locked = false;
-	Sbar_Changed();
 }
 
-trace_t Cam_DoTrace(vec3_t vec1, vec3_t vec2)
+static void Cam_FindTarget (void)
 {
-#if 0
-	memset(&pmove, 0, sizeof(pmove));
+	int	i, num;
 
-	pmove.numphysent = 1;
-	VectorCopy (vec3_origin, pmove.physents[0].origin);
-	pmove.physents[0].model = cl.worldmodel;
-#endif
-
-	VectorCopy (vec1, pmove.origin);
-	return PM_PlayerTrace(pmove.origin, vec2);
-}
-	
-// Returns distance or 9999 if invalid for some reason
-static float Cam_TryFlyby(player_state_t *self, player_state_t *player, vec3_t vec, qboolean checkvis)
-{
-	vec3_t v;
-	trace_t trace;
-	float len;
-
-	vectoangles(vec, v);
-//	v[0] = -v[0];
-	VectorCopy (v, pmove.angles);
-	VectorNormalize(vec);
-	VectorMA(player->origin, 800, vec, v);
-	// v is endpos
-	// fake a player move
-	trace = Cam_DoTrace(player->origin, v);
-	if (/*trace.inopen ||*/ trace.inwater)
-		return 9999;
-	VectorCopy(trace.endpos, vec);
-	VectorSubtract(trace.endpos, player->origin, v);
-	len = VectorLength(v);
-	if (len < 32 || len > 800)
-		return 9999;
-	if (checkvis) {
-		VectorSubtract(trace.endpos, self->origin, v);
-		len = VectorLength(v);
-
-		trace = Cam_DoTrace(self->origin, vec);
-		if (trace.fraction != 1 || trace.inwater)
-			return 9999;
+	// use the last tracked player if possible
+	for (i = 0; i < MAX_CLIENTS; i++) {
+		num = (cam_target + i) % MAX_CLIENTS;
+		if (num == cl.playernum || !cl.players[num].name[0] || cl.players[num].spectator)
+			continue;
+		// found someone
+		goto ok;
 	}
-	return len;
+	return;
+
+ok:
+	cam_track = true;
+	cam_target = num;
+	cam_locked = false;		// not yet
+	Sbar_Changed ();
+	Cam_SendPTrackCommand (num);
 }
 
-// Is player visible?
-static qboolean Cam_IsVisible(player_state_t *player, vec3_t vec)
+static void Cam_FindNextTarget (void)
 {
-	trace_t trace;
-	vec3_t v;
+	int	i, num;
 
-	trace = Cam_DoTrace(player->origin, vec);
-	if (trace.fraction != 1 || /*trace.inopen ||*/ trace.inwater)
-		return false;
-	// check distance, don't let the player get too far away or too close
-	VectorSubtract(player->origin, vec, v);
-
-	return ((v[0]*v[0]+v[1]*v[1]+v[2]*v[2]) >= 256);
-}
-
-static qboolean InitFlyby(player_state_t *self, player_state_t *player, int checkvis) 
-{
-    float f, max;
-    vec3_t vec, vec2;
-	vec3_t forward, right, up;
-
-	VectorCopy(player->viewangles, vec);
-    vec[0] = 0;
-	AngleVectors (vec, forward, right, up);
-//	for (i = 0; i < 3; i++)
-//		forward[i] *= 3;
-
-    max = 1000;
-	VectorAdd(forward, up, vec2);
-	VectorAdd(vec2, right, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	VectorAdd(forward, up, vec2);
-	VectorSubtract(vec2, right, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	VectorAdd(forward, right, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	VectorSubtract(forward, right, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	VectorAdd(forward, up, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	VectorSubtract(forward, up, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	VectorAdd(up, right, vec2);
-	VectorSubtract(vec2, forward, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	VectorSubtract(up, right, vec2);
-	VectorSubtract(vec2, forward, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	// invert
-	VectorSubtract(vec3_origin, forward, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	VectorCopy(forward, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	// invert
-	VectorSubtract(vec3_origin, right, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-	VectorCopy(right, vec2);
-    if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max) {
-        max = f;
-		VectorCopy(vec2, vec);
-    }
-
-	// ack, can't find him
-    if (max >= 1000) {
-//		Cam_Unlock();
-		return false;
+	// find next target
+	// start with cam_nexttarget so that we can switch targets quickly even if waiting
+	for (i = 0; i < MAX_CLIENTS; i++) {
+		num = (cam_target + 1 + i) % MAX_CLIENTS;
+		if (num == cl.playernum || !cl.players[num].name[0] || cl.players[num].spectator)
+			continue;
+		// found someone
+		goto ok;
 	}
-	locked = true;
-	VectorCopy(vec, desired_position); 
-	return true;
+	// there is only one player
+	return;
+
+ok:
+	cam_target = num;
+	cam_locked = false;		// not yet
+	Sbar_Changed ();
+	Cam_SendPTrackCommand (num);
 }
 
-static void Cam_CheckHighTarget(void)
-{
-	int i, j, max;
-	player_info_t	*s;
 
-	j = -1;
-	for (i = 0, max = -9999; i < MAX_CLIENTS; i++) {
-		s = &cl.players[i];
-		if (s->name[0] && !s->spectator && s->frags > max) {
-			max = s->frags;
-			j = i;
+void Cam_FinishMove (usercmd_t *cmd)
+{
+	int		buttons_pressed;
+
+	if (!cl.spectator || cls.state != ca_active || cl.intermission)
+		return;
+
+	buttons_pressed = cmd->buttons & ~cam_oldbuttons;
+	cam_oldbuttons = cmd->buttons;
+
+	// user intentions
+	if (buttons_pressed & BUTTON_ATTACK) {
+		if (cam_track) {
+			// leave tracking mode
+			cam_track = false;
+			cam_locked = false;
+			cam_curtarget = NOTARGET;
+			Sbar_Changed ();
+			Cam_SendUnlockCommand ();
+		}
+		else {
+			Cam_FindTarget ();
 		}
 	}
-	if (j >= 0) {
-		if (!locked || cl.players[j].frags > cl.players[spec_track].frags)
-			Cam_Lock(j);
-	} else
-		Cam_Unlock();
-}
-	
-// ZOID
-//
-// Take over the user controls and track a player.
-// We find a nice position to watch the player and move there
-void Cam_Track(usercmd_t *cmd)
-{
-	player_state_t *player, *self;
-	frame_t *frame;
-	vec3_t vec;
-
-	if (!cl.spectator)
-		return;
-	
-	if (cl_hightrack.value && !locked)
-		Cam_CheckHighTarget();
-
-	if (!autocam || cls.state != ca_active)
-		return;
-
-	if (locked && (!cl.players[spec_track].name[0] || cl.players[spec_track].spectator)) {
-		locked = false;
-		if (cl_hightrack.value)
-			Cam_CheckHighTarget();
-		else
-			Cam_Unlock();
-		return;
+	else if (cam_track && (buttons_pressed & BUTTON_JUMP))
+	{
+		Cam_FindNextTarget ();
 	}
 
-	frame = &cl.frames[cl.validsequence & UPDATE_MASK];
-	player = frame->playerstate + spec_track;
-	self = frame->playerstate + cl.playernum;
-
-	if (!locked || !Cam_IsVisible(player, desired_position)) {
-		if (!locked || cls.realtime - cam_lastviewtime > 0.1) {
-			if (!InitFlyby(self, player, true))
-				InitFlyby(self, player, false);
-			cam_lastviewtime = cls.realtime;
+	if (cam_track && !cam_locked) {
+		// try to lock to desired target
+		if (cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cam_target].messagenum
+				== cl.parsecount) {
+			// good
+			cam_locked = true;
+			cam_curtarget = cam_target;
 		}
-	} else
-		cam_lastviewtime = cls.realtime;
-	
-	// couldn't track for some reason
-	if (!locked || !autocam)
-		return;
+	}
 
-	if (cl_chasecam.value) {
-		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0;
+	if (cam_curtarget != NOTARGET) {
+		player_state_t	*state;
+		state = &cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cam_curtarget];
+		if (state->messagenum == cl.parsecount) {
+			VectorCopy (state->viewangles, cl.simangles);
+			VectorCopy (state->viewangles, cl.viewangles);
+			VectorCopy (state->origin, cl.simorg);
 
-		VectorCopy(player->viewangles, cl.viewangles);
-		VectorCopy(player->origin, desired_position);
-		if (memcmp(&desired_position, &self->origin, sizeof(desired_position)) != 0) {
+			// move there so that we get correct PVS
 			MSG_WriteByte (&cls.netchan.message, clc_tmove);
-			MSG_WriteCoord (&cls.netchan.message, desired_position[0]);
-			MSG_WriteCoord (&cls.netchan.message, desired_position[1]);
-			MSG_WriteCoord (&cls.netchan.message, desired_position[2]);
-			// move there locally immediately
-			VectorCopy(desired_position, self->origin);
+			MSG_WriteCoord (&cls.netchan.message, cl.simorg[0]);
+			MSG_WriteCoord (&cls.netchan.message, cl.simorg[1]);
+			MSG_WriteCoord (&cls.netchan.message, cl.simorg[2]);
 		}
-	} else {
-		// Ok, move to our desired position and set our angles to view
-		// the player
-		VectorSubtract(desired_position, self->origin, vec);
-		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0;
-		if (VectorLength(vec) > 16) { // close enough?
-			MSG_WriteByte (&cls.netchan.message, clc_tmove);
-			MSG_WriteCoord (&cls.netchan.message, desired_position[0]);
-			MSG_WriteCoord (&cls.netchan.message, desired_position[1]);
-			MSG_WriteCoord (&cls.netchan.message, desired_position[2]);
-		}
-
-		// move there locally immediately
-		VectorCopy(desired_position, self->origin);
-										 
-		VectorSubtract(player->origin, desired_position, vec);
-		vectoangles(vec, cl.viewangles);
-		cl.viewangles[0] = -cl.viewangles[0];
-	}
-}
-
-void Cam_FinishMove(usercmd_t *cmd)
-{
-	int i;
-	player_info_t	*s;
-	int end;
-
-	if (cls.state != ca_active)
-		return;
-
-	if (!cl.spectator) // only in spectator mode
-		return;
-
-	if (cmd->buttons & BUTTON_ATTACK) {
-		if (!(oldbuttons & BUTTON_ATTACK)) {
-
-			oldbuttons |= BUTTON_ATTACK;
-			autocam++;
-
-			if (autocam > CAM_TRACK) {
-				Cam_Unlock();
-				VectorCopy(cl.viewangles, cmd->angles);
-				return;
+		else {
+			// lost target (player disconnected?)
+			cam_curtarget = NOTARGET;
+			if (cam_locked) {
+				// try next guy
+				cam_locked = false;		// in case we don't find anyone
+				Cam_FindNextTarget ();
 			}
-		} else
-			return;
-	} else {
-		oldbuttons &= ~BUTTON_ATTACK;
-		if (!autocam)
-			return;
-	}
-
-	if (autocam && cl_hightrack.value) {
-		Cam_CheckHighTarget();
-		return;
-	}
-
-	if (locked) {
-		if ((cmd->buttons & BUTTON_JUMP) && (oldbuttons & BUTTON_JUMP))
-			return;		// don't pogo stick
-
-		if (!(cmd->buttons & BUTTON_JUMP)) {
-			oldbuttons &= ~BUTTON_JUMP;
-			return;
+			else {
+				// never mind, we're going to lock to a new player soon anyway
+			}
 		}
-		oldbuttons |= BUTTON_JUMP;	// don't jump again until released
 	}
 
-//	Com_Printf ("Selecting track target...\n");
-
-	if (locked && autocam)
-		end = (spec_track + 1) % MAX_CLIENTS;
-	else
-		end = spec_track;
-	i = end;
-	do {
-		s = &cl.players[i];
-		if (s->name[0] && !s->spectator) {
-			Cam_Lock(i);
-			return;
-		}
-		i = (i + 1) % MAX_CLIENTS;
-	} while (i != end);
-	// stay on same guy?
-	i = spec_track;
-	s = &cl.players[i];
-	if (s->name[0] && !s->spectator) {
-		Cam_Lock(i);
-		return;
+	if (cam_track /* or check cam_curtarget? */) {
+		cmd->forwardmove = cmd->sidemove = cmd->upmove = 0;
+		cmd->buttons = 0;	// not sure about this
+		//VectorCopy (cl.viewangles, cmd->angles);	// don't really need this
+		// might be a better idea to clear cmd->angles to save bandwidth?
 	}
-	Com_Printf ("No target found ...\n");
-	autocam = locked = false;
 }
 
-void Cam_Reset(void)
+void Cam_Reset (void)
 {
-	autocam = CAM_NONE;
-	spec_track = 0;
+	cam_track = 0;
+	cam_locked = false;
+	cam_target = 0;
+	cam_curtarget = NOTARGET;
+	cam_oldbuttons = 0;
 }
+
 
 /*
 ===============
@@ -465,17 +264,18 @@ void Cam_TryLock (void)
 {
 	int		i, j;
 	player_state_t *state;
-	int		old_autocam, old_spec_track;
-	static	float cam_lastlocktime;
+	int		old_locked, old_target;
+	static	float lastlocktime;
 
 	if (!cl.validsequence)
 		return;
 
-	if (!autocam)
-		cam_lastlocktime = 0;
+	// this is to make sure lastlocktime is initialized (FIXME)
+	if (!cam_track)
+		lastlocktime = 0;
 
-	old_autocam = autocam;
-	old_spec_track = spec_track;
+	old_locked = cam_locked;
+	old_target = cam_target;
 
 	state = cl.frames[cl.validsequence & UPDATE_MASK].playerstate;
 	for (i=0 ; i<MAX_CLIENTS ; i++) {
@@ -490,28 +290,27 @@ void Cam_TryLock (void)
 					break;	// too far
 			if (j < 3)
 				continue;
-			autocam = CAM_TRACK;
-			spec_track = i;
-			locked = true;
-			cam_lastlocktime = cls.realtime;
+			cam_track = true;
+			cam_locked = true;
+			cam_target = cam_curtarget = i;
+			lastlocktime = cls.realtime;
 			break;
 		}
 	}
 
-	if (cls.realtime - cam_lastlocktime > 0.3) {
+	if (cls.realtime - lastlocktime > 0.3) {
 		// Couldn't lock to any player for 0.3 seconds, so assume
 		// the spectator switched to free spectator mode
-		autocam = CAM_NONE;
-		spec_track = 0;
-		locked = false;
+		cam_track = false;
+		cam_locked = false;
+		cam_curtarget = NOTARGET;
 	}
 
-	if (autocam != old_autocam || spec_track != old_spec_track)
+	if (cam_target != old_target || cam_locked != old_locked)
 		Sbar_Changed ();
 }
 
 void CL_InitCam(void)
 {
 	Cvar_Register (&cl_hightrack);
-	Cvar_Register (&cl_chasecam);
 }
