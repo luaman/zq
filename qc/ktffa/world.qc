@@ -396,6 +396,12 @@ void() StartFrame =
 		timer.owner = world;
 		timer.classname = "timer";
 	}
+
+// Tonik: note current "serverinfo maxfps" setting
+// (we don't want to do it in every player frame)
+	current_maxfps = stof(infokey(world, "maxfps"));
+	if (!current_maxfps)
+		current_maxfps = 72;	// 2.30 standard
 };
 
 /*
