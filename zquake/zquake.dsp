@@ -1130,6 +1130,10 @@ SOURCE=.\teamplay.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\version.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\vid_wgl.c
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
