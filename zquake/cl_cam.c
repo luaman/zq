@@ -35,18 +35,6 @@ static int	cam_oldbuttons;
 
 cvar_t cl_hightrack = {"cl_hightrack", "0" };	// track high fragger
 
-#ifdef MVDPLAY
-static qbool locked = false;
-qbool cam_forceview;
-vec3_t cam_viewangles;
-double cam_lastviewtime;
-
-int spec_track = 0; // player# of who we are tracking
-int ideal_track = 0;
-float	last_lock = 0;
-int autocam = CAM_NONE;
-#endif
-
 void Cam_SetViewPlayer (void)
 {
 	if (cl.spectator && cam_curtarget != NOTARGET)
@@ -78,41 +66,23 @@ qbool Cam_DrawPlayer (int playernum)
 #ifdef MVDPLAY
 int Cam_TrackNum(void)
 {
-	if (!autocam)
+	if (!cam_track)
 		return -1;
-	return spec_track;
+	return cam_target;	// or cam_curtarget?
 }
 
-void Cam_Unlock(void)
+void Cam_Lock (int playernum)
 {
-	if (autocam) {
-		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message, "ptrack");
-		autocam = CAM_NONE;
-		locked = false;
-		Sbar_Changed();
-	}
-}
+	cam_track = true;
+	cam_target = playernum;
+	// not sure about the following two
+	cam_locked = true;
+	cam_curtarget = playernum;
 
-void Cam_Lock(int playernum)
-{
-	char st[40];
+	memcpy(cl.stats, cl.players[playernum].stats, sizeof(cl.stats));
 
-	sprintf(st, "ptrack %i", playernum);
-	if (cls.mvdplayback) {
-		memcpy(cl.stats, cl.players[playernum].stats, sizeof(cl.stats));
-		ideal_track = playernum;
-	}
-
-	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-	MSG_WriteString (&cls.netchan.message, st);
-	spec_track = playernum;
-	cam_forceview = true;
-	last_lock = cls.realtime;
-	locked = false;
 	Sbar_Changed();
 }
-
 #endif
 
 int Cam_TargetCount (void)
@@ -139,14 +109,6 @@ static void Cam_SendPTrackCommand (int playernum)
 	char st[40];
 
 	sprintf(st, "ptrack %i", playernum);
-
-#ifdef MVDPLAY
-	if (cls.mvdplayback) {
-		memcpy(cl.stats, cl.players[playernum].stats, sizeof(cl.stats));
-		ideal_track = playernum;
-	}
-#endif
-
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 	MSG_WriteString (&cls.netchan.message, st);
 }
@@ -169,6 +131,12 @@ ok:
 	cam_track = true;
 	cam_target = num;
 	cam_locked = false;		// not yet
+
+#ifdef MVDPLAY
+	if (cls.mvdplayback)
+		memcpy(cl.stats, cl.players[num].stats, sizeof(cl.stats));
+#endif
+
 	Sbar_Changed ();
 	Cam_SendPTrackCommand (num);
 }
@@ -192,6 +160,12 @@ static void Cam_FindNextTarget (void)
 ok:
 	cam_target = num;
 	cam_locked = false;		// not yet
+
+#ifdef MVDPLAY
+	if (cls.mvdplayback)
+		memcpy(cl.stats, cl.players[num].stats, sizeof(cl.stats));
+#endif
+
 	Sbar_Changed ();
 	Cam_SendPTrackCommand (num);
 }

@@ -605,13 +605,6 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u);
 //
 // cl_cam.c
 //
-#ifdef MVDPLAY
-#define CAM_NONE	0
-#define CAM_TRACK	1
-
-extern	int		spec_track; // player# of who we are tracking
-#endif
-
 extern qbool	cam_track;
 extern int		cam_target;		// playernum of who we're tracking or wish to track
 extern qbool	cam_locked;
@@ -623,11 +616,11 @@ void Cam_FinishMove (usercmd_t *cmd);
 void Cam_Reset (void);
 void Cam_SetViewPlayer (void);
 void CL_InitCam (void);
+void Cam_TryLock (void);
 #ifdef MVDPLAY
 int Cam_TrackNum(void);
 void Cam_Lock(int playernum);
 #endif
-void Cam_TryLock (void);
 
 //
 // skin.c
