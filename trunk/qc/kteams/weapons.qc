@@ -1057,7 +1057,8 @@ void W_SetCurrentAmmo ()
 		self.weaponmodel = "progs/v_axe.mdl";
 		self.weaponframe = 0;
 #ifdef VWEP_TEST
-        self.vw_index = 1;
+        if(vw_available > 0)
+            self.vw_index = 1;
 #endif
 	}
 	else if (self.weapon == IT_SHOTGUN)
@@ -1067,7 +1068,8 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_SHELLS;
 #ifdef VWEP_TEST
-        self.vw_index = 2;
+        if(vw_available > 0)
+            self.vw_index = 2;
 #endif
 	}
 	else if (self.weapon == IT_SUPER_SHOTGUN)
@@ -1077,7 +1079,8 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_SHELLS;
 #ifdef VWEP_TEST
-        self.vw_index = 3;
+        if(vw_available > 0)
+            self.vw_index = 3;
 #endif
 	}
 	else if (self.weapon == IT_NAILGUN)
@@ -1087,7 +1090,8 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_NAILS;
 #ifdef VWEP_TEST
-        self.vw_index = 4;
+        if(vw_available > 0)
+            self.vw_index = 4;
 #endif
 	}
 	else if (self.weapon == IT_SUPER_NAILGUN)
@@ -1097,7 +1101,8 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_NAILS;
 #ifdef VWEP_TEST
-        self.vw_index = 5;
+        if(vw_available > 0)
+            self.vw_index = 5;
 #endif
 	}
 	else if (self.weapon == IT_GRENADE_LAUNCHER)
@@ -1107,7 +1112,8 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_ROCKETS;
 #ifdef VWEP_TEST
-        self.vw_index = 6;
+        if(vw_available > 0)
+            self.vw_index = 6;
 #endif
 	}
 	else if (self.weapon == IT_ROCKET_LAUNCHER)
@@ -1117,7 +1123,8 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_ROCKETS;
 #ifdef VWEP_TEST
-        self.vw_index = 7;
+        if(vw_available > 0)
+            self.vw_index = 7;
 #endif
 	}
 	else if (self.weapon == IT_LIGHTNING)
@@ -1127,7 +1134,8 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_CELLS;
 #ifdef VWEP_TEST
-        self.vw_index = 8;
+        if(vw_available > 0)
+            self.vw_index = 8;
 #endif
 	}
 	else

@@ -1608,7 +1608,7 @@ void PlayerPostThink ()
 
 #ifdef VWEP_TEST
     // update vwep frame
-    if(stof(infokey(world, "vwep")))
+    if(stof(infokey(world, "vwep")) && vw_available > 0)
     {
         if (self.health <= 0)
         {
