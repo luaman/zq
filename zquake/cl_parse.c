@@ -1144,15 +1144,6 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 		CL_NewTranslation (slot);
 }
 
-static void CL_PlayerLeaveSlot(player_info_t *player)
-{
-	if (cl.spectator && cls.demoplayback)
-	{
-		Cam_Unlock ();
-		Cam_TryLock ();
-	}
-}
-
 /*
 ==============
 CL_UpdateUserinfo
@@ -1175,9 +1166,6 @@ void CL_UpdateUserinfo (void)
 	strlcpy (player->userinfo, MSG_ReadString(), sizeof(player->userinfo));
 
 	CL_ProcessUserInfo (slot, player);
-
-	if (!player->name[0] && !was_empty_slot)
-		CL_PlayerLeaveSlot(player);
 }
 
 /*
