@@ -86,6 +86,8 @@ cvar_t	r_drawflame = {"r_drawflame", "1"};
 cvar_t	cl_gibfilter = {"cl_gibfilter", "0"};
 cvar_t	r_rocketlight = {"r_rocketlight", "1"};
 cvar_t	r_rockettrail = {"r_rockettrail", "1"};
+cvar_t	r_grenadetrail = {"r_grenadetrail", "1"};
+cvar_t	r_powerupglow = {"r_powerupglow", "1"};
 cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
 
 cvar_t	cl_teamskin = {"teamskin", ""};
@@ -1221,6 +1223,8 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&cl_enemyskin);
 	Cvar_RegisterVariable (&r_drawflame);
 	Cvar_RegisterVariable (&r_rockettrail);
+	Cvar_RegisterVariable (&r_grenadetrail);
+	Cvar_RegisterVariable (&r_powerupglow);
 	Cvar_RegisterVariable (&r_rocketlight);
 	Cvar_RegisterVariable (&default_fov);
 // <-- Tonik
