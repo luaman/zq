@@ -38,12 +38,14 @@ cvar_t	sv_rconPassword = {"rcon_password", ""};	// password for remote server co
 cvar_t	sv_password = {"password", ""};				// password for entering the game
 cvar_t	sv_spectatorPassword = {"spectator_password", ""};	// password for entering as a sepctator
 
-cvar_t	allow_download = {"allow_download", "1"};
-cvar_t	allow_download_skins = {"allow_download_skins", "1"};
-cvar_t	allow_download_models = {"allow_download_models", "1"};
-cvar_t	allow_download_sounds = {"allow_download_sounds", "1"};
-cvar_t	allow_download_maps = {"allow_download_maps", "1"};
-cvar_t	allow_download_pakmaps = {"allow_download_pakmaps", "0"};
+cvar_t	allow_download			= {"allow_download", "1"};
+cvar_t	allow_download_skins	= {"allow_download_skins", "1"};
+cvar_t	allow_download_models	= {"allow_download_models", "1"};
+cvar_t	allow_download_sounds	= {"allow_download_sounds", "1"};
+cvar_t	allow_download_maps		= {"allow_download_maps", "1"};
+cvar_t	allow_download_pakmaps	= {"allow_download_pakmaps", "0"};
+cvar_t	allow_download_gfx		= {"allow_download_gfx", "1"};
+cvar_t	allow_download_other	= {"allow_download_other", "1"};	// make it 0 one day
 
 cvar_t	sv_highchars = {"sv_highchars", "1"};
 cvar_t	sv_phs = {"sv_phs", "1"};
@@ -1384,6 +1386,8 @@ void SV_InitLocal (void)
 	Cvar_Register (&allow_download_sounds);
 	Cvar_Register (&allow_download_maps);
 	Cvar_Register (&allow_download_pakmaps);
+	Cvar_Register (&allow_download_gfx);
+	Cvar_Register (&allow_download_other);
 
 	Cvar_Register (&filterban);
 	Cmd_AddCommand ("addip", SV_AddIP_f);
