@@ -27,7 +27,7 @@
 
 
 // enable extensions in the engine
-float	z_ext_clientcommand = 0;
+float	z_ext_clientcommand;
 
 
 void Cmd_Give (string item, string amount)
