@@ -53,6 +53,7 @@ for all variables in the bot...
 .vector	b_dir;
 .float	forwardmove, sidemove, upmove;
 .vector	dyn_dest;
+.float	search_time;
 
 // used for the physics & movement AI
 float KEY_MOVEUP 		= 1;
