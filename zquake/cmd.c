@@ -451,10 +451,9 @@ char *Cmd_AliasString (char *name)
 /*
 ===============
 Cmd_Viewalias_f
-
 ===============
 */
-void Cmd_Viewalias_f(void)
+void Cmd_Viewalias_f (void)
 {
 	cmd_alias_t *alias;
 
@@ -470,6 +469,20 @@ void Cmd_Viewalias_f(void)
 		Com_Printf ("%s : \"%s\"\n", Cmd_Argv(1), alias->value);
 	else
 		Com_Printf ("No such alias: %s\n", Cmd_Argv(1));
+}
+
+/*
+===============
+Cmd_AliasList_f
+===============
+*/
+void Cmd_AliasList_f (void)
+{
+	cmd_alias_t	*a;
+
+	Com_Printf ("Current alias commands:\n");
+	for (a = cmd_alias ; a ; a=a->next)
+		Com_Printf ("%s : %s\n\n", a->name, a->value);
 }
 
 /*
@@ -491,9 +504,8 @@ void Cmd_Alias_f (void)
 	c = Cmd_Argc();
 	if (c == 1)
 	{
-		Com_Printf ("Current alias commands:\n");
-		for (a = cmd_alias ; a ; a=a->next)
-			Com_Printf ("%s : %s\n\n", a->name, a->value);
+		Com_Printf ("alias <name> <command> : create or modify an alias\n");
+		Com_Printf ("aliaslist : list all aliases\n");
 		return;
 	}
 
@@ -1246,13 +1258,14 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("stuffcmds", Cmd_StuffCmds_f);
 	Cmd_AddCommand ("exec", Cmd_Exec_f);
 	Cmd_AddCommand ("echo", Cmd_Echo_f);
-	Cmd_AddCommand ("alias", Cmd_Alias_f);
+	Cmd_AddCommand ("aliaslist", Cmd_AliasList_f);
 	Cmd_AddCommand ("aliasa", Cmd_Alias_f);
+	Cmd_AddCommand ("alias", Cmd_Alias_f);
 	Cmd_AddCommand ("viewalias", Cmd_Viewalias_f);
-	Cmd_AddCommand ("wait", Cmd_Wait_f);
-	Cmd_AddCommand ("cmdlist", Cmd_CmdList_f);
 	Cmd_AddCommand ("unaliasall", Cmd_UnAliasAll_f);
 	Cmd_AddCommand ("unalias", Cmd_UnAlias_f);
+	Cmd_AddCommand ("wait", Cmd_Wait_f);
+	Cmd_AddCommand ("cmdlist", Cmd_CmdList_f);
 	Cmd_AddCommand ("if", Cmd_If_f);
 	Cmd_AddCommand ("_z_cmd", Cmd_Z_Cmd_f);	// ZQuake
 }
