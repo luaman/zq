@@ -1151,7 +1151,6 @@ CL_UpdateUserinfo
 void CL_UpdateUserinfo (void)
 {
 	int		slot;
-	qbool	was_empty_slot;
 	player_info_t	*player;
 
 	slot = MSG_ReadByte ();
@@ -1159,7 +1158,6 @@ void CL_UpdateUserinfo (void)
 		Host_Error ("CL_ParseServerMessage: svc_updateuserinfo > MAX_CLIENTS");
 
 	player = &cl.players[slot];
-	was_empty_slot = !player->name[0];
 
 	player->userid = MSG_ReadLong ();
 	strlcpy (player->userinfo, MSG_ReadString(), sizeof(player->userinfo));
