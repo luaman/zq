@@ -800,6 +800,8 @@ void CL_BeginLocalConnection ()
 	if (!com_serveractive)
 		CL_Disconnect ();
 
+	D_FlushCaches ();
+
 	S_StopAllSounds (true);
 	cl.worldmodel = NULL;
 

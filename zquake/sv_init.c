@@ -305,8 +305,6 @@ clients along with it.
 This is only called from the SV_Map_f() function.
 ================
 */
-void D_FlushCaches ();
-
 void SV_SpawnServer (char *server, qboolean devmap)
 {
 	edict_t		*ent;
@@ -325,9 +323,6 @@ void SV_SpawnServer (char *server, qboolean devmap)
 	com_serveractive = false;
 	sv.paused = false;
 
-#ifndef SERVERONLY
-	D_FlushCaches ();
-#endif
 	Mod_ClearAll ();
 	Hunk_FreeToLowMark (host_hunklevel);
 
