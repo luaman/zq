@@ -738,8 +738,7 @@ void R_AliasDrawModel (alight_t *plighting)
 	if (!currententity->colormap)
 		Sys_Error ("R_AliasDrawModel: !currententity->colormap");
 
-	r_affinetridesc.drawtype = (currententity->trivial_accept == 3) &&
-			r_recursiveaffinetriangles;
+	r_affinetridesc.drawtype = (currententity->trivial_accept == 3);
 
 	if (r_affinetridesc.drawtype)
 	{

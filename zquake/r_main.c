@@ -23,14 +23,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "r_local.h"
 #include "sound.h"
 
-//define	PASSAGES
-
 void		*colormap;
 vec3_t		viewlightvec;
 alight_t	r_viewlighting = {128, 192, viewlightvec};
 float		r_time1;
 int			r_numallocatededges;
-qboolean	r_recursiveaffinetriangles = true;
 int			r_pixbytes = 1;
 float		r_aliasuvscale = 1.0;
 int			r_outofsurfaces;
@@ -134,9 +131,6 @@ cvar_t	r_aliastransadj = {"r_aliastransadj", "100"};
 cvar_t	r_fullbrightSkins = {"r_fullbrightSkins","0"};
 
 extern cvar_t	scr_fov;
-
-void CreatePassages (void);
-void SetVisibilityByPassages (void);
 
 void R_NetGraph (void);
 void R_ZGraph (void);
@@ -979,11 +973,7 @@ void R_RenderView_ (void)
 
 	R_SetupFrame ();
 
-#ifdef PASSAGES
-SetVisibilityByPassages ();
-#else
 	R_MarkLeaves ();	// done here so we know if we're in water
-#endif
 
 // make FDIV fast. This reduces timing precision after we've been running for a
 // while, so we don't do it globally.  This also sets chop mode, and we do it
