@@ -40,6 +40,33 @@
     4. Compile as you normally would and enjoy.
 */
 
+void(entity player) snap_tutor_helpcall =
+{
+    // Only say ``On my way'' once...
+    if( ! player.agrip_aux.lip )
+    {
+        dprint(self.netname);
+        dprint(": On my way.\n");
+        player.agrip_aux.lip = true;
+    }
+    
+    self.goalentity = player;
+    
+    if( vlen(self.goalentity.origin - self.origin) < 50 )
+    {
+        // Only say ``I'm here'' once...
+        if( ! player.agrip_aux.items )
+        {
+            dprint(self.netname);
+            dprint(": I'm here!\n");
+            player.agrip_aux.items = true;
+            // Unset the ``come here'' flag...
+            player.agrip_aux.ammo_cells = false;
+            self.goalentity = world;
+        }
+    }
+}
+
 /*
     Section 1: AI
 
@@ -71,7 +98,8 @@ void() bot_search_for_items =
     // he gives up on that item and marks it to avoid it for a while
     if (time > self.search_time && self.goalentity != world)
     {
-        self.goalentity.search_time = time + 30;
+        //self.goalentity.search_time = time + 30;
+        self.goalentity.search_time = time + 10;
         self.goalentity = world;
     }
 
@@ -85,7 +113,8 @@ void() bot_search_for_items =
     {
         if ( (item.flags & FL_ITEM) && visible(item) && item.model != string_null && time > item.search_time)
         {
-            self.search_time = time + 30;
+            //self.search_time = time + 30;
+            self.search_time = time + 10;
             self.goalentity = item;
         }
         item = item.chain;
@@ -244,24 +273,28 @@ void() check_for_water =
     // bots don't see water like players do, so we check for it
 
     makevectors(self.angles);
-    p = pointcontents(self.origin + v_forward*16);
+    p = pointcontents(self.origin - '0 0 25');
+    //p = pointcontents(self.origin + v_forward*16);
     if (p != CONTENT_WATER && p != CONTENT_SLIME && p != CONTENT_LAVA)
         return;
 
     if (p == CONTENT_WATER && time > self.pain_finished)
     {
+        dprint("I'm in water!!!\n");
         T_Damage (self, world, world, 5);
         self.pain_finished = time + 2;
         sound (self, CHAN_VOICE, "player/gasp2.wav", 1, ATTN_NORM);
     }
-    if (p == CONTENT_SLIME && time > self.pain_finished)
+    else if (p == CONTENT_SLIME && time > self.pain_finished)
     {
+        dprint("I'm in slime!!!\n");
         T_Damage (self, world, world, 10);
         self.pain_finished = time + 1;
         sound (self, CHAN_VOICE, "player/lburn2.wav", 1, ATTN_NORM);
     }
-    if (p == CONTENT_LAVA && time > self.pain_finished)
+    else if (p == CONTENT_LAVA && time > self.pain_finished)
     {
+        dprint("I'm in lava!!!\n");
         T_Damage (self, world, world, 20);
         self.pain_finished = time + 0.5;
         sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);
@@ -283,48 +316,34 @@ void() check_for_water =
 void() check_for_ledge =
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {
-    local vector spot;
-    
     if( ! self.flags & FL_ONGROUND )
         return;
 
-    makevectors (self.angles);
-    spot = self.origin + (v_forward * 5);
-    spot = spot - '0 0 45';
-    if (pointcontents(spot) == CONTENT_EMPTY)
-        bot_jump1();
-
-    /* $AGRIP-START 
-
-    local float r;
-    r = random();
-
+    /* $AGRIP-START */
     // This uses our jump detection routine to work out if it is safe
     // to jump in the direction the bot wants to travel...
-
-    // We should also not jump down stairs.
-
-    spot = self.origin - '0 0 25';
-    spot = spot + v_forward * 10;
-    traceline(spot, spot - '0 0 30', true, self);
-
-    if( pointcontents(trace_endpos) == CONTENT_EMPTY && trace_fraction == 1 )
+    self.owner = self;
+    self.aiment = self;
+    local float result;
+    result = snap_nav_haz_detect(self.origin - '0 0 25', v_forward, false, false);
+    if( result < 0 )
     {
-        if( random() > 0.5 )
-            self.angles_y = vectoyaw(self.goalentity.origin - self.origin);
-
-        //snap_misc_showpoint(self.origin, "progs/s_explod.spr", 3);
-
-        if( snap_misc_jumptest(self.origin, v_forward) )
+        if( snap_misc_jumptest(self.origin, v_forward) == SNAP_NAV_JMP_NRM )
+        {
             jump_forward();
-        else if( r > 0.8 )
-            self.angles_y = anglemod(self.angles_y + 180);
-        else if( r > 0.4 )
-            self.angles_y = anglemod(self.angles_y - 45);
+        }
         else
-            self.angles_y = anglemod(self.angles_y + 45);
+        {
+            // If it is safe to move forward, do so anyway...
+            if( random() < 0.25 && result == CONTENT_EMPTY )
+            {
+                // face target...
+                self.angles_y = vectoyaw(self.goalentity.origin - self.origin);
+                jump_forward();
+            }
+        }
     }
-    $AGRIP-END */
+    /* $AGRIP-END */
 };
 
 
@@ -498,6 +517,11 @@ void() bot_walk =
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {
     // this is his main AI routine, where he will look for items and enemies
+    /*dprint("WALK -- enemy: ");
+    dprint(self.enemy.classname);
+    dprint("   goal: ");
+    dprint(self.goalentity.classname);
+    dprint("\n");*/
 
     if (!(self.flags & FL_ONGROUND))
         return;
@@ -509,32 +533,7 @@ void() bot_walk =
 
     if( player.agrip_aux.ammo_cells )
     {
-        // Only say ``On my way'' once...
-        if( ! player.agrip_aux.lip )
-        {
-            dprint(self.netname);
-            dprint(": On my way.\n");
-            player.agrip_aux.lip = true;
-        }
-
-        self.goalentity = player;
-        if( vlen(self.goalentity.origin - self.origin) < 100 )
-        {
-            // Only say ``I'm here'' once...
-            if( ! player.agrip_aux.items )
-            {
-                dprint(self.netname);
-                dprint(": I'm here!\n");
-                player.agrip_aux.items = true;
-
-                // Unset the ``come here'' flag...
-                player.agrip_aux.ammo_cells = false;
-                self.goalentity = world;
-                //self.pausetime = 1;
-                //self.think = self.th_stand;
-                //self.nextthink = time + 0.1;
-            }
-        }
+        snap_tutor_helpcall(player);
     }
     else
     {
@@ -542,14 +541,15 @@ void() bot_walk =
         player.agrip_aux.lip = false;
         player.agrip_aux.items = false;
 
-        // Do our normal walk routine...
+        // stuff that bot normally does in this function but shouldn't if player is calling...
         bot_look_for_bots();
         bot_look_for_players();
         bot_search_for_items();
         bot_grab_items();
     }
+    
     /* $AGRIP-END */
-
+        
     check_for_ledge();
     check_for_water();
 
@@ -560,7 +560,8 @@ void() bot_walk =
 
     if (self.goalentity != world)
         movetogoal(20);
-    else coffee_move();
+    else
+        coffee_move();
 };
 
 
@@ -630,12 +631,28 @@ void() bot_run =
 {
     // his fighting thoughts. after a short while, he'll give up 
     // on his enemy, but if he can see him, he'll always attack
+    /*dprint("RUN -- enemy: ");
+    dprint(self.enemy.classname);
+    dprint("   goal: ");
+    dprint(self.goalentity.classname);
+    dprint("\n");*/
 
     if (!(self.flags & FL_ONGROUND))
         return;
 
     check_for_water();
 
+    /* $AGRIP-START */
+    // See if the player wants us to come...
+    local entity player;
+    player = find(world, classname, "player");
+    if( player.agrip_aux.ammo_cells )
+    {
+        bot_walk();
+        return;
+    }
+    /* $AGRIP-END */
+    
     if (visible(self.enemy))
         self.search_time = time + 6;
 
