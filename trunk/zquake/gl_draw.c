@@ -379,6 +379,35 @@ void Draw_TextureMode_f (void)
 	}
 }
 
+
+void Draw_LoadCharset (void)
+{
+	int i;
+	char	buf[128*256];
+	char	*src, *dest;
+
+	draw_chars = W_GetLumpName ("conchars");
+	for (i=0 ; i<256*64 ; i++)
+		if (draw_chars[i] == 0)
+			draw_chars[i] = 255;	// proper transparent color
+
+	// Convert the 128*128 conchars texture to 128*256 leaving
+	// empty space between rows so that chars don't stumble on
+	// each other because of texture smoothing.
+	// This hack costs us 64K of GL texture memory
+	memset (buf, 255, sizeof(buf));
+	src = draw_chars;
+	dest = buf;
+	for (i=0 ; i<16 ; i++) {
+		memcpy (dest, src, 128*8);
+		src += 128*8;
+		dest += 128*8*2;
+	}
+
+	char_texture = GL_LoadTexture ("charset", 128, 256, buf, false, true, false);
+}
+
+
 /*
 ===============
 Draw_Init
@@ -410,21 +439,16 @@ void Draw_Init (void)
 	// by hand, because we need to write the version
 	// string into the background before turning
 	// it into a texture
-	draw_chars = W_GetLumpName ("conchars");
-	for (i=0 ; i<256*64 ; i++)
-		if (draw_chars[i] == 0)
-			draw_chars[i] = 255;	// proper transparent color
 
-	// now turn them into textures
-	char_texture = GL_LoadTexture ("charset", 128, 128, draw_chars, false, true, false);
+	Draw_LoadCharset ();
 
 	cs2_texture = GL_LoadTexture ("", 8, 8, cs2_data, false, true, false);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	cs3_texture = GL_LoadTexture ("", 8, 8, cs3_data, false, true, false);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	start = Hunk_LowMark ();
 
@@ -514,7 +538,7 @@ smoothly scrolled off.
 void Draw_Character (int x, int y, int num)
 {
 	int				row, col;
-	float			frow, fcol, size;
+	float			frow, fcol;
 
 	if (num == 32)
 		return;		// space
@@ -529,18 +553,17 @@ void Draw_Character (int x, int y, int num)
 
 	frow = row*0.0625;
 	fcol = col*0.0625;
-	size = 0.0625;
 
 	GL_Bind (char_texture);
 
 	glBegin (GL_QUADS);
 	glTexCoord2f (fcol, frow);
 	glVertex2f (x, y);
-	glTexCoord2f (fcol + size, frow);
+	glTexCoord2f (fcol + (1.0/16), frow);
 	glVertex2f (x+8, y);
-	glTexCoord2f (fcol + size, frow + size);
+	glTexCoord2f (fcol + (1.0/16), frow + (1.0/32));
 	glVertex2f (x+8, y+8);
-	glTexCoord2f (fcol, frow + size);
+	glTexCoord2f (fcol, frow + (1.0/32));
 	glVertex2f (x, y+8);
 	glEnd ();
 }
@@ -1127,6 +1150,10 @@ static	unsigned	scaled[1024*512];	// [512*256];
 		scaled_width = gl_max_size.value;
 	if (scaled_height > gl_max_size.value)
 		scaled_height = gl_max_size.value;
+	if (scaled_width < 1)
+		scaled_width = 1;
+	if (scaled_height < 1)
+		scaled_height = 1;
 
 	if (scaled_width * scaled_height > sizeof(scaled)/4)
 		Sys_Error ("GL_LoadTexture: too big");
@@ -1231,6 +1258,10 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 		scaled_width = gl_max_size.value;
 	if (scaled_height > gl_max_size.value)
 		scaled_height = gl_max_size.value;
+	if (scaled_width < 1)
+		scaled_width = 1;
+	if (scaled_height < 1)
+		scaled_height = 1;
 
 	if (scaled_width * scaled_height > sizeof(scaled))
 		Sys_Error ("GL_LoadTexture: too big");
