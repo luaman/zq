@@ -228,6 +228,7 @@ typedef struct
 	qboolean	teamfortress;	// true if gamedir is "fortress"
 	int			fpd;			// FAQ proxy flags
 	int			z_ext;			// ZQuake protocol extensions flags
+	float		maxfps;
 
 	int			parsecount;		// server message counter
 	int			validsequence;	// this is the sequence number of the last good

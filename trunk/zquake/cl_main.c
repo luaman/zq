@@ -836,7 +836,7 @@ qboolean Host_FilterTime (void)
 		return true;
 
 	if (cl_maxfps.value)
-		fps = bound (30.0, cl_maxfps.value, 72.0);
+		fps = bound (30.0, cl_maxfps.value, cl.maxfps);
 	else
 	{
 		if (cls.demoplayback)
@@ -844,10 +844,10 @@ qboolean Host_FilterTime (void)
 
 #ifdef QW_BOTH
 		if (sv.state != ss_dead)
-			fps = 72.0;
+			fps = cl.maxfps;
 		else
 #endif
-			fps = bound (30.0, rate.value/80.0, 72.0);
+			fps = bound (30.0, rate.value/80.0, cl.maxfps);
 	}
 
 	if (realtime - oldrealtime < 1.0/fps)
