@@ -145,7 +145,8 @@ void Cmd_StuffCmds_f (void);
 
 #define	MAX_ALIAS_NAME	32
 
-#define ALIAS_ARCHIVE	1
+#define ALIAS_ARCHIVE	1	// save to config.cfg
+#define ALIAS_STUFFED	2	// stuffed by mod, clear after leaving server
 
 typedef struct cmd_alias_s
 {
@@ -157,6 +158,7 @@ typedef struct cmd_alias_s
 } cmd_alias_t;
 
 qboolean Cmd_DeleteAlias (char *name);	// return true if successful
+void Cmd_RemoveStuffedAliases (void);
 cmd_alias_t *Cmd_FindAlias (char *name); // returns NULL on failure
 char *Cmd_AliasString (char *name); // returns NULL on failure
 void Cmd_WriteAliases (FILE *f);

@@ -536,7 +536,15 @@ void Cmd_Alias_f (void)
 		a->hash_next = cmd_alias_hash[key];
 		cmd_alias_hash[key] = a;
 	}
+
 	strcpy (a->name, s);
+
+#ifndef SERVERONLY
+	if (cbuf_current == &cbuf_svc)
+		a->flags |= ALIAS_STUFFED;
+	else
+		a->flags &= ALIAS_STUFFED;
+#endif
 
 	if (!Q_stricmp(Cmd_Argv(0), "aliasa"))
 		a->flags |= ALIAS_ARCHIVE;
@@ -633,6 +641,19 @@ void Cmd_UnAliasAll_f (void)
 	// clear hash
 	for (i=0 ; i<32 ; i++) {
 		cmd_alias_hash[i] = NULL;
+	}
+}
+
+
+void Cmd_RemoveStuffedAliases (void)
+{
+	cmd_alias_t	*a, *next;
+
+	for (a=cmd_alias ; a ; a=next) {
+		next = a->next;
+		
+		if (a->flags & ALIAS_STUFFED)
+			Cmd_DeleteAlias (a->name);
 	}
 }
 
