@@ -1536,10 +1536,11 @@ void() ClientConnect =
 
 	self.k_stuff = parm10;
 
-	if(!self.k_stuff) {
+	if (!self.k_stuff) {
 		stuffer = spawn();
 		stuffer.classname = "stuffer";
 		stuffer.owner = self;
+		stuffer.think = StuffThink;
 		stuffer.nextthink = time + 2;
 		self.k_stuff = 1;
 	}
