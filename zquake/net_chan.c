@@ -110,7 +110,7 @@ Netchan_OutOfBand
 Sends an out-of-band datagram
 ================
 */
-void Netchan_OutOfBand (int net_socket, netadr_t adr, int length, byte *data)
+void Netchan_OutOfBand (netsrc_t sock, netadr_t adr, int length, byte *data)
 {
 	sizebuf_t	send;
 	byte		send_buf[MAX_MSGLEN + PACKET_HEADER];
@@ -128,7 +128,7 @@ void Netchan_OutOfBand (int net_socket, netadr_t adr, int length, byte *data)
 #ifndef SERVERONLY
 	if (!cls.demoplayback)
 #endif
-		NET_SendPacket (net_socket, send.cursize, send.data, adr);
+		NET_SendPacket (sock, send.cursize, send.data, adr);
 }
 
 /*
@@ -138,7 +138,7 @@ Netchan_OutOfBandPrint
 Sends a text message in an out-of-band datagram
 ================
 */
-void Netchan_OutOfBandPrint (int net_socket, netadr_t adr, char *format, ...)
+void Netchan_OutOfBandPrint (netsrc_t sock, netadr_t adr, char *format, ...)
 {
 	va_list		argptr;
 	static char		string[8192];		// ??? why static?
@@ -147,8 +147,7 @@ void Netchan_OutOfBandPrint (int net_socket, netadr_t adr, char *format, ...)
 	vsprintf (string, format,argptr);
 	va_end (argptr);
 
-
-	Netchan_OutOfBand (net_socket, adr, strlen(string), (byte *)string);
+	Netchan_OutOfBand (sock, adr, strlen(string), (byte *)string);
 }
 
 
@@ -159,20 +158,19 @@ Netchan_Setup
 called to open a channel to a remote system
 ==============
 */
-void Netchan_Setup (netchan_t *chan, netadr_t adr, int qport, int net_socket)
+void Netchan_Setup (netsrc_t sock, netchan_t *chan, netadr_t adr, int qport)
 {
 	memset (chan, 0, sizeof(*chan));
 	
-	chan->net_socket = net_socket;
-
+	chan->sock = sock;
 	chan->remote_address = adr;
+	chan->qport = qport;
+
 	chan->last_received = realtime;
 	
 	chan->message.data = chan->message_buf;
 	chan->message.allowoverflow = true;
 	chan->message.maxsize = sizeof(chan->message_buf);
-
-	chan->qport = qport;
 	
 	chan->rate = 1.0/2500;
 }
@@ -270,10 +268,8 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 	MSG_WriteLong (&send, w2);
 
 	// send the qport if we are a client
-#ifndef SERVERONLY
-	if (chan->net_socket == net_clientsocket)
-		MSG_WriteShort (&send, cls.qport);
-#endif
+	if (chan->sock == NS_CLIENT)
+		MSG_WriteShort (&send, chan->qport);
 
 // copy the reliable message to the packet first
 	if (send_reliable)
@@ -295,7 +291,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 #ifndef SERVERONLY
 	if (!cls.demoplayback)
 #endif
-		NET_SendPacket (chan->net_socket, send.cursize, send.data, chan->remote_address);
+		NET_SendPacket (chan->sock, send.cursize, send.data, chan->remote_address);
 
 	if (chan->cleartime < realtime)
 		chan->cleartime = realtime + send.cursize*chan->rate;
@@ -328,29 +324,15 @@ qboolean Netchan_Process (netchan_t *chan)
 {
 	unsigned		sequence, sequence_ack;
 	unsigned		reliable_ack, reliable_message;
-#if defined(SERVERONLY) || defined(QW_BOTH)
-	int			qport;
-#endif
 
-	if (
-#ifndef SERVERONLY
-			!cls.demoplayback && 
-#endif
-			!NET_CompareAdr (net_from, chan->remote_address))
-		return false;
-	
 // get sequence numbers		
 	MSG_BeginReading ();
 	sequence = MSG_ReadLong ();
 	sequence_ack = MSG_ReadLong ();
 
 	// read the qport if we are a server
-#ifdef SERVERONLY
-	qport = MSG_ReadShort ();
-#elif defined(QW_BOTH)
-	if (chan->net_socket == net_serversocket)
-		qport = MSG_ReadShort ();
-#endif
+	if (chan->sock == NS_SERVER)
+		MSG_ReadShort ();
 
 	reliable_message = sequence >> 31;
 	reliable_ack = sequence_ack >> 31;

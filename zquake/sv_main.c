@@ -482,7 +482,7 @@ void SVC_Log (void)
 	if (seq == svs.logsequence-1 || !sv_fraglogfile)
 	{	// they already have this data, or we aren't logging frags
 		data[0] = A2A_NACK;
-		NET_SendPacket (net_serversocket, 1, data, net_from);
+		NET_SendPacket (NS_SERVER, 1, data, net_from);
 		return;
 	}
 
@@ -491,7 +491,7 @@ void SVC_Log (void)
 	sprintf (data, "stdlog %i\n", svs.logsequence-1);
 	strcat (data, (char *)svs.log_buf[((svs.logsequence-1)&1)]);
 
-	NET_SendPacket (net_serversocket, strlen(data)+1, data, net_from);
+	NET_SendPacket (NS_SERVER, strlen(data)+1, data, net_from);
 }
 
 /*
@@ -507,7 +507,7 @@ void SVC_Ping (void)
 
 	data = A2A_ACK;
 
-	NET_SendPacket (net_serversocket, 1, &data, net_from);
+	NET_SendPacket (NS_SERVER, 1, &data, net_from);
 }
 
 /*
@@ -552,7 +552,7 @@ void SVC_GetChallenge (void)
 	}
 
 	// send it back
-	Netchan_OutOfBandPrint (net_serversocket, net_from, "%c%i", S2C_CHALLENGE, 
+	Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c%i", S2C_CHALLENGE, 
 			svs.challenges[i].challenge);
 }
 
@@ -583,7 +583,7 @@ void SVC_DirectConnect (void)
 	version = atoi(Cmd_Argv(1));
 	if (version != PROTOCOL_VERSION)
 	{
-		Netchan_OutOfBandPrint (net_serversocket, net_from, "%c\nServer is version %4.2f.\n", A2C_PRINT, QW_VERSION);
+		Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nServer is version %4.2f.\n", A2C_PRINT, QW_VERSION);
 		Con_Printf ("* rejected connect from version %i\n", version);
 		return;
 	}
@@ -602,13 +602,13 @@ void SVC_DirectConnect (void)
 		{
 			if (challenge == svs.challenges[i].challenge)
 				break;		// good
-			Netchan_OutOfBandPrint (net_serversocket, net_from, "%c\nBad challenge.\n", A2C_PRINT);
+			Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nBad challenge.\n", A2C_PRINT);
 			return;
 		}
 	}
 	if (i == MAX_CHALLENGES)
 	{
-		Netchan_OutOfBandPrint (net_serversocket, net_from, "%c\nNo challenge for address.\n", A2C_PRINT);
+		Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nNo challenge for address.\n", A2C_PRINT);
 		return;
 	}
 
@@ -621,7 +621,7 @@ void SVC_DirectConnect (void)
 			strcmp(spectator_password.string, s) )
 		{	// failed
 			Con_Printf ("%s:spectator password failed\n", NET_AdrToString (net_from));
-			Netchan_OutOfBandPrint (net_serversocket, net_from, "%c\nrequires a spectator password\n\n", A2C_PRINT);
+			Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nrequires a spectator password\n\n", A2C_PRINT);
 			return;
 		}
 		Info_RemoveKey (userinfo, "spectator"); // remove passwd
@@ -636,7 +636,7 @@ void SVC_DirectConnect (void)
 			strcmp(password.string, s) )
 		{
 			Con_Printf ("%s:password failed\n", NET_AdrToString (net_from));
-			Netchan_OutOfBandPrint (net_serversocket, net_from, "%c\nserver requires a password\n\n", A2C_PRINT);
+			Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nserver requires a password\n\n", A2C_PRINT);
 			return;
 		}
 		spectator = false;
@@ -707,7 +707,7 @@ void SVC_DirectConnect (void)
 		|| (!spectator && clients >= (int)maxclients.value) )
 	{
 		Con_Printf ("%s:full connect\n", NET_AdrToString (adr));
-		Netchan_OutOfBandPrint (net_serversocket, adr, "%c\nserver is full\n\n", A2C_PRINT);
+		Netchan_OutOfBandPrint (NS_SERVER, adr, "%c\nserver is full\n\n", A2C_PRINT);
 		return;
 	}
 
@@ -733,11 +733,11 @@ void SVC_DirectConnect (void)
 	// this is the only place a client_t is ever initialized
 	*newcl = temp;
 
-	Netchan_OutOfBandPrint (net_serversocket, adr, "%c", S2C_CONNECTION );
+	Netchan_OutOfBandPrint (NS_SERVER, adr, "%c", S2C_CONNECTION );
 
 	edictnum = (newcl-svs.clients)+1;
 	
-	Netchan_Setup (&newcl->netchan , adr, qport, net_serversocket);
+	Netchan_Setup (NS_SERVER, &newcl->netchan, adr, qport);
 
 	newcl->state = cs_connected;
 
@@ -1097,7 +1097,7 @@ void SV_SendBan (void)
 	data[5] = 0;
 	strcat (data, "\nbanned.\n");
 	
-	NET_SendPacket (net_serversocket, strlen(data), data, net_from);
+	NET_SendPacket (NS_SERVER, strlen(data), data, net_from);
 }
 
 /*
@@ -1130,11 +1130,9 @@ void SV_ReadPackets (void)
 {
 	int			i;
 	client_t	*cl;
-	qboolean	good;
 	int			qport;
 
-	good = false;
-	while (NET_GetPacket(net_serversocket))
+	while (NET_GetPacket(NS_SERVER))
 	{
 		if (SV_FilterPacket ())
 		{
@@ -1173,7 +1171,6 @@ void SV_ReadPackets (void)
 			if (Netchan_Process(&cl->netchan))
 			{	// this is a valid, sequenced packet, so process it
 				svs.stats.packets++;
-				good = true;
 				cl->send_message = true;	// reply at end of frame
 				if (cl->state != cs_zombie)
 					SV_ExecuteClientMessage (cl);
@@ -1570,7 +1567,7 @@ void Master_Heartbeat (void)
 		if (master_adr[i].port)
 		{
 			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
-			NET_SendPacket (net_serversocket, strlen(string), string, master_adr[i]);
+			NET_SendPacket (NS_SERVER, strlen(string), string, master_adr[i]);
 		}
 }
 
@@ -1593,7 +1590,7 @@ void Master_Shutdown (void)
 		if (master_adr[i].port)
 		{
 			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
-			NET_SendPacket (net_serversocket, strlen(string), string, master_adr[i]);
+			NET_SendPacket (NS_SERVER, strlen(string), string, master_adr[i]);
 		}
 }
 

@@ -34,13 +34,10 @@ byte		net_message_buffer[MAX_UDP_PACKET];
 
 WSADATA		winsockdata;
 
-// Tonik -->
-#define	 PORT_LOOPBACK 65535
 int			loop_c2s_messageLength;
 char		loop_c2s_message[MAX_UDP_PACKET];
 int			loop_s2c_messageLength;
 char		loop_s2c_message[MAX_UDP_PACKET];
-// <-- Tonik
 
 //=============================================================================
 
@@ -55,12 +52,15 @@ void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 
 void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 {
+	a->type = NA_IP;
 	*(int *)&a->ip = *(int *)&s->sin_addr;
 	a->port = s->sin_port;
 }
 
 qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b)
 {
+	if (a.type == NA_LOOPBACK && b.type == NA_LOOPBACK)
+		return true;
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
 		return true;
 	return false;
@@ -68,6 +68,8 @@ qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b)
 
 qboolean	NET_CompareAdr (netadr_t a, netadr_t b)
 {
+	if (a.type == NA_LOOPBACK && b.type == NA_LOOPBACK)
+		return true;
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] && a.port == b.port)
 		return true;
 	return false;
@@ -77,10 +79,8 @@ char	*NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
-#ifdef QW_BOTH
-	if (*(int *)&a == 0 && a.port == PORT_LOOPBACK)
+	if (a.type == NA_LOOPBACK)
 		return "loopback";
-#endif
 
 	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3], ntohs(a.port));
 
@@ -106,23 +106,19 @@ idnewt:28000
 192.246.40.70:28000
 =============
 */
-qboolean	NET_StringToAdr (char *s, netadr_t *a)
+qboolean NET_StringToAdr (char *s, netadr_t *a)
 {
 	struct hostent	*h;
 	struct sockaddr_in sadr;
 	char	*colon;
 	char	copy[128];
 
-// Tonik -->	
-#ifdef QW_BOTH
 	if (!strcmp(s, "local"))
 	{
 		memset(a, 0, sizeof(*a));
-		a->port = PORT_LOOPBACK;
+		a->type = NA_LOOPBACK;
 		return true;
 	}
-#endif
-// <-- Tonik
 	
 	memset (&sadr, 0, sizeof(sadr));
 	sadr.sin_family = AF_INET;
@@ -157,36 +153,37 @@ qboolean	NET_StringToAdr (char *s, netadr_t *a)
 
 //=============================================================================
 
-qboolean NET_GetPacket (int net_socket)
+qboolean NET_GetPacket (netsrc_t sock)
 {
 	int 	ret;
 	struct sockaddr_in	from;
 	int		fromlen;
+	int		net_socket;
 
-// Tonik -->
-	if (net_socket == net_clientsocket && loop_s2c_messageLength > 0)
+	if (sock == NS_CLIENT && loop_s2c_messageLength > 0)
 	{
 		memcpy (net_message_buffer, loop_s2c_message, loop_s2c_messageLength);
 		net_message.cursize = loop_s2c_messageLength;
 		loop_s2c_messageLength = 0;
-		memset (&from, 0, sizeof(from));
-		from.sin_port = PORT_LOOPBACK;
-		SockadrToNetadr (&from, &net_from);
+		memset (&net_from, 0, sizeof(net_from));
+		net_from.type = NA_LOOPBACK;
 		return net_message.cursize;
 	}
 
-	if (net_socket == net_serversocket && loop_c2s_messageLength > 0)
+	if (sock == NS_SERVER && loop_c2s_messageLength > 0)
 	{
-//		Con_DPrintf ("NET_GetPacket: c2s\n");
 		memcpy (net_message_buffer, loop_c2s_message, loop_c2s_messageLength);
 		net_message.cursize = loop_c2s_messageLength;
 		loop_c2s_messageLength = 0;
-		memset (&from, 0, sizeof(from));
-		from.sin_port = PORT_LOOPBACK;
-		SockadrToNetadr (&from, &net_from);
+		memset (&net_from, 0, sizeof(net_from));
+		net_from.type = NA_LOOPBACK;
 		return net_message.cursize;
 	}
-// <-- Tonik
+
+	if (sock == NS_CLIENT)
+		net_socket = net_clientsocket;
+	else
+		net_socket = net_serversocket;
 
 	fromlen = sizeof(from);
 	ret = recvfrom (net_socket, (char *)net_message_buffer, sizeof(net_message_buffer), 0, (struct sockaddr *)&from, &fromlen);
@@ -223,15 +220,15 @@ qboolean NET_GetPacket (int net_socket)
 
 //=============================================================================
 
-void NET_SendPacket (int net_socket, int length, void *data, netadr_t to)
+void NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to)
 {
-	int ret;
+	int		ret;
 	struct sockaddr_in	addr;
+	int		net_socket;
 
-// Tonik -->
-	if (*(int *)&to.ip == 0 && to.port == 65535)	// Loopback
+	if (to.type == NA_LOOPBACK)
 	{
-		if (net_socket == net_clientsocket)
+		if (sock == NS_CLIENT)
 		{
 //			if (loop_c2s_messageLength)
 //				Con_Printf ("Warning: NET_SendPacket: loop_c2s: NET_SendPacket without NET_GetPacket\n");
@@ -239,7 +236,7 @@ void NET_SendPacket (int net_socket, int length, void *data, netadr_t to)
 			loop_c2s_messageLength = length;
 			return;
 		}
-		else if (net_socket == net_serversocket)
+		else if (sock == NS_SERVER)
 		{
 //			if (loop_s2c_messageLength)
 //				Con_Printf ("Warning: NET_SendPacket: loop_s2c: NET_SendPacket without NET_GetPacket\n");
@@ -248,11 +245,14 @@ void NET_SendPacket (int net_socket, int length, void *data, netadr_t to)
 			return;
 		}
 		Sys_Error("NET_SendPacket: loopback: unknown socket");
-		return;
 	}
-// <-- Tonik
 
 	NetadrToSockadr (&to, &addr);
+
+	if (sock == NS_CLIENT)
+		net_socket = net_clientsocket;
+	else
+		net_socket = net_serversocket;
 
 	ret = sendto (net_socket, data, length, 0, (struct sockaddr *)&addr, sizeof(addr) );
 	if (ret == -1)

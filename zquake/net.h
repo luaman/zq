@@ -21,11 +21,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define	PORT_ANY	-1
 
+typedef enum {NA_LOOPBACK, NA_BROADCAST, NA_IP, NA_IPX, NA_BROADCAST_IPX} netadrtype_t;
+
+typedef enum {NS_CLIENT, NS_SERVER} netsrc_t;
+
 typedef struct
 {
+	netadrtype_t	type;
+
 	byte	ip[4];
+	byte	ipx[10];
+
 	unsigned short	port;
-	unsigned short	pad;
 } netadr_t;
 
 extern	netadr_t	net_local_adr;
@@ -39,8 +46,8 @@ extern	int		net_serversocket;
 
 void		NET_Init (int clientport, int serverport);
 void		NET_Shutdown (void);
-qboolean	NET_GetPacket (int net_socket);
-void		NET_SendPacket (int net_socket, int length, void *data, netadr_t to);
+qboolean	NET_GetPacket (netsrc_t sock);
+void		NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to);
 
 qboolean	NET_CompareAdr (netadr_t a, netadr_t b);
 qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b);
@@ -58,6 +65,8 @@ typedef struct
 {
 	qboolean	fatal_error;
 
+	netsrc_t	sock;
+
 	float		last_received;		// for timeouts
 
 // the statistics are cleared at each client begin, because
@@ -68,7 +77,6 @@ typedef struct
 	int			drop_count;			// dropped packets, cleared each level
 	int			good_count;			// cleared each level
 
-	int			net_socket;		// Tonik
 	netadr_t	remote_address;
 	int			qport;
 
@@ -103,10 +111,10 @@ extern	int	net_drop;		// packets dropped before this one
 
 void Netchan_Init (void);
 void Netchan_Transmit (netchan_t *chan, int length, byte *data);
-void Netchan_OutOfBand (int net_socket, netadr_t adr, int length, byte *data);
-void Netchan_OutOfBandPrint (int net_socket, netadr_t adr, char *format, ...);
+void Netchan_OutOfBand (netsrc_t sock, netadr_t adr, int length, byte *data);
+void Netchan_OutOfBandPrint (netsrc_t sock, netadr_t adr, char *format, ...);
 qboolean Netchan_Process (netchan_t *chan);
-void Netchan_Setup (netchan_t *chan, netadr_t adr, int qport, int net_socket);
+void Netchan_Setup (netsrc_t sock, netchan_t *chan, netadr_t adr, int qport);
 
 qboolean Netchan_CanPacket (netchan_t *chan);
 qboolean Netchan_CanReliable (netchan_t *chan);
