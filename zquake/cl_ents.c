@@ -406,7 +406,7 @@ void CL_LinkPacketEntities (void)
 		state = &pack->entities[pnum];
 		cent = &cl_entities[state->number];
 
-		assert(cent->lastframe != cl_entframecount);
+		assert(cent->lastframe == cl_entframecount);
 		assert(!memcmp(state, &cent->current, sizeof(*state)));
 
 		// control powerup glow for bots
