@@ -204,10 +204,6 @@ SOURCE=.\cl_screen.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\cl_slist.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\cl_tent.c
 # End Source File
 # Begin Source File

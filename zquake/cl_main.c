@@ -22,7 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "winquake.h"
 #include "cdaudio.h"
-#include "cl_slist.h"
 #include "input.h"
 #include "keys.h"
 #include "menu.h"
@@ -841,9 +840,6 @@ void CL_Init (void)
 
 	NET_ClientConfig (true);
 
-	SList_Init ();
-	SList_Load ();
-
 #if 0
 	// bring up the main menu
 	M_Menu_Main_f ();
@@ -1043,7 +1039,6 @@ void CL_Shutdown (void)
 
 	CL_WriteConfiguration (); 
 
-	SList_Shutdown ();
 	CDAudio_Shutdown ();
 	S_Shutdown();
 	IN_Shutdown ();

@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "winquake.h"
-#include "cl_slist.h"
 #include "input.h"
 #include "keys.h"
 #include "sound.h"
@@ -45,15 +44,13 @@ void (*vid_menukeyfn)(int key);
 
 enum {m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer,
 	m_setup, m_options, m_video, m_keys, m_help, m_quit,
-	m_gameoptions, m_slist, m_sedit, m_fps, m_demos} m_state;
+	m_gameoptions, m_fps, m_demos} m_state;
 
 void M_Menu_Main_f (void);
 	void M_Menu_SinglePlayer_f (void);
 		void M_Menu_Load_f (void);
 		void M_Menu_Save_f (void);
 	void M_Menu_MultiPlayer_f (void);
-		void M_Menu_ServerList_f (void);
-			void M_Menu_SEdit_f (void);
 		void M_Menu_Setup_f (void);
 		void M_Menu_Demos_f (void);
 		void M_Menu_GameOptions_f (void);
@@ -69,8 +66,6 @@ void M_Main_Draw (void);
 		void M_Load_Draw (void);
 		void M_Save_Draw (void);
 	void M_MultiPlayer_Draw (void);
-		void M_ServerList_Draw (void);
-			void M_SEdit_Draw (void);
 		void M_Setup_Draw (void);
 		void M_Demos_Draw (void);
 		void M_GameOptions_Draw (void);
@@ -86,8 +81,6 @@ void M_Main_Key (int key);
 		void M_Load_Key (int key);
 		void M_Save_Key (int key);
 	void M_MultiPlayer_Key (int key);
-		void M_ServerList_Key (int key);
-			void M_SEdit_Key (int key);
 		void M_Setup_Key (int key);
 		void M_Demos_Key (int key);
 		void M_GameOptions_Key (int key);
@@ -1559,9 +1552,9 @@ void M_Save_Key (int key)
 
 int	m_multiplayer_cursor;
 #ifdef CLIENTONLY
-#define	MULTIPLAYER_ITEMS	3
+#define	MULTIPLAYER_ITEMS	2
 #else
-#define	MULTIPLAYER_ITEMS	4
+#define	MULTIPLAYER_ITEMS	3
 #endif
 
 void M_Menu_MultiPlayer_f (void)
@@ -1577,11 +1570,10 @@ void M_MultiPlayer_Draw (void)
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
 	M_DrawPic ( (320-p->width)/2, 4, p);
-	M_Print (80, 40, "Favorite Servers");
-	M_Print (80, 48, "Player Setup");
-	M_Print (80, 56, "Demos");
+	M_Print (80, 40, "Player Setup");
+	M_Print (80, 48, "Demos");
 #ifndef CLIENTONLY
-	M_Print (80, 64, "New Game");
+	M_Print (80, 56, "New Game");
 #endif
 
 // cursor
@@ -1628,19 +1620,15 @@ void M_MultiPlayer_Key (int key)
 		switch (m_multiplayer_cursor)
 		{
 		case 0:
-			M_Menu_ServerList_f ();
-			break;
-
-		case 1:
 			M_Menu_Setup_f ();
 			break;
 
-		case 2:
+		case 1:
 			M_Menu_Demos_f ();
 			break;
 
 #ifndef CLIENTONLY
-		case 3:
+		case 2:
 			M_Menu_GameOptions_f ();
 			break;
 #endif
@@ -2566,319 +2554,6 @@ void M_Setup_Key (int k)
 }
 
 
-// SLIST -->
-
-#define MENU_X 50
-#define MENU_Y 30
-#define STAT_X 50
-#define STAT_Y 122
-
-int m_multip_cursor=0;
-int m_multip_mins;
-int m_multip_maxs;
-int m_multip_horiz;
-int m_multip_state;
-
-void M_Menu_ServerList_f (void)
-{
-	M_EnterMenu (m_slist);
-	m_multip_mins = 0;
-	m_multip_maxs = 10;
-	m_multip_horiz = 0;
-	m_multip_state = 0;
-}
-
-void M_ServerList_Draw (void)
-{
-	int serv;
-	int line = 1;
-	mpic_t *p;
-	//int f;
-
-	M_DrawTransPic(16,4,Draw_CachePic("gfx/qplaque.lmp"));
-	p = Draw_CachePic("gfx/p_multi.lmp");
-	M_DrawPic((320-p->width)/2,4,p);
-
-	if (!(slist[0].server)) {
-		M_DrawTextBox(60,80,23,4);
-		M_PrintWhite(110,12*8,"No server list");
-		M_PrintWhite(140,13*8,"found.");
-		return;
-	}
-	M_DrawTextBox(STAT_X,STAT_Y,23,4);
-	//M_DrawTextBox(STAT_X+96,STAT_Y+38,12,3);
-	M_DrawTextBox(STAT_X,STAT_Y+38,23,3);
-	M_DrawTextBox(MENU_X,MENU_Y,23,(m_multip_maxs - m_multip_mins)+1);
-	for (serv = m_multip_mins; serv <= m_multip_maxs; serv++) {
-		if (slist[serv].server) {
-			M_Print(MENU_X+18,line*8+MENU_Y,
-				va("%1.21s",
-				strlen(slist[serv].description) <= m_multip_horiz ? "" : slist[serv].description+m_multip_horiz));
-			line++;
-		}
-	}
-	M_PrintWhite(STAT_X+18,STAT_Y+16,"IP/Hostname:");
-	M_Print(STAT_X+18,STAT_Y+24,slist[m_multip_cursor].server);
-	M_DrawCharacter(MENU_X+8,(m_multip_cursor - m_multip_mins + 1) * 8+MENU_Y,
-		12+((int)(curtime*4)&1));
-}
-
-void M_ServerList_Key (key)
-{
-//	server_entry_t *pt;
-	if (!(slist[0].server) && key != K_ESCAPE && key != K_INS)
-		return;
-	switch(key)
-	{
-	case K_BACKSPACE:
-		m_topmenu = m_none;	// intentional fallthrough
-	case K_ESCAPE:
-		M_LeaveMenu (m_multiplayer);
-		break;
-
-	case K_UPARROW:
-		S_LocalSound("misc/menu1.wav");
-		if (m_multip_cursor > 0)
-		{
-			if (keydown[K_CTRL])
-			{
-				SList_Switch(m_multip_cursor,m_multip_cursor-1);
-				m_multip_cursor--;
-			}
-			else
-				m_multip_cursor--;
-		}
-		break;
-
-	case K_DOWNARROW:
-		S_LocalSound("misc/menu1.wav");
-		if (keydown[K_CTRL])
-		{
-			if (m_multip_cursor != SList_Len() - 1) {
-				SList_Switch(m_multip_cursor,m_multip_cursor+1);
-				m_multip_cursor++;
-			}
-		}
-		else if (m_multip_cursor < (MAX_SERVER_LIST-1) && slist[m_multip_cursor+1].server) {
-			m_multip_cursor++;
-		}
-		break;
-
-	case K_HOME:
-		S_LocalSound("misc/menu1.wav");
-		m_multip_cursor = 0;
-		break;
-
-	case K_END:
-		S_LocalSound("misc/menu1.wav");
-		m_multip_cursor = SList_Len() - 1;
-		break;
-		
-	case K_PGUP:
-		S_LocalSound("misc/menu1.wav");
-		m_multip_cursor -= (m_multip_maxs - m_multip_mins);
-		if (m_multip_cursor < 0)
-			m_multip_cursor = 0;
-		break;
-
-	case K_PGDN:
-		S_LocalSound("misc/menu1.wav");
-		m_multip_cursor += (m_multip_maxs - m_multip_mins);
-		if (m_multip_cursor >= MAX_SERVER_LIST)
-			m_multip_cursor = MAX_SERVER_LIST - 1;
-		while (!(slist[m_multip_cursor].server))
-			m_multip_cursor--;
-		break;
-
-	case K_RIGHTARROW:
-		S_LocalSound("misc/menu1.wav");
-		if (m_multip_horiz < 256)
-			m_multip_horiz++;
-		break;
-
-	case K_LEFTARROW:
-		S_LocalSound("misc/menu1.wav");
-		if (m_multip_horiz > 0 )
-			m_multip_horiz--;
-		break;
-
-	case K_ENTER:
-		if (keydown[K_CTRL])
-		{
-			M_Menu_SEdit_f();
-			break;
-		}
-		m_state = m_main;
-		M_ToggleMenu_f();
-		Cbuf_AddText(va("%s %s\n", keydown[K_SHIFT] ? "observe" : "join", slist[m_multip_cursor].server));
-		break;
-
-	case 'e':
-	case 'E':
-		M_Menu_SEdit_f();
-		break;
-
-	case K_INS:
-		S_LocalSound("misc/menu2.wav");
-		if (SList_Len() < (MAX_SERVER_LIST-1)) {
-			memmove(&slist[m_multip_cursor+1],
-				&slist[m_multip_cursor],
-				(SList_Len() - m_multip_cursor)*sizeof(slist[0]));
-			SList_Reset_NoFree(m_multip_cursor);
-			SList_Set(m_multip_cursor,"127.0.0.1","<BLANK>");
-		}
-		break;
-
-	case K_DEL:
-		S_LocalSound("misc/menu2.wav");
-		if (SList_Len() > 0) {
-			free(slist[m_multip_cursor].server);
-			free(slist[m_multip_cursor].description);
-			if (SList_Len()-1 == m_multip_cursor) {
-				SList_Reset_NoFree(m_multip_cursor);
-				m_multip_cursor = !m_multip_cursor ? 0 : m_multip_cursor-1;
-
-			}
-			else {
-				memmove(&slist[m_multip_cursor],
-				&slist[m_multip_cursor+1],
-				(SList_Len()-m_multip_cursor-1) * sizeof(slist[0]));
-				SList_Reset_NoFree(SList_Len()-1);
-			}
-		}
-		break;
-	default:
-		break;
-	}
-	if (m_multip_cursor < m_multip_mins) {
-		m_multip_maxs -= (m_multip_mins - m_multip_cursor);
-		m_multip_mins = m_multip_cursor;
-	}
-	if (m_multip_cursor > m_multip_maxs) {
-		m_multip_mins += (m_multip_cursor - m_multip_maxs);
-		m_multip_maxs = m_multip_cursor;
-	}
-}
-#define SERV_X 60
-#define SERV_Y 64
-#define DESC_X 60
-#define DESC_Y 40
-#define SERV_L 22
-#define DESC_L 22
-
-char serv[256];
-char desc[256];
-int serv_max;
-int serv_min;
-int desc_max;
-int desc_min;
-int sedit_state;
-
-void M_Menu_SEdit_f (void) {
-	M_EnterMenu (m_sedit);
-	sedit_state = 0;
-	strlcpy (serv, slist[m_multip_cursor].server, sizeof(serv));
-	strlcpy (desc, slist[m_multip_cursor].description, sizeof(desc));
-	serv_max = strlen(serv) > SERV_L ? strlen(serv) : SERV_L;
-	serv_min = serv_max - (SERV_L);
-	desc_max = strlen(desc) > DESC_L ? strlen(desc) : DESC_L;
-	desc_min = desc_max - (DESC_L);
-}
-
-void M_SEdit_Draw (void) {
-	mpic_t *p;
-
-	M_DrawTransPic(16,4,Draw_CachePic("gfx/qplaque.lmp"));
-	p = Draw_CachePic("gfx/p_multi.lmp");
-	M_DrawPic((320-p->width)/2,4,p);
-
-	M_DrawTextBox(SERV_X,SERV_Y,23,1);
-	M_DrawTextBox(DESC_X,DESC_Y,23,1);
-	M_PrintWhite(SERV_X,SERV_Y-4,"Hostname/IP:");
-	M_PrintWhite(DESC_X,DESC_Y-4,"Description:");
-	M_Print(SERV_X+9,SERV_Y+8,va("%1.22s",serv+serv_min));
-	M_Print(DESC_X+9,DESC_Y+8,va("%1.22s",desc+desc_min));
-	if (sedit_state == 0)
-		M_DrawCharacter(SERV_X+9+8*(strlen(serv)-serv_min),
-			SERV_Y+8,10+((int)(curtime*4)&1));
-	if (sedit_state == 1)
-		M_DrawCharacter(DESC_X+9+8*(strlen(desc)-desc_min),
-			DESC_Y+8,10+((int)(curtime*4)&1));
-}
-
-void M_SEdit_Key (int key) {
-	int	l;
-	switch (key) {
-		case K_ESCAPE:
-			M_Menu_ServerList_f ();
-			break;
-		case K_ENTER:
-			SList_Set(m_multip_cursor,serv,desc);
-			M_Menu_ServerList_f ();
-			break;
-		case K_UPARROW:
-			S_LocalSound("misc/menu1.wav");
-			sedit_state = sedit_state == 0 ? 1 : 0;
-			break;
-		case K_DOWNARROW:
-			S_LocalSound("misc/menu1.wav");
-			sedit_state = sedit_state == 1 ? 0 : 1;
-			break;
-		case K_BACKSPACE:
-			switch (sedit_state) {
-				case 0:
-					if ((l = strlen(serv)))
-						serv[--l] = 0;
-					if (strlen(serv)-6 < serv_min && serv_min) {
-						serv_min--;
-						serv_max--;
-					}
-					break;
-				case 1:
-					if ((l = strlen(desc)))
-						desc[--l] = 0;
-					if (strlen(desc)-6 < desc_min && desc_min) {
-						desc_min--;
-						desc_max--;
-					}
-					break;
-				default:
-					break;
-			}
-			break;
-		default:
-			if (key < 32 || key > 127)
-				break;
-			switch(sedit_state) {
-				case 0:
-					l = strlen(serv);
-					if (l < 254) {
-						serv[l+1] = 0;
-						serv[l] = key;
-					}
-					if (strlen(serv) > serv_max) {
-						serv_min++;
-						serv_max++;
-					}
-					break;
-				case 1:
-					l = strlen(desc);
-					if (l < 254) {
-						desc[l+1] = 0;
-						desc[l] = key;
-					}
-					if (strlen(desc) > desc_max) {
-						desc_min++;
-						desc_max++;
-					}
-					break;
-			}
-			break;
-	}
-}
-
-// <-- SLIST
-
 void M_Quit_Draw (void)
 {
 	static char *quitmsg[] = {
@@ -2950,7 +2625,7 @@ void M_Init (void)
 	Cmd_AddCommand ("menu_save", M_Menu_Save_f);
 #endif
 	Cmd_AddCommand ("menu_multiplayer", M_Menu_MultiPlayer_f);
-	Cmd_AddCommand ("menu_slist", M_Menu_ServerList_f);
+//	Cmd_AddCommand ("menu_slist", M_Menu_ServerList_f);
 	Cmd_AddCommand ("menu_setup", M_Menu_Setup_f);
 	Cmd_AddCommand ("menu_demos", M_Menu_Demos_f);
 	Cmd_AddCommand ("menu_options", M_Menu_Options_f);
@@ -3066,14 +2741,6 @@ void M_Draw (void)
 		break;
 #endif
 
-	case m_slist:
-		M_ServerList_Draw ();
-		break;
-
-	case m_sedit:
-		M_SEdit_Draw ();
-		break;
-
 	case m_demos:
 		M_Demos_Draw ();
 	}
@@ -3158,14 +2825,6 @@ void M_Keydown (int key)
 		M_GameOptions_Key (key);
 		return;
 #endif
-
-	case m_slist:
-		M_ServerList_Key (key);
-		return;
-
-	case m_sedit:
-		M_SEdit_Key (key);
-		break;
 
 	case m_demos:
 		M_Demos_Key (key);
