@@ -19,16 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cvar.c -- dynamic variable tracking
 
-#ifdef SERVERONLY 
-#include "qwsvdef.h"
-#else
 #include "quakedef.h"
-#ifndef CLIENTONLY
-#include "server.h"
-#endif
-#endif
 
-
+extern void SV_ServerinfoChanged (char *key, char *value);
 extern char *TP_ParseFunChars (char *s, qboolean chat);
 
 static cvar_t	*cvar_hash[32];
@@ -155,10 +148,6 @@ int Cvar_CompleteCountPossible (char *partial)
 }
 
 
-#ifdef SERVERONLY
-void SV_SendServerInfoChange(char *key, char *value);
-#endif
-
 /*
 ============
 Cvar_Set
@@ -200,13 +189,7 @@ void Cvar_Set (cvar_t *var, char *value)
 
 #ifndef CLIENTONLY
 	if (var->flags & CVAR_SERVERINFO)
-	{
-		if (strcmp(var->string, Info_ValueForKey (svs.info, var->name)))
-		{
-			Info_SetValueForKey (svs.info, var->name, var->string, MAX_SERVERINFO_STRING);
-			SV_SendServerInfoChange(var->name, var->string);
-		}
-	}
+		SV_ServerinfoChanged (var->name, var->string);
 #endif
 
 #ifndef SERVERONLY
@@ -322,7 +305,7 @@ void Cvar_Register (cvar_t *var)
 
 #ifndef CLIENTONLY
 	if (var->flags & CVAR_SERVERINFO)
-		Info_SetValueForKey (svs.info, var->name, var->string, MAX_SERVERINFO_STRING);
+		SV_ServerinfoChanged (var->name, var->string);
 #endif
 
 #ifndef SERVERONLY

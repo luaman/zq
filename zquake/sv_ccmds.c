@@ -438,6 +438,7 @@ void SV_Heartbeat_f (void)
 	svs.last_heartbeat = -9999;
 }
 
+
 void SV_SendServerInfoChange(char *key, char *value)
 {
 	if (!sv.state)
@@ -447,6 +448,23 @@ void SV_SendServerInfoChange(char *key, char *value)
 	MSG_WriteString (&sv.reliable_datagram, key);
 	MSG_WriteString (&sv.reliable_datagram, value);
 }
+
+/*
+==================
+SV_ServerinfoChanged
+
+Cvar system calls this when a CVAR_SERVERINFO cvar changes
+==================
+*/
+void SV_ServerinfoChanged (char *key, char *string)
+{
+	if (strcmp(string, Info_ValueForKey (svs.info, key)))
+	{
+		Info_SetValueForKey (svs.info, key, string, MAX_SERVERINFO_STRING);
+		SV_SendServerInfoChange (key, string);
+	}
+}
+
 
 /*
 ===========
