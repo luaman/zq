@@ -831,8 +831,6 @@ int		 main (int argc, char **argv)
 			name = argv[p] + 2; // current argv includes the name
 		if (PR_AddDefine((const char *)name, &type_const_float, &zqcc_value, false) <= 0)
 			Error ("ERROR: unable to create the #define \"%s\"\n", name);
-		else
-			printf ("Additional #define: %s\n", name);
 	}
 
 	sprintf (filename, "%sprogs.src", sourcedir);
