@@ -32,8 +32,8 @@ void flag_touch ()
 	if (other.health <= 0)
 		return;
 	
-	//TODO: modify checks to only allow player to pickup enemy flag and only
-	//allowed to capture on team flag if its at the base (not in the field)
+	//TODO: modify checks only allowed to capture on team flag if its at the
+	//base (not in the field)
 	if ((other.items & IT_KEY1) | (other.items & IT_KEY2))
 	{
 // CAPTURE FLAG -->
@@ -46,7 +46,7 @@ void flag_touch ()
 		self.think = SUB_regen;
 // <-- CAPTURE FLAG
 	}
-	else 
+	else if (other.enemy_flag & self.items)
 	{
 // PICKUP FLAG -->
 		self.mdl = self.model;
@@ -137,12 +137,15 @@ void item_flag_team2 ()
 	self.skin = 1;
 }
 
-// stubs to avoid missing classname errors on map start
+/*QUAKED item_player_team1
+*/
 void info_player_team1 ()
 {
 
 }
 
+/*QUAKED item_player_team2
+*/
 void info_player_team2 ()
 {
 

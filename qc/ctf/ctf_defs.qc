@@ -25,4 +25,5 @@
 
 */
 
-
+.float		team_flag;			// IT_KEY1 or IT_KEY2
+.float		enemy_flag;			// IT_KEY1 or IT_KEY2
