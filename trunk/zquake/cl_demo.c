@@ -61,6 +61,7 @@ void CL_StopPlayback (void)
 	if (cls.timedemo)
 		CL_FinishTimeDemo ();
 
+	cl.teamfortress = false;
 	memset (cl.cshifts, 0, sizeof(cl.cshifts));
 	cl.stats[STAT_ITEMS] = 0;
 	v_updatepalette = true;
