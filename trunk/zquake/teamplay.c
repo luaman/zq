@@ -1186,7 +1186,7 @@ void TP_CheckVersionRequest (char *s)
 		case '\n':
 			return;
 		case ':':
-		case (char)':'|128:
+		case (char)(':'|128):		// hmm.... why is this here?
 			goto ok;
 		}
 	}
