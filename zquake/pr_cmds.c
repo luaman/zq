@@ -455,6 +455,26 @@ void PF_random (void)
 
 /*
 =================
+PF_particle
+
+particle(origin, color, count)
+=================
+*/
+void PF_particle (void)
+{
+	float	*org, *dir;
+	float	color, count;
+			
+	org = G_VECTOR(OFS_PARM0);
+	dir = G_VECTOR(OFS_PARM1);
+	color = G_FLOAT(OFS_PARM2);
+	count = G_FLOAT(OFS_PARM3);
+	SV_StartParticle (org, dir, color, count);
+}
+
+
+/*
+=================
 PF_ambientsound
 
 =================
@@ -500,7 +520,7 @@ void PF_ambientsound (void)
 =================
 PF_sound
 
-Each entity can have eight independant sound sources, like voice,
+Each entity can have eight independent sound sources, like voice,
 weapon, feet, etc.
 
 Channel 0 is an auto-allocate channel, the others override anything
@@ -1829,7 +1849,7 @@ PF_aim,
 PF_cvar,
 PF_localcmd,
 PF_nextent,
-PF_Fixme,
+PF_particle,
 PF_changeyaw,
 PF_Fixme,
 PF_vectoangles,

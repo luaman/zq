@@ -31,7 +31,7 @@ typedef struct
 // to do move prediction and to generate a drawable entity
 typedef struct
 {
-	int			messagenum;		// all players won't be updated each frame
+	int			messagenum;		// cl.parsecount of last valid update
 
 	double		state_time;		// not the same as the packet time,
 								// because player commands come asyncronously
@@ -422,13 +422,13 @@ void CL_Disconnect (void);
 void CL_Disconnect_f (void);
 void CL_NextDemo (void);
 
-extern	int				cl_entframecount, cl_oldentframecount;
+extern int			cl_entframecount, cl_oldentframecount;
 
-extern	int				cl_numvisedicts;
-extern	entity_t		cl_visedicts[MAX_VISEDICTS];
+extern int			cl_numvisedicts;
+extern entity_t		cl_visedicts[MAX_VISEDICTS];
 
-extern	int				cl_numvisparticles;
-extern	particle_t		cl_visparticles[MAX_PARTICLES];
+extern int			cl_numvisparticles;
+extern particle_t	cl_visparticles[MAX_PARTICLES];
 
 extern char emodel_name[], pmodel_name[];
 
@@ -465,10 +465,11 @@ int CL_CalcNet (void);
 void CL_ParseServerMessage (void);
 void CL_NewTranslation (int slot);
 qboolean CL_CheckOrDownloadFile (char *filename);
-qboolean CL_IsUploading(void);
-void CL_NextUpload(void);
+qboolean CL_IsUploading (void);
+void CL_NextUpload (void);
 void CL_StartUpload (byte *data, int size);
-void CL_StopUpload(void);
+void CL_StopUpload (void);
+void CL_ParseParticleEffect (void);
 
 
 //
@@ -502,6 +503,7 @@ void CL_GrenadeTrail (vec3_t start, vec3_t end);
 void CL_RocketTrail (vec3_t start, vec3_t end);
 void CL_TracerTrail (vec3_t start, vec3_t end, int color);
 void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
+void CL_RunParticleEffect2 (vec3_t org, vec3_t dir, int color, int count, int scale);
 void CL_EntityParticles (vec3_t org);
 
 //
@@ -544,11 +546,11 @@ void CL_InitCam (void);
 // skin.c
 //
 
-void	Skin_Find (player_info_t *sc);
-byte	*Skin_Cache (skin_t *skin);
-void	Skin_Skins_f (void);
-void	Skin_AllSkins_f (void);
-void	Skin_NextDownload (void);
+void Skin_Find (player_info_t *sc);
+byte *Skin_Cache (skin_t *skin);
+void Skin_Skins_f (void);
+void Skin_AllSkins_f (void);
+void Skin_NextDownload (void);
 
 #define RSSHOT_WIDTH 320
 #define RSSHOT_HEIGHT 200

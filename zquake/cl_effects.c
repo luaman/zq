@@ -221,8 +221,6 @@ CL_RunParticleEffect
 */
 void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count)
 {
-	int			i, j;
-	cparticle_t	*p;
 	int			scale;
 
 	if (count > 130)
@@ -231,6 +229,19 @@ void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count)
 		scale = 2;
 	else
 		scale = 1;
+
+	CL_RunParticleEffect2 (org, dir, color, count, scale);
+}
+
+/*
+===============
+CL_RunParticleEffect2
+===============
+*/
+void CL_RunParticleEffect2 (vec3_t org, vec3_t dir, int color, int count, int scale)
+{
+	int			i, j;
+	cparticle_t	*p;
 
 	for (i=0 ; i<count ; i++)
 	{

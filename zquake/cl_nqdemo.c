@@ -57,18 +57,6 @@ void R_TranslatePlayerSkin (int playernum);
 #define	NQ_SND_LOOPING		(1<<2)		// a long
 
 
-#define	svc_time			7	// [float] server time
-#define	svc_version			4	// [long] server version
-#define	svc_setview			5	// [short] entity number
-#define	svc_updatename		13	// [byte] [string]
-#define	svc_updatefrags		14	// [byte] [short]
-#define	svc_clientdata		15	// <shortbits + data>
-#define	svc_updatecolors	17	// [byte] [byte]
-#define	svc_particle		18	// [vec3] <variable>
-#define	svc_signonnum		25	// [byte]  used for the signon sequence
-#define svc_cutscene		34
-
-
 //=========================================================================================
 
 qboolean	nq_drawpings;	// for sbar code
@@ -488,32 +476,6 @@ void NQD_ParseStartSoundPacket(void)
  
     S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
 }       
-
-
-/*
-===============
-NQD_ParseParticleEffect
-===============
-*/
-void NQD_ParseParticleEffect (void)
-{
-	vec3_t		org, dir;
-	int			i, count, msgcount, color;
-	
-	for (i=0 ; i<3 ; i++)
-		org[i] = MSG_ReadCoord ();
-	for (i=0 ; i<3 ; i++)
-		dir[i] = MSG_ReadChar () * (1.0/16);
-	msgcount = MSG_ReadByte ();
-	color = MSG_ReadByte ();
-
-	if (msgcount == 255)
-		count = 1024;
-	else
-		count = msgcount;
-	
-	CL_RunParticleEffect (org, dir, color, count);
-}
 
 
 /*
@@ -1029,19 +991,19 @@ void NQD_ParseServerMessage (void)
 		case svc_nop:
 			break;
 
-		case svc_time:
+		case nq_svc_time:
 			nq_mtime[1] = nq_mtime[0];
 			nq_mtime[0] = MSG_ReadFloat ();
 			cl.servertime = nq_mtime[0];
 			message_with_datagram = true;
 			break;
 
-		case svc_clientdata:
+		case nq_svc_clientdata:
 			i = MSG_ReadShort ();
 			NQD_ParseClientdata (i);
 			break;
 
-		case svc_version:
+		case nq_svc_version:
 			i = MSG_ReadLong ();
 			if (i != NQ_PROTOCOL_VERSION)
 				Host_Error ("CL_ParseServerMessage: Server is protocol %i instead of %i\n", i, NQ_PROTOCOL_VERSION);
@@ -1106,7 +1068,7 @@ void NQD_ParseServerMessage (void)
 			S_StopSound(i>>3, i&7);
 			break;
 
-		case svc_updatename:
+		case nq_svc_updatename:
 			Sbar_Changed ();
 			i = MSG_ReadByte ();
 			if (i >= nq_maxclients)
@@ -1122,12 +1084,12 @@ void NQD_ParseServerMessage (void)
 			cl.players[i].frags = MSG_ReadShort();
 			break;
 
-		case svc_updatecolors:
+		case nq_svc_updatecolors:
 			NQD_ParseUpdatecolors ();
 			break;
 			
-		case svc_particle:
-			NQD_ParseParticleEffect ();
+		case nq_svc_particle:
+			CL_ParseParticleEffect ();
 			break;
 
 		case svc_spawnbaseline:
@@ -1156,7 +1118,7 @@ void NQD_ParseServerMessage (void)
 				CDAudio_Resume ();
 			break;
 
-		case svc_signonnum:
+		case nq_svc_signonnum:
 			i = MSG_ReadByte ();
 			if (i <= nq_signon)
 				Host_Error ("Received signon %i when at %i", i, nq_signon);
@@ -1206,7 +1168,7 @@ void NQD_ParseServerMessage (void)
 			VectorCopy (nq_last_fixangle, cl.simangles);
 			break;
 
-		case svc_cutscene:
+		case nq_svc_cutscene:
 			cl.intermission = 3;
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
