@@ -2661,13 +2661,13 @@ PF_infokey,			// string(entity e, string key) infokey	= #80
 PF_stof,			// float(string s) stof					= #81
 PF_multicast,		// void(vector where, float set) multicast = #82
 
-PF_testbot,			// !!! Temporary! It will be removed !!!
-PF_setinfo,			// !!! Temporary! It will be removed !!!
-PF_precache_vwep_model,			// !!! Temporary! It will be removed !!!
-PF_Fixme,
-PF_Fixme,
-PF_Fixme,
-PF_Fixme,
+PF_Fixme,			// #83
+PF_Fixme,			// #84
+PF_Fixme,			// #85
+PF_Fixme,			// #86
+PF_Fixme,			// #87
+PF_Fixme,			// #88
+PF_Fixme,			// #89
 PF_tracebox,		// void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity ignore) tracebox = #90;
 PF_randomvec,		// vector() randomvec								= #91;
 PF_Fixme,
@@ -2701,6 +2701,14 @@ builtin_t pr_extbuiltins[] =
 	PF_checkbuiltinrange, // float(float start, float num) checkbuiltinrange = #0x5a01;
 	PF_maptobuiltin,	// float(void() from_func, float to_num) maptobuiltin = #0x5a02;
 	PF_mapfunction,		// float(void() from_func, void() to_func) mapfunction = #0x5a03;
+	PF_Fixme,			// RESERVED #0x5a04
+	PF_Fixme,			// RESERVED #0x5a05
+	PF_Fixme,			// RESERVED #0x5a06
+	PF_Fixme,			// RESERVED #0x5a07
+	PF_Fixme,			// soundtoclient goes here	(#0x5a08)
+	PF_precache_vwep_model,	// #0x5a09
+	PF_testbot,			// #0x5a0A
+	PF_setinfo,			// #0x5a0B
 };
 
 int pr_numextbuiltins = sizeof(pr_extbuiltins)/sizeof(pr_extbuiltins[0]);
