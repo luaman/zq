@@ -184,8 +184,7 @@ void Key_SetBinding (int keynum, char *binding);
 void Key_Unbind (int keynum);
 void Key_ClearStates (void);
 int Key_StringToKeynum (char *str);
-//char *Key_KeynumToString (int keynum, char *buffer, size_t buf_size);
-char *Key_KeynumToString (int keynum);
+char *Key_KeynumToString (int keynum, char *buffer, size_t buf_size);
 
 #endif /* _KEYS_H_ */
 

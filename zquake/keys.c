@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -81,9 +81,8 @@ keyname_t keynames[] =
 	{"SHIFT", K_SHIFT},
 	{"LSHIFT", K_LSHIFT},
 	{"RSHIFT", K_RSHIFT},
-	
-	// Keypad stuff..
 
+	// Keypad stuff..
 	{"NUMLOCK", KP_NUMLOCK},
 	{"KP_NUMLCK", KP_NUMLOCK},
 	{"KP_NUMLOCK", KP_NUMLOCK},
@@ -271,12 +270,14 @@ static void FindCommonSubString (char *s)
 	}
 }
 
+
+extern int Cmd_CompleteCountPossible (char *partial);
+extern int Cmd_AliasCompleteCountPossible (char *partial);
+extern int Cvar_CompleteCountPossible (char *partial);
+
 void CompleteCommand (void)
 {
 	char	*cmd, *s;
-	extern int Cmd_CompleteCountPossible (char *partial);
-	extern int Cmd_AliasCompleteCountPossible (char *partial);
-	extern int Cvar_CompleteCountPossible (char *partial);
 	int		c, a, v;
 
 	s = key_lines[edit_line]+1;
@@ -392,7 +393,7 @@ void RemoveColors(char *name) {
 	s = name;
 	for (s = name; *s == '_'; s++) ;
 	memmove(name, s, strlen(s) + 1);
-	
+
 	for (s = name + strlen(name); s > name  &&  (*(s - 1) == '_'); s--) ;
 
 	*s = 0;
@@ -424,23 +425,23 @@ int FindBestNick (char *s) {
 
 
 void CompleteName(void) {
-    char s[MAXCMDLINE], t[MAXCMDLINE], *p, *q;
-    int best, diff, i;
+	char s[MAXCMDLINE], t[MAXCMDLINE], *p, *q;
+	int best, diff, i;
 
-    p = q = key_lines[edit_line] + key_linepos;
-    while (--p >= key_lines[edit_line] + 1)
-        if (!(  (*(signed char *)p >= 32) && !strchr(disallowed, *p) )) 
-             break;
-    p++;
-    if (q - p <= 0)
-        return;
+	p = q = key_lines[edit_line] + key_linepos;
+	while (--p >= key_lines[edit_line] + 1)
+		if (!(  (*(signed char *)p >= 32) && !strchr(disallowed, *p) ))
+			break;
+	p++;
+	if (q - p <= 0)
+		return;
 
-    strlcpy (s, p, q - p + 1);
+	strlcpy (s, p, q - p + 1);
 
 	best = FindBestNick (s);
-    if (best >= 0) {
-        strlcpy (t, cl.players[best].name, sizeof(t));
-		
+	if (best >= 0) {
+		strlcpy (t, cl.players[best].name, sizeof(t));
+
 		for (i = 0; t[i]; i++) {
 			if ((127 & t[i]) == ' ') {
 				int k;
@@ -454,11 +455,11 @@ void CompleteName(void) {
 			}
 		}
 		diff = strlen(t) - strlen(s);
-	
+
 		memmove(q + diff, q, strlen(q) + 1);
 		memmove(p, t, strlen(t));
 		key_linepos += diff;
-		if (!key_lines[edit_line][key_linepos] && key_linepos < MAXCMDLINE - 1) {	
+		if (!key_lines[edit_line][key_linepos] && key_linepos < MAXCMDLINE - 1) {
 			key_lines[edit_line][key_linepos] = ' ';
 			key_lines[edit_line][++key_linepos] = 0;
 		}
@@ -914,7 +915,7 @@ void Key_Console (int key)
 				con.display = con.current - con.numlines;
 			else
 				key_linepos = 1;
-                                Sys_Printf("%c\n", key_lines[edit_line][1]);
+			Sys_Printf("%c\n", key_lines[edit_line][1]);
 			return;
 
 		case K_END:
@@ -1111,7 +1112,7 @@ int Key_StringToKeynum (char *str)
 {
 	keyname_t	*kn;
 	int			keynum;
-	
+
 	if (!str || !str[0])
 		return -1;
 	if (!str[1])
@@ -1133,33 +1134,60 @@ int Key_StringToKeynum (char *str)
 }
 
 /*
-===================
+=================================================
 Key_KeynumToString
 
-Returns a string (either a single ascii char, or a K_* name) for the
-given keynum.
-FIXME: handle quote special (general escape sequence?)
-===================
+Returns a string for the given keynum.
+  (either a single ascii char, or a K_* name)
+it uses either the given buffer or a internal one
+  (parameter buffer == NULL)
+=================================================
 */
-char *Key_KeynumToString (int keynum)
+char *Key_KeynumToString (int keynum, char *buffer, size_t buf_size)
 {
-	keyname_t	*kn;	
-	static	char	tinystr[2];
-	
-	if (keynum == -1)
-		return "<KEY NOT FOUND>";
+	static char *retval        = NULL;
+	keyname_t	*kn            = NULL;
+	static	char	tinystr[5] = "\0";
+
+	if (keynum < 0)
+		retval = "<KEY NOT FOUND>";
+	else
+	if (keynum == 0)
+		retval = "<NO KEY>";
 	if (keynum > 32 && keynum < 127)
 	{	// printable ascii
-		tinystr[0] = keynum;
-		tinystr[1] = 0;
-		return tinystr;
+		if (keynum == 34) // treat " special
+			sprintf (tinystr, "#%u", keynum);
+		else
+		{
+			tinystr[0] = keynum;
+			tinystr[1] = '\0';
+		}
+		retval = tinystr;
 	}
-	
-	for (kn=keynames ; kn->name ; kn++)
-		if (keynum == kn->keynum)
-			return kn->name;
+	else
+	{
+		for (kn = keynames; kn->name; kn++)
+		{
+			if (keynum == kn->keynum)
+			{
+				retval = kn->name;
+				break;
+			}
+		}
+	}
 
-	return "<UNKNOWN KEYNUM>";
+	if (retval == NULL)
+		retval = "<UNKNOWN KEYNUM>";
+
+	// use the buffer if given
+	if (buffer != NULL && buf_size > (size_t)0)
+	{
+		strlcpy (buffer, retval, buf_size);
+		return (buffer);
+	}
+
+	return retval;
 }
 
 
@@ -1207,7 +1235,7 @@ void Key_Unbind_f (void)
 		Com_Printf ("unbind <key> : remove commands from a key\n");
 		return;
 	}
-	
+
 	b = Key_StringToKeynum (Cmd_Argv(1));
 	if (b==-1)
 	{
@@ -1221,7 +1249,7 @@ void Key_Unbind_f (void)
 void Key_Unbindall_f (void)
 {
 	int		i;
-	
+
 	for (i=0 ; i<256 ; i++)
 		if (keybindings[i])
 			Key_Unbind (i);
@@ -1236,7 +1264,7 @@ Key_Bind_f
 void Key_Bind_f (void)
 {
 	int			c, b;
-	
+
 	c = Cmd_Argc();
 
 	if (c < 2)
@@ -1259,7 +1287,7 @@ void Key_Bind_f (void)
 			Com_Printf ("\"%s\" is not bound\n", Cmd_Argv(1) );
 		return;
 	}
-	
+
 // copy the rest of the command line
 	Key_SetBinding (b, Cmd_MakeArgs(2));
 }
@@ -1276,7 +1304,7 @@ void Key_BindList_f (void)
 
 	for (i=0 ; i<256 ; i++)
 		if (keybindings[i])
-			Com_Printf ("%s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+			Com_Printf ("%s \"%s\"\n", Key_KeynumToString(i, NULL, 0), keybindings[i]);
 }
 
 
@@ -1297,7 +1325,7 @@ void Key_WriteBindings (FILE *f)
 			if (i == ';')
 				fprintf (f, "bind \";\" \"%s\"\n", keybindings[i]);
 			else
-				fprintf (f, "bind %s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+				fprintf (f, "bind %s \"%s\"\n", Key_KeynumToString(i, NULL, 0), keybindings[i]);
 		}
 }
 
@@ -1317,7 +1345,7 @@ void Key_Init (void)
 		key_lines[i][1] = 0;
 	}
 	key_linepos = 1;
-	
+
 //
 // init ascii characters in console mode
 //
@@ -1432,7 +1460,7 @@ void Key_EventEx (int key, int shiftkey, qbool down)
 	}
 
 //
-// handle escape specialy, so the user can never unbind it
+// handle escape specially, so the user can never unbind it
 //
 	if (key == K_ESCAPE)
 	{
@@ -1506,8 +1534,7 @@ void Key_EventEx (int key, int shiftkey, qbool down)
 // if not a consolekey, send to the interpreter no matter what mode is
 //
 	if ( (key_dest == key_menu && menubound[key])
-	|| ((key_dest == key_console || key_dest == key_message)
-		&& !consolekeys[key])
+	|| ((key_dest == key_console || key_dest == key_message) && !consolekeys[key])
 	|| (key_dest == key_game && ( cls.state == ca_active || !consolekeys[key] ) ) )
 	{
 		kb = keybindings[key];
