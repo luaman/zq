@@ -620,7 +620,10 @@ void SCR_DrawClock (void)
 	else
 	{
 		float	time;
-		time = cls.realtime;
+		if (cl.z_ext & Z_EXT_SERVERTIME)
+			time = cl.servertime;
+		else
+			time = cls.realtime;
 		tens_hours = fmod (time / 36000, 10);
 		hours = fmod (time / 3600, 10);
 		tens_minutes = fmod (time / 600, 6);
