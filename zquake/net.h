@@ -41,7 +41,8 @@ extern	sizebuf_t	net_message;
 
 void		NET_Init (void);
 void		NET_Shutdown (void);
-void		NET_Config (qboolean client, qboolean server);
+void		NET_ClientConfig (qboolean enable);	// open/close client socket
+void		NET_ServerConfig (qboolean enable);	// open/close server socket
 
 qboolean	NET_GetPacket (netsrc_t sock);
 void		NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to);

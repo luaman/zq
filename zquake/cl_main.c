@@ -776,7 +776,7 @@ void CL_Init (void)
 	Sbar_Init ();
 	M_Init ();	
 
-	NET_Config (true, false);
+	NET_ClientConfig (true);
 
 	SList_Init ();
 	SList_Load ();
