@@ -25,11 +25,17 @@ MAKEFILE		?=Makefile
 # compilation tool and detection of targets/achitecture
 CC=gcc
 CXX=g++
+MACHINE:=$(shell $(CC) -dumpmachine)
+ARCH:=$(shell echo $(MACHINE) | sed -e 's/\-.*//g' -e 's/i.86/x86/g' -e 's/hppa.*/hppa/')
 
 # compiler flags
 BASE_CFLAGS				 =-Wall
 BASE_RELEASE_CFLAGS		 =-O2
 BASE_DEBUG_CFLAGS		 =-g -D_DEBUG
+
+ifeq ($(ARCH),ppc)
+	BASE_CFLAGS			+= -DHAVE_STRLCAT -DHAVE_STRLCPY
+endif
 
 RELEASE_CFLAGS			 =$(BASE_CFLAGS) $(BASE_RELEASE_CFLAGS)
 DEBUG_CFLAGS			 =$(BASE_CFLAGS) $(BASE_DEBUG_CFLAGS)
