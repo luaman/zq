@@ -95,18 +95,21 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 	for (i=0 ; i< pmove.numphysent ; i++)
 	{
 		pe = &pmove.physents[i];
+
 	// get the clipping hull
 		if (pe->model)
+		{
 			hull = &pmove.physents[i].model->hulls[1];
+			VectorSubtract (hull->clip_mins, player_mins, offset);
+			VectorAdd (offset, pe->origin, offset);
+		}
 		else
 		{
 			VectorSubtract (pe->mins, player_maxs, mins);
 			VectorSubtract (pe->maxs, player_mins, maxs);
 			hull = CM_HullForBox (mins, maxs);
+			VectorCopy (pe->origin, offset);
 		}
-
-	// PM_HullForEntity (ent, mins, maxs, offset);
-	VectorCopy (pe->origin, offset);
 
 		VectorSubtract (start, offset, start_l);
 		VectorSubtract (end, offset, end_l);
