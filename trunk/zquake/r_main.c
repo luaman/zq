@@ -633,14 +633,8 @@ void R_DrawViewModel (void)
 	float		add;
 	dlight_t	*dl;
 	
-	if (!r_drawviewmodel.value || (r_fov_greater_than_90 && r_drawviewmodel.value == 2)
-		|| !Cam_DrawViewModel())
-		return;
-
-	if (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)
-		return;
-
-	if (cl.stats[STAT_HEALTH] <= 0)
+	if (!r_drawviewmodel.value ||
+		(r_fov_greater_than_90 && r_drawviewmodel.value == 2))
 		return;
 
 	currententity = &cl.viewent;

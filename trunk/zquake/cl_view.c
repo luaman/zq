@@ -922,7 +922,10 @@ void V_AddViewWeapon (float bob)
 
 	view = &cl.viewent;
 
-	if (view_message->flags & (PF_GIB|PF_DEAD))
+	if (view_message->flags & (PF_GIB|PF_DEAD)
+		|| (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)
+		|| cl.stats[STAT_HEALTH] <= 0
+		|| !Cam_DrawViewModel())
 	{
  		view->model = NULL;
 		return;
