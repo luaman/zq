@@ -23,6 +23,7 @@
    Boston, MA  02111-1307, USA
 */
 
+#ifdef USE_ALSA
 #include <stdio.h>
 #include <alsa/asoundlib.h>
 #include "quakedef.h"
@@ -30,17 +31,16 @@
 
 // Global Variables
 extern int paintedtime, soundtime;
-static int snd_inited;
 static int snd_blocked = 0;
 static snd_pcm_uframes_t buffer_size;
 static const char  *pcmname = NULL;
 static snd_pcm_t   *pcm;
 
 // Prototypes
-int SNDDMA_GetDMAPos (void);
+int SNDDMA_GetDMAPos_ALSA (void);
 
 
-void SNDDMA_Init_Cvars (void)
+void SNDDMA_Init_Cvars_ALSA (void)
 {
     Cvar_Get ("snd_stereo", "1", CVAR_ROM);
     Cvar_Get ("snd_rate", "0", CVAR_ROM);
@@ -48,7 +48,7 @@ void SNDDMA_Init_Cvars (void)
     Cvar_Get ("snd_bits", "0", CVAR_ROM);
 }
 
-qbool SNDDMA_Init (void)
+qbool SNDDMA_Init_ALSA (void)
 {
     int                 err;
     int			bps = -1, stereo = -1;
@@ -57,7 +57,7 @@ qbool SNDDMA_Init (void)
     snd_pcm_sw_params_t	*sw;
     snd_pcm_uframes_t   frag_size;
 
-    SNDDMA_Init_Cvars();
+    SNDDMA_Init_Cvars_ALSA();
 
     // Allocate memory for configuration of ALSA...
     snd_pcm_hw_params_alloca (&hw);
@@ -304,21 +304,17 @@ qbool SNDDMA_Init (void)
     Sys_Printf("%5d speed\n", dma.speed);
     Sys_Printf("0x%lx dma buffer\n", (long)dma.buffer);
 
-    snd_inited = 1;
     return 1;
 error:
     snd_pcm_close (pcm);
     return 0;
 }
 
-int SNDDMA_GetDMAPos (void)
+int SNDDMA_GetDMAPos_ALSA (void)
 {
     const snd_pcm_channel_area_t *areas;
     snd_pcm_uframes_t offset;
     snd_pcm_uframes_t nframes = dma.samples/dma.channels;
-
-    if(!snd_inited)
-        return 0;
 
     snd_pcm_avail_update (pcm);
     snd_pcm_mmap_begin (pcm, &areas, &offset, &nframes);
@@ -329,13 +325,9 @@ int SNDDMA_GetDMAPos (void)
     return dma.samplepos;
 }
 
-void SNDDMA_Shutdown (void)
+void SNDDMA_Shutdown_ALSA (void)
 {
-    if(snd_inited)
-    {
-        snd_pcm_close (pcm);
-        snd_inited = 0;
-    }
+    snd_pcm_close (pcm);
 }
 
 /*
@@ -343,7 +335,7 @@ void SNDDMA_Shutdown (void)
 
    Send sound to device if buffer isn't really the dma buffer
 */
-void SNDDMA_Submit (void)
+void SNDDMA_Submit_ALSA (void)
 {
     int state;
     int count = paintedtime - soundtime;
@@ -380,17 +372,20 @@ void SNDDMA_Submit (void)
     These functions are not currently needed by ZQuake,
     but could be of use in the future...
 
-static void SNDDMA_BlockSound (void)
+    Remember, they assume that sound is already inited.
+
+static void SNDDMA_BlockSound_ALSA (void)
 {
-    if(snd_inited && ++snd_blocked == 1)
+    if(++snd_blocked == 1)
         snd_pcm_pause (pcm, 1);
 }
 
-static void SNDDMA_UnblockSound (void)
+static void SNDDMA_UnblockSound_ALSA (void)
 {
-    if(!snd_inited || !snd_blocked)
+    if(!snd_blocked)
         return;
     if(!--snd_blocked)
         snd_pcm_pause (pcm, 0);
 }*/
 
+#endif // USE_ALSA
