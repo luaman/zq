@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #define FULLSCREENHACK
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 #include "quakedef.h"
 #include "render.h"
 #include "d_local.h"
