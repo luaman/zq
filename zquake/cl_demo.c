@@ -1124,4 +1124,3 @@ void CL_TimeDemo_f (void)
 	cls.td_startframe = host_framecount;
 	cls.td_lastframe = -1;		// get a new message this frame
 }
-
