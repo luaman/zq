@@ -812,12 +812,6 @@ void R_DrawWaterSurfaces (void)
 	if (wateralpha == 1.0 && gl_texsort.value)
 		return;
 
-	//
-	// go back to the world matrix
-	//
-
-    glLoadMatrixf (r_world_matrix);
-
 	if (wateralpha < 1.0) {
 		glEnable (GL_BLEND);
 		glColor4f (1, 1, 1, wateralpha);
