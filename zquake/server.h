@@ -99,10 +99,6 @@ typedef struct
 	sizebuf_t	multicast;
 	byte		multicast_buf[MAX_MSGLEN];
 
-	// the master buffer is used for building log packets
-	sizebuf_t	master;
-	byte		master_buf[MAX_DATAGRAM];
-
 	// the signon buffer will be sent to each client as they connect
 	// includes the entity baselines, the static entities, etc
 	// large levels will have >MAX_DATAGRAM sized signons, so 
