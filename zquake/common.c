@@ -1182,7 +1182,7 @@ void COM_Path_f (void)
 ============
 COM_WriteFile
 
-The filename will be prefixed by the current game directory
+The filename will be prefixed by com_basedir
 ============
 */
 void COM_WriteFile (char *filename, void *data, int len)
@@ -1190,11 +1190,11 @@ void COM_WriteFile (char *filename, void *data, int len)
 	FILE	*f;
 	char	name[MAX_OSPATH];
 	
-	sprintf (name, "%s/%s", com_gamedir, filename);
+	Q_snprintfz (name, sizeof(name), "%s/%s", com_basedir, filename);
 	
 	f = fopen (name, "wb");
 	if (!f) {
-		Sys_mkdir(com_gamedir);
+		COM_CreatePath (name);
 		f = fopen (name, "wb");
 		if (!f)
 			Sys_Error ("Error opening %s", filename);
@@ -1213,7 +1213,7 @@ COM_CreatePath
 Only used for CopyFile and download
 ============
 */
-void	COM_CreatePath (char *path)
+void COM_CreatePath (char *path)
 {
 	char	*ofs;
 	
