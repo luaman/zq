@@ -378,6 +378,12 @@ void Com_DPrintf (char *fmt, ...);
 
 //============================================================================
 
+#ifdef SERVERONLY
+#define	dedicated	1
+#else
+extern qboolean	dedicated;
+#endif
+
 extern cvar_t	developer;
 extern cvar_t	registered;
 
