@@ -1440,6 +1440,24 @@ static client_t *Write_GetClient(void)
 	return &svs.clients[entnum-1];
 }
 
+// this is an extremely nasty hack
+void CheckIntermission (void)
+{
+	sizebuf_t *msg = WriteDest();
+
+	if (G_FLOAT(OFS_PARM1) != svc_intermission)
+		return;
+
+	if ( (msg->cursize == 2 && msg->data[0] == svc_cdtrack)	/* QW progs send svc_cdtrack first */
+		|| msg->cursize == 0  /* just in case */ )
+	{
+		// prefix the svc_intermission message with an sv.time update
+		// to make sure intermission screen has the right value
+		MSG_WriteByte (&sv.reliable_datagram, svc_updatestatlong);
+		MSG_WriteByte (&sv.reliable_datagram, STAT_TIME);
+		MSG_WriteLong (&sv.reliable_datagram, (int)(sv.time * 1000));
+	}
+}
 
 void PF_WriteByte (void)
 {
@@ -1447,8 +1465,11 @@ void PF_WriteByte (void)
 		client_t *cl = Write_GetClient();
 		ClientReliableCheckBlock(cl, 1);
 		ClientReliableWrite_Byte(cl, G_FLOAT(OFS_PARM1));
-	} else
+	} else {
+		if (G_FLOAT(OFS_PARM0) == MSG_ALL)
+			CheckIntermission ();
 		MSG_WriteByte (WriteDest(), G_FLOAT(OFS_PARM1));
+	}
 }
 
 void PF_WriteChar (void)
