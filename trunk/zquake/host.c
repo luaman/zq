@@ -174,8 +174,10 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	Cbuf_Init ();
 	Cmd_Init ();
 	Cvar_Init ();
-
 	COM_Init ();
+
+	FS_InitFilesystem ();
+	COM_CheckRegistered ();
 
 	Con_Init ();
 	NET_Init ();
