@@ -263,10 +263,10 @@ static void CL_LerpMove (float msgtime)
 
 /*
 ==============
-CL_PredictMove
+CL_PredictLocalPlayer
 ==============
 */
-void CL_PredictMove (void)
+static void CL_PredictLocalPlayer (void)
 {
 	int			i;
 	frame_t		*from = NULL, *to;
@@ -345,6 +345,26 @@ void CL_PredictMove (void)
 
 out:
 	CL_CalcCrouch ();
+}
+
+
+/*
+==============
+CL_PredictMovement
+
+Predict the local player and other players
+==============
+*/
+void CL_PredictMovement (void)
+{
+	// set up prediction for other players
+	CL_SetUpPlayerPrediction (false);
+
+	// predict the local player, lerp movement, etc
+	CL_PredictLocalPlayer ();
+
+	// predict other players
+	CL_SetUpPlayerPrediction (true);
 }
 
 

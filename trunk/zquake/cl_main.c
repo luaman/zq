@@ -1023,14 +1023,8 @@ void CL_Frame (double time)
 	{
 		Cam_SetViewPlayer ();
 
-		// Set up prediction for other players
-		CL_SetUpPlayerPrediction(false);
-
-		// do client side motion prediction
-		CL_PredictMove ();
-
-		// Set up prediction for other players
-		CL_SetUpPlayerPrediction(true);
+		// predict all players
+		CL_PredictMovement ();
 
 		// build a refresh entity list
 		CL_EmitEntities ();
