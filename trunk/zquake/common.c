@@ -850,7 +850,7 @@ void COM_DefaultExtension (char *path, char *extension)
 		src--;
 	}
 
-	strncat (path, extension, MAX_OSPATH);
+	Q_strncatz (path, extension, MAX_OSPATH);
 }
 
 /*
@@ -870,7 +870,7 @@ void COM_ForceExtension (char *path, char *extension)
 	if (src >= path && !strcmp(src, extension))
 		return;
 
-	strncat (path, extension, MAX_OSPATH);
+	Q_strncatz (path, extension, MAX_OSPATH);
 }
 
 //============================================================================
