@@ -1308,6 +1308,8 @@ void SV_InitLocal (void)
 	int		i;
 	extern cvar_t	sv_spectalk;
 	extern cvar_t	sv_mapcheck;
+	extern cvar_t	sv_maxpitch;
+	extern cvar_t	sv_minpitch;
 	extern cvar_t	sv_aim;
 	extern cvar_t	sv_nailhack;
 	extern cvar_t	sv_loadentfiles;
@@ -1347,6 +1349,8 @@ void SV_InitLocal (void)
 	Cvar_Register (&sv_zombietime);
 	Cvar_Register (&sv_spectalk);
 	Cvar_Register (&sv_mapcheck);
+	Cvar_Register (&sv_maxpitch);
+	Cvar_Register (&sv_minpitch);
 
 	Cvar_Register (&deathmatch);
 	Cvar_Register (&teamplay);

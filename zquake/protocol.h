@@ -252,11 +252,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // ZQuake protocol extensions (*z_ext serverinfo key)
 //
-#define Z_EXT_PM_TYPE		(1<<0)
-#define Z_EXT_PM_TYPE_NEW	(1<<1)
-#define Z_EXT_VIEWHEIGHT	(1<<2)
-#define Z_EXT_SERVERTIME	(1<<3)
-#define SUPPORTED_EXTENSIONS (Z_EXT_PM_TYPE|Z_EXT_PM_TYPE_NEW|Z_EXT_VIEWHEIGHT|Z_EXT_SERVERTIME)
+#define Z_EXT_PM_TYPE		(1<<0)	// basic PM_TYPE functionality (reliable jump_held)
+#define Z_EXT_PM_TYPE_NEW	(1<<1)	// adds PM_FLY, PM_SPECTATOR
+#define Z_EXT_VIEWHEIGHT	(1<<2)	// STAT_VIEWHEIGHT
+#define Z_EXT_SERVERTIME	(1<<3)	// STAT_TIME
+#define Z_EXT_PITCHLIMITS	(1<<4)	// serverinfo maxpitch & minpitch
+#define SUPPORTED_EXTENSIONS (Z_EXT_PM_TYPE|Z_EXT_PM_TYPE_NEW|Z_EXT_VIEWHEIGHT|Z_EXT_SERVERTIME|Z_EXT_PITCHLIMITS)
 
 /*
 ==========================================================

@@ -510,6 +510,12 @@ void SV_Serverinfo_f (void)
 		Com_Printf ("Star variables cannot be changed.\n");
 		return;
 	}
+
+	if (!strcmp(Cmd_Argv(1), "maxpitch") || !strcmp(Cmd_Argv(1), "minpitch")) {
+		Cvar_Set (Cvar_FindVar(va("sv_%s", Cmd_Argv(1))), Cmd_Argv(2));
+		return;		// cvar callbacks will take care of updating serverinfo
+	}
+
 	Info_SetValueForKey (svs.info, Cmd_Argv(1), Cmd_Argv(2), MAX_SERVERINFO_STRING);
 
 	// if this is a cvar, change it too	
