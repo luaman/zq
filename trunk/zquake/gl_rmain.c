@@ -101,6 +101,7 @@ cvar_t	gl_nocolors = {"gl_nocolors","0"};
 cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1"};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions","0"};
 cvar_t	gl_finish = {"gl_finish","0"};
+cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
 
 extern	cvar_t	gl_ztrick;
 extern	cvar_t	scr_fov;

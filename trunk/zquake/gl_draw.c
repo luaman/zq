@@ -91,7 +91,6 @@ typedef struct
 	qboolean	mipmap;
 } gltexture_t;
 
-#define	MAX_GLTEXTURES	1024
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
@@ -1297,10 +1296,24 @@ static	unsigned	trans[640*480];		// FIXME, temporary
 		table = d_8to24table;
 
 	s = width*height;
+
+	if (alpha == 2)
+	{
+	// this is a fullbright mask, so make all non-fullbright
+	// colors transparent
+		for (i=0 ; i<s ; i++)
+		{
+			p = data[i];
+			if (p < 224)
+				trans[i] = table[p] & 0x00FFFFFF; // transparent 
+			else
+				trans[i] = table[p];	// fullbright
+		}
+	}
+	else if (alpha)
+	{
 	// if there are no transparent pixels, make it a 3 component
 	// texture even if it was specified as otherwise
-	if (alpha)
-	{
 		noalpha = true;
 		for (i=0 ; i<s ; i++)
 		{

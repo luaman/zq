@@ -60,6 +60,45 @@ msurface_t  *waterchain = NULL;
 
 void R_RenderDynamicLightmaps (msurface_t *fa);
 
+glpoly_t	*fullbright_polys[MAX_GLTEXTURES];
+qboolean	drawfullbrights = false;
+
+void DrawGLPoly (glpoly_t *p);
+
+void R_RenderFullbrights (void)
+{
+	int         i, j;
+	glpoly_t   *p;
+	float      *v;
+
+	if (!drawfullbrights || !gl_fb_bmodels.value)
+		return;
+
+	GL_DisableMultitexture ();
+
+	glDepthMask (0);	// don't bother writing Z
+
+	glEnable (GL_BLEND);
+//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+//	glColor4f (1, 1, 1, 1);
+
+	for (i = 1; i < MAX_GLTEXTURES; i++) {
+		if (!fullbright_polys[i])
+			continue;
+		GL_Bind (i);
+		for (p = fullbright_polys[i]; p; p = p->fb_chain) {
+			DrawGLPoly (p);
+		}
+		fullbright_polys[i] = NULL;
+	}
+	glDepthMask (1);
+
+	drawfullbrights = false;
+}
+
+
+
 /*
 ===============
 R_AddDynamicLights
@@ -539,7 +578,6 @@ void R_DrawSequentialPoly (msurface_t *s)
 				glVertex3fv (v);
 			}
 			glEnd ();
-			return;
 		} else {
 			p = s->polys;
 
@@ -568,6 +606,12 @@ void R_DrawSequentialPoly (msurface_t *s)
 			glDisable (GL_BLEND);
 		}
 
+		if (t->fb_texturenum) {
+			s->polys->fb_chain = fullbright_polys[t->fb_texturenum];
+			fullbright_polys[t->fb_texturenum] = s->polys;
+			drawfullbrights = true;
+		}
+		
 		return;
 	}
 
@@ -659,6 +703,13 @@ void R_DrawSequentialPoly (msurface_t *s)
 		DrawGLWaterPolyLightmap (p);
 		glDisable (GL_BLEND);
 	}
+
+/*	// No warping fullbrights yet
+	if (t->fb_texturenum) {
+		s->polys->fb_chain = fullbright_polys[t->fb_texturenum];
+		fullbright_polys[t->fb_texturenum] = s->polys;
+		drawfullbrights = true;
+	}	*/
 }
 #endif
 
@@ -872,9 +923,14 @@ void R_RenderBrushPoly (msurface_t *fa)
 		DrawGLPoly (fa->polys);
 
 	// add the poly to the proper lightmap chain
-
 	fa->polys->chain = lightmap_polys[fa->lightmaptexturenum];
 	lightmap_polys[fa->lightmaptexturenum] = fa->polys;
+
+	if (t->fb_texturenum) {
+		fa->polys->fb_chain = fullbright_polys[t->fb_texturenum];
+		fullbright_polys[t->fb_texturenum] = fa->polys;
+		drawfullbrights = true;
+	}
 
 	// check for lightmap modification
 	for (maps = 0 ; maps < MAXLIGHTMAPS && fa->styles[maps] != 255 ;
@@ -1198,6 +1254,8 @@ void R_DrawBrushModel (entity_t *e)
 
 	glColor3f (1,1,1);
 	memset (lightmap_polys, 0, sizeof(lightmap_polys));
+//	if (gl_fb_bmodels.value)
+//		memset (fullbright_polys, 0, sizeof(fullbright_polys));
 
 	VectorSubtract (r_refdef.vieworg, e->origin, modelorg);
 	if (rotated)
@@ -1256,6 +1314,8 @@ e->angles[0] = -e->angles[0];	// stupid quake bug
 	}
 
 	R_BlendLightmaps ();
+
+	R_RenderFullbrights ();
 
 	glPopMatrix ();
 }
@@ -1415,15 +1475,20 @@ void R_DrawWorld (void)
 
 	glColor3f (1,1,1);
 	memset (lightmap_polys, 0, sizeof(lightmap_polys));
+	if (gl_fb_bmodels.value)
+		memset (fullbright_polys, 0, sizeof(fullbright_polys));
+
 #ifdef QUAKE2
 	R_ClearSkyBox ();
 #endif
 
 	R_RecursiveWorldNode (cl.worldmodel->nodes);
 
-		DrawTextureChains ();
+	DrawTextureChains ();
 
 	R_BlendLightmaps ();
+
+	R_RenderFullbrights ();
 
 #ifdef QUAKE2
 	R_DrawSkyBox ();
