@@ -1505,6 +1505,8 @@ void AddAllEntsToPmove (void)
 int SV_PMTypeForClient (client_t *cl)
 {
 	if (cl->spectator || (cl->edict->v.movetype == MOVETYPE_NOCLIP)) {
+		if (cl->extensions & Z_EXT_PM_TYPE_NEW)
+			return PM_SPECTATOR;
 		return PM_OLD_SPECTATOR;
 	}
 
