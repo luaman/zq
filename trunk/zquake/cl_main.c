@@ -866,8 +866,6 @@ void CL_BeginLocalConnection (void)
 	if (!com_serveractive)
 		CL_Disconnect ();
 
-	cl.worldmodel = NULL;
-
 #if 1
 	if (cls.state == ca_active)
 		cls.state = ca_connected;
