@@ -110,47 +110,44 @@ void ClientReliableWrite_SZ (void *data, int len)
 }
 
 
-
 static void SV_AddToBackbuf (client_t *cl, const byte *data, int size)
 {
-	backbuf_block_t *block;
-
-	assert (size >= 0);
-	if (!size)
-		return;
-
-	// allocate new block
-	block = Q_malloc (sizeof(backbuf_block_t)-4 + size);
-
-	// fill it in
-	block->size = size;
-	block->next = NULL;
-	memcpy (block->data, data, size);
-
-	// link it in
-	if (cl->backbuf_head) {
-		assert (cl->backbuf_tail != NULL);
-		cl->backbuf_tail->next = block;
-		cl->backbuf_tail = block;
-	} else {
-		assert (cl->backbuf_tail == NULL);
-		cl->backbuf_head = cl->backbuf_tail = block;
+	if (!cl->num_backbuf) {
+		SZ_Init (&cl->backbuf, cl->backbuf_data[0], sizeof(cl->backbuf_data[0]));
+		cl->backbuf_size[0] = 0;
+		cl->num_backbuf++;
 	}
 
-	// update total
-	cl->backbuf_size += size;
+	if (cl->backbuf.cursize + size > cl->backbuf.maxsize) {
+		if (cl->num_backbuf == MAX_BACK_BUFFERS) {
+			Com_Printf ("WARNING: MAX_BACK_BUFFERS for %s\n", cl->name);
+			cl->backbuf.cursize = 0; // don't overflow without allowoverflow set
+			cl->netchan.message.overflowed = true; // this will drop the client
+			return;
+		}
+		SZ_Init (&cl->backbuf, cl->backbuf_data[cl->num_backbuf], sizeof(cl->backbuf_data[cl->num_backbuf]));
+		cl->backbuf_size[cl->num_backbuf] = 0;
+		cl->num_backbuf++;
+	}
+
+	// write it to the backbuf
+	SZ_Write (&cl->backbuf, data, size);
+	cl->backbuf_size[cl->num_backbuf-1] = cl->backbuf.cursize;
 }
 
 void SV_AddToReliable (client_t *cl, const byte *data, int size)
 {
-	if (!cl->backbuf_size &&
-		cl->netchan.message.cursize + size <= cl->netchan.message.maxsize)
+	/* +1 is so that there's always space for the disconnect message (FIXME) */
+
+	if (!cl->num_backbuf &&
+		cl->netchan.message.cursize + size + 1 <= cl->netchan.message.maxsize)
 	{
-		// it will fit
+		// it will fit into the current message
 		SZ_Write (&cl->netchan.message, data, size);
 	}
 	else
-	{	// won't fit, add it to backbuf
+	{
+		// save it for next
 		SV_AddToBackbuf (cl, data, size);
 	}
 }
@@ -158,49 +155,41 @@ void SV_AddToReliable (client_t *cl, const byte *data, int size)
 // flush data from client's reliable buffers to netchan
 void SV_FlushBackbuf (client_t *cl)
 {
-	backbuf_block_t *block;
+	int i;
 
-	block = cl->backbuf_head;
-	while (block) {
-		if (block->size > (cl->netchan.message.maxsize - cl->netchan.message.cursize))
-			break;
+	// check to see if we have a backbuf to stick into the reliable
+	if (cl->num_backbuf) {
+		// will it fit?
+		if (cl->netchan.message.cursize + cl->backbuf_size[0] <
+			cl->netchan.message.maxsize) {
 
-		// add to reliable
-		SZ_Write (&cl->netchan.message, block->data, block->size);
+			Com_DPrintf ("%s: backbuf %d bytes\n",
+				cl->name, cl->backbuf_size[0]);
 
-		// update total
-		cl->backbuf_size -= block->size;
+			// it'll fit
+			SZ_Write (&cl->netchan.message, cl->backbuf_data[0],
+				cl->backbuf_size[0]);
+			
+			// move along, move along
+			for (i = 1; i < cl->num_backbuf; i++) {
+				memcpy(cl->backbuf_data[i - 1], cl->backbuf_data[i],
+					cl->backbuf_size[i]);
+				cl->backbuf_size[i - 1] = cl->backbuf_size[i];
+			}
 
-		// free this block and grab next
-		block = cl->backbuf_head->next;
-		Q_free (cl->backbuf_head);
-		cl->backbuf_head = block;
-		if (!block) {
-			assert (cl->backbuf_size == 0);
-			cl->backbuf_tail = NULL;
+			cl->num_backbuf--;
+			if (cl->num_backbuf) {
+				SZ_Init (&cl->backbuf, cl->backbuf_data[cl->num_backbuf - 1],
+					sizeof(cl->backbuf_data[cl->num_backbuf - 1]));
+				cl->backbuf.cursize = cl->backbuf_size[cl->num_backbuf - 1];
+			}
 		}
 	}
-
 }
 
 void SV_ClearBackbuf (client_t *cl)
 {
-	backbuf_block_t *block;
-
-	block = cl->backbuf_head;
-	while (block) {
-		// update total
-		cl->backbuf_size -= block->size;
-
-		// free this block and grab next
-		block = cl->backbuf_head->next;
-		Q_free (cl->backbuf_head);
-		cl->backbuf_head = block;
-		if (!block) {
-			assert (cl->backbuf_size == 0);
-			cl->backbuf_tail = NULL;
-		}
-	}
+	cl->num_backbuf = 0;
 }
 
 // clears both cl->netchan.message and backbuf

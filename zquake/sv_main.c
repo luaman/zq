@@ -122,15 +122,9 @@ Quake calls this before calling Sys_Quit or Sys_Error
 */
 void SV_Shutdown (char *finalmsg)
 {
-	int i;
-
 	SV_FinalMessage (finalmsg);
 
 	PR_FreeStrings ();
-
-	// free heap-allocated backbuffers
-	for (i = 0; i < MAX_CLIENTS; i++)
-		SV_ClearBackbuf (&svs.clients[i]);
 
 	Master_Shutdown ();
 	NET_ServerConfig (false);
@@ -165,12 +159,6 @@ void SV_DropClient (client_t *drop)
 		SV_RemoveBot (drop);
 		return;
 	}
-
-	// mmm....
-	// would it be a better idea to pass "char *finalmsg" to SV_DropClient
-	// and clear EVERYTHING here?
-	// or not clear anything, but add the disconnect via ClientReliableWrite?
-	SV_ClearBackbuf (drop);
 
 	// add the disconnect
 	MSG_WriteByte (&drop->netchan.message, svc_disconnect);
@@ -648,12 +636,6 @@ void SVC_DirectConnect (void)
 		return;
 	}
 
-	if (newcl->backbuf_size) {
-		// FIXME: just in case I forget to free it somewhere...
-		Com_Printf ("Warning: newcl->backbuf_size, clearing...\n");
-		SV_ClearBackbuf (newcl);
-	}
-	
 	// build a new connection
 	// accept the new client
 	// this is the only place a client_t is ever initialized

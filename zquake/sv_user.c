@@ -210,7 +210,7 @@ static void Cmd_Soundlist_f (void)
 	}
 	
 	// if we're not back-bufffered, try to fit the soundlist into current message
-	if (!sv_client->backbuf_size &&
+	if (!sv_client->num_backbuf &&
 		sv_client->netchan.message.maxsize - sv_client->netchan.message.cursize > 100)
 	{
 		maxsize = sv_client->netchan.message.maxsize - sv_client->netchan.message.cursize;
@@ -317,7 +317,7 @@ static void Cmd_Modellist_f (void)
 
 
 	// if we're not back-bufffered, try to fit the modellist into current message
-	if (!sv_client->backbuf_size &&
+	if (!sv_client->num_backbuf &&
 		sv_client->netchan.message.maxsize - sv_client->netchan.message.cursize > 100)
 	{
 		maxsize = sv_client->netchan.message.maxsize - sv_client->netchan.message.cursize;
