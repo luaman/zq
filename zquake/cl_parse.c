@@ -1085,9 +1085,6 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 	if (slot == cl.playernum)
 		cl.spectator = player->spectator;
 
-	if (cls.state == ca_active)
-		Skin_Find (player);
-
 	Sbar_Changed ();
 	if (slot == cl.playernum && (cl_teamtopcolor >= 0 || cl_enemytopcolor >= 0) &&
 		strcmp(player->team, player->_team))
