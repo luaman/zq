@@ -192,14 +192,14 @@ float visible (entity targ)
 	
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
-	traceline (spot1, spot2, TRUE, self);	// see through other monsters
+	traceline (spot1, spot2, true, self);	// see through other monsters
 	
 	if (trace_inopen && trace_inwater)
-		return FALSE;			// sight line crossed contents
+		return false;			// sight line crossed contents
 
 	if (trace_fraction == 1)
-		return TRUE;
-	return FALSE;
+		return true;
+	return false;
 }
 
 
@@ -221,9 +221,9 @@ float infront (entity targ)
 	
 	if ( dot > 0.3)
 	{
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 
@@ -356,7 +356,7 @@ FindTarget
 
 Self is currently not attacking anything, so try to find a target
 
-Returns TRUE if an enemy was sighted
+Returns true if an enemy was sighted
 
 When a player fires a missile, the point of impact becomes a fakeplayer so
 that monsters that see the impact will respond as if they had seen the
@@ -382,39 +382,39 @@ float FindTarget ()
 	{
 		client = sight_entity;
 		if (client.enemy == self.enemy)
-			return FALSE;
+			return false;
 	}
 	else
 	{
 		client = checkclient ();
 		if (!client)
-			return FALSE;	// current check entity isn't in PVS
+			return false;	// current check entity isn't in PVS
 	}
 
 	if (client == self.enemy)
-		return FALSE;
+		return false;
 
 	if (client.flags & FL_NOTARGET)
-		return FALSE;
+		return false;
 	if (client.items & IT_INVISIBILITY)
-		return FALSE;
+		return false;
 
 	r = range (client);
 	if (r == RANGE_FAR)
-		return FALSE;
+		return false;
 		
 	if (!visible (client))
-		return FALSE;
+		return false;
 
 	if (r == RANGE_NEAR)
 	{
 		if (client.show_hostile < time && !infront (client))
-			return FALSE;
+			return false;
 	}
 	else if (r == RANGE_MID)
 	{
 		if ( /* client.show_hostile < time || */ !infront (client))
-			return FALSE;
+			return false;
 	}
 	
 //
@@ -427,13 +427,13 @@ float FindTarget ()
 		if (self.enemy.classname != "player")
 		{
 			self.enemy = world;
-			return FALSE;
+			return false;
 		}
 	}
 	
 	FoundTarget ();
 
-	return TRUE;
+	return true;
 }
 
 
@@ -614,8 +614,8 @@ float FacingIdeal ()
 	
 	delta = anglemod(self.angles_y - self.ideal_yaw);
 	if (delta > 45 && delta < 315)
-		return FALSE;
-	return TRUE;
+		return false;
+	return true;
 }
 
 
@@ -627,7 +627,7 @@ float DogCheckAttack ();
 float CheckAnyAttack ()
 {
 	if (!enemy_vis)
-		return FALSE;
+		return false;
 	if (self.classname == "monster_army")
 		return SoldierCheckAttack ();
 	if (self.classname == "monster_ogre")

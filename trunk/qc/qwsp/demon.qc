@@ -244,7 +244,7 @@ DEMON
 ==============
 CheckDemonMelee
 
-Returns TRUE if a melee attack would hit right now
+Returns true if a melee attack would hit right now
 ==============
 */
 float CheckDemonMelee ()
@@ -252,9 +252,9 @@ float CheckDemonMelee ()
 	if (enemy_range == RANGE_MELEE)
 	{	// FIXME: check canreach
 		self.attack_state = AS_MELEE;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 /*
@@ -270,11 +270,11 @@ float CheckDemonJump ()
 
 	if (self.origin_z + self.mins_z > self.enemy.origin_z + self.enemy.mins_z
 	+ 0.75 * self.enemy.size_z)
-		return FALSE;
+		return false;
 		
 	if (self.origin_z + self.maxs_z < self.enemy.origin_z + self.enemy.mins_z
 	+ 0.25 * self.enemy.size_z)
-		return FALSE;
+		return false;
 		
 	dist = self.enemy.origin - self.origin;
 	dist_z = 0;
@@ -282,15 +282,15 @@ float CheckDemonJump ()
 	d = vlen(dist);
 	
 	if (d < 100)
-		return FALSE;
+		return false;
 		
 	if (d > 200)
 	{
 		if (random() < 0.9)
-			return FALSE;
+			return false;
 	}
 		
-	return TRUE;
+	return true;
 }
 
 float DemonCheckAttack ()
@@ -299,17 +299,17 @@ float DemonCheckAttack ()
 	if (CheckDemonMelee ())
 	{
 		self.attack_state = AS_MELEE;
-		return TRUE;
+		return true;
 	}
 	
 	if (CheckDemonJump ())
 	{
 		self.attack_state = AS_MISSILE;
         sound (self, CHAN_VOICE, "demon/djump.wav", 1, ATTN_NORM);
-		return TRUE;
+		return true;
 	}
 	
-	return FALSE;
+	return false;
 }
 
 

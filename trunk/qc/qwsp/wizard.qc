@@ -111,9 +111,9 @@ float WizardCheckAttack ()
 	float	chance;
 
 	if (time < self.attack_finished)
-		return FALSE;
+		return false;
 	if (!enemy_vis)
-		return FALSE;
+		return false;
 
 	if (enemy_range == RANGE_FAR)
 	{
@@ -122,7 +122,7 @@ float WizardCheckAttack ()
 			self.attack_state = AS_STRAIGHT;
 			wiz_run1 ();
 		}
-		return FALSE;
+		return false;
 	}
 		
 	targ = self.enemy;
@@ -131,7 +131,7 @@ float WizardCheckAttack ()
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
 
-	traceline (spot1, spot2, FALSE, self);
+	traceline (spot1, spot2, false, self);
 
 	if (trace_ent != targ)
 	{	// don't have a clear shot, so move to a side
@@ -140,7 +140,7 @@ float WizardCheckAttack ()
 			self.attack_state = AS_STRAIGHT;
 			wiz_run1 ();
 		}
-		return FALSE;
+		return false;
 	}
 			
 	if (enemy_range == RANGE_MELEE)
@@ -155,7 +155,7 @@ float WizardCheckAttack ()
 	if (random () < chance)
 	{
 		self.attack_state = AS_MISSILE;
-		return TRUE;
+		return true;
 	}
 
 	if (enemy_range == RANGE_MID)
@@ -175,7 +175,7 @@ float WizardCheckAttack ()
 		}
 	}
 	
-	return FALSE;
+	return false;
 }
 
 /*

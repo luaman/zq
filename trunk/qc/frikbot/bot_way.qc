@@ -10,64 +10,64 @@ Waypoint Linking code
 float CheckLinked (entity e1, entity e2)
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
-		return FALSE;
+		return false;
 	else if (e1.target1 == e2)
 	{
 		if (e1.b_aiflags & AI_TELELINK_1)
 			return 2;
-		else return TRUE;
+		else return true;
 	}
 	else if (e1.target2 == e2)
 	{
 		if (e1.b_aiflags & AI_TELELINK_2)
 			return 2;
-		else return TRUE;
+		else return true;
 	}
 	else if (e1.target3 == e2)
 	{
 		if (e1.b_aiflags & AI_TELELINK_3)
 			return 2;
-		else return TRUE;
+		else return true;
 	}
 	else if (e1.target4 == e2)
 	{
 		if (e1.b_aiflags & AI_TELELINK_4)
 			return 2;
-		else return TRUE;
+		else return true;
 	}
 
-	else return FALSE;
+	else return false;
 }
 
 
 float LinkWays (entity e1, entity e2)
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
-		return FALSE;
+		return false;
 	else if (CheckLinked(e1, e2))
-		return FALSE; // already linked!!!
+		return false; // already linked!!!
 
 	if (e1.target1 == world)
 	{
 		e1.target1 = e2;
-		return TRUE;
+		return true;
 	}
 	else if (e1.target2 == world)
 	{
 		e1.target2 = e2;
-		return TRUE;
+		return true;
 	}
 	else if (e1.target3 == world)
 	{
 		e1.target3 = e2;
-                return TRUE;
+                return true;
 	}
 	else if (e1.target4 == world)
 	{
 		e1.target4 = e2;
-		return TRUE;
+		return true;
 	}
-	else return FALSE;
+	else return false;
 
 }
 // Link Ways part 2, used only for teleporters
@@ -75,36 +75,36 @@ float LinkWays (entity e1, entity e2)
 float TeleLinkWays (entity e1, entity e2)
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
-		return FALSE;
+		return false;
 	else if (CheckLinked(e1, e2))
-		return FALSE; // already linked!!!
+		return false; // already linked!!!
 
 	if (e1.target1 == world)
 	{
 		e1.target1 = e2;
 		e1.b_aiflags = e1.b_aiflags | AI_TELELINK_1;
-		return TRUE;
+		return true;
 	}
 	else if (e1.target2 == world)
 	{
 		e1.target2 = e2;
 		e1.b_aiflags = e1.b_aiflags | AI_TELELINK_2;
-		return TRUE;
+		return true;
 	}
 	else if (e1.target3 == world)
 	{
 		e1.target3 = e2;
 		e1.b_aiflags = e1.b_aiflags | AI_TELELINK_3;
-            return TRUE;
+            return true;
 	}
 	else if (e1.target4 == world)
 	{
 		e1.target4 = e2;
 		e1.b_aiflags = e1.b_aiflags | AI_TELELINK_4;
-		return TRUE;
+		return true;
 	}
 	else
-		return FALSE;
+		return false;
 
 }
 
@@ -256,7 +256,7 @@ void DynamicWaypoint ()
 			self.dyn_flags = 2;
 			if (!self.ishuman)
 			{
-				bot_lost(self.target1, TRUE);
+				bot_lost(self.target1, true);
 				self.enemy = world;
 			}
 		}
@@ -390,22 +390,22 @@ void DynamicWaypoint ()
 		}
 	}
 
-	if (frik_recognize_plat(FALSE)) 
+	if (frik_recognize_plat(false)) 
 	{
 		if (vlen(trace_ent.velocity) > 0)
 		{
 			if (self.dyn_plat)
 				return;
-			self.dyn_plat = TRUE;
+			self.dyn_plat = true;
 			if (!self.dyn_flags)
 				self.dyn_flags = 1;
 			//bprint("on a plat!!!!!\n");
 		}
 		else
-			self.dyn_plat = FALSE;
+			self.dyn_plat = false;
 	}
 	else
-		self.dyn_plat = FALSE;
+		self.dyn_plat = false;
 
 	if (self.dyn_flags == 2)
 		self.dyn_dest = self.origin + self.view_ofs;
@@ -436,7 +436,7 @@ void DynamicWaypoint ()
 	
 	self.dyn_dest = self.origin + self.view_ofs;
 
-	if (frik_recognize_plat(FALSE))
+	if (frik_recognize_plat(false))
 	{
 		if (trace_ent.classname == "door")
 			t.b_aiflags = t.b_aiflags | AI_DOORFLAG;
@@ -622,7 +622,7 @@ void ClearRouteTable ()
 	t = way_head;
 	while (t)
 	{
-		t. keys = FALSE;
+		t. keys = false;
 		t.enemy = world;
 		t.items = -1; // not in table
 		t = t._next;
@@ -676,9 +676,9 @@ void mark_path (entity this)
 		
 	if (t.enemy == world)
 	{
-		bot_lost(this, FALSE);
+		bot_lost(this, false);
 		if (waypoint_mode == WM_DYNAMIC)
-			self.route_failed = TRUE;
+			self.route_failed = true;
 		return;
 	}
 
@@ -730,7 +730,7 @@ void FollowLink (entity e2, float b_bit)
 	{
 		if (!e2.keys)
 			busy_waypoints = busy_waypoints + 1;
-		e2.keys = TRUE;
+		e2.keys = true;
 		e2.items = dist;
 		e2.think = WaypointThink;
 		e2.nextthink = time;
@@ -749,25 +749,25 @@ void WaypointThink ()
 	{
 		if (self.target1)
 		{
-			traceline(self.origin, self.target1.origin, TRUE, self);
+			traceline(self.origin, self.target1.origin, true, self);
 			if (trace_fraction == 1)
 				FollowLink(self.target1, AI_TELELINK_1);
 		}
 		if (self.target2)
 		{
-			traceline(self.origin, self.target2.origin, TRUE, self);
+			traceline(self.origin, self.target2.origin, true, self);
 			if (trace_fraction == 1)
 				FollowLink(self.target2, AI_TELELINK_2);
 		}
 		if (self.target3)
 		{
-			traceline(self.origin, self.target3.origin, TRUE, self);
+			traceline(self.origin, self.target3.origin, true, self);
 			if (trace_fraction == 1)
 			FollowLink(self.target3, AI_TELELINK_3);
 		}
 		if (self.target4)
 		{
-			traceline(self.origin, self.target4.origin, TRUE, self);
+			traceline(self.origin, self.target4.origin, true, self);
 			if (trace_fraction == 1)
 				FollowLink(self.target4, AI_TELELINK_4);
 		}
@@ -785,7 +785,7 @@ void WaypointThink ()
 	}
 
 	busy_waypoints = busy_waypoints - 1;
-	self.keys = FALSE;
+	self.keys = false;
 
 	if (busy_waypoints <= 0)
 	{
@@ -793,9 +793,9 @@ void WaypointThink ()
 		{
 			oself = self;
 			self = route_table;
-			bot_get_path(self.target1, FALSE);
+			bot_get_path(self.target1, false);
 			self = oself;
-			direct_route = FALSE;
+			direct_route = false;
 		}
 	}
 }
@@ -820,14 +820,14 @@ Boy it's confusing.
 float begin_route ()
 {
 	if (busy_waypoints > 0)
-		return FALSE;
+		return false;
 	
 	if (route_table != world)
 	{
 		if (!route_table.ishuman)
 		{
 			if (route_table.b_clientno != -1)
-				return FALSE;
+				return false;
 		}
 	}
 
@@ -840,15 +840,15 @@ float begin_route ()
 		self.last_way.items = vlen(self.last_way.origin - self.origin);
 		self.last_way.nextthink = time;
 		self.last_way.think = WaypointThink;
-		self.last_way.keys = TRUE;
+		self.last_way.keys = true;
 		busy_waypoints = 1;
-		return TRUE;
+		return true;
 	}
 	else 
 	{
 		route_table = world;
 		busy_waypoints = 0;
-		return FALSE;
+		return false;
 	}
 }
 
@@ -869,9 +869,9 @@ void bot_get_path (entity this, float direct)
 	if (direct)
 	{
 		if(begin_route())
-			direct_route = TRUE;
+			direct_route = true;
 		else
-			bot_lost(this, FALSE);
+			bot_lost(this, false);
 		return;
 	}
 }

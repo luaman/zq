@@ -292,7 +292,7 @@ void bot_shoot ()
 	g = angcomp(self.v_angle_y, self.b_angle_y);
 	if (fabs(g) > 30)
 		return; // not again!
-	self.button0 = TRUE;
+	self.button0 = true;
 }
 
 /*
@@ -337,7 +337,7 @@ void bot_fight_style ()
 	v = weapon_range(self.weapon);
 	if (foedist > v_y && foedist < v_z)
 	{
-		traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + v_forward * v_z, FALSE, self);
+		traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + v_forward * v_z, false, self);
 		if (vlen(trace_endpos - (self.origin + self.view_ofs)) >= v_y)
 		{
 			// try to avoid shooting teammates

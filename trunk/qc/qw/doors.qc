@@ -321,18 +321,18 @@ entity spawn_field (vector fmins, vector fmaxs)
 float EntitiesTouching (entity e1, entity e2)
 {
 	if (e1.mins_x > e2.maxs_x)
-		return FALSE;
+		return false;
 	if (e1.mins_y > e2.maxs_y)
-		return FALSE;
+		return false;
 	if (e1.mins_z > e2.maxs_z)
-		return FALSE;
+		return false;
 	if (e1.maxs_x < e2.mins_x)
-		return FALSE;
+		return false;
 	if (e1.maxs_y < e2.mins_y)
-		return FALSE;
+		return false;
 	if (e1.maxs_z < e2.mins_z)
-		return FALSE;
-	return TRUE;
+		return false;
+	return true;
 }
 
 

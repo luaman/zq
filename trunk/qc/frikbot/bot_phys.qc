@@ -105,7 +105,7 @@ float() SV_RunThink  =
 	thinktime = self.nextthink;
 	bkuptime = time;
 	if (thinktime <= 0 || thinktime > (time + real_frametime))
-		return TRUE;
+		return true;
 	if (thinktime < time)
 		thinktime = time;
 	self.nextthink = 0;
@@ -114,7 +114,7 @@ float() SV_RunThink  =
 	makevectors(self.v_angle); // hack
 	self.think();
 	time = bkuptime;
-	return TRUE;
+	return true;
 }
 
 // Thanks to Alan Kivlin for this function
@@ -211,7 +211,7 @@ void PostPhysics ()
 						else
 						{
 							if (dst > 1)
-								frik_obstructed(obstr, FALSE); 
+								frik_obstructed(obstr, false); 
 
 							org = self.origin;
 							self.flags = cflags;

@@ -221,7 +221,7 @@ void CastLightning ()
 	dir = self.enemy.origin + '0 0 16' - org;
 	dir = normalize (dir);
 
-	traceline (org, self.origin + dir*600, TRUE, self);
+	traceline (org, self.origin + dir*600, true, self);
 
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_LIGHTNING1);

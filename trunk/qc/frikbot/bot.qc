@@ -238,7 +238,7 @@ void ClientConnected ()
 	self._next = player_head;
 	player_head = self;
 
-	self.ishuman = TRUE;
+	self.ishuman = true;
 }
 
 

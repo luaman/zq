@@ -46,31 +46,31 @@ float CanDamage (entity targ, entity inflictor)
 // bmodels need special checking because their origin is 0,0,0
 	if (targ.movetype == MOVETYPE_PUSH)
 	{
-		traceline(inflictor.origin, 0.5 * (targ.absmin + targ.absmax), TRUE, self);
+		traceline(inflictor.origin, 0.5 * (targ.absmin + targ.absmax), true, self);
 		if (trace_fraction == 1)
-			return TRUE;
+			return true;
 		if (trace_ent == targ)
-			return TRUE;
-		return FALSE;
+			return true;
+		return false;
 	}
 	
-	traceline(inflictor.origin, targ.origin, TRUE, self);
+	traceline(inflictor.origin, targ.origin, true, self);
 	if (trace_fraction == 1)
-		return TRUE;
-	traceline(inflictor.origin, targ.origin + '15 15 0', TRUE, self);
+		return true;
+	traceline(inflictor.origin, targ.origin + '15 15 0', true, self);
 	if (trace_fraction == 1)
-		return TRUE;
-	traceline(inflictor.origin, targ.origin + '-15 -15 0', TRUE, self);
+		return true;
+	traceline(inflictor.origin, targ.origin + '-15 -15 0', true, self);
 	if (trace_fraction == 1)
-		return TRUE;
-	traceline(inflictor.origin, targ.origin + '-15 15 0', TRUE, self);
+		return true;
+	traceline(inflictor.origin, targ.origin + '-15 15 0', true, self);
 	if (trace_fraction == 1)
-		return TRUE;
-	traceline(inflictor.origin, targ.origin + '15 -15 0', TRUE, self);
+		return true;
+	traceline(inflictor.origin, targ.origin + '15 -15 0', true, self);
 	if (trace_fraction == 1)
-		return TRUE;
+		return true;
 
-	return FALSE;
+	return false;
 }
 
 
