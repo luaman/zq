@@ -539,7 +539,7 @@ void Mod_LoadLighting (lump_t *l)
 	}
 
 	// LordHavoc's .lit support
-	if (!gl_loadlitfiles.value)	// FIXME: if gl_colorlights is 0, don't bother either
+	if (!gl_loadlitfiles.value || !gl_colorlights.value)
 		goto loadmono;
 
 	strlcpy (litname, loadmodel->name, sizeof(litname));
