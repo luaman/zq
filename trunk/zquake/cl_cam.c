@@ -30,8 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "sbar.h"
 
-#define BUTTON_JUMP 2
-#define BUTTON_ATTACK 1
 #define MAX_ANGLE_TURN 10
 
 static vec3_t desired_position; // where the camera wants to be

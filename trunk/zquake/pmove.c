@@ -76,9 +76,6 @@ void Pmove_Init (void)
 #define	STEPSIZE	18
 
 
-#define	BUTTON_JUMP	2
-
-
 /*
 ==================
 PM_ClipVelocity
