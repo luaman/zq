@@ -19,6 +19,10 @@
 
 #include "qcc.h"
 
+#ifdef _WIN32
+#include <io.h>
+#include <direct.h>
+#endif
 
 char		destfile[1024];
 
@@ -548,7 +552,7 @@ void	PR_BeginCompilation (void *memory, int memsize)
 {
 	int		i;
 	
-	pr.memory = memory;
+	pr.memory = (char *) memory;
 	pr.max_memory = memsize;
 	
 	numpr_globals = RESERVED_OFS;
@@ -571,10 +575,10 @@ called after all files are compiled to check for errors
 Returns false if errors were detected.
 ==============
 */
-boolean	PR_FinishCompilation (void)
+qboolean	PR_FinishCompilation (void)
 {
 	def_t		*d;
-	boolean	errors;
+	qboolean	errors;
 	
 	errors = false;
 	
@@ -811,8 +815,13 @@ int			packbytes;
 
 void Sys_mkdir (char *path)
 {
+#ifdef _WIN32
+	if (_mkdir (path) != -1)
+		return;
+#else
 	if (mkdir (path, 0777) != -1)
 		return;
+#endif
 	if (errno != EEXIST)
 		Error ("mkdir %s: %s",path, strerror(errno)); 
 }
@@ -1077,7 +1086,7 @@ void main (int argc, char **argv)
 	InitData ();
 	
 	sprintf (filename, "%sprogs.src", sourcedir);
-	LoadFile (filename, (void *)&src);
+	LoadFile (filename, (void **)&src);
 	
 	src = COM_Parse (src);
 	if (!src)
@@ -1097,7 +1106,7 @@ void main (int argc, char **argv)
 			break;
 		sprintf (filename, "%s%s", sourcedir, com_token);
 		printf ("compiling %s\n", filename);
-		LoadFile (filename, (void *)&src2);
+		LoadFile (filename, (void **)&src2);
 
 		if (!PR_CompileFile (src2, filename) )
 			exit (1);

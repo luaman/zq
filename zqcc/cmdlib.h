@@ -28,8 +28,14 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifndef _WIN32
 #include <sys/file.h>
+#endif
 #include <stdarg.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #ifdef NeXT
 #include <libc.h>
@@ -37,7 +43,7 @@
 
 #ifndef __BYTEBOOL__
 #define __BYTEBOOL__
-typedef enum {false, true} boolean;
+typedef int qboolean;
 typedef unsigned char byte;
 #endif
 
@@ -49,10 +55,19 @@ typedef unsigned char byte;
 extern int myargc;
 extern char **myargv;
 
+#ifdef _WIN32
+#define Q_stricmp(s1, s2) _stricmp((s1), (s2))
+#define Q_strnicmp(s1, s2, n) _strnicmp((s1), (s2), (n))
+#else
+#define Q_stricmp(s1, s2) strcasecmp((s1), (s2))
+#define Q_strnicmp(s1, s2, n) strncasecmp((s1), (s2), (n))
+#endif
+
+
 char *strupr (char *in);
 char *strlower (char *in);
-int filelength (int handle);
-int tell (int handle);
+int Q_filelength (int handle);
+int Q_tell (int handle);
 
 double I_FloatTime (void);
 

@@ -19,7 +19,11 @@
 // cmdlib.c
 
 #include "cmdlib.h"
-#include <sys/time.h>
+#include <time.h>
+#ifdef _WIN32
+#include <io.h>
+#include <fcntl.h>
+#endif
 
 #define PATHSEPERATOR   '/'
 
@@ -35,6 +39,7 @@ int		com_eof;
 I_FloatTime
 ================
 */
+#if 0
 double I_FloatTime (void)
 {
 	struct timeval tp;
@@ -51,7 +56,7 @@ double I_FloatTime (void)
 	
 	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
 }
-
+#endif
 
 /*
 ==============
@@ -138,10 +143,10 @@ skipwhite:
 
 /*
 ================
-filelength
+Q_filelength
 ================
 */
-int filelength (int handle)
+int Q_filelength (int handle)
 {
 	struct stat	fileinfo;
     
@@ -153,7 +158,7 @@ int filelength (int handle)
 	return fileinfo.st_size;
 }
 
-int tell (int handle)
+int Q_tell (int handle)
 {
 	return lseek (handle, 0, SEEK_CUR);
 }
@@ -226,7 +231,7 @@ int CheckParm (char *check)
 
 	for (i = 1;i<myargc;i++)
 	{
-		if ( !strcasecmp(check, myargv[i]) )
+		if ( !Q_stricmp(check, myargv[i]) )
 			return i;
 	}
 
