@@ -23,9 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef QW_BOTH
 #include "quakedef.h"
 #include "keys.h"
-#include "progs.h"
-#include "pmove.h"
 #include "server.h"
+#include "pmove.h"
 #else
 #include "qwsvdef.h"
 #endif
@@ -412,7 +411,6 @@ void SVC_Status (void)
 	int		ping;
 	int		top, bottom;
 
-	Cmd_TokenizeString ("status");
 	SV_BeginRedirect (RD_PACKET);
 	Con_Printf ("%s\n", svs.info);
 	for (i=0 ; i<MAX_CLIENTS ; i++)
