@@ -23,11 +23,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "sound.h"
 
-#define	MAX_BEAMS	8
+#define	MAX_BEAMS	32
 typedef struct
 {
 	int		entity;
-	struct model_s	*model;
+	model_t	*model;
 	float	endtime;
 	vec3_t	start, end;
 } beam_t;
@@ -37,16 +37,17 @@ beam_t		cl_beams[MAX_BEAMS];
 static vec3_t	playerbeam_end;
 
 
-#define	MAX_EXPLOSIONS	8
-typedef struct
+#define	MAX_EXPLOSIONS	32
+typedef struct explosion_s
 {
+	struct explosion_s *prev, *next;
 	vec3_t	origin;
 	float	start;
 	model_t	*model;
 } explosion_t;
 
 explosion_t	cl_explosions[MAX_EXPLOSIONS];
-
+explosion_t cl_explosions_headnode, *cl_free_explosions;
 
 sfx_t			*cl_sfx_wizhit;
 sfx_t			*cl_sfx_knighthit;
@@ -55,6 +56,11 @@ sfx_t			*cl_sfx_ric1;
 sfx_t			*cl_sfx_ric2;
 sfx_t			*cl_sfx_ric3;
 sfx_t			*cl_sfx_r_exp3;
+
+model_t			*cl_explo_mod;
+model_t			*cl_bolt1_mod;
+model_t			*cl_bolt2_mod;
+model_t			*cl_bolt3_mod;
 
 /*
 =================
@@ -79,8 +85,21 @@ CL_ClearTEnts
 */
 void CL_ClearTEnts (void)
 {
+	int i;
+
+	cl_explo_mod = NULL;
+	cl_bolt1_mod = cl_bolt2_mod = cl_bolt3_mod = NULL;
+
 	memset (&cl_beams, 0, sizeof(cl_beams));
 	memset (&cl_explosions, 0, sizeof(cl_explosions));
+
+	// link explosions
+	cl_free_explosions = cl_explosions;
+	cl_explosions_headnode.prev = &cl_explosions_headnode;
+	cl_explosions_headnode.next = &cl_explosions_headnode;
+
+	for (i = 0; i < MAX_EXPLOSIONS-1; i++)
+		cl_explosions[i].next = &cl_explosions[i+1];
 }
 
 /*
@@ -90,24 +109,43 @@ CL_AllocExplosion
 */
 explosion_t *CL_AllocExplosion (void)
 {
-	int		i;
-	float	time;
-	int		index;
-	
-	for (i=0 ; i<MAX_EXPLOSIONS ; i++)
-		if (!cl_explosions[i].model)
-			return &cl_explosions[i];
-// find the oldest explosion
-	time = cl.time;
-	index = 0;
+	explosion_t *ex;
 
-	for (i=0 ; i<MAX_EXPLOSIONS ; i++)
-		if (cl_explosions[i].start < time)
-		{
-			time = cl_explosions[i].start;
-			index = i;
-		}
-	return &cl_explosions[index];
+	if ( cl_free_explosions )
+	{	// take a free explosion if possible
+		ex = cl_free_explosions;
+		cl_free_explosions = ex->next;
+	} 
+	else 
+	{	// grab the oldest one otherwise
+		ex = cl_explosions_headnode.prev;
+		ex->prev->next = ex->next;
+		ex->next->prev = ex->prev;
+	}
+
+	// put the explosion at the start of the list
+	ex->prev = &cl_explosions_headnode;
+	ex->next = cl_explosions_headnode.next;
+	ex->next->prev = ex;
+	ex->prev->next = ex;
+
+	return ex;
+}
+
+/*
+=================
+CL_FreeExplosion
+=================
+*/
+void CL_FreeExplosion (explosion_t *ex)
+{
+	// remove from linked active list
+	ex->prev->next = ex->next;
+	ex->next->prev = ex->prev;
+
+	// insert into linked free list
+	ex->next = cl_free_explosions;
+	cl_free_explosions = ex;
 }
 
 /*
@@ -136,7 +174,7 @@ void CL_ParseBeam (model_t *m)
 		VectorCopy (end, playerbeam_end);	// for cl_trueLightning
 
 // override any beam with the same entity
-	for (i=0, b=cl_beams ; i< MAX_BEAMS ; i++, b++)
+	for (i = 0, b = cl_beams; i < MAX_BEAMS; i++, b++)
 		if (b->entity == ent)
 		{
 			b->model = m;
@@ -147,7 +185,7 @@ void CL_ParseBeam (model_t *m)
 		}
 
 // find a free beam
-	for (i=0, b=cl_beams ; i< MAX_BEAMS ; i++, b++)
+	for (i = 0, b = cl_beams; i < MAX_BEAMS; i++, b++)
 	{
 		if (!b->model || b->endtime < cl.time)
 		{
@@ -159,7 +197,8 @@ void CL_ParseBeam (model_t *m)
 			return;
 		}
 	}
-	Com_Printf ("beam list overflow!\n");	
+
+	Com_DPrintf ("beam list overflow!\n");	
 }
 
 /*
@@ -186,7 +225,7 @@ void CL_ParseTEnt (void)
 		CL_RunParticleEffect (pos, vec3_origin, 20, 30);
 		S_StartSound (-1, 0, cl_sfx_wizhit, pos, 1, 1);
 		break;
-		
+
 	case TE_KNIGHTSPIKE:			// spike hitting wall
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
@@ -194,7 +233,7 @@ void CL_ParseTEnt (void)
 		CL_RunParticleEffect (pos, vec3_origin, 226, 20);
 		S_StartSound (-1, 0, cl_sfx_knighthit, pos, 1, 1);
 		break;
-		
+
 	case TE_SPIKE:			// spike hitting wall
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
@@ -214,6 +253,7 @@ void CL_ParseTEnt (void)
 				S_StartSound (-1, 0, cl_sfx_ric3, pos, 1, 1);
 		}
 		break;
+
 	case TE_SUPERSPIKE:			// super spike hitting wall
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
@@ -233,7 +273,7 @@ void CL_ParseTEnt (void)
 				S_StartSound (-1, 0, cl_sfx_ric3, pos, 1, 1);
 		}
 		break;
-		
+
 	case TE_EXPLOSION:			// rocket explosion
 	// particles
 
@@ -274,13 +314,15 @@ void CL_ParseTEnt (void)
 	// sprite
 		if (cl_explosion.value != 6 && cl_explosion.value != 7 && cl_explosion.value != 8)
 		{
+			if (!cl_explo_mod)
+				cl_explo_mod = Mod_ForName ("progs/s_explod.spr", true);
 			ex = CL_AllocExplosion ();
 			VectorCopy (pos, ex->origin);
 			ex->start = cl.time;
-			ex->model = Mod_ForName ("progs/s_explod.spr", true);
+			ex->model = cl_explo_mod;
 		}
 		break;
-		
+
 	case TE_TAREXPLOSION:			// tarbaby explosion
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
@@ -291,24 +333,30 @@ void CL_ParseTEnt (void)
 		break;
 
 	case TE_LIGHTNING1:			// lightning bolts
-		CL_ParseBeam (Mod_ForName("progs/bolt.mdl", true));
+		if (!cl_bolt1_mod)
+			cl_bolt1_mod = Mod_ForName("progs/bolt.mdl", true);
+		CL_ParseBeam (cl_bolt1_mod);
 		break;
-		
+
 	case TE_LIGHTNING2:			// lightning bolts
-		CL_ParseBeam (Mod_ForName("progs/bolt2.mdl", true));
+		if (!cl_bolt2_mod)
+			cl_bolt2_mod = Mod_ForName("progs/bolt2.mdl", true);
+		CL_ParseBeam (cl_bolt2_mod);
 		break;
-		
+
 	case TE_LIGHTNING3:			// lightning bolts
-		CL_ParseBeam (Mod_ForName("progs/bolt3.mdl", true));
+		if (!cl_bolt3_mod)
+			cl_bolt3_mod = Mod_ForName("progs/bolt3.mdl", true);
+		CL_ParseBeam (cl_bolt3_mod);
 		break;
-	
+
 	case TE_LAVASPLASH:	
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
 		CL_LavaSplash (pos);
 		break;
-	
+
 	case TE_TELEPORT:
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
@@ -323,7 +371,7 @@ void CL_ParseTEnt (void)
 		pos[2] = MSG_ReadCoord ();
 		CL_RunParticleEffect (pos, vec3_origin, 0, 20*cnt);
 		break;
-		
+
 	case TE_BLOOD:				// bullets hitting body
 		cnt = MSG_ReadByte ();
 		pos[0] = MSG_ReadCoord ();
@@ -357,16 +405,17 @@ void CL_UpdateBeams (void)
 	int			i;
 	beam_t		*b;
 	vec3_t		dist, org;
-	float		d;
+	float		d, dec;
 	entity_t	ent;
 	float		yaw, pitch;
 	float		forward;
 
+	dec = 30;
 	memset (&ent, 0, sizeof(entity_t));
 	ent.colormap = vid.colormap;
 
 // update lightning
-	for (i=0, b=cl_beams ; i< MAX_BEAMS ; i++, b++)
+	for (i = 0, b = cl_beams; i < MAX_BEAMS; i++, b++)
 	{
 		if (!b->model || b->endtime < cl.time)
 			continue;
@@ -383,19 +432,19 @@ void CL_UpdateBeams (void)
 				vec3_t	ang;
 				float	f, delta;
 				pmtrace_t	trace;
-				
+
 				f = max(0, min(1, cl_trueLightning.value));
-				
+
 				VectorSubtract (playerbeam_end, cl.simorg, v);
 				v[2] -= 22;		// adjust for view height
 				vectoangles (v, ang);
-				
+
 				// lerp pitch
 				ang[0] = -ang[0];
 				if (ang[0] < -180)
 					ang[0] += 360;
-				ang[0] += (cl.viewangles[0] - ang[0])*f;
-				
+				ang[0] += (cl.viewangles[0] - ang[0]) * f;
+
 				// lerp yaw
 				delta = cl.viewangles[1] - ang[1];
 				if (delta > 180)
@@ -404,19 +453,19 @@ void CL_UpdateBeams (void)
 					delta += 360;
 				ang[1] += delta*f;
 				ang[2] = 0;
-				
+
 				AngleVectors (ang, forward, NULL, NULL);
 				VectorScale (forward, 600, forward);
 				VectorCopy (cl.simorg, org);
 				org[2] += 16;
 				VectorAdd (org, forward, b->end);
-				
+
 				trace = PM_TraceLine (org, b->end);
 				if (trace.fraction < 1)
 					VectorCopy (trace.endpos, b->end);
 			}
 		}
-		
+
 	// calculate pitch and yaw
 		VectorSubtract (b->end, b->start, dist);
 
@@ -442,7 +491,8 @@ void CL_UpdateBeams (void)
 
 	// add new entities for the lightning
 		VectorCopy (b->start, org);
-		d = VectorNormalize(dist);
+		d = VectorNormalize (dist);
+		VectorScale (dist, dec, dist);
 
 		while (d > 0)
 		{
@@ -454,12 +504,10 @@ void CL_UpdateBeams (void)
 
 			V_AddEntity (&ent);
 
-			for (i=0 ; i<3 ; i++)
-				org[i] += dist[i]*30;
-			d -= 30;
+			d -= dec;
+			VectorAdd (org, dist, org);
 		}
 	}
-	
 }
 
 /*
@@ -469,22 +517,23 @@ CL_UpdateExplosions
 */
 void CL_UpdateExplosions (void)
 {
-	int			i;
 	int			f;
 	explosion_t	*ex;
+	explosion_t *next, *hnode;
 	entity_t	ent;
 
 	memset (&ent, 0, sizeof(entity_t));
 	ent.colormap = vid.colormap;
 
-	for (i=0, ex=cl_explosions ; i< MAX_EXPLOSIONS ; i++, ex++)
+	hnode = &cl_explosions_headnode;
+	for (ex = hnode->next; ex != hnode; ex = next)
 	{
-		if (!ex->model)
-			continue;
-		f = 10*(cl.time - ex->start);
+		next = ex->next;
+		f = 10 * (cl.time - ex->start);
+
 		if (f >= ex->model->numframes)
 		{
-			ex->model = NULL;
+			CL_FreeExplosion (ex);
 			continue;
 		}
 
