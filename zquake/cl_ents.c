@@ -403,7 +403,8 @@ void CL_ParsePacketEntities (qboolean delta)
 			host_skipframe = true;
 
 #ifdef _WIN32
-		SetWindowText (mainwindow, va("ZQuake: %s", cls.servername));
+		if (!cls.demoplayback)
+			SetWindowText (mainwindow, va("ZQuake: %s", cls.servername));
 #endif
 		Con_ClearNotify ();
 		TP_ExecTrigger ("f_spawn");
