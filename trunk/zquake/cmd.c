@@ -479,16 +479,6 @@ Cmd_Alias_f
 Creates a new command that executes a command string (possibly ; separated)
 ===============
 */
-
-char *CopyString (char *in)
-{
-	char	*out;
-	
-	out = Z_Malloc (strlen(in)+1);
-	strcpy (out, in);
-	return out;
-}
-
 void Cmd_Alias_f (void)
 {
 	cmd_alias_t	*a;
