@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #endif
 
+#include "crc.h"
+
 #define MAX_NUM_ARGVS	50
 #define NUM_SAFE_ARGVS	6
 
@@ -39,8 +41,6 @@ static char	*safeargvs[NUM_SAFE_ARGVS] =
 	{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse"};
 
 cvar_t	registered = {"registered","0"};
-
-qboolean		msg_suppress_1 = 0;
 
 void COM_InitFilesystem (void);
 void COM_Path_f (void);

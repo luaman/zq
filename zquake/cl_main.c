@@ -21,7 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include "winquake.h"
+#include "cdaudio.h"
 #include "cl_slist.h"
+#include "input.h"
 #include "keys.h"
 #include "pmove.h"
 #include "sbar.h"
@@ -29,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 #include "teamplay.h"
 #ifdef _WIN32
-#include "winsock.h"
+#include <winsock.h>
 #else
 #include <netinet/in.h>
 #endif

@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include "winquake.h"
+#include "cdaudio.h"
 #include "d_local.h"
 #include "keys.h"
 #include "resource.h"
@@ -148,6 +149,9 @@ void VID_MenuKey (int key);
 
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void AppActivate(BOOL fActive, BOOL minimize);
+
+qboolean msg_suppress_1 = 0;	// suppresses resolution and cache size console output
+								// at fullscreen DIB focus gain/loss
 
 
 /*

@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // vid_wgl.c -- Windows 9x/NT OpenGL driver
 
 #include "quakedef.h"
+#include "cdaudio.h"
 #include "winquake.h"
 #include "resource.h"
 #include "keys.h"
@@ -471,8 +472,8 @@ int VID_SetMode (int modenum, unsigned char *palette)
 // fix the leftover Alt from any Alt-Tab or the like that switched us away
 	ClearAllStates ();
 
-	if (!msg_suppress_1)
-		Con_SafePrintf ("Video mode %s initialized.\n", VID_GetModeDescription (vid_modenum));
+//	if (!msg_suppress_1)
+	Con_SafePrintf ("Video mode %s initialized.\n", VID_GetModeDescription (vid_modenum));
 
 //	VID_SetPalette (palette);
 
