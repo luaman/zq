@@ -543,7 +543,7 @@ void SCR_DrawFPS (void)
 	double t;
 	extern int fps_count;
 	static int lastfps;
-	int x, y;
+	int x;
 	char st[80];
 
 	if (!show_fps.value)
@@ -558,9 +558,8 @@ void SCR_DrawFPS (void)
 
 	sprintf(st, "%3d FPS", lastfps);
 	x = vid.width - strlen(st) * 8 - 8;
-	y = vid.height - sb_lines - 8;
-//	R_DrawTile (x, y, strlen(st) * 8, 8);
-	R_DrawString(x, y, st);
+//	R_DrawTile (x, 0, strlen(st) * 8, 8);
+	R_DrawString(x, 0, st);
 }
 
 
@@ -1114,7 +1113,7 @@ void SCR_UpdateScreen (void)
 			if (show_speed.value)
 				R_DrawTile (vid.width - 4*8 - 8, 8, 4*8, 8, scr_backtile);
 			if (show_fps.value)
-				R_DrawTile (vid.width - 8*8 - 8, vid.height - sb_lines - 8, 8*8, 8, scr_backtile);
+				R_DrawTile (vid.width - 8*8 - 8, 0, 8*8, 8, scr_backtile);
 			if (scr_clock.value)
 			{
 				if (scr_clock_y.value < 0)
