@@ -370,7 +370,7 @@ void Cmd_Exec_f (void)
 			return;
 		}
 	}
-	if (!Cvar_Command () && (cl_warncmd.value || developer.value))
+	if (cl_warncmd.value || developer.value)
 		Com_Printf ("execing %s\n", name);
 
 #ifndef SERVERONLY
@@ -420,7 +420,7 @@ cmd_alias_t *Cmd_FindAlias (char *name)
 	int			key;
 	cmd_alias_t *alias;
 
-	key = HashKey (name);
+	key = Com_HashKey (name);
 	for (alias = cmd_alias_hash[key] ; alias ; alias = alias->hash_next)
 	{
 		if (!Q_stricmp(name, alias->name))
@@ -434,7 +434,7 @@ char *Cmd_AliasString (char *name)
 	int			key;
 	cmd_alias_t *alias;
 
-	key = HashKey (name);
+	key = Com_HashKey (name);
 	for (alias = cmd_alias_hash[key] ; alias ; alias = alias->hash_next)
 	{
 		if (!Q_stricmp(name, alias->name))
@@ -522,7 +522,7 @@ void Cmd_Alias_f (void)
 	}
 #endif
 
-	key = HashKey(s);
+	key = Com_HashKey(s);
 
 	// if the alias already exists, reuse it
 	for (a = cmd_alias_hash[key] ; a ; a=a->hash_next)
@@ -565,7 +565,7 @@ qboolean Cmd_DeleteAlias (char *name)
 	cmd_alias_t	*a, *prev;
 	int			key;
 
-	key = HashKey (name);
+	key = Com_HashKey (name);
 
 	prev = NULL;
 	for (a = cmd_alias_hash[key] ; a ; a = a->hash_next)
@@ -789,7 +789,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 		return;
 	}
 	
-	key = HashKey (cmd_name);
+	key = Com_HashKey (cmd_name);
 
 // fail if the command already exists
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
@@ -821,7 +821,7 @@ qboolean Cmd_Exists (char *cmd_name)
 	int	key;
 	cmd_function_t	*cmd;
 
-	key = HashKey (cmd_name);
+	key = Com_HashKey (cmd_name);
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
 		if (!Q_stricmp (cmd_name, cmd->name))
@@ -842,7 +842,7 @@ cmd_function_t *Cmd_FindCommand (char *cmd_name)
 	int	key;
 	cmd_function_t	*cmd;
 
-	key = HashKey (cmd_name);
+	key = Com_HashKey (cmd_name);
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
 		if (!Q_stricmp (cmd_name, cmd->name))
@@ -1108,7 +1108,7 @@ void Cmd_ExecuteString (char *text)
 	}
 #endif
 
-	key = HashKey (cmd_argv[0]);
+	key = Com_HashKey (cmd_argv[0]);
 
 // check functions
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)

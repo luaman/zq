@@ -257,10 +257,10 @@ void Q_snprintfz (char *dest, size_t size, char *fmt, ...)
 
 /*
 ==========
-HashKey
+Com_HashKey
 ==========
 */
-int HashKey (char *name)
+int Com_HashKey (char *name)
 {
 	int	v;
 	unsigned char c;
