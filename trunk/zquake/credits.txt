@@ -1,6 +1,6 @@
 CREDITS
 
-id Software and QuakeWorld team -- QW 2.40 source
+id Software and QuakeWorld team -- QuakeWorld 2.40 source code
 QuakeForge team - lots of advice and code pieces
 Brian Koropoff - server list
 Forest 'LordHavoc' Hale - MSG_WriteAngle fix, .lit support, Half-Life bsp support
