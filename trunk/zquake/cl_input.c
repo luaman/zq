@@ -567,12 +567,16 @@ void CL_SendCmd (void)
     {
 		CL_Move(&cl.lastcmd);
 		cls.netchan.outgoing_sequence++;
+		SZ_Clear (&cls.netchan.message);	// don't overflow
 		return;
     }
 #endif
 
 	if (cls.demoplayback)
-		return; // sendcmds come from the demo
+	{
+		SZ_Clear (&cls.netchan.message);	// don't overflow
+		return;
+	}
 
 	// save this command off for prediction
 	i = cls.netchan.outgoing_sequence & UPDATE_MASK;
