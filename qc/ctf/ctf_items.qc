@@ -99,6 +99,8 @@ void flag_respawn ()
 
 }
 
+/*QUAKED item_flag_team1
+*/
 void item_flag_team1 ()
 {
 	precache_model ("progs/flag.mdl");
@@ -116,6 +118,8 @@ void item_flag_team1 ()
 	self.skin = 0;
 }
 
+/*QUAKED item_flag_team2
+*/
 void item_flag_team2 ()
 {
 	precache_model ("progs/flag.mdl");
