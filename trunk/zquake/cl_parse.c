@@ -1172,6 +1172,7 @@ void CL_ProcessServerInfo (void)
 	int i;
 
 	cl.fpd = Q_atof(Info_ValueForKey(cl.serverinfo, "fpd"));
+	cl.z_ext = Q_atof(Info_ValueForKey(cl.serverinfo, "*z_ext"));
 	teamplay = Q_atof(Info_ValueForKey(cl.serverinfo, "teamplay"));
 	
 	p = Info_ValueForKey(cl.serverinfo, "deathmatch");
