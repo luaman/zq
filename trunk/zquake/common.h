@@ -241,3 +241,7 @@ void Com_BeginRedirect (void (*RedirectedPrint) (char *));
 void Com_EndRedirect (void);
 void Com_Printf (char *fmt, ...);
 void Com_DPrintf (char *fmt, ...);
+
+//============================================================================
+
+extern qboolean	com_serveractive;	// true if sv.state != ss_dead

@@ -520,7 +520,7 @@ CL_Serverinfo_f
 void CL_Serverinfo_f (void)
 {
 #ifdef QW_BOTH
-	if (cls.state < ca_connected || sv.state != ss_dead) {
+	if (cls.state < ca_connected || com_serveractive) {
 		SV_Serverinfo_f();
 		return;
 	}
@@ -679,12 +679,10 @@ void CL_FullServerinfo_f (void)
 
 	Q_strncpyz (cl.serverinfo, Cmd_Argv(1), sizeof(cl.serverinfo));
 
-	if ((p = Info_ValueForKey(cl.serverinfo, "*z_version")) && *p) {
-#ifdef QW_BOTH
+	if ((p = Info_ValueForKey(cl.serverinfo, "*z_version")) && *p)
+	{
 		// only print version if connecting to a remote server
-		if (sv.state == ss_dead)
-#endif
-			if (!server_version)
+		if (!com_serveractive && !server_version)
 				Com_Printf ("ZQuake %s server\n", p);
 		server_version = 2.40;
 	}

@@ -168,6 +168,7 @@ void SV_Shutdown (char *finalmsg)
 
 	memset (&sv, 0, sizeof(sv));
 	sv.state = ss_dead;
+	com_serveractive = false;
 
 	memset (svs.clients, 0, sizeof(svs.clients));
 }

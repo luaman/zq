@@ -330,6 +330,7 @@ void SV_SpawnServer (char *server)
 							// restarted
 
 	sv.state = ss_dead;
+	com_serveractive = false;
 	sv.paused = false;
 
 #ifdef QW_BOTH
@@ -422,6 +423,7 @@ void SV_SpawnServer (char *server)
 	// precache and static commands can be issued during
 	// map initialization
 	sv.state = ss_loading;
+	com_serveractive = true;
 
 	ent = EDICT_NUM(0);
 	ent->free = false;

@@ -258,9 +258,8 @@ void CL_ClearState (void)
 	S_StopAllSounds (true);
 
 	Com_DPrintf ("Clearing memory\n");
-#ifdef QW_BOTH
-	if (sv.state == ss_dead) // connecting to a remote server
-#endif
+
+	if (!com_serveractive)
 	{
 		D_FlushCaches ();
 		Mod_ClearAll ();
@@ -330,7 +329,7 @@ void CL_Disconnect (void)
 
 #ifdef QW_BOTH
 		// if running a local server, shut it down
-		if (sv.state != ss_dead)
+		if (com_serveractive)
 			SV_Shutdown ("");
 #endif
 	}
@@ -847,11 +846,9 @@ qboolean Host_FilterTime (void)
 			fps = bound (30.0, cl_maxfps.value, fpscap);
 		else
 		{
-#ifdef QW_BOTH
-			if (sv.state != ss_dead)
+			if (com_serveractive)
 				fps = fpscap;
 			else
-#endif
 				fps = bound (30.0, rate.value/80.0, fpscap);
 		}
 	}
@@ -923,7 +920,7 @@ void Host_Frame (double time)
 	Cbuf_Execute ();
 
 #ifdef QW_BOTH
-	if (sv.state == ss_active)
+	if (com_serveractive)
 		SV_Frame(host_frametime);
 #endif
 
