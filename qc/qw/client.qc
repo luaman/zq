@@ -235,6 +235,8 @@ void() execute_changelevel =
 		other.solid = SOLID_NOT;
 		other.movetype = MOVETYPE_NONE;
 		other.modelindex = 0;
+		other.effects = 0;
+		setorigin (other, pos.origin);
 		other = find (other, classname, "player");
 	}       
 
