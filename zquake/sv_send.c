@@ -328,7 +328,7 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
 		return;
 	}
     
-	ent = NUM_FOR_EDICT(entity);
+	ent = SV_TranslateEntnum(NUM_FOR_EDICT(entity));
 
 	if ((channel & 8) || !sv_phs.value)	// no PHS flag
 	{

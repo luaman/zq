@@ -25,6 +25,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define	MAX_SIGNON_BUFFERS	8
 
+typedef struct
+{
+	int		original;	// what entity is currently using this translation slot
+	double	lastused;	// last time this slot was used
+} entity_translation_t;
+
 typedef enum {
 	ss_dead,			// no map loaded
 	ss_loading,			// spawning level edicts
@@ -64,6 +70,10 @@ typedef struct
 	edict_t		*edicts;			// can NOT be array indexed, because
 									// edict_t is variable sized, but can
 									// be used to reference the world ent
+
+	int			entmap[MAX_EDICTS];		// because QW protocol only handles 512 entities,
+										// translate entnums dynamically before sending
+	entity_translation_t	translations[512];	// translated numbers are tracked here
 
 	byte		*pvs, *phs;			// fully expanded and decompressed
 
@@ -426,6 +436,7 @@ void SV_SendServerInfoChange (char *key, char *value);
 //
 // sv_ents.c
 //
+int SV_TranslateEntnum (int num);
 void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg);
 void SV_WriteClientdataToMessage (client_t *client, sizebuf_t *msg);
 

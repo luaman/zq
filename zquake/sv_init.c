@@ -82,10 +82,15 @@ baseline will be transmitted
 void SV_CreateBaseline (void)
 {
 	int			i;
-	edict_t			*svent;
-	int				entnum;	
-		
-	for (entnum = 0; entnum < sv.num_edicts ; entnum++)
+	edict_t		*svent;
+	int			entnum;
+	int			max_edicts;
+
+	// because baselines for entnum >= 512 don't make sense
+	// FIXME, translate baselines nums as well as packet entity nums?
+	max_edicts = min (sv.num_edicts, 512);
+
+	for (entnum = 0; entnum < max_edicts ; entnum++)
 	{
 		svent = EDICT_NUM(entnum);
 		if (svent->free)

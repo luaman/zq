@@ -155,6 +155,78 @@ void SV_EmitNailUpdate (sizebuf_t *msg)
 
 //=============================================================================
 
+//
+// returns translated entity number for sending to client
+//
+int SV_TranslateEntnum (int num)
+{
+	entity_translation_t	*trans, *best;
+	double	besttime, trivial_accept;
+	int	i;
+
+	assert (num >= 0 && num < MAX_EDICTS);
+
+	if (num <= MAX_CLIENTS)					// client entitites are never translated
+		return num;
+
+	if (sv.entmap[num]) {
+		// see if the previous translation is still valid
+		trans = &sv.translations[sv.entmap[num]];
+		if (trans->original == num) {
+			// translation is still valid
+			trans->lastused = svs.realtime;
+			return sv.entmap[num];
+		}
+	}
+
+	trivial_accept = svs.realtime - 10;		// anything older than that will do
+
+	if (num < 512) {
+		// whenever possible, try to use the original number as translation
+		trans = &sv.translations[num];
+		if (!trans->lastused || trans->lastused < trivial_accept) {
+			// good, we can use it
+			trans->original = num;
+			trans->lastused = svs.realtime;
+			sv.entmap[num] = num;
+			return num;
+		}
+	}
+
+//Com_Printf ("looking for a new translation...\n");
+
+	// find a new translation slot
+	besttime = svs.realtime;
+	best = NULL;
+
+	for (i = MAX_CLIENTS + 1; i < 512; i++) {
+		if (sv.edicts[i].baseline.modelindex)
+			continue;		// never use slots with baselines
+
+		trans = &sv.translations[i];
+		if (!trans->lastused || trans->lastused < trivial_accept) {
+			best = trans;
+			break;
+		}
+
+		if (trans->lastused < besttime) {
+			besttime = trans->lastused;
+			best = trans;
+		}
+	}
+
+	if (!best)
+		Host_Error ("SV_TranslateEntnum: no free translation slots");
+
+	best->lastused = svs.realtime;
+	best->original = num;
+	sv.entmap[num] =  best - sv.translations;
+
+	return sv.entmap[num];
+}
+
+//=============================================================================
+
 
 /*
 =============
@@ -309,6 +381,26 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 	}
 }
 
+// ouch! ouch! ouch!
+static void BubbleSort (packet_entities_t *pack)
+{
+	int			i;
+	qboolean	done;
+
+	do {
+		done = true;
+		for (i = 0; i < pack->num_entities - 1; i++) {
+			if (pack->entities[i].number > pack->entities[i+1].number) {
+				entity_state_t tmp;
+				tmp = pack->entities[i];
+				pack->entities[i] = pack->entities[i+1];
+				pack->entities[i+1] = tmp;
+				done = false;
+			}
+		}
+	} while (!done);
+}
+
 // we pass it to MSG_EmitPacketEntities
 entity_state_t *SV_GetBaseline (int number)
 {
@@ -336,7 +428,6 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	edict_t	*clent;
 	client_frame_t	*frame;
 	entity_state_t	*state;
-	int		max_edicts;
 
 	// this is the frame we are creating
 	frame = &client->frames[client->netchan.incoming_sequence & UPDATE_MASK];
@@ -355,10 +446,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 
 	numnails = 0;
 
-	// QW protocol can only handle 512 entities. Any entity with number >= 512 will be invisible
-	max_edicts = min (sv.num_edicts, 512);
-
-	for (e=MAX_CLIENTS+1, ent=EDICT_NUM(e) ; e < max_edicts ; e++, ent = NEXT_EDICT(ent))
+	for (e=MAX_CLIENTS+1, ent=EDICT_NUM(e) ; e < sv.num_edicts ; e++, ent = NEXT_EDICT(ent))
 	{
 		// ignore ents without visible models
 		if (!ent->v.modelindex || !*PR_GetString(ent->v.model))
@@ -382,7 +470,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 		state = &pack->entities[pack->num_entities];
 		pack->num_entities++;
 
-		state->number = e;
+		state->number = SV_TranslateEntnum(e);
 		state->flags = 0;
 		VectorCopy (ent->v.origin, state->origin);
 		VectorCopy (ent->v.angles, state->angles);
@@ -392,6 +480,9 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 		state->skinnum = ent->v.skin;
 		state->effects = ent->v.effects;
 	}
+
+	// entity translation might have broken original entnum order so make sure entity states are sorted
+	BubbleSort (pack);
 
 	if (client->delta_sequence != -1) {
 		// encode the packet entities as a delta from the

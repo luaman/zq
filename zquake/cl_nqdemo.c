@@ -16,7 +16,7 @@ void R_TranslatePlayerSkin (int playernum);
 #define	NQ_MAX_CLIENTS	16
 #define NQ_SIGNONS		4
 
-#define	NQ_MAX_EDICTS	600			// Must be <= MAX_EDICTS!
+#define	NQ_MAX_EDICTS	600			// Must be <= MAX_CL_EDICTS!
 
 // if the high bit of the servercmd is set, the low bits are fast update flags:
 #define	NQ_U_MOREBITS	(1<<0)
