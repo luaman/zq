@@ -39,6 +39,7 @@ void weapon_laser_gun ()
 	}
 
 	precache_model ("progs/v_laserg.mdl");
+	precache_model ("progs/lasrspik.mdl");
 
 	precache_model ("progs/g_laserg.mdl");
 	setmodel (self, "progs/g_laserg.mdl");
@@ -59,6 +60,7 @@ void weapon_proximity_gun ()
 	}
 
 	precache_model ("progs/v_prox.mdl");
+	precache_model ("progs/proxbomb.mdl");
 
 	precache_model ("progs/g_prox.mdl");
 	setmodel (self, "progs/g_prox.mdl");
@@ -102,6 +104,20 @@ void item_artifact_wetsuit ()
 
 	precache_model ("progs/wetsuit.mdl");
 	setmodel (self, "progs/wetsuit.mdl");
+
+	StartItem ();
+}
+
+
+void item_artifact_empathy_shields ()
+{
+	if (deathmatch > 3) {
+		remove (self);
+		return;
+	}
+
+	precache_model ("progs/empathy.mdl");
+	setmodel (self, "progs/empathy.mdl");
 
 	StartItem ();
 }
