@@ -440,25 +440,17 @@ local vector	org;
 	spawn_tfog (org);
 	spawn_tdeath(t.origin, other);
 
-// move the player and lock him down for a little while
-	if (!other.health)
-	{
-		other.origin = t.origin;
-		other.velocity = (v_forward * other.velocity_x) + (v_forward * other.velocity_y);
-		return;
-	}
-
+// move the player
 	setorigin (other, t.origin);
 	other.angles = t.mangle;
+	other.flags = other.flags - (other.flags & FL_ONGROUND);
+
 	if (other.classname == "player")
 	{
 		other.fixangle = 1;		// turn this way immediately
-		other.teleport_time = time + 0.7;
-		if (other.flags & FL_ONGROUND)
-			other.flags = other.flags - FL_ONGROUND;
 		other.velocity = v_forward * 300;
 	}
-	other.flags = other.flags - other.flags & FL_ONGROUND;
+
 };
 
 /*QUAKED info_teleport_destination (.5 .5 .5) (-8 -8 -8) (8 8 32)
