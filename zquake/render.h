@@ -123,13 +123,13 @@ extern refdef2_t	r_refdef2;
 // FIXME, only used by sound code in client -- make private to refresh?
 extern vec3_t		r_origin, vpn, vright, vup;
 
-void R_Init (void);
+void R_Init (unsigned char *palette);
 void R_InitTextures (void);
 void R_InitEfrags (void);
 void R_RenderView (void);		// must set r_refdef first
-void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect);
-								// called whenever r_refdef or vid change
 void R_SetSky (char *name);				// Quake2 skybox
+// called whenever r_refdef or vid change
+void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect);
 
 void R_AddEfrags (entity_t *ent);
 void R_RemoveEfrags (entity_t *ent);

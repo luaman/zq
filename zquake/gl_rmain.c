@@ -601,7 +601,7 @@ void R_SetupGL (void)
 R_Init
 ===============
 */
-void R_Init (void)
+void R_Init (unsigned char *palette)
 {
 	extern void R_InitBubble (void);
 	extern void R_Draw_Init (void);

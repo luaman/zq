@@ -44,8 +44,6 @@ typedef unsigned short PIXEL;
 #include "input.h"
 #include "keys.h"
 
-unsigned char d_15to8table[65536];
-
 cvar_t		vid_ref = {"vid_ref", "soft", CVAR_ROM};
 cvar_t		_windowed_mouse = {"_windowed_mouse","0",CVAR_ARCHIVE};
 cvar_t		m_filter = {"m_filter","0",CVAR_ARCHIVE};

@@ -827,7 +827,7 @@ void CL_Init (void)
 #endif
 
 
-	R_Init ();
+	R_Init (host_basepal);
 
 	S_Init ();
 	CDAudio_Init ();

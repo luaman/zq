@@ -128,6 +128,12 @@ cvar_t	r_aliastransbase = {"r_aliastransbase", "200"};
 cvar_t	r_aliastransadj = {"r_aliastransadj", "100"};
 cvar_t	r_fullbrightSkins = {"r_fullbrightSkins","0"};
 
+// FIXME, reload & rebuild the palette stuff on gamedir changes
+unsigned char	r_palette[768];
+qbool			d_15to8table_made = false;
+unsigned char	d_15to8table[65536];
+
+
 extern cvar_t	scr_fov;
 
 void R_NetGraph (void);
@@ -172,14 +178,16 @@ void R_InitTextures (void)
 R_Init
 ===============
 */
-void R_Init (void)
+void R_Init (unsigned char *palette)
 {
 	extern void R_Draw_Init (void);
 	int		dummy;
 	
 // get stack position so we can guess if we are going to overflow
 	r_stack_start = (byte *)&dummy;
-	
+
+	memcpy (r_palette, palette, 768);
+
 	R_InitTurb ();
 	
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);

@@ -397,7 +397,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int			original_mode, temp;
 	qbool		stat;
-    MSG			msg;
+//    MSG			msg;
 
 	if ((windowed && (modenum != 0)) ||
 		(!windowed && (modenum < 1)) ||
@@ -467,14 +467,15 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	vid_modenum = modenum;
 	Cvar_SetValue (&vid_mode, (float)vid_modenum);
 
+/*	// Tonik: all it does, it seems, is eat up keys and slow down
+	// the startup process by 0.1 seconds, so disable it
 	while (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
 	{
       	TranslateMessage (&msg);
       	DispatchMessage (&msg);
 	}
-
 	Sleep (100);
-
+*/
 	SetWindowPos (mainwindow, HWND_TOP, 0, 0, 0, 0,
 				  SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW |
 				  SWP_NOCOPYBITS);
