@@ -30,7 +30,7 @@ HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS
 #define	WAV_BUFFERS				64
 #define	WAV_MASK				0x3F
 #define	WAV_BUFFER_SIZE			0x0400
-#define SECONDARY_BUFFER_SIZE	0x10000
+#define	SECONDARY_BUFFER_SIZE	0x10000
 
 typedef enum {SIS_SUCCESS, SIS_FAILURE, SIS_NOTAVAIL} sndinitstat;
 
@@ -68,8 +68,8 @@ LPDIRECTSOUNDBUFFER pDSBuf, pDSPBuf;
 
 HINSTANCE hInstDS;
 
-qbool SNDDMA_InitDirect (void);
-qbool SNDDMA_InitWav (void);
+static sndinitstat SNDDMA_InitDirect (void);
+static qbool       SNDDMA_InitWav (void);
 
 
 /* static */ char *DSoundError (int error)
@@ -198,7 +198,7 @@ SNDDMA_InitDirect
 Direct-Sound support
 ==================
 */
-sndinitstat SNDDMA_InitDirect (void)
+static sndinitstat SNDDMA_InitDirect (void)
 {
 	DSBUFFERDESC	dsbuf;
 	DSBCAPS			dsbcaps;
@@ -430,7 +430,7 @@ SNDDM_InitWav
 Crappy windows multimedia base
 ==================
 */
-qbool SNDDMA_InitWav (void)
+static qbool SNDDMA_InitWav (void)
 {
 	WAVEFORMATEX  format;
 	int				i;
@@ -556,7 +556,7 @@ Returns false if nothing is found.
 ==================
 */
 
-int SNDDMA_Init(void)
+qbool SNDDMA_Init(void)
 {
 	sndinitstat	stat;
 
@@ -616,10 +616,10 @@ int SNDDMA_Init(void)
 		if (snd_firsttime)
 			Com_Printf ("No sound device initialized\n");
 
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 /*
