@@ -344,7 +344,7 @@ SOURCE=.\d_polyse.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\d_scan.c
+SOURCE=.\r_scan.c
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
 
@@ -540,6 +540,25 @@ SOURCE=.\gl_ngraph.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\gl_ralias.c
+
+!IF  "$(CFG)" == "zqclient - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\gl_refrag.c
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
@@ -598,6 +617,25 @@ SOURCE=.\gl_rmain.c
 # Begin Source File
 
 SOURCE=.\gl_rmisc.c
+
+!IF  "$(CFG)" == "zqclient - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\gl_rsprite.c
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
 
@@ -1463,14 +1501,14 @@ InputName=cl_math
 # End Source File
 # Begin Source File
 
-SOURCE=.\d_draw.s
+SOURCE=.\r_draw8.s
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
 
 # Begin Custom Build
 OutDir=.\Release-client
-InputPath=.\d_draw.s
-InputName=d_draw
+InputPath=.\r_draw8.s
+InputName=r_draw8
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -1484,8 +1522,8 @@ InputName=d_draw
 
 # Begin Custom Build
 OutDir=.\Debug-client
-InputPath=.\d_draw.s
-InputName=d_draw
+InputPath=.\r_draw8.s
+InputName=r_draw8
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -1509,14 +1547,14 @@ InputName=d_draw
 # End Source File
 # Begin Source File
 
-SOURCE=.\d_draw16.s
+SOURCE=.\r_draw16.s
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
 
 # Begin Custom Build
 OutDir=.\Release-client
-InputPath=.\d_draw16.s
-InputName=d_draw16
+InputPath=.\r_draw16.s
+InputName=r_draw16
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -1530,8 +1568,8 @@ InputName=d_draw16
 
 # Begin Custom Build
 OutDir=.\Debug-client
-InputPath=.\d_draw16.s
-InputName=d_draw16
+InputPath=.\r_draw16.s
+InputName=r_draw16
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -1555,14 +1593,14 @@ InputName=d_draw16
 # End Source File
 # Begin Source File
 
-SOURCE=.\d_parta.s
+SOURCE=.\r_parta.s
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
 
 # Begin Custom Build
 OutDir=.\Release-client
-InputPath=.\d_parta.s
-InputName=d_parta
+InputPath=.\r_parta.s
+InputName=r_parta
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -1576,8 +1614,8 @@ InputName=d_parta
 
 # Begin Custom Build
 OutDir=.\Debug-client
-InputPath=.\d_parta.s
-InputName=d_parta
+InputPath=.\r_parta.s
+InputName=r_parta
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -1647,14 +1685,14 @@ InputName=d_polysa
 # End Source File
 # Begin Source File
 
-SOURCE=.\d_scana.s
+SOURCE=.\r_scana.s
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
 
 # Begin Custom Build
 OutDir=.\Release-client
-InputPath=.\d_scana.s
-InputName=d_scana
+InputPath=.\r_scana.s
+InputName=r_scana
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -1668,8 +1706,8 @@ InputName=d_scana
 
 # Begin Custom Build
 OutDir=.\Debug-client
-InputPath=.\d_scana.s
-InputName=d_scana
+InputPath=.\r_scana.s
+InputName=r_scana
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
