@@ -108,7 +108,7 @@ void Cmd_Give (string item, string amount)
 	}
 	else if (item == "quad") {
 		self.items = self.items | IT_QUAD;
-		self.super_time = 1;
+		self.super_time = 0;
 		self.super_damage_finished = time + 30;
 	}
 	else if (item == "key1")
