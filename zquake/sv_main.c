@@ -1617,7 +1617,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 SV_Init
 ====================
 */
-void SV_Init (quakeparms_t *parms)
+void SV_Init (void)
 {
 	PR_Init ();
 	SV_InitLocal ();
