@@ -711,8 +711,13 @@ void CL_ParsePlayerinfo (void)
 		int pm_code = (flags >> PF_PMC_SHIFT) & PF_PMC_MASK;
 
 		if (pm_code == PMC_NORMAL || pm_code == PMC_NORMAL_JUMP_HELD) {
-			state->pm_type = PM_NORMAL;
-			state->jump_held = (pm_code == PMC_NORMAL_JUMP_HELD);
+			if (flags & PF_DEAD)
+				state->pm_type = PM_DEAD;
+			else
+			{
+				state->pm_type = PM_NORMAL;
+				state->jump_held = (pm_code == PMC_NORMAL_JUMP_HELD);
+			}
 		}
 		else if (pm_code == PMC_OLD_SPECTATOR)
 			state->pm_type = PM_OLD_SPECTATOR;
