@@ -1,6 +1,7 @@
 ./spprogs.dat
 
 ../qw/defs.qc
+sp_defs.qc
 ../qw/subs.qc
 sp_subs.qc
 fight.qc
