@@ -280,7 +280,7 @@ qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	}
 	else
 	{
-		VectorInverse (plane->normal, trace->plane.normal);
+		VectorNegate (plane->normal, trace->plane.normal);
 		trace->plane.dist = -plane->dist;
 	}
 
