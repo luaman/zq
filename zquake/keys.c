@@ -205,9 +205,9 @@ qboolean CheckForCommand (void)
 	command[i] = 0;
 
 	cmd = Cmd_CompleteCommand (command);
-	if (!cmd || strcmp (cmd, command))
+	if (!cmd || Q_strcasecmp (cmd, command))
 		cmd = Cvar_CompleteVariable (command);
-	if (!cmd  || strcmp (cmd, command) )
+	if (!cmd || Q_strcasecmp (cmd, command) )
 		return false;		// just a chat message
 	return true;
 }
