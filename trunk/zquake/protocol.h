@@ -163,14 +163,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	PF_DEAD			(1<<9)		// don't block movement any more
 #define	PF_GIB			(1<<10)		// offset the view height differently
 // bits 11..13 are player move type bits
-#define PF_PM_TYPE_SHIFT	11
-#define	PF_PM_TYPE_MASK	7
+#define PF_PMC_SHIFT	11
+#define	PF_PMC_MASK	7
 
 // player move types
-#define PM_NORMAL			0		// normal ground movement
-#define PM_NORMAL_JUMP_HELD	1		// a fake move type for jump debouncing
-#define PM_NOCLIP			2
-#define PM_FLY				3		// clipped
+#define PMC_NORMAL			0		// normal ground movement
+#define PMC_NORMAL_JUMP_HELD	1	// normal ground novement + jump_held
+#define PMC_NOCLIP			2
+#define PMC_FLY				3		// clipped
 
 //==============================================
 

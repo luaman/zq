@@ -670,10 +670,10 @@ void CL_ParsePlayerinfo (void)
 	{
 		int		pm_type;
 
-		pm_type = (flags >> PF_PM_TYPE_SHIFT) & PF_PM_TYPE_MASK;
-		if (pm_type == PM_NORMAL)
+		pm_type = (flags >> PF_PMC_SHIFT) & PF_PMC_MASK;
+		if (pm_type == PMC_NORMAL)
 			state->jump_held = false;
-		else if (pm_type == PM_NORMAL_JUMP_HELD)
+		else if (pm_type == PMC_NORMAL_JUMP_HELD)
 			state->jump_held = true;
 	}
 
