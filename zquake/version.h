@@ -1,9 +1,9 @@
 // version.h
 
 #define	QW_VERSION	2.40
-#define Z_VERSION	"0.14"
+#define Z_VERSION	"0.15dev"
 
-#define RELEASE_VERSION
+// #define RELEASE_VERSION
 
 #ifdef _WIN32
 #define QW_PLATFORM	"Win32"
