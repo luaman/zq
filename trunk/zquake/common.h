@@ -213,6 +213,8 @@ void FS_LoadCacheFile (char *path, struct cache_user_s *cu);
 void COM_WriteFile (char *filename, void *data, int len);
 void COM_CreatePath (char *path);
 
+void COM_CheckRegistered (void);
+
 
 char *Info_ValueForKey (char *s, char *key);
 void Info_RemoveKey (char *s, char *key);
