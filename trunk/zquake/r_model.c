@@ -1335,21 +1335,15 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		mod->modhint = MOD_THUNDERBOLT;	*/
 
 	if (mod->modhint == MOD_PLAYER || mod->modhint == MOD_EYES) {
-		unsigned short crc;
-		char st[40];
-
-		crc = CRC_Block (buffer, fs_filesize);
-	
-		sprintf(st, "%d", (int) crc);
-		Info_SetValueForKey (cls.userinfo, 
-			mod->modhint == MOD_PLAYER ? pmodel_name : emodel_name,
-			st, MAX_INFO_STRING);
-
 		if (cls.state >= ca_connected) {
+			char st[40];
+			unsigned short crc;
+
+			crc = CRC_Block (buffer, fs_filesize);
 			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 			sprintf(st, "setinfo %s %d", 
-				mod->modhint == MOD_PLAYER ? pmodel_name : emodel_name,
-				(int)crc);
+					mod->modhint == MOD_PLAYER ? pmodel_name : emodel_name,
+					(int)crc);
 			SZ_Print (&cls.netchan.message, st);
 		}
 	}
