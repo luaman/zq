@@ -930,8 +930,8 @@ void TP_CheckVersionRequest (char *s)
 	int	i;
 
 	if (vars.f_version_reply_time
-		&& realtime - vars.f_version_reply_time < 10)
-		return;	// don't reply again if 10 seconds haven't passed
+		&& realtime - vars.f_version_reply_time < 20)
+		return;	// don't reply again if 20 seconds haven't passed
 
 	while (1)
 	{
@@ -952,9 +952,10 @@ ok:
 		buf[i] = s[i] &~ 128;			// strip high bit
 
 	if (!strncmp(buf, " f_version\n", 11) || !strncmp(buf, " z_version\n", 11))
+	{
 		Cbuf_AddText (va("say ZQuake version %s (Build %04d)\n", Z_VERSION, build_number()));
-
-	vars.f_version_reply_time = realtime;
+		vars.f_version_reply_time = realtime;
+	}
 }
 
 
