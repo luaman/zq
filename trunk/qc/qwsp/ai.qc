@@ -725,11 +725,11 @@ void ai_run (float dist)
 	
 	movedist = dist;
 // see if the enemy is dead
-	if (self.enemy.health <= 0)
+	if (self.enemy.health <= 0 || self.enemy.flags & FL_NOTARGET)
 	{
 		self.enemy = world;
 	// FIXME: look all around for other targets
-		if (self.oldenemy.health > 0)
+		if (self.oldenemy.health > 0 && !(self.oldenemy.flags & FL_NOTARGET))
 		{
 			self.enemy = self.oldenemy;
 			HuntTarget ();
