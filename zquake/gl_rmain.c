@@ -461,12 +461,24 @@ void R_DrawAliasModel (entity_t *ent)
 	qboolean	full_light;
 	model_t		*clmodel = ent->model;
 	int			texture, fb_texture = 0;
+	float		d;
 
 	VectorAdd (ent->origin, clmodel->mins, mins);
 	VectorAdd (ent->origin, clmodel->maxs, maxs);
 
-	if (R_CullBox (mins, maxs))
-		return;
+	if (ent->angles[0] || ent->angles[1] || ent->angles[2])
+	{
+		for (i=0 ; i<4 ; i++)
+		{
+			d = DotProduct (ent->origin, frustum[i].normal) - frustum[i].dist;
+
+			if (d <= -clmodel->radius)
+				return;
+		}
+	}
+	else
+		if (R_CullBox (mins, maxs))
+			return;
 
 	VectorCopy (ent->origin, r_entorigin);
 	VectorSubtract (r_origin, r_entorigin, modelorg);
