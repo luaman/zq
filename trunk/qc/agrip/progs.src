@@ -23,7 +23,7 @@ agrip_defs.qc // Accessibility definitions
 ../qw/combat.qc
 ../qw/items.qc
 
-_aux.qc       // AGRIP Auxiliary Player Information Object
+epi.qc       // AGRIP Auxiliary Player Information Object
 se.qc        // AGRIP Sound Entity
 misc.qc      // AGRIP Utility Functions
 nav.qc       // AGRIP Navigation Helper
