@@ -416,7 +416,7 @@ void CL_FinishMove (usercmd_t *cmd)
 {
 	int		i;
 	int		ms;
-	static double	msec_balance = 0;
+	static double	extramsec = 0;
 
 //
 // figure button bits
@@ -437,9 +437,9 @@ void CL_FinishMove (usercmd_t *cmd)
 #if 0
 	ms = cls.frametime * 1000;
 #else
-	msec_balance += cls.frametime * 990;
-	ms = msec_balance;
-	msec_balance -= ms;
+	extramsec += cls.frametime * 990;
+	ms = extramsec;
+	extramsec -= ms;
 #endif
 	if (ms > 250)
 		ms = 100;		// time was unreasonable
