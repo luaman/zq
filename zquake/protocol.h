@@ -164,9 +164,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	PF_WEAPONFRAME	(1<<8)		// only sent for view player
 #define	PF_DEAD			(1<<9)		// don't block movement any more
 #define	PF_GIB			(1<<10)		// offset the view height differently
-// bits 11..13 are player move type bits
+// bits 11..13 are player move type bits (ZQuake extension)
 #define PF_PMC_SHIFT	11
 #define	PF_PMC_MASK	7
+#define	PF_ONGROUND		(1<<14)		// ZQuake extension
 
 // player move types
 #define PMC_NORMAL			0		// normal ground movement
@@ -264,6 +265,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define Z_EXT_PITCHLIMITS	(1<<4)	// serverinfo maxpitch & minpitch
 #define Z_EXT_JOIN_OBSERVE	(1<<5)	// server: "join" and "observe" commands are supported
 									// client: on-the-fly spectator <-> player switching supported
+#define Z_EXT_PF_ONGROUND	(1<<6)	// server: PF_ONGROUND is valid for all svc_playerinfo
 
 // experimental bits
 #define Z_EXT_SVC_PARTICLE	(1<<30)	// whether the client or server supports NQ's svc_particle
@@ -271,7 +273,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define SUPPORTED_EXTENSIONS (Z_EXT_PM_TYPE|Z_EXT_PM_TYPE_NEW|	\
 		Z_EXT_VIEWHEIGHT|Z_EXT_SERVERTIME|Z_EXT_PITCHLIMITS|	\
-		Z_EXT_JOIN_OBSERVE)
+		Z_EXT_JOIN_OBSERVE|Z_EXT_PF_ONGROUND)
 
 /*
 ==========================================================

@@ -260,6 +260,10 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 		}
 		pflags |= pm_code << PF_PMC_SHIFT;
 
+		// Z_EXT_PF_ONGROUND protocol extension
+		if ((int)ent->v.flags & FL_ONGROUND)
+			pflags |= PF_ONGROUND;
+
 		if (client->spec_track && client->spec_track - 1 == j &&
 			ent->v.weaponframe) 
 			pflags |= PF_WEAPONFRAME;
