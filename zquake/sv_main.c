@@ -166,42 +166,6 @@ void SV_Shutdown (char *finalmsg)
 	memset (svs.clients, 0, sizeof(svs.clients));
 }
 
-/*
-================
-SV_Error
-
-Sends a datagram to all the clients informing them of the server crash,
-then exits
-================
-*/
-void SV_Error (char *error, ...)
-{
-	va_list		argptr;
-	static	char		string[1024];
-	static	qboolean inerror = false;
-
-	if (inerror)
-		Sys_Error ("SV_Error: recursively entered (%s)", string);
-
-	inerror = true;
-
-	va_start (argptr,error);
-	vsprintf (string,error,argptr);
-	va_end (argptr);
-
-	Com_Printf ("SV_Error: %s\n",string);
-
-#ifdef QW_BOTH
-	inerror = false;
-	Host_EndGame ("SV_Error");
-#else
-	SV_Shutdown (va("server crashed: %s\n", string));
-	NET_Shutdown ();
-
-	Sys_Error ("SV_Error: %s",string);
-#endif
-}
-
 
 /*
 =====================
