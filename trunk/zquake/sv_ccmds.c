@@ -115,7 +115,7 @@ void SV_Fraglogfile_f (void)
 	// find an unused name
 	for (i=0 ; i<MAX_LOGFILES ; i++)
 	{
-		sprintf (name, "%s/frag_%i.log", com_gamedir, i);
+		Q_snprintfz (name, sizeof(name), "%s/frag_%i.log", com_gamedir, i);
 		sv_fraglogfile = fopen (name, "r");
 		if (!sv_fraglogfile)
 		{	// can't read it, so create this one
@@ -194,7 +194,7 @@ void SV_Map_f (void)
 	strcpy (level, Cmd_Argv(1));
 
 	// check to make sure the level exists
-	sprintf (expanded, "maps/%s.bsp", level);
+	Q_snprintfz (expanded, sizeof(expanded), "maps/%s.bsp", level);
 	FS_FOpenFile (expanded, &f);
 	if (!f)
 	{
