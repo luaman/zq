@@ -81,7 +81,7 @@ cvar_t	sv_highchars = {"sv_highchars", "1"};
 cvar_t	sv_phs = {"sv_phs", "1"};
 cvar_t	pausable = {"pausable", "1"};
 cvar_t	sv_maxrate = {"sv_maxrate", "0"};
-cvar_t	sv_fastconnect = {"sv_fastconnect", "1"};
+cvar_t	sv_fastconnect = {"sv_fastconnect", "0"};
 
 //
 // game rules mirrored in svs.info
