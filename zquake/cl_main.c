@@ -828,8 +828,10 @@ void CL_Init (void)
 	SList_Init ();
 	SList_Load ();
 
+#if 0
 	// bring up the main menu
 	M_Menu_Main_f ();
+#endif
 }
 
 
