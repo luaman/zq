@@ -41,8 +41,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <X11/extensions/xf86dga.h>
 #endif
 
-static Display *dpy = NULL;
-static Window win;
+static Display *x_disp = NULL;
+static Window x_win;
 static GLXContext ctx = NULL;
 
 static float old_windowed_mouse = 0, mouse_x, mouse_y, old_mouse_x, old_mouse_y;
@@ -133,9 +133,9 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void VID_SetCaption (char *text)
 {
-	if (!dpy)
+	if (!x_disp)
 		return;
-	XStoreName (dpy, win, text);
+	XStoreName (x_disp, x_win, text);
 }
 
 static int XLateKey(XKeyEvent *ev)
@@ -354,27 +354,27 @@ static void install_grabs(void)
 {
 
     // don't show mouse cursor icon
-    XDefineCursor(dpy, win, CreateNullCursor(dpy, win));
+    XDefineCursor(x_disp, x_win, CreateNullCursor(x_disp, x_win));
 
-    XGrabPointer(dpy, win,
+    XGrabPointer(x_disp, x_win,
                  True,
                  0,
                  GrabModeAsync, GrabModeAsync,
-                 win,
+                 x_win,
                  None,
                  CurrentTime);
 
 #ifdef USE_DGA
-    XF86DGADirectVideo(dpy, DefaultScreen(dpy), XF86DGADirectMouse);
+    XF86DGADirectVideo(x_disp, DefaultScreen(x_disp), XF86DGADirectMouse);
     dgamouse = 1;
-    XWarpPointer(dpy, None, win, 0, 0, 0, 0, 0, 0); // oldman: this should be here really
+    XWarpPointer(x_disp, None, x_win, 0, 0, 0, 0, 0, 0); // oldman: this should be here really
 #else
-    XWarpPointer(dpy, None, win,
+    XWarpPointer(x_disp, None, x_win,
                  0, 0, 0, 0,
                  vid.width / 2, vid.height / 2);
 #endif
 
-    XGrabKeyboard(dpy, win,
+    XGrabKeyboard(x_disp, x_win,
                   False,
                   GrabModeAsync, GrabModeAsync,
                   CurrentTime);
@@ -383,15 +383,15 @@ static void install_grabs(void)
 static void uninstall_grabs(void)
 {
 #ifdef USE_DGA
-    XF86DGADirectVideo(dpy, DefaultScreen(dpy), 0);
+    XF86DGADirectVideo(x_disp, DefaultScreen(x_disp), 0);
     dgamouse = 0;
 #endif
 
-    XUngrabPointer(dpy, CurrentTime);
-    XUngrabKeyboard(dpy, CurrentTime);
+    XUngrabPointer(x_disp, CurrentTime);
+    XUngrabKeyboard(x_disp, CurrentTime);
 
     // show cursor again
-    XUndefineCursor(dpy, win);
+    XUndefineCursor(x_disp, x_win);
 
 }
 
@@ -416,10 +416,10 @@ static void GetEvent(void)
     XEvent event;
     int b;
 
-    if (!dpy)
+    if (!x_disp)
         return;
 
-    XNextEvent(dpy, &event);
+    XNextEvent(x_disp, &event);
 
     switch (event.type)
     {
@@ -444,10 +444,10 @@ static void GetEvent(void)
                 mouse_y = (float) ((int)event.xmotion.y - (int)(vid.height/2));
 
                 /* move the mouse to the window center again */
-                XSelectInput(dpy, win, X_MASK & ~PointerMotionMask);
-                XWarpPointer(dpy, None, win, 0, 0, 0, 0,
+                XSelectInput(x_disp, x_win, X_MASK & ~PointerMotionMask);
+                XWarpPointer(x_disp, None, x_win, 0, 0, 0, 0,
                              (vid.width/2), (vid.height/2));
-                XSelectInput(dpy, win, X_MASK);
+                XSelectInput(x_disp, x_win, X_MASK);
 #ifdef USE_DGA
             }
 #endif
@@ -541,7 +541,7 @@ void VID_SetDeviceGammaRamp (unsigned short *ramps)
         currentgammaramp = ramps;
         if (vid_hwgamma_enabled)
         {
-            XF86VidModeSetGammaRamp(dpy, scrnum, 256, ramps, ramps + 256, ramps + 512);
+            XF86VidModeSetGammaRamp(x_disp, scrnum, 256, ramps, ramps + 256, ramps + 512);
             customgamma = true;
         }
     }
@@ -556,13 +556,13 @@ void InitHWGamma (void)
     if (COM_CheckParm("-nohwgamma"))
         return;
 
-    XF86VidModeGetGammaRampSize(dpy, scrnum, &xf86vm_gammaramp_size);
+    XF86VidModeGetGammaRampSize(x_disp, scrnum, &xf86vm_gammaramp_size);
 
     vid_gammaworks = (xf86vm_gammaramp_size == 256);
 
     if (vid_gammaworks)
     {
-        XF86VidModeGetGammaRamp(dpy,scrnum,xf86vm_gammaramp_size,
+        XF86VidModeGetGammaRamp(x_disp,scrnum,xf86vm_gammaramp_size,
                                 systemgammaramp[0], systemgammaramp[1], systemgammaramp[2]);
     }
     vid_hwgamma_enabled = vid_hwgammacontrol.value && vid_gammaworks; // && fullscreen?
@@ -575,7 +575,7 @@ void RestoreHWGamma (void)
     if (vid_gammaworks && customgamma)
     {
         customgamma = false;
-        XF86VidModeSetGammaRamp(dpy, scrnum, 256, systemgammaramp[0], systemgammaramp[1], systemgammaramp[2]);
+        XF86VidModeSetGammaRamp(x_disp, scrnum, 256, systemgammaramp[0], systemgammaramp[1], systemgammaramp[2]);
     }
 #endif
 }
@@ -700,7 +700,7 @@ void GL_EndRendering (void)
     }
 
     glFlush();
-    glXSwapBuffers(dpy, win);
+    glXSwapBuffers(x_disp, x_win);
 }
 
 void VID_Shutdown(void)
@@ -713,18 +713,18 @@ void VID_Shutdown(void)
     RestoreHWGamma();
 
 #ifdef USE_VMODE
-    if (dpy)
+    if (x_disp)
     {
-        glXDestroyContext(dpy, ctx);
-        if (win)
-            XDestroyWindow(dpy, win);
+        glXDestroyContext(x_disp, ctx);
+        if (x_win)
+            XDestroyWindow(x_disp, x_win);
         if (vidmode_active)
-            XF86VidModeSwitchToMode(dpy, scrnum, vidmodes[0]);
-        XCloseDisplay(dpy);
+            XF86VidModeSwitchToMode(x_disp, scrnum, vidmodes[0]);
+        XCloseDisplay(x_disp);
         vidmode_active = false;
     }
 #else
-    glXDestroyContext(dpy, ctx);
+    glXDestroyContext(x_disp, ctx);
 #endif
 }
 
@@ -823,20 +823,20 @@ void VID_Init(unsigned char *palette)
     if (vid.height < 200)
         vid.height = 200;
 
-    if (!(dpy = XOpenDisplay(NULL)))
+    if (!(x_disp = XOpenDisplay(NULL)))
     {
         fprintf(stderr, "Error couldn't open the X display\n");
         exit(1);
     }
 
-    scrnum = DefaultScreen(dpy);
-    root = RootWindow(dpy, scrnum);
+    scrnum = DefaultScreen(x_disp);
+    root = RootWindow(x_disp, scrnum);
 
 #ifdef USE_VMODE
     // check vmode extensions supported
     // Get video mode list
     MajorVersion = MinorVersion = 0;
-    if (!XF86VidModeQueryVersion(dpy, &MajorVersion, &MinorVersion))
+    if (!XF86VidModeQueryVersion(x_disp, &MajorVersion, &MinorVersion))
     {
         vidmode_ext = false;
     }
@@ -847,7 +847,7 @@ void VID_Init(unsigned char *palette)
     }
 #endif
 
-    visinfo = glXChooseVisual(dpy, scrnum, attrib);
+    visinfo = glXChooseVisual(x_disp, scrnum, attrib);
     if (!visinfo)
     {
         fprintf(stderr, "qkHack: Error couldn't get an RGB, Double-buffered, Depth visual\n");
@@ -860,7 +860,7 @@ void VID_Init(unsigned char *palette)
     {
         int best_fit, best_dist, dist, x, y;
 
-        XF86VidModeGetAllModeLines(dpy, scrnum, &num_vidmodes, &vidmodes);
+        XF86VidModeGetAllModeLines(x_disp, scrnum, &num_vidmodes, &vidmodes);
 
         // Are we going fullscreen?  If so, let's change video mode
         if (fullscreen)
@@ -888,10 +888,10 @@ void VID_Init(unsigned char *palette)
                 actualWidth = vidmodes[best_fit]->hdisplay;
                 actualHeight = vidmodes[best_fit]->vdisplay;
                 // change to the mode
-                XF86VidModeSwitchToMode(dpy, scrnum, vidmodes[best_fit]);
+                XF86VidModeSwitchToMode(x_disp, scrnum, vidmodes[best_fit]);
                 vidmode_active = true;
                 // Move the viewport to top left
-                XF86VidModeSetViewPort(dpy, scrnum, 0, 0);
+                XF86VidModeSetViewPort(x_disp, scrnum, 0, 0);
             }
             else
             {
@@ -903,7 +903,7 @@ void VID_Init(unsigned char *palette)
     /* window attributes */
     attr.background_pixel = 0;
     attr.border_pixel = 0;
-    attr.colormap = XCreateColormap(dpy, root, visinfo->visual, AllocNone);
+    attr.colormap = XCreateColormap(x_disp, root, visinfo->visual, AllocNone);
     attr.event_mask = X_MASK;
     mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
@@ -918,27 +918,27 @@ void VID_Init(unsigned char *palette)
         attr.save_under = False;
     }
 #endif
-    win = XCreateWindow(dpy, root, 0, 0, width, height,
+    x_win = XCreateWindow(x_disp, root, 0, 0, width, height,
                         0, visinfo->depth, InputOutput,
                         visinfo->visual, mask, &attr);
-    XStoreName(dpy, win, PROGRAM);
-    XMapWindow(dpy, win);
+    XStoreName(x_disp, x_win, PROGRAM);
+    XMapWindow(x_disp, x_win);
 
 #ifdef USE_VMODE
     if (vidmode_active)
     {
-        XRaiseWindow(dpy, win);
-        XWarpPointer(dpy, None, win, 0, 0, 0, 0, 0, 0);
-        XFlush(dpy);
+        XRaiseWindow(x_disp, x_win);
+        XWarpPointer(x_disp, None, x_win, 0, 0, 0, 0, 0, 0);
+        XFlush(x_disp);
         // Move the viewport to top left
-        XF86VidModeSetViewPort(dpy, scrnum, 0, 0);
+        XF86VidModeSetViewPort(x_disp, scrnum, 0, 0);
     }
 #endif
-    XFlush(dpy);
+    XFlush(x_disp);
 
-    ctx = glXCreateContext(dpy, visinfo, NULL, True);
+    ctx = glXCreateContext(x_disp, visinfo, NULL, True);
 
-    glXMakeCurrent(dpy, win, ctx);
+    glXMakeCurrent(x_disp, x_win, ctx);
 
     vid.realwidth = width;
     vid.realheight = height;
@@ -968,9 +968,9 @@ void VID_Init(unsigned char *palette)
 
 void Sys_SendKeyEvents(void)
 {
-    if (dpy)
+    if (x_disp)
     {
-        while (XPending(dpy))
+        while (XPending(x_disp))
             GetEvent();
     }
 }
