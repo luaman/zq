@@ -316,6 +316,7 @@ void CL_ClearState (void)
 	}
 
 	CL_ClearTEnts ();
+	CL_ClearParticles ();
 
 // wipe the entire cl structure
 	memset (&cl, 0, sizeof(cl));
@@ -328,7 +329,6 @@ void CL_ClearState (void)
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
 	memset (cl_entities, 0, sizeof(cl_entities));
 
-	cl_numvisedicts = 0;
 	cl_oldentframecount = -1;
 	cl_entframecount = 0;
 	cl.viewheight = DEFAULT_VIEWHEIGHT;

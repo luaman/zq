@@ -84,6 +84,12 @@ void V_NewMap (void)
 	v_iroll_level = 0.1;
 	v_ipitch_level = 0.3;
 	v_idlescale = 0;
+
+	v_dmg_time = 0;
+	v_dmg_roll = 0;
+	v_dmg_pitch = 0;
+
+	V_ClearScene();
 }
 
 /*
