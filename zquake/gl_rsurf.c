@@ -1408,7 +1408,7 @@ int AllocBlock (int w, int h, int *x, int *y)
 mvertex_t	*r_pcurrentvertbase;
 model_t		*currentmodel;
 
-int	nColinElim;
+// int	nColinElim;
 
 /*
 ================
@@ -1514,7 +1514,7 @@ void BuildSurfaceDisplayList (msurface_t *fa)
 						poly->verts[j - 1][k] = poly->verts[j][k];
 				}
 				lnumverts--;
-				nColinElim++;
+//				nColinElim++;
 				// retry next vertex next time, which is now current vertex
 				i--;
 			}
