@@ -305,6 +305,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	edict_t	*clent;
 	client_frame_t	*frame;
 	entity_state_t	*state;
+	int		max_edicts;
 
 	// this is the frame we are creating
 	frame = &client->frames[client->netchan.incoming_sequence & UPDATE_MASK];
@@ -323,7 +324,10 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 
 	numnails = 0;
 
-	for (e=MAX_CLIENTS+1, ent=EDICT_NUM(e) ; e<sv.num_edicts ; e++, ent = NEXT_EDICT(ent))
+	// QW protocol can only handle 512 entities. Any entity with number >= 512 will be invisible
+	max_edicts = min (sv.num_edicts, 512);
+
+	for (e=MAX_CLIENTS+1, ent=EDICT_NUM(e) ; e < max_edicts ; e++, ent = NEXT_EDICT(ent))
 	{
 		// ignore ents without visible models
 		if (!ent->v.modelindex || !*PR_GetString(ent->v.model))
