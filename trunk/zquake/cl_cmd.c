@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -79,7 +79,7 @@ void CL_ForwardToServer_f (void)
 		CL_RSShot ();
 		return;
 	}
-	
+
 	if (cls.demoplayback)
 		return;		// not really connected
 
@@ -258,7 +258,7 @@ void CL_PrintQStatReply (char *s)
 	int n, numplayers;
 	int userid, frags, time, ping, topcolor, bottomcolor;
 	char name[33], skin[17];
-	
+
 	Com_Printf ("\n");
 	//Com_Printf ("-------------------------------------\n");
 
@@ -295,17 +295,17 @@ void CL_PrintQStatReply (char *s)
 	Com_Printf ("players    %i/%s\n", numplayers, Info_ValueForKey(s, "maxclients"));
 
 	p = strtok (NULL, "\n");
-	
+
 	if (p)
 	{
 		con_ormask = 128;
 		Com_Printf ("\nping time frags name\n");
 		con_ormask = 0;
 		//Com_Printf ("-------------------------------------\n");
-		
+
 		while (p)
 		{
-			sscanf (p, "%d %d %d %d \"%32[^\"]\" \"%16[^\"]\" %d %d", 
+			sscanf (p, "%d %d %d %d \"%32[^\"]\" \"%16[^\"]\" %d %d",
 				&userid, &frags, &time, &ping, &name, &skin, &topcolor, &bottomcolor);
 			Com_Printf("%4d %4d %4d  %-16.16s\n", ping, time, frags, name);
 			p = strtok (NULL, "\n");
@@ -397,7 +397,7 @@ void CL_Rcon_f (void)
 		if (to.port == 0)
 			to.port = BigShort (PORT_SERVER);
 	}
-	
+
 	NET_SendPacket (NS_CLIENT, strlen(message)+1, message
 		, to);
 }
@@ -539,14 +539,14 @@ void CL_Color_f (void)
 		top = atoi(Cmd_Argv(1));
 		bottom = atoi(Cmd_Argv(2));
 	}
-	
+
 	top &= 15;
 	if (top > 13)
 		top = 13;
 	bottom &= 15;
 	if (bottom > 13)
 		bottom = 13;
-	
+
 	sprintf (num, "%i", top);
 	Cvar_Set (&topcolor, num);
 	sprintf (num, "%i", bottom);
@@ -636,6 +636,9 @@ void CL_SetInfo_f (void)
 }
 
 
+extern void SV_Quit_f (void);
+extern cvar_t cl_confirmquit;
+
 /*
 ==================
 CL_Quit_f
@@ -643,9 +646,6 @@ CL_Quit_f
 */
 void CL_Quit_f (void)
 {
-	extern void SV_Quit_f (void);
-	extern cvar_t cl_confirmquit;
-
 #ifndef CLIENTONLY
 	if (dedicated)
 		SV_Quit_f ();
@@ -691,7 +691,7 @@ void CL_Serverinfo_f (void)
 		Info_Print (cl.serverinfo);
 	else
 		// so that it says we are not connected :)
-		Cmd_ForwardToServer();	
+		Cmd_ForwardToServer();
 }
 
 
@@ -799,7 +799,7 @@ void CL_Join_f (void)
 
 	if (Cmd_Argc() > 2) {
 		Com_Printf ("join [server]: join the game as player\n");
-		return; 
+		return;
 	}
 
 	if (Cmd_Argc() == 2) {
@@ -845,7 +845,7 @@ void CL_Observe_f (void)
 
 	if (Cmd_Argc() > 2) {
 		Com_Printf ("observe [server]: join the game as spectator\n");
-		return; 
+		return;
 	}
 
 	if (Cmd_Argc() == 2) {
@@ -919,7 +919,7 @@ void CL_InitCommands (void)
 	Cmd_AddCommand ("version", CL_Version_f);
 	Cmd_AddCommand ("writeconfig", CL_WriteConfig_f);
 	Cmd_AddCommand ("startdemos", CL_StartDemos_f);
-	Cmd_AddCommand ("pointfile", CL_ReadPointFile_f);	
+	Cmd_AddCommand ("pointfile", CL_ReadPointFile_f);
 	Cmd_AddCommand ("snd_restart", CL_SND_Restart_f);
 
 // client info setting
@@ -1034,7 +1034,6 @@ void CL_FullServerinfo_f (void)
 			}
 		}
 	}
-
 }
 
 

@@ -493,13 +493,13 @@ void CL_ParseDownload (void)
 	if (!cls.download)
 	{
 		if (strncmp(cls.downloadtempname,"skins/",6))
-			Q_snprintfz (name, sizeof(name), "%s/%s", cls.gamedir, cls.downloadtempname);
+			Q_snprintfz ((char *)name, sizeof(name), "%s/%s", cls.gamedir, cls.downloadtempname);
 		else
-			Q_snprintfz (name, sizeof(name), "qw/%s", cls.downloadtempname);
+			Q_snprintfz ((char *)name, sizeof(name), "qw/%s", cls.downloadtempname);
 
-		COM_CreatePath (name);
+		COM_CreatePath ((char *)name);
 
-		cls.download = fopen (name, "wb");
+		cls.download = fopen ((const char *)name, "wb");
 		if (!cls.download)
 		{
 			msg_readcount += size;

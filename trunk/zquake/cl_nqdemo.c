@@ -325,7 +325,7 @@ void NQD_ParseStufftext (void)
 	s = MSG_ReadString ();
 	Com_DPrintf ("stufftext: %s\n", s);
 
-	for (p = s; *p; p++) {
+	for (p = (byte *)s; *p; p++) {
 		if (*p > 32 && *p < 128)
 			goto ok;
 	}

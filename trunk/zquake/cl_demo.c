@@ -41,7 +41,7 @@ static HANDLE	hQizmoProcess = NULL;
 static char tempqwd_name[256] = ""; // this file must be deleted
 									// after playback is finished
 void CheckQizmoCompletion (void);
-void StopQWZPlayback (void);
+static void StopQWZPlayback (void);
 #endif
 
 /*
@@ -396,7 +396,7 @@ Called by CL_Record_f and CL_EasyRecord_f
 static void CL_Record (void)
 {
 	sizebuf_t	buf;
-	char	buf_data[MAX_MSGLEN];
+	byte	buf_data[MAX_MSGLEN];
 	int n, i, j;
 	char *s;
 	entity_t *ent;
@@ -739,7 +739,7 @@ void CL_EasyRecord_f (void)
 	char	name[1024];
 	char	name2[MAX_OSPATH*2];
 	int		i;
-	unsigned char	*p;
+	char	*p;
 	FILE	*f;
 
 	c = Cmd_Argc();
@@ -801,12 +801,12 @@ void CL_EasyRecord_f (void)
 	}
 
 // Make sure the filename doesn't contain illegal characters
-	for (p=name ; *p ; p++)	{
+	for (p = name; *p; p++)	{
 		char c;
 		*p &= 0x7F;		// strip high bit
 		c = *p;
-		if (c<=' ' || c=='?' || c=='*' || c=='\\' || c=='/' || c==':'
-			|| c=='<' || c=='>' || c=='"')
+		if (c <= ' ' || c == '?' || c == '*' || c == '\\' || c == '/' || c == ':'
+			|| c == '<' || c == '>' || c == '"')
 			*p = '_';
 	}
 

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -43,7 +43,7 @@ int			con_notifylines;		// scan lines to clear for notify lines
 extern	char	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;
 extern	int		key_linepos;
-		
+
 
 qbool		con_initialized = false;
 
@@ -84,7 +84,7 @@ void Con_ToggleConsole_f (void)
                 Com_Printf("!Entering console.\n");
         }
 #endif
-	
+
 	SCR_EndLoadingPlaque ();
 	Con_ClearNotify ();
 }
@@ -101,7 +101,7 @@ void Con_Clear_f (void)
 	con.display = con.current;
 }
 
-						
+
 /*
 ================
 Con_ClearNotify
@@ -110,12 +110,12 @@ Con_ClearNotify
 void Con_ClearNotify (void)
 {
 	int		i;
-	
+
 	for (i=0 ; i<NUM_CON_TIMES ; i++)
 		con_times[i] = 0;
 }
 
-						
+
 /*
 ================
 Con_MessageMode_f
@@ -184,7 +184,7 @@ void Con_CheckResize (void)
 			numlines = con_totallines;
 
 		numchars = oldwidth;
-	
+
 		if (con_linewidth < numchars)
 			numchars = con_linewidth;
 
@@ -210,9 +210,9 @@ void Con_CheckResize (void)
 
 
 /*
-================					
+================
 Con_ConDump_f
-================					
+================
 */
 void Con_ConDump_f (void)
 {
@@ -277,7 +277,7 @@ void Con_Init (void)
 
 	con_linewidth = -1;
 	Con_CheckResize ();
-	
+
 	Com_Printf ("Console initialized.\n");
 
 //
@@ -328,7 +328,7 @@ void Con_Print (char *txt)
 
 	if (!con_initialized)
 		return;
-	
+
 
 	if (txt[0] == 1 || txt[0] == 2)
 	{
@@ -339,7 +339,7 @@ void Con_Print (char *txt)
 		mask = 0;
 
 
-	while ( (c = *txt) )
+	while ( (c = *txt) != 0 )
 	{
 	// count word length
 		for (l=0 ; l< con_linewidth ; l++)
@@ -358,7 +358,7 @@ void Con_Print (char *txt)
 			cr = false;
 		}
 
-		
+
 		if (!con.x)
 		{
 			Con_Linefeed ();
@@ -386,7 +386,7 @@ void Con_Print (char *txt)
 				con.x = 0;
 			break;
 		}
-		
+
 	}
 }
 
@@ -469,7 +469,7 @@ void Con_DrawNotify (void)
 		if (time > con_notifytime.value)
 			continue;
 		text = con.text + (i % con_totallines)*con_linewidth;
-		
+
 		clearnotify = 0;
 		scr_copytop = 1;
 
@@ -486,7 +486,7 @@ void Con_DrawNotify (void)
 
 		clearnotify = 0;
 		scr_copytop = 1;
-	
+
 		if (chat_team) {
 			R_DrawString (8, v, "say_team:");
 			skip = 11;
@@ -518,7 +518,7 @@ void Con_DrawNotify (void)
 		}
 		v += 8;
 	}
-	
+
 	if (v > con_notifylines)
 		con_notifylines = v;
 }
@@ -537,12 +537,12 @@ void Con_DrawConsole (int lines)
 	char			*text;
 	int				row;
 	char			dlbar[1024];
-	
+
 	if (lines <= 0)
 		return;
 
 	con_vislines = lines;
-	
+
 // changed to line things up better
 	rows = (lines-22)>>3;		// rows of text to draw
 
@@ -556,19 +556,19 @@ void Con_DrawConsole (int lines)
 	// draw arrows to show the buffer is backscrolled
 		for (x=0 ; x<con_linewidth ; x+=4)
 			R_DrawChar ( (x+1)<<3, y, '^');
-	
+
 		y -= 8;
 		rows--;
 		row--;
 	}
-	
+
 	for (i=0 ; i<rows ; i++, y-=8, row--)
 	{
 		if (row < 0)
 			break;
 		if (con.current - row >= con_totallines)
 			break;		// past scrollback wrap point
-			
+
 		text = con.text + (row % con_totallines)*con_linewidth;
 
 		for (x=0 ; x<con_linewidth ; x++)
@@ -600,7 +600,7 @@ void Con_DrawConsole (int lines)
 			n = 0;
 		else
 			n = y * cls.downloadpercent / 100;
-			
+
 		for (j = 0; j < y; j++)
 			if (j == n)
 				dlbar[i++] = '\x83';
