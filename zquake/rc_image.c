@@ -128,7 +128,7 @@ void LoadTGA (char *filename, byte **out, int *width, int *height)
 		}
 	}
 	else if (targa_header.image_type==10) {   // Runlength encoded RGB images
-		unsigned char red,green,blue,alphabyte,packetHeader,packetSize,j;
+		unsigned char red = 0,green = 0,blue = 0,alphabyte = 0,packetHeader = 0,packetSize = 0,j = 0;
 		for (row = rows - 1; row >= 0; row--) {
 			pixbuf = *out + ((targa_header.attributes & 0x20) ? rows-1-row : row) * columns * 4;
 			for(column=0; column<columns; ) {
@@ -396,3 +396,5 @@ void WritePCX (byte *data, int width, int height, int rowbytes, byte *palette,	/
 	*pcxdata = (byte *) pcx;
 	*pcxsize = pack - (byte *)pcx;
 }
+
+/* vi: set noet ts=4 sts=4 ai sw=4: */

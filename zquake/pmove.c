@@ -393,7 +393,7 @@ void PM_AirAccelerate (vec3_t wishdir, float wishspeed, float accel)
 {
 	int			i;
 	float		addspeed, accelspeed, currentspeed, wishspd = wishspeed;
-	float		originalspeed, newspeed, speedcap;
+	float		originalspeed = 0.0, newspeed = 0.0, speedcap = 0.0;
 		
 	if (pmove.pm_type == PM_DEAD)
 		return;

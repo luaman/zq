@@ -177,7 +177,7 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 	int			msec;
 	usercmd_t	cmd;
 	int			pflags;
-	int			pm_type, pm_code;
+	int			pm_type = 0, pm_code = 0;
 
 	for (j=0,cl=svs.clients ; j<MAX_CLIENTS ; j++,cl++)
 	{
@@ -436,3 +436,5 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	// now add the specialized nail update
 	SV_EmitNailUpdate (msg);
 }
+
+/* vi: set noet ts=4 sts=4 ai sw=4: */
