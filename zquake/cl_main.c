@@ -95,8 +95,6 @@ cvar_t	rate = {"rate","2500", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	noaim = {"noaim","0", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	msg = {"msg","1", CVAR_ARCHIVE|CVAR_USERINFO};
 
-extern cvar_t cl_hightrack;
-
 
 client_static_t	cls;
 client_state_t	cl;
