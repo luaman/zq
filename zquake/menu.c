@@ -180,57 +180,7 @@ void M_DrawTransPicTranslate (int x, int y, qpic_t *pic)
 
 void M_DrawTextBox (int x, int y, int width, int lines)
 {
-	qpic_t	*p;
-	int		cx, cy;
-	int		n;
-
-	// draw left side
-	cx = x;
-	cy = y;
-	p = Draw_CachePic ("gfx/box_tl.lmp");
-	M_DrawTransPic (cx, cy, p);
-	p = Draw_CachePic ("gfx/box_ml.lmp");
-	for (n = 0; n < lines; n++)
-	{
-		cy += 8;
-		M_DrawTransPic (cx, cy, p);
-	}
-	p = Draw_CachePic ("gfx/box_bl.lmp");
-	M_DrawTransPic (cx, cy+8, p);
-
-	// draw middle
-	cx += 8;
-	while (width > 0)
-	{
-		cy = y;
-		p = Draw_CachePic ("gfx/box_tm.lmp");
-		M_DrawTransPic (cx, cy, p);
-		p = Draw_CachePic ("gfx/box_mm.lmp");
-		for (n = 0; n < lines; n++)
-		{
-			cy += 8;
-			if (n == 1)
-				p = Draw_CachePic ("gfx/box_mm2.lmp");
-			M_DrawTransPic (cx, cy, p);
-		}
-		p = Draw_CachePic ("gfx/box_bm.lmp");
-		M_DrawTransPic (cx, cy+8, p);
-		width -= 2;
-		cx += 16;
-	}
-
-	// draw right side
-	cy = y;
-	p = Draw_CachePic ("gfx/box_tr.lmp");
-	M_DrawTransPic (cx, cy, p);
-	p = Draw_CachePic ("gfx/box_mr.lmp");
-	for (n = 0; n < lines; n++)
-	{
-		cy += 8;
-		M_DrawTransPic (cx, cy, p);
-	}
-	p = Draw_CachePic ("gfx/box_br.lmp");
-	M_DrawTransPic (cx, cy+8, p);
+	Draw_TextBox (x + ((vid.width - 320)>>1), y + m_yofs, width, lines);
 }
 
 //=============================================================================
@@ -2799,6 +2749,8 @@ void M_Draw (void)
 
 	if (scr_centerMenu.value)
 		m_yofs = (vid.height - 200) / 2;
+	else
+		m_yofs = 0;
 
 	switch (m_state)
 	{
@@ -2890,8 +2842,6 @@ void M_Draw (void)
 	case m_demos:
 		M_Demos_Draw ();
 	}
-
-	m_yofs = 0;
 
 	if (m_entersound)
 	{
