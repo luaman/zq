@@ -1168,7 +1168,7 @@ SOURCE=.\vid_win.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\view.c
+SOURCE=.\cl_view.c
 # End Source File
 # Begin Source File
 
@@ -1404,7 +1404,7 @@ SOURCE=.\vid.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\view.h
+SOURCE=.\cl_view.h
 # End Source File
 # Begin Source File
 
