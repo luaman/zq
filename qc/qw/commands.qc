@@ -36,7 +36,9 @@ void(string item, string amount) Cmd_Give = {
 		return;
 	}
 
-	if (item == "2")
+	if (item == "")
+		return;
+	else if (item == "2")
 		self.items = self.items | IT_SHOTGUN;
 	else if (item == "3")
 		self.items = self.items | IT_SUPER_SHOTGUN;
@@ -68,7 +70,7 @@ void(string item, string amount) Cmd_Give = {
 		self.ammo_cells = 100;
 		if (self.health < 100)
 			self.health = 100;
-		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) | IT_ARMOR3;
+		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
 		self.armortype = 0.8;
 		self.armorvalue = 200;
 	}
