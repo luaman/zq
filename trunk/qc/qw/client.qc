@@ -47,6 +47,7 @@ string nextmap;
 
 float   intermission_running;
 float   intermission_exittime;
+vector	intermission_origin;
 
 /*QUAKED info_intermission (1 0.5 0.5) (-16 -16 -16) (16 16 16)
 This is the camera point for the intermission.
@@ -215,6 +216,7 @@ void() execute_changelevel =
 	intermission_exittime = time + 5;
 
 	pos = FindIntermission ();
+	intermission_origin = pos.origin;
 
 // play intermission music
 	WriteByte (MSG_ALL, SVC_CDTRACK);
@@ -1094,6 +1096,12 @@ void() PlayerPostThink =
 	local   float   mspeed, aspeed;
 	local   float   r;
 
+	if (intermission_running)
+	{
+		setorigin (self, intermission_origin);
+		return;
+	}
+
 	if (self.deadflag)
 		return;
 
@@ -1116,8 +1124,7 @@ void() PlayerPostThink =
 
 	CheckPowerups ();
 
-	if (!intermission_running)
-		W_WeaponFrame ();
+	W_WeaponFrame ();
 };
 
 
