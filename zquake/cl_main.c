@@ -1124,6 +1124,7 @@ void Host_Init (quakeparms_t *parms)
 #endif
 
 	Con_Printf ("€ QuakeWorld Initialized ‚\n");	
+	key_dest = key_console;
 }
 
 
