@@ -2864,35 +2864,32 @@ void M_SEdit_Key (int key) {
 
 void M_Quit_Draw (void)
 {
-#define VSTR(x) #x
-#define VSTR2(x) VSTR(x)
-	char *cmsg[] = {
-//    0123456789012345678901234567890123456789
-	"0            QuakeWorld",
-	"1    version " VSTR2(QW_VERSION) " by id Software",
+	static char *quitmsg[] = {
+	"0ZQuake " Z_VERSION,
+	"1based on QuakeWorld by Id Software",
+	"1",
 	"0Programming",
-	"1 John Carmack    Michael Abrash",
-	"1 John Cash       Christian Antkow",
+	"1Anton 'Tonik' Gavrilov",
+	"1",
 	"0Additional Programming",
-	"1 Dave 'Zoid' Kirsch",
-	"1 Jack 'morbid' Mathews",
+	"1QuakeForge team",
+	"1Victor Luchits",
+	"1",
 	"0Id Software is not responsible for",
     "0providing technical support for",
-	"0QUAKEWORLD(tm). (c)1996 Id Software,",
-	"0Inc.  All Rights Reserved.",
-	"0QUAKEWORLD(tm) is a trademark of Id",
-	"0Software, Inc.",
-	"1NOTICE: THE COPYRIGHT AND TRADEMARK",
-	"1NOTICES APPEARING  IN YOUR COPY OF",
-	"1QUAKE(r) ARE NOT MODIFIED BY THE USE",
-	"1OF QUAKEWORLD(tm) AND REMAIN IN FULL",
-	"1FORCE.",
+	"0ZQuake.",
+	"1NOTICE: The copyright and trademark",
+	"1 notices appearing  in your copy of",
+	"1Quake(r) are not modified by the use",
+	"1of ZQuake and remain in full force.",
+	"0QuakeWorld(tm) is a trademark of",
+	"0Id Software, Inc.",
 	"0NIN(r) is a registered trademark",
 	"0licensed to Nothing Interactive, Inc.",
 	"0All rights reserved. Press y to exit",
-	NULL };
+	NULL};
 	char **p;
-	int y;
+	int x, y;
 
 /*	if (wasInMenus)
 	{
@@ -2904,11 +2901,13 @@ void M_Quit_Draw (void)
 
 	M_DrawTextBox (0, 0, 38, 23);
 	y = 12;
-	for (p = cmsg; *p; p++, y += 8) {
+	for (p = quitmsg; *p; p++, y += 8)
+	{
+		x = 16 + (36 - (strlen(*p + 1))) * 4;
 		if (**p == '0')
-			M_PrintWhite (16, y, *p + 1);
+			M_PrintWhite (x, y, *p + 1);
 		else
-			M_Print (16, y,	*p + 1);
+			M_Print (x, y,	*p + 1);
 	}
 }
 
