@@ -368,7 +368,7 @@ def_t *PR_ParseFunctionCall (def_t *func)
 		PR_Expect (")");
 	}
 	if (arg >8)
-		PR_ParseError ("More than eight parameters");
+		PR_ParseError ("more than eight parameters");
 		
 
 	PR_Statement (&pr_opcodes[OP_CALL0+arg], func, 0);
@@ -398,7 +398,7 @@ def_t	*PR_ParseValue (void)
 // look through the defs
 	d = PR_GetDef (NULL, name, pr_scope, false);
 	if (!d)
-		PR_ParseError ("Unknown value \"%s\"", name);	
+		PR_ParseError ("unknown value \"%s\"", name);	
 	return d;
 }
 
@@ -693,7 +693,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 		if (pr_token_type != tt_immediate
 		|| pr_immediate_type != &type_float
 		|| pr_immediate._float != (int)pr_immediate._float)
-			PR_ParseError ("Bad builtin immediate");
+			PR_ParseError ("bad builtin immediate");
 		f->builtin = (int)pr_immediate._float;
 		PR_Lex ();
 		return f;
@@ -755,7 +755,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool allocate)
 				continue;		// in a different function
 			
 			if (type && def->type != type)
-				PR_ParseError ("Type mismatch on redeclaration of %s",name);
+				PR_ParseError ("type mismatch on redeclaration of %s",name);
 			return def;
 		}
 	
@@ -841,7 +841,7 @@ void PR_ParseDefs (void)
 	type = PR_ParseType ();
 	
 	if (pr_scope && (type->type == ev_field || type->type == ev_function) )
-		PR_ParseError ("Fields and functions must be global");
+		PR_ParseError ("fields and functions must be global");
 		
 	do
 	{

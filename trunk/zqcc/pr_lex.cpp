@@ -144,7 +144,7 @@ void PR_LexString (void)
 			else if (c == '"')
 				c = '"';
 			else
-				PR_ParseError ("Unknown escape char");
+				PR_ParseError ("unknown escape char");
 		}
 		else if (c=='\"')
 		{
@@ -202,7 +202,7 @@ void PR_LexVector (void)
 		PR_LexWhitespace ();
 	}
 	if (*pr_file_p != '\'')
-		PR_ParseError ("Bad vector");
+		PR_ParseError ("bad vector");
 	pr_file_p++;
 }
 
@@ -339,7 +339,7 @@ void PR_FindMacro (void)
 			pr_immediate._float = i;
 			return;
 		}
-	PR_ParseError ("Unknown frame macro $%s", pr_token);
+	PR_ParseError ("unknown frame macro $%s", pr_token);
 }
 
 // just parses text, returning false if an eol is reached
