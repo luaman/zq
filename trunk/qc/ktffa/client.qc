@@ -41,13 +41,20 @@ float   modelindex_eyes, modelindex_player;
 
 void() CheckAll =
 {
-	local float player_rate,maxrate=0,minrate=0;
-	local string tmp;
-	local entity p;
+	float player_rate,maxrate,minrate;
+	string tmp;
+	entity p;
 
-	maxrate = stof(infokey(world, "k_maxrate"));
-	minrate = stof(infokey(world, "k_minrate"));
-
+	if ((stof(infokey(other,"k_maxrate"))) == 0)
+		maxrate = 0;
+	else
+		maxrate = stof(infokey(other,"k_maxrate"));
+	
+	if ((stof(infokey(other,"k_minrate"))) == 0)
+		minrate = 0;
+	else
+		minrate = stof(infokey(other,"k_minrate"));
+        
 	if(maxrate!=0  || minrate!=0)
 	{
 		p = find(world, classname, "player");
