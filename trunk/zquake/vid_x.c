@@ -510,7 +510,7 @@ void VID_Init (unsigned char *palette)
 			x_vis,
 			attribmask,
 			&attribs );
-		XStoreName( x_disp,x_win,"xquake");
+		XStoreName( x_disp,x_win,"zquake-x11");
 
 
 		if (x_visinfo->class != TrueColor)
