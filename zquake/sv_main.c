@@ -88,8 +88,8 @@ void SV_FreeDelayedPackets (client_t *cl) {
 
 	for (pack = cl->packets; pack; pack = next) {
 		cl->packets = next = pack->next;
-		pack->next = sv.free_packets;
-		sv.free_packets = pack;
+		pack->next = svs.free_packets;
+		svs.free_packets = pack;
 	}
 }
 
@@ -133,6 +133,8 @@ Quake calls this before calling Sys_Quit or Sys_Error
 */
 void SV_Shutdown (char *finalmsg)
 {
+	int i;
+
 	SV_FinalMessage (finalmsg);
 
 	PR_FreeStrings ();
@@ -149,6 +151,9 @@ void SV_Shutdown (char *finalmsg)
 	memset (&sv, 0, sizeof(sv));
 	sv.state = ss_dead;
 	com_serveractive = false;
+
+	for (i = 0; i < MAX_CLIENTS; i++)		
+		SV_FreeDelayedPackets(&svs.clients[i]);
 
 	memset (svs.clients, 0, sizeof(svs.clients));
 	svs.lastuserid = 0;
@@ -1079,8 +1084,8 @@ void SV_ReadPackets (void)
 			SV_ExecuteClientMessage (cl);
 
 			cl->packets = next = pack->next;
-			pack->next = sv.free_packets;
-			sv.free_packets = pack;
+			pack->next = svs.free_packets;
+			svs.free_packets = pack;
 		}
 		
 	}
@@ -1131,18 +1136,18 @@ void SV_ReadPackets (void)
 
 		// ok, we know who sent this packet, but do we need to delay executing it?
 		if (cl->delay > 0) {
-			if (!sv.free_packets) // packet has to be dropped..
+			if (!svs.free_packets) // packet has to be dropped..
 				break;
 
 			// insert at end of list
 			if (!cl->packets) {
-				cl->last_packet = cl->packets = sv.free_packets;
+				cl->last_packet = cl->packets = svs.free_packets;
 			} else {
 				// this works because '=' associates from right to left
-				cl->last_packet = cl->last_packet->next = sv.free_packets;
+				cl->last_packet = cl->last_packet->next = svs.free_packets;
 			}
 
-			sv.free_packets = sv.free_packets->next;
+			svs.free_packets = svs.free_packets->next;
 			cl->last_packet->next = NULL;
 			
 			cl->last_packet->time = svs.realtime;
@@ -1396,6 +1401,7 @@ void SV_InitLocal (void)
 	extern cvar_t	pm_ktjump;
 	extern cvar_t	pm_slidefix;
 	extern cvar_t	pm_airstep;
+	packet_t		*packet_freeblock;	// initialise delayed packet free block
 
 	SV_InitOperatorCommands	();
 
@@ -1487,6 +1493,15 @@ void SV_InitLocal (void)
 
 	SZ_Init (&svs.log[1], svs.log_buf[1], sizeof(svs.log_buf[1]));
 	svs.log[1].allowoverflow = true;
+
+	packet_freeblock = Hunk_AllocName(MAX_DELAYED_PACKETS * sizeof(packet_t), "delayed_packets");
+
+	for (i = 0; i < MAX_DELAYED_PACKETS; i++) {
+		SZ_Init (&packet_freeblock[i].msg, packet_freeblock[i].buf, sizeof(packet_freeblock[i].buf));
+		packet_freeblock[i].next = &packet_freeblock[i + 1];
+	}
+	packet_freeblock[MAX_DELAYED_PACKETS - 1].next = NULL;
+	svs.free_packets = &packet_freeblock[0];
 }
 
 
