@@ -159,6 +159,7 @@ static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, ve
 		return true;		// empty
 	}
 
+	// FIXME, check at load time
 	if (num < trace_hull.firstclipnode || num > trace_hull.lastclipnode)
 		Sys_Error ("RecursiveHullTrace: bad node number");
 
