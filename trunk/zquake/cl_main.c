@@ -1040,6 +1040,7 @@ void CL_Frame (double time)
 	if (host_speeds.value)
 		time1 = Sys_DoubleTime ();
 
+	SCR_RunConsole ();
 	SCR_UpdateScreen ();
 
 	if (host_speeds.value)
