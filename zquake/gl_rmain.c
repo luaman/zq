@@ -71,9 +71,6 @@ texture_t	*r_notexture_mip;
 
 int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
-
-void R_MarkLeaves (void);
-
 cvar_t	r_norefresh = {"r_norefresh","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
 cvar_t	r_drawflame = {"r_drawflame","1"};
@@ -106,16 +103,21 @@ cvar_t	gl_fb_depthhack = {"gl_fb_depthhack","1"};
 cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
 cvar_t	gl_fb_models = {"gl_fb_models","1"};
 cvar_t	gl_colorlights = {"gl_colorlights","1"};
-
 cvar_t	gl_lightmode = {"gl_lightmode","2"};
+
 int		lightmode = 2;
 
 extern	cvar_t	gl_ztrick;
-extern	cvar_t	scr_fov;
 
 #ifndef _WIN32
 qboolean vid_hwgamma_enabled = false;	// dummy
 #endif
+
+
+void R_MarkLeaves (void);
+void R_InitBubble (void);
+void R_InitParticleTexture (void);
+
 
 /*
 =================
@@ -141,7 +143,6 @@ void R_RotateForEntity (entity_t *e)
 
 	glRotatef (e->angles[1], 0, 0, 1);
 	glRotatef (-e->angles[0], 0, 1, 0);
-	// ZOID: fixed z angle
 	glRotatef (e->angles[2], 1, 0, 0);
 }
 
@@ -1056,6 +1057,74 @@ void R_SetupGL (void)
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_DEPTH_TEST);
 }
+
+
+/*
+===============
+R_Init
+===============
+*/
+void R_Init (void)
+{
+	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
+#ifndef CLIENTONLY
+	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
+#endif
+
+	Cvar_Register (&r_norefresh);
+	Cvar_Register (&r_lightmap);
+	Cvar_Register (&r_fullbright);
+	Cvar_Register (&r_drawentities);
+	Cvar_Register (&r_drawflame);
+	Cvar_Register (&r_shadows);
+	Cvar_Register (&r_mirroralpha);
+	Cvar_Register (&r_wateralpha);
+	Cvar_Register (&r_dynamic);
+	Cvar_Register (&r_novis);
+	Cvar_Register (&r_speeds);
+	Cvar_Register (&r_netgraph);
+	Cvar_Register (&r_fullbrightSkins);
+	Cvar_Register (&r_skycolor);
+	Cvar_Register (&r_fastsky);
+
+	Cvar_Register (&gl_clear);
+	Cvar_Register (&gl_texsort);
+ 
+ 	if (gl_mtexable)
+		Cvar_SetValue (&gl_texsort, 0);
+
+	Cvar_Register (&gl_cull);
+	Cvar_Register (&gl_smoothmodels);
+	Cvar_Register (&gl_affinemodels);
+	Cvar_Register (&gl_polyblend);
+	Cvar_Register (&gl_flashblend);
+	Cvar_Register (&gl_playermip);
+	Cvar_Register (&gl_nocolors);
+	Cvar_Register (&gl_finish);
+	Cvar_Register (&gl_fb_depthhack);
+	Cvar_Register (&gl_fb_bmodels);
+	Cvar_Register (&gl_fb_models);
+	Cvar_Register (&gl_colorlights);
+	Cvar_Register (&gl_lightmode);
+
+	Cvar_Register (&gl_keeptjunctions);
+	Cvar_Register (&gl_reporttjunctions);
+
+	R_InitTextures ();
+	R_InitBubble ();
+	R_InitParticles ();
+	R_InitParticleTexture ();
+
+	netgraphtexture = texture_extension_number;
+	texture_extension_number++;
+
+	playertextures = texture_extension_number;
+	texture_extension_number += MAX_CLIENTS;
+
+	// fullbrights
+	texture_extension_number += MAX_CLIENTS;
+}
+
 
 /*
 ================
