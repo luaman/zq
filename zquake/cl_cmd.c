@@ -673,38 +673,35 @@ Sent by server when serverinfo changes
 void CL_FullServerinfo_f (void)
 {
 	char *p;
-	float v;
 
 	if (Cmd_Argc() != 2)
-	{
-		//Con_Printf ("usage: fullserverinfo <complete info string>\n");
 		return;
-	}
 
 	strcpy (cl.serverinfo, Cmd_Argv(1));
 
-	server_version = 0;
-
 	if ((p = Info_ValueForKey(cl.serverinfo, "*z_version")) && *p) {
-		v = Q_atof(p);
-		if (v) {
 #ifdef QW_BOTH
-			// only print version if connecting to a remote server
-			if (sv.state == ss_dead)
+		// only print version if connecting to a remote server
+		if (sv.state == ss_dead)
 #endif
-				Con_Printf("ZQuake Version %s Server\n", p);
-			server_version = 2.40;
-		}
+			if (!server_version)
+				Con_Printf("ZQuake %s server\n", p);
+		server_version = 2.40;
 	}
-	if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p) {
+	else if ((p = Info_ValueForKey(cl.serverinfo, "*qf_version")) && *p) {
+		if (!server_version)
+			Con_Printf("QuakeForge %s server\n", p);
+		server_version = 2.40;
+	}
+	else if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p) {
+		float v;
 		v = Q_atof(p);
 		if (v) {
 			if (!server_version)
-				Con_Printf("Version %1.2f Server\n", v);
+				Con_Printf("QuakeWorld %1.2f server\n", v);
 			server_version = v;
 		}
 	}
-
 	CL_ProcessServerInfo ();
 }
 
