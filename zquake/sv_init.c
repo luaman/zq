@@ -240,8 +240,9 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	extern cvar_t	sv_cheats;
 
 	Com_DPrintf ("SpawnServer: %s\n", mapname);
-	
+
 	SV_SaveSpawnparms ();
+	PR_FreeStrings ();
 
 	svs.spawncount++;		// any partially connected client will be
 							// restarted

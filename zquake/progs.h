@@ -177,4 +177,5 @@ extern int num_prstr;
 
 char *PR_GetString(int num);
 int PR_SetString(char *s);
-
+void PR_InitStrings (void);
+void PR_FreeStrings (void);

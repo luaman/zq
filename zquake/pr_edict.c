@@ -1081,12 +1081,9 @@ void PR_LoadProgs (void)
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
 	pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
 
-	Com_Printf ("globals end: %i\n", progs->ofs_globals + progs->numglobals * 4);
-	Com_Printf ("file size: %i\n", fs_filesize);
-
 	pr_globals = (float *)pr_global_struct;
 
-	num_prstr = 0;
+	PR_InitStrings ();
 	
 	pr_edict_size = progs->entityfields * 4 + sizeof (edict_t) - sizeof(entvars_t);
 	
