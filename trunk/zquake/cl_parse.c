@@ -96,6 +96,8 @@ char *svc_strings[] =
 	"svc_setinfo",
 	"svc_serverinfo",
 	"svc_updatepl",
+
+	"MVD svc_nails2",
 };
 
 const int num_svc_strings = sizeof(svc_strings)/sizeof(svc_strings[0]);
@@ -1858,6 +1860,7 @@ void CL_ParseServerMessage (void)
 		switch (cmd)
 		{
 		default:
+bad_message:
 			Host_Error ("CL_ParseServerMessage: Illegible server message");
 			break;
 			
@@ -2083,7 +2086,7 @@ void CL_ParseServerMessage (void)
             break;
         case svc_nails2:
 			if (!cls.mvdplayback)
-				Host_Error("CL_ParseServerMessage: svc_nails2 without cls.mvdplayback");
+				goto bad_message;
             CL_ParseProjectiles (true);
 #endif
 			break;
