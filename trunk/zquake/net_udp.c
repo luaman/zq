@@ -431,13 +431,12 @@ Sleeps msec or until the server socket is ready
 */
 void NET_Sleep (int msec)
 {
-#ifdef SERVERONLY
-    struct timeval timeout;
+	struct timeval timeout;
 	fd_set	fdset;
 	extern qbool do_stdin, stdin_ready;
 
-	if (ip_sockets[NS_SERVER] == -1)
-		return; // we're not a server, just run full speed
+//	if (ip_sockets[NS_SERVER] == -1)
+//		return; // we're not a server, just run full speed
 
 	FD_ZERO (&fdset);
 	if (do_stdin)
@@ -447,7 +446,6 @@ void NET_Sleep (int msec)
 	timeout.tv_usec = (msec%1000)*1000;
 	select (ip_sockets[NS_SERVER]+1, &fdset, NULL, NULL, &timeout);
 	stdin_ready = FD_ISSET (0, &fdset);
-#endif
 }
 
 
