@@ -25,14 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 #include <setjmp.h>
 
-#if defined(QW_BOTH) || defined(SERVERONLY)
-#include "server.h"
-#endif
-
-void CL_Frame (double time);
-void CL_Shutdown ();
-void SV_Init (void);
-
 
 double		curtime;
 
@@ -208,9 +200,9 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	Cbuf_Execute ();
 
 // if a map wasn't specified on the command line, spawn start map
-	if (sv.state == ss_dead)
+	if (!com_serveractive)
 		Cmd_ExecuteString ("map start");
-	if (sv.state == ss_dead)
+	if (!com_serveractive)
 		Host_Error ("Couldn't spawn a server");
 
 #else
