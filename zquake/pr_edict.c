@@ -979,11 +979,11 @@ void PR_LoadProgs (void)
 
 	progs = NULL;
 	if (!deathmatch.value)
-		progs = (dprograms_t *)COM_LoadHunkFile ("spprogs.dat");
+		progs = (dprograms_t *)FS_LoadHunkFile ("spprogs.dat");
 	if (!progs)
-		progs = (dprograms_t *)COM_LoadHunkFile ("zqprogs.dat");
+		progs = (dprograms_t *)FS_LoadHunkFile ("zqprogs.dat");
 	if (!progs)
-		progs = (dprograms_t *)COM_LoadHunkFile ("qwprogs.dat");
+		progs = (dprograms_t *)FS_LoadHunkFile ("qwprogs.dat");
 	if (!progs)
 		SV_Error ("PR_LoadProgs: couldn't load qwprogs.dat");
 	Com_DPrintf ("Programs occupy %iK.\n", com_filesize/1024);

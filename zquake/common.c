@@ -1334,7 +1334,7 @@ int FS_FOpenFile (char *filename, FILE **file)
 
 /*
 ============
-COM_LoadFile
+FS_LoadFile
 
 Filename are relative to the quake directory.
 Always appends a 0 byte to the loaded data.
@@ -1343,7 +1343,7 @@ Always appends a 0 byte to the loaded data.
 cache_user_t *loadcache;
 byte	*loadbuf;
 int		loadsize;
-byte *COM_LoadFile (char *path, int usehunk)
+byte *FS_LoadFile (char *path, int usehunk)
 {
 	FILE	*h;
 	byte	*buf;
@@ -1376,10 +1376,10 @@ byte *COM_LoadFile (char *path, int usehunk)
 			buf = loadbuf;
 	}
 	else
-		Sys_Error ("COM_LoadFile: bad usehunk");
+		Sys_Error ("FS_LoadFile: bad usehunk");
 
 	if (!buf)
-		Sys_Error ("COM_LoadFile: not enough space for %s", path);
+		Sys_Error ("FS_LoadFile: not enough space for %s", path);
 		
 	((byte *)buf)[len] = 0;
 #ifndef SERVERONLY
@@ -1394,37 +1394,37 @@ byte *COM_LoadFile (char *path, int usehunk)
 	return buf;
 }
 
-byte *COM_LoadHunkFile (char *path)
+byte *FS_LoadHunkFile (char *path)
 {
-	return COM_LoadFile (path, 1);
+	return FS_LoadFile (path, 1);
 }
 
-byte *COM_LoadTempFile (char *path)
+byte *FS_LoadTempFile (char *path)
 {
-	return COM_LoadFile (path, 2);
+	return FS_LoadFile (path, 2);
 }
 
-void COM_LoadCacheFile (char *path, struct cache_user_s *cu)
+void FS_LoadCacheFile (char *path, struct cache_user_s *cu)
 {
 	loadcache = cu;
-	COM_LoadFile (path, 3);
+	FS_LoadFile (path, 3);
 }
 
 // uses temp hunk if larger than bufsize
-byte *COM_LoadStackFile (char *path, void *buffer, int bufsize)
+byte *FS_LoadStackFile (char *path, void *buffer, int bufsize)
 {
 	byte	*buf;
 	
 	loadbuf = (byte *)buffer;
 	loadsize = bufsize;
-	buf = COM_LoadFile (path, 4);
+	buf = FS_LoadFile (path, 4);
 	
 	return buf;
 }
 
 /*
 =================
-COM_LoadPackFile
+FS_LoadPackFile
 
 Takes an explicit (not game tree related) path to a pak file.
 
@@ -1432,7 +1432,7 @@ Loads the header and directory, adding the files at the beginning
 of the list so they override previous pack files.
 =================
 */
-pack_t *COM_LoadPackFile (char *packfile)
+pack_t *FS_LoadPackFile (char *packfile)
 {
 	dpackheader_t	header;
 	int				i;
@@ -1518,7 +1518,7 @@ void FS_AddGameDirectory (char *dir)
 	for (i=0 ; ; i++)
 	{
 		sprintf (pakfile, "%s/pak%i.pak", dir, i);
-		pak = COM_LoadPackFile (pakfile);
+		pak = FS_LoadPackFile (pakfile);
 		if (!pak)
 			break;
 		search = Hunk_Alloc (sizeof(searchpath_t));
@@ -1595,7 +1595,7 @@ void FS_SetGamedir (char *dir)
 	for (i=0 ; ; i++)
 	{
 		sprintf (pakfile, "%s/pak%i.pak", com_gamedir, i);
-		pak = COM_LoadPackFile (pakfile);
+		pak = FS_LoadPackFile (pakfile);
 		if (!pak)
 			break;
 		search = Q_Malloc (sizeof(searchpath_t));

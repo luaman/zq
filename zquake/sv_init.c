@@ -268,7 +268,7 @@ unsigned SV_CheckModel(char *mdl)
 	byte *buf;
 	unsigned short crc;
 
-	buf = (byte *)COM_LoadStackFile (mdl, stackbuf, sizeof(stackbuf));
+	buf = (byte *)FS_LoadStackFile (mdl, stackbuf, sizeof(stackbuf));
 	if (!buf)
 		SV_Error ("SV_CheckModel: could not load %s\n", mdl);
 	crc = CRC_Block(buf, com_filesize);
@@ -291,7 +291,7 @@ void SV_LoadEntFile (void)
 	COM_StripExtension (sv.worldmodel->name, name);
 	strcat (name, ".ent");
 
-	data = (char *) COM_LoadHunkFile (name);
+	data = (char *) FS_LoadHunkFile (name);
 	if (!data)
 		return;
 

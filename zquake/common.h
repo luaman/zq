@@ -216,10 +216,10 @@ extern char	com_basedir[MAX_OSPATH];
 void COM_WriteFile (char *filename, void *data, int len);
 int FS_FOpenFile (char *filename, FILE **file);
 
-byte *COM_LoadStackFile (char *path, void *buffer, int bufsize);
-byte *COM_LoadTempFile (char *path);
-byte *COM_LoadHunkFile (char *path);
-void COM_LoadCacheFile (char *path, struct cache_user_s *cu);
+byte *FS_LoadStackFile (char *path, void *buffer, int bufsize);
+byte *FS_LoadTempFile (char *path);
+byte *FS_LoadHunkFile (char *path);
+void FS_LoadCacheFile (char *path, struct cache_user_s *cu);
 void COM_CreatePath (char *path);
 void FS_SetGamedir (char *dir);
 

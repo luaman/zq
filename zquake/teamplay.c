@@ -848,7 +848,7 @@ void TP_LoadLocFile (char *path, qboolean quiet)
 		strcat (locname, ".loc");	// Add default extension
 
 	mark = Hunk_LowMark ();
-	buf = (char *) COM_LoadHunkFile (locname);
+	buf = (char *) FS_LoadHunkFile (locname);
 
 	if (!buf)
 	{

@@ -332,7 +332,7 @@ void Cmd_Exec_f (void)
 
 	Q_strncpyz (name, Cmd_Argv(1), sizeof(name) - 4);
 	mark = Hunk_LowMark ();
-	f = (char *)COM_LoadHunkFile (name);
+	f = (char *)FS_LoadHunkFile (name);
 	if (!f)
 	{
 		char *p;
@@ -341,7 +341,7 @@ void Cmd_Exec_f (void)
 		if (!strchr (p, '.')) {
 			// no extension, so try the default (.cfg)
 			strcat (name, ".cfg");
-			f = (char *)COM_LoadHunkFile (name);
+			f = (char *)FS_LoadHunkFile (name);
 		}
 
 		if (!f) {
