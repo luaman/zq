@@ -39,7 +39,7 @@ void R_DrawParticles (void)
 	VectorScale (vup, yscaleshrink, r_pup);
 	VectorCopy (vpn, r_ppn);
 	
-	for (i = 0, p = cl_visparticles; i < cl_numvisparticles; i++, p++)
+	for (i = 0, p = r_refdef2.particles; i < r_refdef2.numParticles; i++, p++)
 	{
 		D_DrawParticle (p);
 	}

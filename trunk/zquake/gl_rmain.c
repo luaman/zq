@@ -828,7 +828,7 @@ void R_DrawParticles (void)
 	glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBegin (GL_TRIANGLES);
 
-	for (i = 0, p = cl_visparticles; i < cl_numvisparticles; i++, p++)
+	for (i = 0, p = r_refdef2.particles; i < r_refdef2.numParticles; i++, p++)
 	{
 		// hack a scale up to keep particles from disapearing
 		dist = (p->org[0] - r_origin[0])*vpn[0] + (p->org[1] - r_origin[1])*vpn[1]

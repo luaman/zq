@@ -1171,6 +1171,9 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 	r_refdef2.time = cl.time;
 //	r_refdef2.allowCheats = false;
 
+	r_refdef2.numParticles = cl_numvisparticles;
+	r_refdef2.particles = cl_visparticles;
+
 	R_RenderView ();
 }
 
