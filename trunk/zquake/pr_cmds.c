@@ -953,6 +953,9 @@ void PF_Remove (void)
 	int		num;
 
 	ed = G_EDICT(OFS_PARM0);
+	if (ed == (edict_t *)sv.edicts)
+		return;
+
 	num = NUM_FOR_EDICT(ed);
 
 	if (num >= 1 && num <= MAX_CLIENTS) {
