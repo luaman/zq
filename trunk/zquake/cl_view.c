@@ -855,7 +855,7 @@ void V_CalcViewRoll (void)
 	}
 	r_refdef.viewangles[ROLL] += cl.rollangle;
 
-	if (v_dmg_time > 0)
+	if (v_dmg_time > 0 && v_kicktime.value > 0)
 	{
 		r_refdef.viewangles[ROLL] += v_dmg_time/v_kicktime.value*v_dmg_roll;
 		r_refdef.viewangles[PITCH] += v_dmg_time/v_kicktime.value*v_dmg_pitch;
