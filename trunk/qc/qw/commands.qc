@@ -130,8 +130,6 @@ void Cmd_Give (string item, string amount)
 		self.armorvalue = 200;
 	}
 	else {
-		sprint (self, PRINT_HIGH, "no such item: ");
-		sprint (self, PRINT_HIGH, item);
-		sprint (self, PRINT_HIGH, "\n");
+		sprint (self, PRINT_HIGH, "no such item: ", item, "\n");
 	}
 }

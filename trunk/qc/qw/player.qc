@@ -572,7 +572,7 @@ void GibPlayer ()
 void PlayerDie ()
 {
 	float	i;
-	string	s;
+	string	s, s2;
 	self.items = self.items - (self.items & IT_INVISIBILITY);
 
 	if ((stof(infokey(world,"dq"))) != 0)
@@ -580,14 +580,12 @@ void PlayerDie ()
 		if (self.super_damage_finished > 0)
 		{
 			DropQuad (self.super_damage_finished - time);
-			bprint (PRINT_LOW, self.netname);
 			if (deathmatch == 4)
-				bprint (PRINT_LOW, " lost an OctaPower with ");
+				s2 = "an OctaPower";
 			else
-				bprint (PRINT_LOW, " lost a quad with ");
+				s2 = "a quad";		// FIXME: "quad" is capitalized in q_touch, but not here
 			s = ftos(rint(self.super_damage_finished - time));
-			bprint (PRINT_LOW, s);
-			bprint (PRINT_LOW, " seconds remaining\n");
+			bprint (PRINT_LOW, self.netname, " lost ", s2, " with ",  s, " seconds remaining\n");
 		}
 	}
 
@@ -595,11 +593,8 @@ void PlayerDie ()
 	{
 		if (self.invisible_finished > 0)
 		{
-			bprint (PRINT_LOW, self.netname);
-			bprint (PRINT_LOW, " lost a ring with ");
 			s = ftos(rint(self.invisible_finished - time));
-			bprint (PRINT_LOW, s);
-			bprint (PRINT_LOW, " seconds remaining\n");
+			bprint (PRINT_LOW, self.netname, " lost a ring with ", s, " seconds remaining\n");
 			DropRing (self.invisible_finished - time);
 		}
 	}
