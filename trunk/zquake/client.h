@@ -253,6 +253,8 @@ typedef struct
 	int			mvd_lastto;
 	int			mvd_lasttype;
 	qbool   	mvd_findtarget;
+	float		mvd_newtime;
+	float		mvd_oldtime;
 #endif
 	FILE		*demofile;
 	byte		demomessage_data[MAX_MSGLEN * 2 /* FIXME */];
@@ -273,7 +275,7 @@ extern client_persistent_t	cls;
 #ifdef MVDPLAY
 typedef struct
 {
-	qbool    	interpolate;
+	qbool	interpolate;
 	vec3_t		origin;
 	vec3_t		angles;
 	int			oldindex;
@@ -412,6 +414,7 @@ typedef struct
 #ifdef MVDPLAY
 // interpolation stuff
 	interpolate_t	int_projectiles[MAX_PROJECTILES];
+	int			mvd_fixangle;
 #endif
 
 // sprint buffer

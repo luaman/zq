@@ -420,8 +420,7 @@ void CL_LinkPacketEntities (void)
 
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
-		extern float nextdemotime, olddemotime;
-		f = bound(0, (cls.demotime - olddemotime) / (nextdemotime - olddemotime), 1);
+		f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
 	}
 	else
 #endif
@@ -1244,11 +1243,8 @@ void CL_SetSolidEntities (void)
 }
 
 #ifdef MVDPLAY
-extern float nextdemotime, olddemotime;
 
 #define ISDEAD(i) ( (i) >=41 && (i) <=102 )
-
-int	fixangle;
 
 void MVD_InitInterpolation (void)
 {
@@ -1257,14 +1253,8 @@ void MVD_InitInterpolation (void)
     frame_t	*frame, *oldframe;
     player_state_t	*state, *oldstate;
     vec3_t	dist;
-	float timediff;
 
     if (!cl.validsequence)
-        return;
-
-    timediff = nextdemotime - olddemotime;
-    if (!timediff)
-		// shouldn't happen?
         return;
 
     frame = &cl.frames[cl.parsecount&UPDATE_MASK];
@@ -1283,7 +1273,7 @@ void MVD_InitInterpolation (void)
 
         pplayer->predict = false;
 
-        if (fixangle & 1 << i)
+        if (cl.mvd_fixangle & 1 << i)
         {
             if (i == Cam_TrackNum()) {
                 VectorCopy(cl.viewangles, state->command.angles);
@@ -1293,7 +1283,7 @@ void MVD_InitInterpolation (void)
             // no angle interpolation
             VectorCopy(state->command.angles, oldstate->command.angles);
 
-            fixangle &= ~(1 << i);
+            cl.mvd_fixangle &= ~(1 << i);
             //continue;
         }
 
@@ -1324,22 +1314,10 @@ void MVD_InitInterpolation (void)
         pplayer->oldstate = oldstate;
         pplayer->predict = true;
 
-        for (j=0;j<3;j++) {
-            pplayer->vel[j] = (state->origin[j] - oldstate->origin[j])/timediff;
-        }
+        assert (cls.mvd_newtime > cls.mvd_oldtime);
+        for (j = 0; j < 3; j++)
+            pplayer->vel[j] = (state->origin[j] - oldstate->origin[j]) / (cls.mvd_newtime - cls.mvd_oldtime);
     }
-
-/*
-    // entities
-    for (i=0; i < frame->packet_entities.num_entities; i++)
-    {
-        if (!cl.int_entities[i].interpolate)
-            continue;
-
-        MSG_UnpackOrigin (frame->packet_entities.entities[i].s_origin, cl.int_entities[i].origin);
-        MSG_UnpackAngles (frame->packet_entities.entities[i].s_angles, cl.int_entities[i].angles);
-    }
-*/
 
     // nails
     for (i=0; i < cl_num_projectiles; i++) {
@@ -1352,7 +1330,6 @@ void MVD_InitInterpolation (void)
 void MVD_ClearPredict(void)
 {
     memset(predicted_players, 0, sizeof(predicted_players));
-    fixangle = 0;
 }
 
 void MVD_Interpolate(void)
@@ -1365,8 +1342,8 @@ void MVD_Interpolate(void)
 	struct predicted_player *pplayer;
 	static float old;
 
-	if (old != nextdemotime) {
-		old = nextdemotime;
+	if (old != cls.mvd_newtime) {
+		old = cls.mvd_newtime;
 		MVD_InitInterpolation ();
 	}
 
@@ -1375,15 +1352,15 @@ void MVD_Interpolate(void)
 	if (!cl.validsequence)
 		return;
 
-	if (nextdemotime <= olddemotime)
+	if (cls.mvd_newtime <= cls.mvd_oldtime)
 		return;
 
 	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
 	oldframe = &cl.frames[cl.oldparsecount & UPDATE_MASK];
 	oldents = oldframe->packet_entities.entities;
 
-//Com_Printf ("%f of %f\n", cls.demotime - olddemotime, nextdemotime - olddemotime);
-	f = bound(0, (cls.demotime - olddemotime) / (nextdemotime - olddemotime), 1);
+//Com_Printf ("%f of %f\n", cls.demotime - cls.mvd_oldtime, cls.mvd_newtime - cls.mvd_oldtime);
+	f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
 
 	// interpolate nails
 	for (i = 0; i < cl_num_projectiles; i++)	{

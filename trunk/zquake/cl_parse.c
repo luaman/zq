@@ -681,9 +681,6 @@ void CL_ParseServerData (void)
 	char	fn[MAX_OSPATH];
 	qbool	cflag = false;
 	int		protover;
-#ifdef MVDPLAY
-	extern float	nextdemotime, olddemotime;
-#endif
 
 	Com_DPrintf ("Serverdata packet received.\n");
 //
@@ -746,7 +743,8 @@ void CL_ParseServerData (void)
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
 		int i;
-		cls.netchan.last_received = nextdemotime = olddemotime = MSG_ReadFloat();
+		// FIXME
+		cls.netchan.last_received = cls.mvd_newtime = cls.mvd_oldtime = MSG_ReadFloat();
 		cl.playernum = MAX_CLIENTS - 1;
 		cl.spectator = true;
 		for (i = 0; i < UPDATE_BACKUP; i++)
@@ -1916,11 +1914,10 @@ bad_message:
 #ifdef MVDPLAY
 			if (cls.mvdplayback)
 			{
-				extern int	fixangle;
 				vec3_t ang;
 
 				j = MSG_ReadByte();
-				fixangle |= 1 << j;
+				cl.mvd_fixangle |= 1 << j;
 				for (i = 0; i < 3; i++)
 					ang[i] = MSG_ReadAngle();
 				if (j == Cam_TrackNum())
