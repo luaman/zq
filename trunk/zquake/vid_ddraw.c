@@ -26,6 +26,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "keys.h"
 #include "sound.h"
 
+
+void AppActivate (BOOL fActive, BOOL minimize);
+
 extern int		Minimized;
 
 HWND		mainwindow;
