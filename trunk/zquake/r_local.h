@@ -19,8 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_local.h -- private refresh defs
 
-#ifndef GLQUAKE
-
 #include "r_shared.h"
 
 #define ALIAS_BASE_SIZE_RATIO		(1.0 / 11.0)
@@ -119,9 +117,6 @@ extern	int		r_visframecount;
 extern int	vstartscan;
 
 
-void R_ClearPolyList (void);
-void R_DrawPolyList (void);
-
 //
 // current entity info
 //
@@ -178,8 +173,6 @@ extern int	c_faceclip;
 extern int	r_polycount;
 extern int	r_wholepolycount;
 
-extern	model_t		*cl_worldmodel;
-
 extern int		*pfrustum_indexes[4];
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
@@ -191,11 +184,6 @@ extern int			vstartscan;
 extern fixed16_t	sadjust, tadjust;
 extern fixed16_t	bbextents, bbextentt;
 
-#define MAXBVERTINDEXES	1000	// new clipped vertices when clipping bmodels
-								//  to the world BSP
-extern mvertex_t	*r_ptverts, *r_ptvertsmax;
-
-extern vec3_t			sbaseaxis[3], tbaseaxis[3];
 extern float			entity_rotation[3][3];
 
 extern int		r_currentkey;
@@ -254,7 +242,6 @@ extern	edge_t	edge_head;
 extern	edge_t	edge_tail;
 extern	edge_t	edge_aftertail;
 extern int		r_bmodelactive;
-extern vrect_t	*pconupdate;
 
 extern float		aliasxscale, aliasyscale, aliasxcenter, aliasycenter;
 extern float		r_aliastransition, r_resfudge;
@@ -263,7 +250,6 @@ extern int		r_outofsurfaces;
 extern int		r_outofedges;
 
 extern mvertex_t	*r_pcurrentvertbase;
-extern int			r_maxvalidedgeoffset;
 
 void R_AliasClipTriangle (mtriangle_t *ptri);
 
@@ -273,7 +259,6 @@ extern float	se_time1, se_time2, de_time1, de_time2, dv_time1, dv_time2;
 extern int		r_frustum_indexes[4*6];
 extern int		r_maxsurfsseen, r_maxedgesseen, r_cnumsurfs;
 extern qboolean	r_surfsonstack;
-extern cshift_t	cshift_water;
 extern qboolean	r_dowarpold, r_viewchanged;
 
 extern mleaf_t	*r_viewleaf, *r_oldviewleaf;
@@ -291,10 +276,6 @@ void R_PrintDSpeeds (void);
 void R_AnimateLight (void);
 int R_LightPoint (vec3_t p);
 void R_SetupFrame (void);
-void R_cshift_f (void);
 void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1);
 void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
-void R_SplitEntityOnNode2 (mnode_t *node);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
-
-#endif //GLQUAKE

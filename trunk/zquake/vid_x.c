@@ -75,8 +75,6 @@ unsigned short d_8to16table[256];
 
 int		num_shades=32;
 
-int	d_con_indirect = 0;
-
 int		vid_buffersize;
 
 static qboolean			doShm;
