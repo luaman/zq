@@ -186,20 +186,52 @@ PR_LexNumber
 */
 float PR_LexNumber (void)
 {
-	int		c;
-	int		len;
-	
-	len = 0;
-	c = *pr_file_p;
-	do
-	{
-		pr_token[len] = c;
-		len++;
+	bool	neg = false;
+	double	adj = 0.1;
+	bool	dot = false;
+	double	val = 0;
+
+	char *token_start = pr_file_p;
+
+	if (*pr_file_p == '-') {
+		neg = true;
 		pr_file_p++;
-		c = *pr_file_p;
-	} while ((c >= '0' && c<= '9') || c == '.');
+	}
+
+	for (;;)
+	{
+		int c = *pr_file_p;
+
+		if (c == '.' && !dot) {
+			dot = true;
+		}
+		else if (c >= '0' && c <= '9')
+		{
+			if (dot) {
+				val = val + adj * (c - '0');
+				adj *= 0.1;
+			}
+			else
+				val = val * 10 + (c - '0');
+		}
+		else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+			PR_ParseError ("syntax error : '%c'", c);
+		else
+			break;	// found a legal non-numeric char
+
+		pr_file_p++;
+	}
+
+	if (neg)
+		val = -val;
+
+	int len = pr_file_p - token_start;
+	if (len > sizeof(pr_token))
+		PR_ParseError ("constant too long");
+	memcpy (pr_token, token_start, len);
 	pr_token[len] = 0;
-	return atof (pr_token);
+
+	return (float)val;
 }
 
 /*
