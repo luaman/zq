@@ -102,6 +102,7 @@ void SV_SaveGame_f (void)
 	COM_DefaultExtension (name, ".sav");
 	
 	Com_Printf ("Saving game to %s...\n", name);
+	COM_CreatePath (name);
 	f = fopen (name, "w");
 	if (!f)
 	{
