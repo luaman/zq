@@ -101,6 +101,9 @@ int			m_return_state;
 qboolean	m_return_onerror;
 char		m_return_reason [32];
 
+int			m_topmenu;			// set if a submenu was entered via a
+								// menu_* command
+
 
 //=============================================================================
 /* Support Routines */
@@ -213,19 +216,32 @@ void M_ToggleMenu_f (void)
 		m_state = m_none;
 		return;
 	}
-/*	if (key_dest == key_console)
-	{
-		Con_ToggleConsole_f ();
-	}*/
 	else
 	{
-		// hide console
-		scr_conlines = 0;
-		scr_con_current = 0;
 		M_Menu_Main_f ();
 	}
 }
 
+/*
+================
+M_EnterMenu
+================
+*/
+void M_EnterMenu (int state)
+{
+	if (key_dest != key_menu) {
+		m_topmenu = state;
+		Con_ClearNotify ();
+		// hide the console
+		scr_conlines = 0;
+		scr_con_current = 0;
+	} else
+		m_topmenu = m_none;
+
+	key_dest = key_menu;
+	m_state = state;
+	m_entersound = true;
+}
 		
 //=============================================================================
 /* MAIN MENU */
@@ -241,9 +257,7 @@ void M_Menu_Main_f (void)
 		m_save_demonum = cls.demonum;
 		cls.demonum = -1;
 	}
-	key_dest = key_menu;
-	m_state = m_main;
-	m_entersound = true;
+	M_EnterMenu (m_main);
 }
 				
 
@@ -347,9 +361,7 @@ int		options_cursor;
 
 void M_Menu_Options_f (void)
 {
-	key_dest = key_menu;
-	m_state = m_options;
-	m_entersound = true;
+	M_EnterMenu (m_options);
 }
 
 
@@ -680,9 +692,7 @@ int		bind_grab;
 
 void M_Menu_Keys_f (void)
 {
-	key_dest = key_menu;
-	m_state = m_keys;
-	m_entersound = true;
+	M_EnterMenu (m_keys);
 }
 
 
@@ -867,9 +877,7 @@ extern cvar_t r_drawflame;
 
 void M_Menu_Fps_f (void)
 {
-	key_dest = key_menu;
-	m_state = m_fps;
-	m_entersound = true;
+	M_EnterMenu (m_fps);
 }
 
 void M_Fps_Draw (void)
@@ -1073,9 +1081,7 @@ void M_Fps_Key (int k)
 
 void M_Menu_Video_f (void)
 {
-	key_dest = key_menu;
-	m_state = m_video;
-	m_entersound = true;
+	M_EnterMenu (m_video);
 }
 
 
@@ -1099,9 +1105,7 @@ int		help_page;
 
 void M_Menu_Help_f (void)
 {
-	key_dest = key_menu;
-	m_state = m_help;
-	m_entersound = true;
+	M_EnterMenu (m_help);
 	help_page = 0;
 }
 
@@ -1150,11 +1154,9 @@ void M_Menu_Quit_f (void)
 	if (m_state == m_quit)
 		return;
 	wasInMenus = (key_dest == key_menu);
-	key_dest = key_menu;
 	m_quit_prevstate = m_state;
-	m_state = m_quit;
-	m_entersound = true;
 	msgNumber = rand()&7;
+	M_EnterMenu (m_quit);
 }
 
 
@@ -1203,10 +1205,8 @@ extern	cvar_t	maxclients;
 
 void M_Menu_SinglePlayer_f (void)
 {
-	key_dest = key_menu;
-	m_state = m_singleplayer;
+	M_EnterMenu (m_singleplayer);
 	m_singleplayer_confirm = false;
-	m_entersound = true;
 }
 
 
@@ -1316,7 +1316,7 @@ void M_SinglePlayer_Key (int key)
 
 void M_Menu_SinglePlayer_f (void)
 {
-	m_state = m_singleplayer;
+	M_EnterMenu (m_singleplayer);
 }
 
 void M_SinglePlayer_Draw (void)
@@ -1382,9 +1382,7 @@ void M_ScanSaves (void)
 
 void M_Menu_Load_f (void)
 {
-	m_entersound = true;
-	m_state = m_load;
-	key_dest = key_menu;
+	M_EnterMenu (m_load);
 //	M_ScanSaves ();
 }
 
@@ -1398,9 +1396,7 @@ void M_Menu_Save_f (void)
 	if (svs.maxclients != 1)
 		return;
 */
-	m_entersound = true;
-	m_state = m_save;
-	key_dest = key_menu;
+	M_EnterMenu (m_save);
 //	M_ScanSaves ();
 }
 
@@ -1484,9 +1480,7 @@ int	m_multiplayer_cursor;
 
 void M_Menu_MultiPlayer_f (void)
 {
-	key_dest = key_menu;
-	m_state = m_multiplayer;
-	m_entersound = true;
+	M_EnterMenu (m_multiplayer);
 }
 
 
@@ -1789,9 +1783,7 @@ static void ReadDir (void)
 
 void M_Menu_Demos_f (void)
 {
-	m_entersound = true;
-	m_state = m_demos;
-	key_dest = key_menu;
+	M_EnterMenu (m_demos);
 	ReadDir ();
 }
 
@@ -2027,9 +2019,7 @@ int _fraglimit, _timelimit;
 
 void M_Menu_GameOptions_f (void)
 {
-	key_dest = key_menu;
-	m_state = m_gameoptions;
-	m_entersound = true;
+	M_EnterMenu (m_gameoptions);
 
 	// 16 and 8 are not really limits --- just sane values
 	// for these variables...
@@ -2333,9 +2323,7 @@ extern cvar_t	topcolor, bottomcolor;
 
 void M_Menu_Setup_f (void)
 {
-	key_dest = key_menu;
-	m_state = m_setup;
-	m_entersound = true;
+	M_EnterMenu (m_setup);
 	Q_strncpyz (setup_name, name.string, sizeof(setup_name));
 	Q_strncpyz (setup_team, team.string, sizeof(setup_team));
 	setup_top = setup_oldtop = (int)topcolor.value;
@@ -2514,9 +2502,7 @@ int m_multip_state;
 
 void M_Menu_ServerList_f (void)
 {
-	key_dest = key_menu;
-	m_entersound = true;
-	m_state = m_slist;
+	M_EnterMenu (m_slist);
 	m_multip_mins = 0;
 	m_multip_maxs = 10;
 	m_multip_horiz = 0;
@@ -2710,9 +2696,7 @@ int desc_min;
 int sedit_state;
 
 void M_Menu_SEdit_f (void) {
-	key_dest = key_menu;
-	m_entersound = true;
-	m_state = m_sedit;
+	M_EnterMenu (m_sedit);
 	sedit_state = 0;
 	Q_strncpyz (serv, slist[m_multip_cursor].server, sizeof(serv));
 	Q_strncpyz (desc, slist[m_multip_cursor].description, sizeof(desc));
