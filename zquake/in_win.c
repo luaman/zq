@@ -477,6 +477,8 @@ void IN_StartupMouse (void)
 }
 
 
+void IN_LoadKeys_f (void);
+
 /*
 ===========
 IN_Init
@@ -494,6 +496,7 @@ void IN_Init (void)
 	Cvar_Register (&in_joystick);
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
+	Cmd_AddCommand ("loadkeys", IN_LoadKeys_f);
 
 	uiWheelMessage = RegisterWindowMessage ( "MSWHEEL_ROLLMSG" );
 
@@ -1237,6 +1240,7 @@ void IN_JoyMove (usercmd_t *cmd)
 
 //==========================================================================
 
+// builtin keymap
 static byte scantokey[128] =
 {
 //  0       1        2       3       4       5       6       7
@@ -1259,6 +1263,10 @@ static byte scantokey[128] =
 	0,      0,      0,      0,      0,      0,      0,      0
 };
 
+// user defined keymap
+byte keymap[256];	// 128-255 are extended scancodes
+qboolean keymap_active = false;
+
 
 /*
 =======
@@ -1277,6 +1285,12 @@ int IN_MapKey (int key)
 	key = (key>>16)&255;
 	if (key > 127)
 		return 0;
+
+	if (keymap_active)
+	{
+		key = keymap[key + (extended ? 128 : 0)];
+		return key;
+	}
 
 	key = scantokey[key];
 
@@ -1312,4 +1326,106 @@ int IN_MapKey (int key)
 	}
 
 	return key;
+}
+
+void IN_LoadKeys_f (void)
+{
+	int n, keynum;
+	qboolean ext;
+	int shift;
+	char *data;
+	char filename[MAX_QPATH];
+	char layout[64] = "custom";
+
+	if (Cmd_Argc() != 2)
+	{
+		Com_Printf ("loadkeys <filename> : load keymap from file\n"
+					"loadkeys -d : restore default keymap\n");
+		return;
+	}
+
+	if (!strcmp(Cmd_Argv(1), "-d"))
+	{
+		keymap_active = false;
+		return;
+	}
+
+	Q_strncpyz (filename, Cmd_Argv(1), sizeof(filename) - 5);
+	COM_DefaultExtension (filename, ".kmap");
+	data = FS_LoadTempFile (filename);
+	if (!data)
+	{
+		Com_Printf ("Couldn't load %s\n", filename);
+		return;
+	}
+
+	keymap_active = false;
+
+	data = strtok (data, "\r\n");
+	for ( ; data; data = strtok (NULL, "\r\n"))
+	{
+		if (strlen(data) >= 256)	// sanity check
+			return;
+
+		Cmd_TokenizeString (data);
+
+		if (!Cmd_Argc())
+			continue;
+
+		ext = false;
+		shift = 0;
+
+		if (!strcmp(Cmd_Argv(0), "layout") && Cmd_Argc() > 1)
+		{
+			Q_strncpyz (layout, Cmd_Argv(1), sizeof(layout));
+			continue;
+		}
+
+		if (!strcmp(Cmd_Argv(0), "ext")) {
+			ext = true;
+			shift++;
+		}
+
+		if (strcmp(Cmd_Argv(shift), "keycode"))
+			continue;
+
+		shift++;
+
+		if (!strcmp(Cmd_Argv(shift), "ext")) {
+			ext = true;
+			shift++;
+		}
+
+		n = Q_atoi(Cmd_Argv(shift));
+
+		if (n <= 0 || n > 128)
+		{
+			Com_Printf ("\"%s\" is not a valid scan code\n", Cmd_Argv(shift));
+			continue;
+		}
+
+		keynum = Key_StringToKeynum(Cmd_Argv(shift + 1));
+		if (keynum > 0)
+		{
+			if (!ext)
+				keymap[n] = keynum;
+			else
+				keymap[n + 128] = keynum;
+		}
+		else
+			Com_Printf ("\"%s\" is not a valid key\n", Cmd_Argv(shift + 1));
+	}
+
+	// some keys are hard-wired
+	keymap[1] = K_ESCAPE;
+	keymap[28] = K_ENTER;
+	keymap[72 + 128] = K_UPARROW;
+	keymap[80 + 128] = K_DOWNARROW;
+	keymap[75 + 128] = K_LEFTARROW;
+	keymap[77 + 128] = K_RIGHTARROW;
+
+	keymap_active = true;
+
+	if (cl_warncmd.value || developer.value)
+		Com_Printf ("%s keymap loaded\n", layout);
 }
