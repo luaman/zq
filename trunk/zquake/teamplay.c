@@ -998,7 +998,13 @@ ok:
 
 	if (!strncmp(buf, " f_version\n", 11) || !strncmp(buf, " z_version\n", 11))
 	{
-		Cbuf_AddText (va("say ZQuake version %s (Build %04d)\n", Z_VERSION, build_number()));
+#ifdef RELEASE_VERSION
+		Cbuf_AddText (va("say ZQuake version %s "
+			QW_PLATFORM ":" QW_RENDERER "\n", Z_VERSION));
+#else
+		Cbuf_AddText (va("say ZQuake version %s (Build %04d) "
+			QW_PLATFORM ":" QW_RENDERER "\n", Z_VERSION, build_number()));
+#endif
 		vars.f_version_reply_time = realtime;
 	}
 }
