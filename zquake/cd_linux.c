@@ -17,8 +17,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-// Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
-// rights reserved.
+// cd_linux.c
 
 #include <stdio.h>
 #include <unistd.h>
@@ -33,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <linux/cdrom.h>
 
 #include "quakedef.h"
+#include "cdaudio.h"
 #include "sound.h"
 
 static qboolean cdValid = false;
