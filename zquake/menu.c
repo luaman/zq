@@ -118,6 +118,7 @@ M_DrawCharacter
 Draws one solid graphics character
 ================
 */
+
 void M_DrawCharacter (int cx, int line, int num)
 {
 	Draw_Character (cx + ((menuwidth - 320)>>1), line + m_yofs, num);
@@ -125,22 +126,12 @@ void M_DrawCharacter (int cx, int line, int num)
 
 void M_Print (int cx, int cy, char *str)
 {
-	while (*str)
-	{
-		M_DrawCharacter (cx, cy, (*str) | 128);
-		str++;
-		cx += 8;
-	}
+	Draw_Alt_String (cx + ((menuwidth - 320)>>1), cy + m_yofs, str);
 }
 
 void M_PrintWhite (int cx, int cy, char *str)
 {
-	while (*str)
-	{
-		M_DrawCharacter (cx, cy, *str);
-		str++;
-		cx += 8;
-	}
+	Draw_String (cx + ((menuwidth - 320)>>1), cy + m_yofs, str);
 }
 
 void M_DrawTransPic (int x, int y, qpic_t *pic)
