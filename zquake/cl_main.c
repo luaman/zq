@@ -331,7 +331,7 @@ void CL_Disconnect (void)
 #ifdef QW_BOTH
 		// if running a local server, shut it down
 		if (sv.state != ss_dead)
-			SV_ShutdownServer();
+			SV_Shutdown ("");
 #endif
 	}
 
@@ -1147,6 +1147,10 @@ void Host_Shutdown(void)
 	isdown = true;
 
 	Host_WriteConfiguration (); 
+
+#ifdef QW_BOTH
+	SV_Shutdown ("Server quit\n");
+#endif
 
 	SList_Shutdown ();
 	CDAudio_Shutdown ();

@@ -115,35 +115,32 @@ qboolean ServerPaused(void)
 }
 
 
-#ifdef QW_BOTH
 /*
-=================
-SV_ShutdownServer
-=================
+==================
+SV_FinalMessage
+
+Used by SV_Shutdown to send a final message to all connected
+clients before the server goes down.  The messages are sent immediately,
+not just stuck on the outgoing message list, because the server is going
+to totally exit after returning from this function.
+==================
 */
-void SV_ShutdownServer (void)
+void SV_FinalMessage (char *message)
 {
-	Master_Shutdown ();
-	if (sv_logfile)
-	{
-		fclose (sv_logfile);
-		sv_logfile = NULL;
-	}
-	if (sv_fraglogfile)
-	{
-		fclose (sv_fraglogfile);
-		sv_logfile = NULL;
-	}
+	int			i;
+	client_t	*cl;
+	
+	SZ_Clear (&net_message);
+	MSG_WriteByte (&net_message, svc_print);
+	MSG_WriteByte (&net_message, PRINT_HIGH);
+	MSG_WriteString (&net_message, message);
+	MSG_WriteByte (&net_message, svc_disconnect);
 
-	SV_FinalMessage ("");
-
-	memset (&sv, 0, sizeof(sv));
-	sv.state = ss_dead;
-
-	memset (svs.clients, 0, sizeof(svs.clients));
-	//memset (svs.challenges, 0, sizeof(svs.challenges));
+	for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
+		if (cl->state >= cs_spawned)
+			Netchan_Transmit (&cl->netchan, net_message.cursize
+			, net_message.data);
 }
-#endif
 
 
 /*
@@ -153,8 +150,10 @@ SV_Shutdown
 Quake calls this before calling Sys_Quit or Sys_Error
 ================
 */
-void SV_Shutdown (void)
+void SV_Shutdown (char *finalmsg)
 {
+	SV_FinalMessage (finalmsg);
+
 	Master_Shutdown ();
 	if (sv_logfile)
 	{
@@ -166,7 +165,11 @@ void SV_Shutdown (void)
 		fclose (sv_fraglogfile);
 		sv_logfile = NULL;
 	}
-	NET_Shutdown ();
+
+	memset (&sv, 0, sizeof(sv));
+	sv.state = ss_dead;
+
+	memset (svs.clients, 0, sizeof(svs.clients));
 }
 
 /*
@@ -194,45 +197,16 @@ void SV_Error (char *error, ...)
 
 	Con_Printf ("SV_Error: %s\n",string);
 
-	SV_FinalMessage (va("server crashed: %s\n", string));
-
 #ifdef QW_BOTH
 	inerror = false;
 	Host_EndGame ("SV_Error");
 #else
-	SV_Shutdown ();
+	SV_Shutdown (va("server crashed: %s\n", string));
+	NET_Shutdown ();
 
 	Sys_Error ("SV_Error: %s",string);
 #endif
 }
-
-/*
-==================
-SV_FinalMessage
-
-Used by SV_Error and SV_Quit_f to send a final message to all connected
-clients before the server goes down.  The messages are sent immediately,
-not just stuck on the outgoing message list, because the server is going
-to totally exit after returning from this function.
-==================
-*/
-void SV_FinalMessage (char *message)
-{
-	int			i;
-	client_t	*cl;
-	
-	SZ_Clear (&net_message);
-	MSG_WriteByte (&net_message, svc_print);
-	MSG_WriteByte (&net_message, PRINT_HIGH);
-	MSG_WriteString (&net_message, message);
-	MSG_WriteByte (&net_message, svc_disconnect);
-
-	for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
-		if (cl->state >= cs_spawned)
-			Netchan_Transmit (&cl->netchan, net_message.cursize
-			, net_message.data);
-}
-
 
 
 /*
