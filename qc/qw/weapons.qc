@@ -891,15 +891,16 @@ void superspike_touch ()
 
 
 /*
+// only works correctly for client entities!
 float(entity ent) EntityNum =
 {
-	float num = 1;
+	float num = 0;
 	entity e;
 	
 	e = world;
 	do {
 		e = nextent(e);
-		
+		num = num + 1;
 	} while (e != ent);
 
 	return num;
