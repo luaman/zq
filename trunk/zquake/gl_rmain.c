@@ -283,6 +283,7 @@ float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 };
 
 vec3_t	shadevector;
+float	shadescale = 0;
 
 float	shadelight, ambientlight;
 
@@ -561,11 +562,13 @@ void R_DrawAliasModel (entity_t *ent)
 	if (ent->scoreboard && !gl_nocolors.value)
 	{
 		i = ent->scoreboard - cl.players;
+
 		if (!ent->scoreboard->skin) {
 			Skin_Find(ent->scoreboard);
 			R_TranslatePlayerSkin(i);
 		}
-		if (i >= 0 && i<MAX_CLIENTS)
+
+		if (i >= 0 && i < MAX_CLIENTS)
 		    texture = playertextures + i;
 	}
 
@@ -583,7 +586,18 @@ void R_DrawAliasModel (entity_t *ent)
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 	if (!full_light && gl_fb_models.value) {
-		int	fb_texture = paliashdr->fb_texturenum[skinnum][anim];
+		int	fb_texture = 0;
+		
+		if ((clmodel->modhint == MOD_PLAYER) && ent->scoreboard)
+		{
+			i = ent->scoreboard - cl.players;
+
+			if (i >= 0 && i < MAX_CLIENTS)
+				fb_texture = fb_skins[i];
+		}
+		else
+			fb_texture = paliashdr->fb_texturenum[skinnum][anim];
+
 		if (fb_texture) {
 			glEnable (GL_BLEND);
 			GL_Bind (fb_texture);
@@ -602,10 +616,12 @@ void R_DrawAliasModel (entity_t *ent)
 	{
 		float an = -ent->angles[1] / 180 * M_PI;
 		
-		shadevector[0] = Q_cos(an);
-		shadevector[1] = Q_sin(an);
-		shadevector[2] = 1;
-		VectorNormalizeFast (shadevector);
+		if (!shadescale)
+			shadescale = Q_RSqrt (2);
+
+		shadevector[0] = Q_cos(an) * shadescale;
+		shadevector[1] = Q_sin(an) * shadescale;
+		shadevector[2] = shadescale;
 
 		glPushMatrix ();
 
