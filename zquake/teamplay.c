@@ -981,9 +981,14 @@ char *TP_LocationName (vec3_t location)
 	int		i, minnum;
 	float	dist, mindist;
 	vec3_t	vec;
+	static qboolean	recursive;
+	static char	buf[1024];
 	
 	if (!loc_numentries || (cls.state != ca_active))
 		return tp_name_someplace.string;
+
+	if (recursive)
+		return "";
 
 	minnum = 0;
 	mindist = 9999999;
@@ -997,7 +1002,11 @@ char *TP_LocationName (vec3_t location)
 		}
 	}
 
-	return locdata[minnum].name;
+	recursive = true;
+	Cmd_ExpandString (locdata[minnum].name, buf);
+	recursive = false;
+
+	return buf;
 }
 
 /*
