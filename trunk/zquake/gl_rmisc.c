@@ -201,8 +201,8 @@ void R_Init (void)
 	Cvar_Register (&gl_keeptjunctions);
 	Cvar_Register (&gl_reporttjunctions);
 
-	R_InitBubble();
-	
+	R_InitTextures ();
+	R_InitBubble ();
 	R_InitParticles ();
 	R_InitParticleTexture ();
 
