@@ -84,38 +84,16 @@ dlight_t *CL_AllocDlight (int key)
 CL_NewDlight
 ===============
 */
-void CL_NewDlight (int key, float x, float y, float z, float radius, float time,
+void CL_NewDlight (int key, vec3_t origin, float radius, float time,
 				   int type)
 {
 	dlight_t	*dl;
 
 	dl = CL_AllocDlight (key);
-	dl->origin[0] = x;
-	dl->origin[1] = y;
-	dl->origin[2] = z;
+	VectorCopy (origin, dl->origin);
 	dl->radius = radius;
 	dl->die = cl.time + time;
-	if (type == 0) {
-		dl->color[0] = 0.2;
-		dl->color[1] = 0.1;
-		dl->color[2] = 0.05;
-		dl->color[3] = 0.7;
-	} else if (type == 1) {
-		dl->color[0] = 0.05;
-		dl->color[1] = 0.05;
-		dl->color[2] = 0.3;
-		dl->color[3] = 0.7;
-	} else if (type == 2) {
-		dl->color[0] = 0.5;
-		dl->color[1] = 0.05;
-		dl->color[2] = 0.05;
-		dl->color[3] = 0.7;
-	} else if (type == 3) {
-		dl->color[0]=0.5;
-		dl->color[1] = 0.05;
-		dl->color[2] = 0.4;
-		dl->color[3] = 0.7;
-	}
+	dl->type = type;
 }
 
 
@@ -429,7 +407,6 @@ void CL_LinkPacketEntities (void)
 	float				autorotate;
 	int					i;
 	int					pnum;
-	dlight_t			*dl;
 
 	pack = &cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].packet_entities;
 
@@ -447,15 +424,18 @@ void CL_LinkPacketEntities (void)
 		{
 			// spawn light flashes, even ones coming from invisible objects
 			if ((s1->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
-				CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand()&31), 0.1, 3);
+				CL_NewDlight (s1->number, s1->origin, 200 + (rand()&31), 0.1, lt_redblue);
 			else if (s1->effects & EF_BLUE)
-				CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand()&31), 0.1, 1);
+				CL_NewDlight (s1->number, s1->origin, 200 + (rand()&31), 0.1, lt_blue);
 			else if (s1->effects & EF_RED)
-				CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand()&31), 0.1, 2);
-			else if (s1->effects & EF_BRIGHTLIGHT)
-				CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2] + 16, 400 + (rand()&31), 0.1, 0);
-			else if (s1->effects & EF_DIMLIGHT)
-				CL_NewDlight (s1->number, s1->origin[0], s1->origin[1], s1->origin[2], 200 + (rand()&31), 0.1, 0);
+				CL_NewDlight (s1->number, s1->origin, 200 + (rand()&31), 0.1, lt_red);
+			else if (s1->effects & EF_BRIGHTLIGHT) {
+				vec3_t	tmp;
+				VectorCopy (s1->origin, tmp);
+				tmp[2] += 16;
+				CL_NewDlight (s1->number, tmp, 400 + (rand()&31), 0.1, lt_default);
+			} else if (s1->effects & EF_DIMLIGHT)
+				CL_NewDlight (s1->number, s1->origin, 200 + (rand()&31), 0.1, lt_default);
 		}
 
 		if (cl_deadbodyfilter.value && s1->modelindex == cl_playerindex
@@ -563,12 +543,8 @@ void CL_LinkPacketEntities (void)
 					R_RocketTrail (old_origin, ent->origin, 0);
 			}
 
-			if (r_rocketlight.value) {
-				dl = CL_AllocDlight (s1->number);
-				VectorCopy (ent->origin, dl->origin);
-				dl->radius = 200;
-				dl->die = cl.time + 0.1;
-			}
+			if (r_rocketlight.value)
+				CL_NewDlight (s1->number, ent->origin, 200, 0.1, lt_rocket);
 		}
 		else if (model->flags & EF_GRENADE && r_grenadetrail.value)
 			R_RocketTrail (old_origin, ent->origin, 1);
@@ -864,15 +840,19 @@ void CL_LinkPlayers (void)
 					VectorCopy (state->origin, org);
 
 				if ((state->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
-					CL_NewDlight (j, org[0], org[1], org[2], 200 + (rand()&31), 0.1, 3);
+					CL_NewDlight (j, org, 200 + (rand()&31), 0.1, lt_redblue);
 				else if (state->effects & EF_BLUE)
-					CL_NewDlight (j, org[0], org[1], org[2], 200 + (rand()&31), 0.1, 1);
+					CL_NewDlight (j, org, 200 + (rand()&31), 0.1, lt_blue);
 				else if (state->effects & EF_RED)
-					CL_NewDlight (j, org[0], org[1], org[2], 200 + (rand()&31), 0.1, 2);
-				else if (state->effects & EF_BRIGHTLIGHT)
-					CL_NewDlight (j, org[0], org[1], org[2] + 16, 400 + (rand()&31), 0.1, 0);
+					CL_NewDlight (j, org, 200 + (rand()&31), 0.1, lt_red);
+				else if (state->effects & EF_BRIGHTLIGHT) {
+					vec3_t	tmp;
+					VectorCopy (org, tmp);
+					tmp[2] += 16;
+					CL_NewDlight (j, tmp, 400 + (rand()&31), 0.1, lt_default);
+				}
 				else if (state->effects & EF_DIMLIGHT)
-					CL_NewDlight (j, org[0], org[1], org[2], 200 + (rand()&31), 0.1, 0);
+					CL_NewDlight (j, org, 200 + (rand()&31), 0.1, lt_default);
 			}
 #ifdef GLQUAKE
 		}

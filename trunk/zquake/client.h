@@ -119,7 +119,12 @@ typedef struct
 //
 // client_state_t should hold all pieces of the client state
 //
+
 #define	MAX_DLIGHTS		32
+
+typedef enum { lt_default, lt_blue, lt_red, lt_redblue, lt_muzzleflash,
+lt_explosion, lt_rocket, NUM_DLIGHTTYPES } dlighttype_t;
+
 typedef struct
 {
 	int		key;				// so entities can reuse same entry
@@ -128,7 +133,7 @@ typedef struct
 	float	die;				// stop lighting after this time
 	float	decay;				// drop this each second
 	float	minlight;			// don't add when contributing less
-	float   color[4];
+	int		type;
 } dlight_t;
 
 typedef struct
@@ -367,9 +372,6 @@ extern float	server_version;	// version of server we connected to
 //
 // cl_main
 //
-dlight_t *CL_AllocDlight (int key);
-void	CL_DecayLights (void);
-
 void CL_Init (void);
 void Host_WriteConfiguration (void);
 
@@ -473,6 +475,10 @@ void CL_ClearTEnts (void);
 //
 // cl_ents.c
 //
+dlight_t *CL_AllocDlight (int key);
+void CL_NewDlight (int key, vec3_t origin, float radius, float time, int type);
+void CL_DecayLights (void);
+
 void CL_SetSolidPlayers (int playernum);
 void CL_SetUpPlayerPrediction(qboolean dopred);
 void CL_EmitEntities (void);
@@ -495,8 +501,8 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 #define CAM_NONE	0
 #define CAM_TRACK	1
 
-extern	int		autocam;
-extern int spec_track; // player# of who we are tracking
+extern int	autocam;
+extern int	spec_track; // player# of who we are tracking
 
 qboolean Cam_DrawViewModel(void);
 qboolean Cam_DrawPlayer(int playernum);
