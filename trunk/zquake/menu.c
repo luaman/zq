@@ -242,6 +242,22 @@ void M_EnterMenu (int state)
 	m_state = state;
 	m_entersound = true;
 }
+
+/*
+================
+M_LeaveMenu
+================
+*/
+void M_LeaveMenu (int parent)
+{
+	if (m_topmenu == m_state) {
+		m_state = m_none;
+		key_dest = key_game;
+	} else {
+		m_state = parent;
+		m_entersound = true;
+	}
+}
 		
 //=============================================================================
 /* MAIN MENU */
@@ -572,8 +588,10 @@ void M_Options_Key (int k)
 {
 	switch (k)
 	{
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-		M_Menu_Main_f ();
+		M_LeaveMenu (m_main);
 		break;
 		
 	case K_ENTER:
@@ -814,8 +832,10 @@ void M_Keys_Key (int k)
 	
 	switch (k)
 	{
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-		M_Menu_Options_f ();
+		M_LeaveMenu (m_options);
 		break;
 
 	case K_LEFTARROW:
@@ -948,8 +968,10 @@ void M_Fps_Key (int k)
 
 	switch (k)
 	{
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-		M_Menu_Options_f ();
+		M_LeaveMenu (m_options);
 		break;
 
 	case K_UPARROW:
@@ -1121,8 +1143,10 @@ void M_Help_Key (int key)
 {
 	switch (key)
 	{
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-		M_Menu_Main_f ();
+		M_LeaveMenu (m_main);
 		break;
 		
 	case K_UPARROW:
@@ -1260,8 +1284,10 @@ void M_SinglePlayer_Key (int key)
 
 	switch (key)
 	{
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-		M_Menu_Main_f ();
+		M_LeaveMenu (m_main);
 		break;
 
 	case K_DOWNARROW:
@@ -1335,8 +1361,14 @@ void M_SinglePlayer_Draw (void)
 
 void M_SinglePlayer_Key (key)
 {
-	if (key == K_ESCAPE || key == K_ENTER)
-		m_state = m_main;
+	switch (key) {
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
+	case K_ESCAPE:
+	case K_ENTER:
+		M_LeaveMenu (m_main);
+		break;
+	}
 }
 #endif	// !QW_BOTH
 
@@ -1444,24 +1476,26 @@ void M_Save_Draw (void)
 }
 
 
-void M_Load_Key (int k)
+void M_Load_Key (int key)
 {
-	switch (k)
-	{
+	switch (key) {
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
 	case K_ENTER:
-		M_Menu_SinglePlayer_f ();
+		M_LeaveMenu (m_singleplayer);
 		break;
 	}
 }
 
-void M_Save_Key (int k)
+void M_Save_Key (int key)
 {
-	switch (k)
-	{
+	switch (key) {
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
 	case K_ENTER:
-		M_Menu_SinglePlayer_f ();
+		M_LeaveMenu (m_singleplayer);
 		break;
 	}
 }
@@ -1507,8 +1541,10 @@ void M_MultiPlayer_Key (int key)
 {
 	switch (key)
 	{
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-		M_Menu_Main_f ();
+		M_LeaveMenu (m_main);
 		break;
 
 	case K_DOWNARROW:
@@ -1833,9 +1869,11 @@ void M_Demos_Key (int k)
 {
 	switch (k)
 	{
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
 		Q_strncpyz(prevdir, dir[demo_cursor+demo_base].name, MAX_QPATH);
-		M_Menu_MultiPlayer_f ();
+		M_LeaveMenu (m_multiplayer);
 		break;
 
 	case K_UPARROW:
@@ -2203,9 +2241,10 @@ void M_GameOptions_Key (int key)
 
 	switch (key)
 	{
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-//		M_Menu_Net_f ();
-		M_Menu_MultiPlayer_f ();
+		M_LeaveMenu (m_multiplayer);
 		break;
 
 	case K_UPARROW:
@@ -2376,7 +2415,7 @@ void M_Setup_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
-		M_Menu_MultiPlayer_f ();
+		M_LeaveMenu (m_multiplayer);
 		break;
 
 	case K_UPARROW:
@@ -2444,12 +2483,13 @@ void M_Setup_Key (int k)
 		{
 			if (strlen(setup_name))
 				setup_name[strlen(setup_name)-1] = 0;
-		}
-
-		if (setup_cursor == 1)
+		} else if (setup_cursor == 1)
 		{
 			if (strlen(setup_team))
 				setup_team[strlen(setup_team)-1] = 0;
+		} else {
+			m_topmenu = m_none;
+			M_LeaveMenu (m_multiplayer);
 		}
 		break;
 
@@ -2551,8 +2591,10 @@ void M_ServerList_Key (key)
 		return;
 	switch(key)
 	{
+	case K_BACKSPACE:
+		m_topmenu = m_none;	// intentional fallthrough
 	case K_ESCAPE:
-		M_Menu_MultiPlayer_f();
+		M_LeaveMenu (m_multiplayer);
 		break;
 
 	case K_UPARROW:
