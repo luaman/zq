@@ -40,6 +40,15 @@ void		*host_membase;
 jmp_buf 	host_abort;
 
 
+/*
+================
+Host_Abort
+================
+*/
+void Host_Abort (void)
+{
+	longjmp (host_abort, 1);
+}
 
 /*
 ================
@@ -59,7 +68,7 @@ void Host_EndGame (char *message, ...)
 //	SV_Shutdown ("");	// FIXME
 	CL_Disconnect ();
 
-	longjmp (host_abort, 1);
+	Host_Abort ();
 }
 
 /*
@@ -106,7 +115,7 @@ void Host_Error (char *error, ...)
 
 	inerror = false;
 
-	longjmp (host_abort, 1);
+	Host_Abort ();
 }
 
 
