@@ -473,7 +473,7 @@ void Cmd_Alias_f (void)
 
 	key = Key(s);
 
-	// if the alias allready exists, reuse it
+	// if the alias already exists, reuse it
 	for (a = cmd_alias_hash[key] ; a ; a=a->hash_next)
 	{
 		if (!Q_strcasecmp(a->name, s))

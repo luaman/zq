@@ -462,7 +462,7 @@ void Con_DrawInput (void)
 	char	temp[MAXCMDLINE];
 
 	if (key_dest != key_console && cls.state == ca_active)
-		return;		// don't draw anything (allways draw if not active)
+		return;		// don't draw anything (always draw if not active)
 
 	text = strcpy (temp, key_lines[edit_line]);
 
