@@ -268,9 +268,9 @@ void Q_snprintfz (char *dest, size_t size, char *fmt, ...)
 
 	va_start (argptr, fmt);
 #ifdef _WIN32
-	_vsnprintf (dest, size-1, fmt, argptr);
+	_vsnprintf (dest, size, fmt, argptr);
 #else
-	vsnprintf (dest, size-1, fmt, argptr);
+	vsnprintf (dest, size, fmt, argptr);
 #endif
 	va_end (argptr);
 
