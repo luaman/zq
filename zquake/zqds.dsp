@@ -326,7 +326,7 @@ SOURCE=.\qwcl2.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\qwsv2.ico
+SOURCE=.\zqds.ico
 # End Source File
 # Begin Source File
 
