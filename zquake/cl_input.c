@@ -472,13 +472,10 @@ void CL_FinishMove (usercmd_t *cmd)
 	in_use.state &= ~2;
 
 	// send milliseconds of time to apply the move
-#if 0
-	ms = cls.frametime * 1000;
-#else
-	extramsec += cls.frametime * 990;
+	extramsec += cls.frametime * 1000;
 	ms = extramsec;
 	extramsec -= ms;
-#endif
+
 	if (ms > 250)
 		ms = 100;		// time was unreasonable
 	cmd->msec = ms;
@@ -503,7 +500,7 @@ void CL_FinishMove (usercmd_t *cmd)
 	cmd->sidemove = MakeChar (cmd->sidemove);
 	cmd->upmove = MakeChar (cmd->upmove);
 
-	for (i=0 ; i<3 ; i++)
+	for (i = 0; i < 3; i++)
 		cmd->angles[i] = (Q_rint(cmd->angles[i]*65536.0/360.0)&65535) * (360.0/65536.0);
 }
 
