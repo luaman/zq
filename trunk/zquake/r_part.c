@@ -41,10 +41,6 @@ int			r_numparticles;
 
 vec3_t			r_pright, r_pup, r_ppn;
 
-#ifdef GLQUAKE
-float	r_partscale = 0.04f;
-#endif
-
 /*
 ===============
 R_InitParticles
@@ -470,6 +466,8 @@ void R_DrawParticles (void)
 	unsigned char	theAlpha;
 	vec3_t			up, right;
 	float			dist, scale;
+
+	float r_partscale = 0.004 * tan (r_refdef.fov_x * (M_PI/180) * 0.5f);
 
 	GL_Bind(particletexture);
 	
