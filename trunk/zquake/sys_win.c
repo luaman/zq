@@ -215,8 +215,8 @@ char *Sys_ConsoleInput (void)
 	INPUT_RECORD	rec;
 	int		i, dummy;
 	int		ch, numread, numevents;
-	HANDLE	th;
-	char	*clipText, *textCopied;
+	HANDLE	hclipdata;
+	char	*clipText;
 
 	while (1)
 	{
@@ -263,34 +263,29 @@ char *Sys_ConsoleInput (void)
 							& SHIFT_PRESSED) && (rec.Event.KeyEvent.wVirtualKeyCode
 							==VK_INSERT))) {
 							if (OpenClipboard(NULL)) {
-								th = GetClipboardData(CF_TEXT);
-								if (th) {
-									clipText = GlobalLock(th);
+								hclipdata = GetClipboardData(CF_TEXT);
+								if (hclipdata) {
+									clipText = GlobalLock(hclipdata);
 									if (clipText) {
-										textCopied = Q_Malloc (GlobalSize(th)+1);
-										strcpy(textCopied, clipText);
-										strtok(textCopied, "\n\r\b");
-										i = strlen(textCopied);
-										if (i+len>=256)
-											i=256-len;
-										if (i>0) {
-											textCopied[i]=0;
-											text[len]=0;
-											strcat(text, textCopied);
-											len+=dummy;
-											WriteFile(houtput, textCopied, i, &dummy, NULL);
+										for (i=0; clipText[i]; i++)
+											if (clipText[i]=='\n' || clipText[i]=='\r' || clipText[i]=='\b')
+												break;
+										if (i + len >= sizeof(text))
+											i = sizeof(text) - 1 - len;
+										if (i > 0) {
+											memcpy (text + len, clipText, i);
+											len += i;
+											WriteFile(houtput, clipText, i, &dummy, NULL);
 										}
-										free(textCopied);
 									}
-									GlobalUnlock(th);
+									GlobalUnlock(hclipdata);
 								}
 								CloseClipboard();
 							}
-						} else if (ch >= ' ')
+						} else if (ch >= ' ' && len < sizeof(text)-1)
 						{
 							WriteFile(houtput, &ch, 1, &dummy, NULL);	
-							text[len] = ch;
-							len = (len + 1) & 0xff;
+							text[len++] = ch;
 						}
 
 						break;
