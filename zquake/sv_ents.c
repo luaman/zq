@@ -379,7 +379,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 		{	// only sent origin and velocity to spectators
 			pflags &= PF_VELOCITY1 | PF_VELOCITY2 | PF_VELOCITY3;
 			// Z_EXT_PM_TYPE protocol extension
-			pflags |= PM_NOCLIP << PF_PM_TYPE_SHIFT;
+			pflags |= PMC_NOCLIP << PF_PMC_SHIFT;
 		}
 		else if (ent == clent)
 		{	// don't send a lot of data on personal entity
@@ -388,7 +388,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 				pflags |= PF_WEAPONFRAME;
 			// Z_EXT_PM_TYPE protocol extension
 			if (cl->jump_held)
-				pflags |= PM_NORMAL_JUMP_HELD << PF_PM_TYPE_SHIFT;
+				pflags |= PMC_NORMAL_JUMP_HELD << PF_PMC_SHIFT;
 		}
 
 		if (client->spec_track && client->spec_track - 1 == j &&
