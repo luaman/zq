@@ -122,48 +122,41 @@ static void Cmd_New_f (void)
 	if (!gamedir[0])
 		gamedir = "qw";
 
-//NOTE:  This doesn't go through ClientReliableWrite since it's before the user
-//spawns.  These functions are written to not overflow
-	if (sv_client->num_backbuf) {
-		SV_ClientPrintf (sv_client, PRINT_HIGH, "WARNING %s: [SV_New] Back buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
-		sv_client->num_backbuf = 0;
-		SZ_Clear(&sv_client->netchan.message);
-	}
-
 	// send the serverdata
-	MSG_WriteByte (&sv_client->netchan.message, svc_serverdata);
-	MSG_WriteLong (&sv_client->netchan.message, PROTOCOL_VERSION);
-	MSG_WriteLong (&sv_client->netchan.message, svs.spawncount);
-	MSG_WriteString (&sv_client->netchan.message, gamedir);
+	ClientReliableWrite_Begin (sv_client, svc_serverdata);
+	ClientReliableWrite_Long (PROTOCOL_VERSION);
+	ClientReliableWrite_Long (svs.spawncount);
+	ClientReliableWrite_String (gamedir);
 
 	playernum = NUM_FOR_EDICT(sv_client->edict)-1;
 	if (sv_client->spectator)
 		playernum |= 128;
-	MSG_WriteByte (&sv_client->netchan.message, playernum);
+	ClientReliableWrite_Byte (playernum);
 
 	// send full levelname
-	MSG_WriteString (&sv_client->netchan.message, PR_GetString(sv.edicts->v.message));
+	ClientReliableWrite_String (PR_GetString(sv.edicts->v.message));
 
 	// send the movevars
-	MSG_WriteFloat(&sv_client->netchan.message, movevars.gravity);
-	MSG_WriteFloat(&sv_client->netchan.message, movevars.stopspeed);
-	MSG_WriteFloat(&sv_client->netchan.message, movevars.maxspeed);
-	MSG_WriteFloat(&sv_client->netchan.message, movevars.spectatormaxspeed);
-	MSG_WriteFloat(&sv_client->netchan.message, movevars.accelerate);
-	MSG_WriteFloat(&sv_client->netchan.message, movevars.airaccelerate);
-	MSG_WriteFloat(&sv_client->netchan.message, movevars.wateraccelerate);
-	MSG_WriteFloat(&sv_client->netchan.message, movevars.friction);
-	MSG_WriteFloat(&sv_client->netchan.message, movevars.waterfriction);
-	MSG_WriteFloat(&sv_client->netchan.message, movevars.entgravity);
+	ClientReliableWrite_Float (movevars.gravity);
+	ClientReliableWrite_Float (movevars.stopspeed);
+	ClientReliableWrite_Float (movevars.maxspeed);
+	ClientReliableWrite_Float (movevars.spectatormaxspeed);
+	ClientReliableWrite_Float (movevars.accelerate);
+	ClientReliableWrite_Float (movevars.airaccelerate);
+	ClientReliableWrite_Float (movevars.wateraccelerate);
+	ClientReliableWrite_Float (movevars.friction);
+	ClientReliableWrite_Float (movevars.waterfriction);
+	ClientReliableWrite_Float (movevars.entgravity);
+	ClientReliableWrite_End ();
 
 	// send music
-	MSG_WriteByte (&sv_client->netchan.message, svc_cdtrack);
-	MSG_WriteByte (&sv_client->netchan.message, sv.edicts->v.sounds);
+	ClientReliableWrite_Begin (sv_client, svc_cdtrack);
+	ClientReliableWrite_Byte (sv.edicts->v.sounds);
+	ClientReliableWrite_End ();
 
 	// send server info string
-	strcpy (info, svs.info);
-
 	// append skybox name if there's enough room
+	strcpy (info, svs.info);
 	if (sv.sky[0] && !strstr(sv.sky, ".."))
 	{
 		if (!strstr(svs.info, "\\sky\\") &&
@@ -173,9 +166,10 @@ static void Cmd_New_f (void)
 			strcat (info, sv.sky);
 		}
 	}
-	MSG_WriteByte (&sv_client->netchan.message, svc_stufftext);
-	MSG_WriteString (&sv_client->netchan.message, va("fullserverinfo \"%s\"\n", info));
 
+	ClientReliableWrite_Begin (sv_client, svc_stufftext);
+	ClientReliableWrite_String (va("fullserverinfo \"%s\"\n", info));
+	ClientReliableWrite_End ();
 }
 
 /*
@@ -185,8 +179,11 @@ Cmd_Soundlist_f
 */
 static void Cmd_Soundlist_f (void)
 {
-	char	**s;
-	int		n;
+	char		**s;
+	int			n;
+	int			maxsize;
+	byte		msg_data[MAX_MSGLEN];
+	sizebuf_t	msg;
 
 	if (sv_client->state != cs_connected)
 	{
@@ -197,6 +194,7 @@ static void Cmd_Soundlist_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
+		SV_ClearReliable (sv_client);
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cmd_Soundlist_f from different level\n");
 		Cmd_New_f ();
 		return;
@@ -204,34 +202,41 @@ static void Cmd_Soundlist_f (void)
 
 	n = atoi(Cmd_Argv(2));
 	if ((unsigned)n >= (MAX_SOUNDS - 1)) {
+		SV_ClearReliable (sv_client);
 		SV_ClientPrintf (sv_client, PRINT_HIGH, 
 			"Cmd_Soundlist_f: Invalid soundlist index\n");
 		SV_DropClient (sv_client);
 		return;
 	}
 	
-//NOTE:  This doesn't go through ClientReliableWrite since it's before the user
-//spawns.  These functions are written to not overflow
-	if (sv_client->num_backbuf) {
-		SV_ClientPrintf (sv_client, PRINT_HIGH, "WARNING %s: [SV_Soundlist] Back buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
-		sv_client->num_backbuf = 0;
-		SZ_Clear(&sv_client->netchan.message);
+	// if we're not back-bufffered, try to fit the soundlist into current message
+	if (!sv_client->backbuf_size &&
+		sv_client->netchan.message.maxsize - sv_client->netchan.message.cursize > 100)
+	{
+		maxsize = sv_client->netchan.message.maxsize - sv_client->netchan.message.cursize;
 	}
+	else
+		maxsize = MAX_MSGLEN/2;
 
-	MSG_WriteByte (&sv_client->netchan.message, svc_soundlist);
-	MSG_WriteByte (&sv_client->netchan.message, n);
-	for (s = sv.sound_name + 1 + n ;
-		n < MAX_SOUNDS - 1 && *s && sv_client->netchan.message.cursize < (MAX_MSGLEN/2); 
-		s++, n++)
-		MSG_WriteString (&sv_client->netchan.message, *s);
+	SZ_Init (&msg, msg_data, sizeof(msg_data));
 
-	MSG_WriteByte (&sv_client->netchan.message, 0);
+	MSG_WriteByte (&msg, svc_soundlist);
+	MSG_WriteByte (&msg, n);
+	for (s = sv.sound_name + 1 + n; n < MAX_SOUNDS - 1 && *s; s++, n++) {
+		if (msg.cursize + strlen(*s) + 3 > maxsize)
+			break;
+		MSG_WriteString (&msg, *s);
+	}
+	MSG_WriteByte (&msg, 0);
 
 	// next msg
 	if (n < MAX_SOUNDS - 1 && *s)
-		MSG_WriteByte (&sv_client->netchan.message, n);
+		MSG_WriteByte (&msg, n);
 	else
-		MSG_WriteByte (&sv_client->netchan.message, 0);
+		MSG_WriteByte (&msg, 0);
+
+
+	SV_AddToReliable (sv_client, msg.data, msg.cursize);
 }
 
 static char *TrimModelName (char *full)
@@ -263,6 +268,9 @@ static void Cmd_Modellist_f (void)
 {
 	char		**s;
 	int			i, n;
+	int			maxsize;
+	byte		msg_data[MAX_MSGLEN];
+	sizebuf_t	msg;
 
 	if (sv_client->state != cs_connected)
 	{
@@ -273,6 +281,7 @@ static void Cmd_Modellist_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
+		SV_ClearReliable (sv_client);
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cmd_Modellist_f from different level\n");
 		Cmd_New_f ();
 		return;
@@ -280,51 +289,60 @@ static void Cmd_Modellist_f (void)
 
 	n = atoi(Cmd_Argv(2));
 	if ((unsigned)n >= (MAX_MODELS - 1)) {
+		SV_ClearReliable (sv_client);
 		SV_ClientPrintf (sv_client, PRINT_HIGH, 
 			"Cmd_Modellist_f: Invalid modellist index\n");
 		SV_DropClient (sv_client);
 		return;
 	}
 
+
 //@@VWep test
 	if (n == 0 && (sv_client->extensions & Z_EXT_VWEP) && sv.vw_model_name[0]) {
 		// send VWep precaches
-		// pray we don't overflow
 		for (i = 0, s = sv.vw_model_name; i < MAX_VWEP_MODELS; s++, i++) {
 			if (!sv.vw_model_name[i] || !sv.vw_model_name[i][0])
 				continue;
-			MSG_WriteByte (&sv_client->netchan.message, svc_serverinfo);
-			MSG_WriteString (&sv_client->netchan.message, "#vw");
-			MSG_WriteString (&sv_client->netchan.message, va("%i %s", i, TrimModelName(*s)));
+			ClientReliableWrite_Begin (sv_client, svc_serverinfo);
+			ClientReliableWrite_String ("#vw");
+			ClientReliableWrite_String (va("%i %s", i, TrimModelName(*s)));
+			ClientReliableWrite_End();
 		}
 		// send end-of-list messsage
-		MSG_WriteByte (&sv_client->netchan.message, svc_serverinfo);
-		MSG_WriteString (&sv_client->netchan.message, "#vw");
-		MSG_WriteString (&sv_client->netchan.message, "");
+		ClientReliableWrite_Begin (sv_client, svc_serverinfo);
+		ClientReliableWrite_String ("#vw");
+		ClientReliableWrite_String ("");
+		ClientReliableWrite_End();
 	}
 
 
-//NOTE:  This doesn't go through ClientReliableWrite since it's before the user
-//spawns.  These functions are written to not overflow
-	if (sv_client->num_backbuf) {
-		SV_ClientPrintf (sv_client, PRINT_HIGH, "WARNING %s: [SV_Modellist] Back buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
-		sv_client->num_backbuf = 0;
-		SZ_Clear(&sv_client->netchan.message);
+	// if we're not back-bufffered, try to fit the modellist into current message
+	if (!sv_client->backbuf_size &&
+		sv_client->netchan.message.maxsize - sv_client->netchan.message.cursize > 100)
+	{
+		maxsize = sv_client->netchan.message.maxsize - sv_client->netchan.message.cursize;
 	}
+	else
+		maxsize = MAX_MSGLEN/2;
 
-	MSG_WriteByte (&sv_client->netchan.message, svc_modellist);
-	MSG_WriteByte (&sv_client->netchan.message, n);
-	for (s = sv.model_name + 1 + n ; 
-		n < (MAX_MODELS - 1) && *s && sv_client->netchan.message.cursize < (MAX_MSGLEN/2); 
-		s++, n++)
-		MSG_WriteString (&sv_client->netchan.message, *s);
-	MSG_WriteByte (&sv_client->netchan.message, 0);
+	SZ_Init (&msg, msg_data, sizeof(msg_data));
+
+	MSG_WriteByte (&msg, svc_modellist);
+	MSG_WriteByte (&msg, n);
+	for (s = sv.model_name + 1 + n; n < MAX_MODELS - 1 && *s; s++, n++) {
+		if (msg.cursize + strlen(*s) + 3 > maxsize)
+			break;
+		MSG_WriteString (&msg, *s);
+	}
+	MSG_WriteByte (&msg, 0);
 
 	// next msg
 	if (n < MAX_MODELS - 1 && *s)
-		MSG_WriteByte (&sv_client->netchan.message, n);
+		MSG_WriteByte (&msg, n);
 	else
-		MSG_WriteByte (&sv_client->netchan.message, 0);
+		MSG_WriteByte (&msg, 0);
+
+	SV_AddToReliable (sv_client, msg.data, msg.cursize);
 }
 
 /*
@@ -346,6 +364,7 @@ static void Cmd_PreSpawn_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
+		SV_ClearReliable (sv_client);
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cmd_PreSpawn_f from different level\n");
 		Cmd_New_f ();
 		return;
@@ -371,29 +390,20 @@ static void Cmd_PreSpawn_f (void)
 		}
 	}
 
-//NOTE:  This doesn't go through ClientReliableWrite since it's before the user
-//spawns.  These functions are written to not overflow
-	if (sv_client->num_backbuf) {
-		SV_ClientPrintf (sv_client, PRINT_HIGH, "WARNING %s: [SV_PreSpawn] Back-buffered (%d0), clearing\n", sv_client->name, sv_client->netchan.message.cursize); 
-		sv_client->num_backbuf = 0;
-		SZ_Clear(&sv_client->netchan.message);
-	}
-
-	SZ_Write (&sv_client->netchan.message, 
-		sv.signon_buffers[buf],
-		sv.signon_buffer_size[buf]);
+	SV_AddToReliable (sv_client, sv.signon_buffers[buf], sv.signon_buffer_size[buf]);
 
 	buf++;
 	if (buf == sv.num_signon_buffers)
 	{	// all done prespawning
-		MSG_WriteByte (&sv_client->netchan.message, svc_stufftext);
-		MSG_WriteString (&sv_client->netchan.message, va("cmd spawn %i 0\n",svs.spawncount) );
+		ClientReliableWrite_Begin (sv_client, svc_stufftext);
+		ClientReliableWrite_String (va("cmd spawn %i 0\n", svs.spawncount));
+		ClientReliableWrite_End ();
 	}
 	else
 	{	// need to prespawn more
-		MSG_WriteByte (&sv_client->netchan.message, svc_stufftext);
-		MSG_WriteString (&sv_client->netchan.message, 
-			va("cmd prespawn %i %i\n", svs.spawncount, buf) );
+		ClientReliableWrite_Begin (sv_client, svc_stufftext);
+		ClientReliableWrite_String (va("cmd prespawn %i %i\n", svs.spawncount, buf));
+		ClientReliableWrite_End ();
 	}
 }
 
@@ -417,13 +427,15 @@ static void Cmd_Spawn_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
+		SV_ClearReliable (sv_client);
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cmd_Spawn_f from different level\n");
 		Cmd_New_f ();
 		return;
 	}
 
 	// FIXME: is this a good thing?
-	SZ_Clear (&sv_client->netchan.message);
+	// Tonik: no, I think it is not
+//	SZ_Clear (&sv_client->netchan.message);
 
 	// send current status of all other players
 	// normally this could overflow, but no need to check due to backbuf
@@ -436,10 +448,10 @@ static void Cmd_Spawn_f (void)
 		if ((!sv.lightstyles[i] || !sv.lightstyles[i][0])
 			&& sv_fastconnect.value)
 			continue;		// don't send empty lightstyle strings
-		ClientReliableWrite_Begin (sv_client, svc_lightstyle, 
-			3 + (sv.lightstyles[i] ? strlen(sv.lightstyles[i]) : 1));
-		ClientReliableWrite_Byte (sv_client, (char)i);
-		ClientReliableWrite_String (sv_client, sv.lightstyles[i]);
+		ClientReliableWrite_Begin (sv_client, svc_lightstyle);
+		ClientReliableWrite_Byte ((char)i);
+		ClientReliableWrite_String (sv.lightstyles[i]);
+		ClientReliableWrite_End ();
 	}
 
 	// set up the edict
@@ -470,26 +482,31 @@ static void Cmd_Spawn_f (void)
 	//
 	memset (sv_client->stats, 0, sizeof(sv_client->stats));
 
-	ClientReliableWrite_Begin (sv_client, svc_updatestatlong, 6);
-	ClientReliableWrite_Byte (sv_client, STAT_TOTALSECRETS);
-	ClientReliableWrite_Long (sv_client, pr_global_struct->total_secrets);
+	ClientReliableWrite_Begin (sv_client, svc_updatestatlong);
+	ClientReliableWrite_Byte (STAT_TOTALSECRETS);
+	ClientReliableWrite_Long (pr_global_struct->total_secrets);
+	ClientReliableWrite_End ();
 
-	ClientReliableWrite_Begin (sv_client, svc_updatestatlong, 6);
-	ClientReliableWrite_Byte (sv_client, STAT_TOTALMONSTERS);
-	ClientReliableWrite_Long (sv_client, pr_global_struct->total_monsters);
+	ClientReliableWrite_Begin (sv_client, svc_updatestatlong);
+	ClientReliableWrite_Byte (STAT_TOTALMONSTERS);
+	ClientReliableWrite_Long (pr_global_struct->total_monsters);
+	ClientReliableWrite_End ();
 
-	ClientReliableWrite_Begin (sv_client, svc_updatestatlong, 6);
-	ClientReliableWrite_Byte (sv_client, STAT_SECRETS);
-	ClientReliableWrite_Long (sv_client, pr_global_struct->found_secrets);
+	ClientReliableWrite_Begin (sv_client, svc_updatestatlong);
+	ClientReliableWrite_Byte (STAT_SECRETS);
+	ClientReliableWrite_Long (pr_global_struct->found_secrets);
+	ClientReliableWrite_End ();
 
-	ClientReliableWrite_Begin (sv_client, svc_updatestatlong, 6);
-	ClientReliableWrite_Byte (sv_client, STAT_MONSTERS);
-	ClientReliableWrite_Long (sv_client, pr_global_struct->killed_monsters);
+	ClientReliableWrite_Begin (sv_client, svc_updatestatlong);
+	ClientReliableWrite_Byte (STAT_MONSTERS);
+	ClientReliableWrite_Long (pr_global_struct->killed_monsters);
+	ClientReliableWrite_End ();
 
 	// get the client to check and download skins
 	// when that is completed, a begin command will be issued
-	ClientReliableWrite_Begin (sv_client, svc_stufftext, 8);
-	ClientReliableWrite_String (sv_client, "skins\n" );
+	ClientReliableWrite_Begin (sv_client, svc_stufftext);
+	ClientReliableWrite_String ("skins\n" );
+	ClientReliableWrite_End ();
 }
 
 /*
@@ -539,6 +556,7 @@ static void Cmd_Begin_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
+		SV_ClearReliable (sv_client);
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cmd_Begin_f from different level\n");
 		Cmd_New_f ();
 		return;
@@ -600,8 +618,9 @@ static void Cmd_Begin_f (void)
 
 	// if we are paused, tell the client
 	if (sv_paused.value) {
-		ClientReliableWrite_Begin (sv_client, svc_setpause, 2);
-		ClientReliableWrite_Byte (sv_client, sv_paused.value ? 1 : 0);
+		ClientReliableWrite_Begin (sv_client, svc_setpause);
+		ClientReliableWrite_Byte (sv_paused.value ? 1 : 0);
+		ClientReliableWrite_End ();
 		SV_ClientPrintf(sv_client, PRINT_HIGH, "Server is paused.\n");
 	}
 
@@ -614,10 +633,11 @@ static void Cmd_Begin_f (void)
 		edict_t *ent;
 
 		ent = EDICT_NUM( 1 + (sv_client - svs.clients) );
-		MSG_WriteByte (&sv_client->netchan.message, svc_setangle);
-		for (i=0 ; i < 2 ; i++)
-			MSG_WriteAngle (&sv_client->netchan.message, ent->v.v_angle[i]);
-		MSG_WriteAngle (&sv_client->netchan.message, 0);
+		ClientReliableWrite_Begin (sv_client, svc_setangle);
+		ClientReliableWrite_Angle (ent->v.v_angle[0]);
+		ClientReliableWrite_Angle (ent->v.v_angle[1]);
+		ClientReliableWrite_Angle (0);
+		ClientReliableWrite_End ();
 	}
 
 	sv_client->lastservertimeupdate = -99;	// update immediately
@@ -644,16 +664,17 @@ static void Cmd_NextDL_f (void)
 	if (r > 768)
 		r = 768;
 	r = fread (buffer, 1, r, sv_client->download);
-	ClientReliableWrite_Begin (sv_client, svc_download, 6+r);
-	ClientReliableWrite_Short (sv_client, r);
+	ClientReliableWrite_Begin (sv_client, svc_download);
+	ClientReliableWrite_Short (r);
 
 	sv_client->downloadcount += r;
 	size = sv_client->downloadsize;
 	if (!size)
 		size = 1;
 	percent = sv_client->downloadcount*100/size;
-	ClientReliableWrite_Byte (sv_client, percent);
-	ClientReliableWrite_SZ (sv_client, buffer, r);
+	ClientReliableWrite_Byte (percent);
+	ClientReliableWrite_SZ (buffer, r);
+	ClientReliableWrite_End ();
 
 	if (sv_client->downloadcount != sv_client->downloadsize)
 		return;
@@ -695,8 +716,9 @@ static void SV_NextUpload (void)
 
 	if (!*sv_client->uploadfn) {
 		SV_ClientPrintf(sv_client, PRINT_HIGH, "Upload denied\n");
-		ClientReliableWrite_Begin (sv_client, svc_stufftext, 8);
-		ClientReliableWrite_String (sv_client, "stopul\n");
+		ClientReliableWrite_Begin (sv_client, svc_stufftext);
+		ClientReliableWrite_String ("stopul\n");
+		ClientReliableWrite_End ();
 
 		// suck out rest of packet
 		size = MSG_ReadShort ();	MSG_ReadByte ();
@@ -712,9 +734,11 @@ static void SV_NextUpload (void)
 		sv_client->upload = fopen(sv_client->uploadfn, "wb");
 		if (!sv_client->upload) {
 			Sys_Printf("Can't create %s\n", sv_client->uploadfn);
-			ClientReliableWrite_Begin (sv_client, svc_stufftext, 8);
-			ClientReliableWrite_String (sv_client, "stopul\n");
+			ClientReliableWrite_Begin (sv_client, svc_stufftext);
+			ClientReliableWrite_String ("stopul\n");
+			ClientReliableWrite_End ();
 			*sv_client->uploadfn = 0;
+			// FIXME, add msg_readcount += size?
 			return;
 		}
 		Sys_Printf("Receiving %s from %d...\n", sv_client->uploadfn, sv_client->userid);
@@ -728,8 +752,9 @@ static void SV_NextUpload (void)
 Com_DPrintf ("UPLOAD: %d received\n", size);
 
 	if (percent != 100) {
-		ClientReliableWrite_Begin (sv_client, svc_stufftext, 8);
-		ClientReliableWrite_String (sv_client, "nextul\n");
+		ClientReliableWrite_Begin (sv_client, svc_stufftext);
+		ClientReliableWrite_String ("nextul\n");
+		ClientReliableWrite_End ();
 	} else {
 		fclose (sv_client->upload);
 		sv_client->upload = NULL;
@@ -832,9 +857,10 @@ static void Cmd_Download_f (void)
 	return;
 
 deny_download:
-	ClientReliableWrite_Begin (sv_client, svc_download, 4);
-	ClientReliableWrite_Short (sv_client, -1);
-	ClientReliableWrite_Byte (sv_client, 0);
+	ClientReliableWrite_Begin (sv_client, svc_download);
+	ClientReliableWrite_Short (-1);
+	ClientReliableWrite_Byte (0);
+	ClientReliableWrite_End ();
 }
 
 //=============================================================================
@@ -976,12 +1002,15 @@ static void Cmd_Pings_f (void)
 		if (client->state != cs_spawned)
 			continue;
 
-		ClientReliableWrite_Begin (sv_client, svc_updateping, 4);
-		ClientReliableWrite_Byte (sv_client, j);
-		ClientReliableWrite_Short (sv_client, SV_CalcPing(client));
-		ClientReliableWrite_Begin (sv_client, svc_updatepl, 3);
-		ClientReliableWrite_Byte (sv_client, j);
-		ClientReliableWrite_Byte (sv_client, client->lossage);
+		ClientReliableWrite_Begin (sv_client, svc_updateping);
+		ClientReliableWrite_Byte (j);
+		ClientReliableWrite_Short (SV_CalcPing(client));
+		ClientReliableWrite_End ();
+
+		ClientReliableWrite_Begin (sv_client, svc_updatepl);
+		ClientReliableWrite_Byte (j);
+		ClientReliableWrite_Byte (client->lossage);
+		ClientReliableWrite_End ();
 	}
 }
 
@@ -1031,8 +1060,9 @@ void SV_TogglePause (const char *msg)
 	{
 		if (cl->state < cs_connected)
 			continue;
-		ClientReliableWrite_Begin (cl, svc_setpause, 2);
-		ClientReliableWrite_Byte (cl, sv_paused.value ? 1 : 0);
+		ClientReliableWrite_Begin (cl, svc_setpause);
+		ClientReliableWrite_Byte (sv_paused.value ? 1 : 0);
+		ClientReliableWrite_End ();
 
 		cl->lastservertimeupdate = -99;	// force an update to be sent
 	}

@@ -29,6 +29,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define	MAX_SIGNON_BUFFERS	10
 
+typedef struct backbuf_block_s {
+	int		size;
+	struct backbuf_block_s	*next;
+	byte	data[4];		// variable sized
+} backbuf_block_t;
+
 typedef struct
 {
 	int		original;	// what entity is currently using this translation slot
@@ -172,11 +178,10 @@ typedef struct client_s
 	sizebuf_t		datagram;
 	byte			datagram_buf[MAX_DATAGRAM];
 
-	// back buffers for client reliable data
-	sizebuf_t		backbuf;
-	int				num_backbuf;
-	int				backbuf_size[MAX_BACK_BUFFERS];
-	byte			backbuf_data[MAX_BACK_BUFFERS][MAX_MSGLEN];
+	// backbuffers for client reliable data
+	int				backbuf_size;		// total size of all data in backbuf blocks
+	backbuf_block_t *backbuf_head;
+	backbuf_block_t *backbuf_tail;
 
 	// stufftext and sprint messages are buffered to reduce traffic
 	char			stufftext_buf[MAX_STUFFTEXT];
@@ -456,19 +461,23 @@ void SV_WriteClientdataToMessage (client_t *client, sizebuf_t *msg);
 //
 // sv_nchan.c
 //
-void ClientReliableCheckBlock(client_t *cl, int maxsize);
-void ClientReliable_FinishWrite(client_t *cl);
-void ClientReliableWrite_Begin(client_t *cl, int c, int maxsize);
-void ClientReliableWrite_Angle(client_t *cl, float f);
-void ClientReliableWrite_Angle16(client_t *cl, float f);
-void ClientReliableWrite_Byte(client_t *cl, int c);
-void ClientReliableWrite_Char(client_t *cl, int c);
-void ClientReliableWrite_Float(client_t *cl, float f);
-void ClientReliableWrite_Coord(client_t *cl, float f);
-void ClientReliableWrite_Long(client_t *cl, int c);
-void ClientReliableWrite_Short(client_t *cl, int c);
-void ClientReliableWrite_String(client_t *cl, char *s);
-void ClientReliableWrite_SZ(client_t *cl, void *data, int len);
+void ClientReliableWrite_Begin0 (client_t *cl);
+void ClientReliableWrite_Begin (client_t *cl, int c);
+void ClientReliableWrite_End (void);
+void ClientReliableWrite_Angle (float f);
+void ClientReliableWrite_Angle16 (float f);
+void ClientReliableWrite_Byte (int c);
+void ClientReliableWrite_Char (int c);
+void ClientReliableWrite_Float (float f);
+void ClientReliableWrite_Coord (float f);
+void ClientReliableWrite_Long (int c);
+void ClientReliableWrite_Short (int c);
+void ClientReliableWrite_String (char *s);
+void ClientReliableWrite_SZ (void *data, int len);
+void SV_AddToReliable (client_t *cl, const byte *data, int size);
+void SV_FlushBackbuf (client_t *cl);
+void SV_ClearBackbuf (client_t *cl);
+void SV_ClearReliable (client_t *cl);	// clear cl->netchan.message and backbuf
 
 //
 // sv_save.c

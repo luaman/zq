@@ -333,8 +333,9 @@ static void PF_centerprint (void)
 		
 	cl = &svs.clients[entnum-1];
 
-	ClientReliableWrite_Begin (cl, svc_centerprint, 2 + strlen(s));
-	ClientReliableWrite_String (cl, s);
+	ClientReliableWrite_Begin (cl, svc_centerprint);
+	ClientReliableWrite_String (s);
+	ClientReliableWrite_End ();
 }
 
 
@@ -762,13 +763,15 @@ static void PF_stuffcmd (void)
 	if (buflen + newlen >= MAX_STUFFTEXT-1) {
 		// flush the buffer because there's no space left
 		if (buflen) {
-			ClientReliableWrite_Begin (cl, svc_stufftext, 2+buflen);
-			ClientReliableWrite_String (cl, buf);
+			ClientReliableWrite_Begin (cl, svc_stufftext);
+			ClientReliableWrite_String (buf);
+			ClientReliableWrite_End ();
 			buf[0] = 0;
 		}
 		if (newlen >= MAX_STUFFTEXT-1) {
-			ClientReliableWrite_Begin (cl, svc_stufftext, 2+newlen);
-			ClientReliableWrite_String (cl, str);
+			ClientReliableWrite_Begin (cl, svc_stufftext);
+			ClientReliableWrite_String (str);
+			ClientReliableWrite_End ();
 			return;
 		}
 	}
@@ -779,9 +782,11 @@ static void PF_stuffcmd (void)
 	// flush complete (\n terminated) strings
 	for (i=buflen-1 ; i>=0 ; i--) {
 		if (buf[i] == '\n') {
-			ClientReliableWrite_Begin (cl, svc_stufftext, 2 + (i + 1));
-			ClientReliableWrite_SZ (cl, buf, i+1);
-			ClientReliableWrite_Byte (cl, 0);
+			ClientReliableWrite_Begin (cl, svc_stufftext);
+			ClientReliableWrite_SZ (buf, i+1);
+			ClientReliableWrite_Byte (0);
+			ClientReliableWrite_End ();
+
 			// move the remainder to buffer beginning
 			strcpy (buf, buf + i + 1);
 			return;
@@ -1184,9 +1189,10 @@ static void PF_lightstyle (void)
 	for (j=0, client = svs.clients ; j<MAX_CLIENTS ; j++, client++)
 		if ( client->state == cs_spawned )
 		{
-			ClientReliableWrite_Begin (client, svc_lightstyle, strlen(val)+3);
-			ClientReliableWrite_Char (client, style);
-			ClientReliableWrite_String (client, val);
+			ClientReliableWrite_Begin (client, svc_lightstyle);
+			ClientReliableWrite_Char (style);
+			ClientReliableWrite_String (val);
+			ClientReliableWrite_End ();
 		}
 }
 
@@ -1418,9 +1424,9 @@ static void CheckIntermission (void)
 static void PF_WriteByte (void)
 {
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
-		client_t *cl = Write_GetClient();
-		ClientReliableCheckBlock(cl, 1);
-		ClientReliableWrite_Byte(cl, G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_Begin0 (Write_GetClient());
+		ClientReliableWrite_Byte (G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_End ();
 	} else {
 		if (G_FLOAT(OFS_PARM0) == MSG_ALL)
 			CheckIntermission ();
@@ -1431,9 +1437,9 @@ static void PF_WriteByte (void)
 static void PF_WriteChar (void)
 {
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
-		client_t *cl = Write_GetClient();
-		ClientReliableCheckBlock(cl, 1);
-		ClientReliableWrite_Char(cl, G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_Begin0 (Write_GetClient());
+		ClientReliableWrite_Char (G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_End ();
 	} else
 		MSG_WriteChar (WriteDest(), G_FLOAT(OFS_PARM1));
 }
@@ -1441,9 +1447,9 @@ static void PF_WriteChar (void)
 static void PF_WriteShort (void)
 {
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
-		client_t *cl = Write_GetClient();
-		ClientReliableCheckBlock(cl, 2);
-		ClientReliableWrite_Short(cl, G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_Begin0 (Write_GetClient());
+		ClientReliableWrite_Short (G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_End ();
 	} else
 		MSG_WriteShort (WriteDest(), G_FLOAT(OFS_PARM1));
 }
@@ -1451,9 +1457,9 @@ static void PF_WriteShort (void)
 static void PF_WriteLong (void)
 {
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
-		client_t *cl = Write_GetClient();
-		ClientReliableCheckBlock(cl, 4);
-		ClientReliableWrite_Long(cl, G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_Begin0 (Write_GetClient());
+		ClientReliableWrite_Long (G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_End ();
 	} else
 		MSG_WriteLong (WriteDest(), G_FLOAT(OFS_PARM1));
 }
@@ -1461,9 +1467,9 @@ static void PF_WriteLong (void)
 static void PF_WriteAngle (void)
 {
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
-		client_t *cl = Write_GetClient();
-		ClientReliableCheckBlock(cl, 1);
-		ClientReliableWrite_Angle(cl, G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_Begin0 (Write_GetClient());
+		ClientReliableWrite_Angle (G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_End ();
 	} else
 		MSG_WriteAngle (WriteDest(), G_FLOAT(OFS_PARM1));
 }
@@ -1471,9 +1477,9 @@ static void PF_WriteAngle (void)
 static void PF_WriteCoord (void)
 {
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
-		client_t *cl = Write_GetClient();
-		ClientReliableCheckBlock(cl, 2);
-		ClientReliableWrite_Coord(cl, G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_Begin0 (Write_GetClient());
+		ClientReliableWrite_Coord (G_FLOAT(OFS_PARM1));
+		ClientReliableWrite_End ();
 	}
 	else
 	{
@@ -1493,9 +1499,9 @@ static void PF_WriteCoord (void)
 static void PF_WriteString (void)
 {
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
-		client_t *cl = Write_GetClient();
-		ClientReliableCheckBlock(cl, 1+strlen(G_STRING(OFS_PARM1)));
-		ClientReliableWrite_String(cl, G_STRING(OFS_PARM1));
+		ClientReliableWrite_Begin0 (Write_GetClient());
+		ClientReliableWrite_String (G_STRING(OFS_PARM1));
+		ClientReliableWrite_End ();
 	} else
 		MSG_WriteString (WriteDest(), G_STRING(OFS_PARM1));
 }
@@ -1504,9 +1510,9 @@ static void PF_WriteString (void)
 static void PF_WriteEntity (void)
 {
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
-		client_t *cl = Write_GetClient();
-		ClientReliableCheckBlock(cl, 2);
-		ClientReliableWrite_Short(cl, SV_TranslateEntnum(G_EDICTNUM(OFS_PARM1)));
+		ClientReliableWrite_Begin0 (Write_GetClient());
+		ClientReliableWrite_Short (SV_TranslateEntnum(G_EDICTNUM(OFS_PARM1)));
+		ClientReliableWrite_End ();
 	} else
 		MSG_WriteShort (WriteDest(), SV_TranslateEntnum(G_EDICTNUM(OFS_PARM1)));
 }
