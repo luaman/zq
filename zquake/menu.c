@@ -773,7 +773,7 @@ void M_Keys_Draw (void)
 	if (bind_grab)
 		M_Print (12, 32, "Press a key or button for this action");
 	else
-		M_Print (18, 32, "Enter to change, backspace to clear");
+		M_Print (18, 32, "Enter to change, del to clear");
 		
 // search for known bindings
 	for (i=0 ; i<NUMCOMMANDS ; i++)
@@ -874,7 +874,6 @@ void M_Keys_Key (int k)
 		bind_grab = true;
 		break;
 
-	case K_BACKSPACE:		// delete bindings
 	case K_DEL:				// delete bindings
 		S_LocalSound ("misc/menu2.wav");
 		M_UnbindCommand (bindnames[keys_cursor][0]);
@@ -910,7 +909,9 @@ void M_Fps_Draw (void)
 	M_DrawPic ( (320-p->width)/2, 4, p);
 	
 	M_Print (16, 32, "            Explosions");
-	M_Print (220, 32, "//todo");
+	M_Print (220, 32, cl_explosion.value==0 ? "normal" :
+		cl_explosion.value==1 ? "type 1" : cl_explosion.value==2 ? "type 2" :
+		cl_explosion.value==3 ? "type 3" : "");
 
 	M_Print (16, 40, "         Muzzleflashes");
 	M_Print (220, 40, cl_muzzleflash.value==2 ? "own off" :
@@ -946,6 +947,8 @@ void M_Fps_Draw (void)
 
 void M_Fps_Key (int k)
 {
+	int i;
+
 	switch (k)
 	{
 	case K_ESCAPE:
@@ -981,6 +984,12 @@ void M_Fps_Key (int k)
 	case K_ENTER:
 		S_LocalSound ("misc/menu2.wav");
 		switch (fps_cursor) {
+		case 0:
+			i = cl_explosion.value + 1;
+			if (i > 3 || i < 0)
+				i = 0;
+			Cvar_SetValue (&cl_explosion, (float)i);
+			break;
 		case 1:
 			Cvar_SetValue (&cl_muzzleflash, cl_muzzleflash.value==2 ? 1 :
 				cl_muzzleflash.value ? 0 : 2);
@@ -1256,7 +1265,7 @@ void M_SinglePlayer_Draw (void)
 //	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/sp_menu.lmp") );
 
 	M_DrawTextBox (60, 10*8, 23, 4);	
-	M_PrintWhite (92, 12*8, "QuakeWorld is for");
+	M_PrintWhite (88, 12*8, "This client is for");
 	M_PrintWhite (88, 13*8, "Internet play only");
 }
 
@@ -1265,7 +1274,7 @@ void M_SinglePlayer_Key (key)
 	if (key == K_ESCAPE || key == K_ENTER)
 		m_state = m_main;
 }
-#endif	// QW_BOTH
+#endif	// !QW_BOTH
 
 
 //=============================================================================
