@@ -190,6 +190,7 @@ void CL_SendConnectPacket (void)
 	char	data[2048];
 	double t1, t2;
 	char	biguserinfo[MAX_INFO_STRING + 32];
+	char	extensionstring[32] = "";
 
 	if (cls.state != ca_disconnected)
 		return;
@@ -212,11 +213,14 @@ void CL_SendConnectPacket (void)
 	cls.qport = Cvar_VariableValue("qport");
 
 	// let the server know what extensions we support
+	// old way -- about to be removed
 	strcpy (biguserinfo, cls.userinfo);
 	Info_SetValueForStarKey (biguserinfo, "*z_ext", va("%i", SUPPORTED_EXTENSIONS), sizeof(biguserinfo));
+	// new, Right Way -- probably gonna stay
+	Info_SetValueForKey (extensionstring, "z_ext", va("%i", SUPPORTED_EXTENSIONS), sizeof(extensionstring));
 
-	sprintf (data, "\xff\xff\xff\xff" "connect %i %i %i \"%s\"\n",
-		PROTOCOL_VERSION, cls.qport, cls.challenge, biguserinfo);
+	sprintf (data, "\xff\xff\xff\xff" "connect %i %i %i \"%s\" \"%s\"\n",
+		PROTOCOL_VERSION, cls.qport, cls.challenge, biguserinfo, extensionstring);
 	NET_SendPacket (NS_CLIENT, strlen(data), data, adr);
 }
 
