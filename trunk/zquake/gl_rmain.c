@@ -892,6 +892,9 @@ void R_SetFrustum (void)
 
 		VectorAdd (vpn, vup, frustum[2].normal);
 		VectorSubtract (vpn, vup, frustum[3].normal);
+
+		for (i=0 ; i<4 ; i++)
+			VectorNormalize (frustum[i].normal);
 	}
 	else
 	{
