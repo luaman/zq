@@ -1972,7 +1972,7 @@ byte COM_BlockSequenceCRCByte (byte *base, int length, int sequence)
 	byte	*p;
 	byte chkb[60 + 4];
 
-	p = chktbl + (sequence % (sizeof(chktbl) - 4));
+	p = chktbl + ((unsigned int)sequence % (sizeof(chktbl) - 4));
 
 	if (length > 60)
 		length = 60;
