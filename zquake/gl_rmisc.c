@@ -425,7 +425,7 @@ int MipColor(int r, int g, int b)
 {
 	int i;
 	float dist;
-	int best;
+	int best = 0;
 	float bestdist;
 	int r1, g1, b1;
 	static int lr = -1, lg = -1, lb = -1;
