@@ -301,7 +301,7 @@ TELEPORT TRIGGERS
 float	PLAYER_ONLY	= 1;
 float	SILENT = 2;
 
-void() play_teleport =
+void(entity ent) play_teleport =
 {
 	local	float v;
 	local	string tmpstr;
@@ -318,25 +318,17 @@ void() play_teleport =
 	else
 		tmpstr = "misc/r_tele5.wav";
 
-	sound (self, CHAN_VOICE, tmpstr, 1, ATTN_NORM);
-	remove (self);
+	sound (ent, CHAN_VOICE, tmpstr, 1, ATTN_NORM);
 };
 
 void(vector org) spawn_tfog =
 {
-	local entity e;
-
-	e = spawn ();
-	e.origin = org;
-	e.nextthink = time + 0.2;
-	e.think = play_teleport;
-
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_TELEPORT);
 	WriteCoord (MSG_MULTICAST, org_x);
 	WriteCoord (MSG_MULTICAST, org_y);
 	WriteCoord (MSG_MULTICAST, org_z);
-	multicast (org, MULTICAST_PHS);
+	multicast (org, MULTICAST_PVS);
 };
 
 
@@ -405,6 +397,8 @@ void() teleport_touch =
 {
 local entity	t;
 local vector	org;
+local vector	oldorg;
+local entity	e;
 
 	if (self.targetname)
 	{
@@ -433,15 +427,14 @@ local vector	org;
 
 	SUB_UseTargets ();
 
-// put a tfog where the player was
-	spawn_tfog (other.origin);
-
-// spawn a tfog flash in front of the destination
+// calc v_forward
 	makevectors (t.mangle);
-	org = t.origin + 32 * v_forward;
 
-	spawn_tfog (org);
+// spawn teledeath
 	spawn_tdeath(t.origin, other);
+
+// save origin for teleport sound and tfog
+	oldorg = other.origin;
 
 // move the player
 	setorigin (other, t.origin);
@@ -454,6 +447,21 @@ local vector	org;
 		other.velocity = v_forward * 300;
 	}
 
+// play teleport sound where the player was
+	e = spawn ();
+	setorigin (e, oldorg);
+	e.think = SUB_Remove;
+	e.nextthink = time + 0.2;
+	play_teleport (e);
+
+// spawn a tfog where the player was
+	spawn_tfog (oldorg);
+
+// play teleport sound at destination
+	play_teleport (other);
+
+// spawn a tfog flash in front of the destination
+	spawn_tfog (t.origin + 32 * v_forward);
 };
 
 /*QUAKED info_teleport_destination (.5 .5 .5) (-8 -8 -8) (8 8 32)
