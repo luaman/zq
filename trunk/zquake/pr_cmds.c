@@ -200,7 +200,7 @@ static void PF_setmodel (void)
 	if (!*check)
 		PR_RunError ("no precache: %s\n", m);
 		
-	e->v.model = PR_SetString(m);
+	e->v.model = G_INT(OFS_PARM1);
 	e->v.modelindex = i;
 
 // if it is an inline model, get the size information for it
