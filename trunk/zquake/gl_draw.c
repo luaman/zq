@@ -277,7 +277,9 @@ static void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 	if (!newval == !gl_smoothfont.value || !char_texture)
 		return;
 
-	if (newval)
+        GL_Bind(char_texture);
+        
+        if (newval)
 	{
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
