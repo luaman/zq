@@ -1117,6 +1117,8 @@ void Cmd_If_f (void)
 		result = Q_atof(Cmd_Argv(1)) > Q_atof(Cmd_Argv(3));
 	else if (!strcmp(op, "<"))
 		result = Q_atof(Cmd_Argv(1)) < Q_atof(Cmd_Argv(3));
+	else if (!strcmp(op, "&"))
+		result = Q_atoi(Cmd_Argv(1)) & Q_atoi(Cmd_Argv(3));
 	else if (!strcmp(op, ">="))
 		result = Q_atof(Cmd_Argv(1)) >= Q_atof(Cmd_Argv(3));
 	else if (!strcmp(op, "<="))
