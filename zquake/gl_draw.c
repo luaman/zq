@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sbar.h"
 
 void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel);
-cvar_t		gl_smoothfont = {"gl_smoothfont", "1", 0, OnChange_gl_smoothfont};
+cvar_t		gl_smoothfont = {"gl_smoothfont", "0", 0, OnChange_gl_smoothfont};
 
 byte		*draw_chars;				// 8*8 graphic characters
 mpic_t		*draw_disc;
@@ -286,7 +286,8 @@ static void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 	{
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	}
+        }
+        return;
 }
 
 
