@@ -17,7 +17,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+
+// FIXME
+#ifdef GLQUAKE
+#include "gl_local.h"
+#else
 #include "quakedef.h"
+#endif
+
 #include "winquake.h"
 #include "cl_slist.h"
 #include "input.h"
@@ -26,10 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 #ifndef CLIENTONLY
 #include "server.h"
-#endif
-
-#ifdef GLQUAKE
-#include "gl_local.h"
 #endif
 
 #ifndef _WIN32
