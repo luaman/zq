@@ -173,11 +173,9 @@ void CL_ParseBeam (int type)
 	end[2] = MSG_ReadCoord ();
 
 	// an experimental protocol extension:
-	// TE_LIGHTNING1 with entity in -33..-1 range is a rail trail
-	if (type == 1 && (ent >= -33 && ent <= -1)) {
-		int color = (ent == -1) ? 208 :		// world
-			cl.players[-ent-2].name ? cl.players[-ent-2].railcolor : 208;	// player
-		CL_RailTrail (start, end, color);
+	// TE_LIGHTNING1 with entity num in -1024..-1 range is a rail trail
+	if (type == 1 && (ent >= -1024 && ent <= -1)) {
+		CL_RailTrail (start, end, 208);
 		return;
 	}
 

@@ -87,8 +87,6 @@ typedef struct player_info_s
 	byte	pl;
 	qbool	spectator;
 
-	int		railcolor;
-
 	// skin information
 	int		real_topcolor;			// what the server tells us
 	int		real_bottomcolor;
