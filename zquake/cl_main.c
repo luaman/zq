@@ -457,33 +457,8 @@ void CL_ConnectionlessPacket (void)
 
 	c = MSG_ReadByte ();
 
-	if (c == S2C_CHALLENGE) {
-		Com_Printf ("%s: challenge\n", NET_AdrToString(net_from));
-
-		s = MSG_ReadString ();
-		cls.challenge = atoi(s);
-		CL_SendConnectPacket ();
-		return;
-	}
-
-	if (c == S2C_CONNECTION) {
-		if (!com_serveractive || developer.value)
-			Com_Printf ("%s: connection\n", NET_AdrToString(net_from));
-		if (cls.state >= ca_connected)
-		{
-			if (!cls.demoplayback)
-				Com_Printf ("Dup connect received.  Ignored.\n");
-			return;
-		}
-		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, cls.qport);
-		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message, "new");	
-		cls.state = ca_connected;
-		if (!com_serveractive || developer.value)
-			Com_Printf ("Connected.\n");
-		allowremotecmd = false; // localid required now for remote cmds
-		return;
-	}
+	if (msg_badread)
+		return;	// runt packet
 
 	// remote command from GUI frontend
 	if (c == A2C_CLIENT_COMMAND) {
@@ -534,6 +509,39 @@ void CL_ConnectionlessPacket (void)
 		Cbuf_AddText (cmdtext);
 		Cbuf_AddText ("\n");
 		allowremotecmd = false;
+		return;
+	}
+
+	// only allow packets from the server we connected to
+	// (except for A2C_CLIENT_COMMAND which is processed earlier)
+	if (!cls.demoplayback && !NET_CompareAdr(net_from, cls.server_adr))
+		return;
+
+	if (c == S2C_CHALLENGE) {
+		Com_Printf ("%s: challenge\n", NET_AdrToString(net_from));
+
+		s = MSG_ReadString ();
+		cls.challenge = atoi(s);
+		CL_SendConnectPacket ();
+		return;
+	}
+
+	if (c == S2C_CONNECTION) {
+		if (!com_serveractive || developer.value)
+			Com_Printf ("%s: connection\n", NET_AdrToString(net_from));
+		if (cls.state >= ca_connected)
+		{
+			if (!cls.demoplayback)
+				Com_Printf ("Dup connect received.  Ignored.\n");
+			return;
+		}
+		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, cls.qport);
+		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
+		MSG_WriteString (&cls.netchan.message, "new");	
+		cls.state = ca_connected;
+		if (!com_serveractive || developer.value)
+			Com_Printf ("Connected.\n");
+		allowremotecmd = false; // localid required now for remote cmds
 		return;
 	}
 
