@@ -129,7 +129,7 @@ typedef struct
 
 
 //
-// clientState_t should hold all pieces of the client state
+// client_state_t should hold all pieces of the client state
 //
 
 #define	MAX_DLIGHTS		32
@@ -186,7 +186,7 @@ typedef enum {
 #define	MAX_DEMOS	8
 
 //
-// the clientPersistent_t structure is persistent through an arbitrary number
+// the client_persistent_t structure is persistent through an arbitrary number
 // of server connections
 //
 typedef struct
@@ -225,7 +225,7 @@ typedef struct
 	char		demos[MAX_DEMOS][MAX_QPATH];
 
 // demo recording info must be here, because record is started before
-// entering a map (and clearing clientState_t)
+// entering a map (and clearing client_state_t)
 	qboolean	demorecording;
 	qboolean	demoplayback;
 	qboolean	nqdemoplayback;
@@ -241,9 +241,9 @@ typedef struct
 	int			challenge;
 
 	float		latency;		// rolling average
-} clientPersistent_t;
+} client_persistent_t;
 
-extern clientPersistent_t	cls;
+extern client_persistent_t	cls;
 
 
 // cl.paused flags
@@ -251,7 +251,7 @@ extern clientPersistent_t	cls;
 #define PAUSED_DEMO		2
 
 //
-// the clientState_t structure is wiped completely at every
+// the client_state_t structure is wiped completely at every
 // server signon
 //
 typedef struct
@@ -370,9 +370,9 @@ typedef struct
 	float		bunnyspeedcap;
 
 	char		sky[32];
-} clientState_t;
+} client_state_t;
 
-extern	clientState_t	cl;
+extern client_state_t	cl;
 
 
 //
