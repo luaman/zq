@@ -652,7 +652,7 @@ void CL_ParseProjectiles (void)
 		for (j=0 ; j<6 ; j++)
 			bits[j] = MSG_ReadByte ();
 
-return;	// @@@ Tonik - until this function is fixed
+continue;	// @@@ Tonik - until this function is fixed
 
 		if (cl_num_projectiles == MAX_PROJECTILES)
 			continue;
