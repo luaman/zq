@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "pmove.h"
 
+cvar_t	pm_jumpfix = {"pm_jumpfix","1"};
 cvar_t	pm_slidefix = {"pm_slidefix","0"};	// FIXME: remove?
 cvar_t	pm_ktphysics = {"pm_ktphysics", "0"};	// set this when
 			// playing on a server running Kombat Teams 2.10 or later
@@ -54,6 +55,9 @@ void PM_InitBoxHull (void);
 
 void Pmove_Init (void)
 {
+#if defined(SERVERONLY) || defined(QW_BOTH)
+	Cvar_RegisterVariable (&pm_jumpfix);
+#endif
 	Cvar_RegisterVariable (&pm_slidefix);
 	Cvar_RegisterVariable (&pm_ktphysics);
 	PM_InitBoxHull ();
@@ -567,7 +571,8 @@ void PM_AirMove (void)
 		// add gravity
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * frametime;
 
-		if ( ! PM_FlyMove() )
+		i = PM_FlyMove();
+		if (!i && pm_jumpfix.value)
 		{
 			// the move didn't get blocked
 			PM_CategorizePosition ();
