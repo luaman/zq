@@ -1704,7 +1704,7 @@ void BuildSurfaceDisplayList (msurface_t *fa)
 	//
 	// remove co-linear points - Ed
 	//
-	if (!gl_keeptjunctions.value && !(fa->flags & SURF_UNDERWATER) )
+	if (!gl_keeptjunctions.value)
 	{
 		for (i = 0 ; i < lnumverts ; ++i)
 		{
