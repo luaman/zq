@@ -1185,6 +1185,11 @@ void Cmd_Join_f (void)
 	if (!sv_client->spectator)
 		return;		// already a player
 
+	if (!(sv_client->extensions & Z_EXT_JOIN_OBSERVE)) {
+		Com_Printf ("Your QW client doesn't support this command\n");
+		return;
+	}
+
 	if (sv_password.string[0] && Q_stricmp(sv_password.string, "none")) {
 		Com_Printf ("This server requires a %s password. Please disconnect, set the password and reconnect as %s.\n", "player", "player");
 		return;
@@ -1254,6 +1259,11 @@ void Cmd_Observe_f (void)
 		return;
 	if (sv_client->spectator)
 		return;		// already a spectator
+
+	if (!(sv_client->extensions & Z_EXT_JOIN_OBSERVE)) {
+		Com_Printf ("Your QW client doesn't support this command\n");
+		return;
+	}
 
 	if (sv_spectatorPassword.string[0] && Q_stricmp(sv_spectatorPassword.string, "none")) {
 		Com_Printf ("This server requires a %s password. Please disconnect, set the password and reconnect as %s.\n", "spectator", "spectator");
