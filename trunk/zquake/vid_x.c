@@ -50,10 +50,6 @@ cvar_t			 _windowed_mouse	= {"_windowed_mouse","0",CVAR_ARCHIVE};
 cvar_t			 m_filter			= {"m_filter","0",CVAR_ARCHIVE};
 float			 old_windowed_mouse;
 
-// not used
-int				 VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes, VGA_planar;
-byte			*VGA_pagebase;
-
 qbool			 mouse_avail		= false;
 int				 mouse_buttons		= 3;
 int				 mouse_oldbuttonstate;
@@ -62,14 +58,6 @@ float			 mouse_x, mouse_y;
 float			 old_mouse_x, old_mouse_y;
 int				 p_mouse_x;
 int				 p_mouse_y;
-int				 ignorenext;
-int				 bits_per_pixel;
-
-typedef struct
-{
-	int			 input;
-	int			 output;
-} keymap_t;
 
 extern viddef_t	 vid; // global video state
 unsigned short	 d_8to16table[256];
@@ -85,10 +73,8 @@ static Window	 x_win;
 static GC		 x_gc;
 static Visual	*x_vis;
 static XVisualInfo	*x_visinfo;
-//static XImage	*x_image;
 
 static int		 x_shmeventtype;
-//static XShmSegmentInfo	 x_shminfo;
 
 static qbool	 oktodraw = false;
 
@@ -440,7 +426,6 @@ void VID_Init (unsigned char *palette)
 
    Cvar_Register (&vid_ref);
 
-   ignorenext=0;
    vid.width = 320;
    vid.height = 200;
    vid.maxwarpwidth = WARP_WIDTH;
