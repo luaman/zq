@@ -287,6 +287,7 @@ union eval_t
 };	
 
 extern int		type_size[8];
+extern type_t	*type_for_etype[8];
 extern def_t	*def_for_type[8];
 
 extern type_t	type_void, type_string, type_float, type_vector, type_entity, type_field, type_function, type_pointer, type_floatfield;
@@ -328,7 +329,7 @@ struct opcode_t
 	char		*opname;
 	float		priority;
 	bool		right_associative;
-	def_t		*type_a, *type_b, *type_c;
+	etype_t		type_a, type_b, type_c;
 };
 
 //============================================================================
