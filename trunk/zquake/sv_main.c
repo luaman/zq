@@ -1085,19 +1085,29 @@ void SV_ReadPackets (void)
 				cl->netchan.remote_address.port = net_from.port;
 			}
 
-			if (svs.num_packets == MAX_DELAYED_PACKETS) // packet has to be dropped..
-				break;
+			if (svs.clients[i].delay > 0) {
+				if (svs.num_packets == MAX_DELAYED_PACKETS) // packet has to be dropped..
+					break;
+				pack = &svs.packets[svs.num_packets++];
 
-			pack = &svs.packets[svs.num_packets++];
-
-			pack->time = svs.realtime;
-			pack->clientnum = i;
-			SZ_Clear(&pack->msg);
-			SZ_Write(&pack->msg, net_message.data, net_message.cursize);
+				pack->time = svs.realtime;
+				pack->clientnum = i;
+				SZ_Clear(&pack->msg);
+				SZ_Write(&pack->msg, net_message.data, net_message.cursize);
+			} else {
+				if (Netchan_Process(&cl->netchan)) {
+					// this is a valid, sequenced packet, so process it
+					svs.stats.packets++;
+					if (cl->state != cs_zombie) {
+						cl->send_message = true;	// reply at end of frame
+						SV_ExecuteClientMessage (cl);
+					}
+				}
+			}
 			break;
 
 		}
-		
+
 		if (i != MAX_CLIENTS)
 			continue;
 	
@@ -1114,16 +1124,13 @@ SV_ReadDelayedPackets
 */
 void SV_ReadDelayedPackets (void)
 {
-	int			i, j;
 	client_t	*cl;
-	packet_t	*pack;
+	int			i, sentcount;
+	packet_t	*pack, *endpack;
 
-	for (i = 0, pack = svs.packets; i < svs.num_packets; ) {
-		if (svs.realtime < pack->time + svs.clients[pack->clientnum].delay) {
-			i++;
-			pack++;
+	for (i = sentcount = 0, pack = svs.packets; i < svs.num_packets; i++, pack++) {
+		if (svs.realtime < pack->time + svs.clients[pack->clientnum].delay)
 			continue;
-		}
 
 		SZ_Clear(&net_message);
 		SZ_Write(&net_message, pack->msg.data, pack->msg.cursize);
@@ -1139,15 +1146,27 @@ void SV_ReadDelayedPackets (void)
 			}
 		}
 
-		for (j = i + 1; j < svs.num_packets; j++) {
-			SZ_Clear(&svs.packets[j - 1].msg);
-			SZ_Write(&svs.packets[j - 1].msg, svs.packets[j].msg.data, svs.packets[j].msg.cursize);
-			svs.packets[j - 1].clientnum = svs.packets[j].clientnum;
-			svs.packets[j - 1].time = svs.packets[j].time;
-		}
-
-		svs.num_packets--;
+		pack->clientnum = -1;
+		sentcount++;
 	}
+
+	// compactify svs.packets by copying delayed packets from the end of sv.packets to sent packets at the front of svs.packets 
+	for (pack = svs.packets, endpack = svs.packets + svs.num_packets - 1; ; pack++, endpack--) {
+		for ( ; pack < svs.packets + svs.num_packets && pack->clientnum != -1; pack++)
+			;
+		for ( ; endpack >= svs.packets && endpack->clientnum == -1; endpack--)
+			;
+		if (pack >= endpack)
+			break;
+
+		SZ_Clear(&pack->msg);
+		SZ_Write(&pack->msg, endpack->msg.data, endpack->msg.cursize);
+		pack->clientnum = endpack->clientnum;
+		pack->time = endpack->time;
+	}
+
+	svs.num_packets -= sentcount;
+
 }
 
 /*
