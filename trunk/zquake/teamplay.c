@@ -1471,6 +1471,7 @@ int TP_CategorizeMessage (char *s, int *offset)
 	int		i, msglen, len;
 	int		flags;
 	player_info_t	*player;
+	char	*name;
 
 	flags = 0;
 	msglen = strlen(s);
@@ -1481,12 +1482,13 @@ int TP_CategorizeMessage (char *s, int *offset)
 
 	for (i=0, player=cl.players ; i < MAX_CLIENTS ; i++, player++)
 	{
-		len = strlen(player->name);
-		if (!len)
+		if (!player->name[0])
 			continue;
+		name = Info_ValueForKey (player->userinfo, "name");
+		len = strlen(name);
 		// check messagemode1
 		if (len+2 <= msglen && s[len] == ':' && s[len+1] == ' '	&&
-			!strncmp(player->name, s, len))
+			!strncmp(name, s, len))
 		{
 			if (player->spectator)
 				flags |= 4;
@@ -1497,7 +1499,7 @@ int TP_CategorizeMessage (char *s, int *offset)
 		// check messagemode2
 		else if (s[0] == '(' && !cl.spectator && len+4 <= msglen &&
 			!strncmp(s+len+1, "): ", 3) &&
-			!strncmp(player->name, s+1, len))
+			!strncmp(name, s+1, len))
 		{
 			// no team messages in teamplay 0, except for our own
 			if (i == cl.playernum || ( cl.teamplay &&
