@@ -420,10 +420,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	int				t;
 	RECT			rect;
 
-    /* previous instances do not exist in Win32 */
-    if (hPrevInstance)
-        return 0;
-
 	global_hInstance = hInstance;
 	global_nCmdShow = nCmdShow;
 
