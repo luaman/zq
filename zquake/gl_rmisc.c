@@ -82,71 +82,6 @@ void R_InitParticleTexture (void)
 	GL_Upload32 ((unsigned *) data, 32, 32, true, true);
 }
 
-/*
-===============
-R_Envmap_f
-
-Grab six views for environment mapping tests
-===============
-*/
-void R_Envmap_f (void)
-{
-	byte	buffer[256*256*4];
-
-	glDrawBuffer  (GL_FRONT);
-	glReadBuffer  (GL_FRONT);
-	envmap = true;
-
-	r_refdef.vrect.x = 0;
-	r_refdef.vrect.y = 0;
-	r_refdef.vrect.width = 256;
-	r_refdef.vrect.height = 256;
-
-	r_refdef.viewangles[0] = 0;
-	r_refdef.viewangles[1] = 0;
-	r_refdef.viewangles[2] = 0;
-	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
-	R_RenderView ();
-	glReadPixels (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile (va("%s/env0.rgb", cls.gamedirfile), buffer, sizeof(buffer));		
-
-	r_refdef.viewangles[1] = 90;
-	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
-	R_RenderView ();
-	glReadPixels (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile (va("%s/env1.rgb", cls.gamedirfile), buffer, sizeof(buffer));		
-
-	r_refdef.viewangles[1] = 180;
-	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
-	R_RenderView ();
-	glReadPixels (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile (va("%s/env2.rgb", cls.gamedirfile), buffer, sizeof(buffer));		
-
-	r_refdef.viewangles[1] = 270;
-	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
-	R_RenderView ();
-	glReadPixels (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile (va("%s/env3.rgb", cls.gamedirfile), buffer, sizeof(buffer));		
-
-	r_refdef.viewangles[0] = -90;
-	r_refdef.viewangles[1] = 0;
-	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
-	R_RenderView ();
-	glReadPixels (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile (va("%s/env4.rgb", cls.gamedirfile), buffer, sizeof(buffer));		
-
-	r_refdef.viewangles[0] = 90;
-	r_refdef.viewangles[1] = 0;
-	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
-	R_RenderView ();
-	glReadPixels (0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	COM_WriteFile (va("%s/env5.rgb", cls.gamedirfile), buffer, sizeof(buffer));		
-
-	envmap = false;
-	glDrawBuffer (GL_BACK);
-	glReadBuffer (GL_BACK);
-	GL_EndRendering ();
-}
 
 /*
 ===============
@@ -156,7 +91,6 @@ R_Init
 void R_Init (void)
 {
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
-	Cmd_AddCommand ("envmap", R_Envmap_f);
 #ifndef CLIENTONLY
 	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
 #endif
