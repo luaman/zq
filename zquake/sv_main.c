@@ -1401,7 +1401,10 @@ void SV_InitLocal (void)
 	Info_SetValueForStarKey (svs.info, "*version", va("%4.2f", QW_VERSION), MAX_SERVERINFO_STRING);
 	Info_SetValueForStarKey (svs.info, "*z_version", VersionString(), MAX_SERVERINFO_STRING);
 	Info_SetValueForStarKey (svs.info, "*z_ext", va("%i", SUPPORTED_EXTENSIONS), MAX_SERVERINFO_STRING);
-	
+
+	if (strcmp(com_gamedirfile, "qw"))
+		Info_SetValueForStarKey (svs.info, "*gamedir", com_gamedirfile, MAX_SERVERINFO_STRING);
+
 	// init fraglog stuff
 	svs.logsequence = 1;
 	svs.logtime = svs.realtime;
