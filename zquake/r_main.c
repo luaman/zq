@@ -637,6 +637,9 @@ void R_DrawViewModel (void)
 		(r_fov_greater_than_90 && r_drawviewmodel.value == 2))
 		return;
 
+	if (!r_drawentities.value)
+		return;
+
 	currententity = &cl.viewent;
 	if (!currententity->model)
 		return;
