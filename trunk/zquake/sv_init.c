@@ -96,7 +96,7 @@ void SV_CreateBaseline (void)
 	for (entnum = 0; entnum < max_edicts ; entnum++)
 	{
 		svent = EDICT_NUM(entnum);
-		if (svent->free)
+		if (!svent->inuse)
 			continue;
 		// create baselines for all player slots,
 		// and any other edict that has a visible model
@@ -340,7 +340,7 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	com_serveractive = true;
 
 	ent = EDICT_NUM(0);
-	ent->free = false;
+	ent->inuse = true;
 	ent->v.model = PR_SetString(sv.modelname);
 	ent->v.modelindex = 1;		// world model
 	ent->v.solid = SOLID_BSP;

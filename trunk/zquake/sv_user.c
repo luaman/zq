@@ -498,6 +498,7 @@ void Cmd_Begin_f (void)
 	if (sv_client->state == cs_spawned)
 		return; // don't begin again
 
+	// FIXME: this should be AFTER spawncount check??!!!
 	sv_client->state = cs_spawned;
 	
 	// handle the case of a level changing while a client was connecting
@@ -507,6 +508,8 @@ void Cmd_Begin_f (void)
 		Cmd_New_f ();
 		return;
 	}
+
+	sv_player->inuse = true;
 	
 	if (!sv.loadgame)
 	{
@@ -1739,7 +1742,7 @@ void AddAllEntsToPmove (void)
 	check = NEXT_EDICT(sv.edicts);
 	for (e=1 ; e<sv.num_edicts ; e++, check = NEXT_EDICT(check))
 	{
-		if (check->free)
+		if (!check->inuse)
 			continue;
 		if (check->v.owner == pl)
 			continue;

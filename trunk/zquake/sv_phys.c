@@ -77,7 +77,7 @@ void SV_CheckAllEnts (void)
 	check = NEXT_EDICT(sv.edicts);
 	for (e=1 ; e<sv.num_edicts ; e++, check = NEXT_EDICT(check))
 	{
-		if (check->free)
+		if (!check->inuse)
 			continue;
 		if (check->v.movetype == MOVETYPE_PUSH
 		|| check->v.movetype == MOVETYPE_NONE
@@ -162,7 +162,7 @@ qbool SV_RunThink (edict_t *ent)
 		pr_global_struct->other = EDICT_TO_PROG(sv.edicts);
 		PR_ExecuteProgram (ent->v.think);
 
-		if (ent->free)
+		if (!ent->inuse)
 			return false;
 	} while (1);
 
@@ -321,7 +321,7 @@ int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace, int type)
 // run the impact function
 //
 		SV_Impact (ent, trace.ent);
-		if (ent->free)
+		if (!ent->inuse)
 			break;		// removed by the impact function
 
 		
@@ -471,7 +471,7 @@ qbool SV_Push (edict_t *pusher, vec3_t move)
 	check = NEXT_EDICT(sv.edicts);
 	for (e=1 ; e<sv.num_edicts ; e++, check = NEXT_EDICT(check))
 	{
-		if (check->free)
+		if (!check->inuse)
 			continue;
 		if (check->v.movetype == MOVETYPE_PUSH
 		|| check->v.movetype == MOVETYPE_NONE
@@ -630,7 +630,7 @@ VectorCopy (ent->v.origin, oldorg);
 		pr_global_struct->self = EDICT_TO_PROG(ent);
 		pr_global_struct->other = EDICT_TO_PROG(sv.edicts);
 		PR_ExecuteProgram (ent->v.think);
-		if (ent->free)
+		if (!ent->inuse)
 			return;
 VectorSubtract (ent->v.origin, oldorg, move);
 
@@ -764,7 +764,7 @@ void SV_Physics_Toss (edict_t *ent)
 	trace = SV_PushEntity (ent, move);
 	if (trace.fraction == 1)
 		return;
-	if (ent->free)
+	if (!ent->inuse)
 		return;
 	
 	if (ent->v.movetype == MOVETYPE_BOUNCE)
@@ -957,7 +957,7 @@ void SV_Physics (void)
 	ent = sv.edicts;
 	for (i=0 ; i<sv.num_edicts ; i++, ent = NEXT_EDICT(ent))
 	{
-		if (ent->free)
+		if (!ent->inuse)
 			continue;
 
 		if (pr_global_struct->force_retouch)

@@ -267,11 +267,11 @@ void SV_LoadGame_f (void)
 		{	// parse an edict
 			ent = EDICT_NUM(entnum);
 			memset (&ent->v, 0, progs->entityfields * 4);
-			ent->free = false;
+			ent->inuse = true;
 			ED_ParseEdict (start, ent);
 	
 			// link it into the bsp tree
-			if (!ent->free)
+			if (ent->inuse)
 				SV_LinkEdict (ent, false);
 		}
 

@@ -54,13 +54,13 @@ qbool	ED_ParseEpair (void *base, ddef_t *key, char *s);
 =================
 ED_ClearEdict
 
-Sets everything to NULL
+Sets everything to NULL and mark as used
 =================
 */
 void ED_ClearEdict (edict_t *e)
 {
 	memset (&e->v, 0, progs->entityfields * 4);
-	e->free = false;
+	e->inuse = true;
 }
 
 /*
@@ -84,7 +84,7 @@ edict_t *ED_Alloc (void)
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
-		if (e->free && ( e->freetime < 2 || sv.time - e->freetime > 0.5 ) )
+		if (!e->inuse && ( e->freetime < 2 || sv.time - e->freetime > 0.5 ) )
 		{
 			ED_ClearEdict (e);
 			return e;
@@ -118,7 +118,7 @@ void ED_Free (edict_t *ed)
 {
 	SV_UnlinkEdict (ed);		// unlink from world bsp
 
-	ed->free = true;
+	ed->inuse = false;
 	ed->v.model = 0;
 	ed->v.takedamage = 0;
 	ed->v.modelindex = 0;
@@ -421,7 +421,7 @@ void ED_Print (edict_t *ed)
 	char	*name;
 	int		type;
 
-	if (ed->free)
+	if (!ed->inuse)
 	{
 		Com_Printf ("FREE\n");
 		return;
@@ -471,7 +471,7 @@ void ED_Write (FILE *f, edict_t *ed)
 
 	fprintf (f, "{\n");
 
-	if (ed->free)
+	if (!ed->inuse)
 	{
 		fprintf (f, "}\n");
 		return;
@@ -520,7 +520,7 @@ void ED_PrintEdicts_f (void)
 	Com_Printf ("%i entities\n", sv.num_edicts);
 	for (i=0 ; i<sv.num_edicts ; i++)
 	{
-		if (EDICT_NUM(i)->free)
+		if (!EDICT_NUM(i)->inuse)
 			continue;
 		Com_Printf ("\nEDICT %i:\n",i);
 		ED_PrintNum (i);
@@ -560,7 +560,7 @@ void ED_Count_f (void)
 	for (i=0 ; i<sv.num_edicts ; i++)
 	{
 		ent = EDICT_NUM(i);
-		if (ent->free)
+		if (!ent->inuse)
 			continue;
 		active++;
 		if (ent->v.solid)
@@ -862,7 +862,7 @@ sprintf (com_token, "0 %s 0", temp);
 	}
 
 	if (!init)
-		ent->free = true;
+		ent->inuse = false;
 
 	return data;
 }
