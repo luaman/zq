@@ -991,7 +991,7 @@ void CL_Frame (double time)
 
 	cl.time += cls.frametime;
 	cl.servertime += cls.frametime;
-	cl.stats[STAT_TIME = cl.servertime * 1000;	// for demos' sake
+	cl.stats[STAT_TIME] = cl.servertime * 1000;	// for demos' sake
 
 	// get new key events
 	Sys_SendKeyEvents ();
