@@ -1291,7 +1291,7 @@ void R_RecursiveWorldNode (mnode_t *node)
 				if (surf->visframe != r_framecount)
 					continue;
 
-				if ((dot < 0) ^ !!(surf->flags & SURF_PLANEBACK)))
+				if ((dot < 0) ^ !!(surf->flags & SURF_PLANEBACK))
 					continue;		// wrong side
 
 				// if sorting by texture, just store it out
