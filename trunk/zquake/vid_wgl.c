@@ -107,7 +107,6 @@ HDC		maindc;
 
 glvert_t glv;
 
-cvar_t	gl_ztrick = {"gl_ztrick","1"};
 cvar_t	gl_strings = {"gl_strings", "", CVAR_ROM};
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1"};
 
@@ -1576,7 +1575,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_Register (&vid_config_y);
 	Cvar_Register (&vid_stretch_by_2);
 	Cvar_Register (&_windowed_mouse);
-	Cvar_Register (&gl_ztrick);
 	Cvar_Register (&vid_hwgammacontrol);
 	Cvar_Register (&vid_displayfrequency);
 
