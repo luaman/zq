@@ -514,7 +514,7 @@ void R_SetupFrame (void)
 
 
 void MYgluPerspective( GLdouble fovy, GLdouble aspect,
-		     GLdouble zNear, GLdouble zFar )
+			GLdouble zNear, GLdouble zFar )
 {
 	GLdouble xmin, xmax, ymin, ymax;
 	
@@ -564,20 +564,20 @@ void R_SetupGL (void)
 	h = y - y2;
 
 	glViewport (x, y2, w, h);
-    screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
-    MYgluPerspective (r_refdef.fov_y,  screenaspect,  4,  4096);
+	screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
+	MYgluPerspective (r_refdef.fov_y,  screenaspect,  4,  4096);
 
 	glCullFace(GL_FRONT);
 
 	glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity ();
+	glLoadIdentity ();
 
-    glRotatef (-90,  1, 0, 0);	    // put Z going up
-    glRotatef (90,  0, 0, 1);	    // put Z going up
-    glRotatef (-r_refdef.viewangles[2],  1, 0, 0);
-    glRotatef (-r_refdef.viewangles[0],  0, 1, 0);
-    glRotatef (-r_refdef.viewangles[1],  0, 0, 1);
-    glTranslatef (-r_refdef.vieworg[0],  -r_refdef.vieworg[1],  -r_refdef.vieworg[2]);
+	glRotatef (-90,  1, 0, 0);		// put Z going up
+	glRotatef (90,	0, 0, 1);		// put Z going up
+	glRotatef (-r_refdef.viewangles[2],  1, 0, 0);
+	glRotatef (-r_refdef.viewangles[0],  0, 1, 0);
+	glRotatef (-r_refdef.viewangles[1],  0, 0, 1);
+	glTranslatef (-r_refdef.vieworg[0],  -r_refdef.vieworg[1],	-r_refdef.vieworg[2]);
 
 	glGetFloatv (GL_MODELVIEW_MATRIX, r_world_matrix);
 
@@ -646,7 +646,7 @@ void R_Init (unsigned char *palette)
 	Cvar_Register (&gl_solidparticles);
 
 	// assume gl_texsort 0 is faster if the card supports multitexture
- 	if (gl_mtexable)
+	if (gl_mtexable)
 		Cvar_SetValue (&gl_texsort, 0);
 
 	// this minigl driver seems to slow us down if the particles
