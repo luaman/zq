@@ -352,7 +352,7 @@ void() agh_weapons_impulsecommands =
     //          taken into consideration; otherwise it'll always be an
     //          opponent to us.
     
-#ifdef ACCESSIBILITY_BOT
+#ifdef AGRIP_BOT
     if( self.impulse == 50 )
 	create_bot(1);
      
