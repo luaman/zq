@@ -750,6 +750,7 @@ char *TP_ParseMacroString (char *s)
 				case 'x': macro_string = Macro_PointName(); break;
 				case 'y': macro_string = Macro_PointLocation(); break;
 				case 't': macro_string = Macro_PointNameAtLocation(); break;
+				case 'S': macro_string = Macro_TF_Skin(); break;
 				default: 
 					buf[i++] = *s++;
 					continue;
