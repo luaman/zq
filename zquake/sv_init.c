@@ -196,31 +196,6 @@ unsigned SV_CheckModel(char *mdl)
 	return crc;
 }
 
-void SV_LoadEntFile (void)
-{
-	char	name[MAX_OSPATH];
-	char	*data;
-	char	crc[32];
-
-	Info_SetValueForStarKey (svs.info,  "*entfile", "", MAX_SERVERINFO_STRING);
-
-	if (!sv_loadentfiles.value)
-		return;
-
-	COM_StripExtension (sv.modelname, name);
-	strcat (name, ".ent");
-
-	data = (char *) FS_LoadHunkFile (name);
-	if (!data)
-		return;
-
-	sv.entitystring = data;
-
-	Com_DPrintf ("Loaded entfile %s\n", name);
-
-	sprintf (crc, "%i", CRC_Block ((byte *)data, fs_filesize));
-	Info_SetValueForStarKey (svs.info, "*entfile", crc, MAX_SERVERINFO_STRING);
-}
 
 /*
 ================
@@ -236,6 +211,7 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 {
 	edict_t		*ent;
 	int			i;
+	char		*entitystring;
 	extern qbool	sv_allow_cheats;
 	extern cvar_t	sv_cheats;
 
@@ -353,12 +329,21 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	// run the frame start qc function to let progs check cvars
 	SV_ProgStartFrame ();
 
-	// check for a custom entity file
-	sv.entitystring = CM_EntityString ();
-	SV_LoadEntFile ();
-
 	// load and spawn all other entities
-	ED_LoadFromFile (sv.entitystring);
+	entitystring = NULL;
+	if (sv_loadentfiles.value) {
+		entitystring = FS_LoadHunkFile (va("maps/%s.ent", sv.mapname));
+		if (entitystring) {
+			Com_DPrintf ("Using entfile maps/%s.ent\n", sv.mapname);
+			Info_SetValueForStarKey (svs.info, "*entfile", va("%i",
+				CRC_Block(entitystring, fs_filesize)), MAX_SERVERINFO_STRING);
+		}
+	}
+	if (!entitystring) {
+		Info_SetValueForStarKey (svs.info,  "*entfile", "", MAX_SERVERINFO_STRING);
+		entitystring = CM_EntityString();
+	}
+	ED_LoadFromFile (entitystring);
 
 	// look up some model indexes for specialized message compression
 	SV_FindModelNumbers ();
