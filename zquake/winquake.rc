@@ -54,7 +54,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON2               ICON    DISCARDABLE     "qwcl2.ico"
+IDI_APPICON             ICON    DISCARDABLE     "qwcl2.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -65,7 +65,7 @@ IDD_DIALOG1 DIALOGEX 0, 0, 124, 27
 STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | WS_POPUP | 
     WS_VISIBLE
 EXSTYLE WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE
-FONT 16, "Times New Roman"
+FONT 16, "Times New Roman", 0, 0, 0x1
 BEGIN
     CONTROL         115,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE,0,0,
                     124,28
@@ -78,17 +78,6 @@ END
 //
 
 IDB_ZQBITMAP            BITMAP  DISCARDABLE     "zquake.bmp"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table
-//
-
-STRINGTABLE DISCARDABLE 
-BEGIN
-    IDS_STRING1             "WinQuake"
-END
-
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -1582,7 +1582,7 @@ void	VID_Init (unsigned char *palette)
 
 	Cmd_AddCommand ("vid_modelist", VID_ModeList_f);
 
-	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
+	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_APPICON));
 
 	VID_InitDIB (global_hInstance);
 	basenummodes = nummodes = 1;
