@@ -473,6 +473,8 @@ static void GetEvent(void)
     grab_input = _windowed_mouse.value != 0
 #ifdef USE_VMODE
                  || vidmode_active;
+#else
+								  ;
 #endif
 
     if (grab_input && !input_grabbed) {
