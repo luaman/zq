@@ -24,20 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // console
 //
 
-#define		CON_TEXTSIZE	65536
-typedef struct
-{
-	char	text[CON_TEXTSIZE];
-	int		current;		// line where next message will be printed
-	int		x;				// offset in current line for next print
-	int		display;		// bottom of console displays this line
-	int		numlines;		// number of non-blank text lines, used for backscroling
-} console_t;
-
-extern	console_t	con;
-
+extern int		con_x;
 extern int		con_ormask;
-extern int		con_totallines;
 extern qbool	con_initialized;
 extern int		con_notifylines;	// scan lines to clear for notify lines
 

@@ -242,16 +242,16 @@ static void PaddedPrint (char *s)
 	extern int con_linewidth;
 	int	nextcolx = 0;
 
-	if (con.x)
-		nextcolx = (int)((con.x + COLUMNWIDTH)/COLUMNWIDTH)*COLUMNWIDTH;
+	if (con_x)
+		nextcolx = (int)((con_x + COLUMNWIDTH)/COLUMNWIDTH)*COLUMNWIDTH;
 
 	if (nextcolx > con_linewidth - MINCOLUMNWIDTH
-		|| (con.x && nextcolx + strlen(s) >= con_linewidth))
+		|| (con_x && nextcolx + strlen(s) >= con_linewidth))
 		Com_Printf ("\n");
 
-	if (con.x)
+	if (con_x)
 		Com_Printf (" ");
-	while (con.x % COLUMNWIDTH)
+	while (con_x % COLUMNWIDTH)
 		Com_Printf (" ");
 	Com_Printf ("%s", s);
 }
@@ -309,7 +309,7 @@ void CompleteCommand (void)
 					FindCommonSubString (cmd->name);
 				}
 			}
-			if (con.x)
+			if (con_x)
 				Com_Printf ("\n");
 		}
 
@@ -321,7 +321,7 @@ void CompleteCommand (void)
 					FindCommonSubString (var->name);
 				}
 			}
-			if (con.x)
+			if (con_x)
 				Com_Printf ("\n");
 		}
 
@@ -332,7 +332,7 @@ void CompleteCommand (void)
 					PaddedPrint (alias->name);
 					FindCommonSubString (alias->name);
 				}
-			if (con.x)
+			if (con_x)
 				Com_Printf ("\n");
 		}
 
