@@ -600,13 +600,36 @@ void CL_ConnectionlessPacket (void)
 
 
 /*
+====================
+CL_GetMessage
+
+Handles playback of demos, on top of NET_ code
+====================
+*/
+qboolean CL_GetMessage (void)
+{
+#ifdef _WIN32
+	extern void CheckQizmoCompletion ();
+	CheckQizmoCompletion ();
+#endif
+
+	if (cls.demoplayback)
+		return CL_GetDemoMessage ();
+
+	if (!NET_GetPacket(NS_CLIENT))
+		return false;
+
+	return true;
+}
+
+
+/*
 =================
 CL_ReadPackets
 =================
 */
 void CL_ReadPackets (void)
 {
-//	while (NET_GetPacket ())
 	while (CL_GetMessage())
 	{
 		//

@@ -393,13 +393,13 @@ extern char emodel_name[], pmodel_name[];
 //
 // cl_demo.c
 //
-void CL_StopPlayback (void);
-qboolean CL_GetMessage (void);
+qboolean CL_GetDemoMessage (void);
 void CL_WriteDemoCmd (usercmd_t *pcmd);
-
-void CL_Stop_f (void);
+void CL_WriteDemoMessage (sizebuf_t *msg);
+void CL_StopPlayback (void);
 void CL_Record_f (void);
 void CL_EasyRecord_f (void);
+void CL_Stop_f (void);
 void CL_PlayDemo_f (void);
 void CL_TimeDemo_f (void);
 
