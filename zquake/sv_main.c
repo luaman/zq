@@ -764,6 +764,7 @@ void SV_ConnectionlessPacket (void)
 	MSG_ReadLong ();		// skip the -1 marker
 
 	s = MSG_ReadStringLine ();
+	s[1023] = 0;
 
 	Cmd_TokenizeString (s);
 
