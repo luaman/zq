@@ -374,7 +374,6 @@ ROCKETS
 void T_MissileTouch ()
 {
 	float	damg;
-	vector neworigin;
 
 //	if (deathmatch == 4)
 //	{
@@ -421,8 +420,7 @@ void T_MissileTouch ()
 	T_RadiusDamage (self, self.owner, 120, other, "rocket");
 
 //	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
-  neworigin = self.origin - 8 * normalize(self.velocity);
-  setorigin (self, neworigin);
+	self.origin = self.origin - 8 * normalize(self.velocity);
 
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
