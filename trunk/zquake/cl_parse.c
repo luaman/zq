@@ -948,16 +948,18 @@ void CL_NewTranslation (int slot)
 	if (slot > MAX_CLIENTS)
 		Sys_Error ("CL_NewTranslation: slot > MAX_CLIENTS");
 
-// teamcolor/enemycolor -->
 	player = &cl.players[slot];
+	if (player->spectator)
+		return;
 
+// teamcolor/enemycolor -->
 	player->topcolor = player->real_topcolor;
 	player->bottomcolor = player->real_bottomcolor;
 
 	strcpy (s, cl.players[cl.playernum].team);
 	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
 
-	if (!cl.teamfortress) {
+	if ( !cl.teamfortress && !(cl.fpd & FPD_NO_FORCE_COLOR) ) {
 		if (cl_teamtopcolor >= 0 && teamplay && 
 			!strcmp(player->team, s))
 		{
@@ -990,6 +992,8 @@ void CL_NewTranslation (int slot)
 		Sys_Error ("CL_NewTranslation: slot > MAX_CLIENTS");
 
 	player = &cl.players[slot];
+	if (player->spectator)
+		return;
 
 	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
 	COM_StripExtension(s, s);
@@ -1003,7 +1007,7 @@ void CL_NewTranslation (int slot)
 	strcpy (s, cl.players[cl.playernum].team);
 	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
 
-	if (!cl.teamfortress) {
+	if ( !cl.teamfortress && !(cl.fpd & FPD_NO_FORCE_COLOR) ) {
 		if (cl_teamtopcolor >= 0 && teamplay && 
 			!strcmp(player->team, s))
 		{
@@ -1150,25 +1154,33 @@ CL_ProcessServerInfo
 Called by CL_FullServerinfo_f and CL_ParseServerInfoChange
 ==============
 */
+void TP_CheckFPD ();
 void CL_ProcessServerInfo (void)
 {
 	char	*p;
 	static int _teamplay = 0;
-	int teamplay;
+	static int _fpd = 0;
+	int teamplay;	// FIXME: make it cl.teamplay?
 	int i;
 
-	if (p = Info_ValueForKey(cl.serverinfo, "deathmatch"))
+	if ((p = Info_ValueForKey(cl.serverinfo, "fpd")) != NULL)
+		cl.fpd = Q_atof(p);
+	else
+		cl.fpd = 0;
+	
+	if ((p = Info_ValueForKey(cl.serverinfo, "deathmatch")) != NULL)
 		cl.gametype = Q_atof(p) ? 1 : 0;
 	else
 		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
 
-	if (p = Info_ValueForKey(cl.serverinfo, "teamplay"))
+	if ((p = Info_ValueForKey(cl.serverinfo, "teamplay")) != NULL)
 		teamplay = Q_atof(p);
 	else 
 		teamplay = 0;
 
-	if (teamplay != _teamplay) {
+	if (teamplay != _teamplay || cl.fpd != _fpd) {
 		_teamplay = teamplay;
+		_fpd = cl.fpd;
 		for (i = 0; i < MAX_CLIENTS ; i++)
 			CL_NewTranslation (i);
 	}
