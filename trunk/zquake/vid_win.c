@@ -1916,47 +1916,6 @@ void	VID_ShiftPalette (unsigned char *palette)
 
 /*
 =================
-VID_DescribeCurrentMode_f
-=================
-*/
-void VID_DescribeCurrentMode_f (void)
-{
-	Com_Printf ("%s\n", VID_GetExtModeDescription (vid_modenum));
-}
-
-
-/*
-=================
-VID_NumModes_f
-=================
-*/
-void VID_NumModes_f (void)
-{
-
-	if (nummodes == 1)
-		Com_Printf ("%d video mode is available\n", nummodes);
-	else
-		Com_Printf ("%d video modes are available\n", nummodes);
-}
-
-
-/*
-=================
-VID_DescribeMode_f
-=================
-*/
-void VID_DescribeMode_f (void)
-{
-	int		modenum;
-	
-	modenum = Q_atoi (Cmd_Argv(1));
-
-	Com_Printf ("%s\n", VID_GetExtModeDescription (modenum));
-}
-
-
-/*
-=================
 VID_DescribeModes_f
 =================
 */
@@ -2104,9 +2063,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_Register (&vid_displayfrequency);
 
 	Cmd_AddCommand ("vid_testmode", VID_TestMode_f);
-	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
-	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);
-	Cmd_AddCommand ("vid_describemode", VID_DescribeMode_f);
 	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
 	Cmd_AddCommand ("vid_forcemode", VID_ForceMode_f);
 	Cmd_AddCommand ("vid_windowed", VID_Windowed_f);

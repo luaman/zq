@@ -1231,52 +1231,6 @@ char *VID_GetExtModeDescription (int mode)
 
 /*
 =================
-VID_DescribeCurrentMode_f
-=================
-*/
-void VID_DescribeCurrentMode_f (void)
-{
-	Com_Printf ("%s\n", VID_GetExtModeDescription (vid_modenum));
-}
-
-
-/*
-=================
-VID_NumModes_f
-=================
-*/
-void VID_NumModes_f (void)
-{
-
-	if (nummodes == 1)
-		Com_Printf ("%d video mode is available\n", nummodes);
-	else
-		Com_Printf ("%d video modes are available\n", nummodes);
-}
-
-
-/*
-=================
-VID_DescribeMode_f
-=================
-*/
-void VID_DescribeMode_f (void)
-{
-	int		t, modenum;
-	
-	modenum = Q_atoi (Cmd_Argv(1));
-
-	t = leavecurrentmode;
-	leavecurrentmode = 0;
-
-	Com_Printf ("%s\n", VID_GetExtModeDescription (modenum));
-
-	leavecurrentmode = t;
-}
-
-
-/*
-=================
 VID_DescribeModes_f
 =================
 */
@@ -1626,9 +1580,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_Register (&vid_hwgammacontrol);
 	Cvar_Register (&vid_displayfrequency);
 
-	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
-	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);
-	Cmd_AddCommand ("vid_describemode", VID_DescribeMode_f);
 	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
