@@ -360,8 +360,8 @@ void SCR_CalcRefdef (void)
 
 	r_refdef2.vrect = scr_vrect;
 
-	r_refdef.fov_x = scr_fov.value;
-	r_refdef.fov_y = CalcFov (r_refdef.fov_x, scr_vrect.width, scr_vrect.height);
+	r_refdef2.fov_x = scr_fov.value;
+	r_refdef2.fov_y = CalcFov (r_refdef2.fov_x, scr_vrect.width, scr_vrect.height);
 }
 
 

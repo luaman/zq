@@ -292,7 +292,7 @@ void R_DrawParticles (void)
 	particle_t		*p;
 	float			r_partscale;
 	
-	r_partscale = 0.004 * tan (r_refdef.fov_x * (M_PI/180) * 0.5f);
+	r_partscale = 0.004 * tan (r_refdef2.fov_x * (M_PI/180) * 0.5f);
 
 	VectorScale (vup, 1.5, up);
 	VectorScale (vright, 1.5, right);
@@ -437,13 +437,13 @@ void R_SetFrustum (void)
 	int		i;
 
 	// rotate VPN right by FOV_X/2 degrees
-	RotatePointAroundVector( frustum[0].normal, vup, vpn, -(90-r_refdef.fov_x / 2 ) );
+	RotatePointAroundVector( frustum[0].normal, vup, vpn, -(90-r_refdef2.fov_x / 2 ) );
 	// rotate VPN left by FOV_X/2 degrees
-	RotatePointAroundVector( frustum[1].normal, vup, vpn, 90-r_refdef.fov_x / 2 );
+	RotatePointAroundVector( frustum[1].normal, vup, vpn, 90-r_refdef2.fov_x / 2 );
 	// rotate VPN up by FOV_X/2 degrees
-	RotatePointAroundVector( frustum[2].normal, vright, vpn, 90-r_refdef.fov_y / 2 );
+	RotatePointAroundVector( frustum[2].normal, vright, vpn, 90-r_refdef2.fov_y / 2 );
 	// rotate VPN down by FOV_X/2 degrees
-	RotatePointAroundVector( frustum[3].normal, vright, vpn, -( 90 - r_refdef.fov_y / 2 ) );
+	RotatePointAroundVector( frustum[3].normal, vright, vpn, -( 90 - r_refdef2.fov_y / 2 ) );
 
 	for (i=0 ; i<4 ; i++)
 	{
@@ -568,7 +568,7 @@ void R_SetupGL (void)
 
 	glViewport (x, y2, w, h);
 	screenaspect = (float)r_refdef2.vrect.width/r_refdef2.vrect.height * vid.aspect;
-	MYgluPerspective (r_refdef.fov_y,  screenaspect,  4,  4096);
+	MYgluPerspective (r_refdef2.fov_y,  screenaspect,  4,  4096);
 
 	glCullFace(GL_FRONT);
 
