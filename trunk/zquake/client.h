@@ -213,6 +213,7 @@ typedef struct
 
 	char		serverinfo[MAX_SERVERINFO_STRING];
 	int			gametype;
+	qboolean	teamfortress;
 
 	int			parsecount;		// server message counter
 	int			validsequence;	// this is the sequence number of the last good
