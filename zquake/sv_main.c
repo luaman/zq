@@ -1427,7 +1427,8 @@ void SV_InitLocal (void)
 	Cmd_AddLegacyCommand ("zombietime", "sv_zombietime");
 	Cvar_Register (&sv_spectalk);
 	Cvar_Register (&sv_mapcheck);
-	Cvar_Register (&sv_minping);
+	if (dedicated)
+		Cvar_Register (&sv_minping);
 	Cvar_Register (&sv_maxpitch);
 	Cvar_Register (&sv_minpitch);
 
