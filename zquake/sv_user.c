@@ -52,13 +52,13 @@ sv_client and sv_player will be valid.
 
 /*
 ================
-SV_New_f
+Cmd_New_f
 
 Sends the first message from the server to a connected client.
 This will be sent on the initial connection and upon each server load.
 ================
 */
-void SV_New_f (void)
+void Cmd_New_f (void)
 {
 	char		*gamedir;
 	int			playernum;
@@ -136,10 +136,10 @@ void SV_New_f (void)
 
 /*
 ==================
-SV_Soundlist_f
+Cmd_Soundlist_f
 ==================
 */
-void SV_Soundlist_f (void)
+void Cmd_Soundlist_f (void)
 {
 	char		**s;
 	unsigned	n;
@@ -153,15 +153,15 @@ void SV_Soundlist_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("SV_Soundlist_f from different level\n");
-		SV_New_f ();
+		Com_Printf ("Cmd_Soundlist_f from different level\n");
+		Cmd_New_f ();
 		return;
 	}
 
 	n = atoi(Cmd_Argv(2));
 	if (n >= MAX_SOUNDS) {
 		SV_ClientPrintf (sv_client, PRINT_HIGH, 
-			"SV_Soundlist_f: Invalid soundlist index\n");
+			"Cmd_Soundlist_f: Invalid soundlist index\n");
 		SV_DropClient (sv_client);
 		return;
 	}
@@ -192,10 +192,10 @@ void SV_Soundlist_f (void)
 
 /*
 ==================
-SV_Modellist_f
+Cmd_Modellist_f
 ==================
 */
-void SV_Modellist_f (void)
+void Cmd_Modellist_f (void)
 {
 	char		**s;
 	unsigned	n;
@@ -209,15 +209,15 @@ void SV_Modellist_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("SV_Modellist_f from different level\n");
-		SV_New_f ();
+		Com_Printf ("Cmd_Modellist_f from different level\n");
+		Cmd_New_f ();
 		return;
 	}
 
 	n = atoi(Cmd_Argv(2));
 	if (n >= MAX_MODELS) {
 		SV_ClientPrintf (sv_client, PRINT_HIGH, 
-			"SV_Modellist_f: Invalid modellist index\n");
+			"Cmd_Modellist_f: Invalid modellist index\n");
 		SV_DropClient (sv_client);
 		return;
 	}
@@ -247,10 +247,10 @@ void SV_Modellist_f (void)
 
 /*
 ==================
-SV_PreSpawn_f
+Cmd_PreSpawn_f
 ==================
 */
-void SV_PreSpawn_f (void)
+void Cmd_PreSpawn_f (void)
 {
 	unsigned	buf;
 	unsigned	check;
@@ -264,8 +264,8 @@ void SV_PreSpawn_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("SV_PreSpawn_f from different level\n");
-		SV_New_f ();
+		Com_Printf ("Cmd_PreSpawn_f from different level\n");
+		Cmd_New_f ();
 		return;
 	}
 	
@@ -319,10 +319,10 @@ void SV_PreSpawn_f (void)
 
 /*
 ==================
-SV_Spawn_f
+Cmd_Spawn_f
 ==================
 */
-void SV_Spawn_f (void)
+void Cmd_Spawn_f (void)
 {
 	int		i;
 	client_t	*client;
@@ -339,15 +339,15 @@ void SV_Spawn_f (void)
 // handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("SV_Spawn_f from different level\n");
-		SV_New_f ();
+		Com_Printf ("Cmd_Spawn_f from different level\n");
+		Cmd_New_f ();
 		return;
 	}
 
 	n = atoi(Cmd_Argv(2));
 	if (n >= MAX_CLIENTS) {
 		SV_ClientPrintf (sv_client, PRINT_HIGH, 
-				"SV_Spawn_f: Invalid client start\n");
+				"Cmd_Spawn_f: Invalid client start\n");
 		SV_DropClient (sv_client); 
 		return;
 	}
@@ -455,10 +455,10 @@ void SV_SpawnSpectator (void)
 
 /*
 ==================
-SV_Begin_f
+Cmd_Begin_f
 ==================
 */
-void SV_Begin_f (void)
+void Cmd_Begin_f (void)
 {
 	unsigned pmodel = 0, emodel = 0;
 	int		i;
@@ -471,8 +471,8 @@ void SV_Begin_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("SV_Begin_f from different level\n");
-		SV_New_f ();
+		Com_Printf ("Cmd_Begin_f from different level\n");
+		Cmd_New_f ();
 		return;
 	}
 	
@@ -555,10 +555,10 @@ void SV_Begin_f (void)
 
 /*
 ==================
-SV_NextDownload_f
+Cmd_NextDL_f
 ==================
 */
-void SV_NextDownload_f (void)
+void Cmd_NextDL_f (void)
 {
 	byte	buffer[1024];
 	int		r;
@@ -680,10 +680,10 @@ Com_DPrintf ("UPLOAD: %d received\n", size);
 
 /*
 ==================
-SV_BeginDownload_f
+Cmd_Download_f
 ==================
 */
-void SV_BeginDownload_f (void)
+void Cmd_Download_f (void)
 {
 	char	*name;
 	extern cvar_t	allow_download;
@@ -752,7 +752,7 @@ void SV_BeginDownload_f (void)
 		return;
 	}
 
-	SV_NextDownload_f ();
+	Cmd_NextDL_f ();
 	Sys_Printf ("Downloading %s to %s\n", name, sv_client->name);
 }
 
@@ -856,19 +856,19 @@ void SV_Say (qboolean team)
 
 /*
 ==================
-SV_Say_f
+Cmd_Say_f
 ==================
 */
-void SV_Say_f(void)
+void Cmd_Say_f(void)
 {
 	SV_Say (false);
 }
 /*
 ==================
-SV_Say_Team_f
+Cmd_Say_Team_f
 ==================
 */
-void SV_Say_Team_f(void)
+void Cmd_Say_Team_f(void)
 {
 	SV_Say (true);
 }
@@ -879,13 +879,13 @@ void SV_Say_Team_f(void)
 
 /*
 =================
-SV_Pings_f
+Cmd_Pings_f
 
 The client is showing the scoreboard, so send new ping times for all
 clients
 =================
 */
-void SV_Pings_f (void)
+void Cmd_Pings_f (void)
 {
 	client_t *client;
 	int		j;
@@ -952,10 +952,10 @@ void SV_TogglePause (const char *msg)
 
 /*
 ==================
-SV_Pause_f
+Cmd_Pause_f
 ==================
 */
-void SV_Pause_f (void)
+void Cmd_Pause_f (void)
 {
 	char st[sizeof(sv_client->name) + 32];
 
@@ -980,12 +980,12 @@ void SV_Pause_f (void)
 
 /*
 =================
-SV_Drop_f
+Cmd_Drop_f
 
 The client is going to disconnect, so remove the connection immediately
 =================
 */
-void SV_Drop_f (void)
+void Cmd_Drop_f (void)
 {
 	SV_EndRedirect ();
 	if (!sv_client->spectator)
@@ -995,12 +995,12 @@ void SV_Drop_f (void)
 
 /*
 =================
-SV_PTrack_f
+Cmd_PTrack_f
 
 Change the bandwidth estimate for a client
 =================
 */
-void SV_PTrack_f (void)
+void Cmd_PTrack_f (void)
 {
 	int		i;
 	edict_t *ent, *tent;
@@ -1038,12 +1038,12 @@ void SV_PTrack_f (void)
 
 /*
 ==================
-SV_SetInfo_f
+Cmd_SetInfo_f
 
 Allow clients to change userinfo
 ==================
 */
-void SV_SetInfo_f (void)
+void Cmd_SetInfo_f (void)
 {
 	int i;
 	char oldval[MAX_INFO_STRING];
@@ -1089,17 +1089,26 @@ void SV_SetInfo_f (void)
 
 /*
 ==================
-SV_ShowServerinfo_f
+Cmd_Serverinfo_f
 
 Dumps the serverinfo info string
 ==================
 */
-void SV_ShowServerinfo_f (void)
+void Cmd_Serverinfo_f (void)
 {
 	Info_Print (svs.info);
 }
 
-void SV_NoSnap_f(void)
+
+/*
+==================
+Cmd_Snap_f
+
+We receive this command if the client doesn't support remote
+screenshots or has them disabled
+==================
+*/
+void Cmd_Snap_f (void)
 {
 	if (*sv_client->uploadfn) {
 		*sv_client->uploadfn = 0;
@@ -1119,12 +1128,12 @@ extern qboolean	sv_allow_cheats;
 
 /*
 ==================
-SV_God_f
+Cmd_God_f
 
 Sets client to godmode
 ==================
 */
-void SV_God_f (void)
+void Cmd_God_f (void)
 {
 	if (!sv_allow_cheats)
 	{
@@ -1142,10 +1151,10 @@ void SV_God_f (void)
 
 /*
 ==================
-SV_Give_f
+Cmd_Give_f
 ==================
 */
-void SV_Give_f (void)
+void Cmd_Give_f (void)
 {
 	char	*t;
 	int		v;
@@ -1193,10 +1202,10 @@ void SV_Give_f (void)
 
 /*
 ==================
-SV_Noclip_f
+Cmd_Noclip_f
 ==================
 */
-void SV_Noclip_f (void)
+void Cmd_Noclip_f (void)
 {
 	if (!sv_allow_cheats)
 	{
@@ -1224,10 +1233,10 @@ void SV_Noclip_f (void)
 
 /*
 ==================
-SV_Fly_f
+Cmd_Fly_f
 ==================
 */
-void SV_Fly_f (void)
+void Cmd_Fly_f (void)
 {
 	if (!sv_allow_cheats)
 	{
@@ -1262,31 +1271,32 @@ typedef struct
 
 ucmd_t ucmds[] =
 {
-	{"new", SV_New_f},
-	{"modellist", SV_Modellist_f},
-	{"soundlist", SV_Soundlist_f},
-	{"prespawn", SV_PreSpawn_f},
-	{"spawn", SV_Spawn_f},
-	{"begin", SV_Begin_f},
+// connection commands
+	{"new", Cmd_New_f},
+	{"soundlist", Cmd_Soundlist_f},
+	{"modellist", Cmd_Modellist_f},
+	{"prespawn", Cmd_PreSpawn_f},
+	{"spawn", Cmd_Spawn_f},
+	{"begin", Cmd_Begin_f},
 
-	{"drop", SV_Drop_f},
-	{"pings", SV_Pings_f},
+	{"download", Cmd_Download_f},
+	{"nextdl", Cmd_NextDL_f},
 
-	{"download", SV_BeginDownload_f},
-	{"nextdl", SV_NextDownload_f},
+	{"drop", Cmd_Drop_f},
+	{"pings", Cmd_Pings_f},
 
-	{"ptrack", SV_PTrack_f},	// used with autocam
+	{"ptrack", Cmd_PTrack_f},	// used with autocam
 
-	{"snap", SV_NoSnap_f},
+	{"snap", Cmd_Snap_f},
 	
 // issued by hand at client consoles	
-	{"pause", SV_Pause_f},
+	{"pause", Cmd_Pause_f},
 
-	{"say", SV_Say_f},
-	{"say_team", SV_Say_Team_f},
+	{"say", Cmd_Say_f},
+	{"say_team", Cmd_Say_Team_f},
 
-	{"setinfo", SV_SetInfo_f},
-	{"serverinfo", SV_ShowServerinfo_f},
+	{"setinfo", Cmd_SetInfo_f},
+	{"serverinfo", Cmd_Serverinfo_f},
 
 	{NULL, NULL}
 };
@@ -1331,13 +1341,13 @@ void SV_ExecuteUserCommand (char *s)
 	if (!Q_stricmp(cmd, "kill"))
 		SV_Kill_f ();
 	else if (!Q_stricmp(cmd, "god"))
-		SV_God_f ();
+		Cmd_God_f ();
 	else if (!Q_stricmp(cmd, "give"))
-		SV_Give_f ();
+		Cmd_Give_f ();
 	else if (!Q_stricmp(cmd, "noclip"))
-		SV_Noclip_f ();
+		Cmd_Noclip_f ();
 	else if (!Q_stricmp(cmd, "fly"))
-		SV_Fly_f ();
+		Cmd_Fly_f ();
 	else
 		Com_Printf ("Bad user command: %s\n", cmd);
 
