@@ -963,7 +963,7 @@ void CL_SetSolidEntities (void)
 	packet_entities_t	*pak;
 	entity_state_t		*state;
 
-	pmove.physents[0].model = cl.worldmodel;
+	pmove.physents[0].model = cl.clipmodels[1];
 	VectorClear (pmove.physents[0].origin);
 	pmove.physents[0].info = 0;
 	pmove.numphysent = 1;
@@ -981,7 +981,7 @@ void CL_SetSolidEntities (void)
 			continue;
 		if (cl.model_precache[state->modelindex]->hulls[1].firstclipnode)
 		{
-			pmove.physents[pmove.numphysent].model = cl.model_precache[state->modelindex];
+			pmove.physents[pmove.numphysent].model = cl.clipmodels[state->modelindex];
 			VectorCopy (state->origin, pmove.physents[pmove.numphysent].origin);
 			pmove.numphysent++;
 		}

@@ -63,12 +63,10 @@ typedef struct
 	unsigned	map_checksum;
 	unsigned	map_checksum2;
 	cmodel_t 	*worldmodel;
-	struct model_s 	*FIXME_worldmodel;
-	char		*model_precache[MAX_MODELS];	// NULL terminated
-	char		*sound_precache[MAX_SOUNDS];	// NULL terminated
+	char		*model_name[MAX_MODELS];	// NULL terminated
+	char		*sound_name[MAX_SOUNDS];	// NULL terminated
 	char		*lightstyles[MAX_LIGHTSTYLES];
 	cmodel_t	*models[MAX_MODELS];
-	struct model_s		*FIXME_models[MAX_MODELS];
 	char		*entitystring;		// entfile may override
 
 	int			num_edicts;			// increases towards MAX_EDICTS

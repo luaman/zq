@@ -171,7 +171,7 @@ void PF_setmodel (void)
 	m = G_STRING(OFS_PARM1);
 
 // check to see if model was properly precached
-	for (i=0, check = sv.model_precache ; *check ; i++, check++)
+	for (i=0, check = sv.model_name ; *check ; i++, check++)
 		if (!strcmp(*check, m))
 			break;
 
@@ -493,7 +493,7 @@ void PF_ambientsound (void)
 	attenuation = G_FLOAT(OFS_PARM3);
 	
 // check to see if samp was properly precached
-	for (soundnum=0, check = sv.sound_precache ; *check ; check++, soundnum++)
+	for (soundnum=0, check = sv.sound_name ; *check ; check++, soundnum++)
 		if (!strcmp(*check,samp))
 			break;
 			
@@ -616,14 +616,14 @@ void PF_checkpos (void)
 
 //============================================================================
 
-byte	checkpvs[MAX_MAP_LEAFS/8];
+// Unlike Quake's Mod_LeafPVS, CM_LeafPVS returns a pointer to static data
+// uncompressed at load time, so it's safe to store for future use
+static byte	*checkpvs;
 
 int PF_newcheckclient (int check)
 {
 	int		i;
-	byte	*pvs;
 	edict_t	*ent;
-	cleaf_t	*leaf;
 	vec3_t	org;
 
 // cycle to the next one
@@ -661,9 +661,7 @@ int PF_newcheckclient (int check)
 
 // get the PVS for the entity
 	VectorAdd (ent->v.origin, ent->v.view_ofs, org);
-	leaf = CM_PointInLeaf (org);
-	pvs = CM_LeafPVS (leaf);
-	memcpy (checkpvs, pvs, (sv.FIXME_worldmodel->numleafs+7)>>3 );
+	checkpvs = CM_LeafPVS (CM_PointInLeaf(org));
 
 	return i;
 }
@@ -687,9 +685,8 @@ name checkclient ()
 void PF_checkclient (void)
 {
 	edict_t	*ent, *self;
-	mleaf_t	*leaf;
 	int		l;
-	vec3_t	view;
+	vec3_t	vieworg;
 	
 // find a new check if on a new frame
 	if (sv.time - sv.lastchecktime >= 0.1)
@@ -708,9 +705,8 @@ void PF_checkclient (void)
 
 // if current entity can't possibly see the check entity, return 0
 	self = PROG_TO_EDICT(pr_global_struct->self);
-	VectorAdd (self->v.origin, self->v.view_ofs, view);
-	leaf = Mod_PointInLeaf (view, sv.FIXME_worldmodel);
-	l = (leaf - sv.FIXME_worldmodel->leafs) - 1;
+	VectorAdd (self->v.origin, self->v.view_ofs, vieworg);
+	l = CM_Leafnum(CM_PointInLeaf(vieworg)) - 1;
 	if ( (l<0) || !(checkpvs[l>>3] & (1<<(l&7)) ) )
 	{
 		RETURN_EDICT(sv.edicts);
@@ -1028,12 +1024,12 @@ void PF_precache_sound (void)
 	
 	for (i=0 ; i<MAX_SOUNDS ; i++)
 	{
-		if (!sv.sound_precache[i])
+		if (!sv.sound_name[i])
 		{
-			sv.sound_precache[i] = s;
+			sv.sound_name[i] = s;
 			return;
 		}
-		if (!strcmp(sv.sound_precache[i], s))
+		if (!strcmp(sv.sound_name[i], s))
 			return;
 	}
 	PR_RunError ("PF_precache_sound: overflow");
@@ -1053,12 +1049,12 @@ void PF_precache_model (void)
 
 	for (i=1 ; i<MAX_MODELS ; i++)
 	{
-		if (!sv.model_precache[i])
+		if (!sv.model_name[i])
 		{
-			sv.model_precache[i] = s;
+			sv.model_name[i] = s;
 			return;
 		}
-		if (!strcmp(sv.model_precache[i], s))
+		if (!strcmp(sv.model_name[i], s))
 			return;
 	}
 	PR_RunError ("PF_precache_model: overflow");

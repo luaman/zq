@@ -345,11 +345,11 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
 
 // find precache number for sound
 	for (sound_num=1 ; sound_num<MAX_SOUNDS
-		&& sv.sound_precache[sound_num] ; sound_num++)
-		if (!strcmp(sample, sv.sound_precache[sound_num]))
+		&& sv.sound_name[sound_num] ; sound_num++)
+		if (!strcmp(sample, sv.sound_name[sound_num]))
 			break;
     
-	if ( sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num] )
+	if ( sound_num == MAX_SOUNDS || !sv.sound_name[sound_num] )
 	{
 		Com_Printf ("SV_StartSound: %s not precached\n", sample);
 		return;
@@ -426,13 +426,13 @@ void SV_FindModelNumbers (void)
 
 	for (i=1 ; i<MAX_MODELS ; i++)
 	{
-		if (!sv.model_precache[i])
+		if (!sv.model_name[i])
 			break;
-		if (!strcmp(sv.model_precache[i],"progs/spike.mdl"))
+		if (!strcmp(sv.model_name[i],"progs/spike.mdl"))
 			sv_nailmodel = i;
-		if (!strcmp(sv.model_precache[i],"progs/s_spike.mdl"))
+		if (!strcmp(sv.model_name[i],"progs/s_spike.mdl"))
 			sv_supernailmodel = i;
-		if (!strcmp(sv.model_precache[i],"progs/player.mdl"))
+		if (!strcmp(sv.model_name[i],"progs/player.mdl"))
 			sv_playermodel = i;
 	}
 }

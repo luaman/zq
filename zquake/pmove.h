@@ -22,10 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef struct
 {
-	vec3_t	origin;
-	struct model_s	*model;		// only for bsp models
-	vec3_t	mins, maxs;	// only for non-bsp models
-	int		info;		// for client or server to identify
+	vec3_t		origin;
+	cmodel_t	*model;		// only for bsp models
+	vec3_t		mins, maxs;	// only for non-bsp models
+	int			info;		// for client or server to identify
 } physent_t;
 
 
