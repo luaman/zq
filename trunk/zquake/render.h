@@ -35,6 +35,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 //=============================================================================
 
+typedef struct
+{
+	int		length;
+	char	map[64];
+} lightstyle_t;
+
 typedef struct efrag_s
 {
 	struct mleaf_s		*leaf;
@@ -109,13 +115,15 @@ typedef struct
 
 
 typedef struct {
-	float		time;
-	qbool		allowCheats;
-	qbool		allow_fbskins;
-	int			viewplayernum;	// don't draw own glow when gl_flashblend 1
-	qbool		watervis;
-	int			numParticles;
-	particle_t	*particles;
+	float			time;
+	qbool			allowCheats;
+	qbool			allow_fbskins;
+	int				viewplayernum;	// don't draw own glow when gl_flashblend 1
+	qbool			watervis;
+
+	lightstyle_t	*lightstyles;
+	int				numParticles;
+	particle_t		*particles;
 } refdef2_t;
 
 

@@ -39,14 +39,14 @@ void R_AnimateLight (void)
 	i = (int)(r_refdef2.time*10);
 	for (j=0 ; j<MAX_LIGHTSTYLES ; j++)
 	{
-		if (!cl_lightstyle[j].length)
+		if (!r_refdef2.lightstyles[j].length)
 		{
 			d_lightstylevalue[j] = 256;
 			continue;
 		}
 
-		k = i % cl_lightstyle[j].length;
-		k = cl_lightstyle[j].map[k] - 'a';
+		k = i % r_refdef2.lightstyles[j].length;
+		k = r_refdef2.lightstyles[j].map[k] - 'a';
 		k = k * 22;
 		d_lightstylevalue[j] = k;
 	}	
