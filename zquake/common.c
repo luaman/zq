@@ -595,19 +595,23 @@ skipwhite:
 					data--;
 				return data;
 			}
-			com_token[len] = c;
-			len++;
+			if (len < MAX_COM_TOKEN-1)
+			{
+				com_token[len] = c;
+				len++;
+			}
 		}
 	}
 
 // parse a regular word
 	do
 	{
-		com_token[len] = c;
+		if (len < MAX_COM_TOKEN-1)
+		{
+			com_token[len] = c;
+			len++;
+		}
 		data++;
-		len++;
-		if (len >= MAX_COM_TOKEN-1)
-			break;
 		c = *data;
 	} while (c && c != ' ' && c != '\t' && c != '\n' && c != '\r');
 
