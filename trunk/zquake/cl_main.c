@@ -57,6 +57,7 @@ cvar_t	r_rocketlight = {"r_rocketLight", "1"};
 cvar_t	r_rockettrail = {"r_rocketTrail", "1"};
 cvar_t	r_grenadetrail = {"r_grenadeTrail", "1"};
 cvar_t	r_powerupglow = {"r_powerupGlow", "1"};
+cvar_t	r_lightflicker = {"r_lightflicker", "1"};
 cvar_t	cl_deadbodyfilter = {"cl_deadbodyFilter", "0"};
 cvar_t	cl_explosion = {"cl_explosion", "0"};
 cvar_t	cl_gibfilter = {"cl_gibFilter", "0"};
@@ -726,10 +727,11 @@ void CL_InitLocal (void)
 	Cvar_Register (&noskins);
 
 	// ZQuake cvars
+	Cvar_Register (&r_rocketlight);
 	Cvar_Register (&r_rockettrail);
 	Cvar_Register (&r_grenadetrail);
 	Cvar_Register (&r_powerupglow);
-	Cvar_Register (&r_rocketlight);
+	Cvar_Register (&r_lightflicker);
 	Cvar_Register (&cl_demospeed);
 	Cmd_AddLegacyCommand ("demotimescale", "cl_demospeed");
 	Cvar_Register (&cl_deadbodyfilter);

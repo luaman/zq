@@ -354,7 +354,7 @@ void CL_LinkPacketEntities (void)
 	float				f;
 	model_t				*model;
 	vec3_t				old_origin;
-	float				autorotate;
+	float				autorotate, flicker;
 	int					i;
 	int					pnum;
 
@@ -372,20 +372,21 @@ void CL_LinkPacketEntities (void)
 		// control powerup glow for bots
 		if (state->modelindex != cl_playerindex || r_powerupglow.value)
 		{
+			flicker = r_lightflicker.value ? (rand() & 31) : 10;
 			// spawn light flashes, even ones coming from invisible objects
 			if ((state->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
-				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_redblue);
+				CL_NewDlight (state->number, state->origin, 200 + flicker, 0.1, lt_redblue);
 			else if (state->effects & EF_BLUE)
-				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_blue);
+				CL_NewDlight (state->number, state->origin, 200 + flicker, 0.1, lt_blue);
 			else if (state->effects & EF_RED)
-				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_red);
+				CL_NewDlight (state->number, state->origin, 200 + flicker, 0.1, lt_red);
 			else if (state->effects & EF_BRIGHTLIGHT) {
 				vec3_t	tmp;
 				VectorCopy (state->origin, tmp);
 				tmp[2] += 16;
-				CL_NewDlight (state->number, tmp, 400 + (rand()&31), 0.1, lt_default);
+				CL_NewDlight (state->number, tmp, 400 + flicker, 0.1, lt_default);
 			} else if (state->effects & EF_DIMLIGHT)
-				CL_NewDlight (state->number, state->origin, 200 + (rand()&31), 0.1, lt_default);
+				CL_NewDlight (state->number, state->origin, 200 + flicker, 0.1, lt_default);
 		}
 
 		// if set to invisible, skip
@@ -794,7 +795,7 @@ for all current players
 */
 void CL_LinkPlayers (void)
 {
-	int				j;
+	int				i, j;
 	player_info_t	*info;
 	player_state_t	*state;
 	player_state_t	exact;
@@ -805,7 +806,7 @@ void CL_LinkPlayers (void)
 	frame_t			*frame;
 	int				oldphysent;
 	vec3_t			org;
-	int				i;
+	float			flicker;
 
 	playertime = cls.realtime - cls.latency + 0.02;
 	if (playertime > cls.realtime)
@@ -829,20 +830,22 @@ void CL_LinkPlayers (void)
 			} else
 				VectorCopy (state->origin, org);
 
+			flicker = r_lightflicker.value ? (rand() & 31) : 10;
+
 			if ((state->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
-				CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_redblue);
+				CL_NewDlight (j+1, org, 200 + flicker, 0.1, lt_redblue);
 			else if (state->effects & EF_BLUE)
-				CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_blue);
+				CL_NewDlight (j+1, org, 200 + flicker, 0.1, lt_blue);
 			else if (state->effects & EF_RED)
-				CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_red);
+				CL_NewDlight (j+1, org, 200 + flicker, 0.1, lt_red);
 			else if (state->effects & EF_BRIGHTLIGHT) {
 				vec3_t	tmp;
 				VectorCopy (org, tmp);
 				tmp[2] += 16;
-				CL_NewDlight (j+1, tmp, 400 + (rand()&31), 0.1, lt_default);
+				CL_NewDlight (j+1, tmp, 400 + flicker, 0.1, lt_default);
 			}
 			else if (state->effects & EF_DIMLIGHT)
-				CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_default);
+				CL_NewDlight (j+1, org, 200 + flicker, 0.1, lt_default);
 		}
 
 		if (!state->modelindex)
