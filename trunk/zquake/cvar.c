@@ -150,11 +150,17 @@ void Cvar_Set (cvar_t *var, char *value)
 	if (!var)
 		return;
 
+	Z_Free (var->string);	// free the old value string
+	
+	var->string = Z_Malloc (strlen(value)+1);
+	strcpy (var->string, value);
+	var->value = Q_atof (var->string);
+
 #if defined(SERVERONLY) || defined(QW_BOTH)
 	if (var->flags & CVAR_SERVERINFO)
 	{
-		Info_SetValueForKey (svs.info, var->name, value, MAX_SERVERINFO_STRING);
-		SV_SendServerInfoChange(var->name, value);
+		Info_SetValueForKey (svs.info, var->name, var->string, MAX_SERVERINFO_STRING);
+		SV_SendServerInfoChange(var->name, var->string);
 //		SV_BroadcastCommand ("fullserverinfo \"%s\"\n", svs.info);
 	}
 #endif
@@ -162,20 +168,14 @@ void Cvar_Set (cvar_t *var, char *value)
 #ifndef SERVERONLY
 	if (var->flags & CVAR_USERINFO)
 	{
-		Info_SetValueForKey (cls.userinfo, var->name, value, MAX_INFO_STRING);
+		Info_SetValueForKey (cls.userinfo, var->name, var->string, MAX_INFO_STRING);
 		if (cls.state >= ca_connected)
 		{
 			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-			SZ_Print (&cls.netchan.message, va("setinfo \"%s\" \"%s\"\n", var->name, value));
+			SZ_Print (&cls.netchan.message, va("setinfo \"%s\" \"%s\"\n", var->name, var->string));
 		}
 	}
 #endif
-	
-	Z_Free (var->string);	// free the old value string
-	
-	var->string = Z_Malloc (strlen(value)+1);
-	strcpy (var->string, value);
-	var->value = Q_atof (var->string);
 }
 
 /*
