@@ -448,7 +448,7 @@ void CL_FullInfo_f (void)
 		if (*s)
 			s++;
 
-		if (!stricmp(key, pmodel_name) || !stricmp(key, emodel_name))
+		if (!Q_strcasecmp(key, pmodel_name) || !Q_strcasecmp(key, emodel_name))
 			continue;
 
 		Info_SetValueForKey (cls.userinfo, key, value, MAX_INFO_STRING);
@@ -474,7 +474,7 @@ void CL_SetInfo_f (void)
 		Com_Printf ("usage: setinfo [ <key> <value> ]\n");
 		return;
 	}
-	if (!stricmp(Cmd_Argv(1), pmodel_name) || !strcmp(Cmd_Argv(1), emodel_name))
+	if (!Q_strcasecmp(Cmd_Argv(1), pmodel_name) || !strcmp(Cmd_Argv(1), emodel_name))
 		return;
 
 	Info_SetValueForKey (cls.userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
