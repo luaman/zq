@@ -865,12 +865,9 @@ void() PlayerPreThink =
 		return;                                 // the think tics
 	}
 
-	if (self.view_ofs == '0 0 0')
-		return;         // intermission or finale
-
 	makevectors (self.v_angle);             // is this still used
 
-        self.deathtype = "";
+	self.deathtype = "";
 
 	CheckRules ();
 	WaterMove ();
@@ -1096,9 +1093,6 @@ void() PlayerPostThink =
 	local   float   mspeed, aspeed;
 	local   float   r;
 
-//dprint ("post think\n");
-	if (self.view_ofs == '0 0 0')
-		return;         // intermission or finale
 	if (self.deadflag)
 		return;
 
