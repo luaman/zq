@@ -159,7 +159,7 @@ void()	army_painc11=[	$painc11,	army_painc12] {ai_painforward(6);}
 void()	army_painc12=[	$painc12,	army_painc13] {ai_painforward(8);}
 void()	army_painc13=[	$painc13,	army_run1] {}
 
-void army_pain ()
+void army_pain (entity attacker, float damage)
 {
 	float	r;
 	
