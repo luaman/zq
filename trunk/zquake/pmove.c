@@ -21,9 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "pmove.h"
 
-#ifndef SERVERONLY
-cvar_t	pm_jumpfixtime = {"pm_jumpfixtime","0.05"};
-#endif
 cvar_t	pm_jumpfix = {"pm_jumpfix","1"};
 cvar_t	pm_slidefix = {"pm_slidefix","0"};	// FIXME: remove?
 cvar_t	pm_ktphysics = {"pm_ktphysics", "0"};	// set this when
@@ -45,10 +42,6 @@ void PM_InitBoxHull (void);
 
 void Pmove_Init (void)
 {
-#ifndef SERVERONLY
-	Cvar_Register (&pm_jumpfixtime);
-#endif
-
 #if defined(SERVERONLY) || defined(QW_BOTH)
 	Cvar_Register (&pm_jumpfix);
 #else
@@ -922,7 +915,7 @@ void PlayerMove (void)
 #ifndef SERVERONLY
 	if (pmove.jump_msec) {
 		pmove.jump_msec += pmove.cmd.msec;
-		if (pmove.jump_msec > pm_jumpfixtime.value*1000)
+		if (pmove.jump_msec > 50)
 			pmove.jump_msec = 0;
 	}
 #endif
