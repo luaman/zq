@@ -317,7 +317,7 @@ void NQD_ParseStufftext (void)
 		int num, ping;
 		MSG_ReadByte();
 		MSG_ReadByte();
-		while (ping = ReadPQShort())
+		while ((ping = ReadPQShort()) != 0)
 		{
 			num = ping / 4096;
 			if ((unsigned int)num >= nq_maxclients)
