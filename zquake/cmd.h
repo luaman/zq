@@ -143,6 +143,7 @@ void Cbuf_AddEarlyCommands (void);
 void Cmd_StuffCmds_f (void);
 void Cmd_AddLegacyCommand (char *oldname, char *newname);
 qbool Cmd_IsLegacyCommand (char *oldname);
+char *Cmd_LegacyCommandValue(char *oldname);
 
 
 //===========================================================================

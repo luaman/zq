@@ -682,6 +682,18 @@ typedef struct legacycmd_s {
 
 static legacycmd_t *legacycmds = NULL;
 
+
+static legacycmd_t *Cmd_GetLegacyCommand (char *oldname)
+{
+	legacycmd_t *cmd;
+
+	for (cmd = legacycmds; cmd; cmd = cmd->next) {
+		if (!Q_stricmp (cmd->oldname, oldname))
+			return cmd;
+	}
+	return NULL;
+}
+
 void Cmd_AddLegacyCommand (char *oldname, char *newname)
 {
 	legacycmd_t *cmd;
@@ -695,13 +707,16 @@ void Cmd_AddLegacyCommand (char *oldname, char *newname)
 
 qbool Cmd_IsLegacyCommand (char *oldname)
 {
+	return Cmd_GetLegacyCommand (oldname) != NULL;
+}
+
+char *Cmd_LegacyCommandValue (char *oldname)
+{
 	legacycmd_t *cmd;
 
-	for (cmd=legacycmds ; cmd ; cmd = cmd->next) {
-		if (!Q_stricmp(cmd->oldname, oldname))
-			return true;
-	}
-	return false;
+	if (!(cmd = Cmd_GetLegacyCommand (oldname)))
+		return NULL;
+	return cmd->newname;
 }
 
 static qbool Cmd_LegacyCommand (void)
@@ -710,13 +725,9 @@ static qbool Cmd_LegacyCommand (void)
 	legacycmd_t *cmd;
 	char	text[1024];
 
-	for (cmd=legacycmds ; cmd ; cmd = cmd->next) {
-		if (!Q_stricmp(cmd->oldname, Cmd_Argv(0)))
-			goto match;
-	}
-	return false;
+	if (!(cmd = Cmd_GetLegacyCommand (Cmd_Argv (0))))
+		return false;
 
-match:
 	if (!cmd->newname[0])
 		return true;		// just ignore this command
 
