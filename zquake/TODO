@@ -20,9 +20,6 @@ Windows Client
 Linux Client
 ------------
  
-* Add the fix for non-dga keyboard input under Linux -
-  http://www.shovelbeating.org/~windsok/keyboard.htm 
-
 * Add strider's evdev input support
 
 * Fix up HWGamma, affects the whole screen for gamma and blends, need to
