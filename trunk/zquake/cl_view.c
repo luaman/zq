@@ -43,7 +43,7 @@ cvar_t	cl_bobup = {"cl_bobup","0.5"};
 cvar_t	v_kicktime = {"v_kicktime", "0.5"};
 cvar_t	v_kickroll = {"v_kickroll", "0.6"};
 cvar_t	v_kickpitch = {"v_kickpitch", "0.6"};
-cvar_t	v_gunkick = {"v_gunkick", "0"};
+cvar_t	v_kickback = {"v_kickback", "0"};	// recoil effect
 
 cvar_t	cl_drawgun = {"r_drawviewmodel", "1"};
 
@@ -985,7 +985,7 @@ void V_CalcRefdef (void)
 	V_CalcViewRoll ();
 	V_AddIdle ();
 
-	if (v_gunkick.value)
+	if (v_kickback.value)
 	{
 		if (cls.nqdemoplayback)
 			r_refdef.viewangles[PITCH] += cl.punchangle;
@@ -1156,7 +1156,7 @@ void V_Init (void)
 	Cvar_Register (&v_kicktime);
 	Cvar_Register (&v_kickroll);
 	Cvar_Register (&v_kickpitch);
-	Cvar_Register (&v_gunkick);
+	Cvar_Register (&v_kickback);
 	Cvar_Register (&cl_drawgun);
 
 	Cvar_Register (&v_bonusflash);
