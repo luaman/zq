@@ -19,8 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // net.h -- quake's interface to the networking layer
 
-#define	PORT_ANY	-1
-
 typedef enum {NA_NULL, NA_LOOPBACK, NA_BROADCAST, NA_IP, NA_IPX, NA_BROADCAST_IPX} netadrtype_t;
 
 typedef enum {NS_CLIENT, NS_SERVER} netsrc_t;
