@@ -451,7 +451,7 @@ void SV_CheckLog (void)
 		svs.logsequence++;
 		sz = &svs.log[svs.logsequence&1];
 		sz->cursize = 0;
-		Con_Printf ("beginning fraglog sequence %i\n", svs.logsequence);
+		Con_DPrintf ("beginning fraglog sequence %i\n", svs.logsequence);
 	}
 
 }
