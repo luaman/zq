@@ -725,7 +725,7 @@ void CL_ParseSoundlist (void)
 			break;
 		numsounds++;
 		if (numsounds == MAX_SOUNDS)
-			Host_Error ("Server sent too many sound_precache");
+			Host_Error ("Server sent too many sound precaches");
 		Q_strncpyz (cl.sound_name[numsounds], str, sizeof(cl.sound_name[numsounds]));
 	}
 
@@ -763,7 +763,7 @@ void CL_ParseModellist (void)
 			break;
 
 		if (++nummodels==MAX_MODELS)
-			Host_Error ("Server sent too many model_precache");
+			Host_Error ("Server sent too many model precaches");
 
 		Q_strncpyz (cl.model_name[nummodels], str, sizeof(cl.model_name[nummodels]));
 	}

@@ -13,7 +13,6 @@ void R_TranslatePlayerSkin (int playernum);
 
 #define	NQ_PROTOCOL_VERSION	15
 
-#define NQ_MAX_MSGLEN	8000
 #define	NQ_MAX_CLIENTS	16
 #define NQ_SIGNONS		4
 
@@ -76,7 +75,7 @@ qboolean	nq_drawpings;	// for sbar code
 
 qboolean	nq_player_teleported;	// hacky
 
-vec3_t	last_fixangle;
+vec3_t	nq_last_fixangle;
 
 int		nq_num_entities;
 int		nq_viewentity;
@@ -123,8 +122,8 @@ qboolean CL_GetNQDemoMessage (void)
 	}
 
 	net_message.cursize = LittleLong (net_message.cursize);
-	if (net_message.cursize > NQ_MAX_MSGLEN)
-		Host_Error ("Demo message > MAX_MSGLEN");
+	if (net_message.cursize > MAX_BIG_MSGLEN)
+		Host_Error ("Demo message > MAX_BIG_MSGLEN");
 
 	r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
 	if (r != 1) {
@@ -311,7 +310,7 @@ void NQD_ParseStufftext (void)
 	char	*s;
 	byte	*p;
 
-	if (msg_readcount + 2 <= net_message.cursize &&
+	if (msg_readcount + 7 <= net_message.cursize &&
 		net_message.data[msg_readcount] == 1 && net_message.data[msg_readcount + 1] == 7)
 	{
 		int num, ping;
@@ -371,7 +370,7 @@ void NQD_ParseServerData (void)
 		Host_Error ("Bad maxclients (%u) from server", nq_maxclients);
 
 // parse gametype
-	cl.gametype = MSG_ReadByte ();
+	cl.gametype = MSG_ReadByte() ? GAME_DEATHMATCH : GAME_COOP;
 
 // parse signon message
 	str = MSG_ReadString ();
@@ -388,35 +387,27 @@ void NQD_ParseServerData (void)
 //
 
 // precache models
-	memset (cl.model_precache, 0, sizeof(cl.model_precache));
 	for (nummodels=1 ; ; nummodels++)
 	{
 		str = MSG_ReadString ();
 		if (!str[0])
 			break;
-		if (nummodels==MAX_MODELS)
-		{
-			Com_Printf ("Server sent too many model precaches\n");
-			return;
-		}
-		strcpy (cl.model_name[nummodels], str);
+		if (nummodels == MAX_MODELS)
+			Host_Error ("Server sent too many model precaches");
+		Q_strncpyz (cl.model_name[nummodels], str, sizeof(cl.model_name[0]));
 		Mod_TouchModel (str);
 	}
 
 // precache sounds
-	memset (cl.sound_precache, 0, sizeof(cl.sound_precache));
 	for (numsounds=1 ; ; numsounds++)
 	{
 		str = MSG_ReadString ();
 		if (!str[0])
 			break;
-		if (numsounds==MAX_SOUNDS)
-		{
-			Com_Printf ("Server sent too many sound precaches\n");
-			return;
-		}
-		strcpy (cl.sound_name[numsounds], str);
-		//	S_TouchSound (str);
+		if (numsounds == MAX_SOUNDS)
+			Host_Error ("Server sent too many sound precaches");
+		Q_strncpyz (cl.sound_name[numsounds], str, sizeof(cl.sound_name[0]));
+		S_TouchSound (str);
 	}
 
 //
@@ -427,10 +418,7 @@ void NQD_ParseServerData (void)
 	{
 		cl.model_precache[i] = Mod_ForName (cl.model_name[i], false);
 		if (cl.model_precache[i] == NULL)
-		{
-			Com_Printf("Model %s not found\n", cl.model_name[i]);
-			return;
-		}
+			Host_Error ("Model %s not found", cl.model_name[i]);
 	}
 
 	for (i=1 ; i<numsounds ; i++) {
@@ -1085,7 +1073,7 @@ void NQD_ParseServerMessage (void)
 
 		case svc_setangle:
 			for (i=0 ; i<3 ; i++)
-				last_fixangle[i] = cl.simangles[i] = cl.viewangles[i] = MSG_ReadAngle ();
+				nq_last_fixangle[i] = cl.simangles[i] = cl.viewangles[i] = MSG_ReadAngle ();
 			break;
 
 		case svc_setview:
@@ -1202,7 +1190,7 @@ void NQD_ParseServerMessage (void)
 			cl.intermission = 1;
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
-			VectorCopy (last_fixangle, cl.simangles);
+			VectorCopy (nq_last_fixangle, cl.simangles);
 			break;
 
 		case svc_finale:
@@ -1210,7 +1198,7 @@ void NQD_ParseServerMessage (void)
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
 			SCR_CenterPrint (MSG_ReadString ());
-			VectorCopy (last_fixangle, cl.simangles);
+			VectorCopy (nq_last_fixangle, cl.simangles);
 			break;
 
 		case svc_cutscene:
@@ -1218,7 +1206,7 @@ void NQD_ParseServerMessage (void)
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
 			SCR_CenterPrint (MSG_ReadString ());
-			VectorCopy (last_fixangle, cl.simangles);
+			VectorCopy (nq_last_fixangle, cl.simangles);
 			break;
 
 		case svc_sellscreen:
