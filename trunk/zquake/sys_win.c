@@ -519,10 +519,10 @@ void SleepUntilInput (int time)
 WinMain
 ==================
 */
+#ifndef SERVERONLY
 HINSTANCE	global_hInstance;
 HWND		hwnd_dialog;	// startup dialog box
 
-#ifndef SERVERONLY
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	int				memsize;
