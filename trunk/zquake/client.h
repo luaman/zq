@@ -255,7 +255,7 @@ typedef struct
 	qboolean	teamfortress;	// true if gamedir is "fortress"
 	int			fpd;			// FAQ proxy flags
 	int			z_ext;			// ZQuake protocol extensions flags
-	qboolean	z_ext_servertime_enabled;	// Does the server actually send STAT_TIME?
+	qboolean	servertime_works;	// Does the server actually send STAT_TIME/svc_time?
 	float		maxfps;
 	float		minpitch;
 	float		maxpitch;
