@@ -264,6 +264,7 @@ void Model_NextDownload (void)
 	// all done
 	cl.worldmodel = cl.model_precache[1];	
 	R_NewMap ();
+	CL_NewMap ();
 	Hunk_Check ();		// make sure nothing is hurt
 
 	// done with modellist, request first of static signon messages
@@ -706,7 +707,6 @@ void CL_ParseModellist (void)
 {
 	int	nummodels;
 	char	*str;
-	char	buf[MAX_QPATH];	// Tonik
 	int n;
 
 // precache models and note certain default indexes
@@ -717,19 +717,6 @@ void CL_ParseModellist (void)
 		str = MSG_ReadString ();
 		if (!str[0])
 			break;
-// Tonik -->
-		if (nummodels == 0)
-		if (cl_loadlocs.value && !cls.demoplayback)
-		{
-			loc_numentries = 0;	// clear loc file
-			if (!strncmp(str, "maps/", 5))
-			{
-				COM_StripExtension (&str[5], buf);
-				strcat (buf, ".loc");
-				CL_LoadLocFile ((char *)&buf, true);
-			}
-		}
-// <-- Tonik
 		nummodels++;
 		if (nummodels==MAX_MODELS)
 			Host_EndGame ("Server sent too many model_precache");

@@ -111,12 +111,6 @@ void CL_StatChanged (int stat, int value)
 	}
 }
 
-void CL_NewMap (void)
-{
-	last_health = 0;
-
-}
-
 
 /*
 ==========================================================================
@@ -927,6 +921,25 @@ char *CL_MapName ()
 	strcpy (mapname, Info_ValueForKey (cl.serverinfo, "map"));
 
 	return mapname;
+}
+
+
+void CL_NewMap (void)
+{
+	last_health = 0;
+
+	if (cl_loadlocs.value && !cls.demoplayback)
+	{
+		if (!strncmp(cl.worldmodel->name, "maps/", 5))
+		{
+			char	buf[MAX_QPATH];
+
+			loc_numentries = 0;	// clear loc file
+			COM_StripExtension (&cl.worldmodel->name[5], buf);
+			strcat (buf, ".loc");
+			CL_LoadLocFile (buf, true);
+		}
+	}
 }
 
 
