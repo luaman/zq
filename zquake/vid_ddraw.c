@@ -607,9 +607,11 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			//Com_Printf ("WM_PAINT\n");	// TESTING
 
 			/*
-			if (!in_mode_set && host_initialized)
-				SCR_UpdateWholeScreen ();
-				*/
+			if (!in_mode_set && host_initialized) {
+				SCR_InvalidateScreen ();
+				SCR_UpdateScreen ();
+			}
+			*/
 
 			EndPaint(hWnd, &ps);
 			break;
