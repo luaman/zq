@@ -263,17 +263,17 @@ void() changelevel_touch =
 	if (other.classname != "player")
 		return;
 
-// if "noexit" is set, blow up the player trying to leave
-//ZOID, 12-13-96, noexit isn't supported in QW.  Overload samelevel
-//      if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
-	if ((cvar("samelevel") == 2) || ((cvar("samelevel") == 3) && (mapname != "start")))
-	{
-		T_Damage (other, self, self, 50000);
-		return;
-	}
-
 	if (deathmatch || coop)
 	{
+		// if "noexit" is set, blow up the player trying to leave
+		// ZOID, 12-13-96, noexit isn't supported in QW.  Overload samelevel
+		//      if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
+		if ((cvar("samelevel") == 2) || ((cvar("samelevel") == 3) && (mapname != "start")))
+		{
+			T_Damage (other, self, self, 50000);
+			return;
+		}
+
 		bprint (PRINT_HIGH, other.netname);
 		bprint (PRINT_HIGH, " exited the level\n");
 	}
