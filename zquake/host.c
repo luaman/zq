@@ -36,10 +36,10 @@ void SV_Init (void);
 
 double		curtime;
 
-int			host_hunklevel;
 qboolean	host_initialized;		// true if into command execution
-
-quakeparms_t host_parms;
+int			host_hunklevel;
+int			host_memsize;
+void		*host_membase;
 
 jmp_buf 	host_abort;
 
@@ -114,6 +114,35 @@ void Host_Error (char *error, ...)
 
 /*
 ===============
+Host_InitMemory
+
+memsize is the recommended amount of memory to use for hunk
+===============
+*/
+void Host_InitMemory (int memsize)
+{
+	int		t;
+
+	if (COM_CheckParm ("-minmemory"))
+		memsize = MINIMUM_MEMORY;
+
+	if ((t = COM_CheckParm ("-heapsize")) != 0 && t + 1 < com_argc)
+		memsize = Q_atoi (com_argv[t + 1]) * 1024;
+
+	if ((t = COM_CheckParm ("-mem")) != 0 && t + 1 < com_argc)
+		memsize = Q_atoi (com_argv[t + 1]) * 1024 * 1024;
+
+	if (memsize < MINIMUM_MEMORY)
+		Sys_Error ("Only %4.1f megs of memory reported, can't execute game", memsize / (float)0x100000);
+
+	host_memsize = memsize;
+	host_membase = Q_Malloc (host_memsize);
+	Memory_Init (host_membase, host_memsize);
+}
+
+
+/*
+===============
 Host_Frame
 ===============
 */
@@ -136,19 +165,11 @@ void Host_Frame (double time)
 Host_Init
 ====================
 */
-void Host_Init (quakeparms_t *parms)
+void Host_Init (int argc, char **argv, int default_memsize)
 {
-	COM_InitArgv (parms->argc, parms->argv);
+	COM_InitArgv (argc, argv);
 
-	if (COM_CheckParm ("-minmemory"))
-		parms->memsize = MINIMUM_MEMORY;
-
-	host_parms = *parms;
-
-	if (parms->memsize < MINIMUM_MEMORY)
-		Sys_Error ("Only %4.1f megs of memory reported, can't execute game", parms->memsize / (float)0x100000);
-
-	Memory_Init (parms->membase, parms->memsize);
+	Host_InitMemory (default_memsize);
 
 	Cbuf_Init ();
 	Cmd_Init ();
@@ -172,7 +193,7 @@ void Host_Init (quakeparms_t *parms)
 	host_initialized = true;
 
 	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
-	Com_Printf ("%4.1f megs RAM used.\n", parms->memsize / (1024*1024.0));
+	Com_Printf ("%4.1f megs RAM used.\n", host_memsize / (1024*1024.0));
 	
 	Com_Printf ("\nZQuake version %s\n\n", VersionString());
 

@@ -93,22 +93,11 @@ void Sys_LowFPPrecision (void)
 
 void main (int argc, char **argv)
 {
-	quakeparms_t	parms;
-
-	parms.memsize = 5861376;
-	parms.membase = Q_Malloc (parms.memsize);
-
-	COM_InitArgv (argc, argv);
-
-	parms.argc = com_argc;
-	parms.argv = com_argv;
-
 	printf ("Host_Init\n");
-	Host_Init (&parms);
+	Host_Init (argc, argv, 5861376);
 	while (1)
 	{
 		Host_Frame (0.1);
 	}
 }
-
 

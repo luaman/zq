@@ -431,23 +431,17 @@ HWND		hwnd_dialog;	// startup dialog box
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	quakeparms_t	parms;
+	int				memsize;
 	double			time, oldtime, newtime;
 	MEMORYSTATUS	lpBuffer;
-	int				t;
 	RECT			rect;
 
 	global_hInstance = hInstance;
 
-	lpBuffer.dwLength = sizeof(MEMORYSTATUS);
-	GlobalMemoryStatus (&lpBuffer);
-
 	ParseCommandLine (lpCmdLine);
 
+	// we need to check for -nohwtimer before Host_Init is called
 	COM_InitArgv (argc, argv);
-
-	parms.argc = com_argc;
-	parms.argv = com_argv;
 
 	hwnd_dialog = CreateDialog (hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
 
@@ -469,32 +463,26 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		SetForegroundWindow (hwnd_dialog);
 	}
 
+
 // take the greater of all the available memory or half the total memory,
 // but at least 8 Mb and no more than 16 Mb, unless they explicitly
 // request otherwise
-	parms.memsize = lpBuffer.dwAvailPhys;
+	lpBuffer.dwLength = sizeof(MEMORYSTATUS);
+	GlobalMemoryStatus (&lpBuffer);
 
-	if (parms.memsize < MINIMUM_WIN_MEMORY)
-		parms.memsize = MINIMUM_WIN_MEMORY;
+	memsize = lpBuffer.dwAvailPhys;
 
-	if (parms.memsize < (lpBuffer.dwTotalPhys >> 1))
-		parms.memsize = lpBuffer.dwTotalPhys >> 1;
+	if (memsize < MINIMUM_WIN_MEMORY)
+		memsize = MINIMUM_WIN_MEMORY;
 
-	if (parms.memsize > MAXIMUM_WIN_MEMORY)
-		parms.memsize = MAXIMUM_WIN_MEMORY;
+	if (memsize < (lpBuffer.dwTotalPhys >> 1))
+		memsize = lpBuffer.dwTotalPhys >> 1;
 
-	if (COM_CheckParm ("-heapsize"))
-	{
-		t = COM_CheckParm("-heapsize") + 1;
+	if (memsize > MAXIMUM_WIN_MEMORY)
+		memsize = MAXIMUM_WIN_MEMORY;
 
-		if (t < com_argc)
-			parms.memsize = Q_atoi (com_argv[t]) * 1024;
-	}
 
-	parms.membase = Q_Malloc (parms.memsize);
-
-	tevent = CreateEvent(NULL, FALSE, FALSE, NULL);
-
+	tevent = CreateEvent (NULL, FALSE, FALSE, NULL);
 	if (!tevent)
 		Sys_Error ("Couldn't create event");
 
@@ -504,7 +492,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	S_BlockSound ();
 
 	Sys_Printf ("Host_Init\n");
-	Host_Init (&parms);
+	Host_Init (argc, argv, memsize);
 
 	oldtime = Sys_DoubleTime ();
 

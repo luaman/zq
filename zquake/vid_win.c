@@ -267,7 +267,7 @@ qboolean VID_CheckAdequateMem (int width, int height)
 
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
-	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+	if ((host_memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
 		 0x10000 * 3) < MINIMUM_MEMORY)
 	{
 		return false;		// not enough memory for mode
@@ -294,7 +294,7 @@ qboolean VID_AllocBuffers (int width, int height)
 
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
-	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+	if ((host_memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
 		 0x10000 * 3) < MINIMUM_MEMORY)
 	{
 		Con_SafePrintf ("Not enough memory for video mode\n");

@@ -214,24 +214,9 @@ main
 */
 void main (int argc, char *argv[])
 {
-	double			time, oldtime, newtime;
-	quakeparms_t	parms;
-	int j;
+	double	time, oldtime, newtime;
 
-	memset (&parms, 0, sizeof(parms));
-
-	COM_InitArgv (argc, argv);	
-	parms.argc = com_argc;
-	parms.argv = com_argv;
-
-	parms.memsize = 16*1024*1024;
-
-	j = COM_CheckParm("-mem");
-	if (j)
-		parms.memsize = (int) (Q_atof(com_argv[j+1]) * 1024 * 1024);
-	parms.membase = Q_Malloc (parms.memsize);
-
-	Host_Init (&parms);
+	Host_Init (argc, argv, 16*1024*1024);
 
 //
 // main loop
