@@ -894,30 +894,38 @@ entity findradius(vector origin, float radius) = #22
 */
 static void PF_findradius (void)
 {
-	edict_t	*ent, *chain;
-	float	rad, rad2;
-	float	*org;
-	vec3_t	eorg;
-	int		i, j;
+	int			i, j, numtouch;
+	edict_t		*touchlist[MAX_EDICTS], *ent, *chain;
+	float		rad, rad2, *org;
+	vec3_t		mins, maxs, eorg;
 
-	chain = (edict_t *)sv.edicts;
-	
 	org = G_VECTOR(OFS_PARM0);
 	rad = G_FLOAT(OFS_PARM1);
 	rad2 = rad * rad;
 
-	ent = NEXT_EDICT(sv.edicts);
-	for (i=1 ; i<sv.num_edicts ; i++, ent = NEXT_EDICT(ent))
+	for (i = 0; i < 3; i++)
 	{
-		if (!ent->inuse)
-			continue;
+		mins[i] = org[i] - rad - 1;		// enlarge the bbox a bit
+		maxs[i] = org[i] + rad + 1;
+	}
+
+	numtouch = SV_AreaEdicts (mins, maxs, touchlist, MAX_EDICTS, AREA_SOLID);
+	numtouch += SV_AreaEdicts (mins, maxs, &touchlist[numtouch], MAX_EDICTS - numtouch, AREA_TRIGGERS);
+
+	chain = (edict_t *)sv.edicts;
+
+// touch linked edicts
+	for (i = 0; i < numtouch; i++)
+	{
+		ent = touchlist[i];
 		if (ent->v.solid == SOLID_NOT)
+			continue;	// FIXME?
+
+		for (j = 0; j < 3; j++)
+			eorg[j] = org[j] - (ent->v.origin[j] + (ent->v.mins[j] + ent->v.maxs[j]) * 0.5);			
+		if (DotProduct(eorg, eorg) > rad2)
 			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (ent->v.origin[j] + (ent->v.mins[j] + ent->v.maxs[j])*0.5);			
-		if (DotProduct(eorg,eorg) > rad2)
-			continue;
-			
+
 		ent->v.chain = EDICT_TO_PROG(chain);
 		chain = ent;
 	}
