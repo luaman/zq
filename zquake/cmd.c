@@ -413,7 +413,7 @@ static int Key (char *name)
 */
 
 static cmd_alias_t	*cmd_alias_hash[32];
-static cmd_alias_t	*cmd_alias;
+/*static*/ cmd_alias_t	*cmd_alias;
 
 cmd_alias_t *Cmd_FindAlias (char *name)
 {
@@ -662,8 +662,8 @@ static	char		*cmd_argv[MAX_ARGS];
 static	char		*cmd_null_string = "";
 static	char		*cmd_args = NULL;
 
-static cmd_function_t	*cmd_hash_array[32];
-static cmd_function_t	*cmd_functions;		// possible commands to execute
+cmd_function_t	*cmd_hash_array[32];
+/*static*/ cmd_function_t	*cmd_functions;		// possible commands to execute
 
 /*
 ============
@@ -872,6 +872,38 @@ char *Cmd_CompleteCommand (char *partial)
 			return alias->name;
 
 	return NULL;
+}
+
+int Cmd_CompleteCountPossible (char *partial)
+{
+	cmd_function_t	*cmd;
+	int		len, c = 0;
+	
+	len = strlen(partial);
+	if (!len)
+		return 0;
+
+	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
+		if (!Q_strncasecmp (partial, cmd->name, len))
+			c++;
+
+	return c;
+}
+
+int Cmd_AliasCompleteCountPossible (char *partial)
+{
+	cmd_alias_t		*alias;
+	int		len, c = 0;
+	
+	len = strlen(partial);
+	if (!len)
+		return 0;
+
+	for (alias=cmd_alias ; alias ; alias=alias->next)
+		if (!Q_strncasecmp (partial, alias->name, len))
+			c++;
+
+	return c;
 }
 
 
