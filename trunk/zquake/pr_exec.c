@@ -700,3 +700,22 @@ int PR_SetString(char *s)
 	return (int)(s - pr_strings);
 }
 
+// reset static string counter and init dynamic strings array
+void PR_InitStrings (void)
+{
+	int i;
+	for (i = MAX_PRSTR; i < MAX_PRSTR + MAX_DYN_PRSTR; i++)
+		pr_strtbl[i] = pr_strings;
+	num_prstr = 0;
+}
+
+void PR_FreeStrings (void)
+{
+	int i;
+	for (i = MAX_PRSTR; i < MAX_PRSTR + MAX_DYN_PRSTR; i++) {
+		if (pr_strtbl[i] && pr_strtbl[i] != pr_strings) {
+			Q_free (pr_strtbl[i]);
+			pr_strtbl[i] = NULL;
+		}
+	}
+}

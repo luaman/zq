@@ -1846,7 +1846,7 @@ static void PF_strzone (void)
 		s = "";
 
 	for (i = MAX_PRSTR; i < MAX_PRSTR + MAX_DYN_PRSTR; i++) {
-		if (pr_strtbl[i] != NULL)
+		if (pr_strtbl[i] != pr_strings)
 			continue;
 		// found an empty slot
 		pr_strtbl[i] = Q_strdup(s);

@@ -127,6 +127,8 @@ void SV_Shutdown (char *finalmsg)
 {
 	SV_FinalMessage (finalmsg);
 
+	PR_FreeStrings ();
+
 	Master_Shutdown ();
 	NET_ServerConfig (false);
 
