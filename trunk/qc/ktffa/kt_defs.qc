@@ -25,6 +25,8 @@
 
 */
 
+#define KTFFA
+
 float intermission_exittime;
 float intermission_getting_closer;
 float intermission_running;
