@@ -304,7 +304,8 @@ void CL_Rcon_f (void)
 	char	message[1024];
 	int		i;
 	netadr_t	to;
-	extern cvar_t	rcon_password, rcon_address;
+	extern cvar_t cl_rconAddress;
+	extern cvar_t *cl_rconPassword;
 
 	message[0] = 255;
 	message[1] = 255;
@@ -314,23 +315,22 @@ void CL_Rcon_f (void)
 
 	strcat (message, "rcon ");
 
-	if (rcon_password.string[0])
-	{
-		strcat (message, rcon_password.string);
+	if (cl_rconPassword->string[0]) {
+		strcat (message, cl_rconPassword->string);
 		strcat (message, " ");
 	}
 
-	for (i=1 ; i<Cmd_Argc() ; i++)
-	{
+	for (i = 1; i < Cmd_Argc(); i++) {
+		if (i > 1)
+			strcat (message, " ");
 		strcat (message, Cmd_Argv(i));
-		strcat (message, " ");
 	}
 
 	if (cls.state >= ca_connected)
 		to = cls.netchan.remote_address;
 	else
 	{
-		if (!strlen(rcon_address.string))
+		if (!strlen(cl_rconAddress.string))
 		{
 			Com_Printf ("You must either be connected,\n"
 						"or set the 'rcon_address' cvar\n"
@@ -338,7 +338,7 @@ void CL_Rcon_f (void)
 
 			return;
 		}
-		NET_StringToAdr (rcon_address.string, &to);
+		NET_StringToAdr (cl_rconAddress.string, &to);
 		if (to.port == 0)
 			to.port = BigShort (PORT_SERVER);
 	}

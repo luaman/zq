@@ -31,8 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 #include "teamplay.h"
 
-cvar_t	rcon_password = {"rcon_password", ""};
-cvar_t	rcon_address = {"rcon_address", ""};
+cvar_t	*cl_rconPassword;
+cvar_t	cl_rconAddress = {"rcon_address", ""};
 
 cvar_t	cl_timeout = {"cl_timeout", "60"};
 
@@ -694,8 +694,8 @@ void CL_InitLocal (void)
 	Cvar_Register (&cl_predictPlayers);
 	Cvar_Register (&cl_solidPlayers);
 
-	Cvar_Register (&rcon_password);
-	Cvar_Register (&rcon_address);
+	Cvar_Get (&cl_rconPassword, "rcon_password", 0);
+	Cvar_Register (&cl_rconAddress);
 
 	Cvar_Register (&localid);
 
