@@ -319,11 +319,11 @@ readit:
 		if (cls.mvdplayback) {
 			switch(cls.mvd_lasttype) {
 			case dem_multiple:
-				if (!cam_locked || !(cls.mvd_lastto & (1 << cam_target)))
+				if (!cam_locked || !(cls.mvd_lastto & (1 << cam_curtarget)))
 					goto readnext;	
 				break;
 			case dem_single:
-				if (!cam_locked || cls.mvd_lastto != cam_target)
+				if (!cam_locked || cls.mvd_lastto != cam_curtarget)
 					goto readnext;
 				break;
 			}
