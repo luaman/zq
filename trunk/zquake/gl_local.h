@@ -180,6 +180,7 @@ extern	cvar_t	gl_fb_depthhack;
 extern	cvar_t	gl_fb_bmodels;
 extern	cvar_t	gl_fb_models;
 extern	cvar_t	gl_colorlights;
+extern	cvar_t	gl_loadlitfiles;
 extern	cvar_t	gl_contrast;
 extern	cvar_t	gl_gamma;
 extern	cvar_t	gl_lightmode;

@@ -279,7 +279,7 @@ vec3_t			lightspot;
 
 int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 {
-	int			r;
+	int			r, g, b;
 	float		front, back, frac;
 	int			side;
 	mplane_t	*plane;
@@ -351,22 +351,24 @@ int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 		dt >>= 4;
 
 		lightmap = surf->samples;
-		r = 0;
+		r = g = b = 0;
 		if (lightmap)
 		{
 
-			lightmap += dt * ((surf->extents[0]>>4)+1) + ds;
+			lightmap += (dt * ((surf->extents[0]>>4)+1) + ds) * 3 /* RGB */;
 
-			for (maps = 0 ; maps < MAXLIGHTMAPS && surf->styles[maps] != 255 ;
+			for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255;
 					maps++)
 			{
 				scale = d_lightstylevalue[surf->styles[maps]];
-				r += *lightmap * scale;
+				r += lightmap[0] * scale;
+				g += lightmap[1] * scale;
+				b += lightmap[2] * scale;
 				lightmap += ((surf->extents[0]>>4)+1) *
-						((surf->extents[1]>>4)+1);
+						((surf->extents[1]>>4)+1) * 3 /* RGB */;
 			}
 			
-			r >>= 8;
+			r = ((r + g + b) / 3) >> 8;
 		}
 		
 		return r;
