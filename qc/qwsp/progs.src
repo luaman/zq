@@ -19,6 +19,7 @@ monsters.qc
 ../qw/plats.qc
 ../qw/misc.qc
 ../qw/commands.qc
+sp_commands.qc
 
 ogre.qc
 demon.qc
