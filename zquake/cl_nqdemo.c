@@ -568,6 +568,7 @@ void NQD_ParseUpdate (int bits)
 
 	ent = &cl_entities[num];
 	ent->previous = ent->current;
+	ent->current = ent->baseline;
 	state = &ent->current;
 	state->number = num;
 
@@ -620,15 +621,6 @@ void NQD_ParseUpdate (int bits)
 		i = ent->baseline.colormap;
 
 	state->colormap = i;
-
-/*	if (!i)
-		state->colormap = vid.colormap;
-	else
-	{
-		if (i > nq_maxclients)
-			Sys_Error ("colormap > maxclients");
-		state->colormap = cl.players[i-1].translations;
-	}	*/
 
 #ifdef GLQUAKE
 	if (bits & NQ_U_SKIN)
