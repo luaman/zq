@@ -73,6 +73,7 @@ void CL_StopPlayback (void)
 		fclose (cls.demofile);
 	cls.demofile = NULL;
 	cls.demoplayback = false;
+	cls.nqdemoplayback = false;
 
 #ifdef _WIN32
 	if (qwz_playback)
@@ -952,10 +953,11 @@ play [demoname]
 void CL_PlayDemo_f (void)
 {
 	char	name[256];
+	qboolean	try_dem;
 
 	if (Cmd_Argc() != 2)
 	{
-		Com_Printf ("play <demoname> : plays a demo\n");
+		Com_Printf ("playdemo <demoname> : plays a demo\n");
 		return;
 	}
 
@@ -976,19 +978,36 @@ void CL_PlayDemo_f (void)
 	}
 #endif
 
-	COM_DefaultExtension (name, ".qwd");
+	if (COM_FileExtension(name)[0] == 0) {
+		COM_DefaultExtension (name, ".qwd");
+		try_dem = true;		// if we can't open the .qwd, try .dem also
+	}
+	else
+		try_dem = false;
 
-	Com_Printf ("Playing demo from %s.\n", COM_SkipPath(name));
-
+try_again:
 	if (!strncmp(name, "../", 3) || !strncmp(name, "..\\", 3))
 		cls.demofile = fopen (va("%s/%s", com_basedir, name+3), "rb");
 	else
 		FS_FOpenFile (name, &cls.demofile);
 
-	if (!cls.demofile)
-	{
-		Com_Printf ("ERROR: couldn't open.\n");
+	if (!cls.demofile && try_dem) {
+		COM_StripExtension (name, name);
+		strcat (name, ".dem");
+		try_dem = false;
+		goto try_again;
+	}
+
+	if (!cls.demofile) {
+		Com_Printf ("ERROR: couldn't open \"%s\"\n", Cmd_Argv(1));
 		return;
+	}
+
+	Com_Printf ("Playing demo from %s.\n", COM_SkipPath(name));
+
+	cls.nqdemoplayback = !Q_stricmp(COM_FileExtension(name), "dem");
+	if (cls.nqdemoplayback) {
+		NQD_StartPlayback ();
 	}
 
 	cls.demoplayback = true;

@@ -536,6 +536,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\cl_nqdemo.c">
+			</File>
+			<File
 				RelativePath="cl_parse.c">
 				<FileConfiguration
 					Name="Debug|Win32">

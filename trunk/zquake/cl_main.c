@@ -616,6 +616,11 @@ CL_ReadPackets
 */
 void CL_ReadPackets (void)
 {
+	if (cls.nqdemoplayback) {
+		NQD_ReadPackets ();
+		return;
+	}
+
 	while (CL_GetMessage())
 	{
 		//
