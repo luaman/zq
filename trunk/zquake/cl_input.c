@@ -532,6 +532,19 @@ void CL_FinishMove (usercmd_t *cmd)
 		cmd->angles[i] = (Q_rint(cmd->angles[i]*65536.0/360.0)&65535) * (360.0/65536.0);
 }
 
+static void CL_Move (usercmd_t *cmd)
+{
+	// get basic movement from keyboard
+	CL_BaseMove (cmd);
+
+	// allow mice or other external controllers to add to the move
+	IN_Move (cmd);
+
+	CL_FinishMove(cmd);
+
+	Cam_FinishMove(cmd);
+}
+
 /*
 =================
 CL_SendCmd
@@ -552,21 +565,8 @@ void CL_SendCmd (void)
 #ifdef MVDPLAY
     if (cls.mvdplayback)
     {
-		cmd = &cl.lastcmd;
-
-		// get basic movement from keyboard
-		CL_BaseMove (cmd);
-
-		// allow mice or other external controllers to add to the move
-		IN_Move (cmd);
-
-		CL_FinishMove(cmd);
-
-		Cam_FinishMove(cmd);
-
-		if (cls.mvdplayback)
-			cls.netchan.outgoing_sequence++;
-
+		CL_Move(&cl.lastcmd);
+		cls.netchan.outgoing_sequence++;
 		return;
     }
 #endif
@@ -580,15 +580,7 @@ void CL_SendCmd (void)
 	cl.frames[i].senttime = cls.realtime;
 	cl.frames[i].receivedtime = -1;		// we haven't gotten a reply yet
 
-	// get basic movement from keyboard
-	CL_BaseMove (cmd);
-
-	// allow mice or other external controllers to add to the move
-	IN_Move (cmd);
-
-	CL_FinishMove(cmd);
-
-	Cam_FinishMove(cmd);
+	CL_Move(cmd);
 
 	SZ_Init (&buf, data, sizeof(data));
 
