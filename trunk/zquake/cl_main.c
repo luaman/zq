@@ -171,19 +171,6 @@ char soundlist_name[] =
 	{ 's'^0xff, 'o'^0xff, 'u'^0xff, 'n'^0xff, 'd'^0xff, 'l'^0xff, 'i'^0xff, 's'^0xff, 't'^0xff, 
 		' '^0xff, '%'^0xff, 'i'^0xff, ' '^0xff, '%'^0xff, 'i'^0xff, 0 };
 
-qboolean CL_OnFovChange (cvar_t *var, char *value)
-{
-	extern cvar_t scr_fov;
-
-	if (var == &scr_fov && cbuf_current == &cbuf_svc
-		&& Q_atof(value) == 90.0 && default_fov.value)
-	{
-		Cvar_SetValue (&scr_fov, default_fov.value);
-		return true;
-	}
-	return false;
-}
-
 /*
 =======================
 CL_SendConnectPacket
@@ -975,7 +962,6 @@ void Host_Frame (double time)
 
 	// process console commands
 	Cbuf_Execute ();
-	Cbuf_ExecuteEx (&cbuf_svc);
 
 #ifdef QW_BOTH
 	if (sv.state == ss_active)
@@ -984,6 +970,9 @@ void Host_Frame (double time)
 
 	// fetch results from server
 	CL_ReadPackets ();
+
+	// process stuffed commands
+	Cbuf_ExecuteEx (&cbuf_svc);
 
 	// send intentions now
 	// resend a connection request if necessary
