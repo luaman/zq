@@ -37,23 +37,23 @@ char *svc_strings[] =
 	"svc_nop",
 	"svc_disconnect",
 	"svc_updatestat",
-	"OBSOLETE svc_version",		// [long] server version
-	"svc_setview",		// [short] entity number
+	"NQ svc_version",		// [long] server version
+	"svc_setview",			// [short] entity number
 	"svc_sound",			// <see code>
-	"svc_time",			// [float] server time
+	"NQ svc_time",			// [float] server time
 	"svc_print",			// [string] null terminated string
 	"svc_stufftext",		// [string] stuffed into client's console buffer
-						// the string should be \n terminated
-	"svc_setangle",		// [vec3] set the view angle to this absolute value
+							// the string should be \n terminated
+	"svc_setangle",			// [vec3] set the view angle to this absolute value
 	
 	"svc_serverdata",		// [long] version ...
 	"svc_lightstyle",		// [byte] [string]
-	"OBSOLETE svc_updatename",		// [byte] [string]
-	"svc_updatefrags",	// [byte] [short]
+	"NQ svc_updatename",	// [byte] [string]
+	"svc_updatefrags",		// [byte] [short]
 	"svc_clientdata",		// <shortbits + data>
 	"svc_stopsound",		// <see code>
-	"OBSOLETE svc_updatecolors",	// [byte] [byte]
-	"OBSOLETE svc_particle",		// [vec3] <variable>
+	"NQ svc_updatecolors",	// [byte] [byte]
+	"NQ svc_particle",		// [vec3] <variable>
 	"svc_damage",			// [byte] impact [byte] blood [vec3] from
 	
 	"svc_spawnstatic",
@@ -62,7 +62,7 @@ char *svc_strings[] =
 	
 	"svc_temp_entity",		// <variable>
 	"svc_setpause",
-	"OBSOLETE svc_signonnum",
+	"NQ svc_signonnum",
 	"svc_centerprint",
 	"svc_killedmonster",
 	"svc_foundsecret",
@@ -1441,6 +1441,33 @@ void CL_MuzzleFlash (void)
 	dl->type = lt_muzzleflash;
 }
 
+
+/*
+===============
+CL_ParseParticleEffect
+
+Back from NetQuake
+===============
+*/
+void CL_ParseParticleEffect (void)
+{
+	vec3_t		org, dir;
+	int			i, count, color;
+	
+	for (i = 0; i < 3; i++)
+		org[i] = MSG_ReadCoord ();
+	for (i = 0; i < 3; i++)
+		dir[i] = MSG_ReadChar () * (1.0/16);
+	count = MSG_ReadByte ();
+	color = MSG_ReadByte ();
+
+	if (count == 255)
+		CL_ParticleExplosion (org);
+	else
+		CL_RunParticleEffect2 (org, dir, color, count, 1);
+}
+
+
 void CL_ParseQizmoVoice (void)
 {
 	int i;
@@ -1542,7 +1569,7 @@ void CL_ParseServerMessage (void)
 			}
 			break;
 
-		case svc_time:
+		case nq_svc_time:
 			MSG_ReadFloat ();
 			break;
 
@@ -1590,7 +1617,11 @@ void CL_ParseServerMessage (void)
 			i = MSG_ReadShort();
 			S_StopSound(i>>3, i&7);
 			break;
-		
+
+		case nq_svc_particle:
+			CL_ParseParticleEffect ();
+			break;
+
 		case svc_updatefrags:
 			Sbar_Changed ();
 			i = MSG_ReadByte ();

@@ -410,8 +410,8 @@ void SV_BeginRedirect (redirect_t rd);
 void SV_EndRedirect (void);
 
 void SV_Multicast (vec3_t origin, int to);
-void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
-    float attenuation);
+void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count);
+void SV_StartSound (edict_t *entity, int channel, char *sample, int volume, float attenuation);
 void SV_ClientPrintf (client_t *cl, int level, char *fmt, ...);
 void SV_BroadcastPrintf (int level, char *fmt, ...);
 void SV_BroadcastCommand (char *fmt, ...);

@@ -283,9 +283,40 @@ inrange:
 
 /*  
 ==================
+SV_StartParticle
+
+Back from NetQuake
+==================
+*/
+void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count)
+{
+	int		i, v;
+
+	MSG_WriteByte (&sv.multicast, nq_svc_particle);
+	MSG_WriteCoord (&sv.multicast, org[0]);
+	MSG_WriteCoord (&sv.multicast, org[1]);
+	MSG_WriteCoord (&sv.multicast, org[2]);
+	for (i=0 ; i<3 ; i++)
+	{
+		v = dir[i]*16;
+		if (v > 127)
+			v = 127;
+		else if (v < -128)
+			v = -128;
+		MSG_WriteChar (&sv.multicast, v);
+	}
+	MSG_WriteByte (&sv.multicast, count);
+	MSG_WriteByte (&sv.multicast, color);
+
+	SV_Multicast (org, MULTICAST_PVS);
+}           
+
+
+/*  
+==================
 SV_StartSound
 
-Each entity can have eight independant sound sources, like voice,
+Each entity can have eight independent sound sources, like voice,
 weapon, feet, etc.
 
 Channel 0 is an auto-allocate channel, the others override anything
