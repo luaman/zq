@@ -225,21 +225,24 @@ void() agh_player_footsteps =
         // But we need to check that footsteps are turned on...
         if( infokey(self, "agv_t_footsteps") == "1" )
         {
-            // We may be in water...
-            if( self.waterlevel > 1 )
+            // Adjust speed according to if we're running or not...
+            if( fabs(self.velocity_x + self.velocity_y) > 200 || self.walkframe == 1 )
             {
-                if( self.walkframe == 1 )
+                // We may be in water...
+                if( self.waterlevel > 1 )
+                {
                     soundtoclient(self, self, CHAN_AUTO, "misc/outwater.wav", 0.5, ATTN_NORM);
-            }
-            else if( checkbottom(self) )
-            {
-                // Generate the footstep sound a bit randomly...
-                local float r;
-                r = random(); 
-                if( r < 0.5 )
-                    soundtoclient(self, self, CHAN_AUTO, "footsteps/footstep_l.wav", 0.5, ATTN_NORM);
-                else
-                    soundtoclient(self, self, CHAN_AUTO, "footsteps/footstep_r.wav", 0.5, ATTN_NORM);
+                }
+                else if( checkbottom(self) )
+                {
+                    // Generate the footstep sound a bit randomly...
+                    local float r;
+                    r = random(); 
+                    if( r < 0.5 )
+                        soundtoclient(self, self, CHAN_AUTO, "footsteps/footstep_l.wav", 0.5, ATTN_NORM);
+                    else
+                        soundtoclient(self, self, CHAN_AUTO, "footsteps/footstep_r.wav", 0.5, ATTN_NORM);
+                }
             }
         }
     }
