@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "winquake.h"
 #include "pmove.h"
+#include "teamplay.h"
 
 cvar_t	cl_nopred = {"cl_nopred","0"};
 cvar_t	cl_pushlatency = {"pushlatency","-999"};
@@ -162,6 +163,7 @@ void CL_PredictMove (void)
 #ifdef _WIN32
 		SetWindowText (mainwindow, text);
 #endif
+		TP_ExecTrigger ("f_spawn");
 	}
 
 	if (cl_nopred.value)
