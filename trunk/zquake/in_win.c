@@ -1248,11 +1248,11 @@ static byte scantokey[128] =
 	0  ,   K_ESCAPE,'1',    '2',    '3',    '4',    '5',    '6',
 	'7',    '8',    '9',    '0',    '-',    '=',    K_BACKSPACE, 9,   // 0
 	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i',
-	'o',    'p',    '[',    ']',    K_ENTER,K_CTRL, 'a',    's',      // 1
+	'o',    'p',    '[',    ']',    K_ENTER,K_LCTRL,'a',    's',      // 1
 	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';',
-	'\'',   '`',    K_SHIFT,'\\',   'z',    'x',    'c',    'v',      // 2
-	'b',    'n',    'm',    ',',    '.',    '/',    K_SHIFT,KP_STAR,
-	K_ALT,  ' ',  K_CAPSLOCK,K_F1,  K_F2,   K_F3,   K_F4,   K_F5,     // 3
+	'\'',   '`',    K_LSHIFT,'\\',   'z',    'x',    'c',    'v',      // 2
+	'b',    'n',    'm',    ',',    '.',    '/',    K_RSHIFT,KP_STAR,
+	K_LALT, ' ',  K_CAPSLOCK,K_F1,  K_F2,   K_F3,   K_F4,   K_F5,     // 3
 	K_F6,   K_F7,   K_F8,   K_F9,   K_F10,  K_PAUSE,K_SCRLCK,K_HOME,
 	K_UPARROW,K_PGUP,KP_MINUS,K_LEFTARROW,KP_5,K_RIGHTARROW,KP_PLUS,K_END, // 4
 	K_DOWNARROW,K_PGDN,K_INS,K_DEL, 0,      0,      0,      K_F11,
@@ -1307,6 +1307,8 @@ void IN_TranslateKeyEvent (int lKeyData, qboolean down)
 				case K_ENTER:		key = KP_ENTER; break;
 				case '/':			key = KP_SLASH; break;
 				case K_PAUSE:		key = KP_NUMLOCK; break;
+				case K_LALT:		key = K_RALT; break;
+				case K_LCTRL:		key = K_RCTRL; break;
 			}
 		} else {
 			switch (key) {
