@@ -209,7 +209,7 @@ qboolean CheckForCommand (void)
 	s = key_lines[edit_line]+1;
 
 	for (i=0 ; i<127 ; i++)
-		if (s[i] <= ' ')
+		if (s[i] == ' ' || s[i] == ';')
 			break;
 		else
 			command[i] = s[i];
