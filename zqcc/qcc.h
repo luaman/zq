@@ -355,9 +355,18 @@ type_t *PR_ParseType (void);
 type_t *PR_ParseFunctionType (type_t *returnType);
 char *PR_ParseName (void);
 
+// compilation warning level for PR_Warning
+enum {
+	WARN_HIGH,
+	WARN_MEDIUM,
+	WARN_LOW,
+	WARN_LOWEST
+};
+
 bool PR_Check (char *string);
 void PR_Expect (char *string);
 void PR_ParseError (char *error, ...);
+void PR_Warning (int level, char *text, ...);
 
 
 extern jmp_buf		pr_parse_abort;		// longjump with this on parse error

@@ -777,11 +777,19 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool isParm)
 // see if the name is already in use
 	def = PR_FindDef (name, scope);
 
-	if (def && def->type != type)
-		PR_ParseError ("type mismatch on redeclaration of %s", name);
+	if (def) {
+		if (def->type != type)
+			PR_ParseError ("type mismatch on redeclaration of %s", name);
 
-	if (def)
+		if (def->isParm && !isParm)
+#if 1 // so that id's original QC code compiles
+			PR_Warning (WARN_HIGH, "redefinition of formal parameter '%s'", name);
+#else
+			PR_ParseError ("redefinition of formal parameter '%s'", name);
+#endif
+		
 		return def;
+	}
 
 // allocate a new def
 	def = (def_t *) malloc (sizeof(def_t));

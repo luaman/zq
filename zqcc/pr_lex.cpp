@@ -492,13 +492,13 @@ PR_ParseError
 Aborts the current file load
 ============
 */
-void PR_ParseError (char *error, ...)
+void PR_ParseError (char *text, ...)
 {
 	va_list		argptr;
 	char		string[1024];
 
-	va_start (argptr,error);
-	vsprintf (string,error,argptr);
+	va_start (argptr, text);
+	vsprintf (string, text,argptr);
 	va_end (argptr);
 
 	printf ("%s(%i): error: %s\n", strings + s_file, pr_source_line, string);
@@ -506,6 +506,26 @@ void PR_ParseError (char *error, ...)
 	longjmp (pr_parse_abort, 1);
 }
 
+/*
+============
+PR_Warning
+
+Prints a warning if level <= pr_warnlevel
+Lower level value is higher importance
+============
+*/
+void PR_Warning (int level, char *text, ...)
+{
+	va_list		argptr;
+	char		string[1024];
+
+	va_start (argptr, text);
+	vsprintf (string, text, argptr);
+	va_end (argptr);
+
+//	if (level <= pr_warnlevel)
+		printf ("%s(%i): warning: %s\n", strings + s_file, pr_source_line, string);
+}
 
 /*
 =============
