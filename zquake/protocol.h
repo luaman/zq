@@ -256,7 +256,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define Z_EXT_PM_TYPE_NEW	(1<<1)
 #define Z_EXT_VIEWHEIGHT	(1<<2)
 #define Z_EXT_SERVERTIME	(1<<3)
-
+#define SUPPORTED_EXTENSIONS (Z_EXT_PM_TYPE|Z_EXT_PM_TYPE_NEW|Z_EXT_VIEWHEIGHT|Z_EXT_SERVERTIME)
 
 /*
 ==========================================================

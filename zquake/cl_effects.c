@@ -110,7 +110,7 @@ void CL_ReadPointFile_f (void)
 	char	name[MAX_OSPATH];
 	extern cvar_t	cl_mapname;
 
-	if (!com_serveractive)
+	if (!com_serveractive && !r_refdef2.allowCheats)
 		return;
 
 	sprintf (name, "maps/%s.pts", cl_mapname.string);
