@@ -757,7 +757,7 @@ void SCR_RunConsole (void)
 	// decide on the height of the console
 	if (scr_disabled_for_loading)
 		scr_conlines = 0;
-	if (cls.state != ca_active && !cl.intermission)
+	else if (cls.state != ca_active && !cl.intermission)
 	{
 		scr_conlines = vid.height;		// full screen
 		scr_con_current = scr_conlines;
