@@ -689,22 +689,22 @@ void M_Options_Key (int k)
 char *bindnames[][2] =
 {
 {"+attack", 		"attack"},
+{"+use", 			"use"},
 {"+jump", 			"jump"},
-{"+forward", 		"walk forward"},
-{"+back", 			"backpedal"},
+{"+forward", 		"move forward"},
+{"+back", 			"move back"},
 {"+moveleft", 		"move left"},
 {"+moveright", 		"move right"},
 {"+moveup",			"swim up"},
 {"+movedown",		"swim down"},
-{"impulse 10", 		"change weapon"},
+{"impulse 12", 		"previous weapon"},
+{"impulse 10", 		"next weapon"},
 {"+speed", 			"run"},
-{"+strafe", 		"sidestep"},
 {"+left", 			"turn left"},
 {"+right", 			"turn right"},
 {"+lookup", 		"look up"},
 {"+lookdown", 		"look down"},
 {"centerview", 		"center view"},
-{"+mlook", 			"mouse look"},
 };
 
 #define	NUMCOMMANDS	(sizeof(bindnames)/sizeof(bindnames[0]))
@@ -792,25 +792,25 @@ void M_Keys_Draw (void)
 		
 		if (keys[0] == -1)
 		{
-			M_Print (140, y, "???");
+			M_Print (156, y, "???");
 		}
 		else
 		{
 			name = Key_KeynumToString (keys[0]);
-			M_Print (140, y, name);
+			M_Print (156, y, name);
 			x = strlen(name) * 8;
 			if (keys[1] != -1)
 			{
-				M_Print (140 + x + 8, y, "or");
-				M_Print (140 + x + 32, y, Key_KeynumToString (keys[1]));
+				M_Print (156 + x + 8, y, "or");
+				M_Print (156 + x + 32, y, Key_KeynumToString (keys[1]));
 			}
 		}
 	}
 	
 	if (bind_grab)
-		M_DrawCharacter (130, 48 + keys_cursor*8, '=');
+		M_DrawCharacter (142, 48 + keys_cursor*8, '=');
 	else
-		M_DrawCharacter (130, 48 + keys_cursor*8, 12+((int)(realtime*4)&1));
+		M_DrawCharacter (142, 48 + keys_cursor*8, 12+((int)(realtime*4)&1));
 }
 
 
