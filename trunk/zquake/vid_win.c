@@ -87,6 +87,7 @@ cvar_t		block_switch = {"block_switch","0",CVAR_ARCHIVE};
 cvar_t		vid_window_x = {"vid_window_x","0",CVAR_ARCHIVE};
 cvar_t		vid_window_y = {"vid_window_y","0",CVAR_ARCHIVE};
 cvar_t		vid_resetonswitch = {"vid_resetonswitch","0",CVAR_ARCHIVE};
+cvar_t		vid_displayfrequency = {"vid_displayfrequency", "0"};
 
 typedef struct {
 	int		width;
@@ -1514,6 +1515,13 @@ qboolean VID_SetFullDIBMode (int modenum)
 	gdevmode.dmPelsHeight = modelist[modenum].height << modelist[modenum].stretched;
 	gdevmode.dmSize = sizeof (gdevmode);
 
+	if (vid_displayfrequency.value > 0)
+	{
+		gdevmode.dmDisplayFrequency = vid_displayfrequency.value;
+		gdevmode.dmFields |= DM_DISPLAYFREQUENCY;
+		Com_DPrintf ("Forcing display frequency to %i Hz\n", gdevmode.dmDisplayFrequency);
+	}
+
 	if (ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
 		Sys_Error ("Couldn't set fullscreen DIB mode");
 
@@ -2093,6 +2101,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_Register (&vid_window_x);
 	Cvar_Register (&vid_window_y);
 	Cvar_Register (&vid_resetonswitch);
+	Cvar_Register (&vid_displayfrequency);
 
 	Cmd_AddCommand ("vid_testmode", VID_TestMode_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);

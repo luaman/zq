@@ -162,6 +162,7 @@ cvar_t		vid_config_x = {"vid_config_x","800",CVAR_ARCHIVE};
 cvar_t		vid_config_y = {"vid_config_y","600",CVAR_ARCHIVE};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1",CVAR_ARCHIVE};
 cvar_t		_windowed_mouse = {"_windowed_mouse","1",CVAR_ARCHIVE};
+cvar_t		vid_displayfrequency = {"vid_displayfrequency", "0"};
 
 int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
@@ -308,6 +309,13 @@ qboolean VID_SetFullDIBMode (int modenum)
 							   modelist[modenum].halfscreen;
 		gdevmode.dmPelsHeight = modelist[modenum].height;
 		gdevmode.dmSize = sizeof (gdevmode);
+
+		if (vid_displayfrequency.value > 0)
+		{
+			gdevmode.dmDisplayFrequency = vid_displayfrequency.value;
+			gdevmode.dmFields |= DM_DISPLAYFREQUENCY;
+			Com_DPrintf ("Forcing display frequency to %i Hz\n", gdevmode.dmDisplayFrequency);
+		}
 
 		if (ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
 			Sys_Error ("Couldn't set fullscreen DIB mode");
@@ -1616,6 +1624,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_Register (&_windowed_mouse);
 	Cvar_Register (&gl_ztrick);
 	Cvar_Register (&vid_hwgammacontrol);
+	Cvar_Register (&vid_displayfrequency);
 
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);
