@@ -26,8 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Cmd_ForwardToServer (void);
 
-//static qboolean	cmd_wait;
-
 cvar_t cl_warncmd = {"cl_warncmd", "0"};
 
 cbuf_t	cbuf_main;
@@ -62,10 +60,6 @@ void Cmd_Wait_f (void)
 =============================================================================
 */
 
-
-//#define MAXCMDBUF 16384
-//static byte	cmd_text_buf[MAXCMDBUF];
-//static int	cmd_text_start, cmd_text_end;
 
 void Cbuf_AddText (char *text) { Cbuf_AddTextEx (&cbuf_main, text); }
 void Cbuf_InsertText (char *text) { Cbuf_InsertTextEx (&cbuf_main, text); }
@@ -131,7 +125,6 @@ Cbuf_InsertText
 
 Adds command text immediately after the current command
 Adds a \n to the text
-FIXME: actually change the command buffer to do less copying
 ============
 */
 void Cbuf_InsertTextEx (cbuf_t *cbuf, char *text)
@@ -596,6 +589,25 @@ void Cmd_UnAlias_f (void)
 		Con_Printf ("Unknown alias \"%s\"\n", s);
 }
 
+// remove all aliases
+void Cmd_UnAliasAll_f (void)
+{
+	cmd_alias_t	*a, *next;
+	int i;
+
+	for (a=cmd_alias ; a ; a=next) {
+		next = a->next;
+		Z_Free (a->value);
+		Z_Free (a);
+	}
+	cmd_alias = NULL;
+
+	// clear hash
+	for (i=0 ; i<32 ; i++) {
+		cmd_alias_hash[i] = NULL;
+	}
+}
+
 
 /*
 =============================================================================
@@ -620,7 +632,7 @@ static cmd_function_t	*cmd_functions;		// possible commands to execute
 Cmd_Argc
 ============
 */
-int		Cmd_Argc (void)
+int Cmd_Argc (void)
 {
 	return cmd_argc;
 }
@@ -630,7 +642,7 @@ int		Cmd_Argc (void)
 Cmd_Argv
 ============
 */
-char	*Cmd_Argv (int arg)
+char *Cmd_Argv (int arg)
 {
 	if ( arg >= cmd_argc )
 		return cmd_null_string;
@@ -644,7 +656,7 @@ Cmd_Args
 Returns a single string containing argv(1) to argv(argc()-1)
 ============
 */
-char		*Cmd_Args (void)
+char *Cmd_Args (void)
 {
 	if (!cmd_args)
 		return "";
@@ -1106,8 +1118,7 @@ void	Cmd_ExecuteString (char *text)
 	cmd_function_t	*cmd;
 	cmd_alias_t		*a;
 	int				key;
-	static	// FIXME
-	char			buf[1024];
+	static char		buf[1024];
 
 #if 0
 	Cmd_TokenizeString (text);
@@ -1192,6 +1203,7 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("alias",Cmd_Alias_f);
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
 	Cmd_AddCommand ("cmdlist", Cmd_CmdList_f);
+	Cmd_AddCommand ("unaliasall", Cmd_UnAliasAll_f);
 	Cmd_AddCommand ("unalias", Cmd_UnAlias_f);
 	Cmd_AddCommand ("_z_cmd", Cmd_Z_Cmd_f);	// ZQuake
 
