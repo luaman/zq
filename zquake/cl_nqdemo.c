@@ -772,11 +772,12 @@ void NQD_LinkEntities (void)
 				vec3_t	tmp;
 				VectorCopy (cur_origin, tmp);
 				tmp[2] += 16;
-				CL_NewDlight (state->number, tmp, 400 + (rand()&31), 0.1, lt_default);
+				V_AddDlight (state->number, tmp, 400 + (rand()&31), 0, lt_default);
 			}
 		}
 		if (state->effects & EF_DIMLIGHT)
-			CL_NewDlight (state->number, cur_origin, 200 + (rand()&31), 0.1, lt_default);
+			if (state->modelindex != cl_playerindex || r_powerupglow.value)
+				V_AddDlight (state->number, cur_origin, 200 + (rand()&31), 0, lt_default);
 
 		// if set to invisible, skip
 		if (!state->modelindex)
