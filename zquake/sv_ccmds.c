@@ -573,7 +573,7 @@ void SV_User_f (void)
 {
 	if (Cmd_Argc() != 2)
 	{
-		Com_Printf ("Usage: info <userid>\n");
+		Com_Printf ("Usage: user <userid>\n");
 		return;
 	}
 
