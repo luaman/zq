@@ -193,6 +193,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&gl_fb_depthhack);
 	Cvar_RegisterVariable (&gl_fb_bmodels);
 	Cvar_RegisterVariable (&gl_fb_models);
+	Cvar_RegisterVariable (&gl_lightmode);
 
 	Cvar_RegisterVariable (&gl_keeptjunctions);
 	Cvar_RegisterVariable (&gl_reporttjunctions);
@@ -396,7 +397,11 @@ R_NewMap
 void R_NewMap (void)
 {
 	int		i;
-	
+
+	lightmode = gl_lightmode.value;
+	if (lightmode < 0 || lightmode > 2)
+		lightmode = 2;
+
 	for (i=0 ; i<256 ; i++)
 		d_lightstylevalue[i] = 264;		// normal light value
 
