@@ -792,7 +792,9 @@ R_PolyBlend
 */
 void R_PolyBlend (void)
 {
-	if (vid_hwgamma_enabled)
+	extern cvar_t	gl_hwblend;
+
+	if (vid_hwgamma_enabled && gl_hwblend.value && !cl.teamfortress)
 		return;
 	if (!v_blend[3])
 		return;
