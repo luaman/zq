@@ -1605,9 +1605,13 @@ void COM_InitFilesystem (void)
 //
 	i = COM_CheckParm ("-basedir");
 	if (i && i < com_argc-1)
-		strcpy (com_basedir, com_argv[i+1]);
+		strncpy (com_basedir, com_argv[i+1], sizeof(com_basedir)-1);
 	else
-		strcpy (com_basedir, host_parms.basedir);
+		strncpy (com_basedir, host_parms.basedir, sizeof(com_basedir)-1);
+
+	i = strlen(com_basedir)-1;
+	if ((i >= 0) && (com_basedir[i]=='/' || com_basedir[i]=='\\'))
+		com_basedir[i] = '\0';
 
 //
 // start up with id1 by default
