@@ -630,7 +630,10 @@ void PR_ParseStatement (void)
 		
 		return;
 	}
-	
+
+	if (PR_Check("else"))
+		PR_ParseError ("illegal else without matching if");
+
 	PR_Expression (TOP_PRIORITY);
 	PR_Expect (";");
 }
