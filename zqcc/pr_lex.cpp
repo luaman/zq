@@ -1107,6 +1107,8 @@ int			 PR_AddDefine (const char *name, const type_t *type, const eval_t *value, 
 		hash_defines[Com_HashKey(name)] = i;
 		pr_defines[i].name = (char *)SafeMalloc (strlen(name) + 1);
 		strcpy(pr_defines[i].name, name);
+
+		printf ("Additional %s#define: %s\n", reserved ? "reserved " : "", name);
 	}
 	else 
 	if (pr_defines[i].reserved && pr_defines[i].defined)
@@ -1156,6 +1158,9 @@ void		 PR_DelDefine (const char *name, bool overrideReserved)
 		PR_ParseError ("\"%s\" is a reserved #define and must not be deleted!", name);
 		return;
 	}
+
+
+	printf ("Removed #define: %s\n", pr_defines[i].name);
 
 	free (pr_defines[i].name);
 
