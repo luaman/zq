@@ -116,7 +116,6 @@ float		max_clients = 32;	/* Tonik --- only waypoint code checks it... */
 float		bot_count, b_options;
 float		waypoint_mode, dump_mode; 
 float		waypoints, direct_route;
-float		sv_gravity;
 entity		fixer;
 entity		route_table;
 entity		b_temp1, b_temp2, b_temp3;
@@ -431,9 +430,6 @@ void BotFrame ()
 	
 	h = infokey(world, "bot_options");
 	b_options = stof(h);
-	
-	// for the sake of speed
-	sv_gravity = cvar("sv_gravity");
 }
 
 /*

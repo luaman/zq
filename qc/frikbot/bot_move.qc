@@ -213,7 +213,7 @@ void frik_obstacles ()
 		return; // gap is only 20 wide, walkable	
 	ang = self.velocity;
 	ang_z = 0;
-	dist = ((540 / sv_gravity) * vlen(ang))/* + 32*/;
+	dist = ((540 / world.gravity) * vlen(ang))/* + 32*/;
 	if (test > dist) // I can't make it
 	{
 		if (conts < -3) // bad stuff down dare
