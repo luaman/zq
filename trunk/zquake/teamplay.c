@@ -1986,13 +1986,20 @@ static void ExecTookTrigger (char *s, int flag, vec3_t org)
 	strncpy (vars.tookname, s, sizeof(vars.tookname)-1);
 	strncpy (vars.tookloc, TP_LocationName (org), sizeof(vars.tookloc)-1);
 
+	if (flag & it_weapons) {
+		int	deathmatch;
+		deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
+		if (deathmatch == 2 || deathmatch == 3)
+			return;
+	}
+
 	if (tookflags & flag) {
 		if (CountTeammates())
 			TP_ExecTrigger ("f_took");
 	}
 }
 
-char *TP_SoundTrigger (char *s)
+char *snd_trigger (char *s)
 {
 	int y, o, i, u, l;
 	qboolean inside = false;
@@ -2101,12 +2108,7 @@ more:
 	// weapons
 	if (!strcmp(s, "weapons/pkup.wav"))
 	{
-		int	deathmatch;
 		item_t	*item;
-
-		deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
-		if (deathmatch == 2 || deathmatch == 3)
-			return;
 		if (!FindNearestItem (it_weapons, &item))
 			return;
 		ExecTookTrigger (item->cvar->string, item->itemflag, org);
