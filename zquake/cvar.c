@@ -263,51 +263,65 @@ If the variable already exists, the value will not be set
 The flags will be or'ed in if the variable exists.
 ============
 */
-void Cvar_Register (cvar_t *variable)
+void Cvar_Register (cvar_t *var)
 {
 	char	string[512];
 	int		key;
 	cvar_t	*old;
 
 	// first check to see if it has already been defined
-	old = Cvar_FindVar (variable->name);
+	old = Cvar_FindVar (var->name);
 	if (old && !(old->flags & CVAR_USER_CREATED))
 	{
-		Com_Printf ("Can't register variable %s, already defined\n", variable->name);
+		Com_Printf ("Can't register variable %s, already defined\n", var->name);
 		return;
 	}
 	
 	// check for overlap with a command
-	if (Cmd_Exists (variable->name))
+	if (Cmd_Exists (var->name))
 	{
-		Com_Printf ("Cvar_Register: %s is a command\n", variable->name);
+		Com_Printf ("Cvar_Register: %s is a command\n", var->name);
 		return;
 	}
 
 	if (old)
 	{
-		variable->flags |= old->flags & ~CVAR_USER_CREATED;
+		var->flags |= old->flags & ~CVAR_USER_CREATED;
 		Q_strncpyz (string, old->string, sizeof(string));
 		Cvar_Delete (old->name);
-		if (!(variable->flags & CVAR_ROM))
-			variable->string = CopyString (string);
+		if (!(var->flags & CVAR_ROM))
+			var->string = CopyString (string);
 		else
-			variable->string = CopyString (variable->string);
+			var->string = CopyString (var->string);
 	}
 	else
 	{
 		// allocate the string on zone because future sets will Z_Free it
-		variable->string = CopyString (variable->string);
+		var->string = CopyString (var->string);
 	}
 	
-	variable->value = Q_atof (variable->string);
+	var->value = Q_atof (var->string);
 
 	// link the variable in
-	key = Key (variable->name);
-	variable->hash_next = cvar_hash[key];
-	cvar_hash[key] = variable;
-	variable->next = cvar_vars;
-	cvar_vars = variable;
+	key = Key (var->name);
+	var->hash_next = cvar_hash[key];
+	cvar_hash[key] = var;
+	var->next = cvar_vars;
+	cvar_vars = var;
+
+#ifndef CLIENTONLY
+	if (var->flags & CVAR_SERVERINFO)
+		Info_SetValueForKey (svs.info, var->name, var->string, MAX_SERVERINFO_STRING);
+#endif
+
+#ifndef SERVERONLY
+	if (var->flags & CVAR_USERINFO)
+	{
+		char *s;
+		s = TP_ParseFunChars (var->string, false);
+		Info_SetValueForKey (cls.userinfo, var->name, s, MAX_INFO_STRING);
+	}
+#endif
 }
 
 
