@@ -746,7 +746,7 @@ void CL_ParseServerData (void)
 		// FIXME
 		cls.mvd_newtime = cls.mvd_oldtime = MSG_ReadFloat();
 		cl.playernum = MAX_CLIENTS - 1;
-		cl.spectator = cl.players[cl.playernum].spectator = true;
+		cl.spectator = true;
 	} else
 #endif
 	{
