@@ -334,6 +334,7 @@ void CL_Disconnect (void)
 	byte	final[10];
 
 	connect_time = -1;
+	server_version = 0;
 
 #ifdef _WIN32
 	SetWindowText (mainwindow, "QuakeWorld: disconnected");
@@ -1106,9 +1107,9 @@ void Host_Init (quakeparms_t *parms)
 	host_initialized = true;
 
 #ifdef RELEASE_VERSION
-	Con_Printf ("\nClient Version %s\n\n", Z_VERSION);
+	Con_Printf ("\nClient version %s\n\n", Z_VERSION);
 #else
-	Con_Printf ("\nClient Version %s (Build %04d)\n\n", Z_VERSION, build_number());
+	Con_Printf ("\nClient version %s (Build %04d)\n\n", Z_VERSION, build_number());
 #endif
 
 	Con_Printf ("€ QuakeWorld Initialized ‚\n");	

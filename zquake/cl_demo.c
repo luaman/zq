@@ -74,6 +74,7 @@ void CL_StopPlayback (void)
 	if (cls.timedemo)
 		CL_FinishTimeDemo ();
 
+	server_version = 0;
 	cl.teamfortress = false;
 }
 
