@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef SERVERONLY
 void Cmd_ForwardToServer (void);
 qboolean CL_CheckServerCommand (void);
+qboolean CL_LegacyCommand (void);
 #endif
 
 cvar_t cl_warncmd = {"cl_warncmd", "0"};
@@ -1114,6 +1115,11 @@ void Cmd_ExecuteString (char *text)
 			return;
 		}
 	}
+
+#ifndef SERVERONLY
+	if (CL_LegacyCommand())
+		return;
+#endif
 
 	if (cl_warncmd.value || developer.value)
 		Con_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));

@@ -775,3 +775,81 @@ qboolean CL_CheckServerCommand ()
 
 	return false;
 }
+
+/*
+==============================================================================
+
+"LEGACY" COMMANDS (QuakeWorld compatibility)
+
+==============================================================================
+*/
+
+typedef struct {
+	cvar_t	*var;
+	char *oldname;
+} legacyvar_t;
+
+extern cvar_t s_nosound;
+extern cvar_t s_precache;
+extern cvar_t s_loadas8bit;
+extern cvar_t s_ambientlevel;
+extern cvar_t s_ambientfade;
+extern cvar_t s_noextraupdate;
+extern cvar_t s_show;
+extern cvar_t s_mixahead;
+
+legacyvar_t legacyvars[] =
+{
+	{&s_nosound, "nosound"},
+	{&s_precache, "precache"},
+	{&s_loadas8bit, "loadas8bit"},
+	{&s_ambientlevel, "ambient_level"},
+	{&s_ambientfade, "ambient_fade"},
+	{&s_noextraupdate, "snd_noextraupdate"},
+	{&s_show, "snd_show"},
+	{&s_mixahead, "_snd_mixahead"},
+	{NULL, NULL}
+};
+
+/*
+================
+CL_CheckServerCommand
+================
+*/
+qboolean CL_LegacyCommand (void)
+{
+	int			i, c;
+	char		*name;
+	legacyvar_t *lvar;
+	cvar_t		*v;
+	char		string[1024];
+
+	c = Cmd_Argc();
+	name = Cmd_Argv(0);
+
+	for (lvar=legacyvars ; lvar->var ; lvar++) {
+		if (!Q_strcasecmp(lvar->oldname, name))
+			break;
+	}
+	if (!lvar->var)
+		return false;
+
+	v = lvar->var;
+
+	if (c == 1)
+	{
+		Con_Printf ("\"%s\" is \"%s\"\n", v->name, v->string);
+		return true;
+	}
+
+	string[0] = 0;
+	for (i=1 ; i < c ; i++)
+	{
+		if (i > 1)
+			strcat (string, " ");
+		strcat (string, Cmd_Argv(i));
+	}
+
+	Cvar_Set (v, string);
+	return true;
+}
