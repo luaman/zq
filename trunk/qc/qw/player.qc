@@ -638,9 +638,9 @@ void() PlayerDie =
 		return;
 	}
 	
-	i = cvar("temp1");
-	if (!i)
-		i = 1 + floor(random()*6);
+	// Note that this generates random values in 1..6 range, so player_diee1 is
+	// executed twice as often as other death sequences. Dunno if this should be fixed -- Tonik
+	i = 1 + floor(random()*6);
 	
 	if (i == 1)
 		player_diea1();
