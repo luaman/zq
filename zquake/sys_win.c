@@ -17,7 +17,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-// sys_win.h
+// sys_win.c
 
 #include "quakedef.h"
 #include "winquake.h"
@@ -35,29 +35,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define PAUSE_SLEEP		50				// sleep time on pause or minimization
 #define NOT_FOCUS_SLEEP	20				// sleep time when not focus
 
-int		starttime;
-qboolean ActiveApp, Minimized;
-qboolean	WinNT;
+qboolean		ActiveApp, Minimized;
+qboolean		WinNT;
 
-HWND	hwnd_dialog;		// startup dialog box
-
-static double		pfreq;
-static double		curtime = 0.0;
-static double		lastcurtime = 0.0;
-static int			lowshift;
-static HANDLE		hinput, houtput;
-
-HANDLE		qwclsemaphore;
-
+static HANDLE	qwclsemaphore;
 static HANDLE	tevent;
-
-void Sys_InitFloatTime (void);
+static HANDLE	hinput, houtput;
 
 void MaskExceptions (void);
 void Sys_PopFPCW (void);
 void Sys_PushFPCW_SetHigh (void);
 
-void Sys_DebugLog(char *file, char *fmt, ...)
+
+void Sys_DebugLog (char *file, char *fmt, ...)
 {
     va_list argptr; 
     static char data[1024];
@@ -142,31 +132,28 @@ void Sys_Init (void)
 
 	// allocate a named semaphore on the client so the
 	// front end can tell if it is alive
-
-	if (!COM_CheckParm("-allowmultiple"))
-	{
-		// mutex will fail if semaphore already exists
-		qwclsemaphore = CreateMutex(
-			NULL,         /* Security attributes */
-			0,            /* owner       */
-			"qwcl"); /* Semaphore name      */
-		if (!qwclsemaphore)
-			Sys_Error ("QWCL is already running on this system");
-		CloseHandle (qwclsemaphore);
-		
-		qwclsemaphore = CreateSemaphore(
-			NULL,         /* Security attributes */
-			0,            /* Initial count       */
-			1,            /* Maximum count       */
-			"qwcl"); /* Semaphore name      */
-	}
+	
+	// mutex will fail if semaphore already exists
+	qwclsemaphore = CreateMutex(
+		NULL,         /* Security attributes */
+		0,            /* owner       */
+		"qwcl"); /* Semaphore name      */
+	if (!qwclsemaphore)
+		Sys_Error ("QWCL is already running on this system");
+	CloseHandle (qwclsemaphore);
+	
+	qwclsemaphore = CreateSemaphore(
+		NULL,         /* Security attributes */
+		0,            /* Initial count       */
+		1,            /* Maximum count       */
+		"qwcl"); /* Semaphore name      */
 
 	MaskExceptions ();
 	Sys_SetFPCW ();
 
 	// make sure the timer is high precision, otherwise
 	// NT gets 18ms resolution
-	timeBeginPeriod( 1 );
+	timeBeginPeriod (1);
 
 	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
 
@@ -382,15 +369,9 @@ void Sys_SendKeyEvents (void)
 ==============================================================================
 */
 
-/*
-==================
-WinMain
-==================
-*/
 void SleepUntilInput (int time)
 {
-
-	MsgWaitForMultipleObjects(1, &tevent, FALSE, time, QS_ALLINPUT);
+	MsgWaitForMultipleObjects (1, &tevent, FALSE, time, QS_ALLINPUT);
 }
 
 
@@ -402,14 +383,13 @@ WinMain
 */
 HINSTANCE	global_hInstance;
 int			global_nCmdShow;
+HWND		hwnd_dialog;	// startup dialog box
 char		*argv[MAX_NUM_ARGVS];
 static char	*empty_string = "";
-HWND		hwnd_dialog;
 
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-//    MSG				msg;
 	quakeparms_t	parms;
 	double			time, oldtime, newtime;
 	MEMORYSTATUS	lpBuffer;
@@ -464,7 +444,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
+	hwnd_dialog = CreateDialog (hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
 
 	if (hwnd_dialog)
 	{
