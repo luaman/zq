@@ -84,14 +84,14 @@ int PM_ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overbounce)
 
 /*
 ============
-PM_FlyMove
+PM_SlideMove
 
 The basic solid body movement clip that slides along multiple planes
 ============
 */
 #define	MAX_CLIP_PLANES	5
 
-int PM_FlyMove (void)
+int PM_SlideMove (void)
 {
 	int			bumpcount, numbumps;
 	vec3_t		dir;
@@ -254,8 +254,7 @@ void PM_GroundMove (void)
 	VectorCopy (pmove.origin, original);
 	VectorCopy (pmove.velocity, originalvel);
 
-	// slide move
-	PM_FlyMove ();
+	PM_SlideMove ();
 
 	VectorCopy (pmove.origin, down);
 	VectorCopy (pmove.velocity, downvel);
@@ -272,8 +271,7 @@ void PM_GroundMove (void)
 		VectorCopy (trace.endpos, pmove.origin);
 	}
 
-// slide move
-	PM_FlyMove ();
+	PM_SlideMove ();
 
 // press down the stepheight
 	VectorCopy (pmove.origin, dest);
@@ -504,7 +502,7 @@ void PM_WaterMove (void)
 		return;
 	}
 	
-	PM_FlyMove ();
+	PM_SlideMove ();
 }
 
 
@@ -565,7 +563,7 @@ void PM_AirMove (void)
 		// add gravity
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * frametime;
 
-		PM_FlyMove();
+		PM_SlideMove ();
 	}
 }
 
@@ -797,10 +795,10 @@ void NudgePosition (void)
 
 /*
 ===============
-SpectatorMove
+PM_SpectatorMove
 ===============
 */
-void SpectatorMove (void)
+void PM_SpectatorMove (void)
 {
 	float	speed, drop, friction, control, newspeed;
 	float	currentspeed, addspeed, accelspeed;
@@ -898,7 +896,7 @@ void PlayerMove (void)
 
 	if (pmove.spectator)
 	{
-		SpectatorMove ();
+		PM_SpectatorMove ();
 		pmove.onground = false;
 		return;
 	}
