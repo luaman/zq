@@ -1561,7 +1561,7 @@ typedef struct direntry_s {
 	int		size;
 } direntry_t;
 
-direntry_t	dir[MAX_DEMO_FILES];
+direntry_t	dir[MAX_DEMO_FILES] = {0};
 int			numfiles;
 char		demodir[MAX_QPATH] = "/qw";
 char		prevdir[MAX_QPATH] = "";
@@ -1587,13 +1587,6 @@ static void ReadDir (void)
 	}
 
 	h = FindFirstFile (va("%s%s/*.*", com_basedir, demodir), &fd);
-/*	if (h == INVALID_HANDLE_VALUE && demodir[0]) {
-		// go to the base directory
-		demodir[0] = '\0';
-		h = FindFirstFile (va("%s%s/*.*", com_basedir, demodir), &fd);
-		numfiles = 0;
-	}*/
-
 	if (h == INVALID_HANDLE_VALUE) {
 		strcpy (dir[numfiles].name, "Error reading directory\n");
 		dir[numfiles].type = 3;
@@ -1602,19 +1595,15 @@ static void ReadDir (void)
 	}
 	
 	do {
+		int type, size;
+		int pos;
+		char name[MAX_DEMO_NAME] = "";
+
 		if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 			if (!strcmp(fd.cFileName, ".") || !strcmp(fd.cFileName, ".."))
 				continue;
-			strncpy (dir[numfiles].name, fd.cFileName, MAX_DEMO_NAME-1);
-			dir[numfiles].type = 1;
-			if (!strcmp(fd.cFileName, prevdir))	{
-				demo_cursor = numfiles;
-				if (demo_cursor >= MAXLINES) {
-					demo_base += demo_cursor - (MAXLINES-1);
-					demo_cursor = MAXLINES-1;
-				}
-				*prevdir = '\0';
-			}
+			type = 1;
+			size = 0;
 		}
 		else
 		{
@@ -1622,15 +1611,47 @@ static void ReadDir (void)
 			if (i < 5 || (Q_strcasecmp(fd.cFileName+i-4, ".qwd")
 				&& Q_strcasecmp(fd.cFileName+i-4, ".qwz")))
 				continue;
-			strncpy (dir[numfiles].name, fd.cFileName, MAX_DEMO_NAME-1);
-			dir[numfiles].type = 0;
-			dir[numfiles].size = fd.nFileSizeLow;
+			type = 0;
+			size = fd.nFileSizeLow;
 		}
+
+		strncpy (name, fd.cFileName, MAX_DEMO_NAME-1);
+
+		// inclusion sort
+		for (i=0 ; i<numfiles ; i++)
+		{
+			if (type < dir[i].type)
+				continue;
+			if (type > dir[i].type)
+				break;
+			if (strcmp (name, dir[i].name) < 0)
+				break;
+		}
+		pos = i;
 		numfiles++;
+		for (i=numfiles-1 ; i>pos ; i--)
+			dir[i] = dir[i-1];
+		strcpy (dir[i].name, name);
+		dir[i].type = type;
+		dir[i].size = size;
 		if (numfiles == MAX_DEMO_FILES)
 			break;
 	} while ( FindNextFile(h, &fd) );
 	FindClose (h);
+
+	// TODO: position demo cursor
+	if (prevdir) {
+		for (i=0 ; i<numfiles ; i++) {
+			if (!strcmp (dir[i].name, prevdir)) {
+				demo_cursor = i;
+				if (demo_cursor >= MAXLINES) {
+					demo_base += demo_cursor - (MAXLINES-1);
+					demo_cursor = MAXLINES-1;
+				}
+				*prevdir = '\0';
+			}
+		}
+	}
 
 	if (!numfiles) {
 		strcpy (dir[0].name, "[ no files ]");
@@ -1666,6 +1687,7 @@ void M_Demos_Draw (void)
 	int		i;
 	int		y;
 	direntry_t	*d;
+	char	str[29] = "";
 
 	M_Print (140, 8, "DEMOS");
 	M_Print (16, 16, demodir);
@@ -1674,10 +1696,11 @@ void M_Demos_Draw (void)
 	d = dir + demo_base;
 	for (i=0, y=32 ; i<numfiles-demo_base && i<MAXLINES ; i++, y+=8, d++)
 	{
+		strncpy (str, d->name, sizeof(str)-1);
 		if (d->type)
-			M_PrintWhite (24, y, d->name);
+			M_PrintWhite (24, y, str);
 		else
-			M_Print (24, y, d->name);
+			M_Print (24, y, str);
 
 		if (d->type == 1)
 			M_PrintWhite (240, y, "  folder");
