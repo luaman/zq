@@ -59,10 +59,18 @@ GL_DrawAliasFrame
 void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qbool mtex)
 {
 	int		i;
-	vec3_t	l_v;
+	float	l_v[4];
 	trivertx_t	*verts;
 	int		*order;
 	int		count;
+
+	if (currententity->renderfx & RF_TRANSLUCENT)
+	{
+		glEnable (GL_BLEND);
+		l_v[3] = currententity->alpha;
+	}
+	else
+		l_v[3] = 1.0;
 
 	lastposenum = posenum;
 
@@ -101,13 +109,16 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qbool mtex)
 				if (l_v[i] > 1)
 					l_v[i] = 1;
 			}
-			glColor3fv (l_v);
+			glColor4fv (l_v);
 			glVertex3f (verts->v[0], verts->v[1], verts->v[2]);
 			verts++;
 		} while (--count);
 
 		glEnd ();
 	}
+
+	if (currententity->renderfx & RF_TRANSLUCENT)
+		glDisable (GL_BLEND);
 }
 
 
