@@ -181,6 +181,25 @@ def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 	return var_c;
 }
 
+def_t *PR_NewDef (int hash)
+{
+	// allocate new def
+	def_t *def = (def_t *) malloc (sizeof(def_t));
+	memset (def, 0, sizeof(*def));
+
+	// link into defs list
+//	def->next = NULL;
+	pr.def_tail->next = def;
+	pr.def_tail = def;
+	
+	// link into hash bucket
+//	def->hash_next = NULL;
+	pr.def_hash_tail[hash]->hash_next = def;
+	pr.def_hash_tail[hash] = def;
+
+	return def;
+}
+
 /*
 ============
 PR_GetImmediate
@@ -190,69 +209,54 @@ Return a preexisting constant if possible, or allocate a new def
 */
 def_t *PR_GetImmediate (type_t *type, eval_t val, char *string = NULL /* for ev_string only */)
 {
-	def_t	*cn;
+	def_t	*def;
 
 	assert (type == &type_const_string || type == &type_const_float || type == &type_const_vector);
 
+	char *name = "IMMEDIATE";
+	int hash = Com_HashKey (name);
+
 // check for a constant with the same value
-	for (cn=pr.def_head.next ; cn ; cn=cn->next)
+	for (def=pr.def_head.next ; def ; def=def->next)
 	{
-		if (!cn->initialized)
+		if (def->type != type || !def->initialized)
 			continue;
-		if (cn->type != type)
-			continue;
-//		if (!cn->type->constant)
-//			continue;
 
 		if (type == &type_const_string) {
-			if (!strcmp(G_STRING(cn->ofs), string) )
-				return cn;
+			if (!strcmp(G_STRING(def->ofs), string) )
+				return def;
 		}
 		else if (type == &type_const_float) {
-			if ( G_FLOAT(cn->ofs) == val._float )
-				return cn;
+			if ( G_FLOAT(def->ofs) == val._float )
+				return def;
 		}
-		else if	(type == &type_const_vector) {
-			if ( ( G_FLOAT(cn->ofs) == val.vector[0] )
-			&& ( G_FLOAT(cn->ofs+1) == val.vector[1] )
-			&& ( G_FLOAT(cn->ofs+2) == val.vector[2] ) ) {
-				return cn;
+		else /*if (type == &type_const_vector)*/ {
+			if ( ( G_FLOAT(def->ofs) == val.vector[0] )
+			&& ( G_FLOAT(def->ofs+1) == val.vector[1] )
+			&& ( G_FLOAT(def->ofs+2) == val.vector[2] ) ) {
+				return def;
 			}
 		}
-		else			
-			PR_ParseError ("weird immediate type");
 	}
 	
-// allocate a new constant
-	cn = (def_t *) malloc (sizeof(def_t));
-	cn->name = "IMMEDIATE";
+// allocate a new def
+	def = PR_NewDef(hash);
 
-	int hash = Com_HashKey (cn->name);
-
-	// link into defs list
-	cn->next = NULL;
-	pr.def_tail->next = cn;
-	pr.def_tail = cn;
-	
-	// link into hash
-	cn->hash_next = NULL;
-	pr.def_hash_tail[hash]->hash_next = cn;
-	pr.def_hash_tail[hash] = cn;
-
-	cn->type = type;
-	cn->initialized = 1;
-	cn->scope = cn->visscope = NULL;	// always share immediates
+	def->name = name;
+	def->type = type;
+	def->initialized = 1;
+	def->scope = def->visscope = NULL;	// always share immediates
 
 // copy the immediate to the global area
-	cn->ofs = numpr_globals;
-	pr_global_defs[cn->ofs] = cn;
+	def->ofs = numpr_globals;
+	pr_global_defs[def->ofs] = def;
 	numpr_globals += type_size[type->type];
 	if (type == &type_const_string)
 		val.string = CopyString (string);
 	
-	memcpy (pr_globals + cn->ofs, &val, 4*type_size[type->type]);
+	memcpy (pr_globals + def->ofs, &val, 4*type_size[type->type]);
 	
-	return cn;
+	return def;
 }
 
 /*
@@ -936,18 +940,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, def_t *visscope, bool 
 
 // allocate a new def
 allocNew:
-	def = (def_t *) malloc (sizeof(def_t));
-	memset (def, 0, sizeof(*def));
-
-	// link into defs list
-	def->next = NULL;
-	pr.def_tail->next = def;
-	pr.def_tail = def;
-	
-	// link into hash
-	def->hash_next = NULL;
-	pr.def_hash_tail[hash]->hash_next = def;
-	pr.def_hash_tail[hash] = def;
+	def = PR_NewDef (hash);
 
 	def->name = (char *) malloc (strlen(name)+1);
 	strcpy (def->name, name);

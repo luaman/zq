@@ -454,3 +454,4 @@ bool CompareType (type_t *t1, type_t *t2);
 // compilation options
 extern bool		opt_idcomp;			// to allow vanilla id Software code to compile
 extern bool		opt_dumpasm;
+extern bool		opt_mergeconstants;
