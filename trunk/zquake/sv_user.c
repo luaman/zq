@@ -534,6 +534,9 @@ void Cmd_Begin_f (void)
 				for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
 					(&pr_global_struct->parm1)[i] = sv_client->spawn_parms[i];
 				
+				// progs can change this to MOVETYPE_FLY, for example
+				sv_player->v.movetype = MOVETYPE_NOCLIP;
+
 				// call the spawn function
 				pr_global_struct->time = sv.time;
 				pr_global_struct->self = EDICT_TO_PROG(sv_player);
@@ -1704,7 +1707,7 @@ void AddAllEntsToPmove (void)
 
 int SV_PMTypeForClient (client_t *cl)
 {
-	if (cl->spectator || (cl->edict->v.movetype == MOVETYPE_NOCLIP)) {
+	if (cl->edict->v.movetype == MOVETYPE_NOCLIP) {
 		if (cl->extensions & Z_EXT_PM_TYPE_NEW)
 			return PM_SPECTATOR;
 		return PM_OLD_SPECTATOR;
