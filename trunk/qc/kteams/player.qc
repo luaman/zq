@@ -594,7 +594,6 @@ void GibPlayer ()
 
 void PlayerDie ()
 {
-	float	i;
 	string	s, s2;
 	self.items = self.items - (self.items & IT_INVISIBILITY);
 

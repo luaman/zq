@@ -169,7 +169,7 @@ void worldspawn ()
 	precache_model ("progs/v_rock2.mdl");
 
 #ifdef VWEP_TEST
-    vw_available = checkextension(ZQ_VWEP);
+    vw_available = checkextension("ZQ_VWEP");
     
     if(stof(infokey(world, "vwep")) && vw_available > 0)
     {
