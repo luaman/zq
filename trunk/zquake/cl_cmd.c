@@ -192,6 +192,97 @@ void CL_Packet_f (void)
 }
 
 
+void CL_PrintQStatReply (char *s)
+{
+	char *p;
+	int numplayers;
+	int userid, frags, time, ping, topcolor, bottomcolor;
+	char name[33], skin[17];
+	
+	Com_Printf ("\n");
+	//Com_Printf ("-------------------------------------\n");
+
+	con_ormask = 128;
+	Com_Printf ("qstat %s:\n", NET_AdrToString(net_from));
+	con_ormask = 0;
+
+	// count players
+	numplayers = -1;
+	p = s;
+	while (*p) if (*p++ == '\n') numplayers++;
+
+	// extract serverinfo string
+	s = strtok (s, "\n");
+
+	Com_Printf ("hostname   %s\n", Info_ValueForKey(s, "hostname"));
+	if (*(p = Info_ValueForKey(s, "*gamedir")))
+		Com_Printf ("gamedir    %s\n", p);
+	if (*(p = Info_ValueForKey(s, "status")))
+		Com_Printf ("status     %s\n", p);
+	//	Com_Printf ("deathmatch %s\n", Info_ValueForKey(s, "deathmatch"));
+	//	Com_Printf ("teamplay   %s\n", Info_ValueForKey(s, "teamplay"));
+	//	Com_Printf ("timelimit  %s\n", Info_ValueForKey(s, "timelimit"));
+	//	Com_Printf ("fraglimit  %s\n", Info_ValueForKey(s, "fraglimit"));
+
+	Com_Printf ("players    %i/%s\n", numplayers, Info_ValueForKey(s, "maxclients"));
+
+	p = strtok (NULL, "\n");
+	
+	if (p)
+	{
+		con_ormask = 128;
+		Com_Printf ("\nping time frags name\n");
+		con_ormask = 0;
+		//Com_Printf ("-------------------------------------\n");
+		
+		while (p)
+		{
+			sscanf (p, "%d %d %d %d \"%32[^\"]\" \"%16[^\"]\" %d %d", 
+				&userid, &frags, &time, &ping, &name, &skin, &topcolor, &bottomcolor);
+			Com_Printf("%4d %4d %4d  %-16.16s\n", ping, time, frags, name);
+			p = strtok (NULL, "\n");
+		}
+		//Com_Printf ("-------------------------------------\n");
+	}
+
+	Com_Printf ("\n");
+}
+
+/*
+====================
+CL_QStat_f
+
+qstat <destination>
+====================
+*/
+double	qstat_senttime = 0;
+
+void CL_QStat_f (void)
+{
+	char	send[10] = {0xff, 0xff, 0xff, 0xff, 's', 't', 'a', 't', 'u', 's'};
+	netadr_t	adr;
+
+	if (Cmd_Argc() < 2)
+	{
+		Com_Printf ("usage: qstat <server>\n");
+		return;
+	}
+
+	if (!NET_StringToAdr (Cmd_Argv(1), &adr))
+	{
+		Com_Printf ("Bad address\n");
+		return;
+	}
+
+	if (adr.port == 0)
+		adr.port = BigShort (PORT_SERVER);
+
+	NET_SendPacket (NS_CLIENT, 10, send, adr);
+
+	qstat_senttime = curtime;
+}
+
+
 /*
 =====================
 CL_Rcon_f
@@ -612,10 +703,11 @@ void CL_InitCommands (void)
 // general commands
 	Cmd_AddCommand ("cmd", CL_ForwardToServer_f);
 	Cmd_AddCommand ("download", CL_Download_f);
+	Cmd_AddCommand ("qstat", CL_QStat_f);
 	Cmd_AddCommand ("packet", CL_Packet_f);
+	Cmd_AddCommand ("rcon", CL_Rcon_f);
 	Cmd_AddCommand ("pause", CL_Pause_f);
 	Cmd_AddCommand ("quit", CL_Quit_f);
-	Cmd_AddCommand ("rcon", CL_Rcon_f);
 	Cmd_AddCommand ("say", CL_Say_f);
 	Cmd_AddCommand ("say_team", CL_Say_f);
 	Cmd_AddCommand ("serverinfo", CL_Serverinfo_f);
