@@ -85,7 +85,7 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 	VectorCopy (u->angles, pmove.angles);
 	VectorCopy (from->velocity, pmove.velocity);
 
-	if (cl.z_ext & Z_EXT_JUMPRELEASED)
+	if (cl.z_ext & Z_EXT_PM_TYPE)
 		pmove.jump_msec = 0;
 	else
 		pmove.jump_msec = from->jump_msec;
