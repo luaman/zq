@@ -57,8 +57,8 @@ will duck back out and catch it.
 =============
 LaunchMissile
 
-Sets the given entities velocity and angles so that it will hit self.enemy
-if self.enemy maintains it's current velocity
+Sets the given entity's velocity and angles so that it will hit self.enemy
+if self.enemy maintains its current velocity
 0.1 is moderately accurate, 0.0 is totally accurate
 =============
 */

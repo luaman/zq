@@ -744,7 +744,7 @@ t_width = override WIDTH to move back (or height if going down)
 t_length = override LENGTH to move sideways
 "dmg"           damage to inflict when blocked (2 default)
 
-If a secret door has a targetname, it will only be opened by it's botton or trigger, not by damage.
+If a secret door has a targetname, it will only be opened by its button or trigger, not by damage.
 "sounds"
 1) medieval
 2) metal
