@@ -185,6 +185,23 @@ char *Macro_Weapon_f (void)
 	}
 }
 
+char *Macro_WeaponNum_f (void)
+{
+	switch (cl.stats[STAT_ACTIVEWEAPON])
+	{
+	case IT_AXE: return "1";
+	case IT_SHOTGUN: return "2";
+	case IT_SUPER_SHOTGUN: return "3";
+	case IT_NAILGUN: return "4";
+	case IT_SUPER_NAILGUN: return "5";
+	case IT_GRENADE_LAUNCHER: return "6";
+	case IT_ROCKET_LAUNCHER: return "7";
+	case IT_LIGHTNING: return "8";
+	default:
+		return "0";
+	}
+}
+
 int	_Macro_BestWeapon (void)
 {
 	int	best;
@@ -365,6 +382,7 @@ macro_command_t macro_commands[] =
 	{"nails", Macro_Nails_f},
 	{"rockets", Macro_Rockets_f},
 	{"cells", Macro_Cells_f},
+	{"weaponnum", Macro_WeaponNum_f},
 	{"weapon", Macro_Weapon_f},
 	{"ammo", Macro_Ammo_f},
 	{"bestweapon", Macro_BestWeapon_f},
