@@ -33,8 +33,9 @@ extern cvar_t cl_teamskin;
 extern cvar_t cl_enemyskin;
 
 // triggers
-void TP_StatChanged (int stat, int value);
 void TP_ExecTrigger (char *s);
+void TP_StatChanged (int stat, int value);
+void TP_CheckPickupSound (char *s);
 
 // message triggers
 void TP_SearchForMsgTriggers (char *s, int level);
@@ -52,8 +53,6 @@ extern int cl_teamtopcolor;
 extern int cl_teambottomcolor;
 extern int cl_enemytopcolor;
 extern int cl_enemybottomcolor;
-void TP_TeamColor_f (void);
-void TP_EnemyColor_f (void);
 
 void TP_LoadLocFile (char *path, qboolean quiet);
 char *TP_ParseMacroString(char *string);
