@@ -449,6 +449,8 @@ void NQD_ParseServerData (void)
 	nq_num_entities = 0;
 	nq_drawpings = false;	// unless we have the ProQuake extension
 	cl.servertime_works = true;
+	cl.allow_fbskins = true;
+	r_refdef2.allowCheats = true;	// why not
 	cls.state = ca_onserver;
 }
 
