@@ -18,11 +18,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#ifdef QW_BOTH
+#ifdef SERVERONLY
+#include "qwsvdef.h"
+#else
 #include "quakedef.h"
 #include "server.h"
-#else
-#include "qwsvdef.h"
 #endif
 
 cvar_t		sv_cheats = {"sv_cheats", "0"};
@@ -235,7 +235,7 @@ void SV_Kick_f (void)
 
 	c = Cmd_Argc ();
 	if (c < 2) {
-#ifdef QW_BOTH
+#ifndef SERVERONLY
 		// some mods use a "kick" alias for their own needs, sigh
 		if (cls.state >= ca_onserver && Cmd_FindAlias("kick")) {
 			Cmd_ExecuteString (Cmd_AliasString("kick"));
@@ -293,7 +293,7 @@ void SV_Status_f (void)
 	float		cpu, avg, pak;
 	char		*s;
 
-#ifdef QW_BOTH
+#ifndef SERVERONLY
 	// some mods use a "status" alias for their own needs, sigh
 	if (!sv_redirected && !Q_strcasecmp(Cmd_Argv(0), "status")
 		&& cls.state >= ca_onserver && Cmd_FindAlias("status")) {
@@ -789,16 +789,14 @@ void SV_InitOperatorCommands (void)
 	Cmd_AddCommand ("snapall", SV_SnapAll_f);
 	Cmd_AddCommand ("kick", SV_Kick_f);
 	Cmd_AddCommand ("status", SV_Status_f);
-#ifdef QW_BOTH
 	Cmd_AddCommand ("serverstatus", SV_Status_f);
-#endif
 
 	Cmd_AddCommand ("map", SV_Map_f);
 
 	Cmd_AddCommand ("setmaster", SV_SetMaster_f);
 	Cmd_AddCommand ("heartbeat", SV_Heartbeat_f);
 
-#ifndef QW_BOTH
+#ifdef SERVERONLY
 	Cmd_AddCommand ("say", SV_ConSay_f);
 	Cmd_AddCommand ("quit", SV_Quit_f);
 	Cmd_AddCommand ("user", SV_User_f);

@@ -517,7 +517,7 @@ CL_Serverinfo_f
 */
 void CL_Serverinfo_f (void)
 {
-#ifdef QW_BOTH
+#ifndef CLIENTONLY
 	if (cls.state < ca_connected || com_serveractive) {
 		SV_Serverinfo_f();
 		return;

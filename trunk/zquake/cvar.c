@@ -23,11 +23,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "qwsvdef.h"
 #else
 #include "quakedef.h"
-#endif
-
-#ifdef QW_BOTH
+#ifndef CLIENTONLY
 #include "server.h"
 #endif
+#endif
+
 
 extern char *TP_ParseFunChars (char *s, qboolean chat);
 
@@ -187,7 +187,7 @@ void Cvar_Set (cvar_t *var, char *value)
 	var->string = CopyString (value);
 	var->value = Q_atof (var->string);
 
-#if defined(SERVERONLY) || defined(QW_BOTH)
+#ifndef CLIENTONLY
 	if (var->flags & CVAR_SERVERINFO)
 	{
 		if (strcmp(var->string, Info_ValueForKey (svs.info, var->name)))

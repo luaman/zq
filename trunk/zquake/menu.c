@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "keys.h"
 #include "sound.h"
 #include "version.h"
-#ifdef QW_BOTH
+#ifndef CLIENTONLY
 #include "server.h"
 #endif
 
@@ -1216,7 +1216,7 @@ void M_Quit_Key (int key)
 //=============================================================================
 /* SINGLE PLAYER MENU */
 
-#ifdef QW_BOTH
+#ifndef CLIENTONLY
 
 #define	SINGLEPLAYER_ITEMS	3
 int	m_singleplayer_cursor;
@@ -1372,7 +1372,7 @@ void M_SinglePlayer_Key (int key)
 	}
 }
 
-#else	// QW_BOTH
+#else	// !CLIENTONLY
 
 void M_Menu_SinglePlayer_f (void)
 {
@@ -1404,7 +1404,7 @@ void M_SinglePlayer_Key (key)
 		break;
 	}
 }
-#endif	// !QW_BOTH
+#endif	// CLIENTONLY
 
 
 //=============================================================================
@@ -1540,10 +1540,10 @@ void M_Save_Key (int key)
 /* MULTIPLAYER MENU */
 
 int	m_multiplayer_cursor;
-#ifdef QW_BOTH
-#define	MULTIPLAYER_ITEMS	4
-#else
+#ifdef CLIENTONLY
 #define	MULTIPLAYER_ITEMS	3
+#else
+#define	MULTIPLAYER_ITEMS	4
 #endif
 
 void M_Menu_MultiPlayer_f (void)
@@ -1562,7 +1562,7 @@ void M_MultiPlayer_Draw (void)
 	M_Print (80, 40, "Favorite Servers");
 	M_Print (80, 48, "Player Setup");
 	M_Print (80, 56, "Demos");
-#ifdef QW_BOTH
+#ifndef CLIENTONLY
 	M_Print (80, 64, "New Game");
 #endif
 
@@ -1621,7 +1621,7 @@ void M_MultiPlayer_Key (int key)
 			M_Menu_Demos_f ();
 			break;
 
-#ifdef QW_BOTH
+#ifndef CLIENTONLY
 		case 3:
 			M_Menu_GameOptions_f ();
 			break;
@@ -2007,7 +2007,7 @@ void M_Demos_Key (int k)
 //=============================================================================
 /* GAME OPTIONS MENU */
 
-#ifdef QW_BOTH
+#ifndef CLIENTONLY
 
 typedef struct
 {
@@ -2359,7 +2359,7 @@ void M_GameOptions_Key (int key)
 		break;
 	}
 }
-#endif	// QW_BOTH
+#endif	// !CLIENTONLY
 
 
 //=============================================================================
@@ -2928,7 +2928,7 @@ void M_Init (void)
 	Cmd_AddCommand ("togglemenu", M_ToggleMenu_f);
 
 	Cmd_AddCommand ("menu_main", M_Menu_Main_f);
-#ifdef QW_BOTH
+#ifndef CLIENTONLY
 	Cmd_AddCommand ("menu_singleplayer", M_Menu_SinglePlayer_f);
 	Cmd_AddCommand ("menu_load", M_Menu_Load_f);
 	Cmd_AddCommand ("menu_save", M_Menu_Save_f);
@@ -3044,7 +3044,7 @@ void M_Draw (void)
 		M_Quit_Draw ();
 		break;
 
-#ifdef QW_BOTH
+#ifndef CLIENTONLY
 	case m_gameoptions:
 		M_GameOptions_Draw ();
 		break;
@@ -3137,7 +3137,7 @@ void M_Keydown (int key)
 		M_Quit_Key (key);
 		return;
 
-#ifdef QW_BOTH
+#ifndef CLIENTONLY
 	case m_gameoptions:
 		M_GameOptions_Key (key);
 		return;

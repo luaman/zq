@@ -1806,7 +1806,7 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 {
 	char	new[1024], *v;
 	int		c;
-#if defined(SERVERONLY) || defined(QW_BOTH)
+#ifndef CLIENTONLY
 	extern cvar_t sv_highchars;
 #endif
 
@@ -1852,7 +1852,7 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 	// only copy ascii values
 	s += strlen(s);
 	v = new;
-#if defined(SERVERONLY) || defined(QW_BOTH)
+#ifndef CLIENTONLY
 	if (!sv_highchars.value) {
 		while (*v) {
 			c = (unsigned char)*v++;

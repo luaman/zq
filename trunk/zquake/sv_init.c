@@ -325,7 +325,7 @@ void SV_SpawnServer (char *server)
 	com_serveractive = false;
 	sv.paused = false;
 
-#ifdef QW_BOTH
+#ifndef SERVERONLY
 	D_FlushCaches ();
 #endif
 	Mod_ClearAll ();
