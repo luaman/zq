@@ -1082,10 +1082,12 @@ void Cmd_ExecuteString (char *text)
 {	
 	cmd_function_t	*cmd;
 	cmd_alias_t		*a;
-	char			**s;
 	int				key;
 	static char		buf[1024];
 	cbuf_t			*inserttarget;
+#ifndef SERVERONLY
+	char			**s;
+#endif
 
 	Cmd_ExpandString (text, buf);
 	Cmd_TokenizeString (buf);
