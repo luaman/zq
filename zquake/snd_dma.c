@@ -695,11 +695,7 @@ void S_UpdateAmbientSounds (void)
 	int			ambient_channel;
 	channel_t	*chan;
 
-	if (!snd_ambient)
-		return;
-
-// calc ambient sound levels
-	if (!cl.worldmodel)
+	if (cls.state != ca_active)
 		return;
 
 	leaf = CM_PointInLeaf (listener_origin);
@@ -710,7 +706,7 @@ void S_UpdateAmbientSounds (void)
 		return;
 	}
 
-	for (ambient_channel = 0 ; ambient_channel< NUM_AMBIENTS ; ambient_channel++)
+	for (ambient_channel = 0; ambient_channel < NUM_AMBIENTS; ambient_channel++)
 	{
 		chan = &channels[ambient_channel];	
 		chan->sfx = ambient_sfx[ambient_channel];
