@@ -40,15 +40,6 @@ vec3_t		forward, right, up;
 vec3_t	player_mins = {-16, -16, -24};
 vec3_t	player_maxs = {16, 16, 32};
 
-// #define	PM_GRAVITY			800
-// #define	PM_STOPSPEED		100
-// #define	PM_MAXSPEED			320
-// #define	PM_SPECTATORMAXSPEED	500
-// #define	PM_ACCELERATE		10
-// #define	PM_AIRACCELERATE	0.7
-// #define	PM_WATERACCELERATE	10
-// #define	PM_FRICTION			6
-// #define	PM_WATERFRICTION	1
 
 void PM_InitBoxHull (void);
 
@@ -210,7 +201,6 @@ int PM_FlyMove (void)
 		{	// go along the crease
 			if (numplanes != 2)
 			{
-//				Con_Printf ("clip velocity, numplanes == %i\n",numplanes);
 				VectorClear (pmove.velocity);
 				break;
 			}
@@ -492,8 +482,6 @@ void PM_WaterMove (void)
 //
 // water acceleration
 //
-//	if (pmove.waterjumptime)
-//		Con_Printf ("wm->%f, %f, %f\n", pmove.velocity[0], pmove.velocity[1], pmove.velocity[2]);
 	PM_Accelerate (wishdir, wishspeed, movevars.wateraccelerate);
 
 // assume it is a stair or a slope, so press down from stepheight above
@@ -508,8 +496,6 @@ void PM_WaterMove (void)
 	}
 	
 	PM_FlyMove ();
-//	if (pmove.waterjumptime)
-//		Con_Printf ("<-wm%f, %f, %f\n", pmove.velocity[0], pmove.velocity[1], pmove.velocity[2]);
 }
 
 
@@ -552,9 +538,6 @@ void PM_AirMove (void)
 		wishspeed = movevars.maxspeed;
 	}
 	
-//	if (pmove.waterjumptime)
-//		Con_Printf ("am->%f, %f, %f\n", pmove.velocity[0], pmove.velocity[1], pmove.velocity[2]);
-
 	if (pmove.onground)
 	{
 		if (pmove.velocity[2] > 0 || !pm_slidefix.value)
@@ -594,15 +577,6 @@ void PM_AirMove (void)
 			}
 		}
 	}
-
-//Con_Printf("airmove:vec: %4.2f %4.2f %4.2f\n",
-//			pmove.velocity[0],
-//			pmove.velocity[1],
-//			pmove.velocity[2]);
-//
-
-//	if (pmove.waterjumptime)
-//		Con_Printf ("<-am%f, %f, %f\n", pmove.velocity[0], pmove.velocity[1], pmove.velocity[2]);
 }
 
 
@@ -799,9 +773,7 @@ void NudgePosition (void)
 //	pmove.origin[2] += 0.124;
 
 //	if (pmove.dead)
-//		return;		// might be a squished point, so don'y bother
-//	if (PM_TestPlayerPosition (pmove.origin) )
-//		return;
+//		return;		// might be a squished point, so don't bother
 
 	for (z=0 ; z<=2 ; z++)
 	{
@@ -885,15 +857,21 @@ void SpectatorMove (void)
 
 	currentspeed = DotProduct(pmove.velocity, wishdir);
 	addspeed = wishspeed - currentspeed;
+
+#define QWBUG		// for compatibility with QW clients/servers
+#ifdef QWBUG
 	if (addspeed <= 0)
 		return;
-	accelspeed = movevars.accelerate*frametime*wishspeed;
-	if (accelspeed > addspeed)
-		accelspeed = addspeed;
-	
-	for (i=0 ; i<3 ; i++)
-		pmove.velocity[i] += accelspeed*wishdir[i];	
+#endif
 
+	if (addspeed > 0) {
+		accelspeed = movevars.accelerate*frametime*wishspeed;
+		if (accelspeed > addspeed)
+			accelspeed = addspeed;
+		
+		for (i=0 ; i<3 ; i++)
+			pmove.velocity[i] += accelspeed*wishdir[i];	
+	}
 
 	// move
 	VectorMA (pmove.origin, frametime, pmove.velocity, pmove.origin);
