@@ -73,7 +73,8 @@ void R_RenderFullbrights (void)
 
 	GL_DisableMultitexture ();
 
-	glDepthMask (0);	// don't bother writing Z
+	glDepthMask (GL_FALSE);	// don't bother writing Z
+
 	if (gl_fb_depthhack.value)
 	{
 		float			depthdelta;
@@ -107,7 +108,7 @@ void R_RenderFullbrights (void)
 	glDisable (GL_BLEND);
 	glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	
-	glDepthMask (1);
+	glDepthMask (GL_TRUE);
 	if (gl_fb_depthhack.value)
 		glDepthRange (gldepthmin, gldepthmax);
 
@@ -1081,16 +1082,21 @@ void R_DrawBrushModel (entity_t *e)
 	}
 
     glPushMatrix ();
-	e->angles[0] = -e->angles[0];	// stupid quake bug
-	R_RotateForEntity (e);
-	e->angles[0] = -e->angles[0];	// stupid quake bug
+
+	// ZOID: stupid quake bug
+
+	glTranslatef (e->origin[0],  e->origin[1],  e->origin[2]);
+
+	glRotatef (e->angles[1], 0, 0, 1);
+	glRotatef (e->angles[0], 0, 1, 0);
+	glRotatef (e->angles[2], 1, 0, 0);
 
 	//
 	// draw texture
 	//
 	for (i=0 ; i<clmodel->nummodelsurfaces ; i++, psurf++)
 	{
-	// find which side of the node we are on
+		// find which side of the node we are on
 		pplane = psurf->plane;
 
 		dot = DotProduct (modelorg, pplane->normal) - pplane->dist;
@@ -1238,7 +1244,7 @@ void R_RecursiveWorldNode (mnode_t *node)
 
 	}
 
-// recurse down the back side
+	// recurse down the back side
 	R_RecursiveWorldNode (node->children[!side]);
 }
 
@@ -1620,6 +1626,5 @@ void GL_BuildLightmaps (void)
 
  	if (!gl_texsort.value)
  		GL_SelectTexture (TEXTURE0_ARB);
-
 }
 
