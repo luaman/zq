@@ -447,9 +447,9 @@ texture_t *R_TextureAnimation (texture_t *base)
 	{
 		base = base->anim_next;
 		if (!base)
-			Sys_Error ("R_TextureAnimation: broken cycle");
+			Host_Error ("R_TextureAnimation: broken cycle");
 		if (++count > 100)
-			Sys_Error ("R_TextureAnimation: infinite cycle");
+			Host_Error ("R_TextureAnimation: infinite cycle");
 	}
 
 	return base;
