@@ -279,7 +279,7 @@ void PM_GroundMove (void)
 	VectorCopy (pmove.origin, dest);
 	dest[2] -= STEPSIZE;
 	trace = PM_PlayerMove (pmove.origin, dest);
-	if ( trace.plane.normal[2] < 0.7)
+	if (trace.fraction != 1 && trace.plane.normal[2] < 0.7)
 		goto usedown;
 	if (!trace.startsolid && !trace.allsolid)
 	{
@@ -597,8 +597,8 @@ void PM_CategorizePosition (void)
 	else
 	{
 		tr = PM_PlayerMove (pmove.origin, point);
-		if ( tr.plane.normal[2] < 0.7)
-			pmove.onground = false;	// too steep
+		if (tr.fraction == 1 || tr.plane.normal[2] < 0.7)
+			pmove.onground = false;
 		else {
 			pmove.onground = true;
 			pmove.groundent = tr.ent;
