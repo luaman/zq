@@ -873,36 +873,3 @@ void R_RenderPoly (msurface_t *fa, int clipflags)
 	D_DrawPoly ();
 }
 
-
-/*
-================
-R_ZDrawSubmodelPolys
-================
-*/
-void R_ZDrawSubmodelPolys (model_t *pmodel)
-{
-	int			i, numsurfaces;
-	msurface_t	*psurf;
-	float		dot;
-	mplane_t	*pplane;
-
-	psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
-	numsurfaces = pmodel->nummodelsurfaces;
-
-	for (i=0 ; i<numsurfaces ; i++, psurf++)
-	{
-	// find which side of the node we are on
-		pplane = psurf->plane;
-
-		dot = DotProduct (modelorg, pplane->normal) - pplane->dist;
-
-	// draw the polygon
-		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
-			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)))
-		{
-		// FIXME: use bounding-box-based frustum clipping info?
-			R_RenderPoly (psurf, 15);
-		}
-	}
-}
-
