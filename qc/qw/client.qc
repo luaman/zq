@@ -1227,6 +1227,8 @@ void ClientDisconnect ()
 	bprint (PRINT_HIGH, self.netname, " left the game with ", s, " frags\n");
 	sound (self, CHAN_BODY, "player/tornoff2.wav", 1, ATTN_NONE);
 	set_suicide_frame ();
+
+	self.classname = "";	// don't turn up in find()
 }
 
 /*
