@@ -1231,10 +1231,10 @@ char *VID_GetExtModeDescription (int mode)
 
 /*
 =================
-VID_DescribeModes_f
+VID_ModeList_f
 =================
 */
-void VID_DescribeModes_f (void)
+void VID_ModeList_f (void)
 {
 	int			i, lnummodes, t;
 	char		*pinfo;
@@ -1580,7 +1580,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_Register (&vid_hwgammacontrol);
 	Cvar_Register (&vid_displayfrequency);
 
-	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
+	Cmd_AddCommand ("vid_modelist", VID_ModeList_f);
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
