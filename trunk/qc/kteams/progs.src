@@ -1,6 +1,7 @@
 ./qwprogs.dat
 
-defs.qc
+../qw/defs.qc
+kt_defs.qc
 
 ../qw/subs.qc
 combat.qc
