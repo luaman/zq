@@ -423,9 +423,7 @@ void Draw_Init (void)
 	byte	*dest;
 	int		x;
 	char	ver[40];
-	glpic_t	*gl;
 	int		start;
-	byte    *ncdata;
 	int		i;
 
 	Cvar_RegisterVariable (&gl_nobind);
@@ -440,18 +438,13 @@ void Draw_Init (void)
 
 	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 
+
 	// load the console background and the charset
 	// by hand, because we need to write the version
 	// string into the background before turning
 	// it into a texture
 
 	Draw_LoadCharset ();
-
-	for (i=0 ; i<3 ; i++) {
-		crosshairtextures[i] = GL_LoadTexture ("", 8, 8, crosshairdata[i], false, true, false);
-		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	}
 
 	start = Hunk_LowMark ();
 
@@ -460,58 +453,23 @@ void Draw_Init (void)
 		Sys_Error ("Couldn't load gfx/conback.lmp");
 	SwapPic (cb);
 
-//	sprintf (ver, "%4.2f", QW_VERSION);
+	if (cb->width != 320 || cb->height != 200)
+		Sys_Error ("Draw_Init: conback.lmp size is not 320x200");
+
 	strcpy (ver, Z_VERSION);
 	dest = cb->data + 320 + 320*186 - 11 - 8*strlen(ver);
 	for (x=0 ; x<strlen(ver) ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
 
-#if 0
-	conback->width = vid.conwidth;
-	conback->height = vid.conheight;
-
-	// scale console to vid size
-	dest = ncdata = Hunk_AllocName(vid.conwidth * vid.conheight, "conback");
-
-	for (y=0 ; y<vid.conheight ; y++, dest += vid.conwidth)
-	{
-		src = cb->data + cb->width * (y*cb->height/vid.conheight);
-		if (vid.conwidth == cb->width)
-			memcpy (dest, src, vid.conwidth);
-		else
-		{
-			f = 0;
-			fstep = cb->width*0x10000/vid.conwidth;
-			for (x=0 ; x<vid.conwidth ; x+=4)
-			{
-				dest[x] = src[f>>16];
-				f += fstep;
-				dest[x+1] = src[f>>16];
-				f += fstep;
-				dest[x+2] = src[f>>16];
-				f += fstep;
-				dest[x+3] = src[f>>16];
-				f += fstep;
-			}
-		}
-	}
-#else
 	conback->width = cb->width;
 	conback->height = cb->height;
-	ncdata = cb->data;
-#endif
-	
-	gl = (glpic_t *)conback->data;
-	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, ncdata, false, false, false);
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
+	GL_LoadPicTexture (conback, cb->data);
 	conback->width = vid.conwidth;
 	conback->height = vid.conheight;
 
 	// free loaded console
 	Hunk_FreeToLowMark (start);
+
 
 	// save a texture slot for translated picture
 	translate_texture = texture_extension_number++;
@@ -519,6 +477,13 @@ void Draw_Init (void)
 	// save slots for scraps
 	scrap_texnum = texture_extension_number;
 	texture_extension_number += MAX_SCRAPS;
+
+	// Load the crosshair pics
+	for (i=0 ; i<3 ; i++) {
+		crosshairtextures[i] = GL_LoadTexture ("", 8, 8, crosshairdata[i], false, true, false);
+		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
 
 	//
 	// get the other pics we need
