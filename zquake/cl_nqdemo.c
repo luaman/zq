@@ -1213,7 +1213,7 @@ void NQD_ReadPackets (void)
 void NQD_StartPlayback ()
 {
 	int		c;
-	qbool	neg = false;;
+	qbool	neg = false;
 
 	// parse forced cd track
 	while ((c = getc(cls.demofile)) != '\n') {
