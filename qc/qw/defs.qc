@@ -641,8 +641,8 @@ void() break						= #6;
 float() random						= #7;		// returns 0 - 1
 void(entity e, float chan, string samp, float vol, float atten) sound = #8;
 vector(vector v) normalize			= #9;
-void(string e) error				= #10;
-void(string e) objerror 			= #11;
+void(string e, ...) error			= #10;
+void(string e, ...) objerror 		= #11;
 float(vector v) vlen				= #12;
 float(vector v) vectoyaw			= #13;
 entity() spawn						= #14;
@@ -661,9 +661,9 @@ string(string s) precache_sound 	= #19;
 string(string s) precache_model 	= #20;
 void(entity client, string s)stuffcmd = #21;
 entity(vector org, float rad) findradius = #22;
-void(float level, string s) bprint				= #23;
-void(entity client, float level, string s) sprint = #24;
-void(string s) dprint				= #25;
+void(float level, string s, ...) bprint				= #23;
+void(entity client, float level, string s, ...) sprint = #24;
+void(string s, ...) dprint			= #25;
 string(float f) ftos				= #26;
 string(vector v) vtos				= #27;
 void() coredump 					= #28;		// prints all edicts
@@ -716,7 +716,7 @@ void(string s) changelevel = #70;
 
 void(string var, string val) cvar_set = #72;	// sets cvar.value
 
-void(entity client, string s) centerprint = #73;	// sprint, but in middle
+void(entity client, string s, ...) centerprint = #73;	// sprint, but in middle
 
 void(vector pos, string samp, float vol, float atten) ambientsound = #74;
 
