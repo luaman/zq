@@ -26,7 +26,7 @@
 */
 
 void() InitBodyQue;
-
+void() NextLevel;
 
 void() main =
 {
@@ -379,6 +379,9 @@ void() StartFrame =
 	deathmatch = cvar("deathmatch");
 	
 	framecount = framecount + 1;
+
+	if (timelimit && time >= timelimit)
+		NextLevel ();
 };
 
 /*

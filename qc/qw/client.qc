@@ -652,8 +652,8 @@ Exit deathmatch games upon conditions
 */
 void() CheckRules =
 {       
-	if (timelimit && time >= timelimit)
-		NextLevel ();
+//	if (timelimit && time >= timelimit)
+//		NextLevel ();
 	
 	if (fraglimit && self.frags >= fraglimit)
 		NextLevel ();
