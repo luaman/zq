@@ -45,6 +45,8 @@ typedef struct
 	int				recalc_refdef;	// if true, recalc vid-based stuff
 	unsigned		conwidth;
 	unsigned		conheight;
+	int				realwidth;		// pixel width of GL window
+	int				realheight;		// pixel height of GL window
 	int				maxwarpwidth;
 	int				maxwarpheight;
 	pixel_t			*direct;		// direct drawing to framebuffer, if not
