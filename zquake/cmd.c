@@ -598,9 +598,10 @@ void Cmd_UnAlias_f (void)
 		Con_Printf ("Alias name is too long\n");
 		return;
 	}
-
+#if 0
 	if (!Cmd_DeleteAlias(s))
 		Con_Printf ("Unknown alias \"%s\"\n", s);
+#endif
 }
 
 // remove all aliases
