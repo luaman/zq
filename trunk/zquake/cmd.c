@@ -524,23 +524,22 @@ void Cmd_Alias_f (void)
 	// if the alias already exists, reuse it
 	for (a = cmd_alias_hash[key] ; a ; a=a->hash_next)
 	{
-		if (!Q_stricmp(a->name, s))
-		{
-			Z_Free (a->value);
+		if (!Q_stricmp(a->name, s))	{
+			Q_free (a->value);
 			break;
 		}
 	}
 
-	if (!a)
-	{
-		a = Z_Malloc (sizeof(cmd_alias_t));
+	if (!a) {
+		// allocate a new one
+		a = Q_malloc (sizeof(cmd_alias_t));
 		a->next = cmd_alias;
 		cmd_alias = a;
 		a->hash_next = cmd_alias_hash[key];
 		cmd_alias_hash[key] = a;
 	}
 
-	strcpy (a->name, s);
+	strcpy (a->name, s);	// safe (length checked earlier)
 
 #ifndef SERVERONLY
 	if (cbuf_current == &cbuf_svc)
@@ -553,7 +552,7 @@ void Cmd_Alias_f (void)
 		a->flags |= ALIAS_ARCHIVE;
 
 // copy the rest of the command line
-	a->value = Z_CopyString (Cmd_MakeArgs(2));
+	a->value = Q_strdup (Cmd_MakeArgs(2));
 }
 
 
@@ -594,8 +593,8 @@ qbool Cmd_DeleteAlias (char *name)
 				cmd_alias = a->next;
 
 			// free
-			Z_Free (a->value);
-			Z_Free (a);			
+			Q_free (a->value);
+			Q_free (a);
 			return true;
 		}
 		prev = a;
