@@ -194,7 +194,63 @@ void Con_CheckResize (void)
 	con.display = con.current;
 }
 
-					
+
+/*
+================					
+Con_ConDump_f
+================					
+*/
+void Con_ConDump_f (void)
+{
+	char	name[MAX_OSPATH];
+	char	buffer[1024];
+	FILE	*f;
+	int		i, x, linewidth;
+	char	*line;
+
+	if (Cmd_Argc() < 2) {
+		Com_Printf ("condump <filename> : dump console text to file\n");
+		return;
+	}
+
+	if (strstr(Cmd_Argv(1), ".."))
+		return;
+
+	Q_snprintfz (name, sizeof(name), "%s/%s", cls.gamedir, Cmd_Argv(1));
+	COM_ForceExtension (name, ".txt");
+
+	f = fopen (name, "wb");
+	if (!f) {
+		Com_Printf ("Couldn't open %s\n", name);
+		return;
+	}
+
+	linewidth = min (con_linewidth, sizeof(buffer)-1);
+	buffer[linewidth] = 0;
+
+	for (i = con.numlines - 1; i >= 0 ; i--)
+	{
+		line = con.text + ((con.current - i + con_totallines) % con_totallines)*con_linewidth;
+		strncpy (buffer, line, linewidth);
+		for (x = linewidth-1; x >= 0; x--)
+		{
+			if (buffer[x] == ' ')
+				buffer[x] = 0;
+			else
+				break;
+		}
+		for (x=0; buffer[x]; x++)
+			if ((unsigned char)buffer[x] >= 128 + 32)
+				buffer[x] &= 0x7f;	// strip high bit off ASCII chars
+
+		fprintf (f, "%s\n", buffer);
+	}
+
+	fclose (f);
+	Com_Printf ("Dumped console text to %s.\n", name);
+}
+
+
 /*
 ================
 Con_Init
@@ -219,6 +275,7 @@ void Con_Init (void)
 	Cmd_AddCommand ("toggleconsole", Con_ToggleConsole_f);
 	Cmd_AddCommand ("messagemode", Con_MessageMode_f);
 	Cmd_AddCommand ("messagemode2", Con_MessageMode2_f);
+	Cmd_AddCommand ("condump", Con_ConDump_f);
 	Cmd_AddCommand ("clear", Con_Clear_f);
 	con_initialized = true;
 }
