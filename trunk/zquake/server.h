@@ -158,7 +158,10 @@ typedef struct client_s
 	int			backbuf_size[MAX_BACK_BUFFERS];
 	byte		backbuf_data[MAX_BACK_BUFFERS][MAX_MSGLEN];
 
-	byte			stufftext_buf[MAX_STUFFTEXT];
+	// stufftext and sprint messages are buffered to reduce traffic
+	char			stufftext_buf[MAX_STUFFTEXT];
+	char			sprint_buf[256];
+	int				sprint_level;
 
 	double			connection_started;	// or time of disconnect for zombies
 	qboolean		send_message;		// set on frames a datagram arived on
