@@ -266,12 +266,11 @@ unsigned SV_CheckModel(char *mdl)
 	byte	stackbuf[1024];		// avoid dirtying the cache heap
 	byte *buf;
 	unsigned short crc;
-//	int len;
 
 	buf = (byte *)COM_LoadStackFile (mdl, stackbuf, sizeof(stackbuf));
+	if (!buf)
+		SV_Error ("SV_CheckModel: could not load %s\n", mdl);
 	crc = CRC_Block(buf, com_filesize);
-//	for (len = com_filesize; len; len--, buf++)
-//		CRC_ProcessByte(&crc, *buf);
 
 	return crc;
 }
