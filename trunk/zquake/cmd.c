@@ -22,9 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cmd.c -- Quake script command processing module
 
 #include "quakedef.h"
-#include "teamplay.h"
 
+#ifndef SERVERONLY
 void Cmd_ForwardToServer (void);
+#endif
 
 cvar_t cl_warncmd = {"cl_warncmd", "0"};
 
@@ -377,7 +378,7 @@ static int Key (char *name)
 	v = 0;
 	while ( (c = *name++) != 0 )
 //		v += *name;
-		v += c &~ 32;	// very lame, but works (case insensitivity)
+		v += c &~ 32;	// make it case insensitive
 
 	return v % 32;
 }
@@ -687,8 +688,7 @@ void Cmd_TokenizeString (char *text)
 	
 	while (1)
 	{
-// skip whitespace up to a /n
-//		while (*text && *text <= ' ' && *text != '\n')
+		// skip whitespace
 		while (*text == ' ' || *text == '\t' || *text == '\r')
 		{
 			text++;
@@ -840,94 +840,6 @@ char *Cmd_CompleteCommand (char *partial)
 	return NULL;
 }
 
-#ifndef SERVERONLY		// FIXME
-/*
-===================
-Cmd_ForwardToServer
-
-adds the current command line as a clc_stringcmd to the client message.
-things like godmode, noclip, etc, are commands directed to the server,
-so when they are typed in at the console, they will need to be forwarded.
-===================
-*/
-void Cmd_ForwardToServer (void)
-{
-	char *p;
-
-	if (cls.state == ca_disconnected)
-	{
-		Con_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
-		return;
-	}
-
-	if (cls.demoplayback)
-	{
-		// Tonik:
-		if ( ! Q_strcasecmp(Cmd_Argv(0), "pause"))
-			cl.paused ^= 1;						
-		return;
-	}
-
-	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-	// lowercase command
-	for (p=Cmd_Argv(0) ; *p ; p++)
-		*p = (char)tolower(*p);
-	SZ_Print (&cls.netchan.message, Cmd_Argv(0));
-	if (Cmd_Argc() > 1)
-	{
-		SZ_Print (&cls.netchan.message, " ");
-
-		if (!Q_strcasecmp(Cmd_Argv(0), "say") ||
-			!Q_strcasecmp(Cmd_Argv(0), "say_team"))
-		{
-			char		*s;
-			s = TP_ParseMacroString(Cmd_Args());
-			if (*s && *s < 32 && *s != 10)
-			{
-				SZ_Print (&cls.netchan.message, "\"");
-				SZ_Print (&cls.netchan.message, s);
-				SZ_Print (&cls.netchan.message, "\"");
-			}
-			else
-				SZ_Print (&cls.netchan.message, s);
-			return;
-		}
-
-		SZ_Print (&cls.netchan.message, Cmd_Args());
-	}
-}
-
-void SCR_RSShot_f (void);
-
-// don't forward the first argument
-void Cmd_ForwardToServer_f (void)
-{
-	if (cls.state == ca_disconnected)
-	{
-		Con_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
-		return;
-	}
-
-	if (Q_strcasecmp(Cmd_Argv(1), "snap") == 0) {
-		SCR_RSShot_f ();
-		return;
-	}
-	
-	if (cls.demoplayback)
-		return;		// not really connected
-
-	if (Cmd_Argc() > 1)
-	{
-		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		SZ_Print (&cls.netchan.message, Cmd_Args());
-	}
-}
-#else
-void Cmd_ForwardToServer (void)
-{
-}
-#endif
-
 
 void Cmd_CmdList_f (void)
 {
@@ -1059,10 +971,12 @@ void Cmd_ExecuteString (char *text)
 	{
 		if (!Q_strcasecmp (cmd_argv[0], cmd->name))
 		{
-			if (!cmd->function)
-				Cmd_ForwardToServer ();
-			else
+			if (cmd->function)
 				cmd->function ();
+#ifndef SERVERONLY
+			else
+				Cmd_ForwardToServer ();
+#endif
 			return;
 		}
 	}
@@ -1127,8 +1041,4 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("unaliasall", Cmd_UnAliasAll_f);
 	Cmd_AddCommand ("unalias", Cmd_UnAlias_f);
 	Cmd_AddCommand ("_z_cmd", Cmd_Z_Cmd_f);	// ZQuake
-
-#ifndef SERVERONLY
-	Cmd_AddCommand ("cmd", Cmd_ForwardToServer_f);
-#endif
 }
