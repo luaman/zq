@@ -235,9 +235,6 @@ void main (int argc, char *argv[])
 
 	SV_Init (&parms);
 
-// run one frame immediately for first heartbeat
-	SV_Frame (0.1);		
-
 //
 // main loop
 //
