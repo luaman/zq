@@ -306,7 +306,7 @@ void R_SetSky (char *name)
 			return;
 		}
 
-		if (width > 512 || height > 512 || width < 256 || height < 256) {
+		if (width > 512 || height > 512) {
 			Com_Printf ("Bad image dimensions in %s\n", pathname);
 			free (pic);
 			return;
