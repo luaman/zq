@@ -128,8 +128,13 @@ void SV_ClientPrintf (client_t *cl, int level, char *fmt, ...)
 	if (level < cl->messagelevel)
 		return;
 	
-	va_start (argptr,fmt);
-	vsprintf (string, fmt,argptr);
+	va_start (argptr, fmt);
+#ifdef _WIN32
+	_vsnprintf (string, sizeof(string) - 1, fmt, argptr);
+	string[sizeof(string) - 1] = '\0';
+#else
+	vsnprintf (string, sizeof(string), fmt, argptr);
+#endif // _WIN32
 	va_end (argptr);
 
 	SV_PrintToClient(cl, level, string);
@@ -149,8 +154,13 @@ void SV_BroadcastPrintf (int level, char *fmt, ...)
 	client_t	*cl;
 	int			i;
 
-	va_start (argptr,fmt);
-	vsprintf (string, fmt,argptr);
+	va_start (argptr, fmt);
+#ifdef _WIN32
+	_vsnprintf (string, sizeof(string) - 1, fmt, argptr);
+	string[sizeof(string) - 1] = '\0';
+#else
+	vsnprintf (string, sizeof(string), fmt, argptr);
+#endif // _WIN32
 	va_end (argptr);
 	
 	Sys_Printf ("%s", string);	// print to the console
@@ -180,8 +190,13 @@ void SV_BroadcastCommand (char *fmt, ...)
 	
 	if (!sv.state)
 		return;
-	va_start (argptr,fmt);
-	vsprintf (string, fmt,argptr);
+	va_start (argptr, fmt);
+#ifdef _WIN32
+	_vsnprintf (string, sizeof(string) - 1, fmt, argptr);
+	string[sizeof(string) - 1] = '\0';
+#else
+	vsnprintf (string, sizeof(string), fmt, argptr);
+#endif // _WIN32
 	va_end (argptr);
 
 	MSG_WriteByte (&sv.reliable_datagram, svc_stufftext);

@@ -696,7 +696,12 @@ static void OutofBandPrintf (netadr_t where, char *fmt, ...)
 	send[3] = 0xff;
 	send[4] = A2C_PRINT;
 	va_start (argptr, fmt);
-	vsprintf (send+5, fmt, argptr);
+#ifdef _WIN32
+	_vsnprintf (send + 5, sizeof(send) - 6, fmt, argptr);
+	send[sizeof(send) - 6] = '\0';
+#else
+	vsnprintf (send + 5, sizeof(send) - 5, fmt, argptr);
+#endif // _WIN32
 	va_end (argptr);
 
 	NET_SendPacket (NS_SERVER, strlen(send)+1, send, where);

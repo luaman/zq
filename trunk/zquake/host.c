@@ -88,7 +88,12 @@ void Host_Error (char *error, ...)
 	SCR_EndLoadingPlaque ();
 
 	va_start (argptr,error);
-	vsprintf (string,error,argptr);
+#ifdef _WIN32
+	_vsnprintf (string, sizeof(string) - 1, error, argptr);
+	string[sizeof(string) - 1] = '\0';
+#else
+	vsnprintf (string, sizeof(string), error, argptr);
+#endif // _WIN32
 	va_end (argptr);
 
 	Com_Printf ("\n===========================\n");

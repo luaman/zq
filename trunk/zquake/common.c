@@ -415,9 +415,10 @@ char *va (char *format, ...)
 	va_start (argptr, format);
 #ifdef _WIN32
 	_vsnprintf (string[idx], sizeof(string[idx]) - 1, format, argptr);
+	string[idx][sizeof(string[idx]) - 1] = '\0';
 #else
-	vsprintf (string[idx], format, argptr);
-#endif
+	vnsprintf (string[idx], sizeof(string[idx]), format, argptr);
+#endif // _WIN32
 	va_end (argptr);
 
 	return string[idx];
@@ -1415,14 +1416,18 @@ Com_Printf
 All console printing must go through this in order to be logged to disk
 ================
 */
-// FIXME: make a buffer size safe vsprintf?
 void Com_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 	
 	va_start (argptr, fmt);
-	vsprintf (msg, fmt, argptr);
+#ifdef _WIN32
+	_vsnprintf (msg, sizeof(msg) - 1, fmt, argptr);
+	msg[sizeof(msg) - 1] = '\0';
+#else
+	vsnprintf (msg, sizeof(msg), fmt, argptr);
+#endif // _WIN32
 	va_end (argptr);
 
 	if (rd_print)
@@ -1467,7 +1472,12 @@ void Com_DPrintf (char *fmt, ...)
 		return;			// don't confuse non-developers with techie stuff...
 
 	va_start (argptr,fmt);
-	vsprintf (msg, fmt, argptr);
+#ifdef _WIN32
+	_vsnprintf (msg, sizeof(msg) - 1, fmt, argptr);
+	msg[sizeof(msg) - 1] = '\0';
+#else
+	vsnprintf (msg, sizeof(msg), fmt, argptr);
+#endif // _WIN32
 	va_end (argptr);
 	
 	Com_Printf ("%s", msg);
