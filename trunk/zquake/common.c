@@ -1494,6 +1494,7 @@ void COM_AddGameDirectory (char *dir)
 //
 	search = Hunk_Alloc (sizeof(searchpath_t));
 	strcpy (search->filename, dir);
+	search->pack = NULL;
 	search->next = com_searchpaths;
 	com_searchpaths = search;
 
@@ -1570,6 +1571,7 @@ void COM_Gamedir (char *dir)
 	//
 	search = Q_Malloc (sizeof(searchpath_t));
 	strcpy (search->filename, com_gamedir);
+	search->pack = NULL;
 	search->next = com_searchpaths;
 	com_searchpaths = search;
 
