@@ -101,11 +101,11 @@ void R_ReadPointFile_f (void)
 	COM_FOpenFile (name, &f);
 	if (!f)
 	{
-		Con_Printf ("couldn't open %s\n", name);
+		Com_Printf ("couldn't open %s\n", name);
 		return;
 	}
 	
-	Con_Printf ("Reading %s...\n", name);
+	Com_Printf ("Reading %s...\n", name);
 	c = 0;
 	for ( ;; )
 	{
@@ -116,7 +116,7 @@ void R_ReadPointFile_f (void)
 		
 		if (!free_particles)
 		{
-			Con_Printf ("Not enough free particles\n");
+			Com_Printf ("Not enough free particles\n");
 			break;
 		}
 		p = free_particles;
@@ -132,7 +132,7 @@ void R_ReadPointFile_f (void)
 	}
 
 	fclose (f);
-	Con_Printf ("%i points read\n", c);
+	Com_Printf ("%i points read\n", c);
 }
 	
 /*

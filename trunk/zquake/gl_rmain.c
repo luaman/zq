@@ -174,7 +174,7 @@ mspriteframe_t *R_GetSpriteFrame (entity_t *currententity)
 
 	if ((frame >= psprite->numframes) || (frame < 0))
 	{
-		Con_Printf ("R_DrawSprite: no such frame %d\n", frame);
+		Com_Printf ("R_DrawSprite: no such frame %d\n", frame);
 		frame = 0;
 	}
 
@@ -425,7 +425,7 @@ void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr, qboolean mtex)
 
 	if ((frame >= paliashdr->numframes) || (frame < 0))
 	{
-		Con_DPrintf ("R_AliasSetupFrame: no such frame %d\n", frame);
+		Com_DPrintf ("R_AliasSetupFrame: no such frame %d\n", frame);
 		frame = 0;
 	}
 
@@ -559,7 +559,7 @@ void R_DrawAliasModel (entity_t *ent)
 	anim = (int)(cl.time*10) & 3;
 	skinnum = ent->skinnum;
 	if ((skinnum >= paliashdr->numskins) || (skinnum < 0)) {
-		Con_DPrintf ("R_DrawAliasModel: no such skin # %d\n", skinnum);
+		Com_DPrintf ("R_DrawAliasModel: no such skin # %d\n", skinnum);
 		skinnum = 0;
 	}
 
@@ -1298,6 +1298,6 @@ void R_RenderView (void)
 	{
 //		glFinish ();
 		time2 = Sys_DoubleTime ();
-		Con_Printf ("%3i ms  %4i wpoly %4i epoly\n", (int)((time2-time1)*1000), c_brush_polys, c_alias_polys); 
+		Com_Printf ("%3i ms  %4i wpoly %4i epoly\n", (int)((time2-time1)*1000), c_brush_polys, c_alias_polys); 
 	}
 }

@@ -244,7 +244,7 @@ void Con_Init (void)
 	con_linewidth = -1;
 	Con_CheckResize ();
 	
-	Con_Printf ("Console initialized.\n");
+	Com_Printf ("Console initialized.\n");
 
 //
 // register our commands
@@ -614,7 +614,7 @@ void Con_SafePrintf (char *fmt, ...)
 	
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
-	Con_Printf ("%s", msg);
+	Com_Printf ("%s", msg);
 	scr_disabled_for_loading = temp;
 }
 

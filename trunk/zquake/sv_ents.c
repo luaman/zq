@@ -285,7 +285,7 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 
 	newindex = 0;
 	oldindex = 0;
-//Con_Printf ("---%i to %i ----\n", client->delta_sequence & UPDATE_MASK
+//Com_Printf ("---%i to %i ----\n", client->delta_sequence & UPDATE_MASK
 //			, client->netchan.outgoing_sequence & UPDATE_MASK);
 	while (newindex < to->num_entities || oldindex < oldmax)
 	{
@@ -294,7 +294,7 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 
 		if (newnum == oldnum)
 		{	// delta update from old position
-//Con_Printf ("delta %i\n", newnum);
+//Com_Printf ("delta %i\n", newnum);
 			SV_WriteDelta (&from->entities[oldindex], &to->entities[newindex], msg, false);
 			oldindex++;
 			newindex++;
@@ -304,7 +304,7 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 		if (newnum < oldnum)
 		{	// this is a new entity, send it from the baseline
 			ent = EDICT_NUM(newnum);
-//Con_Printf ("baseline %i\n", newnum);
+//Com_Printf ("baseline %i\n", newnum);
 			SV_WriteDelta (&ent->baseline, &to->entities[newindex], msg, true);
 			newindex++;
 			continue;
@@ -312,7 +312,7 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 
 		if (newnum > oldnum)
 		{	// the old entity isn't present in the new message
-//Con_Printf ("remove %i\n", oldnum);
+//Com_Printf ("remove %i\n", oldnum);
 			MSG_WriteShort (msg, oldnum | U_REMOVE);
 			oldindex++;
 			continue;

@@ -181,7 +181,7 @@ qboolean CL_CheckOrDownloadFile (char *filename)
 
 	if (strstr (filename, ".."))
 	{
-		Con_Printf ("Refusing to download a path with ..\n");
+		Com_Printf ("Refusing to download a path with ..\n");
 		return true;
 	}
 
@@ -194,7 +194,7 @@ qboolean CL_CheckOrDownloadFile (char *filename)
 
 	//ZOID - can't download when recording
 	if (cls.demorecording) {
-		Con_Printf("Unable to download %s in record mode.\n", cls.downloadname);
+		Com_Printf ("Unable to download %s in record mode.\n", cls.downloadname);
 		return true;
 	}
 	//ZOID - can't download when playback
@@ -202,7 +202,7 @@ qboolean CL_CheckOrDownloadFile (char *filename)
 		return true;
 
 	strcpy (cls.downloadname, filename);
-	Con_Printf ("Downloading %s...\n", cls.downloadname);
+	Com_Printf ("Downloading %s...\n", cls.downloadname);
 
 	// download to a temp name, and only rename
 	// to the real name when done, so if interrupted
@@ -231,7 +231,7 @@ void Model_NextDownload (void)
 
 	if (cls.downloadnumber == 0)
 	{
-		Con_Printf ("Checking models...\n");
+		Com_Printf ("Checking models...\n");
 		cls.downloadnumber = 1;
 	}
 
@@ -256,9 +256,9 @@ void Model_NextDownload (void)
 
 		if (!cl.model_precache[i])
 		{
-			Con_Printf ("\nThe required model file '%s' could not be found or downloaded.\n\n"
+			Com_Printf ("\nThe required model file '%s' could not be found or downloaded.\n\n"
 				, cl.model_name[i]);
-			Con_Printf ("You may need to download or purchase a %s client "
+			Com_Printf ("You may need to download or purchase a %s client "
 				"pack in order to play on this server.\n\n", gamedirfile);
 			CL_Disconnect ();
 			return;
@@ -290,7 +290,7 @@ void Sound_NextDownload (void)
 
 	if (cls.downloadnumber == 0)
 	{
-		Con_Printf ("Checking sounds...\n");
+		Com_Printf ("Checking sounds...\n");
 		cls.downloadnumber = 1;
 	}
 
@@ -348,7 +348,7 @@ void CL_RequestNextDownload (void)
 		break;
 	case dl_none:
 	default:
-		Con_DPrintf("Unknown download type.\n");
+		Com_DPrintf ("Unknown download type.\n");
 	}
 }
 
@@ -378,10 +378,10 @@ void CL_ParseDownload (void)
 
 	if (size == -1)
 	{
-		Con_Printf ("File not found.\n");
+		Com_Printf ("File not found.\n");
 		if (cls.download)
 		{
-			Con_Printf ("cls.download shouldn't have been set\n");
+			Com_Printf ("cls.download shouldn't have been set\n");
 			fclose (cls.download);
 			cls.download = NULL;
 		}
@@ -403,7 +403,7 @@ void CL_ParseDownload (void)
 		if (!cls.download)
 		{
 			msg_readcount += size;
-			Con_Printf ("Failed to open %s\n", cls.downloadtempname);
+			Com_Printf ("Failed to open %s\n", cls.downloadtempname);
 			CL_RequestNextDownload ();
 			return;
 		}
@@ -417,11 +417,11 @@ void CL_ParseDownload (void)
 // change display routines by zoid
 		// request next block
 #if 0
-		Con_Printf (".");
+		Com_Printf (".");
 		if (10*(percent/10) != cls.downloadpercent)
 		{
 			cls.downloadpercent = 10*(percent/10);
-			Con_Printf ("%i%%", cls.downloadpercent);
+			Com_Printf ("%i%%", cls.downloadpercent);
 		}
 #endif
 		cls.downloadpercent = percent;
@@ -435,7 +435,7 @@ void CL_ParseDownload (void)
 		char	newn[MAX_OSPATH];
 
 #if 0
-		Con_Printf ("100%%\n");
+		Com_Printf ("100%%\n");
 #endif
 
 		fclose (cls.download);
@@ -451,7 +451,7 @@ void CL_ParseDownload (void)
 			}
 			r = rename (oldn, newn);
 			if (r)
-				Con_Printf ("failed to rename.\n");
+				Com_Printf ("failed to rename.\n");
 		}
 
 		cls.download = NULL;
@@ -492,12 +492,12 @@ void CL_NextUpload(void)
 	MSG_WriteByte (&cls.netchan.message, percent);
 	SZ_Write (&cls.netchan.message, buffer, r);
 
-	Con_DPrintf ("UPLOAD: %6d: %d written\n", upload_pos - r, r);
+	Com_DPrintf ("UPLOAD: %6d: %d written\n", upload_pos - r, r);
 
 	if (upload_pos != upload_size)
 		return;
 
-	Con_Printf ("Upload completed\n");
+	Com_Printf ("Upload completed\n");
 
 	free(upload_data);
 	upload_data = 0;
@@ -513,7 +513,7 @@ void CL_StartUpload (byte *data, int size)
 	if (upload_data)
 		free(upload_data);
 
-	Con_DPrintf("Upload starting of %d...\n", size);
+	Com_DPrintf ("Upload starting of %d...\n", size);
 
 	upload_data = Q_Malloc (size);
 	memcpy(upload_data, data, size);
@@ -560,7 +560,7 @@ void CL_ParseServerData (void)
 	int protover;
 	extern cshift_t	cshift_empty;
 	
-	Con_DPrintf ("Serverdata packet received.\n");
+	Com_DPrintf ("Serverdata packet received.\n");
 //
 // wipe the client_state_t struct
 //
@@ -647,8 +647,8 @@ void CL_ParseServerData (void)
 	movevars.entgravity         = MSG_ReadFloat();
 
 	// separate the printfs so the server message can have a color
-	Con_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
-	Con_Printf ("%c%s\n", 2, str);
+	Com_Printf ("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
+	Com_Printf ("%c%s\n", 2, str);
 
 	// ask for the sound list next
 	memset(cl.sound_name, 0, sizeof(cl.sound_name));
@@ -919,7 +919,7 @@ void CL_ParseClientdata (void)
 
 	if (latency < 0 || latency > 1.0)
 	{
-//		Con_Printf ("Odd latency: %5.2f\n", latency);
+//		Com_Printf ("Odd latency: %5.2f\n", latency);
 	}
 	else
 	{
@@ -1140,7 +1140,7 @@ void CL_SetInfo (void)
 	Q_strncpyz (value, MSG_ReadString(), sizeof(value));
 
 	if (!cl.teamfortress)	// don't allow cheating in TF
-		Con_DPrintf("SETINFO %s: %s=%s\n", player->name, key, value);
+		Com_DPrintf ("SETINFO %s: %s=%s\n", player->name, key, value);
 
 	Info_SetValueForStarKey (player->userinfo, key, value, MAX_INFO_STRING);
 
@@ -1200,7 +1200,7 @@ void CL_ParseServerInfoChange (void)
 	Q_strncpyz (key, MSG_ReadString(), sizeof(key));
 	Q_strncpyz (value, MSG_ReadString(), sizeof(value));
 
-	Con_DPrintf("SERVERINFO: %s=%s\n", key, value);
+	Com_DPrintf ("SERVERINFO: %s=%s\n", key, value);
 
 	Info_SetValueForKey (cl.serverinfo, key, value, MAX_SERVERINFO_STRING);
 
@@ -1238,10 +1238,10 @@ static void FlushString (char *s, int level, qboolean team, int offset)
 				*out++ = *p;
 		}
 		*out = 0;
-		Con_Printf ("%s", buf);
+		Com_Printf ("%s", buf);
 	}
 	else
-		Con_Printf ("%s", s);
+		Com_Printf ("%s", s);
 	if (level > 3)
 		return;
 	if (team)
@@ -1317,7 +1317,7 @@ void CL_ParseStufftext (void)
 
 	s = MSG_ReadString ();
 
-	Con_DPrintf ("stufftext: %s\n", s);
+	Com_DPrintf ("stufftext: %s\n", s);
 	Cbuf_AddTextEx (&cbuf_svc, s);
 
 	// QW servers send this without the ending \n
@@ -1421,7 +1421,7 @@ void CL_MuzzleFlash (void)
 }
 
 
-#define SHOWNET(x) if(cl_shownet.value==2)Con_Printf ("%3i:%s\n", msg_readcount-1, x);
+#define SHOWNET(x) if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);
 /*
 =====================
 CL_ParseServerMessage
@@ -1441,9 +1441,9 @@ void CL_ParseServerMessage (void)
 // if recording demos, copy the message out
 //
 	if (cl_shownet.value == 1)
-		Con_Printf ("%i ",net_message.cursize);
+		Com_Printf ("%i ",net_message.cursize);
 	else if (cl_shownet.value == 2)
-		Con_Printf ("------------------\n");
+		Com_Printf ("------------------\n");
 
 
 	CL_ParseClientdata ();
@@ -1478,7 +1478,7 @@ void CL_ParseServerMessage (void)
 			break;
 			
 		case svc_nop:
-//			Con_Printf ("svc_nop\n");
+//			Com_Printf ("svc_nop\n");
 			break;
 			
 		case svc_disconnect:

@@ -310,7 +310,7 @@ int UDP_OpenSocket (int port)
 // check for interface binding option
 	if ((i = COM_CheckParm("-ip")) != 0 && i < com_argc) {
 		address.sin_addr.s_addr = inet_addr(com_argv[i+1]);
-		Con_Printf ("Binding to IP Interface Address of %s\n",
+		Com_Printf ("Binding to IP Interface Address of %s\n",
 				inet_ntoa(address.sin_addr));
 	} else
 		address.sin_addr.s_addr = INADDR_ANY;
@@ -376,7 +376,7 @@ void NET_Config (qboolean client, qboolean server)
 #ifdef SERVERONLY
 			Sys_Error ("Couldn't allocate server socket");
 #else
-			Con_Printf ("WARNING: Couldn't allocate server socket.\n");
+			Com_Printf ("WARNING: Couldn't allocate server socket.\n");
 #endif
 		}
 	}

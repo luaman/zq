@@ -346,10 +346,10 @@ void Draw_TextureMode_f (void)
 		for (i=0 ; i< 6 ; i++)
 			if (gl_filter_min == modes[i].minimize)
 			{
-				Con_Printf ("%s\n", modes[i].name);
+				Com_Printf ("%s\n", modes[i].name);
 				return;
 			}
-		Con_Printf ("current filter is unknown???\n");
+		Com_Printf ("current filter is unknown???\n");
 		return;
 	}
 
@@ -360,7 +360,7 @@ void Draw_TextureMode_f (void)
 	}
 	if (i == 6)
 	{
-		Con_Printf ("bad filter name\n");
+		Com_Printf ("bad filter name\n");
 		return;
 	}
 

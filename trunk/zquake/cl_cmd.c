@@ -48,7 +48,7 @@ void Cmd_ForwardToServer (void)
 
 	if (cls.state == ca_disconnected)
 	{
-		Con_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
+		Com_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
 		return;
 	}
 
@@ -69,7 +69,7 @@ void CL_ForwardToServer_f (void)
 {
 	if (cls.state == ca_disconnected)
 	{
-		Con_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
+		Com_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
 		return;
 	}
 
@@ -101,7 +101,7 @@ void CL_Say_f (void)
 
 	if (cls.state == ca_disconnected)
 	{
-		Con_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
+		Com_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
 		return;
 	}
 
@@ -160,13 +160,13 @@ void CL_Packet_f (void)
 
 	if (Cmd_Argc() != 3)
 	{
-		Con_Printf ("packet <destination> <contents>\n");
+		Com_Printf ("packet <destination> <contents>\n");
 		return;
 	}
 
 	if (!NET_StringToAdr (Cmd_Argv(1), &adr))
 	{
-		Con_Printf ("Bad address\n");
+		Com_Printf ("Bad address\n");
 		return;
 	}
 
@@ -235,7 +235,7 @@ void CL_Rcon_f (void)
 	{
 		if (!strlen(rcon_address.string))
 		{
-			Con_Printf ("You must either be connected,\n"
+			Com_Printf ("You must either be connected,\n"
 						"or set the 'rcon_address' cvar\n"
 						"to issue rcon commands\n");
 
@@ -262,13 +262,13 @@ void CL_Download_f (void)
 
 	if (cls.state == ca_disconnected)
 	{
-		Con_Printf ("Must be connected.\n");
+		Com_Printf ("Must be connected.\n");
 		return;
 	}
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("Usage: download <datafile>\n");
+		Com_Printf ("Usage: download <datafile>\n");
 		return;
 	}
 
@@ -310,7 +310,7 @@ void CL_User_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("Usage: user <username / userid>\n");
+		Com_Printf ("Usage: user <username / userid>\n");
 		return;
 	}
 
@@ -327,7 +327,7 @@ void CL_User_f (void)
 			return;
 		}
 	}
-	Con_Printf ("User not in server.\n");
+	Com_Printf ("User not in server.\n");
 }
 
 /*
@@ -343,18 +343,18 @@ void CL_Users_f (void)
 	int		c;
 
 	c = 0;
-	Con_Printf ("userid frags name\n");
-	Con_Printf ("------ ----- ----\n");
+	Com_Printf ("userid frags name\n");
+	Com_Printf ("------ ----- ----\n");
 	for (i=0 ; i<MAX_CLIENTS ; i++)
 	{
 		if (cl.players[i].name[0])
 		{
-			Con_Printf ("%6i %4i %s\n", cl.players[i].userid, cl.players[i].frags, cl.players[i].name);
+			Com_Printf ("%6i %4i %s\n", cl.players[i].userid, cl.players[i].frags, cl.players[i].name);
 			c++;
 		}
 	}
 
-	Con_Printf ("%i total users\n", c);
+	Com_Printf ("%i total users\n", c);
 }
 
 /*
@@ -372,10 +372,10 @@ void CL_Color_f (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		Con_Printf ("\"color\" is \"%s %s\"\n",
+		Com_Printf ("\"color\" is \"%s %s\"\n",
 			Info_ValueForKey (cls.userinfo, "topcolor"),
 			Info_ValueForKey (cls.userinfo, "bottomcolor") );
-		Con_Printf ("color <0-13> [0-13]\n");
+		Com_Printf ("color <0-13> [0-13]\n");
 		return;
 	}
 
@@ -419,7 +419,7 @@ void CL_FullInfo_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("fullinfo <complete info string>\n");
+		Com_Printf ("fullinfo <complete info string>\n");
 		return;
 	}
 
@@ -435,7 +435,7 @@ void CL_FullInfo_f (void)
 
 		if (!*s)
 		{
-			Con_Printf ("MISSING VALUE\n");
+			Com_Printf ("MISSING VALUE\n");
 			return;
 		}
 
@@ -471,7 +471,7 @@ void CL_SetInfo_f (void)
 	}
 	if (Cmd_Argc() != 3)
 	{
-		Con_Printf ("usage: setinfo [ <key> <value> ]\n");
+		Com_Printf ("usage: setinfo [ <key> <value> ]\n");
 		return;
 	}
 	if (!stricmp(Cmd_Argv(1), pmodel_name) || !strcmp(Cmd_Argv(1), emodel_name))
@@ -551,18 +551,18 @@ void CL_WriteConfig_f (void)
 	char	name[MAX_QPATH];
 
 	if (Cmd_Argc() != 2) {
-		Con_Printf ("usage: writeconfig <filename>\n");
+		Com_Printf ("usage: writeconfig <filename>\n");
 		return;
 	}
 
 	Q_strncpyz (name, Cmd_Argv(1), sizeof(name));
 	COM_ForceExtension (name, ".cfg");
 
-	Con_Printf ("Writing %s\n", name);
+	Com_Printf ("Writing %s\n", name);
 
 	f = fopen (va("%s/%s", com_gamedir, name), "w");
 	if (!f) {
-		Con_Printf ("Couldn't write %s.\n", name);
+		Com_Printf ("Couldn't write %s.\n", name);
 		return;
 	}
 	
@@ -658,7 +658,7 @@ void CL_Changing_f (void)
 	cl.intermission = 0;
 	cls.state = ca_connected;	// not active anymore, but not disconnected
 
-	Con_Printf ("\nChanging map...\n");
+	Com_Printf ("\nChanging map...\n");
 }
 
 
@@ -684,12 +684,12 @@ void CL_FullServerinfo_f (void)
 		if (sv.state == ss_dead)
 #endif
 			if (!server_version)
-				Con_Printf("ZQuake %s server\n", p);
+				Com_Printf ("ZQuake %s server\n", p);
 		server_version = 2.40;
 	}
 	else if ((p = Info_ValueForKey(cl.serverinfo, "*qf_version")) && *p) {
 		if (!server_version)
-			Con_Printf("QuakeForge %s server\n", p);
+			Com_Printf ("QuakeForge %s server\n", p);
 		server_version = 2.40;
 	}
 	else if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p) {
@@ -697,14 +697,14 @@ void CL_FullServerinfo_f (void)
 		v = Q_atof(p);
 		if (v) {
 			if (!server_version)
-				Con_Printf("QuakeWorld %1.2f server\n", v);
+				Com_Printf ("QuakeWorld %1.2f server\n", v);
 			server_version = v;
 		}
 	}
 
 	p = Info_ValueForKey (cl.serverinfo, "*cheats");
 	if (*p)
-		Con_Printf ("== Cheats are enabled ==\n");
+		Com_Printf ("== Cheats are enabled ==\n");
 
 	CL_ProcessServerInfo ();
 }
@@ -716,7 +716,7 @@ void CL_Fov_f (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		Con_Printf ("\"fov\" is \"%s\"\n", scr_fov.string);
+		Com_Printf ("\"fov\" is \"%s\"\n", scr_fov.string);
 		return;
 	}
 
@@ -845,7 +845,7 @@ qboolean CL_LegacyCommand (void)
 
 	if (c == 1)
 	{
-		Con_Printf ("\"%s\" is \"%s\"\n", v->name, v->string);
+		Com_Printf ("\"%s\" is \"%s\"\n", v->name, v->string);
 		return true;
 	}
 

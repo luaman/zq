@@ -346,7 +346,7 @@ sndinitstat SNDDMA_InitDirect (void)
 
 		if (DS_OK != pDSPBuf->lpVtbl->GetCaps (pDSPBuf, &dsbcaps))
 		{
-			Con_Printf ("DS:GetCaps failed\n");
+			Com_Printf ("DS:GetCaps failed\n");
 			return SIS_FAILURE;
 		}
 
@@ -679,7 +679,7 @@ void SNDDMA_Submit(void)
 	{
 		if ( snd_completed == snd_sent )
 		{
-			Con_DPrintf ("Sound overrun\n");
+			Com_DPrintf ("Sound overrun\n");
 			break;
 		}
 

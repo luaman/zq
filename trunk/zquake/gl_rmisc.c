@@ -552,7 +552,7 @@ void R_TimeRefresh_f (void)
 	glFinish ();
 	stop = Sys_DoubleTime ();
 	time = stop-start;
-	Con_Printf ("%f seconds (%f fps)\n", time, 128/time);
+	Com_Printf ("%f seconds (%f fps)\n", time, 128/time);
 
 	glDrawBuffer  (GL_BACK);
 	GL_EndRendering ();

@@ -423,7 +423,7 @@ void LoadPCX (FILE *f)
 		|| pcx->xmax >= 320
 		|| pcx->ymax >= 256)
 	{
-		Con_Printf ("Bad pcx file\n");
+		Com_Printf ("Bad pcx file\n");
 		return;
 	}
 
@@ -679,7 +679,7 @@ void R_LoadSkys (void)
 		COM_FOpenFile (name, &f);
 		if (!f)
 		{
-			Con_Printf ("Couldn't load %s\n", name);
+			Com_Printf ("Couldn't load %s\n", name);
 			continue;
 		}
 		LoadTGA (f);

@@ -270,14 +270,14 @@ void Cvar_Register (cvar_t *variable)
 // first check to see if it has already been defined
 	if (Cvar_FindVar (variable->name))
 	{
-		Con_Printf ("Can't register variable %s, already defined\n", variable->name);
+		Com_Printf ("Can't register variable %s, already defined\n", variable->name);
 		return;
 	}
 	
 // check for overlap with a command
 	if (Cmd_Exists (variable->name))
 	{
-		Con_Printf ("Cvar_Register: %s is a command\n", variable->name);
+		Com_Printf ("Cvar_Register: %s is a command\n", variable->name);
 		return;
 	}
 		
@@ -319,7 +319,7 @@ qboolean Cvar_Command (void)
 	c = Cmd_Argc();
 	if (c == 1)
 	{
-		Con_Printf ("\"%s\" is \"%s\"\n", v->name, v->string);
+		Com_Printf ("\"%s\" is \"%s\"\n", v->name, v->string);
 		return true;
 	}
 
@@ -365,14 +365,14 @@ void Cvar_Toggle_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("toggle <cvar> : toggle a cvar on/off\n");
+		Com_Printf ("toggle <cvar> : toggle a cvar on/off\n");
 		return;
 	}
 
 	var = Cvar_FindVar (Cmd_Argv(1));
 	if (!var)
 	{
-		Con_Printf ("Unknown variable \"%s\"\n", Cmd_Argv(1));
+		Com_Printf ("Unknown variable \"%s\"\n", Cmd_Argv(1));
 		return;
 	}
 
@@ -392,13 +392,13 @@ void Cvar_CvarList_f (void)
 	int i;
 
 	for (var=cvar_vars, i=0 ; var ; var=var->next, i++)
-		Con_Printf("%c%c%c %s\n",
+		Com_Printf ("%c%c%c %s\n",
 			var->flags & CVAR_ARCHIVE ? '*' : ' ',
 			var->flags & CVAR_USERINFO ? 'u' : ' ',
 			var->flags & CVAR_SERVERINFO ? 's' : ' ',
 			var->name);
 
-	Con_Printf ("------------\n%d variables\n", i);
+	Com_Printf ("------------\n%d variables\n", i);
 }
 
 /*
@@ -494,7 +494,7 @@ void Cvar_Set_f (void)
 
 	if (Cmd_Argc() != 3)
 	{
-		Con_Printf ("usage: set <cvar> <value>\n");
+		Com_Printf ("usage: set <cvar> <value>\n");
 		return;
 	}
 
@@ -509,7 +509,7 @@ void Cvar_Set_f (void)
 	{
 		if (Cmd_Exists(var_name))
 		{
-			Con_Printf ("\"%s\" is a command\n", var_name);
+			Com_Printf ("\"%s\" is a command\n", var_name);
 			return;
 		}
 
@@ -530,13 +530,13 @@ void Cvar_Inc_f (void)
 
 	c = Cmd_Argc();
 	if (c != 2 && c != 3) {
-		Con_Printf ("inc <cvar> [value]\n");
+		Com_Printf ("inc <cvar> [value]\n");
 		return;
 	}
 
 	var = Cvar_FindVar (Cmd_Argv(1));
 	if (!var) {
-		Con_Printf ("Unknown variable \"%s\"\n", Cmd_Argv(1));
+		Com_Printf ("Unknown variable \"%s\"\n", Cmd_Argv(1));
 		return;
 	}
 
@@ -555,12 +555,12 @@ static void Cvar_Hash_Print_f (void)
 	int		i, count;
 	cvar_t	*cvar;
 
-	Con_Printf ("Cvar hash:\n");
+	Com_Printf ("Cvar hash:\n");
 	for (i = 0; i<32; i++)
 	{
 		count = 0;
 		for (cvar = cvar_hash[i]; cvar; cvar=cvar->hash_next, count++);
-		Con_Printf ("%i: %i\n", i, count);
+		Com_Printf ("%i: %i\n", i, count);
 	}
 
 }

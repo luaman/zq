@@ -195,7 +195,7 @@ void SV_CalcPHS (void)
 //	if (dedicated)
 	if (false)
 #endif
-	Con_Printf ("Building PHS...\n");
+	Com_Printf ("Building PHS...\n");
 
 	num = sv.worldmodel->numleafs;
 	rowwords = (num+31)>>5;
@@ -258,7 +258,7 @@ void SV_CalcPHS (void)
 //	if (dedicated)
 	if (false)
 #endif
-	Con_Printf ("Average leafs visible / hearable / total: %i / %i / %i\n"
+	Com_Printf ("Average leafs visible / hearable / total: %i / %i / %i\n"
 		, vcount/num, count/num, num);
 }
 
@@ -297,7 +297,7 @@ void SV_LoadEntFile (void)
 
 	sv.worldmodel->entities = data;
 
-	Con_DPrintf ("Loaded entfile %s\n", name);
+	Com_DPrintf ("Loaded entfile %s\n", name);
 
 	sprintf (crc, "%i", CRC_Block ((byte *)data, com_filesize));
 	Info_SetValueForStarKey (svs.info, "*entfile", crc, MAX_SERVERINFO_STRING);
@@ -322,7 +322,7 @@ void SV_SpawnServer (char *server)
 	extern qboolean	sv_allow_cheats;
 	extern cvar_t	sv_cheats;
 
-	Con_DPrintf ("SpawnServer: %s\n",server);
+	Com_DPrintf ("SpawnServer: %s\n",server);
 	
 	SV_SaveSpawnparms ();
 
@@ -466,6 +466,6 @@ void SV_SpawnServer (char *server)
 	sv.signon_buffer_size[sv.num_signon_buffers-1] = sv.signon.cursize;
 
 	Info_SetValueForKey (svs.info, "map", sv.name, MAX_SERVERINFO_STRING);
-	Con_DPrintf ("Server spawned.\n");
+	Com_DPrintf ("Server spawned.\n");
 }
 

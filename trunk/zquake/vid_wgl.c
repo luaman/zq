@@ -394,7 +394,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 		Sys_Error ("Bad video mode");
 	}
 
-// so Con_Printfs don't mess us up by forcing vid and snd updates
+// so Com_Printfs don't mess us up by forcing vid and snd updates
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
@@ -591,7 +591,7 @@ void CheckMultiTextureExtensions (void)
 		qglActiveTexture = (void *) wglGetProcAddress("glActiveTextureARB");
 		if (!qglMultiTexCoord2f || !qglActiveTexture)
 			return;
-		Con_Printf("Multitexture extensions found.\n");
+		Com_Printf ("Multitexture extensions found.\n");
 		gl_mtexable = true;
 	}
 }
@@ -604,16 +604,16 @@ GL_Init
 void GL_Init (void)
 {
 	gl_vendor = glGetString (GL_VENDOR);
-	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
+	Com_Printf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = glGetString (GL_RENDERER);
-	Con_Printf ("GL_RENDERER: %s\n", gl_renderer);
+	Com_Printf ("GL_RENDERER: %s\n", gl_renderer);
 
 	gl_version = glGetString (GL_VERSION);
-	Con_Printf ("GL_VERSION: %s\n", gl_version);
+	Com_Printf ("GL_VERSION: %s\n", gl_version);
 	gl_extensions = glGetString (GL_EXTENSIONS);
-	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
+	Com_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
-//	Con_Printf ("%s %s\n", gl_renderer, gl_version);
+//	Com_Printf ("%s %s\n", gl_renderer, gl_version);
 
     if (strnicmp(gl_renderer,"PowerVR",7)==0)
          fullsbardraw = true;
@@ -1255,7 +1255,7 @@ VID_DescribeCurrentMode_f
 */
 void VID_DescribeCurrentMode_f (void)
 {
-	Con_Printf ("%s\n", VID_GetExtModeDescription (vid_modenum));
+	Com_Printf ("%s\n", VID_GetExtModeDescription (vid_modenum));
 }
 
 
@@ -1268,9 +1268,9 @@ void VID_NumModes_f (void)
 {
 
 	if (nummodes == 1)
-		Con_Printf ("%d video mode is available\n", nummodes);
+		Com_Printf ("%d video mode is available\n", nummodes);
 	else
-		Con_Printf ("%d video modes are available\n", nummodes);
+		Com_Printf ("%d video modes are available\n", nummodes);
 }
 
 
@@ -1288,7 +1288,7 @@ void VID_DescribeMode_f (void)
 	t = leavecurrentmode;
 	leavecurrentmode = 0;
 
-	Con_Printf ("%s\n", VID_GetExtModeDescription (modenum));
+	Com_Printf ("%s\n", VID_GetExtModeDescription (modenum));
 
 	leavecurrentmode = t;
 }
@@ -1314,7 +1314,7 @@ void VID_DescribeModes_f (void)
 	{
 		pv = VID_GetModePtr (i);
 		pinfo = VID_GetExtModeDescription (i);
-		Con_Printf ("%2d: %s\n", i, pinfo);
+		Com_Printf ("%2d: %s\n", i, pinfo);
 	}
 
 	leavecurrentmode = t;

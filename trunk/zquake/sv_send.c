@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
 =============================================================================
 
-Con_Printf redirection
+Com_Printf redirection
 
 =============================================================================
 */
@@ -78,7 +78,7 @@ void SV_FlushRedirect (void)
 ==================
 SV_BeginRedirect
 
-Send Con_Printf data to the remote client instead of the console
+Send Com_Printf data to the remote client instead of the console
 ==================
 */
 void SV_BeginRedirect (redirect_t rd)
@@ -260,7 +260,7 @@ void SV_Multicast (vec3_t origin, int to)
 			leafnum = leaf - sv.worldmodel->leafs - 1;
 			if ( !(mask[leafnum>>3] & (1<<(leafnum&7)) ) )
 			{
-//				Con_Printf ("supressed multicast\n");
+//				Com_Printf ("supressed multicast\n");
 				continue;
 			}
 		}
@@ -320,7 +320,7 @@ void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
     
 	if ( sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num] )
 	{
-		Con_Printf ("SV_StartSound: %s not precached\n", sample);
+		Com_Printf ("SV_StartSound: %s not precached\n", sample);
 		return;
 	}
     
@@ -531,7 +531,7 @@ qboolean SV_SendClientDatagram (client_t *client)
 	// copy the accumulated multicast datagram
 	// for this client out to the message
 	if (client->datagram.overflowed)
-		Con_Printf ("WARNING: datagram overflowed for %s\n", client->name);
+		Com_Printf ("WARNING: datagram overflowed for %s\n", client->name);
 	else
 		SZ_Write (&msg, client->datagram.data, client->datagram.cursize);
 	SZ_Clear (&client->datagram);
@@ -542,7 +542,7 @@ qboolean SV_SendClientDatagram (client_t *client)
 
 	if (msg.overflowed)
 	{
-		Con_Printf ("WARNING: msg overflowed for %s\n", client->name);
+		Com_Printf ("WARNING: msg overflowed for %s\n", client->name);
 		SZ_Clear (&msg);
 	}
 
@@ -666,7 +666,7 @@ void SV_SendClientMessages (void)
 			if (c->netchan.message.cursize + c->backbuf_size[0] <
 				c->netchan.message.maxsize) {
 
-				Con_DPrintf("%s: backbuf %d bytes\n",
+				Com_DPrintf ("%s: backbuf %d bytes\n",
 					c->name, c->backbuf_size[0]);
 
 				// it'll fit
@@ -696,7 +696,7 @@ void SV_SendClientMessages (void)
 			SZ_Clear (&c->netchan.message);
 			SZ_Clear (&c->datagram);
 			SV_BroadcastPrintf (PRINT_HIGH, "%s overflowed\n", c->name);
-			Con_Printf ("WARNING: reliable overflow for %s\n",c->name);
+			Com_Printf ("WARNING: reliable overflow for %s\n",c->name);
 			SV_DropClient (c);
 			c->send_message = true;
 			c->netchan.cleartime = 0;	// don't choke this message

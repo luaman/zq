@@ -210,7 +210,7 @@ void FlushEntityPacket (void)
 	int			word;
 	entity_state_t	olde, newe;
 
-	Con_DPrintf ("FlushEntityPacket\n");
+	Com_DPrintf ("FlushEntityPacket\n");
 
 	memset (&olde, 0, sizeof(olde));
 
@@ -269,7 +269,7 @@ void CL_ParsePacketEntities (qboolean delta)
 		}
 
 		if ( (from&UPDATE_MASK) != (oldpacket&UPDATE_MASK) ) {
-			Con_DPrintf ("WARNING: from mismatch\n");
+			Com_DPrintf ("WARNING: from mismatch\n");
 			FlushEntityPacket ();
 			cl.validsequence = 0;
 			return;
@@ -316,7 +316,7 @@ void CL_ParsePacketEntities (qboolean delta)
 		{
 			while (oldindex < oldp->num_entities)
 			{	// copy all the rest of the entities from the old packet
-//Con_Printf ("copy %i\n", oldp->entities[oldindex].number);
+//Com_Printf ("copy %i\n", oldp->entities[oldindex].number);
 				if (newindex >= MAX_PACKET_ENTITIES)
 					Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
 				newp->entities[newindex] = oldp->entities[oldindex];
@@ -332,13 +332,13 @@ void CL_ParsePacketEntities (qboolean delta)
 		{
 			if (full)
 			{
-				Con_Printf ("WARNING: oldcopy on full update");
+				Com_Printf ("WARNING: oldcopy on full update");
 				FlushEntityPacket ();
 				cl.validsequence = 0;	// can't render a frame
 				return;
 			}
 
-//Con_Printf ("copy %i\n", oldnum);
+//Com_Printf ("copy %i\n", oldnum);
 			// copy one of the old entities over to the new packet unchanged
 			if (newindex >= MAX_PACKET_ENTITIES)
 				Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
@@ -350,12 +350,12 @@ void CL_ParsePacketEntities (qboolean delta)
 
 		if (newnum < oldnum)
 		{	// new from baseline
-//Con_Printf ("baseline %i\n", newnum);
+//Com_Printf ("baseline %i\n", newnum);
 			if (word & U_REMOVE)
 			{
 				if (full)
 				{
-					Con_Printf ("WARNING: U_REMOVE on full update\n");
+					Com_Printf ("WARNING: U_REMOVE on full update\n");
 					FlushEntityPacket ();
 					cl.validsequence = 0;	// can't render a frame
 					return;
@@ -375,14 +375,14 @@ void CL_ParsePacketEntities (qboolean delta)
 			{
 				cl.validsequence = 0;
 				cl.delta_sequence = 0;
-				Con_Printf ("WARNING: delta on full update");
+				Com_Printf ("WARNING: delta on full update");
 			}
 			if (word & U_REMOVE)
 			{
 				oldindex++;
 				continue;
 			}
-//Con_Printf ("delta %i\n",newnum);
+//Com_Printf ("delta %i\n",newnum);
 			CL_ParseDelta (&oldp->entities[oldindex], &newp->entities[newindex], word);
 			newindex++;
 			oldindex++;
@@ -937,7 +937,7 @@ void CL_LinkPlayers (void)
 		if (msec <= 0 || !cl_predict_players.value)
 		{
 			VectorCopy (state->origin, ent->origin);
-//Con_DPrintf ("nopredict\n");
+//Com_DPrintf ("nopredict\n");
 		}
 		else
 		{
@@ -945,7 +945,7 @@ void CL_LinkPlayers (void)
 			if (msec > 255)
 				msec = 255;
 			state->command.msec = msec;
-//Con_DPrintf ("predict: %i\n", msec);
+//Com_DPrintf ("predict: %i\n", msec);
 
 			oldphysent = pmove.numphysent;
 			CL_SetSolidPlayers (j);
@@ -1057,7 +1057,7 @@ void CL_SetUpPlayerPrediction(qboolean dopred)
 			if (msec <= 0 || !cl_predict_players.value || !dopred)
 			{
 				VectorCopy (state->origin, pplayer->origin);
-	//Con_DPrintf ("nopredict\n");
+	//Com_DPrintf ("nopredict\n");
 			}
 			else
 			{
@@ -1065,7 +1065,7 @@ void CL_SetUpPlayerPrediction(qboolean dopred)
 				if (msec > 255)
 					msec = 255;
 				state->command.msec = msec;
-	//Con_DPrintf ("predict: %i\n", msec);
+	//Com_DPrintf ("predict: %i\n", msec);
 
 				CL_PredictUsercmd (state, &exact, &state->command, false);
 				VectorCopy (exact.origin, pplayer->origin);

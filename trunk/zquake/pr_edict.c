@@ -95,7 +95,7 @@ edict_t *ED_Alloc (void)
 	
 	if (i == MAX_EDICTS)
 	{
-		Con_Printf ("WARNING: ED_Alloc: no free edicts\n");
+		Com_Printf ("WARNING: ED_Alloc: no free edicts\n");
 		i--;	// step on whatever is the last edict
 		e = EDICT_NUM(i);
 		SV_UnlinkEdict(e);
@@ -438,7 +438,7 @@ void ED_Print (edict_t *ed)
 
 	if (ed->free)
 	{
-		Con_Printf ("FREE\n");
+		Com_Printf ("FREE\n");
 		return;
 	}
 	
@@ -460,12 +460,12 @@ void ED_Print (edict_t *ed)
 		if (j == type_size[type])
 			continue;
 	
-		Con_Printf ("%s",name);
+		Com_Printf ("%s",name);
 		l = strlen (name);
 		while (l++ < 15)
-			Con_Printf (" ");
+			Com_Printf (" ");
 
-		Con_Printf ("%s\n", PR_ValueString(d->type, (eval_t *)v));		
+		Com_Printf ("%s\n", PR_ValueString(d->type, (eval_t *)v));		
 	}
 }
 
@@ -532,10 +532,10 @@ void ED_PrintEdicts (void)
 {
 	int		i;
 	
-	Con_Printf ("%i entities\n", sv.num_edicts);
+	Com_Printf ("%i entities\n", sv.num_edicts);
 	for (i=0 ; i<sv.num_edicts ; i++)
 	{
-		Con_Printf ("\nEDICT %i:\n",i);
+		Com_Printf ("\nEDICT %i:\n",i);
 		ED_PrintNum (i);
 	}
 }
@@ -552,7 +552,7 @@ void ED_PrintEdict_f (void)
 	int		i;
 	
 	i = Q_atoi (Cmd_Argv(1));
-	Con_Printf ("\n EDICT %i:\n",i);
+	Com_Printf ("\n EDICT %i:\n",i);
 	ED_PrintNum (i);
 }
 
@@ -584,11 +584,11 @@ void ED_Count (void)
 			step++;
 	}
 
-	Con_Printf ("num_edicts:%3i\n", sv.num_edicts);
-	Con_Printf ("active    :%3i\n", active);
-	Con_Printf ("view      :%3i\n", models);
-	Con_Printf ("touch     :%3i\n", solid);
-	Con_Printf ("step      :%3i\n", step);
+	Com_Printf ("num_edicts:%3i\n", sv.num_edicts);
+	Com_Printf ("active    :%3i\n", active);
+	Com_Printf ("view      :%3i\n", models);
+	Com_Printf ("touch     :%3i\n", solid);
+	Com_Printf ("step      :%3i\n", step);
 
 }
 
@@ -666,7 +666,7 @@ void ED_ParseGlobals (char *data)
 		key = ED_FindGlobal (keyname);
 		if (!key)
 		{
-			Con_Printf ("%s is not a global\n", keyname);
+			Com_Printf ("%s is not a global\n", keyname);
 			continue;
 		}
 
@@ -761,7 +761,7 @@ qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s)
 		def = ED_FindField (s);
 		if (!def)
 		{
-			Con_Printf ("Can't find field %s\n", s);
+			Com_Printf ("Can't find field %s\n", s);
 			return false;
 		}
 		*(int *)d = G_INT(def->ofs);
@@ -771,7 +771,7 @@ qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s)
 		func = ED_FindFunction (s);
 		if (!func)
 		{
-			Con_Printf ("Can't find function %s\n", s);
+			Com_Printf ("Can't find function %s\n", s);
 			return false;
 		}
 		*(func_t *)d = func - pr_functions;
@@ -849,7 +849,7 @@ if (!strcmp(com_token, "light"))
 		key = ED_FindField (keyname);
 		if (!key)
 		{
-			Con_Printf ("%s is not a field\n", keyname);
+			Com_Printf ("%s is not a field\n", keyname);
 			continue;
 		}
 
@@ -936,7 +936,7 @@ void ED_LoadFromFile (char *data)
 //
 		if (!ent->v.classname)
 		{
-			Con_Printf ("No classname for:\n");
+			Com_Printf ("No classname for:\n");
 			ED_Print (ent);
 			ED_Free (ent);
 			continue;
@@ -947,7 +947,7 @@ void ED_LoadFromFile (char *data)
 
 		if (!func)
 		{
-			Con_Printf ("No spawn function for:\n");
+			Com_Printf ("No spawn function for:\n");
 			ED_Print (ent);
 			ED_Free (ent);
 			continue;
@@ -958,7 +958,7 @@ void ED_LoadFromFile (char *data)
 		SV_FlushSignon();
 	}	
 
-	Con_DPrintf ("%i entities inhibited\n", inhibit);
+	Com_DPrintf ("%i entities inhibited\n", inhibit);
 }
 
 
@@ -986,7 +986,7 @@ void PR_LoadProgs (void)
 		progs = (dprograms_t *)COM_LoadHunkFile ("qwprogs.dat");
 	if (!progs)
 		SV_Error ("PR_LoadProgs: couldn't load qwprogs.dat");
-	Con_DPrintf ("Programs occupy %iK.\n", com_filesize/1024);
+	Com_DPrintf ("Programs occupy %iK.\n", com_filesize/1024);
 
 // add prog crc to the serverinfo
 	sprintf (num, "%i", CRC_Block ((byte *)progs, com_filesize));

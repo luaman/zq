@@ -52,7 +52,7 @@ void CL_NudgePosition (void)
 				return;
 		}
 	}
-	Con_DPrintf ("CL_NudgePosition: stuck\n");
+	Com_DPrintf ("CL_NudgePosition: stuck\n");
 }
 
 

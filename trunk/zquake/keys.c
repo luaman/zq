@@ -233,13 +233,13 @@ static void PaddedPrint (char *s)
 
 	if (nextcolx > con_linewidth - MINCOLUMNWIDTH
 		|| (con->x && nextcolx + strlen(s) >= con_linewidth))
-		Con_Printf ("\n");
+		Com_Printf ("\n");
 
 	if (con->x)
-		Con_Printf (" ");
+		Com_Printf (" ");
 	while (con->x % COLUMNWIDTH)
-		Con_Printf (" ");
-	Con_Printf ("%s", s);
+		Com_Printf (" ");
+	Com_Printf ("%s", s);
 }
 
 static char	compl_common[64];
@@ -284,10 +284,10 @@ void CompleteCommand (void)
 		extern cmd_alias_t *cmd_alias;
 		extern cvar_t *cvar_vars;
 
-		Con_Printf ("\n");
+		Com_Printf ("\n");
 
 		if (c) {
-			Con_Printf ("\x02" "commands:\n");
+			Com_Printf ("\x02" "commands:\n");
 			for (cmd=cmd_functions ; cmd ; cmd=cmd->next) {
 				if (!Q_strncasecmp (s, cmd->name, compl_len)) {
 					PaddedPrint (cmd->name);
@@ -295,11 +295,11 @@ void CompleteCommand (void)
 				}
 			}
 			if (con->x)
-				Con_Printf ("\n");
+				Com_Printf ("\n");
 		}
 
 		if (v) {
-			Con_Printf ("\x02" "variables:\n");
+			Com_Printf ("\x02" "variables:\n");
 			for (var=cvar_vars ; var ; var=var->next) {
 				if (!Q_strncasecmp (s, var->name, compl_len)) {
 					PaddedPrint (var->name);
@@ -307,18 +307,18 @@ void CompleteCommand (void)
 				}
 			}
 			if (con->x)
-				Con_Printf ("\n");
+				Com_Printf ("\n");
 		}
 
 		if (a) {
-			Con_Printf ("\x02" "aliases:\n");
+			Com_Printf ("\x02" "aliases:\n");
 			for (alias=cmd_alias ; alias ; alias=alias->next)
 				if (!Q_strncasecmp (s, alias->name, compl_len)) {
 					PaddedPrint (alias->name);
 					FindCommonSubString (alias->name);
 				}
 			if (con->x)
-				Con_Printf ("\n");
+				Com_Printf ("\n");
 		}
 
 	}
@@ -398,7 +398,7 @@ void Key_Console (int key)
 
 			Cbuf_AddText ("\n");
 no_lf:
-			Con_Printf ("%s\n",key_lines[edit_line]);
+			Com_Printf ("%s\n",key_lines[edit_line]);
 			edit_line = (edit_line + 1) & 31;
 			history_line = edit_line;
 			key_lines[edit_line][0] = ']';
@@ -821,14 +821,14 @@ void Key_Unbind_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("unbind <key> : remove commands from a key\n");
+		Com_Printf ("unbind <key> : remove commands from a key\n");
 		return;
 	}
 	
 	b = Key_StringToKeynum (Cmd_Argv(1));
 	if (b==-1)
 	{
-		Con_Printf ("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+		Com_Printf ("\"%s\" isn't a valid key\n", Cmd_Argv(1));
 		return;
 	}
 
@@ -859,22 +859,22 @@ void Key_Bind_f (void)
 
 	if (c < 2)
 	{
-		Con_Printf ("bind <key> [command] : attach a command to a key\n");
+		Com_Printf ("bind <key> [command] : attach a command to a key\n");
 		return;
 	}
 	b = Key_StringToKeynum (Cmd_Argv(1));
 	if (b==-1)
 	{
-		Con_Printf ("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+		Com_Printf ("\"%s\" isn't a valid key\n", Cmd_Argv(1));
 		return;
 	}
 
 	if (c == 2)
 	{
 		if (keybindings[b])
-			Con_Printf ("\"%s\" = \"%s\"\n", Cmd_Argv(1), keybindings[b] );
+			Com_Printf ("\"%s\" = \"%s\"\n", Cmd_Argv(1), keybindings[b] );
 		else
-			Con_Printf ("\"%s\" is not bound\n", Cmd_Argv(1) );
+			Com_Printf ("\"%s\" is not bound\n", Cmd_Argv(1) );
 		return;
 	}
 	
@@ -902,7 +902,7 @@ void Key_BindList_f (void)
 
 	for (i=0 ; i<256 ; i++)
 		if (keybindings[i])
-			Con_Printf ("%s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+			Com_Printf ("%s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
 }
 
 
@@ -1024,7 +1024,7 @@ void Key_Event (int key, qboolean down)
 	char	*kb;
 	char	cmd[1024];
 
-//	Con_Printf ("%i : %i\n", key, down); //@@@
+//	Com_Printf ("%i : %i\n", key, down); //@@@
 
 	keydown[key] = down;
 

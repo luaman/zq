@@ -159,7 +159,7 @@ void CL_ParseBeam (model_t *m)
 			return;
 		}
 	}
-	Con_Printf ("beam list overflow!\n");	
+	Com_Printf ("beam list overflow!\n");	
 }
 
 /*
