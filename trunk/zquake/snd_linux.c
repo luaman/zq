@@ -72,49 +72,46 @@ qbool SNDDMA_Init(void)
 		return 0;
     }
     
-	shm = &sn;
-    shm->splitbuffer = 0;
-
 // set sample bits & speed
 
     s = getenv("QUAKE_SOUND_SAMPLEBITS");
-    if (s) shm->samplebits = atoi(s);
+    if (s) dma.samplebits = atoi(s);
 	else if ((i = COM_CheckParm("-sndbits")) != 0)
-		shm->samplebits = atoi(com_argv[i+1]);
-	if (shm->samplebits != 16 && shm->samplebits != 8)
+		dma.samplebits = atoi(com_argv[i+1]);
+	if (dma.samplebits != 16 && dma.samplebits != 8)
     {
         ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &fmt);
-        if (fmt & AFMT_S16_LE) shm->samplebits = 16;
-        else if (fmt & AFMT_U8) shm->samplebits = 8;
+        if (fmt & AFMT_S16_LE) dma.samplebits = 16;
+        else if (fmt & AFMT_U8) dma.samplebits = 8;
     }
 
     s = getenv("QUAKE_SOUND_SPEED");
-    if (s) shm->speed = atoi(s);
+    if (s) dma.speed = atoi(s);
 	else if ((i = COM_CheckParm("-sndspeed")) != 0)
-		shm->speed = atoi(com_argv[i+1]);
+		dma.speed = atoi(com_argv[i+1]);
     else
     {
         for (i=0 ; i<sizeof(tryrates)/4 ; i++)
             if (!ioctl(audio_fd, SNDCTL_DSP_SPEED, &tryrates[i])) break;
-        shm->speed = tryrates[i];
+        dma.speed = tryrates[i];
     }
 
     s = getenv("QUAKE_SOUND_CHANNELS");
-    if (s) shm->channels = atoi(s);
+    if (s) dma.channels = atoi(s);
 	else if ((i = COM_CheckParm("-sndmono")) != 0)
-		shm->channels = 1;
+		dma.channels = 1;
 	else if ((i = COM_CheckParm("-sndstereo")) != 0)
-		shm->channels = 2;
-    else shm->channels = 2;
+		dma.channels = 2;
+    else dma.channels = 2;
 
-	shm->samples = info.fragstotal * info.fragsize / (shm->samplebits/8);
-	shm->submission_chunk = 1;
+	dma.samples = info.fragstotal * info.fragsize / (dma.samplebits/8);
+	dma.submission_chunk = 1;
 
 // memory map the dma buffer
 
-	shm->buffer = (unsigned char *) mmap(NULL, info.fragstotal
+	dma.buffer = (unsigned char *) mmap(NULL, info.fragstotal
 		* info.fragsize, PROT_WRITE, MAP_FILE|MAP_SHARED, audio_fd, 0);
-	if (!shm->buffer)
+	if (!dma.buffer)
 	{
 		perror("/dev/dsp");
 		Com_Printf ("Could not mmap /dev/dsp\n");
@@ -123,31 +120,31 @@ qbool SNDDMA_Init(void)
 	}
 
 	tmp = 0;
-	if (shm->channels == 2)
+	if (dma.channels == 2)
 		tmp = 1;
     rc = ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp);
     if (rc < 0)
     {
 		perror("/dev/dsp");
-        Com_Printf ("Could not set /dev/dsp to stereo=%d", shm->channels);
+        Com_Printf ("Could not set /dev/dsp to stereo=%d", dma.channels);
 		close(audio_fd);
         return 0;
     }
 	if (tmp)
-		shm->channels = 2;
+		dma.channels = 2;
 	else
-		shm->channels = 1;
+		dma.channels = 1;
 
-    rc = ioctl(audio_fd, SNDCTL_DSP_SPEED, &shm->speed);
+    rc = ioctl(audio_fd, SNDCTL_DSP_SPEED, &dma.speed);
     if (rc < 0)
     {
 		perror("/dev/dsp");
-        Com_Printf ("Could not set /dev/dsp speed to %d", shm->speed);
+        Com_Printf ("Could not set /dev/dsp speed to %d", dma.speed);
 		close(audio_fd);
         return 0;
     }
 
-    if (shm->samplebits == 16)
+    if (dma.samplebits == 16)
     {
         rc = AFMT_S16_LE;
         rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &rc);
@@ -159,7 +156,7 @@ qbool SNDDMA_Init(void)
 			return 0;
 		}
     }
-    else if (shm->samplebits == 8)
+    else if (dma.samplebits == 8)
     {
         rc = AFMT_U8;
         rc = ioctl(audio_fd, SNDCTL_DSP_SETFMT, &rc);
@@ -174,7 +171,7 @@ qbool SNDDMA_Init(void)
 	else
 	{
 		perror("/dev/dsp");
-		Com_Printf ("%d-bit sound not supported.", shm->samplebits);
+		Com_Printf ("%d-bit sound not supported.", dma.samplebits);
 		close(audio_fd);
 		return 0;
 	}
@@ -200,7 +197,7 @@ qbool SNDDMA_Init(void)
 		return 0;
 	}
 
-	shm->samplepos = 0;
+	dma.samplepos = 0;
 
 	snd_inited = 1;
 	return 1;
@@ -222,11 +219,11 @@ int SNDDMA_GetDMAPos(void)
 		snd_inited = 0;
 		return 0;
 	}
-//	shm->samplepos = (count.bytes / (shm->samplebits / 8)) & (shm->samples-1);
+//	dma.samplepos = (count.bytes / (dma.samplebits / 8)) & (dma.samples-1);
 //	fprintf(stderr, "%d    \r", count.ptr);
-	shm->samplepos = count.ptr / (shm->samplebits / 8);
+	dma.samplepos = count.ptr / (dma.samplebits / 8);
 
-	return shm->samplepos;
+	return dma.samplepos;
 
 }
 

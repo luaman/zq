@@ -48,9 +48,6 @@ typedef struct
 
 typedef struct
 {
-	qbool			gamealive;
-	qbool			soundalive;
-	qbool			splitbuffer;
 	int				channels;
 	int				samples;				// mono samples in buffer
 	int				submission_chunk;		// don't mix less than this #
@@ -136,21 +133,13 @@ extern	channel_t   channels[MAX_CHANNELS];
 extern	int			total_channels;
 
 //
-// Fake dma is a synchronous faking of the DMA progress used for
-// isolating performance in the renderer.  The fakedma_updates is
-// number of times S_Update() is called per second.
-//
-
-extern qbool	fakedma;
-extern int 		fakedma_updates;
 extern int		paintedtime;
 extern vec3_t	listener_origin;
 extern vec3_t	listener_forward;
 extern vec3_t	listener_right;
 extern vec3_t	listener_up;
-extern volatile dma_t *shm;
-extern volatile dma_t sn;
-extern vec_t	sound_nominal_clip_dist;
+
+extern dma_t	dma;
 
 extern cvar_t	s_loadas8bit;
 extern cvar_t	s_khz;
@@ -159,8 +148,7 @@ extern cvar_t	s_swapstereo;
 extern cvar_t	bgmvolume;
 
 extern qbool	snd_initialized;
-
-extern int		snd_blocked;
+extern qbool	snd_blocked;
 
 void S_LocalSound (char *s);
 sfxcache_t *S_LoadSound (sfx_t *s);
@@ -169,8 +157,5 @@ wavinfo_t GetWavinfo (char *name, byte *wav, int wavlength);
 
 void SND_InitScaletable (void);
 void SNDDMA_Submit(void);
-
-void S_AmbientOff (void);
-void S_AmbientOn (void);
 
 #endif
