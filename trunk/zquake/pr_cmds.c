@@ -961,17 +961,10 @@ static void PF_Remove (void)
 	int		num;
 
 	ed = G_EDICT(OFS_PARM0);
-	if (ed == (edict_t *)sv.edicts)
-		return;
 
 	num = NUM_FOR_EDICT(ed);
-
-	if (num >= 1 && num <= MAX_CLIENTS) {
-		client_t *cl = svs.clients + num - 1;
-		if (cl->bot)
-			SV_RemoveBot (cl);
-		return;
-	}
+	if (num >= 0 && num <= MAX_CLIENTS)
+		return;		// world and clients cannot be removed
 
 	ED_Free (ed);
 }
