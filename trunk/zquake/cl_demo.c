@@ -666,7 +666,7 @@ void CL_Record_f (void)
 //
 // open the demo file
 //
-	COM_DefaultExtension (name, ".qwd");
+	COM_ForceExtension (name, ".qwd");
 
 	cls.demofile = fopen (name, "wb");
 	if (!cls.demofile)
@@ -770,14 +770,14 @@ void CL_EasyRecord_f (void)
 
 // find a filename that doesn't exist yet
 	strcpy (name2, name);
-	COM_DefaultExtension (name2, ".qwd");
+	COM_ForceExtension (name2, ".qwd");
 	f = fopen (name2, "rb");
 	if (f) {
 		i = 0;
 		do {
 			fclose (f);
 			strcpy (name2, va("%s_%02i", name, i));
-			COM_DefaultExtension (name2, ".qwd");
+			COM_ForceExtension (name2, ".qwd");
 			f = fopen (name2, "rb");
 			i++;
 		} while (f);
@@ -830,7 +830,7 @@ void CL_ReRecord_f (void)
 //
 // open the demo file
 //
-	COM_DefaultExtension (name, ".qwd");
+	COM_ForceExtension (name, ".qwd");
 
 	cls.demofile = fopen (name, "wb");
 	if (!cls.demofile)
