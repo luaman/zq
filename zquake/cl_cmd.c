@@ -832,7 +832,10 @@ qboolean CL_LegacyCommand (void)
 	// so they are invisible to user and an alias can override them
 	if (!Q_strcasecmp(name, "god") || !Q_strcasecmp(name, "give") ||
 		!Q_strcasecmp(name, "noclip"))
+	{
 		Cmd_ForwardToServer ();
+		return true;
+	}
 
 	for (lvar=legacyvars ; lvar->var ; lvar++) {
 		if (!Q_strcasecmp(lvar->oldname, name))
