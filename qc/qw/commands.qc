@@ -51,6 +51,9 @@ void(string item, string amount) Cmd_Give = {
 		self.ammo_cells = stof(amount);
 	else if (item == "h" || item == "health")
 		self.health = stof(amount);
+	else if (item == "all") {
+		self.items = self.items | (IT_AXE|IT_SHOTGUN|IT_SUPER_SHOTGUN|IT
+	}
 	else {
 		sprint (self, PRINT_HIGH, "no such item: ");
 		sprint (self, PRINT_HIGH, item);
