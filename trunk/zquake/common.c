@@ -43,8 +43,11 @@ static char	*safeargvs[NUM_SAFE_ARGVS] =
 cvar_t	developer = {"developer","0"};
 cvar_t	registered = {"registered","0"};
 
-qboolean com_debuglog = false;
 qboolean com_serveractive = false;
+
+qboolean OnChange_logfile_var (cvar_t *var, char *string);
+cvar_t	logfile_var = {"logfile", "0", 0, OnChange_logfile_var};
+FILE	*logfile;
 
 void FS_InitFilesystem (void);
 void COM_Path_f (void);
@@ -1020,13 +1023,15 @@ void COM_Init (void)
 {
 	Cvar_Register (&developer);
 	Cvar_Register (&registered);
+	Cvar_Register (&logfile_var);
+
+	if (COM_CheckParm("-condebug"))
+		Cvar_SetValue (&logfile_var, 2);	// flush every write
 
 	Cmd_AddCommand ("path", COM_Path_f);
 
 	FS_InitFilesystem ();
 	COM_CheckRegistered ();
-
-	com_debuglog = COM_CheckParm("-condebug");
 }
 
 
@@ -2009,6 +2014,18 @@ void Com_EndRedirect (void)
 	rd_print = NULL;
 }
 
+qboolean OnChange_logfile_var (cvar_t *var, char *string)
+{
+	// close logfile if it's open
+	if (!Q_atof(string) && logfile)
+	{
+		fclose (logfile);
+		logfile = NULL;
+	}
+
+	return false;
+}
+
 /*
 ================
 Com_Printf
@@ -2021,9 +2038,6 @@ void Com_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
-#if defined(QW_BOTH) || defined(SERVERONLY)
-	extern FILE *	sv_logfile;
-#endif
 	
 	va_start (argptr, fmt);
 	vsprintf (msg, fmt, argptr);
@@ -2036,26 +2050,23 @@ void Com_Printf (char *fmt, ...)
 		return;
 	}
 
-#if defined(QW_BOTH) || defined(SERVERONLY)
-	if (sv_logfile)
-		fprintf (sv_logfile, "%s", msg);
-#endif
-
 	// also echo to debugging console
 	Sys_Printf ("%s", msg);
 
-#ifndef SERVERONLY	
-	// log all messages to file
-	if (com_debuglog) {
-		char        msg2[MAX_OSPATH + 32];
-
-		Q_snprintfz (msg2, sizeof (msg2), "%s/qconsole.log", com_gamedir);
-		Sys_DebugLog (msg2, "%s", msg);
+	if (logfile_var.value)
+	{
+		if (!logfile)
+			logfile = fopen (va("%s/qconsole.log", com_gamedir), "w");
+		if (logfile)
+		{
+			fprintf (logfile, "%s", msg);
+			if (logfile_var.value >= 2)
+				fflush (logfile);
+		}
 	}
 
 	// write it to the scrollable buffer
 	Con_Print (msg);
-#endif
 }
 
 /*
