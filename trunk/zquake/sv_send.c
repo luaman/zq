@@ -570,14 +570,11 @@ SV_SendClientDatagram
 */
 qboolean SV_SendClientDatagram (client_t *client)
 {
-	byte		buf[MAX_DATAGRAM];
+	byte		msg_buf[MAX_DATAGRAM];
 	sizebuf_t	msg;
 
-	msg.data = buf;
-	msg.maxsize = sizeof(buf);
-	msg.cursize = 0;
+	SZ_Init (&msg, msg_buf, sizeof(msg_buf));
 	msg.allowoverflow = true;
-	msg.overflowed = false;
 
 	// add the client specific data to the datagram
 	SV_WriteClientdataToMessage (client, &msg);
@@ -606,7 +603,7 @@ qboolean SV_SendClientDatagram (client_t *client)
 	}
 
 	// send the datagram
-	Netchan_Transmit (&client->netchan, msg.cursize, buf);
+	Netchan_Transmit (&client->netchan, msg.cursize, msg.data);
 
 	return true;
 }
@@ -741,10 +738,9 @@ void SV_SendClientMessages (void)
 
 				c->num_backbuf--;
 				if (c->num_backbuf) {
-					memset(&c->backbuf, 0, sizeof(c->backbuf));
-					c->backbuf.data = c->backbuf_data[c->num_backbuf - 1];
+					SZ_Init (&c->backbuf, c->backbuf_data[c->num_backbuf - 1],
+						sizeof(c->backbuf_data[c->num_backbuf - 1]));
 					c->backbuf.cursize = c->backbuf_size[c->num_backbuf - 1];
-					c->backbuf.maxsize = sizeof(c->backbuf_data[c->num_backbuf - 1]);
 				}
 			}
 		}
