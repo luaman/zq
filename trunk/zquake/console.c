@@ -593,28 +593,3 @@ void Con_DrawConsole (int lines)
 // draw the input prompt, user text, and cursor if desired
 	Con_DrawInput ();
 }
-
-
-/*
-==================
-Con_SafePrintf
-
-Okay to call even when the screen can't be updated
-==================
-*/
-void Con_SafePrintf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[1024];
-	int			temp;
-		
-	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
-	va_end (argptr);
-	
-	temp = scr_disabled_for_loading;
-	scr_disabled_for_loading = true;
-	Com_Printf ("%s", msg);
-	scr_disabled_for_loading = temp;
-}
-
