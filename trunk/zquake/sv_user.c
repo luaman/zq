@@ -83,7 +83,7 @@ void SV_New_f (void)
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
 //spawns.  These functions are written to not overflow
 	if (host_client->num_backbuf) {
-		Con_Printf("WARNING %s: [SV_New] Back buffered (%d0, clearing\n", host_client->name, host_client->netchan.message.cursize); 
+		Con_Printf("WARNING %s: [SV_New] Back buffered (%d0), clearing\n", host_client->name, host_client->netchan.message.cursize); 
 		host_client->num_backbuf = 0;
 		SZ_Clear(&host_client->netchan.message);
 	}
@@ -158,7 +158,7 @@ void SV_Soundlist_f (void)
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
 //spawns.  These functions are written to not overflow
 	if (host_client->num_backbuf) {
-		Con_Printf("WARNING %s: [SV_Soundlist] Back buffered (%d0, clearing\n", host_client->name, host_client->netchan.message.cursize); 
+		Con_Printf("WARNING %s: [SV_Soundlist] Back buffered (%d0), clearing\n", host_client->name, host_client->netchan.message.cursize); 
 		host_client->num_backbuf = 0;
 		SZ_Clear(&host_client->netchan.message);
 	}
@@ -214,7 +214,7 @@ void SV_Modellist_f (void)
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
 //spawns.  These functions are written to not overflow
 	if (host_client->num_backbuf) {
-		Con_Printf("WARNING %s: [SV_Modellist] Back buffered (%d0, clearing\n", host_client->name, host_client->netchan.message.cursize); 
+		Con_Printf("WARNING %s: [SV_Modellist] Back buffered (%d0), clearing\n", host_client->name, host_client->netchan.message.cursize); 
 		host_client->num_backbuf = 0;
 		SZ_Clear(&host_client->netchan.message);
 	}
@@ -283,7 +283,7 @@ void SV_PreSpawn_f (void)
 //NOTE:  This doesn't go through ClientReliableWrite since it's before the user
 //spawns.  These functions are written to not overflow
 	if (host_client->num_backbuf) {
-		Con_Printf("WARNING %s: [SV_PreSpawn] Back buffered (%d0, clearing\n", host_client->name, host_client->netchan.message.cursize); 
+		Con_Printf("WARNING %s: [SV_PreSpawn] Back buffered (%d0), clearing\n", host_client->name, host_client->netchan.message.cursize); 
 		host_client->num_backbuf = 0;
 		SZ_Clear(&host_client->netchan.message);
 	}
@@ -950,8 +950,7 @@ void SV_Pause_f (void)
 		return;
 	}
 
-//Tonik	if (sv.paused)
-	if (!sv.paused)	// Tonik
+	if (!sv.paused)
 		sprintf (st, "%s paused the game\n", host_client->name);
 	else
 		sprintf (st, "%s unpaused the game\n", host_client->name);
