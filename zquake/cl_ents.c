@@ -236,7 +236,6 @@ void FlushEntityPacket (void)
 
 	memset (&olde, 0, sizeof(olde));
 
-	cl.validsequence = 0;		// can't render a frame
 	cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].invalid = true;
 
 	// read it all, but ignore it
@@ -286,11 +285,16 @@ void CL_ParsePacketEntities (qboolean delta)
 		if (cls.netchan.outgoing_sequence - cls.netchan.incoming_sequence >= UPDATE_BACKUP-1)
 		{	// there are no valid frames left, so drop it
 			FlushEntityPacket ();
+			cl.validsequence = 0;
 			return;
 		}
 
-		if ( (from&UPDATE_MASK) != (oldpacket&UPDATE_MASK) )
+		if ( (from&UPDATE_MASK) != (oldpacket&UPDATE_MASK) ) {
 			Con_DPrintf ("WARNING: from mismatch\n");
+			FlushEntityPacket ();
+			cl.validsequence = 0;
+			return;
+		}
 
 		if (cls.netchan.outgoing_sequence - oldpacket >= UPDATE_BACKUP-1)
 		{	// we can't use this, it is too old
@@ -345,6 +349,7 @@ void CL_ParsePacketEntities (qboolean delta)
 			{
 				Con_Printf ("WARNING: oldcopy on full update");
 				FlushEntityPacket ();
+				cl.validsequence = 0;	// can't render a frame
 				return;
 			}
 
@@ -365,9 +370,9 @@ void CL_ParsePacketEntities (qboolean delta)
 			{
 				if (full)
 				{
-					cl.validsequence = 0;
 					Con_Printf ("WARNING: U_REMOVE on full update\n");
 					FlushEntityPacket ();
+					cl.validsequence = 0;	// can't render a frame
 					return;
 				}
 				continue;
