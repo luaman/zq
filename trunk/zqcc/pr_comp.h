@@ -23,7 +23,14 @@ typedef int func_t;
 typedef int string_t;
 
 enum etype_t {
-	ev_void, ev_string, ev_float, ev_vector, ev_entity, ev_field, ev_function, ev_pointer
+	ev_void,
+	ev_string,
+	ev_float,
+	ev_vector,
+	ev_entity,
+	ev_field,
+	ev_function,
+	ev_pointer
 };
 
 

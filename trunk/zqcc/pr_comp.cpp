@@ -979,7 +979,7 @@ void PR_ParseInitialization (type_t *type, char *name, def_t *def)
 		PR_ParseError ("syntax error : '%s'", pr_token);
 
 	if (pr_token_type == tt_name) {
-		// FIXME
+		PR_ParseError ("initializer is not a constant");
 	}
 
 	if (pr_immediate_type != type)
