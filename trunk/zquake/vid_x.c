@@ -63,8 +63,6 @@ int mouse_oldbuttonstate;
 int mouse_buttonstate;
 float mouse_x, mouse_y;
 float old_mouse_x, old_mouse_y;
-int p_mouse_x;
-int p_mouse_y;
 static qbool input_grabbed = false;
 
 #ifdef USE_DGA
@@ -1080,13 +1078,6 @@ void GetEvent (void)
 							  | PointerMotionMask | ButtonPressMask
 							  | ButtonReleaseMask);
 			}
-		}
-		else
-		{
-			mouse_x = (float) (x_event.xmotion.x - p_mouse_x);
-			mouse_y = (float) (x_event.xmotion.y - p_mouse_y);
-			p_mouse_x = x_event.xmotion.x;
-			p_mouse_y = x_event.xmotion.y;
 		}
 		break;
 
