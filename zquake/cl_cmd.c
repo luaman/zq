@@ -88,55 +88,64 @@ void CL_ForwardToServer_f (void)
 
 /*
 ===============
-CL_Say_f
+CL_Say
 
 Handles both say and say_team
 ===============
 */
-void CL_Say_f (void)
+void CL_Say (qboolean team)
 {
 	extern cvar_t cl_fakename;
 	char	text[1024], *s;
 
-	if (cls.state == ca_disconnected)
-	{
+	if (Cmd_Argc() < 2) {
+		if (team)
+			Com_Printf ("say_team <text>: send a team message\n");
+		else
+			Com_Printf ("say <text>: send a chat message\n");
+		return;
+	}
+
+	if (cls.state == ca_disconnected) {
 		Com_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
 		return;
 	}
 
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-	// lowercase command
-	for (s=Cmd_Argv(0) ; *s ; s++)
-		*s = (char)tolower(*s);
+	SZ_Print (&cls.netchan.message, team ? "say_team " : "say ");
 
-	SZ_Print (&cls.netchan.message, Cmd_Argv(0));
-	if (Cmd_Argc() > 1)
-	{
-		SZ_Print (&cls.netchan.message, " ");
+	text[0] = 0;
 
-		text[0] = 0;
+	s = TP_ParseMacroString (Cmd_Args());
+	s = TP_ParseFunChars (s, true);
 
-		// cl_fakename will hide real name with a linefeed character
-		if (cl_fakename.string[0] && !strcmp(Cmd_Argv(0), "say_team")) {
-			char buf[32];
-			Q_strncpyz (buf, cl_fakename.string, sizeof(buf));
-			Q_snprintfz (text, sizeof(text), "\x0d%s: ", TP_ParseFunChars(buf, true));
-		}
-
-		s = TP_ParseMacroString (Cmd_Args());	// because Cmd_Args() returns unparsed string
-		s = TP_ParseFunChars (s, true);
-		strncat (text, s, sizeof(text)-1);
-		text[sizeof(text)-1] = 0;		// can't rely on strncat
-
-		if (text[0] && text[0] < 32)
-		{
-			SZ_Print (&cls.netchan.message, "\"");
-			SZ_Print (&cls.netchan.message, text);
-			SZ_Print (&cls.netchan.message, "\"");
-		}
-		else
-			SZ_Print (&cls.netchan.message, text);
+	if (team && cl_fakename.string[0] &&
+		!strchr(s, '\x0d') /* explicit $\ in message overrides cl_fakename */) {
+		char buf[32];
+		Q_strncpyz (buf, cl_fakename.string, sizeof(buf));
+		Q_snprintfz (text, sizeof(text), "\x0d%s: ", TP_ParseFunChars(buf, true));
 	}
+
+	Q_strncatz (text, s, sizeof(text));
+
+	if (text[0] < 32)
+		SZ_Print (&cls.netchan.message, "\"");	// add quotes so that old servers parse the message correctly
+
+	SZ_Print (&cls.netchan.message, text);
+
+	if (text[0] < 32)
+		SZ_Print (&cls.netchan.message, "\"");	// add quotes so that old servers parse the message correctly
+}
+
+
+void CL_Say_f (void)
+{
+	CL_Say (false);
+}
+
+void CL_SayTeam_f (void)
+{
+	CL_Say (true);
 }
 
 
@@ -728,7 +737,7 @@ void CL_InitCommands (void)
 	Cmd_AddCommand ("pause", CL_Pause_f);
 	Cmd_AddCommand ("quit", CL_Quit_f);
 	Cmd_AddCommand ("say", CL_Say_f);
-	Cmd_AddCommand ("say_team", CL_Say_f);
+	Cmd_AddCommand ("say_team", CL_SayTeam_f);
 	Cmd_AddCommand ("serverinfo", CL_Serverinfo_f);
 	Cmd_AddCommand ("skins", Skin_Skins_f);
 	Cmd_AddCommand ("allskins", Skin_AllSkins_f);

@@ -2010,8 +2010,8 @@ void M_Demos_Key (int k)
 			}
 			else
 			{
-				strncat (demodir, "/", sizeof(demodir)-1);
-				strncat (demodir, dir[demo_base + demo_cursor].name, sizeof(demodir)-1);
+				Q_strncatz (demodir, "/", sizeof(demodir)-1);
+				Q_strncatz (demodir, dir[demo_base + demo_cursor].name, sizeof(demodir)-1);
 			}
 			demo_cursor = 0;
 			ReadDir ();
