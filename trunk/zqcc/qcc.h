@@ -370,6 +370,7 @@ extern eval_t		pr_immediate;
 void PR_PrintStatement (dstatement_t *s);
 
 void PR_Lex (void);
+void PR_LexPrecomp (void);
 // reads the next token into pr_token and classifies its type
 
 type_t *PR_ParseType (void);

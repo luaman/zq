@@ -80,7 +80,6 @@ def_t	*def_for_type[8] = {&def_void, &def_string, &def_float, &def_vector, &def_
 
 
 static void		 PR_LexWhitespace (void);
-static void		 PR_LexPrecomp (void);
 
 
 // don't take const into account
@@ -520,7 +519,7 @@ parses and executes directives
   #pragma message
 ========================
 */
-static void          PR_LexPrecomp (void)
+void          PR_LexPrecomp (void)
 {
 	// yeah it isn't quite Precompiler is it?
 	pr_file_p++;  // skip the hash
@@ -681,18 +680,18 @@ static void          PR_LexPrecomp (void)
 
 			PR_Lex();
 		}
-      else
-      {
-         eval_t   value;
+		else
+		{
+			eval_t   value;
 
-         value._float = 1;
+			value._float = 1;
 
-         // finally fix the define (with default-value)
-		   if (PR_AddDefine (define_name, &type_const_float, &value, false) <= 0)
-			   PR_ParseError ("Q544: #define \"%s\": creation failed", define_name);
-      }
+			// finally fix the define (with default-value)
+			if (PR_AddDefine (define_name, &type_const_float, &value, false) <= 0)
+				PR_ParseError ("Q544: #define \"%s\": creation failed", define_name);
+		}
 
-      return;
+		return;
 	}
 	else
 	if (PR_Check("undef"))
