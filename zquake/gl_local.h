@@ -35,7 +35,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <windows.h>
 #endif
 
+#ifdef SDL
+#include <SDL/SDL_opengl.h>
+#else
 #include <GL/gl.h>
+#endif
 
 void GL_EndRendering (void);
 
