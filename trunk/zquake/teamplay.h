@@ -34,9 +34,9 @@ extern cvar_t snd_trigger;
 
 // triggers
 void TP_ExecTrigger (char *s);
-char *TP_SoundTrigger (char *s);
 void TP_StatChanged (int stat, int value);
 void TP_CheckPickupSound (char *s, vec3_t org);
+qboolean TP_CheckSoundTrigger (char *str);
 
 // message triggers
 void TP_SearchForMsgTriggers (char *s, int level);

@@ -1893,85 +1893,6 @@ static void ExecTookTrigger (char *s, int flag, vec3_t org)
 	}
 }
 
-char *TP_SoundTrigger (char *s)
-{
-	int y, o, i, u, l;
-	qboolean inside = false;
-	char msg[1024], p[1024], snd[MAX_QPATH], *str;
-
-	if (!tp_soundtrigger.string[0]) {
-		S_LocalSound ("misc/talk.wav");
-		return s; // no trigger
-	}
-
-	if (!strstr(s, ".wav")) {
-		S_LocalSound ("misc/talk.wav");
-		return s;
-	}
-
-	strcpy(p, s);
-
-	for (str = tp_soundtrigger.string; *str; *str++)
-	{
-		if (strchr(s, *str))
-		{		
-			// play .wav
-			for (y = 0; s[y]; y++) 
-				if(s[y] == *str) 
-					break; // find starting point
-
-			y++;
-		
-			for (o = 0; s[o]; o++)
-			{
-				if (s[y+o] == '.' && s[y+o+1] == 'w' && s[y+o+2] == 'a' && s[y+o+3] == 'v') 
-					break;
-
-				snd[o] = s[y+o];
-			}
-
-			snd[o] = 0;
-			S_LocalSound (va("%s.wav", snd)); // play sound
-
-			// strip .wav from message
-			i = 0; u = 0; l = 0;
-
-			while (i <= strlen(s))
-			{
-				if (s[i] == *str)
-				{
-					inside = true;
-					l = i;
-				}
-
-				if (s[i] == '.' && s[i+1] == 'w' && s[i+2] == 'a' && s[i+3] == 'v')
-				{
-					inside = false;
-
-					if (s[l-1] == ' ' && s[i+4] == ' ')
-						i = i + 5;
-					else
-						i = i + 4;
-				}
-
-				if (!inside)
-				{
-					msg[u] = s[i];
-					msg[u+1] = '\0';
-					u++;
-				}
-
-				i++;
-			}
-
-			strcpy(s, msg);
-			return s;
-		}
-	}
-
-	S_LocalSound ("misc/talk.wav");
-	return s;
-}
 
 void TP_CheckPickupSound (char *s, vec3_t org)
 {
@@ -2225,6 +2146,83 @@ void TP_StatChanged (int stat, int value)
 			TP_ExecTrigger ("f_weaponchange");
 		vars.activeweapon = cl.stats[STAT_ACTIVEWEAPON];
 	}
+}
+
+
+/*
+======================
+TP_CheckSoundTrigger
+
+Find and execute sound triggers.
+A sound trigger must be terminated by either a CR or LF.
+Returns true if a sound was found and played
+======================
+*/
+qboolean TP_CheckSoundTrigger (char *str)
+{
+	int		i, j;
+	int		start, length;
+	char	soundname[MAX_OSPATH];
+	FILE	*f;
+
+	if (!tp_soundtrigger.string[0])
+		return false;
+
+	for (i=strlen(str)-1 ; i ; i--)
+	{
+		if (str[i] != 0x0A && str[i] != 0x0D)
+			continue;
+
+		for (j = i-1 ; j >= 0 ; j--)
+		{
+			// quick check for chars that cannot be used
+			// as sound triggers but might be part of a file name
+			if ((str[j] >= 'a' && str[j] <= 'z') ||
+				(str[j] >= 'A' && str[j] <= 'Z') ||
+				(str[j] >= '0' && str[j] <= '9'))
+				continue;	// file name or chat
+
+			if (strchr(tp_soundtrigger.string, str[j]))
+			{
+				// this might be a sound trigger
+
+				start = j + 1;
+				length = i - start;
+
+				if (!length)
+					break;
+				if (length >= MAX_QPATH)
+					break;
+
+				Q_strncpyz (soundname, str + start, length + 1);
+				if (strstr(soundname, ".."))
+					break;	// no thank you
+
+				// clean up the message
+				strcpy (str + j, str + i);
+
+				if (!snd_initialized)
+					return false;
+
+				COM_DefaultExtension (soundname, ".wav");
+
+				// make sure we have it on disk (FIXME)
+				FS_FOpenFile (va("sound/%s", soundname), &f);
+				if (!f)
+					return false;
+				fclose (f);
+
+				// now play the sound
+				S_LocalSound (soundname);
+				return true;
+			}
+
+			if (str[j] <= ' ' || strchr("\"&'*,:;<>?\\|\x7f", str[j]))
+				break;	// we don't allow these in a file name
+		}
+	}
+
+	return false;
 }
 
 
