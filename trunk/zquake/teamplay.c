@@ -152,6 +152,18 @@ void TP_ExecTrigger (char *s)
 #define MAX_MACRO_VALUE	256
 static char	macro_buf[MAX_MACRO_VALUE] = "";
 
+// buffer-size-safe helper functions
+void MacroBuf_strcat (char *str) {
+	Q_strncatz (macro_buf, str, sizeof(macro_buf));
+}
+void MacroBuf_strcat_with_separator (char *str) {
+	if (macro_buf[0])
+		Q_strncatz (macro_buf, "/", sizeof(macro_buf));
+	Q_strncatz (macro_buf, str, sizeof(macro_buf));
+}
+
+
+
 char *Macro_Quote (void)
 {
 	return "\"";
@@ -222,10 +234,35 @@ char *Macro_Weapon (void)
 	}
 }
 
+char *Macro_Weapons (void) {	
+	macro_buf[0] = 0;
+
+	if (cl.stats[STAT_ITEMS] & IT_LIGHTNING)
+		strcpy(macro_buf, "lg");
+	if (cl.stats[STAT_ITEMS] & IT_ROCKET_LAUNCHER)
+		MacroBuf_strcat_with_separator ("rl");
+	if (cl.stats[STAT_ITEMS] & IT_GRENADE_LAUNCHER)
+		MacroBuf_strcat_with_separator ("gl");
+	if (cl.stats[STAT_ITEMS] & IT_SUPER_NAILGUN)
+		MacroBuf_strcat_with_separator ("sng");
+	if (cl.stats[STAT_ITEMS] & IT_NAILGUN)
+		MacroBuf_strcat_with_separator ("ng");
+	if (cl.stats[STAT_ITEMS] & IT_SUPER_SHOTGUN)
+		MacroBuf_strcat_with_separator ("ssg");
+	if (cl.stats[STAT_ITEMS] & IT_SHOTGUN)
+		MacroBuf_strcat_with_separator ("sg");
+	if (cl.stats[STAT_ITEMS] & IT_AXE)
+		MacroBuf_strcat_with_separator ("axe");
+//	if (!macro_buf[0])	
+//		Q_strncpyz(macro_buf, tp_name_none.string, sizeof(macro_buf));
+
+	return macro_buf;
+}
+
 char *Macro_WeaponAndAmmo (void)
 {
-	char buf[MAX_MACRO_VALUE];
-	sprintf (buf, "%s:%s", Macro_Weapon(), Macro_Ammo());
+	char buf[sizeof(macro_buf)];
+	Q_snprintfz (buf, sizeof(buf), "%s:%s", Macro_Weapon(), Macro_Ammo());
 	strcpy (macro_buf, buf);
 	return macro_buf;
 }
@@ -415,7 +452,7 @@ char *Macro_Date (void)
 char *Macro_Took (void)
 {
 	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
-		strncpy (macro_buf, tp_name_nothing.string, sizeof(macro_buf)-1);
+		Q_strncpyz (macro_buf, tp_name_nothing.string, sizeof(macro_buf));
 	else
 		strcpy (macro_buf, vars.tookname);
 	return macro_buf;
@@ -425,7 +462,7 @@ char *Macro_Took (void)
 char *Macro_TookLoc (void)
 {
 	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
-		strncpy (macro_buf, tp_name_someplace.string, sizeof(macro_buf)-1);
+		Q_strncpyz (macro_buf, tp_name_someplace.string, sizeof(macro_buf));
 	else
 		strcpy (macro_buf, vars.tookloc);
 	return macro_buf;
@@ -438,8 +475,8 @@ char *Macro_TookAtLoc (void)
 	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
 		strncpy (macro_buf, tp_name_nothing.string, sizeof(macro_buf)-1);
 	else {
-		strncpy (macro_buf, va("%s %s %s", vars.tookname,
-			tp_name_at.string, vars.tookloc), sizeof(macro_buf)-1);
+		Q_strncpyz (macro_buf, va("%s %s %s", vars.tookname,
+			tp_name_at.string, vars.tookloc), sizeof(macro_buf));
 	}
 	return macro_buf;
 }
@@ -459,8 +496,10 @@ char *Macro_PointLocation (void)
 		TP_FindPoint ();
 	if (vars.pointloc[0])
 		return vars.pointloc;
-	else
-		return tp_name_someplace.string;
+	else {
+		Q_strncpyz (macro_buf, tp_name_someplace.string, sizeof(macro_buf));
+		return macro_buf;
+	}
 }
 
 char *Macro_PointNameAtLocation (void)
@@ -490,35 +529,21 @@ char *Macro_Need (void)
 
 	// check health
 	if (tp_need_health.value && cl.stats[STAT_HEALTH] < tp_need_health.value) {
-		if (macro_buf[0])
-			strcat (macro_buf, "/");
-		strcat (macro_buf, "health");
+		MacroBuf_strcat_with_separator ("health");
 	}
 
 	if (cl.teamfortress)
 	{
 		// in TF, we have all weapons from the start,
 		// and ammo is checked differently
-		if (cl.stats[STAT_ROCKETS] < tp_need_rockets.value) {
-			if (macro_buf[0])
-				strcat (macro_buf, "/");
-			strcat (macro_buf, "rockets");
-		}
-		if (cl.stats[STAT_SHELLS] < tp_need_shells.value) {
-			if (macro_buf[0])
-				strcat (macro_buf, "/");
-			strcat (macro_buf, "shells");
-		}
-		if (cl.stats[STAT_NAILS] < tp_need_nails.value) {
-			if (macro_buf[0])
-				strcat (macro_buf, "/");
-			strcat (macro_buf, "nails");
-		}
-		if (cl.stats[STAT_CELLS] < tp_need_cells.value) {
-			if (macro_buf[0])
-				strcat (macro_buf, "/");
-			strcat (macro_buf, "cells");
-		}
+		if (cl.stats[STAT_ROCKETS] < tp_need_rockets.value)
+			MacroBuf_strcat_with_separator ("rockets");
+		if (cl.stats[STAT_SHELLS] < tp_need_shells.value)
+			MacroBuf_strcat_with_separator ("shells");
+		if (cl.stats[STAT_NAILS] < tp_need_nails.value)
+			MacroBuf_strcat_with_separator ("nails");
+		if (cl.stats[STAT_CELLS] < tp_need_cells.value)
+			MacroBuf_strcat_with_separator ("cells");
 		goto done;
 	}
 
@@ -539,14 +564,10 @@ char *Macro_Need (void)
 	}
 
 	if (!weapon) {
-		if (macro_buf[0])
-			strcat (macro_buf, "/");
-		strcat (macro_buf, "weapon");
+		MacroBuf_strcat_with_separator ("weapon");
 	} else {
 		if (tp_need_rl.value && !(cl.stats[STAT_ITEMS] & IT_ROCKET_LAUNCHER)) {
-			if (macro_buf[0])
-				strcat (macro_buf, "/");
-			strcat (macro_buf, "rl");
+			MacroBuf_strcat_with_separator ("rl");
 		}
 
 		switch (weapon) {
@@ -556,9 +577,7 @@ char *Macro_Need (void)
 			case 8: if (cl.stats[STAT_CELLS] < tp_need_cells.value) needammo = "cells"; break;
 		}
 		if (needammo) {
-			if (macro_buf[0])
-				strcat (macro_buf, "/");
-			strcat (macro_buf, needammo);
+			MacroBuf_strcat_with_separator (needammo);
 		}
 	}
 
@@ -622,6 +641,7 @@ macro_command_t macro_commands[] =
 	{"rockets", Macro_Rockets},
 	{"cells", Macro_Cells},
 	{"weaponnum", Macro_WeaponNum},
+	{"weapons", Macro_Weapons},
 	{"weapon", Macro_Weapon},
 	{"ammo", Macro_Ammo},
 	{"bestweapon", Macro_BestWeapon},
