@@ -721,7 +721,8 @@ int		 PR_WriteProgdefs (char *filename)
 
 	out += sprintf (out, "#define PROGHEADER_CRC %i\n", crc);
 
-	if (CheckParm("-progdefs")) {
+	if (CheckParm("-progdefs", 0))
+	{
 		printf ("writing %s\n", filename);
 		FILE *f = fopen (filename, "w");
 		fwrite (buf, out - buf, 1, f);
@@ -780,21 +781,22 @@ int		 main (int argc, char **argv)
 	myargc = argc;
 	myargv = argv;
 	
-	if (CheckParm ("-?") || CheckParm ("-help"))
+	if (CheckParm ("-?", 0) || CheckParm ("-help",0 ))
 	{
-		printf ("qcc looks for progs.src in the current directory.\n");
-		printf ("to look in a different directory: qcc -src <directory>\n");
+		printf ("zqcc looks for progs.src in the current directory.\n");
+		printf ("to look in a different directory: -src <directory>\n");
 		printf ("to enable vanilla id Software code compatibility: -idcomp\n");
-		printf ("to dump progdefs.h: qcc -progdefs\n");
+		printf ("to dump progdefs.h: -progdefs\n");
+      printf ("to #define something: -D <name>\n");
 		return 0;	// or should I return 1?
 	}
 
-	if (CheckParm ("-idcomp")) {
+	if (CheckParm ("-idcomp", 0)) {
 		printf ("compiling in id compatibility mode\n");
 		opt_idcomp = true;
 	}
 
-	p = CheckParm ("-src");
+	p = CheckParm ("-src", 0);
 	if (p && p < argc-1 )
 	{
 		strcpy (sourcedir, argv[p+1]);
@@ -811,6 +813,15 @@ int		 main (int argc, char **argv)
 	zqcc_value._float = 1;
 	if (PR_AddDefine((const char *)"_ZQCC", &type_const_float, &zqcc_value, true) <= 0)
 		PR_ParseError ("unable to create the internal #define \"_ZQCC\"");
+
+	// check for commandline defines:
+	p = 0;
+	while ( (p = CheckParm ("-D", p+1)) > 0 && p < argc-1 )
+	{
+		if (PR_AddDefine((const char *)argv[p+1], &type_const_float, &zqcc_value, false) <= 0)
+			PR_ParseError ("unable to create the #define \"%s\"", argv[p+1]);
+		printf ("Additional #define: %s\n", argv[p+1]);
+	}
 
 	sprintf (filename, "%sprogs.src", sourcedir);
 	LoadFile (filename, (void **)&src);
@@ -841,7 +852,7 @@ int		 main (int argc, char **argv)
 	if (!PR_FinishCompilation ())
 		Error ("compilation errors");
 
-	p = CheckParm ("-asm");
+	p = CheckParm ("-asm", 0);
 	if (p)
 	{
 		for (p++ ; p<argc ; p++)
