@@ -22,8 +22,9 @@
 
 // NOTES
 //  * AudioQuake currently supports the QWSP and QW game modes.
-//  * The bot can't be used with QW so if you want to compile qwprogs.dat, you
-//    must disable it by commenting out the #define line below.
+//  * We now use FrikBot (also in ZQuake QC) in multiplayer games.
+//    It doesn't currently support single player/co-op so is disabled
+//    for now in single player.
 
 // Turn on accessibility features...
 #define AGRIP
