@@ -1073,7 +1073,7 @@ R_RecursiveWorldNode
 */
 void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 {
-	int			c, side;
+	int			c, side, sidebit;
 	mplane_t	*plane;
 	msurface_t	*surf, **mark;
 	mleaf_t		*pleaf;
@@ -1112,10 +1112,14 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 		else
 			dot = DotProduct (modelorg, plane->normal) - plane->dist;
 
-		if (dot >= 0)
+		if (dot >= 0) {
 			side = 0;
-		else
+			sidebit = 0;
+		}
+		else {
 			side = 1;
+			sidebit = SURF_PLANEBACK;
+		}
 
 	// recurse down the children, front side first
 		R_RecursiveWorldNode (node->children[side], clipflags);
@@ -1127,40 +1131,33 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 		{
 			surf = r_worldmodel->surfaces + node->firstsurface;
 
-			if (dot < 0 -BACKFACE_EPSILON)
-				side = SURF_PLANEBACK;
-			else if (dot > BACKFACE_EPSILON)
-				side = 0;
+			for ( ; c ; c--, surf++)
 			{
-				for ( ; c ; c--, surf++)
+				if (surf->visframe != r_framecount)
+					continue;
+
+				if ((surf->flags & SURF_PLANEBACK) != sidebit)
+					continue;		// wrong side
+
+				if ((surf->flags & SURF_DRAWSKY) && r_skyboxloaded)
 				{
-					if (surf->visframe != r_framecount)
-						continue;
-
-					if ((dot < 0) ^ !!(surf->flags & SURF_PLANEBACK))
-						continue;		// wrong side
-
-					if ((surf->flags & SURF_DRAWSKY) && r_skyboxloaded)
-					{
-						// just add to visible skybox bounds
-						R_AddSkyBoxSurface (surf);
-						continue;
-					}
-
-					// if sorting by texture, just store it out
-					if (gl_texsort.value) {
-						surf->texturechain = surf->texinfo->texture->texturechain;
-						surf->texinfo->texture->texturechain = surf;
-					} else if (surf->flags & SURF_DRAWSKY) {
-						surf->texturechain = skychain;
-						skychain = surf;
-					} else if (surf->flags & SURF_DRAWTURB) {
-						surf->texturechain = waterchain;
-						waterchain = surf;
-					} else
-						R_DrawSequentialPoly (surf);
-
+					// just add to visible skybox bounds
+					R_AddSkyBoxSurface (surf);
+					continue;
 				}
+
+				// if sorting by texture, just store it out
+				if (gl_texsort.value) {
+					surf->texturechain = surf->texinfo->texture->texturechain;
+					surf->texinfo->texture->texturechain = surf;
+				} else if (surf->flags & SURF_DRAWSKY) {
+					surf->texturechain = skychain;
+					skychain = surf;
+				} else if (surf->flags & SURF_DRAWTURB) {
+					surf->texturechain = waterchain;
+					waterchain = surf;
+				} else
+					R_DrawSequentialPoly (surf);
 			}
 
 		}
