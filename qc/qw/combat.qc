@@ -25,8 +25,6 @@
 
 */
 
-void() T_MissileTouch;
-void() info_player_start;
 void(entity targ, entity attacker) ClientObituary;
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
 
@@ -271,11 +269,6 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
 	
 	while (head)
 	{
-		//bprint (PRINT_HIGH, head.classname);
-		//bprint (PRINT_HIGH, " | ");
-		//bprint (PRINT_HIGH, head.netname);
-		//bprint (PRINT_HIGH, "\n");
-	
 		if (head != ignore)
 		{
 			if (head.takedamage)
