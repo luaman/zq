@@ -95,6 +95,7 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 
 	movevars.entgravity = cl.entgravity;
 	movevars.maxspeed = cl.maxspeed;
+	movevars.bunnyspeedcap = cl.bunnyspeedcap;
 
 	PlayerMove ();
 
