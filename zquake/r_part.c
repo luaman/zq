@@ -125,7 +125,7 @@ void R_ReadPointFile_f (void)
 		p->die = 99999;
 		p->color = (-c)&15;
 		p->type = pt_static;
-		VectorCopy (vec3_origin, p->vel);
+		VectorClear (p->vel);
 		VectorCopy (org, p->org);
 	}
 
@@ -298,7 +298,7 @@ void R_LavaSplash (vec3_t org)
 				p->org[1] = org[1] + dir[1];
 				p->org[2] = org[2] + (rand()&63);
 	
-				VectorNormalize (dir);						
+				VectorNormalizeFast (dir);						
 				vel = 50 + (rand()&63);
 				VectorScale (dir, vel, p->vel);
 			}
@@ -340,7 +340,7 @@ void R_TeleportSplash (vec3_t org)
 				p->org[1] = org[1] + j + (rand()&3);
 				p->org[2] = org[2] + k + (rand()&3);
 	
-				VectorNormalize (dir);						
+				VectorNormalizeFast (dir);						
 				vel = 50 + (rand()&63);
 				VectorScale (dir, vel, p->vel);
 			}
@@ -367,7 +367,7 @@ void R_RocketTrail (vec3_t start, vec3_t end, int type)
 		p->next = active_particles;
 		active_particles = p;
 		
-		VectorCopy (vec3_origin, p->vel);
+		VectorClear (p->vel);
 		p->die = cl.time + 2;
 
 		if (type == 4)

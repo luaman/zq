@@ -130,7 +130,7 @@ void CL_CategorizePosition (void)
 		cl.onground = -1;	// in air
 		return;
 	}
-	VectorCopy (vec3_origin, pmove.velocity);
+	VectorClear (pmove.velocity);
 	VectorCopy (cl.simorg, pmove.origin);
 	pmove.numtouch = 0;
 	PM_CategorizePosition ();

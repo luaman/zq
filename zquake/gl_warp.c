@@ -244,8 +244,7 @@ void EmitSkyPolys (msurface_t *fa)
 			dir[2] *= 3;	// flatten the sphere
 
 			length = dir[0]*dir[0] + dir[1]*dir[1] + dir[2]*dir[2];
-			length = sqrt (length);
-			length = 6*63/length;
+			length = 6*63*Q_RSqrt (length);
 
 			dir[0] *= length;
 			dir[1] *= length;
@@ -384,23 +383,6 @@ void R_DrawSkyChain (msurface_t *s)
 
 =================================================================
 */
-
-typedef struct
-{
-    char	manufacturer;
-    char	version;
-    char	encoding;
-    char	bits_per_pixel;
-    unsigned short	xmin,ymin,xmax,ymax;
-    unsigned short	hres,vres;
-    unsigned char	palette[48];
-    char	reserved;
-    char	color_planes;
-    unsigned short	bytes_per_line;
-    unsigned short	palette_type;
-    char	filler[58];
-    unsigned 	data;			// unbounded
-} pcx_t;
 
 byte	*pcx_rgb;
 
@@ -779,7 +761,7 @@ glEnd();
 return;
 #endif
 	// decide which face it maps to
-	VectorCopy (vec3_origin, v);
+	VectorClear (v);
 	for (i=0, vp=vecs ; i<nump ; i++, vp+=3)
 	{
 		VectorAdd (vp, v, v);

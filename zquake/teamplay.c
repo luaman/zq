@@ -699,6 +699,113 @@ char *TP_ParseMacroString (char *s)
 }
 
 /*
+=============
+TP_ParseClientString
+
+Parses %a-like expressions
+=============
+*/
+char *TP_ParseClientString (char *s)
+{
+	static char	buf[MAX_MACRO_STRING];
+	int		i = 0;
+	char	*macro_string;
+
+	while (*s && i < MAX_MACRO_STRING-1)
+	{
+		// check %[P], etc
+		if (*s == '%' && s[1]=='[' && s[2] && s[3]==']')
+		{
+			static char mbuf[MAX_MACRO_VALUE];
+			switch (s[2]) {
+			case 'a':
+				macro_string = Macro_ArmorType_f();
+				if (!macro_string[0])
+					macro_string = "a";
+				if (cl.stats[STAT_ARMOR] < 30)
+					sprintf (mbuf, "\x10%s:%i\x11", macro_string, cl.stats[STAT_ARMOR]);
+				else
+					sprintf (mbuf, "%s:%i", macro_string, cl.stats[STAT_ARMOR]);
+				macro_string = mbuf;
+				break;
+				
+			case 'h':
+				if (cl.stats[STAT_HEALTH] >= 50)
+					sprintf (macro_buf, "%i", cl.stats[STAT_HEALTH]);
+				else if (cl.stats[STAT_HEALTH] > 0)
+					sprintf (macro_buf, "\x10%i\x11", cl.stats[STAT_HEALTH]);
+				else
+					sprintf (macro_buf, "\x10%s\x11", "DEAD");
+
+				macro_string = macro_buf;
+				break;
+				
+			case 'p':
+			case 'P':
+				macro_string = Macro_Powerups_f();
+				if (macro_string[0])
+					sprintf (mbuf, "\x10%s\x11", macro_string);
+				else
+					mbuf[0] = 0;
+				macro_string = mbuf;
+				break;
+				
+				// todo: %[w], %[b]
+				
+			default:
+				buf[i++] = *s++;
+				continue;
+			}
+			if (i + strlen(macro_string) >= MAX_MACRO_STRING-1)
+				Sys_Error("TP_ParseMacroString: macro string length > MAX_MACRO_STRING)");
+			strcpy (&buf[i], macro_string);
+			i += strlen(macro_string);
+			s += 4;	// skip %[<char>]
+			continue;
+		}
+		
+		// check %a, etc
+		if (*s == '%')
+		{
+			switch (s[1])
+			{
+				case 'a': macro_string = Macro_Armor_f(); break;
+				case 'A': macro_string = Macro_ArmorType_f(); break;
+				case 'b': macro_string = Macro_BestWeaponAndAmmo_f(); break;
+				case 'c': macro_string = Macro_Cells_f(); break;
+				case 'd': macro_string = Macro_LastDeath_f(); break;
+				case 'h': macro_string = Macro_Health_f(); break;
+				case 'i': macro_string = Macro_TookAtLoc_f(); break;
+				case 'l': macro_string = Macro_Location_f(); break;
+				case 'L': macro_string = Macro_Location2_f(); break;
+				case 'P':
+				case 'p': macro_string = Macro_Powerups_f(); break;
+				case 'r': macro_string = Macro_Rockets_f(); break;
+				case 'u': macro_string = Macro_Need_f(); break;
+				case 'w': macro_string = Macro_WeaponAndAmmo_f(); break;
+				case 'x': macro_string = Macro_PointName_f(); break;
+				case 'y': macro_string = Macro_PointLocation_f(); break;
+				case 't': macro_string = Macro_PointNameAtLocation_f(); break;
+				default: 
+					buf[i++] = *s++;
+					continue;
+			}
+			if (i + strlen(macro_string) >= MAX_MACRO_STRING-1)
+				Sys_Error("TP_ParseMacroString: macro string length > MAX_MACRO_STRING)");
+			strcpy (&buf[i], macro_string);
+			i += strlen(macro_string);
+			s += 2;	// skip % and letter
+			continue;
+		}
+
+		buf[i++] = *s++;
+	}
+	buf[i] = 0;
+
+	return buf;
+}
+
+/*
 ==============
 TP_ParseFunChars
 
@@ -978,7 +1085,7 @@ char *TP_LocationName (vec3_t location)
 
 	for (i = 0; i < loc_numentries; i++) {
 		VectorSubtract (location, locdata[i].coord, vec);
-		dist = Length (vec);
+		dist = VectorLength (vec);
 		if (dist < mindist) {
 			minnum = i;
 			mindist = dist;
@@ -1240,7 +1347,7 @@ ok:
 }
 
 
-int	TP_CountPlayers ()
+int	TP_CountPlayers (void)
 {
 	int	i, count;
 
@@ -1253,7 +1360,7 @@ int	TP_CountPlayers ()
 	return count;
 }
 
-char *TP_EnemyTeam ()
+char *TP_EnemyTeam (void)
 {
 	int			i;
 	char		myteam[MAX_INFO_STRING];
@@ -1272,7 +1379,7 @@ char *TP_EnemyTeam ()
 	return "";
 }
 
-char *TP_PlayerName ()
+char *TP_PlayerName (void)
 {
 	static char	myname[MAX_INFO_STRING];
 
@@ -1280,7 +1387,7 @@ char *TP_PlayerName ()
 	return myname;
 }
 
-char *TP_PlayerTeam ()
+char *TP_PlayerTeam (void)
 {
 	static char	myteam[MAX_INFO_STRING];
 
@@ -1288,7 +1395,7 @@ char *TP_PlayerTeam ()
 	return myteam;
 }
 
-char *TP_EnemyName ()
+char *TP_EnemyName (void)
 {
 	int			i;
 	char		*myname;
@@ -1307,7 +1414,7 @@ char *TP_EnemyName ()
 	return "";
 }
 
-char *TP_MapName ()
+char *TP_MapName (void)
 {
 	return cl_mapname.string;
 }
@@ -1421,7 +1528,7 @@ void TP_EnemyColor_f (void)
 
 //===================================================================
 
-void TP_NewMap ()
+void TP_NewMap (void)
 {
 	static char last_map[MAX_QPATH] = "";
 	char mapname[MAX_QPATH];
@@ -1826,7 +1933,7 @@ static int FindNearestItem (int flags, item_t **pitem)
 
 		VectorSubtract (ent->origin, org, v);
 		VectorAdd (v, item->offset, v);
-		dist = Length (v);
+		dist = VectorLength (v);
 		if (dist <= bestdist) {
 			bestdist = dist;
 			bestidx = ent->modelindex;
@@ -1842,7 +1949,7 @@ static int FindNearestItem (int flags, item_t **pitem)
 }
 
 
-static int CountTeammates ()
+static int CountTeammates (void)
 {
 	int	i, count;
 	player_info_t	*player;
@@ -1946,7 +2053,7 @@ more:
 }
 
 
-void TP_FindPoint ()
+void TP_FindPoint (void)
 {
 	packet_entities_t	*pak;
 	entity_state_t		*ent;
@@ -1990,7 +2097,7 @@ void TP_FindPoint ()
 			continue;
 		VectorScale (forward, dist, v2);
 		VectorSubtract (v2, v, v3);
-		miss = Length (v3);
+		miss = VectorLength (v3);
 		if (miss > 300)
 			continue;
 		if (miss > dist*1.7)
@@ -2017,7 +2124,7 @@ void TP_FindPoint ()
 			// physent list might not have been built yet...
 
 			VectorSubtract (vieworg, entorg, v);
-			VectorNormalize (v);
+			VectorNormalizeFast (v);
 			VectorMA (entorg, radius, v, end);
 			trace = PM_TraceLine (vieworg, end);
 			if (trace.fraction == 1)
@@ -2025,7 +2132,7 @@ void TP_FindPoint ()
 
 			VectorMA (entorg, radius, right, end);
 			VectorSubtract (vieworg, end, v);
-			VectorNormalize (v);
+			VectorNormalizeFast (v);
 			VectorMA (end, radius, v, end);
 			trace = PM_TraceLine (vieworg, end);
 			if (trace.fraction == 1)
@@ -2033,7 +2140,7 @@ void TP_FindPoint ()
 
 			VectorMA (entorg, -radius, right, end);
 			VectorSubtract (vieworg, end, v);
-			VectorNormalize (v);
+			VectorNormalizeFast (v);
 			VectorMA (end, radius, v, end);
 			trace = PM_TraceLine (vieworg, end);
 			if (trace.fraction == 1)
@@ -2041,7 +2148,7 @@ void TP_FindPoint ()
 
 			VectorMA (entorg, radius, up, end);
 			VectorSubtract (vieworg, end, v);
-			VectorNormalize (v);
+			VectorNormalizeFast (v);
 			VectorMA (end, radius, v, end);
 			trace = PM_TraceLine (vieworg, end);
 			if (trace.fraction == 1)
@@ -2051,7 +2158,7 @@ void TP_FindPoint ()
 			// through floor in some places
 			VectorMA (entorg, -radius/2, up, end);
 			VectorSubtract (vieworg, end, v);
-			VectorNormalize (v);
+			VectorNormalizeFast (v);
 			VectorMA (end, radius, v, end);
 			trace = PM_TraceLine (vieworg, end);
 			if (trace.fraction == 1)

@@ -379,7 +379,7 @@ store:
 					dest+=3;
 				}
 			else
-				for (j=smax*3; j; j--) {
+				for (j=smax; j; j--) {
 					t = bl[0]; t = t >> 7; if (t > 255) t = 255;
 					dest[0] = 255-t;
 					t = bl[1]; t = t >> 7; if (t > 255) t = 255;
@@ -1075,10 +1075,10 @@ void R_DrawBrushModel (entity_t *e)
 // instanced model
 	if (clmodel->firstmodelsurface != 0 && !gl_flashblend.value)
 	{
-		for (k=0 ; k<MAX_DLIGHTS ; k++)
+		for (k = 0; k < MAX_DLIGHTS; k++)
 		{
 			if ((cl_dlights[k].die < cl.time) ||
-				(!cl_dlights[k].radius))
+				!cl_dlights[k].radius)
 				continue;
 
 			R_MarkLights (&cl_dlights[k], 1<<k,
@@ -1099,7 +1099,7 @@ void R_DrawBrushModel (entity_t *e)
 	//
 	// draw texture
 	//
-	for (i=0 ; i<clmodel->nummodelsurfaces ; i++, psurf++)
+	for (i = 0; i < clmodel->nummodelsurfaces; i++, psurf++)
 	{
 		// find which side of the node we are on
 		pplane = psurf->plane;
@@ -1501,9 +1501,9 @@ void BuildSurfaceDisplayList (msurface_t *fa)
 			next = poly->verts[(i + 1) % lnumverts];
 
 			VectorSubtract (this, prev, v1);
-			VectorNormalize (v1);
+			VectorNormalizeFast (v1);
 			VectorSubtract (next, prev, v2 );
-			VectorNormalize (v2);
+			VectorNormalizeFast (v2);
 
 			// skip co-linear points
 			#define COLINEAR_EPSILON 0.001

@@ -111,7 +111,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib e:\msdev\projects\scitech\lib\win32\vc\mgllt.lib /nologo /subsystem:windows /debug /machine:I386
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 comctl32.lib glu32.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\ZGLDebug\zquake-gl.exe"
+# ADD LINK32 comctl32.lib glu32.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:"d:\quake\zquake-gl.exe"
 # SUBTRACT LINK32 /incremental:no /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
@@ -140,7 +140,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 e:\msdev\projects\winquake\dxsdk\sdk\lib\dxguid.lib winmm.lib wsock32.lib opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"GLDebug/glzquake.exe"
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 comctl32.lib glu32.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:".\ZGLRelease\zquake-gl.exe"
+# ADD LINK32 comctl32.lib glu32.lib dxguid.lib opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:"d:\quake\zquake-gl.exe"
 # SUBTRACT LINK32 /debug /nodefaultlib
 
 !ENDIF 
@@ -670,25 +670,6 @@ SOURCE=.\gl_screen.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\gl_test.c
-
-!IF  "$(CFG)" == "zquake - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\gl_warp.c
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
@@ -753,10 +734,6 @@ SOURCE=.\net_chan.c
 # Begin Source File
 
 SOURCE=.\net_wins.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\nonintel.c
 # End Source File
 # Begin Source File
 

@@ -115,7 +115,7 @@ void SV_CheckVelocity (edict_t *ent)
 	}
 
 	// SV_MAXVELOCITY fix by Maddes
-	wishspeed = Length(ent->v.velocity);
+	wishspeed = VectorLength(ent->v.velocity);
 	if (wishspeed > sv_maxvelocity.value)
 	{
 		VectorScale (ent->v.velocity, sv_maxvelocity.value/wishspeed, ent->v.velocity);
@@ -277,7 +277,7 @@ int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 
 		if (trace.allsolid)
 		{	// entity is trapped in another solid
-			VectorCopy (vec3_origin, ent->v.velocity);
+			VectorClear (ent->v.velocity);
 			return 3;
 		}
 
@@ -323,7 +323,7 @@ int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 	// cliped to another plane
 		if (numplanes >= MAX_CLIP_PLANES)
 		{	// this shouldn't really happen
-			VectorCopy (vec3_origin, ent->v.velocity);
+			VectorClear (ent->v.velocity);
 			return 3;
 		}
 
@@ -355,7 +355,7 @@ int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 			if (numplanes != 2)
 			{
 //				Con_Printf ("clip velocity, numplanes == %i\n",numplanes);
-				VectorCopy (vec3_origin, ent->v.velocity);
+				VectorClear (ent->v.velocity);
 				return 7;
 			}
 			CrossProduct (planes[0], planes[1], dir);
@@ -369,7 +369,7 @@ int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 //
 		if (DotProduct (ent->v.velocity, primal_velocity) <= 0)
 		{
-			VectorCopy (vec3_origin, ent->v.velocity);
+			VectorClear (ent->v.velocity);
 			return blocked;
 		}
 	}
@@ -621,7 +621,7 @@ VectorCopy (ent->v.origin, oldorg);
 			return;
 VectorSubtract (ent->v.origin, oldorg, move);
 
-l = Length(move);
+l = VectorLength(move);
 if (l > 1.0/64)
 {
 //	Con_Printf ("**** snap: %f\n", Length (l));
@@ -768,8 +768,8 @@ void SV_Physics_Toss (edict_t *ent)
 		{
 			ent->v.flags = (int)ent->v.flags | FL_ONGROUND;
 			ent->v.groundentity = EDICT_TO_PROG(trace.ent);
-			VectorCopy (vec3_origin, ent->v.velocity);
-			VectorCopy (vec3_origin, ent->v.avelocity);
+			VectorClear (ent->v.velocity);
+			VectorClear (ent->v.avelocity);
 		}
 	}
 	

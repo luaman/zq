@@ -44,8 +44,11 @@ void R_AnimateLight (void)
 			d_lightstylevalue[j] = 256;
 			continue;
 		}
+
 		k = i % cl_lightstyle[j].length;
-		d_lightstylevalue[j] = (cl_lightstyle[j].map[k] - 'a')*22;
+		k = cl_lightstyle[j].map[k] - 'a';
+		k = k * 22;
+		d_lightstylevalue[j] = k;
 	}	
 }
 
@@ -59,7 +62,7 @@ DYNAMIC LIGHTS BLEND RENDERING
 
 float bubble_sintable[17], bubble_costable[17];
 
-void R_InitBubble() {
+void R_InitBubble(void) {
 	float a;
 	int i;
 	float *bub_sin, *bub_cos;
@@ -77,13 +80,13 @@ void R_InitBubble() {
 
 
 float bubblecolor[NUM_DLIGHTTYPES][4] = {
-	{ 0.2, 0.1, 0.05, 0.7 },	// dimlight or brightlight
-	{ 0.05, 0.05, 0.3, 0.7 },	// blue
-	{ 0.5, 0.05, 0.05, 0.7 },	// red
-	{ 0.5, 0.05, 0.4, 0.7 },	// red + blue
-	{ 0.2, 0.1, 0.05, 0.7 },	// muzzleflash
-	{ 0.2, 0.1, 0.05, 0.7 },	// explosion
-	{ 0, 0, 0, 0 }				// rocket (no light bubble)
+	{ 0.2, 0.1, 0.05 },	// dimlight or brightlight
+	{ 0.05, 0.05, 0.3 },	// blue
+	{ 0.5, 0.05, 0.05 },	// red
+	{ 0.5, 0.05, 0.4 },	// red + blue
+	{ 0.2, 0.1, 0.05 },	// muzzleflash
+	{ 0.2, 0.1, 0.05 },	// explosion
+	{ 0, 0, 0 }				// rocket (no light bubble)
 };
 
 void R_RenderDlight (dlight_t *light)
@@ -108,12 +111,12 @@ void R_RenderDlight (dlight_t *light)
 	}
 
 	glBegin (GL_TRIANGLE_FAN);
-	glColor4fv (bubblecolor[light->type]);
+	glColor3fv (bubblecolor[light->type]);
 
 	v_right[0] = v[1];
 	v_right[1] = -v[0];
 	v_right[2] = 0;
-	VectorNormalize (v_right);
+	VectorNormalizeFast (v_right);
 	CrossProduct (v_right, v, v_up);
 
 	if (length - rad > 8)
@@ -162,7 +165,7 @@ void R_RenderDlights (void)
 	glBlendFunc (GL_ONE, GL_ONE);
 
 	l = cl_dlights;
-	for (i=0 ; i<MAX_DLIGHTS ; i++, l++)
+	for (i = 0; i < MAX_DLIGHTS; i++, l++)
 	{
 		if (l->die < cl.time || !l->radius || l->type == lt_rocket)
 			continue;
@@ -196,27 +199,32 @@ void R_MarkLights (dlight_t *light, int bit, mnode_t *node)
 	float		dist;
 	msurface_t	*surf;
 	int			i;
+loc0:
 	
 	if (node->contents < 0)
 		return;
 
 	splitplane = node->plane;
-	dist = DotProduct (light->origin, splitplane->normal) - splitplane->dist;
+
+	if (splitplane->type < 3)
+		dist = light->origin[splitplane->type] - splitplane->dist;
+	else
+		dist = DotProduct (light->origin, splitplane->normal) - splitplane->dist;
 	
 	if (dist > light->radius)
 	{
-		R_MarkLights (light, bit, node->children[0]);
-		return;
+		node = node->children[0];
+		goto loc0;
 	}
 	if (dist < -light->radius)
 	{
-		R_MarkLights (light, bit, node->children[1]);
-		return;
+		node = node->children[1];
+		goto loc0;
 	}
 		
 // mark the polygons
 	surf = cl.worldmodel->surfaces + node->firstsurface;
-	for (i=0 ; i<node->numsurfaces ; i++, surf++)
+	for (i = 0; i < node->numsurfaces; i++, surf++)
 	{
 		if (surf->dlightframe != r_dlightframecount)
 		{
@@ -226,8 +234,11 @@ void R_MarkLights (dlight_t *light, int bit, mnode_t *node)
 		surf->dlightbits |= bit;
 	}
 
-	R_MarkLights (light, bit, node->children[0]);
-	R_MarkLights (light, bit, node->children[1]);
+	if (node->children[0]->contents >= 0)
+		R_MarkLights (light, bit, node->children[0]);
+
+	if (node->children[1]->contents >= 0)
+		R_MarkLights (light, bit, node->children[1]);
 }
 
 

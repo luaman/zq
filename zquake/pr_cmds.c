@@ -293,12 +293,12 @@ void PF_normalize (void)
 	value1 = G_VECTOR(OFS_PARM0);
 
 	new = value1[0] * value1[0] + value1[1] * value1[1] + value1[2]*value1[2];
-	new = sqrt(new);
 	
 	if (new == 0)
 		newvalue[0] = newvalue[1] = newvalue[2] = 0;
 	else
 	{
+		new = Q_sqrt(new);
 		new = 1/new;
 		newvalue[0] = value1[0] * new;
 		newvalue[1] = value1[1] * new;
@@ -323,9 +323,8 @@ void PF_vlen (void)
 	value1 = G_VECTOR(OFS_PARM0);
 
 	new = value1[0] * value1[0] + value1[1] * value1[1] + value1[2]*value1[2];
-	new = sqrt(new);
 	
-	G_FLOAT(OFS_RETURN) = new;
+	G_FLOAT(OFS_RETURN) = (new) ? Q_sqrt(new) : 0;
 }
 
 /*
@@ -346,7 +345,7 @@ void PF_vectoyaw (void)
 		yaw = 0;
 	else
 	{
-		yaw = (int) (atan2(value1[1], value1[0]) * 180 / M_PI);
+		yaw = (int) (Q_atan2(value1[1], value1[0]) * 180 / M_PI);
 		if (yaw < 0)
 			yaw += 360;
 	}
@@ -380,12 +379,12 @@ void PF_vectoangles (void)
 	}
 	else
 	{
-		yaw = (int) (atan2(value1[1], value1[0]) * 180 / M_PI);
+		yaw = Q_atan2(value1[1], value1[0]) * 180 / M_PI;
 		if (yaw < 0)
 			yaw += 360;
 
-		forward = sqrt (value1[0]*value1[0] + value1[1]*value1[1]);
-		pitch = (int) (atan2(value1[2], forward) * 180 / M_PI);
+		forward = Q_sqrt (value1[0]*value1[0] + value1[1]*value1[1]);
+		pitch = Q_atan2(value1[2], forward) * 180 / M_PI;
 		if (pitch < 0)
 			pitch += 360;
 	}
@@ -824,7 +823,7 @@ void PF_findradius (void)
 			continue;
 		for (j=0 ; j<3 ; j++)
 			eorg[j] = org[j] - (ent->v.origin[j] + (ent->v.mins[j] + ent->v.maxs[j])*0.5);			
-		if (Length(eorg) > rad)
+		if (VectorLength(eorg) > rad)
 			continue;
 			
 		ent->v.chain = EDICT_TO_PROG(chain);
@@ -1029,8 +1028,8 @@ void PF_walkmove (void)
 
 	yaw = yaw*M_PI*2 / 360;
 	
-	move[0] = cos(yaw)*dist;
-	move[1] = sin(yaw)*dist;
+	move[0] = Q_cos(yaw)*dist;
+	move[1] = Q_sin(yaw)*dist;
 	move[2] = 0;
 
 // save program state, because SV_movestep may call other progs
@@ -1255,7 +1254,7 @@ void PF_aim (void)
 			end[j] = check->v.origin[j]
 			+ 0.5*(check->v.mins[j] + check->v.maxs[j]);
 		VectorSubtract (end, start, dir);
-		VectorNormalize (dir);
+		VectorNormalizeFast (dir);
 		dist = DotProduct (dir, pr_global_struct->v_forward);
 		if (dist < bestdist)
 			continue;	// to far to turn
@@ -1273,7 +1272,7 @@ void PF_aim (void)
 		dist = DotProduct (dir, pr_global_struct->v_forward);
 		VectorScale (pr_global_struct->v_forward, dist, end);
 		end[2] = dir[2];
-		VectorNormalize (end);
+		VectorNormalizeFast (end);
 		VectorCopy (end, G_VECTOR(OFS_RETURN));	
 	}
 	else
