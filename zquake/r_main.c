@@ -30,7 +30,6 @@ vec3_t		viewlightvec;
 alight_t	r_viewlighting = {128, 192, viewlightvec};
 float		r_time1;
 int			r_numallocatededges;
-qboolean	r_worldpolysbacktofront;
 qboolean	r_recursiveaffinetriangles = true;
 int			r_pixbytes = 1;
 float		r_aliasuvscale = 1.0;

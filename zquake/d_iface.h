@@ -109,9 +109,6 @@ typedef struct
 extern int		d_spanpixcount;
 extern int		r_framecount;		// sequence # of current frame since Quake
 									//  started
-extern qboolean	r_worldpolysbacktofront;	// 1 if driver wants polygons
-											//  delivered back to front rather
-											//  than front to back
 extern qboolean	r_recursiveaffinetriangles;	// true if a driver wants to use
 											//  recursive triangular subdivison
 											//  and vertex drawing via
