@@ -1,6 +1,6 @@
 // !!! TEMPORARY functions for bot testing !!!
-entity (string name) testbot = #83;
-void (entity e, string key, string value) setinfo = #84;
+/* entity (string name) testbot = #83; */
+/* void (entity e, string key, string value) setinfo = #84; */
 
 
 void DeveloperLightning (entity e1, entity e2, float flag)
@@ -366,7 +366,7 @@ void BotConnect ()
 	self.b_skill = whatskill;
 */
 
-	self.b_skill = 3;	// FIXME FIXME, skill should be saved across levels
+	self.b_skill = 2;	// FIXME FIXME, skill should be saved across levels
 }
 
 // called by the engine instead of ClientDisconnect for bots

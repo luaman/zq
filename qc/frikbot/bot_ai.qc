@@ -732,10 +732,6 @@ Sets the bots look keys & b_angle to point at
 the target - used for fighting and just
 generally making the bot look good.
 
-TODO: make bot gradually change turn aim 
-direction towards desired target rather than
-instant perfect flick shot
-
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
@@ -801,6 +797,7 @@ void bot_angle_set ()
 			self.v_angle_x = self.v_angle_x - 360;
 
 	}
+    /*
 	else if ((self.enemy == world || self.enemy.movetype == MOVETYPE_PUSH) && self.target1.classname != "player")
 	{
 		self.keys = self.keys & 63;
@@ -810,6 +807,7 @@ void bot_angle_set ()
 		while (self.v_angle_x > 180)
 			self.v_angle_x = self.v_angle_x - 360;
 	}
+    */
 	else if (self.b_skill < 2) // skill 2 handled in bot_phys
 	{
 		if (self.b_angle_x > 180)
