@@ -954,7 +954,7 @@ void COM_CheckRegistered (void)
 {
 	FILE		*h;
 
-	COM_FOpenFile("gfx/pop.lmp", &h);
+	FS_FOpenFile ("gfx/pop.lmp", &h);
 
 	if (h) {
 		Cvar_Set (&registered, "1");
@@ -1274,7 +1274,7 @@ Sets com_filesize and one of handle or file
 */
 int file_from_pak; // global indicating file came from pack file ZOID
 
-int COM_FOpenFile (char *filename, FILE **file)
+int FS_FOpenFile (char *filename, FILE **file)
 {
 	searchpath_t	*search;
 	char		netpath[MAX_OSPATH];
@@ -1353,7 +1353,7 @@ byte *COM_LoadFile (char *path, int usehunk)
 	buf = NULL;	// quiet compiler warning
 
 // look for it in the filesystem or pack files
-	len = com_filesize = COM_FOpenFile (path, &h);
+	len = com_filesize = FS_FOpenFile (path, &h);
 	if (!h)
 		return NULL;
 	

@@ -1013,7 +1013,7 @@ void CL_PlayDemo_f (void)
 	if (!strncmp(name, "../", 3) || !strncmp(name, "..\\", 3))
 		cls.demofile = fopen (va("%s/%s", com_basedir, name+3), "rb");
 	else
-		COM_FOpenFile (name, &cls.demofile);
+		FS_FOpenFile (name, &cls.demofile);
 
 	if (!cls.demofile)
 	{

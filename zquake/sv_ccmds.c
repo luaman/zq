@@ -221,7 +221,7 @@ void SV_Map_f (void)
 
 	// check to make sure the level exists
 	sprintf (expanded, "maps/%s.bsp", level);
-	COM_FOpenFile (expanded, &f);
+	FS_FOpenFile (expanded, &f);
 	if (!f)
 	{
 		Com_Printf ("Can't find %s\n", expanded);

@@ -214,8 +214,7 @@ extern char	com_gamedir[MAX_OSPATH];
 extern char	com_basedir[MAX_OSPATH];
 
 void COM_WriteFile (char *filename, void *data, int len);
-int COM_FOpenFile (char *filename, FILE **file);
-void COM_CloseFile (FILE *h);
+int FS_FOpenFile (char *filename, FILE **file);
 
 byte *COM_LoadStackFile (char *path, void *buffer, int bufsize);
 byte *COM_LoadTempFile (char *path);
