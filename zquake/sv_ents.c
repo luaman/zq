@@ -155,13 +155,13 @@ void SV_EmitNailUpdate (sizebuf_t *msg)
 
 /*
 ==================
-SV_WriteDelta
+MSG_WriteDeltaEntity
 
 Writes part of a packetentities message.
 Can delta from either a baseline or a previous packet_entity
 ==================
 */
-void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qboolean force)
+void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qboolean force)
 {
 	int		bits;
 	int		i;
@@ -248,35 +248,32 @@ void SV_WriteDelta (entity_state_t *from, entity_state_t *to, sizebuf_t *msg, qb
 		MSG_WriteAngle(msg, to->angles[2]);
 }
 
+entity_state_t *SV_GetBaseline (int number)
+{
+	return &EDICT_NUM(number)->baseline;
+}
+
 /*
 =============
-SV_EmitPacketEntities
+MSG_EmitPacketEntities
 
 Writes a delta update of a packet_entities_t to the message.
-
 =============
 */
-void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *msg)
+void MSG_EmitPacketEntities (packet_entities_t *from, int delta_sequence, packet_entities_t *to,
+							sizebuf_t *msg, entity_state_t *(*GetBaseline)(int number))
 {
-	edict_t	*ent;
-	client_frame_t	*fromframe;
-	packet_entities_t *from;
 	int		oldindex, newindex;
 	int		oldnum, newnum;
 	int		oldmax;
 
-	// this is the frame that we are going to delta update from
-	if (client->delta_sequence != -1)
-	{
-		fromframe = &client->frames[client->delta_sequence & UPDATE_MASK];
-		from = &fromframe->entities;
+	if (from) {
 		oldmax = from->num_entities;
 
 		MSG_WriteByte (msg, svc_deltapacketentities);
-		MSG_WriteByte (msg, client->delta_sequence);
+		MSG_WriteByte (msg, delta_sequence);
 	}
-	else
-	{
+	else {
 		oldmax = 0;	// no delta update
 		from = NULL;
 
@@ -295,7 +292,7 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 		if (newnum == oldnum)
 		{	// delta update from old position
 //Com_Printf ("delta %i\n", newnum);
-			SV_WriteDelta (&from->entities[oldindex], &to->entities[newindex], msg, false);
+			MSG_WriteDeltaEntity (&from->entities[oldindex], &to->entities[newindex], msg, false);
 			oldindex++;
 			newindex++;
 			continue;
@@ -303,9 +300,8 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 
 		if (newnum < oldnum)
 		{	// this is a new entity, send it from the baseline
-			ent = EDICT_NUM(newnum);
 //Com_Printf ("baseline %i\n", newnum);
-			SV_WriteDelta (&ent->baseline, &to->entities[newindex], msg, true);
+			MSG_WriteDeltaEntity (GetBaseline(newnum), &to->entities[newindex], msg, true);
 			newindex++;
 			continue;
 		}
@@ -321,6 +317,7 @@ void SV_EmitPacketEntities (client_t *client, packet_entities_t *to, sizebuf_t *
 
 	MSG_WriteShort (msg, 0);	// end of packetentities
 }
+
 
 /*
 =============
@@ -521,10 +518,16 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 		state->effects = ent->v.effects;
 	}
 
-	// encode the packet entities as a delta from the
-	// last packetentities acknowledged by the client
-
-	SV_EmitPacketEntities (client, pack, msg);
+	if (client->delta_sequence != -1) {
+		// encode the packet entities as a delta from the
+		// last packetentities acknowledged by the client
+		MSG_EmitPacketEntities (&client->frames[client->delta_sequence & UPDATE_MASK].entities,
+			client->delta_sequence, pack, msg, SV_GetBaseline);
+	}
+	else {
+		// no delta
+		MSG_EmitPacketEntities (NULL, 0, pack, msg, SV_GetBaseline);
+	}
 
 	// now add the specialized nail update
 	SV_EmitNailUpdate (msg);
