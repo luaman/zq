@@ -234,16 +234,16 @@ static void PaddedPrint (char *s)
 	extern int con_linewidth;
 	int	nextcolx = 0;
 
-	if (con->x)
-		nextcolx = (int)((con->x + COLUMNWIDTH)/COLUMNWIDTH)*COLUMNWIDTH;
+	if (con.x)
+		nextcolx = (int)((con.x + COLUMNWIDTH)/COLUMNWIDTH)*COLUMNWIDTH;
 
 	if (nextcolx > con_linewidth - MINCOLUMNWIDTH
-		|| (con->x && nextcolx + strlen(s) >= con_linewidth))
+		|| (con.x && nextcolx + strlen(s) >= con_linewidth))
 		Com_Printf ("\n");
 
-	if (con->x)
+	if (con.x)
 		Com_Printf (" ");
-	while (con->x % COLUMNWIDTH)
+	while (con.x % COLUMNWIDTH)
 		Com_Printf (" ");
 	Com_Printf ("%s", s);
 }
@@ -300,7 +300,7 @@ void CompleteCommand (void)
 					FindCommonSubString (cmd->name);
 				}
 			}
-			if (con->x)
+			if (con.x)
 				Com_Printf ("\n");
 		}
 
@@ -312,7 +312,7 @@ void CompleteCommand (void)
 					FindCommonSubString (var->name);
 				}
 			}
-			if (con->x)
+			if (con.x)
 				Com_Printf ("\n");
 		}
 
@@ -323,7 +323,7 @@ void CompleteCommand (void)
 					PaddedPrint (alias->name);
 					FindCommonSubString (alias->name);
 				}
-			if (con->x)
+			if (con.x)
 				Com_Printf ("\n");
 		}
 
@@ -499,33 +499,33 @@ no_lf:
 	    case K_PGUP:
 	    case K_MWHEELUP:
 			if (keydown[K_CTRL] && key == K_PGUP)
-				con->display -= ((int)scr_conlines-22)>>3;
+				con.display -= ((int)scr_conlines-22)>>3;
 			else
-				con->display -= 2;
-			if (con->display - con->current + con->numlines < 0)
-				con->display = con->current - con->numlines;
+				con.display -= 2;
+			if (con.display - con.current + con.numlines < 0)
+				con.display = con.current - con.numlines;
 			return;
 
 	    case K_MWHEELDOWN:
 	    case K_PGDN:
 			if (keydown[K_CTRL] && key == K_PGDN)
-				con->display += ((int)scr_conlines-22)>>3;
+				con.display += ((int)scr_conlines-22)>>3;
 			else
-				con->display += 2;
-			if (con->display - con->current > 0)
-				con->display = con->current;
+				con.display += 2;
+			if (con.display - con.current > 0)
+				con.display = con.current;
 			return;
 
 	    case K_HOME:
 			if (keydown[K_CTRL])
-				con->display = con->current - con->numlines;
+				con.display = con.current - con.numlines;
 			else
 				key_linepos = 1;
 			return;
 
 	    case K_END:
 			if (keydown[K_CTRL])
-				con->display = con->current;
+				con.display = con.current;
 			else
 				key_linepos = strlen(key_lines[edit_line]);
 			return;
