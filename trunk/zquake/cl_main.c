@@ -792,7 +792,7 @@ void Host_WriteConfiguration (void)
 
 	if (host_initialized && cl_writecfg.value)
 	{
-		f = fopen (va("%s/config.cfg",com_gamedir), "w");
+		f = fopen (va("%s/config.cfg", cls.gamedir), "w");
 		if (!f)
 		{
 			Com_Printf ("Couldn't write config.cfg.\n");

@@ -426,7 +426,7 @@ static void CL_Record (void)
 	MSG_WriteByte (&buf, svc_serverdata);
 	MSG_WriteLong (&buf, PROTOCOL_VERSION);
 	MSG_WriteLong (&buf, cl.servercount);
-	MSG_WriteString (&buf, com_gamedirfile);
+	MSG_WriteString (&buf, cls.gamedirfile);
 
 	if (cl.spectator)
 		MSG_WriteByte (&buf, cl.playernum | 128);
@@ -679,7 +679,7 @@ void CL_Record_f (void)
 	if (cls.demorecording)
 		CL_Stop_f();
   
-	Q_snprintfz (name, sizeof(name), "%s/%s", com_gamedir, Cmd_Argv(1));
+	Q_snprintfz (name, sizeof(name), "%s/%s", cls.gamedir, Cmd_Argv(1));
 
 //
 // open the demo file
@@ -786,7 +786,7 @@ void CL_EasyRecord_f (void)
 			*p = '_';
 	}
 
-	Q_strncpyz (name, va("%s/%s", com_gamedir, name), MAX_OSPATH);
+	Q_strncpyz (name, va("%s/%s", cls.gamedir, name), MAX_OSPATH);
 
 // find a filename that doesn't exist yet
 	strcpy (name2, name);
@@ -899,9 +899,9 @@ void PlayQWZDemo (void)
 		Q_strncpyz (qwz_name, va("%s/%s", com_basedir, name+3), sizeof(qwz_name));
 	else
 		if (name[0] == '/' || name[0] == '\\')
-			Q_strncpyz (qwz_name, va("%s/%s", com_gamedir, name+1), sizeof(qwz_name));
+			Q_strncpyz (qwz_name, va("%s/%s", cls.gamedir, name+1), sizeof(qwz_name));
 		else
-			Q_strncpyz (qwz_name, va("%s/%s", com_gamedir, name), sizeof(qwz_name));
+			Q_strncpyz (qwz_name, va("%s/%s", cls.gamedir, name), sizeof(qwz_name));
 
 	// check if the file exists
 	cls.demofile = fopen (qwz_name, "rb");
