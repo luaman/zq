@@ -843,7 +843,7 @@ void CL_Changing_f (void)
 	S_StopAllSounds (true);
 	cls.state = ca_connected;	// not active anymore, but not disconnected
 
-	Cmd_RemoveStuffedAliases ();
+//	Cmd_RemoveStuffedAliases ();
 
 	Com_Printf ("\nChanging map...\n");
 }
