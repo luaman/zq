@@ -423,6 +423,10 @@ void CL_FinishMove (usercmd_t *cmd)
 		cmd->buttons |= 2;
 	in_jump.state &= ~2;
 
+	if (in_use.state & 3)
+		cmd->buttons |= 4;
+	in_use.state &= ~2;
+
 	// send milliseconds of time to apply the move
 #if 0
 	ms = host_frametime * 1000;
