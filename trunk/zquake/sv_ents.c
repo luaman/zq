@@ -159,7 +159,7 @@ SV_WritePlayersToClient
 
 =============
 */
-void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizebuf_t *msg)
+void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 {
 	int			i, j;
 	client_t	*cl;
@@ -167,6 +167,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 	int			msec;
 	usercmd_t	cmd;
 	int			pflags;
+	int			pm_code;
 
 	for (j=0,cl=svs.clients ; j<MAX_CLIENTS ; j++,cl++)
 	{
@@ -176,7 +177,7 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 		ent = cl->edict;
 
 		// ZOID visibility tracking
-		if (ent != clent &&
+		if (cl != client &&
 			!(client->spec_track && client->spec_track - 1 == j)) 
 		{
 			if (cl->spectator)
@@ -207,20 +208,27 @@ void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs, sizeb
 			pflags |= PF_GIB;
 
 		if (cl->spectator)
-		{	// only sent origin and velocity to spectators
+		{	// only send origin and velocity to spectators
 			pflags &= PF_VELOCITY1 | PF_VELOCITY2 | PF_VELOCITY3;
 			// Z_EXT_PM_TYPE protocol extension
-			pflags |= PMC_OLD_SPECTATOR << PF_PMC_SHIFT;
+			pm_code = PMC_OLD_SPECTATOR;
 		}
-		else if (ent == clent)
+		else if (cl == client)
 		{	// don't send a lot of data on personal entity
 			pflags &= ~(PF_MSEC|PF_COMMAND);
 			if (ent->v.weaponframe)
 				pflags |= PF_WEAPONFRAME;
-			// Z_EXT_PM_TYPE protocol extension
+
 			if (cl->jump_held)
-				pflags |= PMC_NORMAL_JUMP_HELD << PF_PMC_SHIFT;
+				pm_code = PMC_NORMAL_JUMP_HELD;
+			else
+				pm_code = PMC_NORMAL;
 		}
+		else
+			pm_code = PMC_NORMAL;
+
+		// Z_EXT_PM_TYPE protocol extension
+		pflags |= pm_code << PF_PMC_SHIFT;
 
 		if (client->spec_track && client->spec_track - 1 == j &&
 			ent->v.weaponframe) 
@@ -316,7 +324,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	pvs = SV_FatPVS (org);
 
 	// send over the players in the PVS
-	SV_WritePlayersToClient (client, clent, pvs, msg);
+	SV_WritePlayersToClient (client, pvs, msg);
 	
 	// put other visible entities into either a packet_entities or a nails message
 	pack = &frame->entities;
