@@ -773,6 +773,11 @@ guess_pm_type:
 			state->pm_type = PM_NORMAL;
 	}
 
+	if (cl.z_ext & Z_EXT_PF_ONGROUND)
+		state->onground = (flags & PF_ONGROUND) != 0;
+	else
+		state->onground = false;
+
 	VectorCopy (state->command.angles, state->viewangles);
 }
 
