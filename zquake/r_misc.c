@@ -571,6 +571,7 @@ void R_SetupFrame (void)
 	qbool			viewchanged;
 	static refdef2_t	r_oldrefdef2;
 	static float oldfov_x, oldfov_y;
+	static pixel_t *old_vid_buffer;
 
 	if (r_numsurfs.value)
 	{
@@ -620,7 +621,8 @@ void R_SetupFrame (void)
 		r_refdef2.vrect.width != r_oldrefdef2.vrect.width ||
 		r_refdef2.vrect.height != r_oldrefdef2.vrect.height ||
 		r_refdef.fov_x != oldfov_x || r_refdef.fov_y != oldfov_y ||
-		r_dowarp != r_dowarpold)
+		r_dowarp != r_dowarpold ||
+		vid.buffer != old_vid_buffer)
 	{
 		viewchanged = true;
 	}
@@ -628,6 +630,7 @@ void R_SetupFrame (void)
 	r_oldrefdef2 = r_refdef2;
 	oldfov_x = r_refdef.fov_x;
 	oldfov_y = r_refdef.fov_y;
+	old_vid_buffer = vid.buffer;
 
 	if (viewchanged)
 	{
