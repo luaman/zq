@@ -301,3 +301,12 @@ typedef struct mpic_s
 extern texture_t	*r_notexture_mip;
 extern model_t		*r_worldmodel;
 extern entity_t		r_worldentity;
+
+
+// r_main.c
+extern unsigned char	r_palette[768];
+extern qbool			d_15to8table_made;
+extern unsigned char	d_15to8table[65536];
+
+// r_misc.c
+void R_Build15to8table (void);
