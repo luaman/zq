@@ -395,19 +395,8 @@ static int Key (char *name)
 =============================================================================
 */
 
-#define	MAX_ALIAS_NAME	32
-
-typedef struct cmd_alias_s
-{
-	struct cmd_alias_s	*hash_next;
-	struct cmd_alias_s	*next;
-	char	name[MAX_ALIAS_NAME];
-	char	*value;
-} cmd_alias_t;
-
 static cmd_alias_t	*cmd_alias_hash[32];
 static cmd_alias_t	*cmd_alias;
-
 
 cmd_alias_t *Cmd_FindAlias (char *name)
 {
@@ -423,8 +412,6 @@ cmd_alias_t *Cmd_FindAlias (char *name)
 	return NULL;
 }
 
-
-// Tonik 31.08.00 --- for message triggers:
 char *Cmd_AliasString (char *name)
 {
 	int			key;
