@@ -1008,13 +1008,21 @@ void CL_Frame (double time)
 	Cbuf_Execute ();
 	CL_CheckAutoPause ();
 
+	// if running a local server, send the move command now
+//	if (com_serveractive && !cls.demorecording)
+//		CL_SendToServer ();
+
+	if (com_serveractive)
+		SV_Frame (cls.frametime);
+
 	// fetch results from server
 	CL_ReadPackets ();
 
 	// process stuffed commands
 	Cbuf_ExecuteEx (&cbuf_svc);
 
-	CL_SendToServer ();
+//	if (!(com_serveractive && !cls.demorecording))
+		CL_SendToServer ();
 
 	// see if using autocam and set cl.viewplayernum
 	Cam_SetViewPlayer ();

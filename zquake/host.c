@@ -198,10 +198,10 @@ void Host_Frame (double time)
 
 	curtime += time;
 
-	if (com_serveractive)
+	if (dedicated)
 		SV_Frame (time);
-	
-	CL_Frame (time);	// will also call SV_Frame
+	else
+		CL_Frame (time);	// will also call SV_Frame
 }
 
 /*
