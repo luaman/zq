@@ -661,15 +661,15 @@ Con_DPrintf ("UPLOAD: %d received\n", size);
 SV_BeginDownload_f
 ==================
 */
-void SV_BeginDownload_f(void)
+void SV_BeginDownload_f (void)
 {
 	char	*name;
-	extern	cvar_t	allow_download;
-	extern	cvar_t	allow_download_skins;
-	extern	cvar_t	allow_download_models;
-	extern	cvar_t	allow_download_sounds;
-	extern	cvar_t	allow_download_maps;
-	extern	int		file_from_pak; // ZOID did file come from pak?
+	extern cvar_t	allow_download;
+	extern cvar_t	allow_download_skins;
+	extern cvar_t	allow_download_models;
+	extern cvar_t	allow_download_sounds;
+	extern cvar_t	allow_download_maps;
+	extern int		file_from_pak;	// did file come from pak?
 
 	name = Cmd_Argv(1);
 // hacked by zoid to allow more conrol over download
@@ -680,13 +680,13 @@ void SV_BeginDownload_f(void)
 		// leading slash bad as well, must be in subdir
 		|| *name == '/'
 		// next up, skin check
-		|| (strncmp(name, "skins/", 6) == 0 && !allow_download_skins.value)
+		|| (!Q_strncasecmp(name, "skins/", 6) && !allow_download_skins.value)
 		// now models
-		|| (strncmp(name, "progs/", 6) == 0 && !allow_download_models.value)
+		|| (!Q_strncasecmp(name, "progs/", 6) && !allow_download_models.value)
 		// now sounds
-		|| (strncmp(name, "sound/", 6) == 0 && !allow_download_sounds.value)
+		|| (!Q_strncasecmp(name, "sound/", 6) && !allow_download_sounds.value)
 		// now maps (note special case for maps, must not be in pak)
-		|| (strncmp(name, "maps/", 6) == 0 && !allow_download_maps.value)
+		|| (!Q_strncasecmp(name, "maps/", 5) && !allow_download_maps.value)
 		// MUST be in a subdirectory	
 		|| !strstr (name, "/") )	
 	{	// don't allow anything with .. path
