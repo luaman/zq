@@ -273,6 +273,7 @@ typedef struct
 	float		maxpitch;
 	qboolean	allow_fbskins;
 	qboolean	allow_truelightning;
+	qboolean	allow_frj;
 
 	int			parsecount;		// server message counter
 	int			validsequence;	// this is the sequence number of the last good
