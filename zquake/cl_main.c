@@ -140,20 +140,6 @@ jmp_buf 	host_abort;
 
 float	server_version = 0;	// version of server we connected to
 
-char emodel_name[] = 
-	{ 'e' ^ 0xff, 'm' ^ 0xff, 'o' ^ 0xff, 'd' ^ 0xff, 'e' ^ 0xff, 'l' ^ 0xff, 0 };
-char pmodel_name[] = 
-	{ 'p' ^ 0xff, 'm' ^ 0xff, 'o' ^ 0xff, 'd' ^ 0xff, 'e' ^ 0xff, 'l' ^ 0xff, 0 };
-char prespawn_name[] = 
-	{ 'p'^0xff, 'r'^0xff, 'e'^0xff, 's'^0xff, 'p'^0xff, 'a'^0xff, 'w'^0xff, 'n'^0xff,
-		' '^0xff, '%'^0xff, 'i'^0xff, ' '^0xff, '0'^0xff, ' '^0xff, '%'^0xff, 'i'^0xff, 0 };
-char modellist_name[] = 
-	{ 'm'^0xff, 'o'^0xff, 'd'^0xff, 'e'^0xff, 'l'^0xff, 'l'^0xff, 'i'^0xff, 's'^0xff, 't'^0xff, 
-		' '^0xff, '%'^0xff, 'i'^0xff, ' '^0xff, '%'^0xff, 'i'^0xff, 0 };
-char soundlist_name[] = 
-	{ 's'^0xff, 'o'^0xff, 'u'^0xff, 'n'^0xff, 'd'^0xff, 'l'^0xff, 'i'^0xff, 's'^0xff, 't'^0xff, 
-		' '^0xff, '%'^0xff, 'i'^0xff, ' '^0xff, '%'^0xff, 'i'^0xff, 0 };
-
 /*
 =======================
 CL_SendConnectPacket
@@ -1013,19 +999,23 @@ void Host_Frame (double time)
 	fps_count++;
 }
 
-static void simple_crypt(char *buf, int len)
+//============================================================================
+
+// emodel and pmodel are encrypted to prevent llamas from easily hacking them
+
+char emodel_name[] = { 'e'^0xe5, 'm'^0xe5, 'o'^0xe5, 'd'^0xe5, 'e'^0xe5, 'l'^0xe5, 0 };
+char pmodel_name[] = { 'p'^0xe5, 'm'^0xe5, 'o'^0xe5, 'd'^0xe5, 'e'^0xe5, 'l'^0xe5, 0 };
+
+static void simple_crypt (char *buf, int len)
 {
 	while (len--)
-		*buf++ ^= 0xff;
+		*buf++ ^= 0xe5;
 }
 
-void Host_FixupModelNames(void)
+void Host_FixupModelNames (void)
 {
-	simple_crypt(emodel_name, sizeof(emodel_name) - 1);
-	simple_crypt(pmodel_name, sizeof(pmodel_name) - 1);
-	simple_crypt(prespawn_name,  sizeof(prespawn_name)  - 1);
-	simple_crypt(modellist_name, sizeof(modellist_name) - 1);
-	simple_crypt(soundlist_name, sizeof(soundlist_name) - 1);
+	simple_crypt (emodel_name, sizeof(emodel_name) - 1);
+	simple_crypt (pmodel_name, sizeof(pmodel_name) - 1);
 }
 
 //============================================================================

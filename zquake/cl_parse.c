@@ -275,8 +275,7 @@ void Model_NextDownload (void)
 
 	// done with modellist, request first of static signon messages
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-//	MSG_WriteString (&cls.netchan.message, va("prespawn %i 0 %i", cl.servercount, cl.worldmodel->checksum2));
-	MSG_WriteString (&cls.netchan.message, va(prespawn_name, cl.servercount, cl.worldmodel->checksum2));
+	MSG_WriteString (&cls.netchan.message, va("prespawn %i 0 %i", cl.servercount, cl.worldmodel->checksum2));
 }
 
 /*
@@ -323,8 +322,7 @@ void Sound_NextDownload (void)
 	cl_rocketindex = cl_grenadeindex = -1;
 // <-- Tonik
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-//	MSG_WriteString (&cls.netchan.message, va("modellist %i 0", cl.servercount));
-	MSG_WriteString (&cls.netchan.message, va(modellist_name, cl.servercount, 0));
+	MSG_WriteString (&cls.netchan.message, va("modellist %i %i", cl.servercount, 0));
 }
 
 
@@ -655,8 +653,7 @@ void CL_ParseServerData (void)
 	// ask for the sound list next
 	memset(cl.sound_name, 0, sizeof(cl.sound_name));
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-//	MSG_WriteString (&cls.netchan.message, va("soundlist %i 0", cl.servercount));
-	MSG_WriteString (&cls.netchan.message, va(soundlist_name, cl.servercount, 0));
+	MSG_WriteString (&cls.netchan.message, va("soundlist %i %i", cl.servercount, 0));
 
 	// now waiting for downloads, etc
 	cls.state = ca_onserver;
@@ -692,8 +689,7 @@ void CL_ParseSoundlist (void)
 
 	if (n) {
 		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-//		MSG_WriteString (&cls.netchan.message, va("soundlist %i %i", cl.servercount, n));
-		MSG_WriteString (&cls.netchan.message, va(soundlist_name, cl.servercount, n));
+		MSG_WriteString (&cls.netchan.message, va("soundlist %i %i", cl.servercount, n));
 		return;
 	}
 
@@ -754,8 +750,7 @@ void CL_ParseModellist (void)
 
 	if (n) {
 		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-//		MSG_WriteString (&cls.netchan.message, va("modellist %i %i", cl.servercount, n));
-		MSG_WriteString (&cls.netchan.message, va(modellist_name, cl.servercount, n));
+		MSG_WriteString (&cls.netchan.message, va("modellist %i %i", cl.servercount, n));
 		return;
 	}
 
