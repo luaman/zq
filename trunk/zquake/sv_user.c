@@ -1500,6 +1500,20 @@ void AddAllEntsToPmove (void)
 	}
 }
 
+
+
+int SV_PMTypeForClient (client_t *cl)
+{
+	if (cl->spectator || (cl->edict->v.movetype == MOVETYPE_NOCLIP)) {
+		return PM_OLD_SPECTATOR;
+	}
+
+	if (sv_player->v.health <= 0)
+		return PM_DEAD;
+
+	return PM_NORMAL;
+}
+
 /*
 ===========
 SV_PreRunCmd
@@ -1523,7 +1537,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 	edict_t		*ent;
 	int			i, n;
 	int			oldmsec;
-	vec3_t		originalvel;
+	vec3_t		offset;
 
 	cmd = *ucmd;
 
@@ -1568,6 +1582,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 	if (!sv_client->spectator)
 	{
 		qboolean	onground;
+		vec3_t		originalvel;
 
 		VectorCopy (sv_player->v.velocity, originalvel);
 		onground = (int)sv_player->v.flags & FL_ONGROUND;
@@ -1589,54 +1604,53 @@ void SV_RunCmd (usercmd_t *ucmd)
 		SV_RunThink (sv_player);
 	}
 
-	for (i=0 ; i<3 ; i++)
-		pmove.origin[i] = sv_player->v.origin[i] + (sv_player->v.mins[i] - player_mins[i]);
+	// copy player state to pmove
+	VectorSubtract (sv_player->v.mins, player_mins, offset);
+	VectorAdd (sv_player->v.origin, offset, pmove.origin);
 	VectorCopy (sv_player->v.velocity, pmove.velocity);
 	VectorCopy (sv_player->v.v_angle, pmove.angles);
-
-	if (sv_client->spectator || (sv_player->v.movetype == MOVETYPE_NOCLIP)) {
-		pmove.pm_type = PM_OLD_SPECTATOR;
-	}
-	else if (sv_player->v.health <= 0)
-		pmove.pm_type = PM_DEAD;
-	else
-		pmove.pm_type = PM_NORMAL;
-
 	pmove.waterjumptime = sv_player->v.teleport_time;
-	pmove.numphysent = 1;
-	pmove.physents[0].model = sv.worldmodel;
 	pmove.cmd = *ucmd;
+	pmove.pm_type = SV_PMTypeForClient (sv_client);
 	pmove.jump_held = sv_client->jump_held;
 #ifndef SERVERONLY
 	pmove.jump_msec = 0;
 #endif
 
+	// build physent list
+	pmove.numphysent = 1;
+	pmove.physents[0].model = sv.worldmodel;
+	AddLinksToPmove ( sv_areanodes );
+
+	// fill in movevars
 	movevars.entgravity = sv_client->entgravity;
 	movevars.maxspeed = sv_client->maxspeed;
 	movevars.bunnyspeedcap = pm_bunnyspeedcap.value;
 	movevars.ktjump = pm_ktjump.value;
 	movevars.slidefix = pm_slidefix.value;
 
-	AddLinksToPmove ( sv_areanodes );
 
+	// do the move
 	PM_PlayerMove ();
 
+
+	// get player state back out of pmove
 	sv_client->jump_held = pmove.jump_held;
 	sv_player->v.teleport_time = pmove.waterjumptime;
 	sv_player->v.waterlevel = pmove.waterlevel;
 	sv_player->v.watertype = pmove.watertype;
-	if (pmove.onground)
-	{
+
+	if (pmove.onground) {
 		sv_player->v.flags = (int)sv_player->v.flags | FL_ONGROUND;
 		sv_player->v.groundentity = EDICT_TO_PROG(EDICT_NUM(pmove.physents[pmove.groundent].info));
 	}
 	else
 		sv_player->v.flags = (int)sv_player->v.flags & ~FL_ONGROUND;
-	for (i=0 ; i<3 ; i++)
-		sv_player->v.origin[i] = pmove.origin[i] - (sv_player->v.mins[i] - player_mins[i]);
 
+	VectorSubtract (pmove.origin, offset, sv_player->v.origin);
 	VectorCopy (pmove.velocity, sv_player->v.velocity);
 	VectorCopy (pmove.angles, sv_player->v.v_angle);
+
 
 	if (!sv_client->spectator)
 	{
