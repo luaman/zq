@@ -919,7 +919,7 @@ typedef struct locdata_s {
 	char name[MAX_LOC_NAME];
 } locdata_t;
 
-#define MAX_LOC_ENTRIES 1024
+#define MAX_LOC_ENTRIES 4096
 
 locdata_t locdata[MAX_LOC_ENTRIES];	// FIXME: allocate dynamically?
 int	loc_numentries;
