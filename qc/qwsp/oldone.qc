@@ -143,6 +143,16 @@ void() finale_1 =
 		error ("no teleporttrain");
 	remove (pl);
 
+	// svc_finale is broken in QW, so send svc_intermission first to set view angles
+	// and origin, then send svc_finale to set cl.intermission to 2.
+	WriteByte (MSG_ALL, SVC_INTERMISSION);
+	WriteCoord (MSG_ALL, intermission_origin_x);
+	WriteCoord (MSG_ALL, intermission_origin_y);
+	WriteCoord (MSG_ALL, intermission_origin_z);
+	WriteAngle (MSG_ALL, pos.mangle_x);
+	WriteAngle (MSG_ALL, pos.mangle_y);
+	WriteAngle (MSG_ALL, pos.mangle_z);
+
 	WriteByte (MSG_ALL, SVC_FINALE);
 	WriteString (MSG_ALL, "");
 
