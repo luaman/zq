@@ -42,7 +42,7 @@ void info_notnull ()
 
 //============================================================================
 
-float START_OFF = 1;
+const float START_OFF = 1;
 
 void light_use ()
 {
@@ -320,8 +320,8 @@ void misc_explobox2 ()
 
 //============================================================================
 
-float SPAWNFLAG_SUPERSPIKE      = 1;
-float SPAWNFLAG_LASER = 2;
+const float SPAWNFLAG_SUPERSPIKE	= 1;
+const float SPAWNFLAG_LASER			= 2;
 
 void Laser_Touch ()
 {

@@ -33,8 +33,8 @@ void trigger_reactivate ()
 
 //=============================================================================
 
-float	SPAWNFLAG_NOMESSAGE = 1;
-float	SPAWNFLAG_NOTOUCH = 1;
+const float SPAWNFLAG_NOMESSAGE = 1;
+const float SPAWNFLAG_NOTOUCH = 1;
 
 // the wait time has passed, so set back up for another activation
 void multi_wait ()
@@ -298,8 +298,8 @@ TELEPORT TRIGGERS
 ==============================================================================
 */
 
-float	PLAYER_ONLY	= 1;
-float	SILENT = 2;
+const float PLAYER_ONLY	= 1;
+const float SILENT		= 2;	// no ambient hum
 
 void play_teleport (entity ent)
 {
@@ -620,7 +620,7 @@ void trigger_hurt ()
 
 //============================================================================
 
-float PUSH_ONCE = 1;
+const float PUSH_ONCE = 1;
 
 void trigger_push_touch ()
 {
