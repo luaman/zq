@@ -45,23 +45,26 @@ void Snd_WriteLinearBlastStereo16 (void)
 	for (i=0 ; i<snd_linear_count ; i+=2)
 	{
 		val = (snd_p[i]*snd_vol)>>8;
-		if (val > 0x7fff)
-			snd_out[i] = 0x7fff;
-		else if (val < (short)0x8000)
-			snd_out[i] = (short)0x8000;
-		else
-			snd_out[i] = val;
-
+		snd_out[i] = bound (-32768, val, 32767);
 		val = (snd_p[i+1]*snd_vol)>>8;
-		if (val > 0x7fff)
-			snd_out[i+1] = 0x7fff;
-		else if (val < (short)0x8000)
-			snd_out[i+1] = (short)0x8000;
-		else
-			snd_out[i+1] = val;
+		snd_out[i+1] = bound (-32768, val, 32767);
 	}
 }
 #endif
+
+void Snd_WriteLinearBlastStereo16_SwapStereo (void)
+{
+	int		i;
+	int		val;
+
+	for (i=0 ; i<snd_linear_count ; i+=2)
+	{
+		val = (snd_p[i+1]*snd_vol)>>8;
+		snd_out[i] = bound (-32768, val, 32767);
+		val = (snd_p[i]*snd_vol)>>8;
+		snd_out[i+1] = bound (-32768, val, 32767);
+	}
+}
 
 void S_TransferStereo16 (int endtime)
 {
@@ -125,7 +128,10 @@ void S_TransferStereo16 (int endtime)
 		snd_linear_count <<= 1;
 
 	// write a linear blast of samples
-		Snd_WriteLinearBlastStereo16 ();
+		if (s_swapstereo.value)
+			Snd_WriteLinearBlastStereo16_SwapStereo ();
+		else
+			Snd_WriteLinearBlastStereo16 ();
 
 		snd_p += snd_linear_count;
 		lpaintedtime += (snd_linear_count>>1);
