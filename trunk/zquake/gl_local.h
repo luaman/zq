@@ -178,7 +178,6 @@ extern	cvar_t	r_skycolor;
 extern	cvar_t	gl_subdivide_size;
 extern	cvar_t	gl_clear;
 extern	cvar_t	gl_cull;
-extern	cvar_t	gl_poly;
 extern	cvar_t	gl_texsort;
 extern	cvar_t	gl_smoothmodels;
 extern	cvar_t	gl_affinemodels;
@@ -194,6 +193,7 @@ extern	cvar_t	gl_colorlights;
 extern	cvar_t	gl_contrast;
 extern	cvar_t	gl_gamma;
 extern	cvar_t	gl_lightmode;
+extern	cvar_t	gl_solidparticles;
 
 extern	int		lightmode;		// set to gl_lightmode on mapchange
 
