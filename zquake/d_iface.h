@@ -151,7 +151,6 @@ void D_Init (void);
 void D_ViewChanged (void);
 void D_SetupFrame (void);
 void D_StartParticles (void);
-void D_TurnZOn (void);
 void D_WarpScreen (void);
 
 void D_FillRect (vrect_t *vrect, int color);

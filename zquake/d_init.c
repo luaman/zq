@@ -90,17 +90,6 @@ void D_EnableBackBufferAccess (void)
 
 /*
 ===============
-D_TurnZOn
-===============
-*/
-void D_TurnZOn (void)
-{
-// not needed for software version
-}
-
-
-/*
-===============
 D_DisableBackBufferAccess
 ===============
 */
