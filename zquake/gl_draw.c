@@ -1119,8 +1119,10 @@ static	unsigned	scaled[1024*512];	// [512*256];
 	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
 		;
 
-	scaled_width >>= (int)gl_picmip.value;
-	scaled_height >>= (int)gl_picmip.value;
+	if (mipmap) {
+		scaled_width >>= (int)gl_picmip.value;
+		scaled_height >>= (int)gl_picmip.value;
+	}
 
 	if (scaled_width > gl_max_size.value)
 		scaled_width = gl_max_size.value;
@@ -1221,8 +1223,10 @@ void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboole
 	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
 		;
 
-	scaled_width >>= (int)gl_picmip.value;
-	scaled_height >>= (int)gl_picmip.value;
+	if (mipmap) {
+		scaled_width >>= (int)gl_picmip.value;
+		scaled_height >>= (int)gl_picmip.value;
+	}
 
 	if (scaled_width > gl_max_size.value)
 		scaled_width = gl_max_size.value;
