@@ -23,10 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "teamplay.h"
 
-#ifdef GLQUAKE
-#include "gl_local.h"	// FIXME
-#endif
-
 
 extern	cvar_t	cl_predict_players;
 extern	cvar_t	cl_solid_players;
@@ -869,34 +865,28 @@ void CL_LinkPlayers (void)
 			continue;	// not present this frame
 
 		// spawn light flashes, even ones coming from invisible objects
-#ifdef GLQUAKE
-		if (!gl_flashblend.value || j != cl.viewplayernum) {
-#endif
-			if (r_powerupglow.value && !(r_powerupglow.value == 2 && j == cl.viewplayernum))
-			{
-				if (j == cl.playernum) {
-					VectorCopy (cl.simorg, org);
-				} else
-					VectorCopy (state->origin, org);
+		if (r_powerupglow.value && !(r_powerupglow.value == 2 && j == cl.viewplayernum))
+		{
+			if (j == cl.playernum) {
+				VectorCopy (cl.simorg, org);
+			} else
+				VectorCopy (state->origin, org);
 
-				if ((state->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
-					CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_redblue);
-				else if (state->effects & EF_BLUE)
-					CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_blue);
-				else if (state->effects & EF_RED)
-					CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_red);
-				else if (state->effects & EF_BRIGHTLIGHT) {
-					vec3_t	tmp;
-					VectorCopy (org, tmp);
-					tmp[2] += 16;
-					CL_NewDlight (j+1, tmp, 400 + (rand()&31), 0.1, lt_default);
-				}
-				else if (state->effects & EF_DIMLIGHT)
-					CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_default);
+			if ((state->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
+				CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_redblue);
+			else if (state->effects & EF_BLUE)
+				CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_blue);
+			else if (state->effects & EF_RED)
+				CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_red);
+			else if (state->effects & EF_BRIGHTLIGHT) {
+				vec3_t	tmp;
+				VectorCopy (org, tmp);
+				tmp[2] += 16;
+				CL_NewDlight (j+1, tmp, 400 + (rand()&31), 0.1, lt_default);
 			}
-#ifdef GLQUAKE
+			else if (state->effects & EF_DIMLIGHT)
+				CL_NewDlight (j+1, org, 200 + (rand()&31), 0.1, lt_default);
 		}
-#endif
 
 		// the player object never gets added
 		if (j == cl.playernum)
