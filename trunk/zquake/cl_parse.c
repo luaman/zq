@@ -1176,6 +1176,8 @@ void CL_SetInfo (void)
 CL_ProcessServerInfo
 
 Called by CL_FullServerinfo_f and CL_ParseServerInfoChange
+
+MUST be called at least once when entering a new map so that things initialize properly
 ==============
 */
 void CL_ProcessServerInfo (void)
@@ -1209,8 +1211,14 @@ void CL_ProcessServerInfo (void)
 	fpd = cls.demoplayback ? 0 : atoi(Info_ValueForKey(cl.serverinfo, "fpd"));
 
 
-	// ZQuake extension bits
+	// Get the server's ZQuake extension bits
 	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext"));
+
+	// Initialize cl.maxpitch & cl.minpitch
+	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "maxpitch") : NULL;
+	cl.maxpitch = *p ? Q_atof(p) : 80.0f;
+	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "minpitch") : NULL;
+	cl.minpitch = *p ? Q_atof(p) : -70.0f;
 
 	// movement vars for prediction
 	cl.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
@@ -1236,7 +1244,7 @@ void CL_ProcessServerInfo (void)
 		}
 	}
 
-	// skybox
+	// skybox (FIXME, allow dynamic updates, like loadsky)
 	if (cls.state < ca_active)
 	{
 		strcpy (cl.sky, Info_ValueForKey(cl.serverinfo, "sky"));

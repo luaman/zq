@@ -255,6 +255,8 @@ typedef struct
 	int			fpd;			// FAQ proxy flags
 	int			z_ext;			// ZQuake protocol extensions flags
 	float		maxfps;
+	float		minpitch;
+	float		maxpitch;
 	qboolean	allow_fbskins;
 	qboolean	allow_truelightning;
 

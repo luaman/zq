@@ -29,7 +29,12 @@ usercmd_t	cmd;
 cvar_t	sv_spectalk = {"sv_spectalk", "1"};
 cvar_t	sv_mapcheck	= {"sv_mapcheck", "1"};
 
-extern	vec3_t	player_mins;
+void OnChange_sv_maxpitch (cvar_t *var, char *str, qboolean *cancel);
+void OnChange_sv_minpitch (cvar_t *var, char *str, qboolean *cancel);
+cvar_t	sv_maxpitch = {"sv_maxpitch", "80", 0, OnChange_sv_maxpitch};
+cvar_t	sv_minpitch = {"sv_minpitch", "-70", 0, OnChange_sv_minpitch};
+
+extern vec3_t	player_mins;
 
 extern int fp_messages, fp_persecond, fp_secondsdead;
 extern cvar_t	sv_floodprotmsg;
@@ -40,6 +45,47 @@ extern cvar_t	pm_slidefix;
 extern cvar_t	pm_airstep;
 
 extern double	sv_frametime;
+
+char *Q_ftos (float value);
+
+//
+// pitch clamping
+//
+// All this OnChange code is because we want the cvar names to have sv_ prefixes,
+// but don't want them in serverinfo (save a couple of bytes of space)
+// Value sanity checks are also done here
+//
+void OnChange_sv_maxpitch (cvar_t *var, char *str, qboolean *cancel) {
+	float	newval;
+	char	*newstr;
+
+	*cancel = true;
+
+	newval = bound (0, Q_atof(str), 89.0f);
+	if (newval == var->value)
+		return;
+
+	Cvar_SetValue (var, newval);
+	newstr = (newval == 80.0f) ? "" : Q_ftos(newval);	// don't show default values in serverinfo
+	Info_SetValueForKey (svs.info, "maxpitch", newstr, MAX_SERVERINFO_STRING);
+	SV_SendServerInfoChange("maxpitch", newstr);
+}
+
+void OnChange_sv_minpitch (cvar_t *var, char *str, qboolean *cancel) {
+	float	newval;
+	char	*newstr;
+
+	*cancel = true;
+
+	newval = bound (-89.0f, Q_atof(str), 0.0f);
+	if (newval == var->value)
+		return;
+
+	Cvar_SetValue (var, newval);
+	newstr = (newval == -70.0f) ? "" : Q_ftos(newval);	// don't show default values in serverinfo
+	Info_SetValueForKey (svs.info, "minpitch", newstr, MAX_SERVERINFO_STRING);
+	SV_SendServerInfoChange("minpitch", newstr);
+}
 
 
 /*
@@ -1560,6 +1606,12 @@ void SV_RunCmd (usercmd_t *ucmd)
 		SV_RunCmd (&cmd);
 		return;
 	}
+
+	// clamp pitch angle
+	if (ucmd->angles[PITCH] > sv_maxpitch.value)
+		ucmd->angles[PITCH] = sv_maxpitch.value;
+	if (ucmd->angles[PITCH] < sv_minpitch.value)
+		ucmd->angles[PITCH] = sv_minpitch.value;
 
 	if (!sv_player->v.fixangle)
 		VectorCopy (ucmd->angles, sv_player->v.v_angle);
