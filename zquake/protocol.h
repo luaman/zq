@@ -170,9 +170,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define PMC_NORMAL			0		// normal ground movement
 #define PMC_NORMAL_JUMP_HELD	1	// normal ground novement + jump_held
 #define PMC_OLD_SPECTATOR	2		// fly through walls (QW compatibility mode)
+// not implemented yet:
 #define PMC_SPECTATOR		3		// fly through walls
 #define PMC_FLY				4		// clipped
-#define PMC_DEAD			5		// no acceleration
+#define PMC_EXTRA1			5
+#define PMC_EXTRA2			6
+#define PMC_EXTRA3			7
 
 //==============================================
 
@@ -249,7 +252,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // ZQuake protocol extensions (*z_ext serverinfo key)
 //
 #define Z_EXT_PM_TYPE		(1<<0)
-#define Z_EXT_VIEWHEIGHT	(1<<1)
+#define Z_EXT_PM_TYPE_NEW	(1<<1)	// not implemented yet
+#define Z_EXT_VIEWHEIGHT	(1<<2)	// not implemented yet
 
 
 /*
