@@ -516,69 +516,14 @@ void() PlayerDie;
 
 /*
 ===========
-ValidateUser
-
-
-============
-*/
-// float(entity e) ValidateUser =
-// {
-// 	local string    s;
-// 	local string    userclan;
-// 	local float     rank, rankmin, rankmax;
-// 
-// //
-// // if the server has set "clan1" and "clan2", then it
-// // is a clan match that will allow only those two clans in
-// //
-// 	s = serverinfo("clan1");
-// 	if (s)
-// 	{
-// 		userclan = masterinfo(e,"clan");
-// 		if (s == userclan)
-// 			return true;
-// 		s = serverinfo("clan2");
-// 		if (s == userclan)
-// 			return true;
-// 		return false;
-// 	}
-// 
-// //
-// // if the server has set "rankmin" and/or "rankmax" then
-// // the users rank must be between those two values
-// //
-// 	s = masterinfo (e, "rank");
-// 	rank = stof (s);
-// 
-// 	s = serverinfo("rankmin");
-// 	if (s)
-// 	{
-// 		rankmin = stof (s);
-// 		if (rank < rankmin)
-// 			return false;
-// 	}
-// 	s = serverinfo("rankmax");
-// 	if (s)
-// 	{
-// 		rankmax = stof (s);
-// 		if (rankmax < rank)
-// 			return false;
-// 	}
-// 
-// 	return true;
-// };
-
-
-/*
-===========
 PutClientInServer
 
 called each time a player enters a new level
 ============
 */
-void() PutClientInServer =
+void PutClientInServer ()
 {
-	local   entity spot;
+	entity	spot;
 
 	self.classname = "player";
 	self.health = 100;
@@ -594,13 +539,6 @@ void() PutClientInServer =
 	self.radsuit_finished = 0;
 	self.invisible_finished = 0;
 	self.invincible_finished = 0;
-
-// s: the spawn falling damage bug workaround
-	self.jump_flag = 0;
-	self.swim_flag = 0;
-
-// team: fps cheat
-
 	self.effects = 0;
 	self.invincible_time = 0;
 
@@ -621,6 +559,8 @@ void() PutClientInServer =
 	self.origin = spot.origin + '0 0 1';
 	self.angles = spot.angles;
 	self.fixangle = true;           // turn this way immediately
+	self.jump_flag = 0;
+	self.swim_flag = 0;
 
 // oh, this is a hack!
 	setmodel (self, "progs/eyes.mdl");
@@ -639,13 +579,15 @@ void() PutClientInServer =
 	self.velocity = '0 0 0';
 
 	player_stand1 ();
-	
-	makevectors(self.angles);
-	spawn_tfog (self.origin + v_forward*20);
-	play_teleport(self);
+
+	if (deathmatch || coop)
+	{	
+		makevectors(self.angles);
+		play_teleport (self);
+		spawn_tfog (self.origin + v_forward*20);
+	}
 
 	spawn_tdeath (self.origin, self);
-
 
 	if (deathmatch == 4)
 	{
@@ -694,7 +636,7 @@ void() PutClientInServer =
 	}
 
 
-};
+}
 
 
 /*
