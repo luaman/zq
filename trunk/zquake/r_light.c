@@ -108,10 +108,24 @@ loc0:
 	}
 
 	if (node->children[0]->contents >= 0)
-		R_MarkLights (light, bit, node->children[0]);
-
-	if (node->children[1]->contents >= 0)
-		R_MarkLights (light, bit, node->children[1]);
+	{
+		if (node->children[1]->contents >= 0)
+		{
+			R_MarkLights (light, bit, node->children[0]);
+			node = node->children[1];
+			goto loc0;
+		}
+		else
+		{
+			node = node->children[0];
+			goto loc0;
+		}
+	}
+	else if (node->children[1]->contents >= 0)
+	{
+		node = node->children[1];
+		goto loc0;
+	}
 }
 
 
