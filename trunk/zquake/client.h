@@ -157,10 +157,11 @@ typedef struct
 
 typedef struct cparticle_s
 {
+	struct cparticle_s *next;
 	vec3_t		org;
 	int			color;
 	float		alpha;
-	struct cparticle_s *next;
+	float		alphavel;
 	vec3_t		vel;
 	float		ramp;
 	float		die;
@@ -430,7 +431,7 @@ extern int			cl_numvisedicts;
 extern entity_t		cl_visedicts[MAX_VISEDICTS];
 
 extern int			cl_numvisparticles;
-extern particle_t	cl_visparticles[MAX_PARTICLES];
+extern particle_t	*cl_visparticles;	// allocated on hunk
 
 extern char emodel_name[], pmodel_name[];
 
@@ -505,6 +506,7 @@ void CL_VoorTrail (vec3_t start, vec3_t end);
 void CL_GrenadeTrail (vec3_t start, vec3_t end);
 void CL_RocketTrail (vec3_t start, vec3_t end);
 void CL_TracerTrail (vec3_t start, vec3_t end, int color);
+void CL_RailTrail (vec3_t start, vec3_t end);
 void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
 void CL_RunParticleEffect2 (vec3_t org, vec3_t dir, int color, int count, int scale);
 void CL_EntityParticles (vec3_t org);
