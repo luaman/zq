@@ -334,8 +334,6 @@ typedef struct
 
 //============================================================================
 
-extern	netadr_t	master_adr[MAX_MASTERS];	// address of the master server
-
 extern	cvar_t	sv_paused;		// 1 - normal, 2 - auto (single player), 3 - both
 extern	cvar_t	sv_mintic, sv_maxtic;
 extern	cvar_t	maxclients;
@@ -384,10 +382,6 @@ void SV_InitOperatorCommands (void);
 
 void SV_ExtractFromUserinfo (client_t *cl);
 int SV_BoundRate (int rate);
-
-void Master_Heartbeat (void);
-void Master_Packet (void);
-
 
 //
 // sv_move.c
@@ -487,3 +481,12 @@ void SV_LoadGame_f (void);
 edict_t *SV_CreateBot (char *name);
 void SV_RemoveBot (client_t *cl);
 void SV_RunBots (void);
+
+//
+// sv_master.c
+//
+void SV_SetMaster_f (void);
+void SV_Heartbeat_f (void);
+void Master_Shutdown (void);
+void Master_Heartbeat (void);
+

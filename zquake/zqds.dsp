@@ -182,6 +182,10 @@ SOURCE=.\sv_main.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\sv_master.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\sv_move.c
 # End Source File
 # Begin Source File

@@ -204,6 +204,10 @@ SOURCE=.\cl_pred.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\cl_sbar.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\cl_screen.c
 # End Source File
 # Begin Source File
@@ -325,26 +329,6 @@ SOURCE=.\d_modech.c
 # Begin Source File
 
 SOURCE=.\d_polyse.c
-
-!IF  "$(CFG)" == "zquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_scan.c
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
 
@@ -1014,6 +998,26 @@ SOURCE=.\r_rast.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\r_scan.c
+
+!IF  "$(CFG)" == "zquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\r_sky.c
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
@@ -1094,10 +1098,6 @@ SOURCE=.\r_vars.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\cl_sbar.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\skin.c
 # End Source File
 # Begin Source File
@@ -1135,6 +1135,10 @@ SOURCE=.\sv_init.c
 # Begin Source File
 
 SOURCE=.\sv_main.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\sv_master.c
 # End Source File
 # Begin Source File
 
@@ -1254,6 +1258,10 @@ SOURCE=.\bspfile.h
 # Begin Source File
 
 SOURCE=.\cdaudio.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cl_sbar.h
 # End Source File
 # Begin Source File
 
@@ -1421,10 +1429,6 @@ SOURCE=.\render.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cl_sbar.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\screen.h
 # End Source File
 # Begin Source File
@@ -1552,144 +1556,6 @@ InputName=cl_math
 # End Source File
 # Begin Source File
 
-SOURCE=.\r_draw8.s
-
-!IF  "$(CFG)" == "zquake - Win32 Release"
-
-# Begin Custom Build
-OutDir=.\Release
-InputPath=.\r_draw8.s
-InputName=r_draw8
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
-
-# Begin Custom Build
-OutDir=.\Debug
-InputPath=.\r_draw8.s
-InputName=r_draw8
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_draw16.s
-
-!IF  "$(CFG)" == "zquake - Win32 Release"
-
-# Begin Custom Build
-OutDir=.\Release
-InputPath=.\r_draw16.s
-InputName=r_draw16
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
-
-# Begin Custom Build
-OutDir=.\Debug
-InputPath=.\r_draw16.s
-InputName=r_draw16
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_parta.s
-
-!IF  "$(CFG)" == "zquake - Win32 Release"
-
-# Begin Custom Build
-OutDir=.\Release
-InputPath=.\r_parta.s
-InputName=r_parta
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
-
-# Begin Custom Build
-OutDir=.\Debug
-InputPath=.\r_parta.s
-InputName=r_parta
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\d_polysa.s
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
@@ -1713,52 +1579,6 @@ InputName=d_polysa
 OutDir=.\Debug
 InputPath=.\d_polysa.s
 InputName=d_polysa
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_scana.s
-
-!IF  "$(CFG)" == "zquake - Win32 Release"
-
-# Begin Custom Build
-OutDir=.\Release
-InputPath=.\r_scana.s
-InputName=r_scana
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
-	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
-
-# Begin Custom Build
-OutDir=.\Debug
-InputPath=.\r_scana.s
-InputName=r_scana
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -2033,6 +1853,98 @@ InputName=r_aliasa
 # End Source File
 # Begin Source File
 
+SOURCE=.\r_draw16.s
+
+!IF  "$(CFG)" == "zquake - Win32 Release"
+
+# Begin Custom Build
+OutDir=.\Release
+InputPath=.\r_draw16.s
+InputName=r_draw16
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
+
+# Begin Custom Build
+OutDir=.\Debug
+InputPath=.\r_draw16.s
+InputName=r_draw16
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\r_draw8.s
+
+!IF  "$(CFG)" == "zquake - Win32 Release"
+
+# Begin Custom Build
+OutDir=.\Release
+InputPath=.\r_draw8.s
+InputName=r_draw8
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
+
+# Begin Custom Build
+OutDir=.\Debug
+InputPath=.\r_draw8.s
+InputName=r_draw8
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\r_drawa.s
 
 !IF  "$(CFG)" == "zquake - Win32 Release"
@@ -2102,6 +2014,98 @@ InputName=r_edgea
 OutDir=.\Debug
 InputPath=.\r_edgea.s
 InputName=r_edgea
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\r_parta.s
+
+!IF  "$(CFG)" == "zquake - Win32 Release"
+
+# Begin Custom Build
+OutDir=.\Release
+InputPath=.\r_parta.s
+InputName=r_parta
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
+
+# Begin Custom Build
+OutDir=.\Debug
+InputPath=.\r_parta.s
+InputName=r_parta
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLDebug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 GLRelease"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\r_scana.s
+
+!IF  "$(CFG)" == "zquake - Win32 Release"
+
+# Begin Custom Build
+OutDir=.\Release
+InputPath=.\r_scana.s
+InputName=r_scana
+
+"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
+	gas2masm < $(OUTDIR)\$(InputName).spp >$(OUTDIR)\$(InputName).asm 
+	ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm 
+	del $(OUTDIR)\$(InputName).spp 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "zquake - Win32 Debug"
+
+# Begin Custom Build
+OutDir=.\Debug
+InputPath=.\r_scana.s
+InputName=r_scana
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /nologo /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
