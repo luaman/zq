@@ -290,8 +290,8 @@ cshift_t	cshift_water = { {130,80,50}, 128 };
 cshift_t	cshift_slime = { {0,25,5}, 150 };
 cshift_t	cshift_lava = { {255,80,0}, 150 };
 
-cvar_t		v_gamma = {"gamma","0.7",CVAR_ARCHIVE};
-cvar_t		v_contrast = {"contrast","1",CVAR_ARCHIVE};
+cvar_t		v_gamma = {"gamma", "1", CVAR_ARCHIVE};
+cvar_t		v_contrast = {"contrast", "1", CVAR_ARCHIVE};
 
 byte		gammatable[256];	// palette is sent through this
 
