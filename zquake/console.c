@@ -75,6 +75,7 @@ void Con_ToggleConsole_f (void)
 	else
 		key_dest = key_console;
 	
+	SCR_EndLoadingPlaque ();
 	Con_ClearNotify ();
 }
 

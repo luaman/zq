@@ -407,6 +407,8 @@ void CL_ParsePacketEntities (qboolean delta)
 
 		Con_ClearNotify ();
 		TP_ExecTrigger ("f_spawn");
+
+		SCR_EndLoadingPlaque ();
 	}
 }
 

@@ -78,6 +78,10 @@ void Host_Error (char *error, ...)
 	if (inerror)
 		Sys_Error ("Host_Error: recursively entered");
 	inerror = true;
+
+#ifndef SERVERONLY
+	SCR_EndLoadingPlaque ();		// reenable screen updates
+#endif
 	
 	va_start (argptr,error);
 	vsprintf (string,error,argptr);
