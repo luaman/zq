@@ -947,7 +947,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				// to GL_FRONT after switching to fullscreen, causing
 				// screen flickering. Grabbing GL_BACK once doesn't help,
 				// 2 is probably ok, but we use 5 just to be sure
-				vid_grabbackbuffer = 2;
+				vid_grabbackbuffer = 5;
 				Sbar_Changed ();
 			}
 		}
