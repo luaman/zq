@@ -122,7 +122,7 @@ otherwise stepup smoothing code produces ugly jump physics
 */
 void CL_CategorizePosition (void)
 {
-	if (cl.spectator) {
+	if (cl.spectator && cl.playernum == cl.viewplayernum) {
 		cl.onground = false;	// in air
 		return;
 	}
@@ -231,6 +231,15 @@ void CL_PredictMove (void)
 
 	// this is the last valid frame received from the server
 	from = &cl.frames[cl.validsequence & UPDATE_MASK];
+
+	// FIXME...
+	if (cls.demoplayback && cl.spectator && cl.viewplayernum != cl.playernum) {
+		VectorCopy (from->playerstate[cl.viewplayernum].velocity, cl.simvel);
+		VectorCopy (from->playerstate[cl.viewplayernum].origin, cl.simorg);
+		VectorCopy (from->playerstate[cl.viewplayernum].viewangles, cl.simangles);
+		CL_CategorizePosition ();
+		goto out;
+	}
 
 	if (cl_nopred.value)
 	{
