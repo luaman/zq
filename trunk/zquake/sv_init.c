@@ -45,7 +45,7 @@ int SV_ModelIndex (char *name)
 		if (!strcmp(sv.model_precache[i], name))
 			return i;
 	if (i==MAX_MODELS || !sv.model_precache[i])
-		SV_Error ("SV_ModelIndex: model %s not precached", name);
+		Host_Error ("SV_ModelIndex: model %s not precached", name);
 	return i;
 }
 
@@ -62,7 +62,7 @@ void SV_FlushSignon (void)
 		return;
 
 	if (sv.num_signon_buffers == MAX_SIGNON_BUFFERS-1)
-		SV_Error ("sv.num_signon_buffers == MAX_SIGNON_BUFFERS-1");
+		Host_Error ("sv.num_signon_buffers == MAX_SIGNON_BUFFERS-1");
 
 	sv.signon_buffer_size[sv.num_signon_buffers-1] = sv.signon.cursize;
 	sv.signon.data = sv.signon_buffers[sv.num_signon_buffers];
@@ -262,7 +262,7 @@ unsigned SV_CheckModel(char *mdl)
 
 	buf = (byte *)FS_LoadStackFile (mdl, stackbuf, sizeof(stackbuf));
 	if (!buf)
-		SV_Error ("SV_CheckModel: could not load %s\n", mdl);
+		Host_Error ("SV_CheckModel: could not load %s\n", mdl);
 	crc = CRC_Block(buf, com_filesize);
 
 	return crc;

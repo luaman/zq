@@ -32,7 +32,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void CL_Frame (double time);
 void CL_Shutdown ();
 void SV_Init (void);
-void SV_Error (char *error, ...);
 
 
 #ifdef SERVERONLY
@@ -219,7 +218,7 @@ void Host_Init (quakeparms_t *parms)
 	if (sv.state == ss_dead)
 		Cmd_ExecuteString ("map start");
 	if (sv.state == ss_dead)
-		SV_Error ("Couldn't spawn a server");
+		Host_Error ("Couldn't spawn a server");
 
 #else
 
