@@ -330,6 +330,17 @@ model_t *Mod_ForName (char *name, qboolean crash)
 
 byte	*mod_base;
 
+static qboolean HasFullbrights (byte *pixels, int size)
+{
+    int i;
+
+    for (i = 0; i < size; i++)
+        if (pixels[i] >= 224)
+            return true;
+
+    return false;
+}
+
 
 /*
 =================
@@ -371,7 +382,7 @@ void Mod_LoadTextures (lump_t *l)
 		if ( (mt->width & 15) || (mt->height & 15) )
 			Sys_Error ("Texture %s is not 16 aligned", mt->name);
 		pixels = mt->width*mt->height/64*85;
-		tx = Hunk_AllocName (sizeof(texture_t) +pixels, loadname );
+		tx = Hunk_AllocName (sizeof(texture_t) + pixels, loadname);
 		loadmodel->textures[i] = tx;
 
 		memcpy (tx->name, mt->name, sizeof(tx->name));
@@ -390,8 +401,13 @@ void Mod_LoadTextures (lump_t *l)
 			texture_mode = GL_LINEAR_MIPMAP_NEAREST; //_LINEAR;
 			if (mt->name[0] == '*')	// we don't brighten turb textures
 				tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, false);
-			else
+			else {
 				tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, true);
+				if (HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
+					tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", mt->name), tx->width, tx->height, (byte *)(tx+1),
+						true, 2 /* Fullbright mask */, false);
+				}
+			}
 			texture_mode = GL_LINEAR;
 		}
 	}
