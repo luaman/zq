@@ -913,7 +913,7 @@ console functions
 
 void S_Play(void)
 {
-	//static int hash=345;
+	static int hash=345;
 	int 	i;
 	char name[256];
 	sfx_t	*sfx;
@@ -929,16 +929,14 @@ void S_Play(void)
 		else
 			strcpy(name, Cmd_Argv(i));
 		sfx = S_PrecacheSound(name);
-//		S_StartSound(hash++, 0, sfx, listener_origin, 1.0, 1.0);
-// Tonik: so that you can't run away (or teleport) from the sound
-		S_StartSound(cl.viewentity, 0, sfx, listener_origin, 1.0, 1.0);
+		S_StartSound(hash++, 0, sfx, listener_origin, 1.0, 1.0);
 		i++;
 	}
 }
 
 void S_PlayVol(void)
 {
-	//static int hash=543;
+	static int hash=543;
 	int i;
 	float vol;
 	char name[256];
@@ -956,9 +954,7 @@ void S_PlayVol(void)
 			strcpy(name, Cmd_Argv(i));
 		sfx = S_PrecacheSound(name);
 		vol = Q_atof(Cmd_Argv(i+1));
-//		S_StartSound(hash++, 0, sfx, listener_origin, vol, 1.0);
-// Tonik: so that you can't run away (or teleport) from the sound
-		S_StartSound(cl.viewentity, 0, sfx, listener_origin, vol, 1.0);
+		S_StartSound(hash++, 0, sfx, listener_origin, vol, 1.0);
 		i+=2;
 	}
 }
