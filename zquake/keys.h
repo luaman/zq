@@ -32,7 +32,7 @@ typedef enum {
 
 	K_CAPSLOCK,
 	K_PRINTSCR,
-	K_SCRLCK,
+	K_SCROLLLOCK,
 	K_PAUSE,
 
 	K_UPARROW,
