@@ -1740,6 +1740,8 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		mod->maxs[i] = aliasbboxmaxs[i] * pheader->scale[i] + pheader->scale_origin[i];
 	}
 
+	mod->radius = RadiusFromBounds (mod->mins, mod->maxs);
+
 	//
 	// build the draw lists
 	//
