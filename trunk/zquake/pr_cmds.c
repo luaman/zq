@@ -897,8 +897,7 @@ void PF_ftos (void)
 		sprintf (pr_string_temp, "%d", (int)v);
 	else
 	{
-		_snprintf (pr_string_temp, sizeof(pr_string_temp)-1, "%f", v);
-		pr_string_temp[sizeof(pr_string_temp)-1] = 0;
+		Q_snprintfz (pr_string_temp, sizeof(pr_string_temp), "%f", v);
 
 		for (i=strlen(pr_string_temp)-1 ; i>0 && pr_string_temp[i]=='0' ; i--)
 			pr_string_temp[i] = 0;
