@@ -777,6 +777,31 @@ def_t *PR_FindDef (char *name, def_t *scope)
 	return NULL;
 }
 
+// a special hack for functions
+// functions are special as they're always defined on global scope,
+// but may be declared at local scope
+// for functions, def->scope is visibility scope
+// FIXME: make this crap more generic to allow "extern float f;" at local scope
+def_t *PR_FindAndFixupFuncDef (char *name, def_t *scope)
+{
+	for (def_t *def = pr.def_head.next ; def ; def = def->next) {
+		if (def->type->type != ev_function)
+			continue;
+
+		if (strcmp(def->name, name))
+			continue;
+
+		if (!def->scope)
+			return def;		// already declared at global level
+
+		def->scope = scope;		// hack
+		return def;
+	}
+
+	return NULL;
+}
+
+
 /*
 ============
 PR_GetDef
@@ -790,10 +815,13 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool isParm)
 	char element[MAX_NAME];
 
 // see if the name is already in use
-	def = PR_FindDef (name, scope);
+	if (type->type == ev_function && !isParm)
+		def = PR_FindAndFixupFuncDef (name, scope);
+	else
+		def = PR_FindDef (name, scope);
 
 	if (def) {
-		if (def->scope != scope) {
+		if (def->scope != scope && def->type->type != ev_function) {
 			if (!pr_idcomp)
 				goto allocNew;		// a local def overrides global (ok)
 			else
