@@ -32,21 +32,39 @@ void flag_touch ()
 	if (other.health <= 0)
 		return;
 	
+	//TODO: modify checks to only allow player to pickup enemy flag and only
+	//allowed to capture on team flag if its at the base (not in the field)
+	if ((other.items & IT_KEY1) | (other.items & IT_KEY2))
+	{
+// CAPTURE FLAG -->
+		sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+		stuffcmd (other, "bf\n");
+		other.items = other.items - (other.items & (IT_KEY1 | IT_KEY2));
+		bprint (PRINT_LOW, other.netname, " captured ", self.netname, "!\n");
+		//TODO: add 10 to team score
+		self.nextthink = time + 0.2;
+		self.think = SUB_regen;
+// <-- CAPTURE FLAG
+	}
+	else 
+	{
 // PICKUP FLAG -->
-	self.mdl = self.model;
+		self.mdl = self.model;
 
-	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
-	stuffcmd (other, "bf\n");
-	self.solid = SOLID_NOT;
-	other.items = other.items | self.items;
-	self.model = "";
+		sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+		stuffcmd (other, "bf\n");
+		self.solid = SOLID_NOT;
+		other.items = other.items | self.items;
+		self.model = "";
+		
+		bprint (PRINT_LOW, other.netname, " took ", self.netname, "!\n");
+		sprint (other, PRINT_LOW, "You got the enemy flag!\nTake it back to your capture point!`\n");
+
+		activator = other;
+		SUB_UseTargets();                               // fire all targets / killtargets
+// <-- PICKUP_FLAG
+	}
 	
-	bprint (PRINT_LOW, other.netname, " took ", self.netname, "!\n");
-	sprint (other, PRINT_LOW, "You got the enemy flag!\nTake it back to your capture point!`\n");
-
-	activator = other;
-	SUB_UseTargets();                               // fire all targets / killtargets
-// <-- PICKUP_FLAG	
 }
 
 void flag_drop ()
