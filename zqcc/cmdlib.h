@@ -47,6 +47,12 @@ typedef int qboolean;
 typedef unsigned char byte;
 #endif
 
+
+#ifdef _WIN32
+#pragma warning( disable : 4244 )
+#endif
+
+
 // the dec offsetof macro doesn't work very well...
 #define myoffsetof(type,identifier) ((size_t)&((type *)0)->identifier)
 
