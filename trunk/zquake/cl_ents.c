@@ -471,26 +471,26 @@ void CL_LinkPacketEntities (void)
 			{
 				if (r_rockettrail.value) {
 					if (r_rockettrail.value == 2)
-						CL_RocketTrail (old_origin, ent.origin, 1);
+						CL_GrenadeTrail (old_origin, ent.origin);
 					else
-						CL_RocketTrail (old_origin, ent.origin, 0);
+						CL_RocketTrail (old_origin, ent.origin);
 				}
 
 				if (r_rocketlight.value)
 					CL_NewDlight (state->number, ent.origin, 200, 0.1, lt_rocket);
 			}
 			else if (model->flags & EF_GRENADE && r_grenadetrail.value)
-				CL_RocketTrail (old_origin, ent.origin, 1);
+				CL_GrenadeTrail (old_origin, ent.origin);
 			else if (model->flags & EF_GIB)
-				CL_RocketTrail (old_origin, ent.origin, 2);
+				CL_BloodTrail (old_origin, ent.origin);
 			else if (model->flags & EF_ZOMGIB)
-				CL_RocketTrail (old_origin, ent.origin, 4);
+				CL_SlightBloodTrail (old_origin, ent.origin);
 			else if (model->flags & EF_TRACER)
-				CL_RocketTrail (old_origin, ent.origin, 3);
+				CL_TracerTrail (old_origin, ent.origin, 52);
 			else if (model->flags & EF_TRACER2)
-				CL_RocketTrail (old_origin, ent.origin, 5);
+				CL_TracerTrail (old_origin, ent.origin, 230);
 			else if (model->flags & EF_TRACER3)
-				CL_RocketTrail (old_origin, ent.origin, 6);
+				CL_VoorTrail (old_origin, ent.origin);
 		}
 
 		VectorCopy (ent.origin, cent->lerp_origin);

@@ -151,20 +151,16 @@ typedef struct
 	char	map[MAX_STYLESTRING];
 } lightstyle_t;
 
-typedef enum {
-	pt_static, pt_grav, pt_slowgrav, pt_fire, pt_explode, pt_explode2, pt_blob, pt_blob2
-} ptype_t;
-
 typedef struct cparticle_s
 {
 	vec3_t		org;
 	int			color;
 	float		alpha;
-	struct cparticle_s	*next;
+	struct cparticle_s *next;
 	vec3_t		vel;
 	float		ramp;
 	float		die;
-	ptype_t		type;
+	int			type;
 } cparticle_t;
 
 #define	MAX_DEMOS		8
@@ -474,7 +470,12 @@ void CL_BlobExplosion (vec3_t org);
 void CL_ParticleExplosion (vec3_t org);
 void CL_LavaSplash (vec3_t org);
 void CL_TeleportSplash (vec3_t org);
-void CL_RocketTrail (vec3_t start, vec3_t end, int type);
+void CL_SlightBloodTrail (vec3_t start, vec3_t end);
+void CL_BloodTrail (vec3_t start, vec3_t end);
+void CL_VoorTrail (vec3_t start, vec3_t end);
+void CL_GrenadeTrail (vec3_t start, vec3_t end);
+void CL_RocketTrail (vec3_t start, vec3_t end);
+void CL_TracerTrail (vec3_t start, vec3_t end, int color);
 void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
 
 //
