@@ -100,7 +100,7 @@ char *svc_strings[] =
 
 const int num_svc_strings = sizeof(svc_strings)/sizeof(svc_strings[0]);
 
-int		cl_spikeindex, cl_playerindex, cl_flagindex;
+int		cl_spikeindex, cl_playerindex, cl_eyesindex, cl_flagindex;
 int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 int		cl_rocketindex, cl_grenadeindex;
 
@@ -210,7 +210,7 @@ void CL_FindModelNumbers (void)
 {
 	int	i;
 
-	cl_playerindex = cl_spikeindex = cl_flagindex = -1;
+	cl_playerindex = cl_eyesindex = cl_spikeindex = cl_flagindex = -1;
 	cl_h_playerindex = cl_gib1index = cl_gib2index = cl_gib3index = -1;
 	cl_rocketindex = cl_grenadeindex = -1;
 
@@ -219,6 +219,8 @@ void CL_FindModelNumbers (void)
 			cl_spikeindex = i;
 		else if (!strcmp(cl.model_name[i],"progs/player.mdl"))
 			cl_playerindex = i;
+		else if (!strcmp(cl.model_name[i],"progs/eyes.mdl"))
+			cl_eyesindex = i;
 		else if (!strcmp(cl.model_name[i],"progs/flag.mdl"))
 			cl_flagindex = i;
 		else if (!strcmp(cl.model_name[i],"progs/h_player.mdl"))
@@ -235,6 +237,17 @@ void CL_FindModelNumbers (void)
 			cl_grenadeindex = i;
 	}
 }
+
+static void CL_TransmitModelCrc(int index, char *info_key)
+{
+	if (index != -1) {
+		struct model_s *model = cl.model_precache[index];
+		unsigned short crc = R_ModelChecksum (model);
+		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+		MSG_WriteString (&cls.netchan.message, va("setinfo %s %d", info_key, (int) crc));
+	}
+}
+
 
 /*
 =================
@@ -259,6 +272,9 @@ void CL_Prespawn (void)
 	TP_NewMap ();
 
 	Hunk_Check ();		// make sure nothing is hurt
+
+	CL_TransmitModelCrc (cl_playerindex, "pmodel");
+	CL_TransmitModelCrc (cl_eyesindex, "emodel");
 
 	// done with modellist, request first of static signon messages
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);

@@ -300,6 +300,8 @@ typedef struct model_s
 	char		name[MAX_QPATH];
 	qbool		needload;		// bmodels and sprites don't cache normally
 
+	unsigned short	crc;
+
 	modhint_t	modhint;
 
 	modtype_t	type;
