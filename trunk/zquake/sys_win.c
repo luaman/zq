@@ -320,6 +320,24 @@ void Sys_SendKeyEvents (void)
 }
 
 
+BOOL WINAPI HandlerRoutine (DWORD dwCtrlType)
+{
+	switch (dwCtrlType)
+	{
+		case CTRL_C_EVENT:
+			return true;	// ignore
+		case CTRL_BREAK_EVENT:
+		case CTRL_CLOSE_EVENT:
+		case CTRL_LOGOFF_EVENT:
+		case CTRL_SHUTDOWN_EVENT:
+			Cbuf_AddText ("quit\n");
+			return true;
+	}
+
+	return false;
+}
+
+
 /*
 ================
 Sys_Init
@@ -460,6 +478,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	{
 		if (!AllocConsole())
 			Sys_Error ("Couldn't allocate dedicated server console");
+		SetConsoleCtrlHandler (HandlerRoutine, TRUE);
 		SetConsoleTitle ("zqds");
 		hinput = GetStdHandle (STD_INPUT_HANDLE);
 		houtput = GetStdHandle (STD_OUTPUT_HANDLE);
