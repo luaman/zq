@@ -137,6 +137,7 @@ void SV_Shutdown (char *finalmsg)
 	com_serveractive = false;
 
 	memset (svs.clients, 0, sizeof(svs.clients));
+	svs.lastuserid = 0;
 }
 
 
@@ -479,7 +480,6 @@ A connection request that did not come from the master
 void SVC_DirectConnect (void)
 {
 	char		userinfo[1024];
-	static		int	userid;
 	netadr_t	adr;
 	int			i;
 	client_t	*cl, *newcl;
@@ -560,12 +560,12 @@ void SVC_DirectConnect (void)
 	}
 
 	adr = net_from;
-	userid++;	// so every client gets a unique id
 
 	newcl = &temp;
 	memset (newcl, 0, sizeof(client_t));
 
-	newcl->userid = userid;
+	svs.lastuserid++;	// so every client gets a unique id
+	newcl->userid = svs.lastuserid;
 
 	// works properly
 	if (!sv_highchars.value) {
@@ -589,7 +589,7 @@ void SVC_DirectConnect (void)
 		{
 			if (cl->state == cs_connected) {
 				Com_Printf ("%s:dup connect\n", NET_AdrToString (adr));
-				userid--;
+				svs.lastuserid--;
 				return;
 			}
 
