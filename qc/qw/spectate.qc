@@ -82,7 +82,7 @@ void SpectatorImpulseCommand ()
 		}
 	}
 
-	self.impulse = IMPULSE_NONE;
+	self.impulse = 0;
 }
 
 /*
@@ -97,6 +97,6 @@ void SpectatorThink ()
 	// self.origin, etc contains spectator position, so you could
 	// do some neat stuff here
 
-	if (self.impulse != IMPULSE_NONE)
+	if (self.impulse)
 		SpectatorImpulseCommand();
 }
