@@ -7,107 +7,108 @@ Sets bot's name and colors
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
-string(float r) BotName =
+string BotName (entity ent, float r) 
 {
 	self.b_num = r;
 	if (r == 1)
 	{	
-		self.b_pants = 11;
-		self.b_shirt = 0; 
+		ent.b_pants = 11;
+		ent.b_shirt = 0; 
 		return "Vincent";
 	}
 	else if (r == 2)
 	{
-		self.b_pants = 1;
-		self.b_shirt = 3;
+		ent.b_pants = 1;
+		ent.b_shirt = 3;
 		return "Bishop";
 	}
 	else if (r == 3)
 	{	
-		self.b_pants = 13;
-		self.b_shirt = 2;
+		ent.b_pants = 13;
+		ent.b_shirt = 2;
 		return "Nomad";
 	}
 	else if (r == 4)
 	{
-		self.b_pants = 7;
-		self.b_shirt = 6;
+		ent.b_pants = 7;
+		ent.b_shirt = 6;
 		return "Hudson";
 	} 
 	else if (r == 5)
 	{
-		self.b_pants = 12;
-		self.b_shirt = 6;
+		ent.b_pants = 12;
+		ent.b_shirt = 6;
 		return "Lore";
 	}
 	else if (r == 6)
 	{
-		self.b_pants = 4;
-		self.b_shirt = 4;
+		ent.b_pants = 4;
+		ent.b_shirt = 4;
 		return "Servo";
 	}
 	else if (r == 7)
 	{
-		self.b_pants = 2;
-		self.b_shirt = 5;
+		ent.b_pants = 2;
+		ent.b_shirt = 5;
 		return "Gort";
 	} 
 	else if (r == 8)
 	{	
-		self.b_pants = 10;
-		self.b_shirt = 3;
+		ent.b_pants = 10;
+		ent.b_shirt = 3;
 		return "Kryten";
 	}
 	else if (r == 9)
 	{
-		self.b_pants = 9;
-		self.b_shirt = 4;
+		ent.b_pants = 9;
+		ent.b_shirt = 4;
 		return "Pimp Bot";
 	}
 	else if (r == 10)
 	{
-		self.b_pants = 4;
-		self.b_shirt = 7;
+		ent.b_pants = 4;
+		ent.b_shirt = 7;
 		return "Max";
 	}
 	else if (r == 11)
 	{
-		self.b_pants = 3;
-		self.b_shirt = 11;
+		ent.b_pants = 3;
+		ent.b_shirt = 11;
 		return "Marvin";
 	} 
 	else if (r == 12)
 	{
-		self.b_pants = 13;
-		self.b_shirt = 12;
+		ent.b_pants = 13;
+		ent.b_shirt = 12;
 		return "Erwin";
 	}
 	else if (r == 13)
 	{
-		self.b_pants = 11;
-		self.b_shirt = 2;
+		ent.b_pants = 11;
+		ent.b_shirt = 2;
 		return "FrikBot";
 	}
 	else if (r == 14)
 	{
-		self.b_pants = 0;
-		self.b_shirt = 2;
+		ent.b_pants = 0;
+		ent.b_shirt = 2;
 		return "Krosis";
 	}
 	else if (r == 15)
 	{
-		self.b_pants = 8;
-		self.b_shirt = 9;
+		ent.b_pants = 8;
+		ent.b_shirt = 9;
 		return "Gypsy";
 	}
 	else if (r == 16)
 	{
-		self.b_pants = 5;
-		self.b_shirt = 10;
+		ent.b_pants = 5;
+		ent.b_shirt = 10;
 		return "Hal";
 	}
-};
-string () PickARandomName =
+}
+
+string PickARandomName (entity ent)
 {
 	if (bot_count > 16)
 		return "player";
@@ -119,13 +120,13 @@ string () PickARandomName =
 	while(y)
 	{
 		test = ceil(random() * 16);
-		h = BotName(test);
+		h = BotName(ent, test);
 		t = find(world, netname, h);
 		if (t == world)
 			y = FALSE;
 	}
 	return h;
-};
+}
 
 
 
