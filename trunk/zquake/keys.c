@@ -30,7 +30,7 @@ key up events are sent even if in console mode
 
 */
 
-cvar_t	cl_chatmode = {"cl_chatmode", "1"};
+cvar_t	cl_chatmode = {"cl_chatmode", "2"};
 
 #define		MAXCMDLINE	256
 char	key_lines[32][MAXCMDLINE];
@@ -253,11 +253,11 @@ void Key_Console (int key)
 				goto no_lf;
 			else if (key_lines[edit_line][1] == '\\' || key_lines[edit_line][1] == '/')
 				Cbuf_AddText (key_lines[edit_line]+2);	// skip the ]/
-			else if (cl_chatmode.value != 2 && CheckForCommand())
+			else if (cl_chatmode.value != 1 && CheckForCommand())
 				Cbuf_AddText (key_lines[edit_line]+1);	// valid command
-			else if ((cls.state >= ca_connected && cl_chatmode.value == 1) || cl_chatmode.value == 2)
+			else if ((cls.state >= ca_connected && cl_chatmode.value == 2) || cl_chatmode.value == 1)
 			{
-				if (cls.state < ca_connected)	// can happen if cl_constyle == 2
+				if (cls.state < ca_connected)	// can happen if cl_chatmode is 1
 					goto no_lf;					// drop the whole line
 
 				// convert to a chat message
