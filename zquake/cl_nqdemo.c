@@ -265,6 +265,31 @@ void NQD_ParseUpdatecolors (void)
 
 /*
 ==================
+NQD_ParseStufftext
+==================
+*/
+void NQD_ParseStufftext (void)
+{
+	char	*s;
+	byte	*p;
+	
+	s = MSG_ReadString ();
+	Com_DPrintf ("stufftext: %s\n", s);
+
+	for (p = s; *p; p++) {
+		if (*p > 32 && *p < 128)
+			goto ok;
+	}
+	// ignore ProQuake stuff
+	return;
+
+ok:
+	Cbuf_AddTextEx (&cbuf_svc, s);
+}
+
+
+/*
+==================
 NQD_ParseServerData
 ==================
 */
@@ -968,7 +993,7 @@ void NQD_ParseServerMessage (void)
 			break;
 
 		case svc_stufftext:
-			Cbuf_AddText (MSG_ReadString ());
+			NQD_ParseStufftext ();
 			break;
 
 		case svc_damage:
