@@ -1616,8 +1616,8 @@ void DropBackpack ()
 {
 	entity	item;
 
-// still drop if contains weapon with no ammo
-        if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells) && !(self.weapon & 126))
+	if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells)
+			&& !(self.weapon & IT_DROPPABLE_WEAPONS))
 		return; // nothing in it
 
 	item = spawn();
