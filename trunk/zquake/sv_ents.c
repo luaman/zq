@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "qwsvdef.h"
+#include "pmove.h"
+
+int SV_PMTypeForClient (client_t *cl);
 
 /*
 =============================================================================
@@ -167,7 +170,7 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 	int			msec;
 	usercmd_t	cmd;
 	int			pflags;
-	int			pm_code;
+	int			pm_type, pm_code;
 
 	for (j=0,cl=svs.clients ; j<MAX_CLIENTS ; j++,cl++)
 	{
@@ -210,24 +213,35 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 		if (cl->spectator)
 		{	// only send origin and velocity to spectators
 			pflags &= PF_VELOCITY1 | PF_VELOCITY2 | PF_VELOCITY3;
-			// Z_EXT_PM_TYPE protocol extension
-			pm_code = PMC_OLD_SPECTATOR;
 		}
 		else if (cl == client)
 		{	// don't send a lot of data on personal entity
 			pflags &= ~(PF_MSEC|PF_COMMAND);
 			if (ent->v.weaponframe)
 				pflags |= PF_WEAPONFRAME;
-
-			if (cl->jump_held)
-				pm_code = PMC_NORMAL_JUMP_HELD;
-			else
-				pm_code = PMC_NORMAL;
 		}
-		else
-			pm_code = PMC_NORMAL;
 
 		// Z_EXT_PM_TYPE protocol extension
+		// encode pm_type and jump_held into pm_code
+		pm_type = SV_PMTypeForClient (cl);
+		switch (pm_type) {
+		case PM_NORMAL:
+			pm_code = PMC_NORMAL;
+			if (cl->jump_held)
+				pm_code = PMC_NORMAL_JUMP_HELD;
+			break;
+		case PM_OLD_SPECTATOR:
+			pm_code = PMC_OLD_SPECTATOR;
+			break;
+		case PM_SPECTATOR:
+			pm_code = PMC_SPECTATOR;
+			break;
+		case PM_FLY:
+			pm_code = PMC_FLY;
+			break;
+		default:
+			assert (false);
+		}
 		pflags |= pm_code << PF_PMC_SHIFT;
 
 		if (client->spec_track && client->spec_track - 1 == j &&
