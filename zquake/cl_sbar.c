@@ -60,8 +60,6 @@ void Sbar_DeathmatchOverlay (int start);
 void Sbar_TeamOverlay (int start);
 void Sbar_MiniDeathmatchOverlay (void);
 
-static qbool largegame = false;
-
 static int	sbar_xofs;
 
 cvar_t	scr_centerSbar = {"scr_centerSbar", "1", CVAR_ARCHIVE};
@@ -1070,14 +1068,12 @@ static void Sbar_DeathmatchOverlay (int start)
 	int				total;
 	int				minutes;
 	int				p;
-	int				skip = 10;
+	int				skip;
+	qbool			largegame;
 	extern qbool	nq_drawpings;
 
 	if (cl.gametype == GAME_COOP && (cl.maxclients == 1 || cls.nqdemoplayback))
 		return;
-
-	if (largegame)
-		skip = 8;
 
 // request new ping times every two second
 	if (cls.realtime - cl.last_ping_request > 2)
@@ -1141,7 +1137,19 @@ static void Sbar_DeathmatchOverlay (int start)
 		y += 8;
 	}
 
-	for (i=0 ; i<l && y <= vid.height-10 ; i++)
+	// squish the lines if out of space
+	if (y + l * 10 <= vid.height) {
+		largegame = false;
+		skip = 10;
+	} else if (y + l * 9 <= vid.height) {
+		largegame = true;
+		skip = 9;
+	} else {
+		largegame = true;
+		skip = 8;
+	}
+
+	for (i = 0; i < l && y <= vid.height - 8; i++)
 	{
 		k = fragsort[i];
 		s = &cl.players[k];
@@ -1237,9 +1245,6 @@ static void Sbar_DeathmatchOverlay (int start)
 		
 		y += skip;
 	}
-
-	if (y >= vid.height-10) // we ran over the screen size, squish
-		largegame = true;
 }
 
 /*
