@@ -23,12 +23,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "teamplay.h"
 
+
+#define dem_cmd		0
+#define dem_read	1
+#define dem_set		2
+
+
 void Cam_TryLock (void);
 void CL_FinishTimeDemo (void);
 
 // .qwz playback
 static qboolean	qwz_playback = false;
 static qboolean	qwz_unpacking = false;
+
 #ifdef _WIN32
 static HANDLE	hQizmoProcess = NULL;
 static char tempqwd_name[256] = ""; // this file must be deleted
@@ -65,7 +72,6 @@ void CL_StopPlayback (void)
 	if (cls.demofile)
 		fclose (cls.demofile);
 	cls.demofile = NULL;
-	cls.state = ca_disconnected;
 	cls.demoplayback = false;
 
 #ifdef _WIN32
@@ -75,14 +81,7 @@ void CL_StopPlayback (void)
 
 	if (cls.timedemo)
 		CL_FinishTimeDemo ();
-
-	server_version = 0;
-	cl.teamfortress = false;
 }
-
-#define dem_cmd		0
-#define dem_read	1
-#define dem_set		2
 
 /*
 ====================
@@ -227,7 +226,7 @@ qboolean CL_GetDemoMessage (void)
 		r = fread (pcmd, sizeof(*pcmd), 1, cls.demofile);
 		if (r != 1)
 		{
-			CL_StopPlayback ();
+			CL_Disconnect ();
 			return 0;
 		}
 		// byte order stuff
@@ -257,7 +256,7 @@ qboolean CL_GetDemoMessage (void)
 		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
 		if (r != 1)
 		{
-			CL_StopPlayback ();
+			CL_Disconnect ();
 			return 0;
 		}
 		break;
@@ -270,8 +269,8 @@ qboolean CL_GetDemoMessage (void)
 		break;
 
 	default:
-		Con_Printf("Corrupted demo.\n");
-		CL_StopPlayback ();
+		Con_Printf ("Corrupted demo.\n");
+		CL_Disconnect ();
 		return 0;
 	}
 
