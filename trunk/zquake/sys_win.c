@@ -19,6 +19,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // sys_win.c
 
+#ifdef SERVERONLY
+#include "qwsvdef.h"
+#include <winsock.h>
+#include <conio.h>
+#include <limits.h>
+#include <direct.h>		// _mkdir
+#else
 #include "quakedef.h"
 #include "winquake.h"
 #include "resource.h"
@@ -28,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <io.h>			// _open, etc
 #include <direct.h>		// _mkdir
 #include <conio.h>		// _putch
+#endif
 
 #define MINIMUM_WIN_MEMORY	0x0c00000
 #define MAXIMUM_WIN_MEMORY	0x1000000
@@ -41,6 +49,11 @@ qboolean		WinNT;
 static HANDLE	qwclsemaphore;
 static HANDLE	tevent;
 static HANDLE	hinput, houtput;
+
+#ifdef SERVERONLY
+cvar_t	sys_sleep = {"sys_sleep", "8"};
+cvar_t	sys_nostdout = {"sys_nostdout","0"};
+#endif
 
 void MaskExceptions (void);
 void Sys_PopFPCW (void);
@@ -103,16 +116,22 @@ void Sys_Error (char *error, ...)
 	va_list		argptr;
 	char		text[1024];
 
+#ifndef SERVERONLY	// FIXME
 	Host_Shutdown ();
+#endif
 
 	va_start (argptr, error);
 	vsprintf (text, error, argptr);
 	va_end (argptr);
 
+#ifdef SERVERONLY
+	printf ("ERROR: %s\n", text);
+#else
 	MessageBox(NULL, text, "Error", 0 /* MB_OK */ );
 
 	if (qwclsemaphore)
 		CloseHandle (qwclsemaphore);
+#endif
 
 	exit (1);
 }
@@ -135,6 +154,7 @@ void Sys_Printf (char *fmt, ...)
 
 void Sys_Quit (void)
 {
+#ifndef SERVERONLY
 	if (tevent)
 		CloseHandle (tevent);
 
@@ -143,6 +163,7 @@ void Sys_Quit (void)
 
 	if (dedicated)
 		FreeConsole ();
+#endif
 
 	exit (0);
 }
@@ -298,6 +319,8 @@ char *Sys_ConsoleInput (void)
 	return NULL;
 }
 
+
+#ifndef SERVERONLY
 void Sys_SendKeyEvents (void)
 {
     MSG        msg;
@@ -313,6 +336,7 @@ void Sys_SendKeyEvents (void)
       	DispatchMessage (&msg);
 	}
 }
+#endif
 
 
 BOOL WINAPI HandlerRoutine (DWORD dwCtrlType)
@@ -343,9 +367,52 @@ is marked
 */
 void Sys_Init (void)
 {
+#ifdef SERVERONLY
+	OSVERSIONINFO	vinfo;
+
+	// make sure the timer is high precision, otherwise
+	// NT gets 18ms resolution
+	timeBeginPeriod (1);
+
+	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
+
+	if (!GetVersionEx (&vinfo))
+		Sys_Error ("Couldn't get OS info");
+
+	if ((vinfo.dwMajorVersion < 4) ||
+		(vinfo.dwPlatformId == VER_PLATFORM_WIN32s))
+	{
+		Sys_Error ("QuakeWorld requires at least Win95 or NT 4.0");
+	}
+
+	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
+		WinNT = true;
+	else
+		WinNT = false;
+
+	Cvar_Register (&sys_sleep);
+	Cvar_Register (&sys_nostdout);
+
+	if (COM_CheckParm ("-nopriority"))
+	{
+		Cvar_Set (&sys_sleep, "0");
+	}
+	else
+	{
+		if ( ! SetPriorityClass (GetCurrentProcess(), HIGH_PRIORITY_CLASS))
+			Com_Printf ("SetPriorityClass() failed\n");
+		else
+			Com_Printf ("Process priority class set to HIGH\n");
+
+		// sys_sleep > 0 seems to cause packet loss on WinNT (why?)
+		if (WinNT)
+			Cvar_Set (&sys_sleep, "0");
+	}
+#endif
 }
 
 
+#ifndef SERVERONLY
 void Sys_Init_ (void)
 {
 	OSVERSIONINFO	vinfo;
@@ -392,6 +459,7 @@ void Sys_Init_ (void)
 	else
 		WinNT = false;
 }
+#endif
 
 
 /*
@@ -450,7 +518,7 @@ WinMain
 HINSTANCE	global_hInstance;
 HWND		hwnd_dialog;	// startup dialog box
 
-
+#ifndef SERVERONLY
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	int				memsize;
@@ -555,3 +623,49 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     return TRUE;
 }
 
+#else
+
+/*
+==================
+main
+
+==================
+*/
+int main (int argc, char **argv)
+{
+	double			newtime, time, oldtime;
+	int				sleep_msec;
+
+	hinput = GetStdHandle (STD_INPUT_HANDLE);
+	houtput = GetStdHandle (STD_OUTPUT_HANDLE);
+
+	Host_Init (argc, argv, 16*1024*1024);
+
+//
+// main loop
+//
+	oldtime = Sys_DoubleTime () - 0.1;
+	while (1)
+	{
+		sleep_msec = sys_sleep.value;
+		if (sleep_msec > 0)
+		{
+			if (sleep_msec > 13)
+				sleep_msec = 13;
+			Sleep (sleep_msec);
+		}
+
+		NET_Sleep (1);
+
+	// find time passed since last cycle
+		newtime = Sys_DoubleTime ();
+		time = newtime - oldtime;
+		oldtime = newtime;
+		
+		Host_Frame (time);				
+	}	
+
+	return true;
+}
+
+#endif	// !SERVERONLY
