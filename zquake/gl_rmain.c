@@ -359,10 +359,10 @@ void R_PolyBlend (void)
 	glColor4fv (v_blend);
 
 	glBegin (GL_QUADS);
-	glVertex2f (r_refdef.vrect.x, r_refdef.vrect.y);
-	glVertex2f (r_refdef.vrect.x + r_refdef.vrect.width, r_refdef.vrect.y);
-	glVertex2f (r_refdef.vrect.x + r_refdef.vrect.width, r_refdef.vrect.y + r_refdef.vrect.height);
-	glVertex2f (r_refdef.vrect.x, r_refdef.vrect.y + r_refdef.vrect.height);
+	glVertex2f (r_refdef2.vrect.x, r_refdef2.vrect.y);
+	glVertex2f (r_refdef2.vrect.x + r_refdef2.vrect.width, r_refdef2.vrect.y);
+	glVertex2f (r_refdef2.vrect.x + r_refdef2.vrect.width, r_refdef2.vrect.y + r_refdef2.vrect.height);
+	glVertex2f (r_refdef2.vrect.x, r_refdef2.vrect.y + r_refdef2.vrect.height);
 	glEnd ();
 
 	glDisable (GL_BLEND);
@@ -546,10 +546,10 @@ void R_SetupGL (void)
 	//
 	glMatrixMode(GL_PROJECTION);
     glLoadIdentity ();
-	x = (r_refdef.vrect.x * vid.realwidth) / vid.width;
-	x2 = ((r_refdef.vrect.x + r_refdef.vrect.width) * vid.realwidth) / vid.width;
-	y = ((vid.height - r_refdef.vrect.y) * vid.realheight) / vid.height;
-	y2 = ((vid.height - (r_refdef.vrect.y + r_refdef.vrect.height)) * vid.realheight) / vid.height;
+	x = (r_refdef2.vrect.x * vid.realwidth) / vid.width;
+	x2 = ((r_refdef2.vrect.x + r_refdef2.vrect.width) * vid.realwidth) / vid.width;
+	y = ((vid.height - r_refdef2.vrect.y) * vid.realheight) / vid.height;
+	y2 = ((vid.height - (r_refdef2.vrect.y + r_refdef2.vrect.height)) * vid.realheight) / vid.height;
 
 #if 0		// Tonik - what is this for?
 	// fudge around because of frac screen scale
@@ -567,7 +567,7 @@ void R_SetupGL (void)
 	h = y - y2;
 
 	glViewport (x, y2, w, h);
-	screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height * vid.aspect;
+	screenaspect = (float)r_refdef2.vrect.width/r_refdef2.vrect.height * vid.aspect;
 	MYgluPerspective (r_refdef.fov_y,  screenaspect,  4,  4096);
 
 	glCullFace(GL_FRONT);
