@@ -78,7 +78,7 @@ cvar_t	qizmo_dir = {"qizmo_dir", "qizmo"};
 //
 // info mirrors
 //
-cvar_t	password = {"password", "", CVAR_USERINFO};
+cvar_t	*password;
 cvar_t	spectator = {"spectator", "", CVAR_USERINFO};
 cvar_t	name = {"name", "player", CVAR_ARCHIVE|CVAR_USERINFO};
 cvar_t	team = {"team", "", CVAR_ARCHIVE|CVAR_USERINFO};
@@ -739,7 +739,7 @@ void CL_InitLocal (void)
 	//
 	// info mirrors
 	//
-	Cvar_Register (&password);
+	password = Cvar_Get ("password", "",  CVAR_USERINFO);
 	Cvar_Register (&spectator);
 	Cvar_Register (&name);
 	Cvar_Register (&team);
