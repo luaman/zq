@@ -52,7 +52,7 @@ extern double	sv_frametime;
 // but don't want them in serverinfo (save a couple of bytes of space)
 // Value sanity checks are also done here
 //
-void OnChange_sv_maxpitch (cvar_t *var, char *str, qbool *cancel) {
+static void OnChange_sv_maxpitch (cvar_t *var, char *str, qbool *cancel) {
 	float	newval;
 	char	*newstr;
 
@@ -68,7 +68,7 @@ void OnChange_sv_maxpitch (cvar_t *var, char *str, qbool *cancel) {
 	SV_SendServerInfoChange("maxpitch", newstr);
 }
 
-void OnChange_sv_minpitch (cvar_t *var, char *str, qbool *cancel) {
+static void OnChange_sv_minpitch (cvar_t *var, char *str, qbool *cancel) {
 	float	newval;
 	char	*newstr;
 
@@ -102,7 +102,7 @@ Sends the first message from the server to a connected client.
 This will be sent on the initial connection and upon each server load.
 ================
 */
-void Cmd_New_f (void)
+static void Cmd_New_f (void)
 {
 	char		*gamedir;
 	int			playernum;
@@ -183,7 +183,7 @@ void Cmd_New_f (void)
 Cmd_Soundlist_f
 ==================
 */
-void Cmd_Soundlist_f (void)
+static void Cmd_Soundlist_f (void)
 {
 	char		**s;
 	unsigned	n;
@@ -259,7 +259,7 @@ static char *TrimModelName (char *full)
 Cmd_Modellist_f
 ==================
 */
-void Cmd_Modellist_f (void)
+static void Cmd_Modellist_f (void)
 {
 	char		**s;
 	unsigned	n;
@@ -333,7 +333,7 @@ void Cmd_Modellist_f (void)
 Cmd_PreSpawn_f
 ==================
 */
-void Cmd_PreSpawn_f (void)
+static void Cmd_PreSpawn_f (void)
 {
 	unsigned	buf;
 	unsigned	check;
@@ -403,7 +403,7 @@ void Cmd_PreSpawn_f (void)
 Cmd_Spawn_f
 ==================
 */
-void Cmd_Spawn_f (void)
+static void Cmd_Spawn_f (void)
 {
 	int		i;
 	client_t	*client;
@@ -498,7 +498,7 @@ void Cmd_Spawn_f (void)
 SV_SpawnSpectator
 ==================
 */
-void SV_SpawnSpectator (void)
+static void SV_SpawnSpectator (void)
 {
 	int		i;
 	edict_t	*e;
@@ -529,7 +529,7 @@ void SV_SpawnSpectator (void)
 Cmd_Begin_f
 ==================
 */
-void Cmd_Begin_f (void)
+static void Cmd_Begin_f (void)
 {
 	unsigned pmodel = 0, emodel = 0;
 	int		i;
@@ -631,7 +631,7 @@ void Cmd_Begin_f (void)
 Cmd_NextDL_f
 ==================
 */
-void Cmd_NextDL_f (void)
+static void Cmd_NextDL_f (void)
 {
 	byte	buffer[1024];
 	int		r;
@@ -664,7 +664,7 @@ void Cmd_NextDL_f (void)
 
 }
 
-void OutofBandPrintf (netadr_t where, char *fmt, ...)
+static void OutofBandPrintf (netadr_t where, char *fmt, ...)
 {
 	va_list		argptr;
 	char	send[1024];
@@ -686,7 +686,7 @@ void OutofBandPrintf (netadr_t where, char *fmt, ...)
 SV_NextUpload
 ==================
 */
-void SV_NextUpload (void)
+static void SV_NextUpload (void)
 {
 	int		percent;
 	int		size;
@@ -756,7 +756,7 @@ Com_DPrintf ("UPLOAD: %d received\n", size);
 Cmd_Download_f
 ==================
 */
-void Cmd_Download_f (void)
+static void Cmd_Download_f (void)
 {
 	char	name[MAX_QPATH], dirname[MAX_QPATH], *p;
 	extern cvar_t	allow_download;
@@ -845,7 +845,7 @@ deny_download:
 SV_Say
 ==================
 */
-void SV_Say (qbool team)
+static void SV_Say (qbool team)
 {
 	client_t *client;
 	int		j, tmp;
@@ -941,7 +941,7 @@ void SV_Say (qbool team)
 Cmd_Say_f
 ==================
 */
-void Cmd_Say_f(void)
+static void Cmd_Say_f(void)
 {
 	SV_Say (false);
 }
@@ -950,7 +950,7 @@ void Cmd_Say_f(void)
 Cmd_Say_Team_f
 ==================
 */
-void Cmd_Say_Team_f(void)
+static void Cmd_Say_Team_f(void)
 {
 	SV_Say (true);
 }
@@ -967,7 +967,7 @@ The client is showing the scoreboard, so send new ping times for all
 clients
 =================
 */
-void Cmd_Pings_f (void)
+static void Cmd_Pings_f (void)
 {
 	client_t *client;
 	int		j;
@@ -993,7 +993,7 @@ void Cmd_Pings_f (void)
 SV_Kill_f
 ==================
 */
-void SV_Kill_f (void)
+static void SV_Kill_f (void)
 {
 	if (sv_player->v.health <= 0)
 	{
@@ -1045,7 +1045,7 @@ void SV_TogglePause (const char *msg)
 Cmd_Pause_f
 ==================
 */
-void Cmd_Pause_f (void)
+static void Cmd_Pause_f (void)
 {
 	char st[sizeof(sv_client->name) + 32];
 
@@ -1075,7 +1075,7 @@ Cmd_Drop_f
 The client is going to disconnect, so remove the connection immediately
 =================
 */
-void Cmd_Drop_f (void)
+static void Cmd_Drop_f (void)
 {
 	SV_EndRedirect ();
 	if (!sv_client->spectator)
@@ -1090,7 +1090,7 @@ Cmd_PTrack_f
 Change the bandwidth estimate for a client
 =================
 */
-void Cmd_PTrack_f (void)
+static void Cmd_PTrack_f (void)
 {
 	int		i;
 	edict_t *ent, *tent;
@@ -1133,7 +1133,7 @@ Cmd_SetInfo_f
 Allow clients to change userinfo
 ==================
 */
-void Cmd_SetInfo_f (void)
+static void Cmd_SetInfo_f (void)
 {
 	int i;
 	char oldval[MAX_INFO_STRING];
@@ -1190,7 +1190,7 @@ Same as setinfo, but passes transparently through Qizmo and thus (potentically) 
 to add more keys than MAX_INFO_STRING
 ==================
 */
-void Cmd_Info_f (void)
+static void Cmd_Info_f (void)
 {
 	int i;
 	char oldval[MAX_INFO_STRING];
@@ -1251,7 +1251,7 @@ Cmd_Serverinfo_f
 Dumps the serverinfo info string
 ==================
 */
-void Cmd_Serverinfo_f (void)
+static void Cmd_Serverinfo_f (void)
 {
 	Info_Print (svs.info);
 }
@@ -1265,7 +1265,7 @@ We receive this command if the client doesn't support remote
 screenshots or has them disabled
 ==================
 */
-void Cmd_Snap_f (void)
+static void Cmd_Snap_f (void)
 {
 	if (*sv_client->uploadfn) {
 		*sv_client->uploadfn = 0;
@@ -1296,7 +1296,7 @@ Cmd_Join_f
 Set client to player mode without reconnecting
 ==================
 */
-void Cmd_Join_f (void)
+static void Cmd_Join_f (void)
 {
 	int		i;
 	client_t	*cl;
@@ -1369,7 +1369,7 @@ Cmd_Observe_f
 Set client to spectator mode without reconnecting
 ==================
 */
-void Cmd_Observe_f (void)
+static void Cmd_Observe_f (void)
 {
 	int		i;
 	client_t	*cl;
@@ -1450,7 +1450,7 @@ Cmd_God_f
 Sets client to godmode
 ==================
 */
-void Cmd_God_f (void)
+static void Cmd_God_f (void)
 {
 	if (!sv_allow_cheats)
 	{
@@ -1471,7 +1471,7 @@ void Cmd_God_f (void)
 Cmd_Give_f
 ==================
 */
-void Cmd_Give_f (void)
+static void Cmd_Give_f (void)
 {
 	char	*t;
 	int		v;
@@ -1522,7 +1522,7 @@ void Cmd_Give_f (void)
 Cmd_Noclip_f
 ==================
 */
-void Cmd_Noclip_f (void)
+static void Cmd_Noclip_f (void)
 {
 	if (!sv_allow_cheats)
 	{
@@ -1553,7 +1553,7 @@ void Cmd_Noclip_f (void)
 Cmd_Fly_f
 ==================
 */
-void Cmd_Fly_f (void)
+static void Cmd_Fly_f (void)
 {
 	if (!sv_allow_cheats)
 	{
@@ -1624,7 +1624,7 @@ ucmd_t ucmds[] =
 SV_ExecuteUserCommand
 ==================
 */
-void SV_ExecuteUserCommand (char *s)
+static void SV_ExecuteUserCommand (char *s)
 {
 	ucmd_t	*u;
 	pr_cmdfunction_t *cmdfunc;
@@ -1686,7 +1686,7 @@ AddLinksToPmove
 
 ====================
 */
-void AddLinksToPmove ( areanode_t *node )
+static void AddLinksToPmove ( areanode_t *node )
 {
 	link_t		*l, *next;
 	edict_t		*check;
@@ -1765,7 +1765,7 @@ AddAllEntsToPmove
 For debugging
 ================
 */
-void AddAllEntsToPmove (void)
+static void AddAllEntsToPmove (void)
 {
 	int			e;
 	edict_t		*check;
@@ -1852,7 +1852,7 @@ SV_PreRunCmd
 ===========
 Done before running a player command.  Clears the touch array
 */
-byte playertouch[(MAX_EDICTS+7)/8];
+static byte playertouch[(MAX_EDICTS+7)/8];
 
 void SV_PreRunCmd(void)
 {
@@ -2081,7 +2081,7 @@ Run one or more client move commands (more than one if some
 packets were dropped)
 ===================
 */
-void SV_ExecuteClientMove (client_t *cl, usercmd_t oldest, usercmd_t oldcmd, usercmd_t newcmd)
+static void SV_ExecuteClientMove (client_t *cl, usercmd_t oldest, usercmd_t oldcmd, usercmd_t newcmd)
 {
 	int		net_drop;
 
