@@ -1201,6 +1201,7 @@ void M_Quit_Key (int key)
 		}
 		break;
 
+	case K_ENTER:
 	case 'Y':
 	case 'y':
 		key_dest = key_console;
