@@ -218,8 +218,10 @@ typedef struct
 	int			servercount;	// server identification for prespawns
 
 	char		serverinfo[MAX_SERVERINFO_STRING];
-	int			gametype;
-	qboolean	teamfortress;
+// some important serverinfo keys are mirrored here:
+	int			gametype;		// GAME_COOP or GAME_DEATHMATCH
+	qboolean	teamfortress;	// true if gamedir is "fortress"
+	int			fpd;			// FAQ proxy flags
 
 	int			parsecount;		// server message counter
 	int			validsequence;	// this is the sequence number of the last good
