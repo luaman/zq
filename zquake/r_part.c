@@ -37,6 +37,7 @@ int			r_numparticles;
 
 vec3_t			r_pright, r_pup, r_ppn;
 
+float			scalefactor = 0.04f;
 
 /*
 ===============
@@ -461,10 +462,6 @@ void R_DrawParticles (void)
 	vec3_t			up, right;
 	float			dist, scale;
 	qboolean		alphaTestEnabled;
-    float			scalefactor;
-
-	// FIXME: precalc this
-	scalefactor = 0.004 * tan (r_refdef.fov_x * (M_PI/180) / 2);
 
 	GL_Bind(particletexture);
 	alphaTestEnabled = glIsEnabled(GL_ALPHA_TEST);

@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "resource.h"
 #include "keys.h"
 #include "sound.h"
+#include "sbar.h"
 #include <commctrl.h>
 
 #define MAX_MODE_LIST	30
@@ -717,6 +718,7 @@ void	VID_SetPalette (unsigned char *palette)
 	int		j,k,l;
 	unsigned short i;
 	unsigned	*table;
+	float	t;
 //	FILE *f;
 //	char s[255];
 //	HWND hDlg, hProgress;
@@ -743,11 +745,13 @@ void	VID_SetPalette (unsigned char *palette)
 // Tonik: create a brighter palette for bmodel textures
 	pal = palette;
 	table = d_8to24table2;
+	t = 2.0 / 1.5;
+
 	for (i=0 ; i<256 ; i++)
 	{
-		r = pal[0] * (2.0/1.5);	if (r > 255) r = 255;
-		g = pal[1] * (2.0/1.5); if (g > 255) g = 255;
-		b = pal[2] * (2.0/1.5); if (b > 255) b = 255;
+		r = min(pal[0] * t, 255);
+		g = min(pal[1] * t, 255);
+		b = min(pal[2] * t, 255);
 		pal += 3;
 		*table++ = (255<<24) + (r<<0) + (g<<8) + (b<<16);
 	}
@@ -1175,11 +1179,10 @@ VID_GetModePtr
 */
 vmode_t *VID_GetModePtr (int modenum)
 {
-
 	if ((modenum >= 0) && (modenum < nummodes))
 		return &modelist[modenum];
-	else
-		return &badmode;
+
+	return &badmode;
 }
 
 

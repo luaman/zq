@@ -673,7 +673,7 @@ void R_BlendLightmaps (void)
 	if (!gl_texsort.value)
 		return;
 
-	glDepthMask (0);		// don't bother writing Z
+	glDepthMask (GL_FALSE);		// don't bother writing Z
 	glBlendFunc (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
 
 	if (!r_lightmap.value)
@@ -714,7 +714,7 @@ void R_BlendLightmaps (void)
 
 	glDisable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthMask (1);		// back to normal Z buffering
+	glDepthMask (GL_TRUE);		// back to normal Z buffering
 }
 
 
@@ -1081,9 +1081,9 @@ void R_DrawBrushModel (entity_t *e)
 	}
 
     glPushMatrix ();
-e->angles[0] = -e->angles[0];	// stupid quake bug
+	e->angles[0] = -e->angles[0];	// stupid quake bug
 	R_RotateForEntity (e);
-e->angles[0] = -e->angles[0];	// stupid quake bug
+	e->angles[0] = -e->angles[0];	// stupid quake bug
 
 	//
 	// draw texture

@@ -191,8 +191,8 @@ mspriteframe_t *R_GetSpriteFrame (entity_t *currententity)
 
 		time = cl.time + currententity->syncbase;
 
-	// when loading in Mod_LoadSpriteGroup, we guaranteed all interval values
-	// are positive, so we don't have to worry about division by 0
+		// when loading in Mod_LoadSpriteGroup, we guaranteed all interval values
+		// are positive, so we don't have to worry about division by 0
 		targettime = time - ((int)(time / fullinterval)) * fullinterval;
 
 		for (i=0 ; i<(numframes-1) ; i++)
@@ -242,9 +242,6 @@ void R_DrawSpriteModel (entity_t *e)
 	GL_DisableMultitexture();
 
     GL_Bind(frame->gl_texturenum);
-
-	glEnable (GL_ALPHA_TEST);
-	glBegin (GL_QUADS);
 
 	glEnable (GL_ALPHA_TEST);
 	glBegin (GL_QUADS);
@@ -314,18 +311,15 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 	int		*order;
 	int		count;
 
-lastposenum = posenum;
+	lastposenum = posenum;
 
 	verts = (trivertx_t *)((byte *)paliashdr + paliashdr->posedata);
 	verts += posenum * paliashdr->poseverts;
 	order = (int *)((byte *)paliashdr + paliashdr->commands);
 
-	while (1)
+	while ((count = *order++))
 	{
 		// get the vertex count and primitive type
-		count = *order++;
-		if (!count)
-			break;		// done
 		if (count < 0)
 		{
 			count = -count;
@@ -341,9 +335,7 @@ lastposenum = posenum;
 			order += 2;
 
 			// normals and vertexes come from the frame list
-			l = (shadedots[verts->lightnormalindex] * shadelight + ambientlight) / 256;
-			if (l > 1)
-				l = 1;
+			l = min((shadedots[verts->lightnormalindex] * shadelight + ambientlight) / 256, 1);
 			glColor3f (l, l, l);
 			glVertex3f (verts->v[0], verts->v[1], verts->v[2]);
 			verts++;
@@ -366,24 +358,17 @@ void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 	trivertx_t	*verts;
 	int		*order;
 	vec3_t	point;
-	float	height, lheight;
 	int		count;
+	float	lheight = currententity->origin[2] - lightspot[2];
+	float	height = 1 - lheight;
 
-	lheight = currententity->origin[2] - lightspot[2];
-
-	height = 0;
 	verts = (trivertx_t *)((byte *)paliashdr + paliashdr->posedata);
 	verts += posenum * paliashdr->poseverts;
 	order = (int *)((byte *)paliashdr + paliashdr->commands);
 
-	height = -lheight + 1.0;
-
-	while (1)
+	while ((count = *order++))
 	{
 		// get the vertex count and primitive type
-		count = *order++;
-		if (!count)
-			break;		// done
 		if (count < 0)
 		{
 			count = -count;
@@ -502,7 +487,6 @@ void R_DrawAliasModel (entity_t *ent)
 	else
 	{
 		// normal lighting 
-
 		full_light = false;
 		ambientlight = shadelight = R_LightPoint (ent->origin);
 		
@@ -539,9 +523,9 @@ void R_DrawAliasModel (entity_t *ent)
 
 	shadedots = r_avertexnormal_dots[((int)(ent->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
 	
-	an = ent->angles[1]/180*M_PI;
-	shadevector[0] = cos(-an);
-	shadevector[1] = sin(-an);
+	an = -ent->angles[1] / 180 * M_PI;
+	shadevector[0] = cos(an);
+	shadevector[1] = sin(an);
 	shadevector[2] = 1;
 	VectorNormalize (shadevector);
 
