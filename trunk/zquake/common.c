@@ -231,6 +231,14 @@ float Q_atof (char *str)
 	return val*sign;
 }
 
+
+void Q_strncpyz (char *dest, char *src, size_t size)
+{
+	strncpy (dest, src, size-1);
+	dest[size-1] = 0;
+}
+
+
 /*
 ============================================================================
 
@@ -1627,9 +1635,9 @@ void COM_InitFilesystem (void)
 //
 	i = COM_CheckParm ("-basedir");
 	if (i && i < com_argc-1)
-		strncpy (com_basedir, com_argv[i+1], sizeof(com_basedir)-1);
+		Q_strncpyz (com_basedir, com_argv[i+1], sizeof(com_basedir));
 	else
-		strncpy (com_basedir, host_parms.basedir, sizeof(com_basedir)-1);
+		Q_strncpyz (com_basedir, host_parms.basedir, sizeof(com_basedir));
 
 	i = strlen(com_basedir)-1;
 	if ((i >= 0) && (com_basedir[i]=='/' || com_basedir[i]=='\\'))
