@@ -250,7 +250,7 @@ void VID_Gamma_f (void)
 
 		VID_SetPalette (palette);
 
-		vid.recalc_refdef = 1;				// force a surface cache flush
+		SCR_InvalidateScreen ();
 	}
 }
 
@@ -518,7 +518,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	svgalib_inited=1;
 
-	vid.recalc_refdef = 1;				// force a surface cache flush
+	SCR_InvalidateScreen ();
 
 	return 0;
 }

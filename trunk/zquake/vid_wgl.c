@@ -491,7 +491,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 //	VID_SetPalette (palette);
 
-	vid.recalc_refdef = 1;
+	SCR_InvalidateScreen ();
 
 	return true;
 }

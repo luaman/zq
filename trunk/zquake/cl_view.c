@@ -371,7 +371,8 @@ qbool V_CheckGamma (void)
 	old_contrast = sw_contrast.value;
 	
 	BuildGammaTable (sw_gamma.value, sw_contrast.value);
-	vid.recalc_refdef = 1;				// force a surface cache flush
+
+	SCR_InvalidateScreen ();
 	
 	return true;
 }

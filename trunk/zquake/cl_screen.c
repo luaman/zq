@@ -88,8 +88,6 @@ int			scr_copyeverything;
 float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
-float		oldscreensize, oldfov, oldsbar;
-
 cvar_t		scr_drawall = {"scr_drawall", "0"};
 cvar_t		scr_viewsize = {"viewsize","100",CVAR_ARCHIVE};
 cvar_t		scr_fov = {"fov","90",CVAR_ARCHIVE};	// 10 - 170
@@ -298,11 +296,6 @@ void SCR_CalcRefdef (void)
 {
 	float		size;
 
-	scr_fullupdate = 0;		// force a background redraw and sbar redraw
-	vid.recalc_refdef = 0;
-
-//========================================
-	
 // bound viewsize
 	if (scr_viewsize.value < 30)
 		Cvar_Set (&scr_viewsize, "30");
@@ -384,7 +377,6 @@ Keybinding command
 void SCR_SizeUp_f (void)
 {
 	Cvar_SetValue (&scr_viewsize, scr_viewsize.value+10);
-	vid.recalc_refdef = 1;
 }
 
 
@@ -398,7 +390,7 @@ Keybinding command
 void SCR_SizeDown_f (void)
 {
 	Cvar_SetValue (&scr_viewsize, scr_viewsize.value-10);
-	vid.recalc_refdef = 1;
+	scr_fullupdate = 0;
 }
 
 
@@ -915,29 +907,7 @@ void SCR_UpdateScreen (void)
 	scr_copytop = 0;
 	scr_copyeverything = 0;
 
-	//
-	// check for vid changes
-	//
-	if (oldfov != scr_fov.value)
-	{
-		oldfov = scr_fov.value;
-		vid.recalc_refdef = true;
-	}
-
-	if (oldscreensize != scr_viewsize.value)
-	{
-		oldscreensize = scr_viewsize.value;
-		vid.recalc_refdef = true;
-	}
-
-	if (oldsbar != cl_sbar.value)
-	{
-		oldsbar = cl_sbar.value;
-		vid.recalc_refdef = true;
-	}
-
-	if (vid.recalc_refdef)
-		SCR_CalcRefdef ();
+	SCR_CalcRefdef ();
 
 	if (gl_contrast.value > 1 && !vid_hwgamma_enabled)
 		scr_fullupdate = true;
@@ -1057,29 +1027,7 @@ void SCR_UpdateScreen (void)
 	scr_copytop = 0;
 	scr_copyeverything = 0;
 
-	//
-	// check for vid changes
-	//
-	if (oldfov != scr_fov.value)
-	{
-		oldfov = scr_fov.value;
-		vid.recalc_refdef = true;
-	}
-	
-	if (oldscreensize != scr_viewsize.value)
-	{
-		oldscreensize = scr_viewsize.value;
-		vid.recalc_refdef = true;
-	}
-
-	if (oldsbar != cl_sbar.value)
-	{
-		oldsbar = cl_sbar.value;
-		vid.recalc_refdef = true;
-	}
-	
-	if (vid.recalc_refdef)
-		SCR_CalcRefdef ();
+	SCR_CalcRefdef ();
 
 	//
 	// do 3D refresh drawing, and then update the screen
