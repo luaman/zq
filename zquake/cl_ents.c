@@ -694,20 +694,19 @@ void CL_ParsePlayerinfo (void)
 				else if (pm_code == PMC_FLY)
 					state->pm_type = PM_FLY;
 				else {
-					// assume PM_NORMAL
-					state->pm_type = PM_NORMAL;
-					state->jump_held = false;
+					// future extension?
+					goto guess_pm_type;
 				}
 			}
 			else {
-				// assume PM_NORMAL
-				state->pm_type = PM_NORMAL;
-				state->jump_held = false;
+				// future extension?
+				goto guess_pm_type;
 			}
 		}
 	}
 	else
 	{
+guess_pm_type:
 		if (cl.players[num].spectator)
 			state->pm_type = PM_OLD_SPECTATOR;
 		else if (num == cl.playernum && cl.stats[STAT_HEALTH] <= 0)
