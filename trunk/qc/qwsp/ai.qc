@@ -439,6 +439,31 @@ float() FindTarget =
 
 //=============================================================================
 
+/*
+=============
+GetMadAtAttacker
+
+T_Damage calls this when a monster is hurt
+=============
+*/
+void(entity attacker) GetMadAtAttacker =
+{
+// get mad unless of the same class (except for soldiers)
+	if (self != attacker && attacker != self.enemy)
+	{
+		if ( (self.classname != attacker.classname) 
+		|| (self.classname == "monster_army" ) )
+		{
+			if (self.enemy.classname == "player")
+				self.oldenemy = self.enemy;
+			self.enemy = attacker;
+			FoundTarget ();
+		}
+	}
+}
+
+//=============================================================================
+
 void(float dist) ai_forward =
 {
 	walkmove (self.angles_y, dist);
