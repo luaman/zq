@@ -1855,7 +1855,7 @@ static char *toyellow (char *s)
 
 	strlcpy (buf, s, sizeof(buf));
 	for (s=buf ; *s ; s++)
-		if (*s >= '0' && *s <= '9')
+		if ( isdigit((int)(unsigned char)*s) )
 			*s = *s - '0' + 18;
 	return buf;
 }

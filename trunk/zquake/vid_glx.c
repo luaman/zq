@@ -378,8 +378,8 @@ static int XLateKey(XKeyEvent *ev)
 #endif
 
     default:
-        key = *(unsigned char*)buf;
-        if (key >= 'A' && key <= 'Z')
+        key = (int)*(unsigned char*)buf;
+        if ( isupper(key) )
             key = key - 'A' + 'a';
         break;
     }

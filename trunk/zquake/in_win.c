@@ -1443,7 +1443,7 @@ static void IN_LoadKeys_f (void)
 					Com_Printf ("\"%s\" is not a valid key\n", Cmd_Argv(cmd_shift + 2));
 			}
 			else {
-				if (keynum >= 'a' && keynum <= 'z')
+				if ( islower(keynum) )
 					keynum += 'A' - 'a';	// convert to upper case
 				shiftkeymap[ext ? n + 128 : n] = keynum;
 			}

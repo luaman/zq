@@ -864,14 +864,14 @@ qbool StringToFilter (char *s, ipfilter_t *f)
 	
 	for (i=0 ; i<4 ; i++)
 	{
-		if (*s < '0' || *s > '9')
+		if ( !isdigit((int)(unsigned char)*s) )
 		{
 			Com_Printf ("Bad filter address: %s\n", s);
 			return false;
 		}
 		
 		j = 0;
-		while (*s >= '0' && *s <= '9')
+		while ( isdigit((int)(unsigned char)*s) )
 		{
 			num[j++] = *s++;
 		}

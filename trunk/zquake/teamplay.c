@@ -816,16 +816,16 @@ char *TP_ParseFunChars (char *s, qbool chat)
 		if (*s == '$' && s[1] == 'x') {
 			int i;
 			// check for $x10, $x8a, etc
-			c = tolower(s[2]);
-			if (c >= '0' && c <= '9')
+			c = tolower((int)(unsigned char)s[2]);
+			if ( isdigit(c) )
 				i = (c - '0') << 4;
-			else if (c >= 'a' && c <= 'f')
+			else if ( isxdigit(c) )
 				i = (c - 'a' + 10) << 4;
 			else goto skip;
-			c = tolower(s[3]);
-			if (c >= '0' && c <= '9')
+			c = tolower((int)(unsigned char)s[3]);
+			if ( isdigit(c) )
 				i += (c - '0');
-			else if (c >= 'a' && c <= 'f')
+			else if ( isxdigit(c) )
 				i += (c - 'a' + 10);
 			else goto skip;
 			if (!i)
@@ -860,7 +860,7 @@ char *TP_ParseFunChars (char *s, qbool chat)
 				case '$': c = '$'; break;
 				case '^': c = '^'; break;
 			}
-			if (s[1] >= '0' && s[1] <= '9')
+			if ( isdigit((int)(unsigned char)s[1]) )
 				c = s[1] - '0' + 0x12;
 			if (c) {
 				*out++ = c;
@@ -2209,9 +2209,8 @@ qbool TP_CheckSoundTrigger (char *str)
 		{
 			// quick check for chars that cannot be used
 			// as sound triggers but might be part of a file name
-			if ((str[j] >= 'a' && str[j] <= 'z') ||
-				(str[j] >= 'A' && str[j] <= 'Z') ||
-				(str[j] >= '0' && str[j] <= '9'))
+			if ( isalpha((int)(unsigned char)str[j]) ||
+					 isdigit((int)(unsigned char)str[j]) )
 				continue;	// file name or chat
 
 			if (strchr(tp_soundtrigger.string, str[j]))
