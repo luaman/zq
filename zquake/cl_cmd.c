@@ -1007,6 +1007,7 @@ Sent by server when serverinfo changes
 void CL_FullServerinfo_f (void)
 {
 	char *p;
+	float v;
 
 	if (Cmd_Argc() != 2)
 		return;
@@ -1022,6 +1023,18 @@ void CL_FullServerinfo_f (void)
 		r_refdef2.allowCheats = false;
 
 	CL_ProcessServerInfo ();
+
+	if (cls.state < ca_active) {
+		if (!com_serveractive) {
+			if (*(p = Info_ValueForKey(cl.serverinfo, "*version"))) {
+				if ((v = Q_atof(p)))
+					Com_Printf("QuakeWorld %1.2f server\n", v);
+				else
+					Com_Printf("Server is %s\n", p);
+			}
+		}
+	}
+
 }
 
 
