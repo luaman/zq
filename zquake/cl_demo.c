@@ -66,7 +66,8 @@ void CL_StopPlayback (void)
 		fclose (cls.demofile);
 	cls.demofile = NULL;
 	cls.state = ca_disconnected;
-	cls.demoplayback = 0;
+	cls.demoplayback = false;
+
 #ifdef _WIN32
 	if (qwz_playback)
 		StopQWZPlayback ();
@@ -838,7 +839,7 @@ static void CheckQizmoCompletion ()
 		hQizmoProcess = NULL;
 		qwz_unpacking = false;
 		qwz_playback = false;
-		cls.demoplayback = false;
+		cls.demoplayback = cls.timedemo = false;
 		StopQWZPlayback ();
 		return;
 	}
@@ -859,7 +860,7 @@ static void CheckQizmoCompletion ()
 	if (!cls.demofile) {
 		Con_Printf ("Couldn't open %s\n", tempqwd_name);
 		qwz_playback = false;
-		cls.demoplayback = false;
+		cls.demoplayback = cls.timedemo = false;
 		return;
 	}
 
@@ -947,7 +948,7 @@ void PlayQWZDemo (void)
 	si.wShowWindow = SW_HIDE;
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	
-	Q_strncpyz (cmdline, va("%s/%s/qizmo.exe -q -u -D %s", com_basedir,
+	Q_strncpyz (cmdline, va("%s/%s/qizmo.exe -q -u -D \"%s\"", com_basedir,
 		qizmo_dir.string, qwz_name), sizeof(cmdline));
 	
 	if (!CreateProcess (NULL, cmdline, NULL, NULL,
