@@ -197,10 +197,15 @@ void SV_Error (char *error, ...)
 	Con_Printf ("SV_Error: %s\n",string);
 
 	SV_FinalMessage (va("server crashed: %s\n", string));
-		
+
+#ifdef QW_BOTH
+	inerror = false;
+	Host_EndGame ("SV_Error");
+#else
 	SV_Shutdown ();
 
 	Sys_Error ("SV_Error: %s\n",string);
+#endif
 }
 
 /*
