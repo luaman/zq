@@ -533,6 +533,9 @@ void Cmd_Alias_f (void)
 	if (!a) {
 		// allocate a new one
 		a = Q_malloc (sizeof(cmd_alias_t));
+		a->flags = 0;
+
+		// link it in
 		a->next = cmd_alias;
 		cmd_alias = a;
 		a->hash_next = cmd_alias_hash[key];
