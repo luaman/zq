@@ -1103,14 +1103,7 @@ void SV_ReadPackets (void)
 				SZ_Clear(&cl->last_packet->msg);
 				SZ_Write(&cl->last_packet->msg, net_message.data, net_message.cursize);
 			} else {
-				if (Netchan_Process(&cl->netchan)) {
-					// this is a valid, sequenced packet, so process it
-					svs.stats.packets++;
-					if (cl->state != cs_zombie) {
-						cl->send_message = true;	// reply at end of frame
-						SV_ExecuteClientMessage (cl);
-					}
-				}
+				SV_ExecuteClientMessage (cl);
 			}
 			break;
 
@@ -1151,14 +1144,7 @@ void SV_ReadDelayedPackets (void)
 			SZ_Clear(&net_message);
 			SZ_Write(&net_message, pack->msg.data, pack->msg.cursize);
 
-			if (Netchan_Process(&cl->netchan)) {
-				// this is a valid, sequenced packet, so process it
-				svs.stats.packets++;
-				if (cl->state != cs_zombie) {
-					cl->send_message = true;	// reply at end of frame
-					SV_ExecuteClientMessage (cl);
-				}
-			}
+			SV_ExecuteClientMessage (cl);
 
 			cl->packets = next = pack->next;
 			pack->next = svs.free_packets;
