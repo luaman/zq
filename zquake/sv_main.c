@@ -1069,7 +1069,7 @@ void SV_ReadPackets (void)
 		MSG_ReadLong ();		// sequence number
 		qport = MSG_ReadShort () & 0xffff;
 
-		// check for packets from connected clients
+		// check which client sent this packet
 		for (i=0, cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
 		{
 			if (cl->state == cs_free)
@@ -1084,37 +1084,34 @@ void SV_ReadPackets (void)
 				cl->netchan.remote_address.port = net_from.port;
 			}
 
-			if (cl->delay > 0) {
-				if (!svs.free_packets) // packet has to be dropped..
-					break;
-
-				// insert at end of list
-				if (!cl->packets) {
-					cl->last_packet = cl->packets = svs.free_packets;
-				} else {
-					// this works because '=' associates from right to left
-					cl->last_packet = cl->last_packet->next = svs.free_packets;
-				}
-
-				svs.free_packets = svs.free_packets->next;
-				cl->last_packet->next = NULL;
-
-				cl->last_packet->time = svs.realtime;
-				SZ_Clear(&cl->last_packet->msg);
-				SZ_Write(&cl->last_packet->msg, net_message.data, net_message.cursize);
-			} else {
-				SV_ExecuteClientMessage (cl);
-			}
 			break;
-
 		}
 
-		if (i != MAX_CLIENTS)
-			continue;
-	
-		// packet is not from a known client
-		//	Com_Printf ("%s:sequenced packet without connection\n"
-		// ,NET_AdrToString(net_from));
+		if (i == MAX_CLIENTS)
+			break;
+
+		// ok, we know who sent this packet, but do we need to delay executing it?
+		if (cl->delay > 0) {
+			if (!svs.free_packets) // packet has to be dropped..
+				break;
+
+			// insert at end of list
+			if (!cl->packets) {
+				cl->last_packet = cl->packets = svs.free_packets;
+			} else {
+				// this works because '=' associates from right to left
+				cl->last_packet = cl->last_packet->next = svs.free_packets;
+			}
+
+			svs.free_packets = svs.free_packets->next;
+			cl->last_packet->next = NULL;
+			
+			cl->last_packet->time = svs.realtime;
+			SZ_Clear(&cl->last_packet->msg);
+			SZ_Write(&cl->last_packet->msg, net_message.data, net_message.cursize);
+		} else {
+			SV_ExecuteClientMessage (cl);
+		}
 	}
 }
 
@@ -1129,9 +1126,8 @@ void SV_ReadDelayedPackets (void)
 	client_t	*cl;
 	packet_t	*pack, *next;
 
-
 	// check for delayed packets from connected clients
-	for (i=0, cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++) {
+	for (i = 0, cl=svs.clients; i < MAX_CLIENTS; i++, cl++) {
 		if (cl->state == cs_free)
 			continue;
 
