@@ -220,15 +220,15 @@ HEALTH BOX
 // T_Heal: add health to an entity, limiting health to max_health
 // "ignore" will ignore max_health limit
 //
-float T_Heal (entity e, float healamount, float ignore)
+float T_Heal (entity e, float heal_amount, float ignore)
 {
 	if (e.health <= 0)
 		return 0;
 	if ((!ignore) && (e.health >= other.max_health))
 		return 0;
-	healamount = ceil(healamount);
+	heal_amount = ceil(heal_amount);
 
-	e.health = e.health + healamount;
+	e.health = e.health + heal_amount;
 	if ((!ignore) && (e.health >= other.max_health))
 		e.health = other.max_health;
 		
