@@ -67,12 +67,6 @@ cvar_t	tp_name_flag = {"tp_name_flag", "flag"};
 //								TRIGGERS
 //===========================================================================
 
-void *Cmd_FindAlias(s);	 // hmm, it's NOT void in fact, but we don't care
-char *Cmd_AliasString (char *);
-
-// dest must point to a 1024-byte buffer
-void Cmd_ExpandString (char *data, char *dest);
-
 char *Macro_Location_f (void);
 void TP_FindModelNumbers (void);
 
@@ -1280,7 +1274,7 @@ void TP_TookTrigger_f (void)
 {
 	int		i, j, c;
 	char	*p;
-	char	str[255] = {0};
+	char	str[255] = "";
 	qboolean	removeflag = false;
 	int		flag;
 	
