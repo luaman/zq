@@ -935,6 +935,9 @@ void TP_CheckVersionRequest (char *s)
 	char buf[11];
 	int	i;
 
+	if (cl.spectator)
+		return;
+
 	if (vars.f_version_reply_time
 		&& realtime - vars.f_version_reply_time < 20)
 		return;	// don't reply again if 20 seconds haven't passed
