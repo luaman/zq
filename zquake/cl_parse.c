@@ -829,6 +829,7 @@ CL_ParseStaticSound
 */
 void CL_ParseStaticSound (void)
 {
+	extern cvar_t	cl_staticsounds;
 	vec3_t		org;
 	int			sound_num, vol, atten;
 	int			i;
@@ -838,8 +839,9 @@ void CL_ParseStaticSound (void)
 	sound_num = MSG_ReadByte ();
 	vol = MSG_ReadByte ();
 	atten = MSG_ReadByte ();
-	
-	S_StaticSound (cl.sound_precache[sound_num], org, vol, atten);
+
+	if (cl_staticsounds.value)
+		S_StaticSound (cl.sound_precache[sound_num], org, vol, atten);
 }
 
 
