@@ -762,6 +762,8 @@ byte *FS_LoadFile (char *path, int usehunk)
 		else
 			buf = loadbuf;
 	}
+	else if (usehunk == 5)
+		buf = Q_malloc (len + 1);
 	else
 		Sys_Error ("FS_LoadFile: bad usehunk");
 
@@ -807,6 +809,11 @@ byte *FS_LoadStackFile (char *path, void *buffer, int bufsize)
 	buf = FS_LoadFile (path, 4);
 	
 	return buf;
+}
+
+byte *FS_LoadHeapFile (char *path)
+{
+	return FS_LoadFile (path, 5);
 }
 
 /*

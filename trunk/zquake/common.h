@@ -221,6 +221,7 @@ byte *FS_LoadStackFile (char *path, void *buffer, int bufsize);
 byte *FS_LoadTempFile (char *path);
 byte *FS_LoadHunkFile (char *path);
 void FS_LoadCacheFile (char *path, struct cache_user_s *cu);
+byte *FS_LoadHeapFile (char *path);
 
 void COM_WriteFile (char *filename, void *data, int len);
 void COM_CreatePath (char *path);
