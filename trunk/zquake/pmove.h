@@ -91,6 +91,8 @@ typedef struct {
 	float	waterfriction;
 	float	entgravity;
 	float	bunnyspeedcap;
+	float	ktjump;
+	int		slidefix;
 } movevars_t;
 
 

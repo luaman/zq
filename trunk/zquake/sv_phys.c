@@ -50,7 +50,9 @@ cvar_t	pm_airaccelerate	 = {"sv_airaccelerate", "10"};
 cvar_t	pm_wateraccelerate	 = {"sv_wateraccelerate", "10"};
 cvar_t	pm_friction			 = {"sv_friction", "4"};
 cvar_t	pm_waterfriction	 = {"sv_waterfriction", "4"};
+cvar_t	pm_ktjump			 = {"pm_ktjump", "0.5", CVAR_SERVERINFO};
 cvar_t	pm_bunnyspeedcap	 = {"pm_bunnyspeedcap", "", CVAR_SERVERINFO};
+cvar_t	pm_slidefix			 = {"pm_slidefix", "", CVAR_SERVERINFO};
 
 double	sv_frametime;
 
@@ -972,4 +974,6 @@ void SV_SetMoveVars(void)
 	movevars.friction			= pm_friction.value;			 
 	movevars.waterfriction	    = pm_waterfriction.value;	 
 	movevars.entgravity			= 1.0;
+	movevars.slidefix           = pm_slidefix.value;
+	movevars.ktjump             = pm_ktjump.value;
 }
