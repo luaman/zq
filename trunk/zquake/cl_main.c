@@ -309,9 +309,7 @@ void CL_Disconnect (void)
 	server_version = 0;
 	cl.teamfortress = false;
 
-#ifdef _WIN32
-	SetWindowText (mainwindow, "ZQuake");
-#endif
+	VID_SetCaption ("ZQuake");
 
 // stop sounds (especially looping!)
 	S_StopAllSounds (true);
