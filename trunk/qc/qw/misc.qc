@@ -196,13 +196,12 @@ void() fire_fly;
 void() fire_touch;
 void() misc_fireball =
 {
-	
 	precache_model ("progs/lavaball.mdl");
 	self.classname = "fireball";
 	self.nextthink = time + (random() * 5);
 	self.think = fire_fly;
 	if (!self.speed)
-		self.speed == 1000;
+		self.speed = 1000;
 };
 
 void() fire_fly =
