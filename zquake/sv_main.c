@@ -35,14 +35,9 @@ cvar_t	sv_timeout = {"timeout", "65"};		// seconds without any message
 cvar_t	sv_zombietime = {"zombietime", "2"};	// seconds to sink messages
 											// after disconnect
 
-#ifdef SERVERONLY
-cvar_t	rcon_password = {"rcon_password", ""};	// password for remote server commands
-cvar_t	password = {"password", ""};	// password for entering the game
-#else
-extern cvar_t rcon_password;
-extern cvar_t password;
-#endif
-cvar_t	spectator_password = {"spectator_password", ""};	// password for entering as a sepctator
+cvar_t	sv_rconPassword = {"rcon_password", ""};	// password for remote server commands
+cvar_t	sv_password = {"password", ""};				// password for entering the game
+cvar_t	sv_spectatorPassword = {"spectator_password", ""};	// password for entering as a sepctator
 
 cvar_t	allow_download = {"allow_download", "1"};
 cvar_t	allow_download_skins = {"allow_download_skins", "1"};
@@ -529,31 +524,31 @@ void SVC_DirectConnect (void)
 	s = Info_ValueForKey (userinfo, "spectator");
 	if (s[0] && strcmp(s, "0"))
 	{
-		if (spectator_password.string[0] && 
-			Q_stricmp(spectator_password.string, "none") &&
-			strcmp(spectator_password.string, s) )
+		if (sv_spectatorPassword.string[0] && 
+			Q_stricmp(sv_spectatorPassword.string, "none") &&
+			strcmp(sv_spectatorPassword.string, s) )
 		{	// failed
 			Com_Printf ("%s:spectator password failed\n", NET_AdrToString (net_from));
 			Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nrequires a spectator password\n\n", A2C_PRINT);
 			return;
 		}
-		Info_RemoveKey (userinfo, "spectator"); // remove passwd
+		Info_RemoveKey (userinfo, "spectator");
 		Info_SetValueForStarKey (userinfo, "*spectator", "1", MAX_INFO_STRING);
 		spectator = true;
 	}
 	else
 	{
 		s = Info_ValueForKey (userinfo, "password");
-		if (password.string[0] && 
-			Q_stricmp(password.string, "none") &&
-			strcmp(password.string, s) )
+		if (sv_password.string[0] && 
+			Q_stricmp(sv_password.string, "none") &&
+			strcmp(sv_password.string, s) )
 		{
 			Com_Printf ("%s:password failed\n", NET_AdrToString (net_from));
 			Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nserver requires a password\n\n", A2C_PRINT);
 			return;
 		}
 		spectator = false;
-		Info_RemoveKey (userinfo, "password"); // remove passwd
+		Info_RemoveKey (userinfo, "password");
 	}
 
 	adr = net_from;
@@ -686,10 +681,10 @@ void SVC_DirectConnect (void)
 
 int Rcon_Validate (void)
 {
-	if (!strlen (rcon_password.string))
+	if (!strlen (sv_rconPassword.string))
 		return 0;
 
-	if (strcmp (Cmd_Argv(1), rcon_password.string) )
+	if (strcmp (Cmd_Argv(1), sv_rconPassword.string) )
 		return 0;
 
 	return 1;
@@ -1207,13 +1202,13 @@ void SV_CheckVars (void)
 	int			v;
 
 // check password and spectator_password
-	if (strcmp(password.string, pw) ||
-		strcmp(spectator_password.string, spw))
+	if (strcmp(sv_password.string, pw) ||
+		strcmp(sv_spectatorPassword.string, spw))
 	{
-		Q_strncpyz (pw, password.string, sizeof(pw));
-		Q_strncpyz (spw, spectator_password.string, sizeof(spw));
-		Cvar_Set (&password, pw);
-		Cvar_Set (&spectator_password, spw);
+		Q_strncpyz (pw, sv_password.string, sizeof(pw));
+		Q_strncpyz (spw, sv_spectatorPassword.string, sizeof(spw));
+		Cvar_Set (&sv_password, pw);
+		Cvar_Set (&sv_spectatorPassword, spw);
 		
 		v = 0;
 		if (pw && pw[0] && strcmp(pw, "none"))
@@ -1344,12 +1339,9 @@ void SV_InitLocal (void)
 
 	SV_InitOperatorCommands	();
 
-	if (dedicated)
-	{
-		Cvar_Register (&rcon_password);
-		Cvar_Register (&password);
-	}
-	Cvar_Register (&spectator_password);
+	Cvar_Register (&sv_rconPassword);
+	Cvar_Register (&sv_password);
+	Cvar_Register (&sv_spectatorPassword);
 
 	Cvar_Register (&sv_aim);
 	Cvar_Register (&sv_highchars);
