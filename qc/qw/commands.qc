@@ -26,6 +26,10 @@
 */
 
 
+// enable extensions in the engine
+float	z_ext_clientcommand = 0;
+
+
 void(string item, string amount) Cmd_Give = {
 	if (item == "2")
 		self.items = self.items | IT_SHOTGUN;
