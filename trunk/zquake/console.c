@@ -468,7 +468,6 @@ The input line scrolls horizontally if typing goes beyond the right edge
 */
 void Con_DrawInput (void)
 {
-	int		y;
 	int		i;
 	char	*text;
 	char	temp[MAXCMDLINE];
@@ -478,23 +477,20 @@ void Con_DrawInput (void)
 
 	text = strcpy (temp, key_lines[edit_line]);
 
-// fill out remainder with spaces
-	for (i=strlen(text) ; i < MAXCMDLINE ; i++)
+	// fill out remainder with spaces
+	for (i = strlen(text); i < MAXCMDLINE; i++)	
 		text[i] = ' ';
 
-// add the cursor frame
+	// add the cursor frame
 	if ( (int)(realtime*con_cursorspeed) & 1 )
 		text[key_linepos] = 11;
 
-//	prestep if horizontally scrolling
+	//	prestep if horizontally scrolling
 	if (key_linepos >= con_linewidth)
 		text += 1 + key_linepos - con_linewidth;
 
-// draw it
-	y = con_vislines-22;
-
-	for (i=0 ; i<con_linewidth ; i++)
-		Draw_Character ( (i+1)<<3, con_vislines - 22, text[i]);
+	// draw it
+	Draw_String(8, con_vislines-22, text);
 }
 
 
@@ -681,8 +677,9 @@ void Con_DrawConsole (int lines)
 
 		// draw it
 		y = con_vislines-22 + 8;
-		for (i = 0; i < strlen(dlbar); i++)
-			Draw_Character ( (i+1)<<3, y, dlbar[i]);
+//		for (i = 0; i < strlen(dlbar); i++)
+//			Draw_Character ( (i+1)<<3, y, dlbar[i]);
+		Draw_String (8, y, dlbar);
 	}
 
 
