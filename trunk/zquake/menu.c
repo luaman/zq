@@ -1563,7 +1563,7 @@ typedef struct direntry_s {
 
 direntry_t	dir[MAX_DEMO_FILES];
 int			numfiles;
-char		demodir[MAX_QPATH] = "";
+char		demodir[MAX_QPATH] = "/qw";
 char		prevdir[MAX_QPATH] = "";
 
 int	demo_cursor = 0;
@@ -1576,6 +1576,7 @@ static void ReadDir (void)
 	int		i;
 
 	numfiles = 0;
+	demo_base = 0;
 	demo_cursor = 0;
 
 #ifdef _WIN32		// FIXME
@@ -1585,11 +1586,11 @@ static void ReadDir (void)
 		numfiles = 1;
 	}
 
-	h = FindFirstFile (va("%s%s/*.*", com_gamedir, demodir), &fd);
+	h = FindFirstFile (va("%s%s/*.*", com_basedir, demodir), &fd);
 /*	if (h == INVALID_HANDLE_VALUE && demodir[0]) {
 		// go to the base directory
 		demodir[0] = '\0';
-		h = FindFirstFile (va("%s%s/*.*", com_gamedir, demodir), &fd);
+		h = FindFirstFile (va("%s%s/*.*", com_basedir, demodir), &fd);
 		numfiles = 0;
 	}*/
 
@@ -1609,7 +1610,7 @@ static void ReadDir (void)
 			if (!strcmp(fd.cFileName, prevdir))	{
 				demo_cursor = numfiles;
 				if (demo_cursor >= MAXLINES) {
-					demo_base -= demo_cursor - (MAXLINES-1);
+					demo_base += demo_cursor - (MAXLINES-1);
 					demo_cursor = MAXLINES-1;
 				}
 				*prevdir = '\0';
@@ -1618,7 +1619,8 @@ static void ReadDir (void)
 		else
 		{
 			i = strlen(fd.cFileName);
-			if (i < 5 || Q_strcasecmp(fd.cFileName+i-4, ".qwd"))
+			if (i < 5 || (Q_strcasecmp(fd.cFileName+i-4, ".qwd")
+				&& Q_strcasecmp(fd.cFileName+i-4, ".qwz")))
 				continue;
 			strncpy (dir[numfiles].name, fd.cFileName, MAX_DEMO_NAME-1);
 			dir[numfiles].type = 0;
@@ -1780,7 +1782,7 @@ void M_Demos_Key (int k)
 		{
 			key_dest = key_game;
 			m_state = m_none;
-			Cbuf_AddText (va("playdemo \"%s/%s\"\n", demodir, dir[demo_cursor+demo_base].name));
+			Cbuf_AddText (va("playdemo \"..%s/%s\"\n", demodir, dir[demo_cursor+demo_base].name));
 		}
 		break;
 	}
