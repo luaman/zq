@@ -549,6 +549,7 @@ void Cvar_Init (void)
 	Cmd_AddCommand ("cvarlist", Cvar_CvarList_f);
 	Cmd_AddCommand ("toggle", Cvar_Toggle_f);
 	Cmd_AddCommand ("set", Cvar_Set_f);
+	Cmd_AddCommand ("seta", Cvar_Set_f);
 	Cmd_AddCommand ("inc", Cvar_Inc_f);
 
 #ifdef CVAR_DEBUG
