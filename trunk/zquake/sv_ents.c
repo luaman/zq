@@ -135,8 +135,8 @@ void SV_EmitNailUpdate (sizebuf_t *msg)
 		x = ((int)(ent->v.origin[0] + 4096 + 1) >> 1) & 4095;
 		y = ((int)(ent->v.origin[1] + 4096 + 1) >> 1) & 4095;
 		z = ((int)(ent->v.origin[2] + 4096 + 1) >> 1) & 4095;
-		pitch = (int)(ent->v.angles[0]*(16.0/360.0) + 0.5) & 15;
-		yaw = (int)(ent->v.angles[1]*(256.0/360.0) + 0.5) & 255;
+		pitch = Q_rint(ent->v.angles[0]*(16.0/360.0)) & 15;
+		yaw = Q_rint(ent->v.angles[1]*(256.0/360.0)) & 255;
 
 		bits[0] = x;
 		bits[1] = (x>>8) | (y<<4);
