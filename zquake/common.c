@@ -46,7 +46,7 @@ cvar_t	registered = {"registered","0"};
 qboolean com_debuglog = false;
 qboolean com_serveractive = false;
 
-void COM_InitFilesystem (void);
+void FS_InitFilesystem (void);
 void COM_Path_f (void);
 
 char	gamedirfile[MAX_OSPATH];
@@ -1023,7 +1023,7 @@ void COM_Init (void)
 
 	Cmd_AddCommand ("path", COM_Path_f);
 
-	COM_InitFilesystem ();
+	FS_InitFilesystem ();
 	COM_CheckRegistered ();
 
 	com_debuglog = COM_CheckParm("-condebug");
@@ -1607,10 +1607,10 @@ void FS_SetGamedir (char *dir)
 
 /*
 ================
-COM_InitFilesystem
+FS_InitFilesystem
 ================
 */
-void COM_InitFilesystem (void)
+void FS_InitFilesystem (void)
 {
 	int		i;
 
