@@ -289,7 +289,7 @@ void Cvar_Register (cvar_t *variable)
 		variable->flags |= old->flags & ~CVAR_USER_CREATED;
 		Q_strncpyz (string, old->string, sizeof(string));
 		Cvar_Delete (old->name);
-		if (!variable->flags & CVAR_ROM)
+		if (!(variable->flags & CVAR_ROM))
 			variable->string = CopyString (string);
 		else
 			variable->string = CopyString (variable->string);
