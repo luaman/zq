@@ -426,11 +426,7 @@ int CDAudio_Init(void)
     MCI_SET_PARMS	mciSetParms;
 	int				n;
 
-#if		0	// QW
-	if (cls.state == ca_dedicated)
-		return -1;
-#endif
-	if (COM_CheckParm("-nocdaudio"))
+	if (!COM_CheckParm("-cdaudio"))
 		return -1;
 
 	mciOpenParms.lpstrDeviceType = "cdaudio";
