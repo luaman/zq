@@ -326,8 +326,8 @@ void SV_SpawnServer (char *server, qboolean devmap)
 	Mod_ClearAll ();
 	Hunk_FreeToLowMark (host_hunklevel);
 
-	if (coop.value)
-		Cvar_Set (&deathmatch, "0");
+	if (deathmatch.value)
+		Cvar_Set (&coop, "0");
 	current_skill = (int)(skill.value + 0.5);
 	if (current_skill < 0)
 		current_skill = 0;
