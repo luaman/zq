@@ -157,6 +157,7 @@ void SV_LoadGame_f (void)
 	int		entnum;
 	int		version;
 	float	spawn_parms[NUM_SPAWN_PARMS];
+	qboolean	save_disabled_for_loading;
 
 	if (Cmd_Argc() != 2) {
 		Com_Printf ("load <savename> : load a game\n");
@@ -201,7 +202,12 @@ void SV_LoadGame_f (void)
 	fscanf (f, "%s\n",mapname);
 	fscanf (f, "%f\n",&time);
 
+	save_disabled_for_loading = scr_disabled_for_loading;
+
 	Host_EndGame ();
+
+	// Host_EndGame disables the loading plaque, restore it
+	scr_disabled_for_loading = save_disabled_for_loading;
 
 	CL_BeginLocalConnection ();
 
