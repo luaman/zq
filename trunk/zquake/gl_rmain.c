@@ -78,7 +78,6 @@ void R_MarkLeaves (void);
 
 cvar_t	r_norefresh = {"r_norefresh","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
-cvar_t	r_drawviewmodel = {"r_drawviewmodel","1"};
 cvar_t	r_drawflame = {"r_drawflame","1"};
 cvar_t	r_speeds = {"r_speeds","0"};
 cvar_t	r_fullbright = {"r_fullbright","0"};
@@ -757,14 +756,10 @@ R_DrawViewModel
 */
 void R_DrawViewModel (void)
 {
-	if (!r_drawviewmodel.value || 
-		(r_drawviewmodel.value == 2 && scr_fov.value > 90))
+	if (!r_drawentities.value)
 		return;
 
 	if (envmap)
-		return;
-
-	if (!r_drawentities.value)
 		return;
 
 	currententity = &cl.viewent;

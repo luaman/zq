@@ -47,6 +47,8 @@ cvar_t	v_kicktime = {"v_kicktime", "0.5"};
 cvar_t	v_kickroll = {"v_kickroll", "0.6"};
 cvar_t	v_kickpitch = {"v_kickpitch", "0.6"};
 
+cvar_t	cl_drawgun = {"r_drawviewmodel", "1"};
+
 cvar_t	v_gunkick = {"v_gunkick", "1"};
 
 qboolean V_OnIdleChange (cvar_t *var, char *value);
@@ -919,12 +921,14 @@ void V_AddViewWeapon (float bob)
 {
 	vec3_t		forward, right, up;
 	entity_t	*view;
+	extern cvar_t	scr_fov;
 
 	view = &cl.viewent;
 
-	if (view_message->flags & (PF_GIB|PF_DEAD)
+	if (!cl_drawgun.value || (cl_drawgun.value == 2 && scr_fov.value > 90)
+		|| view_message->flags & (PF_GIB|PF_DEAD)
 		|| (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)
-		|| cl.stats[STAT_HEALTH] <= 0
+		|| (cl.stats[STAT_HEALTH] <= 0)
 		|| !Cam_DrawViewModel())
 	{
  		view->model = NULL;
@@ -1161,8 +1165,9 @@ void V_Init (void)
 	Cvar_Register (&cl_bobup);
 	Cvar_Register (&v_kicktime);
 	Cvar_Register (&v_kickroll);
-	Cvar_Register (&v_kickpitch);	
-	Cvar_Register (&v_gunkick);	
+	Cvar_Register (&v_kickpitch);
+	Cvar_Register (&v_gunkick);
+	Cvar_Register (&cl_drawgun);
 
 	Cvar_Register (&v_gamma);
 	Cvar_Register (&v_contrast);

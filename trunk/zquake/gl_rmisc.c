@@ -165,7 +165,6 @@ void R_Init (void)
 	Cvar_Register (&r_lightmap);
 	Cvar_Register (&r_fullbright);
 	Cvar_Register (&r_drawentities);
-	Cvar_Register (&r_drawviewmodel);
 	Cvar_Register (&r_drawflame);
 	Cvar_Register (&r_shadows);
 	Cvar_Register (&r_mirroralpha);
