@@ -984,6 +984,10 @@ cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned
 	if (i != BSPVERSION && i != HL_BSPVERSION)
 		Host_Error ("CM_LoadMap: %s has wrong version number (%i should be %i)", name, i, BSPVERSION);
 
+	// let progs know if we've loaded a Half-Life map
+	if (!clientload)
+		Cvar_ForceSet(Cvar_Get("sv_halflifebsp", "0", CVAR_ROM), (i == HL_BSPVERSION) ? "1" : "0");
+
 	// swap all the lumps
 	cmod_base = (byte *)header;
 

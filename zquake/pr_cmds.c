@@ -1883,6 +1883,7 @@ float(string extension) checkextension = #99;
 static void PF_checkextension (void)
 {
 	static char *supported_extensions[] = {
+		"DP_HALFLIFE_MAP_CVAR",
 		"DP_QC_SINCOSSQRTPOW",
 		"DP_QC_MINMAXBOUND",
 		"ZQ_QC_CHECKBUILTIN",
