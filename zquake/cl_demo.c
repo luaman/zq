@@ -211,24 +211,22 @@ readnext:
 #ifdef MVDPLAY
     if (cls.mvdplayback) {
         fread(&newtime, sizeof(newtime), 1, cls.demofile);
-        // XXX: this byte swap is not needed
-        /* newtime = LittleFloat(newtime); */
-        demotime =  prevtime + newtime * 0.001;
+        demotime = prevtime + newtime * 0.001;
         if (cls.demotime - nextdemotime > 0.0001 && nextdemotime != demotime) {
             olddemotime = nextdemotime;
             cls.netchan.incoming_sequence++;
             cls.netchan.incoming_acknowledged++;
             cls.netchan.frame_latency = 0;
             cls.netchan.last_received = cls.demotime; // just to happy timeout check
-        nextdemotime = demotime;
+			nextdemotime = demotime;
         }
-	} else {
+	}
+	else
 #endif
-	fread(&demotime, sizeof(demotime), 1, cls.demofile);
-	demotime = LittleFloat(demotime);
-#ifdef MVDPLAY
+	{
+		fread(&demotime, sizeof(demotime), 1, cls.demofile);
+		demotime = LittleFloat(demotime);
     }
-#endif
 
 // decide if it is time to grab the next message		
 	if (cls.timedemo) {
@@ -243,7 +241,7 @@ readnext:
 					SEEK_SET);
 			} else 
 #endif
-			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
+				fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
 					SEEK_SET);
 			return false;	// already read this frame's message
 		}
@@ -254,15 +252,15 @@ readnext:
 		cls.demotime = demotime; // warp
 	} else if (!(cl.paused & PAUSED_SERVER) && cls.state >= ca_active) {	// always grab until active
 #ifdef MVDPLAY
-			if (cls.mvdplayback)
-			{
-                if(nextdemotime < demotime) {
-                    fseek(cls.demofile, ftell(cls.demofile) - sizeof(newtime),
-                            SEEK_SET);
-                    return false;
-                }
-			}
-            else
+		if (cls.mvdplayback)
+		{
+            if (nextdemotime < demotime) {
+                fseek(cls.demofile, ftell(cls.demofile) - sizeof(newtime),
+                        SEEK_SET);
+                return false;
+            }
+		}
+        else
 #endif
 		if (cls.demotime < demotime) {
             if (cls.demotime + 1.0 < demotime)
@@ -276,7 +274,7 @@ readnext:
 		cls.demotime = demotime; // we're warping
 
 #ifdef MVDPLAY
-    if(cls.mvdplayback)
+    if (cls.mvdplayback)
         prevtime = demotime;
 #endif
 
@@ -290,7 +288,7 @@ readnext:
 	}
 	
 #ifdef MVDPLAY
-    switch (c&7) {
+    switch (cls.mvdplayback ? c&7 : c) {
 #else
 	switch (c) {
 #endif
@@ -300,7 +298,7 @@ readnext:
 		pcmd = &cl.frames[i].cmd;
 		r = fread (pcmd, sizeof(*pcmd), 1, cls.demofile);
 		if (r != 1)
-			Host_Error ("Corrupted demo 1");
+			Host_Error ("Unexpected end of demo");
 		// byte order stuff
 		for (j = 0; j < 3; j++)
 			pcmd->angles[j] = LittleFloat(pcmd->angles[j]);
@@ -329,7 +327,7 @@ readit:
 			Host_Error ("Demo message > MAX_BIG_MSGLEN");
 		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
 		if (r != 1)
-			Host_Error ("Corrupted demo 2");
+			Host_Error ("Unexpected end of demo");
 
 #ifdef MVDPLAY
 		if (cls.mvdplayback) {
@@ -358,20 +356,14 @@ readit:
 #ifdef MVDPLAY
 		if (cls.mvdplayback)
 			cls.netchan.incoming_acknowledged = cls.netchan.incoming_sequence;
-        goto readnext;
-#else
-		goto readnext;
 #endif
+		goto readnext;
 
 #ifdef MVDPLAY
 	case dem_multiple:
 		r = fread (&i, 4, 1, cls.demofile);
 		if (r != 1)
-		{
-			CL_StopPlayback ();
-			return 0;
-		}
-
+			Host_Error ("Unexpected end of demo");
 		cls.lastto = LittleLong(i);
 		cls.lasttype = dem_multiple;
 		goto readit;
