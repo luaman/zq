@@ -710,7 +710,7 @@ void SV_Gamedir_f (void)
 		return;
 	}
 
-	COM_Gamedir (dir);
+	FS_SetGamedir (dir);
 	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
 }
 

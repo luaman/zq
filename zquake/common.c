@@ -1531,12 +1531,12 @@ void COM_AddGameDirectory (char *dir)
 
 /*
 ================
-COM_Gamedir
+FS_SetGamedir
 
 Sets the gamedir and path to a different directory.
 ================
 */
-void COM_Gamedir (char *dir)
+void FS_SetGamedir (char *dir)
 {
 	searchpath_t	*search, *next;
 	int				i;
