@@ -59,26 +59,6 @@ static void R_LineGraph (int x, int h)
 		ngraph_texels[NET_GRAPHHEIGHT - i - 1][x] = (byte)0xff;
 }
 
-void Draw_CharToNetGraph (int x, int y, int num)
-{
-	int		row, col;
-	byte	*source;
-	int		drawline;
-	int		nx;
-
-	row = num>>4;
-	col = num&15;
-	source = draw_chars + (row<<10) + (col<<3);
-
-	for (drawline = 8; drawline; drawline--, y++)
-	{
-		for (nx=0 ; nx<8 ; nx++)
-			if (source[nx] != 255)
-				ngraph_texels[y][nx+x] = 0x60 + source[nx];
-		source += 128;
-	}
-}
-
 
 /*
 ==============
