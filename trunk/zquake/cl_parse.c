@@ -1176,7 +1176,11 @@ void CL_ProcessServerInfo (void)
 	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext"));
 	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
 	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
-	fpd = atoi(Info_ValueForKey(cl.serverinfo, "fpd"));
+
+	if (cls.demoplayback)
+		fpd = 0;
+	else
+		fpd = atoi(Info_ValueForKey(cl.serverinfo, "fpd"));
 
 	if (teamplay != cl.teamplay || fpd != cl.fpd) {
 		cl.teamplay = teamplay;
