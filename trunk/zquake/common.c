@@ -641,6 +641,13 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move)
 
 //===========================================================================
 
+void SZ_Init (sizebuf_t *buf, byte *data, int length)
+{
+	memset (buf, 0, sizeof(*buf));
+	buf->data = data;
+	buf->maxsize = length;
+}
+
 void SZ_Clear (sizebuf_t *buf)
 {
 	buf->cursize = 0;
