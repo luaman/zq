@@ -335,22 +335,19 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 
 // add all the lightmaps
 	if (lightmap)
-		for (maps = 0 ; maps < MAXLIGHTMAPS && surf->styles[maps] != 255 ;
-			 maps++)
+		for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255; maps++)
 		{
 			scale = d_lightstylevalue[surf->styles[maps]];
 			surf->cached_light[maps] = scale;	// 8.8 fraction
 			bl = blocklights;
 			if (lightmap_bytes == 1) {
-				for (i=0 ; i<size ; i++)
-					*bl++ += lightmap[i] * scale;
+				for (i = 0; i < size; i++)
+					*bl++ += lightmap[i * 3] * scale;
 			} else {
-				for (i=0 ; i<size ; i++) {
-					t = lightmap[i] * scale;
-					bl[0] += t; bl[1] += t;	bl[2] += t; bl += 3;
-				}
+				for (i = 0; i < blocksize; i++)
+					*bl++ += lightmap[i] * scale;
 			}
-			lightmap += size;	// skip to next lightmap
+			lightmap += blocksize;	// skip to next lightmap
 		}
 
 // add all the dynamic lights

@@ -108,6 +108,7 @@ cvar_t	gl_fb_depthhack = {"gl_fb_depthhack","1"};
 cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
 cvar_t	gl_fb_models = {"gl_fb_models","1"};
 cvar_t	gl_colorlights = {"gl_colorlights","1"};
+cvar_t	gl_loadlitfiles = {"gl_loadlitfiles","1"};
 cvar_t	gl_lightmode = {"gl_lightmode","2"};
 cvar_t	gl_solidparticles = {"gl_solidparticles", "0"};
 
@@ -1217,6 +1218,7 @@ void R_Init (void)
 	Cvar_Register (&gl_fb_bmodels);
 	Cvar_Register (&gl_fb_models);
 	Cvar_Register (&gl_colorlights);
+	Cvar_Register (&gl_loadlitfiles);
 	Cvar_Register (&gl_lightmode);
 	Cvar_Register (&gl_keeptjunctions);
 	Cvar_Register (&gl_solidparticles);

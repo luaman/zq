@@ -527,13 +527,81 @@ Mod_LoadLighting
 */
 void Mod_LoadLighting (lump_t *l)
 {
-	if (!l->filelen)
-	{
+	char	litname[256];
+	int		i, ver;
+	int		hunkmark;
+	byte	*data;
+	byte	*in, *out;
+
+	if (l->filelen <= 0) {
 		loadmodel->lightdata = NULL;
 		return;
 	}
-	loadmodel->lightdata = Hunk_AllocName ( l->filelen, loadname);	
-	memcpy (loadmodel->lightdata, mod_base + l->fileofs, l->filelen);
+
+	// LordHavoc's .lit support
+	if (!gl_loadlitfiles.value)	// FIXME: if gl_colorlights is 0, don't bother either
+		goto loadmono;
+
+	strlcpy (litname, loadmodel->name, sizeof(litname));
+	COM_StripExtension (litname, litname);
+	strlcat (litname, ".lit", sizeof(litname));
+
+	hunkmark = Hunk_LowMark ();
+	data = (byte *) FS_LoadHunkFile (litname);
+	if (!data)
+		goto loadmono;
+
+	if (data[0] != 'Q' || data[1] != 'L' || data[2] != 'I' || data[3] != 'T') {
+		Com_Printf ("Corrupt .lit file (old version?), ignoring\n");
+		Hunk_FreeToLowMark (hunkmark);
+		goto loadmono;
+	}
+
+	if ((ver = LittleLong(*(int *)(data + 4))) != 1) {
+		Com_Printf ("Unknown .lit file version (%d)\n", ver);
+		Hunk_FreeToLowMark (hunkmark);
+		goto loadmono;
+	}
+
+	if (com_filesize < l->filelen*3 + 8) {
+		Com_Printf ("Corrupt (truncated) .lit file, ignoring\n");
+		Hunk_FreeToLowMark (hunkmark);
+		goto loadmono;
+	}
+
+	// a valid .lit was successfully loaded
+	// clamp brightness to original level. also helps broken lits (e1m1.lit)
+	// where brighness is abnormally low in some places
+	in = mod_base + l->fileofs;
+	out = loadmodel->lightdata = data + 8;
+	for (i = l->filelen; i; i--) {
+		byte b = max(out[0], max(out[1], out[2]));
+		if (!b) {
+			out[0] = *in;
+			out[1] = *in;
+			out[2] = *in;
+		} else {
+			float scale = ((int)*in << 16) / b;
+			out[0] = (int)(out[0] * scale) >> 16;
+			out[1] = (int)(out[1] * scale) >> 16;
+			out[2] = (int)(out[2] * scale) >> 16;
+		}
+		out += 3;
+		in++;
+	}
+	return;
+
+loadmono:
+	// Expand white lighting data
+	loadmodel->lightdata = (byte *) Hunk_AllocName (l->filelen * 3, loadname);	
+	in = mod_base + l->fileofs;
+	out = loadmodel->lightdata;
+	for (i = l->filelen; i; i--) {
+		byte b = *in++;
+		*out++ = b;
+		*out++ = b;
+		*out++ = b;
+	}
 }
 
 
@@ -793,7 +861,7 @@ void Mod_LoadFaces (lump_t *l)
 		if (i == -1)
 			out->samples = NULL;
 		else
-			out->samples = loadmodel->lightdata + i;
+			out->samples = loadmodel->lightdata + i * 3 /* because lightmaps are RGB */;
 		
 	// set the drawing flags flag
 		
