@@ -243,7 +243,10 @@ void() SpectatorImpulseCommand =
 
 // Check to see if you kicking first so Camera code doesnt take over
 
-	if(self.k_track == 1 && (self.goalentity.classname != "player" || self.goalentity.netname == "")) self.k_track == 0;
+	if(self.k_track == 1 && (self.goalentity.classname != "player" || self.goalentity.netname == ""))
+        {
+            self.k_track == 0;
+        }
 
 	if(self.k_admin == 1 && self.impulse >= 1 && self.impulse <=9) 
 	{

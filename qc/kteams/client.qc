@@ -268,10 +268,10 @@ entity() FindIntermission =
 
 // then look for the start position
 	spot = find (world, classname, "info_player_start");
-	if (spot)
-		return spot;
+	if (!spot)	
+		objerror ("FindIntermission: no spot");
 
-	objerror ("FindIntermission: no spot");
+	return spot;
 
 };
 
