@@ -46,6 +46,26 @@ void PM_Init (void)
 #define BLOCKED_OTHER	4
 #define BLOCKED_ANY		7
 
+
+/*
+** Add an entity to touch list, discarding duplicates
+*/
+static void PM_AddTouchedEnt (int num)
+{
+	int i;
+
+	if (pmove.numtouch == sizeof(pmove.touchindex)/sizeof(pmove.touchindex[0]))
+		return;
+
+	for (i = 0; i < pmove.numtouch; i++)
+		if (pmove.touchindex[i] == num)
+			return;		// already added
+
+	pmove.touchindex[pmove.numtouch] = num;
+	pmove.numtouch++;
+}
+
+
 /*
 ==================
 PM_ClipVelocity
@@ -128,10 +148,7 @@ int PM_SlideMove (void)
 			 break;		// moved the entire distance
 
 		// save entity for contact
-		if (pmove.numtouch < MAX_PHYSENTS) {
-			pmove.touchindex[pmove.numtouch] = trace.e.entnum;
-			pmove.numtouch++;
-		}
+		PM_AddTouchedEnt (trace.e.entnum);
 
 		if (trace.plane.normal[2] >= MIN_STEP_NORMAL)
 			blocked |= BLOCKED_FLOOR;
@@ -636,12 +653,7 @@ void PM_CategorizePosition (void)
 
 		// standing on an entity other than the world
 		if (trace.e.entnum > 0)
-		{
-			if (pmove.numtouch < MAX_PHYSENTS) {
-				pmove.touchindex[pmove.numtouch] = trace.e.entnum;
-				pmove.numtouch++;
-			}
-		}
+			PM_AddTouchedEnt (trace.e.entnum);
 	}
 
 //
