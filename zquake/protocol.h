@@ -264,13 +264,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define Z_EXT_PITCHLIMITS	(1<<4)	// serverinfo maxpitch & minpitch
 #define Z_EXT_JOIN_OBSERVE	(1<<5)	// server: "join" and "observe" commands are supported
 									// client: on-the-fly spectator <-> player switching supported
-#define Z_EXT_SVC_PARTICLE	(1<<6)	// whether the client or server supports NQ's svc_particle
 
+// experimental bits
+#define Z_EXT_SVC_PARTICLE	(1<<30)	// whether the client or server supports NQ's svc_particle
 #define Z_EXT_VWEP			(1<<31)	// fake bit (not 'officially' supported yet)
 
 #define SUPPORTED_EXTENSIONS (Z_EXT_PM_TYPE|Z_EXT_PM_TYPE_NEW|	\
 		Z_EXT_VIEWHEIGHT|Z_EXT_SERVERTIME|Z_EXT_PITCHLIMITS|	\
-		Z_EXT_JOIN_OBSERVE|Z_EXT_SVC_PARTICLE)
+		Z_EXT_JOIN_OBSERVE)
 
 /*
 ==========================================================
