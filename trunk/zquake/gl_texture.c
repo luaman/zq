@@ -309,7 +309,7 @@ void GL_ResampleTexture (unsigned *indata, int inwidth, int inheight,
 		fracstep = inwidth*0x10000/outwidth;
 		for (i = 0;i < outheight;i++)
 		{
-			inrow = (int *)indata + inwidth*(i*inheight/outheight);
+			inrow = (unsigned int *)((int *)indata + inwidth*(i*inheight/outheight));
 			frac = fracstep >> 1;
 			for (j = outwidth >> 2 ; j ; j--)
 			{
@@ -674,7 +674,7 @@ GL_LoadTexture
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten)
 {
 	int			i;
-	unsigned	crc;
+	unsigned	crc = 0;
 	gltexture_t	*glt;
 
 	if (lightmode != 2)
@@ -729,7 +729,7 @@ FIXME: merge with GL_LoadTexture
 int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten)
 {
 	int			i;
-	unsigned	crc;
+	unsigned	crc = 0;
 	gltexture_t	*glt;
 
 	if (lightmode != 2)
