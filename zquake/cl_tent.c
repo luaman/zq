@@ -473,7 +473,7 @@ void CL_UpdateBeams (void)
 		{
 			VectorCopy (cl.simorg, b->start);
 			b->start[2] += cl.crouch;
-			if (cl_trueLightning.value && cl.allow_truelightning && !cl.paused)
+			if (cl_trueLightning.value && cl.allow_truelightning)
 			{
 				vec3_t	forward;
 				vec3_t	v, org;
@@ -491,10 +491,10 @@ void CL_UpdateBeams (void)
 				ang[0] = -ang[0];
 				if (ang[0] < -180)
 					ang[0] += 360;
-				ang[0] += (cl.viewangles[0] - ang[0]) * f;
+				ang[0] += (cl.simangles[0] - ang[0]) * f;
 
 				// lerp yaw
-				delta = cl.viewangles[1] - ang[1];
+				delta = cl.simangles[1] - ang[1];
 				if (delta > 180)
 					delta -= 360;
 				if (delta < -180)
