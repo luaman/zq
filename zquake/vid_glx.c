@@ -506,45 +506,34 @@ void Check_Gamma (unsigned char *pal) {
 	memcpy (pal, palette, sizeof(palette));
 }
 
-// oldman: replaced VID_SetPalette function
-void VID_SetPalette (unsigned char *palette) 
+void VID_SetPalette (byte *palette) 
 {
 	int i;
-	byte *pal;
-	unsigned r,g,b, *table;
+	byte *pal, *table;
 
 	// 8 8 8 encoding
 	pal = palette;
-	table = d_8to24table;
+	table = (byte *)d_8to24table;
 	for (i = 0; i < 256; i++) {
-		r = pal[1];
-		g = pal[2];
-		b = pal[3];
-		pal += 3;
-
-#ifdef BIGENDIAN
-		*table++ = (255 << 0) + (r << 24) + (g << 16) + (b << 8); // rgba
-#else
-		*table++ = (255 << 24) + (r << 0) + (g << 8) + (b << 16);
-#endif
+		*table++ = *pal++;
+		*table++ = *pal++;
+		*table++ = *pal++;
+		*table++ = 255;
 	}
 	d_8to24table[255] = 0;	// 255 is transparent
 
 	// Tonik: create a brighter palette for bmodel textures
 	pal = palette;
-	table = d_8to24table2;
+	table = (byte *)d_8to24table2;
 
-	for (i = 0; i < 256; i++) {
-		r = pal[0] * (2.0 / 1.5); if (r > 255) r = 255;
-		g = pal[1] * (2.0 / 1.5); if (g > 255) g = 255;
-		b = pal[2] * (2.0 / 1.5); if (b > 255) b = 255;
-		pal += 3;
-
-#ifdef BIGENDIAN
-		*table++ = (255 << 0) + (r << 24) + (g << 16) + (b << 8);
-#else
-		*table++ = (255 << 24) + (r << 0) + (g << 8) + (b << 16);
-#endif
+	for (i = 1; i < 256; i++) {
+		pal[0] = min(pal[0] * (2.0 / 1.5), 255);
+		pal[1] = min(pal[1] * (2.0 / 1.5), 255);
+		pal[2] = min(pal[2] * (2.0 / 1.5), 255);
+		*table++ = *pal++;
+		*table++ = *pal++;
+		*table++ = *pal++;
+		*table++ = 255;
 	}
 	d_8to24table2[255] = 0;	// 255 is transparent
 }

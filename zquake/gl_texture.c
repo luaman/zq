@@ -603,7 +603,7 @@ GL_Upload8
 */
 void GL_Upload8 (byte *data, int width, int height, qbool mipmap, qbool alpha, qbool brighten)
 {
-static	unsigned	trans[640*480];		// FIXME, temporary
+	static	unsigned	trans[640*480];		// FIXME, temporary
 	int			i, s;
 	qbool		noalpha;
 	int			p;
@@ -624,7 +624,7 @@ static	unsigned	trans[640*480];		// FIXME, temporary
 		{
 			p = data[i];
 			if (p < 224)
-				trans[i] = table[p] & 0x00FFFFFF; // transparent 
+				trans[i] = table[p] & BigLong(0xFFFFFF00); // transparent 
 			else
 				trans[i] = table[p];	// fullbright
 		}
