@@ -393,17 +393,19 @@ void Cvar_CvarList_f (void)
 
 /*
 ===========
-Cvar_Create
+Cvar_Get
 ===========
 */
-cvar_t *Cvar_Create (char *name, char *string, int cvarflags)
+cvar_t *Cvar_Get (char *name, char *string, int cvarflags)
 {
 	cvar_t		*var;
 	int			key;
 
 	var = Cvar_FindVar(name);
-	if (var)
+	if (var) {
+		var->flags |= cvarflags;
 		return var;
+	}
 
 	var = (cvar_t *) Z_Malloc(sizeof(cvar_t));
 	var->next = cvar_vars;
@@ -415,8 +417,10 @@ cvar_t *Cvar_Create (char *name, char *string, int cvarflags)
 
 	var->name = CopyString (name);
 	var->string = CopyString (string);
-	var->flags = cvarflags;
+	var->flags = cvarflags | CVAR_DYNAMIC;
 	var->value = Q_atof (var->string);
+
+	// FIXME, check userinfo/serverinfo
 
 	return var;
 }
@@ -503,7 +507,7 @@ void Cvar_Set_f (void)
 			return;
 		}
 
-		var = Cvar_Create (name, Cmd_Argv(2), CVAR_DYNAMIC);
+		var = Cvar_Get (name, Cmd_Argv(2), 0);
 	}
 
 	if (cvar_seta)

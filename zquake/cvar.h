@@ -43,8 +43,8 @@ typedef struct cvar_s
 // flags set
 void Cvar_Register (cvar_t *var);
 
-// creates a cvar dynamically
-cvar_t *Cvar_Create (char *name, char *string, int cvarflags);
+// returns existing var or creates a new, dynamic one.  cvarflags will be or'ed in
+cvar_t *Cvar_Get (char *name, char *string, int cvarflags);
 
 // equivalent to "<name> <variable>" typed at the console
 void Cvar_Set (cvar_t *var, char *string);
