@@ -738,6 +738,11 @@ void NQD_LerpPlayerinfo (float f)
 {
 	int		i;
 
+	if (cl.intermission) {
+		// just stay there
+		return;
+	}
+
 	if (nq_player_teleported) {
 		VectorCopy (nq_mvelocity[0], cl.simvel);
 		VectorCopy (nq_mviewangles[0], cl.viewangles);
@@ -1061,7 +1066,7 @@ void NQD_ParseServerMessage (void)
 
 		case svc_setangle:
 			for (i=0 ; i<3 ; i++)
-				cl.viewangles[i] = MSG_ReadAngle ();
+				cl.simangles[i] = cl.viewangles[i] = MSG_ReadAngle ();
 			break;
 
 		case svc_setview:
