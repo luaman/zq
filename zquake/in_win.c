@@ -1444,13 +1444,21 @@ static void IN_LoadKeys_f (void)
 			continue;
 		}
 
+#if 0
+		if (!strcmp(Cmd_Argv(0), "keymap_version")
+		{
+			// do something here
+			continue;
+		}
+#endif
+
 		if (!strcmp(Cmd_Argv(0), "ext")) {
 			ext = true;
 			cmd_shift++;
 		}
 
 		if (strcmp(Cmd_Argv(cmd_shift), "keycode"))
-			continue;
+			continue;	// any unrecognized keywords are silently ignored (FIXME?)
 
 		cmd_shift++;
 
