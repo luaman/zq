@@ -819,6 +819,12 @@ void PF_cvar_set (void)
 	var_name = G_STRING(OFS_PARM0);
 	val = G_STRING(OFS_PARM1);
 
+	if (!strcmp(var_name, "pausable")) {
+		extern cvar_t sv_pausable;
+		// special handling because we renamed the cvar
+		Cvar_Set (&sv_pausable, val);
+	}
+
 	var = Cvar_FindVar(var_name);
 	if (!var)
 	{

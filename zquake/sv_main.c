@@ -31,8 +31,8 @@ client_t	*sv_client;					// current client
 cvar_t	sv_mintic = {"sv_mintic", "0.013"};	// bound the size of the
 cvar_t	sv_maxtic = {"sv_maxtic", "0.1"};	// physics time tic
 
-cvar_t	sv_timeout = {"timeout", "65"};		// seconds without any message
-cvar_t	sv_zombietime = {"zombietime", "2"};	// seconds to sink messages
+cvar_t	sv_timeout = {"sv_timeout", "65"};		// seconds without any message
+cvar_t	sv_zombietime = {"sv_zombietime", "2"};	// seconds to sink messages
 											// after disconnect
 
 cvar_t	sv_rconPassword = {"rcon_password", ""};	// password for remote server commands
@@ -48,7 +48,7 @@ cvar_t	allow_download_pakmaps = {"allow_download_pakmaps", "0"};
 
 cvar_t	sv_highchars = {"sv_highchars", "1"};
 cvar_t	sv_phs = {"sv_phs", "1"};
-cvar_t	sv_pausable = {"pausable", "1"};
+cvar_t	sv_pausable = {"sv_pausable", "1"};
 cvar_t	sv_maxrate = {"sv_maxrate", "0"};
 cvar_t	sv_fastconnect = {"sv_fastconnect", "0"};
 
@@ -1337,6 +1337,7 @@ void SV_InitLocal (void)
 	Cvar_Register (&sv_highchars);
 	Cvar_Register (&sv_phs);
 	Cvar_Register (&sv_pausable);
+	Cmd_AddLegacyCommand ("pausable", "sv_pausable");
 	Cvar_Register (&sv_nailhack);
 	Cvar_Register (&sv_maxrate);
 	Cvar_Register (&sv_fastconnect);
@@ -1346,7 +1347,9 @@ void SV_InitLocal (void)
 	Cvar_Register (&sv_mintic);
 	Cvar_Register (&sv_maxtic);
 	Cvar_Register (&sv_timeout);
+	Cmd_AddLegacyCommand ("timeout", "sv_timeout");
 	Cvar_Register (&sv_zombietime);
+	Cmd_AddLegacyCommand ("zombietime", "sv_zombietime");
 	Cvar_Register (&sv_spectalk);
 	Cvar_Register (&sv_mapcheck);
 	Cvar_Register (&sv_maxpitch);
