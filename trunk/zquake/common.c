@@ -241,6 +241,20 @@ void Q_strncpyz (char *dest, char *src, size_t size)
 	dest[size-1] = 0;
 }
 
+void Q_snprintfz (char *dest, size_t size, char *fmt, ...)
+{
+	va_list		argptr;
+
+	va_start (argptr, fmt);
+#ifdef _WIN32
+	_vsnprintf (dest, size-1, fmt, argptr);
+#else
+	vsnprintf (dest, size-1, fmt, argptr);
+#endif
+	va_end (argptr);
+
+	dest[size-1] = 0;
+}
 
 /*
 ============================================================================
