@@ -155,10 +155,16 @@ int Com_HashKey (char *name);
 
 //============================================================================
 
+void *Q_malloc (size_t size);
+char *Q_strdup (const char *src);
+// might be turned into a function that makes sure all Q_*alloc calls are matched with Q_free
+#define Q_free(ptr) free(ptr)
+
+//============================================================================
+
 // these are here for net.h's sake
 #define	MAX_MSGLEN		1450		// max length of a reliable message
 #define	MAX_DATAGRAM	1450		// max length of unreliable message
 #define	MAX_BIG_MSGLEN	8000		// max length of a demo or loop message, >= MAX_MSGLEN + header
 
 //============================================================================
-

@@ -79,13 +79,6 @@ startup hunk allocations
 
 void Memory_Init (void *buf, int size);
 
-
-void *Q_malloc (size_t size);
-char *Q_strdup (const char *src);
-// might be turned into a function that makes sure all Q_*alloc calls are matched with Q_free
-#define Q_free(ptr) free(ptr)
-
-
 void *Hunk_Alloc (int size);		// returns 0 filled memory
 void *Hunk_AllocName (int size, char *name);
 
