@@ -34,6 +34,8 @@ void CL_Shutdown ();
 void SV_Init (void);
 
 
+double		curtime;
+
 int			host_hunklevel;
 qboolean	host_initialized;		// true if into command execution
 
@@ -119,6 +121,8 @@ void Host_Frame (double time)
 {
 	if (setjmp (host_abort))
 		return;			// something bad happened, or the server disconnected
+
+	curtime += time;
 
 #ifdef SERVERONLY
 	SV_Frame (time);
