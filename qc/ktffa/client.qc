@@ -380,23 +380,26 @@ ClientKill
 Player entered the suicide command
 ============
 */
-void() ClientKill =
+void ClientKill ()
 {
-	if(time < self.suicide_time + 10)
-        {
-		sprint(self, 2, "Only one suicide in 10 seconds\n");
+	if (intermission_running)
+		return;
+
+	if (time < self.suicide_time)
+	{
+		sprint (self, PRINT_HIGH, "Only one suicide in 5 seconds\n");
 		return;
 	}
-	self.suicide_time = time;
 
-	bprint (PRINT_MEDIUM, self.netname);
-	bprint (PRINT_MEDIUM, " suicides\n");
+	self.suicide_time = time + 5;
+
+	bprint (PRINT_MEDIUM, self.netname, " suicides\n");
 	set_suicide_frame ();
 	self.modelindex = modelindex_player;
 	logfrag (self, self);
 	self.frags = self.frags - 2;    // extra penalty
 	respawn ();
-};
+}
 
 float(vector v) CheckSpawnPoint =
 {
