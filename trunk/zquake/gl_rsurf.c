@@ -1603,6 +1603,9 @@ void GL_BuildLightmaps (void)
 		}
 	}
 
+ 	if (!gl_texsort.value)
+ 		GL_SelectTexture(TEXTURE1_ARB);
+
 	//
 	// upload all lightmaps that were filled
 	//
@@ -1622,5 +1625,7 @@ void GL_BuildLightmaps (void)
 		, BLOCK_WIDTH, BLOCK_HEIGHT, 0, 
 		gl_lightmap_format, GL_UNSIGNED_BYTE, lightmaps+i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
 	}
-}
 
+	if (!gl_texsort.value)
+ 		GL_SelectTexture(TEXTURE0_ARB);
+}
