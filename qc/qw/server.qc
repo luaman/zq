@@ -45,6 +45,7 @@ void() path_corner = {};
 
 void() monster_death_use = {};
 void(entity attacker) GetMadAtAttacker = {};
+string(string attacker_class) ObituaryForMonster = {return "";};
 
 void() ExitIntermission =
 {
