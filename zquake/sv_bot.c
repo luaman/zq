@@ -113,6 +113,7 @@ edict_t *SV_CreateBot (char *name)
 void SV_RemoveBot (client_t *cl)
 {
 	if (cl->state == cs_spawned)
+	{
 		if (!cl->spectator)
 		{
 			// call the prog function for removing a client
@@ -130,6 +131,7 @@ void SV_RemoveBot (client_t *cl)
 			pr_global_struct->self = EDICT_TO_PROG(cl->edict);
 			PR_ExecuteProgram (SpectatorDisconnect);
 		}
+	}
 
 	Com_DPrintf ("Bot %s removed\n", cl->name);
 
@@ -182,9 +184,11 @@ void SV_RunBots (void)
 		// create a fake client move command for prediction's sake
 		cmd = nullcmd;
 		VectorCopy (ent->v.v_angle, cmd.angles);
-		cmd.msec = (svs.realtime - cl->cmdtime) * 1000;
-		if (cmd.msec > 255)
+		// oldman: isn't this better? byte can't be > 255?
+		if (((svs.realtime - cl->cmdtime) * 1000) > 255)
 			cmd.msec = 255;
+		else
+			cmd.msec = (svs.realtime - cl->cmdtime) * 1000;
 		cl->lastcmd = cmd;
 		cl->cmdtime = svs.realtime;
 
