@@ -46,10 +46,6 @@ int			playertextures;		// up to 16 color translated skins
 int			playerfbtextures[MAX_CLIENTS];
 int			skyboxtextures;
 
-int			mirrortexturenum;	// quake texturenum, not gltexturenum
-qbool		mirror;
-mplane_t	*mirror_plane;
-
 //
 // view origin
 //
@@ -81,7 +77,6 @@ cvar_t	r_speeds = {"r_speeds","0"};
 cvar_t	r_fullbright = {"r_fullbright","0"};
 cvar_t	r_lightmap = {"r_lightmap","0"};
 cvar_t	r_shadows = {"r_shadows","0"};
-cvar_t	r_mirroralpha = {"r_mirroralpha","1"};
 cvar_t	r_wateralpha = {"r_wateralpha","1"};
 cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
@@ -1132,16 +1127,7 @@ void R_SetupGL (void)
     screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
     MYgluPerspective (r_refdef.fov_y,  screenaspect,  4,  4096);
 
-	if (mirror)
-	{
-		if (mirror_plane->normal[2])
-			glScalef (1, -1, 1);
-		else
-			glScalef (-1, 1, 1);
-		glCullFace(GL_BACK);
-	}
-	else
-		glCullFace(GL_FRONT);
+	glCullFace(GL_FRONT);
 
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity ();
@@ -1191,7 +1177,6 @@ void R_Init (void)
 	Cvar_Register (&r_drawentities);
 	Cvar_Register (&r_drawflame);
 	Cvar_Register (&r_shadows);
-	Cvar_Register (&r_mirroralpha);
 	Cvar_Register (&r_wateralpha);
 	Cvar_Register (&r_dynamic);
 	Cvar_Register (&r_novis);
@@ -1307,17 +1292,7 @@ void R_Clear (void)
 		}
 	}
 
-	if (r_mirroralpha.value != 1.0)
-	{
-		if (clear)
-			glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		else
-			glClear (GL_DEPTH_BUFFER_BIT);
-		gldepthmin = 0;
-		gldepthmax = 0.5;
-		glDepthFunc (GL_LEQUAL);
-	}
-	else if (gl_ztrick.value)
+	if (gl_ztrick.value)
 	{
 		if (clear)
 			glClear (GL_COLOR_BUFFER_BIT);
@@ -1350,76 +1325,6 @@ void R_Clear (void)
 	glDepthRange (gldepthmin, gldepthmax);
 }
 
-#if 0 //!!! FIXME, Zoid, mirror is disabled for now
-/*
-=============
-R_Mirror
-=============
-*/
-void R_Mirror (void)
-{
-	float		d;
-	msurface_t	*s;
-	entity_t	*ent;
-
-	if (!mirror)
-		return;
-
-	memcpy (r_base_world_matrix, r_world_matrix, sizeof(r_base_world_matrix));
-
-	d = DotProduct (r_refdef.vieworg, mirror_plane->normal) - mirror_plane->dist;
-	VectorMA (r_refdef.vieworg, -2*d, mirror_plane->normal, r_refdef.vieworg);
-
-	d = DotProduct (vpn, mirror_plane->normal);
-	VectorMA (vpn, -2*d, mirror_plane->normal, vpn);
-
-	r_refdef.viewangles[0] = -asin (vpn[2])/M_PI*180;
-	r_refdef.viewangles[1] = atan2 (vpn[1], vpn[0])/M_PI*180;
-	r_refdef.viewangles[2] = -r_refdef.viewangles[2];
-
-	ent = &cl_entities[cl.viewentity];
-	if (cl_numvisedicts < MAX_VISEDICTS)
-	{
-		cl_visedicts[cl_numvisedicts] = ent;
-		cl_numvisedicts++;
-	}
-
-	gldepthmin = 0.5;
-	gldepthmax = 1;
-	glDepthRange (gldepthmin, gldepthmax);
-	glDepthFunc (GL_LEQUAL);
-
-	R_RenderScene ();
-	R_DrawWaterSurfaces ();
-	R_DrawParticles ();
-
-	gldepthmin = 0;
-	gldepthmax = 0.5;
-	glDepthRange (gldepthmin, gldepthmax);
-	glDepthFunc (GL_LEQUAL);
-
-	// blend on top
-	glEnable (GL_BLEND);
-	glMatrixMode(GL_PROJECTION);
-	if (mirror_plane->normal[2])
-		glScalef (1,-1,1);
-	else
-		glScalef (-1,1,1);
-	glCullFace(GL_FRONT);
-	glMatrixMode(GL_MODELVIEW);
-
-	glLoadMatrixf (r_base_world_matrix);
-
-	glColor4f (1, 1, 1, r_mirroralpha.value);
-	s = r_worldmodel->textures[mirrortexturenum]->texturechain;
-	for ( ; s ; s=s->texturechain)
-		R_RenderBrushPoly (s);
-	r_worldmodel->textures[mirrortexturenum]->texturechain = NULL;
-	glDisable (GL_BLEND);
-	glColor3f (1, 1, 1);
-}
-#endif
-
 /*
 ================
 R_RenderView
@@ -1445,8 +1350,6 @@ void R_RenderView (void)
 		c_alias_polys = 0;
 	}
 
-	mirror = false;
-
 	if (gl_finish.value)
 		glFinish ();
 
@@ -1457,9 +1360,6 @@ void R_RenderView (void)
 	R_DrawViewModel ();
 	R_DrawWaterSurfaces ();
 	R_DrawParticles ();
-
-	// render mirror view
-//	R_Mirror ();
 
 	if (r_speeds.value)
 	{

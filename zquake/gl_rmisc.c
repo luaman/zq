@@ -260,15 +260,12 @@ void R_NewMap (struct model_s *worldmodel)
 
 	// identify sky texture
 	skytexturenum = -1;
-	mirrortexturenum = -1;
 	for (i = 0; i < r_worldmodel->numtextures; i++)
 	{
 		if (!r_worldmodel->textures[i])
 			continue;
 		if (!strncmp(r_worldmodel->textures[i]->name,"sky",3) )
 			skytexturenum = i;
-		if (!strncmp(r_worldmodel->textures[i]->name,"window02_1",10) )
-			mirrortexturenum = i;
  		r_worldmodel->textures[i]->texturechain = NULL;
 	}
 
