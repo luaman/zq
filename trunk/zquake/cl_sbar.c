@@ -1138,8 +1138,7 @@ static void Sbar_TeamOverlay (int start)
 		return;
 	}
 
-	scr_copyeverything = 1;
-	scr_fullupdate = 0;
+	SCR_InvalidateScreen ();
 
 	xofs = (vid.width - 320)>>1;
 
@@ -1242,8 +1241,7 @@ static void Sbar_DeathmatchOverlay (int start)
 		SZ_Print (&cls.netchan.message, "pings");
 	}
 
-	scr_copyeverything = 1;
-	scr_fullupdate = 0;
+	SCR_InvalidateScreen ();
 
 	xofs = (vid.width - 320)>>1;
 
@@ -1430,8 +1428,7 @@ static void Sbar_MiniDeathmatchOverlay (void)
 	if (vid.width < 512)
 		return; // not enuff room
 
-	scr_copyeverything = 1;
-	scr_fullupdate = 0;
+	SCR_InvalidateScreen ();	// FIXME
 
 // scores	
 	Sbar_SortFrags (false);
@@ -1564,9 +1561,6 @@ void Sbar_IntermissionOverlay (void)
 	int		xofs;
 	int		time;
 
-	scr_copyeverything = 1;
-	scr_fullupdate = 0;
-
 	if (cl.gametype == GAME_DEATHMATCH)
 	{
 		if (cl.teamplay && !sb_showscores)
@@ -1626,9 +1620,7 @@ void Sbar_FinaleOverlay (void)
 {
 	mpic_t	*pic;
 
-	scr_copyeverything = 1;
-
 	pic = R_CachePic ("gfx/finale.lmp");
-	R_DrawPic ((vid.width - GetPicWidth(pic))/2, 16, pic);
+	R_DrawPic ((vid.width - GetPicWidth(pic))/2, 16, R_CachePic ("gfx/finale.lmp"));
 }
 
