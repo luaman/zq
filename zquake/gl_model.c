@@ -1571,13 +1571,9 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 
 	if (mod->modhint == MOD_PLAYER || mod->modhint == MOD_EYES) {
 		unsigned short crc;
-		byte *p;
-		int len;
 		char st[40];
 
-		CRC_Init(&crc);
-		for (len = com_filesize, p = buffer; len; len--, p++)
-			CRC_ProcessByte(&crc, *p);
+		crc = CRC_Block (buffer, com_filesize);
 	
 		sprintf(st, "%d", (int) crc);
 		Info_SetValueForKey (cls.userinfo, 
