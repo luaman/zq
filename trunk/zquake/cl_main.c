@@ -78,6 +78,7 @@ cvar_t	cl_trueLightning = {"cl_trueLightning", "0"};
 cvar_t	cl_parseWhiteText = {"cl_parseWhiteText", "1"};
 cvar_t	cl_filterdrawviewmodel = {"cl_filterdrawviewmodel", "0"};
 cvar_t	cl_oldPL = {"cl_oldPL", "0"};
+cvar_t	cl_demoPingInterval = {"cl_demoPingInterval", "5"};
 cvar_t	default_fov = {"default_fov", "0"};
 cvar_t	qizmo_dir = {"qizmo_dir", "qizmo"};
 
@@ -630,6 +631,28 @@ void CL_ReadPackets (void)
 	
 }
 
+
+void CL_SendToServer (void)
+{
+	// when recording demos, request new ping times every 5 seconds
+	if (cls.demorecording && !cls.demoplayback && cls.state == ca_active
+		&& cl_demoPingInterval.value > 0) {
+		if (realtime - cl.last_ping_request > cl_demoPingInterval.value)
+		{
+			cl.last_ping_request = realtime;
+			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+			SZ_Print (&cls.netchan.message, "pings");
+		}
+	}
+
+	// send intentions now
+	// resend a connection request if necessary
+	if (cls.state == ca_disconnected) {
+		CL_CheckForResend ();
+	} else
+		CL_SendCmd ();
+}
+
 //=============================================================================
 
 void CL_InitCommands (void);
@@ -698,6 +721,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&cl_parseWhiteText);
 	Cvar_RegisterVariable (&cl_filterdrawviewmodel);
 	Cvar_RegisterVariable (&cl_oldPL);
+	Cvar_RegisterVariable (&cl_demoPingInterval);
 	Cvar_RegisterVariable (&default_fov);
 	Cvar_RegisterVariable (&qizmo_dir);
 
@@ -936,12 +960,7 @@ void Host_Frame (double time)
 	// process stuffed commands
 	Cbuf_ExecuteEx (&cbuf_svc);
 
-	// send intentions now
-	// resend a connection request if necessary
-	if (cls.state == ca_disconnected) {
-		CL_CheckForResend ();
-	} else
-		CL_SendCmd ();
+	CL_SendToServer ();
 
 	if (cls.state >= ca_onserver)	// !!! Tonik
 	{
