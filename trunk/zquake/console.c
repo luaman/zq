@@ -401,9 +401,13 @@ void Con_Printf (char *fmt, ...)
 	Sys_Printf ("%s", msg);	// also echo to debugging console
 
 // log all messages to file
-	if (con_debuglog)
-		Sys_DebugLog(va("%s/qconsole.log",com_gamedir), "%s", msg);
-		
+	if (con_debuglog) {
+		char        msg2[MAX_OSPATH + 32];
+
+		_snprintf (msg2, sizeof (msg2), "%s/qconsole.log", com_gamedir);
+		Sys_DebugLog (msg2, "%s", msg);
+	}
+	
 	if (!con_initialized)
 		return;
 		

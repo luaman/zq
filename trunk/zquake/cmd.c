@@ -445,6 +445,29 @@ char *Cmd_AliasString (char *name)
 	return NULL;
 }
 
+/*
+===============
+Cmd_Viewalias_f
+
+===============
+*/
+void Cmd_Viewalias_f(void)
+{
+	cmd_alias_t *alias;
+
+	if (Cmd_Argc() < 2)
+	{
+		Con_Printf ("viewalias <aliasname> : view body of alias\n");
+		return;
+	}
+
+	alias = Cmd_FindAlias(Cmd_Argv(1));
+
+	if (alias)
+		Con_Printf ("%s : \"%s\"\n", Cmd_Argv(1), alias->value);
+	else
+		Con_Printf ("No such alias: %s\n", Cmd_Argv(1));
+}
 
 /*
 ===============
@@ -1160,7 +1183,7 @@ int Cmd_CheckParm (char *parm)
 	return 0;
 }
 
-
+		
 /*
 ============
 Cmd_Init
@@ -1171,10 +1194,11 @@ void Cmd_Init (void)
 //
 // register our commands
 //
-	Cmd_AddCommand ("stuffcmds",Cmd_StuffCmds_f);
-	Cmd_AddCommand ("exec",Cmd_Exec_f);
-	Cmd_AddCommand ("echo",Cmd_Echo_f);
-	Cmd_AddCommand ("alias",Cmd_Alias_f);
+	Cmd_AddCommand ("stuffcmds", Cmd_StuffCmds_f);
+	Cmd_AddCommand ("exec", Cmd_Exec_f);
+	Cmd_AddCommand ("echo", Cmd_Echo_f);
+	Cmd_AddCommand ("alias", Cmd_Alias_f);
+	Cmd_AddCommand ("viewalias", Cmd_Viewalias_f);
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
 	Cmd_AddCommand ("cmdlist", Cmd_CmdList_f);
 	Cmd_AddCommand ("unaliasall", Cmd_UnAliasAll_f);

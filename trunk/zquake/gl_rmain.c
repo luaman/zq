@@ -283,6 +283,7 @@ float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 };
 
 vec3_t	shadevector;
+
 float	shadelight, ambientlight;
 
 // precalculated dot products for quantized angles
@@ -487,18 +488,19 @@ void R_DrawAliasModel (entity_t *ent)
 		full_light = false;
 		ambientlight = shadelight = R_LightPoint (ent->origin);
 		
-		for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 		{
-			if (cl_dlights[lnum].die >= cl.time)
-			{
-				VectorSubtract (ent->origin,
-					cl_dlights[lnum].origin,
-					dist);
-				add = cl_dlights[lnum].radius - Length(dist);
-				
-				if (add > 0)
-					ambientlight += add;
-			}
+			if (cl_dlights[lnum].die < cl.time || 
+				!cl_dlights[lnum].radius)
+				continue;
+
+			VectorSubtract (ent->origin,
+				cl_dlights[lnum].origin,
+				dist);
+			add = cl_dlights[lnum].radius - VectorLength(dist);
+			
+			if (add > 0)
+				ambientlight += add;
 		}
 		
 		// clamp lighting so it doesn't overbright as much
@@ -600,10 +602,10 @@ void R_DrawAliasModel (entity_t *ent)
 	{
 		float an = -ent->angles[1] / 180 * M_PI;
 		
-		shadevector[0] = cos(an);
-		shadevector[1] = sin(an);
+		shadevector[0] = Q_cos(an);
+		shadevector[1] = Q_sin(an);
 		shadevector[2] = 1;
-		VectorNormalize (shadevector);
+		VectorNormalizeFast (shadevector);
 
 		glPushMatrix ();
 
@@ -940,15 +942,15 @@ void R_SetupFrame (void)
 void MYgluPerspective( GLdouble fovy, GLdouble aspect,
 		     GLdouble zNear, GLdouble zFar )
 {
-   GLdouble xmin, xmax, ymin, ymax;
-
-   ymax = zNear * tan( fovy * M_PI / 360.0 );
-   ymin = -ymax;
-
-   xmin = ymin * aspect;
-   xmax = ymax * aspect;
-
-   glFrustum( xmin, xmax, ymin, ymax, zNear, zFar );
+	GLdouble xmin, xmax, ymin, ymax;
+	
+	ymax = zNear * Q_tan( fovy * M_PI / 360.0 );
+	ymin = -ymax;
+	
+	xmin = ymin * aspect;
+	xmax = ymax * aspect;
+	
+	glFrustum( xmin, xmax, ymin, ymax, zNear, zFar );
 }
 
 
@@ -1161,8 +1163,8 @@ void R_Mirror (void)
 	d = DotProduct (vpn, mirror_plane->normal);
 	VectorMA (vpn, -2*d, mirror_plane->normal, vpn);
 
-	r_refdef.viewangles[0] = -asin (vpn[2])/M_PI*180;
-	r_refdef.viewangles[1] = atan2 (vpn[1], vpn[0])/M_PI*180;
+	r_refdef.viewangles[0] = -Q_asin (vpn[2])/M_PI*180;
+	r_refdef.viewangles[1] = Q_atan2 (vpn[1], vpn[0])/M_PI*180;
 	r_refdef.viewangles[2] = -r_refdef.viewangles[2];
 
 	ent = &cl_entities[cl.viewentity];

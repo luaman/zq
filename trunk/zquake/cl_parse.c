@@ -951,6 +951,12 @@ void CL_NewTranslation (int slot)
 	player = &cl.players[slot];
 	if (player->spectator)
 		return;
+/*
+	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
+	COM_StripExtension(s, s);
+	if (player->skin && !stricmp(s, player->skin->name))
+		player->skin = NULL;
+*/
 
 // teamcolor/enemycolor -->
 	player->topcolor = player->real_topcolor;
@@ -1589,7 +1595,7 @@ void CL_ParseServerMessage (void)
 				cl.simorg[i] = MSG_ReadCoord ();			
 			for (i=0 ; i<3 ; i++)
 				cl.simangles[i] = MSG_ReadAngle ();
-			VectorCopy (vec3_origin, cl.simvel);
+			VectorClear (cl.simvel);
 			TP_ExecTrigger ("f_mapend");
 			break;
 

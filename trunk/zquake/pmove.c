@@ -156,7 +156,7 @@ int PM_FlyMove (void)
 
 		if (trace.startsolid || trace.allsolid)
 		{	// entity is trapped in another solid
-			VectorCopy (vec3_origin, pmove.velocity);
+			VectorClear (pmove.velocity);
 			return 3;
 		}
 
@@ -187,7 +187,7 @@ int PM_FlyMove (void)
 	// cliped to another plane
 		if (numplanes >= MAX_CLIP_PLANES)
 		{	// this shouldn't really happen
-			VectorCopy (vec3_origin, pmove.velocity);
+			VectorClear (pmove.velocity);
 			break;
 		}
 
@@ -218,7 +218,7 @@ int PM_FlyMove (void)
 			if (numplanes != 2)
 			{
 //				Con_Printf ("clip velocity, numplanes == %i\n",numplanes);
-				VectorCopy (vec3_origin, pmove.velocity);
+				VectorClear (pmove.velocity);
 				break;
 			}
 			CrossProduct (planes[0], planes[1], dir);
@@ -232,7 +232,7 @@ int PM_FlyMove (void)
 //
 		if (DotProduct (pmove.velocity, primal_velocity) <= 0)
 		{
-			VectorCopy (vec3_origin, pmove.velocity);
+			VectorClear (pmove.velocity);
 			break;
 		}
 	}
@@ -360,7 +360,7 @@ void PM_Friction (void)
 
 	vel = pmove.velocity;
 	
-	speed = sqrt(vel[0]*vel[0] +vel[1]*vel[1] + vel[2]*vel[2]);
+	speed = VectorLength(vel);
 	if (speed < 1)
 	{
 		vel[0] = 0;
@@ -540,8 +540,8 @@ void PM_AirMove (void)
 	
 	forward[2] = 0;
 	right[2] = 0;
-	VectorNormalize (forward);
-	VectorNormalize (right);
+	VectorNormalizeFast (forward);
+	VectorNormalizeFast (right);
 
 	for (i=0 ; i<2 ; i++)
 		wishvel[i] = forward[i]*fmove + right[i]*smove;
@@ -762,7 +762,7 @@ void CheckWaterJump (void)
 	flatforward[0] = forward[0];
 	flatforward[1] = forward[1];
 	flatforward[2] = 0;
-	VectorNormalize (flatforward);
+	VectorNormalizeFast (flatforward);
 
 	VectorMA (pmove.origin, 24, flatforward, spot);
 	spot[2] += 8;
@@ -845,10 +845,10 @@ void SpectatorMove (void)
 
 	// friction
 
-	speed = Length (pmove.velocity);
+	speed = VectorLength (pmove.velocity);
 	if (speed < 1)
 	{
-		VectorCopy (vec3_origin, pmove.velocity)
+		VectorClear (pmove.velocity);
 	}
 	else
 	{
@@ -871,8 +871,8 @@ void SpectatorMove (void)
 	fmove = pmove.cmd.forwardmove;
 	smove = pmove.cmd.sidemove;
 	
-	VectorNormalize (forward);
-	VectorNormalize (right);
+	VectorNormalizeFast (forward);
+	VectorNormalizeFast (right);
 
 	for (i=0 ; i<3 ; i++)
 		wishvel[i] = forward[i]*fmove + right[i]*smove;
