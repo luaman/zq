@@ -1330,7 +1330,8 @@ Finds the file in the search path.
 Sets com_filesize and one of handle or file
 ===========
 */
-int file_from_pak; // global indicating file came from pack file ZOID
+qboolean file_from_pak; // global indicating file came from pack file ZOID
+qboolean file_from_gamedir;	//global indicating file came from pak/file in gamedir (and gamedir wasn't id1/qw)
 
 int FS_FOpenFile (char *filename, FILE **file)
 {
@@ -1339,13 +1340,17 @@ int FS_FOpenFile (char *filename, FILE **file)
 	pack_t		*pak;
 	int			i;
 
-	file_from_pak = 0;
+	file_from_pak = false;
+	file_from_gamedir = true;
 		
 //
 // search through the path, one element at a time
 //
 	for (search = com_searchpaths ; search ; search = search->next)
 	{
+		if (search == com_base_searchpaths)
+			file_from_gamedir = false;
+
 	// is the element a pak file?
 		if (search->pack)
 		{
@@ -1362,7 +1367,7 @@ int FS_FOpenFile (char *filename, FILE **file)
 						Sys_Error ("Couldn't reopen %s", pak->filename);	
 					fseek (*file, pak->files[i].filepos, SEEK_SET);
 					com_filesize = pak->files[i].filelen;
-					file_from_pak = 1;
+					file_from_pak = true;
 					return com_filesize;
 				}
 		}

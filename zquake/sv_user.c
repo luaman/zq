@@ -692,7 +692,7 @@ void SV_BeginDownload_f (void)
 	extern cvar_t	allow_download_sounds;
 	extern cvar_t	allow_download_maps;
 	extern cvar_t	allow_download_pakmaps;
-	extern int		file_from_pak;	// did file come from pak?
+	extern qboolean	file_from_pak;	// did file come from pak?
 
 	name = Cmd_Argv(1);
 // hacked by zoid to allow more conrol over download
