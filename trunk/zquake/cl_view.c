@@ -79,9 +79,6 @@ float	v_idlescale = 0;
 
 void V_NewMap (void)
 {
-	extern cshift_t cshift_empty;	// FIXME, just move its definition higher and get rid of the extern
-	memset (&cshift_empty, 0, sizeof(cshift_empty));
-
 	v_iyaw_cycle = 2;
 	v_iroll_cycle = 0.5;
 	v_ipitch_cycle = 1;
@@ -277,11 +274,12 @@ void V_DriftPitch (void)
  
 ============================================================================== 
 */ 
- 
-cshift_t	cshift_empty = { {0,0,0}, 0 };
-cshift_t	cshift_water = { {130,80,50}, 128 };
-cshift_t	cshift_slime = { {0,25,5}, 150 };
-cshift_t	cshift_lava = { {255,80,0}, 150 };
+
+//                                  r   g   b   frac
+const cshift_t	cshift_empty = { {  0,  0,  0},   0 };
+const cshift_t	cshift_water = { {130, 80, 50}, 128 };
+const cshift_t	cshift_slime = { {  0, 25,  5}, 150 };
+const cshift_t	cshift_lava =  { {255, 80,  0}, 150 };
 
 #define ONCHANGE(FUNC, VAR)									\
 void FUNC (cvar_t *var, char *string, qboolean *cancel) {	\
@@ -389,7 +387,6 @@ void V_ParseDamage (void)
 	vec3_t	forward, right;
 	float	side;
 	float	count;
-	float	fraction;
 	
 	armor = MSG_ReadByte ();
 	blood = MSG_ReadByte ();
@@ -408,10 +405,7 @@ void V_ParseDamage (void)
 	if (cl.cshifts[CSHIFT_DAMAGE].percent > 150)
 		cl.cshifts[CSHIFT_DAMAGE].percent = 150;
 
-	fraction = v_damagecshift.value;
-	if (fraction < 0) fraction = 0;
-	if (fraction > 1) fraction = 1;
-	cl.cshifts[CSHIFT_DAMAGE].percent *= fraction;
+	cl.cshifts[CSHIFT_DAMAGE].percent *= bound (0.0, v_damagecshift.value, 1.0);
 
 	if (armor > blood)		
 	{
@@ -461,10 +455,10 @@ void V_cshift_f (void)
 	if (cls.state >= ca_connected && cl.teamfortress && cbuf_current != &cbuf_svc)
 		return;
 
-	cshift_empty.destcolor[0] = atoi(Cmd_Argv(1));
-	cshift_empty.destcolor[1] = atoi(Cmd_Argv(2));
-	cshift_empty.destcolor[2] = atoi(Cmd_Argv(3));
-	cshift_empty.percent = atoi(Cmd_Argv(4));
+	cl.cshifts[CSHIFT_CUSTOM].destcolor[0] = atoi(Cmd_Argv(1));
+	cl.cshifts[CSHIFT_CUSTOM].destcolor[1] = atoi(Cmd_Argv(2));
+	cl.cshifts[CSHIFT_CUSTOM].destcolor[2] = atoi(Cmd_Argv(3));
+	cl.cshifts[CSHIFT_CUSTOM].percent = atoi(Cmd_Argv(4));
 }
 
 
@@ -495,11 +489,6 @@ Underwater, lava, etc each has a color shift
 */
 void V_SetContentsColor (int contents)
 {
-	if (!v_contentblend.value) {
-		cl.cshifts[CSHIFT_CONTENTS] = cshift_empty;
-		return;
-	}
-
 	switch (contents)
 	{
 	case CONTENTS_EMPTY:
@@ -516,25 +505,7 @@ void V_SetContentsColor (int contents)
 		cl.cshifts[CSHIFT_CONTENTS] = cshift_water;
 	}
 
-	if (v_contentblend.value > 0 && v_contentblend.value < 1
-		&& contents != CONTENTS_EMPTY)
-		cl.cshifts[CSHIFT_CONTENTS].percent *= v_contentblend.value;
-
-#ifdef GLQUAKE
-	if (!gl_polyblend.value && !cl.teamfortress)
-		cl.cshifts[CSHIFT_CONTENTS].percent = 0;
-	else {
-		// ignore gl_cshiftpercent on custom cshifts (set with v_cshift
-		// command) to avoid cheating in TF
-		if (contents != CONTENTS_EMPTY) {
-			if (!gl_polyblend.value)
-				cl.cshifts[CSHIFT_CONTENTS].percent = 0;
-			else
-				cl.cshifts[CSHIFT_CONTENTS].percent *= (gl_cshiftpercent.value / 100.0);
-		}
-	}
-
-#endif
+	cl.cshifts[CSHIFT_CONTENTS].percent *= bound (0.0, v_contentblend.value, 1.0);
 }
 
 /*
@@ -544,39 +515,33 @@ V_CalcPowerupCshift
 */
 void V_CalcPowerupCshift (void)
 {
-	float fraction;
-
 	if (cl.stats[STAT_ITEMS] & IT_QUAD)
 	{
 		cl.cshifts[CSHIFT_POWERUP].destcolor[0] = 0;
 		cl.cshifts[CSHIFT_POWERUP].destcolor[1] = 0;
 		cl.cshifts[CSHIFT_POWERUP].destcolor[2] = 255;
-		fraction = bound (0, v_quadcshift.value, 1);
-		cl.cshifts[CSHIFT_POWERUP].percent = 30 * fraction;
+		cl.cshifts[CSHIFT_POWERUP].percent = 30 * bound (0, v_quadcshift.value, 1);
 	}
 	else if (cl.stats[STAT_ITEMS] & IT_SUIT)
 	{
 		cl.cshifts[CSHIFT_POWERUP].destcolor[0] = 0;
 		cl.cshifts[CSHIFT_POWERUP].destcolor[1] = 255;
 		cl.cshifts[CSHIFT_POWERUP].destcolor[2] = 0;
-		fraction = bound (0, v_suitcshift.value, 1);
-		cl.cshifts[CSHIFT_POWERUP].percent = 20 * fraction;
+		cl.cshifts[CSHIFT_POWERUP].percent = 20 * bound (0, v_suitcshift.value, 1);
 	}
 	else if (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)
 	{
 		cl.cshifts[CSHIFT_POWERUP].destcolor[0] = 100;
 		cl.cshifts[CSHIFT_POWERUP].destcolor[1] = 100;
 		cl.cshifts[CSHIFT_POWERUP].destcolor[2] = 100;
-		fraction = bound (0, v_ringcshift.value, 1);
-		cl.cshifts[CSHIFT_POWERUP].percent = 100 * fraction;
+		cl.cshifts[CSHIFT_POWERUP].percent = 100 * bound (0, v_ringcshift.value, 1);
 	}
 	else if (cl.stats[STAT_ITEMS] & IT_INVULNERABILITY)
 	{
 		cl.cshifts[CSHIFT_POWERUP].destcolor[0] = 255;
 		cl.cshifts[CSHIFT_POWERUP].destcolor[1] = 255;
 		cl.cshifts[CSHIFT_POWERUP].destcolor[2] = 0;
-		fraction = bound (0, v_pentcshift.value, 1);
-		cl.cshifts[CSHIFT_POWERUP].percent = 30 * fraction;
+		cl.cshifts[CSHIFT_POWERUP].percent = 30 * bound (0, v_pentcshift.value, 1);
 	}
 	else
 		cl.cshifts[CSHIFT_POWERUP].percent = 0;
@@ -604,8 +569,9 @@ void V_CalcBlend (void)
 	a = 0;
 
 	if (cls.state != ca_active) {
-		cl.cshifts[CSHIFT_CONTENTS] = cshift_empty;
+		cl.cshifts[CSHIFT_CONTENTS].percent = 0;
 		cl.cshifts[CSHIFT_POWERUP].percent = 0;
+		cl.cshifts[CSHIFT_CUSTOM].percent = 0;
 	}
 	else
 		V_CalcPowerupCshift ();
@@ -622,13 +588,15 @@ void V_CalcBlend (void)
 
 	for (j=0 ; j<NUM_CSHIFTS ; j++)	
 	{
-		if ((!gl_cshiftpercent.value || !gl_polyblend.value) && j != CSHIFT_CONTENTS)
+		if ((!gl_cshiftpercent.value || !gl_polyblend.value) && j != CSHIFT_CUSTOM)
 			continue;
 
-		if (j == CSHIFT_CONTENTS)
+		if (j == CSHIFT_CUSTOM) {
+			if (cl.cshifts[CSHIFT_CONTENTS].percent)
+				continue;	// bug-to-bug compatibility with id code
 			a2 = cl.cshifts[j].percent / 255.0;
-		else
-			a2 = ((cl.cshifts[j].percent * gl_cshiftpercent.value) / 100.0) / 255.0;
+		} else
+			a2 = cl.cshifts[j].percent * (gl_cshiftpercent.value / 100.0) / 255.0;
 
 		if (!a2)
 			continue;
@@ -701,7 +669,7 @@ void V_UpdatePalette (void)
 
 	a = v_blend[3];
 
-	if (!vid_hwgamma_enabled || !gl_hwblend.value || cl.teamfortress)
+	if (!vid_hwgamma_enabled || !(gl_hwblend.value && !cl.teamfortress))
 		a = 0;
 
 	rgb[0] = 255*v_blend[0]*a;
@@ -748,8 +716,9 @@ void V_UpdatePalette (void)
 	static cshift_t	prev_cshifts[NUM_CSHIFTS];
 
 	if (cls.state != ca_active) {
-		cl.cshifts[CSHIFT_CONTENTS] = cshift_empty;
+		cl.cshifts[CSHIFT_CONTENTS].percent = 0;
 		cl.cshifts[CSHIFT_POWERUP].percent = 0;
+		cl.cshifts[CSHIFT_CUSTOM].percent = 0;
 	}
 	else
 		V_CalcPowerupCshift ();
@@ -799,6 +768,9 @@ void V_UpdatePalette (void)
 	
 		for (j=0 ; j<NUM_CSHIFTS ; j++)	
 		{
+			if (j == CSHIFT_CUSTOM && cl.cshifts[CSHIFT_CONTENTS].percent)
+				continue;	// bug-to-bug compatibility with id code
+
 			r += (int)(cl.cshifts[j].percent*(cl.cshifts[j].destcolor[0]-r)) >> 8;
 			g += (int)(cl.cshifts[j].percent*(cl.cshifts[j].destcolor[1]-g)) >> 8;
 			b += (int)(cl.cshifts[j].percent*(cl.cshifts[j].destcolor[2]-b)) >> 8;
