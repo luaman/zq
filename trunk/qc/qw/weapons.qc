@@ -516,21 +516,24 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 
 	if (trace_ent.takedamage)
 	{
+		e1 = trace_ent;
 		LightningHit (from, damage);
+
 		if (self.classname == "player")
 		{
-			if (other.classname == "player")
-				trace_ent.velocity_z = trace_ent.velocity_z + 400;
+			// check DM6 platform bug-o-feature
+			if (self.groundentity == e1)
+				if (e1.classname == "door")
+					e1.velocity_z = e1.velocity_z + 400;
 		}
 	}
-	e1 = trace_ent;
 
 	traceline (p1 + f, p2 + f, FALSE, self);
 	if (trace_ent != e1 && trace_ent.takedamage)
 	{
+		e2 = trace_ent;
 		LightningHit (from, damage);
 	}
-	e2 = trace_ent;
 
 	traceline (p1 - f, p2 - f, FALSE, self);
 	if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage)
