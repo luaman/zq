@@ -25,11 +25,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 
 
-void SCR_RSShot_f (void);
 void CL_ProcessServerInfo (void);
 void SV_Serverinfo_f (void);
 void Key_WriteBindings (FILE *f);
 void S_StopAllSounds (qboolean clear);
+
+void CL_RSShot (void);
+void SCR_RSShot (void);
+cvar_t cl_allowRSShot = {"scr_allowsnap", "1"};
+
 
 /*
 ===================
@@ -72,7 +76,7 @@ void CL_ForwardToServer_f (void)
 	}
 
 	if (Q_stricmp(Cmd_Argv(1), "snap") == 0) {
-		SCR_RSShot_f ();
+		CL_RSShot ();
 		return;
 	}
 	
@@ -84,6 +88,29 @@ void CL_ForwardToServer_f (void)
 		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 		SZ_Print (&cls.netchan.message, Cmd_Args());
 	}
+}
+
+
+//===========================================================================================
+
+void CL_RSShot (void)
+{
+	if (CL_IsUploading())
+		return; // already one pending
+
+	if (cls.state < ca_onserver)
+		return; // gotta be connected
+
+	if (!cl_allowRSShot.value) {
+		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+		SZ_Print (&cls.netchan.message, "snap\n");
+		Com_Printf ("Refusing remote screen shot request.\n");
+		return;
+	}
+
+	Com_Printf ("Remote screen shot requested.\n");
+
+	SCR_RSShot ();
 }
 
 /*
@@ -722,6 +749,8 @@ void CL_WriteConfig_f (void)
 
 void CL_InitCommands (void)
 {
+	Cvar_Register (&cl_allowRSShot);
+
 // general commands
 	Cmd_AddCommand ("cmd", CL_ForwardToServer_f);
 	Cmd_AddCommand ("download", CL_Download_f);
