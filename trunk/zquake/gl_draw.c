@@ -18,9 +18,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// draw.c -- this is the only file outside the refresh that touches the
-// vid buffer
-
 #include "quakedef.h"
 #include "version.h"
 
@@ -71,6 +68,8 @@ typedef struct
 	float	sl, tl, sh, th;
 } glpic_t;
 
+int GL_LoadPicTexture (qpic_t *pic, byte *data);
+
 byte		conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
 qpic_t		*conback = (qpic_t *)&conback_buffer;
 
@@ -115,7 +114,7 @@ void GL_Bind (int texnum)
 
   scrap allocation
 
-  Allocate all the little status bar obejcts into a single texture
+  Allocate all the little status bar objects into a single texture
   to crutch up stupid hardware / drivers
 
 =============================================================================
@@ -233,13 +232,8 @@ qpic_t *Draw_PicFromWad (char *name)
 		pic_texels += p->width*p->height;
 	}
 	else
-	{
-		gl->texnum = GL_LoadPicTexture (p);
-		gl->sl = 0;
-		gl->sh = 1;
-		gl->tl = 0;
-		gl->th = 1;
-	}
+		GL_LoadPicTexture (p, p->data);
+
 	return p;
 }
 
@@ -282,12 +276,7 @@ qpic_t	*Draw_CachePic (char *path)
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
 
-	gl = (glpic_t *)pic->pic.data;
-	gl->texnum = GL_LoadPicTexture (dat);
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
+	GL_LoadPicTexture (&pic->pic, dat->data);
 
 	return &pic->pic;
 }
@@ -1437,11 +1426,63 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 /*
 ================
 GL_LoadPicTexture
+
+NOTE: qpic_t must point to a buffer that will fit both
+qpic_t and appended glpic_t
+
+FIXME: this is messy
+Merge qpic_t and glpic_t into one struct (dpic_t)?
 ================
 */
-int GL_LoadPicTexture (qpic_t *pic)
+int GL_LoadPicTexture (qpic_t *pic, byte *data)
 {
-	return GL_LoadTexture ("", pic->width, pic->height, pic->data, false, true, false);
+	glpic_t	*gl;
+	int		glwidth, glheight;
+	int		i;
+
+	gl = (glpic_t *)pic->data;
+
+	for (glwidth = 1 ; glwidth < pic->width ; glwidth<<=1)
+		;
+	for (glheight = 1 ; glheight < pic->height ; glheight<<=1)
+		;
+
+	if (glwidth == pic->width && glheight == pic->height)
+	{
+		gl->texnum = GL_LoadTexture ("", glwidth, glheight, data,
+						false, true, false);
+		gl->sl = 0;
+		gl->sh = 1;
+		gl->tl = 0;
+		gl->th = 1;
+	}
+	else
+	{
+		byte *src, *dest;
+		byte *buf;
+
+		buf = Q_Malloc (glwidth*glheight);
+
+		memset (buf, 0, glwidth*glheight);
+		src = data;
+		dest = buf;
+		for (i=0 ; i<pic->height ; i++) {
+			memcpy (dest, src, pic->width);
+			src += pic->width;
+			dest += glwidth;
+		}
+
+		gl->texnum = GL_LoadTexture ("", glwidth, glheight, buf,
+						false, true, false);
+		gl->sl = 0;
+		gl->sh = (float)pic->width / glwidth;
+		gl->tl = 0;
+		gl->th = (float)pic->height / glheight;
+
+		free (buf);
+	}
+
+	return gl->texnum;
 }
 
 /****************************************/
