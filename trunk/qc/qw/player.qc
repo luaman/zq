@@ -297,7 +297,10 @@ void PainSound ()
 // slime pain sounds
 	if (self.watertype == CONTENT_SLIME)
 	{
-// FIX ME       put in some steam here
+                // player gulps bubbles when hurt in slime
+                if (self.waterlevel == 3)
+                    DeathBubbles(1);
+
 		if (random() > 0.5)
 			sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);
 		else
