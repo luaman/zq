@@ -175,8 +175,9 @@ void CL_ParseBeam (int type)
 	// an experimental protocol extension:
 	// TE_LIGHTNING1 with entity in -33..-1 range is a rail trail
 	if (type == 1 && (ent >= -33 && ent <= -1)) {
-		CL_RailTrail (start, end,
-			cl.players[-ent-2].name ? cl.players[-ent-2].railcolor : 208);
+		int color = (ent == -1) ? 208 :		// world
+			cl.players[-ent-2].name ? cl.players[-ent-2].railcolor : 208;	// player
+		CL_RailTrail (start, end, color);
 		return;
 	}
 
