@@ -263,7 +263,7 @@ void Cvar_Register (cvar_t *var)
 	if (old)
 	{
 		var->flags |= old->flags & ~CVAR_DYNAMIC;
-		Q_strncpyz (string, old->string, sizeof(string));
+		strlcpy (string, old->string, sizeof(string));
 		Cvar_Delete (old->name);
 		if (!(var->flags & CVAR_ROM))
 			var->string = Z_CopyString (string);

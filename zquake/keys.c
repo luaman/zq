@@ -258,7 +258,7 @@ static int	compl_len;
 static void FindCommonSubString (char *s)
 {
 	if (!compl_clen) {
-		Q_strncpyz (compl_common, s, sizeof(compl_common));
+		strlcpy (compl_common, s, sizeof(compl_common));
 		compl_clen = strlen (compl_common);
 	} else {
 		while (compl_clen > compl_len && Q_strnicmp(s, compl_common, compl_clen))
@@ -403,7 +403,7 @@ int FindBestNick (char *s) {
 
 	for (i = 0; i < MAX_CLIENTS; i++) {
 		if (cl.players[i].name[0]) {
-			Q_strncpyz(name, cl.players[i].name, sizeof(name));
+			strlcpy (name, cl.players[i].name, sizeof(name));
 			RemoveColors(name);
 			for (j = 0; j < strlen(name); j++)
 				name[j] = tolower(name[j]);
@@ -430,11 +430,11 @@ void CompleteName(void) {
     if (q - p <= 0)
         return;
 
-    Q_strncpyz(s, p, q - p + 1);
+    strlcpy (s, p, q - p + 1);
 
 	best = FindBestNick (s);
     if (best >= 0) {
-        Q_strncpyz(t, cl.players[best].name, sizeof(t));
+        strlcpy (t, cl.players[best].name, sizeof(t));
 		
 		for (i = 0; t[i]; i++) {
 			if ((127 & t[i]) == ' ') {

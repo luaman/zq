@@ -303,10 +303,10 @@ void MSG_ReadDeltaUsercmd (struct usercmd_s *from, struct usercmd_s *cmd, qboole
 
 int	Q_atoi (char *str);
 float Q_atof (char *str);
-char *Q_ftos (float value);		// removes trailing zeros
+char *Q_ftos (float value);		// removes trailing zero chars
 
-void Q_strncpyz (char *dest, char *src, size_t size);
-void Q_strncatz (char *dest, char *src, size_t size);
+size_t strlcpy (char *dst, const char *src, size_t size);
+size_t strlcat (char *dst, const char *src, size_t size);
 void Q_snprintfz (char *dest, size_t size, char *fmt, ...);
 
 int Com_HashKey (char *name);

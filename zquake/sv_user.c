@@ -729,7 +729,7 @@ void Cmd_Download_f (void)
 	extern cvar_t	allow_download_gfx;
 	extern cvar_t	allow_download_other;
 
-	Q_strncpyz (name, Cmd_Argv(1), sizeof(name));
+	strlcpy (name, Cmd_Argv(1), sizeof(name));
 
 	if (!allow_download.value || strstr(name, "..") || name[0] == '.' || IS_SLASH(name[0]))
 		goto deny_download;
@@ -822,7 +822,7 @@ void SV_Say (qboolean team)
 		return;
 
 	if (team)
-		Q_strncpyz (t1, Info_ValueForKey (sv_client->userinfo, "team"), sizeof(t1));
+		strlcpy (t1, Info_ValueForKey (sv_client->userinfo, "team"), sizeof(t1));
 
 	if (sv_client->spectator && (!sv_spectalk.value || team))
 		sprintf (text, "[SPEC] %s: ", sv_client->name);
@@ -1114,7 +1114,7 @@ void Cmd_SetInfo_f (void)
 
 	Info_SetValueForKey (sv_client->userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
 // name is extracted below in ExtractFromUserInfo
-//	Q_strncpyz (sv_client->name, Info_ValueForKey (sv_client->userinfo, "name")
+//	strlcpy (sv_client->name, Info_ValueForKey (sv_client->userinfo, "name")
 //		, sizeof(sv_client->name));
 //	SV_FullClientUpdate (sv_client, &sv.reliable_datagram);
 //	sv_client->sendinfo = true;

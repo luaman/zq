@@ -154,12 +154,12 @@ static char	macro_buf[MAX_MACRO_VALUE] = "";
 
 // buffer-size-safe helper functions
 void MacroBuf_strcat (char *str) {
-	Q_strncatz (macro_buf, str, sizeof(macro_buf));
+	strlcat (macro_buf, str, sizeof(macro_buf));
 }
 void MacroBuf_strcat_with_separator (char *str) {
 	if (macro_buf[0])
-		Q_strncatz (macro_buf, "/", sizeof(macro_buf));
-	Q_strncatz (macro_buf, str, sizeof(macro_buf));
+		strlcat (macro_buf, "/", sizeof(macro_buf));
+	strlcat (macro_buf, str, sizeof(macro_buf));
 }
 
 
@@ -254,7 +254,7 @@ char *Macro_Weapons (void) {
 	if (cl.stats[STAT_ITEMS] & IT_AXE)
 		MacroBuf_strcat_with_separator ("axe");
 //	if (!macro_buf[0])	
-//		Q_strncpyz(macro_buf, tp_name_none.string, sizeof(macro_buf));
+//		strlcpy(macro_buf, tp_name_none.string, sizeof(macro_buf));
 
 	return macro_buf;
 }
@@ -452,7 +452,7 @@ char *Macro_Date (void)
 char *Macro_Took (void)
 {
 	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
-		Q_strncpyz (macro_buf, tp_name_nothing.string, sizeof(macro_buf));
+		strlcpy (macro_buf, tp_name_nothing.string, sizeof(macro_buf));
 	else
 		strcpy (macro_buf, vars.tookname);
 	return macro_buf;
@@ -462,7 +462,7 @@ char *Macro_Took (void)
 char *Macro_TookLoc (void)
 {
 	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
-		Q_strncpyz (macro_buf, tp_name_someplace.string, sizeof(macro_buf));
+		strlcpy (macro_buf, tp_name_someplace.string, sizeof(macro_buf));
 	else
 		strcpy (macro_buf, vars.tookloc);
 	return macro_buf;
@@ -475,7 +475,7 @@ char *Macro_TookAtLoc (void)
 	if (!vars.tooktime || cls.realtime > vars.tooktime + 20)
 		strncpy (macro_buf, tp_name_nothing.string, sizeof(macro_buf)-1);
 	else {
-		Q_strncpyz (macro_buf, va("%s %s %s", vars.tookname,
+		strlcpy (macro_buf, va("%s %s %s", vars.tookname,
 			tp_name_at.string, vars.tookloc), sizeof(macro_buf));
 	}
 	return macro_buf;
@@ -497,7 +497,7 @@ char *Macro_PointLocation (void)
 	if (vars.pointloc[0])
 		return vars.pointloc;
 	else {
-		Q_strncpyz (macro_buf, tp_name_someplace.string, sizeof(macro_buf));
+		strlcpy (macro_buf, tp_name_someplace.string, sizeof(macro_buf));
 		return macro_buf;
 	}
 }
@@ -2107,13 +2107,13 @@ ok:
 		} else
 			p = bestitem->cvar->string;
 
-		Q_strncpyz (vars.pointname, p, sizeof(vars.pointname));
-		Q_strncpyz (vars.pointloc, TP_LocationName (bestent->origin), sizeof(vars.pointloc));
+		strlcpy (vars.pointname, p, sizeof(vars.pointname));
+		strlcpy (vars.pointloc, TP_LocationName (bestent->origin), sizeof(vars.pointloc));
 		VectorCopy (bestent->origin, vars.pointorg);
 	}
 	else {
 nothing:
-		Q_strncpyz (vars.pointname, tp_name_nothing.string, sizeof(vars.pointname));
+		strlcpy (vars.pointname, tp_name_nothing.string, sizeof(vars.pointname));
 		vars.pointloc[0] = 0;
 	}
 
@@ -2224,7 +2224,7 @@ qboolean TP_CheckSoundTrigger (char *str)
 				if (length >= MAX_QPATH)
 					break;
 
-				Q_strncpyz (soundname, str + start, length + 1);
+				strlcpy (soundname, str + start, length + 1);
 				if (strstr(soundname, ".."))
 					break;	// no thank you
 
@@ -2344,7 +2344,7 @@ void TP_MsgFilter_f (void)
 			Com_Printf ("A filter may not contain spaces\n");
 			return;
 		}
-		Q_strncpyz (filter_strings[num_filters], s+1, sizeof(filter_strings[0]));
+		strlcpy (filter_strings[num_filters], s+1, sizeof(filter_strings[0]));
 		num_filters++;
 		if (num_filters >= 8)
 			break;

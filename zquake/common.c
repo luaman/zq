@@ -250,17 +250,57 @@ char *Q_ftos (float value)
 }
 
 
-void Q_strncpyz (char *dest, char *src, size_t size)
+#ifndef HAVE_STRLCPY
+size_t strlcpy (char *dst, const char *src, size_t size)
 {
-	strncpy (dest, src, size-1);
-	dest[size-1] = 0;
-}
+	int len = strlen (src);
 
-void Q_strncatz (char *dest, char *src, size_t size)
-{
-	strncat (dest, src, size-1);
-	dest[size-1] = 0;
+	if (len < size) {
+		// it'll fit
+		memcpy (dst, src, len + 1);
+		return len;
+	}
+
+	if (size == 0)
+		return len;
+
+	assert (size >= 0);		// if a negative size was passed, then we're fucked
+
+	memcpy (dst, src, size - 1);
+	dst[size - 1] = 0;
+
+	return len;
 }
+#endif
+
+#ifndef HAVE_STRLCAT
+size_t strlcat (char *dst, const char *src, size_t size)
+{
+	int dstlen = strlen(dst);
+	int srclen = strlen(src);
+	int len = dstlen + srclen;
+
+	if (len < size) {
+		// it'll fit
+		memcpy (dst + dstlen, src, srclen + 1);
+		return len;
+	}
+
+	if (dstlen >= size - 1)
+		return srclen + size;
+
+	if (size == 0)
+		return srclen;
+
+	assert (size >= 0);		// if a negative size was passed, then we're fucked
+
+	memcpy (dst + dstlen, src, size - 1 - dstlen);
+	dst[size - 1] = 0;
+
+	return len;
+}
+#endif
+
 
 void Q_snprintfz (char *dest, size_t size, char *fmt, ...)
 {
@@ -515,7 +555,7 @@ void COM_DefaultExtension (char *path, char *extension)
 		src--;
 	}
 
-	Q_strncatz (path, extension, MAX_OSPATH);
+	strlcat (path, extension, MAX_OSPATH);
 }
 
 /*
@@ -535,7 +575,7 @@ void COM_ForceExtension (char *path, char *extension)
 	if (src >= path && !strcmp(src, extension))
 		return;
 
-	Q_strncatz (path, extension, MAX_OSPATH);
+	strlcat (path, extension, MAX_OSPATH);
 }
 
 //============================================================================
@@ -1280,7 +1320,7 @@ void FS_SetGamedir (char *dir)
 
 	if (!strcmp(com_gamedirfile, dir))
 		return;		// still the same
-	Q_strncpyz (com_gamedirfile, dir, sizeof(com_gamedirfile));
+	strlcpy (com_gamedirfile, dir, sizeof(com_gamedirfile));
 
 	//
 	// free up any current game dir info
@@ -1353,7 +1393,7 @@ void FS_InitFilesystem (void)
 //
 	i = COM_CheckParm ("-basedir");
 	if (i && i < com_argc-1)
-		Q_strncpyz (com_basedir, com_argv[i+1], sizeof(com_basedir));
+		strlcpy (com_basedir, com_argv[i+1], sizeof(com_basedir));
 	else
 		strcpy (com_basedir, ".");
 

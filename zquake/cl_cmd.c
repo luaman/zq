@@ -151,7 +151,7 @@ void CL_Say (qboolean team)
 	SZ_Print (&cls.netchan.message, team ? "say_team " : "say ");
 
 	s = TP_ParseMacroString (Cmd_Args());
-	Q_strncpyz (text, TP_ParseFunChars (s, true), sizeof(text));
+	strlcpy (text, TP_ParseFunChars (s, true), sizeof(text));
 
 	sendtext[0] = 0;
 	if (team && !cl.spectator && cl_fakename.string[0] &&
@@ -162,7 +162,7 @@ void CL_Say (qboolean team)
 		Q_snprintfz (sendtext, sizeof(sendtext), "\x0d%s: ", TP_ParseFunChars(buf, true));
 	}
 
-	Q_strncatz (sendtext, text, sizeof(sendtext));
+	strlcat (sendtext, text, sizeof(sendtext));
 
 	if (sendtext[0] < 32)
 		SZ_Print (&cls.netchan.message, "\"");	// add quotes so that old servers parse the message correctly
@@ -378,7 +378,7 @@ void CL_Rcon_f (void)
 		strcat (message, " ");
 	}
 
-	Q_strncatz (message, Cmd_MakeArgs(1), sizeof(message));
+	strlcat (message, Cmd_MakeArgs(1), sizeof(message));
 
 	if (cls.state >= ca_connected)
 		to = cls.netchan.remote_address;
@@ -748,7 +748,7 @@ void CL_WriteConfig_f (void)
 		return;
 	}
 
-	Q_strncpyz (name, Cmd_Argv(1), sizeof(name));
+	strlcpy (name, Cmd_Argv(1), sizeof(name));
 	COM_ForceExtension (name, ".cfg");
 
 	Com_Printf ("Writing %s\n", name);
@@ -996,7 +996,7 @@ void CL_FullServerinfo_f (void)
 	if (Cmd_Argc() != 2)
 		return;
 
-	Q_strncpyz (cl.serverinfo, Cmd_Argv(1), sizeof(cl.serverinfo));
+	strlcpy (cl.serverinfo, Cmd_Argv(1), sizeof(cl.serverinfo));
 
 	p = Info_ValueForKey (cl.serverinfo, "*cheats");
 	if (*p) {

@@ -1642,7 +1642,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 		Sys_Error ("GL_LoadTexture: numgltextures == MAX_GLTEXTURES");
 	numgltextures++;
 
-	Q_strncpyz (glt->identifier, identifier, sizeof(glt->identifier));
+	strlcpy (glt->identifier, identifier, sizeof(glt->identifier));
 	glt->texnum = texture_extension_number;
 	texture_extension_number++;
 
@@ -1672,7 +1672,7 @@ int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data)
 	int		i;
 	char	fullname[64] = "pic:";
 
-	Q_strncpyz (fullname + 4, name, sizeof(fullname)-4);
+	strlcpy (fullname + 4, name, sizeof(fullname)-4);
 
 	for (glwidth = 1 ; glwidth < pic->width ; glwidth<<=1)
 		;

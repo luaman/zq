@@ -354,7 +354,7 @@ void Cmd_Exec_f (void)
 		return;
 	}
 
-	Q_strncpyz (name, Cmd_Argv(1), sizeof(name) - 4);
+	strlcpy (name, Cmd_Argv(1), sizeof(name) - 4);
 	mark = Hunk_LowMark ();
 	f = (char *)FS_LoadHunkFile (name);
 	if (!f)
@@ -726,7 +726,7 @@ match:
 	// build new command string
 	strcpy (text, cmd->newname);
 	strcat (text, " ");
-	Q_strncatz (text, Cmd_Args(), sizeof(text));
+	strlcat (text, Cmd_Args(), sizeof(text));
 
 	assert (!recursive);
 	recursive = true;

@@ -579,7 +579,7 @@ void Con_DrawConsole (int lines)
 		i = con_linewidth/3;
 		if (strlen(text) > i) {
 			y = x - i - 11;
-			Q_strncpyz (dlbar, text, i+1);
+			strlcpy (dlbar, text, i+1);
 			strcat(dlbar, "...");
 		} else
 			strcpy(dlbar, text);

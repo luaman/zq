@@ -1376,7 +1376,7 @@ void IN_LoadKeys_f (void)
 		return;
 	}
 
-	Q_strncpyz (filename, Cmd_Argv(1), sizeof(filename) - 5);
+	strlcpy (filename, Cmd_Argv(1), sizeof(filename) - 5);
 	COM_DefaultExtension (filename, ".kmap");
 	data = FS_LoadTempFile (filename);
 	if (!data)
@@ -1404,7 +1404,7 @@ void IN_LoadKeys_f (void)
 
 		if ((!strcmp(Cmd_Argv(0), "keymap_name") || !strcmp(Cmd_Argv(0), "layout")) && Cmd_Argc() > 1)
 		{
-			Q_strncpyz (layout, Cmd_Argv(1), sizeof(layout));
+			strlcpy (layout, Cmd_Argv(1), sizeof(layout));
 			continue;
 		}
 
