@@ -195,6 +195,9 @@ void CL_PredictMove (void)
 	if (cls.netchan.outgoing_sequence - cl.validsequence >= UPDATE_BACKUP-1)
 		return;
 
+	if (cam_track && !cls.demoplayback /* FIXME */)
+		return;
+
 	VectorCopy (cl.viewangles, cl.simangles);
 
 	// this is the last valid frame received from the server

@@ -1043,8 +1043,11 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 	else
 		player->spectator = false;
 
-	if (slot == cl.playernum && player->name[0])
+	if (slot == cl.playernum && player->name[0]) {
+		if (cl.spectator && !player->spectator)
+			Cam_Reset ();	// switching to player mode
 		cl.spectator = player->spectator;
+	}
 
 	Sbar_Changed ();
 	if (slot == cl.playernum && (cl_teamtopcolor >= 0 || cl_enemytopcolor >= 0) &&

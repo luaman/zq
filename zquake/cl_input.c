@@ -536,10 +536,6 @@ void CL_SendCmd (void)
 	// allow mice or other external controllers to add to the move
 	IN_Move (cmd);
 
-	// if we are spectator, try autocam
-	if (cl.spectator)
-		Cam_Track(cmd);
-
 	CL_FinishMove(cmd);
 
 	Cam_FinishMove(cmd);

@@ -531,15 +531,13 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u);
 //
 // cl_cam.c
 //
-#define CAM_NONE	0
-#define CAM_TRACK	1
-
-extern int	autocam;
-extern int	spec_track; // player# of who we are tracking
+extern qboolean		cam_track;
+extern int			cam_target;		// playernum of who we're tracking or wish to track
+extern qboolean		cam_locked;
 
 qboolean Cam_DrawViewModel (void);
 qboolean Cam_DrawPlayer (int playernum);
-void Cam_Track (usercmd_t *cmd);
+int Cam_TargetCount (void);
 void Cam_FinishMove (usercmd_t *cmd);
 void Cam_Reset (void);
 void Cam_SetViewPlayer (void);
