@@ -80,7 +80,6 @@ cvar_t	tp_need_rockets = {"tp_need_rockets", "5"};
 cvar_t	tp_need_cells = {"tp_need_cells", "20"};
 cvar_t	tp_need_nails = {"tp_need_nails", "40"};
 cvar_t	tp_need_shells = {"tp_need_shells", "10"};
-cvar_t	tp_took_pointed = {"tp_took_pointed", "1"};
 
 void TP_FindModelNumbers (void);
 void TP_FindPoint (void);
@@ -1482,7 +1481,7 @@ int TP_CategorizeMessage (char *s, int *offset)
 // symbolic names used in tp_took, tp_pickup, tp_point commands
 char *pknames[] = {"quad", "pent", "ring", "suit", "ra", "ya",	"ga",
 "mh", "health", "lg", "rl", "gl", "sng", "ng", "ssg", "pack",
-"cells", "rockets", "nails", "shells", "flag"};
+"cells", "rockets", "nails", "shells", "flag", "pointed"};
 
 #define it_quad		(1<<0)
 #define it_pent		(1<<1)
@@ -1505,7 +1504,8 @@ char *pknames[] = {"quad", "pent", "ring", "suit", "ra", "ya",	"ga",
 #define it_nails	(1<<18)
 #define it_shells	(1<<19)
 #define it_flag		(1<<20)
-#define NUM_ITEMFLAGS 21
+#define it_pointed	(1<<21)		// only valid for tp_took
+#define NUM_ITEMFLAGS 22
 
 #define it_powerups	(it_quad|it_pent|it_ring)
 #define it_weapons	(it_lg|it_rl|it_gl|it_sng|it_ng|it_ssg)
@@ -1515,7 +1515,7 @@ char *pknames[] = {"quad", "pent", "ring", "suit", "ra", "ya",	"ga",
 #define default_pkflags (it_powerups|it_suit|it_armor|it_weapons|it_mh| \
 				it_rockets|it_pack|it_flag)
 
-#define default_tookflags (it_powerups|it_ra|it_ya|it_lg|it_rl|it_mh|it_flag)
+#define default_tookflags (it_powerups|it_ra|it_ya|it_lg|it_rl|it_mh|it_flag|it_pointed)
 
 #define default_pointflags (it_powerups|it_suit|it_armor|it_mh| \
 				it_lg|it_rl|it_gl|it_sng|it_rockets|it_pack|it_flag)
@@ -1565,6 +1565,8 @@ static void FlagCommand (int *flags, int defaultflags)
 
 		flag = 0;
 		for (j=0 ; j<NUM_ITEMFLAGS ; j++) {
+			if ((1<<j) == it_pointed && defaultflags != default_tookflags /* FIXME FIXME */)
+				continue;
 			if (!Q_strnicmp (p, pknames[j], 3)) {
 				flag = 1<<j;
 				break;
@@ -1582,8 +1584,11 @@ static void FlagCommand (int *flags, int defaultflags)
 				flag = it_cells|it_rockets|it_nails|it_shells;
 			else if (!Q_stricmp (p, "default"))
 				flag = defaultflags;
-			else if (!Q_stricmp (p, "all"))
+			else if (!Q_stricmp (p, "all")){
 				flag = (1<<NUM_ITEMFLAGS)-1;
+				if (defaultflags != default_tookflags /* FIXME FIXME */)
+					flag &= ~it_pointed;
+			}
 		}
 
 		if (removeflag)
@@ -1856,7 +1861,7 @@ static void ExecTookTrigger (char *s, int flag, vec3_t org)
 	report = (tookflags & flag) ? true : false;
 
 	if (!report) {
-		if (tp_took_pointed.value && !strcmp(vars.pointname, s)) {
+		if ((tookflags & it_pointed) && !strcmp(vars.pointname, s)) {
 			vec3_t	dist;
 			VectorSubtract (org, vars.pointorg, dist);
 			//Com_DPrintf ("dist: %f\n", VectorLength(dist));
@@ -2393,7 +2398,6 @@ void TP_Init (void)
 	Cvar_Register (&tp_need_cells);
 	Cvar_Register (&tp_need_nails);
 	Cvar_Register (&tp_need_shells);
-	Cvar_Register (&tp_took_pointed);
 
 	Cmd_AddCommand ("macrolist", TP_MacroList_f);
 	Cmd_AddCommand ("loadloc", TP_LoadLocFile_f);
