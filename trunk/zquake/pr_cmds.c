@@ -228,8 +228,9 @@ void PF_sprint (void)
 	int			entnum;
 	int			level;
 	char		*buf, *str;
-	int			buflen, newlen;
+	int			buflen, len;
 	int			i;
+	qboolean	flush = false, flushboth = false;
 	
 	entnum = G_EDICTNUM(OFS_PARM0);
 	level = G_FLOAT(OFS_PARM1);
@@ -246,24 +247,31 @@ void PF_sprint (void)
 	
 	buf = cl->sprint_buf;
 	buflen = strlen (buf);
-	newlen = strlen (str);
+	len = strlen (str);
 
-	if (buflen + newlen >= sizeof(cl->sprint_buf) || (buflen && level != cl->sprint_level)) {
-		// flush the buffer because there's no space left
-		// (or sprint level has changed)
-		if (buflen) {
-			SV_ClientPrintf (cl, cl->sprint_level, "%s", buf);
-			buf[0] = 0;
-		}
-		if (newlen >= sizeof(cl->sprint_buf)) {
-			SV_ClientPrintf (cl, cl->sprint_level, "%s", buf);
-			return;
-		}
+	// flush the buffer if there's not enough space
+	// also flush if sprint level has changed
+	// or if str is a colored message
+	if (len >= sizeof(cl->sprint_buf)
+		|| str[0] == 1 || str[0] == 2)		// a colored message
+		flushboth = true;
+	else if (buflen + len >= sizeof(cl->sprint_buf)
+		|| level != cl->sprint_level)
+		flush = true;
+
+	if ((flush || flushboth) && buflen) {
+		SV_ClientPrintf (cl, cl->sprint_level, "%s", buf);
+		buf[0] = 0;
+	}
+
+	if (flushboth) {
+		SV_ClientPrintf (cl, level, "%s", str);
+		return;
 	}
 
 	strcat (buf, str);
 	cl->sprint_level = level;
-	buflen += newlen;
+	buflen += len;
 
 	// flush complete (\n terminated) strings
 	for (i=buflen-1 ; i>=0 ; i--) {
