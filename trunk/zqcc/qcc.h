@@ -252,8 +252,9 @@ struct def_t
 	char		*name;
 	def_t		*next;
 	gofs_t		ofs;
-	bool		isParm;			// the def is a function parameter if true
-	def_t		*scope;			// function the var was defined in, or NULL
+	bool		isParm;			// if true, the def is a function parameter
+	def_t		*scope;			// function the def was defined in, or NULL
+	def_t		*visscope;		// scope the def is visible in
 	bool		initialized;	// true when a declaration included "= immediate"
 };
 
@@ -381,7 +382,7 @@ extern int		pr_error_count;
 
 void PR_NewLine (void);
 def_t *PR_FindDef (char *name, def_t *scope);
-def_t *PR_GetDef (type_t *type, char *name, def_t *scope, bool isParm = false);
+def_t *PR_GetDef (type_t *type, char *name, def_t *scope, def_t *visscope, bool isParm = false);
 
 void PR_PrintDefs (void);
 
