@@ -1773,7 +1773,12 @@ void CL_ParseServerMessage (void)
 			break;
 			
 		case svc_centerprint:
-			SCR_CenterPrint (MSG_ReadString ());
+			{	char *s = MSG_ReadString();
+				SCR_CenterPrint (s);
+#ifdef AGRIP
+				Com_Printf ("%s\n", s);
+#endif
+			}
 			break;
 			
 		case svc_stufftext:
