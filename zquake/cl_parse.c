@@ -569,7 +569,7 @@ void CL_ParseServerData (void)
 	
 	Com_DPrintf ("Serverdata packet received.\n");
 //
-// wipe the client_state_t struct
+// wipe the clientState_t struct
 //
 	CL_ClearState ();
 	memset (&cshift_empty, 0, sizeof(cshift_empty));	// Tonik
