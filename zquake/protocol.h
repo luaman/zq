@@ -162,6 +162,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	PF_DEAD			(1<<9)		// don't block movement any more
 #define	PF_GIB			(1<<10)		// offset the view height differently
 #define	PF_NOGRAV		(1<<11)		// don't apply gravity for prediction
+#define	PF_JUMPRELEASED	(1<<12)		// for jump debouncing
 
 //==============================================
 
