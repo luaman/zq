@@ -330,6 +330,8 @@ void CL_ParsePacketEntities (qboolean delta)
 
 		SCR_EndLoadingPlaque ();
 	}
+
+	cl_entframecount++;
 }
 
 
@@ -1076,8 +1078,6 @@ void CL_EmitEntities (void)
 		return;
 	if (!cl.validsequence)
 		return;
-
-	cl_entframecount++;
 
 	V_ClearScene ();
 
