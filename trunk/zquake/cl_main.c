@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_main.c  -- client main loop
 
-#include <setjmp.h>
 #include "quakedef.h"
 #include "winquake.h"
 #include "cdaudio.h"
@@ -131,8 +130,6 @@ cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
 cvar_t	show_fps = {"show_fps","0"};			// set for running times
 
 int			fps_count;
-
-jmp_buf 	host_abort;
 
 float	server_version = 0;	// version of server we connected to
 
@@ -787,62 +784,6 @@ void CL_Init (void)
 
 
 /*
-================
-Host_EndGame
-================
-*/
-void Host_EndGame (char *message, ...)
-{
-	va_list		argptr;
-	char		string[1024];
-	
-	va_start (argptr,message);
-	vsprintf (string,message,argptr);
-	va_end (argptr);
-	Com_DPrintf ("Host_EndGame: %s\n",string);
-	
-	CL_Disconnect ();
-
-	longjmp (host_abort, 1);
-}
-
-/*
-================
-Host_Error
-
-This shuts down both the client and server
-================
-*/
-void Host_Error (char *error, ...)
-{
-	va_list		argptr;
-	char		string[1024];
-	static	qboolean inerror = false;
-	
-	if (inerror)
-		Sys_Error ("Host_Error: recursively entered");
-	inerror = true;
-	
-	va_start (argptr,error);
-	vsprintf (string,error,argptr);
-	va_end (argptr);
-	Com_Printf ("\n===========================\n");
-	Com_Printf ("Host_Error: %s\n",string);
-	Com_Printf ("===========================\n\n");
-	
-	CL_Disconnect ();
-	cls.demonum = -1;
-
-	if (!host_initialized)
-		Sys_Error ("Host_Error: %s", string);
-
-	inerror = false;
-
-	longjmp (host_abort, 1);
-}
-
-
-/*
 ===============
 CL_WriteConfiguration
 
@@ -883,12 +824,12 @@ void Host_ConnectLocal ()
 
 /*
 ===================
-Host_FilterTime
+CL_FilterTime
 
 Returns false if the time is too short to run a frame
 ===================
 */
-qboolean Host_FilterTime (void)
+qboolean CL_FilterTime (void)
 {
 	float fps, fpscap;
 
@@ -925,21 +866,17 @@ qboolean Host_FilterTime (void)
 
 /*
 ==================
-Host_Frame
+CL_Frame
 
-Runs all active servers
 ==================
 */
-void Host_Frame (double time)
+void CL_Frame (double time)
 {
 	static double		time1 = 0;
 	static double		time2 = 0;
 	static double		time3 = 0;
 	int			pass1, pass2, pass3;
 	float scale;
-
-	if (setjmp (host_abort) )
-		return;			// something bad happened, or the server disconnected
 
 	// decide the simulation time
 
@@ -961,7 +898,7 @@ void Host_Frame (double time)
 	if (oldrealtime > realtime)
 		oldrealtime = 0;
 
-	if (!Host_FilterTime())
+	if (!CL_FilterTime())
 		return;			// framerate is too high
 
 	cls.frametime = realtime - oldrealtime;
