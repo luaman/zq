@@ -368,6 +368,11 @@ void() tdeath_touch =
 			return;
 		}
 		
+		if (self.owner.classname != "player")
+		{	// monsters explode themselves
+			T_Damage (self.owner, self, self, 50000);
+			return;
+		}
 	}
 
 	if (other.health)
