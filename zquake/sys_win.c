@@ -41,7 +41,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 qbool		ActiveApp, Minimized;
 qbool		WinNT;
 
+#ifndef SERVERONLY
 static HANDLE	qwclsemaphore;
+#endif
 static HANDLE	tevent;
 static HANDLE	hinput, houtput;
 
