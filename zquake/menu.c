@@ -27,6 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "server.h"
 #endif
 
+#ifndef _WIN32
+#include <dirent.h>
+#include <sys/stat.h>
+#endif
+
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
@@ -1504,7 +1509,7 @@ typedef struct direntry_s {
 	int		size;
 } direntry_t;
 
-direntry_t	dir[MAX_DEMO_FILES] = {0};
+direntry_t	dir[MAX_DEMO_FILES] = {{0}};
 int			numfiles;
 char		demodir[MAX_QPATH] = "/qw";
 char		prevdir[MAX_QPATH] = "";
@@ -1512,9 +1517,10 @@ char		prevdir[MAX_QPATH] = "";
 int	demo_cursor = 0;
 int	demo_base = 0;
 
+#ifdef _WIN32
+
 static void ReadDir (void)
 {
-#ifdef _WIN32		// FIXME
 	HANDLE	h;
 	WIN32_FIND_DATA fd;
 	int		i;
@@ -1607,17 +1613,115 @@ static void ReadDir (void)
 		dir[0].type = 3;
 		numfiles = 1;
 	}
-#endif	// _WIN32
 }
+
+#else
+
+static void ReadDir (void)
+{
+	DIR				*d;
+	struct dirent	*dstruct;
+	struct stat		fileinfo;
+	int		i;
+
+	numfiles = 0;
+	demo_base = 0;
+	demo_cursor = 0;
+
+	for (i=0 ; i<MAX_DEMO_FILES ; i++)
+		if (dir[i].name) {
+			free(dir[i].name);
+			dir[i].name = NULL;
+		}
+
+	if (demodir[0]) {
+		dir[0].name = strdup ("..");
+		dir[0].type = 2;
+		numfiles = 1;
+	}
+
+	if (!(d = opendir(va("%s%s", com_basedir, demodir)))) {
+		dir[numfiles].name = strdup ("Error reading directory");
+		dir[numfiles].type = 3;
+		numfiles++;
+		return;
+	}
+
+	dstruct = readdir (d);
+	do {
+		int type, size;
+		int pos;
+		char name[MAX_DEMO_NAME];
+
+		stat (va("%s/%s/%s", com_basedir, demodir, dstruct->d_name), &fileinfo);
+
+		if (S_ISDIR( fileinfo.st_mode )) {
+			if (!strcmp(dstruct->d_name, ".") || !strcmp(dstruct->d_name, ".."))
+				continue;
+			type = 1;
+			size = 0;
+		}
+		else
+		{
+			i = strlen(dstruct->d_name);
+			if (i < 5 || (Q_strcasecmp(dstruct->d_name+i-4, ".qwd")
+				/* && Q_strcasecmp(dstruct->d_name+i-4, ".qwz")*/ ))
+				continue;
+			type = 0;
+			size = fileinfo.st_size;
+		}
+
+		Q_strncpyz (name, dstruct->d_name, MAX_DEMO_NAME);
+
+		// inclusion sort
+		for (i=0 ; i<numfiles ; i++)
+		{
+			if (type < dir[i].type)
+			    continue;
+			if (type > dir[i].type)
+				break;
+			if (strcmp (name, dir[i].name) < 0)
+				break;
+		}
+		pos = i;
+		numfiles++;
+		for (i=numfiles-1 ; i>pos ; i--)
+			dir[i] = dir[i-1];
+		dir[i].name = strdup(name);
+		dir[i].type = type;
+		dir[i].size = size;
+		if (numfiles == MAX_DEMO_FILES)
+			break;
+	} while ((dstruct = readdir (d)));
+	closedir (d);
+
+	if (prevdir) {
+		for (i=0 ; i<numfiles ; i++) {
+			if (!strcmp (dir[i].name, prevdir)) {
+				demo_cursor = i;
+				if (demo_cursor >= MAXLINES) {
+					demo_base += demo_cursor - (MAXLINES-1);
+					demo_cursor = MAXLINES-1;
+				}
+				*prevdir = '\0';
+			}
+		}
+	}
+
+	if (!numfiles) {
+		dir[0].name = strdup("[ no files ]");
+		dir[0].type = 3;
+		numfiles = 1;
+	}
+}
+#endif	// !_WIN32
 
 void M_Menu_Demos_f (void)
 {
-#ifdef _WIN32
 	m_entersound = true;
 	m_state = m_demos;
 	key_dest = key_menu;
 	ReadDir ();
-#endif
 }
 
 static char *toyellow (char *s)
