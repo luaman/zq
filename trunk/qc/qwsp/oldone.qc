@@ -129,7 +129,12 @@ void finale_1 ()
 	entity	pl;
 	entity	timer;
 
-	intermission_exittime = time + 10000000;	// never allow exit
+// 1998-07-30 Shub kill count fix by Maddes  start
+        killed_monsters = killed_monsters + 1;
+        WriteByte (MSG_ALL, SVC_KILLEDMONSTER); // FIXME: reliable broadcast
+// 1998-07-30 Shub kill count fix by Maddes  end
+
+        intermission_exittime = time + 10000000;	// never allow exit
 	intermission_running = 1;
 
 	// find the intermission spot
