@@ -1215,9 +1215,9 @@ void CL_ProcessServerInfo (void)
 	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext"));
 
 	// Initialize cl.maxpitch & cl.minpitch
-	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "maxpitch") : NULL;
+	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "maxpitch") : "";
 	cl.maxpitch = *p ? Q_atof(p) : 80.0f;
-	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "minpitch") : NULL;
+	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "minpitch") : "";
 	cl.minpitch = *p ? Q_atof(p) : -70.0f;
 
 	// movement vars for prediction
