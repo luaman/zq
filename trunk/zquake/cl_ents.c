@@ -352,22 +352,7 @@ void CL_ParsePacketEntities (qbool delta)
 
 	// we can now render a frame
 	if (cls.state == ca_onserver)
-	{	
-		extern qbool host_skipframe;
-		
-		// first update is the final signon stage
-		cls.state = ca_active;
-		if (cls.demoplayback)
-			host_skipframe = true;
-
-		if (!cls.demoplayback)
-			VID_SetCaption (va(PROGRAM ": %s", cls.servername));
-
-		Con_ClearNotify ();
-		TP_ExecTrigger ("f_spawn");
-
-		SCR_EndLoadingPlaque ();
-	}
+		CL_Spawn();
 }
 
 
