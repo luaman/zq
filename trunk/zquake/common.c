@@ -998,11 +998,9 @@ void FS_SetGamedir (char *dir)
 		com_searchpaths = search;		
 	}
 
-breakOut:;
-	{
-		extern void R_FlushPics (void);
-		R_FlushPics ();
-	}
+breakOut:
+	// notify the client so that it reloads its data, etc
+	CL_GamedirChanged ();
 }
 
 /*
