@@ -67,7 +67,7 @@ void SV_New_f (void)
 		return;
 
 	sv_client->state = cs_connected;
-	sv_client->connection_started = realtime;
+	sv_client->connection_started = svs.realtime;
 
 	// send the info about the new client to all connected clients
 //	SV_FullClientUpdate (sv_client, &sv.reliable_datagram);
@@ -767,18 +767,18 @@ void SV_Say (qboolean team)
 	}
 
 	if (fp_messages) {
-		if (!sv.paused && realtime<sv_client->lockedtill) {
+		if (!sv.paused && svs.realtime < sv_client->lockedtill) {
 			SV_ClientPrintf(sv_client, PRINT_CHAT,
 				"You can't talk for %d more seconds\n", 
-					(int) (sv_client->lockedtill - realtime));
+					(int) (sv_client->lockedtill - svs.realtime));
 			return;
 		}
 		tmp = sv_client->whensaidhead - fp_messages + 1;
 		if (tmp < 0)
 			tmp = 10+tmp;
 		if (!sv.paused &&
-			sv_client->whensaid[tmp] && (realtime-sv_client->whensaid[tmp] < fp_persecond)) {
-			sv_client->lockedtill = realtime + fp_secondsdead;
+			sv_client->whensaid[tmp] && (svs.realtime - sv_client->whensaid[tmp] < fp_persecond)) {
+			sv_client->lockedtill = svs.realtime + fp_secondsdead;
 			if (sv_floodprotmsg.string[0])
 				SV_ClientPrintf(sv_client, PRINT_CHAT,
 					"FloodProt: %s\n", sv_floodprotmsg.string);
@@ -790,7 +790,7 @@ void SV_Say (qboolean team)
 		sv_client->whensaidhead++;
 		if (sv_client->whensaidhead > 9)
 			sv_client->whensaidhead = 0;
-		sv_client->whensaid[sv_client->whensaidhead] = realtime;
+		sv_client->whensaid[sv_client->whensaidhead] = svs.realtime;
 	}
 
 	p = Cmd_Args();
@@ -1686,7 +1686,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 
 	// calc ping time
 	frame = &cl->frames[cl->netchan.incoming_acknowledged & UPDATE_MASK];
-	frame->ping_time = realtime - frame->senttime;
+	frame->ping_time = svs.realtime - frame->senttime;
 
 	// make sure the reply sequence number matches the incoming
 	// sequence number 
@@ -1696,7 +1696,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 		cl->send_message = false;	// don't reply, sequences have slipped		
 
 	// save time for ping calculations
-	cl->frames[cl->netchan.outgoing_sequence & UPDATE_MASK].senttime = realtime;
+	cl->frames[cl->netchan.outgoing_sequence & UPDATE_MASK].senttime = svs.realtime;
 	cl->frames[cl->netchan.outgoing_sequence & UPDATE_MASK].ping_time = -1;
 
 	sv_client = cl;
@@ -1707,7 +1707,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 	
 	// mark time so clients will know how much to predict
 	// other players
- 	cl->cmdtime = realtime;
+ 	cl->cmdtime = svs.realtime;
 	cl->delta_sequence = -1;	// no delta unless requested
 	while (1)
 	{
