@@ -1224,6 +1224,7 @@ void M_Quit_Key (int key)
 #define	SINGLEPLAYER_ITEMS	3
 int	m_singleplayer_cursor;
 qboolean m_singleplayer_confirm;
+qboolean m_singleplayer_notavail;
 
 extern	cvar_t	maxclients;
 
@@ -1231,6 +1232,7 @@ void M_Menu_SinglePlayer_f (void)
 {
 	M_EnterMenu (m_singleplayer);
 	m_singleplayer_confirm = false;
+	m_singleplayer_notavail = false;
 }
 
 
@@ -1238,6 +1240,15 @@ void M_SinglePlayer_Draw (void)
 {
 	int		f;
 	mpic_t	*p;
+
+	if (m_singleplayer_notavail) {
+		p = Draw_CachePic ("gfx/ttl_sgl.lmp");
+		M_DrawPic ( (320-p->width)/2, 4, p);
+		M_DrawTextBox (60, 10*8, 24, 4);	
+		M_PrintWhite (80, 12*8, " Cannot start a game");
+		M_PrintWhite (80, 13*8, "spprogs.dat not found");
+		return;
+	}
 
 	if (m_singleplayer_confirm) {
 		M_PrintWhite (64, 11*8, "Are you sure you want to");
@@ -1254,6 +1265,17 @@ void M_SinglePlayer_Draw (void)
 	M_DrawTransPic (54, 32 + m_singleplayer_cursor * 20,Draw_CachePic( va("gfx/menudot%i.lmp", f+1 ) ) );
 }
 
+static void CheckSPGame (void)
+{
+	FILE	*f;
+
+	COM_FOpenFile ("spprogs.dat", &f);
+	if (f) {
+		fclose (f);
+		m_singleplayer_notavail = false;
+	} else
+		m_singleplayer_notavail = true;
+}
 
 static void StartNewGame (void)
 {
@@ -1261,17 +1283,27 @@ static void StartNewGame (void)
 	Cvar_Set (&maxclients, "1");
 //	Cvar_Set (&maxspectators, "0");
 	Cvar_Set (&teamplay, "0");
-	Cvar_Set (&timelimit, "0");	// FIXME
 	Cvar_Set (&deathmatch, "0");
 	Cvar_Set (&coop, "0");
 	if (sv.state != ss_dead)
 		Cbuf_AddText ("disconnect\n");
-	Cbuf_AddText ("gamedir single\n");	// FIXME
+//	Cbuf_AddText ("gamedir qw\n");
 	Cbuf_AddText ("map start\n");
 }
 
 void M_SinglePlayer_Key (int key)
 {
+	if (m_singleplayer_notavail) {
+		switch (key) {
+		case K_BACKSPACE:
+		case K_ESCAPE:
+		case K_ENTER:
+			m_singleplayer_notavail = false;
+			break;
+		}
+		return;
+	}
+
 	if (m_singleplayer_confirm) {
 		if (key == K_ESCAPE || key == 'n') {
 			m_singleplayer_confirm = false;
@@ -1318,6 +1350,11 @@ void M_SinglePlayer_Key (int key)
 		switch (m_singleplayer_cursor)
 		{
 		case 0:
+			CheckSPGame ();
+			if (m_singleplayer_notavail) {
+				m_entersound = true;
+				return;
+			}
 			if (sv.state != ss_dead) {
 				// bring up confirmation dialog
 				m_singleplayer_confirm = true;
@@ -2237,8 +2274,6 @@ void M_NetStart_Change (int dir)
 
 void M_GameOptions_Key (int key)
 {
-	char *p;
-
 	switch (key)
 	{
 	case K_BACKSPACE:
@@ -2318,20 +2353,8 @@ void M_GameOptions_Key (int key)
 			Cvar_Set (&maxclients, va("%i", _maxclients));
 			Cvar_Set (&maxspectators, va("%i", _maxspectators));
 
-			// FIXME...
-			if (_deathmatch)
-			{
-				p = Info_ValueForKey (svs.info, "*gamedir");
-				if (p && !strcmp(p, "single"))
-				{
-					Cbuf_AddText ("gamedir qw\n");
-				}
-			}
-			else
-				Cbuf_AddText ("gamedir single\n");
-
+			// Cbuf_AddText ("gamedir qw\n");
 			Cbuf_AddText ( va ("map %s\n", levels[episodes[startepisode].firstLevel + startlevel].name) );
-
 			return;
 		}
 
