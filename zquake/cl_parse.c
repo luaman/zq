@@ -1613,7 +1613,9 @@ void CL_MuzzleFlash (void)
 	}
 
 
-	if (i - 1 == cl.viewplayernum)
+	//fuh : cl.playernum is used here instead of cl.viewplayernum because
+	//fuh : Cam_SetViewPlayer() is not called until after CL_ReadPackets().
+	if (i - 1 == cl.playernum)
 	{
 		if (cl_muzzleflash.value == 2)
 			return;
