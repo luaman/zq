@@ -824,11 +824,9 @@ void CL_Init (void)
 #endif
 
 
-	SCR_Init ();
 	R_Init ();
 
 	S_Init ();
-
 	CDAudio_Init ();
 
 	CL_InitLocal ();
@@ -838,8 +836,8 @@ void CL_Init (void)
 	CL_InitPrediction ();
 	CL_InitCam ();
 	CL_InitParticles ();
-
 	TP_Init ();
+	SCR_Init ();
 	Sbar_Init ();
 	M_Init ();	
 
