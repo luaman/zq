@@ -359,6 +359,60 @@ cvar_t *Cvar_Create (char *name, char *string, int cvarflags)
 	return v;
 }
 
+/*
+===========
+Cvar_Delete
+===========
+returns true if the cvar was found (and deleted)
+*/
+qboolean Cvar_Delete (char *name)
+{
+	cvar_t	*var, *prev;
+	int		key;
+
+	key = Key (name);
+
+	prev = NULL;
+	for (var = cvar_hash[key] ; var ; var=var->hash_next)
+	{
+		if (!Q_strcasecmp(var->name, name)) {
+			// unlink from hash
+			if (prev)
+				prev->hash_next = var->next;
+			else
+				cvar_hash[key] = var->next;
+			break;
+		}
+		prev = var;
+	}
+
+	if (!var)
+		return false;
+
+	prev = NULL;
+	for (var = cvar_vars ; var ; var=var->next)
+	{
+		if (!Q_strcasecmp(var->name, name)) {
+			// unlink from cvar list
+			if (prev)
+				prev->next = var->next;
+			else
+				cvar_vars = var->next;
+
+			// free
+			Z_Free (var->string);
+			Z_Free (var->name);
+			Z_Free (var);
+			return true;
+		}
+		prev = var;
+	}
+
+	Sys_Error ("Cvar list broken");
+	return false;	// shut up compiler
+}
+
+
 void Cvar_Set_f (void)
 {
 	cvar_t *var;
