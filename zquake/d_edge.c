@@ -204,10 +204,6 @@ void D_DrawSurfaces (void)
 			cacheblock = (byte *)(r_skypixels[pface->texinfo->texture->offsets[0]]);
 			cachewidth = 256;
 
-			d_zistepu = s->d_zistepu;
-			d_zistepv = s->d_zistepv;
-			d_ziorigin = s->d_ziorigin;
-
 			D_CalcGradients (pface);
 
 			(*d_drawspans) (s->spans);
