@@ -1503,6 +1503,7 @@ void CL_ParseServerMessage (void)
 {
 	int			cmd;
 	int			i, j;
+	int			old_readcount;
 
 	received_framecount = cls.framecount;
 	cl.last_servermessage = cls.realtime;
@@ -1511,6 +1512,9 @@ void CL_ParseServerMessage (void)
 //
 // if recording demos, copy the message out
 //
+	SZ_Init (&cls.demomessage, cls.demomessage_data, sizeof(cls.demomessage_data));
+	SZ_Write (&cls.demomessage, net_message.data, 8);	// store sequence numbers
+
 	if (cl_shownet.value == 1)
 		Com_Printf ("%i ",net_message.cursize);
 	else if (cl_shownet.value == 2)
@@ -1529,6 +1533,9 @@ void CL_ParseServerMessage (void)
 			Host_Error ("CL_ParseServerMessage: Bad server message");
 			break;
 		}
+
+		old_readcount = msg_readcount;
+		cls.demomessage_skipwrite = false;
 
 		cmd = MSG_ReadByte ();
 
@@ -1796,9 +1803,14 @@ void CL_ParseServerMessage (void)
 			msg_readcount = net_message.cursize;
 			break;
 		}
+
+		if (!cls.demomessage_skipwrite) {
+			SZ_Write (&cls.demomessage, &net_message.data[old_readcount],
+				msg_readcount - old_readcount);
+		}
 	}
 
 	CL_SetSolidEntities ();
 
-	CL_WriteDemoMessage (&net_message);
+	CL_WriteDemoMessage (&cls.demomessage);
 }

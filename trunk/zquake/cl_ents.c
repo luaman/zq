@@ -146,6 +146,11 @@ void FlushEntityPacket (void)
 	}
 }
 
+entity_state_t *CL_GetBaseline (int number)
+{
+	return &cl_entities[number].baseline;
+}
+
 /*
 ==================
 CL_ParsePacketEntities
@@ -300,6 +305,12 @@ void CL_ParsePacketEntities (qboolean delta)
 	}
 
 	newp->num_entities = newindex;
+
+	if (cls.demorecording) {
+		// write uncompressed packetentities to the demo
+		MSG_EmitPacketEntities (NULL, -1, newp, &cls.demomessage, CL_GetBaseline);
+		cls.demomessage_skipwrite = true;
+	}
 
 	// we can now render a frame
 	if (cls.state == ca_onserver)
