@@ -86,7 +86,7 @@ cvar_t	cl_explosion = {"cl_explosion", "0"};
 cvar_t	r_drawflame = {"r_drawflame", "1"};
 cvar_t	cl_gibfilter = {"cl_gibfilter", "0"};
 cvar_t	r_rocketlight = {"r_rocketlight", "1"};
-cvar_t	r_rockettrail = {"r_rockettrail", "0"};
+cvar_t	r_rockettrail = {"r_rockettrail", "1"};
 cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
 cvar_t	cl_loadlocs = {"cl_loadlocs", "0"};
 

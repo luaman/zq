@@ -550,12 +550,13 @@ void CL_LinkPacketEntities (void)
 			}
 		if (model->flags & EF_ROCKET)
 		{
-// Tonik -->
-			if (r_rockettrail.value > 0 && r_rockettrail.value <= 6)
-				R_RocketTrail (old_origin, ent->origin, r_rockettrail.value);
-			else
-// <-- Tonik
-				R_RocketTrail (old_origin, ent->origin, 0);
+			if (r_rockettrail.value)
+			{
+				int	trailnum = r_rockettrail.value - 1;
+				if (trailnum < 0 || trailnum > 6)
+					trailnum = 0;
+				R_RocketTrail (old_origin, ent->origin, trailnum);
+			}
 
 			if (r_rocketlight.value)	// Tonik
 			{
