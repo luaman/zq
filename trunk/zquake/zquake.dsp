@@ -689,6 +689,10 @@ SOURCE=.\gl_warp.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\image.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\in_win.c
 # End Source File
 # Begin Source File
@@ -1308,15 +1312,15 @@ SOURCE=.\glquake.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\image.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\input.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\keys.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\quake\v2\master\masterpr.h
 # End Source File
 # Begin Source File
 
