@@ -290,6 +290,10 @@ void SV_Give_f (void)
 }
 
 
+void CL_Disconnect ();
+int UDP_OpenSocket (int, qboolean);
+void Host_ConnectLocal ();
+
 /*
 ======================
 SV_Map_f
@@ -347,7 +351,7 @@ void SV_Map_f (void)
 	if (sv.state == ss_dead)
 		CL_Disconnect();
 
-	Host_ForceReconnect();	// FIXME: remove?
+	Host_ConnectLocal ();
 #endif
 
 	SV_BroadcastCommand ("changing\n");
@@ -356,10 +360,6 @@ void SV_Map_f (void)
 	SV_SpawnServer (level);
 
 	SV_BroadcastCommand ("reconnect\n");
-
-#ifdef QW_BOTH
-	Host_ConnectLocal();	// FIXME
-#endif
 }
 
 
