@@ -31,8 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "teamplay.h"
 
 
-void W_LoadWadFile (char *filename);	// FIXME, should be done by renderer
-
 cvar_t	*cl_rconPassword;
 cvar_t	cl_rconAddress = {"rcon_address", ""};
 
@@ -158,9 +156,15 @@ int CL_Stat_TotalMonsters (void) { return cl.stats[STAT_TOTALMONSTERS]; }
 */
 void CL_GamedirChanged (void)
 {
-	if (dedicated)
+	if (dedicated || !cls.initialized)
 		return;
+
+	// free old data and load a new gfx.wad
 	R_FlushPics ();
+
+	// register the pics we need
+	SCR_RegisterPics ();
+	Sbar_RegisterPics ();
 }
 
 /*
@@ -792,6 +796,18 @@ void CL_InitLocal (void)
 	Cmd_AddCommand ("reconnect", CL_Reconnect_f);
 }
 
+static void CL_CheckGfxWad (void)
+{
+	FILE *f;
+	FS_FOpenFile ("gfx.wad", &f);
+	if (!f) {
+		Sys_Error ("Couldn't find gfx.wad.\n"
+			"Make sure you start " PROGRAM
+			"from your Quake directory or use -basedir <path>");
+	}
+	fclose (f);
+}
+
 /*
 =================
 CL_Init
@@ -807,7 +823,7 @@ void CL_Init (void)
 	strcpy (cls.gamedirfile, com_gamedirfile);
 	strcpy (cls.gamedir, com_gamedir);
 
-	W_LoadWadFile ("gfx.wad");
+	CL_CheckGfxWad ();
 
 	host_basepal = (byte *)FS_LoadHunkFile ("gfx/palette.lmp");
 	if (!host_basepal)
@@ -854,6 +870,8 @@ void CL_Init (void)
 	// bring up the main menu
 	M_Menu_Main_f ();
 #endif
+
+	cls.initialized = true;
 }
 
 

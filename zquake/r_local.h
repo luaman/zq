@@ -287,17 +287,6 @@ void R_32To8bit (unsigned int *in, int inwidth, int inheight, byte *out, int out
 
 //=========================================================
 
-typedef struct mpic_s
-{
-	int			width;
-	short		height;
-	byte		alpha;
-	byte		pad;
-	byte		data[4];	// variable sized
-} /* mpic_t */;
-
-//=========================================================
-
 extern texture_t	*r_notexture_mip;
 extern model_t		*r_worldmodel;
 extern entity_t		r_worldentity;

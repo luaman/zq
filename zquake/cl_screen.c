@@ -431,6 +431,18 @@ void SCR_SizeDown_f (void)
 
 
 /*
+** SCR_RegisterPics
+*/
+void SCR_RegisterPics (void)
+{
+	scr_backtile = R_CacheWadPic ("backtile");
+	scr_ram = R_CacheWadPic ("ram");
+	scr_net = R_CacheWadPic ("net");
+	scr_turtle = R_CacheWadPic ("turtle");
+}
+
+
+/*
 ==================
 SCR_Init
 ==================
@@ -463,10 +475,7 @@ void SCR_Init (void)
 	Cmd_AddCommand ("sizeup", SCR_SizeUp_f);
 	Cmd_AddCommand ("sizedown", SCR_SizeDown_f);
 
-	scr_backtile = R_CacheWadPic ("backtile");
-	scr_ram = R_CacheWadPic ("ram");
-	scr_net = R_CacheWadPic ("net");
-	scr_turtle = R_CacheWadPic ("turtle");
+	SCR_RegisterPics ();
 
 	scr_initialized = true;
 }
