@@ -99,8 +99,6 @@ cvar_t	watervis = {"watervis","0",CVAR_SERVERINFO};
 cvar_t	skill = {"skill", "1"};
 cvar_t	coop = {"coop", "0"};
 
-cvar_t	spawn = {"spawn","0"};			// FIXME: remove?
-
 
 FILE	*sv_logfile;
 FILE	*sv_fraglogfile;
@@ -1465,7 +1463,6 @@ void SV_InitLocal (void)
 	Cvar_RegisterVariable (&deathmatch);
 	
 	Cvar_RegisterVariable (&watervis);
-	Cvar_RegisterVariable (&spawn);
 
 #ifndef QW_BOTH
 	Cvar_RegisterVariable (&developer);
