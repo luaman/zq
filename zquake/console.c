@@ -80,6 +80,7 @@ void Con_ToggleConsole_f (void)
 	}
 	else
 		key_dest = key_console;
+
 #ifdef AGRIP
         key_dest == key_console ? Sys_Printf("!Entering console.\n") : Sys_Printf("!Exiting console.\n");
 #endif

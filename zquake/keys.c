@@ -755,238 +755,222 @@ would therefore be harder to read.
 */
 void Key_Console (int key)
 {
-	int i;
+    int i;
 
-	switch (key)
-	{
-		case K_ENTER:
-			HandleEnter ();
-			return;
+    switch (key)
+    {
+        case K_ENTER:
+            HandleEnter ();
+            return;
 
-		case K_TAB:
-			if (keydown[K_CTRL])
-				CompleteName ();
-			else
-				CompleteCommand ();
-			return;
+        case K_TAB:
+            if (keydown[K_CTRL])
+                CompleteName ();
+            else
+                CompleteCommand ();
+            return;
 
-		case K_BACKSPACE:
-			if (key_linepos > 1)
-			{
-				// Show chopped char...
-				Sys_Printf("%c\n", key_lines[edit_line][key_linepos-1]);
-				strcpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
-				key_linepos--;
-			}
-			else
-			{
-				// No chars to delete...
-				Sys_Printf("!Start of line.\n");
-			}
-			return;
+        case K_BACKSPACE:
+            if (key_linepos > 1)
+            {
+                // Show chopped char...
+                Sys_Printf("%c\n", key_lines[edit_line][key_linepos-1]);
+                strcpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
+                key_linepos--;
+            }
+            else
+            {
+                // No chars to delete...
+                Sys_Printf("!Start of line.\n");
+            }
+            return;
 
-		case K_DEL:
-			if (key_linepos < strlen(key_lines[edit_line]))
-			{
-				// Show deleted char...
-				Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
-				strcpy(key_lines[edit_line] + key_linepos, key_lines[edit_line] + key_linepos + 1);
-			}
-			else
-			{
-				// At the end of the line...
-				Sys_Printf("!End of line.\n");
-			}
-			return;
+        case K_DEL:
+            if (key_linepos < strlen(key_lines[edit_line]))
+            {
+                // Show deleted char...
+                Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
+                strcpy(key_lines[edit_line] + key_linepos, key_lines[edit_line] + key_linepos + 1);
+            }
+            else
+            {
+                // At the end of the line...
+                Sys_Printf("!End of line.\n");
+            }
+            return;
 
-		case K_RIGHTARROW:
-			if (keydown[K_CTRL]) {
-				// word right
-				i = strlen(key_lines[edit_line]);
-				while (key_linepos < i && key_lines[edit_line][key_linepos] != ' ')
-					key_linepos++;
-				while (key_linepos < i && key_lines[edit_line][key_linepos] == ' ')
-					key_linepos++;
-				return;
-			}
-			if (key_linepos < strlen(key_lines[edit_line]))
-			{
-				key_linepos++;
-				// Show the char moved to...
-				Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
-			}
-			else
-				Sys_Printf("!End of line.\n");
-			return;
+        case K_RIGHTARROW:
+            if (keydown[K_CTRL])
+            {
+                // word right
+                i = strlen(key_lines[edit_line]);
+                while (key_linepos < i && key_lines[edit_line][key_linepos] != ' ')
+                    key_linepos++;
+                while (key_linepos < i && key_lines[edit_line][key_linepos] == ' ')
+                    key_linepos++;
+                return;
+            }
+            if (key_linepos < strlen(key_lines[edit_line]))
+            {
+                key_linepos++;
+                // Show the char moved to...
+                Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
+            }
+            else
+                Sys_Printf("!End of line.\n");
+            return;
 
-		case K_LEFTARROW:
-			if (keydown[K_CTRL]) {
-				// word left
-				while (key_linepos > 1 && key_lines[edit_line][key_linepos-1] == ' ')
-					key_linepos--;
-				while (key_linepos > 1 && key_lines[edit_line][key_linepos-1] != ' ')
-					key_linepos--;
-				return;
-			}
-			if (key_linepos > 1)
-			{
-				key_linepos--;
-				// Show the char moved to...
-				Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
-			}
-			else
-				Sys_Printf("!Start of line.\n");
-			return;
+        case K_LEFTARROW:
+            if (keydown[K_CTRL])
+            {
+                // word left
+                while (key_linepos > 1 && key_lines[edit_line][key_linepos-1] == ' ')
+                    key_linepos--;
+                while (key_linepos > 1 && key_lines[edit_line][key_linepos-1] != ' ')
+                    key_linepos--;
+                return;
+            }
+            if (key_linepos > 1)
+            {
+                key_linepos--;
+                // Show the char moved to...
+                Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
+            }
+            else
+                Sys_Printf("!Start of line.\n");
+            return;
 
-		case K_UPARROW:
-			if (keydown[K_CTRL]) {
-				AdjustConsoleHeight (-10);
-				return;
-			}
-			if (history_line == ((edit_line+1)&31))
-				return;
-			do {
-				history_line = (history_line - 1) & 31;
-			} while (history_line != edit_line
-					&& !key_lines[history_line][1]);
+        case K_UPARROW:
+            if (keydown[K_CTRL])
+            {
+                AdjustConsoleHeight (-10);
+                return;
+            }
+            if (history_line == ((edit_line+1)&31))
+                return;
+            do
+            {
+                history_line = (history_line - 1) & 31;
+            } while (history_line != edit_line
+                    && !key_lines[history_line][1]);
 
-			if (history_line == edit_line) {
-				history_line = (edit_line+1)&31;
-				Sys_Printf("!No more lines in history.\n");
-				strcpy(key_lines[edit_line], key_lines[history_line]);
-				key_linepos = strlen(key_lines[edit_line]);
-			} else {
-				strcpy(key_lines[edit_line], key_lines[history_line]);
-				key_linepos = strlen(key_lines[edit_line]);
-				// Show moved-to line...
-				Sys_Printf("%s\n", key_lines[edit_line]);
-			}
-			return;
+            if (history_line == edit_line)
+            {
+                history_line = (edit_line+1)&31;
+                Sys_Printf("!No more lines in history.\n");
+                strcpy(key_lines[edit_line], key_lines[history_line]);
+                key_linepos = strlen(key_lines[edit_line]);
+            }
+            else
+            {
+                strcpy(key_lines[edit_line], key_lines[history_line]);
+                key_linepos = strlen(key_lines[edit_line]);
+                // Show moved-to line...
+                Sys_Printf("%s\n", key_lines[edit_line]);
+            }
+            return;
 
-		case K_DOWNARROW:
-			if (keydown[K_CTRL]) {
-				AdjustConsoleHeight (10);
-				return;
-			}
-			if (history_line == edit_line) return;
-			do {
-				history_line = (history_line + 1) & 31;
-			} while (history_line != edit_line
-				&& !key_lines[history_line][1]);
+        case K_DOWNARROW:
+            if (keydown[K_CTRL])
+            {
+                AdjustConsoleHeight (10);
+                return;
+            }
+            if (history_line == edit_line) return;
+            do
+            {
+                history_line = (history_line + 1) & 31;
+            } while (history_line != edit_line
+                    && !key_lines[history_line][1]);
 
-			if (history_line == edit_line) {
-				/*key_lines[edit_line][0] = ']';
-				key_lines[edit_line][1] = 0;
-				key_linepos = 1;*/
-				Sys_Printf("!Edit line reached.\n");
-				strcpy(key_lines[edit_line], key_lines[(edit_line+1)&31]);
-				key_linepos = strlen(key_lines[edit_line]);
-			} else {
-				strcpy(key_lines[edit_line], key_lines[history_line]);
-				key_linepos = strlen(key_lines[edit_line]);
-				// Show moved-to line...
-				Sys_Printf("%s\n", key_lines[edit_line]);
-			}
-			return;
+            if (history_line == edit_line)
+            {
+                Sys_Printf("!Edit line reached.\n");
+                strcpy(key_lines[edit_line], key_lines[(edit_line+1)&31]);
+                key_linepos = strlen(key_lines[edit_line]);
+            }
+            else
+            {
+                strcpy(key_lines[edit_line], key_lines[history_line]);
+                key_linepos = strlen(key_lines[edit_line]);
+                // Show moved-to line...
+                Sys_Printf("%s\n", key_lines[edit_line]);
+            }
+            return;
 
-		case K_PGUP:
-		case K_MWHEELUP:
-			if (keydown[K_CTRL] && key == K_PGUP)
-				Con_Scroll (-(((int)scr_conlines - 22) >> 3));
-			else
-				Con_Scroll (-2);
-			return;
+        case K_PGUP:
+        case K_MWHEELUP:
+            if (keydown[K_CTRL] && key == K_PGUP)
+                Con_Scroll (-(((int)scr_conlines - 22) >> 3));
+            else
+                Con_Scroll (-2);
+            return;
 
-		case K_MWHEELDOWN:
-		case K_PGDN:
-			if (keydown[K_CTRL] && key == K_PGDN)
-				Con_Scroll (((int)scr_conlines - 22) >> 3);
-			else
-				Con_Scroll (2);
-			return;
+        case K_MWHEELDOWN:
+        case K_PGDN:
+            if (keydown[K_CTRL] && key == K_PGDN)
+                Con_Scroll (((int)scr_conlines - 22) >> 3);
+            else
+                Con_Scroll (2);
+            return;
 
-		case K_HOME:
-			if (keydown[K_CTRL])
-				Con_ScrollToTop ();
-			else
-				key_linepos = 1;
-			Sys_Printf("%c\n", key_lines[edit_line][1]);
-			return;
+        case K_HOME:
+            if (keydown[K_CTRL])
+                Con_ScrollToTop ();
+            else
+                key_linepos = 1;
+            Sys_Printf("%c\n", key_lines[edit_line][1]);
+            return;
 
-		case K_END:
-			if (keydown[K_CTRL])
-				Con_ScrollToTop ();
-			else
-				key_linepos = strlen(key_lines[edit_line]);
-			return;
-	}
+        case K_END:
+            if (keydown[K_CTRL])
+                Con_ScrollToTop ();
+            else
+                key_linepos = strlen(key_lines[edit_line]);
+            return;
+    }
 
-	if (((key == 'V' || key == 'v') && keydown[K_CTRL])
-		|| ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
-	{
-		int  len;
-		char *p;
-		char *text = Sys_GetClipboardText();
-		if (text) {
-			for (p = text; *p; p++) {
-				if (*p == '\n' || *p == '\r' || *p == '\t')
-					*p = ' ';
-			}
-			len = p - text;
-			if (len + strlen(key_lines[edit_line]) > MAXCMDLINE-1)
-				len = MAXCMDLINE-1 - strlen(key_lines[edit_line]);
+    if (((key == 'V' || key == 'v') && keydown[K_CTRL])
+            || ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
+    {
+        int  len;
+        char *p;
+        char *text = Sys_GetClipboardText();
+        if (text)
+        {
+            for (p = text; *p; p++)
+            {
+                if (*p == '\n' || *p == '\r' || *p == '\t')
+                    *p = ' ';
+            }
+            len = p - text;
+            if (len + strlen(key_lines[edit_line]) > MAXCMDLINE-1)
+                len = MAXCMDLINE-1 - strlen(key_lines[edit_line]);
 
-			memmove (key_lines[edit_line] + key_linepos + len,
-				key_lines[edit_line] + key_linepos, strlen(key_lines[edit_line] + key_linepos) + 1 /* move trailing zero */);
-			memcpy (key_lines[edit_line] + key_linepos, text, len);
-			key_linepos += len;
+            memmove (key_lines[edit_line] + key_linepos + len,
+                    key_lines[edit_line] + key_linepos, strlen(key_lines[edit_line] + key_linepos) + 1 /* move trailing zero */);
+            memcpy (key_lines[edit_line] + key_linepos, text, len);
+            key_linepos += len;
 
-			Q_free (text);	// Q_malloc'ed by Sys_GetClipboardText
-		}
-		return;
-	}
+            Q_free (text);	// Q_malloc'ed by Sys_GetClipboardText
+        }
+        return;
+    }
 
-	if (key < 32 || key > 127)
-		return;	// non-printable
+    if (key < 32 || key > 127)
+        return;	// non-printable
 
-	/*if (keydown[K_CTRL]) {
-		if (key >= '0' && key <= '9')
-				key = key - '0' + 0x12;	// yellow number
-		else switch (key) {
-			case '[': key = 0x10; break;
-			case ']': key = 0x11; break;
-			case 'g': key = 0x86; break;
-			case 'r': key = 0x87; break;
-			case 'y': key = 0x88; break;
-			case 'b': key = 0x89; break;
-			case '(': key = 0x80; break;
-			case '=': key = 0x81; break;
-			case ')': key = 0x82; break;
-			case 'a': key = 0x83; break;
-			case '<': key = 0x1d; break;
-			case '-': key = 0x1e; break;
-			case '>': key = 0x1f; break;
-			case ',': key = 0x1c; break;
-			case '.': key = 0x9c; break;
-			case 'B': key = 0x8b; break;
-			case 'C': key = 0x8d; break;
-		}
-	}
+    i = strlen(key_lines[edit_line]);
+    if (i >= MAXCMDLINE-1)
+        return;
 
-	if (keydown[K_ALT])
-		key |= 128;		// brown char*/
+    // Print single chars entered...
+    Sys_Printf("%c\n", key);
 
-	i = strlen(key_lines[edit_line]);
-	if (i >= MAXCMDLINE-1)
-		return;
-
-	// Print single chars entered...
-	Sys_Printf("%c\n", key);
-
-	// This also moves the trailing zero
-	memmove (key_lines[edit_line]+key_linepos+1, key_lines[edit_line]+key_linepos, i-key_linepos+1);
-	key_lines[edit_line][key_linepos] = key;
-	key_linepos++;
+    // This also moves the trailing zero
+    memmove (key_lines[edit_line]+key_linepos+1, key_lines[edit_line]+key_linepos, i-key_linepos+1);
+    key_lines[edit_line][key_linepos] = key;
+    key_linepos++;
 }
 #endif // AGRIP
 
