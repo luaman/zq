@@ -188,6 +188,18 @@ void D_EndDirectRect (int x, int y, int width, int height)
 }
 
 
+/*
+================
+VID_SetCaption
+================
+*/
+void VID_SetCaption (char *text)
+{
+	if (vid_initialized)
+		SetWindowText (mainwindow, text);
+}
+
+
 void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 {
 //	RECT    rect;

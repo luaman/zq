@@ -156,6 +156,17 @@ qboolean msg_suppress_1 = 0;	// suppresses resolution and cache size console out
 
 /*
 ================
+VID_SetCaption
+================
+*/
+void VID_SetCaption (char *text)
+{
+	if (vid_initialized)
+		SetWindowText (mainwindow, text);
+}
+
+/*
+================
 VID_RememberWindowPos
 ================
 */
