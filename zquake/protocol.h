@@ -233,6 +233,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	TE_BLOOD			12
 #define	TE_LIGHTNINGBLOOD	13
 
+//==============================================
+
+//
+// ZQuake protocol extensions (*z_ext serverinfo key)
+//
+#define Z_EXT_JUMPRELEASED	(1<<0)
+
 
 /*
 ==========================================================
