@@ -117,7 +117,7 @@ void CheckConnectRate ()
 	maxrate = stof(infokey(world, "k_maxrate"));
 	minrate = stof(infokey(world, "k_minrate"));
 
-	if(maxrate  || minrate)
+	if(maxrate || minrate)
 	{
 	    if (player_rate > maxrate)
 		{

@@ -109,5 +109,6 @@ float intermission_exittime;
 // from both
 // .vector k_oldspeed;
 
+.float maxspeed;       // Used to set Maxspeed on a player moved from old qw defs.qc
 float server_is_2_3x;	// if true, fix the jump bug via QC
 float current_maxfps;	// current value of serverinfo maxfps
