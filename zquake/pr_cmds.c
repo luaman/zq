@@ -572,9 +572,8 @@ static void PF_sound (void)
 	volume = G_FLOAT(OFS_PARM3) * 255;
 	attenuation = G_FLOAT(OFS_PARM4);
 	
-	SV_StartSound (entity, channel, sample, volume, attenuation);
+	SV_StartSound (entity, channel, sample, volume, attenuation, NULL);
 }
-
 
 /*
 =================
@@ -2404,6 +2403,41 @@ static void PF_precache_vwep_model (void)
 // <-- Tonik's experiments
 
 
+/*
+==============
+PF_soundtoclient
+
+ZQuake addition, for AGRIP
+Same as PF_sound, but sends the sound to one client only
+
+void soundtoclient(entity client, entity e, float chan, string samp, float vol, float atten) = #0x5a08
+==============
+*/
+static void PF_soundtoclient (void)
+{
+	char		*sample;
+	int			channel, clientnum;
+	edict_t		*entity;
+	int 		volume;
+	float		attenuation;
+
+    clientnum = G_EDICTNUM(OFS_PARM0);
+	entity = G_EDICT(OFS_PARM1);
+	channel = G_FLOAT(OFS_PARM2);
+	sample = G_STRING(OFS_PARM3);
+	volume = G_FLOAT(OFS_PARM4) * 255;
+	attenuation = G_FLOAT(OFS_PARM5);
+
+	if (clientnum < 1 || clientnum > MAX_CLIENTS) {
+		Com_Printf ("tried to send a sound to a non-client\n");
+		return;
+	}
+
+	SV_StartSound (entity, channel, sample, volume, attenuation,
+											&svs.clients[clientnum-1]);
+}
+
+
 static qbool CheckBuiltin (int num)
 {
 	// check ZQuake builtins
@@ -2705,7 +2739,7 @@ builtin_t pr_extbuiltins[] =
 	PF_Fixme,			// RESERVED #0x5a05
 	PF_Fixme,			// RESERVED #0x5a06
 	PF_Fixme,			// RESERVED #0x5a07
-	PF_Fixme,			// soundtoclient goes here	(#0x5a08)
+	PF_soundtoclient,	// void soundtoclient (entity client, entity e, float chan, string samp, float vol, float atten) = #0x5a08;
 	PF_precache_vwep_model,	// #0x5a09
 	PF_testbot,			// #0x5a0A
 	PF_setinfo,			// #0x5a0B
