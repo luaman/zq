@@ -47,6 +47,8 @@ cvar_t	v_kicktime = {"v_kicktime", "0.5"};
 cvar_t	v_kickroll = {"v_kickroll", "0.6"};
 cvar_t	v_kickpitch = {"v_kickpitch", "0.6"};
 
+cvar_t	v_gunkick = {"v_gunkick", "1"};
+
 qboolean V_OnIdleChange (cvar_t *var, char *value);
 cvar_t	v_iyaw_cycle = {"v_iyaw_cycle", "2", 0, V_OnIdleChange};
 cvar_t	v_iroll_cycle = {"v_iroll_cycle", "0.5", 0, V_OnIdleChange};
@@ -978,12 +980,15 @@ void V_CalcRefdef (void)
 	V_CalcViewRoll ();
 	V_AddIdle ();
 
-	// add weapon kick offset
-	AngleVectors (r_refdef.viewangles, forward, right, up);
-	VectorMA (r_refdef.vieworg, cl.punchangle, forward, r_refdef.vieworg);
+	if (v_gunkick.value)
+	{
+		// add weapon kick offset
+		AngleVectors (r_refdef.viewangles, forward, right, up);
+		VectorMA (r_refdef.vieworg, cl.punchangle, forward, r_refdef.vieworg);
 
-	// add weapon kick angle
-	r_refdef.viewangles[PITCH] += cl.punchangle * 0.5;
+		// add weapon kick angle
+		r_refdef.viewangles[PITCH] += cl.punchangle * 0.5;
+	}
 
 	if (view_message->flags & PF_DEAD)		// PF_GIB will also set PF_DEAD
 		r_refdef.viewangles[ROLL] = 80;	// dead view angle
@@ -1131,25 +1136,23 @@ void V_Init (void)
 	Cvar_Register (&crosshair);
 	Cvar_Register (&cl_crossx);
 	Cvar_Register (&cl_crossy);
-#ifdef GLQUAKE
-	Cvar_Register (&gl_cshiftpercent);
-#endif
 
 	Cvar_Register (&cl_rollspeed);
 	Cvar_Register (&cl_rollangle);
 	Cvar_Register (&cl_bob);
 	Cvar_Register (&cl_bobcycle);
 	Cvar_Register (&cl_bobup);
-
 	Cvar_Register (&v_kicktime);
 	Cvar_Register (&v_kickroll);
 	Cvar_Register (&v_kickpitch);	
+	Cvar_Register (&v_gunkick);	
 
 	Cvar_Register (&v_gamma);
 	Cvar_Register (&v_contrast);
 #ifdef GLQUAKE
 	Cvar_Register (&gl_gamma);
 	Cvar_Register (&gl_contrast);
+	Cvar_Register (&gl_cshiftpercent);
 	Cvar_Register (&gl_hwblend);
 #endif
 
@@ -1158,5 +1161,3 @@ void V_Init (void)
 #endif
 
 }
-
-
