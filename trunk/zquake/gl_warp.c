@@ -28,11 +28,12 @@ int		solidskytexture;
 int		alphaskytexture;
 float	speedscale;		// for top sky and bottom sky
 
-msurface_t	*warpface;
-
 qbool	r_skyboxloaded;
 
-void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
+
+static msurface_t	*warpface;
+
+static void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
 {
 	int		i, j;
 	float	*v;
@@ -50,7 +51,7 @@ void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
 		}
 }
 
-void SubdividePolygon (int numverts, float *verts)
+static void SubdividePolygon (int numverts, float *verts)
 {
 	int		i, j, k;
 	vec3_t	mins, maxs;
@@ -442,7 +443,7 @@ void R_InitSky (texture_t *mt)
 R_SetSky
 ==================
 */
-char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
+static char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
 void R_SetSky (char *name)
 {
 	int		i;
@@ -489,7 +490,7 @@ void R_SetSky (char *name)
 }
 
 
-vec3_t	skyclip[6] = {
+static vec3_t	skyclip[6] = {
 	{1,1,0},
 	{1,-1,0},
 	{0,-1,1},
@@ -498,10 +499,10 @@ vec3_t	skyclip[6] = {
 	{-1,0,1} 
 };
 
-#define skybox_range	2400
+#define skybox_range	2400.0
 
 // 1 = s, 2 = t, 3 = 2048
-int	st_to_vec[6][3] =
+static int	st_to_vec[6][3] =
 {
 	{3,-1,2},
 	{-3,1,2},
@@ -517,7 +518,7 @@ int	st_to_vec[6][3] =
 };
 
 // s = [0]/[2], t = [1]/[2]
-int	vec_to_st[6][3] =
+static int	vec_to_st[6][3] =
 {
 	{-2,3,1},
 	{2,3,-1},
@@ -532,9 +533,9 @@ int	vec_to_st[6][3] =
 //	{1,2,-3}
 };
 
-float	skymins[2][6], skymaxs[2][6];
+static float	skymins[2][6], skymaxs[2][6];
 
-void DrawSkyPolygon (int nump, vec3_t vecs)
+static void DrawSkyPolygon (int nump, vec3_t vecs)
 {
 	int		i,j;
 	vec3_t	v, av;
@@ -605,7 +606,7 @@ void DrawSkyPolygon (int nump, vec3_t vecs)
 }
 
 #define	MAX_CLIP_VERTS	64
-void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
+static void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 {
 	float	*norm;
 	float	*v;
@@ -735,7 +736,7 @@ void R_ClearSky (void)
 	}
 }
 
-void MakeSkyVec (float s, float t, int axis)
+static void MakeSkyVec (float s, float t, int axis)
 {
 	vec3_t		v, b;
 	int			j, k;
@@ -777,8 +778,8 @@ void MakeSkyVec (float s, float t, int axis)
 R_DrawSkyBox
 ==============
 */
-int	skytexorder[6] = {0,2,1,3,4,5};
-void R_DrawSkyBox (void)
+static int	skytexorder[6] = {0,2,1,3,4,5};
+static void R_DrawSkyBox (void)
 {
 	int		i;
 
@@ -798,9 +799,7 @@ void R_DrawSkyBox (void)
 	}
 }
 
-extern msurface_t *skychain;
-
-void EmitSkyVert (vec3_t v)
+static void EmitSkyVert (vec3_t v)
 {
 	vec3_t dir;
 	float	s, t;
@@ -822,58 +821,71 @@ void EmitSkyVert (vec3_t v)
 	glVertex3fv (v);
 }
 
-void DrawSkyFace (int axes[3], int sign)
+// s and t range from -1 to 1
+static void MakeSkyVec2 (float s, float t, int axis, vec3_t v)
+{
+	vec3_t		b;
+	int			j, k;
+
+	b[0] = s*skybox_range;
+	b[1] = t*skybox_range;
+	b[2] = skybox_range;
+
+	for (j=0 ; j<3 ; j++)
+	{
+		k = st_to_vec[axis][j];
+		if (k < 0)
+			v[j] = -b[-k - 1];
+		else
+			v[j] = b[k - 1];
+		v[j] += r_origin[j];
+	}
+
+}
+
+#define SUBDIVISIONS	10
+
+static void DrawSkyFace (int axis)
 {
 	int i, j;
-	vec3_t	v, v2, v3, v4;
+	vec3_t	vecs[4];
+	float s, t;
 
-#define boxsize			(skybox_range * 2)
-#define subdivisions	10
-#define tilesize		(boxsize / subdivisions)
+	float fstep = 2.0 / SUBDIVISIONS;
 
 	glBegin (GL_QUADS);
 
-	v[axes[0]] = r_origin[axes[0]] - (boxsize / 2) * sign;
-	for (i = 0; i < subdivisions; i++)
+	for (i = 0; i < SUBDIVISIONS; i++)
 	{
-		v[axes[1]] = r_origin[axes[1]] + (i*2 - subdivisions) * tilesize / 2;
-		for (j = 0; j < subdivisions; j++) {
-			v[axes[2]] = r_origin[axes[2]] + (j*2 - subdivisions) * tilesize / 2;
+		s = (float)(i*2 - SUBDIVISIONS) / SUBDIVISIONS;
 
-			VectorCopy (v, v2);
-			VectorCopy (v, v3);
-			VectorCopy (v, v4);
+		if (s + fstep < skymins[0][axis] || s > skymaxs[0][axis])
+			continue;
 
-			v2[axes[2]] += tilesize;
-			v3[axes[2]] += tilesize; v3[axes[1]] += tilesize;
-			v4[axes[1]] += tilesize;
+		for (j = 0; j < SUBDIVISIONS; j++) {
+			t = (float)(j*2 - SUBDIVISIONS) / SUBDIVISIONS;
 
-			EmitSkyVert (v);
-			EmitSkyVert (v2);
-			EmitSkyVert (v3);
-			EmitSkyVert (v4);
+			if (t + fstep < skymins[1][axis] || t > skymaxs[1][axis])
+				continue;
 
+			MakeSkyVec2 (s, t, axis, vecs[0]);
+			MakeSkyVec2 (s, t + fstep, axis, vecs[1]);
+			MakeSkyVec2 (s + fstep, t + fstep, axis, vecs[2]);
+			MakeSkyVec2 (s + fstep, t, axis, vecs[3]);
+
+			EmitSkyVert (vecs[0]);
+			EmitSkyVert (vecs[1]);
+			EmitSkyVert (vecs[2]);
+			EmitSkyVert (vecs[3]);
 		}
 	}
 
 	glEnd ();
 }
 
-void R_DrawSkyDome (void)
+
+static void R_DrawSkyDome (void)
 {
-	int skyaxes[][3] = {
-		{0, 2, 1},
-		{0, 1, 2},
-		{1, 0, 2},
-		{1, 2, 0},
-		{2, 1, 0},
-		{2, 0, 1},
-	};
-
-	int skysigns[6] = {
-		-1, 1, -1, 1, -1, 1
-	};
-
 	int i;
 
 	GL_DisableMultitexture();
@@ -882,11 +894,10 @@ void R_DrawSkyDome (void)
 	speedscale = r_refdef2.time*8;
 	speedscale -= (int)speedscale & ~127;
 
-	// FIXME: implement per-polygon clipping
 	for (i = 0; i < 6; i++) {
 		if ((skymins[0][i] >= skymaxs[0][i]	|| skymins[1][i] >= skymaxs[1][i]))
 			continue;
-		DrawSkyFace (skyaxes[i], skysigns[i]);
+		DrawSkyFace (i);
 	}
 
 	glEnable (GL_BLEND);
@@ -898,17 +909,117 @@ void R_DrawSkyDome (void)
 	for (i = 0; i < 6; i++) {
 		if ((skymins[0][i] >= skymaxs[0][i]	|| skymins[1][i] >= skymaxs[1][i]))
 			continue;
-		DrawSkyFace (skyaxes[i], skysigns[i]);
+		DrawSkyFace (i);
 	}
 }
+
+/*
+==============
+R_DrawSky
+
+Draw either the classic cloudy quake sky or a skybox
+==============
+*/
+void R_DrawSky (void)
+{
+	msurface_t	*fa;
+	qbool		ignore_z;
+	extern cvar_t	gl_ztrick;
+	extern int		gl_ztrickframe;
+	extern msurface_t *skychain;
+
+	GL_DisableMultitexture ();
+
+	if (r_fastsky.value) {
+		glDisable (GL_TEXTURE_2D);
+		glColor3ubv ((byte *)&d_8to24table[(byte)r_skycolor.value]);
+		
+		for (fa = skychain; fa; fa = fa->texturechain)
+			EmitFlatPoly (fa);
+		skychain = NULL;
+
+		glEnable (GL_TEXTURE_2D);
+		glColor3f (1, 1, 1);
+		return;
+	}
+
+	if (r_viewleaf->contents == CONTENTS_SOLID) {
+		// always draw if we're in a solid leaf (probably outside the level)
+		// FIXME: we don't really want to add all six planes every time!
+		// FIXME: also handle r_fastsky case
+		int i;
+		for (i = 0; i < 6; i++) {
+			skymins[0][i] = skymins[1][i] = -1;
+			skymaxs[0][i] = skymaxs[1][i] = 1;
+		}
+		ignore_z = true;
+	}
+	else {
+		if (!skychain)
+			return;		// no sky at all
+
+		// figure out how much of the sky box we need to draw
+		for (fa = skychain; fa; fa = fa->texturechain)
+			R_AddSkyBoxSurface (fa);
+
+		ignore_z = false;
+	}
+
+	// turn off Z writes to avoid problems on large maps
+	glDepthMask (GL_FALSE);
+	glDisable (GL_DEPTH_TEST);
+
+	// draw a skybox or classic quake clouds
+	if (r_skyboxloaded)
+		R_DrawSkyBox ();
+	else
+		R_DrawSkyDome ();
+
+	glDepthMask (GL_TRUE);	// re-enable Z writes
+
+	// draw the sky polys into the Z buffer
+	// don't need depth test yet
+	if (!ignore_z) {
+		glDisable(GL_TEXTURE_2D);
+		glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ZERO, GL_ONE);
+
+		for (fa = skychain; fa; fa = fa->texturechain)
+			EmitFlatPoly (fa);
+
+		glEnable (GL_TEXTURE_2D);
+		glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glDisable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	glEnable (GL_DEPTH_TEST);
+
+	skychain = NULL;
+}
+
+/*
+
+This works better (with gl_ztrick 0) on aerowalk where otherwise the sky
+shows in bright pixels through holes in walls, of which on aerowalk there
+are plenty.
+But problems arise on large maps like q1dm17 where the sky tends
+to hide parts of the level.
+We could just put the far clip plane further of course...
 
 void R_DrawSky (void)
 {
 	msurface_t	*fa;
+	qbool		ignore_z;
+	extern cvar_t	gl_ztrick;
+	extern int		gl_ztrickframe;
+	extern msurface_t *skychain;
+
+	GL_DisableMultitexture ();
 
 	if (r_fastsky.value) {
-		GL_DisableMultitexture ();
-
 		glDisable (GL_TEXTURE_2D);
 		glColor3ubv ((byte *)&d_8to24table[(byte)r_skycolor.value]);
 		
@@ -929,14 +1040,44 @@ void R_DrawSky (void)
 			skymins[0][i] = skymins[1][i] = -1;
 			skymaxs[0][i] = skymaxs[1][i] = 1;
 		}
+		ignore_z = true;
 	}
 	else {
 		if (!skychain)
-			return;
+			return;		// no sky at all
 
 		// figure out how much of the sky box we need to draw
 		for (fa = skychain; fa; fa = fa->texturechain)
 			R_AddSkyBoxSurface (fa);
+
+		ignore_z = false;
+	}
+
+	// draw the sky polys into the Z buffer
+	if (!ignore_z) {
+		glDisable(GL_TEXTURE_2D);
+		glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ZERO, GL_ONE);
+
+		for (fa = skychain; fa; fa = fa->texturechain)
+			EmitFlatPoly (fa);
+
+		glEnable (GL_TEXTURE_2D);
+		glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glDisable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	if (!ignore_z) {
+		// only write portions of the sky behind the Z polygons we rendered
+		if (gl_ztrick.value && !gl_ztrickframe)
+			glDepthFunc (GL_LEQUAL);
+		else
+			glDepthFunc (GL_GEQUAL);
+
+		glDepthMask (GL_FALSE);	// don't bother writing Z
 	}
 
 	// draw a skybox or classic quake clouds
@@ -945,24 +1086,16 @@ void R_DrawSky (void)
 	else
 		R_DrawSkyDome ();
 
-	// now draw the sky polys to Z buffer
-	if (Cvar_VariableValue("noskyz")) {
-		skychain = NULL;
-		return;
+	if (!ignore_z) {
+		// back to normal Z test
+		if (gl_ztrick.value && !gl_ztrickframe)
+			glDepthFunc (GL_GEQUAL);
+		else
+			glDepthFunc (GL_LEQUAL);
+
+		glDepthMask (GL_TRUE);	// re-enable Z writes
 	}
 
-	glDisable(GL_TEXTURE_2D);
-	glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-	
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ZERO, GL_ONE);
-
-	for (fa = skychain; fa; fa = fa->texturechain)
-		EmitFlatPoly (fa);
 	skychain = NULL;
-	
-	glEnable (GL_TEXTURE_2D);
-	glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glDisable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
+*/
