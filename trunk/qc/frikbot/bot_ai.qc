@@ -595,32 +595,32 @@ float priority_for_thing (entity thing)
 		}
 		else if (thing.classname == "weapon_supershotgun")
 		{
-			if (!(self.items & 2)) // IT_SUPER_SHOTGUN  
+			if (!(self.items & IT_SUPER_SHOTGUN))
 				thisp = 25;
 		}
 		else if (thing.classname == "weapon_nailgun")
 		{
-			if (!(self.items & 4)) // IT_NAILGUN 
+			if (!(self.items & IT_NAILGUN))
 				thisp = 30;
 		}
 		else if (thing.classname == "weapon_supernailgun")
 		{
-			if (!(self.items & 8)) // IT_SUPER_NAILGUN
+			if (!(self.items & IT_SUPER_NAILGUN))
 				thisp = 35;
 		}
 		else if (thing.classname == "weapon_grenadelauncher")
 		{
-			if (!(self.items & 16)) // IT_GRENADE_LAUNCHER
+			if (!(self.items & IT_GRENADE_LAUNCHER))
 				thisp = 45;
 		}
 		else if (thing.classname == "weapon_rocketlauncher")
 		{
-			if (!(self.items & 32)) // IT_ROCKET_LAUNCHER
+			if (!(self.items & IT_ROCKET_LAUNCHER))
 				thisp = 60;
 		}
 		else if (thing.classname == "weapon_lightning")
 		{
-			if (!(self.items & 64)) // IT_LIGHTNING
+			if (!(self.items & IT_LIGHTNING))
 				thisp = 50;
 		}
 	}
@@ -757,8 +757,8 @@ void bot_angle_set ()
 			traceline(self.enemy.origin, view, FALSE, self);
 			view = trace_endpos;
 			
-			if (self.weapon == 32) 
-				view = view - '0 0 22';
+			if (self.weapon == IT_ROCKET_LAUNCHER)
+				view = view - '0 0 22';		/* why? -- Tonik */
 
 			view = normalize(view - self.origin);
 		}

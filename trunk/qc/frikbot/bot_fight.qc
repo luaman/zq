@@ -221,39 +221,39 @@ void bot_weapon_switch (float brange)
 
 	while(it)
 	{
-		if ((self.ammo_rockets >= 1) && (it & 32))
+		if ((self.ammo_rockets >= 1) && (it & IT_ROCKET_LAUNCHER))
 		{
-			flag = 32;
+			flag = IT_ROCKET_LAUNCHER;
 			pulse = 7;
 		}
-		else if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & 64))
+		else if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & IT_LIGHTNING))
 		{
-			flag = 64;
+			flag = IT_LIGHTNING;
 			pulse = 8;
 		}
-		else if(self.ammo_nails >= 2 && (it & 8))
+		else if(self.ammo_nails >= 2 && (it & IT_SUPER_NAILGUN))
 		{
-			flag = 8;
+			flag = IT_SUPER_NAILGUN;
 			pulse = 5;
 		}
-		else if ((self.ammo_rockets >= 1) && (it & 16))
+		else if ((self.ammo_rockets >= 1) && (it & IT_GRENADE_LAUNCHER))
 		{
-			flag = 16;
+			flag = IT_GRENADE_LAUNCHER;
 			pulse = 6;
 		}
-		else if(self.ammo_shells >= 2 && (it & 2))
+		else if(self.ammo_shells >= 2 && (it & IT_SUPER_SHOTGUN))
 		{
-			flag = 2;
+			flag = IT_SUPER_SHOTGUN;
 			pulse = 3;
 		}
-		else if(self.ammo_nails >= 1 && (it & 4))
+		else if(self.ammo_nails >= 1 && (it & IT_NAILGUN))
 		{
-			flag = 4;
+			flag = IT_NAILGUN;
 			pulse = 4;
 		}
-		else if(self.ammo_shells >= 1 && (it & 1))
+		else if(self.ammo_shells >= 1 && (it & IT_SHOTGUN))
 		{
-			flag = 1;
+			flag = IT_SHOTGUN;
 			pulse = 2;
 		}
 		else
