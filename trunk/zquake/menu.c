@@ -1693,8 +1693,10 @@ void M_Menu_Setup_f (void)
 	key_dest = key_menu;
 	m_state = m_setup;
 	m_entersound = true;
-	strcpy(setup_name, name.string);
-	strcpy(setup_team, team.string);
+	strncpy(setup_name, name.string, sizeof(setup_name));
+	setup_name[15] = 0;
+	strncpy(setup_team, team.string, sizeof(setup_team));
+	setup_team[15] = 0;
 	setup_top = setup_oldtop = (int)topcolor.value;
 	setup_bottom = setup_oldbottom = (int)bottomcolor.value;
 }
@@ -1740,7 +1742,7 @@ void M_Setup_Draw (void)
 
 void M_Setup_Key (int k)
 {
-	int			l;
+	int		l;
 
 	switch (k)
 	{
