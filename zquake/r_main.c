@@ -24,8 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sound.h"
 
 void		*colormap;
-vec3_t		viewlightvec;
-alight_t	r_viewlighting = {128, 192, viewlightvec};
 float		r_time1;
 int			r_numallocatededges;
 int			r_pixbytes = 1;
@@ -589,7 +587,10 @@ void R_DrawEntitiesOnList (void)
 			if (R_AliasCheckBBox ())
 			{
 				j = R_LightPoint (currententity->origin);
-	
+
+				if ((currententity->renderfx & RF_WEAPONMODEL) && j < 24)
+					j = 24;		// always give some light on gun
+				
 				lighting.ambientlight = j;
 				lighting.shadelight = j;
 
@@ -617,7 +618,7 @@ void R_DrawEntitiesOnList (void)
 					lighting.shadelight = 192 - lighting.ambientlight;
 
 				if (r_fullbrightSkins.value && currententity->model->modhint == MOD_PLAYER
-					&& cl.allow_fbskins) {
+					&& r_refdef2.allow_fbskins) {
 					lighting.ambientlight = max (lighting.ambientlight, 100);
 					lighting.shadelight = max (lighting.shadelight, 100);
 				}
@@ -631,64 +632,6 @@ void R_DrawEntitiesOnList (void)
 			break;
 		}
 	}
-}
-
-/*
-=============
-R_DrawViewModel
-=============
-*/
-void R_DrawViewModel (void)
-{
-// FIXME: remove and do real lighting
-	float		lightvec[3] = {-1, 0, 0};
-	int			j;
-	int			lnum;
-	vec3_t		dist;
-	float		add;
-	dlight_t	*dl;
-	
-	if (!r_drawentities.value)
-		return;
-
-	currententity = &cl.viewent;
-	if (!currententity->model)
-		return;
-
-	VectorCopy (currententity->origin, r_entorigin);
-	VectorSubtract (r_origin, r_entorigin, modelorg);
-
-	VectorNegate (vup, viewlightvec);
-
-	j = R_LightPoint (currententity->origin);
-
-	if (j < 24)
-		j = 24;		// always give some light on gun
-	r_viewlighting.ambientlight = j;
-	r_viewlighting.shadelight = j;
-
-// add dynamic lights		
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
-	{
-		dl = &cl_dlights[lnum];
-		if (!dl->radius || dl->die < r_refdef2.time)
-			continue;
-
-		VectorSubtract (currententity->origin, dl->origin, dist);
-		add = dl->radius - VectorLength(dist);
-		if (add > 0)
-			r_viewlighting.ambientlight += add;
-	}
-
-// clamp lighting so it doesn't overbright as much
-	if (r_viewlighting.ambientlight > 128)
-		r_viewlighting.ambientlight = 128;
-	if (r_viewlighting.ambientlight + r_viewlighting.shadelight > 192)
-		r_viewlighting.shadelight = 192 - r_viewlighting.ambientlight;
-
-	r_viewlighting.plightvec = lightvec;
-
-	R_AliasDrawModel (&r_viewlighting);
 }
 
 
@@ -1021,7 +964,8 @@ void R_RenderView_ (void)
 		dv_time1 = de_time2;
 	}
 
-	R_DrawViewModel ();
+	// FIXME, now that there's no R_DrawViewModel here, do something
+	// about the speed stats
 
 	if (r_dspeeds.value)
 	{

@@ -277,26 +277,6 @@ void R_DrawEntitiesOnList (void)
 }
 
 /*
-=============
-R_DrawViewModel
-=============
-*/
-void R_DrawViewModel (void)
-{
-	if (!r_drawentities.value)
-		return;
-
-	currententity = &cl.viewent;
-	if (!currententity->model)
-		return;
-
-	// hack the depth range to prevent view model from poking into walls
-	glDepthRange (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));
-	R_DrawAliasModel (currententity);
-	glDepthRange (gldepthmin, gldepthmax);
-}
-
-/*
 ===============
 R_DrawParticles
 ===============
@@ -816,7 +796,6 @@ void R_RenderView (void)
 
 	// render normal view
 	R_RenderScene ();
-	R_DrawViewModel ();
 	R_DrawWaterSurfaces ();
 	R_DrawParticles ();
 

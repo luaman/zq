@@ -270,7 +270,7 @@ void R_DrawAliasModel (entity_t *ent)
 		full_light = true;
 	}
 	else if (clmodel->modhint == MOD_PLAYER && r_fullbrightSkins.value
-		&& cl.allow_fbskins) {
+		&& r_refdef2.allow_fbskins) {
 		ambientlight = shadelight = 128;
 		VectorSet (ambientlight_v, 128, 128, 128);
 		VectorSet (shadelight_v, 128, 128, 128);
@@ -306,7 +306,7 @@ void R_DrawAliasModel (entity_t *ent)
 			shadelight = 192 - ambientlight;
 		
 		// always give the gun some light
-		if (ent == &cl.viewent && ambientlight < 24)
+		if ((ent->renderfx & RF_WEAPONMODEL) && ambientlight < 24)
 			ambientlight = shadelight = 24;
 		
 		// never allow players to go totally black
@@ -386,6 +386,12 @@ void R_DrawAliasModel (entity_t *ent)
 	if (gl_affinemodels.value)
 		glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
+
+	// hack the depth range to prevent view model from poking into walls
+	if (ent->renderfx & RF_WEAPONMODEL)
+		glDepthRange (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));
+
+
 	if (fb_texture && gl_mtexfbskins) {
 		GL_SelectTexture (GL_TEXTURE0_ARB);
 		GL_Bind (texture);
@@ -418,13 +424,17 @@ void R_DrawAliasModel (entity_t *ent)
 		}
 	}
 
+	if (ent->renderfx & RF_WEAPONMODEL)
+		glDepthRange (gldepthmin, gldepthmax);	// restore normal depth range
+
+
 	glShadeModel (GL_FLAT);
 	if (gl_affinemodels.value)
 		glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	glPopMatrix ();
 
-	if (r_shadows.value && !full_light && ent != &cl.viewent)
+	if (r_shadows.value && !full_light && !(ent->renderfx & RF_WEAPONMODEL))
 	{
 		float an = -ent->angles[1] / 180 * M_PI;
 		

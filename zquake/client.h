@@ -27,6 +27,7 @@ typedef struct
 	cache_user_t	cache;
 } skin_t;
 
+
 // player_state_t is the information needed by a player entity
 // to do move prediction and to generate a drawable entity
 typedef struct
@@ -354,8 +355,6 @@ typedef struct
 	int			num_statics;	// stored top down in cl_entities
 
 	int			cdtrack;		// cd audio
-
-	entity_t	viewent;		// weapon model
 
 // all player information
 	player_info_t	players[MAX_CLIENTS];
