@@ -218,7 +218,7 @@ LSpanLoop:
 	pushl	%ebx		// preserve spans pointer
 	movl	C(tadjust),%edx
 	movl	C(sadjust),%esi
-	movl	C(d_scantable)(,%eax,4),%edi	// v * screenwidth
+	movl	C(d_scantable)(,%eax,4),%edi	// v * r_screenwidth
 	addl	%ebp,%edi
 	movl	sspan_t_u(%ebx),%ebp
 	addl	%ebp,%edi				// pdest = &pdestspan[scans->u];

@@ -1800,9 +1800,9 @@ void VID_LockBuffer (void)
 		d_viewbuffer = (void *)(byte *)vid.buffer;
 
 	if (r_dowarp)
-		screenwidth = WARP_WIDTH;
+		r_screenwidth = WARP_WIDTH;
 	else
-		screenwidth = vid.rowbytes;
+		r_screenwidth = vid.rowbytes;
 }
 		
 		
