@@ -1951,7 +1951,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_playerinfo:
-			CL_ParsePlayerinfo ();
+			CL_ParsePlayerState ();
 			break;
 
 		case svc_nails:
