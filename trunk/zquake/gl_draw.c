@@ -30,13 +30,19 @@ cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_max_size = {"gl_max_size", "1024"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
 cvar_t		gl_conalpha = {"gl_conalpha", "0.8"};
+cvar_t		r_nicefont = { "r_nicefont", "1" };
 
-byte		*draw_chars;				// 8*8 graphic characters
+byte		draw_chars1 [128][128] =
+{
+#include "gl_ocr.h"				// 8*8 graphic characters
+};
+
+byte		*draw_chars;
 mpic_t		*draw_disc;
 mpic_t		*draw_backtile;
 
 int			translate_texture;
-int			char_texture;
+int			char_texture1, char_texture2;
 int			crosshairtextures[3];
 
 static byte crosshairdata[3][64] = {
@@ -100,7 +106,13 @@ int			numgltextures;
 void GL_Bind (int texnum)
 {
 	if (gl_nobind.value)
-		texnum = char_texture;
+	{
+		if (r_nicefont.value)
+			texnum = char_texture2;
+		else
+			texnum = char_texture1;
+	}
+
 	if (currenttexture == texnum)
 		return;
 	currenttexture = texnum;
@@ -299,7 +311,11 @@ void Draw_CharToConback (int num, byte *dest)
 
 	row = num>>4;
 	col = num&15;
-	source = draw_chars + (row<<10) + (col<<3);
+	
+	if (r_nicefont.value)
+		source = (char *)draw_chars1 + (row<<10) + (col<<3);
+	else
+		source = draw_chars + (row<<10) + (col<<3);
 
 	drawline = 8;
 
@@ -380,7 +396,7 @@ void Draw_TextureMode_f (void)
 
 void Draw_LoadCharset (void)
 {
-	int i;
+	int		i;
 	char	buf[128*256];
 	char	*src, *dest;
 
@@ -402,7 +418,22 @@ void Draw_LoadCharset (void)
 		dest += 128*8*2;
 	}
 
-	char_texture = GL_LoadTexture ("charset", 128, 256, buf, false, true, false);
+	char_texture1 = GL_LoadTexture ("charset1", 128, 256, buf, false, true, false);
+
+	// Convert the 128*128 conchars texture to 128*256 leaving
+	// empty space between rows so that chars don't stumble on
+	// each other because of texture smoothing.
+	// This hack costs us 64K of GL texture memory
+	memset (buf, 255, sizeof(buf));
+	src = (byte *)draw_chars1;
+	dest = buf;
+	for (i=0 ; i<16 ; i++) {
+		memcpy (dest, src, 128*8);
+		src += 128*8;
+		dest += 128*8*2;
+	}
+
+	char_texture2 = GL_LoadTexture ("charset2", 128, 256, buf, false, true, false);
 }
 
 
@@ -517,7 +548,10 @@ void Draw_Character (int x, int y, int num)
 	frow = row*0.0625;
 	fcol = col*0.0625;
 
-	GL_Bind (char_texture);
+	if (r_nicefont.value)
+		GL_Bind (char_texture2);
+	else
+		GL_Bind (char_texture1);
 
 	glBegin (GL_QUADS);
 	glTexCoord2f (fcol, frow);
@@ -546,7 +580,10 @@ void Draw_String (int x, int y, char *str)
 	if (!str || !str[0])
 		return;
 
-	GL_Bind (char_texture);
+	if (r_nicefont.value)
+		GL_Bind (char_texture2);
+	else
+		GL_Bind (char_texture1);
 
 	glBegin (GL_QUADS);
 
@@ -587,7 +624,10 @@ void Draw_Alt_String (int x, int y, char *str)
 	if (!str || !str[0])
 		return;
 
-	GL_Bind (char_texture);
+	if (r_nicefont.value)
+		GL_Bind (char_texture2);
+	else
+		GL_Bind (char_texture1);
 
 	glBegin (GL_QUADS);
 
@@ -1457,7 +1497,7 @@ GL_LoadTexture
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, qboolean brighten)
 {
 	int	i;
-	unsigned short crc;
+	unsigned short crc = 0;
 	gltexture_t	*glt;
 
 	if (lightmode != 2)

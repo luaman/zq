@@ -177,6 +177,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_fullbrightSkins);
 	Cvar_RegisterVariable (&r_skycolor);
 	Cvar_RegisterVariable (&r_fastsky);
+	Cvar_RegisterVariable (&r_nicefont);
 
 	Cvar_RegisterVariable (&gl_clear);
 	Cvar_RegisterVariable (&gl_texsort);
@@ -455,9 +456,9 @@ void R_TimeRefresh_f (void)
 	glFinish ();
 
 	start = Sys_DoubleTime ();
-	for (i=0 ; i<128 ; i++)
+	for (i = 0; i < 128; i++)
 	{
-		r_refdef.viewangles[1] = i/128.0*360.0;
+		r_refdef.viewangles[1] = i * (360.0 / 128.0);
 		R_RenderView ();
 	}
 
