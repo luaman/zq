@@ -392,7 +392,8 @@ char *CL_ParseMacroString (char *string)
 				case 'h': macro_string = Cmd_Macro_Health_f(); break;
 				case 'l': macro_string = Cmd_Macro_Location_f(); break;
 				case 'L': macro_string = Cmd_Macro_Location2_f(); break;
-				case 'P': macro_string = Cmd_Macro_Powerups_f(); break;
+				case 'P':
+				case 'p': macro_string = Cmd_Macro_Powerups_f(); break;
 				case 'r': macro_string = Cmd_Macro_Rockets_f(); break;
 				case 'w': macro_string = Cmd_Macro_Weapon_f(); break;
 				case 'W': macro_string = Cmd_Macro_Ammo_f(); break;
