@@ -147,7 +147,6 @@ Cvar_Set
 */
 void Cvar_Set (cvar_t *var, char *value)
 {
-	char	*newvalue;
 	static qboolean	changing = false;
 
 	if (!var)
@@ -462,6 +461,31 @@ void Cvar_Set_f (void)
 	}
 }
 
+void Cvar_Inc_f (void)
+{
+	int		c;
+	cvar_t	*var;
+	float	delta;
+
+	c = Cmd_Argc();
+	if (c != 2 && c != 3) {
+		Con_Printf ("inc <cvar> [value]\n");
+		return;
+	}
+
+	var = Cvar_FindVar (Cmd_Argv(1));
+	if (!var) {
+		Con_Printf ("Unknown variable \"%s\"\n", Cmd_Argv(1));
+		return;
+	}
+
+	if (c == 3)
+		delta = atof (Cmd_Argv(2));
+	else
+		delta = 1;
+
+	Cvar_SetValue (var, var->value + delta);
+}
 
 //#define CVAR_DEBUG
 #ifdef CVAR_DEBUG
@@ -486,6 +510,7 @@ void Cvar_Init (void)
 	Cmd_AddCommand ("cvarlist", Cvar_CvarList_f);
 	Cmd_AddCommand ("toggle", Cvar_Toggle_f);
 	Cmd_AddCommand ("set", Cvar_Set_f);
+	Cmd_AddCommand ("inc", Cvar_Inc_f);
 
 #ifdef CVAR_DEBUG
 	Cmd_AddCommand ("cvar_hash_print", Cvar_Hash_Print_f);
