@@ -1246,7 +1246,7 @@ void() PrintScores =
 	
 	// Check to see if scores changed from last time you hit scores command.
 	// DO this by checking if k_nochange is 0. 
-	// which is set in ClientObituary in client.q
+	// which is set in ClientObituary in client.qc
 	if( (k_showscores) && k_nochange == 0)
         {
 		k_scores1 = 0;
