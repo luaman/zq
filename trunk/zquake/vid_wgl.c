@@ -947,7 +947,8 @@ void AppActivate(BOOL fActive, BOOL minimize)
 
 			if (vid_canalttab && vid_wassuspended) {
 				vid_wassuspended = false;
-				ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN);
+				if (ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
+					Sys_Error ("Couldn't set fullscreen DIB mode");
 				ShowWindow (mainwindow, SW_SHOWNORMAL);
 
 				// Fix for alt-tab bug in NVidia drivers
