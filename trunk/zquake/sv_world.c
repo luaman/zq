@@ -213,6 +213,73 @@ void SV_UnlinkEdict (edict_t *ent)
 	ent->area.prev = ent->area.next = NULL;
 }
 
+/*
+====================
+SV_AreaEdicts
+====================
+*/
+int SV_AreaEdicts (vec3_t mins, vec3_t maxs, edict_t **edicts, int max_edicts, int area)
+{
+	link_t		*l, *start;
+	edict_t		*touch;
+	int			stackdepth = 0, count = 0;
+	areanode_t	*localstack[AREA_NODES], *node = sv_areanodes;
+
+// touch linked edicts
+	while (1)
+	{
+		if (area == AREA_SOLID)
+			start = &node->solid_edicts;
+		else
+			start = &node->trigger_edicts;
+
+		for (l = start->next ; l != start ; l = l->next)
+		{
+			touch = EDICT_FROM_AREA(l);
+			if (touch->v.solid == SOLID_NOT)
+				continue;
+			if (mins[0] > touch->v.absmax[0]
+			|| mins[1] > touch->v.absmax[1]
+			|| mins[2] > touch->v.absmax[2]
+			|| maxs[0] < touch->v.absmin[0]
+			|| maxs[1] < touch->v.absmin[1]
+			|| maxs[2] < touch->v.absmin[2])
+				continue;
+
+			if (count == max_edicts)
+				return count;
+			edicts[count++] = touch;
+		}
+
+		if (node->axis == -1)
+			goto checkstack;		// terminal node
+
+		// recurse down both sides
+		if (maxs[node->axis] > node->dist)
+		{
+			if (mins[node->axis] < node->dist)
+			{
+				localstack[stackdepth++] = node->children[0];
+				goto child1;
+			}
+			node = node->children[0];
+			continue;
+		}
+		if (mins[node->axis] < node->dist)
+		{
+child1:
+			node = node->children[1];
+			continue;
+		}
+
+checkstack:
+		if (!stackdepth)
+			return count;
+		node = localstack[--stackdepth];
+	}
+
+	return count;
+}
 
 /*
 ====================
@@ -221,27 +288,21 @@ SV_TouchLinks
 */
 void SV_TouchLinks ( edict_t *ent, areanode_t *node )
 {
-	link_t		*l, *next;
-	edict_t		*touch;
+	int			i, numtouch;
+	edict_t		*touchlist[MAX_EDICTS], *touch;
 	int			old_self, old_other;
 
+	numtouch = SV_AreaEdicts (ent->v.absmin, ent->v.absmax, touchlist, MAX_EDICTS, AREA_TRIGGERS);
+
 // touch linked edicts
-	for (l = node->trigger_edicts.next ; l != &node->trigger_edicts ; l = next)
+	for (i = 0; i < numtouch; i++)
 	{
-		next = l->next;
-		touch = EDICT_FROM_AREA(l);
+		touch = touchlist[i];
 		if (touch == ent)
 			continue;
 		if (!touch->v.touch || touch->v.solid != SOLID_TRIGGER)
 			continue;
-		if (ent->v.absmin[0] > touch->v.absmax[0]
-		|| ent->v.absmin[1] > touch->v.absmax[1]
-		|| ent->v.absmin[2] > touch->v.absmax[2]
-		|| ent->v.absmax[0] < touch->v.absmin[0]
-		|| ent->v.absmax[1] < touch->v.absmin[1]
-		|| ent->v.absmax[2] < touch->v.absmin[2] )
-			continue;
-			
+
 		old_self = pr_global_struct->self;
 		old_other = pr_global_struct->other;
 
@@ -253,18 +314,13 @@ void SV_TouchLinks ( edict_t *ent, areanode_t *node )
 		pr_global_struct->self = old_self;
 		pr_global_struct->other = old_other;
 	}
-	
-// recurse down both sides
-	if (node->axis == -1)
-		return;
-	
-	if ( ent->v.absmax[node->axis] > node->dist )
-		SV_TouchLinks ( ent, node->children[0] );
-	if ( ent->v.absmin[node->axis] < node->dist )
-		SV_TouchLinks ( ent, node->children[1] );
 }
 
-
+/*
+====================
+SV_LinkToLeafs
+====================
+*/
 void SV_LinkToLeafs (edict_t *ent)
 {
 	int	i, leafnums[MAX_ENT_LEAFS];
@@ -450,31 +506,22 @@ Mins and maxs enclose the entire area swept by the move
 */
 void SV_ClipToLinks ( areanode_t *node, moveclip_t *clip )
 {
-	link_t		*l, *next;
-	edict_t		*touch;
+	int			i, numtouch;
+	edict_t		*touchlist[MAX_EDICTS], *touch;
 	trace_t		trace;
 
+	numtouch = SV_AreaEdicts (clip->boxmins, clip->boxmaxs, touchlist, MAX_EDICTS, AREA_SOLID);
+
 // touch linked edicts
-	for (l = node->solid_edicts.next ; l != &node->solid_edicts ; l = next)
+	for (i = 0; i < numtouch; i++)
 	{
-		next = l->next;
-		touch = EDICT_FROM_AREA(l);
-		if (touch->v.solid == SOLID_NOT)
-			continue;
+		touch = touchlist[i];
 		if (touch == clip->passedict)
 			continue;
 		if (touch->v.solid == SOLID_TRIGGER)
 			Host_Error ("Trigger in clipping list");
 
 		if (clip->type == MOVE_NOMONSTERS && touch->v.solid != SOLID_BSP)
-			continue;
-
-		if (clip->boxmins[0] > touch->v.absmax[0]
-		|| clip->boxmins[1] > touch->v.absmax[1]
-		|| clip->boxmins[2] > touch->v.absmax[2]
-		|| clip->boxmaxs[0] < touch->v.absmin[0]
-		|| clip->boxmaxs[1] < touch->v.absmin[1]
-		|| clip->boxmaxs[2] < touch->v.absmin[2] )
 			continue;
 
 		if (clip->passedict && clip->passedict->v.size[0] && !touch->v.size[0])
@@ -510,15 +557,6 @@ void SV_ClipToLinks ( areanode_t *node, moveclip_t *clip )
 		else if (trace.startsolid)
 			clip->trace.startsolid = true;
 	}
-	
-// recurse down both sides
-	if (node->axis == -1)
-		return;
-
-	if ( clip->boxmaxs[node->axis] > node->dist )
-		SV_ClipToLinks ( node->children[0], clip );
-	if ( clip->boxmins[node->axis] < node->dist )
-		SV_ClipToLinks ( node->children[1], clip );
 }
 
 
