@@ -486,12 +486,6 @@ void() PutClientInServer =
 
 	spawn_tdeath (self.origin, self);
 
-	// Set Rocket Jump Modifiers
-	if (stof(infokey(world, "rj")) != 0)
-	{                
-		rj = stof(infokey(world, "rj"));
-	}
-
 	if (deathmatch == 4)
 	{
 		self.ammo_shells = 0;
