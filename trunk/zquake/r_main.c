@@ -602,11 +602,13 @@ void R_DrawEntitiesOnList (void)
 					lighting.ambientlight = lighting.shadelight = 24;		// always give some light on gun
 				
 				// never allow players to go totally black
-				if (currententity->model->modhint == MOD_PLAYER && lighting.ambientlight < 8)
-						lighting.ambientlight = lighting.shadelight = 8;
+				if ((currententity->model->modhint == MOD_PLAYER || currententity->renderfx & RF_PLAYERMODEL)
+						&& lighting.ambientlight < 8) {
+					lighting.ambientlight = lighting.shadelight = 8;
+				}
 
-				if (r_fullbrightSkins.value && currententity->model->modhint == MOD_PLAYER
-					&& r_refdef2.allow_fbskins) {
+				if ((currententity->model->modhint == MOD_PLAYER || currententity->renderfx & RF_PLAYERMODEL)
+						&&r_fullbrightSkins.value && r_refdef2.allow_fbskins) {
 					lighting.ambientlight = max (lighting.ambientlight, 100);
 					lighting.shadelight = max (lighting.shadelight, 100);
 				}
