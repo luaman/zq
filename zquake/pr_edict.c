@@ -54,6 +54,7 @@ static gefv_cache	gefvCache[GEFV_CACHESIZE] = {{NULL, ""}, {NULL, ""}};
 func_t SpectatorConnect;
 func_t SpectatorThink;
 func_t SpectatorDisconnect;
+func_t BotPreThink;
 
 
 /*
@@ -1117,8 +1118,8 @@ void PR_LoadProgs (void)
 	for (i=0 ; i<progs->numglobals ; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 
-	// Zoid, find the spectator functions
-	SpectatorConnect = SpectatorThink = SpectatorDisconnect = 0;
+	// find optional QC-exported functions
+	SpectatorConnect = SpectatorThink = SpectatorDisconnect = BotPreThink = 0;
 
 	if ((f = ED_FindFunction ("SpectatorConnect")) != NULL)
 		SpectatorConnect = (func_t)(f - pr_functions);
@@ -1126,6 +1127,8 @@ void PR_LoadProgs (void)
 		SpectatorThink = (func_t)(f - pr_functions);
 	if ((f = ED_FindFunction ("SpectatorDisconnect")) != NULL)
 		SpectatorDisconnect = (func_t)(f - pr_functions);
+	if ((f = ED_FindFunction ("BotPreThink")) != NULL)
+		BotPreThink = (func_t)(f - pr_functions);
 
 	PR_CheckExtensions ();
 	PR_FindCmdFunctions ();

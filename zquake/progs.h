@@ -140,6 +140,7 @@ extern	int			pr_xstatement;
 extern func_t SpectatorConnect;
 extern func_t SpectatorThink;
 extern func_t SpectatorDisconnect;
+extern func_t BotPreThink;
 
 void PR_RunError (char *error, ...);
 
