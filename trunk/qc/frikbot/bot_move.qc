@@ -62,8 +62,8 @@ float frik_recognize_plat (float flag)
 float frik_KeysForDir (vector sdir)
 {
 
-	local vector keydir;
-	local float outkeys, tang;
+	vector	keydir;
+	float	outkeys, tang;
 	outkeys = 0;
 	if (sdir_x || sdir_y)
 	{
@@ -104,8 +104,9 @@ manuever around.
 
 void frik_obstructed (vector whichway, float danger)
 {
-	local float dist;
-	local vector disway, org;
+	float	dist;
+	vector	disway, org;
+
 // TODO: something
 	if (self.b_aiflags & AI_BLIND)
 		return;
@@ -171,8 +172,8 @@ Also responsible for jumping gaps.
 
 void frik_obstacles ()
 {
-	local vector start, stop, ang;
-	local float test, conts, dist, hgt;
+	vector	start, stop, ang;
+	float	test, conts, dist, hgt;
 
 	if (!(self.flags & FL_ONGROUND))
 		return;
@@ -304,8 +305,8 @@ I have no idea how well it will work
 
 void frik_dodge_obstruction ()
 {
-	local vector way, org;
-	local float oflags, yaw;
+	vector	way, org;
+	float	oflags, yaw;
 
 	if (!(self.b_aiflags & AI_OBSTRUCTED))
 		return;
@@ -361,8 +362,8 @@ blah
 */
 void frik_movetogoal ()
 {
-	local vector way, start, stop, ang;
-	local float g;
+	vector	way, start, stop, ang;
+	float	g;
 
 	if (self.target1 == world)
 	{
@@ -424,8 +425,8 @@ own waypoints.
 */
 void frik_bot_roam ()
 {
-	local vector org, ang, org1;
-	local float loopcount, flag, dist;
+	vector	org, ang, org1;
+	float	loopcount, flag, dist;
 
 	loopcount = 26;
 	flag = FALSE;

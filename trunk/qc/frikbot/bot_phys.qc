@@ -15,8 +15,8 @@ float CL_KeyState (float key)
 //
 void CL_KeyMove ()
 {
-	local float anglespeed;
-	local vector view;
+	float	anglespeed;
+	vector	view;
 
 	if (self.keys != self.oldkeys)
 	{
@@ -100,7 +100,8 @@ Stuff mimicking sv_phys.c
 
 float() SV_RunThink  =
 {
-	local float thinktime, bkuptime;
+	float	thinktime, bkuptime;
+
 	thinktime = self.nextthink;
 	bkuptime = time;
 	if (thinktime <= 0 || thinktime > (time + real_frametime))
@@ -120,8 +121,9 @@ float() SV_RunThink  =
 // modified heavily by me
 float(vector dir) botCheckForStep =
 {
-	local vector currentorigin, v;
-	local float currentflags, yaw, stepdistance, movedistance; 
+	vector	currentorigin, v;
+	float	currentflags, yaw, stepdistance, movedistance; 
+
 	currentorigin = self.origin;
 	currentflags = self.flags; 
 	self.flags = FL_ONGROUND | FL_PARTIALGROUND; 
@@ -150,8 +152,8 @@ float(vector dir) botCheckForStep =
 // this is merely here to fix a problem with e3m5
 void BruteForceStep (vector dir)
 {
-	local vector currentorigin;
-	local float currentflags, i, len;
+	vector	currentorigin;
+	float	currentflags, i, len;
 
 	currentorigin = self.origin;
 	currentflags = self.flags;
@@ -173,8 +175,8 @@ void BruteForceStep (vector dir)
 
 void PostPhysics ()
 {
-	local vector obstr, org;
-	local float back, dst,cflags;
+	vector	obstr, org;
+	float	back, dst,cflags;
 
 	self = self.owner;
 

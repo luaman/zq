@@ -114,9 +114,9 @@ string PickARandomName (entity ent)
 	if (bot_count > 16)
 		return "player";
 
-	local float y, test;
-	local string h;
-	local entity t;
+	float	y, test;
+	string	h;
+	entity	t;
 	y = TRUE;
 	while(y)
 	{
@@ -168,7 +168,7 @@ void bot_start_topic (float tpic)
 
 void bot_chat ()
 {
-	local float r;
+	float	r;
 	if (b_options & OPT_NOCHAT)
 		return;
 	r = ceil (random() * 6);
@@ -492,7 +492,7 @@ Kick A Bot.
 
 void KickABot ()
 {
-	local entity ty;
+	entity	ty;
 	ty = find(world, classname, "player");
 	while (ty != world)
 	{
@@ -537,8 +537,8 @@ of the bounding boxes
 
 float fisible (entity targ)
 {
-	local vector	spot1, org;
-	local float thruwater, pc1, pc2;
+	vector	spot1, org;
+	float	thruwater, pc1, pc2;
 	
 	org = realorigin(targ);
 	spot1 = self.origin + self.view_ofs;
@@ -631,8 +631,8 @@ for waypoints
 // this is used for waypoint stuff....
 float wisible (entity targ1, entity targ2)
 {
-	local vector	spot1, spot2;
-	local entity ignore;
+	vector	spot1, spot2;
+	entity	ignore;
 
 	spot1 = targ1.origin;
 	spot2 = realorigin(targ2);
@@ -704,8 +704,8 @@ is the entity in the bot's field of view
 */
 float fov (entity targ)
 {
-	local vector yawn;
-	local float g;
+	vector	yawn;
+	float	g;
 	yawn = realorigin(targ);
 	yawn = (yawn + targ.view_ofs) - (self.origin + self.view_ofs);
 	yawn = normalize(yawn);

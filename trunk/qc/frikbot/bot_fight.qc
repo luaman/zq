@@ -2,7 +2,7 @@
 
 float bot_size_player (entity e)
 {
-	local float sz;
+	float	sz;
 
 	sz = e.health + e.armorvalue * e.armortype;
 	if (e.weapon == IT_LIGHTNING)
@@ -32,9 +32,9 @@ float bot_size_player (entity e)
 
 void bot_dodge_stuff ()
 {
-	local entity foe;
-	local float foedist, avdist, scandist, foesz, flen, tsz;
-	local vector v;
+	entity	foe;
+	float	foedist, avdist, scandist, foesz, flen, tsz;
+	vector	v;
 
 	if (waypoint_mode > WM_LOADED)
 		return;
@@ -214,8 +214,8 @@ Pick a weapon based on range / ammo
 
 void bot_weapon_switch (float brange)
 {
-	local	float	it, flag, pulse;
-	local vector v;
+	float	it, flag, pulse;
+	vector	v;
 
 	it = self.items & 127;
 
@@ -285,7 +285,7 @@ void bot_weapon_switch (float brange)
 void bot_shoot ()
 {
 	// quick little function to stop making him shoot the wrong way ! Argh
-	local float g;
+	float	g;
 	g = angcomp(self.v_angle_x, self.b_angle_x);
 	if (fabs(g) > 30)
 		return; // argh, too far away
@@ -308,8 +308,8 @@ attacking an enemy.
 
 void bot_fight_style ()
 {
-	local vector v, v1, v2, org;
-	local float foedist, mysz, foesz;
+	vector	v, v1, v2, org;
+	float	foedist, mysz, foesz;
 
 
 	if (self.enemy.health <= 0)

@@ -299,7 +299,8 @@ signs on to the server.
 
 float ClientBitFlag (float clientno)
 {
-	local float bitflag;
+	float	bitflag;
+
 	bitflag = 1;
 	while(clientno > 0)
 	{
@@ -319,7 +320,7 @@ BotConnect and related functions.
 */				
 entity GetClientEntity (float num)
 {
-	local entity upsy;
+	entity	upsy;
 	upsy = world;
 	num = num + 1;
 	while (num > 0)
@@ -418,7 +419,7 @@ void BotPostThink ()
 
 void BotFrame ()
 {
-	local string h;
+	string	h;
 	
 	h = infokey(world, "bot_options");
 	b_options = stof(h);
