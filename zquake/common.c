@@ -1429,7 +1429,7 @@ pack_t *COM_LoadPackFile (char *packfile)
 	if (numpackfiles > MAX_FILES_IN_PACK)
 		Sys_Error ("%s has %i files", packfile, numpackfiles);
 
-	newfiles = Z_Malloc (numpackfiles * sizeof(packfile_t));
+	newfiles = Q_Malloc (numpackfiles * sizeof(packfile_t));
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
 	fread (&info, 1, header.dirlen, packhandle);
@@ -1442,7 +1442,7 @@ pack_t *COM_LoadPackFile (char *packfile)
 		newfiles[i].filelen = LittleLong(info[i].filelen);
 	}
 
-	pack = Z_Malloc (sizeof (pack_t));
+	pack = Q_Malloc (sizeof (pack_t));
 	strcpy (pack->filename, packfile);
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
@@ -1533,11 +1533,11 @@ void COM_Gamedir (char *dir)
 		if (com_searchpaths->pack)
 		{
 			fclose (com_searchpaths->pack->handle);
-			Z_Free (com_searchpaths->pack->files);
-			Z_Free (com_searchpaths->pack);
+			free (com_searchpaths->pack->files);
+			free (com_searchpaths->pack);
 		}
 		next = com_searchpaths->next;
-		Z_Free (com_searchpaths);
+		free (com_searchpaths);
 		com_searchpaths = next;
 	}
 
@@ -1554,7 +1554,7 @@ void COM_Gamedir (char *dir)
 	//
 	// add the directory to the search path
 	//
-	search = Z_Malloc (sizeof(searchpath_t));
+	search = Q_Malloc (sizeof(searchpath_t));
 	strcpy (search->filename, com_gamedir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
@@ -1568,7 +1568,7 @@ void COM_Gamedir (char *dir)
 		pak = COM_LoadPackFile (pakfile);
 		if (!pak)
 			break;
-		search = Z_Malloc (sizeof(searchpath_t));
+		search = Q_Malloc (sizeof(searchpath_t));
 		search->pack = pak;
 		search->next = com_searchpaths;
 		com_searchpaths = search;		
