@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -22,6 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gl_local.h"
 #include "crc.h"
 #include "version.h"
+
+#ifdef MINGW32
+#include <GL/glext.h>	// GL_COLOR_INDEX8_EXT is defined here
+#endif /* MINGW32 */
 
 extern unsigned char d_15to8table[65536];
 extern unsigned d_8to24table2[256];
@@ -93,14 +97,14 @@ void GL_SelectTexture (GLenum target)
 #ifdef _WIN32 // no multitexture under Linux or Darwin yet
 	qglActiveTexture (target);
 #endif
-	if (target == oldtarget) 
+	if (target == oldtarget)
 		return;
 	cnttextures[oldtarget-GL_TEXTURE0_ARB] = currenttexture;
 	currenttexture = cnttextures[target-GL_TEXTURE0_ARB];
 	oldtarget = target;
 }
 
-void GL_DisableMultitexture (void) 
+void GL_DisableMultitexture (void)
 {
 	if (mtexenabled) {
 		glDisable (GL_TEXTURE_2D);
@@ -151,7 +155,7 @@ static void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel)
 	{
 		Com_Printf ("bad filter name: %s\n", string);
 		*cancel = true;		// don't change the cvar
-		return;	
+		return;
 	}
 
 	gl_filter_min = modes[i].minimize;
@@ -500,7 +504,7 @@ done: ;
 	}
 }
 
-void GL_Upload8_EXT (byte *data, int width, int height, qbool mipmap, qbool alpha) 
+void GL_Upload8_EXT (byte *data, int width, int height, qbool mipmap, qbool alpha)
 {
 	int			i, s;
 	qbool		noalpha;
@@ -624,7 +628,7 @@ void GL_Upload8 (byte *data, int width, int height, qbool mipmap, qbool alpha, q
 		{
 			p = data[i];
 			if (p < 224)
-				trans[i] = table[p] & LittleLong(0x00FFFFFF); // transparent 
+				trans[i] = table[p] & LittleLong(0x00FFFFFF); // transparent
 			else
 				trans[i] = table[p];	// fullbright
 		}
@@ -807,13 +811,13 @@ static void R_InitDefaultTexture (void)
 
 // create a simple checkerboard texture for the default
 	r_notexture_mip = Hunk_AllocName (sizeof(texture_t) + 16*16+8*8+4*4+2*2, "notexture");
-	
+
 	r_notexture_mip->width = r_notexture_mip->height = 16;
 	r_notexture_mip->offsets[0] = sizeof(texture_t);
 	r_notexture_mip->offsets[1] = r_notexture_mip->offsets[0] + 16*16;
 	r_notexture_mip->offsets[2] = r_notexture_mip->offsets[1] + 8*8;
 	r_notexture_mip->offsets[3] = r_notexture_mip->offsets[2] + 4*4;
-	
+
 	for (m=0 ; m<4 ; m++)
 	{
 		dest = (byte *)r_notexture_mip + r_notexture_mip->offsets[m];
@@ -825,7 +829,7 @@ static void R_InitDefaultTexture (void)
 				else
 					*dest++ = 15;
 			}
-	}	
+	}
 }
 
 
