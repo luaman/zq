@@ -728,15 +728,9 @@ void R_DrawBEntitiesOnList (void)
 	// instanced model
 		if (clmodel->firstmodelsurface != 0)
 		{
-			for (k=0 ; k<MAX_DLIGHTS ; k++)
+			for (k=0 ; k<r_refdef2.numDlights ; k++)
 			{
-				if ((cl_dlights[k].die < r_refdef2.time) ||
-					(!cl_dlights[k].radius))
-				{
-					continue;
-				}
-
-				R_MarkLights (&cl_dlights[k], 1<<k,
+				R_MarkLights (&r_refdef2.dlights[k], 1<<k,
 					clmodel->nodes + clmodel->firstnode);
 			}
 		}

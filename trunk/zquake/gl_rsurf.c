@@ -156,22 +156,22 @@ void R_BuildDlightList (msurface_t *surf)
 	tmax = (surf->extents[1]>>4)+1;
 	tex = surf->texinfo;
 
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	for (lnum=0 ; lnum<r_refdef2.numDlights ; lnum++)
 	{
 		if ( !(surf->dlightbits & (1<<lnum) ) )
 			continue;		// not lit by this light
 
-		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) -
+		dist = DotProduct (r_refdef2.dlights[lnum].origin, surf->plane->normal) -
 				surf->plane->dist;
-		irad = (cl_dlights[lnum].radius - fabs(dist)) * 256;
-		iminlight = cl_dlights[lnum].minlight * 256;
+		irad = (r_refdef2.dlights[lnum].radius - fabs(dist)) * 256;
+		iminlight = r_refdef2.dlights[lnum].minlight * 256;
 		if (irad < iminlight)
 			continue;
 
 		iminlight = irad - iminlight;
 		
 		for (i=0 ; i<3 ; i++) {
-			impact[i] = cl_dlights[lnum].origin[i] -
+			impact[i] = r_refdef2.dlights[lnum].origin[i] -
 				surf->plane->normal[i]*dist;
 		}
 		
@@ -208,7 +208,7 @@ void R_BuildDlightList (msurface_t *surf)
 			light->rad = irad;
 			light->local[0] = local[0];
 			light->local[1] = local[1];
-			light->type = cl_dlights[lnum].type;
+			light->type = r_refdef2.dlights[lnum].type;
 			numdlights++;
 		}
 	}
@@ -974,13 +974,9 @@ void R_DrawBrushModel (entity_t *e)
 // instanced model
 	if (clmodel->firstmodelsurface != 0 && !gl_flashblend.value)
 	{
-		for (k = 0; k < MAX_DLIGHTS; k++)
+		for (k = 0; k < r_refdef2.numDlights; k++)
 		{
-			if ((cl_dlights[k].die < r_refdef2.time) ||
-				!cl_dlights[k].radius)
-				continue;
-
-			R_MarkLights (&cl_dlights[k], 1<<k,
+			R_MarkLights (&r_refdef2.dlights[k], 1<<k,
 				clmodel->nodes + clmodel->firstnode);
 		}
 	}

@@ -641,13 +641,10 @@ void R_AliasSetupLighting (void)
 	r_ambientlight = j;
 	r_shadelight = j;
 
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	for (lnum=0 ; lnum<r_refdef2.numDlights ; lnum++)
 	{
-		if (cl_dlights[lnum].die < r_refdef2.time || !cl_dlights[lnum].radius)
-			continue;
-
-		VectorSubtract (currententity->origin, cl_dlights[lnum].origin, dist);
-		add = cl_dlights[lnum].radius - VectorLength(dist);
+		VectorSubtract (currententity->origin, r_refdef2.dlights[lnum].origin, dist);
+		add = r_refdef2.dlights[lnum].radius - VectorLength(dist);
 		if (add > 0)
 			r_ambientlight += add;
 	}

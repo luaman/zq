@@ -76,23 +76,23 @@ void R_AddDynamicLights (void)
 	tmax = (surf->extents[1]>>4)+1;
 	tex = surf->texinfo;
 
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	for (lnum=0 ; lnum<r_refdef2.numDlights ; lnum++)
 	{
 		if ( !(surf->dlightbits & (1<<lnum) ) )
 			continue;		// not lit by this light
 
-		rad = cl_dlights[lnum].radius;
-		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) -
+		rad = r_refdef2.dlights[lnum].radius;
+		dist = DotProduct (r_refdef2.dlights[lnum].origin, surf->plane->normal) -
 				surf->plane->dist;
 		rad -= fabs(dist);
-		minlight = cl_dlights[lnum].minlight;
+		minlight = r_refdef2.dlights[lnum].minlight;
 		if (rad < minlight)
 			continue;
 		minlight = rad - minlight;
 
 		for (i=0 ; i<3 ; i++)
 		{
-			impact[i] = cl_dlights[lnum].origin[i] -
+			impact[i] = r_refdef2.dlights[lnum].origin[i] -
 					surf->plane->normal[i]*dist;
 		}
 
@@ -155,22 +155,22 @@ void R_BuildDLightList (void)
 	tmax = (surf->extents[1]>>4)+1;
 	tex = surf->texinfo;
 
-	for (lnum=0 ; lnum<MAX_DLIGHTS ; lnum++)
+	for (lnum=0 ; lnum<r_refdef2.numDlights ; lnum++)
 	{
 		if ( !(surf->dlightbits & (1<<lnum) ) )
 			continue;		// not lit by this light
 
-		dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) -
+		dist = DotProduct (r_refdef2.dlights[lnum].origin, surf->plane->normal) -
 				surf->plane->dist;
-		irad = (cl_dlights[lnum].radius - fabs(dist)) * 256;
-		iminlight = cl_dlights[lnum].minlight * 256;
+		irad = (r_refdef2.dlights[lnum].radius - fabs(dist)) * 256;
+		iminlight = r_refdef2.dlights[lnum].minlight * 256;
 		if (irad < iminlight)
 			continue;
 
 		iminlight = irad - iminlight;
 		
 		for (i=0 ; i<3 ; i++) {
-			impact[i] = cl_dlights[lnum].origin[i] -
+			impact[i] = r_refdef2.dlights[lnum].origin[i] -
 				surf->plane->normal[i]*dist;
 		}
 		

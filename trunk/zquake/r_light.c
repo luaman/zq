@@ -141,12 +141,10 @@ void R_PushDlights (void)
 
 	r_dlightframecount = r_framecount + 1;	// because the count hasn't
 											//  advanced yet for this frame
-	l = cl_dlights;
+	l = r_refdef2.dlights;
 
-	for (i=0 ; i<MAX_DLIGHTS ; i++, l++)
+	for (i=0 ; i<r_refdef2.numDlights ; i++, l++)
 	{
-		if (l->die < r_refdef2.time || !l->radius)
-			continue;
 		R_MarkLights ( l, 1<<i, r_worldmodel->nodes );
 	}
 }

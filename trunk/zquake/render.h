@@ -41,6 +41,22 @@ typedef struct
 	char	map[64];
 } lightstyle_t;
 
+
+#define	MAX_DLIGHTS		32
+
+typedef enum {	lt_default, lt_blue, lt_red, lt_redblue, lt_muzzleflash,
+				lt_explosion, lt_rocket, NUM_DLIGHTTYPES
+} dlighttype_t;
+
+typedef struct
+{
+	int				key;		// FIXME
+	vec3_t			origin;
+	float			radius;
+	float			minlight;
+	dlighttype_t	type;
+} dlight_t;
+
 typedef struct efrag_s
 {
 	struct mleaf_s		*leaf;
@@ -122,6 +138,8 @@ typedef struct {
 	qbool			watervis;
 
 	lightstyle_t	*lightstyles;
+	int				numDlights;
+	dlight_t		*dlights;
 	int				numParticles;
 	particle_t		*particles;
 } refdef2_t;

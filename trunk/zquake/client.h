@@ -149,21 +149,17 @@ typedef struct
 // client_state_t should hold all pieces of the client state
 //
 
-#define	MAX_DLIGHTS		32
-
-typedef enum { lt_default, lt_blue, lt_red, lt_redblue, lt_muzzleflash,
-lt_explosion, lt_rocket, NUM_DLIGHTTYPES } dlighttype_t;
 
 typedef struct
 {
-	int		key;				// so entities can reuse same entry
-	vec3_t	origin;
-	float	radius;
-	float	die;				// stop lighting after this time
-	float	decay;				// drop this each second
-	float	minlight;			// don't add when contributing less
-	int		type;
-} dlight_t;
+	int				key;		// so entities can reuse same entry
+	vec3_t			origin;
+	float			radius;
+	float			die;		// stop lighting after this time
+	float			decay;		// drop this each second
+	float			minlight;	// don't add when contributing less
+	dlighttype_t	type;
+} cdlight_t;
 
 typedef struct cparticle_s
 {
@@ -433,7 +429,6 @@ extern	centity_t		cl_entities[MAX_CL_EDICTS];
 extern	efrag_t			cl_efrags[MAX_EFRAGS];
 extern	entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 extern	lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
-extern	dlight_t		cl_dlights[MAX_DLIGHTS];
 
 extern byte		*host_basepal;
 extern byte		*host_colormap;
@@ -460,6 +455,9 @@ extern entity_t		cl_visedicts[MAX_VISEDICTS];
 
 extern int			cl_numvisparticles;
 extern particle_t	*cl_visparticles;	// allocated on hunk
+
+extern int			cl_numvisdlights;
+extern dlight_t		cl_visdlights[MAX_DLIGHTS];
 
 extern char emodel_name[], pmodel_name[];
 
@@ -514,9 +512,10 @@ void CL_UpdateTEnts (void);
 //
 // cl_effects.c
 //
-dlight_t *CL_AllocDlight (int key);
-void CL_NewDlight (int key, vec3_t origin, float radius, float time, int type);
-void CL_DecayLights (void);
+cdlight_t *CL_AllocDlight (int key);
+void CL_NewDlight (int key, vec3_t origin, float radius, float time, dlighttype_t type);
+void CL_LinkDlights (void);
+void CL_ClearDlights (void);
 
 void CL_InitParticles (void);
 void CL_ClearParticles (void);
