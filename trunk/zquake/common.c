@@ -2039,6 +2039,22 @@ byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence)
 }
 
 
+//=====================================================================
+
+#define	MAXPRINTMSG	4096
+
+void (*rd_print) (char *) = NULL;
+
+void Com_BeginRedirect (void (*RedirectedPrint) (char *))
+{
+	rd_print = RedirectedPrint;
+}
+
+void Com_EndRedirect (void)
+{
+	rd_print = NULL;
+}
+
 /*
 ================
 Com_Printf
@@ -2046,33 +2062,27 @@ Com_Printf
 All console printing must go through this in order to be logged to disk
 ================
 */
-#define	MAXPRINTMSG	4096
 // FIXME: make a buffer size safe vsprintf?
 void Com_Printf (char *fmt, ...)
 {
-#if defined(QW_BOTH) || defined(SERVERONLY)
-	extern qboolean	sv_redirected;
-	extern FILE *	sv_logfile;
-	extern char		outputbuf[8000];
-	void SV_FlushRedirect ();
-#endif
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
+#if defined(QW_BOTH) || defined(SERVERONLY)
+	extern FILE *	sv_logfile;
+#endif
 	
 	va_start (argptr, fmt);
 	vsprintf (msg, fmt, argptr);
 	va_end (argptr);
 	
-#if defined(QW_BOTH) || defined(SERVERONLY)
-	// add to redirected message
-	if (sv_redirected)
+	if (rd_print)
 	{
-		if (strlen (msg) + strlen(outputbuf) > sizeof(outputbuf) - 1)
-			SV_FlushRedirect ();
-		strcat (outputbuf, msg);
+		// add to redirected message
+		rd_print (msg);
 		return;
 	}
 
+#if defined(QW_BOTH) || defined(SERVERONLY)
 	if (sv_logfile)
 		fprintf (sv_logfile, "%s", msg);
 #endif

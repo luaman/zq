@@ -26,6 +26,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CHAN_ITEM   3
 #define CHAN_BODY   4
 
+extern cvar_t sv_phs;
+
+
 /*
 =============================================================================
 
@@ -34,11 +37,8 @@ Com_Printf redirection
 =============================================================================
 */
 
-char	outputbuf[8000];
-
 redirect_t	sv_redirected;
-
-extern cvar_t sv_phs;
+static char	sv_outputbuf[MAX_MSGLEN - 1];
 
 /*
 ==================
@@ -47,32 +47,31 @@ SV_FlushRedirect
 */
 void SV_FlushRedirect (void)
 {
-	char	send[8000+6];
-
 	if (sv_redirected == RD_PACKET)
 	{
-		send[0] = 0xff;
-		send[1] = 0xff;
-		send[2] = 0xff;
-		send[3] = 0xff;
-		send[4] = A2C_PRINT;
-		memcpy (send+5, outputbuf, strlen(outputbuf)+1);
-
-		NET_SendPacket (NS_SERVER, strlen(send)+1, send, net_from);
+		// send even if sv_outputbuf is empty
+		Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c%s", A2C_PRINT,
+			sv_outputbuf);
 	}
 	else if (sv_redirected == RD_CLIENT)
 	{
-		if (!outputbuf[0])
+		if (!sv_outputbuf[0])
 			return;
-		ClientReliableWrite_Begin (host_client, svc_print, strlen(outputbuf)+3);
+		ClientReliableWrite_Begin (host_client, svc_print, strlen(sv_outputbuf)+3);
 		ClientReliableWrite_Byte (host_client, PRINT_HIGH);
-		ClientReliableWrite_String (host_client, outputbuf);
+		ClientReliableWrite_String (host_client, sv_outputbuf);
 	}
 
 	// clear it
-	outputbuf[0] = 0;
+	sv_outputbuf[0] = 0;
 }
 
+void SV_RedirectedPrint (char *msg)
+{
+	if (strlen (msg) + strlen(sv_outputbuf) >= sizeof(sv_outputbuf))
+		SV_FlushRedirect ();
+	strcat (sv_outputbuf, msg);
+}
 
 /*
 ==================
@@ -84,13 +83,15 @@ Send Com_Printf data to the remote client instead of the console
 void SV_BeginRedirect (redirect_t rd)
 {
 	sv_redirected = rd;
-	outputbuf[0] = 0;
+	sv_outputbuf[0] = 0;
+	Com_BeginRedirect (SV_RedirectedPrint);
 }
 
 void SV_EndRedirect (void)
 {
 	SV_FlushRedirect ();
 	sv_redirected = RD_NONE;
+	Com_EndRedirect ();
 }
 
 
