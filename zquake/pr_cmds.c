@@ -1695,6 +1695,67 @@ static void PF_multicast (void)
 	SV_Multicast (o, to);
 }
 
+/*
+=================
+PF_min
+
+Returns the minimum of two or more floats
+float min(float a, float b, ...)
+=================
+*/
+// DP_QC_MINMAXBOUND
+void PF_min (void)
+{
+	int i;
+	float min, *f;
+	
+	min = G_FLOAT(OFS_PARM0);
+	for (i = 1, f = &G_FLOAT(OFS_PARM1); i < pr_argc; i++, f += 3) {
+		if (*f < min)
+			min = *f;
+	}
+
+	G_FLOAT(OFS_RETURN) = min;
+}
+
+/*
+=================
+PF_max
+
+Returns the maximum of two or more floats
+float max(float a, float b, ...)
+=================
+*/
+// DP_QC_MINMAXBOUND
+void PF_max (void)
+{
+	int i;
+	float max, *f;
+	
+	max = G_FLOAT(OFS_PARM0);
+	for (i = 1, f = &G_FLOAT(OFS_PARM1); i < pr_argc; i++, f += 3) {
+		if (*f > max)
+			max = *f;
+	}
+
+	G_FLOAT(OFS_RETURN) = max;
+}
+
+/*
+=================
+PF_bound
+
+Clamp value to supplied range
+float bound(float min, float value, float max)
+=================
+*/
+// DP_QC_MINMAXBOUND
+void PF_bound (void)
+{
+	G_FLOAT(OFS_RETURN) = bound(G_FLOAT(OFS_PARM0), G_FLOAT(OFS_PARM1), G_FLOAT(OFS_PARM2));
+}
+
+
 // DP_QC_SINCOSSQRTPOW
 // float(float x, float y) pow = #97;
 static void PF_pow (void)
@@ -1714,6 +1775,7 @@ static void PF_checkextension (void)
 {
 	static char *supported_extensions[] = {
 		"DP_QC_SINCOSSQRTPOW",
+		"DP_QC_MINMAXBOUND",
 		NULL
 	};
 	char **pstr, *extension;
@@ -1900,12 +1962,12 @@ PF_Fixme,
 PF_Fixme,
 PF_Fixme,
 PF_Fixme,
+PF_min,				// float(float a, float b, ...) min					= #94;
+PF_max,				// float(float a, float b, ...) max					= #95;
+PF_bound,			// float(float min, float value, float max) bound	= #96;
+PF_pow,				// float(float x, float y) pow						= #97;
 PF_Fixme,
-PF_Fixme,
-PF_Fixme,
-PF_pow,				// float(float x, float y) pow = #97;
-PF_Fixme,
-PF_checkextension,	// float(string name) checkextension = #99;
+PF_checkextension,	// float(string name) checkextension				= #99;
 };
 
 int pr_numbuiltins = sizeof(pr_builtins)/sizeof(pr_builtins[0]);
