@@ -399,10 +399,10 @@ int		options_cursor;
 
 #ifdef GLQUAKE
 #define gamma		gl_gamma
-#define brightness	gl_brightness
+#define contrast	gl_contrast
 #else
 #define gamma		v_gamma
-#define brightness	v_brightness
+#define contrast	v_contrast
 #endif
 
 void M_Menu_Options_f (void)
@@ -435,13 +435,13 @@ void M_AdjustSliders (int dir)
 			gamma.value = 1;
 		Cvar_SetValue (&gamma, gamma.value);
 		break;
-	case 5:	// brightness
-		brightness.value += dir * 0.1;
-		if (brightness.value < 1)
-			brightness.value = 1;
-		if (brightness.value > 2)
-			brightness.value = 2;
-		Cvar_SetValue (&brightness, brightness.value);
+	case 5:	// contrast
+		contrast.value += dir * 0.1;
+		if (contrast.value < 1)
+			contrast.value = 1;
+		if (contrast.value > 2)
+			contrast.value = 2;
+		Cvar_SetValue (&contrast, contrast.value);
 		break;
 	case 6:	// mouse speed
 		sensitivity.value += dir * 0.5;
@@ -562,8 +562,8 @@ void M_Options_Draw (void)
 	r = (1.0 - gamma.value) / 0.5;
 	M_DrawSlider (220, 64, r);
 
-	M_Print (16, 72, "            Brightness");
-	r = brightness.value - 1.0;
+	M_Print (16, 72, "              Contrast");
+	r = contrast.value - 1.0;
 	M_DrawSlider (220, 72, r);
 
 	M_Print (16, 80, "           Mouse Speed");

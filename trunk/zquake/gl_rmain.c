@@ -753,10 +753,10 @@ void R_BrightenScreen (void)
 
 	if (vid_hwgamma_enabled)
 		return;
-	if (gl_brightness.value <= 1.0)
+	if (gl_contrast.value <= 1.0)
 		return;
 
-	f = gl_brightness.value;
+	f = gl_contrast.value;
 	if (f > 3)
 		f = 3;
 
@@ -1057,7 +1057,7 @@ void R_Clear (void)
 			cleartogray = false;
 		}
 	}
-	else if (!vid_hwgamma_enabled && gl_brightness.value > 1) {
+	else if (!vid_hwgamma_enabled && gl_contrast.value > 1) {
 		clear = true;
 		if (!cleartogray) {
 			glClearColor (0.1, 0.1, 0.1, 0);
