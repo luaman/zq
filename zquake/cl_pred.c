@@ -212,6 +212,7 @@ void CL_PredictMove (void)
 	float		f;
 	frame_t		*from, *to = NULL;
 	int			oldphysent;
+	double		playertime;
 
 	if (cl_pushlatency.value > 0)
 		Cvar_Set (&cl_pushlatency, "0");
@@ -219,9 +220,11 @@ void CL_PredictMove (void)
 	if (cl.paused)
 		return;
 
-	cl.time = realtime - cls.latency - cl_pushlatency.value*0.001;
-	if (cl.time > realtime)
-		cl.time = realtime;
+	cl.time += host_frametime;
+
+	playertime = realtime - cls.latency - cl_pushlatency.value*0.001;
+	if (playertime > realtime)
+		playertime = realtime;
 
 	if (cl.intermission) {
 		cl.crouch = 0;
@@ -259,7 +262,7 @@ void CL_PredictMove (void)
 	oldphysent = pmove.numphysent;
 	CL_SetSolidPlayers (cl.playernum);
 
-	// predict forward until cl.time <= to->senttime
+	// predict forward until playertime <= to->senttime
 	for (i=1 ; i<UPDATE_BACKUP-1 && cl.validsequence+i <
 			cls.netchan.outgoing_sequence; i++)
 	{
@@ -267,7 +270,7 @@ void CL_PredictMove (void)
 		CL_PredictUsercmd (&from->playerstate[cl.playernum]
 			, &to->playerstate[cl.playernum], &to->cmd, cl.spectator);
 		cl.onground = pmove.onground;
-		if (to->senttime >= cl.time)
+		if (to->senttime >= playertime)
 			break;
 		from = to;
 	}
@@ -282,7 +285,7 @@ void CL_PredictMove (void)
 		f = 0;
 	else
 	{
-		f = (cl.time - from->senttime) / (to->senttime - from->senttime);
+		f = (playertime - from->senttime) / (to->senttime - from->senttime);
 
 		if (f < 0)
 			f = 0;
