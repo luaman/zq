@@ -262,11 +262,8 @@ void Cmd_StuffCmds_f (void)
 // build the combined string to parse from
 	s = 0;
 	for (i=1 ; i<com_argc ; i++)
-	{
-		if (!com_argv[i])
-			continue;		// NEXTSTEP nulls out -NXHost
 		s += strlen (com_argv[i]) + 1;
-	}
+
 	if (!s)
 		return;
 		
@@ -274,9 +271,7 @@ void Cmd_StuffCmds_f (void)
 	text[0] = 0;
 	for (i=1 ; i<com_argc ; i++)
 	{
-		if (!com_argv[i])
-			continue;		// NEXTSTEP nulls out -NXHost
-		strcat (text,com_argv[i]);
+		strcat (text, com_argv[i]);
 		if (i != com_argc-1)
 			strcat (text, " ");
 	}
