@@ -505,7 +505,11 @@ edict_t	*SV_TestEntityPosition (edict_t *ent)
 {
 	trace_t	trace;
 
-	trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, ent->v.origin, 0, ent);
+	if (ent->v.solid == SOLID_TRIGGER || ent->v.solid == SOLID_NOT)
+		// only clip against bmodels
+		trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, ent->v.origin, MOVE_NOMONSTERS, ent);
+	else
+		trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, ent->v.origin, MOVE_NORMAL, ent);
 	
 	if (trace.startsolid)
 		return sv.edicts;
