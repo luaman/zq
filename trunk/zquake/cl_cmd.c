@@ -1015,7 +1015,7 @@ qboolean CL_LegacyCommand (void)
 	// Cheat commands. They are not added to normal command list
 	// so they are invisible to user and an alias can override them
 	if (!Q_stricmp(name, "god") || !Q_stricmp(name, "give") ||
-		!Q_stricmp(name, "noclip"))
+		!Q_stricmp(name, "noclip") || !Q_stricmp(name, "fly"))
 	{
 		Cmd_ForwardToServer ();
 		return true;

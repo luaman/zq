@@ -219,7 +219,7 @@ qboolean CheckForCommand (void)
 
 	// FIXME
 	if (!Q_stricmp(command, "god") || !Q_stricmp(command, "give") ||
-		!Q_stricmp(command, "noclip"))
+		!Q_stricmp(command, "noclip") || !Q_stricmp(command, "fly"))
 		return true;
 
 	cmd = Cmd_CompleteCommand (command);
