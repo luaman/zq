@@ -543,20 +543,19 @@ float (float w) WeaponCode =
 =============
 Deathmatch_Weapon
 
-Deathmatch weapon change rules for picking up a weapon
-
-.float          ammo_shells, ammo_nails, ammo_rockets, ammo_cells;
+Switch to new_weapon if better than self.weapon
+Only be called if we have enough ammo for new_weapon so don't bother checking
 =============
 */
-void(float old, float new) Deathmatch_Weapon =
+void(float new_weapon) Deathmatch_Weapon =
 {
 	local float or, nr;
 
 // change self.weapon if desired
 	or = RankForWeapon (self.weapon);
-	nr = RankForWeapon (new);
+	nr = RankForWeapon (new_weapon);
 	if ( nr < or )
-		self.weapon = new;
+		self.weapon = new_weapon;
 };
 
 /*
@@ -568,7 +567,7 @@ float() W_BestWeapon;
 
 void() weapon_touch =
 {
-	local   float   hadammo, best, new, old;
+	local   float   hadammo, best, new;
 	local   entity  stemp;
 	local   float   leave;
 
@@ -655,7 +654,6 @@ void() weapon_touch =
 	bound_other_ammo ();
 
 // change to the weapon
-	old = other.items;
 	other.items = other.items | new;
 	
 	stemp = self;
@@ -667,12 +665,12 @@ void() weapon_touch =
 		{
 			if (new != IT_LIGHTNING)
 			{
-				Deathmatch_Weapon (old, new);
+				Deathmatch_Weapon (new);
 			}
 		}
 		else
 		{                
-			Deathmatch_Weapon (old, new);
+			Deathmatch_Weapon (new);
 		}
 	}
 
@@ -1470,7 +1468,7 @@ PLAYER BACKPACKS
 void() BackpackTouch =
 {
 	local string    s;
-	local   float   best, old, new;
+	local   float   best, new;
 	local           entity  stemp;
 	local   float   acount;
 	local   float   b_switch;
@@ -1551,7 +1549,6 @@ void() BackpackTouch =
 	new = self.items;
 	if (!new)
 		new = other.weapon;
-	old = other.items;
 	other.items = other.items | self.items;
 	
 	bound_other_ammo ();
@@ -1613,12 +1610,12 @@ void() BackpackTouch =
 		{
 			if (new != IT_LIGHTNING)
 			{
-				Deathmatch_Weapon (old, new);
+				Deathmatch_Weapon (new);
 			}
 		}
 		else
 		{                
-			Deathmatch_Weapon (old, new);
+			Deathmatch_Weapon (new);
 		}
 	}
 
