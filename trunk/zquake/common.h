@@ -212,6 +212,7 @@ struct cache_user_s;
 
 extern char	com_gamedir[MAX_OSPATH];
 extern char	com_basedir[MAX_OSPATH];
+extern char com_gamedirfile[MAX_QPATH];
 
 void COM_WriteFile (char *filename, void *data, int len);
 int FS_FOpenFile (char *filename, FILE **file);
