@@ -939,6 +939,8 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				ShowWindow(mainwindow, SW_SHOWNORMAL);
 			}
 		}
+		else if (modestate == MS_WINDOWED && Minimized)
+			ShowWindow (mainwindow, SW_RESTORE);
 		else if ((modestate == MS_WINDOWED) && _windowed_mouse.value && key_dest == key_game)
 		{
 			IN_ActivateMouse ();
@@ -953,6 +955,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
 			if (vid_canalttab) { 
+				ShowWindow (mainwindow, SW_MINIMIZE);
 				ChangeDisplaySettings (NULL, 0);
 				vid_wassuspended = true;
 			}
