@@ -342,7 +342,9 @@ NET_Config
 */
 void NET_Config (qboolean client, qboolean server)
 {
+#if defined(QW_BOTH) || defined(SERVERONLY)
 	int		i, port;
+#endif
 
 #ifndef SERVERONLY
 	if (client)
