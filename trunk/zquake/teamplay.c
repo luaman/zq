@@ -60,7 +60,7 @@ char	lastdeathloc[MAX_LOC_NAME];
 
 void CL_ExecTrigger (char *s)
 {
-	if (!cl_triggers.value)
+	if (!cl_triggers.value || cls.demoplayback)
 		return;
 
 	if (Cmd_FindAlias(s)) {
@@ -276,7 +276,7 @@ char *Macro_ArmorType_f (void)
 
 char *Macro_Powerups_f (void)
 {
-	int i;
+	int effects;
 
 	macro_buf[0] = 0;
 
@@ -295,8 +295,9 @@ char *Macro_Powerups_f (void)
 		strcat(macro_buf, "ring");
 	}
 
-	if (cl.frames[cl.parsecount&UPDATE_MASK].
-		playerstate[cl.playernum].effects & (EF_FLAG1|EF_FLAG2))
+	effects = cl.frames[cl.parsecount&UPDATE_MASK].playerstate[cl.playernum].effects;
+	if ( (effects & (EF_FLAG1|EF_FLAG2)) ||
+		(cl.teamfortress && (effects & EF_DIMLIGHT)) )	//FIXME
 	{
 		if (macro_buf[0])
 			strcat(macro_buf, "/");
@@ -826,11 +827,17 @@ void CL_ExecuteTriggerBuf (char *text)
 	}
 }
 
-void CL_SearchForMsgTriggers (char *s)
+void CL_SearchForMsgTriggers (char *s, int level)
 {
 	msg_trigger_t	*t;
 	char *string;
 	extern char *Cmd_AliasString (char *);
+
+	if (cls.demoplayback)
+		return;
+
+	if (level != PRINT_HIGH)	// FIXME
+		return;
 
 	for (t=msg_triggers; t; t=t->next)
 		if (t->string[0] && strstr(s, t->string)) {
