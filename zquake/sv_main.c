@@ -1,5 +1,3 @@
-// Portions Copyright (C) 2000 by Anton Gavrilov (tonik@quake.ru)
-
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -42,7 +40,7 @@ double		realtime;				// without any filtering or bounding
 int			host_hunklevel;
 #endif
 
-int			current_skill;	// Tonik
+int			current_skill;			// for entity spawnflags checking
 
 netadr_t	master_adr[MAX_MASTERS];	// address of group servers
 
@@ -78,18 +76,17 @@ cvar_t	allow_download_models = {"allow_download_models", "1"};
 cvar_t	allow_download_sounds = {"allow_download_sounds", "1"};
 cvar_t	allow_download_maps = {"allow_download_maps", "1"};
 
-cvar_t sv_highchars = {"sv_highchars", "1"};
+cvar_t	sv_highchars = {"sv_highchars", "1"};
 
-cvar_t sv_phs = {"sv_phs", "1"};
+cvar_t	sv_phs = {"sv_phs", "1"};
 
-cvar_t pausable	= {"pausable", "1"};
+cvar_t	pausable = {"pausable", "1"};
 
+cvar_t	sv_maxrate = {"sv_maxrate", "0"};
 
 //
 // game rules mirrored in svs.info
 //
-cvar_t	skill = {"skill", "1"};
-cvar_t	coop = {"coop", "0"};
 cvar_t	fraglimit = {"fraglimit","0",CVAR_SERVERINFO};
 cvar_t	timelimit = {"timelimit","0",CVAR_SERVERINFO};
 cvar_t	teamplay = {"teamplay","0",CVAR_SERVERINFO};
@@ -99,6 +96,9 @@ cvar_t	maxspectators = {"maxspectators","8",CVAR_SERVERINFO};
 cvar_t	deathmatch = {"deathmatch","1",CVAR_SERVERINFO};			// 0, 1, or 2
 cvar_t	spawn = {"spawn","0",CVAR_SERVERINFO};
 cvar_t	watervis = {"watervis","0",CVAR_SERVERINFO};
+// not mirrored
+cvar_t	skill = {"skill", "1"};
+cvar_t	coop = {"coop", "0"};
 
 cvar_t	hostname = {"hostname","unnamed",CVAR_SERVERINFO};
 
@@ -116,7 +116,6 @@ qboolean ServerPaused(void)
 }
 
 
-// Tonik:
 #ifdef QW_BOTH
 /*
 =================
@@ -1259,6 +1258,27 @@ void SV_GetConsoleCommands (void)
 	}
 }
 
+
+/*
+===================
+SV_BoundRate
+===================
+*/
+int SV_BoundRate (int rate)
+{
+	if (!rate)
+		rate = 2500;
+	if (sv_maxrate.value && rate > sv_maxrate.value)
+		rate = sv_maxrate.value;
+	if (rate < 500)
+		rate = 500;
+	if (rate > 10000)
+		rate = 10000;
+
+	return rate;
+}
+
+
 /*
 ===================
 SV_CheckVars
@@ -1267,26 +1287,51 @@ SV_CheckVars
 */
 void SV_CheckVars (void)
 {
-	static char *pw, *spw;
+	static char pw[MAX_INFO_STRING], spw[MAX_INFO_STRING];
+	static float old_maxrate = 0;
 	int			v;
 
-	if (password.string == pw && spectator_password.string == spw)
-		return;
-	pw = password.string;
-	spw = spectator_password.string;
+// check password and spectator_password
+	if (strcmp(password.string, pw) ||
+		strcmp(spectator_password.string, spw))
+	{
+		strncpy (pw, password.string, sizeof(pw)-1);
+		strncpy (spw, spectator_password.string, sizeof(spw)-1);
+		Cvar_Set (&password, pw);
+		Cvar_Set (&spectator_password, spw);
+		
+		v = 0;
+		if (pw && pw[0] && strcmp(pw, "none"))
+			v |= 1;
+		if (spw && spw[0] && strcmp(spw, "none"))
+			v |= 2;
+		
+		Con_DPrintf ("Updated needpass.\n");
+		if (!v)
+			Info_SetValueForKey (svs.info, "needpass", "", MAX_SERVERINFO_STRING);
+		else
+			Info_SetValueForKey (svs.info, "needpass", va("%i",v), MAX_SERVERINFO_STRING);
+	}
 
-	v = 0;
-	if (pw && pw[0] && strcmp(pw, "none"))
-		v |= 1;
-	if (spw && spw[0] && strcmp(spw, "none"))
-		v |= 2;
+// check sv_maxrate
+	if (sv_maxrate.value != old_maxrate) {
+		client_t	*cl;
+		int			i;
+		char		*val;
 
-	Con_DPrintf ("Updated needpass.\n");
-	if (!v)
-		Info_SetValueForKey (svs.info, "needpass", "", MAX_SERVERINFO_STRING);
-	else
-		Info_SetValueForKey (svs.info, "needpass", va("%i",v), MAX_SERVERINFO_STRING);
+		old_maxrate = sv_maxrate.value;
+
+		for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
+		{
+			if (cl->state < cs_connected)
+				continue;
+
+			val = Info_ValueForKey (cl->userinfo, "rate");
+			cl->netchan.rate = 1.0 / SV_BoundRate (atoi(val));
+		}
+	}
 }
+
 
 /*
 ==================
@@ -1345,7 +1390,7 @@ void SV_Frame (double time)
 	
 // process console commands
 	Cbuf_Execute ();
-#endif	// QW_BOTH
+#endif
 
 	SV_CheckVars ();
 
@@ -1402,13 +1447,14 @@ void SV_InitLocal (void)
 #endif
 	Cvar_RegisterVariable (&spectator_password);
 
-	Cvar_RegisterVariable (&sv_nailhack);	// Tonik
+	Cvar_RegisterVariable (&sv_nailhack);
 
 	Cvar_RegisterVariable (&sv_mintic);
 	Cvar_RegisterVariable (&sv_maxtic);
 
-	Cvar_RegisterVariable (&skill);		// Tonik
-	Cvar_RegisterVariable (&coop);		// Tonik
+	Cvar_RegisterVariable (&skill);
+	Cvar_RegisterVariable (&coop);
+
 	Cvar_RegisterVariable (&fraglimit);
 	Cvar_RegisterVariable (&timelimit);
 	Cvar_RegisterVariable (&teamplay);
@@ -1453,6 +1499,8 @@ void SV_InitLocal (void)
 	Cvar_RegisterVariable (&sv_phs);
 
 	Cvar_RegisterVariable (&pausable);
+
+	Cvar_RegisterVariable (&sv_maxrate);
 
 	Cmd_AddCommand ("addip", SV_AddIP_f);
 	Cmd_AddCommand ("removeip", SV_RemoveIP_f);
@@ -1562,6 +1610,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	client_t	*client;
 	int		dupc = 1;
 	char	newname[80];
+	extern cvar_t	sv_maxrate;
 
 
 	// name for C code
@@ -1645,19 +1694,11 @@ void SV_ExtractFromUserinfo (client_t *cl)
 
 	strncpy (cl->name, val, sizeof(cl->name)-1);	
 
-	// rate command
+	// rate
 	val = Info_ValueForKey (cl->userinfo, "rate");
-	if (strlen(val))
-	{
-		i = atoi(val);
-		if (i < 500)
-			i = 500;
-		if (i > 10000)
-			i = 10000;
-		cl->netchan.rate = 1.0/i;
-	}
+	cl->netchan.rate = 1.0 / SV_BoundRate (atoi(val));
 
-	// msg command
+	// message level
 	val = Info_ValueForKey (cl->userinfo, "msg");
 	if (strlen(val))
 	{
@@ -1752,7 +1793,7 @@ void SV_Init (quakeparms_t *parms)
 	Cmd_StuffCmds_f ();
 	Cbuf_Execute ();
 
-// if a map wasn't specified on the command line, spawn start.map
+// if a map wasn't specified on the command line, spawn start map
 	if (sv.state == ss_dead)
 		Cmd_ExecuteString ("map start");
 	if (sv.state == ss_dead)
