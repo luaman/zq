@@ -216,6 +216,7 @@ void R_NetGraph (void)
 //	frame_t	*frame;
 	int lost;
 	char st[80];
+	extern cvar_t r_netgraphBox;
 
 	if (vid.width - 16 <= NET_TIMINGS)
 		w = vid.width - 16;
@@ -225,7 +226,8 @@ void R_NetGraph (void)
 	x =	-(int)((vid.width - 320)>>1);
 	y = vid.height - sb_lines - 24 - (int)r_graphheight.value*2 - 2;
 
-	M_DrawTextBox (x, y, (w+7)/8, ((int)r_graphheight.value*2+7)/8 + 1);
+	if (r_netgraphBox.value)
+		M_DrawTextBox (x, y, (w+7)/8, ((int)r_graphheight.value*2+7)/8 + 1);
 	y2 = y + 8;
 	y = vid.height - sb_lines - 8 - 2;
 
@@ -236,8 +238,11 @@ void R_NetGraph (void)
 		i = (cls.netchan.outgoing_sequence-a) & NET_TIMINGSMASK;
 		R_LineGraph (x+w-1-a, y, packet_latency[i]);
 	}
-	sprintf(st, "%3i%% packet loss", lost);
-	Draw_String(8, y2, st);
+
+	if (r_netgraphBox.value) {
+		sprintf(st, "%3i%% packet loss", lost);
+		Draw_String(8, y2, st);
+	}
 }
 
 /*
