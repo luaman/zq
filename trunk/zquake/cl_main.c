@@ -72,7 +72,7 @@ cvar_t	cl_deadbodyfilter = {"cl_deadbodyFilter", "0"};
 cvar_t	cl_explosion = {"cl_explosion", "0"};
 cvar_t	cl_gibfilter = {"cl_gibFilter", "0"};
 cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
-cvar_t	cl_demotimescale = {"demotimescale", "1"};
+cvar_t	cl_demospeed = {"cl_demospeed", "1"};
 cvar_t	cl_staticsounds = {"cl_staticSounds", "1"};
 cvar_t	cl_trueLightning = {"cl_trueLightning", "0"};
 cvar_t	cl_parseWhiteText = {"cl_parseWhiteText", "1"};
@@ -685,7 +685,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&r_grenadetrail);
 	Cvar_RegisterVariable (&r_powerupglow);
 	Cvar_RegisterVariable (&r_rocketlight);
-	Cvar_RegisterVariable (&cl_demotimescale);
+	Cvar_RegisterVariable (&cl_demospeed);
 	Cvar_RegisterVariable (&cl_deadbodyfilter);
 	Cvar_RegisterVariable (&cl_explosion);
 	Cvar_RegisterVariable (&cl_gibfilter);
@@ -892,7 +892,7 @@ void Host_Frame (double time)
 	if (!cls.demoplayback)
 		realtime += time;
 	else {
-		scale = cl_demotimescale.value;
+		scale = cl_demospeed.value;
 		if (scale <= 0) scale = 1;
 		if (scale < 0.1) scale = 0.1;
 		if (scale > 10) scale = 1;
