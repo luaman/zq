@@ -1589,7 +1589,7 @@ void	VID_Init (unsigned char *palette)
 
 	VID_InitFullDIB (global_hInstance);
 
-	if (COM_CheckParm("-window"))
+	if (COM_CheckParm("-window") || COM_CheckParm("-startwindowed"))
 	{
 		hdc = GetDC (NULL);
 
