@@ -31,6 +31,7 @@ qbool		sb_drawinventory;
 qbool		sb_drawmain;
 qbool		sb_oldmanssbar;		// cl_sbar 2: solid sbar, but viewrect is y-centered
 
+qbool		sb_hipnotic;
 
 #define STAT_MINUS		10	// num frame for '-' stats digit
 static mpic_t	*sb_nums[2][11];
@@ -53,6 +54,20 @@ static mpic_t	*sb_face_invuln;
 static mpic_t	*sb_face_invis_invuln;
 
 static mpic_t	*sb_disc;			// invulnerability
+
+//hipnotic defines
+#define HIT_PROXIMITY_GUN_BIT 16
+#define HIT_MJOLNIR_BIT       7
+#define HIT_LASER_CANNON_BIT  23
+#define HIT_PROXIMITY_GUN   (1<<HIT_PROXIMITY_GUN_BIT)
+#define HIT_MJOLNIR         (1<<HIT_MJOLNIR_BIT)
+#define HIT_LASER_CANNON    (1<<HIT_LASER_CANNON_BIT)
+#define HIT_WETSUIT         (1<<25)
+#define HIT_EMPATHY_SHIELDS (1<<26)
+
+static mpic_t	*hsb_weapons[7][5];   // 0 is active, 1 is owned, 2-5 are flashes
+static mpic_t	*hsb_items[2];
+static int	hipweapons[4] = {HIT_LASER_CANNON_BIT,HIT_MJOLNIR_BIT,4,HIT_PROXIMITY_GUN_BIT};
 
 static qbool	sb_showscores;
 static qbool	sb_showteamscores;
@@ -131,6 +146,57 @@ Sbar_Changed
 void Sbar_Changed (void)
 {
 	sb_updates = 0;	// update next frame
+}
+
+/*
+===============
+Sbar_RegisterHipnoticPics
+===============
+*/
+void Sbar_RegisterHipnoticPics (void)
+{
+	int i, j;
+
+	sb_hipnotic = false;
+
+	hsb_weapons[0][0] = R_CacheWadPic ("inv_laser");
+	// quick check to see if it's the hipnotic wad
+	if (!hsb_weapons[0][0])
+		return;
+	hsb_weapons[0][1] = R_CacheWadPic ("inv_mjolnir");
+	hsb_weapons[0][2] = R_CacheWadPic ("inv_gren_prox");
+	hsb_weapons[0][3] = R_CacheWadPic ("inv_prox_gren");
+	hsb_weapons[0][4] = R_CacheWadPic ("inv_prox");
+
+	hsb_weapons[1][0] = R_CacheWadPic ("inv2_laser");
+	hsb_weapons[1][1] = R_CacheWadPic ("inv2_mjolnir");
+	hsb_weapons[1][2] = R_CacheWadPic ("inv2_gren_prox");
+	hsb_weapons[1][3] = R_CacheWadPic ("inv2_prox_gren");
+	hsb_weapons[1][4] = R_CacheWadPic ("inv2_prox");
+
+	for (i = 0; i < 5; i++)
+	{
+		hsb_weapons[2+i][0] = R_CacheWadPic (va("inva%i_laser",i+1));
+		hsb_weapons[2+i][1] = R_CacheWadPic (va("inva%i_mjolnir",i+1));
+		hsb_weapons[2+i][2] = R_CacheWadPic (va("inva%i_gren_prox",i+1));
+		hsb_weapons[2+i][3] = R_CacheWadPic (va("inva%i_prox_gren",i+1));
+		hsb_weapons[2+i][4] = R_CacheWadPic (va("inva%i_prox",i+1));
+	}
+
+	for (i = 0; i < 7; i++) {
+		for (j = 0; j < 5; j++)
+			if (!hsb_weapons[i][j])
+				return;
+	}
+
+	hsb_items[0] = R_CacheWadPic ("sb_wsuit");
+	hsb_items[1] = R_CacheWadPic ("sb_eshld");
+
+	if (!hsb_items[0] || !hsb_items[1])
+		return;
+
+	// all ok
+	sb_hipnotic = true;
 }
 
 /*
@@ -221,6 +287,9 @@ void Sbar_RegisterPics (void)
 	sb_sbar = R_CacheWadPic ("sbar");
 	sb_ibar = R_CacheWadPic ("ibar");
 	sb_scorebar = R_CacheWadPic ("scorebar");
+
+	if (!strcmp(com_gamedirfile, "hipnotic"))
+		Sbar_RegisterHipnoticPics ();
 }
 
 /*
@@ -578,6 +647,52 @@ static void Sbar_DrawInventory (void)
 		}
 	}
 
+// hipnotic weapons
+    if (sb_hipnotic) {
+		int grenadeflashing = 0;
+//		Com_Printf ("hipnotic weapons\n");
+		for (i = 0; i < 4; i++) {
+			if (cl.stats[STAT_ITEMS] & (1<<hipweapons[i]) ) {
+				time = cl.item_gettime[hipweapons[i]];
+				flashon = (int)((cl.time - time)*10);
+				if (flashon >= 10) {
+					if (cl.stats[STAT_ACTIVEWEAPON] == (1<<hipweapons[i]))
+						flashon = 1;
+					else
+						flashon = 0;
+				}
+				else
+					flashon = (flashon%5) + 2;
+				
+				// check grenade launcher
+				if (i == 2) {
+					if (cl.stats[STAT_ITEMS] & HIT_PROXIMITY_GUN) {
+						if (flashon) {
+							grenadeflashing = 1;
+							Sbar_DrawPic (96, -16, hsb_weapons[flashon][2]);
+						}
+					}
+				}
+				else if (i == 3) {
+					if (cl.stats[STAT_ITEMS] & (IT_SHOTGUN<<4)) {
+						if (flashon && !grenadeflashing) {
+							Sbar_DrawPic (96, -16, hsb_weapons[flashon][3]);
+						}
+						else if (!grenadeflashing) {
+							Sbar_DrawPic (96, -16, hsb_weapons[0][3]);
+						}
+					}
+					else
+						Sbar_DrawPic (96, -16, hsb_weapons[flashon][4]);
+				}
+				else
+					Sbar_DrawPic (176 + (i*24), -16, hsb_weapons[flashon][i]);
+				if (flashon > 1)
+					sb_updates = 0;      // force update to remove flash
+			}
+		}
+    }
+
 // ammo counts
 	for (i=0 ; i<4 ; i++)
 	{
@@ -603,19 +718,40 @@ static void Sbar_DrawInventory (void)
 	
 	flashon = 0;
 // items
-	for (i=0 ; i<6 ; i++)
-		if (cl.stats[STAT_ITEMS] & (1<<(17+i)))
-		{
+	for (i=0 ; i<6 ; i++) {
+		if (cl.stats[STAT_ITEMS] & (1<<(17+i))) {
 			time = cl.item_gettime[17+i];
-			if (time &&	time > cl.time - 2 && flashon )
-			{	// flash frame
+			if (time &&	time > cl.time - 2 && flashon )	{
+				// flash frame
 				sb_updates = 0;
 			}
-			else
-				Sbar_DrawPic (192 + i*16, -16, sb_items[i]);		
+			else {
+				if ( !(sb_hipnotic && i < 2) )
+					Sbar_DrawPic (192 + i*16, -16, sb_items[i]);		
+			}
 			if (time &&	time > cl.time - 2)
 				sb_updates = 0;
 		}
+	}
+
+	// hipnotic items
+	if (sb_hipnotic)
+	{
+		for (i=0 ; i<2 ; i++)
+			if (cl.stats[STAT_ITEMS] & (1<<(24+i)))
+			{
+				time = cl.item_gettime[24+i];
+				if (time && time > cl.time - 2 && flashon ) {
+					// flash frame
+					sb_updates = 0;
+				}
+				else {
+					Sbar_DrawPic (288 + i*16, -16, hsb_items[i]);
+				}
+				if (time && time > cl.time - 2)
+					sb_updates = 0;
+			}
+	}
 
 // sigils
 	for (i=0 ; i<4 ; i++)
@@ -792,6 +928,15 @@ static void Sbar_DrawNormal (void)
 	
 	Sbar_DrawNum (248, 0, cl.stats[STAT_AMMO], 3
 	, cl.stats[STAT_AMMO] <= 10);
+
+// keys (hipnotic only)
+	if (sb_hipnotic)
+	{
+		if (cl.stats[STAT_ITEMS] & IT_KEY1)
+            Sbar_DrawPic (209, 3, sb_items[0]);
+		if (cl.stats[STAT_ITEMS] & IT_KEY2)
+            Sbar_DrawPic (209, 12, sb_items[1]);
+	}
 }
 
 
