@@ -137,7 +137,7 @@ typedef struct client_s
 	char			userinfo[MAX_INFO_STRING];		// infostring
 
 	usercmd_t		lastcmd;			// for filling in big drops and partial predictions
-	double			localtime;			// of last message
+	double			cmdtime;			// realtime of last message
 	int				oldbuttons;
 
 	float			maxspeed;			// localized maxspeed
