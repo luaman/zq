@@ -135,7 +135,7 @@ void		 Sys_Printf (char *fmt, ...)
 	unsigned char	*p;
 
 	va_start (argptr, fmt);
-	vsnprintf (text, sizeof(string), fmt, argptr);
+	vsnprintf (text, sizeof(text), fmt, argptr);
 	va_end (argptr);
 
 	if (sys_nostdout.value)
