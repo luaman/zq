@@ -35,10 +35,6 @@ The video buffers are allocated high to avoid leaving a hole underneath
 server allocations when changing to a higher video mode.
 
 
-Z_??? Zone memory functions used for small, dynamic allocations like text
-strings from command input.  There is only about 48K for it, allocated at
-the very bottom of the hunk.
-
 Cache_??? Cache memory is for objects that can be dynamically loaded and
 can usefully stay persistent between levels.  The size of the cache
 fluctuates from level to level.
@@ -75,8 +71,6 @@ client and server low hunk allocations
 
 startup hunk allocations
 
-Zone block
-
 ----- Bottom of Memory -----
 
 
@@ -85,19 +79,12 @@ Zone block
 
 void Memory_Init (void *buf, int size);
 
+
 void *Q_malloc (size_t size);
 char *Q_strdup (const char *src);
 // might be turned into a function that makes sure all Q_*alloc calls are matched with Q_free
 #define Q_free(ptr) free(ptr)
 
-void Z_Free (void *ptr);
-void *Z_Malloc (int size);			// returns 0 filled memory
-void *Z_TagMalloc (int size, int tag);
-char *Z_CopyString(char *s);
-
-void Z_DumpHeap (void);
-void Z_CheckHeap (void);
-int Z_FreeMemory (void);
 
 void *Hunk_Alloc (int size);		// returns 0 filled memory
 void *Hunk_AllocName (int size, char *name);
@@ -128,10 +115,8 @@ void *Cache_Check (cache_user_t *c);
 void Cache_Free (cache_user_t *c);
 
 void *Cache_Alloc (cache_user_t *c, int size, char *name);
-// Returns NULL if all purgable data was tossed and there still
+// Returns NULL if all purgeable data was tossed and there still
 // wasn't enough room.
 
 void Cache_Report (void);
-
-
 
