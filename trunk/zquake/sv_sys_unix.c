@@ -231,8 +231,6 @@ void main (int argc, char *argv[])
 		parms.memsize = (int) (Q_atof(com_argv[j+1]) * 1024 * 1024);
 	parms.membase = Q_Malloc (parms.memsize);
 
-	parms.basedir = ".";
-
 	Host_Init (&parms);
 
 //

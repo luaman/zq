@@ -41,8 +41,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int noconinput = 0;
 int nostdout = 0;
 
-char *basedir = ".";
-
 cvar_t  sys_linerefresh = {"sys_linerefresh","0"};// set for entity display
 
 // =======================================================================
@@ -352,8 +350,6 @@ int main (int c, char **v)
 	if (j)
 		parms.memsize = (int) (Q_atof(com_argv[j+1]) * 1024 * 1024);
 	parms.membase = Q_Malloc (parms.memsize);
-
-	parms.basedir = basedir;
 
 	noconinput = COM_CheckParm("-noconinput");
 	if (!noconinput)
