@@ -1289,8 +1289,8 @@ void CL_ParsePrint (int level, char *s)
 			S_LocalSound ("misc/talk.wav");
 		}
 		Con_Printf ("%s", str);
-		CL_SearchForMsgTriggers (str);
 		con_ormask = 0;
+		CL_SearchForMsgTriggers (str);
 	}
 
 }
@@ -1367,31 +1367,7 @@ void CL_ParseServerMessage (void)
 		case svc_print:
 			i = MSG_ReadByte ();
 			s = MSG_ReadString ();
-#if 0
-			if (i == PRINT_CHAT)
-			{
-				char *p;
-				// Tonik:
-				CL_CheckVersionRequest(s);
-				if (cl_nofake.value) {
-					for (p = s; *p; p++) {
-						switch (*p)	{
-							case 13: *p = '#'; 
-							case 10: break;
-							default:
-								*p |= 128;
-						}
-					}
-				} else
-					con_ormask = 128;
-				S_LocalSound ("misc/talk.wav");
-			}
-			Con_Printf ("%s", s);
-			CL_SearchForMsgTriggers (s);
-			con_ormask = 0;
-#else
 			CL_ParsePrint (i, s);
-#endif
 			break;
 			
 		case svc_centerprint:
