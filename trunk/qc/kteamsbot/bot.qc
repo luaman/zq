@@ -42,20 +42,20 @@ for all variables in the bot...
 // ----- entity fields ---
 .float	wallhug, keys, oldkeys, ishuman;
 .float	b_frags, b_clientno, b_shirt, b_pants; 
-.float	priority, ai_time, b_sound, missile_speed;
+.float	ai_time, b_sound, missile_speed;
 .float	portal_time, b_skill;
 .float	b_aiflags, b_num, b_chattime;
-.float	b_menu, b_menu_time, b_menu_value;
 .float	route_failed, dyn_flags, dyn_time;
 .float	dyn_plat;
 .entity	temp_way, last_way;
 .entity	target1, target2, target3, target4;
 .entity	_next, _last;
 .entity	current_way;
-.vector	b_angle, b_dest, mouse_emu, obs_dir;
+.vector	b_angle, mouse_emu, obs_dir;
 .vector	b_dir;
 .float	forwardmove, sidemove, upmove;
 .vector	dyn_dest;
+.float	search_time;
 
 // used for the physics & movement AI
 float KEY_MOVEUP 		= 1;
@@ -117,11 +117,10 @@ float OPT_NOCHAT	= 2;
 // -------globals-----
 float		max_clients = 32;	/* Tonik --- only waypoint code checks it... */
 float		bot_count, b_options;
-float		waypoint_mode, dump_mode; 
+float		waypoint_mode;
 float		waypoints, direct_route;
 entity		fixer;
 entity		route_table;
-entity		b_temp1, b_temp2, b_temp3;
 entity 		player_head, way_head;
 float		busy_waypoints;
 
@@ -231,24 +230,19 @@ float GetClientNum (entity ent);
 
 void ClientConnected ()
 {
-/* 	if (stof(infokey(self, "*bot")) != 0) */
-/* 		return; */
-
 	// link him into the player list
 	if (player_head)
 		player_head._last = self;
 	self._next = player_head;
 	player_head = self;
 
+ 	if (!stof(infokey(self, "*bot")))
 	self.ishuman = true;
 }
 
 
 void ClientDisconnected ()
 {
-/*     if (!self.ishuman) */
-/* 		return; */
-
 	if (player_head == self)
 		player_head = self._next;
 	if (self._next)
@@ -373,7 +367,7 @@ void BotConnect ()
 	self.b_skill = whatskill;
 */
 
-	self.b_skill = 3;	// FIXME FIXME, skill should be saved across levels
+	self.b_skill = 2;	// FIXME FIXME, skill should be saved across levels
 
 	self.ready = 0; 
 	PlayerReady();

@@ -735,7 +735,6 @@ void(vector org, vector dir) launch_spike =
 void() W_FireSuperSpikes =
 {
 	local vector    dir;
-	local entity    old;
 
 	sound (self, 1, "weapons/spike2.wav", 1, 1);
 	self.attack_finished = time + 0.2;
@@ -754,7 +753,6 @@ void() W_FireSuperSpikes =
 void(float ox) W_FireSpikes =
 {
 	local vector    dir;
-	local entity    old;
 
 	makevectors (self.v_angle);
 
@@ -782,9 +780,6 @@ void(float ox) W_FireSpikes =
 	WriteByte (1, 34);
 };
 
-
-
-.float hit_z;
 void() spike_touch =
 {
 	if (other == self.owner)
