@@ -675,7 +675,6 @@ at load time.
 int	PR_WriteProgdefs (char *filename)
 {
 	def_t	*d;
-	FILE	*f;
 	char	buf[65536], *out;	// FIXME, add buffer size checks
 	unsigned short		crc;
 	
@@ -755,10 +754,12 @@ int	PR_WriteProgdefs (char *filename)
 
 	out += sprintf (out, "#define PROGHEADER_CRC %i\n", crc);
 
-	printf ("writing %s\n", filename);
-	f = fopen (filename, "w");
-	fwrite (buf, out - buf, 1, f);
-	fclose (f);
+	if (CheckParm("-progdefs")) {
+		printf ("writing %s\n", filename);
+		FILE *f = fopen (filename, "w");
+		fwrite (buf, out - buf, 1, f);
+		fclose (f);
+	}
 
 	return crc;
 }
