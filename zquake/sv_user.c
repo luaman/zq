@@ -1035,11 +1035,7 @@ void SV_Rate_f (void)
 		return;
 	}
 	
-	rate = atoi(Cmd_Argv(1));
-	if (rate < 500)
-		rate = 500;
-	if (rate > 10000)
-		rate = 10000;
+	rate = SV_BoundRate (atoi(Cmd_Argv(1)));
 
 	SV_ClientPrintf (host_client, PRINT_HIGH, "Net rate set to %i\n", rate);
 	host_client->netchan.rate = 1.0/rate;
@@ -1720,5 +1716,3 @@ void SV_UserInit (void)
 	Cvar_RegisterVariable (&sv_spectalk);
 	Cvar_RegisterVariable (&sv_mapcheck);
 }
-
-
