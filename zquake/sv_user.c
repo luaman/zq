@@ -571,8 +571,6 @@ void Cmd_Begin_f (void)
 		emodel != sv.eyes_player_checksum)
 		SV_BroadcastPrintf (PRINT_HIGH, "%s WARNING: non standard player/eyes model detected\n", sv_client->name);
 
-	sv.paused &= ~2;	// FIXME!!!		-- Tonik
-
 	// if we are paused, tell the client
 	if (sv.paused) {
 		ClientReliableWrite_Begin (sv_client, svc_setpause, 2);
@@ -981,7 +979,7 @@ void SV_TogglePause (const char *msg)
 	int i;
 	client_t *cl;
 
-	sv.paused ^= 1;
+	sv.paused = !sv.paused;
 
 	if (msg)
 		SV_BroadcastPrintf (PRINT_HIGH, "%s", msg);
