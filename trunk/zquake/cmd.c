@@ -398,7 +398,7 @@ cmd_alias_t *Cmd_FindAlias (char *name)
 	key = Key (name);
 	for (alias = cmd_alias_hash[key] ; alias ; alias = alias->hash_next)
 	{
-		if (!strcmp(name, alias->name))
+		if (!Q_strcasecmp(name, alias->name))
 			return alias;
 	}
 	return NULL;
@@ -414,7 +414,7 @@ char *Cmd_AliasString (char *name)
 	key = Key (name);
 	for (alias = cmd_alias_hash[key] ; alias ; alias = alias->hash_next)
 	{
-		if (!strcmp(name, alias->name))
+		if (!Q_strcasecmp(name, alias->name))
 			return alias->value;
 	}
 	return NULL;
@@ -445,6 +445,7 @@ void Cmd_Alias_f (void)
 	int			i, c;
 	int			key;
 	char		*s;
+	cvar_t		*var;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -459,6 +460,15 @@ void Cmd_Alias_f (void)
 	{
 		Con_Printf ("Alias name is too long\n");
 		return;
+	}
+
+	if ( (var = Cvar_FindVar(s)) != NULL ) {
+		if (var->flags & CVAR_USER_CREATED)
+			Cvar_Delete (var->name);
+		else {
+//			Con_Printf ("%s is a variable\n");
+			return;
+		}
 	}
 
 	key = Key(s);
@@ -800,7 +810,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 // fail if the command already exists
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
-		if (!strcmp (cmd_name, cmd->name))
+		if (!Q_strcasecmp (cmd_name, cmd->name))
 		{
 			Con_Printf ("Cmd_AddCommand: %s already defined\n", cmd_name);
 			return;
@@ -821,7 +831,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 Cmd_Exists
 ============
 */
-qboolean	Cmd_Exists (char *cmd_name)
+qboolean Cmd_Exists (char *cmd_name)
 {
 	int	key;
 	cmd_function_t	*cmd;
@@ -829,7 +839,7 @@ qboolean	Cmd_Exists (char *cmd_name)
 	key = Key (cmd_name);
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
-		if (!strcmp (cmd_name, cmd->name))
+		if (!Q_strcasecmp (cmd_name, cmd->name))
 			return true;
 	}
 
