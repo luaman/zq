@@ -292,11 +292,7 @@ static void CL_PredictLocalPlayer (void)
 
 	} else {
 		VectorCopy (cl.viewangles, cl.simangles);
-#ifdef MVDPLAY
-		nopred = ((cl_nopred.value && !cls.mvdplayback) || cls.netchan.outgoing_sequence - cl.validsequence <= 1);
-#else
 		nopred = (cl_nopred.value || cls.netchan.outgoing_sequence - cl.validsequence <= 1);
-#endif
 	}
 
 	if (nopred)
@@ -349,6 +345,24 @@ void CL_PredictMovement (void)
 {
 	if (cls.state != ca_active)
 		return;
+
+	if (cls.mvdplayback && !cam_track)
+	{
+		player_state_t	state;
+		
+		memset (&state, 0, sizeof(state));
+		state.pm_type = PM_SPECTATOR;
+		VectorCopy (cl.simorg, state.origin);
+		VectorCopy (cl.simvel, state.velocity);
+
+		CL_PredictUsercmd (&state, &state, &cl.lastcmd);
+
+		VectorCopy (state.origin, cl.simorg);
+		VectorCopy (state.velocity, cl.simvel);
+		VectorCopy (cl.viewangles, cl.simangles);
+		cl.onground = false;
+		return;
+	}
 
 	// set up prediction for other players
 	CL_SetUpPlayerPrediction (false);
