@@ -154,7 +154,7 @@ void CL_Say (qboolean team)
 	Q_strncpyz (text, TP_ParseFunChars (s, true), sizeof(text));
 
 	sendtext[0] = 0;
-	if (team && cl_fakename.string[0] &&
+	if (team && !cl.spectator && cl_fakename.string[0] &&
 		!strchr(s, '\x0d') /* explicit $\ in message overrides cl_fakename */) {
 		char buf[1024];
 		Cmd_ExpandString (cl_fakename.string, buf);
