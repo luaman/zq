@@ -729,8 +729,10 @@ void(vector where, float set) multicast = #82;	// sends the temp message to a se
 //============================================================================
 
 //
-// subs.qc
+// forward declarations
 //
+
+// subs.qc
 void SUB_CalcMove (vector tdest, float tspeed, void() func);
 void SUB_CalcMoveEnt (entity ent, vector tdest, float tspeed, void() func);
 void SUB_CalcAngleMove (vector destangle, float tspeed, void() func);
@@ -740,13 +742,12 @@ void SUB_Null ();
 void SUB_UseTargets ();
 void SUB_Remove ();
 
-//
-//	combat.qc
-//
+// combat.qc
 void T_Damage (entity targ, entity inflictor, entity attacker, float damage);
+float CanDamage (entity targ, entity inflictor);
 
-
+// items.qc
 float T_Heal (entity e, float healamount, float ignore); // health function
 
-float CanDamage (entity targ, entity inflictor);
+//============================================================================
 
