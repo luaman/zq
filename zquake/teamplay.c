@@ -66,6 +66,10 @@ cvar_t	tp_name_flag = {"tp_name_flag", "flag"};
 cvar_t	tp_name_nothing = {"tp_name_nothing", "nothing"};
 cvar_t	tp_name_someplace = {"tp_name_someplace", "someplace"};
 cvar_t	tp_name_at = {"tp_name_at", "at"};
+cvar_t	tp_need_ra = {"tp_need_ra", "50"};
+cvar_t	tp_need_ya = {"tp_need_ya", "50"};
+cvar_t	tp_need_ga = {"tp_need_ga", "50"};
+cvar_t	tp_need_health = {"tp_need_health", "50"};
 
 void TP_FindModelNumbers (void);
 void TP_FindPoint (void);
@@ -446,6 +450,37 @@ char *Macro_PointNameAtLocation_f (void)
 		return vars.pointname;
 }
 
+char *Macro_Need_f (void)
+{
+	macro_buf[0] = 0;
+
+	// check armor
+	if (   ((cl.stats[STAT_ITEMS] & IT_ARMOR1) && cl.stats[STAT_ARMOR] < tp_need_ga.value)
+		|| ((cl.stats[STAT_ITEMS] & IT_ARMOR2) && cl.stats[STAT_ARMOR] < tp_need_ya.value)
+		|| ((cl.stats[STAT_ITEMS] & IT_ARMOR3) && cl.stats[STAT_ARMOR] < tp_need_ra.value)
+		|| (!(cl.stats[STAT_ITEMS] & (IT_ARMOR1|IT_ARMOR2|IT_ARMOR3))
+			&& (tp_need_ga.value || tp_need_ya.value || tp_need_ra.value)))
+		Q_strncpyz (macro_buf, "armor", sizeof(macro_buf));
+
+	// check health
+	if (tp_need_health.value && cl.stats[STAT_HEALTH] < tp_need_health.value) {
+		if (macro_buf[0])
+			strcat (macro_buf, "/");
+		strcat (macro_buf, "health");
+	}
+
+	// TODO
+/*	if (!(cl.stats[STAT_ITEMS] & IT_ROCKET_LAUNCHER)) {
+		if (macro_buf[0])
+			strcat (macro_buf, "/");
+		strcat (macro_buf, "RL");
+	}*/
+
+	if (!macro_buf[0])
+		strcpy (macro_buf, "nothing");
+
+	return macro_buf;
+}
 
 typedef struct
 {
@@ -593,6 +628,7 @@ char *TP_ParseMacroString (char *s)
 				case 'P':
 				case 'p': macro_string = Macro_Powerups_f(); break;
 				case 'r': macro_string = Macro_Rockets_f(); break;
+				case 'u': macro_string = Macro_Need_f(); break;
 				case 'w': macro_string = Macro_WeaponAndAmmo_f(); break;
 				case 'x': macro_string = Macro_PointName_f(); break;
 				case 'y': macro_string = Macro_PointLocation_f(); break;
@@ -2092,6 +2128,10 @@ void TP_Init ()
 	Cvar_RegisterVariable (&tp_name_nothing);
 	Cvar_RegisterVariable (&tp_name_someplace);
 	Cvar_RegisterVariable (&tp_name_at);
+	Cvar_RegisterVariable (&tp_need_ra);
+	Cvar_RegisterVariable (&tp_need_ya);
+	Cvar_RegisterVariable (&tp_need_ga);
+	Cvar_RegisterVariable (&tp_need_health);
 
 	Cmd_AddCommand ("macrolist", TP_MacroList_f);
 	Cmd_AddCommand ("loadloc", TP_LoadLocFile_f);
