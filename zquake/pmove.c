@@ -613,7 +613,7 @@ void PM_CategorizePosition (void)
 {
 	vec3_t		point;
 	int			cont;
-	trace_t	trace = { false, false};
+	trace_t	trace;
 
 // if the player hull point one unit down is solid, the player
 // is on ground
