@@ -57,8 +57,9 @@ interface from being ambiguous.
 #define CVAR_ARCHIVE		1
 #define CVAR_USERINFO		2       // mirrored to userinfo
 #define CVAR_SERVERINFO		4		// mirrored to serverinfo
-#define CVAR_ROM			64		// read only
-#define	CVAR_USER_CREATED	128		// created by a set command
+#define CVAR_ROM			8		// read only
+#define	CVAR_USER_CREATED	16		// created by a set command
+#define	CVAR_USER_ARCHIVE	32		// created by a seta command
 
 typedef struct cvar_s
 {
