@@ -194,110 +194,6 @@ qboolean SV_SetPlayer (void)
 }
 
 
-/*
-==================
-SV_God_f
-
-Sets client to godmode
-==================
-*/
-void SV_God_f (void)
-{
-	if (!sv_allow_cheats)
-	{
-		Con_Printf ("You must run the server with -cheats to enable this command.\n");
-		return;
-	}
-
-	if (!SV_SetPlayer ())
-		return;
-
-	sv_player->v.flags = (int)sv_player->v.flags ^ FL_GODMODE;
-	if (!((int)sv_player->v.flags & FL_GODMODE) )
-		SV_ClientPrintf (host_client, PRINT_HIGH, "godmode OFF\n");
-	else
-		SV_ClientPrintf (host_client, PRINT_HIGH, "godmode ON\n");
-}
-
-
-void SV_Noclip_f (void)
-{
-	if (!sv_allow_cheats)
-	{
-		Con_Printf ("You must run the server with -cheats to enable this command.\n");
-		return;
-	}
-
-	if (!SV_SetPlayer ())
-		return;
-
-	if (sv_player->v.movetype != MOVETYPE_NOCLIP)
-	{
-		sv_player->v.movetype = MOVETYPE_NOCLIP;
-		SV_ClientPrintf (host_client, PRINT_HIGH, "noclip ON\n");
-	}
-	else
-	{
-		sv_player->v.movetype = MOVETYPE_WALK;
-		SV_ClientPrintf (host_client, PRINT_HIGH, "noclip OFF\n");
-	}
-}
-
-
-/*
-==================
-SV_Give_f
-==================
-*/
-void SV_Give_f (void)
-{
-	char	*t;
-	int		v;
-	
-	if (!sv_allow_cheats)
-	{
-		Con_Printf ("You must run the server with -cheats to enable this command.\n");
-		return;
-	}
-	
-	if (!SV_SetPlayer ())
-		return;
-
-	t = Cmd_Argv(2);
-	v = atoi (Cmd_Argv(3));
-	
-	switch (t[0])
-	{
-	case '2':
-	case '3':
-	case '4':
-	case '5':
-	case '6':
-	case '7':
-	case '8':
-	case '9':
-		sv_player->v.items = (int)sv_player->v.items | IT_SHOTGUN<< (t[0] - '2');
-		break;
-	
-	case 's':
-		sv_player->v.ammo_shells = v;
-		break;		
-	case 'n':
-		sv_player->v.ammo_nails = v;
-		break;		
-	case 'r':
-		sv_player->v.ammo_rockets = v;
-		break;		
-	case 'h':
-		sv_player->v.health = v;
-		break;		
-	case 'c':
-		sv_player->v.ammo_cells = v;
-		break;		
-	}
-}
-
-
 void CL_Disconnect ();
 void Host_ConnectLocal ();
 
@@ -940,21 +836,18 @@ void SV_InitOperatorCommands (void)
 #endif
 
 	Cmd_AddCommand ("map", SV_Map_f);
-	Cmd_AddCommand ("setmaster", SV_SetMaster_f);
 
+	Cmd_AddCommand ("setmaster", SV_SetMaster_f);
 	Cmd_AddCommand ("heartbeat", SV_Heartbeat_f);
+
 #ifndef QW_BOTH
 	Cmd_AddCommand ("say", SV_ConSay_f);
 	Cmd_AddCommand ("quit", SV_Quit_f);
-#endif
-	Cmd_AddCommand ("god", SV_God_f);
-	Cmd_AddCommand ("give", SV_Give_f);
-	Cmd_AddCommand ("noclip", SV_Noclip_f);
-	Cmd_AddCommand ("localinfo", SV_Localinfo_f);
-#ifndef QW_BOTH	// FIXME
-	Cmd_AddCommand ("serverinfo", SV_Serverinfo_f);
 	Cmd_AddCommand ("user", SV_User_f);
+	Cmd_AddCommand ("serverinfo", SV_Serverinfo_f);
 #endif
+
+	Cmd_AddCommand ("localinfo", SV_Localinfo_f);
 	Cmd_AddCommand ("gamedir", SV_Gamedir_f);
 	Cmd_AddCommand ("sv_gamedir", SV_Gamedir);
 	Cmd_AddCommand ("floodprot", SV_Floodprot_f);

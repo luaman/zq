@@ -569,7 +569,7 @@ void SV_NextDownload_f (void)
 
 }
 
-void OutofBandPrintf(netadr_t where, char *fmt, ...)
+void OutofBandPrintf (netadr_t where, char *fmt, ...)
 {
 	va_list		argptr;
 	char	send[1024];
@@ -1129,6 +1129,119 @@ void SV_NoSnap_f(void)
 	}
 }
 
+/*
+=============================================================================
+
+CHEAT COMMANDS
+
+=============================================================================
+*/
+
+extern qboolean	sv_allow_cheats;
+
+/*
+==================
+SV_God_f
+
+Sets client to godmode
+==================
+*/
+void SV_God_f (void)
+{
+	if (!sv_allow_cheats)
+	{
+		Con_Printf ("You must run the server with '+set sv_cheats 1' to enable this command.\n");
+		return;
+	}
+
+	sv_player->v.flags = (int)sv_player->v.flags ^ FL_GODMODE;
+	if (!((int)sv_player->v.flags & FL_GODMODE) )
+		SV_ClientPrintf (host_client, PRINT_HIGH, "godmode OFF\n");
+	else
+		SV_ClientPrintf (host_client, PRINT_HIGH, "godmode ON\n");
+}
+
+
+/*
+==================
+SV_Give_f
+==================
+*/
+void SV_Give_f (void)
+{
+	char	*t;
+	int		v;
+	
+	if (!sv_allow_cheats)
+	{
+		Con_Printf ("You must run the server with '+set sv_cheats 1' to enable this command.\n");
+		return;
+	}
+	
+	t = Cmd_Argv(1);
+	v = atoi (Cmd_Argv(2));
+	
+	switch (t[0])
+	{
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+		sv_player->v.items = (int)sv_player->v.items | IT_SHOTGUN<< (t[0] - '2');
+		break;
+	
+	case 's':
+		sv_player->v.ammo_shells = v;
+		break;		
+	case 'n':
+		sv_player->v.ammo_nails = v;
+		break;		
+	case 'r':
+		sv_player->v.ammo_rockets = v;
+		break;		
+	case 'h':
+		sv_player->v.health = v;
+		break;		
+	case 'c':
+		sv_player->v.ammo_cells = v;
+		break;		
+	}
+}
+
+
+/*
+==================
+SV_Noclip_f
+==================
+*/
+void SV_Noclip_f (void)
+{
+	if (!sv_allow_cheats)
+	{
+		Con_Printf ("You must run the server with '+set sv_cheats 1' to enable this command.\n");
+		return;
+	}
+
+	if (sv_player->v.movetype != MOVETYPE_NOCLIP)
+	{
+		sv_player->v.movetype = MOVETYPE_NOCLIP;
+		SV_ClientPrintf (host_client, PRINT_HIGH, "noclip ON\n");
+	}
+	else
+	{
+		sv_player->v.movetype = MOVETYPE_WALK;
+		SV_ClientPrintf (host_client, PRINT_HIGH, "noclip OFF\n");
+	}
+}
+
+
+//=============================================================================
+
+
 typedef struct
 {
 	char	*name;
@@ -1147,6 +1260,13 @@ ucmd_t ucmds[] =
 	{"drop", SV_Drop_f},
 	{"pings", SV_Pings_f},
 
+	{"download", SV_BeginDownload_f},
+	{"nextdl", SV_NextDownload_f},
+
+	{"ptrack", SV_PTrack_f},	// used with autocam
+
+	{"snap", SV_NoSnap_f},
+	
 // issued by hand at client consoles	
 	{"rate", SV_Rate_f},
 	{"kill", SV_Kill_f},
@@ -1157,16 +1277,13 @@ ucmd_t ucmds[] =
 	{"say_team", SV_Say_Team_f},
 
 	{"setinfo", SV_SetInfo_f},
-
 	{"serverinfo", SV_ShowServerinfo_f},
 
-	{"download", SV_BeginDownload_f},
-	{"nextdl", SV_NextDownload_f},
+// cheat commands
+	{"god", SV_God_f},
+	{"give", SV_Give_f},
+	{"noclip", SV_Noclip_f},
 
-	{"ptrack", SV_PTrack_f}, //ZOID - used with autocam
-
-	{"snap", SV_NoSnap_f},
-	
 	{NULL, NULL}
 };
 
@@ -1534,7 +1651,7 @@ SV_PostRunCmd
 ===========
 Done after running a player command.
 */
-void SV_PostRunCmd(void)
+void SV_PostRunCmd (void)
 {
 	// run post-think
 
