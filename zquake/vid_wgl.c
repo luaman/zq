@@ -351,7 +351,7 @@ qbool VID_SetFullDIBMode (int modenum)
 	dibwindow = CreateWindowEx (
 		 ExWindowStyle,
 		 "WinQuake",
-		 "GLQuake",
+		 PROGRAM,
 		 WindowStyle,
 		 rect.left, rect.top,
 		 width,
