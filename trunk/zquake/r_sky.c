@@ -294,7 +294,11 @@ void R_SetSky (char *name)
 	int		r_skysideimage[6] = {5, 2, 4, 1, 0, 3};
 	int		width, height;
 
-	memset (pathname, 0, sizeof(pathname));
+	if (!name[0]) {
+		// disable skybox
+		r_skyboxloaded = false;
+		return;
+	}
 
 	for (i=0 ; i<6 ; i++)
 	{
@@ -303,12 +307,14 @@ void R_SetSky (char *name)
 
 		if (!pic) {
 			Com_Printf ("Couldn't load %s\n", pathname);
+			r_skyboxloaded = false;
 			return;
 		}
 
 		if (width > 512 || height > 512) {
 			Com_Printf ("Bad image dimensions in %s\n", pathname);
 			free (pic);
+			r_skyboxloaded = false;
 			return;
 		}
 

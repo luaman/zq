@@ -450,6 +450,12 @@ void R_SetSky (char *name)
 	int		width, height;
 	char	pathname[MAX_OSPATH];
 
+	if (!name[0]) {
+		// disable skybox
+		r_skyboxloaded = false;
+		return;
+	}
+
 	for (i=0 ; i<6 ; i++)
 	{
 		Q_snprintfz (pathname, sizeof(pathname), "env/%s%s.tga", name, suf[i]);
@@ -457,12 +463,14 @@ void R_SetSky (char *name)
 		if (!pic)
 		{
 			Com_Printf ("Couldn't load %s\n", pathname);
+			r_skyboxloaded = false;
 			return;
 		}
 		if (width > 512 || height > 512)	// just a sanity check
 		{
 			Com_Printf ("Bad image dimensions in %s\n", pathname);
 			free (pic);
+			r_skyboxloaded = false;
 			return;
 		}
 
@@ -724,7 +732,6 @@ void R_ClearSkyBox (void)
 		skymaxs[0][i] = skymaxs[1][i] = -9999;
 	}
 }
-
 
 void MakeSkyVec (float s, float t, int axis)
 {
