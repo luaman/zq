@@ -609,9 +609,6 @@ void R_RenderWorld (void)
 {
 	int			i;
 	model_t		*clmodel;
-	btofpoly_t	btofpolys[MAX_BTOFPOLYS];
-
-	pbtofpolys = btofpolys;
 
 	currententity = &r_worldentity;
 	VectorCopy (r_origin, modelorg);

@@ -38,8 +38,6 @@ int			r_outofedges;
 
 qboolean	r_dowarp, r_dowarpold, r_viewchanged;
 
-int			numbtofpolys;
-btofpoly_t	*pbtofpolys;
 mvertex_t	*r_pcurrentvertbase;
 
 int			c_surf;
