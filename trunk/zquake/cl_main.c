@@ -299,6 +299,7 @@ void CL_ClearState (void)
 #endif
 
 	CL_ClearTEnts ();
+	memset (cl_baselines, 0, sizeof(cl_baselines));
 
 // wipe the entire cl structure
 	memset (&cl, 0, sizeof(cl));
