@@ -699,7 +699,9 @@ type_t *PR_ParseType (void)
 	}
 
 	type_t	*type;
-	
+
+	PR_Check ("const");		// ignore
+
 	if (!strcmp (pr_token, "float") )
 		type = &type_float;
 	else if (!strcmp (pr_token, "vector") )
