@@ -41,12 +41,8 @@ float(vector v_start, vector v_dir, float reverse, float snd)   snap_nav_haz_det
 
 float()                                                         snap_nav_z_main;
 
-void()                                                          snap_nav_coasd_main;
-void()                                                          snap_nav_coasd_space;
-float(vector v_start, vector v_off)                             snap_nav_coasd_space_check;
-void()                                                          snap_nav_coasd_space_sound;
-void()                                                          snap_nav_coasd_corner;
-float(vector v_cmid, vector v_coff)                             snap_nav_coasd_corner_check;
+void()                                                          snap_nav_corners_main;
+float(vector v_cmid, vector v_coff)                             snap_nav_corners_check;
 
 
 // IMPLEMENTATIONS
@@ -67,7 +63,7 @@ void() snap_nav_constructor =
         perspective of the player.
 */
 {
-    local entity new_agnav, child_drop, child_space;
+    local entity new_agnav, child_drop;
 
     // Let there be light!        
     new_agnav = spawn();
@@ -101,11 +97,6 @@ void() snap_nav_constructor =
     if( new_agnav.skin > 1 || new_agnav.skin < 0 )
         new_agnav.skin = 1;
 
-    // Volume throttle for the wind sounds...
-    new_agnav.ammo_cells = stof(infokey(self, "agv_nav_space_volume_throttle"));
-    if( new_agnav.ammo_cells > 1 || new_agnav.ammo_cells < 0 )
-        new_agnav.ammo_cells = 1;
-
     // Volume throttle for the corner sounds...
     new_agnav.lip = stof(infokey(self, "agv_nav_corner_volume_throttle"));
     if( new_agnav.lip > 1 || new_agnav.lip < 0 )
@@ -124,13 +115,6 @@ void() snap_nav_constructor =
     child_drop.owner = self.agrip_nav;
     self.agrip_nav.aiment = child_drop;
     self.agrip_nav.view_ofs = '0 0 0';
-
-    // Set up the child entity that is the space sounder...
-    child_space = spawn();
-    child_space.movetype = MOVETYPE_NONE;
-    child_space.solid = SOLID_NOT;
-    child_space.owner = self.agrip_nav;
-    self.agrip_nav.groundentity = child_space;
 
     // Set previous run time for CAOSD...
     new_agnav.wait = time;
@@ -158,8 +142,6 @@ void() snap_nav_destructor =
 {
     self.aiment.think = SUB_Remove;
     self.aiment.nextthink = time + 0.01;
-    self.groundentity.think = SUB_Remove;
-    self.groundentity.nextthink = time + 0.01;
     self.think = SUB_Remove;
     self.nextthink = time + 0.1;
 };
@@ -188,7 +170,7 @@ void() snap_nav_main =
         snap_nav_haz_main();
 
     // Find corners, etc...
-    snap_nav_coasd_main();
+    snap_nav_corners_main();
 
     // Finished this scan... when do we do it all again?
     self.nextthink = time + self.health;
@@ -727,7 +709,7 @@ float(vector v_start, vector v_dir, float reverse, float snd) snap_nav_haz_detec
                 soundout_volume = ( 1 - soundout_volume ) * self.skin;
                 //dprint("soundout volume: ");dprint(ftos(soundout_volume));dprint("\n");
 
-                // AG_FIXME: Make it do a different version of each drop height sound if the player is on the edge!
+                // FIXME: Make it do a different version of each drop height sound if the player is on the edge!
                 
                 // Classify as SMALL, BIG or HUGE...
                 if( drop_length > 275 )
@@ -841,7 +823,7 @@ float() snap_nav_z_main =
 
 // CORNER FINDING STUFF
 
-void() snap_nav_coasd_main =
+void() snap_nav_corners_main =
 /*
     Purpose:
         Find corners!
@@ -853,141 +835,11 @@ void() snap_nav_coasd_main =
         None yet.
 */
 {
-    if( infokey(self.owner, "agv_t_nav_space_warnings") == "1" )
-        snap_nav_coasd_space();
+    // Should we be here?
+    if(     ! time > self.wait
+        ||  ! infokey(self.owner, "agv_t_nav_corner_warnings") == "1" )
+        return;
 
-    if( time > self.wait && infokey(self.owner, "agv_t_nav_corner_warnings") == "1" )
-        snap_nav_coasd_corner();
-};
-
-void() snap_nav_coasd_space =
-/*
-    Purpose:
-        Find corners!
-    Takes:
-        void
-    Returns:
-        void
-    Notes:
-        None yet.
-*/
-{
-    local float do_sound;
-    local vector v_start;
-
-    makevectors(self.owner.angles);
-    v_start = self.owner.origin - '0 0 20';
-
-    // Is there empty space in front of us (in a number of directions)?
-
-    // Left...
-    do_sound = snap_nav_coasd_space_check(v_start, (v_start - self.frags * v_right));
-    if( do_sound > 0 )
-    {
-        setorigin(self.groundentity, trace_endpos);
-        snap_misc_showpoint(trace_endpos, "progs/s_bubble.spr", 3);
-        snap_nav_coasd_space_sound();
-    }
-
-    // ``NW''
-    do_sound = snap_nav_coasd_space_check(v_start, (v_start - (self.frags/2 * v_right) + (self.frags/2 * v_forward)  ) );
-    if( do_sound > 0 )
-    {
-        setorigin(self.groundentity, trace_endpos);
-        snap_misc_showpoint(trace_endpos, "progs/s_light.spr", 3);
-        snap_nav_coasd_space_sound();
-    }
-
-    // Forward...
-    do_sound = snap_nav_coasd_space_check(v_start, (v_start + self.frags * v_forward));
-    if( do_sound > 0 )
-    {
-        setorigin(self.groundentity, trace_endpos);
-        snap_misc_showpoint(trace_endpos, "progs/s_bubble.spr", 3);
-        snap_nav_coasd_space_sound();
-    }
-
-    // ``NE''
-    do_sound = snap_nav_coasd_space_check(v_start, (v_start + (self.frags/2 * v_right) + (self.groundentity.frags/2 * v_forward)  ) );
-    if( do_sound > 0 )
-    {
-        setorigin(self.groundentity, trace_endpos);
-        snap_misc_showpoint(trace_endpos, "progs/s_light.spr", 3);
-        snap_nav_coasd_space_sound();
-    }
-
-    // Right...
-    do_sound = snap_nav_coasd_space_check(v_start, (v_start + self.frags * v_right));
-    if( do_sound > 0 )
-    {
-        setorigin(self.groundentity, trace_endpos);
-        snap_misc_showpoint(trace_endpos, "progs/s_bubble.spr", 3);
-        snap_nav_coasd_space_sound();
-    }
-};
-
-float(vector v_start, vector v_off) snap_nav_coasd_space_check =
-/*
-    Purpose:
-        Check for free space in a given direction...
-    Takes:
-        vector v_start  - the start position
-        vector v_off    - the left/right/fwd offset
-    Returns:
-        float           - either true or false
-*/
-{
-    local float retval;
-    
-    retval = true;
-    
-    traceline(v_start, v_off, true, self);
-    if( trace_fraction != 1 )
-        retval = false;
-
-    return retval;
-};
-
-void() snap_nav_coasd_space_sound =
-/*
-    Purpose:
-        Sound out the free space that has been found...
-    Takes:
-        void
-    Returns:
-        void
-    Notes:
-        The volume of the sound to be emitted comes from a cvar set by the
-        user.
-*/
-{
-    local float sndlev;
-
-    if( self.owner.waterlevel > 1)
-    {
-        sndlev = 2 * self.ammo_cells;
-        if( sndlev > 1 )
-            sndlev = 1;
-        soundtoclient(self.owner, self.groundentity, CHAN_AUTO, "misc/water2.wav", sndlev, ATTN_NORM);
-    }
-    else
-    {
-        soundtoclient(self.owner, self.groundentity, CHAN_AUTO, "nav/wind.wav", self.ammo_cells, ATTN_NORM);
-    }
-};
-
-void() snap_nav_coasd_corner =
-/*
-    Purpose:
-        Find corners!
-    Takes:
-        void
-    Returns:
-        void
-    Notes:
-        None yet.
-*/
-{
     local float corner_dist, found_left_corner, found_right_corner;
     local float corner_vol, midpoint_vol;
     local vector v_start, v_corner_fwd, v_corner_left, v_corner_right, v_iL, v_iR;
@@ -1020,7 +872,7 @@ void() snap_nav_coasd_corner =
         if( ! found_left_corner )
         {
             v_corner_left = v_corner_fwd - (self.frags/2) * v_right;
-            found_left_corner = snap_nav_coasd_corner_check(v_corner_fwd, v_corner_left);
+            found_left_corner = snap_nav_corners_check(v_corner_fwd, v_corner_left);
             v_iL = v_corner_fwd;
         }
 
@@ -1028,7 +880,7 @@ void() snap_nav_coasd_corner =
         if( ! found_right_corner )
         {
             v_corner_right = v_corner_fwd + (self.frags/2) * v_right;
-            found_right_corner = snap_nav_coasd_corner_check(v_corner_fwd, v_corner_right);
+            found_right_corner = snap_nav_corners_check(v_corner_fwd, v_corner_right);
             v_iR = v_corner_fwd;
         }
     
@@ -1213,7 +1065,7 @@ void() snap_nav_coasd_corner =
         self.wait = time + 0.5;
 };
 
-float(vector v_cmid, vector v_coff) snap_nav_coasd_corner_check =
+float(vector v_cmid, vector v_coff) snap_nav_corners_check =
 /*
     Purpose:
         Find corners - check that a corner point really is one.

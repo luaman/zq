@@ -94,6 +94,7 @@ void() snap_se_cornersound =
             + self.dest2    - vector to corner point.
             + self.frags    - volume of far mid point's sound.
             + self.health   - volume of corner point's sound.
+        * This entity removes itself when completed.
 */
 {
     // Check if we've made the first sound yet or not...

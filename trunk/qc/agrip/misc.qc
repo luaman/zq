@@ -51,7 +51,6 @@ float   (vector object_origin, float fov)           snap_misc_fovtest;
 void    (string msg_string)                         snap_misc_m2o;
 
 // PLAYER UTILITY FUNCTIONS
-void    ()                                          snap_misc_compass;
 void    ()                                          snap_misc_weaponswitch;
 void    ()                                          snap_misc_blockedtest;
 void    (float direction)                           snap_misc_blockedtest_propchg;
@@ -171,79 +170,6 @@ void (string msg_string) snap_misc_m2o =
 
 
 // PLAYER UTILITY FUNCTIONS
-
-void () snap_misc_compass =
-/*
-    Purpose:
-        This works out which way the player is pointing and tells them!
-        It uses the snap_misc_normalyaw() function.
-    Takes:
-        void
-    Returns:
-        void
-    Notes:
-        The global variable ``SNAP_MISC_NORMYAW_OFFSET'' set in the function
-        ``PutClientInServer'' in client.qc is used as an offset.
-        This is because the player could spawn at any angle in a map -- we need
-        to make sure that ``North'' is always considered to be the way they are
-        facing when they spawn.
-*/
-{
-    local float normal_yaw;
-    
-    // Get Normalised yaw...
-    normal_yaw = snap_misc_normalyaw(self.angles_y);
- 
-    // Work out what direction we're pointing in... 
-    if( normal_yaw >= 337.5 )
-        snap_misc_m2m("North North West.\n");
-    else if( normal_yaw >= 330 )
-        snap_misc_m2m("330 degrees.\n");
-    else if( normal_yaw >= 315 )
-        snap_misc_m2m("North West.\n"); 
-    else if( normal_yaw >= 300 )
-        snap_misc_m2m("300 degrees.\n");
-    else if( normal_yaw >= 292.5 )
-        snap_misc_m2m("West North West.\n");
-    else if( normal_yaw >= 270 )
-        snap_misc_m2m("West.\n");
-    else if( normal_yaw >= 247.5 )
-        snap_misc_m2m("West South West.\n");
-    else if( normal_yaw >= 240 )
-        snap_misc_m2m("240 degrees.\n");
-    else if( normal_yaw >= 225 )
-        snap_misc_m2m("South West.\n");
-    else if( normal_yaw >= 210 )
-        snap_misc_m2m("210 degrees.\n");
-    else if( normal_yaw >= 202.5 )
-        snap_misc_m2m("South South West.\n");
-    else if( normal_yaw >= 180 )
-        snap_misc_m2m("South.\n");
-    else if( normal_yaw >= 157.5 )
-        snap_misc_m2m("South South East.\n");
-    else if( normal_yaw >= 150 )
-        snap_misc_m2m("150 degrees.\n");
-    else if( normal_yaw >= 135 )
-        snap_misc_m2m("South East.\n");
-    else if( normal_yaw >= 120 )
-        snap_misc_m2m("120 degrees.\n");
-    else if( normal_yaw >= 112.5 )
-        snap_misc_m2m("East South East.\n");
-    else if( normal_yaw >= 90 )
-        snap_misc_m2m("East.\n");
-    else if( normal_yaw >= 67.5 )
-        snap_misc_m2m("East North East.\n");
-    else if( normal_yaw >= 60 )
-        snap_misc_m2m("60 degrees.\n");
-    else if( normal_yaw >= 45 )
-        snap_misc_m2m("North East.\n");
-    else if( normal_yaw >= 30 )
-        snap_misc_m2m("30 degrees.\n");
-    else if( normal_yaw >= 22.5 )
-        snap_misc_m2m("North North East.\n");
-    else if( normal_yaw >= 0 )
-        snap_misc_m2m("North.\n");
-};
 
 void () snap_misc_weaponswitch =
 /*
