@@ -65,6 +65,7 @@ typedef struct cvar_s
 	char	*name;
 	char	*string;
 	int		flags;
+	qboolean	(*OnChange)(struct cvar_s *var, char *value);
 	float	value;
 	struct cvar_s *hash_next;
 	struct cvar_s *next;
@@ -76,7 +77,7 @@ void 	Cvar_RegisterVariable (cvar_t *variable);
 // archive elements set.
 
 void 	Cvar_Set (cvar_t *var, char *value);
-// equivelant to "<name> <variable>" typed at the console
+// equivalent to "<name> <variable>" typed at the console
 
 void	Cvar_SetValue (cvar_t *var, float value);
 // expands value to a string and calls Cvar_Set
