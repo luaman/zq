@@ -33,6 +33,7 @@ void() player_stand1;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
 void() ExitIntermission;
+string(string attacker_class) ObituaryForMonster;
 
 float   modelindex_eyes, modelindex_player;
 
@@ -1464,6 +1465,12 @@ void(entity targ, entity attacker) ClientObituary =
 			if (attacker.classname == "trigger_changelevel")
 			{
 				bprint (PRINT_MEDIUM," tried to leave\n");
+				return;
+			}
+
+			if (attacker.flags & FL_MONSTER)
+			{
+				bprint (PRINT_MEDIUM, ObituaryForMonster(attacker.classname));
 				return;
 			}
 
