@@ -4452,53 +4452,6 @@ del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
 						Outputs="$(OUTDIR)\$(InputName).obj"/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath="worlda.s">
-				<FileConfiguration
-					Name="GLRelease|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
-gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
-del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
-"
-						Outputs="$(OUTDIR)\$(InputName).obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
-gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
-del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
-"
-						Outputs="$(OUTDIR)\$(InputName).obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
-gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
-del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
-"
-						Outputs="$(OUTDIR)\$(InputName).obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;
-gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm
-ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm
-del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp
-"
-						Outputs="$(OUTDIR)\$(InputName).obj"/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>
