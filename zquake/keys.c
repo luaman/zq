@@ -648,33 +648,29 @@ void Key_Console (int key)
 		case K_PGUP:
 		case K_MWHEELUP:
 			if (keydown[K_CTRL] && key == K_PGUP)
-				con.display -= ((int)scr_conlines-22)>>3;
+				Con_Scroll (-(((int)scr_conlines - 22) >> 3));
 			else
-				con.display -= 2;
-			if (con.display - con.current + con.numlines < 0)
-				con.display = con.current - con.numlines;
+				Con_Scroll (-2);
 			return;
 
 		case K_MWHEELDOWN:
 		case K_PGDN:
 			if (keydown[K_CTRL] && key == K_PGDN)
-				con.display += ((int)scr_conlines-22)>>3;
+				Con_Scroll (((int)scr_conlines - 22) >> 3);
 			else
-				con.display += 2;
-			if (con.display - con.current > 0)
-				con.display = con.current;
+				Con_Scroll (2);
 			return;
 
 		case K_HOME:
 			if (keydown[K_CTRL])
-				con.display = con.current - con.numlines;
+				Con_ScrollToTop ();
 			else
 				key_linepos = 1;
 			return;
 
 		case K_END:
 			if (keydown[K_CTRL])
-				con.display = con.current;
+				Con_ScrollToBottom ();
 			else
 				key_linepos = strlen(key_lines[edit_line]);
 			return;
@@ -896,26 +892,22 @@ void Key_Console (int key)
 		case K_PGUP:
 		case K_MWHEELUP:
 			if (keydown[K_CTRL] && key == K_PGUP)
-				con.display -= ((int)scr_conlines-22)>>3;
+				Con_Scroll (-(((int)scr_conlines - 22) >> 3));
 			else
-				con.display -= 2;
-			if (con.display - con.current + con.numlines < 0)
-				con.display = con.current - con.numlines;
+				Con_Scroll (-2);
 			return;
 
 		case K_MWHEELDOWN:
 		case K_PGDN:
 			if (keydown[K_CTRL] && key == K_PGDN)
-				con.display += ((int)scr_conlines-22)>>3;
+				Con_Scroll (((int)scr_conlines - 22) >> 3);
 			else
-				con.display += 2;
-			if (con.display - con.current > 0)
-				con.display = con.current;
+				Con_Scroll (2);
 			return;
 
 		case K_HOME:
 			if (keydown[K_CTRL])
-				con.display = con.current - con.numlines;
+				Con_ScrollToTop ();
 			else
 				key_linepos = 1;
 			Sys_Printf("%c\n", key_lines[edit_line][1]);
@@ -923,7 +915,7 @@ void Key_Console (int key)
 
 		case K_END:
 			if (keydown[K_CTRL])
-				con.display = con.current;
+				Con_ScrollToTop ();
 			else
 				key_linepos = strlen(key_lines[edit_line]);
 			return;

@@ -390,6 +390,27 @@ void Con_Print (char *txt)
 	}
 }
 
+// scroll the (visible area of the) console up or down
+void Con_Scroll (int count)
+{
+	con.display += count;
+	if (con.display - con.current + con.numlines < 0)
+		con.display = con.current - con.numlines;
+	if (con.display - con.current > 0)
+		con.display = con.current;
+}
+
+void Con_ScrollToTop (void)
+{
+	con.display = con.current - con.numlines;
+}
+
+
+void Con_ScrollToBottom (void)
+{
+	con.display = con.current;
+}
+
 
 /*
 ==============================================================================
