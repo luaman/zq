@@ -619,7 +619,7 @@ float frand(void)
 CL_RailTrail
 ===============
 */
-void CL_RailTrail (vec3_t start, vec3_t end)
+void CL_RailTrail (vec3_t start, vec3_t end, int color)
 {
 	vec3_t		move;
 	vec3_t		vec;
@@ -631,7 +631,7 @@ void CL_RailTrail (vec3_t start, vec3_t end)
 	int			i;
 	float		d, c, s;
 	vec3_t		dir;
-	byte		clr = 208;	// blue
+//	byte		clr = 208;	// blue
 
 	VectorCopy (start, move);
 	VectorSubtract (end, start, vec);
@@ -664,7 +664,7 @@ void CL_RailTrail (vec3_t start, vec3_t end)
 
 		p->alpha = 1.0;
 		p->alphavel = -1.0 / (1+frand()*0.2);
-		p->color = clr + (rand()&7);
+		p->color = color + (rand()&7);
 		for (j=0 ; j<3 ; j++)
 		{
 			p->org[j] = move[j] + dir[j]*3;

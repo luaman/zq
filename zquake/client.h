@@ -73,6 +73,8 @@ typedef struct player_info_s
 	byte	pl;
 	qbool	spectator;
 
+	int		railcolor;
+
 	// skin information
 	int		real_topcolor;			// what the server tells us
 	int		real_bottomcolor;
@@ -506,7 +508,7 @@ void CL_VoorTrail (vec3_t start, vec3_t end);
 void CL_GrenadeTrail (vec3_t start, vec3_t end);
 void CL_RocketTrail (vec3_t start, vec3_t end);
 void CL_TracerTrail (vec3_t start, vec3_t end, int color);
-void CL_RailTrail (vec3_t start, vec3_t end);
+void CL_RailTrail (vec3_t start, vec3_t end, int color);
 void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
 void CL_RunParticleEffect2 (vec3_t org, vec3_t dir, int color, int count, int scale);
 void CL_EntityParticles (vec3_t org);
