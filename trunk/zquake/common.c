@@ -669,7 +669,7 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 		if (length > buf->maxsize)
 			Sys_Error ("SZ_GetSpace: %i is > full buffer size", length);
 			
-		Sys_Printf ("SZ_GetSpace: overflow\n");	// because Con_Printf may be redirected
+		Sys_Printf ("SZ_GetSpace: overflow\n");	// because Com_Printf may be redirected
 		SZ_Clear (buf); 
 		buf->overflowed = true;
 	}
@@ -1151,15 +1151,15 @@ void COM_Path_f (void)
 {
 	searchpath_t	*s;
 	
-	Con_Printf ("Current search path:\n");
+	Com_Printf ("Current search path:\n");
 	for (s=com_searchpaths ; s ; s=s->next)
 	{
 		if (s == com_base_searchpaths)
-			Con_Printf ("----------\n");
+			Com_Printf ("----------\n");
 		if (s->pack)
-			Con_Printf ("%s (%i files)\n", s->pack->filename, s->pack->numfiles);
+			Com_Printf ("%s (%i files)\n", s->pack->filename, s->pack->numfiles);
 		else
-			Con_Printf ("%s\n", s->filename);
+			Com_Printf ("%s\n", s->filename);
 	}
 }
 
@@ -1462,7 +1462,7 @@ pack_t *COM_LoadPackFile (char *packfile)
 	pack->numfiles = numpackfiles;
 	pack->files = newfiles;
 	
-	Con_Printf ("Added packfile %s (%i files)\n", packfile, numpackfiles);
+	Com_Printf ("Added packfile %s (%i files)\n", packfile, numpackfiles);
 	return pack;
 }
 
@@ -1531,7 +1531,7 @@ void COM_Gamedir (char *dir)
 	if (strstr(dir, "..") || strstr(dir, "/")
 		|| strstr(dir, "\\") || strstr(dir, ":") )
 	{
-		Con_Printf ("Gamedir should be a single filename, not a path\n");
+		Com_Printf ("Gamedir should be a single filename, not a path\n");
 		return;
 	}
 
@@ -1691,7 +1691,7 @@ void Info_RemoveKey (char *s, char *key)
 
 	if (strstr (key, "\\"))
 	{
-		Con_Printf ("Can't use a key with a \\\n");
+		Com_Printf ("Can't use a key with a \\\n");
 		return;
 	}
 
@@ -1786,19 +1786,19 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 
 	if (strstr (key, "\\") || strstr (value, "\\") )
 	{
-		Con_Printf ("Can't use keys or values with a \\\n");
+		Com_Printf ("Can't use keys or values with a \\\n");
 		return;
 	}
 
 	if (strstr (key, "\"") || strstr (value, "\"") )
 	{
-		Con_Printf ("Can't use keys or values with a \"\n");
+		Com_Printf ("Can't use keys or values with a \"\n");
 		return;
 	}
 
 	if (strlen(key) > 63 || strlen(value) > 63)
 	{
-		Con_Printf ("Keys and values must be < 64 characters.\n");
+		Com_Printf ("Keys and values must be < 64 characters.\n");
 		return;
 	}
 
@@ -1807,7 +1807,7 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 		// key exists, make sure we have enough room for new value, if we don't,
 		// don't change it!
 		if (strlen(value) - strlen(v) + strlen(s) >= maxsize) {
-			Con_Printf ("Info string length exceeded\n");
+			Com_Printf ("Info string length exceeded\n");
 			return;
 		}
 	}
@@ -1819,7 +1819,7 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 
 	if ((strlen(new) + strlen(s)) >= maxsize)
 	{
-		Con_Printf ("Info string length exceeded\n");
+		Com_Printf ("Info string length exceeded\n");
 		return;
 	}
 
@@ -1851,7 +1851,7 @@ void Info_SetValueForKey (char *s, char *key, char *value, int maxsize)
 {
 	if (key[0] == '*')
 	{
-		Con_Printf ("Can't set * keys\n");
+		Com_Printf ("Can't set * keys\n");
 		return;
 	}
 
@@ -1881,11 +1881,11 @@ void Info_Print (char *s)
 		}
 		else
 			*o = 0;
-		Con_Printf ("%s", key);
+		Com_Printf ("%s", key);
 
 		if (!*s)
 		{
-			Con_Printf ("MISSING VALUE\n");
+			Com_Printf ("MISSING VALUE\n");
 			return;
 		}
 
@@ -1897,7 +1897,7 @@ void Info_Print (char *s)
 
 		if (*s)
 			s++;
-		Con_Printf ("%s\n", value);
+		Com_Printf ("%s\n", value);
 	}
 }
 
@@ -2025,14 +2025,14 @@ byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence)
 
 /*
 ================
-Con_Printf
+Com_Printf
 
 All console printing must go through this in order to be logged to disk
 ================
 */
 #define	MAXPRINTMSG	4096
 // FIXME: make a buffer size safe vsprintf?
-void Con_Printf (char *fmt, ...)
+void Com_Printf (char *fmt, ...)
 {
 #if defined(QW_BOTH) || defined(SERVERONLY)
 	extern qboolean	sv_redirected;
@@ -2080,12 +2080,12 @@ void Con_Printf (char *fmt, ...)
 
 /*
 ================
-Con_DPrintf
+Com_DPrintf
 
-A Con_Printf that only shows up if the "developer" cvar is set
+A Com_Printf that only shows up if the "developer" cvar is set
 ================
 */
-void Con_DPrintf (char *fmt, ...)
+void Com_DPrintf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
@@ -2097,5 +2097,5 @@ void Con_DPrintf (char *fmt, ...)
 	vsprintf (msg, fmt, argptr);
 	va_end (argptr);
 	
-	Con_Printf ("%s", msg);
+	Com_Printf ("%s", msg);
 }

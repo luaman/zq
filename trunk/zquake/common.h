@@ -235,5 +235,5 @@ void Com_BlockFullChecksum (void *buffer, int len, unsigned char *outbuf);
 byte	COM_BlockSequenceCheckByte (byte *base, int length, int sequence, unsigned mapchecksum);
 byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence);
 
-void Con_Printf (char *fmt, ...);
-void Con_DPrintf (char *fmt, ...);
+void Com_Printf (char *fmt, ...);
+void Com_DPrintf (char *fmt, ...);
