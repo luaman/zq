@@ -1,0 +1,46 @@
+./qwprogs.dat
+
+../frikbot/defs.qc     // Give AudioQuake players smt to play with
+//../qw/defs.qc
+agrip_defs.qc // Accessibility definitions
+
+../frikbot/map_dm1.qc
+../frikbot/map_dm2.qc
+../frikbot/map_dm3.qc
+../frikbot/map_dm4.qc
+../frikbot/map_dm5.qc
+../frikbot/map_dm6.qc
+
+../frikbot/bot.qc
+../frikbot/bot_way.qc
+../frikbot/bot_fight.qc
+../frikbot/bot_ai.qc
+../frikbot/bot_misc.qc
+../frikbot/bot_phys.qc
+../frikbot/bot_move.qc
+
+../qw/subs.qc
+../qw/combat.qc
+../qw/items.qc
+
+_aux.qc       // AGRIP Auxiliary Player Information Object
+se.qc        // AGRIP Sound Entity
+misc.qc      // AGRIP Utility Functions
+nav.qc       // AGRIP Navigation Helper
+d5k.qc       // AGRIP Detector 5000
+esr.qc       // AGRIP EtherScan RADAR
+marker.qc    // AGRIP Waypoint Marker
+hooks.qc     // Hook functions (moves accessibility code out of main QC)
+
+../qw/weapons.qc
+../qw/world.qc
+../qw/client.qc
+../qw/spectate.qc
+../qw/player.qc
+../qw/doors.qc
+../qw/buttons.qc
+../qw/triggers.qc
+../qw/plats.qc
+../qw/misc.qc
+../qw/server.qc
+../qw/commands.qc
