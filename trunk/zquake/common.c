@@ -1132,8 +1132,6 @@ byte *FS_LoadFile (char *path, int usehunk)
 		buf = Hunk_AllocName (len+1, base);
 	else if (usehunk == 2)
 		buf = Hunk_TempAlloc (len+1);
-	else if (usehunk == 0)
-		buf = Z_Malloc (len+1);
 	else if (usehunk == 3)
 		buf = Cache_Alloc (loadcache, len+1, base);
 	else if (usehunk == 4)
