@@ -1979,6 +1979,14 @@ void TP_FindPoint ()
 			continue;
 		if (! (item->itemflag & pointflags) )
 			continue;
+		// special check for armors
+		if (item->itemflag == (it_ra|it_ya|it_ga)) {
+			switch (ent->skinnum) {
+				case 0: if (!(pointflags & it_ga)) continue; break;
+				case 1: if (!(pointflags & it_ya)) continue; break;
+				default: if (!(pointflags & it_ra)) continue;
+			}
+		}
 
 		VectorAdd (ent->origin, item->offset, entorg);
 		VectorSubtract (entorg, vieworg, v);
