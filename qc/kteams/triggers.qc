@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 //entity stemp, otemp, s, old;
-entity s;
+//entity s;
 
 void() trigger_reactivate =
 {
@@ -323,7 +323,8 @@ void(entity sndspot) play_teleport =
 
 void(vector org) spawn_tfog =
 {
-	s = spawn ();
+        local entity s;
+        s = spawn ();
 	s.origin = org;
 	s.nextthink = time + 0.2;
 	s.think = SUB_Remove;
