@@ -195,6 +195,8 @@ typedef enum {
 //
 typedef struct
 {
+	qbool		initialized;
+
 // connection information
 	cactive_t	state;
 

@@ -114,6 +114,16 @@ typedef struct {
 } refdef2_t;
 
 
+typedef struct mpic_s
+{
+	int			width;
+	int			height;
+	qbool		alpha;	// will be true if there are any transparent pixels
+} mpic_t;
+
+//====================================================
+
+
 //
 // refresh
 //
@@ -171,6 +181,9 @@ mpic_t *R_CacheWadPic (char *name);
 void R_FlushPics (void);
 void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha);
 void R_DrawCrosshair (int num, byte color, int crossx, int crossy);
+
+#define GetPicWidth(pic) (pic->width)
+#define GetPicHeight(pic) (pic->height)
 
 // model flags
 #define	MF_ROCKET	1			// leave a trail

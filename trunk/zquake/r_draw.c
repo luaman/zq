@@ -34,26 +34,42 @@ mpic_t		*draw_disc;
 
 typedef struct cachepic_s
 {
-	char		name[MAX_QPATH];
-	cache_user_t	cache;
+	mpic_t			pic;
+	char			name[MAX_QPATH];
+	// only one of the following two fields can be set
+	byte			*data;		// raw data in a wad lump
+	cache_user_t	cache;		// cached .lmp
 } cachepic_t;
 
-#define	MAX_CACHED_PICS		128
-cachepic_t	cachepics[MAX_CACHED_PICS];
-int			numcachepics;
-
+#define	MAX_CACHED_PICS		256
+static cachepic_t	cachepics[MAX_CACHED_PICS];
+static int			numcachepics;
 
 mpic_t *R_CacheWadPic (char *name)
 {
-	qpic_t	*p;
-	mpic_t	*pic;
+	int			i;
+	cachepic_t	*cpic;
+	qpic_t		*p;
 
-	p = W_GetLumpName (name);
-	pic = (mpic_t *)p;
-	pic->width = p->width;
-	pic->alpha = memchr (&pic->data, 255, pic->width * pic->height) != NULL;
+	for (cpic = cachepics, i = 0; i < numcachepics; cpic++, i++)
+		if (!strcmp (name, cpic->name))
+			return &cpic->pic;
 
-	return pic;
+	if (numcachepics == MAX_CACHED_PICS)
+		Sys_Error ("numcachepics == MAX_CACHED_PICS");
+
+	numcachepics++;
+	strlcpy (cpic->name, name, sizeof(cpic->name));
+	cpic->cache.data = NULL;
+
+	p = W_GetLumpName (name, true);
+
+	cpic->pic.width = p->width;
+	cpic->pic.height = p->height;
+	cpic->data = p->data;
+	cpic->pic.alpha = memchr (p->data, 255, p->width * p->height) != NULL;
+
+	return &cpic->pic;
 }
 
 /*
@@ -63,12 +79,12 @@ R_CachePic
 */
 mpic_t *R_CachePic (char *path)
 {
-	cachepic_t	*pic;
+	cachepic_t	*cpic;
 	int			i;
 	qpic_t		*dat;
-	
-	for (pic=cachepics, i=0 ; i<numcachepics ; pic++, i++)
-		if (!strcmp (path, pic->name))
+
+	for (cpic = cachepics, i = 0; i < numcachepics; cpic++, i++)
+		if (!strcmp (path, cpic->name))
 			break;
 
 	if (i == numcachepics)
@@ -76,38 +92,62 @@ mpic_t *R_CachePic (char *path)
 		if (numcachepics == MAX_CACHED_PICS)
 			Sys_Error ("numcachepics == MAX_CACHED_PICS");
 		numcachepics++;
-		strcpy (pic->name, path);
+		strlcpy (cpic->name, path, sizeof(cpic->name));
+		cpic->cache.data = NULL;
 	}
+	else
+	{
+		dat = Cache_Check (&cpic->cache);
 
-	dat = Cache_Check (&pic->cache);
-
-	if (dat)
-		return (mpic_t *)dat;
+		if (dat) {
+			cpic->data = dat->data;
+			return &cpic->pic;
+		}
+	}
 
 //
 // load the pic from disk
 //
-	FS_LoadCacheFile (path, &pic->cache);
+	FS_LoadCacheFile (path, &cpic->cache);
 	
-	dat = (qpic_t *)pic->cache.data;
+	dat = (qpic_t *)(cpic->cache.data);
 	if (!dat)
-	{
 		Sys_Error ("R_CachePic: failed to load %s", path);
-	}
 
 	SwapPic (dat);
 
-	((mpic_t *)dat)->width = dat->width;
-	((mpic_t *)dat)->alpha = memchr (&dat->data, 255,
-					dat->width * ((mpic_t *)dat)->height) != NULL;
+	cpic->pic.width = dat->width;
+	cpic->pic.height = dat->height;
+	cpic->data = dat->data;
+	cpic->pic.alpha = memchr (dat->data, 255,
+					dat->width * dat->height) != NULL;
 
-	return (mpic_t *)dat;
+	return &cpic->pic;
 }
 
 
 void R_FlushPics (void)
 {
-	// not needed (yet)
+	int	i;
+	cachepic_t	*cpic;
+
+	for (cpic = cachepics, i = 0; i < numcachepics; cpic++, i++) {
+		if (cpic->cache.data)
+			Cache_Free (cpic->cache.data);
+
+		// turn up any attempt to access an unregistered pic
+		cpic->data = cpic->cache.data = NULL;
+	}
+
+	numcachepics = 0;
+
+	draw_chars = NULL;
+	draw_disc = NULL;
+
+	W_LoadWadFile ("gfx.wad");
+
+	draw_chars = W_GetLumpName ("conchars", true);
+	draw_disc = R_CacheWadPic ("disc");
 }
 
 
@@ -118,7 +158,9 @@ R_Draw_Init
 */
 void R_Draw_Init (void)
 {
-	draw_chars = (byte *) R_CacheWadPic ("conchars");
+	W_LoadWadFile ("gfx.wad");
+
+	draw_chars = W_GetLumpName ("conchars", true);
 	draw_disc = R_CacheWadPic ("disc");
 }
 
@@ -331,7 +373,7 @@ static void R_DrawSolidPic (int x, int y, mpic_t *pic)
 	unsigned short	*pusdest;
 	int				v, u;
 
-	source = pic->data;
+	source = ((cachepic_t *)pic)->data;
 
 	if (r_pixbytes == 1)
 	{
@@ -369,7 +411,7 @@ static void R_DrawTransPic (int x, int y, mpic_t *pic)
 	unsigned short	*pusdest;
 	int				v, u;
 
-	source = pic->data;
+	source = ((cachepic_t *)pic)->data;
 
 	if (r_pixbytes == 1)
 	{
@@ -460,7 +502,7 @@ static void R_DrawTransSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, in
 	unsigned short	*pusdest;
 	int				v, u;
 
-	source = pic->data + srcy * pic->width + srcx;
+	source = ((cachepic_t *)pic)->data + srcy * pic->width + srcx;
 
 	if (r_pixbytes == 1)
 	{
@@ -547,7 +589,7 @@ void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int
 		return;
 	}
 
-	source = pic->data + srcy * pic->width + srcx;
+	source = ((cachepic_t *)pic)->data + srcy * pic->width + srcx;
 
 	if (r_pixbytes == 1)
 	{
@@ -596,7 +638,7 @@ void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
 		Sys_Error ("Draw_TransPic: bad coordinates");
 	}
 		
-	source = pic->data;
+	source = ((cachepic_t *)pic)->data;
 
 	if (r_pixbytes == 1)
 	{
@@ -695,7 +737,8 @@ void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float a
 
 		for (i = startline; i < height; i++)
 		{
-			src = pic->data + pic->width * (i * pic->height / height);
+			src = ((cachepic_t *)pic)->data
+							+ pic->width * (i * pic->height / height);
 			if (width == pic->width) {
 				memcpy (dest, src, width);
 				src += pic->width;
@@ -885,7 +928,7 @@ void R_DrawTile (int x, int y, int w, int h, mpic_t *pic)
 	r_rectdesc.width = pic->width;
 	r_rectdesc.rowbytes = pic->width;
 	r_rectdesc.height = pic->height;
-	r_rectdesc.ptexbytes = pic->data;
+	r_rectdesc.ptexbytes = ((cachepic_t *)pic)->data;
 
 	r_rectdesc.rect.x = x;
 	r_rectdesc.rect.y = y;
@@ -1025,8 +1068,10 @@ Call before beginning any disc IO.
 */
 void R_BeginDisc (void)
 {
+	if (!draw_disc)
+		return;
 
-	D_BeginDirectRect (vid.width - 24, 0, draw_disc->data, 24, 24);
+	D_BeginDirectRect (vid.width - 24, 0, ((cachepic_t *)draw_disc)->data, 24, 24);
 }
 
 
@@ -1040,6 +1085,8 @@ Call after completing any disc IO
 */
 void R_EndDisc (void)
 {
+	if (!draw_disc)
+		return;
 
 	D_EndDirectRect (vid.width - 24, 0, 24, 24);
 }

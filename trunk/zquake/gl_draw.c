@@ -27,7 +27,7 @@ void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel);
 cvar_t		gl_smoothfont = {"gl_smoothfont", "0", 0, OnChange_gl_smoothfont};
 
 byte		*draw_chars;				// 8*8 graphic characters
-mpic_t		*draw_disc;
+static mpic_t	*draw_disc;
 
 int			translate_texture;
 int			char_texture;
@@ -63,8 +63,7 @@ static byte crosshairdata[3][64] = {
 };
 
 
-int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data);
-void Draw_LoadCharset (void);
+void R_LoadCharset (void);
 
 /*
 =============================================================================
@@ -84,10 +83,10 @@ void Draw_LoadCharset (void);
 #define	BLOCK_WIDTH		256
 #define	BLOCK_HEIGHT	256
 
-int			scrap_allocated[MAX_SCRAPS][BLOCK_WIDTH];
-byte		scrap_texels[MAX_SCRAPS][BLOCK_WIDTH*BLOCK_HEIGHT*4];
-int			scrap_dirty = 0;	// bit mask
-int			scrap_texnum;
+static int	scrap_allocated[MAX_SCRAPS][BLOCK_WIDTH];
+/* static */ byte	scrap_texels[MAX_SCRAPS][BLOCK_WIDTH*BLOCK_HEIGHT*4];
+static int	scrap_dirty = 0;	// bit mask
+static int	scrap_texnum;
 
 // returns false if allocation failed
 static qbool Scrap_AllocBlock (int scrapnum, int w, int h, int *x, int *y)
@@ -126,18 +125,15 @@ static qbool Scrap_AllocBlock (int scrapnum, int w, int h, int *x, int *y)
 	return true;
 }
 
-int	scrap_uploads;
-
 static void Scrap_Upload (void)
 {
 	int i;
 
-	scrap_uploads++;
 	for (i=0 ; i<2 ; i++) {
 		if ( !(scrap_dirty & (1 << i)) )
 			continue;
 		scrap_dirty &= ~(1 << i);
-		GL_Bind(scrap_texnum + i);
+		GL_Bind (scrap_texnum + i);
 		GL_Upload8 (scrap_texels[i], BLOCK_WIDTH, BLOCK_HEIGHT, false, i, false);
 	}
 }
@@ -147,52 +143,66 @@ static void Scrap_Upload (void)
 
 typedef struct cachepic_s
 {
-	char	name[MAX_QPATH];
-	mpic_t	pic;
-	qbool	valid;
+	mpic_t		pic;
+	char		name[MAX_QPATH];
+	int			texnum;
+	float		sl, tl, sh, th;
 } cachepic_t;
 
-#define	MAX_CACHED_PICS		128
-cachepic_t	cachepics[MAX_CACHED_PICS];
-int			numcachepics;
+#define	MAX_CACHED_PICS		256
+static cachepic_t	cachepics[MAX_CACHED_PICS];
+static int			numcachepics;
 
-byte		menuplyr_pixels[4096];
+byte		menuplyr_pixels[4096];		// the menu needs them
 
-int		pic_texels;
-int		pic_count;
+int GL_LoadPicTexture (char *name, cachepic_t *pic, byte *data);
 
-/*
-ideally all mpic_t's should have a flushcount field that would be
-checked against a global gl_flushcount; the pic would be reloaded
-if the two don't match.
-currently, the pics are only updated when R_CachePic is called,
-and wad pics are never updated.
-*/
-void R_FlushPics (void)
-{
-	int i;
 
-	if (!draw_chars)
-		return;		// not initialized yet
-
-	for (i = 0; i < numcachepics; i++)
-		cachepics[i].valid = false;		// force it to be reloaded
-
-	// I hope this doesn't cause texture memory leaks
-	Draw_LoadCharset ();
-}
-
-// FIXME, calling R_CacheWadPic more than once for the same pic will allocate a new pic every time
-mpic_t *R_CacheWadPic (char *name)
+static mpic_t *R_CachePic_impl (char *path, qbool wad, qbool crash)
 {
 	qpic_t	*p;
-	mpic_t	*pic;
+	cachepic_t	*pic;
+	int		i;
 
-	p = W_GetLumpName (name);
-	pic = (mpic_t *)p;
+	for (pic = cachepics, i = 0; i < numcachepics; pic++, i++)
+		if (!strcmp (path, pic->name))
+			return &pic->pic;
+
+	if (numcachepics == MAX_CACHED_PICS)
+		Sys_Error ("numcachepics == MAX_CACHED_PICS");
+	numcachepics++;
+
+	strlcpy (pic->name, path, sizeof(pic->name));
+
+	if (wad) {
+		p = W_GetLumpName (path, crash);
+	}
+	else {
+		// load the pic from disk
+		p = (qpic_t *)FS_LoadTempFile (path);	
+		if (!p) {
+			if (crash)
+				Sys_Error ("R_CachePic: failed to load %s", path);
+			else
+				return NULL;
+		}
+		SwapPic (p);
+
+		// HACK HACK HACK --- we need to keep the bytes for
+		// the translatable player picture just for the menu
+		// configuration dialog
+		if (!strcmp (path, "gfx/menuplyr.lmp")) {
+			if ((unsigned)(p->width*p->height) > sizeof(menuplyr_pixels))
+				Sys_Error ("gfx/menuplyr.lmp has invalid dimensions");
+			memcpy (menuplyr_pixels, p->data, p->width*p->height);
+		}
+	}
+
+	pic->pic.width = p->width;
+	pic->pic.height = p->height;
 
 	// load little ones into the scrap
-	if (p->width < 64 && p->height < 64)
+	if (wad && p->width < 64 && p->height < 64)
 	{
 		int		x, y;
 		int		i, j, k;
@@ -200,8 +210,8 @@ mpic_t *R_CacheWadPic (char *name)
 
 		texnum = memchr(p->data, 255, p->width*p->height) != NULL;
 		if (!Scrap_AllocBlock (texnum, p->width, p->height, &x, &y)) {
-			GL_LoadPicTexture (name, pic, p->data);
-			return pic;
+			GL_LoadPicTexture (path, pic, p->data);
+			return &pic->pic;
 		}
 		k = 0;
 		for (i=0 ; i<p->height ; i++)
@@ -213,59 +223,83 @@ mpic_t *R_CacheWadPic (char *name)
 		pic->sh = (x+p->width-0.01)/(float)BLOCK_WIDTH;
 		pic->tl = (y+0.01)/(float)BLOCK_WIDTH;
 		pic->th = (y+p->height-0.01)/(float)BLOCK_WIDTH;
-
-		pic_count++;
-		pic_texels += p->width*p->height;
 	}
 	else
-		GL_LoadPicTexture (name, pic, p->data);
+		GL_LoadPicTexture (path, pic, p->data);
 
-	return pic;
+	return &pic->pic;
+}
+
+mpic_t *R_CachePic (char *path)
+{
+	return R_CachePic_impl (path, false, true);
+}
+
+mpic_t *R_CacheWadPic (char *name)
+{
+	if (!strcmp(name, "conchars")) {
+		R_LoadCharset ();
+		return NULL /* FIXME */;
+	}
+
+	return R_CachePic_impl (name, true, true);
 }
 
 
 /*
 ================
-R_CachePic
+GL_LoadPicTexture
 ================
 */
-mpic_t *R_CachePic (char *path)
+static int GL_LoadPicTexture (char *name, cachepic_t *cpic, byte *data)
 {
-	cachepic_t	*pic;
-	int			i;
-	qpic_t		*dat;
+	int		glwidth, glheight;
+	int		i;
+	char	fullname[64] = "pic:";
 
-	for (pic=cachepics, i=0 ; i<numcachepics ; pic++, i++)
-		if (!strcmp (path, pic->name) && pic->valid)
-			return &pic->pic;
+	strlcpy (fullname + 4, name, sizeof(fullname)-4);
 
-	if (numcachepics == MAX_CACHED_PICS)
-		Sys_Error ("numcachepics == MAX_CACHED_PICS");
-	numcachepics++;
-	strcpy (pic->name, path);
+	for (glwidth = 1 ; glwidth < cpic->pic.width ; glwidth<<=1)
+		;
+	for (glheight = 1 ; glheight < cpic->pic.height ; glheight<<=1)
+		;
 
-//
-// load the pic from disk
-//
-	dat = (qpic_t *)FS_LoadTempFile (path);	
-	if (!dat)
-		Sys_Error ("R_CachePic: failed to load %s", path);
-	SwapPic (dat);
+	if (glwidth == cpic->pic.width && glheight == cpic->pic.height)
+	{
+		cpic->texnum = GL_LoadTexture (fullname, glwidth, glheight, data,
+						false, true, false);
+		cpic->sl = 0;
+		cpic->sh = 1;
+		cpic->tl = 0;
+		cpic->th = 1;
+	}
+	else
+	{
+		byte *src, *dest;
+		byte *buf;
 
-	// HACK HACK HACK --- we need to keep the bytes for
-	// the translatable player picture just for the menu
-	// configuration dialog
-	if (!strcmp (path, "gfx/menuplyr.lmp"))
-		memcpy (menuplyr_pixels, dat->data, dat->width*dat->height);
+		buf = Q_malloc (glwidth*glheight);
 
-	pic->pic.width = dat->width;
-	pic->pic.height = dat->height;
+		memset (buf, 0, glwidth*glheight);
+		src = data;
+		dest = buf;
+		for (i = 0; i < cpic->pic.height; i++) {
+			memcpy (dest, src, cpic->pic.width);
+			src += cpic->pic.width;
+			dest += glwidth;
+		}
 
-	GL_LoadPicTexture (path, &pic->pic, dat->data);
+		cpic->texnum = GL_LoadTexture (fullname, glwidth, glheight, buf,
+						false, true, false);
+		cpic->sl = 0;
+		cpic->sh = (float)cpic->pic.width / glwidth;
+		cpic->tl = 0;
+		cpic->th = (float)cpic->pic.height / glheight;
 
-	pic->valid = true;
+		Q_free (buf);
+	}
 
-	return &pic->pic;
+	return cpic->texnum;
 }
 
 
@@ -277,9 +311,9 @@ static void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 	if (!newval == !gl_smoothfont.value || !char_texture)
 		return;
 
-        GL_Bind(char_texture);
+	GL_Bind(char_texture);
         
-        if (newval)
+	if (newval)
 	{
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -288,17 +322,17 @@ static void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 	{
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        }
+	}
 }
 
 
-static void Draw_LoadCharset (void)
+static void R_LoadCharset (void)
 {
 	int i;
 	char	buf[128*256];
 	char	*src, *dest;
 
-	draw_chars = W_GetLumpName ("conchars");
+	draw_chars = W_GetLumpName ("conchars", true);
 	for (i=0 ; i<256*64 ; i++)
 		if (draw_chars[i] == 0)
 			draw_chars[i] = 255;	// proper transparent color
@@ -323,6 +357,33 @@ static void Draw_LoadCharset (void)
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 }
+
+
+void R_FlushPics (void)
+{
+	if (!draw_chars)
+		return;		// not initialized yet (FIXME?)
+
+	numcachepics = 0;
+
+	memset (scrap_allocated, 0, sizeof(scrap_allocated));
+	memset (scrap_texels, 0, sizeof(scrap_texels));
+	scrap_dirty = false;
+
+	draw_chars = NULL;
+	draw_disc = NULL;
+
+	// load a new gfx.wad
+	W_LoadWadFile ("gfx.wad");
+
+	// load the charset by hand
+	R_LoadCharset ();
+
+	// the disc access monitor pic
+	draw_disc = R_CachePic_impl ("disc", true, false);
+}
+
+
 
 /*
 ===============
@@ -349,13 +410,13 @@ void R_Draw_Init (void)
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 
-	// load the charset by hand
-	Draw_LoadCharset ();
+	W_LoadWadFile ("gfx.wad");
 
-	//
-	// get the other pics we need
-	//
-	draw_disc = R_CacheWadPic ("disc");
+	// load the charset by hand
+	R_LoadCharset ();
+
+	// the disc access monitor pic
+	draw_disc = R_CachePic_impl ("disc", true, false);
 }
 
 
@@ -501,42 +562,47 @@ void R_DrawPic (int x, int y, mpic_t *pic)
 		Sys_Error ("R_DrawPic: bad coordinates");
 	}
 */
+	cachepic_t *cpic = (cachepic_t *) pic;
 
 	if (scrap_dirty)
 		Scrap_Upload ();
-	GL_Bind (pic->texnum);
+
+	GL_Bind (cpic->texnum);
 	glBegin (GL_QUADS);
-	glTexCoord2f (pic->sl, pic->tl);
+	glTexCoord2f (cpic->sl, cpic->tl);
 	glVertex2f (x, y);
-	glTexCoord2f (pic->sh, pic->tl);
-	glVertex2f (x+pic->width, y);
-	glTexCoord2f (pic->sh, pic->th);
-	glVertex2f (x+pic->width, y+pic->height);
-	glTexCoord2f (pic->sl, pic->th);
-	glVertex2f (x, y+pic->height);
+	glTexCoord2f (cpic->sh, cpic->tl);
+	glVertex2f (x + pic->width, y);
+	glTexCoord2f (cpic->sh, cpic->th);
+	glVertex2f (x + pic->width, y + pic->height);
+	glTexCoord2f (cpic->sl, cpic->th);
+	glVertex2f (x, y + pic->height);
 	glEnd ();
 }
 
 // not really used any more
 void Draw_AlphaPic (int x, int y, mpic_t *pic, float alpha)
 {
+	cachepic_t *cpic = (cachepic_t *) pic;
+
 	if (scrap_dirty)
 		Scrap_Upload ();
+
 	glDisable(GL_ALPHA_TEST);
 	glEnable (GL_BLEND);
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace(GL_FRONT);
 	glColor4f (1, 1, 1, alpha);
-	GL_Bind (pic->texnum);
+	GL_Bind (cpic->texnum);
 	glBegin (GL_QUADS);
-	glTexCoord2f (pic->sl, pic->tl);
+	glTexCoord2f (cpic->sl, cpic->tl);
 	glVertex2f (x, y);
-	glTexCoord2f (pic->sh, pic->tl);
-	glVertex2f (x+pic->width, y);
-	glTexCoord2f (pic->sh, pic->th);
-	glVertex2f (x+pic->width, y+pic->height);
-	glTexCoord2f (pic->sl, pic->th);
-	glVertex2f (x, y+pic->height);
+	glTexCoord2f (cpic->sh, cpic->tl);
+	glVertex2f (x + pic->width, y);
+	glTexCoord2f (cpic->sh, cpic->th);
+	glVertex2f (x + pic->width, y + pic->height);
+	glTexCoord2f (cpic->sl, cpic->th);
+	glVertex2f (x, y + pic->height);
 	glEnd ();
 	glColor3f (1, 1, 1);
 	glEnable(GL_ALPHA_TEST);
@@ -547,29 +613,30 @@ void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int
 {
 	float newsl, newtl, newsh, newth;
 	float oldglwidth, oldglheight;
+	cachepic_t *cpic = (cachepic_t *) pic;
 
 	if (scrap_dirty)
 		Scrap_Upload ();
 	
-	oldglwidth = pic->sh - pic->sl;
-	oldglheight = pic->th - pic->tl;
+	oldglwidth = cpic->sh - cpic->sl;
+	oldglheight = cpic->th - cpic->tl;
 
-	newsl = pic->sl + (srcx*oldglwidth)/pic->width;
+	newsl = cpic->sl + (srcx*oldglwidth)/pic->width;
 	newsh = newsl + (width*oldglwidth)/pic->width;
 
-	newtl = pic->tl + (srcy*oldglheight)/pic->height;
+	newtl = cpic->tl + (srcy*oldglheight)/pic->height;
 	newth = newtl + (height*oldglheight)/pic->height;
 	
-	GL_Bind (pic->texnum);
+	GL_Bind (cpic->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (newsl, newtl);
 	glVertex2f (x, y);
 	glTexCoord2f (newsh, newtl);
-	glVertex2f (x+width, y);
+	glVertex2f (x + width, y);
 	glTexCoord2f (newsh, newth);
-	glVertex2f (x+width, y+height);
+	glVertex2f (x + width, y + height);
 	glTexCoord2f (newsl, newth);
-	glVertex2f (x, y+height);
+	glVertex2f (x, y + height);
 	glEnd ();
 }
 
@@ -625,24 +692,28 @@ void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation)
 
 void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha)
 {
+	cachepic_t *cpic = (cachepic_t *) pic;
+
 	if (!alpha)
 		return;
+
 	if (scrap_dirty)
 		Scrap_Upload ();
+
 	glDisable(GL_ALPHA_TEST);
 	glEnable (GL_BLEND);
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace(GL_FRONT);
 	glColor4f (1, 1, 1, alpha);
-	GL_Bind (pic->texnum);
+	GL_Bind (cpic->texnum);
 	glBegin (GL_QUADS);
-	glTexCoord2f (pic->sl, pic->tl);
+	glTexCoord2f (cpic->sl, cpic->tl);
 	glVertex2f (x, y);
-	glTexCoord2f (pic->sh, pic->tl);
+	glTexCoord2f (cpic->sh, cpic->tl);
 	glVertex2f (x + width, y);
-	glTexCoord2f (pic->sh, pic->th);
+	glTexCoord2f (cpic->sh, cpic->th);
 	glVertex2f (x + width, y + height);
-	glTexCoord2f (pic->sl, pic->th);
+	glTexCoord2f (cpic->sl, cpic->th);
 	glVertex2f (x, y + height);
 	glEnd ();
 	glColor3f (1, 1, 1);
@@ -661,7 +732,7 @@ refresh window.
 */
 void R_DrawTile (int x, int y, int w, int h, mpic_t *pic)
 {
-	GL_Bind (pic->texnum);
+	GL_Bind (((cachepic_t *)pic)->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (x/64.0, y/64.0);
 	glVertex2f (x, y);

@@ -100,15 +100,6 @@ texture_t *R_TextureAnimation (texture_t *base);
 
 //====================================================
 
-typedef struct mpic_s
-{
-	int			width, height;
-	int			texnum;
-	float		sl, tl, sh, th;
-} /* mpic_t */;
-
-//====================================================
-
 
 extern model_t		*r_worldmodel;
 extern entity_t		r_worldentity;

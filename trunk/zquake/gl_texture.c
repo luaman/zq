@@ -717,64 +717,6 @@ setuptexture:
 	return glt->texnum;
 }
 
-/*
-================
-GL_LoadPicTexture
-
-================
-*/
-int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data)
-{
-	int		glwidth, glheight;
-	int		i;
-	char	fullname[64] = "pic:";
-
-	strlcpy (fullname + 4, name, sizeof(fullname)-4);
-
-	for (glwidth = 1 ; glwidth < pic->width ; glwidth<<=1)
-		;
-	for (glheight = 1 ; glheight < pic->height ; glheight<<=1)
-		;
-
-	if (glwidth == pic->width && glheight == pic->height)
-	{
-		pic->texnum = GL_LoadTexture (fullname, glwidth, glheight, data,
-						false, true, false);
-		pic->sl = 0;
-		pic->sh = 1;
-		pic->tl = 0;
-		pic->th = 1;
-	}
-	else
-	{
-		byte *src, *dest;
-		byte *buf;
-
-		buf = Q_malloc (glwidth*glheight);
-
-		memset (buf, 0, glwidth*glheight);
-		src = data;
-		dest = buf;
-		for (i=0 ; i<pic->height ; i++) {
-			memcpy (dest, src, pic->width);
-			src += pic->width;
-			dest += glwidth;
-		}
-
-		pic->texnum = GL_LoadTexture ("", glwidth, glheight, buf,
-						false, true, false);
-		pic->sl = 0;
-		pic->sh = (float)pic->width / glwidth;
-		pic->tl = 0;
-		pic->th = (float)pic->height / glheight;
-
-		Q_free (buf);
-	}
-
-	return pic->texnum;
-}
-
-
 static void R_InitParticleTexture (void)
 {
 	int		i, x, y;
