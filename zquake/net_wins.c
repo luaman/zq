@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // net_wins.c
 
-#include "quakedef.h"
+#include "common.h"
 #include "winquake.h"
 
 netadr_t	net_local_adr;	// FIXME: make this work!
