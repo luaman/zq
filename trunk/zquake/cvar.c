@@ -184,8 +184,7 @@ void Cvar_Set (cvar_t *var, char *value)
 
 	Z_Free (var->string);	// free the old value string
 	
-	var->string = Z_Malloc (strlen(value)+1);
-	strcpy (var->string, value);
+	var->string = CopyString (value);
 	var->value = Q_atof (var->string);
 
 #if defined(SERVERONLY) || defined(QW_BOTH)
@@ -435,10 +434,8 @@ cvar_t *Cvar_Create (char *name, char *string, int cvarflags)
 	v->hash_next = cvar_hash[key];
 	cvar_hash[key] = v;
 
-	v->name = Z_Malloc(strlen(name)+1);
-	strcpy (v->name, name);
-	v->string = Z_Malloc (strlen(string)+1);
-	strcpy (v->string, string);
+	v->name = CopyString (name);
+	v->string = CopyString (string);
 	v->flags = cvarflags;
 	v->value = Q_atof (v->string);
 
