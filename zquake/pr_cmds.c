@@ -1854,6 +1854,45 @@ static void PF_substr (void)
 }
 
 
+// string(string s) strzone = #118
+static void PF_strzone (void)
+{
+	int i;
+	char *s;
+
+	s = G_STRING(OFS_PARM0);
+
+	for (i = MAX_PRSTR; i < MAX_PRSTR + MAX_DYN_PRSTR; i++) {
+		if (pr_strtbl[i] != NULL)
+			continue;
+		// found an empty slot
+		pr_strtbl[i] = Q_strdup(s);
+		G_INT(OFS_RETURN) = -i;
+		return;
+	}
+
+	Host_Error ("PF_strzone: no free strings");
+}
+
+// void(string s) strunzone = #119
+static void PF_strunzone (void)
+{
+	int num;
+
+	num = G_INT(OFS_PARM0);
+	if (num > -MAX_PRSTR)
+		Host_Error ("PF_strunzone: not a dynamic string");
+
+	if (num <= -(MAX_PRSTR + MAX_DYN_PRSTR))
+		Host_Error ("PF_strunzone: bad string");
+
+	if (pr_strtbl[-num] == pr_strings)
+		return;	// allow multiple strunzone on the same string (like free in C)
+
+	Q_free (pr_strtbl[-num]);
+	pr_strtbl[-num] = pr_strings;
+}
+
 /*
 ==============
 PF_multicast
@@ -2112,6 +2151,9 @@ PF_Fixme,			// #113
 PF_strlen,			// float(string s) strlen							= #114;
 PF_strcat,			// string(string s1, string s2) strcat				= #115; 
 PF_substr,			// string(string s, float start, float count) substr = #116;
+PF_Fixme,			// #117
+PF_strzone,			// string(string s) strzone							= #118
+PF_strunzone,		// void(string s) strunzone							= #119
 };
 
 int pr_numbuiltins = sizeof(pr_builtins)/sizeof(pr_builtins[0]);

@@ -169,9 +169,10 @@ void ED_PrintNum (int ent);
 //
 // PR strings stuff
 //
-#define MAX_PRSTR 1024
+#define MAX_PRSTR 1024		// max static strings
+#define MAX_DYN_PRSTR 1024	// max dynamic strings
 
-extern char *pr_strtbl[MAX_PRSTR];
+extern char *pr_strtbl[MAX_PRSTR + MAX_DYN_PRSTR];
 extern int num_prstr;
 
 char *PR_GetString(int num);

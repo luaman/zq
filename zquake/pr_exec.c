@@ -669,7 +669,7 @@ while (1)
 
 /*----------------------*/
 
-char *pr_strtbl[MAX_PRSTR];
+char *pr_strtbl[MAX_PRSTR + MAX_DYN_PRSTR];
 int num_prstr;
 
 char *PR_GetString(int num)
