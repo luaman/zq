@@ -35,7 +35,6 @@ typedef enum {
 
 typedef struct
 {
-//	qboolean	active;				// false when server is going down
 	server_state_t	state;			// precache commands are only valid during load
 
 	double		time;
@@ -104,7 +103,7 @@ typedef enum
 					// connection for a couple seconds
 	cs_connected,	// has been assigned to a client_t, but not in game yet
 	cs_spawned		// client is fully in game
-} sv_client_state_t;		// FIXME
+} sv_client_state_t;
 
 typedef struct
 {
@@ -237,6 +236,8 @@ typedef struct
 
 typedef struct
 {
+	double		realtime;			// increased by SV_Frame, never reset
+
 	int			spawncount;			// number of servers spawned since start,
 									// used to check late spawns
 	client_t	clients[MAX_CLIENTS];
