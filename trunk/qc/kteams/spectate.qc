@@ -244,13 +244,13 @@ void() SpectatorImpulseCommand =
 // Check to see if you kicking first so Camera code doesnt take over
 
 	if(self.k_track == 1 && (self.goalentity.classname != "player" || self.goalentity.netname == ""))
-        {
-            self.k_track = 0; // oldman: corrected assigment
-        }
+    {
+            self.k_track = 0;
+    }
 
 	if(self.k_admin == 1 && self.impulse >= 1 && self.impulse <=9) 
 	{
-		if(self.k_domapstuff ==0 )
+		if(self.k_domapstuff == 0)
 		{
 			local entity stuffem;
 			
@@ -261,7 +261,7 @@ void() SpectatorImpulseCommand =
 			stuffem.think = StuffCustomMaps;
 			stuffem.nextthink = time + 0.1;
 
-			self.k_domapstuff=1;
+			self.k_domapstuff = 1;
 		}
 		
 		AdminImpBot();
