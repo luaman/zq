@@ -200,6 +200,7 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	Cmd_Init ();
 	Cvar_Init ();
 	COM_Init ();
+	Key_Init ();
 
 	FS_InitFilesystem ();
 	COM_CheckRegistered ();

@@ -51,3 +51,7 @@ void Cmd_ForwardToServer (void)
 void D_FlushCaches (void)
 {
 }
+
+void Key_Init (void)
+{
+}

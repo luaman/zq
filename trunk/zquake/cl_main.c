@@ -789,7 +789,6 @@ void CL_Init (void)
 
 	Sys_mkdir(va("%s/%s", com_basedir, "qw"));
 
-	Key_Init ();
 	V_Init ();
 
 #ifdef __linux__
