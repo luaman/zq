@@ -89,6 +89,7 @@ cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
 cvar_t	r_watervishack = {"r_watervishack", "1"};
+cvar_t	r_fullbrightSkins = {"r_fullbrightSkins", "0"};
 
 cvar_t	gl_clear = {"gl_clear","0"};
 cvar_t	gl_cull = {"gl_cull","1"};
@@ -487,6 +488,10 @@ void R_DrawAliasModel (entity_t *ent)
 	} else if (clmodel->modhint == MOD_FLAME) {
 		ambientlight = 255;
 		shadelight = 0;
+		full_light = true;
+	}
+	else if (clmodel->modhint == MOD_PLAYER && r_fullbrightSkins.value) {
+		ambientlight = shadelight = 128;
 		full_light = true;
 	}
 	else
