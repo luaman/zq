@@ -6,6 +6,7 @@ Brian Koropoff - server list
 Forest 'LordHavoc' Hale - MSG_WriteAngle fix
 Dabb - nVidia alt-tabbing fix
 Andrew Tridgell - mdfour.c
-Victor Luchits - mtex fb rendering for alias models, fullbrights on .pcx
+Victor 'Vic' Luchits - mtex fb rendering for alias models, fullbrights on .pcx
     player skins and more...
-Anton 'Tonik' Gavrilov  - oh, is it me?
+'Massa' - keymaps
+Anton 'Tonik' Gavrilov - everything else
