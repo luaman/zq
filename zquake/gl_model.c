@@ -320,7 +320,7 @@ model_t *Mod_ForName (char *name, qboolean crash)
 }
 
 
-static qboolean HasFullbrights (byte *pixels, int size)
+qboolean Img_HasFullbrights (byte *pixels, int size)
 {
     int i;
 
@@ -413,7 +413,7 @@ void Mod_LoadTextures (lump_t *l)
 				tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, false);
 			else {
 				tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, true);
-				if (HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
+				if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
 					tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", mt->name), tx->width, tx->height, (byte *)(tx+1),
 						true, 2 /* Fullbright mask */, false);
 				}
@@ -1487,7 +1487,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 				GL_LoadTexture (name, pheader->skinwidth, pheader->skinheight,
 				(byte *)(pskintype + 1), true, false, false);
 
-			if (HasFullbrights((byte *)(pskintype + 1),	pheader->skinwidth*pheader->skinheight))
+			if (Img_HasFullbrights((byte *)(pskintype + 1),	pheader->skinwidth*pheader->skinheight))
 				pheader->fb_texturenum[i][0] = pheader->fb_texturenum[i][1] =
 				pheader->fb_texturenum[i][2] = pheader->fb_texturenum[i][3] =
 					GL_LoadTexture (va("@fb_%s", name), pheader->skinwidth, 
@@ -1514,7 +1514,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 						GL_LoadTexture (name, pheader->skinwidth, 
 						pheader->skinheight, (byte *)(pskintype), true, false, false);
 
-					if (HasFullbrights((byte *)(pskintype),	pheader->skinwidth*pheader->skinheight))
+					if (Img_HasFullbrights((byte *)(pskintype),	pheader->skinwidth*pheader->skinheight))
 						pheader->fb_texturenum[i][j&3] =
 							GL_LoadTexture (va("@fb_%s", name), pheader->skinwidth, 
 							pheader->skinheight, (byte *)(pskintype), true, 2, false);

@@ -216,7 +216,12 @@ void R_Init (void)
 
 	playertextures = texture_extension_number;
 	texture_extension_number += MAX_CLIENTS;
+
+	// fullbrights
+	texture_extension_number += MAX_CLIENTS;
 }
+
+int fb_skins[MAX_CLIENTS];
 
 /*
 ===============
@@ -265,10 +270,10 @@ void R_TranslatePlayerSkin (int playernum)
 		top *= 16;
 		bottom *= 16;
 
-		for (i=0 ; i<256 ; i++)
+		for (i = 0; i < 256; i++)
 			translate[i] = i;
 
-		for (i=0 ; i<16 ; i++)
+		for (i = 0; i < 16; i++)
 		{
 			if (top < 128)	// the artists made some backwards ranges.  sigh.
 				translate[TOP_RANGE+i] = top+i;
@@ -305,24 +310,6 @@ void R_TranslatePlayerSkin (int playernum)
 		// instead of sending it through gl_upload 8
 		GL_Bind(playertextures + playernum);
 
-	#if 0
-		s = 320*200;
-		byte	translated[320*200];
-
-		for (i=0 ; i<s ; i+=4)
-		{
-			translated[i] = translate[original[i]];
-			translated[i+1] = translate[original[i+1]];
-			translated[i+2] = translate[original[i+2]];
-			translated[i+3] = translate[original[i+3]];
-		}
-
-
-		// don't mipmap these, because it takes too long
-		GL_Upload8 (translated, paliashdr->skinwidth, paliashdr->skinheight, 
-			false, false, true, false);
-	#endif
-
 		scaled_width = gl_max_size.value < 512 ? gl_max_size.value : 512;
 		scaled_height = gl_max_size.value < 256 ? gl_max_size.value : 256;
 		// allow users to crunch sizes down even more if they want
@@ -357,6 +344,54 @@ void R_TranslatePlayerSkin (int playernum)
 			}
 
 			GL_Upload8_EXT ((byte *)pixels, scaled_width, scaled_height, false, false);
+
+			if (Img_HasFullbrights ((byte *)original, inwidth*inheight))
+			{
+				fb_skins[playernum] = playertextures + playernum + MAX_CLIENTS;
+
+				GL_Bind(fb_skins[playernum]);
+
+				out2 = (byte *)pixels;
+				memset(pixels, 0, sizeof(pixels));
+				fracstep = tinwidth*0x10000/scaled_width;
+
+				// make all non-fullbright colors transparent
+				for (i=0 ; i<scaled_height ; i++, out2 += scaled_width)
+				{
+					inrow = original + inwidth*(i*tinheight/scaled_height);
+					frac = fracstep >> 1;
+					for (j=0 ; j<scaled_width ; j+=4)
+					{
+						if (inrow[frac>>16] < 224)
+							out2[j] = translate[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+						else
+							out2[j] = translate[inrow[frac>>16]]; // fullbright 
+
+						frac += fracstep;
+						if (inrow[frac>>16] < 224)
+							out2[j+1] = translate[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+						else
+							out2[j+1] = translate[inrow[frac>>16]]; // fullbright 
+						frac += fracstep;
+						if (inrow[frac>>16] < 224)
+							out2[j+2] = translate[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+						else
+							out2[j+2] = translate[inrow[frac>>16]]; // fullbright 
+						frac += fracstep;
+						if (inrow[frac>>16] < 224)
+							out2[j+3] = translate[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+						else
+							out2[j+3] = translate[inrow[frac>>16]]; // fullbright 
+						frac += fracstep;
+					}
+				}
+
+				GL_Upload8_EXT ((byte *)pixels, scaled_width, scaled_height, false, false);
+			}
+			else {
+				fb_skins[playernum] = 0;
+			}
+
 			return;
 		}
 
@@ -390,6 +425,59 @@ void R_TranslatePlayerSkin (int playernum)
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		if (Img_HasFullbrights ((byte *)original, inwidth*inheight))
+		{
+			fb_skins[playernum] = playertextures + playernum + MAX_CLIENTS;
+
+			GL_Bind(fb_skins[playernum]);
+
+			out = pixels;
+			memset(pixels, 0, sizeof(pixels));
+			fracstep = tinwidth*0x10000/scaled_width;
+
+			// make all non-fullbright colors transparent
+			for (i=0 ; i<scaled_height ; i++, out += scaled_width)
+			{
+				inrow = original + inwidth*(i*tinheight/scaled_height);
+				frac = fracstep >> 1;
+				for (j=0 ; j<scaled_width ; j+=4)
+				{
+					if (inrow[frac>>16] < 224)
+						out[j] = translate32[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+					else
+						out[j] = translate32[inrow[frac>>16]]; // fullbright 
+
+					frac += fracstep;
+					if (inrow[frac>>16] < 224)
+						out[j+1] = translate32[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+					else
+						out[j+1] = translate32[inrow[frac>>16]]; // fullbright 
+					frac += fracstep;
+					if (inrow[frac>>16] < 224)
+						out[j+2] = translate32[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+					else
+						out[j+2] = translate32[inrow[frac>>16]]; // fullbright 
+					frac += fracstep;
+					if (inrow[frac>>16] < 224)
+						out[j+3] = translate32[inrow[frac>>16]] & 0x00FFFFFF; // transparent 
+					else
+						out[j+3] = translate32[inrow[frac>>16]]; // fullbright 
+					frac += fracstep;
+				}
+			}
+
+			glTexImage2D (GL_TEXTURE_2D, 0, gl_alpha_format, 
+				scaled_width, scaled_height, 0, GL_RGBA, 
+				GL_UNSIGNED_BYTE, pixels);
+
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+		else {
+			fb_skins[playernum] = 0;
+		}
 	}
 }
 
