@@ -92,7 +92,7 @@ Writes the current user cmd
 void CL_WriteDemoCmd (usercmd_t *pcmd)
 {
 	int		i;
-	float	fl;
+	float	fl, t[3];
 	byte	c;
 	usercmd_t cmd;
 
@@ -115,11 +115,11 @@ void CL_WriteDemoCmd (usercmd_t *pcmd)
 
 	fwrite(&cmd, sizeof(cmd), 1, cls.demofile);
 
-	for (i=0 ; i<3 ; i++)
-	{
-		fl = LittleFloat (cl.viewangles[i]);
-		fwrite (&fl, 4, 1, cls.demofile);
-	}
+	t[0] = LittleFloat (cl.viewangles[0]);
+	t[1] = LittleFloat (cl.viewangles[1]);
+	t[2] = LittleFloat (cl.viewangles[2]);
+
+	fwrite (t, 12, 1, cls.demofile);
 
 	fflush (cls.demofile);
 }
@@ -261,14 +261,14 @@ qboolean CL_GetDemoMessage (void)
 		}
 		break;
 
-	case dem_set :
+	case dem_set:
 		fread (&i, 4, 1, cls.demofile);
 		cls.netchan.outgoing_sequence = LittleLong(i);
 		fread (&i, 4, 1, cls.demofile);
 		cls.netchan.incoming_sequence = LittleLong(i);
 		break;
 
-	default :
+	default:
 		Con_Printf("Corrupted demo.\n");
 		CL_StopPlayback ();
 		return 0;
