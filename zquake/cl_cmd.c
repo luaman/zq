@@ -95,7 +95,8 @@ Handles both say and say_team
 */
 void CL_Say_f (void)
 {
-	char	*s;
+	extern cvar_t cl_fakename;
+	char	text[1024], *s;
 
 	if (cls.state == ca_disconnected)
 	{
@@ -107,21 +108,34 @@ void CL_Say_f (void)
 	// lowercase command
 	for (s=Cmd_Argv(0) ; *s ; s++)
 		*s = (char)tolower(*s);
+
 	SZ_Print (&cls.netchan.message, Cmd_Argv(0));
 	if (Cmd_Argc() > 1)
 	{
 		SZ_Print (&cls.netchan.message, " ");
 
-		s = TP_ParseMacroString (Cmd_Args());
+		text[0] = 0;
+
+		// cl_fakename will hide real name with a linefeed character
+		if (cl_fakename.string[0] && !strcmp(Cmd_Argv(0), "say_team")) {
+			char buf[32];
+			Q_strncpyz (buf, cl_fakename.string, sizeof(buf));
+			Q_snprintfz (text, sizeof(text), "\x0d%s: ", TP_ParseFunChars(buf, true));
+		}
+
+		s = TP_ParseMacroString (Cmd_Args());	// because Cmd_Args() returns unparsed string
 		s = TP_ParseFunChars (s, true);
-		if (*s && *s < 32)
+		strncat (text, s, sizeof(text)-1);
+		text[sizeof(text)-1] = 0;		// can't rely on strncat
+
+		if (text[0] && text[0] < 32)
 		{
 			SZ_Print (&cls.netchan.message, "\"");
-			SZ_Print (&cls.netchan.message, s);
+			SZ_Print (&cls.netchan.message, text);
 			SZ_Print (&cls.netchan.message, "\"");
 		}
 		else
-			SZ_Print (&cls.netchan.message, s);
+			SZ_Print (&cls.netchan.message, text);
 	}
 }
 
