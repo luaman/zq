@@ -118,7 +118,6 @@ void CL_WriteDemoCmd (usercmd_t *pcmd)
 	t[0] = LittleFloat (cl.viewangles[0]);
 	t[1] = LittleFloat (cl.viewangles[1]);
 	t[2] = LittleFloat (cl.viewangles[2]);
-
 	fwrite (t, 12, 1, cls.demofile);
 
 	fflush (cls.demofile);
@@ -238,11 +237,10 @@ qboolean CL_GetDemoMessage (void)
 		cl.frames[i].senttime = demotime;
 		cl.frames[i].receivedtime = -1;		// we haven't gotten a reply yet
 		cls.netchan.outgoing_sequence++;
-		fread (cl.viewangles, 12, 1, cls.demofile);
 
-		for (i = 0; i < 3; i++) {
+		fread (cl.viewangles, 12, 1, cls.demofile);
+		for (i = 0; i < 3; i++)
 			cl.viewangles[i] = LittleFloat (cl.viewangles[i]);
-		}
 		break;
 
 	case dem_read:
@@ -395,8 +393,13 @@ void CL_WriteSetDemoMessage (void)
 }
 
 
+/*
+====================
+CL_Record
 
-
+Called by CL_Record_f and CL_EasyRecord_f
+====================
+*/
 static void CL_Record (void)
 {
 	sizebuf_t	buf;
@@ -612,34 +615,30 @@ static void CL_Record (void)
 // send all current light styles
 	for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
 	{
+		if (!cl_lightstyle[i].length)
+			continue;		// don't send empty lightstyle strings
 		MSG_WriteByte (&buf, svc_lightstyle);
 		MSG_WriteByte (&buf, (char)i);
 		MSG_WriteString (&buf, cl_lightstyle[i].map);
 	}
 
 	for (i = 0; i < MAX_CL_STATS; i++) {
-		MSG_WriteByte (&buf, svc_updatestatlong);
-		MSG_WriteByte (&buf, i);
-		MSG_WriteLong (&buf, cl.stats[i]);
+		if (!cl.stats[i])
+			continue;		// no need to send zero values
+		if (cl.stats[i] >= 0 && cl.stats[i] <= 255) {
+			MSG_WriteByte (&buf, svc_updatestat);
+			MSG_WriteByte (&buf, i);
+			MSG_WriteByte (&buf, cl.stats[i]);
+		} else {
+			MSG_WriteByte (&buf, svc_updatestatlong);
+			MSG_WriteByte (&buf, i);
+			MSG_WriteLong (&buf, cl.stats[i]);
+		}
 		if (buf.cursize > MAX_MSGLEN/2) {
 			CL_WriteRecordDemoMessage (&buf, seq++);
 			SZ_Clear (&buf); 
 		}
 	}
-
-#if 0
-	MSG_WriteByte (&buf, svc_updatestatlong);
-	MSG_WriteByte (&buf, STAT_TOTALMONSTERS);
-	MSG_WriteLong (&buf, cl.stats[STAT_TOTALMONSTERS]);
-
-	MSG_WriteByte (&buf, svc_updatestatlong);
-	MSG_WriteByte (&buf, STAT_SECRETS);
-	MSG_WriteLong (&buf, cl.stats[STAT_SECRETS]);
-
-	MSG_WriteByte (&buf, svc_updatestatlong);
-	MSG_WriteByte (&buf, STAT_MONSTERS);
-	MSG_WriteLong (&buf, cl.stats[STAT_MONSTERS]);
-#endif
 
 	// get the client to check and download skins
 	// when that is completed, a begin command will be issued
@@ -820,7 +819,7 @@ void CL_EasyRecord_f (void)
 ====================
 CL_ReRecord_f
 
-record <demoname>
+rerecord <demoname>
 ====================
 */
 void CL_ReRecord_f (void)
