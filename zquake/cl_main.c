@@ -753,6 +753,7 @@ void CL_Init (void)
 	Cmd_AddCommand ("disconnect", CL_Disconnect_f);
 	Cmd_AddCommand ("connect", CL_Connect_f);
 	Cmd_AddCommand ("reconnect", CL_Reconnect_f);
+	Cmd_AddCommand ("writecfg", Host_WriteConfiguration);
 
 	SList_Init();
 	SList_Load();
