@@ -82,6 +82,17 @@ void OnChange_maxclients (cvar_t *var, char *str, qbool *cancel) {
 	*cancel = true;
 }
 
+
+void SV_FreeDelayedPackets (client_t *cl) {
+	packet_t *pack, *next;
+
+	for (pack = cl->packets; pack; pack = next) {
+		cl->packets = next = pack->next;
+		pack->next = sv.free_packets;
+		sv.free_packets = pack;
+	}
+}
+
 /*
 ==================
 SV_FinalMessage
@@ -155,6 +166,7 @@ or crashing.
 */
 void SV_DropClient (client_t *drop)
 {
+
 	if (drop->bot) {
 		SV_RemoveBot (drop);
 		return;
@@ -206,6 +218,8 @@ void SV_DropClient (client_t *drop)
 //	drop->edict->inuse = false;
 	drop->name[0] = 0;
 	memset (drop->userinfo, 0, sizeof(drop->userinfo));
+
+	SV_FreeDelayedPackets(drop);
 
 // send notification to all remaining clients
 	SV_FullClientUpdate (drop, &sv.reliable_datagram);
@@ -1065,8 +1079,8 @@ void SV_ReadPackets (void)
 			SV_ExecuteClientMessage (cl);
 
 			cl->packets = next = pack->next;
-			pack->next = svs.free_packets;
-			svs.free_packets = pack;
+			pack->next = sv.free_packets;
+			sv.free_packets = pack;
 		}
 		
 	}
@@ -1117,18 +1131,18 @@ void SV_ReadPackets (void)
 
 		// ok, we know who sent this packet, but do we need to delay executing it?
 		if (cl->delay > 0) {
-			if (!svs.free_packets) // packet has to be dropped..
+			if (!sv.free_packets) // packet has to be dropped..
 				break;
 
 			// insert at end of list
 			if (!cl->packets) {
-				cl->last_packet = cl->packets = svs.free_packets;
+				cl->last_packet = cl->packets = sv.free_packets;
 			} else {
 				// this works because '=' associates from right to left
-				cl->last_packet = cl->last_packet->next = svs.free_packets;
+				cl->last_packet = cl->last_packet->next = sv.free_packets;
 			}
 
-			svs.free_packets = svs.free_packets->next;
+			sv.free_packets = sv.free_packets->next;
 			cl->last_packet->next = NULL;
 			
 			cl->last_packet->time = svs.realtime;
@@ -1383,8 +1397,6 @@ void SV_InitLocal (void)
 	extern cvar_t	pm_slidefix;
 	extern cvar_t	pm_airstep;
 
-	packet_t		*packet_allocblock;
-
 	SV_InitOperatorCommands	();
 
 	Cvar_Register (&sv_rconPassword);
@@ -1475,16 +1487,6 @@ void SV_InitLocal (void)
 
 	SZ_Init (&svs.log[1], svs.log_buf[1], sizeof(svs.log_buf[1]));
 	svs.log[1].allowoverflow = true;
-
-	packet_allocblock = Hunk_AllocName(MAX_DELAYED_PACKETS * sizeof(packet_t), "delayed_packets");
-
-	for (i = 0; i < MAX_DELAYED_PACKETS; i++) {
-		SZ_Init (&packet_allocblock[i].msg, packet_allocblock[i].buf, sizeof(packet_allocblock[i].buf));
-		packet_allocblock[i].next = &packet_allocblock[i + 1];
-	}
-	packet_allocblock[MAX_DELAYED_PACKETS - 1].next = NULL;
-
-	svs.free_packets = &packet_allocblock[0];
 }
 
 
