@@ -27,7 +27,6 @@
 extern cvar_t cl_parsesay;
 extern cvar_t cl_triggers;
 extern cvar_t cl_nofake;
-extern cvar_t cl_loadlocs;
 extern cvar_t cl_rocket2grenade;
 extern cvar_t cl_teamskin;
 extern cvar_t cl_enemyskin;
