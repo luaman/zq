@@ -1416,8 +1416,8 @@ qbool VID_SetWindowedMode (int modenum)
 	vid.numpages = 1;
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
-	vid.height = vid.conheight = DIBHeight;
-	vid.width = vid.conwidth = DIBWidth;
+	vid.height = DIBHeight;
+	vid.width = DIBWidth;
 	vid.aspect = ((float)vid.height / (float)vid.width) *
 				(320.0 / 240.0);
 
@@ -1464,8 +1464,8 @@ qbool VID_SetFullscreenMode (int modenum)
 	vid.buffer = vid.direct = NULL;
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
-	DIBHeight = vid.height = vid.conheight = modelist[modenum].height;
-	DIBWidth = vid.width = vid.conwidth = modelist[modenum].width;
+	DIBHeight = vid.height = modelist[modenum].height;
+	DIBWidth = vid.width = modelist[modenum].width;
 	vid.aspect = ((float)vid.height / (float)vid.width) *
 				(320.0 / 240.0);
 
@@ -1586,8 +1586,8 @@ qbool VID_SetFullDIBMode (int modenum)
 	vid.numpages = 1;
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
-	vid.height = vid.conheight = DIBHeight;
-	vid.width = vid.conwidth = DIBWidth;
+	vid.height = DIBHeight;
+	vid.width = DIBWidth;
 	vid.aspect = ((float)vid.height / (float)vid.width) *
 				(320.0 / 240.0);
 
