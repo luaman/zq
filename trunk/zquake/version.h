@@ -22,3 +22,4 @@
 
 int build_number (void);
 void CL_Version_f (void);
+char *VersionString (void);

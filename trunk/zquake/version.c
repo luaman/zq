@@ -27,14 +27,13 @@
 #include "quakedef.h"
 #include "version.h"
 
-// char *date = "Oct 24 1996";
 static char *date = __DATE__ ;
 static char *mon[12] = 
 { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 static char mond[12] = 
 { 31,    28,    31,    30,    31,    30,    31,    31,    30,    31,    30,    31 };
 
-// returns days since Dec 21 1999
+// returns days since Dec 21 1999 (the day before q1source release)
 int build_number (void)
 {
 	int m = 0; 
@@ -73,6 +72,24 @@ CL_Version_f
 void CL_Version_f (void)
 {
 	Com_Printf ("QW version %4.2f\n", QW_VERSION);
-	Com_Printf ("ZQuake version %s (Build %04d)\n", Z_VERSION, build_number());
+	Com_Printf ("ZQuake version %s\n", VersionString());
 	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
+}
+
+/*
+=======================
+VersionString
+======================
+*/
+char *VersionString (void)
+{
+	static char str[32];
+
+#ifdef RELEASE_VERSION
+	sprintf (str, "%s", Z_VERSION);
+#else
+	sprintf (str, "%s (build %i)", Z_VERSION, build_number());
+#endif
+
+	return str;
 }
