@@ -1762,7 +1762,7 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 {
 	char	new[1024], *v;
 	int		c;
-#ifdef SERVERONLY
+#if defined(SERVERONLY) || defined(QW_BOTH)
 	extern cvar_t sv_highchars;
 #endif
 
@@ -1788,7 +1788,7 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 	if (*(v = Info_ValueForKey(s, key))) {
 		// key exists, make sure we have enough room for new value, if we don't,
 		// don't change it!
-		if (strlen(value) - strlen(v) + strlen(s) > maxsize) {
+		if (strlen(value) - strlen(v) + strlen(s) >= maxsize) {
 			Con_Printf ("Info string length exceeded\n");
 			return;
 		}
@@ -1799,7 +1799,7 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 
 	sprintf (new, "\\%s\\%s", key, value);
 
-	if ((int)(strlen(new) + strlen(s)) > maxsize)
+	if ((strlen(new) + strlen(s)) >= maxsize)
 	{
 		Con_Printf ("Info string length exceeded\n");
 		return;
@@ -1808,28 +1808,22 @@ void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize)
 	// only copy ascii values
 	s += strlen(s);
 	v = new;
-	while (*v)
-	{
-		c = (unsigned char)*v++;
-#ifndef SERVERONLY
-		// client only allows highbits on name
-		if (stricmp(key, "name") != 0) {
-			c &= 127;
-			if (c < 32 || c > 127)
+#if defined(SERVERONLY) || defined(QW_BOTH)
+	if (!sv_highchars.value) {
+		while (*v) {
+			c = (unsigned char)*v++;
+			if (c == ('\\'|128))
 				continue;
-			// auto lowercase team
-			if (stricmp(key, "team") == 0)
-				c = tolower(c);
-		}
-#else
-		if (!sv_highchars.value) {
 			c &= 127;
-			if (c < 32 || c > 127)
-				continue;
+			if (c >= 32)
+				*s++ = c;
 		}
+	}
+	else
 #endif
-//		c &= 127;		// strip high bits
-		if (c > 13) // && c < 127)
+	while (*v) {
+		c = (unsigned char)*v++;
+		if (c > 13)
 			*s++ = c;
 	}
 	*s = 0;
