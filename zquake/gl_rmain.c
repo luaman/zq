@@ -107,6 +107,11 @@ cvar_t	gl_fb_models = {"gl_fb_models","1"};
 
 extern	cvar_t	gl_ztrick;
 extern	cvar_t	scr_fov;
+
+#ifndef _WIN32
+qboolean vid_hwgamma_enabled = false;	// dummy
+#endif
+
 /*
 =================
 R_CullBox
@@ -718,33 +723,24 @@ R_PolyBlend
 */
 void R_PolyBlend (void)
 {
+	if (vid_hwgamma_enabled)
+		return;
 	if (!gl_polyblend.value)
 		return;
 	if (!v_blend[3])
 		return;
 
-//Con_Printf("R_PolyBlend(): %4.2f %4.2f %4.2f %4.2f\n",v_blend[0], v_blend[1],	v_blend[2],	v_blend[3]);
-
- 	GL_DisableMultitexture();
-
 	glDisable (GL_ALPHA_TEST);
 	glEnable (GL_BLEND);
-	glDisable (GL_DEPTH_TEST);
 	glDisable (GL_TEXTURE_2D);
-
-    glLoadIdentity ();
-
-    glRotatef (-90,  1, 0, 0);	    // put Z going up
-    glRotatef (90,  0, 0, 1);	    // put Z going up
 
 	glColor4fv (v_blend);
 
 	glBegin (GL_QUADS);
-
-	glVertex3f (10, 100, 100);
-	glVertex3f (10, -100, 100);
-	glVertex3f (10, -100, -100);
-	glVertex3f (10, 100, -100);
+	glVertex2f (r_refdef.vrect.x, r_refdef.vrect.y);
+	glVertex2f (r_refdef.vrect.x + r_refdef.vrect.width, r_refdef.vrect.y);
+	glVertex2f (r_refdef.vrect.x + r_refdef.vrect.width, r_refdef.vrect.y + r_refdef.vrect.height);
+	glVertex2f (r_refdef.vrect.x, r_refdef.vrect.y + r_refdef.vrect.height);
 	glEnd ();
 
 	glDisable (GL_BLEND);
@@ -752,6 +748,48 @@ void R_PolyBlend (void)
 	glEnable (GL_ALPHA_TEST);
 }
 
+/*
+================
+R_BrightenScreen
+================
+*/
+void R_BrightenScreen (void)
+{
+	extern float	vid_gamma;
+	float	f;
+
+	if (vid_hwgamma_enabled)
+		return;
+	if (gl_brightness.value <= 1.0)
+		return;
+
+	f = gl_brightness.value;
+	if (f > 3)
+		f = 3;
+
+	f = pow (f, vid_gamma);
+	
+	glDisable (GL_TEXTURE_2D);
+	glEnable (GL_BLEND);
+	glBlendFunc (GL_DST_COLOR, GL_ONE);
+	glBegin (GL_QUADS);
+	while (f > 1)
+	{
+		if (f >= 2)
+			glColor3f (1, 1, 1);
+		else
+			glColor3f (f - 1, f - 1, f - 1);
+		glVertex2f (0, 0);
+		glVertex2f (vid.width, 0);
+		glVertex2f (vid.width, vid.height);
+		glVertex2f (0, vid.height);
+		f *= 0.5;
+	}
+	glEnd ();
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable (GL_TEXTURE_2D);
+	glDisable (GL_BLEND);
+}
 
 int SignbitsForPlane (mplane_t *out)
 {
@@ -1016,9 +1054,27 @@ R_Clear
 int gl_ztrickframe = 0;
 void R_Clear (void)
 {
+	static qboolean cleartogray;
+	qboolean	clear = false;
+
+	if (gl_clear.value) {
+		clear = true;
+		if (cleartogray) {
+			glClearColor (1, 0, 0, 0);
+			cleartogray = false;
+		}
+	}
+	else if (!vid_hwgamma_enabled && gl_brightness.value > 1) {
+		clear = true;
+		if (!cleartogray) {
+			glClearColor (0.1, 0.1, 0.1, 0);
+			cleartogray = true;
+		}
+	}
+
 	if (r_mirroralpha.value != 1.0)
 	{
-		if (gl_clear.value)
+		if (clear)
 			glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		else
 			glClear (GL_DEPTH_BUFFER_BIT);
@@ -1028,7 +1084,7 @@ void R_Clear (void)
 	}
 	else if (gl_ztrick.value)
 	{
-		if (gl_clear.value)
+		if (clear)
 			glClear (GL_COLOR_BUFFER_BIT);
 
 		gl_ztrickframe = !gl_ztrickframe;
@@ -1047,7 +1103,7 @@ void R_Clear (void)
 	}
 	else
 	{
-		if (gl_clear.value)
+		if (clear)
 			glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		else
 			glClear (GL_DEPTH_BUFFER_BIT);
@@ -1169,7 +1225,7 @@ void R_RenderView (void)
 	// render mirror view
 //	R_Mirror ();
 
-	R_PolyBlend ();
+//	R_PolyBlend ();
 
 	if (r_speeds.value)
 	{
