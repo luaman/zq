@@ -1551,13 +1551,13 @@ void M_MultiPlayer_Key (int key)
 //=============================================================================
 /* DEMOS MENU */
 
-#define MAX_DEMO_NAME 64
-#define MAX_DEMO_FILES 64
+#define MAX_DEMO_NAME 128
+#define MAX_DEMO_FILES 256
 #define MAXLINES 19	  // maximum number of files visible on screen
 
 typedef struct direntry_s {
 	int		type;	// 0=file, 1=dir, 2="..", 3=message
-	char	name[MAX_DEMO_NAME];
+	char	*name;
 	int		size;
 } direntry_t;
 
@@ -1580,15 +1580,21 @@ static void ReadDir (void)
 	demo_base = 0;
 	demo_cursor = 0;
 
+	for (i=0 ; i<MAX_DEMO_FILES ; i++)
+		if (dir[i].name) {
+			free(dir[i].name);
+			dir[i].name = NULL;
+		}
+
 	if (demodir[0]) {
-		strcpy (dir[0].name, "..");
+		dir[0].name = strdup ("..");
 		dir[0].type = 2;
 		numfiles = 1;
 	}
 
 	h = FindFirstFile (va("%s%s/*.*", com_basedir, demodir), &fd);
 	if (h == INVALID_HANDLE_VALUE) {
-		strcpy (dir[numfiles].name, "Error reading directory\n");
+		dir[numfiles].name = strdup ("Error reading directory");
 		dir[numfiles].type = 3;
 		numfiles++;
 		return;
@@ -1631,7 +1637,7 @@ static void ReadDir (void)
 		numfiles++;
 		for (i=numfiles-1 ; i>pos ; i--)
 			dir[i] = dir[i-1];
-		strcpy (dir[i].name, name);
+		dir[i].name = strdup(name);
 		dir[i].type = type;
 		dir[i].size = size;
 		if (numfiles == MAX_DEMO_FILES)
@@ -1654,7 +1660,7 @@ static void ReadDir (void)
 	}
 
 	if (!numfiles) {
-		strcpy (dir[0].name, "[ no files ]");
+		dir[0].name = strdup("[ no files ]");
 		dir[0].type = 3;
 		numfiles = 1;
 	}
