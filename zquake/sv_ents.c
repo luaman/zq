@@ -242,6 +242,12 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 		case PM_FLY:
 			pm_code = PMC_FLY;
 			break;
+		case PM_NONE:
+			pm_code = PMC_NONE;
+			break;
+		case PM_FREEZE:
+			pm_code = PMC_FREEZE;
+			break;
 		default:
 			assert (false);
 		}

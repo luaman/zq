@@ -695,6 +695,10 @@ void CL_ParsePlayerinfo (void)
 					state->pm_type = PM_SPECTATOR;
 				else if (pm_code == PMC_FLY)
 					state->pm_type = PM_FLY;
+				else if (pm_code == PMC_NONE)
+					state->pm_type = PM_NONE;
+				else if (pm_code == PMC_FREEZE)
+					state->pm_type = PM_FREEZE;
 				else {
 					// future extension?
 					goto guess_pm_type;

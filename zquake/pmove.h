@@ -51,7 +51,9 @@ typedef enum {
 	PM_OLD_SPECTATOR,	// fly, no clip to world (QW bug)
 	PM_SPECTATOR,		// fly, no clip to world
 	PM_DEAD,			// no acceleration
-	PM_FLY				// fly, bump into walls
+	PM_FLY,				// fly, bump into walls
+	PM_NONE,			// can't move
+	PM_FREEZE			// can't move or look around (TODO)
 } pmtype_t;
 
 typedef struct

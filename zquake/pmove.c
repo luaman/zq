@@ -658,11 +658,9 @@ void PM_CategorizePosition (void)
 		}
 	}
 
-	// snap to ground unless in fly mode or underwater
-	// FIXME: remove this code?
-	// donno how much it will affect prediction though
 	if (pmove.onground && pmove.pm_type != PM_FLY && pmove.waterlevel < 3)
 	{
+		// snap to ground so that we can't jump higher than we're supposed to
 		if (!trace.startsolid && !trace.allsolid)
 			VectorCopy (trace.endpos, pmove.origin);
 	}
@@ -923,6 +921,11 @@ void PM_PlayerMove (void)
 {
 	frametime = pmove.cmd.msec * 0.001;
 	pmove.numtouch = 0;
+
+	if (pmove.pm_type == PM_NONE || pmove.pm_type == PM_FREEZE) {
+		PM_CategorizePosition ();
+		return;
+	}
 
 	// take angles directly from command
 	VectorCopy (pmove.cmd.angles, pmove.angles);
