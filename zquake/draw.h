@@ -20,7 +20,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // cl_draw.h - 2d drawing functions which don't belong to refresh
 
+#ifdef _WIN32
 typedef struct mpic_s	mpic_t;
+#else
+#ifdef GLQUAKE
+typedef struct mpic_s
+{
+	int			width, height;
+	int			texnum;
+	float		sl, tl, sh, th;
+} mpic_t;
+#else
+typedef struct mpic_s
+{
+	int			width;
+	short		height;
+	byte		alpha;
+	byte		pad;
+	byte		data[4];	// variable sized
+} mpic_t;
+#endif
+#endif
 
 // FIXME, load separately in refresh and client?
 extern	mpic_t		*draw_disc;	// also used on sbar

@@ -33,7 +33,7 @@ typedef struct cnode_s
 	struct cnode_s	*children[2];	
 } cnode_t;
 
-
+#ifdef _WIN32
 typedef struct cleaf_s
 {
 // common with node
@@ -43,6 +43,7 @@ typedef struct cleaf_s
 // leaf specific
 	byte		ambient_sound_level[NUM_AMBIENTS];
 } cleaf_t;
+#endif
 
 
 
