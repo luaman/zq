@@ -260,7 +260,7 @@ void PR_LexPunctuation (void)
 		}
 	}
 	
-	PR_ParseError ("Unknown punctuation");
+	PR_ParseError ("unknown character '0x%02x'", (byte)*pr_file_p);
 }
 
 		
