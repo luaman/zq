@@ -332,15 +332,15 @@ void Draw_TextBox (int x, int y, int width, int lines)
 	cx = x;
 	cy = y;
 	p = Draw_CachePic ("gfx/box_tl.lmp");
-	Draw_TransPic (cx, cy, p);
+	Draw_Pic (cx, cy, p);
 	p = Draw_CachePic ("gfx/box_ml.lmp");
 	for (n = 0; n < lines; n++)
 	{
 		cy += 8;
-		Draw_TransPic (cx, cy, p);
+		Draw_Pic (cx, cy, p);
 	}
 	p = Draw_CachePic ("gfx/box_bl.lmp");
-	Draw_TransPic (cx, cy+8, p);
+	Draw_Pic (cx, cy+8, p);
 
 	// draw middle
 	cx += 8;
@@ -348,17 +348,17 @@ void Draw_TextBox (int x, int y, int width, int lines)
 	{
 		cy = y;
 		p = Draw_CachePic ("gfx/box_tm.lmp");
-		Draw_TransPic (cx, cy, p);
+		Draw_Pic (cx, cy, p);
 		p = Draw_CachePic ("gfx/box_mm.lmp");
 		for (n = 0; n < lines; n++)
 		{
 			cy += 8;
 			if (n == 1)
 				p = Draw_CachePic ("gfx/box_mm2.lmp");
-			Draw_TransPic (cx, cy, p);
+			Draw_Pic (cx, cy, p);
 		}
 		p = Draw_CachePic ("gfx/box_bm.lmp");
-		Draw_TransPic (cx, cy+8, p);
+		Draw_Pic (cx, cy+8, p);
 		width -= 2;
 		cx += 16;
 	}
@@ -366,15 +366,15 @@ void Draw_TextBox (int x, int y, int width, int lines)
 	// draw right side
 	cy = y;
 	p = Draw_CachePic ("gfx/box_tr.lmp");
-	Draw_TransPic (cx, cy, p);
+	Draw_Pic (cx, cy, p);
 	p = Draw_CachePic ("gfx/box_mr.lmp");
 	for (n = 0; n < lines; n++)
 	{
 		cy += 8;
-		Draw_TransPic (cx, cy, p);
+		Draw_Pic (cx, cy, p);
 	}
 	p = Draw_CachePic ("gfx/box_br.lmp");
-	Draw_TransPic (cx, cy+8, p);
+	Draw_Pic (cx, cy+8, p);
 }
 
 
@@ -423,27 +423,14 @@ void Draw_DebugChar (char num)
 
 /*
 =============
-Draw_Pic
+Draw_SolidPic
 =============
 */
-void Draw_Pic (int x, int y, mpic_t *pic)
+static void Draw_SolidPic (int x, int y, mpic_t *pic)
 {
 	byte			*dest, *source;
 	unsigned short	*pusdest;
 	int				v, u;
-
-	if (pic->alpha) {
-		Draw_TransPic (x, y, pic);
-		return;
-	}
-
-	if ((x < 0) ||
-		(x + pic->width > vid.width) ||
-		(y < 0) ||
-		(y + pic->height > vid.height))
-	{
-		Sys_Error ("Draw_Pic: bad coordinates");
-	}
 
 	source = pic->data;
 
@@ -477,76 +464,17 @@ void Draw_Pic (int x, int y, mpic_t *pic)
 }
 
 
-void Draw_TransSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height);
-
-/*
-=============
-Draw_SubPic
-=============
-*/
-void Draw_SubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
-{
-	byte			*dest, *source;
-	unsigned short	*pusdest;
-	int				v, u;
-
-	if (pic->alpha) {
-		Draw_TransSubPic (x, y, pic, srcx, srcy, width, height);
-		return;
-	}
-
-	if ((x < 0) || (x + width > vid.width) || (y < 0) || (y + height > vid.height))
-		Sys_Error ("Draw_Pic: bad coordinates");
-
-	source = pic->data + srcy * pic->width + srcx;
-
-	if (r_pixbytes == 1)
-	{
-		dest = vid.buffer + y * vid.rowbytes + x;
-
-		for (v=0 ; v<height ; v++)
-		{
-			memcpy (dest, source, width);
-			dest += vid.rowbytes;
-			source += pic->width;
-		}
-	}
-	else
-	{
-	// FIXME: pretranslate at load time?
-		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
-
-		for (v=0 ; v<height ; v++)
-		{
-			for (u=srcx ; u<(srcx+width) ; u++)
-			{
-				pusdest[u] = d_8to16table[source[u]];
-			}
-
-			pusdest += vid.rowbytes >> 1;
-			source += pic->width;
-		}
-	}
-}
-
-
 /*
 =============
 Draw_TransPic
 =============
 */
-void Draw_TransPic (int x, int y, mpic_t *pic)
+static void Draw_TransPic (int x, int y, mpic_t *pic)
 {
 	byte	*dest, *source, tbyte;
 	unsigned short	*pusdest;
 	int				v, u;
 
-	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
-		 (unsigned)(y + pic->height) > vid.height)
-	{
-		Sys_Error ("Draw_TransPic: bad coordinates");
-	}
-		
 	source = pic->data;
 
 	if (r_pixbytes == 1)
@@ -619,18 +547,91 @@ void Draw_TransPic (int x, int y, mpic_t *pic)
 
 /*
 =============
+Draw_Pic
+=============
+*/
+void Draw_Pic (int x, int y, mpic_t *pic)
+{
+	if ((x < 0) || (x + pic->width > vid.width) ||
+		(y < 0) || (y + pic->height > vid.height))
+	{
+		Sys_Error ("Draw_Pic: bad coordinates");
+	}
+
+	if (pic->alpha)
+		Draw_TransPic (x, y, pic);
+	else
+		Draw_SolidPic (x, y, pic);
+}
+
+
+void Draw_TransSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height);
+
+/*
+=============
+Draw_SubPic
+=============
+*/
+void Draw_SubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
+{
+	byte			*dest, *source;
+	unsigned short	*pusdest;
+	int				v, u;
+
+	if ((x < 0) || (x + width > vid.width) ||
+		(y < 0) || (y + height > vid.height))
+	{
+		Sys_Error ("Draw_Pic: bad coordinates");
+	}
+
+	if (pic->alpha) {
+		Draw_TransSubPic (x, y, pic, srcx, srcy, width, height);
+		return;
+	}
+
+	source = pic->data + srcy * pic->width + srcx;
+
+	if (r_pixbytes == 1)
+	{
+		dest = vid.buffer + y * vid.rowbytes + x;
+
+		for (v=0 ; v<height ; v++)
+		{
+			memcpy (dest, source, width);
+			dest += vid.rowbytes;
+			source += pic->width;
+		}
+	}
+	else
+	{
+	// FIXME: pretranslate at load time?
+		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
+
+		for (v=0 ; v<height ; v++)
+		{
+			for (u=srcx ; u<(srcx+width) ; u++)
+			{
+				pusdest[u] = d_8to16table[source[u]];
+			}
+
+			pusdest += vid.rowbytes >> 1;
+			source += pic->width;
+		}
+	}
+}
+
+
+/*
+=============
 Draw_TransSubPic
 =============
 */
-void Draw_TransSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
+static void Draw_TransSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height)
 {
 	byte	*dest, *source, tbyte;
 	unsigned short	*pusdest;
 	int				v, u;
 
-	if ((x < 0) || (x + width > vid.width) || (y < 0) || (y + height > vid.height))
-		Sys_Error ("Draw_Pic: bad coordinates");
-		
 	source = pic->data + srcy * pic->width + srcx;
 
 	if (r_pixbytes == 1)
