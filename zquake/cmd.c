@@ -980,6 +980,8 @@ void Cmd_ForwardToServer (void)
 	}
 }
 
+void SCR_RSShot_f (void);
+
 // don't forward the first argument
 void Cmd_ForwardToServer_f (void)
 {
@@ -990,7 +992,7 @@ void Cmd_ForwardToServer_f (void)
 	}
 
 	if (Q_strcasecmp(Cmd_Argv(1), "snap") == 0) {
-		Cbuf_InsertText ("snap\n");
+		SCR_RSShot_f ();
 		return;
 	}
 	
