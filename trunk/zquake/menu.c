@@ -360,6 +360,7 @@ int		options_cursor;
 
 extern cvar_t	gammavar;
 extern cvar_t	contrast;
+extern cvar_t	cl_run;
 
 void M_Menu_Options_f (void)
 {
@@ -427,16 +428,7 @@ void M_AdjustSliders (int dir)
 		break;
 		
 	case 9:	// always run
-		if (cl_forwardspeed.value > 200)
-		{
-			Cvar_SetValue (&cl_forwardspeed, 200);
-			Cvar_SetValue (&cl_backspeed, 200);
-		}
-		else
-		{
-			Cvar_SetValue (&cl_forwardspeed, 400);
-			Cvar_SetValue (&cl_backspeed, 400);
-		}
+		Cvar_SetValue (&cl_run, !cl_run.value);
 		break;
 	
 	case 10:	// mouse look
@@ -533,7 +525,7 @@ void M_Options_Draw (void)
 	M_DrawSlider (220, 96, r);
 
 	M_Print (16, 104,  "            Always Run");
-	M_DrawCheckbox (220, 104, cl_forwardspeed.value > 200);
+	M_DrawCheckbox (220, 104, cl_run.value);
 
 	M_Print (16, 112, "            Mouse look");
 	M_DrawCheckbox (220, 112, freelook.value);
