@@ -128,7 +128,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G5 /ML /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "GLQUAKE" /FR /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /GX /Ot /Ow /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "GLQUAKE" /D "id386" /D "QW_BOTH" /YX /FD /c
+# ADD CPP /nologo /G5 /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "GLQUAKE" /D "id386" /D "QW_BOTH" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
