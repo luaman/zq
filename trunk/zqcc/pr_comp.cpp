@@ -1262,4 +1262,3 @@ bool PR_CompileFile (char *string, char *filename)
 	
 	return (pr_error_count == 0);
 }
-
