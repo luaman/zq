@@ -38,37 +38,31 @@ when crossing a water boudnary.
 
 cvar_t	cl_rollspeed = {"cl_rollspeed", "200"};
 cvar_t	cl_rollangle = {"cl_rollangle", "2.0"};
-
 cvar_t	cl_bob = {"cl_bob","0.02"};
 cvar_t	cl_bobcycle = {"cl_bobcycle","0.6"};
 cvar_t	cl_bobup = {"cl_bobup","0.5"};
-
 cvar_t	v_kicktime = {"v_kicktime", "0.5"};
 cvar_t	v_kickroll = {"v_kickroll", "0.6"};
 cvar_t	v_kickpitch = {"v_kickpitch", "0.6"};
+cvar_t	v_gunkick = {"v_gunkick", "0"};
 
 cvar_t	cl_drawgun = {"r_drawviewmodel", "1"};
 
-cvar_t	v_gunkick = {"v_gunkick", "0"};
+qboolean Change_v_idle (cvar_t *var, char *value);
+cvar_t	v_iyaw_cycle = {"v_iyaw_cycle", "2", 0, Change_v_idle};
+cvar_t	v_iroll_cycle = {"v_iroll_cycle", "0.5", 0, Change_v_idle};
+cvar_t	v_ipitch_cycle = {"v_ipitch_cycle", "1", 0, Change_v_idle};
+cvar_t	v_iyaw_level = {"v_iyaw_level", "0.3", 0, Change_v_idle};
+cvar_t	v_iroll_level = {"v_iroll_level", "0.1", 0, Change_v_idle};
+cvar_t	v_ipitch_level = {"v_ipitch_level", "0.3", 0, Change_v_idle};
+cvar_t	v_idlescale = {"v_idlescale", "0", 0, Change_v_idle};
 
-qboolean V_OnIdleChange (cvar_t *var, char *value);
-cvar_t	v_iyaw_cycle = {"v_iyaw_cycle", "2", 0, V_OnIdleChange};
-cvar_t	v_iroll_cycle = {"v_iroll_cycle", "0.5", 0, V_OnIdleChange};
-cvar_t	v_ipitch_cycle = {"v_ipitch_cycle", "1", 0, V_OnIdleChange};
-cvar_t	v_iyaw_level = {"v_iyaw_level", "0.3", 0, V_OnIdleChange};
-cvar_t	v_iroll_level = {"v_iroll_level", "0.1", 0, V_OnIdleChange};
-cvar_t	v_ipitch_level = {"v_ipitch_level", "0.3", 0, V_OnIdleChange};
-
-cvar_t	v_idlescale = {"v_idlescale", "0", 0, V_OnIdleChange};
-
-cvar_t	crosshair = {"crosshair","2",CVAR_ARCHIVE};
-cvar_t	crosshaircolor = {"crosshaircolor","79",CVAR_ARCHIVE};
-
+cvar_t	crosshair = {"crosshair", "2", CVAR_ARCHIVE};
+cvar_t	crosshaircolor = {"crosshaircolor", "79", CVAR_ARCHIVE};
 cvar_t  cl_crossx = {"cl_crossx", "0", CVAR_ARCHIVE};
 cvar_t  cl_crossy = {"cl_crossy", "0", CVAR_ARCHIVE};
 
 cvar_t  v_contentblend = {"v_contentblend", "1"};
-
 cvar_t	v_damagecshift = {"v_damagecshift", "1"};
 cvar_t	v_quadcshift = {"v_quadcshift", "1"};
 cvar_t	v_suitcshift = {"v_suitcshift", "1"};
@@ -82,13 +76,11 @@ cvar_t	v_bonusflash = {"cl_bonusflash", "1"};
 
 float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
-extern	int			in_forward, in_forward2, in_back;
-
 frame_t		*view_frame;
 player_state_t		*view_message;
 
 
-qboolean V_OnIdleChange (cvar_t *var, char *value)
+qboolean Change_v_idle (cvar_t *var, char *value)
 {
 	// Don't allow cheating in TF
 	if (cl.teamfortress && cls.state >= ca_connected &&
@@ -1133,6 +1125,7 @@ void V_Init (void)
 	Cvar_Register (&v_centermove);
 	Cvar_Register (&v_centerspeed);
 
+	Cvar_Register (&v_idlescale);
 	Cvar_Register (&v_iyaw_cycle);
 	Cvar_Register (&v_iroll_cycle);
 	Cvar_Register (&v_ipitch_cycle);
@@ -1140,19 +1133,6 @@ void V_Init (void)
 	Cvar_Register (&v_iroll_level);
 	Cvar_Register (&v_ipitch_level);
 
-	Cvar_Register (&v_contentblend);
-	Cvar_Register (&v_damagecshift);
-	Cvar_Register (&v_quadcshift);
-	Cvar_Register (&v_suitcshift);
-	Cvar_Register (&v_ringcshift);
-	Cvar_Register (&v_pentcshift);
-#ifdef GLQUAKE
-	Cvar_Register (&v_dlightcshift);
-#endif
-
-	Cvar_Register (&v_bonusflash);
-
-	Cvar_Register (&v_idlescale);
 	Cvar_Register (&crosshaircolor);
 	Cvar_Register (&crosshair);
 	Cvar_Register (&cl_crossx);
@@ -1168,6 +1148,17 @@ void V_Init (void)
 	Cvar_Register (&v_kickpitch);
 	Cvar_Register (&v_gunkick);
 	Cvar_Register (&cl_drawgun);
+
+	Cvar_Register (&v_bonusflash);
+	Cvar_Register (&v_contentblend);
+	Cvar_Register (&v_damagecshift);
+	Cvar_Register (&v_quadcshift);
+	Cvar_Register (&v_suitcshift);
+	Cvar_Register (&v_ringcshift);
+	Cvar_Register (&v_pentcshift);
+#ifdef GLQUAKE
+	Cvar_Register (&v_dlightcshift);
+#endif
 
 	Cvar_Register (&v_gamma);
 	Cvar_Register (&v_contrast);

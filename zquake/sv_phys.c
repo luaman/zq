@@ -40,17 +40,17 @@ solid_edge items only clip against bsp models.
 
 */
 
-cvar_t	sv_maxvelocity = {"sv_maxvelocity","2000"}; 
-
-cvar_t	sv_gravity			 = { "sv_gravity", "800"};    
-cvar_t	sv_stopspeed		 = { "sv_stopspeed", "100"};    
-cvar_t	sv_maxspeed			 = { "sv_maxspeed", "320"};    
-cvar_t	sv_spectatormaxspeed = { "sv_spectatormaxspeed", "500"};
-cvar_t	sv_accelerate		 = { "sv_accelerate", "10"};     
-cvar_t	sv_airaccelerate	 = { "sv_airaccelerate", "10"};    
-cvar_t	sv_wateraccelerate	 = { "sv_wateraccelerate", "10"};     
-cvar_t	sv_friction			 = { "sv_friction", "4"};      
-cvar_t	sv_waterfriction	 = { "sv_waterfriction", "4"};      
+cvar_t	sv_maxvelocity		 = {"sv_maxvelocity","2000"}; 
+cvar_t	sv_gravity			 = {"sv_gravity", "800"};
+cvar_t	pm_stopspeed		 = {"sv_stopspeed", "100"};
+cvar_t	pm_maxspeed			 = {"sv_maxspeed", "320"};
+cvar_t	pm_spectatormaxspeed = {"sv_spectatormaxspeed", "500"};
+cvar_t	pm_accelerate		 = {"sv_accelerate", "10"};
+cvar_t	pm_airaccelerate	 = {"sv_airaccelerate", "10"};
+cvar_t	pm_wateraccelerate	 = {"sv_wateraccelerate", "10"};
+cvar_t	pm_friction			 = {"sv_friction", "4"};
+cvar_t	pm_waterfriction	 = {"sv_waterfriction", "4"};
+cvar_t	pm_bunnyspeedcap	 = {"pm_bunnyspeedcap", "", CVAR_SERVERINFO};
 
 double	sv_frametime;
 
@@ -963,13 +963,13 @@ void SV_Physics (void)
 void SV_SetMoveVars(void)
 {
 	movevars.gravity			= sv_gravity.value; 
-	movevars.stopspeed		    = sv_stopspeed.value;		 
-	movevars.maxspeed			= sv_maxspeed.value;			 
-	movevars.spectatormaxspeed  = sv_spectatormaxspeed.value; 
-	movevars.accelerate		    = sv_accelerate.value;		 
-	movevars.airaccelerate	    = sv_airaccelerate.value;	 
-	movevars.wateraccelerate	= sv_wateraccelerate.value;	   
-	movevars.friction			= sv_friction.value;			 
-	movevars.waterfriction	    = sv_waterfriction.value;	 
+	movevars.stopspeed		    = pm_stopspeed.value;		 
+	movevars.maxspeed			= pm_maxspeed.value;			 
+	movevars.spectatormaxspeed  = pm_spectatormaxspeed.value; 
+	movevars.accelerate		    = pm_accelerate.value;		 
+	movevars.airaccelerate	    = pm_airaccelerate.value;	 
+	movevars.wateraccelerate	= pm_wateraccelerate.value;	   
+	movevars.friction			= pm_friction.value;			 
+	movevars.waterfriction	    = pm_waterfriction.value;	 
 	movevars.entgravity			= 1.0;
 }

@@ -35,8 +35,8 @@ cvar_t	sv_mintic = {"sv_mintic","0.03"};	// bound the size of the
 #endif										// physics time tic 
 cvar_t	sv_maxtic = {"sv_maxtic","0.1"};	//
 
-cvar_t	timeout = {"timeout","65"};		// seconds without any message
-cvar_t	zombietime = {"zombietime", "2"};	// seconds to sink messages
+cvar_t	sv_timeout = {"timeout","65"};		// seconds without any message
+cvar_t	sv_zombietime = {"zombietime", "2"};	// seconds to sink messages
 											// after disconnect
 
 #ifdef SERVERONLY
@@ -57,7 +57,7 @@ cvar_t	allow_download_pakmaps = {"allow_download_pakmaps", "0"};
 
 cvar_t	sv_highchars = {"sv_highchars", "1"};
 cvar_t	sv_phs = {"sv_phs", "1"};
-cvar_t	pausable = {"pausable", "1"};
+cvar_t	sv_pausable = {"pausable", "1"};
 cvar_t	sv_maxrate = {"sv_maxrate", "0"};
 cvar_t	sv_fastconnect = {"sv_fastconnect", "0"};
 
@@ -1127,7 +1127,7 @@ void SV_CheckTimeouts (void)
 	float	droptime;
 	int	nclients;
 	
-	droptime = curtime - timeout.value;
+	droptime = curtime - sv_timeout.value;
 	nclients = 0;
 
 	for (i=0,cl=svs.clients ; i<MAX_CLIENTS ; i++,cl++)
@@ -1142,7 +1142,7 @@ void SV_CheckTimeouts (void)
 			}
 		}
 		if (cl->state == cs_zombie && 
-			svs.realtime - cl->connection_started > zombietime.value)
+			svs.realtime - cl->connection_started > sv_zombietime.value)
 		{
 			cl->state = cs_free;	// can now be reused
 		}
@@ -1327,21 +1327,23 @@ SV_InitLocal
 void SV_InitLocal (void)
 {
 	int		i;
-	extern	cvar_t	sv_maxvelocity;
-	extern	cvar_t	sv_gravity;
-	extern	cvar_t	sv_aim;
-	extern	cvar_t	sv_stopspeed;
-	extern	cvar_t	sv_spectatormaxspeed;
-	extern	cvar_t	sv_accelerate;
-	extern	cvar_t	sv_airaccelerate;
-	extern	cvar_t	sv_wateraccelerate;
-	extern	cvar_t	sv_friction;
-	extern	cvar_t	sv_waterfriction;
-	extern	cvar_t	sv_nailhack;
-	extern	cvar_t	sv_loadentfiles;
+	extern cvar_t	sv_spectalk;
+	extern cvar_t	sv_mapcheck;
+	extern cvar_t	sv_aim;
+	extern cvar_t	sv_nailhack;
+	extern cvar_t	sv_loadentfiles;
+	extern cvar_t	sv_maxvelocity;
+	extern cvar_t	sv_gravity;
+	extern cvar_t	pm_stopspeed;
+	extern cvar_t	pm_spectatormaxspeed;
+	extern cvar_t	pm_accelerate;
+	extern cvar_t	pm_airaccelerate;
+	extern cvar_t	pm_wateraccelerate;
+	extern cvar_t	pm_friction;
+	extern cvar_t	pm_waterfriction;
+	extern cvar_t	pm_bunnyspeedcap;
 
 	SV_InitOperatorCommands	();
-	SV_UserInit ();
 
 	if (dedicated)
 	{
@@ -1350,40 +1352,45 @@ void SV_InitLocal (void)
 	}
 	Cvar_Register (&spectator_password);
 
+	Cvar_Register (&sv_aim);
+	Cvar_Register (&sv_highchars);
+	Cvar_Register (&sv_phs);
+	Cvar_Register (&sv_pausable);
+	Cvar_Register (&sv_nailhack);
+	Cvar_Register (&sv_maxrate);
+	Cvar_Register (&sv_fastconnect);
+	Cvar_Register (&sv_loadentfiles);
 	Cvar_Register (&sv_mintic);
 	Cvar_Register (&sv_maxtic);
+	Cvar_Register (&sv_timeout);
+	Cvar_Register (&sv_zombietime);
+	Cvar_Register (&sv_spectalk);
+	Cvar_Register (&sv_mapcheck);
 
+	Cvar_Register (&deathmatch);
+	Cvar_Register (&teamplay);
 	Cvar_Register (&skill);
 	Cvar_Register (&coop);
 	Cvar_Register (&fraglimit);
 	Cvar_Register (&timelimit);
-	Cvar_Register (&teamplay);
 	Cvar_Register (&samelevel);
 	Cvar_Register (&maxclients);
 	Cvar_Register (&maxspectators);
 	Cvar_Register (&hostname);
-	Cvar_Register (&deathmatch);
-	
 	Cvar_Register (&watervis);
-
-	Cvar_Register (&timeout);
-	Cvar_Register (&zombietime);
 
 	Cvar_Register (&sv_maxvelocity);
 	Cvar_Register (&sv_gravity);
-	Cvar_Register (&sv_stopspeed);
-	Cvar_Register (&sv_maxspeed);
-	Cvar_Register (&sv_spectatormaxspeed);
-	Cvar_Register (&sv_accelerate);
-	Cvar_Register (&sv_airaccelerate);
-	Cvar_Register (&sv_wateraccelerate);
-	Cvar_Register (&sv_friction);
-	Cvar_Register (&sv_waterfriction);
+	Cvar_Register (&pm_stopspeed);
+	Cvar_Register (&pm_maxspeed);
+	Cvar_Register (&pm_spectatormaxspeed);
+	Cvar_Register (&pm_accelerate);
+	Cvar_Register (&pm_airaccelerate);
+	Cvar_Register (&pm_wateraccelerate);
+	Cvar_Register (&pm_friction);
+	Cvar_Register (&pm_waterfriction);
+	Cvar_Register (&pm_bunnyspeedcap);
 
-	Cvar_Register (&sv_aim);
-
-	Cvar_Register (&filterban);
-	
 	Cvar_Register (&allow_download);
 	Cvar_Register (&allow_download_skins);
 	Cvar_Register (&allow_download_models);
@@ -1391,15 +1398,7 @@ void SV_InitLocal (void)
 	Cvar_Register (&allow_download_maps);
 	Cvar_Register (&allow_download_pakmaps);
 
-	Cvar_Register (&sv_highchars);
-	Cvar_Register (&sv_phs);
-	Cvar_Register (&pausable);
-
-	Cvar_Register (&sv_nailhack);
-	Cvar_Register (&sv_maxrate);
-	Cvar_Register (&sv_fastconnect);
-	Cvar_Register (&sv_loadentfiles);
-
+	Cvar_Register (&filterban);
 	Cmd_AddCommand ("addip", SV_AddIP_f);
 	Cmd_AddCommand ("removeip", SV_RemoveIP_f);
 	Cmd_AddCommand ("listip", SV_ListIP_f);

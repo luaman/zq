@@ -27,18 +27,16 @@ edict_t	*sv_player;
 usercmd_t	cmd;
 
 cvar_t	sv_spectalk = {"sv_spectalk", "1"};
-
 cvar_t	sv_mapcheck	= {"sv_mapcheck", "1"};
 
 extern	vec3_t	player_mins;
 
 extern int fp_messages, fp_persecond, fp_secondsdead;
-extern cvar_t sv_floodprotmsg;
-extern cvar_t pausable;
+extern cvar_t	sv_floodprotmsg;
+extern cvar_t	sv_pausable;
+extern cvar_t	pm_bunnyspeedcap;
 
 extern double	sv_frametime;
-
-cvar_t	pm_bunnyspeedcap = {"pm_bunnyspeedcap", "", CVAR_SERVERINFO};
 
 
 /*
@@ -372,10 +370,10 @@ void SV_Spawn_f (void)
 	val = GetEdictFieldValue(ent, "gravity");
 	if (val)
 		val->_float = 1.0;
-	sv_client->maxspeed = sv_maxspeed.value;
+	sv_client->maxspeed = pm_maxspeed.value;
 	val = GetEdictFieldValue(ent, "maxspeed");
 	if (val)
-		val->_float = sv_maxspeed.value;
+		val->_float = pm_maxspeed.value;
 
 //
 // force stats to be updated
@@ -935,7 +933,7 @@ void SV_Pause_f (void)
 //	client_t *cl;
 	char st[sizeof(sv_client->name) + 32];
 
-	if (!pausable.value) {
+	if (!sv_pausable.value) {
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Pause not allowed.\n");
 		return;
 	}
@@ -1814,16 +1812,4 @@ void SV_ExecuteClientMessage (client_t *cl)
 
 		}
 	}
-}
-
-/*
-==============
-SV_UserInit
-==============
-*/
-void SV_UserInit (void)
-{
-	Cvar_Register (&sv_spectalk);
-	Cvar_Register (&sv_mapcheck);
-	Cvar_Register (&pm_bunnyspeedcap);
 }

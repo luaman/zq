@@ -323,7 +323,7 @@ typedef struct
 //============================================================================
 
 extern	cvar_t	sv_mintic, sv_maxtic;
-extern	cvar_t	sv_maxspeed;
+extern	cvar_t	pm_maxspeed;
 
 extern	cvar_t	sv_fastconnect;
 
@@ -424,7 +424,6 @@ void SV_FindModelNumbers (void);
 // sv_user.c
 //
 void SV_ExecuteClientMessage (client_t *cl);
-void SV_UserInit (void);
 void SV_TogglePause (const char *msg);
 
 
