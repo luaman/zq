@@ -175,7 +175,6 @@ void R_GenTile (msurface_t *psurf, void *pdest);
 extern float	skyshift;
 
 extern int		c_surf;
-extern vrect_t	scr_vrect;
 
 extern byte		*r_warpbuffer;
 

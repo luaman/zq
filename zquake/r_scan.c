@@ -49,37 +49,35 @@ void D_WarpScreen (void)
 	int		*turb;
 	int		*col;
 	byte	**row;
-	byte	*rowptr[1024];
-	int		column[1280];
+	byte	*rowptr[1024 * 2];
+	int		column[1280 * 2];
 	float	wratio, hratio;
 
 	w = r_refdef.vrect.width;
 	h = r_refdef.vrect.height;
 
-	wratio = w / (float)scr_vrect.width;
-	hratio = h / (float)scr_vrect.height;
+	wratio = w / (float)r_refdef2.vrect.width;
+	hratio = h / (float)r_refdef2.vrect.height;
 
-	for (v=0 ; v<scr_vrect.height+AMP2*2 ; v++)
+	for (v = 0; v < r_refdef2.vrect.height + AMP2*2; v++)
 	{
-		rowptr[v] = d_viewbuffer + (r_refdef.vrect.y * screenwidth) +
-				 (screenwidth * (int)((float)v * hratio * h / (h + AMP2 * 2)));
+		rowptr[v] = d_viewbuffer + (screenwidth * (int)((float)v * hratio * h / (h + AMP2 * 2)));
 	}
 
-	for (u=0 ; u<scr_vrect.width+AMP2*2 ; u++)
+	for (u = 0; u < r_refdef2.vrect.width + AMP2*2; u++)
 	{
-		column[u] = r_refdef.vrect.x +
-				(int)((float)u * wratio * w / (w + AMP2 * 2));
+		column[u] = (int)((float)u * wratio * w / (w + AMP2 * 2));
 	}
 
 	turb = intsintable + ((int)(r_refdef2.time*SPEED)&(CYCLE-1));
-	dest = vid.buffer + scr_vrect.y * vid.rowbytes + scr_vrect.x;
+	dest = vid.buffer + r_refdef2.vrect.y * vid.rowbytes + r_refdef2.vrect.x;
 
-	for (v=0 ; v<scr_vrect.height ; v++, dest += vid.rowbytes)
+	for (v = 0; v < r_refdef2.vrect.height ; v++, dest += vid.rowbytes)
 	{
 		col = &column[turb[v&(CYCLE-1)]];
 		row = &rowptr[v];
 
-		for (u=0 ; u<scr_vrect.width ; u+=4)
+		for (u = 0; u < r_refdef2.vrect.width; u += 4)
 		{
 			dest[u+0] = row[turb[(u+0)&(CYCLE-1)]][col[u+0]];
 			dest[u+1] = row[turb[(u+1)&(CYCLE-1)]][col[u+1]];

@@ -429,6 +429,8 @@ void R_SetUpFrustumIndexes (void)
 }
 
 
+void R_ViewChanged (float aspect);	// TODO: just move the function here
+
 /*
 ===============
 R_SetupFrame
@@ -437,8 +439,10 @@ R_SetupFrame
 void R_SetupFrame (void)
 {
 	int				edgecount;
-	vrect_t			vrect;
 	float			w, h;
+	qbool			viewchanged;
+	static refdef2_t	r_oldrefdef2;
+	static float oldfov_x, oldfov_y;
 
 	if (r_numsurfs.value)
 	{
@@ -481,19 +485,35 @@ void R_SetupFrame (void)
 	r_dowarpold = r_dowarp;
 	r_dowarp = r_waterwarp.value && (r_viewleaf->contents <= CONTENTS_WATER);
 
-	if ((r_dowarp != r_dowarpold) || r_viewchanged)
+	viewchanged = false;
+
+	if (r_refdef2.vrect.x != r_oldrefdef2.vrect.x ||
+		r_refdef2.vrect.y != r_oldrefdef2.vrect.y ||
+		r_refdef2.vrect.width != r_oldrefdef2.vrect.width ||
+		r_refdef2.vrect.height != r_oldrefdef2.vrect.height ||
+		r_refdef.fov_x != oldfov_x || r_refdef.fov_y != oldfov_y ||
+		r_dowarp != r_dowarpold)
+	{
+		viewchanged = true;
+	}
+
+	r_oldrefdef2 = r_refdef2;
+	oldfov_x = r_refdef.fov_x;
+	oldfov_y = r_refdef.fov_y;
+
+	if (viewchanged)
 	{
 		if (r_dowarp)
 		{
 			if ((vid.width <= vid.maxwarpwidth) &&
 				(vid.height <= vid.maxwarpheight))
 			{
-				vrect.x = 0;
-				vrect.y = 0;
-				vrect.width = vid.width;
-				vrect.height = vid.height;
+				r_refdef.vrect.x = 0;
+				r_refdef.vrect.y = 0;
+				r_refdef.vrect.width = vid.width;
+				r_refdef.vrect.height = vid.height;
 
-				R_ViewChanged (&vrect, sb_lines, vid.aspect);
+				R_ViewChanged (vid.aspect);
 			}
 			else
 			{
@@ -512,28 +532,21 @@ void R_SetupFrame (void)
 					w *= (float)vid.maxwarpheight / h;
 				}
 
-				vrect.x = 0;
-				vrect.y = 0;
-				vrect.width = (int)w;
-				vrect.height = (int)h;
+				r_refdef.vrect.x = 0;
+				r_refdef.vrect.y = 0;
+				r_refdef.vrect.width = (int)w;
+				r_refdef.vrect.height = (int)h;
 
-				R_ViewChanged (&vrect,
-							   (int)((float)sb_lines * (h/(float)vid.height)),
-							   vid.aspect * (h / w) *
-								 ((float)vid.width / (float)vid.height));
+				R_ViewChanged (vid.aspect /* * (h / w) *
+								 ((float)vid.width / (float)vid.height)*/);
 			}
 		}
 		else
 		{
-			vrect.x = 0;
-			vrect.y = 0;
-			vrect.width = vid.width;
-			vrect.height = vid.height;
+			r_refdef.vrect = r_refdef2.vrect;
 
-			R_ViewChanged (&vrect, sb_lines, vid.aspect);
+			R_ViewChanged (vid.aspect);
 		}
-
-		r_viewchanged = false;
 	}
 
 // start off with just the four screen edge clip planes

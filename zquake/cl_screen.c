@@ -297,9 +297,6 @@ Internal use only
 void SCR_CalcRefdef (void)
 {
 	float		size;
-#ifndef GLQUAKE
-	vrect_t		vrect;
-#endif
 
 	scr_fullupdate = 0;		// force a background redraw and sbar redraw
 	vid.recalc_refdef = 0;
@@ -355,49 +352,23 @@ void SCR_CalcRefdef (void)
 
 	size /= 100.0;
 
-#ifdef GLQUAKE
-
-	r_refdef.vrect.width = (int)(vid.width * size + 1.0) & ~1;
-	if (r_refdef.vrect.width < 96) {
-		size = 96.0 / r_refdef.vrect.width;
-		r_refdef.vrect.width = 96;      // min for icons
+	scr_vrect.width = (int)(vid.width * size + 1.0) & ~1;
+	if (scr_vrect.width < 96) {
+		size = 96.0 / scr_vrect.width;
+		scr_vrect.width = 96;      // min for icons
 	}
 
-	r_refdef.vrect.height = (int)(vid.height * size + 1.0) & ~1;
-	if (r_refdef.vrect.height > vid.height - sb_lines)
-		r_refdef.vrect.height = vid.height - sb_lines;
+	scr_vrect.height = (int)(vid.height * size + 1.0) & ~1;
+	if (scr_vrect.height > vid.height - sb_lines)
+		scr_vrect.height = vid.height - sb_lines;
 
-	r_refdef.vrect.x = (vid.width - r_refdef.vrect.width)/2;
-	r_refdef.vrect.y = (vid.height - sb_lines - r_refdef.vrect.height)/2;
+	scr_vrect.x = (vid.width - scr_vrect.width)/2;
+	scr_vrect.y = (vid.height - sb_lines - scr_vrect.height)/2;
 
-	scr_vrect = r_refdef.vrect;
-
-	r_refdef.fov_x = scr_fov.value;
-	r_refdef.fov_y = CalcFov (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
-
-#else
-
-// these calculations mirror those in R_Init() for r_refdef, but take no
-// account of water warping
-	vrect.x = 0;
-	vrect.y = 0;
-	vrect.width = vid.width;
-	vrect.height = vid.height;
-
-	R_SetVrect (&vrect, &scr_vrect, sb_lines);
+	r_refdef2.vrect = scr_vrect;
 
 	r_refdef.fov_x = scr_fov.value;
-	r_refdef.fov_y = CalcFov (r_refdef.fov_x, vrect.width, vrect.height);
-
-// guard against going from one mode to another that's less than half the
-// vertical resolution
-	if (scr_con_current > vid.height)
-		scr_con_current = vid.height;
-
-// notify the refresh of the change
-	R_ViewChanged (&vrect, sb_lines, vid.aspect);
-
-#endif	// !GLQUAKE
+	r_refdef.fov_y = CalcFov (r_refdef.fov_x, scr_vrect.width, scr_vrect.height);
 }
 
 
@@ -828,6 +799,11 @@ void SCR_DrawConsole (void)
 		return;
 	}
 
+	// guard against going from one mode to another that's less than half the
+	// vertical resolution
+	if (scr_con_current > vid.height)
+		scr_con_current = vid.height;
+
 	// draw the background
 	if (scr_con_current == vid.height)
 		alpha = 1.0f;	// non-transparent if full screen
@@ -874,24 +850,24 @@ void SCR_TileClear (int	y, int height)
 	if (height <= 0)
 		return;
 
-	if (r_refdef.vrect.x > 0) {
+	if (scr_vrect.x > 0) {
 		// left
-		R_DrawTile (0, y, r_refdef.vrect.x, height, scr_backtile);
+		R_DrawTile (0, y, scr_vrect.x, height, scr_backtile);
 		// right
-		R_DrawTile (r_refdef.vrect.x + r_refdef.vrect.width, y, 
-			vid.width - (r_refdef.vrect.x + r_refdef.vrect.width), 
+		R_DrawTile (scr_vrect.x + scr_vrect.width, y, 
+			vid.width - (scr_vrect.x + scr_vrect.width), 
 			height, scr_backtile);
 	}
-	if (y < r_refdef.vrect.y) {
+	if (y < scr_vrect.y) {
 		// top
-		R_DrawTile (r_refdef.vrect.x, y, r_refdef.vrect.width, 
-			min(r_refdef.vrect.y, y + height) - y, scr_backtile);
+		R_DrawTile (scr_vrect.x, y, scr_vrect.width, 
+			min(scr_vrect.y, y + height) - y, scr_backtile);
 	}
-	if (y + height > r_refdef.vrect.y + r_refdef.vrect.height) {
+	if (y + height > scr_vrect.y + scr_vrect.height) {
 		// bottom
-		int top = max(r_refdef.vrect.y + r_refdef.vrect.height, y);
-		R_DrawTile (r_refdef.vrect.x, top,
-			r_refdef.vrect.width, y + height - top, scr_backtile);
+		int top = max(scr_vrect.y + scr_vrect.height, y);
+		R_DrawTile (scr_vrect.x, top,
+			scr_vrect.width, y + height - top, scr_backtile);
 	}
 }
 

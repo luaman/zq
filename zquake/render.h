@@ -131,6 +131,8 @@ typedef struct
 
 
 typedef struct {
+	vrect_t			vrect;			// subwindow in video for refresh
+
 	float			time;
 	qbool			allowCheats;
 	qbool			allow_fbskins;
@@ -167,7 +169,6 @@ void R_InitEfrags (void);
 void R_RenderView (void);		// must set r_refdef first
 void R_SetSky (char *name);				// Quake2 skybox
 // called whenever r_refdef or vid change
-void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect);
 
 void R_AddEfrags (entity_t *ent);
 void R_RemoveEfrags (entity_t *ent);

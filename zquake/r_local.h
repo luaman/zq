@@ -250,7 +250,7 @@ extern float	se_time1, se_time2, de_time1, de_time2, dv_time1, dv_time2;
 extern int		r_frustum_indexes[4*6];
 extern int		r_maxsurfsseen, r_maxedgesseen, r_cnumsurfs;
 extern qbool	r_surfsonstack;
-extern qbool	r_dowarpold, r_viewchanged;
+extern qbool	r_dowarpold;
 
 extern mleaf_t	*r_viewleaf, *r_oldviewleaf;
 
