@@ -251,8 +251,8 @@ readnext:
 		// get the next message
 		fread (&net_message.cursize, 4, 1, cls.demofile);
 		net_message.cursize = LittleLong (net_message.cursize);
-		if (net_message.cursize > MAX_MSGLEN + 8)
-			Host_Error ("Demo message > MAX_MSGLEN");
+		if (net_message.cursize > MAX_BIG_MSGLEN)
+			Host_Error ("Demo message > MAX_BIG_MSGLEN");
 		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
 		if (r != 1)
 			Host_Error ("Corrupted demo");
