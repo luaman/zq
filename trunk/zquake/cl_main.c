@@ -117,7 +117,6 @@ byte		*host_basepal;
 byte		*host_colormap;
 
 cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
-cvar_t	show_fps = {"show_fps","0"};			// set for running times
 
 int			fps_count;
 
@@ -682,7 +681,6 @@ void CL_InitLocal (void)
 	extern	cvar_t		baseskin;
 	extern	cvar_t		noskins;
 
-	Cvar_Register (&show_fps);
 	Cvar_Register (&host_speeds);
 
 	Cvar_Register (&cl_warncmd);

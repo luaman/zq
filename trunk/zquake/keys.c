@@ -1087,7 +1087,7 @@ void Key_EventEx (int key, int shiftkey, qboolean down)
 				M_ToggleMenu_f ();
 			break;
 		default:
-			Sys_Error ("Bad key_dest");
+			assert(!"Bad key_dest");
 		}
 		return;
 	}
@@ -1177,7 +1177,7 @@ void Key_EventEx (int key, int shiftkey, qboolean down)
 		Key_Console (key);
 		break;
 	default:
-		Sys_Error ("Bad key_dest");
+		assert(!"Bad key_dest");
 	}
 }
 

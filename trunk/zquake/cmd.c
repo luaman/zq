@@ -604,7 +604,7 @@ qboolean Cmd_DeleteAlias (char *name)
 		prev = a;
 	}
 
-	Sys_Error ("Cmd_DeleteAlias: alias list broken");
+	assert(!"Cmd_DeleteAlias: alias list broken");
 	return false;	// shut up compiler
 }
 
@@ -780,7 +780,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	int	key;
 	
 	if (host_initialized)	// because hunk allocation would get stomped
-		Sys_Error ("Cmd_AddCommand after host_initialized");
+		assert(!"Cmd_AddCommand after host_initialized");
 		
 // fail if the command is a variable name
 	if (Cvar_FindVar(cmd_name))
@@ -1289,7 +1289,7 @@ int Cmd_CheckParm (char *parm)
 	int i;
 	
 	if (!parm)
-		Sys_Error ("Cmd_CheckParm: NULL");
+		assert(!"Cmd_CheckParm: NULL");
 
 	for (i = 1; i < Cmd_Argc (); i++)
 		if (! Q_stricmp (parm, Cmd_Argv (i)))
