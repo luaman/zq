@@ -466,7 +466,6 @@ float           teamplay;
 float           timelimit;
 float           fraglimit;
 float           deathmatch;
-float           rj                      =       1;
 
 //================================================
 
