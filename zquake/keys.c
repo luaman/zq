@@ -553,8 +553,9 @@ void Key_Console (int key)
 {
 	int i;
 
-	switch (key) {
-	    case K_ENTER:
+	switch (key)
+	{
+		case K_ENTER:
 			HandleEnter ();
 			return;
 
@@ -592,7 +593,7 @@ void Key_Console (int key)
 				key_linepos++;
 			return;
 
-	    case K_LEFTARROW:
+		case K_LEFTARROW:
 			if (keydown[K_CTRL]) {
 				// word left
 				while (key_linepos > 1 && key_lines[edit_line][key_linepos-1] == ' ')
@@ -605,7 +606,7 @@ void Key_Console (int key)
 				key_linepos--;
 			return;
 
-	    case K_UPARROW:
+		case K_UPARROW:
 			if (keydown[K_CTRL]) {
 				AdjustConsoleHeight (-10);
 				return;
@@ -641,8 +642,8 @@ void Key_Console (int key)
 			}
 			return;
 
-	    case K_PGUP:
-	    case K_MWHEELUP:
+		case K_PGUP:
+		case K_MWHEELUP:
 			if (keydown[K_CTRL] && key == K_PGUP)
 				con.display -= ((int)scr_conlines-22)>>3;
 			else
@@ -651,8 +652,8 @@ void Key_Console (int key)
 				con.display = con.current - con.numlines;
 			return;
 
-	    case K_MWHEELDOWN:
-	    case K_PGDN:
+		case K_MWHEELDOWN:
+		case K_PGDN:
 			if (keydown[K_CTRL] && key == K_PGDN)
 				con.display += ((int)scr_conlines-22)>>3;
 			else
@@ -661,14 +662,14 @@ void Key_Console (int key)
 				con.display = con.current;
 			return;
 
-	    case K_HOME:
+		case K_HOME:
 			if (keydown[K_CTRL])
 				con.display = con.current - con.numlines;
 			else
 				key_linepos = 1;
 			return;
 
-	    case K_END:
+		case K_END:
 			if (keydown[K_CTRL])
 				con.display = con.current;
 			else
@@ -679,7 +680,7 @@ void Key_Console (int key)
 	if (((key == 'V' || key == 'v') && keydown[K_CTRL])
 		|| ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
 	{
-		int	len;
+		int  len;
 		char *p;
 		char *text = Sys_GetClipboardText();
 		if (text) {
@@ -740,7 +741,7 @@ void Key_Console (int key)
 	key_lines[edit_line][key_linepos] = key;
 	key_linepos++;
 }
-#else
+#else // AGRIP
 /*
 ====================
 Key_Console -- Accessible Version
@@ -756,8 +757,9 @@ void Key_Console (int key)
 {
 	int i;
 
-	switch (key) {
-	        case K_ENTER:
+	switch (key)
+	{
+		case K_ENTER:
 			HandleEnter ();
 			return;
 
@@ -771,30 +773,30 @@ void Key_Console (int key)
 		case K_BACKSPACE:
 			if (key_linepos > 1)
 			{
-                                // Show chopped char...
-                                Sys_Printf("%c\n", key_lines[edit_line][key_linepos-1]);
+				// Show chopped char...
+				Sys_Printf("%c\n", key_lines[edit_line][key_linepos-1]);
 				strcpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
 				key_linepos--;
 			}
-                        else
-                        {
-                                // No chars to delete...
-                                Sys_Printf("!Start of line.\n");
-                        }
+			else
+			{
+				// No chars to delete...
+				Sys_Printf("!Start of line.\n");
+			}
 			return;
 
 		case K_DEL:
 			if (key_linepos < strlen(key_lines[edit_line]))
-                        {
-                                // Show deleted char...
-                                Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
+			{
+				// Show deleted char...
+				Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
 				strcpy(key_lines[edit_line] + key_linepos, key_lines[edit_line] + key_linepos + 1);
-                        }
-                        else
-                        {
-                                // At the end of the line...
-                                Sys_Printf("!End of line.\n");
-                        }
+			}
+			else
+			{
+				// At the end of the line...
+				Sys_Printf("!End of line.\n");
+			}
 			return;
 
 		case K_RIGHTARROW:
@@ -808,16 +810,16 @@ void Key_Console (int key)
 				return;
 			}
 			if (key_linepos < strlen(key_lines[edit_line]))
-                        {
+			{
 				key_linepos++;
-                                // Show the char moved to...
-                                Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
-                        }
-                        else
-                                Sys_Printf("!End of line.\n");
+				// Show the char moved to...
+				Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
+			}
+			else
+				Sys_Printf("!End of line.\n");
 			return;
 
-	        case K_LEFTARROW:
+		case K_LEFTARROW:
 			if (keydown[K_CTRL]) {
 				// word left
 				while (key_linepos > 1 && key_lines[edit_line][key_linepos-1] == ' ')
@@ -827,38 +829,39 @@ void Key_Console (int key)
 				return;
 			}
 			if (key_linepos > 1)
-                        {
+			{
 				key_linepos--;
-                                // Show the char moved to...
-                                Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
-                        }
-                        else
-                                Sys_Printf("!Start of line.\n");
+				// Show the char moved to...
+				Sys_Printf("%c\n", key_lines[edit_line][key_linepos]);
+			}
+			else
+				Sys_Printf("!Start of line.\n");
 			return;
 
-	        case K_UPARROW:
+		case K_UPARROW:
 			if (keydown[K_CTRL]) {
 				AdjustConsoleHeight (-10);
 				return;
 			}
-                        if (history_line == ((edit_line+1)&31)) return;
+			if (history_line == ((edit_line+1)&31))
+				return;
 			do {
 				history_line = (history_line - 1) & 31;
 			} while (history_line != edit_line
 					&& !key_lines[history_line][1]);
 
-                        if (history_line == edit_line) {
+			if (history_line == edit_line) {
 				history_line = (edit_line+1)&31;
-                                Sys_Printf("!No more lines in history.\n");
-                                strcpy(key_lines[edit_line], key_lines[history_line]);
-			        key_linepos = strlen(key_lines[edit_line]);
-                        } else {
-			        strcpy(key_lines[edit_line], key_lines[history_line]);
-			        key_linepos = strlen(key_lines[edit_line]);
-                                // Show moved-to line...
-                                Sys_Printf("%s\n", key_lines[edit_line]);
-                        }
- 			return;
+				Sys_Printf("!No more lines in history.\n");
+				strcpy(key_lines[edit_line], key_lines[history_line]);
+				key_linepos = strlen(key_lines[edit_line]);
+			} else {
+				strcpy(key_lines[edit_line], key_lines[history_line]);
+				key_linepos = strlen(key_lines[edit_line]);
+				// Show moved-to line...
+				Sys_Printf("%s\n", key_lines[edit_line]);
+			}
+			return;
 
 		case K_DOWNARROW:
 			if (keydown[K_CTRL]) {
@@ -875,19 +878,19 @@ void Key_Console (int key)
 				/*key_lines[edit_line][0] = ']';
 				key_lines[edit_line][1] = 0;
 				key_linepos = 1;*/
-                                Sys_Printf("!Edit line reached.\n");
+				Sys_Printf("!Edit line reached.\n");
 				strcpy(key_lines[edit_line], key_lines[(edit_line+1)&31]);
 				key_linepos = strlen(key_lines[edit_line]);
 			} else {
 				strcpy(key_lines[edit_line], key_lines[history_line]);
 				key_linepos = strlen(key_lines[edit_line]);
-                                // Show moved-to line...
-                                Sys_Printf("%s\n", key_lines[edit_line]);
+				// Show moved-to line...
+				Sys_Printf("%s\n", key_lines[edit_line]);
 			}
 			return;
 
-	        case K_PGUP:
-	        case K_MWHEELUP:
+		case K_PGUP:
+		case K_MWHEELUP:
 			if (keydown[K_CTRL] && key == K_PGUP)
 				con.display -= ((int)scr_conlines-22)>>3;
 			else
@@ -896,8 +899,8 @@ void Key_Console (int key)
 				con.display = con.current - con.numlines;
 			return;
 
-	        case K_MWHEELDOWN:
-	        case K_PGDN:
+		case K_MWHEELDOWN:
+		case K_PGDN:
 			if (keydown[K_CTRL] && key == K_PGDN)
 				con.display += ((int)scr_conlines-22)>>3;
 			else
@@ -906,7 +909,7 @@ void Key_Console (int key)
 				con.display = con.current;
 			return;
 
-	        case K_HOME:
+		case K_HOME:
 			if (keydown[K_CTRL])
 				con.display = con.current - con.numlines;
 			else
@@ -914,7 +917,7 @@ void Key_Console (int key)
                                 Sys_Printf("%c\n", key_lines[edit_line][1]);
 			return;
 
-	        case K_END:
+		case K_END:
 			if (keydown[K_CTRL])
 				con.display = con.current;
 			else
@@ -925,7 +928,7 @@ void Key_Console (int key)
 	if (((key == 'V' || key == 'v') && keydown[K_CTRL])
 		|| ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
 	{
-		int	len;
+		int  len;
 		char *p;
 		char *text = Sys_GetClipboardText();
 		if (text) {
@@ -981,15 +984,15 @@ void Key_Console (int key)
 	if (i >= MAXCMDLINE-1)
 		return;
 
-        // Print single chars entered...
-        Sys_Printf("%c\n", key);
+	// Print single chars entered...
+	Sys_Printf("%c\n", key);
 
 	// This also moves the trailing zero
 	memmove (key_lines[edit_line]+key_linepos+1, key_lines[edit_line]+key_linepos, i-key_linepos+1);
 	key_lines[edit_line][key_linepos] = key;
 	key_linepos++;
 }
-#endif
+#endif // AGRIP
 
 //============================================================================
 
