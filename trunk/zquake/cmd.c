@@ -520,19 +520,15 @@ void Cmd_Alias_f (void)
 
 	name = Cmd_Argv(1);
 
-	key = Com_HashKey(name);
+	// see if there's already an alias by that name
+	a = Cmd_FindAlias(name);
 
-	// if the alias already exists, reuse it
-	for (a = cmd_alias_hash[key] ; a ; a=a->hash_next)
-	{
-		if (!Q_stricmp(a->name, name))	{
-			Q_free (a->name);
-			Q_free (a->value);
-			break;
-		}
+	if (a) {
+		// reuse it
+		Q_free (a->name);
+		Q_free (a->value);
 	}
-
-	if (!a) {
+	else {
 		// allocate a new one
 		a = Q_malloc (sizeof(cmd_alias_t));
 		a->flags = 0;
@@ -540,6 +536,7 @@ void Cmd_Alias_f (void)
 		// link it in
 		a->next = cmd_alias;
 		cmd_alias = a;
+		key = Com_HashKey(name);
 		a->hash_next = cmd_alias_hash[key];
 		cmd_alias_hash[key] = a;
 	}
