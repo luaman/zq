@@ -811,7 +811,12 @@ void Draw_ConsoleBackground (int lines)
 #ifdef __linux__
 		sprintf (ver, "LinuxGL (%4.2f) QuakeWorld", LINUX_VERSION);
 #else
-		sprintf (ver, "GL (%4.2f) QuakeWorld", GLQUAKE_VERSION);
+//		sprintf (ver, "GL (%4.2f) QuakeWorld", GLQUAKE_VERSION);
+#ifdef QW_BOTH
+		sprintf (ver, "GL (%4.2f) ZQuake", GLQUAKE_VERSION);
+#else
+		sprintf (ver, "GL (%4.2f) ZQuake client", GLQUAKE_VERSION);
+#endif
 #endif
 		x = vid.conwidth - (strlen(ver)*8 + 11) - (vid.conwidth*8/320)*7;
 		for (i=0 ; i<strlen(ver) ; i++)
