@@ -509,13 +509,13 @@ void Draw_Character (int x, int y, int num)
 	int				row, col;
 	float			frow, fcol;
 
+	if (y <= -8)
+		return;			// totally off screen
+
 	if (num == 32)
 		return;		// space
 
 	num &= 255;
-	
-	if (y <= -8)
-		return;			// totally off screen
 
 	row = num>>4;
 	col = num&15;
@@ -528,11 +528,11 @@ void Draw_Character (int x, int y, int num)
 	glBegin (GL_QUADS);
 	glTexCoord2f (fcol, frow);
 	glVertex2f (x, y);
-	glTexCoord2f (fcol + (1.0/16), frow);
+	glTexCoord2f (fcol + 0.0625, frow);
 	glVertex2f (x+8, y);
-	glTexCoord2f (fcol + (1.0/16), frow + (1.0/32));
+	glTexCoord2f (fcol + 0.0625, frow + 0.03125);
 	glVertex2f (x+8, y+8);
-	glTexCoord2f (fcol, frow + (1.0/32));
+	glTexCoord2f (fcol, frow + 0.03125);
 	glVertex2f (x, y+8);
 	glEnd ();
 }
@@ -544,12 +544,36 @@ Draw_String
 */
 void Draw_String (int x, int y, char *str)
 {
-	while (*str)
+	float			frow, fcol;
+	int num;
+
+	if (y <= -8)
+		return;			// totally off screen
+
+	GL_Bind (char_texture);
+
+	glBegin (GL_QUADS);
+
+	while (*str) // stop rendering when out of characters or room
 	{
-		Draw_Character (x, y, *str);
-		str++;
+		if ((num = *str++) != 32) // skip spaces
+		{
+			frow = (float) (num >> 4)*0.0625;
+			fcol = (float) (num & 15)*0.0625;
+			glTexCoord2f (fcol, frow);
+			glVertex2f (x, y);
+			glTexCoord2f (fcol + 0.0625, frow);
+			glVertex2f (x+8, y);
+			glTexCoord2f (fcol + 0.0625, frow + 0.03125);
+			glVertex2f (x+8, y+8);
+			glTexCoord2f (fcol, frow + 0.03125);
+			glVertex2f (x, y+8);
+		}
+
 		x += 8;
 	}
+
+	glEnd ();
 }
 
 /*
@@ -559,19 +583,43 @@ Draw_Alt_String
 */
 void Draw_Alt_String (int x, int y, char *str)
 {
-	while (*str)
+	float			frow, fcol;
+	int num;
+
+	if (y <= -8)
+		return;			// totally off screen
+
+	GL_Bind (char_texture);
+
+	glBegin (GL_QUADS);
+
+	while (*str) // stop rendering when out of characters or room
 	{
-		Draw_Character (x, y, (*str) | 0x80);
-		str++;
+		if ((num = *str++|0x80) != 32) // skip spaces
+		{
+			frow = (float) (num >> 4)*0.0625;
+			fcol = (float) (num & 15)*0.0625;
+			glTexCoord2f (fcol, frow);
+			glVertex2f (x, y);
+			glTexCoord2f (fcol + 0.0625, frow);
+			glVertex2f (x+8, y);
+			glTexCoord2f (fcol + 0.0625, frow + 0.03125);
+			glVertex2f (x+8, y+8);
+			glTexCoord2f (fcol, frow + 0.03125);
+			glVertex2f (x, y+8);
+		}
+
 		x += 8;
 	}
+
+	glEnd ();
 }
 
 void Draw_Crosshair (void)
 {
 	int x, y;
 	int ofs1, ofs2;
-	extern vrect_t		scr_vrect;
+	extern vrect_t scr_vrect;
 
 	if (crosshair.value == 2 || crosshair.value == 3 || crosshair.value == 4) {
 		x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value; 
