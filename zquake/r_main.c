@@ -658,9 +658,7 @@ void R_EdgeDrawing (void)
 
 	if (!r_dspeeds.value)
 	{
-		VID_UnlockBuffer ();
 		S_ExtraUpdate ();	// don't let sound get messed up if going slow
-		VID_LockBuffer ();
 	}
 	
 	R_ScanEdges ();
@@ -698,18 +696,14 @@ void R_RenderView_ (void)
 		
 	if (!r_dspeeds.value)
 	{
-		VID_UnlockBuffer ();
 		S_ExtraUpdate ();	// don't let sound get messed up if going slow
-		VID_LockBuffer ();
 	}
 	
 	R_EdgeDrawing ();
 
 	if (!r_dspeeds.value)
 	{
-		VID_UnlockBuffer ();
 		S_ExtraUpdate ();	// don't let sound get messed up if going slow
-		VID_LockBuffer ();
 	}
 	
 	if (r_dspeeds.value)
