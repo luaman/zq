@@ -109,7 +109,7 @@ void MSG_WriteString (sizebuf_t *sb, char *s)
 
 void MSG_WriteCoord (sizebuf_t *sb, float f)
 {
-	MSG_WriteShort (sb, (int)(f*8));
+	MSG_WriteShort (sb, Q_rint(f*8));
 }
 
 void MSG_WriteAngle (sizebuf_t *sb, float f)
@@ -194,13 +194,13 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 		if (to->s_origin[i] != from->s_origin[i])
 			bits |= U_ORIGIN1<<i;
 
-	if ( to->angles[0] != from->angles[0] )
+	if ( to->s_angles[0] != from->s_angles[0] )
 		bits |= U_ANGLE1;
 		
-	if ( to->angles[1] != from->angles[1] )
+	if ( to->s_angles[1] != from->s_angles[1] )
 		bits |= U_ANGLE2;
 		
-	if ( to->angles[2] != from->angles[2] )
+	if ( to->s_angles[2] != from->s_angles[2] )
 		bits |= U_ANGLE3;
 		
 	if ( to->colormap != from->colormap )
@@ -255,15 +255,15 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 	if (bits & U_ORIGIN1)
 		MSG_WriteShort (msg, to->s_origin[0]);
 	if (bits & U_ANGLE1)
-		MSG_WriteAngle(msg, to->angles[0]);
+		MSG_WriteChar (msg, to->s_angles[0]);
 	if (bits & U_ORIGIN2)
 		MSG_WriteShort (msg, to->s_origin[1]);
 	if (bits & U_ANGLE2)
-		MSG_WriteAngle(msg, to->angles[1]);
+		MSG_WriteChar (msg, to->s_angles[1]);
 	if (bits & U_ORIGIN3)
 		MSG_WriteShort (msg, to->s_origin[2]);
 	if (bits & U_ANGLE3)
-		MSG_WriteAngle(msg, to->angles[2]);
+		MSG_WriteChar (msg, to->s_angles[2]);
 }
 
 /*
@@ -569,9 +569,9 @@ void MSG_ReadDeltaUsercmd (usercmd_t *from, usercmd_t *move, qbool protocol_26)
 
 void MSG_PackOrigin (const vec3_t in, short out[3])
 {
-	out[0] = (short)(in[0] * 8);
-	out[1] = (short)(in[1] * 8);
-	out[2] = (short)(in[2] * 8);
+	out[0] = (short)Q_rint(in[0] * 8);
+	out[1] = (short)Q_rint(in[1] * 8);
+	out[2] = (short)Q_rint(in[2] * 8);
 }
 
 void MSG_UnpackOrigin (const short in[3], vec3_t out)
@@ -580,3 +580,18 @@ void MSG_UnpackOrigin (const short in[3], vec3_t out)
 	out[1] = in[1] * 0.125;
 	out[2] = in[2] * 0.125;
 }
+
+void MSG_PackAngles (const vec3_t in, char out[3])
+{
+	out[0] = Q_rint(in[0]*256.0/360.0) & 255;
+	out[1] = Q_rint(in[1]*256.0/360.0) & 255;
+	out[2] = Q_rint(in[2]*256.0/360.0) & 255;
+}
+
+void MSG_UnpackAngles (const char in[3], vec3_t out)
+{
+	out[0] = in[0] * (360.0/256);
+	out[1] = in[1] * (360.0/256);
+	out[2] = in[2] * (360.0/256);
+}
+

@@ -90,19 +90,19 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 		to->s_origin[0] = MSG_ReadShort ();
 		
 	if (bits & U_ANGLE1)
-		to->angles[0] = MSG_ReadAngle();
+		to->s_angles[0] = MSG_ReadByte ();
 
 	if (bits & U_ORIGIN2)
 		to->s_origin[1] = MSG_ReadShort ();
 		
 	if (bits & U_ANGLE2)
-		to->angles[1] = MSG_ReadAngle();
+		to->s_angles[1] = MSG_ReadByte ();
 
 	if (bits & U_ORIGIN3)
 		to->s_origin[2] = MSG_ReadShort ();
 		
 	if (bits & U_ANGLE3)
-		to->angles[2] = MSG_ReadAngle();
+		to->s_angles[2] = MSG_ReadByte ();
 
 	if (bits & U_SOLID)
 	{
@@ -489,24 +489,25 @@ void CL_LinkPacketEntities (void)
 		}
 		else
 		{
-			float	a1, a2;
+			vec3_t	a1, a2;
 
-			for (i=0 ; i<3 ; i++)
+			MSG_UnpackAngles (cent->current.s_angles, a1);
+			MSG_UnpackAngles (cent->previous.s_angles, a2);
+
+			for (i = 0; i < 3; i++)
 			{
-				a1 = cent->current.angles[i];
-				a2 = cent->previous.angles[i];
-				if (a1 - a2 > 180)
-					a1 -= 360;
-				if (a1 - a2 < -180)
-					a1 += 360;
-				ent.angles[i] = a2 + f * (a1 - a2);
+				if (a1[i] - a2[i] > 180)
+					a1[i] -= 360;
+				if (a1[i] - a2[i] < -180)
+					a1[i] += 360;
+				ent.angles[i] = a2[i] + f * (a1[i] - a2[i]);
 			}
 		}
 
 		// calculate origin
 		for (i=0 ; i<3 ; i++)
-			ent.origin[i] = cent->previous.s_origin[i] * 8.0 + 
-				f * (cur_origin[i] - cent->previous.s_origin[i] * 8.0);
+			ent.origin[i] = cent->previous.s_origin[i] * 0.125 + 
+				f * (cur_origin[i] - cent->previous.s_origin[i] * 0.125);
 
 		// add automatic particle trails
 		if (modelflags & ~MF_ROTATE)
