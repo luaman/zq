@@ -186,15 +186,15 @@ SOURCE=.\sv_send.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\sv_sys_win.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\sv_user.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\sv_world.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\sys_win.c
 # End Source File
 # Begin Source File
 
