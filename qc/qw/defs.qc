@@ -749,5 +749,12 @@ float CanDamage (entity targ, entity inflictor);
 // items.qc
 float T_Heal (entity e, float healamount, float ignore); // health function
 
+
 //============================================================================
+
+//
+// ZQuake additions
+//
+
+.float suicide_time;	// can't suicide sooner than this
 
