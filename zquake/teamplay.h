@@ -59,7 +59,7 @@ char *TP_ParseMacroString (char *s);
 char *TP_ParseFunChars (char *s);
 void TP_NewMap ();
 void TP_CheckVersionRequest(char *s);
-int TP_CategorizeMessage (char *s);
+int TP_CategorizeMessage (char *s, int *offset);
 
 void TP_Init ();
 
