@@ -243,6 +243,8 @@ void Com_DPrintf (char *fmt, ...);
 
 //============================================================================
 
+extern cvar_t	developer;
+extern cvar_t	registered;
 
 // the host system specifies the base of the directory tree, the
 // command line parms passed to the program, and the amount of memory
