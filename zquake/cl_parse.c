@@ -239,6 +239,36 @@ void CL_FindModelNumbers (void)
 
 /*
 =================
+CL_Prespawn
+=================
+*/
+void CL_Prespawn (void)
+{
+	char	mapname[MAX_QPATH];
+
+	cl.worldmodel = cl.model_precache[1];
+	if (!cl.worldmodel)
+		Host_Error ("CL_Prespawn: NULL worldmodel");
+
+	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
+	Cvar_ForceSet (&host_mapname, mapname);
+
+	CL_ClearParticles ();
+	CL_FindModelNumbers ();
+	R_NewMap (cl.worldmodel);
+	R_SetSky (cl.sky);
+
+	TP_NewMap ();
+
+	Hunk_Check ();		// make sure nothing is hurt
+
+	// done with modellist, request first of static signon messages
+	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+	MSG_WriteString (&cls.netchan.message, va("prespawn %i 0 %i", cl.servercount, cl.map_checksum2));
+}
+
+/*
+=================
 Model_NextDownload
 =================
 */
@@ -246,7 +276,6 @@ void Model_NextDownload (void)
 {
 	char	*s;
 	int		i;
-	char	mapname[MAX_QPATH];
 
 	if (cls.downloadnumber == 0)
 	{
@@ -291,26 +320,7 @@ void Model_NextDownload (void)
 	}
 
 	// all done
-	cl.worldmodel = cl.model_precache[1];
-	if (!cl.worldmodel)
-		Host_Error ("Model_NextDownload: NULL worldmodel");
-
-
-	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
-	Cvar_ForceSet (&host_mapname, mapname);
-
-	CL_ClearParticles ();
-	CL_FindModelNumbers ();
-	R_NewMap (cl.worldmodel);
-	R_SetSky (cl.sky);
-
-	TP_NewMap ();
-
-	Hunk_Check ();		// make sure nothing is hurt
-
-	// done with modellist, request first of static signon messages
-	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-	MSG_WriteString (&cls.netchan.message, va("prespawn %i 0 %i", cl.servercount, cl.map_checksum2));
+	CL_Prespawn ();
 }
 
 /*
