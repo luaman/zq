@@ -199,11 +199,6 @@ void AdminKick ()
         ExitKick(self);
     else
     {
-        if(!stof(infokey(world, "k_allowkick")))
-        {
-            sprint(self, 2, "You are not allowed to kick on this server.\n");
-            return;
-        }
         self.k_kicking = 1;
         sprint(self, 2, "Kicking process started\n\nType ω to kick, ξ for next, λιγλ to leave.\n");
         self.kick_ctype = "player";
@@ -309,11 +304,6 @@ void ReqAdmin ()
     }
     if(self.k_admin)
         return;
-    if(!stof(infokey(world, "k_admins")))
-    {
-        sprint(self, 2, "NO ADMINS ON THIS SERVER!\n");
-        return;
-    }
     self.k_admin = 1;
     self.k_adminc = 6;
     self.k_added = 0;
@@ -427,15 +417,9 @@ void ReadyThink ()
                     centerprint(p, tmp, " seconds to gamestart");
             else
                 if(i1 == 1)
-                    if(!stof(infokey(world, "k_duel")))
-                        centerprint(p, tmp, " second to gamestart\nΚοιξ αξ εψιστιξη τεαν!");
-                    else
                         centerprint(p, tmp, " second to gamestart\nΗο ςεαδω!");
 
                 else
-                    if(!stof(infokey(world, "k_duel")))
-                        centerprint(p, tmp, " seconds to gamestart\nΚοιξ αξ εψιστιξη τεαν!");
-                    else
                         centerprint(p, tmp, " seconds to gamestart\nΗο ςεαδω!");
         }
         p = find(p, classname, "player");
