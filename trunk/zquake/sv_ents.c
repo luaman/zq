@@ -97,12 +97,16 @@ int		numnails;
 
 extern	int	sv_nailmodel, sv_supernailmodel, sv_playermodel;
 
-cvar_t	sv_nailhack	= {"sv_nailhack", "0"};	// Tonik
+#ifdef QW_BOTH
+cvar_t	sv_nailhack	= {"sv_nailhack", "1"};
+#else
+cvar_t	sv_nailhack	= {"sv_nailhack", "0"};
+#endif
 
 qboolean SV_AddNailUpdate (edict_t *ent)
 {
-	if (sv_nailhack.value)	// Tonik
-		return false;	// Tonik
+	if (sv_nailhack.value)
+		return false;
 
 	if (ent->v.modelindex != sv_nailmodel
 		&& ent->v.modelindex != sv_supernailmodel)
