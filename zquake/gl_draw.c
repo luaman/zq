@@ -417,7 +417,6 @@ void Draw_Init (void)
 
 	// now turn them into textures
 	char_texture = GL_LoadTexture ("charset", 128, 128, draw_chars, false, true, false);
-//	Draw_CrosshairAdjust();
 
 	cs2_texture = GL_LoadTexture ("", 8, 8, cs2_data, false, true, false);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -1379,6 +1378,9 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	}
 	else
 		glt = &gltextures[numgltextures];
+
+	if (numgltextures == MAX_GLTEXTURES)
+		Sys_Error ("GL_LoadTexture: numgltextures == MAX_GLTEXTURES");
 	numgltextures++;
 
 	strcpy (glt->identifier, identifier);
@@ -1387,7 +1389,7 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	glt->height = height;
 	glt->mipmap = mipmap;
 
-	GL_Bind(texture_extension_number );
+	GL_Bind (texture_extension_number);
 
 	GL_Upload8 (data, width, height, mipmap, alpha, brighten);
 
