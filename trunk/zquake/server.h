@@ -121,8 +121,11 @@ typedef struct
 typedef struct client_s
 {
 	sv_client_state_t	state;
-
+	int				extensions;			// what ZQuake extensions the client supports
 	int				spectator;			// non-interactive
+
+	int				userid;							// identifying number
+	char			userinfo[MAX_INFO_STRING];		// infostring
 
 	qboolean		sendinfo;			// at end of frame, send info to all
 										// this prevents malicious multiple broadcasts
@@ -131,9 +134,6 @@ typedef struct client_s
 	unsigned		checksum;			// checksum for calcs
 	qboolean		drop;				// lose this guy next opportunity
 	int				lossage;			// loss percentage
-
-	int				userid;							// identifying number
-	char			userinfo[MAX_INFO_STRING];		// infostring
 
 	usercmd_t		lastcmd;			// for filling in big drops and partial predictions
 	double			cmdtime;			// realtime of last message
