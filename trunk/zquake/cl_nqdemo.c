@@ -341,6 +341,7 @@ void NQD_ParseServerData (void)
 	char	*str;
 	int		i;
 	int		nummodels, numsounds;
+	char	mapname[MAX_QPATH];
 
 	Com_DPrintf ("Serverdata packet received.\n");
 //
@@ -423,6 +424,10 @@ void NQD_ParseServerData (void)
 	cl.worldmodel = cl.model_precache[1];
 	if (!cl.worldmodel)
 		Host_Error ("NQD_ParseServerData: NULL worldmodel");
+
+	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
+	Cvar_ForceSet (&host_mapname, mapname);
+
 	CL_ClearParticles ();
 	CL_FindModelNumbers ();
 	TP_NewMap ();
@@ -500,9 +505,6 @@ void NQD_ParseUpdate (int bits)
 	centity_t	*ent;
 	entity_state_t	*state;
 	int			num;
-#ifdef GLQUAKE
-	int			skin;
-#endif
 
 	if (nq_signon == NQ_SIGNONS - 1)
 	{	// first update is the final signon stage
@@ -540,6 +542,7 @@ void NQD_ParseUpdate (int bits)
 	else
 		forcelink = false;
 
+	ent->prevframe = ent->lastframe;
 	ent->lastframe = cl_entframecount;
 	
 	if (bits & NQ_U_MODEL)
@@ -585,23 +588,16 @@ void NQD_ParseUpdate (int bits)
 
 	state->colormap = i;
 
-#ifdef GLQUAKE
-	if (bits & NQ_U_SKIN)
-		skin = MSG_ReadByte();
-	else
-		skin = ent->baseline.skinnum;
-	if (skin != state->skinnum) {
-		state->skinnum = skin;
-		if (num > 0 && num <= nq_maxclients)
-			R_TranslatePlayerSkin (num - 1);
-	}
-
-#else
-
 	if (bits & NQ_U_SKIN)
 		state->skinnum = MSG_ReadByte();
 	else
 		state->skinnum = ent->baseline.skinnum;
+
+#ifdef GLQUAKE
+	if ((num > 0 && num <= nq_maxclients) && (ent->prevframe != cl_oldentframecount
+		|| state->skinnum != ent->previous.skinnum)) {
+		R_TranslatePlayerSkin (num - 1);
+	}
 #endif
 
 	if (bits & NQ_U_EFFECTS)
@@ -944,6 +940,7 @@ void NQD_ParseServerMessage (void)
 
 	nq_player_teleported = false;		// OMG, it's a hack!
 	message_with_datagram = false;
+	cl_oldentframecount = cl_entframecount;
 	cl_entframecount++;
 
 	if (cl_shownet.value == 1)

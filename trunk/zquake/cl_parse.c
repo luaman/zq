@@ -526,7 +526,7 @@ void CL_NextUpload(void)
 
 	Com_Printf ("Upload completed\n");
 
-	free(upload_data);
+	Q_free (upload_data);
 	upload_data = 0;
 	upload_pos = upload_size = 0;
 }
@@ -538,12 +538,12 @@ void CL_StartUpload (byte *data, int size)
 
 	// override
 	if (upload_data)
-		free(upload_data);
+		Q_free (upload_data);
 
 	Com_DPrintf ("Upload starting of %d...\n", size);
 
-	upload_data = Q_Malloc (size);
-	memcpy(upload_data, data, size);
+	upload_data = Q_malloc (size);
+	memcpy (upload_data, data, size);
 	upload_size = size;
 	upload_pos = 0;
 
@@ -560,7 +560,7 @@ qbool CL_IsUploading(void)
 void CL_StopUpload(void)
 {
 	if (upload_data)
-		free(upload_data);
+		Q_free (upload_data);
 	upload_data = NULL;
 }
 

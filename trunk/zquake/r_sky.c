@@ -313,7 +313,7 @@ void R_SetSky (char *name)
 
 		if (width > 512 || height > 512) {
 			Com_Printf ("Bad image dimensions in %s\n", pathname);
-			free (pic);
+			Q_free (pic);	// Q_malloc'ed by LoadTGA
 			r_skyboxloaded = false;
 			return;
 		}
@@ -323,7 +323,7 @@ void R_SetSky (char *name)
 		r_skytexinfo[i].texture->height = 256;
 		r_skytexinfo[i].texture->offsets[0] = i;
 		R_32To8bit ((unsigned int *)pic, width, height, r_skypixels[i], 256, 256);
-		free (pic);
+		Q_free (pic);	// Q_malloc'ed by LoadTGA
 	}
 
 	r_skyboxloaded = true;

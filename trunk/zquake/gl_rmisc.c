@@ -397,7 +397,7 @@ void R_ScreenShot_f (void)
 		}
 	}		
 
-	buffer = Q_Malloc (vid.realwidth * vid.realheight * 3 + 18);
+	buffer = Q_malloc (vid.realwidth * vid.realheight * 3 + 18);
 	memset (buffer, 0, 18);
 	buffer[2] = 2;          // uncompressed type
 	buffer[12] = vid.realwidth&255;
@@ -418,7 +418,7 @@ void R_ScreenShot_f (void)
 	}
 	COM_WriteFile (va("%s/%s", cls.gamedirfile, pcxname), buffer, vid.realwidth*vid.realheight*3 + 18 );
 
-	free (buffer);
+	Q_free (buffer);
 	Com_Printf ("Wrote %s\n", pcxname);
 } 
  
@@ -528,7 +528,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 // 
 // save the pcx file 
 // 
-	newbuf = Q_Malloc (vid.realheight * vid.realwidth * 3);
+	newbuf = Q_malloc (vid.realheight * vid.realwidth * 3);
 
 	glReadPixels (0, 0, vid.realwidth, vid.realheight, GL_RGB, GL_UNSIGNED_BYTE, newbuf);
 
@@ -595,7 +595,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 	// +w*(h-1) and -w are because we have the data upside down in newbuf
 	WritePCX (newbuf + w*(h-1), w, h, -w, host_basepal, pcxdata, pcxsize);
 
-	free(newbuf);
+	Q_free (newbuf);
 
 	// return with pcxdata and pcxsize
 } 

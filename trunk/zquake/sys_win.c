@@ -238,7 +238,7 @@ char *Sys_GetClipboardText (void)
 	if (OpenClipboard(NULL)) {
 		if ((h = GetClipboardData(CF_TEXT)) != NULL) {
 			if ((p = GlobalLock(h)) != NULL) {
-				text = Q_Malloc (strlen(p) + 1);
+				text = Q_malloc (strlen(p) + 1);
 				strcpy (text, p);
 				GlobalUnlock(h);
 			}
