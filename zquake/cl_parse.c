@@ -1321,8 +1321,8 @@ void CL_ParseServerMessage (void)
 					con_ormask = 128;
 				S_LocalSound ("misc/talk.wav");
 			}
-			CL_SearchForMsgTriggers (s);
 			Con_Printf ("%s", s);
+			CL_SearchForMsgTriggers (s);
 			con_ormask = 0;
 			break;
 			
@@ -1355,8 +1355,7 @@ void CL_ParseServerMessage (void)
 		case svc_lightstyle:
 			i = MSG_ReadByte ();
 			if (i >= MAX_LIGHTSTYLES)
-//				Sys_Error ("svc_lightstyle > MAX_LIGHTSTYLES");
-				Host_EndGame ("svc_lightstyle > MAX_LIGHTSTYLES"); // Tonik
+				Host_EndGame ("svc_lightstyle > MAX_LIGHTSTYLES");
 			strcpy (cl_lightstyle[i].map,  MSG_ReadString());
 			cl_lightstyle[i].length = strlen(cl_lightstyle[i].map);
 			break;
