@@ -190,6 +190,8 @@ void COM_ForceExtension (char *path, char *extension);
 char	*va(char *format, ...);
 // does a varargs printf into a temp buffer
 
+char *CopyString(char *s);
+
 
 //============================================================================
 

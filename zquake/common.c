@@ -1055,7 +1055,7 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-char	*va(char *format, ...)
+char *va(char *format, ...)
 {
 	va_list		argptr;
 	static char		string[1024];
@@ -1078,6 +1078,17 @@ int	memsearch (byte *start, int count, int search)
 			return i;
 	return -1;
 }
+
+
+char *CopyString (char *in)
+{
+	char	*out;
+	
+	out = Z_Malloc (strlen(in)+1);
+	strcpy (out, in);
+	return out;
+}
+
 
 /*
 =============================================================================

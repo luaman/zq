@@ -462,10 +462,9 @@ void SV_SendServerInfoChange(char *key, char *value)
 ===========
 SV_Serverinfo_f
 
-  Examine or change the serverinfo string
+Examine or change the serverinfo string
 ===========
 */
-char *CopyString(char *s);
 void SV_Serverinfo_f (void)
 {
 	cvar_t	*var;
@@ -505,12 +504,11 @@ void SV_Serverinfo_f (void)
 
 /*
 ===========
-SV_Serverinfo_f
+SV_Localinfo_f
 
-  Examine or change the serverinfo string
+Examine or change the localinfo string
 ===========
 */
-char *CopyString(char *s);
 void SV_Localinfo_f (void)
 {
 	if (Cmd_Argc() == 1)
