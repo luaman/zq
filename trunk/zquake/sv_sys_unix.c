@@ -161,7 +161,7 @@ void Sys_Quit (void)
 	exit (0);		// appkit isn't running
 }
 
-static int do_stdin = 1;
+int do_stdin = 1;
 
 /*
 ================
@@ -216,9 +216,6 @@ void main (int argc, char *argv[])
 {
 	double			time, oldtime, newtime;
 	quakeparms_t	parms;
-	fd_set	fdset;
-	extern	int		net_socket;
-    struct timeval timeout;
 	int j;
 
 	memset (&parms, 0, sizeof(parms));
@@ -248,18 +245,7 @@ void main (int argc, char *argv[])
 	while (1)
 	{
 	// select on the net socket and stdin
-	// the only reason we have a timeout at all is so that if the last
-	// connected client times out, the message would not otherwise
-	// be printed until the next event.
-		FD_ZERO(&fdset);
-		if (do_stdin)
-			FD_SET(0, &fdset);
-		FD_SET(net_socket, &fdset);
-		timeout.tv_sec = 1;
-		timeout.tv_usec = 0;
-		if (select (net_socket+1, &fdset, NULL, NULL, &timeout) == -1)
-			continue;
-		stdin_ready = FD_ISSET(0, &fdset);
+		NET_Sleep (10);
 
 	// find time passed since last cycle
 		newtime = Sys_DoubleTime ();
