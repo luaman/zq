@@ -212,6 +212,7 @@ extern lpSelTexFUNC qglActiveTexture;
 #endif
 
 extern qboolean gl_mtexable;
+extern qboolean gl_mtexfbskins;
 
 void GL_DisableMultitexture(void);
 void GL_EnableMultitexture(void);

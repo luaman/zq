@@ -148,6 +148,7 @@ lp3DFXFUNC glColorTableEXT;
 qboolean is8bit = false;
 qboolean isPermedia = false;
 qboolean gl_mtexable = false;
+qboolean gl_mtexfbskins = false;
 
 //====================================
 
@@ -605,6 +606,9 @@ void CheckMultiTextureExtensions (void)
 		Com_Printf ("Multitexture extensions found.\n");
 		gl_mtexable = true;
 	}
+
+	if (gl_mtexable && !COM_CheckParm("-nomtexfbskins"))
+		gl_mtexfbskins = true;
 }
 
 BOOL ( WINAPI * qwglSwapIntervalEXT)( int interval ) = NULL;

@@ -630,7 +630,7 @@ void R_DrawAliasModel (entity_t *ent)
 	if (gl_affinemodels.value)
 		glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-	if (fb_texture && gl_mtexable) {
+	if (fb_texture && gl_mtexfbskins) {
 		GL_SelectTexture (GL_TEXTURE0_ARB);
 		GL_Bind (texture);
 		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
