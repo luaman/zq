@@ -1394,7 +1394,8 @@ void() W_WeaponFrame =
 	if (time < self.attack_finished)
 		return;
 
-	ImpulseCommands ();
+	if (self.impulse)
+		ImpulseCommands ();
 	
 // check for attack
 	if (self.button0)
