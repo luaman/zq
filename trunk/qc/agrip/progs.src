@@ -1,23 +1,7 @@
 ./qwprogs.dat
 
-../frikbot/defs_frikbot.qc     // Give AudioQuake players smt to play with
 ../qw/defs.qc
 agrip_defs.qc // Accessibility definitions
-
-../frikbot/map_dm1.qc
-../frikbot/map_dm2.qc
-../frikbot/map_dm3.qc
-../frikbot/map_dm4.qc
-../frikbot/map_dm5.qc
-../frikbot/map_dm6.qc
-
-../frikbot/bot.qc
-../frikbot/bot_way.qc
-../frikbot/bot_fight.qc
-../frikbot/bot_ai.qc
-../frikbot/bot_misc.qc
-../frikbot/bot_phys.qc
-../frikbot/bot_move.qc
 
 ../qw/subs.qc
 ../qw/combat.qc
@@ -44,3 +28,7 @@ hooks.qc     // Hook functions (moves accessibility code out of main QC)
 ../qw/misc.qc
 ../qw/server.qc
 ../qw/commands.qc
+
+tutor_support.qc
+tutor.qc            // a bot that supports team dm
+                    // (coop suported via spprogs.dat)

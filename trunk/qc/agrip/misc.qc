@@ -46,8 +46,8 @@ float SNAP_NAV_JMP_RUN = 2;
 // PROTOTYPES
 
 // OBJECT UTILITY FUNCTIONS
-float   (vector targ_origin)                snap_misc_ownervisible;
-float   (vector object_origin, float fov)   snap_misc_fovtest;
+float   (vector targ_origin)                        snap_misc_ownervisible;
+float   (vector object_origin, float fov)           snap_misc_fovtest;
 void    (string msg_string)                         snap_misc_m2o;
 
 // PLAYER UTILITY FUNCTIONS

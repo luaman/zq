@@ -20,12 +20,6 @@
 /* $AGRIP-START */
 /* AGRIP Definitions */
 
-// NOTES
-//  * AudioQuake currently supports the QWSP and QW game modes.
-//  * We now use FrikBot (also in ZQuake QC) in multiplayer games.
-//    It doesn't currently support single player/co-op so is disabled
-//    for now in single player.
-
 // Turn on accessibility features...
 #define AGRIP
 
@@ -35,6 +29,9 @@
 .entity agrip_d5k;
 .entity agrip_esr;
 .entity agrip_aux;
+
+// Tutor bot creation functions...
+void (float teem) create_bot;
 
 // these declarations are here because I don't want them in
 // qw/defs.qc right now
