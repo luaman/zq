@@ -261,20 +261,6 @@ void VID_Gamma_f (void)
 	}
 }
 
-void VID_DescribeMode_f (void)
-{
-	int modenum;
-	
-	modenum = Q_atoi (Cmd_Argv(1));
-	if ((modenum >= num_modes) || (modenum < 0 ) || !modes[modenum].width)
-		Com_Printf ("Invalid video mode: %d!\n",modenum);
-	Com_Printf ("%d: %d x %d - ",modenum,modes[modenum].width,modes[modenum].height);
-	if (modes[modenum].bytesperpixel == 0)
-		Com_Printf ("ModeX\n");
-	else
-		Com_Printf ("%d bpp\n", modes[modenum].bytesperpixel<<3);
-}
-
 void VID_DescribeModes_f (void)
 {
 	int i;
@@ -301,11 +287,6 @@ int VID_NumModes ()
 	for (i=0;i<num_modes;i++)
 		i1+=(modes[i].width?1:0);
 	return (i1);
-}
-
-void VID_NumModes_f (void)
-{
-	Com_Printf ("%d modes\n",VID_NumModes());
 }
 
 void VID_Debug_f (void)
@@ -573,8 +554,6 @@ void VID_Init(unsigned char *palette)
 		Cvar_Register (&vid_redrawfull);
 		Cvar_Register (&vid_waitforrefresh);
 		
-		Cmd_AddCommand("vid_nummodes", VID_NumModes_f);
-		Cmd_AddCommand("vid_describemode", VID_DescribeMode_f);
 		Cmd_AddCommand("vid_describemodes", VID_DescribeModes_f);
 		Cmd_AddCommand("vid_debug", VID_Debug_f);
 
