@@ -893,14 +893,14 @@ void Mod_LoadFaces (lump_t *l)
 
 		if (!strncmp(out->texinfo->texture->name,"sky", 3))	// sky
 		{
-			out->flags |= (SURF_DRAWSKY | SURF_DRAWTILED);
+			out->flags |= (SURF_DRAWSKY | SURF_UNLIT);
 			GL_BuildSkySurfacePolys (out);	// build gl polys
 			continue;
 		}
 
 		if (out->texinfo->texture->name[0] == turbchar)		// turbulent
 		{
-			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
+			out->flags |= (SURF_DRAWTURB | SURF_UNLIT);
 			GL_SubdivideSurface (out);	// cut up polygon for warps
 			continue;
 		}

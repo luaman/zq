@@ -777,13 +777,13 @@ void Mod_LoadFaces (lump_t *l)
 		
 		if (!strncmp(out->texinfo->texture->name,"sky",3))	// sky
 		{
-			out->flags |= (SURF_DRAWSKY | SURF_DRAWTILED);
+			out->flags |= (SURF_DRAWSKY | SURF_UNLIT);
 			continue;
 		}
 		
 		if (!strncmp(out->texinfo->texture->name,"*",1))		// turbulent
 		{
-			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
+			out->flags |= (SURF_DRAWTURB | SURF_UNLIT);
 			for (i=0 ; i<2 ; i++)
 			{
 				out->extents[i] = 16384;
