@@ -54,7 +54,7 @@ typedef struct
 	vec3_t		origin;
 	vec3_t		angles;
 	vec3_t		velocity;
-	int			oldbuttons;
+	qboolean	jump_held;
 #ifndef SERVERONLY
 	int			jump_msec;	// msec since last jump
 #endif

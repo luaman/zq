@@ -672,9 +672,9 @@ void CL_ParsePlayerinfo (void)
 
 		pm_type = (flags >> PF_PM_TYPE_SHIFT) & PF_PM_TYPE_MASK;
 		if (pm_type == PM_NORMAL)
-			state->oldbuttons &= ~BUTTON_JUMP;
+			state->jump_held = false;
 		else if (pm_type == PM_NORMAL_JUMP_HELD)
-			state->oldbuttons |= BUTTON_JUMP;
+			state->jump_held = true;
 	}
 
 	VectorCopy (state->command.angles, state->viewangles);

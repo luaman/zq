@@ -137,7 +137,7 @@ typedef struct client_s
 
 	usercmd_t		lastcmd;			// for filling in big drops and partial predictions
 	double			cmdtime;			// realtime of last message
-	int				oldbuttons;
+	qboolean		jump_held;
 
 	float			maxspeed;			// localized maxspeed
 	float			entgravity;			// localized ent gravity

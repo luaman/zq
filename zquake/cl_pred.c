@@ -85,7 +85,7 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 		pmove.jump_msec = 0;
 	else
 		pmove.jump_msec = from->jump_msec;
-	pmove.oldbuttons = from->oldbuttons;
+	pmove.jump_held = from->jump_held;
 	pmove.waterjumptime = from->waterjumptime;
 	pmove.dead = cl.stats[STAT_HEALTH] <= 0;
 	pmove.spectator = spectator;
@@ -102,7 +102,7 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u, 
 //pmove.origin[i] = ((int)(pmove.origin[i]*8))*0.125;
 
 	to->waterjumptime = pmove.waterjumptime;
-	to->oldbuttons = pmove.oldbuttons;
+	to->jump_held = pmove.jump_held;
 	to->jump_msec = pmove.jump_msec;
 	pmove.jump_msec = 0;
 
