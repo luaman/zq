@@ -885,7 +885,7 @@ void CL_ParseStartSoundPacket(void)
 	ent = (channel>>3)&1023;
 	channel &= 7;
 
-	if (ent > MAX_EDICTS)
+	if (ent > MAX_CL_EDICTS)
 		Host_Error ("CL_ParseStartSoundPacket: ent = %i", ent);
 	
     S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
@@ -1672,7 +1672,7 @@ void CL_ParseServerMessage (void)
 			
 		case svc_spawnbaseline:
 			i = MSG_ReadShort ();
-			if (i >= MAX_EDICTS)
+			if (i >= MAX_CL_EDICTS)
 				Host_Error ("svc_spawnbaseline: ent > MAX_EDICTS");
 			CL_ParseBaseline (&cl_entities[i].baseline);
 			break;

@@ -398,7 +398,7 @@ extern cvar_t	r_lightflicker;
 #define	MAX_STATIC_ENTITIES	128			// torches, etc
 
 // FIXME, allocate dynamically
-extern	centity_t		cl_entities[MAX_EDICTS];
+extern	centity_t		cl_entities[MAX_CL_EDICTS];
 extern	efrag_t			cl_efrags[MAX_EFRAGS];
 extern	entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 extern	lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
