@@ -264,7 +264,7 @@ void Model_NextDownload (void)
 				, cl.model_name[i]);
 			Com_Printf ("You may need to download or purchase a %s client "
 				"pack in order to play on this server.\n\n", cls.gamedirfile);
-			CL_Disconnect ();
+			Host_EndGame ();
 			return;
 		}
 	}

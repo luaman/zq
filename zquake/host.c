@@ -57,6 +57,9 @@ Host_EndGame
 */
 void Host_EndGame (void)
 {
+#ifndef SERVERONLY
+	SCR_EndLoadingPlaque ();
+#endif
 	SV_Shutdown ("Server was killed");
 	CL_Disconnect ();
 }

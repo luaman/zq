@@ -962,7 +962,7 @@ void CL_PlayDemo_f (void)
 //
 // disconnect from server
 //
-	CL_Disconnect ();
+	Host_EndGame ();
 	
 //
 // open the demo file
