@@ -34,6 +34,24 @@ The game starts with a Cbuf_AddText ("exec quake.rc\n"); Cbuf_Execute ();
 
 */
 
+#define MAXCMDBUF 16384
+
+typedef struct cbuf_s {
+	char	text_buf[MAXCMDBUF];
+	int		text_start;
+	int		text_end;
+	qboolean	wait;
+} cbuf_t;
+
+extern cbuf_t	cbuf_main;
+#ifndef SERVERONLY
+extern cbuf_t cbuf_svc;
+#endif
+extern cbuf_t	*cbuf_current;
+
+void Cbuf_AddTextEx (cbuf_t *cbuf, char *text);
+void Cbuf_InsertTextEx (cbuf_t *cbuf, char *text);
+void Cbuf_ExecuteEx (cbuf_t *cbuf);
 
 void Cbuf_Init (void);
 // allocates an initial text buffer that will grow as needed
