@@ -330,7 +330,6 @@ typedef struct
 	int			spectator;
 
 	double		last_ping_request;	// while showing scoreboard
-	double		last_servermessage;
 
 // sentcmds[cl.netchan.outgoing_sequence & UPDATE_MASK] = cmd
 	frame_t		frames[UPDATE_BACKUP];

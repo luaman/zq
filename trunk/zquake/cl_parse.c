@@ -1809,15 +1809,13 @@ void CL_ParseQizmoVoice (void)
 CL_ParseServerMessage
 =====================
 */
-int	received_framecount;
+
 void CL_ParseServerMessage (void)
 {
 	int			cmd;
 	int			i, j;
 	int			old_readcount;
 
-	received_framecount = cls.framecount;
-	cl.last_servermessage = cls.realtime;
 	CL_ClearProjectiles ();
 
 //
