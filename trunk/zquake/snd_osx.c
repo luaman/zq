@@ -63,10 +63,43 @@ OSStatus	SNDDMA_AudioIOProc (AudioDeviceID inDevice,
     return 0;
 }
 
+bool	SNDDMA_ReserveBufferSize (void)
+{
+    OSStatus		myError;
+    AudioDeviceID	myAudioDevice;
+    UInt32		myPropertySize;
+
+    // this function has to be called before any QuickTime movie data is loaded, so that the QuickTime handler
+    // knows about our custom buffersize!
+    myPropertySize = sizeof (AudioDeviceID);
+    myError = AudioHardwareGetProperty (kAudioHardwarePropertyDefaultOutputDevice,
+            &myPropertySize,&myAudioDevice);
+
+    if (!myError && myAudioDevice != kAudioDeviceUnknown)
+    {
+        UInt32		myBufferByteCount = OUTPUT_BUFFER_SIZE * sizeof (float);
+
+        myPropertySize = sizeof (myBufferByteCount);
+
+        // set the buffersize for the audio device:
+        myError = AudioDeviceSetProperty (myAudioDevice, NULL, 0, false, kAudioDevicePropertyBufferSize,
+                myPropertySize, &myBufferByteCount);
+
+        if (!myError)
+        {
+            return (true);
+        }
+    }
+
+    return (false);
+}
+
 qbool SNDDMA_Init(void)
 {
     AudioStreamBasicDescription	myBasicDescription;
     UInt32 myPropertySize;
+
+    SNDDMA_ReserveBufferSize ();
 
     Com_Printf ("Initializing CoreAudio...\n");
     myPropertySize = sizeof (gSndDeviceID);
