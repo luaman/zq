@@ -332,8 +332,10 @@ store:
 			for (j=0 ; j<smax ; j++)
 			{
 				t = *bl++;
-//				t >>= 7;
-				t = (t >> 8) + (t >> 9);
+				if (lightmode == 2)
+					t = (t >> 8) + (t >> 9);
+				else
+					t >>= 7;
 				if (t > 255)
 					t = 255;
 				dest[3] = 255-t;
@@ -347,15 +349,21 @@ store:
 		bl = blocklights;
 		for (i=0 ; i<tmax ; i++, dest += stride)
 		{
-			for (j=0 ; j<smax ; j++)
-			{
-				t = *bl++;
-				//t >>= 7;
-				t = (t >> 8) + (t >> 9);
-				if (t > 255)
-					t = 255;
-				dest[j] = 255-t;
-			}
+			if (lightmode == 2)
+				for (j=0 ; j<smax ; j++) {
+					t = *bl++;
+					t = (t >> 8) + (t >> 9);
+					if (t > 255)
+						t = 255;
+					dest[j] = 255-t;
+				}
+			else
+				for (j=0 ; j<smax ; j++) {
+					t = *bl++ >> 7;
+					if (t > 255)
+						t = 255;
+					dest[j] = 255-t;
+				}
 		}
 		break;
 	default:

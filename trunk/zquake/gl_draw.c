@@ -89,6 +89,7 @@ typedef struct
 	char	identifier[64];
 	int		width, height;
 	qboolean	mipmap;
+	qboolean	brighten;
 	int		crc;
 } gltexture_t;
 
@@ -1397,12 +1398,16 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qboolea
 	int			i, crc;
 	gltexture_t	*glt;
 
+	if (lightmode != 2)
+		brighten = false;
+
 	// see if the texture is already present
 	if (identifier[0]) {
 		crc = CRC_Block (data, width*height);
 		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++) {
 			if (!strncmp (identifier, glt->identifier, sizeof(glt->identifier)-1)) {
-				if (width == glt->width && height == glt->height && crc == glt->crc)
+				if (width == glt->width && height == glt->height
+					&& crc == glt->crc && brighten == glt->brighten)
 					return gltextures[i].texnum;
 				else
 					goto setuptexture;	// reload the texture into the same slot
@@ -1424,6 +1429,7 @@ setuptexture:
 	glt->width = width;
 	glt->height = height;
 	glt->mipmap = mipmap;
+	glt->brighten = brighten;
 	glt->crc = crc;
 
 	GL_Bind (glt->texnum);

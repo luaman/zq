@@ -107,6 +107,9 @@ cvar_t	gl_fb_depthhack = {"gl_fb_depthhack","1"};
 cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
 cvar_t	gl_fb_models = {"gl_fb_models","1"};
 
+cvar_t	gl_lightmode = {"gl_lightmode","2"};
+int		lightmode = 2;
+
 extern	cvar_t	gl_ztrick;
 extern	cvar_t	scr_fov;
 
