@@ -498,9 +498,6 @@ void Cmd_Begin_f (void)
 	if (sv_client->state == cs_spawned)
 		return; // don't begin again
 
-	// FIXME: this should be AFTER spawncount check??!!!
-	sv_client->state = cs_spawned;
-	
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
@@ -508,6 +505,8 @@ void Cmd_Begin_f (void)
 		Cmd_New_f ();
 		return;
 	}
+
+	sv_client->state = cs_spawned;
 
 	sv_player->inuse = true;
 	
