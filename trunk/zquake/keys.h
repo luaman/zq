@@ -70,6 +70,7 @@ typedef enum {
 
 	KP_NUMLOCK,
 	KP_SLASH,
+	KP_STAR,
 
 	KP_HOME,
 	KP_UPARROW,
@@ -79,7 +80,7 @@ typedef enum {
 	KP_LEFTARROW,
 	KP_5,
 	KP_RIGHTARROW,
-//	KP_PLUS,
+	KP_PLUS,
 
 	KP_END,
 	KP_DOWNARROW,
