@@ -133,3 +133,14 @@ void item_flag_team2 ()
 	self.skin = 1;
 }
 
+// stubs to avoid missing classname errors on map start
+void info_player_team1 ()
+{
+
+}
+
+void info_player_team2 ()
+{
+
+}
+
