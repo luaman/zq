@@ -102,6 +102,7 @@ void 	Cvar_WriteVariables (FILE *f);
 // with the archive flag set to true.
 
 cvar_t *Cvar_FindVar (char *var_name);
+qboolean Cvar_Delete (char *name);
 
 cvar_t *Cvar_Create (char *name, char *string, int cvarflags);
 
