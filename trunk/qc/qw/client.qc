@@ -1483,7 +1483,8 @@ void(entity targ, entity attacker) ClientObituary =
 
 			if (attacker.flags & FL_MONSTER)
 			{
-				bprint (PRINT_MEDIUM, ObituaryForMonster(attacker.classname));
+				deathstring = ObituaryForMonster(attacker.classname);
+				bprint (PRINT_MEDIUM, deathstring);
 				return;
 			}
 
