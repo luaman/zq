@@ -910,11 +910,7 @@ cdlight_t *CL_AllocDlight (int key)
 		for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
 		{
 			if (dl->key == key)
-			{
-				memset (dl, 0, sizeof(*dl));
-				dl->key = key;
-				return dl;
-			}
+				goto init;
 		}
 	}
 
@@ -923,16 +919,14 @@ cdlight_t *CL_AllocDlight (int key)
 	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
 	{
 		if (dl->die < cl.time)
-		{
-			memset (dl, 0, sizeof(*dl));
-			dl->key = key;
-			return dl;
-		}
+			goto init;
 	}
 
 	dl = &cl_dlights[0];
+init:
 	memset (dl, 0, sizeof(*dl));
 	dl->key = key;
+	dl->starttime = cl.time;
 	return dl;
 }
 
@@ -963,16 +957,22 @@ void CL_LinkDlights (void)
 {
 	int			i;
 	cdlight_t	*dl;
+	float		radius;
 
 	dl = cl_dlights;
 	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
 	{
-		if (dl->die < cl.time || dl->radius <= 0)
+		if (dl->die < cl.time)
 			continue;
 
-		V_AddDlight(dl->key, dl->origin, dl->radius, dl->minlight, dl->type);
+		radius = dl->radius - (cl.time - dl->starttime) * dl->decay;
 
-		dl->radius -= cls.frametime * dl->decay;
+		if (radius <= 0) {
+			dl->die = 0;
+			continue;
+		}
+
+		V_AddDlight(dl->key, dl->origin, radius, dl->minlight, dl->type);
 	}
 }
 
