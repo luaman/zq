@@ -403,6 +403,12 @@ void Mod_LoadTextures (lump_t *l)
 			memcpy (tx+1, (byte *)(tx+1) + 32*31, 32);
 		}
 
+		// just for r_fastturb's sake
+		if (mt->offsets[0]) {
+			byte *data = (byte *) &d_8to24table[*((byte *) mt + mt->offsets[0] + ((mt->height * mt->width) >> 1))];
+			tx->flatcolor3ub = (255 << 24) + (data[0] << 0) + (data[1] << 8) + (data[2] << 16);
+		}
+
 		if (!strncmp(mt->name,"sky",3))	
 			R_InitSky (tx);
 		else
