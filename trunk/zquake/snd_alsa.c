@@ -2,7 +2,7 @@
    Support for the ALSA 1.0.1 sound driver
 
    Copyright (C) 1999,2000  contributors of the QuakeForge project
-   Extensively modified for inclusion in ZQuake as snd_linux.c
+   Extensively modified for inclusion in ZQuake as alsa_snd_linux.c
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,9 +25,20 @@
 
 #ifdef USE_ALSA
 #include <stdio.h>
+#include <dlfcn.h>
 #include <alsa/asoundlib.h>
 #include "quakedef.h"
 #include "sound.h"
+
+// Define all dynamic ALSA functions...
+#define ALSA_FUNC(ret, func, params) \
+static ret (*alsa_##func) params;
+#include "snd_alsa_funcs.h"
+#undef ALSA_FUNC
+
+// Catch the sizeof functions...
+#define snd_pcm_hw_params_sizeof alsa_snd_pcm_hw_params_sizeof
+#define snd_pcm_sw_params_sizeof alsa_snd_pcm_sw_params_sizeof
 
 // Global Variables
 extern int paintedtime, soundtime;
@@ -39,6 +50,8 @@ static snd_pcm_t   *pcm;
 // Prototypes
 int SNDDMA_GetDMAPos_ALSA (void);
 
+
+// Main functions
 
 void SNDDMA_Init_Cvars_ALSA (void)
 {
@@ -56,6 +69,21 @@ qbool SNDDMA_Init_ALSA (void)
     snd_pcm_hw_params_t	*hw;
     snd_pcm_sw_params_t	*sw;
     snd_pcm_uframes_t   frag_size;
+    static void         *alsa_handle;
+
+    if(! (alsa_handle = dlopen("libasound.so.2", RTLD_GLOBAL | RTLD_NOW)) )
+        return 0;
+
+#define ALSA_FUNC(ret, func, params) \
+    if (!(alsa_##func = dlsym (alsa_handle, #func))) \
+    { \
+        Sys_Printf ("Couldn't load ALSA function %s\n", #func); \
+        dlclose (alsa_handle); \
+        alsa_handle = 0; \
+        return false; \
+    }
+#include "snd_alsa_funcs.h"
+#undef ALSA_FUNC
 
     SNDDMA_Init_Cvars_ALSA();
 
@@ -88,25 +116,25 @@ qbool SNDDMA_Init_ALSA (void)
     stereo = Cvar_VariableValue("snd_stereo");
 
     // Initialise ALSA...
-    err = snd_pcm_open(&pcm, pcmname, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
+    err = alsa_snd_pcm_open(&pcm, pcmname, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
     if(0 > err)
     {
-        Sys_Printf("Error: audio open error: %s\n", snd_strerror(err));
+        Sys_Printf("Error: audio open error: %s\n", alsa_snd_strerror(err));
         return 0;
     }
     Sys_Printf("Using PCM %s.\n", pcmname);
 
-    err = snd_pcm_hw_params_any (pcm, hw);
+    err = alsa_snd_pcm_hw_params_any (pcm, hw);
     if(0 > err)
     {
-        Sys_Printf("ALSA: error setting hw_params_any. %s\n", snd_strerror(err));
+        Sys_Printf("ALSA: error setting hw_params_any. %s\n", alsa_snd_strerror(err));
         goto error;
     }
 
-    err = snd_pcm_hw_params_set_access (pcm, hw, SND_PCM_ACCESS_MMAP_INTERLEAVED);
+    err = alsa_snd_pcm_hw_params_set_access (pcm, hw, SND_PCM_ACCESS_MMAP_INTERLEAVED);
     if(0 > err)
     {
-        Sys_Printf("ALSA: Failure to set interleaved PCM access. %s\n", snd_strerror(err));
+        Sys_Printf("ALSA: Failure to set interleaved PCM access. %s\n", alsa_snd_strerror(err));
         goto error;
     }
 
@@ -114,30 +142,30 @@ qbool SNDDMA_Init_ALSA (void)
     switch (bps)
     {
         case -1:
-            err = snd_pcm_hw_params_set_format (pcm, hw, SND_PCM_FORMAT_S16); // was _LE
+            err = alsa_snd_pcm_hw_params_set_format (pcm, hw, SND_PCM_FORMAT_S16); // was _LE
             if(0 <= err) 
             {
                 bps = 16;
             }
             else
             {
-                if(0 <= (err = snd_pcm_hw_params_set_format (pcm, hw, SND_PCM_FORMAT_U8)))
+                if(0 <= (err = alsa_snd_pcm_hw_params_set_format (pcm, hw, SND_PCM_FORMAT_U8)))
                 {
                     bps = 8;
                 }
                 else
                 {
-                    Sys_Printf("ALSA: no useable formats. %s\n", snd_strerror(err));
+                    Sys_Printf("ALSA: no useable formats. %s\n", alsa_snd_strerror(err));
                     goto error;
                 }
             }
             break;
         case 8:
         case 16:
-            err = snd_pcm_hw_params_set_format (pcm, hw, bps == 8 ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16);
+            err = alsa_snd_pcm_hw_params_set_format (pcm, hw, bps == 8 ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16);
             if(0 > err)
             {
-                Sys_Printf("ALSA: no usable formats. %s\n", snd_strerror(err));
+                Sys_Printf("ALSA: no usable formats. %s\n", alsa_snd_strerror(err));
                 goto error;
             }
             break;
@@ -150,30 +178,30 @@ qbool SNDDMA_Init_ALSA (void)
     switch (stereo)
     {
         case -1:
-            err = snd_pcm_hw_params_set_channels (pcm, hw, 2);
+            err = alsa_snd_pcm_hw_params_set_channels (pcm, hw, 2);
             if(0 <= err)
             {
                 stereo = 1;
             }
             else
             {
-                if(0 <= (err = snd_pcm_hw_params_set_channels (pcm, hw, 1)))
+                if(0 <= (err = alsa_snd_pcm_hw_params_set_channels (pcm, hw, 1)))
                 {
                     stereo = 0;
                 }
                 else 
                 {
-                    Sys_Printf("ALSA: no usable channels. %s\n", snd_strerror(err));
+                    Sys_Printf("ALSA: no usable channels. %s\n", alsa_snd_strerror(err));
                     goto error;
                 }
             }
             break;
         case 0:
         case 1:
-            err = snd_pcm_hw_params_set_channels (pcm, hw, stereo ? 2 : 1);
+            err = alsa_snd_pcm_hw_params_set_channels (pcm, hw, stereo ? 2 : 1);
             if(0 > err) 
             {
-                Sys_Printf("ALSA: no usable channels. %s\n", snd_strerror(err));
+                Sys_Printf("ALSA: no usable channels. %s\n", alsa_snd_strerror(err));
                 goto error;
             }
             break;
@@ -187,7 +215,7 @@ qbool SNDDMA_Init_ALSA (void)
     {
         case 0:
             rate = 44100;
-            err = snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
+            err = alsa_snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
             if(0 <= err)
             {
                 frag_size = 32 * bps;
@@ -195,7 +223,7 @@ qbool SNDDMA_Init_ALSA (void)
             else
             {
                 rate = 22050;
-                err = snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
+                err = alsa_snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
                 if(0 <= err)
                 {
                     frag_size = 16 * bps;
@@ -203,7 +231,7 @@ qbool SNDDMA_Init_ALSA (void)
                 else
                 {
                     rate = 11025;
-                    err = snd_pcm_hw_params_set_rate_near (pcm, hw, &rate,
+                    err = alsa_snd_pcm_hw_params_set_rate_near (pcm, hw, &rate,
                             0);
                     if(0 <= err)
                     {
@@ -211,7 +239,7 @@ qbool SNDDMA_Init_ALSA (void)
                     } 
                     else 
                     {
-                        Sys_Printf("ALSA: no usable rates. %s\n", snd_strerror(err));
+                        Sys_Printf("ALSA: no usable rates. %s\n", alsa_snd_strerror(err));
                         goto error;
                     }
                 }
@@ -220,10 +248,10 @@ qbool SNDDMA_Init_ALSA (void)
         case 11025:
         case 22050:
         case 44100:
-            err = snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
+            err = alsa_snd_pcm_hw_params_set_rate_near (pcm, hw, &rate, 0);
             if(0 > err)
             {
-                Sys_Printf("ALSA: desired rate %i not supported. %s\n", rate, snd_strerror(err));
+                Sys_Printf("ALSA: desired rate %i not supported. %s\n", rate, alsa_snd_strerror(err));
                 goto error;
             }
             frag_size = 8 * bps * rate / 11025;
@@ -233,50 +261,50 @@ qbool SNDDMA_Init_ALSA (void)
             goto error;
     }
 
-    err = snd_pcm_hw_params_set_period_size_near (pcm, hw, &frag_size, 0);
+    err = alsa_snd_pcm_hw_params_set_period_size_near (pcm, hw, &frag_size, 0);
     if(0 > err)
     {
-        Sys_Printf("ALSA: unable to set period size near %i. %s\n", (int)frag_size, snd_strerror(err));
+        Sys_Printf("ALSA: unable to set period size near %i. %s\n", (int)frag_size, alsa_snd_strerror(err));
         goto error;
     }
-    err = snd_pcm_hw_params (pcm, hw);
+    err = alsa_snd_pcm_hw_params (pcm, hw);
     if(0 > err)
     {
-        Sys_Printf("ALSA: unable to install hw params: %s\n", snd_strerror(err));
+        Sys_Printf("ALSA: unable to install hw params: %s\n", alsa_snd_strerror(err));
         goto error;
     }
-    err = snd_pcm_sw_params_current (pcm, sw);
+    err = alsa_snd_pcm_sw_params_current (pcm, sw);
     if(0 > err)
     {
-        Sys_Printf("ALSA: unable to determine current sw params. %s\n", snd_strerror(err));
+        Sys_Printf("ALSA: unable to determine current sw params. %s\n", alsa_snd_strerror(err));
         goto error;
     }
-    err = snd_pcm_sw_params_set_start_threshold (pcm, sw, ~0U);
+    err = alsa_snd_pcm_sw_params_set_start_threshold (pcm, sw, ~0U);
     if(0 > err)
     {
-        Sys_Printf("ALSA: unable to set playback threshold. %s\n", snd_strerror(err));
+        Sys_Printf("ALSA: unable to set playback threshold. %s\n", alsa_snd_strerror(err));
         goto error;
     }
-    err = snd_pcm_sw_params_set_stop_threshold (pcm, sw, ~0U);
+    err = alsa_snd_pcm_sw_params_set_stop_threshold (pcm, sw, ~0U);
     if(0 > err)
     {
-        Sys_Printf("ALSA: unable to set playback stop threshold. %s\n", snd_strerror(err));
+        Sys_Printf("ALSA: unable to set playback stop threshold. %s\n", alsa_snd_strerror(err));
         goto error;
     }
-    err = snd_pcm_sw_params (pcm, sw);
+    err = alsa_snd_pcm_sw_params (pcm, sw);
     if(0 > err)
     {
-        Sys_Printf("ALSA: unable to install sw params. %s\n", snd_strerror(err));
+        Sys_Printf("ALSA: unable to install sw params. %s\n", alsa_snd_strerror(err));
         goto error;
     }
 
     dma.channels = stereo + 1;
 
     // don't mix less than this in mono samples:
-    err = snd_pcm_hw_params_get_period_size (hw, (snd_pcm_uframes_t *)&dma.submission_chunk, 0);
+    err = alsa_snd_pcm_hw_params_get_period_size (hw, (snd_pcm_uframes_t *)&dma.submission_chunk, 0);
     if(0 > err)
     {
-        Sys_Printf("ALSA: unable to get period size. %s\n", snd_strerror(err));
+        Sys_Printf("ALSA: unable to get period size. %s\n", alsa_snd_strerror(err));
         goto error;
     }
 
@@ -284,10 +312,10 @@ qbool SNDDMA_Init_ALSA (void)
     dma.samplepos = 0;
     dma.samplebits = bps;
 
-    err = snd_pcm_hw_params_get_buffer_size (hw, &buffer_size);
+    err = alsa_snd_pcm_hw_params_get_buffer_size (hw, &buffer_size);
     if(0 > err)
     {
-        Sys_Printf("ALSA: unable to get buffer size. %s\n", snd_strerror(err));
+        Sys_Printf("ALSA: unable to get buffer size. %s\n", alsa_snd_strerror(err));
         goto error;
     }
 
@@ -306,7 +334,7 @@ qbool SNDDMA_Init_ALSA (void)
 
     return 1;
 error:
-    snd_pcm_close (pcm);
+    alsa_snd_pcm_close (pcm);
     return 0;
 }
 
@@ -316,8 +344,8 @@ int SNDDMA_GetDMAPos_ALSA (void)
     snd_pcm_uframes_t offset;
     snd_pcm_uframes_t nframes = dma.samples/dma.channels;
 
-    snd_pcm_avail_update (pcm);
-    snd_pcm_mmap_begin (pcm, &areas, &offset, &nframes);
+    alsa_snd_pcm_avail_update (pcm);
+    alsa_snd_pcm_mmap_begin (pcm, &areas, &offset, &nframes);
     offset *= dma.channels;
     nframes *= dma.channels;
     dma.samplepos = offset;
@@ -327,7 +355,7 @@ int SNDDMA_GetDMAPos_ALSA (void)
 
 void SNDDMA_Shutdown_ALSA (void)
 {
-    snd_pcm_close (pcm);
+    alsa_snd_pcm_close (pcm);
 }
 
 /*
@@ -348,19 +376,19 @@ void SNDDMA_Submit_ALSA (void)
 
     nframes = count / dma.channels;
 
-    snd_pcm_avail_update (pcm);
-    snd_pcm_mmap_begin (pcm, &areas, &offset, &nframes);
+    alsa_snd_pcm_avail_update (pcm);
+    alsa_snd_pcm_mmap_begin (pcm, &areas, &offset, &nframes);
 
-    state = snd_pcm_state (pcm);
+    state = alsa_snd_pcm_state (pcm);
 
     switch (state) 
     {
         case SND_PCM_STATE_PREPARED:
-            snd_pcm_mmap_commit (pcm, offset, nframes);
-            snd_pcm_start (pcm);
+            alsa_snd_pcm_mmap_commit (pcm, offset, nframes);
+            alsa_snd_pcm_start (pcm);
             break;
         case SND_PCM_STATE_RUNNING:
-            snd_pcm_mmap_commit (pcm, offset, nframes);
+            alsa_snd_pcm_mmap_commit (pcm, offset, nframes);
             break;
         default:
             break;
@@ -377,7 +405,7 @@ void SNDDMA_Submit_ALSA (void)
 static void SNDDMA_BlockSound_ALSA (void)
 {
     if(++snd_blocked == 1)
-        snd_pcm_pause (pcm, 1);
+        alsa_snd_pcm_pause (pcm, 1);
 }
 
 static void SNDDMA_UnblockSound_ALSA (void)
@@ -385,7 +413,7 @@ static void SNDDMA_UnblockSound_ALSA (void)
     if(!snd_blocked)
         return;
     if(!--snd_blocked)
-        snd_pcm_pause (pcm, 0);
+        alsa_snd_pcm_pause (pcm, 0);
 }*/
 
 #endif // USE_ALSA
