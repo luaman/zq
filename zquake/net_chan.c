@@ -75,7 +75,6 @@ to the new value before sending out any replies.
 
 */
 
-int		net_drop;
 cvar_t	showpackets = {"showpackets", "0"};
 cvar_t	showdrop = {"showdrop", "0"};
 cvar_t	qport = {"qport", "0"};
@@ -359,15 +358,15 @@ qboolean Netchan_Process (netchan_t *chan)
 //
 // dropped packets don't keep the message from being used
 //
-	net_drop = sequence - (chan->incoming_sequence+1);
-	if (net_drop > 0)
+	chan->dropped = sequence - (chan->incoming_sequence+1);
+	if (chan->dropped > 0)
 	{
 		chan->drop_count += 1;
 
 		if (showdrop.value)
 			Com_Printf ("%s:Dropped %i packets at %i\n"
 			, NET_AdrToString (chan->remote_address)
-			, sequence-(chan->incoming_sequence+1)
+			, chan->dropped
 			, sequence);
 	}
 

@@ -1673,6 +1673,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 {
 	int		c;
 	char	*s;
+	int		net_drop;
 	usercmd_t	oldest, oldcmd, newcmd;
 	client_frame_t	*frame;
 	vec3_t o;
@@ -1768,6 +1769,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 			if (!sv.paused) {
 				SV_PreRunCmd();
 
+				net_drop = cl->netchan.dropped;
 				if (net_drop < 20)
 				{
 					while (net_drop > 2)

@@ -65,6 +65,8 @@ typedef struct
 
 	netsrc_t	sock;
 
+	int			dropped;			// between last packet and previous
+
 	float		last_received;		// for timeouts
 
 // the statistics are cleared at each client begin, because
@@ -104,8 +106,6 @@ typedef struct
 	int			outgoing_size[MAX_LATENT];
 	double		outgoing_time[MAX_LATENT];
 } netchan_t;
-
-extern	int	net_drop;		// packets dropped before this one
 
 void Netchan_Init (void);
 void Netchan_Transmit (netchan_t *chan, int length, byte *data);
