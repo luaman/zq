@@ -23,13 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "sound.h"
 
-// FIXME, just for Mod_ForName
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
-#include "r_model.h"
-#endif
-
 #define	MAX_BEAMS	32
 typedef struct
 {
@@ -525,6 +518,7 @@ void CL_UpdateBeams (void)
 CL_UpdateExplosions
 =================
 */
+#define EXPLOSION_FRAMES 6
 void CL_UpdateExplosions (void)
 {
 	int			f;
@@ -541,7 +535,7 @@ void CL_UpdateExplosions (void)
 		next = ex->next;
 		f = 10 * (cl.time - ex->start);
 
-		if (f >= ex->model->numframes)
+		if (f >= EXPLOSION_FRAMES)
 		{
 			CL_FreeExplosion (ex);
 			continue;

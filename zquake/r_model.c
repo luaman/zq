@@ -1766,3 +1766,7 @@ void Mod_Print (void)
 }
 
 
+int R_ModelFlags (const struct model_s *model)
+{
+	return model->flags;
+}
