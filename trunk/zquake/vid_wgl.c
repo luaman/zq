@@ -1537,7 +1537,7 @@ void VID_Init8bitPalette()
 
 	glColorTableEXT = (void *)wglGetProcAddress("glColorTableEXT");
     if (!glColorTableEXT || !strstr(gl_extensions, "GL_EXT_shared_texture_palette") ||
-		COM_CheckParm("-no8bit"))
+		!COM_CheckParm("-use8bit"))
 		return;
 
 	Con_SafePrintf("8-bit GL extensions enabled.\n");
