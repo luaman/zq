@@ -7,14 +7,15 @@ agrip_defs.qc // Accessibility definitions
 ../qw/combat.qc
 ../qw/items.qc
 
-epi.qc       // AGRIP Auxiliary Player Information Object
-se.qc        // AGRIP Sound Entity
-misc.qc      // AGRIP Utility Functions
-nav.qc       // AGRIP Navigation Helper
-d5k.qc       // AGRIP Detector 5000
-esr.qc       // AGRIP EtherScan RADAR
-marker.qc    // AGRIP Waypoint Marker
-hooks.qc     // Hook functions (moves accessibility code out of main QC)
+epi.qc      // AGRIP Auxiliary Player Information Object
+se.qc       // AGRIP Sound Entity
+misc.qc     // AGRIP Utility Functions
+nav.qc      // AGRIP Navigation Helper
+extnav.qc   // External navigation utilities
+d5k.qc      // AGRIP Detector 5000
+esr.qc      // AGRIP EtherScan RADAR
+marker.qc   // AGRIP Waypoint Marker
+hooks.qc    // Hook functions (moves accessibility code out of main QC)
 
 ../qw/weapons.qc
 ../qw/world.qc

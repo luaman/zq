@@ -400,6 +400,11 @@ void ClientKill ()
 	self.suicide_time = time + 5;
 
 	bprint (PRINT_MEDIUM, self.netname, " suicides\n");
+
+#ifdef AGRIP
+        agh_player_dietidy();
+#endif
+        
 	set_suicide_frame ();
 	self.modelindex = modelindex_player;
 	logfrag (self, self);

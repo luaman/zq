@@ -105,7 +105,6 @@ void() snap_esr_constructor =
     s_monster = spawn();
     s_monster.movetype = MOVETYPE_NONE;
     s_monster.solid = SOLID_NOT;
-    //setmodel(s_monster, "progs/s_explod.spr");
     s_monster.frags = self.agrip_esr.items;
     s_monster.think = snap_se_stickysound;
     s_monster.owner = self;
@@ -114,7 +113,6 @@ void() snap_esr_constructor =
     s_enemy = spawn();
     s_enemy.movetype = MOVETYPE_NONE;
     s_enemy.solid = SOLID_NOT;
-    //setmodel(s_enemy, "progs/s_explod.spr");
     s_enemy.frags = self.agrip_esr.items;
     s_enemy.think = snap_se_stickysound;
     s_enemy.owner = self;
@@ -123,7 +121,6 @@ void() snap_esr_constructor =
     s_friend = spawn();
     s_friend.movetype = MOVETYPE_NONE;
     s_friend.solid = SOLID_NOT;
-    //setmodel(s_friend, "progs/s_explod.spr");
     s_friend.frags = self.agrip_esr.items;
     s_friend.think = snap_se_stickysound;
     s_friend.owner = self;
@@ -131,7 +128,7 @@ void() snap_esr_constructor =
  
     // Set it going...
     new_agesr.think = snap_esr_main;
-    new_agesr.nextthink = time + 0.1;
+    new_agesr.nextthink = time + 1;
 };
 
 void() snap_esr_main =
@@ -345,14 +342,10 @@ void() snap_esr_classic =
                         e_lower_dist = dist;
                     }
                 }
-
-                /*else
-                    dprint(potential_hit.classname);dprint(" <-- is not a hit.\n");*/
 	    }
         }
 
         // Get the next entity...
-        //dprint("radar found: ");dprint(potential_hit.classname);dprint("\n");
         potential_hit = potential_hit.chain;
     }
 

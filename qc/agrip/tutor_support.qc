@@ -25,14 +25,9 @@
 // originally came from.
 //
 
+//###########################################################################
+
 // ../qwsp/sp_subs.qc
-
-/*
-
-in nightmare mode, all attack_finished times become 0
-some monsters refire twice automatically
-
-*/
 
 void SUB_AttackFinished (float normal)
 {
@@ -59,136 +54,12 @@ void SUB_CheckRefire (void() thinkst)
 
 // ../qwsp/fight.qc
 
-/*
-
-A monster is in fight mode if it thinks it can effectively attack its
-enemy.
-
-When it decides it can't attack, it goes into hunt mode.
-
-*/
-
 float anglemod (float v);
-
-//void knight_atk1 ();
-//void knight_runatk1 ();
-//void ogre_smash1 ();
-//void ogre_swing1 ();
-
-//void sham_smash1 ();
-//void sham_swingr1 ();
-//void sham_swingl1 ();
-
-//float DemonCheckAttack ();
-//void Demon_Melee (float side);
-
 void ChooseTurn (vector dest);
-
 void ai_face ();
-
 
 float	enemy_vis, enemy_infront, enemy_range;
 float	enemy_yaw;
-
-/*
-void knight_attack ()
-{
-	float	len;
-	
-// decide if now is a good swing time
-	len = vlen(self.enemy.origin+self.enemy.view_ofs - (self.origin+self.view_ofs));
-	
-	if (len<80)
-		knight_atk1 ();
-	else
-		knight_runatk1 ();
-}*/
-
-//=============================================================================
-
-/*
-===========
-CheckAttack
-
-The player is in view, so decide to move or launch an attack
-Returns false if movement should continue
-============
-*/
-/*
-float CheckAttack ()
-{
-	vector	spot1, spot2;
-	entity	targ;
-	float	chance;
-
-	targ = self.enemy;
-	
-// see if any entities are in the way of the shot
-	spot1 = self.origin + self.view_ofs;
-	spot2 = targ.origin + targ.view_ofs;
-
-	traceline (spot1, spot2, false, self);
-
-	if (trace_ent != targ)
-		return false;		// don't have a clear shot
-			
-	if (trace_inopen && trace_inwater)
-		return false;			// sight line crossed contents
-
-	if (enemy_range == RANGE_MELEE)
-	{	// melee attack
-		if (self.th_melee)
-		{
-			if (self.classname == "monster_knight")
-				knight_attack ();
-			else
-				self.th_melee ();
-			return true;
-		}
-	}
-	
-// missile attack
-	if (!self.th_missile)
-		return false;
-		
-	if (time < self.attack_finished)
-		return false;
-		
-	if (enemy_range == RANGE_FAR)
-		return false;
-		
-	if (enemy_range == RANGE_MELEE)
-	{
-		chance = 0.9;
-		self.attack_finished = 0;
-	}
-	else if (enemy_range == RANGE_NEAR)
-	{
-		if (self.th_melee)
-			chance = 0.2;
-		else
-			chance = 0.4;
-	}
-	else if (enemy_range == RANGE_MID)
-	{
-		if (self.th_melee)
-			chance = 0.05;
-		else
-			chance = 0.1;
-	}
-	else
-		chance = 0;
-
-	if (random () < chance)
-	{
-		self.th_missile ();
-		SUB_AttackFinished (2*random());
-		return true;
-	}
-
-	return false;
-}*/
-
 
 /*
 =============
@@ -237,7 +108,6 @@ void ai_charge_side ()
 	walkmove(heading, 20);
 }
 
-
 /*
 =============
 ai_melee
@@ -261,7 +131,6 @@ void ai_melee ()
 	T_Damage (self.enemy, self, self, ldmg);
 }
 
-
 void ai_melee_side ()
 {
 	vector	delta;
@@ -281,9 +150,6 @@ void ai_melee_side ()
 	ldmg = (random() + random() + random()) * 3;
 	T_Damage (self.enemy, self, self, ldmg);
 }
-
-
-//=============================================================================
 
 /*
 ===========
@@ -342,7 +208,6 @@ float SoldierCheckAttack ()
 
 	return false;
 }
-//=============================================================================
 
 /*
 ===========
@@ -399,8 +264,6 @@ float ShamCheckAttack ()
 	SUB_AttackFinished (2 + 2*random());
 	return true;
 }
-
-//============================================================================
 
 /*
 ===========
@@ -464,47 +327,8 @@ float OgreCheckAttack ()
 
 void movetarget_f ();
 void t_movetarget ();
-//void knight_walk1 ();
-//void knight_bow6 ();
-//void knight_bow1 ();
 void T_Damage (entity etemp, entity stemp, entity stemp, float dmg);
-/*
-
-.enemy
-Will be world if not currently angry at anyone.
-
-.movetarget
-The next path spot to walk toward.  If .enemy, ignore .movetarget.
-When an enemy is killed, the monster will try to return to its path.
-
-.huntt_ime
-Set to time + something when the player is in sight, but movement straight for
-him is blocked.  This causes the monster to use wall following code for
-movement direction instead of sighting on the player.
-
-.ideal_yaw
-A yaw angle of the intended direction, which will be turned towards at up
-to 45 deg / state.  If the enemy is in view and hunt_time is not active,
-this will be the exact line towards the enemy.
-
-.pausetime
-A monster will leave its stand state and head towards its .movetarget when
-time > .pausetime.
-
-walkmove(angle, speed) primitive is all or nothing
-*/
-
-
-//
-// globals
-//
 float	current_yaw;
-
-//
-// when a monster becomes angry at a player, that monster will be used
-// as the sight target the next frame so that monsters near that one
-// will wake up even if they wouldn't have noticed the player
-//
 entity	sight_entity;
 float	sight_entity_time;
 
@@ -517,26 +341,6 @@ float anglemod (float v)
 	return v;
 }
 
-/*
-==============================================================================
-
-MOVETARGET CODE
-
-The angle of the movetarget affects standing and bowing direction, but has no effect on movement, which always heads to the next target.
-
-targetname
-must be present.  The name of this movetarget.
-
-target
-the next spot to move to.  If not present, stop here for good.
-
-pausetime
-The number of seconds to spend standing or bowing for path_stand or path_bow
-
-==============================================================================
-*/
-
-
 void movetarget_f ()
 {
 	if (!self.targetname)
@@ -548,27 +352,6 @@ void movetarget_f ()
 	
 }
 
-/* $AGRIP
-
-   Comment out for tutor_support
-   
-  QUAKED path_corner (0.5 0.3 0) (-8 -8 -8) (8 8 8)
-Monsters will continue walking towards the next target corner.
-
-void path_corner ()
-{
-	movetarget_f ();
-}
-*/
-
-/*
-=============
-t_movetarget
-
-Something has bumped into a movetarget.  If it is a monster
-moving towards it, change the next destination and continue.
-==============
-*/
 void t_movetarget ()
 {
 	entity	temp;
@@ -596,10 +379,6 @@ void t_movetarget ()
 		return;
 	}
 }
-
-
-
-//============================================================================
 
 /*
 =============
@@ -652,7 +431,6 @@ float visible (entity targ)
 	return false;
 }
 
-
 /*
 =============
 infront
@@ -675,65 +453,6 @@ float infront (entity targ)
 	}
 	return false;
 }
-
-
-//============================================================================
-
-/*
-===========
-ChangeYaw
-
-Turns towards self.ideal_yaw at self.yaw_speed
-Sets the global variable current_yaw
-Called every 0.1 sec by monsters
-============
-*/
-/*
-
-void ChangeYaw ()
-{
-	float	ideal, move;
-
-//current_yaw = self.ideal_yaw;
-// mod down the current angle
-	current_yaw = anglemod( self.angles_y );
-	ideal = self.ideal_yaw;
-	
-	if (current_yaw == ideal)
-		return;
-	
-	move = ideal - current_yaw;
-	if (ideal > current_yaw)
-	{
-		if (move > 180)
-			move = move - 360;
-	}
-	else
-	{
-		if (move < -180)
-			move = move + 360;
-	}
-		
-	if (move > 0)
-	{
-		if (move > self.yaw_speed)
-			move = self.yaw_speed;
-	}
-	else
-	{
-		if (move < 0-self.yaw_speed )
-			move = 0-self.yaw_speed;
-	}
-
-	current_yaw = anglemod (current_yaw + move);
-
-	self.angles_y = current_yaw;
-}
-
-*/
-
-
-//============================================================================
 
 void HuntTarget ()
 {
@@ -886,38 +605,6 @@ float FindTarget ()
 	return true;
 }
 
-
-//=============================================================================
-
-/*
-=============
-GetMadAtAttacker
-
-T_Damage calls this when a monster is hurt
-=============
-*/
-/* $AGRIP
-
-   Commented out for tutor_support
-
-void GetMadAtAttacker (entity attacker)
-{
-// get mad unless of the same class (except for soldiers)
-	if (self != attacker && attacker != self.enemy)
-	{
-		if ( (self.classname != attacker.classname) 
-		|| (self.classname == "monster_army" ) )
-		{
-			if (self.enemy.classname == "player")
-				self.oldenemy = self.enemy;
-			self.enemy = attacker;
-			FoundTarget ();
-		}
-	}
-}*/
-
-//=============================================================================
-
 void ai_forward (float dist)
 {
 	walkmove (self.angles_y, dist);
@@ -927,7 +614,6 @@ void ai_back (float dist)
 {
 	walkmove ( (self.angles_y+180), dist);
 }
-
 
 /*
 =============
@@ -984,7 +670,6 @@ void ai_walk (float dist)
 	movetogoal (dist);
 }
 
-
 /*
 =============
 ai_stand
@@ -1021,8 +706,6 @@ void ai_turn ()
 	
 	ChangeYaw ();
 }
-
-//=============================================================================
 
 /*
 =============
@@ -1070,32 +753,6 @@ float FacingIdeal ()
 	return true;
 }
 
-
-//=============================================================================
-
-//float WizardCheckAttack ();
-//float DogCheckAttack ();
-
-/*float CheckAnyAttack ()
-{
-	if (!enemy_vis)
-		return false;
-	if (self.classname == "monster_army")
-		return SoldierCheckAttack ();
-	if (self.classname == "monster_ogre")
-		return OgreCheckAttack ();
-	if (self.classname == "monster_shambler")
-		return ShamCheckAttack ();
-	if (self.classname == "monster_demon1")
-		return DemonCheckAttack ();
-	if (self.classname == "monster_dog")
-		return DogCheckAttack ();
-	if (self.classname == "monster_wizard")
-		return WizardCheckAttack ();
-	return CheckAttack ();
-}*/
-
-
 /*
 =============
 ai_run_melee
@@ -1115,7 +772,6 @@ void ai_run_melee ()
 	}
 }
 
-
 /*
 =============
 ai_run_missile
@@ -1133,7 +789,6 @@ void ai_run_missile ()
 		self.attack_state = AS_STRAIGHT;
 	}
 }
-
 
 /*
 =============
@@ -1160,81 +815,4 @@ void ai_run_slide ()
 	
 	walkmove (self.ideal_yaw - ofs, movedist);
 }
-
-
-/*
-=============
-ai_run
-
-The monster has an enemy it is trying to kill
-=============
-*/
-/*
-void ai_run (float dist)
-{
-	movedist = dist;
-// see if the enemy is dead
-	if (self.enemy.health <= 0 || self.enemy.flags & FL_NOTARGET)
-	{
-		self.enemy = world;
-	// FIXME: look all around for other targets
-		if (self.oldenemy.health > 0 && !(self.oldenemy.flags & FL_NOTARGET))
-		{
-			self.enemy = self.oldenemy;
-			HuntTarget ();
-		}
-		else
-		{
-			if (self.movetarget)
-				self.th_walk ();
-			else
-				self.th_stand ();
-			return;
-		}
-	}
-
-	self.show_hostile = time + 1;		// wake up other monsters
-
-// check knowledge of enemy
-	enemy_vis = visible(self.enemy);
-	if (enemy_vis)
-		self.search_time = time + 5;
-
-// look for other coop players
-	if (coop && self.search_time < time)
-	{
-		if (FindTarget ())
-			return;
-	}
-
-	enemy_infront = infront(self.enemy);
-	enemy_range = range(self.enemy);
-	enemy_yaw = vectoyaw(self.enemy.origin - self.origin);
-	
-	if (self.attack_state == AS_MISSILE)
-	{
-//dprint ("ai_run_missile\n");
-		ai_run_missile ();
-		return;
-	}
-	if (self.attack_state == AS_MELEE)
-	{
-//dprint ("ai_run_melee\n");
-		ai_run_melee ();
-		return;
-	}
-
-	if (CheckAnyAttack ())
-		return;					// beginning an attack
-		
-	if (self.attack_state == AS_SLIDING)
-	{
-		ai_run_slide ();
-		return;
-	}
-		
-// head straight in
-	movetogoal (dist);		// done in C code...
-}
-*/
 

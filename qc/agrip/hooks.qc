@@ -97,7 +97,8 @@ void() agh_world_precaches =
     precache_sound ("nav/wall-scrape.wav");
     precache_sound ("nav/door.wav");
     precache_sound ("misc/menu3.wav");      // Need replacement wall-touch
-    precache_sound ("nav/wind.wav");
+    precache_sound ("nav/wind.wav");        // del?
+    precache_sound ("ambience/windfly.wav");
     precache_sound ("misc/water2.wav");     // For the open space detection
     precache_sound ("nav/up.wav");
     precache_sound ("nav/down.wav");
@@ -377,7 +378,6 @@ void() agh_weapons_impulsecommands =
     //          104         nav/z warnings
     //          105         nav/haz warnings
     //          106         nav/side haz warnings
-    //          107         nav/space warnings
     //          108         nav/corner warnings
     //	        110         d5k
     //	        120	    esr
@@ -670,12 +670,32 @@ void() agh_weapons_impulsecommands =
 
 
     // IMMEDIATE USE ITEMS...
-     
-    // Impulse 140 triggers the compass...
-    if( self.impulse == 140 )
-        snap_misc_compass();
     
-    // Impulse 150 triggers the drop describer...
+    // Impulse  140 activates   compass
+    //          141             open space sweep
+    //          150             drop describer
+    //          160             jump describer
+    //          170             adds a marker
+    //          171             deletes last marker
+     
+    // Compass...
+    if( self.impulse == 140 )
+        snap_extnav_compass();
+
+    // Spawn a sweep object...
+    if( self.impulse == 141 )
+    {
+        local entity sweep;
+        sweep = spawn();
+        self.groundentity = sweep;
+        sweep.owner = self;
+        sweep.health = stof(infokey(self, "agv_nav_detrange"));
+        sweep.think = snap_extnav_osd;
+        sweep.nextthink = time;
+        // it will remove itself when completed.
+    }
+            
+    // Drop description...
     if( self.impulse == 150 && infokey(self, "agv_t_nav") == "1" )
     {
         // The NAV device will tell us what lies in the drop.
@@ -692,7 +712,7 @@ void() agh_weapons_impulsecommands =
             soundtoclient(self, self, CHAN_AUTO, "deny.wav", 1, ATTN_NORM);
     }
    
-    // Impulse 160 triggers the jump describer...
+    // Jump description...
     if( self.impulse == 160 )
     {
         // The NAV device will tell us if we can make the jump.
@@ -711,13 +731,13 @@ void() agh_weapons_impulsecommands =
         }
     }
 
-    // Impulse 170 adds a marker...
+    // Marker: Add
     if( self.impulse == 170 )
     {
         snap_marker_constructor();
     }
 
-    // Impulse 171 deletes the last marker...
+    // Marker: Delete last
     if( self.impulse == 171 )
     {
         snap_marker_destructor();
