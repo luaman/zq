@@ -84,12 +84,11 @@ void OnChange_maxclients (cvar_t *var, char *str, qbool *cancel) {
 
 
 void SV_FreeDelayedPackets (client_t *cl) {
-	packet_t *pack, *next;
-
-	for (pack = cl->packets; pack; pack = next) {
-		cl->packets = next = pack->next;
-		pack->next = svs.free_packets;
-		svs.free_packets = pack;
+	while (cl->packets) {
+		packet_t *next = cl->packets->next;
+		cl->packets->next = svs.free_packets;
+		svs.free_packets = cl->packets;
+		cl->packets = next;
 	}
 }
 
@@ -1078,6 +1077,9 @@ void SV_ReadPackets (void)
 			SZ_Clear(&net_message);
 			SZ_Write(&net_message, cl->packets->msg.data, cl->packets->msg.cursize);
 			SV_ExecuteClientMessage(cl);
+			if (!cl->packets)
+				break;			// if SV_ExecuteClientMessage() dropped the client,
+								// cl->packets will have been freed by SV_FreeDelayedPackets() .
 
 			// remove from queue
 			next = cl->packets->next;
