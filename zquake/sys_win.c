@@ -392,11 +392,42 @@ void Sys_Init (void)
 ==============================================================================
 */
 
+int		argc;
+char	*argv[MAX_NUM_ARGVS];
+static char	*empty_string = "";
+
+void ParseCommandLine (char *lpCmdLine)
+{
+	argc = 1;
+	argv[0] = empty_string;
+
+	while (*lpCmdLine && (argc < MAX_NUM_ARGVS))
+	{
+		while (*lpCmdLine && ((*lpCmdLine <= 32) || (*lpCmdLine > 126)))
+			lpCmdLine++;
+
+		if (*lpCmdLine)
+		{
+			argv[argc] = lpCmdLine;
+			argc++;
+
+			while (*lpCmdLine && ((*lpCmdLine > 32) && (*lpCmdLine <= 126)))
+				lpCmdLine++;
+
+			if (*lpCmdLine)
+			{
+				*lpCmdLine = 0;
+				lpCmdLine++;
+			}
+			
+		}
+	}
+}
+
 void SleepUntilInput (int time)
 {
 	MsgWaitForMultipleObjects (1, &tevent, FALSE, time, QS_ALLINPUT);
 }
-
 
 
 /*
@@ -407,8 +438,6 @@ WinMain
 HINSTANCE	global_hInstance;
 int			global_nCmdShow;
 HWND		hwnd_dialog;	// startup dialog box
-char		*argv[MAX_NUM_ARGVS];
-static char	*empty_string = "";
 
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -431,34 +460,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	parms.basedir = cwd;
 
-	parms.argc = 1;
-	argv[0] = empty_string;
+	ParseCommandLine (lpCmdLine);
 
-	while (*lpCmdLine && (parms.argc < MAX_NUM_ARGVS))
-	{
-		while (*lpCmdLine && ((*lpCmdLine <= 32) || (*lpCmdLine > 126)))
-			lpCmdLine++;
-
-		if (*lpCmdLine)
-		{
-			argv[parms.argc] = lpCmdLine;
-			parms.argc++;
-
-			while (*lpCmdLine && ((*lpCmdLine > 32) && (*lpCmdLine <= 126)))
-				lpCmdLine++;
-
-			if (*lpCmdLine)
-			{
-				*lpCmdLine = 0;
-				lpCmdLine++;
-			}
-			
-		}
-	}
-
-	parms.argv = argv;
-
-	COM_InitArgv (parms.argc, parms.argv);
+	COM_InitArgv (argc, argv);
 
 	parms.argc = com_argc;
 	parms.argv = com_argv;
