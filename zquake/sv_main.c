@@ -534,7 +534,7 @@ void SVC_DirectConnect (void)
 	if (s[0] && strcmp(s, "0"))
 	{
 		if (spectator_password.string[0] && 
-			Q_strcasecmp(spectator_password.string, "none") &&
+			Q_stricmp(spectator_password.string, "none") &&
 			strcmp(spectator_password.string, s) )
 		{	// failed
 			Com_Printf ("%s:spectator password failed\n", NET_AdrToString (net_from));
@@ -549,7 +549,7 @@ void SVC_DirectConnect (void)
 	{
 		s = Info_ValueForKey (userinfo, "password");
 		if (password.string[0] && 
-			Q_strcasecmp(password.string, "none") &&
+			Q_stricmp(password.string, "none") &&
 			strcmp(password.string, s) )
 		{
 			Com_Printf ("%s:password failed\n", NET_AdrToString (net_from));
@@ -1540,7 +1540,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		val = Info_ValueForKey (cl->userinfo, "name");
 	}
 
-	if (!val[0] || !Q_strcasecmp(val, "console")) {
+	if (!val[0] || !Q_stricmp(val, "console")) {
 		Info_SetValueForKey (cl->userinfo, "name", "unnamed", MAX_INFO_STRING);
 		val = Info_ValueForKey (cl->userinfo, "name");
 	}
@@ -1550,7 +1550,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		for (i=0, client = svs.clients ; i<MAX_CLIENTS ; i++, client++) {
 			if (client->state != cs_spawned || client == cl)
 				continue;
-			if (!Q_strcasecmp(client->name, val))
+			if (!Q_stricmp(client->name, val))
 				break;
 		}
 		if (i != MAX_CLIENTS) { // dup name

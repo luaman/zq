@@ -586,7 +586,7 @@ void CL_ParseServerData (void)
 	// game directory
 	str = MSG_ReadString ();
 
-	cl.teamfortress = !Q_strcasecmp(str, "fortress");
+	cl.teamfortress = !Q_stricmp(str, "fortress");
 	if (cl.teamfortress) {
 		extern cvar_t	v_iyaw_cycle, v_iroll_cycle, v_ipitch_cycle,
 			v_iyaw_level, v_iroll_level, v_ipitch_level, v_idlescale;
@@ -600,7 +600,7 @@ void CL_ParseServerData (void)
 		Cvar_SetValue (&v_idlescale, 0);
 	}
 
-	if (Q_strcasecmp(cls.gamedirfile, str)) {
+	if (Q_stricmp(cls.gamedirfile, str)) {
 		// save current config
 		CL_WriteConfiguration ();
 		Q_strncpyz (cls.gamedirfile, str, sizeof(cls.gamedirfile));
@@ -965,7 +965,7 @@ void CL_NewTranslation (int slot)
 		return;
 	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
 	COM_StripExtension(s, s);
-	if (player->skin && Q_strcasecmp(s, player->skin->name))
+	if (player->skin && Q_stricmp(s, player->skin->name))
 		player->skin = NULL;
 
 // teamcolor/enemycolor -->
@@ -1011,7 +1011,7 @@ void CL_NewTranslation (int slot)
 
 	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
 	COM_StripExtension(s, s);
-	if (player->skin && Q_strcasecmp(s, player->skin->name))
+	if (player->skin && Q_stricmp(s, player->skin->name))
 		player->skin = NULL;
 
 // teamcolor/enemycolor -->

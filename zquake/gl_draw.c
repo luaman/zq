@@ -345,7 +345,7 @@ qboolean OnChange_gl_texturemode (cvar_t *var, char *string)
 
 	for (i=0 ; i<6 ; i++)
 	{
-		if (!Q_strcasecmp (modes[i].name, string ) )
+		if (!Q_stricmp (modes[i].name, string ) )
 			break;
 	}
 	if (i == 6)
@@ -448,8 +448,8 @@ void Draw_Init (void)
 	Cvar_Register (&gl_smoothfont);
 
 	// 3dfx can only handle 256 wide textures
-	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4) ||
-		!Q_strncasecmp ((char *)gl_renderer, "Mesa",4))
+	if (!Q_strnicmp ((char *)gl_renderer, "3dfx",4) ||
+		!Q_strnicmp ((char *)gl_renderer, "Mesa",4))
 		Cvar_Set (&gl_max_size, "256");
 
 	// load the console background and the charset

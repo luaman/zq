@@ -1003,7 +1003,7 @@ void CL_PlayDemo_f (void)
 	Q_strncpyz (name, Cmd_Argv(1), sizeof(name)-4);
 
 #ifdef _WIN32
-	if (strlen(name) > 4 && !Q_strcasecmp(name + strlen(name) - 4, ".qwz")) {
+	if (strlen(name) > 4 && !Q_stricmp(name + strlen(name) - 4, ".qwz")) {
 		PlayQWZDemo ();
 		return;
 	}

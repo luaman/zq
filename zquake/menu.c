@@ -1698,8 +1698,8 @@ static void ReadDir (void)
 		else
 		{
 			i = strlen(fd.cFileName);
-			if (i < 5 || (Q_strcasecmp(fd.cFileName+i-4, ".qwd")
-				&& Q_strcasecmp(fd.cFileName+i-4, ".qwz")))
+			if (i < 5 || (Q_stricmp(fd.cFileName+i-4, ".qwd")
+				&& Q_stricmp(fd.cFileName+i-4, ".qwz")))
 				continue;
 			type = 0;
 			size = fd.nFileSizeLow;
@@ -1799,8 +1799,8 @@ static void ReadDir (void)
 		else
 		{
 			i = strlen(dstruct->d_name);
-			if (i < 5 || (Q_strcasecmp(dstruct->d_name+i-4, ".qwd")
-				/* && Q_strcasecmp(dstruct->d_name+i-4, ".qwz")*/ ))
+			if (i < 5 || (Q_stricmp(dstruct->d_name+i-4, ".qwd")
+				/* && Q_stricmp(dstruct->d_name+i-4, ".qwz")*/ ))
 				continue;
 			type = 0;
 			size = fileinfo.st_size;

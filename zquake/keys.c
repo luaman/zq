@@ -211,14 +211,14 @@ qboolean CheckForCommand (void)
 	command[i] = 0;
 
 	// FIXME
-	if (!Q_strcasecmp(command, "god") || !Q_strcasecmp(command, "give") ||
-		!Q_strcasecmp(command, "noclip"))
+	if (!Q_stricmp(command, "god") || !Q_stricmp(command, "give") ||
+		!Q_stricmp(command, "noclip"))
 		return true;
 
 	cmd = Cmd_CompleteCommand (command);
-	if (!cmd || Q_strcasecmp (cmd, command))
+	if (!cmd || Q_stricmp (cmd, command))
 		cmd = Cvar_CompleteVariable (command);
-	if (!cmd || Q_strcasecmp (cmd, command) )
+	if (!cmd || Q_stricmp (cmd, command) )
 		return false;		// just a chat message
 	return true;
 }
@@ -258,7 +258,7 @@ static void FindCommonSubString (char *s)
 		Q_strncpyz (compl_common, s, sizeof(compl_common));
 		compl_clen = strlen (compl_common);
 	} else {
-		while (compl_clen > compl_len && Q_strncasecmp(s, compl_common, compl_clen))
+		while (compl_clen > compl_len && Q_strnicmp(s, compl_common, compl_clen))
 			compl_clen--;
 	}
 }
@@ -295,7 +295,7 @@ void CompleteCommand (void)
 		if (c) {
 			Com_Printf ("\x02" "commands:\n");
 			for (cmd=cmd_functions ; cmd ; cmd=cmd->next) {
-				if (!Q_strncasecmp (s, cmd->name, compl_len)) {
+				if (!Q_strnicmp (s, cmd->name, compl_len)) {
 					PaddedPrint (cmd->name);
 					FindCommonSubString (cmd->name);
 				}
@@ -307,7 +307,7 @@ void CompleteCommand (void)
 		if (v) {
 			Com_Printf ("\x02" "variables:\n");
 			for (var=cvar_vars ; var ; var=var->next) {
-				if (!Q_strncasecmp (s, var->name, compl_len)) {
+				if (!Q_strnicmp (s, var->name, compl_len)) {
 					PaddedPrint (var->name);
 					FindCommonSubString (var->name);
 				}
@@ -319,7 +319,7 @@ void CompleteCommand (void)
 		if (a) {
 			Com_Printf ("\x02" "aliases:\n");
 			for (alias=cmd_alias ; alias ; alias=alias->next)
-				if (!Q_strncasecmp (s, alias->name, compl_len)) {
+				if (!Q_strnicmp (s, alias->name, compl_len)) {
 					PaddedPrint (alias->name);
 					FindCommonSubString (alias->name);
 				}
@@ -735,7 +735,7 @@ int Key_StringToKeynum (char *str)
 
 	for (kn=keynames ; kn->name ; kn++)
 	{
-		if (!Q_strcasecmp(str,kn->name))
+		if (!Q_stricmp(str,kn->name))
 			return kn->keynum;
 	}
 	return -1;
