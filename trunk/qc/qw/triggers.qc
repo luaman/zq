@@ -29,7 +29,7 @@
 void() trigger_reactivate =
 {
 	self.solid = SOLID_TRIGGER;
-};
+}
 
 //=============================================================================
 
@@ -45,7 +45,7 @@ void() multi_wait =
 		self.takedamage = DAMAGE_YES;
 		self.solid = SOLID_BBOX;
 	}
-};
+}
 
 
 // the trigger was just touched/killed/used
@@ -88,19 +88,19 @@ void() multi_trigger =
 		self.nextthink = time + 0.1;
 		self.think = SUB_Remove;
 	}
-};
+}
 
 void() multi_killed =
 {
 	self.enemy = damage_attacker;
 	multi_trigger();
-};
+}
 
 void() multi_use =
 {
 	self.enemy = activator;
 	multi_trigger();
-};
+}
 
 void() multi_touch =
 {
@@ -117,7 +117,7 @@ void() multi_touch =
 	
 	self.enemy = other;
 	multi_trigger ();
-};
+}
 
 /*QUAKED trigger_multiple (.5 .5 .5) ? notouch
 Variable sized repeatable trigger.  Must be targeted at one or more entities.  If "health" is set, the trigger must be killed to activate each time.
@@ -173,7 +173,7 @@ void() trigger_multiple =
 			self.touch = multi_touch;
 		}
 	}
-};
+}
 
 
 /*QUAKED trigger_once (.5 .5 .5) ? notouch
@@ -193,7 +193,7 @@ void() trigger_once =
 {
 	self.wait = -1;
 	trigger_multiple();
-};
+}
 
 //=============================================================================
 
@@ -203,7 +203,7 @@ This fixed size trigger cannot be touched, it can only be fired by other events.
 void() trigger_relay =
 {
 	self.use = SUB_UseTargets;
-};
+}
 
 
 //=============================================================================
@@ -238,7 +238,7 @@ void() trigger_secret =
 	}
 
 	trigger_multiple ();
-};
+}
 
 //=============================================================================
 
@@ -271,7 +271,7 @@ void() counter_use =
 		centerprint(activator, "Sequence completed!");
 	self.enemy = activator;
 	multi_trigger ();
-};
+}
 
 /*QUAKED trigger_counter (.5 .5 .5) ? nomessage
 Acts as an intermediary for an action that takes multiple inputs.
@@ -287,7 +287,7 @@ void() trigger_counter =
 		self.count = 2;
 
 	self.use = counter_use;
-};
+}
 
 
 /*
@@ -319,7 +319,7 @@ void(entity ent) play_teleport =
 		tmpstr = "misc/r_tele5.wav";
 
 	sound (ent, CHAN_VOICE, tmpstr, 1, ATTN_NORM);
-};
+}
 
 void(vector org) spawn_tfog =
 {
@@ -329,7 +329,7 @@ void(vector org) spawn_tfog =
 	WriteCoord (MSG_MULTICAST, org_y);
 	WriteCoord (MSG_MULTICAST, org_z);
 	multicast (org, MULTICAST_PVS);
-};
+}
 
 
 void() tdeath_touch =
@@ -371,7 +371,7 @@ void() tdeath_touch =
 	{
 		T_Damage (other, self, self, 50000);
 	}
-};
+}
 
 
 void(vector org, entity death_owner) spawn_tdeath =
@@ -391,7 +391,7 @@ local entity	death;
 	death.owner = death_owner;
 	
 	force_retouch = 2;		// make sure even still objects get hit
-};
+}
 
 void() teleport_touch =
 {
@@ -461,7 +461,7 @@ local entity	e;
 
 // spawn a tfog flash in front of the destination
 	spawn_tfog (t.origin + 32 * v_forward);
-};
+}
 
 /*QUAKED info_teleport_destination (.5 .5 .5) (-8 -8 -8) (8 8 32)
 This is the destination marker for a teleporter.  It should have a "targetname" field with the same value as a teleporter's "target" field.
@@ -475,14 +475,14 @@ void() info_teleport_destination =
 	self.origin = self.origin + '0 0 27';
 	if (!self.targetname)
 		objerror ("no targetname");
-};
+}
 
 void() teleport_use =
 {
 	self.nextthink = time + 0.2;
 	force_retouch = 2;		// make sure even still objects get hit
 	self.think = SUB_Null;
-};
+}
 
 /*QUAKED trigger_teleport (.5 .5 .5) ? PLAYER_ONLY SILENT
 Any object touching this will be transported to the corresponding info_teleport_destination entity. You must set the "target" field, and create an object with a "targetname" field that matches.
@@ -506,7 +506,7 @@ void() trigger_teleport =
 		o = (self.mins + self.maxs)*0.5;
 		ambientsound (o, "ambience/hum1.wav",0.5 , ATTN_STATIC);
 	}
-};
+}
 
 
 /*
@@ -523,7 +523,7 @@ void() trigger_skill_touch =
 		return;
 		
 	cvar_set ("skill", self.message);
-};
+}
 
 /*QUAKED trigger_setskill (.5 .5 .5) ?
 sets skill level to the value of "message".
@@ -539,7 +539,7 @@ void() trigger_setskill =
 
 	InitTrigger ();
 	self.touch = trigger_skill_touch;
-};
+}
 
 
 /*
@@ -572,7 +572,7 @@ void() trigger_onlyregistered_touch =
 			sound (other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM);
 		}
 	}
-};
+}
 
 /*QUAKED trigger_onlyregistered (.5 .5 .5) ?
 Only fires if playing the registered version, otherwise prints the message
@@ -582,7 +582,7 @@ void() trigger_onlyregistered =
 	precache_sound ("misc/talk.wav");
 	InitTrigger ();
 	self.touch = trigger_onlyregistered_touch;
-};
+}
 
 //============================================================================
 
@@ -590,7 +590,7 @@ void() hurt_on =
 {
 	self.solid = SOLID_TRIGGER;
 	self.nextthink = -1;
-};
+}
 
 void() hurt_touch =
 {
@@ -603,7 +603,7 @@ void() hurt_touch =
 	}
 
 	return;
-};
+}
 
 /*QUAKED trigger_hurt (.5 .5 .5) ?
 Any object touching this will be hurt
@@ -616,7 +616,7 @@ void() trigger_hurt =
 	self.touch = hurt_touch;
 	if (!self.dmg)
 		self.dmg = 5;
-};
+}
 
 //============================================================================
 
@@ -640,7 +640,7 @@ void() trigger_push_touch =
 	}
 	if (self.spawnflags & PUSH_ONCE)
 		remove(self);
-};
+}
 
 
 /*QUAKED trigger_push (.5 .5 .5) ? PUSH_ONCE
@@ -653,7 +653,7 @@ void() trigger_push =
 	self.touch = trigger_push_touch;
 	if (!self.speed)
 		self.speed = 1000;
-};
+}
 
 //============================================================================
 
@@ -672,7 +672,7 @@ void() trigger_monsterjump_touch =
 	other.flags = other.flags - FL_ONGROUND;
 
 	other.velocity_z = self.height;
-};
+}
 
 /*QUAKED trigger_monsterjump (.5 .5 .5) ?
 Walking monsters that touch this will jump in the direction of the trigger's angle
@@ -689,5 +689,5 @@ void() trigger_monsterjump =
 		self.angles = '0 360 0';
 	InitTrigger ();
 	self.touch = trigger_monsterjump_touch;
-};
+}
 

@@ -180,7 +180,7 @@ void() main =
 	precache_file2 ("maps/dm5.bsp");
 	precache_file2 ("maps/dm6.bsp");
 */
-};
+}
 
 
 entity  lastspawn;
@@ -384,7 +384,7 @@ void() worldspawn =
 	deathmatch = cvar("deathmatch");
 	skill = cvar("skill");
 	coop = cvar("coop");
-};
+}
 
 void() StartFrame =
 {
@@ -396,7 +396,7 @@ void() StartFrame =
 
 	if (deathmatch && timelimit && time >= timelimit)
 		NextLevel ();
-};
+}
 
 /*
 ==============================================================================
@@ -411,7 +411,7 @@ entity  bodyque_head;
 void() bodyque =
 {	// just here so spawn functions don't complain after the world
 	// creates bodyques
-};
+}
 
 void() InitBodyQue =
 {
@@ -424,7 +424,7 @@ void() InitBodyQue =
 	bodyque_head.owner.owner.owner = spawn();
 	bodyque_head.owner.owner.owner.classname = "bodyque";
 	bodyque_head.owner.owner.owner.owner = bodyque_head;
-};
+}
 
 
 // make a body que entry for the given ent so the ent can be
@@ -442,4 +442,4 @@ void(entity ent) CopyToBodyQue =
 	setorigin (bodyque_head, ent.origin);
 	setsize (bodyque_head, ent.mins, ent.maxs);
 	bodyque_head = bodyque_head.owner;
-};
+}

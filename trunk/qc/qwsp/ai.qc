@@ -69,7 +69,7 @@ float(float v) anglemod =
 	while (v < 0)
 		v = v + 360;
 	return v;
-};
+}
 
 /*
 ==============================================================================
@@ -100,7 +100,7 @@ void() movetarget_f =
 	self.touch = t_movetarget;
 	setsize (self, '-8 -8 -8', '8 8 8');
 	
-};
+}
 
 /*QUAKED path_corner (0.5 0.3 0) (-8 -8 -8) (8 8 8)
 Monsters will continue walking towards the next target corner.
@@ -108,7 +108,7 @@ Monsters will continue walking towards the next target corner.
 void() path_corner =
 {
 	movetarget_f ();
-};
+}
 
 
 /*
@@ -145,7 +145,7 @@ local entity	temp;
 		self.th_stand ();
 		return;
 	}
-};
+}
 
 
 
@@ -177,7 +177,7 @@ local float		r;
 	if (r < 1000)
 		return RANGE_MID;
 	return RANGE_FAR;
-};
+}
 
 /*
 =============
@@ -200,7 +200,7 @@ float (entity targ) visible =
 	if (trace_fraction == 1)
 		return TRUE;
 	return FALSE;
-};
+}
 
 
 /*
@@ -224,7 +224,7 @@ float(entity targ) infront =
 		return TRUE;
 	}
 	return FALSE;
-};
+}
 
 
 //============================================================================
@@ -278,7 +278,7 @@ void() ChangeYaw =
 	current_yaw = anglemod (current_yaw + move);
 
 	self.angles_y = current_yaw;
-};
+}
 
 */
 
@@ -292,7 +292,7 @@ void() HuntTarget =
 	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
 	self.nextthink = time + 0.1;
 	SUB_AttackFinished (1);	// wait a while before first attack
-};
+}
 
 void() SightSound =
 {
@@ -334,7 +334,7 @@ local float	rsnd;
 		sound (self, CHAN_VOICE, "soldier/sight1.wav", 1, ATTN_NORM);
 	else if (self.classname == "monster_shalrath")
 		sound (self, CHAN_VOICE, "shalrath/sight.wav", 1, ATTN_NORM);
-};
+}
 
 void() FoundTarget =
 {
@@ -348,7 +348,7 @@ void() FoundTarget =
 
 	SightSound ();
 	HuntTarget ();
-};
+}
 
 /*
 ===========
@@ -434,7 +434,7 @@ float() FindTarget =
 	FoundTarget ();
 
 	return TRUE;
-};
+}
 
 
 //=============================================================================
@@ -460,19 +460,19 @@ void(entity attacker) GetMadAtAttacker =
 			FoundTarget ();
 		}
 	}
-};
+}
 
 //=============================================================================
 
 void(float dist) ai_forward =
 {
 	walkmove (self.angles_y, dist);
-};
+}
 
 void(float dist) ai_back =
 {
 	walkmove ( (self.angles_y+180), dist);
-};
+}
 
 
 /*
@@ -493,7 +493,7 @@ void(float dist) ai_pain =
 	
 	walkmove (away, dist);
 */
-};
+}
 
 /*
 =============
@@ -505,7 +505,7 @@ stagger back a bit
 void(float dist) ai_painforward =
 {
 	walkmove (self.ideal_yaw, dist);
-};
+}
 
 /*
 =============
@@ -530,7 +530,7 @@ void(float dist) ai_walk =
 		return;
 
 	movetogoal (dist);
-};
+}
 
 
 /*
@@ -553,7 +553,7 @@ void() ai_stand =
 	
 // change angle slightly
 
-};
+}
 
 /*
 =============
@@ -568,7 +568,7 @@ void() ai_turn =
 		return;
 	
 	ChangeYaw ();
-};
+}
 
 //=============================================================================
 
@@ -600,7 +600,7 @@ void(vector dest3) ChooseTurn =
 
 	dir_z = 0;
 	self.ideal_yaw = vectoyaw(dir);	
-};
+}
 
 /*
 ============
@@ -616,7 +616,7 @@ float() FacingIdeal =
 	if (delta > 45 && delta < 315)
 		return FALSE;
 	return TRUE;
-};
+}
 
 
 //=============================================================================
@@ -641,7 +641,7 @@ float() CheckAnyAttack =
 	if (self.classname == "monster_wizard")
 		return WizardCheckAttack ();
 	return CheckAttack ();
-};
+}
 
 
 /*
@@ -661,7 +661,7 @@ void() ai_run_melee =
 		self.th_melee ();
 		self.attack_state = AS_STRAIGHT;
 	}
-};
+}
 
 
 /*
@@ -680,7 +680,7 @@ void() ai_run_missile =
 		self.th_missile ();
 		self.attack_state = AS_STRAIGHT;
 	}
-};
+}
 
 
 /*
@@ -707,7 +707,7 @@ void() ai_run_slide =
 	self.lefty = 1 - self.lefty;
 	
 	walkmove (self.ideal_yaw - ofs, movedist);
-};
+}
 
 
 /*
@@ -786,5 +786,5 @@ void(float dist) ai_run =
 		
 // head straight in
 	movetogoal (dist);		// done in C code...
-};
+}
 

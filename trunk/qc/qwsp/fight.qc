@@ -60,7 +60,7 @@ void() knight_attack =
 		knight_atk1 ();
 	else
 		knight_runatk1 ();
-};
+}
 
 //=============================================================================
 
@@ -144,7 +144,7 @@ float() CheckAttack =
 	}
 
 	return FALSE;
-};
+}
 
 
 /*
@@ -158,7 +158,7 @@ void() ai_face =
 {
 	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
 	ChangeYaw ();
-};
+}
 
 /*
 =============
@@ -175,7 +175,7 @@ void(float d) ai_charge =
 {
 	ai_face ();	
 	movetogoal (d);		// done in C code...
-};
+}
 
 void() ai_charge_side =
 {
@@ -192,7 +192,7 @@ void() ai_charge_side =
 	heading = vectoyaw(dtemp - self.origin);
 	
 	walkmove(heading, 20);
-};
+}
 
 
 /*
@@ -216,7 +216,7 @@ void() ai_melee =
 		
 	ldmg = (random() + random() + random()) * 3;
 	T_Damage (self.enemy, self, self, ldmg);
-};
+}
 
 
 void() ai_melee_side =
@@ -237,7 +237,7 @@ void() ai_melee_side =
 		return;
 	ldmg = (random() + random() + random()) * 3;
 	T_Damage (self.enemy, self, self, ldmg);
-};
+}
 
 
 //=============================================================================
@@ -298,7 +298,7 @@ float() SoldierCheckAttack =
 	}
 
 	return FALSE;
-};
+}
 //=============================================================================
 
 /*
@@ -356,7 +356,7 @@ float() ShamCheckAttack =
 	self.attack_state = AS_MISSILE;
 	SUB_AttackFinished (2 + 2*random());
 	return TRUE;
-};
+}
 
 //============================================================================
 
@@ -422,5 +422,5 @@ float() OgreCheckAttack =
 	self.attack_state = AS_MISSILE;
 	SUB_AttackFinished (1 + 2*random());
 	return TRUE;
-};
+}
 

@@ -59,7 +59,7 @@ Use mangle instead of angle, so you can set pitch or roll as well as yaw.  'pitc
 void() info_intermission =
 {
 	self.angles = self.mangle;      // so C can get at it
-};
+}
 
 
 
@@ -92,7 +92,7 @@ void() SetChangeParms =
 	parm7 = self.ammo_cells;
 	parm8 = self.weapon;
 	parm9 = self.armortype * 100;
-};
+}
 
 void() SetNewParms =
 {
@@ -105,7 +105,7 @@ void() SetNewParms =
 	parm7 = 0;
 	parm8 = 1;
 	parm9 = 0;
-};
+}
 
 void() DecodeLevelParms =
 {
@@ -124,7 +124,7 @@ void() DecodeLevelParms =
 	self.ammo_cells = parm7;
 	self.weapon = parm8;
 	self.armortype = parm9 * 0.01;
-};
+}
 
 /*
 ============
@@ -159,7 +159,7 @@ entity() FindIntermission =
 		objerror ("FindIntermission: no spot");
 
 	return spot;
-};
+}
 
 
 void() GotoNextMap =
@@ -181,7 +181,7 @@ void() GotoNextMap =
 		else
 			changelevel (nextmap);
 	}
-};
+}
 
 
 
@@ -201,7 +201,7 @@ void() IntermissionThink =
 		return;
 	
 	ExitIntermission ();
-};
+}
 
 /*
 ============
@@ -255,7 +255,7 @@ void() execute_changelevel =
 		other = find (other, classname, "player");
 	}       
 
-};
+}
 
 
 void() changelevel_touch =
@@ -294,7 +294,7 @@ void() changelevel_touch =
 // in the middle of C movement code, so set a think time to do it
 	self.think = execute_changelevel;
 	self.nextthink = time + 0.1;
-};
+}
 
 /*QUAKED trigger_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
 When the player touches this, he gets sent to the map listed in the "map" variable.  Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
@@ -306,7 +306,7 @@ void() trigger_changelevel =
 	
 	InitTrigger ();
 	self.touch = changelevel_touch;
-};
+}
 
 
 /*
@@ -344,7 +344,7 @@ void() respawn =
 	{	// restart the entire server
 		changelevel (mapname);
 	}
-};
+}
 
 
 /*
@@ -366,7 +366,7 @@ void() ClientKill =
 	logfrag (self, self);
 	self.frags = self.frags - 2;    // extra penalty
 	respawn ();
-};
+}
 
 
 /*
@@ -469,7 +469,7 @@ entity() SelectSpawnPoint =
 	}
 	return spot;
 
-};
+}
 
 
 void() DecodeLevelParms;
@@ -596,7 +596,7 @@ void() PutClientInServer =
 	}
 
 
-};
+}
 
 
 /*
@@ -613,7 +613,7 @@ The normal starting point for a level.
 */
 void() info_player_start =
 {
-};
+}
 
 
 /*QUAKED info_player_start2 (1 0 0) (-16 -16 -24) (16 16 24)
@@ -621,21 +621,21 @@ Only used on start map for the return point from an episode.
 */
 void() info_player_start2 =
 {
-};
+}
 
 /*QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 24)
 potential spawning position for deathmatch games
 */
 void() info_player_deathmatch =
 {
-};
+}
 
 /*QUAKED info_player_coop (1 0 1) (-16 -16 -24) (16 16 24)
 potential spawning position for coop games
 */
 void() info_player_coop =
 {
-};
+}
 
 /*
 ===============================================================================
@@ -703,7 +703,7 @@ void() NextLevel =
 		o.think = execute_changelevel;
 		o.nextthink = time + 0.1;
 	}
-};
+}
 
 /*
 ============
@@ -716,7 +716,7 @@ void() CheckRules =
 {       
 	if (deathmatch && fraglimit && self.frags >= fraglimit)
 		NextLevel ();
-};
+}
 
 //============================================================================
 
@@ -751,7 +751,7 @@ void() PlayerDeathThink =
 	self.button1 = 0;
 	self.button2 = 0;
 	respawn();
-};
+}
 
 
 void() PlayerJump =
@@ -785,7 +785,7 @@ void() PlayerJump =
 
 // player jumping sound
 	sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
-};
+}
 
 
 /*
@@ -872,7 +872,7 @@ void() WaterMove =
 		self.flags = self.flags + FL_INWATER;
 		self.dmgtime = 0;
 	}       
-};
+}
 
 /*
 ================
@@ -921,7 +921,7 @@ void() PlayerPreThink =
 		self.weapon = W_BestWeapon ();
 		W_SetCurrentAmmo ();
 	}
-};
+}
 	
 /*
 ================
@@ -1098,7 +1098,7 @@ void() CheckPowerups =
 		}
 	}       
 
-};
+}
 
 
 /*
@@ -1140,7 +1140,7 @@ void() PlayerPostThink =
 	CheckPowerups ();
 
 	W_WeaponFrame ();
-};
+}
 
 
 /*
@@ -1161,7 +1161,7 @@ void() ClientConnect =
 // a client connecting during an intermission can cause problems
 	if (intermission_running)
 		GotoNextMap ();
-};
+}
 
 
 /*
@@ -1183,7 +1183,7 @@ void() ClientDisconnect =
 	bprint (PRINT_HIGH, " frags\n");
 	sound (self, CHAN_BODY, "player/tornoff2.wav", 1, ATTN_NONE);
 	set_suicide_frame ();
-};
+}
 
 /*
 ===========
@@ -1491,4 +1491,4 @@ void(entity targ, entity attacker) ClientObituary =
 			bprint (PRINT_MEDIUM," died\n");
 		}
 	}
-};
+}

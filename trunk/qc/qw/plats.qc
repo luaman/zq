@@ -66,7 +66,7 @@ void() plat_spawn_inside_trigger =
 	}
 	
 	setsize (trigger, tmin, tmax);
-};
+}
 
 void() plat_hit_top =
 {
@@ -74,27 +74,27 @@ void() plat_hit_top =
 	self.state = STATE_TOP;
 	self.think = plat_go_down;
 	self.nextthink = self.ltime + 3;
-};
+}
 
 void() plat_hit_bottom =
 {
 	sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.state = STATE_BOTTOM;
-};
+}
 
 void() plat_go_down =
 {
 	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	self.state = STATE_DOWN;
 	SUB_CalcMove (self.pos2, self.speed, plat_hit_bottom);
-};
+}
 
 void() plat_go_up =
 {
 	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	self.state = STATE_UP;
 	SUB_CalcMove (self.pos1, self.speed, plat_hit_top);
-};
+}
 
 void() plat_center_touch =
 {
@@ -109,7 +109,7 @@ void() plat_center_touch =
 		plat_go_up ();
 	else if (self.state == STATE_TOP)
 		self.nextthink = self.ltime + 1;	// delay going down
-};
+}
 
 void() plat_outside_touch =
 {
@@ -123,14 +123,14 @@ void() plat_outside_touch =
 	self = self.enemy;
 	if (self.state == STATE_TOP)
 		plat_go_down ();
-};
+}
 
 void() plat_trigger_use =
 {
 	if (self.think)
 		return;		// already activated
 	plat_go_down();
-};
+}
 
 
 void() plat_crush =
@@ -146,7 +146,7 @@ void() plat_crush =
 		plat_go_up ();
 	else
 		objerror ("plat_crush: bad self.state\n");
-};
+}
 
 void() plat_use =
 {
@@ -154,7 +154,7 @@ void() plat_use =
 	if (self.state != STATE_UP)
 		objerror ("plat_use: not in up state");
 	plat_go_down();
-};
+}
 
 
 /*QUAKED func_plat (0 .5 .8) ? PLAT_LOW_TRIGGER
@@ -235,7 +235,7 @@ void() func_plat =
 		setorigin (self, self.pos2);
 		self.state = STATE_BOTTOM;
 	}
-};
+}
 
 //============================================================================
 
@@ -249,14 +249,14 @@ void() train_blocked =
 	self.attack_finished = time + 0.5;
 	other.deathtype = "squish";
 	T_Damage (other, self, self, self.dmg);
-};
+}
 
 void() train_use =
 {
 	if (self.think != func_train_find)
 		return;		// already activated
 	train_next();
-};
+}
 
 void() train_wait =
 {
@@ -269,7 +269,7 @@ void() train_wait =
 		self.nextthink = self.ltime + 0.1;
 	
 	self.think = train_next;
-};
+}
 
 void() train_next =
 {
@@ -285,7 +285,7 @@ void() train_next =
 		self.wait = 0;
 	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	SUB_CalcMove (targ.origin - self.mins, self.speed, train_wait);
-};
+}
 
 void() func_train_find =
 
@@ -300,7 +300,7 @@ void() func_train_find =
 		self.nextthink = self.ltime + 0.1;
 		self.think = train_next;
 	}
-};
+}
 
 /*QUAKED func_train (0 .5 .8) ?
 Trains are moving platforms that players can ride.
@@ -352,7 +352,7 @@ void() func_train =
 // a chance to spawn
 	self.nextthink = self.ltime + 0.1;
 	self.think = func_train_find;
-};
+}
 
 /*QUAKED misc_teleporttrain (0 .5 .8) (-8 -8 -8) (8 8 8)
 This is used for the final bos
@@ -384,5 +384,5 @@ void() misc_teleporttrain =
 // a chance to spawn
 	self.nextthink = self.ltime + 0.1;
 	self.think = func_train_find;
-};
+}
 

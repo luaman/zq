@@ -128,4 +128,4 @@ void(string item, string amount) Cmd_Give = {
 		sprint (self, PRINT_HIGH, item);
 		sprint (self, PRINT_HIGH, "\n");
 	}
-};
+}
