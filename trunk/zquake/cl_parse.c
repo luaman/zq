@@ -1084,6 +1084,9 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 	else
 		player->spectator = false;
 
+	if (slot == cl.playernum)
+		cl.spectator = player->spectator;
+
 	if (cls.state == ca_active)
 		Skin_Find (player);
 
@@ -1147,7 +1150,7 @@ void CL_SetInfo (void)
 	if (!cl.teamfortress)	// don't allow cheating in TF
 		Con_DPrintf("SETINFO %s: %s=%s\n", player->name, key, value);
 
-	Info_SetValueForKey (player->userinfo, key, value, MAX_INFO_STRING);
+	Info_SetValueForStarKey (player->userinfo, key, value, MAX_INFO_STRING);
 
 	CL_ProcessUserInfo (slot, player);
 }
