@@ -287,6 +287,8 @@ float Q_atof (char *str);
 void Q_strncpyz (char *dest, char *src, size_t size);
 void Q_snprintfz (char *dest, size_t size, char *fmt, ...);
 
+int HashKey (char *name);
+
 //============================================================================
 
 extern	char		com_token[1024];

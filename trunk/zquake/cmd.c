@@ -404,33 +404,6 @@ void Cmd_Echo_f (void)
 /*
 =============================================================================
 
-								HASH
-
-=============================================================================
-*/
-
-/*
-==========
-Key
-==========
-Returns hash key for a string
-*/
-static int Key (char *name)
-{
-	int	v;
-	int c;
-
-	v = 0;
-	while ( (c = *name++) != 0 )
-//		v += *name;
-		v += c &~ 32;	// make it case insensitive
-
-	return v % 32;
-}
-
-/*
-=============================================================================
-
 								ALIASES
 
 =============================================================================
@@ -444,7 +417,7 @@ cmd_alias_t *Cmd_FindAlias (char *name)
 	int			key;
 	cmd_alias_t *alias;
 
-	key = Key (name);
+	key = HashKey (name);
 	for (alias = cmd_alias_hash[key] ; alias ; alias = alias->hash_next)
 	{
 		if (!Q_strcasecmp(name, alias->name))
@@ -458,7 +431,7 @@ char *Cmd_AliasString (char *name)
 	int			key;
 	cmd_alias_t *alias;
 
-	key = Key (name);
+	key = HashKey (name);
 	for (alias = cmd_alias_hash[key] ; alias ; alias = alias->hash_next)
 	{
 		if (!Q_strcasecmp(name, alias->name))
@@ -546,7 +519,7 @@ void Cmd_Alias_f (void)
 	}
 #endif
 
-	key = Key(s);
+	key = HashKey(s);
 
 	// if the alias already exists, reuse it
 	for (a = cmd_alias_hash[key] ; a ; a=a->hash_next)
@@ -589,7 +562,7 @@ qboolean Cmd_DeleteAlias (char *name)
 	cmd_alias_t	*a, *prev;
 	int			key;
 
-	key = Key (name);
+	key = HashKey (name);
 
 	prev = NULL;
 	for (a = cmd_alias_hash[key] ; a ; a = a->hash_next)
@@ -813,7 +786,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 		return;
 	}
 	
-	key = Key (cmd_name);
+	key = HashKey (cmd_name);
 
 // fail if the command already exists
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
@@ -845,7 +818,7 @@ qboolean Cmd_Exists (char *cmd_name)
 	int	key;
 	cmd_function_t	*cmd;
 
-	key = Key (cmd_name);
+	key = HashKey (cmd_name);
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
 		if (!Q_strcasecmp (cmd_name, cmd->name))
@@ -866,7 +839,7 @@ cmd_function_t *Cmd_FindCommand (char *cmd_name)
 	int	key;
 	cmd_function_t	*cmd;
 
-	key = Key (cmd_name);
+	key = HashKey (cmd_name);
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
 	{
 		if (!Q_strcasecmp (cmd_name, cmd->name))
@@ -1101,7 +1074,7 @@ void Cmd_ExecuteString (char *text)
 	}
 #endif
 
-	key = Key (cmd_argv[0]);
+	key = HashKey (cmd_argv[0]);
 
 // check functions
 	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)

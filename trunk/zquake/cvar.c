@@ -30,26 +30,6 @@ static char		*cvar_null_string = "";
 
 
 /*
-==========
-Key
-
-Returns hash key for a string
-==========
-*/
-static int Key (char *name)
-{
-	int	v;
-	int c;
-
-	v = 0;
-	while ( (c = *name++) != 0 )
-//		v += *name;
-		v += c &~ 32;	// very lame, but works (case insensitivity)
-
-	return v % 32;
-}
-
-/*
 ============
 Cvar_FindVar
 ============
@@ -59,7 +39,7 @@ cvar_t *Cvar_FindVar (char *var_name)
 	cvar_t	*var;
 	int		key;
 
-	key = Key (var_name);
+	key = HashKey (var_name);
 	
 	for (var=cvar_hash[key] ; var ; var=var->hash_next)
 		if (!Q_strcasecmp (var_name, var->name))
@@ -288,7 +268,7 @@ void Cvar_Register (cvar_t *var)
 	var->value = Q_atof (var->string);
 
 	// link the variable in
-	key = Key (var->name);
+	key = HashKey (var->name);
 	var->hash_next = cvar_hash[key];
 	cvar_hash[key] = var;
 	var->next = cvar_vars;
@@ -434,7 +414,7 @@ cvar_t *Cvar_Create (char *name, char *string, int cvarflags)
 	v->next = cvar_vars;
 	cvar_vars = v;
 
-	key = Key (name);
+	key = HashKey (name);
 	v->hash_next = cvar_hash[key];
 	cvar_hash[key] = v;
 
@@ -457,7 +437,7 @@ qboolean Cvar_Delete (char *name)
 	cvar_t	*var, *prev;
 	int		key;
 
-	key = Key (name);
+	key = HashKey (name);
 
 	prev = NULL;
 	for (var = cvar_hash[key] ; var ; var=var->hash_next)
