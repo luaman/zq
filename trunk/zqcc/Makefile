@@ -70,11 +70,11 @@ ifeq ($(CC_BASEVERSION),2)
 	BASE_RELEASE_CFLAGS	+= -O3
 else
 	BASE_RELEASE_CFLAGS	+= -O6
-	ifeq ($(ARCH),ppc)
-		BASE_RELEASE_CFLAGS	+= -falign-loops=16 -falign-jumps=16 -falign-functions=16
-	else
-		BASE_RELEASE_CFLAGS	+= -falign-loops=2 -falign-jumps=2 -falign-functions=2
-	endif
+ifeq ($(ARCH),ppc)
+	BASE_RELEASE_CFLAGS	+= -falign-loops=16 -falign-jumps=16 -falign-functions=16
+else
+	BASE_RELEASE_CFLAGS	+= -falign-loops=2 -falign-jumps=2 -falign-functions=2
+endif
 endif
 BASE_DEBUG_CFLAGS		 =-g -D_DEBUG
 
@@ -121,11 +121,11 @@ ifeq ($(_DEBUG),0)
 endif
 
 ifndef CFLAGS
-	ifneq ($(_DEBUG),0)
-		CFLAGS			 =$(DEBUG_CFLAGS)
-	else
-		CFLAGS			 =$(RELEASE_CFLAGS)
-	endif
+ifneq ($(_DEBUG),0)
+	CFLAGS			 =$(DEBUG_CFLAGS)
+else
+	CFLAGS			 =$(RELEASE_CFLAGS)
+endif
 endif
 
 #======================================================================
@@ -156,8 +156,18 @@ release:
 	@echo "*** Generating $(TARGETS) (release version)..."
 	@$(MAKE) $(MYMAKEFLAGS) _RELEASE=1 BUILD_DIR="$(RELEASE_BUILD_DIR)" CFLAGS="$(RELEASE_CFLAGS)" target
 
-target:					 $(TARGETS)
-	@echo "*** $(TARGETS) has been generated!"
+target:					 $(TARGETS) striptargets
+	@echo "*** Target(s) $(TARGETS) have been built"
+
+striptargets:			 $(TARGETS)
+ifneq ($(_RELEASE),0)
+ifeq ($(ARCH),mingw32)	# Win32/x86 in MingW environment
+	strip $(addsuffix .exe,$(TARGETS))
+else
+	strip $(TARGETS)
+endif
+	@echo "*** Release target(s) $(TARGETS) have been stripped"
+endif
 
 
 #-----------------------
@@ -227,7 +237,7 @@ zqcc_debug:				 $(ZQCC_OBJS)
 		$(LDFLAGS)
 
 winres.o:				 zqcc.rc resource.h
-	windres zqcc.rc $@
+	windres $(filter -D%,$(CFLAGS)) -i zqcc.rc -o $@
 
 #-----------------------
 # dependencies
