@@ -185,8 +185,8 @@ Cmd_Soundlist_f
 */
 static void Cmd_Soundlist_f (void)
 {
-	char		**s;
-	unsigned	n;
+	char	**s;
+	int		n;
 
 	if (sv_client->state != cs_connected)
 	{
@@ -203,7 +203,7 @@ static void Cmd_Soundlist_f (void)
 	}
 
 	n = atoi(Cmd_Argv(2));
-	if (n >= (MAX_SOUNDS - 1)) {
+	if ((unsigned)n >= (MAX_SOUNDS - 1)) {
 		SV_ClientPrintf (sv_client, PRINT_HIGH, 
 			"Cmd_Soundlist_f: Invalid soundlist index\n");
 		SV_DropClient (sv_client);
@@ -220,15 +220,15 @@ static void Cmd_Soundlist_f (void)
 
 	MSG_WriteByte (&sv_client->netchan.message, svc_soundlist);
 	MSG_WriteByte (&sv_client->netchan.message, n);
-	for (s = sv.sound_name + 1 + n ; 
-		*s && sv_client->netchan.message.cursize < (MAX_MSGLEN/2); 
+	for (s = sv.sound_name + 1 + n ;
+		n < MAX_SOUNDS - 1 && *s && sv_client->netchan.message.cursize < (MAX_MSGLEN/2); 
 		s++, n++)
 		MSG_WriteString (&sv_client->netchan.message, *s);
 
 	MSG_WriteByte (&sv_client->netchan.message, 0);
 
 	// next msg
-	if (*s)
+	if (n < MAX_SOUNDS - 1 && *s)
 		MSG_WriteByte (&sv_client->netchan.message, n);
 	else
 		MSG_WriteByte (&sv_client->netchan.message, 0);
