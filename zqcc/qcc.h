@@ -235,6 +235,11 @@ There are no ++ / -- operators, or operate/assign operators.
 typedef int	gofs_t;				// offset in global data block
 struct def_t;
 
+// varargs bit is hacked into type->num_parms
+const int VA_BIT = 16;
+const int VA_MASK = 15;
+
+
 struct type_t
 {
 	etype_t		type;
@@ -242,7 +247,7 @@ struct type_t
 
 // function types are more complex
 	type_t		*aux_type;		// return type or field type
-	int			num_parms;		// -1 = variable args
+	int			num_parms;		// number of required parms ( + VA_BIT if variable parms)
 	type_t		*parm_types[MAX_PARMS];	// only [num_parms] allocated
 
 	type_t		*next;
