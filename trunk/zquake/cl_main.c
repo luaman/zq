@@ -507,7 +507,7 @@ void CL_ConnectionlessPacket (void)
 		Con_Printf ("print\n");
 
 		s = MSG_ReadString ();
-		Con_Print (s);
+		Con_Printf ("%s", s);
 		return;
 	}
 
