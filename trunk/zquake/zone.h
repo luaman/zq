@@ -40,7 +40,7 @@ strings from command input.  There is only about 48K for it, allocated at
 the very bottom of the hunk.
 
 Cache_??? Cache memory is for objects that can be dynamically loaded and
-can usefully stay persistant between levels.  The size of the cache
+can usefully stay persistent between levels.  The size of the cache
 fluctuates from level to level.
 
 To allocate a cachable object
