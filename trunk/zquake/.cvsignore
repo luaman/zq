@@ -17,13 +17,5 @@ tags
 zqclient.mak
 zqds.mak
 zquake.mak
-Debug
-Debug-client
-Debug-client-gl
-Debug-gl
-Debug-server
-Release
-Release-client
-Release-client-gl
-Release-gl
-Release-server
+Debug*
+Release*
