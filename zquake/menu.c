@@ -1285,7 +1285,7 @@ static void StartNewGame (void)
 	Cvar_Set (&teamplay, "0");
 	Cvar_Set (&deathmatch, "0");
 	Cvar_Set (&coop, "0");
-	if (sv.state != ss_dead)
+	if (com_serveractive)
 		Cbuf_AddText ("disconnect\n");
 //	Cbuf_AddText ("gamedir qw\n");
 	Cbuf_AddText ("map start\n");
@@ -1355,7 +1355,7 @@ void M_SinglePlayer_Key (int key)
 				m_entersound = true;
 				return;
 			}
-			if (sv.state != ss_dead) {
+			if (com_serveractive) {
 				// bring up confirmation dialog
 				m_singleplayer_confirm = true;
 				m_entersound = true;

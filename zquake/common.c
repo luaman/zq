@@ -43,7 +43,8 @@ static char	*safeargvs[NUM_SAFE_ARGVS] =
 cvar_t	developer = {"developer","0"};
 cvar_t	registered = {"registered","0"};
 
-qboolean	com_debuglog;
+qboolean com_debuglog = false;
+qboolean com_serveractive = false;
 
 void COM_InitFilesystem (void);
 void COM_Path_f (void);
