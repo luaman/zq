@@ -414,7 +414,7 @@ void VID_Init (unsigned char *palette)
 	mainwindow = CreateWindowEx (
 		ExWindowStyle,
 		"WinQuake",
-		"ZQuake",
+		PROGRAM,
 		WindowStyle,
 		0, 0,
 		320,

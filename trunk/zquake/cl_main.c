@@ -341,7 +341,7 @@ void CL_Disconnect (void)
 	server_version = 0;
 	cl.teamfortress = false;
 
-	VID_SetCaption ("ZQuake");
+	VID_SetCaption (PROGRAM);
 
 // stop sounds (especially looping!)
 	S_StopAllSounds (true);

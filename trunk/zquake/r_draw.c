@@ -836,7 +836,7 @@ void Draw_ConsoleBackground (int lines)
 		strcpy (ver, PROGRAM_VERSION);
 		dest = conback->data + 320 + 320*186 - 11 - 8*strlen(ver);
 	} else {
-		sprintf (ver, "ZQuake %s", PROGRAM_VERSION);
+		sprintf (ver, PROGRAM " %s", PROGRAM_VERSION);
 		dest = conback->data + 320 - (strlen(ver)*8 + 11) + 320*186;
 	}
 
