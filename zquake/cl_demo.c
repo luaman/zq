@@ -821,55 +821,6 @@ void CL_EasyRecord_f (void)
 }
 
 
-/*
-====================
-CL_ReRecord_f
-
-rerecord <demoname>
-====================
-*/
-void CL_ReRecord_f (void)
-{
-	int		c;
-	char	name[MAX_OSPATH];
-
-	c = Cmd_Argc();
-	if (c != 2)
-	{
-		Con_Printf ("rerecord <demoname>\n");
-		return;
-	}
-
-	if (!*cls.servername) {
-		Con_Printf("No server to reconnect to...\n");
-		return;
-	}
-
-	if (cls.demorecording)
-		CL_Stop_f();
-  
-	sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
-
-//
-// open the demo file
-//
-	COM_ForceExtension (name, ".qwd");
-
-	cls.demofile = fopen (name, "wb");
-	if (!cls.demofile)
-	{
-		Con_Printf ("ERROR: couldn't open.\n");
-		return;
-	}
-
-	Con_Printf ("recording to %s.\n", name);
-	cls.demorecording = true;
-
-	CL_Disconnect();
-	CL_BeginServerConnect();
-}
-
-
 //==================================================================
 // .QWZ demos playback (via Qizmo)
 //
