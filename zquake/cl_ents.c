@@ -739,11 +739,14 @@ void CL_ParsePlayerinfo (void)
 	else
 		state->weaponframe = 0;
 
-	if (cl.z_ext & Z_EXT_JUMPRELEASED)
+	if (cl.z_ext & Z_EXT_PM_TYPE)
 	{
-		if (flags & PF_JUMPRELEASED)
+		int		pm_type;
+
+		pm_type = (flags >> PF_PM_TYPE_SHIFT) & PF_PM_TYPE_MASK;
+		if (pm_type == PM_NORMAL)
 			state->oldbuttons &= ~BUTTON_JUMP;
-		else
+		else if (pm_type == PM_NORMAL_JUMP_HELD)
 			state->oldbuttons |= BUTTON_JUMP;
 	}
 
