@@ -36,7 +36,6 @@ void	VID_Init (unsigned char *palette)
 	vid.aspect = 1.0;
 	vid.numpages = 1;
 	vid.colormap = host_colormap;
-	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 	vid.buffer = vid_buffer;
 	vid.rowbytes = BASEWIDTH;
 	
