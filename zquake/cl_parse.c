@@ -1214,7 +1214,8 @@ void CL_ProcessServerInfo (void)
 
 	// movement vars for prediction
 	cl.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
-	movevars.slidefix = Q_atoi(Info_ValueForKey(cl.serverinfo, "pm_slidefix"));
+	movevars.slidefix = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_slidefix")) != 0);
+	movevars.airstep = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_airstep")) != 0);
 	p = Info_ValueForKey(cl.serverinfo, "pm_ktjump");
 	if (*p)
 		movevars.ktjump = Q_atof(p);

@@ -53,6 +53,7 @@ cvar_t	pm_waterfriction	 = {"sv_waterfriction", "4"};
 cvar_t	pm_ktjump			 = {"pm_ktjump", "0.5", CVAR_SERVERINFO};
 cvar_t	pm_bunnyspeedcap	 = {"pm_bunnyspeedcap", "0", CVAR_SERVERINFO};
 cvar_t	pm_slidefix			 = {"pm_slidefix", "0", CVAR_SERVERINFO};
+cvar_t	pm_airstep			 = {"pm_airstep", "0", CVAR_SERVERINFO};
 
 double	sv_frametime;
 
@@ -972,15 +973,18 @@ void SV_Physics (void)
 void SV_SetMoveVars(void)
 {
 	movevars.gravity			= sv_gravity.value; 
-	movevars.stopspeed		    = pm_stopspeed.value;		 
-	movevars.maxspeed			= pm_maxspeed.value;			 
-	movevars.spectatormaxspeed  = pm_spectatormaxspeed.value; 
-	movevars.accelerate		    = pm_accelerate.value;		 
-	movevars.airaccelerate	    = pm_airaccelerate.value;	 
-	movevars.wateraccelerate	= pm_wateraccelerate.value;	   
-	movevars.friction			= pm_friction.value;			 
-	movevars.waterfriction	    = pm_waterfriction.value;	 
-	movevars.entgravity			= 1.0;
-	movevars.slidefix           = pm_slidefix.value;
-	movevars.ktjump             = pm_ktjump.value;
+	movevars.stopspeed			= pm_stopspeed.value;
+	movevars.maxspeed			= pm_maxspeed.value;
+	movevars.spectatormaxspeed	= pm_spectatormaxspeed.value;
+	movevars.accelerate 		= pm_accelerate.value;
+	movevars.airaccelerate		= pm_airaccelerate.value;
+	movevars.wateraccelerate	= pm_wateraccelerate.value;
+	movevars.friction			= pm_friction.value;
+	movevars.waterfriction		= pm_waterfriction.value;
+	movevars.entgravity 		= 1.0;
+
+// redundant as we set them in every SV_RunCmd call anyway
+//	movevars.slidefix			= pm_slidefix.value;
+//	movevars.airstep			= pm_airstep.value;
+//	movevars.ktjump 			= pm_ktjump.value;
 }
