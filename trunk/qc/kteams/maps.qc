@@ -227,7 +227,7 @@ string(float f2) GetMapName =
 void() SelectMap =
 {
 	local float f1, f2, f3;
-	local string s1, s2;
+	local string s2;
 	local entity p;
 
 	f1 = stof(infokey(world, "999"));

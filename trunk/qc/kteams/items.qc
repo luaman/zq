@@ -47,8 +47,6 @@ void() q_touch;
 
 void() q_touch =
 {
-local entity    stemp;
-local float     f1;
 local string 	s;
 
 	if (other.classname != "player")
@@ -121,8 +119,6 @@ void() r_touch;
 
 void() r_touch =
 {
-local entity    stemp;
-local float     f1;
 local string 	s;
 
 	if (other.classname != "player")
@@ -301,7 +297,6 @@ void() item_health =
 
 void() health_touch =
 {
-	local   float f1;
 	local   string  s;
 
 	if (deathmatch == 4)
@@ -397,7 +392,7 @@ void() armor_touch;
 
 void() armor_touch =
 {
-	local   float   type, value, bit, f1;
+	local   float   type, value, bit;
 
 	if (other.health <= 0)
 		return;
@@ -574,7 +569,7 @@ float() W_BestWeapon;
 
 void() weapon_touch =
 {
-	local   float   hadammo, best, new, old, f1;
+	local   float   hadammo, best, new, old;
 	local   entity  stemp;
 	local   float   leave;
 
@@ -1126,9 +1121,6 @@ KEYS
 
 void() key_touch =
 {
-local entity    stemp;
-local float	f1;
-
 	if (other.classname != "player")
 		return;
 	if (other.health <= 0)
@@ -1262,9 +1254,6 @@ END OF LEVEL RUNES
 
 void() sigil_touch =
 {
-local entity    stemp;
-local float	f1;
-
 	if (other.classname != "player")
 		return;
 	if (other.health <= 0)
@@ -1337,8 +1326,6 @@ void() powerup_touch;
 
 void() powerup_touch =
 {
-local entity    stemp;
-local float             best;
 //team
 local float f1;
 //team
@@ -1511,7 +1498,7 @@ PLAYER BACKPACKS
 void() BackpackTouch =
 {
 	local string    s;
-	local   float   best, old, new, f1;
+	local   float   best, old, new;
 	local           entity  stemp;
 	local   float   acount;
 	local   float   b_switch;
@@ -1678,7 +1665,6 @@ DropBackpack
 void() DropBackpack =
 {
 	local entity    item;
-	local string s1;
 	local float f1;
 
 	if (match_in_progress != 2 || !stof(infokey(world, "dp"))) return;	//team

@@ -43,7 +43,7 @@ void() RandomPickup;
 void() RandomPickup =
 {
 	local entity p;
-	local float f1=0, teamnumber=0, ineachteam=0, alreadyset=0;
+	local float f1=0, ineachteam=0, alreadyset=0;
 
 	if(self.k_admin != 2) {
 		sprint(self, 2, "You are not an admin\n");
@@ -271,8 +271,6 @@ void(entity kicker) ExitKick =
 
 void() ReqAdmin =
 {
-	local entity motd;
-
 //  admin state=1.5 check for election
 	if(self.k_admin == 1.5) {
 		sprint(self, 2, "Abort ÂÏÂ„Ùion first\n");
@@ -332,7 +330,7 @@ void() AdminImpBot =
 
 void() ReadyThink =
 {
-	local float i1, i2;
+	local float i1;
 	local string tmp;
 	local entity p;
 
@@ -508,8 +506,6 @@ void() AdminMatchStart =
 
 void() AdminForceBreak =
 {
-	local entity p;
-	local float f1;
 	local string tmp;
 
 	if(self.k_admin == 2 && self.classname != "player" && !match_in_progress) {

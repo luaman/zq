@@ -309,11 +309,6 @@ When the player presses attack or jump, change to the next level
 */
 void() IntermissionThink =
 {
-//team
-	local entity p;
-	
-//team
-
 	if (time < intermission_exittime)
 		return;
 
@@ -381,8 +376,6 @@ void() execute_changelevel =
 
 void() changelevel_touch =
 {
-	local entity    pos;
-
 	if (other.classname != "player")
 		return;
 
@@ -490,12 +483,11 @@ Returns the entity to spawn at
 */
 entity() SelectSpawnPoint =
 {
-    local   entity  spot, newspot, thing;
+    local   entity  spot, thing;
 	local	entity spots;
 	local   float   numspots, totalspots;
-	local   float   rnum, pcount;
+	local   float   pcount;
 	local	float	k_nspots;	//team
-	local	string	t1;			//team
 	local	vector	v1;			//team
 
 
@@ -664,7 +656,6 @@ called each time a player enters a new level
 void() PutClientInServer =
 {
 	local   entity spot;
-	local   string s;
 
 	self.classname = "player";
 	self.health = 100;
@@ -870,7 +861,6 @@ go to the next level for deathmatch
 void() NextLevel =
 {
 	local entity o;
-	local string newmap;
 
 	if (nextmap != "")
 		return; // already done
@@ -949,8 +939,6 @@ void() CheckRules =
 
 void() PlayerDeathThink =
 {
-	local entity    old_self;
-
 local float             forward;
 
 //team
@@ -999,7 +987,7 @@ local float             forward;
 
 void() PlayerJump =
 {
-	local vector start, end;
+	local vector end;
 
 	if (self.flags & 2048)
 		return;
@@ -1178,7 +1166,6 @@ Called every frame before physics are run
 */
 void() PlayerPreThink =
 {
-	local   float   mspeed, aspeed;
 	local   float   r;
 	local string tmp;
 
@@ -1494,8 +1481,6 @@ Called every frame after physics are run
 */
 void() PlayerPostThink =
 {
-	local   float   mspeed, aspeed;
-	local   float   r;
 	local string s1, s2;	//team
 	local float f1, f2;	//team
 	local entity ghost;	//team
@@ -1714,7 +1699,7 @@ void() ClientDisconnect =
 {
 //kombat teams gained control over this
 	local entity ghost;
-	local float f1, f2, f3;
+	local float f1, f2;
 	local string s1;
 
 	if(self.k_accepted == 2) {
@@ -1817,7 +1802,6 @@ void(entity targ, entity attacker) ClientObituary =
 {
 	local   float rnum;
 	local   string deathstring, deathstring2;
-	local   string s;
 	local   string attackerteam, targteam;
 	local string attackerteam2;	//team
 
