@@ -372,7 +372,7 @@ static void NQD_ParseServerData (void)
 	str = MSG_ReadString ();
 	strncpy (cl.levelname, str, sizeof(cl.levelname)-1);
 
-// seperate the printfs so the server message can have a color
+// separate the printfs so the server message can have a color
 	Com_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
 	Com_Printf ("%c%s\n", 2, str);
 
