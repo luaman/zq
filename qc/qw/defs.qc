@@ -318,6 +318,7 @@ const float IT_ROCKET_LAUNCHER		= 0x0020;
 const float IT_LIGHTNING			= 0x0040;
 //const float IT_EXTRA_WEAPON		= 0x0080;
 const float IT_ALL_WEAPONS			= 0x107f;
+const float IT_DROPPABLE_WEAPONS	= 0x007e; // minus axe and shotgun
 
 const float IT_SHELLS				= 0x0100;
 const float IT_NAILS				= 0x0200;
