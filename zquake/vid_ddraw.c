@@ -543,7 +543,7 @@ MAIN WINDOW
 ===================================================================
 */
 
-int IN_MapKey (int key);
+int IN_TranslateKeyEvent (int lKeyData, qboolean down);
 
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -617,13 +617,13 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
 			if (!in_mode_set)
-				Key_Event (IN_MapKey(lParam), true);
+				IN_TranslateKeyEvent (lParam, true);
 			break;
 
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
 			if (!in_mode_set)
-				Key_Event (IN_MapKey(lParam), false);
+				IN_TranslateKeyEvent (lParam, true);
 			break;
 
 	// this is complicated because Win32 seems to pack multiple mouse events into

@@ -1265,67 +1265,74 @@ static byte scantokey[128] =
 
 // user defined keymap
 byte keymap[256];	// 128-255 are extended scancodes
+byte shiftkeymap[256];	// generated when shift is pressed
 qboolean keymap_active = false;
 
+extern void Key_EventEx (int key, int shiftkey, qboolean down);
 
 /*
 =======
-IN_MapKey
+IN_TranslateKeyEvent
 
-Map from windows to quake keynums
+Map from windows to quake keynums and generate Key_EventEx
 =======
 */
-int IN_MapKey (int key)
+void IN_TranslateKeyEvent (int lKeyData, qboolean down)
 {
-	int		extended;
+	int		extended, scancode, key, shiftkey;
 	extern cvar_t	cl_keypad;
 
-	extended = (key >> 24) & 1;
+	extended = (lKeyData >> 24) & 1;
 
-	key = (key>>16)&255;
-	if (key > 127)
-		return 0;
+	scancode = (lKeyData>>16)&255;
+	if (scancode > 127)
+		return;
 
 	if (keymap_active)
 	{
-		key = keymap[key + (extended ? 128 : 0)];
-		return key;
+		key = keymap[scancode + (extended ? 128 : 0)];
+		if (keydown[K_SHIFT])
+			shiftkey = shiftkeymap[scancode + (extended ? 128 : 0)];
+		else
+			shiftkey = key;
+		Key_EventEx (key, shiftkey, down);
+		return;
 	}
 
-	key = scantokey[key];
+	key = scantokey[scancode];
 
 	if (cl_keypad.value) {
 		if (extended) {
 			switch (key) {
-				case K_ENTER:		return KP_ENTER;
-				case '/':			return KP_SLASH;
-				case K_PAUSE:		return KP_NUMLOCK;
+				case K_ENTER:		key = KP_ENTER;
+				case '/':			key = KP_SLASH;
+				case K_PAUSE:		key = KP_NUMLOCK;
 			};
 		} else {
 			switch (key) {
-				case K_HOME:		return KP_HOME;
-				case K_UPARROW:		return KP_UPARROW;
-				case K_PGUP:		return KP_PGUP;
-				case K_LEFTARROW:	return KP_LEFTARROW;
-				case K_RIGHTARROW:	return KP_RIGHTARROW;
-				case K_END:			return KP_END;
-				case K_DOWNARROW:	return KP_DOWNARROW;
-				case K_PGDN:		return KP_PGDN;
-				case K_INS:			return KP_INS;
-				case K_DEL:			return KP_DEL;
+				case K_HOME:		key = KP_HOME;
+				case K_UPARROW:		key = KP_UPARROW;
+				case K_PGUP:		key = KP_PGUP;
+				case K_LEFTARROW:	key = KP_LEFTARROW;
+				case K_RIGHTARROW:	key = KP_RIGHTARROW;
+				case K_END:			key = KP_END;
+				case K_DOWNARROW:	key = KP_DOWNARROW;
+				case K_PGDN:		key = KP_PGDN;
+				case K_INS:			key = KP_INS;
+				case K_DEL:			key = KP_DEL;
 			}
 		}
 	} else {
 		// cl_keypad 0, compatibility mode
 		switch (key) {
-			case KP_STAR:	return '*';
-			case KP_MINUS:	return '-';
-			case KP_5:		return '5';
-			case KP_PLUS:	return '+';
+			case KP_STAR:	key = '*';
+			case KP_MINUS:	key = '-';
+			case KP_5:		key = '5';
+			case KP_PLUS:	key = '+';
 		}
 	}
 
-	return key;
+	Key_Event (key, down);
 }
 
 /*
@@ -1333,14 +1340,17 @@ int IN_MapKey (int key)
 IN_LoadKeys_f
 
 Load a custom keymap from file
+The format is like this:
 layout "Default"
+keycode 27 ] }
 keycode 28 ENTER
 ext keycode 28 KP_ENTER
+keycode 40 ' #34
 ===========
 */
 void IN_LoadKeys_f (void)
 {
-	int n, keynum, count, shift;
+	int n, keynum, count, cmd_shift;
 	qboolean ext;
 	char *data;
 	char filename[MAX_QPATH];
@@ -1383,7 +1393,7 @@ void IN_LoadKeys_f (void)
 			continue;
 
 		ext = false;
-		shift = 0;
+		cmd_shift = 0;
 
 		if (!strcmp(Cmd_Argv(0), "layout") && Cmd_Argc() > 1)
 		{
@@ -1393,38 +1403,54 @@ void IN_LoadKeys_f (void)
 
 		if (!strcmp(Cmd_Argv(0), "ext")) {
 			ext = true;
-			shift++;
+			cmd_shift++;
 		}
 
-		if (strcmp(Cmd_Argv(shift), "keycode"))
+		if (strcmp(Cmd_Argv(cmd_shift), "keycode"))
 			continue;
 
-		shift++;
+		cmd_shift++;
 
-		if (!strcmp(Cmd_Argv(shift), "ext")) {
+		if (!strcmp(Cmd_Argv(cmd_shift), "ext")) {
 			ext = true;
-			shift++;
+			cmd_shift++;
 		}
 
-		n = Q_atoi(Cmd_Argv(shift));
+		n = Q_atoi(Cmd_Argv(cmd_shift));
 
 		if (n <= 0 || n > 128)
 		{
-			Com_Printf ("\"%s\" is not a valid scan code\n", Cmd_Argv(shift));
+			Com_Printf ("\"%s\" is not a valid scan code\n", Cmd_Argv(cmd_shift));
 			continue;
 		}
 
-		keynum = Key_StringToKeynum(Cmd_Argv(shift + 1));
+		keynum = Key_StringToKeynum(Cmd_Argv(cmd_shift + 1));
 		if (keynum > 0)
 		{
-			if (!ext)
-				keymap[n] = keynum;
-			else
-				keymap[n + 128] = keynum;
+			keymap[ext ? n + 128 : n] = keynum;
 			count++;
+
+			if (Cmd_Argc() > cmd_shift + 2)
+			{
+				// user defined shifted key
+				keynum = Key_StringToKeynum(Cmd_Argv(cmd_shift + 2));
+				if (keynum > 0)
+				{
+					shiftkeymap[ext ? n + 128 : n] = keynum;
+					count++;
+				}
+				else
+					Com_Printf ("\"%s\" is not a valid key\n", Cmd_Argv(cmd_shift + 2));
+			}
+			else
+			{
+				if (keynum >= 'a' && keynum <= 'z')
+					keynum += 'A' - 'a';	// convert to upper case
+				shiftkeymap[ext ? n + 128 : n] = keynum;
+			}
 		}
 		else
-			Com_Printf ("\"%s\" is not a valid key\n", Cmd_Argv(shift + 1));
+			Com_Printf ("\"%s\" is not a valid key\n", Cmd_Argv(cmd_shift + 1));
 	}
 
 	if (!count) {
