@@ -219,8 +219,8 @@ void R_TranslatePlayerSkin (int playernum);
 void GL_Bind (int texnum);
 
 // Multitexture
-#define	TEXTURE0_ARB 			0x84C0
-#define	TEXTURE1_ARB 			0x84C1
+#define	GL_TEXTURE0_ARB 			0x84C0
+#define	GL_TEXTURE1_ARB 			0x84C1
 
 #ifdef _WIN32
 typedef void (APIENTRY *lpMTexFUNC) (GLenum, GLfloat, GLfloat);

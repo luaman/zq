@@ -41,7 +41,7 @@ int SV_ModelIndex (char *name)
 	if (!name || !name[0])
 		return 0;
 
-	for (i=0 ; i<MAX_MODELS && sv.model_precache[i] ; i++)
+	for (i=1 ; i<MAX_MODELS && sv.model_precache[i] ; i++)
 		if (!strcmp(sv.model_precache[i], name))
 			return i;
 	if (i==MAX_MODELS || !sv.model_precache[i])

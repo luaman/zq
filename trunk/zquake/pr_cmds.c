@@ -1017,7 +1017,7 @@ void PF_precache_model (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 
-	for (i=0 ; i<MAX_MODELS ; i++)
+	for (i=1 ; i<MAX_MODELS ; i++)
 	{
 		if (!sv.model_precache[i])
 		{
@@ -1525,8 +1525,6 @@ void PF_WriteEntity (void)
 }
 
 //=============================================================================
-
-int SV_ModelIndex (char *name);
 
 void PF_makestatic (void)
 {

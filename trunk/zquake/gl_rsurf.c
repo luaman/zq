@@ -483,7 +483,7 @@ void GL_DisableMultitexture (void)
 {
 	if (mtexenabled) {
 		glDisable (GL_TEXTURE_2D);
-		GL_SelectTexture (TEXTURE0_ARB);
+		GL_SelectTexture (GL_TEXTURE0_ARB);
 		mtexenabled = false;
 	}
 }
@@ -491,7 +491,7 @@ void GL_DisableMultitexture (void)
 void GL_EnableMultitexture (void)
 {
 	if (gl_mtexable) {
-		GL_SelectTexture (TEXTURE1_ARB);
+		GL_SelectTexture (GL_TEXTURE1_ARB);
 		glEnable (GL_TEXTURE_2D);
 		mtexenabled = true;
 	}
@@ -524,7 +524,7 @@ void R_DrawSequentialPoly (msurface_t *s)
 
 			t = R_TextureAnimation (s->texinfo->texture);
 			// Binds world to texture env 0
-			GL_SelectTexture (TEXTURE0_ARB);
+			GL_SelectTexture (GL_TEXTURE0_ARB);
 			GL_Bind (t->gl_texturenum);
 			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 			// Binds lightmap to texenv 1
@@ -548,8 +548,8 @@ void R_DrawSequentialPoly (msurface_t *s)
 			v = p->verts[0];
 			for (i=0 ; i<p->numverts ; i++, v+= VERTEXSIZE)
 			{
-				qglMultiTexCoord2f (TEXTURE0_ARB, v[3], v[4]);
-				qglMultiTexCoord2f (TEXTURE1_ARB, v[5], v[6]);
+				qglMultiTexCoord2f (GL_TEXTURE0_ARB, v[3], v[4]);
+				qglMultiTexCoord2f (GL_TEXTURE1_ARB, v[5], v[6]);
 				glVertex3fv (v);
 			}
 			glEnd ();
@@ -1596,18 +1596,14 @@ void GL_BuildLightmaps (void)
 		for (i=0 ; i<m->numsurfaces ; i++)
 		{
 			GL_CreateSurfaceLightmap (m->surfaces + i);
-			if ( m->surfaces[i].flags & SURF_DRAWTURB )
+			if ( m->surfaces[i].flags & (SURF_DRAWTURB|SURF_DRAWSKY) )
 				continue;
-#ifndef QUAKE2
-			if ( m->surfaces[i].flags & SURF_DRAWSKY )
-				continue;
-#endif
 			BuildSurfaceDisplayList (m->surfaces + i);
 		}
 	}
 
  	if (!gl_texsort.value)
- 		GL_SelectTexture(TEXTURE1_ARB);
+ 		GL_SelectTexture(GL_TEXTURE1_ARB);
 
 	//
 	// upload all lightmaps that were filled
@@ -1630,5 +1626,5 @@ void GL_BuildLightmaps (void)
 	}
 
 	if (!gl_texsort.value)
- 		GL_SelectTexture(TEXTURE0_ARB);
+ 		GL_SelectTexture(GL_TEXTURE0_ARB);
 }

@@ -1699,7 +1699,7 @@ int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data)
 
 /****************************************/
 
-static GLenum oldtarget = TEXTURE0_ARB;
+static GLenum oldtarget = GL_TEXTURE0_ARB;
 
 void GL_SelectTexture (GLenum target) 
 {
@@ -1710,7 +1710,7 @@ void GL_SelectTexture (GLenum target)
 #endif
 	if (target == oldtarget) 
 		return;
-	cnttextures[oldtarget-TEXTURE0_ARB] = currenttexture;
-	currenttexture = cnttextures[target-TEXTURE0_ARB];
+	cnttextures[oldtarget-GL_TEXTURE0_ARB] = currenttexture;
+	currenttexture = cnttextures[target-GL_TEXTURE0_ARB];
 	oldtarget = target;
 }
