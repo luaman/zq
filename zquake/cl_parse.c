@@ -959,18 +959,20 @@ void CL_NewTranslation (int slot)
 	strcpy (s, cl.players[cl.playernum].team);
 	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
 
-	if (cl_teamtopcolor >= 0 && teamplay && 
-		!strcmp(player->team, s))
-	{
-		player->topcolor = cl_teamtopcolor;
-		player->bottomcolor = cl_teambottomcolor;
-	}
-	
-	if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
-		(!teamplay || strcmp(player->team, s)))
-	{
-		player->topcolor = cl_enemytopcolor;
-		player->bottomcolor = cl_enemybottomcolor;
+	if (!cl.teamfortress) {
+		if (cl_teamtopcolor >= 0 && teamplay && 
+			!strcmp(player->team, s))
+		{
+			player->topcolor = cl_teamtopcolor;
+			player->bottomcolor = cl_teambottomcolor;
+		}
+		
+		if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
+			(!teamplay || strcmp(player->team, s)))
+		{
+			player->topcolor = cl_enemytopcolor;
+			player->bottomcolor = cl_enemybottomcolor;
+		}
 	}
 // <--
 
@@ -1003,18 +1005,20 @@ void CL_NewTranslation (int slot)
 	strcpy (s, cl.players[cl.playernum].team);
 	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
 
-	if (cl_teamtopcolor >= 0 && teamplay && 
-		!strcmp(player->team, s))
-	{
-		player->topcolor = cl_teamtopcolor;
-		player->bottomcolor = cl_teambottomcolor;
-	}
-	
-	if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
-		(!teamplay || strcmp(player->team, s)))
-	{
-		player->topcolor = cl_enemytopcolor;
-		player->bottomcolor = cl_enemybottomcolor;
+	if (!cl.teamfortress) {
+		if (cl_teamtopcolor >= 0 && teamplay && 
+			!strcmp(player->team, s))
+		{
+			player->topcolor = cl_teamtopcolor;
+			player->bottomcolor = cl_teambottomcolor;
+		}
+		
+		if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
+			(!teamplay || strcmp(player->team, s)))
+		{
+			player->topcolor = cl_enemytopcolor;
+			player->bottomcolor = cl_enemybottomcolor;
+		}
 	}
 // <--
 
