@@ -295,6 +295,7 @@ void SCR_CalcRefdef (void)
 	vrect_t		vrect;
 #endif
 
+
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
 
@@ -314,9 +315,6 @@ void SCR_CalcRefdef (void)
 		Cvar_Set (&scr_fov, "10");
 	if (scr_fov.value > (r_refdef2.allowCheats ? 170 : 140))
 		Cvar_SetValue (&scr_fov, r_refdef2.allowCheats ? 170 : 140);
-
-	r_refdef.fov_x = scr_fov.value;
-	r_refdef.fov_y = CalcFov (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
 // intermission is always full screen	
 	if (cl.intermission)
@@ -372,6 +370,8 @@ void SCR_CalcRefdef (void)
 
 	scr_vrect = r_refdef.vrect;
 
+	r_refdef.fov_x = scr_fov.value;
+	r_refdef.fov_y = CalcFov (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
 #else
 
 // these calculations mirror those in R_Init() for r_refdef, but take no
@@ -382,6 +382,9 @@ void SCR_CalcRefdef (void)
 	vrect.height = vid.height;
 
 	R_SetVrect (&vrect, &scr_vrect, sb_lines);
+
+	r_refdef.fov_x = scr_fov.value;
+	r_refdef.fov_y = CalcFov (r_refdef.fov_x, vrect.width, vrect.height);
 
 // guard against going from one mode to another that's less than half the
 // vertical resolution
