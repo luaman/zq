@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include "quakedef.h"
+#include "common.h"
 
 #ifdef _WIN32
 #include "winquake.h"
@@ -123,11 +123,7 @@ void Netchan_OutOfBand (netsrc_t sock, netadr_t adr, int length, byte *data)
 	SZ_Write (&send, data, length);
 
 // send the datagram
-	//zoid, no input in demo playback mode
-#ifndef SERVERONLY
-	if (!cls.demoplayback)
-#endif
-		NET_SendPacket (sock, send.cursize, send.data, adr);
+	NET_SendPacket (sock, send.cursize, send.data, adr);
 }
 
 /*
@@ -287,11 +283,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 	chan->outgoing_size[i] = send.cursize;
 	chan->outgoing_time[i] = curtime;
 
-	//zoid, no input in demo playback mode
-#ifndef SERVERONLY
-	if (!cls.demoplayback)
-#endif
-		NET_SendPacket (chan->sock, send.cursize, send.data, chan->remote_address);
+	NET_SendPacket (chan->sock, send.cursize, send.data, chan->remote_address);
 
 	if (chan->cleartime < curtime)
 		chan->cleartime = curtime + send.cursize*chan->rate;
