@@ -2,7 +2,7 @@
 
 ../qw/defs.qc
 ../qw/subs.qc
-subs.qc
+sp_subs.qc
 fight.qc
 ai.qc
 ../qw/combat.qc
@@ -10,7 +10,7 @@ ai.qc
 ../qw/weapons.qc
 ../qw/world.qc
 ../qw/client.qc
-client.qc
+sp_client.qc
 ../qw/player.qc
 monsters.qc
 ../qw/doors.qc
