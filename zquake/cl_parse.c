@@ -593,7 +593,7 @@ void CL_ParseServerData (void)
 		Cvar_SetValue (&v_idlescale, 0);
 	}
 
-	if (stricmp(gamedirfile, str)) {
+	if (Q_strcasecmp(gamedirfile, str)) {
 		// save current config
 		Host_WriteConfiguration (); 
 		cflag = true;
@@ -949,7 +949,7 @@ void CL_NewTranslation (int slot)
 		return;
 	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
 	COM_StripExtension(s, s);
-	if (player->skin && stricmp(s, player->skin->name))
+	if (player->skin && Q_strcasecmp(s, player->skin->name))
 		player->skin = NULL;
 
 // teamcolor/enemycolor -->
@@ -995,7 +995,7 @@ void CL_NewTranslation (int slot)
 
 	strcpy(s, Info_ValueForKey(player->userinfo, "skin"));
 	COM_StripExtension(s, s);
-	if (player->skin && stricmp(s, player->skin->name))
+	if (player->skin && Q_strcasecmp(s, player->skin->name))
 		player->skin = NULL;
 
 // teamcolor/enemycolor -->
