@@ -494,8 +494,7 @@ void CL_Quit_f (void)
 	M_Menu_Quit_f ();
 	return;
 #if 0
-	CL_Disconnect ();
-	Sys_Quit ();
+	Host_Quit ();
 #endif
 }
 

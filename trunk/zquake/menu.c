@@ -1206,8 +1206,7 @@ void M_Quit_Key (int key)
 	case 'Y':
 	case 'y':
 		key_dest = key_console;
-		CL_Disconnect ();
-		Sys_Quit ();
+		Host_Quit ();
 		break;
 
 	default:

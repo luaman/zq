@@ -1104,7 +1104,7 @@ LONG WINAPI MainWndProc (
 			if (MessageBox (mainwindow, "Are you sure you want to quit?", "Confirm Exit",
 						MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
 			{
-				Sys_Quit ();
+				Host_Quit ();
 			}
 
 	        break;
