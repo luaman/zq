@@ -395,7 +395,7 @@ void Master_Packet (void);
 int SV_ModelIndex (char *name);
 void SV_FlushSignon (void);
 void SV_SaveSpawnparms (void);
-void SV_SpawnServer (char *server);
+void SV_SpawnServer (char *server, qboolean devmap);
 
 
 //
