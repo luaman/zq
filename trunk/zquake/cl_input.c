@@ -20,10 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cl.input.c  -- builds an intended movement command to send to the server
 
 #include "quakedef.h"
-#include "pmove.h"		// Swimup hack
 
 cvar_t	cl_nodelta = {"cl_nodelta","0"};
-cvar_t	cl_deltarecord = {"cl_deltarecord","0"};	// Tonik
 cvar_t	cl_c2spps = {"cl_c2spps","0"};				// Tonik
 
 /*
@@ -400,7 +398,7 @@ void CL_FinishMove (usercmd_t *cmd)
 	int		ms;
 
 //
-// always dump the first two message, because it may contain leftover inputs
+// always dump the first two messages, because they may contain leftover inputs
 // from the last level
 //
 	if (++cl.movemessages <= 2)
@@ -456,7 +454,6 @@ void CL_SendCmd (void)
 	static float	pps_balance = 0;
 	static int	dropcount = 0;
 	qboolean	dontdrop;
-
 
 	if (cls.demoplayback)
 		return; // sendcmds come from the demo
@@ -529,7 +526,7 @@ void CL_SendCmd (void)
 		cl.validsequence = 0;
 
 	if (cl.validsequence && !cl_nodelta.value && cls.state == ca_active &&
-		(!cls.demorecording || cl_deltarecord.value))
+		!cls.demorecording)
 	{
 		cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].delta_sequence = cl.validsequence;
 		MSG_WriteByte (&buf, clc_delta);
@@ -619,8 +616,7 @@ void CL_InitInput (void)
 	Cmd_AddCommand ("-mlook", IN_MLookUp);
 
 	Cvar_RegisterVariable (&cl_nodelta);
-//	Cvar_RegisterVariable (&cl_deltarecord);	// Tonik
-	Cvar_RegisterVariable (&cl_c2spps);			// Tonik
+	Cvar_RegisterVariable (&cl_c2spps);
 }
 
 /*
