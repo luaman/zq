@@ -591,26 +591,31 @@ void CL_ParseServerData (void)
 		Cvar_SetValue (&v_idlescale, 0);
 	}
 
-	if (Q_strcasecmp(com_gamedirfile, str)) {
+	if (Q_strcasecmp(cls.gamedirfile, str)) {
 		// save current config
-		Host_WriteConfiguration (); 
+		Host_WriteConfiguration ();
+		Q_strncpyz (cls.gamedirfile, str, sizeof(cls.gamedirfile));
+		Q_snprintfz (cls.gamedir, sizeof(cls.gamedir),
+			"%s/%s", com_basedir, cls.gamedirfile);
 		cflag = true;
 	}
 
 	if (!com_serveractive)
 		FS_SetGamedir (str);
 
-	//ZOID--run the autoexec.cfg in the gamedir
-	//if it exists
+	// ZOID--run the autoexec.cfg in the gamedir
+	// if it exists
+	// Tonik -- FIXME: this will not work right on a local server
+	// if cls.gamedir differs from com_gamedir
 	if (cflag) {
 		int cl_warncmd_val = cl_warncmd.value;
-		Q_snprintfz (fn, sizeof(fn), "%s/%s", com_gamedir, "config.cfg");
+		Q_snprintfz (fn, sizeof(fn), "%s/%s", cls.gamedir, "config.cfg");
 		if ((f = fopen(fn, "r")) != NULL) {
 			fclose(f);
 			Cbuf_AddText ("cl_warncmd 0\n");
 			Cbuf_AddText ("exec config.cfg\n");
 		}
-		Q_snprintfz (fn, sizeof(fn), "%s/%s", com_gamedir, "frontend.cfg");
+		Q_snprintfz (fn, sizeof(fn), "%s/%s", cls.gamedir, "frontend.cfg");
 		if ((f = fopen(fn, "r")) != NULL) {
 			fclose(f);
 			Cbuf_AddText ("cl_warncmd 0\n");
