@@ -357,13 +357,13 @@ void SCR_CalcRefdef (void)
 
 #ifdef GLQUAKE
 
-	r_refdef.vrect.width = vid.width * size;
+	r_refdef.vrect.width = (int)(vid.width * size + 0.5);
 	if (r_refdef.vrect.width < 96) {
 		size = 96.0 / r_refdef.vrect.width;
 		r_refdef.vrect.width = 96;      // min for icons
 	}
 
-	r_refdef.vrect.height = vid.height * size;
+	r_refdef.vrect.height = (int)(vid.height * size + 0.5);
 	if (r_refdef.vrect.height > vid.height - sb_lines)
 		r_refdef.vrect.height = vid.height - sb_lines;
 
