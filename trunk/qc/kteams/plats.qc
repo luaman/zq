@@ -278,7 +278,7 @@ void train_wait ()
 		sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	}
 	else
-		self.nextthink = self.ltime + 0.01;     // smoother plat movement
+		self.nextthink = self.ltime + 0.1;
 // KTEAMS -->
 // make trains stop if frozen
         if(match_in_progress == 2 || (!stof(infokey(world, "k_freeze")) && !match_in_progress))
@@ -311,7 +311,7 @@ void func_train_find ()
 	setorigin (self, targ.origin - self.mins);
 	if (!self.targetname)
 	{	// not triggered, so start immediately
-		self.nextthink = self.ltime + 0.01;     // smoother plat movement
+		self.nextthink = self.ltime + 0.1;
 		self.think = train_next;
 	}
 }
