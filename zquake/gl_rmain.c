@@ -99,7 +99,7 @@ cvar_t	gl_texsort = {"gl_texsort","1"};
 cvar_t	gl_smoothmodels = {"gl_smoothmodels","1"};
 cvar_t	gl_affinemodels = {"gl_affinemodels","0"};
 cvar_t	gl_polyblend = {"gl_polyblend","1"};
-cvar_t	gl_flashblend = {"gl_flashblend","1"};
+cvar_t	gl_flashblend = {"gl_flashblend","0"};
 cvar_t	gl_playermip = {"gl_playermip","0"};
 cvar_t	gl_nocolors = {"gl_nocolors","0"};
 cvar_t	gl_keeptjunctions = {"gl_keeptjunctions","1"};
@@ -108,7 +108,7 @@ cvar_t	gl_finish = {"gl_finish","0"};
 cvar_t	gl_fb_depthhack = {"gl_fb_depthhack","1"};
 cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
 cvar_t	gl_fb_models = {"gl_fb_models","1"};
-cvar_t	gl_colorlights = {"gl_colorlights","0"};
+cvar_t	gl_colorlights = {"gl_colorlights","1"};
 
 cvar_t	gl_lightmode = {"gl_lightmode","2"};
 int		lightmode = 2;
