@@ -403,37 +403,6 @@ void CL_Disconnect_f (void)
 
 
 /*
-=====================
-CL_NextDemo
-
-Called to play the next demo in the demo loop
-=====================
-*/
-void CL_NextDemo (void)
-{
-	char	str[MAX_OSPATH];
-
-	if (cls.demonum == -1)
-		return;		// don't play demos
-
-	if (!cls.demos[cls.demonum][0] || cls.demonum == MAX_DEMOS)
-	{
-		cls.demonum = 0;
-		if (!cls.demos[cls.demonum][0])
-		{
-//			Com_Printf ("No demos listed with startdemos\n");
-			cls.demonum = -1;
-			return;
-		}
-	}
-
-	Q_snprintfz (str, sizeof(str), "playdemo %s\n", cls.demos[cls.demonum]);
-	Cbuf_InsertText (str);
-	cls.demonum++;
-}
-
-
-/*
 =================
 CL_Reconnect_f
 

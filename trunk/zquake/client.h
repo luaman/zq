@@ -163,9 +163,6 @@ typedef struct cparticle_s
 	int			type;
 } cparticle_t;
 
-#define	MAX_DEMOS		8
-#define	MAX_DEMONAME	16
-
 typedef enum {
 	ca_disconnected, 	// full screen console with no connection
 	ca_demostart,		// starting up a demo
@@ -215,10 +212,6 @@ typedef struct
 	int			downloadnumber;
 	dltype_t	downloadtype;
 	int			downloadpercent;
-
-// demo loop control
-	int			demonum;		// -1 = don't play demos
-	char		demos[MAX_DEMOS][MAX_DEMONAME];		// when not playing
 
 // demo recording info must be here, because record is started before
 // entering a map (and clearing clientState_t)

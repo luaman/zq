@@ -93,9 +93,6 @@ void Host_Error (char *error, ...)
 	
 	SV_Shutdown (va("server crashed: %s\n", string));
 	CL_Disconnect ();
-#ifndef SERVERONLY		// FIXME
-	cls.demonum = -1;
-#endif
 
 	if (dedicated)
 	{

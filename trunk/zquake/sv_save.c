@@ -165,8 +165,6 @@ void SV_LoadGame_f (void)
 		return;
 	}
 
-	cls.demonum = -1;		// stop demo loop in case this fails
-
 	sprintf (name, "%s/save/%s", com_gamedir, Cmd_Argv(1));
 	COM_DefaultExtension (name, ".sav");
 	
