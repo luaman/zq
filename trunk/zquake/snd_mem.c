@@ -117,7 +117,7 @@ sfxcache_t *S_LoadSound (sfx_t *s)
 
 //	Com_Printf ("loading %s\n",namebuffer);
 
-	data = COM_LoadStackFile(namebuffer, stackbuf, sizeof(stackbuf));
+	data = FS_LoadStackFile (namebuffer, stackbuf, sizeof(stackbuf));
 
 	if (!data)
 	{
