@@ -380,6 +380,8 @@ void Com_DPrintf (char *fmt, ...);
 
 #ifdef SERVERONLY
 #define	dedicated	1
+#elif CLIENTONLY
+#define	dedicated	0
 #else
 extern qboolean	dedicated;
 #endif
