@@ -34,6 +34,7 @@ static struct predicted_player {
 	qbool predict;
 	vec3_t	oldo;
 	vec3_t	olda;
+	vec3_t	oldv;
 	vec3_t	vel;
 	player_state_t *oldstate;
 #endif
@@ -685,6 +686,8 @@ void CL_ParseProjectiles (void)
 		for (j=0 ; j<6 ; j++)
 			bits[j] = MSG_ReadByte ();
 
+return;	// @@@ Tonik - until this function is fixed
+
 		if (cl_num_projectiles == MAX_PROJECTILES)
 			continue;
 
@@ -1291,74 +1294,9 @@ static float adjustangle(float current, float ideal, float fraction)
 
 #define ISDEAD(i) ( (i) >=41 && (i) <=102 )
 
-void CL_Interpolate(void)
-{
-    int i, j;
-    frame_t	*frame, *oldframe;
-    struct predicted_player *pplayer;
-    player_state_t	*state, *oldstate;
-    float	f;
-
-    if (!cl.validsequence || !timediff)
-        return;
-
-    frame = &cl.frames[cl.parsecount&UPDATE_MASK];
-    oldframe = &cl.frames[(cl.oldparsecount)&UPDATE_MASK];
-
-    f = (cls.realtime - nextdemotime)/(timediff);
-    if (f > 0.0)
-        f = 0.0;
-    if (f < -1.0)
-        f = -1.0;
-
-    // interpolate entities
-    for (i=0; i < frame->packet_entities.num_entities; i++)
-    {
-        if (!cl.int_entities[i].interpolate)
-            continue;
-
-        for (j=0;j<3;j++) {
-            frame->packet_entities.entities[i].s_origin[j] = cl.int_entities[i].origin[j] + f*(cl.int_entities[i].origin[j] - oldframe->packet_entities.entities[cl.int_entities[i].oldindex].s_origin[j]);
-            frame->packet_entities.entities[i].s_angles[j] = adjustangle(oldframe->packet_entities.entities[cl.int_entities[i].oldindex].s_angles[j], cl.int_entities[i].angles[j],1.0+f);
-        }
-    }
-
-    // interpolate nails
-    for (i=0; i < cl_num_projectiles; i++)
-    {
-        if (!cl.int_projectiles[i].interpolate)
-            continue;
-
-        if (!cl_oldprojectiles[cl.int_projectiles[i].oldindex].origin[0]) 
-            Com_Printf("%d %d, %d, %d\n", i, cl.int_projectiles[i].oldindex, cl_projectiles[i].num, i >= cl_num_oldprojectiles);
-        for (j=0;j<3;j++) {
-            cl_projectiles[i].origin[j] = cl.int_projectiles[i].origin[j] + f*(cl.int_projectiles[i].origin[j] - cl_oldprojectiles[cl.int_projectiles[i].oldindex].origin[j]);
-        }
-    }
-
-    // interpolate clients
-    for (i=0, pplayer = predicted_players, state=frame->playerstate, oldstate=oldframe->playerstate; 
-            i < MAX_CLIENTS;
-            i++, pplayer++, state++, oldstate++)
-    {
-        if (pplayer->predict)
-        {
-            for (j=0;j<3;j++) {
-                state->viewangles[j] = adjustangle(oldstate->command.angles[j], pplayer->olda[j], 1.0+f);
-                state->origin[j] = pplayer->oldo[j] + f*(pplayer->oldo[j]-oldstate->origin[j]);
-            }
-            // FIXME: oldman
-#if 0
-            if (i == spec_track) {
-                VectorCopy(pplayer->vel, SpeedVec);
-            }
-#endif
-        }
-    }
-}
 int	fixangle;
 
-void CL_InitInterpolation(float next, float old)
+void MVD_InitInterpolation(float next, float old)
 {
     float	f;
     int		i,j;
@@ -1463,13 +1401,13 @@ void CL_InitInterpolation(float next, float old)
     }
 }
 
-void CL_ClearPredict(void)
+void MVD_ClearPredict(void)
 {
     memset(predicted_players, 0, sizeof(predicted_players));
     fixangle = 0;
 }
 
-void MVD_Interpolate(void) {
+void MVD_Interpolate(void)
 {
 	int i, j;
 	float f;
@@ -1478,6 +1416,7 @@ void MVD_Interpolate(void) {
 	entity_state_t *oldents;
 	struct predicted_player *pplayer;
 	static float old;
+	extern float olddemotime;
 
 	self = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[cl.playernum];
 	oldself = &cl.frames[(cls.netchan.outgoing_sequence - 1) & UPDATE_MASK].playerstate[cl.playernum];
@@ -1488,10 +1427,10 @@ void MVD_Interpolate(void) {
 	VectorCopy(oldself->velocity, self->velocity);
 	VectorCopy(oldself->viewangles, self->viewangles);
 
-	if (old != nextdemotime) {
-		old = nextdemotime;
-		MVD_InitInterpolation();
-	}
+//	if (old != nextdemotime) {
+//		old = nextdemotime;
+//		MVD_InitInterpolation (nextdemotime, olddemotime);
+//	}
 
 	CL_ParseClientdata();
 
@@ -1502,6 +1441,8 @@ void MVD_Interpolate(void) {
 
 	if (nextdemotime <= olddemotime)
 		return;
+
+//Com_Printf ("%f of %f\n", cls.demotime - olddemotime, nextdemotime - olddemotime);
 
 	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
 	oldframe = &cl.frames[cl.oldparsecount & UPDATE_MASK];
@@ -1528,7 +1469,7 @@ void MVD_Interpolate(void) {
 
 		if (pplayer->predict) {
 			for (j = 0; j < 3; j++) {
-				state->viewangles[j] = MVD_AdjustAngle(oldstate->command.angles[j], pplayer->olda[j], f);
+				state->viewangles[j] = adjustangle(oldstate->command.angles[j], pplayer->olda[j], f);
 				state->origin[j] = oldstate->origin[j] + f * (pplayer->oldo[j] - oldstate->origin[j]);
 				state->velocity[j] = oldstate->velocity[j] + f * (pplayer->oldv[j] - oldstate->velocity[j]);
 			}
