@@ -170,13 +170,13 @@ void S_Init (void)
 {
 //	Com_Printf ("\nSound Initialization\n");
 
+	Cvar_Register(&bgmvolume);
+	Cvar_Register(&s_volume);
 	Cvar_Register(&s_initsound);
 	Cvar_Register(&s_nosound);
-	Cvar_Register(&s_volume);
 	Cvar_Register(&s_precache);
 	Cvar_Register(&s_loadas8bit);
 	Cvar_Register(&s_khz);
-	Cvar_Register(&bgmvolume);
 	Cvar_Register(&s_ambientlevel);
 	Cvar_Register(&s_ambientfade);
 	Cvar_Register(&s_noextraupdate);
