@@ -828,6 +828,12 @@ qboolean CL_LegacyCommand (void)
 	c = Cmd_Argc();
 	name = Cmd_Argv(0);
 
+	// Cheat commands. They are not added to normal command list
+	// so they are invisible to user and an alias can override them
+	if (!Q_strcasecmp(name, "god") || !Q_strcasecmp(name, "give") ||
+		!Q_strcasecmp(name, "noclip"))
+		Cmd_ForwardToServer ();
+
 	for (lvar=legacyvars ; lvar->var ; lvar++) {
 		if (!Q_strcasecmp(lvar->oldname, name))
 			break;
