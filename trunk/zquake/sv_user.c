@@ -1252,7 +1252,9 @@ Dumps the serverinfo info string
 */
 static void Cmd_Serverinfo_f (void)
 {
+	SV_BeginRedirect (RD_CLIENT);
 	Info_Print (svs.info);
+	SV_EndRedirect ();
 }
 
 
