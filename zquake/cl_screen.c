@@ -283,6 +283,126 @@ float CalcFov (float fov_x, float width, float height)
 
 /*
 =================
+SCR_CalcRefdef
+
+Must be called whenever vid changes
+Internal use only
+=================
+*/
+void SCR_CalcRefdef (void)
+{
+	float		size;
+#ifdef GLQUAKE
+	int 		h;
+	qboolean	full = false;
+#else
+	vrect_t		vrect;
+#endif
+
+	scr_fullupdate = 0;		// force a background redraw
+	vid.recalc_refdef = 0;
+
+// force the status bar to redraw
+	Sbar_Changed ();
+
+//========================================
+	
+// bound viewsize
+	if (scr_viewsize.value < 30)
+		Cvar_Set (&scr_viewsize, "30");
+	if (scr_viewsize.value > 120)
+		Cvar_Set (&scr_viewsize, "120");
+
+// bound field of view
+	if (scr_fov.value < 10)
+		Cvar_Set (&scr_fov, "10");
+	if (scr_fov.value > (r_refdef2.allowCheats ? 170 : 140))
+		Cvar_SetValue (&scr_fov, r_refdef2.allowCheats ? 170 : 140);
+
+	r_refdef.fov_x = scr_fov.value;
+	r_refdef.fov_y = CalcFov (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
+
+// intermission is always full screen	
+	if (cl.intermission)
+		size = 120;
+	else
+		size = scr_viewsize.value;
+
+	if (size >= 120)
+		sb_lines = 0;		// no status bar at all
+	else if (size >= 110)
+		sb_lines = 24;		// no inventory
+	else
+		sb_lines = 24+16+8;
+
+#ifdef GLQUAKE
+
+	if (scr_viewsize.value >= 100.0) {
+		full = true;
+		size = 100.0;
+	} else
+		size = scr_viewsize.value;
+	if (cl.intermission)
+	{
+		full = true;
+		size = 100.0;
+		sb_lines = 0;
+	}
+	size /= 100.0;
+
+	if (!cl_sbar.value && full)
+		h = vid.height;
+	else
+		h = vid.height - sb_lines;
+
+	r_refdef.vrect.width = vid.width * size;
+	if (r_refdef.vrect.width < 96)
+	{
+		size = 96.0 / r_refdef.vrect.width;
+		r_refdef.vrect.width = 96;      // min for icons
+	}
+
+	r_refdef.vrect.height = vid.height * size;
+	if (cl_sbar.value || !full) {
+  		if (r_refdef.vrect.height > vid.height - sb_lines)
+  			r_refdef.vrect.height = vid.height - sb_lines;
+	} else if (r_refdef.vrect.height > vid.height)
+			r_refdef.vrect.height = vid.height;
+	r_refdef.vrect.x = (vid.width - r_refdef.vrect.width)/2;
+	if (full)
+		r_refdef.vrect.y = 0;
+	else 
+		r_refdef.vrect.y = (h - r_refdef.vrect.height)/2;
+
+	scr_vrect = r_refdef.vrect;
+
+#else
+
+// these calculations mirror those in R_Init() for r_refdef, but take no
+// account of water warping
+	vrect.x = 0;
+	vrect.y = 0;
+	vrect.width = vid.width;
+	vrect.height = vid.height;
+
+	R_SetVrect (&vrect, &scr_vrect, sb_lines);
+
+// guard against going from one mode to another that's less than half the
+// vertical resolution
+	if (scr_con_current > vid.height)
+		scr_con_current = vid.height;
+
+// notify the refresh of the change
+	R_ViewChanged (&vrect, sb_lines, vid.aspect);
+
+#endif	// !GLQUAKE
+}
+
+
+//============================================================================
+
+/*
+=================
 SCR_SizeUp_f
 
 Keybinding command
