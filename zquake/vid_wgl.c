@@ -108,6 +108,8 @@ glvert_t glv;
 
 cvar_t	gl_strings = {"gl_strings", "", CVAR_ROM};
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1"};
+cvar_t	gl_swapinterval = {"gl_swapinterval", "1"};
+cvar_t	gl_ext_swapinterval = {"gl_ext_swapinterval", "1"};
 
 qboolean	vid_gammaworks = false;
 qboolean	vid_hwgamma_enabled = false;
@@ -605,6 +607,27 @@ void CheckMultiTextureExtensions (void)
 	}
 }
 
+BOOL ( WINAPI * qwglSwapIntervalEXT)( int interval ) = NULL;
+
+void CheckSwapIntervalExtension (void)
+{
+	if (gl_ext_swapinterval.value && strstr(gl_extensions, "WGL_EXT_swap_control")) {
+		qwglSwapIntervalEXT = (void *) wglGetProcAddress("wglSwapIntervalEXT");
+	}
+}
+
+void UpdateSwapInterval (void)
+{
+	static float old_gl_swapinterval = 0;
+
+	if (qwglSwapIntervalEXT) {
+		if (gl_swapinterval.value != old_gl_swapinterval) {
+			old_gl_swapinterval = gl_swapinterval.value;
+			qwglSwapIntervalEXT (gl_swapinterval.value != 0);
+		}
+	}
+}
+
 /*
 ===============
 GL_Init
@@ -633,6 +656,7 @@ void GL_Init (void)
 
 	CheckTextureExtensions ();
 	CheckMultiTextureExtensions ();
+	CheckSwapIntervalExtension ();
 
 	glClearColor (1,0,0,0);
 	glCullFace(GL_FRONT);
@@ -692,6 +716,8 @@ void GL_EndRendering (void)
 		else
 			RestoreHWGamma ();
 	}
+
+	UpdateSwapInterval ();
 
 	if (!scr_skipupdate || block_drawing)
 		SwapBuffers(maindc);
@@ -1576,6 +1602,8 @@ void	VID_Init (unsigned char *palette)
 	Cvar_Register (&_windowed_mouse);
 	Cvar_Register (&vid_hwgammacontrol);
 	Cvar_Register (&vid_displayfrequency);
+	Cvar_Register (&gl_swapinterval);
+	Cvar_Register (&gl_ext_swapinterval);
 
 	Cmd_AddCommand ("vid_modelist", VID_ModeList_f);
 
