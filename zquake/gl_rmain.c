@@ -1079,16 +1079,6 @@ void R_SetupGL (void)
 	y = vid.height - r_refdef.vrect.y;
 	y2 = vid.height - (r_refdef.vrect.y + r_refdef.vrect.height);
 
-	// fudge around because of frac screen scale
-	if (x > 0)
-		x--;
-	if (x2 < vid.width)
-		x2++;
-	if (y2 < 0)
-		y2--;
-	if (y < vid.height)
-		y++;
-
 	w = x2 - x;
 	h = y - y2;
 
