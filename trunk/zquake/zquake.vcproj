@@ -3574,6 +3574,9 @@
 				RelativePath="cmd.h">
 			</File>
 			<File
+				RelativePath=".\cmodel.h">
+			</File>
+			<File
 				RelativePath="common.h">
 			</File>
 			<File
