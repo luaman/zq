@@ -104,7 +104,6 @@ entity_t		cl_visedicts_list[2][MAX_VISEDICTS];
 
 double			connect_time = 0;		// for connection retransmits
 
-double		realtime;				// without any filtering or bounding
 double		oldrealtime;			// last frame run
 qboolean	host_skipframe;			// used in demo playback
 
@@ -166,7 +165,7 @@ void CL_SendConnectPacket (void)
 		return;
 	}
 	t2 = Sys_DoubleTime ();
-	connect_time = realtime + t2 - t1;	// for retransmit requests
+	connect_time = cls.realtime + t2 - t1;	// for retransmit requests
 
 	if (adr.port == 0)
 		adr.port = BigShort (PORT_SERVER);
@@ -193,7 +192,7 @@ void CL_CheckForResend (void)
 
 	if (cls.state != ca_disconnected || !connect_time)
 		return;
-	if (realtime - connect_time < 5.0)
+	if (cls.realtime - connect_time < 5.0)
 		return;
 
 	t1 = Sys_DoubleTime ();
@@ -204,7 +203,7 @@ void CL_CheckForResend (void)
 		return;
 	}
 	t2 = Sys_DoubleTime ();
-	connect_time = realtime + t2 - t1;	// for retransmit requests
+	connect_time = cls.realtime + t2 - t1;	// for retransmit requests
 
 	if (adr.port == 0)
 		adr.port = BigShort (PORT_SERVER);
@@ -610,9 +609,9 @@ void CL_SendToServer (void)
 	// when recording demos, request new ping times every 5 seconds
 	if (cls.demorecording && !cls.demoplayback && cls.state == ca_active
 		&& cl_demoPingInterval.value > 0) {
-		if (realtime - cl.last_ping_request > cl_demoPingInterval.value)
+		if (cls.realtime - cl.last_ping_request > cl_demoPingInterval.value)
 		{
-			cl.last_ping_request = realtime;
+			cl.last_ping_request = cls.realtime;
 			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 			SZ_Print (&cls.netchan.message, "pings");
 		}
@@ -838,7 +837,7 @@ qboolean CL_FilterTime (void)
 		}
 	}
 
-	if (realtime - oldrealtime < 1.0/fps)
+	if (cls.realtime - oldrealtime < 1.0/fps)
 		return false;
 
 	return true;
@@ -867,27 +866,27 @@ void CL_Frame (double time)
 	}
 
 	if (!cls.demoplayback)
-		realtime += time;
+		cls.realtime += time;
 	else {
 		scale = cl_demospeed.value;
 		if (scale <= 0) scale = 1;
 		if (scale < 0.1) scale = 0.1;
 		if (scale > 10) scale = 1;
-		realtime += time*scale;
+		cls.realtime += time*scale;
 	}
 
-	if (oldrealtime > realtime)
+	if (oldrealtime > cls.realtime)
 		oldrealtime = 0;
 
 	if (!CL_FilterTime())
 		return;			// framerate is too high
 
-	cls.frametime = realtime - oldrealtime;
+	cls.frametime = cls.realtime - oldrealtime;
 
 	if (cls.demoplayback && (cl.paused & 2))
-		realtime = oldrealtime;
+		cls.realtime = oldrealtime;
 
-	oldrealtime = realtime;
+	oldrealtime = cls.realtime;
 	if (cls.frametime > 0.2)
 		cls.frametime = 0.2;
 		

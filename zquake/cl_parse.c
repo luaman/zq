@@ -153,7 +153,7 @@ int CL_CalcNet (void)
 	packetcount = 0;
 	for (a=0 ; a<NET_TIMINGS ; a++)
 	{
-		if (!cl_oldPL.value && a < UPDATE_BACKUP && (realtime -
+		if (!cl_oldPL.value && a < UPDATE_BACKUP && (cls.realtime -
 			cl.frames[(cls.netchan.outgoing_sequence-a)&UPDATE_MASK].senttime) < cls.latency)
 			continue;
 
@@ -922,7 +922,7 @@ void CL_ParseClientdata (void)
 	frame = &cl.frames[i];
 	parsecounttime = cl.frames[i].senttime;
 
-	frame->receivedtime = realtime;
+	frame->receivedtime = cls.realtime;
 
 // calculate latency
 	latency = frame->receivedtime - frame->senttime;
@@ -1452,7 +1452,7 @@ void CL_ParseServerMessage (void)
 	int			i, j;
 
 	received_framecount = cls.framecount;
-	cl.last_servermessage = realtime;
+	cl.last_servermessage = cls.realtime;
 	CL_ClearProjectiles ();
 
 //
@@ -1583,7 +1583,7 @@ void CL_ParseServerMessage (void)
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
 				Host_Error ("CL_ParseServerMessage: svc_updateentertime > MAX_CLIENTS");
-			cl.players[i].entertime = realtime - MSG_ReadFloat ();
+			cl.players[i].entertime = cls.realtime - MSG_ReadFloat ();
 			break;
 			
 		case svc_spawnbaseline:
@@ -1627,7 +1627,7 @@ void CL_ParseServerMessage (void)
 
 		case svc_intermission:
 			cl.intermission = 1;
-			cl.completed_time = realtime;
+			cl.completed_time = cls.realtime;
 			vid.recalc_refdef = true;	// go to full screen
 			for (i=0 ; i<3 ; i++)
 				cl.simorg[i] = MSG_ReadCoord ();			
@@ -1639,7 +1639,7 @@ void CL_ParseServerMessage (void)
 
 		case svc_finale:
 			cl.intermission = 2;
-			cl.completed_time = realtime;
+			cl.completed_time = cls.realtime;
 			vid.recalc_refdef = true;	// go to full screen
 			SCR_CenterPrint (MSG_ReadString ());			
 			break;

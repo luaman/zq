@@ -37,7 +37,7 @@ cvar_t		_con_notifylines = {"con_notifylines","4"};
 cvar_t		con_notifytime = {"con_notifytime","3"};		//seconds
 
 #define	NUM_CON_TIMES 16
-float		con_times[NUM_CON_TIMES];	// realtime time the line was generated
+float		con_times[NUM_CON_TIMES];	// cls.realtime time the line was generated
 								// for transparent notify lines
 
 int			con_vislines;
@@ -330,7 +330,7 @@ void Con_Print (char *txt)
 			Con_Linefeed ();
 		// mark time for transparent overlay
 			if (con->current >= 0)
-				con_times[con->current % NUM_CON_TIMES] = realtime;
+				con_times[con->current % NUM_CON_TIMES] = cls.realtime;
 		}
 
 		switch (c)
@@ -432,7 +432,7 @@ void Con_DrawNotify (void)
 		time = con_times[i % NUM_CON_TIMES];
 		if (time == 0)
 			continue;
-		time = realtime - time;
+		time = cls.realtime - time;
 		if (time > con_notifytime.value)
 			continue;
 		text = con->text + (i % con_totallines)*con_linewidth;

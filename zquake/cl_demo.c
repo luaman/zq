@@ -97,9 +97,9 @@ void CL_WriteDemoCmd (usercmd_t *pcmd)
 	byte	c;
 	usercmd_t cmd;
 
-//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, cls.realtime);
 
-	fl = LittleFloat((float)realtime);
+	fl = LittleFloat((float)cls.realtime);
 	fwrite (&fl, sizeof(fl), 1, cls.demofile);
 
 	c = dem_cmd;
@@ -137,12 +137,12 @@ void CL_WriteDemoMessage (sizebuf_t *msg)
 	float	fl;
 	byte	c;
 
-//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, cls.realtime);
 
 	if (!cls.demorecording)
 		return;
 
-	fl = LittleFloat((float)realtime);
+	fl = LittleFloat((float)cls.realtime);
 	fwrite (&fl, sizeof(fl), 1, cls.demofile);
 
 	c = dem_read;
@@ -194,23 +194,23 @@ qboolean CL_GetDemoMessage (void)
 			cls.td_starttime = Sys_DoubleTime();
 			cls.td_startframe = cls.framecount;
 		}
-		realtime = demotime; // warp
+		cls.realtime = demotime; // warp
 	} else if (!(cl.paused & 1) && cls.state >= ca_active) {	// always grab until active
-		if (realtime + 1.0 < demotime) {
+		if (cls.realtime + 1.0 < demotime) {
 			// too far back
-			realtime = demotime - 1.0;
+			cls.realtime = demotime - 1.0;
 			// rewind back to time
 			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
 					SEEK_SET);
 			return 0;
-		} else if (realtime < demotime) {
+		} else if (cls.realtime < demotime) {
 			// rewind back to time
 			fseek(cls.demofile, ftell(cls.demofile) - sizeof(demotime),
 					SEEK_SET);
 			return 0;		// don't need another message yet
 		}
 	} else
-		realtime = demotime; // we're warping
+		cls.realtime = demotime; // we're warping
 
 	if (cls.state < ca_demostart)
 		Host_Error ("CL_GetDemoMessage: cls.state != ca_active");
@@ -346,12 +346,12 @@ void CL_WriteRecordDemoMessage (sizebuf_t *msg, int seq)
 	float	fl;
 	byte	c;
 
-//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, cls.realtime);
 
 	if (!cls.demorecording)
 		return;
 
-	fl = LittleFloat((float)realtime);
+	fl = LittleFloat((float)cls.realtime);
 	fwrite (&fl, sizeof(fl), 1, cls.demofile);
 
 	c = dem_read;
@@ -376,12 +376,12 @@ void CL_WriteSetDemoMessage (void)
 	float	fl;
 	byte	c;
 
-//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+//Com_Printf ("write: %ld bytes, %4.4f\n", msg->cursize, cls.realtime);
 
 	if (!cls.demorecording)
 		return;
 
-	fl = LittleFloat((float)realtime);
+	fl = LittleFloat((float)cls.realtime);
 	fwrite (&fl, sizeof(fl), 1, cls.demofile);
 
 	c = dem_set;
@@ -599,7 +599,7 @@ static void CL_Record (void)
 		
 		MSG_WriteByte (&buf, svc_updateentertime);
 		MSG_WriteByte (&buf, i);
-		MSG_WriteFloat (&buf, realtime - player->entertime);
+		MSG_WriteFloat (&buf, cls.realtime - player->entertime);
 
 		MSG_WriteByte (&buf, svc_updateuserinfo);
 		MSG_WriteByte (&buf, i);
@@ -864,7 +864,7 @@ static void CheckQizmoCompletion ()
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
 	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
-	realtime = 0;
+	cls.realtime = 0;
 }
 
 static void StopQWZPlayback ()
@@ -932,7 +932,7 @@ void PlayQWZDemo (void)
 		cls.demoplayback = true;
 		cls.state = ca_demostart;
 		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
-		realtime = 0;
+		cls.realtime = 0;
 		return;
 	}
 	
@@ -967,7 +967,7 @@ void PlayQWZDemo (void)
 	cls.demofile = NULL;
 	cls.state = ca_demostart;
 	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
-	realtime = 0;
+	cls.realtime = 0;
 }
 #endif
 
@@ -1024,7 +1024,7 @@ void CL_PlayDemo_f (void)
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
 	Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, 0);
-	realtime = 0;
+	cls.realtime = 0;
 }
 
 /*
