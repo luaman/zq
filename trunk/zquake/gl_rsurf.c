@@ -1445,7 +1445,7 @@ void GL_BuildLightmaps (void)
 		for (i=0 ; i<m->numsurfaces ; i++)
 		{
 			GL_CreateSurfaceLightmap (m->surfaces + i);
-			if ( m->surfaces[i].flags & (SURF_DRAWTURB|SURF_DRAWSKY) )
+			if ( m->surfaces[i].flags & (SURF_UNLIT) )
 				continue;
 			BuildSurfaceDisplayList (m->surfaces + i);
 		}
