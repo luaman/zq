@@ -42,6 +42,7 @@ void PM_Init (void)
 #define	STEPSIZE	18
 #define	MIN_STEP_NORMAL	0.7		// roughly 45 degrees
 
+#define pm_flyfriction 4
 
 /*
 ==================
@@ -217,20 +218,22 @@ Each intersection will try to step over the obstruction instead of
 sliding along it.
 =============
 */
-void PM_StepSlideMove (void)
+void PM_StepSlideMove (qboolean fly)
 {
 	vec3_t	start, dest;
 	pmtrace_t	trace;
 	vec3_t	original, originalvel, down, up, downvel;
 	float	downdist, updist;
 
-	if (!movevars.slidefix)
-		pmove.velocity[2] = 0;
+	if (!fly) {
+		if (!movevars.slidefix)
+			pmove.velocity[2] = 0;
 
-	if (!pmove.velocity[0] && !pmove.velocity[1])
-	{
-		pmove.velocity[2] = 0;
-		return;
+		if (!pmove.velocity[0] && !pmove.velocity[1])
+		{
+			pmove.velocity[2] = 0;
+			return;
+		}
 	}
 
 	// first try just moving to the destination	
@@ -281,6 +284,10 @@ void PM_StepSlideMove (void)
 	{
 		VectorCopy (trace.endpos, pmove.origin);
 	}
+
+	if (pmove.origin[2] < original[2])
+		goto usedown;
+
 	VectorCopy (pmove.origin, up);
 
 	// decide which one went farther
@@ -332,6 +339,12 @@ void PM_Friction (void)
 		return;
 	}
 
+	if (pmove.pm_type == PM_FLY) {
+		// apply flymode friction
+		drop = speed * pm_flyfriction * frametime;
+		goto scalevel;
+	}
+
 	friction = movevars.friction;
 
 // if the leading edge is over a dropoff, increase friction
@@ -359,14 +372,12 @@ void PM_Friction (void)
 
 
 // scale the velocity
+scalevel:
 	newspeed = speed - drop;
 	if (newspeed < 0)
 		newspeed = 0;
-	newspeed /= speed;
 
-	vel[0] = vel[0] * newspeed;
-	vel[1] = vel[1] * newspeed;
-	vel[2] = vel[2] * newspeed;
+	VectorScale (vel, newspeed / speed, vel);
 }
 
 
@@ -504,6 +515,34 @@ void PM_WaterMove (void)
 
 
 /*
+*/
+void PM_FlyMove ()
+{
+	int		i;
+	vec3_t	wishvel;
+	float	wishspeed;
+	vec3_t	wishdir;
+
+	for (i=0 ; i<3 ; i++)
+		wishvel[i] = forward[i]*pmove.cmd.forwardmove + right[i]*pmove.cmd.sidemove;
+	
+	wishvel[2] += pmove.cmd.upmove;
+
+	VectorCopy (wishvel, wishdir);
+	wishspeed = VectorNormalize(wishdir);
+	
+	if (wishspeed > movevars.maxspeed) {
+		VectorScale (wishvel, movevars.maxspeed/wishspeed, wishvel);
+		wishspeed = movevars.maxspeed;
+	}
+	
+	PM_Accelerate (wishdir, wishspeed, movevars.accelerate);
+	
+	PM_StepSlideMove (true);
+}
+
+
+/*
 ===================
 PM_AirMove
 
@@ -547,7 +586,7 @@ void PM_AirMove (void)
 			pmove.velocity[2] = 0;
 		PM_Accelerate (wishdir, wishspeed, movevars.accelerate);
 		pmove.velocity[2] -= movevars.entgravity * movevars.gravity * frametime;
-		PM_StepSlideMove ();
+		PM_StepSlideMove (false);
 	}
 	else
 	{	// not on ground, so little effect on velocity
@@ -649,6 +688,9 @@ PM_CheckJump
 */
 void PM_CheckJump (void)
 {
+	if (pmove.pm_type == PM_FLY)
+		return;
+
 	if (pmove.pm_type == PM_DEAD)
 	{
 		pmove.jump_held = true;	// don't jump on respawn
@@ -910,7 +952,7 @@ void PM_PlayerMove (void)
 	// set onground, watertype, and waterlevel
 	PM_CategorizePosition ();
 
-	if (pmove.waterlevel == 2)
+	if (pmove.waterlevel == 2 && pmove.pm_type != PM_FLY)
 		PM_CheckWaterJump ();
 
 	if (pmove.velocity[2] < 0 || pmove.pm_type == PM_DEAD)
@@ -937,6 +979,8 @@ void PM_PlayerMove (void)
 
 	if (pmove.waterlevel >= 2)
 		PM_WaterMove ();
+	else if (pmove.pm_type == PM_FLY)
+		PM_FlyMove ();
 	else
 		PM_AirMove ();
 
