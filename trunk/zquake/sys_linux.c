@@ -41,62 +41,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int noconinput = 0;
 int nostdout = 0;
 
-cvar_t  sys_linerefresh = {"sys_linerefresh","0"};// set for entity display
-
 // =======================================================================
 // General routines
 // =======================================================================
-
-void Sys_DebugNumber(int y, int val)
-{
-}
-
-/*
-void Sys_Printf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		text[1024];
-	
-	va_start (argptr,fmt);
-	vsprintf (text,fmt,argptr);
-	va_end (argptr);
-	fprintf(stderr, "%s", text);
-	
-	Con_Print (text);
-}
-
-void Sys_Printf (char *fmt, ...)
-{
-
-    va_list     argptr;
-    char        text[1024], *t_p;
-    int         l, r;
-
-    if (nostdout)
-        return;
-
-    va_start (argptr,fmt);
-    vsprintf (text,fmt,argptr);
-    va_end (argptr);
-
-    l = strlen(text);
-    t_p = text;
-
-// make sure everything goes through, even though we are non-blocking
-    while (l)
-    {
-        r = write (1, text, l);
-        if (r != l)
-            sleep (0);
-        if (r > 0)
-        {
-            t_p += r;
-            l -= r;
-        }
-    }
-
-}
-*/
 
 void Sys_Printf (char *fmt, ...)
 {
@@ -149,17 +96,6 @@ void Sys_Error (char *error, ...)
 
 } 
 
-void Sys_Warn (char *warning, ...)
-{ 
-    va_list     argptr;
-    char        string[1024];
-    
-    va_start (argptr,warning);
-    vsprintf (string,warning,argptr);
-    va_end (argptr);
-	fprintf(stderr, "Warning: %s", string);
-} 
-
 /*
 ============
 Sys_FileTime
@@ -183,28 +119,6 @@ void Sys_mkdir (char *path)
     mkdir (path, 0777);
 }
 
-void Sys_EditFile(char *filename)
-{
-
-	char cmd[256];
-	char *term;
-	char *editor;
-
-	term = getenv("TERM");
-	if (term && !strcmp(term, "xterm"))
-	{
-		editor = getenv("VISUAL");
-		if (!editor)
-			editor = getenv("EDITOR");
-		if (!editor)
-			editor = getenv("EDIT");
-		if (!editor)
-			editor = "vi";
-		sprintf(cmd, "xterm -e %s %s", editor, filename);
-		system(cmd);
-	}
-
-}
 
 double Sys_DoubleTime (void)
 {
@@ -221,21 +135,6 @@ double Sys_DoubleTime (void)
     }
 
     return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
-}
-
-// =======================================================================
-// Sleeps for microseconds
-// =======================================================================
-
-static volatile int oktogo;
-
-void alarm_handler(int x)
-{
-	oktogo=1;
-}
-
-void Sys_LineRefresh(void)
-{
 }
 
 void floating_point_exception_handler(int whatever)
