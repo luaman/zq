@@ -511,7 +511,7 @@ void VID_SetPalette (unsigned char *palette)
 {
 	int i;
 	byte *pal;
-	unsigned r,g,b, v, *table;
+	unsigned r,g,b, *table;
 
 	// 8 8 8 encoding
 	pal = palette;
