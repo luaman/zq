@@ -248,18 +248,8 @@ static void CL_LerpMove (float msgtime)
 	frac = (simtime - lerp_times[from]) / (lerp_times[to] - lerp_times[from]);
 	frac = bound (0, frac, 1);
 
-	for (i = 0; i < 3; i++)
-		cl.simorg[i] = lerp_origin[from][i] + (lerp_origin[to][i] - lerp_origin[from][i]) * frac;
-
-	for (i = 0; i < 3; i++) {
-		float delta = lerp_angles[to][i] - lerp_angles[from][i];
-		if (delta > 180)
-			delta -= 360;
-		else if (delta < -180)
-			delta += 360;
-		cl.simangles[i] = lerp_angles[from][i] + delta * frac;
-	}
-
+	LerpVector (lerp_origin[from], lerp_origin[to], frac, cl.simorg);
+	LerpAngles (lerp_angles[from], lerp_angles[to], frac, cl.simangles);
 }
 
 /*

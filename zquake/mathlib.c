@@ -448,6 +448,30 @@ void VectorScale (vec3_t in, vec_t scale, vec3_t out)
 	out[2] = in[2]*scale;
 }
 
+void LerpVector (const vec3_t from, const vec3_t to, float frac, vec3_t out)
+{
+	out[0] = from[0] + frac * (to[0] - from[0]);
+	out[1] = from[1] + frac * (to[1] - from[1]);
+	out[2] = from[2] + frac * (to[2] - from[2]);
+}
+
+void LerpAngles (const vec3_t from, const vec3_t to, float frac, vec3_t out)
+{
+	int i;
+	float delta;
+
+	for (i = 0; i < 3; i++)
+	{
+		delta = to[i] - from[i];
+
+		if (delta > 180)
+			delta -= 360;
+		else if (delta < -180)
+			delta += 360;
+
+		out[i] = from[i] + frac * delta;
+	}
+}
 
 int Q_log2(int val)
 {

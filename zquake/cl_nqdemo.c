@@ -700,8 +700,6 @@ extern int	cl_rocketindex, cl_grenadeindex;
 
 static void NQD_LerpPlayerinfo (float f)
 {
-	int		i;
-
 	if (cl.intermission) {
 		// just stay there
 		return;
@@ -714,20 +712,9 @@ static void NQD_LerpPlayerinfo (float f)
 		return;
 	}
 
-	for (i=0 ; i<3 ; i++)
-		cl.simvel[i] = nq_mvelocity[1][i] + 
-			f * (nq_mvelocity[0][i] - nq_mvelocity[1][i]);
-
-	for (i = 0; i < 3; i++)
-	{
-		float	d;
-		d = nq_mviewangles[0][i] - nq_mviewangles[1][i];
-		if (d > 180)
-			d -= 360;
-		else if (d < -180)
-			d += 360;
-		cl.viewangles[i] = cl.simangles[i] = nq_mviewangles[1][i] + f*d;
-	}
+	LerpVector (nq_mvelocity[1], nq_mvelocity[0], f, cl.simvel);
+	LerpAngles (nq_mviewangles[1], nq_mviewangles[0], f, cl.simangles);
+	VectorCopy (cl.simangles, cl.viewangles);
 }
 
 void NQD_LinkEntities (void)
@@ -816,19 +803,11 @@ void NQD_LinkEntities (void)
 		}
 		else
 		{
-			vec3_t	a1, a2;
+			vec3_t	old, cur;
 
-			MSG_UnpackAngles (cent->current.s_angles, a1);
-			MSG_UnpackAngles (cent->previous.s_angles, a2);
-
-			for (i = 0; i < 3; i++)
-			{
-				if (a1[i] - a2[i] > 180)
-					a1[i] -= 360;
-				if (a1[i] - a2[i] < -180)
-					a1[i] += 360;
-				ent.angles[i] = a2[i] + f * (a1[i] - a2[i]);
-			}
+			MSG_UnpackAngles (cent->current.s_angles, old);
+			MSG_UnpackAngles (cent->previous.s_angles, cur);
+			LerpAngles (old, cur, f, ent.angles);
 		}
 
 		// calculate origin
