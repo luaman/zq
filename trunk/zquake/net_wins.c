@@ -27,8 +27,7 @@ netadr_t	net_local_adr;	// FIXME: make this work!
 netadr_t	net_from;
 sizebuf_t	net_message;
 
-#define	MAX_UDP_PACKET	(MAX_MSGLEN*2)	// one more than msg + header
-byte		net_message_buffer[MAX_UDP_PACKET];
+byte		net_message_buffer[MAX_BIG_MSGLEN];
 
 WSADATA		winsockdata;
 
@@ -36,7 +35,7 @@ WSADATA		winsockdata;
 
 typedef struct
 {
-	byte	data[MAX_UDP_PACKET];
+	byte	data[MAX_BIG_MSGLEN];
 	int		datalen;
 } loopmsg_t;
 
@@ -214,7 +213,7 @@ void NET_SendLoopPacket (netsrc_t sock, int length, void *data, netadr_t to)
 	loop->send++;
 
 	if (length > sizeof(loop->msgs[i].data))
-		Sys_Error ("NET_SendLoopPacket: length > MAX_UDP_PACKET");
+		Sys_Error ("NET_SendLoopPacket: length > MAX_BIG_MSGLEN");
 
 	memcpy (loop->msgs[i].data, data, length);
 	loop->msgs[i].datalen = length;
