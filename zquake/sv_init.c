@@ -293,12 +293,11 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	sv.edicts = Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");
 	
 	// leave slots at start for clients only
-	sv.num_edicts = MAX_CLIENTS+1;
-	for (i=0 ; i<MAX_CLIENTS ; i++)
-	{
+	sv.num_edicts = MAX_CLIENTS + 1;
+	for (i = 0; i < MAX_CLIENTS; i++) {
 		ent = EDICT_NUM(i+1);
+		ent->inuse = true;		// for frikbot's sake only
 		svs.clients[i].edict = ent;
-//ZOID - make sure we update frags right
 		svs.clients[i].old_frags = 0;
 	}
 

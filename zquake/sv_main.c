@@ -204,7 +204,7 @@ void SV_DropClient (client_t *drop)
 
 	drop->old_frags = 0;
 	drop->edict->v.frags = 0;
-	drop->edict->inuse = false;
+//	drop->edict->inuse = false;
 	drop->name[0] = 0;
 	memset (drop->userinfo, 0, sizeof(drop->userinfo));
 

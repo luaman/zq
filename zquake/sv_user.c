@@ -547,7 +547,7 @@ void Cmd_Begin_f (void)
 
 	sv_client->state = cs_spawned;
 
-	sv_player->inuse = true;
+//	sv_player->inuse = true;
 	
 	if (!sv.loadgame)
 	{
