@@ -60,6 +60,7 @@ char *TP_ParseFunChars (char *s);
 void TP_NewMap ();
 void TP_CheckVersionRequest(char *s);
 int TP_CategorizeMessage (char *s, int *offset);
+qboolean TP_FilterMessage (char *s);
 
 void TP_Init ();
 
