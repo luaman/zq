@@ -480,6 +480,63 @@ static void AdjustConsoleHeight (int delta)
 	Cvar_SetValue (&scr_consize, (float)height / vid.height);
 }
 
+// Enter key was pressed in the console, do the appropriate action
+static void HandleEnter (void)
+{
+	enum { COMMAND, CHAT, TEAMCHAT } type;
+	char *p;
+
+	// decide whether to treat the text as chat or command
+	if (keydown[K_CTRL])
+		type = TEAMCHAT;
+	else if (keydown[K_SHIFT])
+		type = (cl_chatmode.value == 1) ? COMMAND : CHAT;
+	else if (key_lines[edit_line][1] == '\\' || key_lines[edit_line][1] == '/')
+		type = COMMAND;
+	else if (cl_chatmode.value && cls.state >= ca_connected
+			&& (cl_chatmode.value == 1 || !CheckForCommand()))
+		type = CHAT;
+	else
+		type = COMMAND;
+
+	// do appropriate action
+	switch (type) {
+	case CHAT:
+	case TEAMCHAT:
+		for (p = key_lines[edit_line] + 1; *p; p++) {
+			if (*p != ' ')
+				break;
+		}
+		if (!*p)
+			break;		// just whitespace
+
+		Cbuf_AddText (type == TEAMCHAT ? "say_team " : "say ");
+		Cbuf_AddText (key_lines[edit_line]+1);
+		Cbuf_AddText ("\n");
+		break;
+
+	case COMMAND:
+		p = key_lines[edit_line] + 1;	// skip the "]" prompt char
+		if (*p == '\\' || (*p == '/' && p[1] != '/'))
+			p++;
+		Cbuf_AddText (p);
+		Cbuf_AddText ("\n");
+		break;
+	}
+
+	// echo to the console and cycle command history
+	Com_Printf ("%s\n", key_lines[edit_line]);
+	edit_line = (edit_line + 1) & 31;
+	history_line = edit_line;
+	key_lines[edit_line][0] = ']';
+	key_lines[edit_line][1] = 0;
+	key_linepos = 1;
+
+	if (cls.state == ca_disconnected)
+		SCR_UpdateScreen ();	// force an update, because the command
+								// may take some time
+}
+
 /*
 ====================
 Key_Console
@@ -490,50 +547,10 @@ Interactive line editing and console scrollback
 void Key_Console (int key)
 {
 	int i;
-	char *p;
 
 	switch (key) {
 	    case K_ENTER:
-			// backslash text are commands
-			if (key_lines[edit_line][1] == '/' && key_lines[edit_line][2] == '/')
-				goto no_lf;
-			else if (key_lines[edit_line][1] == '\\' || key_lines[edit_line][1] == '/')
-				Cbuf_AddText (key_lines[edit_line]+2);	// skip the ]/
-			else if (cl_chatmode.value != 1 && CheckForCommand())
-				Cbuf_AddText (key_lines[edit_line]+1);	// valid command
-			else if ((cls.state >= ca_connected && cl_chatmode.value == 2) || cl_chatmode.value == 1)
-			{
-				if (cls.state < ca_connected)	// can happen if cl_chatmode is 1
-					goto no_lf;					// drop the whole line
-
-				for (p = key_lines[edit_line] + 1; *p; p++) {
-					if (*p != ' ')
-						break;
-				}
-				if (!*p)
-					goto no_lf;		// just whitespace
-
-				// convert to a chat message
-				if (keydown[K_CTRL])
-					Cbuf_AddText ("say_team ");
-				else
-					Cbuf_AddText ("say ");
-				Cbuf_AddText (key_lines[edit_line]+1);
-			}
-			else
-				Cbuf_AddText (key_lines[edit_line]+1);	// skip the ]
-
-			Cbuf_AddText ("\n");
-no_lf:
-			Com_Printf ("%s\n",key_lines[edit_line]);
-			edit_line = (edit_line + 1) & 31;
-			history_line = edit_line;
-			key_lines[edit_line][0] = ']';
-			key_lines[edit_line][1] = 0;
-			key_linepos = 1;
-			if (cls.state == ca_disconnected)
-				SCR_UpdateScreen ();	// force an update, because the command
-										// may take some time
+			HandleEnter ();
 			return;
 
 		case K_TAB:
