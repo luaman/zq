@@ -242,6 +242,22 @@ void CompleteCommand (void)
 	}
 }
 
+static void AdjustConsoleHeight (int delta)
+{
+	extern cvar_t scr_consize;
+	int		height;
+
+	if (cls.state != ca_active)
+		return;
+	height = (scr_consize.value * vid.height + delta + 5) / 10;
+	height *= 10;
+	if (delta < 0 && height < 30)
+		height = 30;
+	if (delta > 0 && height > vid.height - 10)
+		height = vid.height - 10;
+	Cvar_SetValue (&scr_consize, (float)height / vid.height);
+}
+
 /*
 ====================
 Key_Console
@@ -333,6 +349,10 @@ no_lf:
 			return;
 
 	    case K_UPARROW:
+			if (keydown[K_CTRL]) {
+				AdjustConsoleHeight (-10);
+				return;
+			}
 			do {
 				history_line = (history_line - 1) & 31;
 			} while (history_line != edit_line
@@ -344,6 +364,10 @@ no_lf:
 			return;
 
 		case K_DOWNARROW:
+			if (keydown[K_CTRL]) {
+				AdjustConsoleHeight (10);
+				return;
+			}
 			if (history_line == edit_line) return;
 			do {
 				history_line = (history_line + 1) & 31;
