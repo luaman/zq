@@ -362,7 +362,7 @@ void() execute_changelevel =
 		other.movetype = 0;
 		other.modelindex = 0;
 // s: make players invisible
-		other.model == string_null;
+                other.model = string_null; // oldman: corrected assignment 
 // play telesound at matchend and shoot the screen down
 		stuffcmd(other, "play misc/r_tele");
 		stuffcmd(other, tmp);
