@@ -50,7 +50,7 @@ typedef struct
 	union {						// entity the surface is on
 		int		entnum;			// for pmove
 		struct edict_s *ent;	// for sv_world
-	};
+	}			e;
 } trace_t;
 
 
@@ -77,3 +77,5 @@ cmodel_t *CM_InlineModel (char *name);
 void CM_InvalidateMap (void);
 cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned *checksum2);
 void CM_Init (void);
+
+/* vi: set noet ts=4 sts=4 ai sw=4: */

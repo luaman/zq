@@ -89,7 +89,7 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 // fill in a default trace
 	memset (&total, 0, sizeof(trace_t));
 	total.fraction = 1;
-	total.entnum = -1;
+	total.e.entnum = -1;
 	VectorCopy (end, total.endpos);
 
 	for (i=0 ; i< pmove.numphysent ; i++)
@@ -129,7 +129,7 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 		if (trace.fraction < total.fraction)
 		{
 			total = trace;
-			total.entnum = i;
+			total.e.entnum = i;
 		}
 
 	}
@@ -155,7 +155,7 @@ trace_t PM_TraceLine (vec3_t start, vec3_t end)
 // fill in a default trace
 	memset (&total, 0, sizeof(trace_t));
 	total.fraction = 1;
-	total.entnum = -1;
+	total.e.entnum = -1;
 	VectorCopy (end, total.endpos);
 
 	for (i=0 ; i< pmove.numphysent ; i++)
@@ -188,7 +188,7 @@ trace_t PM_TraceLine (vec3_t start, vec3_t end)
 		if (trace.fraction < total.fraction)
 		{
 			total = trace;
-			total.entnum = i;
+			total.e.entnum = i;
 		}
 
 	}
@@ -196,4 +196,4 @@ trace_t PM_TraceLine (vec3_t start, vec3_t end)
 	return total;
 }
 
-
+/* vi: set noet ts=4 sts=4 ai sw=4: */
