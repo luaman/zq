@@ -59,8 +59,9 @@ cvar_t	fraglimit = {"fraglimit","0",CVAR_SERVERINFO};
 cvar_t	timelimit = {"timelimit","0",CVAR_SERVERINFO};
 cvar_t	teamplay = {"teamplay","0",CVAR_SERVERINFO};
 cvar_t	samelevel = {"samelevel","0",CVAR_SERVERINFO};
-cvar_t	maxclients = {"maxclients","8",CVAR_SERVERINFO};
-cvar_t	maxspectators = {"maxspectators","8",CVAR_SERVERINFO};
+void OnChange_maxclients (cvar_t *var, char *str, qboolean *cancel);
+cvar_t	maxclients = {"maxclients","8",CVAR_SERVERINFO, OnChange_maxclients};
+cvar_t	maxspectators = {"maxspectators","8",CVAR_SERVERINFO, OnChange_maxclients};
 cvar_t	deathmatch = {"deathmatch","1",CVAR_SERVERINFO};			// 0, 1, or 2
 cvar_t	hostname = {"hostname","unnamed",CVAR_SERVERINFO};
 cvar_t	watervis = {"watervis","0",CVAR_SERVERINFO};
@@ -74,6 +75,14 @@ void SV_AcceptClient (netadr_t adr, int userid, char *userinfo);
 void Master_Shutdown (void);
 
 //============================================================================
+
+// handles both maxclients and maxspectators
+void OnChange_maxclients (cvar_t *var, char *str, qboolean *cancel) {
+	int num = Q_atof(str);
+	num = bound(0, num, 32);
+	Cvar_SetValue (var, num);
+	*cancel = true;
+}
 
 qboolean ServerPaused(void)
 {
