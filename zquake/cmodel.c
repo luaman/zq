@@ -847,3 +847,75 @@ dmodel_t* CM_InlineModel (char *name)
 #endif
 
 #endif
+
+
+
+/*
+=============================================================================
+
+The PVS must include a small area around the client to allow head bobbing
+or other small motion on the client side.  Otherwise, a bob might cause an
+entity that should be visible to not show up, especially when the bob
+crosses a waterline.
+
+=============================================================================
+*/
+static int	fatbytes;
+static byte	fatpvs[MAX_MAP_LEAFS/8];
+static model_t *fatpvs_model;	// should go away when proper CM is implemented
+static vec3_t	fatpvs_org;
+
+static void AddToFatPVS_r (mnode_t *node)
+{
+	int		i;
+	byte	*pvs;
+	mplane_t	*plane;
+	float	d;
+
+	while (1)
+	{
+	// if this is a leaf, accumulate the pvs bits
+		if (node->contents < 0)
+		{
+			if (node->contents != CONTENTS_SOLID)
+			{
+				pvs = Mod_LeafPVS ( (mleaf_t *)node, fatpvs_model);
+				for (i=0 ; i<fatbytes ; i++)
+					fatpvs[i] |= pvs[i];
+			}
+			return;
+		}
+	
+		plane = node->plane;
+		d = DotProduct (fatpvs_org, plane->normal) - plane->dist;
+		if (d > 8)
+			node = node->children[0];
+		else if (d < -8)
+			node = node->children[1];
+		else
+		{	// go down both
+			AddToFatPVS_r (node->children[0]);
+			node = node->children[1];
+		}
+	}
+}
+
+/*
+=============
+CM_FatPVS
+
+Calculates a PVS that is the inclusive or of all leafs within 8 pixels of the
+given point.
+=============
+*/
+byte *CM_FatPVS (vec3_t org, struct model_s *model)
+{
+	fatpvs_model = model;		// should go away when proper CM is implemented
+	VectorCopy (org, fatpvs_org);
+
+	fatbytes = (model->numleafs+31)>>3;
+	memset (fatpvs, 0, fatbytes);
+	AddToFatPVS_r (model->nodes);
+	return fatpvs;
+}
+
