@@ -802,9 +802,9 @@ void V_UpdatePalette (void)
 	
 		for (j=0 ; j<NUM_CSHIFTS ; j++)	
 		{
-			r += (cl.cshifts[j].percent*(cl.cshifts[j].destcolor[0]-r))>>8;
-			g += (cl.cshifts[j].percent*(cl.cshifts[j].destcolor[1]-g))>>8;
-			b += (cl.cshifts[j].percent*(cl.cshifts[j].destcolor[2]-b))>>8;
+			r += (int)(cl.cshifts[j].percent*(cl.cshifts[j].destcolor[0]-r)) >> 8;
+			g += (int)(cl.cshifts[j].percent*(cl.cshifts[j].destcolor[1]-g)) >> 8;
+			b += (int)(cl.cshifts[j].percent*(cl.cshifts[j].destcolor[2]-b)) >> 8;
 		}
 		
 		newpal[0] = gammatable[r];
