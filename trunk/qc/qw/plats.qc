@@ -341,7 +341,6 @@ void() func_train =
 		precache_sound ("plats/train1.wav");
 	}
 
-	self.cnt = 1;
 	self.solid = SOLID_BSP;
 	self.movetype = MOVETYPE_PUSH;
 	self.blocked = train_blocked;
@@ -368,7 +367,6 @@ void() misc_teleporttrain =
 	if (!self.target)
 		objerror ("func_train without a target");
 
-	self.cnt = 1;
 	self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_PUSH;
 	self.blocked = train_blocked;
