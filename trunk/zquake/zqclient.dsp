@@ -1418,15 +1418,19 @@ SOURCE=.\qe3.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\quakeworld.bmp
-# End Source File
-# Begin Source File
-
 SOURCE=.\qwcl2.ico
 # End Source File
 # Begin Source File
 
+SOURCE=.\qwsv2.ico
+# End Source File
+# Begin Source File
+
 SOURCE=.\zquake.bmp
+# End Source File
+# Begin Source File
+
+SOURCE=.\winquake.rc
 # End Source File
 # End Group
 # Begin Group "Asm Files"
