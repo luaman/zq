@@ -725,6 +725,10 @@ Sets the bots look keys & b_angle to point at
 the target - used for fighting and just
 generally making the bot look good.
 
+TODO: make bot gradually change turn aim 
+direction towards desired target rather than
+instant perfect flick shot
+
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
