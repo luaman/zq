@@ -336,11 +336,11 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	// load and spawn all other entities
 	entitystring = NULL;
 	if (sv_loadentfiles.value) {
-		entitystring = FS_LoadHunkFile (va("maps/%s.ent", sv.mapname));
+		entitystring = (char *)FS_LoadHunkFile (va("maps/%s.ent", sv.mapname));
 		if (entitystring) {
 			Com_DPrintf ("Using entfile maps/%s.ent\n", sv.mapname);
 			Info_SetValueForStarKey (svs.info, "*entfile", va("%i",
-				CRC_Block(entitystring, fs_filesize)), MAX_SERVERINFO_STRING);
+				CRC_Block((byte *)entitystring, fs_filesize)), MAX_SERVERINFO_STRING);
 		}
 	}
 	if (!entitystring) {

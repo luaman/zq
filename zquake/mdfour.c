@@ -115,10 +115,10 @@ static void copy64(uint32 *M, unsigned char *in)
 
 static void copy4(unsigned char *out,uint32 x)
 {
-	out[0] = x&0xFF;
-	out[1] = (x>>8)&0xFF;
-	out[2] = (x>>16)&0xFF;
-	out[3] = (x>>24)&0xFF;
+	out[0] = (unsigned char)(x & 0xFF);
+	out[1] = (unsigned char)((x>>8) & 0xFF);
+	out[2] = (unsigned char)((x>>16) & 0xFF);
+	out[3] = (unsigned char)((x>>24) & 0xFF);
 }
 
 void mdfour_begin(struct mdfour *md)
