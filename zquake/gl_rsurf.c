@@ -1088,10 +1088,7 @@ void R_DrawBrushModel (entity_t *e)
 
     glPushMatrix ();
 
-	// ZOID: stupid quake bug
-
 	glTranslatef (e->origin[0],  e->origin[1],  e->origin[2]);
-
 	glRotatef (e->angles[1], 0, 0, 1);
 	glRotatef (e->angles[0], 0, 1, 0);
 	glRotatef (e->angles[2], 1, 0, 0);
@@ -1501,9 +1498,9 @@ void BuildSurfaceDisplayList (msurface_t *fa)
 			next = poly->verts[(i + 1) % lnumverts];
 
 			VectorSubtract (this, prev, v1);
-			VectorNormalizeFast (v1);
+			VectorNormalize (v1);
 			VectorSubtract (next, prev, v2 );
-			VectorNormalizeFast (v2);
+			VectorNormalize (v2);
 
 			// skip co-linear points
 			#define COLINEAR_EPSILON 0.001
