@@ -1483,13 +1483,13 @@ pack_t *COM_LoadPackFile (char *packfile)
 
 /*
 ================
-COM_AddGameDirectory
+FS_AddGameDirectory
 
 Sets com_gamedir, adds the directory to the head of the path,
 then loads and adds pak1.pak pak2.pak ... 
 ================
 */
-void COM_AddGameDirectory (char *dir)
+void FS_AddGameDirectory (char *dir)
 {
 	int				i;
 	searchpath_t	*search;
@@ -1631,8 +1631,8 @@ void FS_InitFilesystem (void)
 //
 // start up with id1 by default
 //
-	COM_AddGameDirectory (va("%s/id1", com_basedir) );
-	COM_AddGameDirectory (va("%s/qw", com_basedir) );
+	FS_AddGameDirectory (va("%s/id1", com_basedir) );
+	FS_AddGameDirectory (va("%s/qw", com_basedir) );
 
 	// any set gamedirs will be freed up to here
 	com_base_searchpaths = com_searchpaths;
