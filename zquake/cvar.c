@@ -221,14 +221,17 @@ Cvar_SetValue
 */
 void Cvar_SetValue (cvar_t *var, float value)
 {
-	char	val[32];
+	char	val[128];
 	int	i;
 	
-	sprintf (val, "%f", value);
+	_snprintf (val, sizeof(val)-1, "%f", value);
+	val[sizeof(val)-1] = 0;
+
 	for (i=strlen(val)-1 ; i>0 && val[i]=='0' ; i--)
 		val[i] = 0;
 	if (val[i] == '.')
 		val[i] = 0;
+
 	Cvar_Set (var, val);
 }
 
