@@ -324,7 +324,7 @@ void SCR_CalcRefdef (void)
 	if (cl.intermission) {
 		size = 100.0;
 		sb_lines = 0;
-		sb_drawinventory = sb_drawmain = true;
+		sb_drawinventory = sb_drawmain = false;
 	}
 	else
 	{
