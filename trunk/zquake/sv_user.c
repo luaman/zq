@@ -262,8 +262,7 @@ Cmd_Modellist_f
 static void Cmd_Modellist_f (void)
 {
 	char		**s;
-	unsigned	n;
-	int			i;
+	int			i, n;
 
 	if (sv_client->state != cs_connected)
 	{
@@ -280,7 +279,7 @@ static void Cmd_Modellist_f (void)
 	}
 
 	n = atoi(Cmd_Argv(2));
-	if (n >= (MAX_MODELS - 1)) {
+	if ((unsigned)n >= (MAX_MODELS - 1)) {
 		SV_ClientPrintf (sv_client, PRINT_HIGH, 
 			"Cmd_Modellist_f: Invalid modellist index\n");
 		SV_DropClient (sv_client);
@@ -316,13 +315,13 @@ static void Cmd_Modellist_f (void)
 	MSG_WriteByte (&sv_client->netchan.message, svc_modellist);
 	MSG_WriteByte (&sv_client->netchan.message, n);
 	for (s = sv.model_name + 1 + n ; 
-		*s && sv_client->netchan.message.cursize < (MAX_MSGLEN/2); 
+		n < (MAX_MODELS - 1) && *s && sv_client->netchan.message.cursize < (MAX_MSGLEN/2); 
 		s++, n++)
 		MSG_WriteString (&sv_client->netchan.message, *s);
 	MSG_WriteByte (&sv_client->netchan.message, 0);
 
 	// next msg
-	if (*s)
+	if (n < MAX_MODELS - 1 && *s)
 		MSG_WriteByte (&sv_client->netchan.message, n);
 	else
 		MSG_WriteByte (&sv_client->netchan.message, 0);
