@@ -196,13 +196,6 @@ void CL_SendConnectPacket (void)
 		return;
 	}
 
-	if (!NET_IsClientLegal(&adr))
-	{
-		Con_Printf ("Illegal server address\n");
-		connect_time = -1;
-		return;
-	}
-
 	if (adr.port == 0)
 		adr.port = BigShort (27500);
 	t2 = Sys_DoubleTime ();
@@ -244,16 +237,10 @@ void CL_CheckForResend (void)
 		connect_time = -1;
 		return;
 	}
-	if (!NET_IsClientLegal(&adr))
-	{
-		Con_Printf ("Illegal server address\n");
-		connect_time = -1;
-		return;
-	}
+	t2 = Sys_DoubleTime ();
 
 	if (adr.port == 0)
 		adr.port = BigShort (27500);
-	t2 = Sys_DoubleTime ();
 
 	connect_time = realtime+t2-t1;	// for retransmit requests
 
