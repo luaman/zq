@@ -33,23 +33,19 @@ extern cvar_t cl_loadlocs;
 extern cvar_t cl_rocket2grenade;
 
 // triggers
-void CL_StatChanged (int stat, int value);
-void CL_NewMap (void);
-void CL_ExecTrigger (char *s);
-
-void CL_LoadLocFile (char *path, qboolean quiet);
-char *CL_ParseMacroString(char *string);
+void TP_StatChanged (int stat, int value);
+void TP_ExecTrigger (char *s);
 
 // message triggers
-void CL_SearchForMsgTriggers (char *s, int level);
+void TP_SearchForMsgTriggers (char *s, int level);
 
 // used by easyrecord command
-int CL_CountPlayers();
-char *CL_MapName();
-char *CL_PlayerName();
-char *CL_PlayerTeam();
-char *CL_EnemyName();
-char *CL_EnemyTeam();
+int TP_CountPlayers();
+char *TP_MapName();
+char *TP_PlayerName();
+char *TP_PlayerTeam();
+char *TP_EnemyName();
+char *TP_EnemyTeam();
 
 // teamcolor&enemycolor
 extern int cl_teamtopcolor;
@@ -59,4 +55,7 @@ extern int cl_enemybottomcolor;
 void TP_TeamColor_f (void);
 void TP_EnemyColor_f (void);
 
-void CL_InitTeamplay ();
+void TP_LoadLocFile (char *path, qboolean quiet);
+char *TP_ParseMacroString(char *string);
+void TP_NewMap ();
+void TP_Init ();

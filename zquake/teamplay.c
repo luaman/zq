@@ -64,7 +64,7 @@ typedef struct tvars_s {
 
 tvars_t vars;
 
-void CL_ExecTrigger (char *s)
+void TP_ExecTrigger (char *s)
 {
 	if (!cl_triggers.value || cls.demoplayback)
 		return;
@@ -76,7 +76,7 @@ void CL_ExecTrigger (char *s)
 }
 
 #define	IT_WEAPONS (2|4|8|16|32|64)
-void CL_StatChanged (int stat, int value)
+void TP_StatChanged (int stat, int value)
 {
 	int		i;
 
@@ -91,7 +91,7 @@ void CL_StatChanged (int stat, int value)
 				vars.respawntrigger_time = realtime;
 				//if (cl.teamfortress)
 					memset (&cshift_empty, 0, sizeof(cshift_empty));
-				CL_ExecTrigger ("f_respawn");
+				TP_ExecTrigger ("f_respawn");
 			}
 			vars.health = value;
 			return;
@@ -99,7 +99,7 @@ void CL_StatChanged (int stat, int value)
 		if (vars.health > 0) {		// We just died
 			vars.deathtrigger_time = realtime;
 			strcpy (vars.lastdeathloc, Macro_Location_f());
-			CL_ExecTrigger ("f_death");
+			TP_ExecTrigger ("f_death");
 		}
 		vars.health = value;
 	}
@@ -111,7 +111,7 @@ void CL_StatChanged (int stat, int value)
 		|| i & (IT_INVISIBILITY|IT_INVULNERABILITY|IT_SUIT|IT_QUAD))
 		{
 			// ...
-			//CL_ExecTrigger ("f_took");
+			//TP_ExecTrigger ("f_took");
 		}
 
 		if (i & (IT_KEY1|IT_KEY2)) {
@@ -122,7 +122,7 @@ void CL_StatChanged (int stat, int value)
 
 			// TODO: only if tooktriggers are enabled
 			strcpy (vars.last_tooktrigger, vars.tookitem);
-			CL_ExecTrigger ("f_took");
+			TP_ExecTrigger ("f_took");
 		}
 
 		vars.items = value;
@@ -364,7 +364,7 @@ macro_command_t macro_commands[] =
 
 #define MAX_MACRO_STRING 1024
 
-char *CL_ParseMacroString (char *string)
+char *TP_ParseMacroString (char *string)
 {
 	static char	buf[MAX_MACRO_STRING];
 	char	*s;
@@ -423,7 +423,7 @@ char *CL_ParseMacroString (char *string)
 					continue;
 				}
 				if (i + strlen(macro_string) >= MAX_MACRO_STRING-1)
-					Sys_Error("CL_ParseMacroString: macro string length > MAX_MACRO_STRING)");
+					Sys_Error("TP_ParseMacroString: macro string length > MAX_MACRO_STRING)");
 				strcpy (&buf[i], macro_string);
 				i += strlen(macro_string);
 				s += 4;	// skip %[<char>]
@@ -455,7 +455,7 @@ char *CL_ParseMacroString (char *string)
 					continue;
 				}
 				if (i + strlen(macro_string) >= MAX_MACRO_STRING-1)
-					Sys_Error("CL_ParseMacroString: macro string length > MAX_MACRO_STRING)");
+					Sys_Error("TP_ParseMacroString: macro string length > MAX_MACRO_STRING)");
 				strcpy (&buf[i], macro_string);
 					i += strlen(macro_string);
 				s += 2;	// skip % and letter
@@ -506,7 +506,7 @@ char *CL_ParseMacroString (char *string)
 					{
 						macro_string = macro->func();
 						if (i + strlen(macro_string) >= MAX_MACRO_STRING-1) // !!! is this right?
-							Sys_Error("CL_ParseMacroString: macro string length > MAX_MACRO_STRING)");
+							Sys_Error("TP_ParseMacroString: macro string length > MAX_MACRO_STRING)");
 						strcpy (&buf[i], macro_string);
 						i += strlen(macro_string);
 						s += strlen(macro->name);
@@ -550,7 +550,7 @@ int	loc_numentries;
 #define SKIPBLANKS(ptr) while (*ptr == ' ' || *ptr == 9 || *ptr == 13) ptr++
 #define SKIPTOEOL(ptr) while (*ptr != 10 && *ptr == 0) ptr++
 
-void CL_LoadLocFile (char *path, qboolean quiet)
+void TP_LoadLocFile (char *path, qboolean quiet)
 {
 	char	*buf, *p;
 	int		i, n, sign;
@@ -565,7 +565,7 @@ void CL_LoadLocFile (char *path, qboolean quiet)
 	strcpy (locname, "locs/");
 	if (strlen(path) + strlen(locname) + 2+4 > MAX_OSPATH)
 	{
-		Con_Printf ("CL_LoadLocFile: path name > MAX_OSPATH\n");
+		Con_Printf ("TP_LoadLocFile: path name > MAX_OSPATH\n");
 		return;
 	}
 	strcat (locname, path);
@@ -685,7 +685,7 @@ _endoffile:
 		Con_Printf ("Loaded %s (%i locations)\n", locname, loc_numentries);
 }
 
-void CL_LoadLocFile_f (void)
+void TP_LoadLocFile_f (void)
 {
 	if (Cmd_Argc() != 2)
 	{
@@ -693,7 +693,7 @@ void CL_LoadLocFile_f (void)
 		return;
 	}
 
-	CL_LoadLocFile (Cmd_Argv(1), false);
+	TP_LoadLocFile (Cmd_Argv(1), false);
 }
 
 extern int parsecountmod;
@@ -757,7 +757,7 @@ msg_trigger_t *CL_FindTrigger (char *name)
 }
 
 
-void CL_MsgTrigger_f (void)
+void TP_MsgTrigger_f (void)
 {
 	int		c;
 	char	*name;
@@ -835,7 +835,7 @@ char *trigger_commands[] = {
 
 #define NUM_TRIGGER_COMMANDS (sizeof(trigger_commands)/sizeof(trigger_commands[0]))
 
-void CL_ExecuteTriggerString (char *text)
+void TP_ExecuteTriggerString (char *text)
 {
 	static char	buf[1024];
 	char	*arg0;
@@ -873,7 +873,7 @@ void CL_ExecuteTriggerString (char *text)
 }
 
 
-void CL_ExecuteTriggerBuf (char *text)
+void TP_ExecuteTriggerBuf (char *text)
 {
 	char	line[1024];
 	int		i, quotes;
@@ -892,14 +892,14 @@ void CL_ExecuteTriggerBuf (char *text)
 		}
 		memcpy (line, text, i);
 		line[i] = 0;
-		CL_ExecuteTriggerString (line);
+		TP_ExecuteTriggerString (line);
 		if (!text[i])
 			break;
 		text += i + 1;
 	}
 }
 
-void CL_SearchForMsgTriggers (char *s, int level)
+void TP_SearchForMsgTriggers (char *s, int level)
 {
 	msg_trigger_t	*t;
 	char *string;
@@ -915,14 +915,14 @@ void CL_SearchForMsgTriggers (char *s, int level)
 		if (t->string[0] && strstr(s, t->string)) {
 			string = Cmd_AliasString (t->name);
 			if (string)
-				CL_ExecuteTriggerBuf (string);
+				TP_ExecuteTriggerBuf (string);
 			else
 				Con_Printf ("trigger \"%s\" has no matching alias\n", t->name);
 		}
 }
 
 
-int	CL_CountPlayers ()
+int	TP_CountPlayers ()
 {
 	int	i, count;
 
@@ -935,7 +935,7 @@ int	CL_CountPlayers ()
 	return count;
 }
 
-char *CL_EnemyTeam ()
+char *TP_EnemyTeam ()
 {
 	int			i;
 	char		myteam[MAX_INFO_STRING];
@@ -954,7 +954,7 @@ char *CL_EnemyTeam ()
 	return "";
 }
 
-char *CL_PlayerName ()
+char *TP_PlayerName ()
 {
 	static char	myname[MAX_INFO_STRING];
 
@@ -962,7 +962,7 @@ char *CL_PlayerName ()
 	return myname;
 }
 
-char *CL_PlayerTeam ()
+char *TP_PlayerTeam ()
 {
 	static char	myteam[MAX_INFO_STRING];
 
@@ -970,13 +970,13 @@ char *CL_PlayerTeam ()
 	return myteam;
 }
 
-char *CL_EnemyName ()
+char *TP_EnemyName ()
 {
 	int			i;
 	char		*myname;
 	static char	enemyname[MAX_INFO_STRING];
 
-	myname = CL_PlayerName ();
+	myname = TP_PlayerName ();
 
 	for (i = 0; i < MAX_CLIENTS ; i++) {
 		if (cl.players[i].name[0] && !cl.players[i].spectator)
@@ -989,12 +989,10 @@ char *CL_EnemyName ()
 	return "";
 }
 
-
-char *CL_MapName ()
+char *TP_MapName ()
 {
 	return cl_mapname.string;
 }
-
 
 /*
 =============================================================================
@@ -1105,7 +1103,7 @@ void TP_EnemyColor_f (void)
 
 //===================================================================
 
-void CL_NewMap (void)
+void TP_NewMap ()
 {
 	static char last_map[MAX_QPATH] = {'\0'};
 	char mapname[MAX_QPATH];
@@ -1119,7 +1117,7 @@ void CL_NewMap (void)
 		if (cl_loadlocs.value && !cls.demoplayback) {
 			char locname[MAX_OSPATH];
 			_snprintf (locname, MAX_OSPATH, "%s.loc", mapname);
-			CL_LoadLocFile (locname, true);
+			TP_LoadLocFile (locname, true);
 		}
 		strcpy (last_map, mapname);
 		Cvar_SetROM (&cl_mapname, mapname);
@@ -1128,7 +1126,7 @@ void CL_NewMap (void)
 
 /*
 ======================
-Team_CategorizeMessage
+TP_CategorizeMessage
 
 returns a combination of these values:
 0 -- unknown (probably generated by the server)
@@ -1142,7 +1140,7 @@ in the enemy team. The result will be 3 (1+2)
 Never returns 2 if we a spectator.
 ======================
 */
-int Team_CategorizeMessage (char *s)
+int TP_CategorizeMessage (char *s)
 {
 	int		i, msglen, len;
 	int		flags;
@@ -1182,7 +1180,7 @@ int Team_CategorizeMessage (char *s)
 	return flags;
 }
 
-void CL_InitTeamplay()
+void TP_Init ()
 {
 	Cvar_RegisterVariable (&_cmd_macros);
 	Cvar_RegisterVariable (&cl_parsesay);
@@ -1192,8 +1190,8 @@ void CL_InitTeamplay()
 	Cvar_RegisterVariable (&cl_rocket2grenade);
 	Cvar_RegisterVariable (&cl_mapname);
 
-	Cmd_AddCommand ("loadloc", CL_LoadLocFile_f);
-	Cmd_AddCommand ("msg_trigger", CL_MsgTrigger_f);
+	Cmd_AddCommand ("loadloc", TP_LoadLocFile_f);
+	Cmd_AddCommand ("msg_trigger", TP_MsgTrigger_f);
 	Cmd_AddCommand ("teamcolor", TP_TeamColor_f);
 	Cmd_AddCommand ("enemycolor", TP_EnemyColor_f);
 }

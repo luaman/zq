@@ -264,7 +264,7 @@ void Model_NextDownload (void)
 	// all done
 	cl.worldmodel = cl.model_precache[1];	
 	R_NewMap ();
-	CL_NewMap ();
+	TP_NewMap ();
 	Hunk_Check ();		// make sure nothing is hurt
 
 	// done with modellist, request first of static signon messages
@@ -1213,8 +1213,7 @@ void CL_SetStat (int stat, int value)
 
 	cl.stats[stat] = value;
 
-//	if (stat == STAT_HEALTH)
-		CL_StatChanged(stat, value);	// Triggers...
+	TP_StatChanged(stat, value);
 }
 
 /*
@@ -1336,7 +1335,7 @@ void CL_ParsePrint (int level, char *s)
 			char *p;
 			int flags;
 
-			flags = Team_CategorizeMessage (str);
+			flags = TP_CategorizeMessage (str);
 			CL_CheckVersionRequest (str);
 			if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
 				for (p = str; *p; p++)
@@ -1348,7 +1347,7 @@ void CL_ParsePrint (int level, char *s)
 		}
 		Con_Printf ("%s", str);
 		con_ormask = 0;
-		CL_SearchForMsgTriggers (str, level);
+		TP_SearchForMsgTriggers (str, level);
 	}
 
 }
@@ -1549,7 +1548,7 @@ void CL_ParseServerMessage (void)
 			for (i=0 ; i<3 ; i++)
 				cl.simangles[i] = MSG_ReadAngle ();
 			VectorCopy (vec3_origin, cl.simvel);
-			CL_ExecTrigger ("f_mapend");
+			TP_ExecTrigger ("f_mapend");
 			break;
 
 		case svc_finale:
