@@ -405,7 +405,7 @@ void ResetSharedFrameBuffers (void)
 		// attach to the shared memory segment
 		x_shminfo[frm].shmaddr = (void *) shmat (x_shminfo[frm].shmid, 0, 0);
 
-		printf ("VID: shared memory id=%d, addr=0x%lx\n", x_shminfo[frm].shmid,
+//		printf ("VID: shared memory id=%d, addr=0x%lx\n", x_shminfo[frm].shmid,
 				(long) x_shminfo[frm].shmaddr);
 
 		x_framebuffer[frm]->data = x_shminfo[frm].shmaddr;
