@@ -58,13 +58,11 @@ void IN_MouseEvent (int mstate);
 extern int		window_center_x, window_center_y;
 extern RECT		window_rect;
 
-extern qboolean	mouseinitialized;
 extern HWND		hwnd_dialog;
 
 extern HANDLE	hinput, houtput;
 
 void IN_UpdateClipCursor (void);
-void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify);
 
 void S_BlockSound (void);
 void S_UnblockSound (void);
