@@ -205,7 +205,6 @@ void CL_SendConnectPacket (void)
 	char	data[2048];
 	double t1, t2;
 	char	biguserinfo[MAX_INFO_STRING + 32];
-	char	extensionstring[32] = "";
 
 	if (cls.state != ca_disconnected)
 		return;
