@@ -151,6 +151,8 @@ size_t strlcpy (char *dst, const char *src, size_t size);
 size_t strlcat (char *dst, const char *src, size_t size);
 void Q_snprintfz (char *dest, size_t size, char *fmt, ...);
 
+qbool Q_glob_match (const char *pattern, const char *text);
+
 int Com_HashKey (char *name);
 
 //============================================================================
