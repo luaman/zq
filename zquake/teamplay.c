@@ -36,20 +36,19 @@ cvar_t	cl_loadlocs = {"cl_loadlocs", "0"};
 
 cvar_t	cl_rocket2grenade = {"cl_r2g", "0"};
 
+
 //===========================================================================
 //								TRIGGERS
 //===========================================================================
-
-// Defined later...
-char *Cmd_Macro_Location_f (void);
 
 void *Cmd_FindAlias(s);	 // hmm, it's NOT void in fact
 
 // dest must point to a 1024-byte buffer
 void Cmd_ExpandString (char *data, char *dest);
 
-#define MAX_LOC_NAME 32
+char *Macro_Location_f (void);	// defined later
 
+#define MAX_LOC_NAME 32
 
 
 int	last_health = 0;
@@ -64,11 +63,9 @@ void CL_ExecTrigger (char *s)
 	if (!cl_triggers.value)
 		return;
 
-	if (Cmd_FindAlias(s))
-	{
+	if (Cmd_FindAlias(s)) {
 		Cbuf_AddText (s);
 		Cbuf_AddText ("\n");
-		// maybe call Cbuf_Execute?
 	}
 }
 
@@ -95,7 +92,7 @@ void CL_StatChanged (int stat, int value)
 		}
 		if (last_health > 0) {		// We just died
 			last_deathtrigger = realtime;
-			strcpy (lastdeathloc, Cmd_Macro_Location_f());
+			strcpy (lastdeathloc, Macro_Location_f());
 			CL_ExecTrigger ("f_death");
 		}
 		last_health = value;
@@ -121,108 +118,59 @@ void CL_NewMap (void)
 }
 
 
-//===========================================================================
-//								MACROS
-//===========================================================================
-
-
-typedef char *(*mcommand_t) (void);
-
-typedef struct cmd_macro_s
-{
-	struct cmd_macro_s	*next;
-	char	*name;
-	mcommand_t	function;
-} cmd_macro_t;
-
-cmd_macro_t	*cmd_macros;
-
-#define MAX_MACRO_VALUE	255
-
-
-void Cmd_AddMacro (char *macro_name, mcommand_t function)
-{
-	cmd_macro_t	*macro;
-	
-	if (host_initialized)	// because hunk allocation would get stomped
-		Sys_Error ("Cmd_AddMacro after host_initialized");
-		
-// fail if the macro is a variable name
-	if (Cvar_VariableString(macro_name)[0])
-	{
-		Con_Printf ("Cmd_AddMacro: %s already defined as a var\n", macro_name);
-		return;
-	}
-	
-// fail if the macro already exists
-	for (macro=cmd_macros ; macro ; macro=macro->next)
-	{
-		if (!strcmp (macro_name, macro->name))
-		{
-			Con_Printf ("Cmd_AddMacro: %s already defined\n", macro_name);
-			return;
-		}
-	}
-
-	macro = Hunk_Alloc (sizeof(cmd_macro_t));	// FIXME: use zone memory?
-	macro->name = macro_name;
-	macro->function = function;
-	macro->next = cmd_macros;
-	cmd_macros = macro;
-}
-
-
 /*
 ==========================================================================
-						 MACRO FUNCTIONS DEFINITION
+						        MACRO FUNCTIONS
 ==========================================================================
 */
 
+#define MAX_MACRO_VALUE	255
 static char	macro_buf[MAX_MACRO_VALUE];
 
-char *Cmd_Macro_Health_f (void)
+
+char *Macro_Health_f (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_HEALTH]);
 	return macro_buf;
 }
 
-char *Cmd_Macro_Armor_f (void)
+char *Macro_Armor_f (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_ARMOR]);
 	return macro_buf;
 }
 
-char *Cmd_Macro_Shells_f (void)
+char *Macro_Shells_f (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_SHELLS]);
 	return macro_buf;
 }
 
-char *Cmd_Macro_Nails_f (void)
+char *Macro_Nails_f (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_NAILS]);
 	return macro_buf;
 }
 
-char *Cmd_Macro_Rockets_f (void)
+char *Macro_Rockets_f (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_ROCKETS]);
 	return macro_buf;
 }
 
-char *Cmd_Macro_Cells_f (void)
+char *Macro_Cells_f (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_CELLS]);
 	return macro_buf;
 }
 
-char *Cmd_Macro_Ammo_f (void)
+char *Macro_Ammo_f (void)
 {
 	sprintf(macro_buf, "%i", cl.stats[STAT_AMMO]);
 	return macro_buf;
 }
 
-char *Cmd_Macro_Weapon_f (void)
+char *Macro_Weapon_f (void)
 {
 	switch (cl.stats[STAT_ACTIVEWEAPON])
 	{
@@ -239,7 +187,7 @@ char *Cmd_Macro_Weapon_f (void)
 	}
 }
 
-int	_Cmd_Macro_BestWeapon (void)
+int	_Macro_BestWeapon (void)
 {
 	int	best;
 
@@ -264,9 +212,9 @@ int	_Cmd_Macro_BestWeapon (void)
 	return best;
 }
 
-char *Cmd_Macro_BestWeapon_f (void)
+char *Macro_BestWeapon_f (void)
 {
-	switch (_Cmd_Macro_BestWeapon())
+	switch (_Macro_BestWeapon())
 	{
 	case IT_AXE: return "axe";
 	case IT_SHOTGUN: return "sg";
@@ -281,9 +229,9 @@ char *Cmd_Macro_BestWeapon_f (void)
 	}
 }
 
-char *Cmd_Macro_BestAmmo_f (void)
+char *Macro_BestAmmo_f (void)
 {
-	switch (_Cmd_Macro_BestWeapon())
+	switch (_Macro_BestWeapon())
 	{
 	case IT_SHOTGUN: case IT_SUPER_SHOTGUN: 
 		sprintf(macro_buf, "%i", cl.stats[STAT_SHELLS]);
@@ -306,7 +254,15 @@ char *Cmd_Macro_BestAmmo_f (void)
 	}
 }
 
-char *Cmd_Macro_ArmorType_f (void)
+// needed for %b parsing
+char *Macro_BestWeaponAndAmmo_f (void)
+{
+	strcpy (macro_buf, va("%s:%s", Macro_BestWeapon_f(),
+		Macro_BestAmmo_f()));
+	return macro_buf;
+}
+
+char *Macro_ArmorType_f (void)
 {
 	if (cl.stats[STAT_ITEMS] & IT_ARMOR1)
 		return "ga";
@@ -318,38 +274,46 @@ char *Cmd_Macro_ArmorType_f (void)
 		return "";	// no armor at all
 }
 
-char *Cmd_Macro_Powerups_f (void)
+char *Macro_Powerups_f (void)
 {
+	int i;
+
 	macro_buf[0] = 0;
 
 	if (cl.stats[STAT_ITEMS] & IT_QUAD)
 		strcpy(macro_buf, "quad");
 
-	if (cl.stats[STAT_ITEMS] & IT_INVULNERABILITY)
-	{
+	if (cl.stats[STAT_ITEMS] & IT_INVULNERABILITY) {
 		if (macro_buf[0])
 			strcat(macro_buf, "/");
 		strcat(macro_buf, "pent");
 	}
 
-	if (cl.stats[STAT_ITEMS] & IT_INVISIBILITY)
-	{
+	if (cl.stats[STAT_ITEMS] & IT_INVISIBILITY) {
 		if (macro_buf[0])
 			strcat(macro_buf, "/");
 		strcat(macro_buf, "ring");
 	}
 
+	if (cl.frames[cl.parsecount&UPDATE_MASK].
+		playerstate[cl.playernum].effects & (EF_FLAG1|EF_FLAG2))
+	{
+		if (macro_buf[0])
+			strcat(macro_buf, "/");
+		strcat(macro_buf, "flag");
+	}
+
 	return macro_buf;
 }
 
-char *Cmd_Macro_Location2_f (void)
+char *Macro_Location2_f (void)
 {
 	if (last_deathtrigger && realtime - last_deathtrigger <= 5)
 		return lastdeathloc;
-	return Cmd_Macro_Location_f();
+	return Macro_Location_f();
 }
 
-char *Cmd_Macro_LastDeath_f (void)
+char *Macro_LastDeath_f (void)
 {
 	if (last_deathtrigger)
 		return lastdeathloc;
@@ -357,6 +321,31 @@ char *Cmd_Macro_LastDeath_f (void)
 		return "someplace";
 }
 
+typedef struct
+{
+	char	*name;
+	char	*(*func) (void);
+} macro_command_t;
+
+// Note: longer macro names like "armortype" must be defined
+// _before_ the shorter ones like "armor" to be parsed properly
+macro_command_t macro_commands[] =
+{
+	{"health", Macro_Health_f},
+	{"armortype", Macro_ArmorType_f},
+	{"armor", Macro_Armor_f},
+	{"shells", Macro_Shells_f},
+	{"nails", Macro_Nails_f},
+	{"rockets", Macro_Rockets_f},
+	{"cells", Macro_Cells_f},
+	{"weapon", Macro_Weapon_f},
+	{"ammo", Macro_Ammo_f},
+	{"bestweapon", Macro_BestWeapon_f},
+	{"bestammo", Macro_BestAmmo_f},
+	{"powerups", Macro_Powerups_f},
+	{"location", Macro_Location_f},
+	{NULL, NULL}
+};
 
 #define MAX_MACRO_STRING 1024
 
@@ -366,7 +355,7 @@ char *CL_ParseMacroString (char *string)
 	static char	buf[MAX_MACRO_STRING];
 	char	*s;
 	int		i;
-	cmd_macro_t	*macro;
+	macro_command_t	*macro;
 	char	*macro_string;
 	char	ch;
 
@@ -385,18 +374,19 @@ char *CL_ParseMacroString (char *string)
 				macro_string = NULL;
 				switch (s[1])
 				{
-				case 'a': macro_string = Cmd_Macro_Armor_f(); break;
-				case 'A': macro_string = Cmd_Macro_ArmorType_f(); break;
-				case 'c': macro_string = Cmd_Macro_Cells_f(); break;
-				case 'd': macro_string = Cmd_Macro_LastDeath_f(); break;
-				case 'h': macro_string = Cmd_Macro_Health_f(); break;
-				case 'l': macro_string = Cmd_Macro_Location_f(); break;
-				case 'L': macro_string = Cmd_Macro_Location2_f(); break;
+				case 'a': macro_string = Macro_Armor_f(); break;
+				case 'A': macro_string = Macro_ArmorType_f(); break;
+				case 'b': macro_string = Macro_BestWeaponAndAmmo_f(); break;
+				case 'c': macro_string = Macro_Cells_f(); break;
+				case 'd': macro_string = Macro_LastDeath_f(); break;
+				case 'h': macro_string = Macro_Health_f(); break;
+				case 'l': macro_string = Macro_Location_f(); break;
+				case 'L': macro_string = Macro_Location2_f(); break;
 				case 'P':
-				case 'p': macro_string = Cmd_Macro_Powerups_f(); break;
-				case 'r': macro_string = Cmd_Macro_Rockets_f(); break;
-				case 'w': macro_string = Cmd_Macro_Weapon_f(); break;
-				case 'W': macro_string = Cmd_Macro_Ammo_f(); break;
+				case 'p': macro_string = Macro_Powerups_f(); break;
+				case 'r': macro_string = Macro_Rockets_f(); break;
+				case 'w': macro_string = Macro_Weapon_f(); break;
+				case 'W': macro_string = Macro_Ammo_f(); break;
 				default: 
 					buf[i++] = *s++;
 					continue;
@@ -438,22 +428,19 @@ char *CL_ParseMacroString (char *string)
 		{	
 			s++;
 
-			if (*s == '$')
-			{
+			if (*s == '$') {
 				buf[i++] = '$';
 				s++;
 				continue;
 			}
 
-		// macro search
-			if (_cmd_macros.value)
-			{
-				macro = cmd_macros;
-				while (macro)
-				{
+			// macro search
+			if (_cmd_macros.value) {
+				macro = macro_commands;
+				while (macro->name) {
 					if (!strncmp(s, macro->name, strlen(macro->name)))
 					{
-						macro_string = macro->function();
+						macro_string = macro->func();
 						if (i + strlen(macro_string) >= MAX_MACRO_STRING-1) // !!! is this right?
 							Sys_Error("CL_ParseMacroString: macro string length > MAX_MACRO_STRING)");
 						strcpy (&buf[i], macro_string);
@@ -461,14 +448,11 @@ char *CL_ParseMacroString (char *string)
 						s += strlen(macro->name);
 						goto _continue;
 					}
-					macro = macro->next;
+					macro++;
 				}
 			}
 
-		// skip unknown macro name
-			while (*s && ((*s >= 'A' && *s <= 'Z') || (*s >= 'a' && *s <= 'z')))
-				s++;	
-			continue;
+			buf[i++] = '$';
 		}
 
 		buf[i++] = *s++;
@@ -478,25 +462,6 @@ char *CL_ParseMacroString (char *string)
 	buf[i] = 0;
 
 	return	buf;
-}
-
-
-
-void Cmd_Macro_Init (void)
-{
-	Cmd_AddMacro("health", Cmd_Macro_Health_f);
-	Cmd_AddMacro("armortype", Cmd_Macro_ArmorType_f);
-	Cmd_AddMacro("armor", Cmd_Macro_Armor_f);
-	Cmd_AddMacro("shells", Cmd_Macro_Shells_f);
-	Cmd_AddMacro("nails", Cmd_Macro_Nails_f);
-	Cmd_AddMacro("rockets", Cmd_Macro_Rockets_f);
-	Cmd_AddMacro("cells", Cmd_Macro_Cells_f);
-	Cmd_AddMacro("weapon", Cmd_Macro_Weapon_f);
-	Cmd_AddMacro("ammo", Cmd_Macro_Ammo_f);
-	Cmd_AddMacro("bestweapon", Cmd_Macro_BestWeapon_f);
-	Cmd_AddMacro("bestammo", Cmd_Macro_BestAmmo_f);
-	Cmd_AddMacro("powerups", Cmd_Macro_Powerups_f);
-	Cmd_AddMacro("location", Cmd_Macro_Location_f);
 }
 
 
@@ -665,7 +630,7 @@ void CL_LoadLocFile_f (void)
 }
 
 extern int parsecountmod;
-char *Cmd_Macro_Location_f (void)
+char *Macro_Location_f (void)
 {
 	int		i;
 	int		min_num;
@@ -966,7 +931,6 @@ void CL_InitTeamplay()
 	Cvar_RegisterVariable (&cl_loadlocs);
 	Cvar_RegisterVariable (&cl_rocket2grenade);
 
-	Cmd_Macro_Init();
 	Cmd_AddCommand ("loadloc", CL_LoadLocFile_f);
 	Cmd_AddCommand ("msg_trigger", CL_MsgTrigger_f);
 }
