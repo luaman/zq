@@ -43,8 +43,6 @@ typedef struct
 	float			aspect;		// width / height -- < 0 is taller than wide
 	int				numpages;
 	int				recalc_refdef;	// if true, recalc vid-based stuff
-	pixel_t			*conbuffer;
-	int				conrowbytes;
 	unsigned		conwidth;
 	unsigned		conheight;
 	int				maxwarpwidth;

@@ -1396,8 +1396,8 @@ qboolean VID_SetWindowedMode (int modenum)
 
 	MGL_makeCurrentDC(dibdc);
 
-	vid.buffer = vid.conbuffer = vid.direct = dibdc->surface;
-	vid.rowbytes = vid.conrowbytes = dibdc->mi.bytesPerLine;
+	vid.buffer = vid.direct = dibdc->surface;
+	vid.rowbytes = dibdc->mi.bytesPerLine;
 	vid.numpages = 1;
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
@@ -1446,7 +1446,7 @@ qboolean VID_SetFullscreenMode (int modenum)
 	modestate = MS_FULLSCREEN;
 	vid_fulldib_on_focus_mode = 0;
 
-	vid.buffer = vid.conbuffer = vid.direct = NULL;
+	vid.buffer = vid.direct = NULL;
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	DIBHeight = vid.height = vid.conheight = modelist[modenum].height;
@@ -1559,8 +1559,8 @@ qboolean VID_SetFullDIBMode (int modenum)
 
 	MGL_makeCurrentDC(dibdc);
 
-	vid.buffer = vid.conbuffer = vid.direct = dibdc->surface;
-	vid.rowbytes = vid.conrowbytes = dibdc->mi.bytesPerLine;
+	vid.buffer = vid.direct = dibdc->surface;
+	vid.rowbytes = dibdc->mi.bytesPerLine;
 	vid.numpages = 1;
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
@@ -1773,14 +1773,14 @@ void VID_LockBuffer (void)
 	if (memdc)
 	{
 		// Update surface pointer for linear access modes
-		vid.buffer = vid.conbuffer = vid.direct = memdc->surface;
-		vid.rowbytes = vid.conrowbytes = memdc->mi.bytesPerLine;
+		vid.buffer = vid.direct = memdc->surface;
+		vid.rowbytes = memdc->mi.bytesPerLine;
 	}
 	else if (mgldc)
 	{
 		// Update surface pointer for linear access modes
-		vid.buffer = vid.conbuffer = vid.direct = mgldc->surface;
-		vid.rowbytes = vid.conrowbytes = mgldc->mi.bytesPerLine;
+		vid.buffer = vid.direct = mgldc->surface;
+		vid.rowbytes = mgldc->mi.bytesPerLine;
 	}
 
 	if (r_dowarp)
@@ -1811,7 +1811,7 @@ void VID_UnlockBuffer (void)
 	MGL_endDirectAccess();
 
 // to turn up any unlocked accesses
-	vid.buffer = vid.conbuffer = vid.direct = d_viewbuffer = NULL;
+	vid.buffer = vid.direct = d_viewbuffer = NULL;
 
 }
 

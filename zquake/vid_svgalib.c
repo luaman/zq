@@ -505,7 +505,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 	vid.colormap = (pixel_t *) host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
-	vid.conrowbytes = vid.rowbytes;
 	vid.conwidth = vid.width;
 	vid.conheight = vid.height;
 	vid.numpages = 1;
@@ -531,7 +530,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	vid_surfcache = ((byte *)d_pzbuffer) + zsize;
 
-	vid.conbuffer = vid.buffer = (pixel_t *)(((byte *)d_pzbuffer) + zsize + tsize);
+	vid.buffer = (pixel_t *)(((byte *)d_pzbuffer) + zsize + tsize);
 
 	D_InitCaches (vid_surfcache, tsize);
 

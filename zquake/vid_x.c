@@ -266,8 +266,6 @@ void ResetFrameBuffer(void)
 		Sys_Error("VID: XCreateImage failed\n");
 
 	vid.buffer = (byte*) (x_framebuffer[0]);
-	vid.conbuffer = vid.buffer;
-
 }
 
 void ResetSharedFrameBuffers(void)
@@ -589,8 +587,6 @@ void VID_Init (unsigned char *palette)
 	vid.rowbytes = x_framebuffer[0]->bytes_per_line;
 	vid.buffer = x_framebuffer[0]->data;
 	vid.direct = 0;
-	vid.conbuffer = x_framebuffer[0]->data;
-	vid.conrowbytes = vid.rowbytes;
 	vid.conwidth = vid.width;
 	vid.conheight = vid.height;
 	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
@@ -898,10 +894,8 @@ void	VID_Update (vrect_t *rects)
 			ResetFrameBuffer();
 		vid.rowbytes = x_framebuffer[0]->bytes_per_line;
 		vid.buffer = x_framebuffer[current_framebuffer]->data;
-		vid.conbuffer = vid.buffer;
 		vid.conwidth = vid.width;
 		vid.conheight = vid.height;
-		vid.conrowbytes = vid.rowbytes;
 		vid.recalc_refdef = 1;				// force a surface cache flush
 		Con_CheckResize();
 		Con_Clear_f();
@@ -927,7 +921,6 @@ void	VID_Update (vrect_t *rects)
 		}
 		current_framebuffer = !current_framebuffer;
 		vid.buffer = x_framebuffer[current_framebuffer]->data;
-		vid.conbuffer = vid.buffer;
 		XSync(x_disp, False);
 	}
 	else
