@@ -1053,6 +1053,10 @@ SOURCE=.\snd_win.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\sv_bot.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\sv_ccmds.c
 # End Source File
 # Begin Source File
