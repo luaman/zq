@@ -184,11 +184,9 @@ Returns true if the bandwidth choke isn't active
 #define	MAX_BACKUP	200
 qboolean Netchan_CanPacket (netchan_t *chan)
 {
-#ifndef SERVERONLY
-	if (chan->remote_address.type == NA_LOOPBACK && com_serveractive
-		&& CL_ClientState() < ca_active)
-		return true;	// unlimited bandwidth while connecting
-#endif
+	// unlimited bandwidth for local client
+	if (chan->remote_address.type == NA_LOOPBACK)
+		return true;
 
 	if (chan->cleartime < curtime + MAX_BACKUP*chan->rate)
 		return true;
