@@ -1040,7 +1040,7 @@ Cmd_Z_Cmd_f
 ===========
 _z_cmd <command>
 Just executes the rest of the string.
-Can be used to do some zqwcl-specific action, e.g. "_z_cmd exec tonik_z.cfg"
+Can be used to do some ZQuake-specific action, e.g. "_z_cmd exec tonik_z.cfg"
 */
 void Cmd_Z_Cmd_f (void)
 {
