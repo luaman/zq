@@ -161,6 +161,7 @@ typedef struct
 	vec3_t			origin;
 	float			radius;
 	float			die;		// stop lighting after this time
+	float			starttime;
 	float			decay;		// drop this each second
 	float			minlight;	// don't add when contributing less
 	dlighttype_t	type;
