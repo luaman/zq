@@ -139,6 +139,8 @@ void Cmd_ForwardToServer (void);
 
 void Cbuf_AddEarlyCommands (void);
 void Cmd_StuffCmds_f (void);
+void Cmd_AddLegacyCommand (char *oldname, char *newname);
+qboolean Cmd_IsLegacyCommand (char *oldname);
 
 
 //===========================================================================

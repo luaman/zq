@@ -23,7 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef SERVERONLY
 qboolean CL_CheckServerCommand (void);
-qboolean CL_LegacyCommand (void);
 #endif
 
 cvar_t cl_warncmd = {"cl_warncmd", "0"};
@@ -670,6 +669,73 @@ void Cmd_WriteAliases (FILE *f)
 /*
 =============================================================================
 
+					LEGACY COMMANDS
+
+=============================================================================
+*/
+
+typedef struct legacycmd_s {
+	char *oldname, *newname;
+	struct legacycmd_s *next;
+} legacycmd_t;
+
+static legacycmd_t *legacycmds = NULL;
+
+void Cmd_AddLegacyCommand (char *oldname, char *newname)
+{
+	legacycmd_t *cmd;
+	cmd = (legacycmd_t *) Q_Malloc (sizeof(legacycmd_t));
+	cmd->next = legacycmds;
+	legacycmds = cmd;
+
+	cmd->oldname = oldname;
+	cmd->newname = newname;
+}
+
+qboolean Cmd_IsLegacyCommand (char *oldname)
+{
+	legacycmd_t *cmd;
+
+	for (cmd=legacycmds ; cmd ; cmd = cmd->next) {
+		if (!Q_stricmp(cmd->oldname, oldname))
+			return true;
+	}
+	return false;
+}
+
+static qboolean Cmd_LegacyCommand (void)
+{
+	qboolean recursive = false;
+	legacycmd_t *cmd;
+	char	text[1024];
+
+	for (cmd=legacycmds ; cmd ; cmd = cmd->next) {
+		if (!Q_stricmp(cmd->oldname, Cmd_Argv(0)))
+			goto match;
+	}
+	return false;
+
+match:
+	if (!cmd->newname[0])
+		return true;		// just ignore this command
+
+	// build new command string
+	strcpy (text, cmd->newname);
+	strcat (text, " ");
+	Q_strncatz (text, Cmd_Args(), sizeof(text));
+
+	assert (!recursive);
+	recursive = true;
+	Cmd_ExecuteString (text);
+	recursive = false;
+
+	return true;
+}
+
+
+/*
+=============================================================================
+
 					COMMAND EXECUTION
 
 =============================================================================
@@ -1169,17 +1235,15 @@ void Cmd_ExecuteString (char *text)
 	}
 
 // some bright guy decided to use "skill" as a mod command in Custom TF, sigh
-if ( ! (!strcmp(Cmd_Argv(0), "skill") && Cmd_Argc() == 1 && Cmd_FindAlias("skill")))
-{
-
+	if (!strcmp(Cmd_Argv(0), "skill") && Cmd_Argc() == 1 && Cmd_FindAlias("skill"))
+		goto checkaliases;
 
 // check cvars
 	if (Cvar_Command())
 		return;
 
-}
-
 // check alias
+checkaliases:
 	for (a=cmd_alias_hash[key] ; a ; a=a->hash_next)
 	{
 		if (!Q_stricmp (cmd_argv[0], a->name))
@@ -1210,10 +1274,8 @@ if ( ! (!strcmp(Cmd_Argv(0), "skill") && Cmd_Argc() == 1 && Cmd_FindAlias("skill
 		}
 	}
 
-#ifndef SERVERONLY
-	if (CL_LegacyCommand())
+	if (Cmd_LegacyCommand())
 		return;
-#endif
 
 	if (cl_warncmd.value || developer.value)
 		Com_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));

@@ -217,9 +217,7 @@ qboolean CheckForCommand (void)
 			command[i] = s[i];
 	command[i] = 0;
 
-	// FIXME
-	if (!Q_stricmp(command, "god") || !Q_stricmp(command, "give") ||
-		!Q_stricmp(command, "noclip") || !Q_stricmp(command, "fly"))
+	if (Cmd_IsLegacyCommand(command))
 		return true;
 
 	cmd = Cmd_CompleteCommand (command);
