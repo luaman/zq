@@ -59,9 +59,8 @@ Host_EndGame
 */
 void Host_EndGame (void)
 {
-#ifndef SERVERONLY
 	SCR_EndLoadingPlaque ();
-#endif
+
 	SV_Shutdown ("Server was killed");
 	CL_Disconnect ();
 
@@ -86,9 +85,7 @@ void Host_Error (char *error, ...)
 		Sys_Error ("Host_Error: recursively entered");
 	inerror = true;
 
-#ifndef SERVERONLY
-	SCR_EndLoadingPlaque ();		// reenable screen updates
-#endif
+	SCR_EndLoadingPlaque ();
 	
 	va_start (argptr,error);
 	vsprintf (string,error,argptr);
