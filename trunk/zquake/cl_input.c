@@ -499,7 +499,7 @@ void CL_FinishMove (usercmd_t *cmd)
 	in_use.state &= ~2;
 
 	// send milliseconds of time to apply the move
-	extramsec += cls.frametime * 1000;
+	extramsec += cls.trueframetime * 1000;
 	ms = extramsec;
 	extramsec -= ms;
 
@@ -550,10 +550,28 @@ void CL_SendCmd (void)
 	qbool		dontdrop;
 
 #ifdef MVDPLAY
-    if (cls.demoplayback && !cls.mvdplayback)
-#else
-	if (cls.demoplayback)
+    if (cls.mvdplayback)
+    {
+		cmd = &cl.lastcmd;
+
+		// get basic movement from keyboard
+		CL_BaseMove (cmd);
+
+		// allow mice or other external controllers to add to the move
+		IN_Move (cmd);
+
+		CL_FinishMove(cmd);
+
+		Cam_FinishMove(cmd);
+
+		if (cls.mvdplayback)
+			cls.netchan.outgoing_sequence++;
+
+		return;
+    }
 #endif
+
+	if (cls.demoplayback)
 		return; // sendcmds come from the demo
 
 	// save this command off for prediction
@@ -571,13 +589,6 @@ void CL_SendCmd (void)
 	CL_FinishMove(cmd);
 
 	Cam_FinishMove(cmd);
-
-#ifdef MVDPLAY
-	if (cls.mvdplayback) {
-		cls.netchan.outgoing_sequence++;
-		return;
-	}
-#endif
 
 	SZ_Init (&buf, data, sizeof(data));
 

@@ -335,6 +335,7 @@ typedef struct
 
 // sentcmds[cl.netchan.outgoing_sequence & UPDATE_MASK] = cmd
 	frame_t		frames[UPDATE_BACKUP];
+	usercmd_t	lastcmd;			// observer intentions (demo playback only)
 
 // information for local display
 	double		servertime;			// for display on solo status bar
