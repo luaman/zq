@@ -226,27 +226,24 @@ char *Macro_WeaponNum_f (void)
 
 int	_Macro_BestWeapon (void)
 {
-	int	best;
-
-	best = 0;
-	if (cl.stats[STAT_ITEMS] & IT_AXE)
-		best = IT_AXE;
-	if (cl.stats[STAT_ITEMS] & IT_SHOTGUN && cl.stats[STAT_SHELLS] >= 1)
-		best = IT_SHOTGUN;
-	if (cl.stats[STAT_ITEMS] & IT_SUPER_SHOTGUN && cl.stats[STAT_SHELLS] >= 2)
-		best = IT_SUPER_SHOTGUN;
-	if (cl.stats[STAT_ITEMS] & IT_NAILGUN && cl.stats[STAT_NAILS] >= 1)
-		best = IT_NAILGUN;
-	if (cl.stats[STAT_ITEMS] & IT_SUPER_NAILGUN && cl.stats[STAT_NAILS] >= 2)
-		best = IT_SUPER_NAILGUN;
-	if (cl.stats[STAT_ITEMS] & IT_GRENADE_LAUNCHER && cl.stats[STAT_ROCKETS] >= 1)
-		best = IT_GRENADE_LAUNCHER;
-	if (cl.stats[STAT_ITEMS] & IT_LIGHTNING && cl.stats[STAT_CELLS] >= 1)
-		best = IT_LIGHTNING;
-	if (cl.stats[STAT_ITEMS] & IT_ROCKET_LAUNCHER && cl.stats[STAT_ROCKETS] >= 1)
-		best = IT_ROCKET_LAUNCHER;
-
-	return best;
+	if (cl.stats[STAT_ITEMS] & IT_ROCKET_LAUNCHER)
+		return IT_ROCKET_LAUNCHER;
+	else if (cl.stats[STAT_ITEMS] & IT_LIGHTNING)
+		return IT_LIGHTNING;
+	else if (cl.stats[STAT_ITEMS] & IT_GRENADE_LAUNCHER)
+		return IT_GRENADE_LAUNCHER;
+	else if (cl.stats[STAT_ITEMS] & IT_SUPER_NAILGUN)
+		return IT_SUPER_NAILGUN;
+	else if (cl.stats[STAT_ITEMS] & IT_NAILGUN)
+		return IT_NAILGUN;
+	else if (cl.stats[STAT_ITEMS] & IT_SUPER_SHOTGUN)
+		return IT_SUPER_SHOTGUN;
+	else if (cl.stats[STAT_ITEMS] & IT_SHOTGUN)
+		return IT_SHOTGUN;
+	else if (cl.stats[STAT_ITEMS] & IT_AXE)
+		return IT_AXE;
+	else
+		return 0;
 }
 
 char *Macro_BestWeapon_f (void)
@@ -497,7 +494,6 @@ int macro_length;	// length of macro name
 
 char *TP_MacroString (char *s)
 {
-	static char	buf[MAX_MACRO_STRING];
 	macro_command_t	*macro;
 
 	macro = macro_commands;
