@@ -288,3 +288,9 @@ typedef struct usercmd_s
 	byte	impulse;
 } usercmd_t;
 
+//
+// usercmd button bits
+//
+#define BUTTON_ATTACK	(1<<0)
+#define BUTTON_JUMP		(1<<1)
+#define BUTTON_USE		(1<<2)
