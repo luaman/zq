@@ -270,14 +270,22 @@ static qboolean RecursiveHullTrace (int num, float p1f, float p2f, vec3_t p1, ve
 	return false;
 }
 
-void PM_HullTrace (hull_t *hull, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t *trace)
+// trace a line through the supplied clipping hull
+// does not fill trace.ent
+trace_t PM_HullTrace (hull_t *hull, vec3_t start, vec3_t end)
 {
+	// fill in a default trace
+	memset (&trace_trace, 0, sizeof(trace_trace));
+	trace_trace.fraction = 1;
+	trace_trace.allsolid = true;
+//	trace_trace.startsolid = true;
+	VectorCopy (end, trace_trace.endpos);
+
 	trace_hull = *hull;
-	trace_trace = *trace;
 
-	RecursiveHullTrace (trace_hull.firstclipnode, p1f, p2f, p1, p2);
+	RecursiveHullTrace (trace_hull.firstclipnode, 0, 1, start, end);
 
-	*trace = trace_trace;
+	return trace_trace;
 }
 
 /*
@@ -356,26 +364,20 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 		VectorSubtract (start, offset, start_l);
 		VectorSubtract (end, offset, end_l);
 
-	// fill in a default trace
-		memset (&trace, 0, sizeof(trace_t));
-		trace.fraction = 1;
-		trace.allsolid = true;
-//		trace.startsolid = true;
-		VectorCopy (end, trace.endpos);
+		// trace a line through the apropriate clipping hull
+		trace = PM_HullTrace (hull, start_l, end_l);
 
-	// trace a line through the apropriate clipping hull
-		PM_HullTrace (hull, 0, 1, start_l, end_l, &trace);
+		// fix trace up by the offset
+		VectorAdd (trace.endpos, offset, trace.endpos);
 
 		if (trace.allsolid)
 			trace.startsolid = true;
 		if (trace.startsolid)
 			trace.fraction = 0;
 
-	// did we clip the move?
+		// did we clip the move?
 		if (trace.fraction < total.fraction)
 		{
-			// fix trace up by the offset
-			VectorAdd (trace.endpos, offset, trace.endpos);
 			total = trace;
 			total.entnum = i;
 		}
@@ -421,26 +423,20 @@ trace_t PM_TraceLine (vec3_t start, vec3_t end)
 		VectorSubtract (start, offset, start_l);
 		VectorSubtract (end, offset, end_l);
 
-	// fill in a default trace
-		memset (&trace, 0, sizeof(trace_t));
-		trace.fraction = 1;
-		trace.allsolid = true;
-//		trace.startsolid = true;
-		VectorCopy (end, trace.endpos);
+		// trace a line through the apropriate clipping hull
+		trace = PM_HullTrace (hull, start_l, end_l);
 
-	// trace a line through the apropriate clipping hull
-		PM_HullTrace (hull, 0, 1, start_l, end_l, &trace);
+		// fix trace up by the offset
+		VectorAdd (trace.endpos, offset, trace.endpos);
 
 		if (trace.allsolid)
 			trace.startsolid = true;
 		if (trace.startsolid)
 			trace.fraction = 0;
 
-	// did we clip the move?
+		// did we clip the move?
 		if (trace.fraction < total.fraction)
 		{
-			// fix trace up by the offset
-			VectorAdd (trace.endpos, offset, trace.endpos);
 			total = trace;
 			total.entnum = i;
 		}
