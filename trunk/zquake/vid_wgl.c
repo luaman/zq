@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cdaudio.h"
 #include "keys.h"
 #include "resource.h"
-#include "sbar.h"
+#include "cl_sbar.h"
 #include "sound.h"
 #include "winquake.h"
 
