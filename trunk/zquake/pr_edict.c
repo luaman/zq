@@ -990,7 +990,6 @@ void PR_CheckExtensions (void)
 			continue;
 		if (!strcmp(PR_GetString(def->s_name), "z_ext_clientcommand"))
 		{
-			Com_Printf ("blah\n");
 			pr_z_ext_clientcommand = true;
 			// let progs know that we have the extension
 			((eval_t *)&pr_globals[def->ofs])->_float = 1;
