@@ -721,7 +721,8 @@ void SV_Gamedir_f (void)
 	// where you don't really want them to be.
 	// Fortress, arena, etc do need a separate *gamedir; for everything else,
 	// you'll have to force it with "sv_gamedir foo" if indeed necessary
-	if (!strcmp(dir, "fortress") || !strcmp(dir, "arena") || !strcmp(dir, "ctf"))
+	if (!strcmp(dir, "fortress") || !strcmp(dir, "arena") || !strcmp(dir, "ctf")
+		|| !strcmp(dir, "rogue") || !strcmp(dir, "hipnotic"))
 		Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
 	else
 		Info_SetValueForStarKey (svs.info, "*gamedir", "", MAX_SERVERINFO_STRING);
