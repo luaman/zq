@@ -668,7 +668,6 @@ void Mod_LoadTexinfo (lump_t *l)
 	mtexinfo_t *out;
 	int 	i, j, count;
 	int		miptex;
-	float	len1, len2;
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
@@ -683,23 +682,6 @@ void Mod_LoadTexinfo (lump_t *l)
 	{
 		for (j=0 ; j<8 ; j++)
 			out->vecs[0][j] = LittleFloat (in->vecs[0][j]);
-		len1 = VectorLength (out->vecs[0]);
-		len2 = VectorLength (out->vecs[1]);
-		len1 = (len1 + len2)/2;
-		if (len1 < 0.32)
-			out->mipadjust = 4;
-		else if (len1 < 0.49)
-			out->mipadjust = 3;
-		else if (len1 < 0.99)
-			out->mipadjust = 2;
-		else
-			out->mipadjust = 1;
-#if 0
-		if (len1 + len2 < 0.001)
-			out->mipadjust = 1;		// don't crash
-		else
-			out->mipadjust = 1 / floor( (len1+len2)/2 + 0.1 );
-#endif
 
 		miptex = LittleLong (in->miptex);
 		out->flags = LittleLong (in->flags);
@@ -834,7 +816,7 @@ void Mod_LoadFaces (lump_t *l)
 			continue;
 		}
 		
-		if (!strncmp(out->texinfo->texture->name,"*",1))		// turbulent
+		if (out->texinfo->texture->name[0] == '*')			// turbulent
 		{
 			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
 			for (i=0 ; i<2 ; i++)
@@ -1118,7 +1100,7 @@ void Mod_LoadPlanes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*2*sizeof(*out), loadname);	
+	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
 	
 	loadmodel->planes = out;
 	loadmodel->numplanes = count;
