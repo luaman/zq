@@ -120,65 +120,69 @@ void GL_Bind (int texnum)
 =============================================================================
 */
 
-#define	MAX_SCRAPS		1
+// some cards have low quality of alpha pics, so load the pics
+// without transparent pixels into a different scrap block.
+// scrap 0 is solid pics, 1 is transparent
+#define	MAX_SCRAPS		2
 #define	BLOCK_WIDTH		256
 #define	BLOCK_HEIGHT	256
 
 int			scrap_allocated[MAX_SCRAPS][BLOCK_WIDTH];
 byte		scrap_texels[MAX_SCRAPS][BLOCK_WIDTH*BLOCK_HEIGHT*4];
-qboolean	scrap_dirty;
+int			scrap_dirty = 0;	// bit mask
 int			scrap_texnum;
 
-// returns a texture number and the position inside it
-int Scrap_AllocBlock (int w, int h, int *x, int *y)
+// returns false if allocation failed
+qboolean Scrap_AllocBlock (int scrapnum, int w, int h, int *x, int *y)
 {
 	int		i, j;
 	int		best, best2;
-	int		texnum;
 
-	for (texnum=0 ; texnum<MAX_SCRAPS ; texnum++)
+	best = BLOCK_HEIGHT;
+	
+	for (i=0 ; i<BLOCK_WIDTH-w ; i++)
 	{
-		best = BLOCK_HEIGHT;
-
-		for (i=0 ; i<BLOCK_WIDTH-w ; i++)
+		best2 = 0;
+		
+		for (j=0 ; j<w ; j++)
 		{
-			best2 = 0;
-
-			for (j=0 ; j<w ; j++)
-			{
-				if (scrap_allocated[texnum][i+j] >= best)
-					break;
-				if (scrap_allocated[texnum][i+j] > best2)
-					best2 = scrap_allocated[texnum][i+j];
-			}
-			if (j == w)
-			{	// this is a valid spot
-				*x = i;
-				*y = best = best2;
-			}
+			if (scrap_allocated[scrapnum][i+j] >= best)
+				break;
+			if (scrap_allocated[scrapnum][i+j] > best2)
+				best2 = scrap_allocated[scrapnum][i+j];
 		}
-
-		if (best + h > BLOCK_HEIGHT)
-			continue;
-
-		for (i=0 ; i<w ; i++)
-			scrap_allocated[texnum][*x + i] = best + h;
-
-		return texnum;
+		if (j == w)
+		{	// this is a valid spot
+			*x = i;
+			*y = best = best2;
+		}
 	}
+	
+	if (best + h > BLOCK_HEIGHT)
+		return false;
+	
+	for (i=0 ; i<w ; i++)
+		scrap_allocated[scrapnum][*x + i] = best + h;
 
-	Sys_Error ("Scrap_AllocBlock: full");
-	return 0;
+	scrap_dirty |= (1 << scrapnum);
+
+	return true;
 }
 
 int	scrap_uploads;
 
 void Scrap_Upload (void)
 {
+	int i;
+
 	scrap_uploads++;
-	GL_Bind(scrap_texnum);
-	GL_Upload8 (scrap_texels[0], BLOCK_WIDTH, BLOCK_HEIGHT, false, true, false);
-	scrap_dirty = false;
+	for (i=0 ; i<2 ; i++) {
+		if ( !(scrap_dirty & (1 << i)) )
+			continue;
+		scrap_dirty &= ~(1 << i);
+		GL_Bind(scrap_texnum + i);
+		GL_Upload8 (scrap_texels[i], BLOCK_WIDTH, BLOCK_HEIGHT, false, i, false);
+	}
 }
 
 //=============================================================================
@@ -215,8 +219,11 @@ qpic_t *Draw_PicFromWad (char *name)
 		int		i, j, k;
 		int		texnum;
 
-		texnum = Scrap_AllocBlock (p->width, p->height, &x, &y);
-		scrap_dirty = true;
+		texnum = memchr(p->data, 255, p->width*p->height) != NULL;
+		if (!Scrap_AllocBlock (texnum, p->width, p->height, &x, &y)) {
+			GL_LoadPicTexture (p, p->data);
+			return p;
+		}
 		k = 0;
 		for (i=0 ; i<p->height ; i++)
 			for (j=0 ; j<p->width ; j++, k++)
