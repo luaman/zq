@@ -957,7 +957,7 @@ CL_Frame
 */
 void CL_Frame (double time)
 {
-	double			time1 = 0, time2 = 0;
+	double			time1, time2;
 	static double	time3 = 0;
 	int				pass1, pass2, pass3;
 	static double	extratime = 0.001;
