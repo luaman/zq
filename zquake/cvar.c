@@ -264,7 +264,7 @@ void Cvar_Register (cvar_t *var)
 
 	if (old)
 	{
-		var->flags |= old->flags & ~CVAR_DYNAMIC;
+		var->flags |= old->flags & ~(CVAR_DYNAMIC|CVAR_TEMP);
 		strlcpy (string, old->string, sizeof(string));
 		Cvar_Delete (old->name);
 		if (!(var->flags & CVAR_ROM))
@@ -314,7 +314,7 @@ qbool Cvar_Command (void)
 	var = Cvar_FindVar (Cmd_Argv(0));
 	if (!var)
 		return false;
-		
+
 // perform a variable print or set
 	if (Cmd_Argc() == 1)
 	{
@@ -410,6 +410,7 @@ cvar_t *Cvar_Get (char *name, char *string, int cvarflags)
 
 	var = Cvar_FindVar(name);
 	if (var) {
+		var->flags &= ~CVAR_TEMP;
 		var->flags |= cvarflags;
 		return var;
 	}
@@ -487,6 +488,29 @@ qbool Cvar_Delete (char *name)
 
 	assert(!"Cvar list broken");
 	return false;	// shut up compiler
+}
+
+
+// if an unknown command with parameters was encountered when loading
+// config.cfg, assume it's a cvar set and spawn a temp var
+qbool Cvar_CreateTempVar (void)
+{
+	char *name = Cmd_Argv(0);
+	// FIXME, make sure it's a valid cvar name, return false if not
+	Cvar_Get (name, Cmd_MakeArgs(1), CVAR_TEMP);
+	return true;
+}
+
+// if none of the subsystems claimed the cvar from config.cfg, remove it
+void Cvar_CleanUpTempVars (void)
+{
+	cvar_t *var, *next;
+
+	for (var = cvar_vars; var; var = next) {
+		next = var->next;
+		if (var->flags & CVAR_TEMP)
+			Cvar_Delete (var->name);
+	}
 }
 
 

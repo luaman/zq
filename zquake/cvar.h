@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CVAR_INIT			16		// can only be set during initialization
 #define	CVAR_DYNAMIC		32		// allocated on heap, not static
 #define	CVAR_USER_ARCHIVE	64		// created by a seta command
+#define CVAR_TEMP			128		// created during initial config.cfg loading
 
 typedef struct cvar_s
 {
@@ -55,7 +56,7 @@ void Cvar_ForceSet (cvar_t *var, char *string);
 // expands value to a string and calls Cvar_Set
 void Cvar_SetValue (cvar_t *var, float value);
 
-// returns 0 if not defined or non numeric
+// returns 0 if not defined or non-numeric
 float Cvar_VariableValue (char *name);
 
 // returns an empty string if not defined
@@ -79,5 +80,8 @@ qbool Cvar_Delete (char *name);
 
 // Use this to walk through all vars
 cvar_t *Cvar_Next (cvar_t *var);
+
+qbool Cvar_CreateTempVar (void);	// when parsing config.cfg
+void Cvar_CleanUpTempVars (void);	// clean up afterwards
 
 void Cvar_Init (void);

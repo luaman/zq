@@ -222,13 +222,17 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	FS_InitFilesystem ();
 	COM_CheckRegistered ();
 
-	Cbuf_AddText ("exec zqstartup.cfg");
-	Cbuf_Execute ();
+	Con_Init ();
+
+	if (!dedicated) {
+		Cbuf_AddText ("exec default.cfg\n");
+		Cbuf_AddText ("exec config.cfg\n");
+		Cbuf_Execute ();
+	}
 
 	Cbuf_AddEarlyCommands ();
 	Cbuf_Execute ();
 
-	Con_Init ();
 	NET_Init ();
 	Netchan_Init ();
 	Sys_Init ();
@@ -239,6 +243,8 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	SV_Init ();
 	CL_Init ();
 
+	Cvar_CleanUpTempVars ();
+
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
 
@@ -246,7 +252,6 @@ void Host_Init (int argc, char **argv, int default_memsize)
 
 	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Com_Printf ("%4.1f megs RAM used.\n", host_memsize / (1024*1024.0));
-	
 	Com_Printf ("\n========= " PROGRAM " Initialized =========\n");
 
 
@@ -264,8 +269,6 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	}
 	else
 	{
-		Cbuf_AddText ("exec default.cfg\n");
-		Cbuf_AddText ("exec config.cfg\n");
 		Cbuf_AddText ("exec autoexec.cfg\n");
 		Cmd_StuffCmds_f ();		// process command line arguments
 		Cbuf_AddText ("cl_warncmd 1\n");
