@@ -202,15 +202,17 @@ extern char	com_gamedir[MAX_OSPATH];
 extern char	com_basedir[MAX_OSPATH];
 extern char com_gamedirfile[MAX_QPATH];
 
-void COM_WriteFile (char *filename, void *data, int len);
+void FS_InitFilesystem (void);
+void FS_SetGamedir (char *dir);
 int FS_FOpenFile (char *filename, FILE **file);
-
 byte *FS_LoadStackFile (char *path, void *buffer, int bufsize);
 byte *FS_LoadTempFile (char *path);
 byte *FS_LoadHunkFile (char *path);
 void FS_LoadCacheFile (char *path, struct cache_user_s *cu);
+
+void COM_WriteFile (char *filename, void *data, int len);
 void COM_CreatePath (char *path);
-void FS_SetGamedir (char *dir);
+
 
 char *Info_ValueForKey (char *s, char *key);
 void Info_RemoveKey (char *s, char *key);

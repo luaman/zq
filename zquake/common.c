@@ -1029,9 +1029,6 @@ void COM_Init (void)
 		Cvar_SetValue (&logfile_var, 2);	// flush every write
 
 	Cmd_AddCommand ("path", COM_Path_f);
-
-	FS_InitFilesystem ();
-	COM_CheckRegistered ();
 }
 
 
