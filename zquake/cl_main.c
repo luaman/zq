@@ -768,7 +768,7 @@ void Host_Error (char *error, ...)
 	va_end (argptr);
 	Con_Printf ("\n===========================\n");
 	Con_Printf ("Host_Error: %s\n",string);
-	Con_Printf ("\n===========================\n");
+	Con_Printf ("===========================\n\n");
 	
 	CL_Disconnect ();
 	cls.demonum = -1;
