@@ -22,7 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 
 #ifndef SERVERONLY
-void Cmd_ForwardToServer (void);
 qboolean CL_CheckServerCommand (void);
 qboolean CL_LegacyCommand (void);
 #endif
@@ -1078,10 +1077,8 @@ void Cmd_ExecuteString (char *text)
 		{
 			if (cmd->function)
 				cmd->function ();
-#ifndef SERVERONLY
 			else
 				Cmd_ForwardToServer ();
-#endif
 			return;
 		}
 	}
