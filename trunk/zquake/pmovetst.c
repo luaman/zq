@@ -20,70 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "pmove.h"
 
-static	hull_t		box_hull;
-static	dclipnode_t	box_clipnodes[6];
-static	mplane_t	box_planes[6];
-
 extern	vec3_t player_mins;
 extern	vec3_t player_maxs;
-
-/*
-===================
-PM_InitBoxHull
-
-Set up the planes and clipnodes so that the six floats of a bounding box
-can just be stored out and get a proper hull_t structure.
-===================
-*/
-void PM_InitBoxHull (void)
-{
-	int		i;
-	int		side;
-
-	box_hull.clipnodes = box_clipnodes;
-	box_hull.planes = box_planes;
-	box_hull.firstclipnode = 0;
-	box_hull.lastclipnode = 5;
-
-	for (i=0 ; i<6 ; i++)
-	{
-		box_clipnodes[i].planenum = i;
-		
-		side = i&1;
-		
-		box_clipnodes[i].children[side] = CONTENTS_EMPTY;
-		if (i != 5)
-			box_clipnodes[i].children[side^1] = i + 1;
-		else
-			box_clipnodes[i].children[side^1] = CONTENTS_SOLID;
-		
-		box_planes[i].type = i>>1;
-		box_planes[i].normal[i>>1] = 1;
-	}
-	
-}
-
-
-/*
-===================
-PM_HullForBox
-
-To keep everything totally uniform, bounding boxes are turned into small
-BSP trees instead of being compared directly.
-===================
-*/
-hull_t	*PM_HullForBox (vec3_t mins, vec3_t maxs)
-{
-	box_planes[0].dist = maxs[0];
-	box_planes[1].dist = mins[0];
-	box_planes[2].dist = maxs[1];
-	box_planes[3].dist = mins[1];
-	box_planes[4].dist = maxs[2];
-	box_planes[5].dist = mins[2];
-
-	return &box_hull;
-}
-
 
 /*
 ==================
@@ -148,7 +86,7 @@ qboolean PM_TestPlayerPosition (vec3_t pos)
 		{
 			VectorSubtract (pe->mins, player_maxs, mins);
 			VectorSubtract (pe->maxs, player_mins, maxs);
-			hull = PM_HullForBox (mins, maxs);
+			hull = CM_HullForBox (mins, maxs);
 		}
 
 		VectorSubtract (pos, pe->origin, test);
@@ -191,7 +129,7 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 		{
 			VectorSubtract (pe->mins, player_maxs, mins);
 			VectorSubtract (pe->maxs, player_mins, maxs);
-			hull = PM_HullForBox (mins, maxs);
+			hull = CM_HullForBox (mins, maxs);
 		}
 
 	// PM_HullForEntity (ent, mins, maxs, offset);
@@ -251,7 +189,7 @@ trace_t PM_TraceLine (vec3_t start, vec3_t end)
 		if (pe->model)
 			hull = &pmove.physents[i].model->hulls[0];
 		else
-			hull = PM_HullForBox (pe->mins, pe->maxs);
+			hull = CM_HullForBox (pe->mins, pe->maxs);
 
 	// PM_HullForEntity (ent, mins, maxs, offset);
 	VectorCopy (pe->origin, offset);

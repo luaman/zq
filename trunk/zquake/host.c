@@ -222,6 +222,7 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	NET_Init ();
 	Netchan_Init ();
 	Sys_Init ();
+	CM_Init ();
 	PM_Init ();
 	Mod_Init ();
 	Host_InitLocal ();

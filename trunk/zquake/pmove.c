@@ -32,11 +32,8 @@ vec3_t	player_mins = {-16, -16, -24};
 vec3_t	player_maxs = {16, 16, 32};
 
 
-void PM_InitBoxHull (void);
-
 void PM_Init (void)
 {
-	PM_InitBoxHull ();
 }
 
 #define	STEPSIZE	18
