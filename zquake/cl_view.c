@@ -143,6 +143,9 @@ float V_CalcBob (void)
 	if (!cl.onground)
 		return bob;		// just use old value
 
+	if (!cl_bobcycle.value)
+		return 0;
+
 	bobtime += cls.frametime;
 	cycle = bobtime - (int)(bobtime/cl_bobcycle.value)*cl_bobcycle.value;
 	cycle /= cl_bobcycle.value;
