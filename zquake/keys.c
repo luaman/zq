@@ -738,6 +738,7 @@ int Key_StringToKeynum (char *str)
 		keynum = Q_atoi(str + 1);
 		if (keynum < 32 || keynum > 127)
 			return -1;
+		return keynum;
 	}
 
 	for (kn=keynames ; kn->name ; kn++) {
