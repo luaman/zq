@@ -108,7 +108,7 @@ void multi_touch ()
 		return;
 	
 // if the trigger has an angles field, check player's facing direction
-	if (self.movedir != '0 0 0')
+	if (self.movedir != VEC_ORIGIN)
 	{
 		makevectors (other.angles);
 		if (v_forward * self.movedir < 0)
@@ -382,7 +382,7 @@ void spawn_tdeath (vector org, entity death_owner)
 	death.classname = "teledeath";
 	death.movetype = MOVETYPE_NONE;
 	death.solid = SOLID_TRIGGER;
-	death.angles = '0 0 0';
+	death.angles = VEC_ORIGIN;
 	setsize (death, death_owner.mins - '1 1 1', death_owner.maxs + '1 1 1');
 	setorigin (death, org);
 	death.touch = tdeath_touch;
@@ -470,7 +470,7 @@ void info_teleport_destination ()
 {
 // this does nothing, just serves as a target spot
 	self.mangle = self.angles;
-	self.angles = '0 0 0';
+	self.angles = VEC_ORIGIN;
 	self.model = "";
 	setorigin (self, self.origin + '0 0 27');
 	if (!self.targetname)
@@ -685,7 +685,7 @@ void trigger_monsterjump ()
 		self.speed = 200;
 	if (!self.height)
 		self.height = 200;
-	if (self.angles == '0 0 0')
+	if (self.angles == VEC_ORIGIN)
 		self.angles = '0 360 0';
 	InitTrigger ();
 	self.touch = trigger_monsterjump_touch;

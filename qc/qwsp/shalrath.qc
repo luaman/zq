@@ -163,7 +163,7 @@ void ShalMissile ()
 	missile.movetype = MOVETYPE_FLYMISSILE;
 	setmodel (missile, "progs/v_spike.mdl");
 
-	setsize (missile, '0 0 0', '0 0 0');		
+	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);		
 
 	missile.origin = self.origin + '0 0 10';
 	missile.velocity = dir * 400;

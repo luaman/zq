@@ -87,7 +87,7 @@ void LaunchMissile (entity missile, float mspeed, float accuracy)
 	
 	missile.velocity = vec * mspeed;
 
-	missile.angles = '0 0 0';
+	missile.angles = VEC_ORIGIN;
 	missile.angles_y = vectoyaw(missile.velocity);
 
 // set missile duration
@@ -246,7 +246,7 @@ void Wiz_StartFast ()
 	missile = spawn ();
 	missile.owner = self;
 	missile.nextthink = time + 0.6;
-	setsize (missile, '0 0 0', '0 0 0');		
+	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);		
 	setorigin (missile, self.origin + '0 0 30' + v_forward*14 + v_right*14);
 	missile.enemy = self.enemy;
 	missile.nextthink = time + 0.8;
@@ -256,7 +256,7 @@ void Wiz_StartFast ()
 	missile = spawn ();
 	missile.owner = self;
 	missile.nextthink = time + 1;
-	setsize (missile, '0 0 0', '0 0 0');		
+	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);		
 	setorigin (missile, self.origin + '0 0 30' + v_forward*14 + v_right* -14);
 	missile.enemy = self.enemy;
 	missile.nextthink = time + 0.3;

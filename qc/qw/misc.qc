@@ -218,7 +218,7 @@ void fire_fly ()
 	fireball.velocity_z = self.speed + (random() * 200);
 	fireball.classname = "fireball";
 	setmodel (fireball, "progs/lavaball.mdl");
-	setsize (fireball, '0 0 0', '0 0 0');
+	setsize (fireball, VEC_ORIGIN, VEC_ORIGIN);
 	setorigin (fireball, self.origin);
 	fireball.nextthink = time + 5;
 	fireball.think = SUB_Remove;
@@ -267,7 +267,7 @@ void misc_explobox ()
 	self.movetype = MOVETYPE_NONE;
 	precache_model ("maps/b_explob.bsp");
 	setmodel (self, "maps/b_explob.bsp");
-	setsize (self, '0 0 0', '32 32 64');
+	setsize (self, VEC_ORIGIN, '32 32 64');
 	precache_sound ("weapons/r_exp3.wav");
 	self.health = 20;
 	self.th_die = barrel_explode;
@@ -300,7 +300,7 @@ void misc_explobox2 ()
 	self.movetype = MOVETYPE_NONE;
 	precache_model2 ("maps/b_exbox2.bsp");
 	setmodel (self, "maps/b_exbox2.bsp");
-	setsize (self, '0 0 0', '32 32 32');
+	setsize (self, VEC_ORIGIN, '32 32 32');
 	precache_sound ("weapons/r_exp3.wav");
 	self.health = 20;
 	self.th_die = barrel_explode;
@@ -373,7 +373,7 @@ void LaunchLaser (vector org, vector vec)
 	newmis.effects = EF_DIMLIGHT;
 
 	setmodel (newmis, "progs/laser.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');             
+	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);             
 
 	setorigin (newmis, org);
 
@@ -596,7 +596,7 @@ This is just a solid wall if not inhibitted
 */
 void func_wall ()
 {
-	self.angles = '0 0 0';
+	self.angles = VEC_ORIGIN;
 	self.movetype = MOVETYPE_PUSH;  // so it doesn't get pushed by anything
 	self.solid = SOLID_BSP;
 	self.use = func_wall_use;
@@ -609,7 +609,7 @@ A simple entity that looks solid but lets you walk through it.
 */
 void func_illusionary ()
 {
-	self.angles = '0 0 0';
+	self.angles = VEC_ORIGIN;
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_NOT;
 	setmodel (self, self.model);
@@ -625,7 +625,7 @@ void func_episodegate ()
 	if (!(serverflags & self.spawnflags))
 		return;                 // can still enter episode
 
-	self.angles = '0 0 0';
+	self.angles = VEC_ORIGIN;
 	self.movetype = MOVETYPE_PUSH;  // so it doesn't get pushed by anything
 	self.solid = SOLID_BSP;
 	self.use = func_wall_use;
@@ -640,7 +640,7 @@ void func_bossgate ()
 {
 	if ( (serverflags & 15) == 15)
 		return;         // all episodes completed
-	self.angles = '0 0 0';
+	self.angles = VEC_ORIGIN;
 	self.movetype = MOVETYPE_PUSH;  // so it doesn't get pushed by anything
 	self.solid = SOLID_BSP;
 	self.use = func_wall_use;

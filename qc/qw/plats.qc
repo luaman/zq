@@ -200,7 +200,7 @@ void func_plat ()
 
 
 	self.mangle = self.angles;
-	self.angles = '0 0 0';
+	self.angles = VEC_ORIGIN;
 
 	self.classname = "plat";
 	self.solid = SOLID_BSP;

@@ -161,7 +161,7 @@ void finale_1 ()
 	pl = find (world, classname, "player");
 	while (pl != world)
 	{
-		pl.view_ofs = '0 0 0';
+		pl.view_ofs = VEC_ORIGIN;
 		pl.angles = other.v_angle = intermission_spot.mangle;
 		pl.fixangle = true;		// turn this way immediately
 		pl.map = self.map;

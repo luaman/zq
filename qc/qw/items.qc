@@ -186,7 +186,7 @@ void PlaceItem ()
 	self.flags = FL_ITEM;           // make extra wide
 	self.solid = SOLID_TRIGGER;
 	self.movetype = MOVETYPE_TOSS;  
-	self.velocity = '0 0 0';
+	self.velocity = VEC_ORIGIN;
 	self.origin_z = self.origin_z + 6;
 	oldz = self.origin_z;
 	if (!droptofloor())
@@ -288,7 +288,7 @@ void item_health ()
 		self.healamount = 25;
 		self.healtype = 1;
 	}
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 }
 
@@ -922,7 +922,7 @@ void item_shells ()
 	}
 	self.weapon = 1;
 	self.netname = "shells";
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 }
 
@@ -950,7 +950,7 @@ void item_spikes ()
 	}
 	self.weapon = 2;
 	self.netname = "nails";
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 
 }
@@ -979,7 +979,7 @@ void item_rockets ()
 	}
 	self.weapon = 3;
 	self.netname = "rockets";
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 
 }
@@ -1009,7 +1009,7 @@ void item_cells ()
 	}
 	self.weapon = 4;
 	self.netname = "cells";
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 
 }
@@ -1085,7 +1085,7 @@ void item_weapon ()
 		self.netname = "rockets";
 	}
 	
-	setsize (self, '0 0 0', '32 32 56');
+	setsize (self, VEC_ORIGIN, '32 32 56');
 	StartItem ();
 }
 
