@@ -95,16 +95,16 @@ void R_RenderDlight (dlight_t *light)
 	vec3_t	v_right, v_up;
 	float	length;
 	float	rad;
-	float	*bub_sin, *bub_cos;
+	float	*bub_sin = bubble_sintable, 
+		*bub_cos = bubble_costable;
 
-	bub_sin = bubble_sintable;
-	bub_cos = bubble_costable;
 	rad = light->radius * 0.35;
-
 	VectorSubtract (light->origin, r_origin, v);
 	length = VectorNormalize (v);
+
 	if (length < rad)
-	{	// view is inside the dlight
+	{
+		// view is inside the dlight
 		V_AddLightBlend (1, 0.5, 0, light->radius * 0.0003);
 		return;
 	}
@@ -129,15 +129,16 @@ void R_RenderDlight (dlight_t *light)
 
 	glVertex3fv (v);
 	glColor3f (0, 0, 0);
-	for (i=16 ; i>=0 ; i--)
+
+	for (i = 16; i >= 0; i--, bub_sin++, bub_cos++)
 	{
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 			v[j] = light->origin[j] + (v_right[j]*(*bub_cos) +
 				+ v_up[j]*(*bub_sin)) * rad;
-		bub_sin++; 
-		bub_cos++;
+
 		glVertex3fv (v);
 	}
+
 	glEnd ();
 }
 
@@ -156,7 +157,7 @@ void R_RenderDlights (void)
 
 	r_dlightframecount = r_framecount + 1;	// because the count hasn't
 											//  advanced yet for this frame
-	glDepthMask (0);
+	glDepthMask (GL_FALSE);
 	glDisable (GL_TEXTURE_2D);
 	glShadeModel (GL_SMOOTH);
 	glEnable (GL_BLEND);
@@ -174,7 +175,7 @@ void R_RenderDlights (void)
 	glDisable (GL_BLEND);
 	glEnable (GL_TEXTURE_2D);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthMask (1);
+	glDepthMask (GL_TRUE);
 }
 
 
