@@ -998,28 +998,6 @@ void CL_FullServerinfo_f (void)
 
 	Q_strncpyz (cl.serverinfo, Cmd_Argv(1), sizeof(cl.serverinfo));
 
-	if ((p = Info_ValueForKey(cl.serverinfo, "*z_version")) && *p)
-	{
-		// only print version if connecting to a remote server
-		if (!com_serveractive && !server_version)
-				Com_Printf ("ZQuake %s server\n", p);
-		server_version = 2.40;
-	}
-	else if ((p = Info_ValueForKey(cl.serverinfo, "*qf_version")) && *p) {
-		if (!server_version)
-			Com_Printf ("QuakeForge %s server\n", p);
-		server_version = 2.40;
-	}
-	else if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p) {
-		float v;
-		v = Q_atof(p);
-		if (v) {
-			if (!server_version)
-				Com_Printf ("QuakeWorld %1.2f server\n", v);
-			server_version = v;
-		}
-	}
-
 	p = Info_ValueForKey (cl.serverinfo, "*cheats");
 	if (*p) {
 		Com_Printf ("== Cheats are enabled ==\n");

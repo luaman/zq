@@ -403,8 +403,6 @@ extern	entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 extern	lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
 extern	dlight_t		cl_dlights[MAX_DLIGHTS];
 
-extern float	server_version;	// version of server we connected to
-
 extern byte		*host_basepal;
 extern byte		*host_colormap;
 

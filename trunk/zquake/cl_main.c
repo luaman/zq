@@ -127,9 +127,6 @@ cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
 
 int			fps_count;
 
-float	server_version = 0;	// version of server we connected to
-
-
 // emodel and pmodel are encrypted to prevent llamas from easily hacking them
 char emodel_name[] = { 'e'^0xe5, 'm'^0xe5, 'o'^0xe5, 'd'^0xe5, 'e'^0xe5, 'l'^0xe5, 0 };
 char pmodel_name[] = { 'p'^0xe5, 'm'^0xe5, 'o'^0xe5, 'd'^0xe5, 'e'^0xe5, 'l'^0xe5, 0 };
@@ -363,7 +360,6 @@ void CL_Disconnect (void)
 	byte	final[10];
 
 	connect_time = 0;
-	server_version = 0;
 	cl.teamfortress = false;
 
 	VID_SetCaption (PROGRAM);
