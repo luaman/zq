@@ -381,12 +381,96 @@ def_t *PR_Term (void)
 	return PR_ParseValue ();
 }
 
+bool PR_Calc (int opcode, const eval_t *a, const eval_t *b, eval_t *c)
+{
+	switch (opcode) {
+	case OP_ADD_F:
+		c->_float = a->_float + b->_float;
+		break;
+	case OP_ADD_V:
+		c->vector[0] = a->vector[0] + b->vector[0];
+		c->vector[1] = a->vector[1] + b->vector[1];
+		c->vector[2] = a->vector[2] + b->vector[2];
+		break;
+	case OP_SUB_F:
+		c->_float = a->_float - b->_float;
+		break;
+	case OP_SUB_V:
+		c->vector[0] = a->vector[0] - b->vector[0];
+		c->vector[1] = a->vector[1] - b->vector[1];
+		c->vector[2] = a->vector[2] - b->vector[2];
+		break;
+	case OP_MUL_F:
+		c->_float = a->_float * b->_float;
+		break;
+	case OP_MUL_V:
+		c->_float = a->vector[0]*b->vector[0] + a->vector[1]*b->vector[1] + a->vector[2]*b->vector[2];
+		break;
+	case OP_MUL_FV:
+		c->vector[0] = a->_float * b->vector[0];
+		c->vector[1] = a->_float * b->vector[1];
+		c->vector[2] = a->_float * b->vector[2];
+		break;
+	case OP_MUL_VF:
+		c->vector[0] = b->_float * a->vector[0];
+		c->vector[1] = b->_float * a->vector[1];
+		c->vector[2] = b->_float * a->vector[2];
+		break;
+	case OP_DIV_F:
+		c->_float = a->_float / b->_float;		// FIXME, check b->_float
+		break;
+	case OP_BITAND:
+		c->_float = (int)a->_float & (int)b->_float;
+		break;
+	case OP_BITOR:
+		c->_float = (int)a->_float | (int)b->_float;
+		break;
+	case OP_GE:
+		c->_float = a->_float >= b->_float;
+		break;
+	case OP_LE:
+		c->_float = a->_float <= b->_float;
+		break;
+	case OP_GT:
+		c->_float = a->_float > b->_float;
+		break;
+	case OP_LT:
+		c->_float = a->_float < b->_float;
+		break;
+	case OP_AND:
+		c->_float = a->_float && b->_float;
+		break;
+	case OP_OR:
+		c->_float = a->_float || b->_float;
+		break;
+	case OP_EQ_F:
+		c->_float = a->_float == b->_float;
+		break;
+	case OP_EQ_V:
+		c->_float = (a->vector[0] == b->vector[0]) &&
+					(a->vector[1] == b->vector[1]) &&
+					(a->vector[2] == b->vector[2]);
+		break;
+	case OP_NE_F:
+		c->_float = a->_float != b->_float;
+		break;
+	case OP_NE_V:
+		c->_float = (a->vector[0] != b->vector[0]) ||
+					(a->vector[1] != b->vector[1]) ||
+					(a->vector[2] != b->vector[2]);
+		break;
+	default:
+		return false;
+	}
+
+	return true;
+}
+
 /*
 ==============
 PR_Expression
 ==============
 */
-
 def_t *PR_Expression (int priority)
 {
 	opcode_t	*op, *oldop;
@@ -471,8 +555,31 @@ def_t *PR_Expression (int priority)
 			
 			if (type_a == ev_pointer && type_b != e->type->aux_type->type)
 				PR_ParseError ("type mismatch for %s", op->name);
-			
-			
+
+#if 0
+			if (e->type->constant && e2->type->constant) {
+				// try to calculate the expression at compile time
+				eval_t result;
+				if (PR_Calc(op - pr_opcodes, (eval_t *)(pr_globals + e->ofs),
+						(eval_t *)(pr_globals + e2->ofs), &result))
+				{
+//					printf ("line %i: folding %s %s %s into %s\n", pr_source_line, e->name, op->name, e2->name,
+//						PR_ValueString(op->type_c, &val));
+
+					type_t *resulttype;
+					switch (op->type_c) {
+						case ev_float: resulttype = &type_const_float; break;
+						//case ev_string: resulttype = &type_const_string; break;
+						case ev_vector: resulttype = &type_const_vector; break;
+						default: assert (false);
+					}
+
+					e = PR_GetImmediate (resulttype, result);
+					break;
+				}
+			}
+#endif
+
 			if (op->right_associative)
 				e = PR_Statement (op, e2, e);
 			else
