@@ -517,8 +517,27 @@ void CL_ConnectionlessPacket (void)
 		return;
 	}
 
+	// print command from somewhere
+	if (c == A2C_PRINT) {
+		if (net_message.data[msg_readcount] == '\\') {
+			extern double qstat_senttime;
+			extern void CL_PrintQStatReply (char *s);
+
+			if (qstat_senttime && curtime - qstat_senttime < 10) {
+				CL_PrintQStatReply (MSG_ReadString());
+				return;
+			}
+		}
+
+		Com_Printf ("%s: print\n", NET_AdrToString(net_from));
+
+		s = MSG_ReadString ();
+		Com_Printf ("%s", s);
+		return;
+	}
+
 	// only allow packets from the server we connected to
-	// (except for A2C_CLIENT_COMMAND which is processed earlier)
+	// (except for A2C_CLIENT_COMMAND and A2C_PRINT which are processed earlier)
 	if (!cls.demoplayback && !NET_CompareAdr(net_from, cls.server_adr))
 		return;
 
@@ -547,25 +566,6 @@ void CL_ConnectionlessPacket (void)
 		if (!com_serveractive || developer.value)
 			Com_Printf ("Connected.\n");
 		allowremotecmd = false; // localid required now for remote cmds
-		return;
-	}
-
-	// print command from somewhere
-	if (c == A2C_PRINT) {
-		if (net_message.data[msg_readcount] == '\\') {
-			extern double qstat_senttime;
-			extern void CL_PrintQStatReply (char *s);
-
-			if (qstat_senttime && curtime - qstat_senttime < 10) {
-				CL_PrintQStatReply (MSG_ReadString());
-				return;
-			}
-		}
-
-		Com_Printf ("%s: print\n", NET_AdrToString(net_from));
-
-		s = MSG_ReadString ();
-		Com_Printf ("%s", s);
 		return;
 	}
 
