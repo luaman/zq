@@ -318,6 +318,7 @@ void Cmd_Exec_f (void)
 {
 	char	*f;
 	int		mark;
+	char	name[MAX_OSPATH];
 
 	if (Cmd_Argc () != 2)
 	{
@@ -325,23 +326,39 @@ void Cmd_Exec_f (void)
 		return;
 	}
 
-	// FIXME: is this safe freeing the hunk here???
+	Q_strncpyz (name, Cmd_Argv(1), sizeof(name) - 4);
 	mark = Hunk_LowMark ();
-	f = (char *)COM_LoadHunkFile (Cmd_Argv(1));
+	f = (char *)COM_LoadHunkFile (name);
 	if (!f)
 	{
-		Con_Printf ("couldn't exec %s\n",Cmd_Argv(1));
-		return;
+		char *p;
+
+		p = COM_SkipPath (name);
+		if (!strchr (p, '.')) {
+			// no extension, so try the default (.cfg)
+			strcat (name, ".cfg");
+			f = (char *)COM_LoadHunkFile (name);
+		}
+
+		if (!f) {
+			Con_Printf ("couldn't exec %s\n", Cmd_Argv(1));
+			return;
+		}
 	}
 	if (!Cvar_Command () && (cl_warncmd.value || developer.value))
-		Con_Printf ("execing %s\n",Cmd_Argv(1));
+		Con_Printf ("execing %s\n", name);
 
 #ifndef SERVERONLY
-	if (cbuf_current == &cbuf_svc)
+	if (cbuf_current == &cbuf_svc) {
 		Cbuf_AddText (f);
+		Cbuf_AddText ("\n");
+	}
 	else
 #endif
+	{
+		Cbuf_InsertText ("\n");
 		Cbuf_InsertText (f);
+	}
 	Hunk_FreeToLowMark (mark);
 }
 
