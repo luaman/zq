@@ -120,8 +120,6 @@ typedef struct
 	int			intermission_hunt;		// looking for WriteCoords to fill in intermission_origin
 	qbool		intermission_origin_valid;
 	vec3_t		intermission_origin;
-
-	packet_t	*free_packets;
 } server_t;
 
 
@@ -290,6 +288,8 @@ typedef struct
 	byte		log_buf[2][MAX_DATAGRAM];
 
 	challenge_t	challenges[MAX_CHALLENGES];	// to prevent invalid IPs from connecting
+
+	packet_t	*free_packets;
 } serverPersistent_t;
 
 //=============================================================================
