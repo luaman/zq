@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -588,7 +588,7 @@ void CheckArrayExtensions (void)
 	Sys_Error ("Vertex array extension not present");
 }
 
-void CheckMultiTextureExtensions (void) 
+void CheckMultiTextureExtensions (void)
 {
 	if (strstr(gl_extensions, "GL_ARB_multitexture ") && !COM_CheckParm("-nomtex")) {
 		qglMultiTexCoord2f = (void *) wglGetProcAddress("glMultiTexCoord2fARB");
@@ -748,7 +748,7 @@ void VID_SetPalette (unsigned char *palette)
 		g = pal[1];
 		b = pal[2];
 		pal += 3;
-		
+
 //		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
 //		v = (255<<0) + (r<<8) + (g<<16) + (b<<24);
 		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
@@ -867,7 +867,7 @@ BOOL bSetupPixelFormat(HDC hDC)
 	0,				// shift bit ignored
 	0,				// no accumulation buffer
 	0, 0, 0, 0, 			// accum bits ignored
-	32,				// 32-bit z-buffer	
+	32,				// 32-bit z-buffer
 	0,				// no stencil buffer
 	0,				// no auxiliary buffer
 	PFD_MAIN_PLANE,			// main layer
@@ -910,7 +910,7 @@ void ClearAllStates (void)
 	extern void IN_ClearStates (void);
 	extern qbool keydown[256];
 	int		i;
-	
+
 // send an up event for each key, to make sure the server clears them all
 	for (i=0 ; i<256 ; i++)
 	{
@@ -969,7 +969,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 
 				// Fix for alt-tab bug in NVidia drivers
 				MoveWindow (mainwindow, 0, 0, gdevmode.dmPelsWidth, gdevmode.dmPelsHeight, false);
-				
+
 				scr_fullupdate = 0;
 			}
 		}
@@ -989,7 +989,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
 			RestoreHWGamma ();
-			if (vid_canalttab) { 
+			if (vid_canalttab) {
 				ChangeDisplaySettings (NULL, 0);
 				vid_wassuspended = true;
 			}
@@ -1051,7 +1051,7 @@ LONG WINAPI MainWndProc (
 		case WM_SYSKEYDOWN:
 			IN_TranslateKeyEvent (lParam, true);
 			break;
-			
+
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
 			IN_TranslateKeyEvent (lParam, false);
@@ -1097,7 +1097,7 @@ LONG WINAPI MainWndProc (
 		// JACK: This is the mouse wheel with the Intellimouse
 		// Its delta is either positive or neg, and we generate the proper
 		// Event.
-		case WM_MOUSEWHEEL: 
+		case WM_MOUSEWHEEL:
 			if (in_mwheeltype != MWHEEL_DINPUT)
 			{
 				in_mwheeltype = MWHEEL_WINDOWMSG;
@@ -1168,7 +1168,7 @@ int VID_NumModes (void)
 	return nummodes;
 }
 
-	
+
 /*
 =================
 VID_GetModePtr
@@ -1346,6 +1346,9 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 
 	do
 	{
+		devmode.dmSize = sizeof(DEVMODE);
+		devmode.dmDriverExtra = 0;
+
 		stat = EnumDisplaySettings (NULL, modenum, &devmode);
 
 		if ((devmode.dmBitsPerPel >= 15) &&
@@ -1516,7 +1519,7 @@ void VID_Build15to8table (void)
 	}
 }
 
-void VID_Init8bitPalette() 
+void VID_Init8bitPalette()
 {
 	// Check for 8bit Extensions and initialize them.
 	int i;
@@ -1672,7 +1675,7 @@ void	VID_Init (unsigned char *palette)
 				if (COM_CheckParm("-height"))
 					height = Q_atoi(com_argv[COM_CheckParm("-height")+1]);
 
-			// if they want to force it, add the specified mode to the list
+				// if they want to force it, add the specified mode to the list
 				if (COM_CheckParm("-force") && (nummodes < MAX_MODE_LIST))
 				{
 					modelist[nummodes].type = MS_FULLDIB;
@@ -1726,13 +1729,22 @@ void	VID_Init (unsigned char *palette)
 					}
 					else
 					{
-						for (i=1, vid_default=0 ; i<nummodes ; i++)
+						int j;
+						int bestheight = (width * 3) / 4;
+
+						vid_default = 0;
+						for (j = 0; j < 2; j++)
 						{
-							if ((modelist[i].width == width) && (modelist[i].bpp == bpp))
+							for (i = 1; i < nummodes; i++)
 							{
-								vid_default = i;
-								done = 1;
-								break;
+								if ((modelist[i].width == width) &&
+								    (modelist[i].bpp == bpp) &&
+								    (j || modelist[i].height == bestheight))
+								{
+									vid_default = i;
+									done = 1;
+									break;
+								}
 							}
 						}
 					}
@@ -1880,7 +1892,7 @@ void VID_MenuDraw (void)
 
 	vid_wmodes = 0;
 	lnummodes = VID_NumModes ();
-	
+
 	for (i=1 ; (i<lnummodes) && (vid_wmodes < MAX_MODEDESCS) ; i++)
 	{
 		ptr = VID_GetModeDescription (i);
