@@ -980,21 +980,10 @@ void ED_LoadFromFile (char *data)
 
 void PR_CheckExtensions (void)
 {
-	int i;
-	ddef_t	*def;
-
 	pr_z_ext_clientcommand = false;
 
-	for (i = 0, def = pr_globaldefs; i < progs->numglobaldefs; i++, def++) {
-		if (def->type != ev_float)
-			continue;
-		if (!strcmp(PR_GetString(def->s_name), "z_ext_clientcommand"))
-		{
-			pr_z_ext_clientcommand = true;
-			// let progs know that we have the extension
-			((eval_t *)&pr_globals[def->ofs])->_float = 1;
-		}
-	}
+	if (ED_FindGlobal("z_ext_clientcommand"))
+		pr_z_ext_clientcommand = true;
 }
 
 /*
