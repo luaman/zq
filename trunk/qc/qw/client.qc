@@ -385,6 +385,7 @@ entity() SelectSpawnPoint =
 		spot = find (world, classname, "info_player_start");
 		if (!spot)
 			error ("PutClientInServer: no info_player_start on level");
+		return spot;
 	}
 		
 // choose a info_player_deathmatch point
