@@ -56,6 +56,8 @@ kbutton_t	in_up, in_down;
 
 int			in_impulse;
 
+qboolean	in_invertview;	// for forward rocket jump
+
 
 void KeyDown (kbutton_t *b)
 {
@@ -158,9 +160,28 @@ void IN_UseUp (void) {KeyUp(&in_use);}
 void IN_JumpDown (void) {KeyDown(&in_jump);}
 void IN_JumpUp (void) {KeyUp(&in_jump);}
 
-//Tonik void IN_Impulse (void) {in_impulse=Q_atoi(Cmd_Argv(1));}
+//
+// builtin forward rocket jump script 
+//
 
-// Tonik -->
+void IN_FRJDown (void)
+{
+	in_invertview = true;
+	in_impulse = 7;
+	IN_AttackDown ();
+	IN_JumpDown ();
+}
+
+void IN_FRJUp (void)
+{
+	in_invertview = false;
+	IN_AttackUp ();
+	IN_JumpUp ();
+}
+
+
+//void IN_Impulse (void) {in_impulse=Q_atoi(Cmd_Argv(1));}
+
 void IN_Impulse (void)
 {
 	int best, i, imp, items;
@@ -219,7 +240,7 @@ void IN_Impulse (void)
 	if (best)
 		in_impulse = best;
 }
-// <-- Tonik
+
 
 /*
 ===============
@@ -451,6 +472,13 @@ void CL_FinishMove (usercmd_t *cmd)
 	cmd->impulse = in_impulse;
 	in_impulse = 0;
 
+	if (in_invertview) {
+		cmd->forwardmove = -cmd->forwardmove;
+		cmd->sidemove = -cmd->sidemove;
+		cmd->upmove = -cmd->upmove;
+		cmd->angles[YAW] = anglemod(cmd->angles[YAW] + 180);
+	}
+
 
 //
 // chop down so no extra bits are kept that the server wouldn't get
@@ -638,6 +666,9 @@ void CL_InitInput (void)
 	Cmd_AddCommand ("-klook", IN_KLookUp);
 	Cmd_AddCommand ("+mlook", IN_MLookDown);
 	Cmd_AddCommand ("-mlook", IN_MLookUp);
+	Cmd_AddCommand ("+frj", IN_FRJDown);
+	Cmd_AddCommand ("-frj", IN_FRJUp);
+
 
 	Cvar_Register (&cl_upspeed);
 	Cvar_Register (&cl_forwardspeed);
