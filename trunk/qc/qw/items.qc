@@ -346,7 +346,7 @@ void() health_touch =
 	}
 	else
 	{
-		if (deathmatch != 2)            // deathmatch 2 is the silly old rules
+		if (deathmatch && deathmatch != 2)            // deathmatch 2 is the silly old rules
 		{
 			self.nextthink = time + 20;
 			self.think = SUB_regen;
@@ -372,7 +372,7 @@ void() item_megahealth_rot =
 // just blindly subtract the flag off
 	other.items = other.items - (other.items & IT_SUPERHEALTH);
 	
-	if (deathmatch != 2)    // deathmatch 2 is silly old rules
+	if (deathmatch && deathmatch != 2)    // deathmatch 2 is silly old rules
 	{
 		self.nextthink = time + 20;
 		self.think = SUB_regen;
@@ -429,9 +429,11 @@ void() armor_touch =
 
 	self.solid = SOLID_NOT;
 	self.model = string_null;
-	if (deathmatch != 2)
+	if (deathmatch && deathmatch != 2)
+	{
 		self.nextthink = time + 20;
-	self.think = SUB_regen;
+		self.think = SUB_regen;
+	}
 
 	sprint(other, PRINT_LOW, "You got armor\n");
 // armor touch sound
@@ -587,7 +589,7 @@ void() weapon_touch =
 	best = W_BestWeapon();
 	self = stemp;
 
-	if (deathmatch == 2 || deathmatch == 3 || deathmatch == 5)
+	if (deathmatch == 2 || deathmatch == 3 || deathmatch == 5 || coop)
 		leave = 1;
 	else
 		leave = 0;
@@ -681,15 +683,15 @@ void() weapon_touch =
 	if (leave)
 		return;
 
-	if (deathmatch!=3 || deathmatch !=5)
-	{
 	// remove it in single player, or setup for respawning in deathmatch
-		self.model = string_null;
-		self.solid = SOLID_NOT;
-		if (deathmatch != 2)
-			self.nextthink = time + 30;
+	self.model = string_null;
+	self.solid = SOLID_NOT;
+	if (deathmatch && deathmatch != 2)
+	{
+		self.nextthink = time + 30;
 		self.think = SUB_regen;
 	}
+
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
 };
@@ -885,15 +887,16 @@ local float             best;
 // remove it in single player, or setup for respawning in deathmatch
 	self.model = string_null;
 	self.solid = SOLID_NOT;
-	if (deathmatch != 2)
+	if (deathmatch && deathmatch != 2)
+	{
 		self.nextthink = time + 30;
 
-// Xian -- If playing in DM 3.0 mode, halve the time ammo respawns        
+		// Xian -- If playing in DM 3.0 mode, halve the time ammo respawns        
+		if (deathmatch == 3 || deathmatch == 5)
+			self.nextthink = time + 15;
 
-	if (deathmatch == 3 || deathmatch == 5)        
-		self.nextthink = time + 15;
-
-	self.think = SUB_regen;
+		self.think = SUB_regen;
+	}
 
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
@@ -1120,8 +1123,11 @@ void() key_touch =
 	stuffcmd (other, "bf\n");
 	other.items = other.items | self.items;
 
-	self.solid = SOLID_NOT;
-	self.model = string_null;
+	if (!coop)
+	{
+		self.solid = SOLID_NOT;
+		self.model = string_null;
+	}
 
 	activator = other;
 	SUB_UseTargets();                               // fire all targets / killtargets
@@ -1300,9 +1306,6 @@ POWERUPS
 ===============================================================================
 */
 
-void() powerup_touch;
-
-
 void() powerup_touch =
 {
 	if (other.classname != "player")
@@ -1314,15 +1317,18 @@ void() powerup_touch =
 	sprint (other,PRINT_LOW,  self.netname);
 	sprint (other,PRINT_LOW, "\n");
 
-	self.mdl = self.model;
+	if (deathmatch)
+	{
+		self.mdl = self.model;
 	
-	if ((self.classname == "item_artifact_invulnerability") ||
-		(self.classname == "item_artifact_invisibility"))
-		self.nextthink = time + 60*5;
-	else
-		self.nextthink = time + 60;
+		if ((self.classname == "item_artifact_invulnerability") ||
+			(self.classname == "item_artifact_invisibility"))
+			self.nextthink = time + 60*5;
+		else
+			self.nextthink = time + 60;
 	
-	self.think = SUB_regen;
+		self.think = SUB_regen;
+	}
 
 	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
