@@ -182,7 +182,7 @@ void Cbuf_ExecuteEx (cbuf_t *cbuf)
 
 		cursize = cbuf->text_end - cbuf->text_start;
 		quotes = 0;
-		for (i=0 ; i< cursize ; i++)
+		for (i=0 ; i<cursize ; i++)
 		{
 			if (text[i] == '"')
 				quotes++;
@@ -199,6 +199,8 @@ void Cbuf_ExecuteEx (cbuf_t *cbuf)
 
 		memcpy (line, text, i);
 		line[i] = 0;
+		if (i > 0 && line[i-1] == '\r')
+			line[i-1] = 0;	// remove DOS ending CR
 		
 // delete the text from the command buffer and move remaining commands down
 // this is necessary because commands (exec, alias) can insert data at the
@@ -673,7 +675,6 @@ Cmd_TokenizeString
 Parses the given string into command line tokens.
 ============
 */
-#if 1
 void Cmd_TokenizeString (char *text)
 {
 	int			idx;
@@ -688,8 +689,7 @@ void Cmd_TokenizeString (char *text)
 	{
 // skip whitespace up to a /n
 //		while (*text && *text <= ' ' && *text != '\n')
-//		while (*text == ' ' || *text == 9 || *text == 13)	// Tonik
-		while (*text && *(unsigned char*)text <= ' ' && *text != '\n')	// Tonik
+		while (*text == ' ' || *text == '\t' || *text == '\r')
 		{
 			text++;
 		}
@@ -720,94 +720,6 @@ void Cmd_TokenizeString (char *text)
 	}
 	
 }
-
-#else
-// Tonik: new TokenizeString (not finished)
-// text must point to a buffer 1024 chars long
-void Cmd_TokenizeString (char *text)
-{
-	int			idx;
-	int			i, c, len;	// COM_Parse
-	static char	argv_buf[1024];
-	char		*p;
-	
-	p = argv_buf;
-		
-	cmd_argc = 0;
-	cmd_args = NULL;
-	
-	while (1)
-	{
-// skip whitespace up to a /n
-//skipwhite:
-		while (*text && *(unsigned char*)text <= ' ' && *text != '\n')	// Tonik
-		{
-			text++;
-		}
-		
-		if (*text == '\n')
-		{	// a newline seperates commands in the buffer
-			text++;
-			break;
-		}
-
-		if (!*text)
-			return;
-		
-		if (cmd_argc == 1)
-			cmd_args = text;
-
-		// skip // comments
-		if (c=='/' && text[1] == '/')
-		{
-//			while (*text && *text != '\n')
-//				text++;
-			break;
-		}
-		
-		*p = 0;
-
-		
-		// handle quoted strings specially
-		if (c == '\"')
-		{
-			text++;
-			while (1)
-			{
-				c = *text++;
-				if (c=='\"' || !c)
-				{
-					*p = 0;
-					//return text;
-					goto _return;
-				}
-				*p++ = c;
-				len++;
-			}
-		}
-		
-		// parse a regular word
-		do
-		{
-			*p++ = c;
-			text++;
-			c = *text;
-		} while (c > 32);
-		
-		*p = 0;
-		
-_return:
-		if (cmd_argc < MAX_ARGS)
-		{
-			cmd_argv[cmd_argc] = argv_buf + idx;
-			strcpy (cmd_argv[cmd_argc], com_token);
-			idx++;
-			cmd_argc++;
-		}
-	}
-	
-}
-#endif
 
 
 /*
@@ -1117,7 +1029,7 @@ A complete command line has been parsed, so try to execute it
 FIXME: lookupnoadd the token to speed search?
 ============
 */
-void	Cmd_ExecuteString (char *text)
+void Cmd_ExecuteString (char *text)
 {	
 	cmd_function_t	*cmd;
 	cmd_alias_t		*a;
