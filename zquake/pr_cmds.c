@@ -577,7 +577,7 @@ void PF_traceline (void)
 =================
 PF_checkpos
 
-Returns true if the given entity can move to the given position from it's
+Returns true if the given entity can move to the given position from its
 current position by walking or rolling.
 FIXME: make work...
 scalar checkpos (entity, vector)

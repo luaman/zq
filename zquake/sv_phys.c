@@ -454,7 +454,7 @@ qboolean SV_Push (edict_t *pusher, vec3_t move)
 
 	VectorCopy (pusher->v.origin, pushorig);
 	
-// move the pusher to it's final position
+// move the pusher to its final position
 
 	VectorAdd (pusher->v.origin, move, pusher->v.origin);
 	SV_LinkEdict (pusher, false);

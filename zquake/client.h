@@ -31,7 +31,7 @@ typedef struct
 // to do move prediction and to generate a drawable entity
 typedef struct
 {
-	int			messagenum;		// all player's won't be updated each frame
+	int			messagenum;		// all players won't be updated each frame
 
 	double		state_time;		// not the same as the packet time,
 								// because player commands come asyncronously
@@ -246,7 +246,7 @@ typedef struct
 
 // information for local display
 	int			stats[MAX_CL_STATS];	// health, etc
-	float		item_gettime[32];	// cl.time of aquiring item, for blinking
+	float		item_gettime[32];	// cl.time of acquiring item, for blinking
 	float		faceanimtime;		// use anim frame if cl.time < this
 
 	cshift_t	cshifts[NUM_CSHIFTS];	// color shifts for damage, powerups and content types
@@ -274,10 +274,10 @@ typedef struct
 
 	qboolean	paused;			// send over by server
 
-	float		punchangle;		// temporar yview kick from weapon firing
+	float		punchangle;		// temporary view kick from weapon firing
 	
 	int			intermission;	// don't change view angle, full screen, etc
-	int			completed_time;	// latched ffrom time at intermission start
+	int			completed_time;	// latched from time at intermission start
 	
 //
 // information that is static for the entire time connected to a server
@@ -295,7 +295,7 @@ typedef struct
 	struct model_s	*worldmodel;	// cl_entitites[0].model
 	struct efrag_s	*free_efrags;
 	int			num_entities;	// stored bottom up in cl_entities array
-	int			num_statics;	// stored top down in cl_entitiers
+	int			num_statics;	// stored top down in cl_entities
 
 	int			cdtrack;		// cd audio
 
@@ -397,7 +397,7 @@ void CL_StopUpload(void);
 
 
 //
-// cl_tent
+// cl_tent.c
 //
 void CL_InitTEnts (void);
 void CL_ClearTEnts (void);

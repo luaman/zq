@@ -115,7 +115,7 @@ void SV_CreateBaseline (void)
 		}
 
 		//
-		// flush the signon message out to a seperate buffer if
+		// flush the signon message out to a separate buffer if
 		// nearly full
 		//
 		SV_FlushSignon ();
