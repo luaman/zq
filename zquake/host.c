@@ -26,6 +26,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <setjmp.h>
 
 
+#ifndef		SERVERONLY
+qboolean	dedicated = false;
+#endif
+
 double		curtime;
 
 qboolean	host_initialized;		// true if into command execution
