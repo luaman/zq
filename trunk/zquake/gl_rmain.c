@@ -1049,8 +1049,6 @@ void R_RenderScene (void)
 
 	R_RenderDlights ();
 
-	R_DrawParticles ();
-
 #ifdef GLTEST
 	Test_Draw ();
 #endif
@@ -1168,7 +1166,7 @@ void R_Mirror (void)
 
 	R_RenderScene ();
 	R_DrawWaterSurfaces ();
-
+	R_DrawParticles ();
 
 	gldepthmin = 0;
 	gldepthmax = 0.5;
@@ -1233,6 +1231,7 @@ void R_RenderView (void)
 	R_RenderScene ();
 	R_DrawViewModel ();
 	R_DrawWaterSurfaces ();
+	R_DrawParticles ();
 
 	// render mirror view
 //	R_Mirror ();
