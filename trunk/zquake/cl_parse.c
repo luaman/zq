@@ -104,12 +104,6 @@ int		cl_spikeindex, cl_playerindex, cl_eyesindex, cl_flagindex;
 int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 int		cl_rocketindex, cl_grenadeindex;
 
-#ifdef MVDPLAY
-int	oldparsecountmod;
-int	parsecountmod;
-double	parsecounttime;
-#endif
-
 //=============================================================================
 
 int packet_latency[NET_TIMINGS];
