@@ -152,6 +152,9 @@ void Cvar_Set (cvar_t *var, char *value)
 	if (!var)
 		return;
 
+	if (var->flags & CVAR_ROM)
+		return;
+
 	if (var->OnChange && !changing) {
 		changing = true;
 		if (var->OnChange(var, value)) {
@@ -189,6 +192,20 @@ void Cvar_Set (cvar_t *var, char *value)
 #endif
 }
 
+void Cvar_SetROM (cvar_t *var, char *value)
+{
+	int saved_flags;
+
+	if (!var)
+		return;
+
+	saved_flags = var->flags;
+	var->flags &= ~CVAR_ROM;
+	Cvar_Set (var, value);
+	var->flags = saved_flags;
+}
+
+
 /*
 ============
 Cvar_SetValue
@@ -206,6 +223,7 @@ void Cvar_SetValue (cvar_t *var, float value)
 		val[i] = 0;
 	Cvar_Set (var, val);
 }
+
 
 /*
 ============
