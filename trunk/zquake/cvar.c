@@ -231,7 +231,7 @@ void Cvar_Register (cvar_t *var)
 
 	// first check to see if it has already been defined
 	old = Cvar_FindVar (var->name);
-	if (old && !(old->flags & CVAR_USER_CREATED))
+	if (old && !(old->flags & CVAR_DYNAMIC))
 	{
 		Com_Printf ("Can't register variable %s, already defined\n", var->name);
 		return;
@@ -246,7 +246,7 @@ void Cvar_Register (cvar_t *var)
 
 	if (old)
 	{
-		var->flags |= old->flags & ~CVAR_USER_CREATED;
+		var->flags |= old->flags & ~CVAR_DYNAMIC;
 		Q_strncpyz (string, old->string, sizeof(string));
 		Cvar_Delete (old->name);
 		if (!(var->flags & CVAR_ROM))
@@ -503,7 +503,7 @@ void Cvar_Set_f (void)
 			return;
 		}
 
-		var = Cvar_Create (name, Cmd_Argv(2), CVAR_USER_CREATED);
+		var = Cvar_Create (name, Cmd_Argv(2), CVAR_DYNAMIC);
 	}
 
 	if (cvar_seta)

@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CVAR_SERVERINFO		4		// mirrored to serverinfo
 #define CVAR_ROM			8		// read only
 #define CVAR_INIT			16		// can only be set during initialization
-#define	CVAR_USER_CREATED	32		// created by a set command
+#define	CVAR_DYNAMIC		32		// allocated on zone, not static
 #define	CVAR_USER_ARCHIVE	64		// created by a seta command
 
 typedef struct cvar_s
