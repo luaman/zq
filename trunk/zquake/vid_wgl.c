@@ -663,18 +663,11 @@ GL_BeginRendering
 
 =================
 */
-qboolean vid_grabbackbuffer;
 void GL_BeginRendering (int *x, int *y, int *width, int *height)
 {
 	*x = *y = 0;
 	*width = WindowRect.right - WindowRect.left;
 	*height = WindowRect.bottom - WindowRect.top;
-
-	if (vid_grabbackbuffer) {
-		glDrawBuffer (GL_BACK);
-		vid_grabbackbuffer--;
-	}
-
 }
 
 
@@ -990,11 +983,11 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				vid_wassuspended = false;
 				ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN);
 				ShowWindow (mainwindow, SW_SHOWNORMAL);
-				// Tonik: It seems Windows sometimes sets draw buffer to
-				// to GL_FRONT after switching to fullscreen, causing
-				// screen flickering. Grabbing GL_BACK once doesn't help,
-				// 2 is probably ok, but we use 5 just to be sure
-				vid_grabbackbuffer = 5;
+
+				// Fix for alt-tab bug in NVidia drivers
+				MoveWindow (mainwindow, 0, 0, gdevmode.dmPelsWidth, gdevmode.dmPelsHeight, false);
+				
+				// scr_fullupdate = 0;
 				Sbar_Changed ();
 			}
 		}
@@ -1015,7 +1008,6 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			IN_ShowMouse ();
 			RestoreHWGamma ();
 			if (vid_canalttab) { 
-				ShowWindow (mainwindow, SW_MINIMIZE);
 				ChangeDisplaySettings (NULL, 0);
 				vid_wassuspended = true;
 			}
