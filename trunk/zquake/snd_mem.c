@@ -133,6 +133,19 @@ sfxcache_t *S_LoadSound (sfx_t *s)
 	sc = Cache_Alloc ( &s->cache, len + sizeof(sfxcache_t), s->name);
 	if (!sc)
 		return NULL;
+
+#ifdef BIGENDIAN
+	if (info.width == 2) {
+		int i;
+		short *ptr;
+
+		len = info.samples * info.channels;
+		ptr = (short *) (data + info.dataofs);
+
+		for (i = 0; i < len; i++)
+			ptr[i] = LittleShort(ptr[i]);
+	}
+#endif
 	
 	sc->length = info.samples;
 	sc->loopstart = info.loopstart;
