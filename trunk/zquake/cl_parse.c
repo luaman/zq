@@ -743,11 +743,10 @@ void CL_ParseServerData (void)
 #ifdef MVDPLAY
 	if (cls.mvdplayback)
 	{
-		int i;
 		// FIXME
 		cls.mvd_newtime = cls.mvd_oldtime = MSG_ReadFloat();
 		cl.playernum = MAX_CLIENTS - 1;
-		cl.spectator = true;
+		cl.spectator = cl.players[cl.playernum].spectator = true;
 	} else
 #endif
 	{
@@ -1185,6 +1184,9 @@ CL_ProcessUserInfo
 void CL_ProcessUserInfo (int slot, player_info_t *player)
 {
 	char	old_team[MAX_INFO_KEY];
+
+	if (slot == cl.playernum && cls.mvdplayback)
+		return;
 
 	strlcpy (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
 	if (!player->name[0] && player->userid && strlen(player->userinfo) >= MAX_INFO_STRING - 17) {
