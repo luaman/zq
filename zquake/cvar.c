@@ -279,7 +279,9 @@ Handles variable inspection and changing from the console
 */
 qboolean Cvar_Command (void)
 {
-	cvar_t			*v;
+	int			i, c;
+	cvar_t		*v;
+	char		string[1024];
 
 // check variables
 	v = Cvar_FindVar (Cmd_Argv(0));
@@ -287,13 +289,22 @@ qboolean Cvar_Command (void)
 		return false;
 		
 // perform a variable print or set
-	if (Cmd_Argc() == 1)
+	c = Cmd_Argc();
+	if (c == 1)
 	{
 		Con_Printf ("\"%s\" is \"%s\"\n", v->name, v->string);
 		return true;
 	}
 
-	Cvar_Set (v, Cmd_Argv(1));
+	string[0] = 0;
+	for (i=1 ; i < c ; i++)
+	{
+		if (i > 1)
+			strcat (string, " ");
+		strcat (string, Cmd_Argv(i));
+	}
+
+	Cvar_Set (v, string);
 	return true;
 }
 
