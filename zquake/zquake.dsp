@@ -1180,7 +1180,7 @@ SOURCE=.\winquake.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\world.c
+SOURCE=.\sv_world.c
 # End Source File
 # Begin Source File
 
