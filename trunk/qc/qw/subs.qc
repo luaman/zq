@@ -26,9 +26,31 @@
 */
 
 
-void SUB_Null () {}
+/*
+================
+SUB_Null
 
-void SUB_Remove () {remove(self);}
+Used to reset an entity's touch function:
+self.touch = SUB_Null;
+================
+*/
+void SUB_Null ()
+{
+}
+
+/*
+================
+SUB_Remove
+
+Used to make an entity remove itself in a while:
+self.think = SUB_Remove;
+self.nextthink = time + 1;
+================
+*/
+void SUB_Remove ()
+{
+	remove(self);
+}
 
 
 /*
