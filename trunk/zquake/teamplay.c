@@ -37,7 +37,6 @@ cvar_t	cl_triggers = {"cl_triggers", "0"};
 cvar_t	tp_forceTriggers = {"tp_forceTriggers", "0"};
 cvar_t	cl_nofake = {"cl_nofake", "2"};
 cvar_t	tp_loadlocs = {"tp_loadlocs", "1"};
-cvar_t	cl_mapname = {"mapname", "", CVAR_ROM};
 
 cvar_t	cl_teamskin = {"teamskin", ""};
 cvar_t	cl_enemyskin = {"enemyskin", ""};
@@ -1276,7 +1275,7 @@ char *TP_EnemyName (void)
 
 char *TP_MapName (void)
 {
-	return cl_mapname.string;
+	return host_mapname.string;
 }
 
 /*
@@ -1406,7 +1405,7 @@ void TP_NewMap (void)
 			TP_LoadLocFile (locname, true);
 		}
 		strcpy (last_map, mapname);
-		Cvar_ForceSet (&cl_mapname, mapname);
+		Cvar_ForceSet (&host_mapname, mapname);
 	}
 
 	TP_ExecTrigger ("f_newmap");
@@ -2358,7 +2357,6 @@ void TP_Init (void)
 	Cvar_Register (&tp_forceTriggers);
 	Cvar_Register (&cl_nofake);
 	Cvar_Register (&tp_loadlocs);
-	Cvar_Register (&cl_mapname);
 	Cvar_Register (&cl_teamskin);
 	Cvar_Register (&cl_enemyskin);
 	Cvar_Register (&tp_soundtrigger);
