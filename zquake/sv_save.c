@@ -6,11 +6,13 @@ LOAD / SAVE GAME
 ===============================================================================
 */
 
-#include "quakedef.h"
 #include "server.h"
 #include "sv_world.h"
 
-extern cvar_t	maxclients;
+// hmm...
+extern int CL_Stat_Monsters(void), CL_Stat_TotalMonsters(void);
+extern int CL_IntermissionRunning (void);
+extern qboolean scr_disabled_for_loading;
 
 #define	SAVEGAME_COMMENT_LENGTH	39
 #define	SAVEGAME_VERSION	6
@@ -20,17 +22,25 @@ extern cvar_t	maxclients;
 SV_SavegameComment
 
 Writes a SAVEGAME_COMMENT_LENGTH character comment
+
+FIXME: What is the right place for this function?
+If it stays in server, then the CL_Stat_Monsters is architecturally ugly
+Move it to client?
+On the other hand, if we make it fully client-independent, "save" and "load" could
+be made to work even on dedicated servers.  Not sure though how useful that would be.
 ===============
 */
 void SV_SavegameComment (char *text)
 {
 	int		i;
 	char	kills[20];
+	char	*levelname;
 
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 		text[i] = ' ';
-	memcpy (text, cl.levelname, strlen(cl.levelname));
-	sprintf (kills, "kills:%3i/%-3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
+	levelname = PR_GetString(sv.edicts->v.message);
+	memcpy (text, levelname, strlen(levelname));
+	sprintf (kills, "kills:%3i/%-3i", CL_Stat_Monsters(), CL_Stat_TotalMonsters());
 	memcpy (text+22, kills, strlen(kills));
 
 // convert space to _ to make stdio happy
@@ -69,7 +79,7 @@ void SV_SaveGame_f (void)
 		return;
 	}
 
-	if (cl.intermission) {
+	if (CL_IntermissionRunning()) {
 		Com_Printf ("Can't save in intermission.\n");
 		return;
 	}

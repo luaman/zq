@@ -18,10 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include "qwsvdef.h"
+#include "server.h"
 #include "version.h"
-
-int			current_skill;			// for entity spawnflags checking
 
 netadr_t	master_adr[MAX_MASTERS];	// address of group servers
 
@@ -68,6 +66,8 @@ cvar_t	watervis = {"watervis","0",CVAR_SERVERINFO};
 
 cvar_t	skill = {"skill", "1"};
 cvar_t	coop = {"coop", "0", CVAR_SERVERINFO};
+
+int		current_skill;			// for entity spawnflags checking
 
 FILE	*sv_fraglogfile;
 

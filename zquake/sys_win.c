@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // sys_win.c
 
 #ifdef SERVERONLY
-#include "qwsvdef.h"
+#include "common.h"
 #include <winsock.h>
 #include <limits.h>
 #include <direct.h>		// _mkdir

@@ -19,7 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // sv_user.c -- server code for moving users
 
-#include "qwsvdef.h"
+#include "server.h"
+#include "sv_world.h"
 #include "pmove.h"
 
 edict_t	*sv_player;
@@ -1245,7 +1246,7 @@ void Cmd_Join_f (void)
 	int		i;
 	client_t	*cl;
 	int		numclients;
-	extern cvar_t	maxclients, sv_password;
+	extern cvar_t	sv_password;
 
 	if (sv_client->state != cs_spawned)
 		return;

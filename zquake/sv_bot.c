@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // sv_bot.c -- bot functions
 
-#include "qwsvdef.h"
+#include "server.h"
 
 void SetUpClientEdict (client_t *cl, edict_t *ent);
 
@@ -57,7 +57,6 @@ void Bot_Spawn_And_Begin (client_t *cl)
 
 edict_t *SV_CreateBot (char *name)
 {
-	extern cvar_t	maxclients;
 	int			i, numclients;
 	client_t	*cl, *newcl;
 	edict_t		*ent;

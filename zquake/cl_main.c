@@ -144,10 +144,15 @@ static void CL_FixupModelNames (void)
 
 //============================================================================
 
-int CL_ClientState ()
+int CL_ClientState (void)
 {
 	return cls.state;
 }
+
+// just for sv_save.c
+int CL_IntermissionRunning (void) { return cl.intermission; }
+int CL_Stat_Monsters (void) { return cl.stats[STAT_MONSTERS]; }
+int CL_Stat_TotalMonsters (void) { return cl.stats[STAT_TOTALMONSTERS]; }
 
 
 /*
