@@ -1963,6 +1963,25 @@ static void PF_precache_vwep_model (void)
 // <-- Tonik's experiments
 
 
+static qbool CheckBuiltin (int num)
+{
+	// check ZQuake builtins
+	if (num >= ZQ_BUILTINS && num < ZQ_BUILTINS + pr_numextbuiltins)
+		return (pr_extbuiltins[num - ZQ_BUILTINS] != PF_Fixme);
+
+	// check other builtins
+	if (num <= 0 || num >= pr_numbuiltins || pr_builtins[num] == PF_Fixme
+		// I'm being paranoid here
+		|| pr_builtins[num] == PF_testbot
+		|| pr_builtins[num] == PF_setinfo
+		|| pr_builtins[num] == PF_precache_vwep_model)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 /*
 ==============
 PF_checkbuiltin
@@ -1977,28 +1996,17 @@ float(float num, ...) checkbuiltin = #0x5a00;
 // ZQ_QC_CHECKBUILTIN
 static void PF_checkbuiltin (void)
 {
-	int i, num;
+	int i;
 	float *f;
 
 	for (i = 0, f = &G_FLOAT(OFS_PARM0); i < pr_argc; i++, f += 3) {
-		num = *f;
-		// check extended builtins
-		if (num < ZQ_BUILTINS || num - ZQ_BUILTINS >= pr_numextbuiltins
-			|| pr_extbuiltins[num - ZQ_BUILTINS] == PF_Fixme) {
-			// check standard builtins
-			if (num < 0 || num > pr_numbuiltins || pr_builtins[num] == PF_Fixme
-				// I'm being paranoid here
-				|| pr_builtins[num] == PF_testbot
-				|| pr_builtins[num] == PF_setinfo
-				|| pr_builtins[num] == PF_precache_vwep_model)
-			{
-				G_FLOAT(OFS_RETURN) = 0;
-				return;
-			}
+		if (!CheckBuiltin(*f)) {
+			G_FLOAT(OFS_RETURN) = 0;
+			return;
 		}
 	}
 
-	G_FLOAT(OFS_RETURN) = 1;	// all are supported
+	G_FLOAT(OFS_RETURN) = 1;
 }
 
 /*
@@ -2014,31 +2022,12 @@ float(float start, float num) checkbuiltinrange = #0x5a01;
 static void PF_checkbuiltinrange (void)
 {
 	int	i, start, end;
-	builtin_t	*builtins;
 
 	start = G_FLOAT(OFS_PARM0);
 	end = G_FLOAT(OFS_PARM1);
 
-	if (start < 1 || (start >= pr_numbuiltins && start < ZQ_BUILTINS)
-		|| (end >= pr_numbuiltins && end < ZQ_BUILTINS)
-		|| end >= ZQ_BUILTINS + pr_numextbuiltins) {
-		G_FLOAT(OFS_RETURN) = 0;
-		return;
-	}
-
-	if (start < pr_numbuiltins)
-		builtins = pr_builtins;
-	else {
-		builtins = pr_extbuiltins;
-		start -= ZQ_BUILTINS;
-		end -= ZQ_BUILTINS;
-	}
-
 	for (i = start; i < end; i++) {
-		if (builtins[i] == PF_Fixme
-			|| pr_builtins[i] == PF_testbot
-			|| pr_builtins[i] == PF_setinfo
-			|| pr_builtins[i] == PF_precache_vwep_model) {
+		if (!CheckBuiltin(i)) {
 			G_FLOAT(OFS_RETURN) = 0;
 			return;
 		}
@@ -2046,6 +2035,82 @@ static void PF_checkbuiltinrange (void)
 
 	G_FLOAT(OFS_RETURN) = 1;
 }
+
+/*
+==============
+PF_maptobuiltin
+
+Turn a function into a builtin.
+Ok to call if we're not sure the builtin is present;
+0 will be returned then, and the function will not be mapped
+
+float(void() from_func, float to_num) maptobuiltin = #0x5a02;
+==============
+*/
+static void PF_maptobuiltin (void)
+{
+	int func;
+	int	num;
+
+	func = G_FUNCTION(OFS_PARM0);
+	num = G_FLOAT(OFS_PARM1);
+
+	if (func <= 0 || func >= progs->numfunctions)
+		Host_Error ("PF_mapbuiltin: bad function");
+
+	if (!CheckBuiltin(num)) {
+		G_FLOAT(OFS_RETURN) = 0;
+		return;
+	}
+
+	pr_functions[func].first_statement = -num;
+
+	G_FLOAT(OFS_RETURN) = 1;
+}
+
+/*
+==============
+PF_mapfunction
+
+Maps one function to another function.
+Either function can be a normal function or a builtin.
+If to_func is a builtin, then the same rules apply as in PF_maptobuiltin:
+no mapping is done, and zero is returned
+
+float(void() from_func, void() to_func) mapfunction = #0x5a03;
+==============
+*/
+static void PF_mapfunction (void)
+{
+	int func1, func2;
+	int to_num;
+
+	func1 = G_FUNCTION(OFS_PARM0);
+	func2 = G_FUNCTION(OFS_PARM1);
+
+	if (func1 <= 0 || func1 >= progs->numfunctions ||
+		func2 <= 0 || func2 >= progs->numfunctions)
+		Host_Error ("PF_mapfunction: bad function");
+
+	to_num = pr_functions[func2].first_statement;
+
+	if (to_num < 0 && !CheckBuiltin(-to_num)) {
+		G_FLOAT(OFS_RETURN) = 0;
+		return;
+	}
+
+	if (to_num < 0) {
+		// if mapping to a builtin, only copy the number
+		pr_functions[func1].first_statement = to_num;
+	} else {
+		// copy the entire function
+		// FIXME: except .profile?
+		pr_functions[func1] = pr_functions[func2];
+	}
+
+	G_FLOAT(OFS_RETURN) = 1;
+}
+
 
 //=============================================================================
 
@@ -2191,8 +2256,10 @@ void PF_checkbuiltin (void);
 
 builtin_t pr_extbuiltins[] =
 {
-	PF_checkbuiltin,
-	PF_checkbuiltinrange,
+	PF_checkbuiltin,	// float(float num, ...) checkbuiltin			= #0x5a00;
+	PF_checkbuiltinrange, // float(float start, float num) checkbuiltinrange = #0x5a01;
+	PF_maptobuiltin,	// float(void() from_func, float to_num) maptobuiltin = #0x5a02;
+	PF_mapfunction,		// float(void() from_func, void() to_func) mapfunction = #0x5a03;
 };
 
 int pr_numextbuiltins = sizeof(pr_extbuiltins)/sizeof(pr_extbuiltins[0]);
