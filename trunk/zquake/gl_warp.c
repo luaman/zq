@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include "gl_local.h"
+#include "image.h"
 
 extern	model_t	*loadmodel;
 
@@ -32,6 +33,9 @@ float	speedscale;		// for top sky and bottom sky
 
 msurface_t	*warpface;
 
+qboolean	r_skyboxloaded;
+
+void R_DrawSkyboxChain (msurface_t *s);
 
 void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
 {
@@ -319,7 +323,6 @@ void EmitBothSkyLayers (msurface_t *fa)
 	glDisable (GL_BLEND);
 }
 
-#ifndef QUAKE2
 /*
 =================
 R_DrawSkyChain
@@ -328,6 +331,12 @@ R_DrawSkyChain
 void R_DrawSkyChain (msurface_t *s)
 {
 	msurface_t	*fa;
+
+	if (r_skyboxloaded)
+	{
+		R_DrawSkyboxChain (s);
+		return;
+	}
 
 	GL_DisableMultitexture();
 
@@ -361,7 +370,6 @@ void R_DrawSkyChain (msurface_t *s)
 	glDisable (GL_BLEND);
 }
 
-#endif
 
 /*
 =================================================================
@@ -370,9 +378,6 @@ void R_DrawSkyChain (msurface_t *s)
 
 =================================================================
 */
-
-#ifdef QUAKE2
-
 
 #define	SKY_TEX		2000
 
@@ -534,11 +539,11 @@ void LoadTGA (FILE *fin)
 
 	if (targa_header.image_type!=2 
 		&& targa_header.image_type!=10) 
-		Sys_Error ("LoadTGA: Only type 2 and 10 targa RGB images supported");
+		Host_Error ("LoadTGA: Only type 2 and 10 targa RGB images supported");
 
 	if (targa_header.colormap_type !=0 
 		|| (targa_header.pixel_size!=32 && targa_header.pixel_size!=24))
-		Sys_Error ("Texture_LoadTGA: Only 32 or 24 bit images supported (no colormaps)");
+		Host_Error ("Texture_LoadTGA: Only 32 or 24 bit images supported (no colormaps)");
 
 	columns = targa_header.width;
 	rows = targa_header.height;
@@ -662,25 +667,25 @@ void LoadTGA (FILE *fin)
 
 /*
 ==================
-R_LoadSkys
+R_SetSky
 ==================
 */
 char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
-void R_LoadSkys (void)
+void R_SetSky (char *name)
 {
 	int		i;
 	FILE	*f;
-	char	name[64];
+	char	pathname[MAX_QPATH];
 
 	for (i=0 ; i<6 ; i++)
 	{
 		GL_Bind (SKY_TEX + i);
-		sprintf (name, "gfx/env/bkgtst%s.tga", suf[i]);
-		FS_FOpenFile (name, &f);
+		Q_snprintfz (pathname, sizeof(pathname), "env/%s%s.tga", name, suf[i]);
+		FS_FOpenFile (pathname, &f);
 		if (!f)
 		{
 			Com_Printf ("Couldn't load %s\n", name);
-			continue;
+			return;
 		}
 		LoadTGA (f);
 //		LoadPCX (f);
@@ -694,6 +699,8 @@ void R_LoadSkys (void)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	}
+
+	r_skyboxloaded = true;
 }
 
 
@@ -916,10 +923,10 @@ void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 
 /*
 =================
-R_DrawSkyChain
+R_DrawSkyboxChain
 =================
 */
-void R_DrawSkyChain (msurface_t *s)
+void R_DrawSkyboxChain (msurface_t *s)
 {
 	msurface_t	*fa;
 
@@ -928,7 +935,7 @@ void R_DrawSkyChain (msurface_t *s)
 	glpoly_t	*p;
 
 	c_sky = 0;
-	GL_Bind(solidskytexture);
+//	GL_Bind(solidskytexture);
 
 	// calculate vertex values for sky box
 
@@ -1008,29 +1015,19 @@ R_DrawSkyBox
 int	skytexorder[6] = {0,2,1,3,4,5};
 void R_DrawSkyBox (void)
 {
-	int		i, j, k;
-	vec3_t	v;
-	float	s, t;
+	int		i;
 
-#if 0
-glEnable (GL_BLEND);
-glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-glColor4f (1, 1, 1, 0.5);
-glDisable (GL_DEPTH_TEST);
-#endif
+	if (!r_skyboxloaded)
+		return;
+
 	for (i=0 ; i<6 ; i++)
 	{
 		if (skymins[0][i] >= skymaxs[0][i]
 		|| skymins[1][i] >= skymaxs[1][i])
 			continue;
 
-		GL_Bind (SKY_TEX+skytexorder[i]);
-#if 0
-skymins[0][i] = -1;
-skymins[1][i] = -1;
-skymaxs[0][i] = 1;
-skymaxs[1][i] = 1;
-#endif
+		GL_Bind (SKY_TEX + skytexorder[i]);
+
 		glBegin (GL_QUADS);
 		MakeSkyVec (skymins[0][i], skymins[1][i], i);
 		MakeSkyVec (skymins[0][i], skymaxs[1][i], i);
@@ -1038,16 +1035,8 @@ skymaxs[1][i] = 1;
 		MakeSkyVec (skymaxs[0][i], skymins[1][i], i);
 		glEnd ();
 	}
-#if 0
-glDisable (GL_BLEND);
-glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-glColor4f (1, 1, 1, 1);
-glEnable (GL_DEPTH_TEST);
-#endif
 }
 
-
-#endif
 
 //===============================================================
 

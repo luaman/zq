@@ -241,6 +241,10 @@ void EmitBothSkyLayers (msurface_t *fa);
 void EmitWaterPolys (msurface_t *fa);
 void EmitSkyPolys (msurface_t *fa);
 void R_DrawSkyChain (msurface_t *s);
+void R_DrawSkyboxChain (msurface_t *s);
+void R_ClearSkyBox (void);
+void R_DrawSkyBox (void);
+extern qboolean	r_skyboxloaded;
 
 //
 // gl_draw.c
