@@ -258,15 +258,14 @@ void CL_Prespawn (void)
 {
 	char	mapname[MAX_QPATH];
 
-	cl.worldmodel = cl.model_precache[1];
-	if (!cl.worldmodel)
+	if (!cl.model_precache[1])
 		Host_Error ("CL_Prespawn: NULL worldmodel");
 
 	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
 	Cvar_ForceSet (&host_mapname, mapname);
 
 	CL_FindModelNumbers ();
-	R_NewMap (cl.worldmodel);
+	R_NewMap (cl.model_precache[1]);
 	R_SetSky (cl.sky);
 
 	TP_NewMap ();
@@ -1320,7 +1319,7 @@ void CL_ProcessServerInfo (void)
 		strcpy (cl.sky, p);
 		if (strstr(cl.sky, ".."))
 			cl.sky[0] = 0;
-		if (cls.state >= ca_onserver && cl.worldmodel)
+		if (cls.state >= ca_onserver && cl.model_precache[1])
 			R_SetSky (cl.sky);
 	}
 }
