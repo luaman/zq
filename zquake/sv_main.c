@@ -1487,7 +1487,12 @@ void SV_InitLocal (void)
 		sprintf (localmodels[i], "*%i", i);
 
 	Info_SetValueForStarKey (svs.info, "*version", va("%4.2f", QW_VERSION), MAX_SERVERINFO_STRING);
+#ifdef RELEASE_VERSION
 	Info_SetValueForStarKey (svs.info, "*z_version", Z_VERSION, MAX_SERVERINFO_STRING);
+#else
+	Info_SetValueForStarKey (svs.info, "*z_version",
+		va("%s (build %i)", Z_VERSION, build_number()), MAX_SERVERINFO_STRING);
+#endif
 	Info_SetValueForStarKey (svs.info, "*z_ext", va("%i", Z_EXT_PM_TYPE), MAX_SERVERINFO_STRING);
 	
 	// init fraglog stuff
@@ -1741,11 +1746,7 @@ void SV_Init (quakeparms_t *parms)
 	Com_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Com_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));	
 
-#ifdef RELEASE_VERSION
-	Com_Printf ("\nServer Version %s\n\n", Z_VERSION);
-#else
-	Com_Printf ("\nServer Version %s (Build %04d)\n\n", Z_VERSION, build_number());
-#endif
+	Com_Printf ("\nServer version %s\n\n", Info_ValueForKey(svs.info, "*z_version"));
 
 	Com_Printf ("For help on ZQuake, go to http://zquake.frag.ru/\n\n");
 
