@@ -1069,8 +1069,8 @@ void Cmd_ExpandString (char *data, char *dest)
 	int		i, len;
 	cvar_t	*var, *bestvar;
 	int		quotes = 0;
-	char	*str;
-	int		name_length;
+	char	*str = NULL;
+	int		name_length = 0;
 #ifndef SERVERONLY
 	extern int	macro_length;
 #endif
@@ -1435,3 +1435,5 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("if", Cmd_If_f);
 	Cmd_AddCommand ("_z_cmd", Cmd_Z_Cmd_f);	// ZQuake
 }
+
+/* vi: set noet ts=4 sts=4 ai sw=4: */
