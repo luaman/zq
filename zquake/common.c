@@ -881,6 +881,8 @@ skipwhite:
 			if (c=='\"' || !c)
 			{
 				com_token[len] = 0;
+				if (!c)
+					data--;
 				return data;
 			}
 			com_token[len] = c;
