@@ -195,7 +195,7 @@ void CL_Packet_f (void)
 void CL_PrintQStatReply (char *s)
 {
 	char *p;
-	int numplayers;
+	int n, numplayers;
 	int userid, frags, time, ping, topcolor, bottomcolor;
 	char name[33], skin[17];
 	
@@ -224,6 +224,13 @@ void CL_PrintQStatReply (char *s)
 	//	Com_Printf ("teamplay   %s\n", Info_ValueForKey(s, "teamplay"));
 	//	Com_Printf ("timelimit  %s\n", Info_ValueForKey(s, "timelimit"));
 	//	Com_Printf ("fraglimit  %s\n", Info_ValueForKey(s, "fraglimit"));
+	if ((n = Q_atoi(Info_ValueForKey(s, "needpass")) & 3) != 0)
+		Com_Printf ("needpass   %s%s%s\n", n & 1 ? "player" : "",
+			n == 3 ? ", " : "", n & 2 ? "spectator" : "");
+/*	if (Q_atoi(Info_ValueForKey(s, "needpass")) & 1)
+		Com_Printf ("player password required\n");
+	if (Q_atoi(Info_ValueForKey(s, "needpass")) & 2)
+		Com_Printf ("spectator password required\n");*/
 
 	Com_Printf ("players    %i/%s\n", numplayers, Info_ValueForKey(s, "maxclients"));
 
