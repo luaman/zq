@@ -1488,10 +1488,10 @@ if (sv_player->v.health > 0 && before && !after )
 	sv_player->v.teleport_time = pmove.waterjumptime;
 	sv_player->v.waterlevel = pmove.waterlevel;
 	sv_player->v.watertype = pmove.watertype;
-	if (pmove.onground != -1)
+	if (pmove.onground)
 	{
 		sv_player->v.flags = (int)sv_player->v.flags | FL_ONGROUND;
-		sv_player->v.groundentity = EDICT_TO_PROG(EDICT_NUM(pmove.physents[pmove.onground].info));
+		sv_player->v.groundentity = EDICT_TO_PROG(EDICT_NUM(pmove.physents[pmove.groundent].info));
 	}
 	else
 		sv_player->v.flags = (int)sv_player->v.flags & ~FL_ONGROUND;

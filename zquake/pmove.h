@@ -48,33 +48,35 @@ typedef struct
 
 typedef struct
 {
-	int		sequence;	// just for debugging prints
+	int			sequence;	// just for debugging prints
 
 	// player state
-	vec3_t	origin;
-	vec3_t	angles;
-	vec3_t	velocity;
-	int		oldbuttons;
+	vec3_t		origin;
+	vec3_t		angles;
+	vec3_t		velocity;
+	int			oldbuttons;
 #ifndef SERVERONLY
-	int		jump_msec;	// msec since last jump
+	int			jump_msec;	// msec since last jump
 #endif
 	float		waterjumptime;
 	qboolean	dead;
-	int		spectator;
-	int		onground;	// -1 when in air, otherwise ground entity index
-	int		waterlevel;
-	int		watertype;
+	int			spectator;
 
 	// world state
-	int		numphysent;
+	int			numphysent;
 	physent_t	physents[MAX_PHYSENTS];	// 0 should be the world
 
 	// input
 	usercmd_t	cmd;
 
 	// results
-	int		numtouch;
-	int		touchindex[MAX_PHYSENTS];
+	int			numtouch;
+	int			touchindex[MAX_PHYSENTS];
+	qboolean	onground;
+	int			groundent;		// index in physents array, only valid
+								// when onground is true
+	int			waterlevel;
+	int			watertype;
 } playermove_t;
 
 typedef struct {
