@@ -764,7 +764,10 @@ void SV_Say (qboolean team)
 	char	t1[32] = "";
 	char	*t2;
 
-	if (Cmd_Argc () < 2)
+	if (Cmd_Argc() < 2)
+		return;
+
+	if (sv_client->state != cs_spawned)
 		return;
 
 	if (team)
