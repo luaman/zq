@@ -1121,8 +1121,8 @@ void() PlayerPostThink =
 
 	CheckPowerups ();
 
-	W_WeaponFrame ();
-
+	if (!intermission_running)
+		W_WeaponFrame ();
 };
 
 
