@@ -196,7 +196,9 @@ extern	const char *gl_version;
 extern	const char *gl_extensions;
 
 void R_TranslatePlayerSkin (int playernum);
+
 void GL_Bind (int texnum);
+void GL_SelectTexture (GLenum target);
 
 // Multitexture
 #define	GL_TEXTURE0_ARB 			0x84C0

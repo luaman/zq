@@ -488,33 +488,6 @@ extern	int		solidskytexture;
 extern	int		alphaskytexture;
 extern	float	speedscale;		// for top sky and bottom sky
 
-#ifdef _WIN32
-lpMTexFUNC qglMultiTexCoord2f = NULL;
-lpSelTexFUNC qglActiveTexture = NULL;
-#endif
-
-qboolean mtexenabled = false;
-
-void GL_SelectTexture (GLenum target);
-
-void GL_DisableMultitexture (void) 
-{
-	if (mtexenabled) {
-		glDisable (GL_TEXTURE_2D);
-		GL_SelectTexture (GL_TEXTURE0_ARB);
-		mtexenabled = false;
-	}
-}
-
-void GL_EnableMultitexture (void)
-{
-	if (gl_mtexable) {
-		GL_SelectTexture (GL_TEXTURE1_ARB);
-		glEnable (GL_TEXTURE_2D);
-		mtexenabled = true;
-	}
-}
-
 /*
 ================
 R_DrawSequentialPoly
