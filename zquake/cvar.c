@@ -179,7 +179,8 @@ void Cvar_Set (cvar_t *var, char *value)
 
 	if ((var->flags & CVAR_INIT) && host_initialized)
 	{
-		Com_Printf ("\"%s\" cannot be changed from the console\n", var->name);
+		if (cl_warncmd.value)
+			Com_Printf ("\"%s\" cannot be changed from the console\n", var->name);
 		return;
 	}
 
