@@ -263,6 +263,25 @@ void NQD_ParseUpdatecolors (void)
 	Sbar_Changed ();
 }
 
+			
+/*
+==================
+NQD_ParsePrint
+==================
+*/
+void NQD_ParsePrint (void)
+{
+	extern cvar_t	cl_chatsound;
+
+	char *s = MSG_ReadString();
+	if (s[0] == 1) {	// chat
+		if (cl_chatsound.value)
+			S_LocalSound ("misc/talk.wav");
+	}
+	Com_Printf ("%s", s);
+}
+
+
 /*
 ==================
 NQD_ParseStufftext
@@ -976,7 +995,7 @@ void NQD_ParseServerMessage (void)
 			break;
 
 		case svc_print:
-			Com_Printf ("%s", MSG_ReadString ());
+			NQD_ParsePrint ();
 			break;
 			
 		case svc_centerprint:
