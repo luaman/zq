@@ -2089,6 +2089,83 @@ void TP_StatChanged (int stat, int value)
 	}
 }
 
+#define MAX_FILTER_LENGTH 4
+char filter_strings[8][MAX_FILTER_LENGTH+1];
+int	num_filters = 0;
+
+// returns false if the message shouldn't be printed
+qboolean TP_FilterMessage (char *s)
+{
+	int i, j, len, maxlen;
+
+	if (!num_filters)
+		return true;
+
+	len = strlen (s);
+	if (len < 2 || s[len-1] != '\n' || s[len-2] == '#')
+		return true;
+
+	maxlen = MAX_FILTER_LENGTH + 1;
+	for (i=len-2 ; i >= 0, maxlen > 0 ; i--, maxlen--) {
+		if (s[i] == ' ')
+			return true;
+		if (s[i] == '#')
+			break;
+	}
+	if (i < 0 || !maxlen)
+		return true;
+
+	s[len-1] = 0;	// so that strcmp works properly
+	i++;
+	for (j=0 ; j<num_filters ; j++)
+		if (!strcmp(s + i, filter_strings[j])) {
+			s[len-1] = '\n';
+			return true;
+		}
+
+	s[len-1] = '\n';
+	return false;	// this message is not for us
+}
+
+void TP_MsgFilter_f (void)
+{
+	int c, i;
+	char *s;
+
+	c = Cmd_Argc ();
+	if (c == 1) {
+		if (!num_filters) {
+			Con_Printf ("No filters defined\n");
+			return;
+		}
+		for (i=0 ; i<num_filters ; i++)
+			Con_Printf ("%s#%s", i ? " " : "", filter_strings[i]);
+		Con_Printf ("\n");
+		return;
+	}
+
+	if (c == 2 && (Cmd_Argv(1)[0] == 0 || !strcmp(Cmd_Argv(1), "clear"))) {
+		num_filters = 0;
+		return;
+	}
+
+	num_filters = 0;
+	for (i=1 ; i < c ; i++) {
+		s = Cmd_Argv(i);
+		if (*s != '#') {
+			Con_Printf ("A filter must start with \"#\"\n");
+			return;
+		}
+		if (strchr(s+1, ' ')) {
+			Con_Printf ("A filter may not contain spaces\n");
+			return;
+		}
+		Q_strncpyz (filter_strings[num_filters], s+1, sizeof(filter_strings[0]));
+		num_filters++;
+		if (num_filters >= 8)
+			break;
+	}
+}
 
 void TP_Init ()
 {
@@ -2135,6 +2212,7 @@ void TP_Init ()
 
 	Cmd_AddCommand ("macrolist", TP_MacroList_f);
 	Cmd_AddCommand ("loadloc", TP_LoadLocFile_f);
+	Cmd_AddCommand ("filter", TP_MsgFilter_f);
 	Cmd_AddCommand ("msg_trigger", TP_MsgTrigger_f);
 	Cmd_AddCommand ("teamcolor", TP_TeamColor_f);
 	Cmd_AddCommand ("enemycolor", TP_EnemyColor_f);
