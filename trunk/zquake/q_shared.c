@@ -246,6 +246,76 @@ void Q_snprintfz (char *dest, size_t size, char *fmt, ...)
 
 
 /*
+==============
+Q_glob_match_after_star
+==============
+*/
+static qbool Q_glob_match_after_star (const char *pattern, const char *text)
+{
+	char c, c1;
+	const char *p = pattern, *t = text;
+
+	while ((c = *p++) == '?' || c == '*') {
+		if (c == '?' && *t++ == '\0')
+			return false;
+	}
+
+	if (c == '\0')
+		return true;
+
+	for (c1 = ((c == '\\') ? *p : c); ; ) {
+		if (tolower(*t) == c1 && Q_glob_match (p - 1, t))
+			return true;
+		if (*t++ == '\0')
+			return false;
+	}
+}
+
+/*
+==============
+Q_glob_match
+
+Match a pattern against a string.
+Based on Vic's Q_WildCmp, which is based on Linux glob_match.
+Works like glob_match, except that sets ([]) are not supported.
+
+A match means the entire string TEXT is used up in matching.
+
+In the pattern string, `*' matches any sequence of characters,
+`?' matches any character. Any other character in the pattern
+must be matched exactly.
+
+To suppress the special syntactic significance of any of `*?\'
+and match the character exactly, precede it with a `\'.
+==============
+*/
+qbool Q_glob_match (const char *pattern, const char *text)
+{
+	char c;
+
+	while ((c = *pattern++) != '\0') {
+		switch (c) {
+			case '?':
+				if (*text++ == '\0')
+					return false;
+				break;
+			case '\\':
+				if (tolower(*pattern++) != tolower(*text++))
+					return false;
+				break;
+			case '*':
+				return Q_glob_match_after_star(pattern, text);
+			default:
+				if (tolower(c) != tolower(*text++))
+					return false;
+		}
+	}
+
+	return (*text == '\0');
+}
+
+
+/*
 ==========
 Com_HashKey
 ==========
