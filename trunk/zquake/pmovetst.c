@@ -46,7 +46,7 @@ qbool PM_TestPlayerPosition (vec3_t pos)
 {
 	int			i;
 	physent_t	*pe;
-	vec3_t		mins, maxs, test;
+	vec3_t		mins, maxs, offset, test;
 	hull_t		*hull;
 
 	for (i=0 ; i< pmove.numphysent ; i++)
@@ -54,15 +54,20 @@ qbool PM_TestPlayerPosition (vec3_t pos)
 		pe = &pmove.physents[i];
 	// get the clipping hull
 		if (pe->model)
+		{
 			hull = &pmove.physents[i].model->hulls[1];
+			VectorSubtract (hull->clip_mins, player_mins, offset);
+			VectorAdd (offset, pe->origin, offset);
+		}
 		else
 		{
 			VectorSubtract (pe->mins, player_maxs, mins);
 			VectorSubtract (pe->maxs, player_mins, maxs);
 			hull = CM_HullForBox (mins, maxs);
+			VectorCopy (pe->origin, offset);
 		}
 
-		VectorSubtract (pos, pe->origin, test);
+		VectorSubtract (pos, offset, test);
 
 		if (CM_HullPointContents (hull, hull->firstclipnode, test) == CONTENTS_SOLID)
 			return false;
