@@ -281,28 +281,70 @@ inrange:
 ==================
 SV_StartParticle
 
-Back from NetQuake
+Back from NetQuake, now a protocol extension
+
+Use svc_particle if the client supports the extension,
+otherwise fall back to QW's temp entities
 ==================
 */
-void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count)
+// quick hack: until I get rid of multicast, only send svc_particles if 
+// EVERYONE supports them. Usually the case in single player :)
+static qbool AllClientsWantSVCParticle (void)
+{
+	int i;
+	client_t *cl;
+	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++) {
+		// can't use cs_spawned, otherwise a client who was spawned this frame
+		// has a chance of receiving and svc_particle he doesn't support
+		if (cl->state < cs_connected)
+			continue;
+		if (!(cl->extensions & Z_EXT_SVC_PARTICLE))
+			return false;
+	}
+	return true;
+}
+
+void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count,
+					   int replacement_te, int replacement_count)
 {
 	int		i, v;
+	qbool	send_count;
 
-	MSG_WriteByte (&sv.multicast, nq_svc_particle);
-	MSG_WriteCoord (&sv.multicast, org[0]);
-	MSG_WriteCoord (&sv.multicast, org[1]);
-	MSG_WriteCoord (&sv.multicast, org[2]);
-	for (i=0 ; i<3 ; i++)
+	if (AllClientsWantSVCParticle())
 	{
-		v = dir[i]*16;
-		if (v > 127)
-			v = 127;
-		else if (v < -128)
-			v = -128;
-		MSG_WriteChar (&sv.multicast, v);
+		MSG_WriteByte (&sv.multicast, nq_svc_particle);
+		MSG_WriteCoord (&sv.multicast, org[0]);
+		MSG_WriteCoord (&sv.multicast, org[1]);
+		MSG_WriteCoord (&sv.multicast, org[2]);
+		for (i=0 ; i<3 ; i++)
+		{
+			v = dir[i]*16;
+			if (v > 127)
+				v = 127;
+			else if (v < -128)
+				v = -128;
+			MSG_WriteChar (&sv.multicast, v);
+		}
+		MSG_WriteByte (&sv.multicast, count);
+		MSG_WriteByte (&sv.multicast, color);
 	}
-	MSG_WriteByte (&sv.multicast, count);
-	MSG_WriteByte (&sv.multicast, color);
+	else
+	{
+		if (replacement_te == TE_EXPLOSION || replacement_te == TE_LIGHTNINGBLOOD)
+			send_count = false;
+		else if (replacement_te == TE_BLOOD || replacement_te == TE_GUNSHOT)
+			send_count = true;
+		else
+			return;		// don't send anything
+
+		MSG_WriteByte (&sv.multicast, svc_temp_entity);
+		MSG_WriteByte (&sv.multicast, replacement_te);
+		if (send_count)
+			MSG_WriteByte (&sv.multicast, replacement_count);
+		MSG_WriteCoord (&sv.multicast, org[0]);
+		MSG_WriteCoord (&sv.multicast, org[1]);
+		MSG_WriteCoord (&sv.multicast, org[2]);
+	}
 
 	SV_Multicast (org, MULTICAST_PVS);
 }           
