@@ -33,23 +33,6 @@ fpenv:
 
 	.text
 
-.globl C(MaskExceptions)
-C(MaskExceptions):
-	fnstenv	fpenv
-	orl		$0x3F,fpenv
-	fldenv	fpenv
-
-	ret
-
-#if 0
-.globl C(unmaskexceptions)
-C(unmaskexceptions):
-	fnstenv	fpenv
-	andl		$0xFFFFFFE0,fpenv
-	fldenv	fpenv
-
-	ret
-#endif
 
 	.data
 
@@ -72,19 +55,6 @@ C(Sys_LowFPPrecision):
 .globl C(Sys_HighFPPrecision)
 C(Sys_HighFPPrecision):
 	fldcw	full_cw
-
-	ret
-
-.globl C(Sys_PushFPCW_SetHigh)
-C(Sys_PushFPCW_SetHigh):
-	fnstcw	pushed_cw
-	fldcw	full_cw
-
-	ret
-
-.globl C(Sys_PopFPCW)
-C(Sys_PopFPCW):
-	fldcw	pushed_cw
 
 	ret
 

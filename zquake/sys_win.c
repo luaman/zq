@@ -50,10 +50,6 @@ cvar_t	sys_sleep = {"sys_sleep", "8"};
 cvar_t	sys_nostdout = {"sys_nostdout","0"};
 #endif
 
-void MaskExceptions (void);
-void Sys_PopFPCW (void);
-void Sys_PushFPCW_SetHigh (void);
-
 
 /*
 ===============================================================================
@@ -464,7 +460,6 @@ void Sys_Init_ (void)
 			"qwcl"); /* Semaphore name      */
 	}
 
-	MaskExceptions ();
 	Sys_SetFPCW ();
 
 	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
