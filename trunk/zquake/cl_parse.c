@@ -27,13 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "teamplay.h"
 #include "version.h"
 
-// FIXME, only for Mod_ForName
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
-#include "r_model.h"
-#endif
-
 
 void R_TranslatePlayerSkin (int playernum);
 

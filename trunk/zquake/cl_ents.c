@@ -23,13 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "teamplay.h"
 
-// FIXME, get rid of
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
-#include "r_model.h"
-#endif
-
 extern cvar_t	cl_predictPlayers;
 extern cvar_t	cl_solidPlayers;
 
@@ -392,7 +385,8 @@ void CL_LinkPacketEntities (void)
 	packet_entities_t	*pack;
 	entity_state_t		*state;
 	float				f;
-	model_t				*model;
+	struct model_s		*model;
+	int					modelflags;
 	vec3_t				old_origin;
 	float				autorotate, flicker;
 	int					i;
@@ -446,8 +440,9 @@ void CL_LinkPacketEntities (void)
 			&& ( (i=state->frame)==49 || i==60 || i==69 || i==84 || i==93 || i==102) )
 			continue;
 
-		if (cl_gibfilter.value && (state->modelindex == cl_h_playerindex
-			|| state->modelindex == cl_gib1index || state->modelindex == cl_gib2index || state->modelindex == cl_gib3index))
+		if (cl_gibfilter.value &&
+			(state->modelindex == cl_h_playerindex || state->modelindex == cl_gib1index
+			|| state->modelindex == cl_gib2index || state->modelindex == cl_gib3index))
 			continue;
 
 		ent.model = model = cl.model_precache[state->modelindex];
@@ -459,8 +454,8 @@ void CL_LinkPacketEntities (void)
 				ent.model = cl.model_precache[cl_grenadeindex];
 
 		// set colormap
-		if (state->colormap && (state->colormap < MAX_CLIENTS) 
-			&& ent.model->modhint == MOD_PLAYER)
+		if (state->colormap && (state->colormap < MAX_CLIENTS)
+			&& state->modelindex == cl_playerindex)
 		{
 			ent.colormap = cl.players[state->colormap-1].translations;
 			ent.scoreboard = &cl.players[state->colormap-1];
@@ -477,8 +472,10 @@ void CL_LinkPacketEntities (void)
 		// set frame
 		ent.frame = state->frame;
 
+		modelflags = R_ModelFlags (model);
+
 		// rotate binary objects locally
-		if (model->flags & EF_ROTATE)
+		if (modelflags & MF_ROTATE)
 		{
 			ent.angles[0] = 0;
 			ent.angles[1] = autorotate;
@@ -506,7 +503,7 @@ void CL_LinkPacketEntities (void)
 				f * (cent->current.origin[i] - cent->previous.origin[i]);
 
 		// add automatic particle trails
-		if (model->flags & ~EF_ROTATE)
+		if (modelflags & ~MF_ROTATE)
 		{
 			VectorCopy (cent->lerp_origin, old_origin);
 
@@ -517,7 +514,7 @@ void CL_LinkPacketEntities (void)
 					break;
 				}
 
-			if (model->flags & EF_ROCKET)
+			if (modelflags & MF_ROCKET)
 			{
 				if (r_rockettrail.value) {
 					if (r_rockettrail.value == 2)
@@ -529,17 +526,17 @@ void CL_LinkPacketEntities (void)
 				if (r_rocketlight.value)
 					CL_NewDlight (state->number, ent.origin, 200, 0.1, lt_rocket);
 			}
-			else if (model->flags & EF_GRENADE && r_grenadetrail.value)
+			else if (modelflags & MF_GRENADE && r_grenadetrail.value)
 				CL_GrenadeTrail (old_origin, ent.origin);
-			else if (model->flags & EF_GIB)
+			else if (modelflags & MF_GIB)
 				CL_BloodTrail (old_origin, ent.origin);
-			else if (model->flags & EF_ZOMGIB)
+			else if (modelflags & MF_ZOMGIB)
 				CL_SlightBloodTrail (old_origin, ent.origin);
-			else if (model->flags & EF_TRACER)
+			else if (modelflags & MF_TRACER)
 				CL_TracerTrail (old_origin, ent.origin, 52);
-			else if (model->flags & EF_TRACER2)
+			else if (modelflags & MF_TRACER2)
 				CL_TracerTrail (old_origin, ent.origin, 230);
-			else if (model->flags & EF_TRACER3)
+			else if (modelflags & MF_TRACER3)
 				CL_VoorTrail (old_origin, ent.origin);
 		}
 

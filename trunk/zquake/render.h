@@ -171,3 +171,19 @@ mpic_t *R_CachePic (char *path);
 mpic_t *R_CacheWadPic (char *name);
 void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha);
 void R_DrawCrosshair (int num, byte color, int crossx, int crossy);
+
+// model flags
+#define	MF_ROCKET	1			// leave a trail
+#define	MF_GRENADE	2			// leave a trail
+#define	MF_GIB		4			// leave a trail
+#define	MF_ROTATE	8			// rotate (bonus items)
+#define	MF_TRACER	16			// green split trail
+#define	MF_ZOMGIB	32			// small blood trail
+#define	MF_TRACER2	64			// orange split trail + rotate
+#define	MF_TRACER3	128			// purple trail
+
+void Mod_ClearAll (void);
+void Mod_TouchModel (char *name);
+struct model_s *Mod_ForName (char *name, qbool crash);
+int R_ModelFlags (const struct model_s *model);
+

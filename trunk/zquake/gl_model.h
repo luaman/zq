@@ -297,15 +297,6 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 // some models are special
 typedef enum {MOD_NORMAL, MOD_PLAYER, MOD_EYES, MOD_FLAME, MOD_THUNDERBOLT} modhint_t;
 
-#define	EF_ROCKET	1			// leave a trail
-#define	EF_GRENADE	2			// leave a trail
-#define	EF_GIB		4			// leave a trail
-#define	EF_ROTATE	8			// rotate (bonus items)
-#define	EF_TRACER	16			// green split trail
-#define	EF_ZOMGIB	32			// small blood trail
-#define	EF_TRACER2	64			// orange split trail + rotate
-#define	EF_TRACER3	128			// purple trail
-
 typedef struct model_s
 {
 	char		name[MAX_QPATH];
