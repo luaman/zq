@@ -1071,8 +1071,8 @@ CL_ProcessUserInfo
 void CL_ProcessUserInfo (int slot, player_info_t *player)
 {
 	Q_strncpyz (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
-	if (!player->name[0] && player->userinfo[0]) {
-		// don't allow players without a name
+	if (!player->name[0] && player->userid && strlen(player->userinfo) >= MAX_INFO_STRING - 17) {
+		// somebody's trying to hide himself by overloading userinfo
 		strcpy (player->name, " ");
 	}
 	player->real_topcolor = atoi(Info_ValueForKey (player->userinfo, "topcolor"));
