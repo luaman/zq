@@ -29,12 +29,12 @@ void SNDDMA_Submit_OSS(void);
 
 qbool SNDDMA_Init(void)
 {
-    Cvar_Get ("snd_noalsa", "0", CVAR_ARCHIVE);
+    Cvar_Get ("s_noalsa", "0", CVAR_ARCHIVE);
     int retval;
 
     // Give user the option to force OSS...
     if(     COM_CheckParm("-noalsa")
-        ||  Cvar_VariableValue("snd_noalsa") )
+        ||  Cvar_VariableValue("s_noalsa") )
     {
         // User wants us to use OSS...
         Sys_Printf("sound: Using OSS at user's request...\n");
