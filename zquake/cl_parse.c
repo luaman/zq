@@ -1444,7 +1444,7 @@ void CL_SetStat (int stat, int value)
 		cl.viewheight = cl.stats[STAT_VIEWHEIGHT];
 
 	if (stat == STAT_TIME && cl.z_ext & Z_EXT_SERVERTIME) {
-		cl.z_ext_servertime_enabled = true;
+		cl.servertime_works = true;
 		cl.servertime = cl.stats[STAT_TIME] * 0.001;
 	}
 

@@ -620,7 +620,7 @@ void SCR_DrawClock (void)
 	else
 	{
 		float	time;
-		if (cl.z_ext_servertime_enabled)
+		if (cl.servertime_works)
 			time = cl.servertime;
 		else
 			time = cls.realtime;

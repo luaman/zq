@@ -415,6 +415,7 @@ void NQD_ParseServerData (void)
 
 	nq_signon = 0;
 	nq_num_entities = 0;
+	cl.servertime_works = true;
 	cls.state = ca_onserver;
 }
 
@@ -975,6 +976,7 @@ void NQD_ParseServerMessage (void)
 		case svc_time:
 			nq_mtime[1] = nq_mtime[0];
 			nq_mtime[0] = MSG_ReadFloat ();
+			cl.servertime = nq_mtime[0];
 			break;
 
 		case svc_clientdata:
