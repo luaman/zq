@@ -104,7 +104,7 @@ OgreFireGrenade
 */
 void() OgreFireGrenade =
 {
-	local	entity missile, mpuff;
+	local	entity missile;
 	
 	muzzleflash();
 
