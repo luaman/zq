@@ -718,7 +718,6 @@ void	VID_SetPalette (unsigned char *palette)
 	int		j,k,l;
 	unsigned short i;
 	unsigned	*table;
-	float	t;
 //	FILE *f;
 //	char s[255];
 //	HWND hDlg, hProgress;
@@ -745,7 +744,6 @@ void	VID_SetPalette (unsigned char *palette)
 // Tonik: create a brighter palette for bmodel textures
 	pal = palette;
 	table = d_8to24table2;
-	t = 2.0 / 1.5;
 
 	for (i=0 ; i<256 ; i++)
 	{
