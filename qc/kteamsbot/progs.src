@@ -9,7 +9,7 @@ defs.qc
 ../frikbot/map_dm5.qc
 ../frikbot/map_dm6.qc
 
-../frikbot/bot.qc
+bot.qc
 ../frikbot/bot_way.qc
 ../frikbot/bot_fight.qc
 ../frikbot/bot_ai.qc
@@ -24,7 +24,7 @@ defs.qc
 ../kteams/vote.qc
 
 ../kteams/maps.qc
-../kteams/weapons.qc
+weapons.qc
 world.qc
 ../kteams/motd.qc
 ../kteams/admin.qc
