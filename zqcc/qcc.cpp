@@ -575,10 +575,10 @@ called after all files are compiled to check for errors
 Returns false if errors were detected.
 ==============
 */
-qboolean	PR_FinishCompilation (void)
+bool PR_FinishCompilation (void)
 {
 	def_t		*d;
-	qboolean	errors;
+	bool		errors;
 	
 	errors = false;
 	
