@@ -40,8 +40,10 @@ void S_StopAllSounds_f (void);
 channel_t   channels[MAX_CHANNELS];
 int			total_channels;
 
-qbool		snd_blocked = 0;
+int			snd_blocked = 0;
 qbool		snd_initialized = false;
+qbool		snd_commands_initialized = false;
+qbool		sound_started = false;
 
 dma_t		dma;
 
@@ -66,7 +68,10 @@ int			num_sfx;
 
 sfx_t		*ambient_sfx[NUM_AMBIENTS];
 
-qbool	sound_started = false;
+
+// ====================================================================
+// User-setable variables
+// ====================================================================
 
 cvar_t bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
 cvar_t s_initsound = {"s_initsound", "1"};
@@ -81,11 +86,6 @@ cvar_t s_noextraupdate = {"s_noextraupdate", "0"};
 cvar_t s_show = {"s_show", "0"};
 cvar_t s_mixahead = {"s_mixahead", "0.1", CVAR_ARCHIVE};
 cvar_t s_swapstereo = {"s_swapstereo", "0", CVAR_ARCHIVE};
-
-
-// ====================================================================
-// User-setable variables
-// ====================================================================
 
 
 void S_SoundInfo_f (void)
@@ -116,9 +116,6 @@ void S_Startup (void)
 {
 	int		rc;
 
-	if (!snd_initialized)
-		return;
-
 	rc = SNDDMA_Init();
 
 	if (!rc)
@@ -141,7 +138,9 @@ SND_Restart_f
 */
 void SND_Restart_f (void)
 {
-	// make this work!
+	S_Shutdown ();
+	S_Init ();
+	// FIXME, clean up known_sfx?
 }
 
 
@@ -154,61 +153,70 @@ void S_Init (void)
 {
 //	Com_Printf ("\nSound Initialization\n");
 
-	Cvar_Register(&bgmvolume);
-	Cvar_Register(&s_volume);
-	Cvar_Register(&s_initsound);
-	Cvar_Register(&s_nosound);
-	Cvar_Register(&s_precache);
-	Cvar_Register(&s_loadas8bit);
-	Cvar_Register(&s_khz);
-	Cvar_Register(&s_ambientlevel);
-	Cvar_Register(&s_ambientfade);
-	Cvar_Register(&s_noextraupdate);
-	Cvar_Register(&s_show);
-	Cvar_Register(&s_mixahead);
-	Cvar_Register(&s_swapstereo);
+	if (!snd_commands_initialized) {
+		snd_commands_initialized = true;
 
-	// compatibility with old configs
-	Cmd_AddLegacyCommand ("volume", "s_volume");
-	Cmd_AddLegacyCommand ("nosound", "s_nosound");
-	Cmd_AddLegacyCommand ("precache", "s_precache");
-	Cmd_AddLegacyCommand ("loadas8bit", "s_loadas8bit");
-	Cmd_AddLegacyCommand ("ambient_level", "s_ambientlevel");
-	Cmd_AddLegacyCommand ("ambient_fade", "s_ambientfade");
-	Cmd_AddLegacyCommand ("snd_noextraupdate", "s_noextraupdate");
-	Cmd_AddLegacyCommand ("snd_show", "s_show");
-	Cmd_AddLegacyCommand ("_snd_mixahead", "s_mixahead");
+		Cvar_Register(&bgmvolume);
+		Cvar_Register(&s_volume);
+		Cvar_Register(&s_initsound);
+		Cvar_Register(&s_nosound);
+		Cvar_Register(&s_precache);
+		Cvar_Register(&s_loadas8bit);
+		Cvar_Register(&s_khz);
+		Cvar_Register(&s_ambientlevel);
+		Cvar_Register(&s_ambientfade);
+		Cvar_Register(&s_noextraupdate);
+		Cvar_Register(&s_show);
+		Cvar_Register(&s_mixahead);
+		Cvar_Register(&s_swapstereo);
 
-	if (COM_CheckParm("-nosound") || !s_initsound.value) {
-		Cmd_AddLegacyCommand ("play", "");	// just suppress warnings
+		// compatibility with old configs
+		Cmd_AddLegacyCommand ("volume", "s_volume");
+		Cmd_AddLegacyCommand ("nosound", "s_nosound");
+		Cmd_AddLegacyCommand ("precache", "s_precache");
+		Cmd_AddLegacyCommand ("loadas8bit", "s_loadas8bit");
+		Cmd_AddLegacyCommand ("ambient_level", "s_ambientlevel");
+		Cmd_AddLegacyCommand ("ambient_fade", "s_ambientfade");
+		Cmd_AddLegacyCommand ("snd_noextraupdate", "s_noextraupdate");
+		Cmd_AddLegacyCommand ("snd_show", "s_show");
+		Cmd_AddLegacyCommand ("_snd_mixahead", "s_mixahead");
+
+		Cmd_AddCommand("snd_restart", SND_Restart_f);
+		Cmd_AddCommand("play", S_Play_f);
+		Cmd_AddCommand("playvol", S_PlayVol_f);
+		Cmd_AddCommand("stopsound", S_StopAllSounds_f);
+		Cmd_AddCommand("soundlist", S_SoundList_f);
+		Cmd_AddCommand("soundinfo", S_SoundInfo_f);
+	}
+
+	if (!s_initsound.value || COM_CheckParm("-nosound")) {
+		Com_Printf ("sound initialization skipped\n");
 		return;
 	}
 
-	Cmd_AddCommand("snd_restart", SND_Restart_f);
-	Cmd_AddCommand("play", S_Play_f);
-	Cmd_AddCommand("playvol", S_PlayVol_f);
-	Cmd_AddCommand("stopsound", S_StopAllSounds_f);
-	Cmd_AddCommand("soundlist", S_SoundList_f);
-	Cmd_AddCommand("soundinfo", S_SoundInfo_f);
-
-	if (host_memsize < 0x800000)
-	{
+	if (!snd_initialized && host_memsize < 0x800000) {
 		Cvar_Set (&s_loadas8bit, "1");
 		Com_Printf ("loading all sounds as 8bit\n");
 	}
 
-	snd_initialized = true;
-
 	S_Startup ();
 
-	SND_InitScaletable ();
+	if (!sound_started)
+		return;
 
-	num_sfx = 0;
+	if (!snd_initialized) {
+		snd_initialized = true;
 
-//	Com_Printf ("Sound sampling rate: %i\n", dma.speed);
+		SND_InitScaletable ();
 
-	ambient_sfx[AMBIENT_WATER] = S_PrecacheSound ("ambience/water1.wav");
-	ambient_sfx[AMBIENT_SKY] = S_PrecacheSound ("ambience/wind2.wav");
+		num_sfx = 0;
+
+		Com_Printf ("Sound sampling rate: %i\n", dma.speed);
+
+		ambient_sfx[AMBIENT_WATER] = S_PrecacheSound ("ambience/water1.wav");
+		ambient_sfx[AMBIENT_SKY] = S_PrecacheSound ("ambience/wind2.wav");
+
+	}
 
 	S_StopAllSounds (true);
 }
@@ -876,7 +884,7 @@ void S_Play_f (void)
 	int 	i;
 	char name[256];
 	sfx_t	*sfx;
-	
+
 	for (i=1; i < Cmd_Argc(); i++)
 	{
 		strcpy(name, Cmd_Argv(i));
