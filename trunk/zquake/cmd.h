@@ -82,6 +82,14 @@ then searches for a command or variable that matches the first token.
 
 typedef void (*xcommand_t) (void);
 
+typedef struct cmd_function_s
+{
+	struct cmd_function_s	*hash_next;
+	struct cmd_function_s	*next;
+	char					*name;
+	xcommand_t				function;
+} cmd_function_t;
+
 void	Cmd_Init (void);
 
 void	Cmd_AddCommand (char *cmd_name, xcommand_t function);
@@ -93,6 +101,8 @@ void	Cmd_AddCommand (char *cmd_name, xcommand_t function);
 
 qboolean Cmd_Exists (char *cmd_name);
 // used by the cvar code to check for cvar / command name overlap
+
+cmd_function_t *Cmd_FindCommand (char *cmd_name);  // for message triggers
 
 char 	*Cmd_CompleteCommand (char *partial);
 // attempts to match a partial command for automatic command line completion

@@ -605,14 +605,6 @@ void Cmd_UnAlias_f (void)
 =============================================================================
 */
 
-typedef struct cmd_function_s
-{
-	struct cmd_function_s	*hash_next;	// Tonik
-	struct cmd_function_s	*next;
-	char					*name;
-	xcommand_t				function;
-} cmd_function_t;
-
 #define	MAX_ARGS		80
 
 static	int			cmd_argc;
@@ -865,6 +857,26 @@ qboolean Cmd_Exists (char *cmd_name)
 	return false;
 }
 
+
+/*
+============
+Cmd_FindCommand
+============
+*/
+cmd_function_t *Cmd_FindCommand (char *cmd_name)
+{
+	int	key;
+	cmd_function_t	*cmd;
+
+	key = Key (cmd_name);
+	for (cmd=cmd_hash_array[key] ; cmd ; cmd=cmd->hash_next)
+	{
+		if (!Q_strcasecmp (cmd_name, cmd->name))
+			return cmd;
+	}
+
+	return NULL;
+}
 
 
 /*
