@@ -486,74 +486,6 @@ void R_ScreenShot_f (void)
 	free (buffer);
 	Com_Printf ("Wrote %s\n", pcxname);
 } 
-
-/* 
-============== 
-WritePCXfile 
-============== 
-*/ 
-void WritePCXfile (byte *data, int width, int height, int rowbytes, byte *palette,	// [in]
-				   byte **pcxdata, int *pcxsize)									// [out]
-{
-	int		i, j;
-	pcx_t	*pcx;
-	byte		*pack;
-	  
-	pcx = Hunk_TempAlloc (width*height*2+1000);
-	if (!pcx) {
-		Com_Printf ("WritePCXfile: not enough memory\n");
-		*pcxdata = NULL;
-		*pcxsize = 0;
-		return;
-	} 
- 
-	pcx->manufacturer = 0x0a;	// PCX id
-	pcx->version = 5;			// 256 color
- 	pcx->encoding = 1;		// uncompressed
-	pcx->bits_per_pixel = 8;		// 256 color
-	pcx->xmin = 0;
-	pcx->ymin = 0;
-	pcx->xmax = LittleShort((short)(width-1));
-	pcx->ymax = LittleShort((short)(height-1));
-	pcx->hres = LittleShort((short)width);
-	pcx->vres = LittleShort((short)height);
-	memset (pcx->palette,0,sizeof(pcx->palette));
-	pcx->color_planes = 1;		// chunky image
-	pcx->bytes_per_line = LittleShort((short)width);
-	pcx->palette_type = LittleShort(2);		// not a grey scale
-	memset (pcx->filler,0,sizeof(pcx->filler));
-
-// pack the image
-	pack = &pcx->data;
-
-	data += rowbytes * (height - 1);
-
-	for (i=0 ; i<height ; i++)
-	{
-		for (j=0 ; j<width ; j++)
-		{
-			if ( (*data & 0xc0) != 0xc0)
-				*pack++ = *data++;
-			else
-			{
-				*pack++ = 0xc1;
-				*pack++ = *data++;
-			}
-		}
-
-		data += rowbytes - width;
-		data -= rowbytes * 2;
-	}
-			
-// write the palette
-	*pack++ = 0x0c;	// palette ID byte
-	for (i=0 ; i<768 ; i++)
-		*pack++ = *palette++;
-		
-	// fill results
-	*pcxdata = (byte *) pcx;
-	*pcxsize = pack - (byte *)pcx;
-} 
  
 
 
@@ -725,7 +657,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 	Q_strncpyz (st, name.string, sizeof(st));
 	R_DrawStringToSnap (st, newbuf, w - strlen(st)*8, h - 21, w);
 
-	WritePCXfile (newbuf, w, h, w, host_basepal, pcxdata, pcxsize);
+	WritePCX (newbuf, w, h, w, host_basepal, pcxdata, pcxsize);
 
 	free(newbuf);
 

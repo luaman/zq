@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 #include "d_local.h"
+#include "image.h"
 
 
 int		iskyspeed = 8;
@@ -276,4 +277,49 @@ void R_SetSkyFrame (void)
 	r_skymade = 0;
 }
 
+texture_t	r_skytextures[6];
+byte		r_skypixels[6][256*256];
 
+/*
+===============
+R_SetSky
+===============
+*/
+void R_SetSky (char *name)
+{
+	int		i;
+	char	pathname[MAX_QPATH];
+	byte	*pic;
+	char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
+	int		r_skysideimage[6] = {5, 2, 4, 1, 0, 3};
+	int		width, height;
+
+	memset (pathname, 0, sizeof(pathname));
+
+	for (i=0 ; i<6 ; i++)
+	{
+		Q_snprintfz (pathname, sizeof(pathname), "env/%s%s.tga", name, suf[r_skysideimage[i]]);
+		LoadTGA (pathname, &pic, &width, &height);
+
+		if (!pic)
+		{
+			Com_Printf ("Couldn't load %s\n", name);
+			return;
+		}
+		if (width != 256 || height != 256)
+		{
+			Com_Printf ("Couldn't load %s\n", name);
+			free (pic);
+			return;
+		}
+
+		r_skytexinfo[i].texture = &r_skytextures[i];
+		r_skytexinfo[i].texture->width = 256;
+		r_skytexinfo[i].texture->height = 256;
+		r_skytexinfo[i].texture->offsets[0] = i;
+		R_32To8bit (pic, 256, 256, r_skypixels[i]);
+		free (pic);
+	}
+
+	r_skyboxloaded = true;
+}

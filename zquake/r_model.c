@@ -546,7 +546,7 @@ void Mod_LoadVertexes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+	out = Hunk_AllocName ( (count+2)*sizeof(*out), loadname);	
 
 	loadmodel->vertexes = out;
 	loadmodel->numvertexes = count;
@@ -610,7 +610,7 @@ void Mod_LoadEdges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( (count + 1) * sizeof(*out), loadname);	
+	out = Hunk_AllocName ( (count + 13) * sizeof(*out), loadname);	
 
 	loadmodel->edges = out;
 	loadmodel->numedges = count;
@@ -639,7 +639,7 @@ void Mod_LoadTexinfo (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+	out = Hunk_AllocName ( (count+6)*sizeof(*out), loadname);	
 
 	loadmodel->texinfo = out;
 	loadmodel->numtexinfo = count;
@@ -758,7 +758,7 @@ void Mod_LoadFaces (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+	out = Hunk_AllocName ( (count+6)*sizeof(*out), loadname);	
 
 	loadmodel->surfaces = out;
 	loadmodel->numsurfaces = count;
@@ -1054,7 +1054,7 @@ void Mod_LoadSurfedges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+	out = Hunk_AllocName ( (count+24)*sizeof(*out), loadname);	
 
 	loadmodel->surfedges = out;
 	loadmodel->numsurfedges = count;
@@ -1080,7 +1080,7 @@ void Mod_LoadPlanes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("MOD_LoadBmodel: funny lump size in %s",loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*2*sizeof(*out), loadname);	
+	out = Hunk_AllocName ( (count+6)*sizeof(*out), loadname);	
 	
 	loadmodel->planes = out;
 	loadmodel->numplanes = count;
