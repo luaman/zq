@@ -19,12 +19,12 @@ CFG=zqclient - Win32 Release
 !MESSAGE 
 !MESSAGE "zqclient - Win32 Release" (based on "Win32 (x86) Application")
 !MESSAGE "zqclient - Win32 Debug" (based on "Win32 (x86) Application")
-!MESSAGE "zqclient - Win32 GLDebug" (based on "Win32 (x86) Application")
 !MESSAGE "zqclient - Win32 GLRelease" (based on "Win32 (x86) Application")
+!MESSAGE "zqclient - Win32 GLDebug" (based on "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
-# PROP AllowPerConfigDependencies 0
+# PROP AllowPerConfigDependencies 1
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
@@ -35,8 +35,8 @@ RSC=rc.exe
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir ".\Release"
-# PROP BASE Intermediate_Dir ".\Release"
+# PROP BASE Output_Dir ".\Release-client"
+# PROP BASE Intermediate_Dir ".\Release-client"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
@@ -45,12 +45,12 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /G5 /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /D "CLIENTONLY" /YX /FD /c
+# ADD CPP /nologo /G5 /W3 /GX- /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /D "CLIENTONLY" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /fo".\Release-client\zq-client.res" /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -63,8 +63,8 @@ LINK32=link.exe
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir ".\Debug"
-# PROP BASE Intermediate_Dir ".\Debug"
+# PROP BASE Output_Dir ".\Debug-client"
+# PROP BASE Intermediate_Dir ".\Debug-client"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
@@ -73,11 +73,11 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /D "CLIENTONLY" /FR /YX /FD /c
+# ADD CPP /nologo /G5 /ML /W3 /Gm /GX- /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /D "CLIENTONLY" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /fo".\Debug-client\zq-client.res" /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -90,57 +90,57 @@ LINK32=link.exe
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir ".\qwcl___0"
-# PROP BASE Intermediate_Dir ".\qwcl___0"
+# PROP BASE Output_Dir ".\Debug-client-GL"
+# PROP BASE Intermediate_Dir ".\Debug-client-GL"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".\Debug-client-gl"
-# PROP Intermediate_Dir ".\Debug-client-gl"
+# PROP Output_Dir ".\Debug-client-GL"
+# PROP Intermediate_Dir ".\Debug-client-GL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /ML /Gm /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /D "CLIENTONLY" /FR /YX /FD /c
+# ADD CPP /nologo /G5 /ML /W3 /GX- /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /D "CLIENTONLY" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /fo".\Debug-client-GL/zq-client.res" /d "_DEBUG" /d "GLQUAKE"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 opengl32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib e:\msdev\projects\scitech\lib\win32\vc\mgllt.lib /nologo /subsystem:windows /debug /machine:I386
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\Debug-client-gl/zq-client-gl.exe"
+# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /debug /machine:I386 /out:".\Debug-client-GL/zq-client-gl.exe"
 # SUBTRACT LINK32 /incremental:no /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir ".\qwcl___W"
-# PROP BASE Intermediate_Dir ".\qwcl___W"
+# PROP BASE Output_Dir ".\Release-client-GL"
+# PROP BASE Intermediate_Dir ".\Release-client-GL"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".\Release-client-gl"
-# PROP Intermediate_Dir ".\Release-client-gl"
+# PROP Output_Dir ".\Release-client-GL"
+# PROP Intermediate_Dir ".\Release-client-GL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /G5 /ML /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "GLQUAKE" /FR /YX /c
-# ADD CPP /nologo /G5 /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /D "CLIENTONLY" /YX /FD /c
+# ADD BASE CPP /nologo /G5 /ML /GX /Zi /Od /I "e:\msdev\projects\dxsdk\sdk\inc" /I "e:\msdev\projects\scitech\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "GLQUAKE" /FR /YX /c
+# ADD CPP /nologo /G5 /ML /W3 /GX- /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "id386" /D "GLQUAKE" /D "CLIENTONLY" /YX /FD /c
 # SUBTRACT CPP /Fr
-# ADD BASE MTL /nologo /D "_DEBUG" /win32
-# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD BASE MTL /nologo /D "NDEBUG" /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /fo".\Release-client-GL/zq-client.res" /d "NDEBUG" /d "GLQUAKE"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 e:\msdev\projects\winquake\dxsdk\sdk\lib\dxguid.lib winmm.lib wsock32.lib opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"GLDebug/glqwcl.exe"
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:".\Release-client-gl/zq-client-gl.exe"
+# ADD LINK32 opengl32.lib dxguid.lib wsock32.lib user32.lib gdi32.lib winmm.lib /nologo /subsystem:windows /incremental:no /machine:I386 /out:".\Release-client-GL/zq-client-gl.exe"
 # SUBTRACT LINK32 /debug /nodefaultlib
 
 !ENDIF 
@@ -950,8 +950,11 @@ SOURCE=.\r_part.c
 
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
 
+# PROP Exclude_From_Build 1
+
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
 
+# PROP BASE Exclude_From_Build 1
 # PROP Exclude_From_Build 1
 
 !ENDIF 
@@ -1426,11 +1429,11 @@ SOURCE=.\qwsv2.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\zquake.bmp
+SOURCE=.\winquake.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\winquake.rc
+SOURCE=.\zquake.bmp
 # End Source File
 # End Group
 # Begin Group "Asm Files"
@@ -1473,7 +1476,7 @@ InputName=cl_math
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Debug-client-gl
+OutDir=.\Debug-client-GL
 InputPath=.\cl_math.s
 InputName=cl_math
 
@@ -1488,7 +1491,7 @@ InputName=cl_math
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Release-client-gl
+OutDir=.\Release-client-GL
 InputPath=.\cl_math.s
 InputName=cl_math
 
@@ -1678,7 +1681,7 @@ InputName=math
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Debug-client-gl
+OutDir=.\Debug-client-GL
 InputPath=.\math.s
 InputName=math
 
@@ -1693,7 +1696,7 @@ InputName=math
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Release-client-gl
+OutDir=.\Release-client-GL
 InputPath=.\math.s
 InputName=math
 
@@ -2159,7 +2162,7 @@ InputName=snd_mixa
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Debug-client-gl
+OutDir=.\Debug-client-GL
 InputPath=.\snd_mixa.s
 InputName=snd_mixa
 
@@ -2174,7 +2177,7 @@ InputName=snd_mixa
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Release-client-gl
+OutDir=.\Release-client-GL
 InputPath=.\snd_mixa.s
 InputName=snd_mixa
 
@@ -2318,7 +2321,7 @@ InputName=sys_x86
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
 
 # Begin Custom Build
-OutDir=.\Debug-client-gl
+OutDir=.\Debug-client-GL
 InputPath=.\sys_x86.s
 InputName=sys_x86
 
@@ -2333,7 +2336,7 @@ InputName=sys_x86
 !ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
 
 # Begin Custom Build
-OutDir=.\Release-client-gl
+OutDir=.\Release-client-GL
 InputPath=.\sys_x86.s
 InputName=sys_x86
 
