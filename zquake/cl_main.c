@@ -1023,7 +1023,6 @@ void Host_Init (quakeparms_t *parms)
 
 	Memory_Init (parms->membase, parms->memsize);
 
-	Math_Init ();
 	Cbuf_Init ();
 	Cmd_Init ();
 	Cvar_Init ();
