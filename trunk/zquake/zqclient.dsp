@@ -312,26 +312,6 @@ SOURCE=.\d_modech.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\d_part.c
-
-!IF  "$(CFG)" == "zqclient - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\d_polyse.c
 
 !IF  "$(CFG)" == "zqclient - Win32 Release"
