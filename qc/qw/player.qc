@@ -162,6 +162,10 @@ void()  player_run =[   $rockrun1,      player_run      ]
 		self.frame = self.frame + self.walkframe;
 	}
 	self.walkframe = self.walkframe + 1;
+
+#ifdef AGRIP
+	agh_player_footsteps();
+#endif
 }
 
 void muzzleflash ()
@@ -616,6 +620,10 @@ void PlayerDie ()
 	self.movetype = MOVETYPE_TOSS;
 	if (self.velocity_z < 10)
 		self.velocity_z = self.velocity_z + random()*300;
+
+#ifdef AGRIP
+	agh_player_dietidy();
+#endif
 
 	if (self.health < -40)
 	{
