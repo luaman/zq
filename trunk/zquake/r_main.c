@@ -336,56 +336,31 @@ R_SetVrect
 */
 void R_SetVrect (vrect_t *pvrectin, vrect_t *pvrect, int lineadj)
 {
-	int		h;
 	float	size;
-	qbool	full = false;
-
-	if (scr_viewsize.value >= 100.0) {
-		size = 100.0;
-		full = true;
-	} else
-		size = scr_viewsize.value;
 
 	if (cl.intermission)
-	{
-		full = true;
 		size = 100.0;
-		lineadj = 0;
-	}
+	else if (scr_viewsize.value >= 100.0)
+		size = 100.0;
+	else
+		size = scr_viewsize.value;
+
 	size /= 100.0;
 
-	if (!cl_sbar.value && full)
-		h = pvrectin->height;
-	else
-		h = pvrectin->height - lineadj;
-
-//	h = (!cl_sbar.value && size==1.0) ? pvrectin->height : (pvrectin->height - lineadj);
-//	h = pvrectin->height - lineadj;
-	if (full)
-		pvrect->width = pvrectin->width;
-	else
-		pvrect->width = pvrectin->width * size;
-	if (pvrect->width < 96)
-	{
+	pvrect->width = pvrectin->width * size;
+	if (pvrect->width < 96) {
 		size = 96.0 / pvrectin->width;
 		pvrect->width = 96;	// min for icons
 	}
 	pvrect->width &= ~7;
-	pvrect->height = pvrectin->height * size;
-	if (cl_sbar.value || !full) {
-		if (pvrect->height > pvrectin->height - lineadj)
-			pvrect->height = pvrectin->height - lineadj;
-	} else
-		if (pvrect->height > pvrectin->height)
-			pvrect->height = pvrectin->height;
 
+	pvrect->height = pvrectin->height * size;
+	if (pvrect->height > pvrectin->height - lineadj)
+		pvrect->height = pvrectin->height - lineadj;
 	pvrect->height &= ~1;
 
 	pvrect->x = (pvrectin->width - pvrect->width)/2;
-	if (full)
-		pvrect->y = 0;
-	else
-		pvrect->y = (h - pvrect->height)/2;
+	pvrect->y = (pvrectin->height - lineadj - pvrect->height)/2;
 }
 
 

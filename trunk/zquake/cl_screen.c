@@ -266,7 +266,12 @@ float CalcFov (float fov_x, float width, float height)
 {
 	float   a;
 	float   x;
-	
+
+/*
+FIXME: this function is broken in GL (doesn't take screen aspect into account)
+Probably in software also, but software doesn't care about fov_y
+*/
+
 	if (fov_x < 1 || fov_x > 179)
 		Sys_Error ("Bad fov: %f", fov_x);
 	
@@ -291,13 +296,9 @@ Internal use only
 void SCR_CalcRefdef (void)
 {
 	float		size;
-#ifdef GLQUAKE
-	int 		h;
-	qbool		full = false;
-#else
+#ifndef GLQUAKE
 	vrect_t		vrect;
 #endif
-
 
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
@@ -320,61 +321,59 @@ void SCR_CalcRefdef (void)
 		Cvar_SetValue (&scr_fov, r_refdef2.allowCheats ? 170 : 140);
 
 // intermission is always full screen	
-	if (cl.intermission)
-		size = 120;
+	if (cl.intermission) {
+		size = 100.0;
+		sb_lines = 0;
+		sb_drawinventory = sb_drawmain = true;
+	}
 	else
+	{
 		size = scr_viewsize.value;
 
-	if (size >= 120)
-		sb_lines = 0;		// no status bar at all
-	else if (size >= 110)
-		sb_lines = 24;		// no inventory
-	else
-		sb_lines = 24+16+8;
+		// decide how much of the status bar to draw
+		if (size >= 120) {
+			sb_lines = 0;		// no status bar at all
+			sb_drawinventory = sb_drawmain = false;
+		}
+		else if (size >= 110) {
+			sb_lines = 24;		// no inventory
+			sb_drawinventory = false;
+			sb_drawmain = true;
+		}
+		else {
+			sb_lines = 24+16+8;	// full status bar
+			sb_drawinventory = sb_drawmain = true;
+		}
+
+		if (!cl_sbar.value)
+			sb_lines = 0;
+
+		if (size > 100.0)
+			size = 100.0;
+	}
+
+	size /= 100.0;
 
 #ifdef GLQUAKE
 
-	if (scr_viewsize.value >= 100.0) {
-		full = true;
-		size = 100.0;
-	} else
-		size = scr_viewsize.value;
-	if (cl.intermission)
-	{
-		full = true;
-		size = 100.0;
-		sb_lines = 0;
-	}
-	size /= 100.0;
-
-	if (!cl_sbar.value && full)
-		h = vid.height;
-	else
-		h = vid.height - sb_lines;
-
 	r_refdef.vrect.width = vid.width * size;
-	if (r_refdef.vrect.width < 96)
-	{
+	if (r_refdef.vrect.width < 96) {
 		size = 96.0 / r_refdef.vrect.width;
 		r_refdef.vrect.width = 96;      // min for icons
 	}
 
 	r_refdef.vrect.height = vid.height * size;
-	if (cl_sbar.value || !full) {
-  		if (r_refdef.vrect.height > vid.height - sb_lines)
-  			r_refdef.vrect.height = vid.height - sb_lines;
-	} else if (r_refdef.vrect.height > vid.height)
-			r_refdef.vrect.height = vid.height;
+	if (r_refdef.vrect.height > vid.height - sb_lines)
+		r_refdef.vrect.height = vid.height - sb_lines;
+
 	r_refdef.vrect.x = (vid.width - r_refdef.vrect.width)/2;
-	if (full)
-		r_refdef.vrect.y = 0;
-	else 
-		r_refdef.vrect.y = (h - r_refdef.vrect.height)/2;
+	r_refdef.vrect.y = (vid.height - sb_lines - r_refdef.vrect.height)/2;
 
 	scr_vrect = r_refdef.vrect;
 
 	r_refdef.fov_x = scr_fov.value;
 	r_refdef.fov_y = CalcFov (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
+
 #else
 
 // these calculations mirror those in R_Init() for r_refdef, but take no
@@ -845,42 +844,41 @@ void SCR_InvalidateScreen (void)
 }
 
 
-#ifdef GLQUAKE
-
 /*
 =================
 SCR_TileClear
 
-Clear unused areas in GL
+Fill background areas with the tile texture,
 =================
 */
-void SCR_TileClear (void)
+void SCR_TileClear (int	y, int height)
 {
-	if (cls.state != ca_active && cl.intermission) {
-		R_DrawTile (0, 0, vid.width, vid.height, scr_backtile);
+	if (height <= 0)
 		return;
-	}
 
 	if (r_refdef.vrect.x > 0) {
 		// left
-		R_DrawTile (0, 0, r_refdef.vrect.x, vid.height - sb_lines, scr_backtile);
+		R_DrawTile (0, y, r_refdef.vrect.x, height, scr_backtile);
 		// right
-		R_DrawTile (r_refdef.vrect.x + r_refdef.vrect.width, 0, 
+		R_DrawTile (r_refdef.vrect.x + r_refdef.vrect.width, y, 
 			vid.width - (r_refdef.vrect.x + r_refdef.vrect.width), 
-			vid.height - sb_lines, scr_backtile);
+			height, scr_backtile);
 	}
-	if (r_refdef.vrect.y > 0) {
+	if (y < r_refdef.vrect.y) {
 		// top
-		R_DrawTile (r_refdef.vrect.x, 0, r_refdef.vrect.width, 
-			r_refdef.vrect.y, scr_backtile);
+		R_DrawTile (r_refdef.vrect.x, y, r_refdef.vrect.width, 
+			min(r_refdef.vrect.y, y + height) - y, scr_backtile);
 	}
-	if (r_refdef.vrect.y + r_refdef.vrect.height < vid.height - sb_lines) {
+	if (y + height > r_refdef.vrect.y + r_refdef.vrect.height) {
 		// bottom
-		R_DrawTile (r_refdef.vrect.x, r_refdef.vrect.y + r_refdef.vrect.height, 
-			r_refdef.vrect.width, vid.height - sb_lines
-			- (r_refdef.vrect.height + r_refdef.vrect.y), scr_backtile);
+		int top = max(r_refdef.vrect.y + r_refdef.vrect.height, y);
+		R_DrawTile (r_refdef.vrect.x, top,
+			r_refdef.vrect.width, y + height - top, scr_backtile);
 	}
 }
+
+#ifdef GLQUAKE
+
 
 /*
 ==================
@@ -966,7 +964,10 @@ void SCR_UpdateScreen (void)
 	//
 	// draw any areas not covered by the refresh
 	//
-	SCR_TileClear ();
+	if (cls.state != ca_active && cl.intermission)
+		R_DrawTile (0, 0, vid.width, vid.height, scr_backtile);
+	else
+		SCR_TileClear (0, vid.height - sb_lines);
 
 	if (r_netgraph.value)
 		R_NetGraph ();
