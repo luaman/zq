@@ -389,6 +389,7 @@ extern cvar_t	r_rocketlight;
 extern cvar_t	r_rockettrail;
 extern cvar_t	r_grenadetrail;
 extern cvar_t	r_powerupglow;
+extern cvar_t	r_lightflicker;
 
 #define	MAX_EFRAGS		512
 #define	MAX_STATIC_ENTITIES	128			// torches, etc
