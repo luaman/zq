@@ -93,19 +93,28 @@ keyname_t keynames[] =
 	{"KP_MINUS", KP_MINUS},
 
 	{"KP_HOME", KP_HOME},
+	{"KP_7", KP_HOME},
 	{"KP_UPARROW", KP_UPARROW},
+	{"KP_8", KP_UPARROW},
 	{"KP_PGUP", KP_PGUP},
+	{"KP_9", KP_PGUP},
 	{"KP_PLUS", KP_PLUS},
 
 	{"KP_LEFTARROW", KP_LEFTARROW},
+	{"KP_4", KP_LEFTARROW},
 	{"KP_5", KP_5},
 	{"KP_RIGHTARROW", KP_RIGHTARROW},
+	{"KP_6", KP_RIGHTARROW},
 
 	{"KP_END", KP_END},
+	{"KP_1", KP_END},
 	{"KP_DOWNARROW", KP_DOWNARROW},
+	{"KP_2", KP_DOWNARROW},
 	{"KP_PGDN", KP_PGDN},
+	{"KP_3", KP_PGDN},
 
 	{"KP_INS", KP_INS},
+	{"KP_0", KP_INS},
 	{"KP_DEL", KP_DEL},
 	{"KP_ENTER", KP_ENTER},
 
