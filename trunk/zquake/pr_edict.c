@@ -32,6 +32,7 @@ globalvars_t	*pr_global_struct;
 float			*pr_globals;			// same as pr_global_struct
 int				pr_edict_size;	// in bytes
 
+qboolean		pr_z_ext_clientcommand;
 pr_cmdfunction_t	pr_cmdfunctions[MAX_PR_CMDFUNCTIONS];
 int				pr_numcmdfunctions;
 
@@ -977,6 +978,26 @@ void ED_LoadFromFile (char *data)
 }
 
 
+void PR_CheckExtensions (void)
+{
+	int i;
+	ddef_t	*def;
+
+	pr_z_ext_clientcommand = false;
+
+	for (i = 0, def = pr_globaldefs; i < progs->numglobaldefs; i++, def++) {
+		if (def->type != ev_float)
+			continue;
+		if (!strcmp(PR_GetString(def->s_name), "z_ext_clientcommand"))
+		{
+			Com_Printf ("blah\n");
+			pr_z_ext_clientcommand = true;
+			// let progs know that we have the extension
+			((eval_t *)&pr_globals[def->ofs])->_float = 1;
+		}
+	}
+}
+
 /*
 ===============
 PR_FindCmdFunctions
@@ -991,6 +1012,9 @@ void PR_FindCmdFunctions (void)
 	char	*name;
 
 	pr_numcmdfunctions = 0;
+
+	if (!pr_z_ext_clientcommand)
+		return;
 
 	for (i=0 ; i<progs->numfunctions ; i++)
 	{
@@ -1106,6 +1130,7 @@ void PR_LoadProgs (void)
 	if ((f = ED_FindFunction ("SpectatorDisconnect")) != NULL)
 		SpectatorDisconnect = (func_t)(f - pr_functions);
 
+	PR_CheckExtensions ();
 	PR_FindCmdFunctions ();
 }
 
