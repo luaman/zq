@@ -61,7 +61,7 @@ static qbool	force_minimized, in_mode_set, is_mode0x13, force_mode_set;
 static int		vid_stretched, windowed_mouse;
 static qbool	palette_changed, syscolchg, vid_mode_set, hide_window, pal_is_nostatic;
 static HICON	hIcon;
-extern qbool	mouseactive; // from in_win.c
+extern qbool	in_mouseactive; // from in_win.c
 
 #define MODE_WINDOWED			0
 #define MODE_SETTABLE_WINDOW	2
@@ -2388,10 +2388,10 @@ void	VID_Update (vrect_t *rects)
 			windowed_mouse = false;
 		} else {
 			windowed_mouse = true;
-			if (key_dest == key_game && !mouseactive && ActiveApp) {
+			if (key_dest == key_game && !in_mouseactive && ActiveApp) {
 				IN_ActivateMouse ();
 				IN_HideMouse ();
-			} else if (mouseactive && key_dest != key_game) {
+			} else if (in_mouseactive && key_dest != key_game) {
 				IN_DeactivateMouse ();
 				IN_ShowMouse ();
 			}
@@ -2724,7 +2724,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				IN_DeactivateMouse ();
 				IN_ShowMouse ();
 			}
-			else if ((modestate == MS_WINDOWED) && _windowed_mouse.value /* && mouseactive */)
+			else if ((modestate == MS_WINDOWED) && _windowed_mouse.value /* && in_mouseactive */)
 			{
 				IN_DeactivateMouse ();
 				IN_ShowMouse ();
