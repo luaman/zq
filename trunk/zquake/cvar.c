@@ -449,9 +449,9 @@ qboolean Cvar_Delete (char *name)
 		if (!Q_stricmp(var->name, name)) {
 			// unlink from hash
 			if (prev)
-				prev->hash_next = var->next;
+				prev->hash_next = var->hash_next;
 			else
-				cvar_hash[key] = var->next;
+				cvar_hash[key] = var->hash_next;
 			break;
 		}
 		prev = var;
