@@ -397,6 +397,7 @@ void CL_UpdateBeams (void)
 		if (b->entity == cl.playernum+1)	// entity 0 is the world
 		{
 			VectorCopy (cl.simorg, b->start);
+			b->start[2] += cl.crouch;
 			if (cl_trueLightning.value)
 			{
 				vec3_t	forward, right, up;
