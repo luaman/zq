@@ -305,6 +305,8 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 
 	strcpy (info, client->userinfo);
 	Info_RemovePrefixedKeys (info, '_');	// server passwords, etc
+	Info_RemoveKey (info, "pmodel");
+	Info_RemoveKey (info, "emodel");
 
 	MSG_WriteByte (buf, svc_updateuserinfo);
 	MSG_WriteByte (buf, i);
