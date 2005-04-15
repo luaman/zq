@@ -668,9 +668,8 @@ void Sys_SendKeyEvents(void)
 
 		case SDL_MOUSEMOTION:
 			if (mouse_active) {
-				mouse_x += event.motion.xrel * 2;
-				mouse_y += event.motion.yrel * 2;
-
+                mouse_x += event.motion.xrel;
+                mouse_y += event.motion.yrel;
 			}
 			break;
 
@@ -786,31 +785,28 @@ void IN_Move (usercmd_t *cmd)
 	mouse_x *= sensitivity.value;
 	mouse_y *= sensitivity.value;
 
-	if ( (in_strafe.state & 1) || (lookstrafe.value && (in_mlook.state & 1) ))
+    // add mouse X/Y movement to cmd
+    if ( (in_strafe.state & 1) || (lookstrafe.value && mlook_active))
 		cmd->sidemove += m_side.value * mouse_x;
 	else
 		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
-	if (in_mlook.state & 1)
+
+	if (mlook_active)
 		V_StopPitchDrift ();
 
-	if ( (in_mlook.state & 1) && !(in_strafe.state & 1))
+	if ( mlook_active && !(in_strafe.state & 1))
 	{
 		cl.viewangles[PITCH] += m_pitch.value * mouse_y;
-		if (cl.viewangles[PITCH] > 80)
-			cl.viewangles[PITCH] = 80;
-		if (cl.viewangles[PITCH] < -70)
-			cl.viewangles[PITCH] = -70;
+		if (cl.viewangles[PITCH] > cl.maxpitch)
+			cl.viewangles[PITCH] = cl.maxpitch;
+		if (cl.viewangles[PITCH] < cl.minpitch)
+			cl.viewangles[PITCH] = cl.minpitch;
 	}
 	else
 	{
-#if 0
-		if ((in_strafe.state & 1) && noclip_anglehack)
-			cmd->upmove -= m_forward.value * mouse_y;
-		else
-#endif
-			cmd->forwardmove -= m_forward.value * mouse_y;
+        cmd->forwardmove -= m_forward.value * mouse_y;
 	}
-	mouse_x = mouse_y = 0;
+	mouse_x = mouse_y = 0.0;
 }
 
 // direct draw software compatability stuff
