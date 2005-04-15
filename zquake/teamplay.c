@@ -28,8 +28,10 @@
 #include "version.h"
 #include "sound.h"
 #include "pmove.h"
+#include "teamplay.h"
 #include <time.h>
 
+void OnChangeSkinForcing(cvar_t *var, char *str, qbool *cancel);
 
 cvar_t	cl_parseSay = {"cl_parseSay", "1"};
 cvar_t	cl_parseFunChars = {"cl_parseFunChars", "1"};
@@ -37,8 +39,8 @@ cvar_t	cl_triggers = {"cl_triggers", "0"};
 cvar_t	tp_forceTriggers = {"tp_forceTriggers", "0"};
 cvar_t	tp_loadlocs = {"tp_loadlocs", "1"};
 
-cvar_t	cl_teamskin = {"teamskin", ""};
-cvar_t	cl_enemyskin = {"enemyskin", ""};
+cvar_t	cl_teamskin = {"teamskin", "", 0, OnChangeSkinForcing};
+cvar_t	cl_enemyskin = {"enemyskin", "", 0, OnChangeSkinForcing};
 
 cvar_t  tp_soundtrigger = {"tp_soundtrigger", "~"};
 
@@ -1289,6 +1291,14 @@ int		cl_teambottomcolor;
 int		cl_enemytopcolor = -1;
 int		cl_enemybottomcolor;
 
+void TP_RefreshSkins (void)
+{
+	int i;
+
+	for (i = 0; i < MAX_CLIENTS; i++)
+		CL_NewTranslation(i);
+}
+
 void TP_TeamColor_f (void)
 {
 	int	top, bottom;
@@ -1332,8 +1342,7 @@ void TP_TeamColor_f (void)
 		cl_teamtopcolor = top;
 		cl_teambottomcolor = bottom;
 
-		for (i = 0; i < MAX_CLIENTS; i++)
-			CL_NewTranslation(i);
+		TP_RefreshSkins();
 	}
 }
 
@@ -1380,9 +1389,26 @@ void TP_EnemyColor_f (void)
 		cl_enemytopcolor = top;
 		cl_enemybottomcolor = bottom;
 
-		for (i = 0; i < MAX_CLIENTS; i++)
-			CL_NewTranslation(i);
+		TP_RefreshSkins();
 	}
+}
+
+void OnChangeSkinForcing(cvar_t *var, char *str, qbool *cancel) {
+	extern cvar_t noskins;
+
+	if (cl.teamfortress || (cl.fpd & FPD_NO_FORCE_SKIN))
+		return;
+
+	if (cls.state == ca_active) {
+		float oldskins;
+
+		Cvar_Set(var, str);
+		oldskins = noskins.value;
+		noskins.value = 2;
+		Skin_Skins_f();
+		noskins.value = oldskins;
+	}
+	return;
 }
 
 //===================================================================

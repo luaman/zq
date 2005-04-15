@@ -54,6 +54,7 @@ extern int cl_teamtopcolor;
 extern int cl_teambottomcolor;
 extern int cl_enemytopcolor;
 extern int cl_enemybottomcolor;
+void TP_RefreshSkins ();
 
 void TP_LoadLocFile (char *path, qbool quiet);
 char *TP_ParseMacroString (char *s);
