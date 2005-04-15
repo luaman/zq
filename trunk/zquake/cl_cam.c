@@ -73,6 +73,7 @@ void Cam_Lock (int playernum)
 	memcpy(cl.stats, cl.players[playernum].stats, sizeof(cl.stats));
 
 	Sbar_Changed();
+    TP_RefreshSkins();
 }
 #endif
 
@@ -129,6 +130,7 @@ ok:
 #endif
 
 	Sbar_Changed ();
+    TP_RefreshSkins();
 	Cam_SendPTrackCommand (num);
 }
 
@@ -157,7 +159,8 @@ ok:
 		memcpy(cl.stats, cl.players[num].stats, sizeof(cl.stats));
 #endif
 
-	Sbar_Changed ();
+    Sbar_Changed ();
+    TP_RefreshSkins();
 	Cam_SendPTrackCommand (num);
 }
 
@@ -180,6 +183,7 @@ void Cam_FinishMove (usercmd_t *cmd)
 			cam_locked = false;
 			cam_curtarget = CAM_NOTARGET;
 			Sbar_Changed ();
+            TP_RefreshSkins();
 			Cam_SendUnlockCommand ();
 		}
 		else {
@@ -300,8 +304,10 @@ void Cam_TryLock (void)
 		cam_curtarget = CAM_NOTARGET;
 	}
 
-	if (cam_target != old_target || cam_locked != old_locked)
+	if (cam_target != old_target || cam_locked != old_locked) {
 		Sbar_Changed ();
+        TP_RefreshSkins();
+    }
 }
 
 void CL_InitCam(void)

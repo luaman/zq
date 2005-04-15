@@ -1088,6 +1088,7 @@ void CL_NewTranslation (int slot)
 {
 	char	s[512];
 	player_info_t	*player;
+	int tracknum;
 
 	if (slot >= MAX_CLIENTS)
 		Sys_Error ("CL_NewTranslation: slot >= MAX_CLIENTS");
@@ -1105,18 +1106,21 @@ void CL_NewTranslation (int slot)
 	player->topcolor = player->real_topcolor;
 	player->bottomcolor = player->real_bottomcolor;
 
-	strcpy (s, cl.players[cl.playernum].team);
+	if (cl.spectator && (tracknum = Cam_PlayerNum()) != -1)
+		strcpy (s, cl.players[tracknum].team);
+	else if (!cl.spectator)
+        strcpy (s, cl.players[cl.playernum].team);
 
 	if ( !cl.teamfortress && !(cl.fpd & FPD_NO_FORCE_COLOR) ) {
-		if (cl_teamtopcolor >= 0 && cl.teamplay && 
-			!strcmp(player->team, s))
+        qbool teammate;
+
+        teammate = (cl.teamplay && !strcmp(player->team, s)) ? true : false;
+		if (cl_teamtopcolor >= 0 && teammate)
 		{
 			player->topcolor = cl_teamtopcolor;
 			player->bottomcolor = cl_teambottomcolor;
 		}
-		
-		if (cl_enemytopcolor >= 0 && slot != cl.playernum &&
-			(!cl.teamplay || strcmp(player->team, s)))
+        else if (cl_enemytopcolor >= 0 && slot != cl.playernum && !teammate)
 		{
 			player->topcolor = cl_enemytopcolor;
 			player->bottomcolor = cl_enemybottomcolor;
