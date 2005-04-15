@@ -244,6 +244,10 @@ static int SDL_LateKey(SDL_keysym *sym)
 			key = K_PAUSE;
 			break;
 
+        case SDLK_CAPSLOCK:
+            key = K_CAPSLOCK;
+            break;
+
 		case SDLK_LSHIFT:
 		case SDLK_RSHIFT:
 			key = K_SHIFT;
@@ -259,6 +263,8 @@ static int SDL_LateKey(SDL_keysym *sym)
 			key = K_ALT;
 			break;
 
+            // FIXME: oldman keypad support should be added (not had access
+            // to non laptop keyboard before :)
 		case SDLK_KP0:
 			key = '0';
 			break;
