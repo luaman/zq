@@ -45,6 +45,8 @@ cvar_t	v_kickroll = {"v_kickroll", "0.6"};
 cvar_t	v_kickpitch = {"v_kickpitch", "0.6"};
 cvar_t	v_kickback = {"v_kickback", "0"};	// recoil effect
 
+cvar_t	v_viewheight = {"v_viewheight", "0"};
+
 cvar_t	cl_drawgun = {"r_drawviewmodel", "1"};
 
 cvar_t	crosshair = {"crosshair", "2", CVAR_ARCHIVE};
@@ -945,14 +947,15 @@ void V_CalcRefdef (void)
 {
 	vec3_t		forward;
 	float		bob;
+    float height_adjustment;
 
 	V_DriftPitch ();
 
 	bob = V_CalcBob ();
 
-//	
-// set up the refresh position
-//
+	height_adjustment = v_viewheight.value ? bound (-7, v_viewheight.value, 4) : V_CalcBob ();
+
+    // set up the refresh position
 	VectorCopy (cl.simorg, r_refdef2.vieworg);
 
 	// never let it sit exactly on a node line, because a water plane can
@@ -970,6 +973,8 @@ void V_CalcRefdef (void)
 	else
 	{
 		r_refdef2.vieworg[2] += cl.viewheight;	// normal view height
+
+        r_refdef2.vieworg[2] += height_adjustment;
 
 		r_refdef2.vieworg[2] += bob;
 
@@ -1002,7 +1007,7 @@ void V_CalcRefdef (void)
 	if (view_message.flags & PF_DEAD)		// PF_GIB will also set PF_DEAD
 		r_refdef2.viewangles[ROLL] = 80;	// dead view angle
 
-	V_AddViewWeapon (bob);
+	V_AddViewWeapon (bob+height_adjustment);
 }
 
 /*
@@ -1184,6 +1189,8 @@ void V_Init (void)
 	Cvar_Register (&v_kickpitch);
 	Cvar_Register (&v_kickback);
 	Cvar_Register (&cl_drawgun);
+
+	Cvar_Register (&v_viewheight);
 
 	Cvar_Register (&v_bonusflash);
 	Cvar_Register (&v_contentblend);

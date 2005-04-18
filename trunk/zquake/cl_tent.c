@@ -457,6 +457,7 @@ void CL_UpdateBeams (void)
 	float		d, dec;
 	entity_t	ent;
 	vec3_t		angles;
+	extern cvar_t v_viewheight;
 
 	dec = 30;
 	memset (&ent, 0, sizeof(entity_t));
@@ -472,7 +473,7 @@ void CL_UpdateBeams (void)
 		if (b->entity == Cam_PlayerNum() + 1 && !cl.intermission)
 		{
 			VectorCopy (cl.simorg, b->start);
-			b->start[2] += cl.crouch;
+			b->start[2] += cl.crouch + bound(-7, v_viewheight.value, 4);
 			if (cl_trueLightning.value && cl.allow_truelightning)
 			{
 				vec3_t	forward;

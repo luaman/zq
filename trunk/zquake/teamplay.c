@@ -2005,6 +2005,7 @@ void TP_FindPoint (void)
 	vec3_t	ang;
 	vec3_t	vieworg, entorg;
 	item_t	*item = NULL, *bestitem = NULL;
+	extern cvar_t v_viewheight;
 
 	ang[0] = cl.viewangles[0];
 	ang[1] = cl.viewangles[1];
@@ -2012,6 +2013,7 @@ void TP_FindPoint (void)
 	AngleVectors (ang, forward, right, up);
 	VectorCopy (cl.simorg, vieworg);
 	vieworg[2] += 22;	// adjust for view height
+	vieworg[2] += (v_viewheight.value ? bound (-7, v_viewheight.value, 4) : 0);
 
 	if (!cl.validsequence)
 		goto nothing;
