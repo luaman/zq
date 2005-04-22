@@ -47,13 +47,13 @@ void() snap_esr_constructor =
     Purpose:
         Set up the ESR object.
     Takes:
-	void
+	    void
     Returns:
-	void
+	    void
     Notes:
 	* Like other constructors, this function is run as the player.
-        * When this is called, the _current_ mode of operation is in the
-          agv_t_esr cvar.
+    * When this is called, the _current_ mode of operation is in the
+      agv_t_esr cvar.
 */
 {
     local entity new_agesr;
@@ -179,12 +179,12 @@ void() snap_esr_main =
 void() snap_esr_classic =
 /*	
     Purpose:
-	Detect enemies and determine what level they are on with respect to
+	    Detect enemies and determine what level they are on with respect to
         the player.  Then call the sounder function to produce the sound (the
         sound produced is dependant on if the enemy is within the FOV of the
         ESR, which is customisable by the user).
     Takes:
-	void
+	    void
     Returns:
     	void
     Notes:
@@ -274,15 +274,24 @@ void() snap_esr_classic =
             // Potential team-mate...
             else if( teamplay )
             {
-                //dprint("teamplay -- ");
-                local string ownerteam;
-                ownerteam = infokey(self.owner, "team");
-                local string otherteam; 
-                otherteam = infokey(potential_hit, "team");
+                //dprint("teamplay -- \n");
+                local string ownerteam, otherteam;
+                if( potential_hit.classname == "bot")
+                {
+                    ownerteam = "p";
+                    otherteam = "p";
+                    if( potential_hit.team == 2 )
+                        otherteam = "b";
+                }
+                else
+                {
+                    ownerteam = infokey(self.owner, "team");
+                    otherteam = infokey(potential_hit, "team");
+                }
+                //dprint("owner: ", ownerteam, "  ph: ", otherteam, "\n");
                     
                 // On the same team?
-                if(     ownerteam == otherteam 
-                    ||  self.owner.colormap == potential_hit.colormap )
+                if(     ownerteam == otherteam )
                 {
                     //dprint("same team?\n");
                     pf_lev = snap_esr_classic_level(potential_hit.origin_z);
@@ -303,7 +312,7 @@ void() snap_esr_classic =
                     }
                 }
                 // Potential enemy...
-                else if( ! potential_hit.flags & FL_MONSTER )
+                else //if( ! potential_hit.flags & FL_MONSTER )
                 {
                     //dprint("enemy?\n");
                     pe_lev = snap_esr_classic_level(potential_hit.origin_z);
@@ -325,7 +334,7 @@ void() snap_esr_classic =
                 }
             }
             // No teamplay -- most likely an enemy, then...
-            else if( ! potential_hit.flags & FL_MONSTER )
+            else //if( ! potential_hit.flags & FL_MONSTER )
             {
                 //dprint("no teamplay -- enemy?\n");
                 pe_lev = snap_esr_classic_level(potential_hit.origin_z);
@@ -482,6 +491,7 @@ void() snap_esr_classic =
         &&  self.aiment.state != 1 
         &&  infokey(self.owner, "agv_t_esr_monster_warnings") == "1" )
     {
+        //dprint("sounding monster.\n");
         level = snap_esr_classic_level(nearest_monster.origin_z);
         mdist = vlen(self.owner.origin - nearest_monster.origin);
         if( snap_misc_fovtest(nearest_monster.origin, self.frame) )
@@ -492,14 +502,11 @@ void() snap_esr_classic =
                 self.aiment.message = "esr/monster-same.wav";
             else
                 self.aiment.message = "esr/monster-higher.wav";
+        
+            setorigin(self.aiment, nearest_monster.origin);
+            self.aiment.state = 1;
+            self.aiment.nextthink = time + ( mdist / 500 );
         }
-        else
-        {
-            self.aiment.message = "weapons/ric1.wav";
-        }
-        setorigin(self.aiment, nearest_monster.origin);
-        self.aiment.state = 1;
-        self.aiment.nextthink = time + ( mdist / 500 );
     }
 
     // Friends...
@@ -507,7 +514,7 @@ void() snap_esr_classic =
         &&  self.goalentity.state != 1
         &&  infokey(self.owner, "agv_t_esr_friend_warnings") == "1" )
     {
-        dprint("sounding friend.\n");
+        //dprint("sounding friend.\n");
         level = snap_esr_classic_level(nearest_friend.origin_z);
         fdist = vlen(self.owner.origin - nearest_friend.origin);
         if( snap_misc_fovtest(nearest_friend.origin, self.frame) )
@@ -518,14 +525,11 @@ void() snap_esr_classic =
                 self.goalentity.message = "esr/friend-same.wav";
             else
                 self.goalentity.message = "esr/friend-higher.wav";
+        
+            setorigin(self.goalentity, nearest_friend.origin);
+            self.goalentity.state = 1;
+            self.goalentity.nextthink = time + ( fdist / 500 );
         }
-        else
-        {
-            self.goalentity.message = "weapons/ric1.wav";
-        }
-        setorigin(self.goalentity, nearest_friend.origin);
-        self.goalentity.state = 1;
-        self.goalentity.nextthink = time + ( fdist / 500 );
     }
 
     // Enemies...
@@ -533,7 +537,7 @@ void() snap_esr_classic =
         &&  self.enemy.state != 1
         &&  infokey(self.owner, "agv_t_esr_enemy_warnings") == "1" )
     {
-        dprint("sounding enemy.\n");
+        //dprint("sounding enemy.\n");
         level = snap_esr_classic_level(nearest_enemy.origin_z);
         edist = vlen(self.owner.origin - nearest_enemy.origin);
         if( snap_misc_fovtest(nearest_enemy.origin, self.frame) )
@@ -544,14 +548,11 @@ void() snap_esr_classic =
                 self.enemy.message = "esr/enemy-same.wav";
             else
                 self.enemy.message = "esr/enemy-higher.wav";
+        
+            setorigin(self.enemy, nearest_enemy.origin);
+            self.enemy.state = 1;
+            self.enemy.nextthink = time + ( edist / 500 );
         }
-        else
-        {
-            self.enemy.message = "weapons/ric1.wav";
-        }
-        setorigin(self.enemy, nearest_enemy.origin);
-        self.enemy.state = 1;
-        self.enemy.nextthink = time + ( edist / 500 );
     }
     
     self.nextthink = time + 0.1;

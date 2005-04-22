@@ -237,11 +237,11 @@ void() bot_grab_items =
             }
         }
 
-        dprint("my health is: ");dprint(ftos(self.health));
+        /*dprint("my health is: ");dprint(ftos(self.health));
           dprint("\nmy armor is: ");dprint(ftos(self.armorvalue));
           dprint("\nmy ammo is: ");dprint(ftos(self.currentammo));
           dprint("\ny weapon is: ");dprint(ftos(self.weapon));
-          dprint("\n");
+          dprint("\n");*/
 
         self.goalentity = world;
     }
@@ -384,7 +384,8 @@ float() bot_look_for_players =
         return false;
 
     if (teamplay)
-        if (self.team == client.team)
+        //if (self.team == client.team)
+        if (self.colormap == client.colormap)
             return false;
 
     if (client.netname == "observer")
@@ -1476,6 +1477,7 @@ void(float teem) create_bot =
             * bprints -> snap_misc_m2m calls
         
         FIXME make this work for QW-style teams (infokey)
+            * can't -- have to use colours instead for bots
     */
  
     bot.netname = bot_name();
@@ -1485,15 +1487,21 @@ void(float teem) create_bot =
     if (teamplay)
     {
         plr = find(world, classname, "player");
-        plr.team = 1;
+        //plr.team = 1;
         bot.team = teem;
-        if (teem == plr.team)
+        
+        if (teem == 1) // was plr.team
         {
             bot.colormap = plr.colormap;
             sprint(self, PRINT_MEDIUM, " on your team.\n");
         }
         else
         {
+            // ensure not same colourmap...
+            while( bot.colormap == plr.colormap)
+            {
+                bot.colormap = bot.colormap + 1;
+            }
             sprint(self, PRINT_MEDIUM, " on the enemy team.\n");
         }
     }
