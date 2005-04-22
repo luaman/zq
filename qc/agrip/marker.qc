@@ -86,7 +86,7 @@ void() snap_marker_constructor =
     // Give it life...
     new_agmarker.ammo_shells = time;
     new_agmarker.ammo_rockets = 2;
-    new_agmarker.think = snap_se_loopedsound_public;
+    new_agmarker.think = snap_se_loopedsound;
     new_agmarker.touch = snap_marker_touch;
     new_agmarker.nextthink = time + 0.1;
 
@@ -172,10 +172,11 @@ void() snap_marker_touch =
 {
     local string marker_number;
 
-    if( time > self.ammo_shells + self.ammo_rockets )
+    if( other == self.owner && time > self.ammo_shells + self.ammo_rockets )
     {
         marker_number = ftos(self.items);
-        sprint(other, 1, "!You found ", self.owner.netname, "'s marker ", marker_number, ".\n");
+        //sprint(other, 1, "!You found ", self.owner.netname, "'s marker ", marker_number, ".\n");
+        sprint(other, 1, "!You found marker ", marker_number, ".\n");
         self.ammo_shells = time;
     }
 };
