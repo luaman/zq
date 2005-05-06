@@ -89,6 +89,7 @@ void() bot_jump1;
 void() respawn_bot;
 void() bot_check_ammo;
 void() bot_face;
+void() bot_attack;
 
 .float	ai_time;
 
@@ -161,6 +162,8 @@ void() jump_forward =
     if (!(self.flags & FL_ONGROUND))
         return;
 
+    makevectors(self.angles);
+    self.velocity = self.velocity + (v_forward * self.speed);
 	self.button2 = true;
 
     /* OLD VELOCITY GIVING CODE {{{
@@ -185,30 +188,9 @@ void() check_for_water =
     if (p != CONTENT_WATER && p != CONTENT_SLIME && p != CONTENT_LAVA)
         return;
 
-    if (p == CONTENT_WATER && time > self.pain_finished)
-    {
-        T_Damage (self, world, world, 5);
-        self.pain_finished = time + 2;
-        sound (self, CHAN_VOICE, "player/gasp2.wav", 1, ATTN_NORM);
-    }
-    if (p == CONTENT_SLIME && time > self.pain_finished)
-    {
-        T_Damage (self, world, world, 10);
-        self.pain_finished = time + 1;
-        sound (self, CHAN_VOICE, "player/lburn2.wav", 1, ATTN_NORM);
-    }
-    if (p == CONTENT_LAVA && time > self.pain_finished)
-    {
-        T_Damage (self, world, world, 20);
-        self.pain_finished = time + 0.5;
-        sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);
-    }
-
-    self.flags = self.flags - (self.flags & FL_ONGROUND);
-
     // he'll try to swim upward here
-    self.velocity = self.velocity + (v_forward * 200);
-    self.velocity_z = self.velocity_z + 200;
+    self.velocity = self.velocity + (v_forward * self.speed);
+    self.velocity_z = self.velocity_z + self.speed;
     if (random() < 0.4)
         self.velocity_x = self.velocity_x + 100;
     else if (random() > 0.8)
@@ -285,7 +267,7 @@ float() bot_look_for_players =
     }
 
     self.enemy = client;
-	/* self.goalentity = client; */
+    self.goalentity = client;
     /* self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin); */
     //FIXME: should now go into bot_run to chase
     bot_face();
@@ -334,6 +316,7 @@ void() bot_face =
 {
     // this turns him directly toward his enemy
     self.angles_y = vectoyaw(self.enemy.origin - self.origin);
+    self.v_angle_y = vectoyaw(self.enemy.origin - self.origin);
 }
 
 
@@ -373,13 +356,12 @@ void() coffee_move =
     // degree angle at the wall's corner. i have seen my bots do laps
     // around entire levels with these three lines of code
 
-    /* MODIFIED {{{
+    // MODIFIED {{
     if (walkmove (self.angles_y, 20) == true)
     {
         makevectors(self.angles);
         // self.flags = self.flags - (self.flags & FL_ONGROUND);
-        // self.velocity = self.velocity + (v_forward * self.speed);
-        self.forwardmove = self.forwardmove + (v_forward * self.speed);
+        self.velocity = self.velocity + (v_forward * self.speed);
         return;
     }
 
@@ -389,20 +371,19 @@ void() coffee_move =
         {
             makevectors(self.angles);
             // self.flags = self.flags - (self.flags & FL_ONGROUND);
-            // self.velocity = self.velocity + (v_right * self.speed);
-            self.sidemove = self.sidemove + (v_right * self.speed);
+            self.velocity = self.velocity + (v_right * self.speed);
         }
         else
         {
             makevectors(self.angles);
             // self.flags = self.flags - (self.flags & FL_ONGROUND);
-            // self.velocity = self.velocity + (v_right * self.speed * -1);
-            self.sidemove = self.sidemove - (v_right * self.speed);
+            self.velocity = self.velocity + (v_right * self.speed * -1);
         }
         return;
     }
 
     self.angles_y = self.angles_y + (self.button1 / 2);
+	self.v_angle_y = self.v_angle_y + (self.button1 / 2);
 
     // every so often, he'll change his wall-hugging direction
     if (random() <= 0.02)
@@ -410,9 +391,9 @@ void() coffee_move =
             if (self.button1 == 90)
                 self.button1 = -90;
             else self.button1 = 90;
-            }}} */
+            // }}}
 
-    // ORIGINAL {{
+    /* ORIGINAL {{{
     if (walkmove (self.angles_y, 20) == false)
         if (walkmove (self.angles_y + self.button1, 20) == false)
             self.angles_y = self.angles_y + (self.button1 / 2);
@@ -423,7 +404,7 @@ void() coffee_move =
         if (self.button1 == 90)
             self.button1 = -90;
         else self.button1 = 90;
-        // }}}
+       // }}} */
 
 }
 
@@ -437,21 +418,10 @@ void() bot_walk =
     if (!(self.flags & FL_ONGROUND))
         return;
 
-    self.button0 = 0;
-    self.button2 = 0;
-
-	// am I dead? Fire randomly until I respawn
-	if (self.health < 1)
-	{
-		self.button0 = floor(random() * 2);
-		self.button2 = 0;
-        return;
-    }
-
     /* bot_look_for_bots(); XXX: shouldn't be needed anymore */
     bot_look_for_players();
     bot_search_for_items();
-    bot_grab_items();
+    /* bot_grab_items(); */
 
     check_for_ledge();
     check_for_water();
@@ -510,7 +480,6 @@ void() bot_strafe =
 
     bot_face();
 
-
     // stepping backwards for a long distance shot
     if (self.weapon == IT_ROCKET_LAUNCHER)
     {
@@ -560,8 +529,7 @@ void() bot_run =
 
     if (visible(self.enemy) && time > self.attack_finished)
     {
-        // FIXME: removed this - legacy?
-        // self.th_missile();
+        bot_attack();
     }
 
 }
@@ -909,7 +877,7 @@ void() bot_fire_rocket =
 
 
 // ==============================
-void() bot_lightning =
+void() bot_fire_lightning =
 // ------------------------------
 {
     vector	org, dir;
@@ -1085,12 +1053,12 @@ void()  bot_nail4		=[	$nailatt2,	bot_nail5	] {bot_strafe();};
 void()  bot_nail5		=[	$nailatt1,	bot_nail6	] {bot_strafe(); bot_fire_nailgun();};
 void()  bot_nail6		=[	$nailatt2,	bot_run1	] {bot_strafe(); if (visible(self.enemy) && self.ammo_nails > 0 && self.enemy.health > 0)	bot_nail1(); else bot_run1(); };
 
-void()  bot_light1	=[	$light1,	bot_light2	] {bot_strafe(); bot_lightning();};
-void()  bot_light2	=[	$light2,	bot_light3	] {bot_strafe(); bot_lightning();};
-void()  bot_light3	=[	$light1,	bot_light4	] {bot_strafe(); bot_lightning();};
-void()  bot_light4	=[	$light2,	bot_light5	] {bot_strafe(); bot_lightning();};
-void()  bot_light5	=[	$light1,	bot_light6	] {bot_strafe(); bot_lightning();};
-void()  bot_light6	=[	$light2,	bot_run1	] {bot_strafe(); bot_lightning(); if (visible(self.enemy) && self.ammo_cells > 0 && self.enemy.health > 0) bot_light1(); else bot_run1(); };
+void()  bot_light1	=[	$light1,	bot_light2	] {bot_strafe(); bot_fire_lightning();};
+void()  bot_light2	=[	$light2,	bot_light3	] {bot_strafe(); bot_fire_lightning();};
+void()  bot_light3	=[	$light1,	bot_light4	] {bot_strafe(); bot_fire_lightning();};
+void()  bot_light4	=[	$light2,	bot_light5	] {bot_strafe(); bot_fire_lightning();};
+void()  bot_light5	=[	$light1,	bot_light6	] {bot_strafe(); bot_fire_lightning();};
+void()  bot_light6	=[	$light2,	bot_run1	] {bot_strafe(); bot_fire_lightning(); if (visible(self.enemy) && self.ammo_cells > 0 && self.enemy.health > 0) bot_light1(); else bot_run1(); };
 
 
 
@@ -1283,37 +1251,37 @@ void() bot_attack =
     if (self.weapon == IT_SHOTGUN)
     {
         self.attack_finished = time + 0.5;
-        bot_shot1();
+        bot_fire_shotgun();
     }
     else if (self.weapon == IT_SUPER_SHOTGUN)
     {
         self.attack_finished = time + 0.7;
-        bot_shot1();
+        bot_fire_supershotgun();
     }
     else if (self.weapon == IT_NAILGUN)
     {
         self.attack_finished = time + 0.2;
-        bot_nail1();
+        bot_fire_nailgun();
     }
     else if (self.weapon == IT_SUPER_NAILGUN)
     {
         self.attack_finished = time + 0.2;
-        bot_nail1();
+        bot_fire_supernailgun();
     }
     else if (self.weapon == IT_GRENADE_LAUNCHER)
     {
         self.attack_finished = time + 0.8;
-        bot_rock1();
+        bot_fire_grenade();
     }
     else if (self.weapon == IT_ROCKET_LAUNCHER)
     {
         self.attack_finished = time + 1;
-        bot_rock1();
+        bot_fire_rocket();
     }
     else if (self.weapon == IT_LIGHTNING)
     {
         self.attack_finished = time + 0.1;
-        bot_light1();
+        bot_fire_lightning();
     }
 
 }
@@ -1490,11 +1458,33 @@ void BotDisconnect ()
 // called by the engine instead of PlayerPreThink for bots
 void BotPreThink ()
 {
+	// am I dead? Fire randomly until I respawn
+	if (self.health < 1)
+	{
+		self.button0 = 0;
+        self.button1 = 0;
+		self.button2 = floor(random() * 2);
+        self.enemy = self.goalentity = world;
+        if (self.deadflag == DEAD_DEAD)
+        {
+            self.deadflag = DEAD_RESPAWNABLE;
+            respawn();
+        }
+        return;
+    }
+
+    self.button0 = self.button1 = self.button2 = 0;
+
     if (self.ai_time > time) {
         // do nothing
     } else {
-        self.ai_time = time + 0.05;
-        bot_walk();
+        self.ai_time = time + 0.1;
+        if(self.enemy == world || self.enemy == self) {
+            bot_walk();
+        } else if (self.health > 0) {
+            bot_face();
+            bot_run();
+        }
     }
 
     PlayerPreThink ();
