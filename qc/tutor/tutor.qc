@@ -943,7 +943,7 @@ void() bot_lightning =
 ==========================================================================
 ==========================================================================
 
-	Section 3: Animation
+	Section 3: Animation XXX: shouldn't be needed anymore {{{
 
 	This is a bunch of ugly stuff, and you don't really need to
 	understand all of it. It merely defines his animation frames and
@@ -1163,7 +1163,7 @@ void()  bot_diee7		=[	$deathe7,	bot_diee8	 ] {};
 void()  bot_diee8		=[	$deathe8,	bot_diee9	 ] {};
 void()  bot_diee9		=[	$deathe9,	th_respawn	 ] {};
 
-
+// }}}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void(entity attacker, float damage)	bot_pain =
@@ -1403,17 +1403,21 @@ void(float team) create_bot =
 local entity bot, spot, plr;
 
 // initializing the entity
-	bot = spawn();
-	spot = SelectSpawnPoint();
-	bot.origin = spot.origin + '0 0 1';
-	bot.angles = spot.angles;
-	bot.fixangle = true;	
-	spawn_tfog (bot.origin);
-	spawn_tdeath (bot.origin, bot);
-	bot.solid = SOLID_SLIDEBOX;
-	bot.movetype = MOVETYPE_STEP;
+bot = testbot("tutorbot"); // use ZQuake server bot support
+/* OLD SPAWN CODE {{{
+   bot = spawn();
+   spot = SelectSpawnPoint();
+   bot.origin = spot.origin + '0 0 1';
+   bot.angles = spot.angles;
+   bot.fixangle = true;	
+   spawn_tfog (bot.origin);
+   spawn_tdeath (bot.origin, bot);
+   bot.solid = SOLID_SLIDEBOX;
+   bot.movetype = MOVETYPE_STEP;
+   }}} */
 
 // defining his animation
+/* OLD ANIMATION CODE {{{
 	setmodel(bot, "progs/player.mdl");
 	bot.frame = $stand1;
 	bot.th_stand = bot_stand1;
@@ -1422,15 +1426,19 @@ local entity bot, spot, plr;
 	bot.th_pain = bot_pain;
 	bot.th_die = bot_die;
 	bot.th_missile = bot_attack;
+    }}} */
 
 // arming and naming him
+/* OLD ANIMATION CODE {{{
 	bot.items = bot.items | IT_SHOTGUN;
 	bot.currentammo = bot.ammo_shells = bot.ammo_shells + 25;
 	bot.weapon = IT_SHOTGUN;
 	give_random_weapon(bot);
 	bot.health = 100;
 	bot.classname = "bot";
+    }}} */
 
+/* OLD TEAMPLAY CODE {{{
 	if (teamplay)
 		{
 		plr = find(world, classname, "player");
@@ -1439,12 +1447,23 @@ local entity bot, spot, plr;
 		if (teem == plr.team)
 			bot.colormap = plr.colormap;
 		}
+        }}} */
 
+/* OLD NAMING CODE {{{
 	bot.netname = bot_name();
 	bprint(PRINT_HIGH, bot.netname);
 	bprint(PRINT_HIGH, " enters the game\n");
+    }}} */
+	bot.netname = bot_name();
+
+    setinfo (bot, "name", bot.netname);
+
+	setinfo (bot, "topcolor", "4");
+
+	setinfo (bot, "bottomcolor", "11");
 
 // polishing him up
+    /* POLISHING CODE FIXME: NOT SURE IF NEEDED
 	setsize (bot, VEC_HULL_MIN, VEC_HULL_MAX);
 	bot.ideal_yaw = bot.angles * '0 1 0';
 	bot.yaw_speed = 120;
@@ -1454,7 +1473,32 @@ local entity bot, spot, plr;
 	bot.button1 = 90;
 	bot.nextthink = time + 0.1 + random();
 	bot.think = bot.th_walk;
-
+    */
 };
+
+// called by the engine instead of ClientConnect for bots
+void BotConnect ()
+{
+	ClientConnect ();
+}
+
+// called by the engine instead of ClientDisconnect for bots
+void BotDisconnect ()
+{
+	ClientDisconnect ();
+}
+
+// called by the engine instead of PlayerPreThink for bots
+void BotPreThink ()
+{
+    bot_walk();
+    PlayerPreThink ();
+}
+
+// called by the engine instead of PlayerPostThink for bots
+void BotPostThink ()
+{
+	PlayerPostThink ();		// just call the default function
+}
 
 // vi:foldenable
