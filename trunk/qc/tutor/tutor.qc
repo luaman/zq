@@ -88,6 +88,9 @@
 void() bot_jump1;
 void() respawn_bot;
 void() bot_check_ammo;
+void() bot_face;
+
+.float	ai_time;
 
 // ------------------------------------------------
 void() bot_search_for_items =
@@ -158,11 +161,14 @@ void() jump_forward =
     if (!(self.flags & FL_ONGROUND))
         return;
 
+	self.button2 = true;
+
+    /* OLD VELOCITY GIVING CODE {{{
     self.flags = self.flags - (self.flags & FL_ONGROUND);
     makevectors(self.angles);
     self.velocity = self.velocity + (v_forward * 250);
     self.velocity_z = self.velocity_z + 250;
-
+    }}} */
 }
 
 
@@ -243,45 +249,46 @@ float() bot_look_for_players =
     // this is just like id's FindTarget(), he's looking for clients
 
     client = checkclient ();
+
     if (!client)
         return false;
 
+    /*
     if (teamplay)
         if (self.team == client.team)
             return false;
+     */
 
-    if (client.netname == "observer")
+    if (client == self.enemy || client.netname == "observer")
         return false;
 
-    if (client == self.enemy)
-        return false;
-
-    if (client.flags & FL_NOTARGET)
-        return false;
-    if (client.items & IT_INVISIBILITY)
+    if (client.flags & FL_NOTARGET || client.items & IT_INVISIBILITY)
         return false;
 
     r = range (client);
-    if (r == RANGE_FAR)
-        return false;
+
+    /* if (r == RANGE_FAR) */
+        /* return false; */
 
     if (!visible (client))
         return false;
 
     if (r == RANGE_NEAR)
     {
-        if (client.show_hostile < time && !infront (client))
-            return false;
+        /* if (client.show_hostile < time && !infront (client)) */
+            /* return false; */
     }
     else if (r == RANGE_MID)
     {
-        if (!infront (client))
-            return false;
+        /* if (!infront (client)) */
+            /* return false; */
     }
 
     self.enemy = client;
-
-    /* FoundTarget (); */ // FIXME: foundtarget crashes the client?? :((
+	/* self.goalentity = client; */
+    /* self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin); */
+    //FIXME: should now go into bot_run to chase
+    bot_face();
 
     return true;
 }
@@ -326,7 +333,6 @@ void() bot_face =
 // ----------------------
 {
     // this turns him directly toward his enemy
-
     self.angles_y = vectoyaw(self.enemy.origin - self.origin);
 }
 
@@ -367,11 +373,13 @@ void() coffee_move =
     // degree angle at the wall's corner. i have seen my bots do laps
     // around entire levels with these three lines of code
 
+    /* MODIFIED {{{
     if (walkmove (self.angles_y, 20) == true)
     {
         makevectors(self.angles);
-        self.flags = self.flags - (self.flags & FL_ONGROUND);
-        self.velocity = v_forward * self.speed;
+        // self.flags = self.flags - (self.flags & FL_ONGROUND);
+        // self.velocity = self.velocity + (v_forward * self.speed);
+        self.forwardmove = self.forwardmove + (v_forward * self.speed);
         return;
     }
 
@@ -380,14 +388,16 @@ void() coffee_move =
         if (self.button1 == -90)
         {
             makevectors(self.angles);
-            self.flags = self.flags - (self.flags & FL_ONGROUND);
-            self.velocity = v_right * self.speed;
+            // self.flags = self.flags - (self.flags & FL_ONGROUND);
+            // self.velocity = self.velocity + (v_right * self.speed);
+            self.sidemove = self.sidemove + (v_right * self.speed);
         }
         else
         {
             makevectors(self.angles);
-            self.flags = self.flags - (self.flags & FL_ONGROUND);
-            self.velocity = v_right * self.speed * -1;
+            // self.flags = self.flags - (self.flags & FL_ONGROUND);
+            // self.velocity = self.velocity + (v_right * self.speed * -1);
+            self.sidemove = self.sidemove - (v_right * self.speed);
         }
         return;
     }
@@ -400,8 +410,9 @@ void() coffee_move =
             if (self.button1 == 90)
                 self.button1 = -90;
             else self.button1 = 90;
+            }}} */
 
-    /* ORIGINAL {{{
+    // ORIGINAL {{
     if (walkmove (self.angles_y, 20) == false)
         if (walkmove (self.angles_y + self.button1, 20) == false)
             self.angles_y = self.angles_y + (self.button1 / 2);
@@ -412,7 +423,7 @@ void() coffee_move =
         if (self.button1 == 90)
             self.button1 = -90;
         else self.button1 = 90;
-        }}} */
+        // }}}
 
 }
 
@@ -426,6 +437,9 @@ void() bot_walk =
     if (!(self.flags & FL_ONGROUND))
         return;
 
+    self.button0 = 0;
+    self.button2 = 0;
+
 	// am I dead? Fire randomly until I respawn
 	if (self.health < 1)
 	{
@@ -434,25 +448,25 @@ void() bot_walk =
         return;
     }
 
-    /* bot_look_for_bots(); */
+    /* bot_look_for_bots(); XXX: shouldn't be needed anymore */
     bot_look_for_players();
     bot_search_for_items();
     bot_grab_items();
 
     check_for_ledge();
-    /* check_for_water(); */
-
-    self.button0 = 0;
-    self.button2 = 0;
+    check_for_water();
 
     // of course movetogoal() is id's C function, it moves randomly
     // toward what his self.goalentity is; don't let it worry you,
     // this function takes a long time to get where its going
     // the coffee_move is his cool running function
 
-    if (self.goalentity != world)
+    if (self.goalentity != world) {
         movetogoal(20);
-    else coffee_move();
+    }
+    else {
+        coffee_move();
+    }
 }
 
 
@@ -1163,7 +1177,7 @@ void(entity attacker, float damage)	bot_pain =
     if (attacker != self.enemy && attacker != world && self.enemy.classname != "player")
     {
         self.enemy = attacker;
-        FoundTarget();
+        /* FoundTarget(); */
     }
 
     if (self.pain_finished > time)
@@ -1382,7 +1396,6 @@ void(float team) create_bot =
 
     // initializing the entity
     bot = testbot("tutorbot"); // use ZQuake server bot support
-    bot.movetype = MOVETYPE_STEP;
     /* OLD SPAWN CODE {{{
        bot = spawn();
        spot = SelectSpawnPoint();
@@ -1441,7 +1454,12 @@ void(float team) create_bot =
 
     setinfo (bot, "bottomcolor", "11");
 
-    bot.speed = cvar("sv_maxspeed");
+    bot.speed = 320;
+    /* bot.speed = cvar("sv_maxspeed"); */
+
+    self.velocity_x = 0;
+    self.velocity_y = 0;
+    self.velocity_z = 0;
 
     // polishing him up
     /* POLISHING CODE FIXME: NOT SURE IF NEEDED
@@ -1472,7 +1490,13 @@ void BotDisconnect ()
 // called by the engine instead of PlayerPreThink for bots
 void BotPreThink ()
 {
-    bot_walk();
+    if (self.ai_time > time) {
+        // do nothing
+    } else {
+        self.ai_time = time + 0.05;
+        bot_walk();
+    }
+
     PlayerPreThink ();
 }
 
