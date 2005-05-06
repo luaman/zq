@@ -229,7 +229,7 @@ void() check_for_ledge =
     spot = self.origin + (v_forward * 60);
     spot = spot - '0 0 35';
     if (pointcontents(spot) == CONTENT_EMPTY)
-        bot_jump1();
+        jump_forward();
 }
 
 
@@ -281,7 +281,7 @@ float() bot_look_for_players =
 
     self.enemy = client;
 
-    FoundTarget ();
+    /* FoundTarget (); */ // FIXME: foundtarget crashes the client?? :((
 
     return true;
 }
@@ -315,7 +315,8 @@ void() bot_look_for_bots =
     {
         self.enemy = found;
         self.goalentity = found;
-        self.th_run();
+        // FIXME: removed this - legacy?
+        // self.th_run();
     }
 }
 
@@ -342,7 +343,8 @@ void() bot_stand =
 
     if (time > self.pausetime)
     {
-        self.th_walk();
+        // FIXME: removed this - legacy?
+        // self.th_walk();
         return;
     }
 
@@ -365,6 +367,41 @@ void() coffee_move =
     // degree angle at the wall's corner. i have seen my bots do laps
     // around entire levels with these three lines of code
 
+    if (walkmove (self.angles_y, 20) == true)
+    {
+        makevectors(self.angles);
+        self.flags = self.flags - (self.flags & FL_ONGROUND);
+        self.velocity = v_forward * self.speed;
+        return;
+    }
+
+    if (walkmove (self.angles_y + self.button1, 20) == true)
+    {
+        if (self.button1 == -90)
+        {
+            makevectors(self.angles);
+            self.flags = self.flags - (self.flags & FL_ONGROUND);
+            self.velocity = v_right * self.speed;
+        }
+        else
+        {
+            makevectors(self.angles);
+            self.flags = self.flags - (self.flags & FL_ONGROUND);
+            self.velocity = v_right * self.speed * -1;
+        }
+        return;
+    }
+
+    self.angles_y = self.angles_y + (self.button1 / 2);
+
+    // every so often, he'll change his wall-hugging direction
+    if (random() <= 0.02)
+        if (random() < 0.5)
+            if (self.button1 == 90)
+                self.button1 = -90;
+            else self.button1 = 90;
+
+    /* ORIGINAL {{{
     if (walkmove (self.angles_y, 20) == false)
         if (walkmove (self.angles_y + self.button1, 20) == false)
             self.angles_y = self.angles_y + (self.button1 / 2);
@@ -375,6 +412,7 @@ void() coffee_move =
         if (self.button1 == 90)
             self.button1 = -90;
         else self.button1 = 90;
+        }}} */
 
 }
 
@@ -388,13 +426,24 @@ void() bot_walk =
     if (!(self.flags & FL_ONGROUND))
         return;
 
-    bot_look_for_bots();
+	// am I dead? Fire randomly until I respawn
+	if (self.health < 1)
+	{
+		self.button0 = floor(random() * 2);
+		self.button2 = 0;
+        return;
+    }
+
+    /* bot_look_for_bots(); */
     bot_look_for_players();
     bot_search_for_items();
     bot_grab_items();
 
     check_for_ledge();
-    check_for_water();
+    /* check_for_water(); */
+
+    self.button0 = 0;
+    self.button2 = 0;
 
     // of course movetogoal() is id's C function, it moves randomly
     // toward what his self.goalentity is; don't let it worry you,
@@ -488,14 +537,18 @@ void() bot_run =
         self.goalentity = world;
         self.enemy = world;
         self.pausetime = time + 4;
-        self.th_stand();
+        // FIXME: removed this - legacy?
+        // self.th_stand();
         return;
     }
 
     bot_strafe();
 
     if (visible(self.enemy) && time > self.attack_finished)
-        self.th_missile();
+    {
+        // FIXME: removed this - legacy?
+        // self.th_missile();
+    }
 
 }
 
@@ -1329,6 +1382,7 @@ void(float team) create_bot =
 
     // initializing the entity
     bot = testbot("tutorbot"); // use ZQuake server bot support
+    bot.movetype = MOVETYPE_STEP;
     /* OLD SPAWN CODE {{{
        bot = spawn();
        spot = SelectSpawnPoint();
@@ -1386,6 +1440,8 @@ void(float team) create_bot =
     setinfo (bot, "topcolor", "4");
 
     setinfo (bot, "bottomcolor", "11");
+
+    bot.speed = cvar("sv_maxspeed");
 
     // polishing him up
     /* POLISHING CODE FIXME: NOT SURE IF NEEDED
