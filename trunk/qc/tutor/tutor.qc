@@ -304,8 +304,6 @@ void() check_for_ledge =
 {
     vector spot;
 
-    self.button2 = false;
-
     // movetogoal() will never move over a ledge, so we have to
     // check for a break in front of him and force him to jump
 
@@ -318,8 +316,11 @@ void() check_for_ledge =
     makevectors (self.angles);
     spot = self.origin + (v_forward * 60);
     spot = spot - '0 0 35';
-    if (pointcontents(spot) == CONTENT_EMPTY)
+    if (pointcontents(spot) == CONTENT_EMPTY) {
         jump_forward();
+    } else {
+        self.button2 = false;
+    }
 }
 
 
@@ -412,8 +413,6 @@ void() bot_stand =
 
     if (time > self.pausetime)
     {
-        // FIXME: removed this - legacy?
-        // self.th_walk();
         return;
     }
 
@@ -442,8 +441,7 @@ void() coffee_move =
         self.forwardmove = self.speed;
         return;
     }
-
-    if (walkmove (self.angles_y + self.button1, 20) == true)
+    else if (walkmove (self.angles_y + self.button1, 20) == true)
     {
         if (self.button1 == -90)
         {
@@ -467,7 +465,7 @@ void() coffee_move =
     self.failedmove = self.failedmove + 1;
     self.angles_y = self.angles_y + (self.button1 / 2);
 
-    if(self.failedmove > 20) {
+    if(self.failedmove > 10) {
         // every so often, he'll change his wall-hugging direction
         /* if (random() <= 0.02) */
             /* if (random() < 0.5) */
@@ -477,6 +475,7 @@ void() coffee_move =
         else {
             self.button1 = 90;
         }
+        self.angles_y = self.angles_y * -1;
         self.failedmove = 0;
     }
 }
@@ -602,7 +601,7 @@ void() bot_run =
 
     bot_face();
 
-    if (visible(self.enemy) && time > self.attack_finished)
+    if (visible(self.enemy))
     {
         bot_attack();
     }
@@ -1204,9 +1203,6 @@ void() bot_attack =
     vector dir, org, range;
     float foedist;
 
-    if (time < self.attack_finished)
-        return;
-
     bot_check_ammo();
     /* dir = vectoangles(bot_aim_at_enemy()); */
     /* self.v_angle_x = dir_x; */
@@ -1415,9 +1411,13 @@ void BotPreThink ()
         self.ai_time = time + 0.1;
         if(self.enemy == world || self.enemy == self) {
             self.button0 = false;
-            if (!(self.flags & FL_ONGROUND))
-                self.button2 = false;
-            bot_walk();
+            /* if (!(self.flags & FL_ONGROUND)) */
+                /* self.button2 = false; */
+            if (time > self.pausetime) {
+                bot_walk();
+            } else {
+                bot_stand();
+            }
         } else if (self.health > 0) {
             bot_run();
         }
