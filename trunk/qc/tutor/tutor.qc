@@ -92,6 +92,7 @@ void() bot_face;
 void() bot_attack;
 
 .float	ai_time;
+.float	forwardmove, sidemove, upmove;
 
 // ------------------------------------------------
 void() bot_search_for_items =
@@ -204,7 +205,7 @@ void() check_for_ledge =
 {
     vector spot;
 
-    // movetogoal() will never move over a legde, so we have to
+    // movetogoal() will never move over a ledge, so we have to
     // check for a break in front of him and force him to jump
 
     if (random() < 0.80)
@@ -275,41 +276,6 @@ float() bot_look_for_players =
     return true;
 }
 
-
-// ------------------------------------------------
-void() bot_look_for_bots =
-// ------------------------------------------------
-{
-    entity found, foe;
-
-    // bots aren't clients, so we have to check fo them manually
-    // we just see if any of the bots in the entity list are visible
-
-    if (self.enemy)
-        return;
-
-    found = world;
-    foe = find(world, classname, "bot");
-
-    while(foe)
-    {
-        if (visible(foe) && foe != self && foe.health > 0)
-            found = foe;
-        if (teamplay && found.team == self.team)
-            found = world;
-        foe = find(foe, classname, "bot");
-    }
-
-    if (found != world)
-    {
-        self.enemy = found;
-        self.goalentity = found;
-        // FIXME: removed this - legacy?
-        // self.th_run();
-    }
-}
-
-
 // ----------------------
 void() bot_face =
 // ----------------------
@@ -326,7 +292,6 @@ void() bot_stand =
 {
     // his standing thoughts, pretty simple
 
-    bot_look_for_bots();
     bot_look_for_players();
     check_for_water();
 
@@ -360,8 +325,9 @@ void() coffee_move =
     if (walkmove (self.angles_y, 20) == true)
     {
         makevectors(self.angles);
-        // self.flags = self.flags - (self.flags & FL_ONGROUND);
-        self.velocity = self.velocity + (v_forward * self.speed);
+        self.flags = self.flags - (self.flags & FL_ONGROUND);
+        /* self.velocity = self.velocity + (v_forward * self.speed); */
+        self.forwardmove = self.forwardmove + self.speed;
         return;
     }
 
@@ -370,14 +336,16 @@ void() coffee_move =
         if (self.button1 == -90)
         {
             makevectors(self.angles);
-            // self.flags = self.flags - (self.flags & FL_ONGROUND);
-            self.velocity = self.velocity + (v_right * self.speed);
+            self.flags = self.flags - (self.flags & FL_ONGROUND);
+            /* self.velocity = self.velocity + (v_right * self.speed); */
+            self.sidemove = self.sidemove + self.speed;
         }
         else
         {
             makevectors(self.angles);
-            // self.flags = self.flags - (self.flags & FL_ONGROUND);
-            self.velocity = self.velocity + (v_right * self.speed * -1);
+            self.flags = self.flags - (self.flags & FL_ONGROUND);
+            /* self.velocity = self.velocity + (v_right * self.speed * -1); */
+            self.sidemove = self.sidemove - self.speed;
         }
         return;
     }
@@ -392,20 +360,6 @@ void() coffee_move =
                 self.button1 = -90;
             else self.button1 = 90;
             // }}}
-
-    /* ORIGINAL {{{
-    if (walkmove (self.angles_y, 20) == false)
-        if (walkmove (self.angles_y + self.button1, 20) == false)
-            self.angles_y = self.angles_y + (self.button1 / 2);
-
-    // every so often, he'll change his wall-hugging direction
-
-    if (random() <= 0.02)
-        if (self.button1 == 90)
-            self.button1 = -90;
-        else self.button1 = 90;
-       // }}} */
-
 }
 
 
@@ -418,7 +372,6 @@ void() bot_walk =
     if (!(self.flags & FL_ONGROUND))
         return;
 
-    /* bot_look_for_bots(); XXX: shouldn't be needed anymore */
     bot_look_for_players();
     bot_search_for_items();
     /* bot_grab_items(); */
@@ -433,6 +386,7 @@ void() bot_walk =
 
     if (self.goalentity != world) {
         movetogoal(20);
+        self.forwardmove = self.forwardmove + self.speed;
     }
     else {
         coffee_move();
@@ -453,13 +407,15 @@ void() bot_run_slide =
     else
         ofs = -90;
 
-    if (walkmove (self.angles_y + ofs, 20))
+    if (walkmove (self.angles_y + ofs, 20)) {
+        self.sidemove = self.sidemove + self.speed;
         return;
+    }
 
     self.lefty = 1 - self.lefty;
 
     walkmove (self.angles_y - ofs, 20);
-
+    self.sidemove = self.sidemove - self.speed;
 }
 
 
@@ -475,6 +431,7 @@ void() bot_strafe =
     if (!visible(self.enemy))
     {
         movetogoal(20);
+        self.forwardmove = self.forwardmove + self.speed;
         return;
     }
 
@@ -488,8 +445,10 @@ void() bot_strafe =
     }
 
     // chasing the player here
-    else if (self.weapon == IT_SUPER_SHOTGUN)
+    else if (self.weapon == IT_SUPER_SHOTGUN) {
         movetogoal(20);
+        self.forwardmove = self.forwardmove + self.speed;
+    }
 
     // standing still while attacking
     else if (self.weapon == IT_LIGHTNING)
@@ -517,11 +476,8 @@ void() bot_run =
 
     if (time > self.search_time || self.enemy.health <= 0)
     {
-        self.goalentity = world;
-        self.enemy = world;
+        self.goalentity = self.enemy = world;
         self.pausetime = time + 4;
-        // FIXME: removed this - legacy?
-        // self.th_stand();
         return;
     }
 
@@ -822,8 +778,8 @@ void() bot_fire_grenade =
     makevectors (self.v_angle);
 
     missile.velocity = bot_aim_at_enemy();
-    missile.velocity = missile.velocity * 500;
-    missile.velocity_z = 300;
+    missile.velocity = missile.velocity * 600;
+    missile.velocity_z = missile.velocity_z + 200;
 
     missile.avelocity = '300 300 300';
 
@@ -1248,6 +1204,7 @@ void() bot_attack =
 
     bot_check_ammo();
 
+    /*
     if (self.weapon == IT_SHOTGUN)
     {
         self.attack_finished = time + 0.5;
@@ -1283,7 +1240,8 @@ void() bot_attack =
         self.attack_finished = time + 0.1;
         bot_fire_lightning();
     }
-
+    */
+    self.button0 = true;
 }
 
 
@@ -1473,13 +1431,13 @@ void BotPreThink ()
         return;
     }
 
-    self.button0 = self.button1 = self.button2 = 0;
-
     if (self.ai_time > time) {
         // do nothing
     } else {
         self.ai_time = time + 0.1;
+        self.forwardmove = self.sidemove = self.upmove = 0;
         if(self.enemy == world || self.enemy == self) {
+            self.button0 = self.button1 = self.button2 = 0;
             bot_walk();
         } else if (self.health > 0) {
             bot_face();
