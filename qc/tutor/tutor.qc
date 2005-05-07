@@ -62,6 +62,102 @@
 ---------------------------------------------------------------------------
 */
 
+vector realorigin (entity ent)
+{
+	return (ent.absmin + ent.absmax) * 0.5;
+}
+
+/*
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+fisible
+
+a version of visible that checks for corners
+of the bounding boxes
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+*/
+
+float fisible (entity targ)
+{
+	vector	spot1, org;
+	float	thruwater, pc1, pc2;
+
+	org = realorigin(targ);
+	spot1 = self.origin + self.view_ofs;
+
+	if (targ.solid == SOLID_BSP)
+	{
+		traceline (spot1, org, true, self);
+		if (trace_ent == targ)
+			return true;
+		else if (trace_fraction == 1)
+			return true;
+		return false;
+	}
+	else
+	{
+		pc1 = pointcontents(org);
+		pc2 = pointcontents(spot1);
+		if (targ.classname == "player")
+			thruwater = false;
+		else if (pc1 == CONTENT_LAVA)
+			return false;
+		else
+			thruwater = true;
+	}
+
+	if (pc1 < -1) // targ's origin is in water or other liquid
+	{
+		if (pc2 != pc1)
+		{
+			// look for their head
+			traceline (spot1, org + targ.mins, true, self);
+			// cross the water check
+			if (trace_inopen)
+				if (trace_inwater)
+					if (!thruwater)
+						return false;
+			if (trace_ent == targ)
+				return true;
+			else if (trace_fraction == 1)
+				return true;
+			return false;
+		}
+	}
+	else
+	{
+		if (pc2 != pc1)
+		{
+			traceline (spot1, org + targ.maxs, true, self);
+			if (trace_inopen)
+				if (trace_inwater)
+					if (!thruwater)
+						return false;
+			if (trace_ent == targ)
+				return true;
+			else if (trace_fraction == 1)
+				return true;
+			return false;
+		}
+	}
+	traceline (spot1, org, true, self);
+	if (trace_ent == targ)
+		return true;
+	else if (trace_fraction == 1)
+		return true;
+	traceline (spot1, org + targ.maxs, true, self);
+	if (trace_ent == targ)
+		return true;
+	else if (trace_fraction == 1)
+		return true;
+	traceline (spot1, org + targ.mins, true, self);
+	if (trace_ent == targ)
+		return true;
+	else if (trace_fraction == 1)
+		return true;
+	return false;
+}
 
 
 /*
@@ -85,11 +181,11 @@
 
 
 // declaring the routines before they are called
-void() bot_jump1;
-void() respawn_bot;
 void() bot_check_ammo;
 void() bot_face;
 void() bot_attack;
+
+.float failedmove;
 
 .float	ai_time;
 .float	forwardmove, sidemove, upmove;
@@ -142,12 +238,6 @@ void() bot_grab_items =
         self.goalentity.model = string_null;
         self.goalentity.nextthink = time + 20;
         self.goalentity.think = SUB_regen;
-        if (self.goalentity.healamount)
-            sound (self, CHAN_ITEM, "items/health1.wav", 1, ATTN_NORM);
-        else if (self.goalentity.weapon)
-            sound (self, CHAN_ITEM, "weapons/pkup.wav", 1, ATTN_NORM);
-        else
-            sound(self, CHAN_ITEM, "items/armor1.wav", 1, ATTN_NORM);
         self.goalentity = world;
     }
 
@@ -164,7 +254,7 @@ void() jump_forward =
         return;
 
     makevectors(self.angles);
-    self.velocity = self.velocity + (v_forward * self.speed);
+    self.forwardmove = self.speed;
 	self.button2 = true;
 
     /* OLD VELOCITY GIVING CODE {{{
@@ -186,16 +276,25 @@ void() check_for_water =
 
     makevectors(self.angles);
     p = pointcontents(self.origin + v_forward*16);
-    if (p != CONTENT_WATER && p != CONTENT_SLIME && p != CONTENT_LAVA)
+    if (p != CONTENT_WATER && p != CONTENT_SLIME && p != CONTENT_LAVA) {
+        self.upmove = 0;
         return;
+    }
 
     // he'll try to swim upward here
-    self.velocity = self.velocity + (v_forward * self.speed);
-    self.velocity_z = self.velocity_z + self.speed;
-    if (random() < 0.4)
-        self.velocity_x = self.velocity_x + 100;
-    else if (random() > 0.8)
-        self.velocity_y = self.velocity_y + 100;
+    /* self.velocity = self.velocity + (v_forward * self.speed); */
+    /* self.velocity_z = self.velocity_z + self.speed; */
+    self.forwardmove = self.speed;
+    self.upmove = self.speed;
+
+    if (random() < 0.4) {
+        /* self.velocity_x = self.velocity_x + 100; */
+        self.sidemove = 320;
+    }
+    else if (random() > 0.8) {
+        /* self.velocity_y = self.velocity_y + 100; */
+        self.sidemove = -320;
+    }
 }
 
 
@@ -204,6 +303,8 @@ void() check_for_ledge =
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {
     vector spot;
+
+    self.button2 = false;
 
     // movetogoal() will never move over a ledge, so we have to
     // check for a break in front of him and force him to jump
@@ -250,28 +351,26 @@ float() bot_look_for_players =
 
     r = range (client);
 
-    /* if (r == RANGE_FAR) */
-        /* return false; */
-
     if (!visible (client))
         return false;
 
-    if (r == RANGE_NEAR)
+    if (r == RANGE_FAR) {
+        return false;
+    }
+    else if (r == RANGE_NEAR)
     {
-        /* if (client.show_hostile < time && !infront (client)) */
-            /* return false; */
+        if (client.show_hostile < time && !infront (client))
+            return false;
     }
     else if (r == RANGE_MID)
     {
-        /* if (!infront (client)) */
-            /* return false; */
+        if (!infront (client))
+            return false;
     }
 
     self.enemy = client;
     self.goalentity = client;
     /* self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin); */
-    //FIXME: should now go into bot_run to chase
-    bot_face();
 
     return true;
 }
@@ -280,9 +379,26 @@ float() bot_look_for_players =
 void() bot_face =
 // ----------------------
 {
-    // this turns him directly toward his enemy
-    self.angles_y = vectoyaw(self.enemy.origin - self.origin);
-    self.v_angle_y = vectoyaw(self.enemy.origin - self.origin);
+    if(self.enemy != world) {
+        vector viewangles;
+
+        // this turns him directly toward his enemy
+        self.angles_y = vectoyaw(self.enemy.origin - self.origin);
+        viewangles = vectoangles(self.enemy.origin - self.origin);
+        self.v_angle_x = viewangles_x;
+        self.v_angle_y = viewangles_y;
+
+        if (self.v_angle_x > 180)
+            self.v_angle_x = self.v_angle_x - 360; // corrects an ID mistake
+
+        self.v_angle_x = self.v_angle_x * -1;  // corrects an ID mistake
+
+        if (self.v_angle_x > 80)
+            self.v_angle_x = 80;
+
+        if (self.v_angle_x < -80)
+            self.v_angle_x = -80;
+    }
 }
 
 
@@ -291,7 +407,6 @@ void() bot_stand =
 // ----------------------
 {
     // his standing thoughts, pretty simple
-
     bot_look_for_players();
     check_for_water();
 
@@ -315,19 +430,16 @@ void() coffee_move =
 // ******************************
 {
 
-    // this is the best subroutine i've ever written, and probably the
-    // most powerful bot roaming function. i hope you credit me if you use
-    // it. basically he strafes along a wall, then turns at a 45 or -45
-    // degree angle at the wall's corner. i have seen my bots do laps
-    // around entire levels with these three lines of code
-
+    // basically he strafes along a wall, then turns at a 45 or -45 degree
+    // angle at the wall's corner.
     // MODIFIED {{
     if (walkmove (self.angles_y, 20) == true)
     {
         makevectors(self.angles);
-        self.flags = self.flags - (self.flags & FL_ONGROUND);
+        /* self.flags = self.flags - (self.flags & FL_ONGROUND); */
         /* self.velocity = self.velocity + (v_forward * self.speed); */
-        self.forwardmove = self.forwardmove + self.speed;
+        /* self.forwardmove = v_forward * self.speed; */
+        self.forwardmove = self.speed;
         return;
     }
 
@@ -336,30 +448,37 @@ void() coffee_move =
         if (self.button1 == -90)
         {
             makevectors(self.angles);
-            self.flags = self.flags - (self.flags & FL_ONGROUND);
+            /* self.flags = self.flags - (self.flags & FL_ONGROUND); */
             /* self.velocity = self.velocity + (v_right * self.speed); */
-            self.sidemove = self.sidemove + self.speed;
+            /* self.sidemove = v_right * self.speed; */
+            self.sidemove = self.speed;
         }
         else
         {
             makevectors(self.angles);
-            self.flags = self.flags - (self.flags & FL_ONGROUND);
+            /* self.flags = self.flags - (self.flags & FL_ONGROUND); */
             /* self.velocity = self.velocity + (v_right * self.speed * -1); */
-            self.sidemove = self.sidemove - self.speed;
+            /* self.sidemove = v_right * self.speed * -1; */
+            self.sidemove = self.speed * -1;
         }
         return;
     }
 
+    self.failedmove = self.failedmove + 1;
     self.angles_y = self.angles_y + (self.button1 / 2);
-	self.v_angle_y = self.v_angle_y + (self.button1 / 2);
 
-    // every so often, he'll change his wall-hugging direction
-    if (random() <= 0.02)
-        if (random() < 0.5)
-            if (self.button1 == 90)
-                self.button1 = -90;
-            else self.button1 = 90;
-            // }}}
+    if(self.failedmove > 20) {
+        // every so often, he'll change his wall-hugging direction
+        /* if (random() <= 0.02) */
+            /* if (random() < 0.5) */
+        if (self.button1 == 90) {
+            self.button1 = -90;
+        }
+        else {
+            self.button1 = 90;
+        }
+        self.failedmove = 0;
+    }
 }
 
 
@@ -386,7 +505,7 @@ void() bot_walk =
 
     if (self.goalentity != world) {
         movetogoal(20);
-        self.forwardmove = self.forwardmove + self.speed;
+        self.forwardmove = self.speed;
     }
     else {
         coffee_move();
@@ -431,11 +550,9 @@ void() bot_strafe =
     if (!visible(self.enemy))
     {
         movetogoal(20);
-        self.forwardmove = self.forwardmove + self.speed;
+        self.forwardmove = self.speed;
         return;
     }
-
-    bot_face();
 
     // stepping backwards for a long distance shot
     if (self.weapon == IT_ROCKET_LAUNCHER)
@@ -445,9 +562,9 @@ void() bot_strafe =
     }
 
     // chasing the player here
-    else if (self.weapon == IT_SUPER_SHOTGUN) {
+    else if (self.weapon == IT_SUPER_SHOTGUN || self.weapon == IT_AXE) {
         movetogoal(20);
-        self.forwardmove = self.forwardmove + self.speed;
+        self.forwardmove = self.speed;
     }
 
     // standing still while attacking
@@ -482,6 +599,8 @@ void() bot_run =
     }
 
     bot_strafe();
+
+    bot_face();
 
     if (visible(self.enemy) && time > self.attack_finished)
     {
@@ -521,10 +640,6 @@ void() bot_run =
 ==========================================================================
 ==========================================================================
 */
-
-
-void() bot_run1;
-
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void() bot_drop_pack =
@@ -670,201 +785,57 @@ void() bot_check_ammo =
 
     bot_set_currentammo();
 
-    bot_run1();
+    /* bot_run1(); */
 }
 
+// -------------------------------------
+vector () bot_calculate_aim =
+// -------------------------------------
+{
+    float num_tries;
+    vector end;
+
+    num_tries = 25;
+
+    while (num_tries)
+    {
+        end = self.enemy.origin;
+        end_x = end_x + crandom() * 20;
+        end_y = end_y + crandom() * 20;
+        end_z = end_z + crandom() * 20;
+        traceline (self.origin, end, true, self);
+        if ((trace_fraction == 1) && (trace_ent == self.enemy))
+            return end - self.origin;
+        num_tries = num_tries - 1;
+    }
+
+    return self.enemy.origin - self.origin;
+}
 
 // -------------------------------------
 vector() bot_aim_at_enemy =
 // -------------------------------------
 {
+    // FIXME: this doesn't work @ all
+    /*
+    traceline (self.origin, self.enemy.origin, false, self);
+
+    if ((trace_fraction != 1) || (trace_ent != self.enemy))
+        return bot_calculate_aim();
+    else
+        return normalize(self.enemy.origin - self.origin);
+    */
+    /*
+    traceline (self.origin, self.enemy.origin, false, self);
+    if ((trace_fraction != 1) || (trace_ent != self.enemy)) {
+        if (self.weapon == IT_ROCKET_LAUNCHER || self.weapon == IT_GRENADE_LAUNCHER) {
+            return bot_calculate_aim();
+        }
+    }
+    else
+    */
     return normalize(self.enemy.origin - self.origin);
 }
-
-
-// -------------------------------------
-void() bot_fire_supershotgun =
-// -------------------------------------
-{
-    vector dir;
-
-    self.currentammo = self.ammo_shells = self.ammo_shells - 2;
-    bot_face();
-    sound (self ,CHAN_WEAPON, "weapons/shotgn2.wav", 1, ATTN_NORM);
-    /* self.effects = self.effects | EF_MUZZLEFLASH; */
-    dir = bot_aim_at_enemy();
-    FireBullets (18, dir, '0.14 0.1 0');
-}
-
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void() bot_fire_shotgun =
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-{
-    vector dir;
-
-    if (self.weapon == IT_SUPER_SHOTGUN)
-    {
-        bot_fire_supershotgun();
-        return;
-    }
-
-    bot_face();
-
-    sound (self, CHAN_WEAPON, "weapons/guncock.wav", 1, ATTN_NORM);
-    /* self.effects = self.effects | EF_MUZZLEFLASH; */
-
-    dir = bot_aim_at_enemy();
-    FireBullets (6, dir, '0.04 0.04 0');
-
-}
-
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void() bot_fire_supernailgun =
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-{
-    vector dir;
-
-    self.currentammo = self.ammo_nails = self.ammo_nails - 1;
-    sound (self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
-
-    dir = bot_aim_at_enemy();
-    launch_spike (self.origin + '0 6 16', dir);
-    newmis.touch = superspike_touch;
-    setmodel (newmis, "progs/s_spike.mdl");
-    setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
-}
-
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void() bot_fire_nailgun =
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-{
-    vector dir;
-
-    if (self.weapon == IT_SUPER_NAILGUN)
-    {
-        bot_fire_supernailgun();
-        return;
-    }
-
-    self.currentammo = self.ammo_nails = self.ammo_nails - 1;
-    makevectors (self.v_angle);
-    sound (self, CHAN_WEAPON, "weapons/rocket1i.wav", 1, ATTN_NORM);
-
-    dir = bot_aim_at_enemy();
-    launch_spike (self.origin + '0 6 16', dir);
-
-}
-
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void() bot_fire_grenade =
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-{
-    entity missile;
-
-    self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
-    /* self.effects = self.effects | EF_MUZZLEFLASH; */
-    sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
-
-    missile = spawn ();
-    missile.owner = self;
-    missile.movetype = MOVETYPE_BOUNCE;
-    missile.solid = SOLID_BBOX;
-
-    // set missile speed
-    makevectors (self.v_angle);
-
-    missile.velocity = bot_aim_at_enemy();
-    missile.velocity = missile.velocity * 600;
-    missile.velocity_z = missile.velocity_z + 200;
-
-    missile.avelocity = '300 300 300';
-
-    missile.angles = vectoangles(missile.velocity);
-
-    missile.touch = GrenadeTouch;
-
-    // set missile duration
-    missile.nextthink = time + 2.5;
-    missile.think = GrenadeExplode;
-
-    setmodel (missile, "progs/grenade.mdl");
-    setsize (missile, '0 0 0', '0 0 0');
-    setorigin (missile, self.origin);
-
-}
-
-
-// =============================
-void() bot_fire_rocket =
-// -----------------------------
-{
-    entity missile;
-
-    if (self.weapon == IT_GRENADE_LAUNCHER)
-    {
-        bot_fire_grenade();
-        return;
-    }
-
-    self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
-    sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
-
-    missile = spawn ();
-    missile.owner = self;
-    missile.movetype = MOVETYPE_FLYMISSILE;
-    missile.solid = SOLID_BBOX;
-    missile.classname = "missile";
-
-    missile.velocity = bot_aim_at_enemy() * 1000;
-
-    missile.angles = vectoangles(missile.velocity);
-    missile.touch = T_MissileTouch;
-    missile.nextthink = time + 5;
-    missile.think = SUB_Remove;
-
-    setmodel (missile, "progs/missile.mdl");
-    setsize (missile, '-1 -1 -1', '1 1 1');
-    setorigin (missile, self.origin + v_forward*8 + '0 0 16');
-}
-
-
-// ==============================
-void() bot_fire_lightning =
-// ------------------------------
-{
-    vector	org, dir;
-
-    /* self.effects = self.effects | EF_MUZZLEFLASH; */
-
-    bot_face();
-
-    makevectors(self.angles);
-    org = self.origin + '0 0 8' + (v_forward * 8);
-
-    dir = bot_aim_at_enemy();
-
-    traceline (org, self.origin + dir*600, true, self);
-
-    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-    WriteByte (MSG_BROADCAST, TE_LIGHTNING1);
-    WriteEntity (MSG_BROADCAST, self);
-    WriteCoord (MSG_BROADCAST, org_x);
-    WriteCoord (MSG_BROADCAST, org_y);
-    WriteCoord (MSG_BROADCAST, org_z);
-    WriteCoord (MSG_BROADCAST, trace_endpos_x);
-    WriteCoord (MSG_BROADCAST, trace_endpos_y);
-    WriteCoord (MSG_BROADCAST, trace_endpos_z);
-
-    LightningDamage (org, trace_endpos, self, 10);
-
-    sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);
-    self.currentammo = self.ammo_cells = self.ammo_cells - 1;
-}
-
 
 /*
 ==========================================================================
@@ -884,6 +855,7 @@ void() bot_fire_lightning =
 */
 
 
+/*
 
 // Frame macros
 
@@ -1090,9 +1062,10 @@ void()  bot_diee6		=[	$deathe6,	bot_diee7	 ] {};
 void()  bot_diee7		=[	$deathe7,	bot_diee8	 ] {};
 void()  bot_diee8		=[	$deathe8,	bot_diee9	 ] {};
 void()  bot_diee9		=[	$deathe9,	th_respawn	 ] {};
-
+*/
 // }}}
 
+/*
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void(entity attacker, float damage)	bot_pain =
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1101,7 +1074,7 @@ void(entity attacker, float damage)	bot_pain =
     if (attacker != self.enemy && attacker != world && self.enemy.classname != "player")
     {
         self.enemy = attacker;
-        /* FoundTarget(); */
+        // FoundTarget();
     }
 
     if (self.pain_finished > time)
@@ -1191,57 +1164,61 @@ void() bot_die =
     else
         bot_diee1();
 }
+*/
+
+
+/*
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+weapon_range
+
+_x "sweet spot range" - try to maintain this range if possible
+_y minimum range bot can be to be effective (rl/gl) (move away)
+_z maximum range bot can be to be effective (lg/axe) (move in)
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+*/
+vector weapon_range (float wep)
+{
+	if (wep == IT_AXE)
+		return '48 0 64';
+	else if (wep == IT_SHOTGUN)
+		return '128 0 99999';
+	else if (wep == IT_SUPER_SHOTGUN)
+		return '128 0 99999';
+	else if (wep == IT_NAILGUN)
+		return '180 0 3000';
+	else if (wep == IT_SUPER_NAILGUN)
+		return '180 0 3000';
+	else if (wep == IT_GRENADE_LAUNCHER)
+		return '180 48 3000';
+	else if (wep == IT_ROCKET_LAUNCHER)
+		return '180 48 3000';
+	else if (wep == IT_LIGHTNING)
+		return '350 0 512';
+}
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void() bot_attack =
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {
-    // this routine decides which animation sequence to play
+    vector dir, org, range;
+    float foedist;
 
     if (time < self.attack_finished)
         return;
 
     bot_check_ammo();
+    /* dir = vectoangles(bot_aim_at_enemy()); */
+    /* self.v_angle_x = dir_x; */
+    /* self.v_angle_y = dir_y; */
+	org = realorigin(self.enemy);
+	makevectors(self.v_angle);
+	foedist = vlen(org - self.origin);
+	range = weapon_range(self.weapon);
+    traceline (self.origin + self.view_ofs, self.origin + self.view_ofs + v_forward * range_z, false, self);
 
-    /*
-    if (self.weapon == IT_SHOTGUN)
-    {
-        self.attack_finished = time + 0.5;
-        bot_fire_shotgun();
-    }
-    else if (self.weapon == IT_SUPER_SHOTGUN)
-    {
-        self.attack_finished = time + 0.7;
-        bot_fire_supershotgun();
-    }
-    else if (self.weapon == IT_NAILGUN)
-    {
-        self.attack_finished = time + 0.2;
-        bot_fire_nailgun();
-    }
-    else if (self.weapon == IT_SUPER_NAILGUN)
-    {
-        self.attack_finished = time + 0.2;
-        bot_fire_supernailgun();
-    }
-    else if (self.weapon == IT_GRENADE_LAUNCHER)
-    {
-        self.attack_finished = time + 0.8;
-        bot_fire_grenade();
-    }
-    else if (self.weapon == IT_ROCKET_LAUNCHER)
-    {
-        self.attack_finished = time + 1;
-        bot_fire_rocket();
-    }
-    else if (self.weapon == IT_LIGHTNING)
-    {
-        self.attack_finished = time + 0.1;
-        bot_fire_lightning();
-    }
-    */
-    self.button0 = true;
+    if (vlen(trace_endpos - (self.origin + self.view_ofs)) >= range_y)
+        self.button0 = true;
 }
 
 
@@ -1266,6 +1243,7 @@ string() bot_name =
 }
 
 
+/*
 // ------------------------------------------------
 void() respawn_bot =
 // ------------------------------------------------
@@ -1312,6 +1290,7 @@ void() respawn_bot =
     self.nextthink = time + 0.1 + random();
     self.think = self.th_stand;
 }
+*/
 
 
 // ------------------------------------------------
@@ -1380,12 +1359,12 @@ void(float team) create_bot =
 
     setinfo (bot, "bottomcolor", "11");
 
-    bot.speed = 320;
     /* bot.speed = cvar("sv_maxspeed"); */
+    bot.speed = 320;
 
-    self.velocity_x = 0;
-    self.velocity_y = 0;
-    self.velocity_z = 0;
+    // initialise button1 to 90 degrees
+    self.button1 = 90;
+    self.failedmove = 0;
 
     // polishing him up
     /* POLISHING CODE FIXME: NOT SURE IF NEEDED
@@ -1416,11 +1395,10 @@ void BotDisconnect ()
 // called by the engine instead of PlayerPreThink for bots
 void BotPreThink ()
 {
-	// am I dead? Fire randomly until I respawn
+	// am I dead? fire randomly until I respawn
 	if (self.health < 1)
 	{
-		self.button0 = 0;
-        self.button1 = 0;
+		self.button0 = false;
 		self.button2 = floor(random() * 2);
         self.enemy = self.goalentity = world;
         if (self.deadflag == DEAD_DEAD)
@@ -1435,12 +1413,12 @@ void BotPreThink ()
         // do nothing
     } else {
         self.ai_time = time + 0.1;
-        self.forwardmove = self.sidemove = self.upmove = 0;
         if(self.enemy == world || self.enemy == self) {
-            self.button0 = self.button1 = self.button2 = 0;
+            self.button0 = false;
+            if (!(self.flags & FL_ONGROUND))
+                self.button2 = false;
             bot_walk();
         } else if (self.health > 0) {
-            bot_face();
             bot_run();
         }
     }
