@@ -45,10 +45,6 @@ void() agh_player_footsteps;
 void() agh_player_dietidy;
 void() agh_weapons_impulsecommands;
 
-// FORWARD DECLARATIONS
-
-void() ImpulseCommands;
-
 
 // IMPLEMENTATIONS
 
@@ -150,25 +146,31 @@ void() agh_client_startdevs =
     // NAV
     if( infokey(self, "agv_t_nav") == "1" )
     {
-        stuffcmd(self, "setinfo agv_t_nav 0\n");
-        //self.impulse = 100;
-        //ImpulseCommands();
+        // Create a new object...
+        snap_nav_constructor();
+        //stuffcmd(self, "setinfo agv_t_nav 1\n");
+        snap_misc_m2m("NAV: Enabled.\n");
+        soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
     }
 
     // D5k
     if( infokey(self, "agv_t_d5k") == "1" )
     {
-        stuffcmd(self, "setinfo agv_t_d5k 0\n");
-        //self.impulse = 110;
-        //ImpulseCommands();
+        // Create a new object...
+        snap_d5k_constructor();
+        //stuffcmd(self, "setinfo agv_t_d5k 1\n");
+        snap_misc_m2m("D5k: Enabled.\n");
+        soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
     }
 
     // ESR
     if( infokey(self, "agv_t_esr") == "1" )
     {
-        stuffcmd(self, "setinfo agv_t_esr 0\n");
-        //self.impulse = 120;
-        //ImpulseCommands();
+        // ``Re-enable'' the ESR...
+        //stuffcmd(self, "setinfo agv_t_esr 1\n");
+        snap_esr_constructor();
+        soundtoclient(self, self, CHAN_AUTO, "toggles/on.wav", 1, ATTN_NORM);
+        snap_misc_m2m("ESR: Set to mode 1.\n");
     }
 
     // Compass Offset...
@@ -279,16 +281,27 @@ void() agh_player_dietidy =
     // NAV
     if( infokey(self, "agv_t_nav") == "1" )
     {
-        self.impulse = 100;
-        ImpulseCommands();
+        // Remove the object, as it exists now...
+        self.agrip_nav.think = snap_nav_destructor;
+        self.agrip_nav.nextthink = time + 0.01;
+        //stuffcmd(self, "setinfo agv_t_nav 0\n");
+        snap_misc_m2m("NAV: Disabled.\n");
+        soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
+
+        // Set to 1 for when player respawns...
         stuffcmd(self, "setinfo agv_t_nav 1\n");
     }
 
     // D5k
     if( infokey(self, "agv_t_d5k") == "1" )
     {
-        self.impulse = 110;
-        ImpulseCommands();
+        // Remove the object, as it exists now...
+        remove(self.agrip_d5k);
+        stuffcmd(self, "setinfo agv_t_d5k 0\n");
+        snap_misc_m2m("D5k: Disabled.\n");
+        soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
+
+        // Set to 1 for respawn...
         stuffcmd(self, "setinfo agv_t_d5k 1\n");
     }
 
@@ -316,6 +329,7 @@ void() agh_player_dietidy =
     // Remove all waypoints...
     while( self.agrip_aux.health > 0 )
     {
+        // FIXME can cause errors...
         snap_marker_destructor();
     }
 
@@ -385,22 +399,22 @@ void() agh_weapons_impulsecommands =
     if( self.impulse == 100 )
     {
         if( infokey(self, "agv_t_nav") == "0" )
-	{
-	    // Create a new object...
-	    snap_nav_constructor();
-	    stuffcmd(self, "setinfo agv_t_nav 1\n");
+        {
+            // Create a new object...
+            snap_nav_constructor();
+            stuffcmd(self, "setinfo agv_t_nav 1\n");
             snap_misc_m2m("NAV: Enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
-	}
+        }
         else
-	{
-	    // Remove the object, as it exists now...
-	    self.agrip_nav.think = snap_nav_destructor;
-	    self.agrip_nav.nextthink = time + 0.01;
-	    stuffcmd(self, "setinfo agv_t_nav 0\n");
+        {
+            // Remove the object, as it exists now...
+            self.agrip_nav.think = snap_nav_destructor;
+            self.agrip_nav.nextthink = time + 0.01;
+            stuffcmd(self, "setinfo agv_t_nav 0\n");
             snap_misc_m2m("NAV: Disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
-	}
+        }
     }
 
     // nav_wall_warnings
@@ -408,30 +422,30 @@ void() agh_weapons_impulsecommands =
     {
         if( infokey(self, "agv_t_nav_wall_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_nav_wall_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_nav_wall_warnings 0\n");
             snap_misc_m2m("NAV: Wall warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
-	else
+        else
         {
-	    stuffcmd(self, "setinfo agv_t_nav_wall_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_nav_wall_warnings 1\n");
             snap_misc_m2m("NAV: Wall warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
-     }
+    }
 
     // nav_side_wall_warnings
     if( self.impulse == 102 )
     {
-	if( infokey(self, "agv_t_nav_side_wall_warnings") == "1" )
+        if( infokey(self, "agv_t_nav_side_wall_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_nav_side_wall_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_nav_side_wall_warnings 0\n");
             snap_misc_m2m("NAV: Side wall warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
-	else
+        else
         {
-	    stuffcmd(self, "setinfo agv_t_nav_side_wall_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_nav_side_wall_warnings 1\n");
             snap_misc_m2m("NAV: Side wall warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
@@ -442,30 +456,30 @@ void() agh_weapons_impulsecommands =
     {
         if( infokey(self, "agv_t_nav_wall_touch_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_nav_wall_touch_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_nav_wall_touch_warnings 0\n");
             snap_misc_m2m("NAV: Wall touch warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
-	else
+        else
         {
-	    stuffcmd(self, "setinfo agv_t_nav_wall_touch_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_nav_wall_touch_warnings 1\n");
             snap_misc_m2m("NAV: Wall touch warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
-     }
+    }
 
     // nav_z_warnings
     if( self.impulse == 104 )
     {
         if( infokey(self, "agv_t_nav_z_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_nav_z_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_nav_z_warnings 0\n");
             snap_misc_m2m("NAV: Z warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
-	else
+        else
         {
-	    stuffcmd(self, "setinfo agv_t_nav_z_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_nav_z_warnings 1\n");
             snap_misc_m2m("NAV: Z warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
@@ -474,32 +488,32 @@ void() agh_weapons_impulsecommands =
     // nav_haz_warnings
     if( self.impulse == 105 )
     {
-	if( infokey(self, "agv_t_nav_haz_warnings") == "1" )
+        if( infokey(self, "agv_t_nav_haz_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_nav_haz_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_nav_haz_warnings 0\n");
             snap_misc_m2m("NAV: Hazard warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
         else
         {
-	    stuffcmd(self, "setinfo agv_t_nav_haz_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_nav_haz_warnings 1\n");
             snap_misc_m2m("NAV: Hazard warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
-     }
+    }
 
     // nav_side_haz_warnings
     if( self.impulse == 106 )
     {
         if( infokey(self, "agv_t_nav_side_haz_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_nav_side_haz_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_nav_side_haz_warnings 0\n");
             snap_misc_m2m("NAV: Side hazard warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
-	else
+        else
         {
-	    stuffcmd(self, "setinfo agv_t_nav_side_haz_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_nav_side_haz_warnings 1\n");
             snap_misc_m2m("NAV: Side hazard warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
@@ -508,15 +522,15 @@ void() agh_weapons_impulsecommands =
     // nav_space_warnings
     if( self.impulse == 107 )
     {
-	if( infokey(self, "agv_t_nav_space_warnings") == "1" )
+        if( infokey(self, "agv_t_nav_space_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_nav_space_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_nav_space_warnings 0\n");
             snap_misc_m2m("NAV: Open space warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
-	else
+        else
         {
-	    stuffcmd(self, "setinfo agv_t_nav_space_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_nav_space_warnings 1\n");
             snap_misc_m2m("NAV: Open space warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
@@ -527,13 +541,13 @@ void() agh_weapons_impulsecommands =
     {
         if( infokey(self, "agv_t_nav_corner_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_nav_corner_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_nav_corner_warnings 0\n");
             snap_misc_m2m("NAV: Corner warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
-	else
+        else
         {
-	    stuffcmd(self, "setinfo agv_t_nav_corner_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_nav_corner_warnings 1\n");
             snap_misc_m2m("NAV: Corner warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
@@ -599,13 +613,13 @@ void() agh_weapons_impulsecommands =
     {
         if( infokey(self, "agv_t_esr_monster_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_esr_monster_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_esr_monster_warnings 0\n");
             snap_misc_m2m("ESR: Monster warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
-	else
+        else
         {
-	    stuffcmd(self, "setinfo agv_t_esr_monster_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_esr_monster_warnings 1\n");
             snap_misc_m2m("ESR: Monster warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
@@ -614,15 +628,15 @@ void() agh_weapons_impulsecommands =
     // ESR Enemy Warnings...
     if( self.impulse == 122 )
     {
-	if( infokey(self, "agv_t_esr_enemy_warnings") == "1" )
+        if( infokey(self, "agv_t_esr_enemy_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_esr_enemy_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_esr_enemy_warnings 0\n");
             snap_misc_m2m("ESR: Enemy warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
-	else
+        else
         {
-	    stuffcmd(self, "setinfo agv_t_esr_enemy_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_esr_enemy_warnings 1\n");
             snap_misc_m2m("ESR: Enemy warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
@@ -631,15 +645,15 @@ void() agh_weapons_impulsecommands =
     // ESR Friend Warnings...
     if( self.impulse == 123 )
     {
-	if( infokey(self, "agv_t_esr_friend_warnings") == "1" )
+        if( infokey(self, "agv_t_esr_friend_warnings") == "1" )
         {
-	    stuffcmd(self, "setinfo agv_t_esr_friend_warnings 0\n");
+            stuffcmd(self, "setinfo agv_t_esr_friend_warnings 0\n");
             snap_misc_m2m("ESR: Friend warnings disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
         else
         {
-	    stuffcmd(self, "setinfo agv_t_esr_friend_warnings 1\n");
+            stuffcmd(self, "setinfo agv_t_esr_friend_warnings 1\n");
             snap_misc_m2m("ESR: Friend warnings enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
         }
@@ -648,13 +662,13 @@ void() agh_weapons_impulsecommands =
     // Footsteps...
     if( self.impulse == 130 )
     {
-	if( infokey(self, "agv_t_footsteps") == "1" )
+        if( infokey(self, "agv_t_footsteps") == "1" )
         {
             stuffcmd(self, "setinfo agv_t_footsteps 0\n");
             snap_misc_m2m("Footsteps disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
         }
-	else
+        else
         {
             stuffcmd(self, "setinfo agv_t_footsteps 1\n");
             snap_misc_m2m("Footsteps enabled.\n");
