@@ -140,7 +140,7 @@ void() snap_nav_destructor =
         This runs from the perspective of the nav object.
 */
 {
-    remove(self.aiment)
+    remove(self.aiment);
     remove(self);
 };
 
