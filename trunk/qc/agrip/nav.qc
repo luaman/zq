@@ -140,10 +140,8 @@ void() snap_nav_destructor =
         This runs from the perspective of the nav object.
 */
 {
-    self.aiment.think = SUB_Remove;
-    self.aiment.nextthink = time + 0.01;
-    self.think = SUB_Remove;
-    self.nextthink = time + 0.1;
+    remove(self.aiment)
+    remove(self);
 };
 
 void() snap_nav_main =

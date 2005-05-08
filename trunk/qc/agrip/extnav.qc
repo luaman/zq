@@ -143,8 +143,8 @@ void() snap_extnav_osd =
             snap_extnav_osd_sound();
         }
         self.frags = 0;
-        self.think = SUB_Remove;
-        self.nextthink = time + 1;
+        // Finished sweep; vanish...
+        remove(self);
     }
     else
     {

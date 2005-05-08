@@ -543,22 +543,21 @@ void() agh_weapons_impulsecommands =
     if( self.impulse == 110 )
     {
         if( infokey(self, "agv_t_d5k") == "0" )
-	{
-	    // Create a new object...
-	    snap_d5k_constructor();
-	    stuffcmd(self, "setinfo agv_t_d5k 1\n");
+        {
+            // Create a new object...
+            snap_d5k_constructor();
+            stuffcmd(self, "setinfo agv_t_d5k 1\n");
             snap_misc_m2m("D5k: Enabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
-	}
+        }
         else
-	{
-	    // Remove the object, as it exists now...
-	    self.agrip_d5k.think = SUB_Remove;
-	    self.agrip_d5k.nextthink = time + 0.01;
-	    stuffcmd(self, "setinfo agv_t_d5k 0\n");
+        {
+            // Remove the object, as it exists now...
+            remove(self.agrip_d5k);
+            stuffcmd(self, "setinfo agv_t_d5k 0\n");
             snap_misc_m2m("D5k: Disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
-	}
+        }
     }	
 
     // EtherScan RADAR -- ``ESR''

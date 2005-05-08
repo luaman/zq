@@ -398,8 +398,7 @@ void (vector point, string sprite, float ttl) snap_misc_showpoint =
     temp_point_ent = spawn();
     setorigin(temp_point_ent, point);
     setmodel(temp_point_ent, sprite);
-    temp_point_ent.think = SUB_Remove;
-    temp_point_ent.nextthink = time + ttl;
+    remove(temp_point_ent);
 };
 
 float(vector jump_origin, vector move_dir) snap_misc_jumptest =

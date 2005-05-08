@@ -54,8 +54,7 @@ void() snap_se_singlesound =
 */
 {
     soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
-    self.think = SUB_Remove;
-    self.nextthink = time + 0.1;
+    remove(self);
 };
 
 void() snap_se_stickysound =
@@ -111,8 +110,7 @@ void() snap_se_cornersound =
         // Yes, we have; do the corner sound now...
         setorigin(self, self.dest2);
         soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.health, ATTN_NORM);
-        self.think = SUB_Remove;
-        self.nextthink = time + 0.1;
+        remove(self);
     }
 };
 

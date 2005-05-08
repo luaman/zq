@@ -156,17 +156,13 @@ void() snap_esr_main =
         // (i.e. They wanted to kill it.)
 
         // Kill child objects...
-        self.aiment.think = SUB_Remove;
-        self.aiment.nextthink = time + 0.01;
-        self.enemy.think = SUB_Remove;
-        self.enemy.nextthink = time + 0.01;
-        self.goalentity.think = SUB_Remove;
-        self.goalentity.nextthink = time + 0.01;
+        remove(self.aiment);
+        remove(self.enemy);
+        remove(self.goalentity);
          
         // Destruct the ESR...
         soundtoclient(self.owner, self.owner, CHAN_AUTO, "toggles/off.wav", 1, ATTN_NORM);
-        self.think = SUB_Remove;
-        self.nextthink = time + 0.01;
+        remove(self);
     }
     else
     {

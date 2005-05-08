@@ -145,8 +145,7 @@ void() snap_marker_destructor =
 
         if( foundflag )
         {
-            found_ent.think = SUB_Remove;
-            found_ent.nextthink = time + 0.1;
+            remove(found_ent);
             marker_number = ftos(self.agrip_aux.health);
             snap_misc_m2m("Waypoint marker ");
             sprint(self, 1, marker_number);
