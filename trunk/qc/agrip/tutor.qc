@@ -200,8 +200,8 @@ void() bot_grab_items =
         else if( self.goalentity.healamount )
         {
             // FIXME: Bot shouldn't pick up stuff it doesn't need (e.g. health)
-            dprint(self.netname);dprint(": I just got ");
-            dprint(ftos(self.goalentity.healamount));dprint(" health!\n");
+            //dprint(self.netname);dprint(": I just got ");
+            //dprint(ftos(self.goalentity.healamount));dprint(" health!\n");
             self.health = self.health + self.goalentity.healamount;
             if( self.health > 100 )
                 self.health = 100;
