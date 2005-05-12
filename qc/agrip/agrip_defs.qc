@@ -33,8 +33,10 @@
 // These used to be in qw/defs.qc but were removed:
 .float volume;
 
-// Tutor bot creation functions...
+// Bot stuff...
 void (float teem) create_bot;
+entity (string name) testbot = #0x5a0A;
+void (entity e, string key, string value) setinfo = #0x5a0B;
 
 // these declarations are here because I don't want them in
 // qw/defs.qc right now
