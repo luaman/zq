@@ -142,6 +142,9 @@ void() agh_client_startdevs =
 
     // AUX
     snap_aux_constructor();
+
+    // Set message lock to un-prioritise the following messages...
+    self.agrip_aux.state = true;
     
     // NAV
     if( infokey(self, "agv_t_nav") == "1" )
@@ -172,6 +175,9 @@ void() agh_client_startdevs =
         soundtoclient(self, self, CHAN_AUTO, "toggles/on.wav", 1, ATTN_NORM);
         snap_misc_m2m("ESR: Set to mode 1.\n");
     }
+
+    // Unset message lock...
+    self.agrip_aux.state = false;
 
     // Compass Offset...
     SNAP_MISC_NORMYAW_OFFSET = self.angles_y;
