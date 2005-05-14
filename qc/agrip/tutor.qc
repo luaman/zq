@@ -1,3 +1,11 @@
+// AGRIP Notes:
+//  * This tutor bot is basically the normal one plus some code from oldman
+//    that makes it use the ZQ bot support.
+//  * It has 3 skill levels:
+//      + 0 -- stays in the same place during combat
+//      + 1 -- chases player during combat (when sensible)
+//      + 2 -- does bot_run_slide() during combat
+
 // Extra defns...
 .float ai_time;
 void() bot_attack;
@@ -5,6 +13,8 @@ vector realorigin (entity ent)
 {
         return (ent.absmin + ent.absmax) * 0.5;
 }
+
+//////////
 
 
 /*
@@ -533,7 +543,6 @@ void() bot_run_slide =
 	self.lefty = 1 - self.lefty;
 	
 	walkmove (self.angles_y - ofs, 20);
-
 };
 
 
@@ -545,7 +554,6 @@ void() bot_strafe =
 {
 // this routine is called every frame during combat, 
 // so he strafes and dodges even while shooting
-
 
 	bot_check_ammo();
 
@@ -572,9 +580,29 @@ void() bot_strafe =
 // standing still while attacking
 	else if (self.weapon == IT_LIGHTNING)
 		return;
-
-	else bot_run_slide();
-
+//	else bot_run_slide();   // AGRIP
+    else
+    {
+        // AGRIP
+        // Skill level 0 -- just stand there like an idiot.
+        // Skill level 1 -- chase player
+        // Skill level 2 -- bot_run_slide()
+        local float botskill;
+        botskill = stof(infokey(self, "botskill"));
+        if (botskill == 1)
+        {
+            if (   self.weapon != IT_ROCKET_LAUNCHER
+                && self.weapon != IT_GRENADE_LAUNCHER )
+            {
+                movetogoal(20);
+            }
+        }
+        else if (botskill == 2)
+        {
+            bot_run_slide();
+        }
+        // END AGRIP skillz stuff
+    }
 };
 
 
@@ -1598,8 +1626,13 @@ local entity bot, spot, plr;
 void(float team) create_bot =
 // ------------------------------------------------
 {
-    //entity bot, spot, plr;
     entity bot;
+
+    // Check bots are allowed...
+    // vs Maxplayers and currentplayers?
+    // leave enough spaces for a member to connect to all teams?
+    // add a bot to each team?
+    // delete a bot from each team?
 
     // initializing the entity
     bot = testbot("tutorbot"); // use ZQuake server bot support
@@ -1608,6 +1641,34 @@ void(float team) create_bot =
         bprint(PRINT_HIGH, "Can't connect any more bots - server is full!\n");
         return;
     }
+
+    setinfo (bot, "topcolor", "4");
+    setinfo (bot, "bottomcolor", "11");
+
+    /* bot.speed = cvar("sv_maxspeed"); */
+    bot.speed = 320;
+
+    bot.netname = bot_name();
+
+    setinfo (bot, "name", bot.netname);
+    // AGRIP team stuff:
+    if(team == 2 && (teamplay || coop) )
+    {
+        local string player_team;
+        player_team = infokey(self, "team");
+        setinfo (bot, "team", player_team);
+    }
+
+    // initialise button1 to 90 degrees
+    //self.button1 = 90;
+    //self.failedmove = 0;
+    bot.button1 = 90;
+    //bot.failedmove = 0;
+
+    // AGRIP skillz stuff...
+    setinfo(bot, "botskill", "1"); // FIXME variable 0-2
+
+    // ----------
 
     /* OLD SPAWN CODE {{{
        bot = spawn();
@@ -1659,27 +1720,6 @@ void(float team) create_bot =
        bprint(PRINT_HIGH, bot.netname);
        bprint(PRINT_HIGH, " enters the game\n");
        }}} */
-    bot.netname = bot_name();
-
-    setinfo (bot, "name", bot.netname);
-    // AGRIP matatk:
-    if(team == 2 && (teamplay || coop) )
-    {
-        local string player_team;
-        player_team = infokey(self, "team");
-        setinfo (bot, "team", player_team);
-    }
-
-    setinfo (bot, "topcolor", "4");
-
-    setinfo (bot, "bottomcolor", "11");
-
-    /* bot.speed = cvar("sv_maxspeed"); */
-    bot.speed = 320;
-
-    // initialise button1 to 90 degrees
-    self.button1 = 90;
-    //self.failedmove = 0;
 
     // polishing him up
     /* POLISHING CODE FIXME: NOT SURE IF NEEDED
