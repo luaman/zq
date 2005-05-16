@@ -14,6 +14,32 @@ vector realorigin (entity ent)
         return (ent.absmin + ent.absmax) * 0.5;
 }
 
+// from frikbot:
+/*
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+Kick A Bot. 
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+*/
+
+void KickABot ()
+{
+	entity	ty;
+	ty = find(world, classname, "player");
+	while (ty != world)
+	{
+		if (!infokey(ty, "botskill")) {
+			
+			stuffcmd (ty, "disconnect\n");
+			ty = world;
+		}
+		else
+			ty = find(ty, classname, "player");
+	}
+}
+
+
 //////////
 
 
@@ -1628,11 +1654,19 @@ void(float team) create_bot =
 {
     entity bot;
 
+    // AGRIP:
     // Check bots are allowed...
     // vs Maxplayers and currentplayers?
     // leave enough spaces for a member to connect to all teams?
     // add a bot to each team?
     // delete a bot from each team?
+    
+    // AGRIP - don't spawn a bot if it's not allowed...
+    if (!stof(infokey(world, "bots_allowed")))
+    {
+        bprint(PRINT_HIGH, "Bots not allowed on this server!\n");
+        return;
+    }
 
     // initializing the entity
     bot = testbot("tutorbot"); // use ZQuake server bot support
