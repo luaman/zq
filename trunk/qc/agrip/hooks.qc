@@ -362,6 +362,9 @@ void() agh_weapons_impulsecommands =
     // Note:    Only if we are in teamplay mode will the bot's team be
     //          taken into consideration; otherwise it'll always be an
     //          opponent to us.
+
+    if( self.impulse == 49 )
+        KickABot();
     
     if( self.impulse == 50 )
         create_bot(1);
