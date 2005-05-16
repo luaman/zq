@@ -29,8 +29,8 @@ void KickABot ()
 	ty = find(world, classname, "player");
 	while (ty != world)
 	{
-		if (!infokey(ty, "botskill")) {
-			
+		if (infokey(ty, "isbot") == "1") {
+			dprint(infokey(ty, "botskill"));
 			stuffcmd (ty, "disconnect\n");
 			ty = world;
 		}
@@ -1521,17 +1521,17 @@ string() bot_name =
 local float n;
 
 	n = floor(random() * 11);
-	if (n == 0)	return "Frog";
-	else if (n == 1) return "Reaper";
-	else if (n == 2) return "Omicron";
-	else if (n == 3) return "Estep";
-	else if (n == 4) return "Zeus";
-	else if (n == 5) return "Cujo";
-	else if (n == 6) return "Gyro";
-	else if (n == 7) return "Oak";
-	else if (n == 8) return "Eliminator";
-	else if (n == 9) return "Eraser";
-	else return "BG";
+	if (n == 0)	return "[B] Frog";
+	else if (n == 1) return "[B] Reaper";
+	else if (n == 2) return "[B] Omicron";
+	else if (n == 3) return "[B] Estep";
+	else if (n == 4) return "[B] Zeus";
+	else if (n == 5) return "[B] Cujo";
+	else if (n == 6) return "[B] Gyro";
+	else if (n == 7) return "[B] Oak";
+	else if (n == 8) return "[B] Eliminator";
+	else if (n == 9) return "[B] Eraser";
+	else return "[B] BG";
 };
 
 
@@ -1700,7 +1700,10 @@ void(float team) create_bot =
     //bot.failedmove = 0;
 
     // AGRIP skillz stuff...
+    setinfo(bot, "isbot", "1"); // FIXME variable 0-2
     setinfo(bot, "botskill", "1"); // FIXME variable 0-2
+
+    bot.isbot = true;
 
     // ----------
 
