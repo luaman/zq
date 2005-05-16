@@ -30,7 +30,6 @@ void KickABot ()
 	while (ty != world)
 	{
 		if (infokey(ty, "isbot") == "1") {
-			dprint(infokey(ty, "botskill"));
 			stuffcmd (ty, "disconnect\n");
 			ty = world;
 		}
