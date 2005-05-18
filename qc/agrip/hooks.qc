@@ -217,7 +217,8 @@ void() agh_player_footsteps =
     {
         // Are we scraping against a wall?
         // (This would show up as two walls; one front/back and one at the side.)
-        if( self.agrip_aux.ammo_rockets > 1 && self.origin_z == self.oldorigin_z )
+        if( self.agrip_aux.ammo_rockets > 1 )
+        if( self.origin_z == self.oldorigin_z )
         {
             soundtoclient(self, self, CHAN_AUTO, "nav/wall-scrape.wav", 0.5, ATTN_NORM);
 
@@ -261,7 +262,8 @@ void() agh_player_footsteps =
     {
         // Need to make sure that we haven't just started moving
         // or we'll get spurious oomphs...
-        if( self.agrip_aux.ammo_rockets > 0 && self.walkframe == 1 )
+        if( self.agrip_aux.ammo_rockets > 0 )
+        if( self.walkframe == 1 )
             soundtoclient(self, self, CHAN_AUTO, "player/land.wav", 0.5, ATTN_NORM);
     }
 
@@ -713,7 +715,8 @@ void() agh_weapons_impulsecommands =
     }
             
     // Drop description...
-    if( self.impulse == 150 && infokey(self, "agv_t_nav") == "1" )
+    if( self.impulse == 150 )
+    if( infokey(self, "agv_t_nav") == "1" )
     {
         // The NAV device will tell us what lies in the drop.
         // The property we examine is set every time it thinks.

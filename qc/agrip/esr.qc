@@ -230,16 +230,13 @@ void() snap_esr_classic =
     while( potential_hit )
     {
         // Don't detect things that shouldn't be detected...
-        // FIXME: QuakeWiki says that QC does NOT return early
-        //        when it encounters a false result in an &&'d if
-        //        statement -- is this true of the new ZQCC?
-        if(     snap_misc_ownervisible(potential_hit.origin)
-            &&  potential_hit.health > 1
-            &&  potential_hit != self.owner
-            &&  potential_hit != world 
-	        &&  potential_hit.classname != "worldspwan"
-            &&  potential_hit.classname != "door"
-            &&  potential_hit.classname != "agrip_marker" )
+        if( snap_misc_ownervisible(potential_hit.origin) )
+        if( potential_hit.health > 1 )
+        if( potential_hit != self.owner )
+        if( potential_hit != world  )
+        if( potential_hit.classname != "worldspwan" )
+        if( potential_hit.classname != "door" )
+        if( potential_hit.classname != "agrip_marker" )
         {
             // Get distance to the entity...
             dist = vlen(self.owner.origin - potential_hit.origin);
@@ -483,9 +480,9 @@ void() snap_esr_classic =
     // Now make sound based on where potential_hit is in relation to player...
 
     // Monsters...
-    if(     nearest_monster != world
-        &&  self.aiment.state != 1 
-        &&  infokey(self.owner, "agv_t_esr_monster_warnings") == "1" )
+    if( nearest_monster != world )
+    if( self.aiment.state != 1 )
+    if( infokey(self.owner, "agv_t_esr_monster_warnings") == "1" )
     {
         //dprint("sounding monster.\n");
         level = snap_esr_classic_level(nearest_monster.origin_z);
@@ -506,9 +503,9 @@ void() snap_esr_classic =
     }
 
     // Friends...
-    if(     nearest_friend != world
-        &&  self.goalentity.state != 1
-        &&  infokey(self.owner, "agv_t_esr_friend_warnings") == "1" )
+    if( nearest_friend != world )
+    if( self.goalentity.state != 1 )
+    if( infokey(self.owner, "agv_t_esr_friend_warnings") == "1" )
     {
         //dprint("sounding friend.\n");
         level = snap_esr_classic_level(nearest_friend.origin_z);
@@ -529,9 +526,9 @@ void() snap_esr_classic =
     }
 
     // Enemies...
-    if(     nearest_enemy != world 
-        &&  self.enemy.state != 1
-        &&  infokey(self.owner, "agv_t_esr_enemy_warnings") == "1" )
+    if( nearest_enemy != world ) 
+    if( self.enemy.state != 1 )
+    if( infokey(self.owner, "agv_t_esr_enemy_warnings") == "1" )
     {
         //dprint("sounding enemy.\n");
         level = snap_esr_classic_level(nearest_enemy.origin_z);
