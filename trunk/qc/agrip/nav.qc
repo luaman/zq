@@ -164,7 +164,8 @@ void() snap_nav_main =
 
     // Find drops, water, slime, lava and jumps...
     // DO NOT detect ledges if we're moving up/down, though!
-    if( z_changed != true && infokey(self.owner, "agv_t_nav_haz_warnings") == "1" )
+    if( z_changed != true )
+    if( infokey(self.owner, "agv_t_nav_haz_warnings") == "1" )
         snap_nav_haz_main();
 
     // Find corners, etc...
@@ -933,7 +934,8 @@ void() snap_nav_corners_main =
         // Flag we found the corner...
         // NOT if we have immediately found a new one after losing the old,
         // one, though!
-        if( self.count == true && self.pos1 != v_corner_left )
+        if( self.count == true )
+        if( self.pos1 != v_corner_left )
         {
             // Make sure that the distance between the two is big
             // enough to be significant...
@@ -984,7 +986,8 @@ void() snap_nav_corners_main =
         // Flag we found the corner...
         // NOT if we have immediately found a new one after losing the old,
         // one, though!
-        if( self.state == true && self.pos2 != v_corner_right )
+        if( self.state == true )
+        if( self.pos2 != v_corner_right )
         {
             // Make sure that the distance between the two is big
             // enough to be significant...
@@ -1004,14 +1007,15 @@ void() snap_nav_corners_main =
     // JUST PASSED A CORNER INDICATION
 
     // Left corners...
-    if(     self.count != found_left_corner
-        &&  self.dest1 == v_forward )
+    if( self.count != found_left_corner )
+    if( self.dest1 == v_forward )
     {
         // Indicate we've just passed a corner on whichever side it was...
         local entity passed_corner_snder;
         local float sound_level;
         sound_level = 1 - (vlen(self.finaldest - self.owner.origin) / self.frags)*self.lip;
-        if( sound_level > 0 && sound_level <= 1 )
+        if( sound_level > 0 )
+        if( sound_level <= 1 )
         {
             passed_corner_snder = spawn();
             passed_corner_snder.message = "weapons/ric2.wav";
@@ -1032,14 +1036,15 @@ void() snap_nav_corners_main =
     }
 
     // Right corners...
-    if(     self.state != found_right_corner
-        &&  self.dest2 == v_forward )
+    if( self.state != found_right_corner )
+    if( self.dest2 == v_forward )
     {
         // Indicate we've just passed a corner on whichever side it was...
         local entity passed_corner_snder;
         local float sound_level;
         sound_level = 1 - (vlen(self.finalangle - self.owner.origin) / self.frags)*self.lip;
-        if( sound_level > 0 && sound_level <= 1 )
+        if( sound_level > 0 )
+        if( sound_level <= 1 )
         {
             passed_corner_snder = spawn();
             passed_corner_snder.message = "weapons/ric2.wav";
@@ -1058,7 +1063,8 @@ void() snap_nav_corners_main =
     }
 
     // Set prevoius run time...
-    if( found_left_corner && found_right_corner )
+    if( found_left_corner )
+    if( found_right_corner )
         self.wait = time + 1;
     else
         self.wait = time + 0.5;
