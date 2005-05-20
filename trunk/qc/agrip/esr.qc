@@ -487,8 +487,8 @@ void() snap_esr_classic =
         //dprint("sounding monster.\n");
         level = snap_esr_classic_level(nearest_monster.origin_z);
         mdist = vlen(self.owner.origin - nearest_monster.origin);
-        if( snap_misc_fovtest(nearest_monster.origin, self.frame) )
-        {
+        //if( snap_misc_fovtest(nearest_monster.origin, self.frame) )
+        //{
             if( level == SNAP_ESR_LEVEL_LOWER )
                 self.aiment.message = "esr/monster-lower.wav";
             else if( level == SNAP_ESR_LEVEL_SAME )
@@ -499,7 +499,7 @@ void() snap_esr_classic =
             setorigin(self.aiment, nearest_monster.origin);
             self.aiment.state = 1;
             self.aiment.nextthink = time + ( mdist / 500 );
-        }
+        //}
     }
 
     // Friends...
@@ -510,8 +510,8 @@ void() snap_esr_classic =
         //dprint("sounding friend.\n");
         level = snap_esr_classic_level(nearest_friend.origin_z);
         fdist = vlen(self.owner.origin - nearest_friend.origin);
-        if( snap_misc_fovtest(nearest_friend.origin, self.frame) )
-        {
+        //if( snap_misc_fovtest(nearest_friend.origin, self.frame) )
+        //{
             if( level == SNAP_ESR_LEVEL_LOWER )
                 self.goalentity.message = "esr/friend-lower.wav";
             else if( level == SNAP_ESR_LEVEL_SAME )
@@ -522,7 +522,7 @@ void() snap_esr_classic =
             setorigin(self.goalentity, nearest_friend.origin);
             self.goalentity.state = 1;
             self.goalentity.nextthink = time + ( fdist / 500 );
-        }
+        //}
     }
 
     // Enemies...
@@ -533,8 +533,8 @@ void() snap_esr_classic =
         //dprint("sounding enemy.\n");
         level = snap_esr_classic_level(nearest_enemy.origin_z);
         edist = vlen(self.owner.origin - nearest_enemy.origin);
-        if( snap_misc_fovtest(nearest_enemy.origin, self.frame) )
-        {
+        //if( snap_misc_fovtest(nearest_enemy.origin, self.frame) )
+        //{
             if( level == SNAP_ESR_LEVEL_LOWER )
                 self.enemy.message = "esr/enemy-lower.wav";
             else if( level == SNAP_ESR_LEVEL_SAME )
@@ -545,7 +545,7 @@ void() snap_esr_classic =
             setorigin(self.enemy, nearest_enemy.origin);
             self.enemy.state = 1;
             self.enemy.nextthink = time + ( edist / 500 );
-        }
+        //}
     }
     
     self.nextthink = time + 0.1;
@@ -618,7 +618,7 @@ void() snap_esr_hazard =
     }
     
     // Now work out if we got a lock...
-    if( foundflag && snap_misc_fovtest(local_hazard.origin, self.frame) )
+    if( foundflag )//FIXME&& snap_misc_fovtest(local_hazard.origin, self.frame) )
     {
         if( self.frags == -1 ) // Tells us we've never had a lock.
         {

@@ -1367,12 +1367,6 @@ void ClientObituary (entity targ, entity attacker)
 
 	if (attacker.classname == "player")
 	{
-#ifdef AGRIP
-        if (attacker.isbot)
-        {
-            bprint(PRINT_HIGH, "BOT KILL\n");
-        }
-#endif
 		if (targ == attacker)
 		{
 			// killed self

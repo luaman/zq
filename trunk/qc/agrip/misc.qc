@@ -47,7 +47,6 @@ float SNAP_NAV_JMP_RUN = 2;
 
 // OBJECT UTILITY FUNCTIONS
 float   (vector targ_origin)                        snap_misc_ownervisible;
-float   (vector object_origin, float fov)           snap_misc_fovtest;
 void    (string msg_string)                         snap_misc_m2o;
 
 // PLAYER UTILITY FUNCTIONS
@@ -69,8 +68,10 @@ float   (vector jump_origin, vector move_dir)       snap_misc_jumptest;
 float (vector targ_origin) snap_misc_ownervisible =
 /*
     Purpose:
-        A small utility function used by the D5k to determine if the
+        This function is used by ESR and D5k to determine if the
         player that owns it can ``see'' an object.
+        PLEASE NOTE that this INCLUDES a check for if the object is
+        within the player's FOV (90 degrees).
     Takes:
         vector targ_origin  - the entity we're trying to assess for
                               visibility.
@@ -81,72 +82,58 @@ float (vector targ_origin) snap_misc_ownervisible =
     traceline(self.owner.origin, targ_origin, true, self);
 
     if( trace_fraction == 1 )
-        return true;
-
-    return false;
-};
-
-float (vector object_origin, float fov) snap_misc_fovtest =
-/*
-    Purpose:
-        This tests if a certain object_originection vector points to a point in or
-        out of the specified field of view.
-    Takes:
-        * vector object_origin - The origin of the object we're asessing.
-        * float   fov          - The field of view it should be within.
-    Returns:
-        * float             - true or false
-*/
-{
-    local float fov_eachside_yaw, obj_orig_yaw, player_normal_yaw;
-    local float min_fov_yaw, max_fov_yaw;
-
-    // The fov_eachside_yaw should be between +/- 1/2 the fov left or right...
-    fov_eachside_yaw = fov / 2;
-
-    // Get yaw of object's origin relative to player...
-    obj_orig_yaw = vectoyaw(object_origin - self.owner.origin);
-    obj_orig_yaw = snap_misc_normalyaw(obj_orig_yaw);
-
-    // Get yaw of player...
-    player_normal_yaw = snap_misc_normalyaw(self.owner.angles_y);
-
-    // Work out the bounds that will be used to test if the object is within
-    // the player's FOV...
-    
-    // For min...
-    min_fov_yaw = player_normal_yaw - fov_eachside_yaw;
-    /*if( min_fov_yaw > 360 )
-        min_fov_yaw = min_fov_yaw - 360;
-    else if(min_fov_yaw < 0 )
-        min_fov_yaw = min_fov_yaw + 360;*/
-
-    // For max...
-    max_fov_yaw = player_normal_yaw + fov_eachside_yaw;
-    /*if( max_fov_yaw > 360 )
-        max_fov_yaw = max_fov_yaw - 360;
-    else if(max_fov_yaw < 0 )
-        max_fov_yaw = max_fov_yaw + 360;*/
-    
-    // Debug info
-    /*dprint("fovtest1 :: owner yaw = ");dprint(ftos(player_normal_yaw));
-    dprint("  obj_orig_yaw = ");dprint(ftos(obj_orig_yaw));dprint("\n");
-    dprint("fovtest2 :: min yaw = ");dprint(ftos(min_fov_yaw));
-    dprint("  max yaw = ");dprint(ftos(max_fov_yaw));dprint("\n");*/
-
-    // Is it within our FOV?
-    if( min_fov_yaw <= obj_orig_yaw && max_fov_yaw >= obj_orig_yaw )
     {
-        return true;
+        local float obj_orig_yaw, player_normal_yaw;
+        local float min_fov_yaw, max_fov_yaw;
+    
+        // Get yaw of targ's origin relative to player...
+        obj_orig_yaw = vectoyaw(targ_origin - self.owner.origin);
+        obj_orig_yaw = snap_misc_normalyaw(obj_orig_yaw);
+    
+        // Get yaw of player...
+        player_normal_yaw = snap_misc_normalyaw(self.owner.angles_y);
+    
+        // Work out the bounds that will be used to test if the object is within
+        // the player's FOV...
+        
+        // For min...
+        min_fov_yaw = player_normal_yaw - 45;
+        /*if( min_fov_yaw > 360 )
+            min_fov_yaw = min_fov_yaw - 360;
+        else if(min_fov_yaw < 0 )
+            min_fov_yaw = min_fov_yaw + 360;*/
+    
+        // For max...
+        max_fov_yaw = player_normal_yaw + 45;
+        /*if( max_fov_yaw > 360 )
+            max_fov_yaw = max_fov_yaw - 360;
+        else if(max_fov_yaw < 0 )
+            max_fov_yaw = max_fov_yaw + 360;*/
+        
+        // Debug info
+        /*dprint("fovtest1 :: owner yaw = ");dprint(ftos(player_normal_yaw));
+        dprint("  obj_orig_yaw = ");dprint(ftos(obj_orig_yaw));dprint("\n");
+        dprint("fovtest2 :: min yaw = ");dprint(ftos(min_fov_yaw));
+        dprint("  max yaw = ");dprint(ftos(max_fov_yaw));dprint("\n");*/
+    
+        // Is it within our FOV?
+        if( min_fov_yaw <= obj_orig_yaw && max_fov_yaw >= obj_orig_yaw )
+        {
+            return true;
+        }
+        else
+        {
+            // Could be that annoying 360 bug...
+            obj_orig_yaw = obj_orig_yaw - 360;
+            if( min_fov_yaw <= obj_orig_yaw && max_fov_yaw >= obj_orig_yaw )
+                return true;
+            else
+                return false;
+        }
     }
     else
     {
-        // Could be that annoying 360 bug...
-        obj_orig_yaw = obj_orig_yaw - 360;
-        if( min_fov_yaw <= obj_orig_yaw && max_fov_yaw >= obj_orig_yaw )
-            return true;
-        else
-            return false;
+        return false;
     }
 };
 
