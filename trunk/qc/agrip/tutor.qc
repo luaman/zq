@@ -1699,10 +1699,8 @@ void(float team) create_bot =
     //bot.failedmove = 0;
 
     // AGRIP skillz stuff...
-    setinfo(bot, "isbot", "1"); // FIXME variable 0-2
+    setinfo(bot, "isbot", "1");
     setinfo(bot, "botskill", "1"); // FIXME variable 0-2
-
-    bot.isbot = true;
 
     // ----------
 

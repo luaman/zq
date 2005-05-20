@@ -335,10 +335,11 @@ void() agh_player_dietidy =
 
 
     // Remove all waypoints...
+    snap_misc_m2m("Removing markers...\n");
     while( self.agrip_aux.health > 0 )
     {
-        // FIXME can cause errors...
-        snap_marker_destructor();
+        // Call it *QUIETLY*...
+        snap_marker_destructor(1);
     }
 
     // AUX
@@ -760,7 +761,7 @@ void() agh_weapons_impulsecommands =
     // Marker: Delete last
     if( self.impulse == 171 )
     {
-        snap_marker_destructor();
+        snap_marker_destructor(0);
     }
 
     

@@ -35,7 +35,7 @@
 // Please refer to the function snap_misc_blockedtest() for more
 // information on the values these properties can take.
 
-// Bot Call Flag
+// Bot Call Flag FIXME
 //
 // If the player wants bots to come to their aid, the self.ammo_cells flag is set.
 // When the bots tell the player they're on their way, the self.lip flag is set.
@@ -53,7 +53,6 @@
 //
 // It is primarily used to stop the device messages from masking the player
 // death messages.
-
 
 
 // PROTOTYPES

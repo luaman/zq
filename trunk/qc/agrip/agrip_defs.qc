@@ -34,7 +34,6 @@
 .float volume;
 
 // Bot stuff...
-.float isbot;
 void () KickABot;
 void (float teem) create_bot;
 entity (string name) testbot = #0x5a0A;
