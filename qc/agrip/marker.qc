@@ -23,9 +23,9 @@
 
 // PROTOTYPES
 
-void()  snap_marker_constructor;
-void()  snap_marker_destructor;
-void()  snap_marker_touch;
+void()              snap_marker_constructor;
+void(float quiet)   snap_marker_destructor;
+void()              snap_marker_touch;
 
 
 // IMPLEMENTATIONS
@@ -54,13 +54,19 @@ void() snap_marker_constructor =
 {
     local entity new_agmarker;
     local string marker_number;
+
+    // Limit number of markers...
+    if( self.agrip_aux.health > 19 )
+    {
+        snap_misc_m2m("The Arena Masters are angered at your marker-spammage!\n");
+        return;
+    }
                                                                                            
     // Set up new marker object's physical properties...
     new_agmarker = spawn();
     new_agmarker.movetype = MOVETYPE_NONE;
     new_agmarker.solid = SOLID_TRIGGER;
     setorigin(new_agmarker, self.origin);
-    //setsize(new_agmarker,new_agmarker.origin-'50 50 20', new_agmarker.origin+'50 50 20');
     setmodel(new_agmarker, "progs/s_light.spr");
 
     // Sound...
@@ -79,9 +85,8 @@ void() snap_marker_constructor =
     self.agrip_aux.health = self.agrip_aux.health + 1;
     new_agmarker.items = self.agrip_aux.health;
 
-    // Set up the classname and owner name...
+    // Set up the classname...
     new_agmarker.classname = "agrip_marker";
-    new_agmarker.netname = self.netname;
 
     // Give it life...
     new_agmarker.ammo_shells = time;
@@ -97,7 +102,7 @@ void() snap_marker_constructor =
     sprint(self, 1, " created.\n");
 };
 
-void() snap_marker_destructor =
+void(float quiet) snap_marker_destructor =
 /*
     Purpose:
         Destroy the last created marker.
@@ -109,52 +114,47 @@ void() snap_marker_destructor =
         This is run from the perspective of the player, too.
 */
 {
-    local float exitflag, foundflag;
+    local float exitflag;
     local entity find_start_ent;
     local entity found_ent;
     local string marker_number;
 
     if( self.agrip_aux.health == 0 )
     {
+        // No markers...
         snap_misc_m2m("No waypoint markers to delete.\n");
         soundtoclient(self, self, CHAN_AUTO, "deny.wav", 1, ATTN_NORM);
     }
     else
     {
-        exitflag = false;
-        foundflag = false;
+        // Markers exist...
         find_start_ent = world;
-    
-        while( ! exitflag )
+   
+        // Look for this player's last marker and remove it.
+        // This could be called by the dietidy() hook, in which case don't spam
+        // the player with messages saying each one has been remved.
+        while( !exitflag )
         {
             found_ent = find(find_start_ent, classname, "agrip_marker");
 
-            if(    found_ent.netname == self.netname
+            if(    found_ent.owner == self
                 && found_ent.items == self.agrip_aux.health )
             {
-                foundflag = true;
+                remove(found_ent);
+                if( !quiet )
+                {
+                    marker_number = ftos(self.agrip_aux.health);
+                    snap_misc_m2m("Waypoint marker ");
+                    sprint(self, 1, marker_number);
+                    sprint(self, 1, " deleted.\n");
+                }
+                self.agrip_aux.health = self.agrip_aux.health - 1;
                 exitflag = true;
             }
-            else if( found_ent == world )
+            else
             {
-                exitflag = true;
+                find_start_ent = found_ent;
             }
-        
-            find_start_ent = found_ent;
-        }
-
-        if( foundflag )
-        {
-            remove(found_ent);
-            marker_number = ftos(self.agrip_aux.health);
-            snap_misc_m2m("Waypoint marker ");
-            sprint(self, 1, marker_number);
-            sprint(self, 1, " deleted.\n");
-            self.agrip_aux.health = self.agrip_aux.health - 1;
-        }
-        else
-        {
-            error("Couldn't find the last marker for ", self.netname, ".\n");
         }
     }
 };
@@ -174,7 +174,6 @@ void() snap_marker_touch =
     if( other == self.owner && time > self.ammo_shells + self.ammo_rockets )
     {
         marker_number = ftos(self.items);
-        //sprint(other, 1, "!You found ", self.owner.netname, "'s marker ", marker_number, ".\n");
         sprint(other, 1, "!You found marker ", marker_number, ".\n");
         self.ammo_shells = time;
     }
