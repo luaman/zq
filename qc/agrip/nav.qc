@@ -29,7 +29,6 @@
 // PROTOTYPES
 
 void()                                                          snap_nav_constructor;
-void()                                                          snap_nav_destructor;
 void()                                                          snap_nav_main;
 
 void()                                                          snap_nav_struct_main;
@@ -37,7 +36,8 @@ float(float dir, vector v_start, vector v_out, vector v_out_up) snap_nav_struct_
 void(float dir, float objtype)                                  snap_nav_struct_soundout;
 
 void()                                                          snap_nav_haz_main;
-float(vector v_start, vector v_dir, float reverse, float snd)   snap_nav_haz_detect;
+float(float fwd, vector v_start, vector v_dir, float reverse, float snd)
+                                                                snap_nav_haz_detect;
 
 float()                                                         snap_nav_z_main;
 
@@ -111,7 +111,7 @@ void() snap_nav_constructor =
     child_drop.movetype = MOVETYPE_NONE;
     child_drop.solid = SOLID_NOT;
     setmodel(child_drop, "progs/s_bubble.spr");
-    child_drop.classname = "";
+    child_drop.classname = "agrip_hazard";
     child_drop.owner = self.agrip_nav;
     self.agrip_nav.aiment = child_drop;
     self.agrip_nav.view_ofs = '0 0 0';
@@ -126,22 +126,6 @@ void() snap_nav_constructor =
     // Give it life!
     new_agnav.think = snap_nav_main;
     new_agnav.nextthink = time + 0.1;
-};
-
-void() snap_nav_destructor =
-/*
-    Purpose:
-        This is the ``destructor'' of the nav object.
-    Takes:
-        void
-    Returns:
-        void
-    Notes:
-        This runs from the perspective of the nav object.
-*/
-{
-    remove(self.aiment);
-    remove(self);
 };
 
 void() snap_nav_main =
@@ -529,41 +513,24 @@ void() snap_nav_haz_main =
     // (For forward, left, right and back directions.)
     
     // Forward
-
     // Should the ESR be making the sound?
     if( infokey(self.owner, "agv_t_esr") == "2" )
-        haztype = snap_nav_haz_detect(v_start, v_forward, false, false);
+        haztype = snap_nav_haz_detect(true, v_start, v_forward, false, false);
     else
-        haztype = snap_nav_haz_detect(v_start, v_forward, false, true);
+        haztype = snap_nav_haz_detect(true, v_start, v_forward, false, true);
 
-    // Place the marker?
-    // The return value of the hazard detection function tells us if we should...
-    if( haztype <= 0 ) // (Greater than 0 means there was some kind of error.)
-    {
-        setorigin(self.aiment, self.view_ofs);
-        self.aiment.classname = "agrip_hazard";
-        self.aiment.netname = self.owner.netname;
-
-        // Set the direction the drop was in...
-        // (The direction is always set in self.aiment.oldorigin, but we only
-        // want to take notice of the drop in front.)
-        self.aiment.movedir = self.aiment.oldorigin;
-    }
-    else
-    {
-        setorigin(self.aiment, '0 0 0');
-        self.aiment.classname = "";
-    }
-   
+    // NB: self.aiment (the hazard marker) is only set up if we are detecting
+    //     in front of the player.  If there was a hazard, it's origin will now
+    //     be set and it will have it's state set to 1.
+    //     The following calls do not interfere with this.
+    
     // Do the other dirs if we've been told to...
     if( infokey(self.owner, "agv_t_nav_side_haz_warnings") == "1" )
     {
         // Left
-        snap_nav_haz_detect(v_start, v_right, true, true);
+        snap_nav_haz_detect(false, v_start, v_right, true, true);
         // Right
-        snap_nav_haz_detect(v_start, v_right, false, true);
-        // Back
-        //snap_nav_haz_detect(v_start, v_forward, true);
+        snap_nav_haz_detect(false, v_start, v_right, false, true);
     }
 
     // DROP DESCRIPTIONS
@@ -576,13 +543,13 @@ void() snap_nav_haz_main =
     // JUMP DESCRIPTIONS
     // We need to be able to say if the player could make the jump in front of
     // them, in a similar way to drop types above.
-    if( self.aiment.origin == '0 0 0' )
-        self.takedamage = 0;
-    else
+    if( self.aiment.state == 1 )
         self.takedamage = snap_misc_jumptest(self.aiment.origin, self.aiment.movedir);
+    else
+        self.takedamage = 0;
 };
          
-float(vector v_start, vector v_dir, float reverse, float snd) snap_nav_haz_detect =
+float(float fwd, vector v_start, vector v_dir, float reverse, float snd) snap_nav_haz_detect =
 /*      
     Purpose:
         Detect ledges/drops near the player.  Make a sound based on how large
@@ -590,6 +557,9 @@ float(vector v_start, vector v_dir, float reverse, float snd) snap_nav_haz_detec
         slime or lava).  The calling function can do whatever it wants with
         this information.
     Takes:
+        * float fwd         - are we doing this in the forward direction?
+                              (because only in fwd direction do we care about
+                              the hazard marker's position)
         * vector v_start    - origin of trace
         * vector v_dir      - direction vector projected from origin
                               (just horizontal)
@@ -607,8 +577,8 @@ float(vector v_start, vector v_dir, float reverse, float snd) snap_nav_haz_detec
     Notes:
         * self.skin contains the volume throttle for hazard sounds.
         * self.view_ofs contains the vector to place the hazard locator entity
-          at _if_ there is a valid drop (it sets this to '0 0 0' if there was
-          not a valid drop).
+          at _if_ there is a valid drop.
+        * If the drop is not valid, the .state of self.aiment is set to 0.
 */
 {
     local vector v_end;
@@ -733,7 +703,6 @@ float(vector v_start, vector v_dir, float reverse, float snd) snap_nav_haz_detec
                 {
                     // Set to return drop contents...
                     retval = pointcontents(trace_endpos);
-                    self.aiment.oldorigin = v_dir;
                 }
                 else
                 {
@@ -761,10 +730,16 @@ float(vector v_start, vector v_dir, float reverse, float snd) snap_nav_haz_detec
 
     // If we are returning some kind of success (0 or >0), we should let the
     // nav object know where to put the hazard marker entity...
+    if( fwd)
     if( retval < 20 )
-        self.view_ofs = ( v_end + '0 0 40' );
+    {
+        setorigin( self.aiment, (v_end + '0 0 40') );
+        self.aiment.state = 1;
+    }
     else
-        self.view_ofs = '0 0 0';
+    {
+        self.aiment.state = 0;
+    }
 
     return retval;
 };

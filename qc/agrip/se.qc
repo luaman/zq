@@ -67,15 +67,14 @@ void() snap_se_stickysound =
     Returns:
         void
     Notes:
-        Is spawned at the right position and given the apprpriate
-        nextthink time.
-        Deosn't remove itself when done.
+        + An entity should be spawned at the right position and given the
+          apprpriate nextthink time.
+        + This is the object's .think function.
+        + To avoid eating bandwidth, you should not call this more than twice
+          per second.
 */
 {
     soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
-
-    // No longer waiting to or playing the sound...
-    self.state = 0;
 };
 
 
