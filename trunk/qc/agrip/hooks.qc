@@ -143,41 +143,27 @@ void() agh_client_startdevs =
     // AUX
     snap_aux_constructor();
 
-    // Set message lock to un-prioritise the following messages...
+    // Set message lock to un-prioritise the following message...
     self.agrip_aux.state = true;
+   
+    // Instead of blurting out lots for each dev...
+    snap_misc_m2m("Starting devices...\n");
+    soundtoclient(self, self, CHAN_AUTO, "toggles/on.wav", 1, ATTN_NORM);
     
+    // Unset message lock...
+    self.agrip_aux.state = false;
+
     // NAV
     if( infokey(self, "agv_t_nav") == "1" )
-    {
-        // Create a new object...
         snap_nav_constructor();
-        //stuffcmd(self, "setinfo agv_t_nav 1\n");
-        snap_misc_m2m("NAV: Enabled.\n");
-        soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
-    }
 
     // D5k
     if( infokey(self, "agv_t_d5k") == "1" )
-    {
-        // Create a new object...
         snap_d5k_constructor();
-        //stuffcmd(self, "setinfo agv_t_d5k 1\n");
-        snap_misc_m2m("D5k: Enabled.\n");
-        soundtoclient(self, self, CHAN_VOICE, "toggles/on.wav", 1, ATTN_NORM);
-    }
 
     // ESR
     if( infokey(self, "agv_t_esr") == "1" )
-    {
-        // ``Re-enable'' the ESR...
-        //stuffcmd(self, "setinfo agv_t_esr 1\n");
         snap_esr_constructor();
-        soundtoclient(self, self, CHAN_AUTO, "toggles/on.wav", 1, ATTN_NORM);
-        snap_misc_m2m("ESR: Set to mode 1.\n");
-    }
-
-    // Unset message lock...
-    self.agrip_aux.state = false;
 
     // Compass Offset...
     SNAP_MISC_NORMYAW_OFFSET = self.angles_y;
@@ -285,57 +271,34 @@ void() agh_player_dietidy =
     self.agrip_aux.state = true;
 
     // Disable NAV, ESR, D5k...
+    snap_misc_m2m("Stopping devices...\n");
+    soundtoclient(self, self, CHAN_AUTO, "toggles/off.wav", 1, ATTN_NORM);
 
     // NAV
     if( infokey(self, "agv_t_nav") == "1" )
     {
-        // Remove the object, as it exists now...
-        self.agrip_nav.think = snap_nav_destructor;
-        self.agrip_nav.nextthink = time + 0.01;
-        //stuffcmd(self, "setinfo agv_t_nav 0\n");
-        snap_misc_m2m("NAV: Disabled.\n");
-        soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
-
-        // Set to 1 for when player respawns...
-        stuffcmd(self, "setinfo agv_t_nav 1\n");
+        remove(self.agrip_nav.aiment);
+        remove(self.agrip_nav);
     }
 
     // D5k
     if( infokey(self, "agv_t_d5k") == "1" )
     {
-        // Remove the object, as it exists now...
         remove(self.agrip_d5k);
-        stuffcmd(self, "setinfo agv_t_d5k 0\n");
-        snap_misc_m2m("D5k: Disabled.\n");
-        soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);
-
-        // Set to 1 for respawn...
-        stuffcmd(self, "setinfo agv_t_d5k 1\n");
     }
 
     // ESR
     if( infokey(self, "agv_t_esr") == "1" )
     {
-        // Manual destroy the ESR...
-        // (This is the safest way.)
-
-        // Kill child objects (safely)...
         remove(self.agrip_esr.aiment);
         remove(self.agrip_esr.enemy);
         remove(self.agrip_esr.goalentity);
-
-        // Destruct the ESR...
-        sound(self.agrip_esr.owner, CHAN_AUTO, "toggles/off.wav", 1, ATTN_NORM);
         remove(self.agrip_esr);
-
-        // Now set the flag back so that it's respawned when I am...
-        snap_misc_m2m("ESR: Disabled.\n");
-        stuffcmd(self, "setinfo agv_t_esr 1\n");
     }
 
-
     // Remove all waypoints...
-    snap_misc_m2m("Removing markers...\n");
+    if( self.agrip_aux.health > 0 )
+        snap_misc_m2m("Removing markers...\n");
     while( self.agrip_aux.health > 0 )
     {
         // Call it *QUIETLY*...
@@ -421,8 +384,8 @@ void() agh_weapons_impulsecommands =
         else
         {
             // Remove the object, as it exists now...
-            self.agrip_nav.think = snap_nav_destructor;
-            self.agrip_nav.nextthink = time + 0.01;
+            remove(self.agrip_nav.aiment);
+            remove(self.agrip_nav);
             stuffcmd(self, "setinfo agv_t_nav 0\n");
             snap_misc_m2m("NAV: Disabled.\n");
             soundtoclient(self, self, CHAN_VOICE, "toggles/off.wav", 1, ATTN_NORM);

@@ -616,8 +616,8 @@ void() bot_strafe =
         botskill = stof(infokey(self, "botskill"));
         if (botskill == 1)
         {
-            if (   self.weapon != IT_ROCKET_LAUNCHER
-                && self.weapon != IT_GRENADE_LAUNCHER )
+            if( self.weapon != IT_ROCKET_LAUNCHER )
+            if( self.weapon != IT_GRENADE_LAUNCHER )
             {
                 movetogoal(20);
             }

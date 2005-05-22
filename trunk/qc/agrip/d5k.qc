@@ -244,9 +244,11 @@ void() snap_d5k_main =
             self.nextthink = time + 0.5;
             // Debug.info
             /*dprint("CT: ");dprint(ftos(time));
-            dprint("  NT: ");dprint(ftos(self.nextthink));
-            dprint("  SV: ");dprint(ftos(sound_vol));
-            dprint("  GE: ");dprint(self.goalentity.classname);
+            dprint(" NT: ");dprint(ftos(self.nextthink));
+            dprint(" SV: ");dprint(ftos(sound_vol));
+            dprint(" GE: ");dprint(self.goalentity.classname);
+            dprint(" GEO: ");dprint(vtos(self.goalentity.origin));
+            dprint(" M: ");dprint(ftos(matched));
             dprint("\n");*/
         }
         else
