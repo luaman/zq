@@ -1652,6 +1652,7 @@ void(float team) create_bot =
 // ------------------------------------------------
 {
     entity bot;
+    local string bots_skill;
 
     // AGRIP:
     // Check bots are allowed...
@@ -1664,6 +1665,14 @@ void(float team) create_bot =
     if (!stof(infokey(world, "bots_allowed")))
     {
         bprint(PRINT_HIGH, "Bots not allowed on this server!\n");
+        return;
+    }
+
+    // AGRIP - check bot skill setting...
+    bots_skill = infokey(world, "bots_skill");
+    if( !bots_skill || stof(bots_skill) < 0 || stof(bots_skill) > 2 )
+    {
+        bprint(PRINT_HIGH, "Can't add a bot - server admin has not set bots_skill to 0, 1 or 2!\n");
         return;
     }
 
@@ -1700,7 +1709,7 @@ void(float team) create_bot =
 
     // AGRIP skillz stuff...
     setinfo(bot, "isbot", "1");
-    setinfo(bot, "botskill", "1"); // FIXME variable 0-2
+    setinfo(bot, "bskill", bots_skill);  // variable by server admin
 
     // ----------
 
