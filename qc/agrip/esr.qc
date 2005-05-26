@@ -140,7 +140,7 @@ void() snap_esr_main =
     {
         snap_esr_hazard();
     }
-    else if( infokey(self.owner, "agv_t_esr") == "0" )
+    else //if( infokey(self.owner, "agv_t_esr") == "0" )
     {
         // The user pressed the ESR key again when it was in mode 2...
         // (i.e. They wanted to kill it.)
@@ -154,12 +154,12 @@ void() snap_esr_main =
         soundtoclient(self.owner, self.owner, CHAN_AUTO, "toggles/off.wav", 1, ATTN_NORM);
         remove(self);
     }
-    else
+    /*else
     {
         local string mode;
         mode = infokey(self.owner, "agv_t_esr");
         objerror("ESR: ", self.owner.netname, "'s requested ESR mode '", mode, "' is invalid\nPlease report this bug to the developers.  Thank you.\n");
-    }
+    }*/
 };
 
 void() snap_esr_classic =
