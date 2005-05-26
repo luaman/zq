@@ -299,8 +299,14 @@ void() agh_player_dietidy =
     // Remove all waypoints...
     if( self.agrip_aux.health > 0 )
         snap_misc_m2m("Removing markers...\n");
-    while( self.agrip_aux.health > 0 )
+    // FIXME this is an NP-complete ugly hack!!!
+    while( floor(self.agrip_aux.health) > 0 )
     {
+        // debug info...
+        /*dprint(self.netname);
+        dprint(" call m_d with a-aux.h = ");
+        dprint(ftos(self.agrip_aux.health));
+        dprint("\n");*/
         // Call it *QUIETLY*...
         snap_marker_destructor(1);
     }
