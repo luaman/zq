@@ -119,6 +119,12 @@ void(float quiet) snap_marker_destructor =
     local entity found_ent;
     local string marker_number;
 
+    // debug info
+    /*dprint(self.netname);
+    dprint(" md START.  num: ");
+    dprint(ftos(self.agrip_aux.health));
+    dprint("\n");*/
+
     if( self.agrip_aux.health == 0 )
     {
         // No markers...
@@ -137,9 +143,27 @@ void(float quiet) snap_marker_destructor =
         {
             found_ent = find(find_start_ent, classname, "agrip_marker");
 
+            // debug info
+            /*dprint(self.netname);
+            dprint(" md PREMID.  num: ");
+            dprint(ftos(self.agrip_aux.health));
+            dprint("  thismkrnum: ");
+            dprint(ftos(found_ent.items));
+            dprint("  found_ent.owner.netname = ");
+            dprint(found_ent.owner.netname);
+            dprint("\n");*/
+            
             if(    found_ent.owner == self
                 && found_ent.items == self.agrip_aux.health )
             {
+                // debug info
+                /*dprint(self.netname);
+                dprint(" md MID.  num: ");
+                dprint(ftos(self.agrip_aux.health));
+                dprint("  marker.items: ");
+                dprint(ftos(found_ent.items));
+                dprint("\n");*/
+
                 remove(found_ent);
                 if( !quiet )
                 {
@@ -157,6 +181,12 @@ void(float quiet) snap_marker_destructor =
             }
         }
     }
+
+    // debug info
+    /*dprint(self.netname);
+    dprint(" md END.  num: ");
+    dprint(ftos(self.agrip_aux.health));
+    dprint("\n");*/
 };
 
 void() snap_marker_touch =
