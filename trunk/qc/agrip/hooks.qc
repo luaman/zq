@@ -134,13 +134,6 @@ void() agh_client_startdevs =
 	    void
 */
 {
-    // Terrible, terrible, ugly hack...
-    if( stof(infokey(self, "fortytwo")) != 42 )
-    {
-        bprint(PRINT_HIGH, self, "Sorry, this is not a standard QuakeWorld server.\nYou need to use the AGRIP AudioQuake mod to connect here.\n");
-        stuffcmd(self, "disconnect.\n");
-    }
-    
     // Work out which devices are meant to be active...
 
     // Note that we have to reverse the value of the cvar as it is meant
@@ -176,6 +169,16 @@ void() agh_client_startdevs =
     SNAP_MISC_NORMYAW_OFFSET = self.angles_y;
     if( SNAP_MISC_NORMYAW_OFFSET == 270 )
         SNAP_MISC_NORMYAW_OFFSET = -90;
+
+    // Terrible, terrible, ugly hack...
+    if( stof(infokey(self, "fortytwo")) != 42 )
+    {
+        sprint(self, PRINT_HIGH, "Sorry, this is not a standard QuakeWorld server.\nYou need to use the AGRIP AudioQuake mod to connect here.\n");
+        dprint("KICKED SIGHTED PLAYER ``");
+        dprint(self.netname);
+        dprint("''!\n");
+        stuffcmd(self, "wait;disconnect\n");
+    }
 };
 
 void() agh_player_footsteps =
