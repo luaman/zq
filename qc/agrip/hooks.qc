@@ -129,11 +129,18 @@ void() agh_client_startdevs =
     Purpose:
         Starts the appropriate helper devices when a client joins the server.
     Takes:
-	void
+	    void
     Returns:
-	void
+	    void
 */
 {
+    // Terrible, terrible, ugly hack...
+    if( stof(infokey(self, "fortytwo")) != 42 )
+    {
+        bprint(PRINT_HIGH, self, "Sorry, this is not a standard QuakeWorld server.\nYou need to use the AGRIP AudioQuake mod to connect here.\n");
+        stuffcmd(self, "disconnect.\n");
+    }
+    
     // Work out which devices are meant to be active...
 
     // Note that we have to reverse the value of the cvar as it is meant
