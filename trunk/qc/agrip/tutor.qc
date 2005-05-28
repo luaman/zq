@@ -1686,6 +1686,9 @@ void(float team) create_bot =
 
     setinfo (bot, "topcolor", "4");
     setinfo (bot, "bottomcolor", "11");
+    
+    // Ugly hack...
+    setinfo (bot, "fortytwo", "42");
 
     /* bot.speed = cvar("sv_maxspeed"); */
     bot.speed = 320;
