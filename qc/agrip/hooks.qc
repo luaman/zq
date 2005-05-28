@@ -173,7 +173,7 @@ void() agh_client_startdevs =
     // Terrible, terrible, ugly hack...
     if( stof(infokey(self, "fortytwo")) != 42 )
     {
-        sprint(self, PRINT_HIGH, "Sorry, this is not a standard QuakeWorld server.\nYou need to use the AGRIP AudioQuake mod to connect here.\n");
+        sprint(self, PRINT_HIGH, "Sorry, this is not a standard QuakeWorld server.\nYou need to use the AGRIP AudioQuake mod (version 0.3.0 beta 2 and later)\nto connect here.\n");
         dprint("KICKED SIGHTED PLAYER ``");
         dprint(self.netname);
         dprint("''!\n");
