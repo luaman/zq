@@ -561,9 +561,7 @@ void VID_Init(unsigned char *palette)
 	vid.width = vid.width;
 	vid.height = vid.height;
 
-	/* vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0); */
-    // FIXME: experimenting with aspect ratios
-	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 200.0);
+	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 	vid.numpages = 2;
 
 	GL_Init();
