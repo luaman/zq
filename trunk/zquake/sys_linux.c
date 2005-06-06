@@ -235,6 +235,7 @@ int			 main (int argc, char **argv)
 		Host_Frame(time);
 		oldtime = newtime;
 	}
+    return 0;
 }
 
 

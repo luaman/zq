@@ -108,5 +108,9 @@ void Draw_Crosshair (void)
 	if (!crosshair.value)
 		return;
 
+#ifdef GLQUAKE
+	R_DrawCrosshair (crosshair.value, cl_crossx.value, cl_crossy.value);
+#else
 	R_DrawCrosshair (crosshair.value, (byte)crosshaircolor.value, cl_crossx.value, cl_crossy.value);
+#endif
 }
