@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include "quakedef.h"
 #include "gl_local.h"
 #include "keys.h"
@@ -561,7 +561,9 @@ void VID_Init(unsigned char *palette)
 	vid.width = vid.width;
 	vid.height = vid.height;
 
-	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
+	/* vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0); */
+    // FIXME: experimenting with aspect ratios
+	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 200.0);
 	vid.numpages = 2;
 
 	GL_Init();
