@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #ifdef SDL
-#include <SDL_opengl.h>
+#include <SDL/SDL_opengl.h>
 #else
 #include <GL/gl.h>
 #endif
