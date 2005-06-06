@@ -293,17 +293,11 @@ void VWepModel_NextDownload (void)
 {
 	int		i;
 
-#ifdef MVDPLAY
-    if (!cls.mvdplayback) {
-#endif
-        if (!cl.z_ext & Z_EXT_VWEP || !cl.vw_model_name[0][0]) {
-            // no vwep support, go straight to prespawn
-            CL_Prespawn ();
-            return;
-        }
-#ifdef MVDPLAY
-    }
-#endif
+	if (!cl.z_ext & Z_EXT_VWEP || !cl.vw_model_name[0][0]) {
+		// no vwep support, go straight to prespawn
+		CL_Prespawn ();
+		return;
+	}
 
 	if (cls.downloadnumber == 0) {
 		if (!com_serveractive || developer.value)
@@ -321,36 +315,19 @@ void VWepModel_NextDownload (void)
 			return;		// started a download
 	}
 
-#ifdef MVDPLAY
-        if(cls.mvdplayback) {
-            cl.vw_model_precache[0] = Mod_ForName("progs/vwplayer.mdl", false);  // vwep-enabled player model to use 
-            cl.vw_model_precache[1] = Mod_ForName("progs/w_axe.mdl", false);
-            cl.vw_model_precache[2] = Mod_ForName("progs/w_shot.mdl", false);
-            cl.vw_model_precache[3] = Mod_ForName("progs/w_shot2.mdl", false);
-            cl.vw_model_precache[4] = Mod_ForName("progs/w_nail.mdl", false);
-            cl.vw_model_precache[5] = Mod_ForName("progs/w_nail2.mdl", false);
-            cl.vw_model_precache[6] = Mod_ForName("progs/w_rock.mdl", false);
-            cl.vw_model_precache[7] = Mod_ForName("progs/w_rock2.mdl", false);
-            cl.vw_model_precache[8] = Mod_ForName("progs/w_light.mdl", false);
-        }
-        else
-#endif
-        {
-            for (i = 0; i < MAX_VWEP_MODELS; i++)
-            {
-                if (!cl.vw_model_name[i][0])
-                    continue;
+	for (i = 0; i < MAX_VWEP_MODELS; i++)
+	{
+		if (!cl.vw_model_name[i][0])
+			continue;
 
-                if (strcmp(cl.vw_model_name[i], "*"))
-                    cl.vw_model_precache[i] = Mod_ForName (cl.vw_model_name[i], false);
+		if (strcmp(cl.vw_model_name[i], "*"))
+			cl.vw_model_precache[i] = Mod_ForName (cl.vw_model_name[i], false);
 
-
-                if (!cl.vw_model_precache[i]) {
-                    // never mind
-                    Com_Printf ("Warning: model %s could not be found\n", cl.vw_model_name[i]);
-                }
-            }
-        }
+		if (!cl.vw_model_precache[i]) {
+			// never mind
+			// Com_Printf ("Warning: model %s could not be found\n", cl.vw_model_name[i]);
+		}
+	}
 
 	if (!strcmp(cl.vw_model_name[0], "*") || cl.vw_model_precache[0])
 		cl.vwep_enabled = true;
@@ -1469,11 +1446,7 @@ void CL_ParseServerInfoChange (void)
 	strlcpy (value, MSG_ReadString(), sizeof(value));
 
 #ifdef VWEP_TEST
-#ifdef MVDPLAY
-	if ( ((cl.z_ext & Z_EXT_VWEP) && !strcmp(key, "#vw")) || (cls.mvdplayback && !strcmp(key, "#vw"))) {
-#else
 	if ( (cl.z_ext & Z_EXT_VWEP) && !strcmp(key, "#vw") ) {
-#endif
 		CL_ParseVWepPrecache (value);
 		return;
 	}

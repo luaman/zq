@@ -67,7 +67,7 @@ int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
 cvar_t	r_norefresh = {"r_norefresh","0"};
 cvar_t	r_drawentities = {"r_drawentities","1"};
-cvar_t	r_drawflame = {"r_drawflame","1", CVAR_ARCHIVE};
+cvar_t	r_drawflame = {"r_drawflame","1"};
 cvar_t	r_speeds = {"r_speeds","0"};
 cvar_t	r_fullbright = {"r_fullbright","0"};
 cvar_t	r_lightmap = {"r_lightmap","0"};
@@ -76,10 +76,10 @@ cvar_t	r_wateralpha = {"r_wateralpha","1"};
 cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
-cvar_t	r_fullbrightSkins = {"r_fullbrightSkins", "0", CVAR_ARCHIVE};
-cvar_t	r_fastsky = {"r_fastsky", "0", CVAR_ARCHIVE};
-cvar_t	r_skycolor = {"r_skycolor", "4", CVAR_ARCHIVE};
-cvar_t	r_fastturb = {"r_fastturb", "0", CVAR_ARCHIVE};
+cvar_t	r_fullbrightSkins = {"r_fullbrightSkins", "0"};
+cvar_t	r_fastsky = {"r_fastsky", "0"};
+cvar_t	r_skycolor = {"r_skycolor", "4"};
+cvar_t	r_fastturb = {"r_fastturb", "0"};
 
 cvar_t	gl_subdivide_size = {"gl_subdivide_size", "64", CVAR_ARCHIVE};
 cvar_t	gl_clear = {"gl_clear","0"};
@@ -96,8 +96,8 @@ cvar_t	gl_finish = {"gl_finish","0"};
 cvar_t	gl_fb_depthhack = {"gl_fb_depthhack","1"};
 cvar_t	gl_fb_bmodels = {"gl_fb_bmodels","1"};
 cvar_t	gl_fb_models = {"gl_fb_models","1"};
-cvar_t	gl_colorlights = {"gl_colorlights","1", CVAR_ARCHIVE};
-cvar_t	gl_loadlitfiles = {"gl_loadlitfiles","1", CVAR_ARCHIVE};
+cvar_t	gl_colorlights = {"gl_colorlights","1"};
+cvar_t	gl_loadlitfiles = {"gl_loadlitfiles","1"};
 cvar_t	gl_lightmode = {"gl_lightmode","2"};
 cvar_t	gl_solidparticles = {"gl_solidparticles", "0"};
 

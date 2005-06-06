@@ -182,11 +182,7 @@ mpic_t *R_CachePic (char *path);
 mpic_t *R_CacheWadPic (char *name);
 void R_FlushPics (void);
 void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha);
-#ifdef GLQUAKE
-void R_DrawCrosshair (int num, int crossx, int crossy);
-#else
 void R_DrawCrosshair (int num, byte color, int crossx, int crossy);
-#endif
 
 #define GetPicWidth(pic) (pic->width)
 #define GetPicHeight(pic) (pic->height)

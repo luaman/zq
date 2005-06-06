@@ -22,7 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "pmove.h"
 #include "teamplay.h"
-#include "gl_model.h"
 
 extern cvar_t	cl_predictPlayers;
 extern cvar_t	cl_solidPlayers;
@@ -836,11 +835,7 @@ void CL_ParsePlayerState (void)
 		MSG_ReadDeltaUsercmd (&nullcmd, &state->command, cl.protocol);
 
 #ifdef VWEP_TEST
-#ifdef MVDPLAY
-	if ((cl.z_ext & Z_EXT_VWEP) || cls.mvdplayback) {
-#else
 	if (cl.z_ext & Z_EXT_VWEP) {
-#endif
 		state->vw_index = state->command.impulse;
 		state->vw_frame = state->command.msec;
 	} else {
@@ -1001,17 +996,14 @@ static qbool CL_AddVWepModel (entity_t *ent, int vw_index, int vw_frame)
 {
 	entity_t	newent;
 
-	if ((unsigned)vw_index >= MAX_VWEP_MODELS) {
+	if ((unsigned)vw_index >= MAX_VWEP_MODELS)
 		return false;
-    }
 
-	if (cl.vw_model_name[vw_index][0] == '*') {
+	if (cl.vw_model_name[vw_index][0] == '*')
 		return true;	// empty vwep model
-    }
 
-	if (!cl.vw_model_precache[vw_index]) {
+	if (!cl.vw_model_precache[vw_index])
 		return false;	// vwep model not present - draw default player.mdl
-    }
 
 	// build the weapon entity
 	memset (&newent, 0, sizeof(entity_t));
@@ -1027,29 +1019,6 @@ static qbool CL_AddVWepModel (entity_t *ent, int vw_index, int vw_frame)
 	return true;
 }
 #endif
-
-// FIXME: same as in sv_user.c and cl_demo.c Move to common.c?
-#ifdef VWEP_TEST
-static char *TrimModelName (char *full)
-{
-	static char shortn[MAX_QPATH];
-	int len;
-
-	if (!strncmp(full, "progs/", 6) && !strchr(full + 6, '/'))
-		strlcpy (shortn, full + 6, sizeof(shortn));		// strip progs/
-	else
-		strlcpy (shortn, full, sizeof(shortn));
-
-	len = strlen(shortn);
-	if (len > 4 && !strcmp(shortn + len - 4, ".mdl")
-		&& strchr(shortn, '.') == shortn + len - 4)
-	{	// strip .mdl
-		shortn[len - 4] = '\0';
-	}
-
-	return shortn;
-}
-#endif // VWEP_TEST
 
 
 /*
@@ -1178,37 +1147,7 @@ void CL_LinkPlayers (void)
 			CL_AddFlagModels (&ent, 1);
 
 #ifdef VWEP_TEST
-#ifdef MVDPLAY
-        if ((cl.vwep_enabled && state->vw_index) || (cls.mvdplayback)) {
-            struct model_s *vmodel = cl.model_precache[cl.stats[STAT_WEAPON]];
-            if( vmodel != NULL && (*vmodel).name != NULL ) {
-                char *vmodelname = TrimModelName((*vmodel).name);
-                state->vw_frame = state->frame;
-                if(!strcmp(vmodelname, "v_rock2"))
-                    state->vw_index = 7;
-                else if(!strcmp(vmodelname, "v_light"))
-                    state->vw_index = 8;
-                else if(!strcmp(vmodelname, "v_rock"))
-                    state->vw_index = 6;
-                else if(!strcmp(vmodelname, "v_shot"))
-                    state->vw_index = 2;
-                else if(!strcmp(vmodelname, "v_nail2"))
-                    state->vw_index = 5;
-                else if(!strcmp(vmodelname, "v_shot2"))
-                    state->vw_index = 3;
-                else if(!strcmp(vmodelname, "v_nail"))
-                    state->vw_index = 4;
-                else if(!strcmp(vmodelname, "v_axe"))
-                    state->vw_index = 1;
-                else
-                    state->vw_index = state->vw_frame = 0;
-            } else {
-                    state->vw_index = state->vw_frame = 0;
-            }
-
-#else
 		if (cl.vwep_enabled && state->vw_index) {
-#endif
 			qbool vwep;
 			vwep = CL_AddVWepModel (&ent, state->vw_index, state->vw_frame);
 			if (vwep) {
