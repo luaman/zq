@@ -909,8 +909,7 @@ void() snap_nav_corners_main =
         // Flag we found the corner...
         // NOT if we have immediately found a new one after losing the old,
         // one, though!
-        if( self.count == true )
-        if( self.pos1 != v_corner_left )
+        if( self.count == true && self.pos1 != v_corner_left )
         {
             // Make sure that the distance between the two is big
             // enough to be significant...
@@ -961,8 +960,7 @@ void() snap_nav_corners_main =
         // Flag we found the corner...
         // NOT if we have immediately found a new one after losing the old,
         // one, though!
-        if( self.state == true )
-        if( self.pos2 != v_corner_right )
+        if( self.state == true && self.pos2 != v_corner_right )
         {
             // Make sure that the distance between the two is big
             // enough to be significant...

@@ -30,6 +30,8 @@ float SNAP_ESR_LEVEL_HIGHER = 1;
 float SNAP_ESR_SPECIAL_EXPLOBOX = 10;
 float SNAP_ESR_SPECIAL_DROP = 20;
 
+float BEEPTIME_DIVISOR = 500;
+
 
 // PROTOTYPES
 
@@ -97,6 +99,7 @@ void() snap_esr_constructor =
     s_monster.solid = SOLID_NOT;
     s_monster.frags = self.agrip_esr.items;
     s_monster.think = snap_se_stickysound;
+    s_monster.nextthink = 0;
     s_monster.owner = self;
     self.agrip_esr.aiment = s_monster;
     // Enemy (Player/Bot) Sounder...
@@ -105,6 +108,7 @@ void() snap_esr_constructor =
     s_enemy.solid = SOLID_NOT;
     s_enemy.frags = self.agrip_esr.items;
     s_enemy.think = snap_se_stickysound;
+    s_enemy.nextthink = 0;
     s_enemy.owner = self;
     self.agrip_esr.enemy = s_enemy;
     // friend Sounder...
@@ -113,6 +117,7 @@ void() snap_esr_constructor =
     s_friend.solid = SOLID_NOT;
     s_friend.frags = self.agrip_esr.items;
     s_friend.think = snap_se_stickysound;
+    s_friend.nextthink = 0;
     s_friend.owner = self;
     self.agrip_esr.goalentity = s_friend;
  
@@ -184,6 +189,8 @@ void() snap_esr_classic =
 {
     local entity potential_hit, nearest_monster, nearest_enemy, nearest_friend;
     local float mindist, dist, level;
+    local float tmptime;
+    local string mt, pht; // for comparing teams
     
     // Monster level variables...
     local float mdist, m_same_dist, m_lower_dist, m_higher_dist, pm_lev;
@@ -257,26 +264,11 @@ void() snap_esr_classic =
             // Potential team-mate...
             else if( teamplay )
             {
-                //dprint("teamplay -- \n");
-                local string ownerteam, otherteam;
-                if( potential_hit.classname == "bot")
-                {
-                    ownerteam = "p";
-                    otherteam = "p";
-                    if( potential_hit.team == 2 )
-                        otherteam = "b";
-                }
-                else
-                {
-                    ownerteam = infokey(self.owner, "team");
-                    otherteam = infokey(potential_hit, "team");
-                }
-                //dprint("owner: ", ownerteam, "  ph: ", otherteam, "\n");
-                    
                 // On the same team?
-                if(     ownerteam == otherteam )
+                mt = infokey(self.owner, "team");
+                pht = infokey(potential_hit, "team");
+                if( mt == pht )
                 {
-                    //dprint("same team?\n");
                     pf_lev = snap_esr_classic_level(potential_hit.origin_z);
                     if( pf_lev == SNAP_ESR_LEVEL_SAME && f_same_dist > dist)
                     {
@@ -319,7 +311,6 @@ void() snap_esr_classic =
             // No teamplay -- most likely an enemy, then...
             else //if( ! potential_hit.flags & FL_MONSTER )
             {
-                //dprint("no teamplay -- enemy?\n");
                 pe_lev = snap_esr_classic_level(potential_hit.origin_z);
                 if( pe_lev == SNAP_ESR_LEVEL_SAME && e_same_dist > dist)
                 {
@@ -484,7 +475,14 @@ void() snap_esr_classic =
             self.aiment.message = "esr/monster-higher.wav";
 
         setorigin(self.aiment, nearest_monster.origin);
-        self.aiment.nextthink = time + ( mdist / 500 );
+        if( self.aiment.nextthink < time )  // i.e. we finished last beep
+        {
+            tmptime = mdist / BEEPTIME_DIVISOR;
+            if( tmptime < 0.5 )
+                self.aiment.nextthink = time + 0.5;
+            else
+                self.aiment.nextthink = time + tmptime;
+        }
     }
 
     // Friends...
@@ -502,7 +500,14 @@ void() snap_esr_classic =
             self.goalentity.message = "esr/friend-higher.wav";
 
         setorigin(self.goalentity, nearest_friend.origin);
-        self.goalentity.nextthink = time + ( fdist / 500 );
+        if( self.goalentity.nextthink < time )  // i.e. we finished last beep
+        {
+            tmptime = fdist / BEEPTIME_DIVISOR;
+            if( tmptime < 0.5 )
+                self.goalentity.nextthink = time + 0.5;
+            else
+                self.goalentity.nextthink = time + tmptime;
+        }
     }
 
     // Enemies...
@@ -520,10 +525,17 @@ void() snap_esr_classic =
             self.enemy.message = "esr/enemy-higher.wav";
 
         setorigin(self.enemy, nearest_enemy.origin);
-        self.enemy.nextthink = time + ( edist / 500 );
+        if( self.enemy.nextthink < time )  // i.e. we finished last beep
+        {
+            tmptime = edist / BEEPTIME_DIVISOR;
+            if( tmptime < 0.5 )
+                self.enemy.nextthink = time + 0.5;
+            else
+                self.enemy.nextthink = time + tmptime;
+        }
     }
     
-    self.nextthink = time + 0.4;
+    self.nextthink = time + 0.1;
 };
 
 float(float entity_z) snap_esr_classic_level =
@@ -604,7 +616,7 @@ void() snap_esr_hazard =
         }
         soundtoclient(self.owner, local_hazard, CHAN_AUTO, "esr/haz.wav", self.items, ATTN_NORM);
         dist_to_hazard = vlen(local_hazard.origin - self.owner.origin);
-        self.nextthink = time + ( (dist_to_hazard - 20) / 500 );
+        self.nextthink = time + ( (dist_to_hazard - 20) / BEEPTIME_DIVISOR );
         //dprint(ftos(self.nextthink - time));
         //dprint("\n");
         if( self.nextthink < time + 0.25 )
