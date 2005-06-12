@@ -110,12 +110,6 @@ float (vector targ_origin) snap_misc_ownervisible =
         else if(max_fov_yaw < 0 )
             max_fov_yaw = max_fov_yaw + 360;*/
         
-        // Debug info
-        /*dprint("fovtest1 :: owner yaw = ");dprint(ftos(player_normal_yaw));
-        dprint("  obj_orig_yaw = ");dprint(ftos(obj_orig_yaw));dprint("\n");
-        dprint("fovtest2 :: min yaw = ");dprint(ftos(min_fov_yaw));
-        dprint("  max yaw = ");dprint(ftos(max_fov_yaw));dprint("\n");*/
-    
         // Is it within our FOV?
         if( min_fov_yaw <= obj_orig_yaw && max_fov_yaw >= obj_orig_yaw )
         {
@@ -126,9 +120,13 @@ float (vector targ_origin) snap_misc_ownervisible =
             // Could be that annoying 360 bug...
             obj_orig_yaw = obj_orig_yaw - 360;
             if( min_fov_yaw <= obj_orig_yaw && max_fov_yaw >= obj_orig_yaw )
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         }
     }
     else
@@ -136,6 +134,7 @@ float (vector targ_origin) snap_misc_ownervisible =
         return false;
     }
 };
+
 
 void (string msg_string) snap_misc_m2o =
 /*
