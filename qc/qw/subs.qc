@@ -68,7 +68,7 @@ void SetMovedir ()
 		makevectors (self.angles);
 		self.movedir = v_forward;
 	}
-	
+
 	self.angles = VEC_ORIGIN;
 }
 
@@ -126,24 +126,24 @@ void SUB_CalcMove (vector tdest, float tspeed, void() func)
 		self.nextthink = self.ltime + 0.1;
 		return;
 	}
-		
+
 // set destdelta to the vector needed to move
 	vdestdelta = tdest - self.origin;
-	
+
 // calculate length of vector
 	len = vlen (vdestdelta);
-	
+
 // divide by speed to get time to reach dest
 	traveltime = len / tspeed;
 
 	if (traveltime < 0.03)
 		traveltime = 0.03;
-	
+
 // set nextthink to trigger a think when dest is reached
 	self.nextthink = self.ltime + traveltime;
 
 // scale the destdelta vector by the time spent traveling to get velocity
-	self.velocity = vdestdelta * (1/traveltime);	// qcc won't take vec/float	
+	self.velocity = vdestdelta * (1/traveltime);	// qcc won't take vec/float
 }
 
 /*
@@ -166,7 +166,7 @@ void SUB_CalcMoveDone ()
 SUB_CalcAngleMove
 
 calculate self.avelocity and self.nextthink to reach destangle from
-self.angles rotating 
+self.angles rotating
 
 The calling function should make sure self.think is valid
 ===============
@@ -187,13 +187,13 @@ void SUB_CalcAngleMove (vector destangle, float tspeed, void() func)
 
 	if (!tspeed)
 		objerror("No speed is defined!");
-		
+
 // set destdelta to the vector needed to move
 	destdelta = destangle - self.angles;
-	
+
 // calculate length of vector
 	len = vlen (destdelta);
-	
+
 // divide by speed to get time to reach dest
 	traveltime = len / tspeed;
 
@@ -202,7 +202,7 @@ void SUB_CalcAngleMove (vector destangle, float tspeed, void() func)
 
 // scale the destdelta vector by the time spent traveling to get velocity
 	self.avelocity = destdelta * (1 / traveltime);
-	
+
 	self.think1 = func;
 	self.finalangle = destangle;
 	self.think = SUB_CalcAngleMoveDone;
@@ -271,8 +271,8 @@ void SUB_UseTargets ()
 		t.target = self.target;
 		return;
 	}
-	
-	
+
+
 //
 // print the message
 //
@@ -297,7 +297,7 @@ void SUB_UseTargets ()
 			remove (t);
 		} while ( 1 );
 	}
-	
+
 //
 // fire targets
 //
@@ -326,7 +326,7 @@ void SUB_UseTargets ()
 			activator = act;
 		} while ( 1 );
 	}
-	
+
 
 }
 

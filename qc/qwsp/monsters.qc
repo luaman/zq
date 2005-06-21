@@ -48,7 +48,7 @@ void monster_use ()
 		return;
 	if (activator.classname != "player")
 		return;
-	
+
 // delay reaction so if the monster is teleported, its sound is still
 // heard
 	self.enemy = activator;
@@ -86,14 +86,14 @@ void walkmonster_start_go ()
 {
 	self.origin_z = self.origin_z + 1;	// raise off floor a bit
 	droptofloor();
-	
+
 	if (!walkmove(0,0))
 	{
 		dprint ("walkmonster in wall at: ");
 		dprint (vtos(self.origin));
 		dprint ("\n");
 	}
-	
+
 	self.takedamage = DAMAGE_AIM;
 
 	self.ideal_yaw = self.angles * '0 1 0';
@@ -101,9 +101,9 @@ void walkmonster_start_go ()
 		self.yaw_speed = 20;
 	self.view_ofs = '0 0 25';
 	self.use = monster_use;
-	
+
 	self.flags = self.flags | FL_MONSTER;
-	
+
 	if (self.target)
 	{
 		self.goalentity = self.movetarget = find(world, targetname, self.target);
@@ -187,7 +187,7 @@ void flymonster_start ()
 {
 // set FL_FLY early so that we're not affected by gravity
 	self.flags = self.flags | (FL_FLY | FL_MONSTER);
-        
+
 // spread think times so they don't all happen at same time
 	self.nextthink = time + 0.1 + random()*0.5;
 	self.think = flymonster_start_go;
@@ -210,7 +210,7 @@ void swimmonster_start_go ()
 		self.yaw_speed = 10;
 	self.view_ofs = '0 0 10';
 	self.use = monster_use;
-	
+
 	if (self.target)
 	{
 		self.goalentity = self.movetarget = find(world, targetname, self.target);
@@ -238,7 +238,7 @@ void swimmonster_start ()
 {
 // set FL_SWIM early so that we're not affected by gravity
 	self.flags = self.flags | (FL_SWIM | FL_MONSTER);
-    
+
 // spread think times so they don't all happen at same time
 	self.nextthink = time + 0.1 + random()*0.5;
 	self.think = swimmonster_start_go;

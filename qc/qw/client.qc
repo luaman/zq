@@ -75,11 +75,11 @@ void SetChangeParms ()
 		SetNewParms ();
 		return;
 	}
- 
+
 // remove items
-	self.items = self.items - (self.items & 
+	self.items = self.items - (self.items &
 	(IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD) );
-	
+
 // cap super health
 	if (self.health > 100)
 		self.health = 100;
@@ -119,7 +119,7 @@ void DecodeLevelParms ()
 		if (world.model == "maps/start.bsp")
 			SetNewParms ();         // take away all stuff on starting new episode
 	}
-	
+
 	self.items = parm1;
 	self.health = parm2;
 	self.armorvalue = parm3;
@@ -160,7 +160,7 @@ entity FindIntermission ()
 
 // then look for the start position
 	spot = find (world, classname, "info_player_start");
-	if (!spot)	
+	if (!spot)
 		objerror ("FindIntermission: no spot");
 
 	return spot;
@@ -204,7 +204,7 @@ void IntermissionThink ()
 
 	if (!self.button0 && !self.button1 && !self.button2)
 		return;
-	
+
 	ExitIntermission ();
 }
 
@@ -219,7 +219,7 @@ Take the players to the intermission spot
 void execute_changelevel ()
 {
 	intermission_running = 1;
-	
+
 // enforce a wait time before allowing changelevel
 	intermission_exittime = time + 5;
 
@@ -236,7 +236,7 @@ void execute_changelevel ()
 	WriteAngle (MSG_ALL, intermission_spot.mangle_x);
 	WriteAngle (MSG_ALL, intermission_spot.mangle_y);
 	WriteAngle (MSG_ALL, intermission_spot.mangle_z);
-	
+
 	other = find (world, classname, "player");
 	while (other != world)
 	{
@@ -255,7 +255,7 @@ void execute_changelevel ()
 		setorigin (other, intermission_spot.origin);
 		other.velocity = VEC_ORIGIN;
 		other = find (other, classname, "player");
-	}       
+	}
 }
 
 
@@ -282,7 +282,7 @@ void SendIntermissionToClient ()
 	WriteAngle (MSG_ONE, intermission_spot.mangle_x);
 	WriteAngle (MSG_ONE, intermission_spot.mangle_y);
 	WriteAngle (MSG_ONE, intermission_spot.mangle_z);
-	
+
 	setorigin (self, intermission_spot.origin);
 }
 
@@ -305,7 +305,7 @@ void changelevel_touch ()
 
 		bprint (PRINT_HIGH, other.netname, " exited the level\n");
 	}
-	
+
 	nextmap = self.map;
 
 	SUB_UseTargets ();
@@ -331,7 +331,7 @@ void trigger_changelevel ()
 {
 	if (!self.map)
 		objerror ("changelevel trigger doesn't have map");
-	
+
 	InitTrigger ();
 	self.touch = changelevel_touch;
 }
@@ -404,7 +404,7 @@ void ClientKill ()
 #ifdef AGRIP
         agh_player_dietidy();
 #endif
-        
+
 	set_suicide_frame ();
 	self.modelindex = modelindex_player;
 	logfrag (self, self);
@@ -458,23 +458,23 @@ entity SelectSpawnPoint ()
 			error ("PutClientInServer: no info_player_start on level");
 		return spot;
 	}
-		
+
 // choose a info_player_deathmatch point
 // ok, find all spots that don't have players nearby
 
 	spots = world;
-	spot = find (world, classname, "info_player_deathmatch");       
+	spot = find (world, classname, "info_player_deathmatch");
 	while (spot)
 	{
 		totalspots = totalspots + 1;
 
 		thing=findradius(spot.origin, 84);
-		pcount=0;               
+		pcount=0;
 		while (thing)
 		{
 			if (thing.classname == "player")
-				pcount=pcount + 1;                      
-			thing=thing.chain;      
+				pcount=pcount + 1;
+			thing=thing.chain;
 		}
 		if (pcount == 0) {
 			spot.goalentity = spots;
@@ -483,27 +483,27 @@ entity SelectSpawnPoint ()
 		}
 
 		// Get the next spot in the chain
-		spot = find (spot, classname, "info_player_deathmatch");                
+		spot = find (spot, classname, "info_player_deathmatch");
 	}
 	totalspots=totalspots - 1;
 	if (!numspots) {
 		// ack, they are all full, just pick one at random
 //		bprint (PRINT_HIGH, "Ackk! All spots are full. Selecting random spawn spot\n");
 		totalspots = rint((random() * totalspots));
-		spot = find (world, classname, "info_player_deathmatch");       
+		spot = find (world, classname, "info_player_deathmatch");
 		while (totalspots > 0) {
 			totalspots = totalspots - 1;
 			spot = find (spot, classname, "info_player_deathmatch");
 		}
 		return spot;
 	}
-		
+
 // We now have the number of spots available on the map in numspots
 
 	// Generate a random number between 1 and numspots
 
 	numspots = numspots - 1;
-	
+
 	numspots = rint((random() * numspots ) );
 
 	spot = spots;
@@ -548,17 +548,17 @@ void PutClientInServer ()
 	self.invincible_time = 0;
 
 	DecodeLevelParms ();
-	
+
 	W_SetCurrentAmmo ();
 
 	self.attack_finished = time;
 	self.th_pain = player_pain;
 	self.th_die = PlayerDie;
-	
+
 	self.deadflag = DEAD_NO;
 // paustime is set by teleporters to keep the player from moving a while
 	self.pausetime = 0;
-	
+
 	spot = SelectSpawnPoint ();
 
 	self.origin = spot.origin + '0 0 1';
@@ -584,7 +584,7 @@ void PutClientInServer ()
 
 // set size and link into world
 	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
-	
+
 	self.view_ofs = '0 0 22';
 
 // Mod - Xian (May.20.97)
@@ -595,7 +595,7 @@ void PutClientInServer ()
 	player_stand1 ();
 
 	if (deathmatch || coop)
-	{	
+	{
 		makevectors(self.angles);
 		play_teleport (self);
 		spawn_tfog (self.origin + v_forward*20);
@@ -737,7 +737,7 @@ void NextLevel ()
 			mapname = "e4m1";
 			serverflags = serverflags - 7;
 		}
- 
+
 		o = spawn();
 		o.map = mapname;
 	}
@@ -769,7 +769,7 @@ Exit deathmatch games upon conditions
 ============
 */
 void CheckRules ()
-{       
+{
 	if (deathmatch && fraglimit && self.frags >= fraglimit)
 		NextLevel ();
 }
@@ -786,7 +786,7 @@ void PlayerDeathThink ()
 		forward = forward - 20;
 		if (forward <= 0)
 			self.velocity = VEC_ORIGIN;
-		else    
+		else
 			self.velocity = forward * normalize(self.velocity);
 	}
 
@@ -814,7 +814,7 @@ void PlayerJump ()
 {
 	if (self.flags & FL_WATERJUMP)
 		return;
-	
+
 	if (self.waterlevel >= 2)
 	{
 // play swiming sound
@@ -836,7 +836,7 @@ void PlayerJump ()
 	if ( !(self.flags & FL_JUMPRELEASED) )
 		return;         // don't pogo stick
 
-	self.flags = self.flags - (self.flags & FL_JUMPRELEASED);       
+	self.flags = self.flags - (self.flags & FL_JUMPRELEASED);
 	self.button2 = 0;
 
 // player jumping sound
@@ -880,11 +880,11 @@ void WaterMove ()
 			self.pain_finished = time + 1;
 		}
 	}
-	
+
 	if (!self.waterlevel)
 	{
 		if (self.flags & FL_INWATER)
-		{       
+		{
 			// play leave water sound
 			sound (self, CHAN_BODY, "misc/outwater.wav", 1, ATTN_NORM);
 			self.flags = self.flags - FL_INWATER;
@@ -912,9 +912,9 @@ void WaterMove ()
 			T_Damage (self, world, world, 4*self.waterlevel);
 		}
 	}
-	
+
 	if ( !(self.flags & FL_INWATER) )
-	{       
+	{
 
 // player enter water sound
 
@@ -927,7 +927,7 @@ void WaterMove ()
 
 		self.flags = self.flags + FL_INWATER;
 		self.dmgtime = 0;
-	}       
+	}
 }
 
 /*
@@ -957,7 +957,7 @@ void PlayerPreThink ()
 		PlayerDeathThink ();
 		return;
 	}
-	
+
 	if (self.deadflag == DEAD_DYING)
 		return; // dying, so do nothing
 
@@ -968,7 +968,7 @@ void PlayerPreThink ()
 	else
 		self.flags = self.flags | FL_JUMPRELEASED;
 
-// teleporters can force a non-moving pause time        
+// teleporters can force a non-moving pause time
 	if (time < self.pausetime)
 		self.velocity = VEC_ORIGIN;
 
@@ -978,7 +978,7 @@ void PlayerPreThink ()
 		W_SetCurrentAmmo ();
 	}
 }
-	
+
 /*
 ================
 CheckPowerups
@@ -1011,7 +1011,7 @@ void CheckPowerups ()
 				sound (self, CHAN_AUTO, "items/inv2.wav", 1, ATTN_NORM);
 				self.invisible_time = time + 1;
 			}
-			
+
 			if (self.invisible_time < time)
 			{
 				self.invisible_time = time + 1;
@@ -1025,7 +1025,7 @@ void CheckPowerups ()
 			self.invisible_finished = 0;
 			self.invisible_time = 0;
 		}
-		
+
 	// use the eyes
 		self.frame = 0;
 		self.modelindex = modelindex_eyes;
@@ -1046,14 +1046,14 @@ void CheckPowerups ()
 				sound (self, CHAN_AUTO, "items/protect2.wav", 1, ATTN_NORM);
 				self.invincible_time = time + 1;
 			}
-			
+
 			if (self.invincible_time < time)
 			{
 				self.invincible_time = time + 1;
 				stuffcmd (self, "bf\n");
 			}
 		}
-		
+
 		if (self.invincible_finished < time)
 		{       // just stopped
 			self.items = self.items - IT_INVULNERABILITY;
@@ -1089,8 +1089,8 @@ void CheckPowerups ()
 				stuffcmd (self, "bf\n");
 				sound (self, CHAN_AUTO, "items/damage2.wav", 1, ATTN_NORM);
 				self.super_time = time + 1;
-			}         
-			
+			}
+
 			if (self.super_time < time)
 			{
 				self.super_time = time + 1;
@@ -1121,9 +1121,9 @@ void CheckPowerups ()
 			self.effects = self.effects - (self.effects & EF_DIMLIGHT);
 			self.effects = self.effects - (self.effects & EF_BLUE);
 		}
-	}       
+	}
 
-// suit 
+// suit
 	if (self.radsuit_finished)
 	{
 		self.air_finished = time + 12;          // don't drown
@@ -1138,7 +1138,7 @@ void CheckPowerups ()
 				sound (self, CHAN_AUTO, "items/suit2.wav", 1, ATTN_NORM);
 				self.rad_time = time + 1;
 			}
-			
+
 			if (self.rad_time < time)
 			{
 				self.rad_time = time + 1;
@@ -1152,7 +1152,7 @@ void CheckPowerups ()
 			self.rad_time = 0;
 			self.radsuit_finished = 0;
 		}
-	}       
+	}
 
 }
 
@@ -1190,7 +1190,7 @@ void PlayerPostThink ()
 	if (self.deadflag)
 		return;
 
-// check to see if player landed and play landing sound 
+// check to see if player landed and play landing sound
 	if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) )
 	{
 		if (self.watertype == CONTENT_WATER)
@@ -1198,7 +1198,7 @@ void PlayerPostThink ()
 		else if (self.jump_flag < -650)
 		{
 			self.deathtype = "falling";
-			T_Damage (self, world, world, 5); 
+			T_Damage (self, world, world, 5);
 			sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
 
 			if (self.groundentity.takedamage == DAMAGE_AIM)
@@ -1300,7 +1300,7 @@ void ClientObituary (entity targ, entity attacker)
 	attackerteam = infokey(attacker, "team");
 	targteam = infokey(targ, "team");
 
-	if (deathmatch > 3)	
+	if (deathmatch > 3)
 	{
 		if (targ.deathtype == "selfwater")
 		{
@@ -1329,7 +1329,7 @@ void ClientObituary (entity targ, entity attacker)
 	}
 
 	// double 666 telefrag (can happen often in deathmatch 4)
-	if (attacker.classname == "teledeath3") 
+	if (attacker.classname == "teledeath3")
 	{
 		bprint (PRINT_MEDIUM, targ.netname, " was telefragged by ",
 					attacker.owner.netname, "'s Satan's power\n");
@@ -1344,7 +1344,7 @@ void ClientObituary (entity targ, entity attacker)
 		if (teamplay && targteam == attackerteam && attackerteam != "" && targ != attacker)
 		{
 			logfrag (attacker, attacker);
-			attacker.frags = attacker.frags - 1; 
+			attacker.frags = attacker.frags - 1;
 			bprint (PRINT_MEDIUM, attacker.netname, " squished a teammate\n");
 			return;
 		}

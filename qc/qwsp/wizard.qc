@@ -26,7 +26,7 @@ WIZARD
 
 $cd /raid/quake/id1/models/a_wizard
 $origin 0 0 24
-$base wizbase	
+$base wizbase
 $skin wizbase
 
 $frame hover1 hover2 hover3 hover4 hover5 hover6 hover7 hover8
@@ -68,23 +68,23 @@ void LaunchMissile (entity missile, float mspeed, float accuracy)
 	float	fly;
 
 	makevectors (self.angles);
-		
+
 // set missile speed
 	vec = self.enemy.origin + self.enemy.mins + self.enemy.size * 0.7 - missile.origin;
 
 // calc aproximate time for missile to reach vec
 	fly = vlen (vec) / mspeed;
-	
+
 // get the entities xy velocity
 	move = self.enemy.velocity;
 	move_z = 0;
 
 // project the target forward in time
 	vec = vec + move * fly;
-	
+
 	vec = normalize(vec);
 	vec = vec + accuracy*v_up*(random()- 0.5) + accuracy*v_right*(random()- 0.5);
-	
+
 	missile.velocity = vec * mspeed;
 
 	missile.angles = VEC_ORIGIN;
@@ -92,7 +92,7 @@ void LaunchMissile (entity missile, float mspeed, float accuracy)
 
 // set missile duration
 	missile.nextthink = time + 5;
-	missile.think = SUB_Remove;	
+	missile.think = SUB_Remove;
 }
 
 
@@ -124,9 +124,9 @@ float WizardCheckAttack ()
 		}
 		return false;
 	}
-		
+
 	targ = self.enemy;
-	
+
 // see if any entities are in the way of the shot
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
@@ -142,7 +142,7 @@ float WizardCheckAttack ()
 		}
 		return false;
 	}
-			
+
 	if (enemy_range == RANGE_MELEE)
 		chance = 0.9;
 	else if (enemy_range == RANGE_NEAR)
@@ -174,7 +174,7 @@ float WizardCheckAttack ()
 			wiz_side1 ();
 		}
 	}
-	
+
 	return false;
 }
 
@@ -218,9 +218,9 @@ void Wiz_FastFire ()
 		muzzleflash();
 		self = oself;
 
-		makevectors (self.enemy.angles);	
+		makevectors (self.enemy.angles);
 		dst = self.enemy.origin - 13*self.movedir;
-	
+
 		vec = normalize(dst - self.origin);
 		sound (self, CHAN_WEAPON, "wizard/wattack.wav", 1, ATTN_NORM);
 		launch_spike (self.origin, vec);
@@ -228,7 +228,7 @@ void Wiz_FastFire ()
 		newmis.owner = self.owner;
 		newmis.classname = "wizspike";
 		setmodel (newmis, "progs/w_spike.mdl");
-		setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);		
+		setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
 	}
 
 	remove (self);
@@ -238,7 +238,7 @@ void Wiz_FastFire ()
 void Wiz_StartFast ()
 {
 	entity	missile;
-	
+
 	sound (self, CHAN_WEAPON, "wizard/wattack.wav", 1, ATTN_NORM);
 	self.v_angle = self.angles;
 	makevectors (self.angles);
@@ -246,7 +246,7 @@ void Wiz_StartFast ()
 	missile = spawn ();
 	missile.owner = self;
 	missile.nextthink = time + 0.6;
-	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);		
+	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);
 	setorigin (missile, self.origin + '0 0 30' + v_forward*14 + v_right*14);
 	missile.enemy = self.enemy;
 	missile.nextthink = time + 0.8;
@@ -256,7 +256,7 @@ void Wiz_StartFast ()
 	missile = spawn ();
 	missile.owner = self;
 	missile.nextthink = time + 1;
-	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);		
+	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);
 	setorigin (missile, self.origin + '0 0 30' + v_forward*14 + v_right* -14);
 	missile.enemy = self.enemy;
 	missile.nextthink = time + 0.3;
@@ -274,7 +274,7 @@ void Wiz_idlesound ()
 	if (self.waitmin < time)
 	{
 	 	self.waitmin = time + 2;
-	 	if (wr > 4.5) 
+	 	if (wr > 4.5)
 	 		sound (self, CHAN_VOICE, "wizard/widle1.wav", 1,  ATTN_IDLE);
 	 	if (wr < 1.5)
 	 		sound (self, CHAN_VOICE, "wizard/widle2.wav", 1, ATTN_IDLE);
@@ -427,6 +427,6 @@ void monster_wizard ()
 	self.th_missile = Wiz_Missile;
 	self.th_pain = Wiz_Pain;
 	self.th_die = wiz_die;
-		
+
 	flymonster_start ();
 }

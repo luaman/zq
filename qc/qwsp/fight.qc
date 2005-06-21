@@ -52,10 +52,10 @@ float	enemy_yaw;
 void knight_attack ()
 {
 	float	len;
-	
+
 // decide if now is a good swing time
 	len = vlen(self.enemy.origin+self.enemy.view_ofs - (self.origin+self.view_ofs));
-	
+
 	if (len<80)
 		knight_atk1 ();
 	else
@@ -79,7 +79,7 @@ float CheckAttack ()
 	float	chance;
 
 	targ = self.enemy;
-	
+
 // see if any entities are in the way of the shot
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
@@ -88,7 +88,7 @@ float CheckAttack ()
 
 	if (trace_ent != targ)
 		return false;		// don't have a clear shot
-			
+
 	if (trace_inopen && trace_inwater)
 		return false;			// sight line crossed contents
 
@@ -103,17 +103,17 @@ float CheckAttack ()
 			return true;
 		}
 	}
-	
+
 // missile attack
 	if (!self.th_missile)
 		return false;
-		
+
 	if (time < self.attack_finished)
 		return false;
-		
+
 	if (enemy_range == RANGE_FAR)
 		return false;
-		
+
 	if (enemy_range == RANGE_MELEE)
 	{
 		chance = 0.9;
@@ -173,7 +173,7 @@ float range (entity targ);
 
 void ai_charge (float d)
 {
-	ai_face ();	
+	ai_face ();
 	movetogoal (d);		// done in C code...
 }
 
@@ -181,7 +181,7 @@ void ai_charge_side ()
 {
 	vector	dtemp;
 	float	heading;
-	
+
 // aim to the left of the enemy for a flyby
 
 	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
@@ -190,7 +190,7 @@ void ai_charge_side ()
 	makevectors (self.angles);
 	dtemp = self.enemy.origin - 30*v_right;
 	heading = vectoyaw(dtemp - self.origin);
-	
+
 	walkmove(heading, 20);
 }
 
@@ -208,12 +208,12 @@ void ai_melee ()
 
 	if (!self.enemy)
 		return;		// removed before stroke
-		
+
 	delta = self.enemy.origin - self.origin;
 
 	if (vlen(delta) > 60)
 		return;
-		
+
 	ldmg = (random() + random() + random()) * 3;
 	T_Damage (self.enemy, self, self, ldmg);
 }
@@ -226,9 +226,9 @@ void ai_melee_side ()
 
 	if (!self.enemy)
 		return;		// removed before stroke
-		
+
 	ai_charge_side();
-	
+
 	delta = self.enemy.origin - self.origin;
 
 	if (vlen(delta) > 60)
@@ -257,7 +257,7 @@ float SoldierCheckAttack ()
 	float	chance;
 
 	targ = self.enemy;
-	
+
 // see if any entities are in the way of the shot
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
@@ -269,15 +269,15 @@ float SoldierCheckAttack ()
 
 	if (trace_ent != targ)
 		return false;	// don't have a clear shot
-			
-	
+
+
 // missile attack
 	if (time < self.attack_finished)
 		return false;
-		
+
 	if (enemy_range == RANGE_FAR)
 		return false;
-		
+
 	if (enemy_range == RANGE_MELEE)
 		chance = 0.9;
 	else if (enemy_range == RANGE_NEAR)
@@ -325,12 +325,12 @@ float ShamCheckAttack ()
 
 	if (time < self.attack_finished)
 		return false;
-	
+
 	if (!enemy_vis)
 		return false;
-		
+
 	targ = self.enemy;
-	
+
 // see if any entities are in the way of the shot
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
@@ -347,11 +347,11 @@ float ShamCheckAttack ()
 	{
 		return false;	// don't have a clear shot
 	}
-			
+
 // missile attack
 	if (enemy_range == RANGE_FAR)
 		return false;
-		
+
 	self.attack_state = AS_MISSILE;
 	SUB_AttackFinished (2 + 2*random());
 	return true;
@@ -383,12 +383,12 @@ float OgreCheckAttack ()
 
 	if (time < self.attack_finished)
 		return false;
-	
+
 	if (!enemy_vis)
 		return false;
-		
+
 	targ = self.enemy;
-	
+
 // see if any entities are in the way of the shot
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
@@ -402,14 +402,14 @@ float OgreCheckAttack ()
 	{
 		return false;	// don't have a clear shot
 	}
-			
+
 // missile attack
 	if (time < self.attack_finished)
 		return false;
-		
+
 	if (enemy_range == RANGE_FAR)
 		return false;
-		
+
 	self.attack_state = AS_MISSILE;
 	SUB_AttackFinished (1 + 2*random());
 	return true;
