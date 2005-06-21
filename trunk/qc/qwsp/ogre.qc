@@ -26,7 +26,7 @@ OGRE
 
 $cd /raid/quake/id1/models/ogre_c
 $origin 0 0 24
-$base base		
+$base base
 $skin base
 
 $frame	stand1 stand2 stand3 stand4 stand5 stand6 stand7 stand8 stand9
@@ -78,7 +78,7 @@ void OgreGrenadeExplode ()
 	WriteCoord (MSG_BROADCAST, self.origin_x);
 	WriteCoord (MSG_BROADCAST, self.origin_y);
 	WriteCoord (MSG_BROADCAST, self.origin_z);
-	multicast (self.origin, MULTICAST_PHS);	
+	multicast (self.origin, MULTICAST_PHS);
 
 	remove (self);
 }
@@ -105,7 +105,7 @@ OgreFireGrenade
 void OgreFireGrenade ()
 {
 	entity	missile;
-	
+
 	muzzleflash();
 
 	sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
@@ -114,8 +114,8 @@ void OgreFireGrenade ()
 	missile.owner = self;
 	missile.movetype = MOVETYPE_BOUNCE;
 	missile.solid = SOLID_BBOX;
-		
-// set missile speed	
+
+// set missile speed
 
 	makevectors (self.angles);
 
@@ -126,15 +126,15 @@ void OgreFireGrenade ()
 	missile.avelocity = '300 300 300';
 
 	missile.angles = vectoangles(missile.velocity);
-	
+
 	missile.touch = OgreGrenadeTouch;
-	
+
 // set missile duration
 	missile.nextthink = time + 2.5;
 	missile.think = OgreGrenadeExplode;
 
 	setmodel (missile, "progs/grenade.mdl");
-	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);		
+	setsize (missile, VEC_ORIGIN, VEC_ORIGIN);
 	setorigin (missile, self.origin);
 }
 
@@ -164,11 +164,11 @@ void chainsaw (float side)
 
 	if (vlen(delta) > 100)
 		return;
-		
+
 	ldmg = (random() + random() + random()) * 4;
 	self.enemy.deathtype = "ogre";
 	T_Damage (self.enemy, self, self, ldmg);
-	
+
 	if (side)
 	{
 		makevectors (self.angles);
@@ -336,10 +336,10 @@ void ogre_pain (entity attacker, float damage)
 	if (self.pain_finished > time)
 		return;
 
-	sound (self, CHAN_VOICE, "ogre/ogpain1.wav", 1, ATTN_NORM);		
+	sound (self, CHAN_VOICE, "ogre/ogpain1.wav", 1, ATTN_NORM);
 
 	r = random();
-	
+
 	if (r < 0.25)
 	{
 		ogre_pain1 ();
@@ -411,7 +411,7 @@ void ogre_die ()
 	}
 
 	sound (self, CHAN_VOICE, "ogre/ogdth.wav", 1, ATTN_NORM);
-	
+
 	if (random() < 0.5)
 		ogre_die1 ();
 	else
@@ -464,7 +464,7 @@ void monster_ogre ()
 	self.th_melee = ogre_melee;
 	self.th_missile = ogre_nail1;
 	self.th_pain = ogre_pain;
-	
+
 	walkmonster_start();
 }
 

@@ -127,7 +127,7 @@ void worldspawn ()
 
 	precache_sound ("boss1/sight1.wav");
 
-// ax sounds	
+// ax sounds
 	precache_sound ("weapons/ax1.wav"); 			// ax swoosh
 	precache_sound ("player/axhit1.wav");			// ax hit meat
 	precache_sound ("player/axhit2.wav");			// ax hit world
@@ -170,22 +170,22 @@ void worldspawn ()
 
 #ifdef VWEP_TEST
     vw_available = checkextension("ZQ_VWEP");
-    
+
     if(stof(infokey(world, "vwep")) && vw_available > 0)
     {
-        // precache our vwep models 
-        precache_vwep_model (0, "progs/vwplayer.mdl");  // vwep-enabled player model to use 
-        precache_vwep_model (1, "progs/w_axe.mdl"); 
-        precache_vwep_model (2, "progs/w_shot.mdl"); 
-        precache_vwep_model (3, "progs/w_shot2.mdl"); 
-        precache_vwep_model (4, "progs/w_nail.mdl"); 
-        precache_vwep_model (5, "progs/w_nail2.mdl"); 
-        precache_vwep_model (6, "progs/w_rock.mdl"); 
-        precache_vwep_model (7, "progs/w_rock2.mdl"); 
+        // precache our vwep models
+        precache_vwep_model (0, "progs/vwplayer.mdl");  // vwep-enabled player model to use
+        precache_vwep_model (1, "progs/w_axe.mdl");
+        precache_vwep_model (2, "progs/w_shot.mdl");
+        precache_vwep_model (3, "progs/w_shot2.mdl");
+        precache_vwep_model (4, "progs/w_nail.mdl");
+        precache_vwep_model (5, "progs/w_nail2.mdl");
+        precache_vwep_model (6, "progs/w_rock.mdl");
+        precache_vwep_model (7, "progs/w_rock2.mdl");
         precache_vwep_model (8, "progs/w_light.mdl");
     }
 #endif
-    
+
 	precache_model ("progs/bolt.mdl");				// for lightning gun
 	precache_model ("progs/bolt2.mdl"); 			// for lightning gun
 	precache_model ("progs/bolt3.mdl"); 			// for boss shock
@@ -201,7 +201,7 @@ void worldspawn ()
 	precache_model ("progs/zom_gib.mdl");
 
 	precache_model ("progs/v_light.mdl");
-	
+
 
 #ifdef AGRIP
 	agh_world_precaches();
@@ -247,7 +247,7 @@ void worldspawn ()
 
 	// 11 SLOW PULSE NOT FADE TO BLACK
 	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
-	
+
 	// styles 32-62 are assigned by the light program for switchable lights
 
 	// 63 testing
@@ -269,7 +269,7 @@ void StartFrame ()
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar("fraglimit");
 	teamplay = cvar("teamplay");
-	
+
 	framecount = framecount + 1;
 
 	if (deathmatch && timelimit && time >= timelimit)

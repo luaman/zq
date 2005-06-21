@@ -129,7 +129,7 @@ void func_button ()
 		precache_sound ("buttons/switch04.wav");
 		self.noise = "buttons/switch04.wav";
 	}
-	
+
 	SetMovedir ();
 
 	self.movetype = MOVETYPE_PUSH;

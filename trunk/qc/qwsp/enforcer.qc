@@ -26,7 +26,7 @@ SOLDIER / PLAYER
 
 $cd /raid/quake/id1/models/enforcer
 $origin 0 -6 24
-$base base		
+$base base
 $skin skin
 
 $frame stand1 stand2 stand3 stand4 stand5 stand6 stand7
@@ -63,7 +63,7 @@ void enforcer_fire ()
 
 	muzzleflash();
 	makevectors (self.angles);
-	
+
 	org = self.origin + v_forward * 30 + v_right * 8.5 + '0 0 16';
 
 	LaunchLaser(org, self.enemy.origin - self.origin);
@@ -176,7 +176,7 @@ void enf_pain (entity attacker, float damage)
 	if (self.pain_finished > time)
 		return;
 
-	
+
 	if (r < 0.5)
 		sound (self, CHAN_VOICE, "enforcer/pain1.wav", 1, ATTN_NORM);
 	else
@@ -229,7 +229,7 @@ void()	enf_fdie1	=[	$fdeath1,	enf_fdie2	] {
 
 }
 void()	enf_fdie2	=[	$fdeath2,	enf_fdie3	] {}
-void()	enf_fdie3	=[	$fdeath3,	enf_fdie4	] 
+void()	enf_fdie3	=[	$fdeath3,	enf_fdie4	]
 {self.solid = SOLID_NOT;self.ammo_cells = 5;DropBackpack();}
 void()	enf_fdie4	=[	$fdeath4,	enf_fdie5	] {}
 void()	enf_fdie5	=[	$fdeath5,	enf_fdie6	] {}
@@ -287,7 +287,7 @@ void monster_enforcer ()
 	precache_sound2 ("enforcer/sight2.wav");
 	precache_sound2 ("enforcer/sight3.wav");
 	precache_sound2 ("enforcer/sight4.wav");
-	
+
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 

@@ -75,7 +75,7 @@ void dog_bite ()
 
 	if (vlen(delta) > 100)
 		return;
-		
+
 	ldmg = (random() + random() + random()) * 8;
 	T_Damage (self.enemy, self, self, ldmg);
 }
@@ -86,13 +86,13 @@ void Dog_JumpTouch ()
 
 	if (self.health <= 0)
 		return;
-		
+
 	if (other.takedamage)
 	{
 		if ( vlen(self.velocity) > 300 )
 		{
 			ldmg = 10 + 10*random();
-			T_Damage (other, self, self, ldmg);	
+			T_Damage (other, self, self, ldmg);
 		}
 	}
 
@@ -172,7 +172,7 @@ void() dog_leap1	=[	$leap1,		dog_leap2	] {ai_face();}
 void() dog_leap2	=[	$leap2,		dog_leap3	]
 {
 	ai_face();
-	
+
 	self.touch = Dog_JumpTouch;
 	makevectors (self.angles);
 	self.origin_z = self.origin_z + 1;
@@ -300,22 +300,22 @@ float CheckDogJump ()
 	if (self.origin_z + self.mins_z > self.enemy.origin_z + self.enemy.mins_z
 	+ 0.75 * self.enemy.size_z)
 		return false;
-		
+
 	if (self.origin_z + self.maxs_z < self.enemy.origin_z + self.enemy.mins_z
 	+ 0.25 * self.enemy.size_z)
 		return false;
-		
+
 	dist = self.enemy.origin - self.origin;
 	dist_z = 0;
-	
+
 	d = vlen(dist);
-	
+
 	if (d < 80)
 		return false;
-		
+
 	if (d > 150)
 		return false;
-		
+
 	return true;
 }
 
@@ -327,13 +327,13 @@ float DogCheckAttack ()
 		self.attack_state = AS_MELEE;
 		return true;
 	}
-	
+
 	if (CheckDogJump ())
 	{
 		self.attack_state = AS_MISSILE;
 		return true;
 	}
-	
+
 	return false;
 }
 

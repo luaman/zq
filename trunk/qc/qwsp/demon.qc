@@ -94,7 +94,7 @@ void()	demon1_jump3	=[	$leap3,		demon1_jump4	] {ai_face();}
 void()	demon1_jump4	=[	$leap4,		demon1_jump5	]
 {
 	ai_face();
-	
+
 	self.touch = Demon_JumpTouch;
 	makevectors (self.angles);
 	self.origin_z = self.origin_z + 1;
@@ -152,7 +152,7 @@ void demon1_pain (entity attacker, float damage)
 
 	if (random()*200 > damage)
 		return;		// didn't flinch
-		
+
 	demon1_pain1 ();
 }
 
@@ -227,7 +227,7 @@ void monster_demon1 ()
 	self.th_melee = Demon_MeleeAttack;		// one of two attacks
 	self.th_missile = demon1_jump1;			// jump attack
 	self.th_pain = demon1_pain;
-		
+
 	walkmonster_start();
 }
 
@@ -271,25 +271,25 @@ float CheckDemonJump ()
 	if (self.origin_z + self.mins_z > self.enemy.origin_z + self.enemy.mins_z
 	+ 0.75 * self.enemy.size_z)
 		return false;
-		
+
 	if (self.origin_z + self.maxs_z < self.enemy.origin_z + self.enemy.mins_z
 	+ 0.25 * self.enemy.size_z)
 		return false;
-		
+
 	dist = self.enemy.origin - self.origin;
 	dist_z = 0;
-	
+
 	d = vlen(dist);
-	
+
 	if (d < 100)
 		return false;
-		
+
 	if (d > 200)
 	{
 		if (random() < 0.9)
 			return false;
 	}
-		
+
 	return true;
 }
 
@@ -301,14 +301,14 @@ float DemonCheckAttack ()
 		self.attack_state = AS_MELEE;
 		return true;
 	}
-	
+
 	if (CheckDemonJump ())
 	{
 		self.attack_state = AS_MISSILE;
         sound (self, CHAN_VOICE, "demon/djump.wav", 1, ATTN_NORM);
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -319,7 +319,7 @@ void Demon_Melee (float side)
 {
 	float	ldmg;
 	vector	delta;
-	
+
 	ai_face ();
 	walkmove (self.ideal_yaw, 12);	// allow a little closing
 
@@ -329,10 +329,10 @@ void Demon_Melee (float side)
 		return;
 	if (!CanDamage (self.enemy, self))
 		return;
-		
+
     sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
 	ldmg = 10 + 5*random();
-	T_Damage (self.enemy, self, self, ldmg);	
+	T_Damage (self.enemy, self, self, ldmg);
 
 	makevectors (self.angles);
 	SpawnMeatSpray (self.origin + v_forward*16, side * v_right);
@@ -345,13 +345,13 @@ void Demon_JumpTouch ()
 
 	if (self.health <= 0)
 		return;
-		
+
 	if (other.takedamage)
 	{
 		if ( vlen(self.velocity) > 400 )
 		{
 			ldmg = 40 + 10*random();
-			T_Damage (other, self, self, ldmg);	
+			T_Damage (other, self, self, ldmg);
 		}
 	}
 
