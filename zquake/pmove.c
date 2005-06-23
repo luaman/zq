@@ -253,6 +253,7 @@ int PM_StepSlideMove (qbool in_air)
 		if (!(blocked & BLOCKED_STEP))
 			return blocked;
 
+		//FIXME: "pmove.velocity < 0" ???? :)
 		org = (pmove.velocity < 0) ? pmove.origin : original;	// cryptic, eh?
 		VectorCopy (org, dest);
 		dest[2] -= STEPSIZE;
