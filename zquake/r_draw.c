@@ -295,7 +295,7 @@ void R_DrawPixel (int x, int y, byte color)
 	}
 }
 
-void R_DrawCrosshair (int num, byte color, int crossx, int crossy)
+void R_DrawCrosshair (int num, int crossx, int crossy)
 {
 	int	x, y;
 	extern vrect_t		scr_vrect;	// FIXME
