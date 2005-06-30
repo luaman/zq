@@ -254,6 +254,8 @@ int PM_StepSlideMove (qbool in_air)
 			return blocked;
 
 		//FIXME: "pmove.velocity < 0" ???? :)
+		// Of course I meant pmove.velocity[2], but I'm afraid I don't understand
+		// the code's purpose any more, so let it stay just this way for now :)  -- Tonik
 		org = (pmove.velocity < 0) ? pmove.origin : original;	// cryptic, eh?
 		VectorCopy (org, dest);
 		dest[2] -= STEPSIZE;
