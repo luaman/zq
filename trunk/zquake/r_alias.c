@@ -775,11 +775,8 @@ void R_AliasDrawModel (void)
 	R_AliasSetupLighting ();
 	R_AliasSetupFrame ();
 
-#ifdef MVDPLAY
-    if(!cls.mvdplayback) // FIXME: temp workaround to stop mvd halting on OSX, doesn't cause any ill effects
-#endif
-        if (!currententity->colormap)
-            Sys_Error ("R_AliasDrawModel: !currententity->colormap");
+	if (!currententity->colormap)
+		Sys_Error ("R_AliasDrawModel: !currententity->colormap");
 
 	r_affinetridesc.drawtype = (currententity->trivial_accept == 3);
 

@@ -658,6 +658,7 @@ static void CL_LinkProjectiles(void)
 
 	memset(&ent, 0, sizeof(entity_t));
 	ent.model = cl.model_precache[cl_spikeindex];
+	ent.colormap = vid.colormap;
 
 #ifdef MVDPLAY
 	f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
