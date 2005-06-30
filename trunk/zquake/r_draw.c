@@ -299,6 +299,10 @@ void R_DrawCrosshair (int num, byte color, int crossx, int crossy)
 {
 	int	x, y;
 	extern vrect_t		scr_vrect;	// FIXME
+	extern cvar_t crosshaircolor;
+	byte color;
+
+	color = (int)crosshaircolor.value;
 
 	x = scr_vrect.x + scr_vrect.width/2 + crossx; 
 	y = scr_vrect.y + scr_vrect.height/2 + crossy;

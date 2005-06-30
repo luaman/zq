@@ -100,7 +100,7 @@ void Draw_TextBox (int x, int y, int width, int lines)
 
 void Draw_Crosshair (void)
 {
-	extern cvar_t crosshair, crosshaircolor, cl_crossx, cl_crossy;
+	extern cvar_t crosshair, cl_crossx, cl_crossy;
 
 	if (cl.spectator && cam_curtarget == CAM_NOTARGET)
 		return;
@@ -108,9 +108,5 @@ void Draw_Crosshair (void)
 	if (!crosshair.value)
 		return;
 
-#ifdef GLQUAKE
 	R_DrawCrosshair (crosshair.value, cl_crossx.value, cl_crossy.value);
-#else
-	R_DrawCrosshair (crosshair.value, (byte)crosshaircolor.value, cl_crossx.value, cl_crossy.value);
-#endif
 }
