@@ -534,7 +534,7 @@ void R_DrawString (int x, int y, const char *str)
 	glEnd ();
 }
 
-byte *StringToRGB(char *s) {
+static byte *StringToRGB(char *s) {
 	byte *col;
 	static byte rgb[4];
 
@@ -568,7 +568,6 @@ void R_DrawCrosshair (int num, int crossx, int crossy)
 
 	if (num >= 2 && num <= NUMCROSSHAIRS+1) {
 		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		/* glColor3ubv ((byte *) &d_8to24table[(byte) color]); */
 		glColor3ubv (col);
 		GL_Bind (crosshairtextures[num - 2]);
 
