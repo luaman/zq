@@ -30,7 +30,8 @@ float SNAP_ESR_LEVEL_HIGHER = 1;
 float SNAP_ESR_SPECIAL_EXPLOBOX = 10;
 float SNAP_ESR_SPECIAL_DROP = 20;
 
-float BEEPTIME_DIVISOR = 500;
+float BEEPTIME_DIVISOR = 1100;
+float BEEPTIME_OFFSET = 100;
 
 
 // PROTOTYPES
@@ -477,9 +478,9 @@ void() snap_esr_classic =
         setorigin(self.aiment, nearest_monster.origin);
         if( self.aiment.nextthink < time )  // i.e. we finished last beep
         {
-            tmptime = mdist / BEEPTIME_DIVISOR;
-            if( tmptime < 0.5 )
-                self.aiment.nextthink = time + 0.5;
+            tmptime = (mdist + BEEPTIME_OFFSET) / BEEPTIME_DIVISOR;
+            if( tmptime < 0.1 )
+                self.aiment.nextthink = time + 0.1;
             else
                 self.aiment.nextthink = time + tmptime;
         }
@@ -502,9 +503,9 @@ void() snap_esr_classic =
         setorigin(self.goalentity, nearest_friend.origin);
         if( self.goalentity.nextthink < time )  // i.e. we finished last beep
         {
-            tmptime = fdist / BEEPTIME_DIVISOR;
-            if( tmptime < 0.5 )
-                self.goalentity.nextthink = time + 0.5;
+            tmptime = (fdist + BEEPTIME_OFFSET) / BEEPTIME_DIVISOR;
+            if( tmptime < 0.1 )
+                self.goalentity.nextthink = time + 0.1;
             else
                 self.goalentity.nextthink = time + tmptime;
         }
@@ -527,9 +528,9 @@ void() snap_esr_classic =
         setorigin(self.enemy, nearest_enemy.origin);
         if( self.enemy.nextthink < time )  // i.e. we finished last beep
         {
-            tmptime = edist / BEEPTIME_DIVISOR;
-            if( tmptime < 0.5 )
-                self.enemy.nextthink = time + 0.5;
+            tmptime = (edist + BEEPTIME_OFFSET) / BEEPTIME_DIVISOR;
+            if( tmptime < 0.1 )
+                self.enemy.nextthink = time + 0.1;
             else
                 self.enemy.nextthink = time + tmptime;
         }
