@@ -488,7 +488,6 @@ void() snap_esr_classic =
                 // only print message if we've got a lock
                 if( self.aiment.state == false )
                 {
-                    //sprint(self.owner, PRINT_HIGH, nearest_m.classname, "\n");
                     self.aiment.state = true;
                 }
             }
@@ -509,7 +508,7 @@ void() snap_esr_classic =
                 // only play lost lock sound if we did lose a lock...
                 if( self.aiment.state == true )
                 {
-                    soundtoclient(self.owner, nearest_f, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+                    soundtoclient(self.owner, nearest_m, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
                 }
                 self.aiment.state = false;
             }
@@ -553,7 +552,10 @@ void() snap_esr_classic =
                 if( self.goalentity.state == false )
                 {
                     if( infokey(self.owner, "agv_t_esr_names") == "1" )
-                        sprint(self.owner, PRINT_HIGH, "!F ", nearest_f.netname, "\n");
+                    {
+                        pht = infokey(nearest_f, "team");
+                        sprint(self.owner, PRINT_HIGH, "!", pht, " ", nearest_f.netname, "\n");
+                    }
                     self.goalentity.state = true;
                 }
             }
@@ -618,7 +620,18 @@ void() snap_esr_classic =
                 if( self.enemy.state == false )
                 {
                     if( infokey(self.owner, "agv_t_esr_names") == "1" ) 
-                        sprint(self.owner, PRINT_HIGH, "! ", nearest_e.netname, "\n");
+                    {
+                        // If in teamplay, print their team too...
+                        if( teamplay )
+                        {
+                            pht = infokey(nearest_f, "team");
+                            sprint(self.owner, PRINT_HIGH, "!", pht, " ", nearest_e.netname, "\n");
+                        }
+                        else
+                        {
+                            sprint(self.owner, PRINT_HIGH, "!", nearest_e.netname, "\n");
+                        }
+                    }
                     self.enemy.state = true;
                 }
             }
@@ -639,7 +652,7 @@ void() snap_esr_classic =
                 // only play lost lock sound if we did lose a lock...
                 if( self.enemy.state == true )
                 {
-                    soundtoclient(self.owner, nearest_f, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+                    soundtoclient(self.owner, nearest_e, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
                 }
                 self.enemy.state = false;
             }
