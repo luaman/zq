@@ -30,17 +30,22 @@ float SNAP_ESR_LEVEL_HIGHER = 1;
 float SNAP_ESR_SPECIAL_EXPLOBOX = 10;
 float SNAP_ESR_SPECIAL_DROP = 20;
 
-float BEEPTIME_DIVISOR = 1100;
-float BEEPTIME_OFFSET = 100;
+float SNAP_ESR_BEEPTIME_DIVISOR = 1100;
+float SNAP_ESR_BEEPTIME_OFFSET = 100;
+
+float SNAP_ESR_NAME_RANGE = 500;
+// sighteds can't identify by sight over greater distances than this
+
+float SNAP_ESR_GAP_TIME = 0.2;
 
 
 // PROTOTYPES
 
-void()                                          snap_esr_constructor;
-void()                                          snap_esr_main;
-void()                                          snap_esr_classic;
-float(float entity_z)                           snap_esr_classic_level;
-void()                                          snap_esr_hazard;
+void()                  snap_esr_constructor;
+void()                  snap_esr_main;
+void()                  snap_esr_classic;
+float(float entity_z)   snap_esr_classic_level;
+void()                  snap_esr_hazard;
 
 
 // IMPLEMENTATIONS
@@ -124,7 +129,7 @@ void() snap_esr_constructor =
  
     // Set it going...
     new_agesr.think = snap_esr_main;
-    new_agesr.nextthink = time + 1;
+    new_agesr.nextthink = time + 0.1;
 };
 
 void() snap_esr_main =
@@ -185,10 +190,11 @@ void() snap_esr_classic =
           sure who the original RADAR code was written by, unfortunately; it may
           have come from the Quake-C Patch Archives.  It is Public Domain,
           anyway, so is fully GPL-compatible.
+          NOTE: Pretty much everything has now been re-written.
 	    * Z Tolerance comes from the ESR object's ``.frags'' property.
 */
 {
-    local entity potential_hit, nearest_monster, nearest_enemy, nearest_friend;
+    local entity potential_hit, nearest_m, nearest_e, nearest_f;
     local float mindist, dist, level;
     local float tmptime;
     local string mt, pht; // for comparing teams
@@ -211,11 +217,11 @@ void() snap_esr_classic =
     f_lower_dist = f_higher_dist = f_same_dist = 2000;
  
     // Set up entity variables...
-    nearest_monster = world;
+    nearest_m = world;
     m_lower = m_higher = m_same = world;
-    nearest_enemy = world;
+    nearest_e = world;
     e_lower = e_higher = e_same = world;
-    nearest_friend = world;
+    nearest_f = world;
     f_lower = f_higher = f_same = world;
   
 
@@ -225,6 +231,8 @@ void() snap_esr_classic =
     potential_hit = findradius(self.owner.origin, 1000);
 
     // Work out which (if any) are the closest threats...
+    // NOTE: Threats on all levels are computed, later the one with the highest
+    //       priority is chosen.
     while( potential_hit )
     {
         // Don't detect things that shouldn't be detected...
@@ -347,7 +355,7 @@ void() snap_esr_classic =
     if( m_same != world )
     {
         // Same level is the highest priority...
-        nearest_monster = m_same;
+        nearest_m = m_same;
         //dprint("ESR: monster -- same\n");
     }
     else if( m_higher != world )
@@ -357,26 +365,26 @@ void() snap_esr_classic =
             // Chose based on who's closer...
             if( m_lower_dist < m_higher_dist )
             {
-                nearest_monster = m_lower;
+                nearest_m = m_lower;
                 //dprint("ESR: monster -- lower [interp]\n");
             }
             else
             {
-                nearest_monster = m_higher;
+                nearest_m = m_higher;
                 //dprint("ESR: monster -- higher [interp]\n");
             }
         }
         else
         {
             // There is no lower monster so the higher one is chosen...
-            nearest_monster = m_higher;
+            nearest_m = m_higher;
             //dprint("ESR: monster -- higher [default]\n");
         }
     }
     else if( m_lower != world )
     {
         // There is no higher monster so the lower one is chosen...
-        nearest_monster = m_lower;
+        nearest_m = m_lower;
         //dprint("ESR: monster -- lower [default]\n");
     }
 
@@ -385,7 +393,7 @@ void() snap_esr_classic =
     if( f_same != world )
     {
         // Same level is the highest priority...
-        nearest_friend = f_same;
+        nearest_f = f_same;
         //dprint("ESR: friend -- same\n");
     }
     else if( f_higher != world )
@@ -395,26 +403,26 @@ void() snap_esr_classic =
             // Chose based on who's closer...
             if( f_lower_dist < f_higher_dist )
             {
-                nearest_friend = f_lower;
+                nearest_f = f_lower;
                 //dprint("ESR: friend -- lower [interp]\n");
             }
             else
             {
-                nearest_friend = f_higher;
+                nearest_f = f_higher;
                 //dprint("ESR: friend -- higher [interp]\n");
             }
         }
         else
         {
             // There is no lower friend so the higher one is chosen...
-            nearest_friend = f_higher;
+            nearest_f = f_higher;
             //dprint("ESR: friend -- higher [default]\n");
         }
     }
     else if( f_lower != world )
     {
         // There is no higher friend so the lower one is chosen...
-        nearest_friend = f_lower;
+        nearest_f = f_lower;
         //dprint("ESR: friend -- lower [default]\n");
     }
 
@@ -423,7 +431,7 @@ void() snap_esr_classic =
     if( e_same != world )
     {
         // Same level is the highest priority...
-        nearest_enemy = e_same;
+        nearest_e = e_same;
         //dprint("ESR: enemy -- same\n");
     }
     else if( e_higher != world )
@@ -433,26 +441,26 @@ void() snap_esr_classic =
             // Chose based on who's closer...
             if( e_lower_dist < e_higher_dist )
             {
-                nearest_enemy = e_lower;
+                nearest_e = e_lower;
                 //dprint("ESR: enemy -- lower [interp]\n");
             }
             else
             {
-                nearest_enemy = e_higher;
+                nearest_e = e_higher;
                 //dprint("ESR: enemy -- higher [interp]\n");
             }
         }
         else
         {
             // There is no lower enemy so the higher one is chosen...
-            nearest_enemy = e_higher;
+            nearest_e = e_higher;
             //dprint("ESR: enemy -- higher [default]\n");
         }
     }
     else if( e_lower != world )
     {
         // There is no higher enemy so the lower one is chosen...
-        nearest_enemy = e_lower;
+        nearest_e = e_lower;
         //dprint("ESR: enemy -- lower [default]\n");
     }
 
@@ -461,82 +469,205 @@ void() snap_esr_classic =
     
     // Now make sound based on where potential_hit is in relation to player...
 
+    // Do line-of-sight/beep-on-centre test...
+    makevectors(self.owner.angles);
+    tracebox(self.owner.origin, VEC_HULL_MIN, VEC_HULL_MAX, self.owner.origin+(v_forward*SNAP_ESR_NAME_RANGE), false, self.owner);
+    
     // Monsters...
-    if( nearest_monster != world )
-    if( infokey(self.owner, "agv_t_esr_monster_warnings") == "1" )
+    if( nearest_m != world )
     {
-        //dprint("sounding monster.\n");
-        level = snap_esr_classic_level(nearest_monster.origin_z);
-        mdist = vlen(self.owner.origin - nearest_monster.origin);
-        if( level == SNAP_ESR_LEVEL_LOWER )
-            self.aiment.message = "esr/monster-lower.wav";
-        else if( level == SNAP_ESR_LEVEL_SAME )
-            self.aiment.message = "esr/monster-same.wav";
-        else
-            self.aiment.message = "esr/monster-higher.wav";
-
-        setorigin(self.aiment, nearest_monster.origin);
-        if( self.aiment.nextthink < time )  // i.e. we finished last beep
+        if( infokey(self.owner, "agv_t_esr_monster_warnings") == "1" )
         {
-            tmptime = (mdist + BEEPTIME_OFFSET) / BEEPTIME_DIVISOR;
-            if( tmptime < 0.1 )
-                self.aiment.nextthink = time + 0.1;
+            //dprint("sounding monster.\n");
+            if( trace_ent == nearest_m )
+            {
+                // Beep-on-Centre Sounding...
+                self.aiment.message = "esr/monster-boc.wav";
+
+                // L-O-S...
+                // only print message if we've got a lock
+                if( self.aiment.state == false )
+                {
+                    //sprint(self.owner, PRINT_HIGH, nearest_m.classname, "\n");
+                    self.aiment.state = true;
+                }
+            }
+            else  // not in l-o-s
+            {
+                // Normal Sounding...
+                level = snap_esr_classic_level(nearest_m.origin_z);
+                mdist = vlen(self.owner.origin - nearest_m.origin);
+                if( level == SNAP_ESR_LEVEL_LOWER )
+                    self.aiment.message = "esr/monster-lower.wav";
+                else if( level == SNAP_ESR_LEVEL_SAME )
+                    self.aiment.message = "esr/monster-same.wav";
+                else
+                    self.aiment.message = "esr/monster-higher.wav";
+
+                // L-O-S...
+                // lost a lock (entity still in FOV) or never had one
+                // only play lost lock sound if we did lose a lock...
+                if( self.aiment.state == true )
+                {
+                    soundtoclient(self.owner, nearest_f, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+                }
+                self.aiment.state = false;
+            }
+    
+            // Prepare to make the sound...
+            setorigin(self.aiment, nearest_m.origin);
+            tmptime = (mdist + SNAP_ESR_BEEPTIME_OFFSET) / SNAP_ESR_BEEPTIME_DIVISOR;
+            if( tmptime < SNAP_ESR_GAP_TIME )
+                self.aiment.nextthink = time + SNAP_ESR_GAP_TIME;
             else
                 self.aiment.nextthink = time + tmptime;
         }
     }
+    else  // no nearest_m
+    {
+        // L-O-S...
+        // lost a lock (entity moved out of FOV) or never had one
+        // only play lost lock sound if we did lose a lock...
+        if( self.aiment.state == true )
+        {
+            soundtoclient(self.owner, self.aiment, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+            // Note: have to use ESR sounder as closest approx. of actual
+            //       position of the entity we were tracking.
+        }
+        self.aiment.state = false;
+    }
 
     // Friends...
-    if( nearest_friend != world )
-    if( infokey(self.owner, "agv_t_esr_friend_warnings") == "1" )
+    if( nearest_f != world )
     {
-        //dprint("sounding friend.\n");
-        level = snap_esr_classic_level(nearest_friend.origin_z);
-        fdist = vlen(self.owner.origin - nearest_friend.origin);
-        if( level == SNAP_ESR_LEVEL_LOWER )
-            self.goalentity.message = "esr/friend-lower.wav";
-        else if( level == SNAP_ESR_LEVEL_SAME )
-            self.goalentity.message = "esr/friend-same.wav";
-        else
-            self.goalentity.message = "esr/friend-higher.wav";
-
-        setorigin(self.goalentity, nearest_friend.origin);
-        if( self.goalentity.nextthink < time )  // i.e. we finished last beep
+        if( infokey(self.owner, "agv_t_esr_friend_warnings") == "1" )
         {
-            tmptime = (fdist + BEEPTIME_OFFSET) / BEEPTIME_DIVISOR;
-            if( tmptime < 0.1 )
-                self.goalentity.nextthink = time + 0.1;
+            //dprint("sounding friend.\n");
+            if( trace_ent == nearest_f )
+            {
+                // Beep-on-Centre Sounding...
+                self.goalentity.message = "esr/friend-boc.wav";
+
+                // L-O-S...
+                // only print message if we've got a lock
+                if( self.goalentity.state == false )
+                {
+                    if( infokey(self.owner, "agv_t_esr_names") == "1" )
+                        sprint(self.owner, PRINT_HIGH, "!F ", nearest_f.netname, "\n");
+                    self.goalentity.state = true;
+                }
+            }
+            else  // not in l-o-s
+            {
+                // Normal Sounding...
+                level = snap_esr_classic_level(nearest_f.origin_z);
+                fdist = vlen(self.owner.origin - nearest_f.origin);
+                if( level == SNAP_ESR_LEVEL_LOWER )
+                    self.goalentity.message = "esr/friend-lower.wav";
+                else if( level == SNAP_ESR_LEVEL_SAME )
+                    self.goalentity.message = "esr/friend-same.wav";
+                else
+                    self.goalentity.message = "esr/friend-higher.wav";
+
+                // L-O-S...
+                // lost a lock (entity still in FOV) or never had one
+                // only play lost lock sound if we did lose a lock...
+                if( self.goalentity.state == true )
+                {
+                    soundtoclient(self.owner, nearest_f, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+                }
+                self.goalentity.state = false;
+            }
+    
+            // Prepare to make the sound...
+            setorigin(self.goalentity, nearest_f.origin);
+            tmptime = (fdist + SNAP_ESR_BEEPTIME_OFFSET) / SNAP_ESR_BEEPTIME_DIVISOR;
+            if( tmptime < SNAP_ESR_GAP_TIME )
+                self.goalentity.nextthink = time + SNAP_ESR_GAP_TIME;
             else
                 self.goalentity.nextthink = time + tmptime;
         }
     }
+    else  // no nearest_f
+    {
+        // L-O-S...
+        // lost a lock (entity moved out of FOV) or never had one
+        // only play lost lock sound if we did lose a lock...
+        if( self.goalentity.state == true )
+        {
+            soundtoclient(self.owner, self.goalentity, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+            // Note: have to use ESR sounder as closest approx. of actual
+            //       position of the entity we were tracking.
+        }
+        self.goalentity.state = false;
+    }
 
     // Enemies...
-    if( nearest_enemy != world ) 
-    if( infokey(self.owner, "agv_t_esr_enemy_warnings") == "1" )
+    if( nearest_e != world ) 
     {
-        //dprint("sounding enemy.\n");
-        level = snap_esr_classic_level(nearest_enemy.origin_z);
-        edist = vlen(self.owner.origin - nearest_enemy.origin);
-        if( level == SNAP_ESR_LEVEL_LOWER )
-            self.enemy.message = "esr/enemy-lower.wav";
-        else if( level == SNAP_ESR_LEVEL_SAME )
-            self.enemy.message = "esr/enemy-same.wav";
-        else
-            self.enemy.message = "esr/enemy-higher.wav";
-
-        setorigin(self.enemy, nearest_enemy.origin);
-        if( self.enemy.nextthink < time )  // i.e. we finished last beep
+        if( infokey(self.owner, "agv_t_esr_enemy_warnings") == "1" )
         {
-            tmptime = (edist + BEEPTIME_OFFSET) / BEEPTIME_DIVISOR;
-            if( tmptime < 0.1 )
-                self.enemy.nextthink = time + 0.1;
+            //dprint("sounding enemy.\n");
+            if( trace_ent == nearest_e )
+            {
+                // Beep-on-Centre Sounding...
+                self.enemy.message = "esr/enemy-boc.wav";
+
+                // L-O-S...
+                // only print message if we've got a lock
+                if( self.enemy.state == false )
+                {
+                    if( infokey(self.owner, "agv_t_esr_names") == "1" ) 
+                        sprint(self.owner, PRINT_HIGH, "! ", nearest_e.netname, "\n");
+                    self.enemy.state = true;
+                }
+            }
+            else  // not in l-o-s
+            {
+                // Normal Sounding...
+                level = snap_esr_classic_level(nearest_e.origin_z);
+                edist = vlen(self.owner.origin - nearest_e.origin);
+                if( level == SNAP_ESR_LEVEL_LOWER )
+                    self.enemy.message = "esr/enemy-lower.wav";
+                else if( level == SNAP_ESR_LEVEL_SAME )
+                    self.enemy.message = "esr/enemy-same.wav";
+                else
+                    self.enemy.message = "esr/enemy-higher.wav";
+
+                // L-O-S...
+                // lost a lock (entity still in FOV) or never had one
+                // only play lost lock sound if we did lose a lock...
+                if( self.enemy.state == true )
+                {
+                    soundtoclient(self.owner, nearest_f, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+                }
+                self.enemy.state = false;
+            }
+            
+            // Prepare to make the sound...
+            setorigin(self.enemy, nearest_e.origin);
+            tmptime = (edist + SNAP_ESR_BEEPTIME_OFFSET) / SNAP_ESR_BEEPTIME_DIVISOR;
+            if( tmptime < SNAP_ESR_GAP_TIME )
+                self.enemy.nextthink = time + SNAP_ESR_GAP_TIME;
             else
                 self.enemy.nextthink = time + tmptime;
         }
     }
-    
-    self.nextthink = time + 0.1;
+    else  // no nearest_e
+    {
+        // lost a lock (entity moved out of FOV) or never had one
+        // only play lost lock sound if we did lose a lock...
+        if( self.enemy.state == true )
+        {
+            soundtoclient(self.owner, self.enemy, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+            // Note: have to use ESR sounder as closest approx. of actual
+            //       position of the entity we were tracking.
+        }
+        self.enemy.state = false;
+    }
+   
+    // Finished ESR scan...
+    self.nextthink = time + SNAP_ESR_GAP_TIME + 0.1;
 };
 
 float(float entity_z) snap_esr_classic_level =
@@ -617,7 +748,7 @@ void() snap_esr_hazard =
         }
         soundtoclient(self.owner, local_hazard, CHAN_AUTO, "esr/haz.wav", self.items, ATTN_NORM);
         dist_to_hazard = vlen(local_hazard.origin - self.owner.origin);
-        self.nextthink = time + ( (dist_to_hazard - 20) / BEEPTIME_DIVISOR );
+        self.nextthink = time + ( (dist_to_hazard - 20) / SNAP_ESR_BEEPTIME_DIVISOR );
         //dprint(ftos(self.nextthink - time));
         //dprint("\n");
         if( self.nextthink < time + 0.25 )
