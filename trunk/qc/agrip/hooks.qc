@@ -78,12 +78,15 @@ void() agh_world_precaches =
     // EtherScan RADAR
     precache_sound ("esr/monster-higher.wav");
     precache_sound ("esr/monster-same.wav");
+    precache_sound ("esr/monster-boc.wav");
     precache_sound ("esr/monster-lower.wav");
     precache_sound ("esr/enemy-higher.wav");
     precache_sound ("esr/enemy-same.wav");
+    precache_sound ("esr/enemy-boc.wav");
     precache_sound ("esr/enemy-lower.wav");
     precache_sound ("esr/friend-higher.wav");
     precache_sound ("esr/friend-same.wav");
+    precache_sound ("esr/friend-boc.wav");
     precache_sound ("esr/friend-lower.wav");
     precache_sound ("esr/haz.wav");
 
