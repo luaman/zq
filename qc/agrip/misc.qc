@@ -384,6 +384,7 @@ void (vector point, string sprite, float ttl) snap_misc_showpoint =
     temp_point_ent = spawn();
     setorigin(temp_point_ent, point);
     setmodel(temp_point_ent, sprite);
+    //makestatic(temp_point_ent);
     temp_point_ent.think = SUB_Remove;
     temp_point_ent.nextthink = time + ttl;
 };
