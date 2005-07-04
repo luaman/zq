@@ -25,6 +25,13 @@ Kick A Bot.
 
 void KickABot ()
 {
+    // AGRIP - don't spawn a bot if it's not allowed...
+    if (!stof(infokey(world, "bots_clientcontrol")))
+    {
+        bprint(PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
+        return;
+    }
+
 	entity	ty;
 	ty = find(world, classname, "player");
 	while (ty != world)
@@ -612,9 +619,9 @@ void() bot_strafe =
         // Skill level 0 -- just stand there like an idiot.
         // Skill level 1 -- chase player
         // Skill level 2 -- bot_run_slide()
-        local float botskill;
-        botskill = stof(infokey(self, "botskill"));
-        if (botskill == 1)
+        local float skill;
+        skill = stof(infokey(self, "bskill"));
+        if (skill == 1)
         {
             if( self.weapon != IT_ROCKET_LAUNCHER )
             if( self.weapon != IT_GRENADE_LAUNCHER )
@@ -622,7 +629,7 @@ void() bot_strafe =
                 movetogoal(20);
             }
         }
-        else if (botskill == 2)
+        else if (skill == 2)
         {
             bot_run_slide();
         }
@@ -1652,25 +1659,18 @@ void(float team) create_bot =
 // ------------------------------------------------
 {
     entity bot;
-    local string bots_skill;
+    local string skill;
 
-    // AGRIP:
-    // Check bots are allowed...
-    // vs Maxplayers and currentplayers?
-    // leave enough spaces for a member to connect to all teams?
-    // add a bot to each team?
-    // delete a bot from each team?
-    
     // AGRIP - don't spawn a bot if it's not allowed...
-    if (!stof(infokey(world, "bots_allowed")))
+    if (!stof(infokey(world, "bots_clientcontrol")))
     {
-        bprint(PRINT_HIGH, "Bots not allowed on this server!\n");
+        bprint(PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
         return;
     }
 
     // AGRIP - check bot skill setting...
-    bots_skill = infokey(world, "bots_skill");
-    if( !bots_skill || stof(bots_skill) < 0 || stof(bots_skill) > 2 )
+    skill = infokey(world, "bots_skill");
+    if( !skill || stof(skill) < 0 || stof(skill) > 2 )
     {
         bprint(PRINT_HIGH, "Can't add a bot - server admin has not set bots_skill to 0, 1 or 2!\n");
         return;
@@ -1697,11 +1697,18 @@ void(float team) create_bot =
 
     setinfo (bot, "name", bot.netname);
     // AGRIP team stuff:
-    if(team == 2 && (teamplay || coop) )
+    if (teamplay || coop)
     {
-        local string player_team;
-        player_team = infokey(self, "team");
-        setinfo (bot, "team", player_team);
+        if(team == 2 ) // friendly
+        {
+            local string player_team;
+            player_team = infokey(self, "team");
+            setinfo (bot, "team", player_team);
+        }
+        else  // not friendly
+        {
+            // FIXME pick random other team?
+        }
     }
 
     // initialise button1 to 90 degrees
@@ -1712,7 +1719,7 @@ void(float team) create_bot =
 
     // AGRIP skillz stuff...
     setinfo(bot, "isbot", "1");
-    setinfo(bot, "bskill", bots_skill);  // variable by server admin
+    setinfo(bot, "bskill", skill);  // variable by server admin
 
     // ----------
 
