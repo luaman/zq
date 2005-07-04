@@ -40,7 +40,10 @@
 // PROTOTYPES
 
 void() agh_world_precaches;
+void() agh_world_padclients;
 void() agh_client_startdevs;
+void() agh_client_padclients_connect;
+void() agh_client_padclients_disconnect;
 void() agh_player_footsteps;
 void() agh_player_dietidy;
 void() agh_weapons_impulsecommands;
@@ -127,6 +130,57 @@ void() agh_world_precaches =
     precache_sound ("deny.wav");
 };
 
+void() agh_world_padclients =
+/*
+    Purpose:
+        Spawn bots (if enabled) to fill out player spots until clients
+        connect to the game.
+    Takes:
+	    void
+    Returns:
+	    void
+    Notes:
+        Works off the following serverinfo variables:
+          + bots_padclients     - number of clients to pad
+                                  bots_padclients % ag_numteams should == 0
+          + ag_numteams         - number of teams to use
+          + ag_team[1234]name   - names of teams
+*/
+{
+    local float numteams;
+    local float padclients;
+    local float botsperteam;
+    
+    dprint("agh_world_padclients\n");
+
+    if( infokey(world, "bots_padclients") == "0" )
+        return;
+
+    // How many bots to spawn?
+    numteams = stof(infokey(world, "ag_numteams"));
+    padclients = stof(infokey(world, "bots_padclients"));
+    botsperteam = padclients / numteams;
+
+    // Sanity checks...
+    if( numteams < 0 || numteams > 4 )
+    {
+        error("Server misconfigured: ag_numteams isn't between 0 and 4!\n");
+    }
+    if( botsperteam * numteams != padclients )
+    {
+        error("Server misconfigured: bots_padclients doesn't divide into ag_numteams!\n");
+    }
+
+    // Spawn the little fraggers...
+    dprint("need to spawn: ");
+    dprint(ftos(botsperteam));
+    dprint(" * ");
+    dprint(ftos(numteams));
+    dprint(" = ");
+    dprint(ftos(padclients));
+    dprint("\n");
+}
+
 void() agh_client_startdevs =
 /*
     Purpose:
@@ -174,6 +228,7 @@ void() agh_client_startdevs =
         SNAP_MISC_NORMYAW_OFFSET = -90;
 
     // Terrible, terrible, ugly hack...
+    // FIXME remove this when auth is out!
     if( stof(infokey(self, "fortytwo")) != 42 )
     {
         sprint(self, PRINT_HIGH, "Sorry, this is not a standard QuakeWorld server.\nYou need to use the AGRIP AudioQuake mod (version 0.3.0 beta 2 and later)\nto connect here.\n");
@@ -183,6 +238,34 @@ void() agh_client_startdevs =
         stuffcmd(self, "wait;disconnect\n");
     }
 };
+
+void() agh_client_padclients_connect =
+/*
+    Purpose:
+        Attempt to replace a connected bot with a connecting client
+        if bot padding is on.
+    Takes:
+	    void
+    Returns:
+	    void
+*/
+{
+    dprint("agh_client_padclieints_connect\n");
+}
+
+void() agh_client_padclients_disconnect =
+/*
+    Purpose:
+        Attempt to replace a disconnected client with a bot
+        if bot padding is on.
+    Takes:
+	    void
+    Returns:
+	    void
+*/
+{
+    dprint("agh_client_padclieints_disconnect\n");
+}
 
 void() agh_player_footsteps =
 /*

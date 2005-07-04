@@ -205,6 +205,7 @@ void worldspawn ()
 
 #ifdef AGRIP
 	agh_world_precaches();
+    agh_world_padclients();
 #endif
 
 

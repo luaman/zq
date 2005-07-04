@@ -403,6 +403,8 @@ void ClientKill ()
 
 #ifdef AGRIP
         agh_player_dietidy();
+        // Don't need to call agh_client_padclients_disconnect
+        // 'cos they're coming right back (we hope...)
 #endif
 
 	set_suicide_frame ();
@@ -651,6 +653,7 @@ void PutClientInServer ()
 
 #ifdef AGRIP
 	agh_client_startdevs();
+    agh_client_padclients_connect();
 #endif
 }
 
@@ -1268,6 +1271,7 @@ void ClientDisconnect ()
 #endif
 #ifdef AGRIP
 	agh_player_dietidy(); // tidy up before leaving
+    agh_client_padclients_disconnect();
 #endif
 
 	// let everyone else know
