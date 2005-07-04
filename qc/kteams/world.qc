@@ -234,11 +234,6 @@ void worldspawn ()
 	precache_model ("progs/v_light.mdl");
 	
 
-#ifdef AGRIP
-	agh_world_precaches();
-#endif
-
-
 //
 // Setup light animation tables. 'a' is total darkness, 'z' is maxbright.
 //
