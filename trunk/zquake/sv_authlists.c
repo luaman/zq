@@ -282,6 +282,9 @@ authclient_t *SV_AuthListFind(authqh_t *header, char *name)
 SV_AuthListPrint
 
 Print out all members of the selected auth details queue.
+
+DO NOT USE THIS IN PRODUCTION CODE
+(it prints out sensitive information)
 ===============
 */
 void SV_AuthListPrint(authqh_t *header)
