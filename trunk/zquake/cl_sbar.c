@@ -78,7 +78,8 @@ static void Sbar_TeamOverlay (int start);
 static void Sbar_MiniDeathmatchOverlay (void);
 
 #ifdef AGRIP
-#define R_DrawString(a, b, c)   Sys_Printf("%s\n", c)
+qbool ag_lock_scores;
+qbool ag_lock_intermission;
 #endif
 
 static int	sbar_xofs;
@@ -128,6 +129,9 @@ static void Sbar_ShowScores (void)
 
 	sb_showscores = true;
 	sb_updates = 0;
+#ifdef AGRIP
+    ag_lock_scores = false;
+#endif
 }
 
 /*
@@ -553,6 +557,7 @@ static int Sbar_ColorForMap (int m)
 Sbar_SoloScoreboard
 ===============
 */
+#ifndef AGRIP
 static void Sbar_SoloScoreboard (void)
 {
 	char	str[80];
@@ -596,6 +601,53 @@ static void Sbar_SoloScoreboard (void)
 			Sbar_DrawString (232 - l*4, 12, cl.levelname);
 	}
 }
+#else // AGRIP
+// Accessible version...
+static void Sbar_SoloScoreboard (void)
+{
+    char    str[80];
+    double  _time;
+    int     minutes, seconds, tens, units;
+
+    sb_updates = 0;     // because time display changes every second
+
+    Sbar_DrawPic (0, 0, sb_scorebar);
+
+    if (cl.gametype == GAME_COOP)
+    {
+        sprintf(str, "Monsters: %i/%i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
+        Sys_Printf(str);
+
+        sprintf(str, "Secrets: %i/%i", cl.stats[STAT_SECRETS], cl.stats[STAT_TOTALSECRETS]);
+        Sys_Printf(str);
+    }
+
+    // time
+    if (cl.servertime_works)
+        _time = cl.servertime;  // good, we know real time spent on level
+    else {
+        // well.. we must show something, right?
+        _time = cls.realtime;
+        if (cl.gametype == GAME_COOP)
+            _time -= cl.players[cl.playernum].entertime;
+    }
+    minutes = _time / 60;
+    seconds = _time - 60*minutes;
+    tens = seconds / 10;
+    units = seconds - 10*tens;
+    sprintf (str,"Time: %i:%i.%i%i", minutes, seconds, tens, units);
+    Sbar_DrawString (184, 4, str);
+
+    if (cl.gametype == GAME_COOP)
+    {
+        // draw level name
+        int l = strlen (cl.levelname);
+        if (l < 22 && !strstr(cl.levelname, "\n"))
+            Sbar_DrawString (232 - l*4, 12, cl.levelname);
+    }
+}
+#endif // AGRIP
+
 
 //=============================================================================
 
@@ -987,10 +1039,6 @@ void Sbar_Draw (void)
 	qbool	headsup;
 	qbool	inventory_area_drawn = false;
 
-#ifdef AGRIP
-        if (cl.stats[STAT_HEALTH] <= 0) return;
-#endif
-
 	headsup = !cl_sbar.value || sb_oldmanssbar2;
 	if ((sb_updates >= vid.numpages) && !headsup && !sb_oldmanssbar)
 		return;
@@ -1028,6 +1076,7 @@ void Sbar_Draw (void)
 			Sbar_DrawFrags ();
 	}	
 
+#ifndef AGRIP
 // main area
 	if (sb_drawmain)
 	{
@@ -1050,6 +1099,34 @@ void Sbar_Draw (void)
 		Sbar_DeathmatchOverlay (0);
 	else if (sb_showteamscores)
 		Sbar_TeamOverlay (0);
+#else // AGRIP
+    // (Same as above but converts TAB key to only display scores once.)
+    // main area
+    if (sb_drawmain)
+    {
+        if (cl.spectator)
+            Sbar_SpectatorScoreboard ();
+        else if (!ag_lock_scores && (sb_showscores || cl.stats[STAT_HEALTH] <= 0))
+            Sbar_SoloScoreboard ();
+        else
+            Sbar_DrawNormal ();
+    }
+
+    // main screen deathmatch rankings
+    // if we're dead show team scores in team games
+    if (!ag_lock_scores)
+    {
+        if (cl.stats[STAT_HEALTH] <= 0 && !cl.spectator)
+            if (cl.teamplay && !sb_showscores)
+                Sbar_TeamOverlay (0);
+            else
+                Sbar_DeathmatchOverlay (0);
+        else if (sb_showscores)
+            Sbar_DeathmatchOverlay (0);
+        else if (sb_showteamscores)
+            Sbar_TeamOverlay (0);
+    }
+#endif
 
 #ifdef GLQUAKE
 	if (sb_showscores || sb_showteamscores ||
@@ -1072,8 +1149,7 @@ void Sbar_Draw (void)
 		Sbar_MiniDeathmatchOverlay ();
 
 #ifdef AGRIP
-    Sbar_DontShowScores();
-    Sbar_DontShowTeamScores();
+        ag_lock_scores = true;
 #endif
 }
 
@@ -1119,6 +1195,7 @@ team frags
 added by Zoid
 ==================
 */
+#ifndef AGRIP
 static void Sbar_TeamOverlay (int start)
 {
 	mpic_t			*pic;
@@ -1206,6 +1283,88 @@ static void Sbar_TeamOverlay (int start)
 	y += 8;
 	Sbar_DeathmatchOverlay(y);
 }
+#else // AGRIP
+// Accessible version...
+static void Sbar_TeamOverlay (int start)
+{
+    mpic_t          *pic;
+    int             i, k, l;
+    int             x, y;
+    int             xofs;
+    char            num[12];
+    char            team[4+1];
+    team_t *tm;
+    int plow, phigh, pavg;
+
+    Sys_Printf("TO\n");
+
+    if (cl.gametype == GAME_COOP && cl.maxclients == 1)
+        return;
+
+    if (!cl.teamplay) {
+        Sbar_DeathmatchOverlay (start);
+        return;
+    }
+
+    scr_copyeverything = 1;
+    //scr_fullupdate = 0;
+
+    xofs = (vid.width - 320)>>1;
+
+    if (!start) {
+        pic = R_CachePic ("gfx/ranking.lmp");
+        R_DrawPic (xofs + 160 - GetPicWidth(pic)/2, 0, pic);
+        y = 24;
+    } else
+        y = start;
+    x = xofs + 36;
+    Sys_Printf("low/avg/high team total players\n");
+    y += 8;
+    Sys_Printf("------------ ---- ----- -------\n");
+    y += 8;
+
+    // sort the teams
+    Sbar_SortTeams();
+
+    // draw the text
+    l = scoreboardlines;
+
+    for (i=0 ; i < scoreboardteams && y <= vid.height-10 ; i++)
+    {
+        k = teamsort[i];
+        tm = teams + k;
+        // draw pings
+        plow = tm->plow;
+        if (plow < 0 || plow > 999)
+            plow = 999;
+        phigh = tm->phigh;
+        if (phigh < 0 || phigh > 999)
+            phigh = 999;
+        if (!tm->players)
+            pavg = 999;
+        else
+            pavg = tm->ptotal / tm->players;
+        if (pavg < 0 || pavg > 999)
+            pavg = 999;
+
+        Sys_Printf("%-3i/%-3i/%-4i ",plow,pavg,phigh);
+
+        // draw team
+        strlcpy (team, tm->team, sizeof(team));
+        Sys_Printf("%-4s ", team);
+
+        // draw total
+        Sys_Printf("%-5i ",tm->frags);
+
+        // draw players
+        Sys_Printf("%i\n",tm->players);
+
+        y += 8;
+    }
+    y += 8;
+    Sbar_DeathmatchOverlay(y);
+}
+#endif // AGRIP
 
 /*
 ==================
@@ -1214,6 +1373,7 @@ Sbar_DeathmatchOverlay
 ping time frags name
 ==================
 */
+#ifndef AGRIP
 static void Sbar_DeathmatchOverlay (int start)
 {
 	mpic_t			*pic;
@@ -1403,6 +1563,102 @@ static void Sbar_DeathmatchOverlay (int start)
 		y += skip;
 	}
 }
+#else // AGRIP
+// Accessible Version...
+static void Sbar_DeathmatchOverlay (int start)
+{
+    int             i, k, l, y, f, skip;
+    player_info_t   *s;
+    qbool           largegame;
+    extern qbool    nq_drawpings;
+
+    if (cl.gametype == GAME_COOP && (cl.maxclients == 1 || cls.nqdemoplayback))
+        return;
+
+    // High-priority message...
+    Sys_Printf("!");
+
+    // scores
+    Sbar_SortFrags (true);
+
+    // draw the text
+    l = scoreboardlines;
+
+    if (start)
+        y = start;
+    else
+        y = 24;
+
+    if (cls.nqdemoplayback)
+    {
+        if (nq_drawpings) {
+            Sys_Printf("name             frags\n");
+            Sys_Printf("---------------- -----\n");
+        }
+    }
+    else if (cl.teamplay)
+    {
+        Sys_Printf("team     name             frags\n");
+        Sys_Printf("-------- ---------------- -----\n");
+    }
+    else
+    {
+        Sys_Printf("name             frags\n");
+        Sys_Printf("---------------- -----\n");
+    }
+
+    // squish the lines if out of space
+    if (y + l * 10 <= vid.height) {
+        largegame = false;
+        skip = 10;
+    } else if (y + l * 9 <= vid.height) {
+        largegame = true;
+        skip = 9;
+    } else {
+        largegame = true;
+        skip = 8;
+    }
+
+    for (i = 0; i < l && y <= vid.height - 8; i++)
+    {
+        k = fragsort[i];
+        s = &cl.players[k];
+        if (!s->name[0])
+            continue;
+
+        if (!cls.nqdemoplayback)
+        {
+            if (s->spectator)
+            {
+                Sys_Printf("spectator");
+
+                // draw name
+                if (cl.teamplay)
+                    Sys_Printf("       %s\n",s->name);
+                else
+                    Sys_Printf("  %s\n",s->name);
+                y += skip;
+                continue;
+            }
+        }
+
+        // team
+        if (cl.teamplay)
+        {
+            char team[8+1];
+            strlcpy (team, s->team, sizeof(team));
+            Sys_Printf("%-8s ",team);
+        }
+
+        // draw name
+        Sys_Printf("%-16s ",s->name);
+
+        // draw number
+        f = s->frags;
+        Sys_Printf("%-5i \n",f);
+    }
+}
+#endif // AGRIP
 
 /*
 ==================
@@ -1561,6 +1817,12 @@ void Sbar_IntermissionOverlay (void)
 	int		xofs;
 	int		time;
 
+#ifdef AGRIP
+    if (ag_lock_intermission)
+        return;
+    ag_lock_intermission = true;
+#endif
+
 	if (cl.gametype == GAME_DEATHMATCH)
 	{
 		if (cl.teamplay && !sb_showscores)
@@ -1608,6 +1870,10 @@ void Sbar_IntermissionOverlay (void)
 	Sbar_IntermissionNumber (xofs + 160, 144, cl.stats[STAT_MONSTERS], 3, 0);
 	R_DrawPic (xofs + 232, 144, sb_slash);
 	Sbar_IntermissionNumber (xofs + 240, 144, cl.stats[STAT_TOTALMONSTERS], 3, 0);
+
+#ifdef AGRIP
+    Sbar_SoloScoreboard();
+#endif
 }
 
 

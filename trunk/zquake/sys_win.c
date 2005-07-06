@@ -132,22 +132,18 @@ void Sys_Printf (char *fmt, ...)
 		return;
 #endif
 
+#ifndef AGRIP
 	va_start (argptr,fmt);
 	_vsnprintf (text, sizeof(text) - 1, fmt, argptr);
 	text[sizeof(text) - 1] = '\0';
 	va_end (argptr);
+#else
+    vprintf(fmt,argptr);
+    fflush(stdout);
+#endif
 
+#ifndef AGRIP
 	WriteFile (houtput, text, strlen(text), &dummy, NULL);
-
-#ifdef AGRIP
-{
-	unsigned char *p = NULL;
-	for (p = (unsigned char *)text; *p; p++) {
-		if (!((*p > 128 || *p < 32) && *p != 10 && *p != 13 && *p != 9))
-			putc(*p, stdout);
-	}
-	fflush(stdout);
-}
 #endif
 }
 
