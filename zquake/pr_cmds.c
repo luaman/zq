@@ -2158,6 +2158,7 @@ static void PF_pow (void)
 =================
 PF_strlen
 
+ZQ_QC_STRINGS
 float strlen(string s) = #114;
 =================
 */
@@ -2171,6 +2172,7 @@ static void PF_strlen (void)
 =================
 PF_strlen
 
+ZQ_QC_STRINGS
 string stradd(string s1, string s2, ...) = #115; 
 =================
 */
@@ -2190,6 +2192,7 @@ static void PF_stradd (void)
 =================
 PF_substr
 
+ZQ_QC_STRINGS
 string substr(string s, float start, float count) = #116;
 =================
 */
@@ -2259,6 +2262,8 @@ void PF_stov(void)
 =================
 PF_strzone
 
+
+ZQ_QC_STRINGS
 string strzone(string s) = #118
 =================
 */
@@ -2289,6 +2294,7 @@ static void PF_strzone (void)
 =================
 PF_strunzone
 
+ZQ_QC_STRINGS
 void strunzone(string s) = #119
 =================
 */
@@ -2336,6 +2342,7 @@ static void PF_checkextension (void)
 #ifdef VWEP_TEST
 		"ZQ_VWEP_TEST",
 #endif
+		"ZQ_QC_STRINGS",
 		NULL
 	};
 	char **pstr, *extension;
