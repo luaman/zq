@@ -59,6 +59,12 @@ void    (string msg_string)                         snap_misc_m2m;
 float   (float init_yaw)                            snap_misc_normalyaw;
 void    (vector point, string sprite, float ttl)    snap_misc_showpoint;
 float   (vector jump_origin, vector move_dir)       snap_misc_jumptest;
+void    ()                                          snap_misc_botspawner;
+float   (float notmyteam)                           snap_misc_pickrndteam;
+string  (float teamnum)                             snap_misc_nameforteamnum;
+float   (string teamname)                           snap_misc_numforteamname;
+float   (float teamnum)                             snap_misc_bottomforteamnum;
+float   (float teamnum)                             snap_misc_topforteamnum;
 
 
 // IMPLEMENTATIONS
@@ -441,6 +447,284 @@ float(vector jump_origin, vector move_dir) snap_misc_jumptest =
 
     return retval;
 };
+
+void() snap_misc_botspawner =
+/*
+    Purpose:
+        + THIS IS RUN AS AN ENTITY'S .think FUNCTION.
+        + As we cannot do this in for (while) loops because there are no arrays,
+          we have to explicitly say ``spawn a bot with team 2''.  There is a
+          short way to do this; just test if ag_numteams is greater than 0/1/2/3
+          and if it is, spawn botsperteam with the currently-being-tested team's
+          colours and name (done in a for (while) loop).
+        + Also we have to wait before spawning the members on each team so that
+          we don't overflow the server.  For this reason, we set up an entity to
+          do the actual spawning.
+    Takes:
+        self.items is the number of teams to spawn
+        self.frags is the number of players per team
+    Returns:
+        void
+    Notes:
+        + Keeps track of how many teams it has spawned with self.state.
+          This isn't an exact count of how many teams we've spawned, because
+          we need to remove ourself when we get to the end (hence going all
+          the way to state 4 even when we only spawn 2 teams).
+        + We add players gradually, too.  self.lip keeps track of how many
+          we've added for each team.
+*/
+{
+    local string tteam;
+
+    if( self.state == 0 )
+    {
+        if( self.items > 0 )  // at least 1 team
+        {
+            dprint("spawning team 1...\n");
+            if( self.lip < self.frags )
+            {
+                dprint("    team (1) member.\n");
+                tteam = infokey(world, "ag_team1name");
+                create_bot(snap_misc_bottomforteamnum(1), snap_misc_topforteamnum(1), tteam, false);
+                self.lip = self.lip + 1;
+            }
+            else
+            {
+                self.lip = 0;  // reset for next team
+                self.state = 1;
+            }
+        }
+        else
+        {
+            self.state = 1;
+        }
+        self.nextthink = time + 1;
+    }
+    else if( self.state == 1 )
+    {
+        if( self.items > 1 )  // at least 2 teams
+        {
+            dprint("spawning team 2...\n");
+            if( self.lip < self.frags )
+            {
+                dprint("    team (2) member.\n");
+                tteam = infokey(world, "ag_team2name");
+                create_bot(snap_misc_bottomforteamnum(2), snap_misc_topforteamnum(2), tteam, false);
+                self.lip = self.lip + 1;
+            }
+            else
+            {
+                self.lip = 0;  // reset for next team
+                self.state = 2;
+            }
+        }
+        else
+        {
+            self.state = 2;
+        }
+        self.nextthink = time + 1;
+    }
+    else if( self.state == 2 )
+    {
+        if( self.items > 2 )  // at least 3 teams
+        {
+            dprint("spawning team 3...\n");
+            if( self.lip < self.frags )
+            {
+                dprint("    team (3) member.\n");
+                tteam = infokey(world, "ag_team3name");
+                create_bot(snap_misc_bottomforteamnum(3), snap_misc_topforteamnum(3), tteam, false);
+                self.lip = self.lip + 1;
+            }
+            else
+            {
+                self.lip = 0;  // reset for next team
+                self.state = 3;
+            }
+        }
+        else
+        {
+            self.state = 3;
+        }
+        self.nextthink = time + 1;
+    }
+    else if( self.state == 3 )
+    {
+        if( self.items > 3 )  // ooh, four teams!
+        {
+            dprint("spawning team 4...\n");
+            if( self.lip < self.frags )
+            {
+                dprint("    team (4) member.\n");
+                tteam = infokey(world, "ag_team4name");
+                create_bot(snap_misc_bottomforteamnum(4), snap_misc_topforteamnum(4), tteam, false);
+                self.lip = self.lip + 1;
+            }
+            else
+            {
+                // no need to reset for next team
+                self.state = 4;
+            }
+        }
+        else
+        {
+            self.state = 4;
+        }
+        self.nextthink = time + 1;
+    }
+    else
+    {
+        // Reached state 4 -- remove...
+        dprint("About to remove botspawner...\n");
+        self.think = SUB_Remove;
+        self.nextthink = time + 0.1;
+    }
+}
+
+float (float notmyteam) snap_misc_pickrndteam =
+/*
+    Purpose:
+        Returns a string that is the name of a random team.
+        If notmyteam is true, it picks from the remaining teams.
+        (That MUST be called by a player.)
+    Takes:
+        float notmyteam - set if player only
+    Returns:
+        string (random teamname)
+    Notes:
+        This is used when kicking bots and adding bots (by clients).
+*/
+{
+    local float numteams;
+    local float rnd;
+    local float okteam;  // allows us to loop if we picked a team
+                         // that is same as calling client's team
+                         // when they didn't want us to.
+    
+    numteams = stof(infokey(world, "ag_numteams"));
+    rnd = random() * numteams;
+    rnd = rint(rnd);
+
+    okteam = 0;
+    while( !okteam )
+    {
+        if( notmyteam )
+        {
+            if( snap_misc_nameforteamnum(rnd) == infokey(self, "team") )
+            {
+                dprint("Not my team!\n");
+                okteam = 0;
+            }
+            else
+            {
+                okteam = 1;
+            }
+        }
+        else
+        {
+            okteam = 1;
+        }
+    }
+
+    return rnd;
+}
+
+string (float teamnum) snap_misc_nameforteamnum =
+/*
+    Purpose:
+        Returns a string that is the name of the given team number.
+    Takes:
+        float teamnum
+    Returns:
+        string (teamname)
+*/
+{
+    if( teamnum == 1 )
+        return infokey(world, "ag_team1name");
+    else if( teamnum == 2 )
+        return infokey(world, "ag_team2name");
+    else if( teamnum == 3 )
+        return infokey(world, "ag_team3name");
+    else
+        return infokey(world, "ag_team4name");
+}
+
+float (string teamname) snap_misc_numforteamname =
+/*
+    Purpose:
+        Returns a float that is the number of the given team name.
+        Returns 0 if there was no match.
+    Takes:
+        string teamname
+    Returns:
+        float (teamnum or 0)
+    Notes:
+        Can be used for error-checking client has set the right name.
+*/
+{
+    local string client_team;
+    local float retval;
+
+    // catch passed-in teamname...
+    client_team = strzone(teamname);
+   
+    // compare team...
+    if ( client_team == infokey(world, "ag_team1name") )
+        retval = 1;
+    else if ( client_team == infokey(world, "ag_team2name") )
+        retval = 2;
+    else if ( client_team == infokey(world, "ag_team3name") )
+        retval = 3;
+    else if ( client_team == infokey(world, "ag_team4name") )
+        retval = 4;
+    else
+        retval = 0;
+
+    // be tidy now
+    strunzone(client_team);
+    
+    return retval;
+}
+
+float (float teamnum) snap_misc_bottomforteamnum =
+/*
+    Purpose:
+        Returns the bottom colour for given team.
+    Takes:
+        float teamnum
+    Returns:
+        float (bottom)
+*/
+{
+    if( teamnum == 1 )
+        return 4;
+    else if( teamnum == 2 )
+        return 13;
+    else if( teamnum == 3 )
+        return 12;
+    else
+        return 3;
+}
+
+float (float teamnum) snap_misc_topforteamnum =
+/*
+    Purpose:
+        Returns the top colour for given team.
+    Takes:
+        float teamnum
+    Returns:
+        float (top)
+*/
+{
+    if( teamnum == 1 )
+        return 0;
+    else if( teamnum == 2 )
+        return 0;
+    else if( teamnum == 3 )
+        return 0;
+    else
+        return 0;
+}
 
 
 /* $AGRIP-END */
