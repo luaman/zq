@@ -2156,6 +2156,33 @@ static void PF_pow (void)
 
 /*
 =================
+PF_cvar_string
+
+QSG_CVARSTRING
+string cvar_string(string varname) = #103;
+=================
+*/
+static void PF_cvar_string (void)
+{
+	char	*str;
+	cvar_t	*var;
+
+	str = G_STRING(OFS_PARM0);
+
+	var = Cvar_FindVar(str);
+	if (!var) {
+		// TODO: Cmd_LegacyCommandValue?
+		G_INT(OFS_RETURN) = 0;
+		return;
+	}
+
+	strlcpy (pr_string_temp, var->string, sizeof(pr_string_temp));
+	RETURN_STRING(pr_string_temp);
+}
+
+
+/*
+=================
 PF_strlen
 
 ZQ_QC_STRINGS
@@ -2343,6 +2370,7 @@ static void PF_checkextension (void)
 		"ZQ_VWEP_TEST",
 #endif
 		"ZQ_QC_STRINGS",
+		"QSG_CVARSTRING",
 		NULL
 	};
 	char **pstr, *extension;
@@ -2729,11 +2757,15 @@ PF_bound,			// float(float min, float value, float max) bound	= #96;
 PF_pow,				// float(float x, float y) pow						= #97;
 PF_Fixme,
 PF_checkextension,	// float(string name) checkextension				= #99;
+
+PF_Fixme,			// #100
+PF_Fixme,			// #101
+PF_Fixme,			// #102
+
+PF_cvar_string,		// string(string varname) cvar_string				= #103
+
 EMPTY_BUILTIN_X10,
-PF_Fixme,			// #110
-PF_Fixme,			// #111
-PF_Fixme,			// #112
-PF_Fixme,			// #113
+
 PF_strlen,			// float(string s) strlen							= #114;
 PF_stradd,			// string(string s1, string s2, ...) stradd			= #115; 
 PF_substr,			// string(string s, float start, float count) substr = #116;
