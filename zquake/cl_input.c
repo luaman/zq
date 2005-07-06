@@ -735,7 +735,7 @@ void CL_InitInput (void)
 	Cvar_Register (&cl_pitchspeed);
 	Cvar_Register (&cl_anglespeedkey);
 #ifdef AGRIP
-        Cvar_Register (&agv_mov_turnvalue);
+    Cvar_Register (&agv_mov_turnvalue);
 #endif
 
 	Cvar_Register (&lookspring);

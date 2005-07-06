@@ -144,7 +144,11 @@ typedef struct
 	packet_entities_t	entities;
 } client_frame_t;
 
+#ifndef AGRIP
 #define MAX_BACK_BUFFERS	4
+#else
+#define MAX_BACK_BUFFERS    8   // AGRIP needs bigger backbufs
+#endif
 #define MAX_STUFFTEXT		256
 
 typedef struct client_s
