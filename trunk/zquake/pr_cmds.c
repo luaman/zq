@@ -2334,7 +2334,7 @@ static void PF_checkextension (void)
 		"ZQ_QC_PARTICLE",
 		"ZQ_TESTBOT",
 #ifdef VWEP_TEST
-		"ZQ_VWEP",
+		"ZQ_VWEP_TEST",
 #endif
 		NULL
 	};
