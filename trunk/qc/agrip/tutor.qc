@@ -14,35 +14,116 @@ vector realorigin (entity ent)
         return (ent.absmin + ent.absmax) * 0.5;
 }
 
-// from frikbot:
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-Kick A Bot. 
+Kick A Bot (DM version)
+Adapted from FrikBot version to support bot padding
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void KickABot ()
+void KickABotDM(float clientcalled)
 {
     // AGRIP - don't spawn a bot if it's not allowed...
-    if (!stof(infokey(world, "bots_clientcontrol")))
+    if( clientcalled )
     {
-        bprint(PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
-        return;
+        if( infokey(world, "bots_clientcontrol") == "0" )
+        {
+            sprint(self, PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
+            return 2;
+        }
+        // FIXME stop them removing bots that are there to pad
     }
 
-	entity	ty;
-	ty = find(world, classname, "player");
-	while (ty != world)
+	entity pkick;
+	pkick = find(world, classname, "player");
+	while( pkick != world )
 	{
-		if (infokey(ty, "isbot") == "1") {
-			stuffcmd (ty, "disconnect\n");
-			ty = world;
+        if( infokey(pkick, "isbot") == "1" )
+        {
+			stuffcmd(pkick, "disconnect\n");
+			pkick = world;
 		}
 		else
-			ty = find(ty, classname, "player");
+        {
+			pkick = find(pkick, classname, "player");
+        }
 	}
+
+    // FIXME all bots kicked -> deny.wav?
+}
+
+/*
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+Kick A Bot (Team version)
+Adapted from FrikBot version to support bot padding
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+*/
+
+float KickABotTeam(float bteam, float clientcalled)
+{
+    // Returns:
+    //       2 for you're not allowed to kick
+    //       1 for didn't kick (not found)
+    //       0 for did kick
+   
+    // FIXME do loop in here, check for no bots left
+    
+    local string isbot;
+    local string found_ent_team;
+    local string bteam_str, bot_team;
+    local float retval;
+
+    retval = 1;  // assume we don't find smt to kick
+    
+    // AGRIP - don't spawn a bot if it's not allowed...
+    if( clientcalled )
+    {
+        if( infokey(world, "bots_clientcontrol") == "0" )
+        {
+            sprint(self, PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
+            return 2;
+        }
+        // FIXME stop them removing bots that are there to pad
+    }
+
+    // Look up real team name for passed in team number..
+    bteam_str = snap_misc_nameforteamnum(bteam);
+    // Catch string...
+    bot_team = strzone(bteam_str);
+    dprint("KICKBOT got team ");dprint(bot_team);dprint("\n");
+
+	entity pkick;
+	pkick = find(world, classname, "player");
+	while( pkick != world )
+	{
+        found_ent_team = infokey(pkick, "team");
+        isbot = infokey(pkick, "isbot");
+
+        dprint("found_ent_team: ");dprint(found_ent_team);
+        dprint("  isbot: ");dprint(isbot);
+        dprint("  bot_team: ");dprint(bot_team);dprint("\n");
+	
+        if( isbot == "1" && found_ent_team == bot_team )
+        {
+			stuffcmd(pkick, "disconnect\n");
+			pkick = world;
+            retval = 0;
+		}
+		else
+        {
+			pkick = find(pkick, classname, "player");
+        }
+	}
+
+    dprint("kickabot returning: ");dprint(ftos(retval));dprint("\n");
+    strunzone(bot_team);
+    return retval;
+
+    // FIXME all bots kicked -> deny.wav?
 }
 
 
@@ -1655,16 +1736,17 @@ local entity bot, spot, plr;
 */
 
 // ------------------------------------------------
-void(float team) create_bot =
+void(float bottom, float top, string bteam, float clientcalled) create_bot =
 // ------------------------------------------------
 {
     entity bot;
-    local string skill;
+    local string skill, tmp;
 
     // AGRIP - don't spawn a bot if it's not allowed...
+    if( clientcalled )  // i.e. only check if we're a client
     if (!stof(infokey(world, "bots_clientcontrol")))
     {
-        bprint(PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
+        sprint(self, PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
         return;
     }
 
@@ -1672,20 +1754,28 @@ void(float team) create_bot =
     skill = infokey(world, "bots_skill");
     if( !skill || stof(skill) < 0 || stof(skill) > 2 )
     {
-        bprint(PRINT_HIGH, "Can't add a bot - server admin has not set bots_skill to 0, 1 or 2!\n");
+        sprint(self, PRINT_HIGH, "Can't add a bot - server admin has not set bots_skill to 0, 1 or 2!\n");
         return;
     }
 
     // initializing the entity
-    bot = testbot("tutorbot"); // use ZQuake server bot support
+    bot = testbot(bteam); // use ZQuake server bot support
     if (!bot)
     {
-        bprint(PRINT_HIGH, "Can't connect any more bots - server is full!\n");
+        sprint(self, PRINT_HIGH, "Can't connect any more bots - server is full!\n");
         return;
     }
 
-    setinfo (bot, "topcolor", "4");
-    setinfo (bot, "bottomcolor", "11");
+    // Team name...
+    setinfo (bot, "team", bteam);
+    // NOTE: this is always set to text passed to testbot() whatever we do
+    //       and doesn't work at all if it's not done right here... :-S
+
+    // Colours...
+    tmp = ftos(bottom);
+    setinfo (bot, "bottomcolor", tmp);
+    tmp = ftos(top);
+    setinfo (bot, "topcolor", tmp);
     
     // Ugly hack...
     setinfo (bot, "fortytwo", "42");
@@ -1693,23 +1783,9 @@ void(float team) create_bot =
     /* bot.speed = cvar("sv_maxspeed"); */
     bot.speed = 320;
 
+    // Name...
     bot.netname = bot_name();
-
     setinfo (bot, "name", bot.netname);
-    // AGRIP team stuff:
-    if (teamplay || coop)
-    {
-        if(team == 2 ) // friendly
-        {
-            local string player_team;
-            player_team = infokey(self, "team");
-            setinfo (bot, "team", player_team);
-        }
-        else  // not friendly
-        {
-            // FIXME pick random other team?
-        }
-    }
 
     // initialise button1 to 90 degrees
     //self.button1 = 90;
@@ -1720,72 +1796,6 @@ void(float team) create_bot =
     // AGRIP skillz stuff...
     setinfo(bot, "isbot", "1");
     setinfo(bot, "bskill", skill);  // variable by server admin
-
-    // ----------
-
-    /* OLD SPAWN CODE {{{
-       bot = spawn();
-       spot = SelectSpawnPoint();
-       bot.origin = spot.origin + '0 0 1';
-       bot.angles = spot.angles;
-       bot.fixangle = true;	
-       spawn_tfog (bot.origin);
-       spawn_tdeath (bot.origin, bot);
-       bot.solid = SOLID_SLIDEBOX;
-       bot.movetype = MOVETYPE_STEP;
-       }}} */
-
-    // defining his animation
-    /* OLD ANIMATION CODE {{{
-       setmodel(bot, "progs/player.mdl");
-       bot.frame = $stand1;
-       bot.th_stand = bot_stand1;
-       bot.th_walk = bot_walk1;
-       bot.th_run = bot_run1;
-       bot.th_pain = bot_pain;
-       bot.th_die = bot_die;
-       bot.th_missile = bot_attack;
-       }}} */
-
-    // arming and naming him
-    /* OLD ANIMATION CODE {{{
-       bot.items = bot.items | IT_SHOTGUN;
-       bot.currentammo = bot.ammo_shells = bot.ammo_shells + 25;
-       bot.weapon = IT_SHOTGUN;
-       give_random_weapon(bot);
-       bot.health = 100;
-       bot.classname = "bot";
-       }}} */
-
-    /* OLD TEAMPLAY CODE {{{
-       if (teamplay)
-       {
-       plr = find(world, classname, "player");
-       plr.team = 1;
-       bot.team = teem;
-       if (teem == plr.team)
-       bot.colormap = plr.colormap;
-       }
-       }}} */
-
-    /* OLD NAMING CODE {{{
-       bot.netname = bot_name();
-       bprint(PRINT_HIGH, bot.netname);
-       bprint(PRINT_HIGH, " enters the game\n");
-       }}} */
-
-    // polishing him up
-    /* POLISHING CODE FIXME: NOT SURE IF NEEDED
-       setsize (bot, VEC_HULL_MIN, VEC_HULL_MAX);
-       bot.ideal_yaw = bot.angles * '0 1 0';
-       bot.yaw_speed = 120;
-       bot.view_ofs = '0 0 22';
-       bot.takedamage = DAMAGE_AIM;
-       bot.attack_state = 0;
-       bot.button1 = 90;
-       bot.nextthink = time + 0.1 + random();
-       bot.think = bot.th_walk;
-     */
 }
 
 // called by the engine instead of ClientConnect for bots

@@ -34,10 +34,18 @@
 .float volume;
 
 // Bot stuff...
-void () KickABot;
-void (float teem) create_bot;
+void (float clientcalled) KickABotDM;
+float (float bteam, float clientcalled) KickABotTeam;
+void (float bottom, float top, string bteam, float clientcalled) create_bot;
 entity (string name) testbot = #0x5a0A;
 void (entity e, string key, string value) setinfo = #0x5a0B;
+
+// ZQ_QC_STRINGS
+float (string s) strlen = #114;
+string(string s1, string s2) stradd = #115;
+string(string s, float start, float length) substring = #116;
+string(string s) strzone = #118;
+void(string s) strunzone = #119;
 
 // these declarations are here because I don't want them in
 // qw/defs.qc right now
