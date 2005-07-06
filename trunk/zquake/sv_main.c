@@ -49,6 +49,14 @@ cvar_t	sv_paused = {"sv_paused", "0", CVAR_ROM};
 cvar_t	sv_maxrate = {"sv_maxrate", "0"};
 cvar_t	sv_fastconnect = {"sv_fastconnect", "0"};
 
+#ifdef MAUTH
+#include "sv_authlists.h"
+authqh_t authtokq;
+authqh_t authclientq;
+#define MAX_AUTH_TOK_QUEUE 4
+#define MAX_AUTH_CLIENT_QUEUE 32
+#endif
+
 //
 // game rules mirrored in svs.info
 //
@@ -612,6 +620,59 @@ void SVC_DirectConnect (void)
 		Info_RemoveKey (userinfo, "password");
 	}
 
+#ifdef MAUTH
+    if( !COM_CheckParm("-nomauth") )
+    {
+        // Only allow clients to connect that have gone through the auth system.
+        authclient_t *authclient;
+        qbool inclientq = false;
+    
+        // Try the auth token queue first...
+        authclient = SV_AuthListFind(&authtokq, Info_ValueForKey(userinfo, "name"));
+        if( authclient == NULL )
+        {
+            // Fall back to checking if they had already connected and are in the
+            // client queue already (i.e. were on here before a map change)...
+            authclient = SV_AuthListFind(&authclientq, Info_ValueForKey(userinfo, "name"));
+            if( authclient == NULL )
+            {
+                // FIXME drop with reason
+                Com_Printf ("MAUTH: Client %s not in a queue; connect refused.\n", Info_ValueForKey(userinfo, "name"));
+                return;
+            }
+            inclientq = true;
+        }
+       
+        // Move to auth'd clients queue if they're valid...
+        if( !authclient->valid )
+        {
+            // FIXME drop with reason
+            Com_Printf ("MAUTH: Client %s not validated yet; connect refused.\n", Info_ValueForKey(userinfo, "name"));
+            return;
+        }
+    
+        // They're valid, so move them to the main client queue from the auth
+        // cache queue...
+        if( !inclientq )
+        {
+            SV_AuthListMove(&authtokq, &authclientq, authclient);
+        }
+    
+        // debugging:
+        SV_AuthListPrint(&authtokq);
+        SV_AuthListPrint(&authclientq);
+        
+        Com_Printf ("MAUTH: Client %s connection allowed.\n", Info_ValueForKey(userinfo, "name"));
+        // FIXME when they drop, remove them (if the drop is caused by disconnect)
+        // can we use valid flag to flag them for potential removal after a non disconnect drop?
+        // kicks always use disconnect?
+    }
+    else
+    {
+        Com_Printf("MAUTH: disabled; allowing client connection.\n");
+    }
+#endif
+
 	adr = net_from;
 
 	// if there is already a slot for this ip, reuse it
@@ -813,6 +874,43 @@ void SV_ConnectionlessPacket (void)
 		SVC_DirectConnect ();
 		return;
 	}
+#ifdef MAUTH
+	else if (!strcmp(c,M2S_AUTH_TOK))
+	{
+        // Provisionally add auth record...
+        if (SV_AuthListAdd(&authtokq))
+        {
+            Com_Printf("MAUTH: Added token to auth queue (from %s)\n", NET_AdrToString(net_from));
+            SV_AuthListPrint(&authtokq);
+            SV_AuthListPrint(&authclientq);
+            // Send S2M_AUTH_TOK_CHK as a spoofing check...
+            Master_AuthTokChk(authtokq.start->name, authtokq.start->hash);
+        }
+        else
+        {
+            Com_Printf("MAUTH: Failure to add token -- already added? (from %s)\n", NET_AdrToString(net_from));
+            // FIXME Send S2M_AUTH_TOK_NACK
+        }
+		return;
+	}
+	else if (!strcmp(c,M2S_AUTH_TOK_ACK))
+	{
+        // The master is sending us the correct name and hash;
+        // check that what we've got agrees with this.
+
+        // FIXME do we trust this packet?
+
+        SV_AuthListValidate(&authtokq);
+        SV_AuthListPrint(&authtokq);
+        SV_AuthListPrint(&authclientq);
+		return;
+	}
+    /*else if (!strcmp(c,M2S_AUTH_TOK_NACK))
+    {
+        // Master said this token not valid -- FIXME how can we trust this?
+        // FIXME remove player details from auth queue.
+    }*/
+#endif
 	else if (!strcmp(c,"getchallenge"))
 	{
 		SVC_GetChallenge ();
@@ -1502,6 +1600,16 @@ void SV_InitLocal (void)
 	}
 	packet_freeblock[MAX_DELAYED_PACKETS - 1].next = NULL;
 	svs.free_packets = &packet_freeblock[0];
+
+#ifdef MAUTH
+    // Set up queues for temporary auth tokens and auth'd clients...
+    authtokq.maxlen = MAX_AUTH_TOK_QUEUE;
+    authtokq.curlen = 0;
+    authtokq.start = NULL;
+    authclientq.maxlen = MAX_AUTH_CLIENT_QUEUE;
+    authclientq.curlen = 0;
+    authclientq.start = NULL;
+#endif
 }
 
 

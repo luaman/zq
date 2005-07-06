@@ -139,3 +139,29 @@ void Master_Shutdown (void)
 		}
 }
 
+#ifdef MAUTH
+/*
+=================
+Master_AuthTokChk
+
+Send the packet that will ask master servers if the auth record we just
+received is valid.
+=================
+*/
+void Master_AuthTokChk(char *name, char *hash)
+{
+	char		string[1024];
+	int			i;
+
+	sprintf (string, "%s\n%s\n%s\n", S2M_AUTH_TOK_CHK, name, hash);
+
+	// send to group master
+	for (i=0 ; i<MAX_MASTERS ; i++)
+		if (master_adr[i].port)
+		{
+			Com_Printf ("Sending S2M_AUTH_TOK_CHK to %s\n", NET_AdrToString (master_adr[i]));
+			NET_SendPacket (NS_SERVER, strlen(string), string, master_adr[i]);
+		}
+}
+#endif
+
