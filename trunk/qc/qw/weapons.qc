@@ -1098,10 +1098,6 @@ float W_BestWeapon ()
 {
 	float	it;
 
-#ifdef AGRIP
-	soundtoclient (self, self, CHAN_AUTO, "ammo-out.wav", 1, ATTN_NORM);
-#endif
-
 	it = self.items;
 
 	if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & IT_LIGHTNING) )
