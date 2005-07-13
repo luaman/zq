@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 cvar_t	cl_nodelta = {"cl_nodelta","0"};
 cvar_t	cl_c2spps = {"cl_c2spps","0"};
 cvar_t	cl_c2sImpulseBackup = {"cl_c2sImpulseBackup","3"};
+cvar_t	cl_broken_ankle_sucks = {"cl_broken_ankle_sucks","0"};
 #ifdef AGRIP
 cvar_t  agv_mov_turnvalue = {"agv_mov_turnvalue","30",CVAR_USERINFO};
 #endif
@@ -482,6 +483,7 @@ void CL_FinishMove (usercmd_t *cmd)
 	int		i;
 	int		ms;
 	static double	extramsec = 0;
+	static int jitter_bit, jitter_count;
 
 //
 // figure button bits
@@ -493,6 +495,23 @@ void CL_FinishMove (usercmd_t *cmd)
 	if (in_jump.state & 3)
 		cmd->buttons |= 2;
 	in_jump.state &= ~2;
+
+	if (cl_broken_ankle_sucks.value)
+	{
+		if (cl.simvel[2] < -290)
+			jitter_count = 5;
+
+		if (jitter_count)
+		{
+			if (cmd->buttons & 2)
+			{
+				if (jitter_bit & 1)
+					cmd->buttons &= ~2;
+				jitter_bit = !jitter_bit;
+			}
+			jitter_count--;
+		}
+	}
 
 	if (in_use.state & 3)
 		cmd->buttons |= 4;
@@ -751,6 +770,7 @@ void CL_InitInput (void)
 	Cvar_Register (&cl_nodelta);
 	Cvar_Register (&cl_c2sImpulseBackup);
 	Cvar_Register (&cl_c2spps);
+	Cvar_Register (&cl_broken_ankle_sucks);
 }
 
 /*
