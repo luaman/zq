@@ -621,6 +621,7 @@ void SVC_DirectConnect (void)
 	}
 
 #ifdef MAUTH
+    // FIXME never check loopback connections
     if( !COM_CheckParm("-nomauth") )
     {
         // Only allow clients to connect that have gone through the auth system.
