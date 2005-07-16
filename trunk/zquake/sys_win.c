@@ -445,7 +445,9 @@ void Sys_Init_ (void)
 			"qwcl"); /* Semaphore name      */
 	}
 
+#if id386
 	Sys_SetFPCW ();
+#endif
 
 	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
 	if (!GetVersionEx (&vinfo))
