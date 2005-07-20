@@ -595,7 +595,7 @@ void W_FireLightning ()
 
 // explode if under water
 #ifdef KTEAMS
-    if (self.waterlevel > 1 || match_in_progress == 2)
+    if (self.waterlevel > 1 && match_in_progress == 2)
 #else
 	if (self.waterlevel > 1)
 #endif
