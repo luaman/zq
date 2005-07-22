@@ -498,7 +498,7 @@ void CL_FinishMove (usercmd_t *cmd)
 
 	if (cl_broken_ankle_sucks.value)
 	{
-		if (cl.simvel[2] < -290)
+		if (cl.simvel[2] < -620)	// 650 + some fuzz
 			jitter_count = 5;
 
 		if (jitter_count)
