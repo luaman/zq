@@ -248,7 +248,7 @@ void() agh_client_startdevs =
     self.agrip_aux.state = true;
    
     // Instead of blurting out lots for each dev...
-    snap_misc_m2m("Starting devices...\n");
+    snap_misc_m2m("!Starting devices...\n");
     soundtoclient(self, self, CHAN_AUTO, "toggles/on.wav", 1, ATTN_NORM);
     
     // Unset message lock...
@@ -344,7 +344,7 @@ void() agh_client_padclients_disconnect =
 	    void
 */
 {
-    dprint("PAD: agh_client_padclients_disconnect\n");
+    //dprint("PAD: agh_client_padclients_disconnect\n");
 }
 
 void() agh_player_footsteps =
@@ -534,14 +534,14 @@ void() agh_weapons_impulsecommands =
     if( self.impulse == 50 )
     {
         // Add a friend
-        dprint("friend\n");
+        //dprint("friend\n");
         create_bot(stof(infokey(self, "bottomcolor")), stof(infokey(self, "topcolor")), infokey(self, "team"), true);
     }
                    
     if( self.impulse == 51 )
     {
         // Add an enemy (to a random team not including my own)...
-        dprint("enemy\n");
+        //dprint("enemy\n");
         local string eteam;
         eteam = snap_misc_nameforteamnum(snap_misc_pickrndteam(true));
         create_bot(stof(infokey(self, "bottomcolor")), stof(infokey(self, "topcolor")), eteam, true);

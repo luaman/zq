@@ -764,8 +764,8 @@ void() snap_esr_hazard =
         self.nextthink = time + ( (dist_to_hazard - 20) / SNAP_ESR_BEEPTIME_DIVISOR );
         //dprint(ftos(self.nextthink - time));
         //dprint("\n");
-        if( self.nextthink < time + 0.25 )
-            self.nextthink = time + 0.25;
+        if( self.nextthink < time + 0.1 )
+            self.nextthink = time + 0.1;
     }
     else
     {
