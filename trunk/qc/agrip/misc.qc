@@ -575,7 +575,7 @@ void() snap_misc_botspawner =
     else
     {
         // Reached state 4 -- remove...
-        dprint("About to remove botspawner...\n");
+        //dprint("About to remove botspawner...\n");
         self.think = SUB_Remove;
         self.nextthink = time + 0.1;
     }

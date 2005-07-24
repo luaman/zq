@@ -1097,7 +1097,7 @@ float(vector v_cmid, vector v_coff) snap_nav_corners_check =
                 if( trace_fraction == 1 )
                 {
                     retval = true;
-                    snap_misc_showpoint(v_cornerpoint, "progs/s_bubble.spr", 4);
+                    //snap_misc_showpoint(v_cornerpoint, "progs/s_explod.spr", 4);
                 }
             }
         }
