@@ -132,15 +132,15 @@ void Sys_Printf (char *fmt, ...)
 		return;
 #endif
 
-#ifndef AGRIP
 	va_start (argptr,fmt);
+#ifndef AGRIP
 	_vsnprintf (text, sizeof(text) - 1, fmt, argptr);
 	text[sizeof(text) - 1] = '\0';
-	va_end (argptr);
 #else
     vprintf(fmt,argptr);
     fflush(stdout);
 #endif
+	va_end (argptr);
 
 #ifndef AGRIP
 	WriteFile (houtput, text, strlen(text), &dummy, NULL);

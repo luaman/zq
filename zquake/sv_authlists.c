@@ -23,6 +23,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_authlists.h"
 
 /*
+   FOR DOCUMENTATION ON MAUTH, PLEASE READ ``sv_authlists.h''
+*/
+
+
+/*
 ===============
 SV_AuthListAdd
 
@@ -119,7 +124,11 @@ void SV_AuthListRemove(authqh_t *header, authclient_t *rm)
 
     Q_free(rm->name);
     Q_free(rm->hash);
+    //Q_free(rm->valid);
     Q_free(rm);
+
+    if( header->start == rm )
+        header->start = NULL;
 
     header->curlen--;
 }
@@ -241,7 +250,7 @@ qbool SV_AuthListValidate(authqh_t *header)
     if( !strcmp(testrec->hash,msgline) )
     {
         Com_Printf("SV_AuthListValidate: Token validated for %s.\n", testrec->name);
-        testrec->valid = true;
+        testrec->valid = 1;
         return true;
     }
     else
@@ -274,6 +283,34 @@ authclient_t *SV_AuthListFind(authqh_t *header, char *name)
         temp = temp->next;
     }
     return NULL;
+}
+
+
+/*
+===============
+SV_AuthListClean
+
+Removes all auth tokens in the given queue that have a valid of zero.
+
+NOTE: Call this on a temporary auth queue (i.e. not the one for clients
+      that have connected already) and you'll remove all the tokens!
+===============
+*/
+void SV_AuthListClean(authqh_t *header)
+{
+    authclient_t *temp;
+
+    temp = header->start;
+
+    Com_Printf("SV_AuthListClean: maxlen %d, curlen %d\n", header->maxlen, header->curlen);
+
+    Com_Printf("\tSV_AuthListClean: start.\n");
+    while( temp != NULL )
+    {
+        Com_Printf("\t\tac: %s, %s, %d\n", temp->name, temp->hash, temp->valid);
+        temp = temp->next;
+    }
+    Com_Printf("\tSV_AuthListClean: end.\n");
 }
 
 
