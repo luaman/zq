@@ -54,7 +54,7 @@ cvar_t	sv_fastconnect = {"sv_fastconnect", "0"};
 authqh_t authtokq;
 authqh_t authclientq;
 #define MAX_AUTH_TOK_QUEUE 4
-#define MAX_AUTH_CLIENT_QUEUE 32
+#define MAX_AUTH_CLIENT_QUEUE 40
 #endif
 
 //
@@ -209,6 +209,14 @@ void SV_DropClient (client_t *drop)
 			PR_ExecuteProgram (SpectatorDisconnect);
 		}
 	}
+
+#ifdef MAUTH
+    // remove client from auth queue...
+    authclient_t *dropclient;
+    dropclient = SV_AuthListFind(&authclientq, Info_ValueForKey(drop->userinfo, "name"));
+    if( dropclient )
+       SV_AuthListRemove (&authclientq, dropclient);  
+#endif
 
 	if (drop->spectator)
 		Com_Printf ("Spectator %s removed\n",drop->name);
@@ -621,12 +629,10 @@ void SVC_DirectConnect (void)
 	}
 
 #ifdef MAUTH
-    // FIXME never check loopback connections
-    if( !COM_CheckParm("-nomauth") )
+    // Check that the client is allowed to connect...
+	if( net_from.type != NA_LOOPBACK && !COM_CheckParm("-nomauth") )
     {
-        // Only allow clients to connect that have gone through the auth system.
         authclient_t *authclient;
-        qbool inclientq = false;
     
         // Try the auth token queue first...
         authclient = SV_AuthListFind(&authtokq, Info_ValueForKey(userinfo, "name"));
@@ -641,9 +647,14 @@ void SVC_DirectConnect (void)
                 Com_Printf ("MAUTH: Client %s not in a queue; connect refused.\n", Info_ValueForKey(userinfo, "name"));
                 return;
             }
-            inclientq = true;
         }
-       
+        else
+        {
+            // They're valid, so move them to the main client queue from the
+            // auth cache queue...
+            SV_AuthListMove(&authtokq, &authclientq, authclient);
+        }
+
         // Move to auth'd clients queue if they're valid...
         if( !authclient->valid )
         {
@@ -651,26 +662,16 @@ void SVC_DirectConnect (void)
             Com_Printf ("MAUTH: Client %s not validated yet; connect refused.\n", Info_ValueForKey(userinfo, "name"));
             return;
         }
-    
-        // They're valid, so move them to the main client queue from the auth
-        // cache queue...
-        if( !inclientq )
-        {
-            SV_AuthListMove(&authtokq, &authclientq, authclient);
-        }
-    
+        
         // debugging:
         SV_AuthListPrint(&authtokq);
         SV_AuthListPrint(&authclientq);
         
         Com_Printf ("MAUTH: Client %s connection allowed.\n", Info_ValueForKey(userinfo, "name"));
-        // FIXME when they drop, remove them (if the drop is caused by disconnect)
-        // can we use valid flag to flag them for potential removal after a non disconnect drop?
-        // kicks always use disconnect?
     }
     else
     {
-        Com_Printf("MAUTH: disabled; allowing client connection.\n");
+        Com_Printf("MAUTH: loopback or disabled; allowing client connection.\n");
     }
 #endif
 
