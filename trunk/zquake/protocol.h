@@ -50,21 +50,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	S2M_SHUTDOWN		'C'
 
 #ifdef MAUTH
-#define M2S_AUTH_TOK        "m2s-auth-tok"
+// Client stuff...
+#ifndef SERVERONLY
+#define C2M_AUTH_INIT       'i' //"c2m-auth-init"
+// kicks off an authentication sesh.
+#define M2C_AUTH_RND        'I' //"m2c-auth-rnd"
+// gives us the string we add to our password before hashing with MD4.
+#define C2M_AUTH_HASH       'H' //"c2m-auth-hash"
+#endif  // !SERVERONLY
+
+// Server stuff...
+#ifndef CLIENTONLY
+#define M2S_AUTH_TOK        't' //"m2s-auth-tok"
 // sent by master to the server that a client wants to play on when they have
 // been successfully auth'd against the master.  Is temporary, only for this
 // server and will expire as soon as the server turns off or the client is
 // removed from the list (by connecting, then issuing the disconnect command).
-#define S2M_AUTH_TOK_NACK   "s2m-auth-tok-nack"
+#define S2M_AUTH_TOK_NACK   's' //"s2m-auth-tok-nack"
 // negative reply from server to master (e.g. can't add token to list due to
-// list being full or it already being there)
-#define S2M_AUTH_TOK_CHK    "s2m-auth-tok-chk"
+// list being full or it already being there).
+#define S2M_AUTH_TOK_CHK    'T' //"s2m-auth-tok-chk"
 // the token was accepted by the server, but this is sent to make sure the
 // details we just got weren't spoofed (we need to be careful we tust this,
-// of course)
-#define M2S_AUTH_TOK_ACK    "m2s-auth-tok-ack"
-// reply from master with result of above check
-#endif
+// of course).
+#define M2S_AUTH_TOK_ACK    'u' //"m2s-auth-tok-ack"
+// reply from master with result of above check.
+#endif  // !CLIENTONLY
+#endif  // MAUTH
 
 
 //==================

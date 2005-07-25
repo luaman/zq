@@ -269,6 +269,7 @@ void CL_BeginServerConnect(void)
 	CL_CheckForResend();
 }
 
+#ifndef MAUTH
 /*
 ================
 CL_Connect_f
@@ -292,6 +293,67 @@ void CL_Connect_f (void)
 	strlcpy (cls.servername, server, sizeof(cls.servername));
 	CL_BeginServerConnect();
 }
+#else // MAUTH
+/*
+================
+CL_Connect_f
+
+MAUTH version -- kick off an authentication sequence as first part of
+connection routine.
+================
+*/
+void CL_Connect_f (void)
+{
+	char	*server;
+	char	*masterserver;
+    char    data[2048];
+
+	if (Cmd_Argc() != 3)
+	{
+		Com_Printf ("usage: connect <master> <server>\n");
+		return;
+	}
+	
+	Host_EndGame ();
+	
+    server = Cmd_Argv (1);
+	strlcpy (cls.servername, server, sizeof(cls.servername));
+
+    // Have to check for valid server address here as we must send to master...
+	if (!NET_StringToAdr (cls.servername, &cls.server_adr))
+	{
+		Com_Printf ("Bad server address\n");
+		return;
+	}
+	if (cls.server_adr.port == 0)
+		cls.server_adr.port = BigShort (PORT_SERVER);
+
+	masterserver = Cmd_Argv (2);
+	strlcpy (cls.masterservername, masterserver, sizeof(cls.masterservername));
+
+    // Start off auth sequence before trying to connect...
+	if (!NET_StringToAdr (cls.masterservername, &cls.masterserver_adr))
+	{
+		Com_Printf ("Bad master server address\n");
+		return;
+	}
+	if (cls.masterserver_adr.port == 0)
+		cls.masterserver_adr.port = BigShort (27000);  // master port
+
+	Com_Printf ("Attempting to auth with %s...\n", cls.masterservername);
+	sprintf (data, "%c\n%s\n%s:%d\n",
+            C2M_AUTH_INIT,
+            Cvar_VariableString("name"),
+            cls.servername,
+            cls.server_adr.port);
+	NET_SendPacket (NS_CLIENT, strlen(data), data, cls.masterserver_adr);
+
+    // Normal connection procedure...
+    // FIXME wait?
+    // FIXME use some qbools to work out if we get a NACK to stop trying to connect -- ie preserve state
+	CL_BeginServerConnect();
+}
+#endif  // !MAUTH
 
 /*
 =====================
@@ -491,6 +553,52 @@ void CL_ConnectionlessPacket (void)
 
 	if (msg_badread)
 		return;	// runt packet
+    
+#ifdef MAUTH
+    // Deal with authentication messages...
+    if (c == M2C_AUTH_RND)
+    {
+        char *tmpstr;
+        char *hash_md4;
+        char data[1024];
+
+        // FIXME compute and send hash to master
+        // FIXME ensure this is our master somehow?
+        // FIXME malformed packets shouldn't crash server
+
+        MSG_ReadStringLine();
+        
+        // Check player name...
+        tmpstr = MSG_ReadStringLine();
+        if( !tmpstr || strcmp(Cvar_VariableString("name"),tmpstr) )
+        {
+            // FIXME return NACK
+            return;
+        }
+        
+        // Show random string...
+        tmpstr = MSG_ReadString();
+        if( !tmpstr )
+        {
+            // FIXME return NACK
+            return;
+        }
+        Sys_Printf("MAUTH: random string is %s.\n", tmpstr);
+
+        // Compute hash with Com_BlockFullChecksum() from name + rnd...
+        strcat(tmpstr,"mp2");
+        Com_BlockFullChecksum(tmpstr,sizeof(tmpstr),hash_md4);
+        Sys_Printf("MAUTH: str is %s.\n", tmpstr);
+        Sys_Printf("MAUTH: str size is %d.\n", sizeof(tmpstr));
+        Sys_Printf("MAUTH: hash is %s.\n", hash_md4);
+        Sys_Printf("MAUTH: hash size is %d.\n", sizeof(hash_md4));
+        
+        // Send hash to master...
+        sprintf(data, "%c\n%s\n%s\n", C2M_AUTH_HASH, Cvar_VariableString("name"), hash_md4);
+		NET_SendPacket (NS_CLIENT, sizeof(data), data, net_from);
+        return;
+    }
+#endif
 
 	// remote command from GUI frontend
 	if (c == A2C_CLIENT_COMMAND) {
