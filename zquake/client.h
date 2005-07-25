@@ -224,6 +224,10 @@ typedef struct
 	int			qport;
 	char		servername[MAX_OSPATH];	// name of server from original connect
 	netadr_t	server_adr;
+#ifdef MAUTH
+	char		masterservername[MAX_OSPATH];	// name of server from original connect
+	netadr_t	masterserver_adr;
+#endif
 
 // private userinfo for sending to masterless servers
 	char		userinfo[MAX_INFO_STRING];

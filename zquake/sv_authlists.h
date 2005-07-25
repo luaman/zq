@@ -27,6 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "common.h"
 
 /*
+    FIXME disable name command on servers with MAUTH
+    FIXME disable team command on servers with AGRIP
+*/
+
+/*
     MAUTH DOCUMENTATION
 
     I have attempted to recreate the spirit of the old QW global stats
@@ -55,6 +60,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     Most of the code is in ZQuake CVS, but the rest can be found at:
 
         http://www.agrip.org.uk/svn/
+
+    This Subversion repository contains a reference implementation of the
+    extended QW master server and an authentication client you can use with
+    it (for those wishing to investigate adding MAUTH to their QW engines).
 
     The rest of this rant describes the technical bits as they relate to ZQ.
 
