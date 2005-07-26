@@ -178,7 +178,14 @@ void() agh_world_padclients =
         return;
 
     // How many bots to spawn?
-    numteams = stof(infokey(world, "ag_numteams"));
+    if( teamplay )
+    {
+        numteams = stof(infokey(world, "ag_numteams"));
+    }
+    else
+    {
+        numteams = 1;
+    }
     padclients = stof(infokey(world, "bots_padclients"));
     botsperteam = rint(padclients / numteams);
 
