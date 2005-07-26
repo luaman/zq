@@ -484,7 +484,18 @@ void() snap_misc_botspawner =
             if( self.lip < self.frags )
             {
                 dprint("    team (1) member.\n");
-                tteam = infokey(world, "ag_team1name");
+                if( teamplay )
+                {
+                    // in teamplay we must get the right name for the team...
+                    tteam = infokey(world, "ag_team1name");
+                }
+                else
+                {
+                    // in DM we don't need teams...
+                    // (we only need this test in team 1 as there is only
+                    // one ``team'' of bots as far as we are concerned in DM)
+                    tteam = "n/a";
+                }
                 create_bot(snap_misc_bottomforteamnum(1), snap_misc_topforteamnum(1), tteam, false);
                 self.lip = self.lip + 1;
             }
@@ -584,13 +595,13 @@ void() snap_misc_botspawner =
 float (float notmyteam) snap_misc_pickrndteam =
 /*
     Purpose:
-        Returns a string that is the name of a random team.
+        Returns a float that is the number of a random team.
         If notmyteam is true, it picks from the remaining teams.
         (That MUST be called by a player.)
     Takes:
         float notmyteam - set if player only
     Returns:
-        string (random teamname)
+        float (random team number)
     Notes:
         This is used when kicking bots and adding bots (by clients).
 */
