@@ -276,7 +276,7 @@ void() snap_esr_classic =
                 // On the same team?
                 mt = infokey(self.owner, "team");
                 pht = infokey(potential_hit, "team");
-                if( mt == pht )
+                if( mt != "" && mt == pht )
                 {
                     pf_lev = snap_esr_classic_level(potential_hit.origin_z);
                     if( pf_lev == SNAP_ESR_LEVEL_SAME && f_same_dist > dist)
