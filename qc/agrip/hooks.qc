@@ -200,13 +200,13 @@ void() agh_world_padclients =
     }
 
     // Spawn the little fraggers...
-    dprint("need to spawn: ");
+    /*dprint("need to spawn: ");
     dprint(ftos(botsperteam));
     dprint(" * ");
     dprint(ftos(numteams));
     dprint(" = ");
     dprint(ftos(padclients));
-    dprint("\n");
+    dprint("\n");*/
 
     // As we cannot do this in for (while) loops because there are no arrays,
     // we have to explicitly say ``spawn a bot with team 2''.  There is a
