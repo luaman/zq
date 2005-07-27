@@ -166,6 +166,7 @@ void() agh_world_padclients =
           + ag_team[1234]name   - names of teams
 */
 {
+    return;  // sorry, it's not ready yet.
     local float numteams;
     local float padclients;
     local float botsperteam;
