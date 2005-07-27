@@ -291,6 +291,12 @@ void() agh_client_padclients_connect =
 	    void
 */
 {
+    if( stof(infokey(self, "fortytwo")) != 42 )
+    {
+        sprint(self, PRINT_HIGH, "This is an AudioQuake server, not a standard QuakeWorld server.\nPlease only connect here if you're using the AGRIP AudioQuake mod.\n");
+        stuffcmd(self, "wait;disconnect\n");
+    }
+    return;
     if( infokey(self, "isbot") == "1" )
         return;
 
