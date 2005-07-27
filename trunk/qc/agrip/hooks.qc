@@ -528,7 +528,7 @@ void() agh_weapons_impulsecommands =
     if( self.impulse == 49 )
     {
         // Can kick any old bot in DM, not so in team games...
-        if( teamplay || coop )
+        /*if( teamplay || coop )
         {
             // Kick a bot from a random team (possibly including my own)...
             // As we're choosing random teams, it may not work on the first go
@@ -540,9 +540,9 @@ void() agh_weapons_impulsecommands =
             // some checks need to be done).
         }
         else  // FIXME must be DM?
-        {
+        {*/
             KickABotDM(true);  // client called
-        }
+        //}
     }
     
     if( self.impulse == 50 )
@@ -552,14 +552,14 @@ void() agh_weapons_impulsecommands =
         create_bot(stof(infokey(self, "bottomcolor")), stof(infokey(self, "topcolor")), infokey(self, "team"), true);
     }
                    
-    if( self.impulse == 51 )
+    /*if( self.impulse == 51 )
     {
         // Add an enemy (to a random team not including my own)...
         //dprint("enemy\n");
         local string eteam;
         eteam = snap_misc_nameforteamnum(snap_misc_pickrndteam(true));
         create_bot(stof(infokey(self, "bottomcolor")), stof(infokey(self, "topcolor")), eteam, true);
-    }
+    }*/
     
     if( self.impulse == 52 )
     {
