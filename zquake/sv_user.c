@@ -618,9 +618,11 @@ static void Cmd_Begin_f (void)
 	pmodel = atoi(Info_ValueForKey (sv_client->userinfo, "pmodel"));
 	emodel = atoi(Info_ValueForKey (sv_client->userinfo, "emodel"));
 
+#ifndef AGRIP
 	if (pmodel != sv.model_player_checksum ||
 		emodel != sv.eyes_player_checksum)
 		SV_BroadcastPrintf (PRINT_HIGH, "%s WARNING: non standard player/eyes model detected\n", sv_client->name);
+#endif
 
 	// if we are paused, tell the client
 	if (sv_paused.value) {
