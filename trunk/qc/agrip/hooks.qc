@@ -256,7 +256,7 @@ void() agh_client_startdevs =
     self.agrip_aux.state = true;
    
     // Instead of blurting out lots for each dev...
-    snap_misc_m2m("!Starting devices...\n");
+    snap_misc_m2m("Starting devices...\n");
     soundtoclient(self, self, CHAN_AUTO, "toggles/on.wav", 1, ATTN_NORM);
     
     // Unset message lock...
