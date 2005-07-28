@@ -1917,6 +1917,22 @@ static void PF_logfrag (void)
 	if (e1 < 1 || e1 > MAX_CLIENTS
 	|| e2 < 1 || e2 > MAX_CLIENTS)
 		return;
+
+#ifdef AGRIP
+	// If bots are involved, DON'T LOG the frag
+	// (it pollutes the stats system).
+	// Put this in braces to avoid the obnoxious VC
+	// error ``missing ; before type''...
+	{
+		client_t *cl1, *cl2;
+		// Don't log frags where bots kill players
+		// OR when players kill bots...
+		cl1 = &svs.clients[e1-1];
+		cl2 = &svs.clients[e2-1];
+		if (cl1->bot || cl2->bot)
+			return;
+	}
+#endif
 	
 	s = va("\\%s\\%s\\\n",svs.clients[e1-1].name, svs.clients[e2-1].name);
 
