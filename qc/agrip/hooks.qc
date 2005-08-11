@@ -166,7 +166,6 @@ void() agh_world_padclients =
           + ag_team[1234]name   - names of teams
 */
 {
-    return;  // sorry, it's not ready yet.
     local float numteams;
     local float padclients;
     local float botsperteam;
@@ -201,13 +200,13 @@ void() agh_world_padclients =
     }
 
     // Spawn the little fraggers...
-    /*dprint("need to spawn: ");
+    dprint("need to spawn: ");
     dprint(ftos(botsperteam));
-    dprint(" * ");
+    dprint(" [bpt] * ");
     dprint(ftos(numteams));
-    dprint(" = ");
+    dprint(" [teams] = ");
     dprint(ftos(padclients));
-    dprint("\n");*/
+    dprint("\n");
 
     // As we cannot do this in for (while) loops because there are no arrays,
     // we have to explicitly say ``spawn a bot with team 2''.  There is a
@@ -220,7 +219,7 @@ void() agh_world_padclients =
     // do the actual spawning.
     
     // FIXME in dm don't give colours -- or give random colours
-    // FIXME bots have inverse colours to players? or just dark tops?
+    // FIXME bots have inverse colours to players? or just dark bots?
     // FIXME disable team command / make it switch your colours too?
     
     entity spawner;
@@ -291,16 +290,18 @@ void() agh_client_padclients_connect =
 	    void
 */
 {
+    if( infokey(self, "isbot") == "1" )
+        // FIXME??? make it add bots to other teams for balancing?
+        // FIXME ALTER BOT COLOURS!!!
+        return;
+
     if( stof(infokey(self, "fortytwo")) != 42 )
     {
         sprint(self, PRINT_HIGH, "This is an AudioQuake server, not a standard QuakeWorld server.\nPlease only connect here if you're using the AGRIP AudioQuake mod.\n");
         stuffcmd(self, "wait;disconnect\n");
     }
-    return;
-    if( infokey(self, "isbot") == "1" )
-        return;
 
-    if( teamplay || coop )
+    if( teamplay )// || coop )
     {
         local float teamnum;
         local float numteams;
@@ -314,7 +315,7 @@ void() agh_client_padclients_connect =
         numteams = stof(infokey(world, "ag_numteams"));
         tmp = infokey(self, "team");
         teamnum = snap_misc_numforteamname(tmp);
-        dprint("my team number is : ");dprint(ftos(teamnum));dprint("\n");
+        dprint("PAD: CONNECT ~ my team number is : ");dprint(ftos(teamnum));dprint("\n");
 
         // Valid team number?
         if( teamnum == 0 || teamnum > numteams )
@@ -324,8 +325,9 @@ void() agh_client_padclients_connect =
         }
         else
         {
-            // Set colours...
-            // Bottom...
+            // Set colours
+            // (by working out the colours and sending a console command)...
+            // bottom...
             tmp = ftos(snap_misc_bottomforteamnum(teamnum));
             stmp = strzone(tmp);
             cmd = stradd("bottomcolor ", stmp);
@@ -358,7 +360,7 @@ void() agh_client_padclients_disconnect =
 	    void
 */
 {
-    //dprint("PAD: agh_client_padclients_disconnect\n");
+    dprint("PAD: agh_client_padclients_disconnect\n");
 }
 
 void() agh_player_footsteps =
@@ -510,14 +512,15 @@ void() agh_weapons_impulsecommands =
     Purpose:
         Carries out the accessibility-related impulse commands...
     Takes:
-	void
+        void
     Returns:
-	void
+        void
 */
 {
     // TUTOR BOT STUFF
 
-    // Impulse  50  Adds a bot on our team
+    // Impulse  49  Kicks a bot
+    //          50  Adds a bot on our team
     //          51  Adds an enemy bot
     //          52  Sets and un-sets the call flag
 
@@ -527,39 +530,40 @@ void() agh_weapons_impulsecommands =
 
     if( self.impulse == 49 )
     {
-        // Can kick any old bot in DM, not so in team games...
-        /*if( teamplay || coop )
+        // Can kick any old bot in DM; not so in team games...
+        if( teamplay || coop )
         {
-            // Kick a bot from a random team (possibly including my own)...
-            // As we're choosing random teams, it may not work on the first go
-            // so we repeat until it does...
-            KickABotTeam(snap_misc_pickrndteam(false), true);
-            // The false paramater to pickrndteam means we could pick a bot
-            // on our team.
-            // The true at the end means a client called the function (so
-            // some checks need to be done).
+            local float myteam;
+            myteam = snap_misc_numforteamname(infokey(self, "team"));
+            KickABotTeam(myteam, true);
+            // (The true at the end means a client called the function -- so
+            // some checks need to be done to ensure this is allowed.)
         }
         else  // FIXME must be DM?
-        {*/
+        {
             KickABotDM(true);  // client called
-        //}
+        }
     }
     
     if( self.impulse == 50 )
     {
         // Add a friend
-        //dprint("friend\n");
         create_bot(stof(infokey(self, "bottomcolor")), stof(infokey(self, "topcolor")), infokey(self, "team"), true);
     }
                    
-    /*if( self.impulse == 51 )
+    if( self.impulse == 51 )
     {
         // Add an enemy (to a random team not including my own)...
-        //dprint("enemy\n");
-        local string eteam;
-        eteam = snap_misc_nameforteamnum(snap_misc_pickrndteam(true));
-        create_bot(stof(infokey(self, "bottomcolor")), stof(infokey(self, "topcolor")), eteam, true);
-    }*/
+        local float random_enemy_team, mybot, mytop;
+        local string enemy_teamname;
+
+        // Choose a team that isn't mine to add the top to...
+        random_enemy_team = snap_misc_pickrndteam(true);
+        enemy_teamname = snap_misc_nameforteamnum(random_enemy_team);
+        mybot = snap_misc_bottomforteamnum(random_enemy_team);
+        mytop = snap_misc_topforteamnum(random_enemy_team);
+        create_bot(mybot, mytop, enemy_teamname, true);
+    }
     
     if( self.impulse == 52 )
     {

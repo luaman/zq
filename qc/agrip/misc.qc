@@ -59,7 +59,11 @@ void    (string msg_string)                         snap_misc_m2m;
 float   (float init_yaw)                            snap_misc_normalyaw;
 void    (vector point, string sprite, float ttl)    snap_misc_showpoint;
 float   (vector jump_origin, vector move_dir)       snap_misc_jumptest;
+
+// BOT UTILITY FUNCTIONS
 void    ()                                          snap_misc_botspawner;
+
+// TEAM MANAGEMENT UTILITY FUNCTIONS
 float   (float notmyteam)                           snap_misc_pickrndteam;
 string  (float teamnum)                             snap_misc_nameforteamnum;
 float   (string teamname)                           snap_misc_numforteamname;
@@ -448,6 +452,9 @@ float(vector jump_origin, vector move_dir) snap_misc_jumptest =
     return retval;
 };
 
+
+// BOT UTILITY FUNCTIONS
+
 void() snap_misc_botspawner =
 /*
     Purpose:
@@ -475,7 +482,8 @@ void() snap_misc_botspawner =
 */
 {
     local string tteam;
-
+    local float tbot, ttop;
+ 
     if( self.state == 0 )
     {
         if( self.items > 0 )  // at least 1 team
@@ -483,11 +491,14 @@ void() snap_misc_botspawner =
             dprint("spawning team 1...\n");
             if( self.lip < self.frags )
             {
-                dprint("    team (1) member.\n");
+                dprint("    team 1 member.\n");
                 if( teamplay )
                 {
                     // in teamplay we must get the right name for the team...
                     tteam = infokey(world, "ag_team1name");
+                    tbot = snap_misc_bottomforteamnum(1);
+                    ttop = snap_misc_topforteamnum(1);
+                    create_bot(tbot, ttop, tteam, false);
                 }
                 else
                 {
@@ -495,8 +506,8 @@ void() snap_misc_botspawner =
                     // (we only need this test in team 1 as there is only
                     // one ``team'' of bots as far as we are concerned in DM)
                     tteam = "n/a";
+                    create_bot(0, 12, tteam, false);
                 }
-                create_bot(snap_misc_bottomforteamnum(1), snap_misc_topforteamnum(1), tteam, false);
                 self.lip = self.lip + 1;
             }
             else
@@ -518,9 +529,11 @@ void() snap_misc_botspawner =
             dprint("spawning team 2...\n");
             if( self.lip < self.frags )
             {
-                dprint("    team (2) member.\n");
+                dprint("    team 2 member.\n");
                 tteam = infokey(world, "ag_team2name");
-                create_bot(snap_misc_bottomforteamnum(2), snap_misc_topforteamnum(2), tteam, false);
+                tbot = snap_misc_bottomforteamnum(2);
+                ttop = snap_misc_topforteamnum(2);
+                create_bot(tbot, ttop, tteam, false);
                 self.lip = self.lip + 1;
             }
             else
@@ -542,9 +555,11 @@ void() snap_misc_botspawner =
             dprint("spawning team 3...\n");
             if( self.lip < self.frags )
             {
-                dprint("    team (3) member.\n");
+                dprint("    team 3 member.\n");
                 tteam = infokey(world, "ag_team3name");
-                create_bot(snap_misc_bottomforteamnum(3), snap_misc_topforteamnum(3), tteam, false);
+                tbot = snap_misc_bottomforteamnum(3);
+                ttop = snap_misc_topforteamnum(3);
+                create_bot(tbot, ttop, tteam, false);
                 self.lip = self.lip + 1;
             }
             else
@@ -566,9 +581,11 @@ void() snap_misc_botspawner =
             dprint("spawning team 4...\n");
             if( self.lip < self.frags )
             {
-                dprint("    team (4) member.\n");
+                dprint("    team 4 member.\n");
                 tteam = infokey(world, "ag_team4name");
-                create_bot(snap_misc_bottomforteamnum(4), snap_misc_topforteamnum(4), tteam, false);
+                tbot = snap_misc_bottomforteamnum(4);
+                ttop = snap_misc_topforteamnum(4);
+                create_bot(tbot, ttop, tteam, false);
                 self.lip = self.lip + 1;
             }
             else
@@ -586,11 +603,13 @@ void() snap_misc_botspawner =
     else
     {
         // Reached state 4 -- remove...
-        //dprint("About to remove botspawner...\n");
-        self.think = SUB_Remove;
-        self.nextthink = time + 0.1;
+        dprint("About to remove botspawner...\n");
+        remove(self);
     }
 }
+
+
+// TEAM MANAGEMENT UTILITY FUNCTIONS
 
 float (float notmyteam) snap_misc_pickrndteam =
 /*
@@ -611,28 +630,43 @@ float (float notmyteam) snap_misc_pickrndteam =
     local float okteam;  // allows us to loop if we picked a team
                          // that is same as calling client's team
                          // when they didn't want us to.
-    
-    numteams = stof(infokey(world, "ag_numteams"));
-    rnd = random() * numteams;
-    rnd = rint(rnd);
 
+    numteams = stof(infokey(world, "ag_numteams"));
+
+    if( notmyteam )
+    {
+        local float myteam;
+        myteam = snap_misc_numforteamname(infokey(self, "team"));
+        dprint("PRNDT: my team is ");
+        dprint(ftos(myteam));
+        dprint("\n");
+    }
+    
     okteam = 0;
     while( !okteam )
     {
+        rnd = 1 + ( random() * ( numteams - 1 ) );
+        rnd = rint(rnd);
+        dprint("PRNDT: rnd team is ");
+        dprint(ftos(rnd));
+        dprint("\n");
+
         if( notmyteam )
         {
-            if( snap_misc_nameforteamnum(rnd) == infokey(self, "team") )
+            if( rnd == myteam )
             {
-                dprint("Not my team!\n");
+                dprint("PRNDT: Not my team!\n");
                 okteam = 0;
             }
             else
             {
+                dprint("PRNDT: found a good team.\n");
                 okteam = 1;
             }
         }
         else
         {
+            dprint("PRNDT: keep first team num.\n");
             okteam = 1;
         }
     }
@@ -656,8 +690,13 @@ string (float teamnum) snap_misc_nameforteamnum =
         return infokey(world, "ag_team2name");
     else if( teamnum == 3 )
         return infokey(world, "ag_team3name");
-    else
+    else if( teamnum == 4 )
         return infokey(world, "ag_team4name");
+    else
+    {
+        dprint("ERROR: Invalid team number ", ftos(teamnum), "!\n");
+        error("snap_misc_nameforteamnum called with invalid team number!\n");
+    }
 }
 
 float (string teamname) snap_misc_numforteamname =
@@ -673,26 +712,29 @@ float (string teamname) snap_misc_numforteamname =
         Can be used for error-checking client has set the right name.
 */
 {
-    local string client_team;
+    local string s_teamname;
     local float retval;
 
     // catch passed-in teamname...
-    client_team = strzone(teamname);
-   
+    s_teamname = strzone(teamname);
+
     // compare team...
-    if ( client_team == infokey(world, "ag_team1name") )
+    if ( s_teamname == infokey(world, "ag_team1name") )
         retval = 1;
-    else if ( client_team == infokey(world, "ag_team2name") )
+    else if ( s_teamname == infokey(world, "ag_team2name") )
         retval = 2;
-    else if ( client_team == infokey(world, "ag_team3name") )
+    else if ( s_teamname == infokey(world, "ag_team3name") )
         retval = 3;
-    else if ( client_team == infokey(world, "ag_team4name") )
+    else if ( s_teamname == infokey(world, "ag_team4name") )
         retval = 4;
     else
-        retval = 0;
+    {
+        dprint("ERROR: Invalid team name ", teamname, "!\n");
+        error("snap_misc_nameforteamnum called with invalid team number!\n");
+    }
 
     // be tidy now
-    strunzone(client_team);
+    strunzone(s_teamname);
     
     return retval;
 }
@@ -713,8 +755,13 @@ float (float teamnum) snap_misc_bottomforteamnum =
         return 13;
     else if( teamnum == 3 )
         return 12;
-    else
+    else if (teamnum == 4 )
         return 3;
+    else
+    {
+        dprint("ERROR: Invalid team number ", ftos(teamnum), "!\n");
+        error("snap_misc_bottomforteamnum called with invalid team number!\n");
+    }
 }
 
 float (float teamnum) snap_misc_topforteamnum =
@@ -733,8 +780,13 @@ float (float teamnum) snap_misc_topforteamnum =
         return 0;
     else if( teamnum == 3 )
         return 0;
-    else
+    else if( teamnum == 4 )
         return 0;
+    else
+    {
+        dprint("ERROR: Invalid team number ", ftos(teamnum), "!\n");
+        error("snap_misc_bottomforteamnum called with invalid team number!\n");
+    }
 }
 
 
