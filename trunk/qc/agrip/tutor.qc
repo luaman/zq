@@ -14,6 +14,45 @@ vector realorigin (entity ent)
         return (ent.absmin + ent.absmax) * 0.5;
 }
 
+float() CountPlayers =
+{
+    local entity plr;
+    local float count;
+    
+    plr = find(world, classname, "player");
+    while( plr != world )
+    {
+        if( plr.netname != "" )
+            count = count + 1;
+
+        plr = find(plr, classname, "player");
+    }
+
+    return count;
+}
+
+// KickABotClientCheck
+// Ensures clients can't kick bots below the padclients level...
+// Returns 0 if the user is not allowed to kick the bot, 1 if they are.
+float() KickABotClientCheck =
+{
+    local float pclients;
+
+    pclients = stof(infokey(world, "bots_padclients"));
+    
+    if( infokey(world, "bots_clientcontrol") == "1" )
+    {
+        if( CountPlayers() > pclients )
+            return 1;
+        else
+            sprint(self, PRINT_HIGH, "Can't remove bots that are there to pad player slots!\n");
+    }
+    else
+        sprint(self, PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
+    
+    return 0;
+}
+
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -25,16 +64,9 @@ Adapted from FrikBot version to support bot padding
 
 void KickABotDM(float clientcalled)
 {
-    // AGRIP - don't spawn a bot if it's not allowed...
     if( clientcalled )
-    {
-        if( infokey(world, "bots_clientcontrol") == "0" )
-        {
-            sprint(self, PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
+        if( !KickABotClientCheck )
             return 2;
-        }
-        // FIXME stop them removing bots that are there to pad
-    }
 
 	entity pkick;
 	pkick = find(world, classname, "player");
@@ -74,27 +106,18 @@ float KickABotTeam(float bteam, float clientcalled)
     
     local string isbot;
     local string found_ent_team;
-    local string bteam_str, bot_team;
+    local string bot_team, s_bot_team;
     local float retval;
 
     retval = 1;  // assume we don't find smt to kick
-    
-    // AGRIP - don't spawn a bot if it's not allowed...
+
     if( clientcalled )
-    {
-        if( infokey(world, "bots_clientcontrol") == "0" )
-        {
-            sprint(self, PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
+        if( !KickABotClientCheck() )
             return 2;
-        }
-        // FIXME stop them removing bots that are there to pad
-    }
 
     // Look up real team name for passed in team number..
-    bteam_str = snap_misc_nameforteamnum(bteam);
-    // Catch string...
-    bot_team = strzone(bteam_str);
-    dprint("KICKBOT got team ");dprint(bot_team);dprint("\n");
+    bot_team = snap_misc_nameforteamnum(bteam);
+    s_bot_team = strzone(bot_team);
 
 	entity pkick;
 	pkick = find(world, classname, "player");
@@ -103,11 +126,7 @@ float KickABotTeam(float bteam, float clientcalled)
         found_ent_team = infokey(pkick, "team");
         isbot = infokey(pkick, "isbot");
 
-        dprint("found_ent_team: ");dprint(found_ent_team);
-        dprint("  isbot: ");dprint(isbot);
-        dprint("  bot_team: ");dprint(bot_team);dprint("\n");
-	
-        if( isbot == "1" && found_ent_team == bot_team )
+        if( isbot == "1" && found_ent_team == s_bot_team )
         {
 			stuffcmd(pkick, "disconnect\n");
 			pkick = world;
@@ -119,15 +138,11 @@ float KickABotTeam(float bteam, float clientcalled)
         }
 	}
 
-    dprint("kickabot returning: ");dprint(ftos(retval));dprint("\n");
-    strunzone(bot_team);
+    strunzone(s_bot_team);
     return retval;
 
     // FIXME all bots kicked -> deny.wav?
 }
-
-
-//////////
 
 
 /*
@@ -1740,13 +1755,24 @@ void(float bottom, float top, string bteam, float clientcalled) create_bot =
 // ------------------------------------------------
 {
     entity bot;
+    local string s_bteam;
     local string skill, tmp;
+
+    s_bteam = strzone(bteam);
+    
+    dprint("CREATE_BOT! bot: ");
+    dprint(ftos(bottom));dprint("  top: ");
+    dprint(ftos(top));dprint("  s_bteam: ");
+    dprint(s_bteam);dprint("  cc: ");
+    dprint(ftos(clientcalled));dprint("\n");
 
     // AGRIP - don't spawn a bot if it's not allowed...
     if( clientcalled )  // i.e. only check if we're a client
     if (!stof(infokey(world, "bots_clientcontrol")))
     {
         sprint(self, PRINT_HIGH, "Clients not allowed to add/kick bots on this server!\n");
+        strunzone(s_bteam);
+        // FIXME deny.wav!
         return;
     }
 
@@ -1755,21 +1781,24 @@ void(float bottom, float top, string bteam, float clientcalled) create_bot =
     if( !skill || stof(skill) < 0 || stof(skill) > 2 )
     {
         sprint(self, PRINT_HIGH, "Can't add a bot - server admin has not set bots_skill to 0, 1 or 2!\n");
+        strunzone(s_bteam);
         return;
     }
 
     // initializing the entity
-    bot = testbot(bteam); // use ZQuake server bot support
+    bot = testbot("tutorbot"); // use ZQuake server bot support
     if (!bot)
     {
         sprint(self, PRINT_HIGH, "Can't connect any more bots - server is full!\n");
+        strunzone(s_bteam);
         return;
     }
 
     // Team name...
-    setinfo (bot, "team", bteam);
+    setinfo (bot, "team", s_bteam);
     // NOTE: this is always set to text passed to testbot() whatever we do
     //       and doesn't work at all if it's not done right here... :-S
+    strunzone(s_bteam);
 
     // Colours...
     tmp = ftos(bottom);
