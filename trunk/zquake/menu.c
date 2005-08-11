@@ -251,6 +251,7 @@ void M_Menu_Main_f (void)
 
 void M_Main_Draw (void)
 {
+#ifndef AGRIP
 	int		f;
 	mpic_t	*p;
 
@@ -262,6 +263,7 @@ void M_Main_Draw (void)
 	f = (int)(curtime * 10)%6;
 
 	M_DrawPic (54, 32 + m_main_cursor * 20, R_CachePic(va("gfx/menudot%i.lmp", f+1)));
+#endif
 }
 
 
