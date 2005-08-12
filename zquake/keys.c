@@ -83,6 +83,11 @@ keyname_t keynames[] =
 	{"LSHIFT", K_LSHIFT},
 	{"RSHIFT", K_RSHIFT},
 
+	{"WIN", K_WIN},
+	{"LWIN", K_LWIN},
+	{"RWIN", K_RWIN},
+	{"MENU", K_MENU},
+
 	// Keypad stuff..
 	{"NUMLOCK", KP_NUMLOCK},
 	{"KP_NUMLCK", KP_NUMLOCK},
@@ -1418,6 +1423,8 @@ void Key_EventEx (int key, int shiftkey, qbool down)
 		Key_EventEx (K_CTRL, K_CTRL, down);
 	else if (key == K_LSHIFT || key == K_RSHIFT)
 		Key_EventEx (K_SHIFT, K_SHIFT, down);
+	else if (key == K_LWIN || key == K_RWIN)
+		Key_EventEx (K_WIN, K_WIN, down);
 
 	keydown[key] = down;
 
