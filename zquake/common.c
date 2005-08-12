@@ -1381,6 +1381,33 @@ byte COM_BlockSequenceCRCByte (byte *base, int length, int sequence)
 }
 
 
+//============================================================================
+
+///////////////////////////////////////////////////////////////
+//	MD4-based checksum utility functions
+//
+//	Copyright (C) 2000       Jeff Teunissen <d2deek@pmail.net>
+//
+//	Author: Jeff Teunissen	<d2deek@pmail.net>
+//	Date: 01 Jan 2000
+
+unsigned Com_BlockChecksum (void *buffer, int length)
+{
+	int				digest[4];
+	unsigned 		val;
+
+	mdfour ( (unsigned char *) digest, (unsigned char *) buffer, length );
+
+	val = digest[0] ^ digest[1] ^ digest[2] ^ digest[3];
+
+	return val;
+}
+
+void Com_BlockFullChecksum (void *buffer, int len, unsigned char *outbuf)
+{
+	mdfour ( outbuf, (unsigned char *) buffer, len );
+}
+
 //=====================================================================
 
 #define	MAXPRINTMSG	4096
