@@ -71,10 +71,10 @@ typedef enum {
 	K_HOME,
 	K_END,
 
-//	K_WIN,
-//	K_LWIN,
-//	K_RWIN,
-//	K_MENU,
+	K_WIN,
+	K_LWIN,
+	K_RWIN,
+	K_MENU,
 
 //
 // Keypad stuff..

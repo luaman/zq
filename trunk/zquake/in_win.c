@@ -1264,7 +1264,7 @@ static byte scantokey[128] =
 	K_F6,   K_F7,   K_F8,   K_F9,   K_F10,  K_PAUSE,K_SCROLLLOCK,K_HOME,
 	K_UPARROW,K_PGUP,KP_MINUS,K_LEFTARROW,KP_5,K_RIGHTARROW,KP_PLUS,K_END, // 4
 	K_DOWNARROW,K_PGDN,K_INS,K_DEL, 0,      0,      0,      K_F11,
-	K_F12,  0,      0,      0,      0,      0,      0,      0,        // 5
+	K_F12,  0,      0,      K_LWIN, K_RWIN, K_MENU, 0,      0,        // 5
 	0,      0,      0,      0,      0,      0,      0,      0,
 	0,      0,      0,      0,      0,      0,      0,      0,
 	0,      0,      0,      0,      0,      0,      0,      0,
