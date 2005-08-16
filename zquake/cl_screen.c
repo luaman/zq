@@ -657,6 +657,7 @@ SCR_DrawLoading
 */
 void SCR_DrawLoading (void)
 {
+#ifndef AGRIP
 	mpic_t  *pic;
 
 	if (!scr_drawloading)
@@ -665,6 +666,7 @@ void SCR_DrawLoading (void)
 	pic = R_CachePic ("gfx/loading.lmp");
 	R_DrawPic ( (vid.width - pic->width)/2, 
 		(vid.height - 48 - pic->height)/2, pic);
+#endif
 }
 
 
