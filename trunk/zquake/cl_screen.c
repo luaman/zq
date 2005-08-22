@@ -630,6 +630,7 @@ DrawPause
 */
 void SCR_DrawPause (void)
 {
+#ifndef AGRIP
 	extern cvar_t sv_paused;
 	mpic_t	*pic;
 
@@ -647,6 +648,7 @@ void SCR_DrawPause (void)
 	pic = R_CachePic ("gfx/pause.lmp");
 	R_DrawPic ( (vid.width - pic->width)/2, 
 		(vid.height - 48 - pic->height)/2, pic);
+#endif
 }
 
 
