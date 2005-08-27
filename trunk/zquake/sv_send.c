@@ -708,7 +708,7 @@ void SV_UpdateToReliableMessages (void)
 
 		ent = sv_client->edict;
 
-		if (sv_client->old_frags != ent->v.frags)
+		if (sv_client->old_frags != (int)ent->v.frags)
 		{
 			for (j=0, client = svs.clients ; j<MAX_CLIENTS ; j++, client++)
 			{
