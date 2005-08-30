@@ -24,7 +24,7 @@
 #define AGRIP
 
 // Define our helper objects...
-// These really work as fields for each entity in the gaem
+// These really work as fields for each entity in the game
 .entity agrip_nav;
 .entity agrip_d5k;
 .entity agrip_esr;
