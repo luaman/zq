@@ -173,9 +173,28 @@ void CL_ParseBeam (int type)
 	end[2] = MSG_ReadCoord ();
 
 	// an experimental protocol extension:
-	// TE_LIGHTNING1 with entity num in -1024..-1 range is a rail trail
-	if (type == 1 && (ent >= -1024 && ent <= -1)) {
-		CL_RailTrail (start, end, 208);
+	// TE_LIGHTNING1 with entity num in -512..-1 range is a rail trail
+	if (type == 1 && (ent >= -512 && ent <= -1)) {
+		char colors[8] = { 6 /* white (change to something else?) */,
+			208 /* blue */,
+			180 /* green */, 208 /* FIXME light blue */, 224 /* red */,
+			208 /* FIXME magenta */, 192 /* yellow */, 6 /* white */};
+		int color;
+		int pnum, cnum;
+
+		// -512..-257 are colored trails assigned to a specific
+		// player, so overrides can be applied; encoded as follows:
+		// 7654321076543210
+		// 1111111nnnnnnссс  (n = player num, c = color code)
+		cnum = ent & 7;
+		pnum = (ent >> 3) & 63;
+		if (pnum < MAX_CLIENTS)
+		{
+			// TODO: apply team/enemy overrides
+		}
+		color = colors[cnum];
+		
+		CL_RailTrail (start, end, color);
 		return;
 	}
 
