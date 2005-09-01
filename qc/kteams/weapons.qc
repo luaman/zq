@@ -1022,10 +1022,15 @@ void() W_FireRailgun =
 //	sound (self, CHAN_WEAPON, "weapons/railgun.wav", 1, ATTN_NORM);
 	sound (self, CHAN_WEAPON, "weapons/lstart.wav", 1, ATTN_NORM);
 
+	float color;
+	color = floor(stof(infokey(self, "railcolor")));
+	if (color < 1 || color > 7)
+		color = 1;
+
 	entnum = EntityNum(self);
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_LIGHTNING1);
-	WriteShort (MSG_MULTICAST, -1 - entnum);
+	WriteShort (MSG_MULTICAST, -512 + entnum * 8 + color);
 	WriteCoord (MSG_MULTICAST, org_x);
 	WriteCoord (MSG_MULTICAST, org_y);
 	WriteCoord (MSG_MULTICAST, org_z);
