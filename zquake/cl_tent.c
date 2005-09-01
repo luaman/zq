@@ -177,8 +177,8 @@ void CL_ParseBeam (int type)
 	if (type == 1 && (ent >= -512 && ent <= -1)) {
 		char colors[8] = { 6 /* white (change to something else?) */,
 			208 /* blue */,
-			180 /* green */, 208 /* FIXME light blue */, 224 /* red */,
-			208 /* FIXME magenta */, 192 /* yellow */, 6 /* white */};
+			180 /* green */, 35 /* light blue */, 224 /* red */,
+			133 /* magenta... kinda */, 192 /* yellow */, 6 /* white */};
 		int color;
 		int pnum, cnum;
 
@@ -193,7 +193,7 @@ void CL_ParseBeam (int type)
 			// TODO: apply team/enemy overrides
 		}
 		color = colors[cnum];
-		
+
 		CL_RailTrail (start, end, color);
 		return;
 	}
