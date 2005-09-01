@@ -978,7 +978,7 @@ void() W_FireRailgun =
 	entnum = EntityNum(self);
 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
 	WriteByte (MSG_MULTICAST, TE_LIGHTNING1);
-	WriteShort (MSG_MULTICAST, -512 + entnum * 8 + color);
+	WriteShort (MSG_MULTICAST, -512 + (entnum - 1) * 8 + color);
 	WriteCoord (MSG_MULTICAST, org_x);
 	WriteCoord (MSG_MULTICAST, org_y);
 	WriteCoord (MSG_MULTICAST, org_z);
