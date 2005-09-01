@@ -123,8 +123,8 @@ LSpanLoop:
 // initial s and t values
 //
 // FIXME: pipeline FILD?
-	fistl	espan_t_v(%ebx)
-	fistl	espan_t_u(%ebx)
+	fildl	espan_t_v(%ebx)
+	fildl	espan_t_u(%ebx)
 
 	fld		%st(1)			// dv | du | dv
 	fmuls	C(d_sdivzstepv)	// dv*d_sdivzstepv | du | dv
