@@ -427,6 +427,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\q_shared.c">
+			</File>
+			<File
 				RelativePath=".\sv_bot.c">
 			</File>
 			<File
@@ -502,22 +505,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="sv_model.c">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
+				RelativePath=".\sv_master.c">
 			</File>
 			<File
 				RelativePath="sv_move.c">
