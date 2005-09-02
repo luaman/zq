@@ -457,7 +457,7 @@ static void PF_random (void)
 =================
 PF_particle
 
-particle(origin, dir, color, count [,replacement_te [,replacement_count]]) = #47
+particle(origin, dir, color, count [,replacement_te [,replacement_count]]) = #48
 =================
 */
 static void PF_particle (void)
