@@ -2387,6 +2387,7 @@ static void PF_checkextension (void)
 #endif
 		"ZQ_QC_STRINGS",
 		"QSG_CVARSTRING",
+		"DP_CON_SET",
 		NULL
 	};
 	char **pstr, *extension;
