@@ -550,7 +550,6 @@ void R_SetupGL (void)
 	y = ((vid.height - r_refdef2.vrect.y) * vid.realheight) / vid.height;
 	y2 = ((vid.height - (r_refdef2.vrect.y + r_refdef2.vrect.height)) * vid.realheight) / vid.height;
 
-#if 0		// Tonik - what is this for?
 	// fudge around because of frac screen scale
 	if (x > 0)
 		x--;
@@ -560,7 +559,6 @@ void R_SetupGL (void)
 		y2--;
 	if (y < vid.realheight)
 		y++; 
-#endif
 
 	w = x2 - x;
 	h = y - y2;
