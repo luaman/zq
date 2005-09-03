@@ -173,7 +173,7 @@ static void Scrap_Upload (void)
 			continue;
 		scrap_dirty &= ~(1 << i);
 		GL_Bind (scrap_texnum + i);
-		GL_Upload8 (scrap_texels[i], BLOCK_WIDTH, BLOCK_HEIGHT, false, i, false);
+		GL_Upload8 (scrap_texels[i], BLOCK_WIDTH, BLOCK_HEIGHT, i ? TEX_ALPHA : 0);
 	}
 }
 
@@ -302,8 +302,7 @@ static int GL_LoadPicTexture (char *name, cachepic_t *cpic, byte *data)
 
 	if (glwidth == cpic->pic.width && glheight == cpic->pic.height)
 	{
-		cpic->texnum = GL_LoadTexture (fullname, glwidth, glheight, data,
-						false, true, false);
+		cpic->texnum = GL_LoadTexture (fullname, glwidth, glheight, data, TEX_ALPHA);
 		cpic->sl = 0;
 		cpic->sh = 1;
 		cpic->tl = 0;
@@ -325,8 +324,7 @@ static int GL_LoadPicTexture (char *name, cachepic_t *cpic, byte *data)
 			dest += glwidth;
 		}
 
-		cpic->texnum = GL_LoadTexture (fullname, glwidth, glheight, buf,
-						false, true, false);
+		cpic->texnum = GL_LoadTexture (fullname, glwidth, glheight, buf, TEX_ALPHA);
 		cpic->sl = 0;
 		cpic->sh = (float)cpic->pic.width / glwidth;
 		cpic->tl = 0;
@@ -386,7 +384,7 @@ static void R_LoadCharset (void)
 		dest += 128*8*2;
 	}
 
-	char_texture = GL_LoadTexture ("pic:charset", 128, 256, buf, false, true, false);
+	char_texture = GL_LoadTexture ("pic:charset", 128, 256, buf, TEX_ALPHA);
 	if (!gl_smoothfont.value)
 	{
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -441,7 +439,7 @@ void R_Draw_Init (void)
 
 	// load the crosshair pics
 	for (i=0 ; i<NUMCROSSHAIRS ; i++) {
-		crosshairtextures[i] = GL_LoadTexture ("", 8, 8, crosshairdata[i], false, true, false);
+		crosshairtextures[i] = GL_LoadTexture ("", 8, 8, crosshairdata[i], TEX_ALPHA);
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}

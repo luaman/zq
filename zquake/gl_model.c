@@ -396,7 +396,8 @@ void Mod_LoadTextures (lump_t *l)
 			byte *data;
 			if ((data = WAD3_LoadTexture(mt)) != NULL) {
 				qbool alpha = (tx->name[0] == '{');
-				tx->gl_texturenum = GL_LoadTexture32 (tx->name, tx->width, tx->height, data, true, alpha, true);
+				tx->gl_texturenum = GL_LoadTexture32 (tx->name, tx->width, tx->height, data,
+					TEX_MIPMAP|TEX_BRIGHTEN | (alpha ? TEX_ALPHA : 0));
 				Q_free (data);
 				continue;
 			}
@@ -428,7 +429,7 @@ void Mod_LoadTextures (lump_t *l)
 			tx->width = r_notexture_mip->width;
 			tx->height = r_notexture_mip->height;
 			tx->gl_texturenum = GL_LoadTexture ("r_notexture_mip", tx->width, 
-							tx->height, (byte *)(r_notexture_mip + 1), true, false, true);
+							tx->height, (byte *)(r_notexture_mip + 1), TEX_MIPMAP|TEX_BRIGHTEN);
 			continue;
 		}
 
@@ -437,12 +438,12 @@ void Mod_LoadTextures (lump_t *l)
 		else
 		{
 			if (mt->name[0] == '*')	// we don't brighten turb textures
-				tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, false);
+				tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), TEX_MIPMAP);
 			else {
-				tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, true);
+				tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), TEX_MIPMAP|TEX_BRIGHTEN);
 				if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
 					tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", mt->name), tx->width, tx->height, (byte *)(tx+1),
-						true, 2 /* Fullbright mask */, false);
+						TEX_MIPMAP|TEX_FULLBRIGHTMASK);
 				}
 			}
 		}
@@ -1511,13 +1512,13 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 			pheader->gl_texturenum[i][2] =
 			pheader->gl_texturenum[i][3] =
 				GL_LoadTexture (name, pheader->skinwidth, pheader->skinheight,
-				(byte *)(pskintype + 1), true, false, false);
+				(byte *)(pskintype + 1), TEX_MIPMAP);
 
 			if (Img_HasFullbrights((byte *)(pskintype + 1),	pheader->skinwidth*pheader->skinheight))
 				pheader->fb_texturenum[i][0] = pheader->fb_texturenum[i][1] =
 				pheader->fb_texturenum[i][2] = pheader->fb_texturenum[i][3] =
 					GL_LoadTexture (va("@fb_%s", name), pheader->skinwidth, 
-					pheader->skinheight, (byte *)(pskintype + 1), true, 2, false);
+					pheader->skinheight, (byte *)(pskintype + 1), TEX_MIPMAP|TEX_FULLBRIGHTMASK);
 			else
 				pheader->fb_texturenum[i][0] = pheader->fb_texturenum[i][1] =
 				pheader->fb_texturenum[i][2] = pheader->fb_texturenum[i][3] = 0;
@@ -1538,12 +1539,12 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 					Q_snprintfz (name, sizeof(name), "%s_%i_%i", loadmodel->name, i, j);
 					pheader->gl_texturenum[i][j&3] = 
 						GL_LoadTexture (name, pheader->skinwidth, 
-						pheader->skinheight, (byte *)(pskintype), true, false, false);
+						pheader->skinheight, (byte *)(pskintype), TEX_MIPMAP);
 
 					if (Img_HasFullbrights((byte *)(pskintype),	pheader->skinwidth*pheader->skinheight))
 						pheader->fb_texturenum[i][j&3] =
 							GL_LoadTexture (va("@fb_%s", name), pheader->skinwidth, 
-							pheader->skinheight, (byte *)(pskintype), true, 2, false);
+							pheader->skinheight, (byte *)(pskintype), TEX_MIPMAP|TEX_FULLBRIGHTMASK);
 					else
 						pheader->fb_texturenum[i][j&3] = 0;
 
@@ -1794,7 +1795,7 @@ void *Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe, int framenum)
 	pspriteframe->right = width + origin[0];
 
 	sprintf (name, "%s_%i", loadmodel->name, framenum);
-	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, false);
+	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), TEX_MIPMAP|TEX_ALPHA);
 
 	return (void *)((byte *)pinframe + sizeof (dspriteframe_t) + size);
 }

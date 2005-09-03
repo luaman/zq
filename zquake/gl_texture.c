@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gl_local.h"
 #include "crc.h"
 #include "version.h"
+#include "rc_pixops.h"
 
 #ifdef MINGW32
 #include <GL/glext.h>	// GL_COLOR_INDEX8_EXT is defined here
@@ -34,7 +35,6 @@ static void	OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel);
 
 cvar_t		gl_nobind = {"gl_nobind", "0"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
-cvar_t		gl_lerpimages = {"r_lerpimages", "1"};
 cvar_t		gl_texturemode = {"gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", 0, OnChange_gl_texturemode};
 
 int		texture_extension_number = 1;
@@ -57,8 +57,8 @@ typedef struct
 	int		texnum;
 	char	identifier[64];
 	int		width, height;
-	qbool	mipmap;
-	qbool	brighten;
+	int		scaled_width, scaled_height;
+	int		mode;
 	unsigned	crc;
 } gltexture_t;
 
@@ -164,7 +164,7 @@ static void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel)
 	// change all the existing mipmap texture objects
 	for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
 	{
-		if (glt->mipmap)
+		if (glt->mode & TEX_MIPMAP)
 		{
 			GL_Bind (glt->texnum);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
@@ -196,141 +196,23 @@ int GL_FindTexture (char *identifier)
 }
 
 
-void R_ResampleTextureLerpLine (byte *in, byte *out, int inwidth,
-		int outwidth)
-{
-	int		j, xi, oldx = 0, f, fstep, endx;
-	fstep = (int) (inwidth*65536.0f/outwidth);
-	endx = (inwidth-1);
-	for (j = 0,f = 0;j < outwidth;j++, f += fstep)
-	{
-		xi = (int) f >> 16;
-		if (xi != oldx)
-		{
-			in += (xi - oldx) * 4;
-			oldx = xi;
-		}
-		if (xi < endx)
-		{
-			int lerp = f & 0xFFFF;
-			*out++ = (byte) ((((in[4] - in[0]) * lerp) >> 16) + in[0]);
-			*out++ = (byte) ((((in[5] - in[1]) * lerp) >> 16) + in[1]);
-			*out++ = (byte) ((((in[6] - in[2]) * lerp) >> 16) + in[2]);
-			*out++ = (byte) ((((in[7] - in[3]) * lerp) >> 16) + in[3]);
-		}
-		else // last pixel of the line has no pixel to lerp to
-		{
-			*out++ = in[0];
-			*out++ = in[1];
-			*out++ = in[2];
-			*out++ = in[3];
-		}
-	}
-}
-
 /*
 ================
 GL_ResampleTexture
+
+Copyright (C) 2005 Anton 'Tonik' Gavrilov
+
+Look what I can do in two lines of code!
+Perhaps I should sell a supported version for a living.
 ================
 */
 void GL_ResampleTexture (unsigned *indata, int inwidth, int inheight,
 		unsigned *outdata, int outwidth, int outheight)
 {
-	if (gl_lerpimages.value)
-	{
-		int		i, j, yi, oldy, f, fstep, endy = (inheight-1);
-		byte	*inrow, *out, *row1, *row2;
-		out = (byte *) outdata;
-		fstep = (int) (inheight*65536.0f/outheight);
-
-		row1 = Q_malloc(outwidth*4);
-		row2 = Q_malloc(outwidth*4);
-		inrow = (byte *) indata;
-		oldy = 0;
-		R_ResampleTextureLerpLine (inrow, row1, inwidth, outwidth);
-		R_ResampleTextureLerpLine (inrow + inwidth*4, row2, inwidth,
-				outwidth);
-		for (i = 0, f = 0;i < outheight;i++,f += fstep)
-		{
-			yi = f >> 16;
-			if (yi < endy)
-			{
-				int lerp = f & 0xFFFF;
-				if (yi != oldy)
-				{
-					inrow = (byte *)indata + inwidth*4*yi;
-					if (yi == oldy+1)
-						memcpy(row1, row2, outwidth*4);
-					else
-						R_ResampleTextureLerpLine (inrow, row1, inwidth,
-								outwidth);
-					R_ResampleTextureLerpLine (inrow + inwidth*4, row2,
-							inwidth, outwidth);
-					oldy = yi;
-				}
-				for (j=outwidth ; j ; j--)
-				{
-					out[0] = (byte) ((((row2[ 0] - row1[ 0]) * lerp) >> 16)
-							+ row1[ 0]);
-					out[1] = (byte) ((((row2[ 1] - row1[ 1]) * lerp) >> 16)
-							+ row1[ 1]);
-					out[2] = (byte) ((((row2[ 2] - row1[ 2]) * lerp) >> 16)
-							+ row1[ 2]);
-					out[3] = (byte) ((((row2[ 3] - row1[ 3]) * lerp) >> 16)
-							+ row1[ 3]);
-					out += 4;
-					row1 += 4;
-					row2 += 4;
-				}
-				row1 -= outwidth*4;
-				row2 -= outwidth*4;
-			}
-			else
-			{
-				if (yi != oldy)
-				{
-					inrow = (byte *)indata + inwidth*4*yi;
-					if (yi == oldy+1)
-						memcpy(row1, row2, outwidth*4);
-					else
-						R_ResampleTextureLerpLine (inrow, row1, inwidth,
-								outwidth);
-					oldy = yi;
-				}
-				memcpy(out, row1, outwidth * 4);
-			}
-		}
-		Q_free (row1);
-		Q_free (row2);
-	}
-	else
-	{
-		int i, j;
-		unsigned frac, fracstep;
-		unsigned int *inrow, *out;
-		out = outdata;
-
-		fracstep = inwidth*0x10000/outwidth;
-		for (i = 0;i < outheight;i++)
-		{
-			inrow = (unsigned int *)((int *)indata + inwidth*(i*inheight/outheight));
-			frac = fracstep >> 1;
-			for (j = outwidth >> 2 ; j ; j--)
-			{
-				out[0] = inrow[frac >> 16]; frac += fracstep;
-				out[1] = inrow[frac >> 16]; frac += fracstep;
-				out[2] = inrow[frac >> 16]; frac += fracstep;
-				out[3] = inrow[frac >> 16]; frac += fracstep;
-				out += 4;
-			}
-			for (j = outwidth & 3 ; j ; j--)
-			{
-				*out = inrow[frac >> 16]; frac += fracstep;
-				out++;
-			}
-		}
-	}
+	_pixops_scale ((guchar *)outdata, 0, 0, outwidth, outheight, outwidth * 4, 4, 1, (const guchar *)indata,
+		inwidth, inheight, inwidth * 4, 4, 1, (double)outwidth/inwidth, (double)outheight/inheight, PIXOPS_INTERP_BILINEAR);
 }
+
 
 /*
 ================
@@ -359,46 +241,53 @@ void GL_MipMap (byte *in, int width, int height)
 	}
 }
 
+static void
+ScaleDimensions (int width, int height, int *scaled_width, int *scaled_height, int mode)
+{
+	int picmip;
+	qbool scale;
+
+	scale = (mode & TEX_MIPMAP) && !(mode & TEX_NOSCALE);
+
+	for (*scaled_width = 1; *scaled_width < width; *scaled_width <<= 1) {};
+	for (*scaled_height = 1; *scaled_height < height; *scaled_height <<= 1) {};
+
+	if (scale) {
+		picmip = (int) bound(0, gl_picmip.value, 16);
+		*scaled_width >>= picmip;
+		*scaled_height >>= picmip;		
+	}
+
+	*scaled_width = bound(1, *scaled_width, gl_max_texsize);
+	*scaled_height = bound(1, *scaled_height, gl_max_texsize);
+}
+
+
 /*
 ===============
 GL_Upload32
+
+Accepts TEX_MIPMAP, TEX_ALPHA
 ===============
 */
-void GL_Upload32 (unsigned *data, int width, int height, qbool mipmap, qbool alpha)
+void GL_Upload32 (unsigned *data, int width, int height, int mode /*qbool mipmap, qbool alpha*/)
 {
 	int			samples;
 static	unsigned	scaled[1024*512];	// [512*256];
 	int			scaled_width, scaled_height;
 
-	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
-		;
-	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
-		;
-
-	if (mipmap) {
-		scaled_width >>= (int)gl_picmip.value;
-		scaled_height >>= (int)gl_picmip.value;
-	}
-
-	if (scaled_width > gl_max_texsize)
-		scaled_width = gl_max_texsize;
-	if (scaled_height > gl_max_texsize)
-		scaled_height = gl_max_texsize;
-	if (scaled_width < 1)
-		scaled_width = 1;
-	if (scaled_height < 1)
-		scaled_height = 1;
+	ScaleDimensions (width, height, &scaled_width, &scaled_height, mode);
 
 	if (scaled_width * scaled_height > sizeof(scaled)/4)
 		Sys_Error ("GL_LoadTexture: too big");
 
-	samples = alpha ? gl_alpha_format : gl_solid_format;
+	samples = (mode & TEX_ALPHA) ? gl_alpha_format : gl_solid_format;
 
 	texels += scaled_width * scaled_height;
 
 	if (scaled_width == width && scaled_height == height)
 	{
-		if (!mipmap)
+		if (!(mode & TEX_MIPMAP))
 		{
 			glTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			goto done;
@@ -409,7 +298,7 @@ static	unsigned	scaled[1024*512];	// [512*256];
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
 
 	glTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
-	if (mipmap)
+	if (mode & TEX_MIPMAP)
 	{
 		int		miplevel;
 
@@ -430,7 +319,7 @@ static	unsigned	scaled[1024*512];	// [512*256];
 done: ;
 
 
-	if (mipmap)
+	if (mode & TEX_MIPMAP)
 	{
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
@@ -445,9 +334,11 @@ done: ;
 /*
 ===============
 GL_Upload8
+
+Accepts TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN
 ===============
 */
-void GL_Upload8 (byte *data, int width, int height, qbool mipmap, qbool alpha, qbool brighten)
+void GL_Upload8 (byte *data, int width, int height, int mode /* qbool mipmap, qbool alpha, qbool brighten */)
 {
 	static	unsigned	trans[640*480];		// FIXME, temporary
 	int			i, s;
@@ -455,15 +346,16 @@ void GL_Upload8 (byte *data, int width, int height, qbool mipmap, qbool alpha, q
 	int			p;
 	unsigned	*table;
 
-	if (brighten)
+	if (mode & TEX_BRIGHTEN)
 		table = d_8to24table2;
 	else
 		table = d_8to24table;
 
 	s = width*height;
 
-	if (alpha == 2)
+	if (mode & TEX_FULLBRIGHTMASK)
 	{
+		mode |= TEX_ALPHA;
 	// this is a fullbright mask, so make all non-fullbright
 	// colors transparent
 		for (i=0 ; i<s ; i++)
@@ -475,7 +367,7 @@ void GL_Upload8 (byte *data, int width, int height, qbool mipmap, qbool alpha, q
 				trans[i] = table[p];	// fullbright
 		}
 	}
-	else if (alpha)
+	else if (mode & TEX_ALPHA)
 	{
 	// if there are no transparent pixels, make it a 3 component
 	// texture even if it was specified as otherwise
@@ -488,8 +380,8 @@ void GL_Upload8 (byte *data, int width, int height, qbool mipmap, qbool alpha, q
 			trans[i] = table[p];
 		}
 
-		if (alpha && noalpha)
-			alpha = false;
+		if (noalpha)
+			mode &= ~TEX_ALPHA;
 	}
 	else
 	{
@@ -504,22 +396,26 @@ void GL_Upload8 (byte *data, int width, int height, qbool mipmap, qbool alpha, q
 		}
 	}
 
-	GL_Upload32 (trans, width, height, mipmap, alpha);
+	GL_Upload32 (trans, width, height, mode);
 }
 
 /*
 ================
 GL_LoadTexture
+
+Accepts TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN
 ================
 */
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten)
+int GL_LoadTexture (char *identifier, int width, int height, byte *data, int mode /*qbool mipmap, qbool alpha, qbool brighten*/)
 {
-	int			i;
+	int i, scaled_width, scaled_height;
 	unsigned	crc = 0;
 	gltexture_t	*glt;
 
 	if (lightmode != 2)
-		brighten = false;
+		mode &= ~TEX_BRIGHTEN;
+
+	ScaleDimensions (width, height, &scaled_width, &scaled_height, mode);
 
 	// see if the texture is already present
 	if (identifier[0]) {
@@ -527,7 +423,8 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qbool m
 		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++) {
 			if (!strncmp (identifier, glt->identifier, sizeof(glt->identifier)-1)) {
 				if (width == glt->width && height == glt->height
-					&& crc == glt->crc && brighten == glt->brighten)
+					&& crc == glt->crc && (mode & TEX_BRIGHTEN) == (glt->mode & TEX_BRIGHTEN)
+					&& scaled_width == glt->scaled_width && scaled_height == glt->scaled_height)
 					return gltextures[i].texnum;
 				else
 					goto setuptexture;	// reload the texture into the same slot
@@ -548,13 +445,14 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, qbool m
 setuptexture:
 	glt->width = width;
 	glt->height = height;
-	glt->mipmap = mipmap;
-	glt->brighten = brighten;
+	glt->scaled_width = scaled_width;
+	glt->scaled_height = scaled_height;
+	glt->mode = mode;
 	glt->crc = crc;
 
 	GL_Bind (glt->texnum);
 
-	GL_Upload8 (data, width, height, mipmap, alpha, brighten);
+	GL_Upload8 (data, width, height, mode);
 
 	return glt->texnum;
 }
@@ -564,17 +462,19 @@ setuptexture:
 ================
 GL_LoadTexture32
 
+Accepts TEX_MIPMAP, TEX_ALPHA, TEX_BRIGHTEN(FIXME FIXME not yet)
+
 FIXME: merge with GL_LoadTexture
 ================
 */
-int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten)
+int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, int mode /*qbool mipmap, qbool alpha, qbool brighten*/)
 {
 	int			i;
 	unsigned	crc = 0;
 	gltexture_t	*glt;
 
 	if (lightmode != 2)
-		brighten = false;
+		mode &= ~TEX_BRIGHTEN;
 
 	// see if the texture is already present
 	if (identifier[0]) {
@@ -582,7 +482,7 @@ int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qbool
 		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++) {
 			if (!strncmp (identifier, glt->identifier, sizeof(glt->identifier)-1)) {
 				if (width == glt->width && height == glt->height
-					&& crc == glt->crc && brighten == glt->brighten)
+					&& crc == glt->crc && ((mode & TEX_BRIGHTEN) == (glt->mode & TEX_BRIGHTEN)))
 					return gltextures[i].texnum;
 				else
 					goto setuptexture;	// reload the texture into the same slot
@@ -603,13 +503,12 @@ int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qbool
 setuptexture:
 	glt->width = width;
 	glt->height = height;
-	glt->mipmap = mipmap;
-	glt->brighten = false /* brighten */;
+	glt->mode = mode;
 	glt->crc = crc;
 
 	GL_Bind (glt->texnum);
 
-	GL_Upload32 ((unsigned int *)data, width, height, mipmap, alpha);
+	GL_Upload32 ((unsigned int *)data, width, height, mode);
 
 	return glt->texnum;
 }
@@ -637,7 +536,7 @@ static void R_InitParticleTexture (void)
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	GL_Upload32 ((unsigned *) data, 32, 32, true, true);
+	GL_Upload32 ((unsigned *) data, 32, 32, TEX_MIPMAP|TEX_ALPHA);
 }
 
 
@@ -679,7 +578,6 @@ void R_InitTextures (void)
 {
 	Cvar_Register (&gl_nobind);
 	Cvar_Register (&gl_picmip);
-	Cvar_Register (&gl_lerpimages);
 	Cvar_Register (&gl_texturemode);
 
 	// get the maximum texture size from driver
