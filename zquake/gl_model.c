@@ -23,6 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "rc_wad.h"
 #include "crc.h"
 
+cvar_t gl_scaleModelTextures = {"gl_scaleModelTextures", "0"};
+cvar_t gl_scaleTurbTextures = {"gl_scaleTurbTextures", "1"};
+cvar_t gl_mipcap = {"gl_mipcap", "0"};
+
 //#define HALFLIFEBSP	// enable Half-Life map support
 
 model_t	*loadmodel;
@@ -47,6 +51,10 @@ Mod_Init
 void Mod_Init (void)
 {
 	memset (mod_novis, 0xff, sizeof(mod_novis));
+
+	Cvar_Register (&gl_scaleModelTextures);
+	Cvar_Register (&gl_scaleTurbTextures);
+	Cvar_Register (&gl_mipcap);
 }
 
 /*
@@ -353,6 +361,8 @@ void Mod_LoadTextures (lump_t *l)
 	texture_t	*anims[10];
 	texture_t	*altanims[10];
 	dmiptexlump_t *m;
+	qbool		noscale;
+	int			mipcap;
 
 	if (!l->filelen)
 	{
@@ -433,20 +443,33 @@ void Mod_LoadTextures (lump_t *l)
 			continue;
 		}
 
-		if (!loadmodel->halflifebsp && !strncmp(mt->name,"sky",3))	
-			R_InitSky (tx);
-		else
+		if (loadmodel->isworldmodel && !loadmodel->halflifebsp && !strncmp(mt->name,"sky",3))
 		{
-			if (mt->name[0] == '*')	// we don't brighten turb textures
-				tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), TEX_MIPMAP);
-			else {
-				tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), TEX_MIPMAP|TEX_BRIGHTEN);
-				if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
-					tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", mt->name), tx->width, tx->height, (byte *)(tx+1),
-						TEX_MIPMAP|TEX_FULLBRIGHTMASK);
-				}
+			R_InitSky (tx);
+			continue;
+		}
+
+		noscale = ((!gl_scaleModelTextures.value && !loadmodel->isworldmodel) ||
+				(!gl_scaleTurbTextures.value && (mt->name[0] == '*')));
+
+		mipcap = noscale ? 0 : bound(0, gl_mipcap.value, 3);
+
+{
+		byte *data = (byte *) mt + mt->offsets[mipcap];
+		int width = tx->width >> mipcap;
+		int height = tx->height >> mipcap;
+
+		if (mt->name[0] == '*')	// we don't brighten turb textures
+			tx->gl_texturenum = GL_LoadTexture (mt->name, width, height, data/*(byte *)(tx+1)*/, TEX_MIPMAP | (noscale ? TEX_NOSCALE : 0));
+		else {
+			tx->gl_texturenum = GL_LoadTexture (mt->name, width, height, data/*(byte *)(tx+1)*/, TEX_MIPMAP|TEX_BRIGHTEN | (noscale ? TEX_NOSCALE : 0));
+			if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
+				tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", mt->name), width, height, (byte *)(tx+1),
+					TEX_MIPMAP|TEX_FULLBRIGHTMASK);
 			}
 		}
+
+}
 	}
 
 //
@@ -1220,6 +1243,8 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		Host_Error ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)", mod->name, i, BSPVERSION);
 
 	loadmodel->halflifebsp = (i == HL_BSPVERSION);
+
+	loadmodel->isworldmodel = !strcmp(loadmodel->name, va("maps/%s.bsp", host_mapname.string));
 
 // swap all the lumps
 	mod_base = (byte *)header;

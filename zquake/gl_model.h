@@ -361,6 +361,8 @@ typedef struct model_s
 	byte		*visdata;
 	byte		*lightdata;
 
+	qbool		isworldmodel;
+
 //
 // additional model data
 //
