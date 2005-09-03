@@ -212,7 +212,7 @@ void CL_SendConnectPacket (void)
 
 	// let the server know what extensions we support
 	strcpy (biguserinfo, cls.userinfo);
-	Info_SetValueForStarKey (biguserinfo, "*z_ext", va("%i", SUPPORTED_EXTENSIONS), sizeof(biguserinfo));
+	Info_SetValueForStarKey (biguserinfo, "*z_ext", va("%i", CLIENT_EXTENSIONS), sizeof(biguserinfo));
 
 	sprintf (data, "\xff\xff\xff\xff" "connect %i %i %i \"%s\"\n",
 		PROTOCOL_VERSION, cls.qport, cls.challenge, biguserinfo);

@@ -1577,7 +1577,7 @@ void SV_InitLocal (void)
 		sprintf (localmodels[i], "*%i", i);
 
 	Info_SetValueForStarKey (svs.info, "*version", va(PROGRAM " %s", VersionString()), MAX_SERVERINFO_STRING);
-	Info_SetValueForStarKey (svs.info, "*z_ext", va("%i", SUPPORTED_EXTENSIONS), MAX_SERVERINFO_STRING);
+	Info_SetValueForStarKey (svs.info, "*z_ext", va("%i", SERVER_EXTENSIONS), MAX_SERVERINFO_STRING);
 #ifdef VWEP_TEST
 	Info_SetValueForStarKey (svs.info, "*vwtest", "1", MAX_SERVERINFO_STRING);
 #endif
