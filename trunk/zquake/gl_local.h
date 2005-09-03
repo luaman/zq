@@ -41,6 +41,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <GL/gl.h>
 #endif
 
+#include "gl_texture.h"
+
 void GL_EndRendering (void);
 
 
@@ -59,18 +61,7 @@ extern	BINDTEXFUNCPTR bindTexFunc;
 extern	DELTEXFUNCPTR delTexFunc;
 extern	TEXSUBIMAGEPTR TexSubImage2DFunc;
 
-extern	int texture_extension_number;
-
 extern	float	gldepthmin, gldepthmax;
-
-#define MAX_GLTEXTURES 1024
-
-void GL_Upload32 (unsigned *data, int width, int height,  qbool mipmap, qbool alpha);
-void GL_Upload8 (byte *data, int width, int height,  qbool mipmap, qbool alpha, qbool brighten);
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten);
-int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten);
-int GL_FindTexture (char *identifier);
-
 
 
 #ifdef _WIN32
@@ -127,8 +118,6 @@ extern	mleaf_t		*r_viewleaf2, *r_oldviewleaf2;	// for watervis hack
 extern	texture_t	*r_notexture_mip;
 extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
-extern	int	currenttexture;
-extern	int	cnttextures[2];
 extern	int	particletexture;
 extern	int	netgraphtexture;
 extern	int	playertextures;
@@ -175,10 +164,6 @@ extern	cvar_t	gl_solidparticles;
 
 extern	int		lightmode;		// set to gl_lightmode on mapchange
 
-extern	int		gl_lightmap_format;
-extern	int		gl_solid_format;
-extern	int		gl_alpha_format;
-
 extern	cvar_t	gl_playermip;
 
 extern	const char *gl_vendor;
@@ -186,12 +171,7 @@ extern	const char *gl_renderer;
 extern	const char *gl_version;
 extern	const char *gl_extensions;
 
-extern	int		gl_max_texsize;
-
 void R_TranslatePlayerSkin (int playernum);
-
-void GL_Bind (int texnum);
-void GL_SelectTexture (GLenum target);
 
 // Multitexture
 #define	GL_TEXTURE0_ARB 			0x84C0
@@ -206,9 +186,6 @@ extern lpSelTexFUNC qglActiveTexture;
 
 extern qbool gl_mtexable;
 extern qbool gl_mtexfbskins;
-
-void GL_DisableMultitexture(void);
-void GL_EnableMultitexture(void);
 
 //
 // gl_warp.c
