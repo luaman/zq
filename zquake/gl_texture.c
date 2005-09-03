@@ -267,7 +267,7 @@ ScaleDimensions (int width, int height, int *scaled_width, int *scaled_height, i
 ===============
 GL_Upload32
 
-Accepts TEX_MIPMAP, TEX_ALPHA
+Accepts TEX_MIPMAP, TEX_ALPHA, TEX_NOSCALE
 ===============
 */
 void GL_Upload32 (unsigned *data, int width, int height, int mode /*qbool mipmap, qbool alpha*/)
@@ -335,10 +335,10 @@ done: ;
 ===============
 GL_Upload8
 
-Accepts TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN
+Accepts TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN, TEX_NOSCALE
 ===============
 */
-void GL_Upload8 (byte *data, int width, int height, int mode /* qbool mipmap, qbool alpha, qbool brighten */)
+void GL_Upload8 (byte *data, int width, int height, int mode)
 {
 	static	unsigned	trans[640*480];		// FIXME, temporary
 	int			i, s;
@@ -403,10 +403,10 @@ void GL_Upload8 (byte *data, int width, int height, int mode /* qbool mipmap, qb
 ================
 GL_LoadTexture
 
-Accepts TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN
+Accepts TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN, TEX_NOSCALE
 ================
 */
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, int mode /*qbool mipmap, qbool alpha, qbool brighten*/)
+int GL_LoadTexture (char *identifier, int width, int height, byte *data, int mode)
 {
 	int i, scaled_width, scaled_height;
 	unsigned	crc = 0;
@@ -462,18 +462,18 @@ setuptexture:
 ================
 GL_LoadTexture32
 
-Accepts TEX_MIPMAP, TEX_ALPHA, TEX_BRIGHTEN(FIXME FIXME not yet)
+Accepts TEX_MIPMAP, TEX_ALPHA, TEX_BRIGHTEN(FIXME not yet), TEX_NOSCALE
 
 FIXME: merge with GL_LoadTexture
 ================
 */
-int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, int mode /*qbool mipmap, qbool alpha, qbool brighten*/)
+int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, int mode)
 {
 	int			i;
 	unsigned	crc = 0;
 	gltexture_t	*glt;
 
-	if (lightmode != 2)
+//	if (lightmode != 2)
 		mode &= ~TEX_BRIGHTEN;
 
 	// see if the texture is already present
