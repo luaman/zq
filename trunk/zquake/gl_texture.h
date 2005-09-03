@@ -22,15 +22,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define MAX_GLTEXTURES 1024
 
-// texture "mode" mask, passed to upload functions
-#define TEX_MIPMAP			1
-#define TEX_ALPHA			2
-#define	TEX_BRIGHTEN		4
+// texture "mode" bits, passed to upload functions
+#define TEX_MIPMAP			1	// build mipmaps
+#define TEX_ALPHA			2	// has alpha pixels
+#define	TEX_FULLBRIGHTMASK	4	// implies TEX_ALPHA
+#define	TEX_BRIGHTEN		8	// apply palette hack
+#define	TEX_NOSCALE			16	// don't apply gl_picmip
 
-void GL_Upload32 (unsigned *data, int width, int height,  qbool mipmap, qbool alpha);
-void GL_Upload8 (byte *data, int width, int height,  qbool mipmap, qbool alpha, qbool brighten);
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten);
-int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, qbool mipmap, qbool alpha, qbool brighten);
+// TEX_MIPMAP, TEX_ALPHA
+void GL_Upload32 (unsigned *data, int width, int height, int mode);
+
+// TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN, TEX_NOSCALE
+void GL_Upload8 (byte *data, int width, int height, int mode);
+
+// TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN, TEX_NOSCALE
+int GL_LoadTexture (char *identifier, int width, int height, byte *data, int mode);
+
+// TEX_MIPMAP, TEX_ALPHA, TEX_BRIGHTEN(FIXME not yet)
+int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, int mode);
+
 int GL_FindTexture (char *identifier);
 //int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data);
 
