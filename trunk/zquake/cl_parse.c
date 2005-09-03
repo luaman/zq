@@ -258,13 +258,8 @@ CL_Prespawn
 */
 void CL_Prespawn (void)
 {
-	char	mapname[MAX_QPATH];
-
 	if (!cl.model_precache[1])
 		Host_Error ("CL_Prespawn: NULL worldmodel");
-
-	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
-	Cvar_ForceSet (&host_mapname, mapname);
 
 	CL_FindModelNumbers ();
 	R_NewMap (cl.model_precache[1]);
@@ -889,6 +884,13 @@ void CL_ParseModellist (void)
 			return;
 		}
 	}
+
+
+{
+	char	mapname[MAX_QPATH];
+	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
+	Cvar_ForceSet (&host_mapname, mapname);
+}
 
 	cls.downloadnumber = 0;
 	cls.downloadtype = dl_model;
