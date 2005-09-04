@@ -583,8 +583,11 @@ void R_InitTextures (void)
 	// get the maximum texture size from driver
 	glGetIntegerv (GL_MAX_TEXTURE_SIZE, (GLint *) &gl_max_texsize);
 
+	GL_AllocTextureSlots ();
+
 	R_InitDefaultTexture ();
 	R_InitParticleTexture ();
+
 }
 
 /* vi: set noet ts=4 sts=4 ai sw=4: */

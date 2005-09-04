@@ -118,13 +118,18 @@ extern	mleaf_t		*r_viewleaf2, *r_oldviewleaf2;	// for watervis hack
 extern	texture_t	*r_notexture_mip;
 extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
-extern	int	particletexture;
-extern	int	netgraphtexture;
-extern	int	playertextures;
-extern	int	playerfbtextures[MAX_CLIENTS];
-extern	int	skyboxtextures;
-
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
+
+#define MAX_LIGHTMAPS 64
+
+extern int	solidskytexture, alphaskytexture;
+extern int	lightmap_textures;
+extern int	particletexture;
+extern int	netgraphtexture;
+extern int	playertextures;
+extern int	playerfbtextures[MAX_CLIENTS];
+extern int	skyboxtextures;
+
 
 extern	cvar_t	r_norefresh;
 extern	cvar_t	r_drawentities;
@@ -216,6 +221,7 @@ void R_BrightenScreen (void);
 // gl_rmisc.c
 void R_ScreenShot_f (void);
 void R_LoadSky_f (void);
+void GL_AllocTextureSlots (void);
 
 //
 // gl_rlight.c
