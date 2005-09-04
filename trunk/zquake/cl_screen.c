@@ -90,7 +90,7 @@ float		scr_conlines;		// lines of console to display
 
 cvar_t		scr_drawall = {"scr_drawall", "0"};
 cvar_t		scr_viewsize = {"viewsize","100",CVAR_ARCHIVE};
-cvar_t		scr_fov = {"fov","90",CVAR_ARCHIVE};	// 10 - 170
+cvar_t		scr_fov = {"fov","100",CVAR_ARCHIVE};	// 10 - 170
 cvar_t		scr_consize = {"scr_consize","0.5"};
 cvar_t		scr_conspeed = {"scr_conspeed","1000"};
 cvar_t		scr_conalpha = {"scr_conalpha", "0.8"};
