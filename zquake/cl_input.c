@@ -337,7 +337,7 @@ cvar_t	cl_pitchspeed = {"cl_pitchspeed","150"};
 
 cvar_t	lookspring = {"lookspring","0",CVAR_ARCHIVE};
 cvar_t	lookstrafe = {"lookstrafe","0",CVAR_ARCHIVE};
-cvar_t	sensitivity = {"sensitivity","3",CVAR_ARCHIVE};
+cvar_t	sensitivity = {"sensitivity","12",CVAR_ARCHIVE};
 cvar_t	freelook = {"freelook","1",CVAR_ARCHIVE};
 
 cvar_t	m_pitch = {"m_pitch","0.022", CVAR_ARCHIVE};
