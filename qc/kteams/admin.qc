@@ -719,7 +719,7 @@ void AdminForcePause ()
                 e1.maxspeed = k_oldmaxspeed;
                 e1.pain_finished = f1 + e1.pain_finished;
                 if(e1.invincible_finished)
-                    e1.invincible_finished = f1 + e1.pain_finished;
+                    e1.invincible_finished = f1 + e1.invincible_finished;
                 if(e1.invisible_finished)
                     e1.invisible_finished = f1 + e1.invisible_finished;
                 if(e1.super_damage_finished)
