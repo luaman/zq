@@ -45,7 +45,8 @@ typedef struct {
 	int			dib;
 	int			fullscreen;
 	int			bpp;
-	int			halfscreen;
+	int			freq;
+	qbool		halfscreen;
 	char		modedesc[17];
 } vmode_t;
 
@@ -300,17 +301,17 @@ qbool VID_SetFullDIBMode (int modenum)
 
 	if (!leavecurrentmode)
 	{
-		gdevmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+		gdevmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY;
 		gdevmode.dmBitsPerPel = modelist[modenum].bpp;
 		gdevmode.dmPelsWidth = modelist[modenum].width <<
 							   modelist[modenum].halfscreen;
 		gdevmode.dmPelsHeight = modelist[modenum].height;
+		gdevmode.dmDisplayFrequency = modelist[modenum].freq;
 		gdevmode.dmSize = sizeof (gdevmode);
 
 		if (vid_displayfrequency.value > 0)
 		{
 			gdevmode.dmDisplayFrequency = vid_displayfrequency.value;
-			gdevmode.dmFields |= DM_DISPLAYFREQUENCY;
 			Com_DPrintf ("Forcing display frequency to %i Hz\n", gdevmode.dmDisplayFrequency);
 		}
 
@@ -1334,80 +1335,85 @@ VID_InitFullDIB
 void VID_InitFullDIB (HINSTANCE hInstance)
 {
 	DEVMODE	devmode;
-	int		i, modenum, originalnummodes, existingmode, numlowresmodes;
+	int		i, modenum, originalnummodes, numlowresmodes;
 	int		j, bpp, done;
 	BOOL	stat;
+	int		width;
+	qbool	halfscreen, existingmode;
 
 // enumerate >8 bpp modes
 	originalnummodes = nummodes;
-	modenum = 0;
 
-	do
+	for (modenum = 0; nummodes < MAX_MODE_LIST; modenum++)
 	{
 		devmode.dmSize = sizeof(DEVMODE);
 		devmode.dmDriverExtra = 0;
 
 		stat = EnumDisplaySettings (NULL, modenum, &devmode);
+		if (!stat)
+			break;
 
-		if ((devmode.dmBitsPerPel >= 15) &&
-			(devmode.dmPelsWidth <= MAXWIDTH) &&
-			(devmode.dmPelsHeight <= MAXHEIGHT) &&
-			(nummodes < MAX_MODE_LIST))
+		if ((devmode.dmBitsPerPel < 15) ||
+			(devmode.dmPelsWidth > MAXWIDTH) ||
+			(devmode.dmPelsHeight > MAXHEIGHT))
+			continue;
+
+		devmode.dmFields = DM_BITSPERPEL |
+						   DM_PELSWIDTH |
+						   DM_PELSHEIGHT |
+						   DM_DISPLAYFREQUENCY;
+
+		if (ChangeDisplaySettings (&devmode, CDS_TEST | CDS_FULLSCREEN) !=
+				DISP_CHANGE_SUCCESSFUL)
+			continue;
+
+		width = devmode.dmPelsWidth;
+		halfscreen = false;
+
+	// if the width is more than twice the height, reduce it by half because this
+	// is probably a dual-screen monitor
+		if (width > devmode.dmPelsHeight * 2)
 		{
-			devmode.dmFields = DM_BITSPERPEL |
-							   DM_PELSWIDTH |
-							   DM_PELSHEIGHT;
-
-			if (ChangeDisplaySettings (&devmode, CDS_TEST | CDS_FULLSCREEN) ==
-					DISP_CHANGE_SUCCESSFUL)
+			if (!COM_CheckParm("-noadjustaspect"))
 			{
-				modelist[nummodes].type = MS_FULLDIB;
-				modelist[nummodes].width = devmode.dmPelsWidth;
-				modelist[nummodes].height = devmode.dmPelsHeight;
-				modelist[nummodes].modenum = 0;
-				modelist[nummodes].halfscreen = 0;
-				modelist[nummodes].dib = 1;
-				modelist[nummodes].fullscreen = 1;
-				modelist[nummodes].bpp = devmode.dmBitsPerPel;
-				sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
-						 devmode.dmPelsWidth, devmode.dmPelsHeight,
-						 devmode.dmBitsPerPel);
-
-			// if the width is more than twice the height, reduce it by half because this
-			// is probably a dual-screen monitor
-				if (!COM_CheckParm("-noadjustaspect"))
-				{
-					if (modelist[nummodes].width > (modelist[nummodes].height << 1))
-					{
-						modelist[nummodes].width >>= 1;
-						modelist[nummodes].halfscreen = 1;
-						sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
-								 modelist[nummodes].width,
-								 modelist[nummodes].height,
-								 modelist[nummodes].bpp);
-					}
-				}
-
-				for (i=originalnummodes, existingmode = 0 ; i<nummodes ; i++)
-				{
-					if ((modelist[nummodes].width == modelist[i].width)   &&
-						(modelist[nummodes].height == modelist[i].height) &&
-						(modelist[nummodes].bpp == modelist[i].bpp))
-					{
-						existingmode = 1;
-						break;
-					}
-				}
-
-				if (!existingmode)
-				{
-					nummodes++;
-				}
+				width *= 2;
+				halfscreen = true;
 			}
 		}
 
-		modenum++;
-	} while (stat);
+		existingmode = false;
+		for (i = originalnummodes; i<nummodes ; i++)
+		{
+			if ((modelist[i].width == width)   &&
+				(modelist[i].height == devmode.dmPelsHeight) &&
+				(modelist[i].bpp == devmode.dmBitsPerPel))
+			{
+				existingmode = true;
+				// use highest available refresh frequency
+				if (devmode.dmDisplayFrequency > modelist[i].freq)
+					modelist[i].freq = devmode.dmDisplayFrequency;
+				break;
+			}
+		}
+
+		if (existingmode)
+			continue;
+
+		modelist[nummodes].type = MS_FULLDIB;
+		modelist[nummodes].width = width;
+		modelist[nummodes].height = devmode.dmPelsHeight;
+		modelist[nummodes].modenum = 0;
+		modelist[nummodes].halfscreen = 0;
+		modelist[nummodes].dib = 1;
+		modelist[nummodes].fullscreen = 1;
+		modelist[nummodes].bpp = devmode.dmBitsPerPel;
+		modelist[nummodes].freq = devmode.dmDisplayFrequency;
+		sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
+				 devmode.dmPelsWidth, devmode.dmPelsHeight,
+				 devmode.dmBitsPerPel);
+
+		nummodes++;
+	}
 
 // see if there are any low-res modes that aren't being reported
 	numlowresmodes = sizeof(lowresmodes) / sizeof(lowresmodes[0]);
