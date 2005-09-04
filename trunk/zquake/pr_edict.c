@@ -1022,6 +1022,7 @@ void PR_LoadProgs (void)
 	char	num[32];
 	static int lumpsize[6] = { sizeof(dstatement_t), sizeof(ddef_t),
 		sizeof(ddef_t), sizeof(dfunction_t), 4, 4 };
+	int		filesize;
 
 	progs = NULL;
 	if (!deathmatch.value)
@@ -1029,8 +1030,11 @@ void PR_LoadProgs (void)
 		int hunk_mark = Hunk_LowMark ();
 
 		progs = (dprograms_t *) FS_LoadHunkFile ("spprogs.dat");
+		filesize = fs_filesize;	// save fs_filesize, because FS_FOpenFile below will overwrite it
 
-		if (!file_from_gamedir) {
+		if (progs && !file_from_gamedir && Q_stricmp(com_gamedirfile, "qw")
+										&& Q_stricmp(com_gamedirfile, ""))
+		{
 			// spprogs.dat is not from gamedir, this is possibly not what we wanted
 			// look for qwprogs.dat in gamedir
 			FILE *f;
@@ -1046,18 +1050,20 @@ void PR_LoadProgs (void)
 			}
 		}
 	}
-	if (!progs)
+	if (!progs) {
 		progs = (dprograms_t *)FS_LoadHunkFile ("qwprogs.dat");
+		filesize = fs_filesize;
+	}
 	if (!progs)
 		Host_Error ("PR_LoadProgs: couldn't load qwprogs.dat");
 
-	if (fs_filesize < sizeof(*progs))
+	if (filesize < (int)sizeof(*progs))
 		Host_Error("progs.dat is corrupt");
 
-	Com_DPrintf ("Programs occupy %iK.\n", fs_filesize/1024);
+	Com_DPrintf ("Programs occupy %iK.\n", filesize/1024);
 
 // add prog crc to the serverinfo
-	sprintf (num, "%i", CRC_Block ((byte *)progs, fs_filesize));
+	sprintf (num, "%i", CRC_Block ((byte *)progs, filesize));
 	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
 
 // byte swap the header
@@ -1072,7 +1078,7 @@ void PR_LoadProgs (void)
 // check lump offsets and sizes
 	for (i = 0; i < 6; i ++) {
 		if (((int *)progs)[i*2 + 2] < sizeof(*progs)
-			|| ((int *)progs)[i*2 + 2] + ((int *)progs)[i*2 + 3]*lumpsize[i] > fs_filesize)
+			|| ((int *)progs)[i*2 + 2] + ((int *)progs)[i*2 + 3]*lumpsize[i] > filesize)
 		Host_Error("progs.dat is corrupt");
 	}
 
