@@ -1086,6 +1086,10 @@ SOURCE=.\rc_image.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\rc_pixops.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\rc_wad.c
 # End Source File
 # Begin Source File
@@ -1198,6 +1202,10 @@ SOURCE=.\cdaudio.h
 # Begin Source File
 
 SOURCE=.\cl_sbar.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cl_screen.h
 # End Source File
 # Begin Source File
 
@@ -1373,10 +1381,6 @@ SOURCE=.\render.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cl_screen.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\sound.h
 # End Source File
 # Begin Source File
@@ -1414,6 +1418,17 @@ SOURCE=.\zone.h
 # Begin Source File
 
 SOURCE=.\winquake.rc
+
+!IF  "$(CFG)" == "zqclient - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLRelease"
+
+!ELSEIF  "$(CFG)" == "zqclient - Win32 GLDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
