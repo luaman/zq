@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 cvar_t gl_scaleModelTextures = {"gl_scaleModelTextures", "0"};
 cvar_t gl_scaleTurbTextures = {"gl_scaleTurbTextures", "1"};
-cvar_t gl_mipcap = {"gl_mipcap", "0"};
+cvar_t gl_mipTexLevel = {"gl_mipTexLevel", "0"};
 
 //#define HALFLIFEBSP	// enable Half-Life map support
 
@@ -54,7 +54,7 @@ void Mod_Init (void)
 
 	Cvar_Register (&gl_scaleModelTextures);
 	Cvar_Register (&gl_scaleTurbTextures);
-	Cvar_Register (&gl_mipcap);
+	Cvar_Register (&gl_mipTexLevel);
 }
 
 /*
@@ -452,7 +452,7 @@ void Mod_LoadTextures (lump_t *l)
 		noscale = ((!gl_scaleModelTextures.value && !loadmodel->isworldmodel) ||
 				(!gl_scaleTurbTextures.value && (mt->name[0] == '*')));
 
-		mipcap = noscale ? 0 : bound(0, gl_mipcap.value, 3);
+		mipcap = noscale ? 0 : bound(0, gl_mipTexLevel.value, 3);
 
 {
 		byte *data = (byte *) mt + mt->offsets[mipcap];
