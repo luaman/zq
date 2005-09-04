@@ -947,13 +947,13 @@ void V_CalcRefdef (void)
 {
 	vec3_t		forward;
 	float		bob;
-    float height_adjustment;
 
 	V_DriftPitch ();
 
-	bob = V_CalcBob ();
-
-	height_adjustment = v_viewheight.value ? bound (-7, v_viewheight.value, 4) : V_CalcBob ();
+	if (v_viewheight.value)
+		bob = bound (-7, v_viewheight.value, 4);
+	else
+		bob = V_CalcBob ();
 
     // set up the refresh position
 	VectorCopy (cl.simorg, r_refdef2.vieworg);
@@ -973,8 +973,6 @@ void V_CalcRefdef (void)
 	else
 	{
 		r_refdef2.vieworg[2] += cl.viewheight;	// normal view height
-
-        r_refdef2.vieworg[2] += height_adjustment;
 
 		r_refdef2.vieworg[2] += bob;
 
@@ -1007,7 +1005,7 @@ void V_CalcRefdef (void)
 	if (view_message.flags & PF_DEAD)		// PF_GIB will also set PF_DEAD
 		r_refdef2.viewangles[ROLL] = 80;	// dead view angle
 
-	V_AddViewWeapon (bob+height_adjustment);
+	V_AddViewWeapon (bob);
 }
 
 /*
