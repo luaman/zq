@@ -40,11 +40,6 @@ int			c_brush_polys, c_alias_polys;
 int			currenttexture = -1;		// to avoid unnecessary texture sets
 int			cnttextures[2] = {-1, -1};	// cached
 
-int			particletexture;	// little dot for particles
-int			playertextures;		// up to 32 color translated skins
-int			playerfbtextures[MAX_CLIENTS];
-int			skyboxtextures;
-
 //
 // view origin
 //
@@ -655,18 +650,6 @@ void R_Init (unsigned char *palette)
 	R_InitTextures ();
 	R_Draw_Init ();
 	R_InitBubble ();
-
-	netgraphtexture = texture_extension_number;
-	texture_extension_number++;
-
-	playertextures = texture_extension_number;
-	texture_extension_number += MAX_CLIENTS;
-
-	// add room for fullbright skins
-	texture_extension_number += MAX_CLIENTS;
-
-	skyboxtextures = texture_extension_number;
-	texture_extension_number += 6;
 
 	Mod_Init ();
 }

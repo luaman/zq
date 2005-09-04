@@ -28,8 +28,6 @@ float	wateralpha;		// 1 if watervis is disabled by server,
 
 int		lightmap_bytes;		// 1, 2, or 4
 
-int		lightmap_textures;
-
 #define	BLOCK_WIDTH		128
 #define	BLOCK_HEIGHT	128
 
@@ -535,8 +533,6 @@ texture_t *R_TextureAnimation (texture_t *base)
 */
 
 
-extern	int		solidskytexture;
-extern	int		alphaskytexture;
 extern	float	speedscale;		// for top sky and bottom sky
 
 /*
@@ -1414,12 +1410,6 @@ void GL_BuildLightmaps (void)
 	memset (allocated, 0, sizeof(allocated));
 
 	r_framecount = 1;		// no dlightcache
-
-	if (!lightmap_textures)
-	{
-		lightmap_textures = texture_extension_number;
-		texture_extension_number += MAX_LIGHTMAPS;
-	}
 
 	if (gl_colorlights.value) {
 		gl_lightmap_format = GL_RGB;

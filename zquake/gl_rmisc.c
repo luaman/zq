@@ -24,6 +24,32 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <time.h>
 
 
+int solidskytexture, alphaskytexture;
+int lightmap_textures;
+int particletexture;	// little dot for particles
+int	playertextures;		// up to 32 color translated skins
+int	playerfbtextures[MAX_CLIENTS];
+int	skyboxtextures;
+
+
+void GL_AllocTextureSlots (void)
+{
+	netgraphtexture = texture_extension_number++;
+
+	playertextures = texture_extension_number;
+	texture_extension_number += MAX_CLIENTS * 2 /* normal and fullbright */;
+
+	skyboxtextures = texture_extension_number;
+	texture_extension_number += 6;
+
+	solidskytexture = texture_extension_number++;
+	alphaskytexture = texture_extension_number++;
+
+	lightmap_textures = texture_extension_number;
+	texture_extension_number += MAX_LIGHTMAPS;
+}
+
+
 /*
 ===============
 R_TranslatePlayerSkin
@@ -232,6 +258,8 @@ void R_NewMap (struct model_s *worldmodel)
 	r_viewleaf = NULL;
 
 	GL_BuildLightmaps ();
+
+	memset (playerfbtextures, 0, sizeof(playerfbtextures));
 
 	// identify sky texture
 	skytexturenum = -1;
