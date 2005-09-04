@@ -1672,7 +1672,7 @@ void	VID_Init (unsigned char *palette)
 				}
 				else
 				{
-					bpp = 15;
+					bpp = 32;
 					findbpp = 1;
 				}
 
@@ -1759,13 +1759,13 @@ void	VID_Init (unsigned char *palette)
 						{
 							switch (bpp)
 							{
-							case 15:
+							case 32:
 								bpp = 16;
 								break;
 							case 16:
-								bpp = 32;
+								bpp = 15;
 								break;
-							case 32:
+							case 15:
 								bpp = 24;
 								break;
 							case 24:
