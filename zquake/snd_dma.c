@@ -75,7 +75,7 @@ sfx_t		*ambient_sfx[NUM_AMBIENTS];
 
 cvar_t bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
 cvar_t s_initsound = {"s_initsound", "1"};
-cvar_t s_volume = {"s_volume", "0.7", CVAR_ARCHIVE};
+cvar_t s_volume = {"s_volume", "0.5", CVAR_ARCHIVE};
 #if defined (hpux) || defined(sun)
 cvar_t s_nosound = {"s_nosound", "1"};
 #else
