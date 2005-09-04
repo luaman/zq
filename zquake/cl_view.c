@@ -298,7 +298,7 @@ ONCHANGE(ch_gamma, gl_gamma)	ONCHANGE(ch_contrast, gl_contrast)
 ONCHANGE(ch_gamma, sw_gamma)	ONCHANGE(ch_contrast, sw_contrast)
 #endif
 
-cvar_t		gammavar = {"gamma", "1", CVAR_ARCHIVE, ch_gamma};
+cvar_t		gammavar = {"gamma", "0.7", CVAR_ARCHIVE, ch_gamma};
 cvar_t		contrast = {"contrast", "1", 0, ch_contrast};
 
 
@@ -306,7 +306,7 @@ cvar_t		contrast = {"contrast", "1", 0, ch_contrast};
 
 ONCHANGE(ch_gl_gamma, gammavar)	ONCHANGE(ch_gl_contrast, contrast)
 
-cvar_t		gl_gamma = {"gl_gamma", "1", CVAR_USER_ARCHIVE, ch_gl_gamma};
+cvar_t		gl_gamma = {"gl_gamma", "0.7", CVAR_USER_ARCHIVE, ch_gl_gamma};
 cvar_t		gl_contrast = {"gl_contrast", "1", CVAR_USER_ARCHIVE, ch_gl_contrast};
 cvar_t		gl_cshiftpercent = {"gl_cshiftpercent", "100"};
 cvar_t		gl_hwblend = {"gl_hwblend","0"};
@@ -319,7 +319,7 @@ unsigned short	ramps[3][256];
 
 ONCHANGE(ch_sw_gamma, gammavar)	ONCHANGE(ch_sw_contrast, contrast)
 
-cvar_t		sw_gamma = {"sw_gamma", "1", CVAR_USER_ARCHIVE, ch_sw_gamma};
+cvar_t		sw_gamma = {"sw_gamma", "0.7", CVAR_USER_ARCHIVE, ch_sw_gamma};
 cvar_t		sw_contrast = {"sw_contrast", "1", CVAR_USER_ARCHIVE, ch_sw_contrast};
 
 byte		gammatable[256];	// palette is sent through this
