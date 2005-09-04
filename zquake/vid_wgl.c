@@ -1552,33 +1552,6 @@ void VID_Init8bitPalette()
 	VID_Build15to8table ();
 }
 
-static void Check_Gamma (unsigned char *pal)
-{
-	float	f, inf;
-	unsigned char	palette[768];
-	int		i;
-
-	if ((i = COM_CheckParm("-gamma")) != 0 && i+1 < com_argc)
-		vid_gamma = bound (0.3, Q_atof(com_argv[i+1]), 1);
-	else
-		vid_gamma = 1;
-
-	Cvar_SetValue (&gl_gamma, vid_gamma);
-
-	for (i=0 ; i<768 ; i++)
-	{
-		f = pow ( (pal[i]+1)/256.0 , vid_gamma );
-		inf = f*255 + 0.5;
-		if (inf < 0)
-			inf = 0;
-		if (inf > 255)
-			inf = 255;
-		palette[i] = inf;
-	}
-
-	memcpy (pal, palette, sizeof(palette));
-}
-
 /*
 ===================
 VID_Init
@@ -1815,7 +1788,6 @@ void	VID_Init (unsigned char *palette)
 		hwnd_dialog = NULL;
 	}
 
-	Check_Gamma(palette);
 	VID_SetPalette (palette);
 
 	VID_SetMode (vid_default, palette);
