@@ -2680,6 +2680,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\rc_pixops.c">
+			</File>
+			<File
 				RelativePath="rc_wad.c">
 				<FileConfiguration
 					Name="Debug|Win32">

@@ -407,11 +407,6 @@
 				</File>
 				<File
 					RelativePath=".\cl_draw.c">
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="cl_effects.c">
@@ -910,6 +905,9 @@
 							Optimization="2"
 							PreprocessorDefinitions=""/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\rc_pixops.c">
 				</File>
 				<File
 					RelativePath="rc_wad.c">
