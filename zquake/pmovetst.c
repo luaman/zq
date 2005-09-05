@@ -40,13 +40,12 @@ static void PM_TraceBounds (vec3_t start, vec3_t end, vec3_t boxmins, vec3_t box
 	}
 }
 
-static qbool PM_CullTraceBox (vec3_t mins, vec3_t maxs, vec3_t offset, vec3_t emins, vec3_t emaxs, vec3_t hullmins, vec3_t hullmaxs)
-{
+static qbool PM_CullTraceBox(vec3_t mins, vec3_t maxs, vec3_t offset, vec3_t emins, vec3_t emaxs, vec3_t hullmins, vec3_t hullmaxs) {
 	return
-	(	mins[0] > offset[0] + emaxs[0] + hullmaxs[0] || maxs[0] < offset[0] + emins[0] + hullmins[0] ||
-		mins[1] > offset[1] + emaxs[1] + hullmaxs[1] || maxs[1] < offset[1] + emins[1] + hullmins[1] ||
-		mins[2] > offset[2] + emaxs[2] + hullmaxs[2] || maxs[2] < offset[2] + emins[2] + hullmins[2]
-	);
+		(	mins[0] + hullmins[0] > offset[0] + emaxs[0] || maxs[0] + hullmaxs[0] < offset[0] + emins[0] ||
+			mins[1] + hullmins[1] > offset[1] + emaxs[1] || maxs[1] + hullmaxs[1] < offset[1] + emins[1] ||
+			mins[2] + hullmins[2] > offset[2] + emaxs[2] || maxs[2] + hullmaxs[2] < offset[2] + emins[2] 
+		);
 }
 
 
