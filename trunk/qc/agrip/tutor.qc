@@ -14,23 +14,6 @@ vector realorigin (entity ent)
         return (ent.absmin + ent.absmax) * 0.5;
 }
 
-float() CountPlayers =
-{
-    local entity plr;
-    local float count;
-    
-    plr = find(world, classname, "player");
-    while( plr != world )
-    {
-        if( plr.netname != "" )
-            count = count + 1;
-
-        plr = find(plr, classname, "player");
-    }
-
-    return count;
-}
-
 // KickABotClientCheck
 // Ensures clients can't kick bots below the padclients level...
 // Returns 0 if the user is not allowed to kick the bot, 1 if they are.
@@ -1760,11 +1743,11 @@ void(float bottom, float top, string bteam, float clientcalled) create_bot =
 
     s_bteam = strzone(bteam);
     
-    dprint("CREATE_BOT! bot: ");
+    /*dprint("CREATE_BOT! bot: ");
     dprint(ftos(bottom));dprint("  top: ");
     dprint(ftos(top));dprint("  s_bteam: ");
     dprint(s_bteam);dprint("  cc: ");
-    dprint(ftos(clientcalled));dprint("\n");
+    dprint(ftos(clientcalled));dprint("\n");*/
 
     // AGRIP - don't spawn a bot if it's not allowed...
     if( clientcalled )  // i.e. only check if we're a client
