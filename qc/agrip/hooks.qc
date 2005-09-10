@@ -200,13 +200,13 @@ void() agh_world_padclients =
     }
 
     // Spawn the little fraggers...
-    dprint("need to spawn: ");
+    /*dprint("need to spawn: ");
     dprint(ftos(botsperteam));
     dprint(" [bpt] * ");
     dprint(ftos(numteams));
     dprint(" [teams] = ");
     dprint(ftos(padclients));
-    dprint("\n");
+    dprint("\n");*/
 
     // As we cannot do this in for (while) loops because there are no arrays,
     // we have to explicitly say ``spawn a bot with team 2''.  There is a
@@ -284,27 +284,27 @@ void() agh_client_padclients_connect =
     Purpose:
         Attempt to replace a connected bot with a connecting client
         if bot padding is on.
+        If teamplay is on, set appropriate colours for connecting client.
     Takes:
 	    void
     Returns:
 	    void
 */
 {
-    if( infokey(self, "isbot") == "1" )
-        // FIXME??? make it add bots to other teams for balancing?
-        // FIXME ALTER BOT COLOURS!!!
-        return;
-
+    // Ugly hack until MAUTH is finished...
+    if( infokey(self, "isbot") != "1" )
     if( stof(infokey(self, "fortytwo")) != 42 )
     {
         sprint(self, PRINT_HIGH, "This is an AudioQuake server, not a standard QuakeWorld server.\nPlease only connect here if you're using the AGRIP AudioQuake mod.\n");
         stuffcmd(self, "wait;disconnect\n");
+        return;
     }
 
     if( teamplay )// || coop )
     {
         local float teamnum;
         local float numteams;
+        local float numpad, numplrs;
         local string tmp;
         local string stmp;
         local string cmd;
@@ -315,13 +315,13 @@ void() agh_client_padclients_connect =
         numteams = stof(infokey(world, "ag_numteams"));
         tmp = infokey(self, "team");
         teamnum = snap_misc_numforteamname(tmp);
-        dprint("PAD: CONNECT ~ my team number is : ");dprint(ftos(teamnum));dprint("\n");
 
         // Valid team number?
         if( teamnum == 0 || teamnum > numteams )
         {
             sprint(self, PRINT_HIGH, "You have not set yourself to be in one of the teams on this server.\nPlease use the team command to do so and reconnect.\n");
             stuffcmd(self, "wait;disconnect\n");
+            return;
         }
         else
         {
@@ -347,6 +347,35 @@ void() agh_client_padclients_connect =
             strunzone(stmp);
         }
     }
+    else
+    {
+        // FIXME DM
+    }
+
+    // Now we've added the player, should we remove a bot?
+    numpad = stof(infokey(world, "bots_padclients"));
+    numplrs = CountPlayers();
+    /*dprint("PAD____CON: players: ");
+    dprint(ftos(numplrs));
+    dprint("  padclients: ");
+    dprint(ftos(numpad));
+    dprint("\n");*/
+    if( infokey(self, "isbot") != "1" )
+    {
+        // Kick a bot if a player connects
+        // and we're over the padding limit...
+        if( numplrs > numpad )
+            if( teamplay == 1 )
+                KickABotTeam(teamnum, 0);
+            else
+                KickABotDM(0);
+    }
+    else
+    {
+        // Kick a bot if we need to leave a gap
+        // for a player to connect...
+        // FIXME
+    }
 }
 
 void() agh_client_padclients_disconnect =
@@ -360,7 +389,50 @@ void() agh_client_padclients_disconnect =
 	    void
 */
 {
-    dprint("PAD: agh_client_padclients_disconnect\n");
+    //dprint("PAD_DISCON: <START>\n");
+    if( teamplay )// || coop )
+    {
+        local float teamnum;
+        local float numteams;
+        local float numpad, numplrs;
+        local string tmp;
+   
+        // Check number of teams vs our team...
+        numteams = stof(infokey(world, "ag_numteams"));
+        tmp = infokey(self, "team");
+        teamnum = snap_misc_numforteamname(tmp);
+    }
+
+    // Now we've added the player, should we remove a bot?
+    numpad = stof(infokey(world, "bots_padclients"));
+    numplrs = CountPlayers();
+    /*dprint("PAD_DISCON:  players: ");
+    dprint(ftos(numplrs));
+    dprint("  padclients: ");
+    dprint(ftos(numpad));
+    dprint("\n");*/
+    if( infokey(self, "isbot") != "1" )
+    {
+        // Add a bot if a player connects
+        // and we're under the padding limit...
+        if( numplrs == numpad )
+        // (Test for == because this client is just about to disappear
+        // and when they finally do, we'll be just below the level.)
+        {
+            dprint("PAD_DISCON: ADD A BOT!\n");
+            if( teamplay == 1 )
+            {
+                local float bot, top;
+                bot = stof(infokey(self, "bottom"));
+                top = stof(infokey(self, "top"));
+                create_bot(bot, top, infokey(self, "team"), 0); 
+            }
+            else
+            {
+                create_bot(0, 0, "bots", 0);
+            }
+        }
+    }
 }
 
 void() agh_player_footsteps =

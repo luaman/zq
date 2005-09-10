@@ -64,6 +64,7 @@ float   (vector jump_origin, vector move_dir)       snap_misc_jumptest;
 void    ()                                          snap_misc_botspawner;
 
 // TEAM MANAGEMENT UTILITY FUNCTIONS
+float   ()                                          CountPlayers; // from kteams
 float   (float notmyteam)                           snap_misc_pickrndteam;
 string  (float teamnum)                             snap_misc_nameforteamnum;
 float   (string teamname)                           snap_misc_numforteamname;
@@ -488,10 +489,10 @@ void() snap_misc_botspawner =
     {
         if( self.items > 0 )  // at least 1 team
         {
-            dprint("spawning team 1...\n");
+            //dprint("spawning team 1...\n");
             if( self.lip < self.frags )
             {
-                dprint("    team 1 member.\n");
+                //dprint("    team 1 member.\n");
                 if( teamplay )
                 {
                     // in teamplay we must get the right name for the team...
@@ -526,10 +527,10 @@ void() snap_misc_botspawner =
     {
         if( self.items > 1 )  // at least 2 teams
         {
-            dprint("spawning team 2...\n");
+            //dprint("spawning team 2...\n");
             if( self.lip < self.frags )
             {
-                dprint("    team 2 member.\n");
+                //dprint("    team 2 member.\n");
                 tteam = infokey(world, "ag_team2name");
                 tbot = snap_misc_bottomforteamnum(2);
                 ttop = snap_misc_topforteamnum(2);
@@ -552,10 +553,10 @@ void() snap_misc_botspawner =
     {
         if( self.items > 2 )  // at least 3 teams
         {
-            dprint("spawning team 3...\n");
+            //dprint("spawning team 3...\n");
             if( self.lip < self.frags )
             {
-                dprint("    team 3 member.\n");
+                //dprint("    team 3 member.\n");
                 tteam = infokey(world, "ag_team3name");
                 tbot = snap_misc_bottomforteamnum(3);
                 ttop = snap_misc_topforteamnum(3);
@@ -578,10 +579,10 @@ void() snap_misc_botspawner =
     {
         if( self.items > 3 )  // ooh, four teams!
         {
-            dprint("spawning team 4...\n");
+            //dprint("spawning team 4...\n");
             if( self.lip < self.frags )
             {
-                dprint("    team 4 member.\n");
+                //dprint("    team 4 member.\n");
                 tteam = infokey(world, "ag_team4name");
                 tbot = snap_misc_bottomforteamnum(4);
                 ttop = snap_misc_topforteamnum(4);
@@ -603,13 +604,30 @@ void() snap_misc_botspawner =
     else
     {
         // Reached state 4 -- remove...
-        dprint("About to remove botspawner...\n");
+        //dprint("About to remove botspawner...\n");
         remove(self);
     }
 }
 
 
 // TEAM MANAGEMENT UTILITY FUNCTIONS
+
+float() CountPlayers =
+{
+    local entity plr;
+    local float count;
+
+    plr = find(world, classname, "player");
+    while( plr != world )
+    {
+        if( plr.netname != "" )
+            count = count + 1;
+
+        plr = find(plr, classname, "player");
+    }
+
+    return count;
+}
 
 float (float notmyteam) snap_misc_pickrndteam =
 /*
