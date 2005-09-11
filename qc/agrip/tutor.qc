@@ -1807,6 +1807,8 @@ void(float bottom, float top, string bteam, float clientcalled) create_bot =
 
     // AGRIP skillz stuff...
     setinfo(bot, "isbot", "1");
+    if( clientcalled )
+        setinfo(bot, "cab", "1");
     setinfo(bot, "bskill", skill);  // variable by server admin
 }
 
