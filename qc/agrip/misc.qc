@@ -765,10 +765,7 @@ float (string teamname) snap_misc_numforteamname =
     else if ( s_teamname == infokey(world, "ag_team4name") )
         retval = 4;
     else
-    {
-        dprint("ERROR: Invalid team name ", teamname, "!\n");
-        error("snap_misc_nameforteamnum called with invalid team number!\n");
-    }
+        retval = 0;
 
     // be tidy now
     strunzone(s_teamname);
