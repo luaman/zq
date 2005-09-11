@@ -65,6 +65,7 @@ void    ()                                          snap_misc_botspawner;
 
 // TEAM MANAGEMENT UTILITY FUNCTIONS
 float   ()                                          CountPlayers; // from kteams
+float   (string team)                               CountPlayersTeam;
 float   (float notmyteam)                           snap_misc_pickrndteam;
 string  (float teamnum)                             snap_misc_nameforteamnum;
 float   (string teamname)                           snap_misc_numforteamname;
@@ -629,6 +630,24 @@ float() CountPlayers =
     return count;
 }
 
+float(string team) CountPlayersTeam =
+{
+    local entity plr;
+    local float count;
+
+    plr = find(world, classname, "player");
+    while( plr != world )
+    {
+        if( plr.netname != "" )
+        if( infokey(plr, "team") == team )
+            count = count + 1;
+
+        plr = find(plr, classname, "player");
+    }
+
+    return count;
+}
+
 float (float notmyteam) snap_misc_pickrndteam =
 /*
     Purpose:
@@ -655,9 +674,9 @@ float (float notmyteam) snap_misc_pickrndteam =
     {
         local float myteam;
         myteam = snap_misc_numforteamname(infokey(self, "team"));
-        dprint("PRNDT: my team is ");
+        /*dprint("PRNDT: my team is ");
         dprint(ftos(myteam));
-        dprint("\n");
+        dprint("\n");*/
     }
     
     okteam = 0;
@@ -665,26 +684,26 @@ float (float notmyteam) snap_misc_pickrndteam =
     {
         rnd = 1 + ( random() * ( numteams - 1 ) );
         rnd = rint(rnd);
-        dprint("PRNDT: rnd team is ");
+        /*dprint("PRNDT: rnd team is ");
         dprint(ftos(rnd));
-        dprint("\n");
+        dprint("\n");*/
 
         if( notmyteam )
         {
             if( rnd == myteam )
             {
-                dprint("PRNDT: Not my team!\n");
+                //dprint("PRNDT: Not my team!\n");
                 okteam = 0;
             }
             else
             {
-                dprint("PRNDT: found a good team.\n");
+                //dprint("PRNDT: found a good team.\n");
                 okteam = 1;
             }
         }
         else
         {
-            dprint("PRNDT: keep first team num.\n");
+            //dprint("PRNDT: keep first team num.\n");
             okteam = 1;
         }
     }

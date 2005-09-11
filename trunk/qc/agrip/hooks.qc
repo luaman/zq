@@ -159,11 +159,16 @@ void() agh_world_padclients =
     Returns:
 	    void
     Notes:
-        Works off the following serverinfo variables:
-          + bots_padclients     - number of clients to pad
+        * Works off the following serverinfo variables:
+            + bots_padclients     - number of clients to pad
                                   bots_padclients % ag_numteams should == 0
-          + ag_numteams         - number of teams to use
-          + ag_team[1234]name   - names of teams
+            + ag_numteams         - number of teams to use
+            + ag_team[1234]name   - names of teams
+        * Having numteams 0 means we want to use classic Quake TeamDM.
+            + FIXME can we make bot padding work here?
+              Current behaviour is to add them to team "bots".
+        * Having numteams 2-4 means we want to use AGRIP TeamDM
+        * Numteams being 1 is a mistake (why not just use DM?)
 */
 {
     local float numteams;
@@ -172,15 +177,20 @@ void() agh_world_padclients =
     local float i;
     local string tteam;
 
-  
     // Should we be here?
     if( infokey(world, "bots_padclients") == "0" )
         return;
+    if( infokey(world, "ag_numteams") == "0" )
+        return;  // classic Quake TeamDM
 
     // How many bots to spawn?
     if( teamplay )
     {
         numteams = stof(infokey(world, "ag_numteams"));
+        if( numteams < 2 || numteams > 4 )
+        {
+            error("Server misconfigured: ag_numteams isn't between 2 and 4!\n");
+        }
     }
     else
     {
@@ -189,15 +199,9 @@ void() agh_world_padclients =
     padclients = stof(infokey(world, "bots_padclients"));
     botsperteam = rint(padclients / numteams);
 
-    // Sanity checks...
-    if( numteams < 0 || numteams > 4 )
-    {
-        error("Server misconfigured: ag_numteams isn't between 0 and 4!\n");
-    }
+    // Sanity check...
     if( botsperteam * numteams != padclients )
-    {
         error("Server misconfigured: bots_padclients doesn't (integer) divide into ag_numteams!\n");
-    }
 
     // Spawn the little fraggers...
     /*dprint("need to spawn: ");
@@ -218,8 +222,6 @@ void() agh_world_padclients =
     // we don't overflow the server.  For this reason, we set up an entity to
     // do the actual spawning.
     
-    // FIXME in dm don't give colours -- or give random colours
-    // FIXME bots have inverse colours to players? or just dark bots?
     // FIXME disable team command / make it switch your colours too?
     
     entity spawner;
@@ -291,36 +293,43 @@ void() agh_client_padclients_connect =
 	    void
 */
 {
+    local float teamnum, numteams, numpad, numplrs, botsperteam;
+    local string conplrteam, sconplrteam;
+    local string tmp;
+    local string stmp;
+    local string cmd;
+    local string scmd;
+    local string fullcmd;
+
+    // Should we be here?
+    if( infokey(world, "bots_padclients") == "0" )
+        return;
+    if( infokey(world, "ag_numteams") == "0" )
+        return;  // classic Quake TeamDM
+
     // Ugly hack until MAUTH is finished...
     if( infokey(self, "isbot") != "1" )
     if( stof(infokey(self, "fortytwo")) != 42 )
     {
-        sprint(self, PRINT_HIGH, "This is an AudioQuake server, not a standard QuakeWorld server.\nPlease only connect here if you're using the AGRIP AudioQuake mod.\n");
+        sprint(self, PRINT_HIGH, "This is an AudioQuake server, not a standard QuakeWorld server.\nPlease only connect here if you're using AGRIP AudioQuake.\n");
         stuffcmd(self, "wait;disconnect\n");
         return;
     }
 
     if( teamplay )// || coop )
     {
-        local float teamnum;
-        local float numteams;
-        local float numpad, numplrs;
-        local string tmp;
-        local string stmp;
-        local string cmd;
-        local string scmd;
-        local string fullcmd;
-   
         // Check number of teams vs our team...
         numteams = stof(infokey(world, "ag_numteams"));
-        tmp = infokey(self, "team");
-        teamnum = snap_misc_numforteamname(tmp);
+        conplrteam = infokey(self, "team");
+        sconplrteam = strzone(conplrteam);
+        teamnum = snap_misc_numforteamname(conplrteam);
 
         // Valid team number?
         if( teamnum == 0 || teamnum > numteams )
         {
             sprint(self, PRINT_HIGH, "You have not set yourself to be in one of the teams on this server.\nPlease use the team command to do so and reconnect.\n");
             stuffcmd(self, "wait;disconnect\n");
+            strunzone(sconplrteam);
             return;
         }
         else
@@ -350,32 +359,65 @@ void() agh_client_padclients_connect =
     else
     {
         // FIXME DM
+        // ACTUALLY, don't need to do anything here
     }
 
     // Now we've added the player, should we remove a bot?
-    numpad = stof(infokey(world, "bots_padclients"));
-    numplrs = CountPlayers();
-    /*dprint("PAD____CON: players: ");
+    /*FIXME old debug code
+    dprint("PAD____CON: players: ");
     dprint(ftos(numplrs));
     dprint("  padclients: ");
     dprint(ftos(numpad));
     dprint("\n");*/
-    if( infokey(self, "isbot") != "1" )
+    if( infokey(self, "cab") != "1" )
     {
         // Kick a bot if a player connects
         // and we're over the padding limit...
-        if( numplrs > numpad )
-            if( teamplay == 1 )
+        if( teamplay )
+        {
+            // FIXME check that there is not a bot here that should be
+            // replaced by me -- even though we may not have gone over
+            // the global padding limit, we could have gone over the limit
+            // for players in this team.
+            numpad = stof(infokey(world, "bots_padclients"));
+            numplrs = CountPlayersTeam(sconplrteam);
+            botsperteam = numpad / numteams;
+            /*dprint("PAD____CON:");
+            dprint("  padc's: ");
+            dprint(ftos(numpad));
+            dprint("  bots/team: ");
+            dprint(ftos(botsperteam));
+            dprint("  team plrs: ");
+            dprint(ftos(numplrs));
+            dprint("  team: ");
+            dprint(sconplrteam);*/
+            strunzone(sconplrteam);
+            if( numplrs > botsperteam )
+            {
+                //dprint("  KICK");
                 KickABotTeam(teamnum, 0);
+            }
             else
+            {
+                //dprint("  NO KICK");
+            }
+            //dprint("\n");
+        }
+        else
+        {
+            numpad = stof(infokey(world, "bots_padclients"));
+            numplrs = CountPlayers();
+            if( numplrs > numpad )
                 KickABotDM(0);
+        }
     }
-    else
-    {
-        // Kick a bot if we need to leave a gap
+    //else
+    //{
+        // Kick a connecting bot if we need to leave a gap
         // for a player to connect...
         // FIXME
-    }
+        // couldn't doing this begin a recursive loop?  should check before spawning?
+    //}
 }
 
 void() agh_client_padclients_disconnect =
@@ -389,6 +431,12 @@ void() agh_client_padclients_disconnect =
 	    void
 */
 {
+    // Should we be here?
+    if( infokey(world, "bots_padclients") == "0" )
+        return;
+    if( infokey(world, "ag_numteams") == "0" )
+        return;  // classic Quake TeamDM
+
     //dprint("PAD_DISCON: <START>\n");
     if( teamplay )// || coop )
     {
@@ -419,7 +467,7 @@ void() agh_client_padclients_disconnect =
         // (Test for == because this client is just about to disappear
         // and when they finally do, we'll be just below the level.)
         {
-            dprint("PAD_DISCON: ADD A BOT!\n");
+            //dprint("PAD_DISCON: ADD A BOT!\n");
             if( teamplay == 1 )
             {
                 local float bot, top;
