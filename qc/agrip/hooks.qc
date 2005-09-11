@@ -178,6 +178,8 @@ void() agh_world_padclients =
     local string tteam;
 
     // Should we be here?
+    if( !deathmatch )
+        return;
     if( infokey(world, "bots_padclients") == "0" )
         return;
     if( infokey(world, "ag_numteams") == "0" )
@@ -302,6 +304,8 @@ void() agh_client_padclients_connect =
     local string fullcmd;
 
     // Should we be here?
+    if( !deathmatch )
+        return;
     if( infokey(world, "bots_padclients") == "0" )
         return;
     if( infokey(world, "ag_numteams") == "0" )
@@ -432,6 +436,8 @@ void() agh_client_padclients_disconnect =
 */
 {
     // Should we be here?
+    if( !deathmatch )
+        return;
     if( infokey(world, "bots_padclients") == "0" )
         return;
     if( infokey(world, "ag_numteams") == "0" )
