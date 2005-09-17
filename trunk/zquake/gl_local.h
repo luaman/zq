@@ -166,6 +166,7 @@ extern	cvar_t	gl_contrast;
 extern	cvar_t	gl_gamma;
 extern	cvar_t	gl_lightmode;
 extern	cvar_t	gl_solidparticles;
+extern	cvar_t	gl_shaftlight;
 
 extern	int		lightmode;		// set to gl_lightmode on mapchange
 
