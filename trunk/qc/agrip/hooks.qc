@@ -75,9 +75,12 @@ void() agh_world_precaches =
     Purpose:
         Provide all of the precaches for an accessible game.
     Takes:
-	void
+	    void
     Returns:
-	void
+	    void
+    Notes:
+        A hook can be enabled in agrip_defs.qc to allow mods to
+        do some precaching for themselves.
 */
 {
     // Stuff to re-factor:
@@ -147,6 +150,10 @@ void() agh_world_precaches =
 
     // Deny
     precache_sound ("deny.wav");
+
+#ifdef AGRIP_MODHOOK_PRECACHE
+    agrip_modhook_precache();
+#endif
 };
 
 void() agh_world_padclients =
