@@ -174,7 +174,9 @@ char *Q_strdup (const char *src);
 //============================================================================
 
 #ifndef NOMVDPLAY
+#ifndef SERVERONLY
 #define MVDPLAY
+#endif
 #endif
 
 #endif /* _Q_SHARED_H_ */
