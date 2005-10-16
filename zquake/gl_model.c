@@ -465,7 +465,7 @@ void Mod_LoadTextures (lump_t *l)
 			tx->gl_texturenum = GL_LoadTexture (mt->name, width, height, data/*(byte *)(tx+1)*/, TEX_MIPMAP|TEX_BRIGHTEN | (noscale ? TEX_NOSCALE : 0));
 			if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
 				tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", mt->name), width, height, (byte *)(tx+1),
-					TEX_MIPMAP|TEX_FULLBRIGHTMASK);
+					TEX_MIPMAP|TEX_FULLBRIGHTMASK | (noscale ? TEX_NOSCALE : 0));
 			}
 		}
 
