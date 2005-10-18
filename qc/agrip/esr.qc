@@ -162,7 +162,7 @@ void() snap_esr_main =
         remove(self.goalentity);
          
         // Destruct the ESR...
-        soundtoclient(self.owner, self.owner, CHAN_AUTO, "toggles/off.wav", 1, ATTN_NORM);
+        safe_soundtoclient(self.owner, self.owner, CHAN_AUTO, "toggles/off.wav", 1, ATTN_NORM);
         remove(self);
     }
     /*else
@@ -508,7 +508,7 @@ void() snap_esr_classic =
                 // only play lost lock sound if we did lose a lock...
                 if( self.aiment.state == true )
                 {
-                    soundtoclient(self.owner, nearest_m, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+                    safe_soundtoclient(self.owner, nearest_m, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
                 }
                 self.aiment.state = false;
             }
@@ -529,7 +529,7 @@ void() snap_esr_classic =
         // only play lost lock sound if we did lose a lock...
         if( self.aiment.state == true )
         {
-            soundtoclient(self.owner, self.aiment, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+            safe_soundtoclient(self.owner, self.aiment, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
             // Note: have to use ESR sounder as closest approx. of actual
             //       position of the entity we were tracking.
         }
@@ -576,7 +576,7 @@ void() snap_esr_classic =
                 // only play lost lock sound if we did lose a lock...
                 if( self.goalentity.state == true )
                 {
-                    soundtoclient(self.owner, nearest_f, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+                    safe_soundtoclient(self.owner, nearest_f, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
                 }
                 self.goalentity.state = false;
             }
@@ -597,7 +597,7 @@ void() snap_esr_classic =
         // only play lost lock sound if we did lose a lock...
         if( self.goalentity.state == true )
         {
-            soundtoclient(self.owner, self.goalentity, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+            safe_soundtoclient(self.owner, self.goalentity, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
             // Note: have to use ESR sounder as closest approx. of actual
             //       position of the entity we were tracking.
         }
@@ -652,7 +652,7 @@ void() snap_esr_classic =
                 // only play lost lock sound if we did lose a lock...
                 if( self.enemy.state == true )
                 {
-                    soundtoclient(self.owner, nearest_e, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+                    safe_soundtoclient(self.owner, nearest_e, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
                 }
                 self.enemy.state = false;
             }
@@ -672,7 +672,7 @@ void() snap_esr_classic =
         // only play lost lock sound if we did lose a lock...
         if( self.enemy.state == true )
         {
-            soundtoclient(self.owner, self.enemy, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
+            safe_soundtoclient(self.owner, self.enemy, CHAN_AUTO, "weapons/ric2.wav", 1, ATTN_NORM);
             // Note: have to use ESR sounder as closest approx. of actual
             //       position of the entity we were tracking.
         }
@@ -756,10 +756,10 @@ void() snap_esr_hazard =
         if( self.frags == -1 ) // Tells us we've never had a lock.
         {
             snap_misc_m2o("ESR: Set to mode 2.\n");
-            soundtoclient(self.owner, self.owner, CHAN_AUTO, "toggles/mode.wav", 1, ATTN_NORM);
+            safe_soundtoclient(self.owner, self.owner, CHAN_AUTO, "toggles/mode.wav", 1, ATTN_NORM);
             self.frags = 1;
         }
-        soundtoclient(self.owner, local_hazard, CHAN_AUTO, "esr/haz.wav", self.items, ATTN_NORM);
+        safe_soundtoclient(self.owner, local_hazard, CHAN_AUTO, "esr/haz.wav", self.items, ATTN_NORM);
         dist_to_hazard = vlen(local_hazard.origin - self.owner.origin);
         self.nextthink = time + ( (dist_to_hazard - 20) / SNAP_ESR_BEEPTIME_DIVISOR );
         //dprint(ftos(self.nextthink - time));
@@ -783,7 +783,7 @@ void() snap_esr_hazard =
             // We must reset self.frags as this hazard deteciton session is over...
             self.frags = -1;
             snap_misc_m2o("ESR: Lost hazard lock - reverting to mode 1.\n");
-            soundtoclient(self.owner, self.owner, CHAN_AUTO, "toggles/mode.wav", 1, ATTN_NORM);
+            safe_soundtoclient(self.owner, self.owner, CHAN_AUTO, "toggles/mode.wav", 1, ATTN_NORM);
             stuffcmd(self.owner, "setinfo agv_t_esr 1\n");
             self.nextthink = time + 0.1;
         }

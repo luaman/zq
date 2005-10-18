@@ -153,14 +153,14 @@ void() snap_d5k_main =
     	        && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
-                soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/armor1.wav", sound_vol, ATTN_NORM);
+                safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/armor1.wav", sound_vol, ATTN_NORM);
             }
     	    // HEALTH...
             else if( self.goalentity.classname == "item_health" 
     	          && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
-    		    soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/health1.wav", sound_vol, ATTN_NORM);
+    		    safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/health1.wav", sound_vol, ATTN_NORM);
             }
             // AMMO...
     	    else if( (  self.goalentity.classname == "item_shells"
@@ -170,14 +170,14 @@ void() snap_d5k_main =
     	             && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
-    	        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "weapons/lock4.wav", sound_vol, ATTN_NORM);
+    	        safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "weapons/lock4.wav", sound_vol, ATTN_NORM);
             }
             // DROPPED BACKPACK...
             else if( self.goalentity.classname == "" 
                   && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
-    	        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/backpack.wav", sound_vol, ATTN_NORM);
+    	        safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "d5k/backpack.wav", sound_vol, ATTN_NORM);
             }
             // SWITCH...
             // Note: Assume state = STATE_TOP if it isn't STATE_BOTTOM.
@@ -187,34 +187,38 @@ void() snap_d5k_main =
                 matched = true;
 
                 if( self.goalentity.state == STATE_BOTTOM )
-    		        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "buttons/switch04.wav", sound_vol, ATTN_NORM);
+                {
+    		        safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "buttons/switch04.wav", sound_vol, ATTN_NORM);
+                }
                 else if( self.skin )
-    		        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "buttons/switch04.wav", sound_vol, ATTN_NORM);
+                {
+    		        safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "buttons/switch04.wav", sound_vol, ATTN_NORM);
+                }
             }
             // POWERUP (EnvSuit, Pentogram, RoS, Quad)...
     	    else if( self.goalentity.classname == "item_artifact_envirosuit" 
     		      && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
-    	        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/suit.wav", sound_vol, ATTN_NORM);
+    	        safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/suit.wav", sound_vol, ATTN_NORM);
             }
             else if( self.goalentity.classname == "item_artifact_invulnerability" 
     		      && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
-    	        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/protect.wav", sound_vol, ATTN_NORM);
+    	        safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/protect.wav", sound_vol, ATTN_NORM);
             }
             else if( self.goalentity.classname == "item_artifact_invisibility" 
     		      && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
-    	    	soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/inv1.wav", sound_vol, ATTN_NORM);
+    	    	safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/inv1.wav", sound_vol, ATTN_NORM);
             }
             else if( self.goalentity.classname == "item_artifact_super_damage" 
     		      && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
-    	        soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/damage3.wav", sound_vol, ATTN_NORM);
+    	        safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "items/damage3.wav", sound_vol, ATTN_NORM);
             }
             // KEY...
     	    else if( (  self.goalentity.classname == "item_key1"
@@ -223,7 +227,7 @@ void() snap_d5k_main =
             {
                 matched = true;
     	        // AG_FIXME: sound change needed for key
-    		    soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "misc/talk.wav", sound_vol, ATTN_NORM);
+    		    safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "misc/talk.wav", sound_vol, ATTN_NORM);
             }
             // WEAPON...
             else if( (  self.goalentity.classname == "weapon_nailgun"
@@ -235,7 +239,7 @@ void() snap_d5k_main =
     		         && snap_misc_ownervisible(self.goalentity.origin) )
             {
                 matched = true;
-    		    soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "weapons/pkup.wav", sound_vol, ATTN_NORM);
+    		    safe_soundtoclient(self.owner, self.goalentity, CHAN_ITEM, "weapons/pkup.wav", sound_vol, ATTN_NORM);
             }
         }
 

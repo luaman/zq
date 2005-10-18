@@ -196,11 +196,11 @@ void() snap_extnav_osd_sound =
         //sndlev = 2 * self.owner.ammo_cells;
         //if( sndlev > 1 )
         //    sndlev = 1;
-        soundtoclient(self.owner, self, CHAN_AUTO, "misc/water2.wav", 1, ATTN_NORM);
+        safe_soundtoclient(self.owner, self, CHAN_AUTO, "misc/water2.wav", 1, ATTN_NORM);
     }
     else
     {
-        soundtoclient(self.owner, self, CHAN_AUTO, "nav/wind.wav", 1, ATTN_NORM);
+        safe_soundtoclient(self.owner, self, CHAN_AUTO, "nav/wind.wav", 1, ATTN_NORM);
     }
 };
 

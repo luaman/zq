@@ -129,7 +129,7 @@ void(float quiet) snap_marker_destructor =
     {
         // No markers...
         snap_misc_m2m("No waypoint markers to delete.\n");
-        soundtoclient(self, self, CHAN_AUTO, "deny.wav", 1, ATTN_NORM);
+        safe_soundtoclient(self, self, CHAN_AUTO, "deny.wav", 1, ATTN_NORM);
     }
     else
     {

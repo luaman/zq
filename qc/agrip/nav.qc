@@ -413,7 +413,7 @@ void(float direction, float objtype) snap_nav_struct_soundout =
         {
             // Yes -- make the wall-hit sound and unset the ``just hit this'' flag...
             actual_sound_level = 1;
-            soundtoclient(self.owner, self, CHAN_AUTO, "player/land.wav", actual_sound_level, ATTN_NORM);
+            safe_soundtoclient(self.owner, self, CHAN_AUTO, "player/land.wav", actual_sound_level, ATTN_NORM);
             self.owner.agrip_aux.ammo_shells = self.owner.agrip_aux.ammo_shells - (self.owner.agrip_aux.ammo_shells & direction);
         }
         // Perhaps we're still touching it after hitting it a while back...
@@ -431,7 +431,7 @@ void(float direction, float objtype) snap_nav_struct_soundout =
             
                 // Make the wall-touch sound...
                 // AG_FIXME: wall-touch sound
-                soundtoclient(self.owner, self, CHAN_AUTO, "misc/menu3.wav", actual_sound_level, ATTN_NORM);
+                safe_soundtoclient(self.owner, self, CHAN_AUTO, "misc/menu3.wav", actual_sound_level, ATTN_NORM);
             }
         }
         // OK, well maybe the wall is within our wall detection range...
@@ -452,7 +452,7 @@ void(float direction, float objtype) snap_nav_struct_soundout =
                           )
                     )
               )
-                soundtoclient(self.owner, self, CHAN_AUTO, "nav/wall.wav", actual_sound_level, ATTN_NORM);
+                safe_soundtoclient(self.owner, self, CHAN_AUTO, "nav/wall.wav", actual_sound_level, ATTN_NORM);
         }
         // END of WALL sounding stuff.
     }
@@ -471,11 +471,17 @@ void(float direction, float objtype) snap_nav_struct_soundout =
             
             // Sound out ramps, SLOPE and doors...
             if( objtype == SNAP_NAV_STRUCT_SLOPE )
-                soundtoclient(self.owner, self, CHAN_AUTO, "nav/slope.wav", actual_sound_level, ATTN_NORM);
+            {
+                safe_soundtoclient(self.owner, self, CHAN_AUTO, "nav/slope.wav", actual_sound_level, ATTN_NORM);
+            }
             else if( objtype == SNAP_NAV_STRUCT_SLOPE_DOWN )
-                soundtoclient(self.owner, self, CHAN_AUTO, "nav/slope.wav", actual_sound_level, ATTN_NORM);
+            {
+                safe_soundtoclient(self.owner, self, CHAN_AUTO, "nav/slope.wav", actual_sound_level, ATTN_NORM);
+            }
             else if( objtype == SNAP_NAV_STRUCT_DOOR )
-                soundtoclient(self.owner, self, CHAN_AUTO, "nav/door.wav", actual_sound_level, ATTN_NORM);
+            {
+                safe_soundtoclient(self.owner, self, CHAN_AUTO, "nav/door.wav", actual_sound_level, ATTN_NORM);
+            }
         }
     }
 };
@@ -683,11 +689,17 @@ float(float fwd, vector v_start, vector v_dir, float reverse, float snd) snap_na
                 
                 // Classify as SMALL, BIG or HUGE...
                 if( drop_length > 275 )
-                    soundtoclient(self.owner, self, CHAN_AUTO, "haz/drop-huge.wav", soundout_volume, ATTN_NORM);
+                {
+                    safe_soundtoclient(self.owner, self, CHAN_AUTO, "haz/drop-huge.wav", soundout_volume, ATTN_NORM);
+                }
                 else if( drop_length > 39 )
-                    soundtoclient(self.owner, self, CHAN_AUTO, "haz/drop-big.wav", soundout_volume, ATTN_NORM);
+                {
+                    safe_soundtoclient(self.owner, self, CHAN_AUTO, "haz/drop-big.wav", soundout_volume, ATTN_NORM);
+                }
                 else if( drop_length > 16 )
-                    soundtoclient(self.owner, self, CHAN_AUTO, "haz/drop-small.wav", soundout_volume, ATTN_NORM);
+                {
+                    safe_soundtoclient(self.owner, self, CHAN_AUTO, "haz/drop-small.wav", soundout_volume, ATTN_NORM);
+                }
             }
 
 
@@ -776,9 +788,13 @@ float() snap_nav_z_main =
         // Compare previous Z location to current one and make an appropriate
         // sound...
         if( self.owner.origin_z > self.frame + 5 )
-            soundtoclient(self.owner, self.owner, CHAN_AUTO, "nav/up.wav", 1, ATTN_NORM);
+        {
+            safe_soundtoclient(self.owner, self.owner, CHAN_AUTO, "nav/up.wav", 1, ATTN_NORM);
+        }
         else if( self.owner.origin_z < self.frame - 5 )
-            soundtoclient(self.owner, self.owner, CHAN_AUTO, "nav/down.wav", 1, ATTN_NORM);
+        {
+            safe_soundtoclient(self.owner, self.owner, CHAN_AUTO, "nav/down.wav", 1, ATTN_NORM);
+        }
         else
             z_changed = false;
 
