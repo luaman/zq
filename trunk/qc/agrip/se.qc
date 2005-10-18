@@ -24,7 +24,7 @@
 // NOTES
 // 
 // All functions here, unless specifed by ``_public'' at the end of their names,
-// are intended to work with the soundtoclient() builtin and provide private
+// are intended to work with the safe_soundtoclient() builtin and provide private
 // sound messaging to their owner in-game.
 
 
@@ -53,7 +53,7 @@ void() snap_se_singlesound =
         Removes itself when done.
 */
 {
-    soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
+    safe_soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
     remove(self);
 };
 
@@ -74,7 +74,7 @@ void() snap_se_stickysound =
           per second.
 */
 {
-    soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
+    safe_soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
 };
 
 
@@ -100,7 +100,7 @@ void() snap_se_cornersound =
     {
         // No, we haven't...
         setorigin(self, self.dest1);
-        soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
+        safe_soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
         self.nextthink = time + 0.2;
         self.items = true;
     }
@@ -108,7 +108,7 @@ void() snap_se_cornersound =
     {
         // Yes, we have; do the corner sound now...
         setorigin(self, self.dest2);
-        soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.health, ATTN_NORM);
+        safe_soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.health, ATTN_NORM);
         remove(self);
     }
 };
@@ -124,7 +124,7 @@ void() snap_se_loopedsound =
         void
 */
 {
-    soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
+    safe_soundtoclient(self.owner, self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
     self.nextthink = time + self.health;
 };
 
@@ -139,6 +139,12 @@ void() snap_se_loopedsound_public =
         void
 */
 {
+    // for debugging...
+    if( self.frags < 0 )
+        error("PLEASE REPORT THIS BUG TO THE DEVELOPERS INCLUDING ALL TEXT MESSAGES!\n");
+    else if( self.frags > 1 )
+        error("PLEASE REPORT THIS BUG TO THE DEVELOPERS INCLUDING ALL TEXT MESSAGES!\n");
+
     sound(self, CHAN_AUTO, self.message, self.frags, ATTN_NORM);
     self.nextthink = time + self.health;
 };

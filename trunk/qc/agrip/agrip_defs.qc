@@ -65,4 +65,38 @@ void(string s) strunzone = #119;
 void (entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #0x5a08;
 void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity forent) tracebox = #90;	// DP_QC_TRACEBOX
 
+// For debugging...
+void (entity client, entity e, float chan, string samp, float vol, float atten) safe_soundtoclient =
+{
+    /* for testing this function...
+    if( random() > 0.99 )
+    {
+        dprint("INITING CRASH...\n");
+        vol = 42;
+    }*/
+
+    if( vol < 0 )
+    {
+        dprint("PLEASE REPORT THIS BUG, INCLUDING ALL ERROR MESSAGES!\n");
+        local float i;
+        while( i < 1000000)
+        {
+            i = i + 1;
+        }
+    }
+    else if( vol > 1 )
+    {
+        dprint("PLEASE REPORT THIS BUG, INCLUDING ALL ERROR MESSAGES!\n");
+        local float i;
+        while( i < 1000000)
+        {
+            i = i + 1;
+        }
+    }
+    else
+    {
+        soundtoclient(client, e, chan, samp, vol, atten);
+    }
+}
+
 /* $AGRIP-END */
