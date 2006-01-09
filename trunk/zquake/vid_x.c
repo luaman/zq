@@ -763,10 +763,9 @@ void VID_SetPalette (unsigned char *palette)
 	}
 }
 
+static void uninstall_grabs ();
 void VID_Shutdown (void)
 {
-	static void uninstall_grabs ();
-
 	if (!x_disp)
 		return;
 
