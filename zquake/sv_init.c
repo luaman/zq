@@ -200,7 +200,14 @@ unsigned SV_CheckModel(char *mdl)
 
 	buf = (byte *)FS_LoadStackFile (mdl, stackbuf, sizeof(stackbuf));
 	if (!buf)
-		Host_Error ("SV_CheckModel: could not load %s\n", mdl);
+	{
+		if (!strcmp(mdl, "progs/player.mdl"))
+			return 33168;
+		else if (!strcmp(mdl, "progs/eyes.mdl"))
+			return 6967;
+		else
+			Host_Error ("SV_CheckModel: could not load %s\n", mdl);
+	}
 	crc = CRC_Block(buf, fs_filesize);
 
 	return crc;
