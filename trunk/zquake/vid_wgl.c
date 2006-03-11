@@ -104,7 +104,7 @@ HDC		maindc;
 
 cvar_t	gl_strings = {"gl_strings", "", CVAR_ROM};
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1"};
-cvar_t	gl_swapinterval = {"gl_swapinterval", "1"};
+cvar_t	vid_vsync = {"vid_vsync", "1"};
 cvar_t	gl_ext_swapinterval = {"gl_ext_swapinterval", "1"};
 
 qbool	vid_gammaworks = false;
@@ -613,12 +613,12 @@ void CheckSwapIntervalExtension (void)
 
 void UpdateSwapInterval (void)
 {
-	static float old_gl_swapinterval = 0;
+	static float old_vid_vsync = 0;
 
 	if (qwglSwapIntervalEXT) {
-		if (gl_swapinterval.value != old_gl_swapinterval) {
-			old_gl_swapinterval = gl_swapinterval.value;
-			qwglSwapIntervalEXT (gl_swapinterval.value != 0);
+		if (vid_vsync.value != old_vid_vsync) {
+			old_vid_vsync = vid_vsync.value;
+			qwglSwapIntervalEXT (vid_vsync.value != 0);
 		}
 	}
 }
@@ -1578,7 +1578,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_Register (&_windowed_mouse);
 	Cvar_Register (&vid_hwgammacontrol);
 	Cvar_Register (&vid_displayfrequency);
-	Cvar_Register (&gl_swapinterval);
+	Cvar_Register (&vid_vsync);
 	Cvar_Register (&gl_ext_swapinterval);
 
 	Cmd_AddCommand ("vid_modelist", VID_ModeList_f);
