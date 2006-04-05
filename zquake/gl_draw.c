@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gl_local.h"
 #include "rc_wad.h"
+#include "rc_image.h"
 #include "crc.h"
 
 static void	OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel);
@@ -359,12 +360,48 @@ static void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 	}
 }
 
+static int LoadCharsetImage (char *filename)
+{
+	byte *pic;
+	int width, height;
+	byte *buf, *src, *dest;
+	int bufsize;
+	int texnum;
+	int i;
 
-static void R_LoadCharset (void)
+	LoadTGA (filename, &pic, &width, &height);
+	if (!pic)
+		return 0;
+
+	bufsize = width * height * 2 * 4;
+	buf = Q_malloc(bufsize);
+	memset (buf, 0, bufsize);
+	dest = buf;
+	src = pic;
+	for (i = 0 ; i < 16 ; i++) {
+		memcpy (dest, src, (width * height) >> 2);
+		src += ((width * height) >> 2);
+		dest += ((width * height) >> 1);
+	}
+
+	texnum = GL_LoadTexture32 (va("pic:%s", filename), width, height * 2, buf, TEX_ALPHA);
+	if (!gl_smoothfont.value)
+	{
+		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
+
+	free (buf);
+	free (pic);
+	return texnum;
+}
+
+static int LoadCharsetFromWad (void)
 {
 	int i;
 	byte	buf[128*256];
 	byte	*src, *dest;
+	int texnum;
 
 	draw_chars = W_GetLumpName ("conchars", true);
 	for (i=0 ; i<256*64 ; i++)
@@ -384,14 +421,21 @@ static void R_LoadCharset (void)
 		dest += 128*8*2;
 	}
 
-	char_texture = GL_LoadTexture ("pic:charset", 128, 256, buf, TEX_ALPHA);
+	texnum = GL_LoadTexture ("pic:charset", 128, 256, buf, TEX_ALPHA);
 	if (!gl_smoothfont.value)
 	{
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
+	return texnum;
 }
 
+static void R_LoadCharsets (void)
+{
+	char_texture = LoadCharsetImage ("charset.tga");
+	if (!char_texture)
+		char_texture = LoadCharsetFromWad ();
+}
 
 void R_FlushPics (void)
 {
@@ -407,11 +451,9 @@ void R_FlushPics (void)
 	draw_chars = NULL;
 	draw_disc = NULL;
 
-	// load a new gfx.wad
 	W_LoadWadFile ("gfx.wad");
 
-	// load the charset by hand
-	R_LoadCharset ();
+	R_LoadCharsets ();
 
 	// the disc access monitor pic
 	draw_disc = R_CachePic_impl ("disc", true, false);
@@ -446,8 +488,7 @@ void R_Draw_Init (void)
 
 	W_LoadWadFile ("gfx.wad");
 
-	// load the charset by hand
-	R_LoadCharset ();
+	R_LoadCharsets ();
 
 	// the disc access monitor pic
 	draw_disc = R_CachePic_impl ("disc", true, false);
