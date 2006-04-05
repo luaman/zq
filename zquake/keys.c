@@ -492,7 +492,7 @@ static void AdjustConsoleHeight (int delta)
 }
 
 // Enter key was pressed in the console, do the appropriate action
-static void HandleEnter (void)
+static void HandleEnter (qbool ignore_ctrldown)
 {
 	enum {COMMAND, CHAT, TEAMCHAT} type;
 	char *p;
@@ -500,7 +500,7 @@ static void HandleEnter (void)
 	// decide whether to treat the text as chat or command
 	if (cls.state == ca_disconnected)
 		type = COMMAND;
-	else if (keydown[K_CTRL])
+	else if (keydown[K_CTRL] && !ignore_ctrldown)
 		type = TEAMCHAT;
 	else if (keydown[K_SHIFT])
 		type = CHAT;
@@ -563,8 +563,12 @@ void Key_Console (int key)
 
 	switch (key)
 	{
+		case 'M': case 'm': case 'J': case 'j':		//^M,^J = Enter
+			if (!keydown[K_CTRL])
+				break;
+		/* fall through */
 		case K_ENTER:
-			HandleEnter ();
+			HandleEnter (key != K_ENTER);
 			return;
 
 		case K_TAB:
@@ -574,6 +578,9 @@ void Key_Console (int key)
 				CompleteCommand ();
 			return;
 
+		case 'H': case 'h':		// ^H = BACKSPACE	
+			if (!keydown[K_CTRL])
+				break;
 		case K_BACKSPACE:
 			if (key_linepos > 1)
 			{
@@ -614,11 +621,16 @@ void Key_Console (int key)
 				key_linepos--;
 			return;
 
+		case 'P': case 'p':		// ^P = back in history
+			if (!keydown[K_CTRL])
+				break;
+			goto prevline;
 		case K_UPARROW:
 			if (keydown[K_CTRL]) {
 				AdjustConsoleHeight (-10);
 				return;
 			}
+prevline:
 			do {
 				history_line = (history_line - 1) & 31;
 			} while (history_line != edit_line
@@ -629,11 +641,16 @@ void Key_Console (int key)
 			key_linepos = strlen(key_lines[edit_line]);
 			return;
 
+		case 'N': case 'n':		// ^N = forward in history
+			if (!keydown[K_CTRL])
+				break;
+			goto nextline;
 		case K_DOWNARROW:
 			if (keydown[K_CTRL]) {
 				AdjustConsoleHeight (10);
 				return;
 			}
+nextline:
 			if (history_line == edit_line) return;
 			do {
 				history_line = (history_line + 1) & 31;
@@ -678,6 +695,14 @@ void Key_Console (int key)
 				Con_ScrollToBottom ();
 			else
 				key_linepos = strlen(key_lines[edit_line]);
+			return;
+		case 'u': case 'U':
+			if (!keydown[K_CTRL])
+				break;
+			if (key_linepos > 1) {
+				strcpy(key_lines[edit_line] + 1, key_lines[edit_line] + key_linepos);
+				key_linepos = 1;
+			}
 			return;
 	}
 
