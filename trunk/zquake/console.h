@@ -33,6 +33,7 @@ void Con_CheckResize (void);
 void Con_Init (void);
 void Con_DrawConsole (int lines);
 void Con_Print (char *txt);
+void Con_PrintW (wchar *txt);
 void Con_Scroll (int count);
 void Con_ScrollToTop (void);
 void Con_ScrollToBottom (void);

@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define		CON_TEXTSIZE	65536
 typedef struct
 {
-	char	text[CON_TEXTSIZE];
+	wchar	text[CON_TEXTSIZE];
 	int		current;		// line where next message will be printed
 	int		display;		// bottom of console displays this line
 	int		numlines;		// number of non-blank text lines, used for backscroling
@@ -50,7 +50,7 @@ int			con_vislines;
 int			con_notifylines;		// scan lines to clear for notify lines
 
 #define		MAXCMDLINE	256
-extern	char	key_lines[32][MAXCMDLINE];
+extern	wchar	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;
 extern	int		key_linepos;
 
@@ -96,8 +96,11 @@ Con_Clear_f
 */
 void Con_Clear_f (void)
 {
+	int	i;
+
 	con.numlines = 0;
-	memset (con.text, ' ', CON_TEXTSIZE);
+	for (i = 0; i < CON_TEXTSIZE; i++)
+		con.text[i] = ' ';
 	con.display = con.current;
 }
 
@@ -158,7 +161,7 @@ If the line width has changed, reformat the buffer.
 void Con_CheckResize (void)
 {
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
-	char	tbuf[CON_TEXTSIZE];
+	wchar	tbuf[CON_TEXTSIZE];
 
 	width = (vid.width >> 3) - 2;
 
@@ -170,7 +173,8 @@ void Con_CheckResize (void)
 		width = 38;
 		con_linewidth = width;
 		con_totallines = CON_TEXTSIZE / con_linewidth;
-		memset (con.text, ' ', CON_TEXTSIZE);
+		for (i = 0; i < CON_TEXTSIZE; i++)
+			con.text[i] = ' ';
 	}
 	else
 	{
@@ -188,8 +192,9 @@ void Con_CheckResize (void)
 		if (con_linewidth < numchars)
 			numchars = con_linewidth;
 
-		memcpy (tbuf, con.text, CON_TEXTSIZE);
-		memset (con.text, ' ', CON_TEXTSIZE);
+		memcpy (tbuf, con.text, CON_TEXTSIZE*sizeof(wchar));
+		for (i = 0; i < CON_TEXTSIZE; i++)
+			con.text[i] = ' ';
 
 		for (i=0 ; i<numlines ; i++)
 		{
@@ -217,10 +222,10 @@ Con_ConDump_f
 void Con_ConDump_f (void)
 {
 	char	name[MAX_OSPATH];
-	char	buffer[1024];
+	wchar	buffer[1024];
 	FILE	*f;
 	int		i, x, linewidth;
-	char	*line;
+	wchar	*line;
 
 	if (Cmd_Argc() < 2) {
 		Com_Printf ("condump <filename> : dump console text to file\n");
@@ -245,7 +250,7 @@ void Con_ConDump_f (void)
 	for (i = con.numlines - 1; i >= 0 ; i--)
 	{
 		line = con.text + ((con.current - i + con_totallines) % con_totallines)*con_linewidth;
-		strncpy (buffer, line, linewidth);
+		memcpy (buffer, line, linewidth*sizeof(buffer[0]));
 		for (x = linewidth-1; x >= 0; x--)
 		{
 			if (buffer[x] == ' ')
@@ -254,10 +259,10 @@ void Con_ConDump_f (void)
 				break;
 		}
 		for (x=0; buffer[x]; x++)
-			if ((unsigned char)buffer[x] >= 128 + 32)
+			if (buffer[x] >= 128 + 32 && buffer[x] <= 255)
 				buffer[x] &= 0x7f;	// strip high bit off ASCII chars
 
-		fprintf (f, "%s\n", buffer);
+		fprintf (f, "%s\n", wcs2str(buffer));
 	}
 
 	fclose (f);
@@ -302,14 +307,16 @@ Con_Linefeed
 */
 void Con_Linefeed (void)
 {
+	int i;
+
 	con_x = 0;
 	if (con.display == con.current)
 		con.display++;
 	con.current++;
 	if (con.numlines < con_totallines)
 		con.numlines++;
-	memset (&con.text[(con.current%con_totallines)*con_linewidth]
-	, ' ', con_linewidth);
+	for (i = 0; i < con_linewidth; i++)
+		con.text[(con.current%con_totallines)*con_linewidth + i] = ' ';
 }
 
 /*
@@ -380,6 +387,78 @@ void Con_Print (char *txt)
 
 		default:	// display character and advance
 			y = con.current % con_totallines;
+			con.text[y*con_linewidth+con_x] = (unsigned char)c | mask | con_ormask;
+			con_x++;
+			if (con_x >= con_linewidth)
+				con_x = 0;
+			break;
+		}
+
+	}
+}
+
+
+//##U
+void Con_PrintW (wchar *txt)
+{
+	int		y;
+	int		c, l;
+	static int	cr;
+	int		mask;
+
+	if (!con_initialized)
+		return;
+
+	if (txt[0] == 1 || txt[0] == 2)
+	{
+		mask = 128;		// go to colored text
+		txt++;
+	}
+	else
+		mask = 0;
+
+
+	while ( (c = *txt) != 0 )
+	{
+	// count word length
+		for (l=0 ; l< con_linewidth ; l++)
+			if ( txt[l] <= ' ')
+				break;
+
+	// word wrap
+		if (l != con_linewidth && (con_x + l > con_linewidth) )
+			con_x = 0;
+
+		txt++;
+
+		if (cr)
+		{
+			con.current--;
+			cr = false;
+		}
+
+
+		if (!con_x)
+		{
+			Con_Linefeed ();
+		// mark time for transparent overlay
+			if (con.current >= 0)
+				con_times[con.current % NUM_CON_TIMES] = cls.realtime;
+		}
+
+		switch (c)
+		{
+		case '\n':
+			con_x = 0;
+			break;
+
+		case '\r':
+			con_x = 0;
+			cr = 1;
+			break;
+
+		default:	// display character and advance
+			y = con.current % con_totallines;
 			con.text[y*con_linewidth+con_x] = c | mask | con_ormask;
 			con_x++;
 			if (con_x >= con_linewidth)
@@ -389,6 +468,8 @@ void Con_Print (char *txt)
 
 	}
 }
+
+
 
 // scroll the (visible area of the) console up or down
 void Con_Scroll (int count)
@@ -430,17 +511,23 @@ The input line scrolls horizontally if typing goes beyond the right edge
 */
 void Con_DrawInput (void)
 {
-	int		len;
-	char	*text;
-	char	temp[MAXCMDLINE + 1];       //+ 1 for cursor if stlen(key_lines[edit_line]) == 255
+	int		len, i;
+	wchar	*text;
+	wchar	temp[MAXCMDLINE + 1];       //+ 1 for cursor if stlen(key_lines[edit_line]) == 255
 
 	if (key_dest != key_console && cls.state == ca_active)
 		return;
 
-	len = strlcpy (temp, key_lines[edit_line], MAXCMDLINE);
+	wcsncpy (temp, key_lines[edit_line], MAXCMDLINE);
+	temp[MAXCMDLINE] = 0;
+	len = wcslen(temp);
+
 	text = temp;
 
-	memset(text + len, ' ', MAXCMDLINE - len);              // fill out remainder with spaces
+	// fill out remainder with spaces
+	for (i = 0; i < MAXCMDLINE - len; i++)
+		(text + len)[i] = ' ';
+	
 	text[MAXCMDLINE] = 0;
 
 	// add the cursor frame
@@ -451,7 +538,7 @@ void Con_DrawInput (void)
 	if (key_linepos >= con_linewidth)
 		text += 1 + key_linepos - con_linewidth;
 
-	R_DrawString (8, con_vislines-22, text);
+	R_DrawStringW (8, con_vislines-22, text);
 }
 
 
@@ -465,7 +552,7 @@ Draws the last few lines of output transparently over the game top
 void Con_DrawNotify (void)
 {
 	int		x, v;
-	char	*text;
+	wchar	*text;
 	int		i;
 	float	time;
 	char	*s;
@@ -495,7 +582,7 @@ void Con_DrawNotify (void)
 		scr_copytop = 1;
 
 		for (x = 0 ; x < con_linewidth ; x++)
-			R_DrawChar ( (x+1)<<3, v, text[x]);
+			R_DrawCharW ( (x+1)<<3, v, text[x]);
 
 		v += 8;
 	}
@@ -555,6 +642,7 @@ void Con_DrawConsole (int lines)
 {
 	int				i, j, x, y, n;
 	int				rows;
+	wchar			*wtext;
 	char			*text;
 	int				row;
 	char			dlbar[1024];
@@ -590,10 +678,10 @@ void Con_DrawConsole (int lines)
 		if (con.current - row >= con_totallines)
 			break;		// past scrollback wrap point
 
-		text = con.text + (row % con_totallines)*con_linewidth;
+		wtext = con.text + (row % con_totallines)*con_linewidth;
 
 		for (x=0 ; x<con_linewidth ; x++)
-			R_DrawChar ( (x+1)<<3, y, text[x]);
+			R_DrawCharW ( (x+1)<<3, y, wtext[x]);
 	}
 
 	// draw the download bar
