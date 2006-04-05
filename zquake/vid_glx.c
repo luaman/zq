@@ -134,16 +134,51 @@ void VID_SetCaption (char *text)
 	XStoreName (x_disp, x_win, text);
 }
 
-static int XLateKey(XKeyEvent *ev)
+// handles a limited range of chars
+// currently, only ascii and cyrillic
+static int KeysymToUnicode (int k)
 {
+	extern byte koi2wc_table[64];
+	wchar u;
+	if (k >= 32 && k <= 126)
+		u = k;
+	else if (k >= 0x6c0 && k <= 0x6ff)
+		u = koi2wc_table[k - 0x6c0] + 0x400;
+	else if (k == 0x6a3)
+		u = 0x451;		// cyrillic small yo
+	else if (k == 0x6b3)
+		u = 0x401;		// cyrillic capital YO 
+	else if (k == 0x6a4)
+		u = 0x454;		// ukrainian ie
+	else if (k == 0x6b4)
+		u = 0x404;		// ukrainian IE
+	else if (k == 0x6a6)
+		u = 0x456;		// ukrainian/belarusian i
+	else if (k == 0x6b6)
+		u = 0x406;		// ukrainian/belarusian I
+	else if (k == 0x6a7)
+		u = 0x457;		// ukrainian yi
+	else if (k == 0x6b7)
+		u = 0x407;		// ukrainian YI
+	else if (k == 0x6ae)
+		u = 0x45e;		// belarusian short u
+	else if (k == 0x6b7)
+		u = 0x40e;		// belarusian short U
+	else
+		u = 0;
+	return u;
+}
 
+static int XLateKey(XKeyEvent *ev, wchar *unichar /*out*/)
+{
     int key;
-//    char buf[64];
-//    KeySym shifted;
+    char buf[64];
+    KeySym shifted;
     KeySym keysym;
 
     keysym = XLookupKeysym (ev, 0);
-//    XLookupString (ev, buf, sizeof buf, &shifted, 0);
+    XLookupString (ev, buf, sizeof(buf), &shifted, 0);
+	*unichar = KeysymToUnicode(shifted);
 
     key = 0;
 
@@ -414,8 +449,12 @@ static void GetEvent(void)
     switch (event.type)
     {
     case KeyPress:
-    case KeyRelease:
-        Key_Event(XLateKey(&event.xkey), event.type == KeyPress);
+	case KeyRelease: {
+			int keycode;
+			wchar unichar;
+			keycode = XLateKey(&event.xkey, &unichar);
+			Key_EventEx (keycode, unichar, event.type == KeyPress);
+		}
         break;
 
     case MotionNotify:

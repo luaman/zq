@@ -1461,7 +1461,7 @@ void CL_ParseServerInfoChange (void)
 	CL_ProcessServerInfo ();
 }
 
-static char koi2wc_table[64] = {
+char koi2wc_table[64] = {
 0x4e,0x30,0x31,0x46,0x34,0x35,0x44,0x33,0x45,0x38,0x39,0x3a,0x3b,0x3c,0x3d,0x3e,
 0x3f,0x4f,0x40,0x41,0x42,0x43,0x36,0x32,0x4c,0x4b,0x37,0x48,0x4d,0x49,0x47,0x4a,
 0x2e,0x10,0x11,0x26,0x14,0x15,0x24,0x13,0x25,0x18,0x19,0x1a,0x1b,0x1c,0x1d,0x1e,
@@ -1472,7 +1472,7 @@ wchar koi2wc (char c)
 	unsigned char uc = c;
 
 	if (uc >= 192 && (unsigned char)c <= 255)
-		return koi8wc_table[(unsigned char)c - 192] + 0x400;
+		return koi2wc_table[(unsigned char)c - 192] + 0x400;
 	else if (uc == '#' + 128)
 		return 0x0451;	// russian small yo
 	else if (uc == '3' + 128)
@@ -1551,7 +1551,7 @@ static void FlushString (char *s, int level, qbool team, int offset)
 
 		for (p=ws; *p; p++) {
 			if  (*p == '{' && parsewhite && p-ws >= offset) {
-				p1 = wcschr (p + 1, '}');
+				p1 = qwcschr (p + 1, '}');
 				if (p1) {
 					memcpy (out, p + 1, (p1 - p - 1) * sizeof(out[0]));
 					out += p1 - p - 1;

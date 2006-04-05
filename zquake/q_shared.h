@@ -155,9 +155,15 @@ wchar char2wc (char c);
 char wc2char (wchar wc);
 wchar *str2wcs (const char *str);
 char *wcs2str (const wchar *ws);
-#ifndef _WIN32
-wchar *wcscpy (wchar *dest, const wchar *src);
-size_t wcslen (const wchar *s);
+#ifdef _WIN32
+#define qwcscpy wcscpy
+#define qwcschr wcschr
+#define qwcslen wcslen
+#else
+wchar *qwcscpy (wchar *dest, const wchar *src);
+wchar *qwcschr (const wchar *ws, wchar wc);
+size_t qwcslen (const wchar *s);
+size_t qwcslcpy (wchar *dst, const wchar *src, size_t size);
 #endif
 
 size_t strlcpy (char *dst, const char *src, size_t size);

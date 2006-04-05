@@ -286,6 +286,51 @@ char *wcs2str (const wchar *ws)
 	return buf;
 }
 
+size_t qwcslen (const wchar *ws)
+{
+	int i = 0;
+	while (*ws++)
+		i++;
+	return i;
+}
+
+wchar *qwcscpy (wchar *dest, const wchar *src)
+{
+	while (*src)
+		*dest++ = *src++;
+	*dest = 0;
+	return dest;
+}
+
+size_t qwcslcpy (wchar *dst, const wchar *src, size_t size)
+{
+	int len = qwcslen (src);
+
+	if (len < size) {
+		// it'll fit
+		memcpy (dst, src, (len + 1) * sizeof(wchar));
+		return len;
+	}
+
+	if (size == 0)
+		return len;
+
+	assert (size >= 0);		// if a negative size was passed, then we're fucked
+
+	memcpy (dst, src, (size - 1) * sizeof(wchar));
+	dst[size - 1] = 0;
+
+	return len;
+}
+wchar *qwcschr (const wchar *ws, wchar wc)
+{
+	while (*ws) {
+		if (*ws == wc)
+			return (wchar *)ws;
+		ws++;
+	}
+	return NULL;
+}
 
 
 /*
