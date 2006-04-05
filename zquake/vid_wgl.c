@@ -71,7 +71,6 @@ qbool			DDActive;
 
 static vmode_t	modelist[MAX_MODE_LIST];
 static int		nummodes;
-static vmode_t	*pcurrentmode;
 static vmode_t	badmode;
 
 static DEVMODE	gdevmode;
@@ -1834,7 +1833,7 @@ extern void M_PrintWhite (int cx, int cy, char *str);
 extern void M_DrawChar (int cx, int line, int num);
 extern void M_DrawPic (int x, int y, mpic_t *pic);
 
-static int	vid_line, vid_wmodes;
+static int	vid_wmodes;
 
 typedef struct
 {
