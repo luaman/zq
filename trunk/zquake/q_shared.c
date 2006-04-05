@@ -258,7 +258,7 @@ char wc2char (wchar wc)
 		return '?';
 }
 
-wchar *str2wcs (char *s)
+wchar *str2wcs (const char *s)
 {
 	static wchar buf[65536];	//ouch! ouch!
 	int i;
@@ -272,7 +272,7 @@ wchar *str2wcs (char *s)
 	return buf;
 }
 
-char *wcs2str (wchar *ws)
+char *wcs2str (const wchar *ws)
 {
 	static char buf[65536];		//ouch! ouch!
 	int i;

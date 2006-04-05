@@ -153,8 +153,8 @@ char *Q_ftos (float value);		// removes trailing zero chars
 
 wchar char2wc (char c);
 char wc2char (wchar wc);
-wchar *str2wcs (char *str);
-char *wcs2str (wchar *ws);
+wchar *str2wcs (const char *str);
+char *wcs2str (const wchar *ws);
 #ifndef _WIN32
 wchar *wcscpy (wchar *dest, const wchar *src);
 size_t wcslen (const wchar *s);
