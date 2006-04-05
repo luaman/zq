@@ -78,7 +78,7 @@ void M_Main_Key (int key);
 		void M_Load_Key (int key);
 		void M_Save_Key (int key);
 	void M_MultiPlayer_Key (int key);
-		void M_Setup_Key (int key);
+		void M_Setup_Key (int key, wchar unichar);
 		void M_Demos_Key (int key);
 		void M_GameOptions_Key (int key);
 	void M_Options_Key (int key);
@@ -2431,7 +2431,7 @@ void M_Setup_Draw (void)
 }
 
 
-void M_Setup_Key (int k)
+void M_Setup_Key (int k, wchar unichar)
 {
 	int		l;
 
@@ -2525,7 +2525,7 @@ void M_Setup_Key (int k)
 			if (l < 15)
 			{
 				setup_name[l+1] = 0;
-				setup_name[l] = k;
+				setup_name[l] = wc2char(unichar);
 			}
 		}
 		if (setup_cursor == 1)
@@ -2534,7 +2534,7 @@ void M_Setup_Key (int k)
 			if (l < 15)
 			{
 				setup_team[l+1] = 0;
-				setup_team[l] = k;
+				setup_team[l] = wc2char(unichar);
 			}
 		}
 	}
@@ -2735,7 +2735,7 @@ void M_Draw (void)
 }
 
 
-void M_Keydown (int key)
+void M_Keydown (int key, wchar unichar)
 {
 	switch (m_state)
 	{
@@ -2763,7 +2763,7 @@ void M_Keydown (int key)
 		return;
 
 	case m_setup:
-		M_Setup_Key (key);
+		M_Setup_Key (key, unichar);
 		return;
 
 	case m_options:

@@ -557,7 +557,7 @@ Key_Console
 Interactive line editing and console scrollback
 ====================
 */
-void Key_Console (int key)
+void Key_Console (int key, wchar unichar)
 {
 	int i;
 
@@ -732,35 +732,35 @@ nextline:
 		return;
 	}
 
-	if (key < 32 || key > 127)
+	if (!unichar)
 		return;	// non-printable
 
 	if (keydown[K_CTRL]) {
-		if (key >= '0' && key <= '9')
-				key = key - '0' + 0x12;	// yellow number
+		if (unichar >= '0' && unichar <= '9')
+				unichar = unichar - '0' + 0x12;	// yellow number
 		else switch (key) {
-			case '[': key = 0x10; break;
-			case ']': key = 0x11; break;
-			case 'g': key = 0x86; break;
-			case 'r': key = 0x87; break;
-			case 'y': key = 0x88; break;
-			case 'b': key = 0x89; break;
-			case '(': key = 0x80; break;
-			case '=': key = 0x81; break;
-			case ')': key = 0x82; break;
-			case 'a': key = 0x83; break;
-			case '<': key = 0x1d; break;
-			case '-': key = 0x1e; break;
-			case '>': key = 0x1f; break;
-			case ',': key = 0x1c; break;
-			case '.': key = 0x9c; break;
-			case 'B': key = 0x8b; break;
-			case 'C': key = 0x8d; break;
+			case '[': unichar = 0x10; break;
+			case ']': unichar = 0x11; break;
+			case 'g': unichar = 0x86; break;
+			case 'r': unichar = 0x87; break;
+			case 'y': unichar = 0x88; break;
+			case 'b': unichar = 0x89; break;
+			case '(': unichar = 0x80; break;
+			case '=': unichar = 0x81; break;
+			case ')': unichar = 0x82; break;
+			case 'a': unichar = 0x83; break;
+			case '<': unichar = 0x1d; break;
+			case '-': unichar = 0x1e; break;
+			case '>': unichar = 0x1f; break;
+			case ',': unichar = 0x1c; break;
+			case '.': unichar = 0x9c; break;
+			case 'B': unichar = 0x8b; break;
+			case 'C': unichar = 0x8d; break;
 		}
 	}
 
-	if (keydown[K_ALT])
-		key |= 128;		// brown char
+	if (keydown[K_ALT] && unichar <= 128)
+		unichar |= 128;		// brown char
 
 	i = strlen(key_lines[edit_line]);
 	if (i >= MAXCMDLINE-1)
@@ -768,7 +768,7 @@ nextline:
 
 	// This also moves the trailing zero
 	memmove (key_lines[edit_line]+key_linepos+1, key_lines[edit_line]+key_linepos, i-key_linepos+1);
-	key_lines[edit_line][key_linepos] = key;
+	key_lines[edit_line][key_linepos] = wc2char(unichar);
 	key_linepos++;
 }
 #else // AGRIP
@@ -1010,7 +1010,7 @@ qbool	chat_team;
 char	chat_buffer[MAXCMDLINE];
 int		chat_linepos = 0;
 
-void Key_Message (int key)
+void Key_Message (int key, wchar unichar)
 {
 	int len;
 
@@ -1435,19 +1435,19 @@ Called by the system between frames for both key up and key down events
 Should NOT be called during an interrupt!
 ===================
 */
-void Key_EventEx (int key, int shiftkey, qbool down)
+void Key_EventEx (int key, wchar unichar, qbool down)
 {
 	char	*kb;
 	char	cmd[1024];
 
 	if (key == K_LALT || key == K_RALT)
-		Key_EventEx (K_ALT, K_ALT, down);
+		Key_EventEx (K_ALT, 0, down);
 	else if (key == K_LCTRL || key == K_RCTRL)
-		Key_EventEx (K_CTRL, K_CTRL, down);
+		Key_EventEx (K_CTRL, 0, down);
 	else if (key == K_LSHIFT || key == K_RSHIFT)
-		Key_EventEx (K_SHIFT, K_SHIFT, down);
+		Key_EventEx (K_SHIFT, 0, down);
 	else if (key == K_LWIN || key == K_RWIN)
-		Key_EventEx (K_WIN, K_WIN, down);
+		Key_EventEx (K_WIN, 0, down);
 
 	keydown[key] = down;
 
@@ -1481,10 +1481,10 @@ void Key_EventEx (int key, int shiftkey, qbool down)
 		switch (key_dest)
 		{
 		case key_message:
-			Key_Message (key);
+			Key_Message (key, unichar);
 			break;
 		case key_menu:
-			M_Keydown (key);
+			M_Keydown (key, unichar);
 			break;
 		case key_game:
 			M_ToggleMenu_f ();
@@ -1548,20 +1548,18 @@ void Key_EventEx (int key, int shiftkey, qbool down)
 	if (!down)
 		return;		// other systems only care about key down events
 
-	key = shiftkey;
-
 	switch (key_dest)
 	{
 	case key_message:
-		Key_Message (key);
+		Key_Message (key, unichar);
 		break;
 	case key_menu:
-		M_Keydown (key);
+		M_Keydown (key, unichar);
 		break;
 
 	case key_game:
 	case key_console:
-		Key_Console (key);
+		Key_Console (key, unichar);
 		break;
 	default:
 		assert(!"Bad key_dest");
@@ -1570,10 +1568,14 @@ void Key_EventEx (int key, int shiftkey, qbool down)
 
 void Key_Event (int key, qbool down)
 {
-	if (keydown[K_SHIFT])
-		Key_EventEx (key, keyshift[key], down);
-	else
-		Key_EventEx (key, key, down);
+	wchar unichar;
+
+	assert (key >= 0 && key <= 255);
+
+	unichar = keydown[K_SHIFT] ? keyshift[key] : key;
+	if (unichar < 32 || unichar > 127)
+		unichar = 0;
+	Key_EventEx (key, unichar, down);
 }
 
 /*

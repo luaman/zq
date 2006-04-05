@@ -38,8 +38,10 @@ HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion,
 cvar_t	m_filter = {"m_filter", "0"};
 cvar_t	in_dinput = {"in_dinput", "1", CVAR_ARCHIVE};
 
+// keyboard variables
 // compatibility with old Quake -- setting to 0 disables KP_* codes
 cvar_t	cl_keypad = {"cl_keypad","1"};
+cvar_t	in_builtinkeymap = {"in_builtinkeymap", "0"};
 
 static int		mouse_buttons = 0;
 static int		mouse_oldbuttonstate = 0;
@@ -528,6 +530,7 @@ void IN_Init (void)
 
 	// keyboard variables
 	Cvar_Register (&cl_keypad);
+	Cvar_Register (&in_builtinkeymap);
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 	Cmd_AddCommand ("loadkeys", IN_LoadKeys_f);
@@ -1277,7 +1280,7 @@ byte	shiftkeymap[256];	// generated when shift is pressed
 byte	altgrkeymap[256];	// generated when Alt-GR is pressed
 qbool	keymap_active = false;
 
-extern void Key_EventEx (int key, int shiftkey, qbool down);
+extern void Key_EventEx (int key, int unichar, qbool down);
 
 /*
 =======
@@ -1286,13 +1289,15 @@ IN_TranslateKeyEvent
 Map from windows to quake keynums and generate Key_EventEx
 =======
 */
-void IN_TranslateKeyEvent (int lKeyData, qbool down)
+void IN_TranslateKeyEvent (int lParam, int wParam, qbool down)
 {
-	int		extended, scancode, key, shiftkey;
+	int		extended, scancode, key;
+	WCHAR	unichar;
+	BYTE	state[256];
+	
+	extended = (lParam >> 24) & 1;
 
-	extended = (lKeyData >> 24) & 1;
-
-	scancode = (lKeyData>>16)&255;
+	scancode = (lParam >> 16) & 255;
 	if (scancode > 127)
 		return;
 
@@ -1300,12 +1305,12 @@ void IN_TranslateKeyEvent (int lKeyData, qbool down)
 	{
 		key = keymap[scancode + (extended ? 128 : 0)];
 		if (keydown[K_ALTGR])
-			shiftkey = altgrkeymap[scancode + (extended ? 128 : 0)];
+			unichar = altgrkeymap[scancode + (extended ? 128 : 0)];
 		else if (keydown[K_SHIFT])
-			shiftkey = shiftkeymap[scancode + (extended ? 128 : 0)];
+			unichar = shiftkeymap[scancode + (extended ? 128 : 0)];
 		else
-			shiftkey = key;
-		Key_EventEx (key, shiftkey, down);
+			unichar = key;
+		Key_EventEx (key, unichar, down);
 		return;
 	}
 
@@ -1344,7 +1349,15 @@ void IN_TranslateKeyEvent (int lKeyData, qbool down)
 		}
 	}
 
-	Key_Event (key, down);
+	if (in_builtinkeymap.value)
+	{
+		Key_Event (key, down);
+		return;
+	}
+
+	GetKeyboardState (state);
+	ToUnicode (wParam, lParam >> 16, state, &unichar, 1, 0);
+	Key_EventEx (key, unichar, down);
 }
 
 /*
