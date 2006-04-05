@@ -1461,43 +1461,118 @@ void CL_ParseServerInfoChange (void)
 	CL_ProcessServerInfo ();
 }
 
+static char koi2wc_table[64] = {
+0x4e,0x30,0x31,0x46,0x34,0x35,0x44,0x33,0x45,0x38,0x39,0x3a,0x3b,0x3c,0x3d,0x3e,
+0x3f,0x4f,0x40,0x41,0x42,0x43,0x36,0x32,0x4c,0x4b,0x37,0x48,0x4d,0x49,0x47,0x4a,
+0x2e,0x10,0x11,0x26,0x14,0x15,0x24,0x13,0x25,0x18,0x19,0x1a,0x1b,0x1c,0x1d,0x1e,
+0x1f,0x2f,0x20,0x21,0x22,0x23,0x16,0x12,0x2c,0x2b,0x17,0x28,0x2d,0x29,0x27,0x2a };
+
+wchar koi2wc (char c)
+{
+	unsigned char uc = c;
+
+	if (uc >= 192 && (unsigned char)c <= 255)
+		return koi8wc_table[(unsigned char)c - 192] + 0x400;
+	else if (uc == '#' + 128)
+		return 0x0451;	// russian small yo
+	else if (uc == '3' + 128)
+		return 0x0401;	// russian capital yo
+	else if (uc == '4' + 128)
+		return 0x0404;	// ukranian capital round E
+	else if (uc == '$' + 128)
+		return 0x0454;	// ukranian small round E
+	else if (uc == '6' + 128)
+		return 0x0406;	// ukranian capital I
+	else if (uc == '&' + 128)
+		return 0x0456;	// ukranian small i
+	else if (uc == '7' + 128)
+		return 0x0407;	// ukranian capital I with two dots
+	else if (uc == '\'' + 128)
+		return 0x0457;	// ukranian small i with two dots
+	else if (uc == '>' + 128)
+		return 0x040e;	// belarusian Y
+	else if (uc == '.' + 128)
+		return 0x045e;	// belarusian y
+	else if (uc == '/' + 128)
+		return 0x042c;	// russian capital hard sign
+	else
+		return (wchar)(unsigned char)c;
+}
+
+
+static wchar *decode_string (const char *s)
+{
+	static wchar buf[2048];	// should be enough for everyone!!!
+
+	// this code sucks
+	if (strstr(s, "=?koi8q?") && strstr(s, "?="))
+	{
+		int i;
+		char *p;
+		wchar *out = buf;
+
+Com_DPrintf ("%s\n", s);
+		p = strstr(s, "=?koi8q?");
+		for (i = 0; i < p - s; i++)
+			*out++ = char2wc(s[i]);
+		p += strlen("=?koi8q?");
+		while (*p && !(*p == '?' && *(p+1) == '='))
+		{
+			*out++ = koi2wc(*p);
+			p++;
+		}
+		if (*p) {
+			p += 2;
+			while (*p)
+				*out++ = *p++;
+		}
+		*out++ = 0;
+		return buf;
+	}
+	return str2wcs(s);
+}
+
 
 // for CL_ParsePrint
 static void FlushString (char *s, int level, qbool team, int offset)
 {
+	wchar *ws = decode_string (s);
+
 #ifndef AGRIP
 	if (level == PRINT_CHAT)
 	{
-		char	buf[2048];
-		char	*out = buf, *p, *p1;
+		wchar	buf[2048];
+		wchar	*out = buf, *p, *p1;
 		extern cvar_t	cl_parseWhiteText;
 		qbool	parsewhite;
 
 		parsewhite = cl_parseWhiteText.value == 1 ||
 			(cl_parseWhiteText.value == 2 && team);
 
-		for (p=s; *p; p++) {
-			if  (*p == '{' && parsewhite && p-s >= offset) {
-				p1 = strchr (p + 1, '}');
+		for (p=ws; *p; p++) {
+			if  (*p == '{' && parsewhite && p-ws >= offset) {
+				p1 = wcschr (p + 1, '}');
 				if (p1) {
-					memcpy (out, p + 1, p1 - p - 1);
+					memcpy (out, p + 1, (p1 - p - 1) * sizeof(out[0]));
 					out += p1 - p - 1;
 					p = p1;
 					continue;
 				}
 			}
 			if (*p != 10 && *p != 13
-				&& !(p==s && (*p==1 || *p==2)))
+				&& !(p==ws && (*p==1 || *p==2)))
 				*out++ = *p | 128;	// convert to red
 			else
 				*out++ = *p;
 		}
 		*out = 0;
-		Com_Printf ("%s", buf);
+//		Com_Printf ("%s", buf);
+		Con_PrintW (buf);
 	}
 	else
 #endif
-		Com_Printf ("%s", s);
+//		Com_Printf ("%s", s);
+		Con_PrintW (ws);
 	if (level > 3)
 		return;
 	if (team)

@@ -493,6 +493,57 @@ static void AdjustConsoleHeight (int delta)
 	Cvar_SetValue (&scr_consize, (float)height / vid.height);
 }
 
+/* KOI8-R encodes Russian capital hard sign as 0xFF, but we can't use it
+because it breaks older clients (qwcl).  We use 0xaf ('/'+ 0x80) instead. */
+static char *wc2koi_table =
+"?3??4?67??????>?"
+"abwgdevzijklmnop"
+"rstufhc~{}/yx|`q"
+"ABWGDEVZIJKLMNOP"
+"RSTUFHC^[]_YX\\@Q"
+"?#??$?&'??????.?";
+
+char wc2koi (wchar wc) {
+	if (wc <= 127)
+		return (char)wc;
+	if (wc >= 0x400 && wc <= 0x45f)
+		return wc2koi_table[wc - 0x400] + 128;
+	else
+		return '?';
+		
+}
+
+char *encode_say (wchar *in)
+{
+	static char buf[1024];
+	wchar *p;
+	char *out;
+	int i;
+
+	for (p = in; *p; p++)
+		if (*p > 256)
+			goto encode;
+	strlcpy (buf, wcs2str(in), sizeof(buf));
+	return buf;
+encode:
+	strcpy (buf, "=?koi8q?");
+	out = buf + strlen(buf);
+	while (*in && (out - buf < sizeof(buf)/sizeof(buf[0])))
+	{
+		if (*in <= 255)
+			*out++ = *in;
+		else {
+			*out++ = wc2koi(*in);
+		}
+		in++;
+	}
+	*out++ = '?';
+	*out++ = '=';
+	*out++ = 0;
+	return buf;
+}
+
+
 // Enter key was pressed in the console, do the appropriate action
 static void HandleEnter (qbool ignore_ctrldown)
 {
@@ -525,7 +576,8 @@ static void HandleEnter (qbool ignore_ctrldown)
 			break;		// just whitespace
 
 		Cbuf_AddText(type == TEAMCHAT ? "say_team " : "say ");
-		Cbuf_AddText(wcs2str(key_lines[edit_line] + 1));
+//		Cbuf_AddText(wcs2str(key_lines[edit_line] + 1));
+		Cbuf_AddText(encode_say(key_lines[edit_line] + 1));
 		Cbuf_AddText("\n");
 		break;
 
