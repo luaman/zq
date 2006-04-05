@@ -469,9 +469,13 @@ void CL_LinkPacketEntities (void)
 		if (!state->modelindex)
 			continue;
 
-		if (cl_deadbodyfilter.value && state->modelindex == cl_playerindex
-			&& ( (i=state->frame)==49 || i==60 || i==69 || i==84 || i==93 || i==102) )
-			continue;
+		if (state->modelindex == cl_playerindex) {
+			i = state->frame;
+			if (cl_deadbodyfilter.value == 2 && i >= 41 && i <= 102)
+				continue;
+			if (cl_deadbodyfilter.value && (i==49 || i==60 || i==69 || i==84 || i==93 || i==102))
+				continue;
+		}
 
 		if (cl_gibfilter.value &&
 			(state->modelindex == cl_h_playerindex || state->modelindex == cl_gib1index
