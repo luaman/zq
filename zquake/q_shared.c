@@ -245,6 +245,49 @@ void Q_snprintfz (char *dest, size_t size, char *fmt, ...)
 }
 
 
+wchar char2wc (char c)
+{
+	return (wchar)(unsigned char)c;
+}
+
+char wc2char (wchar wc)
+{
+	if (wc <= 255)
+		return (char)wc;
+	else
+		return '?';
+}
+
+wchar *str2wcs (char *s)
+{
+	static wchar buf[65536];	//ouch! ouch!
+	int i;
+
+	for (i = 0; i < 65536 - 1; i++) {
+		if (s[i] == 0)
+			break;
+		buf[i] = (short)(unsigned char)s[i];
+	}
+	buf[i] = 0;
+	return buf;
+}
+
+char *wcs2str (wchar *ws)
+{
+	static char buf[65536];		//ouch! ouch!
+	int i;
+
+	for (i = 0; i < 65536 - 1; i++) {
+		if (ws[i] == 0)
+			break;
+		buf[i] = (char)ws[i];
+	}
+	buf[i] = 0;
+	return buf;
+}
+
+
+
 /*
 ==============
 Q_glob_match_after_star
