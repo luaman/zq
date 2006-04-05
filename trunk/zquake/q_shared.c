@@ -280,7 +280,7 @@ char *wcs2str (wchar *ws)
 	for (i = 0; i < 65536 - 1; i++) {
 		if (ws[i] == 0)
 			break;
-		buf[i] = (char)ws[i];
+		buf[i] = ws[i] <= 255 ? (char)ws[i] : '?';
 	}
 	buf[i] = 0;
 	return buf;
