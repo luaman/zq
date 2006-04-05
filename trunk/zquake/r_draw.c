@@ -265,6 +265,10 @@ void R_DrawChar (int x, int y, int num)
 		}
 	}
 }
+void R_DrawCharW (int x, int y, wchar num)
+{
+	R_DrawChar (x, y, wc2char(num));
+}
 
 void R_DrawString (int x, int y, const char *str)
 {
@@ -272,6 +276,16 @@ void R_DrawString (int x, int y, const char *str)
 	{
 		R_DrawChar (x, y, *str);
 		str++;
+		x += 8;
+	}
+}
+
+void R_DrawStringW (int x, int y, const wchar *ws)
+{
+	while (*ws)
+	{
+		R_DrawChar (x, y, *ws);
+		ws++;
 		x += 8;
 	}
 }

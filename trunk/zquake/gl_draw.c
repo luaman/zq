@@ -30,7 +30,9 @@ byte		*draw_chars;				// 8*8 graphic characters
 static mpic_t	*draw_disc;
 
 int			translate_texture;
-int			char_texture;
+#define		MAX_CHARSETS 16
+int			char_textures[MAX_CHARSETS];
+int			char_range[MAX_CHARSETS];	// 0x0400, etc; slot 0 is always 0x00
 #define		NUMCROSSHAIRS 6
 int			crosshairtextures[NUMCROSSHAIRS];
 
@@ -102,8 +104,6 @@ static byte crosshairdata[NUMCROSSHAIRS][64] = {
 	}
 };
 
-
-static void	R_LoadCharset (void);
 
 /*
 =============================================================================
@@ -341,22 +341,25 @@ static int GL_LoadPicTexture (char *name, cachepic_t *cpic, byte *data)
 static void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 {
 	float	newval;
+	int		i;
 
 	newval = Q_atof (string);
-	if (!newval == !gl_smoothfont.value || !char_texture)
+	if (!newval == !gl_smoothfont.value || !char_textures[0])
 		return;
 
-	GL_Bind(char_texture);
-        
-	if (newval)
+	for (i = 0; i < MAX_CHARSETS; i++)
 	{
-		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	}
-	else
-	{
-		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		if (!char_textures[i])
+			break;
+		GL_Bind(char_textures[i]);
+
+		if (newval) {
+			glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		} else {
+			glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
 	}
 }
 
@@ -432,9 +435,13 @@ static int LoadCharsetFromWad (void)
 
 static void R_LoadCharsets (void)
 {
-	char_texture = LoadCharsetImage ("charset.tga");
-	if (!char_texture)
-		char_texture = LoadCharsetFromWad ();
+	char_textures[0] = LoadCharsetImage ("charset.tga");
+	if (!char_textures[0])
+		char_textures[0] = LoadCharsetFromWad ();
+	// for now, only try to load the cyrillic range
+	char_textures[1] = LoadCharsetImage ("charset-0400.tga");
+	if (char_textures[1])
+		char_range[1] = 0x0400;
 }
 
 void R_FlushPics (void)
@@ -504,16 +511,30 @@ It can be clipped to the top of the screen to allow the console to be
 smoothly scrolled off.
 ================
 */
-void R_DrawChar (int x, int y, int num)
+void R_DrawCharW (int x, int y, wchar num)
 {
-	int				row, col;
-	float			frow, fcol;
+	int		row, col;
+	float	frow, fcol;
+	int		i;
+	int		slot;
 
 	if (y <= -8)
 		return;			// totally off screen
 
 	if (num == 32)
 		return;		// space
+
+	slot = 0;
+	if ((num & 0xFF00) != 0)
+	{
+		for (i = 1; i < MAX_CHARSETS; i++)
+			if (char_range[i] == (num & 0xFF00)) {
+				slot = i;
+				break;
+			}
+		if (i == MAX_CHARSETS)
+			num = '?';
+	}
 
 	num &= 255;
 
@@ -523,8 +544,7 @@ void R_DrawChar (int x, int y, int num)
 	frow = row*0.0625;
 	fcol = col*0.0625;
 
-	GL_Bind (char_texture);
-
+	GL_Bind (char_textures[slot]);
 	glBegin (GL_QUADS);
 	glTexCoord2f (fcol, frow);
 	glVertex2f (x, y);
@@ -537,6 +557,11 @@ void R_DrawChar (int x, int y, int num)
 	glEnd ();
 }
 
+void R_DrawChar (int x, int y, int num)
+{
+	R_DrawCharW (x, y, char2wc(num));
+}
+
 void R_DrawString (int x, int y, const char *str)
 {
 	float			frow, fcol;
@@ -547,7 +572,7 @@ void R_DrawString (int x, int y, const char *str)
 	if (!*str)
 		return;
 
-	GL_Bind (char_texture);
+	GL_Bind (char_textures[0]);
 
 	glBegin (GL_QUADS);
 
@@ -571,6 +596,17 @@ void R_DrawString (int x, int y, const char *str)
 	}
 
 	glEnd ();
+}
+
+void R_DrawStringW (int x, int y, const wchar *ws)
+{
+	if (y <= -8)
+		return;			// totally off screen
+	while (*ws)
+	{
+		R_DrawCharW (x, y, *ws++);
+		x += 8;
+	}
 }
 
 static byte *StringToRGB(char *s) {
