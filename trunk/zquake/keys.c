@@ -1440,8 +1440,6 @@ void Key_EventEx (int key, int shiftkey, qbool down)
 	char	*kb;
 	char	cmd[1024];
 
-//	Com_Printf ("%i : %i\n", key, down); //@@@
-
 	if (key == K_LALT || key == K_RALT)
 		Key_EventEx (K_ALT, K_ALT, down);
 	else if (key == K_LCTRL || key == K_RCTRL)
@@ -1519,32 +1517,8 @@ void Key_EventEx (int key, int shiftkey, qbool down)
 			Cbuf_AddText (cmd);
 			keyactive[key] = false;
 		}
-		if (shiftkey != key)
-		{
-			kb = keybindings[shiftkey];
-			if (kb && kb[0] == '+' && keyactive[keyshift[key]])
-			{
-				sprintf (cmd, "-%s %i\n", kb+1, key);
-				Cbuf_AddText (cmd);
-				keyactive[keyshift[key]] = false;
-			}
-		}
 		return;
 	}
-
-//
-// during demo playback, most keys bring up the main menu
-//
-#if 0
-	if (cls.demoplayback && down && consolekeys[key] && key_dest == key_game
-		&& key != K_ALT && key != K_CTRL && key != K_SHIFT
-		&& key != K_INS && key != K_DEL && key != K_HOME
-		&& key != K_END && key != K_TAB)
-	{
-		M_ToggleMenu_f ();
-		return;
-	}
-#endif
 
 //
 // if not a consolekey, send to the interpreter no matter what mode is
