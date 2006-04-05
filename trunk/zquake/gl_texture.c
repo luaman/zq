@@ -74,10 +74,10 @@ lpSelTexFUNC qglActiveTexture = NULL;
 
 void GL_Bind (int texnum)
 {
-	extern int char_texture;
+	extern int char_textures[1];
 
 	if (gl_nobind.value)
-		texnum = char_texture;
+		texnum = char_textures[0];
 	if (currenttexture == texnum)
 		return;
 	currenttexture = texnum;
