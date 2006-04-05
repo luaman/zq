@@ -2756,7 +2756,7 @@ MAIN WINDOW
 
 LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-int IN_TranslateKeyEvent (int lKeyData, qbool down);
+int IN_TranslateKeyEvent (int lParam, int wParam, qbool down);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (
@@ -2890,13 +2890,13 @@ LONG WINAPI MainWndProc (
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
 			if (!in_mode_set)
-				IN_TranslateKeyEvent (lParam, true);
+				IN_TranslateKeyEvent (lParam, wParam, true);
 			break;
 
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
 			if (!in_mode_set)
-				IN_TranslateKeyEvent (lParam, false);
+				IN_TranslateKeyEvent (lParam, wParam, false);
 			break;
 
 	// this is complicated because Win32 seems to pack multiple mouse events into

@@ -33,7 +33,7 @@ extern	int	m_activenet;
 // menus
 //
 void M_Init (void);
-void M_Keydown (int key);
+void M_Keydown (int key, wchar unichar);
 void M_Draw (void);
 void M_ToggleMenu_f (void);
 void M_DrawTextBox (int x, int y, int width, int lines);
