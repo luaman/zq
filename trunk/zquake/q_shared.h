@@ -151,6 +151,11 @@ int	Q_atoi (char *str);
 float Q_atof (char *str);
 char *Q_ftos (float value);		// removes trailing zero chars
 
+wchar char2wc (char c);
+char wc2char (wchar wc);
+wchar *str2wcs (char *str);
+char *wcs2str (wchar *ws);
+
 size_t strlcpy (char *dst, const char *src, size_t size);
 size_t strlcat (char *dst, const char *src, size_t size);
 void Q_snprintfz (char *dest, size_t size, char *fmt, ...);
