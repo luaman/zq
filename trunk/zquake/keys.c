@@ -356,7 +356,7 @@ void CompleteCommand (void)
 		return;
 
 	key_lines[edit_line][1] = '/';
-	wcscpy (key_lines[edit_line]+2, str2wcs(cmd));
+	qwcscpy (key_lines[edit_line]+2, str2wcs(cmd));
 	key_linepos = strlen(cmd)+2;
 	if (c + a + v == 1)
 		key_lines[edit_line][key_linepos++] = ' ';
@@ -496,12 +496,12 @@ static void AdjustConsoleHeight (int delta)
 /* KOI8-R encodes Russian capital hard sign as 0xFF, but we can't use it
 because it breaks older clients (qwcl).  We use 0xaf ('/'+ 0x80) instead. */
 static char *wc2koi_table =
-"?3??4?67??????>?"
+"?3??4?67??" "??" "??" ">?"
 "abwgdevzijklmnop"
 "rstufhc~{}/yx|`q"
 "ABWGDEVZIJKLMNOP"
 "RSTUFHC^[]_YX\\@Q"
-"?#??$?&'??????.?";
+"?#??$?&'??" "??" "??.?";
 
 char wc2koi (wchar wc) {
 	if (wc <= 127)
@@ -518,7 +518,6 @@ char *encode_say (wchar *in)
 	static char buf[1024];
 	wchar *p;
 	char *out;
-	int i;
 
 	for (p = in; *p; p++)
 		if (*p > 256)
@@ -639,27 +638,27 @@ void Key_Console (int key, wchar unichar)
 		case K_BACKSPACE:
 			if (key_linepos > 1)
 			{
-				wcscpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
+				qwcscpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
 				key_linepos--;
 			}
 			return;
 
 		case K_DEL:
-			if (key_linepos < wcslen(key_lines[edit_line]))
-				wcscpy(key_lines[edit_line] + key_linepos, key_lines[edit_line] + key_linepos + 1);
+			if (key_linepos < qwcslen(key_lines[edit_line]))
+				qwcscpy(key_lines[edit_line] + key_linepos, key_lines[edit_line] + key_linepos + 1);
 			return;
 
 		case K_RIGHTARROW:
 			if (keydown[K_CTRL]) {
 				// word right
-				i = wcslen(key_lines[edit_line]);
+				i = qwcslen(key_lines[edit_line]);
 				while (key_linepos < i && key_lines[edit_line][key_linepos] != ' ')
 					key_linepos++;
 				while (key_linepos < i && key_lines[edit_line][key_linepos] == ' ')
 					key_linepos++;
 				return;
 			}
-			if (key_linepos < wcslen(key_lines[edit_line]))
+			if (key_linepos < qwcslen(key_lines[edit_line]))
 				key_linepos++;
 			return;
 
@@ -692,8 +691,8 @@ prevline:
 					&& !key_lines[history_line][1]);
 			if (history_line == edit_line)
 				history_line = (edit_line+1)&31;
-			wcscpy(key_lines[edit_line], key_lines[history_line]);
-			key_linepos = wcslen(key_lines[edit_line]);
+			qwcscpy(key_lines[edit_line], key_lines[history_line]);
+			key_linepos = qwcslen(key_lines[edit_line]);
 			return;
 
 		case 'N': case 'n':		// ^N = forward in history
@@ -717,8 +716,8 @@ nextline:
 				key_lines[edit_line][1] = 0;
 				key_linepos = 1;
 			} else {
-				wcscpy(key_lines[edit_line], key_lines[history_line]);
-				key_linepos = wcslen(key_lines[edit_line]);
+				qwcscpy(key_lines[edit_line], key_lines[history_line]);
+				key_linepos = qwcslen(key_lines[edit_line]);
 			}
 			return;
 
@@ -749,13 +748,13 @@ nextline:
 			if (keydown[K_CTRL])
 				Con_ScrollToBottom ();
 			else
-				key_linepos = wcslen(key_lines[edit_line]);
+				key_linepos = qwcslen(key_lines[edit_line]);
 			return;
 		case 'u': case 'U':
 			if (!keydown[K_CTRL])
 				break;
 			if (key_linepos > 1) {
-				wcscpy(key_lines[edit_line] + 1, key_lines[edit_line] + key_linepos);
+				qwcscpy(key_lines[edit_line] + 1, key_lines[edit_line] + key_linepos);
 				key_linepos = 1;
 			}
 			return;
@@ -773,12 +772,12 @@ nextline:
 					*p = ' ';
 			}
 			len = p - text;
-			if (len + wcslen(key_lines[edit_line]) > MAXCMDLINE-1)
-				len = MAXCMDLINE-1 - wcslen(key_lines[edit_line]);
+			if (len + qwcslen(key_lines[edit_line]) > MAXCMDLINE-1)
+				len = MAXCMDLINE-1 - qwcslen(key_lines[edit_line]);
 
 			memmove (key_lines[edit_line] + key_linepos + len,
 			         key_lines[edit_line] + key_linepos,
-			         (wcslen(key_lines[edit_line] + key_linepos) + 1/*move trailing zero*/) * sizeof(wchar));
+			         (qwcslen(key_lines[edit_line] + key_linepos) + 1/*move trailing zero*/) * sizeof(wchar));
 			memcpy (key_lines[edit_line] + key_linepos, text, len * sizeof(wchar));
 			key_linepos += len;
 
@@ -817,7 +816,7 @@ nextline:
 	if (keydown[K_ALT] && unichar <= 128)
 		unichar |= 128;		// brown char
 
-	i = wcslen(key_lines[edit_line]);
+	i = qwcslen(key_lines[edit_line]);
 	if (i >= MAXCMDLINE-1)
 		return;
 
@@ -860,7 +859,7 @@ void Key_Console (int key, wchar unichar)
             {
                 // Show chopped char...
                 Sys_Printf("%c\n", wc2char(key_lines[edit_line][key_linepos-1]));
-                wcscpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
+                qwcscpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
                 key_linepos--;
             }
             else
@@ -871,11 +870,11 @@ void Key_Console (int key, wchar unichar)
             return;
 
         case K_DEL:
-            if (key_linepos < wcslen(key_lines[edit_line]))
+            if (key_linepos < qwcslen(key_lines[edit_line]))
             {
                 // Show deleted char...
                 Sys_Printf("%c\n", wc2char(key_lines[edit_line][key_linepos]));
-                wcscpy(key_lines[edit_line] + key_linepos, key_lines[edit_line] + key_linepos + 1);
+                qwcscpy(key_lines[edit_line] + key_linepos, key_lines[edit_line] + key_linepos + 1);
             }
             else
             {
@@ -888,14 +887,14 @@ void Key_Console (int key, wchar unichar)
             if (keydown[K_CTRL])
             {
                 // word right
-                i = wcslen(key_lines[edit_line]);
+                i = qwcslen(key_lines[edit_line]);
                 while (key_linepos < i && key_lines[edit_line][key_linepos] != ' ')
                     key_linepos++;
                 while (key_linepos < i && key_lines[edit_line][key_linepos] == ' ')
                     key_linepos++;
                 return;
             }
-            if (key_linepos < wcslen(key_lines[edit_line]))
+            if (key_linepos < qwcslen(key_lines[edit_line]))
             {
                 key_linepos++;
                 // Show the char moved to...
@@ -943,13 +942,13 @@ void Key_Console (int key, wchar unichar)
             {
                 history_line = (edit_line+1)&31;
                 Sys_Printf("!No more lines in history.\n");
-                wcscpy(key_lines[edit_line], key_lines[history_line]);
-                key_linepos = wcslen(key_lines[edit_line]);
+                qwcscpy(key_lines[edit_line], key_lines[history_line]);
+                key_linepos = qwcslen(key_lines[edit_line]);
             }
             else
             {
-                wcscpy(key_lines[edit_line], key_lines[history_line]);
-                key_linepos = wcslen(key_lines[edit_line]);
+                qwcscpy(key_lines[edit_line], key_lines[history_line]);
+                key_linepos = qwcslen(key_lines[edit_line]);
                 // Show moved-to line...
                 Sys_Printf("%s\n", key_lines[edit_line]);
             }
@@ -971,13 +970,13 @@ void Key_Console (int key, wchar unichar)
             if (history_line == edit_line)
             {
                 Sys_Printf("!Edit line reached.\n");
-                wcscpy(key_lines[edit_line], key_lines[(edit_line+1)&31]);
-                key_linepos = wcslen(key_lines[edit_line]);
+                qwcscpy(key_lines[edit_line], key_lines[(edit_line+1)&31]);
+                key_linepos = qwcslen(key_lines[edit_line]);
             }
             else
             {
-                wcscpy(key_lines[edit_line], key_lines[history_line]);
-                key_linepos = wcslen(key_lines[edit_line]);
+                qwcscpy(key_lines[edit_line], key_lines[history_line]);
+                key_linepos = qwcslen(key_lines[edit_line]);
                 // Show moved-to line...
                 Sys_Printf("%s\n", key_lines[edit_line]);
             }
@@ -1011,7 +1010,7 @@ void Key_Console (int key, wchar unichar)
             if (keydown[K_CTRL])
                 Con_ScrollToTop ();
             else
-                key_linepos = wcslen(key_lines[edit_line]);
+                key_linepos = qwcslen(key_lines[edit_line]);
             return;
     }
 
@@ -1029,11 +1028,11 @@ void Key_Console (int key, wchar unichar)
                     *p = ' ';
             }
             len = p - text;
-            if (len + wcslen(key_lines[edit_line]) > MAXCMDLINE-1)
-                len = MAXCMDLINE-1 - wcslen(key_lines[edit_line]);
+            if (len + qwcslen(key_lines[edit_line]) > MAXCMDLINE-1)
+                len = MAXCMDLINE-1 - qwcslen(key_lines[edit_line]);
 
             memmove (key_lines[edit_line] + key_linepos + len,
-                    key_lines[edit_line] + key_linepos, (wcslen(key_lines[edit_line] + key_linepos) + 1/*move trailing zero*/) * sizeof(wchar));
+                    key_lines[edit_line] + key_linepos, (qwcslen(key_lines[edit_line] + key_linepos) + 1/*move trailing zero*/) * sizeof(wchar));
             memcpy (key_lines[edit_line] + key_linepos, text, len * sizeof(wchar));
             key_linepos += len;
 
@@ -1045,7 +1044,7 @@ void Key_Console (int key, wchar unichar)
 	if (!unichar)
 		return;	// non-printable
 
-    i = wcslen(key_lines[edit_line]);
+    i = qwcslen(key_lines[edit_line]);
     if (i >= MAXCMDLINE-1)
         return;
 

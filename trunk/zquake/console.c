@@ -518,9 +518,8 @@ void Con_DrawInput (void)
 	if (key_dest != key_console && cls.state == ca_active)
 		return;
 
-	wcsncpy (temp, key_lines[edit_line], MAXCMDLINE);
-	temp[MAXCMDLINE] = 0;
-	len = wcslen(temp);
+	qwcslcpy (temp, key_lines[edit_line], MAXCMDLINE);
+	len = qwcslen(temp);
 
 	text = temp;
 
