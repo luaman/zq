@@ -155,6 +155,10 @@ wchar char2wc (char c);
 char wc2char (wchar wc);
 wchar *str2wcs (char *str);
 char *wcs2str (wchar *ws);
+#ifndef _WIN32
+wchar *wcscpy (wchar *dest, const wchar *src);
+size_t wcslen (const wchar *s);
+#endif
 
 size_t strlcpy (char *dst, const char *src, size_t size);
 size_t strlcat (char *dst, const char *src, size_t size);
