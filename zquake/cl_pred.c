@@ -92,6 +92,7 @@ void CL_CategorizePosition (void)
 {
 	if (cl.spectator && cam_curtarget == CAM_NOTARGET) {
 		cl.onground = false;	// in air
+		cl.waterlevel = 0;
 		return;
 	}
 	VectorClear (pmove.velocity);
@@ -99,6 +100,7 @@ void CL_CategorizePosition (void)
 	pmove.numtouch = 0;
 	PM_CategorizePosition ();
 	cl.onground = pmove.onground;
+	cl.waterlevel = pmove.waterlevel;
 }
 
 
@@ -263,6 +265,7 @@ static void CL_PredictLocalPlayer (void)
 	int			i;
 	frame_t		*from = NULL, *to;
 	int			oldphysent;
+	extern cvar_t cl_smartjump;
 
 	if (cls.nqdemoplayback)
 		goto out;
@@ -290,8 +293,11 @@ static void CL_PredictLocalPlayer (void)
 	{
 		VectorCopy (to->playerstate[Cam_PlayerNum()].velocity, cl.simvel);
 		VectorCopy (to->playerstate[Cam_PlayerNum()].origin, cl.simorg);
-		if (cl.z_ext & Z_EXT_PF_ONGROUND)
+		if (cl.z_ext & Z_EXT_PF_ONGROUND) {
+			if (cl_smartjump.value)
+				CL_CategorizePosition ();
 			cl.onground = to->playerstate[Cam_PlayerNum()].onground;
+		}
 		else
 			CL_CategorizePosition ();
 		goto out;
@@ -309,6 +315,7 @@ static void CL_PredictLocalPlayer (void)
 		CL_PredictUsercmd (&from->playerstate[cl.playernum]
 			, &to->playerstate[cl.playernum], &to->cmd);
 		cl.onground = pmove.onground;
+		cl.waterlevel = pmove.waterlevel;
 	}
 
 	pmove.numphysent = oldphysent;

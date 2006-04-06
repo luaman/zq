@@ -354,6 +354,7 @@ typedef struct
 	double		laststop;
 
 	qbool		onground;
+	qbool		waterlevel;
 	float		crouch;			// local amount for smoothing stepups
 	float		viewheight;
 

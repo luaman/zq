@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 cvar_t	cl_nodelta = {"cl_nodelta","0"};
 cvar_t	cl_c2spps = {"cl_c2spps","0"};
 cvar_t	cl_c2sImpulseBackup = {"cl_c2sImpulseBackup","3"};
+cvar_t	cl_smartjump = {"cl_smartjump", "1"};
 cvar_t	cl_broken_ankle_sucks = {"cl_broken_ankle_sucks","0"};
 #ifdef AGRIP
 cvar_t  agv_mov_turnvalue = {"agv_mov_turnvalue","30",CVAR_USERINFO};
@@ -161,8 +162,28 @@ void IN_AttackUp(void) {KeyUp(&in_attack);}
 
 void IN_UseDown (void) {KeyDown(&in_use);}
 void IN_UseUp (void) {KeyUp(&in_use);}
-void IN_JumpDown (void) {KeyDown(&in_jump);}
-void IN_JumpUp (void) {KeyUp(&in_jump);}
+
+void IN_JumpDown(void) {
+	qbool condition;
+
+	// The code is from FuhQuake. Why the teamfortress check?
+	condition = (cls.state == ca_active && cl_smartjump.value);
+	if (condition && cl.stats[STAT_HEALTH] > 0 && !cls.demoplayback && !cl.spectator && 
+		cl.waterlevel >= 2 && !(cl.teamfortress && (in_forward.state & 1))
+	)
+		KeyDown(&in_up);
+	else if (condition && cl.spectator && !cam_track)
+		KeyDown(&in_up);
+	else
+		KeyDown(&in_jump);
+}
+
+void IN_JumpUp(void) {
+	if (cl_smartjump.value)
+		KeyUp(&in_up);
+	KeyUp(&in_jump);
+}
+
 
 //
 // builtin forward rocket jump script 
@@ -770,6 +791,7 @@ void CL_InitInput (void)
 	Cvar_Register (&cl_nodelta);
 	Cvar_Register (&cl_c2sImpulseBackup);
 	Cvar_Register (&cl_c2spps);
+	Cvar_Register (&cl_smartjump);
 	Cvar_Register (&cl_broken_ankle_sucks);
 }
 
