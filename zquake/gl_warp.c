@@ -726,12 +726,20 @@ void R_ClearSky (void)
 
 static void MakeSkyVec (float s, float t, int axis)
 {
-	vec3_t		v, b;
-	int			j, k;
+	vec3_t      v, b;
+	int         j, k;
+#ifdef FARCLIP_SKYBOX
+	int         farclip;
 
+	farclip = max((int) r_farclip.value, 4096);
+	b[0] = s*(farclip >> 1);
+	b[1] = t*(farclip >> 1);
+	b[2] = (farclip >> 1);
+#else
 	b[0] = s*skybox_range;
 	b[1] = t*skybox_range;
 	b[2] = skybox_range;
+#endif
 
 	for (j=0 ; j<3 ; j++)
 	{
@@ -814,10 +822,18 @@ static void MakeSkyVec2 (float s, float t, int axis, vec3_t v)
 {
 	vec3_t		b;
 	int			j, k;
+#ifdef FARCLIP_SKYBOX
+	int         farclip;
 
+	farclip = max((int) r_farclip.value, 4096);
+	b[0] = s*(farclip >> 1);
+	b[1] = t*(farclip >> 1);
+	b[2] = (farclip >> 1);
+#else
 	b[0] = s*skybox_range;
 	b[1] = t*skybox_range;
 	b[2] = skybox_range;
+#endif
 
 	for (j=0 ; j<3 ; j++)
 	{
