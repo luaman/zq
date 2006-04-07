@@ -75,6 +75,7 @@ cvar_t	r_fullbrightSkins = {"r_fullbrightSkins", "0", CVAR_ARCHIVE};
 cvar_t	r_fastsky = {"r_fastsky", "0", CVAR_ARCHIVE};
 cvar_t	r_skycolor = {"r_skycolor", "4", CVAR_ARCHIVE};
 cvar_t	r_fastturb = {"r_fastturb", "0", CVAR_ARCHIVE};
+cvar_t	r_farclip = {"r_farclip", "4096"};
 
 cvar_t	gl_subdivide_size = {"gl_subdivide_size", "64", CVAR_ARCHIVE};
 cvar_t	gl_clear = {"gl_clear","0"};
@@ -534,7 +535,7 @@ R_SetupGL
 void R_SetupGL (void)
 {
 	float	screenaspect;
-	int		x, x2, y2, y, w, h;
+	int		x, x2, y2, y, w, h, farclip;
 
 	//
 	// set up viewpoint
@@ -561,7 +562,8 @@ void R_SetupGL (void)
 
 	glViewport (x, y2, w, h);
 	screenaspect = (float)r_refdef2.vrect.width/r_refdef2.vrect.height * vid.aspect;
-	MYgluPerspective (r_refdef2.fov_y,  screenaspect,  4,  4096);
+	farclip = max((int) r_farclip.value, 4096);
+	MYgluPerspective (r_refdef2.fov_y,  screenaspect,  4,  farclip);
 
 	glCullFace(GL_FRONT);
 
@@ -618,6 +620,7 @@ void R_Init (unsigned char *palette)
 	Cvar_Register (&r_skycolor);
 	Cvar_Register (&r_fastsky);
 	Cvar_Register (&r_fastturb);
+	Cvar_Register (&r_farclip);
 
 	Cvar_Register (&gl_subdivide_size);
 	Cvar_Register (&gl_clear);

@@ -146,6 +146,7 @@ extern	cvar_t	r_netgraph;
 extern	cvar_t	r_fullbrightSkins;
 extern	cvar_t	r_fastsky;
 extern	cvar_t	r_skycolor;
+extern	cvar_t	r_farclip;
 
 extern	cvar_t	gl_subdivide_size;
 extern	cvar_t	gl_clear;
