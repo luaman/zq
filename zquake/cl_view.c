@@ -36,11 +36,11 @@ when crossing a water boudnary.
 */
 
 cvar_t	cl_rollspeed = {"cl_rollspeed", "200"};
-cvar_t	cl_rollangle = {"cl_rollangle", "2.0"};
-cvar_t	cl_bob = {"cl_bob","0.02"};
+cvar_t	cl_rollangle = {"cl_rollangle", "0"};	// Quake default was 2
+cvar_t	cl_bob = {"cl_bob","0	"};				// Quake default was 0.02
 cvar_t	cl_bobcycle = {"cl_bobcycle","0.6"};
 cvar_t	cl_bobup = {"cl_bobup","0.5"};
-cvar_t	v_kicktime = {"v_kicktime", "0.5"};
+cvar_t	v_kicktime = {"v_kicktime", "0"};		// Quake default was 0.5
 cvar_t	v_kickroll = {"v_kickroll", "0.6"};
 cvar_t	v_kickpitch = {"v_kickpitch", "0.6"};
 cvar_t	v_kickback = {"v_kickback", "0"};	// recoil effect
