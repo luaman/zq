@@ -1316,6 +1316,8 @@ void Key_Unbindall_f (void)
 	for (i=0 ; i<256 ; i++)
 		if (keybindings[i])
 			Key_Unbind (i);
+
+	Key_SetBinding ('`', "toggleconsole");
 }
 
 
