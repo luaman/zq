@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include "input.h"
+#include "pmove.h"		// PM_FLY
 
 cvar_t	cl_nodelta = {"cl_nodelta","0"};
 cvar_t	cl_c2spps = {"cl_c2spps","0"};
@@ -166,10 +167,13 @@ void IN_UseUp (void) {KeyUp(&in_use);}
 void IN_JumpDown(void) {
 	qbool condition;
 
-	// The code is from FuhQuake. Why the teamfortress check?
 	condition = (cls.state == ca_active && cl_smartjump.value);
 	if (condition && cl.stats[STAT_HEALTH] > 0 && !cls.demoplayback && !cl.spectator && 
 		cl.waterlevel >= 2 && !(cl.teamfortress && (in_forward.state & 1))
+	)
+		KeyDown(&in_up);
+	else if (condition && cl.stats[STAT_HEALTH] > 0 && !cls.demoplayback && !cl.spectator && 
+		cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cl.playernum].pm_type == PM_FLY
 	)
 		KeyDown(&in_up);
 	else if (condition && cl.spectator && !cam_track)
