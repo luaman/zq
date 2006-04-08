@@ -204,6 +204,93 @@ void Host_Frame (double time)
 		CL_Frame (time);	// will also call SV_Frame
 }
 
+// this will go elsewhere...
+qbool NonLegacyDefaultCfg (void) {
+	byte *data;
+	data = FS_LoadTempFile ("default.cfg");
+	if (!data)
+		return false;
+	if (fs_filesize == 1914 && Com_BlockChecksum(data, fs_filesize) == 0x2d7b72b9)
+		return false;
+	return true;
+}
+
+void ExecDefaultConfig (void) 
+{
+	// the user provided his own default.cfg, so use it
+	if (NonLegacyDefaultCfg()) {
+		Cbuf_AddText ("exec default.cfg\n");
+		return;
+	}
+
+	Cbuf_AddText (
+
+"unbindall\n"
+
+"bind w +forward;"
+"bind s +back;"
+"bind a +moveleft;"
+"bind d +moveright;"
+"bind c +movedown;"
+"bind alt +movedown;"
+"bind space +jump;"
+"bind enter +jump;"
+"bind ctrl +attack;"
+
+"bind mouse1 +attack;"
+"bind mouse2 impulse 8;"
+"bind mouse3 impulse 3 2;"
+
+"bind shift impulse 7;"
+"bind f impulse 6;"
+
+"bind uparrow +forward;"
+"bind downarrow +back;"
+"bind leftarrow +left;"
+"bind rightarrow +right;"
+"bind del +lookdown;"
+"bind pgdn +lookup;"
+"bind end centerview;"
+
+"bind 1 impulse 1;"
+"bind 2	impulse 2;"
+"bind 3	impulse 3;"
+"bind 4	impulse 4;"
+"bind 5	impulse 5;"
+"bind 6	impulse 6;"
+"bind 7	impulse 7;"
+"bind 8	impulse 8;"
+"bind 9 impulse 9;"
+"bind / impulse 10;"
+"bind [ impulse 12;"
+"bind ] impulse 10;"
+
+"bind F1 help;"
+"bind F2 menu_save;"
+"bind F3 menu_load;"
+"bind F4 menu_options;"
+"bind F5 menu_multiplayer;"
+"bind F6 \"echo Quicksaving...; wait; save quick\";"
+"bind F9 \"echo Quickloading...; wait; load quick\";"
+"bind F10 quit;"
+"bind F12 screenshot;"
+
+"bind tab +showscores;"
+"bind pause pause;"
+"bind ~ toggleconsole;"
+"bind `	toggleconsole;"
+
+"bind t	messagemode;"
+"bind y	messagemode2;"
+
+"bind +	sizeup;"
+"bind =	sizeup;"
+"bind - sizedown;"
+"bind KP_PLUS sizeup;"
+"bind KP_MINUS sizedown;"
+);
+}
+
 /*
 ====================
 Host_Init
@@ -232,7 +319,8 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	Con_Init ();
 
 	if (!dedicated) {
-		Cbuf_AddText ("exec default.cfg\n");
+		//Cbuf_AddText ("exec default.cfg\n");
+		ExecDefaultConfig ();
 		Cbuf_AddText ("exec config.cfg\n");
 		Cbuf_Execute ();
 	}
@@ -276,7 +364,11 @@ void Host_Init (int argc, char **argv, int default_memsize)
 	}
 	else
 	{
-		Cbuf_AddText ("exec autoexec.cfg\n");
+		FILE *f;
+		if (FS_FOpenFile("autoexec.cfg", &f) != -1) {
+			fclose(f);
+			Cbuf_AddText ("exec autoexec.cfg\n");
+		}
 		Cmd_StuffCmds_f ();		// process command line arguments
 		Cbuf_AddText ("cl_warncmd 1\n");
 	}
