@@ -307,7 +307,7 @@ typedef struct
 	float		minpitch;
 	float		maxpitch;
 	qbool		allow_fbskins;
-	qbool		allow_truelightning;
+	qbool		allow_fakeshaft;
 	qbool		allow_frj;
 
 	int			parsecount;		// server message counter
@@ -438,7 +438,7 @@ extern cvar_t	cl_gibfilter;
 extern cvar_t	cl_deadbodyfilter;
 extern cvar_t	cl_explosion;
 extern cvar_t	cl_muzzleflash;
-extern cvar_t	cl_trueLightning;
+extern cvar_t	cl_fakeshaft;
 extern cvar_t	r_rocketlight;
 extern cvar_t	r_rockettrail;
 extern cvar_t	r_grenadetrail;

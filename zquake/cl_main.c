@@ -65,7 +65,7 @@ cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
 cvar_t	cl_r2g = {"cl_r2g", "0"};
 cvar_t	cl_demospeed = {"cl_demospeed", "1"};
 cvar_t	cl_staticsounds = {"cl_staticSounds", "1"};
-cvar_t	cl_trueLightning = {"cl_trueLightning", "0"};
+cvar_t	cl_fakeshaft = {"cl_fakeshaft", "0"};
 cvar_t	cl_nofake = {"cl_nofake", "2"};
 cvar_t	cl_parseWhiteText = {"cl_parseWhiteText", "1"};
 cvar_t	cl_filterdrawviewmodel = {"cl_filterdrawviewmodel", "0"};
@@ -892,7 +892,7 @@ void CL_InitLocal (void)
 	Cvar_Register (&cl_muzzleflash);
 	Cvar_Register (&cl_r2g);
 	Cvar_Register (&cl_staticsounds);
-	Cvar_Register (&cl_trueLightning);
+	Cvar_Register (&cl_fakeshaft);
 	Cvar_Register (&cl_nofake);
 	Cvar_Register (&cl_parseWhiteText);
 	Cvar_Register (&cl_filterdrawviewmodel);

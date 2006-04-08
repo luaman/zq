@@ -1301,8 +1301,13 @@ void CL_ProcessServerInfo (void)
 	p = Info_ValueForKey (cl.serverinfo, "fbskins");
 	cl.allow_fbskins = *p ? (Q_atoi(p) != 0) : !cl.teamfortress; // for TF, fbskins are disabled by default
 
-	p = Info_ValueForKey (cl.serverinfo, "truelightning");
-	cl.allow_truelightning = *p ? (Q_atoi(p) != 0) : true;	// allowed by default
+	p = Info_ValueForKey (cl.serverinfo, "fakeshaft");
+	if (*p)
+		cl.allow_fakeshaft = Q_atoi(p);
+	else {
+		p = Info_ValueForKey (cl.serverinfo, "truelightning");
+		cl.allow_fakeshaft = *p ? (Q_atoi(p) != 0) : true;	// allowed by default
+	}
 
 	p = Info_ValueForKey (cl.serverinfo, "allow_frj");
 	cl.allow_frj = *p ? Q_atoi(p) : true;		// allowed by default
