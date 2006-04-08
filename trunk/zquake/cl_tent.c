@@ -222,7 +222,7 @@ void CL_ParseBeam (int type)
 	}
 
 	if (ent == Cam_PlayerNum() + 1)
-		VectorCopy (end, playerbeam_end);	// for cl_trueLightning
+		VectorCopy (end, playerbeam_end);	// for cl_fakeshaft
 
 // override any beam with the same entity
 	for (i = 0, b = cl_beams; i < MAX_BEAMS; i++, b++)
@@ -492,7 +492,7 @@ void CL_UpdateBeams (void)
 		{
 			VectorCopy (cl.simorg, b->start);
 			b->start[2] += cl.crouch;
-			if (cl_trueLightning.value && cl.allow_truelightning)
+			if (cl_fakeshaft.value && cl.allow_fakeshaft)
 			{
 				vec3_t	forward;
 				vec3_t	v, org;
@@ -500,7 +500,7 @@ void CL_UpdateBeams (void)
 				float	f, delta;
 				trace_t	trace;
 
-				f = max(0, min(1, cl_trueLightning.value));
+				f = max(0, min(1, cl_fakeshaft.value));
 
 				VectorSubtract (playerbeam_end, cl.simorg, v);
 				v[2] -= 22;		// adjust for view height
