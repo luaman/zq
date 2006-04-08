@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void AppActivate (BOOL fActive, BOOL minimize);
 
-extern int		Minimized;
+extern qbool Minimized;
 
 HWND	mainwindow;
 
@@ -541,7 +541,7 @@ MAIN WINDOW
 ===================================================================
 */
 
-int IN_TranslateKeyEvent (int lKeyData, qbool down);
+int IN_TranslateKeyEvent (int lParam, int wParam, qbool down);
 
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -617,13 +617,13 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
 			if (!in_mode_set)
-				IN_TranslateKeyEvent (lParam, true);
+				IN_TranslateKeyEvent (lParam, wParam, true);
 			break;
 
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
 			if (!in_mode_set)
-				IN_TranslateKeyEvent (lParam, true);
+				IN_TranslateKeyEvent (lParam, wParam, false);
 			break;
 
 	// this is complicated because Win32 seems to pack multiple mouse events into
