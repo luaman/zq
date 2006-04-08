@@ -96,7 +96,7 @@ cvar_t	gl_colorlights = {"gl_colorlights","1", CVAR_ARCHIVE};
 cvar_t	gl_loadlitfiles = {"gl_loadlitfiles","1", CVAR_ARCHIVE};
 cvar_t	gl_lightmode = {"gl_lightmode","2"};
 cvar_t	gl_solidparticles = {"gl_solidparticles", "0"};
-cvar_t	gl_shaftlight = {"gl_shaftlight", "0"};
+cvar_t	gl_shaftlight = {"gl_shaftlight", "1"};
 
 int		lightmode = 2;
 
