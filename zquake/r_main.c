@@ -124,7 +124,7 @@ cvar_t	r_maxedges = {"r_maxedges", "0"};
 cvar_t	r_numedges = {"r_numedges", "0"};
 cvar_t	r_aliastransbase = {"r_aliastransbase", "200"};
 cvar_t	r_aliastransadj = {"r_aliastransadj", "100"};
-cvar_t	r_fullbrightSkins = {"r_fullbrightSkins","0"};
+cvar_t	r_fullbrightSkins = {"r_fullbrightSkins","1"};
 
 // FIXME, reload & rebuild the palette stuff on gamedir changes
 unsigned char	r_palette[768];
