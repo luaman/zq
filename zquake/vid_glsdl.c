@@ -459,8 +459,6 @@ void VID_Init(unsigned char *palette)
 	Cvar_Register (&m_filter);
 	Cvar_Register (&_windowed_mouse);
 
-	vid.colormap = host_colormap;
-
 	if (!(COM_CheckParm("-window")) )
 		flags |= SDL_FULLSCREEN;
 

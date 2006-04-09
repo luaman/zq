@@ -99,6 +99,7 @@ float	se_time1, se_time2, de_time1, de_time2, dv_time1, dv_time2;
 
 void R_MarkLeaves (void);
 
+
 cvar_t	r_draworder = {"r_draworder","0"};
 cvar_t	r_speeds = {"r_speeds","0"};
 cvar_t	r_timegraph = {"r_timegraph","0"};
@@ -131,6 +132,9 @@ unsigned char	r_palette[768];
 qbool			d_15to8table_made = false;
 unsigned char	d_15to8table[65536];
 unsigned short	d_8to16table[256];
+
+unsigned char	*r_colormap;	// [256 * VID_GRADES]
+unsigned short	r_colormap16[256 * VID_GRADES];
 
 
 extern cvar_t	scr_fov;
@@ -182,6 +186,10 @@ void R_Init (unsigned char *palette)
 	extern void R_Draw_Init (void);
 	
 	memcpy (r_palette, palette, 768);
+
+	r_colormap = (byte *)FS_LoadHunkFile ("gfx/colormap.lmp");
+	if (!r_colormap)
+		Sys_Error ("Couldn't load gfx/colormap.lmp");
 
 	R_InitTurb ();
 	
@@ -306,6 +314,7 @@ void R_NewMap (struct model_s *worldmodel)
 	r_skyboxloaded = false;
 
 	R_InitSkyBox (r_worldmodel);
+	R_FlushTranslations ();
 }
 
 void R_LoadSky_f ()

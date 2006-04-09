@@ -2077,7 +2077,6 @@ void	VID_Init (unsigned char *palette)
 		VID_InitFullDIB (global_hInstance);
 	}
 
-	vid.colormap = host_colormap;
 	vid_testingmode = 0;
 
 // GDI doesn't let us remap palette index 0, so we'll remap color
@@ -2102,7 +2101,7 @@ void	VID_Init (unsigned char *palette)
 		}
 	}
 
-	for (i=0, ptmp = vid.colormap ; i<(1<<(VID_CBITS+8)) ; i++, ptmp++)
+	for (i=0, ptmp = r_colormap ; i<(1<<(VID_CBITS+8)) ; i++, ptmp++)
 	{
 		if (*ptmp == 0)
 			*ptmp = bestmatch;

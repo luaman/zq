@@ -782,8 +782,6 @@ void VID_Init(unsigned char *palette)
     Cvar_Register (&_windowed_mouse);
     Cvar_Register (&m_filter);
 
-    vid.colormap = host_colormap;
-
     // interpret command-line params
     // fullscreen cmdline check
 #ifdef USE_VMODE

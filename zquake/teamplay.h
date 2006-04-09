@@ -28,8 +28,6 @@
 
 extern cvar_t cl_parsesay;
 extern cvar_t cl_triggers;
-extern cvar_t cl_teamskin;
-extern cvar_t cl_enemyskin;
 extern cvar_t snd_trigger;
 
 // triggers
@@ -54,7 +52,6 @@ extern int cl_teamtopcolor;
 extern int cl_teambottomcolor;
 extern int cl_enemytopcolor;
 extern int cl_enemybottomcolor;
-void TP_RefreshSkins ();
 
 void TP_LoadLocFile (char *path, qbool quiet);
 char *TP_ParseMacroString (char *s);

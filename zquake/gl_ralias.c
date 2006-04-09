@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gl_local.h"
 
+
 /*
 =============================================================
 
@@ -231,7 +232,6 @@ R_DrawAliasModel
 */
 void R_DrawAliasModel (entity_t *ent)
 {
-	int			i;
 	int			lnum;
 	vec3_t		dist;
 	float		add;
@@ -369,20 +369,10 @@ void R_DrawAliasModel (entity_t *ent)
 
 	// we can't dynamically colormap textures, so they are cached
 	// separately for the players.  Heads are just uncolored.
-	if (ent->scoreboard && (clmodel->modhint == MOD_PLAYER || ent->renderfx & RF_PLAYERMODEL)
+	if (ent->colormap && (clmodel->modhint == MOD_PLAYER || ent->renderfx & RF_PLAYERMODEL)
 		&& !gl_nocolors.value)
 	{
-		i = ent->scoreboard - cl.players;
-
-		if (!ent->scoreboard->skin) {
-			Skin_Find (ent->scoreboard);
-			R_TranslatePlayerSkin (i);
-		}
-
-		if (i >= 0 && i < MAX_CLIENTS) {
-		    texture = playertextures + i;
-			fb_texture = playerfbtextures[i];
-		}
+		R_GetTranslatedPlayerSkin (ent->colormap, &texture, &fb_texture);
 	}
 
 	if (full_light || !gl_fb_models.value) {

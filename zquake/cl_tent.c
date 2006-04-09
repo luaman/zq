@@ -479,7 +479,7 @@ void CL_UpdateBeams (void)
 
 	dec = 30;
 	memset (&ent, 0, sizeof(entity_t));
-	ent.colormap = vid.colormap;
+	ent.colormap = 0;
 
 // update lightning
 	for (i = 0, b = cl_beams; i < MAX_BEAMS; i++, b++)
@@ -572,7 +572,7 @@ void CL_UpdateExplosions (void)
 	entity_t	ent;
 
 	memset (&ent, 0, sizeof(entity_t));
-	ent.colormap = vid.colormap;
+	ent.colormap = 0;
 
 	hnode = &cl_explosions_headnode;
 	for (ex = hnode->next; ex != hnode; ex = next)

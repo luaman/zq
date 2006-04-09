@@ -31,7 +31,7 @@ mtriangle_t		*ptriangles;
 affinetridesc_t	r_affinetridesc;
 
 void *			acolormap;	// FIXME: should go away
-
+extern byte *R_GetColormap (int colormap);
 trivertx_t		*r_apverts;
 
 // TODO: these probably will go away with optimized rasterization
@@ -607,13 +607,10 @@ void R_AliasSetupSkin (void)
 	r_affinetridesc.seamfixupX16 =  (a_skinwidth >> 1) << 16;
 	r_affinetridesc.skinheight = pmdl->skinheight;
 
-	if (currententity->scoreboard)
+	if (currententity->colormap && currententity->model->modhint == MOD_PLAYER)
 	{
-		byte	*base;
-
-		if (!currententity->scoreboard->skin)
-			Skin_Find (currententity->scoreboard);
-		base = Skin_Cache (currententity->scoreboard->skin);
+		byte *base;
+		base = R_GetSkin (currententity->colormap);
 		if (base)
 		{
 			r_affinetridesc.pskin = base;
@@ -775,9 +772,6 @@ void R_AliasDrawModel (void)
 	R_AliasSetupLighting ();
 	R_AliasSetupFrame ();
 
-	if (!currententity->colormap)
-		Sys_Error ("R_AliasDrawModel: !currententity->colormap");
-
 	r_affinetridesc.drawtype = (currententity->trivial_accept == 3);
 
 	if (r_affinetridesc.drawtype)
@@ -787,11 +781,11 @@ void R_AliasDrawModel (void)
 	else
 	{
 #if id386
-		D_Aff8Patch (currententity->colormap);
+		D_Aff8Patch (R_GetColormap(currententity->colormap));
 #endif
 	}
 
-	acolormap = currententity->colormap;
+	acolormap = R_GetColormap(currententity->colormap);
 
 	ziscale = (float)0x8000 * (float)0x10000;
 	if (currententity->renderfx & RF_WEAPONMODEL)

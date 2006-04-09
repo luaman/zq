@@ -10,7 +10,6 @@ void TP_NewMap (void);
 void CL_ParseBaseline (entity_state_t *es);
 void CL_ParseStatic (void);
 void CL_ParseStaticSound (void);
-void R_TranslatePlayerSkin (int playernum);
 
 #define	NQ_PROTOCOL_VERSION	15
 
@@ -251,13 +250,19 @@ NQD_ParseUpdatecolors
 static void NQD_ParseUpdatecolors (void)
 {
 	int	i, colors;
+	int top, bottom;
 
 	i = MSG_ReadByte ();
 	if (i >= nq_maxclients)
 		Host_Error ("CL_ParseServerMessage: svc_updatecolors > NQ_MAX_CLIENTS");
 	colors = MSG_ReadByte ();
-	cl.players[i].bottomcolor = cl.players[i].real_bottomcolor = min(colors & 15, 13);
-	cl.players[i].topcolor = cl.players[i].real_topcolor = min((colors >> 4) & 15, 13);
+
+	// fill in userinfo values
+	top = min(colors & 15, 13);
+	bottom = min((colors >> 4) & 15, 13);
+	Info_SetValueForKey (cl.players[i].userinfo, "topcolor", va("%i", top), MAX_INFO_KEY);
+	Info_SetValueForKey (cl.players[i].userinfo, "bottomcolor", va("%i", bottom), MAX_INFO_KEY);
+
 	CL_NewTranslation (i);
 	Sbar_Changed ();
 }
@@ -576,10 +581,6 @@ static void NQD_ParseUpdate (int bits)
 		}
 		else
 			forcelink = true;	// hack to make null model players work
-#ifdef GLQUAKE
-		if (num > 0 && num <= nq_maxclients)
-			R_TranslatePlayerSkin (num - 1);
-#endif
 	}
 	
 	if (bits & NQ_U_FRAME)
@@ -598,13 +599,6 @@ static void NQD_ParseUpdate (int bits)
 		state->skinnum = MSG_ReadByte();
 	else
 		state->skinnum = ent->baseline.skinnum;
-
-#ifdef GLQUAKE
-	if ((num > 0 && num <= nq_maxclients) && (ent->prevframe != cl_oldentframecount
-		|| state->skinnum != ent->previous.skinnum)) {
-		R_TranslatePlayerSkin (num - 1);
-	}
-#endif
 
 	if (bits & NQ_U_EFFECTS)
 		state->effects = MSG_ReadByte();
@@ -840,17 +834,12 @@ void NQD_LinkEntities (void)
 			continue;
 
 		// set colormap
-		if (state->colormap && (state->colormap < MAX_CLIENTS) 
-			&& state->modelindex == cl_playerindex)
-		{
-			ent.colormap = cl.players[state->colormap-1].translations;
-			ent.scoreboard = &cl.players[state->colormap-1];
-		}
+		if (state->colormap && state->colormap <= MAX_CLIENTS
+			&& state->modelindex == cl_playerindex
+		)
+			ent.colormap = state->colormap;
 		else
-		{
-			ent.colormap = vid.colormap;
-			ent.scoreboard = NULL;
-		}
+			ent.colormap = 0;
 
 		// set skin
 		ent.skinnum = state->skinnum;

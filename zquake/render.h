@@ -71,12 +71,10 @@ typedef struct entity_s
 	vec3_t					angles;
 	struct model_s			*model;			// NULL = no model
 	int						frame;
-	byte					*colormap;
+	int						colormap;
 	int						skinnum;		// for alias models
 	int						renderfx;		// RF_WEAPONMODEL, etc
 	float					alpha;
-
-	struct player_info_s	*scoreboard;	// identify player
 
 	struct efrag_s			*efrag;			// linked list of efrags (FIXME)
 	int						visframe;		// last frame this entity was
@@ -99,6 +97,13 @@ typedef struct particle_s
 } particle_t;
 
 
+typedef struct translation_info_s {
+	int		topcolor;
+	int		bottomcolor;
+	char	skinname[32];
+} translation_info_t;
+
+
 // eye position, enitiy list, etc - filled in before calling R_RenderView
 typedef struct {
 	vrect_t			vrect;			// subwindow in video for refresh
@@ -118,6 +123,9 @@ typedef struct {
 	dlight_t		*dlights;
 	int				numParticles;
 	particle_t		*particles;
+
+	translation_info_t	*translations;	// [MAX_CLIENTS]
+	char			baseskin[32];
 } refdef2_t;
 
 

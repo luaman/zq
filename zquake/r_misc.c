@@ -25,6 +25,134 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <time.h>
 
 
+typedef struct r_translation_s {
+	int topcolor;
+	int bottomcolor;
+	char skinname[32];
+	byte colormap[VID_GRADES*256];
+	struct skin_s *skin;
+} r_translation_t;
+
+static r_translation_t r_translations[MAX_CLIENTS];
+static struct skin_s *r_baseskin;
+static char cur_baseskin[32];
+
+// dest must point to a VID_GRADES*256-byte buffer
+static void BuildTranslation (int topcolor, int bottomcolor, byte *dest) 
+{
+		int		i, j;
+		int		top, bottom;
+		byte	*source;
+
+		source = r_colormap;
+		memcpy (dest, r_colormap, VID_GRADES*256);
+		top = topcolor;
+		if (top > 13 || top < 0)
+			top = 13;
+		top *= 16;
+		bottom = bottomcolor;
+		if (bottom > 13 || bottom < 0)
+			bottom = 13;
+		bottom *= 16;
+
+		for (i=0 ; i<VID_GRADES ; i++, dest += 256, source+=256)
+		{
+			if (top < 128)	// the artists made some backwards ranges.  sigh.
+				memcpy (dest + TOP_RANGE, source + top, 16);
+			else
+				for (j=0 ; j<16 ; j++)
+					dest[TOP_RANGE+j] = source[top+15-j];
+					
+			if (bottom < 128)
+				memcpy (dest + BOTTOM_RANGE, source + bottom, 16);
+			else
+				for (j=0 ; j<16 ; j++)
+					dest[BOTTOM_RANGE+j] = source[bottom+15-j];		
+		}
+}
+
+
+byte *R_GetColormap (int colormap)
+{
+	r_translation_t *cur;
+	translation_info_t *new;
+
+	assert (colormap >= 0 && colormap <= MAX_CLIENTS);
+
+	if (colormap == 0)
+		return r_colormap;
+
+	cur = r_translations + (colormap - 1);
+	new = r_refdef2.translations + (colormap - 1);
+
+	// rebuild if necessary
+	if (new->topcolor != cur->topcolor
+		|| new->bottomcolor != cur->bottomcolor)
+	{
+		cur->topcolor = new->topcolor;
+		cur->bottomcolor = new->bottomcolor;
+		BuildTranslation (new->topcolor,
+			new->bottomcolor, cur->colormap);
+//		Com_Printf ("updated translation %i\n", colormap);
+	}
+
+	return cur->colormap;
+}
+
+// called on startup and every time gamedir changes
+void R_FlushTranslations (void)
+{
+	int i;
+
+	Skin_Flush ();
+	for (i = 0; i < MAX_CLIENTS; i++) {
+		r_translations[i].topcolor = -1; // this will force a rebuild
+		r_translations[i].skinname[0] = 0;
+		r_translations[i].skin = NULL;
+	}
+	r_baseskin = NULL;
+	cur_baseskin[0] = 0;
+}
+
+
+byte *R_GetSkin (int colormap)
+{
+	r_translation_t *cur;
+	translation_info_t *new;
+	byte *data;
+
+	assert (colormap >= 0 && colormap <= MAX_CLIENTS);
+	if (!colormap)
+		return NULL;
+
+	cur = &r_translations[colormap - 1];
+	new = &r_refdef2.translations[colormap - 1];
+
+	if (strcmp(new->skinname, cur->skinname) || !new->skinname[0]) {
+		strlcpy (cur->skinname, new->skinname, sizeof(cur->skinname));
+
+//Com_Printf ("R_GetSkin: %s\n", r_translations[colormap - 1].skinname);
+		if (!cur->skinname[0])
+			return NULL;
+		Skin_Find (r_translations[colormap - 1].skinname, &cur->skin);
+	}
+
+	data = Skin_Cache (cur->skin);
+	if (!data) {
+		if (r_refdef2.baseskin[0] && strcmp(r_refdef2.baseskin, cur->skinname)) {
+			if (strcmp(cur_baseskin, r_refdef2.baseskin)) {
+				strlcpy (cur_baseskin, r_refdef2.baseskin, sizeof(cur_baseskin));
+				if (!cur_baseskin[0])
+					return NULL;
+				Skin_Find (r_refdef2.baseskin, &r_baseskin);
+			}
+			data = Skin_Cache (r_baseskin);
+		}
+	}
+
+	return data;
+}
+
 /*
 ===============
 R_CheckVariables
@@ -542,14 +670,14 @@ void R_ViewChanged (float aspect)
 	{
 		Sys_MakeCodeWriteable ((long)R_Surf8Start,
 						     (long)R_Surf8End - (long)R_Surf8Start);
-		colormap = vid.colormap;
+		colormap = r_colormap;
 		R_Surf8Patch ();
 	}
 	else
 	{
 		Sys_MakeCodeWriteable ((long)R_Surf16Start,
 						     (long)R_Surf16End - (long)R_Surf16Start);
-		colormap = vid.colormap16;
+		colormap = r_colormap16;
 		R_Surf16Patch ();
 	}
 #endif	// id386
