@@ -1037,6 +1037,8 @@ Never store this pointer for later use!
 On failure (not enough memory), *pcxdata will be set to NULL
 ================== 
 */  
+#define RSSHOT_WIDTH 320
+#define RSSHOT_HEIGHT 200
 void R_RSShot (byte **pcxdata, int *pcxsize)
 { 
 	int     x, y;
