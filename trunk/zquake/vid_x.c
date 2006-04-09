@@ -441,7 +441,6 @@ void VID_Init (unsigned char *palette)
 // every frame, so we need to redraw everything every frame
 	vid.numpages = 0x7FFFFFFF;	// "infinite"
 //	vid.numpages = 2;
-	vid.colormap = host_colormap;
 
 	srandom (getpid ());
 

@@ -700,7 +700,7 @@ void R_DrawSurfaceBlock16 (void)
 		for (b=0; b<blocksize; b++)
 		{
 			pix = *psource;
-			*pdest = vid.colormap16[(light & 0xFF00) + pix];
+			*pdest = r_colormap16[(light & 0xFF00) + pix];
 			psource += sourcesstep;
 			pdest++;
 			light += lightstep;

@@ -319,9 +319,25 @@ extern unsigned char	r_palette[768];
 extern qbool			d_15to8table_made;
 extern unsigned char	d_15to8table[65536];
 extern unsigned short	d_8to16table[256];
+extern unsigned char	*r_colormap;	// [256 * VID_GRADES]
+extern unsigned short	r_colormap16[256 * VID_GRADES];
 
 // r_misc.c
 void R_Build15to8table (void);
+void R_FlushTranslations (void);
+byte *R_GetColormap (int colormap);
+
+// skin.c
+typedef struct skin_s
+{
+	char		name[16];
+	qbool		failedload;		// the name isn't a valid skin
+	cache_user_t	cache;
+} skin_t;
+
+void Skin_Find (char *skinname, struct skin_s **sk);
+byte *Skin_Cache (struct skin_s *skin);
+void Skin_Flush (void);
 
 #endif /* _R_LOCAL_H_ */
 

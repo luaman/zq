@@ -36,8 +36,6 @@ typedef struct vrect_s
 typedef struct
 {
 	pixel_t			*buffer;		// invisible buffer
-	pixel_t			*colormap;		// 256 * VID_GRADES size
-	unsigned short	*colormap16;	// 256 * VID_GRADES size
 	int				rowbytes;		// may be > width if displayed in a window
 	int				width;
 	int				height;

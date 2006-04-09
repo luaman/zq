@@ -475,7 +475,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	}
 
 	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
-	vid.colormap = (pixel_t *) host_colormap;
 	vid.numpages = 1;
 	
 	// alloc zbuffer and surface cache

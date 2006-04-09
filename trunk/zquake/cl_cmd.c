@@ -912,8 +912,6 @@ void CL_InitCommands (void)
 	Cmd_AddCommand ("say", CL_Say_f);
 	Cmd_AddCommand ("say_team", CL_SayTeam_f);
 	Cmd_AddCommand ("serverinfo", CL_Serverinfo_f);
-	Cmd_AddCommand ("skins", Skin_Skins_f);
-	Cmd_AddCommand ("allskins", Skin_AllSkins_f);
 	Cmd_AddCommand ("user", CL_User_f);
 	Cmd_AddCommand ("users", CL_Users_f);
 	Cmd_AddCommand ("version", CL_Version_f);
@@ -1080,6 +1078,7 @@ void V_cshift_f (void)
 	cl.cshifts[CSHIFT_CUSTOM].percent = atoi(Cmd_Argv(4));
 }
 
+extern void CL_Skins_f (void);
 
 typedef struct {
 	char	*name;
@@ -1089,6 +1088,7 @@ typedef struct {
 svcmd_t svcmds[] =
 {
 	{"changing", CL_Changing_f},
+	{"skins", CL_Skins_f},
 	{"fullserverinfo", CL_FullServerinfo_f},
 	{"nextul", CL_NextUpload},
 	{"stopul", CL_StopUpload},

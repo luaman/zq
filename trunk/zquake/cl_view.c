@@ -884,7 +884,7 @@ void V_AddViewWeapon (float bob)
 	if (!ent.model)
 		return;
 	ent.frame = view_message.weaponframe;
-	ent.colormap = vid.colormap;
+	ent.colormap = 0;
 	ent.renderfx = RF_WEAPONMODEL;
 
 #ifdef GLQUAKE
@@ -1114,6 +1114,9 @@ extern vrect_t scr_vrect;
 
 void V_RenderView (void)
 {
+	int i;
+	translation_info_t translations[MAX_CLIENTS];
+
 //	if (cl.simangles[ROLL])
 //		Sys_Error ("cl.simangles[ROLL]");	// DEBUG
 cl.simangles[ROLL] = 0;	// FIXME @@@ 
@@ -1153,6 +1156,14 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 
 	r_refdef2.numParticles = cl_numvisparticles;
 	r_refdef2.particles = cl_visparticles;
+
+	for (i = 0; i < MAX_CLIENTS; i++) {
+		translations[i].topcolor = cl.players[i].topcolor;
+		translations[i].bottomcolor = cl.players[i].bottomcolor;
+		strlcpy (translations[i].skinname, cl.players[i].skin, sizeof(translations[0].skinname));
+	}
+	r_refdef2.translations = translations;
+	strlcpy (r_refdef2.baseskin, baseskin.string, sizeof(r_refdef2.baseskin));
 
 	R_RenderView ();
 }

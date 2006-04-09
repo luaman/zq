@@ -178,8 +178,6 @@ extern	const char *gl_renderer;
 extern	const char *gl_version;
 extern	const char *gl_extensions;
 
-void R_TranslatePlayerSkin (int playernum);
-
 // Multitexture
 #define	GL_TEXTURE0_ARB 			0x84C0
 #define	GL_TEXTURE1_ARB 			0x84C1
@@ -224,6 +222,8 @@ void R_BrightenScreen (void);
 void R_ScreenShot_f (void);
 void R_LoadSky_f (void);
 void GL_AllocTextureSlots (void);
+void R_GetTranslatedPlayerSkin (int colormap, int *texture, int *fb_texture);
+void R_FlushTranslations (void);
 
 //
 // gl_rlight.c
@@ -265,6 +265,20 @@ void R_DrawAliasModel (entity_t *ent);
 // gl_rsprite.c
 //
 void R_DrawSpriteModel (entity_t *ent);
+
+//
+// skin.c
+//
+typedef struct skin_s
+{
+	char		name[16];
+	qbool		failedload;		// the name isn't a valid skin
+	cache_user_t	cache;
+} skin_t;
+
+void Skin_Find (char *skinname, struct skin_s **sk);
+byte *Skin_Cache (struct skin_s *skin);
+void Skin_Flush (void);
 
 #endif /* _GL_LOCAL_H_ */
 

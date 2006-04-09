@@ -370,7 +370,6 @@ void VID_Init (unsigned char *palette)
 //	vid.numpages = 1;
 	vid.numpages = 2;	// TESTING
 
-	vid.colormap = host_colormap;
 	vid.buffer = vid_buffer;
 	vid.rowbytes = BASEWIDTH;
 	

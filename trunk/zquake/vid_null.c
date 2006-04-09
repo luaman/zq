@@ -34,7 +34,6 @@ void	VID_Init (unsigned char *palette)
 	vid.height = BASEHEIGHT;
 	vid.aspect = 1.0;
 	vid.numpages = 1;
-	vid.colormap = host_colormap;
 	vid.buffer = vid_buffer;
 	vid.rowbytes = BASEWIDTH;
 	

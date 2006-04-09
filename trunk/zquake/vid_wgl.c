@@ -1780,8 +1780,6 @@ void	VID_Init (unsigned char *palette)
 	if (vid.height < 200)
 		vid.height = 200;
 
-	vid.colormap = host_colormap;
-
 	if (hwnd_dialog) {
 		DestroyWindow (hwnd_dialog);
 		hwnd_dialog = NULL;
