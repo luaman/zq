@@ -601,8 +601,5 @@ void Cam_TryLock (void);
 void Cam_Lock(int playernum);
 #endif
 
-#define RSSHOT_WIDTH 320
-#define RSSHOT_HEIGHT 200
-
 #endif /* _CLIENT_H_ */
 
