@@ -264,6 +264,8 @@ void ExecDefaultConfig (void)
 "bind / impulse 10;"
 "bind [ impulse 12;"
 "bind ] impulse 10;"
+"bind mwheelup impulse 12;"
+"bind mwheeldown impulse 10;"
 
 "bind F1 help;"
 "bind F2 menu_save;"
