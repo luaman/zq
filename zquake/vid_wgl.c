@@ -1216,7 +1216,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		{
 			if (!COM_CheckParm("-noadjustaspect"))
 			{
-				width *= 2;
+				width /= 2;
 				halfscreen = true;
 			}
 		}
