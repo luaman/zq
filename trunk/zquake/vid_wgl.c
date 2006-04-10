@@ -42,7 +42,6 @@ typedef struct {
 	int			width;
 	int			height;
 	int			modenum;
-	int			dib;
 	int			fullscreen;
 	int			bpp;
 	int			freq;
@@ -62,7 +61,7 @@ lmode_t	lowresmodes[] = {
 	{512, 384},
 };
 
-qbool			DDActive;
+qbool			DDActive;	// sys_win.c wants this
 
 static vmode_t	modelist[MAX_MODE_LIST];
 static int		nummodes;
@@ -125,7 +124,6 @@ cvar_t		vid_mode = {"vid_mode","0"};
 cvar_t		_vid_default_mode = {"_vid_default_mode","0",CVAR_ARCHIVE};
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
 cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3",CVAR_ARCHIVE};
-cvar_t		vid_nopageflip = {"vid_nopageflip","0",CVAR_ARCHIVE};
 cvar_t		vid_config_x = {"vid_config_x","800",CVAR_ARCHIVE};
 cvar_t		vid_config_y = {"vid_config_y","600",CVAR_ARCHIVE};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1",CVAR_ARCHIVE};
@@ -172,7 +170,6 @@ void VID_SetCaption (char *text)
 
 void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 {
-//	RECT    rect;
 	int     CenterX, CenterY;
 
 	CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
@@ -188,10 +185,8 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 qbool VID_SetWindowedMode (int modenum)
 {
 	HDC				hdc;
-	int				lastmodestate, width, height;
+	int				width, height;
 	RECT			rect;
-
-	lastmodestate = modestate;
 
 	WindowRect.top = WindowRect.left = 0;
 
@@ -269,9 +264,9 @@ qbool VID_SetWindowedMode (int modenum)
 
 qbool VID_SetFullDIBMode (int modenum)
 {
-	HDC				hdc;
-	int				lastmodestate, width, height;
-	RECT			rect;
+	HDC			hdc;
+	int			width, height;
+	RECT		rect;
 
 	if (!leavecurrentmode)
 	{
@@ -293,7 +288,6 @@ qbool VID_SetFullDIBMode (int modenum)
 			Sys_Error ("Couldn't set fullscreen DIB mode");
 	}
 
-	lastmodestate = modestate;
 	modestate = MS_FULLDIB;
 
 	WindowRect.top = WindowRect.left = 0;
@@ -1165,7 +1159,6 @@ void VID_InitDIB (HINSTANCE hInstance)
 			 modelist[0].width, modelist[0].height);
 
 	modelist[0].modenum = MODE_WINDOWED;
-	modelist[0].dib = 1;
 	modelist[0].fullscreen = 0;
 	modelist[0].halfscreen = 0;
 	modelist[0].bpp = 0;
@@ -1251,7 +1244,6 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		modelist[nummodes].height = devmode.dmPelsHeight;
 		modelist[nummodes].modenum = 0;
 		modelist[nummodes].halfscreen = 0;
-		modelist[nummodes].dib = 1;
 		modelist[nummodes].fullscreen = 1;
 		modelist[nummodes].bpp = devmode.dmBitsPerPel;
 		modelist[nummodes].freq = devmode.dmDisplayFrequency;
@@ -1284,7 +1276,6 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 				modelist[nummodes].height = devmode.dmPelsHeight;
 				modelist[nummodes].modenum = 0;
 				modelist[nummodes].halfscreen = 0;
-				modelist[nummodes].dib = 1;
 				modelist[nummodes].fullscreen = 1;
 				modelist[nummodes].bpp = devmode.dmBitsPerPel;
 				sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
@@ -1346,7 +1337,6 @@ void	VID_Init (unsigned char *palette)
 
 	Cvar_Register (&vid_ref);
 	Cvar_Register (&vid_mode);
-	Cvar_Register (&vid_nopageflip);
 	Cvar_Register (&_vid_default_mode);
 	Cvar_Register (&_vid_default_mode_win);
 	Cvar_Register (&vid_config_x);
@@ -1437,7 +1427,6 @@ void	VID_Init (unsigned char *palette)
 					modelist[nummodes].height = height;
 					modelist[nummodes].modenum = 0;
 					modelist[nummodes].halfscreen = 0;
-					modelist[nummodes].dib = 1;
 					modelist[nummodes].fullscreen = 1;
 					modelist[nummodes].bpp = bpp;
 					sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
