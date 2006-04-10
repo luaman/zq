@@ -75,4 +75,7 @@ extern int gl_max_texsize;
 
 extern int texture_extension_number;
 
+extern unsigned d_8to24table[256];
+void R_SetPalette (byte *palette);
+
 #endif	//__GL_TEXTURE_H

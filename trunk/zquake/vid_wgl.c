@@ -84,13 +84,9 @@ DWORD		WindowStyle, ExWindowStyle;
 HWND	mainwindow, dibwindow;
 
 int			vid_modenum = NO_MODE;
-int			vid_realmode;
 int			vid_default = MODE_WINDOWED;
 static int	windowed_default;
-unsigned char	vid_curpal[256*3];
 static qbool fullsbardraw = false;
-
-float vid_gamma = 1.0;
 
 HGLRC	baseRC;
 HDC		maindc;
@@ -106,10 +102,6 @@ unsigned short *currentgammaramp = NULL;
 void RestoreHWGamma (void);
 
 
-unsigned	d_8to24table[256];
-unsigned	d_8to24table2[256];
-unsigned char d_15to8table[65536];
-
 modestate_t	modestate = MS_UNINIT;
 
 void VID_MenuDraw (void);
@@ -122,13 +114,6 @@ void ClearAllStates (void);
 void VID_UpdateWindowStatus (void);
 void GL_Init (void);
 
-PROC glArrayElementEXT;
-PROC glColorPointerEXT;
-PROC glTexCoordPointerEXT;
-PROC glVertexPointerEXT;
-
-typedef void (APIENTRY *lp3DFXFUNC) (int, int, int, int, int, const void*);
-lp3DFXFUNC glColorTableEXT;
 qbool gl_mtexable = false;
 qbool gl_mtexfbskins = false;
 
@@ -452,7 +437,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 // ourselves at the top of the z order, then grab the foreground again,
 // Who knows if it helps, but it probably doesn't hurt
 	SetForegroundWindow (mainwindow);
-//	VID_SetPalette (palette);
 	vid_modenum = modenum;
 	Cvar_SetValue (&vid_mode, (float)vid_modenum);
 
@@ -476,8 +460,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 //	if (!msg_suppress_1)
 	Com_Printf ("Video mode %s initialized.\n", VID_GetModeDescription (vid_modenum));
-
-//	VID_SetPalette (palette);
 
 	SCR_InvalidateScreen ();
 
@@ -548,32 +530,6 @@ void CheckTextureExtensions (void)
 		Sys_Error ("GetProcAddress for BindTextureEXT failed");
 		return;
 	}
-}
-
-void CheckArrayExtensions (void)
-{
-	unsigned char		*tmp;
-
-	/* check for texture extension */
-	tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
-	while (tmp && *tmp)
-	{
-		if (strncmp((const char*)tmp, "GL_EXT_vertex_array", strlen("GL_EXT_vertex_array")) == 0)
-		{
-			if ( ((glArrayElementEXT = wglGetProcAddress("glArrayElementEXT")) == NULL) ||
-			     ((glColorPointerEXT = wglGetProcAddress("glColorPointerEXT")) == NULL) ||
-			     ((glTexCoordPointerEXT = wglGetProcAddress("glTexCoordPointerEXT")) == NULL) ||
-			     ((glVertexPointerEXT = wglGetProcAddress("glVertexPointerEXT")) == NULL) )
-			{
-				Sys_Error ("GetProcAddress for vertex extension failed");
-				return;
-			}
-			return;
-		}
-		tmp++;
-	}
-
-	Sys_Error ("Vertex array extension not present");
 }
 
 void CheckMultiTextureExtensions (void)
@@ -664,51 +620,6 @@ void GL_EndRendering (void)
 		SCR_InvalidateScreen ();
 }
 
-void VID_SetPalette (unsigned char *palette)
-{
-	int			i;
-	byte		*pal;
-	unsigned	r,g,b;
-	unsigned	v;
-	unsigned	*table;
-
-//
-// 8 8 8 encoding
-//
-	pal = palette;
-	table = d_8to24table;
-	for (i=0 ; i<256 ; i++)
-	{
-		r = pal[0];
-		g = pal[1];
-		b = pal[2];
-		pal += 3;
-
-//		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
-//		v = (255<<0) + (r<<8) + (g<<16) + (b<<24);
-		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
-		*table++ = v;
-	}
-	d_8to24table[255] = 0;	// 255 is transparent
-
-// Tonik: create a brighter palette for bmodel textures
-	pal = palette;
-	table = d_8to24table2;
-
-	for (i=0 ; i<256 ; i++)
-	{
-		r = pal[0] * (2.0 / 1.5); if (r > 255) r = 255;
-		g = pal[1] * (2.0 / 1.5); if (g > 255) g = 255;
-		b = pal[2] * (2.0 / 1.5); if (b > 255) b = 255;
-		pal += 3;
-		*table++ = (255<<24) + (r<<0) + (g<<8) + (b<<16);
-	}
-	d_8to24table2[255] = 0;	// 255 is transparent
-}
-
-void VID_ShiftPalette (unsigned char *palette)
-{
-}
 
 static byte	systemgammaramp[3][256][2];
 static qbool customgamma = false;
@@ -1417,42 +1328,6 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		Com_Printf ("No fullscreen DIB modes found\n");
 }
 
-void VID_Build15to8table (void)
-{
-	byte	*pal;
-	unsigned r,g,b;
-	unsigned v;
-	int     r1,g1,b1;
-	int		j,k,l;
-	int		i;
-
-	// 3D distance calcs - k is last closest, l is the distance.
-	// FIXME: Precalculate this and cache to disk ?
-	for (i=0; i < (1<<15); i++) {
-		/* Maps
-			000000000000000
-			000000000011111 = Red  = 0x1F
-			000001111100000 = Blue = 0x03E0
-			111110000000000 = Grn  = 0x7C00
-		*/
-		r = ((i & 0x1F) << 3)+4;
-		g = ((i & 0x03E0) >> 2)+4;
-		b = ((i & 0x7C00) >> 7)+4;
-		pal = (unsigned char *)d_8to24table;
-		for (v=0,k=0,l=10000*10000; v<256; v++,pal+=4) {
-			r1 = r-pal[0];
-			g1 = g-pal[1];
-			b1 = b-pal[2];
-			j = (r1*r1)+(g1*g1)+(b1*b1);
-			if (j<l) {
-				k=v;
-				l=j;
-			}
-		}
-		d_15to8table[i]=k;
-	}
-}
-
 
 /*
 ===================
@@ -1688,8 +1563,6 @@ void	VID_Init (unsigned char *palette)
 		hwnd_dialog = NULL;
 	}
 
-	VID_SetPalette (palette);
-
 	VID_SetMode (vid_default, palette);
 
 	maindc = GetDC(mainwindow);
@@ -1707,8 +1580,6 @@ void	VID_Init (unsigned char *palette)
 
 	sprintf (gldir, "%s/glquake", com_gamedir);
 //	Sys_mkdir (gldir);
-
-	vid_realmode = vid_modenum;
 
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;

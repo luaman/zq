@@ -383,7 +383,6 @@ R_BrightenScreen
 */
 void R_BrightenScreen (void)
 {
-	extern float	vid_gamma;
 	float	f;
 
 	if (vid_hwgamma_enabled)
@@ -395,8 +394,6 @@ void R_BrightenScreen (void)
 	if (f > 3)
 		f = 3;
 
-	f = pow (f, vid_gamma);
-	
 	glDisable (GL_TEXTURE_2D);
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_DST_COLOR, GL_ONE);
@@ -601,6 +598,7 @@ void R_SetupGL (void)
 
 extern void R_InitBubble (void);
 extern void R_Draw_Init (void);
+extern void R_SetPalette (byte *palette);
 
 /*
 ===============
@@ -660,10 +658,10 @@ void R_Init (unsigned char *palette)
 	if (!strcmp(gl_vendor, "METABYTE/WICKED3D"))
 		Cvar_SetValue(&gl_solidparticles, 1);
 
+	R_SetPalette (palette);
 	R_InitTextures ();
 	R_Draw_Init ();
 	R_InitBubble ();
-
 	Mod_Init ();
 }
 

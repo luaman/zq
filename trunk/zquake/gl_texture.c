@@ -28,8 +28,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <GL/glext.h>	// GL_COLOR_INDEX8_EXT is defined here
 #endif /* MINGW32 */
 
-extern unsigned char d_15to8table[65536];
-extern unsigned d_8to24table2[256];
+
+unsigned d_8to24table[256];
+unsigned d_8to24table2[256];
 
 static void	OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel);
 
@@ -175,6 +176,51 @@ static void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel)
 
 
 //====================================================================
+
+void R_SetPalette (unsigned char *palette)
+{
+	int			i;
+	byte		*pal;
+	unsigned	r,g,b;
+	unsigned	v;
+	unsigned	*table;
+
+//
+// 8 8 8 encoding
+//
+	pal = palette;
+	table = d_8to24table;
+	for (i=0 ; i<256 ; i++)
+	{
+		r = pal[0];
+		g = pal[1];
+		b = pal[2];
+		pal += 3;
+
+//		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
+//		v = (255<<0) + (r<<8) + (g<<16) + (b<<24);
+		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
+		*table++ = v;
+	}
+	d_8to24table[255] = 0;	// 255 is transparent
+
+// Tonik: create a brighter palette for bmodel textures
+	pal = palette;
+	table = d_8to24table2;
+
+	for (i=0 ; i<256 ; i++)
+	{
+		r = pal[0] * (2.0 / 1.5); if (r > 255) r = 255;
+		g = pal[1] * (2.0 / 1.5); if (g > 255) g = 255;
+		b = pal[2] * (2.0 / 1.5); if (b > 255) b = 255;
+		pal += 3;
+		*table++ = (255<<24) + (r<<0) + (g<<8) + (b<<16);
+	}
+	d_8to24table2[255] = 0;	// 255 is transparent
+}
+
+//====================================================================
+
 
 /*
 ================

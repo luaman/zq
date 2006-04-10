@@ -57,16 +57,10 @@ typedef void (APIENTRY *lpMTexFUNC) (GLenum, GLfloat, GLfloat);
 lpMTexFUNC qglMultiTexCoord2f = NULL;
 
 // setup gamma variables
-float vid_gamma = 1.0;
-byte vid_gamma_table[256];
 unsigned short *currentgammaramp = NULL;
 qbool vid_gammaworks = false;
 // qbool vid_hwgamma_enabled = false;
 qbool customgamma = false;
-
-unsigned d_8to24table[256];
-unsigned d_8to24table2[256];
-unsigned char	d_15to8table[65536];
 
 static int scrnum;
 
@@ -534,9 +528,6 @@ void InitSig(void)
     signal(SIGTERM, signal_handler);
 }
 
-void VID_ShiftPalette(unsigned char *p)
-{
-}
 
 /*
 ======================
@@ -594,39 +585,6 @@ void RestoreHWGamma (void)
 
 //=================================================================
 
-void VID_SetPalette (byte *palette)
-{
-    int i;
-    byte *pal, *table;
-
-    // 8 8 8 encoding
-    pal = palette;
-    table = (byte *)d_8to24table;
-    for (i = 0; i < 256; i++)
-    {
-        *table++ = *pal++;
-        *table++ = *pal++;
-        *table++ = *pal++;
-        *table++ = 255;
-    }
-    d_8to24table[255] = 0;	// 255 is transparent
-
-    // Tonik: create a brighter palette for bmodel textures
-    pal = palette;
-    table = (byte *)d_8to24table2;
-
-    for (i = 1; i < 256; i++)
-    {
-        pal[0] = min(pal[0] * (2.0 / 1.5), 255);
-        pal[1] = min(pal[1] * (2.0 / 1.5), 255);
-        pal[2] = min(pal[2] * (2.0 / 1.5), 255);
-        *table++ = *pal++;
-        *table++ = *pal++;
-        *table++ = *pal++;
-        *table++ = 255;
-    }
-    d_8to24table2[255] = 0;	// 255 is transparent
-}
 
 void GL_CheckExtensions (void)
 {
@@ -866,8 +824,6 @@ void VID_Init(unsigned char *palette)
     InitSig(); // trap evil signals
 
     GL_Init();
-
-    VID_SetPalette(palette);
 
     InitHWGamma();
 
