@@ -103,7 +103,6 @@ const char *gl_version;
 const char *gl_extensions;
 
 qbool is8bit = false;
-qbool isPermedia = false;
 qbool gl_mtexable = false;
 qbool gl_mtexfbskins = false;
 

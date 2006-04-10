@@ -138,7 +138,6 @@ PROC glVertexPointerEXT;
 typedef void (APIENTRY *lp3DFXFUNC) (int, int, int, int, int, const void*);
 lp3DFXFUNC glColorTableEXT;
 qbool is8bit = false;
-qbool isPermedia = false;
 qbool gl_mtexable = false;
 qbool gl_mtexfbskins = false;
 
@@ -641,12 +640,6 @@ void GL_Init (void)
 	Cvar_Register (&gl_strings);
 	Cvar_ForceSet (&gl_strings, va("GL_VENDOR: %s\nGL_RENDERER: %s\n"
 		"GL_VERSION: %s\nGL_EXTENSIONS: %s", gl_vendor, gl_renderer, gl_version, gl_extensions));
-
-    if (strnicmp(gl_renderer,"PowerVR",7)==0)
-         fullsbardraw = true;
-
-    if (strnicmp(gl_renderer,"Permedia",8)==0)
-         isPermedia = true;
 
 	CheckTextureExtensions ();
 	CheckMultiTextureExtensions ();
