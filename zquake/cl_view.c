@@ -974,6 +974,22 @@ void V_CalcRefdef (void)
 		r_refdef2.vieworg[2] += cl.crouch;
 	}
 
+	if (cl.landtime) {
+		const float tt = 350;
+		const float lt = 90;
+		const float lh = 6;
+		float _landtime = 350 - (cl.time - cl.landtime) * 1000;
+
+		if (_landtime <= 0)
+			cl.landtime = 0;
+		else {
+			if (_landtime >= (tt - lt))
+				r_refdef2.vieworg[2] -= ((tt - _landtime) / lt) * lh;
+			else
+				r_refdef2.vieworg[2] -= _landtime / (tt - lt) * lh;
+		}
+	}
+
 //
 // set up refresh view angles
 //

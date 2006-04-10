@@ -339,6 +339,7 @@ typedef struct
 	qbool		onground;
 	qbool		waterlevel;
 	float		crouch;			// local amount for smoothing stepups
+	float		landtime;
 	float		viewheight;
 
 	int			paused;			// a combination of PAUSED_SERVER and PAUSED_DEMO flags

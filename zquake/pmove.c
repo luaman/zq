@@ -962,8 +962,12 @@ were contacted during the move.
 */
 void PM_PlayerMove (void)
 {
+	qbool oldonground;
+	vec3_t oldvelocity;
+
 	pm_frametime = pmove.cmd.msec * 0.001;
 	pmove.numtouch = 0;
+	pmove.landspeed = 0;
 
 	if (pmove.pm_type == PM_NONE || pmove.pm_type == PM_FREEZE) {
 		PM_CategorizePosition ();
@@ -986,14 +990,16 @@ void PM_PlayerMove (void)
 	// set onground, watertype, and waterlevel
 	PM_CategorizePosition ();
 
+	VectorCopy (pmove.velocity, oldvelocity);
+	oldonground = pmove.onground;
+
 	if (pmove.waterlevel == 2 && pmove.pm_type != PM_FLY)
 		PM_CheckWaterJump ();
 
 	if (pmove.velocity[2] < 0 || pmove.pm_type == PM_DEAD)
 		pmove.waterjumptime = 0;
 
-	if (pmove.waterjumptime)
-	{
+	if (pmove.waterjumptime) {
 		pmove.waterjumptime -= pm_frametime;
 		if (pmove.waterjumptime < 0)
 			pmove.waterjumptime = 0;
@@ -1020,6 +1026,9 @@ void PM_PlayerMove (void)
 
 	// set onground, watertype, and waterlevel for final spot
 	PM_CategorizePosition ();
+
+	if (pmove.onground && !oldonground)
+		pmove.landspeed = oldvelocity[2];
 
 	if (!movevars.pground)
 	{
