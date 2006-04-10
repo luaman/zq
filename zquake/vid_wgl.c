@@ -129,7 +129,6 @@ PROC glVertexPointerEXT;
 
 typedef void (APIENTRY *lp3DFXFUNC) (int, int, int, int, int, const void*);
 lp3DFXFUNC glColorTableEXT;
-qbool is8bit = false;
 qbool gl_mtexable = false;
 qbool gl_mtexfbskins = false;
 
@@ -1418,12 +1417,6 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		Com_Printf ("No fullscreen DIB modes found\n");
 }
 
-qbool VID_Is8bit() {
-	return is8bit;
-}
-
-#define GL_SHARED_TEXTURE_PALETTE_EXT 0x81FB
-
 void VID_Build15to8table (void)
 {
 	byte	*pal;
@@ -1460,34 +1453,6 @@ void VID_Build15to8table (void)
 	}
 }
 
-void VID_Init8bitPalette()
-{
-	// Check for 8bit Extensions and initialize them.
-	int i;
-	char thePalette[256*3];
-	char *oldPalette, *newPalette;
-
-	glColorTableEXT = (void *)wglGetProcAddress("glColorTableEXT");
-    if (!glColorTableEXT || !strstr(gl_extensions, "GL_EXT_shared_texture_palette") ||
-		!COM_CheckParm("-use8bit"))
-		return;
-
-	Com_Printf ("8-bit GL extensions enabled.\n");
-    glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
-	oldPalette = (char *) d_8to24table;
-	newPalette = thePalette;
-	for (i=0;i<256;i++) {
-		*newPalette++ = *oldPalette++;
-		*newPalette++ = *oldPalette++;
-		*newPalette++ = *oldPalette++;
-		oldPalette++;
-	}
-	glColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE,
-		(void *) thePalette);
-	is8bit = TRUE;
-
-	VID_Build15to8table ();
-}
 
 /*
 ===================
@@ -1744,9 +1709,6 @@ void	VID_Init (unsigned char *palette)
 //	Sys_mkdir (gldir);
 
 	vid_realmode = vid_modenum;
-
-	// Check for 3DFX Extensions and initialize them.
-	VID_Init8bitPalette();
 
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;

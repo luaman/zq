@@ -394,8 +394,6 @@ void GL_EndRendering (void)
 	}
 }
 
-void VID_Init8bitPalette(void) {}
-
 void VID_Init(unsigned char *palette)
 {
 	int i;
@@ -736,8 +734,6 @@ void VID_LockBuffer(void) {}
 void VID_UnlockBuffer(void) {}
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height) {}
 void D_EndDirectRect (int x, int y, int width, int height) {}
-
-qbool VID_Is8bit(void) { return false; }
 
 void VID_SetCaption (char *text) {
 	SDL_WM_SetCaption(text, text);

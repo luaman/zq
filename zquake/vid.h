@@ -81,18 +81,8 @@ void VID_UnlockBuffer (void);
 
 void VID_SetCaption (char *text);
 
-// oldman: gamma variables for glx linux
 void VID_SetDeviceGammaRamp (unsigned short *ramps);
 extern qbool vid_hwgamma_enabled;
-
-#ifdef GLQUAKE
-qbool VID_Is8bit(void);
-#endif
-
-#ifdef _WIN32
-void VID_SetDeviceGammaRamp (unsigned short *ramps);
-extern qbool vid_hwgamma_enabled;
-#endif
 
 #endif /* _VID_H_ */
 
