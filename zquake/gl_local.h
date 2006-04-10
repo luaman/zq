@@ -217,6 +217,7 @@ qbool R_CullSphere (vec3_t centre, float radius);
 void R_RotateForEntity (entity_t *e);
 void R_PolyBlend (void);
 void R_BrightenScreen (void);
+void GL_Init (void);
 
 // gl_rmisc.c
 void R_ScreenShot_f (void);
