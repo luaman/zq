@@ -95,7 +95,6 @@ cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol", "1"};
 
 /*-----------------------------------------------------------------------*/
 
-qbool is8bit = false;
 qbool gl_mtexable = false;
 qbool gl_mtexfbskins = false;
 
@@ -675,37 +674,6 @@ void VID_Shutdown(void)
 #else
     glXDestroyContext(x_disp, ctx);
 #endif
-}
-
-qbool VID_Is8bit(void)
-{
-    return is8bit;
-}
-
-// removed old 3dfx code
-void VID_Init8bitPalette()
-{
-    // Check for 8bit Extensions and initialize them.
-    int i;
-    char thePalette[256*3];
-    char *oldPalette, *newPalette;
-
-    if (strstr(gl_extensions, "GL_EXT_shared_texture_palette") == NULL)
-        return;
-
-    Com_Printf ("8-bit GL extensions enabled.\n");
-    glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
-    oldPalette = (char *) d_8to24table; //d_8to24table3dfx;
-    newPalette = thePalette;
-    for (i=0;i<256;i++)
-    {
-        *newPalette++ = *oldPalette++;
-        *newPalette++ = *oldPalette++;
-        *newPalette++ = *oldPalette++;
-        oldPalette++;
-    }
-    glColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
-    is8bit = true;
 }
 
 void VID_Init(unsigned char *palette)
