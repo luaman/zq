@@ -100,6 +100,14 @@ cvar_t	gl_shaftlight = {"gl_shaftlight", "1"};
 
 int		lightmode = 2;
 
+cvar_t	gl_strings = {"gl_strings", "", CVAR_ROM};
+const char *gl_vendor;
+const char *gl_renderer;
+const char *gl_version;
+const char *gl_extensions;
+
+float		gldepthmin, gldepthmax;
+
 
 #ifndef _WIN32
 qbool vid_hwgamma_enabled = false;	// dummy
@@ -657,6 +665,50 @@ void R_Init (unsigned char *palette)
 	R_InitBubble ();
 
 	Mod_Init ();
+}
+
+
+/*
+===============
+GL_Init
+===============
+*/
+extern void GL_CheckExtensions (void);
+void GL_Init (void)
+{
+	gl_vendor = (const char *) glGetString (GL_VENDOR);
+	Com_Printf ("GL_VENDOR: %s\n", gl_vendor);
+	gl_renderer = (const char *) glGetString (GL_RENDERER);
+	Com_Printf ("GL_RENDERER: %s\n", gl_renderer);
+	gl_version = (const char *) glGetString (GL_VERSION);
+	Com_Printf ("GL_VERSION: %s\n", gl_version);
+	gl_extensions = (const char *) glGetString (GL_EXTENSIONS);
+//	Com_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
+
+	Cvar_Register (&gl_strings);
+	Cvar_ForceSet (&gl_strings, va("GL_VENDOR: %s\nGL_RENDERER: %s\n"
+		"GL_VERSION: %s\nGL_EXTENSIONS: %s", gl_vendor, gl_renderer, gl_version, gl_extensions));
+
+	glClearColor (1,0,0,0);
+	glCullFace(GL_FRONT);
+	glEnable(GL_TEXTURE_2D);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.666);
+
+	glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+	glShadeModel (GL_FLAT);
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	GL_CheckExtensions();
 }
 
 
