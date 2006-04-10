@@ -625,7 +625,6 @@ void V_UpdatePalette (void)
 	int		c;
 	float	gamma, contrast;
 	static float	old_gamma, old_contrast, old_hwblend;
-	extern float	vid_gamma;
 
 	new = false;
 
@@ -666,11 +665,6 @@ void V_UpdatePalette (void)
 	rgb[2] = 255*v_blend[2]*a;
 
 	a = 1-a;
-
-	if (vid_gamma != 1.0) {
-		contrast = pow (contrast, vid_gamma);
-		gamma = gamma/vid_gamma;
-	}
 
 	for (i=0 ; i<256 ; i++)
 	{

@@ -28,11 +28,6 @@ static SDL_Surface *screen = NULL;
 Uint32 flags = 0; // SDL flags
 int bpp = 0;
 
-unsigned short	d_8to16table[256];
-unsigned		d_8to24table[256];
-unsigned		d_8to24table2[256];
-unsigned char	d_15to8table[65536];
-
 cvar_t	_windowed_mouse = {"_windowed_mouse", "1", CVAR_ARCHIVE};
 
 static qbool mouse_avail = true;
@@ -44,11 +39,6 @@ static int   mouse_oldbuttonstate = 0;
 static cvar_t m_filter = {"m_filter", "0"};
 
 static int scr_width, scr_height;
-
-void (*qglColorTableEXT) (int, int, int, int, int, const void*);
-void (*qgl3DfxSetPaletteEXT) (GLuint *);
-
-float vid_gamma = 0.8;
 
 qbool gl_mtexable = false;
 qbool gl_mtexfbskins = false;
@@ -488,7 +478,6 @@ void VID_Init(unsigned char *palette)
 
 	GL_Init();
 
-	VID_SetPalette(palette);
 	SDL_WM_SetCaption("zquake-glsdl","zquake-glsdl");
 
 	Com_Printf ("Video mode %dx%dx%d initialized.\n", width, height, bpp);
@@ -510,44 +499,6 @@ void VID_Shutdown(void)
 	screen = NULL;
 }
 
-void VID_ShiftPalette(unsigned char *palette)
-{
-	VID_SetPalette(palette);
-}
-
-void VID_SetPalette (byte *palette)
-{
-	int i;
-	byte *pal, *table;
-
-	// 8 8 8 encoding
-	pal = palette;
-	table = (byte *)d_8to24table;
-	for (i = 0; i < 256; i++)
-	{
-		*table++ = *pal++;
-		*table++ = *pal++;
-		*table++ = *pal++;
-		*table++ = 255;
-	}
-	d_8to24table[255] = 0;	// 255 is transparent
-
-	// Tonik: create a brighter palette for bmodel textures
-	pal = palette;
-	table = (byte *)d_8to24table2;
-
-	for (i = 1; i < 256; i++)
-	{
-		pal[0] = min(pal[0] * (2.0 / 1.5), 255);
-		pal[1] = min(pal[1] * (2.0 / 1.5), 255);
-		pal[2] = min(pal[2] * (2.0 / 1.5), 255);
-		*table++ = *pal++;
-		*table++ = *pal++;
-		*table++ = *pal++;
-		*table++ = 255;
-	}
-	d_8to24table2[255] = 0;	// 255 is transparent
-}
 
 void Sys_SendKeyEvents(void)
 {
