@@ -54,6 +54,7 @@ typedef struct
 	int			jump_msec;	// msec since last jump
 #endif
 	float		waterjumptime;
+	qbool		onground;
 	int			pm_type;
 
 	// world state
@@ -66,9 +67,9 @@ typedef struct
 	// results
 	int			numtouch;
 	int			touchindex[MAX_PHYSENTS];
-	qbool		onground;
 	int			groundent;		// index in physents array, only valid
 								// when onground is true
+	float		landspeed;
 	int			waterlevel;
 	int			watertype;
 } playermove_t;

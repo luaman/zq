@@ -266,6 +266,7 @@ static void CL_PredictLocalPlayer (void)
 	frame_t		*from = NULL, *to;
 	int			oldphysent;
 	extern cvar_t cl_smartjump;
+	float		landspeed = 0;
 
 	if (cls.nqdemoplayback)
 		goto out;
@@ -297,6 +298,7 @@ static void CL_PredictLocalPlayer (void)
 			if (cl_smartjump.value)
 				CL_CategorizePosition ();
 			cl.onground = to->playerstate[Cam_PlayerNum()].onground;
+			landspeed = pmove.landspeed;
 		}
 		else
 			CL_CategorizePosition ();
@@ -329,6 +331,9 @@ static void CL_PredictLocalPlayer (void)
 
 out:
 	CL_CalcCrouch ();
+
+	if (pmove.landspeed < -650 && !cl.landtime)
+		cl.landtime = cl.time;
 }
 
 
