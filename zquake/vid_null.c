@@ -12,13 +12,10 @@ byte	vid_buffer[BASEWIDTH*BASEHEIGHT];
 short	zbuffer[BASEWIDTH*BASEHEIGHT];
 byte	surfcache[256*1024];
 
-unsigned	d_8to24table[256];
-
 
 void	VID_SetCaption (char *text)
 {
 }
-
 
 void	VID_SetPalette (unsigned char *palette)
 {

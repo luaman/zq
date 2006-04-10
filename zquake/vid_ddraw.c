@@ -46,8 +46,6 @@ short	zbuffer[BASEWIDTH*BASEHEIGHT];
 //byte	surfcache[256*1024];
 byte	surfcache[320*200*4];
 
-unsigned	d_8to24table[256];
-
 cvar_t	vid_ref = {"vid_ref", "soft", CVAR_ROM};
 cvar_t	_windowed_mouse = {"_windowed_mouse", "0"};
 

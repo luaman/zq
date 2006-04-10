@@ -112,8 +112,6 @@ static int		VID_highhunkmark;
 
 unsigned char	vid_curpal[256*3];
 
-unsigned int	d_8to24table[256];
-
 int			driver = grDETECT,mode;
 qbool		useWinDirect = true, useDirectDraw = true;
 MGLDC		*mgldc = NULL,*memdc = NULL,*dibdc = NULL,*windc = NULL;
