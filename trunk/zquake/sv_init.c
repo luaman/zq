@@ -297,7 +297,7 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	
 	strlcpy (sv.mapname, mapname, sizeof(sv.mapname));
 	Cvar_ForceSet (&host_mapname, sv.mapname);
-	Q_snprintfz (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", sv.mapname);
+	snprintf (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", sv.mapname);
 
 	sv.worldmodel = CM_LoadMap (sv.modelname, false, &sv.map_checksum, &sv.map_checksum2);
 

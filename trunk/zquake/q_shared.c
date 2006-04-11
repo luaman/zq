@@ -166,7 +166,7 @@ char *Q_ftos (float value)
 	static char str[128];
 	int	i;
 
-	Q_snprintfz (str, sizeof(str), "%f", value);
+	snprintf (str, sizeof(str), "%f", value);
 
 	for (i=strlen(str)-1 ; i>0 && str[i]=='0' ; i--)
 		str[i] = 0;

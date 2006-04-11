@@ -220,7 +220,7 @@ void Cvar_SetValue (cvar_t *var, float value)
 	char	val[128];
 	int	i;
 	
-	Q_snprintfz (val, sizeof(val), "%f", value);
+	snprintf (val, sizeof(val), "%f", value);
 
 	for (i=strlen(val)-1 ; i>0 && val[i]=='0' ; i--)
 		val[i] = 0;

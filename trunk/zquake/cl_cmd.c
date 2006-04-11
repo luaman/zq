@@ -160,7 +160,7 @@ void CL_Say (qbool team)
 		char buf[1024];
 		Cmd_ExpandString (cl_fakename.string, buf);
 		strcpy (buf, TP_ParseMacroString (buf));
-		Q_snprintfz (sendtext, sizeof(sendtext), "\x0d%s: ", TP_ParseFunChars(buf, true));
+		snprintf (sendtext, sizeof(sendtext), "\x0d%s: ", TP_ParseFunChars(buf, true));
 	}
 
 	strlcat (sendtext, text, sizeof(sendtext));
@@ -424,7 +424,7 @@ void CL_Download_f (void)
 		return;
 	}
 
-	Q_snprintfz (cls.downloadname, sizeof(cls.downloadname),
+	snprintf (cls.downloadname, sizeof(cls.downloadname),
 		"%s/%s", cls.gamedir, Cmd_Argv(1));
 
 	p = cls.downloadname;

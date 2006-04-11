@@ -235,7 +235,7 @@ void Con_ConDump_f (void)
 	if (strstr(Cmd_Argv(1), ".."))
 		return;
 
-	Q_snprintfz (name, sizeof(name), "%s/%s", cls.gamedir, Cmd_Argv(1));
+	snprintf (name, sizeof(name), "%s/%s", cls.gamedir, Cmd_Argv(1));
 	COM_ForceExtension (name, ".txt");
 
 	f = fopen (name, "wb");

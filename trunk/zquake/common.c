@@ -574,7 +574,7 @@ void COM_WriteFile (char *filename, void *data, int len)
 	FILE	*f;
 	char	name[MAX_OSPATH];
 	
-	Q_snprintfz (name, sizeof(name), "%s/%s", com_basedir, filename);
+	snprintf (name, sizeof(name), "%s/%s", com_basedir, filename);
 	
 	f = fopen (name, "wb");
 	if (!f) {
@@ -699,7 +699,7 @@ int FS_FOpenFile (char *filename, FILE **file)
 		}
 		else
 		{		
-			Q_snprintfz (netpath, sizeof(netpath), "%s/%s", search->filename, filename);
+			snprintf (netpath, sizeof(netpath), "%s/%s", search->filename, filename);
 
 			*file = fopen (netpath, "rb");
 			if (!*file)

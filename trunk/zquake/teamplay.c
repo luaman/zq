@@ -257,7 +257,7 @@ char *Macro_Weapons (void) {
 char *Macro_WeaponAndAmmo (void)
 {
 	char buf[sizeof(macro_buf)];
-	Q_snprintfz (buf, sizeof(buf), "%s:%s", Macro_Weapon(), Macro_Ammo());
+	snprintf (buf, sizeof(buf), "%s:%s", Macro_Weapon(), Macro_Ammo());
 	strcpy (macro_buf, buf);
 	return macro_buf;
 }
@@ -923,7 +923,7 @@ void TP_LoadLocFile (char *filename, qbool quiet)
 	if (!*filename)
 		return;
 
-	Q_snprintfz (fullpath, sizeof(fullpath) - 4, "locs/%s", filename);
+	snprintf (fullpath, sizeof(fullpath) - 4, "locs/%s", filename);
 	COM_DefaultExtension (fullpath, ".loc");
 
 	buf = (char *) FS_LoadTempFile (fullpath);
@@ -1393,7 +1393,7 @@ void TP_NewMap (void)
 	{	// map name has changed
 		loc_numentries = 0;	// clear loc file
 		if (tp_loadlocs.value && cl.deathmatch && !cls.demoplayback) {
-			Q_snprintfz (locname, sizeof(locname), "%s.loc", host_mapname.string);
+			snprintf (locname, sizeof(locname), "%s.loc", host_mapname.string);
 			TP_LoadLocFile (locname, true);
 		}
 		strlcpy (last_map, host_mapname.string, sizeof(last_map));

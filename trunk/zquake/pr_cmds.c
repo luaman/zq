@@ -961,10 +961,10 @@ static void PF_ftos (void)
 	v = G_FLOAT(OFS_PARM0);
 
 	if (v == (int)v)
-		Q_snprintfz (pr_string_temp, sizeof(pr_string_temp), "%d", (int)v);
+		snprintf (pr_string_temp, sizeof(pr_string_temp), "%d", (int)v);
 	else
 	{
-		Q_snprintfz (pr_string_temp, sizeof(pr_string_temp), "%f", v);
+		snprintf (pr_string_temp, sizeof(pr_string_temp), "%f", v);
 
 		for (i=strlen(pr_string_temp)-1 ; i>0 && pr_string_temp[i]=='0' ; i--)
 			pr_string_temp[i] = 0;
@@ -1807,7 +1807,7 @@ string etos(entity ent) = #65
 */
 static void PF_etos (void)
 {
-	Q_snprintfz (pr_string_temp, sizeof(pr_string_temp), "entity %i", G_EDICTNUM(OFS_PARM0));
+	snprintf (pr_string_temp, sizeof(pr_string_temp), "entity %i", G_EDICTNUM(OFS_PARM0));
 
 	G_INT(OFS_RETURN) = PR_SetString(pr_string_temp);
 }
