@@ -229,20 +229,32 @@ size_t strlcat (char *dst, const char *src, size_t size)
 #endif
 
 
-void Q_snprintfz (char *dest, size_t size, char *fmt, ...)
-{
-	va_list		argptr;
-
-	va_start (argptr, fmt);
 #ifdef _WIN32
-	_vsnprintf (dest, size, fmt, argptr);
-#else
-	vsnprintf (dest, size, fmt, argptr);
-#endif
-	va_end (argptr);
+int snprintf(char *buffer, size_t count, char const *format, ...)
+{
+	int ret;
+	va_list argptr;
 
-	dest[size-1] = 0;
+	if (!count)
+		return 0;
+	va_start(argptr, format);
+	ret = _vsnprintf(buffer, count, format, argptr);
+	buffer[count - 1] = 0;
+	va_end(argptr);
+	return ret;
 }
+
+int vsnprintf(char *buffer, size_t count, const char *format, va_list argptr)
+{
+	int ret;
+
+	if (!count)
+		return 0;
+	ret = _vsnprintf(buffer, count, format, argptr);
+	buffer[count - 1] = 0;
+	return ret;
+}
+#endif
 
 
 wchar char2wc (char c)
