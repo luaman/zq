@@ -1328,9 +1328,7 @@ VID_Init
 void	VID_Init (unsigned char *palette)
 {
 	int		i, existingmode;
-	int		basenummodes, width, height, bpp, findbpp, done;
-	char	gldir[MAX_OSPATH];
-	HDC		hdc;
+	int		width, height, bpp, findbpp, done;
 	DEVMODE	devmode;
 
 	memset(&devmode, 0, sizeof(devmode));
@@ -1353,21 +1351,10 @@ void	VID_Init (unsigned char *palette)
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_APPICON));
 
 	VID_InitDIB (global_hInstance);
-	basenummodes = nummodes = 1;
-
 	VID_InitFullDIB (global_hInstance);
 
 	if (COM_CheckParm("-window") || COM_CheckParm("-startwindowed"))
 	{
-		hdc = GetDC (NULL);
-
-		if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
-		{
-			Sys_Error ("Can't run in non-RGB mode");
-		}
-
-		ReleaseDC (NULL, hdc);
-
 		windowed = true;
 
 		vid_default = MODE_WINDOWED;
@@ -1566,9 +1553,6 @@ void	VID_Init (unsigned char *palette)
 		Sys_Error ("wglMakeCurrent failed");
 
 	GL_Init ();
-
-	sprintf (gldir, "%s/glquake", com_gamedir);
-//	Sys_mkdir (gldir);
 
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
