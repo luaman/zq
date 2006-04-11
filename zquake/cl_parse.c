@@ -586,9 +586,9 @@ void CL_ParseDownload (void)
 	if (!cls.download)
 	{
 		if (strncmp(cls.downloadtempname,"skins/",6))
-			Q_snprintfz (name, sizeof(name), "%s/%s", cls.gamedir, cls.downloadtempname);
+			snprintf (name, sizeof(name), "%s/%s", cls.gamedir, cls.downloadtempname);
 		else
-			Q_snprintfz (name, sizeof(name), "qw/%s", cls.downloadtempname);
+			snprintf (name, sizeof(name), "qw/%s", cls.downloadtempname);
 
 		COM_CreatePath (name);
 
@@ -776,7 +776,7 @@ void CL_ParseServerData (void)
 		// save current config
 		CL_WriteConfiguration ();
 		strlcpy (cls.gamedirfile, str, sizeof(cls.gamedirfile));
-		Q_snprintfz (cls.gamedir, sizeof(cls.gamedir),
+		snprintf (cls.gamedir, sizeof(cls.gamedir),
 			"%s/%s", com_basedir, cls.gamedirfile);
 		cflag = true;
 	}
@@ -787,7 +787,7 @@ void CL_ParseServerData (void)
 	// run config.cfg and frontend.cfg in the gamedir if they exist
 	if (cflag) {
 		int cl_warncmd_val = cl_warncmd.value;
-		Q_snprintfz (fn, sizeof(fn), "%s/%s", cls.gamedir, "config.cfg");
+		snprintf (fn, sizeof(fn), "%s/%s", cls.gamedir, "config.cfg");
 		if ((f = fopen(fn, "r")) != NULL) {
 			fclose(f);
 			Cbuf_AddText ("cl_warncmd 0\n");
@@ -796,7 +796,7 @@ void CL_ParseServerData (void)
 			else
 				Cbuf_AddText (va("exec ../%s/config.cfg\n", cls.gamedirfile));
 		}
-		Q_snprintfz (fn, sizeof(fn), "%s/%s", cls.gamedir, "frontend.cfg");
+		snprintf (fn, sizeof(fn), "%s/%s", cls.gamedir, "frontend.cfg");
 		if ((f = fopen(fn, "r")) != NULL) {
 			fclose(f);
 			Cbuf_AddText ("cl_warncmd 0\n");
@@ -805,7 +805,7 @@ void CL_ParseServerData (void)
 			else
 				Cbuf_AddText (va("exec ../%s/frontend.cfg\n", cls.gamedirfile));
 		}
-		Q_snprintfz (fn, sizeof(fn), "cl_warncmd %d\n", cl_warncmd_val);
+		snprintf (fn, sizeof(fn), "cl_warncmd %d\n", cl_warncmd_val);
 		Cbuf_AddText (fn);
 	}
 

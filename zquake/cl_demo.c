@@ -814,7 +814,7 @@ void CL_Record_f (void)
 	if (cls.demorecording)
 		CL_Stop_f();
   
-	Q_snprintfz (name, sizeof(name), "%s/%s", cls.gamedir, Cmd_Argv(1));
+	snprintf (name, sizeof(name), "%s/%s", cls.gamedir, Cmd_Argv(1));
 
 //
 // open the demo file
@@ -871,10 +871,10 @@ void CL_EasyRecord_f (void)
 /// FIXME: check buffer sizes!!!
 
 	if (c == 2)
-		Q_snprintfz (name, sizeof(name), "%s", Cmd_Argv(1));
+		snprintf (name, sizeof(name), "%s", Cmd_Argv(1));
 	else if (cl.spectator) {
 		// FIXME: if tracking a player, use his name
-		Q_snprintfz (name, sizeof(name), "spec_%s_%s",
+		snprintf (name, sizeof(name), "spec_%s_%s",
 			TP_PlayerName(),
 			TP_MapName());
 	} else {
@@ -883,7 +883,7 @@ void CL_EasyRecord_f (void)
 		if (cl.teamplay && i >= 3)
 		{
 			// Teamplay
-			Q_snprintfz (name, sizeof(name), "%s_%s_vs_%s_%s",
+			snprintf (name, sizeof(name), "%s_%s_vs_%s_%s",
 				TP_PlayerName(),
 				TP_PlayerTeam(),
 				TP_EnemyTeam(),
@@ -891,20 +891,20 @@ void CL_EasyRecord_f (void)
 		} else {
 			if (i == 2) {
 				// Duel
-				Q_snprintfz (name, sizeof(name), "%s_vs_%s_%s",
+				snprintf (name, sizeof(name), "%s_vs_%s_%s",
 					TP_PlayerName(),
 					TP_EnemyName(),
 					TP_MapName());
 			}
 			else if (i > 2) {
 				// FFA
-				Q_snprintfz (name, sizeof(name), "%s_ffa_%s",
+				snprintf (name, sizeof(name), "%s_ffa_%s",
 					TP_PlayerName(), 
 					TP_MapName());
 			}
 			else {
 				// one player
-				Q_snprintfz (name, sizeof(name), "%s_%s",
+				snprintf (name, sizeof(name), "%s_%s",
 					TP_PlayerName(),
 					TP_MapName());
 			}

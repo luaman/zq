@@ -285,7 +285,7 @@ void R_SetSky (char *name)
 
 	for (i=0 ; i<6 ; i++)
 	{
-		Q_snprintfz (pathname, sizeof(pathname), "env/%s%s.tga", name, suf[r_skysideimage[i]]);
+		snprintf (pathname, sizeof(pathname), "env/%s%s.tga", name, suf[r_skysideimage[i]]);
 		LoadTGA (pathname, &pic, &width, &height);
 
 		if (!pic) {
