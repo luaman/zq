@@ -1018,11 +1018,11 @@ PR_LoadProgs
 */
 void PR_LoadProgs (void)
 {
-	int		i;
+	int	i;
 	char	num[32];
 	static int lumpsize[6] = { sizeof(dstatement_t), sizeof(ddef_t),
 		sizeof(ddef_t), sizeof(dfunction_t), 4, 4 };
-	int		filesize;
+	int	filesize = 0;
 
 	progs = NULL;
 	if (!deathmatch.value)
