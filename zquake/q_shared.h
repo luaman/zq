@@ -168,7 +168,9 @@ size_t qwcslcpy (wchar *dst, const wchar *src, size_t size);
 
 size_t strlcpy (char *dst, const char *src, size_t size);
 size_t strlcat (char *dst, const char *src, size_t size);
-void Q_snprintfz (char *dest, size_t size, char *fmt, ...);
+int snprintf(char *buffer, size_t count, char const *format, ...);
+int vsnprintf(char *buffer, size_t count, const char *format, va_list argptr);
+#define Q_snprintfz snprintf 	// nuke this one day
 
 qbool Q_glob_match (const char *pattern, const char *text);
 
