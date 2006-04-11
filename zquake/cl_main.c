@@ -1120,11 +1120,11 @@ CL_Frame
 */
 void CL_Frame (double time)
 {
-	double			time1, time2;
-	static double	time3 = 0;
-	int				pass1, pass2, pass3;
+	double		time1 = 0.0, time2 = 0.0;
+	static double	time3 = 0.0;
+	int		pass1, pass2, pass3;
 	static double	extratime = 0.001;
-	double			minframetime;
+	double		minframetime;
 
 	extratime += time;
 

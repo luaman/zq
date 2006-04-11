@@ -306,7 +306,7 @@ void CL_PrintQStatReply (char *s)
 		while (p)
 		{
 			sscanf (p, "%d %d %d %d \"%32[^\"]\" \"%16[^\"]\" %d %d",
-				&userid, &frags, &time, &ping, &name, &skin, &topcolor, &bottomcolor);
+				&userid, &frags, &time, &ping, (char *)&name, (char *)&skin, &topcolor, &bottomcolor);
 			Com_Printf("%4d %4d %4d  %-16.16s\n", ping, time, frags, name);
 			p = strtok (NULL, "\n");
 		}
