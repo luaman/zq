@@ -470,10 +470,10 @@ void CL_LinkPacketEntities (void)
 			continue;
 
 		if (state->modelindex == cl_playerindex) {
-			i = state->frame;
-			if (cl_deadbodyfilter.value == 2 && i >= 41 && i <= 102)
+			int f = state->frame;
+			if (cl_deadbodyfilter.value == 2 && f >= 41 && f <= 102)
 				continue;
-			if (cl_deadbodyfilter.value && (i==49 || i==60 || i==69 || i==84 || i==93 || i==102))
+			if (cl_deadbodyfilter.value && (f==49 || f==60 || f==69 || f==84 || f==93 || f==102))
 				continue;
 		}
 
@@ -1031,7 +1031,7 @@ for all current players
 */
 void CL_LinkPlayers (void)
 {
-	int				i, j;
+	int				j;
 	player_info_t	*info;
 	player_state_t	*state;
 	player_state_t	exact;
@@ -1095,9 +1095,13 @@ void CL_LinkPlayers (void)
 		if (j == cl.playernum)
 			continue;
 
-		if (cl_deadbodyfilter.value && state->modelindex == cl_playerindex
-			&& ( (i=state->frame)==49 || i==60 || i==69 || i==84 || i==93 || i==102) )
-			continue;
+		if (state->modelindex == cl_playerindex) {
+			int f = state->frame;
+			if (cl_deadbodyfilter.value == 2 && f >= 41 && f <= 102)
+				continue;
+			if (cl_deadbodyfilter.value && (f==49 || f==60 || f==69 || f==84 || f==93 || f==102))
+				continue;
+		}
 		
 		if (!Cam_DrawPlayer(j))
 			continue;
