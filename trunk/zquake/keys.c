@@ -432,10 +432,10 @@ int FindBestNick (char *s) {
 
 
 void CompleteName(void) {
+/* FIXME
 	char s[MAXCMDLINE], t[MAXCMDLINE], *p, *q;
 	int best, diff, i;
 
-/* FIXME
 	p = q = key_lines[edit_line] + key_linepos;
 	while (--p >= key_lines[edit_line] + 1)
 		if (!(  (*(signed char *)p >= 32) && !strchr(disallowed, *p) ))

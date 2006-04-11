@@ -326,6 +326,7 @@ extern unsigned short	r_colormap16[256 * VID_GRADES];
 void R_Build15to8table (void);
 void R_FlushTranslations (void);
 byte *R_GetColormap (int colormap);
+byte *R_GetSkin (int colormap);
 
 // skin.c
 typedef struct skin_s

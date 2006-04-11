@@ -419,6 +419,7 @@ static void uninstall_grabs(void)
 
 }
 
+extern void Key_EventEx (int key, int unichar, qbool down);
 static void GetEvent(void)
 {
     XEvent event;
