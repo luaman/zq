@@ -332,7 +332,7 @@ void M_Main_Key (int key)
 //=============================================================================
 /* OPTIONS MENU */
 
-#define	OPTIONS_ITEMS	18
+#define	OPTIONS_ITEMS	15
 
 #define	SLIDER_RANGE	10
 
@@ -407,31 +407,19 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue (&s_volume, s_volume.value);
 		break;
 
-	case 9:	// always run
-		Cvar_SetValue (&cl_run, !cl_run.value);
-		break;
-
-	case 10:	// mouse look
-		Cvar_SetValue (&freelook, !freelook.value);
-		break;
-
-	case 11:	// invert mouse
+	case 9:	// invert mouse
 		Cvar_SetValue (&m_pitch, -m_pitch.value);
 		break;
 
-	case 12:	// lookstrafe
-		Cvar_SetValue (&lookstrafe, !lookstrafe.value);
-		break;
-
-	case 13:
+	case 10:
 		Cvar_SetValue (&cl_sbar, !cl_sbar.value);
 		break;
 
-	case 14:
+	case 11:
 		Cvar_SetValue (&cl_hudswap, !cl_hudswap.value);
 		break;
-
-	case 17:	// _windowed_mouse
+		
+	case 14:	// _windowed_mouse
 		Cvar_SetValue (&_windowed_mouse, !_windowed_mouse.value);
 		break;
 	}
@@ -471,6 +459,7 @@ void M_Options_Draw (void)
 {
 	float		r;
 	mpic_t	*p;
+	int y;
 
 	M_DrawPic (16, 4, R_CachePic("gfx/qplaque.lmp"));
 	p = R_CachePic ("gfx/p_option.lmp");
@@ -500,39 +489,37 @@ void M_Options_Draw (void)
 	r = bgmvolume.value;
 	M_DrawSlider (220, 88, r);
 
-	M_Print (16, 96, "          Sound Volume");
+	y = 96;
+	M_Print (16, y, "          Sound Volume");
 	r = s_volume.value;
-	M_DrawSlider (220, 96, r);
+	M_DrawSlider (220, y, r);
 
-	M_Print (16, 104,  "            Always Run");
-	M_DrawCheckbox (220, 104, cl_run.value);
+	y +=  8;
+	M_Print (16, y, "          Invert Mouse");
+	M_DrawCheckbox (220, y, m_pitch.value < 0);
 
-	M_Print (16, 112, "            Mouse look");
-	M_DrawCheckbox (220, 112, freelook.value);
+	y +=  8;
+	M_Print (16, y, "    Use old status bar");
+	M_DrawCheckbox (220, y, cl_sbar.value);
 
-	M_Print (16, 120, "          Invert Mouse");
-	M_DrawCheckbox (220, 120, m_pitch.value < 0);
+	y +=  8;
+	M_Print (16, y, "      HUD on left side");
+	M_DrawCheckbox (220, y, cl_hudswap.value);
 
-	M_Print (16, 128, "            Lookstrafe");
-	M_DrawCheckbox (220, 128, lookstrafe.value);
+	y +=  8;
+	M_Print (16, y, "          FPS settings");
 
-	M_Print (16, 136, "    Use old status bar");
-	M_DrawCheckbox (220, 136, cl_sbar.value);
-
-	M_Print (16, 144, "      HUD on left side");
-	M_DrawCheckbox (220, 144, cl_hudswap.value);
-
-	M_Print (16, 152, "          FPS settings");
-
+	y +=  8;
 	if (vid_menudrawfn)
-		M_Print (16, 160, "           Video Modes");
+		M_Print (16, y, "           Video Modes");
 
 #ifdef _WIN32
 	if (modestate == MS_WINDOWED)
 	{
 #endif
-		M_Print (16, 168, "             Use Mouse");
-		M_DrawCheckbox (220, 168, _windowed_mouse.value);
+		y +=  8;
+		M_Print (16, y, "             Use Mouse");
+		M_DrawCheckbox (220, y, _windowed_mouse.value);
 #ifdef _WIN32
 	}
 #endif
@@ -567,10 +554,10 @@ void M_Options_Key (int k)
 		case 2:
 			Cbuf_AddText ("exec default.cfg\n");
 			break;
-		case 15:
+		case 12:
 			M_Menu_Fps_f ();
 			break;
-		case 16:
+		case 13:
 			if (vid_menudrawfn)
 				M_Menu_Video_f ();
 			break;
@@ -615,10 +602,9 @@ void M_Options_Key (int k)
 		break;
 	}
 
-	if (options_cursor == 16 && vid_menudrawfn == NULL)
+	if (options_cursor == 13 && vid_menudrawfn == NULL)
 	{
 		if (k == K_UPARROW || k == K_END || k == K_PGDN)
-			//options_cursor = 15;
 			options_cursor--;
 		else
 			//options_cursor = 0;
@@ -626,10 +612,10 @@ void M_Options_Key (int k)
 	}
 
 #ifdef _WIN32
-	if ((options_cursor == 17) && (modestate != MS_WINDOWED))
+	if ((options_cursor == 14) && (modestate != MS_WINDOWED))
 	{
 		if (k == K_UPARROW || k == K_END || k == K_PGDN)
-			options_cursor = 16;
+			options_cursor = 13;
 		else
 			options_cursor = 0;
 	}
