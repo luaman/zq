@@ -119,7 +119,7 @@ qbool gl_mtexfbskins = false;
 //====================================
 
 cvar_t		vid_ref = {"vid_ref", "gl", CVAR_ROM};
-cvar_t		vid_mode = {"vid_mode","0"};
+cvar_t		gl_mode = {"gl_mode","0"};
 // Note that 0 is MODE_WINDOWED
 cvar_t		_vid_default_mode = {"_vid_default_mode","0",CVAR_ARCHIVE};
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
@@ -210,6 +210,7 @@ qbool VID_SetWindowedMode (int modenum)
 	height = rect.bottom - rect.top;
 
 	// Create the DIB window
+if (!dibwindow)
 	dibwindow = CreateWindowEx (
 		 ExWindowStyle,
 		 "WinQuake",
@@ -222,6 +223,10 @@ qbool VID_SetWindowedMode (int modenum)
 		 NULL,
 		 global_hInstance,
 		 NULL);
+else {
+	SetWindowLong (dibwindow, GWL_STYLE, WindowStyle);
+	MoveWindow (dibwindow, 0, 0, width, height, FALSE);
+}
 
 	if (!dibwindow)
 		Sys_Error ("Couldn't create DIB window");
@@ -311,6 +316,7 @@ qbool VID_SetFullDIBMode (int modenum)
 	height = rect.bottom - rect.top;
 
 	// Create the DIB window
+if (!dibwindow)
 	dibwindow = CreateWindowEx (
 		 ExWindowStyle,
 		 "WinQuake",
@@ -323,6 +329,10 @@ qbool VID_SetFullDIBMode (int modenum)
 		 NULL,
 		 global_hInstance,
 		 NULL);
+else {
+	SetWindowLong (dibwindow, GWL_STYLE, WindowStyle);
+	MoveWindow (dibwindow, 0, 0, width, height, FALSE);
+}
 
 	if (!dibwindow)
 		Sys_Error ("Couldn't create DIB window");
@@ -367,12 +377,12 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	qbool		stat;
 //    MSG			msg;
 
-	if ((windowed && (modenum != 0)) ||
+/*	if ((windowed && (modenum != 0)) ||
 		(!windowed && (modenum < 1)) ||
 		(!windowed && (modenum >= nummodes)))
 	{
 		Sys_Error ("Bad video mode");
-	}
+	} */
 
 // so Com_Printfs don't mess us up by forcing vid and snd updates
 	temp = scr_disabled_for_loading;
@@ -432,7 +442,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 // Who knows if it helps, but it probably doesn't hurt
 	SetForegroundWindow (mainwindow);
 	vid_modenum = modenum;
-	Cvar_SetValue (&vid_mode, (float)vid_modenum);
+	Cvar_SetValue (&gl_mode, (float)vid_modenum);
 
 /*	// Tonik: all it does, it seems, is eat up keys and slow down
 	// the startup process by 0.1 seconds, so disable it
@@ -1319,39 +1329,13 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		Com_Printf ("No fullscreen DIB modes found\n");
 }
 
-
-/*
-===================
-VID_Init
-===================
-*/
-void	VID_Init (unsigned char *palette)
+static void FindDefaultMode (void)
 {
 	int		i, existingmode;
 	int		width, height, bpp, findbpp, done;
 	DEVMODE	devmode;
 
 	memset(&devmode, 0, sizeof(devmode));
-
-	Cvar_Register (&vid_ref);
-	Cvar_Register (&vid_mode);
-	Cvar_Register (&_vid_default_mode);
-	Cvar_Register (&_vid_default_mode_win);
-	Cvar_Register (&vid_config_x);
-	Cvar_Register (&vid_config_y);
-	Cvar_Register (&vid_stretch_by_2);
-	Cvar_Register (&_windowed_mouse);
-	Cvar_Register (&vid_hwgammacontrol);
-	Cvar_Register (&vid_displayfrequency);
-	Cvar_Register (&vid_vsync);
-	Cvar_Register (&gl_ext_swapinterval);
-
-	Cmd_AddCommand ("vid_modelist", VID_ModeList_f);
-
-	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_APPICON));
-
-	VID_InitDIB (global_hInstance);
-	VID_InitFullDIB (global_hInstance);
 
 	if (COM_CheckParm("-window") || COM_CheckParm("-startwindowed"))
 	{
@@ -1513,6 +1497,39 @@ void	VID_Init (unsigned char *palette)
 			}
 		}
 	}
+}
+
+/*
+===================
+VID_Init
+===================
+*/
+void CL_VID_Restart_f (void);
+void VID_Init (unsigned char *palette)
+{
+	int i;
+
+	Cvar_Register (&vid_ref);
+	Cvar_Register (&gl_mode);
+	Cvar_Register (&_vid_default_mode);
+	Cvar_Register (&_vid_default_mode_win);
+	Cvar_Register (&vid_config_x);
+	Cvar_Register (&vid_config_y);
+	Cvar_Register (&vid_stretch_by_2);
+	Cvar_Register (&_windowed_mouse);
+	Cvar_Register (&vid_hwgammacontrol);
+	Cvar_Register (&vid_displayfrequency);
+	Cvar_Register (&vid_vsync);
+	Cvar_Register (&gl_ext_swapinterval);
+
+	Cmd_AddCommand ("vid_modelist", VID_ModeList_f);
+	Cmd_AddCommand ("vid_restart", CL_VID_Restart_f);
+
+	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_APPICON));
+
+	VID_InitDIB (global_hInstance);
+	VID_InitFullDIB (global_hInstance);
+	FindDefaultMode ();
 
 	vid_initialized = true;
 
@@ -1562,6 +1579,42 @@ void	VID_Init (unsigned char *palette)
 
 	if (COM_CheckParm("-fullsbar"))
 		fullsbardraw = true;
+}
+
+void VID_Restart ()
+{
+	if (baseRC)
+		wglDeleteContext (baseRC);
+	VID_SetMode (gl_mode.value, host_basepal);
+	baseRC = wglCreateContext( maindc );
+	if (!baseRC)
+		Sys_Error ("Could not initialize GL (wglCreateContext failed).\n\nMake sure you in are 65535 color mode, and try running -window.");
+	if (!wglMakeCurrent( maindc, baseRC ))
+		Sys_Error ("wglMakeCurrent failed");
+
+	GL_Init ();
+}
+
+void CL_VID_Restart_f ()
+{
+	VID_Restart ();
+
+	R_InitTextures ();
+
+	// force models to reload
+	Cache_Flush ();
+
+	// free old data and load a new gfx.wad
+	R_Draw_Init ();
+
+	// register the pics we need
+	SCR_RegisterPics ();
+	Sbar_RegisterPics ();
+
+	if (cls.state == ca_active) {
+		R_ReloadTextures ();
+		GL_BuildLightmaps ();
+	}
 }
 
 

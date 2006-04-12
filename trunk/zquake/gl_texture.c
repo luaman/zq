@@ -626,6 +626,9 @@ void R_InitTextures (void)
 	Cvar_Register (&gl_picmip);
 	Cvar_Register (&gl_texturemode);
 
+	texture_extension_number = 1;
+	numgltextures = 0;
+
 	// get the maximum texture size from driver
 	glGetIntegerv (GL_MAX_TEXTURE_SIZE, (GLint *) &gl_max_texsize);
 
