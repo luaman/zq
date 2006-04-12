@@ -1607,14 +1607,7 @@ void CL_VID_Restart_f ()
 	// free old data and load a new gfx.wad
 	R_Draw_Init ();
 
-	// register the pics we need
-	SCR_RegisterPics ();
-	Sbar_RegisterPics ();
-
-	if (cls.state == ca_active) {
-		R_ReloadTextures ();
-		GL_BuildLightmaps ();
-	}
+	GL_BuildLightmaps ();
 }
 
 

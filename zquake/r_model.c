@@ -1758,3 +1758,10 @@ unsigned short R_ModelChecksum (const struct model_s *model)
 {
 	return model->crc;
 }
+
+//=============================================================================
+
+// a stub
+void R_LoadModelTextures (model_t *m)
+{
+}

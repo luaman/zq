@@ -472,6 +472,8 @@ void CL_Disconnect (void)
 	
 	Cmd_RemoveStuffedAliases ();
 
+	cl.paused = 0;
+
 	if (cls.demorecording && cls.state != ca_disconnected)
 		CL_Stop_f ();
 
@@ -865,6 +867,25 @@ void CL_SendToServer (void)
 		CL_CheckForResend ();
 	} else
 		CL_SendCmd ();
+}
+
+// this is callback from VID after a vid_restart
+void CL_ReloadTextures (void)
+{
+	int i;
+
+	// register the pics we need
+	SCR_RegisterPics ();
+	Sbar_RegisterPics ();
+
+	if (cls.state == ca_active) {
+		for (i = 1; i < MAX_MODELS; i++)
+		{
+			if (!cl.model_name[i][0])
+				break;
+			R_LoadModelTextures (cl.model_precache[i]);
+		}
+	}
 }
 
 //=============================================================================
