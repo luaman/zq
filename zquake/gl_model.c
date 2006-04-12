@@ -566,6 +566,78 @@ void Mod_LoadTextures (lump_t *l)
 	}
 }
 
+void R_LoadBrushModelTextures (model_t *m)
+{
+	int		i;
+	texture_t	*tx;
+	qbool		noscale;
+	int			mipcap;
+	byte *data;
+
+	loadmodel = m;
+
+	for (i = 0; i < loadmodel->numtextures; i++)
+	{
+		tx = loadmodel->textures[i];
+
+		if (loadmodel->isworldmodel && !loadmodel->halflifebsp && !strncmp(tx->name,"sky",3))
+		{
+			R_InitSky (tx);
+			continue;
+		}
+
+		noscale = ((!gl_scaleModelTextures.value && !loadmodel->isworldmodel) ||
+				(!gl_scaleTurbTextures.value && (tx->name[0] == '*')));
+
+		mipcap = noscale ? 0 : bound(0, gl_mipTexLevel.value, 3);
+
+{
+		int width = tx->width >> mipcap;
+		int height = tx->height >> mipcap;
+
+
+		data = (byte *)(tx+1);
+
+		if (tx->name[0] == '*')	// we don't brighten turb textures
+			tx->gl_texturenum = GL_LoadTexture (tx->name, width, height, data/*(byte *)(tx+1)*/, TEX_MIPMAP | (noscale ? TEX_NOSCALE : 0));
+		else {
+			tx->gl_texturenum = GL_LoadTexture (tx->name, width, height, data/*(byte *)(tx+1)*/, TEX_MIPMAP|TEX_BRIGHTEN | (noscale ? TEX_NOSCALE : 0));
+			if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
+				tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", tx->name), width, height, (byte *)(tx+1),
+					TEX_MIPMAP|TEX_FULLBRIGHTMASK | (noscale ? TEX_NOSCALE : 0));
+			}
+		}
+
+}
+
+
+		
+	}
+}
+
+void R_LoadSpriteModelTextures (model_t *m)
+{
+	// TODO
+}
+
+void R_ReloadTextures (void)
+{
+	int i;
+
+	for (i=1 ; i<MAX_MODELS ; i++)
+	{
+		if (!cl.model_name[i][0])
+			break;
+
+		if (cl.model_precache[i]->type == mod_brush)
+			R_LoadBrushModelTextures (cl.model_precache[i]);
+		else if (cl.model_precache[i]->type == mod_sprite)
+			R_LoadSpriteModelTextures (cl.model_precache[i]);
+	}
+}
+
+
+
 /*
 =================
 Mod_LoadLighting

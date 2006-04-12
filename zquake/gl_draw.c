@@ -486,6 +486,14 @@ void R_Draw_Init (void)
 	scrap_texnum = texture_extension_number;
 	texture_extension_number += MAX_SCRAPS;
 
+	numcachepics = 0;
+	memset (scrap_allocated, 0, sizeof(scrap_allocated));
+	memset (scrap_texels, 0, sizeof(scrap_texels));
+	scrap_dirty = false;
+
+	draw_chars = NULL;
+	draw_disc = NULL;
+
 	// load the crosshair pics
 	for (i=0 ; i<NUMCROSSHAIRS ; i++) {
 		crosshairtextures[i] = GL_LoadTexture ("", 8, 8, crosshairdata[i], TEX_ALPHA);
