@@ -251,6 +251,8 @@ void Cvar_Register (cvar_t *var)
 	old = Cvar_FindVar (var->name);
 
 	if (old && !(old->flags & CVAR_DYNAMIC)) {
+		if (old == var)
+			return;
 		Com_Printf ("Can't register variable %s, already defined\n", var->name);
 		return;
 	}
