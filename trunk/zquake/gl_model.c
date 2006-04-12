@@ -620,22 +620,13 @@ void R_LoadSpriteModelTextures (model_t *m)
 	// TODO
 }
 
-void R_ReloadTextures (void)
+void R_LoadModelTextures (model_t *m)
 {
-	int i;
-
-	for (i=1 ; i<MAX_MODELS ; i++)
-	{
-		if (!cl.model_name[i][0])
-			break;
-
-		if (cl.model_precache[i]->type == mod_brush)
-			R_LoadBrushModelTextures (cl.model_precache[i]);
-		else if (cl.model_precache[i]->type == mod_sprite)
-			R_LoadSpriteModelTextures (cl.model_precache[i]);
-	}
+	if (m->type == mod_brush)
+		R_LoadBrushModelTextures (m);
+	else if (m->type == mod_sprite)
+		R_LoadSpriteModelTextures (m);
 }
-
 
 
 /*
