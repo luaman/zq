@@ -501,7 +501,7 @@ void R_DrawSurfaceBlock8_mip0 (void)
 			for (b=15; b>=0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char *)vid.colormap)
+				prowdest[b] = ((unsigned char *)r_colormap)
 						[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
@@ -551,7 +551,7 @@ void R_DrawSurfaceBlock8_mip1 (void)
 			for (b=7; b>=0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char *)vid.colormap)
+				prowdest[b] = ((unsigned char *)r_colormap)
 						[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
@@ -601,7 +601,7 @@ void R_DrawSurfaceBlock8_mip2 (void)
 			for (b=3; b>=0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char *)vid.colormap)
+				prowdest[b] = ((unsigned char *)r_colormap)
 						[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
@@ -651,7 +651,7 @@ void R_DrawSurfaceBlock8_mip3 (void)
 			for (b=1; b>=0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char *)vid.colormap)
+				prowdest[b] = ((unsigned char *)r_colormap)
 						[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
