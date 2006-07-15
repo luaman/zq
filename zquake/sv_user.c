@@ -1887,13 +1887,13 @@ int SV_PMTypeForClient (client_t *cl)
 		return PM_OLD_SPECTATOR;
 	}
 
-	if (sv_player->v.movetype == MOVETYPE_FLY)
+	if (cl->edict->v.movetype == MOVETYPE_FLY)
 		return PM_FLY;
 
-	if (sv_player->v.movetype == MOVETYPE_NONE)
+	if (cl->edict->v.movetype == MOVETYPE_NONE)
 		return PM_NONE;
 
-	if (sv_player->v.health <= 0)
+	if (cl->edict->v.health <= 0)
 		return PM_DEAD;
 
 	return PM_NORMAL;
