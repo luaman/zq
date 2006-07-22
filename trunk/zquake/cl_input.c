@@ -300,7 +300,7 @@ float CL_KeyState (kbutton_t *key)
 	if (impulsedown && !impulseup)
 	{
 		if (down)
-			val = 1;	// pressed and held this frame
+			val = 0.5;	// pressed and held this frame
 		else
 			val = 0;	//	I_Error ();
 	}
@@ -328,21 +328,21 @@ float CL_KeyState (kbutton_t *key)
 
 	key->state &= 1;		// clear impulses
 
-#ifdef AGRIP
-        // The player snaps a certain number of degrees for each ``turn''...
-        if(  !  ( in_strafe.state & 1 )
-            &&  ( key == &in_right || key == &in_left ) )
-        {
-            if( val == 0.5 || val == 0.25 )
-                val = agv_mov_turnvalue.value;
-            else
-                val = 0;
-        }
-#endif
-
 	return val;
 }
 
+#ifdef AGRIP
+float CL_AG_TurnVal (kbutton_t *key)
+{
+    float val = CL_KeyState (key);
+
+    // The player snaps a certain number of degrees for each ``turn''...
+    if( val == 0.5 || val == 0.25 )
+        return agv_mov_turnvalue.value;
+    else
+        return 0;
+}
+#endif
 
 
 
@@ -405,16 +405,16 @@ void CL_AdjustAngles (void)
 		cl.viewangles[YAW] += yawspeed * CL_KeyState (&in_left);
 		cl.viewangles[YAW] = anglemod(cl.viewangles[YAW]);
 #else
-                // Accessible player turning support:
-                // Simpler yaw calculations...
-                cl.viewangles[YAW] -= CL_KeyState (&in_right);
-                cl.viewangles[YAW] += CL_KeyState (&in_left);
+        // Accessible player turning support:
+        // Simpler yaw calculations...
+        cl.viewangles[YAW] -= CL_AG_TurnVal (&in_right);
+        cl.viewangles[YAW] += CL_AG_TurnVal (&in_left);
 
-                // Can't use anglemod as we must ensure exact (non-decimal) results...
-                if( cl.viewangles[YAW] > 360 )
-                    cl.viewangles[YAW] -= 360;
-                else if( cl.viewangles[YAW] < 0 )
-                    cl.viewangles[YAW] += 360;
+        // Can't use anglemod as we must ensure exact (non-decimal) results...
+        if( cl.viewangles[YAW] > 360 )
+            cl.viewangles[YAW] -= 360;
+        else if( cl.viewangles[YAW] < 0 )
+            cl.viewangles[YAW] += 360;
 #endif
 	}
 	if (in_klook.state & 1)

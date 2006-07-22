@@ -844,7 +844,7 @@ void Key_Console (int key, wchar unichar)
     switch (key)
     {
         case K_ENTER:
-            HandleEnter ();
+            HandleEnter (key != K_ENTER);
             return;
 
         case K_TAB:

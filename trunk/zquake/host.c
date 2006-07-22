@@ -232,7 +232,7 @@ void ExecDefaultConfig (void)
 "bind a +moveleft;"
 "bind d +moveright;"
 "bind c +movedown;"
-"bind alt +movedown;"
+"bind alt +strafe;"
 "bind space +jump;"
 "bind enter +jump;"
 "bind ctrl +attack;"
