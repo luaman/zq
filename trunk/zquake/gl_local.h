@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef SDL
 #include <SDL_opengl.h>
+#elif defined(__APPLE__)
+#include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
@@ -45,6 +47,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void GL_EndRendering (void);
 
+#ifndef APIENTRY
+#define APIENTRY
+#endif
 
 // Function prototypes for the Texture Object Extension routines
 typedef GLboolean (APIENTRY *ARETEXRESFUNCPTR)(GLsizei, const GLuint *,
