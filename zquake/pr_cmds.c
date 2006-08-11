@@ -2174,7 +2174,7 @@ static void PF_pow (void)
 =================
 PF_cvar_string
 
-QSG_CVARSTRING
+QSG_CVARSTRING DP_QC_CVAR_STRING
 string cvar_string(string varname) = #103;
 =================
 */
@@ -2387,6 +2387,7 @@ static void PF_checkextension (void)
 #endif
 		"ZQ_QC_STRINGS",
 		"QSG_CVARSTRING",
+		"DP_QC_CVAR_STRING",
 		"DP_CON_SET",
 		NULL
 	};
@@ -2767,7 +2768,7 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 ////
 {99, PF_checkextension},// float(string name) checkextension				= #99;
 ////
-{103, PF_cvar_string},	// string(string varname) cvar_string				= #103
+{103, PF_cvar_string},	// string(string varname) cvar_string				= #103;
 ////
 {114, PF_strlen},		// float(string s) strlen							= #114;
 {115, PF_stradd},		// string(string s1, string s2, ...) stradd			= #115; 
@@ -2775,6 +2776,7 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {117, PF_stov},			// vector(string s) stov							= #117;
 {118, PF_strzone},		// string(string s) strzone							= #118;
 {119, PF_strunzone},	// void(string s) strunzone							= #119;
+{448, PF_cvar_string},	// string(string varname) cvar_string				= #448;
 };
 
 #define num_ext_builtins (sizeof(ext_builtins)/sizeof(ext_builtins[0]))
