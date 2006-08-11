@@ -2794,7 +2794,7 @@ void PR_InitBuiltins (void)
 		if (ext_builtins[i].num > pr_numbuiltins)
 			pr_numbuiltins = ext_builtins[i].num;
 
-	pr_builtins = Q_malloc(pr_numbuiltins * sizeof(builtin_t));
+	pr_builtins = Q_calloc(pr_numbuiltins, sizeof(builtin_t));
 	memcpy (pr_builtins, std_builtins, sizeof(std_builtins));
 	for (i = 0; i < num_ext_builtins; i++) {
 		assert (ext_builtins[i].num >= 0);
