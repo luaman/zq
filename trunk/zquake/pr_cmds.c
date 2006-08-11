@@ -2654,6 +2654,29 @@ static void PF_mapfunction (void)
 }
 
 
+void PF_tokenize (void)
+{
+	char *str;
+
+	str = G_STRING(OFS_PARM0);
+	Cmd_TokenizeString (str);
+}
+
+void PF_argc (void)
+{
+	G_FLOAT(OFS_RETURN) = Cmd_Argc();
+}
+
+void PF_argv (void)
+{
+	int num;
+
+	num = G_FLOAT(OFS_PARM0);
+	if (num < 0 || num >= Cmd_Argc())
+		RETURN_STRING("");
+	RETURN_STRING(Cmd_Argv(num));
+}
+
 //=============================================================================
 
 static builtin_t std_builtins[] =
@@ -2824,6 +2847,10 @@ builtin_t pr_extbuiltins[] =
 #endif
 	PF_testbot,			// #0x5a0A
 	PF_setinfo,			// #0x5a0B
+//testing
+PF_tokenize,
+PF_argc,
+PF_argv,
 };
 
 int pr_numextbuiltins = sizeof(pr_extbuiltins)/sizeof(pr_extbuiltins[0]);
