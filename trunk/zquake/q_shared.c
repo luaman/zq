@@ -552,6 +552,14 @@ void *Q_malloc (size_t size)
 	return p;
 }
 
+void *Q_calloc (size_t count, size_t size)
+{
+	void *p = calloc(count, size);
+	if (!p)
+		Sys_Error ("Not enough memory free; check disk space");
+	return p;
+}
+
 char *Q_strdup (const char *src)
 {
 	char *p = strdup(src);

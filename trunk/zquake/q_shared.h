@@ -52,7 +52,11 @@ typedef unsigned char 		byte;
 
 #define wchar unsigned short	// 16-bit Unicode char
 
+#ifdef OBJECTIVE_C_FIXME
+typedef int qbool;
+#else
 typedef enum {false, true} qbool;
+#endif
 
 #ifndef NULL
 #define NULL ((void *)0)
@@ -179,6 +183,7 @@ int Com_HashKey (char *name);
 //============================================================================
 
 void *Q_malloc (size_t size);
+void *Q_calloc (size_t count, size_t size);
 char *Q_strdup (const char *src);
 // might be turned into a function that makes sure all Q_*alloc calls are matched with Q_free
 #define Q_free(ptr) free(ptr)
