@@ -1680,6 +1680,7 @@ static void SV_ExecuteUserCommand (char *s)
 	pr_cmdfunction_t *cmdfunc;
 	char	*cmd;
 	int		i, j;
+	extern func_t ClientCommand;
 	
 	Cmd_TokenizeString (s);
 	sv_player = sv_client->edict;
@@ -1692,6 +1693,26 @@ static void SV_ExecuteUserCommand (char *s)
 			return;
 		}
 
+	// ZQ_CLIENTCOMMAND extension
+	if (ClientCommand) {
+		static char cmd_copy[128], s_copy[1024];
+		char *p;
+		pr_global_struct->time = sv.time;
+		pr_global_struct->self = EDICT_TO_PROG(sv_player);
+		strlcpy (cmd_copy, cmd, sizeof(cmd_copy));
+		strlcpy (s_copy, s, sizeof(s_copy));
+		// lowercase command to rule out the possibility of a user executing
+		// a command the mod wants to block (e.g. 'join') by using uppercase
+		for (p = cmd_copy; *p; p++)
+			*p = (char)tolower(*p);
+		((int *)pr_globals)[OFS_PARM0] = PR_SetString (cmd_copy);
+		((int *)pr_globals)[OFS_PARM1] = PR_SetString (s_copy);
+		PR_ExecuteProgram (ClientCommand);
+		if (G_FLOAT(OFS_RETURN) != 0)
+			return;		// the command was handled by the mod
+	}
+
+	// z_ext_clientcommand extension (deprecated)
 	for (i = 0, cmdfunc = pr_cmdfunctions; i < pr_numcmdfunctions; i++, cmdfunc++) {
 		if (!Q_stricmp(cmdfunc->name, cmd)) {
 			pr_global_struct->time = sv.time;
