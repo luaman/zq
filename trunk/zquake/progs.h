@@ -142,7 +142,7 @@ int NUM_FOR_EDICT(edict_t *e);
 extern	int		type_size[8];
 
 typedef void (*builtin_t) (void);
-extern builtin_t pr_builtins[], pr_extbuiltins[];
+extern builtin_t *pr_builtins, pr_extbuiltins[];
 extern int pr_numbuiltins, pr_numextbuiltins;
 #define ZQ_BUILTINS		0x5a00
 

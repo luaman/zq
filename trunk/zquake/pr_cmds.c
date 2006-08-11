@@ -2655,12 +2655,7 @@ static void PF_mapfunction (void)
 
 //=============================================================================
 
-#define EMPTY_BUILTIN_X10	PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme, PF_Fixme
-#define EMPTY_BUILTIN_X20	EMPTY_BUILTIN_X10, EMPTY_BUILTIN_X10
-#define EMPTY_BUILTIN_X50	EMPTY_BUILTIN_X20, EMPTY_BUILTIN_X20, EMPTY_BUILTIN_X10
-#define EMPTY_BUILTIN_X100	EMPTY_BUILTIN_X50, EMPTY_BUILTIN_X50
-
-builtin_t pr_builtins[] =
+static builtin_t std_builtins[] =
 {
 PF_Fixme,
 PF_makevectors,		// void(entity e) makevectors 			= #1;
@@ -2756,45 +2751,59 @@ PF_logfrag,			// void(entity killer, entity killee) logfrag = #79
 PF_infokey,			// string(entity e, string key) infokey	= #80
 PF_stof,			// float(string s) stof					= #81
 PF_multicast,		// void(vector where, float set) multicast = #82
-
-PF_Fixme,			// #83
-PF_Fixme,			// #84
-PF_Fixme,			// #85
-PF_Fixme,			// #86
-PF_Fixme,			// #87
-PF_Fixme,			// #88
-PF_Fixme,			// #89
-PF_tracebox,		// void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity ignore) tracebox = #90;
-PF_randomvec,		// vector() randomvec								= #91;
-PF_Fixme,
-PF_Fixme,
-PF_min,				// float(float a, float b, ...) min					= #94;
-PF_max,				// float(float a, float b, ...) max					= #95;
-PF_bound,			// float(float min, float value, float max) bound	= #96;
-PF_pow,				// float(float x, float y) pow						= #97;
-PF_Fixme,
-PF_checkextension,	// float(string name) checkextension				= #99;
-
-PF_Fixme,			// #100
-PF_Fixme,			// #101
-PF_Fixme,			// #102
-
-PF_cvar_string,		// string(string varname) cvar_string				= #103
-
-EMPTY_BUILTIN_X10,
-
-PF_strlen,			// float(string s) strlen							= #114;
-PF_stradd,			// string(string s1, string s2, ...) stradd			= #115; 
-PF_substr,			// string(string s, float start, float count) substr = #116;
-PF_stov,			// vector(string s) stov							= #117
-PF_strzone,			// string(string s) strzone							= #118
-PF_strunzone,		// void(string s) strunzone							= #119
 };
 
-int pr_numbuiltins = sizeof(pr_builtins)/sizeof(pr_builtins[0]);
+#define num_std_builtins (sizeof(std_builtins)/sizeof(std_builtins[0]))
+
+static struct { int num; builtin_t func; } ext_builtins[] =
+{
+{90, PF_tracebox},		// void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity ignore) tracebox = #90;
+{91, PF_randomvec},		// vector() randomvec								= #91;
+////
+{94, PF_min},			// float(float a, float b, ...) min					= #94;
+{95, PF_max},			// float(float a, float b, ...) max					= #95;
+{96, PF_bound},			// float(float min, float value, float max) bound	= #96;
+{97, PF_pow},			// float(float x, float y) pow						= #97;
+////
+{99, PF_checkextension},// float(string name) checkextension				= #99;
+////
+{103, PF_cvar_string},	// string(string varname) cvar_string				= #103
+////
+{114, PF_strlen},		// float(string s) strlen							= #114;
+{115, PF_stradd},		// string(string s1, string s2, ...) stradd			= #115; 
+{116, PF_substr},		// string(string s, float start, float count) substr = #116;
+{117, PF_stov},			// vector(string s) stov							= #117;
+{118, PF_strzone},		// string(string s) strzone							= #118;
+{119, PF_strunzone},	// void(string s) strunzone							= #119;
+};
+
+#define num_ext_builtins (sizeof(ext_builtins)/sizeof(ext_builtins[0]))
+
+builtin_t *pr_builtins;
+int pr_numbuiltins;
+
+void PR_InitBuiltins (void)
+{
+	int i;
+
+	// find highest builtin number to see how much space we need
+	pr_numbuiltins = num_std_builtins;
+	for (i = 0; i < num_ext_builtins; i++)
+		if (ext_builtins[i].num > pr_numbuiltins)
+			pr_numbuiltins = ext_builtins[i].num;
+
+	pr_builtins = Q_malloc(pr_numbuiltins * sizeof(builtin_t));
+	memcpy (pr_builtins, std_builtins, sizeof(std_builtins));
+	for (i = 0; i < num_ext_builtins; i++) {
+		assert (ext_builtins[i].num >= 0);
+		pr_builtins[ext_builtins[i].num] = ext_builtins[i].func;
+	}
+}
+		
 
 void PF_checkbuiltin (void);
 
+// ZQuake test range
 builtin_t pr_extbuiltins[] =
 {
 	PF_checkbuiltin,	// float(float num, ...) checkbuiltin			= #0x5a00;
