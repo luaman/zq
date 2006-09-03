@@ -57,7 +57,7 @@ state bit 2 is edge triggered on the down to up transition
 kbutton_t	in_mlook, in_klook;
 kbutton_t	in_left, in_right, in_forward, in_back;
 kbutton_t	in_lookup, in_lookdown, in_moveleft, in_moveright;
-kbutton_t	in_strafe, in_speed, in_use, in_jump, in_attack;
+kbutton_t	in_strafe, in_speed, in_use, in_jump, in_attack, in_attack2;
 kbutton_t	in_up, in_down;
 
 int			in_impulse;
@@ -160,7 +160,8 @@ void IN_StrafeUp(void) {KeyUp(&in_strafe);}
 
 void IN_AttackDown(void) {KeyDown(&in_attack);}
 void IN_AttackUp(void) {KeyUp(&in_attack);}
-
+void IN_Attack2Down(void) {KeyDown(&in_attack2);}
+void IN_Attack2Up(void) {KeyUp(&in_attack2);}
 void IN_UseDown (void) {KeyDown(&in_use);}
 void IN_UseUp (void) {KeyUp(&in_use);}
 
@@ -300,7 +301,11 @@ float CL_KeyState (kbutton_t *key)
 	if (impulsedown && !impulseup)
 	{
 		if (down)
+#ifdef AGRIP
 			val = 0.5;	// pressed and held this frame
+#else
+			val = 1;	// pressed and held this frame
+#endif
 		else
 			val = 0;	//	I_Error ();
 	}
@@ -542,6 +547,10 @@ void CL_FinishMove (usercmd_t *cmd)
 		cmd->buttons |= 4;
 	in_use.state &= ~2;
 
+	if (in_attack2.state & 3)
+		cmd->buttons |= 8;
+	in_attack2.state &= ~2;
+	
 	// send milliseconds of time to apply the move
 	extramsec += cls.trueframetime * 1000;
 	ms = extramsec;
@@ -756,6 +765,8 @@ void CL_InitInput (void)
 	Cmd_AddCommand ("-speed", IN_SpeedUp);
 	Cmd_AddCommand ("+attack", IN_AttackDown);
 	Cmd_AddCommand ("-attack", IN_AttackUp);
+	Cmd_AddCommand ("+attack2", IN_Attack2Down);
+	Cmd_AddCommand ("-attack2", IN_Attack2Up);
 	Cmd_AddCommand ("+use", IN_UseDown);
 	Cmd_AddCommand ("-use", IN_UseUp);
 	Cmd_AddCommand ("+jump", IN_JumpDown);
