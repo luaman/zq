@@ -2386,6 +2386,7 @@ static void PF_checkextension (void)
 		"ZQ_VWEP_TEST",
 #endif
 		"ZQ_QC_STRINGS",
+		"ZQ_SOUNDTOCLIENT",
 		"QSG_CVARSTRING",
 		"DP_QC_CVAR_STRING",
 		"DP_CON_SET",
@@ -2467,10 +2468,11 @@ static void PF_precache_vwep_model (void)
 ==============
 PF_soundtoclient
 
-ZQuake addition, for AGRIP
+ZQ_SOUNDTOCLIENT
+For the AGRIP project
 Same as PF_sound, but sends the sound to one client only
 
-void soundtoclient(entity client, entity e, float chan, string samp, float vol, float atten) = #0x5a08
+void soundtoclient(entity client, entity e, float chan, string samp, float vol, float atten) = #530
 ==============
 */
 static void PF_soundtoclient (void)
@@ -2800,6 +2802,7 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {118, PF_strzone},		// string(string s) strzone							= #118;
 {119, PF_strunzone},	// void(string s) strunzone							= #119;
 {448, PF_cvar_string},	// string(string varname) cvar_string				= #448;
+{530, PF_soundtoclient},	// void(entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
 };
 
 #define num_ext_builtins (sizeof(ext_builtins)/sizeof(ext_builtins[0]))
@@ -2839,7 +2842,7 @@ builtin_t pr_extbuiltins[] =
 	PF_Fixme,			// RESERVED #0x5a05
 	PF_Fixme,			// RESERVED #0x5a06
 	PF_Fixme,			// RESERVED #0x5a07
-	PF_soundtoclient,	// void soundtoclient (entity client, entity e, float chan, string samp, float vol, float atten) = #0x5a08;
+	PF_soundtoclient,	// deprecated, use #530 instead
 #ifdef VWEP_TEST
 	PF_precache_vwep_model,	// #0x5a09
 #else
