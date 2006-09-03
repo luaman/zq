@@ -2818,8 +2818,8 @@ void PR_InitBuiltins (void)
 	// find highest builtin number to see how much space we need
 	pr_numbuiltins = num_std_builtins;
 	for (i = 0; i < num_ext_builtins; i++)
-		if (ext_builtins[i].num > pr_numbuiltins)
-			pr_numbuiltins = ext_builtins[i].num;
+		if (ext_builtins[i].num + 1 > pr_numbuiltins)
+			pr_numbuiltins = ext_builtins[i].num + 1;
 
 	pr_builtins = Q_calloc(pr_numbuiltins, sizeof(builtin_t));
 	memcpy (pr_builtins, std_builtins, sizeof(std_builtins));
