@@ -2429,7 +2429,8 @@ static void PF_setinfo (void)
 	key = G_STRING(OFS_PARM1);
 	value = G_STRING(OFS_PARM2);
 
-	Info_SetValueForKey (svs.clients[entnum-1].userinfo, key, value, MAX_INFO_STRING);
+	Info_SetValueForStarKey (svs.clients[entnum-1].userinfo, key, value, MAX_INFO_STRING);
+	svs.clients[entnum-1].spectator = value[0] ? true : false;
 
 	// FIXME?
 	SV_ExtractFromUserinfo (&svs.clients[entnum-1]);
