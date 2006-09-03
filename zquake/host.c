@@ -232,7 +232,11 @@ void ExecDefaultConfig (void)
 "bind a +moveleft;"
 "bind d +moveright;"
 "bind c +movedown;"
+#ifdef AGRIP
 "bind alt +strafe;"
+#else
+"bind alt +movedown;"
+#endif
 "bind space +jump;"
 "bind enter +jump;"
 "bind ctrl +attack;"
