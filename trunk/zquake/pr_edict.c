@@ -43,7 +43,7 @@ func_t SpectatorConnect, SpectatorThink, SpectatorDisconnect;
 func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
 func_t ClientCommand;
 
-int		fofs_maxspeed, fofs_gravity;
+int		fofs_maxspeed, fofs_gravity, fofs_items2;
 int		fofs_forwardmove, fofs_sidemove, fofs_upmove;
 #ifdef VWEP_TEST
 int		fofs_vw_index, fofs_vw_frame;
@@ -1147,6 +1147,7 @@ void PR_LoadProgs (void)
 	// find optional QC-exported fields
 	fofs_maxspeed = ED_FindFieldOffset ("maxspeed");
 	fofs_gravity = ED_FindFieldOffset ("gravity");
+	fofs_items2 = ED_FindFieldOffset ("items2");
 	fofs_forwardmove = ED_FindFieldOffset ("forwardmove");
 	fofs_sidemove = ED_FindFieldOffset ("sidemove");
 	fofs_upmove = ED_FindFieldOffset ("upmove");

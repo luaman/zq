@@ -2387,6 +2387,7 @@ static void PF_checkextension (void)
 #endif
 		"ZQ_QC_STRINGS",
 		"ZQ_SOUNDTOCLIENT",
+		"ZQ_ITEMS2",
 		"QSG_CVARSTRING",
 		"DP_QC_CVAR_STRING",
 		"DP_CON_SET",

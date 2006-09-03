@@ -156,7 +156,7 @@ extern	int			pr_xstatement;
 extern func_t SpectatorConnect, SpectatorDisconnect, SpectatorThink;
 extern func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
 
-extern int	fofs_gravity, fofs_maxspeed;
+extern int	fofs_gravity, fofs_maxspeed, fofs_items2;
 extern int	fofs_forwardmove, fofs_sidemove, fofs_upmove;
 #ifdef VWEP_TEST
 extern int	fofs_vw_index, fofs_vw_frame;
