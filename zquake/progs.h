@@ -130,9 +130,8 @@ int NUM_FOR_EDICT(edict_t *e);
 extern	int		type_size[8];
 
 typedef void (*builtin_t) (void);
-extern builtin_t *pr_builtins, pr_extbuiltins[];
-extern int pr_numbuiltins, pr_numextbuiltins;
-#define ZQ_BUILTINS		0x5a00
+extern builtin_t *pr_builtins;
+extern int pr_numbuiltins;
 
 // list of extensions which are off by default
 // a checkextension(..) call from progs enables the corresponding extension
