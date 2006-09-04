@@ -1031,10 +1031,10 @@ static void Cmd_Pings_f (void)
 
 /*
 ==================
-SV_Kill_f
+Cmd_Kill_f
 ==================
 */
-static void SV_Kill_f (void)
+static void Cmd_Kill_f (void)
 {
 	if (sv_player->v.health <= 0)
 	{
@@ -1129,7 +1129,7 @@ static void Cmd_Drop_f (void)
 =================
 Cmd_PTrack_f
 
-Change the bandwidth estimate for a client
+Client wants to track a (different) player, or go into free fly
 =================
 */
 static void Cmd_PTrack_f (void)
@@ -1636,7 +1636,7 @@ typedef struct
 	void	(*func) (void);
 } ucmd_t;
 
-ucmd_t ucmds[] =
+static ucmd_t ucmds[] =
 {
 // connection commands
 	{"new", Cmd_New_f},
@@ -1648,23 +1648,33 @@ ucmd_t ucmds[] =
 
 	{"download", Cmd_Download_f},
 	{"nextdl", Cmd_NextDL_f},
-
-	{"drop", Cmd_Drop_f},
 	{"pings", Cmd_Pings_f},
+	{"snap", Cmd_Snap_f},
+	{"setinfo", Cmd_SetInfo_f},
 
+// this will be made progs-overridable when we provide a way for
+// progs to change client->spec_track
 	{"ptrack", Cmd_PTrack_f},	// used with autocam
 
-	{"snap", Cmd_Snap_f},
-	
-// issued by hand at client consoles	
+	{NULL, NULL}
+};
+
+// these can be handled by progs or by the engine
+static ucmd_t ucmds2[] =
+{
+	{"drop", Cmd_Drop_f},		// client is disconnecting
 	{"pause", Cmd_Pause_f},
-
-	{"say", Cmd_Say_f},
-	{"say_team", Cmd_Say_Team_f},
-
-	{"setinfo", Cmd_SetInfo_f},
 	{"info", Cmd_Info_f},
 	{"serverinfo", Cmd_Serverinfo_f},
+	{"say", Cmd_Say_f},
+	{"say_team", Cmd_Say_Team_f},
+	{"kill", Cmd_Kill_f},
+	{"god", Cmd_Give_f},
+	{"give", Cmd_Give_f},
+	{"noclip", Cmd_Noclip_f},
+	{"fly", Cmd_Fly_f},
+	{"join", Cmd_Join_f},
+	{"observe", Cmd_Observe_f},
 
 	{NULL, NULL}
 };
@@ -1690,7 +1700,7 @@ static void SV_ExecuteUserCommand (char *s)
 			return;
 		}
 
-	// ZQ_CLIENTCOMMAND extension
+	// ZQ_CLIENTCOMMAND extension: does the progs want this command?
 	if (GE_ClientCommand && pr_ext_enabled.zq_clientcommand) {
 		static char cmd_copy[128], s_copy[1024];
 		char *p;
@@ -1709,23 +1719,16 @@ static void SV_ExecuteUserCommand (char *s)
 			return;		// the command was handled by the mod
 	}
 
-	// check other commands (progs may override them)
-	if (!Q_stricmp(cmd, "kill"))
-		SV_Kill_f ();
-	else if (!Q_stricmp(cmd, "god"))
-		Cmd_God_f ();
-	else if (!Q_stricmp(cmd, "give"))
-		Cmd_Give_f ();
-	else if (!Q_stricmp(cmd, "noclip"))
-		Cmd_Noclip_f ();
-	else if (!Q_stricmp(cmd, "fly"))
-		Cmd_Fly_f ();
-	else if (!Q_stricmp(cmd, "join"))
-		Cmd_Join_f ();
-	else if (!Q_stricmp(cmd, "observe"))
-		Cmd_Observe_f ();
-	else
-		SV_ClientPrintf (sv_client, PRINT_HIGH, "Bad user command: %s\n", cmd);
+	// progs didn't handle it, let's see if we have a default handler
+	for (u=ucmds2 ; u->name ; u++)
+		if (!strcmp (cmd, u->name) )
+		{
+			u->func ();
+			return;
+		}
+
+	// sorry it didn't work out; God knows we tried
+	SV_ClientPrintf (sv_client, PRINT_HIGH, "Bad user command: %s\n", cmd);
 }
 
 /*
