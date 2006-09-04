@@ -84,6 +84,8 @@ keyname_t keynames[] =
 	{"RSHIFT", K_RSHIFT},
 
 	{"WIN", K_WIN},
+	{"COMMAND", K_COMMAND},
+	{"CMD", K_COMMAND},
 	{"LWIN", K_LWIN},
 	{"RWIN", K_RWIN},
 	{"MENU", K_MENU},

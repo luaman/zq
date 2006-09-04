@@ -72,6 +72,7 @@ typedef enum {
 	K_END,
 
 	K_WIN,
+	K_COMMAND = K_WIN,
 	K_LWIN,
 	K_RWIN,
 	K_MENU,
