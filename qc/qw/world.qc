@@ -36,6 +36,18 @@ void main ()
 
 entity  lastspawn;
 
+void() dummy_checkextension = {	dprint ("HEHEHE\n"); return false; }
+
+void InitExtensions ()
+{
+	if (!cvar("pr_checkextension"))
+		checkextension = dummy_checkextension;
+
+	// This enabled the extension in the engine
+	checkextension("ZQ_CLIENTCOMMAND");
+
+}
+
 //=======================
 /*QUAKED worldspawn (0 0 0) ?
 Only used for the world entity.
@@ -51,6 +63,8 @@ World Types:
 void worldspawn ()
 {
 	string	s;
+
+	InitExtensions ();
 
 	lastspawn = world;
 	InitBodyQue ();
@@ -204,9 +218,9 @@ void worldspawn ()
 
 
 #ifdef AGRIP
-    agh_world_checkstringext();
+	agh_world_checkstringext();
 	agh_world_precaches();
-    agh_world_padclients();
+	agh_world_padclients();
 #endif
 
 

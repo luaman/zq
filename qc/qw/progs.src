@@ -1,6 +1,7 @@
 ./qwprogs.dat
 
 defs.qc
+defs_ext.qc
 subs.qc
 combat.qc
 items.qc
