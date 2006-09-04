@@ -12,6 +12,7 @@ ai.qc
 ../qw/world.qc
 ../qw/client.qc
 sp_client.qc
+../qw/spectate.qc
 ../qw/player.qc
 monsters.qc
 ../qw/doors.qc
