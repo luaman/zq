@@ -2,6 +2,8 @@
 
                     // defs.qc
 ../qw/defs.qc
+../qw/defs_ext.qc
+
 ../qwsp/sp_defs.qc
 zeus_defs.qc
 
@@ -22,6 +24,8 @@ hud.qc              // heads up display 1.0
 ../qw/world.qc      // modified for ZEUSbot v2.0 ditto world.qc
 ../qw/client.qc     // modified for ZEUSbot v2.0 ditto client.qc
 ../qwsp/sp_client.qc
+../qw/spectate.qc
+
 ../qw/player.qc
 ../qwsp/monsters.qc
 ../qw/doors.qc      
