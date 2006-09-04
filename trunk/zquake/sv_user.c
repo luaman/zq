@@ -1694,7 +1694,7 @@ static void SV_ExecuteUserCommand (char *s)
 		}
 
 	// ZQ_CLIENTCOMMAND extension
-	if (ClientCommand) {
+	if (ClientCommand && pr_ext_enabled.zq_clientcommand) {
 		static char cmd_copy[128], s_copy[1024];
 		char *p;
 		pr_global_struct->time = sv.time;

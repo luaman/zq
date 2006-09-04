@@ -2388,6 +2388,7 @@ static void PF_checkextension (void)
 		"ZQ_QC_STRINGS",
 		"ZQ_SOUNDTOCLIENT",
 		"ZQ_ITEMS2",
+		"ZQ_CLIENTCOMMAND",
 		"QSG_CVARSTRING",
 		"DP_QC_CVAR_STRING",
 		"DP_CON_SET",
@@ -2399,6 +2400,8 @@ static void PF_checkextension (void)
 	for (pstr = supported_extensions; *pstr; pstr++) {
 		if (!Q_stricmp(*pstr, extension)) {
 			G_FLOAT(OFS_RETURN) = 1.0;	// supported
+			if (!strcmp(extension, "ZQ_CLIENTCOMMAND"))
+				pr_ext_enabled.zq_clientcommand = true;
 			return;
 		}
 	}
