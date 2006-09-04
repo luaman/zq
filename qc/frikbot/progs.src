@@ -2,6 +2,7 @@
 
 defs_frikbot.qc
 ../qw/defs.qc
+../qw/defs_ext.qc
 
 map_dm1.qc
 map_dm2.qc

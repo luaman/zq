@@ -29,17 +29,38 @@
 // Extended builtins
 //
 
-float(string name) checkextension = #99;	// check if a builtin function is available on the server
+// check if a builtin function is available on the server
+float(string name) checkextension = #99;
+
+// DP_QC_TRACEBOX
+void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity forent) tracebox = #90;
+
+// ZQ_QC_STRINGS
+float (string s) strlen = #114;
+string(string s1, string s2) stradd = #115;
+string(string s, float start, float length) substring = #116;
+string(string s) strzone = #118;
+void(string s) strunzone = #119;
 
 // ZQ_QC_TOKENIZE
 float() argc = #440;
 float tokenize(string s) = #441;
 string(float n) argv = #442;
 
+// ZQ_SOUNDTOCLIENT
+void (entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
+
+
 #ifdef FRIKBOT
 entity (string name) testbot = #0x5a0A;
-void (entity e, string key, string value) setinfo = #0x5a0B;
+//void (entity e, string key, string value) setinfo = #0x5a0B;
 #endif
+
+
+//FIXME, this will be changed
+void (entity e, string key, string value) setinfo = #0x5a0B;
+
+
 
 #ifdef VWEP_TEST
 void (float index, string model) precache_vwep_model = #0x5a09;

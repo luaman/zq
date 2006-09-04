@@ -1,6 +1,7 @@
 ./qwprogs.dat
 
 ../qw/defs.qc
+../qw/defs_ext.qc
 agrip_defs.qc // Accessibility definitions
 
 ../qw/subs.qc

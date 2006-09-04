@@ -26,10 +26,6 @@
 */
 
 
-//FIXME
-void (entity e, string key, string value) setinfo = #0x5a0B;
-
-
 void Cmd_Give ()
 {
 	string item;
