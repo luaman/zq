@@ -1677,9 +1677,7 @@ SV_ExecuteUserCommand
 static void SV_ExecuteUserCommand (char *s)
 {
 	ucmd_t	*u;
-	pr_cmdfunction_t *cmdfunc;
 	char	*cmd;
-	int		i, j;
 	
 	Cmd_TokenizeString (s);
 	sv_player = sv_client->edict;
@@ -1709,18 +1707,6 @@ static void SV_ExecuteUserCommand (char *s)
 		PR_ExecuteProgram (GE_ClientCommand);
 		if (G_FLOAT(OFS_RETURN) != 0)
 			return;		// the command was handled by the mod
-	}
-
-	// z_ext_clientcommand extension (deprecated)
-	for (i = 0, cmdfunc = pr_cmdfunctions; i < pr_numcmdfunctions; i++, cmdfunc++) {
-		if (!Q_stricmp(cmdfunc->name, cmd)) {
-			pr_global_struct->time = sv.time;
-			pr_global_struct->self = EDICT_TO_PROG(sv_player);
-			for (j = 0; j < 8; j++)
-				*(string_t *)&pr_globals[OFS_PARM0 + j*3] = PR_SetString(Cmd_Argv(j + 1));
-			PR_ExecuteProgram (cmdfunc->funcnum);
-			return;
-		}
 	}
 
 	// check other commands (progs may override them)

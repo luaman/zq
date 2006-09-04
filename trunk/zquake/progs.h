@@ -77,21 +77,9 @@ extern	float			*pr_globals;			// same as pr_global_struct
 
 extern	int				pr_edict_size;	// in bytes
 
-//============================================================================
-// z_ext_clientcommand progs extension
-
-typedef struct {
-	char		name[32];
-	int			funcnum;
-} pr_cmdfunction_t;
-
-#define MAX_PR_CMDFUNCTIONS 1024
-extern	pr_cmdfunction_t	pr_cmdfunctions[MAX_PR_CMDFUNCTIONS];
-extern	int					pr_numcmdfunctions;
-
-//============================================================================
 
 void PR_Init (void);
+void PR_InitBuiltins (void);
 
 void PR_ExecuteProgram (func_t fnum);
 void PR_LoadProgs (void);

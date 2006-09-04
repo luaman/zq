@@ -33,10 +33,6 @@ globalvars_t	*pr_global_struct;
 float			*pr_globals;			// same as pr_global_struct
 int				pr_edict_size;	// in bytes
 
-qbool			pr_z_ext_clientcommand;
-pr_cmdfunction_t	pr_cmdfunctions[MAX_PR_CMDFUNCTIONS];
-int				pr_numcmdfunctions;
-
 struct pr_ext_enabled_s	pr_ext_enabled;
 
 int		type_size[8] = {1,sizeof(void *)/4,1,3,1,1,sizeof(void *)/4,sizeof(void *)/4};
@@ -974,48 +970,6 @@ void ED_LoadFromFile (char *data)
 }
 
 
-void PR_CheckExtensions (void)
-{
-	pr_z_ext_clientcommand = false;
-
-	if (ED_FindGlobal("z_ext_clientcommand"))
-		pr_z_ext_clientcommand = true;
-
-	memset (&pr_ext_enabled, sizeof(pr_ext_enabled), 0);
-}
-
-/*
-===============
-PR_FindCmdFunctions
-
-Enumerate all Cmd_* functions (z_ext_clientcommand extension)
-===============
-*/
-void PR_FindCmdFunctions (void)
-{
-	int	i;
-	dfunction_t	*func;
-	char	*name;
-
-	pr_numcmdfunctions = 0;
-
-	if (!pr_z_ext_clientcommand)
-		return;
-
-	for (i=0 ; i<progs->numfunctions ; i++)
-	{
-		func = &pr_functions[i];
-		name = PR_GetString(func->s_name);
-		if (!strncmp(name, "Cmd_", 4)) {
-			strlcpy (pr_cmdfunctions[pr_numcmdfunctions].name, name + 4, sizeof(pr_cmdfunctions[0].name));
-			pr_cmdfunctions[pr_numcmdfunctions].funcnum = i;
-			pr_numcmdfunctions++;
-			if (pr_numcmdfunctions == MAX_PR_CMDFUNCTIONS)
-				break;
-		}
-	}
-}
-
 /*
 ===============
 PR_LoadProgs
@@ -1160,8 +1114,8 @@ void PR_LoadProgs (void)
 	fofs_vw_frame = ED_FindFieldOffset ("vw_frame");
 #endif
 
-	PR_CheckExtensions ();
-	PR_FindCmdFunctions ();
+	// reset stuff like ZQ_CLIENTCOMMAND, progs must enable it explicitly
+	memset (&pr_ext_enabled, sizeof(pr_ext_enabled), 0);
 }
 
 
