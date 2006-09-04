@@ -2658,16 +2658,13 @@ static void PF_mapfunction (void)
 }
 
 
+// FIXME, make independent of Cmd_TokenizeString?
 void PF_tokenize (void)
 {
 	char *str;
 
 	str = G_STRING(OFS_PARM0);
 	Cmd_TokenizeString (str);
-}
-
-void PF_argc (void)
-{
 	G_FLOAT(OFS_RETURN) = Cmd_Argc();
 }
 
@@ -2803,6 +2800,8 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {117, PF_stov},			// vector(string s) stov							= #117;
 {118, PF_strzone},		// string(string s) strzone							= #118;
 {119, PF_strunzone},	// void(string s) strunzone							= #119;
+{441, PF_tokenize},		// float(string s) tokenize							= #441;
+{442, PF_argv},			// string(float n) argv								= #442;
 {448, PF_cvar_string},	// string(string varname) cvar_string				= #448;
 {530, PF_soundtoclient},	// void(entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
 };
@@ -2852,10 +2851,6 @@ builtin_t pr_extbuiltins[] =
 #endif
 	PF_testbot,			// #0x5a0A
 	PF_setinfo,			// #0x5a0B
-//testing
-PF_tokenize,
-PF_argc,
-PF_argv,
 };
 
 int pr_numextbuiltins = sizeof(pr_extbuiltins)/sizeof(pr_extbuiltins[0]);
