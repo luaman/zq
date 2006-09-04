@@ -146,6 +146,12 @@ extern builtin_t *pr_builtins, pr_extbuiltins[];
 extern int pr_numbuiltins, pr_numextbuiltins;
 #define ZQ_BUILTINS		0x5a00
 
+// list of extensions which are off by default
+// a checkextension(..) call from progs enables the corresponding extension
+extern struct pr_ext_enabled_s {
+	qbool zq_clientcommand;
+} pr_ext_enabled;
+
 extern int		pr_argc;
 
 extern	qbool		pr_trace;

@@ -37,6 +37,8 @@ qbool			pr_z_ext_clientcommand;
 pr_cmdfunction_t	pr_cmdfunctions[MAX_PR_CMDFUNCTIONS];
 int				pr_numcmdfunctions;
 
+struct pr_ext_enabled_s	pr_ext_enabled;
+
 int		type_size[8] = {1,sizeof(void *)/4,1,3,1,1,sizeof(void *)/4,sizeof(void *)/4};
 
 func_t SpectatorConnect, SpectatorThink, SpectatorDisconnect;
@@ -978,6 +980,8 @@ void PR_CheckExtensions (void)
 
 	if (ED_FindGlobal("z_ext_clientcommand"))
 		pr_z_ext_clientcommand = true;
+
+	memset (&pr_ext_enabled, sizeof(pr_ext_enabled), 0);
 }
 
 /*
