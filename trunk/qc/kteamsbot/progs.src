@@ -2,6 +2,7 @@
 
 defs.qc
 ../qw/defs.qc
+../qw/defs_ext.qc
 ../frikbot/defs_frikbot.qc
 ../kteams/kt_defs.qc
 

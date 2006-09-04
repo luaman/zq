@@ -3,6 +3,7 @@
 ctf_defs.qc
 
 ../qw/defs.qc
+../qw/defs_ext.qc
 ../qw/subs.qc
 ../qw/combat.qc
 ../qw/items.qc
