@@ -26,12 +26,13 @@
 */
 
 
-// enable extensions in the engine
-float	z_ext_clientcommand;
+//FIXME
+void (entity e, string key, string value) setinfo = #0x5a0B;
 
 
-void Cmd_Give (string item, string amount)
+void Cmd_Give ()
 {
+	string item;
 	float	am;
 
 	if (!infokey(world, "*cheats")) {
@@ -39,11 +40,16 @@ void Cmd_Give (string item, string amount)
 		return;
 	}
 
-	am = stof(amount);
-
-	if (item == "")
+	if (argc() < 2)
 		return;
-	else if (item == "2")
+
+	item = argv(1);
+	if (argc() >= 3)
+		am = stof(argv(2));
+	else
+		am = 100;
+
+	if (item == "2")
 		self.items = self.items | IT_SHOTGUN;
 	else if (item == "3")
 		self.items = self.items | IT_SUPER_SHOTGUN;
@@ -66,13 +72,9 @@ void Cmd_Give (string item, string amount)
 	else if (item == "c" || item == "cells")
 		self.ammo_cells = am;
 	else if (item == "h" || item == "health") {
-		if (amount == "")
-			am = 100;
 		self.health = am;
 	}
 	else if (item == "ga") {
-		if (amount == "")
-			am = 100;
 		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		if (am > 0) {
 			self.items = self.items | IT_ARMOR1;
@@ -83,7 +85,7 @@ void Cmd_Give (string item, string amount)
 			self.armorvalue = 0;
 	}
 	else if (item == "ya") {
-		if (amount == "")
+		if (argc() < 3)
 			am = 150;
 		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		if (am > 0) {
@@ -95,7 +97,7 @@ void Cmd_Give (string item, string amount)
 			self.armorvalue = 0;
 	}
 	else if (item == "ra") {
-		if (amount == "")
+		if (argc() < 3)
 			am = 200;
 		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 		if (am > 0) {
@@ -132,4 +134,85 @@ void Cmd_Give (string item, string amount)
 	else {
 		sprint (self, PRINT_HIGH, "no such item: ", item, "\n");
 	}
+}
+
+
+void Cmd_God ()
+{
+	if (infokey(world, "*cheats") == "") {
+		sprint (self, PRINT_HIGH, "Cheats are not allowed on this server\n");
+		return;
+	}
+
+	if (self.flags & FL_GODMODE)
+	{
+		self.flags = self.flags - FL_GODMODE;
+		sprint (self, PRINT_HIGH, "godmode OFF\n");
+	}
+	else
+	{
+		self.flags = self.flags | FL_GODMODE;
+		sprint (self, PRINT_HIGH, "godmode ON\n");
+	}
+}
+
+void Cmd_Observe ()
+{
+	entity spot;
+
+	if (infokey(self, "*spectator") != "")
+		return;
+
+	if (!deathmatch && !coop) {
+		sprint (self, PRINT_HIGH, "This command is disabled in single player mode\n");
+		return;
+	}
+
+	ClientDisconnect ();
+
+	setinfo(self, "*spectator", "1");
+	self.movetype = MOVETYPE_NOCLIP;
+	self.view_ofs = '0 0 22';
+	self.fixangle = true;
+	spot = find (world, classname, "info_player_start");
+	self.origin = spot.origin;
+	self.angles = spot.angles;
+
+	SpectatorConnect ();
+}
+
+void Cmd_Join ()
+{
+	if (infokey(self, "*spectator") == "")
+		return;
+
+	if (!deathmatch && !coop) {
+		sprint (self, PRINT_HIGH, "This command is disabled in single player mode\n");
+		return;
+	}
+
+	SpectatorDisconnect ();
+	setinfo(self, "*spectator", "");
+	ClientConnect ();
+	PutClientInServer ();
+}
+
+
+/*
+** ZQ_CLIENTCOMMAND extension
+*/
+void GE_ClientCommand (string cmd, string cmdline)
+{
+	if (cmd == "give")
+		Cmd_Give ();
+	else if (cmd == "god")
+		Cmd_God ();
+	else if (cmd == "join")
+		Cmd_Join ();
+	else if (cmd == "observe")
+		Cmd_Observe ();
+	else
+		return false;
+
+	return true;
 }
