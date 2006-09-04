@@ -2376,22 +2376,23 @@ static void PF_checkextension (void)
 		"DP_QC_ETOS",
 		"DP_QC_RANDOMVEC",
 		"DP_QC_TRACEBOX",
-		"ZQ_QC_CHECKBUILTIN",
+		"DP_QC_CVAR_STRING",
+		"DP_CON_SET",
+		"QSG_CVARSTRING",
 		"ZQ_MOVETYPE_NOCLIP",
 		"ZQ_MOVETYPE_FLY",
 		"ZQ_MOVETYPE_NONE",
+		"ZQ_QC_CHECKBUILTIN",
 		"ZQ_QC_PARTICLE",
+		"ZQ_QC_STRINGS",
+		"ZQ_QC_TOKENIZE",
+		"ZQ_CLIENTCOMMAND",
+		"ZQ_SOUNDTOCLIENT",
+		"ZQ_ITEMS2",
 		"ZQ_TESTBOT",
 #ifdef VWEP_TEST
 		"ZQ_VWEP_TEST",
 #endif
-		"ZQ_QC_STRINGS",
-		"ZQ_SOUNDTOCLIENT",
-		"ZQ_ITEMS2",
-		"ZQ_CLIENTCOMMAND",
-		"QSG_CVARSTRING",
-		"DP_QC_CVAR_STRING",
-		"DP_CON_SET",
 		NULL
 	};
 	char **pstr, *extension;
@@ -2661,6 +2662,10 @@ static void PF_mapfunction (void)
 }
 
 
+/*
+** ZQ_QC_TOKENIZE
+** float(string s) tokenize = #441;
+*/
 // FIXME, make independent of Cmd_TokenizeString?
 void PF_tokenize (void)
 {
@@ -2671,6 +2676,19 @@ void PF_tokenize (void)
 	G_FLOAT(OFS_RETURN) = Cmd_Argc();
 }
 
+/*
+** ZQ_QC_TOKENIZE
+** float() argc = #440;
+*/
+void PF_argc (void)
+{
+	G_FLOAT(OFS_RETURN) = Cmd_Argc();
+}
+
+/*
+** ZQ_QC_TOKENIZE
+** string(float n) argv = #442;
+*/
 void PF_argv (void)
 {
 	int num;
@@ -2803,6 +2821,7 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {117, PF_stov},			// vector(string s) stov							= #117;
 {118, PF_strzone},		// string(string s) strzone							= #118;
 {119, PF_strunzone},	// void(string s) strunzone							= #119;
+{440, PF_argc},			// float() argc										= #440;
 {441, PF_tokenize},		// float(string s) tokenize							= #441;
 {442, PF_argv},			// string(float n) argv								= #442;
 {448, PF_cvar_string},	// string(string varname) cvar_string				= #448;

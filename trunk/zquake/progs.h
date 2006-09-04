@@ -161,6 +161,7 @@ extern	int			pr_xstatement;
 
 extern func_t SpectatorConnect, SpectatorDisconnect, SpectatorThink;
 extern func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
+extern func_t GE_ClientCommand;
 
 extern int	fofs_gravity, fofs_maxspeed, fofs_items2;
 extern int	fofs_forwardmove, fofs_sidemove, fofs_upmove;

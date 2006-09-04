@@ -43,7 +43,7 @@ int		type_size[8] = {1,sizeof(void *)/4,1,3,1,1,sizeof(void *)/4,sizeof(void *)/
 
 func_t SpectatorConnect, SpectatorThink, SpectatorDisconnect;
 func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
-func_t ClientCommand;
+func_t GE_ClientCommand;
 
 int		fofs_maxspeed, fofs_gravity, fofs_items2;
 int		fofs_forwardmove, fofs_sidemove, fofs_upmove;
@@ -1146,7 +1146,7 @@ void PR_LoadProgs (void)
 	BotDisconnect = ED_FindFunctionOffset ("BotDisconnect");
 	BotPreThink = ED_FindFunctionOffset ("BotPreThink");
 	BotPostThink = ED_FindFunctionOffset ("BotPostThink");
-	ClientCommand = ED_FindFunctionOffset ("ClientCommand");
+	GE_ClientCommand = ED_FindFunctionOffset ("GE_ClientCommand");
 
 	// find optional QC-exported fields
 	fofs_maxspeed = ED_FindFieldOffset ("maxspeed");

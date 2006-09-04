@@ -1680,7 +1680,6 @@ static void SV_ExecuteUserCommand (char *s)
 	pr_cmdfunction_t *cmdfunc;
 	char	*cmd;
 	int		i, j;
-	extern func_t ClientCommand;
 	
 	Cmd_TokenizeString (s);
 	sv_player = sv_client->edict;
@@ -1694,7 +1693,7 @@ static void SV_ExecuteUserCommand (char *s)
 		}
 
 	// ZQ_CLIENTCOMMAND extension
-	if (ClientCommand && pr_ext_enabled.zq_clientcommand) {
+	if (GE_ClientCommand && pr_ext_enabled.zq_clientcommand) {
 		static char cmd_copy[128], s_copy[1024];
 		char *p;
 		pr_global_struct->time = sv.time;
@@ -1707,7 +1706,7 @@ static void SV_ExecuteUserCommand (char *s)
 			*p = (char)tolower(*p);
 		((int *)pr_globals)[OFS_PARM0] = PR_SetString (cmd_copy);
 		((int *)pr_globals)[OFS_PARM1] = PR_SetString (s_copy);
-		PR_ExecuteProgram (ClientCommand);
+		PR_ExecuteProgram (GE_ClientCommand);
 		if (G_FLOAT(OFS_RETURN) != 0)
 			return;		// the command was handled by the mod
 	}
