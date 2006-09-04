@@ -37,6 +37,7 @@ when crossing a water boudnary.
 
 cvar_t	cl_rollspeed = {"cl_rollspeed", "200"};
 cvar_t	cl_rollangle = {"cl_rollangle", "0"};	// Quake default was 2
+cvar_t	cl_rollalpha = {"cl_rollalpha", "20"};
 cvar_t	cl_bob = {"cl_bob","0	"};				// Quake default was 0.02
 cvar_t	cl_bobcycle = {"cl_bobcycle","0.6"};
 cvar_t	cl_bobup = {"cl_bobup","0.5"};
@@ -830,8 +831,11 @@ void V_CalcViewRoll (void)
 	float	adjspeed;
 	
 	side = V_CalcRoll (cl.simangles, cl.simvel);
-	adjspeed = 20 * bound (2, fabs(cl_rollangle.value), 45);
-	if (side > cl.rollangle) {
+	adjspeed = cl_rollalpha.value * bound (2, fabs(cl_rollangle.value), 45);
+	if (cl_rollalpha.value == 0) {
+		cl.rollangle = 0;	// don't get stuck in a tilted state
+	}
+	else if (side > cl.rollangle) {
 		cl.rollangle += cls.frametime * adjspeed;
 		if (cl.rollangle > side)
 			cl.rollangle = side;
@@ -1200,6 +1204,7 @@ void V_Init (void)
 
 	Cvar_Register (&cl_rollspeed);
 	Cvar_Register (&cl_rollangle);
+	Cvar_Register (&cl_rollalpha);
 	Cvar_Register (&cl_bob);
 	Cvar_Register (&cl_bobcycle);
 	Cvar_Register (&cl_bobup);
