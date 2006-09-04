@@ -2669,6 +2669,14 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {442, PF_argv},			// string(float n) argv								= #442;
 {448, PF_cvar_string},	// string(string varname) cvar_string				= #448;
 {530, PF_soundtoclient},	// void(entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
+
+// Experimental and/or deprecated:
+{0x5a08, PF_soundtoclient},
+#ifdef VWEP_TEST
+{0x5a09, PF_precache_vwep_model},
+#endif
+{0x5a0A, PF_testbot},
+{0x5a0B, PF_setinfo},
 };
 
 #define num_ext_builtins (sizeof(ext_builtins)/sizeof(ext_builtins[0]))
@@ -2693,29 +2701,5 @@ void PR_InitBuiltins (void)
 		pr_builtins[ext_builtins[i].num] = ext_builtins[i].func;
 	}
 }
-		
-
-// ZQuake test range
-builtin_t pr_extbuiltins[] =
-{
-	PF_Fixme,
-	PF_Fixme,
-	PF_Fixme,
-	PF_Fixme,
-	PF_Fixme,			// RESERVED #0x5a04
-	PF_Fixme,			// RESERVED #0x5a05
-	PF_Fixme,			// RESERVED #0x5a06
-	PF_Fixme,			// RESERVED #0x5a07
-	PF_soundtoclient,	// deprecated, use #530 instead
-#ifdef VWEP_TEST
-	PF_precache_vwep_model,	// #0x5a09
-#else
-	PF_Fixme,
-#endif
-	PF_testbot,			// #0x5a0A
-	PF_setinfo,			// #0x5a0B
-};
-
-int pr_numextbuiltins = sizeof(pr_extbuiltins)/sizeof(pr_extbuiltins[0]);
 
 /* vi: set noet ts=4 sts=4 ai sw=4: */
