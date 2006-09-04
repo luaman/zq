@@ -703,12 +703,6 @@ float(string s) stof				= #81;		// convert string to float
 void(vector where, float set) multicast = #82;	// sends the temp message to a set
 						// of clients, possibly in PVS or PHS
 
-float(string name) checkextension = #99;	// check if a builtin function is available on the server
-
-#ifdef FRIKBOT
-entity (string name) testbot = #0x5a0A;
-void (entity e, string key, string value) setinfo = #0x5a0B;
-#endif
 
 //============================================================================
 
@@ -741,11 +735,3 @@ float T_Heal (entity e, float heal_amount, float ignore); // health function
 //
 
 .float suicide_time;	// can't suicide sooner than this
-
-// vwep
-#ifdef VWEP_TEST
-void (float index, string model) precache_vwep_model = #0x5a09;
-.float vw_index;
-.float vw_frame;
-float vw_available;
-#endif
