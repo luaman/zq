@@ -62,7 +62,7 @@ void(string s) strunzone = #119;
 
 // these declarations are here because I don't want them in
 // qw/defs.qc right now
-void (entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #0x5a08;
+void (entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
 void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity forent) tracebox = #90;	// DP_QC_TRACEBOX
 
 // For debugging...
