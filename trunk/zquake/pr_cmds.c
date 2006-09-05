@@ -2388,6 +2388,7 @@ static void PF_checkextension (void)
 		"ZQ_CLIENTCOMMAND",
 		"ZQ_SOUNDTOCLIENT",
 		"ZQ_ITEMS2",
+		"ZQ_PAUSE",
 		"ZQ_TESTBOT",
 #ifdef VWEP_TEST
 		"ZQ_VWEP_TEST",
@@ -2400,8 +2401,14 @@ static void PF_checkextension (void)
 	for (pstr = supported_extensions; *pstr; pstr++) {
 		if (!Q_stricmp(*pstr, extension)) {
 			G_FLOAT(OFS_RETURN) = 1.0;	// supported
+
 			if (!strcmp(extension, "ZQ_CLIENTCOMMAND"))
 				pr_ext_enabled.zq_clientcommand = true;
+			else if (!strcmp(extension, "ZQ_CONSOLECOMMAND"))
+				pr_ext_enabled.zq_consolecommand = true;
+			else if (!strcmp(extension, "ZQ_PAUSE"))
+				pr_ext_enabled.zq_pause = true;
+
 			return;
 		}
 	}
@@ -2542,6 +2549,19 @@ void PF_argv (void)
 	RETURN_STRING(Cmd_Argv(num));
 }
 
+/*
+** ZQ_PAUSE
+** void(float pause) setpause = #531;
+*/
+void PF_setpause (void)
+{
+	qbool pause;
+
+	pause = G_FLOAT(OFS_PARM0) ? true : false;
+	if (pause != (((int)sv_paused.value & 1) ? true : false))
+		SV_TogglePause ("");
+}
+
 //=============================================================================
 
 static builtin_t std_builtins[] =
@@ -2669,6 +2689,7 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {442, PF_argv},			// string(float n) argv								= #442;
 {448, PF_cvar_string},	// string(string varname) cvar_string				= #448;
 {530, PF_soundtoclient},	// void(entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
+{531, PF_setpause},		// void(float pause) setpause						= #531;
 
 // Experimental and/or deprecated:
 {0x5a08, PF_soundtoclient},

@@ -1400,6 +1400,14 @@ void SV_CheckVars (void)
 }
 
 
+static void PausedTic (void)
+{
+	if (GE_PausedTic && pr_ext_enabled.zq_pause) {
+		G_FLOAT(OFS_PARM0) = curtime - sv.pausedstart;
+		PR_ExecuteProgram (GE_PausedTic);
+	}
+}
+
 /*
 ==================
 SV_Frame
@@ -1419,6 +1427,7 @@ void SV_Frame (double time)
 // decide the simulation time
 	if (!sv_paused.value)
 	{
+		// FIXME, would it be better to advance svs.realtime even when paused?
 		svs.realtime += time;
 		sv.time += time;
 	}
@@ -1432,8 +1441,10 @@ void SV_Frame (double time)
 // move autonomous things around if enough time has passed
 	if (!sv_paused.value)
 		SV_Physics ();
-	else
+	else {
+		PausedTic ();
 		SV_RunBots ();	// just update network stuff, but don't run physics
+	}
 
 // get packets
 	SV_ReadPackets ();

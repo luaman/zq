@@ -1063,6 +1063,8 @@ void SV_TogglePause (const char *msg)
 	else
 		newval = (int)sv_paused.value ^ 1;
 
+	if (!sv_paused.value && newval)
+		sv.pausedstart = curtime;
 	Cvar_ForceSet (&sv_paused, va("%i", newval));
 
 	if (msg)
