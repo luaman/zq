@@ -2694,8 +2694,10 @@ void PR_InitBuiltins (void)
 		if (ext_builtins[i].num + 1 > pr_numbuiltins)
 			pr_numbuiltins = ext_builtins[i].num + 1;
 
-	pr_builtins = Q_calloc(pr_numbuiltins, sizeof(builtin_t));
+	pr_builtins = Q_malloc(pr_numbuiltins * sizeof(builtin_t));
 	memcpy (pr_builtins, std_builtins, sizeof(std_builtins));
+	for (i = num_std_builtins; i < pr_numbuiltins; i++)
+		pr_builtins[i] = PF_Fixme;
 	for (i = 0; i < num_ext_builtins; i++) {
 		assert (ext_builtins[i].num >= 0);
 		pr_builtins[ext_builtins[i].num] = ext_builtins[i].func;
