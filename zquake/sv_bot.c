@@ -39,7 +39,7 @@ void Bot_Spawn_And_Begin (client_t *cl)
 
 	// copy spawn parms out of the client_t
 	for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
-		(&pr_global_struct->parm1)[i] = cl->spawn_parms[i];
+		(&PR_GLOBAL(parm1))[i] = cl->spawn_parms[i];
 
 	// call the spawn function
 	pr_global_struct->time = sv.time;
@@ -47,12 +47,12 @@ void Bot_Spawn_And_Begin (client_t *cl)
 	if (BotConnect)
 		PR_ExecuteProgram (BotConnect);
 	else
-		PR_ExecuteProgram (pr_global_struct->ClientConnect);
+		PR_ExecuteProgram (PR_GLOBAL(ClientConnect));
 
 	// actually spawn the player
 	pr_global_struct->time = sv.time;
 	pr_global_struct->self = EDICT_TO_PROG(ent);
-	PR_ExecuteProgram (pr_global_struct->PutClientInServer);
+	PR_ExecuteProgram (PR_GLOBAL(PutClientInServer));
 
 	cl->sendinfo = true;
 }
@@ -122,7 +122,7 @@ void SV_RemoveBot (client_t *cl)
 			if (BotDisconnect)
 				PR_ExecuteProgram (BotDisconnect);
 			else
-				PR_ExecuteProgram (pr_global_struct->ClientDisconnect);
+				PR_ExecuteProgram (PR_GLOBAL(ClientDisconnect));
 		}
 		else if (SpectatorDisconnect)
 		{
@@ -168,9 +168,9 @@ void SV_RunBots (void)
 		if (cl->state == cs_connected) {
 			if (!cl->cmdtime /* FIXME, a good idea to check this particular field? */) {
 				// call the progs to get default spawn parms for the new client
-				PR_ExecuteProgram (pr_global_struct->SetNewParms);
+				PR_ExecuteProgram (PR_GLOBAL(SetNewParms));
 				for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
-					cl->spawn_parms[i] = (&pr_global_struct->parm1)[i];
+					cl->spawn_parms[i] = (&PR_GLOBAL(parm1))[i];
 			}
 
 			Bot_Spawn_And_Begin (cl);

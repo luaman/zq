@@ -820,7 +820,7 @@ void SV_ProgStartFrame (void)
 	pr_global_struct->self = EDICT_TO_PROG(sv.edicts);
 	pr_global_struct->other = EDICT_TO_PROG(sv.edicts);
 	pr_global_struct->time = sv.time;
-	PR_ExecuteProgram (pr_global_struct->StartFrame);
+	PR_ExecuteProgram (PR_GLOBAL(StartFrame));
 }
 
 /*
@@ -871,6 +871,9 @@ void SV_RunNewmis (void)
 	edict_t	*ent;
 	double save_frametime;
 
+	if (pr_nqprogs)
+		return;
+
 	if (!pr_global_struct->newmis)
 		return;
 
@@ -912,7 +915,7 @@ void SV_Physics (void)
 	else
 		sv_frametime = 0.1;		// initialization frame
 
-	pr_global_struct->frametime = sv_frametime;
+	PR_GLOBAL(frametime) = sv_frametime;
 
 	SV_ProgStartFrame ();
 
@@ -926,7 +929,7 @@ void SV_Physics (void)
 		if (!ent->inuse)
 			continue;
 
-		if (pr_global_struct->force_retouch)
+		if (PR_GLOBAL(force_retouch))
 			SV_LinkEdict (ent, true);	// force retouch even for stationary
 
 		if (i > 0 && i <= MAX_CLIENTS)
@@ -936,8 +939,8 @@ void SV_Physics (void)
 		SV_RunNewmis ();
 	}
 	
-	if (pr_global_struct->force_retouch)
-		pr_global_struct->force_retouch--;
+	if (PR_GLOBAL(force_retouch))
+		PR_GLOBAL(force_retouch)--;
 
 	SV_RunBots ();
 }

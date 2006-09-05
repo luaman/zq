@@ -490,22 +490,22 @@ static void Cmd_Spawn_f (void)
 
 	ClientReliableWrite_Begin (sv_client, svc_updatestatlong);
 	ClientReliableWrite_Byte (STAT_TOTALSECRETS);
-	ClientReliableWrite_Long (pr_global_struct->total_secrets);
+	ClientReliableWrite_Long (PR_GLOBAL(total_secrets));
 	ClientReliableWrite_End ();
 
 	ClientReliableWrite_Begin (sv_client, svc_updatestatlong);
 	ClientReliableWrite_Byte (STAT_TOTALMONSTERS);
-	ClientReliableWrite_Long (pr_global_struct->total_monsters);
+	ClientReliableWrite_Long (PR_GLOBAL(total_monsters));
 	ClientReliableWrite_End ();
 
 	ClientReliableWrite_Begin (sv_client, svc_updatestatlong);
 	ClientReliableWrite_Byte (STAT_SECRETS);
-	ClientReliableWrite_Long (pr_global_struct->found_secrets);
+	ClientReliableWrite_Long (PR_GLOBAL(found_secrets));
 	ClientReliableWrite_End ();
 
 	ClientReliableWrite_Begin (sv_client, svc_updatestatlong);
 	ClientReliableWrite_Byte (STAT_MONSTERS);
-	ClientReliableWrite_Long (pr_global_struct->killed_monsters);
+	ClientReliableWrite_Long (PR_GLOBAL(killed_monsters));
 	ClientReliableWrite_End ();
 
 	// get the client to check and download skins
@@ -581,7 +581,7 @@ static void Cmd_Begin_f (void)
 			if (SpectatorConnect) {
 				// copy spawn parms out of the client_t
 				for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
-					(&pr_global_struct->parm1)[i] = sv_client->spawn_parms[i];
+					(&PR_GLOBAL(parm1))[i] = sv_client->spawn_parms[i];
 				
 				// call the spawn function
 				pr_global_struct->time = sv.time;
@@ -593,17 +593,17 @@ static void Cmd_Begin_f (void)
 		{
 			// copy spawn parms out of the client_t
 			for (i=0 ; i< NUM_SPAWN_PARMS ; i++)
-				(&pr_global_struct->parm1)[i] = sv_client->spawn_parms[i];
+				(&PR_GLOBAL(parm1))[i] = sv_client->spawn_parms[i];
 			
 			// call the spawn function
 			pr_global_struct->time = sv.time;
 			pr_global_struct->self = EDICT_TO_PROG(sv_player);
-			PR_ExecuteProgram (pr_global_struct->ClientConnect);
+			PR_ExecuteProgram (PR_GLOBAL(ClientConnect));
 			
 			// actually spawn the player
 			pr_global_struct->time = sv.time;
 			pr_global_struct->self = EDICT_TO_PROG(sv_player);
-			PR_ExecuteProgram (pr_global_struct->PutClientInServer);	
+			PR_ExecuteProgram (PR_GLOBAL(PutClientInServer));	
 		}
 	}
 
@@ -1044,7 +1044,7 @@ static void Cmd_Kill_f (void)
 	
 	pr_global_struct->time = sv.time;
 	pr_global_struct->self = EDICT_TO_PROG(sv_player);
-	PR_ExecuteProgram (pr_global_struct->ClientKill);
+	PR_ExecuteProgram (PR_GLOBAL(ClientKill));
 }
 
 /*
@@ -1389,19 +1389,19 @@ static void Cmd_Join_f (void)
 	Info_RemoveKey (sv_client->userinfo, "*spectator");
 
 	// call the progs to get default spawn parms for the new client
-	PR_ExecuteProgram (pr_global_struct->SetNewParms);
+	PR_ExecuteProgram (PR_GLOBAL(SetNewParms));
 	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
-		sv_client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
+		sv_client->spawn_parms[i] = (&PR_GLOBAL(parm1))[i];
 
 	// call the spawn function
 	pr_global_struct->time = sv.time;
 	pr_global_struct->self = EDICT_TO_PROG(sv_player);
-	PR_ExecuteProgram (pr_global_struct->ClientConnect);
+	PR_ExecuteProgram (PR_GLOBAL(ClientConnect));
 	
 	// actually spawn the player
 	pr_global_struct->time = sv.time;
 	pr_global_struct->self = EDICT_TO_PROG(sv_player);
-	PR_ExecuteProgram (pr_global_struct->PutClientInServer);	
+	PR_ExecuteProgram (PR_GLOBAL(PutClientInServer));	
 
 	// send notification to all clients
 	sv_client->sendinfo = true;
@@ -1451,7 +1451,7 @@ static void Cmd_Observe_f (void)
 	// call the prog function for removing a client
 	// this will set the body to a dead frame, among other things
 	pr_global_struct->self = EDICT_TO_PROG(sv_player);
-	PR_ExecuteProgram (pr_global_struct->ClientDisconnect);
+	PR_ExecuteProgram (PR_GLOBAL(ClientDisconnect));
 
 	sv_client->old_frags = 0;
 	SetUpClientEdict (sv_client, sv_client->edict);
@@ -1461,9 +1461,9 @@ static void Cmd_Observe_f (void)
 	Info_SetValueForStarKey (sv_client->userinfo, "*spectator", "1", MAX_INFO_STRING);
 
 	// call the progs to get default spawn parms for the new client
-	PR_ExecuteProgram (pr_global_struct->SetNewParms);
+	PR_ExecuteProgram (PR_GLOBAL(SetNewParms));
 	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
-		sv_client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
+		sv_client->spawn_parms[i] = (&PR_GLOBAL(parm1))[i];
 
 	SV_SpawnSpectator ();
 	
@@ -1952,13 +1952,13 @@ void SV_RunCmd (usercmd_t *ucmd)
 	if (sv_client->bot)
 	{
 		// bots make their decisions here
-		pr_global_struct->frametime = sv_frametime;
+		PR_GLOBAL(frametime) = sv_frametime;
 		pr_global_struct->time = sv.time;
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
 		if (BotPreThink)
 			PR_ExecuteProgram (BotPreThink);
 		else
-			PR_ExecuteProgram (pr_global_struct->PlayerPreThink);
+			PR_ExecuteProgram (PR_GLOBAL(PlayerPreThink));
 
 		// create a move command
 		VectorCopy (sv_player->v.v_angle, ucmd->angles);
@@ -2007,11 +2007,11 @@ void SV_RunCmd (usercmd_t *ucmd)
 		VectorCopy (sv_player->v.velocity, originalvel);
 		old_onground = (int)sv_player->v.flags & FL_ONGROUND;
 
-		pr_global_struct->frametime = sv_frametime;
+		PR_GLOBAL(frametime) = sv_frametime;
 		pr_global_struct->time = sv.time;
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
 
-		PR_ExecuteProgram (pr_global_struct->PlayerPreThink);
+		PR_ExecuteProgram (PR_GLOBAL(PlayerPreThink));
 
 		if (old_onground && originalvel[2] < 0 && sv_player->v.velocity[2] == 0
 			&& originalvel[0] == sv_player->v.velocity[0]
@@ -2118,7 +2118,7 @@ void SV_PostRunCmd (void)
 		if (sv_client->bot && BotPostThink)
 			PR_ExecuteProgram (BotPostThink);
 		else
-			PR_ExecuteProgram (pr_global_struct->PlayerPostThink);
+			PR_ExecuteProgram (PR_GLOBAL(PlayerPostThink));
 
 		if (onground && originalvel[2] < 0 && sv_player->v.velocity[2] == 0
 			&& originalvel[0] == sv_player->v.velocity[0]

@@ -613,7 +613,7 @@ void SV_UpdateClientStats (client_t *client)
 	if (!client->spectator)
 		stats[STAT_ACTIVEWEAPON] = ent->v.weapon;
 	// stuff the sigil bits into the high bits of items for sbar
-	stats[STAT_ITEMS] = (int)ent->v.items | ((int)pr_global_struct->serverflags << 28);
+	stats[STAT_ITEMS] = (int)ent->v.items | ((int)PR_GLOBAL(serverflags) << 28);
 	if (fofs_items2)	// ZQ_ITEMS2 extension
 		stats[STAT_ITEMS] |= (int)EdictFieldFloat(ent, fofs_items2) << 23;
 

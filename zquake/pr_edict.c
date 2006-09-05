@@ -35,6 +35,17 @@ int				pr_edict_size;	// in bytes
 
 struct pr_ext_enabled_s	pr_ext_enabled;
 
+#define NQ_PROGHEADER_CRC 5927
+
+#ifdef WITH_NQPROGS
+qbool pr_nqprogs;
+int pr_fieldoffsetpatch[106];
+int pr_globaloffsetpatch[62];
+static int pr_globaloffsetpatch_nq[62] = {0,0,0,0,0,666,-4,-4,8,8,
+8,8,8,8,8,8,8,8,8,8, 8,8,8,8,8,8,8,8,8,8, 8,8,8,8,8,8,8,8,8,8, 
+8,8,8,8,8,8,8,8,8,8, 8,8,8,8,8,8,8,8,8,8, 8,8};
+#endif
+
 int		type_size[8] = {1,sizeof(void *)/4,1,3,1,1,sizeof(void *)/4,sizeof(void *)/4};
 
 func_t SpectatorConnect, SpectatorThink, SpectatorDisconnect;
@@ -984,7 +995,16 @@ void PR_LoadProgs (void)
 	int	filesize = 0;
 
 	progs = NULL;
-	if (!deathmatch.value)
+#ifdef WITH_NQPROGS
+	pr_nqprogs = false;
+	if (Cvar_VariableValue("nqprogs")) {
+		progs = (dprograms_t *)FS_LoadHunkFile ("progs.dat");
+		filesize = fs_filesize;
+		if (progs)
+			pr_nqprogs = true;
+	}
+#endif
+	if (!pr_nqprogs && !deathmatch.value)
 	{
 		int hunk_mark = Hunk_LowMark ();
 
@@ -1031,7 +1051,7 @@ void PR_LoadProgs (void)
 
 	if (progs->version != PROG_VERSION)
 		Host_Error ("progs.dat has wrong version number (%i should be %i)", progs->version, PROG_VERSION);
-	if (progs->crc != PROGHEADER_CRC)
+	if (progs->crc != (pr_nqprogs ? NQ_PROGHEADER_CRC : PROGHEADER_CRC))
 		Host_Error ("You must have the qwprogs.dat from QuakeWorld installed");
 
 // check lump offsets and sizes
@@ -1051,7 +1071,7 @@ void PR_LoadProgs (void)
 	pr_globals = (float *)pr_global_struct;
 
 	PR_InitStrings ();
-	
+
 	pr_edict_size = progs->entityfields * 4 + sizeof (edict_t) - sizeof(entvars_t);
 	
 // byte swap the lumps
@@ -1089,8 +1109,32 @@ void PR_LoadProgs (void)
 		pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
 	}
 
+
 	for (i=0 ; i<progs->numglobals ; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
+
+
+#ifdef WITH_NQPROGS
+	if (pr_nqprogs) {
+		memcpy (&pr_globaloffsetpatch, &pr_globaloffsetpatch_nq, sizeof(pr_globaloffsetpatch));
+		for (i = 0; i < 106; i++) {
+			pr_fieldoffsetpatch[i] = (i < 8) ? i : (i < 25) ? i + 1 :
+				(i < 28) ? i + (102 - 25) : (i < 73) ? i - 2 :
+				(i < 74) ? i + (105 - 73) : (i < 105) ? i - 3 : /* (i == 105) */ 8;
+		}
+
+		for (i=0 ; i<progs->numfielddefs ; i++)
+			pr_fielddefs[i].ofs = PR_FIELDOFS(pr_fielddefs[i].ofs);
+
+	}
+	else
+	{
+		memset (&pr_globaloffsetpatch, sizeof(pr_globaloffsetpatch), 0);
+
+		for (i = 0; i < 106; i++)
+			pr_fieldoffsetpatch[i] = i;
+	}
+#endif
 
 	// find optional QC-exported functions
 	SpectatorConnect = ED_FindFunctionOffset ("SpectatorConnect");
@@ -1156,5 +1200,3 @@ int NUM_FOR_EDICT(edict_t *e)
 		Host_Error ("NUM_FOR_EDICT: bad pointer");
 	return b;
 }
-
-
