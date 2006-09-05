@@ -43,9 +43,9 @@ string(string s) strzone = #118;
 void(string s) strunzone = #119;
 
 // ZQ_QC_TOKENIZE
-float() argc = #440;
-float tokenize(string s) = #441;
-string(float n) argv = #442;
+float tokenize(string s) = #84;
+float() argc = #85;
+string(float n) argv = #86;
 
 // ZQ_SOUNDTOCLIENT
 void (entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
