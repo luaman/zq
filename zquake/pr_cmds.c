@@ -2514,7 +2514,7 @@ static void PF_soundtoclient (void)
 
 /*
 ** ZQ_QC_TOKENIZE
-** float(string s) tokenize = #441;
+** float(string s) tokenize = #84;
 */
 // FIXME, make independent of Cmd_TokenizeString?
 void PF_tokenize (void)
@@ -2528,7 +2528,7 @@ void PF_tokenize (void)
 
 /*
 ** ZQ_QC_TOKENIZE
-** float() argc = #440;
+** float() argc = #85;
 */
 void PF_argc (void)
 {
@@ -2537,7 +2537,7 @@ void PF_argc (void)
 
 /*
 ** ZQ_QC_TOKENIZE
-** string(float n) argv = #442;
+** string(float n) argv = #86;
 */
 void PF_argv (void)
 {
@@ -2666,6 +2666,10 @@ PF_multicast,		// void(vector where, float set) multicast = #82
 
 static struct { int num; builtin_t func; } ext_builtins[] =
 {
+{84, PF_tokenize},		// float(string s) tokenize							= #84;
+{85, PF_argc},			// float() argc										= #85;
+{86, PF_argv},			// string(float n) argv								= #86;
+
 {90, PF_tracebox},		// void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity ignore) tracebox = #90;
 {91, PF_randomvec},		// vector() randomvec								= #91;
 ////
@@ -2684,9 +2688,6 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {117, PF_stov},			// vector(string s) stov							= #117;
 {118, PF_strzone},		// string(string s) strzone							= #118;
 {119, PF_strunzone},	// void(string s) strunzone							= #119;
-{440, PF_argc},			// float() argc										= #440;
-{441, PF_tokenize},		// float(string s) tokenize							= #441;
-{442, PF_argv},			// string(float n) argv								= #442;
 {448, PF_cvar_string},	// string(string varname) cvar_string				= #448;
 {530, PF_soundtoclient},	// void(entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
 {531, PF_setpause},		// void(float pause) setpause						= #531;
