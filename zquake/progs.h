@@ -137,6 +137,8 @@ extern int pr_numbuiltins;
 // a checkextension(..) call from progs enables the corresponding extension
 extern struct pr_ext_enabled_s {
 	qbool zq_clientcommand;
+	qbool zq_consolecommand;
+	qbool zq_pause;
 } pr_ext_enabled;
 
 extern int		pr_argc;
@@ -148,7 +150,7 @@ extern	int			pr_xstatement;
 
 extern func_t SpectatorConnect, SpectatorDisconnect, SpectatorThink;
 extern func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
-extern func_t GE_ClientCommand;
+extern func_t GE_ClientCommand, GE_ConsoleCommand, GE_PausedTic;
 
 extern int	fofs_gravity, fofs_maxspeed, fofs_items2;
 extern int	fofs_forwardmove, fofs_sidemove, fofs_upmove;

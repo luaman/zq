@@ -65,6 +65,8 @@ typedef struct
 	int			lastcheck;			// used by PF_checkclient
 	double		lastchecktime;		// for monster ai
 
+	double		pausedstart;		// svs.realtime when pause started
+
 	qbool		loadgame;			// handle connections specially
 
 	//check player/eyes models for hacks
