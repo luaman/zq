@@ -1702,18 +1702,18 @@ static void SV_ExecuteUserCommand (char *s)
 
 	// ZQ_CLIENTCOMMAND extension: does the progs want this command?
 	if (GE_ClientCommand && pr_ext_enabled.zq_clientcommand) {
-		static char cmd_copy[128], s_copy[1024];
+		static char cmd_copy[128], args_copy[1024] /* Ouch! */;
 		char *p;
 		pr_global_struct->time = sv.time;
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
 		strlcpy (cmd_copy, cmd, sizeof(cmd_copy));
-		strlcpy (s_copy, s, sizeof(s_copy));
+		strlcpy (args_copy, Cmd_Args(), sizeof(args_copy));
 		// lowercase command to rule out the possibility of a user executing
 		// a command the mod wants to block (e.g. 'join') by using uppercase
 		for (p = cmd_copy; *p; p++)
 			*p = (char)tolower(*p);
 		((int *)pr_globals)[OFS_PARM0] = PR_SetString (cmd_copy);
-		((int *)pr_globals)[OFS_PARM1] = PR_SetString (s_copy);
+		((int *)pr_globals)[OFS_PARM1] = PR_SetString (args_copy);
 		PR_ExecuteProgram (GE_ClientCommand);
 		if (G_FLOAT(OFS_RETURN) != 0)
 			return;		// the command was handled by the mod
