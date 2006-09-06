@@ -59,10 +59,10 @@ void Cvar_ForceSet (cvar_t *var, char *string);
 void Cvar_SetValue (cvar_t *var, float value);
 
 // returns 0 if not defined or non-numeric
-float Cvar_VariableValue (char *name);
+float Cvar_Value (char *name);
 
 // returns an empty string if not defined
-char *Cvar_VariableString (char *name);
+char *Cvar_String (char *name);
 
 // attempts to match a partial variable name for command line completion
 // returns NULL if nothing fits

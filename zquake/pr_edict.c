@@ -997,7 +997,7 @@ void PR_LoadProgs (void)
 	progs = NULL;
 #ifdef WITH_NQPROGS
 	pr_nqprogs = false;
-	if (Cvar_VariableValue("nqprogs")) {
+	if (Cvar_Value("nqprogs")) {
 		progs = (dprograms_t *)FS_LoadHunkFile ("progs.dat");
 		filesize = fs_filesize;
 		if (progs)

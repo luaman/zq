@@ -34,7 +34,7 @@ qbool SNDDMA_Init(void)
 
     // Give user the option to force OSS...
     if(     COM_CheckParm("-noalsa")
-        ||  Cvar_VariableValue("s_noalsa") )
+        ||  Cvar_Value("s_noalsa") )
     {
         // User wants us to use OSS...
         Sys_Printf("sound: Using OSS at user's request...\n");
