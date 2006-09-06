@@ -91,11 +91,11 @@ qbool SNDDMA_Init_ALSA (void)
     snd_pcm_sw_params_alloca (&sw);
 
     // Check for user-specified parameters...
-    pcmname = Cvar_VariableString("s_device");
+    pcmname = Cvar_String("s_device");
 
-    if(Cvar_VariableValue("s_bits"))
+    if(Cvar_Value("s_bits"))
     {
-        bps = Cvar_VariableValue("s_bits");
+        bps = Cvar_Value("s_bits");
         if(bps != 16 && bps != 8)
         {
             Sys_Printf("Error: invalid sample bits: %d\n", bps);
@@ -103,8 +103,8 @@ qbool SNDDMA_Init_ALSA (void)
         }
     }
 
-    if(Cvar_VariableValue("s_rate")) {
-        rate = Cvar_VariableValue("s_rate");
+    if(Cvar_Value("s_rate")) {
+        rate = Cvar_Value("s_rate");
         if(rate != 44100 && rate != 22050 && rate != 11025)
         {
             Sys_Printf("Error: invalid sample rate: %d\n", rate);
@@ -112,7 +112,7 @@ qbool SNDDMA_Init_ALSA (void)
         }
     }
 
-    stereo = Cvar_VariableValue("s_stereo");
+    stereo = Cvar_Value("s_stereo");
 
     // Initialise ALSA...
     err = alsa_snd_pcm_open(&pcm, pcmname, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);

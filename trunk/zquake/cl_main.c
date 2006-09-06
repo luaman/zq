@@ -227,7 +227,7 @@ void CL_SendConnectPacket (void)
 
 	connect_time = cls.realtime;	// for retransmit requests
 
-	cls.qport = Cvar_VariableValue("qport");
+	cls.qport = Cvar_Value("qport");
 
 	// let the server know what extensions we support
 	strcpy (biguserinfo, cls.userinfo);
@@ -362,7 +362,7 @@ void CL_Connect_f (void)
 	Com_Printf ("Attempting to auth with %s...\n", cls.masterservername);
 	sprintf (data, "%c\n%s\n%s:%d\n",
             C2M_AUTH_INIT,
-            Cvar_VariableString("name"),
+            Cvar_String("name"),
             cls.servername,
             cls.server_adr.port);
 	NET_SendPacket (NS_CLIENT, strlen(data), data, cls.masterserver_adr);
@@ -593,7 +593,7 @@ void CL_ConnectionlessPacket (void)
         
         // Check player name...
         tmpstr = MSG_ReadStringLine();
-        if( !tmpstr || strcmp(Cvar_VariableString("name"),tmpstr) )
+        if( !tmpstr || strcmp(Cvar_String("name"),tmpstr) )
         {
             // FIXME return NACK
             return;
@@ -617,7 +617,7 @@ void CL_ConnectionlessPacket (void)
         Sys_Printf("MAUTH: hash size is %d.\n", sizeof(hash_md4));
         
         // Send hash to master...
-        sprintf(data, "%c\n%s\n%s\n", C2M_AUTH_HASH, Cvar_VariableString("name"), hash_md4);
+        sprintf(data, "%c\n%s\n%s\n", C2M_AUTH_HASH, Cvar_String("name"), hash_md4);
 		NET_SendPacket (NS_CLIENT, sizeof(data), data, net_from);
         return;
     }

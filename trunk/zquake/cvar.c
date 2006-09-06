@@ -65,10 +65,10 @@ cvar_t *Cvar_FindVar (char *name)
 
 /*
 ============
-Cvar_VariableValue
+Cvar_Value
 ============
 */
-float Cvar_VariableValue (char *name)
+float Cvar_Value (char *name)
 {
 	cvar_t	*var = Cvar_FindVar (name);
 	if (!var)
@@ -79,10 +79,10 @@ float Cvar_VariableValue (char *name)
 
 /*
 ============
-Cvar_VariableString
+Cvar_String
 ============
 */
-char *Cvar_VariableString (char *name)
+char *Cvar_String (char *name)
 {
 	cvar_t *var = Cvar_FindVar (name);
 	if (!var)

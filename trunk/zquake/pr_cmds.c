@@ -877,7 +877,7 @@ static void PF_cvar (void)
 	if (!Cvar_FindVar (str) && (temp = Cmd_LegacyCommandValue (str)))
 		str = temp;
 
-	G_FLOAT(OFS_RETURN) = Cvar_VariableValue (str);
+	G_FLOAT(OFS_RETURN) = Cvar_Value (str);
 }
 
 
