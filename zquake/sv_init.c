@@ -341,6 +341,7 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 		pr_globals[35] = deathmatch.value;
 		pr_globals[36] = coop.value;
 		pr_globals[37] = teamplay.value;
+		NQP_Reset ();
 	}
 	
 	// run the frame start qc function to let progs check cvars

@@ -89,11 +89,14 @@ extern	int pr_globaloffsetpatch[62];
 #define PR_GLOBAL(field) (((globalvars_t *)((byte *)pr_global_struct + \
 	pr_globaloffsetpatch[((int *)&((globalvars_t *)0)->field - (int *)0) - 28]))->field)
 
+void NQP_Reset (void);
+
 #else	// !WITH_NQPROGS
 
 #define pr_nqprogs 0
 #define PR_FIELDOFS(i) (i)
 #define PR_GLOBAL(field) pr_global_struct->field
+#define NQP_Reset()
 
 #endif
 

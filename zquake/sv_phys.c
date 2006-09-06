@@ -915,6 +915,9 @@ void SV_Physics (void)
 	else
 		sv_frametime = 0.1;		// initialization frame
 
+	if (pr_nqprogs)
+		NQP_Reset ();
+
 	PR_GLOBAL(frametime) = sv_frametime;
 
 	SV_ProgStartFrame ();
