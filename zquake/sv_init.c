@@ -337,6 +337,11 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	PR_GLOBAL(mapname) = PR_SetString(sv.mapname);
 	// serverflags are for cross level information (sigils)
 	PR_GLOBAL(serverflags) = svs.serverflags;
+	if (pr_nqprogs) {
+		pr_globals[35] = deathmatch.value;
+		pr_globals[36] = coop.value;
+		pr_globals[37] = teamplay.value;
+	}
 	
 	// run the frame start qc function to let progs check cvars
 	SV_ProgStartFrame ();
