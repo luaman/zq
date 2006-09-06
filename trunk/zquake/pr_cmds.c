@@ -245,7 +245,7 @@ static void PF_bprint (void)
 	
 	if (pr_nqprogs) {
 		level = PRINT_HIGH;
-		s = PF_VarString(1);
+		s = PF_VarString(0);
 	} else {
 		level = G_FLOAT(OFS_PARM0);
 		s = PF_VarString(1);
@@ -1622,6 +1622,137 @@ static void CheckIntermission (void)
 }
 
 
+#ifdef WITH_NQPROGS
+static byte nqp_buf_data[500] /* must be large enough for svc_finale text */;
+static sizebuf_t nqp_buf;
+static qbool nqp_ignore_this_frame;
+static int nqp_expect;
+
+void NQP_Reset (void)
+{
+	nqp_ignore_this_frame = false;
+	nqp_expect = 0;
+	SZ_Init (&nqp_buf, nqp_buf_data, sizeof(nqp_buf_data));
+}
+
+static void NQP_Flush (int count)
+{
+// FIXME, we make no distinction reliable or not
+	assert (count <= nqp_buf.cursize);
+	SZ_Write (&sv.reliable_datagram, nqp_buf_data, count);
+	memcpy (nqp_buf_data, nqp_buf_data + count, nqp_buf.cursize - count);
+	nqp_buf.cursize -= count;
+}
+
+static void NQP_Skip (int count)
+{
+	assert (count <= nqp_buf.cursize);
+	memcpy (nqp_buf_data, nqp_buf_data + count, nqp_buf.cursize - count);
+	nqp_buf.cursize -= count;
+}
+
+static void NQP_Process (void)
+{
+	int cmd;
+
+	if (nqp_ignore_this_frame) {
+		SZ_Clear (&nqp_buf);
+		return;
+	}
+
+	while (1) {
+		if (nqp_expect) {
+			if (nqp_buf.cursize >= nqp_expect) {
+				NQP_Flush (nqp_expect);
+				nqp_expect = 0;
+			}
+			else
+				break;
+		}
+
+		if (!nqp_buf.cursize)
+			break;
+
+		nqp_expect = 0;
+
+		cmd = nqp_buf_data[0];
+		if (cmd == svc_killedmonster || cmd == svc_foundsecret || cmd == svc_sellscreen)
+			nqp_expect = 1;
+		else if (cmd == svc_cdtrack) {
+			if (nqp_buf.cursize < 3)
+				goto waitformore;
+			NQP_Flush (2);
+			NQP_Skip (1);
+		}
+		else if (cmd == svc_finale) {
+			byte *p = memchr (nqp_buf_data + 1, 0, nqp_buf.cursize - 1);
+			if (!p)
+				goto waitformore;
+			nqp_expect = (p - nqp_buf_data) + 1;
+		}
+		else if (cmd == svc_intermission) {
+			int i;
+			NQP_Flush (1);
+			for (i = 0; i < 3; i++)
+				MSG_WriteCoord (&sv.reliable_datagram, svs.clients[0].edict->v.origin[i]);
+			for (i = 0; i < 3; i++)
+				MSG_WriteAngle (&sv.reliable_datagram, svs.clients[0].edict->v.angles[i]);
+		}
+		else if (nqp_buf_data[0] == svc_temp_entity) {
+			if (nqp_buf.cursize < 2)
+				break;
+
+switch (nqp_buf_data[1]) {
+  case TE_SPIKE:
+  case TE_SUPERSPIKE:
+  case TE_EXPLOSION:
+  case TE_TAREXPLOSION:
+  case TE_WIZSPIKE:
+  case TE_KNIGHTSPIKE:
+  case TE_LAVASPLASH:
+  case TE_TELEPORT:
+		nqp_expect = 8;
+		break;
+  case TE_GUNSHOT:
+		if (nqp_buf.cursize < 8)
+			goto waitformore;
+		NQP_Flush (2);
+		MSG_WriteByte (&sv.reliable_datagram, 1);
+		NQP_Flush (6);
+		break;
+
+  case TE_LIGHTNING1:
+  case TE_LIGHTNING2:
+  case TE_LIGHTNING3:
+		nqp_expect = 16;
+	  break;
+  case NQ_TE_BEAM:
+		NQP_Skip (16);
+		break;
+
+  case NQ_TE_EXPLOSION2:
+		nqp_expect = 10;
+		break;
+  default:
+		Com_Printf ("WARNING: progs.dat sent an unsupported svc_temp_entity: %i\n", nqp_buf_data[1]);
+	    goto ignore;
+}
+
+		}
+		else {
+			Com_Printf ("WARNING: progs.dat sent an unsupported svc: %i\n", cmd);
+ignore:
+			nqp_ignore_this_frame = true;
+			break;
+		}
+	}
+waitformore:;
+}
+
+#else // !WITH_NQPROGS
+#define NQ_Process()
+#endif
+
 /*
 =================
 PF_WriteByte
@@ -1631,8 +1762,13 @@ void WriteByte(float to, float f) = #52
 */
 static void PF_WriteByte (void)
 {
-	if (pr_nqprogs)
-		return;	// FIXME
+	if (pr_nqprogs) {
+		if (G_FLOAT(OFS_PARM0) == MSG_ONE || G_FLOAT(OFS_PARM0) == MSG_INIT)
+			return;	// we don't support this
+		MSG_WriteByte (&nqp_buf, G_FLOAT(OFS_PARM1));
+		NQP_Process ();
+		return;
+	}
 
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
 		ClientReliableWrite_Begin0 (Write_GetClient());
@@ -1655,8 +1791,13 @@ void WriteChar(float to, float f) = #53
 */
 static void PF_WriteChar (void)
 {
-	if (pr_nqprogs)
-		return; // FIXME
+	if (pr_nqprogs) {
+		if (G_FLOAT(OFS_PARM0) == MSG_ONE || G_FLOAT(OFS_PARM0) == MSG_INIT)
+			return;	// we don't support this
+		MSG_WriteByte (&nqp_buf, G_FLOAT(OFS_PARM1));
+		NQP_Process ();
+		return;
+	}
 
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
 		ClientReliableWrite_Begin0 (Write_GetClient());
@@ -1676,8 +1817,13 @@ void WriteShort(float to, float f) = #54
 */
 static void PF_WriteShort (void)
 {
-	if (pr_nqprogs)
-		return; // FIXME
+	if (pr_nqprogs) {
+		if (G_FLOAT(OFS_PARM0) == MSG_ONE || G_FLOAT(OFS_PARM0) == MSG_INIT)
+			return;	// we don't support this
+		MSG_WriteShort (&nqp_buf, G_FLOAT(OFS_PARM1));
+		NQP_Process ();
+		return;
+	}
 
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
 		ClientReliableWrite_Begin0 (Write_GetClient());
@@ -1697,8 +1843,13 @@ void WriteLong(float to, float f) = #55
 */
 static void PF_WriteLong (void)
 {
-	if (pr_nqprogs)
-		return; // FIXME
+	if (pr_nqprogs) {
+		if (G_FLOAT(OFS_PARM0) == MSG_ONE || G_FLOAT(OFS_PARM0) == MSG_INIT)
+			return;	// we don't support this
+		MSG_WriteLong (&nqp_buf, G_FLOAT(OFS_PARM1));
+		NQP_Process ();
+		return;
+	}
 
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
 		ClientReliableWrite_Begin0 (Write_GetClient());
@@ -1718,8 +1869,13 @@ void WriteAngle(float to, float f) = #57
 */
 static void PF_WriteAngle (void)
 {
-	if (pr_nqprogs)
-		return; // FIXME
+	if (pr_nqprogs) {
+		if (G_FLOAT(OFS_PARM0) == MSG_ONE || G_FLOAT(OFS_PARM0) == MSG_INIT)
+			return;	// we don't support this
+		MSG_WriteAngle (&nqp_buf, G_FLOAT(OFS_PARM1));
+		NQP_Process ();
+		return;
+	}
 
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
 		ClientReliableWrite_Begin0 (Write_GetClient());
@@ -1739,8 +1895,13 @@ void WriteCoord(float to, float f) = #56
 */
 static void PF_WriteCoord (void)
 {
-	if (pr_nqprogs)
-		return; // FIXME
+	if (pr_nqprogs) {
+		if (G_FLOAT(OFS_PARM0) == MSG_ONE || G_FLOAT(OFS_PARM0) == MSG_INIT)
+			return;	// we don't support this
+		MSG_WriteCoord (&nqp_buf, G_FLOAT(OFS_PARM1));
+		NQP_Process ();
+		return;
+	}
 
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
 		ClientReliableWrite_Begin0 (Write_GetClient());
@@ -1772,8 +1933,13 @@ void WriteString(float to, string s) = #58
 */
 static void PF_WriteString (void)
 {
-	if (pr_nqprogs)
-		return; // FIXME
+	if (pr_nqprogs) {
+		if (G_FLOAT(OFS_PARM0) == MSG_ONE || G_FLOAT(OFS_PARM0) == MSG_INIT)
+			return;	// we don't support this
+		MSG_WriteString (&nqp_buf, G_STRING(OFS_PARM1));
+		NQP_Process ();
+		return;
+	}
 
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
 		ClientReliableWrite_Begin0 (Write_GetClient());
@@ -1793,8 +1959,13 @@ void WriteEntity(float to, entity e) = #59
 */
 static void PF_WriteEntity (void)
 {
-	if (pr_nqprogs)
-		return; // FIXME
+	if (pr_nqprogs) {
+		if (G_FLOAT(OFS_PARM0) == MSG_ONE || G_FLOAT(OFS_PARM0) == MSG_INIT)
+			return;	// we don't support this
+		MSG_WriteShort (&nqp_buf, SV_TranslateEntnum(G_EDICTNUM(OFS_PARM1)));
+		NQP_Process ();
+		return;
+	}
 
 	if (G_FLOAT(OFS_PARM0) == MSG_ONE) {
 		ClientReliableWrite_Begin0 (Write_GetClient());
