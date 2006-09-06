@@ -986,6 +986,7 @@ void ED_LoadFromFile (char *data)
 PR_LoadProgs
 ===============
 */
+extern qbool FS_FindFile (char *filename);
 void PR_LoadProgs (void)
 {
 	int	i;
@@ -993,53 +994,98 @@ void PR_LoadProgs (void)
 	static int lumpsize[6] = { sizeof(dstatement_t), sizeof(ddef_t),
 		sizeof(ddef_t), sizeof(dfunction_t), 4, 4 };
 	int	filesize = 0;
+	char	*progsname;
 
 	progs = NULL;
+
+	// decide whether to load qwprogs.dat, progs.dat or spprogs.dat
+
 #ifdef WITH_NQPROGS
-	pr_nqprogs = false;
-	if (Cvar_Value("nqprogs")) {
-		progs = (dprograms_t *)FS_LoadHunkFile ("progs.dat");
-		filesize = fs_filesize;
-		if (progs)
-			pr_nqprogs = true;
-	}
+	if (Cvar_Value("sv_forcenqprogs"))
+		goto use_progs;
 #endif
-	if (!pr_nqprogs && !deathmatch.value)
+
+	if (!deathmatch.value)
 	{
-		int hunk_mark = Hunk_LowMark ();
-
-		progs = (dprograms_t *) FS_LoadHunkFile ("spprogs.dat");
-		filesize = fs_filesize;	// save fs_filesize, because FS_FOpenFile below will overwrite it
-
-		if (progs && !file_from_gamedir && Q_stricmp(com_gamedirfile, "qw")
-										&& Q_stricmp(com_gamedirfile, ""))
+		if (Q_stricmp(com_gamedirfile, "qw") && 
+			strcmp(com_gamedirfile, ""))
 		{
-			// spprogs.dat is not from gamedir, this is possibly not what we wanted
-			// look for qwprogs.dat in gamedir
-			FILE *f;
-			FS_FOpenFile ("qwprogs.dat", &f);
-			if (f) {
-				fclose (f);
-				// it exists, but where's it from?
-				if (file_from_gamedir) {
-					// throw away spprogs and load qwprogs instead
-					Hunk_FreeToLowMark (hunk_mark);
-					progs = NULL;
-				}
-			}
+			// if we're using a custom mod, anything
+			// in gamedir is preferred to stock *progs.dat
+			qbool check;
+			check = FS_FindFile ("spprogs.dat");
+			if (check && file_from_gamedir)
+				goto use_spprogs;
+#ifdef WITH_NQPROGS
+			check = FS_FindFile ("progs.dat");
+			if (check && file_from_gamedir)
+				goto use_progs;
+#endif
+			check = FS_FindFile ("qwprogs.dat");
+			if (check && file_from_gamedir)
+				goto use_qwprogs;
+		}
+
+use_spprogs:
+		progs = (dprograms_t *) FS_LoadHunkFile ("spprogs.dat");
+		progsname = "spprogs.dat";
+		pr_nqprogs = false;
+
+		if (!progs) {
+#ifdef WITH_NQPROGS
+use_progs:
+			progs = (dprograms_t *)FS_LoadHunkFile ("progs.dat");
+			progsname = "progs.dat";
+			pr_nqprogs = true;
+		}
+#endif
+		if (!progs) {
+use_qwprogs:
+			progs = (dprograms_t *)FS_LoadHunkFile ("qwprogs.dat");
+			progsname = "qwprogs.dat";
+			pr_nqprogs = false;
 		}
 	}
-	if (!progs) {
-		progs = (dprograms_t *)FS_LoadHunkFile ("qwprogs.dat");
-		filesize = fs_filesize;
+	else	// deathmatch
+	{
+		if (Q_stricmp(com_gamedirfile, "qw") && 
+			strcmp(com_gamedirfile, ""))
+		{
+			qbool check;
+			check = FS_FindFile ("qwprogs.dat");
+			if (check && file_from_gamedir)
+				goto dm_use_qwprogs;
+#ifdef WITH_NQPROGS
+			check = FS_FindFile ("progs.dat");
+			if (check && file_from_gamedir)
+				goto dm_use_progs;
+#endif
+		}
+
+dm_use_qwprogs:
+		progs = (dprograms_t *) FS_LoadHunkFile ("qwprogs.dat");
+		progsname = "qwprogs.dat";
+		pr_nqprogs = false;
+
+		if (!progs) {
+#ifdef WITH_NQPROGS
+dm_use_progs:
+			progs = (dprograms_t *)FS_LoadHunkFile ("progs.dat");
+			progsname = "progs.dat";
+			pr_nqprogs = true;
+		}
+#endif
 	}
+
 	if (!progs)
-		Host_Error ("PR_LoadProgs: couldn't load qwprogs.dat");
+		Host_Error ("PR_LoadProgs: couldn't load progs.dat");
+
+	filesize = fs_filesize;
 
 	if (filesize < (int)sizeof(*progs))
-		Host_Error("progs.dat is corrupt");
+		Host_Error("%s is corrupt", progsname);
 
-	Com_DPrintf ("Programs occupy %iK.\n", filesize/1024);
+	Com_DPrintf ("Using %s (%i bytes).\n", progsname, filesize);
 
 // add prog crc to the serverinfo
 	sprintf (num, "%i", CRC_Block ((byte *)progs, filesize));

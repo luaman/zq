@@ -659,6 +659,62 @@ Sets fs_filesize and one of handle or file
 qbool	file_from_pak;		// global indicating file came from a packfile
 qbool	file_from_gamedir;	// global indicating file came from a gamedir (and gamedir wasn't id1/qw)
 
+
+// we use this in progs loading
+qbool FS_FindFile (char *filename)
+{
+	searchpath_t	*search;
+	char		netpath[MAX_OSPATH];
+	pack_t		*pak;
+	int			i;
+	FILE		*f;
+
+	file_from_pak = false;
+	file_from_gamedir = true;
+		
+	for (search = com_searchpaths ; search ; search = search->next)
+	{
+		if (search == com_base_searchpaths)
+			file_from_gamedir = false;
+
+	// is the element a pak file?
+		if (search->pack)
+		{
+		// look through all the pak file elements
+			pak = search->pack;
+			for (i=0 ; i<pak->numfiles ; i++)
+				if (!strcmp (pak->files[i].name, filename))
+				{	// found it!
+					fs_filesize = pak->files[i].filelen;
+					file_from_pak = true;
+					return true;
+				}
+		}
+		else
+		{		
+			snprintf (netpath, sizeof(netpath), "%s/%s", search->filename, filename);
+
+			f = fopen (netpath, "rb");
+			if (!f)
+				continue;
+			
+			fs_filesize = COM_filelength (f);
+			fclose (f);
+			return true;
+		}
+		
+	}
+	
+	fs_filesize = -1;
+	return true;
+}
+
+
+
+
+
+
+
 int FS_FOpenFile (char *filename, FILE **file)
 {
 	searchpath_t	*search;
