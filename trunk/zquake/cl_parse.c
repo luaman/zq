@@ -1711,14 +1711,6 @@ void CL_ParseStufftext (void)
 	Com_DPrintf ("stufftext: %s\n", s);
 	Cbuf_AddTextEx (&cbuf_svc, s);
 
-	// QW servers send this without the ending \n
-	if ( !strcmp (s, "cmd snap") ||
-		// QuakeForge servers up to Beta 6 send this without the \n
-		(!strncmp (s, "r_skyname ", 10) && !strchr (s, '\n')) )
-	{
-		Cbuf_AddTextEx (&cbuf_svc, "\n");
-	}
-
 	// Execute stuffed commands immediately when starting a demo
 	if (cls.demoplayback && cls.state != ca_active)
 		Cbuf_ExecuteEx (&cbuf_svc); // FIXME: execute cbuf_main too?
