@@ -2001,11 +2001,12 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	if (!sv_client->spectator && !sv_client->bot)
 	{
-		qbool	old_onground;
-		vec3_t	originalvel;
+		int	oldflags, oldbutton2;
+		vec3_t	oldvelocity;
 
-		VectorCopy (sv_player->v.velocity, originalvel);
-		old_onground = (int)sv_player->v.flags & FL_ONGROUND;
+		VectorCopy (sv_player->v.velocity, oldvelocity);
+		oldflags = (int)sv_player->v.flags;
+		oldbutton2 = (int)sv_player->v.button2;
 
 		PR_GLOBAL(frametime) = sv_frametime;
 		pr_global_struct->time = sv.time;
@@ -2013,12 +2014,30 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 		PR_ExecuteProgram (PR_GLOBAL(PlayerPreThink));
 
-		if (old_onground && originalvel[2] < 0 && sv_player->v.velocity[2] == 0
-			&& originalvel[0] == sv_player->v.velocity[0]
-			&& originalvel[1] == sv_player->v.velocity[1])
+		if (pr_nqprogs) {
+			// ignore QC PlayerJump
+			if (oldbutton2 && (oldflags & FL_ONGROUND) &&
+				!((int)sv_player->v.flags & FL_ONGROUND) && 
+				sv_player->v.velocity[2] > oldvelocity[2]) {
+				VectorCopy (oldvelocity, sv_player->v.velocity);
+				sv_player->v.flags = oldflags;
+			}
+			// ignore QC waterjump
+			if ( !(oldflags & FL_WATERJUMP) &&
+				((int)sv_player->v.flags & FL_WATERJUMP) && 
+				sv_player->v.velocity[2] > oldvelocity[2]) {
+				VectorCopy (oldvelocity, sv_player->v.velocity);
+				sv_player->v.flags = oldflags;
+				sv_player->v.teleport_time = 0;
+			}
+		} else
+
+		if ((oldflags & FL_ONGROUND) && oldvelocity[2] < 0 && sv_player->v.velocity[2] == 0
+			&& oldvelocity[0] == sv_player->v.velocity[0]
+			&& oldvelocity[1] == sv_player->v.velocity[1])
 		{
 			// don't let KTeams mess with physics
-			sv_player->v.velocity[2] = originalvel[2];
+			sv_player->v.velocity[2] = oldvelocity[2];
 		}
 
 		SV_RunThink (sv_player);
@@ -2104,7 +2123,7 @@ Done after running a player command.
 */
 void SV_PostRunCmd (void)
 {
-	vec3_t		originalvel;
+	vec3_t		oldvelocity;
 
 	// run post-think
 
@@ -2113,19 +2132,19 @@ void SV_PostRunCmd (void)
 
 		pr_global_struct->time = sv.time;
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
-		VectorCopy (sv_player->v.velocity, originalvel);
+		VectorCopy (sv_player->v.velocity, oldvelocity);
 
 		if (sv_client->bot && BotPostThink)
 			PR_ExecuteProgram (BotPostThink);
 		else
 			PR_ExecuteProgram (PR_GLOBAL(PlayerPostThink));
 
-		if (onground && originalvel[2] < 0 && sv_player->v.velocity[2] == 0
-			&& originalvel[0] == sv_player->v.velocity[0]
-			&& originalvel[1] == sv_player->v.velocity[1])
+		if (onground && oldvelocity[2] < 0 && sv_player->v.velocity[2] == 0
+			&& oldvelocity[0] == sv_player->v.velocity[0]
+			&& oldvelocity[1] == sv_player->v.velocity[1])
 		{
 			// don't let KTeams mess with physics
-			sv_player->v.velocity[2] = originalvel[2];
+			sv_player->v.velocity[2] = oldvelocity[2];
 		}
 
 		SV_RunNewmis ();
