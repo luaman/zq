@@ -351,6 +351,10 @@ void CL_PredictMovement (void)
 
 	if (cl.intermission) {
 		cl.crouch = 0;
+		if (cl.intermission == 3 && !cls.nqdemoplayback)
+			VectorCopy (cl.frames[cl.validsequence & UPDATE_MASK]
+				.playerstate[Cam_PlayerNum()].origin, cl.simorg);
+
 		return;
 	}
 

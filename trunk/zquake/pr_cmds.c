@@ -1698,6 +1698,14 @@ static void NQP_Process (void)
 			for (i = 0; i < 3; i++)
 				MSG_WriteAngle (&sv.reliable_datagram, svs.clients[0].edict->v.angles[i]);
 		}
+		else if (cmd == nq_svc_cutscene) {
+			byte *p = memchr (nqp_buf_data + 1, 0, nqp_buf.cursize - 1);
+			if (!p)
+				goto waitformore;
+			MSG_WriteByte (&sv.reliable_datagram, svc_stufftext);
+			MSG_WriteString (&sv.reliable_datagram, "//cutscene\n"); // ZQ extension
+			NQP_Skip (p - nqp_buf_data + 1);
+		}
 		else if (nqp_buf_data[0] == svc_temp_entity) {
 			if (nqp_buf.cursize < 2)
 				break;

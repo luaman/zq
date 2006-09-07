@@ -1711,6 +1711,17 @@ void CL_ParseStufftext (void)
 	Com_DPrintf ("stufftext: %s\n", s);
 	Cbuf_AddTextEx (&cbuf_svc, s);
 
+	// This is how we transmit svc_cutscene via the QW protocol
+	if (!strcmp(s, "//cutscene\n") ||
+	// one day we may support a text message here
+	(!strncmp(s, "//cutscene ", 11) && s[strlen(s)-1] == '\n') ) {
+		cl.intermission = 3;
+		cl.completed_time = cl.time;
+		// we don't support cutscene messages... but no one seems
+		// to use them anyway so never mind 
+		SCR_CenterPrint ("");
+	}
+
 	// Execute stuffed commands immediately when starting a demo
 	if (cls.demoplayback && cls.state != ca_active)
 		Cbuf_ExecuteEx (&cbuf_svc); // FIXME: execute cbuf_main too?
@@ -2050,8 +2061,10 @@ bad_message:
 			{
 				for (i = 0; i < 3 ; i++)
 					cl.viewangles[i] = MSG_ReadAngle ();
-            }
+			}
 //			cl.viewangles[PITCH] = cl.viewangles[ROLL] = 0;
+			if (cl.intermission == 3)
+				VectorCopy (cl.viewangles, cl.simangles);
 			break;
 			
 		case svc_lightstyle:
