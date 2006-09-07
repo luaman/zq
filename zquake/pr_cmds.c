@@ -1623,7 +1623,7 @@ static void CheckIntermission (void)
 
 
 #ifdef WITH_NQPROGS
-static byte nqp_buf_data[500] /* must be large enough for svc_finale text */;
+static byte nqp_buf_data[1024] /* must be large enough for svc_finale text */;
 static sizebuf_t nqp_buf;
 static qbool nqp_ignore_this_frame;
 static int nqp_expect;
