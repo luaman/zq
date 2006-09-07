@@ -73,6 +73,7 @@ Sets everything to NULL and mark as used
 void ED_ClearEdict (edict_t *e)
 {
 	memset (&e->v, 0, progs->entityfields * 4);
+	e->lastruntime = 0;
 	e->inuse = true;
 }
 

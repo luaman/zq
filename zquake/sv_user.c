@@ -2147,7 +2147,10 @@ void SV_PostRunCmd (void)
 			sv_player->v.velocity[2] = oldvelocity[2];
 		}
 
-		SV_RunNewmis ();
+		if (pr_nqprogs)
+			SV_RunNQNewmis ();
+		else
+			SV_RunNewmis ();
 	}
 	else if (SpectatorThink) {
 		pr_global_struct->time = sv.time;

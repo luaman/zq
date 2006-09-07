@@ -429,6 +429,7 @@ void SV_Physics (void);
 void SV_CheckVelocity (edict_t *ent);
 qbool SV_RunThink (edict_t *ent);
 void SV_RunNewmis (void);
+void SV_RunNQNewmis (void);
 void SV_SetMoveVars(void);
 
 //
