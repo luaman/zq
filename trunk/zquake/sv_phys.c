@@ -861,6 +861,40 @@ void SV_RunEntity (edict_t *ent)
 }
 
 /*
+** SV_RunNQNewmis
+** 
+** sv_player will be valid
+*/
+void SV_RunNQNewmis (void)
+{
+	edict_t	*ent;
+	double save_frametime;
+	int i, pl;
+
+	pl = EDICT_TO_PROG(sv_player);
+	ent = NEXT_EDICT(sv.edicts);
+	for (i=1 ; i<sv.num_edicts ; i++, ent = NEXT_EDICT(ent))
+	{
+		if (!ent->inuse)
+			continue;
+		if (ent->lastruntime || ent->v.owner != pl)
+			continue;
+		if (ent->v.movetype != MOVETYPE_FLY &&
+			ent->v.movetype != MOVETYPE_FLYMISSILE && 
+			ent->v.movetype != MOVETYPE_BOUNCE) 
+			continue;
+		if (ent->v.solid != SOLID_BBOX && ent->v.solid != SOLID_TRIGGER)
+			continue;
+
+		save_frametime = sv_frametime;
+		sv_frametime = 0.05;
+		SV_RunEntity (ent);
+		sv_frametime = save_frametime;
+		return;
+	}
+}
+
+/*
 ================
 SV_RunNewmis
 
