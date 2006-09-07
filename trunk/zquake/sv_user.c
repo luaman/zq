@@ -1671,7 +1671,7 @@ static ucmd_t ucmds2[] =
 	{"say", Cmd_Say_f},
 	{"say_team", Cmd_Say_Team_f},
 	{"kill", Cmd_Kill_f},
-	{"god", Cmd_Give_f},
+	{"god", Cmd_God_f},
 	{"give", Cmd_Give_f},
 	{"noclip", Cmd_Noclip_f},
 	{"fly", Cmd_Fly_f},
