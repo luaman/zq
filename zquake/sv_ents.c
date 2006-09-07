@@ -165,6 +165,8 @@ int SV_TranslateEntnum (int num)
 static int TranslateEffects (edict_t *ent)
 {
 	int fx = (int)ent->v.effects;
+	if (pr_nqprogs)
+		fx &= ~EF_MUZZLEFLASH;
 	if (pr_nqprogs && (fx & EF_DIMLIGHT)) {
 		if ((int)ent->v.items & IT_QUAD)
 			fx |= EF_BLUE;
@@ -449,6 +451,26 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 
 	// now add the specialized nail update
 	SV_EmitNailUpdate (msg);
+
+	// Translate NQ progs' EF_MUZZLEFLASH to svc_muzzleflash
+	if (pr_nqprogs)
+	for (e=1, ent=EDICT_NUM(e) ; e < sv.num_edicts ; e++, ent = NEXT_EDICT(ent))
+	{
+		// ignore ents without visible models
+		if (!ent->v.modelindex || !*PR_GetString(ent->v.model))
+			continue;
+
+		// ignore if not touching a PV leaf
+		for (i=0 ; i < ent->num_leafs ; i++)
+			if (pvs[ent->leafnums[i] >> 3] & (1 << (ent->leafnums[i]&7) ))
+				break;
+
+		if ((int)ent->v.effects & EF_MUZZLEFLASH) {
+			ent->v.effects = (int)ent->v.effects & ~EF_MUZZLEFLASH;
+			MSG_WriteByte (msg, svc_muzzleflash);
+			MSG_WriteShort (msg, e);
+		}
+	}			
 }
 
 /* vi: set noet ts=4 sts=4 ai sw=4: */
