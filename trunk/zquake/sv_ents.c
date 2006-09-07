@@ -162,6 +162,18 @@ int SV_TranslateEntnum (int num)
 
 //=============================================================================
 
+static int TranslateEffects (edict_t *ent)
+{
+	int fx = (int)ent->v.effects;
+	if (pr_nqprogs && (fx & EF_DIMLIGHT)) {
+		if ((int)ent->v.items & IT_QUAD)
+			fx |= EF_BLUE;
+		if ((int)ent->v.items & IT_INVULNERABILITY)
+			fx |= EF_RED;
+	}
+	return fx;
+}
+
 
 /*
 =============
@@ -323,7 +335,7 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 			MSG_WriteByte (msg, ent->v.skin);
 
 		if (pflags & PF_EFFECTS)
-			MSG_WriteByte (msg, ent->v.effects);
+			MSG_WriteByte (msg, TranslateEffects(ent));
 
 		if (pflags & PF_WEAPONFRAME)
 			MSG_WriteByte (msg, ent->v.weaponframe);
@@ -418,7 +430,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 		state->frame = ent->v.frame;
 		state->colormap = ent->v.colormap;
 		state->skinnum = ent->v.skin;
-		state->effects = ent->v.effects;
+		state->effects = TranslateEffects(ent);
 	}
 
 	// entity translation might have broken original entnum order, so sort them
