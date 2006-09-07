@@ -203,5 +203,7 @@ char *Q_strdup (const char *src);
 #endif
 #endif
 
+#define WITH_NQPROGS
+
 #endif /* _Q_SHARED_H_ */
 
