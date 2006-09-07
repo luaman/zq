@@ -2063,7 +2063,11 @@ bad_message:
 					cl.viewangles[i] = MSG_ReadAngle ();
 			}
 //			cl.viewangles[PITCH] = cl.viewangles[ROLL] = 0;
-			if (cl.intermission == 3)
+			// svc_finale and svc_cutscene don't send origin or angles;
+			// we expect progs to move the player to the intermission spot
+			// and set their angles correctly.  This is unlike qwcl, but
+			// QW never used svc_finale so this should't break anything
+			if (cl.intermission == 2 || cl.intermission == 3)
 				VectorCopy (cl.viewangles, cl.simangles);
 			break;
 			

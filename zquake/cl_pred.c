@@ -351,7 +351,12 @@ void CL_PredictMovement (void)
 
 	if (cl.intermission) {
 		cl.crouch = 0;
-		if (cl.intermission == 3 && !cls.nqdemoplayback)
+
+		if ((cl.intermission == 2 || cl.intermission == 3) && !cls.nqdemoplayback)
+			// svc_finale and svc_cutscene don't send origin or angles;
+			// we expect progs to move the player to the intermission spot
+			// and set their angles correctly.  This is unlike qwcl, but
+			// QW never used svc_finale so this should't break anything
 			VectorCopy (cl.frames[cl.validsequence & UPDATE_MASK]
 				.playerstate[Cam_PlayerNum()].origin, cl.simorg);
 
