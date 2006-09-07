@@ -2001,12 +2001,13 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	if (!sv_client->spectator && !sv_client->bot)
 	{
-		int	oldflags, oldbutton2;
+		int	oldflags;
 		vec3_t	oldvelocity;
+		float	old_teleport_time;
 
 		VectorCopy (sv_player->v.velocity, oldvelocity);
 		oldflags = (int)sv_player->v.flags;
-		oldbutton2 = (int)sv_player->v.button2;
+		old_teleport_time = sv_player->v.teleport_time;
 
 		PR_GLOBAL(frametime) = sv_frametime;
 		pr_global_struct->time = sv.time;
@@ -2015,21 +2016,8 @@ void SV_RunCmd (usercmd_t *ucmd)
 		PR_ExecuteProgram (PR_GLOBAL(PlayerPreThink));
 
 		if (pr_nqprogs) {
-			// ignore QC PlayerJump
-			if (oldbutton2 && (oldflags & FL_ONGROUND) &&
-				!((int)sv_player->v.flags & FL_ONGROUND) && 
-				sv_player->v.velocity[2] > oldvelocity[2]) {
-				VectorCopy (oldvelocity, sv_player->v.velocity);
-				sv_player->v.flags = oldflags;
-			}
-			// ignore QC waterjump
-			if ( !(oldflags & FL_WATERJUMP) &&
-				((int)sv_player->v.flags & FL_WATERJUMP) && 
-				sv_player->v.velocity[2] > oldvelocity[2]) {
-				VectorCopy (oldvelocity, sv_player->v.velocity);
-				sv_player->v.flags = oldflags;
-				sv_player->v.teleport_time = 0;
-			}
+			sv_player->v.teleport_time = old_teleport_time;
+			VectorCopy (oldvelocity, sv_player->v.velocity);
 		} else
 
 		if ((oldflags & FL_ONGROUND) && oldvelocity[2] < 0 && sv_player->v.velocity[2] == 0
@@ -2079,6 +2067,8 @@ void SV_RunCmd (usercmd_t *ucmd)
 	// get player state back out of pmove
 	sv_client->jump_held = pmove.jump_held;
 	sv_player->v.teleport_time = pmove.waterjumptime;
+	if (pr_nqprogs)
+		sv_player->v.flags = ((int)sv_player->v.flags & ~FL_WATERJUMP) | (pmove.waterjumptime ? FL_WATERJUMP : 0);
 	sv_player->v.waterlevel = pmove.waterlevel;
 	sv_player->v.watertype = pmove.watertype;
 
@@ -2139,6 +2129,9 @@ void SV_PostRunCmd (void)
 		else
 			PR_ExecuteProgram (PR_GLOBAL(PlayerPostThink));
 
+		if (pr_nqprogs)
+			VectorCopy (oldvelocity, sv_player->v.velocity);
+		else
 		if (onground && oldvelocity[2] < 0 && sv_player->v.velocity[2] == 0
 			&& oldvelocity[0] == sv_player->v.velocity[0]
 			&& oldvelocity[1] == sv_player->v.velocity[1])
