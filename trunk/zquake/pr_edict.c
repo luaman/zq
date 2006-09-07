@@ -964,10 +964,10 @@ void ED_LoadFromFile (char *data)
 		}
 
 		if (hip2m5_hack) {
-			// this map's spawn point is one unit below ground level
+			// this map's spawn point is several units below ground level
 			// NQ's pmove copes with that, but QW gets stuck
 			if (!strcmp(PR_GetString(ent->v.classname), "info_player_start"))
-				ent->v.origin[2] += 1;
+				ent->v.origin[2] += 3;
 		}
 		
 	// look for the spawn function
