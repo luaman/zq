@@ -11,21 +11,21 @@ default: gl server soft
 all: server gl soft null
 
 #==============================================================================
-
-# Automatic architecture detection
-# One day it will work right
+# Architecture detection
+#
+# MACHINE = i686-linux-gnu, etc
+# ARCH = mingw32 x86-linux ppc-linux x86-darwin ppc-darwin
+# OS = windows linux darwin
 
 MACHINE = $(shell $(CC) -dumpmachine)
 ARCH = $(shell echo $(MACHINE) | sed -e 's/.*mingw32.*/mingw32/g' \
-	-e 's/i.86/x86/g') # -e 's/\-.*//g' -
+	-e 's/i.86/x86/g' -e 's/-gnu//')
+	# -e 's/\-.*//g' -
 
-# why are we getting a space at the end?
-ifeq ($(ARCH),ppc-darwin )
-ARCH=ppc-darwin
+OS = $(shell echo $(ARCH) | sed -e 's/.*-//')
+ifeq ($(OS),mingw32)
+OS = windows
 endif
-
-# Supported $(ARCH):
-# mingw32 x86-linux ppc-linux x86-darwin ppc-darwin
 
 #==============================================================================
 
@@ -47,17 +47,17 @@ CFLAGS = -DVWEP_TEST
 ifeq ($(ARCH),mingw32)
 	CFLAGS += -D_WIN32 -DMINGW32
 endif
-ifeq ($(ARCH),x86-linux)
-	CFLAGS +=
+ifeq ($(OS),linux)
+	CFLAGS += -DUSE_ALSA -DUSE_VMODE -DUSE_DGA
 endif
 ifeq ($(ARCH),ppc-linux)
 	CFLAGS += -DBIGENDIAN
 endif
-ifeq ($(ARCH),x86-darwin)
+ifeq ($(OS),darwin)
 	CFLAGS += -DHAVE_STRLCPY -DHAVE_STRLCAT
 endif
 ifeq ($(ARCH),ppc-darwin)
-	CFLAGS += -DHAVE_STRLCPY -DHAVE_STRLCAT -DBIGENDIAN
+	CFLAGS += -DBIGENDIAN
 endif
 
 SERVER_CFLAGS = -DSERVERONLY
@@ -69,11 +69,15 @@ NULL_CFLAGS =
 
 LDFLAGS =
 ifeq ($(ARCH),mingw32)
-	LDFLAGS				+= -lws2_32 -luser32 -lwinmm -ldxguid -lddraw
-	LDFLAGS				+= -lopengl32 -lgdi32
+	LDFLAGS				+=-lws2_32 -luser32 -lwinmm -ldxguid -lddraw
+	LDFLAGS				+=-lopengl32 -lgdi32
 endif
-ifeq ($(ARCH),ppc-darwin)
-	LDFLAGS				 =-framework "CoreAudio" -framework OpenGL
+ifeq ($(OS),darwin)
+	LDFLAGS				+=-framework "CoreAudio" -framework OpenGL
+endif
+ifeq ($(OS),linux)
+	LDFLAGS				+=-lm -lGL -lXxf86vm -lXxf86dga
+					# -L/usr/X11R6/lib -lX11 -lXext
 endif
 
 #==============================================================================
@@ -105,9 +109,13 @@ ZQGL_PLATFORM_C_FILES = net_udp
 ZQSW_PLATFORM_C_FILES = net_udp
 NULL_C_FILES += net_udp
 endif
-ifeq ($(ARCH),ppc-darwin)
+ifeq ($(OS),darwin)
 ZQGL_PLATFORM_C_FILES += snd_null cd_null
 ZQSW_PLATFORM_C_FILES += snd_null cd_null
+endif
+ifeq ($(OS),linux)
+ZQGL_PLATFORM_C_FILES += sys_linux cd_linux snd_dma snd_mem snd_mix snd_linux snd_oss snd_alsa vid_glx
+ZQSW_PLATFORM_C_FILES += sys_linux cd_linux snd_dma snd_mem snd_mix snd_linux snd_oss snd_alsa vid_x
 endif
 ZQDS_C_FILES = $(SERVER_C_FILES) $(COMMON_C_FILES) $(ZQDS_PLATFORM_C_FILES) cl_null
 ZQSW_C_FILES = $(CLIENT_C_FILES) $(ZQSW_PLATFORM_C_FILES) $(SW_C_FILES) $(SERVER_C_FILES) $(COMMON_C_FILES)
@@ -121,8 +129,9 @@ ZQNULL_C_OBJS = $(addprefix $(NULL_OBJ_DIR)/, $(addsuffix .o, $(ZQNULL_C_FILES))
 #==============================================================================
 
 printvars:
-	@echo "MACHINE       = '$(MACHINE)'"
-	@echo "ARCH          = '$(ARCH)'"
+	@echo "MACHINE       = $(MACHINE)"
+	@echo "ARCH          = $(ARCH)"
+	@echo "OS            = $(OS)"
 	@echo ""
 	@echo "PRODUCT_DIR   = $(PRODUCT_DIR)"
 	@echo ""
@@ -146,7 +155,7 @@ $(ZQDS_C_OBJS): $(SERVER_OBJ_DIR)/%.o: %.c
 gl: $(PRODUCT_DIR)/zquake-gl
 $(PRODUCT_DIR)/zquake-gl: $(ZQGL_C_OBJS)
 	@echo [LINK] $@
-	$(CC) -o $@ $(ZQGL_C_OBJS) $(LDFLAGS)
+	@$(CC) -o $@ $(ZQGL_C_OBJS) $(LDFLAGS)
 $(ZQGL_C_OBJS): $(GL_OBJ_DIR)/%.o: %.c
 	@-mkdir -p $(GL_OBJ_DIR)
 	@echo [CC] $<
