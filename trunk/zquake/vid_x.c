@@ -591,6 +591,13 @@ void VID_Init (unsigned char *palette)
 
         if (best_fit != -1)
         {
+			XF86VidModeModeLine *current_vidmode;
+
+			// This nice hack comes from the SDL source code
+			// makes switching back to original vide mode on shutdown actually work
+			current_vidmode = (XF86VidModeModeLine*)((char*)vidmodes[0] + sizeof(vidmodes[0]->dotclock));
+			XF86VidModeGetModeLine(x_disp, scrnum, (int*)&vidmodes[0]->dotclock, current_vidmode);
+
             // change to the mode
             XF86VidModeSwitchToMode(x_disp, scrnum, vidmodes[best_fit]);
             // Move the viewport to top left
