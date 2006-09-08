@@ -4,12 +4,29 @@
 
 #==============================================================================
 # Here are the targets:
-.PHONY: all server soft gl
+
+.PHONY: all server gl soft null
+
 default: gl server soft
 all: server gl soft null
+
 #==============================================================================
 
+# Automatic architecture detection
+# One day it will work right
+
+MACHINE = $(shell $(CC) -dumpmachine)
+ARCH = $(shell echo $(MACHINE) | sed -e 's/.*mingw32.*/mingw32/g' \
+	-e 's/\-.*//g' -e 's/i.86/x86/g')
+
+# Supported $(ARCH):
+# mingw32 x86-linux ppc-linux x86-darwin ppc-darwin
+
+#==============================================================================
+
+
 CC = gcc
+
 
 PRODUCT_DIR=release
 GL_OBJ_DIR=release/gl
@@ -17,22 +34,52 @@ SOFT_OBJ_DIR=release/soft
 SERVER_OBJ_DIR=release/server
 NULL_OBJ_DIR=release/null
 
-PLATFORM_CFLAGS = -DHAVE_STRLCPY -DHAVE_STRLCAT -DBIGENDIAN
+
+#------------------------------------------------------------------------------
+
+CFLAGS = -DVWEP_TEST
+
+ifeq ($(ARCH),mingw32)
+	CFLAGS += -D_WIN32 -DMINGW32
+endif
+ifeq ($(ARCH),x86-linux)
+	CFLAGS +=
+endif
+ifeq ($(ARCH),ppc-linux)
+	CFLAGS += -DBIGENDIAN
+endif
+ifeq ($(ARCH),x86-darwin)
+	CFLAGS += -DHAVE_STRLCPY -DHAVE_STRLCAT
+endif
+ifeq ($(ARCH),ppc-darwin)
+	CFLAGS += -DHAVE_STRLCPY -DHAVE_STRLCAT -DBIGENDIAN
+endif
+
 SERVER_CFLAGS = -DSERVERONLY
 GL_CFLAGS = -DGLQUAKE
 SW_CFLAGS =
 NULL_CFLAGS =
 
+#------------------------------------------------------------------------------
+
+LDFLAGS =
+ifeq ($(ARCH),mingw32)
+	LDFLAGS				+= -lws2_32 -luser32 -lwinmm -ldxguid -lddraw
+	LDFLAGS				+= -lopengl32 -lgdi32
+endif
+ifeq ($(ARCH),ppc-darwin)
+	LDFLAGS				 =-framework "CoreAudio"
+endif
+
 #==============================================================================
+
 CLIENT_C_FILES = cl_cam cl_cmd cl_demo cl_draw cl_effects cl_ents cl_input \
 	cl_main cl_nqdemo cl_parse cl_pred cl_sbar cl_screen cl_tent cl_view \
 	console keys menu teamplay
-GL_C_FILES = skin rc_wad rc_image rc_pixops \
-	vid_null snd_null cd_null in_null sv_save sys_null \
+GL_C_FILES = sv_save skin rc_wad rc_image rc_pixops \
 	gl_draw gl_mesh gl_model gl_ngraph gl_ralias gl_refrag gl_rlight \
 	gl_rmain gl_rmisc gl_rsprite gl_rsurf gl_texture gl_warp
-SW_C_FILES = nonintel skin rc_wad rc_image rc_pixops \
-	vid_null snd_null cd_null in_null sv_save sys_null \
+SW_C_FILES = sv_save skin rc_wad rc_image rc_pixops nonintel \
 	d_edge d_fill d_init d_modech d_polyse d_sky d_sprite d_surf d_vars \
 	d_zpoint r_aclip r_alias r_bsp r_draw r_edge r_efrag r_light r_main \
 	r_misc r_model r_part r_rast r_scan r_sky r_sprite r_surf r_vars
@@ -41,18 +88,29 @@ SERVER_C_FILES = sv_bot sv_ccmds sv_ents sv_init sv_main sv_master \
 	pr_cmds pr_edict pr_exec
 COMMON_C_FILES = cmd cmodel com_msg common crc cvar host mathlib mdfour \
 	net_chan pmove pmovetst q_shared version zone
-NULL_C_FILES = sv_save net_udp rc_null vid_null snd_null cd_null in_null sys_null
-ZQDS_UNIX_C_FILES = sv_sys_unix net_udp
-CLIENT_UNIX_C_FILES = net_udp
-ZQDS_C_FILES = $(SERVER_C_FILES) $(COMMON_C_FILES) $(ZQDS_UNIX_C_FILES) cl_null
-ZQSW_C_FILES = $(CLIENT_C_FILES) $(CLIENT_UNIX_C_FILES) $(SW_C_FILES) $(SERVER_C_FILES) $(COMMON_C_FILES)
-ZQGL_C_FILES = $(CLIENT_C_FILES) $(CLIENT_UNIX_C_FILES) $(GL_C_FILES) $(SERVER_C_FILES) $(COMMON_C_FILES)
+NULL_C_FILES = sv_save rc_null vid_null snd_null cd_null in_null sys_null
+ifeq ($(ARCH),mingw32)
+ZQDS_PLATFORM_C_FILES = sys_win net_wins
+ZQGL_PLATFORM_C_FILES = sys_win net_wins snd_dma snd_mem snd_mix snd_win cd_win in_win vid_wgl
+ZQSW_PLATFORM_C_FILES = sys_win net_wins snd_dma snd_mem snd_mix snd_win cd_win in_win vid_ddraw
+NULL_C_FILES += net_wins
+else
+ZQDS_PLATFORM_C_FILES = sv_sys_unix net_udp
+ZQGL_PLATFORM_C_FILES = net_udp
+ZQSW_PLATFORM_C_FILES = net_udp
+NULL_C_FILES += net_udp
+endif
+ZQDS_C_FILES = $(SERVER_C_FILES) $(COMMON_C_FILES) $(ZQDS_PLATFORM_C_FILES) cl_null
+ZQSW_C_FILES = $(CLIENT_C_FILES) $(ZQSW_PLATFORM_C_FILES) $(SW_C_FILES) $(SERVER_C_FILES) $(COMMON_C_FILES)
+ZQGL_C_FILES = $(CLIENT_C_FILES) $(ZQGL_PLATFORM_C_FILES) $(GL_C_FILES) $(SERVER_C_FILES) $(COMMON_C_FILES)
 ZQNULL_C_FILES = $(CLIENT_C_FILES) $(SERVER_C_FILES) $(COMMON_C_FILES) $(NULL_C_FILES)
 ZQDS_C_OBJS = $(addprefix $(SERVER_OBJ_DIR)/, $(addsuffix .o, $(ZQDS_C_FILES)))
 ZQGL_C_OBJS = $(addprefix $(GL_OBJ_DIR)/, $(addsuffix .o, $(ZQGL_C_FILES)))
 ZQSW_C_OBJS = $(addprefix $(SOFT_OBJ_DIR)/, $(addsuffix .o, $(ZQSW_C_FILES)))
 ZQNULL_C_OBJS = $(addprefix $(NULL_OBJ_DIR)/, $(addsuffix .o, $(ZQNULL_C_FILES)))
+
 #==============================================================================
+
 #.PHONY: server
 #server:
 #	@echo [MAKE] server
@@ -61,38 +119,38 @@ ZQNULL_C_OBJS = $(addprefix $(NULL_OBJ_DIR)/, $(addsuffix .o, $(ZQNULL_C_FILES))
 server: $(PRODUCT_DIR)/zqds
 $(PRODUCT_DIR)/zqds: $(ZQDS_C_OBJS)
 	@echo [LINK] $@
-	@$(CC) -o $@ $(ZQDS_C_OBJS)
+	@$(CC) -o $@ $(ZQDS_C_OBJS) $(LDFLAGS)
 $(ZQDS_C_OBJS): $(SERVER_OBJ_DIR)/%.o: %.c
 	@-mkdir -p $(SERVER_OBJ_DIR)
 	@echo [CC] $<
-	@$(CC) $(SERVER_CFLAGS) $(PLATFORM_CFLAGS) -c -o $@ $<
+	@$(CC) $(CFLAGS) $(SERVER_CFLAGS) -c -o $@ $<
 #------------------------------------------------------------------------------
 gl: $(PRODUCT_DIR)/zquake-gl
 $(PRODUCT_DIR)/zquake-gl: $(ZQGL_C_OBJS)
 	@echo [LINK] $@
-	@$(CC) -o $@ $(ZQGL_C_OBJS)
+	$(CC) -o $@ $(ZQGL_C_OBJS) $(LDFLAGS)
 $(ZQGL_C_OBJS): $(GL_OBJ_DIR)/%.o: %.c
 	@-mkdir -p $(GL_OBJ_DIR)
 	@echo [CC] $<
-	@$(CC) $(GL_CFLAGS) $(PLATFORM_CFLAGS) -c -o $@ $<
+	@$(CC) $(CFLAGS) $(GL_CFLAGS) -c -o $@ $<
 #------------------------------------------------------------------------------
 soft: $(PRODUCT_DIR)/zquake
 $(PRODUCT_DIR)/zquake: $(ZQSW_C_OBJS)
 	@echo [LINK] $@
-	@$(CC) -o $@ $(ZQSW_C_OBJS)
+	@$(CC) -o $@ $(ZQSW_C_OBJS) $(LDFLAGS)
 $(ZQSW_C_OBJS): $(SOFT_OBJ_DIR)/%.o: %.c
 	@-mkdir -p $(SOFT_OBJ_DIR)
 	@echo [CC] $<
-	@$(CC) $(SW_CFLAGS) $(PLATFORM_CFLAGS) -c -o $@ $<
+	@$(CC) $(CFLAGS) $(SW_CFLAGS) -c -o $@ $<
 #------------------------------------------------------------------------------
 null: $(PRODUCT_DIR)/zquake-null
 $(PRODUCT_DIR)/zquake-null: $(ZQNULL_C_OBJS)
 	@echo [LINK] $@
-	@$(CC) -o $@ $(ZQNULL_C_OBJS)
+	@$(CC) -o $@ $(ZQNULL_C_OBJS) $(LDFLAGS)
 $(ZQNULL_C_OBJS): $(NULL_OBJ_DIR)/%.o: %.c
 	@-mkdir -p $(NULL_OBJ_DIR)
 	@echo [CC] $<
-	@$(CC) $(NULL_CFLAGS) $(PLATFORM_CFLAGS) -c -o $@ $<
+	@$(CC) $(CFLAGS) $(NULL_CFLAGS) -c -o $@ $<
 #------------------------------------------------------------------------------
 clean:
 	@echo [CLEAN]
@@ -100,4 +158,5 @@ clean:
 	@-rmdir $(SERVER_OBJ_DIR) $(SOFT_OBJ_DIR) $(GL_OBJ_DIR) $(NULL_OBJ_DIR) 2>/dev/null
 	@-rm $(PRODUCT_DIR)/zqds $(PRODUCT_DIR)/zquake $(PRODUCT_DIR)/zquake-gl $(PRODUCT_DIR)/zquake-null 2>/dev/null
 	@-rm $(PRODUCT_DIR) 2>/dev/null
+
 #==============================================================================
