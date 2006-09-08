@@ -12,6 +12,8 @@ byte	vid_buffer[BASEWIDTH*BASEHEIGHT];
 short	zbuffer[BASEWIDTH*BASEHEIGHT];
 byte	surfcache[256*1024];
 
+cvar_t	_windowed_mouse = {"_windowed_mouse", "0"};
+
 
 void	VID_SetCaption (char *text)
 {
