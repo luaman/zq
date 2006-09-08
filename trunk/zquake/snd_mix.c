@@ -91,8 +91,8 @@ void S_TransferStereo16 (int endtime)
 	{
 		reps = 0;
 
-		while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize,
-									   &pbuf2, &dwSize2, 0)) != DS_OK)
+		while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, (void *) &pbuf, &dwSize,
+									   (void *) &pbuf2, &dwSize2, 0)) != DS_OK)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
@@ -179,6 +179,10 @@ void S_TransferPaintBuffer(int endtime)
 	if (pDSBuf)
 	{
 		reps = 0;
+
+#ifdef MINGW32
+#define Lock(a,b,c,d,e,f,g,h) Lock(a,b,c,(void *)d,e,(void *)f,g,h)
+#endif
 
 		while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize,
 									   &pbuf2,&dwSize2, 0)) != DS_OK)
