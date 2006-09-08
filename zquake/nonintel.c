@@ -57,6 +57,13 @@ void R_SurfacePatch (void)
 	// we only patch code on Intel
 }
 
+void Sys_HighFPPrecision (void)
+{
+}
+
+void Sys_LowFPPrecision (void)
+{
+}
 
 #endif	// !id386
 
