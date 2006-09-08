@@ -159,7 +159,8 @@ lumpinfo_t *W_GetLumpinfo (char *name, qbool crash)
 			return lump_p;
 	}
 	
-	Sys_Error ("W_GetLumpinfo: %s not found", name);
+	if (crash)
+		Sys_Error ("W_GetLumpinfo: %s not found", name);
 	return NULL;
 }
 
@@ -171,6 +172,8 @@ void *W_GetLumpName (char *name, qbool crash)
 	lumpinfo_t	*lump;
 	
 	lump = W_GetLumpinfo (name, crash);
+	if (!lump)
+		return NULL;
 
 	if ( lump->type == TYP_QPIC &&
 			((qpic_t *)(wad_base + lump->filepos))->width *
