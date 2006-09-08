@@ -171,8 +171,6 @@ int	D_SurfaceCacheForRes (int width, int height);
 void D_FlushCaches (void);
 void D_InitCaches (void *buffer, int size);
 
-void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
-
 // 2D drawing functions
 void R_DrawChar (int x, int y, int num);
 void R_DrawCharW (int x, int y, wchar num);
