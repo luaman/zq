@@ -15,19 +15,19 @@ byte	surfcache[256*1024];
 cvar_t	_windowed_mouse = {"_windowed_mouse", "0"};
 
 
-void	VID_SetCaption (char *text)
+void VID_SetCaption (char *text)
 {
 }
 
-void	VID_SetPalette (unsigned char *palette)
+void VID_SetPalette (unsigned char *palette)
 {
 }
 
-void	VID_ShiftPalette (unsigned char *palette)
+void VID_ShiftPalette (unsigned char *palette)
 {
 }
 
-void	VID_Init (unsigned char *palette)
+void VID_Init (unsigned char *palette)
 {
 	vid.width = BASEWIDTH;
 	vid.height = BASEHEIGHT;
@@ -40,31 +40,26 @@ void	VID_Init (unsigned char *palette)
 	D_InitCaches (surfcache, sizeof(surfcache));
 }
 
-void	VID_Shutdown (void)
+void VID_Shutdown (void)
 {
 }
 
-void	VID_Update (vrect_t *rects)
+void VID_LockBuffer (void)
 {
 }
 
-/*
-================
-D_BeginDirectRect
-================
-*/
+void VID_UnlockBuffer (void)
+{
+}
+
+void VID_Update (vrect_t *rects)
+{
+}
+
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
 }
 
-
-/*
-================
-D_EndDirectRect
-================
-*/
 void D_EndDirectRect (int x, int y, int width, int height)
 {
 }
-
-
