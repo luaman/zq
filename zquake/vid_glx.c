@@ -735,6 +735,14 @@ void VID_Init(unsigned char *palette)
         // Are we going fullscreen?  If so, let's change video mode
         if (fullscreen)
         {
+			XF86VidModeModeLine *current_vidmode;
+
+			// This nice hack comes from the SDL source code
+			// makes switching back to original vide mode on shutdown actually work
+			// (don't you just love X11?)
+			current_vidmode = (XF86VidModeModeLine*)((char*)vidmodes[0] + sizeof(vidmodes[0]->dotclock));
+			XF86VidModeGetModeLine(x_disp, scrnum, (int*)&vidmodes[0]->dotclock, current_vidmode);
+
             best_dist = 9999999;
             best_fit = -1;
 
