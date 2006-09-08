@@ -211,7 +211,7 @@ static PIXEL24 xlib_rgb24 (int r, int g, int b)
 static void st2_fixup (XImage *framebuf, int x, int y, int width, int height)
 {
 	int xi, yi;
-	char *src;
+	byte *src;
 	PIXEL16 *dest;
 
 	if ((x < 0) || (y < 0))
@@ -219,7 +219,7 @@ static void st2_fixup (XImage *framebuf, int x, int y, int width, int height)
 
 	for (yi = y; yi < (y + height); yi++)
 	{
-		src = &framebuf->data[yi * framebuf->bytes_per_line];
+		src = (byte *) &framebuf->data[yi * framebuf->bytes_per_line];
 		dest = (PIXEL16 *) src;
 		for (xi = (x + width - 1); xi >= x; xi--)
 			dest[xi] = st2d_8to16table[src[xi]];
@@ -230,7 +230,7 @@ static void st2_fixup (XImage *framebuf, int x, int y, int width, int height)
 static void st3_fixup (XImage *framebuf, int x, int y, int width, int height)
 {
 	int xi, yi;
-	char *src;
+	byte *src;
 	PIXEL24 *dest;
 
 	if ((x < 0) || (y < 0))
@@ -238,7 +238,7 @@ static void st3_fixup (XImage *framebuf, int x, int y, int width, int height)
 
 	for (yi = y; yi < (y + height); yi++)
 	{
-		src = &framebuf->data[yi * framebuf->bytes_per_line];
+		src = (byte *) &framebuf->data[yi * framebuf->bytes_per_line];
 		dest = (PIXEL24 *) src;
 		for (xi = (x + width - 1); xi >= x; xi--)
 			dest[xi] = st2d_8to24table[src[xi]];
