@@ -26,8 +26,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <errno.h>
 
 
+qbool do_stdin = true;
+qbool stdin_ready;
 
-void		 Sys_mkdir (char *path)
+
+void Sys_mkdir (char *path)
 {
 }
 
@@ -40,16 +43,16 @@ SYSTEM IO
 ===============================================================================
 */
 
-void		 Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
+void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
 }
 
 
-void		 Sys_Error (char *error, ...)
+void Sys_Error (char *error, ...)
 {
 	va_list	 argptr;
 
-	printf ("I_Error: ");
+	printf ("Sys_Error: ");
 	va_start (argptr,error);
 	vprintf (error,argptr);
 	va_end (argptr);
@@ -59,7 +62,7 @@ void		 Sys_Error (char *error, ...)
 }
 
 
-void		 Sys_Printf (char *fmt, ...)
+void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 
@@ -69,13 +72,13 @@ void		 Sys_Printf (char *fmt, ...)
 }
 
 
-void		 Sys_Quit (void)
+void Sys_Quit (void)
 {
 	exit (0);
 }
 
 
-double		 Sys_DoubleTime (void)
+double Sys_DoubleTime (void)
 {
 	static double	 t	= 0.0;
 
@@ -85,35 +88,40 @@ double		 Sys_DoubleTime (void)
 }
 
 
-char		*Sys_ConsoleInput (void)
+char *Sys_ConsoleInput (void)
 {
 	return NULL;
 }
 
 
-char		*Sys_GetClipboardText (void)
+char *Sys_GetClipboardText (void)
 {
 	return NULL;
 }
 
 
-void		 Sys_SendKeyEvents (void)
+void Sys_SendKeyEvents (void)
 {
 }
 
 
-void		 Sys_HighFPPrecision (void)
+void Sys_HighFPPrecision (void)
 {
 }
 
 
-void		 Sys_LowFPPrecision (void)
+void Sys_LowFPPrecision (void)
+{
+}
+
+
+void Sys_Init (void)
 {
 }
 
 //=============================================================================
 
-void		 main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 #ifdef hpux
 	// makes it possible to access unaligned pointers (e.g. inside structures)
@@ -127,5 +135,7 @@ void		 main (int argc, char **argv)
 	{
 		Host_Frame (0.1);
 	}
+
+	return 0;
 }
 
