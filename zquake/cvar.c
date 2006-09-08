@@ -46,10 +46,10 @@ cvar_t *Cvar_Next (cvar_t *var)
 
 /*
 ============
-Cvar_FindVar
+Cvar_Find
 ============
 */
-cvar_t *Cvar_FindVar (char *name)
+cvar_t *Cvar_Find (char *name)
 {
 	cvar_t	*var;
 	int		key;
@@ -70,7 +70,7 @@ Cvar_Value
 */
 float Cvar_Value (char *name)
 {
-	cvar_t	*var = Cvar_FindVar (name);
+	cvar_t	*var = Cvar_Find (name);
 	if (!var)
 		return 0;
 	return Q_atof (var->string);
@@ -84,7 +84,7 @@ Cvar_String
 */
 char *Cvar_String (char *name)
 {
-	cvar_t *var = Cvar_FindVar (name);
+	cvar_t *var = Cvar_Find (name);
 	if (!var)
 		return "";
 	return var->string;
@@ -248,7 +248,7 @@ void Cvar_Register (cvar_t *var)
 	cvar_t	*old;
 
 	// first check to see if it has already been defined
-	old = Cvar_FindVar (var->name);
+	old = Cvar_Find (var->name);
 
 	if (old && !(old->flags & CVAR_DYNAMIC)) {
 		if (old == var)
@@ -314,7 +314,7 @@ qbool Cvar_Command (void)
 	cvar_t		*var;
 
 // check variables
-	var = Cvar_FindVar (Cmd_Argv(0));
+	var = Cvar_Find (Cmd_Argv(0));
 	if (!var)
 		return false;
 
@@ -369,7 +369,7 @@ void Cvar_Toggle_f (void)
 		return;
 	}
 
-	var = Cvar_FindVar (Cmd_Argv(1));
+	var = Cvar_Find (Cmd_Argv(1));
 	if (!var)
 	{
 		Com_Printf ("Unknown variable \"%s\"\n", Cmd_Argv(1));
@@ -420,7 +420,7 @@ cvar_t *Cvar_Get (char *name, char *string, int cvarflags)
 	cvar_t		*var;
 	int			key;
 
-	var = Cvar_FindVar(name);
+	var = Cvar_Find(name);
 	if (var) {
 		var->flags &= ~CVAR_TEMP;
 		var->flags |= cvarflags;
@@ -540,7 +540,7 @@ void Cvar_Set_f (void)
 	}
 
 	name = Cmd_Argv (1);
-	var = Cvar_FindVar (name);
+	var = Cvar_Find (name);
 
 	if (var)
 	{
@@ -582,7 +582,7 @@ void Cvar_Inc_f (void)
 		return;
 	}
 
-	var = Cvar_FindVar (Cmd_Argv(1));
+	var = Cvar_Find (Cmd_Argv(1));
 	if (!var) {
 		Com_Printf ("Unknown variable \"%s\"\n", Cmd_Argv(1));
 		return;

@@ -904,7 +904,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 
 #if 0
 // fail if the command is a variable name
-	if (Cvar_FindVar(cmd_name)) {
+	if (Cvar_Find(cmd_name)) {
 		Com_Printf ("Cmd_AddCommand: %s already defined as a var\n", cmd_name);
 		return;
 	}
@@ -1133,7 +1133,7 @@ void Cmd_ExpandString (char *data, char *dest)
 				data++;
 				buf[i++] = c;
 				buf[i] = 0;
-				if ( (var = Cvar_FindVar(buf)) != NULL )
+				if ( (var = Cvar_Find(buf)) != NULL )
 					bestvar = var;
 			}
 
@@ -1308,7 +1308,7 @@ checkaliases:
 				// if the alias value is a command or cvar and
 				// the alias is called with parameters, add them
 				if (Cmd_Argc() > 1 && !strchr(a->value, ' ') && !strchr(a->value, '\t')
-					&& (Cvar_FindVar(a->value) || (Cmd_FindCommand(a->value)
+					&& (Cvar_Find(a->value) || (Cmd_FindCommand(a->value)
 					&& a->value[0] != '+' && a->value[0] != '-')))
 				{
 					Cbuf_InsertTextEx (inserttarget, Cmd_Args());

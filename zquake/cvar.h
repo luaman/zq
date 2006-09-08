@@ -77,7 +77,7 @@ qbool Cvar_Command (void);
 // with the archive flag set to true.
 void Cvar_WriteVariables (FILE *f);
 
-cvar_t *Cvar_FindVar (char *name);
+cvar_t *Cvar_Find (char *name);
 qbool Cvar_Delete (char *name);
 
 // Use this to walk through all vars
