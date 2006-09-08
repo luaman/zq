@@ -22,14 +22,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define DIRECTINPUT_VERSION 0x0300
 
-#define byte mingw32_rpcndr_h_byte
-#include <dinput.h>
-#undef byte
-
 #include "quakedef.h"
 #include "winquake.h"
 #include "input.h"
 #include "keys.h"
+#include <dinput.h>
 
 #define DINPUT_BUFFERSIZE           16
 #define iDirectInputCreate(a,b,c,d)	pDirectInputCreate(a,b,c,d)
