@@ -5,7 +5,7 @@
 #==============================================================================
 # Here are the targets:
 
-.PHONY: all server gl soft null
+.PHONY: default all server gl soft null
 
 default: gl server soft
 all: server gl soft null
@@ -17,7 +17,12 @@ all: server gl soft null
 
 MACHINE = $(shell $(CC) -dumpmachine)
 ARCH = $(shell echo $(MACHINE) | sed -e 's/.*mingw32.*/mingw32/g' \
-	-e 's/\-.*//g' -e 's/i.86/x86/g')
+	-e 's/i.86/x86/g') # -e 's/\-.*//g' -
+
+# why are we getting a space at the end?
+ifeq ($(ARCH),ppc-darwin )
+ARCH=ppc-darwin
+endif
 
 # Supported $(ARCH):
 # mingw32 x86-linux ppc-linux x86-darwin ppc-darwin
@@ -68,7 +73,7 @@ ifeq ($(ARCH),mingw32)
 	LDFLAGS				+= -lopengl32 -lgdi32
 endif
 ifeq ($(ARCH),ppc-darwin)
-	LDFLAGS				 =-framework "CoreAudio"
+	LDFLAGS				 =-framework "CoreAudio" -framework OpenGL
 endif
 
 #==============================================================================
@@ -100,6 +105,10 @@ ZQGL_PLATFORM_C_FILES = net_udp
 ZQSW_PLATFORM_C_FILES = net_udp
 NULL_C_FILES += net_udp
 endif
+ifeq ($(ARCH),ppc-darwin)
+ZQGL_PLATFORM_C_FILES += snd_null cd_null
+ZQSW_PLATFORM_C_FILES += snd_null cd_null
+endif
 ZQDS_C_FILES = $(SERVER_C_FILES) $(COMMON_C_FILES) $(ZQDS_PLATFORM_C_FILES) cl_null
 ZQSW_C_FILES = $(CLIENT_C_FILES) $(ZQSW_PLATFORM_C_FILES) $(SW_C_FILES) $(SERVER_C_FILES) $(COMMON_C_FILES)
 ZQGL_C_FILES = $(CLIENT_C_FILES) $(ZQGL_PLATFORM_C_FILES) $(GL_C_FILES) $(SERVER_C_FILES) $(COMMON_C_FILES)
@@ -110,6 +119,15 @@ ZQSW_C_OBJS = $(addprefix $(SOFT_OBJ_DIR)/, $(addsuffix .o, $(ZQSW_C_FILES)))
 ZQNULL_C_OBJS = $(addprefix $(NULL_OBJ_DIR)/, $(addsuffix .o, $(ZQNULL_C_FILES)))
 
 #==============================================================================
+
+printvars:
+	@echo "MACHINE       = '$(MACHINE)'"
+	@echo "ARCH          = '$(ARCH)'"
+	@echo ""
+	@echo "PRODUCT_DIR   = $(PRODUCT_DIR)"
+	@echo ""
+	@echo "CFLAGS        = $(CFLAGS)"
+	@echo "LDFLAGS       = $(LDFLAGS)"
 
 #.PHONY: server
 #server:
