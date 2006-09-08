@@ -260,7 +260,7 @@ qbool NET_GetPacket (netsrc_t sock)
 {
 	int 	ret;
 	struct sockaddr_in	from;
-	int		fromlen;
+	socklen_t	fromlen;
 	int		net_socket;
 
 	if (NET_GetLoopPacket (sock))

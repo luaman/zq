@@ -859,7 +859,7 @@ void R_32To8bit (unsigned int *in, int inwidth, int inheight, byte *out, int out
 		fracstep = (inwidth * 0x10000) / outwidth;
 		for (i = 0; i < outheight; i++)
 		{
-			inrow = (int *)in + inwidth*(i*inheight/outheight);
+			inrow = (unsigned int *)in + inwidth*(i*inheight/outheight);
 			frac = fracstep >> 1;
 			for (j = outwidth >> 2 ; j ; j--)
 			{
