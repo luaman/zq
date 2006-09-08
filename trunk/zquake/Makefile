@@ -19,7 +19,7 @@ all: server gl soft null
 
 MACHINE = $(shell $(CC) -dumpmachine)
 ARCH = $(shell echo $(MACHINE) | sed -e 's/.*mingw32.*/mingw32/g' \
-	-e 's/i.86/x86/g' -e 's/-gnu//')
+	-e 's/i.86/x86/g' -e 's/-gnu//' -e 's/powerpc/ppc/')
 	# -e 's/\-.*//g' -
 
 OS = $(shell echo $(ARCH) | sed -e 's/.*-//')
