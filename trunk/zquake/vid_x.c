@@ -421,6 +421,14 @@ void ResetSharedFrameBuffers (void)
 
 }
 
+
+static qbool x_error_caught = false;
+static int handler(Display *disp, XErrorEvent *ev)
+{
+	x_error_caught = true;
+	return 0;
+}
+
 // Called at startup to set up translation tables, takes 256 8 bit RGB values
 // the palette data will go away after the call, so it must be copied off if
 // the video driver will need it again
@@ -599,18 +607,24 @@ void VID_Init (unsigned char *palette)
 			XF86VidModeGetModeLine(x_disp, scrnum, (int*)&vidmodes[0]->dotclock, current_vidmode);
 
             // change to the mode
+			x_error_caught = false;
+			XSetErrorHandler (handler);
             XF86VidModeSwitchToMode(x_disp, scrnum, vidmodes[best_fit]);
-            // Move the viewport to top left
-            XF86VidModeSetViewPort(x_disp, scrnum, 0, 0);
-            vidmode_active = true;
-			vid.aspect = ((float) vidmodes[best_fit]->vdisplay
+			XSync (x_disp, false);
+			XSetErrorHandler (NULL);
+			if (!x_error_caught)
+			{
+	            // Move the viewport to top left
+    	        XF86VidModeSetViewPort(x_disp, scrnum, 0, 0);
+        	    vidmode_active = true;
+				vid.aspect = ((float) vidmodes[best_fit]->vdisplay
 								/ (float) vidmodes[best_fit]->hdisplay) * (320.0 / 240.0);	
+			}
+			else
+					Com_Printf ("Failed to set fullscreen mode\n");
         }
         else
-        {
         	Com_Printf ("Couldn't find an appropriate fullscreen video mode\n");
-        	vidmode_active = false;
-        }
     }
 }
 #endif	// USE_VMODE

@@ -634,6 +634,13 @@ void VID_Shutdown(void)
 #endif
 }
 
+static qbool x_error_caught = false;
+static int handler(Display *disp, XErrorEvent *ev)
+{
+	x_error_caught = true;
+	return 0;
+}
+
 void VID_Init(unsigned char *palette)
 {
     int i;
@@ -766,14 +773,19 @@ void VID_Init(unsigned char *palette)
                 actualWidth = vidmodes[best_fit]->hdisplay;
                 actualHeight = vidmodes[best_fit]->vdisplay;
                 // change to the mode
+				x_error_caught = false;
+				XSetErrorHandler (handler);
                 XF86VidModeSwitchToMode(x_disp, scrnum, vidmodes[best_fit]);
-                vidmode_active = true;
-                // Move the viewport to top left
-                XF86VidModeSetViewPort(x_disp, scrnum, 0, 0);
-            }
-            else
-            {
-                fullscreen = 0;
+				XSync (x_disp, false);
+				XSetErrorHandler (NULL);
+				if (!x_error_caught)
+				{
+					vidmode_active = true;
+	                // Move the viewport to top left
+					XF86VidModeSetViewPort(x_disp, scrnum, 0, 0);
+				}
+				else
+					Com_Printf ("Failed to set fullscreen mode\n");
             }
         }
     }
