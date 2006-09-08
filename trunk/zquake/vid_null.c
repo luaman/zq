@@ -3,6 +3,15 @@
 #include "quakedef.h"
 #include "d_local.h"
 
+
+#ifdef _WIN32
+#include "winquake.h"
+modestate_t	modestate;
+HWND mainwindow;
+qbool Minimized;
+#endif
+
+
 viddef_t	vid;				// global video state
 
 #define	BASEWIDTH	320
