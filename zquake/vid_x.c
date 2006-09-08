@@ -1135,10 +1135,10 @@ void GetEvent (void)
 			oktodraw = true;
 	}
 
+    grab_input = (_windowed_mouse.value != 0) && (key_dest == key_game);
 #ifdef USE_VMODE
-    grab_input = _windowed_mouse.value != 0 || vidmode_active;
-#else
-    grab_input = _windowed_mouse.value != 0;
+	if (vidmode_active)
+		grab_input = true;
 #endif
 
 	if (grab_input && !input_grabbed)
