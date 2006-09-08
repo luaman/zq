@@ -837,8 +837,6 @@ int		fps_cursor = 0;
 
 extern cvar_t v_bonusflash;
 extern cvar_t v_damagecshift;
-extern cvar_t r_fastsky;
-extern cvar_t r_drawflame;
 
 void M_Menu_Fps_f (void)
 {
@@ -889,14 +887,14 @@ void M_Fps_Draw (void)
 		r_powerupglow.value ? "on" : "off");
 
 	M_Print (16, 112, "         Draw torches");
-	M_DrawCheckbox (220, 112, r_drawflame.value);
+	M_DrawCheckbox (220, 112, Cvar_Value("r_drawflame"));
 
 	M_Print (16, 120, "             Fast sky");
-	M_DrawCheckbox (220, 120, r_fastsky.value);
+	M_DrawCheckbox (220, 120, Cvar_Value("r_fastsky"));
 
 #ifdef GLQUAKE
 	M_Print (16, 128, "          Fast lights");
-	M_DrawCheckbox (220, 128, gl_flashblend.value);
+	M_DrawCheckbox (220, 128, Cvar_Value("gl_flashblend"));
 #endif
 
 	M_PrintWhite (16, 136, "            Fast mode");
@@ -998,15 +996,15 @@ void M_Fps_Key (int k)
 			Cvar_SetValue (&r_powerupglow, i);
 			break;
 		case 10:
-			Cvar_SetValue (&r_drawflame, !r_drawflame.value);
+			Cvar_SetValue (Cvar_Find("r_drawflame"), !Cvar_Value("r_drawflame"));
 			break;
 		case 11:
-			Cvar_SetValue (&r_fastsky, !r_fastsky.value);
+			Cvar_SetValue (Cvar_Find("r_fastsky"), !Cvar_Value("r_fastsky"));
 			break;
 
 #ifdef GLQUAKE
 		case 12:
-			Cvar_SetValue (&gl_flashblend, !gl_flashblend.value);
+			Cvar_SetValue (Cvar_Find("gl_flashblend"), !Cvar_Value("gl_flashblend"));
 			break;
 #endif
 
@@ -1018,10 +1016,10 @@ void M_Fps_Key (int k)
 			Cvar_SetValue (&cl_deadbodyfilter, 1);
 			Cvar_SetValue (&r_rocketlight, 0);
 			Cvar_SetValue (&r_powerupglow, 0);
-			Cvar_SetValue (&r_drawflame, 0);
-			Cvar_SetValue (&r_fastsky, 1);
+			Cvar_SetValue (Cvar_Find("r_drawflame"), 0);
+			Cvar_SetValue (Cvar_Find("r_fastsky"), 1);
 #ifdef GLQUAKE
-			Cvar_SetValue (&gl_flashblend, 1);
+			Cvar_SetValue (Cvar_Find("gl_flashblend"), 1);
 #endif
 			break;
 
@@ -1033,10 +1031,10 @@ void M_Fps_Key (int k)
 			Cvar_SetValue (&cl_deadbodyfilter, 0);
 			Cvar_SetValue (&r_rocketlight, 1);
 			Cvar_SetValue (&r_powerupglow, 2);
-			Cvar_SetValue (&r_drawflame, 1);
-			Cvar_SetValue (&r_fastsky, 0);
+			Cvar_SetValue (Cvar_Find("r_drawflame"), 1);
+			Cvar_SetValue (Cvar_Find("r_fastsky"), 0);
 #ifdef GLQUAKE
-			Cvar_SetValue (&gl_flashblend, 0);
+			Cvar_SetValue (Cvar_Find("gl_flashblend"), 0);
 #endif
 		}
 	}
