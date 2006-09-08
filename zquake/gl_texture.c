@@ -197,9 +197,8 @@ void R_SetPalette (unsigned char *palette)
 		b = pal[2];
 		pal += 3;
 
-//		v = (255<<24) + (r<<16) + (g<<8) + (b<<0);
-//		v = (255<<0) + (r<<8) + (g<<16) + (b<<24);
 		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
+		v = LittleLong (v);
 		*table++ = v;
 	}
 	d_8to24table[255] = 0;	// 255 is transparent
@@ -214,7 +213,7 @@ void R_SetPalette (unsigned char *palette)
 		g = pal[1] * (2.0 / 1.5); if (g > 255) g = 255;
 		b = pal[2] * (2.0 / 1.5); if (b > 255) b = 255;
 		pal += 3;
-		*table++ = (255<<24) + (r<<0) + (g<<8) + (b<<16);
+		*table++ = LittleLong((255<<24) + (r<<0) + (g<<8) + (b<<16));
 	}
 	d_8to24table2[255] = 0;	// 255 is transparent
 }
