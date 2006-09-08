@@ -529,6 +529,7 @@ void SCR_DrawFPS (void)
 	R_DrawString(x, 0, st);
 }
 
+float nq_speed;
 
 void SCR_DrawSpeed (void)
 {
@@ -550,6 +551,10 @@ void SCR_DrawSpeed (void)
 		maxspeed = 0;
 	}
 
+if (cls.nqdemoplayback) {
+	speed = nq_speed;
+} else
+{
 	if (show_speed.value == 2) {
 		VectorCopy (cl.simvel, vel);	// predicted velocity
 	} else if (cl.validsequence)
@@ -558,6 +563,7 @@ void SCR_DrawSpeed (void)
 		VectorClear (vel);
 	vel[2] = 0;
 	speed = VectorLength(vel);
+}
 
 	if (speed > maxspeed)
 		maxspeed = speed;

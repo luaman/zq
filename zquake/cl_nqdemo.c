@@ -805,6 +805,19 @@ void NQD_LinkEntities (void)
 			LerpAngles (old, cur, f, ent.angles);
 		}
 
+if (num == nq_viewentity) {
+extern float nq_speed;
+float f;
+nq_speed = 0;
+	for (i = 0; i < 3; i++) {
+		f = (cent->current.s_origin[i] - cent->previous.s_origin[i]) * 0.125;
+		nq_speed += f * f;
+	}
+if (nq_speed) nq_speed = sqrt(nq_speed);
+nq_speed /= nq_mtime[0] - nq_mtime[1];
+
+}
+
 		// calculate origin
 		for (i = 0; i < 3; i++)
 		{
