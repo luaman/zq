@@ -211,7 +211,7 @@ static PIXEL24 xlib_rgb24 (int r, int g, int b)
 static void st2_fixup (XImage *framebuf, int x, int y, int width, int height)
 {
 	int xi, yi;
-	unsigned char *src;
+	char *src;
 	PIXEL16 *dest;
 
 	if ((x < 0) || (y < 0))
@@ -230,7 +230,7 @@ static void st2_fixup (XImage *framebuf, int x, int y, int width, int height)
 static void st3_fixup (XImage *framebuf, int x, int y, int width, int height)
 {
 	int xi, yi;
-	unsigned char *src;
+	char *src;
 	PIXEL24 *dest;
 
 	if ((x < 0) || (y < 0))
@@ -717,7 +717,7 @@ void VID_Init (unsigned char *palette)
 
 	current_framebuffer = 0;
 	vid.rowbytes = x_framebuffer[0]->bytes_per_line;
-	vid.buffer = x_framebuffer[0]->data;
+	vid.buffer = (pixel_t *)x_framebuffer[0]->data;
 	vid.direct = 0;
 
 //  XSynchronize(x_disp, False);
@@ -1148,7 +1148,7 @@ void VID_Update (vrect_t *rects)
 		else
 			ResetFrameBuffer ();
 		vid.rowbytes = x_framebuffer[0]->bytes_per_line;
-		vid.buffer = x_framebuffer[current_framebuffer]->data;
+		vid.buffer = (pixel_t *)x_framebuffer[current_framebuffer]->data;
 		SCR_InvalidateScreen ();
 		Con_CheckResize ();
 		Con_Clear_f ();
@@ -1184,7 +1184,7 @@ void VID_Update (vrect_t *rects)
 			rects = rects->pnext;
 		}
 		current_framebuffer = !current_framebuffer;
-		vid.buffer = x_framebuffer[current_framebuffer]->data;
+		vid.buffer = (pixel_t *)x_framebuffer[current_framebuffer]->data;
 		XSync (x_disp, False);
 	}
 	else

@@ -1518,7 +1518,7 @@ wchar koi2wc (char c)
 {
 	unsigned char uc = c;
 
-	if (uc >= 192 && (unsigned char)c <= 255)
+	if (uc >= 192 /* && (unsigned char)c <= 255 */)
 		return koi2wc_table[(unsigned char)c - 192] + 0x400;
 	else if (uc == '#' + 128)
 		return 0x0451;	// russian small yo
