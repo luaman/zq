@@ -874,7 +874,7 @@ static void PF_cvar (void)
 		return;
 	}
 
-	if (!Cvar_FindVar (str) && (temp = Cmd_LegacyCommandValue (str)))
+	if (!Cvar_Find (str) && (temp = Cmd_LegacyCommandValue (str)))
 		str = temp;
 
 	G_FLOAT(OFS_RETURN) = Cvar_Value (str);
@@ -897,8 +897,8 @@ static void PF_cvar_set (void)
 	var_name = G_STRING(OFS_PARM0);
 	val = G_STRING(OFS_PARM1);
 
-	if (!(var = Cvar_FindVar (var_name)) && (temp = Cmd_LegacyCommandValue (var_name)))
-		var = Cvar_FindVar (temp);
+	if (!(var = Cvar_Find (var_name)) && (temp = Cmd_LegacyCommandValue (var_name)))
+		var = Cvar_Find (temp);
 
 	if (!var) {
 		Com_DPrintf ("PF_cvar_set: variable %s not found\n", var_name);
@@ -2415,7 +2415,7 @@ static void PF_cvar_string (void)
 
 	str = G_STRING(OFS_PARM0);
 
-	var = Cvar_FindVar(str);
+	var = Cvar_Find(str);
 	if (!var) {
 		// TODO: Cmd_LegacyCommandValue?
 		G_INT(OFS_RETURN) = 0;

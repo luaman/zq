@@ -1238,14 +1238,14 @@ void V_Init (void)
 	// this nastyness is to make "gamma foo" in config.cfg work
 	// FIXME: cvar.c should fire OnChange in Cvar_Register!
 	// things will be a bit different then (?)
-	if (!Cvar_FindVar("sw_gamma")) {
+	if (!Cvar_Find("sw_gamma")) {
 		Cvar_Register (&sw_gamma);
 		Cvar_SetValue (&sw_gamma, gammavar.value);
 	} else {
 		Cvar_Register (&sw_gamma);
 		Cvar_SetValue (&gammavar, sw_gamma.value);
 	}
-	if (!Cvar_FindVar("sw_contrast")) {
+	if (!Cvar_Find("sw_contrast")) {
 		Cvar_Register (&sw_contrast);
 		Cvar_SetValue (&sw_contrast, contrast.value);
 	} else {
