@@ -764,7 +764,8 @@ int FS_FOpenFile (char *filename, FILE **file)
 			if (developer.value)
 				Sys_Printf ("FindFile: %s\n",netpath);
 
-			return COM_filelength (*file);
+			fs_filesize = COM_filelength (*file);
+			return fs_filesize;
 		}
 		
 	}
