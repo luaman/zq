@@ -1062,7 +1062,7 @@ static qbool IN_ReadJoystick (void)
 	else
 	{
 		// read error occurred
-		// turning off the joystick seems too harsh for 1 read error,\
+		// turning off the joystick seems too harsh for 1 read error,
 		// but what should be done?
 		// Com_Printf ("IN_ReadJoystick: no response\n");
 		// joy_avail = false;
