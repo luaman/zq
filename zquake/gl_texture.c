@@ -35,8 +35,17 @@ unsigned d_8to24table2[256];
 static void	OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel);
 
 cvar_t		gl_nobind = {"gl_nobind", "0"};
+cvar_t		gl_max_size = {"gl_max_size", "4096"};
 cvar_t		gl_picmip = {"gl_picmip", "0"};
-cvar_t		gl_texturemode = {"gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", 0, OnChange_gl_texturemode};
+cvar_t		gl_picmip_world = {"gl_picmip_world", "base"};
+cvar_t		gl_picmip_model = {"gl_picmip_model", "base"};
+cvar_t		gl_picmip_turb = {"gl_picmip_turb", "base"};
+cvar_t		gl_picmip_sprite = {"gl_picmip_sprite", "base"};
+cvar_t		gl_texturemode = {"gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", 4, OnChange_gl_texturemode};
+cvar_t		gl_texturemode_world = {"gl_texturemode_world", "base", 0, OnChange_gl_texturemode};
+cvar_t		gl_texturemode_model = {"gl_texturemode_model", "base", 0, OnChange_gl_texturemode};
+cvar_t		gl_texturemode_turb = {"gl_texturemode_turb", "base", 0, OnChange_gl_texturemode};
+cvar_t		gl_texturemode_sprite = {"gl_texturemode_sprite", "base", 0, OnChange_gl_texturemode};
 
 int		texture_extension_number = 1;
 
@@ -44,8 +53,7 @@ int		gl_lightmap_format = 4;
 int		gl_solid_format = 3;
 int		gl_alpha_format = 4;
 
-int		gl_filter_min = GL_LINEAR_MIPMAP_NEAREST;
-int		gl_filter_max = GL_LINEAR;
+int		gl_filter_2d = GL_LINEAR;
 
 int		gl_max_texsize;
 
@@ -128,48 +136,76 @@ void GL_EnableMultitexture (void)
 
 typedef struct
 {
-	char *name;
+	char *name, *shortname;
 	int	minimize, maximize;
 } glmode_t;
 
 static glmode_t modes[] = {
-	{"GL_NEAREST", GL_NEAREST, GL_NEAREST},
-	{"GL_LINEAR", GL_LINEAR, GL_LINEAR},
-	{"GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST},
-	{"GL_LINEAR_MIPMAP_NEAREST", GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR},
-	{"GL_NEAREST_MIPMAP_LINEAR", GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST},
-	{"GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR}
+	{"base", "", 0, 0},								// 0
+	{"GL_NEAREST", "N", GL_NEAREST, GL_NEAREST},	// 1
+	{"GL_LINEAR", "L", GL_LINEAR, GL_LINEAR},		// 2
+	{"GL_NEAREST_MIPMAP_NEAREST", "NMN", GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST}, // 3
+	{"GL_LINEAR_MIPMAP_NEAREST", "LMN", GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR}, // 4
+	{"GL_NEAREST_MIPMAP_LINEAR", "NML", GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST}, // 5
+	{"GL_LINEAR_MIPMAP_LINEAR", "LML", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR} // 6
 };
 
+static void FilterForMode (int mode, int *min_filter, int *max_filter)
+{
+	int i;
+
+	if ((mode & TEX_MODEL) && gl_texturemode_model.value)
+		i = gl_texturemode_model.value;
+	else if ((mode & TEX_TURB) && gl_texturemode_turb.value)
+		i = gl_texturemode_turb.value;
+	else if ((mode & TEX_SPRITE) && gl_texturemode_sprite.value)
+		i = gl_texturemode_sprite.value;
+	else if ((mode & TEX_WORLD) && gl_texturemode_world.value)
+		i = gl_texturemode_world.value;
+	else
+		i = gl_texturemode.value;
+
+	// in case someone defeats the cvar system...
+	i = bound (1, i, 6);
+
+	*min_filter = modes[i].minimize;
+	*max_filter = modes[i].maximize;
+}
 
 static void OnChange_gl_texturemode (cvar_t *var, char *string, qbool *cancel)
 {
 	int		i;
 	gltexture_t	*glt;
 
-	for (i=0 ; i<6 ; i++)
+	for (i = 0; i < 7; i++)
 	{
-		if (!Q_stricmp (modes[i].name, string ) )
-			break;
-	}
-	if (i == 6)
-	{
-		Com_Printf ("bad filter name: %s\n", string);
-		*cancel = true;		// don't change the cvar
-		return;
+		if (!i && var==&gl_texturemode)
+			continue;	// this cvar can't be set to "base"
+		if (!Q_stricmp(modes[i].name, string) || !Q_stricmp(modes[i].shortname, string))
+			goto ok;
 	}
 
-	gl_filter_min = modes[i].minimize;
-	gl_filter_max = modes[i].maximize;
+	Com_Printf ("bad filter name: %s\n", string);
+	*cancel = true;		// don't change the cvar
+	return;
+
+ok:
+	Cvar_Set (var, modes[i].name);
+	// we cheat and set a cvar's value to the filter's index,
+	// so that we don't need string comparisons later on
+	var->value = i;		// GL_NEAREST = 1, GL_LINEAR = 2, ...
+	*cancel = true;
 
 	// change all the existing mipmap texture objects
 	for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
 	{
 		if (glt->mode & TEX_MIPMAP)
 		{
+			int min_filter, max_filter;
+			FilterForMode (glt->mode, &min_filter, &max_filter);
 			GL_Bind (glt->texnum);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, max_filter);
 		}
 	}
 }
@@ -254,6 +290,8 @@ Perhaps I should sell a supported version for a living.
 void GL_ResampleTexture (unsigned *indata, int inwidth, int inheight,
 		unsigned *outdata, int outwidth, int outheight)
 {
+	// FIXME, _pixops_scale is extremely slow on extreme downsampling
+	// (e.g. 64x64 to 1x1), implement workarounds!
 	_pixops_scale ((guchar *)outdata, 0, 0, outwidth, outheight, outwidth * 4, 4, 1, (const guchar *)indata,
 		inwidth, inheight, inwidth * 4, 4, 1, (double)outwidth/inwidth, (double)outheight/inheight, PIXOPS_INTERP_BILINEAR);
 }
@@ -289,7 +327,7 @@ void GL_MipMap (byte *in, int width, int height)
 static void
 ScaleDimensions (int width, int height, int *scaled_width, int *scaled_height, int mode)
 {
-	int picmip;
+	int picmip, max_texsize;
 	qbool scale;
 
 	scale = (mode & TEX_MIPMAP) && !(mode & TEX_NOSCALE);
@@ -297,14 +335,29 @@ ScaleDimensions (int width, int height, int *scaled_width, int *scaled_height, i
 	for (*scaled_width = 1; *scaled_width < width; *scaled_width <<= 1) {};
 	for (*scaled_height = 1; *scaled_height < height; *scaled_height <<= 1) {};
 
-	if (scale) {
-		picmip = (int) bound(0, gl_picmip.value, 16);
-		*scaled_width >>= picmip;
-		*scaled_height >>= picmip;		
-	}
+	picmip =
+(mode & TEX_MODEL && (gl_picmip_model.value || gl_picmip_model.string[0] == '0')) ?
+			gl_picmip_model.value :
+(mode & TEX_TURB && (gl_picmip_turb.value || gl_picmip_turb.string[0] == '0')) ?
+			gl_picmip_turb.value :
+(mode & TEX_SPRITE && (gl_picmip_sprite.value || gl_picmip_sprite.string[0] == '0')) ?
+			gl_picmip_sprite.value :
+(mode & TEX_WORLD && (gl_picmip_world.value || gl_picmip_world.string[0] == '0')) ?
+			gl_picmip_world.value :
+			scale ? gl_picmip.value : 0;
 
-	*scaled_width = bound(1, *scaled_width, gl_max_texsize);
-	*scaled_height = bound(1, *scaled_height, gl_max_texsize);
+	picmip = (int) bound(0, picmip, 16);
+	*scaled_width >>= picmip;
+	*scaled_height >>= picmip;		
+
+	if (mode & TEX_MIPMAP && !(mode & TEX_NOSCALE) && gl_max_size.value) {
+		max_texsize = min(gl_max_texsize, gl_max_size.value);
+		max_texsize = max(max_texsize, 1);
+	} else {
+		max_texsize = gl_max_texsize;
+	}
+	*scaled_width = bound(1, *scaled_width, max_texsize);
+	*scaled_height = bound(1, *scaled_height, max_texsize);
 }
 
 
@@ -320,6 +373,7 @@ void GL_Upload32 (unsigned *data, int width, int height, int mode /*qbool mipmap
 	int			samples;
 static	unsigned	scaled[1024*512];	// [512*256];
 	int			scaled_width, scaled_height;
+	int min_filter, max_filter;
 
 	ScaleDimensions (width, height, &scaled_width, &scaled_height, mode);
 
@@ -364,16 +418,14 @@ static	unsigned	scaled[1024*512];	// [512*256];
 done: ;
 
 
-	if (mode & TEX_MIPMAP)
-	{
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	if (mode & TEX_MIPMAP) {
+		FilterForMode (mode, &min_filter, &max_filter);
+	} else {
+		min_filter = gl_filter_2d;
+		max_filter = gl_filter_2d;
 	}
-	else
-	{
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-	}
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, max_filter);
 }
 
 /*
@@ -622,8 +674,17 @@ R_InitTextures
 void R_InitTextures (void)
 {
 	Cvar_Register (&gl_nobind);
+	Cvar_Register (&gl_max_size);
 	Cvar_Register (&gl_picmip);
+	Cvar_Register (&gl_picmip_world);
+	Cvar_Register (&gl_picmip_model);
+	Cvar_Register (&gl_picmip_turb);
+	Cvar_Register (&gl_picmip_sprite);
 	Cvar_Register (&gl_texturemode);
+	Cvar_Register (&gl_texturemode_world);
+	Cvar_Register (&gl_texturemode_model);
+	Cvar_Register (&gl_texturemode_turb);
+	Cvar_Register (&gl_texturemode_sprite);
 
 	texture_extension_number = 1;
 	numgltextures = 0;

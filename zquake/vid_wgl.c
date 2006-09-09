@@ -1607,6 +1607,8 @@ void CL_VID_Restart_f ()
 	// free old data and load a new gfx.wad
 	R_Draw_Init ();
 
+	CL_ReloadTextures ();
+
 	GL_BuildLightmaps ();
 }
 

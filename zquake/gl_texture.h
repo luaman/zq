@@ -28,17 +28,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	TEX_FULLBRIGHTMASK	4	// implies TEX_ALPHA
 #define	TEX_BRIGHTEN		8	// apply palette hack
 #define	TEX_NOSCALE			16	// don't apply gl_picmip
+#define TEX_WORLD			32	// world, including inline brushes
+#define TEX_MODEL			64	// alias + external brushes (e.g. health box)
+#define TEX_TURB			128	// water, teleports (TEX_WORLD may also be set)
+#define TEX_SPRITE			256	// wanna guess?
 
 // TEX_MIPMAP, TEX_ALPHA
 void GL_Upload32 (unsigned *data, int width, int height, int mode);
 
 // TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN, TEX_NOSCALE
+// + TEX WORLD etc
 void GL_Upload8 (byte *data, int width, int height, int mode);
 
 // TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN, TEX_NOSCALE
+// + TEX WORLD etc
 int GL_LoadTexture (char *identifier, int width, int height, byte *data, int mode);
 
 // TEX_MIPMAP, TEX_ALPHA, TEX_BRIGHTEN(FIXME not yet)
+// + TEX WORLD etc
 int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, int mode);
 
 int GL_FindTexture (char *identifier);
