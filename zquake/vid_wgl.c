@@ -1257,7 +1257,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 		modelist[nummodes].fullscreen = 1;
 		modelist[nummodes].bpp = devmode.dmBitsPerPel;
 		modelist[nummodes].freq = devmode.dmDisplayFrequency;
-		sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
+		sprintf (modelist[nummodes].modedesc, "%ldx%ldx%ld",
 				 devmode.dmPelsWidth, devmode.dmPelsHeight,
 				 devmode.dmBitsPerPel);
 
@@ -1288,7 +1288,7 @@ void VID_InitFullDIB (HINSTANCE hInstance)
 				modelist[nummodes].halfscreen = 0;
 				modelist[nummodes].fullscreen = 1;
 				modelist[nummodes].bpp = devmode.dmBitsPerPel;
-				sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
+				sprintf (modelist[nummodes].modedesc, "%ldx%ldx%ld",
 						 devmode.dmPelsWidth, devmode.dmPelsHeight,
 						 devmode.dmBitsPerPel);
 
@@ -1400,7 +1400,7 @@ static void FindDefaultMode (void)
 					modelist[nummodes].halfscreen = 0;
 					modelist[nummodes].fullscreen = 1;
 					modelist[nummodes].bpp = bpp;
-					sprintf (modelist[nummodes].modedesc, "%dx%dx%d",
+					sprintf (modelist[nummodes].modedesc, "%ldx%ldx%ld",
 							 devmode.dmPelsWidth, devmode.dmPelsHeight,
 							 devmode.dmBitsPerPel);
 
@@ -1594,6 +1594,9 @@ void VID_Restart ()
 
 	GL_Init ();
 }
+
+void R_Draw_Init (void);
+void CL_ReloadTextures (void);
 
 void CL_VID_Restart_f ()
 {
