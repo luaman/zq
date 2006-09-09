@@ -219,37 +219,44 @@ void R_SetPalette (unsigned char *palette)
 	byte		*pal;
 	unsigned	r,g,b;
 	unsigned	v;
-	unsigned	*table;
+	byte		*table;
 
 //
 // 8 8 8 encoding
 //
 	pal = palette;
-	table = d_8to24table;
-	for (i=0 ; i<256 ; i++)
+	table = (byte *) d_8to24table;
+	for (i = 0; i < 256; i++)
 	{
 		r = pal[0];
 		g = pal[1];
 		b = pal[2];
 		pal += 3;
 
-		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
-		v = LittleLong (v);
-		*table++ = v;
+		table[0] = r;
+		table[1] = g;
+		table[2] = b;
+		table[3] = 255;
+		table += 4;
 	}
 	d_8to24table[255] = 0;	// 255 is transparent
 
 // Tonik: create a brighter palette for bmodel textures
 	pal = palette;
-	table = d_8to24table2;
+	table = (byte *) d_8to24table2;
 
-	for (i=0 ; i<256 ; i++)
+	for (i = 0; i < 256; i++)
 	{
 		r = pal[0] * (2.0 / 1.5); if (r > 255) r = 255;
 		g = pal[1] * (2.0 / 1.5); if (g > 255) g = 255;
 		b = pal[2] * (2.0 / 1.5); if (b > 255) b = 255;
 		pal += 3;
-		*table++ = LittleLong((255<<24) + (r<<0) + (g<<8) + (b<<16));
+
+		table[0] = r;
+		table[1] = g;
+		table[2] = b;
+		table[3] = 255;
+		table += 4;
 	}
 	d_8to24table2[255] = 0;	// 255 is transparent
 }
