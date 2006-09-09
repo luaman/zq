@@ -167,8 +167,8 @@ char *wcs2str (const wchar *ws);
 wchar *qwcscpy (wchar *dest, const wchar *src);
 wchar *qwcschr (const wchar *ws, wchar wc);
 size_t qwcslen (const wchar *s);
-size_t qwcslcpy (wchar *dst, const wchar *src, size_t size);
 #endif
+size_t qwcslcpy (wchar *dst, const wchar *src, size_t size);
 
 size_t strlcpy (char *dst, const char *src, size_t size);
 size_t strlcat (char *dst, const char *src, size_t size);

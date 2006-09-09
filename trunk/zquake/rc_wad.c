@@ -415,7 +415,7 @@ byte *WAD3_LoadTexture (texture_t *tx)
 {
 	int i, j = 0;
 	miptex_t *mt;
-	byte *data, *pal;
+	byte *data;
 	FILE *file;
 
 	if (tx->offsets[0])
