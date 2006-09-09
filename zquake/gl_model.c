@@ -353,6 +353,7 @@ byte	*mod_base;
 Mod_LoadTextures
 =================
 */
+void R_LoadBrushModelTextures (model_t *m);
 void Mod_LoadTextures (lump_t *l)
 {
 	int		i, j, pixels, num, max, altmax;
@@ -391,7 +392,10 @@ void Mod_LoadTextures (lump_t *l)
 
 		if ( (mt->width & 15) || (mt->height & 15) )
 			Host_Error ("Texture %s is not 16 aligned", mt->name);
+
 		pixels = mt->width*mt->height/64*85;
+		if (loadmodel->halflifebsp)
+			pixels += 2 + 256*3;	/* palette and unknown two bytes */
 		tx = Hunk_AllocName (sizeof(texture_t) + pixels, loadname);
 		loadmodel->textures[i] = tx;
 
@@ -400,16 +404,13 @@ void Mod_LoadTextures (lump_t *l)
 		tx->height = mt->height;
 
 #ifdef HALFLIFEBSP
-		if (loadmodel->halflifebsp) {
-			byte *data;
-			if ((data = WAD3_LoadTexture(mt)) != NULL) {
-				qbool alpha = (tx->name[0] == '{');
-				tx->gl_texturenum = GL_LoadTexture32 (tx->name, tx->width, tx->height, data,
-					TEX_WORLD|TEX_MIPMAP|TEX_BRIGHTEN | (alpha ? TEX_ALPHA : 0));
-				Q_free (data);
-				tx->offsets[0] = 0;
-				continue;
-			}
+		if (loadmodel->halflifebsp && mt->offsets[0])
+		{
+			// the pixels immediately follow the structures
+			memcpy (tx+1, mt+1, pixels);
+			for (j = 0; j < MIPLEVELS; j++)
+				tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
+			continue;
 		}
 #endif
 
@@ -436,55 +437,9 @@ void Mod_LoadTextures (lump_t *l)
 				tx->flatcolor3ub = (255 << 24) + (data[0] << 0) + (data[1] << 8) + (data[2] << 16);
 			}
 		}
-		else
-			tx->offsets[0] = 0;
-
-		// The rest is identical with R_LoadBrushModelTextures
-		if (!tx->offsets[0]) {
-			tx->width = r_notexture_mip->width;
-			tx->height = r_notexture_mip->height;
-			tx->gl_texturenum = GL_LoadTexture ("r_notexture_mip", tx->width, 
-							tx->height, (byte *)(r_notexture_mip + 1), TEX_WORLD|TEX_MIPMAP|TEX_BRIGHTEN);
-			continue;
-		}
-
-		if (loadmodel->isworldmodel && !loadmodel->halflifebsp && !strncmp(tx->name,"sky",3))
-		{
-			R_InitSky (tx);
-			continue;
-		}
-
-		noscale = ((!gl_scaleModelTextures.value && !loadmodel->isworldmodel) ||
-				(!gl_scaleTurbTextures.value && (tx->name[0] == '*')));
-
-		mipcap = noscale ? 0 : bound(0, gl_mipTexLevel.value, 3);
-
-		base_texmode = TEX_MIPMAP;
-		if (loadmodel->isworldmodel)
-			base_texmode |= TEX_WORLD;
-		else
-			base_texmode |= TEX_MODEL;
-		if (noscale)
-			base_texmode |= TEX_NOSCALE;
-
-		if (tx->name[0] == '*')
-			 // turb textures are drawn without lightmaps, so we don't brighten them
-			texmode = base_texmode | TEX_TURB;
-		else
-			texmode = base_texmode | TEX_BRIGHTEN;
-
-		data = (byte *)tx + tx->offsets[mipcap];
-		width = tx->width >> mipcap;
-		height = tx->height >> mipcap;
-
-		tx->gl_texturenum = GL_LoadTexture (tx->name, width, height,
-														data, texmode);
-
-		if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
-			tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", tx->name), width,
-					height, (byte *)(tx+1), base_texmode|TEX_FULLBRIGHTMASK);
-		}
 	}
+
+	R_LoadBrushModelTextures (loadmodel);
 
 //
 // sequence the animations
@@ -594,12 +549,31 @@ void R_LoadBrushModelTextures (model_t *m)
 	for (i = 0; i < loadmodel->numtextures; i++)
 	{
 		tx = loadmodel->textures[i];
+		if (!tx)
+			continue;
+
+#ifdef HALFLIFEBSP
+		if (loadmodel->halflifebsp) {
+			byte *data = WAD3_LoadTexture(tx);
+			if (!data) {
+				tx->gl_texturenum = GL_LoadTexture ("r_notexture_mip", r_notexture_mip->width, 
+							r_notexture_mip->height, (byte *)(r_notexture_mip + 1), TEX_WORLD|TEX_MIPMAP|TEX_BRIGHTEN);
+				continue;
+			}
+
+			qbool alpha = (tx->name[0] == '{');
+			tx->gl_texturenum = GL_LoadTexture32 (tx->name, tx->width, tx->height, data,
+				TEX_WORLD|TEX_MIPMAP|TEX_BRIGHTEN | (alpha ? TEX_ALPHA : 0));
+			Q_free (data);
+			continue;
+		}
+#endif
 
 		if (!tx->offsets[0]) {
 			tx->width = r_notexture_mip->width;
 			tx->height = r_notexture_mip->height;
 			tx->gl_texturenum = GL_LoadTexture ("r_notexture_mip", tx->width, 
-							tx->height, (byte *)(r_notexture_mip + 1), TEX_MIPMAP|TEX_BRIGHTEN);
+							tx->height, (byte *)(r_notexture_mip + 1), TEX_WORLD|TEX_MIPMAP|TEX_BRIGHTEN);
 			continue;
 		}
 

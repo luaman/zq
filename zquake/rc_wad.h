@@ -62,8 +62,10 @@ lumpinfo_t *W_GetLumpinfo (char *name, qbool crash);
 
 void SwapPic (qpic_t *pic);
 
+#ifdef HALFLIFEBSP
 void WAD3_LoadWadFile (char *filename);
-byte *WAD3_LoadTexture (miptex_t *mt);
+byte *WAD3_LoadTexture (texture_t *tx);
+#endif
 
 #endif // _WAD_H
 
