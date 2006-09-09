@@ -45,6 +45,9 @@ NULL_OBJ_DIR=release/null
 CFLAGS = -DVWEP_TEST -DHALFLIFEBSP
 CFLAGS += -Wall -Wno-format-y2k
 
+# optimizations (should be only for release)
+CFLAGS +=-ffast-math -fomit-frame-pointer -fexpensive-optimizations
+
 ifeq ($(ARCH),mingw32)
 	CFLAGS += -D_WIN32 -DMINGW32
 endif
