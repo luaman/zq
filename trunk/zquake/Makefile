@@ -42,7 +42,7 @@ NULL_OBJ_DIR=release/null
 
 #------------------------------------------------------------------------------
 
-CFLAGS = -DVWEP_TEST
+CFLAGS = -DVWEP_TEST -DHALFLIFEBSP
 
 ifeq ($(ARCH),mingw32)
 	CFLAGS += -D_WIN32 -DMINGW32

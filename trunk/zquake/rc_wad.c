@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // rc_wad.c - .wad file loading
 
 #include "quakedef.h"
+#ifdef HALFLIFEBSP
+#include "gl_local.h"
+#endif
 #include "rc_wad.h"
 #include "crc.h"
 
@@ -293,7 +296,7 @@ WAD3 Texture Loading
 =============================================================================
 */
 
-#ifdef GLQUAKE
+#ifdef HALFLIFEBSP
 
 #define TEXWAD_MAXIMAGES 16384
 
@@ -305,6 +308,7 @@ typedef struct {
 } texwadlump_t;
 
 static texwadlump_t texwadlump[TEXWAD_MAXIMAGES];
+static int wad3_numlumps = 0;
 
 void WAD3_LoadWadFile (char *filename)
 {
@@ -312,6 +316,9 @@ void WAD3_LoadWadFile (char *filename)
 	wadinfo_t header;
 	int i, j, infotableofs, numlumps, lowmark;
 	FILE *file;
+
+	if (wad3_numlumps == TEXWAD_MAXIMAGES)
+		return;
 
 	if (FS_FOpenFile (va("textures/halflife/%s", filename), &file) != -1)
 		goto loaded;
@@ -359,40 +366,39 @@ loaded:
 
 	for (i = 0, lump_p = lumps; i < numlumps; i++,lump_p++) {
 		W_CleanupName (lump_p->name, lump_p->name);
-		for (j = 0; j < TEXWAD_MAXIMAGES; j++) {
-			if (!texwadlump[j].name[0] || !strcmp(lump_p->name, texwadlump[j].name))
-				break;
+		for (j = 0; j < wad3_numlumps; j++) {
+			if (!strcmp(lump_p->name, texwadlump[j].name))
+				goto skip_duplicate;
 		}
-		if (j == TEXWAD_MAXIMAGES)
-			break; // we are full, don't load any more
-		if (!texwadlump[j].name[0])
-			strlcpy (texwadlump[j].name, lump_p->name, sizeof(texwadlump[j].name));
+		strlcpy (texwadlump[j].name, lump_p->name, sizeof(texwadlump[j].name));
 		texwadlump[j].file = file;
 		texwadlump[j].position = LittleLong(lump_p->filepos);
 		texwadlump[j].size = LittleLong(lump_p->disksize);
+		wad3_numlumps++;
+		if (wad3_numlumps == TEXWAD_MAXIMAGES)
+			break;
+skip_duplicate:;
 	}
 
 	Hunk_FreeToLowMark(lowmark);
 	//leaves the file open
 }
 
+
 //converts paletted to rgba
-static byte *ConvertWad3ToRGBA(miptex_t *tex)
+byte *ConvertWad3ToRGBA(int width, int height, byte *in, qbool alpha)
 {
-	byte *in, *data, *pal;
+	byte *data, *pal;
 	int i, p, image_size;
 
-	if (!tex->offsets[0])
-		Sys_Error("ConvertWad3ToRGBA: tex->offsets[0] == 0");
-
-	image_size = tex->width * tex->height;
-	in = (byte *) ((byte *) tex + tex->offsets[0]);
+	image_size = width * height;
 	data = Q_malloc (image_size * 4);
 
-	pal = in + ((image_size * 85) >> 6) + 2;
+	pal = (byte *) in + ((image_size * 85) / 64) + 2;
+
 	for (i = 0; i < image_size; i++) {
 		p = *in++;
-		if (tex->name[0] == '{' && p == 255) {
+		if (p == 255 && alpha) {
 			((int *) data)[i] = 0;
 		} else {
 			p *= 3;
@@ -405,47 +411,43 @@ static byte *ConvertWad3ToRGBA(miptex_t *tex)
 	return data;
 }
 
-byte *WAD3_LoadTexture (miptex_t *mt)
+byte *WAD3_LoadTexture (texture_t *tx)
 {
-	char texname[MAX_QPATH];
-	int i, j, lowmark = 0;
+	int i, j = 0;
+	miptex_t *mt;
+	byte *data, *pal;
 	FILE *file;
-	miptex_t *tex;
-	byte *data;
 
-	if (mt->offsets[0])
-		return ConvertWad3ToRGBA(mt);
+	if (tx->offsets[0])
+		return ConvertWad3ToRGBA(tx->width, tx->height, (byte *)(tx + 1),
+								(tx->name[0] == '{'));
 
-	texname[sizeof(texname) - 1] = 0;
-	W_CleanupName (mt->name, texname);
-	for (i = 0; i < TEXWAD_MAXIMAGES; i++) {
-		if (!texwadlump[i].name[0])
-			break;
-		if (strcmp(texname, texwadlump[i].name))
+	for (i = 0; i < wad3_numlumps; i++) {
+		if (Q_stricmp(tx->name, texwadlump[i].name))
 			continue;
-
+		
 		file = texwadlump[i].file;
 		if (fseek(file, texwadlump[i].position, SEEK_SET)) {
 			Com_Printf("WAD3_LoadTexture: corrupt WAD3 file\n");
 			return NULL;
 		}
-		lowmark = Hunk_LowMark();
-		tex = Hunk_Alloc(texwadlump[i].size);
-		if (fread(tex, 1, texwadlump[i].size, file) < texwadlump[i].size) {
+		mt = Q_malloc(texwadlump[i].size);
+		if (fread(mt, 1, texwadlump[i].size, file) < texwadlump[i].size) {
 			Com_Printf("WAD3_LoadTexture: corrupt WAD3 file\n");
-			Hunk_FreeToLowMark(lowmark);
+			Q_free (mt);
 			return NULL;
 		}
-		tex->width = LittleLong(tex->width);
-		tex->height = LittleLong(tex->height);
-		if (tex->width != mt->width || tex->height != mt->height) {
-			Hunk_FreeToLowMark(lowmark);
+		mt->width = LittleLong(mt->width);
+		mt->height = LittleLong(mt->height);
+		if (mt->width != tx->width || mt->height != tx->height) {
+			Q_free (mt);
 			return NULL;
 		}
 		for (j = 0;j < MIPLEVELS;j++)
-			tex->offsets[j] = LittleLong(tex->offsets[j]);
-		data = ConvertWad3ToRGBA(tex);
-		Hunk_FreeToLowMark(lowmark);
+			mt->offsets[j] = LittleLong(mt->offsets[j]);
+		data = ConvertWad3ToRGBA(mt->width, mt->height, (byte *)(mt + 1),
+													(tx->name[0] == '{'));
+		Q_free (mt);
 		return data;
 	}
 	return NULL;
