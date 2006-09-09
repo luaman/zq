@@ -571,8 +571,8 @@ void R_ViewChanged (float aspect)
 	float	res_scale;
 #if id386
 	extern void		*colormap;
-	extern cvar_t	r_aliastransbase, r_aliastransadj;
 #endif
+	extern cvar_t	r_aliastransbase, r_aliastransadj;
 
 	r_refdef.horizontalFieldOfView = 2.0 * tan (r_refdef2.fov_x/360*M_PI);
 	r_refdef.fvrectx = (float)r_refdef.vrect.x;
