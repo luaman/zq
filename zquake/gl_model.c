@@ -26,6 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 cvar_t gl_scaleModelTextures = {"gl_scaleModelTextures", "0"};
 cvar_t gl_scaleTurbTextures = {"gl_scaleTurbTextures", "1"};
 cvar_t gl_mipTexLevel = {"gl_mipTexLevel", "0"};
+cvar_t gl_externalTextures_world = {"gl_externalTextures_world", "1"};
+cvar_t gl_externalTextures_bmodels = {"gl_externalTextures_bmodels", "1"};
 
 //#define HALFLIFEBSP	// enable Half-Life map support
 
@@ -55,6 +57,8 @@ void Mod_Init (void)
 	Cvar_Register (&gl_scaleModelTextures);
 	Cvar_Register (&gl_scaleTurbTextures);
 	Cvar_Register (&gl_mipTexLevel);
+	Cvar_Register (&gl_externalTextures_world);
+	Cvar_Register (&gl_externalTextures_bmodels);
 }
 
 /*
@@ -362,10 +366,6 @@ void Mod_LoadTextures (lump_t *l)
 	texture_t	*anims[10];
 	texture_t	*altanims[10];
 	dmiptexlump_t *m;
-	qbool		noscale;
-	int			mipcap, base_texmode, texmode;
-	byte		*data;
-	int			width, height;
 
 	if (!l->filelen)
 	{
@@ -535,6 +535,81 @@ void Mod_LoadTextures (lump_t *l)
 	}
 }
 
+int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int matchheight, int mode);
+
+static int LoadExternalTexture (texture_t *tx, int mode)
+{
+	char *name, *mapname /*, *groupname*/;
+
+	if (loadmodel->halflifebsp)
+		return 0;
+
+	if (loadmodel->isworldmodel) {
+		if (!gl_externalTextures_world.value)
+			return 0;
+	} else {
+		if (!gl_externalTextures_bmodels.value)
+			return 0;
+	}
+
+	name = tx->name;
+	mapname = Cvar_String("mapname");
+//	groupname = TP_GetMapGroupName(mapname, NULL);
+
+#define TEX_LUMA 512
+
+#define ISTURBTEX(name)		((name)[0] == '*')
+
+	if (loadmodel->isworldmodel)
+		mode |= TEX_WORLD;
+	else
+		mode |= TEX_MODEL;
+
+		if (tx->name[0] == '*')
+			 // turb textures are drawn without lightmaps, so we don't brighten them
+			mode |= TEX_TURB;
+		else
+			mode |= TEX_BRIGHTEN;
+
+
+	if (loadmodel->isworldmodel) {
+		if ((tx->gl_texturenum = GL_LoadTextureImage (va("textures/%s/%s", mapname, name), name, 0, 0, mode))) {
+			if (!ISTURBTEX(name))
+				tx->fb_texturenum = GL_LoadTextureImage (va("textures/%s/%s_luma", mapname, name), va("@fb_%s", name), 0, 0, mode | TEX_LUMA);
+		} else {
+/*
+			if (groupname) {
+				if ((tx->gl_texturenum = GL_LoadTextureImage (va("textures/%s/%s", groupname, name), name, 0, 0, mode))) {
+					if (!ISTURBTEX(name))
+						tx->fb_texturenum = GL_LoadTextureImage (va("textures/%s/%s_luma", groupname, name), va("@fb_%s", name), 0, 0, mode | TEX_LUMA);
+				}
+			}
+*/
+		}
+	} else {
+		if ((tx->gl_texturenum = GL_LoadTextureImage (va("textures/bmodels/%s", name), name, 0, 0, mode))) {
+			if (!ISTURBTEX(name))
+				tx->fb_texturenum = GL_LoadTextureImage (va("textures/bmodels/%s_luma", name), va("@fb_%s", name), 0, 0, mode | TEX_LUMA);
+		}
+	}
+
+	if (!tx->gl_texturenum) {
+		if ((tx->gl_texturenum = GL_LoadTextureImage (va("textures/%s", name), name, 0, 0, mode))) {
+			if (!ISTURBTEX(name))
+				tx->fb_texturenum = GL_LoadTextureImage (va("textures/%s_luma", name), va("@fb_%s", name), 0, 0, mode | TEX_LUMA);
+		}
+	}
+
+	// FIXME, no luma textures right now
+	tx->fb_texturenum = 0;
+
+//	if (tx->fb_texturenum)
+//		tx->isLumaTexture = true;
+
+	return tx->gl_texturenum;
+}
+
+
 void R_LoadBrushModelTextures (model_t *m)
 {
 	int		i;
@@ -568,6 +643,9 @@ void R_LoadBrushModelTextures (model_t *m)
 			continue;
 		}
 #endif
+
+		if (LoadExternalTexture(tx, TEX_MIPMAP))
+			continue;
 
 		if (!tx->offsets[0]) {
 			tx->width = r_notexture_mip->width;
