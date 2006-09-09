@@ -43,6 +43,7 @@ NULL_OBJ_DIR=release/null
 #------------------------------------------------------------------------------
 
 CFLAGS = -DVWEP_TEST -DHALFLIFEBSP
+CFLAGS += -Wall -Wno-format-y2k
 
 ifeq ($(ARCH),mingw32)
 	CFLAGS += -D_WIN32 -DMINGW32
@@ -68,9 +69,12 @@ NULL_CFLAGS =
 #------------------------------------------------------------------------------
 
 LDFLAGS =
+GL_LDFLAGS =
+SW_LDFLAGS =
 ifeq ($(ARCH),mingw32)
-	LDFLAGS				+=-lws2_32 -luser32 -lwinmm -ldxguid -lddraw
-	LDFLAGS				+=-lopengl32 -lgdi32
+	LDFLAGS				+=-lws2_32 -luser32 -lwinmm -ldxguid -lgdi32
+	GL_LDFLAGS			=-mwindows -lopengl32
+	SW_LDFLAGS			=-mwindows -lddraw
 endif
 ifeq ($(OS),darwin)
 	LDFLAGS				+=-framework "CoreAudio" -framework OpenGL
@@ -155,7 +159,7 @@ $(ZQDS_C_OBJS): $(SERVER_OBJ_DIR)/%.o: %.c
 gl: $(PRODUCT_DIR)/zquake-gl
 $(PRODUCT_DIR)/zquake-gl: $(ZQGL_C_OBJS)
 	@echo [LINK] $@
-	@$(CC) -o $@ $(ZQGL_C_OBJS) $(LDFLAGS)
+	@$(CC) -o $@ $(ZQGL_C_OBJS) $(LDFLAGS) $(GL_LDFLAGS)
 $(ZQGL_C_OBJS): $(GL_OBJ_DIR)/%.o: %.c
 	@-mkdir -p $(GL_OBJ_DIR)
 	@echo [CC] $<
@@ -164,7 +168,7 @@ $(ZQGL_C_OBJS): $(GL_OBJ_DIR)/%.o: %.c
 soft: $(PRODUCT_DIR)/zquake
 $(PRODUCT_DIR)/zquake: $(ZQSW_C_OBJS)
 	@echo [LINK] $@
-	@$(CC) -o $@ $(ZQSW_C_OBJS) $(LDFLAGS)
+	@$(CC) -o $@ $(ZQSW_C_OBJS) $(LDFLAGS) $(SW_LDFLAGS)
 $(ZQSW_C_OBJS): $(SOFT_OBJ_DIR)/%.o: %.c
 	@-mkdir -p $(SOFT_OBJ_DIR)
 	@echo [CC] $<
