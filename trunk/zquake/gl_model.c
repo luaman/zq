@@ -362,7 +362,9 @@ void Mod_LoadTextures (lump_t *l)
 	texture_t	*altanims[10];
 	dmiptexlump_t *m;
 	qbool		noscale;
-	int			mipcap;
+	int			mipcap, base_texmode, texmode;
+	byte		*data;
+	int			width, height;
 
 	if (!l->filelen)
 	{
@@ -389,17 +391,13 @@ void Mod_LoadTextures (lump_t *l)
 
 		if ( (mt->width & 15) || (mt->height & 15) )
 			Host_Error ("Texture %s is not 16 aligned", mt->name);
-//		pixels = mt->width*mt->height/64*85;
-		pixels = mt->width*mt->height;	// Tonik: we don't need
-								// precalculated mip textures in GL
+		pixels = mt->width*mt->height/64*85;
 		tx = Hunk_AllocName (sizeof(texture_t) + pixels, loadname);
 		loadmodel->textures[i] = tx;
 
 		memcpy (tx->name, mt->name, sizeof(tx->name));
 		tx->width = mt->width;
 		tx->height = mt->height;
-		for (j = 0; j < MIPLEVELS; j++)
-			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
 
 #ifdef HALFLIFEBSP
 		if (loadmodel->halflifebsp) {
@@ -407,8 +405,9 @@ void Mod_LoadTextures (lump_t *l)
 			if ((data = WAD3_LoadTexture(mt)) != NULL) {
 				qbool alpha = (tx->name[0] == '{');
 				tx->gl_texturenum = GL_LoadTexture32 (tx->name, tx->width, tx->height, data,
-					TEX_MIPMAP|TEX_BRIGHTEN | (alpha ? TEX_ALPHA : 0));
+					TEX_WORLD|TEX_MIPMAP|TEX_BRIGHTEN | (alpha ? TEX_ALPHA : 0));
 				Q_free (data);
+				tx->offsets[0] = 0;
 				continue;
 			}
 		}
@@ -418,6 +417,9 @@ void Mod_LoadTextures (lump_t *l)
 		{
 			// the pixels immediately follow the structures
 			memcpy (tx+1, mt+1, pixels);
+
+			for (j = 0; j < MIPLEVELS; j++)
+				tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
 
 			// HACK HACK HACK
 			if (!strcmp(mt->name, "shot1sid") && mt->width==32 && mt->height==32
@@ -435,41 +437,53 @@ void Mod_LoadTextures (lump_t *l)
 			}
 		}
 		else
-		{
+			tx->offsets[0] = 0;
+
+		// The rest is identical with R_LoadBrushModelTextures
+		if (!tx->offsets[0]) {
 			tx->width = r_notexture_mip->width;
 			tx->height = r_notexture_mip->height;
 			tx->gl_texturenum = GL_LoadTexture ("r_notexture_mip", tx->width, 
-							tx->height, (byte *)(r_notexture_mip + 1), TEX_MIPMAP|TEX_BRIGHTEN);
+							tx->height, (byte *)(r_notexture_mip + 1), TEX_WORLD|TEX_MIPMAP|TEX_BRIGHTEN);
 			continue;
 		}
 
-		if (loadmodel->isworldmodel && !loadmodel->halflifebsp && !strncmp(mt->name,"sky",3))
+		if (loadmodel->isworldmodel && !loadmodel->halflifebsp && !strncmp(tx->name,"sky",3))
 		{
 			R_InitSky (tx);
 			continue;
 		}
 
 		noscale = ((!gl_scaleModelTextures.value && !loadmodel->isworldmodel) ||
-				(!gl_scaleTurbTextures.value && (mt->name[0] == '*')));
+				(!gl_scaleTurbTextures.value && (tx->name[0] == '*')));
 
 		mipcap = noscale ? 0 : bound(0, gl_mipTexLevel.value, 3);
 
-{
-		byte *data = (byte *) mt + mt->offsets[mipcap];
-		int width = tx->width >> mipcap;
-		int height = tx->height >> mipcap;
+		base_texmode = TEX_MIPMAP;
+		if (loadmodel->isworldmodel)
+			base_texmode |= TEX_WORLD;
+		else
+			base_texmode |= TEX_MODEL;
+		if (noscale)
+			base_texmode |= TEX_NOSCALE;
 
-		if (mt->name[0] == '*')	// we don't brighten turb textures
-			tx->gl_texturenum = GL_LoadTexture (mt->name, width, height, data/*(byte *)(tx+1)*/, TEX_MIPMAP | (noscale ? TEX_NOSCALE : 0));
-		else {
-			tx->gl_texturenum = GL_LoadTexture (mt->name, width, height, data/*(byte *)(tx+1)*/, TEX_MIPMAP|TEX_BRIGHTEN | (noscale ? TEX_NOSCALE : 0));
-			if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
-				tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", mt->name), width, height, (byte *)(tx+1),
-					TEX_MIPMAP|TEX_FULLBRIGHTMASK | (noscale ? TEX_NOSCALE : 0));
-			}
+		if (tx->name[0] == '*')
+			 // turb textures are drawn without lightmaps, so we don't brighten them
+			texmode = base_texmode | TEX_TURB;
+		else
+			texmode = base_texmode | TEX_BRIGHTEN;
+
+		data = (byte *)tx + tx->offsets[mipcap];
+		width = tx->width >> mipcap;
+		height = tx->height >> mipcap;
+
+		tx->gl_texturenum = GL_LoadTexture (tx->name, width, height,
+														data, texmode);
+
+		if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
+			tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", tx->name), width,
+					height, (byte *)(tx+1), base_texmode|TEX_FULLBRIGHTMASK);
 		}
-
-}
 	}
 
 //
@@ -570,15 +584,24 @@ void R_LoadBrushModelTextures (model_t *m)
 {
 	int		i;
 	texture_t	*tx;
+	int			mipcap, base_texmode, texmode;
 	qbool		noscale;
-	int			mipcap;
-	byte *data;
+	byte		*data;
+	int			width, height;
 
 	loadmodel = m;
 
 	for (i = 0; i < loadmodel->numtextures; i++)
 	{
 		tx = loadmodel->textures[i];
+
+		if (!tx->offsets[0]) {
+			tx->width = r_notexture_mip->width;
+			tx->height = r_notexture_mip->height;
+			tx->gl_texturenum = GL_LoadTexture ("r_notexture_mip", tx->width, 
+							tx->height, (byte *)(r_notexture_mip + 1), TEX_MIPMAP|TEX_BRIGHTEN);
+			continue;
+		}
 
 		if (loadmodel->isworldmodel && !loadmodel->halflifebsp && !strncmp(tx->name,"sky",3))
 		{
@@ -591,27 +614,31 @@ void R_LoadBrushModelTextures (model_t *m)
 
 		mipcap = noscale ? 0 : bound(0, gl_mipTexLevel.value, 3);
 
-{
-		int width = tx->width >> mipcap;
-		int height = tx->height >> mipcap;
+		base_texmode = TEX_MIPMAP;
+		if (loadmodel->isworldmodel)
+			base_texmode |= TEX_WORLD;
+		else
+			base_texmode |= TEX_MODEL;
+		if (noscale)
+			base_texmode |= TEX_NOSCALE;
 
+		if (tx->name[0] == '*')
+			 // turb textures are drawn without lightmaps, so we don't brighten them
+			texmode = base_texmode | TEX_TURB;
+		else
+			texmode = base_texmode | TEX_BRIGHTEN;
 
-		data = (byte *)(tx+1);
+		data = (byte *)tx + tx->offsets[mipcap];
+		width = tx->width >> mipcap;
+		height = tx->height >> mipcap;
 
-		if (tx->name[0] == '*')	// we don't brighten turb textures
-			tx->gl_texturenum = GL_LoadTexture (tx->name, width, height, data/*(byte *)(tx+1)*/, TEX_MIPMAP | (noscale ? TEX_NOSCALE : 0));
-		else {
-			tx->gl_texturenum = GL_LoadTexture (tx->name, width, height, data/*(byte *)(tx+1)*/, TEX_MIPMAP|TEX_BRIGHTEN | (noscale ? TEX_NOSCALE : 0));
-			if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
-				tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", tx->name), width, height, (byte *)(tx+1),
-					TEX_MIPMAP|TEX_FULLBRIGHTMASK | (noscale ? TEX_NOSCALE : 0));
-			}
+		tx->gl_texturenum = GL_LoadTexture (tx->name, width, height,
+														data, texmode);
+
+		if (Img_HasFullbrights((byte *)(tx+1), tx->width*tx->height)) {
+			tx->fb_texturenum = GL_LoadTexture (va("@fb_%s", tx->name), width,
+					height, (byte *)(tx+1), base_texmode|TEX_FULLBRIGHTMASK);
 		}
-
-}
-
-
-		
 	}
 }
 
@@ -1574,6 +1601,7 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 	daliasskingroup_t		*pinskingroup;
 	int		groupskins;
 	daliasskininterval_t	*pinskinintervals;
+	int		noscale_flag = gl_scaleModelTextures.value ? 0 : TEX_NOSCALE;
 	
 	skin = (byte *)(pskintype + 1);
 
@@ -1600,13 +1628,13 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 			pheader->gl_texturenum[i][2] =
 			pheader->gl_texturenum[i][3] =
 				GL_LoadTexture (name, pheader->skinwidth, pheader->skinheight,
-				(byte *)(pskintype + 1), TEX_MIPMAP);
+				(byte *)(pskintype + 1), TEX_MODEL|TEX_MIPMAP|noscale_flag);
 
 			if (Img_HasFullbrights((byte *)(pskintype + 1),	pheader->skinwidth*pheader->skinheight))
 				pheader->fb_texturenum[i][0] = pheader->fb_texturenum[i][1] =
 				pheader->fb_texturenum[i][2] = pheader->fb_texturenum[i][3] =
 					GL_LoadTexture (va("@fb_%s", name), pheader->skinwidth, 
-					pheader->skinheight, (byte *)(pskintype + 1), TEX_MIPMAP|TEX_FULLBRIGHTMASK);
+					pheader->skinheight, (byte *)(pskintype + 1), TEX_MODEL|TEX_MIPMAP|TEX_FULLBRIGHTMASK|noscale_flag);
 			else
 				pheader->fb_texturenum[i][0] = pheader->fb_texturenum[i][1] =
 				pheader->fb_texturenum[i][2] = pheader->fb_texturenum[i][3] = 0;
@@ -1627,12 +1655,12 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 					snprintf (name, sizeof(name), "%s_%i_%i", loadmodel->name, i, j);
 					pheader->gl_texturenum[i][j&3] = 
 						GL_LoadTexture (name, pheader->skinwidth, 
-						pheader->skinheight, (byte *)(pskintype), TEX_MIPMAP);
+						pheader->skinheight, (byte *)(pskintype), TEX_MODEL|TEX_MIPMAP|noscale_flag);
 
 					if (Img_HasFullbrights((byte *)(pskintype),	pheader->skinwidth*pheader->skinheight))
 						pheader->fb_texturenum[i][j&3] =
 							GL_LoadTexture (va("@fb_%s", name), pheader->skinwidth, 
-							pheader->skinheight, (byte *)(pskintype), TEX_MIPMAP|TEX_FULLBRIGHTMASK);
+							pheader->skinheight, (byte *)(pskintype), TEX_MODEL|TEX_MIPMAP|TEX_FULLBRIGHTMASK|noscale_flag);
 					else
 						pheader->fb_texturenum[i][j&3] = 0;
 
@@ -1859,6 +1887,7 @@ void *Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe, int framenum)
 	mspriteframe_t		*pspriteframe;
 	int					width, height, size, origin[2];
 	char				name[64];
+	int					texmode;
 
 	pinframe = (dspriteframe_t *)pin;
 
@@ -1882,8 +1911,11 @@ void *Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe, int framenum)
 	pspriteframe->left = origin[0];
 	pspriteframe->right = width + origin[0];
 
+	texmode = TEX_SPRITE|TEX_MIPMAP|TEX_ALPHA;
+	if (!gl_scaleModelTextures.value)
+		texmode |= TEX_NOSCALE;
 	sprintf (name, "%s_%i", loadmodel->name, framenum);
-	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), TEX_MIPMAP|TEX_ALPHA);
+	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), texmode);
 
 	return (void *)((byte *)pinframe + sizeof (dspriteframe_t) + size);
 }
