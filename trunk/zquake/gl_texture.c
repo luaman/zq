@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gl_local.h"
 #include "crc.h"
 #include "version.h"
+#include "rc_image.h"
 #include "rc_pixops.h"
 
 #ifdef MINGW32
@@ -218,7 +219,6 @@ void R_SetPalette (unsigned char *palette)
 	int			i;
 	byte		*pal;
 	unsigned	r,g,b;
-	unsigned	v;
 	byte		*table;
 
 //
@@ -615,6 +615,48 @@ setuptexture:
 	GL_Upload32 ((unsigned int *)data, width, height, mode);
 
 	return glt->texnum;
+}
+
+
+
+int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int matchheight, int mode)
+{
+	int texnum;
+	byte *data;
+//	gltexture_t *gltexture;
+	int width, height;
+	char	tganame[MAX_QPATH], *c;
+
+//	if (no24bit)
+//		return 0;
+
+	if (!identifier)
+		identifier = filename;
+
+#if 0
+	gltexture = current_texture = GL_FindTexture(identifier);
+
+	if (!(data = GL_LoadImagePixels (filename, matchwidth, matchheight, mode))) {
+		texnum =  (gltexture && !current_texture) ? gltexture->texnum : 0;
+	} else {
+		texnum = GL_LoadTexturePixels(data, identifier, image_width, image_height, mode);
+		Q_free(data);	// data was Q_malloc'ed by GL_LoadImagePixels
+	}
+#endif 
+
+	snprintf (tganame, sizeof(tganame), "%s.tga", filename);
+	for (c = tganame; *c; c++)
+		if (*c == '*')
+			*c = '#';
+	LoadTGA (tganame, &data, &width, &height);
+	if (!data)
+		return 0;
+
+	texnum = GL_LoadTexture32 (identifier, width, height, data, mode);
+
+	Q_free (data);
+
+	return texnum;
 }
 
 
