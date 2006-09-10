@@ -32,8 +32,6 @@ static bool						gSndIOProcIsInstalled = false;
 static UInt32					gSndBufferPosition,
 gSndBufferByteCount;
 
-static int tryrates[] = { 11025, 22051, 44100, 8000 };
-
 OSStatus	SNDDMA_AudioIOProc (AudioDeviceID inDevice,
                              const AudioTimeStamp *inNow,
                              const AudioBufferList *inInputData,
