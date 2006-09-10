@@ -1,0 +1,3786 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 39;
+	objects = {
+		080E96DDFE201D6D7F000001 = {
+			children = (
+				EAFA2E960AB4B88900E3EB11,
+				EA14E3F00AB4B29000B4AEF4,
+				EA14E3F10AB4B29000B4AEF4,
+				EA14E3E60AB4B22400B4AEF4,
+				EA14D5CC0AB4A6AD00B4AEF4,
+				EAFA2F980AB4BFB400E3EB11,
+				EA14D5CD0AB4A6AD00B4AEF4,
+				EA14D5CE0AB4A6AD00B4AEF4,
+				EA14D5CF0AB4A6AD00B4AEF4,
+				EA14D5D00AB4A6AD00B4AEF4,
+				EA14D5CA0AB4A64B00B4AEF4,
+				EA77601C0AB4A14B001E2983,
+				EA77601D0AB4A14B001E2983,
+				EA77601E0AB4A14B001E2983,
+				EA77601F0AB4A14B001E2983,
+				EA7760200AB4A14B001E2983,
+				EA7760210AB4A14B001E2983,
+				32CA4F630368D1EE00C91783,
+			);
+			isa = PBXGroup;
+			name = "Mac OS X";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		089C165CFE840E0CC02AAC07 = {
+			children = (
+				089C165DFE840E0CC02AAC07,
+			);
+			isa = PBXVariantGroup;
+			name = InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		089C165DFE840E0CC02AAC07 = {
+			fileEncoding = 10;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
+			name = English;
+			path = English.lproj/InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//080
+//081
+//082
+//083
+//084
+//100
+//101
+//102
+//103
+//104
+		1058C7A0FEA54F0111CA2CBB = {
+			children = (
+				EAFA2EA30AB4B90F00E3EB11,
+				EAFA2EA40AB4B90F00E3EB11,
+				EAFA2E910AB4B83200E3EB11,
+				1058C7A1FEA54F0111CA2CBB,
+			);
+			isa = PBXGroup;
+			name = "Linked Frameworks";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		1058C7A1FEA54F0111CA2CBB = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = Cocoa.framework;
+			path = /System/Library/Frameworks/Cocoa.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1058C7A2FEA54F0111CA2CBB = {
+			children = (
+				29B97325FDCFA39411CA2CEA,
+				29B97324FDCFA39411CA2CEA,
+			);
+			isa = PBXGroup;
+			name = "Other Frameworks";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//100
+//101
+//102
+//103
+//104
+//190
+//191
+//192
+//193
+//194
+		19C28FACFE9D520D11CA2CBB = {
+			children = (
+				8D1107320486CEB800E47090,
+				EA77602C0AB4A163001E2983,
+				EA7760320AB4A1E7001E2983,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//190
+//191
+//192
+//193
+//194
+//290
+//291
+//292
+//293
+//294
+		29B97313FDCFA39411CA2CEA = {
+			buildSettings = {
+			};
+			buildStyles = (
+				4A9504CCFFE6A4B311CA0CBA,
+				4A9504CDFFE6A4B311CA0CBA,
+			);
+			hasScannedForEncodings = 1;
+			isa = PBXProject;
+			mainGroup = 29B97314FDCFA39411CA2CEA;
+			projectDirPath = "";
+			targets = (
+				8D1107260486CEB800E47090,
+				EA77602B0AB4A163001E2983,
+				EA7760310AB4A1E7001E2983,
+			);
+		};
+		29B97314FDCFA39411CA2CEA = {
+			children = (
+				080E96DDFE201D6D7F000001,
+				29B97315FDCFA39411CA2CEA,
+				EA7760380AB4A244001E2983,
+				EA7760390AB4A252001E2983,
+				EA77603A0AB4A27D001E2983,
+				EA77603B0AB4A288001E2983,
+				EA14D6530AB4AD0100B4AEF4,
+				29B97317FDCFA39411CA2CEA,
+				29B97323FDCFA39411CA2CEA,
+				19C28FACFE9D520D11CA2CBB,
+				EAC4D4A50AB4D1CB00209B7A,
+			);
+			isa = PBXGroup;
+			name = ZQuake;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA = {
+			children = (
+				EAFA2F640AB4B9E400E3EB11,
+				EA14E3DD0AB4B21100B4AEF4,
+				EA14E3DE0AB4B21100B4AEF4,
+				EA14E3DF0AB4B21100B4AEF4,
+				EA14DB080AB4AE4300B4AEF4,
+				EA14DB090AB4AE4300B4AEF4,
+				EA14D62B0AB4AC9700B4AEF4,
+				EA14D62C0AB4AC9700B4AEF4,
+				EA77603C0AB4A2DB001E2983,
+				EA77603D0AB4A2DB001E2983,
+				EA77603E0AB4A2DB001E2983,
+				EA77603F0AB4A2DB001E2983,
+				EA7760400AB4A2DB001E2983,
+				EA7760410AB4A2DB001E2983,
+				EA7760420AB4A2DB001E2983,
+				EA7760430AB4A2DB001E2983,
+				EA7760450AB4A2DB001E2983,
+				EA7760470AB4A2DB001E2983,
+				EA7760480AB4A2DB001E2983,
+				EA7760490AB4A2DB001E2983,
+				EA77604A0AB4A2DB001E2983,
+				EA77604B0AB4A2DC001E2983,
+				EA77604C0AB4A2DC001E2983,
+				EA77604D0AB4A2DC001E2983,
+				EA77604E0AB4A2DC001E2983,
+				EA77604F0AB4A2DC001E2983,
+				EA7760500AB4A2DC001E2983,
+				EA7760510AB4A2DC001E2983,
+				EA7760520AB4A2DC001E2983,
+				EA7760530AB4A2DC001E2983,
+				EA7760540AB4A2DC001E2983,
+				EA7760550AB4A2DC001E2983,
+			);
+			isa = PBXGroup;
+			name = Client;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA = {
+			children = (
+				EAC4D48D0AB4CC1C00209B7A,
+				8D1107310486CEB800E47090,
+				089C165CFE840E0CC02AAC07,
+				29B97318FDCFA39411CA2CEA,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97318FDCFA39411CA2CEA = {
+			children = (
+				29B97319FDCFA39411CA2CEA,
+			);
+			isa = PBXVariantGroup;
+			name = ZQuake.nib;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97319FDCFA39411CA2CEA = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
+			name = English;
+			path = English.lproj/ZQuake.nib;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA = {
+			children = (
+				1058C7A0FEA54F0111CA2CBB,
+				1058C7A2FEA54F0111CA2CBB,
+			);
+			isa = PBXGroup;
+			name = Frameworks;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		29B97324FDCFA39411CA2CEA = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = AppKit.framework;
+			path = /System/Library/Frameworks/AppKit.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		29B97325FDCFA39411CA2CEA = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = Foundation.framework;
+			path = /System/Library/Frameworks/Foundation.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+//290
+//291
+//292
+//293
+//294
+//320
+//321
+//322
+//323
+//324
+		32CA4F630368D1EE00C91783 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = ZQuake_Prefix.pch;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//320
+//321
+//322
+//323
+//324
+//4A0
+//4A1
+//4A2
+//4A3
+//4A4
+		4A9504CCFFE6A4B311CA0CBA = {
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ZERO_LINK = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		4A9504CDFFE6A4B311CA0CBA = {
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+//4A0
+//4A1
+//4A2
+//4A3
+//4A4
+//8D0
+//8D1
+//8D2
+//8D3
+//8D4
+		8D1107260486CEB800E47090 = {
+			buildPhases = (
+				8D1107290486CEB800E47090,
+				8D11072C0486CEB800E47090,
+				8D11072E0486CEB800E47090,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = ZQuake_Prefix.pch;
+				INFOPLIST_FILE = "ZQuake-GL-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_CFLAGS = "-DGLQUAKE -DHALFLIFEBSP";
+				PRODUCT_NAME = "ZQuake-GL";
+				WARNING_CFLAGS = "-Wall -Wno-format-y2k";
+				WRAPPER_EXTENSION = app;
+			};
+			dependencies = (
+			);
+			isa = PBXNativeTarget;
+			name = "ZQuake-GL";
+			productInstallPath = "$(HOME)/Applications";
+			productName = ZQuake;
+			productReference = 8D1107320486CEB800E47090;
+			productType = "com.apple.product-type.application";
+		};
+		8D1107290486CEB800E47090 = {
+			buildActionMask = 2147483647;
+			files = (
+				8D11072A0486CEB800E47090,
+				8D11072B0486CEB800E47090,
+				EA7760220AB4A14B001E2983,
+				EA7760240AB4A14B001E2983,
+				EA7760260AB4A14B001E2983,
+				EA7760640AB4A2DC001E2983,
+				EA7760660AB4A2DC001E2983,
+				EA7760690AB4A2DC001E2983,
+				EA77606A0AB4A2DC001E2983,
+				EA77606B0AB4A2DC001E2983,
+				EA77606D0AB4A2DC001E2983,
+				EA77606F0AB4A2DC001E2983,
+				EA7760E50AB4A350001E2983,
+				EA7760E70AB4A350001E2983,
+				EA14D5D40AB4A6AD00B4AEF4,
+				EA14D6180AB4AB0300B4AEF4,
+				EA14D62E0AB4AC9700B4AEF4,
+				EA14D6430AB4ACF800B4AEF4,
+				EA14D6460AB4ACF800B4AEF4,
+				EA14D6500AB4ACF800B4AEF4,
+				EA14D6510AB4ACF800B4AEF4,
+				EA14D65D0AB4AD5900B4AEF4,
+				EA14D65F0AB4AD5900B4AEF4,
+				EA14D6610AB4AD5900B4AEF4,
+				EA14DF6F0AB4AECC00B4AEF4,
+				EA14E3F20AB4B29000B4AEF4,
+				EAFA2F990AB4BFB400E3EB11,
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D11072A0486CEB800E47090 = {
+			fileRef = 29B97318FDCFA39411CA2CEA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8D11072B0486CEB800E47090 = {
+			fileRef = 089C165CFE840E0CC02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8D11072C0486CEB800E47090 = {
+			buildActionMask = 2147483647;
+			files = (
+				EA7760230AB4A14B001E2983,
+				EA7760250AB4A14B001E2983,
+				EA7760270AB4A14B001E2983,
+				EA7760560AB4A2DC001E2983,
+				EA7760570AB4A2DC001E2983,
+				EA7760580AB4A2DC001E2983,
+				EA7760590AB4A2DC001E2983,
+				EA77605A0AB4A2DC001E2983,
+				EA77605B0AB4A2DC001E2983,
+				EA77605C0AB4A2DC001E2983,
+				EA77605D0AB4A2DC001E2983,
+				EA77605F0AB4A2DC001E2983,
+				EA7760610AB4A2DC001E2983,
+				EA7760620AB4A2DC001E2983,
+				EA7760630AB4A2DC001E2983,
+				EA7760650AB4A2DC001E2983,
+				EA7760670AB4A2DC001E2983,
+				EA7760680AB4A2DC001E2983,
+				EA77606C0AB4A2DC001E2983,
+				EA77606E0AB4A2DC001E2983,
+				EA77609B0AB4A300001E2983,
+				EA77609D0AB4A300001E2983,
+				EA77609E0AB4A300001E2983,
+				EA77609F0AB4A300001E2983,
+				EA7760A00AB4A300001E2983,
+				EA7760A10AB4A300001E2983,
+				EA7760A20AB4A300001E2983,
+				EA7760A40AB4A300001E2983,
+				EA7760A50AB4A300001E2983,
+				EA7760A60AB4A300001E2983,
+				EA7760A70AB4A300001E2983,
+				EA7760A80AB4A300001E2983,
+				EA7760A90AB4A300001E2983,
+				EA7760AA0AB4A300001E2983,
+				EA7760DD0AB4A350001E2983,
+				EA7760DF0AB4A350001E2983,
+				EA7760E10AB4A350001E2983,
+				EA7760E20AB4A350001E2983,
+				EA7760E40AB4A350001E2983,
+				EA7760E60AB4A350001E2983,
+				EA7760E80AB4A350001E2983,
+				EA7760E90AB4A350001E2983,
+				EA7760EB0AB4A350001E2983,
+				EA77613F0AB4A467001E2983,
+				EA7761410AB4A467001E2983,
+				EA14D5D10AB4A6AD00B4AEF4,
+				EA14D5D20AB4A6AD00B4AEF4,
+				EA14D5D30AB4A6AD00B4AEF4,
+				EA14D5D50AB4A6AD00B4AEF4,
+				EA14D5DE0AB4A70D00B4AEF4,
+				EA14D5E30AB4A72900B4AEF4,
+				EA14D5E70AB4A75F00B4AEF4,
+				EA14D5EE0AB4A84300B4AEF4,
+				EA14D5F70AB4A87100B4AEF4,
+				EA14D5F90AB4A87100B4AEF4,
+				EA14D5FA0AB4A87100B4AEF4,
+				EA14D60C0AB4A8D800B4AEF4,
+				EA14D62D0AB4AC9700B4AEF4,
+				EA14D6420AB4ACF800B4AEF4,
+				EA14D6440AB4ACF800B4AEF4,
+				EA14D6450AB4ACF800B4AEF4,
+				EA14D6470AB4ACF800B4AEF4,
+				EA14D6480AB4ACF800B4AEF4,
+				EA14D6490AB4ACF800B4AEF4,
+				EA14D64A0AB4ACF800B4AEF4,
+				EA14D64B0AB4ACF800B4AEF4,
+				EA14D64C0AB4ACF800B4AEF4,
+				EA14D64D0AB4ACF800B4AEF4,
+				EA14D64E0AB4ACF800B4AEF4,
+				EA14D64F0AB4ACF800B4AEF4,
+				EA14D6520AB4ACF800B4AEF4,
+				EA14D65C0AB4AD5900B4AEF4,
+				EA14D65E0AB4AD5900B4AEF4,
+				EA14D6600AB4AD5900B4AEF4,
+				EA14DF6E0AB4AECC00B4AEF4,
+				EA14E3E00AB4B21100B4AEF4,
+				EA14E3E10AB4B21100B4AEF4,
+				EA14E3E20AB4B21100B4AEF4,
+				EA14E3E70AB4B22400B4AEF4,
+				EA14E3F30AB4B29000B4AEF4,
+				EAFA2E970AB4B88900E3EB11,
+				EAFA2F650AB4B9E400E3EB11,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D11072E0486CEB800E47090 = {
+			buildActionMask = 2147483647;
+			files = (
+				8D11072F0486CEB800E47090,
+				EAFA2E920AB4B83200E3EB11,
+				EAFA2EA50AB4B90F00E3EB11,
+				EAFA2EA60AB4B90F00E3EB11,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D11072F0486CEB800E47090 = {
+			fileRef = 1058C7A1FEA54F0111CA2CBB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8D1107310486CEB800E47090 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text.xml;
+			path = "ZQuake-GL-Info.plist";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		8D1107320486CEB800E47090 = {
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = "ZQuake-GL.app";
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+//8D0
+//8D1
+//8D2
+//8D3
+//8D4
+//EA0
+//EA1
+//EA2
+//EA3
+//EA4
+		EA14D5CA0AB4A64B00B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_sys_unix.c;
+			path = /Users/tony/projects/zquake/source/sv_sys_unix.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5CB0AB4A64B00B4AEF4 = {
+			fileRef = EA14D5CA0AB4A64B00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5CC0AB4A6AD00B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sys_linux.c;
+			path = /Users/tony/projects/zquake/source/sys_linux.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5CD0AB4A6AD00B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = sys_osx.m;
+			path = /Users/tony/projects/zquake/source/sys_osx.m;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5CE0AB4A6AD00B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = vid_osx_shared.m;
+			path = /Users/tony/projects/zquake/source/vid_osx_shared.m;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5CF0AB4A6AD00B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = vid_osx.h;
+			path = /Users/tony/projects/zquake/source/vid_osx.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5D00AB4A6AD00B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = vid_osxgl.m;
+			path = /Users/tony/projects/zquake/source/vid_osxgl.m;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5D10AB4A6AD00B4AEF4 = {
+			fileRef = EA14D5CC0AB4A6AD00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5D20AB4A6AD00B4AEF4 = {
+			fileRef = EA14D5CD0AB4A6AD00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5D30AB4A6AD00B4AEF4 = {
+			fileRef = EA14D5CE0AB4A6AD00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5D40AB4A6AD00B4AEF4 = {
+			fileRef = EA14D5CF0AB4A6AD00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5D50AB4A6AD00B4AEF4 = {
+			fileRef = EA14D5D00AB4A6AD00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5D60AB4A6AD00B4AEF4 = {
+			fileRef = EA14D5CC0AB4A6AD00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5D70AB4A6AD00B4AEF4 = {
+			fileRef = EA14D5CD0AB4A6AD00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5D80AB4A6AD00B4AEF4 = {
+			fileRef = EA14D5CE0AB4A6AD00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5D90AB4A6AD00B4AEF4 = {
+			fileRef = EA14D5CF0AB4A6AD00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5DA0AB4A6AD00B4AEF4 = {
+			fileRef = EA14D5D00AB4A6AD00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5DD0AB4A70D00B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = host.c;
+			path = /Users/tony/projects/zquake/source/host.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5DE0AB4A70D00B4AEF4 = {
+			fileRef = EA14D5DD0AB4A70D00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5DF0AB4A70D00B4AEF4 = {
+			fileRef = EA14D5DD0AB4A70D00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5E00AB4A70D00B4AEF4 = {
+			fileRef = EA14D5DD0AB4A70D00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5E20AB4A72900B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = zone.c;
+			path = /Users/tony/projects/zquake/source/zone.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5E30AB4A72900B4AEF4 = {
+			fileRef = EA14D5E20AB4A72900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5E40AB4A72900B4AEF4 = {
+			fileRef = EA14D5E20AB4A72900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5E50AB4A72900B4AEF4 = {
+			fileRef = EA14D5E20AB4A72900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5E60AB4A75F00B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = q_shared.c;
+			path = /Users/tony/projects/zquake/source/q_shared.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5E70AB4A75F00B4AEF4 = {
+			fileRef = EA14D5E60AB4A75F00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5E80AB4A75F00B4AEF4 = {
+			fileRef = EA14D5E60AB4A75F00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5E90AB4A75F00B4AEF4 = {
+			fileRef = EA14D5E60AB4A75F00B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5ED0AB4A84300B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = net_udp.c;
+			path = /Users/tony/projects/zquake/source/net_udp.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5EE0AB4A84300B4AEF4 = {
+			fileRef = EA14D5ED0AB4A84300B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5EF0AB4A84300B4AEF4 = {
+			fileRef = EA14D5ED0AB4A84300B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5F00AB4A84300B4AEF4 = {
+			fileRef = EA14D5ED0AB4A84300B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5F10AB4A87100B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = pr_cmds.c;
+			path = /Users/tony/projects/zquake/source/pr_cmds.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5F30AB4A87100B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = pr_edict.c;
+			path = /Users/tony/projects/zquake/source/pr_edict.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5F40AB4A87100B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = pr_exec.c;
+			path = /Users/tony/projects/zquake/source/pr_exec.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D5F70AB4A87100B4AEF4 = {
+			fileRef = EA14D5F10AB4A87100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5F90AB4A87100B4AEF4 = {
+			fileRef = EA14D5F30AB4A87100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5FA0AB4A87100B4AEF4 = {
+			fileRef = EA14D5F40AB4A87100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5FD0AB4A87100B4AEF4 = {
+			fileRef = EA14D5F10AB4A87100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D5FF0AB4A87100B4AEF4 = {
+			fileRef = EA14D5F30AB4A87100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6000AB4A87100B4AEF4 = {
+			fileRef = EA14D5F40AB4A87100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6030AB4A87900B4AEF4 = {
+			fileRef = EA14D5F10AB4A87100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6050AB4A87900B4AEF4 = {
+			fileRef = EA14D5F30AB4A87100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6060AB4A87900B4AEF4 = {
+			fileRef = EA14D5F40AB4A87100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D60A0AB4A8D800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = version.c;
+			path = /Users/tony/projects/zquake/source/version.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D60C0AB4A8D800B4AEF4 = {
+			fileRef = EA14D60A0AB4A8D800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D60E0AB4A8D800B4AEF4 = {
+			fileRef = EA14D60A0AB4A8D800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6100AB4A8EE00B4AEF4 = {
+			fileRef = EA14D60A0AB4A8D800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6170AB4AB0300B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = q_shared.h;
+			path = /Users/tony/projects/zquake/source/q_shared.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6180AB4AB0300B4AEF4 = {
+			fileRef = EA14D6170AB4AB0300B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6190AB4AB0300B4AEF4 = {
+			fileRef = EA14D6170AB4AB0300B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D62B0AB4AC9700B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = console.c;
+			path = /Users/tony/projects/zquake/source/console.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D62C0AB4AC9700B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = console.h;
+			path = /Users/tony/projects/zquake/source/console.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D62D0AB4AC9700B4AEF4 = {
+			fileRef = EA14D62B0AB4AC9700B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D62E0AB4AC9700B4AEF4 = {
+			fileRef = EA14D62C0AB4AC9700B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D62F0AB4AC9700B4AEF4 = {
+			fileRef = EA14D62B0AB4AC9700B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6300AB4AC9700B4AEF4 = {
+			fileRef = EA14D62C0AB4AC9700B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6310AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_draw.c;
+			path = /Users/tony/projects/zquake/source/gl_draw.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6320AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = gl_local.h;
+			path = /Users/tony/projects/zquake/source/gl_local.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6330AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_mesh.c;
+			path = /Users/tony/projects/zquake/source/gl_mesh.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6340AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_model.c;
+			path = /Users/tony/projects/zquake/source/gl_model.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6350AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = gl_model.h;
+			path = /Users/tony/projects/zquake/source/gl_model.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6360AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_ngraph.c;
+			path = /Users/tony/projects/zquake/source/gl_ngraph.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6370AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_ralias.c;
+			path = /Users/tony/projects/zquake/source/gl_ralias.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6380AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_refrag.c;
+			path = /Users/tony/projects/zquake/source/gl_refrag.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6390AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_rlight.c;
+			path = /Users/tony/projects/zquake/source/gl_rlight.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D63A0AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_rmain.c;
+			path = /Users/tony/projects/zquake/source/gl_rmain.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D63B0AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_rmisc.c;
+			path = /Users/tony/projects/zquake/source/gl_rmisc.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D63C0AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_rsprite.c;
+			path = /Users/tony/projects/zquake/source/gl_rsprite.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D63D0AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_rsurf.c;
+			path = /Users/tony/projects/zquake/source/gl_rsurf.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D63E0AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_texture.c;
+			path = /Users/tony/projects/zquake/source/gl_texture.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D63F0AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = gl_texture.h;
+			path = /Users/tony/projects/zquake/source/gl_texture.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6400AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = gl_warp_sin.h;
+			path = /Users/tony/projects/zquake/source/gl_warp_sin.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6410AB4ACF800B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gl_warp.c;
+			path = /Users/tony/projects/zquake/source/gl_warp.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6420AB4ACF800B4AEF4 = {
+			fileRef = EA14D6310AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6430AB4ACF800B4AEF4 = {
+			fileRef = EA14D6320AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6440AB4ACF800B4AEF4 = {
+			fileRef = EA14D6330AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6450AB4ACF800B4AEF4 = {
+			fileRef = EA14D6340AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6460AB4ACF800B4AEF4 = {
+			fileRef = EA14D6350AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6470AB4ACF800B4AEF4 = {
+			fileRef = EA14D6360AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6480AB4ACF800B4AEF4 = {
+			fileRef = EA14D6370AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6490AB4ACF800B4AEF4 = {
+			fileRef = EA14D6380AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D64A0AB4ACF800B4AEF4 = {
+			fileRef = EA14D6390AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D64B0AB4ACF800B4AEF4 = {
+			fileRef = EA14D63A0AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D64C0AB4ACF800B4AEF4 = {
+			fileRef = EA14D63B0AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D64D0AB4ACF800B4AEF4 = {
+			fileRef = EA14D63C0AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D64E0AB4ACF800B4AEF4 = {
+			fileRef = EA14D63D0AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D64F0AB4ACF800B4AEF4 = {
+			fileRef = EA14D63E0AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6500AB4ACF800B4AEF4 = {
+			fileRef = EA14D63F0AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6510AB4ACF800B4AEF4 = {
+			fileRef = EA14D6400AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6520AB4ACF800B4AEF4 = {
+			fileRef = EA14D6410AB4ACF800B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6530AB4AD0100B4AEF4 = {
+			children = (
+				EA14D6550AB4AD5900B4AEF4,
+				EA14D6560AB4AD5900B4AEF4,
+				EA14D6570AB4AD5900B4AEF4,
+				EA14D6580AB4AD5900B4AEF4,
+				EA14D6590AB4AD5900B4AEF4,
+				EA14D65A0AB4AD5900B4AEF4,
+			);
+			isa = PBXGroup;
+			name = "Renderer Common";
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA14D6550AB4AD5900B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = rc_image.c;
+			path = /Users/tony/projects/zquake/source/rc_image.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6560AB4AD5900B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = rc_image.h;
+			path = /Users/tony/projects/zquake/source/rc_image.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6570AB4AD5900B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = rc_pixops.c;
+			path = /Users/tony/projects/zquake/source/rc_pixops.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6580AB4AD5900B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = rc_pixops.h;
+			path = /Users/tony/projects/zquake/source/rc_pixops.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D6590AB4AD5900B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = rc_wad.c;
+			path = /Users/tony/projects/zquake/source/rc_wad.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D65A0AB4AD5900B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = rc_wad.h;
+			path = /Users/tony/projects/zquake/source/rc_wad.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14D65C0AB4AD5900B4AEF4 = {
+			fileRef = EA14D6550AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D65D0AB4AD5900B4AEF4 = {
+			fileRef = EA14D6560AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D65E0AB4AD5900B4AEF4 = {
+			fileRef = EA14D6570AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D65F0AB4AD5900B4AEF4 = {
+			fileRef = EA14D6580AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6600AB4AD5900B4AEF4 = {
+			fileRef = EA14D6590AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6610AB4AD5900B4AEF4 = {
+			fileRef = EA14D65A0AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6630AB4AD5900B4AEF4 = {
+			fileRef = EA14D6550AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6640AB4AD5900B4AEF4 = {
+			fileRef = EA14D6560AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6650AB4AD5900B4AEF4 = {
+			fileRef = EA14D6570AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6660AB4AD5900B4AEF4 = {
+			fileRef = EA14D6580AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6670AB4AD5900B4AEF4 = {
+			fileRef = EA14D6590AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14D6680AB4AD5900B4AEF4 = {
+			fileRef = EA14D65A0AB4AD5900B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14DB080AB4AE4300B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = teamplay.c;
+			path = /Users/tony/projects/zquake/source/teamplay.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14DB090AB4AE4300B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = teamplay.h;
+			path = /Users/tony/projects/zquake/source/teamplay.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14DF6E0AB4AECC00B4AEF4 = {
+			fileRef = EA14DB080AB4AE4300B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14DF6F0AB4AECC00B4AEF4 = {
+			fileRef = EA14DB090AB4AE4300B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3D40AB4AF5000B4AEF4 = {
+			fileRef = EA14DB080AB4AE4300B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3D50AB4AF5000B4AEF4 = {
+			fileRef = EA14DB090AB4AE4300B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3DD0AB4B21100B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = snd_dma.c;
+			path = /Users/tony/projects/zquake/source/snd_dma.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14E3DE0AB4B21100B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = snd_mem.c;
+			path = /Users/tony/projects/zquake/source/snd_mem.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14E3DF0AB4B21100B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = snd_mix.c;
+			path = /Users/tony/projects/zquake/source/snd_mix.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14E3E00AB4B21100B4AEF4 = {
+			fileRef = EA14E3DD0AB4B21100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3E10AB4B21100B4AEF4 = {
+			fileRef = EA14E3DE0AB4B21100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3E20AB4B21100B4AEF4 = {
+			fileRef = EA14E3DF0AB4B21100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3E30AB4B21100B4AEF4 = {
+			fileRef = EA14E3DD0AB4B21100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3E40AB4B21100B4AEF4 = {
+			fileRef = EA14E3DE0AB4B21100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3E50AB4B21100B4AEF4 = {
+			fileRef = EA14E3DF0AB4B21100B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3E60AB4B22400B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = snd_osx.c;
+			path = /Users/tony/projects/zquake/source/snd_osx.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14E3E70AB4B22400B4AEF4 = {
+			fileRef = EA14E3E60AB4B22400B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3E80AB4B22400B4AEF4 = {
+			fileRef = EA14E3E60AB4B22400B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3F00AB4B29000B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = in_osx.h;
+			path = /Users/tony/projects/zquake/source/in_osx.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14E3F10AB4B29000B4AEF4 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = in_osx.m;
+			path = /Users/tony/projects/zquake/source/in_osx.m;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA14E3F20AB4B29000B4AEF4 = {
+			fileRef = EA14E3F00AB4B29000B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3F30AB4B29000B4AEF4 = {
+			fileRef = EA14E3F10AB4B29000B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3F40AB4B29000B4AEF4 = {
+			fileRef = EA14E3F00AB4B29000B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA14E3F50AB4B29000B4AEF4 = {
+			fileRef = EA14E3F10AB4B29000B4AEF4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77601C0AB4A14B001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = Quake.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA77601D0AB4A14B001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = Quake.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA77601E0AB4A14B001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = QuakeApplication.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA77601F0AB4A14B001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = QuakeApplication.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA7760200AB4A14B001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = QuakeView.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA7760210AB4A14B001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = QuakeView.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA7760220AB4A14B001E2983 = {
+			fileRef = EA77601C0AB4A14B001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760230AB4A14B001E2983 = {
+			fileRef = EA77601D0AB4A14B001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760240AB4A14B001E2983 = {
+			fileRef = EA77601E0AB4A14B001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760250AB4A14B001E2983 = {
+			fileRef = EA77601F0AB4A14B001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760260AB4A14B001E2983 = {
+			fileRef = EA7760200AB4A14B001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760270AB4A14B001E2983 = {
+			fileRef = EA7760210AB4A14B001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760280AB4A163001E2983 = {
+			buildActionMask = 2147483647;
+			files = (
+				EAC4D49A0AB4D03D00209B7A,
+				EAC4D49B0AB4D05100209B7A,
+				EA77607E0AB4A2DC001E2983,
+				EA7760800AB4A2DC001E2983,
+				EA7760830AB4A2DC001E2983,
+				EA7760840AB4A2DC001E2983,
+				EA7760850AB4A2DC001E2983,
+				EA7760870AB4A2DC001E2983,
+				EA7760890AB4A2DC001E2983,
+				EA7760F40AB4A350001E2983,
+				EA7760F60AB4A350001E2983,
+				EA14D5D90AB4A6AD00B4AEF4,
+				EA14D6190AB4AB0300B4AEF4,
+				EA14D6300AB4AC9700B4AEF4,
+				EA14D6640AB4AD5900B4AEF4,
+				EA14D6660AB4AD5900B4AEF4,
+				EA14D6680AB4AD5900B4AEF4,
+				EA14E3D50AB4AF5000B4AEF4,
+				EA14E3F40AB4B29000B4AEF4,
+				EAFA2F9A0AB4BFB400E3EB11,
+				EAC4D48E0AB4CC1C00209B7A,
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA7760290AB4A163001E2983 = {
+			buildActionMask = 2147483647;
+			files = (
+				EA7760700AB4A2DC001E2983,
+				EA7760710AB4A2DC001E2983,
+				EA7760720AB4A2DC001E2983,
+				EA7760730AB4A2DC001E2983,
+				EA7760740AB4A2DC001E2983,
+				EA7760750AB4A2DC001E2983,
+				EA7760760AB4A2DC001E2983,
+				EA7760770AB4A2DC001E2983,
+				EA7760790AB4A2DC001E2983,
+				EA77607B0AB4A2DC001E2983,
+				EA77607C0AB4A2DC001E2983,
+				EA77607D0AB4A2DC001E2983,
+				EA77607F0AB4A2DC001E2983,
+				EA7760810AB4A2DC001E2983,
+				EA7760820AB4A2DC001E2983,
+				EA7760860AB4A2DC001E2983,
+				EA7760880AB4A2DC001E2983,
+				EA7760AC0AB4A300001E2983,
+				EA7760AE0AB4A300001E2983,
+				EA7760AF0AB4A300001E2983,
+				EA7760B00AB4A300001E2983,
+				EA7760B10AB4A300001E2983,
+				EA7760B20AB4A300001E2983,
+				EA7760B30AB4A300001E2983,
+				EA7760B50AB4A300001E2983,
+				EA7760B60AB4A300001E2983,
+				EA7760B70AB4A300001E2983,
+				EA7760B80AB4A300001E2983,
+				EA7760B90AB4A300001E2983,
+				EA7760BA0AB4A300001E2983,
+				EA7760BB0AB4A300001E2983,
+				EA7760EC0AB4A350001E2983,
+				EA7760EE0AB4A350001E2983,
+				EA7760F00AB4A350001E2983,
+				EA7760F10AB4A350001E2983,
+				EA7760F30AB4A350001E2983,
+				EA7760F50AB4A350001E2983,
+				EA7760F70AB4A350001E2983,
+				EA7760F80AB4A350001E2983,
+				EA7760FA0AB4A350001E2983,
+				EA7761430AB4A467001E2983,
+				EA7761450AB4A467001E2983,
+				EA14D5D60AB4A6AD00B4AEF4,
+				EA14D5D70AB4A6AD00B4AEF4,
+				EA14D5D80AB4A6AD00B4AEF4,
+				EA14D5DA0AB4A6AD00B4AEF4,
+				EA14D5DF0AB4A70D00B4AEF4,
+				EA14D5E40AB4A72900B4AEF4,
+				EA14D5E80AB4A75F00B4AEF4,
+				EA14D5EF0AB4A84300B4AEF4,
+				EA14D5FD0AB4A87100B4AEF4,
+				EA14D5FF0AB4A87100B4AEF4,
+				EA14D6000AB4A87100B4AEF4,
+				EA14D60E0AB4A8D800B4AEF4,
+				EA14D62F0AB4AC9700B4AEF4,
+				EA14D6630AB4AD5900B4AEF4,
+				EA14D6650AB4AD5900B4AEF4,
+				EA14D6670AB4AD5900B4AEF4,
+				EA14E3D40AB4AF5000B4AEF4,
+				EA14E3E30AB4B21100B4AEF4,
+				EA14E3E40AB4B21100B4AEF4,
+				EA14E3E50AB4B21100B4AEF4,
+				EA14E3E80AB4B22400B4AEF4,
+				EA14E3F50AB4B29000B4AEF4,
+				EAFA2E980AB4B88900E3EB11,
+				EAFA2F660AB4B9E400E3EB11,
+				EAFA2FE30AB4C36100E3EB11,
+				EAFA2FE40AB4C36100E3EB11,
+				EAFA2FE50AB4C36100E3EB11,
+				EAFA2FE60AB4C36100E3EB11,
+				EAFA2FE70AB4C36100E3EB11,
+				EAFA2FE80AB4C36100E3EB11,
+				EAFA2FE90AB4C36100E3EB11,
+				EAFA2FEA0AB4C36100E3EB11,
+				EAFA2FEB0AB4C36100E3EB11,
+				EAFA2FEC0AB4C36100E3EB11,
+				EAFA2FED0AB4C36100E3EB11,
+				EAFA2FEE0AB4C36100E3EB11,
+				EAFA2FEF0AB4C36100E3EB11,
+				EAFA2FF00AB4C36100E3EB11,
+				EAFA2FF10AB4C36100E3EB11,
+				EAFA2FF20AB4C36100E3EB11,
+				EAFA2FF30AB4C36100E3EB11,
+				EAFA2FF40AB4C36100E3EB11,
+				EAFA2FF50AB4C36100E3EB11,
+				EAFA2FF60AB4C36100E3EB11,
+				EAFA2FF70AB4C36100E3EB11,
+				EAFA2FF80AB4C36100E3EB11,
+				EAFA2FF90AB4C36100E3EB11,
+				EAFA2FFA0AB4C36100E3EB11,
+				EAFA2FFB0AB4C36100E3EB11,
+				EAFA2FFC0AB4C36100E3EB11,
+				EAFA2FFD0AB4C36100E3EB11,
+				EAFA2FFE0AB4C36100E3EB11,
+				EAFA30000AB4C36E00E3EB11,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA77602A0AB4A163001E2983 = {
+			buildActionMask = 2147483647;
+			files = (
+				EAFA30240AB4C49D00E3EB11,
+				EAFA2E930AB4B83200E3EB11,
+				EAFA2EA70AB4B90F00E3EB11,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA77602B0AB4A163001E2983 = {
+			buildPhases = (
+				EA7760280AB4A163001E2983,
+				EA7760290AB4A163001E2983,
+				EA77602A0AB4A163001E2983,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = ZQuake_Prefix.pch;
+				INFOPLIST_FILE = "ZQuake-SW-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "ZQuake-SW";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wall -Wno-format-y2k";
+			};
+			dependencies = (
+			);
+			isa = PBXNativeTarget;
+			name = "ZQuake-SW";
+			productName = "ZQuake-SW";
+			productReference = EA77602C0AB4A163001E2983;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>ZQuake-SW</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.yourcompany.ZQuake_SW</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>NSMainNibFile</key>
+	<string>MainMenu</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+</dict>
+</plist>
+";
+			productType = "com.apple.product-type.application";
+		};
+		EA77602C0AB4A163001E2983 = {
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = "ZQuake-SW.app";
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EA77602F0AB4A1E7001E2983 = {
+			buildActionMask = 2147483647;
+			files = (
+				EA14D6100AB4A8EE00B4AEF4,
+				EA14D6030AB4A87900B4AEF4,
+				EA14D6050AB4A87900B4AEF4,
+				EA14D6060AB4A87900B4AEF4,
+				EA7761470AB4A47D001E2983,
+				EA7761490AB4A47D001E2983,
+				EA7760BD0AB4A30D001E2983,
+				EA7760BF0AB4A30D001E2983,
+				EA7760C00AB4A30D001E2983,
+				EA7760C10AB4A30D001E2983,
+				EA7760C20AB4A30D001E2983,
+				EA7760C30AB4A30D001E2983,
+				EA7760C40AB4A30D001E2983,
+				EA7760C60AB4A30D001E2983,
+				EA7760C70AB4A30D001E2983,
+				EA7760C80AB4A30D001E2983,
+				EA7760C90AB4A30D001E2983,
+				EA7760CA0AB4A30D001E2983,
+				EA7760CB0AB4A30D001E2983,
+				EA7760CC0AB4A30D001E2983,
+				EA7760FB0AB4A35C001E2983,
+				EA7760FD0AB4A35C001E2983,
+				EA7760FF0AB4A35C001E2983,
+				EA7761000AB4A35C001E2983,
+				EA7761020AB4A35C001E2983,
+				EA7761040AB4A35C001E2983,
+				EA7761060AB4A35C001E2983,
+				EA7761070AB4A35C001E2983,
+				EA7761090AB4A35C001E2983,
+				EA14D5CB0AB4A64B00B4AEF4,
+				EA14D5E00AB4A70D00B4AEF4,
+				EA14D5E50AB4A72900B4AEF4,
+				EA14D5E90AB4A75F00B4AEF4,
+				EA14D5F00AB4A84300B4AEF4,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA7760300AB4A1E7001E2983 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA7760310AB4A1E7001E2983 = {
+			buildPhases = (
+				EA77602F0AB4A1E7001E2983,
+				EA7760300AB4A1E7001E2983,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				ARCHS = ppc;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "-DSERVERONLY";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = zqds;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+			);
+			isa = PBXNativeTarget;
+			name = zqds;
+			productName = zqds;
+			productReference = EA7760320AB4A1E7001E2983;
+			productType = "com.apple.product-type.tool";
+		};
+		EA7760320AB4A1E7001E2983 = {
+			explicitFileType = "compiled.mach-o.executable";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = zqds;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EA7760380AB4A244001E2983 = {
+			children = (
+				EA14D5F10AB4A87100B4AEF4,
+				EA14D5F30AB4A87100B4AEF4,
+				EA14D5F40AB4A87100B4AEF4,
+				EA77608A0AB4A300001E2983,
+				EA77608C0AB4A300001E2983,
+				EA77608D0AB4A300001E2983,
+				EA77608E0AB4A300001E2983,
+				EA77608F0AB4A300001E2983,
+				EA7760900AB4A300001E2983,
+				EA7760910AB4A300001E2983,
+				EA7760930AB4A300001E2983,
+				EA7760940AB4A300001E2983,
+				EA7760950AB4A300001E2983,
+				EA7760960AB4A300001E2983,
+				EA7760970AB4A300001E2983,
+				EA7760980AB4A300001E2983,
+				EA7760990AB4A300001E2983,
+			);
+			isa = PBXGroup;
+			name = Server;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA7760390AB4A252001E2983 = {
+			children = (
+				EA14D6170AB4AB0300B4AEF4,
+				EA14D60A0AB4A8D800B4AEF4,
+				EA14D5ED0AB4A84300B4AEF4,
+				EA14D5E60AB4A75F00B4AEF4,
+				EA14D5E20AB4A72900B4AEF4,
+				EA14D5DD0AB4A70D00B4AEF4,
+				EA77613B0AB4A467001E2983,
+				EA77613D0AB4A467001E2983,
+				EA7760CE0AB4A350001E2983,
+				EA7760D00AB4A350001E2983,
+				EA7760D20AB4A350001E2983,
+				EA7760D30AB4A350001E2983,
+				EA7760D50AB4A350001E2983,
+				EA7760D60AB4A350001E2983,
+				EA7760D70AB4A350001E2983,
+				EA7760D80AB4A350001E2983,
+				EA7760D90AB4A350001E2983,
+				EA7760DA0AB4A350001E2983,
+				EA7760DC0AB4A350001E2983,
+			);
+			isa = PBXGroup;
+			name = Common;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA77603A0AB4A27D001E2983 = {
+			children = (
+				EA14D6310AB4ACF800B4AEF4,
+				EA14D6320AB4ACF800B4AEF4,
+				EA14D6330AB4ACF800B4AEF4,
+				EA14D6340AB4ACF800B4AEF4,
+				EA14D6350AB4ACF800B4AEF4,
+				EA14D6360AB4ACF800B4AEF4,
+				EA14D6370AB4ACF800B4AEF4,
+				EA14D6380AB4ACF800B4AEF4,
+				EA14D6390AB4ACF800B4AEF4,
+				EA14D63A0AB4ACF800B4AEF4,
+				EA14D63B0AB4ACF800B4AEF4,
+				EA14D63C0AB4ACF800B4AEF4,
+				EA14D63D0AB4ACF800B4AEF4,
+				EA14D63E0AB4ACF800B4AEF4,
+				EA14D63F0AB4ACF800B4AEF4,
+				EA14D6400AB4ACF800B4AEF4,
+				EA14D6410AB4ACF800B4AEF4,
+			);
+			isa = PBXGroup;
+			name = "Renderer-GL";
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA77603B0AB4A288001E2983 = {
+			children = (
+				EAFA2FFF0AB4C36E00E3EB11,
+				EAFA2FC70AB4C36100E3EB11,
+				EAFA2FC80AB4C36100E3EB11,
+				EAFA2FC90AB4C36100E3EB11,
+				EAFA2FCA0AB4C36100E3EB11,
+				EAFA2FCB0AB4C36100E3EB11,
+				EAFA2FCC0AB4C36100E3EB11,
+				EAFA2FCD0AB4C36100E3EB11,
+				EAFA2FCE0AB4C36100E3EB11,
+				EAFA2FCF0AB4C36100E3EB11,
+				EAFA2FD00AB4C36100E3EB11,
+				EAFA2FD10AB4C36100E3EB11,
+				EAFA2FD20AB4C36100E3EB11,
+				EAFA2FD30AB4C36100E3EB11,
+				EAFA2FD40AB4C36100E3EB11,
+				EAFA2FD50AB4C36100E3EB11,
+				EAFA2FD60AB4C36100E3EB11,
+				EAFA2FD70AB4C36100E3EB11,
+				EAFA2FD80AB4C36100E3EB11,
+				EAFA2FD90AB4C36100E3EB11,
+				EAFA2FDA0AB4C36100E3EB11,
+				EAFA2FDB0AB4C36100E3EB11,
+				EAFA2FDC0AB4C36100E3EB11,
+				EAFA2FDD0AB4C36100E3EB11,
+				EAFA2FDE0AB4C36100E3EB11,
+				EAFA2FDF0AB4C36100E3EB11,
+				EAFA2FE00AB4C36100E3EB11,
+				EAFA2FE10AB4C36100E3EB11,
+				EAFA2FE20AB4C36100E3EB11,
+			);
+			isa = PBXGroup;
+			name = "Renderer-SW";
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EA77603C0AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_cam.c;
+			path = /Users/tony/projects/zquake/source/cl_cam.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77603D0AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_cmd.c;
+			path = /Users/tony/projects/zquake/source/cl_cmd.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77603E0AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_demo.c;
+			path = /Users/tony/projects/zquake/source/cl_demo.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77603F0AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_draw.c;
+			path = /Users/tony/projects/zquake/source/cl_draw.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760400AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_effects.c;
+			path = /Users/tony/projects/zquake/source/cl_effects.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760410AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_ents.c;
+			path = /Users/tony/projects/zquake/source/cl_ents.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760420AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_input.c;
+			path = /Users/tony/projects/zquake/source/cl_input.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760430AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_main.c;
+			path = /Users/tony/projects/zquake/source/cl_main.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760450AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_nqdemo.c;
+			path = /Users/tony/projects/zquake/source/cl_nqdemo.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760470AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_parse.c;
+			path = /Users/tony/projects/zquake/source/cl_parse.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760480AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_pred.c;
+			path = /Users/tony/projects/zquake/source/cl_pred.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760490AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_sbar.c;
+			path = /Users/tony/projects/zquake/source/cl_sbar.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77604A0AB4A2DB001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = cl_sbar.h;
+			path = /Users/tony/projects/zquake/source/cl_sbar.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77604B0AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_screen.c;
+			path = /Users/tony/projects/zquake/source/cl_screen.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77604C0AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = cl_screen.h;
+			path = /Users/tony/projects/zquake/source/cl_screen.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77604D0AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_tent.c;
+			path = /Users/tony/projects/zquake/source/cl_tent.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77604E0AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cl_view.c;
+			path = /Users/tony/projects/zquake/source/cl_view.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77604F0AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = cl_view.h;
+			path = /Users/tony/projects/zquake/source/cl_view.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760500AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = client.h;
+			path = /Users/tony/projects/zquake/source/client.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760510AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = input.h;
+			path = /Users/tony/projects/zquake/source/input.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760520AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = keys.c;
+			path = /Users/tony/projects/zquake/source/keys.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760530AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = keys.h;
+			path = /Users/tony/projects/zquake/source/keys.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760540AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = menu.c;
+			path = /Users/tony/projects/zquake/source/menu.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760550AB4A2DC001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = menu.h;
+			path = /Users/tony/projects/zquake/source/menu.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760560AB4A2DC001E2983 = {
+			fileRef = EA77603C0AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760570AB4A2DC001E2983 = {
+			fileRef = EA77603D0AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760580AB4A2DC001E2983 = {
+			fileRef = EA77603E0AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760590AB4A2DC001E2983 = {
+			fileRef = EA77603F0AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77605A0AB4A2DC001E2983 = {
+			fileRef = EA7760400AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77605B0AB4A2DC001E2983 = {
+			fileRef = EA7760410AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77605C0AB4A2DC001E2983 = {
+			fileRef = EA7760420AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77605D0AB4A2DC001E2983 = {
+			fileRef = EA7760430AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77605F0AB4A2DC001E2983 = {
+			fileRef = EA7760450AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760610AB4A2DC001E2983 = {
+			fileRef = EA7760470AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760620AB4A2DC001E2983 = {
+			fileRef = EA7760480AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760630AB4A2DC001E2983 = {
+			fileRef = EA7760490AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760640AB4A2DC001E2983 = {
+			fileRef = EA77604A0AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760650AB4A2DC001E2983 = {
+			fileRef = EA77604B0AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760660AB4A2DC001E2983 = {
+			fileRef = EA77604C0AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760670AB4A2DC001E2983 = {
+			fileRef = EA77604D0AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760680AB4A2DC001E2983 = {
+			fileRef = EA77604E0AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760690AB4A2DC001E2983 = {
+			fileRef = EA77604F0AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77606A0AB4A2DC001E2983 = {
+			fileRef = EA7760500AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77606B0AB4A2DC001E2983 = {
+			fileRef = EA7760510AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77606C0AB4A2DC001E2983 = {
+			fileRef = EA7760520AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77606D0AB4A2DC001E2983 = {
+			fileRef = EA7760530AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77606E0AB4A2DC001E2983 = {
+			fileRef = EA7760540AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77606F0AB4A2DC001E2983 = {
+			fileRef = EA7760550AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760700AB4A2DC001E2983 = {
+			fileRef = EA77603C0AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760710AB4A2DC001E2983 = {
+			fileRef = EA77603D0AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760720AB4A2DC001E2983 = {
+			fileRef = EA77603E0AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760730AB4A2DC001E2983 = {
+			fileRef = EA77603F0AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760740AB4A2DC001E2983 = {
+			fileRef = EA7760400AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760750AB4A2DC001E2983 = {
+			fileRef = EA7760410AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760760AB4A2DC001E2983 = {
+			fileRef = EA7760420AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760770AB4A2DC001E2983 = {
+			fileRef = EA7760430AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760790AB4A2DC001E2983 = {
+			fileRef = EA7760450AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77607B0AB4A2DC001E2983 = {
+			fileRef = EA7760470AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77607C0AB4A2DC001E2983 = {
+			fileRef = EA7760480AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77607D0AB4A2DC001E2983 = {
+			fileRef = EA7760490AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77607E0AB4A2DC001E2983 = {
+			fileRef = EA77604A0AB4A2DB001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77607F0AB4A2DC001E2983 = {
+			fileRef = EA77604B0AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760800AB4A2DC001E2983 = {
+			fileRef = EA77604C0AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760810AB4A2DC001E2983 = {
+			fileRef = EA77604D0AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760820AB4A2DC001E2983 = {
+			fileRef = EA77604E0AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760830AB4A2DC001E2983 = {
+			fileRef = EA77604F0AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760840AB4A2DC001E2983 = {
+			fileRef = EA7760500AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760850AB4A2DC001E2983 = {
+			fileRef = EA7760510AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760860AB4A2DC001E2983 = {
+			fileRef = EA7760520AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760870AB4A2DC001E2983 = {
+			fileRef = EA7760530AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760880AB4A2DC001E2983 = {
+			fileRef = EA7760540AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760890AB4A2DC001E2983 = {
+			fileRef = EA7760550AB4A2DC001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77608A0AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_authlists.c;
+			path = /Users/tony/projects/zquake/source/sv_authlists.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77608C0AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_bot.c;
+			path = /Users/tony/projects/zquake/source/sv_bot.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77608D0AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_ccmds.c;
+			path = /Users/tony/projects/zquake/source/sv_ccmds.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77608E0AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_ents.c;
+			path = /Users/tony/projects/zquake/source/sv_ents.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77608F0AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_init.c;
+			path = /Users/tony/projects/zquake/source/sv_init.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760900AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_main.c;
+			path = /Users/tony/projects/zquake/source/sv_main.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760910AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_master.c;
+			path = /Users/tony/projects/zquake/source/sv_master.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760930AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_move.c;
+			path = /Users/tony/projects/zquake/source/sv_move.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760940AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_nchan.c;
+			path = /Users/tony/projects/zquake/source/sv_nchan.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760950AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_phys.c;
+			path = /Users/tony/projects/zquake/source/sv_phys.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760960AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_save.c;
+			path = /Users/tony/projects/zquake/source/sv_save.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760970AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_send.c;
+			path = /Users/tony/projects/zquake/source/sv_send.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760980AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_user.c;
+			path = /Users/tony/projects/zquake/source/sv_user.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760990AB4A300001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = sv_world.c;
+			path = /Users/tony/projects/zquake/source/sv_world.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77609B0AB4A300001E2983 = {
+			fileRef = EA77608A0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77609D0AB4A300001E2983 = {
+			fileRef = EA77608C0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77609E0AB4A300001E2983 = {
+			fileRef = EA77608D0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77609F0AB4A300001E2983 = {
+			fileRef = EA77608E0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760A00AB4A300001E2983 = {
+			fileRef = EA77608F0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760A10AB4A300001E2983 = {
+			fileRef = EA7760900AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760A20AB4A300001E2983 = {
+			fileRef = EA7760910AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760A40AB4A300001E2983 = {
+			fileRef = EA7760930AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760A50AB4A300001E2983 = {
+			fileRef = EA7760940AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760A60AB4A300001E2983 = {
+			fileRef = EA7760950AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760A70AB4A300001E2983 = {
+			fileRef = EA7760960AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760A80AB4A300001E2983 = {
+			fileRef = EA7760970AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760A90AB4A300001E2983 = {
+			fileRef = EA7760980AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760AA0AB4A300001E2983 = {
+			fileRef = EA7760990AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760AC0AB4A300001E2983 = {
+			fileRef = EA77608A0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760AE0AB4A300001E2983 = {
+			fileRef = EA77608C0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760AF0AB4A300001E2983 = {
+			fileRef = EA77608D0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760B00AB4A300001E2983 = {
+			fileRef = EA77608E0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760B10AB4A300001E2983 = {
+			fileRef = EA77608F0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760B20AB4A300001E2983 = {
+			fileRef = EA7760900AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760B30AB4A300001E2983 = {
+			fileRef = EA7760910AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760B50AB4A300001E2983 = {
+			fileRef = EA7760930AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760B60AB4A300001E2983 = {
+			fileRef = EA7760940AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760B70AB4A300001E2983 = {
+			fileRef = EA7760950AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760B80AB4A300001E2983 = {
+			fileRef = EA7760960AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760B90AB4A300001E2983 = {
+			fileRef = EA7760970AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760BA0AB4A300001E2983 = {
+			fileRef = EA7760980AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760BB0AB4A300001E2983 = {
+			fileRef = EA7760990AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760BD0AB4A30D001E2983 = {
+			fileRef = EA77608A0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760BF0AB4A30D001E2983 = {
+			fileRef = EA77608C0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760C00AB4A30D001E2983 = {
+			fileRef = EA77608D0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760C10AB4A30D001E2983 = {
+			fileRef = EA77608E0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760C20AB4A30D001E2983 = {
+			fileRef = EA77608F0AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760C30AB4A30D001E2983 = {
+			fileRef = EA7760900AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760C40AB4A30D001E2983 = {
+			fileRef = EA7760910AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760C60AB4A30D001E2983 = {
+			fileRef = EA7760930AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760C70AB4A30D001E2983 = {
+			fileRef = EA7760940AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760C80AB4A30D001E2983 = {
+			fileRef = EA7760950AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760C90AB4A30D001E2983 = {
+			fileRef = EA7760960AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760CA0AB4A30D001E2983 = {
+			fileRef = EA7760970AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760CB0AB4A30D001E2983 = {
+			fileRef = EA7760980AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760CC0AB4A30D001E2983 = {
+			fileRef = EA7760990AB4A300001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760CE0AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cmd.c;
+			path = /Users/tony/projects/zquake/source/cmd.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760D00AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cmodel.c;
+			path = /Users/tony/projects/zquake/source/cmodel.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760D20AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = com_msg.c;
+			path = /Users/tony/projects/zquake/source/com_msg.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760D30AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = common.c;
+			path = /Users/tony/projects/zquake/source/common.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760D50AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = crc.c;
+			path = /Users/tony/projects/zquake/source/crc.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760D60AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = crc.h;
+			path = /Users/tony/projects/zquake/source/crc.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760D70AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cvar.c;
+			path = /Users/tony/projects/zquake/source/cvar.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760D80AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = cvar.h;
+			path = /Users/tony/projects/zquake/source/cvar.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760D90AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = net_chan.c;
+			path = /Users/tony/projects/zquake/source/net_chan.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760DA0AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = pmove.c;
+			path = /Users/tony/projects/zquake/source/pmove.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760DC0AB4A350001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = pmovetst.c;
+			path = /Users/tony/projects/zquake/source/pmovetst.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA7760DD0AB4A350001E2983 = {
+			fileRef = EA7760CE0AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760DF0AB4A350001E2983 = {
+			fileRef = EA7760D00AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760E10AB4A350001E2983 = {
+			fileRef = EA7760D20AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760E20AB4A350001E2983 = {
+			fileRef = EA7760D30AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760E40AB4A350001E2983 = {
+			fileRef = EA7760D50AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760E50AB4A350001E2983 = {
+			fileRef = EA7760D60AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760E60AB4A350001E2983 = {
+			fileRef = EA7760D70AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760E70AB4A350001E2983 = {
+			fileRef = EA7760D80AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760E80AB4A350001E2983 = {
+			fileRef = EA7760D90AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760E90AB4A350001E2983 = {
+			fileRef = EA7760DA0AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760EB0AB4A350001E2983 = {
+			fileRef = EA7760DC0AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760EC0AB4A350001E2983 = {
+			fileRef = EA7760CE0AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760EE0AB4A350001E2983 = {
+			fileRef = EA7760D00AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760F00AB4A350001E2983 = {
+			fileRef = EA7760D20AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760F10AB4A350001E2983 = {
+			fileRef = EA7760D30AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760F30AB4A350001E2983 = {
+			fileRef = EA7760D50AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760F40AB4A350001E2983 = {
+			fileRef = EA7760D60AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760F50AB4A350001E2983 = {
+			fileRef = EA7760D70AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760F60AB4A350001E2983 = {
+			fileRef = EA7760D80AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760F70AB4A350001E2983 = {
+			fileRef = EA7760D90AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760F80AB4A350001E2983 = {
+			fileRef = EA7760DA0AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760FA0AB4A350001E2983 = {
+			fileRef = EA7760DC0AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760FB0AB4A35C001E2983 = {
+			fileRef = EA7760CE0AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760FD0AB4A35C001E2983 = {
+			fileRef = EA7760D00AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7760FF0AB4A35C001E2983 = {
+			fileRef = EA7760D20AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761000AB4A35C001E2983 = {
+			fileRef = EA7760D30AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761020AB4A35C001E2983 = {
+			fileRef = EA7760D50AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761040AB4A35C001E2983 = {
+			fileRef = EA7760D70AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761060AB4A35C001E2983 = {
+			fileRef = EA7760D90AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761070AB4A35C001E2983 = {
+			fileRef = EA7760DA0AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761090AB4A35C001E2983 = {
+			fileRef = EA7760DC0AB4A350001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA77613B0AB4A467001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = mathlib.c;
+			path = /Users/tony/projects/zquake/source/mathlib.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77613D0AB4A467001E2983 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = mdfour.c;
+			path = /Users/tony/projects/zquake/source/mdfour.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EA77613F0AB4A467001E2983 = {
+			fileRef = EA77613B0AB4A467001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761410AB4A467001E2983 = {
+			fileRef = EA77613D0AB4A467001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761430AB4A467001E2983 = {
+			fileRef = EA77613B0AB4A467001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761450AB4A467001E2983 = {
+			fileRef = EA77613D0AB4A467001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761470AB4A47D001E2983 = {
+			fileRef = EA77613B0AB4A467001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EA7761490AB4A47D001E2983 = {
+			fileRef = EA77613D0AB4A467001E2983;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAC4D48D0AB4CC1C00209B7A = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = text.xml;
+			path = "ZQuake-SW-Info.plist";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		EAC4D48E0AB4CC1C00209B7A = {
+			fileRef = EAC4D48D0AB4CC1C00209B7A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAC4D49A0AB4D03D00209B7A = {
+			fileRef = 29B97318FDCFA39411CA2CEA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAC4D49B0AB4D05100209B7A = {
+			fileRef = 089C165CFE840E0CC02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAC4D4A50AB4D1CB00209B7A = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.xml;
+			name = "test-Info.plist";
+			path = "/Users/tony/projects/zquake/source/osx/test-Info.plist";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2E910AB4B83200E3EB11 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = CoreAudio.framework;
+			path = /System/Library/Frameworks/CoreAudio.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2E920AB4B83200E3EB11 = {
+			fileRef = EAFA2E910AB4B83200E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2E930AB4B83200E3EB11 = {
+			fileRef = EAFA2E910AB4B83200E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2E960AB4B88900E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = cd_null.c;
+			path = /Users/tony/projects/zquake/source/cd_null.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2E970AB4B88900E3EB11 = {
+			fileRef = EAFA2E960AB4B88900E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2E980AB4B88900E3EB11 = {
+			fileRef = EAFA2E960AB4B88900E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2EA30AB4B90F00E3EB11 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = IOKit.framework;
+			path = /System/Library/Frameworks/IOKit.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2EA40AB4B90F00E3EB11 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = OpenGL.framework;
+			path = /System/Library/Frameworks/OpenGL.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2EA50AB4B90F00E3EB11 = {
+			fileRef = EAFA2EA30AB4B90F00E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2EA60AB4B90F00E3EB11 = {
+			fileRef = EAFA2EA40AB4B90F00E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2EA70AB4B90F00E3EB11 = {
+			fileRef = EAFA2EA30AB4B90F00E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2F640AB4B9E400E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = skin.c;
+			path = /Users/tony/projects/zquake/source/skin.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2F650AB4B9E400E3EB11 = {
+			fileRef = EAFA2F640AB4B9E400E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2F660AB4B9E400E3EB11 = {
+			fileRef = EAFA2F640AB4B9E400E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2F980AB4BFB400E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = sys_osx.h;
+			path = /Users/tony/projects/zquake/source/sys_osx.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2F990AB4BFB400E3EB11 = {
+			fileRef = EAFA2F980AB4BFB400E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2F9A0AB4BFB400E3EB11 = {
+			fileRef = EAFA2F980AB4BFB400E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FC70AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = d_edge.c;
+			path = /Users/tony/projects/zquake/source/d_edge.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FC80AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = d_fill.c;
+			path = /Users/tony/projects/zquake/source/d_fill.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FC90AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = d_init.c;
+			path = /Users/tony/projects/zquake/source/d_init.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FCA0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = d_modech.c;
+			path = /Users/tony/projects/zquake/source/d_modech.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FCB0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = d_polyse.c;
+			path = /Users/tony/projects/zquake/source/d_polyse.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FCC0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = d_sky.c;
+			path = /Users/tony/projects/zquake/source/d_sky.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FCD0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = d_sprite.c;
+			path = /Users/tony/projects/zquake/source/d_sprite.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FCE0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = d_surf.c;
+			path = /Users/tony/projects/zquake/source/d_surf.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FCF0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = d_vars.c;
+			path = /Users/tony/projects/zquake/source/d_vars.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FD00AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = d_zpoint.c;
+			path = /Users/tony/projects/zquake/source/d_zpoint.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FD10AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_aclip.c;
+			path = /Users/tony/projects/zquake/source/r_aclip.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FD20AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_alias.c;
+			path = /Users/tony/projects/zquake/source/r_alias.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FD30AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_bsp.c;
+			path = /Users/tony/projects/zquake/source/r_bsp.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FD40AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_draw.c;
+			path = /Users/tony/projects/zquake/source/r_draw.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FD50AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_edge.c;
+			path = /Users/tony/projects/zquake/source/r_edge.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FD60AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_efrag.c;
+			path = /Users/tony/projects/zquake/source/r_efrag.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FD70AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_light.c;
+			path = /Users/tony/projects/zquake/source/r_light.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FD80AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_main.c;
+			path = /Users/tony/projects/zquake/source/r_main.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FD90AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_misc.c;
+			path = /Users/tony/projects/zquake/source/r_misc.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FDA0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_model.c;
+			path = /Users/tony/projects/zquake/source/r_model.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FDB0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_part.c;
+			path = /Users/tony/projects/zquake/source/r_part.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FDC0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_rast.c;
+			path = /Users/tony/projects/zquake/source/r_rast.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FDD0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_scan.c;
+			path = /Users/tony/projects/zquake/source/r_scan.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FDE0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_sky.c;
+			path = /Users/tony/projects/zquake/source/r_sky.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FDF0AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_sprite.c;
+			path = /Users/tony/projects/zquake/source/r_sprite.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FE00AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_surf.c;
+			path = /Users/tony/projects/zquake/source/r_surf.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FE10AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = r_vars.c;
+			path = /Users/tony/projects/zquake/source/r_vars.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FE20AB4C36100E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = rc_null.c;
+			path = /Users/tony/projects/zquake/source/rc_null.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA2FE30AB4C36100E3EB11 = {
+			fileRef = EAFA2FC70AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FE40AB4C36100E3EB11 = {
+			fileRef = EAFA2FC80AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FE50AB4C36100E3EB11 = {
+			fileRef = EAFA2FC90AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FE60AB4C36100E3EB11 = {
+			fileRef = EAFA2FCA0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FE70AB4C36100E3EB11 = {
+			fileRef = EAFA2FCB0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FE80AB4C36100E3EB11 = {
+			fileRef = EAFA2FCC0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FE90AB4C36100E3EB11 = {
+			fileRef = EAFA2FCD0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FEA0AB4C36100E3EB11 = {
+			fileRef = EAFA2FCE0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FEB0AB4C36100E3EB11 = {
+			fileRef = EAFA2FCF0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FEC0AB4C36100E3EB11 = {
+			fileRef = EAFA2FD00AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FED0AB4C36100E3EB11 = {
+			fileRef = EAFA2FD10AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FEE0AB4C36100E3EB11 = {
+			fileRef = EAFA2FD20AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FEF0AB4C36100E3EB11 = {
+			fileRef = EAFA2FD30AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FF00AB4C36100E3EB11 = {
+			fileRef = EAFA2FD40AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FF10AB4C36100E3EB11 = {
+			fileRef = EAFA2FD50AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FF20AB4C36100E3EB11 = {
+			fileRef = EAFA2FD60AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FF30AB4C36100E3EB11 = {
+			fileRef = EAFA2FD70AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FF40AB4C36100E3EB11 = {
+			fileRef = EAFA2FD80AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FF50AB4C36100E3EB11 = {
+			fileRef = EAFA2FD90AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FF60AB4C36100E3EB11 = {
+			fileRef = EAFA2FDA0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FF70AB4C36100E3EB11 = {
+			fileRef = EAFA2FDB0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FF80AB4C36100E3EB11 = {
+			fileRef = EAFA2FDC0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FF90AB4C36100E3EB11 = {
+			fileRef = EAFA2FDD0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FFA0AB4C36100E3EB11 = {
+			fileRef = EAFA2FDE0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FFB0AB4C36100E3EB11 = {
+			fileRef = EAFA2FDF0AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FFC0AB4C36100E3EB11 = {
+			fileRef = EAFA2FE00AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FFD0AB4C36100E3EB11 = {
+			fileRef = EAFA2FE10AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FFE0AB4C36100E3EB11 = {
+			fileRef = EAFA2FE20AB4C36100E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA2FFF0AB4C36E00E3EB11 = {
+			fileEncoding = 12;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = nonintel.c;
+			path = /Users/tony/projects/zquake/source/nonintel.c;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		EAFA30000AB4C36E00E3EB11 = {
+			fileRef = EAFA2FFF0AB4C36E00E3EB11;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		EAFA30240AB4C49D00E3EB11 = {
+			fileRef = 1058C7A1FEA54F0111CA2CBB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA;
+}

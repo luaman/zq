@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {newGame = id; }; 
+            CLASS = Quake; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = QuakeAppication; LANGUAGE = ObjC; SUPERCLASS = NSApplication; }
+    ); 
+    IBVersion = 1; 
+}
