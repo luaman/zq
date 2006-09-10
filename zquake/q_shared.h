@@ -125,6 +125,10 @@ short	ShortSwap (short l);
 int		LongSwap (int l);
 float	FloatSwap (float f);
 
+#ifdef __BIG_ENDIAN__
+#define BIGENDIAN
+#endif
+
 #ifdef BIGENDIAN
 #define BigShort(x) (x)
 #define BigLong(x) (x)
