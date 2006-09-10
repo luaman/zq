@@ -42,7 +42,7 @@ typedef enum {
 	K_LEFTARROW,
 	K_RIGHTARROW,
 
-	K_ALT,
+	K_ALT, K_OPTION = K_ALT,
 	K_LALT,     // Left Alt-Key (can be used to separate the keys for bindings)
 	K_RALT,     // Right Alt-Key (can be used to separate the keys; this can NOT be used if a third level of mappings is needed)
 	K_ALTGR,    // Right Alt-Key (=AltGr Key; this key must be used, if a third level of mappings is needed)
@@ -64,6 +64,10 @@ typedef enum {
 	K_F10,
 	K_F11,
 	K_F12,
+	K_F13,
+	K_F14,
+	K_F15,
+	K_F16,
 	K_INS,
 	K_DEL,
 	K_PGDN,
@@ -84,23 +88,25 @@ typedef enum {
 	KP_SLASH,
 	KP_STAR,
 
-	KP_HOME,
-	KP_UPARROW,
-	KP_PGUP,
+	KP_7, KP_HOME = KP_7,
+	KP_8, KP_UPARROW = KP_8,
+	KP_9, KP_PGUP = KP_9,
 	KP_MINUS,
 
-	KP_LEFTARROW,
+	KP_4, KP_LEFTARROW = KP_4,
 	KP_5,
-	KP_RIGHTARROW,
+	KP_6, KP_RIGHTARROW = KP_6,
 	KP_PLUS,
 
-	KP_END,
-	KP_DOWNARROW,
-	KP_PGDN,
+	KP_1, KP_END = KP_1,
+	KP_2, KP_DOWNARROW = KP_2,
+	KP_3, KP_PGDN = KP_3,
 
-	KP_INS,
+	KP_0, KP_INS = KP_0,
 	KP_DEL,
 	KP_ENTER,
+
+	KP_EQUAL,		// Mac
 
 //
 // mouse buttons generate virtual keys
