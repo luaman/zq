@@ -187,12 +187,10 @@ extern	const char *gl_extensions;
 #define	GL_TEXTURE0_ARB 			0x84C0
 #define	GL_TEXTURE1_ARB 			0x84C1
 
-#ifdef _WIN32
 typedef void (APIENTRY *lpMTexFUNC) (GLenum, GLfloat, GLfloat);
 typedef void (APIENTRY *lpSelTexFUNC) (GLenum);
 extern lpMTexFUNC qglMultiTexCoord2f;
 extern lpSelTexFUNC qglActiveTexture;
-#endif
 
 extern qbool gl_mtexable;
 extern qbool gl_mtexfbskins;
