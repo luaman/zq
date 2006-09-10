@@ -178,7 +178,7 @@ char		*Sys_ConsoleInput(void)
 	return text;
 }
 
-
+#if !(defined(__APPLE__) && !defined(SDL))
 int			 main (int argc, char **argv)
 {
 	double	 time, oldtime, newtime;
@@ -227,6 +227,7 @@ int			 main (int argc, char **argv)
 	}
     return 0;
 }
+#endif
 
 
 /*
