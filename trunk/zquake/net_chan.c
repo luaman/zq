@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 
-#if defined(__linux__) || defined(sun) || defined(darwin) || defined(hpux) || defined(__OpenBSD__)
+#if defined(__linux__) || defined(sun) || defined(darwin) || defined(__APPLE__) || defined(hpux) || defined(__OpenBSD__)
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
