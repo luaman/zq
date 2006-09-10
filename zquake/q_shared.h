@@ -52,11 +52,15 @@ typedef unsigned char 		byte;
 
 #define wchar unsigned short	// 16-bit Unicode char
 
-#ifdef OBJECTIVE_C_FIXME
-typedef int qbool;
-#else
-typedef enum {false, true} qbool;
+#ifndef false
+#define false 0
 #endif
+#ifndef true
+#define true 1
+#endif
+typedef int qbool;
+
+//typedef enum {false, true} qbool;
 
 #ifndef NULL
 #define NULL ((void *)0)
