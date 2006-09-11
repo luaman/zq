@@ -129,7 +129,7 @@ short	ShortSwap (short l);
 int		LongSwap (int l);
 float	FloatSwap (float f);
 
-#ifdef __BIG_ENDIAN__
+#if defined(__BIG_ENDIAN__) && !defined(BIGENDIAN)
 #define BIGENDIAN
 #endif
 
