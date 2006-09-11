@@ -53,7 +53,7 @@ static qbool input_grabbed =  false;
 		    PointerMotionMask | ButtonMotionMask )
 #define X_MASK (KEY_MASK | MOUSE_MASK | VisibilityChangeMask | StructureNotifyMask )
 
-typedef void (APIENTRY *lpMTexFUNC) (GLenum, GLfloat, GLfloat);
+//typedef void (APIENTRY *lpMTexFUNC) (GLenum, GLfloat, GLfloat);
 lpMTexFUNC qglMultiTexCoord2f = NULL;
 
 // setup gamma variables
