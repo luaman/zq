@@ -286,9 +286,6 @@ qbool VID_SetDisplayMode (void)
         {
             Sys_Error ("Unable to switch the displaymode!");
         }
-		Com_Printf ("7\n");
-		
-		
     }
     
     // get the pixel format:
