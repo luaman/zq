@@ -23,8 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pmove.h"
 #include "teamplay.h"
 
-extern cvar_t	cl_predictPlayers;
-extern cvar_t	cl_solidPlayers;
+extern cvar_t	cl_predict_players;
+extern cvar_t	cl_solid_players;
 
 static struct predicted_player {
 	int		flags;
@@ -1123,7 +1123,7 @@ void CL_LinkPlayers (void)
 
 		// only predict half the move to minimize overruns
 		msec = 500 * (playertime - state->state_time);
-		if (msec <= 0 || !cl_predictPlayers.value)
+		if (msec <= 0 || !cl_predict_players.value)
 		{
 			VectorCopy (state->origin, ent.origin);
 		}
@@ -1389,9 +1389,9 @@ void CL_SetUpPlayerPrediction (qbool dopred)
 			// only predict half the move to minimize overruns
 			msec = 500*(playertime - state->state_time);
 #ifdef MVDPLAY
-			if (msec <= 0 || !cl_predictPlayers.value || !dopred || cls.mvdplayback)
+			if (msec <= 0 || !cl_predict_players.value || !dopred || cls.mvdplayback)
 #else
-			if (msec <= 0 || !cl_predictPlayers.value || !dopred)
+			if (msec <= 0 || !cl_predict_players.value || !dopred)
 #endif
 			{
 				VectorCopy (state->origin, pplayer->origin);
@@ -1428,7 +1428,7 @@ void CL_SetSolidPlayers (int playernum)
 	struct predicted_player *pplayer;
 	physent_t *pent;
 
-	if (!cl_solidPlayers.value)
+	if (!cl_solid_players.value)
 		return;
 
 	pent = pmove.physents + pmove.numphysent;
