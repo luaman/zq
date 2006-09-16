@@ -44,8 +44,8 @@ cvar_t	cl_maxfps	= {"cl_maxfps", "0", CVAR_ARCHIVE};
 
 cvar_t	cl_writecfg = {"cl_writecfg", "1"};
 
-cvar_t	cl_predictPlayers = {"cl_predict_players", "1"};
-cvar_t	cl_solidPlayers = {"cl_solid_players", "1"};
+cvar_t	cl_predict_players = {"cl_predict_players", "1"};
+cvar_t	cl_solid_players = {"cl_solid_players", "1"};
 
 cvar_t  localid = {"localid", ""};
 
@@ -903,8 +903,8 @@ void CL_InitLocal (void)
 	Cvar_Register (&cl_maxfps);
 	Cvar_Register (&cl_timeout);
 	Cvar_Register (&cl_writecfg);
-	Cvar_Register (&cl_predictPlayers);
-	Cvar_Register (&cl_solidPlayers);
+	Cvar_Register (&cl_predict_players);
+	Cvar_Register (&cl_solid_players);
 	// Just for compatibility with ZQuake 0.14 (remove one day)
 	Cmd_AddLegacyCommand ("cl_predictPlayers", "cl_predict_players");
 	Cmd_AddLegacyCommand ("cl_solidPlayers", "cl_solid_players");
