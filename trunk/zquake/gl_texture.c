@@ -562,6 +562,21 @@ setuptexture:
 }
 
 
+static void brighten32 (byte *data, int size)
+{
+	byte *p;
+	int i;
+
+	p = data;
+	for (i = 0; i < size/4; i++)
+	{
+		p[0] = min(p[0] * 2.0/1.5, 255);
+		p[1] = min(p[1] * 2.0/1.5, 255);
+		p[2] = min(p[2] * 2.0/1.5, 255);
+		p += 4;
+	}
+}
+
 /*
 ================
 GL_LoadTexture32
@@ -577,7 +592,7 @@ int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, int m
 	unsigned	crc = 0;
 	gltexture_t	*glt;
 
-//	if (lightmode != 2)
+	if (lightmode != 2)
 		mode &= ~TEX_BRIGHTEN;
 
 	// see if the texture is already present
@@ -611,6 +626,10 @@ setuptexture:
 	glt->crc = crc;
 
 	GL_Bind (glt->texnum);
+
+	// FIXME, we're not supposed to modify data passed in to LoadTexture,
+	// but it doesn't currently break anything so we do
+	brighten32 (data, width * height * 4);
 
 	GL_Upload32 ((unsigned int *)data, width, height, mode);
 
