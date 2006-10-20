@@ -49,7 +49,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize) {}
 
 // surface cache related
 qbool r_cache_thrash;
-int D_SurfaceCacheForRes (int width, int height) {}
+int D_SurfaceCacheForRes (int width, int height) { return 0; }
 void D_FlushCaches (void) {}
 void D_InitCaches (void *buffer, int size) {}
 
@@ -69,8 +69,8 @@ void R_FadeScreen (void) {}
 void R_DrawDebugChar (char num) {}
 void R_BeginDisc (void) {}
 void R_EndDisc (void) {}
-mpic_t *R_CachePic (char *path) {}
-mpic_t *R_CacheWadPic (char *name) {}
+mpic_t *R_CachePic (char *path) { return NULL; }
+mpic_t *R_CacheWadPic (char *name) { return NULL; }
 void R_FlushPics (void) {}
 void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha) {}
 void R_DrawCrosshair (int num, int crossx, int crossy) {}
@@ -78,7 +78,7 @@ void R_DrawCrosshair (int num, int crossx, int crossy) {}
 // model loading
 void Mod_ClearAll (void) {}
 void Mod_TouchModel (char *name) {}
-struct model_s *Mod_ForName (char *name, qbool crash) {}
-int R_ModelFlags (const struct model_s *model) {}
-unsigned short R_ModelChecksum (const struct model_s *model) {}
+struct model_s *Mod_ForName (char *name, qbool crash) { return NULL; }
+int R_ModelFlags (const struct model_s *model) { return 0; }
+unsigned short R_ModelChecksum (const struct model_s *model) { return 0; }
 void R_LoadModelTextures (struct model_s *m) {}
