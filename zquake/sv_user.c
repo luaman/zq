@@ -386,9 +386,9 @@ static void Cmd_PreSpawn_f (void)
 
 //		Com_DPrintf ("Client check = %d\n", check);
 
-		if (sv_mapcheck.value && check != sv.map_checksum && check != sv.map_checksum2) {
+		if (sv_mapcheck.value && check != sv.map_checksum && check != sv.map_checksum2 && Com_TranslateMapChecksum(sv.mapname, check) != sv.map_checksum2) {
 			SV_ClientPrintf (sv_client, PRINT_HIGH, 
-				"Map model file does not match (%s), %i != %i/%i.\n"
+				"Map model file does not match (%s), 0x%x != 0x%x/0x%x.\n"
 				"You may need a new version of the map, or the proper install files.\n",
 				sv.modelname, check, sv.map_checksum, sv.map_checksum2);
 			SV_DropClient (sv_client); 
