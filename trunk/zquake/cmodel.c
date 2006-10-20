@@ -985,6 +985,7 @@ cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned
 	int			i;
 	dheader_t	*header;
 	unsigned int *buf;
+	char mapname[MAX_QPATH];
 
 	if (map_name[0]) {
 		assert(!strcmp(name, map_name));
@@ -1035,7 +1036,8 @@ cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned
 	}
 	if (checksum)
 		*checksum = map_checksum;
-	*checksum2 = map_checksum2;
+	COM_StripExtension (COM_SkipPath(name), mapname);
+	*checksum2 = Com_TranslateMapChecksum (mapname, map_checksum2);
 
 	// load into heap
 	CM_LoadPlanes (&header->lumps[LUMP_PLANES]);

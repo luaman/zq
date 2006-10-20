@@ -264,6 +264,11 @@ byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence);
 
 //============================================================================
 
+// com_mapcheck.c
+int Com_TranslateMapChecksum (char *mapname, int checksum);
+
+//============================================================================
+
 void Com_BeginRedirect (void (*RedirectedPrint) (char *));
 void Com_EndRedirect (void);
 void Com_Printf (char *fmt, ...);
