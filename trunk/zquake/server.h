@@ -454,7 +454,7 @@ void SV_FindModelNumbers (void);
 // sv_user.c
 //
 void SV_ExecuteClientMessage (client_t *cl);
-void SV_TogglePause (const char *msg);
+void SV_TogglePause (qbool menu, const char *msg);
 
 
 //

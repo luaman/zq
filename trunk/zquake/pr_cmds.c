@@ -2789,7 +2789,7 @@ void PF_setpause (void)
 
 	pause = G_FLOAT(OFS_PARM0) ? true : false;
 	if (pause != (((int)sv_paused.value & 1) ? true : false))
-		SV_TogglePause ("");
+		SV_TogglePause (false, NULL);
 }
 
 //=============================================================================
