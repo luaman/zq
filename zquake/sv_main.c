@@ -1296,8 +1296,17 @@ void SV_CheckTimeouts (void)
 			cl->state = cs_free;	// can now be reused
 		}
 	}
+
 	if (((int) sv_paused.value & 1) && !nclients) {
 		// nobody left, unpause the server
+		if (GE_ShouldPause) {
+			pr_global_struct->time = sv.time;
+			pr_global_struct->self = EDICT_TO_PROG(sv.edicts);
+			G_FLOAT(OFS_PARM0) = 0 /* newstate = false */;
+			PR_ExecuteProgram (GE_ShouldPause);
+			if (!G_FLOAT(OFS_RETURN))
+				return;		// progs said don't unpause
+		}
 		SV_TogglePause("Pause released since no players are left.\n");
 	}
 }
@@ -1402,7 +1411,7 @@ void SV_CheckVars (void)
 
 static void PausedTic (void)
 {
-	if (GE_PausedTic && pr_ext_enabled.zq_pause) {
+	if (GE_PausedTic /* && pr_ext_enabled.zq_pause*/) {
 		G_FLOAT(OFS_PARM0) = curtime - sv.pausedstart;
 		PR_ExecuteProgram (GE_PausedTic);
 	}
