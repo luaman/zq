@@ -1092,6 +1092,9 @@ Cmd_Pause_f
 static void Cmd_Pause_f (void)
 {
 	char st[sizeof(sv_client->name) + 32];
+	qbool newstate;
+
+	newstate = !((int)sv_paused.value & 1);
 
 	if (!sv_pausable.value) {
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Pause not allowed.\n");
@@ -1103,7 +1106,16 @@ static void Cmd_Pause_f (void)
 		return;
 	}
 
-	if (!((int)sv_paused.value & 1))
+	if (GE_ShouldPause) {
+		pr_global_struct->time = sv.time;
+		pr_global_struct->self = EDICT_TO_PROG(sv_player);
+		G_FLOAT(OFS_PARM0) = newstate;
+		PR_ExecuteProgram (GE_ShouldPause);
+		if (!G_FLOAT(OFS_RETURN))
+			return;		// progs said ignore the request
+	}
+
+	if (newstate)
 		sprintf (st, "%s paused the game\n", sv_client->name);
 	else
 		sprintf (st, "%s unpaused the game\n", sv_client->name);

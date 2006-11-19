@@ -50,7 +50,7 @@ int		type_size[8] = {1,sizeof(void *)/4,1,3,1,1,sizeof(void *)/4,sizeof(void *)/
 
 func_t SpectatorConnect, SpectatorThink, SpectatorDisconnect;
 func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
-func_t GE_ClientCommand, GE_ConsoleCommand, GE_PausedTic;
+func_t GE_ClientCommand, GE_ConsoleCommand, GE_PausedTic, GE_ShouldPause;
 
 int		fofs_maxspeed, fofs_gravity, fofs_items2;
 int		fofs_forwardmove, fofs_sidemove, fofs_upmove;
@@ -1202,6 +1202,7 @@ dm_use_progs:
 	GE_ClientCommand = ED_FindFunctionOffset ("GE_ClientCommand");
 	GE_ConsoleCommand = ED_FindFunctionOffset ("GE_ConsoleCommand");
 	GE_PausedTic = ED_FindFunctionOffset ("GE_PausedTic");
+	GE_ShouldPause = ED_FindFunctionOffset ("GE_ShouldPause");
 
 	// find optional QC-exported fields
 	fofs_maxspeed = ED_FindFieldOffset ("maxspeed");
