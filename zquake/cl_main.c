@@ -1075,7 +1075,7 @@ void CL_BeginLocalConnection (void)
 }
 
 
-extern void SV_TogglePause (const char *msg);
+extern void SV_TogglePause (qbool menu, const char *msg);
 extern cvar_t sv_paused;
 
 // automatically pause the game when going into the menus in single player
@@ -1086,11 +1086,11 @@ static void CL_CheckAutoPause (void)
 		&& (key_dest == key_menu /*|| key_dest == key_console*/))
 	{
 		if (!((int)sv_paused.value & 2))
-			SV_TogglePause (NULL);
+			SV_TogglePause (true, NULL);
 	}
 	else {
 		if ((int)sv_paused.value & 2)
-			SV_TogglePause (NULL);
+			SV_TogglePause (true, NULL);
 	}
 #endif
 }

@@ -1049,43 +1049,6 @@ static void Cmd_Kill_f (void)
 
 /*
 ==================
-SV_TogglePause
-==================
-*/
-void SV_TogglePause (const char *msg)
-{
-	int i;
-	client_t *cl;
-	int	newval;
-
-	if (!msg)
-		newval = (int)sv_paused.value ^ 2;
-	else
-		newval = (int)sv_paused.value ^ 1;
-
-	if (!sv_paused.value && newval)
-		sv.pausedstart = curtime;
-	Cvar_ForceSet (&sv_paused, va("%i", newval));
-
-	if (msg)
-		SV_BroadcastPrintf (PRINT_HIGH, "%s", msg);
-
-	// send notification to all clients
-	for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
-	{
-		if (cl->state < cs_connected)
-			continue;
-		ClientReliableWrite_Begin (cl, svc_setpause);
-		ClientReliableWrite_Byte (sv_paused.value ? 1 : 0);
-		ClientReliableWrite_End ();
-
-		cl->lastservertimeupdate = -99;	// force an update to be sent
-	}
-}
-
-
-/*
-==================
 Cmd_Pause_f
 ==================
 */
@@ -1120,7 +1083,7 @@ static void Cmd_Pause_f (void)
 	else
 		sprintf (st, "%s unpaused the game\n", sv_client->name);
 
-	SV_TogglePause(st);
+	SV_TogglePause (false, st);
 }
 
 

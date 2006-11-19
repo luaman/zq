@@ -1307,7 +1307,7 @@ void SV_CheckTimeouts (void)
 			if (!G_FLOAT(OFS_RETURN))
 				return;		// progs said don't unpause
 		}
-		SV_TogglePause("Pause released since no players are left.\n");
+		SV_TogglePause(false, "Pause released since no players are left.\n");
 	}
 }
 
@@ -1405,6 +1405,46 @@ void SV_CheckVars (void)
 			val = Info_ValueForKey (cl->userinfo, "rate");
 			cl->netchan.rate = 1.0 / SV_BoundRate (atoi(val));
 		}
+	}
+}
+
+
+/*
+==================
+SV_TogglePause
+
+'menu' is set when the player pauses the game by bringing up the menu
+in single player games
+==================
+*/
+void SV_TogglePause (qbool menu, const char *msg)
+{
+	int i;
+	client_t *cl;
+	int	newval;
+
+	if (menu)
+		newval = (int)sv_paused.value ^ 2;
+	else
+		newval = (int)sv_paused.value ^ 1;
+
+	if (!sv_paused.value && newval)
+		sv.pausedstart = curtime;
+	Cvar_ForceSet (&sv_paused, va("%i", newval));
+
+	if (msg && *msg)
+		SV_BroadcastPrintf (PRINT_HIGH, "%s", msg);
+
+	// send notification to all clients
+	for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
+	{
+		if (cl->state < cs_connected)
+			continue;
+		ClientReliableWrite_Begin (cl, svc_setpause);
+		ClientReliableWrite_Byte (sv_paused.value ? 1 : 0);
+		ClientReliableWrite_End ();
+
+		cl->lastservertimeupdate = -99;	// force an update to be sent
 	}
 }
 
