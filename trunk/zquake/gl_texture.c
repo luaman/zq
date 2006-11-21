@@ -58,8 +58,6 @@ int		gl_filter_2d = GL_LINEAR;
 
 int		gl_max_texsize;
 
-int		texels;
-
 extern byte	scrap_texels[2][256*256*4];	// FIXME FIXME FIXME
 
 typedef struct
@@ -378,18 +376,13 @@ Accepts TEX_MIPMAP, TEX_ALPHA, TEX_NOSCALE
 void GL_Upload32 (unsigned *data, int width, int height, int mode /*qbool mipmap, qbool alpha*/)
 {
 	int			samples;
-static	unsigned	scaled[1024*512];	// [512*256];
+	unsigned	*scaled, *scaled_buf = NULL;
 	int			scaled_width, scaled_height;
 	int min_filter, max_filter;
 
 	ScaleDimensions (width, height, &scaled_width, &scaled_height, mode);
 
-	if (scaled_width * scaled_height > sizeof(scaled)/4)
-		Sys_Error ("GL_LoadTexture: too big");
-
 	samples = (mode & TEX_ALPHA) ? gl_alpha_format : gl_solid_format;
-
-	texels += scaled_width * scaled_height;
 
 	if (scaled_width == width && scaled_height == height)
 	{
@@ -398,10 +391,14 @@ static	unsigned	scaled[1024*512];	// [512*256];
 			glTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			goto done;
 		}
-		memcpy (scaled, data, width*height*4);
+		scaled = data;
 	}
 	else
+	{
+		scaled_buf = Q_malloc (scaled_width * scaled_height * 4);
+		scaled = scaled_buf;
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
+	}
 
 	glTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 	if (mode & TEX_MIPMAP)
@@ -433,6 +430,8 @@ done: ;
 	}
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, max_filter);
+
+	free (scaled_buf);
 }
 
 /*
