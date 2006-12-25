@@ -50,7 +50,7 @@ extern kbutton_t 	in_speed;
 void CL_InitInput (void);
 void CL_SendCmd (void);
 void CL_BaseMove (usercmd_t *cmd);
-float CL_KeyState (kbutton_t *key);
+float CL_KeyState (kbutton_t *key, qbool lookbutton);
 
 
 extern cvar_t	cl_upspeed;
