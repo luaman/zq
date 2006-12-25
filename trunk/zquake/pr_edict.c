@@ -911,7 +911,6 @@ void ED_LoadFromFile (char *data)
 	edict_t		*ent;
 	int			inhibit;
 	dfunction_t	*func;
-	qbool hip2m5_hack = !strcmp(sv.mapname, "hip2m5");
 	
 	ent = NULL;
 	inhibit = 0;
@@ -963,13 +962,6 @@ void ED_LoadFromFile (char *data)
 			continue;
 		}
 
-		if (hip2m5_hack) {
-			// this map's spawn point is several units below ground level
-			// NQ's pmove copes with that, but QW gets stuck
-			if (!strcmp(PR_GetString(ent->v.classname), "info_player_start"))
-				ent->v.origin[2] += 3;
-		}
-		
 	// look for the spawn function
 		func = ED_FindFunction ( PR_GetString(ent->v.classname) );
 
