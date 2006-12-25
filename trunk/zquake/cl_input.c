@@ -288,7 +288,7 @@ Returns 0.25 if a key was pressed and released during the frame,
 1.0 if held for the entire time
 ===============
 */
-float CL_KeyState (kbutton_t *key)
+float CL_KeyState (kbutton_t *key, qbool lookbutton)
 {
 	float	val;
 	qbool	impulsedown, impulseup, down;
@@ -301,11 +301,9 @@ float CL_KeyState (kbutton_t *key)
 	if (impulsedown && !impulseup)
 	{
 		if (down)
-#ifdef AGRIP
-			val = 0.5;	// pressed and held this frame
-#else
-			val = 1;	// pressed and held this frame
-#endif
+			// pressed and held this frame
+			val = lookbutton ? 0.5	/* frj scripts compatibility */
+				: 1.0;	
 		else
 			val = 0;	//	I_Error ();
 	}
@@ -339,7 +337,7 @@ float CL_KeyState (kbutton_t *key)
 #ifdef AGRIP
 float CL_AG_TurnVal (kbutton_t *key)
 {
-    float val = CL_KeyState (key);
+    float val = CL_KeyState (key, true);
 
     // The player snaps a certain number of degrees for each ``turn''...
     if( val == 0.5 || val == 0.25 )
@@ -406,31 +404,31 @@ void CL_AdjustAngles (void)
 			yawspeed *= cls.frametime;
 		}
 #ifndef AGRIP
-		cl.viewangles[YAW] -= yawspeed * CL_KeyState (&in_right);
-		cl.viewangles[YAW] += yawspeed * CL_KeyState (&in_left);
+		cl.viewangles[YAW] -= yawspeed * CL_KeyState (&in_right, true);
+		cl.viewangles[YAW] += yawspeed * CL_KeyState (&in_left, true);
 		cl.viewangles[YAW] = anglemod(cl.viewangles[YAW]);
 #else
-        // Accessible player turning support:
-        // Simpler yaw calculations...
-        cl.viewangles[YAW] -= CL_AG_TurnVal (&in_right);
-        cl.viewangles[YAW] += CL_AG_TurnVal (&in_left);
+		// Accessible player turning support:
+		// Simpler yaw calculations...
+		cl.viewangles[YAW] -= CL_AG_TurnVal (&in_right);
+		cl.viewangles[YAW] += CL_AG_TurnVal (&in_left);
 
-        // Can't use anglemod as we must ensure exact (non-decimal) results...
-        if( cl.viewangles[YAW] > 360 )
-            cl.viewangles[YAW] -= 360;
-        else if( cl.viewangles[YAW] < 0 )
-            cl.viewangles[YAW] += 360;
+		// Can't use anglemod as we must ensure exact (non-decimal) results...
+		if( cl.viewangles[YAW] > 360 )
+			cl.viewangles[YAW] -= 360;
+		else if( cl.viewangles[YAW] < 0 )
+			cl.viewangles[YAW] += 360;
 #endif
 	}
 	if (in_klook.state & 1)
 	{
 		V_StopPitchDrift ();
-		cl.viewangles[PITCH] -= speed*cl_pitchspeed.value * CL_KeyState (&in_forward);
-		cl.viewangles[PITCH] += speed*cl_pitchspeed.value * CL_KeyState (&in_back);
+		cl.viewangles[PITCH] -= speed*cl_pitchspeed.value * CL_KeyState (&in_forward, true);
+		cl.viewangles[PITCH] += speed*cl_pitchspeed.value * CL_KeyState (&in_back, true);
 	}
 	
-	up = CL_KeyState (&in_lookup);
-	down = CL_KeyState(&in_lookdown);
+	up = CL_KeyState (&in_lookup, true);
+	down = CL_KeyState(&in_lookdown, true);
 	
 	cl.viewangles[PITCH] -= speed*cl_pitchspeed.value * up;
 	cl.viewangles[PITCH] += speed*cl_pitchspeed.value * down;
@@ -466,20 +464,20 @@ void CL_BaseMove (usercmd_t *cmd)
 	VectorCopy (cl.viewangles, cmd->angles);
 	if (in_strafe.state & 1)
 	{
-		cmd->sidemove += cl_sidespeed.value * CL_KeyState (&in_right);
-		cmd->sidemove -= cl_sidespeed.value * CL_KeyState (&in_left);
+		cmd->sidemove += cl_sidespeed.value * CL_KeyState (&in_right, false);
+		cmd->sidemove -= cl_sidespeed.value * CL_KeyState (&in_left, false);
 	}
 
-	cmd->sidemove += cl_sidespeed.value * CL_KeyState (&in_moveright);
-	cmd->sidemove -= cl_sidespeed.value * CL_KeyState (&in_moveleft);
+	cmd->sidemove += cl_sidespeed.value * CL_KeyState (&in_moveright, false);
+	cmd->sidemove -= cl_sidespeed.value * CL_KeyState (&in_moveleft, false);
 
-	cmd->upmove += cl_upspeed.value * CL_KeyState (&in_up);
-	cmd->upmove -= cl_upspeed.value * CL_KeyState (&in_down);
+	cmd->upmove += cl_upspeed.value * CL_KeyState (&in_up, false);
+	cmd->upmove -= cl_upspeed.value * CL_KeyState (&in_down, false);
 
 	if (! (in_klook.state & 1) )
 	{	
-		cmd->forwardmove += cl_forwardspeed.value * CL_KeyState (&in_forward);
-		cmd->forwardmove -= cl_backspeed.value * CL_KeyState (&in_back);
+		cmd->forwardmove += cl_forwardspeed.value * CL_KeyState (&in_forward, false);
+		cmd->forwardmove -= cl_backspeed.value * CL_KeyState (&in_back, false);
 	}	
 
 //
@@ -491,6 +489,154 @@ void CL_BaseMove (usercmd_t *cmd)
 		cmd->sidemove *= cl_movespeedkey.value;
 		cmd->upmove *= cl_movespeedkey.value;
 	}	
+}
+
+
+
+static void MoveHack (usercmd_t *cmd)
+{
+	vec3_t fw, rt;
+	vec3_t cmd_ang;
+	vec3_t wishvel, curvel;
+	float wishspeed, curspeed;
+
+	if (cl.waterlevel)
+		return;
+
+	if (!cmd->forwardmove && !cmd->sidemove)
+		return;
+
+	if (!Cvar_Value("mon"))
+		return;
+
+	VectorCopy (cmd->angles, cmd_ang);
+	cmd_ang[PITCH] = 0;
+	cmd_ang[ROLL] = 0;
+	AngleVectors (cmd_ang, fw, rt, NULL);
+
+	VectorScale (fw, cmd->forwardmove, wishvel);
+	VectorMA (wishvel, cmd->sidemove, rt, wishvel);
+	wishspeed = VectorNormalize (wishvel);
+
+	Com_DPrintf ("wishspeed1 %f\n", wishspeed);
+if (wishspeed > 320)
+	wishspeed = 320;
+
+	VectorCopy (cl.simvel, curvel);
+	curvel[2] = 0;
+	curspeed = VectorLength (curvel);
+
+	Com_DPrintf ("curspeed %f\n", curspeed);
+
+	if (wishspeed >= 300 /* fixme movevars maxspeed? */ && curspeed > wishspeed)
+		wishspeed = curspeed /* * 1.1 */ /* bunny accel */;
+
+	VectorScale (wishvel, wishspeed, wishvel);
+
+	VectorSubtract (wishvel, curvel, wishvel);
+	wishspeed = VectorLength (wishvel);
+
+
+	Com_DPrintf ("wishspeed %f\n", wishspeed);
+
+	if (wishspeed > 508.0f) {
+		VectorScale (wishvel, 508.0f/wishspeed, wishvel);
+	}
+
+//wishspeed = 508 /* FIXME */;
+
+if (cl.onground)
+return;
+
+	cmd->forwardmove = DotProduct (wishvel, fw);
+	cmd->sidemove = DotProduct (wishvel, rt);
+
+	Com_DPrintf ("forwardmove %i\nsidemove %i\n", cmd->forwardmove, cmd->sidemove);
+
+
+#if 0
+	VectorCopy (cl.simvel, v1);
+	v1[2] = 0;
+
+	if (VectorLength(v1) < 5)
+		return;
+
+	a = BestAngleForSpeed (VectorLength(v1), cl.onground);
+
+	vectoangles (v1, ang);
+
+	delta = intentions_a[YAW] - ang[YAW];
+	if (delta > 180)
+		delta -= 360;
+	if (delta <= -180)
+		delta += 360;
+
+	if (fabs(delta) > 95)
+		return;
+
+//	Cvar_Get ("ga", "0", 0);
+//	Cvar_Get ("aa", "1", 0);
+
+	if (cl.onground)
+		doaccel = fabs(delta) < 3 && Cvar_VariableValue("ga");
+	else
+		doaccel = fabs(delta) < 5 && Cvar_VariableValue("aa");
+
+	if (!doaccel)
+	{
+	//@@TEST	if (cl.onground)
+		{
+			if (fabs(delta) > 90)
+				return;
+
+			a = BestAngle2 (v1, intentions, cl.onground);
+			VectorClear (ang);
+			ang[YAW] = a;
+			AngleVectors (ang, movevec, NULL, NULL);
+			cmd->forwardmove = DotProduct (movevec, fw) * 508;
+			cmd->sidemove = DotProduct (movevec, rt) * 508;
+			return;
+		}
+
+		if (delta < 0) {
+			float f, r, a;
+			f = cmd->forwardmove;
+			r = cmd->sidemove;
+			a = -85 / 180.0 * M_PI;
+			cmd->forwardmove = f * cos(a) + r * sin(a);
+			cmd->sidemove = - f * sin(a) + r * cos(a);
+		}
+		else {
+			float f, r, a;
+			f = cmd->forwardmove;
+			r = cmd->sidemove;
+			a = 85 / 180.0 * M_PI;
+			cmd->forwardmove = f * cos(a) + r * sin(a);
+			cmd->sidemove = - f * sin(a) + r * cos(a);
+		}
+	}
+	else
+	{
+		if (delta < 0) {
+//			Com_DPrintf ("right\n");
+			ang[YAW] -= a;
+			if (ang[YAW] <= -180)
+				ang[YAW] += 360;
+		}
+		else {
+//			Com_DPrintf ("left\n");
+	//		cmd->sidemove = -cmd->sidemove;
+			ang[YAW] += a;
+			if (ang[YAW] > 180)
+				ang[YAW] -= 360;
+		}
+
+		AngleVectors (cmd_ang, fw, rt, NULL);
+		AngleVectors (ang, movevec, NULL, NULL);
+		cmd->forwardmove = DotProduct (movevec, fw) * 508;
+		cmd->sidemove = DotProduct (movevec, rt) * 508;
+	}
+#endif
 }
 
 int MakeChar (int i)
@@ -573,6 +719,10 @@ void CL_FinishMove (usercmd_t *cmd)
 		in_invertview = false;
 	}
 
+
+	if (!cl.spectator) {
+		MoveHack (cmd);
+	}
 
 //
 // chop down so no extra bits are kept that the server wouldn't get
