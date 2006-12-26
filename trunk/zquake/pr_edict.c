@@ -57,6 +57,7 @@ int		fofs_forwardmove, fofs_sidemove, fofs_upmove;
 #ifdef VWEP_TEST
 int		fofs_vw_index, fofs_vw_frame;
 #endif
+int		fofs_buttonX[8-3];
 
 
 ddef_t *ED_FieldAtOfs (int ofs);
@@ -1207,6 +1208,8 @@ dm_use_progs:
 	fofs_vw_index = ED_FindFieldOffset ("vw_index");
 	fofs_vw_frame = ED_FindFieldOffset ("vw_frame");
 #endif
+	for (i = 3; i < 8; i++)
+		fofs_buttonX[i-3] = ED_FindFieldOffset(va("button%i", i));
 
 	// reset stuff like ZQ_CLIENTCOMMAND, progs must enable it explicitly
 	memset (&pr_ext_enabled, sizeof(pr_ext_enabled), 0);

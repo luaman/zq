@@ -1950,8 +1950,12 @@ void SV_RunCmd (usercmd_t *ucmd)
 	{
 		// copy humans' intentions to progs
 		sv_player->v.button0 = ucmd->buttons & 1;
-		sv_player->v.button2 = (ucmd->buttons & 2)>>1;
-		sv_player->v.button1 = (ucmd->buttons & 4)>>2;
+		sv_player->v.button2 = (ucmd->buttons >> 1) & 1;
+		sv_player->v.button1 = (ucmd->buttons >> 2) & 1;
+		// ZQ_INPUTBUTTONS
+		for (i = 3; i < 8; i++)
+			if (fofs_buttonX[i-3])
+				EdictFieldFloat (sv_player, fofs_buttonX[i-3]) = (ucmd->buttons >> i) & 1;
 		if (ucmd->impulse)
 			sv_player->v.impulse = ucmd->impulse;
 	}
