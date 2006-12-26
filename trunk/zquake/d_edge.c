@@ -170,6 +170,24 @@ void D_DrawSurfaces (void)
 	VectorCopy (transformed_modelorg, world_transformed_modelorg);
 
 	// TODO: could preset a lot of this at mode set time
+
+	if (r_drawflat.value && r_refdef2.allowCheats)
+	{
+		for (s = &surfaces[1] ; s<surface_p ; s++)
+		{
+			if (!s->spans)
+				continue;
+
+			d_zistepu = s->d_zistepu;
+			d_zistepv = s->d_zistepv;
+			d_ziorigin = s->d_ziorigin;
+
+			D_DrawSolidSurface (s, (int)s->data & 0xFF);
+			D_DrawZSpans (s->spans);
+		}
+		return;
+	}
+
 	for (s = &surfaces[1] ; s<surface_p ; s++)
 	{
 		if (!s->spans)
