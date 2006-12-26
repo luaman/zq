@@ -298,6 +298,7 @@ char *wcs2str (const wchar *ws)
 	return buf;
 }
 
+#ifndef _WIN32
 size_t qwcslen (const wchar *ws)
 {
 	int i = 0;
@@ -313,6 +314,7 @@ wchar *qwcscpy (wchar *dest, const wchar *src)
 	*dest = 0;
 	return dest;
 }
+#endif
 
 size_t qwcslcpy (wchar *dst, const wchar *src, size_t size)
 {
