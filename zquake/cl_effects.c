@@ -116,7 +116,7 @@ void CL_ReadPointFile_f (void)
 	cparticle_t	*p;
 	char	name[MAX_OSPATH];
 
-	if (!com_serveractive && !r_refdef2.allowCheats)
+	if (!com_serveractive && !r_refdef2.allow_cheats)
 		return;
 
 	sprintf (name, "maps/%s.pts", host_mapname.string);

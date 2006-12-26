@@ -113,7 +113,7 @@ typedef struct {
 	float			fov_x, fov_y;
 
 	float			time;
-	qbool			allowCheats;
+	qbool			allow_cheats;
 	qbool			allow_fbskins;
 	int				viewplayernum;	// don't draw own glow when gl_flashblend 1
 	qbool			watervis;

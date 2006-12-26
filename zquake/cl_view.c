@@ -1158,7 +1158,7 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 	R_PushDlights ();
 
 	r_refdef2.time = cl.time;
-//	r_refdef2.allowCheats = false;
+//	r_refdef2.allow_cheats = false;
 	r_refdef2.allow_fbskins = cl.allow_fbskins;
 	r_refdef2.viewplayernum = Cam_PlayerNum();
 	r_refdef2.watervis = (atoi(Info_ValueForKey(cl.serverinfo, "watervis")) != 0);
