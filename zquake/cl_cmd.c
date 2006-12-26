@@ -1020,6 +1020,9 @@ void CL_FullServerinfo_f (void)
 	} else
 		r_refdef2.allowCheats = false;
 
+	if (cls.demoplayback)
+		r_refdef2.allowCheats = true;
+
 	CL_ProcessServerInfo ();
 
 	if (cls.state < ca_active) {
