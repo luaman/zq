@@ -305,8 +305,8 @@ void SCR_CalcRefdef (void)
 // bound field of view
 	if (scr_fov.value < 10)
 		Cvar_Set (&scr_fov, "10");
-	if (scr_fov.value > (r_refdef2.allowCheats ? 170 : 140))
-		Cvar_SetValue (&scr_fov, r_refdef2.allowCheats ? 170 : 140);
+	if (scr_fov.value > (r_refdef2.allow_cheats ? 170 : 140))
+		Cvar_SetValue (&scr_fov, r_refdef2.allow_cheats ? 170 : 140);
 
 // intermission is always full screen	
 	if (cl.intermission) {

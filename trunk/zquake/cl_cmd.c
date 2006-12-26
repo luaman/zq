@@ -1016,12 +1016,12 @@ void CL_FullServerinfo_f (void)
 	if (*p) {
 		Com_Printf ("*** cheats are enabled ***\n");
 		// allow renderer cheats only if running a local server
-		r_refdef2.allowCheats = com_serveractive;
+		r_refdef2.allow_cheats = com_serveractive;
 	} else
-		r_refdef2.allowCheats = false;
+		r_refdef2.allow_cheats = false;
 
 	if (cls.demoplayback)
-		r_refdef2.allowCheats = true;
+		r_refdef2.allow_cheats = true;
 
 	CL_ProcessServerInfo ();
 

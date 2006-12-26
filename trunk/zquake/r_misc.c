@@ -163,7 +163,7 @@ void R_CheckVariables (void)
 	static qbool	oldbright = false;
 	qbool			fullbright;
 
-	fullbright = (r_fullbright.value && r_refdef2.allowCheats);
+	fullbright = (r_fullbright.value && r_refdef2.allow_cheats);
 	if (fullbright != oldbright) {
 		oldbright = r_fullbright.value;
 		D_FlushCaches ();	// so all lighting changes
@@ -723,7 +723,7 @@ void R_SetupFrame (void)
 				r_numallocatededges, r_maxedgesseen);
 	}
 
-	r_refdef.ambientlight = r_refdef2.allowCheats ? min((int)r_ambient.value, 0) : 0;
+	r_refdef.ambientlight = r_refdef2.allow_cheats ? min((int)r_ambient.value, 0) : 0;
 
 	R_CheckVariables ();
 	

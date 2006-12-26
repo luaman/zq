@@ -171,7 +171,7 @@ void D_DrawSurfaces (void)
 
 	// TODO: could preset a lot of this at mode set time
 
-	if (r_drawflat.value && r_refdef2.allowCheats)
+	if (r_drawflat.value && r_refdef2.allow_cheats)
 	{
 		for (s = &surfaces[1] ; s<surface_p ; s++)
 		{

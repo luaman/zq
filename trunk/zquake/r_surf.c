@@ -283,7 +283,7 @@ void R_BuildLightMap (void)
 	size = smax*tmax;
 	lightmap = surf->samples;
 
-	if ((r_fullbright.value && r_refdef2.allowCheats) || !r_worldmodel->lightdata)
+	if ((r_fullbright.value && r_refdef2.allow_cheats) || !r_worldmodel->lightdata)
 	{
 		for (i=0 ; i<size ; i++)
 			blocklights[i] = 0;
