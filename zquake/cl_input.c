@@ -57,7 +57,8 @@ state bit 2 is edge triggered on the down to up transition
 kbutton_t	in_mlook, in_klook;
 kbutton_t	in_left, in_right, in_forward, in_back;
 kbutton_t	in_lookup, in_lookdown, in_moveleft, in_moveright;
-kbutton_t	in_strafe, in_speed, in_use, in_jump, in_attack, in_attack2;
+kbutton_t	in_strafe, in_speed, in_use, in_jump, in_attack;
+kbutton_t	in_button3, in_button4, in_button5, in_button6, in_button7;
 kbutton_t	in_up, in_down;
 
 int			in_impulse;
@@ -160,10 +161,18 @@ void IN_StrafeUp(void) {KeyUp(&in_strafe);}
 
 void IN_AttackDown(void) {KeyDown(&in_attack);}
 void IN_AttackUp(void) {KeyUp(&in_attack);}
-void IN_Attack2Down(void) {KeyDown(&in_attack2);}
-void IN_Attack2Up(void) {KeyUp(&in_attack2);}
 void IN_UseDown (void) {KeyDown(&in_use);}
 void IN_UseUp (void) {KeyUp(&in_use);}
+void IN_Button3Down(void) {KeyDown(&in_button3);}
+void IN_Button3Up(void) {KeyUp(&in_button3);}
+void IN_Button4Down(void) {KeyDown(&in_button4);}
+void IN_Button4Up(void) {KeyUp(&in_button4);}
+void IN_Button5Down(void) {KeyDown(&in_button5);}
+void IN_Button5Up(void) {KeyUp(&in_button5);}
+void IN_Button6Down(void) {KeyDown(&in_button6);}
+void IN_Button6Up(void) {KeyUp(&in_button6);}
+void IN_Button7Down(void) {KeyDown(&in_button7);}
+void IN_Button7Up(void) {KeyUp(&in_button7);}
 
 void IN_JumpDown(void) {
 	qbool condition;
@@ -491,154 +500,6 @@ void CL_BaseMove (usercmd_t *cmd)
 	}	
 }
 
-
-
-static void MoveHack (usercmd_t *cmd)
-{
-	vec3_t fw, rt;
-	vec3_t cmd_ang;
-	vec3_t wishvel, curvel;
-	float wishspeed, curspeed;
-
-	if (cl.waterlevel)
-		return;
-
-	if (!cmd->forwardmove && !cmd->sidemove)
-		return;
-
-	if (!Cvar_Value("mon"))
-		return;
-
-	VectorCopy (cmd->angles, cmd_ang);
-	cmd_ang[PITCH] = 0;
-	cmd_ang[ROLL] = 0;
-	AngleVectors (cmd_ang, fw, rt, NULL);
-
-	VectorScale (fw, cmd->forwardmove, wishvel);
-	VectorMA (wishvel, cmd->sidemove, rt, wishvel);
-	wishspeed = VectorNormalize (wishvel);
-
-	Com_DPrintf ("wishspeed1 %f\n", wishspeed);
-if (wishspeed > 320)
-	wishspeed = 320;
-
-	VectorCopy (cl.simvel, curvel);
-	curvel[2] = 0;
-	curspeed = VectorLength (curvel);
-
-	Com_DPrintf ("curspeed %f\n", curspeed);
-
-	if (wishspeed >= 300 /* fixme movevars maxspeed? */ && curspeed > wishspeed)
-		wishspeed = curspeed /* * 1.1 */ /* bunny accel */;
-
-	VectorScale (wishvel, wishspeed, wishvel);
-
-	VectorSubtract (wishvel, curvel, wishvel);
-	wishspeed = VectorLength (wishvel);
-
-
-	Com_DPrintf ("wishspeed %f\n", wishspeed);
-
-	if (wishspeed > 508.0f) {
-		VectorScale (wishvel, 508.0f/wishspeed, wishvel);
-	}
-
-//wishspeed = 508 /* FIXME */;
-
-if (cl.onground)
-return;
-
-	cmd->forwardmove = DotProduct (wishvel, fw);
-	cmd->sidemove = DotProduct (wishvel, rt);
-
-	Com_DPrintf ("forwardmove %i\nsidemove %i\n", cmd->forwardmove, cmd->sidemove);
-
-
-#if 0
-	VectorCopy (cl.simvel, v1);
-	v1[2] = 0;
-
-	if (VectorLength(v1) < 5)
-		return;
-
-	a = BestAngleForSpeed (VectorLength(v1), cl.onground);
-
-	vectoangles (v1, ang);
-
-	delta = intentions_a[YAW] - ang[YAW];
-	if (delta > 180)
-		delta -= 360;
-	if (delta <= -180)
-		delta += 360;
-
-	if (fabs(delta) > 95)
-		return;
-
-//	Cvar_Get ("ga", "0", 0);
-//	Cvar_Get ("aa", "1", 0);
-
-	if (cl.onground)
-		doaccel = fabs(delta) < 3 && Cvar_VariableValue("ga");
-	else
-		doaccel = fabs(delta) < 5 && Cvar_VariableValue("aa");
-
-	if (!doaccel)
-	{
-	//@@TEST	if (cl.onground)
-		{
-			if (fabs(delta) > 90)
-				return;
-
-			a = BestAngle2 (v1, intentions, cl.onground);
-			VectorClear (ang);
-			ang[YAW] = a;
-			AngleVectors (ang, movevec, NULL, NULL);
-			cmd->forwardmove = DotProduct (movevec, fw) * 508;
-			cmd->sidemove = DotProduct (movevec, rt) * 508;
-			return;
-		}
-
-		if (delta < 0) {
-			float f, r, a;
-			f = cmd->forwardmove;
-			r = cmd->sidemove;
-			a = -85 / 180.0 * M_PI;
-			cmd->forwardmove = f * cos(a) + r * sin(a);
-			cmd->sidemove = - f * sin(a) + r * cos(a);
-		}
-		else {
-			float f, r, a;
-			f = cmd->forwardmove;
-			r = cmd->sidemove;
-			a = 85 / 180.0 * M_PI;
-			cmd->forwardmove = f * cos(a) + r * sin(a);
-			cmd->sidemove = - f * sin(a) + r * cos(a);
-		}
-	}
-	else
-	{
-		if (delta < 0) {
-//			Com_DPrintf ("right\n");
-			ang[YAW] -= a;
-			if (ang[YAW] <= -180)
-				ang[YAW] += 360;
-		}
-		else {
-//			Com_DPrintf ("left\n");
-	//		cmd->sidemove = -cmd->sidemove;
-			ang[YAW] += a;
-			if (ang[YAW] > 180)
-				ang[YAW] -= 360;
-		}
-
-		AngleVectors (cmd_ang, fw, rt, NULL);
-		AngleVectors (ang, movevec, NULL, NULL);
-		cmd->forwardmove = DotProduct (movevec, fw) * 508;
-		cmd->sidemove = DotProduct (movevec, rt) * 508;
-	}
-#endif
-}
-
 int MakeChar (int i)
 {
 	i &= ~3;
@@ -693,9 +554,21 @@ void CL_FinishMove (usercmd_t *cmd)
 		cmd->buttons |= 4;
 	in_use.state &= ~2;
 
-	if (in_attack2.state & 3)
-		cmd->buttons |= 8;
-	in_attack2.state &= ~2;
+	if (in_button3.state & 3)
+		cmd->buttons |= 1 << 3;
+	in_button3.state &= ~2;
+	if (in_button4.state & 3)
+		cmd->buttons |= 1 << 4;
+	in_button4.state &= ~2;
+	if (in_button5.state & 3)
+		cmd->buttons |= 1 << 5;
+	in_button5.state &= ~2;
+	if (in_button6.state & 3)
+		cmd->buttons |= 1 << 6;
+	in_button6.state &= ~2;
+	if (in_button7.state & 3)
+		cmd->buttons |= 1 << 7;
+	in_button7.state &= ~2;
 	
 	// send milliseconds of time to apply the move
 	extramsec += cls.trueframetime * 1000;
@@ -717,11 +590,6 @@ void CL_FinishMove (usercmd_t *cmd)
 		cmd->sidemove = -cmd->sidemove;
 		cmd->angles[YAW] = anglemod(cmd->angles[YAW] + 180);
 		in_invertview = false;
-	}
-
-
-	if (!cl.spectator) {
-		MoveHack (cmd);
 	}
 
 //
@@ -915,12 +783,22 @@ void CL_InitInput (void)
 	Cmd_AddCommand ("-speed", IN_SpeedUp);
 	Cmd_AddCommand ("+attack", IN_AttackDown);
 	Cmd_AddCommand ("-attack", IN_AttackUp);
-	Cmd_AddCommand ("+attack2", IN_Attack2Down);
-	Cmd_AddCommand ("-attack2", IN_Attack2Up);
 	Cmd_AddCommand ("+use", IN_UseDown);
 	Cmd_AddCommand ("-use", IN_UseUp);
 	Cmd_AddCommand ("+jump", IN_JumpDown);
 	Cmd_AddCommand ("-jump", IN_JumpUp);
+	Cmd_AddCommand ("+attack2", IN_Button3Down);
+	Cmd_AddCommand ("-attack2", IN_Button3Up);
+	Cmd_AddCommand ("+button3", IN_Button3Down);
+	Cmd_AddCommand ("-button3", IN_Button3Up);
+	Cmd_AddCommand ("+button4", IN_Button4Down);
+	Cmd_AddCommand ("-button4", IN_Button4Up);
+	Cmd_AddCommand ("+button5", IN_Button5Down);
+	Cmd_AddCommand ("-button5", IN_Button5Up);
+	Cmd_AddCommand ("+button6", IN_Button6Down);
+	Cmd_AddCommand ("-button6", IN_Button6Up);
+	Cmd_AddCommand ("+button7", IN_Button7Down);
+	Cmd_AddCommand ("-button7", IN_Button7Up);
 	Cmd_AddCommand ("impulse", IN_Impulse);
 	Cmd_AddCommand ("weapon", IN_Impulse);
 	Cmd_AddCommand ("+klook", IN_KLookDown);
