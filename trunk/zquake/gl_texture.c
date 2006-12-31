@@ -594,9 +594,10 @@ int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, int m
 	if (lightmode != 2)
 		mode &= ~TEX_BRIGHTEN;
 
+	crc = CRC_Block (data, width*height);
+
 	// see if the texture is already present
 	if (identifier[0]) {
-		crc = CRC_Block (data, width*height);
 		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++) {
 			if (!strncmp (identifier, glt->identifier, sizeof(glt->identifier)-1)) {
 				if (width == glt->width && height == glt->height
