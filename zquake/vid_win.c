@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "winquake.h"
 #include "cdaudio.h"
 #include "d_local.h"
+#include "r_local.h"
 #include "keys.h"
 #include "resource.h"
 #include "sound.h"
@@ -2081,6 +2082,7 @@ void	VID_Init (unsigned char *palette)
 // mappings from that black to another one
 	bestmatchmetric = 256*256*3;
 
+if (r_colormap) {	// FIXME, the colormap is not yet loaded when VID_Init is called
 	for (i=1 ; i<256 ; i++)
 	{
 		dr = palette[0] - palette[i*3];
@@ -2104,6 +2106,7 @@ void	VID_Init (unsigned char *palette)
 		if (*ptmp == 0)
 			*ptmp = bestmatch;
 	}
+}
 
 	if (COM_CheckParm("-window") || COM_CheckParm("-startwindowed"))
 	{
