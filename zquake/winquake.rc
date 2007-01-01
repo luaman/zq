@@ -7,7 +7,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "winresrc.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -34,7 +34,7 @@ END
 
 2 TEXTINCLUDE DISCARDABLE 
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#include ""winresrc.h""\r\n"
     "\0"
 END
 
@@ -60,6 +60,11 @@ IDI_APPICON             ICON    DISCARDABLE     "zquake.ico"
 //
 // Dialog
 //
+
+//Tonik:
+#ifndef IDC_STATIC
+#define IDC_STATIC -1
+#endif
 
 IDD_DIALOG1 DIALOGEX 0, 0, 124, 27
 STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | WS_POPUP | 
