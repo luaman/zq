@@ -226,17 +226,29 @@ double Sys_DoubleTime (void)
 
 // if successful, returns Q_malloc'ed string (make sure to free it afterwards)
 // returns NULL if the operation failed for some reason
-char *Sys_GetClipboardText (void)
+wchar *Sys_GetClipboardTextW (void)
 {
 	HANDLE	h;
-	char	*text = NULL, *p;
+	wchar	*text = NULL;
+	void *p;
 
 	if (OpenClipboard(NULL)) {
-		if ((h = GetClipboardData(CF_TEXT)) != NULL) {
-			if ((p = GlobalLock(h)) != NULL) {
-				text = Q_strdup (p);
-				GlobalUnlock(h);
+		if (WinNT) {
+			if ((h = GetClipboardData(CF_UNICODETEXT)) != NULL) {
+				if ((p = GlobalLock(h)) != NULL) {
+					text = Q_malloc ((qwcslen(p) + 1) * sizeof(wchar));
+					qwcscpy (text, p);
+					GlobalUnlock(h);
+				}
 			}
+		}
+		else
+			if ((h = GetClipboardData(CF_TEXT)) != NULL) {
+				if ((p = GlobalLock(h)) != NULL) {
+					text = Q_malloc ((strlen(p) + 1) * sizeof(wchar));
+					qwcscpy (text, str2wcs(p));
+					GlobalUnlock(h);
+				}
 		}
 		CloseClipboard();
 	}
