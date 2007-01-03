@@ -1304,12 +1304,14 @@ void IN_TranslateKeyEvent (int lParam, int wParam, qbool down)
 	if (keymap_active)
 	{
 		key = keymap[scancode + (extended ? 128 : 0)];
-		if (keydown[K_ALTGR])
+		if (keydown[K_ALTGR] && !keydown[K_CTRL])
 			unichar = altgrkeymap[scancode + (extended ? 128 : 0)];
-		else if (keydown[K_SHIFT])
+		else if (keydown[K_SHIFT] && !keydown[K_CTRL])
 			unichar = shiftkeymap[scancode + (extended ? 128 : 0)];
-		else
-			unichar = key;
+		else {
+			Key_Event (key, down);
+			return;
+		}
 		Key_EventEx (key, unichar, down);
 		return;
 	}
