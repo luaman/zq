@@ -627,9 +627,11 @@ setuptexture:
 
 	GL_Bind (glt->texnum);
 
-	// FIXME, we're not supposed to modify data passed in to LoadTexture,
-	// but it doesn't currently break anything so we do
-	brighten32 (data, width * height * 4);
+	if (mode & TEX_BRIGHTEN) {
+		// FIXME, we're not supposed to modify data passed in to LoadTexture,
+		// but it doesn't currently break anything so we do
+		brighten32 (data, width * height * 4);
+	}
 
 	GL_Upload32 ((unsigned int *)data, width, height, mode);
 

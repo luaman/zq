@@ -399,14 +399,28 @@ static int LoadCharsetImage (char *filename)
 	return texnum;
 }
 
-static int LoadCharsetFromWad (void)
+static int LoadCharsetFromWadOrLmp (char *name)
 {
 	int i;
 	byte	buf[128*256];
 	byte	*src, *dest;
 	int texnum;
 
-	draw_chars = W_GetLumpName ("conchars", true);
+	draw_chars = W_GetLumpName (name, false);
+
+	if (!draw_chars)
+	{
+		qpic_t *p = (qpic_t *)FS_LoadTempFile (va("gfx/%s.lmp", name));
+		// FIXME FIXME, why are we getting bogus fs_filesize values?
+		//Com_Printf ("%i\n", fs_filesize);
+		if (!p /* || fs_filesize != 128*128+8 */)
+			return 0;
+		SwapPic (p);
+		if (p->width != 128 || p->height != 128)
+			return 0;
+		draw_chars = p->data;
+	}
+
 	for (i=0 ; i<256*64 ; i++)
 		if (draw_chars[i] == 0)
 			draw_chars[i] = 255;	// proper transparent color
@@ -424,7 +438,7 @@ static int LoadCharsetFromWad (void)
 		dest += 128*8*2;
 	}
 
-	texnum = GL_LoadTexture ("pic:charset", 128, 256, buf, TEX_ALPHA);
+	texnum = GL_LoadTexture (va("pic:%s", name), 128, 256, buf, TEX_ALPHA);
 	if (!gl_smoothfont.value)
 	{
 		glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -433,13 +447,18 @@ static int LoadCharsetFromWad (void)
 	return texnum;
 }
 
+
 static void R_LoadCharsets (void)
 {
 	char_textures[0] = LoadCharsetImage ("charset.tga");
 	if (!char_textures[0])
-		char_textures[0] = LoadCharsetFromWad ();
+		char_textures[0] = LoadCharsetFromWadOrLmp ("conchars");
+	if (!char_textures[0])
+		Sys_Error ("Couldn't load default charset\n");
 	// for now, only try to load the cyrillic range
-	char_textures[1] = LoadCharsetImage ("charset-0400.tga");
+	char_textures[1] = LoadCharsetImage ("charset-cyr.tga");
+	if (!char_textures[1])
+		char_textures[1] = LoadCharsetFromWadOrLmp ("conchars-cyr");
 	if (char_textures[1])
 		char_range[1] = 0x0400;
 }
