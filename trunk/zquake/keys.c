@@ -617,13 +617,21 @@ void Key_Console (int key, wchar unichar)
 {
 	int i;
 
+	if (unichar == 'M' - '@' || unichar == 'J' - '@')
+		goto on_enter;
+	if (unichar == 'H' - '@')
+		goto on_backspace;
+	if (unichar == 'P' - '@')
+		goto on_ctrl_p;
+	if (unichar == 'N' - '@')
+		goto on_ctrl_n;
+	if (unichar == 'U' - '@')
+		goto on_ctrl_u;
+
 	switch (key)
 	{
-		case 'M': case 'm': case 'J': case 'j':		//^M,^J = Enter
-			if (!keydown[K_CTRL])
-				break;
-		/* fall through */
 		case K_ENTER:
+on_enter:
 			HandleEnter (key != K_ENTER);
 			return;
 
@@ -634,10 +642,8 @@ void Key_Console (int key, wchar unichar)
 				CompleteCommand ();
 			return;
 
-		case 'H': case 'h':		// ^H = BACKSPACE	
-			if (!keydown[K_CTRL])
-				break;
 		case K_BACKSPACE:
+on_backspace:
 			if (key_linepos > 1)
 			{
 				qwcscpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
@@ -677,16 +683,12 @@ void Key_Console (int key, wchar unichar)
 				key_linepos--;
 			return;
 
-		case 'P': case 'p':		// ^P = back in history
-			if (!keydown[K_CTRL])
-				break;
-			goto prevline;
 		case K_UPARROW:
 			if (keydown[K_CTRL]) {
 				AdjustConsoleHeight (-10);
 				return;
 			}
-prevline:
+on_ctrl_p:
 			do {
 				history_line = (history_line - 1) & 31;
 			} while (history_line != edit_line
@@ -697,16 +699,12 @@ prevline:
 			key_linepos = qwcslen(key_lines[edit_line]);
 			return;
 
-		case 'N': case 'n':		// ^N = forward in history
-			if (!keydown[K_CTRL])
-				break;
-			goto nextline;
 		case K_DOWNARROW:
 			if (keydown[K_CTRL]) {
 				AdjustConsoleHeight (10);
 				return;
 			}
-nextline:
+on_ctrl_n:
 			if (history_line == edit_line) return;
 			do {
 				history_line = (history_line + 1) & 31;
@@ -752,9 +750,8 @@ nextline:
 			else
 				key_linepos = qwcslen(key_lines[edit_line]);
 			return;
-		case 'u': case 'U':
-			if (!keydown[K_CTRL])
-				break;
+		case 9999:
+on_ctrl_u:
 			if (key_linepos > 1) {
 				qwcscpy(key_lines[edit_line] + 1, key_lines[edit_line] + key_linepos);
 				key_linepos = 1;
@@ -762,13 +759,14 @@ nextline:
 			return;
 	}
 
-	if (((key == 'V' || key == 'v') && keydown[K_CTRL])
+	// ctrl-v or shift-insert = paste
+	if (unichar == 'V' - '@'
 		|| ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
 	{
-		int  len;
-		char *p;
-		char *text = Sys_GetClipboardText();
+		wchar *text = Sys_GetClipboardTextW();
 		if (text) {
+			int	len;
+			wchar *p;
 			for (p = text; *p; p++) {
 				if (*p == '\n' || *p == '\r' || *p == '\t')
 					*p = ' ';
@@ -788,32 +786,40 @@ nextline:
 		return;
 	}
 
+	if (keydown[K_CTRL] && !unichar && key >= '0' && key <= '9')
+		unichar = key - '0' + 0x12;	// yellow number
+
 	if (!unichar)
 		return;	// non-printable
 
 	if (keydown[K_CTRL]) {
-		if (unichar >= '0' && unichar <= '9')
-				unichar = unichar - '0' + 0x12;	// yellow number
-		else switch (key) {
-			case '[': unichar = 0x10; break;
-			case ']': unichar = 0x11; break;
-			case 'g': unichar = 0x86; break;
-			case 'r': unichar = 0x87; break;
-			case 'y': unichar = 0x88; break;
-			case 'b': unichar = 0x89; break;
-			case '(': unichar = 0x80; break;
-			case '=': unichar = 0x81; break;
-			case ')': unichar = 0x82; break;
-			case 'a': unichar = 0x83; break;
-			case '<': unichar = 0x1d; break;
-			case '-': unichar = 0x1e; break;
-			case '>': unichar = 0x1f; break;
-			case ',': unichar = 0x1c; break;
-			case '.': unichar = 0x9c; break;
-			case 'B': unichar = 0x8b; break;
-			case 'C': unichar = 0x8d; break;
+		if (key >= '0' && key <= '9')
+		{}
+		else switch (unichar) {
+			case '[' - '@': unichar = 0x10; break;
+			case ']' - '@': unichar = 0x11; break;
+			case 'G' - '@': unichar = 0x86; break;
+			case 'R' - '@': unichar = 0x87; break;
+			case 'Y' - '@': unichar = 0x88; break;
+			case 'B' - '@': unichar = 0x89; break;
+			case '(' - '@': unichar = 0x80; break;
+//			case '=' - '@': unichar = 0x81; break;
+			case ')' - '@': unichar = 0x82; break;
+			case 'A' - '@': unichar = 0x83; break;
+//FIXME make these work one way or another
+//			case '<' - '@': unichar = 0x1d; break;
+//			case '-' - '@': unichar = 0x1e; break;
+//			case '>' - '@': unichar = 0x1f; break;
+//			case ',' - '@': unichar = 0x1c; break;
+//			case '.' - '@': unichar = 0x9c; break;
+//			case 'B' - '@': unichar = 0x8b; break;	// ctrl-shift-...
+//			case 'C' - '@': unichar = 0x8d; break;	// ctrl-shift-...
+			default:
+				if (unichar < 32)
+					return;
 		}
-	}
+	} else if (unichar < 32)
+		return;
 
 	if (keydown[K_ALT] && unichar <= 128)
 		unichar |= 128;		// brown char
@@ -1019,11 +1025,10 @@ void Key_Console (int key, wchar unichar)
     if (((key == 'V' || key == 'v') && keydown[K_CTRL])
             || ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
     {
-        int  len;
-        char *p;
-        char *text = Sys_GetClipboardText();
-        if (text)
-        {
+		wchar *text = Sys_GetClipboardTextW();
+		if (text) {
+			int	len;
+			wchar *p;
             for (p = text; *p; p++)
             {
                 if (*p == '\n' || *p == '\r' || *p == '\t')
@@ -1125,10 +1130,10 @@ void Key_Message (int key, wchar unichar)
 	if (((key == 'V' || key == 'v') && keydown[K_CTRL])
 		|| ((key == K_INS || key == KP_INS) && keydown[K_SHIFT]))
 	{
-		int	len;
-		char *p;
-		char *text = Sys_GetClipboardText();
+		wchar *text = Sys_GetClipboardTextW();
 		if (text) {
+			int	len;
+			wchar *p;
 			for (p = text; *p; p++) {
 				if (*p == '\n' || *p == '\r' || *p == '\t')
 					*p = ' ';
@@ -1630,9 +1635,25 @@ void Key_Event (int key, qbool down)
 
 	assert (key >= 0 && key <= 255);
 
-	unichar = keydown[K_SHIFT] ? keyshift[key] : key;
-	if (unichar < 32 || unichar > 127)
+	if (keydown[K_CTRL] && !keydown[K_ALT] && !keydown[K_ALTGR])
+	{
+		if (key >= 'a' && key <= '~')
+			unichar = key - 'a' + 1;
+		else if (key >= 'A' && key <= '^')
+			unichar = key - 'A' + 1;
+		else
+			unichar = 0;
+	}
+	else if (keydown[K_CTRL])
 		unichar = 0;
+	else {
+		if (keydown[K_SHIFT])
+			unichar = keyshift[key];
+		else
+			unichar = key;
+		if (unichar < 32 || unichar > 127)
+			unichar = 0;
+	}
 	Key_EventEx (key, unichar, down);
 }
 

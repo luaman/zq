@@ -45,12 +45,12 @@ double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
 
-// if successful, returns malloc'ed string (make sure to free it afterwards)
+// if successful, returns Q_malloc'ed string (make sure to free it afterwards)
 // returns NULL if the operation failed for some reason
-char *Sys_GetClipboardText (void);
+unsigned short *Sys_GetClipboardTextW (void);
 
-void Sys_SendKeyEvents (void);
 // Perform Key_Event () callbacks until the input que is empty
+void Sys_SendKeyEvents (void);
 
 void Sys_LowFPPrecision (void);
 void Sys_HighFPPrecision (void);
