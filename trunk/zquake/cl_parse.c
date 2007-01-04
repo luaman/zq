@@ -1552,17 +1552,17 @@ static wchar *decode_string (const char *s)
 	static wchar buf[2048];	// should be enough for everyone!!!
 
 	// this code sucks
-	if (strstr(s, "=?koi8q?") && strstr(s, "?="))
+	if (strstr(s, "=?koi8q??") && strstr(s, "?="))
 	{
 		int i;
 		char *p;
 		wchar *out = buf;
 
 Com_DPrintf ("%s\n", s);
-		p = strstr(s, "=?koi8q?");
+		p = strstr(s, "=?koi8q??");
 		for (i = 0; i < p - s; i++)
 			*out++ = char2wc(s[i]);
-		p += strlen("=?koi8q?");
+		p += strlen("=?koi8q??");
 		while (*p && !(*p == '?' && *(p+1) == '='))
 		{
 			*out++ = koi2wc(*p);

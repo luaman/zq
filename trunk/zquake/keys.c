@@ -527,7 +527,7 @@ char *encode_say (wchar *in)
 	strlcpy (buf, wcs2str(in), sizeof(buf));
 	return buf;
 encode:
-	strcpy (buf, "=?koi8q?");
+	strcpy (buf, "=?koi8q??");
 	out = buf + strlen(buf);
 	while (*in && (out - buf < sizeof(buf)/sizeof(buf[0])))
 	{
