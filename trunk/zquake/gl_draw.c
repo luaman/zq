@@ -399,38 +399,62 @@ static int LoadCharsetImage (char *filename)
 	return texnum;
 }
 
-static int LoadCharsetFromWadOrLmp (char *name)
+static int LoadCharsetFromWadOrLmp (char *name, byte **pixels)
 {
 	int i;
 	byte	buf[128*256];
+	byte	*data;
 	byte	*src, *dest;
 	int texnum;
+	extern int wad_lump_disksize;
 
-	draw_chars = W_GetLumpName (name, false);
+	/* conchars is usually just raw data without a header, but we allow it to be in QPIC format */
+	data = W_GetLumpName (name, false);
+	if (data) {
+		if (wad_lump_disksize == 128*128)
+			/* raw data */;
+		else if (wad_lump_disksize == 128*128 + 8)
+			/* a qpic */
+			data += 8;	// skip header
+		else {
+			Com_Printf ("Bad conchars lump size\n");
+			data = NULL;
+		}
+	}
 
-	if (!draw_chars)
-	{
-		qpic_t *p = (qpic_t *)FS_LoadTempFile (va("gfx/%s.lmp", name));
-		// FIXME FIXME, why are we getting bogus fs_filesize values?
-		//Com_Printf ("%i\n", fs_filesize);
-		if (!p /* || fs_filesize != 128*128+8 */)
+	/* We expect an .lmp to be in QPIC format, but it's ok if it's just raw data */
+	if (!data) {
+		data = FS_LoadTempFile (va("gfx/%s.lmp", name));
+		if (!data)
 			return 0;
-		SwapPic (p);
-		if (p->width != 128 || p->height != 128)
+		if (fs_filesize == 128*128)
+			/* raw data */;
+		else if (fs_filesize == 128*128 + 8) {
+			qpic_t *p = (qpic_t *)data;
+			SwapPic (p);
+			if (p->width != 128 || p->height != 128)
+				return 0;
+			data += 8;
+		}
+		else
 			return 0;
-		draw_chars = p->data;
 	}
 
 	for (i=0 ; i<256*64 ; i++)
-		if (draw_chars[i] == 0)
-			draw_chars[i] = 255;	// proper transparent color
+		if (data[i] == 0)
+			data[i] = 255;	// proper transparent color
+
+	if (pixels != NULL) {
+		*pixels = Q_malloc (128*128);
+		memcpy (*pixels, data, 128*128);
+	}
 
 	// Convert the 128*128 conchars texture to 128*256 leaving
 	// empty space between rows so that chars don't stumble on
 	// each other because of texture smoothing.
 	// This hack costs us 64K of GL texture memory
 	memset (buf, 255, sizeof(buf));
-	src = draw_chars;
+	src = data;
 	dest = buf;
 	for (i=0 ; i<16 ; i++) {
 		memcpy (dest, src, 128*8);
@@ -450,15 +474,22 @@ static int LoadCharsetFromWadOrLmp (char *name)
 
 static void R_LoadCharsets (void)
 {
-	char_textures[0] = LoadCharsetImage ("charset.tga");
-	if (!char_textures[0])
-		char_textures[0] = LoadCharsetFromWadOrLmp ("conchars");
+	int t;
+
+	// always load the conchars lump, because we need the pixels for DrawCharToSnap
+	char_textures[0] = LoadCharsetFromWadOrLmp ("conchars", &draw_chars);
+	// but use a higher resolution image if available
+	t = LoadCharsetImage ("charset.tga");
+	if (t)
+		char_textures[0] = t;
 	if (!char_textures[0])
 		Sys_Error ("Couldn't load default charset\n");
-	// for now, only try to load the cyrillic range
+
+	// load Unicode charsets
+	// for now we only try the cyrillic range
 	char_textures[1] = LoadCharsetImage ("charset-cyr.tga");
 	if (!char_textures[1])
-		char_textures[1] = LoadCharsetFromWadOrLmp ("conchars-cyr");
+		char_textures[1] = LoadCharsetFromWadOrLmp ("conchars-cyr", NULL);
 	if (char_textures[1])
 		char_range[1] = 0x0400;
 }

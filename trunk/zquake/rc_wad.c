@@ -170,6 +170,8 @@ lumpinfo_t *W_GetLumpinfo (char *name, qbool crash)
 
 static void W_HackOcranaLedsIntoConchars (byte *data);
 
+int wad_lump_disksize;
+
 void *W_GetLumpName (char *name, qbool crash)
 {
 	lumpinfo_t	*lump;
@@ -191,6 +193,8 @@ void *W_GetLumpName (char *name, qbool crash)
 			W_HackOcranaLedsIntoConchars (wad_base + lump->filepos);
 #endif
 	}
+
+	wad_lump_disksize = lump->disksize;
 
 	return (void *)(wad_base + lump->filepos);
 }
