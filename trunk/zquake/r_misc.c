@@ -985,9 +985,6 @@ int MipColor(int r, int g, int b)
 	return best;
 }
 
-// in r_draw.c
-extern byte		*draw_chars;				// 8*8 graphic characters
-
 void R_DrawCharToSnap (int num, byte *dest, int width)
 {
 	int		row, col;
@@ -997,7 +994,7 @@ void R_DrawCharToSnap (int num, byte *dest, int width)
 
 	row = num>>4;
 	col = num&15;
-	source = draw_chars + (row<<10) + (col<<3);
+	source = draw_chars[0] + (row<<10) + (col<<3);
 
 	drawline = 8;
 
