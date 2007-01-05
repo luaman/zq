@@ -323,6 +323,10 @@ extern unsigned short	d_8to16table[256];
 extern unsigned char	*r_colormap;	// [256 * VID_GRADES]
 extern unsigned short	r_colormap16[256 * VID_GRADES];
 
+// r_draw.c
+#define		MAX_CHARSETS 16
+byte		*draw_chars[MAX_CHARSETS];				// 8*8 graphic characters
+
 // r_misc.c
 void R_Build15to8table (void);
 void R_FlushTranslations (void);
