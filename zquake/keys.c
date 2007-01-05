@@ -435,47 +435,45 @@ int FindBestNick (char *s) {
 
 
 void CompleteName(void) {
-/* FIXME
-	char s[MAXCMDLINE], t[MAXCMDLINE], *p, *q;
+	wchar s[MAXCMDLINE], t[MAXCMDLINE], *p, *q;
 	int best, diff, i;
 
 	p = q = key_lines[edit_line] + key_linepos;
 	while (--p >= key_lines[edit_line] + 1)
-		if (!(  (*(signed char *)p >= 32) && !strchr(disallowed, *p) ))
+		if (!(  (*(signed short *)p >= 32) && !strchr(disallowed, wc2char(*p)) ))
 			break;
 	p++;
 	if (q - p <= 0)
 		return;
 
-	strlcpy (s, p, q - p + 1);
+	qwcslcpy (s, p, q - p + 1);
 
-	best = FindBestNick (s);
+	best = FindBestNick (wcs2str(s));
 	if (best >= 0) {
-		strlcpy (t, cl.players[best].name, sizeof(t));
+		qwcslcpy(t, str2wcs(cl.players[best].name), sizeof(t)/sizeof(t[0]));
 
 		for (i = 0; t[i]; i++) {
 			if ((127 & t[i]) == ' ') {
 				int k;
 
-				if ((k = strlen(t)) < MAXCMDLINE - 2) {
-					memmove(t + 1, t, k + 1);
+				if ((k = wcslen(t)) < MAXCMDLINE - 2) {
+					memmove(t + 1, t, (k + 1)*sizeof(wchar));
 					t[k + 2] = 0;
 					t[k + 1] = t[0] = '\"';
 				}
 				break;
 			}
 		}
-		diff = strlen(t) - strlen(s);
+		diff = qwcslen(t) - qwcslen(s);
 
-		memmove(q + diff, q, strlen(q) + 1);
-		memmove(p, t, strlen(t));
+		memmove(q + diff, q, (qwcslen(q) + 1)*sizeof(wchar));
+		memmove(p, t, qwcslen(t)*sizeof(wchar));
 		key_linepos += diff;
 		if (!key_lines[edit_line][key_linepos] && key_linepos < MAXCMDLINE - 1) {
 			key_lines[edit_line][key_linepos] = ' ';
 			key_lines[edit_line][++key_linepos] = 0;
 		}
 	}
-*/
 }
 
 //===================================================================
