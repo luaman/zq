@@ -236,8 +236,7 @@ wchar *Sys_GetClipboardTextW (void)
 		if (WinNT) {
 			if ((h = GetClipboardData(CF_UNICODETEXT)) != NULL) {
 				if ((p = GlobalLock(h)) != NULL) {
-					text = Q_malloc ((qwcslen(p) + 1) * sizeof(wchar));
-					qwcscpy (text, p);
+					text = Q_wcsdup(p);
 					GlobalUnlock(h);
 				}
 			}
@@ -245,8 +244,7 @@ wchar *Sys_GetClipboardTextW (void)
 		else
 			if ((h = GetClipboardData(CF_TEXT)) != NULL) {
 				if ((p = GlobalLock(h)) != NULL) {
-					text = Q_malloc ((strlen(p) + 1) * sizeof(wchar));
-					qwcscpy (text, str2wcs(p));
+					text = Q_wcsdup(str2wcs(p));
 					GlobalUnlock(h);
 				}
 		}
