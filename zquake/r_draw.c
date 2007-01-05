@@ -26,7 +26,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sound.h"
 #include "version.h"
 
-byte		*draw_chars;				// 8*8 graphic characters
+int			char_range[MAX_CHARSETS];	// 0x0400, etc; slot 0 is always 0x00
+byte		*draw_chars[MAX_CHARSETS];				// 8*8 graphic characters
+								// slot 0 is static, the rest are Q_malloc'd
 mpic_t		*draw_disc;
 
 //=============================================================================
@@ -127,6 +129,26 @@ mpic_t *R_CachePic (char *path)
 	return &cpic->pic;
 }
 
+// returns Q_malloc'd data, or NULL or error
+static byte *LoadAlternateCharset (char *name)
+{
+	qpic_t *p;
+	byte *data;
+	
+	p = (qpic_t *)FS_LoadTempFile (va("gfx/%s.lmp", name));
+	// FIXME FIXME, why are we getting bogus fs_filesize values?
+	//Com_Printf ("%i\n", fs_filesize);
+	if (!p /* || fs_filesize != 128*128+8 */)
+		return NULL;
+	SwapPic (p);
+	if (p->width != 128 || p->height != 128)
+		return 0;
+	data = Q_malloc (128*128);
+	memcpy (data, p->data, 128*128);
+	return data;
+}
+
+void R_Draw_Init ();
 
 void R_FlushPics (void)
 {
@@ -143,13 +165,14 @@ void R_FlushPics (void)
 
 	numcachepics = 0;
 
-	draw_chars = NULL;
+	draw_chars[0] = NULL;
+	for (i = 1; i < MAX_CHARSETS; i++) {
+		Q_free (draw_chars[i]);
+		char_range[i] = 0;
+	}
 	draw_disc = NULL;
 
-	W_LoadWadFile ("gfx.wad");
-
-	draw_chars = W_GetLumpName ("conchars", true);
-	draw_disc = R_CacheWadPic ("disc");
+	R_Draw_Init ();
 }
 
 
@@ -162,7 +185,11 @@ void R_Draw_Init (void)
 {
 	W_LoadWadFile ("gfx.wad");
 
-	draw_chars = W_GetLumpName ("conchars", true);
+	draw_chars[0] = W_GetLumpName ("conchars", true);
+	draw_chars[1] = LoadAlternateCharset ("conchars-cyr");
+	if (draw_chars[1])
+		char_range[1] = 0x0400;
+
 	draw_disc = R_CacheWadPic ("disc");
 }
 
@@ -177,27 +204,36 @@ It can be clipped to the top of the screen to allow the console to be
 smoothly scrolled off.
 ================
 */
-void R_DrawChar (int x, int y, int num)
+void R_DrawCharW (int x, int y, wchar num)
 {
 	byte			*dest;
 	byte			*source;
 	unsigned short	*pusdest;
 	int				drawline;	
-	int				row, col;
+	int				row, col, slot;
 
-	num &= 255;
-	
 	if (y <= -8)
 		return;			// totally off screen
 
 	if (y > (int)vid.height - 8 || x < 0 || x > vid.width - 8)
 		return;
-	if (num < 0 || num > 255)
-		return;
 
-	row = num>>4;
+	slot = 0;
+	if ((num & 0xFF00) != 0)
+	{
+		int i;
+		for (i = 1; i < MAX_CHARSETS; i++)
+			if (char_range[i] == (num & 0xFF00)) {
+				slot = i;
+				break;
+			}
+		if (i == MAX_CHARSETS)
+			num = '?';
+	}
+
+	row = (num>>4)&15;
 	col = num&15;
-	source = draw_chars + (row<<10) + (col<<3);
+	source = draw_chars[slot] + (row<<10) + (col<<3);
 
 	if (y < 0)
 	{	// clipped
@@ -265,9 +301,9 @@ void R_DrawChar (int x, int y, int num)
 		}
 	}
 }
-void R_DrawCharW (int x, int y, wchar num)
+void R_DrawChar (int x, int y, int num)
 {
-	R_DrawChar (x, y, wc2char(num));
+	R_DrawCharW (x, y, char2wc(num));
 }
 
 void R_DrawString (int x, int y, const char *str)
@@ -284,7 +320,7 @@ void R_DrawStringW (int x, int y, const wchar *ws)
 {
 	while (*ws)
 	{
-		R_DrawChar (x, y, *ws);
+		R_DrawCharW (x, y, *ws);
 		ws++;
 		x += 8;
 	}
@@ -357,7 +393,6 @@ void R_DrawDebugChar (char num)
 	byte			*dest;
 	byte			*source;
 	int				drawline;	
-	extern byte		*draw_chars;
 	int				row, col;
 
 	if (!vid.direct)
@@ -367,7 +402,7 @@ void R_DrawDebugChar (char num)
 
 	row = num>>4;
 	col = num&15;
-	source = draw_chars + (row<<10) + (col<<3);
+	source = draw_chars[0] + (row<<10) + (col<<3);
 
 	dest = vid.direct + 312;
 
