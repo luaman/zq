@@ -2443,13 +2443,13 @@ static void PF_strlen (void)
 
 /*
 =================
-PF_strlen
+PF_strcat
 
 ZQ_QC_STRINGS
-string stradd(string s1, string s2, ...) = #115; 
+string strcat(string s1, string s2, ...) = #115; 
 =================
 */
-static void PF_stradd (void)
+static void PF_strcat (void)
 {
 	int i;
 
@@ -2914,7 +2914,7 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {103, PF_cvar_string},	// string(string varname) cvar_string				= #103;
 ////
 {114, PF_strlen},		// float(string s) strlen							= #114;
-{115, PF_stradd},		// string(string s1, string s2, ...) stradd			= #115; 
+{115, PF_strcat},		// string(string s1, string s2, ...) strcat			= #115;
 {116, PF_substr},		// string(string s, float start, float count) substr = #116;
 {117, PF_stov},			// vector(string s) stov							= #117;
 {118, PF_strzone},		// string(string s) strzone							= #118;
