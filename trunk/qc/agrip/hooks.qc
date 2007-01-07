@@ -350,18 +350,18 @@ void() agh_client_padclients_connect =
             // bottom...
             tmp = ftos(snap_misc_bottomforteamnum(teamnum));
             stmp = strzone(tmp);
-            cmd = stradd("bottomcolor ", stmp);
+            cmd = strcat("bottomcolor ", stmp);
             scmd = strzone(cmd);
-            fullcmd = stradd(scmd, "\n");
+            fullcmd = strcat(scmd, "\n");
             stuffcmd(self, fullcmd);
             strunzone(scmd);
             strunzone(stmp);
             // Top...
             tmp = ftos(snap_misc_topforteamnum(teamnum));
             stmp = strzone(tmp);
-            cmd = stradd("topcolor ", stmp);
+            cmd = strcat("topcolor ", stmp);
             scmd = strzone(cmd);
-            fullcmd = stradd(scmd, "\n");
+            fullcmd = strcat(scmd, "\n");
             stuffcmd(self, fullcmd);
             strunzone(scmd);
             strunzone(stmp);
