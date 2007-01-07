@@ -37,7 +37,7 @@ void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity f
 
 // ZQ_QC_STRINGS
 float (string s) strlen = #114;
-string(string s1, string s2) stradd = #115;
+string(string s1, string s2) strcat = #115;
 string(string s, float start, float length) substring = #116;
 string(string s) strzone = #118;
 void(string s) strunzone = #119;
