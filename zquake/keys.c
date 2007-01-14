@@ -456,7 +456,7 @@ void CompleteName(void) {
 			if ((127 & t[i]) == ' ') {
 				int k;
 
-				if ((k = wcslen(t)) < MAXCMDLINE - 2) {
+				if ((k = qwcslen(t)) < MAXCMDLINE - 2) {
 					memmove(t + 1, t, (k + 1)*sizeof(wchar));
 					t[k + 2] = 0;
 					t[k + 1] = t[0] = '\"';
