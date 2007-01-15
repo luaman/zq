@@ -120,38 +120,6 @@ static wchar cp1251towc (char c)
 	return (wchar)uc;
 }
 
-wchar *decode_stringOLD (const char *s)
-{
-	static wchar buf[2048];	// should be enough for everyone!!!
-
-	// this code sucks
-	if (strstr(s, "=`koi8q:") && strstr(s, "`="))
-	{
-		int i;
-		char *p;
-		wchar *out = buf;
-
-//Com_DPrintf ("%s\n", s);
-		p = strstr(s, "=`koi8q:");
-		for (i = 0; i < p - s; i++)
-			*out++ = char2wc(s[i]);
-		p += strlen("=`koi8q:");
-		while (*p && !(*p == '`' && *(p+1) == '='))
-		{
-			*out++ = koi2wc(*p);
-			p++;
-		}
-		if (*p) {
-			p += 2;
-			while (*p)
-				*out++ = *p++;
-		}
-		*out++ = 0;
-		return maybe_transliterate(buf);
-	}
-	return str2wcs(s);
-}
-
 // returns Q_malloc'ed data
 wchar *decode_koi8q (char *str) {
 	wchar *buf, *out;
