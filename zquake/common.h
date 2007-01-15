@@ -272,6 +272,7 @@ int Com_TranslateMapChecksum (char *mapname, int checksum);
 void Com_BeginRedirect (void (*RedirectedPrint) (char *));
 void Com_EndRedirect (void);
 void Com_Printf (char *fmt, ...);
+void Com_PrintW (wchar *msg);
 void Com_DPrintf (char *fmt, ...);
 
 //============================================================================
