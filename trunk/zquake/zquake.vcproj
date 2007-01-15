@@ -4760,6 +4760,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\progs.h"
+				>
+			</File>
+			<File
 				RelativePath="protocol.h"
 				>
 			</File>
