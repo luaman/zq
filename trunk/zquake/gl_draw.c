@@ -559,6 +559,19 @@ void R_Draw_Init (void)
 	draw_disc = R_CachePic_impl ("disc", true, false);
 }
 
+qbool R_CharAvailable (wchar num)
+{
+	int i;
+
+	if (num == (num & 0xff))
+		return true;
+
+	for (i = 1; i < MAX_CHARSETS; i++)
+		if (char_range[i] == (num & 0xFF00))
+			return true;
+
+	return false;
+}
 
 /*
 ================
