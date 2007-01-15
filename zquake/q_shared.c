@@ -336,6 +336,31 @@ size_t qwcslcpy (wchar *dst, const wchar *src, size_t size)
 
 	return len;
 }
+size_t qwcslcat (wchar *dst, const wchar *src, size_t size)
+{
+	int dstlen = qwcslen(dst);
+	int srclen = qwcslen(src);
+	int len = dstlen + srclen;
+
+	if (len < size) {
+		// it'll fit
+		memcpy (dst + dstlen, src, (srclen + 1)*sizeof(wchar));
+		return len;
+	}
+
+	if (dstlen >= size - 1)
+		return srclen + size;
+
+	if (size == 0)
+		return srclen;
+
+	assert (size >= 0);		// if a negative size was passed, then we're fucked
+
+	memcpy (dst + dstlen, src, (size - 1 - dstlen)*sizeof(wchar));
+	dst[size - 1] = 0;
+
+	return len;
+}
 wchar *qwcschr (const wchar *ws, wchar wc)
 {
 	while (*ws) {

@@ -177,6 +177,7 @@ wchar *qwcschr (const wchar *ws, wchar wc);
 size_t qwcslen (const wchar *s);
 #endif
 size_t qwcslcpy (wchar *dst, const wchar *src, size_t size);
+size_t qwcslcat (wchar *dst, const wchar *src, size_t size);
 wchar *Q_wcsdup(const wchar *src);
 
 size_t strlcpy (char *dst, const char *src, size_t size);
