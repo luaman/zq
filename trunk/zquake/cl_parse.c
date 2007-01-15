@@ -1543,13 +1543,11 @@ static void FlushString (char *s, int level, qbool team, int offset)
 				*out++ = *p;
 		}
 		*out = 0;
-//		Com_Printf ("%s", buf);
-		Con_PrintW (buf);
+		Com_PrintW (buf);
 	}
 	else
 #endif
-//		Com_Printf ("%s", s);
-		Con_PrintW (ws);
+		Com_PrintW (ws);
 	if (level > 3)
 		return;
 	if (team)

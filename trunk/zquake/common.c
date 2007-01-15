@@ -1537,6 +1537,34 @@ void Com_Printf (char *fmt, ...)
 	// write it to the scrollable buffer
 	Con_Print (msg);
 }
+extern void Con_PrintW (wchar *txt);
+void Com_PrintW (wchar *msg)
+{
+	if (rd_print)
+	{
+		// add to redirected message
+		rd_print (wcs2str(msg));
+		return;
+	}
+
+	// also echo to debugging console
+	Sys_Printf ("%s", wcs2str(msg));
+
+	if (logfile_var.value)
+	{
+		if (!logfile)
+			logfile = fopen (va("%s/qconsole.log", com_gamedir), "w");
+		if (logfile)
+		{
+			fprintf (logfile, "%s", wcs2str(msg));
+			if (logfile_var.value >= 2)
+				fflush (logfile);
+		}
+	}
+
+	// write it to the scrollable buffer
+	Con_PrintW (msg);
+}
 
 /*
 ================
