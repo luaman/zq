@@ -194,6 +194,19 @@ void R_Draw_Init (void)
 }
 
 
+qbool R_CharAvailable (wchar c)
+{
+	int i;
+
+	if (num == (num & 0xff))
+		return true;
+
+	for (i = 1; i < MAX_CHARSETS; i++)
+		if (char_range[i] == (num & 0xFF00))
+			return true;
+
+	return false;
+}
 
 /*
 ================
