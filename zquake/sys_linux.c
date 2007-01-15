@@ -148,7 +148,7 @@ void		 floating_point_exception_handler(int whatever)
 	signal(SIGFPE, floating_point_exception_handler);
 }
 
-char		*Sys_GetClipboardText (void)
+wchar		*Sys_GetClipboardTextW (void)
 {
 	return NULL;
 }
