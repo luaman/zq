@@ -1758,7 +1758,7 @@ waitformore:;
 }
 
 #else // !WITH_NQPROGS
-#define NQ_Process()
+#define NQP_Process()
 #endif
 
 /*
