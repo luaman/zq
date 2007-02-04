@@ -322,6 +322,7 @@ void CL_HandleHostError (void);
 void CL_BeginLocalConnection (void);
 void Con_Init (void);
 void Con_Print (char *txt);
+void Con_PrintW (wchar *txt);
 void Key_Init (void);
 void SCR_EndLoadingPlaque (void);
 

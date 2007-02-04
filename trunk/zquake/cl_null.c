@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cl_null.c -- this file can stub out the entire client system
 // for pure dedicated servers
 
+#include "q_shared.h"	// wchar
+
 void CL_Init (void) {}
 void CL_Shutdown (void) {}
 void CL_GamedirChanged (void) {}
@@ -29,6 +31,7 @@ void CL_HandleHostError (void) {}
 void CL_BeginLocalConnection (void) {}
 void Con_Init (void) {}
 void Con_Print (char *text) {}
+void Con_PrintW (wchar *text) {}
 void Cmd_ForwardToServer (void) {}
 void D_FlushCaches (void) {}
 void Key_Init (void) {}
