@@ -1678,7 +1678,7 @@ static void SV_ExecuteUserCommand (char *s)
 		}
 
 	// ZQ_CLIENTCOMMAND extension: does the progs want this command?
-	if (GE_ClientCommand && pr_ext_enabled.zq_clientcommand) {
+	if (GE_ClientCommand /*&& pr_ext_enabled.zq_clientcommand*/) {
 		static char cmd_copy[128], args_copy[1024] /* Ouch! */;
 		char *p;
 		pr_global_struct->time = sv.time;
