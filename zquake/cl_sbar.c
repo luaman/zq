@@ -472,8 +472,9 @@ static void Sbar_SortFrags (qbool includespec)
 		
 	for (i=0 ; i<scoreboardlines ; i++)
 		for (j=0 ; j<scoreboardlines-1-i ; j++)
-			if (cl.players[fragsort[j]].spectator > cl.players[fragsort[i]].spectator
-			|| cl.players[fragsort[j]].frags < cl.players[fragsort[j+1]].frags)
+			if (cl.players[fragsort[j]].spectator != cl.players[fragsort[j+1]].spectator ?
+			cl.players[fragsort[j]].spectator > cl.players[fragsort[j+1]].spectator :
+			cl.players[fragsort[j]].frags < cl.players[fragsort[j+1]].frags)
 			{
 				k = fragsort[j];
 				fragsort[j] = fragsort[j+1];
