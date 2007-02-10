@@ -172,7 +172,7 @@ void SV_RunBots (void)
 				for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
 					cl->spawn_parms[i] = (&PR_GLOBAL(parm1))[i];
 			}
-
+cl->spectator = false;//FIXME
 			Bot_Spawn_And_Begin (cl);
 		}
 
