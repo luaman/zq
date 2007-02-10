@@ -421,7 +421,7 @@ void CL_ClearState (void)
 	CL_ClearTEnts ();
 	CL_ClearDlights ();
 	CL_ClearParticles ();
-	CL_ClearProjectiles ();
+	CL_ClearNails ();
 
 // wipe the entire cl structure
 	memset (&cl, 0, sizeof(cl));

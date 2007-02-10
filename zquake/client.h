@@ -54,7 +54,6 @@ typedef struct
 
 #ifdef VWEP_TEST
 	byte		vw_index;
-	byte		vw_frame;
 #endif
 
 	// prediction info
@@ -380,7 +379,7 @@ typedef struct
 	struct efrag_s	*free_efrags;
 	int			num_entities;	// stored bottom up in cl_entities array
 	int			num_statics;	// stored top down in cl_entities
-	int			num_projectiles;
+	int			num_nails;
 
 	int			cdtrack;		// cd audio
 
@@ -557,11 +556,11 @@ void CL_EntityParticles (vec3_t org);
 void CL_SetSolidPlayers (int playernum);
 void CL_SetUpPlayerPrediction (qbool dopred);
 void CL_EmitEntities (void);
-void CL_ClearProjectiles (void);
+void CL_ClearNails (void);
 #ifdef MVDPLAY
-void CL_ParseProjectiles (qbool nail2);
+void CL_ParseNails (qbool nail2);
 #else
-void CL_ParseProjectiles (void);
+void CL_ParseNails (void);
 #endif
 void CL_ParsePacketEntities (qbool delta);
 void CL_SetSolidEntities (void);
