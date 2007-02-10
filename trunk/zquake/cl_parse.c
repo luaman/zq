@@ -302,7 +302,7 @@ void VWepModel_NextDownload (void)
 	for ( ; cls.downloadnumber < MAX_VWEP_MODELS; cls.downloadnumber++)
 	{
 		if (!cl.vw_model_name[cls.downloadnumber][0] ||
-			cl.vw_model_name[cls.downloadnumber][0] == '*')
+			!strcmp(cl.vw_model_name[cls.downloadnumber], "-"))
 			continue;
 		if (!CL_CheckOrDownloadFile(cl.vw_model_name[cls.downloadnumber]))
 			return;		// started a download
@@ -399,7 +399,7 @@ void Model_NextDownload (void)
 
 /*
 =================
-Sound_NextDownload
+ownload
 =================
 */
 void Sound_NextDownload (void)
@@ -1153,7 +1153,7 @@ void CL_ParseClientdata (void)
 			cls.latency += 0.001;	// drift up, so correction is needed
     }
 
-	cl.num_projectiles = 0;
+	cl.num_nails = 0;
 }
 
 /*
@@ -2147,14 +2147,14 @@ bad_message:
 
 		case svc_nails:
 #ifndef MVDPLAY
-			CL_ParseProjectiles ();
+			CL_ParseNails ();
 #else
-            CL_ParseProjectiles (false);
+            CL_ParseNails (false);
             break;
         case svc_nails2:
 			if (!cls.mvdplayback)
 				goto bad_message;
-            CL_ParseProjectiles (true);
+            CL_ParseNails (true);
 #endif
 			break;
 

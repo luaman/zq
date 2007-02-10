@@ -179,7 +179,7 @@ extern func_t GE_ClientCommand, GE_ConsoleCommand, GE_PausedTic, GE_ShouldPause;
 extern int	fofs_gravity, fofs_maxspeed, fofs_items2;
 extern int	fofs_forwardmove, fofs_sidemove, fofs_upmove;
 #ifdef VWEP_TEST
-extern int	fofs_vw_index, fofs_vw_frame;
+extern int	fofs_vw_index;
 #endif
 extern int	fofs_buttonX[8-3];
 

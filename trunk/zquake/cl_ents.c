@@ -574,53 +574,53 @@ void CL_LinkPacketEntities (void)
 /*
 =========================================================================
 
-PROJECTILE PARSING / LINKING
+NAIL PARSING / LINKING
 
 =========================================================================
 */
 
-#define	MAX_PROJECTILES	32
+#define	MAX_NAILS	32
 
 typedef struct {
 	byte	number;
 	vec3_t	origin;
 	vec3_t	angles;
-} projectile_t;
+} nail_t;
 
-static projectile_t			cl_projectiles[MAX_PROJECTILES];
+static nail_t			cl_nails[MAX_NAILS];
 
 #ifdef MVDPLAY
 typedef struct {
 	int		newindex;
 	int		sequence[2];
 	vec3_t	origin[2];
-} lerped_projectile_t;
+} lerped_nail_t;
 
-static lerped_projectile_t	cl_lerped_projectiles[256];
+static lerped_nail_t	cl_lerped_nails[256];
 #endif
 
 
-void CL_ClearProjectiles(void)
+void CL_ClearNails (void)
 {
 #ifdef MVDPLAY
-	memset(cl_projectiles, 0, sizeof(cl_projectiles));
-	memset(cl_lerped_projectiles, 0, sizeof(cl_lerped_projectiles));
+	memset(cl_nails, 0, sizeof(cl_nails));
+	memset(cl_lerped_nails, 0, sizeof(cl_lerped_nails));
 #endif
 }
 
 #ifdef MVDPLAY
-void CL_ParseProjectiles(qbool tagged)
+void CL_ParseNails (qbool tagged)
 #else
-void CL_ParseProjectiles(void)
+void CL_ParsNails (void)
 #endif
 {
 	byte bits[6];
 	int i, c, j, num = 0;
-	projectile_t *pr;
+	nail_t *pr;
 
 	c = MSG_ReadByte();
 
-	for (i = 0; i < c && cl.num_projectiles < MAX_PROJECTILES; i++) {
+	for (i = 0; i < c && cl.num_nails < MAX_NAILS; i++) {
 #ifdef MVDPLAY
 		num = tagged ? MSG_ReadByte() : 0;
 #endif
@@ -628,7 +628,7 @@ void CL_ParseProjectiles(void)
 		for (j = 0; j < 6; j++)
 			bits[j] = MSG_ReadByte();
 
-		pr = &cl_projectiles[cl.num_projectiles++];
+		pr = &cl_nails[cl.num_nails++];
 
 		pr->origin[0] = (( bits[0] + ((bits[1] & 15) << 8)) << 1) - 4096;
 		pr->origin[1] = (((bits[1] >> 4) + (bits[2] << 4)) << 1) - 4096;
@@ -638,19 +638,19 @@ void CL_ParseProjectiles(void)
 
 #ifdef MVDPLAY
 		if ((pr->number = num)) {
-			int newindex = cl_lerped_projectiles[num].newindex = !cl_lerped_projectiles[num].newindex;
-			cl_lerped_projectiles[num].sequence[newindex] = cl.validsequence;
-			VectorCopy(pr->origin, cl_lerped_projectiles[num].origin[newindex]);
+			int newindex = cl_lerped_nails[num].newindex = !cl_lerped_nails[num].newindex;
+			cl_lerped_nails[num].sequence[newindex] = cl.validsequence;
+			VectorCopy(pr->origin, cl_lerped_nails[num].origin[newindex]);
 		}
 #endif
 	}
 }
 
-static void CL_LinkProjectiles(void)
+static void CL_LinkNails (void)
 {
 	int i;
 	entity_t ent;
-	projectile_t *pr;
+	nail_t *pr;
 #ifdef MVDPLAY
 	float f;
 #endif
@@ -663,11 +663,11 @@ static void CL_LinkProjectiles(void)
 	f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
 #endif
 
-	for (i = 0, pr = cl_projectiles; i < cl.num_projectiles; i++, pr++)	{
+	for (i = 0, pr = cl_nails; i < cl.num_nails; i++, pr++)	{
 #ifdef MVDPLAY
 		int num;
-		if ((num = cl_projectiles[i].number)) {
-			lerped_projectile_t *lpr = &cl_lerped_projectiles[num];
+		if ((num = cl_nails[i].number)) {
+			lerped_nail_t *lpr = &cl_lerped_nails[num];
 			if (cl.oldparsecount && lpr->sequence[!lpr->newindex] == cl.oldparsecount) {
 				LerpVector(lpr->origin[!lpr->newindex], lpr->origin[lpr->newindex], f, ent.origin);
 				goto done_origin;
@@ -835,12 +835,10 @@ void CL_ParsePlayerState (void)
 		MSG_ReadDeltaUsercmd (&nullcmd, &state->command, cl.protocol);
 
 #ifdef VWEP_TEST
-	if (cl.z_ext & Z_EXT_VWEP) {
+	if (cl.z_ext & Z_EXT_VWEP)
 		state->vw_index = state->command.impulse;
-		state->vw_frame = state->command.msec;
-	} else {
-		state->vw_index = state->vw_frame = 0;
-	}
+	else
+		state->vw_index = 0;
 #endif
 
 	for (i=0 ; i<3 ; i++)
@@ -999,7 +997,7 @@ static qbool CL_AddVWepModel (entity_t *ent, int vw_index, int vw_frame)
 	if ((unsigned)vw_index >= MAX_VWEP_MODELS)
 		return false;
 
-	if (cl.vw_model_name[vw_index][0] == '*')
+	if (!strcmp(cl.vw_model_name[vw_index], "-"))
 		return true;	// empty vwep model
 
 	if (!cl.vw_model_precache[vw_index])
@@ -1149,9 +1147,9 @@ void CL_LinkPlayers (void)
 #ifdef VWEP_TEST
 		if (cl.vwep_enabled && state->vw_index) {
 			qbool vwep;
-			vwep = CL_AddVWepModel (&ent, state->vw_index, state->vw_frame);
+			vwep = CL_AddVWepModel (&ent, state->vw_index, state->frame);
 			if (vwep) {
-				if (cl.vw_model_name[0][0] != '*') {
+				if (strcmp(cl.vw_model_name[0], "-")) {
 					ent.model = cl.vw_model_precache[0];
 					ent.renderfx = RF_PLAYERMODEL;
 					V_AddEntity (&ent);
@@ -1481,7 +1479,7 @@ void CL_EmitEntities (void)
 	else {
 		CL_LinkPlayers ();
 		CL_LinkPacketEntities ();
-		CL_LinkProjectiles ();
+		CL_LinkNails ();
 	}
 	CL_LinkDlights ();
 	CL_LinkParticles ();
