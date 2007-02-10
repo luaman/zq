@@ -685,12 +685,7 @@ static void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 	ClipSkyPolygon (newc[1], newv[1][0], stage+1);
 }
 
-/*
-=================
-R_AddSkyBoxSurface
-=================
-*/
-void R_AddSkyBoxSurface (msurface_t *fa)
+static void AddSkyBoxSurface (msurface_t *fa)
 {
 	int		i;
 	vec3_t	verts[MAX_CLIP_VERTS];
@@ -708,12 +703,7 @@ void R_AddSkyBoxSurface (msurface_t *fa)
 }
 
 
-/*
-==============
-R_ClearSky
-==============
-*/
-void R_ClearSky (void)
+static void ClearSky (void)
 {
 	int		i;
 
@@ -961,8 +951,9 @@ void R_DrawSky (void)
 			return;		// no sky at all
 
 		// figure out how much of the sky box we need to draw
+		ClearSky ();
 		for (fa = skychain; fa; fa = fa->texturechain)
-			R_AddSkyBoxSurface (fa);
+			AddSkyBoxSurface (fa);
 
 		ignore_z = false;
 	}
@@ -1046,8 +1037,9 @@ void R_DrawSky (void)
 			return;		// no sky at all
 
 		// figure out how much of the sky box we need to draw
+		ClearSky ();
 		for (fa = skychain; fa; fa = fa->texturechain)
-			R_AddSkyBoxSurface (fa);
+			AddSkyBoxSurface (fa);
 
 		ignore_z = false;
 	}
