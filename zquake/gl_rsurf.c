@@ -1160,8 +1160,6 @@ void R_DrawWorld (void)
 	if (gl_fb_bmodels.value)
 		memset (fullbright_polys, 0, sizeof(fullbright_polys));
 
-	R_ClearSky ();
-
 	R_RecursiveWorldNode (r_worldmodel->nodes, 15);
 
 	R_DrawSky ();
