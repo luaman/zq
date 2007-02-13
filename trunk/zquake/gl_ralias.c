@@ -33,37 +33,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define NUMVERTEXNORMALS	162
 
+// also used in cl_effects.c
 float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 #include "anorms.h"
 };
 
-vec3_t	shadevector;
-float	shadescale = 0;
+static vec3_t	shadevector;
+static float	shadescale = 0;
 
-vec3_t	shadelight_v, ambientlight_v;
+static vec3_t	shadelight_v, ambientlight_v;
 
 // precalculated dot products for quantized angles
 #define SHADEDOT_QUANT 16
-float	r_avertexnormal_dots[SHADEDOT_QUANT][256] =
+static float	r_avertexnormal_dots[SHADEDOT_QUANT][256] =
 #include "anorm_dots.h"
 ;
 
-float	*shadedots = r_avertexnormal_dots[0];
+static float	*shadedots = r_avertexnormal_dots[0];
 
-int	lastposenum;
+static int	lastpose;
 
 /*
 =============
 GL_DrawAliasFrame
 =============
 */
-void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qbool mtex)
+static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int pose, int oldpose, float backlerp, qbool mtex)
 {
 	int		i;
 	float	l_v[4];
-	trivertx_t	*verts;
+	vec3_t	vec;
+	trivertx_t	*verts, *oldverts;
 	int		*order;
 	int		count;
+	float	blerp;
 
 	if (currententity->renderfx & RF_TRANSLUCENT)
 	{
@@ -73,10 +76,12 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qbool mtex)
 	else
 		l_v[3] = 1.0;
 
-	lastposenum = posenum;
+	backlerp = bound (0, backlerp, 1);
+	lastpose = backlerp < 0.5 ? pose : oldpose;
 
-	verts = (trivertx_t *)((byte *)paliashdr + paliashdr->posedata);
-	verts += posenum * paliashdr->poseverts;
+	verts = oldverts = (trivertx_t *)((byte *)paliashdr + paliashdr->posedata);
+	verts += pose * paliashdr->poseverts;
+	oldverts += oldpose * paliashdr->poseverts;
 	order = (int *)((byte *)paliashdr + paliashdr->commands);
 
 	while ((count = *order++))
@@ -103,16 +108,30 @@ void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum, qbool mtex)
 
 			order += 2;
 
+			blerp = backlerp;
+			if (currententity->renderfx & RF_LIMITLERP) {
+				vec3_t diff;
+				VectorSubtract (verts->v, oldverts->v, diff);
+				if (VectorLengthSquared(diff) > 135*135)
+					blerp = 0;
+			}
+
 			// normals and vertexes come from the frame list
 			for (i = 0; i < 3; i++) {
-				l_v[i] = (shadedots[verts->lightnormalindex] * shadelight_v[i] + ambientlight_v[i]) / 256.0;
+				float tmp = LerpFloat(shadedots[verts->lightnormalindex], shadedots[oldverts->lightnormalindex], blerp);
+
+				l_v[i] = (tmp * shadelight_v[i] + ambientlight_v[i]) / 256.0;
 			
 				if (l_v[i] > 1)
 					l_v[i] = 1;
 			}
 			glColor4fv (l_v);
-			glVertex3f (verts->v[0], verts->v[1], verts->v[2]);
+			vec[0] = LerpFloat(verts->v[0], oldverts->v[0], blerp);
+			vec[1] = LerpFloat(verts->v[1], oldverts->v[1], blerp);
+			vec[2] = LerpFloat(verts->v[2], oldverts->v[2], blerp);
+			glVertex3fv (vec);
 			verts++;
+			oldverts++;
 		} while (--count);
 
 		glEnd ();
@@ -130,7 +149,7 @@ GL_DrawAliasShadow
 */
 extern	vec3_t			lightspot;
 
-void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
+static void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 {
 	trivertx_t	*verts;
 	int		*order;
@@ -186,9 +205,9 @@ R_SetupAliasFrame
 
 =================
 */
-void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr, qbool mtex)
+static void R_SetupAliasFrame (int frame, int oldframe, float backlerp, aliashdr_t *paliashdr, qbool mtex)
 {
-	int				pose, numposes;
+	int				pose, oldpose, numposes;
 	float			interval;
 
 	if ((frame >= paliashdr->numframes) || (frame < 0))
@@ -197,20 +216,30 @@ void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr, qbool mtex)
 		frame = 0;
 	}
 
+	if ((oldframe >= paliashdr->numframes) || (oldframe < 0))
+	{
+		Com_DPrintf ("R_AliasSetupFrame: no such frame %d\n", oldframe);
+		backlerp = 0;
+	}
+
 	pose = paliashdr->frames[frame].firstpose;
 	numposes = paliashdr->frames[frame].numposes;
-
 	if (numposes > 1)
 	{
 		interval = paliashdr->frames[frame].interval;
 		pose += (int)(r_refdef2.time / interval) % numposes;
 	}
 
-	GL_DrawAliasFrame (paliashdr, pose, mtex);
+	oldpose = paliashdr->frames[oldframe].firstpose;
+	if (paliashdr->frames[oldframe].numposes > 1)
+	{
+		interval = paliashdr->frames[oldframe].interval;
+		pose += (int)(r_refdef2.time / interval) % paliashdr->frames[oldframe].numposes;
+	}
+
+	GL_DrawAliasFrame (paliashdr, pose, oldpose, backlerp, mtex);
 }
 
-
-void GL_SelectTexture (GLenum target);
 
 // Because of poor quality of the lits out there, in many situations
 // I'd prefer the models not to be colored at all.
@@ -400,7 +429,7 @@ void R_DrawAliasModel (entity_t *ent)
 		GL_Bind (fb_texture);
 		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
-		R_SetupAliasFrame (ent->frame, paliashdr, true);
+		R_SetupAliasFrame (ent->frame, ent->oldframe, ent->backlerp, paliashdr, true);
 
 		GL_DisableMultitexture ();
 	}
@@ -410,14 +439,14 @@ void R_DrawAliasModel (entity_t *ent)
 		GL_Bind (texture);
 		glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-		R_SetupAliasFrame (ent->frame, paliashdr, false);
+		R_SetupAliasFrame (ent->frame, ent->oldframe, ent->backlerp, paliashdr, false);
 
 		if (fb_texture) {
 			glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 			glEnable (GL_BLEND);
 			GL_Bind (fb_texture);
 
-			R_SetupAliasFrame (ent->frame, paliashdr, false);
+			R_SetupAliasFrame (ent->frame, ent->oldframe, ent->backlerp, paliashdr, false);
 
 			glDisable (GL_BLEND);
 		}
@@ -455,7 +484,7 @@ void R_DrawAliasModel (entity_t *ent)
 		glDisable (GL_TEXTURE_2D);
 		glEnable (GL_BLEND);
 		glColor4f (0, 0, 0, 0.5);
-		GL_DrawAliasShadow (paliashdr, lastposenum);
+		GL_DrawAliasShadow (paliashdr, lastpose);
 		glEnable (GL_TEXTURE_2D);
 		glDisable (GL_BLEND);
 		glPopMatrix ();

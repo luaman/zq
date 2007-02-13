@@ -49,6 +49,7 @@ cvar_t	v_kickback = {"v_kickback", "0"};	// recoil effect
 cvar_t	v_viewheight = {"v_viewheight", "0"};
 
 cvar_t	cl_drawgun = {"r_drawviewmodel", "1"};
+cvar_t	r_lerpmuzzlehack = {"r_lerpmuzzlehack", "1"};
 
 cvar_t	crosshair = {"crosshair", "3", CVAR_ARCHIVE};
 cvar_t	crosshaircolor = {"crosshaircolor", "13", CVAR_ARCHIVE}; // QW default was 79
@@ -867,6 +868,11 @@ void V_AddViewWeapon (float bob)
 	vec3_t		forward, up;
 	entity_t	ent;
 	extern cvar_t	scr_fov;
+	// FIXME, move the statics to a structure like cl
+	static int oldweapon, curframe, oldframe;
+	static double start_lerp_time;
+	extern int cl_w1index, cl_w2index, cl_w3index, cl_w4index, cl_w5index, cl_w6index, cl_w7index;
+	int i;
 
 	if (!cl_drawgun.value || (cl_drawgun.value == 2 && scr_fov.value > 90)
 		|| view_message.flags & (PF_GIB|PF_DEAD)
@@ -884,6 +890,25 @@ void V_AddViewWeapon (float bob)
 	ent.frame = view_message.weaponframe;
 	ent.colormap = 0;
 	ent.renderfx = RF_WEAPONMODEL;
+
+	if (cl.stats[STAT_WEAPON] != oldweapon) {
+		oldweapon = cl.stats[STAT_WEAPON];
+		curframe = -1;
+		start_lerp_time = -1;
+	}
+	if (ent.frame != curframe) {
+		oldframe = curframe;
+		curframe = ent.frame;
+		start_lerp_time = cl.time;
+	}
+	ent.oldframe = oldframe;
+	ent.backlerp = 1 - (cl.time - start_lerp_time)*10;
+	ent.backlerp = bound (0, ent.backlerp, 1);
+
+	if (!((i = cl.stats[STAT_WEAPON]) == cl_w1index || i == cl_w2index || i == cl_w3index
+	|| i == cl_w4index || i == cl_w5index || i == cl_w6index || i == cl_w7index)
+	&& r_lerpmuzzlehack.value)
+		ent.renderfx |= RF_LIMITLERP;
 
 #ifdef GLQUAKE
 	if (cl.stats[STAT_ITEMS] & IT_INVISIBILITY) {
@@ -1213,6 +1238,7 @@ void V_Init (void)
 	Cvar_Register (&v_kickpitch);
 	Cvar_Register (&v_kickback);
 	Cvar_Register (&cl_drawgun);
+	Cvar_Register (&r_lerpmuzzlehack);
 
 	Cvar_Register (&v_viewheight);
 

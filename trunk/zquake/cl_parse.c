@@ -103,6 +103,7 @@ const int num_svc_strings = sizeof(svc_strings)/sizeof(svc_strings[0]);
 int		cl_spikeindex, cl_playerindex, cl_eyesindex, cl_flagindex;
 int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 int		cl_rocketindex, cl_grenadeindex;
+int cl_w1index, cl_w2index, cl_w3index, cl_w4index, cl_w5index, cl_w6index, cl_w7index;
 
 //=============================================================================
 
@@ -213,6 +214,7 @@ void CL_FindModelNumbers (void)
 	cl_playerindex = cl_eyesindex = cl_spikeindex = cl_flagindex = -1;
 	cl_h_playerindex = cl_gib1index = cl_gib2index = cl_gib3index = -1;
 	cl_rocketindex = cl_grenadeindex = -1;
+	cl_w1index = cl_w2index = cl_w3index = cl_w4index = cl_w5index = cl_w6index = cl_w7index = -1;
 
 	for (i = 1; i < MAX_MODELS; i++) {
 		if (!strcmp(cl.model_name[i],"progs/spike.mdl"))
@@ -235,6 +237,20 @@ void CL_FindModelNumbers (void)
 			cl_rocketindex = i;
 		else if (!strcmp(cl.model_name[i],"progs/grenade.mdl"))
 			cl_grenadeindex = i;
+		else if (!strcmp(cl.model_name[i],"progs/v_axe.mdl"))
+			cl_w1index = i;
+		else if (!strcmp(cl.model_name[i],"progs/v_bio.mdl"))
+			cl_w2index = i;
+		else if (!strcmp(cl.model_name[i],"progs/v_grap.mdl"))
+			cl_w3index = i;
+		else if (!strcmp(cl.model_name[i],"progs/v_knife.mdl"))
+			cl_w4index = i;
+		else if (!strcmp(cl.model_name[i],"progs/v_knife2.mdl"))
+			cl_w5index = i;
+		else if (!strcmp(cl.model_name[i],"progs/v_medi.mdl"))
+			cl_w6index = i;
+		else if (!strcmp(cl.model_name[i],"progs/v_span.mdl"))
+			cl_w7index = i;
 	}
 }
 

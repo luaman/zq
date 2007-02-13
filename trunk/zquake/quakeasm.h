@@ -145,6 +145,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	.extern C(fv)
 	.extern C(edge_tail_u_shift20)
 	.extern C(r_apverts)
+	.extern C(r_oldapverts)
+	.extern C(r_framelerp)
 	.extern C(r_anumverts)
 	.extern C(aliastransform)
 	.extern C(r_avertexnormals)
