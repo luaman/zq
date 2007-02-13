@@ -54,9 +54,9 @@ static qbool PM_CullTraceBox(vec3_t mins, vec3_t maxs, vec3_t offset, vec3_t emi
 PM_PointContents
 ==================
 */
-int PM_PointContents (vec3_t p)
+int PM_PointContents (playermove_t *pm, vec3_t p)
 {
-	hull_t *hull = &pmove.physents[0].model->hulls[0];
+	hull_t *hull = &pm->physents[0].model->hulls[0];
 	return CM_HullPointContents (hull, hull->firstclipnode, p);
 }
 
@@ -67,20 +67,20 @@ PM_TestPlayerPosition
 Returns false if the given player position is not valid (in solid)
 ================
 */
-qbool PM_TestPlayerPosition (vec3_t pos)
+qbool PM_TestPlayerPosition (playermove_t *pm, vec3_t pos)
 {
 	int			i;
 	physent_t	*pe;
 	vec3_t		mins, maxs, offset, test;
 	hull_t		*hull;
 
-	for (i=0 ; i< pmove.numphysent ; i++)
+	for (i=0 ; i< pm->numphysent ; i++)
 	{
-		pe = &pmove.physents[i];
+		pe = &pm->physents[i];
 	// get the clipping hull
 		if (pe->model)
 		{
-			hull = &pmove.physents[i].model->hulls[1];
+			hull = &pm->physents[i].model->hulls[1];
 			VectorSubtract (hull->clip_mins, player_mins, offset);
 			VectorAdd (offset, pe->origin, offset);
 		}
@@ -106,7 +106,7 @@ qbool PM_TestPlayerPosition (vec3_t pos)
 PM_PlayerTrace
 ================
 */
-trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
+trace_t PM_PlayerTrace (playermove_t *pm, vec3_t start, vec3_t end)
 {
 	trace_t		trace, total;
 	vec3_t		offset;
@@ -124,14 +124,14 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 
 	PM_TraceBounds(start, end, tracemins, tracemaxs);
 
-	for (i=0 ; i< pmove.numphysent ; i++)
+	for (i=0 ; i< pm->numphysent ; i++)
 	{
-		pe = &pmove.physents[i];
+		pe = &pm->physents[i];
 
 	// get the clipping hull
 		if (pe->model)
 		{
-			hull = &pmove.physents[i].model->hulls[1];
+			hull = &pm->physents[i].model->hulls[1];
 
 			if (i > 0 && PM_CullTraceBox(tracemins, tracemaxs, pe->origin, pe->model->mins, pe->model->maxs, hull->clip_mins, hull->clip_maxs))
 				continue;
@@ -183,7 +183,7 @@ trace_t PM_PlayerTrace (vec3_t start, vec3_t end)
 PM_TraceLine
 ================
 */
-trace_t PM_TraceLine (vec3_t start, vec3_t end)
+trace_t PM_TraceLine (playermove_t *pm, vec3_t start, vec3_t end)
 {
 	trace_t		trace, total;
 	vec3_t		offset;
@@ -198,12 +198,12 @@ trace_t PM_TraceLine (vec3_t start, vec3_t end)
 	total.e.entnum = -1;
 	VectorCopy (end, total.endpos);
 
-	for (i=0 ; i< pmove.numphysent ; i++)
+	for (i=0 ; i< pm->numphysent ; i++)
 	{
-		pe = &pmove.physents[i];
+		pe = &pm->physents[i];
 	// get the clipping hull
 		if (pe->model)
-			hull = &pmove.physents[i].model->hulls[0];
+			hull = &pm->physents[i].model->hulls[0];
 		else
 			hull = CM_HullForBox (pe->mins, pe->maxs);
 

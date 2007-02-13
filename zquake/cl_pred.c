@@ -44,37 +44,33 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u)
 		return;
 	}
 
-	VectorCopy (from->origin, pmove.origin);
+	VectorCopy (from->origin, cl.pmove.origin);
 //	VectorCopy (from->viewangles, pmove.angles);
-	VectorCopy (u->angles, pmove.angles);
-	VectorCopy (from->velocity, pmove.velocity);
+	VectorCopy (u->angles, cl.pmove.angles);
+	VectorCopy (from->velocity, cl.pmove.velocity);
 
 	if (cl.z_ext & Z_EXT_PM_TYPE)
-		pmove.jump_msec = 0;
+		cl.pmove.jump_msec = 0;
 	else
-		pmove.jump_msec = from->jump_msec;
-	pmove.jump_held = from->jump_held;
-	pmove.waterjumptime = from->waterjumptime;
-	pmove.pm_type = from->pm_type;
-	pmove.onground = from->onground;
-	pmove.cmd = *u;
+		cl.pmove.jump_msec = from->jump_msec;
+	cl.pmove.jump_held = from->jump_held;
+	cl.pmove.waterjumptime = from->waterjumptime;
+	cl.pmove.pm_type = from->pm_type;
+	cl.pmove.onground = from->onground;
+	cl.pmove.cmd = *u;
 
-	movevars.entgravity = cl.entgravity;
-	movevars.maxspeed = cl.maxspeed;
-	movevars.bunnyspeedcap = cl.bunnyspeedcap;
+	PM_PlayerMove (&cl.pmove, &cl.movevars);
 
-	PM_PlayerMove ();
+	to->waterjumptime = cl.pmove.waterjumptime;
+	to->pm_type = cl.pmove.pm_type;
+	to->jump_held = cl.pmove.jump_held;
+	to->jump_msec = cl.pmove.jump_msec;
+	cl.pmove.jump_msec = 0;
 
-	to->waterjumptime = pmove.waterjumptime;
-	to->pm_type = pmove.pm_type;
-	to->jump_held = pmove.jump_held;
-	to->jump_msec = pmove.jump_msec;
-	pmove.jump_msec = 0;
-
-	VectorCopy (pmove.origin, to->origin);
-	VectorCopy (pmove.angles, to->viewangles);
-	VectorCopy (pmove.velocity, to->velocity);
-	to->onground = pmove.onground;
+	VectorCopy (cl.pmove.origin, to->origin);
+	VectorCopy (cl.pmove.angles, to->viewangles);
+	VectorCopy (cl.pmove.velocity, to->velocity);
+	to->onground = cl.pmove.onground;
 
 	to->weaponframe = from->weaponframe;
 }
@@ -95,12 +91,12 @@ void CL_CategorizePosition (void)
 		cl.waterlevel = 0;
 		return;
 	}
-	VectorClear (pmove.velocity);
-	VectorCopy (cl.simorg, pmove.origin);
-	pmove.numtouch = 0;
-	PM_CategorizePosition ();
-	cl.onground = pmove.onground;
-	cl.waterlevel = pmove.waterlevel;
+	VectorClear (cl.pmove.velocity);
+	VectorCopy (cl.simorg, cl.pmove.origin);
+	cl.pmove.numtouch = 0;
+	PM_CategorizePosition (&cl.pmove);
+	cl.onground = cl.pmove.onground;
+	cl.waterlevel = cl.pmove.waterlevel;
 }
 
 
@@ -408,7 +404,7 @@ static void CL_PredictLocalPlayer (void)
 			if (cl_smartjump.value)
 				CL_CategorizePosition ();
 			cl.onground = to->playerstate[Cam_PlayerNum()].onground;
-			landspeed = pmove.landspeed;
+			landspeed = cl.pmove.landspeed;
 		}
 		else
 			CL_CategorizePosition ();
@@ -416,7 +412,7 @@ static void CL_PredictLocalPlayer (void)
 	}
 
 
-	oldphysent = pmove.numphysent;
+	oldphysent = cl.pmove.numphysent;
 	CL_SetSolidPlayers (cl.playernum);
 
 	// run frames
@@ -426,11 +422,11 @@ static void CL_PredictLocalPlayer (void)
 		to = &cl.frames[(cl.validsequence+i) & UPDATE_MASK];
 		CL_PredictUsercmd (&from->playerstate[cl.playernum]
 			, &to->playerstate[cl.playernum], &to->cmd);
-		cl.onground = pmove.onground;
-		cl.waterlevel = pmove.waterlevel;
+		cl.onground = cl.pmove.onground;
+		cl.waterlevel = cl.pmove.waterlevel;
 	}
 
-	pmove.numphysent = oldphysent;
+	cl.pmove.numphysent = oldphysent;
 
 	// copy results out for rendering
 	VectorCopy (to->playerstate[cl.playernum].velocity, cl.simvel);
@@ -444,7 +440,7 @@ static void CL_PredictLocalPlayer (void)
 out:
 	CL_CalcCrouch ();
 
-	if (pmove.landspeed < -650 && !cl.landtime)
+	if (cl.pmove.landspeed < -650 && !cl.landtime)
 		cl.landtime = cl.time;
 }
 

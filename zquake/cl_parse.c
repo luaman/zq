@@ -835,29 +835,29 @@ void CL_ParseServerData (void)
 	// get the movevars
 	if (cl.protocol >= 25)
 	{	// from QW 2.00 on
-		movevars.gravity			= MSG_ReadFloat();
-		movevars.stopspeed          = MSG_ReadFloat();
-		cl.maxspeed                 = MSG_ReadFloat();
-		movevars.spectatormaxspeed  = MSG_ReadFloat();
-		movevars.accelerate         = MSG_ReadFloat();
-		movevars.airaccelerate      = MSG_ReadFloat();
-		movevars.wateraccelerate    = MSG_ReadFloat();
-		movevars.friction           = MSG_ReadFloat();
-		movevars.waterfriction      = MSG_ReadFloat();
-		cl.entgravity               = MSG_ReadFloat();
+		cl.movevars.gravity			   = MSG_ReadFloat();
+		cl.movevars.stopspeed          = MSG_ReadFloat();
+		cl.movevars.maxspeed           = MSG_ReadFloat();
+		cl.movevars.spectatormaxspeed  = MSG_ReadFloat();
+		cl.movevars.accelerate         = MSG_ReadFloat();
+		cl.movevars.airaccelerate      = MSG_ReadFloat();
+		cl.movevars.wateraccelerate    = MSG_ReadFloat();
+		cl.movevars.friction           = MSG_ReadFloat();
+		cl.movevars.waterfriction      = MSG_ReadFloat();
+		cl.movevars.entgravity         = MSG_ReadFloat();
 	}
 	else
 	{
-		movevars.gravity = 800;
-		movevars.stopspeed = 100;
-		cl.maxspeed = 320;
-		movevars.spectatormaxspeed = 500;
-		movevars.accelerate = 10;
-		movevars.airaccelerate = 10;
-		movevars.wateraccelerate = 10;
-		movevars.friction = 4;
-		movevars.waterfriction = 4;
-		cl.entgravity = 1;
+		cl.movevars.gravity = 800;
+		cl.movevars.stopspeed = 100;
+		cl.movevars.maxspeed = 320;
+		cl.movevars.spectatormaxspeed = 500;
+		cl.movevars.accelerate = 10;
+		cl.movevars.airaccelerate = 10;
+		cl.movevars.wateraccelerate = 10;
+		cl.movevars.friction = 4;
+		cl.movevars.waterfriction = 4;
+		cl.movevars.entgravity = 1;
 	}
 
 	// separate the printfs so the server message can have a color
@@ -1375,13 +1375,13 @@ void CL_ProcessServerInfo (void)
 	cl.minpitch = *p ? Q_atof(p) : -70.0f;
 
 	// movement vars for prediction
-	cl.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
-	movevars.slidefix = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_slidefix")) != 0);
-	movevars.airstep = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_airstep")) != 0);
-	movevars.pground = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_pground")) != 0)
+	cl.movevars.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
+	cl.movevars.slidefix = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_slidefix")) != 0);
+	cl.movevars.airstep = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_airstep")) != 0);
+	cl.movevars.pground = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_pground")) != 0)
 		&& (cl.z_ext & Z_EXT_PF_ONGROUND) /* pground doesn't make sense without this */;
 	p = Info_ValueForKey(cl.serverinfo, "pm_ktjump");
-	movevars.ktjump = *p ? Q_atof(p) : (cl.teamfortress ? 0 : 0.5); 
+	cl.movevars.ktjump = *p ? Q_atof(p) : (cl.teamfortress ? 0 : 0.5); 
 
 	// deathmatch and teamplay
 	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
@@ -2187,11 +2187,11 @@ bad_message:
 			break;
 
 		case svc_maxspeed :
-			cl.maxspeed = MSG_ReadFloat();
+			cl.movevars.maxspeed = MSG_ReadFloat();
 			break;
 
 		case svc_entgravity :
-			cl.entgravity = MSG_ReadFloat();
+			cl.movevars.entgravity = MSG_ReadFloat();
 			break;
 
 		case svc_setpause:

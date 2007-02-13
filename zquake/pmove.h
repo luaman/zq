@@ -94,17 +94,17 @@ typedef struct {
 } movevars_t;
 
 
-extern	movevars_t		movevars;
-extern	playermove_t	pmove;
+//extern	movevars_t		movevars;
+//extern	playermove_t	pmove;
 
-void PM_PlayerMove (void);
+void PM_PlayerMove (playermove_t *pmove, movevars_t *movevars);
 void PM_Init (void);
 
-int PM_PointContents (vec3_t point);
-void PM_CategorizePosition (void);
-qbool PM_TestPlayerPosition (vec3_t point);
-trace_t PM_PlayerTrace (vec3_t start, vec3_t end);
-trace_t PM_TraceLine (vec3_t start, vec3_t end);
+int PM_PointContents (playermove_t *pm, vec3_t point);
+qbool PM_TestPlayerPosition (playermove_t *pm, vec3_t point);
+trace_t PM_PlayerTrace (playermove_t *pm, vec3_t start, vec3_t end);
+trace_t PM_TraceLine (playermove_t *pm, vec3_t start, vec3_t end);
+void PM_CategorizePosition (playermove_t *pm);
 
 #endif /* _PMOVE_H_ */
 

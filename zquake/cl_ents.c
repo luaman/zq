@@ -1128,10 +1128,10 @@ void CL_LinkPlayers (void)
 				msec = 255;
 			state->command.msec = msec;
 
-			oldphysent = pmove.numphysent;
+			oldphysent = cl.pmove.numphysent;
 			CL_SetSolidPlayers (j);
 			CL_PredictUsercmd (state, &exact, &state->command);
-			pmove.numphysent = oldphysent;
+			cl.pmove.numphysent = oldphysent;
 			VectorCopy (exact.origin, ent.origin);
 		}
 
@@ -1180,10 +1180,10 @@ void CL_SetSolidEntities (void)
 	packet_entities_t	*pak;
 	entity_state_t		*state;
 
-	pmove.physents[0].model = cl.clipmodels[1];
-	VectorClear (pmove.physents[0].origin);
-	pmove.physents[0].info = 0;
-	pmove.numphysent = 1;
+	cl.pmove.physents[0].model = cl.clipmodels[1];
+	VectorClear (cl.pmove.physents[0].origin);
+	cl.pmove.physents[0].info = 0;
+	cl.pmove.numphysent = 1;
 
 	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
 	pak = &frame->packet_entities;
@@ -1193,11 +1193,11 @@ void CL_SetSolidEntities (void)
 		if (!state->modelindex)
 			continue;
 		if (cl.clipmodels[state->modelindex]) {
-			if (pmove.numphysent == MAX_PHYSENTS)
+			if (cl.pmove.numphysent == MAX_PHYSENTS)
 				break;
-			pmove.physents[pmove.numphysent].model = cl.clipmodels[state->modelindex];
-			MSG_UnpackOrigin (state->s_origin, pmove.physents[pmove.numphysent].origin);
-			pmove.numphysent++;
+			cl.pmove.physents[cl.pmove.numphysent].model = cl.clipmodels[state->modelindex];
+			MSG_UnpackOrigin (state->s_origin, cl.pmove.physents[cl.pmove.numphysent].origin);
+			cl.pmove.numphysent++;
 		}
 	}
 
@@ -1425,7 +1425,7 @@ void CL_SetSolidPlayers (int playernum)
 	if (!cl_solid_players.value)
 		return;
 
-	pent = pmove.physents + pmove.numphysent;
+	pent = cl.pmove.physents + cl.pmove.numphysent;
 
 	for (j=0, pplayer = predicted_players; j < MAX_CLIENTS;	j++, pplayer++) {
 
@@ -1439,14 +1439,14 @@ void CL_SetSolidPlayers (int playernum)
 		if (pplayer->flags & PF_DEAD)
 			continue; // dead players aren't solid
 
-		if (pmove.numphysent == MAX_PHYSENTS)
+		if (cl.pmove.numphysent == MAX_PHYSENTS)
 			break;
 
 		pent->model = 0;
 		VectorCopy(pplayer->origin, pent->origin);
 		VectorCopy(player_mins, pent->mins);
 		VectorCopy(player_maxs, pent->maxs);
-		pmove.numphysent++;
+		cl.pmove.numphysent++;
 		pent++;
 	}
 }

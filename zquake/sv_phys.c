@@ -359,7 +359,7 @@ SV_AddGravity
 */
 void SV_AddGravity (edict_t *ent, float scale)
 {
-	ent->v.velocity[2] -= scale * movevars.gravity * sv_frametime;
+	ent->v.velocity[2] -= scale * sv.movevars.gravity * sv_frametime;
 }
 
 /*
@@ -783,7 +783,7 @@ void SV_Physics_Step (edict_t *ent)
 // frefall if not onground
 	if ( ! ((int)ent->v.flags & (FL_ONGROUND | FL_FLY | FL_SWIM) ) )
 	{
-		if (ent->v.velocity[2] < movevars.gravity*-0.1)
+		if (ent->v.velocity[2] < sv.movevars.gravity*-0.1)
 			hitsound = true;
 		else
 			hitsound = false;
@@ -984,21 +984,21 @@ void SV_Physics (void)
 
 void SV_SetMoveVars(void)
 {
-	movevars.gravity			= sv_gravity.value; 
-	movevars.stopspeed			= pm_stopspeed.value;
-	movevars.maxspeed			= pm_maxspeed.value;
-	movevars.spectatormaxspeed	= pm_spectatormaxspeed.value;
-	movevars.accelerate 		= pm_accelerate.value;
-	movevars.airaccelerate		= pm_airaccelerate.value;
-	movevars.wateraccelerate	= pm_wateraccelerate.value;
-	movevars.friction			= pm_friction.value;
-	movevars.waterfriction		= pm_waterfriction.value;
-	movevars.entgravity 		= 1.0;
+	sv.movevars.gravity				= sv_gravity.value; 
+	sv.movevars.stopspeed			= pm_stopspeed.value;
+	sv.movevars.maxspeed			= pm_maxspeed.value;
+	sv.movevars.spectatormaxspeed	= pm_spectatormaxspeed.value;
+	sv.movevars.accelerate 			= pm_accelerate.value;
+	sv.movevars.airaccelerate		= pm_airaccelerate.value;
+	sv.movevars.wateraccelerate		= pm_wateraccelerate.value;
+	sv.movevars.friction			= pm_friction.value;
+	sv.movevars.waterfriction		= pm_waterfriction.value;
+	sv.movevars.entgravity 			= 1.0;
 
 // redundant as we set them in every SV_RunCmd call anyway
-//	movevars.slidefix			= pm_slidefix.value;
-//	movevars.airstep			= pm_airstep.value;
-//	movevars.ktjump 			= pm_ktjump.value;
+//	sv.movevars.slidefix		= pm_slidefix.value;
+//	sv.movevars.airstep			= pm_airstep.value;
+//	sv.movevars.ktjump 			= pm_ktjump.value;
 }
 
 /* vi: set noet ts=4 sts=4 ai sw=4: */
