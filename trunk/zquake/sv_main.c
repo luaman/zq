@@ -145,7 +145,7 @@ Quake calls this before calling Sys_Quit or Sys_Error
 */
 void SV_Shutdown (char *finalmsg)
 {
-	int i;
+	int i, j;
 
 	SV_FinalMessage (finalmsg);
 
@@ -164,8 +164,13 @@ void SV_Shutdown (char *finalmsg)
 	sv.state = ss_dead;
 	com_serveractive = false;
 
-	for (i = 0; i < MAX_CLIENTS; i++)		
+	for (i = 0; i < MAX_CLIENTS; i++) {
 		SV_FreeDelayedPackets(&svs.clients[i]);
+		for (j = 0; j < UPDATE_BACKUP; j++) {
+			Q_free(svs.clients[i].frames[j].entities.entities);
+			svs.clients[i].frames[j].entities.entities = NULL;
+		}
+	}
 
 	memset (svs.clients, 0, sizeof(svs.clients));
 	svs.lastuserid = 0;
@@ -183,6 +188,7 @@ or crashing.
 */
 void SV_DropClient (client_t *drop)
 {
+	int i;
 
 	if (drop->bot) {
 		SV_RemoveBot (drop);
@@ -245,6 +251,11 @@ void SV_DropClient (client_t *drop)
 	memset (drop->userinfo, 0, sizeof(drop->userinfo));
 
 	SV_FreeDelayedPackets(drop);
+	
+	for (i = 0; i < UPDATE_BACKUP; i++) {
+			Q_free(drop->frames[i].entities.entities);
+			drop->frames[i].entities.entities = NULL;
+	}
 
 // send notification to all remaining clients
 	SV_FullClientUpdate (drop, &sv.reliable_datagram);

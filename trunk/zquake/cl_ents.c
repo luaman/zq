@@ -213,6 +213,12 @@ void CL_ParsePacketEntities (qbool delta)
 	int			word, newnum, oldnum;
 	qbool		full;
 	byte		from;
+	entity_state_t newents[BIG_MAX_PACKET_ENTITIES];
+#ifdef MVDPLAY
+	int maxents = cls.mvdplayback ? BIG_MAX_PACKET_ENTITIES	: MAX_PACKET_ENTITIES;
+#else
+	int maxents = MAX_PACKET_ENTITIES;
+#endif
 
 	newpacket = cls.netchan.incoming_sequence&UPDATE_MASK;
 	newp = &cl.frames[newpacket].packet_entities;
@@ -260,6 +266,7 @@ void CL_ParsePacketEntities (qbool delta)
 	{	// this is a full update that we can start delta compressing from now
 		oldp = &dummy;
 		dummy.num_entities = 0;
+		dummy.entities = NULL;
 		full = true;
 	}
 
@@ -284,14 +291,9 @@ void CL_ParsePacketEntities (qbool delta)
 		{
 			while (oldindex < oldp->num_entities)
 			{	// copy all the rest of the entities from the old packet
-#ifdef MVDPLAY
-				if ((newindex >= MAX_PACKET_ENTITIES && !cls.mvdplayback) ||
-					 newindex >= MVD_MAX_PACKET_ENTITIES)
-#else
-				if (newindex >= MAX_PACKET_ENTITIES)
-#endif
+				if (newindex >= maxents)
 					Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
-				newp->entities[newindex] = oldp->entities[oldindex];
+				newents[newindex] = oldp->entities[oldindex];
 				newindex++;
 				oldindex++;
 			}
@@ -311,14 +313,9 @@ void CL_ParsePacketEntities (qbool delta)
 			}
 
 			// copy one of the old entities over to the new packet unchanged
-#ifdef MVDPLAY
-			if ((newindex >= MAX_PACKET_ENTITIES && !cls.mvdplayback) ||
-				 newindex >= MVD_MAX_PACKET_ENTITIES)
-#else
-			if (newindex >= MAX_PACKET_ENTITIES)
-#endif
+			if (newindex >= maxents)
 				Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
-			newp->entities[newindex] = oldp->entities[oldindex];
+			newents[newindex] = oldp->entities[oldindex];
 			newindex++;
 			oldindex++;
 			oldnum = oldindex >= oldp->num_entities ? 9999 : oldp->entities[oldindex].number;
@@ -338,14 +335,9 @@ void CL_ParsePacketEntities (qbool delta)
 				}
 				continue;
 			}
-#ifdef MVDPLAY
-			if ((newindex >= MAX_PACKET_ENTITIES && !cls.mvdplayback) ||
-				 newindex >= MVD_MAX_PACKET_ENTITIES)
-#else
-			if (newindex >= MAX_PACKET_ENTITIES)
-#endif
+			if (newindex >= maxents)
 				Host_Error ("CL_ParsePacketEntities: newindex == MAX_PACKET_ENTITIES");
-			CL_ParseDelta (&cl_entities[newnum].baseline, &newp->entities[newindex], word);
+			CL_ParseDelta (&cl_entities[newnum].baseline, &newents[newindex], word);
 			newindex++;
 			continue;
 		}
@@ -364,7 +356,7 @@ void CL_ParsePacketEntities (qbool delta)
 				continue;
 			}
 
-			CL_ParseDelta (&oldp->entities[oldindex], &newp->entities[newindex], word);
+			CL_ParseDelta (&oldp->entities[oldindex], &newents[newindex], word);
 
 			newindex++;
 			oldindex++;
@@ -372,6 +364,10 @@ void CL_ParsePacketEntities (qbool delta)
 	}
 
 	newp->num_entities = newindex;
+	Q_free (newp->entities);
+	newp->entities = Q_malloc (sizeof(entity_state_t) * newp->num_entities);
+	memcpy (newp->entities, newents, sizeof(entity_state_t) * newp->num_entities);
+
 	cl.frames[newpacket].valid = true;
 
 	cl_oldentframecount = cl_entframecount;

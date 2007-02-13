@@ -358,34 +358,22 @@ typedef struct entity_state_s
 } entity_state_t;
 
 
-#ifdef SERVERONLY
+// vanilla QW limit
+#define	MAX_PACKET_ENTITIES	64		// doesn't count nails
 
-#define	MAX_PACKET_ENTITIES	64	// doesn't count nails
-typedef struct packet_entities_s
-{
-	int		num_entities;
-	entity_state_t	entities[MAX_PACKET_ENTITIES];
-} packet_entities_t;
-
-#else	// !SERVERONLY
-
+// in MVD demos, and potentially over the network if negotiated
 #ifdef MVDPLAY
-#define	MVD_MAX_PACKET_ENTITIES		300	// doesn't count nails
-#endif
-
-#define	MAX_PACKET_ENTITIES	64	// doesn't count nails
-typedef struct packet_entities_s
-{
-	int		num_entities;
-#ifdef MVDPLAY
-	entity_state_t	entities[MVD_MAX_PACKET_ENTITIES];
+#define	BIG_MAX_PACKET_ENTITIES		300
 #else
-	entity_state_t	entities[MAX_PACKET_ENTITIES];
+#define	BIG_MAX_PACKET_ENTITIES		64
 #endif
+
+typedef struct packet_entities_s
+{
+	int		num_entities;
+	entity_state_t	*entities;		// dynamically allocated
 } packet_entities_t;
 
-
-#endif
 
 typedef struct usercmd_s
 {
