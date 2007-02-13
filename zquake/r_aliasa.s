@@ -52,34 +52,58 @@ C(R_AliasTransformAndProjectFinalVerts):
 	pushl	%edi
 	pushl	%esi				// preserve register variables
 
-//	int			i, temp;
-//	float		lightcos, *plightnormal, zi;
-//	trivertx_t	*pverts;
+//	int i, temp;
+//	float lightcos, zi;
+//	trivertx_t *pverts1, *pverts2;
+//	vec3_t interpolated_verts, interpolated_norm;
 
-//	pverts = r_apverts;
-	movl	C(r_apverts),%esi
+//	pverts1 = r_oldapverts;
+//	pverts2 = r_apverts;
+	movl	C(r_oldapverts),%esi				//pverts1 = esi
+	movl	C(r_apverts),%ebx					//pverts2 = ebx
 
-//	for (i=0 ; i<r_anumverts ; i++, fv++, pverts++, pstverts++)
-//	{
-	movl	pstverts(%esp),%ebp
-	movl	fv(%esp),%edi
-	movl	C(r_anumverts),%ecx
-	subl	%edx,%edx
+//	for (i = 0; i < r_anumverts; i++, fv++, pverts1++, pverts2++, pstverts++) {
+	movl	pstverts(%esp),%ebp				//pstverts = ebp
+	movl	fv(%esp),%edi					//fv = edi
+	movl	C(r_anumverts),%ecx				//r_anumverts = ecx
+	subl	%edx,%edx						//%edx = 0
 
 Lloop:
 
-//	// transform and project
-//		zi = 1.0 / (DotProduct(pverts->v, aliastransform[2]) +
-//				aliastransform[2][3]);
+// transform and project
+//		zi = 1.0 / (DotProduct(pverts->v, aliastransform[2]) + aliastransform[2][3]);
+//		fv->v[2] = pstverts->s;
+//		fv->v[3] = pstverts->t;
+
 	movb	(%esi),%dl
 	movb	%dl,Lcoords
-	fildl	Lcoords				// v[0]
+	fildl	Lcoords
+	movb	(%ebx),%dl
+	movb	%dl,Lcoords
+	fildl	Lcoords
+	fsub	%st(1),%st(0)
+	fmuls	C(r_framelerp)
+	faddp	%st(0),%st(1)		// v[0]
+
 	movb	1(%esi),%dl
 	movb	%dl,Lcoords+4
-	fildl	Lcoords+4			// v[1] | v[0]
-	movb	2(%esi),%dl	
+	fildl	Lcoords+4
+	movb	1(%ebx),%dl
+	movb	%dl,Lcoords+4
+	fildl	Lcoords+4
+	fsub	%st(1),%st(0)
+	fmuls	C(r_framelerp)
+	faddp	%st(0),%st(1)		// v[1] | v[0]
+
+	movb	2(%esi),%dl
 	movb	%dl,Lcoords+8
-	fildl	Lcoords+8			// v[2] | v[1] | v[0]
+	fildl	Lcoords+8
+	movb	2(%ebx),%dl
+	movb	%dl,Lcoords+8
+	fildl	Lcoords+8
+	fsub	%st(1),%st(0)
+	fmuls	C(r_framelerp)
+	faddp	%st(0),%st(1)		// v[2] | v[1] | v[0]
 
 	fld		%st(2)				// v[0] | v[2] | v[1] | v[0]
 	fmuls	C(aliastransform)+32 // accum | v[2] | v[1] | v[0]
@@ -88,11 +112,9 @@ Lloop:
 	fxch	%st(1)				// accum | accum2 | v[2] | v[1] | v[0]
 	fadds	C(aliastransform)+44 // accum | accum2 | v[2] | v[1] | v[0]
 	fld		%st(2)				// v[2] | accum | accum2 | v[2] | v[1] | v[0]
-	fmuls	C(aliastransform)+40 // accum3 | accum | accum2 | v[2] | v[1] |
-								 //  v[0]
+	fmuls	C(aliastransform)+40 // accum3 | accum | accum2 | v[2] | v[1] | v[0]
 	fxch	%st(1)				// accum | accum3 | accum2 | v[2] | v[1] | v[0]
 	faddp	%st(0),%st(2)		// accum3 | accum | v[2] | v[1] | v[0]
-	movb	tv_lightnormalindex(%esi),%dl
 	movl	stv_s(%ebp),%eax
 	movl	%eax,fv_v+8(%edi)
 	faddp	%st(0),%st(1)		// z | v[2] | v[1] | v[0]
@@ -100,51 +122,68 @@ Lloop:
 	movl	stv_t(%ebp),%eax
 	movl	%eax,fv_v+12(%edi)
 
-//	// lighting
-//		plightnormal = r_avertexnormals[pverts->lightnormalindex];
-
 	fdivrs	Lfloat_1			// zi | v[2] | v[1] | v[0]
 
-//		fv->v[2] = pstverts->s;
-//		fv->v[3] = pstverts->t;
 //		fv->flags = pstverts->onseam;
 	movl	stv_onseam(%ebp),%eax
 	movl	%eax,fv_flags(%edi)
 
-	movl	fv_size(%edi),%eax
-	movl	stv_size(%ebp),%eax
-	movl	4(%esi),%eax
-
-	leal	(%edx,%edx,2),%eax	// index*3
+//	// lighting
+//		plightnormal = r_avertexnormals[pverts->lightnormalindex];
 
 	fxch	%st(3)				// v[0] | v[2] | v[1] | zi
 
 //		lightcos = DotProduct (plightnormal, r_plightvec);
+
+	pushl	%ebp
+	pushl	%ecx
+
+	//%edx is already zero'd
+	movb	tv_lightnormalindex(%esi),%dl
+	leal	(%edx,%edx,2),%eax	// index*3
+
+	subl	%ecx,%ecx
+	movb	tv_lightnormalindex(%ebx),%cl
+	leal	(%ecx,%ecx,2),%ebp	// index*3
+
 	flds	C(r_avertexnormals)(,%eax,4)
-	fmuls	C(r_plightvec)
+	flds	C(r_avertexnormals)(,%ebp,4)
+	fsub	%st(1),%st(0)
+	fmuls	C(r_framelerp)
+	faddp	%st(0),%st(1)
+	fmuls	C(r_plightvec)						//v[0]
+
 	flds	C(r_avertexnormals)+4(,%eax,4)
-	fmuls	C(r_plightvec)+4
+	flds	C(r_avertexnormals)+4(,%ebp,4)
+	fsub	%st(1),%st(0)
+	fmuls	C(r_framelerp)
+	faddp	%st(0),%st(1)
+	fmuls	C(r_plightvec)+4					//v[1] | v[0]
+
 	flds	C(r_avertexnormals)+8(,%eax,4)
-	fmuls	C(r_plightvec)+8
+	flds	C(r_avertexnormals)+8(,%ebp,4)
+	fsub	%st(1),%st(0)
+	fmuls	C(r_framelerp)
+	faddp	%st(0),%st(1)
+	fmuls	C(r_plightvec)+8					//v[2] | v[1] | v[0]
+	
+	popl	%ecx								//restore ebp and ecx
+	popl	%ebp
+
 	fxch	%st(1)
 	faddp	%st(0),%st(2)
-	fld		%st(2)				 // v[0] | laccum | laccum2 | v[0] | v[2] |
-								 //  v[1] | zi
-	fmuls	C(aliastransform)+0  // xaccum | laccum | laccum2 | v[0] | v[2] |
-								 //  v[1] | zi
-	fxch	%st(2)				 // laccum2 | laccum | xaccum | v[0] | v[2] |
-								 //  v[1] | zi
+	fld		%st(2)				 // v[0] | laccum | laccum2 | v[0] | v[2] | v[1] | zi
+	fmuls	C(aliastransform)+0  // xaccum | laccum | laccum2 | v[0] | v[2] | v[1] | zi
+	fxch	%st(2)				 // laccum2 | laccum | xaccum | v[0] | v[2] | v[1] | zi
 	faddp	%st(0),%st(1)		 // laccum | xaccum | v[0] | v[2] | v[1] | zi
 
 //		temp = r_ambientlight;
-//		if (lightcos < 0)
-//		{
+//		if (lightcos < 0) {
 	fsts	Ltemp
 	movl	C(r_ambientlight),%eax
 	movb	Ltemp+3,%dl
 	testb	$0x80,%dl
-	jz		Lsavelight	// no need to clamp if only ambient lit, because
-						//  r_ambientlight is preclamped
+	jz		Lsavelight	// no need to clamp if only ambient lit, because r_ambientlight is preclamped
 
 //			temp += (int)(r_shadelight * lightcos);
 	fmuls	C(r_shadelight)
@@ -207,7 +246,8 @@ Lp1:
 	fxch	%st(3)				 // yaccum | xaccum | yaccum2 | xaccum3 |
 								 //  yaccum3 | zi
 	faddp	%st(0),%st(2)		 // xaccum | yaccum | xaccum3 | yaccum3 | zi
-	addl	$(tv_size),%esi
+	addl	$(tv_size),%esi		 //increment pverts1
+	addl	$(tv_size),%ebx		 //increment pverts2
 	faddp	%st(0),%st(2)		 // yaccum | x | yaccum3 | zi
 	faddp	%st(0),%st(2)		 // x | y | zi
 	addl	$(stv_size),%ebp

@@ -232,8 +232,6 @@ extern int				r_acliptype;
 extern finalvert_t		*pfinalverts;
 extern auxvert_t		*pauxverts;
 
-qbool R_AliasCheckBBox (void);
-
 //=========================================================
 // turbulence stuff
 

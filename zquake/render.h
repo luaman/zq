@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define RF_WEAPONMODEL	1
 #define RF_PLAYERMODEL	2
 #define RF_TRANSLUCENT	4
+#define RF_LIMITLERP	8
 
 //=============================================================================
 
@@ -71,6 +72,8 @@ typedef struct entity_s
 	vec3_t					angles;
 	struct model_s			*model;			// NULL = no model
 	int						frame;
+	int						oldframe;		// frame to lerp from
+	float					backlerp;
 	int						colormap;
 	int						skinnum;		// for alias models
 	int						renderfx;		// RF_WEAPONMODEL, etc
