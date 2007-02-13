@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 #include "progs.h"
+#include "pmove.h"
 
 
 #define	MAX_MASTERS	8				// max recipients for heartbeat packets
@@ -87,6 +88,7 @@ typedef struct
 	char		*sound_name[MAX_SOUNDS];	// NULL terminated
 	char		*lightstyles[MAX_LIGHTSTYLES];
 	cmodel_t	*models[MAX_MODELS];
+	movevars_t	movevars;
 
 	int			num_edicts;			// increases towards MAX_EDICTS
 	edict_t		*edicts;			// can NOT be array indexed, because

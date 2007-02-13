@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
 
+#include "pmove.h"
+
 #define MAX_STATIC_SOUNDS	256
 typedef struct
 {
@@ -398,9 +400,8 @@ typedef struct
 	char		sprint_buf[1024];
 
 // localized movement vars
-	float		entgravity;
-	float		maxspeed;
-	float		bunnyspeedcap;
+	movevars_t	movevars;
+	playermove_t	pmove;
 
 	char		sky[32];
 } client_state_t;

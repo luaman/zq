@@ -537,16 +537,16 @@ static void CL_Record (void)
 	MSG_WriteString (&buf, cl.levelname);
 
 	// send the movevars
-	MSG_WriteFloat(&buf, movevars.gravity);
-	MSG_WriteFloat(&buf, movevars.stopspeed);
-	MSG_WriteFloat(&buf, cl.maxspeed);
-	MSG_WriteFloat(&buf, movevars.spectatormaxspeed);
-	MSG_WriteFloat(&buf, movevars.accelerate);
-	MSG_WriteFloat(&buf, movevars.airaccelerate);
-	MSG_WriteFloat(&buf, movevars.wateraccelerate);
-	MSG_WriteFloat(&buf, movevars.friction);
-	MSG_WriteFloat(&buf, movevars.waterfriction);
-	MSG_WriteFloat(&buf, cl.entgravity);
+	MSG_WriteFloat(&buf, cl.movevars.gravity);
+	MSG_WriteFloat(&buf, cl.movevars.stopspeed);
+	MSG_WriteFloat(&buf, cl.movevars.maxspeed);
+	MSG_WriteFloat(&buf, cl.movevars.spectatormaxspeed);
+	MSG_WriteFloat(&buf, cl.movevars.accelerate);
+	MSG_WriteFloat(&buf, cl.movevars.airaccelerate);
+	MSG_WriteFloat(&buf, cl.movevars.wateraccelerate);
+	MSG_WriteFloat(&buf, cl.movevars.friction);
+	MSG_WriteFloat(&buf, cl.movevars.waterfriction);
+	MSG_WriteFloat(&buf, cl.movevars.entgravity);
 
 	// send music
 	MSG_WriteByte (&buf, svc_cdtrack);

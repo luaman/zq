@@ -527,7 +527,7 @@ void CL_UpdateBeams (void)
 				org[2] += 16;
 				VectorAdd (org, forward, b->end);
 
-				trace = PM_TraceLine (org, b->end);
+				trace = PM_TraceLine (&cl.pmove, org, b->end);
 				if (trace.fraction < 1)
 					VectorCopy (trace.endpos, b->end);
 			}

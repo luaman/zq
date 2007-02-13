@@ -2045,7 +2045,7 @@ void TP_FindPoint (void)
 			VectorSubtract (vieworg, entorg, v);
 			VectorNormalize (v);
 			VectorMA (entorg, radius, v, end);
-			trace = PM_TraceLine (vieworg, end);
+			trace = PM_TraceLine (&cl.pmove, vieworg, end);
 			if (trace.fraction == 1)
 				goto ok;
 
@@ -2053,7 +2053,7 @@ void TP_FindPoint (void)
 			VectorSubtract (vieworg, end, v);
 			VectorNormalize (v);
 			VectorMA (end, radius, v, end);
-			trace = PM_TraceLine (vieworg, end);
+			trace = PM_TraceLine (&cl.pmove, vieworg, end);
 			if (trace.fraction == 1)
 				goto ok;
 
@@ -2061,7 +2061,7 @@ void TP_FindPoint (void)
 			VectorSubtract (vieworg, end, v);
 			VectorNormalize (v);
 			VectorMA (end, radius, v, end);
-			trace = PM_TraceLine (vieworg, end);
+			trace = PM_TraceLine (&cl.pmove, vieworg, end);
 			if (trace.fraction == 1)
 				goto ok;
 
@@ -2069,7 +2069,7 @@ void TP_FindPoint (void)
 			VectorSubtract (vieworg, end, v);
 			VectorNormalize (v);
 			VectorMA (end, radius, v, end);
-			trace = PM_TraceLine (vieworg, end);
+			trace = PM_TraceLine (&cl.pmove, vieworg, end);
 			if (trace.fraction == 1)
 				goto ok;
 
@@ -2079,7 +2079,7 @@ void TP_FindPoint (void)
 			VectorSubtract (vieworg, end, v);
 			VectorNormalize (v);
 			VectorMA (end, radius, v, end);
-			trace = PM_TraceLine (vieworg, end);
+			trace = PM_TraceLine (&cl.pmove, vieworg, end);
 			if (trace.fraction == 1)
 				goto ok;
 

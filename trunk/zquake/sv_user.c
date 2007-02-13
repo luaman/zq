@@ -140,16 +140,16 @@ static void Cmd_New_f (void)
 	ClientReliableWrite_String (PR_GetString(sv.edicts->v.message));
 
 	// send the movevars
-	ClientReliableWrite_Float (movevars.gravity);
-	ClientReliableWrite_Float (movevars.stopspeed);
-	ClientReliableWrite_Float (movevars.maxspeed);
-	ClientReliableWrite_Float (movevars.spectatormaxspeed);
-	ClientReliableWrite_Float (movevars.accelerate);
-	ClientReliableWrite_Float (movevars.airaccelerate);
-	ClientReliableWrite_Float (movevars.wateraccelerate);
-	ClientReliableWrite_Float (movevars.friction);
-	ClientReliableWrite_Float (movevars.waterfriction);
-	ClientReliableWrite_Float (movevars.entgravity);
+	ClientReliableWrite_Float (sv.movevars.gravity);
+	ClientReliableWrite_Float (sv.movevars.stopspeed);
+	ClientReliableWrite_Float (sv_client->maxspeed);
+	ClientReliableWrite_Float (sv.movevars.spectatormaxspeed);
+	ClientReliableWrite_Float (sv.movevars.accelerate);
+	ClientReliableWrite_Float (sv.movevars.airaccelerate);
+	ClientReliableWrite_Float (sv.movevars.wateraccelerate);
+	ClientReliableWrite_Float (sv.movevars.friction);
+	ClientReliableWrite_Float (sv.movevars.waterfriction);
+	ClientReliableWrite_Float (sv_client->entgravity);
 	ClientReliableWrite_End ();
 
 	// send music
@@ -1716,6 +1716,8 @@ USER CMD EXECUTION
 ===========================================================================
 */
 
+static playermove_t pmove;
+
 /*
 ====================
 AddLinksToPmove
@@ -2030,17 +2032,17 @@ void SV_RunCmd (usercmd_t *ucmd)
 	AddLinksToPmove ( sv_areanodes );
 
 	// fill in movevars
-	movevars.entgravity = sv_client->entgravity;
-	movevars.maxspeed = sv_client->maxspeed;
-	movevars.bunnyspeedcap = pm_bunnyspeedcap.value;
-	movevars.ktjump = pm_ktjump.value;
-	movevars.slidefix = (pm_slidefix.value != 0);
-	movevars.airstep = (pm_airstep.value != 0);
-	movevars.pground = (pm_pground.value != 0);
+	sv.movevars.entgravity = sv_client->entgravity;
+	sv.movevars.maxspeed = sv_client->maxspeed;
+	sv.movevars.bunnyspeedcap = pm_bunnyspeedcap.value;
+	sv.movevars.ktjump = pm_ktjump.value;
+	sv.movevars.slidefix = (pm_slidefix.value != 0);
+	sv.movevars.airstep = (pm_airstep.value != 0);
+	sv.movevars.pground = (pm_pground.value != 0);
 
 
 	// do the move
-	PM_PlayerMove ();
+	PM_PlayerMove (&pmove, &sv.movevars);
 
 
 	// get player state back out of pmove
