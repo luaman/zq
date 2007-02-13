@@ -424,6 +424,11 @@ vec_t VectorLength (vec3_t v)
 	return sqrt (v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 }
 
+vec_t VectorLengthSquared (vec3_t v)
+{
+	return v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+}
+
 float VectorNormalize (vec3_t v)
 {
 	float	length, ilength;
