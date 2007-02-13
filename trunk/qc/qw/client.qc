@@ -393,11 +393,11 @@ void ClientKill ()
 
 	if (time < self.suicide_time)
 	{
-		sprint (self, PRINT_HIGH, "Only one suicide in 5 seconds\n");
+		sprint (self, PRINT_HIGH, "Only one suicide per second\n");
 		return;
 	}
 
-	self.suicide_time = time + 5;
+	self.suicide_time = time + 1;
 
 	bprint (PRINT_MEDIUM, self.netname, " suicides\n");
 
@@ -531,6 +531,7 @@ called each time a player enters a new level
 void PutClientInServer ()
 {
 	entity	spot;
+	vector	saved_org;
 
 	self.classname = "player";
 	self.health = 100;
