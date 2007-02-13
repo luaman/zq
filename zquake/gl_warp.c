@@ -718,7 +718,7 @@ static void MakeSkyVec (float s, float t, int axis)
 	int         j, k;
 	float		skybox_range;
 
-	skybox_range = max((int) r_farclip.value, 4096) / 1.74; /* 1.74 > sqrt(3) */
+	skybox_range = max(r_farclip.value, 4096) * 0.577; // 0.577 < 1/sqrt(3)
 	b[0] = s*skybox_range;
 	b[1] = t*skybox_range;
 	b[2] = skybox_range;
@@ -806,7 +806,7 @@ static void MakeSkyVec2 (float s, float t, int axis, vec3_t v)
 	int			j, k;
 	float		skybox_range;
 
-	skybox_range = max((int) r_farclip.value, 4096) / 1.74; /* 1.74 > sqrt(3) */
+	skybox_range = max(r_farclip.value, 4096) * 0.577; // 0.577 < 1/sqrt(3)
 	b[0] = s*skybox_range;
 	b[1] = t*skybox_range;
 	b[2] = skybox_range;
