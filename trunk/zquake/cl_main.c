@@ -82,6 +82,8 @@ cvar_t	allskins = {"allskins", "", 0, OnChangeSkinForcing};
 cvar_t	baseskin = {"baseskin", "", 0, OnChangeSkinForcing};
 cvar_t	teamskin = {"teamskin", "", 0, OnChangeSkinForcing};
 cvar_t	enemyskin = {"enemyskin", "", 0, OnChangeSkinForcing};
+cvar_t	cl_independentPhysics = {"cl_independentPhysics", "1"};
+cvar_t	cl_physfps = {"cl_physfps", "0"};
 
 
 //
@@ -948,6 +950,8 @@ void CL_InitLocal (void)
 	Cvar_Register (&cl_useproxy);
 	Cvar_Register (&default_fov);
 	Cvar_Register (&qizmo_dir);
+	Cvar_Register (&cl_independentPhysics);
+	Cvar_Register (&cl_physfps);
 
 #ifndef RELEASE_VERSION
 	// inform everyone that we're using a development version
@@ -1119,22 +1123,40 @@ static double CL_MinFrameTime ()
 		fps = max (30.0, cl_maxfps.value);
 	}
 	else {
-		fpscap = cl.maxfps ? max (30.0, cl.maxfps) : 72.0;
+		if (cl_independentPhysics.value) 
+			fps = cl_maxfps.value ? max(cl_maxfps.value, 30) : 999999;
+		else {
+			fpscap = cl.maxfps ? max (30.0, cl.maxfps) : 72.0;
 
-		if (cl_maxfps.value)
-			fps = bound (30.0, cl_maxfps.value, fpscap);
-		else
-		{
-			if (com_serveractive)
-				fps = fpscap;
+			if (cl_maxfps.value)
+				fps = bound (30.0, cl_maxfps.value, fpscap);
 			else
-				fps = bound (30.0, rate.value/80.0, fpscap);
+			{
+				if (com_serveractive)
+					fps = fpscap;
+				else
+					fps = bound (30.0, rate.value/80.0, fpscap);
+			}
 		}
 	}
 
 	return 1.0/fps;
 }
 
+static double MinPhysFrameTime ()
+{
+	// server policy
+	float fpscap = (cl.maxfps ? cl.maxfps : 72.0);
+
+	// the user can lower it for testing
+	if (cl_physfps.value)
+		fpscap = min(fpscap, cl_physfps.value);
+
+	// not less than this no matter what
+	fpscap = max(fpscap, 10);
+
+	return 1 / fpscap;
+}
 
 /*
 ==================
@@ -1149,6 +1171,7 @@ void CL_Frame (double time)
 	int		pass1, pass2, pass3;
 	static double	extratime = 0.001;
 	double		minframetime;
+	static double	extraphysframetime;
 
 	extratime += time;
 
@@ -1162,6 +1185,28 @@ void CL_Frame (double time)
 	extratime -= cls.trueframetime;
 
 	cls.frametime = min (cls.trueframetime, 0.2);
+
+	if (cl_independentPhysics.value && !cls.demoplayback) 
+	{
+		double minphysframetime = MinPhysFrameTime();
+
+		extraphysframetime += cls.frametime;
+		if (extraphysframetime < minphysframetime)
+			cls.physframe = false;
+		else 
+		{
+			cls.physframe = true;
+
+			if (extraphysframetime > minphysframetime*2)// FIXME: this is for the case when
+				cls.physframetime = extraphysframetime;		// actual fps is too low
+			else										// Dunno how to do it right
+				cls.physframetime = minphysframetime;
+			extraphysframetime -= cls.physframetime;
+		}	
+	} else {
+		extraphysframetime = 0;
+		cls.physframe = true;
+	}
 
 	if (cls.demoplayback) {
 		cls.frametime *= bound (0, cl_demospeed.value, 100);
@@ -1181,6 +1226,8 @@ void CL_Frame (double time)
 	cl.servertime += cls.frametime;
 	cl.stats[STAT_TIME] = cl.servertime * 1000;	// for demos' sake
 
+if (cls.physframe)
+{
 	// get new key events
 	Sys_SendKeyEvents ();
 
@@ -1196,7 +1243,7 @@ void CL_Frame (double time)
 //		CL_SendToServer ();
 
 	if (com_serveractive)
-		SV_Frame (cls.frametime);
+		SV_Frame (cls.physframetime);
 
 	// fetch results from server
 	CL_ReadPackets ();
@@ -1211,6 +1258,12 @@ void CL_Frame (double time)
 
 //	if (!(com_serveractive && !cls.demorecording))
 		CL_SendToServer ();
+}
+else {
+	usercmd_t dummy;
+	IN_Move (&dummy);
+	CL_AdjustAngles ();
+}
 
 	// predict all players
 	CL_PredictMovement ();
