@@ -588,6 +588,12 @@ void PutClientInServer ()
 // set size and link into world
 	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 
+// many maps have spawn points hanging in the air, fix that
+	saved_org = self.origin;
+	droptofloor ();
+	if (self.origin_z < saved_org_z - 64)
+		setorigin (self, saved_org);
+
 	self.view_ofs = '0 0 22';
 
 // Mod - Xian (May.20.97)
