@@ -434,6 +434,7 @@ extern cvar_t	r_rockettrail;
 extern cvar_t	r_grenadetrail;
 extern cvar_t	r_powerupglow;
 extern cvar_t	r_lightflicker;
+extern cvar_t	r_shaftalpha;
 extern cvar_t	cl_independentPhysics;
 
 #define	MAX_EFRAGS		512
