@@ -194,7 +194,7 @@ void R_Draw_Init (void)
 }
 
 
-qbool R_CharAvailable (wchar c)
+qbool R_CharAvailable (wchar num)
 {
 	int i;
 
