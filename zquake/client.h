@@ -200,6 +200,8 @@ typedef struct
 	double		demotime;		// scaled by cl_demospeed, reset when starting a demo
 	double		trueframetime;	// time since last frame
 	double		frametime;		// time since last frame, scaled by cl_demospeed
+	qbool		physframe;
+	double		physframetime;	// time between network packets sent
 
 // network stuff
 	netchan_t	netchan;
@@ -431,6 +433,7 @@ extern cvar_t	r_rockettrail;
 extern cvar_t	r_grenadetrail;
 extern cvar_t	r_powerupglow;
 extern cvar_t	r_lightflicker;
+extern cvar_t	cl_independentPhysics;
 
 #define	MAX_EFRAGS		512
 #define	MAX_STATIC_ENTITIES	128			// torches, etc

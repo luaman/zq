@@ -572,7 +572,7 @@ void CL_FinishMove (usercmd_t *cmd)
 	in_button7.state &= ~2;
 	
 	// send milliseconds of time to apply the move
-	extramsec += cls.trueframetime * 1000;
+	extramsec += (cl_independentPhysics.value ? cls.physframetime : cls.trueframetime) * 1000;
 	ms = extramsec;
 	extramsec -= ms;
 
@@ -718,7 +718,7 @@ void CL_SendCmd (void)
 		CL_WriteDemoCmd (cmd);
 
 	if (cl_c2spps.value) {
-		pps_balance += cls.frametime;
+		pps_balance += cls.physframetime;
 		// never drop more than 2 messages in a row -- that'll cause PL
 		// and don't drop if one of the last two movemessages have an impulse
 		if (pps_balance > 0 || dropcount >= 2 || dontdrop) {

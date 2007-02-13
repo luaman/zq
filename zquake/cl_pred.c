@@ -254,6 +254,116 @@ static void CL_LerpMove (float msgtime)
 	LerpAngles (lerp_angles[from], lerp_angles[to], frac, cl.simangles);
 }
 
+
+static void CL_LerpMovePhys (double msgtime, float f)
+{	
+	static int		lastsequence = 0;
+	static vec3_t	lerp_origin[3];
+	static double	lerp_times[3];
+	static qbool	nolerp[2];
+	static double	demo_latency = 0.01;
+	float	frac;
+	float	simtime;
+	int		i;
+	int		from, to;
+	extern cvar_t cl_nolerp;
+
+	if (cl_nolerp.value) 
+	{
+		lastsequence = ((unsigned)-1) >> 1;	//reset
+		return;
+	}
+
+	if (cls.netchan.outgoing_sequence < lastsequence) 
+	{
+		// reset
+		lastsequence = -1;
+		lerp_times[0] = -1;
+		demo_latency = 0.01;
+	}
+
+	if (cls.physframe) 
+	{
+		lastsequence = cls.netchan.outgoing_sequence;
+
+		// move along
+		lerp_times[2] = lerp_times[1];
+		lerp_times[1] = lerp_times[0];
+		lerp_times[0] = msgtime;
+
+		VectorCopy (lerp_origin[1], lerp_origin[2]);
+		VectorCopy (lerp_origin[0], lerp_origin[1]);
+		VectorCopy (cl.simorg, lerp_origin[0]);
+
+		nolerp[1] = nolerp[0];
+		nolerp[0] = false;
+
+		for (i = 0; i < 3; i++)
+		{
+			if (fabs(lerp_origin[0][i] - lerp_origin[1][i]) > 100)
+			{
+				break;
+			}
+		}
+
+		if (i < 3)
+		{
+			// a teleport or something
+			nolerp[0] = true;	
+		}
+	}
+
+	simtime = cls.realtime - demo_latency;
+
+	// Adjust latency
+	if (simtime > lerp_times[0]) {
+		// High clamp
+		demo_latency = cls.realtime - lerp_times[0];
+	}
+	else if (simtime < lerp_times[2]) {
+		// Low clamp
+		demo_latency = cls.realtime - lerp_times[2];
+	} 
+	else
+	{
+		// Drift towards ideal latency.
+		float ideal_latency = 0;
+
+		if (cls.physframe) {
+			if (demo_latency > ideal_latency)
+				demo_latency = max(demo_latency - cls.frametime * 0.1, ideal_latency);
+			
+			if (demo_latency < ideal_latency)
+				demo_latency = min(demo_latency + cls.frametime * 0.1, ideal_latency);
+		}
+	}
+
+	// decide where to lerp from
+	if (simtime > lerp_times[1]) 
+	{
+		from = 1;
+		to = 0;
+	} 
+	else 
+	{
+		from = 2;
+		to = 1;
+	}
+
+	if (nolerp[to])
+	{
+		return;
+	}
+
+    	frac = (simtime - lerp_times[from]) / (lerp_times[to] - lerp_times[from]);
+    	frac = bound (0, frac, 1);
+
+	for (i = 0; i < 3; i++)
+	{
+		cl.simorg[i] = lerp_origin[from][i] + (lerp_origin[to][i] - lerp_origin[from][i]) * frac;
+	}
+}
+
 /*
 ==============
 CL_PredictLocalPlayer
@@ -328,6 +438,8 @@ static void CL_PredictLocalPlayer (void)
 
 	if (cls.demoplayback)
 		CL_LerpMove (to->senttime);
+	else if (cl_independentPhysics.value)
+		CL_LerpMovePhys (cls.realtime, to->senttime);
 
 out:
 	CL_CalcCrouch ();

@@ -48,6 +48,7 @@ extern kbutton_t 	in_strafe;
 extern kbutton_t 	in_speed;
 
 void CL_InitInput (void);
+void CL_AdjustAngles (void);
 void CL_SendCmd (void);
 void CL_BaseMove (usercmd_t *cmd);
 float CL_KeyState (kbutton_t *key, qbool lookbutton);
