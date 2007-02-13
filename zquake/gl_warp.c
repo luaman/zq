@@ -487,8 +487,6 @@ static vec3_t	skyclip[6] = {
 	{-1,0,1} 
 };
 
-#define skybox_range	2400.0
-
 // 1 = s, 2 = t, 3 = 2048
 static int	st_to_vec[6][3] =
 {
@@ -718,18 +716,12 @@ static void MakeSkyVec (float s, float t, int axis)
 {
 	vec3_t      v, b;
 	int         j, k;
-#ifdef FARCLIP_SKYBOX
-	int         farclip;
+	float		skybox_range;
 
-	farclip = max((int) r_farclip.value, 4096);
-	b[0] = s*(farclip >> 1);
-	b[1] = t*(farclip >> 1);
-	b[2] = (farclip >> 1);
-#else
+	skybox_range = max((int) r_farclip.value, 4096) / 1.74; /* 1.74 > sqrt(3) */
 	b[0] = s*skybox_range;
 	b[1] = t*skybox_range;
 	b[2] = skybox_range;
-#endif
 
 	for (j=0 ; j<3 ; j++)
 	{
@@ -812,18 +804,12 @@ static void MakeSkyVec2 (float s, float t, int axis, vec3_t v)
 {
 	vec3_t		b;
 	int			j, k;
-#ifdef FARCLIP_SKYBOX
-	int         farclip;
+	float		skybox_range;
 
-	farclip = max((int) r_farclip.value, 4096);
-	b[0] = s*(farclip >> 1);
-	b[1] = t*(farclip >> 1);
-	b[2] = (farclip >> 1);
-#else
+	skybox_range = max((int) r_farclip.value, 4096) / 1.74; /* 1.74 > sqrt(3) */
 	b[0] = s*skybox_range;
 	b[1] = t*skybox_range;
 	b[2] = skybox_range;
-#endif
 
 	for (j=0 ; j<3 ; j++)
 	{
