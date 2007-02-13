@@ -81,7 +81,7 @@ void CL_StopPlayback (void)
 	cls.demoplayback = false;
 	cls.nqdemoplayback = false;
 #ifdef MVDPLAY
-	cls.mvdplayback = 0;
+	cls.mvdplayback = false;
 #endif
 
 #ifdef _WIN32
