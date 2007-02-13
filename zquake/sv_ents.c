@@ -376,6 +376,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	edict_t	*clent;
 	client_frame_t	*frame;
 	entity_state_t	*state;
+	entity_state_t	newents[MAX_PACKET_ENTITIES];
 
 	// this is the frame we are creating
 	frame = &client->frames[client->netchan.incoming_sequence & UPDATE_MASK];
@@ -420,7 +421,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 		if (pack->num_entities == MAX_PACKET_ENTITIES)
 			continue;	// all full
 
-		state = &pack->entities[pack->num_entities];
+		state = &newents[pack->num_entities];
 		pack->num_entities++;
 
 		state->number = SV_TranslateEntnum(e);
@@ -435,7 +436,11 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	}
 
 	// entity translation might have broken original entnum order, so sort them
-	qsort (pack->entities, pack->num_entities, sizeof(pack->entities[0]), entity_state_compare);
+	qsort (newents, pack->num_entities, sizeof(newents[0]), entity_state_compare);
+
+	Q_free (pack->entities);
+	pack->entities = Q_malloc (sizeof(newents[0]) * pack->num_entities);
+	memcpy (pack->entities, newents, sizeof(newents[0]) * pack->num_entities);
 
 	if (client->delta_sequence != -1) {
 		// encode the packet entities as a delta from the

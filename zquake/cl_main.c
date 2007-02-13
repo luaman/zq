@@ -423,6 +423,9 @@ void CL_ClearState (void)
 	CL_ClearParticles ();
 	CL_ClearNails ();
 
+	for (i = 0; i < UPDATE_BACKUP; i++)
+		Q_free (cl.frames[i].packet_entities.entities);
+
 // wipe the entire cl structure
 	memset (&cl, 0, sizeof(cl));
 
