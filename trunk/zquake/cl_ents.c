@@ -1193,7 +1193,7 @@ void CL_LinkPlayers (void)
 		ent.angles[ROLL] = V_CalcRoll (ent.angles, state->velocity)*4;
 
 		// only predict half the move to minimize overruns
-		msec = 500 * (playertime - state->state_time);
+		msec = 1000 * (playertime - state->state_time);
 		if (msec <= 0 || !cl_predict_players.value)
 		{
 			VectorCopy (state->origin, ent.origin);
