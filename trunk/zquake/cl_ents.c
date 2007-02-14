@@ -429,8 +429,6 @@ void CL_LinkPacketEntities (void)
 
 	autorotate = anglemod (100*cl.time);
 
-	memset (&ent, 0, sizeof(ent));
-
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
 		f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
@@ -510,6 +508,8 @@ void CL_LinkPacketEntities (void)
 
 		if (cl_gibfilter.value && cl.modelinfos[state->modelindex] == mi_gib)
 			continue;
+
+		memset (&ent, 0, sizeof(ent));
 
 		ent.model = model = cl.model_precache[state->modelindex];
 		if (!model)
