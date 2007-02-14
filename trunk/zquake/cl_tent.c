@@ -63,6 +63,10 @@ static struct model_s	*cl_bolt2_mod;
 static struct model_s	*cl_bolt3_mod;
 static struct model_s	*cl_beam_mod;
 
+cvar_t	cl_fakeshaft = {"cl_fakeshaft", "0"};
+cvar_t	r_shaftalpha = {"r_shaftalpha", "1"};
+
+
 /*
 =================
 CL_ParseTEnts
@@ -70,6 +74,9 @@ CL_ParseTEnts
 */
 void CL_InitTEnts (void)
 {
+	Cvar_Register (&cl_fakeshaft);
+	Cvar_Register (&r_shaftalpha);
+
 	cl_sfx_wizhit = S_PrecacheSound ("wizard/hit.wav");
 	cl_sfx_knighthit = S_PrecacheSound ("hknight/hit.wav");
 	cl_sfx_tink1 = S_PrecacheSound ("weapons/tink1.wav");

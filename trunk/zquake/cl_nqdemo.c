@@ -689,7 +689,6 @@ static float NQD_LerpPoint (void)
 
 
 extern int	cl_playerindex; 
-extern int	cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 extern int	cl_rocketindex, cl_grenadeindex;
 
 static void NQD_LerpPlayerinfo (float f)
@@ -841,9 +840,7 @@ nq_speed /= nq_mtime[0] - nq_mtime[1];
 			&& ( (i=state->frame)==49 || i==60 || i==69 || i==84 || i==93 || i==102) )
 			continue;
 
-		if (cl_gibfilter.value &&
-			(state->modelindex == cl_h_playerindex || state->modelindex == cl_gib1index
-			|| state->modelindex == cl_gib2index || state->modelindex == cl_gib3index))
+		if (cl_gibfilter.value && cl.modelinfos[state->modelindex] == mi_gib)
 			continue;
 
 		// set colormap
