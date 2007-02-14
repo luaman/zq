@@ -198,7 +198,7 @@ static void UpdateEntities (void)
 		cent->prevframe = cent->lastframe;
 		cent->lastframe = cl_entframecount;
 
-		if (cent->prevframe == cl_oldentframecount) {
+		if (cent->prevframe == cl_entframecount - 1) {
 			// move along, move along
 			cent->previous = cent->current;
 		} else {
@@ -384,7 +384,6 @@ void CL_ParsePacketEntities (qbool delta)
 
 	cl.frames[newpacket].valid = true;
 
-	cl_oldentframecount = cl_entframecount;
 	cl_entframecount++;
 	UpdateEntities ();
 
@@ -464,10 +463,11 @@ void CL_LinkPacketEntities (void)
 		state = &pack->entities[pnum];
 		cent = &cl_entities[state->number];
 
-#ifndef MVDPLAY
-		assert(cent->lastframe == cl_entframecount);
-		assert(!memcmp(state, &cent->current, sizeof(*state)));
+#ifdef MVDPLAY
+		if (!cls.mvdplayback)
 #endif
+		{ assert(cent->lastframe == cl_entframecount);
+		assert(!memcmp(state, &cent->current, sizeof(*state))); }
 
 		MSG_UnpackOrigin (state->s_origin, cur_origin);
 
@@ -534,7 +534,7 @@ void CL_LinkPacketEntities (void)
 		ent.frame = state->frame;
 
 		// decide whether to lerp frames
-		if (cent->prevframe != cl_oldentframecount) {
+		if (cent->prevframe != cl_entframecount - 1) {
 			// not in previous message
 			cent->framelerp_start = 0;
 		}
@@ -571,7 +571,7 @@ void CL_LinkPacketEntities (void)
 
 		// calculate origin
 		if (cl.modelinfos[state->modelindex] == mi_monster && cl_lerp_monsters.value) {
-			if (cent->prevframe != cl_oldentframecount) {
+			if (cent->prevframe != cl_entframecount - 1) {
 				// not in previous message
 				cent->monsterlerp_start = 0;
 			}

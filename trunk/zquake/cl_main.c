@@ -91,7 +91,7 @@ entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
 
 // used to determine if an entity was present in the last or previous message
-int				cl_entframecount, cl_oldentframecount;
+int				cl_entframecount;
 
 double			connect_time = 0;		// for connection retransmits
 
@@ -409,8 +409,7 @@ void CL_ClearState (void)
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
 	memset (cl_entities, 0, sizeof(cl_entities));
 
-	cl_oldentframecount = -1;
-	cl_entframecount = 0;
+	cl_entframecount = 2;		// so that cl_entframecount - 1 != 0
 	cl.viewheight = DEFAULT_VIEWHEIGHT;
 	cl.minpitch = -70;
 	cl.maxpitch = 80;

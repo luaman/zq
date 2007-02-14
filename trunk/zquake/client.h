@@ -476,7 +476,7 @@ void CL_Disconnect (void);
 void CL_Disconnect_f (void);
 void CL_NextDemo (void);
 
-extern int			cl_entframecount, cl_oldentframecount;
+extern int			cl_entframecount;
 
 extern int			cl_numvisedicts;
 extern entity_t		cl_visedicts[MAX_VISEDICTS];
