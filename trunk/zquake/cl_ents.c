@@ -35,6 +35,7 @@ cvar_t r_lightflicker = {"r_lightflicker", "1"};
 cvar_t	cl_deadbodyfilter = {"cl_deadbodyFilter", "0"};
 cvar_t	cl_explosion = {"cl_explosion", "0"};
 cvar_t	cl_gibfilter = {"cl_gibFilter", "0"};
+cvar_t	cl_gibtime = {"cl_gibtime", "3"};
 cvar_t	cl_r2g = {"cl_r2g", "0"};
 cvar_t	cl_predict_players = {"cl_predict_players", "1"};
 cvar_t	cl_solid_players = {"cl_solid_players", "1"};
@@ -506,10 +507,24 @@ void CL_LinkPacketEntities (void)
 				continue;
 		}
 
-		if (cl_gibfilter.value && cl.modelinfos[state->modelindex] == mi_gib)
-			continue;
-
 		memset (&ent, 0, sizeof(ent));
+
+		if (cl.modelinfos[state->modelindex] == mi_gib) {
+			if (!cent->gib_start)
+				cent->gib_start = cl.time;
+			if (cl_gibfilter.value == 2) {
+				if (cent->gib_start && cl.time - cent->gib_start > cl_gibtime.value)
+					continue;
+				// start to fade away 1 second before cl_gibtime is up
+				if (cent->gib_start && cl.time - cent->gib_start > cl_gibtime.value - 1) {
+					ent.alpha = cl_gibtime.value - (cl.time - cent->gib_start);
+					ent.renderfx |= RF_TRANSLUCENT;
+				}
+			} else if (cl_gibfilter.value)
+				continue;
+		}
+		else
+			cent->gib_start = 0;
 
 		ent.model = model = cl.model_precache[state->modelindex];
 		if (!model)
@@ -1580,6 +1595,7 @@ void CL_Ents_Init (void)
 	Cvar_Register (&cl_deadbodyfilter);
 	Cvar_Register (&cl_explosion);
 	Cvar_Register (&cl_gibfilter);
+	Cvar_Register (&cl_gibtime);
 	Cvar_Register (&cl_r2g);
 	Cvar_Register (&cl_predict_players);
 	Cvar_Register (&cl_solid_players);

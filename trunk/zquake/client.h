@@ -121,6 +121,7 @@ typedef struct
 	int				oldframe;
 	double			monsterlerp_start;
 	vec3_t			monsterlerp_origin;
+	double			gib_start;
 } centity_t;
 
 typedef struct
