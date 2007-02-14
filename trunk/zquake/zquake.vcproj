@@ -4728,6 +4728,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gl_texture.h"
+				>
+			</File>
+			<File
 				RelativePath="gl_warp_sin.h"
 				>
 			</File>
@@ -4769,6 +4773,10 @@
 			</File>
 			<File
 				RelativePath=".\q_shared.h"
+				>
+			</File>
+			<File
+				RelativePath=".\quakeasm.h"
 				>
 			</File>
 			<File
