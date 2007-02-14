@@ -1047,6 +1047,7 @@ void CL_Init (void)
 	CL_InitPrediction ();
 	CL_InitCam ();
 	CL_InitParticles ();
+	CL_Ents_Init ();
 	TP_Init ();
 	SCR_Init ();
 	Sbar_Init ();
