@@ -930,7 +930,6 @@ static void NQD_ParseServerMessage (void)
 
 	nq_player_teleported = false;		// OMG, it's a hack!
 	message_with_datagram = false;
-	cl_oldentframecount = cl_entframecount;
 	cl_entframecount++;
 
 	if (cl_shownet.value == 1)
