@@ -219,6 +219,7 @@ static void R_SetupAliasFrame (int frame, int oldframe, float backlerp, aliashdr
 	if ((oldframe >= paliashdr->numframes) || (oldframe < 0))
 	{
 		Com_DPrintf ("R_AliasSetupFrame: no such frame %d\n", oldframe);
+		oldframe = 0;
 		backlerp = 0;
 	}
 
@@ -234,7 +235,7 @@ static void R_SetupAliasFrame (int frame, int oldframe, float backlerp, aliashdr
 	if (paliashdr->frames[oldframe].numposes > 1)
 	{
 		interval = paliashdr->frames[oldframe].interval;
-		pose += (int)(r_refdef2.time / interval) % paliashdr->frames[oldframe].numposes;
+		oldpose += (int)(r_refdef2.time / interval) % paliashdr->frames[oldframe].numposes;
 	}
 
 	GL_DrawAliasFrame (paliashdr, pose, oldpose, backlerp, mtex);
