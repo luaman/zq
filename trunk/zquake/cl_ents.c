@@ -410,6 +410,7 @@ void CL_LinkPacketEntities (void)
 	float				autorotate, flicker;
 	int					i;
 	int					pnum;
+	extern cvar_t		cl_nolerp;
 
 	pack = &cl.frames[cl.validsequence&UPDATE_MASK].packet_entities;
 
@@ -423,8 +424,29 @@ void CL_LinkPacketEntities (void)
 	}
 	else
 #endif
-		f = 1.0f;		// FIXME: no interpolation right now
+	if (cl_nolerp.value)
+		f = 1;
+	else
+	{
+		float t, simtime;
 
+		simtime = cls.realtime - cl.entlatency;
+		if (simtime > cl.frames[cl.validsequence&UPDATE_MASK].receivedtime) {
+			cl.entlatency = cls.realtime - cl.frames[cl.validsequence&UPDATE_MASK].receivedtime;
+		} else if (simtime < cl.frames[cl.oldvalidsequence&UPDATE_MASK].receivedtime) {
+			cl.entlatency = cls.realtime - cl.frames[cl.oldvalidsequence&UPDATE_MASK].receivedtime;
+		} else {
+			// drift towards ideal latency
+		}
+
+		t = cl.frames[cl.validsequence&UPDATE_MASK].receivedtime -
+			cl.frames[cl.oldvalidsequence&UPDATE_MASK].receivedtime;
+		if (t)
+			f = (cls.realtime - cl.entlatency - cl.frames[cl.oldvalidsequence&UPDATE_MASK].receivedtime) / t;
+		else
+			f = 1;
+		f = bound (0, f, 1);
+	}
 
 	for (pnum=0 ; pnum<pack->num_entities ; pnum++)
 	{
