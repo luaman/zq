@@ -210,6 +210,7 @@ qbool CL_CheckOrDownloadFile (char *filename)
 void CL_FindModelNumbers (void)
 {
 	int	i;
+	char s[MAX_QPATH];
 
 	cl_playerindex = cl_eyesindex = cl_spikeindex = cl_flagindex = -1;
 	cl_h_playerindex = cl_gib1index = cl_gib2index = cl_gib3index = -1;
@@ -217,40 +218,52 @@ void CL_FindModelNumbers (void)
 	cl_w1index = cl_w2index = cl_w3index = cl_w4index = cl_w5index = cl_w6index = cl_w7index = -1;
 
 	for (i = 1; i < MAX_MODELS; i++) {
-		if (!strcmp(cl.model_name[i],"progs/spike.mdl"))
+		if (strncmp(cl.model_name[i], "progs/", 6)
+		|| strcmp(cl.model_name[i] + strlen(cl.model_name[i]) - 4, ".mdl"))
+			continue;
+		strlcpy (s, cl.model_name[i] + 6, strlen(cl.model_name[i]) - 6 - 4 + 1);
+		if (!strcmp(s, "spike"))
 			cl_spikeindex = i;
-		else if (!strcmp(cl.model_name[i],"progs/player.mdl"))
+		else if (!strcmp(s, "player"))
 			cl_playerindex = i;
-		else if (!strcmp(cl.model_name[i],"progs/eyes.mdl"))
+		else if (!strcmp(s, "eyes"))
 			cl_eyesindex = i;
-		else if (!strcmp(cl.model_name[i],"progs/flag.mdl"))
+		else if (!strcmp(s, "flag"))
 			cl_flagindex = i;
-		else if (!strcmp(cl.model_name[i],"progs/h_player.mdl"))
+		else if (!strcmp(s, "h_player"))
 			cl_h_playerindex = i;
-		else if (!strcmp(cl.model_name[i],"progs/gib1.mdl"))
+		else if (!strcmp(s, "gib1"))
 			cl_gib1index = i;
-		else if (!strcmp(cl.model_name[i],"progs/gib2.mdl"))
+		else if (!strcmp(s, "gib2"))
 			cl_gib2index = i;
-		else if (!strcmp(cl.model_name[i],"progs/gib3.mdl"))
+		else if (!strcmp(s, "gib3"))
 			cl_gib3index = i;
-		else if (!strcmp(cl.model_name[i],"progs/missile.mdl"))
+		else if (!strcmp(s, "missile"))
 			cl_rocketindex = i;
-		else if (!strcmp(cl.model_name[i],"progs/grenade.mdl"))
+		else if (!strcmp(s, "grenade"))
 			cl_grenadeindex = i;
-		else if (!strcmp(cl.model_name[i],"progs/v_axe.mdl"))
+		else if (!strcmp(s, "v_axe"))
 			cl_w1index = i;
-		else if (!strcmp(cl.model_name[i],"progs/v_bio.mdl"))
+		else if (!strcmp(s, "v_bio"))
 			cl_w2index = i;
-		else if (!strcmp(cl.model_name[i],"progs/v_grap.mdl"))
+		else if (!strcmp(s, "v_grap"))
 			cl_w3index = i;
-		else if (!strcmp(cl.model_name[i],"progs/v_knife.mdl"))
+		else if (!strcmp(s, "v_knife"))
 			cl_w4index = i;
-		else if (!strcmp(cl.model_name[i],"progs/v_knife2.mdl"))
+		else if (!strcmp(s, "v_knife2"))
 			cl_w5index = i;
-		else if (!strcmp(cl.model_name[i],"progs/v_medi.mdl"))
+		else if (!strcmp(s, "v_medi"))
 			cl_w6index = i;
-		else if (!strcmp(cl.model_name[i],"progs/v_span.mdl"))
+		else if (!strcmp(s, "v_span"))
 			cl_w7index = i;
+		else if (!strcmp(s, "soldier") || !strcmp(s, "dog") || !strcmp(s, "demon")
+		|| !strcmp(s, "ogre") || !strcmp(s, "shambler") || !strcmp(s, "knight")
+		|| !strcmp(s, "zombie") || !strcmp(s, "wizard") || !strcmp(s, "enforcer")
+		|| !strcmp(s, "fish") || !strcmp(s, "hknight") || !strcmp(s, "shalrath")
+		|| !strcmp(s, "tarbaby") || !strcmp(s, "armabody") || !strcmp(s, "armalegs")
+		|| !strcmp(s, "grem") || !strcmp(s, "scor"))
+			cl.modelinfos[i] = mi_monster;
+
 	}
 }
 

@@ -114,10 +114,13 @@ typedef struct
 	entity_state_t	baseline;
 	entity_state_t	previous;
 	entity_state_t	current;
-
 	int				lastframe;
 	int				prevframe;
-	vec3_t			lerp_origin;
+	vec3_t			lerp_origin;	// for particle trail
+	double			framelerp_start;
+	int				oldframe;
+	double			monsterlerp_start;
+	vec3_t			monsterlerp_origin;
 } centity_t;
 
 typedef struct
@@ -163,6 +166,11 @@ typedef struct cparticle_s
 	float		die;
 	int			type;
 } cparticle_t;
+
+typedef enum {
+	mi_generic,
+	mi_monster
+} modelinfo_t;
 
 typedef enum {
 	ca_disconnected, 	// full screen console with no connection
@@ -371,6 +379,7 @@ typedef struct
 #endif
 	struct sfx_s	*sound_precache[MAX_SOUNDS];
 
+	modelinfo_t	modelinfos[MAX_MODELS];
 	cmodel_t	*clipmodels[MAX_MODELS];
 	unsigned	map_checksum2;
 
@@ -559,6 +568,7 @@ void CL_EntityParticles (vec3_t org);
 //
 // cl_ents.c
 //
+void CL_Ents_Init (void);
 void CL_SetSolidPlayers (int playernum);
 void CL_SetUpPlayerPrediction (qbool dopred);
 void CL_EmitEntities (void);

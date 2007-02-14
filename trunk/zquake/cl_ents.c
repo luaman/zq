@@ -26,6 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern cvar_t	cl_predict_players;
 extern cvar_t	cl_solid_players;
 
+cvar_t cl_lerp_monsters = {"cl_lerp_monsters", "1"};
+
 static struct predicted_player {
 	int		flags;
 	qbool	active;
@@ -522,6 +524,24 @@ void CL_LinkPacketEntities (void)
 		// set frame
 		ent.frame = state->frame;
 
+		// decide whether to lerp frames
+		if (cent->prevframe != cl_oldentframecount) {
+			// not in previous message
+			cent->framelerp_start = 0;
+		}
+		else if (cent->current.frame != cent->previous.frame) {
+//			Com_Printf ("%i -> %i\n", cent->current.frame, cent->previous.frame);
+			cent->framelerp_start = cl.time;
+			cent->oldframe = cent->previous.frame;
+		}
+		if (cent->framelerp_start) {
+			ent.oldframe = cent->oldframe;
+			ent.backlerp = 1 - (cl.time - cent->framelerp_start)*10;
+			ent.backlerp = bound (0, ent.backlerp, 1);
+//			if (ent.backlerp < 1)
+//				Com_Printf ("backlerp %f\n", ent.backlerp);
+		}
+
 		modelflags = R_ModelFlags (model);
 
 		// rotate binary objects locally
@@ -541,9 +561,34 @@ void CL_LinkPacketEntities (void)
 		}
 
 		// calculate origin
-		for (i=0 ; i<3 ; i++)
-			ent.origin[i] = cent->previous.s_origin[i] * 0.125 + 
-				f * (cur_origin[i] - cent->previous.s_origin[i] * 0.125);
+		if (cl.modelinfos[state->modelindex] == mi_monster && cl_lerp_monsters.value) {
+			if (cent->prevframe != cl_oldentframecount) {
+				// not in previous message
+				cent->monsterlerp_start = 0;
+			}
+			else {
+				for (i=0 ; i<3 ; i++)
+					if (cent->current.s_origin[i] != cent->previous.s_origin[i])
+						break;
+				if (i != 3) {
+					cent->monsterlerp_start = cl.time;
+					MSG_UnpackOrigin (cent->previous.s_origin, cent->monsterlerp_origin);
+				}
+			}
+			if (cent->monsterlerp_start) {
+				float backlerp;
+				backlerp = 1 - (cl.time - cent->monsterlerp_start)*10;
+				backlerp = bound (0, backlerp, 1);
+				LerpVector (cur_origin, cent->monsterlerp_origin, backlerp, ent.origin);
+			} else {
+				VectorCopy (cur_origin, ent.origin);
+			}
+		}
+		else {
+			for (i=0 ; i<3 ; i++)
+				ent.origin[i] = cent->previous.s_origin[i] * 0.125 + 
+					f * (cur_origin[i] - cent->previous.s_origin[i] * 0.125);
+		}
 
 		// add automatic particle trails
 		if (modelflags & ~MF_ROTATE)
@@ -1129,6 +1174,16 @@ void CL_LinkPlayers (void)
 		ent.frame = state->frame;
 		ent.colormap = j + 1;
 
+		if (state->frame != cent->current.frame) {
+			cent->framelerp_start = cl.time;
+			cent->oldframe = cent->current.frame;
+			cent->current.frame = state->frame;
+		}
+		if (cent->framelerp_start) {
+			ent.oldframe = cent->oldframe;
+			ent.backlerp = 1 - (cl.time - cent->framelerp_start)*10;
+		}
+
 		//
 		// angles
 		//
@@ -1505,3 +1560,7 @@ void CL_EmitEntities (void)
 	CL_UpdateTEnts ();
 }
 
+void CL_Ents_Init (void)
+{
+	Cvar_Register (&cl_lerp_monsters);
+}
