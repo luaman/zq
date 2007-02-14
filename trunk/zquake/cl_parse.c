@@ -226,7 +226,11 @@ void CL_FindModelNumbers (void)
 			cl_eyesindex = i;
 		else if (!strcmp(s, "flag"))
 			cl_flagindex = i;
-		else if (!strcmp(s, "h_player") || !strcmp(s, "gib1") || !strcmp(s, "gib2") || !strcmp(s, "gib3"))
+		else if (!strcmp(s, "gib1") || !strcmp(s, "gib2") || !strcmp(s, "gib3")
+		|| !strcmp(s, "h_player") || !strcmp(s, "h_demon") || !strcmp(s, "h_dog")
+		|| !strcmp(s, "h_guard") || !strcmp(s, "h_knight") || !strcmp(s, "h_ogre")
+		|| !strcmp(s, "h_shams") || !strcmp(s, "h_wizard") || !strcmp(s, "h_zombie")
+		|| !strcmp(s, "h_hellkn") || !strcmp(s, "h_mega") || !strcmp(s, "h_shal"))
 			cl.modelinfos[i] = mi_gib;
 		else if (!strcmp(s, "missile"))
 			cl_rocketindex = i;
