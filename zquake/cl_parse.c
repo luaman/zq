@@ -101,9 +101,7 @@ char *svc_strings[] =
 const int num_svc_strings = sizeof(svc_strings)/sizeof(svc_strings[0]);
 
 int		cl_spikeindex, cl_playerindex, cl_eyesindex, cl_flagindex;
-int		cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 int		cl_rocketindex, cl_grenadeindex;
-int cl_w1index, cl_w2index, cl_w3index, cl_w4index, cl_w5index, cl_w6index, cl_w7index;
 
 //=============================================================================
 
@@ -213,9 +211,7 @@ void CL_FindModelNumbers (void)
 	char s[MAX_QPATH];
 
 	cl_playerindex = cl_eyesindex = cl_spikeindex = cl_flagindex = -1;
-	cl_h_playerindex = cl_gib1index = cl_gib2index = cl_gib3index = -1;
 	cl_rocketindex = cl_grenadeindex = -1;
-	cl_w1index = cl_w2index = cl_w3index = cl_w4index = cl_w5index = cl_w6index = cl_w7index = -1;
 
 	for (i = 1; i < MAX_MODELS; i++) {
 		if (strncmp(cl.model_name[i], "progs/", 6)
@@ -230,32 +226,16 @@ void CL_FindModelNumbers (void)
 			cl_eyesindex = i;
 		else if (!strcmp(s, "flag"))
 			cl_flagindex = i;
-		else if (!strcmp(s, "h_player"))
-			cl_h_playerindex = i;
-		else if (!strcmp(s, "gib1"))
-			cl_gib1index = i;
-		else if (!strcmp(s, "gib2"))
-			cl_gib2index = i;
-		else if (!strcmp(s, "gib3"))
-			cl_gib3index = i;
+		else if (!strcmp(s, "h_player") || !strcmp(s, "gib1") || !strcmp(s, "gib2") || !strcmp(s, "gib3"))
+			cl.modelinfos[i] = mi_gib;
 		else if (!strcmp(s, "missile"))
 			cl_rocketindex = i;
 		else if (!strcmp(s, "grenade"))
 			cl_grenadeindex = i;
-		else if (!strcmp(s, "v_axe"))
-			cl_w1index = i;
-		else if (!strcmp(s, "v_bio"))
-			cl_w2index = i;
-		else if (!strcmp(s, "v_grap"))
-			cl_w3index = i;
-		else if (!strcmp(s, "v_knife"))
-			cl_w4index = i;
-		else if (!strcmp(s, "v_knife2"))
-			cl_w5index = i;
-		else if (!strcmp(s, "v_medi"))
-			cl_w6index = i;
-		else if (!strcmp(s, "v_span"))
-			cl_w7index = i;
+		else if (!strcmp(s, "v_axe") || !strcmp(s, "v_bio") || !strcmp(s, "v_grap")
+		|| !strcmp(s, "v_knife") || !strcmp(s, "v_knife2") || !strcmp(s, "v_medi")
+		|| !strcmp(s, "v_span"))
+			cl.modelinfos[i] = mi_no_lerp_hack;
 		else if (!strcmp(s, "soldier") || !strcmp(s, "dog") || !strcmp(s, "demon")
 		|| !strcmp(s, "ogre") || !strcmp(s, "shambler") || !strcmp(s, "knight")
 		|| !strcmp(s, "zombie") || !strcmp(s, "wizard") || !strcmp(s, "enforcer")

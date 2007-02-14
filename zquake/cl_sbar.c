@@ -85,6 +85,8 @@ qbool ag_lock_intermission;
 static int	sbar_xofs;
 
 cvar_t	scr_centerSbar = {"scr_centerSbar", "1", CVAR_ARCHIVE};
+cvar_t	cl_sbar = {"cl_sbar", "0", CVAR_ARCHIVE};
+cvar_t	cl_hudswap = {"cl_hudswap", "0", CVAR_ARCHIVE};
 
 /*
 ===============
@@ -308,6 +310,8 @@ Sbar_Init
 void Sbar_Init (void)
 {
 	Cvar_Register (&scr_centerSbar);
+	Cvar_Register (&cl_sbar);
+	Cvar_Register (&cl_hudswap);
 
 	Cmd_AddCommand ("+showscores", Sbar_ShowScores);
 	Cmd_AddCommand ("-showscores", Sbar_DontShowScores);

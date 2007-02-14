@@ -78,6 +78,9 @@ float	v_iroll_level = 0.1;
 float	v_ipitch_level = 0.3;
 float	v_idlescale = 0;
 
+int				cl_numvisedicts;
+entity_t		cl_visedicts[MAX_VISEDICTS];
+
 
 void V_NewMap (void)
 {
@@ -871,8 +874,6 @@ void V_AddViewWeapon (float bob)
 	// FIXME, move the statics to a structure like cl
 	static int oldweapon, curframe, oldframe;
 	static double start_lerp_time;
-	extern int cl_w1index, cl_w2index, cl_w3index, cl_w4index, cl_w5index, cl_w6index, cl_w7index;
-	int i;
 
 	if (!cl_drawgun.value || (cl_drawgun.value == 2 && scr_fov.value > 90)
 		|| view_message.flags & (PF_GIB|PF_DEAD)
@@ -884,6 +885,8 @@ void V_AddViewWeapon (float bob)
 
 	memset (&ent, 0, sizeof(ent));
 
+	if ((unsigned int)cl.stats[STAT_WEAPON] >= MAX_MODELS)
+		Host_Error ("STAT_WEAPON >= MAX_MODELS");
 	ent.model = cl.model_precache[cl.stats[STAT_WEAPON]];
 	if (!ent.model)
 		return;
@@ -905,9 +908,7 @@ void V_AddViewWeapon (float bob)
 	ent.backlerp = 1 - (cl.time - start_lerp_time)*10;
 	ent.backlerp = bound (0, ent.backlerp, 1);
 
-	if (!((i = cl.stats[STAT_WEAPON]) == cl_w1index || i == cl_w2index || i == cl_w3index
-	|| i == cl_w4index || i == cl_w5index || i == cl_w6index || i == cl_w7index)
-	&& r_lerpmuzzlehack.value)
+	if (r_lerpmuzzlehack.value && cl.modelinfos[cl.stats[STAT_WEAPON]] != mi_no_lerp_hack)
 		ent.renderfx |= RF_LIMITLERP;
 
 #ifdef GLQUAKE

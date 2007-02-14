@@ -27,6 +27,18 @@ extern cvar_t	cl_predict_players;
 extern cvar_t	cl_solid_players;
 
 cvar_t cl_lerp_monsters = {"cl_lerp_monsters", "1"};
+cvar_t r_rocketlight = {"r_rocketLight", "1"};
+cvar_t r_rockettrail = {"r_rocketTrail", "1"};
+cvar_t r_grenadetrail = {"r_grenadeTrail", "1"};
+cvar_t r_powerupglow = {"r_powerupGlow", "1"};
+cvar_t r_lightflicker = {"r_lightflicker", "1"};
+cvar_t	cl_deadbodyfilter = {"cl_deadbodyFilter", "0"};
+cvar_t	cl_explosion = {"cl_explosion", "0"};
+cvar_t	cl_gibfilter = {"cl_gibFilter", "0"};
+cvar_t	cl_r2g = {"cl_r2g", "0"};
+cvar_t	cl_predict_players = {"cl_predict_players", "1"};
+cvar_t	cl_solid_players = {"cl_solid_players", "1"};
+
 
 static struct predicted_player {
 	int		flags;
@@ -389,7 +401,6 @@ void CL_ParsePacketEntities (qbool delta)
 
 
 extern int	cl_playerindex; 
-extern int	cl_h_playerindex, cl_gib1index, cl_gib2index, cl_gib3index;
 extern int	cl_rocketindex, cl_grenadeindex;
 
 /*
@@ -497,9 +508,7 @@ void CL_LinkPacketEntities (void)
 				continue;
 		}
 
-		if (cl_gibfilter.value &&
-			(state->modelindex == cl_h_playerindex || state->modelindex == cl_gib1index
-			|| state->modelindex == cl_gib2index || state->modelindex == cl_gib3index))
+		if (cl_gibfilter.value && cl.modelinfos[state->modelindex] == mi_gib)
 			continue;
 
 		ent.model = model = cl.model_precache[state->modelindex];
@@ -1563,4 +1572,18 @@ void CL_EmitEntities (void)
 void CL_Ents_Init (void)
 {
 	Cvar_Register (&cl_lerp_monsters);
+	Cvar_Register (&r_rocketlight);
+	Cvar_Register (&r_rockettrail);
+	Cvar_Register (&r_grenadetrail);
+	Cvar_Register (&r_powerupglow);
+	Cvar_Register (&r_lightflicker);
+	Cvar_Register (&cl_deadbodyfilter);
+	Cvar_Register (&cl_explosion);
+	Cvar_Register (&cl_gibfilter);
+	Cvar_Register (&cl_r2g);
+	Cvar_Register (&cl_predict_players);
+	Cvar_Register (&cl_solid_players);
+	// Just for compatibility with ZQuake 0.14 (remove one day)
+	Cmd_AddLegacyCommand ("cl_predictPlayers", "cl_predict_players");
+	Cmd_AddLegacyCommand ("cl_solidPlayers", "cl_solid_players");
 }

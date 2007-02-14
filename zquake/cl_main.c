@@ -33,40 +33,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 cvar_t	*cl_rconPassword;
 cvar_t	cl_rconAddress = {"rcon_address", ""};
-
 cvar_t	cl_timeout = {"cl_timeout", "60"};
-
 cvar_t	cl_shownet = {"cl_shownet", "0"};	// can be 0, 1, or 2
-
-cvar_t	cl_sbar		= {"cl_sbar", "0", CVAR_ARCHIVE};
-cvar_t	cl_hudswap	= {"cl_hudswap", "0", CVAR_ARCHIVE};
 cvar_t	cl_maxfps	= {"cl_maxfps", "0", CVAR_ARCHIVE};
-
 cvar_t	cl_writecfg = {"cl_writecfg", "1"};
-
-cvar_t	cl_predict_players = {"cl_predict_players", "1"};
-cvar_t	cl_solid_players = {"cl_solid_players", "1"};
-
+cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
 cvar_t  localid = {"localid", ""};
-
 static qbool allowremotecmd = true;
 
 // ZQuake cvars
-// FIXME: r_ prefix is wrong, but not changing for compatibility reasons
-cvar_t	r_rocketlight = {"r_rocketLight", "1"};
-cvar_t	r_rockettrail = {"r_rocketTrail", "1"};
-cvar_t	r_grenadetrail = {"r_grenadeTrail", "1"};
-cvar_t	r_powerupglow = {"r_powerupGlow", "1"};
-cvar_t	r_lightflicker = {"r_lightflicker", "1"};
-cvar_t	r_shaftalpha = {"r_shaftalpha", "1"};
-cvar_t	cl_deadbodyfilter = {"cl_deadbodyFilter", "0"};
-cvar_t	cl_explosion = {"cl_explosion", "0"};
-cvar_t	cl_gibfilter = {"cl_gibFilter", "0"};
 cvar_t	cl_muzzleflash = {"cl_muzzleflash", "1"};
-cvar_t	cl_r2g = {"cl_r2g", "0"};
 cvar_t	cl_demospeed = {"cl_demospeed", "1"};
 cvar_t	cl_staticsounds = {"cl_staticSounds", "1"};
-cvar_t	cl_fakeshaft = {"cl_fakeshaft", "0"};
 cvar_t	cl_nofake = {"cl_nofake", "2"};
 cvar_t	cl_parseWhiteText = {"cl_parseWhiteText", "1"};
 cvar_t	cl_filterdrawviewmodel = {"cl_filterdrawviewmodel", "0"};
@@ -112,12 +90,6 @@ efrag_t			cl_efrags[MAX_EFRAGS];
 entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
 
-// refresh list
-// this is double buffered so the last frame
-// can be scanned for oldorigins of trailing objects
-int				cl_numvisedicts;
-entity_t		cl_visedicts[MAX_VISEDICTS];
-
 // used to determine if an entity was present in the last or previous message
 int				cl_entframecount, cl_oldentframecount;
 
@@ -126,8 +98,6 @@ double			connect_time = 0;		// for connection retransmits
 static qbool	host_skipframe;			// used in demo playback
 
 byte		*host_basepal;
-
-cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
 
 int			fps_count;
 
@@ -904,16 +874,9 @@ void CL_InitLocal (void)
 
 	Cvar_Register (&cl_warncmd);
 	Cvar_Register (&cl_shownet);
-	Cvar_Register (&cl_sbar);
-	Cvar_Register (&cl_hudswap);
 	Cvar_Register (&cl_maxfps);
 	Cvar_Register (&cl_timeout);
 	Cvar_Register (&cl_writecfg);
-	Cvar_Register (&cl_predict_players);
-	Cvar_Register (&cl_solid_players);
-	// Just for compatibility with ZQuake 0.14 (remove one day)
-	Cmd_AddLegacyCommand ("cl_predictPlayers", "cl_predict_players");
-	Cmd_AddLegacyCommand ("cl_solidPlayers", "cl_solid_players");
 
 	cl_rconPassword = Cvar_Get ("rcon_password", "", 0);
 	Cvar_Register (&cl_rconAddress);
@@ -927,21 +890,10 @@ void CL_InitLocal (void)
 	Cvar_Register (&enemyskin);
 
 	// ZQuake cvars
-	Cvar_Register (&r_rocketlight);
-	Cvar_Register (&r_rockettrail);
-	Cvar_Register (&r_grenadetrail);
-	Cvar_Register (&r_powerupglow);
-	Cvar_Register (&r_lightflicker);
-	Cvar_Register (&r_shaftalpha);
 	Cvar_Register (&cl_demospeed);
 	Cmd_AddLegacyCommand ("demotimescale", "cl_demospeed");
-	Cvar_Register (&cl_deadbodyfilter);
-	Cvar_Register (&cl_explosion);
-	Cvar_Register (&cl_gibfilter);
 	Cvar_Register (&cl_muzzleflash);
-	Cvar_Register (&cl_r2g);
 	Cvar_Register (&cl_staticsounds);
-	Cvar_Register (&cl_fakeshaft);
 	Cvar_Register (&cl_nofake);
 	Cvar_Register (&cl_parseWhiteText);
 	Cvar_Register (&cl_filterdrawviewmodel);

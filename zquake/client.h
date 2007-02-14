@@ -169,7 +169,9 @@ typedef struct cparticle_s
 
 typedef enum {
 	mi_generic,
-	mi_monster
+	mi_monster,
+	mi_gib,
+	mi_no_lerp_hack,
 } modelinfo_t;
 
 typedef enum {
