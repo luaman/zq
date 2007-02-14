@@ -98,11 +98,11 @@ typedef struct
 {
 	// generated on client side
 	usercmd_t	cmd;		// cmd that generated the frame
-	double		senttime;	// time cmd was sent off
+	double		senttime;	// cls.realtime when cmd was sent off
 	int			delta_sequence;		// sequence number to delta from, -1 = full update
 
 	// received from server
-	double		receivedtime;	// time message was received, or -1
+	double		receivedtime;	// cls.realtime when message was received, or -1
 	player_state_t	playerstate[MAX_CLIENTS];	// message received that reflects performing
 							// the usercmd
 	packet_entities_t	packet_entities;
