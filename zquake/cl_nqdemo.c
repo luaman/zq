@@ -638,7 +638,7 @@ static void NQD_ParseUpdate (int bits)
 	if ( forcelink )
 	{	// didn't have an update last message
 		VectorCopy (state->s_origin, ent->previous.s_origin);
-		MSG_UnpackOrigin (state->s_origin, ent->lerp_origin);
+		MSG_UnpackOrigin (state->s_origin, ent->trail_origin);
 		VectorCopy (state->s_angles, ent->previous.s_angles);
 		//ent->forcelink = true;
 	}
@@ -832,7 +832,7 @@ nq_speed /= nq_mtime[0] - nq_mtime[1];
 		}
 
 		if (num == nq_viewentity) {
-			VectorCopy (ent.origin, cent->lerp_origin);	// FIXME?
+			VectorCopy (ent.origin, cent->trail_origin);	// FIXME?
 			continue;			// player entity
 		}
 
@@ -866,7 +866,7 @@ nq_speed /= nq_mtime[0] - nq_mtime[1];
 			}
 			else
 			{
-				VectorCopy (cent->lerp_origin, old_origin);
+				VectorCopy (cent->trail_origin, old_origin);
 
 				for (i=0 ; i<3 ; i++)
 					if ( abs(old_origin[i] - ent.origin[i]) > 128)
@@ -880,36 +880,36 @@ nq_speed /= nq_mtime[0] - nq_mtime[1];
 			{
 				if (r_rockettrail.value) {
 					if (r_rockettrail.value == 2)
-						CL_GrenadeTrail (old_origin, ent.origin);
+						CL_GrenadeTrail (old_origin, ent.origin, cent->trail_origin);
 					else
-						CL_RocketTrail (old_origin, ent.origin);
-				}
+						CL_RocketTrail (old_origin, ent.origin, cent->trail_origin);
+				} else
+					VectorCopy (ent.origin, cent->trail_origin);
 
 				if (r_rocketlight.value)
 					CL_NewDlight (state->number, ent.origin, 200, 0.1, lt_rocket);
 			}
 			else if (modelflags & MF_GRENADE && r_grenadetrail.value)
-				CL_GrenadeTrail (old_origin, ent.origin);
+				CL_GrenadeTrail (old_origin, ent.origin, cent->trail_origin);
 			else if (modelflags & MF_GIB)
-				CL_BloodTrail (old_origin, ent.origin);
+				CL_BloodTrail (old_origin, ent.origin, cent->trail_origin);
 			else if (modelflags & MF_ZOMGIB)
-				CL_SlightBloodTrail (old_origin, ent.origin);
+				CL_SlightBloodTrail (old_origin, ent.origin, cent->trail_origin);
 			else if (modelflags & MF_TRACER)
-				CL_TracerTrail (old_origin, ent.origin, 52);
+				CL_TracerTrail (old_origin, ent.origin, cent->trail_origin, 52);
 			else if (modelflags & MF_TRACER2)
-				CL_TracerTrail (old_origin, ent.origin, 230);
+				CL_TracerTrail (old_origin, ent.origin, cent->trail_origin, 230);
 			else if (modelflags & MF_TRACER3)
-				CL_VoorTrail (old_origin, ent.origin);
+				CL_VoorTrail (old_origin, ent.origin, cent->trail_origin);
 		}
 
-		VectorCopy (ent.origin, cent->lerp_origin);
 		cent->lastframe = cl_entframecount;
 		V_AddEntity (&ent);
 	}
 
 	if (nq_viewentity == 0)
 		Host_Error ("viewentity == 0");
-	VectorCopy (cl_entities[nq_viewentity].lerp_origin, cl.simorg);
+	VectorCopy (cl_entities[nq_viewentity].trail_origin, cl.simorg);
 }
 
 

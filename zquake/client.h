@@ -116,7 +116,7 @@ typedef struct
 	entity_state_t	current;
 	int				lastframe;
 	int				prevframe;
-	vec3_t			lerp_origin;	// for particle trail
+	vec3_t			trail_origin;	// for particle trail
 	double			framelerp_start;
 	int				oldframe;
 	double			monsterlerp_start;
@@ -557,12 +557,12 @@ void CL_ParticleExplosion (vec3_t org);
 void CL_ParticleExplosion2 (vec3_t org, int colorStart, int colorLength);
 void CL_LavaSplash (vec3_t org);
 void CL_TeleportSplash (vec3_t org);
-void CL_SlightBloodTrail (vec3_t start, vec3_t end);
-void CL_BloodTrail (vec3_t start, vec3_t end);
-void CL_VoorTrail (vec3_t start, vec3_t end);
-void CL_GrenadeTrail (vec3_t start, vec3_t end);
-void CL_RocketTrail (vec3_t start, vec3_t end);
-void CL_TracerTrail (vec3_t start, vec3_t end, int color);
+void CL_SlightBloodTrail (vec3_t start, vec3_t end, vec3_t trail_origin);
+void CL_BloodTrail (vec3_t start, vec3_t end, vec3_t trail_origin);
+void CL_VoorTrail (vec3_t start, vec3_t end, vec3_t trail_origin);
+void CL_GrenadeTrail (vec3_t start, vec3_t end, vec3_t trail_origin);
+void CL_RocketTrail (vec3_t start, vec3_t end, vec3_t trail_origin);
+void CL_TracerTrail (vec3_t start, vec3_t end, vec3_t trail_origin, int color);
 void CL_RailTrail (vec3_t start, vec3_t end, int color);
 void CL_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count);
 void CL_RunParticleEffect2 (vec3_t org, vec3_t dir, int color, int count, int scale);
