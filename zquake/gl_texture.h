@@ -66,12 +66,12 @@ int GL_LoadTexture (char *identifier, int width, int height, byte *data, int mod
 
 byte *GL_LoadImagePixels (char *, int, int, int);
 int GL_LoadTexturePixels (byte *, char *, int, int, int);
-int GL_LoadTextureImage (char * , char *, int, int, int);
 mpic_t *GL_LoadPicImage (char *, char *, int, int, int);
 int GL_LoadCharsetImage (char *, char *);
 
 void GL_Texture_Init(void);
 */
+int GL_LoadTextureImage (char * , char *, int, int, int);
 
 extern int gl_lightmap_format, gl_solid_format, gl_alpha_format;
 

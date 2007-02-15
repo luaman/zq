@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gl_local.h"
 #include "sound.h"
+#include "rc_image.h"
+#include "qlib.h"
 
 model_t		*r_worldmodel;
 entity_t	r_worldentity;
@@ -663,6 +665,8 @@ void R_Init (unsigned char *palette)
 	R_Draw_Init ();
 	R_InitBubble ();
 	Mod_Init ();
+	QLib_Init ();
+	Image_Init ();
 }
 
 

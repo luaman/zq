@@ -20,6 +20,431 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include "rc_image.h"
+#include "winquake.h"
+
+#ifdef WITH_PNG
+#include "qlib.h"
+#include "png.h"
+#endif
+
+int image_width, image_height;
+
+
+/************************************ PNG ************************************/
+#ifdef WITH_PNG
+
+#ifdef WITH_PNG_STATIC
+
+#define png_handle 1
+
+#define qpng_set_sig_bytes png_set_sig_bytes
+#define qpng_sig_cmp png_sig_cmp
+#define qpng_create_read_struct png_create_read_struct
+#define qpng_create_write_struct png_create_write_struct
+#define qpng_create_info_struct png_create_info_struct
+#define qpng_write_info png_write_info
+#define qpng_read_info png_read_info
+#define qpng_set_expand png_set_expand
+#define qpng_set_gray_1_2_4_to_8 png_set_gray_1_2_4_to_8
+#define qpng_set_palette_to_rgb png_set_palette_to_rgb
+#define qpng_set_tRNS_to_alpha png_set_tRNS_to_alpha
+#define qpng_set_gray_to_rgb png_set_gray_to_rgb
+#define qpng_set_filler png_set_filler
+#define qpng_set_strip_16 png_set_strip_16
+#define qpng_read_update_info png_read_update_info
+#define qpng_read_image png_read_image
+#define qpng_write_image png_write_image
+#define qpng_write_end png_write_end
+#define qpng_read_end png_read_end
+#define qpng_destroy_read_struct png_destroy_read_struct
+#define qpng_destroy_write_struct png_destroy_write_struct
+#define qpng_set_compression_level png_set_compression_level
+#define qpng_set_write_fn png_set_write_fn
+#define qpng_set_read_fn png_set_read_fn
+#define qpng_get_io_ptr png_get_io_ptr
+#define qpng_get_valid png_get_valid
+#define qpng_get_rowbytes png_get_rowbytes
+#define qpng_get_channels png_get_channels
+#define qpng_get_bit_depth png_get_bit_depth
+#define qpng_get_IHDR png_get_IHDR
+#define qpng_set_IHDR png_set_IHDR
+#define qpng_set_PLTE png_set_PLTE
+
+#else	// !WITH_PNG_STATIC
+
+static QLIB_HANDLETYPE_T png_handle = NULL;
+static QLIB_HANDLETYPE_T zlib_handle = NULL;
+
+static void (*qpng_set_sig_bytes)(png_structp, int);
+static int (*qpng_sig_cmp)(png_bytep, png_size_t, png_size_t);
+static png_structp (*qpng_create_read_struct)(png_const_charp, png_voidp, png_error_ptr, png_error_ptr);
+static png_structp (*qpng_create_write_struct)(png_const_charp, png_voidp, png_error_ptr, png_error_ptr);
+static png_infop (*qpng_create_info_struct)(png_structp);
+static void (*qpng_write_info)(png_structp, png_infop);
+static void (*qpng_read_info)(png_structp, png_infop);
+static void (*qpng_set_expand)(png_structp);
+static void (*qpng_set_gray_1_2_4_to_8)(png_structp);
+static void (*qpng_set_palette_to_rgb)(png_structp);
+static void (*qpng_set_tRNS_to_alpha)(png_structp);
+static void (*qpng_set_gray_to_rgb)(png_structp);
+static void (*qpng_set_filler)(png_structp, png_uint_32, int);
+static void (*qpng_set_strip_16)(png_structp);
+static void (*qpng_read_update_info)(png_structp, png_infop);
+static void (*qpng_read_image)(png_structp, png_bytepp);
+static void (*qpng_write_image)(png_structp, png_bytepp);
+static void (*qpng_write_end)(png_structp, png_infop);
+static void (*qpng_read_end)(png_structp, png_infop);
+static void (*qpng_destroy_read_struct)(png_structpp, png_infopp, png_infopp);
+static void (*qpng_destroy_write_struct)(png_structpp, png_infopp);
+static void (*qpng_set_compression_level)(png_structp, int);
+static void (*qpng_set_write_fn)(png_structp, png_voidp, png_rw_ptr, png_flush_ptr);
+static void (*qpng_set_read_fn)(png_structp, png_voidp, png_rw_ptr);
+static png_voidp (*qpng_get_io_ptr)(png_structp);
+static png_uint_32 (*qpng_get_valid)(png_structp, png_infop, png_uint_32);
+static png_uint_32 (*qpng_get_rowbytes)(png_structp, png_infop);
+static png_byte (*qpng_get_channels)(png_structp, png_infop);
+static png_byte (*qpng_get_bit_depth)(png_structp, png_infop);
+static png_uint_32 (*qpng_get_IHDR)(png_structp, png_infop, png_uint_32 *, png_uint_32 *, int *, int *, int *, int *, int *);
+static void (*qpng_set_IHDR)(png_structp, png_infop, png_uint_32, png_uint_32, int, int, int, int, int);
+static void (*qpng_set_PLTE)(png_structp, png_infop, png_colorp, int);
+
+#define NUM_PNGPROCS	(sizeof(pngprocs)/sizeof(pngprocs[0]))
+
+qlib_dllfunction_t pngprocs[] = {
+	{"png_set_sig_bytes", (void **) &qpng_set_sig_bytes},
+	{"png_sig_cmp", (void **) &qpng_sig_cmp},
+	{"png_create_read_struct", (void **) &qpng_create_read_struct},
+	{"png_create_write_struct", (void **) &qpng_create_write_struct},
+	{"png_create_info_struct", (void **) &qpng_create_info_struct},
+	{"png_write_info", (void **) &qpng_write_info},
+	{"png_read_info", (void **) &qpng_read_info},
+	{"png_set_expand", (void **) &qpng_set_expand},
+	{"png_set_gray_1_2_4_to_8", (void **) &qpng_set_gray_1_2_4_to_8},
+	{"png_set_palette_to_rgb", (void **) &qpng_set_palette_to_rgb},
+	{"png_set_tRNS_to_alpha", (void **) &qpng_set_tRNS_to_alpha},
+	{"png_set_gray_to_rgb", (void **) &qpng_set_gray_to_rgb},
+	{"png_set_filler", (void **) &qpng_set_filler},
+	{"png_set_strip_16", (void **) &qpng_set_strip_16},
+	{"png_read_update_info", (void **) &qpng_read_update_info},
+	{"png_read_image", (void **) &qpng_read_image},
+	{"png_write_image", (void **) &qpng_write_image},
+	{"png_write_end", (void **) &qpng_write_end},
+	{"png_read_end", (void **) &qpng_read_end},
+	{"png_destroy_read_struct", (void **) &qpng_destroy_read_struct},
+	{"png_destroy_write_struct", (void **) &qpng_destroy_write_struct},
+	{"png_set_compression_level", (void **) &qpng_set_compression_level},
+	{"png_set_write_fn", (void **) &qpng_set_write_fn},
+	{"png_set_read_fn", (void **) &qpng_set_read_fn},
+	{"png_get_io_ptr", (void **) &qpng_get_io_ptr},
+	{"png_get_valid", (void **) &qpng_get_valid},
+	{"png_get_rowbytes", (void **) &qpng_get_rowbytes},
+	{"png_get_channels", (void **) &qpng_get_channels},
+	{"png_get_bit_depth", (void **) &qpng_get_bit_depth},
+	{"png_get_IHDR", (void **) &qpng_get_IHDR},
+	{"png_set_IHDR", (void **) &qpng_set_IHDR},
+	{"png_set_PLTE", (void **) &qpng_set_PLTE},
+};
+
+static void PNG_FreeLibrary(void) {
+	if (png_handle)
+		QLIB_FREELIBRARY(png_handle);
+	if (zlib_handle)
+		QLIB_FREELIBRARY(zlib_handle);
+}
+
+static qbool PNG_LoadLibrary(void) {
+	if (COM_CheckParm("-nolibpng"))
+		return false;
+
+#ifdef _WIN32
+	if (!(png_handle = LoadLibrary("libpng.dll"))) {
+#else
+#ifdef __APPLE__
+	if (!(png_handle = dlopen("libpng12.dylib", RTLD_NOW))) {
+		if (!(zlib_handle = dlopen("libz.dylib", RTLD_NOW))) {
+#else
+	if (!(png_handle = dlopen("libpng12.so.0", RTLD_NOW)) && !(png_handle = dlopen("libpng.so", RTLD_NOW))) {
+		if (!(zlib_handle = dlopen("libz.so", RTLD_NOW | RTLD_GLOBAL))) {
+#endif
+			QLib_MissingModuleError(QLIB_ERROR_MODULE_NOT_FOUND, "libz", "-nolibpng", "png image features");
+			png_handle = zlib_handle = NULL;
+			return false;
+		}
+#ifdef __APPLE__
+		if (!(png_handle = dlopen("libpng12.dylib", RTLD_NOW)))
+#else
+		if (!(png_handle = dlopen("libpng12.so.0", RTLD_NOW)) && !(png_handle = dlopen("libpng.so", RTLD_NOW)))
+#endif
+#endif
+		{
+			PNG_FreeLibrary();
+			QLib_MissingModuleError(QLIB_ERROR_MODULE_NOT_FOUND, "libpng", "-nolibpng", "png image features");
+			png_handle = zlib_handle = NULL;
+			return false;
+		}
+	}
+
+	if (!QLib_ProcessProcdef(png_handle, pngprocs, NUM_PNGPROCS)) {
+		PNG_FreeLibrary();
+		QLib_MissingModuleError(QLIB_ERROR_MODULE_MISSING_PROC, "libpng", "-nolibpng", "png image features");
+		png_handle = zlib_handle = NULL;
+		return false;
+	}
+
+	return true;
+}
+#endif	// !WITH_PNG_STATIC
+
+static void PNG_IO_user_read_data(png_structp png_ptr, png_bytep data, png_size_t length) {
+	FILE *f = (FILE *) qpng_get_io_ptr(png_ptr);
+	fread(data, 1, length, f);
+}
+
+static void PNG_IO_user_write_data(png_structp png_ptr, png_bytep data, png_size_t length) {
+	FILE *f = (FILE *) qpng_get_io_ptr(png_ptr);
+	fwrite(data, 1, length, f);
+}
+
+static void PNG_IO_user_flush_data(png_structp png_ptr) {
+	FILE *f = (FILE *) qpng_get_io_ptr(png_ptr);
+	fflush(f);
+}
+
+
+byte *Image_LoadPNG (FILE *fin, char *filename, int matchwidth, int matchheight) {
+	byte header[8], **rowpointers, *data;
+	png_structp png_ptr;
+	png_infop pnginfo;
+	int y, width, height, bitdepth, colortype, interlace, compression, filter, bytesperpixel;
+	unsigned long rowbytes;
+
+	if (!png_handle)
+		return NULL;
+
+	if (!fin && FS_FOpenFile (filename, &fin) == -1)
+		return NULL;
+
+	fread(header, 1, 8, fin);
+
+	if (qpng_sig_cmp(header, 0, 8)) {
+		Com_DPrintf ("Invalid PNG image %s\n", COM_SkipPath(filename));
+		fclose(fin);
+		return NULL;
+	}
+
+	if (!(png_ptr = qpng_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL))) {
+		fclose(fin);
+		return NULL;
+	}
+
+	if (!(pnginfo = qpng_create_info_struct(png_ptr))) {
+		qpng_destroy_read_struct(&png_ptr, &pnginfo, NULL);
+		fclose(fin);
+		return NULL;
+	}
+
+	if (setjmp(png_ptr->jmpbuf)) {
+		qpng_destroy_read_struct(&png_ptr, &pnginfo, NULL);
+		fclose(fin);
+		return NULL;
+	}
+
+    qpng_set_read_fn(png_ptr, fin, PNG_IO_user_read_data);
+	qpng_set_sig_bytes(png_ptr, 8);
+	qpng_read_info(png_ptr, pnginfo);
+	qpng_get_IHDR(png_ptr, pnginfo, (png_uint_32 *) &width, (png_uint_32 *) &height, &bitdepth,
+		&colortype, &interlace, &compression, &filter);
+
+	if (width > IMAGE_MAX_DIMENSIONS || height > IMAGE_MAX_DIMENSIONS) {
+		Com_DPrintf ("PNG image %s exceeds maximum supported dimensions\n", COM_SkipPath(filename));
+		qpng_destroy_read_struct(&png_ptr, &pnginfo, NULL);
+		fclose(fin);
+		return NULL;
+	}
+
+	if ((matchwidth && width != matchwidth) || (matchheight && height != matchheight)) {
+		qpng_destroy_read_struct(&png_ptr, &pnginfo, NULL);
+		fclose(fin);
+		return NULL;
+	}
+
+	if (colortype == PNG_COLOR_TYPE_PALETTE) {
+		qpng_set_palette_to_rgb(png_ptr);
+		qpng_set_filler(png_ptr, 255, PNG_FILLER_AFTER);		
+	}
+
+	if (colortype == PNG_COLOR_TYPE_GRAY && bitdepth < 8) 
+		qpng_set_gray_1_2_4_to_8(png_ptr);
+	
+	if (qpng_get_valid(png_ptr, pnginfo, PNG_INFO_tRNS))	
+		qpng_set_tRNS_to_alpha(png_ptr);
+
+	if (colortype == PNG_COLOR_TYPE_GRAY || colortype == PNG_COLOR_TYPE_GRAY_ALPHA)
+		qpng_set_gray_to_rgb(png_ptr);
+
+	if (colortype != PNG_COLOR_TYPE_RGBA)				
+		qpng_set_filler(png_ptr, 255, PNG_FILLER_AFTER);
+
+	if (bitdepth < 8)
+		qpng_set_expand (png_ptr);
+	else if (bitdepth == 16)
+		qpng_set_strip_16(png_ptr);
+
+
+	qpng_read_update_info(png_ptr, pnginfo);
+	rowbytes = qpng_get_rowbytes(png_ptr, pnginfo);
+	bytesperpixel = qpng_get_channels(png_ptr, pnginfo);
+	bitdepth = qpng_get_bit_depth(png_ptr, pnginfo);
+
+	if (bitdepth != 8 || bytesperpixel != 4) {
+		Com_DPrintf ("Unsupported PNG image %s: Bad color depth and/or bpp\n", COM_SkipPath(filename));
+		qpng_destroy_read_struct(&png_ptr, &pnginfo, NULL);
+		fclose(fin);
+		return NULL;
+	}
+
+	data = (byte *) Q_malloc(height * rowbytes );
+	rowpointers = (byte **) Q_malloc(height * sizeof(*rowpointers));
+
+	for (y = 0; y < height; y++)
+		rowpointers[y] = data + y * rowbytes;
+
+	qpng_read_image(png_ptr, rowpointers);
+	qpng_read_end(png_ptr, NULL);
+
+	qpng_destroy_read_struct(&png_ptr, &pnginfo, NULL);
+	Q_free(rowpointers);
+	fclose(fin);
+	image_width = width;
+	image_height = height;
+	return data;
+}
+
+int Image_WritePNG (char *filename, int compression, byte *pixels, int width, int height) {
+	char name[MAX_OSPATH];
+	int i, bpp = 3, pngformat, width_sign;
+	FILE *fp;
+	png_structp png_ptr;
+	png_infop info_ptr;
+	png_byte **rowpointers;
+	snprintf (name, sizeof(name), "%s/%s", com_basedir, filename);
+
+	if (!png_handle)
+		return false;
+
+	width_sign = (width < 0) ? -1 : 1;
+	width = abs(width);
+
+	if (!(fp = fopen (name, "wb"))) {
+		COM_CreatePath (name);
+		if (!(fp = fopen (name, "wb")))
+			return false;
+	}
+
+	if (!(png_ptr = qpng_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL))) {
+		fclose(fp);
+		return false;
+	}
+
+	if (!(info_ptr = qpng_create_info_struct(png_ptr))) {
+		qpng_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+		fclose(fp);
+		return false;
+	}
+
+	if (setjmp(png_ptr->jmpbuf)) {
+		qpng_destroy_write_struct(&png_ptr, &info_ptr);
+		fclose(fp);
+		return false;
+	}
+
+    qpng_set_write_fn(png_ptr, fp, PNG_IO_user_write_data, PNG_IO_user_flush_data);
+	qpng_set_compression_level(png_ptr, bound(Z_NO_COMPRESSION, compression, Z_BEST_COMPRESSION));
+
+	pngformat = (bpp == 4) ? PNG_COLOR_TYPE_RGBA : PNG_COLOR_TYPE_RGB;
+	qpng_set_IHDR(png_ptr, info_ptr, width, height, 8, pngformat,
+		PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+
+	qpng_write_info(png_ptr, info_ptr);
+
+	rowpointers = (png_byte **) Q_malloc (height * sizeof(*rowpointers));
+	for (i = 0; i < height; i++)
+		rowpointers[i] = pixels + i * width_sign * width * bpp;
+	qpng_write_image(png_ptr, rowpointers);
+	qpng_write_end(png_ptr, info_ptr);
+	Q_free(rowpointers);
+	qpng_destroy_write_struct(&png_ptr, &info_ptr);
+	fclose(fp);
+	return true;
+}
+
+int Image_WritePNGPLTE (char *filename, int compression,
+#ifdef GLQUAKE
+	byte *pixels, int width, int height, byte *palette)
+#else
+	byte *pixels, int width, int height, int rowbytes, byte *palette)
+#endif
+{
+#ifdef GLQUAKE
+	int rowbytes = width;
+#endif
+	int i;
+	char name[MAX_OSPATH];
+	FILE *fp;
+	png_structp png_ptr;
+	png_infop info_ptr;
+	png_byte **rowpointers;
+
+	if (!png_handle)
+		return false;
+
+	snprintf (name, sizeof(name), "%s/%s", com_basedir, filename);
+	
+	if (!(fp = fopen (name, "wb"))) {
+		COM_CreatePath (name);
+		if (!(fp = fopen (name, "wb")))
+			return false;
+	}
+
+	if (!(png_ptr = qpng_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL))) {
+		fclose(fp);
+		return false;
+	}
+
+	if (!(info_ptr = qpng_create_info_struct(png_ptr))) {
+		qpng_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+		fclose(fp);
+		return false;
+	}
+
+	if (setjmp(png_ptr->jmpbuf)) {
+		qpng_destroy_write_struct(&png_ptr, &info_ptr);
+		fclose(fp);
+		return false;
+	}
+
+    qpng_set_write_fn(png_ptr, fp, PNG_IO_user_write_data, PNG_IO_user_flush_data);
+	qpng_set_compression_level(png_ptr, bound(Z_NO_COMPRESSION, compression, Z_BEST_COMPRESSION));
+
+	qpng_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_PALETTE,
+		PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+	qpng_set_PLTE(png_ptr, info_ptr, (png_color *) palette, 256);
+
+	qpng_write_info(png_ptr, info_ptr);
+
+	rowpointers = (png_byte **) Q_malloc (height * sizeof(*rowpointers));
+	for (i = 0; i < height; i++)
+		rowpointers[i] = pixels + i * rowbytes;
+	qpng_write_image(png_ptr, rowpointers);
+	qpng_write_end(png_ptr, info_ptr);
+	Q_free(rowpointers);
+	qpng_destroy_write_struct(&png_ptr, &info_ptr);
+	fclose(fp);
+	return true;
+}
+#endif
+
+/************************************ TGA ************************************/
 
 /*
 =========================================================
@@ -262,8 +687,6 @@ static void TGA_upsample32(byte *dest, byte *src) {
 static unsigned short BuffLittleShort(const byte *buffer) {
 	return (buffer[1] << 8) | buffer[0];
 }
-
-int image_width, image_height;
 
 byte *Image_LoadTGA(FILE *fin, char *filename, int matchwidth, int matchheight) {
 	TGAHeader_t header;
@@ -620,6 +1043,26 @@ void WritePCX (byte *data, int width, int height, int rowbytes, byte *palette,	/
 	// fill results
 	*pcxdata = (byte *) pcx;
 	*pcxsize = pack - (byte *)pcx;
+}
+
+void Image_Init(void) {
+#ifdef WITH_PNG
+#ifndef WITH_PNG_STATIC
+	if (PNG_LoadLibrary())
+		QLib_RegisterModule(qlib_libpng, PNG_FreeLibrary);
+#endif
+//	Cvar_Register (&image_png_compression_level);
+#endif
+
+/*
+#ifdef WITH_JPEG
+#ifndef WITH_JPEG_STATIC
+	if (JPEG_LoadLibrary())
+		QLib_RegisterModule(qlib_libjpeg, JPEG_FreeLibrary);
+#endif
+	Cvar_Register (&image_jpeg_quality_level);
+#endif
+*/
 }
 
 /* vi: set noet ts=4 sts=4 ai sw=4: */

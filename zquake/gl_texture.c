@@ -639,7 +639,6 @@ setuptexture:
 }
 
 
-
 int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int matchheight, int mode)
 {
 	int texnum;
@@ -665,6 +664,18 @@ int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int m
 	}
 #endif 
 
+	snprintf (tganame, sizeof(tganame), "%s.png", filename);
+	for (c = tganame; *c; c++)
+		if (*c == '*')
+			*c = '#';
+	data = Image_LoadPNG (NULL, tganame, 0, 0);
+	if (data) {
+		extern int image_width, image_height;
+		width = image_width;
+		height = image_height;
+		goto ok;
+	}
+
 	snprintf (tganame, sizeof(tganame), "%s.tga", filename);
 	for (c = tganame; *c; c++)
 		if (*c == '*')
@@ -673,6 +684,7 @@ int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int m
 	if (!data)
 		return 0;
 
+ok:
 	texnum = GL_LoadTexture32 (identifier, width, height, data, mode);
 
 	Q_free (data);

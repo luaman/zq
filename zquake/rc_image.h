@@ -20,10 +20,38 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _RC_IMAGE_H_
 #define _RC_IMAGE_H_
 
+#include "png.h"
+
+#define IMAGE_MAX_DIMENSIONS 4096
+
+typedef struct
+{
+	byte *data;
+	png_textp textchunks;
+	size_t text_count;
+} png_data;
+
+png_textp Image_LoadPNG_Comments (char *filename, int *text_count);
+png_data *Image_LoadPNG_All (FILE *fin, char *filename, int matchwidth, int matchheight, int loadflag);
+byte *Image_LoadPNG (FILE *, char *, int, int);
+byte *Image_LoadTGA (FILE *, char *, int, int);
+byte *Image_LoadPCX (FILE *, char *, int, int);
+
+int Image_WritePNG(char *filename, int compression, byte *pixels, int width, int height);
+#ifdef GLQUAKE
+int Image_WritePNGPLTE (char *filename, int compression, byte *pixels,
+						int width, int height, byte *palette);
+#else
+int Image_WritePNGPLTE (char *filename, int compression, byte *pixels,
+						int width, int height, int rowbytes, byte *palette);
+#endif
+
 void LoadTGA (char *filename, byte **out, int *width, int *height);
 void LoadPCX (char *filename, byte **pic, int *width, int *height);
 void WritePCX (byte *data, int width, int height, int rowbytes, byte *palette,	// [in]
 				   byte **pcxdata, int *pcxsize);								// [out]
+
+void Image_Init(void);
 
 #endif /* _RC_IMAGE_H_ */
 
