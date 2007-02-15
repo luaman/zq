@@ -384,7 +384,7 @@ CL_SlightBloodTrail
 */
 void CL_SlightBloodTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 {
-	int		j;
+	int		j, num_particles;
 	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
@@ -394,10 +394,12 @@ void CL_SlightBloodTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 	VectorScale (vec, 6, vec);
 	VectorCopy (start, point);
 
-	while (len > 0)
-	{
-		len -= 6;
+	num_particles = len / 6;
+	if (!num_particles)
+		return;
 
+	for (; num_particles; num_particles--)
+	{
 		if (!(p = new_particle()))
 			return;
 
@@ -421,7 +423,7 @@ CL_BloodTrail
 */
 void CL_BloodTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 {
-	int		j;
+	int		j, num_particles;
 	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
@@ -431,10 +433,12 @@ void CL_BloodTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 	VectorScale (vec, 3, vec);
 	VectorCopy (start, point);
 
-	while (len > 0)
-	{
-		len -= 3;
+	num_particles = len /3;
+	if (!num_particles)
+		return;
 
+	for (; num_particles; num_particles--)
+	{
 		if (!(p = new_particle()))
 			return;
 
@@ -458,7 +462,7 @@ CL_VoorTrail
 */
 void CL_VoorTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 {
-	int		j;
+	int		j, num_particles;
 	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
@@ -468,10 +472,12 @@ void CL_VoorTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 	VectorScale (vec, 3, vec);
 	VectorCopy (start, point);
 
-	while (len > 0)
-	{
-		len -= 3;
+	num_particles = len /3;
+	if (!num_particles)
+		return;
 
+	for (; num_particles; num_particles--)
+	{
 		if (!(p = new_particle()))
 			return;
 
@@ -496,7 +502,7 @@ CL_GrenadeTrail
 */
 void CL_GrenadeTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 {
-	int		j;
+	int		j, num_particles;
 	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
@@ -506,10 +512,12 @@ void CL_GrenadeTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 	VectorScale (vec, 3, vec);
 	VectorCopy (start, point);
 
-	while (len > 0)
-	{
-		len -= 3;
+	num_particles = len / 3;
+	if (!num_particles)
+		return;
 
+	for (; num_particles; num_particles--)
+	{
 		if (!(p = new_particle()))
 			return;
 
@@ -534,7 +542,7 @@ CL_RocketTrail
 */
 void CL_RocketTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 {
-	int		j;
+	int		j, num_particles;
 	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
@@ -544,10 +552,12 @@ void CL_RocketTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 	VectorScale (vec, 3, vec);
 	VectorCopy (start, point);
 
-	while (len > 0)
-	{
-		len -= 3;
+	num_particles = len /3;
+	if (!num_particles)
+		return;
 
+	for (; num_particles; num_particles--)
+	{
 		if (!(p = new_particle()))
 			return;
 
@@ -572,6 +582,7 @@ CL_TracerTrail
 */
 void CL_TracerTrail (vec3_t start, vec3_t end, vec3_t trail_origin, int color)
 {
+	int		num_particles;
 	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
@@ -582,10 +593,12 @@ void CL_TracerTrail (vec3_t start, vec3_t end, vec3_t trail_origin, int color)
 	VectorScale (vec, 3, vec);
 	VectorCopy (start, point);
 
-	while (len > 0)
-	{
-		len -= 3;
+	num_particles = len /3;
+	if (!num_particles)
+		return;
 
+	for (; num_particles; num_particles--)
+	{
 		if (!(p = new_particle()))
 			return;
 		
