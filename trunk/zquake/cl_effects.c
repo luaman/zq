@@ -382,16 +382,17 @@ void CL_TeleportSplash (vec3_t org)
 CL_SlightBloodTrail
 ===============
 */
-void CL_SlightBloodTrail (vec3_t start, vec3_t end)
+void CL_SlightBloodTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 {
 	int		j;
-	vec3_t	vec;
+	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
 
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
 	VectorScale (vec, 6, vec);
+	VectorCopy (start, point);
 
 	while (len > 0)
 	{
@@ -406,10 +407,11 @@ void CL_SlightBloodTrail (vec3_t start, vec3_t end)
 		p->alpha = 1.0f;
 		VectorClear (p->vel);
 		for (j=0 ; j<3 ; j++)
-			p->org[j] = start[j] + ((rand()%6)-3);
+			p->org[j] = point[j] + ((rand()%6)-3);
 
-		VectorAdd (start, vec, start);
+		VectorAdd (point, vec, point);
 	}
+	VectorCopy (point, trail_origin);
 }
 
 /*
@@ -417,16 +419,17 @@ void CL_SlightBloodTrail (vec3_t start, vec3_t end)
 CL_BloodTrail
 ===============
 */
-void CL_BloodTrail (vec3_t start, vec3_t end)
+void CL_BloodTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 {
 	int		j;
-	vec3_t	vec;
+	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
 
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
 	VectorScale (vec, 3, vec);
+	VectorCopy (start, point);
 
 	while (len > 0)
 	{
@@ -441,10 +444,11 @@ void CL_BloodTrail (vec3_t start, vec3_t end)
 		p->alpha = 1.0f;
 		VectorClear (p->vel);
 		for (j=0 ; j<3 ; j++)
-			p->org[j] = start[j] + ((rand()%6)-3);
+			p->org[j] = point[j] + ((rand()%6)-3);
 
-		VectorAdd (start, vec, start);
+		VectorAdd (point, vec, point);
 	}
+	VectorCopy (point, trail_origin);
 }
 
 /*
@@ -452,16 +456,17 @@ void CL_BloodTrail (vec3_t start, vec3_t end)
 CL_VoorTrail
 ===============
 */
-void CL_VoorTrail (vec3_t start, vec3_t end)
+void CL_VoorTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 {
 	int		j;
-	vec3_t	vec;
+	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
 
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
 	VectorScale (vec, 3, vec);
+	VectorCopy (start, point);
 
 	while (len > 0)
 	{
@@ -477,10 +482,11 @@ void CL_VoorTrail (vec3_t start, vec3_t end)
 		p->die = cl.time + 0.3;
 		VectorClear (p->vel);
 		for (j=0 ; j<3 ; j++)
-			p->org[j] = start[j] + ((rand()&15)-8);
+			p->org[j] = point[j] + ((rand()&15)-8);
 
-		VectorAdd (start, vec, start);
+		VectorAdd (point, vec, point);
 	}
+	VectorCopy (point, trail_origin);
 }
 
 /*
@@ -488,16 +494,17 @@ void CL_VoorTrail (vec3_t start, vec3_t end)
 CL_GrenadeTrail
 ===============
 */
-void CL_GrenadeTrail (vec3_t start, vec3_t end)
+void CL_GrenadeTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 {
 	int		j;
-	vec3_t	vec;
+	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
 
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
 	VectorScale (vec, 3, vec);
+	VectorCopy (start, point);
 
 	while (len > 0)
 	{
@@ -513,10 +520,11 @@ void CL_GrenadeTrail (vec3_t start, vec3_t end)
 		p->type = pt_fire;
 		VectorClear (p->vel);
 		for (j=0 ; j<3 ; j++)
-			p->org[j] = start[j] + ((rand()%6)-3);
+			p->org[j] = point[j] + ((rand()%6)-3);
 
-		VectorAdd (start, vec, start);
+		VectorAdd (point, vec, point);
 	}
+	VectorCopy (point, trail_origin);
 }
 
 /*
@@ -524,16 +532,17 @@ void CL_GrenadeTrail (vec3_t start, vec3_t end)
 CL_RocketTrail
 ===============
 */
-void CL_RocketTrail (vec3_t start, vec3_t end)
+void CL_RocketTrail (vec3_t start, vec3_t end, vec3_t trail_origin)
 {
 	int		j;
-	vec3_t	vec;
+	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
 
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
 	VectorScale (vec, 3, vec);
+	VectorCopy (start, point);
 
 	while (len > 0)
 	{
@@ -549,10 +558,11 @@ void CL_RocketTrail (vec3_t start, vec3_t end)
 		p->type = pt_fire;
 		VectorClear (p->vel);
 		for (j=0 ; j<3 ; j++)
-			p->org[j] = start[j] + ((rand()%6)-3);
+			p->org[j] = point[j] + ((rand()%6)-3);
 
-		VectorAdd (start, vec, start);
+		VectorAdd (point, vec, point);
 	}
+	VectorCopy (point, trail_origin);
 }
 
 /*
@@ -560,9 +570,9 @@ void CL_RocketTrail (vec3_t start, vec3_t end)
 CL_TracerTrail
 ===============
 */
-void CL_TracerTrail (vec3_t start, vec3_t end, int color)
+void CL_TracerTrail (vec3_t start, vec3_t end, vec3_t trail_origin, int color)
 {
-	vec3_t	vec;
+	vec3_t	vec, point;
 	float	len;
 	cparticle_t	*p;
 	static int tracercount;
@@ -570,6 +580,7 @@ void CL_TracerTrail (vec3_t start, vec3_t end, int color)
 	VectorSubtract (end, start, vec);
 	len = VectorNormalize (vec);
 	VectorScale (vec, 3, vec);
+	VectorCopy (start, point);
 
 	while (len > 0)
 	{
@@ -585,7 +596,7 @@ void CL_TracerTrail (vec3_t start, vec3_t end, int color)
 
 		tracercount++;
 
-		VectorCopy (start, p->org);
+		VectorCopy (point, p->org);
 		if (tracercount & 1)
 		{
 			p->vel[0] = 30*vec[1];
@@ -598,8 +609,9 @@ void CL_TracerTrail (vec3_t start, vec3_t end, int color)
 		}
 
 		p->vel[2] = 0;
-		VectorAdd (start, vec, start);
+		VectorAdd (point, vec, point);
 	}
+	VectorCopy (point, trail_origin);
 }
 
 
