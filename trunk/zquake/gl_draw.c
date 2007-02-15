@@ -203,6 +203,8 @@ static mpic_t *R_CachePic_impl (char *path, qbool wad, qbool crash)
 	qpic_t	*p;
 	cachepic_t	*pic;
 	int		i;
+	char	path2[MAX_OSPATH];
+	int		id;
 
 	for (pic = cachepics, i = 0; i < numcachepics; pic++, i++)
 		if (!strcmp (path, pic->name))
@@ -243,6 +245,23 @@ static mpic_t *R_CachePic_impl (char *path, qbool wad, qbool crash)
 	pic->pic.width = p->width;
 	pic->pic.height = p->height;
 
+	if (wad)
+		snprintf (path2, sizeof(path2), "textures/wad/%s", path);
+	else {
+		if (strlen(path) < 4 || strcmp(path+strlen(path)-4, ".lmp"))
+			goto no24bit;
+		strlcpy (path2, path, min(sizeof(path2), strlen(path)-4+1));
+	}
+	if ((id = GL_LoadTextureImage(path2, path, 0, 0, TEX_ALPHA)) != 0) {
+		pic->texnum = id;
+		pic->sl = 0;
+		pic->sh = 1;
+		pic->tl = 0;
+		pic->th = 1;
+		return &pic->pic;
+	}
+
+no24bit:
 	// load little ones into the scrap
 	if (wad && p->width < 64 && p->height < 64)
 	{
