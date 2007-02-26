@@ -20,10 +20,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _RC_IMAGE_H_
 #define _RC_IMAGE_H_
 
+#ifdef WITH_PNG
 #include "png.h"
+#endif
 
 #define IMAGE_MAX_DIMENSIONS 4096
 
+#ifdef WITH_PNG
 typedef struct
 {
 	byte *data;
@@ -45,6 +48,7 @@ int Image_WritePNGPLTE (char *filename, int compression, byte *pixels,
 int Image_WritePNGPLTE (char *filename, int compression, byte *pixels,
 						int width, int height, int rowbytes, byte *palette);
 #endif
+#endif	// WITH_PNG
 
 void LoadTGA (char *filename, byte **out, int *width, int *height);
 void LoadPCX (char *filename, byte **pic, int *width, int *height);
