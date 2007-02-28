@@ -540,6 +540,7 @@ int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int m
 static int LoadExternalTexture (texture_t *tx, int mode)
 {
 	char *name, *mapname /*, *groupname*/;
+	qbool noscale;
 
 	if (loadmodel->halflifebsp)
 		return 0;
@@ -565,12 +566,16 @@ static int LoadExternalTexture (texture_t *tx, int mode)
 	else
 		mode |= TEX_MODEL;
 
-		if (tx->name[0] == '*')
-			 // turb textures are drawn without lightmaps, so we don't brighten them
-			mode |= TEX_TURB;
-		else
-			mode |= TEX_BRIGHTEN;
+	noscale = ((!gl_scaleModelTextures.value && !loadmodel->isworldmodel) ||
+			(!gl_scaleTurbTextures.value && (tx->name[0] == '*')));
+	if (noscale)
+		mode |= TEX_NOSCALE;
 
+	if (tx->name[0] == '*')
+		 // turb textures are drawn without lightmaps, so we don't brighten them
+		mode |= TEX_TURB;
+	else
+		mode |= TEX_BRIGHTEN;
 
 	if (loadmodel->isworldmodel) {
 		if ((tx->gl_texturenum = GL_LoadTextureImage (va("textures/%s/%s", mapname, name), name, 0, 0, mode))) {
