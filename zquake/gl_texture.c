@@ -282,21 +282,49 @@ int GL_FindTexture (char *identifier)
 }
 
 
+void GL_MipMap (byte *in, byte *out, int width, int height);
+
 /*
 ================
 GL_ResampleTexture
-
-Copyright (C) 2005 Anton 'Tonik' Gavrilov
-
-Look what I can do in two lines of code!
-Perhaps I should sell a supported version for a living.
 ================
 */
 void GL_ResampleTexture (unsigned *indata, int inwidth, int inheight,
 		unsigned *outdata, int outwidth, int outheight)
 {
-	// FIXME, _pixops_scale is extremely slow on extreme downsampling
-	// (e.g. 64x64 to 1x1), implement workarounds!
+	// _pixops_scale is too slow for large downsampling factors, so make use
+	// of the fast GL_MipMap when possible
+	if (inwidth >= outwidth*2 && inheight >= outheight*2) {
+		int tw, th;
+		byte *in, *buf;
+
+		for (tw = outwidth, th = outheight; tw*2 <= inwidth && th*2 <= inheight; ) {
+			tw *= 2;
+			th *= 2;
+		}
+
+		if (inwidth > tw || inheight > th) {
+			buf = Q_malloc (tw * th * 4);
+			_pixops_scale ((guchar *)buf, 0, 0, tw, th, tw * 4, 4, 1, (const guchar *)indata,
+				inwidth, inheight, inwidth * 4, 4, 1, (double)tw/inwidth, (double)th/inheight, PIXOPS_INTERP_BILINEAR);
+			in = buf;
+		} else {
+			buf = Q_malloc ((tw/2) * (th/2) * 4);
+			in = (byte *)indata;
+		}
+
+		while (tw > outwidth) {
+			GL_MipMap (in, buf, tw, th);
+			in = buf;
+			tw >>= 1;
+			th >>= 1;
+		}
+
+		memcpy (outdata, buf, outwidth*outheight*4);
+		Q_free (buf);
+		return;
+	}
+
 	_pixops_scale ((guchar *)outdata, 0, 0, outwidth, outheight, outwidth * 4, 4, 1, (const guchar *)indata,
 		inwidth, inheight, inwidth * 4, 4, 1, (double)outwidth/inwidth, (double)outheight/inheight, PIXOPS_INTERP_BILINEAR);
 }
@@ -309,15 +337,13 @@ GL_MipMap
 Operates in place, quartering the size of the texture
 ================
 */
-void GL_MipMap (byte *in, int width, int height)
+void GL_MipMap (byte *in, byte *out, int width, int height)
 {
 	int		i, j;
-	byte	*out;
 
 	width <<=2;
 	height >>= 1;
-	out = in;
-	for (i=0 ; i<height ; i++, in+=width)
+	for (i = 0; i < height; i++, in+=width)
 	{
 		for (j=0 ; j<width ; j+=8, out+=4, in+=8)
 		{
@@ -365,6 +391,12 @@ ScaleDimensions (int width, int height, int *scaled_width, int *scaled_height, i
 	*scaled_height = bound(1, *scaled_height, max_texsize);
 }
 
+static int RoundToPowerOf2 (int in) {
+	int out;
+	for (out = 1; out < in; out <<= 1)
+		;
+	return out;
+}
 
 /*
 ===============
@@ -408,7 +440,7 @@ void GL_Upload32 (unsigned *data, int width, int height, int mode /*qbool mipmap
 		miplevel = 0;
 		while (scaled_width > 1 || scaled_height > 1)
 		{
-			GL_MipMap ((byte *)scaled, scaled_width, scaled_height);
+			GL_MipMap ((byte *)scaled, (byte *)scaled, scaled_width, scaled_height);
 			scaled_width >>= 1;
 			scaled_height >>= 1;
 			if (scaled_width < 1)
