@@ -242,7 +242,12 @@ void EmitWaterPolys (msurface_t *fa)
 	glpoly_t	*p;
 	float		*v;
 	int			i;
+	extern cvar_t r_fastturb;
 
+	if (r_fastturb.value) {
+		glDisable (GL_TEXTURE_2D);
+		glColor3ubv ((byte *) &fa->texinfo->texture->flatcolor);
+	}
 
 	for (p=fa->polys ; p ; p=p->next)
 	{
@@ -254,6 +259,9 @@ void EmitWaterPolys (msurface_t *fa)
 		}
 		glEnd ();
 	}
+
+	if (r_fastturb.value)
+		glEnable (GL_TEXTURE_2D);
 }
 
 /*

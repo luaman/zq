@@ -434,7 +434,9 @@ void Mod_LoadTextures (lump_t *l)
 			// just for r_fastturb's sake
 			{
 				byte *data = (byte *) &d_8to24table[*((byte *) mt + mt->offsets[0] + ((mt->height * mt->width) >> 1))];
-				tx->flatcolor3ub = (255 << 24) + (data[0] << 0) + (data[1] << 8) + (data[2] << 16);
+				tx->flatcolor[0] = data[0];
+				tx->flatcolor[1] = data[1];
+				tx->flatcolor[2] = data[2];
 			}
 		}
 	}
