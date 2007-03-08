@@ -200,6 +200,7 @@ typedef struct client_s
 	char			stufftext_buf[MAX_STUFFTEXT];
 	char			sprint_buf[256];
 	int				sprint_level;
+	qbool			sprint_nq_low_level;
 
 	double			connection_started;	// or time of disconnect for zombies
 	qbool			send_message;		// set on frames a datagram arived on
