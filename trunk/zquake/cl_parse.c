@@ -220,9 +220,11 @@ void CL_FindModelNumbers (void)
 		strlcpy (s, cl.model_name[i] + 6, strlen(cl.model_name[i]) - 6 - 4 + 1);
 		if (!strcmp(s, "spike"))
 			cl_spikeindex = i;
-		else if (!strcmp(s, "player"))
+		else if (!strcmp(s, "player")) {
 			cl_playerindex = i;
-		else if (!strcmp(s, "eyes"))
+			if (!strcmp(host_mapname.string, "hipend"))
+				cl.modelinfos[i] = mi_monster;	// lerp the cutscene hero's movement
+		} else if (!strcmp(s, "eyes"))
 			cl_eyesindex = i;
 		else if (!strcmp(s, "flag"))
 			cl_flagindex = i;
@@ -247,7 +249,6 @@ void CL_FindModelNumbers (void)
 		|| !strcmp(s, "tarbaby") || !strcmp(s, "armabody") || !strcmp(s, "armalegs")
 		|| !strcmp(s, "grem") || !strcmp(s, "scor"))
 			cl.modelinfos[i] = mi_monster;
-
 	}
 }
 
