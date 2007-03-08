@@ -295,6 +295,20 @@ static void PF_sprint (void)
 	buflen = strlen (buf);
 	len = strlen (str);
 
+	if (pr_nqprogs) {
+		// This is a hack to prevent pickup messages from showing up with msg 1
+		if (!buflen) {
+			cl->sprint_nq_low_level = false;
+			if (!strncmp(str, "You get ", 8) || !strncmp(str, "You got ", 8)
+			|| !strncmp(str, "You receive ", 12))
+				cl->sprint_nq_low_level = true;
+		}
+		if (cl->sprint_nq_low_level)
+			level = PRINT_LOW;
+		if (strchr(str, '\n'))
+			cl->sprint_nq_low_level = false;
+	}
+
 	// flush the buffer if there's not enough space
 	// also flush if sprint level has changed
 	// or if str is a colored message
