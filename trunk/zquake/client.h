@@ -121,6 +121,8 @@ typedef struct
 	int				oldframe;
 	double			monsterlerp_start;
 	vec3_t			monsterlerp_origin;
+	double			monsterlerp_angles_start;
+	vec3_t			monsterlerp_angles;
 	double			gib_start;
 } centity_t;
 

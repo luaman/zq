@@ -568,24 +568,56 @@ void CL_LinkPacketEntities (void)
 
 		modelflags = R_ModelFlags (model);
 
-		// rotate binary objects locally
+		//
+		// calculate angles
+		//
 		if (modelflags & MF_ROTATE)
-		{
+		{	// rotate binary objects locally
 			ent.angles[0] = 0;
 			ent.angles[1] = autorotate;
 			ent.angles[2] = 0;
 		}
+		else if (cl.modelinfos[state->modelindex] == mi_monster && cl_lerp_monsters.value)
+		{
+			// monster angles interpolation
+			if (cent->prevframe != cl_entframecount - 1) {
+				// not in previous message
+				cent->monsterlerp_angles_start = 0;
+			}
+			else {
+				for (i=0 ; i<3 ; i++)
+					if (cent->current.s_angles[i] != cent->previous.s_angles[i])
+						break;
+				if (i != 3) {
+					cent->monsterlerp_angles_start = cl.time;
+					MSG_UnpackAngles (cent->previous.s_angles, cent->monsterlerp_angles);
+				}
+			}
+			if (cent->monsterlerp_angles_start) {
+				float backlerp;
+				vec3_t	cur;
+				backlerp = 1 - (cl.time - cent->monsterlerp_angles_start)*10;
+				backlerp = bound (0, backlerp, 1);
+				MSG_UnpackAngles (cent->current.s_angles, cur);
+				LerpAngles (cur, cent->monsterlerp_angles, backlerp, ent.angles);
+			} else {
+				MSG_UnpackAngles (cent->current.s_angles, ent.angles);
+			}
+		}
 		else
 		{
+			// generic angles interpolation
 			vec3_t	old, cur;
-
-			MSG_UnpackAngles (cent->current.s_angles, old);
-			MSG_UnpackAngles (cent->previous.s_angles, cur);
+			MSG_UnpackAngles (cent->previous.s_angles, old);
+			MSG_UnpackAngles (cent->current.s_angles, cur);
 			LerpAngles (old, cur, f, ent.angles);
 		}
 
+		//
 		// calculate origin
+		//
 		if (cl.modelinfos[state->modelindex] == mi_monster && cl_lerp_monsters.value) {
+			// monster origin interpolation
 			if (cent->prevframe != cl_entframecount - 1) {
 				// not in previous message
 				cent->monsterlerp_start = 0;
@@ -609,6 +641,7 @@ void CL_LinkPacketEntities (void)
 			}
 		}
 		else {
+			// generic origin interpolation
 			for (i=0 ; i<3 ; i++)
 				ent.origin[i] = cent->previous.s_origin[i] * 0.125 + 
 					f * (cur_origin[i] - cent->previous.s_origin[i] * 0.125);
