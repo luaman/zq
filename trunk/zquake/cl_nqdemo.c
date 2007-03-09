@@ -353,6 +353,9 @@ static void NQD_ParseServerData (void)
 	int		i;
 	int		nummodels, numsounds;
 	char	mapname[MAX_QPATH];
+	int		cs2;
+	qbool	gpl_map;
+	extern qbool r_gpl_map;
 
 	Com_DPrintf ("Serverdata packet received.\n");
 //
@@ -416,9 +419,17 @@ static void NQD_ParseServerData (void)
 //
 	cl.clipmodels[1] = CM_LoadMap (cl.model_name[1], true, NULL, &cl.map_checksum2);
 
+	COM_StripExtension (COM_SkipPath(cl.model_name[1]), mapname);
+	cs2 = Com_TranslateMapChecksum (mapname, cl.map_checksum2);
+	gpl_map = (cl.map_checksum2 != cs2);
+	cl.map_checksum2 = cs2;
+#ifdef GLQUAKE
+	r_gpl_map = gpl_map;
+#endif
+
 	for (i = 1; i < nummodels; i++)
 	{
-		cl.model_precache[i] = Mod_ForName (cl.model_name[i], false);
+		cl.model_precache[i] = Mod_ForName (cl.model_name[i], false, i == 1);
 		if (cl.model_precache[i] == NULL)
 			Host_Error ("Model %s not found", cl.model_name[i]);
 
