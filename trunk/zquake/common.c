@@ -706,7 +706,7 @@ qbool FS_FindFile (char *filename)
 	}
 	
 	fs_filesize = -1;
-	return true;
+	return false;
 }
 
 
