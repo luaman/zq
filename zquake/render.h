@@ -210,7 +210,7 @@ void R_DrawCrosshair (int num, int crossx, int crossy);
 
 void Mod_ClearAll (void);
 void Mod_TouchModel (char *name);
-struct model_s *Mod_ForName (char *name, qbool crash);
+struct model_s *Mod_ForName (char *name, qbool crash, qbool worldmodel);
 int R_ModelFlags (const struct model_s *model);
 unsigned short R_ModelChecksum (const struct model_s *model);
 void R_LoadModelTextures (struct model_s *m);

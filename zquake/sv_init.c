@@ -300,6 +300,7 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	snprintf (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", sv.mapname);
 
 	sv.worldmodel = CM_LoadMap (sv.modelname, false, &sv.map_checksum, &sv.map_checksum2);
+	sv.map_checksum2 = Com_TranslateMapChecksum (sv.mapname, sv.map_checksum2);
 
 	//
 	// clear physics interaction links

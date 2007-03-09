@@ -208,22 +208,22 @@ void CL_ParseBeam (int type)
 	switch (type) {
 	case 1:
 		if (!cl_bolt1_mod)
-			cl_bolt1_mod = Mod_ForName ("progs/bolt.mdl", true);
+			cl_bolt1_mod = Mod_ForName ("progs/bolt.mdl", true, false);
 		m = cl_bolt1_mod;
 		break;
 	case 2:
 		if (!cl_bolt2_mod)
-			cl_bolt2_mod = Mod_ForName ("progs/bolt2.mdl", true);
+			cl_bolt2_mod = Mod_ForName ("progs/bolt2.mdl", true, false);
 		m = cl_bolt2_mod;
 		break;
 	case 3:
 		if (!cl_bolt3_mod)
-			cl_bolt3_mod = Mod_ForName ("progs/bolt3.mdl", true);
+			cl_bolt3_mod = Mod_ForName ("progs/bolt3.mdl", true, false);
 		m = cl_bolt3_mod;
 		break;
 	case 4: default:
 		if (!cl_beam_mod)
-			cl_beam_mod = Mod_ForName ("progs/beam.mdl", true);
+			cl_beam_mod = Mod_ForName ("progs/beam.mdl", true, false);
 		m = cl_beam_mod;
 		break;
 	}
@@ -373,7 +373,7 @@ void CL_ParseTEnt (void)
 		if (cl_explosion.value != 6 && cl_explosion.value != 7 && cl_explosion.value != 8)
 		{
 			if (!cl_explo_mod)
-				cl_explo_mod = Mod_ForName ("progs/s_explod.spr", true);
+				cl_explo_mod = Mod_ForName ("progs/s_explod.spr", true, false);
 			ex = CL_AllocExplosion ();
 			VectorCopy (pos, ex->origin);
 			ex->start = cl.time;

@@ -35,9 +35,9 @@ model_t	*loadmodel;
 char	loadname[32];	// for hunk tags
 
 void Mod_LoadSpriteModel (model_t *mod, void *buffer);
-void Mod_LoadBrushModel (model_t *mod, void *buffer);
+void Mod_LoadBrushModel (model_t *mod, void *buffer, qbool worldmodel);
 void Mod_LoadAliasModel (model_t *mod, void *buffer);
-model_t *Mod_LoadModel (model_t *mod, qbool crash);
+model_t *Mod_LoadModel (model_t *mod, qbool crash, qbool worldmodel);
 
 byte	mod_novis[MAX_MAP_LEAFS/8];
 
@@ -76,7 +76,7 @@ void *Mod_Extradata (model_t *mod)
 	if (r)
 		return r;
 
-	Mod_LoadModel (mod, true);
+	Mod_LoadModel (mod, true, false);
 
 	if (!mod->cache.data)
 		Sys_Error ("Mod_Extradata: caching failed");
@@ -244,7 +244,7 @@ Mod_LoadModel
 Loads a model into the cache
 ==================
 */
-model_t *Mod_LoadModel (model_t *mod, qbool crash)
+model_t *Mod_LoadModel (model_t *mod, qbool crash, qbool worldmodel)
 {
 	void	*d;
 	unsigned *buf;
@@ -306,7 +306,7 @@ model_t *Mod_LoadModel (model_t *mod, qbool crash)
 		break;
 	
 	default:
-		Mod_LoadBrushModel (mod, buf);
+		Mod_LoadBrushModel (mod, buf, worldmodel);
 		break;
 	}
 
@@ -320,13 +320,13 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t *Mod_ForName (char *name, qbool crash)
+model_t *Mod_ForName (char *name, qbool crash, qbool worldmodel)
 {
 	model_t	*mod;
 	
 	mod = Mod_FindName (name);
 	
-	return Mod_LoadModel (mod, crash);
+	return Mod_LoadModel (mod, crash, worldmodel);
 }
 
 
@@ -767,6 +767,7 @@ void R_LoadModelTextures (model_t *m)
 Mod_LoadLighting
 =================
 */
+qbool r_gpl_map;	// exported to the client
 void Mod_LoadLighting (lump_t *l)
 {
 	char	litname[256];
@@ -794,7 +795,10 @@ void Mod_LoadLighting (lump_t *l)
 
 	strlcpy (litname, loadmodel->name, sizeof(litname));
 	COM_StripExtension (litname, litname);
-	strlcat (litname, ".lit", sizeof(litname));
+	if (r_gpl_map)
+		strlcat (litname, "_gpl.lit", sizeof(litname));
+	else
+		strlcat (litname, ".lit", sizeof(litname));
 
 	hunkmark = Hunk_LowMark ();
 	data = (byte *) FS_LoadHunkFile (litname);
@@ -1420,7 +1424,7 @@ static void Mod_ParseWadsFromEntityLump(lump_t *l)
 Mod_LoadBrushModel
 =================
 */
-void Mod_LoadBrushModel (model_t *mod, void *buffer)
+void Mod_LoadBrushModel (model_t *mod, void *buffer, qbool worldmodel)
 {
 	int			i;
 	dheader_t	*header;
@@ -1439,8 +1443,7 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		Host_Error ("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)", mod->name, i, BSPVERSION);
 
 	loadmodel->halflifebsp = (i == HL_BSPVERSION);
-
-	loadmodel->isworldmodel = !strcmp(loadmodel->name, va("maps/%s.bsp", host_mapname.string));
+	loadmodel->isworldmodel = worldmodel;
 
 // swap all the lumps
 	mod_base = (byte *)header;
