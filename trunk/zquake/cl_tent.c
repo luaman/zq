@@ -556,8 +556,10 @@ void CL_UpdateBeams (void)
 			ent.angles[PITCH] = angles[PITCH];
 			ent.angles[YAW] = angles[YAW];
 			ent.angles[ROLL] = rand()%360;
-			ent.alpha = r_shaftalpha.value;
-			ent.renderfx |= RF_TRANSLUCENT;
+			if (b->model == cl_bolt2_mod) {
+				ent.alpha = r_shaftalpha.value;
+				ent.renderfx |= RF_TRANSLUCENT;
+			}
 
 			V_AddEntity (&ent);
 
