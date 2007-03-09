@@ -77,7 +77,14 @@ COM_StripExtension
 */
 void COM_StripExtension (char *in, char *out)
 {
-	while (*in && *in != '.')
+	char *p, *dot = NULL;
+	for (p = in; *p; p++) {
+		if (*p == '.' && !dot)
+			dot = p;
+		else if (*p == '/')
+			dot = NULL;
+	}
+	while (*in && in != dot)
 		*out++ = *in++;
 	*out = 0;
 }
