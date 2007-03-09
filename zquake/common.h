@@ -224,6 +224,7 @@ extern qbool	file_from_gamedir;	// set if file came from a gamedir (and gamedir 
 void FS_InitFilesystem (void);
 void FS_SetGamedir (char *dir);
 int FS_FOpenFile (char *filename, FILE **file);
+qbool FS_FindFile (char *filename);
 byte *FS_LoadStackFile (char *path, void *buffer, int bufsize);
 byte *FS_LoadTempFile (char *path);
 byte *FS_LoadHunkFile (char *path);
