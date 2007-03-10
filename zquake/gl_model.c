@@ -682,7 +682,6 @@ static qbool LoadExternalSkyTexture (texture_t *tx)
 	mapname = Cvar_String("mapname");
 	snprintf (solidname, sizeof(solidname), "%s_solid", tx->name);
 	snprintf (alphaname, sizeof(alphaname), "%s_alpha", tx->name);
-	Com_Printf ("tx name: %s    altname: %s\n", tx->name, altname);
 
 	solidskytexture = GL_LoadTextureImage (va("textures/%s/%s", mapname, solidname), solidname, 0, 0, 0);
 	if (!solidskytexture && altname) {
