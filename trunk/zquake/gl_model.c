@@ -1813,8 +1813,9 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	else if (!strcmp(mod->name, "progs/flame.mdl") ||
 		!strcmp(mod->name, "progs/flame2.mdl"))
 		mod->modhint = MOD_FLAME;
+	else if (!strcmp(mod->name, "progs/bolt2.mdl"))
+		mod->modhint = MOD_THUNDERBOLT2;
 	else if (!strcmp(mod->name, "progs/bolt.mdl") ||
-		!strcmp(mod->name, "progs/bolt2.mdl") ||
 		!strcmp(mod->name, "progs/bolt3.mdl"))
 		mod->modhint = MOD_THUNDERBOLT;
 	else

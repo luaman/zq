@@ -297,8 +297,9 @@ void R_DrawAliasModel (entity_t *ent)
 	//
 
 // make thunderbolt and torches full light
-	if (clmodel->modhint == MOD_THUNDERBOLT) {
-		ambientlight = 60 + 150 * bound(0, gl_shaftlight.value, 1);
+	if (clmodel->modhint == MOD_THUNDERBOLT || clmodel->modhint == MOD_THUNDERBOLT2) {
+		ambientlight = 60 + 150 * (clmodel->modhint == MOD_THUNDERBOLT2 ?
+									bound(0, gl_shaftlight.value, 1) : 1);
 		shadelight = 0;
 		VectorSet (ambientlight_v, ambientlight, ambientlight, ambientlight);
 		VectorClear (shadelight_v);
