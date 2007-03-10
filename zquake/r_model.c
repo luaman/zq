@@ -310,7 +310,7 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t *Mod_ForName (char *name, qbool crash)
+model_t *Mod_ForName (char *name, qbool crash, qbool worldmodel)
 {
 	model_t	*mod;
 	
