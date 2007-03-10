@@ -359,10 +359,8 @@ static struct {
 	int md4;
 	char *origname, *newname;
 } translate_names[] = {
-	{ 0xeb2ec07f, "sky1", "sky4_blue" },	// not sure if there are there blue sky1's; just in case
-	{ 0xeb3524c7, "sky1", "sky4_purple" },
 	{ 0xeb2ec07f, "sky4", "sky4_blue" },
-	{ 0xeb3524c7, "sky4", "sky4_purple" },
+	{ 0xeb3524c7, "sky4", "sky1" },
 	{ 0xd4ba8386, "metal5_2", "metal5_2_arc" },
 	{ 0xf172572f, "metal5_2", "metal5_2_x" },
 	{ 0x025054f9, "metal5_4", "metal5_4_arc" },
