@@ -94,7 +94,7 @@ CLIENT_C_FILES = cl_cam cl_cmd cl_demo cl_draw cl_effects cl_ents cl_input \
 	console keys menu teamplay textencoding
 GL_C_FILES = sv_save skin rc_wad rc_image rc_pixops \
 	gl_draw gl_mesh gl_model gl_ngraph gl_ralias gl_refrag gl_rlight \
-	gl_rmain gl_rmisc gl_rsprite gl_rsurf gl_texture gl_warp
+	gl_rmain gl_rmisc gl_rsprite gl_rsurf gl_texture gl_warp gl_sky
 SW_C_FILES = sv_save skin rc_wad rc_image rc_pixops nonintel \
 	d_edge d_fill d_init d_modech d_polyse d_sky d_sprite d_surf d_vars \
 	d_zpoint r_aclip r_alias r_bsp r_draw r_edge r_efrag r_light r_main \
