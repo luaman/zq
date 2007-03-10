@@ -359,16 +359,16 @@ static struct {
 	int md4;
 	char *origname, *newname;
 } translate_names[] = {
-	{ 0xeb2ec07f, "sky4", "sky4_blue" },
-	{ 0xeb3524c7, "sky4", "sky1" },
-	{ 0xd4ba8386, "metal5_2", "metal5_2_arc" },
-	{ 0xf172572f, "metal5_2", "metal5_2_x" },
-	{ 0x025054f9, "metal5_4", "metal5_4_arc" },
-	{ 0x7e09f8b3, "metal5_4", "metal5_4_double" },
-	{ 0x2eedf929, "metal5_8", "metal5_8_back" },
-	{ 0x10f0687c, "metal5_8", "metal5_8_rune" },
-	{ 0xa571c4ba, "plat_top1", "plat_top1_bolt" },
-	{ 0x7476d32b, "plat_top1", "plat_top1_cable" },
+	{ 0x8a010dc0, "sky4", "sky4_blue" },
+	{ 0xde688b77, "sky4", "sky1" },
+	{ 0x45d110ec, "metal5_2", "metal5_2_arc" },
+	{ 0x0d275f87, "metal5_2", "metal5_2_x" },
+	{ 0xf8e27da8, "metal5_4", "metal5_4_arc" },
+	{ 0xa301c52e, "metal5_4", "metal5_4_double" },
+	{ 0xfaa8bf77, "metal5_8", "metal5_8_back" },
+	{ 0x88792923, "metal5_8", "metal5_8_rune" },
+	{ 0xfe4f9f5a, "plat_top1", "plat_top1_bolt" },
+	{ 0x9ac3fccf, "plat_top1", "plat_top1_cable" },
 	{ 0, NULL, NULL },
 };
 
@@ -668,6 +668,45 @@ static int LoadExternalTexture (texture_t *tx, int mode)
 	return tx->gl_texturenum;
 }
 
+static qbool LoadExternalSkyTexture (texture_t *tx)
+{
+	char *altname, *mapname;
+	char solidname[MAX_QPATH], alphaname[MAX_QPATH];
+	char altsolidname[MAX_QPATH], altalphaname[MAX_QPATH];
+	byte alphapixel = 255;
+
+	if (!gl_externalTextures_world.value)
+		return false;
+
+	altname = TranslateTextureName (tx);
+	mapname = Cvar_String("mapname");
+	snprintf (solidname, sizeof(solidname), "%s_solid", tx->name);
+	snprintf (alphaname, sizeof(alphaname), "%s_alpha", tx->name);
+	Com_Printf ("tx name: %s    altname: %s\n", tx->name, altname);
+
+	solidskytexture = GL_LoadTextureImage (va("textures/%s/%s", mapname, solidname), solidname, 0, 0, 0);
+	if (!solidskytexture && altname) {
+		snprintf (altsolidname, sizeof(altsolidname), "%s_solid", altname);
+		solidskytexture = GL_LoadTextureImage (va("textures/%s", altsolidname), altsolidname, 0, 0, 0);
+	}
+	if (!solidskytexture)
+		solidskytexture = GL_LoadTextureImage (va("textures/%s", solidname), solidname, 0, 0, 0);
+	if (!solidskytexture)
+		return false;
+
+	alphaskytexture = GL_LoadTextureImage (va("textures/%s/%s", mapname, alphaname), alphaname, 0, 0, TEX_ALPHA);
+	if (!alphaskytexture && altname) {
+		snprintf (altalphaname, sizeof(altalphaname), "%s_alpha", altname);
+		alphaskytexture = GL_LoadTextureImage (va("textures/%s", altalphaname), altalphaname, 0, 0, TEX_ALPHA);
+	}
+	if (!alphaskytexture)
+		alphaskytexture = GL_LoadTextureImage (va("textures/%s", alphaname), alphaname, 0, 0, TEX_ALPHA);
+	if (!alphaskytexture) {
+		// Load a texture consisting of a single transparent pixel
+		alphaskytexture = GL_LoadTexture (alphaname, 1, 1, &alphapixel, TEX_ALPHA);
+	}
+	return true;
+}
 
 void R_LoadBrushModelTextures (model_t *m)
 {
@@ -703,6 +742,13 @@ void R_LoadBrushModelTextures (model_t *m)
 		}
 #endif
 
+		if (loadmodel->isworldmodel && !loadmodel->halflifebsp && !strncmp(tx->name,"sky",3))
+		{
+			if (!LoadExternalSkyTexture(tx))
+				R_InitSky (tx);
+			continue;
+		}
+
 		if (LoadExternalTexture(tx, TEX_MIPMAP))
 			continue;
 
@@ -711,12 +757,6 @@ void R_LoadBrushModelTextures (model_t *m)
 			tx->height = r_notexture_mip->height;
 			tx->gl_texturenum = GL_LoadTexture ("r_notexture_mip", tx->width, 
 							tx->height, (byte *)(r_notexture_mip + 1), TEX_WORLD|TEX_MIPMAP|TEX_BRIGHTEN);
-			continue;
-		}
-
-		if (loadmodel->isworldmodel && !loadmodel->halflifebsp && !strncmp(tx->name,"sky",3))
-		{
-			R_InitSky (tx);
 			continue;
 		}
 
