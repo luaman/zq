@@ -292,7 +292,7 @@ extern	trivertx_t	*poseverts[MAXALIASFRAMES];
 typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 
 // some models are special
-typedef enum {MOD_NORMAL, MOD_PLAYER, MOD_EYES, MOD_FLAME, MOD_THUNDERBOLT} modhint_t;
+typedef enum {MOD_NORMAL, MOD_PLAYER, MOD_EYES, MOD_FLAME, MOD_THUNDERBOLT, MOD_THUNDERBOLT2} modhint_t;
 
 typedef struct model_s
 {
