@@ -677,7 +677,7 @@ int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int m
 	byte *data;
 //	gltexture_t *gltexture;
 	int width, height;
-	char	tganame[MAX_QPATH], *c;
+	char	extname[MAX_QPATH], *c;
 
 //	if (no24bit)
 //		return 0;
@@ -696,23 +696,25 @@ int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int m
 	}
 #endif 
 
-	snprintf (tganame, sizeof(tganame), "%s.png", filename);
-	for (c = tganame; *c; c++)
+#ifdef WITH_PNG
+	snprintf (extname, sizeof(extname), "%s.png", filename);
+	for (c = extname; *c; c++)
 		if (*c == '*')
 			*c = '#';
-	data = Image_LoadPNG (NULL, tganame, 0, 0);
+	data = Image_LoadPNG (NULL, extname, 0, 0);
 	if (data) {
 		extern int image_width, image_height;
 		width = image_width;
 		height = image_height;
 		goto ok;
 	}
+#endif
 
-	snprintf (tganame, sizeof(tganame), "%s.tga", filename);
-	for (c = tganame; *c; c++)
+	snprintf (extname, sizeof(extname), "%s.tga", filename);
+	for (c = extname; *c; c++)
 		if (*c == '*')
 			*c = '#';
-	LoadTGA (tganame, &data, &width, &height);
+	LoadTGA (extname, &data, &width, &height);
 	if (!data)
 		return 0;
 
