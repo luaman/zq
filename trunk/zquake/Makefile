@@ -103,7 +103,7 @@ SERVER_C_FILES = sv_bot sv_ccmds sv_ents sv_init sv_main sv_master \
 	sv_move sv_nchan sv_phys sv_send sv_user sv_world \
 	pr_cmds pr_edict pr_exec
 COMMON_C_FILES = cmd cmodel com_msg com_mapcheck common crc cvar host mathlib mdfour \
-	net_chan pmove pmovetst q_shared version zone
+	net_chan pmove pmovetst qlib q_shared version zone
 NULL_C_FILES = sv_save rc_null vid_null snd_null cd_null in_null sys_null
 ifeq ($(ARCH),mingw32)
 ZQDS_PLATFORM_C_FILES = sys_win net_wins
