@@ -328,7 +328,7 @@ void VWepModel_NextDownload (void)
 			continue;
 
 		if (strcmp(cl.vw_model_name[i], "*"))
-			cl.vw_model_precache[i] = Mod_ForName (cl.vw_model_name[i], false);
+			cl.vw_model_precache[i] = Mod_ForName (cl.vw_model_name[i], false, false);
 
 		if (!cl.vw_model_precache[i]) {
 			// never mind
