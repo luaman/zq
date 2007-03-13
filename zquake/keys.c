@@ -577,6 +577,18 @@ void Key_Console (int key, wchar unichar)
 	if (unichar == 'U' - '@')
 		goto on_ctrl_u;
 
+	// TODO: add more emacs/bash keys
+	if (keydown[K_CTRL] && unichar == 'w')
+		goto on_ctrl_w;
+	if (keydown[K_CTRL] && unichar == 'a') {
+		key_linepos = 1;
+		return;
+	}
+	if (keydown[K_CTRL] && unichar == 'e') {
+		key_linepos = qwcslen(key_lines[edit_line]);
+		return;
+	}
+
 	switch (key)
 	{
 		case K_ENTER:
@@ -593,6 +605,18 @@ on_enter:
 
 		case K_BACKSPACE:
 on_backspace:
+			if (keydown[K_CTRL]) {
+on_ctrl_w:
+				// delete word left
+				while (key_linepos > 1 && key_lines[edit_line][key_linepos-1] == ' ')
+					key_linepos--;
+				while (key_linepos > 1 && key_lines[edit_line][key_linepos-1] != ' ') {
+					qwcscpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
+					key_linepos--;
+				}
+				return;
+			}
+
 			if (key_linepos > 1)
 			{
 				qwcscpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
