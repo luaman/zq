@@ -1029,7 +1029,7 @@ void V_CalcRefdef (void)
 
 	if (v_kickback.value)
 	{
-		if (cls.nqdemoplayback)
+		if (cls.nqprotocol)
 			r_refdef2.viewangles[PITCH] += cl.punchangle;
 		else
 		{
@@ -1055,7 +1055,7 @@ DropPunchAngle
 */
 void DropPunchAngle (void)
 {
-	if (cls.nqdemoplayback)
+	if (cls.nqprotocol)
 		return;
 
 	if (cl.ideal_punchangle < cl.punchangle)

@@ -1597,12 +1597,12 @@ void CL_EmitEntities (void)
 {
 	if (cls.state != ca_active)
 		return;
-	if (!cl.validsequence && !cls.nqdemoplayback)
+	if (!cl.validsequence && !cls.nqprotocol)
 		return;
 
 	V_ClearScene ();
 
-	if (cls.nqdemoplayback)
+	if (cls.nqprotocol)
 		NQD_LinkEntities ();
 	else {
 		CL_LinkPlayers ();

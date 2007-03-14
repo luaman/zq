@@ -551,7 +551,7 @@ void SCR_DrawSpeed (void)
 		maxspeed = 0;
 	}
 
-if (cls.nqdemoplayback) {
+if (cls.nqprotocol) {
 	speed = nq_speed;
 } else
 {

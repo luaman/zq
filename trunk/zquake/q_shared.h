@@ -205,6 +205,10 @@ char *Q_strdup (const char *src);
 #define	MAX_DATAGRAM	1450		// max length of unreliable message
 #define	MAX_BIG_MSGLEN	8000		// max length of a demo or loop message, >= MAX_MSGLEN + header
 
+#define	MAX_NQMSGLEN	8000		// max length of a reliable message
+#define MAX_OVERALLMSGLEN	MAX_NQMSGLEN
+#define	MAX_NQDATAGRAM	1024		// max length of unreliable message
+
 //============================================================================
 
 #ifndef NOMVDPLAY

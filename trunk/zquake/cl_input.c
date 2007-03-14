@@ -617,6 +617,34 @@ static void CL_Move (usercmd_t *cmd)
 	Cam_FinishMove(cmd);
 }
 
+
+void CLNQ_SendCmd (void)
+{
+	int i;
+	usercmd_t cmd;
+	sizebuf_t	buf;
+	byte		data[128];
+
+	SZ_Init (&buf, data, sizeof(data));
+
+	CL_Move(&cmd);
+	MSG_WriteByte (&buf, clc_move);
+	MSG_WriteFloat (&buf, cl.time);	// so server can get ping times
+	for (i=0 ; i<3 ; i++)
+		MSG_WriteAngle (&buf, cmd.angles[i]);
+	MSG_WriteShort (&buf, cmd.forwardmove);
+	MSG_WriteShort (&buf, cmd.sidemove);
+	MSG_WriteShort (&buf, cmd.upmove);
+	MSG_WriteByte (&buf, cmd.buttons);
+	MSG_WriteByte (&buf, cmd.impulse);
+
+//
+// deliver the message
+//
+	Netchan_Transmit (&cls.netchan, buf.cursize, buf.data);	
+
+}
+
 /*
 =================
 CL_SendCmd
@@ -647,6 +675,11 @@ void CL_SendCmd (void)
 	if (cls.demoplayback)
 	{
 		SZ_Clear (&cls.netchan.message);	// don't overflow
+		return;
+	}
+
+	if (cls.nqprotocol) {
+		CLNQ_SendCmd ();
 		return;
 	}
 

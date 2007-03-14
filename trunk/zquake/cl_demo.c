@@ -79,7 +79,7 @@ void CL_StopPlayback (void)
 		fclose (cls.demofile);
 	cls.demofile = NULL;
 	cls.demoplayback = false;
-	cls.nqdemoplayback = false;
+	cls.nqprotocol = false;
 #ifdef MVDPLAY
 	cls.mvdplayback = false;
 #endif
@@ -1173,8 +1173,8 @@ try_again:
 
 	Com_Printf ("Playing demo from %s.\n", COM_SkipPath(name));
 
-	cls.nqdemoplayback = !Q_stricmp(COM_FileExtension(name), "dem");
-	if (cls.nqdemoplayback) {
+	cls.nqprotocol = !Q_stricmp(COM_FileExtension(name), "dem");
+	if (cls.nqprotocol) {
 		NQD_StartPlayback ();
 	}
 

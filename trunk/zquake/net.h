@@ -89,12 +89,14 @@ typedef struct
 	double		rate;				// seconds / byte
 
 // sequencing variables
+	int			incoming_unreliable;	// NetQuake; dictated by the other end.
 	int			incoming_sequence;
 	int			incoming_acknowledged;
 	int			incoming_reliable_acknowledged;	// single bit
 
 	int			incoming_reliable_sequence;		// single bit, maintained local
 
+	int			outgoing_unreliable;	// NetQuake
 	int			outgoing_sequence;
 	int			reliable_sequence;			// single bit
 	int			last_reliable_sequence;		// sequence number of last send
@@ -104,11 +106,17 @@ typedef struct
 	byte		message_buf[MAX_MSGLEN];
 
 	int			reliable_length;
+	int			reliable_start;				// NetQuake
 	byte		reliable_buf[MAX_MSGLEN];	// unacked reliable message
 
 // time and size data to calculate bandwidth
 	int			outgoing_size[MAX_LATENT];
 	double		outgoing_time[MAX_LATENT];
+
+	// NetQuake servers may receive truncated packets.
+	int in_fragment_length;
+	char in_fragment_buf[MAX_OVERALLMSGLEN];
+	int in_fragment_start;
 } netchan_t;
 
 void Netchan_Init (void);
@@ -116,6 +124,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data);
 void Netchan_OutOfBand (netsrc_t sock, netadr_t adr, int length, byte *data);
 void Netchan_OutOfBandPrint (netsrc_t sock, netadr_t adr, char *format, ...);
 qbool Netchan_Process (netchan_t *chan);
+int NQNetchan_Process (netchan_t *chan);
 void Netchan_Setup (netsrc_t sock, netchan_t *chan, netadr_t adr, int qport);
 
 qbool Netchan_CanPacket (netchan_t *chan);
