@@ -209,6 +209,7 @@ typedef struct
 
 // connection information
 	cactive_t	state;
+	qbool		nqprotocol;
 
 	int			framecount;		// incremented every frame, never reset
 	double		realtime;		// scaled by cl_demospeed
@@ -251,7 +252,6 @@ typedef struct
 // entering a map (and clearing client_state_t)
 	qbool		demorecording;
 	qbool		demoplayback;
-	qbool		nqdemoplayback;
 #ifdef MVDPLAY
 	qbool   	mvdplayback; // playing mvd 
 	int			mvd_lastto;
@@ -514,6 +514,7 @@ void CL_StartDemos_f (void);
 void NQD_ReadPackets (void);
 void NQD_StartPlayback (void);
 void NQD_LinkEntities (void);
+void CLNQ_ParseServerMessage (void);
 
 //
 // cl_parse.c

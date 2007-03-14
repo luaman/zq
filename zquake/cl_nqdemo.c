@@ -68,7 +68,7 @@ static vec3_t	nq_last_fixangle;
 static int		nq_num_entities;
 static int		nq_viewentity;
 static int		nq_forcecdtrack;
-static int		nq_signon;
+int				nq_signon;
 static int		nq_maxclients;
 static float	nq_mtime[2];
 static vec3_t	nq_mvelocity[2];
@@ -466,6 +466,43 @@ static void NQD_ParseServerData (void)
 	cls.state = ca_onserver;
 }
 
+void CLNQ_SignonReply (void)
+{
+	extern cvar_t	skin, name, topcolor, bottomcolor;
+
+	Com_DPrintf ("CL_SignonReply: %i\n", nq_signon);
+
+	switch (nq_signon)
+	{
+	case 1:
+		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+		MSG_WriteString (&cls.netchan.message, "prespawn");
+		break;
+
+	case 2:
+		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+		MSG_WriteString (&cls.netchan.message, va("name \"%s\"\n", name.string));
+	
+		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+		MSG_WriteString (&cls.netchan.message, va("color %i %i\n", (int)topcolor.value, (int)bottomcolor.value));
+	
+		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+		MSG_WriteString (&cls.netchan.message, "spawn");
+		break;
+
+	case 3:
+		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+		MSG_WriteString (&cls.netchan.message, "begin");
+		Cache_Report ();		// print remaining memory
+		break;
+
+	case 4:
+		//SCR_EndLoadingPlaque ();		// allow normal screen updates
+		break;
+	}
+}
+
+
 /*
 ==================
 NQD_ParseStartSoundPacket
@@ -712,13 +749,16 @@ static void NQD_LerpPlayerinfo (float f)
 	if (nq_player_teleported) {
 		VectorCopy (nq_mvelocity[0], cl.simvel);
 		VectorCopy (nq_mviewangles[0], cl.viewangles);
-		VectorCopy (nq_mviewangles[0], cl.simangles);
+		if (cls.demoplayback)
+			VectorCopy (nq_mviewangles[0], cl.simangles);
 		return;
 	}
 
 	LerpVector (nq_mvelocity[1], nq_mvelocity[0], f, cl.simvel);
-	LerpAngles (nq_mviewangles[1], nq_mviewangles[0], f, cl.simangles);
-	VectorCopy (cl.simangles, cl.viewangles);
+	if (cls.demoplayback) {
+		LerpAngles (nq_mviewangles[1], nq_mviewangles[0], f, cl.simangles);
+		VectorCopy (cl.simangles, cl.viewangles);
+	}
 }
 
 void NQD_LinkEntities (void)
@@ -932,7 +972,7 @@ extern const int num_svc_strings;
 
 #define SHOWNET(x) {if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);}
 
-static void NQD_ParseServerMessage (void)
+void CLNQ_ParseServerMessage (void)
 {
 	int		cmd;
 	int		i;
@@ -953,7 +993,7 @@ static void NQD_ParseServerMessage (void)
 //
 // parse the message
 //
-	MSG_BeginReading ();
+	//MSG_BeginReading ();
 	
 	while (1)
 	{
@@ -1128,6 +1168,7 @@ static void NQD_ParseServerMessage (void)
 			if (i <= nq_signon)
 				Host_Error ("Received signon %i when at %i", i, nq_signon);
 			nq_signon = i;
+			CLNQ_SignonReply ();
 			break;
 
 		case svc_killedmonster:
@@ -1189,7 +1230,8 @@ static void NQD_ParseServerMessage (void)
 void NQD_ReadPackets (void)
 {
 	while (CL_GetNQDemoMessage()) {
-		NQD_ParseServerMessage();
+		MSG_BeginReading ();
+		CLNQ_ParseServerMessage();
 	}
 }
 

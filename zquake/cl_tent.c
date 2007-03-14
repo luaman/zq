@@ -417,7 +417,7 @@ void CL_ParseTEnt (void)
 		break;
 
 	case TE_GUNSHOT:			// bullet hitting wall
-		if (cls.nqdemoplayback)
+		if (cls.nqprotocol)
 			cnt = 1;
 		else
 			cnt = MSG_ReadByte ();
@@ -428,7 +428,7 @@ void CL_ParseTEnt (void)
 		break;
 
 	case TE_BLOOD:				// bullets hitting body
-		if (cls.nqdemoplayback) {
+		if (cls.nqprotocol) {
 			// NQ_TE_EXPLOSION2
 			int colorStart, colorLength;
 			pos[0] = MSG_ReadCoord ();
@@ -453,7 +453,7 @@ void CL_ParseTEnt (void)
 		break;
 
 	case TE_LIGHTNINGBLOOD:		// lightning hitting body
-		if (cls.nqdemoplayback) {
+		if (cls.nqprotocol) {
 			// NQ_TE_BEAM - grappling hook beam
 			CL_ParseBeam (4);
 			break;

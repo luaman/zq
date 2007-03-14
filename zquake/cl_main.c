@@ -225,6 +225,7 @@ void CL_CheckForResend (void)
 
 	if (cls.state == ca_disconnected && com_serveractive) {
 		// if the local server is running and we are not, then connect
+		cls.nqprotocol = false;
 		strlcpy (cls.servername, "local", sizeof(cls.servername));
 		NET_StringToAdr ("local", &cls.server_adr);
 		CL_SendConnectPacket ();	// we don't need a challenge on the local server
@@ -248,11 +249,18 @@ void CL_CheckForResend (void)
 	connect_time = cls.realtime + t2 - t1;	// for retransmit requests
 
 	if (cls.server_adr.port == 0)
-		cls.server_adr.port = BigShort (PORT_SERVER);
+		cls.server_adr.port = BigShort (cls.nqprotocol ? 26000 : PORT_SERVER);
 
 	Com_Printf ("Connecting to %s...\n", cls.servername);
-	sprintf (data, "\xff\xff\xff\xff" "getchallenge\n");
-	NET_SendPacket (NS_CLIENT, strlen(data), data, cls.server_adr);
+
+	if (cls.nqprotocol) {
+		memcpy (data, "\x80\x00\x00\x0C" "\x01" "QUAKE\x00" "\x03", 12);
+		NET_SendPacket (NS_CLIENT, 12, data, cls.server_adr);
+	}
+	else {
+		sprintf (data, "\xff\xff\xff\xff" "getchallenge\n");
+		NET_SendPacket (NS_CLIENT, strlen(data), data, cls.server_adr);
+	}
 }
 
 void CL_BeginServerConnect(void)
@@ -282,6 +290,7 @@ void CL_Connect_f (void)
 
 	Host_EndGame ();
 
+	cls.nqprotocol = false;
 	strlcpy (cls.servername, server, sizeof(cls.servername));
 	CL_BeginServerConnect();
 }
@@ -346,6 +355,25 @@ void CL_Connect_f (void)
 	CL_BeginServerConnect();
 }
 #endif  // !MAUTH
+
+void CL_NQConnect_f (void)
+{
+	char	*server;
+
+	if (Cmd_Argc() != 2)
+	{
+		Com_Printf ("usage: nqconnect <server>\n");
+		return;
+	}
+	
+	server = Cmd_Argv (1);
+
+	Host_EndGame ();
+
+	cls.nqprotocol = true;
+	strlcpy (cls.servername, server, sizeof(cls.servername));
+	CL_BeginServerConnect();
+}
 
 /*
 =====================
@@ -458,14 +486,22 @@ void CL_Disconnect (void)
 	}
 	else if (cls.state != ca_disconnected)
 	{
-		final[0] = clc_stringcmd;
-		strcpy ((char *)(final+1), "drop");
-		Netchan_Transmit (&cls.netchan, 6, final);
+		int size;
+		if (cls.nqprotocol) {
+			final[0] = 2 /* clc_disconnect */;
+			Netchan_Transmit (&cls.netchan, 1, final);
+			size = 1;
+		} else {
+			final[0] = clc_stringcmd;
+			strcpy ((char *)(final+1), "drop");
+			Netchan_Transmit (&cls.netchan, 6, final);
+			size = 6;
+		}
 		// don't choke the loopback buffers
 		if (cls.netchan.remote_address.type != NA_LOOPBACK)
 		{
-			Netchan_Transmit (&cls.netchan, 6, final);
-			Netchan_Transmit (&cls.netchan, 6, final);
+			Netchan_Transmit (&cls.netchan, size, final);
+			Netchan_Transmit (&cls.netchan, size, final);
 		}
 	}
 
@@ -511,6 +547,13 @@ void CL_Reconnect_f (void)
 		return;
 
 	S_StopAllSounds (true);
+
+	if (cls.nqprotocol && cls.state >= ca_connected) {
+		extern int nq_signon;
+		cls.state = ca_connected;
+		nq_signon = 0;
+		return;
+	};
 
 	if (cls.state == ca_connected) {
 		Com_Printf ("reconnecting...\n");
@@ -729,6 +772,49 @@ void CL_ConnectionlessPacket (void)
 	Com_Printf ("Bad connectionless command: 0x%X\n", c);
 }
 
+#define NETFLAG_CTL			0x80000000
+#define NETFLAG_LENGTH_MASK	0x0000ffff
+#define CCREP_ACCEPT		0x81
+#define CCREP_REJECT		0x82
+
+void CLNQ_ConnectionlessPacket(void)
+{
+	char *s;
+	int length;
+
+	MSG_BeginReading ();
+	length = LongSwap(MSG_ReadLong ());
+	if (!(length & NETFLAG_CTL))
+		return;	//not an nq control packet.
+	length &= NETFLAG_LENGTH_MASK;
+	if (length != net_message.cursize)
+		return;	//not an nq packet.
+
+	switch(MSG_ReadByte())
+	{
+	case CCREP_ACCEPT:
+		if (cls.state >= ca_connected)
+		{
+//			if (cls.demoplayback == DPB_NONE)
+//				Con_TPrintf (TLC_DUPCONNECTION);
+			return;
+		}
+		net_from.port = htons((short)MSG_ReadLong());
+
+		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, cls.qport);
+		cls.state = ca_connected;
+
+		//send a dummy packet.
+		//this makes our local nat think we initialised the conversation.
+		NET_SendPacket(NS_CLIENT, 0, "", net_from);
+		return;
+
+	case CCREP_REJECT:
+		s = MSG_ReadString();
+		Com_Printf("Connect failed\n%s\n", s);
+		return;
+	}
+}
 
 extern void CheckQizmoCompletion ();
 
@@ -762,7 +848,7 @@ CL_ReadPackets
 */
 void CL_ReadPackets (void)
 {
-	if (cls.nqdemoplayback) {
+	if (cls.nqprotocol && cls.demoplayback) {
 		NQD_ReadPackets ();
 		return;
 	}
@@ -780,6 +866,27 @@ void CL_ReadPackets (void)
 
 	while (CL_GetMessage())
 	{
+		if (cls.nqprotocol && cls.state == ca_disconnected)
+		{	//connect to nq servers, but don't get confused with sequenced packets.
+			CLNQ_ConnectionlessPacket ();
+			continue;	//ignore it. We arn't connected.
+		}
+
+		if (cls.nqprotocol) {
+			switch(NQNetchan_Process(&cls.netchan))
+			{
+			case 0:
+				break;
+			case 1://datagram
+				cls.netchan.incoming_sequence = cls.netchan.outgoing_sequence - 3;
+				/* fall through */
+			case 2://reliable
+				CLNQ_ParseServerMessage ();
+				break;
+			}
+			continue;
+		}
+
 		//
 		// remote command packet
 		//
@@ -935,6 +1042,7 @@ void CL_InitLocal (void)
 
 	Cmd_AddCommand ("disconnect", CL_Disconnect_f);
 	Cmd_AddCommand ("connect", CL_Connect_f);
+	Cmd_AddCommand ("nqconnect", CL_NQConnect_f);
 	Cmd_AddCommand ("reconnect", CL_Reconnect_f);
 }
 

@@ -374,8 +374,11 @@ static void CL_PredictLocalPlayer (void)
 	extern cvar_t cl_smartjump;
 	float		landspeed = 0;
 
-	if (cls.nqdemoplayback)
+	if (cls.nqprotocol) {
+		if (!cls.demoplayback)
+			VectorCopy (cl.viewangles, cl.simangles);
 		goto out;
+	}
 
 	if (!cl.validsequence || cls.netchan.outgoing_sequence - cl.validsequence >= UPDATE_BACKUP-1)
 		return;
@@ -460,7 +463,7 @@ void CL_PredictMovement (void)
 	if (cl.intermission) {
 		cl.crouch = 0;
 
-		if ((cl.intermission == 2 || cl.intermission == 3) && !cls.nqdemoplayback)
+		if ((cl.intermission == 2 || cl.intermission == 3) && !cls.nqprotocol)
 			// svc_finale and svc_cutscene don't send origin or angles;
 			// we expect progs to move the player to the intermission spot
 			// and set their angles correctly.  This is unlike qwcl, but

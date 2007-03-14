@@ -1394,7 +1394,7 @@ static void Sbar_DeathmatchOverlay (int start)
 	qbool			largegame;
 	extern qbool	nq_drawpings;
 
-	if (cl.gametype == GAME_COOP && (cl.maxclients == 1 || cls.nqdemoplayback))
+	if (cl.gametype == GAME_COOP && (cl.maxclients == 1 || cls.nqprotocol))
 		return;
 
 // request new ping times every two second
@@ -1411,7 +1411,7 @@ static void Sbar_DeathmatchOverlay (int start)
 
 	if (!start) {
 		pic = R_CachePic ("gfx/ranking.lmp");
-		y = (cls.nqdemoplayback && !nq_drawpings) ? 8 : 0;
+		y = (cls.nqprotocol && !nq_drawpings) ? 8 : 0;
 		R_DrawPic (xofs + 160 - GetPicWidth(pic)/2, y, pic);
 	}
 
@@ -1426,7 +1426,7 @@ static void Sbar_DeathmatchOverlay (int start)
 	else
 		y = 24;
 
-	if (cls.nqdemoplayback)
+	if (cls.nqprotocol)
 	{
 		x = xofs + 80 - 104;
 		if (nq_drawpings) {
@@ -1477,17 +1477,17 @@ static void Sbar_DeathmatchOverlay (int start)
 		if (!s->name[0])
 			continue;
 
-		if (!cls.nqdemoplayback || nq_drawpings)
+		if (!cls.nqprotocol || nq_drawpings)
 		{
 			// draw ping
 			p = s->ping;
 			if (p < 0 || p > 999)
 				p = 999;
 			sprintf (num, "%4i", p);
-			R_DrawString (cls.nqdemoplayback ? x + 104 - 40 : x, y, num);
+			R_DrawString (cls.nqprotocol ? x + 104 - 40 : x, y, num);
 		}
 
-		if (!cls.nqdemoplayback)
+		if (!cls.nqprotocol)
 		{
 			if (cl.protocol >= 28)
 			{
@@ -1557,7 +1557,7 @@ static void Sbar_DeathmatchOverlay (int start)
 		}
 
 		// draw name
-		if (cls.nqdemoplayback && !nq_drawpings)
+		if (cls.nqprotocol && !nq_drawpings)
 			R_DrawString (x+104+64, y, s->name);
 		else if (cl.teamplay)
 			R_DrawString (x+152+40, y, s->name);
@@ -1576,7 +1576,7 @@ static void Sbar_DeathmatchOverlay (int start)
     qbool           largegame;
     extern qbool    nq_drawpings;
 
-    if (cl.gametype == GAME_COOP && (cl.maxclients == 1 || cls.nqdemoplayback))
+    if (cl.gametype == GAME_COOP && (cl.maxclients == 1 || cls.nqprotocol))
         return;
 
     // High-priority message...
@@ -1593,7 +1593,7 @@ static void Sbar_DeathmatchOverlay (int start)
     else
         y = 24;
 
-    if (cls.nqdemoplayback)
+    if (cls.nqprotocol)
     {
         if (nq_drawpings) {
             Sys_Printf("name             frags\n");
@@ -1630,7 +1630,7 @@ static void Sbar_DeathmatchOverlay (int start)
         if (!s->name[0])
             continue;
 
-        if (!cls.nqdemoplayback)
+        if (!cls.nqprotocol)
         {
             if (s->spectator)
             {
