@@ -469,7 +469,7 @@ void R_DrawAliasModel (entity_t *ent)
 		float an = -ent->angles[1] / 180 * M_PI;
 		
 		if (!shadescale)
-			shadescale = 1/sqrt(2);
+			shadescale = 1/sqrt(2.0);
 
 		shadevector[0] = cos(an) * shadescale;
 		shadevector[1] = sin(an) * shadescale;

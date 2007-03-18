@@ -361,6 +361,7 @@ size_t qwcslcat (wchar *dst, const wchar *src, size_t size)
 
 	return len;
 }
+#ifndef _WIN32
 wchar *qwcschr (const wchar *ws, wchar wc)
 {
 	while (*ws) {
@@ -370,12 +371,13 @@ wchar *qwcschr (const wchar *ws, wchar wc)
 	}
 	return NULL;
 }
+#endif
 
 wchar *Q_wcsdup(const wchar *src)
 {
 	wchar *out;
 	size_t size = (qwcslen(src) + 1) * sizeof(wchar);
-	out = Q_malloc (size);
+	out = (wchar *)Q_malloc (size);
 	memcpy (out, src, size);
 	return out;
 }

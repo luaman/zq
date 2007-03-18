@@ -520,7 +520,7 @@ void CheckTextureExtensions (void)
 		if (hInstGL == NULL)
 			Sys_Error ("Couldn't load opengl32.dll");
 
-		bindTexFunc = (void *)GetProcAddress(hInstGL,"glBindTexture");
+		bindTexFunc = (BINDTEXFUNCPTR)GetProcAddress(hInstGL,"glBindTexture");
 
 		if (!bindTexFunc)
 			Sys_Error ("No texture objects!");
@@ -539,8 +539,8 @@ void CheckTextureExtensions (void)
 void CheckMultiTextureExtensions (void)
 {
 	if (strstr(gl_extensions, "GL_ARB_multitexture ") && !COM_CheckParm("-nomtex")) {
-		qglMultiTexCoord2f = (void *) wglGetProcAddress("glMultiTexCoord2fARB");
-		qglActiveTexture = (void *) wglGetProcAddress("glActiveTextureARB");
+		qglMultiTexCoord2f = (lpMTexFUNC) wglGetProcAddress("glMultiTexCoord2fARB");
+		qglActiveTexture = (lpSelTexFUNC) wglGetProcAddress("glActiveTextureARB");
 		if (!qglMultiTexCoord2f || !qglActiveTexture)
 			return;
 		Com_Printf ("Multitexture extensions found.\n");
@@ -556,7 +556,7 @@ BOOL ( WINAPI * qwglSwapIntervalEXT)( int interval ) = NULL;
 void CheckSwapIntervalExtension (void)
 {
 	if (gl_ext_swapinterval.value && strstr(gl_extensions, "WGL_EXT_swap_control")) {
-		qwglSwapIntervalEXT = (void *) wglGetProcAddress("wglSwapIntervalEXT");
+		qwglSwapIntervalEXT = (BOOL (WINAPI *)(int)) wglGetProcAddress("wglSwapIntervalEXT");
 	}
 }
 
@@ -863,7 +863,7 @@ MAIN WINDOW
 
 LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-int IN_TranslateKeyEvent (int lParam, int wParam, qbool down);
+void IN_TranslateKeyEvent (int lParam, int wParam, qbool down);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (

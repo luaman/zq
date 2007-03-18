@@ -98,7 +98,7 @@ char *svc_strings[] =
 	"MVD svc_nails2",
 };
 
-const int num_svc_strings = sizeof(svc_strings)/sizeof(svc_strings[0]);
+int num_svc_strings = sizeof(svc_strings)/sizeof(svc_strings[0]);
 
 int		cl_spikeindex, cl_playerindex, cl_eyesindex, cl_flagindex;
 int		cl_rocketindex, cl_grenadeindex;
@@ -735,7 +735,7 @@ void CL_StartUpload (byte *data, int size)
 
 	Com_DPrintf ("Upload starting of %d...\n", size);
 
-	upload_data = Q_malloc (size);
+	upload_data = (byte *)Q_malloc (size);
 	memcpy (upload_data, data, size);
 	upload_size = size;
 	upload_pos = 0;

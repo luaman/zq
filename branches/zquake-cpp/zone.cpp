@@ -337,19 +337,19 @@ Cache_Move
 */
 void Cache_Move ( cache_system_t *c)
 {
-	cache_system_t		*new;
+	cache_system_t		*newcs;
 
 // we are clearing up space at the bottom, so only allocate it late
-	new = Cache_TryAlloc (c->size, true);
-	if (new)
+	newcs = Cache_TryAlloc (c->size, true);
+	if (newcs)
 	{
 //		Com_Printf ("cache_move ok\n");
 
-		memcpy ( new+1, c+1, c->size - sizeof(cache_system_t) );
-		new->user = c->user;
-		memcpy (new->name, c->name, sizeof(new->name));
+		memcpy ( newcs+1, c+1, c->size - sizeof(cache_system_t) );
+		newcs->user = c->user;
+		memcpy (newcs->name, c->name, sizeof(newcs->name));
 		Cache_Free (c->user);
-		new->user->data = (void *)(new+1);
+		newcs->user->data = (void *)(newcs+1);
 	}
 	else
 	{
@@ -442,7 +442,7 @@ Size should already include the header and padding
 */
 cache_system_t *Cache_TryAlloc (int size, qbool nobottom)
 {
-	cache_system_t	*cs, *new;
+	cache_system_t	*cs, *newcs;
 	
 // is the cache completely empty?
 
@@ -451,62 +451,62 @@ cache_system_t *Cache_TryAlloc (int size, qbool nobottom)
 		if (hunk_size - hunk_high_used - hunk_low_used < size)
 			Sys_Error ("Cache_TryAlloc: %i is greater then free hunk", size);
 
-		new = (cache_system_t *) (hunk_base + hunk_low_used);
-		memset (new, 0, sizeof(*new));
-		new->size = size;
+		newcs = (cache_system_t *) (hunk_base + hunk_low_used);
+		memset (newcs, 0, sizeof(*newcs));
+		newcs->size = size;
 
-		cache_head.prev = cache_head.next = new;
-		new->prev = new->next = &cache_head;
+		cache_head.prev = cache_head.next = newcs;
+		newcs->prev = newcs->next = &cache_head;
 		
-		Cache_MakeLRU (new);
-		return new;
+		Cache_MakeLRU (newcs);
+		return newcs;
 	}
 	
 // search from the bottom up for space
 
-	new = (cache_system_t *) (hunk_base + hunk_low_used);
+	newcs = (cache_system_t *) (hunk_base + hunk_low_used);
 	cs = cache_head.next;
 	
 	do
 	{
 		if (!nobottom || cs != cache_head.next)
 		{
-			if ( (byte *)cs - (byte *)new >= size)
+			if ( (byte *)cs - (byte *)newcs >= size)
 			{	// found space
-				memset (new, 0, sizeof(*new));
-				new->size = size;
+				memset (newcs, 0, sizeof(*newcs));
+				newcs->size = size;
 				
-				new->next = cs;
-				new->prev = cs->prev;
-				cs->prev->next = new;
-				cs->prev = new;
+				newcs->next = cs;
+				newcs->prev = cs->prev;
+				cs->prev->next = newcs;
+				cs->prev = newcs;
 				
-				Cache_MakeLRU (new);
+				Cache_MakeLRU (newcs);
 	
-				return new;
+				return newcs;
 			}
 		}
 
 	// continue looking		
-		new = (cache_system_t *)((byte *)cs + cs->size);
+		newcs = (cache_system_t *)((byte *)cs + cs->size);
 		cs = cs->next;
 
 	} while (cs != &cache_head);
 	
 // try to allocate one at the very end
-	if ( hunk_base + hunk_size - hunk_high_used - (byte *)new >= size)
+	if ( hunk_base + hunk_size - hunk_high_used - (byte *)newcs >= size)
 	{
-		memset (new, 0, sizeof(*new));
-		new->size = size;
+		memset (newcs, 0, sizeof(*newcs));
+		newcs->size = size;
 		
-		new->next = &cache_head;
-		new->prev = cache_head.prev;
-		cache_head.prev->next = new;
-		cache_head.prev = new;
+		newcs->next = &cache_head;
+		newcs->prev = cache_head.prev;
+		cache_head.prev->next = newcs;
+		cache_head.prev = newcs;
 		
-		Cache_MakeLRU (new);
+		Cache_MakeLRU (newcs);
 
-		return new;
+		return newcs;
 	}
 	
 	return NULL;		// couldn't allocate
@@ -675,7 +675,7 @@ Memory_Init
 */
 void Memory_Init (void *buf, int size)
 {
-	hunk_base = buf;
+	hunk_base = (byte *)buf;
 	hunk_size = size;
 	hunk_low_used = 0;
 	hunk_high_used = 0;

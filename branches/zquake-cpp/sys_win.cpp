@@ -236,7 +236,7 @@ wchar *Sys_GetClipboardTextW (void)
 		if (WinNT) {
 			if ((h = GetClipboardData(CF_UNICODETEXT)) != NULL) {
 				if ((p = GlobalLock(h)) != NULL) {
-					text = Q_wcsdup(p);
+					text = Q_wcsdup((wchar *)p);
 					GlobalUnlock(h);
 				}
 			}
@@ -244,7 +244,7 @@ wchar *Sys_GetClipboardTextW (void)
 		else
 			if ((h = GetClipboardData(CF_TEXT)) != NULL) {
 				if ((p = GlobalLock(h)) != NULL) {
-					text = Q_wcsdup(str2wcs(p));
+					text = Q_wcsdup(str2wcs((char *)p));
 					GlobalUnlock(h);
 				}
 		}
@@ -310,7 +310,7 @@ char *Sys_ConsoleInput (void)
 							if (OpenClipboard(NULL)) {
 								hclipdata = GetClipboardData(CF_TEXT);
 								if (hclipdata) {
-									clipText = GlobalLock(hclipdata);
+									clipText = (char *)GlobalLock(hclipdata);
 									if (clipText) {
 										for (i=0; clipText[i]; i++)
 											if (clipText[i]=='\n' || clipText[i]=='\r' || clipText[i]=='\b')

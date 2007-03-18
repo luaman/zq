@@ -123,7 +123,7 @@ static wchar cp1251towc (char c)
 // returns Q_malloc'ed data
 wchar *decode_koi8q (char *str) {
 	wchar *buf, *out;
-	buf = out = Q_malloc ((strlen(str) + 1)*sizeof(wchar));
+	buf = out = (wchar *)Q_malloc ((strlen(str) + 1)*sizeof(wchar));
 	while (*str)
 		*out++ = koi2wc(*str++);
 	*out = 0;
@@ -133,7 +133,7 @@ wchar *decode_koi8q (char *str) {
 // returns Q_malloc'ed data
 wchar *decode_cp1251 (char *str) {
 	wchar *buf, *out;
-	buf = out = Q_malloc ((strlen(str) + 1)*sizeof(wchar));
+	buf = out = (wchar *)Q_malloc ((strlen(str) + 1)*sizeof(wchar));
 	while (*str)
 		*out++ = cp1251towc(*str++);
 	*out = 0;

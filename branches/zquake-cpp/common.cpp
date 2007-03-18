@@ -23,10 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "crc.h"
 #include "mdfour.h"
 
-
 void R_BeginDisc (void);
 void R_EndDisc (void);
-
 
 #define MAX_NUM_ARGVS	50
 
@@ -814,20 +812,20 @@ byte *FS_LoadFile (char *path, int usehunk)
 	COM_FileBase (path, base);
 	
 	if (usehunk == 1)
-		buf = Hunk_AllocName (len+1, base);
+		buf = (byte *)Hunk_AllocName (len+1, base);
 	else if (usehunk == 2)
-		buf = Hunk_TempAlloc (len+1);
+		buf = (byte *)Hunk_TempAlloc (len+1);
 	else if (usehunk == 3)
-		buf = Cache_Alloc (loadcache, len+1, base);
+		buf = (byte *)Cache_Alloc (loadcache, len+1, base);
 	else if (usehunk == 4)
 	{
 		if (len+1 > loadsize)
-			buf = Hunk_TempAlloc (len+1);
+			buf = (byte *)Hunk_TempAlloc (len+1);
 		else
 			buf = loadbuf;
 	}
 	else if (usehunk == 5)
-		buf = Q_malloc (len + 1);
+		buf = (byte *)Q_malloc (len + 1);
 	else
 		Sys_Error ("FS_LoadFile: bad usehunk");
 
@@ -915,7 +913,7 @@ pack_t *FS_LoadPackFile (char *packfile)
 	if (numpackfiles > MAX_FILES_IN_PACK)
 		Sys_Error ("%s has %i files", packfile, numpackfiles);
 
-	newfiles = Q_malloc (numpackfiles * sizeof(packfile_t));
+	newfiles = (packfile_t *)Q_malloc (numpackfiles * sizeof(packfile_t));
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
 	fread (&info, 1, header.dirlen, packhandle);
@@ -928,7 +926,7 @@ pack_t *FS_LoadPackFile (char *packfile)
 		newfiles[i].filelen = LittleLong(info[i].filelen);
 	}
 
-	pack = Q_malloc (sizeof (pack_t));
+	pack = (pack_t *)Q_malloc (sizeof (pack_t));
 	strcpy (pack->filename, packfile);
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
@@ -964,7 +962,7 @@ void FS_AddGameDirectory (char *dir)
 //
 // add the directory to the search path
 //
-	search = Hunk_Alloc (sizeof(searchpath_t));
+	search = (searchpath_t *)Hunk_Alloc (sizeof(searchpath_t));
 	strcpy (search->filename, dir);
 	search->pack = NULL;
 	search->next = com_searchpaths;
@@ -979,7 +977,7 @@ void FS_AddGameDirectory (char *dir)
 		pak = FS_LoadPackFile (pakfile);
 		if (!pak)
 			break;
-		search = Hunk_Alloc (sizeof(searchpath_t));
+		search = (searchpath_t *)Hunk_Alloc (sizeof(searchpath_t));
 		search->pack = pak;
 		search->next = com_searchpaths;
 		com_searchpaths = search;		
@@ -1041,7 +1039,7 @@ void FS_SetGamedir (char *dir)
 	//
 	// add the directory to the search path
 	//
-	search = Q_malloc (sizeof(searchpath_t));
+	search = (searchpath_t *)Q_malloc (sizeof(searchpath_t));
 	strcpy (search->filename, com_gamedir);
 	search->pack = NULL;
 	search->next = com_searchpaths;
@@ -1056,7 +1054,7 @@ void FS_SetGamedir (char *dir)
 		pak = FS_LoadPackFile (pakfile);
 		if (!pak)
 			break;
-		search = Q_malloc (sizeof(searchpath_t));
+		search = (searchpath_t *)Q_malloc (sizeof(searchpath_t));
 		search->pack = pak;
 		search->next = com_searchpaths;
 		com_searchpaths = search;		
@@ -1505,6 +1503,7 @@ Com_Printf
 All console printing must go through this in order to be logged to disk
 ================
 */
+extern void Con_PrintW (wchar *txt);
 void Com_Printf (char *fmt, ...)
 {
 	va_list		argptr;
@@ -1544,7 +1543,6 @@ void Com_Printf (char *fmt, ...)
 	// write it to the scrollable buffer
 	Con_Print (msg);
 }
-extern void Con_PrintW (wchar *txt);
 void Com_PrintW (wchar *msg)
 {
 	if (rd_print)

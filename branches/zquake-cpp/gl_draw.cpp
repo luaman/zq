@@ -211,7 +211,7 @@ static mpic_t *R_CachePic_impl (char *path, qbool wad, qbool crash)
 			return &pic->pic;
 
 	if (wad) {
-		p = W_GetLumpName (path, crash);
+		p = (qpic_t *)W_GetLumpName (path, crash);
 		if (!p)
 			return NULL;
 	}
@@ -333,7 +333,7 @@ static int GL_LoadPicTexture (char *name, cachepic_t *cpic, byte *data)
 		byte *src, *dest;
 		byte *buf;
 
-		buf = Q_malloc (glwidth*glheight);
+		buf = (byte *)Q_malloc (glwidth*glheight);
 
 		memset (buf, 0, glwidth*glheight);
 		src = data;
@@ -396,7 +396,7 @@ static int LoadCharsetImage (char *filename)
 		return 0;
 
 	bufsize = width * height * 2 * 4;
-	buf = Q_malloc(bufsize);
+	buf = (byte *)Q_malloc(bufsize);
 	memset (buf, 0, bufsize);
 	dest = buf;
 	src = pic;
@@ -428,7 +428,7 @@ static int LoadCharsetFromWadOrLmp (char *name, byte **pixels)
 	extern int wad_lump_disksize;
 
 	/* conchars is usually just raw data without a header, but we allow it to be in QPIC format */
-	data = W_GetLumpName (name, false);
+	data = (byte *)W_GetLumpName (name, false);
 	if (data) {
 		if (wad_lump_disksize == 128*128)
 			/* raw data */;
@@ -464,7 +464,7 @@ static int LoadCharsetFromWadOrLmp (char *name, byte **pixels)
 			data[i] = 255;	// proper transparent color
 
 	if (pixels != NULL) {
-		*pixels = Q_malloc (128*128);
+		*pixels = (byte *)Q_malloc (128*128);
 		memcpy (*pixels, data, 128*128);
 	}
 

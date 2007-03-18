@@ -136,20 +136,20 @@ void FreeSound (void)
 
 	if (pDSBuf)
 	{
-		pDSBuf->lpVtbl->Stop(pDSBuf);
-		pDSBuf->lpVtbl->Release(pDSBuf);
+		pDSBuf->Stop();
+		pDSBuf->Release();
 	}
 
 // only release primary buffer if it's not also the mixing buffer we just released
 	if (pDSPBuf && (pDSBuf != pDSPBuf))
 	{
-		pDSPBuf->lpVtbl->Release(pDSPBuf);
+		pDSPBuf->Release();
 	}
 
 	if (pDS)
 	{
-		pDS->lpVtbl->SetCooperativeLevel (pDS, mainwindow, DSSCL_NORMAL);
-		pDS->lpVtbl->Release(pDS);
+		pDS->SetCooperativeLevel (mainwindow, DSSCL_NORMAL);
+		pDS->Release();
 	}
 
 	if (hWaveOut)
@@ -263,7 +263,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 
 	dscaps.dwSize = sizeof(dscaps);
 
-	if (DS_OK != pDS->lpVtbl->GetCaps (pDS, &dscaps))
+	if (DS_OK != pDS->GetCaps (&dscaps))
 	{
 		Com_Printf ("Couldn't get DS caps\n");
 	}
@@ -275,7 +275,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 		return SIS_FAILURE;
 	}
 
-	if (DS_OK != pDS->lpVtbl->SetCooperativeLevel (pDS, mainwindow, DSSCL_EXCLUSIVE))
+	if (DS_OK != pDS->SetCooperativeLevel (mainwindow, DSSCL_EXCLUSIVE))
 	{
 		Com_Printf ("Set coop level failed\n");
 		FreeSound ();
@@ -296,11 +296,11 @@ static sndinitstat SNDDMA_InitDirect (void)
 
 	if (!COM_CheckParm ("-snoforceformat"))
 	{
-		if (DS_OK == pDS->lpVtbl->CreateSoundBuffer(pDS, &dsbuf, &pDSPBuf, NULL))
+		if (DS_OK == pDS->CreateSoundBuffer(&dsbuf, &pDSPBuf, NULL))
 		{
 			pformat = format;
 
-			if (DS_OK != pDSPBuf->lpVtbl->SetFormat (pDSPBuf, &pformat))
+			if (DS_OK != pDSPBuf->SetFormat (&pformat))
 			{
 //				if (snd_firsttime)
 //					Com_Printf ("Set primary sound buffer format: no\n");
@@ -327,7 +327,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 		memset(&dsbcaps, 0, sizeof(dsbcaps));
 		dsbcaps.dwSize = sizeof(dsbcaps);
 
-		if (DS_OK != pDS->lpVtbl->CreateSoundBuffer(pDS, &dsbuf, &pDSBuf, NULL))
+		if (DS_OK != pDS->CreateSoundBuffer(&dsbuf, &pDSBuf, NULL))
 		{
 			Com_Printf ("DS:CreateSoundBuffer Failed");
 			FreeSound ();
@@ -338,7 +338,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 		dma.samplebits = format.wBitsPerSample;
 		dma.speed = format.nSamplesPerSec;
 
-		if (DS_OK != pDSBuf->lpVtbl->GetCaps (pDSBuf, &dsbcaps))
+		if (DS_OK != pDSBuf->GetCaps (&dsbcaps))
 		{
 			Com_Printf ("DS:GetCaps failed\n");
 			FreeSound ();
@@ -350,14 +350,14 @@ static sndinitstat SNDDMA_InitDirect (void)
 	}
 	else
 	{
-		if (DS_OK != pDS->lpVtbl->SetCooperativeLevel (pDS, mainwindow, DSSCL_WRITEPRIMARY))
+		if (DS_OK != pDS->SetCooperativeLevel (mainwindow, DSSCL_WRITEPRIMARY))
 		{
 			Com_Printf ("Set coop level failed\n");
 			FreeSound ();
 			return SIS_FAILURE;
 		}
 
-		if (DS_OK != pDSPBuf->lpVtbl->GetCaps (pDSPBuf, &dsbcaps))
+		if (DS_OK != pDSPBuf->GetCaps (&dsbcaps))
 		{
 			Com_Printf ("DS:GetCaps failed\n");
 			return SIS_FAILURE;
@@ -368,7 +368,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 	}
 
 	// Make sure mixer is active
-	pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
+	pDSBuf->Play(0, 0, DSBPLAY_LOOPING);
 
 /*	if (snd_firsttime)
 		Com_Printf ("   %d channel(s)\n"
@@ -385,7 +385,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 #define Lock(a,b,c,d,e,f,g,h) Lock(a,b,c,(void *)d,e,(void *)f,g,h)
 #endif
 
-	while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, &lpData, &dwSize, NULL, NULL, 0)) != DS_OK)
+	while ((hresult = pDSBuf->Lock(0, gSndBufSize, (LPVOID *)&lpData, &dwSize, NULL, NULL, 0)) != DS_OK)
 	{
 		if (hresult != DSERR_BUFFERLOST)
 		{
@@ -406,14 +406,14 @@ static sndinitstat SNDDMA_InitDirect (void)
 	memset(lpData, 0, dwSize);
 //		lpData[4] = lpData[5] = 0x7f;	// force a pop for debugging
 
-	pDSBuf->lpVtbl->Unlock(pDSBuf, lpData, dwSize, NULL, 0);
+	pDSBuf->Unlock(lpData, dwSize, NULL, 0);
 
 	/* we don't want anyone to access the buffer directly w/o locking it first. */
 	lpData = NULL;
 
-	pDSBuf->lpVtbl->Stop(pDSBuf);
-	pDSBuf->lpVtbl->GetCurrentPosition(pDSBuf, &mmstarttime.u.sample, &dwWrite);
-	pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
+	pDSBuf->Stop();
+	pDSBuf->GetCurrentPosition(&mmstarttime.u.sample, &dwWrite);
+	pDSBuf->Play(0, 0, DSBPLAY_LOOPING);
 
 	dma.samples = gSndBufSize/(dma.samplebits/8);
 	dma.samplepos = 0;
@@ -490,7 +490,7 @@ static qbool SNDDMA_InitWav (void)
 		FreeSound ();
 		return false;
 	}
-	lpData = GlobalLock(hData);
+	lpData = (HPSTR)GlobalLock(hData);
 	if (!lpData)
 	{
 		Com_Printf ("Sound: Failed to lock.\n");
@@ -644,7 +644,7 @@ int SNDDMA_GetDMAPos(void)
 	if (dsound_init)
 	{
 		mmtime.wType = TIME_SAMPLES;
-		pDSBuf->lpVtbl->GetCurrentPosition(pDSBuf, &mmtime.u.sample, &dwWrite);
+		pDSBuf->GetCurrentPosition(&mmtime.u.sample, &dwWrite);
 		s = mmtime.u.sample - mmstarttime.u.sample;
 	}
 	else if (wav_init)

@@ -84,7 +84,7 @@ void FloorDivMod (double numer, double denom, int *quotient,
 void vectoangles(vec3_t vec, vec3_t ang);
 void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
 void MakeNormalVectors (vec3_t forward, vec3_t right, vec3_t up);
-int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
+extern "C" int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
 float	anglemod(float a);
 
 void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees );

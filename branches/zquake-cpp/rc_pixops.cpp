@@ -26,7 +26,7 @@
 #define guint unsigned int
 #define g_return_if_fail(a) if(!(a)) return
 #define g_return_val_if_fail(a,b) if(!(a)) return (b)
-#define g_new(type,count) Q_malloc(sizeof(type)*(count))
+#define g_new(type,count) (type *)Q_malloc(sizeof(type)*(count))
 #define g_free Q_free
 #define g_assert_not_reached() assert(!"g_assert_not_reached")
 #define CLAMP(val,low,high) bound(low,val,high)

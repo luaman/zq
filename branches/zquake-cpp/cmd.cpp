@@ -74,7 +74,7 @@ void Cbuf_Execute () { Cbuf_ExecuteEx (&cbuf_main); }
 static void Cbuf_Register (cbuf_t *cbuf, int maxsize) {
 	assert(!host_initialized);
 	cbuf->maxsize = maxsize;
-	cbuf->text_buf = Hunk_Alloc(maxsize);
+	cbuf->text_buf = (char *)Hunk_Alloc(maxsize);
 	cbuf->text_start = cbuf->text_end = (cbuf->maxsize >> 1);
 	cbuf->wait = false;
 }
@@ -308,7 +308,7 @@ void Cmd_StuffCmds_f (void)
 	if (!s)
 		return;
 		
-	text = Q_malloc (s+1);
+	text = (char *)Q_malloc (s+1);
 	text[0] = 0;
 	for (i = 1; i < com_argc; i++)
 	{
@@ -318,7 +318,7 @@ void Cmd_StuffCmds_f (void)
 	}
 	
 // pull out the commands
-	build = Q_malloc (s+1);
+	build = (char *)Q_malloc (s+1);
 	build[0] = 0;
 	
 	for (i = 0; i < s-1; i++)
@@ -541,7 +541,7 @@ void Cmd_Alias_f (void)
 	}
 	else {
 		// allocate a new one
-		a = Q_malloc (sizeof(cmd_alias_t));
+		a = (cmd_alias_t *)Q_malloc (sizeof(cmd_alias_t));
 		a->flags = 0;
 
 		// link it in
@@ -922,7 +922,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 		}
 	}
 
-	cmd = Hunk_Alloc (sizeof(cmd_function_t));
+	cmd = (cmd_function_t *)Hunk_Alloc (sizeof(cmd_function_t));
 	cmd->name = cmd_name;
 	cmd->function = function;
 	cmd->next = cmd_functions;

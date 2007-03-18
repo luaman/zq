@@ -309,7 +309,7 @@ void NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to)
 
 	NetadrToSockadr (&to, &addr);
 
-	ret = sendto (net_socket, data, length, 0, (struct sockaddr *)&addr, sizeof(addr));
+	ret = sendto (net_socket, (char *)data, length, 0, (struct sockaddr *)&addr, sizeof(addr));
 	if (ret == -1)
 	{
 		int err = WSAGetLastError();
@@ -354,7 +354,7 @@ int UDP_OpenSocket (int port)
 
 	address.sin_port = htons((short)port);
 
-	if (bind (newsocket, (void *)&address, sizeof(address)) == -1)
+	if (bind (newsocket, (sockaddr *)&address, sizeof(address)) == -1)
 		return -1;
 
 	return newsocket;

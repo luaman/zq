@@ -29,16 +29,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #define	PAINTBUFFER_SIZE	512
+extern "C" {
 portable_samplepair_t paintbuffer[PAINTBUFFER_SIZE];
 int		snd_scaletable[32][256];
 int 	*snd_p, snd_linear_count, snd_vol;
 short	*snd_out;
+}
 
-void Snd_WriteLinearBlastStereo16 (void);
-void Snd_WriteLinearBlastStereo16_SwapStereo (void);
+extern "C" void Snd_WriteLinearBlastStereo16 (void);
+extern "C" void Snd_WriteLinearBlastStereo16_SwapStereo (void);
 
 #if	!id386
-void Snd_WriteLinearBlastStereo16 (void)
+extern "C" void Snd_WriteLinearBlastStereo16 (void)
 {
 	int		i;
 	int		val;
@@ -52,7 +54,7 @@ void Snd_WriteLinearBlastStereo16 (void)
 	}
 }
 
-void Snd_WriteLinearBlastStereo16_SwapStereo (void)
+extern "C" void Snd_WriteLinearBlastStereo16_SwapStereo (void)
 {
 	int		i;
 	int		val;
@@ -91,8 +93,8 @@ void S_TransferStereo16 (int endtime)
 	{
 		reps = 0;
 
-		while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, (void *) &pbuf, &dwSize,
-									   (void *) &pbuf2, &dwSize2, 0)) != DS_OK)
+		while ((hresult = pDSBuf->Lock(0, gSndBufSize, (LPVOID *) &pbuf, &dwSize,
+									   (LPVOID *) &pbuf2, &dwSize2, 0)) != DS_OK)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
@@ -102,7 +104,7 @@ void S_TransferStereo16 (int endtime)
 			}
 			else
 			{
-				pDSBuf->lpVtbl->Restore (pDSBuf);
+				pDSBuf->Restore ();
 			}
 
 			if (++reps > 2)
@@ -140,7 +142,7 @@ void S_TransferStereo16 (int endtime)
 
 #ifdef _WIN32
 	if (pDSBuf)
-		pDSBuf->lpVtbl->Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
+		pDSBuf->Unlock(pbuf, dwSize, NULL, 0);
 #endif
 }
 
@@ -180,12 +182,12 @@ void S_TransferPaintBuffer(int endtime)
 	{
 		reps = 0;
 
-#ifdef MINGW32
-#define Lock(a,b,c,d,e,f,g,h) Lock(a,b,c,(void *)d,e,(void *)f,g,h)
-#endif
+//#ifdef MINGW32
+//#define Lock(a,b,c,d,e,f,g,h) Lock(a,b,c,(void *)d,e,(void *)f,g,h)
+//#endif
 
-		while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize,
-									   &pbuf2,&dwSize2, 0)) != DS_OK)
+		while ((hresult = pDSBuf->Lock(0, gSndBufSize, (LPVOID *)&pbuf, &dwSize,
+									   (LPVOID *)&pbuf2,&dwSize2, 0)) != DS_OK)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
@@ -195,7 +197,7 @@ void S_TransferPaintBuffer(int endtime)
 			}
 			else
 			{
-				pDSBuf->lpVtbl->Restore (pDSBuf);
+				pDSBuf->Restore ();
 			}
 
 			if (++reps > 2)
@@ -247,9 +249,9 @@ void S_TransferPaintBuffer(int endtime)
 
 		ir += il;
 
-		pDSBuf->lpVtbl->Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
+		pDSBuf->Unlock(pbuf, dwSize, NULL, 0);
 
-		pDSBuf->lpVtbl->GetCurrentPosition(pDSBuf, &dwNewpos, &dwWrite);
+		pDSBuf->GetCurrentPosition(&dwNewpos, &dwWrite);
 
 //		if ((dwNewpos >= il) && (dwNewpos <= ir))
 //			Com_Printf ("%d-%d p %d c\n", il, ir, dwNewpos);
@@ -266,7 +268,7 @@ CHANNEL MIXING
 ===============================================================================
 */
 
-void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int endtime);
+extern "C" void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int endtime);
 void SND_PaintChannelFrom16 (channel_t *ch, sfxcache_t *sc, int endtime);
 
 void S_PaintChannels(int endtime)
@@ -354,7 +356,7 @@ void SND_InitScaletable (void)
 
 #if	!id386
 
-void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int count)
+extern "C" void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int count)
 {
 	int 	data;
 	int		*lscale, *rscale;

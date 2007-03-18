@@ -1114,7 +1114,7 @@ void TP_MsgTrigger_f (void)
 
 		if (!trig) {
 			// allocate new trigger
-			trig = Q_malloc (sizeof(msg_trigger_t));
+			trig = (msg_trigger_t *)Q_malloc (sizeof(msg_trigger_t));
 			trig->next = msg_triggers;
 			msg_triggers = trig;
 			strcpy (trig->name, name);	// safe (length checked earlier)

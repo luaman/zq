@@ -380,7 +380,7 @@ void CL_ParsePacketEntities (qbool delta)
 
 	newp->num_entities = newindex;
 	Q_free (newp->entities);
-	newp->entities = Q_malloc (sizeof(entity_state_t) * newp->num_entities);
+	newp->entities = (entity_state_t *)Q_malloc (sizeof(entity_state_t) * newp->num_entities);
 	memcpy (newp->entities, newents, sizeof(entity_state_t) * newp->num_entities);
 
 	cl.frames[newpacket].valid = true;

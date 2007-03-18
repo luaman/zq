@@ -439,7 +439,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	qsort (newents, pack->num_entities, sizeof(newents[0]), entity_state_compare);
 
 	Q_free (pack->entities);
-	pack->entities = Q_malloc (sizeof(newents[0]) * pack->num_entities);
+	pack->entities = (entity_state_t *)Q_malloc (sizeof(newents[0]) * pack->num_entities);
 	memcpy (pack->entities, newents, sizeof(newents[0]) * pack->num_entities);
 
 	if (client->delta_sequence != -1) {
