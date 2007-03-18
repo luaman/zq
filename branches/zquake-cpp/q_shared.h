@@ -29,6 +29,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <ctype.h>
 #include <assert.h>
 
+#include <string>
+#include <vector>
+#include <map>
+using std::string;
+using std::wstring;
+
 #include "sys.h"
 #include "mathlib.h"
 
