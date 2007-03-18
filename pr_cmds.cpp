@@ -2800,7 +2800,7 @@ void PF_argv (void)
 */
 void PF_setpause (void)
 {
-	qbool pause;
+	bool pause;
 
 	pause = G_FLOAT(OFS_PARM0) ? true : false;
 	if (pause != (((int)sv_paused.value & 1) ? true : false))
