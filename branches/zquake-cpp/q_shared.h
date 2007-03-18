@@ -37,11 +37,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma warning( disable : 4309)	// truncation of constant value
 #endif
 
-#ifdef _MSC_VER
-#define inline __inline
-#define HAVE_INLINE
-#endif
-
 #undef gamma	// math.h defines this
 
 #define	QUAKE_GAME			// as opposed to utilities
@@ -53,15 +48,7 @@ typedef unsigned char 		byte;
 
 #define wchar unsigned short	// 16-bit Unicode char
 
-#ifndef false
-#define false 0
-#endif
-#ifndef true
-#define true 1
-#endif
 typedef int qbool;
-
-//typedef enum {false, true} qbool;
 
 #ifndef NULL
 #define NULL ((void *)0)
