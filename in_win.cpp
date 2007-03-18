@@ -398,7 +398,7 @@ static qbool IN_InitDInput (void)
 	}
 
 // obtain an interface to the system mouse device.
-	hr = IDirectInput_CreateDevice(g_pdi, &GUID_SysMouse, &g_pMouse, NULL);
+	hr = g_pdi->CreateDevice(GUID_SysMouse, &g_pMouse, NULL);
 
 	if (FAILED(hr))
 	{
@@ -1280,7 +1280,7 @@ byte	shiftkeymap[256];	// generated when shift is pressed
 byte	altgrkeymap[256];	// generated when Alt-GR is pressed
 qbool	keymap_active = false;
 
-extern void Key_EventEx (int key, int unichar, qbool down);
+extern void Key_EventEx (int key, wchar unichar, qbool down);
 
 /*
 =======
@@ -1400,11 +1400,11 @@ static void IN_LoadKeys_f (void)
 	COM_DefaultExtension (filename, ".kmap");
 
 	// check if the given file can be found in subdirectory "keymaps":
-	data = FS_LoadTempFile (va("keymaps/%s", filename));
+	data = (char *)FS_LoadTempFile (va("keymaps/%s", filename));
 
 	// if not found, recheck in main directory:
 	if (!data)
-	  data = FS_LoadTempFile (filename);
+	  data = (char *)FS_LoadTempFile (filename);
 	if (!data)
 	{
 		Com_Printf ("Couldn't load %s\n", filename);

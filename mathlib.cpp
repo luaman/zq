@@ -168,7 +168,7 @@ BOPS_Error
 Split out like this for ASM to call.
 ==================
 */
-void BOPS_Error (void)
+extern "C" void BOPS_Error (void)
 {
 	Sys_Error ("BoxOnPlaneSide:  Bad signbits");
 }
@@ -182,7 +182,7 @@ BoxOnPlaneSide
 Returns 1, 2, or 1 + 2
 ==================
 */
-int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
+extern "C" int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 {
 	float	dist1, dist2;
 	int		sides;

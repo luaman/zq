@@ -930,7 +930,7 @@ void LoadPCX (char *filename, byte **pic, int *width, int *height)
 	if (height)
 		*height = pcx->ymax+1;
 
-	*pic = out = Q_malloc ((pcx->xmax+1) * (pcx->ymax+1));
+	*pic = out = (byte *)Q_malloc ((pcx->xmax+1) * (pcx->ymax+1));
 
 	for (y=0 ; y<=pcx->ymax ; y++, out += pcx->xmax+1)
 	{
@@ -993,7 +993,7 @@ void WritePCX (byte *data, int width, int height, int rowbytes, byte *palette,	/
 	assert (pcxdata != NULL);
 	assert (pcxsize != NULL);
 
-	pcx = Hunk_TempAlloc (width*height*2+1000);
+	pcx = (pcx_t *)Hunk_TempAlloc (width*height*2+1000);
 	if (!pcx) {
 		Com_Printf ("WritePCX: not enough memory\n");
 		*pcxdata = NULL;

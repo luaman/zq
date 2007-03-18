@@ -45,9 +45,11 @@ int			cnttextures[2] = {-1, -1};	// cached
 //
 // view origin
 //
+extern "C" {
 vec3_t	vup;
 vec3_t	vpn;
 vec3_t	vright;
+}
 vec3_t	r_origin;
 
 //

@@ -577,7 +577,7 @@ static void CM_LoadEntities (lump_t *l)
 		map_entitystring = NULL;
 		return;
 	}
-	map_entitystring = Hunk_AllocName ( l->filelen, loadname);	
+	map_entitystring = (char *)Hunk_AllocName ( l->filelen, loadname);	
 	memcpy (map_entitystring, cmod_base + l->fileofs, l->filelen);
 }
 
@@ -677,7 +677,7 @@ static void CM_LoadNodes (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("CM_LoadMap: funny lump size");
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+	out = (cnode_t *)Hunk_AllocName ( count*sizeof(*out), loadname);	
 
 	map_nodes = out;
 	numnodes = count;
@@ -713,7 +713,7 @@ static void CM_LoadLeafs (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("CM_LoadMap: funny lump size");
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+	out = (cleaf_t *)Hunk_AllocName ( count*sizeof(*out), loadname);	
 
 	map_leafs = out;
 	numleafs = count;
@@ -737,11 +737,11 @@ static void CM_LoadClipnodes (lump_t *l)
 	dclipnode_t *in, *out;
 	int			i, count;
 
-	in = (void *)(cmod_base + l->fileofs);
+	in = (dclipnode_t *)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("CM_LoadMap: funny lump size");
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+	out = (dclipnode_t *)Hunk_AllocName ( count*sizeof(*out), loadname);	
 
 	map_clipnodes = out;
 	numclipnodes = count;
@@ -769,7 +769,7 @@ static void CM_MakeHull0 (void)
 
 	in = map_nodes;
 	count = numnodes;
-	out = Hunk_AllocName ( count*sizeof(*out), loadname);	
+	out = (dclipnode_t *)Hunk_AllocName ( count*sizeof(*out), loadname);	
 
 	// fix up hull 0 in all cmodels
 	for (i = 0; i < numcmodels; i++) {
@@ -805,11 +805,11 @@ static void CM_LoadPlanes (lump_t *l)
 	int			count;
 	int			bits;
 	
-	in = (void *)(cmod_base + l->fileofs);
+	in = (dplane_t *)(cmod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 		Host_Error ("CM_LoadMap: funny lump size");
 	count = l->filelen / sizeof(*in);
-	out = Hunk_AllocName (count * sizeof(*out), loadname);	
+	out = (mplane_t *)Hunk_AllocName (count * sizeof(*out), loadname);	
 	
 	map_planes = out;
 	numplanes = count;
@@ -889,7 +889,7 @@ static void CM_BuildPVS (lump_t *lump_vis, lump_t *lump_leafs)
 
 	map_vis_rowlongs = (visleafs + 31) >> 5;
 	map_vis_rowbytes = map_vis_rowlongs * 4;
-	map_pvs = Hunk_Alloc (map_vis_rowbytes * visleafs);
+	map_pvs = (byte *)Hunk_Alloc (map_vis_rowbytes * visleafs);
 
 	if (!lump_vis->filelen) {
 		memset (map_pvs, 0xff, map_vis_rowbytes * visleafs);
@@ -928,7 +928,7 @@ static void CM_BuildPHS (void)
 	unsigned	*dest, *src;
 	byte	*scan;
 
-	map_phs = Hunk_Alloc (map_vis_rowbytes * visleafs);
+	map_phs = (byte *)Hunk_Alloc (map_vis_rowbytes * visleafs);
 	scan = map_pvs;
 	dest = (unsigned *)map_phs;
 	for (i = 0; i < visleafs; i++, dest += map_vis_rowlongs, scan += map_vis_rowbytes)

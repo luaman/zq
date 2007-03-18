@@ -571,10 +571,10 @@ void S_ClearBuffer (void)
 
 		reps = 0;
 
-#ifdef MINGW32
-#define Lock(a,b,c,d,e,f,g,h) Lock(a,b,c,(void *)d,e,(void *)f,g,h)
-#endif
-		while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, &pData, &dwSize, NULL, NULL, 0)) != DS_OK)
+//#ifdef MINGW32
+//#define Lock(a,b,c,d,e,f,g,h) Lock(a,b,c,(void *)d,e,(void *)f,g,h)
+//#endif
+		while ((hresult = pDSBuf->Lock(0, gSndBufSize, (LPVOID *)&pData, &dwSize, NULL, NULL, 0)) != DS_OK)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
@@ -584,7 +584,7 @@ void S_ClearBuffer (void)
 			}
 			else
 			{
-				pDSBuf->lpVtbl->Restore (pDSBuf);
+				pDSBuf->Restore ();
 			}
 
 			if (++reps > 2)
@@ -593,7 +593,7 @@ void S_ClearBuffer (void)
 
 		memset(pData, clear, dma.samples * dma.samplebits/8);
 
-		pDSBuf->lpVtbl->Unlock(pDSBuf, pData, dwSize, NULL, 0);
+		pDSBuf->Unlock(pData, dwSize, NULL, 0);
 	
 	}
 	else
@@ -864,14 +864,14 @@ void S_Update_ (void)
 
 		if (pDSBuf)
 		{
-			if (pDSBuf->lpVtbl->GetStatus (pDSBuf, &dwStatus) != DS_OK)
+			if (pDSBuf->GetStatus (&dwStatus) != DS_OK)
 				Com_Printf ("Couldn't get sound buffer status\n");
 			
 			if (dwStatus & DSBSTATUS_BUFFERLOST)
-				pDSBuf->lpVtbl->Restore (pDSBuf);
+				pDSBuf->Restore ();
 			
 			if (!(dwStatus & DSBSTATUS_PLAYING))
-				pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
+				pDSBuf->Play(0, 0, DSBPLAY_LOOPING);
 		}
 	}
 #endif
@@ -939,7 +939,7 @@ void S_SoundList_f (void)
 	total = 0;
 	for (sfx=known_sfx, i=0 ; i<num_sfx ; i++, sfx++)
 	{
-		sc = Cache_Check (&sfx->cache);
+		sc = (sfxcache_t *)Cache_Check (&sfx->cache);
 		if (!sc)
 			continue;
 		size = sc->length*sc->width*(sc->stereo+1);

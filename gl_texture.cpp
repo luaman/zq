@@ -304,12 +304,12 @@ void GL_ResampleTexture (unsigned *indata, int inwidth, int inheight,
 		}
 
 		if (inwidth > tw || inheight > th) {
-			buf = Q_malloc (tw * th * 4);
+			buf = (byte *)Q_malloc (tw * th * 4);
 			_pixops_scale ((guchar *)buf, 0, 0, tw, th, tw * 4, 4, 1, (const guchar *)indata,
 				inwidth, inheight, inwidth * 4, 4, 1, (double)tw/inwidth, (double)th/inheight, PIXOPS_INTERP_BILINEAR);
 			in = buf;
 		} else {
-			buf = Q_malloc ((tw/2) * (th/2) * 4);
+			buf = (byte *)Q_malloc ((tw/2) * (th/2) * 4);
 			in = (byte *)indata;
 		}
 
@@ -427,7 +427,7 @@ void GL_Upload32 (unsigned *data, int width, int height, int mode /*qbool mipmap
 	}
 	else
 	{
-		scaled_buf = Q_malloc (scaled_width * scaled_height * 4);
+		scaled_buf = (unsigned int *)Q_malloc (scaled_width * scaled_height * 4);
 		scaled = scaled_buf;
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
 	}
@@ -759,7 +759,7 @@ static void R_InitDefaultTexture (void)
 	byte	*dest;
 
 // create a simple checkerboard texture for the default
-	r_notexture_mip = Hunk_AllocName (sizeof(texture_t) + 16*16+8*8+4*4+2*2, "notexture");
+	r_notexture_mip = (texture_t *)Hunk_AllocName (sizeof(texture_t) + 16*16+8*8+4*4+2*2, "notexture");
 
 	r_notexture_mip->width = r_notexture_mip->height = 16;
 	r_notexture_mip->offsets[0] = sizeof(texture_t);

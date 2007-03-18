@@ -968,7 +968,7 @@ nq_speed /= nq_mtime[0] - nq_mtime[1];
 
 
 extern char *svc_strings[];
-extern const int num_svc_strings;
+extern int num_svc_strings;
 
 #define SHOWNET(x) {if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);}
 

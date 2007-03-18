@@ -229,7 +229,7 @@ void V_DriftPitch (void)
 // don't count small mouse motion
 	if (cl.nodrift)
 	{
-		if ( fabs(cl.frames[(cls.netchan.outgoing_sequence-1)&UPDATE_MASK].cmd.forwardmove) < 200)
+		if ( abs(cl.frames[(cls.netchan.outgoing_sequence-1)&UPDATE_MASK].cmd.forwardmove) < 200)
 			cl.driftmove = 0;
 		else
 			cl.driftmove += cls.frametime;
@@ -624,18 +624,18 @@ V_UpdatePalette
 void V_UpdatePalette (void)
 {
 	int		i, j;
-	qbool	new;
+	qbool	newp;
 	static float	prev_blend[4];
 	float	a, rgb[3];
 	int		c;
 	float	gamma, contrast;
 	static float	old_gamma, old_contrast, old_hwblend;
 
-	new = false;
+	newp = false;
 
 	for (i=0 ; i<4 ; i++) {
 		if (v_blend[i] != prev_blend[i]) {
-			new = true;
+			newp = true;
 			prev_blend[i] = v_blend[i];
 		}
 	}
@@ -643,21 +643,21 @@ void V_UpdatePalette (void)
 	gamma = bound (0.3, gl_gamma.value, 3);
 	if (gamma != old_gamma) {
 		old_gamma = gamma;
-		new = true;
+		newp = true;
 	}
 
 	contrast = bound (1, gl_contrast.value, 3);
 	if (contrast != old_contrast) {
 		old_contrast = contrast;
-		new = true;
+		newp = true;
 	}
 
 	if (gl_hwblend.value != old_hwblend) {
-		new = true;
+		newp = true;
 		old_hwblend = gl_hwblend.value;
 	}
 
-	if (!new)
+	if (!newp)
 		return;
 
 	a = v_blend[3];
@@ -679,7 +679,7 @@ void V_UpdatePalette (void)
 			if (c > 255)
 				c = 255;
 			// apply gamma
-			c = 255 * pow((c + 0.5)/255.5, gamma) + 0.5;
+			c = 255 * pow((c + 0.5)/255.5, (double)gamma) + 0.5;
 			c = bound (0, c, 255);
 			ramps[j][i] = c << 8;
 		}

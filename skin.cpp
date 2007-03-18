@@ -90,7 +90,7 @@ byte *Skin_Cache (skin_t *skin)
 	if (skin->failedload)
 		return NULL;
 
-	out = Cache_Check (&skin->cache);
+	out = (byte *)Cache_Check (&skin->cache);
 	if (out)
 		return out;
 
@@ -109,7 +109,7 @@ byte *Skin_Cache (skin_t *skin)
 		return NULL;
 	}
 
-	out = pix = Cache_Alloc (&skin->cache, 320*200, skin->name);
+	out = pix = (byte *)Cache_Alloc (&skin->cache, 320*200, skin->name);
 	if (!out)
 		Sys_Error ("Skin_Cache: couldn't allocate");
 

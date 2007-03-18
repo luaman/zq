@@ -38,7 +38,7 @@ void QLib_Init(void) {
 	int i;
 
 	for (i = 0; i < qlib_nummodules; i++) {
-		registeredModules[i].id = i;
+		registeredModules[i].id = (qlib_id_t)i;
 		registeredModules[i].loaded = false;
 		registeredModules[i].shutdown = NULL;
 	}

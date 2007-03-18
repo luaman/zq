@@ -246,23 +246,23 @@ void R_GetTranslatedPlayerSkin (int colormap, int *texture, int *fb_texture)
 	struct skin_s *skin;
 	byte *data;
 	r_translation_t *cur;
-	translation_info_t *new;
+	translation_info_t *newt;
 
 	assert (colormap >= 0 && colormap <= MAX_CLIENTS);
 	if (!colormap)
 		return;
 
 	cur = r_translations + (colormap - 1);
-	new = r_refdef2.translations + (colormap - 1);
+	newt = r_refdef2.translations + (colormap - 1);
 
 	// rebuild if necessary
-	if (new->topcolor != cur->topcolor
-		|| new->bottomcolor != cur->bottomcolor
-		|| strcmp(new->skinname, cur->skinname))
+	if (newt->topcolor != cur->topcolor
+		|| newt->bottomcolor != cur->bottomcolor
+		|| strcmp(newt->skinname, cur->skinname))
 	{
-		cur->topcolor = new->topcolor;
-		cur->bottomcolor = new->bottomcolor;
-		strlcpy (cur->skinname, new->skinname, sizeof(cur->skinname));
+		cur->topcolor = newt->topcolor;
+		cur->bottomcolor = newt->bottomcolor;
+		strlcpy (cur->skinname, newt->skinname, sizeof(cur->skinname));
 
 		if (!cur->skinname[0]) {
 			data = NULL;
@@ -458,7 +458,7 @@ void R_ScreenShot_f (void)
 		}
 	}		
 
-	buffer = Q_malloc (vid.realwidth * vid.realheight * 3 + 18);
+	buffer = (byte *)Q_malloc (vid.realwidth * vid.realheight * 3 + 18);
 	memset (buffer, 0, 18);
 	buffer[2] = 2;          // uncompressed type
 	buffer[12] = vid.realwidth&255;
@@ -591,7 +591,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 // 
 // save the pcx file 
 // 
-	newbuf = Q_malloc (vid.realheight * vid.realwidth * 3);
+	newbuf = (unsigned char *)Q_malloc (vid.realheight * vid.realwidth * 3);
 
 	glReadPixels (0, 0, vid.realwidth, vid.realheight, GL_RGB, GL_UNSIGNED_BYTE, newbuf);
 

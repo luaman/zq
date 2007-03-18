@@ -41,7 +41,8 @@ void (*vid_menukeyfn)(int key);
 
 enum {m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer,
 	m_setup, m_options, m_video, m_keys, m_help, m_quit,
-	m_gameoptions, m_fps, m_demos} m_state;
+	m_gameoptions, m_fps, m_demos};
+int m_state;
 
 void M_Menu_Main_f (void);
 	void M_Menu_SinglePlayer_f (void);

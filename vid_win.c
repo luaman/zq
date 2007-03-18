@@ -2756,7 +2756,7 @@ MAIN WINDOW
 
 LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-int IN_TranslateKeyEvent (int lParam, int wParam, qbool down);
+void IN_TranslateKeyEvent (int lParam, int wParam, qbool down);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (

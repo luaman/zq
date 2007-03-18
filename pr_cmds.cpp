@@ -389,20 +389,20 @@ static void PF_normalize (void)
 {
 	float	*value1;
 	vec3_t	newvalue;
-	float	new;
+	float	newf;
 	
 	value1 = G_VECTOR(OFS_PARM0);
 
-	new = value1[0] * value1[0] + value1[1] * value1[1] + value1[2]*value1[2];
+	newf = value1[0] * value1[0] + value1[1] * value1[1] + value1[2]*value1[2];
 	
-	if (new == 0)
+	if (newf == 0)
 		newvalue[0] = newvalue[1] = newvalue[2] = 0;
 	else
 	{
-		new = 1/sqrt(new);
-		newvalue[0] = value1[0] * new;
-		newvalue[1] = value1[1] * new;
-		newvalue[2] = value1[2] * new;
+		newf = 1/sqrt(newf);
+		newvalue[0] = value1[0] * newf;
+		newvalue[1] = value1[1] * newf;
+		newvalue[2] = value1[2] * newf;
 	}
 	
 	VectorCopy (newvalue, G_VECTOR(OFS_RETURN));	
@@ -419,13 +419,13 @@ float vlen(vector v) = #12
 static void PF_vlen (void)
 {
 	float	*value1;
-	float	new;
+	float	newf;
 	
 	value1 = G_VECTOR(OFS_PARM0);
 
-	new = DotProduct(value1, value1);
+	newf = DotProduct(value1, value1);
 	
-	G_FLOAT(OFS_RETURN) = (new) ? sqrt(new) : 0;
+	G_FLOAT(OFS_RETURN) = (newf) ? sqrt(newf) : 0;
 }
 
 
@@ -1699,7 +1699,7 @@ static void NQP_Process (void)
 			NQP_Skip (1);
 		}
 		else if (cmd == svc_finale) {
-			byte *p = memchr (nqp_buf_data + 1, 0, nqp_buf.cursize - 1);
+			byte *p = (byte *)memchr (nqp_buf_data + 1, 0, nqp_buf.cursize - 1);
 			if (!p)
 				goto waitformore;
 			nqp_expect = (p - nqp_buf_data) + 1;
@@ -1713,7 +1713,7 @@ static void NQP_Process (void)
 				MSG_WriteAngle (&sv.reliable_datagram, svs.clients[0].edict->v.angles[i]);
 		}
 		else if (cmd == nq_svc_cutscene) {
-			byte *p = memchr (nqp_buf_data + 1, 0, nqp_buf.cursize - 1);
+			byte *p = (byte *)memchr (nqp_buf_data + 1, 0, nqp_buf.cursize - 1);
 			if (!p)
 				goto waitformore;
 			MSG_WriteByte (&sv.reliable_datagram, svc_stufftext);
@@ -2961,7 +2961,7 @@ void PR_InitBuiltins (void)
 		if (ext_builtins[i].num + 1 > pr_numbuiltins)
 			pr_numbuiltins = ext_builtins[i].num + 1;
 
-	pr_builtins = Q_malloc(pr_numbuiltins * sizeof(builtin_t));
+	pr_builtins = (builtin_t *)Q_malloc(pr_numbuiltins * sizeof(builtin_t));
 	memcpy (pr_builtins, std_builtins, sizeof(std_builtins));
 	for (i = num_std_builtins; i < pr_numbuiltins; i++)
 		pr_builtins[i] = PF_Fixme;

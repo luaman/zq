@@ -234,7 +234,7 @@ void SV_Kick_f (void)
 			saved_state = cl->state;
 			cl->state = cs_free; // HACK: don't broadcast to this client
 			SV_BroadcastPrintf (PRINT_HIGH, "%s was kicked%s\n", cl->name, reason);
-			cl->state = saved_state;
+			cl->state = (client_state_e)saved_state;
 			SV_ClientPrintf (cl, PRINT_HIGH, "You were kicked from the game%s\n", reason);
 			SV_DropClient (cl); 
 			return;

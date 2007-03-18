@@ -282,7 +282,7 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	PR_LoadProgs ();
 
 	// allocate edicts
-	sv.edicts = Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");
+	sv.edicts = (edict_t *)Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");
 	
 	// leave slots at start for clients only
 	sv.num_edicts = MAX_CLIENTS + 1;

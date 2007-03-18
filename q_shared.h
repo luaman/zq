@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef _MSC_VER
 #pragma warning( disable : 4244 4127 4201 4214 4514 4305 4115 4018 4996)
+#pragma warning( disable : 4309)	// truncation of constant value
 #endif
 
 #ifdef _MSC_VER
@@ -168,9 +169,9 @@ char wc2char (wchar wc);
 wchar *str2wcs (const char *str);
 char *wcs2str (const wchar *ws);
 #ifdef _WIN32
-#define qwcscpy wcscpy
-#define qwcschr wcschr
-#define qwcslen wcslen
+#define qwcscpy(a,b) (wchar *)wcscpy((wchar_t *)(a), (wchar_t *)(b))
+#define qwcschr(a,b) (wchar *)wcschr((wchar_t *)(a),b)
+#define qwcslen(a) wcslen((wchar_t *)(a))
 #else
 wchar *qwcscpy (wchar *dest, const wchar *src);
 wchar *qwcschr (const wchar *ws, wchar wc);
