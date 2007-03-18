@@ -161,17 +161,17 @@ Returns true if the file exists, otherwise it attempts
 to start a download from the server.
 ===============
 */
-qbool CL_CheckOrDownloadFile (char *filename)
+qbool CL_CheckOrDownloadFile (string filename)
 {
 	FILE	*f;
 
-	if (strstr (filename, ".."))
+	if (filename.find("..") != string::npos)
 	{
 		Com_Printf ("Refusing to download a path with ..\n");
 		return true;
 	}
 
-	FS_FOpenFile (filename, &f);
+	FS_FOpenFile ((char *)filename.c_str(), &f);
 	if (f)
 	{	// it exists, no need to download
 		fclose (f);
@@ -187,7 +187,7 @@ qbool CL_CheckOrDownloadFile (char *filename)
 	if (cls.demoplayback)
 		return true;
 
-	strcpy (cls.downloadname, filename);
+	strcpy (cls.downloadname, filename.c_str());
 	Com_Printf ("Downloading %s...\n", cls.downloadname);
 
 	// download to a temp name, and only rename
@@ -252,13 +252,13 @@ void CL_FindModelNumbers (void)
 	}
 }
 
-static void CL_TransmitModelCrc(int index, char *info_key)
+static void CL_TransmitModelCrc(int index, string info_key)
 {
 	if (index != -1) {
 		struct model_s *model = cl.model_precache[index];
 		unsigned short crc = R_ModelChecksum (model);
 		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message, va("setinfo %s %d", info_key, (int) crc));
+		MSG_WriteString (&cls.netchan.message, va("setinfo %s %d", info_key.c_str(), (int) crc));
 	}
 }
 

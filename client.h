@@ -526,7 +526,7 @@ int CL_CalcNet (void);
 void CL_ParseServerMessage (void);
 void CL_NewTranslation (int slot);
 void CL_UpdateSkins(void);
-qbool CL_CheckOrDownloadFile (char *filename);
+qbool CL_CheckOrDownloadFile (string filename);
 qbool CL_IsUploading (void);
 void CL_NextUpload (void);
 void CL_StartUpload (byte *data, int size);
