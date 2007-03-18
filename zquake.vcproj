@@ -54,7 +54,7 @@
 				AdditionalIncludeDirectories="libs"
 				PreprocessorDefinitions="NDEBUG;id386;GLQUAKE;WITH_PNG;WITH_PNG_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
-				ExceptionHandling="0"
+				ExceptionHandling="1"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
