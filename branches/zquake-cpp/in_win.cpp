@@ -1084,7 +1084,7 @@ static void IN_JoyMove (usercmd_t *cmd)
 
 	// complete initialization if first time in
 	// this is needed as cvars are not available at initialization time
-	if( joy_advancedinit != true )
+	if( joy_advancedinit == false )
 	{
 		Joy_AdvancedUpdate_f();
 		joy_advancedinit = true;
@@ -1097,7 +1097,7 @@ static void IN_JoyMove (usercmd_t *cmd)
 	}
 
 	// collect the joystick data, if possible
-	if (IN_ReadJoystick () != true)
+	if (IN_ReadJoystick () == false)
 	{
 		return;
 	}
