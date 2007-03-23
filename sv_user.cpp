@@ -1358,7 +1358,7 @@ static void Cmd_Join_f (void)
 
 	sv_client->old_frags = 0;
 	sv_client->spec_track = 0;
-	sv_client->connection_started = 0;
+	sv_client->connection_started = svs.realtime;
 	SetUpClientEdict (sv_client, sv_client->edict);
 
 	// turn the spectator into a player
@@ -1432,7 +1432,7 @@ static void Cmd_Observe_f (void)
 
 	sv_client->old_frags = 0;
 	sv_client->spec_track = 0;
-	sv_client->connection_started = 0;
+	sv_client->connection_started = svs.realtime;
 	SetUpClientEdict (sv_client, sv_client->edict);
 
 	// turn the player into a spectator
