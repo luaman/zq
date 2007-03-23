@@ -29,6 +29,7 @@ typedef struct {
 
 static csentry_t table[] = {
 	{ "dm6", 0x5208da2b, 0xffafbed2 },
+	{ NULL, 0, 0 },
 };
 
 int Com_TranslateMapChecksum (char *mapname, int checksum)
