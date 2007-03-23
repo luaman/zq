@@ -802,6 +802,7 @@ void CLNQ_ConnectionlessPacket(void)
 		net_from.port = htons((short)MSG_ReadLong());
 
 		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, cls.qport);
+		cls.netchan.nqprotocol = true;
 		cls.state = ca_connected;
 
 		//send a dummy packet.
