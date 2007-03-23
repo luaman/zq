@@ -65,6 +65,7 @@ qbool	NET_StringToAdr (char *s, netadr_t *a);
 
 typedef struct
 {
+	qbool		nqprotocol;
 	qbool		fatal_error;
 
 	netsrc_t	sock;
