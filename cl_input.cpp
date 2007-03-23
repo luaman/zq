@@ -27,6 +27,7 @@ cvar_t	cl_nodelta = {"cl_nodelta","0"};
 cvar_t	cl_c2spps = {"cl_c2spps","0"};
 cvar_t	cl_c2sImpulseBackup = {"cl_c2sImpulseBackup","3"};
 cvar_t	cl_smartjump = {"cl_smartjump", "1"};
+cvar_t	cl_autohop = {"cl_autohop", "0"};
 cvar_t	cl_broken_ankle_sucks = {"cl_broken_ankle_sucks","0"};
 #ifdef AGRIP
 cvar_t  agv_mov_turnvalue = {"agv_mov_turnvalue","30",CVAR_USERINFO};
@@ -511,6 +512,19 @@ int MakeChar (int i)
 	return i;
 }
 
+static void Autohop (usercmd_t *cmd)
+{
+	static float oldzvel;
+
+	if (!(cmd->buttons & 2)) {
+		oldzvel = cl.simvel[2];
+		return;
+	}
+	if (cl.simvel[2] <= 0 && oldzvel > 0)
+		cmd->buttons &= ~2;
+	oldzvel = cl.simvel[2];
+}
+
 /*
 ==============
 CL_FinishMove
@@ -592,6 +606,9 @@ void CL_FinishMove (usercmd_t *cmd)
 		cmd->angles[YAW] = anglemod(cmd->angles[YAW] + 180);
 		in_invertview = false;
 	}
+
+	if (cl_autohop.value)
+		Autohop (cmd);
 
 //
 // chop down so no extra bits are kept that the server wouldn't get
@@ -870,6 +887,7 @@ void CL_InitInput (void)
 	Cvar_Register (&cl_c2sImpulseBackup);
 	Cvar_Register (&cl_c2spps);
 	Cvar_Register (&cl_smartjump);
+	Cvar_Register (&cl_autohop);
 	Cvar_Register (&cl_broken_ankle_sucks);
 }
 
