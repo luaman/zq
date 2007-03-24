@@ -54,15 +54,15 @@ char	com_gamedirfile[MAX_QPATH];
 COM_SkipPath
 ============
 */
-char *COM_SkipPath (char *pathname)
+char *COM_SkipPath (const char *pathname)
 {
-	char	*last;
+	char *last;
 	
-	last = pathname;
+	last = (char *)pathname;
 	while (*pathname)
 	{
 		if (*pathname=='/')
-			last = pathname+1;
+			last = (char *)pathname+1;
 		pathname++;
 	}
 	return last;
@@ -115,9 +115,9 @@ Extract file name without extension, to be used for hunk tags
 (up to 32 characters, including trailing zero)
 ============
 */
-void COM_FileBase (char *in, char *out)
+void COM_FileBase (const char *in, char *out)
 {
-	char *p, *start, *end;
+	const char *p, *start, *end;
 	int	length;
 
 	end = in + strlen(in);
@@ -666,7 +666,7 @@ qbool	file_from_gamedir;	// global indicating file came from a gamedir (and game
 
 
 // we use this in progs loading
-qbool FS_FindFile (char *filename)
+qbool FS_FindFile (const string filename)
 {
 	searchpath_t	*search;
 	char		netpath[MAX_OSPATH];
@@ -688,7 +688,7 @@ qbool FS_FindFile (char *filename)
 		// look through all the pak file elements
 			pak = search->pack;
 			for (i=0 ; i<pak->numfiles ; i++)
-				if (!strcmp (pak->files[i].name, filename))
+				if (pak->files[i].name == filename)
 				{	// found it!
 					fs_filesize = pak->files[i].filelen;
 					file_from_pak = true;
@@ -697,7 +697,7 @@ qbool FS_FindFile (char *filename)
 		}
 		else
 		{		
-			snprintf (netpath, sizeof(netpath), "%s/%s", search->filename, filename);
+			snprintf (netpath, sizeof(netpath), "%s/%s", search->filename, filename.c_str());
 
 			f = fopen (netpath, "rb");
 			if (!f)
@@ -720,7 +720,7 @@ qbool FS_FindFile (char *filename)
 
 
 
-int FS_FOpenFile (char *filename, FILE **file)
+int FS_FOpenFile (const string filename, FILE **file)
 {
 	searchpath_t	*search;
 	char		netpath[MAX_OSPATH];
@@ -744,7 +744,7 @@ int FS_FOpenFile (char *filename, FILE **file)
 		// look through all the pak file elements
 			pak = search->pack;
 			for (i=0 ; i<pak->numfiles ; i++)
-				if (!strcmp (pak->files[i].name, filename))
+				if (pak->files[i].name == filename)
 				{	// found it!
 					if (developer.value)
 						Sys_Printf ("PackFile: %s : %s\n", pak->filename, filename);
@@ -760,7 +760,7 @@ int FS_FOpenFile (char *filename, FILE **file)
 		}
 		else
 		{		
-			snprintf (netpath, sizeof(netpath), "%s/%s", search->filename, filename);
+			snprintf (netpath, sizeof(netpath), "%s/%s", search->filename, filename.c_str());
 
 			*file = fopen (netpath, "rb");
 			if (!*file)
@@ -794,7 +794,7 @@ Always appends a 0 byte to the loaded data.
 cache_user_t *loadcache;
 byte	*loadbuf;
 int		loadsize;
-byte *FS_LoadFile (char *path, int usehunk)
+byte *FS_LoadFile (const string path, int usehunk)
 {
 	FILE	*h;
 	byte	*buf;
@@ -809,7 +809,7 @@ byte *FS_LoadFile (char *path, int usehunk)
 		return NULL;
 	
 // extract the filename base name for hunk tag
-	COM_FileBase (path, base);
+	COM_FileBase (path.c_str(), base);
 	
 	if (usehunk == 1)
 		buf = (byte *)Hunk_AllocName (len+1, base);
@@ -845,24 +845,24 @@ byte *FS_LoadFile (char *path, int usehunk)
 	return buf;
 }
 
-byte *FS_LoadHunkFile (char *path)
+byte *FS_LoadHunkFile (const string path)
 {
 	return FS_LoadFile (path, 1);
 }
 
-byte *FS_LoadTempFile (char *path)
+byte *FS_LoadTempFile (const string path)
 {
 	return FS_LoadFile (path, 2);
 }
 
-void FS_LoadCacheFile (char *path, struct cache_user_s *cu)
+void FS_LoadCacheFile (const string path, struct cache_user_s *cu)
 {
 	loadcache = cu;
 	FS_LoadFile (path, 3);
 }
 
 // uses temp hunk if larger than bufsize
-byte *FS_LoadStackFile (char *path, void *buffer, int bufsize)
+byte *FS_LoadStackFile (const string path, void *buffer, int bufsize)
 {
 	byte	*buf;
 	
@@ -873,7 +873,7 @@ byte *FS_LoadStackFile (char *path, void *buffer, int bufsize)
 	return buf;
 }
 
-byte *FS_LoadHeapFile (char *path)
+byte *FS_LoadHeapFile (const string path)
 {
 	return FS_LoadFile (path, 5);
 }
@@ -1123,7 +1123,7 @@ Searches the string for the given
 key and returns the associated value, or an empty string.
 ===============
 */
-char *Info_ValueForKey (char *s, char *key)
+char *Info_ValueForKey (const char *s, const char *key)
 {
 	char	pkey[512];
 	static	char value[4][512];	// use two buffers so compares
@@ -1163,6 +1163,11 @@ char *Info_ValueForKey (char *s, char *key)
 			return "";
 		s++;
 	}
+}
+
+const string Info_ValueForKey (const string s, const string key)
+{
+	return Info_ValueForKey (s.c_str(), key.c_str());
 }
 
 void Info_RemoveKey (char *s, char *key)
@@ -1323,6 +1328,16 @@ void Info_SetValueForKey (char *s, char *key, char *value, int maxsize)
 	}
 
 	Info_SetValueForStarKey (s, key, value, maxsize);
+}
+
+void Info_SetValueForKey (string s, const string key, const string value)
+{
+	int maxsize = s.length() + MAX_INFO_KEY + 3;
+	char *buf = new char[maxsize];
+	strcpy (buf, s.c_str());
+	Info_SetValueForKey (buf, (char *)key.c_str(), (char *)value.c_str(), maxsize);
+	s = buf;
+	delete[] buf;
 }
 
 void Info_Print (char *s)

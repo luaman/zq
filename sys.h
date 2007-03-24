@@ -47,7 +47,7 @@ char *Sys_ConsoleInput (void);
 
 // if successful, returns Q_malloc'ed string (make sure to free it afterwards)
 // returns NULL if the operation failed for some reason
-unsigned short *Sys_GetClipboardTextW (void);
+wchar *Sys_GetClipboardTextW (void);
 
 // Perform Key_Event () callbacks until the input que is empty
 void Sys_SendKeyEvents (void);

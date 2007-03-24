@@ -378,7 +378,7 @@ static void NQD_ParseServerData (void)
 
 // parse signon message
 	str = MSG_ReadString ();
-	strlcpy (cl.levelname, str, sizeof(cl.levelname));
+	cl.levelname = str;
 
 // separate the printfs so the server message can have a color
 	Com_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
@@ -398,7 +398,7 @@ static void NQD_ParseServerData (void)
 			break;
 		if (nummodels == MAX_MODELS)
 			Host_Error ("Server sent too many model precaches");
-		strlcpy (cl.model_name[nummodels], str, sizeof(cl.model_name[0]));
+		cl.model_name[nummodels] = str;
 		Mod_TouchModel (str);
 	}
 
@@ -410,7 +410,7 @@ static void NQD_ParseServerData (void)
 			break;
 		if (numsounds == MAX_SOUNDS)
 			Host_Error ("Server sent too many sound precaches");
-		strlcpy (cl.sound_name[numsounds], str, sizeof(cl.sound_name[0]));
+		cl.sound_name[numsounds] = str;
 		S_TouchSound (str);
 	}
 
@@ -419,7 +419,7 @@ static void NQD_ParseServerData (void)
 //
 	cl.clipmodels[1] = CM_LoadMap (cl.model_name[1], true, NULL, &cl.map_checksum2);
 
-	COM_StripExtension (COM_SkipPath(cl.model_name[1]), mapname);
+	COM_StripExtension (COM_SkipPath(cl.model_name[1].c_str()), mapname);
 	cs2 = Com_TranslateMapChecksum (mapname, cl.map_checksum2);
 	gpl_map = (cl.map_checksum2 != cs2);
 	cl.map_checksum2 = cs2;
@@ -429,16 +429,16 @@ static void NQD_ParseServerData (void)
 
 	for (i = 1; i < nummodels; i++)
 	{
-		cl.model_precache[i] = Mod_ForName (cl.model_name[i], false, i == 1);
+		cl.model_precache[i] = Mod_ForName (cl.model_name[i].c_str(), false, i == 1);
 		if (cl.model_precache[i] == NULL)
 			Host_Error ("Model %s not found", cl.model_name[i]);
 
 		if (cl.model_name[i][0] == '*')
-			cl.clipmodels[i] = CM_InlineModel(cl.model_name[i]);
+			cl.clipmodels[i] = CM_InlineModel(cl.model_name[i].c_str());
 	}
 
 	for (i=1 ; i<numsounds ; i++) {
-		cl.sound_precache[i] = S_PrecacheSound (cl.sound_name[i]);
+		cl.sound_precache[i] = S_PrecacheSound ((char *)cl.sound_name[i].c_str());
 	}
 
 
@@ -446,7 +446,7 @@ static void NQD_ParseServerData (void)
 	if (!cl.model_precache[1])
 		Host_Error ("NQD_ParseServerData: NULL worldmodel");
 
-	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
+	COM_StripExtension (COM_SkipPath(cl.model_name[1].c_str()), mapname);
 	Cvar_ForceSet (&host_mapname, mapname);
 
 	CL_ClearParticles ();

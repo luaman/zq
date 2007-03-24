@@ -94,9 +94,9 @@ byte *CM_FatPVS (vec3_t org);
 int CM_FindTouchedLeafs (const vec3_t mins, const vec3_t maxs, int leafs[], int maxleafs, int headnode, int *topnode);
 char *CM_EntityString (void);
 int	CM_NumInlineModels (void);
-cmodel_t *CM_InlineModel (char *name);
+cmodel_t *CM_InlineModel (const string name);
 void CM_InvalidateMap (void);
-cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned *checksum2);
+cmodel_t *CM_LoadMap (const string name, qbool clientload, unsigned *checksum, unsigned *checksum2);
 void CM_Init (void);
 
 #endif /* _CMODEL_H_ */

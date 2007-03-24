@@ -132,6 +132,100 @@ void OnChangeSkinForcing(cvar_t *var, char *str, qbool *cancel)
 
 //============================================================================
 
+void client_state_t::clear ()
+{
+	servercount = 0;
+	serverinfo = "";
+	protocol = 0;
+	maxclients = 0;
+	deathmatch = 0;
+	teamplay = 0;
+	gametype = 0;
+	teamfortress = false;
+	fpd = 0;
+	z_ext = 0;
+#ifdef VWEP_TEST
+	vwep_enabled = false;
+#endif
+	servertime_works = false;
+	maxfps = 0;
+	minpitch = 0;
+	maxpitch = 0;
+	allow_fbskins = false;
+	allow_fakeshaft = false;
+	allow_frj = false;
+	parsecount = 0;
+	oldparsecount = 0;
+	validsequence = 0;
+	oldvalidsequence = 0;
+	delta_sequence = 0;
+	spectator = false;
+	last_ping_request;
+	memset (frames, 0, sizeof(frames));
+	memset (&lastcmd, 0, sizeof(lastcmd));
+	servertime = 0;
+	memset (stats, 0, sizeof(stats));
+	memset (item_gettime, 0, sizeof(item_gettime));
+	faceanimtime = 0;
+	memset (cshifts, 0, sizeof(cshifts));
+	memset (viewangles, 0, sizeof(viewangles));
+	time = 0;
+	entlatency = 0;
+	memset (simorg, 0, sizeof(simorg));
+	memset (simvel, 0, sizeof(simvel));
+	memset (simangles, 0, sizeof(simangles));
+	pitchvel = 0;
+	nodrift = false;
+	driftmove = 0;
+	laststop = 0;
+	onground = false;
+	waterlevel = false;
+	crouch = 0;
+	landtime = 0;
+	viewheight = 0;
+	paused = 0;
+	ideal_punchangle = 0;
+	punchangle = 0;
+	rollangle = 0;
+	intermission = 0;
+	completed_time = 0;
+	solo_completed_time = 0;
+	for (int i = 0; i < MAX_MODELS; i++)
+		model_name[i] = "";
+#ifdef VWEP_TEST
+	for (int i = 0; i < MAX_VWEP_MODELS; i++)
+		vw_model_name[i] = "";
+#endif
+	for (int i = 0; i < MAX_SOUNDS; i++)
+		sound_name[i] = "";
+	memset (model_precache, 0, sizeof(model_precache));
+#ifdef VWEP_TEST
+	memset (vw_model_precache, 0, sizeof(vw_model_precache));
+#endif
+	memset (sound_precache, 0, sizeof(sound_precache));
+	memset (modelinfos, 0, sizeof(modelinfos));
+	memset (clipmodels, 0, sizeof(clipmodels));
+	map_checksum2 = 0;
+	memset (static_sounds, 0, sizeof(static_sounds));
+	num_static_sounds = 0;
+	levelname = "";
+	playernum = 0;
+	free_efrags = NULL;
+	num_entities = 0;
+	num_statics = 0;
+	num_nails = 0;
+	cdtrack = 0;
+	memset (players, 0, sizeof(players));
+#ifdef MVDPLAY
+	mvd_fixangle = 0;
+#endif
+	sprint_level = 0;
+	sprint_buf = "";
+	memset (&movevars, 0, sizeof(movevars));
+	memset (&pmove, 0, sizeof(pmove));
+	sky = "";
+}
+
 int CL_ClientState (void)
 {
 	return cls.state;
@@ -427,8 +521,7 @@ void CL_ClearState (void)
 	for (i = 0; i < UPDATE_BACKUP; i++)
 		Q_free (cl.frames[i].packet_entities.entities);
 
-// wipe the entire cl structure
-	memset (&cl, 0, sizeof(cl));
+	cl.clear();
 
 	SZ_Clear (&cls.netchan.message);
 

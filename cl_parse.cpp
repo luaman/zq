@@ -208,46 +208,42 @@ qbool CL_CheckOrDownloadFile (string filename)
 void CL_FindModelNumbers (void)
 {
 	int	i;
-	char s[MAX_QPATH];
 
 	cl_playerindex = cl_eyesindex = cl_spikeindex = cl_flagindex = -1;
 	cl_rocketindex = cl_grenadeindex = -1;
 
 	for (i = 1; i < MAX_MODELS; i++) {
-		if (strncmp(cl.model_name[i], "progs/", 6)
-		|| strcmp(cl.model_name[i] + strlen(cl.model_name[i]) - 4, ".mdl"))
+		if (cl.model_name[i].substr(0, 6) != "progs/"
+		|| cl.model_name[i].substr(cl.model_name[i].length() - 4) != ".mdl")
 			continue;
-		strlcpy (s, cl.model_name[i] + 6, strlen(cl.model_name[i]) - 6 - 4 + 1);
-		if (!strcmp(s, "spike"))
+		string s = cl.model_name[i].substr(6, cl.model_name[i].length() - 6 - 4);
+		if (s == "spike")
 			cl_spikeindex = i;
-		else if (!strcmp(s, "player")) {
+		else if (s == "player") {
 			cl_playerindex = i;
 			if (!strcmp(host_mapname.string, "hipend"))
 				cl.modelinfos[i] = mi_monster;	// lerp the cutscene hero's movement
-		} else if (!strcmp(s, "eyes"))
+		} else if (s == "eyes")
 			cl_eyesindex = i;
-		else if (!strcmp(s, "flag"))
+		else if (s == "flag")
 			cl_flagindex = i;
-		else if (!strcmp(s, "gib1") || !strcmp(s, "gib2") || !strcmp(s, "gib3")
-		|| !strcmp(s, "h_player") || !strcmp(s, "h_demon") || !strcmp(s, "h_dog")
-		|| !strcmp(s, "h_guard") || !strcmp(s, "h_knight") || !strcmp(s, "h_ogre")
-		|| !strcmp(s, "h_shams") || !strcmp(s, "h_wizard") || !strcmp(s, "h_zombie")
-		|| !strcmp(s, "h_hellkn") || !strcmp(s, "h_mega") || !strcmp(s, "h_shal"))
+		else if (s == "gib1" || s == "gib2" || s == "gib3" || s == "h_player"
+		|| s == "h_demon" || s == "h_dog" || s == "h_guard" || s == "h_knight"
+		|| s == "h_ogre" || s == "h_shams" || s == "h_wizard" || s == "h_zombie"
+		|| s == "h_hellkn" || s == "h_mega" || s == "h_shal")
 			cl.modelinfos[i] = mi_gib;
-		else if (!strcmp(s, "missile"))
+		else if (s == "missile")
 			cl_rocketindex = i;
-		else if (!strcmp(s, "grenade"))
+		else if (s == "grenade")
 			cl_grenadeindex = i;
-		else if (!strcmp(s, "v_axe") || !strcmp(s, "v_bio") || !strcmp(s, "v_grap")
-		|| !strcmp(s, "v_knife") || !strcmp(s, "v_knife2") || !strcmp(s, "v_medi")
-		|| !strcmp(s, "v_span"))
+		else if (s == "v_axe" || s == "v_bio" || s == "v_grap" || s == "v_knife"
+		|| s == "v_knife2" || s == "v_medi"	|| s == "v_span")
 			cl.modelinfos[i] = mi_no_lerp_hack;
-		else if (!strcmp(s, "soldier") || !strcmp(s, "dog") || !strcmp(s, "demon")
-		|| !strcmp(s, "ogre") || !strcmp(s, "shambler") || !strcmp(s, "knight")
-		|| !strcmp(s, "zombie") || !strcmp(s, "wizard") || !strcmp(s, "enforcer")
-		|| !strcmp(s, "fish") || !strcmp(s, "hknight") || !strcmp(s, "shalrath")
-		|| !strcmp(s, "tarbaby") || !strcmp(s, "armabody") || !strcmp(s, "armalegs")
-		|| !strcmp(s, "grem") || !strcmp(s, "scor"))
+		else if (s == "soldier" || s == "dog" || s == "demon" || s == "ogre"
+		|| s == "shambler" || s == "knight"	|| s == "zombie" || s == "wizard"
+		|| s == "enforcer" || s == "fish" || s == "hknight" || s == "shalrath"
+		|| s == "tarbaby" || s == "armabody" || s == "armalegs"
+		|| s == "grem" || s == "scor")
 			cl.modelinfos[i] = mi_monster;
 	}
 }
@@ -356,7 +352,7 @@ Model_NextDownload
 */
 void Model_NextDownload (void)
 {
-	char	*s;
+	string s;
 	int		i;
 	qbool gpl_map;
 	extern qbool r_gpl_map;
@@ -384,7 +380,7 @@ void Model_NextDownload (void)
 
 	cl.clipmodels[1] = CM_LoadMap (cl.model_name[1], true, NULL, &cl.map_checksum2);
 
-	COM_StripExtension (COM_SkipPath(cl.model_name[1]), mapname);
+	COM_StripExtension (COM_SkipPath(cl.model_name[1].c_str()), mapname);
 	cs2 = Com_TranslateMapChecksum (mapname, cl.map_checksum2);
 	gpl_map = (cl.map_checksum2 != cs2);
 	cl.map_checksum2 = cs2;
@@ -397,7 +393,7 @@ void Model_NextDownload (void)
 		if (!cl.model_name[i][0])
 			break;
 
-		cl.model_precache[i] = Mod_ForName (cl.model_name[i], false, i == 1);
+		cl.model_precache[i] = Mod_ForName(cl.model_name[i], false, i == 1);
 
 		if (!cl.model_precache[i])
 		{
@@ -430,8 +426,7 @@ ownload
 */
 void Sound_NextDownload (void)
 {
-	char	*s;
-	int		i;
+	string s;
 
 	if (cls.downloadnumber == 0)
 	{
@@ -446,15 +441,15 @@ void Sound_NextDownload (void)
 		; cls.downloadnumber++)
 	{
 		s = cl.sound_name[cls.downloadnumber];
-		if (!CL_CheckOrDownloadFile(va("sound/%s",s)))
+		if (!CL_CheckOrDownloadFile("sound/" + s))
 			return;		// started a download
 	}
 
-	for (i=1 ; i<MAX_SOUNDS ; i++)
+	for (int i=1 ; i<MAX_SOUNDS ; i++)
 	{
 		if (!cl.sound_name[i][0])
 			break;
-		cl.sound_precache[i] = S_PrecacheSound (cl.sound_name[i]);
+		cl.sound_precache[i] = S_PrecacheSound((char *)cl.sound_name[i].c_str());
 	}
 
 	// done with sounds, request models now
@@ -612,7 +607,7 @@ void CL_ParseDownload (void)
 	// open the file if not opened yet
 	if (!cls.download)
 	{
-		if (strncmp(cls.downloadtempname,"skins/",6))
+		if (strncmp(cls.downloadtempname, "skins/", 6))
 			snprintf (name, sizeof(name), "%s/%s", cls.gamedir, cls.downloadtempname);
 		else
 			snprintf (name, sizeof(name), "qw/%s", cls.downloadtempname);
@@ -856,7 +851,7 @@ void CL_ParseServerData (void)
 
 	// get the full level name
 	str = MSG_ReadString ();
-	strlcpy (cl.levelname, str, sizeof(cl.levelname));
+	cl.levelname = str;
 
 	// get the movevars
 	if (cl.protocol >= 25)
@@ -927,7 +922,7 @@ void CL_ParseSoundlist (void)
 		numsounds++;
 		if (numsounds == MAX_SOUNDS)
 			Host_Error ("Server sent too many sound precaches");
-		strlcpy (cl.sound_name[numsounds], str, sizeof(cl.sound_name[numsounds]));
+		cl.sound_name[numsounds] = str;
 	}
 
 	if (cl.protocol >= 26)
@@ -972,7 +967,7 @@ void CL_ParseModellist (void)
 		if (++nummodels==MAX_MODELS)
 			Host_Error ("Server sent too many model precaches");
 
-		strlcpy (cl.model_name[nummodels], str, sizeof(cl.model_name[nummodels]));
+		cl.model_name[nummodels] = str;
 	}
 
 	if (cl.protocol >= 26)
@@ -986,12 +981,9 @@ void CL_ParseModellist (void)
 		}
 	}
 
-
-{
 	char	mapname[MAX_QPATH];
-	COM_StripExtension (COM_SkipPath (cl.model_name[1]), mapname);
+	COM_StripExtension (COM_SkipPath(cl.model_name[1].c_str()), mapname);
 	Cvar_ForceSet (&host_mapname, mapname);
-}
 
 	cls.downloadnumber = 0;
 	cls.downloadtype = dl_model;
@@ -1140,7 +1132,7 @@ void CL_ParseStartSoundPacket(void)
 
     S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
 	if (ent == cl.playernum+1)
-		TP_CheckPickupSound (cl.sound_name[sound_num], pos);
+		TP_CheckPickupSound ((char *)cl.sound_name[sound_num].c_str(), pos);
 }       
 
 
@@ -1355,39 +1347,36 @@ MUST be called at least once when entering a new map so that things initialize p
 */
 void CL_ProcessServerInfo (void)
 {
-	char	*p;
-	int teamplay, fpd;
+	string p;
 
 	// game type (sbar code checks it)
 	p = Info_ValueForKey(cl.serverinfo, "deathmatch");
-	if (*p)
-		cl.gametype = atoi(p) ? GAME_DEATHMATCH : GAME_COOP;
+	if (p != "")
+		cl.gametype = atoi(p.c_str()) ? GAME_DEATHMATCH : GAME_COOP;
 	else
 		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
 
-	cl.maxclients = Q_atoi(Info_ValueForKey(cl.serverinfo, "maxclients"));
-
+	cl.maxclients = Q_atoi(Info_ValueForKey(cl.serverinfo, "maxclients").c_str());
 	cl.maxfps = Q_atof(Info_ValueForKey(cl.serverinfo, "maxfps"));
 
 	p = Info_ValueForKey (cl.serverinfo, "fbskins");
-	cl.allow_fbskins = *p ? (Q_atoi(p) != 0) : !cl.teamfortress; // for TF, fbskins are disabled by default
+	cl.allow_fbskins = (p != "") ? (Q_atoi(p) != 0) : !cl.teamfortress; // for TF, fbskins are disabled by default
 
 	p = Info_ValueForKey (cl.serverinfo, "fakeshaft");
-	if (*p)
+	if (p != "")
 		cl.allow_fakeshaft = Q_atoi(p);
 	else {
 		p = Info_ValueForKey (cl.serverinfo, "truelightning");
-		cl.allow_fakeshaft = *p ? (Q_atoi(p) != 0) : true;	// allowed by default
+		cl.allow_fakeshaft = (p != "") ? (Q_atoi(p) != 0) : true;	// allowed by default
 	}
 
 	p = Info_ValueForKey (cl.serverinfo, "allow_frj");
-	cl.allow_frj = *p ? Q_atoi(p) : true;		// allowed by default
+	cl.allow_frj = (p != "") ? Q_atoi(p) : true;		// allowed by default
 
-	fpd = cls.demoplayback ? 0 : atoi(Info_ValueForKey(cl.serverinfo, "fpd"));
-
+	int fpd = cls.demoplayback ? 0 : atoi(Info_ValueForKey(cl.serverinfo, "fpd").c_str());
 
 	// Get the server's ZQuake extension bits
-	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext"));
+	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext").c_str());
 
 #ifdef VWEP_TEST
 	if (atoi(Info_ValueForKey(cl.serverinfo, "*vwtest")))
@@ -1396,9 +1385,9 @@ void CL_ProcessServerInfo (void)
 
 	// Initialize cl.maxpitch & cl.minpitch
 	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "maxpitch") : "";
-	cl.maxpitch = *p ? Q_atof(p) : 80.0f;
+	cl.maxpitch = (p != "") ? Q_atof(p) : 80.0f;
 	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "minpitch") : "";
-	cl.minpitch = *p ? Q_atof(p) : -70.0f;
+	cl.minpitch = (p != "") ? Q_atof(p) : -70.0f;
 
 	// movement vars for prediction
 	cl.movevars.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
@@ -1407,11 +1396,11 @@ void CL_ProcessServerInfo (void)
 	cl.movevars.pground = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_pground")) != 0)
 		&& (cl.z_ext & Z_EXT_PF_ONGROUND) /* pground doesn't make sense without this */;
 	p = Info_ValueForKey(cl.serverinfo, "pm_ktjump");
-	cl.movevars.ktjump = *p ? Q_atof(p) : (cl.teamfortress ? 0 : 0.5); 
+	cl.movevars.ktjump = (p != "") ? Q_atof(p) : (cl.teamfortress ? 0 : 0.5); 
 
 	// deathmatch and teamplay
-	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch"));
-	teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay"));
+	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch").c_str());
+	int teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay").c_str());
 
 	// update skins if needed
 	if (teamplay != cl.teamplay || fpd != cl.fpd) {
@@ -1422,11 +1411,11 @@ void CL_ProcessServerInfo (void)
 	}
 
 	// parse skybox
-	if (strcmp(cl.sky, (p = Info_ValueForKey(cl.serverinfo, "sky")))) {
+	if (cl.sky != (p = Info_ValueForKey(cl.serverinfo, "sky"))) {
 		// sky has changed
-		strcpy (cl.sky, p);
-		if (strstr(cl.sky, ".."))
-			cl.sky[0] = 0;
+		cl.sky = p;
+		if (cl.sky.find("..") != string::npos)
+			cl.sky = "";
 		if (cls.state >= ca_onserver && cl.model_precache[1])
 			R_SetSky (cl.sky);
 	}
@@ -1530,16 +1519,16 @@ void CL_ParseServerInfoChange (void)
 
 	Com_DPrintf ("SERVERINFO: %s=%s\n", key, value);
 
-	Info_SetValueForKey (cl.serverinfo, key, value, MAX_SERVERINFO_STRING);
+	Info_SetValueForKey (cl.serverinfo, key, value);
 
 	CL_ProcessServerInfo ();
 }
 
 
 // for CL_ParsePrint
-static void FlushString (char *s, int level, qbool team, int offset)
+static void FlushString (const string s, int level, qbool team, int offset)
 {
-	wchar *ws = decode_string (s);
+	wchar *ws = decode_string(s.c_str());
 
 #ifndef AGRIP
 	if (level == PRINT_CHAT)
@@ -1578,7 +1567,7 @@ static void FlushString (char *s, int level, qbool team, int offset)
 		return;
 	if (team)
 		level = 4;
-	TP_SearchForMsgTriggers (s + offset, level);
+	TP_SearchForMsgTriggers ((char *)s.c_str() + offset, level);
 }
 
 /*
@@ -1588,16 +1577,13 @@ CL_ParsePrint
 */
 void CL_ParsePrint (void)
 {
-	char	*s, str[2048];
-	char	*p;
-	int		len;
-	int		level, flags=0;
+	int		flags=0;
 	int		offset = 0;
 	extern cvar_t	cl_chatsound, cl_nofake;
 	qbool	suppress_talksound;
 
-	level = MSG_ReadByte ();
-	s = MSG_ReadString ();
+	int level = MSG_ReadByte ();
+	char *s = MSG_ReadString ();
 
 	if (level == PRINT_CHAT) {
 		TP_CheckVersionRequest (s);
@@ -1619,7 +1605,7 @@ void CL_ParsePrint (void)
 			S_LocalSound ("misc/talk.wav");
 
 		if (cl_nofake.value == 1 || (cl_nofake.value == 2 && flags != 2)) {
-			for (p = s; *p; p++)
+			for (char *p = s; *p; p++)
 				if (*p == 13 || (*p == 10 && p[1]))
 					*p = ' '; 
 		}
@@ -1638,14 +1624,13 @@ void CL_ParsePrint (void)
 	}
 //#endif
 
-	strlcat (cl.sprint_buf, s, sizeof(cl.sprint_buf));
+	cl.sprint_buf += s;
 	cl.sprint_level = level;
 
-	if ( (p=strrchr(cl.sprint_buf, '\n')) != NULL ) {
-		len = p - cl.sprint_buf + 1;
-		memcpy(str, cl.sprint_buf, len);
-		str[len] = '\0';
-		strcpy (cl.sprint_buf, p+1);
+	int pos;
+	if ((pos = cl.sprint_buf.rfind('\n')) != string::npos) {
+		string str = cl.sprint_buf.substr(0, pos + 1);
+		cl.sprint_buf = cl.sprint_buf.substr(pos + 1);
 		FlushString (str, level, (flags==2), offset);
 	}
 }

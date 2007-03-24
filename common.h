@@ -199,10 +199,10 @@ void COM_Init (void);
 void COM_Shutdown (void);
 
 
-char *COM_SkipPath (char *pathname);
+char *COM_SkipPath (const char *pathname);
 char *COM_FileExtension (char *in);
 void COM_StripExtension (char *in, char *out);
-void COM_FileBase (char *in, char *out);
+void COM_FileBase (const char *in, char *out);
 void COM_DefaultExtension (char *path, char *extension);
 void COM_ForceExtension (char *path, char *extension);
 
@@ -223,13 +223,13 @@ extern qbool	file_from_gamedir;	// set if file came from a gamedir (and gamedir 
 
 void FS_InitFilesystem (void);
 void FS_SetGamedir (char *dir);
-int FS_FOpenFile (char *filename, FILE **file);
-qbool FS_FindFile (char *filename);
-byte *FS_LoadStackFile (char *path, void *buffer, int bufsize);
-byte *FS_LoadTempFile (char *path);
-byte *FS_LoadHunkFile (char *path);
-void FS_LoadCacheFile (char *path, struct cache_user_s *cu);
-byte *FS_LoadHeapFile (char *path);
+int FS_FOpenFile (const string filename, FILE **file);
+qbool FS_FindFile (const string filename);
+byte *FS_LoadStackFile (const string path, void *buffer, int bufsize);
+byte *FS_LoadTempFile (const string path);
+byte *FS_LoadHunkFile (const string path);
+void FS_LoadCacheFile (const string path, struct cache_user_s *cu);
+byte *FS_LoadHeapFile (const string path);
 
 void COM_WriteFile (char *filename, void *data, int len);
 void COM_CreatePath (char *path);
@@ -250,10 +250,12 @@ void COM_CheckRegistered (void);
 #define	MAX_SERVERINFO_STRING	512
 #define	MAX_LOCALINFO_STRING	32768
 
-char *Info_ValueForKey (char *s, char *key);
+char *Info_ValueForKey (const char *s, const char *key);
+const string Info_ValueForKey (const string s, const string key);
 void Info_RemoveKey (char *s, char *key);
 void Info_RemovePrefixedKeys (char *start, char prefix);
 void Info_SetValueForKey (char *s, char *key, char *value, int maxsize);
+void Info_SetValueForKey (string s, const string key, const string value);
 void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize);
 void Info_Print (char *s);
 

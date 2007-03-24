@@ -988,7 +988,6 @@ void ED_LoadFromFile (char *data)
 PR_LoadProgs
 ===============
 */
-extern qbool FS_FindFile (char *filename);
 void PR_LoadProgs (void)
 {
 	int	i;

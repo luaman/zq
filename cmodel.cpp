@@ -57,7 +57,7 @@ typedef struct cleaf_s
 
 static char			loadname[32];	// for hunk tags
 
-static char			map_name[MAX_QPATH];
+static string		map_name;
 static unsigned int	map_checksum, map_checksum2;
 
 static int			numcmodels;
@@ -965,7 +965,7 @@ static void CM_BuildPHS (void)
 */
 void CM_InvalidateMap (void)
 {
-	map_name[0] = 0;
+	map_name = "";
 
 	// null out the pointers to turn up any attempt to call CM functions
 	map_planes = NULL;
@@ -980,15 +980,14 @@ void CM_InvalidateMap (void)
 /*
 ** CM_LoadMap
 */
-cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned *checksum2)
+cmodel_t *CM_LoadMap (const string name, qbool clientload, unsigned *checksum, unsigned *checksum2)
 {
 	int			i;
 	dheader_t	*header;
 	unsigned int *buf;
 
-	if (map_name[0]) {
-		assert(!strcmp(name, map_name));
-
+	if (map_name != "") {
+		assert(name == map_name);
 		if (checksum)
 			*checksum = map_checksum;
 		*checksum2 = map_checksum2;
@@ -1000,7 +999,7 @@ cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned
 	if (!buf)
 		Host_Error ("CM_LoadMap: %s not found", name);
 
-	COM_FileBase (name, loadname);
+	COM_FileBase (name.c_str(), loadname);
 
 	header = (dheader_t *)buf;
 
@@ -1052,19 +1051,19 @@ cmodel_t *CM_LoadMap (char *name, qbool clientload, unsigned *checksum, unsigned
 	if (!clientload)			// client doesn't need PHS
 		CM_BuildPHS ();
 
-	strlcpy (map_name, name, sizeof(map_name));
+	map_name = name;
 
 	return &map_cmodels[0];
 }
 
-cmodel_t *CM_InlineModel (char *name)
+cmodel_t *CM_InlineModel (const string name)
 {
 	int		num;
 
-	if (!name || name[0] != '*')
+	if (name[0] != '*')
 		Host_Error ("CM_InlineModel: bad name");
 
-	num = atoi (name+1);
+	num = atoi (name.c_str()+1);
 	if (num < 1 || num >= numcmodels)
 		Host_Error ("CM_InlineModel: bad number");
 

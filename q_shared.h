@@ -35,6 +35,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::string;
 using std::wstring;
 
+//#define wchar unsigned short	// 16-bit Unicode char
+#define wchar wchar_t
+
 #include "sys.h"
 #include "mathlib.h"
 
@@ -51,8 +54,6 @@ using std::wstring;
 
 typedef unsigned char 		byte;
 #define _DEF_BYTE_
-
-#define wchar unsigned short	// 16-bit Unicode char
 
 typedef int qbool;
 
@@ -153,8 +154,10 @@ float	FloatSwap (float f);
 #define Q_strnicmp(s1, s2, n) strncasecmp((s1), (s2), (n))
 #endif
 
-int	Q_atoi (char *str);
-float Q_atof (char *str);
+int	Q_atoi (const char *str);
+float Q_atof (const char *str);
+inline float Q_atoi (const string str) { return Q_atoi(str.c_str()); }
+inline float Q_atof (const string str) { return Q_atof(str.c_str()); }
 char *Q_ftos (float value);		// removes trailing zero chars
 
 wchar char2wc (char c);

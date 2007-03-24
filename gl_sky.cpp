@@ -248,14 +248,14 @@ R_SetSky
 ==================
 */
 static char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
-void R_SetSky (char *name)
+void R_SetSky (const string name)
 {
 	int		i;
 	byte	*pic;
 	int		width, height;
 	char	pathname[MAX_OSPATH];
 
-	if (!name[0]) {
+	if (name == "") {
 		// disable skybox
 		r_skyboxloaded = false;
 		return;

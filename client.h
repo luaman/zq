@@ -288,7 +288,7 @@ extern client_persistent_t	cls;
 typedef struct
 {
 	int			servercount;	// server identification for prespawns
-	char		serverinfo[MAX_SERVERINFO_STRING];
+	string		serverinfo;
 	int			protocol;	// 24..29 (for playback of old demos)
 // some important serverinfo keys are mirrored here:
 	int			maxclients;
@@ -372,11 +372,11 @@ typedef struct
 //
 // information that is static for the entire time connected to a server
 //
-	char		model_name[MAX_MODELS][MAX_QPATH];
+	string		model_name[MAX_MODELS];
 #ifdef VWEP_TEST
-	char		vw_model_name[MAX_VWEP_MODELS][MAX_QPATH];	// VWep support
+	string		vw_model_name[MAX_VWEP_MODELS];	// VWep support
 #endif
-	char		sound_name[MAX_SOUNDS][MAX_QPATH];
+	string		sound_name[MAX_SOUNDS];
 
 	struct model_s	*model_precache[MAX_MODELS];
 #ifdef VWEP_TEST
@@ -391,7 +391,7 @@ typedef struct
 	static_sound_t	static_sounds[MAX_STATIC_SOUNDS];
 	int			num_static_sounds;
 
-	char		levelname[40];	// for display on solo scoreboard
+	string		levelname;		// for display on solo scoreboard
 	int			playernum;
 
 // refresh related state
@@ -412,13 +412,15 @@ typedef struct
 
 // sprint buffer
 	int			sprint_level;
-	char		sprint_buf[1024];
+	string		sprint_buf;
 
 // localized movement vars
 	movevars_t	movevars;
 	playermove_t	pmove;
 
-	char		sky[32];
+	string		sky;
+
+	void clear ();
 } client_state_t;
 
 extern client_state_t	cl;

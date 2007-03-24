@@ -367,7 +367,7 @@ static void Sbar_DrawChar (int x, int y, int num)
 Sbar_DrawString
 ================
 */
-static void Sbar_DrawString (int x, int y, char *str)
+static void Sbar_DrawString (int x, int y, const string str)
 {
 	R_DrawString (x + sbar_xofs, y+ vid.height-SBAR_HEIGHT, str);
 }
@@ -600,8 +600,8 @@ static void Sbar_SoloScoreboard (void)
 	if (cl.gametype == GAME_COOP)
 	{
 		// draw level name
-		int l = strlen (cl.levelname);
-		if (l < 22 && !strstr(cl.levelname, "\n"))
+		int l = cl.levelname.length();
+		if (l < 22 && cl.levelname.find('\n') == string::npos)
 			Sbar_DrawString (232 - l*4, 12, cl.levelname);
 	}
 }
@@ -1842,7 +1842,7 @@ void Sbar_IntermissionOverlay (void)
 
 	// in coop, pressing TAB shows player frags instead of totals
 	if ((sb_showscores || sb_showteamscores) && cl.maxclients > 1
-		&& atoi(Info_ValueForKey(cl.serverinfo, "coop")))
+		&& atoi(Info_ValueForKey((char *)cl.serverinfo.c_str(), "coop")))
 	{
 		Sbar_TeamOverlay (48);
 		return;
