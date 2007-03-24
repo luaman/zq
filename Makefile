@@ -90,7 +90,7 @@ endif
 #==============================================================================
 
 CLIENT_C_FILES = cl_cam cl_cmd cl_demo cl_draw cl_effects cl_ents cl_input \
-	cl_main cl_nqdemo cl_parse cl_pred cl_sbar cl_screen cl_tent cl_view \
+	cl_main cl_nqparse cl_parse cl_pred cl_sbar cl_screen cl_tent cl_view \
 	console keys menu teamplay textencoding
 GL_C_FILES = sv_save skin rc_wad rc_image rc_pixops \
 	gl_draw gl_mesh gl_model gl_ngraph gl_ralias gl_refrag gl_rlight \
