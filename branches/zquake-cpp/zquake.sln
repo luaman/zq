@@ -20,8 +20,8 @@ Global
 		{C3F9A947-3C2C-464A-B11D-F9BAC85FDDD9}.Debug-server|Win32.Build.0 = Debug-server|Win32
 		{C3F9A947-3C2C-464A-B11D-F9BAC85FDDD9}.Release|Win32.ActiveCfg = Release|Win32
 		{C3F9A947-3C2C-464A-B11D-F9BAC85FDDD9}.Release|Win32.Build.0 = Release|Win32
-		{C3F9A947-3C2C-464A-B11D-F9BAC85FDDD9}.Release-GL|Win32.ActiveCfg = Release-server|Win32
-		{C3F9A947-3C2C-464A-B11D-F9BAC85FDDD9}.Release-GL|Win32.Build.0 = Release-server|Win32
+		{C3F9A947-3C2C-464A-B11D-F9BAC85FDDD9}.Release-GL|Win32.ActiveCfg = GLRelease|Win32
+		{C3F9A947-3C2C-464A-B11D-F9BAC85FDDD9}.Release-GL|Win32.Build.0 = GLRelease|Win32
 		{C3F9A947-3C2C-464A-B11D-F9BAC85FDDD9}.Release-server|Win32.ActiveCfg = Release-server|Win32
 		{C3F9A947-3C2C-464A-B11D-F9BAC85FDDD9}.Release-server|Win32.Build.0 = Release-server|Win32
 	EndGlobalSection
