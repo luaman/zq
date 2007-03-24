@@ -37,24 +37,11 @@ int			host_hunklevel;
 int			host_memsize;
 void		*host_membase;
 
-jmp_buf 	host_abort;
-
-
-/*
-================
-Host_Abort
-================
-*/
 void Host_Abort (void)
 {
-	longjmp (host_abort, 1);
+	throw EndGame("");
 }
 
-/*
-================
-Host_EndGame
-================
-*/
 void Host_EndGame (void)
 {
 	SCR_EndLoadingPlaque ();
@@ -66,14 +53,22 @@ void Host_EndGame (void)
 	NET_ClearLoopback ();
 }
 
-/*
-================
-Host_Error
+void Host_Error (char *message, ...)
+{
+	va_list		argptr;
+	char		str[1024];
+	
+	va_start (argptr, message);
+	vsprintf (str, message, argptr);
+	va_end (argptr);
 
-This shuts down both the client and server
-================
-*/
-void Host_Error (char *error, ...)
+	if (!host_initialized)
+		Sys_Error ("Error during initialization: %s", str);
+
+	throw Error(str);
+}
+
+void Host_HandleError (char *error, ...)
 {
 	va_list		argptr;
 	char		string[1024];
@@ -89,7 +84,7 @@ void Host_Error (char *error, ...)
 
 	va_start (argptr,error);
 #ifdef _WIN32
-	_vsnprintf (string, sizeof(string) - 1, error, argptr);
+	_vsnprintf (string, sizeof(string), error, argptr);
 	string[sizeof(string) - 1] = '\0';
 #else
 	vsnprintf (string, sizeof(string), error, argptr);
@@ -193,15 +188,20 @@ Host_Frame
 */
 void Host_Frame (double time)
 {
-	if (setjmp (host_abort))
-		return;			// something bad happened, or the server disconnected
+	try {
+		curtime += time;
 
-	curtime += time;
-
-	if (dedicated)
-		SV_Frame (time);
-	else
-		CL_Frame (time);	// will also call SV_Frame
+		if (dedicated)
+			SV_Frame (time);
+		else
+			CL_Frame (time);	// will also call SV_Frame
+		}
+	catch (Error e) {
+		Host_HandleError(e.msg);
+	}
+	catch (EndGame) {
+		// do nothing;
+	}
 }
 
 // this will go elsewhere...
