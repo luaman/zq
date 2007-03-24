@@ -268,7 +268,7 @@ byte		r_skypixels[6][256*256];
 R_SetSky
 ===============
 */
-void R_SetSky (char *name)
+void R_SetSky (const string name)
 {
 	int		i;
 	char	pathname[MAX_QPATH];
@@ -277,7 +277,7 @@ void R_SetSky (char *name)
 	int		r_skysideimage[6] = {5, 2, 4, 1, 0, 3};
 	int		width, height;
 
-	if (!name[0]) {
+	if (name = "") {
 		// disable skybox
 		r_skyboxloaded = false;
 		return;

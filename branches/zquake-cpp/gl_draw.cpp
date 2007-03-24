@@ -652,23 +652,23 @@ void R_DrawChar (int x, int y, int num)
 	R_DrawCharW (x, y, char2wc(num));
 }
 
-void R_DrawString (int x, int y, const char *str)
+void R_DrawString (int x, int y, const string str)
 {
 	float			frow, fcol;
 	int num;
 
 	if (y <= -8)
 		return;			// totally off screen
-	if (!*str)
+	if (str == "")
 		return;
 
 	GL_Bind (char_textures[0]);
 
 	glBegin (GL_QUADS);
 
-	while (*str) // stop rendering when out of characters
+	for (int i = 0; i < str.length(); i++)
 	{
-		if ((num = *str++) != 32) // skip spaces
+		if ((num = str[i]) != 32) // skip spaces
 		{
 			frow = (float) (num >> 4)*0.0625;
 			fcol = (float) (num & 15)*0.0625;
@@ -688,13 +688,13 @@ void R_DrawString (int x, int y, const char *str)
 	glEnd ();
 }
 
-void R_DrawStringW (int x, int y, const wchar *ws)
+void R_DrawStringW (int x, int y, const wstring ws)
 {
 	if (y <= -8)
 		return;			// totally off screen
-	while (*ws)
+	for (int i = 0; i < ws.length(); i++)
 	{
-		R_DrawCharW (x, y, *ws++);
+		R_DrawCharW (x, y, ws[i]);
 		x += 8;
 	}
 }

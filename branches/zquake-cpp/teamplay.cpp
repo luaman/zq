@@ -1743,16 +1743,16 @@ item_t	*model2item[MAX_MODELS];
 void TP_FindModelNumbers (void)
 {
 	int		i, j;
-	char	*s;
+	string	s;
 	item_t	*item;
 
 	for (i=0 ; i<MAX_MODELS ; i++) {
 		model2item[i] = NULL;
 		s = cl.model_name[i];
-		if (!s)
+		if (s == "")
 			continue;
 		for (j=0, item=tp_items ; j<NUMITEMS ; j++, item++)
-			if (!strcmp(s, item->modelname))
+			if (s == item->modelname)
 				model2item[i] = item;
 	}
 }

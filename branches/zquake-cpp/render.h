@@ -151,7 +151,7 @@ void R_Init (unsigned char *palette);
 void R_InitTextures (void);
 void R_InitEfrags (void);
 void R_RenderView (void);		// must set r_refdef first
-void R_SetSky (char *name);				// Quake2 skybox
+void R_SetSky (const string name);				// Quake2 skybox
 // called whenever r_refdef or vid change
 
 void R_AddEfrags (entity_t *ent);
@@ -177,8 +177,8 @@ void D_InitCaches (void *buffer, int size);
 // 2D drawing functions
 void R_DrawChar (int x, int y, int num);
 void R_DrawCharW (int x, int y, wchar num);
-void R_DrawString (int x, int y, const char *str);
-void R_DrawStringW (int x, int y, const wchar *str);
+void R_DrawString (int x, int y, const string str);
+void R_DrawStringW (int x, int y, const wstring ws);
 void R_DrawPixel (int x, int y, byte color);
 void R_DrawPic (int x, int y, mpic_t *pic);
 void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height);
@@ -209,8 +209,8 @@ void R_DrawCrosshair (int num, int crossx, int crossy);
 #define	MF_TRACER3	128			// purple trail
 
 void Mod_ClearAll (void);
-void Mod_TouchModel (char *name);
-struct model_s *Mod_ForName (char *name, qbool crash, qbool worldmodel);
+void Mod_TouchModel (const char *name);
+struct model_s *Mod_ForName (const string name, qbool crash, qbool worldmodel);
 int R_ModelFlags (const struct model_s *model);
 unsigned short R_ModelChecksum (const struct model_s *model);
 void R_LoadModelTextures (struct model_s *m);

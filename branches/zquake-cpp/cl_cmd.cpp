@@ -687,8 +687,8 @@ void CL_Serverinfo_f (void)
 	}
 #endif
 
-	if (cls.state >= ca_onserver && cl.serverinfo)
-		Info_Print (cl.serverinfo);
+	if (cls.state >= ca_onserver && cl.serverinfo != "")
+		Info_Print ((char *)cl.serverinfo.c_str());
 	else
 		// so that it says we are not connected :)
 		Cmd_ForwardToServer();
@@ -777,13 +777,10 @@ qbool CL_ConnectedToQizmo (void)
 */
 qbool CL_ConnectedToQWServer (void)
 {
-	char *p;
-
 	if (cls.state < ca_connected)
 		return false;
 
-	p = Info_ValueForKey(cl.serverinfo, "*version");
-	if (*p && strcmp(p, "2.91"))
+	if (Info_ValueForKey(cl.serverinfo, "*version") != "2.91")
 		return true;
 	else
 		return false;
@@ -1004,16 +1001,12 @@ Sent by server when serverinfo changes
 */
 void CL_FullServerinfo_f (void)
 {
-	char *p;
-	float v;
-
 	if (Cmd_Argc() != 2)
 		return;
 
-	strlcpy (cl.serverinfo, Cmd_Argv(1), sizeof(cl.serverinfo));
+	cl.serverinfo = Cmd_Argv(1);
 
-	p = Info_ValueForKey (cl.serverinfo, "*cheats");
-	if (*p) {
+	if (Info_ValueForKey(cl.serverinfo, "*cheats") != "") {
 		Com_Printf ("*** cheats are enabled ***\n");
 		// allow renderer cheats only if running a local server
 		r_refdef2.allow_cheats = com_serveractive;
@@ -1027,11 +1020,13 @@ void CL_FullServerinfo_f (void)
 
 	if (cls.state < ca_active) {
 		if (!com_serveractive) {
-			if (*(p = Info_ValueForKey(cl.serverinfo, "*version"))) {
-				if ((v = Q_atof(p)))
+			string p;
+			if ((p = Info_ValueForKey(cl.serverinfo, "*version")) != "") {
+				float v = Q_atof(p);
+				if (v)
 					Com_Printf("QuakeWorld %1.2f server\n", v);
 				else
-					Com_Printf("Server is %s\n", p);
+					Com_Printf("Server is %s\n", p.c_str());
 			}
 		}
 	}

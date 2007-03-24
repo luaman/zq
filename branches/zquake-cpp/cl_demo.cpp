@@ -502,7 +502,6 @@ static void CL_Record (void)
 	sizebuf_t	buf;
 	byte	buf_data[MAX_MSGLEN];
 	int n, i, j;
-	char *s;
 	entity_t *ent;
 	entity_state_t *es, blankes;
 	player_info_t *player;
@@ -565,8 +564,8 @@ static void CL_Record (void)
 	MSG_WriteByte (&buf, 0);
 
 	n = 0;
-	s = cl.sound_name[n+1];
-	while (*s) {
+	string s = cl.sound_name[n+1];
+	while (s != "") {
 		MSG_WriteString (&buf, s);
 		if (buf.cursize > MAX_MSGLEN/2) {
 			MSG_WriteByte (&buf, 0);
@@ -613,7 +612,7 @@ static void CL_Record (void)
 
 	n = 0;
 	s = cl.model_name[n+1];
-	while (*s) {
+	while (s != "") {
 		MSG_WriteString (&buf, s);
 		if (buf.cursize > MAX_MSGLEN/2) {
 			MSG_WriteByte (&buf, 0);

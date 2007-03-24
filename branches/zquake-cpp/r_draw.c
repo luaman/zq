@@ -319,22 +319,20 @@ void R_DrawChar (int x, int y, int num)
 	R_DrawCharW (x, y, char2wc(num));
 }
 
-void R_DrawString (int x, int y, const char *str)
+void R_DrawString (int x, int y, const string str)
 {
-	while (*str)
+	for (int i = 0; i < str.length(); i++)
 	{
-		R_DrawChar (x, y, *str);
-		str++;
+		R_DrawChar (x, y, str[i]);
 		x += 8;
 	}
 }
 
-void R_DrawStringW (int x, int y, const wchar *ws)
+void R_DrawStringW (int x, int y, const wstring ws)
 {
-	while (*ws)
+	for (int i = 0; i < ws.length(); i++)
 	{
-		R_DrawCharW (x, y, *ws);
-		ws++;
+		R_DrawCharW (x, y, ws[i]);
 		x += 8;
 	}
 }

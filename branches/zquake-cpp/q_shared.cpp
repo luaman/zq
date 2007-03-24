@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ============================================================================
 */
 
-int Q_atoi (char *str)
+int Q_atoi (const char *str)
 {
 	int		val;
 	int		sign;
@@ -86,7 +86,7 @@ int Q_atoi (char *str)
 }
 
 
-float Q_atof (char *str)
+float Q_atof (const char *str)
 {
 	double	val;
 	int		sign;

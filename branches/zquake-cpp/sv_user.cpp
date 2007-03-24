@@ -456,7 +456,7 @@ static void Cmd_Spawn_f (void)
 			continue;		// don't send empty lightstyle strings
 		ClientReliableWrite_Begin (sv_client, svc_lightstyle);
 		ClientReliableWrite_Byte ((char)i);
-		ClientReliableWrite_String (sv.lightstyles[i]);
+		ClientReliableWrite_String (sv.lightstyles[i] ? sv.lightstyles[i] : ""	);
 		ClientReliableWrite_End ();
 	}
 
