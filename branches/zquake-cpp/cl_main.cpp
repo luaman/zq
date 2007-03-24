@@ -135,7 +135,7 @@ void OnChangeSkinForcing(cvar_t *var, char *str, qbool *cancel)
 void client_state_t::clear ()
 {
 	servercount = 0;
-	serverinfo = "";
+	serverinfo.clear();
 	protocol = 0;
 	maxclients = 0;
 	deathmatch = 0;
@@ -215,7 +215,8 @@ void client_state_t::clear ()
 	num_statics = 0;
 	num_nails = 0;
 	cdtrack = 0;
-	memset (players, 0, sizeof(players));
+	for (int i = 0; i < MAX_CLIENTS; i++)
+		players[i].clear();
 #ifdef MVDPLAY
 	mvd_fixangle = 0;
 #endif
@@ -264,9 +265,9 @@ void CL_UserinfoChanged (char *key, char *string)
 
 	s = TP_ParseFunChars (string, false);
 
-	if (strcmp(s, Info_ValueForKey (cls.userinfo, key)))
+	if (strcmp(s, cls.userinfo[key].c_str()))
 	{
-		Info_SetValueForKey (cls.userinfo, key, s, MAX_INFO_STRING);
+		cls.userinfo.set(key, s);
 
 		if (cls.state >= ca_connected)
 		{
@@ -287,7 +288,6 @@ called by CL_Connect_f and CL_CheckResend
 void CL_SendConnectPacket (void)
 {
 	char	data[2048];
-	char	biguserinfo[MAX_INFO_STRING + 32];
 
 	if (cls.state != ca_disconnected)
 		return;
@@ -297,11 +297,11 @@ void CL_SendConnectPacket (void)
 	cls.qport = Cvar_Value("qport");
 
 	// let the server know what extensions we support
-	strcpy (biguserinfo, cls.userinfo);
-	Info_SetValueForStarKey (biguserinfo, "*z_ext", va("%i", CLIENT_EXTENSIONS), sizeof(biguserinfo));
+	Info biguserinfo = cls.userinfo;
+	biguserinfo.set("*z_ext", va("%i", CLIENT_EXTENSIONS));
 
 	sprintf (data, "\xff\xff\xff\xff" "connect %i %i %i \"%s\"\n",
-		PROTOCOL_VERSION, cls.qport, cls.challenge, biguserinfo);
+		PROTOCOL_VERSION, cls.qport, cls.challenge, biguserinfo.to_string().c_str());
 	NET_SendPacket (NS_CLIENT, strlen(data), data, cls.server_adr);
 }
 
@@ -1109,11 +1109,11 @@ void CL_InitLocal (void)
 
 #ifndef RELEASE_VERSION
 	// inform everyone that we're using a development version
-//	Info_SetValueForStarKey (cls.userinfo, "*ver", va(PROGRAM " %s", VersionString()), MAX_INFO_STRING);
+//	cls.userinfo.set( "*ver", va(PROGRAM " %s", VersionString()));
 #endif
 
 #ifdef VWEP_TEST
-	Info_SetValueForStarKey (cls.userinfo, "*vwtest", "1", MAX_INFO_STRING);
+	cls.userinfo.set("*vwtest", "1");
 #endif
 
 	//

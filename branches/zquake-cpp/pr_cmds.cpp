@@ -2208,8 +2208,11 @@ static void PF_infokey (void)
 	key = G_STRING(OFS_PARM1);
 
 	if (e1 == 0) {
-		if ((value = Info_ValueForKey (svs.info, key)) == NULL || !*value)
-			value = Info_ValueForKey(localinfo, key);
+		string v = svs.info[key];
+		if (v == "")
+			v = svs.localinfo[key];
+		strlcpy (ov, v.c_str(), sizeof(ov));
+		value = ov;
 	} else if (e1 <= MAX_CLIENTS) {
 		if (!strcmp(key, "ip"))
 			value = strcpy(ov, NET_BaseAdrToString (svs.clients[e1-1].netchan.remote_address));
@@ -2220,8 +2223,10 @@ static void PF_infokey (void)
 			int ping = SV_CalcPing (&svs.clients[e1-1]);
 			sprintf(ov, "%d", ping);
 			value = ov;
-		} else
-			value = Info_ValueForKey (svs.clients[e1-1].userinfo, key);
+		} else {
+			strlcpy (ov, svs.clients[e1-1].userinfo[key].c_str(), sizeof(ov));
+			value = ov;
+		}
 	} else
 		value = "";
 
@@ -2684,7 +2689,7 @@ static void PF_setinfo (void)
 	key = G_STRING(OFS_PARM1);
 	value = G_STRING(OFS_PARM2);
 
-	Info_SetValueForStarKey (svs.clients[entnum-1].userinfo, key, value, MAX_INFO_STRING);
+	svs.clients[entnum-1].userinfo.set(key, value);
 	svs.clients[entnum-1].spectator = value[0] ? true : false;
 
 	// FIXME?

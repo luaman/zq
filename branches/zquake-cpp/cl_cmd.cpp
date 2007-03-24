@@ -254,10 +254,10 @@ void CL_Packet_f (void)
 
 void CL_PrintQStatReply (char *s)
 {
-	char *p;
 	int n, numplayers;
 	int userid, frags, time, ping, topcolor, bottomcolor;
 	char name[33], skin[17];
+	string v;
 
 	Com_Printf ("\n");
 	//Com_Printf ("-------------------------------------\n");
@@ -268,31 +268,36 @@ void CL_PrintQStatReply (char *s)
 
 	// count players
 	numplayers = -1;
-	p = s;
-	while (*p) if (*p++ == '\n') numplayers++;
+	char *p = s;
+	while (*p) {
+		if (*p++ == '\n')
+			numplayers++;
+	}
 
 	// extract serverinfo string
 	s = strtok (s, "\n");
 
-	Com_Printf ("hostname   %s\n", Info_ValueForKey(s, "hostname"));
-	if (*(p = Info_ValueForKey(s, "*gamedir")) && strcmp(p, "qw"))
+	Info info;
+	info.load_from_string(s);
+	Com_Printf ("hostname   %s\n", info["hostname"].c_str());
+	if ((v = info["*gamedir"]) != "" && v != "qw")
 		Com_Printf ("gamedir    %s\n", p);
-	Com_Printf ("map        %s\n", Info_ValueForKey(s, "map"));
-	if (*(p = Info_ValueForKey(s, "status")))
-		Com_Printf ("status     %s\n", p);
-	//	Com_Printf ("deathmatch %s\n", Info_ValueForKey(s, "deathmatch"));
-	//	Com_Printf ("teamplay   %s\n", Info_ValueForKey(s, "teamplay"));
-	//	Com_Printf ("timelimit  %s\n", Info_ValueForKey(s, "timelimit"));
-	//	Com_Printf ("fraglimit  %s\n", Info_ValueForKey(s, "fraglimit"));
-	if ((n = Q_atoi(Info_ValueForKey(s, "needpass")) & 3) != 0)
+	Com_Printf ("map        %s\n", info["map"].c_str());
+	if ((v = info["status"]) != "")
+		Com_Printf ("status     %s\n", v.c_str());
+	//	Com_Printf ("deathmatch %s\n", info["deathmatch"].c_str());
+	//	Com_Printf ("teamplay   %s\n", info["teamplay"].c_str());
+	//	Com_Printf ("timelimit  %s\n", info["timelimit"].c_str());
+	//	Com_Printf ("fraglimit  %s\n", info["fraglimit"].c_str());
+	if (((n = Q_atoi(info["needpass"])) & 3) != 0)
 		Com_Printf ("needpass   %s%s%s\n", n & 1 ? "player" : "",
 			n == 3 ? ", " : "", n & 2 ? "spectator" : "");
-/*	if (Q_atoi(Info_ValueForKey(s, "needpass")) & 1)
+/*	if (Q_atoi(info["needpass"]) & 1)
 		Com_Printf ("player password required\n");
-	if (Q_atoi(Info_ValueForKey(s, "needpass")) & 2)
+	if (Q_atoi(info["needpass"]) & 2)
 		Com_Printf ("spectator password required\n");*/
 
-	Com_Printf ("players    %i/%s\n", numplayers, Info_ValueForKey(s, "maxclients"));
+	Com_Printf ("players    %i/%s\n", numplayers, info["maxclients"].c_str());
 
 	p = strtok (NULL, "\n");
 
@@ -474,9 +479,9 @@ void CL_User_f (void)
 		if (!cl.players[i].name[0])
 			continue;
 		if (cl.players[i].userid == uid
-		|| !strcmp(cl.players[i].name, Cmd_Argv(1)) )
+		|| cl.players[i].name == Cmd_Argv(1) )
 		{
-			Info_Print (cl.players[i].userinfo);
+			cl.players[i].userinfo.print();
 			return;
 		}
 	}
@@ -502,7 +507,7 @@ void CL_Users_f (void)
 	{
 		if (cl.players[i].name[0])
 		{
-			Com_Printf ("%6i %4i %s\n", cl.players[i].userid, cl.players[i].frags, cl.players[i].name);
+			Com_Printf ("%6i %4i %s\n", cl.players[i].userid, cl.players[i].frags, cl.players[i].name.c_str());
 			c++;
 		}
 	}
@@ -526,8 +531,8 @@ void CL_Color_f (void)
 	if (Cmd_Argc() == 1)
 	{
 		Com_Printf ("\"color\" is \"%s %s\"\n",
-			Info_ValueForKey (cls.userinfo, "topcolor"),
-			Info_ValueForKey (cls.userinfo, "bottomcolor") );
+			cls.userinfo["topcolor"].c_str(),
+			cls.userinfo["bottomcolor"].c_str());
 		Com_Printf ("color <0-13> [0-13]\n");
 		return;
 	}
@@ -604,7 +609,7 @@ void CL_FullInfo_f (void)
 		if (!Q_stricmp(key, pmodel_name) || !Q_stricmp(key, emodel_name))
 			continue;
 
-		Info_SetValueForKey (cls.userinfo, key, value, MAX_INFO_STRING);
+		cls.userinfo.set(key, value);
 	}
 }
 
@@ -619,7 +624,7 @@ void CL_SetInfo_f (void)
 {
 	if (Cmd_Argc() == 1)
 	{
-		Info_Print (cls.userinfo);
+		cls.userinfo.print();
 		return;
 	}
 	if (Cmd_Argc() != 3)
@@ -630,7 +635,14 @@ void CL_SetInfo_f (void)
 	if (!Q_stricmp(Cmd_Argv(1), pmodel_name) || !strcmp(Cmd_Argv(1), emodel_name))
 		return;
 
-	Info_SetValueForKey (cls.userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
+	if (Cmd_Argv(1)[0] == '*') {
+		Com_Printf ("Can't set * keys\n");
+		return;
+	}
+
+	bool r = cls.userinfo.set(Cmd_Argv(1), Cmd_Argv(2));
+	if (!r)
+		return;
 	if (cls.state >= ca_connected)
 		Cmd_ForwardToServer ();
 }
@@ -687,8 +699,8 @@ void CL_Serverinfo_f (void)
 	}
 #endif
 
-	if (cls.state >= ca_onserver && cl.serverinfo != "")
-		Info_Print ((char *)cl.serverinfo.c_str());
+	if (cls.state >= ca_onserver && cl.serverinfo.to_string() != "")
+		cl.serverinfo.print();
 	else
 		// so that it says we are not connected :)
 		Cmd_ForwardToServer();
@@ -766,10 +778,7 @@ qbool CL_ConnectedToQizmo (void)
 	if (cls.state < ca_connected)
 		return false;
 
-	if (Info_ValueForKey(cl.players[cl.playernum].userinfo, "Qizmo")[0])
-		return true;
-	else
-		return false;
+	return cl.players[cl.playernum].userinfo["Qizmo"] != "";
 }
 
 /*
@@ -780,7 +789,7 @@ qbool CL_ConnectedToQWServer (void)
 	if (cls.state < ca_connected)
 		return false;
 
-	if (Info_ValueForKey(cl.serverinfo, "*version") != "2.91")
+	if (cl.serverinfo["*version"] != "2.91")
 		return true;
 	else
 		return false;
@@ -1004,9 +1013,9 @@ void CL_FullServerinfo_f (void)
 	if (Cmd_Argc() != 2)
 		return;
 
-	cl.serverinfo = Cmd_Argv(1);
+	cl.serverinfo.load_from_string(Cmd_Argv(1));
 
-	if (Info_ValueForKey(cl.serverinfo, "*cheats") != "") {
+	if (cl.serverinfo["*cheats"] != "") {
 		Com_Printf ("*** cheats are enabled ***\n");
 		// allow renderer cheats only if running a local server
 		r_refdef2.allow_cheats = com_serveractive;
@@ -1021,7 +1030,7 @@ void CL_FullServerinfo_f (void)
 	if (cls.state < ca_active) {
 		if (!com_serveractive) {
 			string p;
-			if ((p = Info_ValueForKey(cl.serverinfo, "*version")) != "") {
+			if ((p = cl.serverinfo["*version"]) != "") {
 				float v = Q_atof(p);
 				if (v)
 					Com_Printf("QuakeWorld %1.2f server\n", v);

@@ -145,8 +145,6 @@ Quake calls this before calling Sys_Quit or Sys_Error
 */
 void SV_Shutdown (char *finalmsg)
 {
-	int i, j;
-
 	SV_FinalMessage (finalmsg);
 
 	PR_FreeStrings ();
@@ -164,15 +162,15 @@ void SV_Shutdown (char *finalmsg)
 	sv.state = ss_dead;
 	com_serveractive = false;
 
-	for (i = 0; i < MAX_CLIENTS; i++) {
+	for (int i = 0; i < MAX_CLIENTS; i++) {
 		SV_FreeDelayedPackets(&svs.clients[i]);
-		for (j = 0; j < UPDATE_BACKUP; j++) {
+		for (int j = 0; j < UPDATE_BACKUP; j++) {
 			Q_free(svs.clients[i].frames[j].entities.entities);
 			svs.clients[i].frames[j].entities.entities = NULL;
 		}
+		svs.clients[i].clear();
 	}
 
-	memset (svs.clients, 0, sizeof(svs.clients));
 	svs.lastuserid = 0;
 }
 
@@ -219,7 +217,7 @@ void SV_DropClient (client_t *drop)
 #ifdef MAUTH
     // remove client from auth queue...
     authclient_t *dropclient;
-    dropclient = SV_AuthListFind(&authclientq, Info_ValueForKey(drop->userinfo, "name"));
+    dropclient = SV_AuthListFind(&authclientq, drop->userinfo["name"].c_str());
     if( dropclient )
        SV_AuthListRemove (&authclientq, dropclient);  
 #endif
@@ -248,7 +246,7 @@ void SV_DropClient (client_t *drop)
 	drop->edict->v.frags = 0;
 //	drop->edict->inuse = false;
 	drop->name[0] = 0;
-	memset (drop->userinfo, 0, sizeof(drop->userinfo));
+	drop->userinfo.clear();
 
 	SV_FreeDelayedPackets(drop);
 	
@@ -307,7 +305,6 @@ Writes all update values to a sizebuf
 void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 {
 	int		i;
-	char	info[MAX_INFO_STRING];
 
 	i = client - svs.clients;
 
@@ -330,15 +327,15 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 	MSG_WriteByte (buf, i);
 	MSG_WriteFloat (buf, svs.realtime - client->connection_started);
 
-	strcpy (info, client->userinfo);
-	Info_RemovePrefixedKeys (info, '_');	// server passwords, etc
-	Info_RemoveKey (info, "pmodel");
-	Info_RemoveKey (info, "emodel");
+	Info info = client->userinfo;
+	info.remove_prefixed_keys('_');	// server passwords, etc
+	info.set("pmodel", "");
+	info.set("emodel", "");
 
 	MSG_WriteByte (buf, svc_updateuserinfo);
 	MSG_WriteByte (buf, i);
 	MSG_WriteLong (buf, client->userid);
-	MSG_WriteString (buf, info);
+	MSG_WriteString (buf, info.to_string());
 }
 
 /*
@@ -413,14 +410,14 @@ void SVC_Status (void)
 		cl = &svs.clients[i];
 		if ((cl->state == cs_connected || cl->state == cs_spawned ) && !cl->spectator)
 		{
-			top = atoi(Info_ValueForKey (cl->userinfo, "topcolor"));
-			bottom = atoi(Info_ValueForKey (cl->userinfo, "bottomcolor"));
+			top = atoi(cl->userinfo["topcolor"].c_str());
+			bottom = atoi(cl->userinfo["bottomcolor"].c_str());
 			top = (top < 0) ? 0 : ((top > 13) ? 13 : top);
 			bottom = (bottom < 0) ? 0 : ((bottom > 13) ? 13 : bottom);
 			ping = SV_CalcPing (cl);
 			Com_Printf ("%i %i %i %i \"%s\" \"%s\" %i %i\n", cl->userid, 
 				cl->old_frags, (int)(svs.realtime - cl->connection_started)/60,
-				ping, cl->name, Info_ValueForKey (cl->userinfo, "skin"), top, bottom);
+				ping, cl->name, cl->userinfo["skin"].c_str(), top, bottom);
 		}
 	}
 	SV_EndRedirect ();
@@ -561,13 +558,12 @@ A connection request that did not come from the master
 */
 void SVC_DirectConnect (void)
 {
-	char		userinfo[1024];
+	Info		userinfo;
 	netadr_t	adr;
 	int			i;
 	client_t	*cl, *newcl;
 	edict_t		*ent;
 	int			edictnum;
-	char		*s;
 	int			clients, spectators;
 	qbool		spectator;
 	int			qport;
@@ -584,9 +580,7 @@ void SVC_DirectConnect (void)
 
 	qport = atoi(Cmd_Argv(2));
 	challenge = atoi(Cmd_Argv(3));
-
-	// note an extra byte is needed to replace spectator key
-	strlcpy (userinfo, Cmd_Argv(4), sizeof(userinfo)-1);
+	userinfo.load_from_string(Cmd_Argv(4));
 
 	// see if the challenge is valid
 	if (net_from.type != NA_LOOPBACK)
@@ -609,34 +603,34 @@ void SVC_DirectConnect (void)
 	}
 
 	// check for password or spectator_password
-	s = Info_ValueForKey (userinfo, "spectator");
-	if (s[0] && strcmp(s, "0"))
+	string s = userinfo["spectator"];
+	if (s != "" && s != "0")
 	{
 		if (sv_spectatorPassword.string[0] && 
 			Q_stricmp(sv_spectatorPassword.string, "none") &&
-			strcmp(sv_spectatorPassword.string, s) )
+			sv_spectatorPassword.string != s)
 		{	// failed
 			Com_Printf ("%s:spectator password failed\n", NET_AdrToString (net_from));
 			Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nrequires a spectator password\n\n", A2C_PRINT);
 			return;
 		}
-		Info_RemoveKey (userinfo, "spectator");
-		Info_SetValueForStarKey (userinfo, "*spectator", "1", MAX_INFO_STRING);
+		userinfo.set("spectator", "");
+		userinfo.set("*spectator", "1");
 		spectator = true;
 	}
 	else
 	{
-		s = Info_ValueForKey (userinfo, "password");
+		s = userinfo["password"];
 		if (sv_password.string[0] && 
 			Q_stricmp(sv_password.string, "none") &&
-			strcmp(sv_password.string, s) )
+			sv_password.string != s)
 		{
 			Com_Printf ("%s:password failed\n", NET_AdrToString (net_from));
 			Netchan_OutOfBandPrint (NS_SERVER, net_from, "%c\nserver requires a password\n\n", A2C_PRINT);
 			return;
 		}
 		spectator = false;
-		Info_RemoveKey (userinfo, "password");
+		userinfo.set("password", "");
 	}
 
 #ifdef MAUTH
@@ -646,16 +640,16 @@ void SVC_DirectConnect (void)
         authclient_t *authclient;
     
         // Try the auth token queue first...
-        authclient = SV_AuthListFind(&authtokq, Info_ValueForKey(userinfo, "name"));
+        authclient = SV_AuthListFind(&authtokq, userinfo["name"].c_str());
         if( authclient == NULL )
         {
             // Fall back to checking if they had already connected and are in the
             // client queue already (i.e. were on here before a map change)...
-            authclient = SV_AuthListFind(&authclientq, Info_ValueForKey(userinfo, "name"));
+            authclient = SV_AuthListFind(&authclientq, userinfo["name"].c_str());
             if( authclient == NULL )
             {
                 // FIXME drop with reason
-                Com_Printf ("MAUTH: Client %s not in a queue; connect refused.\n", Info_ValueForKey(userinfo, "name"));
+                Com_Printf ("MAUTH: Client %s not in a queue; connect refused.\n", userinfo["name"].c_str());
                 return;
             }
         }
@@ -670,7 +664,7 @@ void SVC_DirectConnect (void)
         if( !authclient->valid )
         {
             // FIXME drop with reason
-            Com_Printf ("MAUTH: Client %s not validated yet; connect refused.\n", Info_ValueForKey(userinfo, "name"));
+            Com_Printf ("MAUTH: Client %s not validated yet; connect refused.\n", userinfo["name"].c_str());
             return;
         }
         
@@ -678,7 +672,7 @@ void SVC_DirectConnect (void)
         SV_AuthListPrint(&authtokq);
         SV_AuthListPrint(&authclientq);
         
-        Com_Printf ("MAUTH: Client %s connection allowed.\n", Info_ValueForKey(userinfo, "name"));
+        Com_Printf ("MAUTH: Client %s connection allowed.\n", userinfo["name"].c_str());
     }
     else
     {
@@ -742,10 +736,9 @@ void SVC_DirectConnect (void)
 	// build a new connection
 	// accept the new client
 	// this is the only place a client_t is ever initialized
-	memset (newcl, 0, sizeof(*newcl));
+	newcl->clear();
 	newcl->userid = SV_GenerateUserID();
-
-	strlcpy (newcl->userinfo, userinfo, sizeof(newcl->userinfo));
+	newcl->userinfo = userinfo;
 
 	Netchan_OutOfBandPrint (NS_SERVER, adr, "%c", S2C_CONNECTION );
 
@@ -760,16 +753,16 @@ void SVC_DirectConnect (void)
 	newcl->spectator = spectator;
 
 	// extract extensions bits
-	newcl->extensions = atoi(Info_ValueForKey(newcl->userinfo, "*z_ext"));
-	Info_RemoveKey (newcl->userinfo, "*z_ext");
+	newcl->extensions = atoi(newcl->userinfo["*z_ext"].c_str());
+	newcl->userinfo.set("*z_ext", "");
 
 #ifdef VWEP_TEST
-	newcl->extensions |= atoi(Info_ValueForKey(newcl->userinfo, "*vwtest")) ? Z_EXT_VWEP : 0;
-	Info_RemoveKey (newcl->userinfo, "*vwtest");
+	newcl->extensions |= atoi(newcl->userinfo["*vwtest"].c_str()) ? Z_EXT_VWEP : 0;
+	newcl->userinfo.set("*vwtest", "");
 #endif
 
-	// See if the client is using a proxy. The best test I can come up with for now...
-	newcl->uses_proxy = *Info_ValueForKey(newcl->userinfo, "Qizmo") ? true : false;
+	// See if the client is using a proxy. The best test I can come up with right now...
+	newcl->uses_proxy = newcl->userinfo["Qizmo"] != "";
 
 	edictnum = (newcl - svs.clients) + 1;
 	ent = EDICT_NUM(edictnum);	
@@ -1395,26 +1388,22 @@ void SV_CheckVars (void)
 		
 		Com_DPrintf ("Updated needpass.\n");
 		if (!v)
-			Info_SetValueForKey (svs.info, "needpass", "", MAX_SERVERINFO_STRING);
+			svs.info.set("needpass", "");
 		else
-			Info_SetValueForKey (svs.info, "needpass", va("%i",v), MAX_SERVERINFO_STRING);
+			svs.info.set("needpass", va("%i",v));
 	}
 
 // check sv_maxrate
 	if (sv_maxrate.value != old_maxrate) {
 		client_t	*cl;
 		int			i;
-		char		*val;
 
 		old_maxrate = sv_maxrate.value;
-
 		for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
 		{
 			if (cl->state < cs_connected)
 				continue;
-
-			val = Info_ValueForKey (cl->userinfo, "rate");
-			cl->netchan.rate = 1.0 / SV_BoundRate (atoi(val));
+			cl->netchan.rate = 1.0 / SV_BoundRate (atoi(cl->userinfo["rate"].c_str()));
 		}
 	}
 }
@@ -1647,14 +1636,14 @@ void SV_InitLocal (void)
 	for (i=1 ; i<MAX_MODELS ; i++)
 		sprintf (localmodels[i], "*%i", i);
 
-	Info_SetValueForStarKey (svs.info, "*version", va(PROGRAM " %s", VersionString()), MAX_SERVERINFO_STRING);
-	Info_SetValueForStarKey (svs.info, "*z_ext", va("%i", SERVER_EXTENSIONS), MAX_SERVERINFO_STRING);
+	svs.info.set("*version", va(PROGRAM " %s", VersionString()));
+	svs.info.set("*z_ext", va("%i", SERVER_EXTENSIONS));
 #ifdef VWEP_TEST
-	Info_SetValueForStarKey (svs.info, "*vwtest", "1", MAX_SERVERINFO_STRING);
+	svs.info.set("*vwtest", "1");
 #endif
 
 	if (strcmp(com_gamedirfile, "qw"))
-		Info_SetValueForStarKey (svs.info, "*gamedir", com_gamedirfile, MAX_SERVERINFO_STRING);
+		svs.info.set("*gamedir", com_gamedirfile);
 
 	// init fraglog stuff
 	svs.logsequence = 1;
@@ -1698,17 +1687,18 @@ into a more C freindly form.
 */
 void SV_ExtractFromUserinfo (client_t *cl)
 {
-	char	*val, *p, *q;
+	string val;
+	char	*p, *q;
 	int		i;
 	client_t	*client;
 	int		dupc = 1;
 	char	newname[80];
 
 	// name for C code
-	val = Info_ValueForKey (cl->userinfo, "name");
+	val = cl->userinfo["name"];
 
 	// trim user name
-	strlcpy (newname, val, sizeof(newname));
+	strlcpy (newname, val.c_str(), sizeof(newname));
 
 	for (p = newname; (*p == ' ' || *p == '\r' || *p == '\n') && *p; p++)
 		;
@@ -1728,14 +1718,14 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		;
 	p[1] = 0;
 
-	if (strcmp(val, newname)) {
-		Info_SetValueForKey (cl->userinfo, "name", newname, MAX_INFO_STRING);
-		val = Info_ValueForKey (cl->userinfo, "name");
+	if (val != newname) {
+		cl->userinfo.set("name", newname);
+		val = cl->userinfo["name"];
 	}
 
-	if (!val[0] || !Q_stricmp(val, "console")) {
-		Info_SetValueForKey (cl->userinfo, "name", "unnamed", MAX_INFO_STRING);
-		val = Info_ValueForKey (cl->userinfo, "name");
+	if (val == "" || !Q_stricmp(val.c_str(), "console")) {
+		cl->userinfo.set("name", "unnamed");
+		val = cl->userinfo["name"];
 	}
 
 	// check to see if another user by the same name exists
@@ -1743,29 +1733,29 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		for (i=0, client = svs.clients ; i<MAX_CLIENTS ; i++, client++) {
 			if (client->state != cs_spawned || client == cl)
 				continue;
-			if (!Q_stricmp(client->name, val))
+			if (!Q_stricmp(client->name, val.c_str()))
 				break;
 		}
 		if (i != MAX_CLIENTS) { // dup name
-			if (strlen(val) > sizeof(cl->name) - 1)
+			if (val.length() > sizeof(cl->name) - 1)
 				val[sizeof(cl->name) - 4] = 0;
-			p = val;
 
+			int ofs = 0;
 			if (val[0] == '(') {
 				if (val[2] == ')')
-					p = val + 3;
+					ofs = 3;
 				else if (val[3] == ')')
-					p = val + 4;
+					ofs = 4;
 			}
 
-			sprintf(newname, "(%d)%-.40s", dupc++, p);
-			Info_SetValueForKey (cl->userinfo, "name", newname, MAX_INFO_STRING);
-			val = Info_ValueForKey (cl->userinfo, "name");
+			sprintf(newname, "(%d)%-.40s", dupc++, val.c_str()+ofs);
+			cl->userinfo.set("name", newname);
+			val = cl->userinfo["name"];
 		} else
 			break;
 	}
 	
-	if (strncmp(val, cl->name, strlen(cl->name))) {
+	if (val.substr(0, strlen(cl->name)) != cl->name) {
 		if (!sv_paused.value) {
 			if (!cl->lastnametime || svs.realtime - cl->lastnametime > 5) {
 				cl->lastnamecount = 0;
@@ -1783,18 +1773,13 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	}
 
 
-	strlcpy (cl->name, val, sizeof(cl->name));
+	strlcpy (cl->name, val.c_str(), sizeof(cl->name));
 
 	// rate
-	val = Info_ValueForKey (cl->userinfo, "rate");
-	cl->netchan.rate = 1.0 / SV_BoundRate (atoi(val));
+	cl->netchan.rate = 1.0 / SV_BoundRate (atoi(cl->userinfo["rate"].c_str()));
 
 	// message level
-	val = Info_ValueForKey (cl->userinfo, "msg");
-	if (strlen(val))
-	{
-		cl->messagelevel = atoi(val);
-	}
+	cl->messagelevel = atoi(cl->userinfo["msg"].c_str());
 
 }
 

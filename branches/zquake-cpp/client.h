@@ -71,11 +71,11 @@ typedef struct
 typedef struct player_info_s
 {
 	int		userid;
-	char	userinfo[MAX_INFO_STRING];
+	Info	userinfo;
 
 	// scoreboard information
-	char	name[MAX_SCOREBOARDNAME];
-	char	team[MAX_INFO_KEY];
+	string	name;
+	string	team;
 	float	entertime;
 	int		frags;
 	int		ping;
@@ -91,6 +91,22 @@ typedef struct player_info_s
 	int		stats[MAX_CL_STATS];	// health, etc
 	int		prevcount; // for delta update from previous
 #endif
+
+	void clear () {
+		userid = 0;
+		userinfo.clear();
+		name = "";
+		team = "";
+		entertime = 0;
+		frags = ping = pl = 0;
+		spectator = false;
+		topcolor = bottomcolor = 0;
+		skin[0] = 0;
+#ifdef MVDPLAY
+		memset (stats, 0, sizeof(stats));
+		prevcount = 0;
+#endif
+	}
 } player_info_t;
 
 
@@ -203,7 +219,7 @@ typedef enum {
 // the client_persistent_t structure is persistent through an arbitrary number
 // of server connections
 //
-typedef struct
+struct client_persistent_t
 {
 	qbool		initialized;
 
@@ -229,8 +245,7 @@ typedef struct
 	netadr_t	masterserver_adr;
 #endif
 
-// private userinfo for sending to masterless servers
-	char		userinfo[MAX_INFO_STRING];
+	Info		userinfo;
 
 // on a local server these may differ from com_gamedirfile and com_gamedir
 	char		gamedirfile[MAX_QPATH];
@@ -272,7 +287,9 @@ typedef struct
 	int			challenge;
 
 	float		latency;		// rolling average
-} client_persistent_t;
+
+	client_persistent_t() : userinfo(MAX_INFO_STRING-1) {};
+};
 
 extern client_persistent_t	cls;
 
@@ -285,10 +302,10 @@ extern client_persistent_t	cls;
 // the client_state_t structure is wiped completely at every
 // server signon
 //
-typedef struct
+struct client_state_t
 {
 	int			servercount;	// server identification for prespawns
-	string		serverinfo;
+	Info		serverinfo;
 	int			protocol;	// 24..29 (for playback of old demos)
 // some important serverinfo keys are mirrored here:
 	int			maxclients;
@@ -420,8 +437,12 @@ typedef struct
 
 	string		sky;
 
+	client_state_t () {
+		for (int i = 0; i < MAX_CLIENTS; i++)
+			players[i].userinfo.init(MAX_INFO_STRING-1);
+	}
 	void clear ();
-} client_state_t;
+};
 
 extern client_state_t	cl;
 

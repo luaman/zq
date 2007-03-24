@@ -67,7 +67,7 @@ static void OnChange_sv_maxpitch (cvar_t *var, char *str, qbool *cancel) {
 
 	Cvar_SetValue (var, newval);
 	newstr = (newval == 80.0f) ? "" : Q_ftos(newval);	// don't show default values in serverinfo
-	Info_SetValueForKey (svs.info, "maxpitch", newstr, MAX_SERVERINFO_STRING);
+	svs.info.set("maxpitch", newstr);
 	SV_SendServerInfoChange("maxpitch", newstr);
 }
 
@@ -83,7 +83,7 @@ static void OnChange_sv_minpitch (cvar_t *var, char *str, qbool *cancel) {
 
 	Cvar_SetValue (var, newval);
 	newstr = (newval == -70.0f) ? "" : Q_ftos(newval);	// don't show default values in serverinfo
-	Info_SetValueForKey (svs.info, "minpitch", newstr, MAX_SERVERINFO_STRING);
+	svs.info.set("minpitch", newstr);
 	SV_SendServerInfoChange("minpitch", newstr);
 }
 
@@ -107,9 +107,8 @@ This will be sent on the initial connection and upon each server load.
 */
 static void Cmd_New_f (void)
 {
-	char		*gamedir;
-	int			playernum;
-	char		info[MAX_SERVERINFO_STRING];
+	string	gamedir;
+	int		playernum;
 
 	if (sv_client->state == cs_spawned)
 		return;
@@ -121,8 +120,8 @@ static void Cmd_New_f (void)
 //	SV_FullClientUpdate (sv_client, &sv.reliable_datagram);
 //	sv_client->sendinfo = true;
 
-	gamedir = Info_ValueForKey (svs.info, "*gamedir");
-	if (!gamedir[0])
+	gamedir = svs.info["*gamedir"];
+	if (gamedir == "")
 		gamedir = "qw";
 
 	// send the serverdata
@@ -159,15 +158,11 @@ static void Cmd_New_f (void)
 
 	// send server info string
 	// append skybox name if there's enough room
-	strcpy (info, svs.info);
-	if (sv.sky[0] && !strstr(sv.sky, ".."))
-	{
-		if (!strstr(svs.info, "\\sky\\") &&
-			strlen(info) + 5 + strlen(sv.sky) < MAX_SERVERINFO_STRING)
-		{
-			strcat (info, "\\sky\\");
-			strcat (info, sv.sky);
-		}
+	string info = svs.info.to_string();
+	if (sv.sky != "" && sv.sky.find("..") == string::npos && svs.info["\\sky\\"] == ""
+	&& info.length() + 5 + sv.sky.length() < MAX_SERVERINFO_STRING) {
+			info += "\\sky\\";
+			info += sv.sky;
 	}
 
 	ClientReliableWrite_Begin (sv_client, svc_stufftext);
@@ -615,8 +610,8 @@ static void Cmd_Begin_f (void)
 
 	//check he's not cheating
 
-	pmodel = atoi(Info_ValueForKey (sv_client->userinfo, "pmodel"));
-	emodel = atoi(Info_ValueForKey (sv_client->userinfo, "emodel"));
+	pmodel = atoi(sv_client->userinfo["pmodel"].c_str());
+	emodel = atoi(sv_client->userinfo["emodel"].c_str());
 
 #ifndef AGRIP
 	if (pmodel != sv.model_player_checksum ||
@@ -890,7 +885,6 @@ static void SV_Say (qbool team)
 	char	*p;
 	char	text[2048];
 	char	t1[32] = "";
-	char	*t2;
 
 	if (Cmd_Argc() < 2)
 		return;
@@ -899,7 +893,7 @@ static void SV_Say (qbool team)
 		return;
 
 	if (team)
-		strlcpy (t1, Info_ValueForKey (sv_client->userinfo, "team"), sizeof(t1));
+		strlcpy (t1, sv_client->userinfo["team"].c_str(), sizeof(t1));
 
 	if (sv_client->spectator && (!sv_spectalk.value || team))
 		sprintf (text, "[SPEC] %s: ", sv_client->name);
@@ -964,8 +958,8 @@ static void SV_Say (qbool team)
 				if (!client->spectator)
 					continue;
 			} else {
-				t2 = Info_ValueForKey (client->userinfo, "team");
-				if (strcmp(t1, t2) || client->spectator)
+				string t2 = client->userinfo["team"];
+				if (t1 != t2 || client->spectator)
 					continue;	// on different teams
 			}
 		}
@@ -1155,12 +1149,11 @@ Allow clients to change userinfo
 static void Cmd_SetInfo_f (void)
 {
 	int i;
-	char oldval[MAX_INFO_STRING];
 
 	if (Cmd_Argc() == 1) {
 		SV_BeginRedirect (RD_CLIENT);
 		Com_Printf ("User info settings:\n");
-		Info_Print (sv_client->userinfo);
+		sv_client->userinfo.print();
 		SV_EndRedirect ();
 		return;
 	}
@@ -1173,21 +1166,21 @@ static void Cmd_SetInfo_f (void)
 	if (Cmd_Argv(1)[0] == '*')
 		return;		// don't set privileged values
 
-	strcpy(oldval, Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)));
+	string oldval = sv_client->userinfo[Cmd_Argv(1)];
 
 	// redirect output so that "Info string length exceeded" goes to the client,
 	// not to the server console
 	SV_BeginRedirect (RD_CLIENT);
-	Info_SetValueForKey (sv_client->userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
+	sv_client->userinfo.set(Cmd_Argv(1), Cmd_Argv(2));
 	SV_EndRedirect ();
 
 // name is extracted below in ExtractFromUserInfo
-//	strlcpy (sv_client->name, Info_ValueForKey (sv_client->userinfo, "name")
+//	strlcpy (sv_client->name, sv_client->userinfo["name"].c_str()
 //		, sizeof(sv_client->name));
 //	SV_FullClientUpdate (sv_client, &sv.reliable_datagram);
 //	sv_client->sendinfo = true;
 
-	if (!strcmp(Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)), oldval))
+	if (sv_client->userinfo[Cmd_Argv(1)] == oldval)
 		return; // key hasn't changed
 
 	// process any changed values
@@ -1197,7 +1190,7 @@ static void Cmd_SetInfo_f (void)
 	MSG_WriteByte (&sv.reliable_datagram, svc_setinfo);
 	MSG_WriteByte (&sv.reliable_datagram, i);
 	MSG_WriteString (&sv.reliable_datagram, Cmd_Argv(1));
-	MSG_WriteString (&sv.reliable_datagram, Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)));
+	MSG_WriteString (&sv.reliable_datagram, sv_client->userinfo[Cmd_Argv(1)]);
 }
 
 
@@ -1212,12 +1205,11 @@ to add more keys than MAX_INFO_STRING
 static void Cmd_Info_f (void)
 {
 	int i;
-	char oldval[MAX_INFO_STRING];
 
 	if (Cmd_Argc() == 1) {
 		SV_BeginRedirect (RD_CLIENT);
 		Com_Printf ("User info settings:\n");
-		Info_Print (sv_client->userinfo);
+		sv_client->userinfo.print();
 		SV_EndRedirect ();
 		return;
 	}
@@ -1240,15 +1232,15 @@ static void Cmd_Info_f (void)
 	if (Cmd_Argv(1)[0] == '*')
 		return;		// don't set privileged values
 
-	strcpy(oldval, Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)));
+	string oldval = sv_client->userinfo[Cmd_Argv(1)];
 
 	// redirect output so that "Info string length exceeded" goes to the client,
 	// not to the server console
 	SV_BeginRedirect (RD_CLIENT);
-	Info_SetValueForKey (sv_client->userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
+	sv_client->userinfo.set(Cmd_Argv(1), Cmd_Argv(2));
 	SV_EndRedirect ();
 
-	if (!strcmp(Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)), oldval))
+	if (sv_client->userinfo[Cmd_Argv(1)] == oldval)
 		return; // key hasn't changed
 
 	// process any changed values
@@ -1258,7 +1250,7 @@ static void Cmd_Info_f (void)
 	MSG_WriteByte (&sv.reliable_datagram, svc_setinfo);
 	MSG_WriteByte (&sv.reliable_datagram, i);
 	MSG_WriteString (&sv.reliable_datagram, Cmd_Argv(1));
-	MSG_WriteString (&sv.reliable_datagram, Info_ValueForKey(sv_client->userinfo, Cmd_Argv(1)));
+	MSG_WriteString (&sv.reliable_datagram, sv_client->userinfo[Cmd_Argv(1)]);
 }
 
 
@@ -1273,7 +1265,7 @@ Dumps the serverinfo info string
 static void Cmd_Serverinfo_f (void)
 {
 	SV_BeginRedirect (RD_CLIENT);
-	Info_Print (svs.info);
+	svs.info.print();
 	SV_EndRedirect ();
 }
 
@@ -1363,7 +1355,7 @@ static void Cmd_Join_f (void)
 
 	// turn the spectator into a player
 	sv_client->spectator = false;
-	Info_RemoveKey (sv_client->userinfo, "*spectator");
+	sv_client->userinfo.set("*spectator", "");
 
 	// call the progs to get default spawn parms for the new client
 	PR_ExecuteProgram (PR_GLOBAL(SetNewParms));
@@ -1437,7 +1429,7 @@ static void Cmd_Observe_f (void)
 
 	// turn the player into a spectator
 	sv_client->spectator = true;
-	Info_SetValueForStarKey (sv_client->userinfo, "*spectator", "1", MAX_INFO_STRING);
+	sv_client->userinfo.set("*spectator", "1");
 
 	// call the progs to get default spawn parms for the new client
 	PR_ExecuteProgram (PR_GLOBAL(SetNewParms));

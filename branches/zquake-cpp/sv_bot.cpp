@@ -79,7 +79,7 @@ edict_t *SV_CreateBot (char *name)
 	if (numclients >= maxclients.value || !newcl)
 		return sv.edicts;		// all player spots full, return world
 
-	memset (newcl, 0, sizeof(*newcl));
+	newcl->clear();
 	newcl->state = cs_connected;
 	newcl->bot = true;
 	newcl->userid = SV_GenerateUserID();
@@ -91,8 +91,8 @@ edict_t *SV_CreateBot (char *name)
 	newcl->datagram.allowoverflow = true;
 	Netchan_Setup (NS_SERVER, &newcl->netchan, net_null, 0);
 
-	Info_SetValueForStarKey (newcl->userinfo, "*bot", "1", MAX_INFO_STRING);
-	Info_SetValueForKey (newcl->userinfo, "name", newcl->name, MAX_INFO_STRING);
+	newcl->userinfo.set("*bot", "1");
+	newcl->userinfo.set("name", newcl->name);
 
 	// set up the edict
 	ent = EDICT_NUM((newcl - svs.clients) + 1);
@@ -141,7 +141,7 @@ void SV_RemoveBot (client_t *cl)
 	cl->name[0] = 0;
 //	cl->edict->inuse = false;
 	cl->edict->v.frags = 0;
-	memset (cl->userinfo, 0, sizeof(cl->userinfo));
+	cl->userinfo.clear();
 
 	SV_FreeDelayedPackets (cl);
 

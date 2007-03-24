@@ -74,7 +74,7 @@ typedef struct
 	unsigned	model_player_checksum;
 	unsigned	eyes_player_checksum;
 
-	char		sky[32];			// skybox file name ("unit1_", etc)
+	string		sky;				// skybox file name ("unit1_", etc)
 
 	char		mapname[64];		// "e1m1", "dm6", etc
 	char		modelname[MAX_QPATH];		// maps/<name>.bsp, for model_precache[0]
@@ -155,13 +155,13 @@ typedef struct
 #endif
 #define MAX_STUFFTEXT		256
 
-typedef struct client_s
+struct client_t
 {
 	client_state_e	state;
 	qbool			bot;
 
 	int				userid;							// identifying number
-	char			userinfo[MAX_INFO_STRING];		// infostring
+	Info			userinfo;			// infostring
 	char			name[32];			// for printing to other people
 										// extracted from userinfo
 	int				messagelevel;		// for filtering printed messages
@@ -238,7 +238,16 @@ typedef struct client_s
 	int				chokecount;
 	int				delta_sequence;		// -1 = no compression
 	netchan_t		netchan;
-} client_t;
+
+	client_t() : userinfo(MAX_INFO_STRING-1) {};
+	void clear() {
+		byte *tmp = new byte[sizeof(userinfo)];
+		memcpy (tmp, &userinfo, sizeof(userinfo));
+		memset (this, 0, sizeof(*this));
+		memcpy (&userinfo, tmp, sizeof(userinfo));
+		delete[] tmp;
+	};
+};
 
 // a client can leave the server in one of four ways:
 // dropping properly by quiting or disconnecting
@@ -274,7 +283,7 @@ typedef struct
 	int			time;
 } challenge_t;
 
-typedef struct
+struct serverPersistent_t
 {
 	double		realtime;			// increased by SV_Frame, never reset
 
@@ -288,7 +297,8 @@ typedef struct
 	int			heartbeat_sequence;
 	svstats_t	stats;
 
-	char		info[MAX_SERVERINFO_STRING];
+	Info		info;
+	Info		localinfo;			// local game info
 
 	// log messages are used so that fraglog processes can get stats
 	int			logsequence;	// the message currently being filled
@@ -299,7 +309,10 @@ typedef struct
 	challenge_t	challenges[MAX_CHALLENGES];	// to prevent invalid IPs from connecting
 
 	packet_t	*free_packets;
-} serverPersistent_t;
+
+	serverPersistent_t() : info(MAX_SERVERINFO_STRING-1),
+		localinfo(MAX_LOCALINFO_STRING-1) {};
+};
 
 //=============================================================================
 
@@ -379,8 +392,6 @@ extern	client_t	*sv_client;
 extern	edict_t		*sv_player;
 
 extern	char		localmodels[MAX_MODELS][5];	// inline model names for precache
-
-extern	char		localinfo[MAX_LOCALINFO_STRING+1];
 
 extern	FILE		*sv_fraglogfile;
 
@@ -487,7 +498,8 @@ void ClientReliableWrite_Float (float f);
 void ClientReliableWrite_Coord (float f);
 void ClientReliableWrite_Long (int c);
 void ClientReliableWrite_Short (int c);
-void ClientReliableWrite_String (char *s);
+void ClientReliableWrite_String (const char *s);
+inline void ClientReliableWrite_String (const string s) { ClientReliableWrite_String(s.c_str()); };
 void ClientReliableWrite_SZ (void *data, int len);
 void SV_AddToReliable (client_t *cl, const byte *data, int size);
 void SV_FlushBackbuf (client_t *cl);

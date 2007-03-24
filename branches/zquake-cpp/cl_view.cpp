@@ -1187,7 +1187,7 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 //	r_refdef2.allow_cheats = false;
 	r_refdef2.allow_fbskins = cl.allow_fbskins;
 	r_refdef2.viewplayernum = Cam_PlayerNum();
-	r_refdef2.watervis = (atoi(Info_ValueForKey(cl.serverinfo, "watervis").c_str()) != 0);
+	r_refdef2.watervis = (atoi(cl.serverinfo["watervis"].c_str()) != 0);
 
 	r_refdef2.lightstyles = cl_lightstyle;
 
