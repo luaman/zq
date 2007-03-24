@@ -1691,7 +1691,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\rc_wad.cpp"
+					RelativePath=".\rc_skin.cpp"
 					>
 					<FileConfiguration
 						Name="Debug-server|Win32"
@@ -1711,7 +1711,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\skin.cpp"
+					RelativePath=".\rc_wad.cpp"
 					>
 					<FileConfiguration
 						Name="Debug-server|Win32"
