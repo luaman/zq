@@ -303,6 +303,23 @@ extern int		host_memsize;
 
 extern cvar_t	host_mapname;
 
+// generic exception with a text message
+struct EMessage {
+	char *msg;
+	EMessage (char *_msg) : msg(_msg) {}
+};
+
+// shut down client and server and drop to console, printing a message
+// dedicated servers will exit
+struct Error : EMessage {
+	Error(char *_msg) : EMessage(_msg) {}
+};
+
+// shut down client and server and silently drop to console
+struct EndGame : EMessage {
+	EndGame(char *_msg) : EMessage(_msg) {}
+};
+
 // functions that may be called accross subsystems (host, client, server)
 
 void Host_Init (int argc, char **argv, int default_memsize);
