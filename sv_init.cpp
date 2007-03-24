@@ -27,8 +27,6 @@ server_t		sv;					// local server
 
 char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
-char localinfo[MAX_LOCALINFO_STRING+1]; // local game info
-
 cvar_t	sv_loadentfiles = {"sv_loadentfiles", "0"};
 
 
@@ -176,7 +174,7 @@ void SV_SaveSpawnparms (void)
 			sv_client->state = cs_free;
 			sv_client->bot = false;
 			sv_client->name[0] = 0;
-			memset (sv_client->userinfo, 0, sizeof(sv_client->userinfo));
+			sv_client->userinfo.clear();
 			SV_FreeDelayedPackets(sv_client);
 		}
 		else {
@@ -257,11 +255,11 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 
 	if ((sv_cheats.value || devmap) && !sv_allow_cheats) {
 		sv_allow_cheats = true;
-		Info_SetValueForStarKey (svs.info, "*cheats", "ON", MAX_SERVERINFO_STRING);
+		svs.info.set("*cheats", "ON");
 	}
 	else if ((!sv_cheats.value && !devmap) && sv_allow_cheats) {
 		sv_allow_cheats = false;
-		Info_SetValueForStarKey (svs.info, "*cheats", "", MAX_SERVERINFO_STRING);
+		svs.info.set("*cheats", "");
 	}
 
 	// wipe the entire per-level structure
@@ -354,12 +352,12 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 		entitystring = (char *)FS_LoadHunkFile (va("maps/%s.ent", sv.mapname));
 		if (entitystring) {
 			Com_DPrintf ("Using entfile maps/%s.ent\n", sv.mapname);
-			Info_SetValueForStarKey (svs.info, "*entfile", va("%i",
-				CRC_Block((byte *)entitystring, fs_filesize)), MAX_SERVERINFO_STRING);
+			svs.info.set("*entfile", va("%i",
+				CRC_Block((byte *)entitystring, fs_filesize)));
 		}
 	}
 	if (!entitystring) {
-		Info_SetValueForStarKey (svs.info,  "*entfile", "", MAX_SERVERINFO_STRING);
+		svs.info.set("*entfile", "");
 		entitystring = CM_EntityString();
 	}
 	ED_LoadFromFile (entitystring);
@@ -385,7 +383,7 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	SV_CreateBaseline ();
 	sv.signon_buffer_size[sv.num_signon_buffers-1] = sv.signon.cursize;
 
-	Info_SetValueForKey (svs.info, "map", sv.mapname, MAX_SERVERINFO_STRING);
+	svs.info.set("map", sv.mapname);
 	Com_DPrintf ("Server spawned.\n");
 }
 

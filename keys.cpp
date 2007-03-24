@@ -419,7 +419,7 @@ int FindBestNick (char *s) {
 
 	for (i = 0; i < MAX_CLIENTS; i++) {
 		if (cl.players[i].name[0]) {
-			strlcpy (name, cl.players[i].name, sizeof(name));
+			strlcpy (name, cl.players[i].name.c_str(), sizeof(name));
 			RemoveColors(name);
 			for (j = 0; j < strlen(name); j++)
 				name[j] = tolower(name[j]);
@@ -450,7 +450,7 @@ void CompleteName(void) {
 
 	best = FindBestNick (wcs2str(s));
 	if (best >= 0) {
-		qwcslcpy(t, str2wcs(cl.players[best].name), sizeof(t)/sizeof(t[0]));
+		qwcslcpy(t, str2wcs(cl.players[best].name.c_str()), sizeof(t)/sizeof(t[0]));
 
 		for (i = 0; t[i]; i++) {
 			if ((127 & t[i]) == ' ') {

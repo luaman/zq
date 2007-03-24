@@ -444,7 +444,7 @@ static void Sbar_DrawNum (int x, int y, int num, int digits, int color)
 int		fragsort[MAX_CLIENTS];
 int		scoreboardlines;
 typedef struct {
-	char team[MAX_INFO_KEY];
+	string team;
 	int frags;
 	int players;
 	int plow, phigh, ptotal;
@@ -490,7 +490,7 @@ static void Sbar_SortTeams (void)
 {
 	int				i, j, k;
 	player_info_t	*s;
-	char t[16+1];
+	string t;
 
 	scoreboardteams = 0;
 
@@ -510,18 +510,18 @@ static void Sbar_SortTeams (void)
 			continue;
 
 		// find his team in the list
-		strcpy (t, s->team);	// safe
-		if (!t[0])
+		t = s->team;
+		if (t == "")
 			continue; // not on team
 		for (j = 0; j < scoreboardteams; j++)
-			if (!strcmp(teams[j].team, t)) {
+			if (teams[j].team == t) {
 				teams[j].frags += s->frags;
 				teams[j].players++;
 				goto addpinginfo;
 			}
 		if (j == scoreboardteams) { // must add him
 			j = scoreboardteams++;
-			strcpy(teams[j].team, t);
+			teams[j].team = t;
 			teams[j].frags = s->frags;
 			teams[j].players = 1;
 addpinginfo:
@@ -1207,7 +1207,6 @@ static void Sbar_TeamOverlay (int start)
 	int				x, y;
 	int				xofs;
 	char			num[12];
-	char			team[4+1];
 	team_t *tm;
 	int plow, phigh, pavg;
 
@@ -1266,8 +1265,7 @@ static void Sbar_TeamOverlay (int start)
 		R_DrawString ( x, y, num);
 
 	// draw team
-		strlcpy (team, tm->team, sizeof(team));
-		R_DrawString (x + 104, y, team);
+		R_DrawString (x + 104, y, tm->team.substr(0, 4));
 
 	// draw total
 		sprintf (num, "%5i", tm->frags);
@@ -1277,7 +1275,7 @@ static void Sbar_TeamOverlay (int start)
 		sprintf (num, "%5i", tm->players);
 		R_DrawString (x + 104 + 88, y, num);
 		
-		if (!strcmp(cl.players[cl.playernum].team, tm->team)) {
+		if (cl.players[cl.playernum].team == tm->team) {
 			R_DrawChar ( x + 104 - 8, y, 16);
 			R_DrawChar ( x + 104 + 32, y, 17);
 		}
@@ -1550,11 +1548,7 @@ static void Sbar_DeathmatchOverlay (int start)
 		
 		// team
 		if (cl.teamplay)
-		{
-			char team[4+1];
-			strlcpy (team, s->team, sizeof(team));
-			R_DrawString (x+152, y, team);
-		}
+			R_DrawString (x+152, y, s->team.substr(0, 4));
 
 		// draw name
 		if (cls.nqprotocol && !nq_drawpings)
@@ -1681,7 +1675,6 @@ static void Sbar_MiniDeathmatchOverlay (void)
 	char			num[12];
 	player_info_t	*s;
 	int				numlines;
-	char			name[16+1];
 	team_t			*tm;
 	int				sb_height;	// like sb_lines, but not cleared when cl_sbar is 0
 
@@ -1755,18 +1748,13 @@ static void Sbar_MiniDeathmatchOverlay (void)
 		
 	// team
 		if (cl.teamplay)
-		{
-			char team[4+1];
-			strlcpy (team, s->team, sizeof(team));
-			R_DrawString (x+48, y, team);
-		}
+			R_DrawString (x+48, y, s->team.substr(0, 4));
 
 	// draw name
-		strlcpy (name, s->name, sizeof(name));
 		if (cl.teamplay)
-			R_DrawString (x+48+40, y, name);
+			R_DrawString (x+48+40, y, s->name.substr(0, 16));
 		else
-			R_DrawString (x+48, y, name);
+			R_DrawString (x+48, y, s->name.substr(0, 16));
 		y += 8;
 	}
 
@@ -1784,20 +1772,17 @@ static void Sbar_MiniDeathmatchOverlay (void)
 	y = vid.height - sb_height;
 	for (i=0 ; i < scoreboardteams && y <= vid.height; i++)
 	{
-		char team[4+1];
-
 		k = teamsort[i];
 		tm = teams + k;
 
 	// draw pings
-		strlcpy (team, tm->team, sizeof(team));
-		R_DrawString (x, y, team);
+		R_DrawString (x, y, tm->team.substr(0, 4));
 
 	// draw total
 		sprintf (num, "%5i", tm->frags);
 		R_DrawString (x + 40, y, num);
 		
-		if (!strcmp(cl.players[cl.playernum].team, tm->team)) {
+		if (cl.players[cl.playernum].team == tm->team) {
 			R_DrawChar (x - 8, y, 16);
 			R_DrawChar (x + 32, y, 17);
 		}
@@ -1842,7 +1827,7 @@ void Sbar_IntermissionOverlay (void)
 
 	// in coop, pressing TAB shows player frags instead of totals
 	if ((sb_showscores || sb_showteamscores) && cl.maxclients > 1
-		&& atoi(Info_ValueForKey((char *)cl.serverinfo.c_str(), "coop")))
+		&& atoi(cl.serverinfo["coop"].c_str()))
 	{
 		Sbar_TeamOverlay (48);
 		return;

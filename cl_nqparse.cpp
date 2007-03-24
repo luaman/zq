@@ -260,8 +260,8 @@ static void NQD_ParseUpdatecolors (void)
 	// fill in userinfo values
 	top = min(colors & 15, 13);
 	bottom = min((colors >> 4) & 15, 13);
-	Info_SetValueForKey (cl.players[i].userinfo, "topcolor", va("%i", top), MAX_INFO_KEY);
-	Info_SetValueForKey (cl.players[i].userinfo, "bottomcolor", va("%i", bottom), MAX_INFO_KEY);
+	cl.players[i].userinfo.set("topcolor", va("%i", top));
+	cl.players[i].userinfo.set("bottomcolor", va("%i", bottom));
 
 	CL_NewTranslation (i);
 	Sbar_Changed ();
@@ -1118,7 +1118,8 @@ void CLNQ_ParseServerMessage (void)
 			i = MSG_ReadByte ();
 			if (i >= nq_maxclients)
 				Host_Error ("CL_ParseServerMessage: svc_updatename > NQ_MAX_CLIENTS");
-			strlcpy (cl.players[i].name, MSG_ReadString(), sizeof(cl.players[i].name));
+			cl.players[i].name = MSG_ReadString();
+			cl.players[i].name = cl.players[i].name.substr(0, MAX_SCOREBOARDNAME-1);
 			break;
 
 		case svc_updatefrags:

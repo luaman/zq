@@ -97,7 +97,7 @@ void ClientReliableWrite_Short (int c)
 	MSG_WriteShort (&backbuf, c);
 }
 
-void ClientReliableWrite_String (char *s)
+void ClientReliableWrite_String (const char *s)
 {
 	assert (backbuf_write_started);
 	MSG_WriteString(&backbuf, s);

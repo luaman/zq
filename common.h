@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "net.h"
 #include "protocol.h"
 #include "cmodel.h"
+#include "info.h"
 
 
 //
@@ -249,15 +250,6 @@ void COM_CheckRegistered (void);
 
 #define	MAX_SERVERINFO_STRING	512
 #define	MAX_LOCALINFO_STRING	32768
-
-char *Info_ValueForKey (const char *s, const char *key);
-const string Info_ValueForKey (const string s, const string key);
-void Info_RemoveKey (char *s, char *key);
-void Info_RemovePrefixedKeys (char *start, char prefix);
-void Info_SetValueForKey (char *s, char *key, char *value, int maxsize);
-void Info_SetValueForKey (string s, const string key, const string value);
-void Info_SetValueForStarKey (char *s, char *key, char *value, int maxsize);
-void Info_Print (char *s);
 
 //============================================================================
 

@@ -421,9 +421,9 @@ void SV_ServerinfoChanged (char *key, char *str)
 		str = "";
 	}
 
-	if (strcmp(str, Info_ValueForKey (svs.info, key)))
+	if (str != svs.info[key])
 	{
-		Info_SetValueForKey (svs.info, key, str, MAX_SERVERINFO_STRING);
+		svs.info.set(key, str);
 		SV_SendServerInfoChange (key, str);
 	}
 }
@@ -444,7 +444,7 @@ void SV_Serverinfo_f (void)
 	if (Cmd_Argc() == 1)
 	{
 		Com_Printf ("Server info settings:\n");
-		Info_Print (svs.info);
+		svs.info.print();
 		return;
 	}
 
@@ -473,7 +473,7 @@ void SV_Serverinfo_f (void)
 		return;		// reserved for VWep precaches
 #endif
 
-	Info_SetValueForKey (svs.info, key, value, MAX_SERVERINFO_STRING);
+	svs.info.set(key, value);
 
 	// if the key is also a serverinfo cvar, change it too
 	var = Cvar_Find (key);
@@ -503,7 +503,7 @@ void SV_Localinfo_f (void)
 	if (Cmd_Argc() == 1)
 	{
 		Com_Printf ("Local info settings:\n");
-		Info_Print (localinfo);
+		svs.localinfo.print();
 		return;
 	}
 
@@ -518,7 +518,7 @@ void SV_Localinfo_f (void)
 		Com_Printf ("Star variables cannot be changed.\n");
 		return;
 	}
-	Info_SetValueForKey (localinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_LOCALINFO_STRING);
+	svs.localinfo.set(Cmd_Argv(1), Cmd_Argv(2));
 }
 
 
@@ -540,7 +540,7 @@ void SV_User_f (void)
 	if (!SV_SetPlayer ())
 		return;
 
-	Info_Print (sv_client->userinfo);
+	sv_client->userinfo.print();
 }
 
 /*
@@ -556,7 +556,7 @@ void SV_Gamedir (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		Com_Printf ("Current *gamedir: %s\n", Info_ValueForKey (svs.info, "*gamedir"));
+		Com_Printf ("Current *gamedir: %s\n", svs.info["*gamedir"].c_str());
 		return;
 	}
 
@@ -575,7 +575,7 @@ void SV_Gamedir (void)
 		return;
 	}
 
-	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
+	svs.info.set("*gamedir", dir);
 }
 
 /*
@@ -676,11 +676,11 @@ void SV_Gamedir_f (void)
 	// you'll have to force it with "sv_gamedir foo" if indeed necessary
 	if (!strcmp(dir, "fortress") || !strcmp(dir, "arena") || !strcmp(dir, "ctf")
 		|| !strcmp(dir, "rogue") || !strcmp(dir, "hipnotic"))
-		Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
+		svs.info.set("*gamedir", dir);
 	else
-		Info_SetValueForStarKey (svs.info, "*gamedir", "", MAX_SERVERINFO_STRING);
+		svs.info.set("*gamedir", "");
 #else
-	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
+	svs.info.set("*gamedir", dir);
 #endif
 }
 
@@ -792,7 +792,7 @@ void SV_InitOperatorCommands (void)
 	{
 		sv_allow_cheats = true;
 		Cvar_SetValue (&sv_cheats, 1);
-		Info_SetValueForStarKey (svs.info, "*cheats", "ON", MAX_SERVERINFO_STRING);
+		svs.info.set("*cheats", "ON");
 	}
 
 	Cmd_AddCommand ("fraglogfile", SV_Fraglogfile_f);

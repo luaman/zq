@@ -856,9 +856,9 @@ if (!strcmp(com_token, "light"))
 		if (ent == sv.edicts && (!strcmp(keyname, "sky") || !strcmp(keyname, "skyname")))
 		{
 			skyhack = true;
-			strlcpy (sv.sky, com_token, sizeof(sv.sky));
-			if (strstr(sv.sky, ".."))
-				sv.sky[0] = 0;
+			sv.sky = com_token;
+			if (sv.sky.find("..") != string::npos)
+				sv.sky = "";
 		}
 
 // keynames with a leading underscore are used for utility comments,
@@ -1090,7 +1090,7 @@ dm_use_progs:
 
 // add prog crc to the serverinfo
 	sprintf (num, "%i", CRC_Block ((byte *)progs, filesize));
-	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
+	svs.info.set("*progs", num);
 
 // byte swap the header
 	for (i = 0; i < sizeof(*progs)/4; i++)

@@ -587,7 +587,7 @@ char *Macro_TF_Skin (void)
 {
 	char *myskin;
 
-	myskin = Info_ValueForKey(cl.players[cl.playernum].userinfo, "skin");
+	myskin = (char *)cl.players[cl.playernum].userinfo["skin"].c_str();
 	if (!cl.teamfortress)
 		strcpy(macro_buf, myskin);
 	else {
@@ -1222,12 +1222,12 @@ char *TP_EnemyTeam (void)
 	char		myteam[MAX_INFO_KEY];
 	static char	enemyteam[MAX_INFO_KEY];
 
-	strcpy (myteam, Info_ValueForKey(cls.userinfo, "team"));
+	strcpy (myteam, cls.userinfo["team"].c_str());
 
 	for (i = 0; i < MAX_CLIENTS ; i++) {
 		if (cl.players[i].name[0] && !cl.players[i].spectator)
 		{
-			strcpy (enemyteam, Info_ValueForKey(cl.players[i].userinfo, "team"));
+			strcpy (enemyteam, cl.players[i].userinfo["team"].c_str());
 			if (strcmp(myteam, enemyteam) != 0)
 				return enemyteam;
 		}
@@ -1238,14 +1238,14 @@ char *TP_EnemyTeam (void)
 char *TP_PlayerName (void)
 {
 	static char	myname[MAX_INFO_KEY];
-	strcpy (myname, Info_ValueForKey(cl.players[cl.playernum].userinfo, "name"));
+	strcpy (myname, cl.players[cl.playernum].userinfo["name"].c_str());
 	return myname;
 }
 
 char *TP_PlayerTeam (void)
 {
 	static char	myteam[MAX_INFO_KEY];
-	strcpy (myteam, Info_ValueForKey(cl.players[cl.playernum].userinfo, "team"));
+	strcpy (myteam, cl.players[cl.playernum].userinfo["team"].c_str());
 	return myteam;
 }
 
@@ -1260,7 +1260,7 @@ char *TP_EnemyName (void)
 	for (i = 0; i < MAX_CLIENTS ; i++) {
 		if (cl.players[i].name[0] && !cl.players[i].spectator)
 		{
-			strcpy (enemyname, Info_ValueForKey(cl.players[i].userinfo, "name"));
+			strcpy (enemyname, cl.players[i].userinfo["name"].c_str());
 			if (!strcmp(enemyname, myname))
 				return enemyname;
 		}
@@ -1423,7 +1423,7 @@ int TP_CategorizeMessage (char *s, int *offset)
 	int		i, msglen, len;
 	int		flags;
 	player_info_t	*player;
-	char	*name;
+	string name;
 
 	flags = 0;
 	msglen = strlen(s);
@@ -1436,11 +1436,11 @@ int TP_CategorizeMessage (char *s, int *offset)
 	{
 		if (!player->name[0])
 			continue;
-		name = Info_ValueForKey (player->userinfo, "name");
-		len = strlen(name);
+		name = player->userinfo["name"];
+		len = name.length();
 		// check messagemode1
 		if (len+2 <= msglen && s[len] == ':' && s[len+1] == ' '	&&
-			!strncmp(name, s, len))
+			name.substr(0, len) == s)
 		{
 			if (player->spectator)
 				flags |= 4;
@@ -1451,11 +1451,11 @@ int TP_CategorizeMessage (char *s, int *offset)
 		// check messagemode2
 		else if (s[0] == '(' && !cl.spectator && len+4 <= msglen &&
 			!strncmp(s+len+1, "): ", 3) &&
-			!strncmp(name, s+1, len))
+			name.substr(0, len) == s+1)
 		{
 			// no team messages in teamplay 0, except for our own
 			if (i == cl.playernum || ( cl.teamplay &&
-				!strcmp(cl.players[cl.playernum].team, player->team)) )
+				cl.players[cl.playernum].team == player->team) )
 				flags |= 2;
 			*offset = len + 4;
 		}
@@ -1813,7 +1813,7 @@ static int CountTeammates (void)
 {
 	int	i, count;
 	player_info_t	*player;
-	char	*myteam;
+	string myteam;
 
 	if (tp_forceTriggers.value)
 		return 1;
@@ -1825,7 +1825,7 @@ static int CountTeammates (void)
 	myteam = cl.players[cl.playernum].team;
 	for (i=0, player=cl.players; i < MAX_CLIENTS ; i++, player++) {
 		if (player->name[0] && !player->spectator && (i != cl.playernum)
-									&& !strcmp(player->team, myteam))
+									&& player->team == myteam)
 			count++;
 	}
 

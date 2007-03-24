@@ -1181,7 +1181,7 @@ void CL_NewTranslation (int slot)
 {
 	char	skin[32];
 	player_info_t	*player;
-	static char myteam[32];
+	string myteam;
 
 	assert (slot >= 0 && slot <= MAX_CLIENTS);
 
@@ -1189,15 +1189,15 @@ void CL_NewTranslation (int slot)
 	if (player->spectator)
 		return;
 
-	player->topcolor = atoi(Info_ValueForKey (player->userinfo, "topcolor"));
-	player->bottomcolor = atoi(Info_ValueForKey (player->userinfo, "bottomcolor"));
+	player->topcolor = atoi(player->userinfo["topcolor"].c_str());
+	player->bottomcolor = atoi(player->userinfo["bottomcolor"].c_str());
 
 	if (noskins.value == 1) {
 		player->skin[0] = 0;
 		return;
 	}
 
-	strlcpy (skin, Info_ValueForKey(player->userinfo, "skin"), sizeof(skin));
+	strlcpy (skin, player->userinfo["skin"].c_str(), sizeof(skin));
 	if (!skin[0] || !strcmp(skin, "base"))
 		strlcpy (skin, baseskin.string, sizeof(skin));
 	if (allskins.string[0])
@@ -1208,11 +1208,11 @@ void CL_NewTranslation (int slot)
         qbool teammate;
 
 		if (cl.spectator && cam_curtarget != CAM_NOTARGET)
-			strlcpy (myteam, cl.players[Cam_PlayerNum()].team, sizeof(myteam));
+			myteam = cl.players[Cam_PlayerNum()].team;
 		else if (!cl.spectator)
-    	    strlcpy (myteam, cl.players[cl.playernum].team, sizeof(myteam));
+    	    myteam = cl.players[cl.playernum].team;
 
-        teammate = (cl.teamplay	&& !strcmp(player->team, myteam)) ? true : false;
+        teammate = (cl.teamplay	&& player->team == myteam) ? true : false;
 
 		if (teammate && cl_teamtopcolor >= 0) {
 			player->topcolor = cl_teamtopcolor;
@@ -1251,17 +1251,17 @@ CL_ProcessUserInfo
 */
 void CL_ProcessUserInfo (int slot, player_info_t *player)
 {
-	char	old_team[MAX_INFO_KEY];
+	string old_team;
 
-	strlcpy (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
-	if (!player->name[0] && player->userid && strlen(player->userinfo) >= MAX_INFO_STRING - 17) {
+	player->name = player->userinfo["name"];
+	if (player->name == "" && player->userid && player->userinfo.to_string().length() >= MAX_INFO_STRING - 17) {
 		// somebody's trying to hide himself by overflowing userinfo
-		strcpy (player->name, " ");
+		player->name = " ";
 	}
-	strcpy (old_team, player->team);
-	strcpy (player->team, Info_ValueForKey (player->userinfo, "team"));
+	old_team = player->team;
+	player->team = player->userinfo["team"];
 
-	if (Info_ValueForKey (player->userinfo, "*spectator")[0])
+	if (player->userinfo["*spectator"] != "")
 		player->spectator = true;
 	else
 		player->spectator = false;
@@ -1278,7 +1278,7 @@ void CL_ProcessUserInfo (int slot, player_info_t *player)
 
 	Sbar_Changed ();
 
-	if (slot == cl.playernum && strcmp(player->team, old_team))
+	if (slot == cl.playernum && player->team != old_team)
 		CL_UpdateSkins ();
 	else
 		CL_NewTranslation (slot);
@@ -1301,7 +1301,10 @@ void CL_UpdateUserinfo (void)
 	player = &cl.players[slot];
 
 	player->userid = MSG_ReadLong ();
-	strlcpy (player->userinfo, MSG_ReadString(), sizeof(player->userinfo));
+	string tmp = MSG_ReadString();
+
+	tmp = tmp.substr(0, MAX_INFO_STRING-1);
+	player->userinfo.load_from_string(tmp);
 
 	CL_ProcessUserInfo (slot, player);
 }
@@ -1330,7 +1333,9 @@ void CL_SetInfo (void)
 	if (!cl.teamfortress)	// don't allow cheating in TF
 		Com_DPrintf ("SETINFO %s: %s=%s\n", player->name, key, value);
 
-	Info_SetValueForStarKey (player->userinfo, key, value, MAX_INFO_STRING);
+	bool r = player->userinfo.set(key, value);
+	if (!r)
+		return;
 
 	CL_ProcessUserInfo (slot, player);
 }
@@ -1350,57 +1355,57 @@ void CL_ProcessServerInfo (void)
 	string p;
 
 	// game type (sbar code checks it)
-	p = Info_ValueForKey(cl.serverinfo, "deathmatch");
+	p = cl.serverinfo["deathmatch"];
 	if (p != "")
 		cl.gametype = atoi(p.c_str()) ? GAME_DEATHMATCH : GAME_COOP;
 	else
 		cl.gametype = GAME_DEATHMATCH;	// assume GAME_DEATHMATCH by default
 
-	cl.maxclients = Q_atoi(Info_ValueForKey(cl.serverinfo, "maxclients").c_str());
-	cl.maxfps = Q_atof(Info_ValueForKey(cl.serverinfo, "maxfps"));
+	cl.maxclients = Q_atoi(cl.serverinfo["maxclients"].c_str());
+	cl.maxfps = Q_atof(cl.serverinfo["maxfps"]);
 
-	p = Info_ValueForKey (cl.serverinfo, "fbskins");
+	p = cl.serverinfo["fbskins"];
 	cl.allow_fbskins = (p != "") ? (Q_atoi(p) != 0) : !cl.teamfortress; // for TF, fbskins are disabled by default
 
-	p = Info_ValueForKey (cl.serverinfo, "fakeshaft");
+	p = cl.serverinfo["fakeshaft"];
 	if (p != "")
 		cl.allow_fakeshaft = Q_atoi(p);
 	else {
-		p = Info_ValueForKey (cl.serverinfo, "truelightning");
+		p = cl.serverinfo["truelightning"];
 		cl.allow_fakeshaft = (p != "") ? (Q_atoi(p) != 0) : true;	// allowed by default
 	}
 
-	p = Info_ValueForKey (cl.serverinfo, "allow_frj");
+	p = cl.serverinfo["allow_frj"];
 	cl.allow_frj = (p != "") ? Q_atoi(p) : true;		// allowed by default
 
-	int fpd = cls.demoplayback ? 0 : atoi(Info_ValueForKey(cl.serverinfo, "fpd").c_str());
+	int fpd = cls.demoplayback ? 0 : atoi(cl.serverinfo["fpd"].c_str());
 
 	// Get the server's ZQuake extension bits
-	cl.z_ext = atoi(Info_ValueForKey(cl.serverinfo, "*z_ext").c_str());
+	cl.z_ext = atoi(cl.serverinfo["*z_ext"].c_str());
 
 #ifdef VWEP_TEST
-	if (atoi(Info_ValueForKey(cl.serverinfo, "*vwtest")))
+	if (atoi(cl.serverinfo["*vwtest"].c_str()))
 		cl.z_ext |= Z_EXT_VWEP;
 #endif
 
 	// Initialize cl.maxpitch & cl.minpitch
-	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "maxpitch") : "";
+	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? cl.serverinfo["maxpitch"] : "";
 	cl.maxpitch = (p != "") ? Q_atof(p) : 80.0f;
-	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? Info_ValueForKey (cl.serverinfo, "minpitch") : "";
+	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? cl.serverinfo["minpitch"] : "";
 	cl.minpitch = (p != "") ? Q_atof(p) : -70.0f;
 
 	// movement vars for prediction
-	cl.movevars.bunnyspeedcap = Q_atof(Info_ValueForKey(cl.serverinfo, "pm_bunnyspeedcap"));
-	cl.movevars.slidefix = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_slidefix")) != 0);
-	cl.movevars.airstep = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_airstep")) != 0);
-	cl.movevars.pground = (Q_atof(Info_ValueForKey(cl.serverinfo, "pm_pground")) != 0)
+	cl.movevars.bunnyspeedcap = Q_atof(cl.serverinfo["pm_bunnyspeedcap"]);
+	cl.movevars.slidefix = (Q_atof(cl.serverinfo["pm_slidefix"]) != 0);
+	cl.movevars.airstep = (Q_atof(cl.serverinfo["pm_airstep"]) != 0);
+	cl.movevars.pground = (Q_atof(cl.serverinfo["pm_pground"]) != 0)
 		&& (cl.z_ext & Z_EXT_PF_ONGROUND) /* pground doesn't make sense without this */;
-	p = Info_ValueForKey(cl.serverinfo, "pm_ktjump");
+	p = cl.serverinfo["pm_ktjump"];
 	cl.movevars.ktjump = (p != "") ? Q_atof(p) : (cl.teamfortress ? 0 : 0.5); 
 
 	// deathmatch and teamplay
-	cl.deathmatch = atoi(Info_ValueForKey(cl.serverinfo, "deathmatch").c_str());
-	int teamplay = atoi(Info_ValueForKey(cl.serverinfo, "teamplay").c_str());
+	cl.deathmatch = atoi(cl.serverinfo["deathmatch"].c_str());
+	int teamplay = atoi(cl.serverinfo["teamplay"].c_str());
 
 	// update skins if needed
 	if (teamplay != cl.teamplay || fpd != cl.fpd) {
@@ -1411,7 +1416,7 @@ void CL_ProcessServerInfo (void)
 	}
 
 	// parse skybox
-	if (cl.sky != (p = Info_ValueForKey(cl.serverinfo, "sky"))) {
+	if (cl.sky != (p = cl.serverinfo["sky"])) {
 		// sky has changed
 		cl.sky = p;
 		if (cl.sky.find("..") != string::npos)
@@ -1504,22 +1509,21 @@ CL_ParseServerInfoChange
 */
 void CL_ParseServerInfoChange (void)
 {
-	char key[MAX_INFO_KEY];
-	char value[MAX_INFO_KEY];
-
-	strlcpy (key, MSG_ReadString(), sizeof(key));
-	strlcpy (value, MSG_ReadString(), sizeof(value));
+	string key = MSG_ReadString();
+	string value = MSG_ReadString();
 
 #ifdef VWEP_TEST
-	if ( (cl.z_ext & Z_EXT_VWEP) && !strcmp(key, "#vw") ) {
-		CL_ParseVWepPrecache (value);
+	if ( (cl.z_ext & Z_EXT_VWEP) && key == "#vw" ) {
+		CL_ParseVWepPrecache (value.c_str());
 		return;
 	}
 #endif
 
-	Com_DPrintf ("SERVERINFO: %s=%s\n", key, value);
+	Com_DPrintf ("SERVERINFO: %s=%s\n", key.c_str(), value.c_str());
 
-	Info_SetValueForKey (cl.serverinfo, key, value);
+	bool r = cl.serverinfo.set(key, value);
+	if (!r)
+		return;
 
 	CL_ProcessServerInfo ();
 }
