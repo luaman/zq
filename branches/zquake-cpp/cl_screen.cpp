@@ -529,8 +529,6 @@ void SCR_DrawFPS (void)
 	R_DrawString(x, 0, st);
 }
 
-float nq_speed;
-
 void SCR_DrawSpeed (void)
 {
 	int x, y;
@@ -551,19 +549,19 @@ void SCR_DrawSpeed (void)
 		maxspeed = 0;
 	}
 
-if (cls.nqprotocol) {
-	speed = nq_speed;
-} else
-{
-	if (show_speed.value == 2) {
-		VectorCopy (cl.simvel, vel);	// predicted velocity
-	} else if (cl.validsequence)
-		VectorCopy (cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cl.playernum].velocity, vel);
+	if (cls.nqprotocol)
+		speed = CLNQ_CalcPlayerSpeed();
 	else
-		VectorClear (vel);
-	vel[2] = 0;
-	speed = VectorLength(vel);
-}
+	{
+		if (show_speed.value == 2) {
+			VectorCopy (cl.simvel, vel);	// predicted velocity
+		} else if (cl.validsequence)
+			VectorCopy (cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cl.playernum].velocity, vel);
+		else
+			VectorClear (vel);
+		vel[2] = 0;
+		speed = VectorLength(vel);
+	}
 
 	if (speed > maxspeed)
 		maxspeed = speed;
