@@ -680,8 +680,8 @@ static void NQD_ParseUpdate (int bits)
 	else
 		state->s_angles[2] = ent->baseline.s_angles[2];
 
-	if ( bits & NQ_U_NOLERP )
-		forcelink = true;
+//	if ( bits & NQ_U_NOLERP )
+//		forcelink = true;
 
 	if ( forcelink )
 	{	// didn't have an update last message
@@ -774,6 +774,7 @@ void NQD_LinkEntities (void)
 	float				autorotate;
 	int					i;
 	int					num;
+	extern cvar_t cl_lerp_monsters;
 
 	f = NQD_LerpPoint ();
 
@@ -827,8 +828,6 @@ void NQD_LinkEntities (void)
 		if (!state->modelindex)
 			continue;
 
-		cent->current = *state;
-
 		ent.model = model = cl.model_precache[state->modelindex];
 		if (!model)
 			Host_Error ("CL_LinkPacketEntities: bad modelindex");
@@ -838,22 +837,6 @@ void NQD_LinkEntities (void)
 				ent.model = cl.model_precache[cl_grenadeindex];
 
 		modelflags = R_ModelFlags (model);
-
-		// rotate binary objects locally
-		if (modelflags & MF_ROTATE)
-		{
-			ent.angles[0] = 0;
-			ent.angles[1] = autorotate;
-			ent.angles[2] = 0;
-		}
-		else
-		{
-			vec3_t	old, cur;
-
-			MSG_UnpackAngles (cent->current.s_angles, old);
-			MSG_UnpackAngles (cent->previous.s_angles, cur);
-			LerpAngles (old, cur, f, ent.angles);
-		}
 
 if (num == nq_viewentity) {
 extern float nq_speed;
@@ -868,18 +851,71 @@ nq_speed /= nq_mtime[0] - nq_mtime[1];
 
 }
 
-		// calculate origin
-		for (i = 0; i < 3; i++)
+		//
+		// lerp frame animation
+		//
+		if (cent->framelerp_start) {
+			ent.oldframe = cent->oldframe;
+			ent.backlerp = 1 - (cl.time - cent->framelerp_start)*10;
+			ent.backlerp = bound (0, ent.backlerp, 1);
+		}
+
+		//
+		// calculate angles
+		//
+		if (modelflags & MF_ROTATE)
+		{	// rotate binary objects locally
+			VectorSet (ent.angles, 0, autorotate, 0);
+		}
+		else if (cl.modelinfos[state->modelindex] == mi_monster && cl_lerp_monsters.value)
 		{
-			if (abs(cent->current.s_origin[i] - cent->previous.s_origin[i]) > 128 * 8) {
-				// teleport or something, don't lerp
-				VectorCopy (cur_origin, ent.origin);
-				if (num == nq_viewentity)
-					nq_player_teleported = true;
-				break;
+			if (cent->monsterlerp_angles_start) {
+				float backlerp;
+				vec3_t	cur;
+				backlerp = 1 - (cl.time - cent->monsterlerp_angles_start)*10;
+				backlerp = bound (0, backlerp, 1);
+				MSG_UnpackAngles (cent->current.s_angles, cur);
+				LerpAngles (cur, cent->monsterlerp_angles, backlerp, ent.angles);
+			} else {
+				MSG_UnpackAngles (cent->current.s_angles, ent.angles);
 			}
-			ent.origin[i] = cent->previous.s_origin[i] * 0.125 + 
-				f * (cur_origin[i] - cent->previous.s_origin[i] * 0.125);
+		}
+		else
+		{
+			// generic angles interpolation
+			vec3_t	old, cur;
+			MSG_UnpackAngles (cent->previous.s_angles, old);
+			MSG_UnpackAngles (cent->current.s_angles, cur);
+			LerpAngles (old, cur, f, ent.angles);
+		}
+
+		//
+		// calculate origin
+		//
+		if (cl.modelinfos[state->modelindex] == mi_monster && cl_lerp_monsters.value) {
+			if (cent->monsterlerp_start) {
+				float backlerp;
+				backlerp = 1 - (cl.time - cent->monsterlerp_start)*10;
+				backlerp = bound (0, backlerp, 1);
+				LerpVector (cur_origin, cent->monsterlerp_origin, backlerp, ent.origin);
+			} else {
+				VectorCopy (cur_origin, ent.origin);
+			}
+		}
+		else {
+			// generic origin interpolation
+			for (i = 0; i < 3; i++)
+			{
+				if (abs(cent->current.s_origin[i] - cent->previous.s_origin[i]) > 128 * 8) {
+					// teleport or something, don't lerp
+					VectorCopy (cur_origin, ent.origin);
+					if (num == nq_viewentity)
+						nq_player_teleported = true;
+					break;
+				}
+				ent.origin[i] = cent->previous.s_origin[i] * 0.125 + 
+					f * (cur_origin[i] - cent->previous.s_origin[i] * 0.125);
+			}
 		}
 
 		if (num == nq_viewentity) {
@@ -954,7 +990,6 @@ nq_speed /= nq_mtime[0] - nq_mtime[1];
 				CL_VoorTrail (old_origin, ent.origin, cent->trail_origin);
 		}
 
-		cent->lastframe = cl_entframecount;
 		V_AddEntity (&ent);
 	}
 
@@ -965,7 +1000,52 @@ nq_speed /= nq_mtime[0] - nq_mtime[1];
 
 
 
+void NQD_InitLerp (void)
+{
+	int i;
+	extern cvar_t cl_lerp_monsters;
 
+	for (int num = 0; num < nq_num_entities; num++)
+	{
+		centity_t *cent = &cl_entities[num];
+		if (cent->lastframe != cl_entframecount)
+			continue;
+
+		entity_state_t *state = &cent->current;
+
+		if (cent->prevframe != cl_entframecount - 1) {
+			// not in previous message
+			cent->framelerp_start = 0;
+			cent->monsterlerp_start = 0;
+			cent->monsterlerp_angles_start = 0;
+			continue;
+		}
+
+		if (cent->current.frame != cent->previous.frame) {
+			cent->framelerp_start = cl.time;
+			cent->oldframe = cent->previous.frame;
+		}
+
+		if (!(cl.modelinfos[state->modelindex] == mi_monster && cl_lerp_monsters.value))
+			continue;
+
+		for (i = 0; i < 3 ; i++)
+			if (cent->current.s_origin[i] != cent->previous.s_origin[i])
+				break;
+		if (i != 3) {
+			cent->monsterlerp_start = cl.time;
+			MSG_UnpackOrigin (cent->previous.s_origin, cent->monsterlerp_origin);
+		}
+
+		for (i = 0; i < 3 ; i++)
+			if (cent->current.s_angles[i] != cent->previous.s_angles[i])
+				break;
+		if (i != 3) {
+			cent->monsterlerp_angles_start = cl.time;
+			MSG_UnpackAngles (cent->previous.s_angles, cent->monsterlerp_angles);
+		}
+	}
+}
 
 extern char *svc_strings[];
 extern int num_svc_strings;
@@ -1005,15 +1085,7 @@ void CLNQ_ParseServerMessage (void)
 		if (cmd == -1)
 		{
 			SHOWNET("END OF MESSAGE");
-			if (!message_with_datagram) {
-				cl_entframecount--;
-			}
-			else
-			{
-				VectorCopy (nq_mviewangles[0], nq_mviewangles[1]);
-				VectorCopy (nq_mviewangles_temp, nq_mviewangles[0]);
-			}
-			return;		// end of message
+			break;
 		}
 
 	// if the high bit of the command byte is set, it is a fast update
@@ -1056,7 +1128,10 @@ void CLNQ_ParseServerMessage (void)
 			break;
 
 		case svc_disconnect:
-			Com_Printf ("\n======== End of demo ========\n\n");
+			if (cls.demoplayback)
+				Com_Printf ("\n======== End of demo ========\n\n");
+			else
+				Com_Printf ("\nServer disconnected.\n\n");
 			CL_NextDemo ();
 			Host_EndGame ();
 			Host_Abort ();
@@ -1225,6 +1300,16 @@ void CLNQ_ParseServerMessage (void)
 		}
 	}
 
+	if (!message_with_datagram) {
+		cl_entframecount--;
+	}
+	else {
+		VectorCopy (nq_mviewangles[0], nq_mviewangles[1]);
+		VectorCopy (nq_mviewangles_temp, nq_mviewangles[0]);
+	}
+
+	if (message_with_datagram)
+		NQD_InitLerp ();
 }
 
 
