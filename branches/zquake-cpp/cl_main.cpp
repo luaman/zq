@@ -943,7 +943,7 @@ CL_ReadPackets
 void CL_ReadPackets (void)
 {
 	if (cls.nqprotocol && cls.demoplayback) {
-		NQD_ReadPackets ();
+		CLNQ_ReadPackets ();
 		return;
 	}
 

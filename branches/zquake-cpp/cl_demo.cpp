@@ -1174,7 +1174,7 @@ try_again:
 
 	cls.nqprotocol = !Q_stricmp(COM_FileExtension(name), "dem");
 	if (cls.nqprotocol) {
-		NQD_StartPlayback ();
+		CLNQ_StartPlayback ();
 	}
 
 #ifdef MVDPLAY

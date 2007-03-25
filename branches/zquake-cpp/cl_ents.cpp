@@ -1603,7 +1603,7 @@ void CL_EmitEntities (void)
 	V_ClearScene ();
 
 	if (cls.nqprotocol)
-		NQD_LinkEntities ();
+		CLNQ_LinkEntities ();
 	else {
 		CL_LinkPlayers ();
 		CL_LinkPacketEntities ();
