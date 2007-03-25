@@ -262,6 +262,8 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 		svs.info.set("*cheats", "");
 	}
 
+	svs.hipnotic = !strcmp(com_gamedirfile, "hipnotic");
+
 	// wipe the entire per-level structure
 	memset (&sv, 0, sizeof(sv));
 

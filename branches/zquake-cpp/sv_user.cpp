@@ -2021,6 +2021,8 @@ void SV_RunCmd (usercmd_t *ucmd)
 #ifndef SERVERONLY
 	pmove.jump_msec = 0;
 #endif
+	pmove.wetsuit = (svs.hipnotic && fofs_items2 &&
+		((int)EdictFieldFloat(sv_player, fofs_items2) & 2)) ? true : false;
 
 	// build physent list
 	pmove.numphysent = 1;

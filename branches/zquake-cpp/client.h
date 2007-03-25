@@ -312,6 +312,7 @@ struct client_state_t
 	int			deathmatch;
 	int			teamplay;
 	int			gametype;		// GAME_COOP or GAME_DEATHMATCH
+	qbool		hipnotic;
 	qbool		teamfortress;	// true if gamedir is "fortress"
 	int			fpd;			// FAQ proxy flags
 	int			z_ext;			// ZQuake protocol extensions flags

@@ -793,6 +793,7 @@ void CL_ParseServerData (void)
 	str = MSG_ReadString ();
 
 	cl.teamfortress = !Q_stricmp(str, "fortress");
+	cl.hipnotic = !Q_stricmp(str, "hipnotic");
 
 	if (Q_stricmp(cls.gamedirfile, str)) {
 		// save current config

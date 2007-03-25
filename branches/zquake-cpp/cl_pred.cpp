@@ -58,6 +58,8 @@ void CL_PredictUsercmd (player_state_t *from, player_state_t *to, usercmd_t *u)
 	cl.pmove.pm_type = from->pm_type;
 	cl.pmove.onground = from->onground;
 	cl.pmove.cmd = *u;
+	cl.pmove.wetsuit = (cl.hipnotic && (cl.stats[STAT_ITEMS] & (1<<25)))
+		/*HIT_WETSUIT*/	? true : false;
 
 	PM_PlayerMove (&cl.pmove, &cl.movevars);
 

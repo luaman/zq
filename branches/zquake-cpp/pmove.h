@@ -63,6 +63,7 @@ typedef struct
 
 	// input
 	usercmd_t	cmd;
+	qbool		wetsuit;
 
 	// results
 	int			numtouch;

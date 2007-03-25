@@ -507,6 +507,13 @@ void PM_WaterMove (void)
 	}
 	wishspeed *= 0.7;
 
+	if (pm->wetsuit) {
+		if (pm->waterlevel == 2)
+			wishspeed *= 1.25;
+		else
+			wishspeed *= 1.5;
+	}
+
 //
 // water acceleration
 //
