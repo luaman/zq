@@ -299,6 +299,7 @@ struct serverPersistent_t
 
 	Info		info;
 	Info		localinfo;			// local game info
+	qbool		hipnotic;
 
 	// log messages are used so that fraglog processes can get stats
 	int			logsequence;	// the message currently being filled
