@@ -534,9 +534,9 @@ void CL_StartDemos_f (void);
 //
 // cl_nqdemo.c
 //
-void NQD_ReadPackets (void);
-void NQD_StartPlayback (void);
-void NQD_LinkEntities (void);
+void CLNQ_ReadPackets (void);
+void CLNQ_StartPlayback (void);
+void CLNQ_LinkEntities (void);
 void CLNQ_ParseServerMessage (void);
 float CLNQ_CalcPlayerSpeed (void);
 

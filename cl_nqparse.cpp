@@ -123,14 +123,14 @@ static qbool CL_GetNQDemoMessage (void)
 }
 
 
-static void NQD_BumpEntityCount (int num)
+static void CLNQ_BumpEntityCount (int num)
 {
 	if (num >= nq_num_entities)
 		nq_num_entities = num + 1;
 }
 
 
-static void NQD_ParseClientdata (int bits)
+static void CLNQ_ParseClientdata (int bits)
 {
 	int		i, j;
 	extern player_state_t view_message;
@@ -244,10 +244,10 @@ static void NQD_ParseClientdata (int bits)
 
 /*
 ==================
-NQD_ParseUpdatecolors
+CLNQ_ParseUpdatecolors
 ==================
 */
-static void NQD_ParseUpdatecolors (void)
+static void CLNQ_ParseUpdatecolors (void)
 {
 	int	i, colors;
 	int top, bottom;
@@ -270,10 +270,10 @@ static void NQD_ParseUpdatecolors (void)
 			
 /*
 ==================
-NQD_ParsePrint
+CLNQ_ParsePrint
 ==================
 */
-static void NQD_ParsePrint (void)
+static void CLNQ_ParsePrint (void)
 {
 	extern cvar_t	cl_chatsound;
 
@@ -302,10 +302,10 @@ static int ReadPQShort (void) {
 
 /*
 ==================
-NQD_ParseStufftext
+CLNQ_ParseStufftext
 ==================
 */
-static void NQD_ParseStufftext (void)
+static void CLNQ_ParseStufftext (void)
 {
 	char	*s;
 	byte	*p;
@@ -344,10 +344,10 @@ ok:
 
 /*
 ==================
-NQD_ParseServerData
+CLNQ_ParseServerData
 ==================
 */
-static void NQD_ParseServerData (void)
+static void CLNQ_ParseServerData (void)
 {
 	char	*str;
 	int		i;
@@ -444,7 +444,7 @@ static void NQD_ParseServerData (void)
 
 // local state
 	if (!cl.model_precache[1])
-		Host_Error ("NQD_ParseServerData: NULL worldmodel");
+		Host_Error ("CLNQ_ParseServerData: NULL worldmodel");
 
 	COM_StripExtension (COM_SkipPath(cl.model_name[1].c_str()), mapname);
 	Cvar_ForceSet (&host_mapname, mapname);
@@ -505,10 +505,10 @@ void CLNQ_SignonReply (void)
 
 /*
 ==================
-NQD_ParseStartSoundPacket
+CLNQ_ParseStartSoundPacket
 ==================
 */
-static void NQD_ParseStartSoundPacket(void)
+static void CLNQ_ParseStartSoundPacket(void)
 {
     vec3_t  pos;
     int 	channel, ent;
@@ -537,7 +537,7 @@ static void NQD_ParseStartSoundPacket(void)
 	channel &= 7;
 
 	if (ent > NQ_MAX_EDICTS)
-		Host_Error ("NQD_ParseStartSoundPacket: ent = %i", ent);
+		Host_Error ("CLNQ_ParseStartSoundPacket: ent = %i", ent);
 	
 	for (i=0 ; i<3 ; i++)
 		pos[i] = MSG_ReadCoord ();
@@ -548,14 +548,14 @@ static void NQD_ParseStartSoundPacket(void)
 
 /*
 ==================
-NQD_ParseUpdate
+CLNQ_ParseUpdate
 
 Parse an entity update message from the server
 If an entities model or origin changes from frame to frame, it must be
 relinked.  Other attributes can change without relinking.
 ==================
 */
-static void NQD_ParseUpdate (int bits)
+static void CLNQ_ParseUpdate (int bits)
 {
 	int			i;
 //	model_t		*model;
@@ -586,9 +586,9 @@ static void NQD_ParseUpdate (int bits)
 		num = MSG_ReadByte ();
 
 	if (num >= NQ_MAX_EDICTS)
-		Host_Error ("NQD_ParseUpdate: ent > MAX_EDICTS");
+		Host_Error ("CLNQ_ParseUpdate: ent > MAX_EDICTS");
 
-	NQD_BumpEntityCount (num);
+	CLNQ_BumpEntityCount (num);
 
 	ent = &cl_entities[num];
 	ent->previous = ent->current;
@@ -695,13 +695,13 @@ static void NQD_ParseUpdate (int bits)
 
 /*
 ===============
-NQD_LerpPoint
+CLNQ_LerpPoint
 
 Determines the fraction between the last two messages that the objects
 should be put at.
 ===============
 */
-static float NQD_LerpPoint (void)
+static float CLNQ_LerpPoint (void)
 {
 	float	f, frac;
 
@@ -739,7 +739,7 @@ static float NQD_LerpPoint (void)
 extern int	cl_playerindex; 
 extern int	cl_rocketindex, cl_grenadeindex;
 
-static void NQD_LerpPlayerinfo (float f)
+static void CLNQ_LerpPlayerinfo (float f)
 {
 	if (cl.intermission) {
 		// just stay there
@@ -775,7 +775,7 @@ float CLNQ_CalcPlayerSpeed (void)
 	return speed;
 }
 
-void NQD_LinkEntities (void)
+void CLNQ_LinkEntities (void)
 {
 	entity_t			ent;
 	centity_t			*cent;
@@ -790,9 +790,9 @@ void NQD_LinkEntities (void)
 	int					num;
 	extern cvar_t cl_lerp_monsters;
 
-	f = NQD_LerpPoint ();
+	f = CLNQ_LerpPoint ();
 
-	NQD_LerpPlayerinfo (f);
+	CLNQ_LerpPlayerinfo (f);
 
 	autorotate = anglemod (100*cl.time);
 
@@ -1001,7 +1001,7 @@ void NQD_LinkEntities (void)
 
 
 
-void NQD_InitLerp (void)
+void CLNQ_InitLerp (void)
 {
 	int i;
 	extern cvar_t cl_lerp_monsters;
@@ -1093,7 +1093,7 @@ void CLNQ_ParseServerMessage (void)
 		if (cmd & 128)
 		{
 			SHOWNET("fast update");
-			NQD_ParseUpdate (cmd&127);
+			CLNQ_ParseUpdate (cmd&127);
 			continue;
 		}
 
@@ -1119,7 +1119,7 @@ void CLNQ_ParseServerMessage (void)
 
 		case nq_svc_clientdata:
 			i = MSG_ReadShort ();
-			NQD_ParseClientdata (i);
+			CLNQ_ParseClientdata (i);
 			break;
 
 		case nq_svc_version:
@@ -1139,7 +1139,7 @@ void CLNQ_ParseServerMessage (void)
 			break;
 
 		case svc_print:
-			NQD_ParsePrint ();
+			CLNQ_ParsePrint ();
 			break;
 			
 		case svc_centerprint:
@@ -1147,7 +1147,7 @@ void CLNQ_ParseServerMessage (void)
 			break;
 
 		case svc_stufftext:
-			NQD_ParseStufftext ();
+			CLNQ_ParseStufftext ();
 			break;
 
 		case svc_damage:
@@ -1155,7 +1155,7 @@ void CLNQ_ParseServerMessage (void)
 			break;
 
 		case svc_serverdata:
-			NQD_ParseServerData ();
+			CLNQ_ParseServerData ();
 			break;
 
 		case svc_setangle:
@@ -1181,7 +1181,7 @@ void CLNQ_ParseServerMessage (void)
 			break;
 
 		case svc_sound:
-			NQD_ParseStartSoundPacket();
+			CLNQ_ParseStartSoundPacket();
 			break;
 
 		case svc_stopsound:
@@ -1207,7 +1207,7 @@ void CLNQ_ParseServerMessage (void)
 			break;
 
 		case nq_svc_updatecolors:
-			NQD_ParseUpdatecolors ();
+			CLNQ_ParseUpdatecolors ();
 			break;
 			
 		case nq_svc_particle:
@@ -1218,7 +1218,7 @@ void CLNQ_ParseServerMessage (void)
 			i = MSG_ReadShort ();
 			if (i >= NQ_MAX_EDICTS)
 				Host_Error ("svc_spawnbaseline: ent > MAX_EDICTS");
-			NQD_BumpEntityCount (i);
+			CLNQ_BumpEntityCount (i);
 			CL_ParseBaseline (&cl_entities[i].baseline);
 			break;
 		case svc_spawnstatic:
@@ -1310,11 +1310,11 @@ void CLNQ_ParseServerMessage (void)
 	}
 
 	if (message_with_datagram)
-		NQD_InitLerp ();
+		CLNQ_InitLerp ();
 }
 
 
-void NQD_ReadPackets (void)
+void CLNQ_ReadPackets (void)
 {
 	while (CL_GetNQDemoMessage()) {
 		MSG_BeginReading ();
@@ -1323,7 +1323,7 @@ void NQD_ReadPackets (void)
 }
 
 
-void NQD_StartPlayback ()
+void CLNQ_StartPlayback ()
 {
 	int		c;
 	qbool	neg = false;
