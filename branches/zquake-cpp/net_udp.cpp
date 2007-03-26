@@ -346,7 +346,7 @@ int UDP_OpenSocket (int port)
 
 	address.sin_port = htons((short)port);
 
-	if (bind (newsocket, (void *)&address, sizeof(address)) == -1)
+	if (bind (newsocket, (sockaddr *)&address, sizeof(address)) == -1)
 		return -1;
 
 	return newsocket;
