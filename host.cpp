@@ -62,6 +62,8 @@ void Host_Error (char *message, ...)
 	vsprintf (str, message, argptr);
 	va_end (argptr);
 
+	assert(false);		// drop to debugger
+
 	if (!host_initialized)
 		Sys_Error ("Error during initialization: %s", str);
 
