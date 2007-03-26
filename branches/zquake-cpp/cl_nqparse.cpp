@@ -240,6 +240,10 @@ static void CLNQ_ParseClientdata (int bits)
 			Sbar_Changed ();
 		}
 	}
+
+	view_message.flags = 0;
+	if (cl.stats[STAT_HEALTH] <= 0)
+		view_message.flags |= PF_DEAD;
 }
 
 /*
