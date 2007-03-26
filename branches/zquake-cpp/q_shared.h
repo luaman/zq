@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <vector>
 #include <map>
+#include <iostream>
 using std::string;
 using std::wstring;
 
@@ -185,7 +186,7 @@ int vsnprintf(char *buffer, size_t count, const char *format, va_list argptr);
 
 qbool Q_glob_match (const char *pattern, const char *text);
 
-int Com_HashKey (char *name);
+int Com_HashKey (const char *name);
 
 //============================================================================
 

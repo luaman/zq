@@ -457,7 +457,7 @@ qbool Q_glob_match (const char *pattern, const char *text)
 Com_HashKey
 ==========
 */
-int Com_HashKey (char *name)
+int Com_HashKey (const char *name)
 {
 	int	v;
 	unsigned char c;

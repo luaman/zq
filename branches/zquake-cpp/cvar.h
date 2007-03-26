@@ -47,10 +47,10 @@ typedef struct cvar_s
 void Cvar_Register (cvar_t *var);
 
 // returns existing var or creates a new, dynamic one.  cvarflags will be or'ed in
-cvar_t *Cvar_Get (char *name, char *string, int cvarflags);
+cvar_t *Cvar_Get (const char *name, char *string, int cvarflags);
 
 // equivalent to "<name> <variable>" typed at the console
-void Cvar_Set (cvar_t *var, char *string);
+void Cvar_Set (cvar_t *var, const char *string);
 
 // force a set even if the cvar is read only
 void Cvar_ForceSet (cvar_t *var, char *string);
@@ -77,8 +77,8 @@ qbool Cvar_Command (void);
 // with the archive flag set to true.
 void Cvar_WriteVariables (FILE *f);
 
-cvar_t *Cvar_Find (char *name);
-qbool Cvar_Delete (char *name);
+cvar_t *Cvar_Find (const char *name);
+qbool Cvar_Delete (const char *name);
 
 // Use this to walk through all vars
 cvar_t *Cvar_Next (cvar_t *var);
