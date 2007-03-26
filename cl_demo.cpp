@@ -468,7 +468,7 @@ void CL_WriteSetDemoMessage (void)
 
 // FIXME: same as in sv_user.c. Move to common.c?
 #ifdef VWEP_TEST
-static char *TrimModelName (char *full)
+static char *TrimModelName (const char *full)
 {
 	static char shortn[MAX_QPATH];
 	int len;
@@ -553,7 +553,7 @@ static void CL_Record (void)
 
 	// send server info string
 	MSG_WriteByte (&buf, svc_stufftext);
-	MSG_WriteString (&buf, va("fullserverinfo \"%s\"\n", cl.serverinfo) );
+	MSG_WriteString (&buf, va("fullserverinfo \"%s\"\n", cl.serverinfo.to_string().c_str()) );
 
 	// flush packet
 	CL_WriteRecordDemoMessage (&buf, seq++);
@@ -592,11 +592,11 @@ static void CL_Record (void)
 		// pray we don't overflow
 		for (i = 0; i < MAX_VWEP_MODELS; i++) {
 			s = cl.vw_model_name[i];
-			if (!*s)
+			if (s == "")
 				continue;
 			MSG_WriteByte (&buf, svc_serverinfo);
 			MSG_WriteString (&buf, "#vw");
-			MSG_WriteString (&buf, va("%i %s", i, TrimModelName(s)));
+			MSG_WriteString (&buf, va("%i %s", i, TrimModelName(s.c_str())));
 		}
 		// send end-of-list messsage
 		MSG_WriteByte (&buf, svc_serverinfo);

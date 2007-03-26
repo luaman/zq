@@ -164,7 +164,7 @@ void client_state_t::clear ()
 	oldvalidsequence = 0;
 	delta_sequence = 0;
 	spectator = false;
-	last_ping_request;
+	last_ping_request = 0;
 	memset (frames, 0, sizeof(frames));
 	memset (&lastcmd, 0, sizeof(lastcmd));
 	servertime = 0;
