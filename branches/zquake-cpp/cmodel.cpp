@@ -1011,7 +1011,7 @@ cmodel_t *CM_LoadMap (const string name, qbool clientload, unsigned *checksum, u
 
 	// let progs know if we've loaded a Half-Life map
 	if (!clientload)
-		Cvar_ForceSet(Cvar_Get("sv_halflifebsp", "0", CVAR_ROM), map_halflife ? "1" : "0");
+		Cvar_ForceSet(Cvar_Get("sv_halflifebsp", "0", CVAR_ROM), map_halflife ? (char *)"1" : (char *)"0");
 
 	// swap all the lumps
 	cmod_base = (byte *)header;
