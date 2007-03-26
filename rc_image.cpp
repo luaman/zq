@@ -218,6 +218,12 @@ byte *Image_LoadPNG (FILE *fin, char *filename, int matchwidth, int matchheight)
 	int y, width, height, bitdepth, colortype, interlace, compression, filter, bytesperpixel;
 	unsigned long rowbytes;
 
+#ifdef _DEBUG
+	// FIXME, libpng causes access violations for me in debug mode
+	// until I fix that, I'll have to live without PNGs in debug mode
+	return NULL;
+#endif
+
 	if (!png_handle)
 		return NULL;
 
