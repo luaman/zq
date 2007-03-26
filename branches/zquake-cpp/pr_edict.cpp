@@ -1172,11 +1172,10 @@ dm_use_progs:
 
 		for (i=0 ; i<progs->numfielddefs ; i++)
 			pr_fielddefs[i].ofs = PR_FIELDOFS(pr_fielddefs[i].ofs);
-
 	}
 	else
 	{
-		memset (pr_globaloffsetpatch, sizeof(pr_globaloffsetpatch), 0);
+		memset (pr_globaloffsetpatch, 0, sizeof(pr_globaloffsetpatch));
 
 		for (i = 0; i < 106; i++)
 			pr_fieldoffsetpatch[i] = i;
