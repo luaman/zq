@@ -177,21 +177,25 @@ void IN_Button7Down(void) {KeyDown(&in_button7);}
 void IN_Button7Up(void) {KeyUp(&in_button7);}
 
 void IN_JumpDown(void) {
-	qbool condition;
+	qbool up;
+	int pmt;
 
-	condition = (cls.state == ca_active && cl_smartjump.value);
-	if (condition && cl.stats[STAT_HEALTH] > 0 && !cls.demoplayback && !cl.spectator && 
-		cl.waterlevel >= 2 && !(cl.teamfortress && (in_forward.state & 1))
-	)
-		KeyDown(&in_up);
-	else if (condition && cl.stats[STAT_HEALTH] > 0 && !cls.demoplayback && !cl.spectator && 
-		cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cl.playernum].pm_type == PM_FLY
-	)
-		KeyDown(&in_up);
-	else if (condition && cl.spectator && !cam_track)
-		KeyDown(&in_up);
+	if (cls.state != ca_active || !cl_smartjump.value || cls.demoplayback)
+		up = false;
+	else if (cl.spectator)
+		up = cam_track ? false : true;
+	else if (cl.stats[STAT_HEALTH] <= 0)
+		up = false;
+	else if (cl.validsequence && (
+	((pmt = cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cl.playernum].pm_type) == PM_FLY)
+	|| pmt == PM_SPECTATOR || pmt == PM_OLD_SPECTATOR))
+		up = true;
+	else if (cl.waterlevel >= 2 && !(cl.teamfortress && (in_forward.state & 1)))
+		up = true;
 	else
-		KeyDown(&in_jump);
+		up = false;
+
+	KeyDown(up ? &in_up : &in_jump);
 }
 
 void IN_JumpUp(void) {
