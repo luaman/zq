@@ -404,7 +404,7 @@ void SVC_Status (void)
 	int		top, bottom;
 
 	SV_BeginRedirect (RD_PACKET);
-	Com_Printf ("%s\n", svs.info);
+	Com_Printf ("%s\n", svs.info.to_string().c_str());
 	for (i=0 ; i<MAX_CLIENTS ; i++)
 	{
 		cl = &svs.clients[i];
