@@ -1163,7 +1163,7 @@ dm_use_progs:
 
 #ifdef WITH_NQPROGS
 	if (pr_nqprogs) {
-		memcpy (&pr_globaloffsetpatch, &pr_globaloffsetpatch_nq, sizeof(pr_globaloffsetpatch));
+		memcpy (pr_globaloffsetpatch, pr_globaloffsetpatch_nq, sizeof(pr_globaloffsetpatch));
 		for (i = 0; i < 106; i++) {
 			pr_fieldoffsetpatch[i] = (i < 8) ? i : (i < 25) ? i + 1 :
 				(i < 28) ? i + (102 - 25) : (i < 73) ? i - 2 :
@@ -1176,7 +1176,7 @@ dm_use_progs:
 	}
 	else
 	{
-		memset (&pr_globaloffsetpatch, sizeof(pr_globaloffsetpatch), 0);
+		memset (pr_globaloffsetpatch, sizeof(pr_globaloffsetpatch), 0);
 
 		for (i = 0; i < 106; i++)
 			pr_fieldoffsetpatch[i] = i;
