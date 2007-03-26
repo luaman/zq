@@ -36,7 +36,7 @@ char *svc_strings[] =
 	"svc_disconnect",
 	"svc_updatestat",
 	"NQ svc_version",		// [long] server version
-	"svc_setview",			// [short] entity number
+	"NQ svc_setview",		// [short] entity number
 	"svc_sound",			// <see code>
 	"NQ svc_time",			// [float] server time
 	"svc_print",			// [string] null terminated string

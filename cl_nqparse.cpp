@@ -1167,7 +1167,7 @@ void CLNQ_ParseServerMessage (void)
 				nq_last_fixangle[i] = cl.simangles[i] = cl.viewangles[i] = MSG_ReadAngle ();
 			break;
 
-		case svc_setview:
+		case nq_svc_setview:
 			nq_viewentity = MSG_ReadShort ();
 			if (nq_viewentity <= nq_maxclients)
 				cl.playernum = nq_viewentity - 1;
