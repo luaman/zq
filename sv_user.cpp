@@ -166,7 +166,7 @@ static void Cmd_New_f (void)
 	}
 
 	ClientReliableWrite_Begin (sv_client, svc_stufftext);
-	ClientReliableWrite_String (va("fullserverinfo \"%s\"\n", info));
+	ClientReliableWrite_String (va("fullserverinfo \"%s\"\n", info.c_str()));
 	ClientReliableWrite_End ();
 }
 
