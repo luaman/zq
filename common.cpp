@@ -747,7 +747,7 @@ int FS_FOpenFile (const string filename, FILE **file)
 				if (pak->files[i].name == filename)
 				{	// found it!
 					if (developer.value)
-						Sys_Printf ("PackFile: %s : %s\n", pak->filename, filename);
+						Sys_Printf ("PackFile: %s : %s\n", pak->filename, filename.c_str());
 				// open a new file on the pakfile
 					*file = fopen (pak->filename, "rb");
 					if (!*file)
@@ -776,7 +776,7 @@ int FS_FOpenFile (const string filename, FILE **file)
 	}
 	
 	if (developer.value)
-		Sys_Printf ("FindFile: can't find %s\n", filename);
+		Sys_Printf ("FindFile: can't find %s\n", filename.c_str());
 	
 	*file = NULL;
 	fs_filesize = -1;
@@ -830,7 +830,7 @@ byte *FS_LoadFile (const string path, int usehunk)
 		Sys_Error ("FS_LoadFile: bad usehunk");
 
 	if (!buf)
-		Sys_Error ("FS_LoadFile: not enough space for %s", path);
+		Sys_Error ("FS_LoadFile: not enough space for %s", path.c_str());
 		
 	((byte *)buf)[len] = 0;
 #ifndef SERVERONLY
