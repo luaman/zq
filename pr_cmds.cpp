@@ -1692,6 +1692,41 @@ static void NQP_Process (void)
 		cmd = nqp_buf_data[0];
 		if (cmd == svc_killedmonster || cmd == svc_foundsecret || cmd == svc_sellscreen)
 			nqp_expect = 1;
+		else if (cmd == svc_updatefrags)
+			nqp_expect = 4;
+		else if (cmd == nq_svc_updatecolors) {
+			if (nqp_buf.cursize < 3)
+				goto waitformore;
+			MSG_WriteByte (&sv.reliable_datagram, svc_setinfo);
+			MSG_WriteByte (&sv.reliable_datagram, nqp_buf_data[1]);
+			MSG_WriteString (&sv.reliable_datagram, "topcolor");
+			MSG_WriteString (&sv.reliable_datagram, va("%i", min(nqp_buf_data[2] & 15, 13)));
+			MSG_WriteByte (&sv.reliable_datagram, svc_setinfo);
+			MSG_WriteByte (&sv.reliable_datagram, nqp_buf_data[1]);
+			MSG_WriteString (&sv.reliable_datagram, "bottomcolor");
+			MSG_WriteString (&sv.reliable_datagram, va("%i", min((nqp_buf_data[2] >> 4)& 15, 13)));
+			NQP_Skip (3);
+		}
+		else if (cmd == nq_svc_updatename) {
+			if (nqp_buf.cursize < 3)
+				goto waitformore;
+			int slot = nqp_buf_data[1];
+			byte *p = (byte *)memchr (nqp_buf_data + 2, 0, nqp_buf.cursize - 2);
+			if (!p)
+				goto waitformore;
+			MSG_WriteByte (&sv.reliable_datagram, svc_setinfo);
+			MSG_WriteByte (&sv.reliable_datagram, slot);
+			MSG_WriteString (&sv.reliable_datagram, "name");
+			MSG_WriteString (&sv.reliable_datagram, (char *)nqp_buf_data + 2);
+			MSG_WriteByte (&sv.reliable_datagram, svc_updateping);
+			MSG_WriteByte (&sv.reliable_datagram, slot);
+			MSG_WriteShort (&sv.reliable_datagram, 0);
+			// We expect bots to set their name when they enter the game and never change it
+			MSG_WriteByte (&sv.reliable_datagram, svc_updateentertime);
+			MSG_WriteByte (&sv.reliable_datagram, slot);
+			MSG_WriteFloat (&sv.reliable_datagram, 0);
+			NQP_Skip ((p - nqp_buf_data) + 1);
+		}
 		else if (cmd == svc_cdtrack) {
 			if (nqp_buf.cursize < 3)
 				goto waitformore;
