@@ -1210,6 +1210,8 @@ dm_use_progs:
 
 	// reset stuff like ZQ_CLIENTCOMMAND, progs must enable it explicitly
 	memset (&pr_ext_enabled, sizeof(pr_ext_enabled), 0);
+
+	PR_Exec_Init ();
 }
 
 
