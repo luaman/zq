@@ -71,7 +71,7 @@ NULL_CFLAGS =
 
 #------------------------------------------------------------------------------
 
-LDFLAGS =
+LDFLAGS = -lstdc++
 GL_LDFLAGS =
 SW_LDFLAGS =
 ifeq ($(ARCH),mingw32)
@@ -154,7 +154,7 @@ server: $(PRODUCT_DIR)/zqds
 $(PRODUCT_DIR)/zqds: $(ZQDS_C_OBJS)
 	@echo [LINK] $@
 	@$(CC) -o $@ $(ZQDS_C_OBJS) $(LDFLAGS)
-$(ZQDS_C_OBJS): $(SERVER_OBJ_DIR)/%.o: %.c
+$(ZQDS_C_OBJS): $(SERVER_OBJ_DIR)/%.o: %.cpp
 	@-mkdir -p $(SERVER_OBJ_DIR)
 	@echo [CC] $<
 	@$(CC) $(CFLAGS) $(SERVER_CFLAGS) -c -o $@ $<
@@ -163,7 +163,7 @@ gl: $(PRODUCT_DIR)/zquake-gl
 $(PRODUCT_DIR)/zquake-gl: $(ZQGL_C_OBJS)
 	@echo [LINK] $@
 	@$(CC) -o $@ $(ZQGL_C_OBJS) $(LDFLAGS) $(GL_LDFLAGS)
-$(ZQGL_C_OBJS): $(GL_OBJ_DIR)/%.o: %.c
+$(ZQGL_C_OBJS): $(GL_OBJ_DIR)/%.o: %.cpp
 	@-mkdir -p $(GL_OBJ_DIR)
 	@echo [CC] $<
 	@$(CC) $(CFLAGS) $(GL_CFLAGS) -c -o $@ $<
@@ -172,7 +172,7 @@ soft: $(PRODUCT_DIR)/zquake
 $(PRODUCT_DIR)/zquake: $(ZQSW_C_OBJS)
 	@echo [LINK] $@
 	@$(CC) -o $@ $(ZQSW_C_OBJS) $(LDFLAGS) $(SW_LDFLAGS)
-$(ZQSW_C_OBJS): $(SOFT_OBJ_DIR)/%.o: %.c
+$(ZQSW_C_OBJS): $(SOFT_OBJ_DIR)/%.o: %.cpp
 	@-mkdir -p $(SOFT_OBJ_DIR)
 	@echo [CC] $<
 	@$(CC) $(CFLAGS) $(SW_CFLAGS) -c -o $@ $<
@@ -181,7 +181,7 @@ null: $(PRODUCT_DIR)/zquake-null
 $(PRODUCT_DIR)/zquake-null: $(ZQNULL_C_OBJS)
 	@echo [LINK] $@
 	@$(CC) -o $@ $(ZQNULL_C_OBJS) $(LDFLAGS)
-$(ZQNULL_C_OBJS): $(NULL_OBJ_DIR)/%.o: %.c
+$(ZQNULL_C_OBJS): $(NULL_OBJ_DIR)/%.o: %.cpp
 	@-mkdir -p $(NULL_OBJ_DIR)
 	@echo [CC] $<
 	@$(CC) $(CFLAGS) $(NULL_CFLAGS) -c -o $@ $<
