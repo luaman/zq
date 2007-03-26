@@ -997,7 +997,7 @@ cmodel_t *CM_LoadMap (const string name, qbool clientload, unsigned *checksum, u
 	// load the file
 	buf = (unsigned int *)FS_LoadTempFile (name);
 	if (!buf)
-		Host_Error ("CM_LoadMap: %s not found", name);
+		Host_Error ("CM_LoadMap: %s not found", name.c_str());
 
 	COM_FileBase (name.c_str(), loadname);
 
@@ -1005,7 +1005,7 @@ cmodel_t *CM_LoadMap (const string name, qbool clientload, unsigned *checksum, u
 
 	i = LittleLong (header->version);
 	if (i != BSPVERSION && i != HL_BSPVERSION)
-		Host_Error ("CM_LoadMap: %s has wrong version number (%i should be %i)", name, i, BSPVERSION);
+		Host_Error ("CM_LoadMap: %s has wrong version number (%i should be %i)", name.c_str(), i, BSPVERSION);
 
 	map_halflife = (i == HL_BSPVERSION);
 
