@@ -1769,7 +1769,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		}
 				
 		if (cl->state >= cs_spawned && !cl->spectator)
-			SV_BroadcastPrintf (PRINT_HIGH, "%s changed name to %s\n", cl->name, val);
+			SV_BroadcastPrintf (PRINT_HIGH, "%s changed name to %s\n", cl->name, val.c_str());
 	}
 
 
