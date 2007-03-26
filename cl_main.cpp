@@ -63,6 +63,7 @@ cvar_t	teamskin = {"teamskin", "", 0, OnChangeSkinForcing};
 cvar_t	enemyskin = {"enemyskin", "", 0, OnChangeSkinForcing};
 cvar_t	cl_independentPhysics = {"cl_independentPhysics", "1"};
 cvar_t	cl_physfps = {"cl_physfps", "0"};
+cvar_t	cl_zerolocalping = {"cl_zerolocalping", "1"};
 
 
 //
@@ -1106,6 +1107,7 @@ void CL_InitLocal (void)
 	Cvar_Register (&qizmo_dir);
 	Cvar_Register (&cl_independentPhysics);
 	Cvar_Register (&cl_physfps);
+	Cvar_Register (&cl_zerolocalping);
 
 #ifndef RELEASE_VERSION
 	// inform everyone that we're using a development version
@@ -1395,8 +1397,8 @@ if (cls.physframe)
 	CL_CheckAutoPause ();
 
 	// if running a local server, send the move command now
-//	if (com_serveractive && !cls.demorecording)
-//		CL_SendToServer ();
+	if (cl_zerolocalping.value && com_serveractive && !cls.demorecording)
+		CL_SendToServer ();
 
 	if (com_serveractive)
 		SV_Frame (cls.physframetime);
@@ -1412,7 +1414,7 @@ if (cls.physframe)
 	// process stuffed commands
 	Cbuf_ExecuteEx (&cbuf_svc);
 
-//	if (!(com_serveractive && !cls.demorecording))
+	if (!(cl_zerolocalping.value && com_serveractive && !cls.demorecording))
 		CL_SendToServer ();
 }
 else {

@@ -413,6 +413,8 @@ static void CL_PredictLocalPlayer (void)
 		}
 		else
 			CL_CategorizePosition ();
+		if (cl_independentPhysics.value)
+			CL_LerpMovePhys (cls.realtime, to->senttime);
 		goto out;
 	}
 
