@@ -1692,6 +1692,11 @@ static void NQP_Process (void)
 		cmd = nqp_buf_data[0];
 		if (cmd == svc_killedmonster || cmd == svc_foundsecret || cmd == svc_sellscreen)
 			nqp_expect = 1;
+		else if (cmd == nq_svc_setview) {
+			if (nqp_buf.cursize < 3)
+				goto waitformore;
+			NQP_Skip (3);	// what can we do?  just ignore it
+		}
 		else if (cmd == svc_updatefrags)
 			nqp_expect = 4;
 		else if (cmd == nq_svc_updatecolors) {
