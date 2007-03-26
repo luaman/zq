@@ -74,7 +74,7 @@ qbool SNDDMA_Init_ALSA (void)
         return 0;
 
 #define ALSA_FUNC(ret, func, params) \
-    if (!(alsa_##func = dlsym (alsa_handle, #func))) \
+    if (!(*(void **)&alsa_##func = dlsym (alsa_handle, #func))) \
     { \
         Sys_Printf ("Couldn't load ALSA function %s\n", #func); \
         dlclose (alsa_handle); \
@@ -348,7 +348,7 @@ int SNDDMA_GetDMAPos_ALSA (void)
     offset *= dma.channels;
     nframes *= dma.channels;
     dma.samplepos = offset;
-    dma.buffer = areas->addr;
+    dma.buffer = (byte *)areas->addr;
     return dma.samplepos;
 }
 

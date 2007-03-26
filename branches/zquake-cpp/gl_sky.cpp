@@ -263,7 +263,7 @@ void R_SetSky (const string name)
 
 	for (i=0 ; i<6 ; i++)
 	{
-		snprintf (pathname, sizeof(pathname), "env/%s%s.tga", name, suf[i]);
+		snprintf (pathname, sizeof(pathname), "env/%s%s.tga", name.c_str(), suf[i]);
 		LoadTGA (pathname, &pic, &width, &height);
 		if (!pic)
 		{

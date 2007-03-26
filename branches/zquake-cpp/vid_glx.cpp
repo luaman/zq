@@ -80,9 +80,6 @@ cvar_t	vid_ref = {"vid_ref", "gl", CVAR_ROM};
 cvar_t	_windowed_mouse = {"_windowed_mouse", "1", CVAR_ARCHIVE};
 cvar_t	vid_mode = {"vid_mode","0"};
 
-static float mouse_x, mouse_y;
-static float old_mouse_x, old_mouse_y;
-
 cvar_t	m_filter = {"m_filter", "0"};
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol", "1"};
 
