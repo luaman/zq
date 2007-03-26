@@ -398,7 +398,7 @@ void Model_NextDownload (void)
 		if (!cl.model_precache[i])
 		{
 			Com_Printf ("\nThe required model file '%s' could not be found or downloaded.\n\n"
-				, cl.model_name[i]);
+				, cl.model_name[i].c_str());
 			Com_Printf ("You may need to download or purchase a %s client "
 				"pack in order to play on this server.\n\n", cls.gamedirfile);
 			Host_EndGame ();
@@ -1498,7 +1498,7 @@ void CL_ParseVWepPrecache (char *str)
 	else
 		cl.vw_model_name[num][0] = '\0';
 
-	Com_DPrintf ("VWEP %i: '%s'\n", num, cl.vw_model_name[num]);
+	Com_DPrintf ("VWEP %i: '%s'\n", num, cl.vw_model_name[num].c_str());
 }
 #endif
 

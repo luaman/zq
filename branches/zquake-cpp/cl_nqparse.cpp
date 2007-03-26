@@ -435,7 +435,7 @@ static void CLNQ_ParseServerData (void)
 	{
 		cl.model_precache[i] = Mod_ForName (cl.model_name[i].c_str(), false, i == 1);
 		if (cl.model_precache[i] == NULL)
-			Host_Error ("Model %s not found", cl.model_name[i]);
+			Host_Error ("Model %s not found", cl.model_name[i].c_str());
 
 		if (cl.model_name[i][0] == '*')
 			cl.clipmodels[i] = CM_InlineModel(cl.model_name[i].c_str());
