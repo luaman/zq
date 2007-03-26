@@ -49,7 +49,7 @@ cvar_t *Cvar_Next (cvar_t *var)
 Cvar_Find
 ============
 */
-cvar_t *Cvar_Find (char *name)
+cvar_t *Cvar_Find (const char *name)
 {
 	cvar_t	*var;
 	int		key;
@@ -144,7 +144,7 @@ int Cvar_CompleteCountPossible (char *partial)
 Cvar_Set
 ============
 */
-void Cvar_Set (cvar_t *var, char *string)
+void Cvar_Set (cvar_t *var, const char *string)
 {
 	static qbool changing = false;
 
@@ -167,7 +167,7 @@ void Cvar_Set (cvar_t *var, char *string)
 	if (var->OnChange && !changing) {
 		qbool cancel = false;
 		changing = true;
-		var->OnChange(var, string, &cancel);
+		var->OnChange(var, (char *)string, &cancel);
 		changing = false;
 		if (cancel)
 			return;
@@ -415,7 +415,7 @@ void Cvar_CvarList_f (void)
 Cvar_Get
 ===========
 */
-cvar_t *Cvar_Get (char *name, char *string, int cvarflags)
+cvar_t *Cvar_Get (const char *name, char *string, int cvarflags)
 {
 	cvar_t		*var;
 	int			key;
@@ -456,7 +456,7 @@ Cvar_Delete
 ===========
 returns true if the cvar was found (and deleted)
 */
-qbool Cvar_Delete (char *name)
+qbool Cvar_Delete (const char *name)
 {
 	cvar_t	*var, *prev;
 	int		key;
