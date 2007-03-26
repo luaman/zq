@@ -29,6 +29,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sound.h"
 #include "version.h"
 #include "teamplay.h"
+#ifndef _WIN32
+#include <netinet/in.h>		// htons()
+#endif
 
 
 cvar_t	*cl_rconPassword;
