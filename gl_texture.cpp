@@ -42,7 +42,7 @@ cvar_t		gl_picmip_world = {"gl_picmip_world", "base"};
 cvar_t		gl_picmip_model = {"gl_picmip_model", "base"};
 cvar_t		gl_picmip_turb = {"gl_picmip_turb", "base"};
 cvar_t		gl_picmip_sprite = {"gl_picmip_sprite", "base"};
-cvar_t		gl_texturemode = {"gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", 4, OnChange_gl_texturemode};
+cvar_t		gl_texturemode = {"gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", 0, OnChange_gl_texturemode};
 cvar_t		gl_texturemode_world = {"gl_texturemode_world", "base", 0, OnChange_gl_texturemode};
 cvar_t		gl_texturemode_model = {"gl_texturemode_model", "base", 0, OnChange_gl_texturemode};
 cvar_t		gl_texturemode_turb = {"gl_texturemode_turb", "base", 0, OnChange_gl_texturemode};
@@ -797,6 +797,7 @@ void R_InitTextures (void)
 	Cvar_Register (&gl_picmip_turb);
 	Cvar_Register (&gl_picmip_sprite);
 	Cvar_Register (&gl_texturemode);
+	gl_texturemode.value = 4;
 	Cvar_Register (&gl_texturemode_world);
 	Cvar_Register (&gl_texturemode_model);
 	Cvar_Register (&gl_texturemode_turb);
