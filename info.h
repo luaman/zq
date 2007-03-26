@@ -4,7 +4,6 @@
 
 #include <string>
 #include <map>
-#include <iostream>
 
 class Info {
 	std::map <std::string,std::string> keys;
