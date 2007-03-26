@@ -400,8 +400,16 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 
 	numnails = 0;
 
-	for (e=MAX_CLIENTS+1, ent=EDICT_NUM(e) ; e < sv.num_edicts ; e++, ent = NEXT_EDICT(ent))
+	for (e = pr_nqprogs ? 1 : MAX_CLIENTS+1, ent=EDICT_NUM(e);
+		e < sv.num_edicts;
+		e++, ent = NEXT_EDICT(ent))
 	{
+		if (pr_nqprogs) {
+			// don't send the player's model to himself
+			if (e < MAX_CLIENTS + 1 && svs.clients[e-1].state != cs_free)
+				continue;
+		}
+
 		// ignore ents without visible models
 		if (!ent->v.modelindex || !*PR_GetString(ent->v.model))
 			continue;
