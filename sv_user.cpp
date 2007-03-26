@@ -66,7 +66,7 @@ static void OnChange_sv_maxpitch (cvar_t *var, char *str, qbool *cancel) {
 		return;
 
 	Cvar_SetValue (var, newval);
-	newstr = (newval == 80.0f) ? "" : Q_ftos(newval);	// don't show default values in serverinfo
+	newstr = (newval == 80.0f) ? (char *)"" : Q_ftos(newval);	// don't show default values in serverinfo
 	svs.info.set("maxpitch", newstr);
 	SV_SendServerInfoChange("maxpitch", newstr);
 }
@@ -82,7 +82,7 @@ static void OnChange_sv_minpitch (cvar_t *var, char *str, qbool *cancel) {
 		return;
 
 	Cvar_SetValue (var, newval);
-	newstr = (newval == -70.0f) ? "" : Q_ftos(newval);	// don't show default values in serverinfo
+	newstr = (newval == -70.0f) ? (char *)"" : Q_ftos(newval);	// don't show default values in serverinfo
 	svs.info.set("minpitch", newstr);
 	SV_SendServerInfoChange("minpitch", newstr);
 }
