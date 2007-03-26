@@ -141,6 +141,12 @@ char *PR_GlobalStringNoContents (int ofs);
 
 //=============================================================================
 
+void PR_Exec_Init (void)
+{
+	pr_depth = 0;
+	localstack_used = 0;
+}
+
 /*
 =================
 PR_PrintStatement
