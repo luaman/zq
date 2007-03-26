@@ -372,7 +372,7 @@ struct client_state_t
 	double		laststop;
 
 	qbool		onground;
-	qbool		waterlevel;
+	int			waterlevel;
 	float		crouch;			// local amount for smoothing stepups
 	float		landtime;
 	float		viewheight;
