@@ -525,7 +525,7 @@ static void HandleEnter (qbool ignore_ctrldown)
 		if (!*p)
 			break;		// just whitespace
 
-		Cbuf_AddText(type == TEAMCHAT ? "say_team " : "say ");
+		Cbuf_AddText(type == TEAMCHAT ? (char *)"say_team " : (char *)"say ");
 //		Cbuf_AddText(wcs2str(key_lines[edit_line] + 1));
 		Cbuf_AddText(encode_say(key_lines[edit_line] + 1));
 		Cbuf_AddText("\n");

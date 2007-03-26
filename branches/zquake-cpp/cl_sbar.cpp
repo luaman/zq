@@ -1020,7 +1020,7 @@ static void Sbar_SpectatorScoreboard (void)
 		else
 			Sbar_DrawNormal ();
 
-		sprintf (st, "Tracking %-.13s", cl.players[cam_target].name);	// sprintf ok
+		sprintf (st, "Tracking %-.13s", cl.players[cam_target].name.c_str());	// sprintf ok
 		if (!cam_locked)
 			strcat (st, " (waiting)");
 		else if (!cls.demoplayback && Cam_TargetCount() > 1)

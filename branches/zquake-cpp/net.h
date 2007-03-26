@@ -46,7 +46,7 @@ void	NET_ClientConfig (qbool enable);	// open/close client socket
 void	NET_ServerConfig (qbool enable);	// open/close server socket
 
 qbool	NET_GetPacket (netsrc_t sock);
-void	NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to);
+void	NET_SendPacket (netsrc_t sock, int length, const void *data, netadr_t to);
 void	NET_ClearLoopback (void);
 void	NET_Sleep (int msec);
 

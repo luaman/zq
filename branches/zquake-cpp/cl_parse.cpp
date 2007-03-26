@@ -312,7 +312,7 @@ void VWepModel_NextDownload (void)
 	for ( ; cls.downloadnumber < MAX_VWEP_MODELS; cls.downloadnumber++)
 	{
 		if (!cl.vw_model_name[cls.downloadnumber][0] ||
-			!strcmp(cl.vw_model_name[cls.downloadnumber], "-"))
+			cl.vw_model_name[cls.downloadnumber] == "-")
 			continue;
 		if (!CL_CheckOrDownloadFile(cl.vw_model_name[cls.downloadnumber]))
 			return;		// started a download
@@ -320,10 +320,10 @@ void VWepModel_NextDownload (void)
 
 	for (i = 0; i < MAX_VWEP_MODELS; i++)
 	{
-		if (!cl.vw_model_name[i][0])
+		if (cl.vw_model_name[i] == "")
 			continue;
 
-		if (strcmp(cl.vw_model_name[i], "*"))
+		if (cl.vw_model_name[i] != "-")
 			cl.vw_model_precache[i] = Mod_ForName (cl.vw_model_name[i], false, false);
 
 		if (!cl.vw_model_precache[i]) {
@@ -332,7 +332,7 @@ void VWepModel_NextDownload (void)
 		}
 	}
 
-	if (!strcmp(cl.vw_model_name[0], "*") || cl.vw_model_precache[0])
+	if (cl.vw_model_name[0] == "-" || cl.vw_model_precache[0])
 		cl.vwep_enabled = true;
 	else {
 		// if the vwep player model is required but not present,
@@ -1442,7 +1442,7 @@ A typical vwep model list will look like this:
 ==============
 */
 #ifdef VWEP_TEST
-void CL_ParseVWepPrecache (char *str)
+void CL_ParseVWepPrecache (const char *str)
 {
 	int num;
 	char *p;
@@ -1473,9 +1473,9 @@ void CL_ParseVWepPrecache (char *str)
 	if (p && p[1]) {
 		p++;	// skip the space
 
-		if (!strcmp(p, "*")) {
+		if (!strcmp(p, "-")) {
 			// empty model
-			strcpy (cl.vw_model_name[num], "*");
+			cl.vw_model_name[num] = "-";
 		}
 		else {
 			if (strstr(p, "..") || p[0] == '/' || p[0] == '\\')
@@ -1483,20 +1483,20 @@ void CL_ParseVWepPrecache (char *str)
 
 			if (strstr(p, "/"))
 				// a full path was specified
-				strlcpy (cl.vw_model_name[num], p, sizeof(cl.vw_model_name[0]));
+				cl.vw_model_name[num] = p;
 			else {
 				// use default path
-				strcpy (cl.vw_model_name[num], "progs/");	// FIXME, "progs/vwep/"	?
-				strlcat (cl.vw_model_name[num], p, sizeof(cl.vw_model_name[0]));
+				cl.vw_model_name[num] = "progs/";	// FIXME, "progs/vwep/"	?
+				cl.vw_model_name[num] += p;
 			}
 
 			// use default extension if not specified
 			if (!strstr(p, "."))
-				strlcat (cl.vw_model_name[num], ".mdl", sizeof(cl.vw_model_name[0]));
+				cl.vw_model_name[num] += ".mdl";
 		}
 	}
 	else
-		cl.vw_model_name[num][0] = '\0';
+		cl.vw_model_name[num] = "";
 
 	Com_DPrintf ("VWEP %i: '%s'\n", num, cl.vw_model_name[num].c_str());
 }

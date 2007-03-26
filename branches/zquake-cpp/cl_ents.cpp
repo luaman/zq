@@ -1117,7 +1117,7 @@ static qbool CL_AddVWepModel (entity_t *ent, int vw_index, int vw_frame)
 	if ((unsigned)vw_index >= MAX_VWEP_MODELS)
 		return false;
 
-	if (!strcmp(cl.vw_model_name[vw_index], "-"))
+	if (cl.vw_model_name[vw_index] == "-")
 		return true;	// empty vwep model
 
 	if (!cl.vw_model_precache[vw_index])
@@ -1279,7 +1279,7 @@ void CL_LinkPlayers (void)
 			qbool vwep;
 			vwep = CL_AddVWepModel (&ent, state->vw_index, state->frame);
 			if (vwep) {
-				if (strcmp(cl.vw_model_name[0], "-")) {
+				if (cl.vw_model_name[0] != "-") {
 					ent.model = cl.vw_model_precache[0];
 					ent.renderfx = RF_PLAYERMODEL;
 					V_AddEntity (&ent);
