@@ -1332,7 +1332,7 @@ void CL_SetInfo (void)
 	strlcpy (value, MSG_ReadString(), sizeof(value));
 
 	if (!cl.teamfortress)	// don't allow cheating in TF
-		Com_DPrintf ("SETINFO %s: %s=%s\n", player->name, key, value);
+		Com_DPrintf ("SETINFO %s: %s=%s\n", player->name.c_str(), key, value);
 
 	bool r = player->userinfo.set(key, value);
 	if (!r)
