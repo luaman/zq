@@ -214,7 +214,7 @@ qbool NET_GetLoopPacket (netsrc_t sock)
 }
 
 
-void NET_SendLoopPacket (netsrc_t sock, int length, void *data, netadr_t to)
+void NET_SendLoopPacket (netsrc_t sock, int length, const void *data, netadr_t to)
 {
 	int		i;
 	loopback_t	*loop;
@@ -289,7 +289,7 @@ qbool NET_GetPacket (netsrc_t sock)
 
 //=============================================================================
 
-void NET_SendPacket (netsrc_t sock, int length, void *data, netadr_t to)
+void NET_SendPacket (netsrc_t sock, int length, const void *data, netadr_t to)
 {
 	int		ret;
 	struct sockaddr_in	addr;
