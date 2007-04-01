@@ -26,7 +26,7 @@
 #import <drivers/event_status_driver.h>
 #endif // __i386__
 
-#import "quakedef.h"
+#import "client.h"
 #import "in_osx.h"
 #import "vid_osx.h"
 #import "keys.h"

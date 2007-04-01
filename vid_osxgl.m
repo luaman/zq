@@ -7,7 +7,7 @@
 #import <OpenGL/glu.h>
 #import <OpenGL/glext.h>
 
-#import "quakedef.h"
+#import "client.h"
 #import "gl_local.h"
 #import "vid_osx.h"
 #import "in_osx.h"

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	$Id: modules.c,v 1.10 2006/12/15 01:27:11 johnnycz Exp $
 */
 
-#include "quakedef.h"
+#include "client.h"
 #include "qlib.h"
 
 

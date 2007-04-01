@@ -1,6 +1,6 @@
 // vid_null.c -- null video driver to aid porting efforts
 
-#include "quakedef.h"
+#include "client.h"
 #include "d_local.h"
 
 

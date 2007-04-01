@@ -15,7 +15,7 @@
 
 #define OBJECTIVE_C_FIXME
 
-#import "quakedef.h"
+#import "client.h"
 #import "vid_osx.h"
 #import "sys_osx.h"
 

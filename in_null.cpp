@@ -1,6 +1,6 @@
 // in_null.c -- for systems without a mouse
 
-#include "quakedef.h"
+#include "client.h"
 
 void IN_Init (void)
 {

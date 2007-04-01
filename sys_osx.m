@@ -73,7 +73,7 @@
 
 #else
 
-#import "quakedef.h"
+#import "client.h"
 #import "QuakeApplication.h"
 #import "Quake.h"
 #import "in_osx.h"

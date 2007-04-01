@@ -48,7 +48,7 @@ typedef unsigned int PIXEL24;
 #include <X11/extensions/xf86dga.h>
 #endif
 
-#include "quakedef.h"
+#include "client.h"
 #include "d_local.h"
 #include "input.h"
 #include "keys.h"

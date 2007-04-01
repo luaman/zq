@@ -1,6 +1,6 @@
 // cl_nqdemo.c
 
-#include "quakedef.h"
+#include "client.h"
 #include "sound.h"
 #include "cdaudio.h"
 #include "cl_sbar.h"

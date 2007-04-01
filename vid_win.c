@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // vid_win.c -- Win32 video driver
 
-#include "quakedef.h"
+#include "client.h"
 #include "winquake.h"
 #include "cdaudio.h"
 #include "d_local.h"

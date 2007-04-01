@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_ents.c -- entity parsing and management
 
-#include "quakedef.h"
+#include "client.h"
 #include "pmove.h"
 #include "teamplay.h"
 

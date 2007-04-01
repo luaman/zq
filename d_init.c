@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // d_init.c: rasterization driver initialization
 
-#include "quakedef.h"
+#include "client.h"
 #include "d_local.h"
 
 #define NUM_MIPS	4

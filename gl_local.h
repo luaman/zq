@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _GL_LOCAL_H_
 #define _GL_LOCAL_H_
 
-#include "quakedef.h"		// FIXME
+#include "client.h"		// FIXME
 #include "gl_model.h"
 
 #ifdef _MSC_VER
