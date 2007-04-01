@@ -2188,7 +2188,6 @@ static void PF_logfrag (void)
 {
 	edict_t	*ent1, *ent2;
 	int		e1, e2;
-	char	*s;
 
 	ent1 = G_EDICT(OFS_PARM0);
 	ent2 = G_EDICT(OFS_PARM1);
@@ -2215,12 +2214,11 @@ static void PF_logfrag (void)
 			return;
 	}
 #endif
-	
-	s = va("\\%s\\%s\\\n",svs.clients[e1-1].name, svs.clients[e2-1].name);
 
-	SZ_Print (&svs.log[svs.logsequence&1], s);
+	string s = "\\" + svs.clients[e1-1].name + "\\" + svs.clients[e2-1].name + "\\\n";
+	SZ_Print (&svs.log[svs.logsequence&1], s.c_str());
 	if (sv_fraglogfile) {
-		fprintf (sv_fraglogfile, s);
+		fprintf (sv_fraglogfile, "%s", s.c_str());
 		fflush (sv_fraglogfile);
 	}
 }
@@ -2847,7 +2845,7 @@ void PF_setpause (void)
 
 	pause = G_FLOAT(OFS_PARM0) ? true : false;
 	if (pause != (((int)sv_paused.value & 1) ? true : false))
-		SV_TogglePause (false, NULL);
+		SV_TogglePause (false, "");
 }
 
 //=============================================================================

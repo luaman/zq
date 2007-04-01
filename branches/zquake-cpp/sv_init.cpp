@@ -173,7 +173,7 @@ void SV_SaveSpawnparms (void)
 			// bots are kicked on map change
 			sv_client->state = cs_free;
 			sv_client->bot = false;
-			sv_client->name[0] = 0;
+			sv_client->name = "";
 			sv_client->userinfo.clear();
 			SV_FreeDelayedPackets(sv_client);
 		}

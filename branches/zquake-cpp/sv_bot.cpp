@@ -84,7 +84,7 @@ edict_t *SV_CreateBot (char *name)
 	newcl->bot = true;
 	newcl->userid = SV_GenerateUserID();
 	newcl->extensions = CLIENT_EXTENSIONS;	// bots always use latest ZQuake :-)
-	strlcpy (newcl->name, name, sizeof(newcl->name));
+	newcl->name = ((string)name).substr(0, 31);
 
 	// init a bogus network connection
 	SZ_Init (&newcl->datagram, newcl->datagram_buf, sizeof(newcl->datagram_buf));
@@ -99,7 +99,7 @@ edict_t *SV_CreateBot (char *name)
 //	ent->inuse = true;
 	newcl->edict = ent;
 
-	Com_DPrintf ("Bot %s connected\n", newcl->name);
+	Com_DPrintf ("Bot %s connected\n", newcl->name.c_str());
 
 	SetUpClientEdict (newcl, ent);
 
@@ -133,12 +133,12 @@ void SV_RemoveBot (client_t *cl)
 		}
 	}
 
-	Com_DPrintf ("Bot %s removed\n", cl->name);
+	Com_DPrintf ("Bot %s removed\n", cl->name.c_str());
 
 	cl->state = cs_free;		// we don't have zombie bots :)
 	cl->bot = false;
 	cl->old_frags = 0;
-	cl->name[0] = 0;
+	cl->name = "";
 //	cl->edict->inuse = false;
 	cl->edict->v.frags = 0;
 	cl->userinfo.clear();

@@ -36,7 +36,7 @@ int Com_TranslateMapChecksum (const string mapname, int checksum)
 {
 	csentry_t *p;
 
-	Com_DPrintf ("Map checksum (%s): 0x%x\n", mapname, checksum);
+	Com_DPrintf ("Map checksum (%s): 0x%x\n", mapname.c_str(), checksum);
 
 	for (p = table; p->mapname; p++)
 		if (p->mapname == mapname) {

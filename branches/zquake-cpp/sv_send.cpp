@@ -665,7 +665,7 @@ qbool SV_SendClientDatagram (client_t *client)
 	// copy the accumulated multicast datagram
 	// for this client out to the message
 	if (client->datagram.overflowed)
-		Com_Printf ("WARNING: datagram overflowed for %s\n", client->name);
+		Com_Printf ("WARNING: datagram overflowed for %s\n", client->name.c_str());
 	else
 		SZ_Write (&msg, client->datagram.data, client->datagram.cursize);
 	SZ_Clear (&client->datagram);
@@ -676,7 +676,7 @@ qbool SV_SendClientDatagram (client_t *client)
 
 	if (msg.overflowed)
 	{
-		Com_Printf ("WARNING: msg overflowed for %s\n", client->name);
+		Com_Printf ("WARNING: msg overflowed for %s\n", client->name.c_str());
 		SZ_Clear (&msg);
 	}
 
@@ -804,8 +804,8 @@ void SV_SendClientMessages (void)
 		{
 			SZ_Clear (&c->netchan.message);
 			SZ_Clear (&c->datagram);
-			SV_BroadcastPrintf (PRINT_HIGH, "%s overflowed\n", c->name);
-			Com_Printf ("WARNING: reliable overflow for %s\n",c->name);
+			SV_BroadcastPrintf (PRINT_HIGH, "%s overflowed\n", c->name.c_str());
+			Com_Printf ("WARNING: reliable overflow for %s\n",c->name.c_str());
 			SV_DropClient (c);
 			c->send_message = true;
 			c->netchan.cleartime = 0;	// don't choke this message

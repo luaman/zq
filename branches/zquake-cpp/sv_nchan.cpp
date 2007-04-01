@@ -120,7 +120,7 @@ static void SV_AddToBackbuf (client_t *cl, const byte *data, int size)
 
 	if (cl->backbuf.cursize + size > cl->backbuf.maxsize) {
 		if (cl->num_backbuf == MAX_BACK_BUFFERS) {
-			Com_Printf ("WARNING: MAX_BACK_BUFFERS for %s\n", cl->name);
+			Com_Printf ("WARNING: MAX_BACK_BUFFERS for %s\n", cl->name.c_str());
 			cl->backbuf.cursize = 0; // don't overflow without allowoverflow set
 			cl->netchan.message.overflowed = true; // this will drop the client
 			return;
@@ -164,7 +164,7 @@ void SV_FlushBackbuf (client_t *cl)
 			cl->netchan.message.maxsize) {
 
 			Com_DPrintf ("%s: backbuf %d bytes\n",
-				cl->name, cl->backbuf_size[0]);
+				cl->name.c_str(), cl->backbuf_size[0]);
 
 			// it'll fit
 			SZ_Write (&cl->netchan.message, cl->backbuf_data[0],
