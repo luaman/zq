@@ -440,6 +440,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib wsock32.lib"
+				OutputFile="$(OutDir)\zqds.exe"
 				GenerateDebugInformation="true"
 			/>
 			<Tool
@@ -510,6 +511,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib wsock32.lib"
+				OutputFile="$(OutDir)\zqds.exe"
 			/>
 			<Tool
 				Name="VCALinkTool"
