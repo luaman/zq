@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // console.c
 
-#include "quakedef.h"
+#include "client.h"
 #include "keys.h"
 
 #define		CON_TEXTSIZE	65536

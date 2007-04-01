@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // cl_draw.h - 2d drawing functions which don't belong to refresh
 
-#include "quakedef.h"
+#include "client.h"
 
 /*
 ================

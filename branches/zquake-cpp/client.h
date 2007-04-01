@@ -21,6 +21,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
 
+#include "common.h"
+#include "vid.h"
+#include "render.h"
+#include "cl_screen.h"
+#include "cl_view.h"
+#include "console.h"
+#include "draw.h"
 #include "pmove.h"
 
 #define MAX_STATIC_SOUNDS	256

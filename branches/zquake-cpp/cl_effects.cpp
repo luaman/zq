@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include "quakedef.h"
+#include "client.h"
 
 #define ABSOLUTE_MIN_PARTICLES	512		// no fewer than this no matter what's
 										// on the command line

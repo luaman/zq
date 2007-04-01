@@ -11,7 +11,7 @@
 #include <linux/soundcard.h>
 #include <stdio.h>
 
-#include "quakedef.h"
+#include "client.h"
 #include "sound.h"
 
 int audio_fd;

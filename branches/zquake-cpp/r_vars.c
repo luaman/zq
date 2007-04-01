@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_vars.c: global refresh variables
 
-#include	"quakedef.h"
+#include	"client.h"
 
 #if	!id386
 

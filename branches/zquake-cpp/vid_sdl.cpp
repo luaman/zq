@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <SDL.h>
-#include "quakedef.h"
+#include "client.h"
 #include "render.h"
 #include "d_local.h"
 #include "keys.h"

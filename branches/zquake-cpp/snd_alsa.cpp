@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <dlfcn.h>
 #include <alsa/asoundlib.h>
-#include "quakedef.h"
+#include "client.h"
 #include "sound.h"
 
 // Define all dynamic ALSA functions...
