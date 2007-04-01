@@ -124,6 +124,47 @@ typedef struct
 	int			intermission_hunt;		// looking for WriteCoords to fill in intermission_origin
 	qbool		intermission_origin_valid;
 	vec3_t		intermission_origin;
+
+	void clear () {
+		state = ss_dead;
+		time = old_time = 0;
+		lastcheck = 0;
+		lastchecktime = 0;
+		pausedstart = 0;
+		loadgame = false;
+		model_player_checksum = eyes_player_checksum = 0;
+		sky = "";
+		mapname[0] = 0;
+		modelname[0] = 0;
+		map_checksum = map_checksum2 = 0;
+		worldmodel = 0;
+		memset (model_name, 0, sizeof(model_name));
+#ifdef VWEP_TEST
+		memset (vw_model_name, 0, sizeof(vw_model_name));
+#endif
+		memset (sound_name, 0, sizeof(sound_name));
+		memset (lightstyles, 0, sizeof(lightstyles));
+		memset (models, 0, sizeof(models));
+		memset (&movevars, 0, sizeof(movevars));
+		num_edicts = 0;
+		edicts = NULL;
+		memset (entmap, 0, sizeof(entmap));
+		memset (translations, 0, sizeof(translations));
+		memset (&datagram, 0, sizeof(datagram));
+		memset (datagram_buf, 0, sizeof(datagram_buf));
+		memset (&reliable_datagram, 0, sizeof(reliable_datagram));
+		memset (reliable_datagram_buf, 0, sizeof(reliable_datagram_buf));
+		memset (&multicast, 0, sizeof(multicast));
+		memset (multicast_buf, 0, sizeof(multicast_buf));
+		memset (&signon, 0, sizeof(signon));
+		num_signon_buffers = 0;
+		memset (signon_buffer_size, 0, sizeof(signon_buffer_size));
+		memset (signon_buffers, 0, sizeof(signon_buffers));
+		intermission_running = false;
+		intermission_hunt = 0;
+		intermission_origin_valid = false;
+		VectorClear (intermission_origin);
+	}
 } server_t;
 
 

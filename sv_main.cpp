@@ -158,8 +158,7 @@ void SV_Shutdown (char *finalmsg)
 		sv_fraglogfile = NULL;
 	}
 
-	memset (&sv, 0, sizeof(sv));
-	sv.state = ss_dead;
+	sv.clear();
 	com_serveractive = false;
 
 	for (int i = 0; i < MAX_CLIENTS; i++) {

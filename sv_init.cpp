@@ -264,8 +264,7 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 
 	svs.hipnotic = !strcmp(com_gamedirfile, "hipnotic");
 
-	// wipe the entire per-level structure
-	memset (&sv, 0, sizeof(sv));
+	sv.clear();
 
 	SZ_Init (&sv.datagram, sv.datagram_buf, sizeof(sv.datagram_buf));
 	sv.datagram.allowoverflow = true;
