@@ -115,7 +115,7 @@ not just stuck on the outgoing message list, because the server is going
 to totally exit after returning from this function.
 ==================
 */
-void SV_FinalMessage (char *message)
+void SV_FinalMessage (const string message)
 {
 	int			i;
 	client_t	*cl;
@@ -143,7 +143,7 @@ SV_Shutdown
 Quake calls this before calling Sys_Quit or Sys_Error
 ================
 */
-void SV_Shutdown (char *finalmsg)
+void SV_Shutdown (const string finalmsg)
 {
 	SV_FinalMessage (finalmsg);
 
@@ -222,9 +222,9 @@ void SV_DropClient (client_t *drop)
 #endif
 
 	if (drop->spectator)
-		Com_Printf ("Spectator %s removed\n",drop->name);
+		Com_Printf ("Spectator %s removed\n",drop->name.c_str());
 	else
-		Com_Printf ("Client %s removed\n",drop->name);
+		Com_Printf ("Client %s removed\n",drop->name.c_str());
 
 	if (drop->download)
 	{
@@ -244,7 +244,7 @@ void SV_DropClient (client_t *drop)
 	drop->old_frags = 0;
 	drop->edict->v.frags = 0;
 //	drop->edict->inuse = false;
-	drop->name[0] = 0;
+	drop->name = "";
 	drop->userinfo.clear();
 
 	SV_FreeDelayedPackets(drop);
@@ -416,7 +416,7 @@ void SVC_Status (void)
 			ping = SV_CalcPing (cl);
 			Com_Printf ("%i %i %i %i \"%s\" \"%s\" %i %i\n", cl->userid, 
 				cl->old_frags, (int)(svs.realtime - cl->connection_started)/60,
-				ping, cl->name, cl->userinfo["skin"].c_str(), top, bottom);
+				ping, cl->name.c_str(), cl->userinfo["skin"].c_str(), top, bottom);
 		}
 	}
 	SV_EndRedirect ();
@@ -783,9 +783,9 @@ void SVC_DirectConnect (void)
 		newcl->spawn_parms[i] = (&PR_GLOBAL(parm1))[i];
 
 	if (newcl->spectator)
-		Com_Printf ("Spectator %s connected\n", newcl->name);
+		Com_Printf ("Spectator %s connected\n", newcl->name.c_str());
 	else
-		Com_DPrintf ("Client %s connected\n", newcl->name);
+		Com_DPrintf ("Client %s connected\n", newcl->name.c_str());
 
 	newcl->sendinfo = true;
 }
@@ -1288,7 +1288,7 @@ void SV_CheckTimeouts (void)
 			if (!cl->spectator)
 				nclients++;
 			if (cl->netchan.last_received < droptime) {
-				SV_BroadcastPrintf (PRINT_HIGH, "%s timed out\n", cl->name);
+				SV_BroadcastPrintf (PRINT_HIGH, "%s timed out\n", cl->name.c_str());
 				SV_DropClient (cl); 
 				cl->state = cs_free;	// don't bother with zombie state
 			}
@@ -1416,7 +1416,7 @@ SV_TogglePause
 in single player games
 ==================
 */
-void SV_TogglePause (qbool menu, const char *msg)
+void SV_TogglePause (qbool menu, const string msg)
 {
 	int i;
 	client_t *cl;
@@ -1431,8 +1431,8 @@ void SV_TogglePause (qbool menu, const char *msg)
 		sv.pausedstart = curtime;
 	Cvar_ForceSet (&sv_paused, va("%i", newval));
 
-	if (msg && *msg)
-		SV_BroadcastPrintf (PRINT_HIGH, "%s", msg);
+	if (msg != "")
+		SV_BroadcastPrintf (PRINT_HIGH, "%s", msg.c_str());
 
 	// send notification to all clients
 	for (i=0, cl = svs.clients ; i<MAX_CLIENTS ; i++, cl++)
@@ -1732,7 +1732,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		for (i=0, client = svs.clients ; i<MAX_CLIENTS ; i++, client++) {
 			if (client->state != cs_spawned || client == cl)
 				continue;
-			if (!Q_stricmp(client->name, val.c_str()))
+			if (!Q_stricmp(client->name.c_str(), val.c_str()))
 				break;
 		}
 		if (i != MAX_CLIENTS) { // dup name
@@ -1754,13 +1754,13 @@ void SV_ExtractFromUserinfo (client_t *cl)
 			break;
 	}
 	
-	if (val.substr(0, strlen(cl->name)) != cl->name) {
+	if (val.substr(0, cl->name.length()) != cl->name) {
 		if (!sv_paused.value) {
 			if (!cl->lastnametime || svs.realtime - cl->lastnametime > 5) {
 				cl->lastnamecount = 0;
 				cl->lastnametime = svs.realtime;
 			} else if (cl->lastnamecount++ > 4) {
-				SV_BroadcastPrintf (PRINT_HIGH, "%s was kicked for name spam\n", cl->name);
+				SV_BroadcastPrintf (PRINT_HIGH, "%s was kicked for name spam\n", cl->name.c_str());
 				SV_ClientPrintf (cl, PRINT_HIGH, "You were kicked from the game for name spamming\n");
 				SV_DropClient (cl); 
 				return;
@@ -1768,11 +1768,11 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		}
 				
 		if (cl->state >= cs_spawned && !cl->spectator)
-			SV_BroadcastPrintf (PRINT_HIGH, "%s changed name to %s\n", cl->name, val.c_str());
+			SV_BroadcastPrintf (PRINT_HIGH, "%s changed name to %s\n", cl->name.c_str(), val.c_str());
 	}
 
 
-	strlcpy (cl->name, val.c_str(), sizeof(cl->name));
+	cl->name = val;
 
 	// rate
 	cl->netchan.rate = 1.0 / SV_BoundRate (atoi(cl->userinfo["rate"].c_str()));

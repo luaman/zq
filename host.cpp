@@ -73,9 +73,9 @@ void Host_Error (char *message, ...)
 void Host_HandleError (char *error, ...)
 {
 	va_list		argptr;
-	char		string[1024];
+	char		str[1024];
 	static qbool inerror = false;
-	
+
 	if (inerror)
 		Sys_Error ("Host_Error: recursively entered");
 	inerror = true;
@@ -86,18 +86,18 @@ void Host_HandleError (char *error, ...)
 
 	va_start (argptr,error);
 #ifdef _WIN32
-	_vsnprintf (string, sizeof(string), error, argptr);
-	string[sizeof(string) - 1] = '\0';
+	_vsnprintf (str, sizeof(str), error, argptr);
+	str[sizeof(str) - 1] = '\0';
 #else
-	vsnprintf (string, sizeof(string), error, argptr);
+	vsnprintf (str, sizeof(str), error, argptr);
 #endif // _WIN32
 	va_end (argptr);
 
 	Com_Printf ("\n===========================\n");
-	Com_Printf ("Host_Error: %s\n",string);
+	Com_Printf ("Host_Error: %s\n", str);
 	Com_Printf ("===========================\n\n");
 	
-	SV_Shutdown (va("server crashed: %s\n", string));
+	SV_Shutdown ((string)"server crashed: " + str + "\n");
 	CL_Disconnect ();
 	CL_HandleHostError ();		// stop demo loop
 
@@ -105,11 +105,11 @@ void Host_HandleError (char *error, ...)
 	{
 		NET_Shutdown ();
 		COM_Shutdown ();
-		Sys_Error ("%s", string);
+		Sys_Error ("%s", str);
 	}
 
 	if (!host_initialized)
-		Sys_Error ("Host_Error: %s", string);
+		Sys_Error ("Host_Error: %s", str);
 
 	inerror = false;
 

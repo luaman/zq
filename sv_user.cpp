@@ -467,7 +467,7 @@ static void Cmd_Spawn_f (void)
 		memset (&ent->v, 0, progs->entityfields * 4);
 		ent->v.colormap = NUM_FOR_EDICT(ent);
 		ent->v.team = 0;	// FIXME
-		ent->v.netname = PR_SetString(sv_client->name);
+		ent->v.netname = PR_SetString((char *)sv_client->name.c_str());
 	}
 
 	sv_client->entgravity = 1.0;
@@ -616,7 +616,7 @@ static void Cmd_Begin_f (void)
 #ifndef AGRIP
 	if (pmodel != sv.model_player_checksum ||
 		emodel != sv.eyes_player_checksum)
-		SV_BroadcastPrintf (PRINT_HIGH, "%s WARNING: non standard player/eyes model detected\n", sv_client->name);
+		SV_BroadcastPrintf (PRINT_HIGH, "%s WARNING: non standard player/eyes model detected\n", sv_client->name.c_str());
 #endif
 
 	// if we are paused, tell the client
@@ -848,7 +848,7 @@ static void Cmd_Download_f (void)
 	sv_client->downloadcount = 0;
 
 	if (!sv_client->download) {
-		Sys_Printf ("Couldn't download %s to %s\n", name, sv_client->name);
+		Sys_Printf ("Couldn't download %s to %s\n", name, sv_client->name.c_str());
 		goto deny_download;
 	}
 
@@ -861,7 +861,7 @@ static void Cmd_Download_f (void)
 
 	// all checks passed, start downloading
 	Cmd_NextDL_f ();
-	Sys_Printf ("Downloading %s to %s\n", name, sv_client->name);
+	Sys_Printf ("Downloading %s to %s\n", name, sv_client->name.c_str());
 	return;
 
 deny_download:
@@ -896,11 +896,11 @@ static void SV_Say (qbool team)
 		strlcpy (t1, sv_client->userinfo["team"].c_str(), sizeof(t1));
 
 	if (sv_client->spectator && (!sv_spectalk.value || team))
-		sprintf (text, "[SPEC] %s: ", sv_client->name);
+		sprintf (text, "[SPEC] %s: ", sv_client->name.c_str());
 	else if (team)
-		sprintf (text, "(%s): ", sv_client->name);
+		sprintf (text, "(%s): ", sv_client->name.c_str());
 	else {
-		sprintf (text, "%s: ", sv_client->name);
+		sprintf (text, "%s: ", sv_client->name.c_str());
 	}
 
 	if (fp_messages) {
@@ -1048,10 +1048,7 @@ Cmd_Pause_f
 */
 static void Cmd_Pause_f (void)
 {
-	char st[sizeof(sv_client->name) + 32];
-	qbool newstate;
-
-	newstate = !((int)sv_paused.value & 1);
+	qbool newstate = !((int)sv_paused.value & 1);
 
 	if (!sv_pausable.value) {
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Pause not allowed.\n");
@@ -1072,10 +1069,11 @@ static void Cmd_Pause_f (void)
 			return;		// progs said ignore the request
 	}
 
+	string st;
 	if (newstate)
-		sprintf (st, "%s paused the game\n", sv_client->name);
+		st = sv_client->name + " paused the game\n";
 	else
-		sprintf (st, "%s unpaused the game\n", sv_client->name);
+		st = sv_client->name + " unpaused the game\n";
 
 	SV_TogglePause (false, st);
 }
@@ -1092,7 +1090,7 @@ static void Cmd_Drop_f (void)
 {
 	SV_EndRedirect ();
 	if (!sv_client->spectator)
-		SV_BroadcastPrintf (PRINT_HIGH, "%s dropped\n", sv_client->name);
+		SV_BroadcastPrintf (PRINT_HIGH, "%s dropped\n", sv_client->name.c_str());
 	SV_DropClient (sv_client);	
 }
 
@@ -1282,7 +1280,7 @@ static void Cmd_Snap_f (void)
 {
 	if (*sv_client->uploadfn) {
 		*sv_client->uploadfn = 0;
-		SV_BroadcastPrintf (PRINT_HIGH, "%s refused remote screenshot\n", sv_client->name);
+		SV_BroadcastPrintf (PRINT_HIGH, "%s refused remote screenshot\n", sv_client->name.c_str());
 	}
 }
 
@@ -1291,7 +1289,7 @@ void SetUpClientEdict (client_t *cl, edict_t *ent)
 {
 	memset (&ent->v, 0, progs->entityfields * 4);
 	ent->v.colormap = NUM_FOR_EDICT(ent);
-	ent->v.netname = PR_SetString(cl->name);
+	ent->v.netname = PR_SetString((char *)cl->name.c_str());
 
 	cl->entgravity = 1.0;
 	if (fofs_gravity)
@@ -2283,7 +2281,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 			if (calculatedChecksum != checksum)
 			{
 				Com_DPrintf ("Failed command checksum for %s(%d) (%d != %d)\n", 
-					cl->name, cl->netchan.incoming_sequence, checksum, calculatedChecksum);
+					cl->name.c_str(), cl->netchan.incoming_sequence, checksum, calculatedChecksum);
 				return;
 			}
 

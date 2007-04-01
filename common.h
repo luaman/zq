@@ -339,7 +339,7 @@ void Key_Init (void);
 void SCR_EndLoadingPlaque (void);
 
 void SV_Init (void);
-void SV_Shutdown (char *finalmsg);
+void SV_Shutdown (const string finalmsg);
 void SV_Frame (double time);
 
 #endif /* _COMMON_H_ */

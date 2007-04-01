@@ -233,7 +233,7 @@ void SV_Kick_f (void)
 
 			saved_state = cl->state;
 			cl->state = cs_free; // HACK: don't broadcast to this client
-			SV_BroadcastPrintf (PRINT_HIGH, "%s was kicked%s\n", cl->name, reason);
+			SV_BroadcastPrintf (PRINT_HIGH, "%s was kicked%s\n", cl->name.c_str(), reason);
 			cl->state = (client_state_e)saved_state;
 			SV_ClientPrintf (cl, PRINT_HIGH, "You were kicked from the game%s\n", reason);
 			SV_DropClient (cl); 
@@ -289,7 +289,7 @@ void SV_Status_f (void)
 			if (!cl->state)
 				continue;
 
-			Com_Printf ("%-16.16s  ", cl->name);
+			Com_Printf ("%-16.16s  ", cl->name.c_str());
 
 			Com_Printf ("%6i %5i", cl->userid, (int)cl->edict->v.frags);
 			if (cl->spectator)
@@ -329,8 +329,8 @@ void SV_Status_f (void)
 			for (j=0 ; j<l ; j++)
 				Com_Printf (" ");
 			
-			Com_Printf ("%s", cl->name);
-			l = 16 - strlen(cl->name);
+			Com_Printf ("%s", cl->name.c_str());
+			l = 16 - cl->name.length();
 			for (j=0 ; j<l ; j++)
 				Com_Printf (" ");
 			if (cl->state == cs_connected)

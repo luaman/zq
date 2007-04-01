@@ -206,7 +206,7 @@ struct client_t
 
 	int				userid;							// identifying number
 	Info			userinfo;			// infostring
-	char			name[32];			// for printing to other people
+	string			name;				// for printing to other people
 										// extracted from userinfo
 	int				messagelevel;		// for filtering printed messages
 	qbool			spectator;			// non-interactive
@@ -285,11 +285,58 @@ struct client_t
 
 	client_t() : userinfo(MAX_INFO_STRING-1) {};
 	void clear() {
-		byte *tmp = new byte[sizeof(userinfo)];
-		memcpy (tmp, &userinfo, sizeof(userinfo));
-		memset (this, 0, sizeof(*this));
-		memcpy (&userinfo, tmp, sizeof(userinfo));
-		delete[] tmp;
+		state = cs_free;
+		bot = false;
+		userid = 0;
+		userinfo.clear();
+		name = "";
+		messagelevel = 0;
+		spectator = false;
+		extensions = 0;
+		uses_proxy = false;
+		sendinfo = false;
+		lastnametime = 0;
+		lastnamecount = 0;
+		drop = false;
+		lossage = 0;
+		memset (&lastcmd, 0, sizeof(lastcmd));
+		cmdtime = 0;
+		jump_held = false;
+		maxspeed = 0;
+		entgravity = 0;
+		edict = NULL;
+		memset (&datagram, 0, sizeof(datagram));
+		memset (&backbuf, 0, sizeof(backbuf));
+		num_backbuf = 0;
+		memset (backbuf_size, 0, sizeof(backbuf_size));
+		stufftext_buf[0] = 0;
+		sprint_buf[0] = 0;
+		sprint_level = 0;
+		sprint_nq_low_level = false;
+		connection_started = 0;
+		send_message = false;
+		memset (spawn_parms, 0, sizeof(spawn_parms));
+		memset (stats, 0, sizeof(stats));
+		old_frags = 0;
+		lastservertimeupdate = 0;
+		memset (frames, 0, sizeof(frames));
+		download = NULL;
+		downloadsize = 0;
+		downloadcount = 0;
+		spec_track = 0;
+		memset (whensaid, 0, sizeof(whensaid));
+		whensaidhead = 0;
+		lockedtill = 0;
+		upload = NULL;
+		uploadfn[0] = 0;
+		memset (&snap_from, 0, sizeof(snap_from));
+		remote_snap = false;
+		delay = 0;
+		packets = NULL;
+		last_packet = NULL;
+		chokecount = 0;
+		delta_sequence = 0;
+		memset (&netchan, 0, sizeof(netchan));
 	};
 };
 
@@ -445,7 +492,7 @@ extern	FILE		*sv_fraglogfile;
 //
 // sv_main.c
 //
-void SV_Shutdown (char *finalmsg);
+void SV_Shutdown (const string finalmsg);
 void SV_Frame (double time);
 void SV_FinalMessage (char *message);
 void SV_FreeDelayedPackets (client_t *cl);
@@ -513,7 +560,7 @@ void SV_FindModelNumbers (void);
 // sv_user.c
 //
 void SV_ExecuteClientMessage (client_t *cl);
-void SV_TogglePause (qbool menu, const char *msg);
+void SV_TogglePause (qbool menu, const string msg);
 
 
 //
