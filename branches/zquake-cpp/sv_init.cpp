@@ -42,8 +42,8 @@ int SV_ModelIndex (char *name)
 	if (!name || !name[0])
 		return 0;
 
-	for (i = 1; i < MAX_MODELS && sv.model_name[i]; i++)
-		if (!strcmp(sv.model_name[i], name))
+	for (i = 1; i < MAX_MODELS && sv.model_name[i] != ""; i++)
+		if (sv.model_name[i] == name)
 			return i;
 
 	Host_Error ("SV_ModelIndex: model %s not precached", name);
@@ -294,9 +294,9 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 
 	sv.time = 1.0;
 	
-	strlcpy (sv.mapname, mapname, sizeof(sv.mapname));
-	Cvar_ForceSet (&host_mapname, sv.mapname);
-	snprintf (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", sv.mapname);
+	sv.mapname = mapname;
+	Cvar_ForceSet (&host_mapname, mapname);
+	sv.modelname = "maps/" + sv.mapname + ".bsp";
 
 	sv.worldmodel = CM_LoadMap (sv.modelname, false, &sv.map_checksum, &sv.map_checksum2);
 	sv.map_checksum2 = Com_TranslateMapChecksum (sv.mapname, sv.map_checksum2);
@@ -306,7 +306,6 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	//
 	SV_ClearWorld ();
 
-	sv.model_name[0] = pr_strings;
 	sv.model_name[1] = sv.modelname;
 	sv.models[1] = sv.worldmodel;
 	for (i = 1; i < CM_NumInlineModels(); i++) {
@@ -329,12 +328,12 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 
 	ent = EDICT_NUM(0);
 	ent->inuse = true;
-	ent->v.model = PR_SetString(sv.modelname);
+	ent->v.model = PR_SetString((char *)sv.modelname.c_str());
 	ent->v.modelindex = 1;		// world model
 	ent->v.solid = SOLID_BSP;
 	ent->v.movetype = MOVETYPE_PUSH;
 
-	PR_GLOBAL(mapname) = PR_SetString(sv.mapname);
+	PR_GLOBAL(mapname) = PR_SetString((char *)sv.mapname.c_str());
 	// serverflags are for cross level information (sigils)
 	PR_GLOBAL(serverflags) = svs.serverflags;
 	if (pr_nqprogs) {
@@ -350,9 +349,10 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	// load and spawn all other entities
 	entitystring = NULL;
 	if (sv_loadentfiles.value) {
-		entitystring = (char *)FS_LoadHunkFile (va("maps/%s.ent", sv.mapname));
+		// FIXME, FS_LoadHunkFile does not guarantee a trailing \0
+		entitystring = (char *)FS_LoadHunkFile("maps/" + sv.mapname + ".ent");
 		if (entitystring) {
-			Com_DPrintf ("Using entfile maps/%s.ent\n", sv.mapname);
+			Com_DPrintf ("Using entfile maps/%s.ent\n", sv.mapname.c_str());
 			svs.info.set("*entfile", va("%i",
 				CRC_Block((byte *)entitystring, fs_filesize)));
 		}

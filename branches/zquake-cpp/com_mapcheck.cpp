@@ -32,14 +32,14 @@ static csentry_t table[] = {
 	{ NULL, 0, 0 },
 };
 
-int Com_TranslateMapChecksum (char *mapname, int checksum)
+int Com_TranslateMapChecksum (const string mapname, int checksum)
 {
 	csentry_t *p;
 
 	Com_DPrintf ("Map checksum (%s): 0x%x\n", mapname, checksum);
 
 	for (p = table; p->mapname; p++)
-		if (!strcmp(p->mapname, mapname)) {
+		if (p->mapname == mapname) {
 			if (checksum == p->gpl)
 				return p->original;
 			else

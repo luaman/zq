@@ -177,7 +177,7 @@ Cmd_Soundlist_f
 */
 static void Cmd_Soundlist_f (void)
 {
-	char		**s;
+	string		*s;
 	int			n;
 	int			maxsize;
 	byte		msg_data[MAX_MSGLEN];
@@ -220,15 +220,15 @@ static void Cmd_Soundlist_f (void)
 
 	MSG_WriteByte (&msg, svc_soundlist);
 	MSG_WriteByte (&msg, n);
-	for (s = sv.sound_name + 1 + n; n < MAX_SOUNDS - 1 && *s; s++, n++) {
-		if (msg.cursize + strlen(*s) + 3 + 1 > maxsize)
+	for (s = sv.sound_name + 1 + n; n < MAX_SOUNDS - 1 && *s != ""; s++, n++) {
+		if (msg.cursize + s->length() + 3 + 1 > maxsize)
 			break;
-		MSG_WriteString (&msg, *s);
+		MSG_WriteString (&msg, s->c_str());
 	}
 	MSG_WriteByte (&msg, 0);
 
 	// next msg
-	if (n < MAX_SOUNDS - 1 && *s)
+	if (n < MAX_SOUNDS - 1 && *s != "")
 		MSG_WriteByte (&msg, n);
 	else
 		MSG_WriteByte (&msg, 0);
@@ -266,7 +266,7 @@ Cmd_Modellist_f
 */
 static void Cmd_Modellist_f (void)
 {
-	char		**s;
+	string		*s;
 	int			n;
 	int			maxsize;
 	byte		msg_data[MAX_MSGLEN];
@@ -330,15 +330,15 @@ static void Cmd_Modellist_f (void)
 
 	MSG_WriteByte (&msg, svc_modellist);
 	MSG_WriteByte (&msg, n);
-	for (s = sv.model_name + 1 + n; n < MAX_MODELS - 1 && *s; s++, n++) {
-		if (msg.cursize + strlen(*s) + 3 + 1 > maxsize)
+	for (s = sv.model_name + 1 + n; n < MAX_MODELS - 1 && *s != ""; s++, n++) {
+		if (msg.cursize + s->length() + 3 + 1 > maxsize)
 			break;
-		MSG_WriteString (&msg, *s);
+		MSG_WriteString (&msg, s->c_str());
 	}
 	MSG_WriteByte (&msg, 0);
 
 	// next msg
-	if (n < MAX_MODELS - 1 && *s)
+	if (n < MAX_MODELS - 1 && *s != "")
 		MSG_WriteByte (&msg, n);
 	else
 		MSG_WriteByte (&msg, 0);
@@ -385,7 +385,7 @@ static void Cmd_PreSpawn_f (void)
 			SV_ClientPrintf (sv_client, PRINT_HIGH, 
 				"Map model file does not match (%s), 0x%x != 0x%x/0x%x.\n"
 				"You may need a new version of the map, or the proper install files.\n",
-				sv.modelname, check, sv.map_checksum, sv.map_checksum2);
+				sv.modelname.c_str(), check, sv.map_checksum, sv.map_checksum2);
 			SV_DropClient (sv_client); 
 			return;
 		}

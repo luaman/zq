@@ -260,7 +260,7 @@ byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence);
 //============================================================================
 
 // com_mapcheck.c
-int Com_TranslateMapChecksum (char *mapname, int checksum);
+int Com_TranslateMapChecksum (const string mapname, int checksum);
 
 //============================================================================
 
