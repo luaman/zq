@@ -316,7 +316,7 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 
 #ifdef VWEP_TEST
 			// @@VWep test
-			if ((client->extensions & Z_EXT_VWEP) && sv.vw_model_name[0]
+			if ((client->extensions & Z_EXT_VWEP) && sv.vw_model_name[0] != ""
 			&& fofs_vw_index) {
 				cmd.impulse = EdictFieldFloat (ent, fofs_vw_index);
 			}

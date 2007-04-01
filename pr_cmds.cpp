@@ -189,19 +189,20 @@ static void PF_setmodel (void)
 {
 	int			i;
 	edict_t		*e;
-	char		*m, **check;
+	char		*m;
+	string		*check;
 	cmodel_t	*mod;
 
 	e = G_EDICT(OFS_PARM0);
 	m = G_STRING(OFS_PARM1);
 
 // check to see if model was properly precached
-	for (i = 0, check = sv.model_name; i < MAX_MODELS && *check ; i++, check++)
-		if (!strcmp(*check, m))
+	for (i = 1, check = sv.model_name + 1; i < MAX_MODELS && *check != ""; i++, check++)
+		if (*check == m)
 			goto ok;
 	PR_RunError ("PF_setmodel: no precache: %s\n", m);
-ok:
 
+ok:
 	e->v.model = G_INT(OFS_PARM1);
 	e->v.modelindex = i;
 
@@ -540,7 +541,7 @@ void ambientsound(vector pos, string samp, float vol, float atten) = #74
 */
 static void PF_ambientsound (void)
 {
-	char		**check;
+	string		*check;
 	char		*samp;
 	float		*pos;
 	float 		vol, attenuation;
@@ -553,19 +554,16 @@ static void PF_ambientsound (void)
 
 // check to see if samp was properly precached
 	for (soundnum = 1, check = sv.sound_name + 1;
-		soundnum < MAX_SOUNDS && *check;
+		soundnum < MAX_SOUNDS && *check != "";
 		check++, soundnum++)
 	{
-		if (!strcmp(*check, samp))
-			break;
+		if (*check == samp)
+			goto ok;
 	}
-			
-	if (!*check)
-	{
-		Com_Printf ("no precache: %s\n", samp);
-		return;
-	}
+	Com_Printf ("no precache: %s\n", samp);
+	return;
 
+ok:
 // add an svc_spawnambient command to the level signon packet
 	MSG_WriteByte (&sv.signon, svc_spawnstaticsound);
 	for (i = 0; i < 3; i++)
@@ -1162,11 +1160,11 @@ static void PF_precache_sound (void)
 	
 	for (i = 1; i < MAX_SOUNDS; i++)
 	{
-		if (!sv.sound_name[i]) {
+		if (sv.sound_name[i] == "") {
 			sv.sound_name[i] = s;
 			return;
 		}
-		if (!strcmp(sv.sound_name[i], s))
+		if (sv.sound_name[i] == s)
 			return;
 	}
 	PR_RunError ("PF_precache_sound: overflow");
@@ -1194,11 +1192,11 @@ static void PF_precache_model (void)
 
 	for (i = 1; i < MAX_MODELS; i++)
 	{
-		if (!sv.model_name[i]) {
+		if (sv.model_name[i] == "") {
 			sv.model_name[i] = s;
 			return;
 		}
-		if (!strcmp(sv.model_name[i], s))
+		if (sv.model_name[i] == s)
 			return;
 	}
 	PR_RunError ("PF_precache_model: overflow");

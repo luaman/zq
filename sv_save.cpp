@@ -120,7 +120,7 @@ void SV_SaveGame_f (void)
 	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
 		fprintf (f, "%f\n", svs.clients->spawn_parms[i]);
 	fprintf (f, "%d\n", current_skill);
-	fprintf (f, "%s\n", sv.mapname);
+	fprintf (f, "%s\n", sv.mapname.c_str());
 	fprintf (f, "%f\n",sv.time);
 
 // write the light styles

@@ -76,16 +76,16 @@ typedef struct
 
 	string		sky;				// skybox file name ("unit1_", etc)
 
-	char		mapname[64];		// "e1m1", "dm6", etc
-	char		modelname[MAX_QPATH];		// maps/<name>.bsp, for model_precache[0]
+	string		mapname;			// "e1m1", "dm6", etc
+	string		modelname;			// maps/<name>.bsp, for model_precache[0]
 	unsigned	map_checksum;
 	unsigned	map_checksum2;
 	cmodel_t 	*worldmodel;
-	char		*model_name[MAX_MODELS];	// NULL terminated
+	string		model_name[MAX_MODELS];	// NULL terminated
 #ifdef VWEP_TEST
-	char		*vw_model_name[MAX_VWEP_MODELS];	// NULL terminated
+	string		vw_model_name[MAX_VWEP_MODELS];	// NULL terminated
 #endif
-	char		*sound_name[MAX_SOUNDS];	// NULL terminated
+	string		sound_name[MAX_SOUNDS];	// NULL terminated
 	char		*lightstyles[MAX_LIGHTSTYLES];
 	cmodel_t	*models[MAX_MODELS];
 	movevars_t	movevars;
@@ -138,11 +138,14 @@ typedef struct
 		modelname[0] = 0;
 		map_checksum = map_checksum2 = 0;
 		worldmodel = 0;
-		memset (model_name, 0, sizeof(model_name));
+		for (int i = 0; i < MAX_MODELS; i++)
+			model_name[i] = "";
 #ifdef VWEP_TEST
-		memset (vw_model_name, 0, sizeof(vw_model_name));
+		for (int i = 0; i < MAX_VWEP_MODELS; i++)
+			vw_model_name[i] = "";
 #endif
-		memset (sound_name, 0, sizeof(sound_name));
+		for (int i = 0; i < MAX_SOUNDS; i++)
+			sound_name[i] = "";
 		memset (lightstyles, 0, sizeof(lightstyles));
 		memset (models, 0, sizeof(models));
 		memset (&movevars, 0, sizeof(movevars));
