@@ -298,15 +298,15 @@ static void Cmd_Modellist_f (void)
 
 
 #ifdef VWEP_TEST
-	if (n == 0 && (sv_client->extensions & Z_EXT_VWEP) && sv.vw_model_name[0]) {
+	if (n == 0 && (sv_client->extensions & Z_EXT_VWEP) && sv.vw_model_name[0] != "") {
 		int i;
 		// send VWep precaches
 		for (i = 0, s = sv.vw_model_name; i < MAX_VWEP_MODELS; s++, i++) {
-			if (!sv.vw_model_name[i] || !sv.vw_model_name[i][0])
+			if (sv.vw_model_name[i] == "")
 				continue;
 			ClientReliableWrite_Begin (sv_client, svc_serverinfo);
 			ClientReliableWrite_String ("#vw");
-			ClientReliableWrite_String (va("%i %s", i, TrimModelName(*s)));
+			ClientReliableWrite_String (va("%i %s", i, TrimModelName((char *)s->c_str())));
 			ClientReliableWrite_End();
 		}
 		// send end-of-list messsage
