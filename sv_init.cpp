@@ -385,6 +385,6 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	sv.signon_buffer_size[sv.num_signon_buffers-1] = sv.signon.cursize;
 
 	svs.info.set("map", sv.mapname);
-	Com_DPrintf ("Server spawned.\n");
+	Com_Printf ("Server spawned [%s].\n", sv.mapname.c_str());
 }
 
