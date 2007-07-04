@@ -152,6 +152,7 @@ void Cmd_God ()
 	}
 }
 
+#ifdef ZQUAKE_STUFF
 void Cmd_Observe ()
 {
 	entity spot;
@@ -192,6 +193,7 @@ void Cmd_Join ()
 	ClientConnect ();
 	PutClientInServer ();
 }
+#endif
 
 
 /*
@@ -203,10 +205,12 @@ void GE_ClientCommand (string cmd, string cmdline)
 		Cmd_Give ();
 	else if (cmd == "god")
 		Cmd_God ();
+#ifdef ZQUAKE_STUFF
 	else if (cmd == "join")
 		Cmd_Join ();
 	else if (cmd == "observe")
 		Cmd_Observe ();
+#endif
 	else
 		return false;
 
