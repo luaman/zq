@@ -1,3 +1,4 @@
+#include "utf8.h"
 #include "q_shared.h"
 #include "textencoding.h"
 
@@ -36,6 +37,10 @@ char *encode_say (wchar *in)
 	strlcpy (buf, wcs2str(in), sizeof(buf));
 	return buf;
 encode:
+	for (p = in; *p; p++)
+		if (*p > 256 && !(*p >= 0x400 && *p < 0x500))
+			goto encode_utf8;
+	// encode cyrillics
 	strcpy (buf, "=`k8:");
 	out = buf + strlen(buf);
 	while (*in && (out - buf < sizeof(buf)/sizeof(buf[0])))
@@ -47,6 +52,16 @@ encode:
 		}
 		in++;
 	}
+	*out++ = '`';
+	*out++ = '=';
+	*out++ = 0;
+	return buf;
+encode_utf8:
+	strcpy (buf, "=`u:");
+	out = buf + strlen(buf);
+	string ustr = utf8::wchar_utf8(in);
+	memcpy (out, ustr.c_str(), ustr.length() + 1);
+	out += ustr.length() + 1;
 	*out++ = '`';
 	*out++ = '=';
 	*out++ = 0;
@@ -140,12 +155,23 @@ wchar *decode_cp1251 (char *str) {
 	return buf;
 };
 
+// returns Q_malloc'ed data
+wchar *decode_utf8 (char *str) {
+	wstring wstr = utf8::utf8_wchar(str);
+	wchar *buf = (wchar *)Q_malloc ((wstr.length() + 1)*sizeof(wchar));
+	memcpy (buf, wstr.c_str(), (wstr.length() + 1)*sizeof(wchar));
+	return buf;
+};
+
 typedef wchar *(*decodeFUNC) (char *);
 
 static struct {
 	char *name;
 	decodeFUNC func;
 } decode_table[] = {
+	{"utf-8", decode_utf8},
+	{"utf8", decode_utf8},
+	{"u", decode_utf8},
 	{"koi8q", decode_koi8q},
 	{"koi8r", decode_koi8q},
 	{"k8", decode_koi8q},
