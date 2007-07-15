@@ -606,6 +606,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="cdaudio.h"
+					>
+				</File>
+				<File
 					RelativePath=".\cl_cam.cpp"
 					>
 					<FileConfiguration
@@ -1278,6 +1282,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="cl_sbar.h"
+					>
+				</File>
+				<File
 					RelativePath=".\cl_screen.cpp"
 					>
 					<FileConfiguration
@@ -1332,6 +1340,10 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="cl_screen.h"
+					>
 				</File>
 				<File
 					RelativePath=".\cl_tent.cpp"
@@ -1446,6 +1458,14 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="cl_view.h"
+					>
+				</File>
+				<File
+					RelativePath="client.h"
+					>
+				</File>
+				<File
 					RelativePath=".\console.cpp"
 					>
 					<FileConfiguration
@@ -1500,6 +1520,14 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="console.h"
+					>
+				</File>
+				<File
+					RelativePath="draw.h"
+					>
 				</File>
 				<File
 					RelativePath=".\in_win.cpp"
@@ -1558,6 +1586,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="input.h"
+					>
+				</File>
+				<File
 					RelativePath=".\keys.cpp"
 					>
 					<FileConfiguration
@@ -1614,6 +1646,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="keys.h"
+					>
+				</File>
+				<File
 					RelativePath=".\menu.cpp"
 					>
 					<FileConfiguration
@@ -1668,6 +1704,10 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="menu.h"
+					>
 				</File>
 				<File
 					RelativePath=".\rc_image.cpp"
@@ -1750,6 +1790,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="render.h"
+					>
+				</File>
+				<File
 					RelativePath=".\snd_dma.cpp"
 					>
 					<FileConfiguration
@@ -1830,6 +1874,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="sound.h"
+					>
+				</File>
+				<File
 					RelativePath=".\teamplay.cpp"
 					>
 					<FileConfiguration
@@ -1886,6 +1934,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="teamplay.h"
+					>
+				</File>
+				<File
 					RelativePath=".\textencoding.cpp"
 					>
 					<FileConfiguration
@@ -1940,6 +1992,22 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\textencoding.h"
+					>
+				</File>
+				<File
+					RelativePath=".\utf8.h"
+					>
+				</File>
+				<File
+					RelativePath="vid.h"
+					>
+				</File>
+				<File
+					RelativePath="winquake.h"
+					>
 				</File>
 			</Filter>
 			<Filter
@@ -2066,6 +2134,14 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\progs.h"
+					>
+				</File>
+				<File
+					RelativePath=".\server.h"
+					>
+				</File>
+				<File
 					RelativePath=".\sv_bot.cpp"
 					>
 				</File>
@@ -2133,10 +2209,18 @@
 					RelativePath=".\sv_world.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\sv_world.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="ref. SW"
 				>
+				<File
+					RelativePath="adivtab.h"
+					>
+				</File>
 				<File
 					RelativePath="d_edge.c"
 					>
@@ -2258,6 +2342,46 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="d_iface.h"
+					>
+					<FileConfiguration
+						Name="GLRelease|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="GLDebug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="d_ifacea.h"
+					>
+					<FileConfiguration
+						Name="GLRelease|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="GLDebug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath="d_init.c"
 					>
 					<FileConfiguration
@@ -2314,6 +2438,26 @@
 						>
 						<Tool
 							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="d_local.h"
+					>
+					<FileConfiguration
+						Name="GLRelease|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="GLDebug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
 						/>
 					</FileConfiguration>
 				</File>
@@ -2738,6 +2882,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\quakeasm.h"
+					>
+				</File>
+				<File
 					RelativePath="r_aclip.c"
 					>
 					<FileConfiguration
@@ -3158,6 +3306,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="r_local.h"
+					>
+				</File>
+				<File
 					RelativePath="r_main.c"
 					>
 					<FileConfiguration
@@ -3338,6 +3490,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="r_model.h"
+					>
+				</File>
+				<File
 					RelativePath="r_part.c"
 					>
 					<FileConfiguration
@@ -3516,6 +3672,10 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="r_shared.h"
+					>
 				</File>
 				<File
 					RelativePath="r_sky.c"
@@ -3817,10 +3977,774 @@
 						/>
 					</FileConfiguration>
 				</File>
+				<Filter
+					Name="Asm"
+					>
+					<File
+						RelativePath="d_polysa.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="d_spr8.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="d_varsa.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="r_aclipa.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="r_aliasa.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="r_draw16.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="r_draw8.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="r_drawa.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="r_edgea.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="r_parta.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="r_scana.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="r_varsa.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="surf16.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="surf8.s"
+						>
+						<FileConfiguration
+							Name="GLRelease|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="GLDebug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+								CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
+								Outputs="$(OUTDIR)\$(InputName).obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release-server|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="ref. GL"
 				>
+				<File
+					RelativePath="anorm_dots.h"
+					>
+				</File>
 				<File
 					RelativePath=".\gl_draw.cpp"
 					>
@@ -3840,6 +4764,10 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="gl_local.h"
+					>
 				</File>
 				<File
 					RelativePath=".\gl_mesh.cpp"
@@ -3880,6 +4808,10 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="gl_model.h"
+					>
 				</File>
 				<File
 					RelativePath=".\gl_ngraph.cpp"
@@ -3964,6 +4896,22 @@
 				<File
 					RelativePath=".\gl_rmain.cpp"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug-server|Win32"
 						ExcludedFromBuild="true"
@@ -4082,6 +5030,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\gl_texture.h"
+					>
+				</File>
+				<File
 					RelativePath=".\gl_warp.cpp"
 					>
 					<FileConfiguration
@@ -4100,6 +5052,10 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="gl_warp_sin.h"
+					>
 				</File>
 				<File
 					RelativePath=".\qlib.cpp"
@@ -4146,6 +5102,10 @@
 				Name="Common"
 				>
 				<File
+					RelativePath="bothdefs.h"
+					>
+				</File>
+				<File
 					RelativePath=".\cmd.cpp"
 					>
 					<FileConfiguration
@@ -4186,6 +5146,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="cmd.h"
+					>
+				</File>
+				<File
 					RelativePath=".\cmodel.cpp"
 					>
 					<FileConfiguration
@@ -4224,6 +5188,10 @@
 							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\cmodel.h"
+					>
 				</File>
 				<File
 					RelativePath=".\com_mapcheck.cpp"
@@ -4346,6 +5314,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="common.h"
+					>
+				</File>
+				<File
 					RelativePath=".\crc.cpp"
 					>
 					<FileConfiguration
@@ -4386,6 +5358,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="crc.h"
+					>
+				</File>
+				<File
 					RelativePath=".\cvar.cpp"
 					>
 					<FileConfiguration
@@ -4424,6 +5400,10 @@
 							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="cvar.h"
+					>
 				</File>
 				<File
 					RelativePath=".\host.cpp"
@@ -4470,6 +5450,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\info.h"
+					>
+				</File>
+				<File
 					RelativePath=".\mathlib.cpp"
 					>
 					<FileConfiguration
@@ -4510,6 +5494,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="mathlib.h"
+					>
+				</File>
+				<File
 					RelativePath=".\mdfour.cpp"
 					>
 					<FileConfiguration
@@ -4548,6 +5536,10 @@
 							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="net.h"
+					>
 				</File>
 				<File
 					RelativePath=".\net_chan.cpp"
@@ -4710,6 +5702,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="pmove.h"
+					>
+				</File>
+				<File
 					RelativePath=".\pmovetst.cpp"
 					>
 					<FileConfiguration
@@ -4750,7 +5746,19 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="protocol.h"
+					>
+				</File>
+				<File
 					RelativePath=".\q_shared.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\q_shared.h"
+					>
+				</File>
+				<File
+					RelativePath="sys.h"
 					>
 				</File>
 				<File
@@ -4834,6 +5842,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="version.h"
+					>
+				</File>
+				<File
 					RelativePath=".\zone.cpp"
 					>
 					<FileConfiguration
@@ -4873,280 +5885,43 @@
 						/>
 					</FileConfiguration>
 				</File>
+				<File
+					RelativePath="zone.h"
+					>
+				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;fi;fd"
-			>
-			<File
-				RelativePath="adivtab.h"
+			<Filter
+				Name="ref. common"
 				>
-			</File>
-			<File
-				RelativePath="anorm_dots.h"
-				>
-			</File>
-			<File
-				RelativePath="anorms.h"
-				>
-			</File>
-			<File
-				RelativePath="bothdefs.h"
-				>
-			</File>
-			<File
-				RelativePath="bspfile.h"
-				>
-			</File>
-			<File
-				RelativePath="cdaudio.h"
-				>
-			</File>
-			<File
-				RelativePath="cl_sbar.h"
-				>
-			</File>
-			<File
-				RelativePath="cl_screen.h"
-				>
-			</File>
-			<File
-				RelativePath="cl_view.h"
-				>
-			</File>
-			<File
-				RelativePath="client.h"
-				>
-			</File>
-			<File
-				RelativePath="cmd.h"
-				>
-			</File>
-			<File
-				RelativePath=".\cmodel.h"
-				>
-			</File>
-			<File
-				RelativePath="common.h"
-				>
-			</File>
-			<File
-				RelativePath="console.h"
-				>
-			</File>
-			<File
-				RelativePath="crc.h"
-				>
-			</File>
-			<File
-				RelativePath="cvar.h"
-				>
-			</File>
-			<File
-				RelativePath="d_iface.h"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
+				<File
+					RelativePath="anorms.h"
 					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
+				</File>
+				<File
+					RelativePath="bspfile.h"
 					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="d_ifacea.h"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
+				</File>
+				<File
+					RelativePath="modelgen.h"
 					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
+				</File>
+				<File
+					RelativePath=".\qlib.h"
 					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="d_local.h"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
+				</File>
+				<File
+					RelativePath="rc_image.h"
 					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
+				</File>
+				<File
+					RelativePath="rc_wad.h"
 					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="draw.h"
-				>
-			</File>
-			<File
-				RelativePath="gl_local.h"
-				>
-			</File>
-			<File
-				RelativePath="gl_model.h"
-				>
-			</File>
-			<File
-				RelativePath=".\gl_texture.h"
-				>
-			</File>
-			<File
-				RelativePath="gl_warp_sin.h"
-				>
-			</File>
-			<File
-				RelativePath=".\info.h"
-				>
-			</File>
-			<File
-				RelativePath="input.h"
-				>
-			</File>
-			<File
-				RelativePath="keys.h"
-				>
-			</File>
-			<File
-				RelativePath="mathlib.h"
-				>
-			</File>
-			<File
-				RelativePath="menu.h"
-				>
-			</File>
-			<File
-				RelativePath="modelgen.h"
-				>
-			</File>
-			<File
-				RelativePath="net.h"
-				>
-			</File>
-			<File
-				RelativePath="pmove.h"
-				>
-			</File>
-			<File
-				RelativePath=".\progs.h"
-				>
-			</File>
-			<File
-				RelativePath="protocol.h"
-				>
-			</File>
-			<File
-				RelativePath=".\q_shared.h"
-				>
-			</File>
-			<File
-				RelativePath=".\qlib.h"
-				>
-			</File>
-			<File
-				RelativePath=".\quakeasm.h"
-				>
-			</File>
-			<File
-				RelativePath="quakedef.h"
-				>
-			</File>
-			<File
-				RelativePath="r_local.h"
-				>
-			</File>
-			<File
-				RelativePath="r_model.h"
-				>
-			</File>
-			<File
-				RelativePath="r_shared.h"
-				>
-			</File>
-			<File
-				RelativePath="rc_image.h"
-				>
-			</File>
-			<File
-				RelativePath="rc_wad.h"
-				>
-			</File>
-			<File
-				RelativePath="render.h"
-				>
-			</File>
-			<File
-				RelativePath=".\server.h"
-				>
-			</File>
-			<File
-				RelativePath="sound.h"
-				>
-			</File>
-			<File
-				RelativePath="spritegn.h"
-				>
-			</File>
-			<File
-				RelativePath=".\sv_world.h"
-				>
-			</File>
-			<File
-				RelativePath="sys.h"
-				>
-			</File>
-			<File
-				RelativePath="teamplay.h"
-				>
-			</File>
-			<File
-				RelativePath=".\textencoding.h"
-				>
-			</File>
-			<File
-				RelativePath="version.h"
-				>
-			</File>
-			<File
-				RelativePath="vid.h"
-				>
-			</File>
-			<File
-				RelativePath="winquake.h"
-				>
-			</File>
-			<File
-				RelativePath="zone.h"
-				>
-			</File>
+				</File>
+				<File
+					RelativePath="spritegn.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -5191,168 +5966,6 @@
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
 						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="d_polysa.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="d_spr8.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="d_varsa.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -5449,492 +6062,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="r_aclipa.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="r_aliasa.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="r_draw16.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="r_draw8.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="r_drawa.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="r_edgea.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="r_parta.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="r_scana.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="r_varsa.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="snd_mixa.s"
 				>
 				<FileConfiguration
@@ -5953,114 +6080,6 @@
 						Name="VCCustomBuildTool"
 						CommandLine="cl /D &quot;GLQUAKE&quot; /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
 						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="surf16.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="cl /nologo /EP &gt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &quot;$(InputPath)&quot;&#x0D;&#x0A;gas2masm &lt; &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp &gt;&quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.asm&#x0D;&#x0A;ml /nologo /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi $(OUTDIR)\$(InputName).asm&#x0D;&#x0A;del &quot;$(OUTDIR)&quot;\&quot;$(InputName)&quot;.spp&#x0D;&#x0A;"
-						Outputs="$(OUTDIR)\$(InputName).obj"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release-server|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="surf8.s"
-				>
-				<FileConfiguration
-					Name="GLRelease|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="GLDebug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
