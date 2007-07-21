@@ -578,9 +578,90 @@ void R_Draw_Init (void)
 	draw_disc = R_CachePic_impl ("disc", true, false);
 }
 
+static void CreateFontBitmap (int base, int slot) {
+	extern HDC maindc;
+
+#define CHAR_WIDTH 32
+#define CHAR_HEIGHT 32
+
+#define BMP_WIDTH (CHAR_WIDTH * 16)
+#define BMP_HEIGHT (CHAR_HEIGHT * 16)
+
+//Com_Printf ("CreateFontBitmap 0x%x %i\n", base, slot);
+
+	HDC newdc = CreateCompatibleDC(maindc);
+	HBITMAP newbmp = CreateCompatibleBitmap(maindc, BMP_WIDTH, BMP_HEIGHT);
+
+	HFONT font = CreateFontW(16, CHAR_WIDTH, 0, TA_BASELINE, FW_NORMAL,
+                              FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+                              OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+                              NONANTIALIASED_QUALITY, FIXED_PITCH | FF_DONTCARE,
+							  L"Lucida Console"
+                              // L"Bitstream Vera Sans Mono"
+							  );
+
+	HGDIOBJ oldbmp = SelectObject(newdc, newbmp);
+	HGDIOBJ oldfont = SelectObject(newdc, font);
+
+	SetBkColor (newdc, RGB(0, 0, 0));
+	SetTextColor (newdc, RGB(255, 255, 255));
+	RECT rc = { 0, 20, 256, 256};
+	FillRect (newdc, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
+
+	for (int i = 0; i < 256; i++) {
+		RECT rc = { (i & 15)*CHAR_WIDTH, (i / 16) * CHAR_HEIGHT,
+					(i & 15)*CHAR_WIDTH + CHAR_WIDTH, (i / 16) * CHAR_HEIGHT + 16 };
+		wchar_t wc = base + i;
+		DrawTextW (newdc, &wc, 1, &rc, DT_LEFT|DT_TOP|DT_SINGLELINE|DT_NOPREFIX);
+	}
+
+	void *bits = malloc(BMP_WIDTH * BMP_HEIGHT * 4);
+
+	BITMAPINFO bmi = {0};
+	bmi.bmiHeader.biSize = sizeof(bmi.bmiHeader);
+	bmi.bmiHeader.biWidth = BMP_WIDTH;
+	bmi.bmiHeader.biHeight = -BMP_HEIGHT;
+	bmi.bmiHeader.biPlanes = 1;
+	bmi.bmiHeader.biBitCount = 32;
+	bmi.bmiHeader.biCompression = BI_RGB;
+
+	GetDIBits(newdc, newbmp, 0, BMP_HEIGHT, bits, &bmi, DIB_RGB_COLORS);
+
+	SelectObject(newdc, oldfont);
+	SelectObject(newdc, oldbmp);
+
+	DeleteObject(font);
+	DeleteObject(newbmp);
+	DeleteDC(newdc);
+
+	unsigned int *p = (unsigned int *)bits;
+	for (int i = 0; i < BMP_WIDTH*BMP_HEIGHT; i++, p++)
+		if (*p)
+			*p = 0xFF808080;
+		else
+			*p = 0x00808080;	// transparent
+
+	GLuint tex;
+//	glGenTextures(1, &tex);
+//	tex = texture_extension_number++;
+//	glBindTexture(tex);
+//	GL_Bind (tex);
+//	glTexImage2D(GL_TEXTURE_2D, 0, 3, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, bits);
+	tex = GL_LoadTexture32 ("", BMP_WIDTH, BMP_HEIGHT, (byte *)bits, TEX_ALPHA);
+
+	free(bits);
+
+	char_textures[slot] = tex;
+	char_range[slot] = base;
+}
+
 qbool R_CharAvailable (wchar num)
 {
 	int i;
+
+#ifdef _WIN32
+	return true;
+#endif
 
 	if (num == (num & 0xff))
 		return true;
@@ -622,8 +703,23 @@ void R_DrawCharW (int x, int y, wchar num)
 				slot = i;
 				break;
 			}
-		if (i == MAX_CHARSETS)
+
+		if (i == MAX_CHARSETS) {
+#ifdef _WIN32
+			for (i = 1; i < MAX_CHARSETS; i++) {
+				if (!char_range[i])
+					break;
+			}
+			if (i == MAX_CHARSETS)
+				num = '?';
+			else {
+				CreateFontBitmap (num & ~0xFF, i);
+				slot = i;
+			}
+#else
 			num = '?';
+#endif
+		}
 	}
 
 	num &= 255;
