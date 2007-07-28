@@ -46,7 +46,6 @@ aliashdr_t			*paliashdr;
 finalvert_t			*pfinalverts;
 auxvert_t			*pauxverts;
 static float		ziscale;
-static model_t		*pmodel;
 
 static vec3_t		alias_forward, alias_right, alias_up;
 
