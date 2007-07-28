@@ -355,7 +355,9 @@ static void NQD_ParseServerData (void)
 	char	mapname[MAX_QPATH];
 	int		cs2;
 	qbool	gpl_map;
-	extern qbool r_gpl_map;
+#ifdef GLQUAKE
+	extern	qbool r_gpl_map;
+#endif
 
 	Com_DPrintf ("Serverdata packet received.\n");
 //
@@ -468,7 +470,7 @@ static void NQD_ParseServerData (void)
 
 void CLNQ_SignonReply (void)
 {
-	extern cvar_t	skin, name, topcolor, bottomcolor;
+	extern cvar_t name, topcolor, bottomcolor;
 
 	Com_DPrintf ("CL_SignonReply: %i\n", nq_signon);
 

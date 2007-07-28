@@ -391,12 +391,14 @@ ScaleDimensions (int width, int height, int *scaled_width, int *scaled_height, i
 	*scaled_height = bound(1, *scaled_height, max_texsize);
 }
 
+/*
 static int RoundToPowerOf2 (int in) {
 	int out;
 	for (out = 1; out < in; out <<= 1)
 		;
 	return out;
 }
+*/
 
 /*
 ===============
@@ -718,7 +720,9 @@ int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int m
 	if (!data)
 		return 0;
 
+#ifdef WITH_PNG
 ok:
+#endif
 	texnum = GL_LoadTexture32 (identifier, width, height, data, mode);
 
 	Q_free (data);

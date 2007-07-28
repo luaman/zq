@@ -359,7 +359,9 @@ void Model_NextDownload (void)
 	char	*s;
 	int		i;
 	qbool gpl_map;
+#ifdef GLQUAKE
 	extern qbool r_gpl_map;
+#endif
 	char mapname[MAX_QPATH];
 	int cs2;
 
