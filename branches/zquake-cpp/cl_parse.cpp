@@ -296,7 +296,7 @@ void VWepModel_NextDownload (void)
 {
 	int		i;
 
-	if (!cl.z_ext & Z_EXT_VWEP || !cl.vw_model_name[0][0]) {
+	if (!(cl.z_ext & Z_EXT_VWEP) || cl.vw_model_name[0] == "") {
 		// no vwep support, go straight to prespawn
 		CL_Prespawn ();
 		return;
@@ -1445,7 +1445,7 @@ A typical vwep model list will look like this:
 void CL_ParseVWepPrecache (const char *str)
 {
 	int num;
-	char *p;
+	const char *p;
 
 	if (cls.state == ca_active) {
 		// could do a Host_Error as well

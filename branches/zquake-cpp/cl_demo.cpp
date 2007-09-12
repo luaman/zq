@@ -587,7 +587,7 @@ static void CL_Record (void)
 
 #ifdef VWEP_TEST
 // vwep modellist
-	if ((cl.z_ext & Z_EXT_VWEP) && cl.vw_model_name[0][0]) {
+	if ((cl.z_ext & Z_EXT_VWEP) && cl.vw_model_name[0] != "") {
 		// send VWep precaches
 		// pray we don't overflow
 		for (i = 0; i < MAX_VWEP_MODELS; i++) {
