@@ -205,7 +205,7 @@ COM_Parse
 Parse a token out of a string
 ==============
 */
-char *COM_Parse (char *data)
+char *COM_Parse (const char *data)
 {
 	unsigned char c;
 	int		len;
@@ -245,7 +245,7 @@ skipwhite:
 				com_token[len] = 0;
 				if (!c)
 					data--;
-				return data;
+				return (char *)data;
 			}
 			if (len < MAX_COM_TOKEN-1)
 			{
@@ -268,7 +268,7 @@ skipwhite:
 	} while (c && c != ' ' && c != '\t' && c != '\n' && c != '\r');
 
 	com_token[len] = 0;
-	return data;
+	return (char *)data;
 }
 
 
