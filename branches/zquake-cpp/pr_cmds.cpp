@@ -2748,19 +2748,22 @@ static void PF_precache_vwep_model (void)
 	if (sv.state != ss_loading)
 		PR_RunError ("PF_Precache_*: Precache can only be done in spawn functions");
 		
-	i = G_FLOAT(OFS_PARM0);
-	s = G_STRING(OFS_PARM1);
-	G_INT(OFS_RETURN) = G_INT(OFS_PARM1);	// FIXME, remove?
+	s = G_STRING(OFS_PARM0);
 	PR_CheckEmptyString (s);
-
-	if (i < 0 || i >= MAX_VWEP_MODELS)
-		PR_RunError ("PF_precache_vwep_model: bad index %i", i);
 
 	// the strings are transferred via the stufftext mechanism, hence the stringency
 	if (strchr(s, '"') || strchr(s, ';') || strchr(s, '\n'  ) || strchr(s, '\t') || strchr(s, ' '))
 		PR_RunError ("Bad string\n");
 
-	sv.vw_model_name[i] = s;
+	for (i = 0; i < MAX_VWEP_MODELS; i++)
+	{
+		if (sv.vw_model_name[i] == "") {
+			sv.vw_model_name[i] = s;
+			G_INT(OFS_RETURN) = i;
+			return;
+		}
+	}
+	PR_RunError ("PF_precache_vwep_model: overflow");
 }
 #endif
 // <-- Tonik's experiments
@@ -2981,12 +2984,12 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {448, PF_cvar_string},	// string(string varname) cvar_string				= #448;
 {530, PF_soundtoclient},	// void(entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
 {531, PF_setpause},		// void(float pause) setpause						= #531;
+#ifdef VWEP_TEST
+{532, PF_precache_vwep_model},// float(string model) precache_vwep_model	= #532;
+#endif
 
 // Experimental and/or deprecated:
 {0x5a08, PF_soundtoclient},
-#ifdef VWEP_TEST
-{0x5a09, PF_precache_vwep_model},
-#endif
 {0x5a0A, PF_testbot},
 {0x5a0B, PF_setinfo},
 };
