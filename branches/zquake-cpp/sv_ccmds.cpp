@@ -468,11 +468,6 @@ void SV_Serverinfo_f (void)
 		return;		// cvar callbacks will take care of updating serverinfo
 	}
 
-#ifdef VWEP_TEST
-	if (!strcmp(key, "#vw"))
-		return;		// reserved for VWep precaches
-#endif
-
 	svs.info.set(key, value);
 
 	// if the key is also a serverinfo cvar, change it too

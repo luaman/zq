@@ -590,18 +590,18 @@ static void CL_Record (void)
 	if ((cl.z_ext & Z_EXT_VWEP) && cl.vw_model_name[0] != "") {
 		// send VWep precaches
 		// pray we don't overflow
+		string ss = "//vwep ";
 		for (i = 0; i < MAX_VWEP_MODELS; i++) {
 			s = cl.vw_model_name[i];
 			if (s == "")
-				continue;
-			MSG_WriteByte (&buf, svc_serverinfo);
-			MSG_WriteString (&buf, "#vw");
-			MSG_WriteString (&buf, va("%i %s", i, TrimModelName(s.c_str())));
+				break;
+			if (i > 0)
+				ss += " ";
+			ss += TrimModelName(s.c_str());
 		}
-		// send end-of-list messsage
-		MSG_WriteByte (&buf, svc_serverinfo);
-		MSG_WriteString (&buf, "#vw");
-		MSG_WriteString (&buf, "");
+		ss += "\n";
+		MSG_WriteByte (&buf, svc_stufftext);
+		MSG_WriteString (&buf, ss);
 	}
 	// don't bother flushing, the vwep list is not that large (I hope)
 #endif

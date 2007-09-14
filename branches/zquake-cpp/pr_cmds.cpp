@@ -2756,6 +2756,10 @@ static void PF_precache_vwep_model (void)
 	if (i < 0 || i >= MAX_VWEP_MODELS)
 		PR_RunError ("PF_precache_vwep_model: bad index %i", i);
 
+	// the strings are transferred via the stufftext mechanism, hence the stringency
+	if (strchr(s, '"') || strchr(s, ';') || strchr(s, '\n'  ) || strchr(s, '\t') || strchr(s, ' '))
+		PR_RunError ("Bad string\n");
+
 	sv.vw_model_name[i] = s;
 }
 #endif

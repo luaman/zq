@@ -238,7 +238,7 @@ static void Cmd_Soundlist_f (void)
 }
 
 #ifdef VWEP_TEST
-static char *TrimModelName (char *full)
+static char *TrimModelName (const char *full)
 {
 	static char shortn[MAX_QPATH];
 	int len;
@@ -301,18 +301,18 @@ static void Cmd_Modellist_f (void)
 	if (n == 0 && (sv_client->extensions & Z_EXT_VWEP) && sv.vw_model_name[0] != "") {
 		int i;
 		// send VWep precaches
+		string ss = "//vwep ";
 		for (i = 0, s = sv.vw_model_name; i < MAX_VWEP_MODELS; s++, i++) {
 			if (sv.vw_model_name[i] == "")
-				continue;
-			ClientReliableWrite_Begin (sv_client, svc_serverinfo);
-			ClientReliableWrite_String ("#vw");
-			ClientReliableWrite_String (va("%i %s", i, TrimModelName((char *)s->c_str())));
-			ClientReliableWrite_End();
+				break;
+			if (i > 0)
+				ss += " ";
+			ss += TrimModelName(s->c_str());
 		}
+		ss += "\n";
 		// send end-of-list messsage
-		ClientReliableWrite_Begin (sv_client, svc_serverinfo);
-		ClientReliableWrite_String ("#vw");
-		ClientReliableWrite_String ("");
+		ClientReliableWrite_Begin (sv_client, svc_stufftext);
+		ClientReliableWrite_String (ss);
 		ClientReliableWrite_End();
 	}
 #endif
