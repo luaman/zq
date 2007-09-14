@@ -843,7 +843,7 @@ Cmd_TokenizeString
 Parses the given string into command line tokens.
 ============
 */
-void Cmd_TokenizeString (char *text)
+void Cmd_TokenizeString (const char *text)
 {
 	int			idx;
 	static char	argv_buf[1024];
@@ -869,10 +869,10 @@ void Cmd_TokenizeString (char *text)
 
 		if (!*text)
 			return;
-	
+
 		if (cmd_argc == 1)
-			 cmd_args = text;
-			
+			 cmd_args = (char *)text;
+
 		text = COM_Parse (text);
 		if (!text)
 			return;
@@ -1098,7 +1098,7 @@ Note: dest must point to a 1024 byte buffer
 ================
 */
 char *TP_MacroString (char *s);
-void Cmd_ExpandString (char *data, char *dest)
+void Cmd_ExpandString (const char *data, char *dest)
 {
 	unsigned int	c;
 	char	buf[255];
@@ -1222,7 +1222,7 @@ A complete command line has been parsed, so try to execute it
 FIXME: this function is getting really messy...
 ============
 */
-void Cmd_ExecuteString (char *text)
+void Cmd_ExecuteString (const char *text)
 {	
 	cmd_function_t	*cmd;
 	cmd_alias_t		*a;
