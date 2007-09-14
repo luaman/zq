@@ -755,11 +755,6 @@ void SVC_DirectConnect (void)
 	newcl->extensions = atoi(newcl->userinfo["*z_ext"].c_str());
 	newcl->userinfo.set("*z_ext", "");
 
-#ifdef VWEP_TEST
-	newcl->extensions |= atoi(newcl->userinfo["*vwtest"].c_str()) ? Z_EXT_VWEP : 0;
-	newcl->userinfo.set("*vwtest", "");
-#endif
-
 	// See if the client is using a proxy. The best test I can come up with right now...
 	newcl->uses_proxy = newcl->userinfo["Qizmo"] != "";
 
@@ -1637,9 +1632,6 @@ void SV_InitLocal (void)
 
 	svs.info.set("*version", va(PROGRAM " %s", VersionString()));
 	svs.info.set("*z_ext", va("%i", SERVER_EXTENSIONS));
-#ifdef VWEP_TEST
-	svs.info.set("*vwtest", "1");
-#endif
 
 	if (strcmp(com_gamedirfile, "qw"))
 		svs.info.set("*gamedir", com_gamedirfile);

@@ -1384,11 +1384,6 @@ void CL_ProcessServerInfo (void)
 	// Get the server's ZQuake extension bits
 	cl.z_ext = atoi(cl.serverinfo["*z_ext"].c_str());
 
-#ifdef VWEP_TEST
-	if (atoi(cl.serverinfo["*vwtest"].c_str()))
-		cl.z_ext |= Z_EXT_VWEP;
-#endif
-
 	// Initialize cl.maxpitch & cl.minpitch
 	p = (cl.z_ext & Z_EXT_PITCHLIMITS) ? cl.serverinfo["maxpitch"] : "";
 	cl.maxpitch = (p != "") ? Q_atof(p) : 80.0f;
