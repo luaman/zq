@@ -1428,77 +1428,48 @@ void CL_ProcessServerInfo (void)
 }
 
 
-/*
-==============
-CL_ParseVWepPrecache
-
-A typical vwep model list will look like this:
-"0 player_w.mdl"	// player model to use
-"1"					// no weapon at all
-"2 w_shot.mdl"
-"3 w_shot2.mdl"
-...
-""					// list is terminated with an empty key
-==============
-*/
 #ifdef VWEP_TEST
+// parse a string looking like this: //vwep vwplayer w_axe w_shot w_shot2
 void CL_ParseVWepPrecache (const char *str)
 {
-	int num;
+	int i, num;
 	const char *p;
 
 	if (cls.state == ca_active) {
-		// could do a Host_Error as well
-		Com_Printf ("CL_ParseVWepPrecache: ca_active, ignoring\n");
+		Com_DPrintf ("CL_ParseVWepPrecache: ca_active, ignoring\n");
 		return;
 	}
 
-	if (!*str) {
-		Com_DPrintf ("VWEP END\n");
-		return;
-	}
+	Cmd_TokenizeString (str + 2 /* skip the // */);
+	num = min(Cmd_Argc()-1, MAX_VWEP_MODELS);
 
-	num = atoi(str);
-
-	if ( !isdigit((int)(unsigned char)str[0]) )
-		return;		// not a vwep model message
-
-	if ((unsigned)num >= MAX_MODELS)
-		Host_Error("CL_ParseVWepModel: num >= MAX_MODELS");
-
-	if ((unsigned)num >= MAX_VWEP_MODELS)
-		return;		// fail silently to allow for expansion in future
-
-	p = strchr (str, ' ');
-	if (p && p[1]) {
-		p++;	// skip the space
+	for (i = 0; i < num; i++) {
+		p = Cmd_Argv(i+1);
 
 		if (!strcmp(p, "-")) {
 			// empty model
-			cl.vw_model_name[num] = "-";
+			cl.vw_model_name[i] = "-";
 		}
 		else {
 			if (strstr(p, "..") || p[0] == '/' || p[0] == '\\')
-				Host_Error("CL_ParseVWepModel: illegal model name '%s'", p);
+				Host_Error("CL_ParseVWepPrecache: illegal model name '%s'", p);
 
 			if (strstr(p, "/"))
 				// a full path was specified
-				cl.vw_model_name[num] = p;
+				cl.vw_model_name[i] = p;
 			else {
 				// use default path
-				cl.vw_model_name[num] = "progs/";	// FIXME, "progs/vwep/"	?
-				cl.vw_model_name[num] += p;
+				cl.vw_model_name[i] = "progs/";	// FIXME, "progs/vwep/"	?
+				cl.vw_model_name[i] += p;
 			}
 
 			// use default extension if not specified
 			if (!strstr(p, "."))
-				cl.vw_model_name[num] += ".mdl";
+				cl.vw_model_name[i] += ".mdl";
 		}
 	}
-	else
-		cl.vw_model_name[num] = "";
 
-	Com_DPrintf ("VWEP %i: '%s'\n", num, cl.vw_model_name[num].c_str());
+	Com_DPrintf ("VWEP precache: %i models\n", num);
 }
 #endif
 
@@ -1512,13 +1483,6 @@ void CL_ParseServerInfoChange (void)
 {
 	string key = MSG_ReadString();
 	string value = MSG_ReadString();
-
-#ifdef VWEP_TEST
-	if ( (cl.z_ext & Z_EXT_VWEP) && key == "#vw" ) {
-		CL_ParseVWepPrecache (value.c_str());
-		return;
-	}
-#endif
 
 	Com_DPrintf ("SERVERINFO: %s=%s\n", key.c_str(), value.c_str());
 
@@ -1664,6 +1628,11 @@ void CL_ParseStufftext (void)
 		// we don't support cutscene messages... but no one seems
 		// to use them anyway so never mind 
 		SCR_CenterPrint ("");
+	}
+
+	if (!strncmp(s, "//vwep ", 7) && s[strlen(s)-1] == '\n') {
+		CL_ParseVWepPrecache(s);
+		return;
 	}
 
 	// Execute stuffed commands immediately when starting a demo
