@@ -955,7 +955,7 @@ void CL_ParsePlayerState (void)
 		MSG_ReadDeltaUsercmd (&nullcmd, &state->command, cl.protocol);
 
 #ifdef VWEP_TEST
-	if (cl.z_ext & Z_EXT_VWEP)
+	if (cl.z_ext & Z_EXT_VWEP && !(state->flags & PF_GIB))
 		state->vw_index = state->command.impulse;
 	else
 		state->vw_index = 0;
