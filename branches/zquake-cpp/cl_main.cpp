@@ -1117,10 +1117,6 @@ void CL_InitLocal (void)
 //	cls.userinfo.set( "*ver", va(PROGRAM " %s", VersionString()));
 #endif
 
-#ifdef VWEP_TEST
-	cls.userinfo.set("*vwtest", "1");
-#endif
-
 	//
 	// info mirrors
 	//

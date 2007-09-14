@@ -2677,7 +2677,7 @@ static void PF_checkextension (void)
 		"ZQ_SOUNDTOCLIENT",
 		"ZQ_TESTBOT",
 #ifdef VWEP_TEST
-		"ZQ_VWEP_TEST",
+		"ZQ_VWEP",
 #endif
 		NULL
 	};
