@@ -1110,7 +1110,7 @@ CL_AddVWepModel
 ================
 */
 #ifdef VWEP_TEST
-static qbool CL_AddVWepModel (entity_t *ent, int vw_index, int vw_frame)
+static qbool CL_AddVWepModel (entity_t *ent, int vw_index)
 {
 	entity_t	newent;
 
@@ -1128,7 +1128,9 @@ static qbool CL_AddVWepModel (entity_t *ent, int vw_index, int vw_frame)
 	VectorCopy (ent->origin, newent.origin);
 	VectorCopy (ent->angles, newent.angles);
 	newent.model = cl.vw_model_precache[vw_index];
-	newent.frame = vw_frame;
+	newent.frame = ent->frame;
+	newent.oldframe = ent->oldframe;
+	newent.backlerp = ent->backlerp;
 	newent.skinnum = 0;
 	newent.colormap = 0;
 	newent.renderfx = RF_PLAYERMODEL;	// not really, but use same lighting rules
@@ -1277,7 +1279,7 @@ void CL_LinkPlayers (void)
 #ifdef VWEP_TEST
 		if (cl.vwep_enabled && state->vw_index) {
 			qbool vwep;
-			vwep = CL_AddVWepModel (&ent, state->vw_index, state->frame);
+			vwep = CL_AddVWepModel (&ent, state->vw_index);
 			if (vwep) {
 				if (cl.vw_model_name[0] != "-") {
 					ent.model = cl.vw_model_precache[0];
