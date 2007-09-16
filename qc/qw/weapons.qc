@@ -1101,7 +1101,7 @@ void W_SetCurrentAmmo ()
 #endif
 	}
 #ifdef VWEP_TEST
-	if (!vw_enabled || self.invisible_finished)
+	if (!vw_available || self.invisible_finished)
 		self.vw_index = 0;
 #endif
 }
