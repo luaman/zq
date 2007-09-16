@@ -618,7 +618,7 @@ void PlayerDie ()
 
 	self.weaponmodel="";
 #ifdef VWEP_TEST
-	if (vw_enabled != 0)
+	if (vw_available != 0)
 		self.vw_index = 9;
 #endif
 	self.view_ofs = '0 0 -8';
