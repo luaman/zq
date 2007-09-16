@@ -82,9 +82,7 @@ typedef struct
 	unsigned	map_checksum2;
 	cmodel_t 	*worldmodel;
 	string		model_name[MAX_MODELS];	// NULL terminated
-#ifdef VWEP_TEST
 	string		vw_model_name[MAX_VWEP_MODELS];	// NULL terminated
-#endif
 	string		sound_name[MAX_SOUNDS];	// NULL terminated
 	char		*lightstyles[MAX_LIGHTSTYLES];
 	cmodel_t	*models[MAX_MODELS];
@@ -140,10 +138,8 @@ typedef struct
 		worldmodel = 0;
 		for (int i = 0; i < MAX_MODELS; i++)
 			model_name[i] = "";
-#ifdef VWEP_TEST
 		for (int i = 0; i < MAX_VWEP_MODELS; i++)
 			vw_model_name[i] = "";
-#endif
 		for (int i = 0; i < MAX_SOUNDS; i++)
 			sound_name[i] = "";
 		memset (lightstyles, 0, sizeof(lightstyles));

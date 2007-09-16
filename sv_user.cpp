@@ -237,7 +237,6 @@ static void Cmd_Soundlist_f (void)
 	SV_AddToReliable (sv_client, msg.data, msg.cursize);
 }
 
-#ifdef VWEP_TEST
 static char *TrimModelName (const char *full)
 {
 	static char shortn[MAX_QPATH];
@@ -257,7 +256,6 @@ static char *TrimModelName (const char *full)
 
 	return shortn;
 }
-#endif // VWEP_TEST
 
 /*
 ==================
@@ -296,8 +294,6 @@ static void Cmd_Modellist_f (void)
 		return;
 	}
 
-
-#ifdef VWEP_TEST
 	if (n == 0 && (sv_client->extensions & Z_EXT_VWEP) && sv.vw_model_name[0] != "") {
 		int i;
 		// send VWep precaches
@@ -315,7 +311,6 @@ static void Cmd_Modellist_f (void)
 		ClientReliableWrite_String (ss);
 		ClientReliableWrite_End();
 	}
-#endif
 
 	// if we're not back-bufffered, try to fit the modellist into current message
 	if (!sv_client->num_backbuf &&

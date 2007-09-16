@@ -148,9 +148,7 @@ void client_state_t::clear ()
 	teamfortress = false;
 	fpd = 0;
 	z_ext = 0;
-#ifdef VWEP_TEST
 	vwep_enabled = false;
-#endif
 	servertime_works = false;
 	maxfps = 0;
 	minpitch = 0;
@@ -196,16 +194,12 @@ void client_state_t::clear ()
 	solo_completed_time = 0;
 	for (int i = 0; i < MAX_MODELS; i++)
 		model_name[i] = "";
-#ifdef VWEP_TEST
 	for (int i = 0; i < MAX_VWEP_MODELS; i++)
 		vw_model_name[i] = "";
-#endif
 	for (int i = 0; i < MAX_SOUNDS; i++)
 		sound_name[i] = "";
 	memset (model_precache, 0, sizeof(model_precache));
-#ifdef VWEP_TEST
 	memset (vw_model_precache, 0, sizeof(vw_model_precache));
-#endif
 	memset (sound_precache, 0, sizeof(sound_precache));
 	memset (modelinfos, 0, sizeof(modelinfos));
 	memset (clipmodels, 0, sizeof(clipmodels));

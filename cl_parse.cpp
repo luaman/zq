@@ -291,7 +291,6 @@ void CL_Prespawn (void)
 VWepModel_NextDownload
 =================
 */
-#ifdef VWEP_TEST
 void VWepModel_NextDownload (void)
 {
 	int		i;
@@ -342,7 +341,6 @@ void VWepModel_NextDownload (void)
 	// all done
 	CL_Prespawn ();
 }
-#endif
 
 
 /*
@@ -409,14 +407,10 @@ void Model_NextDownload (void)
 			cl.clipmodels[i] = CM_InlineModel(cl.model_name[i]);
 	}
 
-#ifdef VWEP_TEST
 	// done with normal models, request vwep models if necessary
 	cls.downloadtype = dl_vwep_model;
 	cls.downloadnumber = 0;
 	VWepModel_NextDownload ();
-#else
-	CL_Prespawn ();
-#endif
 }
 
 /*
@@ -553,11 +547,9 @@ void CL_RequestNextDownload (void)
 	case dl_model:
 		Model_NextDownload ();
 		break;
-#ifdef VWEP_TEST
 	case dl_vwep_model:
 		VWepModel_NextDownload ();
 		break;
-#endif
 	case dl_sound:
 		Sound_NextDownload ();
 		break;
@@ -1423,7 +1415,6 @@ void CL_ProcessServerInfo (void)
 }
 
 
-#ifdef VWEP_TEST
 // parse a string looking like this: //vwep vwplayer w_axe w_shot w_shot2
 void CL_ParseVWepPrecache (const char *str)
 {
@@ -1466,7 +1457,6 @@ void CL_ParseVWepPrecache (const char *str)
 
 	Com_DPrintf ("VWEP precache: %i models\n", num);
 }
-#endif
 
 
 /*
