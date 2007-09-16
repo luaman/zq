@@ -36,14 +36,14 @@ void main ()
 
 entity  lastspawn;
 
-void() dummy_checkextension = {	dprint ("HEHEHE\n"); return false; }
+void() dummy_checkextension = {	return false; }
 
 void InitExtensions ()
 {
 	if (!cvar("pr_checkextension"))
 		checkextension = dummy_checkextension;
 
-	// This enabled the extension in the engine
+	// This enables the extension in the engine
 	checkextension("ZQ_CLIENTCOMMAND");
 
 }
@@ -185,18 +185,19 @@ void worldspawn ()
 #ifdef VWEP_TEST
     vw_available = checkextension("ZQ_VWEP");
 
-    if(stof(infokey(world, "vwep")) && vw_available > 0)
+    if (stof(infokey(world, "vwep")) && vw_available > 0)
     {
         // precache our vwep models
-        precache_vwep_model (0, "progs/vwplayer.mdl");  // vwep-enabled player model to use
-        precache_vwep_model (1, "progs/w_axe.mdl");
-        precache_vwep_model (2, "progs/w_shot.mdl");
-        precache_vwep_model (3, "progs/w_shot2.mdl");
-        precache_vwep_model (4, "progs/w_nail.mdl");
-        precache_vwep_model (5, "progs/w_nail2.mdl");
-        precache_vwep_model (6, "progs/w_rock.mdl");
-        precache_vwep_model (7, "progs/w_rock2.mdl");
-        precache_vwep_model (8, "progs/w_light.mdl");
+        precache_vwep_model ("progs/vwplayer.mdl");  // vwep-enabled player model to use
+        precache_vwep_model ("progs/w_axe.mdl");
+        precache_vwep_model ("progs/w_shot.mdl");
+        precache_vwep_model ("progs/w_shot2.mdl");
+        precache_vwep_model ("progs/w_nail.mdl");
+        precache_vwep_model ("progs/w_nail2.mdl");
+        precache_vwep_model ("progs/w_rock.mdl");
+        precache_vwep_model ("progs/w_rock2.mdl");
+        precache_vwep_model ("progs/w_light.mdl");
+        precache_vwep_model ("-");
     }
 #endif
 
