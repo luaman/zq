@@ -467,7 +467,6 @@ void CL_WriteSetDemoMessage (void)
 
 
 // FIXME: same as in sv_user.c. Move to common.c?
-#ifdef VWEP_TEST
 static char *TrimModelName (const char *full)
 {
 	static char shortn[MAX_QPATH];
@@ -487,7 +486,6 @@ static char *TrimModelName (const char *full)
 
 	return shortn;
 }
-#endif // VWEP_TEST
 
 
 /*
@@ -585,7 +583,6 @@ static void CL_Record (void)
 		SZ_Clear (&buf); 
 	}
 
-#ifdef VWEP_TEST
 // vwep modellist
 	if ((cl.z_ext & Z_EXT_VWEP) && cl.vw_model_name[0] != "") {
 		// send VWep precaches
@@ -604,7 +601,6 @@ static void CL_Record (void)
 		MSG_WriteString (&buf, ss);
 	}
 	// don't bother flushing, the vwep list is not that large (I hope)
-#endif
 
 // modellist
 	MSG_WriteByte (&buf, svc_modellist);

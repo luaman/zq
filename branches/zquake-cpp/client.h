@@ -44,26 +44,19 @@ typedef struct
 typedef struct
 {
 	int			messagenum;		// cl.parsecount of last valid update
-
 	double		state_time;		// not the same as the packet time,
 								// because player commands come asyncronously
 	usercmd_t	command;		// last command for prediction
-
 	vec3_t		origin;
 	vec3_t		viewangles;		// only for demos, not from server
 	vec3_t		velocity;
 	byte		weaponframe;
-
 	byte		modelindex;
 	byte		frame;
 	byte		skinnum;
 	byte		effects;
-
 	short		flags;			// dead, gib, etc
-
-#ifdef VWEP_TEST
 	byte		vw_index;
-#endif
 
 	// prediction info
 	byte		pm_type;
@@ -211,9 +204,7 @@ typedef enum {
 typedef enum {
 	dl_none,
 	dl_model,
-#ifdef VWEP_TEST
 	dl_vwep_model,
-#endif
 	dl_sound,
 	dl_skin,
 	dl_single
@@ -323,9 +314,7 @@ struct client_state_t
 	qbool		teamfortress;	// true if gamedir is "fortress"
 	int			fpd;			// FAQ proxy flags
 	int			z_ext;			// ZQuake protocol extensions flags
-#ifdef VWEP_TEST
 	qbool		vwep_enabled;
-#endif
 	qbool		servertime_works;	// Does the server actually send STAT_TIME/svc_time?
 	float		maxfps;
 	float		minpitch;
@@ -398,15 +387,11 @@ struct client_state_t
 // information that is static for the entire time connected to a server
 //
 	string		model_name[MAX_MODELS];
-#ifdef VWEP_TEST
 	string		vw_model_name[MAX_VWEP_MODELS];	// VWep support
-#endif
 	string		sound_name[MAX_SOUNDS];
 
 	struct model_s	*model_precache[MAX_MODELS];
-#ifdef VWEP_TEST
 	struct model_s	*vw_model_precache[MAX_VWEP_MODELS];	// VWep support
-#endif
 	struct sfx_s	*sound_precache[MAX_SOUNDS];
 
 	modelinfo_t	modelinfos[MAX_MODELS];

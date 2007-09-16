@@ -2676,9 +2676,7 @@ static void PF_checkextension (void)
 		"ZQ_QC_TOKENIZE",
 		"ZQ_SOUNDTOCLIENT",
 		"ZQ_TESTBOT",
-#ifdef VWEP_TEST
 		"ZQ_VWEP",
-#endif
 		NULL
 	};
 	char **pstr, *extension;
@@ -2737,9 +2735,8 @@ static void PF_setinfo (void)
 	MSG_WriteString (&sv.reliable_datagram, key);
 	MSG_WriteString (&sv.reliable_datagram, value);
 }
+// <-- Tonik's experiments
 
-
-#ifdef VWEP_TEST
 static void PF_precache_vwep_model (void)
 {
 	char	*s;
@@ -2765,8 +2762,6 @@ static void PF_precache_vwep_model (void)
 	}
 	PR_RunError ("PF_precache_vwep_model: overflow");
 }
-#endif
-// <-- Tonik's experiments
 
 
 /*
@@ -2984,9 +2979,7 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {448, PF_cvar_string},	// string(string varname) cvar_string				= #448;
 {530, PF_soundtoclient},	// void(entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
 {531, PF_setpause},		// void(float pause) setpause						= #531;
-#ifdef VWEP_TEST
 {532, PF_precache_vwep_model},// float(string model) precache_vwep_model	= #532;
-#endif
 
 // Experimental and/or deprecated:
 {0x5a08, PF_soundtoclient},

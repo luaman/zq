@@ -54,9 +54,7 @@ func_t GE_ClientCommand, GE_ConsoleCommand, GE_PausedTic, GE_ShouldPause;
 
 int		fofs_maxspeed, fofs_gravity, fofs_items2;
 int		fofs_forwardmove, fofs_sidemove, fofs_upmove;
-#ifdef VWEP_TEST
 int		fofs_vw_index;
-#endif
 int		fofs_buttonX[8-3];
 
 
@@ -1202,9 +1200,7 @@ dm_use_progs:
 	fofs_forwardmove = ED_FindFieldOffset ("forwardmove");
 	fofs_sidemove = ED_FindFieldOffset ("sidemove");
 	fofs_upmove = ED_FindFieldOffset ("upmove");
-#ifdef VWEP_TEST
 	fofs_vw_index = ED_FindFieldOffset ("vw_index");
-#endif
 	for (i = 3; i < 8; i++)
 		fofs_buttonX[i-3] = ED_FindFieldOffset(va("button%i", i));
 
