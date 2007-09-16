@@ -531,7 +531,6 @@ called each time a player enters a new level
 void PutClientInServer ()
 {
 	entity	spot;
-	vector	saved_org;
 
 	self.classname = "player";
 	self.health = 100;
@@ -587,12 +586,6 @@ void PutClientInServer ()
 
 // set size and link into world
 	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
-
-// many maps have spawn points hanging in the air, fix that
-	saved_org = self.origin;
-	droptofloor ();
-	if (self.origin_z < saved_org_z - 64)
-		setorigin (self, saved_org);
 
 	self.view_ofs = '0 0 22';
 
@@ -694,6 +687,15 @@ potential spawning position for deathmatch games
 */
 void info_player_deathmatch ()
 {
+	vector	saved_org;
+
+// many maps have spawn points hanging in the air, fix that
+	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+	saved_org = self.origin;
+	droptofloor ();
+	if (self.origin_z < saved_org_z - 64)
+		setorigin (self, saved_org);
+	setsize (self, VEC_ORIGIN, VEC_ORIGIN);
 }
 
 /*QUAKED info_player_coop (1 0 1) (-16 -16 -24) (16 16 24)
