@@ -735,3 +735,4 @@ float T_Heal (entity e, float heal_amount, float ignore); // health function
 //
 
 .float suicide_time;	// can't suicide sooner than this
+float g_qwshotgun;

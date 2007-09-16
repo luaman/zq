@@ -50,6 +50,12 @@ string(float n) argv = #86;
 // ZQ_SOUNDTOCLIENT
 void (entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
 
+#ifdef VWEP_TEST
+// ZQ_VWEP
+void (string model) precache_vwep_model = #532;
+.float vw_index;
+float vw_available;
+#endif
 
 #ifdef FRIKBOT
 entity (string name) testbot = #0x5a0A;
@@ -60,11 +66,3 @@ entity (string name) testbot = #0x5a0A;
 //FIXME, this will be changed
 void (entity e, string key, string value) setinfo = #0x5a0B;
 
-
-
-#ifdef VWEP_TEST
-void (float index, string model) precache_vwep_model = #0x5a09;
-.float vw_index;
-.float vw_frame;
-float vw_available;
-#endif

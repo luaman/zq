@@ -1178,20 +1178,6 @@ Called every frame after physics are run
 */
 void PlayerPostThink ()
 {
-#ifdef VWEP_TEST
-    // update vwep frame
-    if(stof(infokey(world, "vwep")) && vw_available > 0)
-    {
-        if (self.health <= 0)
-        {
-            self.vw_index = 0;
-            self.vw_frame = 0;
-        }
-        else
-            self.vw_frame = self.frame;
-    }
-#endif
-
 	if (intermission_running)
 	{
 		setorigin (self, intermission_spot.origin);

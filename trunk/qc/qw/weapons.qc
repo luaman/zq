@@ -1010,7 +1010,7 @@ void W_SetCurrentAmmo ()
 		self.weaponmodel = "progs/v_axe.mdl";
 		self.weaponframe = 0;
 #ifdef VWEP_TEST
-        if(vw_available > 0)
+        if (vw_available > 0)
             self.vw_index = 1;
 #endif
 	}
@@ -1021,7 +1021,7 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_SHELLS;
 #ifdef VWEP_TEST
-        if(vw_available > 0)
+        if (vw_available > 0)
             self.vw_index = 2;
 #endif
 	}
@@ -1032,7 +1032,7 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_SHELLS;
 #ifdef VWEP_TEST
-        if(vw_available > 0)
+        if (vw_available > 0)
             self.vw_index = 3;
 #endif
 	}
@@ -1043,7 +1043,7 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_NAILS;
 #ifdef VWEP_TEST
-        if(vw_available > 0)
+        if (vw_available > 0)
             self.vw_index = 4;
 #endif
 	}
@@ -1054,7 +1054,7 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_NAILS;
 #ifdef VWEP_TEST
-        if(vw_available > 0)
+        if (vw_available > 0)
             self.vw_index = 5;
 #endif
 	}
@@ -1065,7 +1065,7 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_ROCKETS;
 #ifdef VWEP_TEST
-        if(vw_available > 0)
+        if (vw_available > 0)
             self.vw_index = 6;
 #endif
 	}
@@ -1076,7 +1076,7 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_ROCKETS;
 #ifdef VWEP_TEST
-        if(vw_available > 0)
+        if (vw_available > 0)
             self.vw_index = 7;
 #endif
 	}
@@ -1087,7 +1087,7 @@ void W_SetCurrentAmmo ()
 		self.weaponframe = 0;
 		self.items = self.items | IT_CELLS;
 #ifdef VWEP_TEST
-        if(vw_available > 0)
+        if (vw_available > 0)
             self.vw_index = 8;
 #endif
 	}
@@ -1096,7 +1096,14 @@ void W_SetCurrentAmmo ()
 		self.currentammo = 0;
 		self.weaponmodel = "";
 		self.weaponframe = 0;
+#ifdef VWEP_TEST
+		self.vw_index = 0;
+#endif
 	}
+#ifdef VWEP_TEST
+	if (!vw_enabled || self.invisible_finished)
+		self.vw_index = 0;
+#endif
 }
 
 float W_BestWeapon ()
