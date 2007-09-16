@@ -670,6 +670,34 @@ setuptexture:
 	return glt->texnum;
 }
 
+// filename is without extension
+byte *GL_LoadImagePixels (char *filename, int *width, int *height)
+{
+	char	extname[MAX_QPATH], *c;
+	byte *data;
+
+#ifdef WITH_PNG
+	snprintf (extname, sizeof(extname), "%s.png", filename);
+	for (c = extname; *c; c++)
+		if (*c == '*')
+			*c = '#';
+	data = Image_LoadPNG (NULL, extname, 0, 0);
+	if (data) {
+		extern int image_width, image_height;
+		*width = image_width;
+		*height = image_height;
+		return data;
+	}
+	return NULL;
+#endif
+
+	snprintf (extname, sizeof(extname), "%s.tga", filename);
+	for (c = extname; *c; c++)
+		if (*c == '*')
+			*c = '#';
+	LoadTGA (extname, &data, width, height);
+	return data;
+}
 
 int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int matchheight, int mode)
 {
@@ -677,10 +705,6 @@ int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int m
 	byte *data;
 //	gltexture_t *gltexture;
 	int width, height;
-	char	extname[MAX_QPATH], *c;
-
-//	if (no24bit)
-//		return 0;
 
 	if (!identifier)
 		identifier = filename;
@@ -696,29 +720,10 @@ int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int m
 	}
 #endif 
 
-#ifdef WITH_PNG
-	snprintf (extname, sizeof(extname), "%s.png", filename);
-	for (c = extname; *c; c++)
-		if (*c == '*')
-			*c = '#';
-	data = Image_LoadPNG (NULL, extname, 0, 0);
-	if (data) {
-		extern int image_width, image_height;
-		width = image_width;
-		height = image_height;
-		goto ok;
-	}
-#endif
-
-	snprintf (extname, sizeof(extname), "%s.tga", filename);
-	for (c = extname; *c; c++)
-		if (*c == '*')
-			*c = '#';
-	LoadTGA (extname, &data, &width, &height);
+	data = GL_LoadImagePixels (filename, &width, &height);
 	if (!data)
 		return 0;
 
-ok:
 	texnum = GL_LoadTexture32 (identifier, width, height, data, mode);
 
 	Q_free (data);

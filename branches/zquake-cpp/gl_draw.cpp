@@ -391,7 +391,7 @@ static int LoadCharsetImage (char *filename)
 	int texnum;
 	int i;
 
-	LoadTGA (filename, &pic, &width, &height);
+	pic = GL_LoadImagePixels(filename, &width, &height);
 	if (!pic)
 		return 0;
 
@@ -498,7 +498,7 @@ static void R_LoadCharsets (void)
 	// always load the conchars lump, because we need the pixels for DrawCharToSnap
 	char_textures[0] = LoadCharsetFromWadOrLmp ("conchars", &draw_chars);
 	// but use a higher resolution image if available
-	t = LoadCharsetImage ("charset.tga");
+	t = LoadCharsetImage ("charset");
 	if (t)
 		char_textures[0] = t;
 	if (!char_textures[0])
@@ -506,7 +506,7 @@ static void R_LoadCharsets (void)
 
 	// load Unicode charsets
 	// for now we only try the cyrillic range
-	char_textures[1] = LoadCharsetImage ("charset-cyr.tga");
+	char_textures[1] = LoadCharsetImage ("charset-cyr");
 	if (!char_textures[1])
 		char_textures[1] = LoadCharsetFromWadOrLmp ("conchars-cyr", NULL);
 	if (char_textures[1])
