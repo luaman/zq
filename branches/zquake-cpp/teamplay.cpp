@@ -1002,6 +1002,32 @@ void TP_LoadLocFile_f (void)
 	TP_LoadLocFile (Cmd_Argv(1), false);
 }
 
+typedef struct locmacro_s
+{
+	char *macro;
+	char *val;
+} locmacro_t;
+
+static locmacro_t locmacros[] = {
+                                    {"ssg", "ssg"},
+                                    {"ng", "ng"},
+                                    {"sng", "sng"},
+                                    {"gl", "gl"},
+                                    {"rl", "rl"},
+                                    {"lg", "lg"},
+                                    {"separator", "-"},
+                                    {"ga", "ga"},
+                                    {"ya", "ya"},
+                                    {"ra", "ra"},
+                                    {"quad", "quad"},
+                                    {"pent", "pent"},
+                                    {"ring", "ring"},
+                                    {"suit", "suit"},
+                                    {"mh", "mega"},
+                                };
+
+#define NUM_LOCMACROS	(sizeof(locmacros) / sizeof(locmacros[0]))
+
 char *TP_LocationName (vec3_t location)
 {
 	int		i, minnum;
@@ -1028,8 +1054,46 @@ char *TP_LocationName (vec3_t location)
 		}
 	}
 
+	char *in, *out, *value;
+	cvar_t *cvar;
+	static char	newbuf[MAX_LOC_NAME];
+
+	newbuf[0] = 0;
+	out = newbuf;
+	in = locdata[minnum].name;
+	while (*in && out - newbuf < sizeof(newbuf) - 1) {
+		if (!Q_strnicmp(in, "$loc_name_", 10)) {
+			in += 10;
+			for (i = 0; i < NUM_LOCMACROS; i++) {
+				if (!Q_strnicmp(in, locmacros[i].macro, strlen(locmacros[i].macro))) {
+					if ((cvar = Cvar_Find(va("loc_name_%s", locmacros[i].macro))))
+						value = cvar->string;
+					else
+						value = locmacros[i].val;
+					if (out - newbuf >= sizeof(newbuf) - strlen(value) - 1)
+						goto done_locmacros;
+					strcpy(out, value);
+					out += strlen(value);
+					in += strlen(locmacros[i].macro);
+					break;
+				}
+			}
+			if (i == NUM_LOCMACROS) {
+				if (out - newbuf >= sizeof(newbuf) - 10 - 1)
+					goto done_locmacros;
+				strcpy(out, "$loc_name_");
+				out += 10;
+			}
+		} else {
+			*out++ = *in++;
+		}
+	}
+done_locmacros:
+	*out = 0;
+
+	buf[0] = 0;
 	recursive = true;
-	Cmd_ExpandString (locdata[minnum].name, buf);
+	Cmd_ExpandString(newbuf, buf);
 	recursive = false;
 
 	return buf;
