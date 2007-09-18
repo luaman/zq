@@ -76,6 +76,7 @@ cvar_t	r_dynamic = {"r_dynamic","1"};
 cvar_t	r_novis = {"r_novis","0"};
 cvar_t	r_netgraph = {"r_netgraph","0"};
 cvar_t	r_fullbrightSkins = {"r_fullbrightSkins", "1", CVAR_ARCHIVE};
+cvar_t	r_fullbrightModels = {"r_fullbrightModels", "0", CVAR_ARCHIVE};
 cvar_t	r_fastsky = {"r_fastsky", "0", CVAR_ARCHIVE};
 cvar_t	r_skycolor = {"r_skycolor", "4", CVAR_ARCHIVE};
 cvar_t	r_fastturb = {"r_fastturb", "0", CVAR_ARCHIVE};
@@ -627,6 +628,7 @@ void R_Init (unsigned char *palette)
 	Cvar_Register (&r_speeds);
 	Cvar_Register (&r_netgraph);
 	Cvar_Register (&r_fullbrightSkins);
+	Cvar_Register (&r_fullbrightModels);
 	Cvar_Register (&r_skycolor);
 	Cvar_Register (&r_fastsky);
 	Cvar_Register (&r_fastturb);
