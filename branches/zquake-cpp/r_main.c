@@ -126,7 +126,8 @@ cvar_t	r_maxedges = {"r_maxedges", "0"};
 cvar_t	r_numedges = {"r_numedges", "0"};
 cvar_t	r_aliastransbase = {"r_aliastransbase", "200"};
 cvar_t	r_aliastransadj = {"r_aliastransadj", "100"};
-cvar_t	r_fullbrightSkins = {"r_fullbrightSkins","1"};
+cvar_t	r_fullbrightSkins = {"r_fullbrightSkins", "1", CVAR_ARCHIVE};
+cvar_t	r_fullbrightModels = {"r_fullbrightModels", "0", CVAR_ARCHIVE};
 
 // FIXME, reload & rebuild the palette stuff on gamedir changes
 unsigned char	r_palette[768];
@@ -225,6 +226,7 @@ void R_Init (unsigned char *palette)
 	Cvar_Register (&r_aliastransbase);
 	Cvar_Register (&r_aliastransadj);
 	Cvar_Register (&r_fullbrightSkins);
+	Cvar_Register (&r_fullbrightModels);
 
 	Cvar_SetValue (&r_maxedges, (float)NUMSTACKEDGES);
 	Cvar_SetValue (&r_maxsurfs, (float)NUMSTACKSURFACES);

@@ -93,6 +93,7 @@ extern cvar_t	r_reportedgeout;
 extern cvar_t	r_maxedges;
 extern cvar_t	r_numedges;
 extern cvar_t	r_fullbrightSkins;
+extern cvar_t	r_fullbrightModels;
 
 #define XCENTERING	(1.0 / 2.0)
 #define YCENTERING	(1.0 / 2.0)
