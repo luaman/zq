@@ -662,7 +662,7 @@ void ED_ParseGlobals (char *data)
 		if (!data)
 			Host_Error ("ED_ParseEntity: EOF without closing brace");
 
-		strcpy (keyname, com_token);
+		strlcpy (keyname, com_token, sizeof(keyname));
 
 	// parse value	
 		data = COM_Parse (data);
@@ -749,7 +749,7 @@ qbool ED_ParseEpair (void *base, ddef_t *key, char *s)
 		break;
 		
 	case ev_vector:
-		strcpy (string, s);
+		strlcpy (string, s, sizeof(string));
 		v = string;
 		w = string;
 		for (i=0 ; i<3 ; i++)
@@ -838,7 +838,7 @@ else
 if (!strcmp(com_token, "light"))
 	strcpy (com_token, "light_lev");	// hack for single light def
 
-		strcpy (keyname, com_token);
+		strlcpy (keyname, com_token, sizeof(keyname));
 		
 	// parse value	
 		data = COM_Parse (data);
@@ -875,7 +875,7 @@ if (!strcmp(com_token, "light"))
 if (anglehack)
 {
 char	temp[32];
-strcpy (temp, com_token);
+strlcpy (temp, com_token, sizeof(temp));
 sprintf (com_token, "0 %s 0", temp);
 }
 
