@@ -119,7 +119,7 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int pose, int oldpose, flo
 			// normals and vertexes come from the frame list
 			float tmp = LerpFloat(shadedots[verts->lightnormalindex], shadedots[oldverts->lightnormalindex], blerp);
 			for (i = 0; i < 3; i++) {
-				l_v[i] = (tmp * shadelight_v[i] + ambientlight_v[i]) >> 8;
+				l_v[i] = (tmp * shadelight_v[i] + ambientlight_v[i]) / 256.0;
 
 				if (l_v[i] > 1)
 					l_v[i] = 1;
