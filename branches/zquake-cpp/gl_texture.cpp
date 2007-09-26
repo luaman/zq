@@ -688,7 +688,6 @@ byte *GL_LoadImagePixels (char *filename, int *width, int *height)
 		*height = image_height;
 		return data;
 	}
-	return NULL;
 #endif
 
 	snprintf (extname, sizeof(extname), "%s.tga", filename);
