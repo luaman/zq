@@ -2850,6 +2850,31 @@ void PF_setpause (void)
 		SV_TogglePause (false, "");
 }
 
+// a la DP_QC_BOTCLIENT
+void PF_clienttype (void)
+{
+	const int CLIENTTYPE_DISCONNECTED = 0;
+	const int CLIENTTYPE_REAL = 1;
+	const int CLIENTTYPE_BOT = 2;
+	const int CLIENTTYPE_NOTACLIENT = 3; 
+
+	int edictnum = G_EDICTNUM(OFS_PARM0);
+
+	int retv;
+	if (edictnum >= 1 && edictnum <= MAX_CLIENTS) {
+		if (svs.clients[edictnum].bot)
+			retv = CLIENTTYPE_BOT;
+		else if (svs.clients[edictnum].state >= cs_connected /* or cs_spawned? */)
+			retv = CLIENTTYPE_REAL;
+		else
+			retv = CLIENTTYPE_DISCONNECTED;
+	}
+	else
+		retv = CLIENTTYPE_NOTACLIENT;
+
+	G_FLOAT(OFS_RETURN) = retv;
+}
+
 //=============================================================================
 
 static builtin_t std_builtins[] =
@@ -2977,6 +3002,7 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {118, PF_strzone},		// string(string s) strzone							= #118;
 {119, PF_strunzone},	// void(string s) strunzone							= #119;
 {448, PF_cvar_string},	// string(string varname) cvar_string				= #448;
+{455, PF_clienttype},	// float(entity client) clienttype					= #455;
 {530, PF_soundtoclient},	// void(entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
 {531, PF_setpause},		// void(float pause) setpause						= #531;
 {532, PF_precache_vwep_model},// float(string model) precache_vwep_model	= #532;
