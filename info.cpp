@@ -7,6 +7,9 @@
 using namespace std;
 
 bool Info::set (string key, string value) {
+	if (key == "")
+		return false;
+
 	if (key.find('\0') != string::npos || value.find('\0') != string::npos) {
 		assert (!"key or value with a \0");
 		return false;
