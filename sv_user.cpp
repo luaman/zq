@@ -1931,9 +1931,9 @@ void SV_RunCmd (usercmd_t *ucmd)
 		ucmd->impulse = sv_player->v.impulse;
 		ucmd->buttons = (sv_player->v.button0 ? 1 : 0) | (sv_player->v.button2 ? 2 : 0) | (sv_player->v.button1 ? 4 : 0);
 
-		ucmd->forwardmove = fofs_forwardmove ? EdictFieldFloat(sv_player, fofs_forwardmove) : 0;
-		ucmd->sidemove = fofs_sidemove ? EdictFieldFloat(sv_player, fofs_sidemove) : 0;
-		ucmd->upmove = fofs_upmove ? EdictFieldFloat (sv_player, fofs_upmove) : 0;
+		ucmd->forwardmove = fofs_movement ? EdictFieldFloat(sv_player, fofs_movement) : 0;
+		ucmd->sidemove = fofs_movement ? EdictFieldFloat(sv_player, fofs_movement + 4) : 0;
+		ucmd->upmove = fofs_movement ? EdictFieldFloat (sv_player, fofs_movement + 8) : 0;
 
 		SV_RunThink (sv_player);
 	}

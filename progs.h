@@ -178,7 +178,7 @@ extern func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
 extern func_t GE_ClientCommand, GE_ConsoleCommand, GE_PausedTic, GE_ShouldPause;
 
 extern int	fofs_gravity, fofs_maxspeed, fofs_items2;
-extern int	fofs_forwardmove, fofs_sidemove, fofs_upmove;
+extern int	fofs_movement;
 extern int	fofs_vw_index;
 extern int	fofs_buttonX[8-3];
 
