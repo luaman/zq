@@ -428,6 +428,30 @@ void SV_ServerinfoChanged (char *key, char *str)
 	}
 }
 
+bool SV_ChangeServerinfo (const string key, const string value)
+{
+	if (key == "maxpitch" || key == "minpitch") {
+		Cvar_Set (Cvar_Find(va("sv_%s", key.c_str())), value.c_str());
+		return true;		// cvar callbacks will take care of updating serverinfo
+	}
+
+	svs.info.set(key, value);
+
+	// if the key is also a serverinfo cvar, change it too
+	cvar_t *var = Cvar_Find(key.c_str());
+	if (var && (var->flags & CVAR_SERVERINFO))
+	{
+		// a hack - strip the serverinfo flag so that the Cvar_Set
+		// doesn't trigger SV_ServerinfoChanged
+		var->flags &= ~CVAR_SERVERINFO;
+		Cvar_Set (var, Cmd_Argv(2));
+		var->flags |= CVAR_SERVERINFO;		// put it back
+	}
+
+	// FIXME, don't send if the key hasn't changed
+	SV_SendServerInfoChange ((char *)key.c_str(), (char *)value.c_str());
+	return true;
+}
 
 /*
 ===========
@@ -438,9 +462,6 @@ Examine or change the serverinfo string
 */
 void SV_Serverinfo_f (void)
 {
-	cvar_t	*var;
-	char	*key, *value;
-
 	if (Cmd_Argc() == 1)
 	{
 		Com_Printf ("Server info settings:\n");
@@ -454,8 +475,8 @@ void SV_Serverinfo_f (void)
 		return;
 	}
 
-	key = Cmd_Argv(1);
-	value = Cmd_Argv(2);
+	char *key = Cmd_Argv(1);
+	char *value = Cmd_Argv(2);
 
 	if (key[0] == '*')
 	{
@@ -463,26 +484,7 @@ void SV_Serverinfo_f (void)
 		return;
 	}
 
-	if (!strcmp(key, "maxpitch") || !strcmp(Cmd_Argv(1), "minpitch")) {
-		Cvar_Set (Cvar_Find(va("sv_%s", key)), value);
-		return;		// cvar callbacks will take care of updating serverinfo
-	}
-
-	svs.info.set(key, value);
-
-	// if the key is also a serverinfo cvar, change it too
-	var = Cvar_Find (key);
-	if (var && (var->flags & CVAR_SERVERINFO))
-	{
-		// a hack - strip the serverinfo flag so that the Cvar_Set
-		// doesn't trigger SV_ServerinfoChanged
-		var->flags &= ~CVAR_SERVERINFO;
-		Cvar_Set (var, Cmd_Argv(2));
-		var->flags |= CVAR_SERVERINFO;		// put it back
-	}
-
-	// FIXME, don't send if the key hasn't changed
-	SV_SendServerInfoChange (key, value);
+	SV_ChangeServerinfo (key, value);
 }
 
 
