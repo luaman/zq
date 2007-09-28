@@ -20,23 +20,23 @@ void CL_KeyMove ()
 
 	if (self.keys != self.oldkeys)
 	{
-		self.forwardmove = self.sidemove = self.upmove = 0;
-		self.sidemove = self.sidemove + (350 * CL_KeyState(KEY_MOVERIGHT));
-		// 350 is the default cl_sidespeed
-		self.sidemove = self.sidemove - (350 * CL_KeyState(KEY_MOVELEFT));
-		// 350 is the default cl_sidespeed
-		self.forwardmove = self.forwardmove + (200 * CL_KeyState(KEY_MOVEFORWARD));
+		self.movement = '0 0 0';
+		self.movement_x = self.movement_x + (200 * CL_KeyState(KEY_MOVEFORWARD));
 		// 200 is the default cl_forwardspeed
-		self.forwardmove = self.forwardmove - (200 * CL_KeyState(KEY_MOVEBACK));
+		self.movement_x = self.movement_x - (200 * CL_KeyState(KEY_MOVEBACK));
 		// 200 is the default cl_backspeed
-		self.upmove = self.upmove + (200 * CL_KeyState(KEY_MOVEUP));
+		self.movement_y = self.movement_y + (350 * CL_KeyState(KEY_MOVERIGHT));
+		// 350 is the default cl_sidespeed
+		self.movement_y = self.movement_y - (350 * CL_KeyState(KEY_MOVELEFT));
+		// 350 is the default cl_sidespeed
+		self.movement_z = self.movement_z + (200 * CL_KeyState(KEY_MOVEUP));
 		// 200 is the default cl_upspeed
-		self.upmove = self.upmove - (200 * CL_KeyState(KEY_MOVEDOWN));
+		self.movement_z = self.movement_z - (200 * CL_KeyState(KEY_MOVEDOWN));
 		// 200 is the default cl_upspeed
 		if (!self.b_aiflags & AI_PRECISION) {
-			self.forwardmove = self.forwardmove * 2;
-			self.sidemove = self.sidemove * 2;
-			self.upmove = self.upmove * 2;
+			self.movement_x = self.movement_x * 2;
+			self.movement_y = self.movement_y * 2;
+			self.movement_z = self.movement_z * 2;
 		}
 		// 2 is the default cl_movespeedkey & bot always has +speed
 	}
