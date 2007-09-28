@@ -2644,6 +2644,42 @@ static void PF_strunzone (void)
 	pr_strtbl[-num] = pr_strings;
 }
 
+// ZQ_SETINFO
+extern bool SV_ChangeServerinfo (const string key, const string value);
+static void PF_setinfo (void)
+{
+	int entnum;
+	char *key, *value;
+
+	entnum = G_EDICTNUM(OFS_PARM0);
+	key = G_STRING(OFS_PARM1);
+	value = G_STRING(OFS_PARM2);
+
+	if (!entnum) {
+		// setinfo on world changes the serverinfo
+		if (key[0] == '*')
+			G_FLOAT(OFS_RETURN) = false;
+		else
+			G_FLOAT(OFS_RETURN) = SV_ChangeServerinfo (key, value);
+		return;
+	}
+
+	if (entnum < 1 || entnum > MAX_CLIENTS)
+		PR_RunError ("Entity is neither world nor a client");
+
+	G_FLOAT(OFS_RETURN) = svs.clients[entnum-1].userinfo.set(key, value);
+	if (!strcmp(key, "*spectator"))
+		svs.clients[entnum-1].spectator = value[0] ? true : false;
+
+	// FIXME?
+	SV_ExtractFromUserinfo (&svs.clients[entnum-1]);
+
+	// FIXME
+	MSG_WriteByte (&sv.reliable_datagram, svc_setinfo);
+	MSG_WriteByte (&sv.reliable_datagram, entnum - 1);
+	MSG_WriteString (&sv.reliable_datagram, key);
+	MSG_WriteString (&sv.reliable_datagram, value);
+}
 
 /*
 ==============
@@ -2674,6 +2710,7 @@ static void PF_checkextension (void)
 		"ZQ_QC_PARTICLE",
 		"ZQ_QC_STRINGS",
 		"ZQ_QC_TOKENIZE",
+		"ZQ_SETINFO",
 		"ZQ_SOUNDTOCLIENT",
 		"ZQ_TESTBOT",
 		"ZQ_VWEP",
@@ -2707,33 +2744,6 @@ static void PF_testbot (void)
 	edict_t	*ed;
 	ed = SV_CreateBot (G_STRING(OFS_PARM0));
 	RETURN_EDICT(ed);
-}
-
-
-static void PF_setinfo (void)
-{
-	int entnum;
-	char *key, *value;
-
-	entnum = G_EDICTNUM(OFS_PARM0);
-
-	if (entnum < 1 || entnum > MAX_CLIENTS)
-		PR_RunError ("Entity is not a client");
-
-	key = G_STRING(OFS_PARM1);
-	value = G_STRING(OFS_PARM2);
-
-	svs.clients[entnum-1].userinfo.set(key, value);
-	svs.clients[entnum-1].spectator = value[0] ? true : false;
-
-	// FIXME?
-	SV_ExtractFromUserinfo (&svs.clients[entnum-1]);
-
-	// FIXME
-	MSG_WriteByte (&sv.reliable_datagram, svc_setinfo);
-	MSG_WriteByte (&sv.reliable_datagram, entnum - 1);
-	MSG_WriteString (&sv.reliable_datagram, key);
-	MSG_WriteString (&sv.reliable_datagram, value);
 }
 // <-- Tonik's experiments
 
@@ -3006,6 +3016,7 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {530, PF_soundtoclient},	// void(entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
 {531, PF_setpause},		// void(float pause) setpause						= #531;
 {532, PF_precache_vwep_model},// float(string model) precache_vwep_model	= #532;
+{533, PF_setinfo},		// float(entity e, string key, string value)		= #533;
 
 // Experimental and/or deprecated:
 {0x5a08, PF_soundtoclient},
