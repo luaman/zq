@@ -53,7 +53,7 @@ func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
 func_t GE_ClientCommand, GE_ConsoleCommand, GE_PausedTic, GE_ShouldPause;
 
 int		fofs_maxspeed, fofs_gravity, fofs_items2;
-int		fofs_forwardmove, fofs_sidemove, fofs_upmove;
+int		fofs_movement;
 int		fofs_vw_index;
 int		fofs_buttonX[8-3];
 
@@ -1197,9 +1197,7 @@ dm_use_progs:
 	fofs_maxspeed = ED_FindFieldOffset ("maxspeed");
 	fofs_gravity = ED_FindFieldOffset ("gravity");
 	fofs_items2 = ED_FindFieldOffset ("items2");
-	fofs_forwardmove = ED_FindFieldOffset ("forwardmove");
-	fofs_sidemove = ED_FindFieldOffset ("sidemove");
-	fofs_upmove = ED_FindFieldOffset ("upmove");
+	fofs_movement = ED_FindFieldOffset ("movement");
 	fofs_vw_index = ED_FindFieldOffset ("vw_index");
 	for (i = 3; i < 8; i++)
 		fofs_buttonX[i-3] = ED_FindFieldOffset(va("button%i", i));
