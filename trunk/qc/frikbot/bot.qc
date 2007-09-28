@@ -51,7 +51,7 @@ for all variables in the bot...
 .entity	current_way;
 .vector	b_angle, mouse_emu, obs_dir;
 .vector	b_dir;
-.float	forwardmove, sidemove, upmove;
+.vector movement;
 .vector	dyn_dest;
 .float	search_time;
 
