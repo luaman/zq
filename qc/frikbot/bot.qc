@@ -122,6 +122,14 @@ entity		route_table;
 entity 		player_head, way_head;
 float		busy_waypoints;
 
+// returned by clienttype()
+const float CLIENTTYPE_DISCONNECTED = 0;
+const float CLIENTTYPE_REAL = 1;
+const float CLIENTTYPE_BOT = 2;
+const float CLIENTTYPE_NOTACLIENT = 3; 
+
+// ------- Builtins ----------
+float(entity client) clienttype = #455;
 
 // ------- Functions exported to the engine ----------
 void	BotConnect ();
@@ -234,7 +242,7 @@ void ClientConnected ()
 	self._next = player_head;
 	player_head = self;
 
- 	if (!stof(infokey(self, "*bot")))
+	if (clienttype(self) != CLIENTTYPE_BOT)
 		self.ishuman = true;
 }
 
