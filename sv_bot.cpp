@@ -44,10 +44,7 @@ void Bot_Spawn_And_Begin (client_t *cl)
 	// call the spawn function
 	pr_global_struct->time = sv.time;
 	pr_global_struct->self = EDICT_TO_PROG(ent);
-	if (BotConnect)
-		PR_ExecuteProgram (BotConnect);
-	else
-		PR_ExecuteProgram (PR_GLOBAL(ClientConnect));
+	PR_ExecuteProgram (PR_GLOBAL(ClientConnect));
 
 	// actually spawn the player
 	pr_global_struct->time = sv.time;
@@ -119,10 +116,7 @@ void SV_RemoveBot (client_t *cl)
 			// call the prog function for removing a client
 			// this will set the body to a dead frame, among other things
 			pr_global_struct->self = EDICT_TO_PROG(cl->edict);
-			if (BotDisconnect)
-				PR_ExecuteProgram (BotDisconnect);
-			else
-				PR_ExecuteProgram (PR_GLOBAL(ClientDisconnect));
+			PR_ExecuteProgram (PR_GLOBAL(ClientDisconnect));
 		}
 		else if (SpectatorDisconnect)
 		{
