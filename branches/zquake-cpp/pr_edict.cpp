@@ -49,7 +49,6 @@ static int pr_globaloffsetpatch_nq[62] = {0,0,0,0,0,666,-4,-4,8,8,
 int		type_size[8] = {1,sizeof(void *)/4,1,3,1,1,sizeof(void *)/4,sizeof(void *)/4};
 
 func_t SpectatorConnect, SpectatorThink, SpectatorDisconnect;
-func_t BotConnect, BotDisconnect, BotPreThink, BotPostThink;
 func_t GE_ClientCommand, GE_ConsoleCommand, GE_PausedTic, GE_ShouldPause;
 
 int		fofs_maxspeed, fofs_gravity, fofs_items2;
@@ -1184,10 +1183,6 @@ dm_use_progs:
 	SpectatorConnect = ED_FindFunctionOffset ("SpectatorConnect");
 	SpectatorThink = ED_FindFunctionOffset ("SpectatorThink");
 	SpectatorDisconnect = ED_FindFunctionOffset ("SpectatorDisconnect");
-	BotConnect = ED_FindFunctionOffset ("BotConnect");
-	BotDisconnect = ED_FindFunctionOffset ("BotDisconnect");
-	BotPreThink = ED_FindFunctionOffset ("BotPreThink");
-	BotPostThink = ED_FindFunctionOffset ("BotPostThink");
 	GE_ClientCommand = ED_FindFunctionOffset ("GE_ClientCommand");
 	GE_ConsoleCommand = ED_FindFunctionOffset ("GE_ConsoleCommand");
 	GE_PausedTic = ED_FindFunctionOffset ("GE_PausedTic");

@@ -1889,6 +1889,25 @@ void SV_PreRunCmd(void)
 	memset(playertouch, 0, sizeof(playertouch));
 }
 
+// just to clean up SV_RunCmd a bit
+static void ApplyViewAngles (usercmd_t *ucmd)
+{
+	// clamp view angles
+	ucmd->angles[PITCH] = bound(sv_minpitch.value, ucmd->angles[PITCH], sv_maxpitch.value);
+	if (!sv_player->v.fixangle)
+		VectorCopy (ucmd->angles, sv_player->v.v_angle);
+
+	// model angles
+	// show 1/3 the pitch angle and all the roll angle	
+	if (sv_player->v.health > 0) {
+		if (!sv_player->v.fixangle) {
+			sv_player->v.angles[PITCH] = -sv_player->v.v_angle[PITCH]/3;
+			sv_player->v.angles[YAW] = sv_player->v.v_angle[YAW];
+		}
+		sv_player->v.angles[ROLL] = 0;
+	}
+}
+
 /*
 ===========
 SV_RunCmd
@@ -1915,31 +1934,9 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	sv_frametime = ucmd->msec * 0.001;
 
-	if (sv_client->bot)
+	if (!sv_client->bot)
 	{
-		// bots make their decisions here
-		PR_GLOBAL(frametime) = sv_frametime;
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(sv_player);
-		if (BotPreThink)
-			PR_ExecuteProgram (BotPreThink);
-		else
-			PR_ExecuteProgram (PR_GLOBAL(PlayerPreThink));
-
-		// create a move command
-		VectorCopy (sv_player->v.v_angle, ucmd->angles);
-		ucmd->impulse = sv_player->v.impulse;
-		ucmd->buttons = (sv_player->v.button0 ? 1 : 0) | (sv_player->v.button2 ? 2 : 0) | (sv_player->v.button1 ? 4 : 0);
-
-		ucmd->forwardmove = fofs_movement ? EdictFieldFloat(sv_player, fofs_movement) : 0;
-		ucmd->sidemove = fofs_movement ? EdictFieldFloat(sv_player, fofs_movement + 4) : 0;
-		ucmd->upmove = fofs_movement ? EdictFieldFloat (sv_player, fofs_movement + 8) : 0;
-
-		SV_RunThink (sv_player);
-	}
-	else
-	{
-		// copy humans' intentions to progs
+		// copy the human's intentions to progs
 		sv_player->v.button0 = ucmd->buttons & 1;
 		sv_player->v.button2 = (ucmd->buttons >> 1) & 1;
 		sv_player->v.button1 = (ucmd->buttons >> 2) & 1;
@@ -1949,27 +1946,10 @@ void SV_RunCmd (usercmd_t *ucmd)
 				EdictFieldFloat (sv_player, fofs_buttonX[i-3]) = (ucmd->buttons >> i) & 1;
 		if (ucmd->impulse)
 			sv_player->v.impulse = ucmd->impulse;
+		ApplyViewAngles (ucmd);
 	}
 
-	// clamp view angles
-	if (ucmd->angles[PITCH] > sv_maxpitch.value)
-		ucmd->angles[PITCH] = sv_maxpitch.value;
-	if (ucmd->angles[PITCH] < sv_minpitch.value)
-		ucmd->angles[PITCH] = sv_minpitch.value;
-	if (!sv_player->v.fixangle)
-		VectorCopy (ucmd->angles, sv_player->v.v_angle);
-
-	// model angles
-	// show 1/3 the pitch angle and all the roll angle	
-	if (sv_player->v.health > 0) {
-		if (!sv_player->v.fixangle) {
-			sv_player->v.angles[PITCH] = -sv_player->v.v_angle[PITCH]/3;
-			sv_player->v.angles[YAW] = sv_player->v.v_angle[YAW];
-		}
-		sv_player->v.angles[ROLL] = 0;
-	}
-
-	if (!sv_client->spectator && !sv_client->bot)
+	if (!sv_client->spectator)
 	{
 		int	oldflags;
 		vec3_t	oldvelocity;
@@ -1989,16 +1969,26 @@ void SV_RunCmd (usercmd_t *ucmd)
 			sv_player->v.teleport_time = old_teleport_time;
 			VectorCopy (oldvelocity, sv_player->v.velocity);
 		} else
-
 		if ((oldflags & FL_ONGROUND) && oldvelocity[2] < 0 && sv_player->v.velocity[2] == 0
-			&& oldvelocity[0] == sv_player->v.velocity[0]
-			&& oldvelocity[1] == sv_player->v.velocity[1])
+			&& oldvelocity[0] == sv_player->v.velocity[0] && oldvelocity[1] == sv_player->v.velocity[1])
 		{
 			// don't let KTeams mess with physics
 			sv_player->v.velocity[2] = oldvelocity[2];
 		}
 
 		SV_RunThink (sv_player);
+	}
+
+	if (sv_client->bot)
+	{
+		// create a move command from QC fields
+		VectorCopy (sv_player->v.v_angle, ucmd->angles);
+		ucmd->impulse = sv_player->v.impulse;
+		ucmd->buttons = (sv_player->v.button0 ? 1 : 0) | (sv_player->v.button2 ? 2 : 0) | (sv_player->v.button1 ? 4 : 0);
+		ucmd->forwardmove = fofs_movement ? EdictFieldFloat(sv_player, fofs_movement) : 0;
+		ucmd->sidemove = fofs_movement ? EdictFieldFloat(sv_player, fofs_movement + 4) : 0;
+		ucmd->upmove = fofs_movement ? EdictFieldFloat (sv_player, fofs_movement + 8) : 0;
+		ApplyViewAngles (ucmd);
 	}
 
 	// copy player state to pmove
@@ -2096,10 +2086,7 @@ void SV_PostRunCmd (void)
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);
 		VectorCopy (sv_player->v.velocity, oldvelocity);
 
-		if (sv_client->bot && BotPostThink)
-			PR_ExecuteProgram (BotPostThink);
-		else
-			PR_ExecuteProgram (PR_GLOBAL(PlayerPostThink));
+		PR_ExecuteProgram (PR_GLOBAL(PlayerPostThink));
 
 		if (pr_nqprogs)
 			VectorCopy (oldvelocity, sv_player->v.velocity);
