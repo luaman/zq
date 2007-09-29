@@ -2872,9 +2872,9 @@ void PF_clienttype (void)
 
 	int retv;
 	if (edictnum >= 1 && edictnum <= MAX_CLIENTS) {
-		if (svs.clients[edictnum].bot)
+		if (svs.clients[edictnum-1].bot)
 			retv = CLIENTTYPE_BOT;
-		else if (svs.clients[edictnum].state >= cs_connected /* or cs_spawned? */)
+		else if (svs.clients[edictnum-1].state >= cs_connected /* or cs_spawned? */)
 			retv = CLIENTTYPE_REAL;
 		else
 			retv = CLIENTTYPE_DISCONNECTED;
