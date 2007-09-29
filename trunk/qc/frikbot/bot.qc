@@ -131,14 +131,11 @@ const float CLIENTTYPE_NOTACLIENT = 3;
 // ------- Builtins ----------
 float(entity client) clienttype = #455;
 
-// ------- Functions exported to the engine ----------
+// -------Prototypes------
+
 void	BotConnect ();
 void	BotDisconnect ();
 void	BotPreThink ();
-void	BotPostThink ();
-
-
-// -------Prototypes------
 
 // rankings
 float	ClientBitFlag (float clientno);
@@ -242,8 +239,11 @@ void ClientConnected ()
 	self._next = player_head;
 	player_head = self;
 
-	if (clienttype(self) != CLIENTTYPE_BOT)
+	if (clienttype(self) == CLIENTTYPE_BOT)
+		BotConnect ();
+	else
 		self.ishuman = true;
+
 }
 
 
@@ -255,6 +255,9 @@ void ClientDisconnected ()
 		self._next._last = self._last;
 	if (self._last)
 		self._last._next = self._next;
+
+	if (clienttype(self) == CLIENTTYPE_BOT)
+		BotDisconnect();
 }
 
 /*
@@ -349,11 +352,8 @@ float GetClientNum (entity ent)
 	return num;
 }
 
-// called by the engine instead of ClientConnect for bots
 void BotConnect ()
 {
-	ClientConnect ();
-
 	bot_count = bot_count + 1;
 
 	bot_start_topic(1);
@@ -379,14 +379,12 @@ void BotConnect ()
 // called by the engine instead of ClientDisconnect for bots
 void BotDisconnect ()
 {
-	ClientDisconnect ();
 	bot_count = bot_count - 1;
 }
 
 
 void BotAI ();	// Tonik
 
-// called by the engine instead of PlayerPreThink for bots
 void BotPreThink ()
 {
 	frik_obstacles();
@@ -408,14 +406,6 @@ void BotPreThink ()
 	}
 
 	DynamicWaypoint();
-
-	PlayerPreThink ();
-}
-
-// called by the engine instead of PlayerPostThink for bots
-void BotPostThink ()
-{
-	PlayerPostThink ();		// just call the default function
 }
 
 

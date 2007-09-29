@@ -951,6 +951,11 @@ Called every frame before physics are run
 */
 void PlayerPreThink ()
 {
+#ifdef FRIKBOT
+	if (clienttype(self) == CLIENTTYPE_BOT)
+		BotPreThink ();
+#endif
+
 	if (intermission_running)
 	{
 		IntermissionThink ();   // otherwise a button could be missed between
