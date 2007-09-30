@@ -2481,6 +2481,25 @@ static void PF_cvar_string (void)
 	RETURN_STRING(pr_string_temp);
 }
 
+// DP_REGISTERCVAR
+// float(string name, string value) registercvar = #93;
+// DarkPlaces implementation has an undocumented feature where you can add cvar flags
+// as a third parameter;  I don't see how that can be useful so it's not implemented
+void PF_registercvar (void)
+{
+	char *name, *value;
+
+	name = G_STRING(OFS_PARM0);
+	value = G_STRING(OFS_PARM0);
+
+	if (Cvar_Find(name)) {
+		G_INT(OFS_RETURN) = 0;
+		return;
+	}
+
+	Cvar_Get (name, value, 0);
+	G_INT(OFS_RETURN) = 1;
+}
 
 /*
 =================
@@ -2699,6 +2718,7 @@ static void PF_checkextension (void)
 		"DP_QC_RANDOMVEC",
 		"DP_QC_SINCOSSQRTPOW",
 		"DP_QC_TRACEBOX",
+		"DP_REGISTERCVAR",
 		"QSG_CVARSTRING",
 		"ZQ_CLIENTCOMMAND",
 		"ZQ_INPUTBUTTONS",
@@ -2996,6 +3016,7 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {90, PF_tracebox},		// void (vector v1, vector mins, vector maxs, vector v2, float nomonsters, entity ignore) tracebox = #90;
 {91, PF_randomvec},		// vector() randomvec								= #91;
 ////
+{93, PF_registercvar},	// float(string name, string value) registercvar	= #93;
 {94, PF_min},			// float(float a, float b, ...) min					= #94;
 {95, PF_max},			// float(float a, float b, ...) max					= #95;
 {96, PF_bound},			// float(float min, float value, float max) bound	= #96;
