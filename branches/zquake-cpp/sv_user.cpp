@@ -1705,7 +1705,7 @@ USER CMD EXECUTION
 ===========================================================================
 */
 
-static playermove_t pmove;
+/*static*/ playermove_t pmove;
 
 /*
 ====================
@@ -1713,7 +1713,7 @@ AddLinksToPmove
 
 ====================
 */
-static void AddLinksToPmove ( areanode_t *node )
+void AddLinksToPmove ( areanode_t *node )
 {
 	link_t		*l, *next;
 	edict_t		*check;
@@ -1856,21 +1856,21 @@ static void AddAllEntsToPmove (void)
 
 
 
-int SV_PMTypeForClient (client_t *cl)
+int SV_PMTypeForEntity (edict_t *ent, int extensions)
 {
-	if (cl->edict->v.movetype == MOVETYPE_NOCLIP) {
-		if (cl->extensions & Z_EXT_PM_TYPE_NEW)
+	if (ent->v.movetype == MOVETYPE_NOCLIP) {
+		if (extensions & Z_EXT_PM_TYPE_NEW)
 			return PM_SPECTATOR;
 		return PM_OLD_SPECTATOR;
 	}
 
-	if (cl->edict->v.movetype == MOVETYPE_FLY)
+	if (ent->v.movetype == MOVETYPE_FLY)
 		return PM_FLY;
 
-	if (cl->edict->v.movetype == MOVETYPE_NONE)
+	if (ent->v.movetype == MOVETYPE_NONE)
 		return PM_NONE;
 
-	if (cl->edict->v.health <= 0)
+	if (ent->v.health <= 0)
 		return PM_DEAD;
 
 	return PM_NORMAL;
@@ -1887,7 +1887,7 @@ void SV_PreRunCmd(void)
 }
 
 // just to clean up SV_RunCmd a bit
-static void ApplyViewAngles (usercmd_t *ucmd)
+void ApplyViewAngles (usercmd_t *ucmd)
 {
 	// clamp view angles
 	ucmd->angles[PITCH] = bound(sv_minpitch.value, ucmd->angles[PITCH], sv_maxpitch.value);
@@ -1995,7 +1995,7 @@ void SV_RunCmd (usercmd_t *ucmd)
 	VectorCopy (sv_player->v.v_angle, pmove.angles);
 	pmove.waterjumptime = sv_player->v.teleport_time;
 	pmove.cmd = *ucmd;
-	pmove.pm_type = SV_PMTypeForClient (sv_client);
+	pmove.pm_type = SV_PMTypeForEntity (sv_player, sv_client->extensions);
 	pmove.onground = ((int)sv_player->v.flags & FL_ONGROUND) != 0;
 	pmove.jump_held = sv_client->jump_held;
 #ifndef SERVERONLY
