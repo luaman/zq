@@ -58,11 +58,8 @@ float vw_available;
 #endif
 
 #ifdef FRIKBOT
-entity (string name) testbot = #0x5a0A;
-//void (entity e, string key, string value) setinfo = #0x5a0B;
+entity (string name) spawnbot = #0x5a0A;
 #endif
 
-
-//FIXME, this will be changed
-void (entity e, string key, string value) setinfo = #0x5a0B;
-
+// ZQ_SETINFO
+void (entity e, string key, string value) setinfo = #533;
