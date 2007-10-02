@@ -211,6 +211,10 @@ float GE_ClientCommand (string cmd, string args)
 	else if (cmd == "observe")
 		Cmd_Observe ();
 #endif
+#ifdef FRIKBOT
+	else if (BotClientCommand(cmd, args))
+		return true;
+#endif
 	else
 		return false;
 
