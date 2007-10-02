@@ -2669,6 +2669,8 @@ static void PF_setinfo (void)
 {
 	int entnum;
 	char *key, *value;
+	client_t *cl;
+	qbool success;
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	key = G_STRING(OFS_PARM1);
@@ -2686,14 +2688,23 @@ static void PF_setinfo (void)
 	if (entnum < 1 || entnum > MAX_CLIENTS)
 		PR_RunError ("Entity is neither world nor a client");
 
-	G_FLOAT(OFS_RETURN) = svs.clients[entnum-1].userinfo.set(key, value);
+	cl = &svs.clients[entnum - 1];
+
+	if (key == "name" && value != "")
+		cl->sendinfo = true;
+
+	G_FLOAT(OFS_RETURN) = success = cl->userinfo.set(key, value);
+	if (!success)
+		return;
+
 	if (!strcmp(key, "*spectator"))
-		svs.clients[entnum-1].spectator = value[0] ? true : false;
+		cl->spectator = value[0] ? true : false;
 
-	// FIXME?
-	SV_ExtractFromUserinfo (&svs.clients[entnum-1]);
+	SV_ExtractFromUserinfo (cl);
 
-	// FIXME
+	if (cl->userinfo["name"] == "" || cl->sendinfo)
+		return;
+
 	MSG_WriteByte (&sv.reliable_datagram, svc_setinfo);
 	MSG_WriteByte (&sv.reliable_datagram, entnum - 1);
 	MSG_WriteString (&sv.reliable_datagram, key);
@@ -2762,7 +2773,7 @@ static void PF_checkextension (void)
 static void PF_testbot (void)
 {
 	edict_t	*ed;
-	ed = SV_CreateBot (G_STRING(OFS_PARM0));
+	ed = SV_CreateBot ();
 	RETURN_EDICT(ed);
 }
 // <-- Tonik's experiments

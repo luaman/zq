@@ -1746,7 +1746,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 			break;
 	}
 	
-	if (val.substr(0, cl->name.length()) != cl->name) {
+	if (val.substr(0, cl->name.length()) != cl->name && !cl->bot) {
 		if (!sv_paused.value) {
 			if (!cl->lastnametime || svs.realtime - cl->lastnametime > 5) {
 				cl->lastnamecount = 0;

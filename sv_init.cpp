@@ -169,7 +169,7 @@ void SV_SaveSpawnparms (void)
 		if (sv_client->state != cs_spawned)
 			continue;
 
-		if (sv_client->bot) {
+/*		if (sv_client->bot) {
 			// bots are kicked on map change
 			sv_client->state = cs_free;
 			sv_client->bot = false;
@@ -177,7 +177,7 @@ void SV_SaveSpawnparms (void)
 			sv_client->userinfo.clear();
 			SV_FreeDelayedPackets(sv_client);
 		}
-		else {
+		else*/ {
 			// needs to reconnect
 			sv_client->state = cs_connected;
 		}

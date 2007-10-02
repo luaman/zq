@@ -30,8 +30,6 @@ void Bot_Spawn_And_Begin (client_t *cl)
 	int i;
 	edict_t	*ent = cl->edict;
 
-//	ent->inuse = true;
-
 	// set colormap, name, entgravity and maxspeed
 	SetUpClientEdict (cl, ent);
 
@@ -54,7 +52,7 @@ void Bot_Spawn_And_Begin (client_t *cl)
 	cl->sendinfo = true;
 }
 
-edict_t *SV_CreateBot (char *name)
+edict_t *SV_CreateBot ()
 {
 	int			i, numclients;
 	client_t	*cl, *newcl;
@@ -77,32 +75,23 @@ edict_t *SV_CreateBot (char *name)
 		return sv.edicts;		// all player spots full, return world
 
 	newcl->clear();
-	newcl->state = cs_connected;
+	newcl->state = cs_spawned;
 	newcl->bot = true;
 	newcl->userid = SV_GenerateUserID();
 	newcl->extensions = CLIENT_EXTENSIONS;	// bots always use latest ZQuake :-)
-	newcl->name = ((string)name).substr(0, 31);
 
 	// init a bogus network connection
 	SZ_Init (&newcl->datagram, newcl->datagram_buf, sizeof(newcl->datagram_buf));
 	newcl->datagram.allowoverflow = true;
 	Netchan_Setup (NS_SERVER, &newcl->netchan, net_null, 0);
 
-	newcl->userinfo.set("*bot", "1");
-	newcl->userinfo.set("name", newcl->name);
-
 	// set up the edict
 	ent = EDICT_NUM((newcl - svs.clients) + 1);
-//	ent->inuse = true;
 	newcl->edict = ent;
 
-	Com_DPrintf ("Bot %s connected\n", newcl->name.c_str());
+//	Com_DPrintf ("Bot %s connected\n", newcl->name.c_str());
 
 	SetUpClientEdict (newcl, ent);
-
-	// the bot will spawn next time SV_RunBots is run
-
-//	newcl->sendinfo = true;
 
 	return ent;
 }
@@ -159,15 +148,12 @@ void SV_RunBots (void)
 		if (!cl->bot)
 			continue;
 
-		if (cl->state == cs_connected) {
-			if (!cl->cmdtime /* FIXME, a good idea to check this particular field? */) {
-				// call the progs to get default spawn parms for the new client
-				PR_ExecuteProgram (PR_GLOBAL(SetNewParms));
-				for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
-					cl->spawn_parms[i] = (&PR_GLOBAL(parm1))[i];
-			}
-cl->spectator = false;//FIXME
+		// FIXME FIXME, we get an infinite loop in COM_HullPointContents
+		// if we spawn the bot in one of the first two SV_Physics calls
+		// sv.old_time is a workaround for now
+		if (cl->state == cs_connected && sv.old_time) {
 			Bot_Spawn_And_Begin (cl);
+			continue;
 		}
 
 		if (cl->state != cs_spawned)
