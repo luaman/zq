@@ -199,7 +199,7 @@ void Cmd_Join ()
 /*
 ** ZQ_CLIENTCOMMAND extension
 */
-void GE_ClientCommand (string cmd, string cmdline)
+float GE_ClientCommand (string cmd, string args)
 {
 	if (cmd == "give")
 		Cmd_Give ();
