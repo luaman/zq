@@ -2723,6 +2723,7 @@ static void PF_checkextension (void)
 	static char *supported_extensions[] = {
 		"DP_CON_SET",
 		"DP_HALFLIFE_MAP_CVAR",
+		"DP_MONSTERWALK",
 		"DP_QC_CVAR_STRING",
 		"DP_QC_ETOS",
 		"DP_QC_MINMAXBOUND",

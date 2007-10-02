@@ -812,6 +812,107 @@ void SV_Physics_Step (edict_t *ent)
 	SV_CheckWaterTransition (ent);
 }
 
+void AddLinksToPmove ( areanode_t *node );
+void ApplyViewAngles (usercmd_t *ucmd);
+int SV_PMTypeForEntity (edict_t *ent, int extensions);
+
+// this is very much like SV_RunCmd, should try to merge them?
+void SV_Physics_Walk (edict_t *ent)
+{
+	vec3_t		offset;
+	extern vec3_t player_mins;
+	extern playermove_t pmove;
+	int i, n;
+
+	if (!SV_RunThink(ent))
+		return;
+
+	sv_player = ent;
+
+	// copy player state to pmove
+	VectorSubtract (sv_player->v.mins, player_mins, offset);
+	VectorAdd (sv_player->v.origin, offset, pmove.origin);
+	VectorCopy (sv_player->v.velocity, pmove.velocity);
+	VectorCopy (sv_player->v.v_angle, pmove.angles);
+	pmove.waterjumptime = sv_player->v.teleport_time;
+
+	pmove.cmd.msec = sv_frametime * 1000;
+	usercmd_t *ucmd = &pmove.cmd;
+	VectorCopy (sv_player->v.v_angle, ucmd->angles);
+	ucmd->impulse = sv_player->v.impulse;
+	ucmd->buttons = (sv_player->v.button0 ? 1 : 0) | (sv_player->v.button2 ? 2 : 0) | (sv_player->v.button1 ? 4 : 0);
+	ucmd->forwardmove = fofs_movement ? EdictFieldFloat(sv_player, fofs_movement) : 0;
+	ucmd->sidemove = fofs_movement ? EdictFieldFloat(sv_player, fofs_movement + 4) : 0;
+	ucmd->upmove = fofs_movement ? EdictFieldFloat (sv_player, fofs_movement + 8) : 0;
+	ApplyViewAngles (ucmd);
+
+	pmove.pm_type = SV_PMTypeForEntity (sv_player, -1);
+	pmove.onground = ((int)ent->v.flags & FL_ONGROUND) != 0;
+	pmove.jump_held = !((int)ent->v.flags & 4096 /*FL_JUMPRELEASED*/);
+#ifndef SERVERONLY
+	pmove.jump_msec = 0;
+#endif
+	pmove.wetsuit = (svs.hipnotic && fofs_items2 &&
+		((int)EdictFieldFloat(sv_player, fofs_items2) & 2)) ? true : false;
+
+	// build physent list
+	pmove.numphysent = 1;
+	pmove.physents[0].model = sv.worldmodel;
+	AddLinksToPmove ( sv_areanodes );
+
+	// fill in movevars
+	sv.movevars.entgravity = fofs_gravity ? EdictFieldFloat(ent, fofs_gravity) : 1.0;
+	if (!sv.movevars.entgravity)
+		sv.movevars.entgravity = 1;
+	sv.movevars.maxspeed = fofs_maxspeed ? EdictFieldFloat(ent, fofs_maxspeed) : 0;
+	if (!sv.movevars.maxspeed)
+		sv.movevars.maxspeed = 320.0;
+	sv.movevars.bunnyspeedcap = pm_bunnyspeedcap.value;
+	sv.movevars.ktjump = pm_ktjump.value;
+	sv.movevars.slidefix = (pm_slidefix.value != 0);
+	sv.movevars.airstep = (pm_airstep.value != 0);
+	sv.movevars.pground = (pm_pground.value != 0);
+
+	// do the move
+	PM_PlayerMove (&pmove, &sv.movevars);
+
+	// get player state back out of pmove
+	sv_player->v.flags = ((int)sv_player->v.flags & ~4096) | (pmove.jump_held ? 0 : 4096);
+	sv_player->v.teleport_time = pmove.waterjumptime;
+	if (pr_nqprogs)
+		sv_player->v.flags = ((int)sv_player->v.flags & ~FL_WATERJUMP) | (pmove.waterjumptime ? FL_WATERJUMP : 0);
+	sv_player->v.waterlevel = pmove.waterlevel;
+	sv_player->v.watertype = pmove.watertype;
+
+	if (pmove.onground) {
+		sv_player->v.flags = (int)sv_player->v.flags | FL_ONGROUND;
+		sv_player->v.groundentity = EDICT_TO_PROG(EDICT_NUM(pmove.physents[pmove.groundent].info));
+	}
+	else
+		sv_player->v.flags = (int)sv_player->v.flags & ~FL_ONGROUND;
+
+	VectorSubtract (pmove.origin, offset, sv_player->v.origin);
+	VectorCopy (pmove.velocity, sv_player->v.velocity);
+	VectorCopy (pmove.angles, sv_player->v.v_angle);
+
+
+	// link into place and touch triggers
+	SV_LinkEdict (sv_player, true);
+
+	// touch other objects
+	for (i=0 ; i<pmove.numtouch ; i++) {
+		edict_t *ent;
+
+		n = pmove.physents[pmove.touchindex[i]].info;
+		ent = EDICT_NUM(n);
+		if (!ent->v.touch)
+			continue;
+		pr_global_struct->self = EDICT_TO_PROG(ent);
+		pr_global_struct->other = EDICT_TO_PROG(sv_player);
+		PR_ExecuteProgram (ent->v.touch);
+	}
+}
+
 //============================================================================
 
 void SV_ProgStartFrame (void)
@@ -854,6 +955,9 @@ void SV_RunEntity (edict_t *ent)
 	case MOVETYPE_FLY:
 	case MOVETYPE_FLYMISSILE:
 		SV_Physics_Toss (ent);
+		break;
+	case MOVETYPE_WALK:
+		SV_Physics_Walk (ent);
 		break;
 	default:
 		Host_Error ("SV_Physics: bad movetype %i", (int)ent->v.movetype);			

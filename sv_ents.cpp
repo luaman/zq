@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "server.h"
 #include "pmove.h"
 
-int SV_PMTypeForClient (client_t *cl);
+int SV_PMTypeForEntity (edict_t *ent, int extensions);
 
 //=============================================================================
 
@@ -244,7 +244,7 @@ void SV_WritePlayersToClient (client_t *client, byte *pvs, sizebuf_t *msg)
 
 		// Z_EXT_PM_TYPE protocol extension
 		// encode pm_type and jump_held into pm_code
-		pm_type = SV_PMTypeForClient (cl);
+		pm_type = SV_PMTypeForEntity (cl->edict, cl->extensions);
 		switch (pm_type) {
 		case PM_DEAD:
 			pm_code = PMC_NORMAL;	// plus PF_DEAD
