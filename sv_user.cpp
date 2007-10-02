@@ -1880,13 +1880,10 @@ int SV_PMTypeForClient (client_t *cl)
 ===========
 SV_PreRunCmd
 ===========
-Done before running a player command.  Clears the touch array
+Done before running a player command.
 */
-static byte playertouch[(MAX_EDICTS+7)/8];
-
 void SV_PreRunCmd(void)
 {
-	memset(playertouch, 0, sizeof(playertouch));
 }
 
 // just to clean up SV_RunCmd a bit
@@ -2057,12 +2054,11 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 			n = pmove.physents[pmove.touchindex[i]].info;
 			ent = EDICT_NUM(n);
-			if (!ent->v.touch || (playertouch[n/8]&(1<<(n%8))))
+			if (!ent->v.touch)
 				continue;
 			pr_global_struct->self = EDICT_TO_PROG(ent);
 			pr_global_struct->other = EDICT_TO_PROG(sv_player);
 			PR_ExecuteProgram (ent->v.touch);
-			playertouch[n/8] |= 1 << (n%8);
 		}
 	}
 }
