@@ -469,3 +469,16 @@ void Cmd_RemoveBot ()
 {
 	KickABot ();
 }
+
+
+float BotClientCommand (string cmd, string args)
+{
+	if (cmd == "addbot")
+		Cmd_AddBot("1", "2");
+	else if (cmd == "removebot")
+		Cmd_RemoveBot ();
+	else
+		return false;
+
+	return true;
+}
