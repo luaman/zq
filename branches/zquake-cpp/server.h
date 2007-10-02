@@ -603,7 +603,7 @@ void SV_LoadGame_f (void);
 //
 // sv_bot.c
 //
-edict_t *SV_CreateBot (char *name);
+edict_t *SV_CreateBot ();
 void SV_RemoveBot (client_t *cl);
 void SV_RunBots (void);
 
