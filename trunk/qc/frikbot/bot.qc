@@ -1,8 +1,3 @@
-// !!! TEMPORARY functions for bot testing !!!
-/* entity (string name) testbot = #83; */
-/* void (entity e, string key, string value) setinfo = #84; */
-
-
 void DeveloperLightning (entity e1, entity e2, float flag)
 {
 };
@@ -428,7 +423,7 @@ related functions.
 
 void Cmd_AddBot (string botnum_s, string skill_s)
 {
-	entity bot;
+	entity bot, oself;
 	float whatbot;
 
 /*	float skill;
@@ -440,7 +435,7 @@ void Cmd_AddBot (string botnum_s, string skill_s)
 
 	whatbot = stof(botnum_s);
 
-	bot = testbot("newbot");
+	bot = spawnbot();
 
 	if (!bot)
 	{
@@ -461,6 +456,13 @@ void Cmd_AddBot (string botnum_s, string skill_s)
 
 	tmp = ftos(bot.b_pants);
 	setinfo (bot, "bottomcolor", tmp);
+
+	oself = self;
+	self = bot;
+	SetNewParms ();
+	PutClientInServer ();
+	ClientConnect ();
+	self = oself;
 }
 
 void Cmd_RemoveBot ()
