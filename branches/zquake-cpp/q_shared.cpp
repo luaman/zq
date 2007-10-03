@@ -257,6 +257,28 @@ int vsnprintf(char *buffer, size_t count, const char *format, va_list argptr)
 #endif
 
 
+char *Q_strlwr( char *s1 ) {
+    char	*s;
+
+    s = s1;
+	while ( *s ) {
+		*s = tolower(*s);
+		s++;
+	}
+    return s1;
+}
+
+char *Q_strupr( char *s1 ) {
+    char	*s;
+
+    s = s1;
+	while ( *s ) {
+		*s = toupper(*s);
+		s++;
+	}
+    return s1;
+}
+
 wchar char2wc (char c)
 {
 	return (wchar)(unsigned char)c;

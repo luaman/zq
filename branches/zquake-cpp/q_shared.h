@@ -29,12 +29,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <ctype.h>
 #include <assert.h>
 
+#ifdef __cplusplus
 #include <string>
 #include <vector>
 #include <map>
 #include <iostream>
 using std::string;
 using std::wstring;
+#endif
 
 //#define wchar unsigned short	// 16-bit Unicode char
 #define wchar wchar_t
@@ -154,11 +156,15 @@ float	FloatSwap (float f);
 #define Q_stricmp(s1, s2) strcasecmp((s1), (s2))
 #define Q_strnicmp(s1, s2, n) strncasecmp((s1), (s2), (n))
 #endif
+char	*Q_strlwr( char *s1 );
+char	*Q_strupr( char *s1 );
 
 int	Q_atoi (const char *str);
 float Q_atof (const char *str);
+#ifdef __cplusplus
 inline float Q_atoi (const string str) { return Q_atoi(str.c_str()); }
 inline float Q_atof (const string str) { return Q_atof(str.c_str()); }
+#endif
 char *Q_ftos (float value);		// removes trailing zero chars
 
 wchar char2wc (char c);
