@@ -54,7 +54,10 @@ void Sys_SendKeyEvents (void);
 
 void Sys_LowFPPrecision (void);
 void Sys_HighFPPrecision (void);
-extern "C" void Sys_SetFPCW (void);
+#ifdef __cplusplus
+extern "C"
+#endif
+void Sys_SetFPCW (void);
 
 void Sys_Init (void);
 
