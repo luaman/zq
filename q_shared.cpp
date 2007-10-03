@@ -475,6 +475,35 @@ qbool Q_glob_match (const char *pattern, const char *text)
 
 
 /*
+============
+va
+
+Does a varargs printf into a temp buffer
+2 buffers are used to allow subsequent va calls
+============
+*/
+char *va (char *format, ...)
+{
+	va_list argptr;
+	static char string[2][2048];
+	static int idx = 0;
+	
+	idx = 1 - idx;
+
+	va_start (argptr, format);
+#ifdef _WIN32
+	_vsnprintf (string[idx], sizeof(string[idx]) - 1, format, argptr);
+	string[idx][sizeof(string[idx]) - 1] = '\0';
+#else
+	vsnprintf (string[idx], sizeof(string[idx]), format, argptr);
+#endif // _WIN32
+	va_end (argptr);
+
+	return string[idx];
+}
+
+
+/*
 ==========
 Com_HashKey
 ==========
