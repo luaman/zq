@@ -44,7 +44,7 @@ typedef struct cvar_s
 
 // registers a cvar that already has the name, string, and optionally the
 // flags set
-void Cvar_Register (cvar_t *var);
+EXTERNC void Cvar_Register (cvar_t *var);
 
 // returns existing var or creates a new, dynamic one.  cvarflags will be or'ed in
 cvar_t *Cvar_Get (const char *name, char *string, int cvarflags);
@@ -56,7 +56,7 @@ void Cvar_Set (cvar_t *var, const char *string);
 void Cvar_ForceSet (cvar_t *var, char *string);
 
 // expands value to a string and calls Cvar_Set
-void Cvar_SetValue (cvar_t *var, float value);
+EXTERNC void Cvar_SetValue (cvar_t *var, float value);
 
 // returns 0 if not defined or non-numeric
 float Cvar_Value (char *name);

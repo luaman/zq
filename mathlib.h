@@ -49,7 +49,7 @@ typedef struct mplane_s
 } mplane_t;
 
 
-extern vec3_t vec3_origin;
+EXTERNC extern vec3_t vec3_origin;
 
 #define DEG2RAD( a ) ( ( (a) * M_PI ) / 180.0f )
 #define RAD2DEG( a ) ( ( (a) * 180.0f ) / M_PI )
@@ -67,44 +67,41 @@ extern vec3_t vec3_origin;
 #define VectorNegate(a,b)		(b[0]=-a[0],b[1]=-a[1],b[2]=-a[2])
 #define VectorSet(v, x, y, z)	(v[0]=(x),v[1]=(y),v[2]=(z))
 
-void VectorMA (const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc);
+EXTERNC void VectorMA (const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc);
 
 vec_t _DotProduct (const vec3_t v1, const vec3_t v2);
 void _VectorSubtract (const vec3_t veca, const vec3_t vecb, vec3_t out);
 void _VectorAdd (const vec3_t veca, const vec3_t vecb, vec3_t out);
 void _VectorCopy (const vec3_t in, vec3_t out);
 
-int VectorCompare (const vec3_t v1, const vec3_t v2);
-vec_t VectorLength (const vec3_t v);
-vec_t VectorLengthSquared (const vec3_t v);
-void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross);
-float VectorNormalize (vec3_t v);		// returns vector length
-float VectorNormalize2 (const vec3_t v, vec3_t out);
-void VectorScale (const vec3_t in, vec_t scale, vec3_t out);
+EXTERNC int VectorCompare (const vec3_t v1, const vec3_t v2);
+EXTERNC vec_t VectorLength (const vec3_t v);
+EXTERNC vec_t VectorLengthSquared (const vec3_t v);
+EXTERNC void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross);
+EXTERNC float VectorNormalize (vec3_t v);		// returns vector length
+EXTERNC float VectorNormalize2 (const vec3_t v, vec3_t out);
+EXTERNC void VectorScale (const vec3_t in, vec_t scale, vec3_t out);
 
 #define LerpFloat(from, to, frac) ((from) + (frac)*((to) - (from)))
-void LerpVector (const vec3_t from, const vec3_t to, float frac, vec3_t out);
-void LerpAngles (const vec3_t from, const vec3_t to, float frac, vec3_t out);
+EXTERNC void LerpVector (const vec3_t from, const vec3_t to, float frac, vec3_t out);
+EXTERNC void LerpAngles (const vec3_t from, const vec3_t to, float frac, vec3_t out);
 
 int Q_log2(int val);
 
-void R_ConcatRotations (const float in1[3][3], const float in2[3][3], float out[3][3]);
-void R_ConcatTransforms (const float in1[3][4], const float in2[3][4], float out[3][4]);
+EXTERNC void R_ConcatRotations (const float in1[3][3], const float in2[3][3], float out[3][3]);
+EXTERNC void R_ConcatTransforms (const float in1[3][4], const float in2[3][4], float out[3][4]);
 
-void FloorDivMod (double numer, double denom, int *quotient,
+EXTERNC void FloorDivMod (double numer, double denom, int *quotient,
 		int *rem);
 
-void vectoangles(const vec3_t vec, vec3_t ang);
-void AngleVectors (const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
-void MakeNormalVectors (const vec3_t forward, vec3_t right, vec3_t up);
-#ifdef __cplusplus
-extern "C"
-#endif
-int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
+EXTERNC void vectoangles(const vec3_t vec, vec3_t ang);
+EXTERNC void AngleVectors (const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
+EXTERNC void MakeNormalVectors (const vec3_t forward, vec3_t right, vec3_t up);
+EXTERNC int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
 float	anglemod(float a);
 
-void PerpendicularVector( vec3_t dst, const vec3_t src );
-void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees );
+EXTERNC void PerpendicularVector( vec3_t dst, const vec3_t src );
+EXTERNC void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees );
 
 
 #define BOX_ON_PLANE_SIDE(emins, emaxs, p)	\

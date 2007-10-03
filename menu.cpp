@@ -118,12 +118,12 @@ void M_DrawChar (int cx, int line, int num)
 	R_DrawChar (cx + ((menuwidth - 320)>>1), line + m_yofs, num);
 }
 
-void M_Print (int cx, int cy, const char *str)
+EXTERNC void M_Print (int cx, int cy, const char *str)
 {
 	Draw_Alt_String (cx + ((menuwidth - 320)>>1), cy + m_yofs, str);
 }
 
-void M_PrintWhite (int cx, int cy, const char *str)
+EXTERNC void M_PrintWhite (int cx, int cy, const char *str)
 {
 	R_DrawString (cx + ((menuwidth - 320)>>1), cy + m_yofs, str);
 }

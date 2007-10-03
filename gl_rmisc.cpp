@@ -69,7 +69,7 @@ static struct skin_s *r_baseskin;
 static char cur_baseskin[32];
 
 // called on startup and every time gamedir changes
-void R_FlushTranslations (void)
+EXTERNC void R_FlushTranslations (void)
 {
 	int i;
 
@@ -374,7 +374,7 @@ void R_TimeRefresh_f (void)
 	GL_EndRendering ();
 }
 
-void D_FlushCaches (void)
+EXTERNC void D_FlushCaches (void)
 {
 	// maybe it's not the right place for this code, but it serves
 	// its purpose - set lightmode to gl_lightmode before loading
@@ -519,7 +519,7 @@ int MipColor(int r, int g, int b)
 }
 
 // from gl_draw.c
-extern byte		*draw_chars;				// 8*8 graphic characters
+EXTERNC extern byte		*draw_chars;				// 8*8 graphic characters
 
 void R_DrawCharToSnap (int num, byte *dest, int width)
 {

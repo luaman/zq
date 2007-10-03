@@ -2,7 +2,7 @@
 #include "q_shared.h"
 #include "textencoding.h"
 
-extern qbool R_CharAvailable (wchar c);
+EXTERNC extern qbool R_CharAvailable (wchar c);
 
 /* KOI8-R encodes Russian capital hard sign as 0xFF, but we can't use it
 because it breaks older clients (qwcl).  We use 0xaf ('/'+ 0x80) instead. */

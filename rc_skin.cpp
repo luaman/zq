@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "r_local.h"
 #endif
 
+EXTERNC extern void R_FlushTranslations (void);
+
 
 #define	MAX_CACHED_SKINS		128
 static skin_t skins[MAX_CACHED_SKINS];
@@ -39,7 +41,7 @@ Skin_Find
 
 ================
 */
-void Skin_Find (char *skinname, struct skin_s **sk)
+EXTERNC void Skin_Find (char *skinname, struct skin_s **sk)
 {
 	skin_t		*skin;
 	int			i;
@@ -59,7 +61,6 @@ void Skin_Find (char *skinname, struct skin_s **sk)
 
 	if (numskins == MAX_CACHED_SKINS)
 	{	// ran out of spots, so flush everything
-		extern void R_FlushTranslations ();
 //		Skin_Flush ();
 		R_FlushTranslations ();
 	}
@@ -80,7 +81,7 @@ Skin_Cache
 Returns a pointer to the skin bitmap, or NULL to use the default
 ==========
 */
-byte *Skin_Cache (skin_t *skin)
+EXTERNC byte *Skin_Cache (skin_t *skin)
 {
 	int		y;
 	byte	*pic, *out, *pix;
@@ -125,7 +126,7 @@ byte *Skin_Cache (skin_t *skin)
 }
 
 
-void Skin_Flush (void)
+EXTERNC void Skin_Flush (void)
 {
 	int		i;
 

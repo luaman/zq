@@ -23,8 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "crc.h"
 #include "mdfour.h"
 
-void R_BeginDisc (void);
-void R_EndDisc (void);
+EXTERNC void R_BeginDisc (void);
+EXTERNC void R_EndDisc (void);
 
 #define MAX_NUM_ARGVS	50
 
@@ -115,7 +115,7 @@ Extract file name without extension, to be used for hunk tags
 (up to 32 characters, including trailing zero)
 ============
 */
-void COM_FileBase (const char *in, char *out)
+EXTERNC void COM_FileBase (const char *in, char *out)
 {
 	const char *p, *start, *end;
 	int	length;
@@ -316,7 +316,7 @@ Returns the position (1 to argc-1) in the program's argument list
 where the given parameter appears, or 0 if not present
 ================
 */
-int COM_CheckParm (char *parm)
+EXTERNC int COM_CheckParm (char *parm)
 {
 	int		i;
 	
@@ -334,7 +334,7 @@ int COM_Argc (void)
 	return com_argc;
 }
 
-char *COM_Argv (int arg)
+EXTERNC char *COM_Argv (int arg)
 {
 	if (arg < 0 || arg >= com_argc)
 		return "";
@@ -431,7 +431,7 @@ The "game directory" is the first tree on the search path and directory that all
 	
 */
 
-int	fs_filesize;
+extern "C" { int	fs_filesize; }
 
 
 //
@@ -816,24 +816,24 @@ byte *FS_LoadFile (const string path, int usehunk)
 	return buf;
 }
 
-byte *FS_LoadHunkFile (const string path)
+EXTERNC byte *FS_LoadHunkFile (const char *path)
 {
 	return FS_LoadFile (path, 1);
 }
 
-byte *FS_LoadTempFile (const string path)
+EXTERNC byte *FS_LoadTempFile (const char *path)
 {
 	return FS_LoadFile (path, 2);
 }
 
-void FS_LoadCacheFile (const string path, struct cache_user_s *cu)
+EXTERNC void FS_LoadCacheFile (const char *path, struct cache_user_s *cu)
 {
 	loadcache = cu;
 	FS_LoadFile (path, 3);
 }
 
 // uses temp hunk if larger than bufsize
-byte *FS_LoadStackFile (const string path, void *buffer, int bufsize)
+EXTERNC byte *FS_LoadStackFile (const char *path, void *buffer, int bufsize)
 {
 	byte	*buf;
 	
@@ -1212,7 +1212,7 @@ All console printing must go through this in order to be logged to disk
 ================
 */
 extern void Con_PrintW (wchar *txt);
-void Com_Printf (char *fmt, ...)
+EXTERNC void Com_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
@@ -1286,7 +1286,7 @@ Com_DPrintf
 A Com_Printf that only shows up if the "developer" cvar is set
 ================
 */
-void Com_DPrintf (char *fmt, ...)
+EXTERNC void Com_DPrintf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gl_local.h"
 
-extern byte		*draw_chars;				// 8*8 graphic characters
+EXTERNC extern byte		*draw_chars;				// 8*8 graphic characters
 
 int	netgraphtexture;	// netgraph texture
 

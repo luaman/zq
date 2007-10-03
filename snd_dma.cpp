@@ -824,7 +824,7 @@ void GetSoundtime (void)
 	soundtime = buffers*fullsamples + samplepos/dma.channels;
 }
 
-void S_ExtraUpdate (void)
+EXTERNC void S_ExtraUpdate (void)
 {
 	if (s_noextraupdate.value)
 		return;		// don't pollute timings

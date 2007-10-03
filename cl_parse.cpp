@@ -271,7 +271,7 @@ void CL_Prespawn (void)
 
 	CL_FindModelNumbers ();
 	R_NewMap (cl.model_precache[1]);
-	R_SetSky (cl.sky);
+	R_SetSky (cl.sky.c_str());
 
 	TP_NewMap ();
 
@@ -323,7 +323,7 @@ void VWepModel_NextDownload (void)
 			continue;
 
 		if (cl.vw_model_name[i] != "-")
-			cl.vw_model_precache[i] = Mod_ForName (cl.vw_model_name[i], false, false);
+			cl.vw_model_precache[i] = Mod_ForName (cl.vw_model_name[i].c_str(), false, false);
 
 		if (!cl.vw_model_precache[i]) {
 			// never mind
@@ -391,7 +391,7 @@ void Model_NextDownload (void)
 		if (!cl.model_name[i][0])
 			break;
 
-		cl.model_precache[i] = Mod_ForName(cl.model_name[i], false, i == 1);
+		cl.model_precache[i] = Mod_ForName(cl.model_name[i].c_str(), false, i == 1);
 
 		if (!cl.model_precache[i])
 		{
@@ -1410,7 +1410,7 @@ void CL_ProcessServerInfo (void)
 		if (cl.sky.find("..") != string::npos)
 			cl.sky = "";
 		if (cls.state >= ca_onserver && cl.model_precache[1])
-			R_SetSky (cl.sky);
+			R_SetSky (cl.sky.c_str());
 	}
 }
 

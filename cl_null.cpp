@@ -33,6 +33,6 @@ void Con_Init (void) {}
 void Con_Print (char *text) {}
 void Con_PrintW (wchar *text) {}
 void Cmd_ForwardToServer (void) {}
-void D_FlushCaches (void) {}
+EXTERNC void D_FlushCaches (void) {}
 void Key_Init (void) {}
 void SCR_EndLoadingPlaque (void) {}

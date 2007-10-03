@@ -158,7 +158,7 @@ void Hunk_Print (qbool all)
 Hunk_AllocName
 ===================
 */
-void *Hunk_AllocName (int size, char *name)
+EXTERNC void *Hunk_AllocName (int size, char *name)
 {
 	hunk_t	*h;
 	
@@ -194,17 +194,17 @@ void *Hunk_AllocName (int size, char *name)
 Hunk_Alloc
 ===================
 */
-void *Hunk_Alloc (int size)
+EXTERNC void *Hunk_Alloc (int size)
 {
 	return Hunk_AllocName (size, "unknown");
 }
 
-int	Hunk_LowMark (void)
+EXTERNC int	Hunk_LowMark (void)
 {
 	return hunk_low_used;
 }
 
-void Hunk_FreeToLowMark (int mark)
+EXTERNC void Hunk_FreeToLowMark (int mark)
 {
 	if (mark < 0 || mark > hunk_low_used)
 		Sys_Error ("Hunk_FreeToLowMark: bad mark %i", mark);
@@ -519,7 +519,7 @@ Cache_Flush
 Throw everything out, so new data will be demand cached
 ============
 */
-void Cache_Flush (void)
+EXTERNC void Cache_Flush (void)
 {
 	while (cache_head.next != &cache_head)
 		Cache_Free ( cache_head.next->user );	// reclaim the space
@@ -584,7 +584,7 @@ Cache_Free
 Frees the memory and removes it from the LRU list
 ==============
 */
-void Cache_Free (cache_user_t *c)
+EXTERNC void Cache_Free (cache_user_t *c)
 {
 	cache_system_t	*cs;
 
@@ -609,7 +609,7 @@ void Cache_Free (cache_user_t *c)
 Cache_Check
 ==============
 */
-void *Cache_Check (cache_user_t *c)
+EXTERNC void *Cache_Check (cache_user_t *c)
 {
 	cache_system_t	*cs;
 
@@ -631,7 +631,7 @@ void *Cache_Check (cache_user_t *c)
 Cache_Alloc
 ==============
 */
-void *Cache_Alloc (cache_user_t *c, int size, char *name)
+EXTERNC void *Cache_Alloc (cache_user_t *c, int size, char *name)
 {
 	cache_system_t	*cs;
 

@@ -38,6 +38,12 @@ using std::string;
 using std::wstring;
 #endif
 
+#ifdef __cplusplus
+#define EXTERNC extern "C"
+#else
+#define EXTERNC
+#endif
+
 //#define wchar unsigned short	// 16-bit Unicode char
 #define wchar wchar_t
 typedef unsigned char 		byte;
@@ -56,6 +62,15 @@ typedef unsigned char 		byte;
 #define	QUAKE_GAME			// as opposed to utilities
 
 #define PROGRAM "ZQuake"
+
+#ifndef __cplusplus
+#ifndef false
+#define false 0
+#endif
+#ifndef true
+#define true 1
+#endif
+#endif
 
 typedef int qbool;
 
@@ -119,9 +134,9 @@ void SZ_Print (sizebuf_t *buf, const char *data);	// strcats onto the sizebuf
 
 //============================================================================
 
-short	ShortSwap (short l);
-int		LongSwap (int l);
-float	FloatSwap (float f);
+EXTERNC short	ShortSwap (short l);
+EXTERNC int		LongSwap (int l);
+EXTERNC float	FloatSwap (float f);
 
 #if defined(__BIG_ENDIAN__) && !defined(BIGENDIAN)
 #define BIGENDIAN
@@ -152,10 +167,10 @@ float	FloatSwap (float f);
 #define Q_stricmp(s1, s2) strcasecmp((s1), (s2))
 #define Q_strnicmp(s1, s2, n) strncasecmp((s1), (s2), (n))
 #endif
-char	*Q_strlwr( char *s1 );
-char	*Q_strupr( char *s1 );
+EXTERNC char	*Q_strlwr( char *s1 );
+EXTERNC char	*Q_strupr( char *s1 );
 
-int	Q_atoi (const char *str);
+EXTERNC int	Q_atoi (const char *str);
 float Q_atof (const char *str);
 #ifdef __cplusplus
 inline float Q_atoi (const string str) { return Q_atoi(str.c_str()); }
@@ -163,7 +178,7 @@ inline float Q_atof (const string str) { return Q_atof(str.c_str()); }
 #endif
 char *Q_ftos (float value);		// removes trailing zero chars
 
-wchar char2wc (char c);
+EXTERNC wchar char2wc (char c);
 char wc2char (wchar wc);
 wchar *str2wcs (const char *str);
 char *wcs2str (const wchar *ws);
@@ -180,22 +195,22 @@ size_t qwcslcpy (wchar *dst, const wchar *src, size_t size);
 size_t qwcslcat (wchar *dst, const wchar *src, size_t size);
 wchar *Q_wcsdup(const wchar *src);
 
-size_t strlcpy (char *dst, const char *src, size_t size);
-size_t strlcat (char *dst, const char *src, size_t size);
-int snprintf(char *buffer, size_t count, char const *format, ...);
-int vsnprintf(char *buffer, size_t count, const char *format, va_list argptr);
+EXTERNC size_t strlcpy (char *dst, const char *src, size_t size);
+EXTERNC size_t strlcat (char *dst, const char *src, size_t size);
+EXTERNC int snprintf(char *buffer, size_t count, char const *format, ...);
+EXTERNC int vsnprintf(char *buffer, size_t count, const char *format, va_list argptr);
 #define Q_snprintfz snprintf 	// nuke this one day
 
 qbool Q_glob_match (const char *pattern, const char *text);
 
 // does a varargs printf into a temp buffer
-char	*va(char *format, ...);
+EXTERNC char	*va(char *format, ...);
 
 int Com_HashKey (const char *name);
 
 //============================================================================
 
-void *Q_malloc (size_t size);
+EXTERNC void *Q_malloc (size_t size);
 void *Q_calloc (size_t count, size_t size);
 char *Q_strdup (const char *src);
 // might be turned into a function that makes sure all Q_*alloc calls are matched with Q_free

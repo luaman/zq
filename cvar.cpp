@@ -215,7 +215,7 @@ void Cvar_ForceSet (cvar_t *var, char *string)
 Cvar_SetValue
 ============
 */
-void Cvar_SetValue (cvar_t *var, float value)
+EXTERNC void Cvar_SetValue (cvar_t *var, float value)
 {
 	char	val[128];
 	int	i;
@@ -241,7 +241,7 @@ If the variable already exists, the value will not be set
 The flags will be or'ed in if the variable exists.
 ============
 */
-void Cvar_Register (cvar_t *var)
+EXTERNC void Cvar_Register (cvar_t *var)
 {
 	char	string[512];
 	int		key;

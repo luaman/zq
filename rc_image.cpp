@@ -211,7 +211,7 @@ static void PNG_IO_user_flush_data(png_structp png_ptr) {
 }
 
 
-byte *Image_LoadPNG (FILE *fin, char *filename, int matchwidth, int matchheight) {
+EXTERNC byte *Image_LoadPNG (FILE *fin, char *filename, int matchwidth, int matchheight) {
 	byte header[8], **rowpointers, *data;
 	png_structp png_ptr;
 	png_infop pnginfo;
@@ -842,7 +842,7 @@ byte *Image_LoadTGA(FILE *fin, char *filename, int matchwidth, int matchheight) 
 	return data;
 }
 
-void LoadTGA (char *filename, byte **out, int *width, int *height)
+EXTERNC void LoadTGA (char *filename, byte **out, int *width, int *height)
 {
 	byte *data;
 

@@ -139,19 +139,19 @@ void VID_HandlePause (qbool pause)
 {
 }
 
-void VID_LockBuffer (void)
+EXTERNC void VID_LockBuffer (void)
 {
 }
 
-void VID_UnlockBuffer (void)
+EXTERNC void VID_UnlockBuffer (void)
 {
 }
 
-void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
+EXTERNC void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
 }
 
-void D_EndDirectRect (int x, int y, int width, int height)
+EXTERNC void D_EndDirectRect (int x, int y, int width, int height)
 {
 }
 
@@ -1621,8 +1621,8 @@ void CL_VID_Restart_f ()
 //========================================================
 
 extern void M_Menu_Options_f (void);
-extern void M_Print (int cx, int cy, const char *str);
-extern void M_PrintWhite (int cx, int cy, const char *str);
+EXTERNC extern void M_Print (int cx, int cy, const char *str);
+EXTERNC extern void M_PrintWhite (int cx, int cy, const char *str);
 extern void M_DrawChar (int cx, int line, int num);
 extern void M_DrawPic (int x, int y, mpic_t *pic);
 

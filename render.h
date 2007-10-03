@@ -126,6 +126,8 @@ typedef struct {
 	dlight_t		*dlights;
 	int				numParticles;
 	particle_t		*particles;
+	int				num_entities;
+	entity_t		*entities;
 
 	translation_info_t	*translations;	// [MAX_CLIENTS]
 	char			baseskin[32];
@@ -145,55 +147,59 @@ typedef struct mpic_s
 //
 // refresh
 //
-extern refdef2_t	r_refdef2;
+EXTERNC extern refdef2_t	r_refdef2;
 
-void R_Init (unsigned char *palette);
-void R_InitTextures (void);
-void R_InitEfrags (void);
-void R_RenderView (void);		// must set r_refdef first
-void R_SetSky (const string name);				// Quake2 skybox
+EXTERNC void R_Init (unsigned char *palette);
+EXTERNC void R_InitTextures (void);
+EXTERNC void R_InitEfrags (void);
+EXTERNC void R_RenderView (void);		// must set r_refdef first
+EXTERNC void R_SetSky (const char *name);				// Quake2 skybox
 // called whenever r_refdef or vid change
 
-void R_AddEfrags (entity_t *ent);
-void R_RemoveEfrags (entity_t *ent);
+EXTERNC void R_AddEfrags (entity_t *ent);
+EXTERNC void R_RemoveEfrags (entity_t *ent);
 
-void R_NewMap (struct model_s *worldmodel);
+EXTERNC void R_NewMap (struct model_s *worldmodel);
 
-void R_PushDlights (void);
+EXTERNC void R_PushDlights (void);
 
 // memory pointed to by pcxdata is allocated using Hunk_TempAlloc
 // never store this pointer for later use!
-void R_RSShot (byte **pcxdata, int *pcxsize);
+EXTERNC void R_RSShot (byte **pcxdata, int *pcxsize);
 
 //
 // surface cache related
 //
-extern qbool	r_cache_thrash;	// set if thrashing the surface cache
+EXTERNC extern qbool	r_cache_thrash;	// set if thrashing the surface cache
 
-int	D_SurfaceCacheForRes (int width, int height);
-void D_FlushCaches (void);
-void D_InitCaches (void *buffer, int size);
+EXTERNC int	D_SurfaceCacheForRes (int width, int height);
+EXTERNC void D_FlushCaches (void);
+EXTERNC void D_InitCaches (void *buffer, int size);
 
 // 2D drawing functions
-void R_DrawChar (int x, int y, int num);
-void R_DrawCharW (int x, int y, wchar num);
-void R_DrawString (int x, int y, const string str);
-void R_DrawStringW (int x, int y, const wstring ws);
-void R_DrawPixel (int x, int y, byte color);
-void R_DrawPic (int x, int y, mpic_t *pic);
-void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height);
-void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation);
-void R_DrawFilledRect (int x, int y, int w, int h, int c);
-void R_DrawTile (int x, int y, int w, int h, mpic_t *pic);
-void R_FadeScreen (void);
-void R_DrawDebugChar (char num);
-void R_BeginDisc (void);
-void R_EndDisc (void);
-mpic_t *R_CachePic (char *path);
-mpic_t *R_CacheWadPic (char *name);
-void R_FlushPics (void);
-void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha);
-void R_DrawCrosshair (int num, int crossx, int crossy);
+EXTERNC void R_DrawChar (int x, int y, int num);
+EXTERNC void R_DrawCharW (int x, int y, wchar num);
+EXTERNC void R_DrawString (int x, int y, const char *str);
+EXTERNC void R_DrawStringW (int x, int y, const wchar *ws);
+#ifdef __cplusplus
+inline void R_DrawString (int x, int y, const string s) { R_DrawString(x, y, s.c_str()); }
+inline void R_DrawStringW (int x, int y, const wstring s) { R_DrawStringW(x, y, s.c_str()); }
+#endif
+EXTERNC void R_DrawPixel (int x, int y, byte color);
+EXTERNC void R_DrawPic (int x, int y, mpic_t *pic);
+EXTERNC void R_DrawSubPic (int x, int y, mpic_t *pic, int srcx, int srcy, int width, int height);
+EXTERNC void R_DrawTransPicTranslate (int x, int y, mpic_t *pic, byte *translation);
+EXTERNC void R_DrawFilledRect (int x, int y, int w, int h, int c);
+EXTERNC void R_DrawTile (int x, int y, int w, int h, mpic_t *pic);
+EXTERNC void R_FadeScreen (void);
+EXTERNC void R_DrawDebugChar (char num);
+EXTERNC void R_BeginDisc (void);
+EXTERNC void R_EndDisc (void);
+EXTERNC mpic_t *R_CachePic (char *path);
+EXTERNC mpic_t *R_CacheWadPic (char *name);
+EXTERNC void R_FlushPics (void);
+EXTERNC void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha);
+EXTERNC void R_DrawCrosshair (int num, int crossx, int crossy);
 
 #define GetPicWidth(pic) (pic->width)
 #define GetPicHeight(pic) (pic->height)
@@ -208,12 +214,14 @@ void R_DrawCrosshair (int num, int crossx, int crossy);
 #define	MF_TRACER2	64			// orange split trail + rotate
 #define	MF_TRACER3	128			// purple trail
 
-void Mod_ClearAll (void);
-void Mod_TouchModel (const char *name);
-struct model_s *Mod_ForName (const string name, qbool crash, qbool worldmodel);
-int R_ModelFlags (const struct model_s *model);
-unsigned short R_ModelChecksum (const struct model_s *model);
-void R_LoadModelTextures (struct model_s *m);
+EXTERNC void Mod_ClearAll (void);
+EXTERNC void Mod_TouchModel (const char *name);
+EXTERNC struct model_s *Mod_ForName (const char *name, qbool crash, qbool worldmodel);
+EXTERNC int R_ModelFlags (const struct model_s *model);
+EXTERNC unsigned short R_ModelChecksum (const struct model_s *model);
+EXTERNC void R_LoadModelTextures (struct model_s *m);
+
+EXTERNC void V_SetContentsColor (int contents);	// this is a callback from R_RenderView to the client
 
 #endif /* _RENDER_H_ */
 

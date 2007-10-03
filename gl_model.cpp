@@ -191,7 +191,7 @@ Mod_FindName
 
 ==================
 */
-model_t *Mod_FindName (const string name)
+model_t *Mod_FindName (const char *name)
 {
 	int		i;
 	model_t	*mod;
@@ -200,14 +200,14 @@ model_t *Mod_FindName (const string name)
 // search the currently loaded models
 //
 	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
-		if (mod->name == name)
+		if (!strcmp(mod->name, name))
 			break;
 
 	if (i == mod_numknown)
 	{
 		if (mod_numknown == MAX_MOD_KNOWN)
 			Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
-		strcpy (mod->name, name.c_str());
+		strcpy (mod->name, name);
 		mod->needload = true;
 		mod_numknown++;
 	}
@@ -317,7 +317,7 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t *Mod_ForName (const string name, qbool crash, qbool worldmodel)
+model_t *Mod_ForName (const char *name, qbool crash, qbool worldmodel)
 {
 	model_t	*mod;
 	

@@ -229,7 +229,7 @@ void R_ScreenShot_f (void);
 void R_LoadSky_f (void);
 void GL_AllocTextureSlots (void);
 void R_GetTranslatedPlayerSkin (int colormap, int *texture, int *fb_texture);
-void R_FlushTranslations (void);
+EXTERNC void R_FlushTranslations (void);
 
 //
 // gl_rlight.c
@@ -282,9 +282,9 @@ typedef struct skin_s
 	cache_user_t	cache;
 } skin_t;
 
-void Skin_Find (char *skinname, struct skin_s **sk);
-byte *Skin_Cache (struct skin_s *skin);
-void Skin_Flush (void);
+EXTERNC void Skin_Find (char *skinname, struct skin_s **sk);
+EXTERNC byte *Skin_Cache (struct skin_s *skin);
+EXTERNC void Skin_Flush (void);
 
 #endif /* _GL_LOCAL_H_ */
 

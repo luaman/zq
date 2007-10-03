@@ -30,18 +30,18 @@ void Sys_mkdir (char *path);
 //
 // memory protection
 //
-void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
+EXTERNC void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
 
 
-void Sys_Error (char *error, ...);
+EXTERNC void Sys_Error (char *error, ...);
 // an error will cause the entire program to exit
 
-void Sys_Printf (char *fmt, ...);
+EXTERNC void Sys_Printf (char *fmt, ...);
 // send text to the console
 
 void Sys_Quit (void);
 
-double Sys_DoubleTime (void);
+EXTERNC double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
 
