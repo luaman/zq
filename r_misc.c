@@ -19,7 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_misc.c
 
-#include "client.h"
+//#define _PMOVE_H_
+//#define Info int
+//#include "client.h"
+
 #include "r_local.h"
 #include "rc_image.h"
 #include <time.h>
@@ -203,7 +206,8 @@ void R_TimeRefresh_f (void)
 	int			startangle;
 	vrect_t		vr;
 
-	if (cls.state != ca_active)
+//	if (cls.state != ca_active)
+	if (!r_worldentity.model || !r_worldmodel)	// FIXME
 		return;
 
 	startangle = r_refdef2.viewangles[1];
@@ -341,6 +345,7 @@ R_NetGraph
 */
 void R_NetGraph (void)
 {
+#if 0	// @@FIXME
 	extern cvar_t	r_netgraph;
 	int		a, x, y, y2, w, i;
 	int		lost;
@@ -372,6 +377,7 @@ void R_NetGraph (void)
 		sprintf(st, "%3i%% packet loss", lost);
 		R_DrawString (8, y2, st);
 	}
+#endif
 }
 
 /*
@@ -455,6 +461,7 @@ void R_PrintAliasStats (void)
 }
 
 
+#if 0
 void WarpPalette (void)
 {
 	int		i,j;
@@ -476,6 +483,7 @@ void WarpPalette (void)
 	
 	VID_ShiftPalette (newpalette);
 }
+#endif
 
 
 /*
@@ -901,6 +909,7 @@ R_ScreenShot_f
 */  
 void R_ScreenShot_f (void) 
 { 
+#if 0	//@@FIXME
 	int			i; 
 	char		pcxname[MAX_OSPATH]; 
 	char		checkname[MAX_OSPATH];
@@ -950,6 +959,7 @@ void R_ScreenShot_f (void)
 	COM_WriteFile (va("%s/%s", cls.gamedirfile, pcxname), pcxdata, pcxsize);
 
 	Com_Printf ("Wrote %s\n", pcxname);
+#endif
 } 
 
 /*
@@ -971,9 +981,9 @@ int MipColor(int r, int g, int b)
 	bestdist = 256*256*3;
 
 	for (i = 0; i < 256; i++) {
-		r1 = host_basepal[i*3] - r;
-		g1 = host_basepal[i*3+1] - g;
-		b1 = host_basepal[i*3+2] - b;
+		r1 = r_palette[i*3] - r;
+		g1 = r_palette[i*3+1] - g;
+		b1 = r_palette[i*3+2] - b;
 		dist = r1*r1 + g1*g1 + b1*b1;
 		if (dist < bestdist) {
 			bestdist = dist;
@@ -1039,7 +1049,8 @@ On failure (not enough memory), *pcxdata will be set to NULL
 #define RSSHOT_WIDTH 320
 #define RSSHOT_HEIGHT 200
 void R_RSShot (byte **pcxdata, int *pcxsize)
-{ 
+{
+#if 0	//@@FIXME
 	int     x, y;
 	unsigned char		*src, *dest;
 	unsigned char		*newbuf;
@@ -1082,9 +1093,9 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 			for (/* */; dy < dey; dy++) {
 				src = vid.buffer + (vid.rowbytes * dy) + dx;
 				for (nx = dx; nx < dex; nx++) {
-					r += host_basepal[*src * 3];
-					g += host_basepal[*src * 3+1];
-					b += host_basepal[*src * 3+2];
+					r += r_palette[*src * 3];
+					g += r_palette[*src * 3+1];
+					b += r_palette[*src * 3+2];
 					src++;
 					count++;
 				}
@@ -1114,6 +1125,7 @@ void R_RSShot (byte **pcxdata, int *pcxsize)
 	Q_free (newbuf);
 
 	// return with pcxdata and pcxsize
+#endif
 } 
 
 //=============================================================================

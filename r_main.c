@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_main.c
 
-#include "client.h"
 #include "r_local.h"
 #include "sound.h"
 
@@ -385,9 +384,9 @@ void R_DrawEntitiesOnList (void)
 	if (!r_drawentities.value)
 		return;
 
-	for (i=0 ; i<cl_numvisedicts ; i++)
+	for (i=0 ; i<r_refdef2.num_entities ; i++)
 	{
-		currententity = &cl_visedicts[i];
+		currententity = &r_refdef2.entities[i];
 
 		switch (currententity->model->type)
 		{
@@ -535,9 +534,9 @@ void R_DrawBEntitiesOnList (void)
 	insubmodel = true;
 	r_dlightframecount = r_framecount;
 
-	for (i=0 ; i<cl_numvisedicts ; i++)
+	for (i=0 ; i<r_refdef2.num_entities ; i++)
 	{
-		currententity = &cl_visedicts[i];
+		currententity = &r_refdef2.entities[i];
 		clmodel = currententity->model;
 
 		if (clmodel->type != mod_brush)

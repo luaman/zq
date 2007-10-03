@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // d_init.c: rasterization driver initialization
 
-#include "client.h"
 #include "d_local.h"
 
 #define NUM_MIPS	4
@@ -61,7 +60,7 @@ void D_Init (void)
 D_EnableBackBufferAccess
 ===============
 */
-void D_EnableBackBufferAccess (void)
+EXTERNC void D_EnableBackBufferAccess (void)
 {
 
 	VID_LockBuffer ();
@@ -73,7 +72,7 @@ void D_EnableBackBufferAccess (void)
 D_DisableBackBufferAccess
 ===============
 */
-void D_DisableBackBufferAccess (void)
+EXTERNC void D_DisableBackBufferAccess (void)
 {
 	VID_UnlockBuffer ();
 }

@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // d_surf.c: rasterization driver surface heap manager
 
-#include "client.h"
 #include "d_local.h"
 #include "r_local.h"
 
@@ -38,7 +37,7 @@ int     D_SurfaceCacheForRes (int width, int height)
 
 	if (COM_CheckParm ("-surfcachesize"))
 	{
-		size = Q_atoi(com_argv[COM_CheckParm("-surfcachesize")+1]) * 1024;
+		size = Q_atoi(COM_Argv(COM_CheckParm("-surfcachesize")+1)) * 1024;
 		return size;
 	}
 	

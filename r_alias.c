@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_alias.c: routines for setting up to draw alias models
 
-#include "client.h"
 #include "r_local.h"
 #include "d_local.h"	// FIXME: shouldn't be needed (is needed for patch
 						// right now, but that should move)
@@ -71,7 +70,7 @@ static aedge_t	aedges[12] = {
 
 #define NUMVERTEXNORMALS	162
 
-float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
+EXTERNC float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 #include "anorms.h"
 };
 
@@ -685,7 +684,7 @@ void R_AliasSetupLighting (void)
 			r_ambientlight = r_shadelight = 8;
 	}
 
-	if ((r_fullbrightModels.value || r_fullbrightSkins.valu &&
+	if ((r_fullbrightModels.value || r_fullbrightSkins.value &&
 	(currententity->model->modhint == MOD_PLAYER || currententity->renderfx & RF_PLAYERMODEL))
 	&& r_refdef2.allow_fbskins) {
 			r_ambientlight = max (r_ambientlight, 100);

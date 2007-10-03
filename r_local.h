@@ -256,8 +256,6 @@ extern edge_t	*r_edges, *edge_p, *edge_max;
 extern	edge_t	*newedges[MAXHEIGHT];
 extern	edge_t	*removeedges[MAXHEIGHT];
 
-extern	int	r_screenwidth;
-
 // FIXME: make stack vars when debugging done
 extern	edge_t	edge_head;
 extern	edge_t	edge_tail;
@@ -319,16 +317,16 @@ extern unsigned char	r_palette[768];
 extern qbool			d_15to8table_made;
 extern unsigned char	d_15to8table[65536];
 extern unsigned short	d_8to16table[256];
-extern unsigned char	*r_colormap;	// [256 * VID_GRADES]
-extern unsigned short	r_colormap16[256 * VID_GRADES];
+EXTERNC extern unsigned char	*r_colormap;	// [256 * VID_GRADES]
+EXTERNC extern unsigned short	r_colormap16[256 * VID_GRADES];
 
 // r_draw.c
 #define		MAX_CHARSETS 16
-byte		*draw_chars[MAX_CHARSETS];				// 8*8 graphic characters
+EXTERNC byte		*draw_chars[MAX_CHARSETS];				// 8*8 graphic characters
 
 // r_misc.c
 void R_Build15to8table (void);
-void R_FlushTranslations (void);
+EXTERNC void R_FlushTranslations (void);
 byte *R_GetColormap (int colormap);
 byte *R_GetSkin (int colormap);
 
@@ -340,9 +338,9 @@ typedef struct skin_s
 	cache_user_t	cache;
 } skin_t;
 
-void Skin_Find (char *skinname, struct skin_s **sk);
-byte *Skin_Cache (struct skin_s *skin);
-void Skin_Flush (void);
+EXTERNC void Skin_Find (char *skinname, struct skin_s **sk);
+EXTERNC byte *Skin_Cache (struct skin_s *skin);
+EXTERNC void Skin_Flush (void);
 
 #endif /* _R_LOCAL_H_ */
 
