@@ -38,7 +38,16 @@ typedef	int	fixed16_t;
 #define M_PI		3.14159265358979323846	// matches value in gcc v2 math.h
 #endif
 
-struct mplane_s;
+// !!! if this is changed, it must be changed in asm_i386.h too !!!
+typedef struct mplane_s
+{
+	vec3_t	normal;
+	float	dist;
+	byte	type;			// for texture axis selection and fast side tests
+	byte	signbits;		// signx + signy<<1 + signz<<1
+	byte	pad[2];
+} mplane_t;
+
 
 extern vec3_t vec3_origin;
 
