@@ -93,7 +93,7 @@ typedef struct cmd_function_s
 
 void Cmd_Init (void);
 
-void Cmd_AddCommand (char *cmd_name, xcommand_t function);
+EXTERNC void Cmd_AddCommand (char *cmd_name, xcommand_t function);
 // called by the init functions of other parts of the program to
 // register commands and functions to call for them.
 // The cmd_name is referenced later, so it should not be in temp memory
@@ -109,9 +109,9 @@ char 	*Cmd_CompleteCommand (char *partial);
 // attempts to match a partial command for automatic command line completion
 // returns NULL if nothing fits
 
-int	Cmd_Argc (void);
-char *Cmd_Argv (int arg);
-char *Cmd_Args (void);
+EXTERNC int	Cmd_Argc (void);
+EXTERNC char *Cmd_Argv (int arg);
+EXTERNC char *Cmd_Args (void);
 char *Cmd_MakeArgs (int start);
 // The functions that execute commands get their parameters with these
 // functions. Cmd_Argv () will return an empty string, not a NULL

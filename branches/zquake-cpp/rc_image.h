@@ -36,7 +36,7 @@ typedef struct
 
 png_textp Image_LoadPNG_Comments (char *filename, int *text_count);
 png_data *Image_LoadPNG_All (FILE *fin, char *filename, int matchwidth, int matchheight, int loadflag);
-byte *Image_LoadPNG (FILE *, char *, int, int);
+EXTERNC byte *Image_LoadPNG (FILE *, char *, int, int);
 byte *Image_LoadTGA (FILE *, char *, int, int);
 byte *Image_LoadPCX (FILE *, char *, int, int);
 
@@ -50,7 +50,7 @@ int Image_WritePNGPLTE (char *filename, int compression, byte *pixels,
 #endif
 #endif	// WITH_PNG
 
-void LoadTGA (char *filename, byte **out, int *width, int *height);
+EXTERNC void LoadTGA (char *filename, byte **out, int *width, int *height);
 void LoadPCX (char *filename, byte **pic, int *width, int *height);
 void WritePCX (byte *data, int width, int height, int rowbytes, byte *palette,	// [in]
 				   byte **pcxdata, int *pcxsize);								// [out]

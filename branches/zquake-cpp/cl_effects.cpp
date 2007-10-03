@@ -742,7 +742,7 @@ CL_EntityParticles
 ===============
 */
 #define NUMVERTEXNORMALS	162
-extern float	r_avertexnormals[NUMVERTEXNORMALS][3];	// FIXME, links to renderer
+EXTERNC extern float	r_avertexnormals[NUMVERTEXNORMALS][3];	// FIXME, links to renderer
 vec3_t	avelocities[NUMVERTEXNORMALS];
 void CL_EntityParticles (vec3_t org)
 {

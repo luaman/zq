@@ -27,9 +27,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cmd.h"
 #include "net.h"
 #include "protocol.h"
+#ifdef __cplusplus
 #include "cmodel.h"
 #include "info.h"
+#endif
 
+#ifndef __cplusplus
+// just to make the compiler happy
+#define string int
+#define wstring int
+#endif
 
 //
 // per-level limits
@@ -190,9 +197,9 @@ extern	char	**com_argv;
 
 void COM_InitArgv (int argc, char **argv);
 int	COM_Argc (void);
-char *COM_Argv (int arg);	// range and null checked
+EXTERNC char *COM_Argv (int arg);	// range and null checked
 void COM_ClearArgv (int arg);
-int COM_CheckParm (char *parm);
+EXTERNC int COM_CheckParm (char *parm);
 void COM_AddParm (char *parm);
 
 
@@ -203,13 +210,13 @@ void COM_Shutdown (void);
 char *COM_SkipPath (const char *pathname);
 char *COM_FileExtension (char *in);
 void COM_StripExtension (char *in, char *out);
-void COM_FileBase (const char *in, char *out);
+EXTERNC void COM_FileBase (const char *in, char *out);
 void COM_DefaultExtension (char *path, char *extension);
 void COM_ForceExtension (char *path, char *extension);
 
 //============================================================================
 
-extern int fs_filesize;
+EXTERNC extern int fs_filesize;
 struct cache_user_s;
 
 extern char	com_gamedir[MAX_OSPATH];
@@ -223,10 +230,10 @@ void FS_InitFilesystem (void);
 void FS_SetGamedir (char *dir);
 int FS_FOpenFile (const string filename, FILE **file);
 qbool FS_FindFile (const string filename);
-byte *FS_LoadStackFile (const string path, void *buffer, int bufsize);
-byte *FS_LoadTempFile (const string path);
-byte *FS_LoadHunkFile (const string path);
-void FS_LoadCacheFile (const string path, struct cache_user_s *cu);
+EXTERNC byte *FS_LoadStackFile (const char *path, void *buffer, int bufsize);
+EXTERNC byte *FS_LoadTempFile (const char *path);
+EXTERNC byte *FS_LoadHunkFile (const char *path);
+EXTERNC void FS_LoadCacheFile (const char *path, struct cache_user_s *cu);
 byte *FS_LoadHeapFile (const string path);
 
 void COM_WriteFile (char *filename, void *data, int len);
@@ -263,9 +270,9 @@ int Com_TranslateMapChecksum (const string mapname, int checksum);
 
 void Com_BeginRedirect (void (*RedirectedPrint) (char *));
 void Com_EndRedirect (void);
-void Com_Printf (char *fmt, ...);
+EXTERNC void Com_Printf (char *fmt, ...);
 void Com_PrintW (wchar *msg);
-void Com_DPrintf (char *fmt, ...);
+EXTERNC void Com_DPrintf (char *fmt, ...);
 
 //============================================================================
 
@@ -294,6 +301,7 @@ extern int		host_memsize;
 
 extern cvar_t	host_mapname;
 
+#ifdef __cplusplus
 // generic exception with a text message
 struct EMessage {
 	char *msg;
@@ -310,8 +318,13 @@ struct Error : EMessage {
 struct EndGame : EMessage {
 	EndGame(char *_msg) : EMessage(_msg) {}
 };
+#endif
 
 // functions that may be called accross subsystems (host, client, server)
+
+#ifndef __cplusplus
+#define Host_Error Host_Error_wrapper
+#endif
 
 void Host_Init (int argc, char **argv, int default_memsize);
 void Host_ClearMemory ();

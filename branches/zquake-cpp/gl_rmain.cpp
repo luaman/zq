@@ -610,7 +610,7 @@ extern void R_SetPalette (byte *palette);
 R_Init
 ===============
 */
-void R_Init (unsigned char *palette)
+EXTERNC void R_Init (unsigned char *palette)
 {
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
 	Cmd_AddCommand ("screenshot", R_ScreenShot_f);

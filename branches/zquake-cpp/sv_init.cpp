@@ -351,7 +351,7 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	entitystring = NULL;
 	if (sv_loadentfiles.value) {
 		// FIXME, FS_LoadHunkFile does not guarantee a trailing \0
-		entitystring = (char *)FS_LoadHunkFile("maps/" + sv.mapname + ".ent");
+		entitystring = (char *)FS_LoadHunkFile(("maps/" + sv.mapname + ".ent").c_str());
 		if (entitystring) {
 			Com_DPrintf ("Using entfile maps/%s.ent\n", sv.mapname.c_str());
 			svs.info.set("*entfile", va("%i",

@@ -92,7 +92,7 @@ void S_StopSound (int entnum, int entchannel);
 void S_StopAllSounds (qbool clear);
 void S_ClearBuffer (void);
 void S_Update (vec3_t origin, vec3_t v_forward, vec3_t v_right, vec3_t v_up);
-void S_ExtraUpdate (void);
+EXTERNC void S_ExtraUpdate (void);
 
 sfx_t *S_PrecacheSound (char *sample);
 void S_TouchSound (char *sample);

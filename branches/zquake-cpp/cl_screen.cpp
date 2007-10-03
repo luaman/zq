@@ -121,9 +121,9 @@ static int	scr_fullupdate;		// set to 0 to force full redraw
 int			clearconsole;
 int			clearnotify;
 
-viddef_t	vid;				// global video state
+extern "C" { viddef_t	vid; }				// global video state
 
-vrect_t		scr_vrect;
+extern "C" { vrect_t		scr_vrect; }
 
 qbool		scr_skipupdate;
 

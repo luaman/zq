@@ -52,7 +52,7 @@ cvar_t	cl_drawgun = {"r_drawviewmodel", "1"};
 cvar_t	r_lerpmuzzlehack = {"r_lerpmuzzlehack", "1"};
 
 cvar_t	crosshair = {"crosshair", "3", CVAR_ARCHIVE};
-cvar_t	crosshaircolor = {"crosshaircolor", "13", CVAR_ARCHIVE}; // QW default was 79
+extern "C" { cvar_t	crosshaircolor = {"crosshaircolor", "13", CVAR_ARCHIVE}; }// QW default was 79
 cvar_t  cl_crossx = {"cl_crossx", "0", CVAR_ARCHIVE};
 cvar_t  cl_crossy = {"cl_crossy", "0", CVAR_ARCHIVE};
 
@@ -353,7 +353,7 @@ void BuildGammaTable (float g, float c)
 	
 	for (i=0 ; i<256 ; i++)
 	{
-		inf = 255 * pow ((i+0.5)/255.5*c, g) + 0.5;
+		inf = 255 * pow ((i+0.5)/255.5*c, (double)g) + 0.5;
 		if (inf < 0)
 			inf = 0;
 		if (inf > 255)
@@ -1150,7 +1150,7 @@ The player's clipping box goes from (-16 -16 -24) to (16 16 32) from
 the entity origin, so any view position inside that will be valid
 ==================
 */
-extern vrect_t scr_vrect;
+EXTERNC extern vrect_t scr_vrect;
 
 void V_RenderView (void)
 {
@@ -1196,6 +1196,9 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 
 	r_refdef2.numParticles = cl_numvisparticles;
 	r_refdef2.particles = cl_visparticles;
+
+	r_refdef2.num_entities = cl_numvisedicts;
+	r_refdef2.entities = cl_visedicts;
 
 	for (i = 0; i < MAX_CLIENTS; i++) {
 		translations[i].topcolor = cl.players[i].topcolor;

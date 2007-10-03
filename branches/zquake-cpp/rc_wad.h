@@ -55,12 +55,12 @@ typedef struct
 	char		name[16];				// must be null terminated
 } lumpinfo_t;
 
-void W_LoadWadFile (char *filename);
-void W_FreeWadFile (void);
-void *W_GetLumpName (char *name, qbool crash);
+EXTERNC void W_LoadWadFile (char *filename);
+EXTERNC void W_FreeWadFile (void);
+EXTERNC void *W_GetLumpName (char *name, qbool crash);
 lumpinfo_t *W_GetLumpinfo (char *name, qbool crash);
 
-void SwapPic (qpic_t *pic);
+EXTERNC void SwapPic (qpic_t *pic);
 
 #ifdef HALFLIFEBSP
 void WAD3_LoadWadFile (char *filename);

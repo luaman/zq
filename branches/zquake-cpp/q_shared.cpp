@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ============================================================================
 */
 
-int Q_atoi (const char *str)
+EXTERNC int Q_atoi (const char *str)
 {
 	int		val;
 	int		sign;
@@ -178,7 +178,7 @@ char *Q_ftos (float value)
 
 
 #ifndef HAVE_STRLCPY
-size_t strlcpy (char *dst, const char *src, size_t size)
+EXTERNC size_t strlcpy (char *dst, const char *src, size_t size)
 {
 	int len = strlen (src);
 
@@ -201,7 +201,7 @@ size_t strlcpy (char *dst, const char *src, size_t size)
 #endif
 
 #ifndef HAVE_STRLCAT
-size_t strlcat (char *dst, const char *src, size_t size)
+EXTERNC size_t strlcat (char *dst, const char *src, size_t size)
 {
 	int dstlen = strlen(dst);
 	int srclen = strlen(src);
@@ -230,7 +230,7 @@ size_t strlcat (char *dst, const char *src, size_t size)
 
 
 #ifdef _WIN32
-int snprintf(char *buffer, size_t count, char const *format, ...)
+EXTERNC int snprintf(char *buffer, size_t count, char const *format, ...)
 {
 	int ret;
 	va_list argptr;
@@ -244,7 +244,7 @@ int snprintf(char *buffer, size_t count, char const *format, ...)
 	return ret;
 }
 
-int vsnprintf(char *buffer, size_t count, const char *format, va_list argptr)
+EXTERNC int vsnprintf(char *buffer, size_t count, const char *format, va_list argptr)
 {
 	int ret;
 
@@ -257,7 +257,7 @@ int vsnprintf(char *buffer, size_t count, const char *format, va_list argptr)
 #endif
 
 
-char *Q_strlwr( char *s1 ) {
+EXTERNC char *Q_strlwr( char *s1 ) {
     char	*s;
 
     s = s1;
@@ -268,7 +268,7 @@ char *Q_strlwr( char *s1 ) {
     return s1;
 }
 
-char *Q_strupr( char *s1 ) {
+EXTERNC char *Q_strupr( char *s1 ) {
     char	*s;
 
     s = s1;
@@ -279,7 +279,7 @@ char *Q_strupr( char *s1 ) {
     return s1;
 }
 
-wchar char2wc (char c)
+EXTERNC wchar char2wc (char c)
 {
 	return (wchar)(unsigned char)c;
 }
@@ -482,7 +482,7 @@ Does a varargs printf into a temp buffer
 2 buffers are used to allow subsequent va calls
 ============
 */
-char *va (char *format, ...)
+EXTERNC char *va (char *format, ...)
 {
 	va_list argptr;
 	static char string[2][2048];
@@ -529,7 +529,7 @@ int Com_HashKey (const char *name)
 ============================================================================
 */
 
-short ShortSwap (short l)
+EXTERNC short ShortSwap (short l)
 {
 	byte    b1,b2;
 
@@ -539,7 +539,7 @@ short ShortSwap (short l)
 	return (b1<<8) + b2;
 }
 
-int LongSwap (int l)
+EXTERNC int LongSwap (int l)
 {
 	byte    b1,b2,b3,b4;
 
@@ -551,7 +551,7 @@ int LongSwap (int l)
 	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
 }
 
-float FloatSwap (float f)
+EXTERNC float FloatSwap (float f)
 {
 	union
 	{
@@ -632,7 +632,7 @@ void SZ_Print (sizebuf_t *buf, const char *data)
 ** the program exits with a message saying there's not enough memory
 ** instead of crashing after trying to use a NULL pointer
 */
-void *Q_malloc (size_t size)
+EXTERNC void *Q_malloc (size_t size)
 {
 	void *p = malloc(size);
 	if (!p)

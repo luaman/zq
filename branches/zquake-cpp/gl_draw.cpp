@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static void	OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel);
 cvar_t		gl_smoothfont = {"gl_smoothfont", "0", 0, OnChange_gl_smoothfont};
 
-byte		*draw_chars;				// 8*8 graphic characters
+EXTERNC { byte		*draw_chars; }				// 8*8 graphic characters
 static mpic_t	*draw_disc;
 
 int			translate_texture;
@@ -655,7 +655,7 @@ static void CreateFontBitmap (int base, int slot) {
 	char_range[slot] = base;
 }
 
-qbool R_CharAvailable (wchar num)
+EXTERNC qbool R_CharAvailable (wchar num)
 {
 	int i;
 
@@ -748,21 +748,22 @@ void R_DrawChar (int x, int y, int num)
 	R_DrawCharW (x, y, char2wc(num));
 }
 
-void R_DrawString (int x, int y, const string str)
+void R_DrawString (int x, int y, const char *str)
 {
 	float			frow, fcol;
 	int num;
 
 	if (y <= -8)
 		return;			// totally off screen
-	if (str == "")
+	if (!str[0])
 		return;
 
 	GL_Bind (char_textures[0]);
 
 	glBegin (GL_QUADS);
 
-	for (int i = 0; i < str.length(); i++)
+	int len = strlen(str);
+	for (int i = 0; i < len; i++)
 	{
 		if ((num = str[i]) != 32) // skip spaces
 		{
@@ -784,11 +785,12 @@ void R_DrawString (int x, int y, const string str)
 	glEnd ();
 }
 
-void R_DrawStringW (int x, int y, const wstring ws)
+void R_DrawStringW (int x, int y, const wchar *ws)
 {
 	if (y <= -8)
 		return;			// totally off screen
-	for (int i = 0; i < ws.length(); i++)
+	int len = wcslen(ws);
+	for (int i = 0; i < len; i++)
 	{
 		R_DrawCharW (x, y, ws[i]);
 		x += 8;
@@ -814,13 +816,13 @@ static byte *StringToRGB(char *s) {
 	return rgb;
 }
 
+EXTERNC extern vrect_t scr_vrect;
+EXTERNC extern cvar_t crosshaircolor;
 void R_DrawCrosshair (int num, int crossx, int crossy)
 {
 	int		x, y;
 	int		ofs1, ofs2;
 	byte    *col;
-	extern vrect_t scr_vrect;
-	extern cvar_t crosshaircolor;
 
 	x = scr_vrect.x + scr_vrect.width/2 + crossx;
 	y = scr_vrect.y + scr_vrect.height/2 + crossy;
@@ -1148,7 +1150,7 @@ Erases the disc icon.
 Call after completing any disc IO
 ================
 */
-void R_EndDisc (void)
+EXTERNC void R_EndDisc (void)
 {
 }
 

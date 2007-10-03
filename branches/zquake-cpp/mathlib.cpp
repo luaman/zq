@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 
-void Sys_Error (char *error, ...);
+EXTERNC void Sys_Error (char *error, ...);
 
-vec3_t vec3_origin = {0,0,0};
+EXTERNC vec3_t vec3_origin = {0,0,0};
 
 /*-----------------------------------------------------------------*/
 
@@ -49,7 +49,7 @@ void ProjectPointOnPlane( vec3_t dst, const vec3_t p, const vec3_t normal )
 /*
 ** assumes "src" is normalized
 */
-void PerpendicularVector( vec3_t dst, const vec3_t src )
+EXTERNC void PerpendicularVector( vec3_t dst, const vec3_t src )
 {
 	int	pos;
 	int i;
@@ -86,7 +86,7 @@ void PerpendicularVector( vec3_t dst, const vec3_t src )
 #endif
 
 
-void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees )
+EXTERNC void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees )
 {
 	float	m[3][3];
 	float	im[3][3];
@@ -284,7 +284,7 @@ if (sides == 0)
 
 
 
-void vectoangles(const vec3_t vec, vec3_t ang)
+EXTERNC void vectoangles(const vec3_t vec, vec3_t ang)
 {
 	float	forward;
 	float	yaw, pitch;
@@ -315,7 +315,7 @@ void vectoangles(const vec3_t vec, vec3_t ang)
 }
 
 
-void AngleVectors (const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
+EXTERNC void AngleVectors (const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 {
 	float		angle;
 	float		sr, sp, sy, cr, cp, cy;
@@ -356,7 +356,7 @@ void AngleVectors (const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 	}
 }
 
-void MakeNormalVectors (/* in */ const vec3_t forward, /* out */ vec3_t right, vec3_t up)
+EXTERNC void MakeNormalVectors (/* in */ const vec3_t forward, /* out */ vec3_t right, vec3_t up)
 {
 	float		d;
 
@@ -372,12 +372,12 @@ void MakeNormalVectors (/* in */ const vec3_t forward, /* out */ vec3_t right, v
 	CrossProduct (right, forward, up);
 }
 
-int VectorCompare (const vec3_t v1, const vec3_t v2)
+EXTERNC int VectorCompare (const vec3_t v1, const vec3_t v2)
 {
 	return (v1[0] == v2[0] && v1[1] == v2[1] && v1[2] == v2[2]);
 }
 
-void VectorMA (const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc)
+EXTERNC void VectorMA (const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc)
 {
 	vecc[0] = veca[0] + scale*vecb[0];
 	vecc[1] = veca[1] + scale*vecb[1];
@@ -410,24 +410,24 @@ void _VectorCopy (const vec3_t in, vec3_t out)
 	out[2] = in[2];
 }
 
-void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross)
+EXTERNC void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross)
 {
 	cross[0] = v1[1]*v2[2] - v1[2]*v2[1];
 	cross[1] = v1[2]*v2[0] - v1[0]*v2[2];
 	cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
 }
 
-vec_t VectorLength (const vec3_t v)
+EXTERNC vec_t VectorLength (const vec3_t v)
 {
 	return sqrt (v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 }
 
-vec_t VectorLengthSquared (const vec3_t v)
+EXTERNC vec_t VectorLengthSquared (const vec3_t v)
 {
 	return v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
 }
 
-float VectorNormalize (vec3_t v)
+EXTERNC float VectorNormalize (vec3_t v)
 {
 	float	length, ilength;
 
@@ -444,7 +444,7 @@ float VectorNormalize (vec3_t v)
 	return length;
 }
 
-float VectorNormalize2 (const vec3_t v, vec3_t out) {
+EXTERNC float VectorNormalize2 (const vec3_t v, vec3_t out) {
 	float	length, ilength;
 
 	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
@@ -464,21 +464,21 @@ float VectorNormalize2 (const vec3_t v, vec3_t out) {
 
 }
 
-void VectorScale (const vec3_t in, vec_t scale, vec3_t out)
+EXTERNC void VectorScale (const vec3_t in, vec_t scale, vec3_t out)
 {
 	out[0] = in[0]*scale;
 	out[1] = in[1]*scale;
 	out[2] = in[2]*scale;
 }
 
-void LerpVector (const vec3_t from, const vec3_t to, float frac, vec3_t out)
+EXTERNC void LerpVector (const vec3_t from, const vec3_t to, float frac, vec3_t out)
 {
 	out[0] = from[0] + frac * (to[0] - from[0]);
 	out[1] = from[1] + frac * (to[1] - from[1]);
 	out[2] = from[2] + frac * (to[2] - from[2]);
 }
 
-void LerpAngles (const vec3_t from, const vec3_t to, float frac, vec3_t out)
+EXTERNC void LerpAngles (const vec3_t from, const vec3_t to, float frac, vec3_t out)
 {
 	int i;
 	float delta;
@@ -510,7 +510,7 @@ int Q_log2(int val)
 R_ConcatRotations
 ================
 */
-void R_ConcatRotations (const float in1[3][3], const float in2[3][3], float out[3][3])
+EXTERNC void R_ConcatRotations (const float in1[3][3], const float in2[3][3], float out[3][3])
 {
 	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] +
 				in1[0][2] * in2[2][0];
@@ -538,7 +538,7 @@ void R_ConcatRotations (const float in1[3][3], const float in2[3][3], float out[
 R_ConcatTransforms
 ================
 */
-void R_ConcatTransforms (const float in1[3][4], const float in2[3][4], float out[3][4])
+EXTERNC void R_ConcatTransforms (const float in1[3][4], const float in2[3][4], float out[3][4])
 {
 	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] +
 				in1[0][2] * in2[2][0];
@@ -577,7 +577,7 @@ quotient must fit in 32 bits.
 ====================
 */
 
-void FloorDivMod (double numer, double denom, int *quotient,
+EXTERNC void FloorDivMod (double numer, double denom, int *quotient,
 		int *rem)
 {
 	int		q, r;

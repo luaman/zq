@@ -47,7 +47,7 @@ typedef struct
 									//  NULL
 } viddef_t;
 
-extern	viddef_t	vid;				// global video state
+EXTERNC extern	viddef_t	vid;				// global video state
 
 extern void (*vid_menudrawfn)(void);
 extern void (*vid_menukeyfn)(int key);
@@ -66,7 +66,7 @@ void	VID_Init (unsigned char *palette);
 void	VID_Shutdown (void);
 // Called at shutdown
 
-void	VID_Update (vrect_t *rects);
+EXTERNC void	VID_Update (vrect_t *rects);
 // flushes the given rectangles from the view buffer to the screen
 
 int VID_SetMode (int modenum, unsigned char *palette);
@@ -76,8 +76,8 @@ int VID_SetMode (int modenum, unsigned char *palette);
 void VID_HandlePause (qbool pause);
 // called only on Win32, when pause happens, so the mouse can be released
 
-void VID_LockBuffer (void);
-void VID_UnlockBuffer (void);
+EXTERNC void VID_LockBuffer (void);
+EXTERNC void VID_UnlockBuffer (void);
 
 void VID_SetCaption (char *text);
 

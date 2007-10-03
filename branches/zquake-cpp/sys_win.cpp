@@ -81,7 +81,7 @@ SYSTEM IO
 Sys_MakeCodeWriteable
 ================
 */
-void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
+EXTERNC void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
 	DWORD  flOldProtect;
 
@@ -91,7 +91,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 }
 
 
-void Sys_Error (char *error, ...)
+EXTERNC void Sys_Error (char *error, ...)
 {
 	va_list		argptr;
 	char		text[1024];
@@ -121,7 +121,7 @@ void Sys_Error (char *error, ...)
 	exit (1);
 }
 
-void Sys_Printf (char *fmt, ...)
+EXTERNC void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[1024];
@@ -186,7 +186,7 @@ void Sys_InitDoubleTime (void)
 	}
 }
 
-double Sys_DoubleTime (void)
+EXTERNC double Sys_DoubleTime (void)
 {
 	__int64 pcount;
 	static __int64 startcount;

@@ -779,7 +779,7 @@ cmd_function_t	*cmd_hash_array[32];
 Cmd_Argc
 ============
 */
-int Cmd_Argc (void)
+EXTERNC int Cmd_Argc (void)
 {
 	return cmd_argc;
 }
@@ -789,7 +789,7 @@ int Cmd_Argc (void)
 Cmd_Argv
 ============
 */
-char *Cmd_Argv (int arg)
+EXTERNC char *Cmd_Argv (int arg)
 {
 	if ( arg >= cmd_argc )
 		return cmd_null_string;
@@ -803,7 +803,7 @@ Cmd_Args
 Returns a single string containing argv(1) to argv(argc()-1)
 ============
 */
-char *Cmd_Args (void)
+EXTERNC char *Cmd_Args (void)
 {
 	if (!cmd_args)
 		return "";
@@ -894,7 +894,7 @@ void Cmd_TokenizeString (const char *text)
 Cmd_AddCommand
 ============
 */
-void Cmd_AddCommand (char *cmd_name, xcommand_t function)
+EXTERNC void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 {
 	cmd_function_t	*cmd;
 	int	key;

@@ -70,6 +70,18 @@ void Host_Error (char *message, ...)
 	throw Error(str);
 }
 
+EXTERNC void Host_Error_wrapper (char *message, ...)
+{
+	va_list		argptr;
+	char		str[1024];
+	
+	va_start (argptr, message);
+	vsprintf (str, message, argptr);
+	va_end (argptr);
+
+	Host_Error (str);
+}
+
 void Host_HandleError (char *error, ...)
 {
 	va_list		argptr;
@@ -153,8 +165,8 @@ void Host_InitMemory (int memsize)
 }
 
 
-extern void D_FlushCaches (void);
-extern void Mod_ClearAll (void);
+EXTERNC extern void D_FlushCaches (void);
+EXTERNC extern void Mod_ClearAll (void);
 
 /*
 ===============

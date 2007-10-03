@@ -40,8 +40,6 @@ static lumpinfo_t	*wad_lumps;
 static byte			*wad_base = NULL;
 static int			wad_filesize;
 
-void SwapPic (qpic_t *pic);
-
 /*
 ==================
 W_CleanupName
@@ -80,7 +78,7 @@ static void W_CleanupName (char *in, char *out)
 W_LoadWadFile
 ====================
 */
-void W_FreeWadFile (void)
+EXTERNC void W_FreeWadFile (void)
 {
 	Q_free (wad_base);
 	wad_base = NULL;
@@ -95,7 +93,7 @@ void W_FreeWadFile (void)
 W_LoadWadFile
 ====================
 */
-void W_LoadWadFile (char *filename)
+EXTERNC void W_LoadWadFile (char *filename)
 {
 	lumpinfo_t		*lump_p;
 	wadinfo_t		*header;
@@ -172,7 +170,7 @@ static void W_HackOcranaLedsIntoConchars (byte *data);
 
 int wad_lump_disksize;
 
-void *W_GetLumpName (char *name, qbool crash)
+EXTERNC void *W_GetLumpName (char *name, qbool crash)
 {
 	lumpinfo_t	*lump;
 	
@@ -208,7 +206,7 @@ automatic byte swapping
 =============================================================================
 */
 
-void SwapPic (qpic_t *pic)
+EXTERNC void SwapPic (qpic_t *pic)
 {
 	pic->width = LittleLong(pic->width);
 	pic->height = LittleLong(pic->height);	

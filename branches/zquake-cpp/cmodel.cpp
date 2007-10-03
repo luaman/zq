@@ -995,7 +995,7 @@ cmodel_t *CM_LoadMap (const string name, qbool clientload, unsigned *checksum, u
 	}
 
 	// load the file
-	buf = (unsigned int *)FS_LoadTempFile (name);
+	buf = (unsigned int *)FS_LoadTempFile (name.c_str());
 	if (!buf)
 		Host_Error ("CM_LoadMap: %s not found", name.c_str());
 
