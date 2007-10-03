@@ -191,6 +191,9 @@ int vsnprintf(char *buffer, size_t count, const char *format, va_list argptr);
 
 qbool Q_glob_match (const char *pattern, const char *text);
 
+// does a varargs printf into a temp buffer
+char	*va(char *format, ...);
+
 int Com_HashKey (const char *name);
 
 //============================================================================

@@ -207,9 +207,6 @@ void COM_FileBase (const char *in, char *out);
 void COM_DefaultExtension (char *path, char *extension);
 void COM_ForceExtension (char *path, char *extension);
 
-char	*va(char *format, ...);
-// does a varargs printf into a temp buffer
-
 //============================================================================
 
 extern int fs_filesize;
