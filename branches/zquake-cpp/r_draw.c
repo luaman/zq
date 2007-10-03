@@ -20,14 +20,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // r_draw.c
 
-#include "client.h"
 #include "r_local.h"
 #include "rc_wad.h"
 #include "sound.h"
 #include "version.h"
 
 int			char_range[MAX_CHARSETS];	// 0x0400, etc; slot 0 is always 0x00
-byte		*draw_chars[MAX_CHARSETS];				// 8*8 graphic characters
+EXTERNC byte		*draw_chars[MAX_CHARSETS];				// 8*8 graphic characters
 								// slot 0 is static, the rest are Q_malloc'd
 mpic_t		*draw_disc;
 
@@ -319,18 +318,20 @@ void R_DrawChar (int x, int y, int num)
 	R_DrawCharW (x, y, char2wc(num));
 }
 
-void R_DrawString (int x, int y, const string str)
+void R_DrawString (int x, int y, const char *str)
 {
-	for (int i = 0; i < str.length(); i++)
+	int i, len = strlen(str);
+	for (i = 0; i < len; i++)
 	{
 		R_DrawChar (x, y, str[i]);
 		x += 8;
 	}
 }
 
-void R_DrawStringW (int x, int y, const wstring ws)
+void R_DrawStringW (int x, int y, const wchar *ws)
 {
-	for (int i = 0; i < ws.length(); i++)
+	int i, wlen = wcslen(ws);
+	for (i = 0; i < wlen; i++)
 	{
 		R_DrawCharW (x, y, ws[i]);
 		x += 8;
@@ -1154,7 +1155,7 @@ Erases the disc icon.
 Call after completing any disc IO
 ================
 */
-void R_EndDisc (void)
+EXTERNC void R_EndDisc (void)
 {
 	if (!draw_disc)
 		return;

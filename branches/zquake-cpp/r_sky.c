@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_sky.c
 
-#include "client.h"
 #include "r_local.h"
 #include "d_local.h"
 #include "rc_image.h"
@@ -268,7 +267,7 @@ byte		r_skypixels[6][256*256];
 R_SetSky
 ===============
 */
-void R_SetSky (const string name)
+void R_SetSky (const char *name)
 {
 	int		i;
 	char	pathname[MAX_QPATH];
@@ -277,7 +276,7 @@ void R_SetSky (const string name)
 	int		r_skysideimage[6] = {5, 2, 4, 1, 0, 3};
 	int		width, height;
 
-	if (name = "") {
+	if (!name[0]) {
 		// disable skybox
 		r_skyboxloaded = false;
 		return;

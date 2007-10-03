@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_efrag.c
 
-#include "client.h"
 #include "r_local.h"
 
 mnode_t	*r_pefragtopnode;
@@ -51,6 +50,7 @@ Call when removing an object from the world or moving it to another position
 */
 void R_RemoveEfrags (entity_t *ent)
 {
+#if 0//@@
 	efrag_t		*ef, *old, *walk, **prev;
 	
 	ef = ent->efrag;
@@ -81,6 +81,7 @@ void R_RemoveEfrags (entity_t *ent)
 	}
 	
 	ent->efrag = NULL; 
+#endif
 }
 
 /*
@@ -90,6 +91,7 @@ R_SplitEntityOnNode
 */
 void R_SplitEntityOnNode (mnode_t *node)
 {
+#if 0//@@
 	efrag_t		*ef;
 	mplane_t	*splitplane;
 	mleaf_t		*leaf;
@@ -152,6 +154,7 @@ void R_SplitEntityOnNode (mnode_t *node)
 		
 	if (sides & 2)
 		R_SplitEntityOnNode (node->children[1]);
+#endif
 }
 
 
@@ -162,6 +165,7 @@ R_AddEfrags
 */
 void R_AddEfrags (entity_t *ent)
 {
+#if 0	//@@
 	model_t		*entmodel;
 	int			i;
 		
@@ -187,6 +191,7 @@ void R_AddEfrags (entity_t *ent)
 	R_SplitEntityOnNode (r_worldmodel->nodes);
 
 	ent->topnode = r_pefragtopnode;
+#endif
 }
 
 
@@ -199,6 +204,7 @@ R_StoreEfrags
 */
 void R_StoreEfrags (efrag_t **ppefrag)
 {
+#if 0	//@@
 	entity_t	*pent;
 	model_t		*model;
 	efrag_t		*pefrag;
@@ -231,6 +237,7 @@ void R_StoreEfrags (efrag_t **ppefrag)
 			Sys_Error ("R_StoreEfrags: Bad entity type %d", model->type);
 		}
 	}
+#endif
 }
 
 
