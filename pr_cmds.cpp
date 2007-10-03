@@ -2731,6 +2731,7 @@ static void PF_checkextension (void)
 		"DP_QC_SINCOSSQRTPOW",
 		"DP_QC_TRACEBOX",
 		"DP_REGISTERCVAR",
+		"FTE_QC_CHECKPVS",
 		"QSG_CVARSTRING",
 		"ZQ_CLIENTCOMMAND",
 		"ZQ_INPUTBUTTONS",
@@ -2744,8 +2745,8 @@ static void PF_checkextension (void)
 		"ZQ_QC_TOKENIZE",
 		"ZQ_SETINFO",
 		"ZQ_SOUNDTOCLIENT",
-		"ZQ_TESTBOT",
 		"ZQ_VWEP",
+		"ZQ_BOT_TEST",
 		NULL
 	};
 	char **pstr, *extension;
@@ -2771,7 +2772,7 @@ static void PF_checkextension (void)
 
 
 // Tonik's experiments -->
-static void PF_testbot (void)
+static void PF_spawnbot (void)
 {
 	edict_t	*ed;
 	ed = SV_CreateBot ();
@@ -2917,6 +2918,25 @@ void PF_clienttype (void)
 	G_FLOAT(OFS_RETURN) = retv;
 }
 
+// FTE_QC_CHECKPVS
+// float(vector viewpos, entity viewee) checkpvs = #240
+// This requires a correctly setorigin'ed entity.
+void PF_checkpvs (void)
+{
+	float *viewpos = G_VECTOR(OFS_PARM0);
+	edict_t *ent = G_EDICT(OFS_PARM1);
+	byte *pvs = CM_FatPVS(viewpos);
+
+	for (int i=0 ; i < ent->num_leafs ; i++) {
+		if (pvs[ent->leafnums[i] >> 3] & (1 << (ent->leafnums[i]&7) )) {
+			G_FLOAT(OFS_RETURN) = 1;
+		}
+	}
+		
+	G_FLOAT(OFS_RETURN) = 0;
+}
+
+
 //=============================================================================
 
 static builtin_t std_builtins[] =
@@ -3044,16 +3064,18 @@ static struct { int num; builtin_t func; } ext_builtins[] =
 {117, PF_stov},			// vector(string s) stov							= #117;
 {118, PF_strzone},		// string(string s) strzone							= #118;
 {119, PF_strunzone},	// void(string s) strunzone							= #119;
+{240, PF_checkpvs},		// float(vector viewpos, entity viewee) checkpvs	= #240
 {448, PF_cvar_string},	// string(string varname) cvar_string				= #448;
 {455, PF_clienttype},	// float(entity client) clienttype					= #455;
 {530, PF_soundtoclient},	// void(entity client, entity e, float chan, string samp, float vol, float atten) soundtoclient = #530;
 {531, PF_setpause},		// void(float pause) setpause						= #531;
 {532, PF_precache_vwep_model},// float(string model) precache_vwep_model	= #532;
 {533, PF_setinfo},		// float(entity e, string key, string value)		= #533;
+{534, PF_spawnbot},		// entity() spawnbot								= #534;
 
 // Experimental and/or deprecated:
 {0x5a08, PF_soundtoclient},
-{0x5a0A, PF_testbot},
+{0x5a0A, PF_spawnbot},
 {0x5a0B, PF_setinfo},
 };
 
