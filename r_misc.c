@@ -636,26 +636,26 @@ void R_ViewChanged (float aspect)
 	screenedge[0].normal[0] = -1.0 / (xOrigin*r_refdef.horizontalFieldOfView);
 	screenedge[0].normal[1] = 0;
 	screenedge[0].normal[2] = 1;
-	screenedge[0].type = PLANE_ANYZ;
+	screenedge[0].type = PLANE_NON_AXIAL;
 	
 // right side clip
 	screenedge[1].normal[0] =
 			1.0 / ((1.0-xOrigin)*r_refdef.horizontalFieldOfView);
 	screenedge[1].normal[1] = 0;
 	screenedge[1].normal[2] = 1;
-	screenedge[1].type = PLANE_ANYZ;
+	screenedge[1].type = PLANE_NON_AXIAL;
 	
 // top side clip
 	screenedge[2].normal[0] = 0;
 	screenedge[2].normal[1] = -1.0 / (yOrigin*verticalFieldOfView);
 	screenedge[2].normal[2] = 1;
-	screenedge[2].type = PLANE_ANYZ;
+	screenedge[2].type = PLANE_NON_AXIAL;
 	
 // bottom side clip
 	screenedge[3].normal[0] = 0;
 	screenedge[3].normal[1] = 1.0 / ((1.0-yOrigin)*verticalFieldOfView);
 	screenedge[3].normal[2] = 1;	
-	screenedge[3].type = PLANE_ANYZ;
+	screenedge[3].type = PLANE_NON_AXIAL;
 	
 	for (i=0 ; i<4 ; i++)
 		VectorNormalize (screenedge[i].normal);
