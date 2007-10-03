@@ -407,6 +407,8 @@ static void DrawSkyPolygon (int nump, vec3_t vecs)
 	}
 }
 
+#define	ON_EPSILON		0.1			// point on plane side epsilon
+
 enum {
 	SIDE_FRONT = 0,
 	SIDE_BACK = 1,
