@@ -40,6 +40,8 @@ using std::wstring;
 
 //#define wchar unsigned short	// 16-bit Unicode char
 #define wchar wchar_t
+typedef unsigned char 		byte;
+#define _DEF_BYTE_
 
 #include "sys.h"
 #include "mathlib.h"
@@ -54,9 +56,6 @@ using std::wstring;
 #define	QUAKE_GAME			// as opposed to utilities
 
 #define PROGRAM "ZQuake"
-
-typedef unsigned char 		byte;
-#define _DEF_BYTE_
 
 typedef int qbool;
 

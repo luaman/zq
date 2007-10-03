@@ -407,6 +407,12 @@ static void DrawSkyPolygon (int nump, vec3_t vecs)
 	}
 }
 
+enum {
+	SIDE_FRONT = 0,
+	SIDE_BACK = 1,
+	SIDE_ON = 2
+};
+
 #define	MAX_CLIP_VERTS	64
 static void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 {
