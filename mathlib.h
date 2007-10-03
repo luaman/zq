@@ -67,6 +67,7 @@ vec_t VectorLength (vec3_t v);
 vec_t VectorLengthSquared (vec3_t v);
 void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
 float VectorNormalize (vec3_t v);		// returns vector length
+float VectorNormalize2 (const vec3_t v, vec3_t out);
 void VectorScale (vec3_t in, vec_t scale, vec3_t out);
 
 #define LerpFloat(from, to, frac) ((from) + (frac)*((to) - (from)))
@@ -84,7 +85,10 @@ void FloorDivMod (double numer, double denom, int *quotient,
 void vectoangles(vec3_t vec, vec3_t ang);
 void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
 void MakeNormalVectors (vec3_t forward, vec3_t right, vec3_t up);
-extern "C" int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
+#ifdef __cplusplus
+extern "C"
+#endif
+int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
 float	anglemod(float a);
 
 void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees );

@@ -446,6 +446,26 @@ float VectorNormalize (vec3_t v)
 	return length;
 }
 
+float VectorNormalize2 (const vec3_t v, vec3_t out) {
+	float	length, ilength;
+
+	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+	length = sqrt (length);
+
+	if (length)
+	{
+		ilength = 1/length;
+		out[0] = v[0]*ilength;
+		out[1] = v[1]*ilength;
+		out[2] = v[2]*ilength;
+	} else {
+		VectorClear( out );
+	}
+		
+	return length;
+
+}
+
 void VectorScale (vec3_t in, vec_t scale, vec3_t out)
 {
 	out[0] = in[0]*scale;
