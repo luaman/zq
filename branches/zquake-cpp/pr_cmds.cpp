@@ -197,7 +197,7 @@ static void PF_setmodel (void)
 	m = G_STRING(OFS_PARM1);
 
 // check to see if model was properly precached
-	for (i = 1, check = sv.model_name + 1; i < MAX_MODELS && *check != ""; i++, check++)
+	for (i = 0, check = sv.model_name; i < MAX_MODELS && (i == 0 || *check != ""); i++, check++)
 		if (*check == m)
 			goto ok;
 	PR_RunError ("PF_setmodel: no precache: %s\n", m);
