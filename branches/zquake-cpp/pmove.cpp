@@ -982,6 +982,7 @@ void PM_PlayerMove (playermove_t *pmove, movevars_t *_movevars)
 {
 	qbool oldonground;
 	vec3_t oldvelocity;
+	int oldwaterlevel;
 
 	pm = pmove;
 	movevars = *_movevars;
@@ -1046,7 +1047,12 @@ void PM_PlayerMove (playermove_t *pmove, movevars_t *_movevars)
 		PM_AirMove ();
 
 	// set onground, watertype, and waterlevel for final spot
+	oldwaterlevel = pm->waterlevel;
 	PM_CategorizePosition (pm);
+
+	// emulate NetQuake waterjump for some maps where otherwise waterjumps wouldn't work
+	if (oldwaterlevel == 2 && pm->waterlevel < 2 && !pm->waterjumptime)
+		PM_CheckWaterJump();
 
 	if (pm->onground && !oldonground)
 		pm->landspeed = oldvelocity[2];
