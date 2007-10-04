@@ -124,8 +124,6 @@ void Host_HandleError (char *error, ...)
 		Sys_Error ("Host_Error: %s", str);
 
 	inerror = false;
-
-	Host_Abort ();
 }
 
 
@@ -215,6 +213,9 @@ void Host_Frame (double time)
 	}
 	catch (EndGame) {
 		// do nothing;
+	}
+	catch (...) {
+		Sys_Error ("Unhandled exception");
 	}
 }
 
