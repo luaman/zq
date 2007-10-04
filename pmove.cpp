@@ -820,11 +820,11 @@ void PM_CheckWaterJump (void)
 
 	VectorMA (pm->origin, 24, flatforward, spot);
 	spot[2] += 8;
-	cont = PM_PointContents (pm, spot);
+	cont = PM_PointContents_AllBSPs (pm, spot);
 	if (cont != CONTENTS_SOLID)
 		return;
 	spot[2] += 24;
-	cont = PM_PointContents (pm, spot);
+	cont = PM_PointContents_AllBSPs (pm, spot);
 	if (cont != CONTENTS_EMPTY)
 		return;
 	// jump out of water

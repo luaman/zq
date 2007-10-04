@@ -102,6 +102,7 @@ void PM_PlayerMove (playermove_t *pmove, movevars_t *movevars);
 void PM_Init (void);
 
 int PM_PointContents (playermove_t *pm, vec3_t point);
+int PM_PointContents_AllBSPs (playermove_t *pm, vec3_t point);
 qbool PM_TestPlayerPosition (playermove_t *pm, vec3_t point);
 trace_t PM_PlayerTrace (playermove_t *pm, vec3_t start, vec3_t end);
 trace_t PM_TraceLine (playermove_t *pm, vec3_t start, vec3_t end);

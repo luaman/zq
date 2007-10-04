@@ -61,6 +61,40 @@ int PM_PointContents (playermove_t *pm, vec3_t p)
 }
 
 /*
+==================
+PM_PointContents_AllBSPs
+
+Checks world and bsp entities, but not bboxes (like traceline with nomonsters set)
+For waterjump test
+==================
+*/
+int PM_PointContents_AllBSPs (playermove_t *pm, vec3_t p)
+{
+	int i;
+	physent_t	*pe;
+	hull_t		*hull;
+	vec3_t		test;
+	int	result, final;
+
+	final = CONTENTS_EMPTY;
+	for (i=0 ; i< pm->numphysent ; i++)
+	{
+		pe = &pm->physents[i];
+		if (!pe->model)
+			continue;	// ignore non-bsp
+		hull = &pm->physents[i].model->hulls[0];
+		VectorSubtract (p, pe->origin, test);
+		result = CM_HullPointContents (hull, hull->firstclipnode, test);
+		if (result == CONTENTS_SOLID)
+			return CONTENTS_SOLID;
+		if (final == CONTENTS_EMPTY)
+			final = result;
+	}
+
+	return final;
+}
+
+/*
 ================
 PM_TestPlayerPosition
 
