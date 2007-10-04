@@ -242,8 +242,11 @@ void CL_FindModelNumbers (void)
 		else if (s == "soldier" || s == "dog" || s == "demon" || s == "ogre"
 		|| s == "shambler" || s == "knight"	|| s == "zombie" || s == "wizard"
 		|| s == "enforcer" || s == "fish" || s == "hknight" || s == "shalrath"
-		|| s == "tarbaby" || s == "armabody" || s == "armalegs"
-		|| s == "grem" || s == "scor")
+		|| s == "tarbaby"
+		// Scourge of Armagon mission pack
+		|| s == "armabody" || s == "armalegs" || s == "grem" || s == "scor"
+		// Travail mission pack
+		|| s == "uberscrag" || s == "jugg2" || s == "spider" || s == "azoth" || s == "axegrunt")
 			cl.modelinfos[i] = mi_monster;
 	}
 }
