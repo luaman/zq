@@ -1690,6 +1690,11 @@ static void NQP_Process (void)
 		cmd = nqp_buf_data[0];
 		if (cmd == svc_killedmonster || cmd == svc_foundsecret || cmd == svc_sellscreen)
 			nqp_expect = 1;
+		else if (cmd == svc_updatestat) {
+			NQP_Skip (1);
+			MSG_WriteByte (&sv.reliable_datagram, svc_updatestatlong);
+			nqp_expect = 5;
+		}
 		else if (cmd == nq_svc_setview) {
 			if (nqp_buf.cursize < 3)
 				goto waitformore;
