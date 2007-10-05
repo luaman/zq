@@ -32,8 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <direct.h>		// _mkdir
 #endif
 
-#define MINIMUM_WIN_MEMORY	0x0c00000
-#define MAXIMUM_WIN_MEMORY	0x1000000
+#define MINIMUM_WIN_MEMORY	0x0c00000	// 12MiB
+#define MAXIMUM_WIN_MEMORY	0x2000000	// 32MiB
 
 #define PAUSE_SLEEP		50				// sleep time on pause or minimization
 #define NOT_FOCUS_SLEEP	20				// sleep time when not focus
@@ -581,7 +581,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 
 // take the greater of all the available memory or half the total memory,
-// but at least 8 Mb and no more than 16 Mb, unless they explicitly
+// but at least 8 Mb and no more than 32 Mb, unless they explicitly
 // request otherwise
 	lpBuffer.dwLength = sizeof(MEMORYSTATUS);
 	GlobalMemoryStatus (&lpBuffer);
@@ -654,7 +654,7 @@ int main (int argc, char **argv)
 	hinput = GetStdHandle (STD_INPUT_HANDLE);
 	houtput = GetStdHandle (STD_OUTPUT_HANDLE);
 
-	Host_Init (argc, argv, 16*1024*1024);
+	Host_Init (argc, argv, 32*1024*1024);
 
 //
 // main loop
