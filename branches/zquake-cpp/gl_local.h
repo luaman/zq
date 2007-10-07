@@ -199,7 +199,7 @@ extern qbool gl_mtexable;
 extern qbool gl_mtexfbskins;
 
 //
-// gl_warp.c
+// gl_warp.cpp
 //
 void GL_SubdivideSurface (msurface_t *fa);
 void GL_BuildSkySurfacePolys (msurface_t *fa);
@@ -210,12 +210,12 @@ void R_InitSky (texture_t *mt);	// classic Quake sky
 extern qbool	r_skyboxloaded;
 
 //
-// gl_draw.c
+// gl_draw.cpp
 //
 void GL_Set2D (void);
 
 //
-// gl_rmain.c
+// gl_rmain.cpp
 //
 qbool R_CullBox (vec3_t mins, vec3_t maxs);
 qbool R_CullSphere (vec3_t centre, float radius);
@@ -224,7 +224,7 @@ void R_PolyBlend (void);
 void R_BrightenScreen (void);
 void GL_Init (void);
 
-// gl_rmisc.c
+// gl_rmisc.cpp
 void R_ScreenShot_f (void);
 void R_LoadSky_f (void);
 void GL_AllocTextureSlots (void);
@@ -232,7 +232,7 @@ void R_GetTranslatedPlayerSkin (int colormap, int *texture, int *fb_texture);
 EXTERNC void R_FlushTranslations (void);
 
 //
-// gl_rlight.c
+// gl_rlight.cpp
 //
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 void R_AnimateLight (void);
@@ -240,17 +240,17 @@ void R_RenderDlights (void);
 int R_LightPoint (vec3_t p, /* out */ vec3_t color);
 
 //
-// gl_refrag.c
+// gl_refrag.cpp
 //
 void R_StoreEfrags (efrag_t **ppefrag);
 
 //
-// gl_mesh.c
+// gl_mesh.cpp
 //
 void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
 
 //
-// gl_rsurf.c
+// gl_rsurf.cpp
 //
 void R_DrawBrushModel (entity_t *e);
 void R_DrawWorld (void);
@@ -258,22 +258,22 @@ void R_DrawWaterSurfaces (void);
 void GL_BuildLightmaps (void);
 
 //
-// gl_ngraph.c
+// gl_ngraph.cpp
 //
 void R_NetGraph (void);
 
 //
-// gl_ralias.c
+// gl_ralias.cpp
 //
 void R_DrawAliasModel (entity_t *ent);
 
 //
-// gl_rsprite.c
+// gl_rsprite.cpp
 //
 void R_DrawSpriteModel (entity_t *ent);
 
 //
-// skin.c
+// rc_skin.cpp
 //
 typedef struct skin_s
 {
