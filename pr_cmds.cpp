@@ -886,6 +886,12 @@ static void PF_cvar (void)
 		return;
 	}
 
+	if (pr_nqprogs && !strcmp(str, "timelimit") && !pr_globals[35] /* deathmatch */) {
+		// stupid NQ bug: timelimit is checked in single player/coop
+		G_FLOAT(OFS_RETURN) = 0.0;
+		return;
+	}
+
 	if (!Cvar_Find (str) && (temp = Cmd_LegacyCommandValue (str)))
 		str = temp;
 
