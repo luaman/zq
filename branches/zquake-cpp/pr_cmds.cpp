@@ -1813,9 +1813,9 @@ switch (nqp_buf_data[1]) {
 		MSG_WriteByte (&sv.reliable_datagram, svc_temp_entity);
 		MSG_WriteByte (&sv.reliable_datagram, TE_LIGHTNING1);
 		entnum = nqp_buf_data[2] + nqp_buf_data[3]*256;
-		if (entnum > MAX_CLIENTS)
+		if ((unsigned int)entnum > 1023)
 			entnum = 0;
-		MSG_WriteShort (&sv.reliable_datagram, (short)(entnum - 297));
+		MSG_WriteShort (&sv.reliable_datagram, (short)(entnum - 1288));
 		NQP_Skip (4);
 		nqp_expect = 12;
 		break;
