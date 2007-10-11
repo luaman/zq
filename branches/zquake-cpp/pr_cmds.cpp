@@ -1807,10 +1807,19 @@ switch (nqp_buf_data[1]) {
 		nqp_expect = 16;
 	  break;
   case NQ_TE_BEAM:
+  {		int entnum;
 		if (nqp_buf.cursize < 16)
 			goto waitformore;
-		NQP_Skip (16);		// TODO: make an extension for this
+		MSG_WriteByte (&sv.reliable_datagram, svc_temp_entity);
+		MSG_WriteByte (&sv.reliable_datagram, TE_LIGHTNING1);
+		entnum = nqp_buf_data[2] + nqp_buf_data[3]*256;
+		if (entnum > MAX_CLIENTS)
+			entnum = 0;
+		MSG_WriteShort (&sv.reliable_datagram, (short)(entnum - 297));
+		NQP_Skip (4);
+		nqp_expect = 12;
 		break;
+  }
 
   case NQ_TE_EXPLOSION2:
 		nqp_expect = 10;

@@ -179,30 +179,35 @@ void CL_ParseBeam (int type)
 	end[1] = MSG_ReadCoord ();
 	end[2] = MSG_ReadCoord ();
 
-	// an experimental protocol extension:
-	// TE_LIGHTNING1 with entity num in -512..-1 range is a rail trail
-	if (type == 1 && (ent >= -512 && ent <= -1)) {
+	// ZQuake protocol extension:
+	// TE_LIGHTNING1 with entity num in -264..-1 range is a rail trail
+	if (type == 1 && (ent >= -264 && ent <= -1) /* 264 (33*8) slots */) {
 		int colors[8] = { 6 /* white (change to something else?) */,
 			208 /* blue */,
 			180 /* green */, 35 /* light blue */, 224 /* red */,
 			133 /* magenta... kinda */, 192 /* yellow */, 6 /* white */};
 		int color;
-		int pnum, cnum;
+		int cnum;
 
-		// -512..-257 are colored trails assigned to a specific
-		// player, so overrides can be applied; encoded as follows:
-		// 7654321076543210
-		// 1111111nnnnnnccc  (n = player num, c = color code)
+		ent -= -264;
 		cnum = ent & 7;
-		pnum = (ent >> 3) & 63;
-		if (pnum < MAX_CLIENTS)
-		{
-			// TODO: apply team/enemy overrides
+		ent = (ent >> 3) & 63;
+		if (ent >= 1 && ent <= MAX_CLIENTS) {
+			// could apply team/enemy overrides here
 		}
 		color = colors[cnum];
 
 		CL_RailTrail (start, end, color);
 		return;
+	}
+	// ZQuake protocol extension:
+	// TE_LIGHTNING1 with entity num in -297..-265 range is TE_BEAM
+	else if (type == 1 && (ent >= -297 && ent <= -265) /* 33 slots */) {
+		if (!cl_beam_mod)
+			cl_beam_mod = Mod_ForName ("progs/beam.mdl", true, false);
+		m = cl_beam_mod;
+		ent -= -297;
+		goto do_beam;
 	}
 
 	switch (type) {
@@ -228,6 +233,7 @@ void CL_ParseBeam (int type)
 		break;
 	}
 
+do_beam:
 	if (ent == Cam_PlayerNum() + 1)
 		VectorCopy (end, playerbeam_end);	// for cl_fakeshaft
 
