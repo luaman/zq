@@ -1948,12 +1948,10 @@ void SV_RunCmd (usercmd_t *ucmd)
 
 	if (!sv_client->spectator)
 	{
-		int	oldflags;
 		vec3_t	oldvelocity;
 		float	old_teleport_time;
 
 		VectorCopy (sv_player->v.velocity, oldvelocity);
-		oldflags = (int)sv_player->v.flags;
 		old_teleport_time = sv_player->v.teleport_time;
 
 		PR_GLOBAL(frametime) = sv_frametime;
@@ -1965,12 +1963,6 @@ void SV_RunCmd (usercmd_t *ucmd)
 		if (pr_nqprogs) {
 			sv_player->v.teleport_time = old_teleport_time;
 			VectorCopy (oldvelocity, sv_player->v.velocity);
-		} else
-		if ((oldflags & FL_ONGROUND) && oldvelocity[2] < 0 && sv_player->v.velocity[2] == 0
-			&& oldvelocity[0] == sv_player->v.velocity[0] && oldvelocity[1] == sv_player->v.velocity[1])
-		{
-			// don't let KTeams mess with physics
-			sv_player->v.velocity[2] = oldvelocity[2];
 		}
 
 		SV_RunThink (sv_player);
@@ -2086,14 +2078,6 @@ void SV_PostRunCmd (void)
 
 		if (pr_nqprogs)
 			VectorCopy (oldvelocity, sv_player->v.velocity);
-		else
-		if (onground && oldvelocity[2] < 0 && sv_player->v.velocity[2] == 0
-			&& oldvelocity[0] == sv_player->v.velocity[0]
-			&& oldvelocity[1] == sv_player->v.velocity[1])
-		{
-			// don't let KTeams mess with physics
-			sv_player->v.velocity[2] = oldvelocity[2];
-		}
 
 		if (pr_nqprogs)
 			SV_RunNQNewmis ();
