@@ -848,7 +848,7 @@ void CLNQ_LinkEntities (void)
 
 		ent.model = model = cl.model_precache[state->modelindex];
 		if (!model)
-			Host_Error ("CL_LinkPacketEntities: bad modelindex");
+			continue;	// NQ tolerates incorrect modelindexes
 
 		if (cl_r2g.value && cl_grenadeindex != -1)
 			if (state->modelindex == cl_rocketindex)
