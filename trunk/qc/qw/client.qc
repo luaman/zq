@@ -1183,6 +1183,11 @@ Called every frame after physics are run
 */
 void PlayerPostThink ()
 {
+#ifdef FRIKBOT
+	if (clienttype(self) == CLIENTTYPE_BOT)
+		BotPostThink ();
+#endif
+
 	if (intermission_running)
 	{
 		setorigin (self, intermission_spot.origin);
