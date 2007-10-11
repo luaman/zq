@@ -201,12 +201,12 @@ void CL_ParseBeam (int type)
 		return;
 	}
 	// ZQuake protocol extension:
-	// TE_LIGHTNING1 with entity num in -297..-265 range is TE_BEAM
-	else if (type == 1 && (ent >= -297 && ent <= -265) /* 33 slots */) {
+	// TE_LIGHTNING1 with entity num in -1288..-265 range is TE_BEAM
+	else if (type == 1 && (ent >= -1288 && ent <= -265) /* 1024 slots */) {
 		if (!cl_beam_mod)
 			cl_beam_mod = Mod_ForName ("progs/beam.mdl", true, false);
 		m = cl_beam_mod;
-		ent -= -297;
+		ent -= -1288;
 		goto do_beam;
 	}
 
