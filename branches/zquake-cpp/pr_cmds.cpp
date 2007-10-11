@@ -1701,10 +1701,19 @@ static void NQP_Process (void)
 			MSG_WriteByte (&sv.reliable_datagram, svc_updatestatlong);
 			nqp_expect = 5;
 		}
+		else if (cmd == svc_print) {
+			byte *p = (byte *)memchr (nqp_buf_data + 1, 0, nqp_buf.cursize - 1);
+			if (!p)
+				goto waitformore;
+			MSG_WriteByte(&sv.reliable_datagram, svc_print);
+			MSG_WriteByte(&sv.reliable_datagram, PRINT_HIGH);
+			MSG_WriteString(&sv.reliable_datagram, (char *)(nqp_buf_data + 1));
+			NQP_Skip(p - nqp_buf_data + 1);
+		}
 		else if (cmd == nq_svc_setview) {
 			if (nqp_buf.cursize < 3)
 				goto waitformore;
-			NQP_Skip (3);	// what can we do?  just ignore it
+			NQP_Skip (3);		// TODO: make an extension for this
 		}
 		else if (cmd == svc_updatefrags)
 			nqp_expect = 4;
@@ -1798,7 +1807,9 @@ switch (nqp_buf_data[1]) {
 		nqp_expect = 16;
 	  break;
   case NQ_TE_BEAM:
-		NQP_Skip (16);
+		if (nqp_buf.cursize < 16)
+			goto waitformore;
+		NQP_Skip (16);		// TODO: make an extension for this
 		break;
 
   case NQ_TE_EXPLOSION2:
