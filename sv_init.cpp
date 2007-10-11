@@ -352,16 +352,11 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 	if (sv_loadentfiles.value) {
 		// FIXME, FS_LoadHunkFile does not guarantee a trailing \0
 		entitystring = (char *)FS_LoadHunkFile(("maps/" + sv.mapname + ".ent").c_str());
-		if (entitystring) {
+		if (entitystring)
 			Com_DPrintf ("Using entfile maps/%s.ent\n", sv.mapname.c_str());
-			svs.info.set("*entfile", va("%i",
-				CRC_Block((byte *)entitystring, fs_filesize)));
-		}
 	}
-	if (!entitystring) {
-		svs.info.set("*entfile", "");
+	if (!entitystring)
 		entitystring = CM_EntityString();
-	}
 	ED_LoadFromFile (entitystring);
 
 	// look up some model indexes for specialized message compression
