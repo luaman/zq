@@ -475,7 +475,7 @@ void () Menu_Intro = {
         st2 = infokey (world,"motd2");
         centerprint3 (self,st1,"\n",st2);
     } else {
-        CenterPrint (self,"Welcome to Oz Team Fortress 1.76\nŸ\nhttp://oztf.quakeworld.nu/\n");
+        CenterPrint (self,"Welcome to Oz Team Fortress 1.77a\nŸ\nhttp://quakeworld.nu/forum/\n");
     }
 };
 
