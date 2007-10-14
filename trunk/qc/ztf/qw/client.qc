@@ -202,7 +202,7 @@ void () DecodeLevelParms = {
     self.current = parm8;
     self.armortype = (parm9 * 0.010);
     if ( !(toggleflags & 256.000) ) {
-        localcmd("serverinfo oztf 1.76\n");
+        localcmd("serverinfo oztf 1.77a\n");
         Initialise_Teams();
         //toggleflags = (toggleflags | parm10);
         flagem_checked = 0.000;

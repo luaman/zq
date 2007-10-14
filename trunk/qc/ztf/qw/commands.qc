@@ -32,7 +32,7 @@ string (float num, float digits) spacefornum = {
 };
 
 void() ShowVersion = {
-    sprint(self, 2,"\n\nΤθισ ισ Oz Team Fortress φεςσιοξ 1.76         βω Mercury\n\nΣπεγιαμ τθαξψ το Omicron, γςεατοςσ οζ Kombat Teams 2.21\nΑξδ ξοξε οτθες τθεξ τθε γςεατοςσ οζ Team Fortress\n\n\nPlease visit θττπΊ――οϊτζ®ρυαλεχοςμδ®ξυ― for more info. \n\n\n");
+    sprint(self, 2,"\n\nΤθισ ισ Oz Team Fortress φεςσιοξ 1.77a         βω Mercury\n\nΣπεγιαμ τθαξψ το Omicron, γςεατοςσ οζ Kombat Teams 2.21\nΑξδ ξοξε οτθες τθεξ τθε γςεατοςσ οζ Team Fortress\n\n\nPlease visit θττπΊ――οϊτζ®ρυαλεχοςμδ®ξυ― for more info. \n\n\n");
 };
 //Special thanx to Rawhide, Omicron, creators of Kombat Teams 2.21\nAnd none other then the creators of Team Fortress\n\n Also thank you to all those test dummies.\n Including the fatty fv nitemare.\n And the annoying sh33p b0y bliP :)\n\nPlease visit ρχτζ®αυσζοςτςεσσ®γον for more info. \n");
 

@@ -20,7 +20,7 @@ void () TeamFortress_MOTD = {
             sprint (self,2.000,"\n\n\n");
         }
 
-        sprint (self,2.000,"Oz Team Fortress v1.76\nhttp://oztf.quakeworld.nu/\n");
+        sprint (self,2.000,"Oz Team Fortress v1.77a\nhttp://quakeworld.nu/forum/\n");
         self.menu_displaytime = 0.000;
         self.current_menu = 5.000;
         self.menu_count = 25.000;
