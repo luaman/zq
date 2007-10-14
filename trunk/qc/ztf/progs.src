@@ -1,0 +1,57 @@
+qwprogs.dat
+
+qw/defs.qc
+qw.qc
+debug.qc
+sbardef.qc // qwtf sbar defs
+status.qc // qwtf sbar
+menu.qc  // qwtf menu
+qw/subs.qc
+qw/combat.qc
+qw/items.qc
+infocheck.qc
+track.qc
+reload.qc
+stored.qc
+qw/weapons.qc
+qw/world.qc
+qw/client.qc
+qw/player.qc
+qw/doors.qc
+qw/buttons.qc
+qw/triggers.qc
+tforttm.qc
+qw/plats.qc
+qw/misc.qc
+qwsp/monsters.qc
+sentry.qc
+admin.qc
+
+classes/pyro.qc
+classes/spy.qc
+classes/demoman.qc
+classes/scout.qc
+classes/engineer.qc
+classes/soldier.qc
+classes/sniper.qc
+
+clan.qc
+rounds.qc
+ammobox.qc
+tfort.qc
+tforthlp.qc
+
+ents/ents.qc
+//ents/halflife.qc // halflife
+//ents/soccer.qc  // soccer
+ents/tfortmap.qc
+//ents/quake3.qc   // quake3
+
+qw/commands.qc
+ctf/hook.qc
+ctf/ctf.qc
+coop.qc
+actions.qc
+impulse.qc
+spect.qc
+mvdsv.qc
