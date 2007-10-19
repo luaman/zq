@@ -1,3 +1,5 @@
+// XXX: there seems to be a huge mass of if/else soup in these methods
+//        cleanups needed ASAP
 
 void (float type, float print) SetOptCmd = {
     if (type == 1) {
@@ -26,26 +28,26 @@ void () ShowOptValue  = {
 
 
 float (string mode) CheckMode = {
-    if (mode == "clan")		return 1;
-    if (mode == "practice")	return 1;
-    if (mode == "tfvsdm") 	return 1;
-    if (mode == "tfstrike") 	return 1;
-    if (mode == "realdm") 	return 1;
-    if (mode == "speedcap") 	return 1;
-    if (mode == "duel") 		return 1;
-    if (mode == "quadmode") 	return 1;
-    if (mode == "realistic") 	return 1;
-    if (mode == "teamfrags") 	return 1;
-    if (mode == "fullteamscore") return 1;
-    if (mode == "clansetup") 	return 1;
-    if (mode == "grapple") 	return 1;
-    if (mode == "gibs") 		return 1;
-    if (mode == "highlander") 	return 1;
-    if (mode == "real_weap") 	return 1;
-    if (mode == "stamina") 	return 1;
-    if (mode == "plasmaclass") return 1;
-    if (mode == "forzamode") 	return 1;
-    if (mode == "holdlimit") 	return 1;
+	if (mode == "clan") return 1;
+	if (mode == "clansetup") return 1;
+	if (mode == "duel") return 1;
+	if (mode == "forzamode") return 1;
+	if (mode == "fullteamscore") return 1;
+	if (mode == "gibs") return 1;
+	if (mode == "grapple") return 1;
+	if (mode == "highlander") return 1;
+	if (mode == "holdlimit") return 1;
+	if (mode == "plasmaclass") return 1;
+	if (mode == "practice") return 1;
+	if (mode == "quadmode") return 1;
+	if (mode == "realdm") return 1;
+	if (mode == "realistic") return 1;
+	if (mode == "real_weap") return 1;
+	if (mode == "speedcap") return 1;
+	if (mode == "stamina") return 1;
+	if (mode == "teamfrags") return 1;
+	if (mode == "tfstrike") return 1;
+	if (mode == "tfvsdm") return 1;
     return 0;
 };
 
@@ -53,54 +55,21 @@ float (string mode) CheckMode = {
 float () UserCmd = {
     local float arg_num, fl, adminlvl;
     local string st;
-    arg_num = argc(); // text has been tokanized in ChatMessage function
+    arg_num = argc();
     if (arg_num == 0)
         return 0;
-    /*  debug
-    	if (argv(0) == "test")
-    	{
-    	sprint(self, 2, "whazzup\n");
-    	return 1;
-    	}
-    //fte alpha test
-    else if (argv(0) == "alpha")
-    {
-    if (arg_num == 2) {
-    fl = stof(argv(1));
-    if (fl >= 0 && fl <= 1) {
-    self.alpha = fl;
-    }
-    return 1;
-    }
-    }
-    if (argv(0) == "gravity")
-    {
-    if (arg_num == 2) {
-    fl = stof(argv(1));
-    if (fl >= 0 && fl <= 4) {
-    self.gravity = fl;
-    }
-    return 1;
-    }
-    }
-    else if (argv(0) == "colormap")
-    {
-    self.colormap = stof(argv(1));
-    return 1;
-    }
-     */
-    else if (argv(0) == "sbar_type") {
-        if (arg_num == 2) {
+
+    if (argv(0) == "sbar_type") {
+        if (arg_num == 1) {
+            sprint(self, 2, "usage: cmd sbar_type \"value\", where value is the sbar type\n");
+            sprint(self, 2, "\n");
+            return 1;
+        } else if (arg_num == 2) {
             fl = stof(argv(1));
             if (fl >= 0 && fl < 64) {
                 self.StatusRefreshTime = (time + 0.5);
                 self.sbar_type = fl;
             }
-            return 1;
-        }
-        if (arg_num == 1) {
-            sprint(self, 2, "usage: cmd sbar_type \"value\", where value is the sbar type\n");
-            sprint(self, 2, "\n");
             return 1;
         }
     } else if (argv(0) == "dlist") {
@@ -113,21 +82,24 @@ float () UserCmd = {
         stuffcmd(self, "\n");
         return 1;
     } else if (argv(0) == "dl") {
-        if (arg_num == 2) {
+        if (arg_num == 1) {
+            sprint(self, 2, "type: cmd dlist, for a list of available demos\n");
+            sprint(self, 2, "to download, type: cmd dl #, where # is the demo number\n");
+            sprint(self, 2, "\n");
+            return 1;
+        } else if (arg_num == 2) {
             stuffcmd(self, "cmd download demonum/");
             stuffcmd(self, argv(1));
             stuffcmd(self, "\n");
             return 1;
 
         }
+    } else if (argv(0) == "adminpwd") {
         if (arg_num == 1) {
-            sprint(self, 2, "type: cmd dlist, for a list of available demos\n");
-            sprint(self, 2, "to download, type: cmd dl #, where # is the demo number\n");
+            sprint(self, 2, "usage: cmd adminpwd password, where password is the admin password\n");
             sprint(self, 2, "\n");
             return 1;
-        }
-    } else if (argv(0) == "adminpwd") {
-        if (arg_num == 2) {
+        } else if (arg_num == 2) {
             if ((self.is_admin == 3.000)) {
                 sprint(self, 2, "You are already an admin\n");
                 return 1;
@@ -148,11 +120,6 @@ float () UserCmd = {
             return 1;
 
         }
-        if (arg_num == 1) {
-            sprint(self, 2, "usage: cmd adminpwd password, where password is the admin password\n");
-            sprint(self, 2, "\n");
-            return 1;
-        }
     } else if (argv(0) == "maplist") {
         if (arg_num == 1) {
             fl = 1;
@@ -160,7 +127,12 @@ float () UserCmd = {
             return 1;
         }
     } else if (argv(0) == "votemap") {
-        if (arg_num == 2) {
+        if (arg_num == 1) {
+            fl = 1;
+            fl = listmaps(self, 2.000, 50, fl, 3, 1);
+            stuffcmd(self, "\n");
+            return 1;
+        } else if (arg_num == 2) {
             st = argv(1);
             fl = findmap(st);
             if (fl) {
@@ -171,20 +143,13 @@ float () UserCmd = {
             }
             return 1;
         }
-        if (arg_num == 1) {
-            fl = 1;
-            fl = listmaps(self, 2.000, 50, fl, 3, 1);
-            stuffcmd(self, "\n");
-            return 1;
-        }
     } else if (argv(0) == "votemode") {
-        if (arg_num == 2) {
+        if (arg_num == 1) {
+            return 1;
+        } else if (arg_num == 2) {
             st = argv(1);
             if (CheckMode(st))
                 PlayerMiscVote(st, 2);
-            return 1;
-        }
-        if (arg_num == 1) {
             return 1;
         }
     } else if (argv(0) == "abort") {
@@ -199,32 +164,16 @@ float () UserCmd = {
                 self.mvote = 0;
                 return 1;
             } else {
-
                 sprint(self,2 , "There are no current votes active.\n");
                 return 1;
             }
         }
     } else if (argv(0) == "keep") {
-        if (arg_num == 5) {
-            st = argv(1);
-            fl = stof(st);
-            fl = self.ammo_shells - fl;
-            if (fl > 0) TeamFortress_DropAmmo( 1.000, fl);
-            st = argv(2);
-            fl = stof(st);
-            fl = self.ammo_nails - fl;
-            if (fl > 0) TeamFortress_DropAmmo( 2.000, fl);
-            st = argv(3);
-            fl = stof(st);
-            fl = self.ammo_rockets - fl;
-            if (fl > 0) TeamFortress_DropAmmo( 3.000, fl);
-            st = argv(4);
-            fl = stof(st);
-            fl = self.ammo_cells - fl;
-            if (fl > 0) TeamFortress_DropAmmo( 4.000, fl);
+        if (arg_num < 3) {
+            sprint(self, 2, "usage: cmd keep cells #value, to keep ammo that you specify and discard the rest.\n");
+            sprint(self, 2, "\n");
             return 1;
-        }
-        if (arg_num == 3) {
+        } else if (arg_num == 3) {
             if (argv(1) == "shells" || argv(1) == "1") {
                 st = argv(2);
                 fl = stof(st);
@@ -252,17 +201,42 @@ float () UserCmd = {
                 if (fl > 0) TeamFortress_DropAmmo( 4.000, fl);
                 return 1;
             }
-        }
-        if (arg_num < 3) {
-            sprint(self, 2, "usage: cmd keep cells #value, to keep ammo that you specify and discard the rest.\n");
-            sprint(self, 2, "\n");
+        } else if (arg_num == 5) {
+            st = argv(1);
+            fl = stof(st);
+            fl = self.ammo_shells - fl;
+            if (fl > 0) TeamFortress_DropAmmo( 1.000, fl);
+            st = argv(2);
+            fl = stof(st);
+            fl = self.ammo_nails - fl;
+            if (fl > 0) TeamFortress_DropAmmo( 2.000, fl);
+            st = argv(3);
+            fl = stof(st);
+            fl = self.ammo_rockets - fl;
+            if (fl > 0) TeamFortress_DropAmmo( 3.000, fl);
+            st = argv(4);
+            fl = stof(st);
+            fl = self.ammo_cells - fl;
+            if (fl > 0) TeamFortress_DropAmmo( 4.000, fl);
             return 1;
         }
     } else if (argv(0) == "eprint") {
         eprint(self);
         return 1;
     } else if (argv(0) == "help" || argv(0) == "list"  ) {
-        if (arg_num == 2) {
+        if (arg_num == 1) {
+            sprint(self, 2, "Commands list:\ncmd adminpwd\ncmd dl\ncmd dlist or demolist\ncmd maplist\ncmd votemap\ncmd votemode\ncmd keep \"ammo\" \"value\"\n");
+
+            if (self.is_admin == 3.000) {
+                sprint(self, 2, "cmd timelimit\ncmd watervis\ncmd prematch\ncmd fraglimit\ncmd teamplay\ncmd overtime\ncmd cft\ncmd password\ncmd spec_password\n");
+                sprint(self, 2, "cmd map\ncmd record\ncmd easyrecord\ncmd autorecord\ncmd cancel\ncmd stop\ncmd quadmode\ncmd teamname\ncmd maxclients\ncmd maxspectators\n");
+                //sprint(self, 2, "cmd observermode\n");
+                sprint(self, 2, "cmd deal\ncmd kick\ncmd rpickup\ncmd cr_\"classname\"\ncmd powerups\ncmd spec_msgs\n");
+                //sprint(self, 2, "");
+            }
+            sprint(self, 2, "cmd help or list (this command)\nFor more info on a command, type cmd help \"command\"\n\n");
+            return 1;
+        } else if (arg_num == 2) {
             if (argv(1) == "adminpwd") {
                 sprint(self, 2, "usage: cmd adminpwd password, where password is the admin password\n\n");
                 return 1;
@@ -342,19 +316,6 @@ float () UserCmd = {
                     return 1;
                 }
             }
-        }
-        if (arg_num == 1) {
-            sprint(self, 2, "Commands list:\ncmd adminpwd\ncmd dl\ncmd dlist or demolist\ncmd maplist\ncmd votemap\ncmd votemode\ncmd keep \"ammo\" \"value\"\n");
-
-            if (self.is_admin == 3.000) {
-                sprint(self, 2, "cmd timelimit\ncmd watervis\ncmd prematch\ncmd fraglimit\ncmd teamplay\ncmd overtime\ncmd cft\ncmd password\ncmd spec_password\n");
-                sprint(self, 2, "cmd map\ncmd record\ncmd easyrecord\ncmd autorecord\ncmd cancel\ncmd stop\ncmd quadmode\ncmd teamname\ncmd maxclients\ncmd maxspectators\n");
-                //sprint(self, 2, "cmd observermode\n");
-                sprint(self, 2, "cmd deal\ncmd kick\ncmd rpickup\ncmd cr_\"classname\"\ncmd powerups\ncmd spec_msgs\n");
-                //sprint(self, 2, "");
-            }
-            sprint(self, 2, "cmd help or list (this command)\nFor more info on a command, type cmd help \"command\"\n\n");
-            return 1;
         }
     }
 
@@ -523,94 +484,79 @@ float () UserCmd = {
             Toggle_Frj ();
             return 1;
         } else if (argv(0) == "timelimit") {
-            if (arg_num == 2) {
-                SetOptCmd(0,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(0,1);
                 return 1;
             }
         } else if (argv(0) == "watervis") {
-            if (arg_num == 2) {
-                SetOptCmd(0,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(0,1);
                 return 1;
             }
         } else if (argv(0) == "prematch") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "fraglimit") {
-            if (arg_num == 2) {
-                SetOptCmd(0,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(0,1);
                 return 1;
             }
         } else if (argv(0) == "teamplay") {
-            if (arg_num == 2) {
+            if (arg_num == 1) {
+                ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
                 SetOptCmd(0,1);
                 return 1;
             }
-            if (arg_num == 1) {
-                ShowOptValue ();
-                return 1;
-            }
         } else if (argv(0) == "overtime") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
                 return 1;
-            }
-        } else if (argv(0) == "cft") {
-            if (arg_num == 2) {
+            } else if (arg_num == 2) {
                 SetOptCmd(1,1);
                 return 1;
             }
+        } else if (argv(0) == "cft") { // FIXME: should be CTF ?
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "record") {
-            if (arg_num == 2) {
-                SetOptCmd(3,0);
-                return 1;
-            }
             if (arg_num == 1) {
                 sprint(self, 2, "usage: cmd record demo, where demo is the demo name\n");
                 sprint(self, 2, "\n");
                 return 1;
-            }
-        } else if (argv(0) == "easyrecord") {
-            if (arg_num == 2) {
+            } else if (arg_num == 2) {
                 SetOptCmd(3,0);
                 return 1;
             }
+        } else if (argv(0) == "easyrecord") {
             if (arg_num == 1) {
                 localcmd("easyrecord\n");
                 return 1;
-            }
-        } else if (argv(0) == "autorecord") {
-            if (arg_num == 2) {
-                localcmd ("localinfo demo_auto_left ");
-                localcmd (argv(1));
-                localcmd ("\n");
+            } else if (arg_num == 2) {
+                SetOptCmd(3,0);
                 return 1;
             }
+        } else if (argv(0) == "autorecord") {
             if (arg_num == 1) {
                 st = infokey (world, "demo_auto_left");
                 if (stof (st) > 0) {
@@ -622,6 +568,11 @@ float () UserCmd = {
                     localcmd ("localinfo demo_auto_left 1\n");
                     return 1;
                 }
+            } else if (arg_num == 2) {
+                localcmd ("localinfo demo_auto_left ");
+                localcmd (argv(1));
+                localcmd ("\n");
+                return 1;
             }
         } else if (argv(0) == "cancel") {
             localcmd("cancel\n");
@@ -629,29 +580,7 @@ float () UserCmd = {
         } else if (argv(0) == "stop") {
             localcmd("stop\n");
             return 1;
-        }
-        /*
-           else if (argv(0) == "observermode")
-           {
-           Toggle_Observer ();
-           return 1;
-           }
-         */
-        else if (argv(0) == "teamname") {
-            if (arg_num == 5) {
-                localcmd ("serverinfo team1 ");
-                localcmd (argv(1));
-                localcmd ("\n");
-                localcmd ("serverinfo team2 ");
-                localcmd (argv(2));
-                localcmd ("\n");
-                localcmd ("serverinfo team3 ");
-                localcmd (argv(3));
-                localcmd ("\n");
-                localcmd ("serverinfo team4 ");
-                localcmd (argv(4));
-                localcmd ("\n");
-            }
+        } else if (argv(0) == "teamname") {
             if (arg_num == 3) {
                 fl = stof(argv(1));
                 if (fl > 0 && fl < 5) {
@@ -668,47 +597,56 @@ float () UserCmd = {
                     localcmd (argv(2));
                     localcmd ("\n");
                 }
+            } else if (arg_num == 5) {
+                localcmd ("serverinfo team1 ");
+                localcmd (argv(1));
+                localcmd ("\n");
+                localcmd ("serverinfo team2 ");
+                localcmd (argv(2));
+                localcmd ("\n");
+                localcmd ("serverinfo team3 ");
+                localcmd (argv(3));
+                localcmd ("\n");
+                localcmd ("serverinfo team4 ");
+                localcmd (argv(4));
+                localcmd ("\n");
             }
             return 1;
         } else if (argv(0) == "maxclients") {
-            if (arg_num == 2) {
-                SetOptCmd(0,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
                 //sprint(self, 2, "usage: cmd maxclients clients, where clients is the maximum number of players name you wish join the game.\n");
                 //sprint(self, 2, "\n");
                 return 1;
-            }
-        } else if (argv(0) == "maxspectators") {
-            if (arg_num == 2) {
+            } else if (arg_num == 2) {
                 SetOptCmd(0,1);
                 return 1;
             }
+        } else if (argv(0) == "maxspectators") {
             if (arg_num == 1) {
                 ShowOptValue ();
                 //sprint(self, 2, "usage: cmd maxspectators specs, where specs is the maximum number of spectators name you wish to observe.\n");
                 //sprint(self, 2, "\n");
                 return 1;
-            }
-        } else if (argv(0) == "map") {
-            if (arg_num == 2) {
-                SetOptCmd(0,0);
+            } else if (arg_num == 2) {
+                SetOptCmd(0,1);
                 return 1;
             }
+        } else if (argv(0) == "map") {
             if (arg_num == 1) {
                 sprint(self, 2, "usage: cmd map mapname, where mapname is the map name you wish to change to\n");
                 sprint(self, 2, "\n");
                 return 1;
-            }
-        } else if (argv(0) == "dmteams") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
+            } else if (arg_num == 2) {
+                SetOptCmd(0,0);
                 return 1;
             }
+        } else if (argv(0) == "dmteams") {
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         }
@@ -722,10 +660,6 @@ float () UserCmd = {
             Admin_CycleDeal();
             return 1;
         } else if (argv(0) == "kick") {
-            if (arg_num == 2) {
-                Admin_KickNum(stof(argv(1)));
-                return 1;
-            }
             if (arg_num == 1) {
                 if (self.admin_mode == 1.000) {
                     Admin_DoKick ();
@@ -733,23 +667,28 @@ float () UserCmd = {
                 }
                 Admin_ListPlayers();
                 return 1;
+            } else if (arg_num == 2) {
+                Admin_KickNum(stof(argv(1)));
+                return 1;
             }
         } else if (argv(0) == "password") {
-            if (arg_num == 2) {
+            if (arg_num == 1) {
+                sprint(self, 2, "usage: cmd password \"password\"\n");
+                sprint(self, 2, "\n");
+                return 1;
+            } else if (arg_num == 2) {
                 SetOptCmd(0,0);
                 PrintPlayers("\nServer Password changed to \"", argv(1), "\"\n\n");
                 if (self.classname == "observer")
                     sprint3(self, 2, "\nServer Password changed to \"", argv(1), "\"\n");
                 return 1;
             }
+        } else if (argv(0) == "spec_password") {
             if (arg_num == 1) {
-                sprint(self, 2, "usage: cmd password \"password\"\n");
+                sprint(self, 2, "usage: cmd spec_password \"password\"\n");
                 sprint(self, 2, "\n");
                 return 1;
-            }
-
-        } else if (argv(0) == "spec_password") {
-            if (arg_num == 2) {
+            } else if (arg_num == 2) {
                 localcmd ("spectator_password ");
                 localcmd (argv(1));
                 localcmd ("\n");
@@ -758,121 +697,99 @@ float () UserCmd = {
                     sprint3(self, 2, "\nSpectator Password changed to \"", argv(1), "\"\n");
                 return 1;
             }
-            if (arg_num == 1) {
-                sprint(self, 2, "usage: cmd spec_password \"password\"\n");
-                sprint(self, 2, "\n");
-                return 1;
-            }
-
         } else if (argv(0) == "cr_scout") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "cr_sniper") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "cr_soldier") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "cr_demoman") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "cr_medic") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "cr_hwguy") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "cr_pyro") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "cr_spy") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "cr_engineer") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
                 return 1;
             }
         } else if (argv(0) == "cr_random") {
-            if (arg_num == 2) {
-                SetOptCmd(1,1);
-                return 1;
-            }
             if (arg_num == 1) {
                 ShowOptValue ();
                 return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(1,1);
+                return 1;
             }
         } else if (argv(0) == "floodprot") {
-            if (arg_num > 2) {
-                sprint(self, 2, "Ensure you use quotations around value - ie cmd floodprot \"8 4 2\"\n");
-                return 1;
-            }
-            if (arg_num == 2) {
-                SetOptCmd(0,0);
-                return 1;
-            }
             if (arg_num == 1) {
                 st = readcmd (st);
                 sprint(self, 2, st);
                 return 1;
-            }
-        } else if (argv(0) == "rmdemo") {
-            if (arg_num == 2) {
+            } else if (arg_num == 2) {
                 SetOptCmd(0,0);
                 return 1;
+            } else if (arg_num > 2) {
+                sprint(self, 2, "Ensure you use quotations around value - ie cmd floodprot \"8 4 2\"\n");
+                return 1;
             }
+        } else if (argv(0) == "rmdemo") {
             if (arg_num == 1) {
                 st = readcmd (st);
                 /*
@@ -883,17 +800,19 @@ float () UserCmd = {
                  */
                 sprint(self, 2, st);
                 return 1;
-            }
-        } else if (argv(0) == "rmdemonum") {
-            if (arg_num == 2) {
+            } else if (arg_num == 2) {
                 SetOptCmd(0,0);
                 return 1;
             }
+        } else if (argv(0) == "rmdemonum") {
             if (arg_num == 1) {
                 st = readcmd (st);
                 sprint(self, 2, st);
                 //sprint(self, 2, "usage: rmdemonum <#> - removes the demo of the number specified\n");
                 //sprint(self, 2, "\n");
+                return 1;
+            } else if (arg_num == 2) {
+                SetOptCmd(0,0);
                 return 1;
             }
         } else if (argv(0) == "calibrate") {
@@ -903,7 +822,6 @@ float () UserCmd = {
             Admin_ListIPs ();
             return 1;
         }
-
     }
     return 0;
 };
@@ -912,14 +830,25 @@ float () UserCmd = {
 float () ConsoleCmd = {
     local string tmp;
     local float arg_num, fl;
-    arg_num = argc(); // tmp has been tokanized in ChatMessage function
+    arg_num = argc();
     if (arg_num == 0)
         return 0;
     if (argv(0) == "test") {
         dprint("whazzup\n");
         return 1;
     } else if (argv(0) == "info") {
-        if (arg_num == 3) {
+        if (arg_num == 1) {
+            localcmd ("localinfo\n");
+            return 1;
+        } else if (arg_num == 2) {
+            tmp = infokey (world, argv(1));
+            dprint("localinfo ");
+            dprint(argv(1));
+            dprint(": \"");
+            dprint(tmp);
+            dprint("\"\n");
+            return 1;
+        } else if (arg_num == 3) {
             if (argv(2) == "\\") {
                 localcmd("localinfo ");
                 localcmd(argv(1));
@@ -939,21 +868,19 @@ float () ConsoleCmd = {
             localcmd("\n");
             return 1;
         }
-        if (arg_num == 2) {
+    } else if (argv(0) == "svinfo") {
+        if (arg_num == 1) {
+            localcmd ("serverinfo\n");
+            return 1;
+        } else if (arg_num == 2) {
             tmp = infokey (world, argv(1));
-            dprint("localinfo ");
+            dprint("serverinfo ");
             dprint(argv(1));
             dprint(": \"");
             dprint(tmp);
             dprint("\"\n");
             return 1;
-        }
-        if (arg_num == 1) {
-            localcmd ("localinfo\n");
-            return 1;
-        }
-    } else if (argv(0) == "svinfo") {
-        if (arg_num == 3) {
+        } else if (arg_num == 3) {
             if (argv(2) == "\\") {
                 localcmd("serverinfo ");
                 localcmd(argv(1));
@@ -973,24 +900,7 @@ float () ConsoleCmd = {
             localcmd("\n");
             return 1;
         }
-        if (arg_num == 2) {
-            tmp = infokey (world, argv(1));
-            dprint("serverinfo ");
-            dprint(argv(1));
-            dprint(": \"");
-            dprint(tmp);
-            dprint("\"\n");
-            return 1;
-        }
-        if (arg_num == 1) {
-            localcmd ("serverinfo\n");
-            return 1;
-        }
     } else if (argv(0) == "prematch") {
-        if (arg_num == 2) {
-            SetOptCmd(1,0);
-            return 1;
-        }
         if (arg_num == 1) {
             tmp = infokey (world, argv(0));
             dprint("prematch is ");
@@ -998,12 +908,11 @@ float () ConsoleCmd = {
             dprint(tmp);
             dprint("\"\n");
             return 1;
-        }
-    } else if (argv(0) == "overtime") {
-        if (arg_num == 2) {
+        } else if (arg_num == 2) {
             SetOptCmd(1,0);
             return 1;
         }
+    } else if (argv(0) == "overtime") {
         if (arg_num == 1) {
             tmp = infokey (world, argv(0));
             dprint("overtime is ");
@@ -1011,12 +920,11 @@ float () ConsoleCmd = {
             dprint(tmp);
             dprint("\"\n");
             return 1;
-        }
-    } else if (argv(0) == "cft") {
-        if (arg_num == 2) {
+        } else if (arg_num == 2) {
             SetOptCmd(1,0);
             return 1;
         }
+    } else if (argv(0) == "cft") {
         if (arg_num == 1) {
             tmp = infokey (world, argv(0));
             dprint("ceasefire time is ");
@@ -1024,9 +932,19 @@ float () ConsoleCmd = {
             dprint(tmp);
             dprint("\"\n");
             return 1;
+        } else if (arg_num == 2) {
+            SetOptCmd(1,0);
+            return 1;
         }
     } else if (argv(0) == "gspeed") {
-        if (arg_num == 2) {
+        if (arg_num == 1) {
+            tmp = infokey (world, "pm_gspeed");
+            dprint("ground speed is ");
+            dprint("\"");
+            dprint(tmp);
+            dprint("\"\n");
+            return 1;
+        } else if (arg_num == 2) {
             gspeed = stof(argv(1));
             if ((gspeed < 1) || (gspeed > 3 ))  {
                 gspeed = 0.000;
@@ -1038,16 +956,15 @@ float () ConsoleCmd = {
             localcmd ("\n");
             return 1;
         }
+    } else if (argv(0) == "airspeed") {
         if (arg_num == 1) {
-            tmp = infokey (world, "pm_gspeed");
-            dprint("ground speed is ");
+            tmp = infokey (world, "pm_airspeed");
+            dprint("air speed is ");
             dprint("\"");
             dprint(tmp);
             dprint("\"\n");
             return 1;
-        }
-    } else if (argv(0) == "airspeed") {
-        if (arg_num == 2) {
+        } else if (arg_num == 2) {
             airspeed = stof(argv(1));
             if ((airspeed < 1) || (airspeed > 4 ))  {
                 airspeed = 0.000;
@@ -1059,21 +976,7 @@ float () ConsoleCmd = {
             localcmd ("\n");
             return 1;
         }
-        if (arg_num == 1) {
-            tmp = infokey (world, "pm_airspeed");
-            dprint("air speed is ");
-            dprint("\"");
-            dprint(tmp);
-            dprint("\"\n");
-            return 1;
-        }
     } else if (argv(0) == "roundtime") {
-        if (arg_num == 2) {
-            localcmd ("localinfo round_time ");
-            localcmd (argv(1));
-            localcmd ("\n");
-            return 1;
-        }
         if (arg_num == 1) {
             tmp = infokey (world, argv(0));
             dprint("round time is ");
@@ -1081,12 +984,13 @@ float () ConsoleCmd = {
             dprint(tmp);
             dprint("\"\n");
             return 1;
-        }
-    } else if (argv(0) == "rounds") {
-        if (arg_num == 2) {
-            SetOptCmd(1,0);
+        } else if (arg_num == 2) {
+            localcmd ("localinfo round_time ");
+            localcmd (argv(1));
+            localcmd ("\n");
             return 1;
         }
+    } else if (argv(0) == "rounds") {
         if (arg_num == 1) {
             tmp = infokey (world, argv(0));
             dprint("rounds is ");
@@ -1094,14 +998,11 @@ float () ConsoleCmd = {
             dprint(tmp);
             dprint("\"\n");
             return 1;
-        }
-    } else if (argv(0) == "autorecord") {
-        if (arg_num == 2) {
-            localcmd ("localinfo demo_auto_left ");
-            localcmd (argv(1));
-            localcmd ("\n");
+        } else if (arg_num == 2) {
+            SetOptCmd(1,0);
             return 1;
         }
+    } else if (argv(0) == "autorecord") {
         if (arg_num == 1) {
             tmp = infokey (world, "demo_auto_left");
             if (stof (tmp) > 0) {
@@ -1113,22 +1014,26 @@ float () ConsoleCmd = {
                 localcmd ("localinfo demo_auto_left 1\n");
                 return 1;
             }
-        }
-    } else if (argv(0) == "grenradius") {
-        if (arg_num == 2) {
-            grenradius = stof(argv(1));
-
-            if (grenradius > 32 || grenradius < 0) {
-                grenradius = 0;
-            }
+        } else if (arg_num == 2) {
+            localcmd ("localinfo demo_auto_left ");
+            localcmd (argv(1));
+            localcmd ("\n");
             return 1;
         }
+    } else if (argv(0) == "grenradius") {
         if (arg_num == 1) {
             tmp = infokey (world, argv(0));
             dprint("grenradius is ");
             dprint("\"");
             dprint(tmp);
             dprint("\"\n");
+            return 1;
+        } else if (arg_num == 2) {
+            grenradius = stof(argv(1));
+
+            if (grenradius > 32 || grenradius < 0) {
+                grenradius = 0;
+            }
             return 1;
         }
     } else if (argv(0) == "restartmap") {
@@ -1239,15 +1144,7 @@ float () ConsoleCmd = {
     } else if (argv(0) == "quadmode") {
         Toggle_Quad ();
         return 1;
-    }
-    /*
-       else if (argv(0) == "observermode")
-       {
-       Toggle_Observer ();
-       return 1;
-       }
-     */
-    else if (argv(0) == "realdm") {
+    } else if (argv(0) == "realdm") {
         Toggle_Misc(argv(0));
         return 1;
     } else if (argv(0) == "holdlimit") {
@@ -1272,13 +1169,10 @@ float () localinfoChanged = {
     local string tmp;
     local float fl;
     local float arg_num;
-    arg_num = argc(); // tmp has been tokanized in ChatMessage function
+    arg_num = argc();
     if (arg_num == 0)
         return 0;
-    if (argv(1) == "gay") {
-        dprint("you are gay\n");
-        return 0;
-    } else if (argv(1) == "rj") {
+    if (argv(1) == "rj") {
         if ( (stof (argv(1)) != 0.000) ) {
             rj = stof (infokey (world,"rj"));
         } else {
@@ -1325,13 +1219,12 @@ float () localinfoChanged = {
 void () UserInfo_Changed = {
     local string sk, st;
     local float arg_num, tc;
-    arg_num = argc(); // tmp has been tokanized in ChatMessage function
+    arg_num = argc();
     if (arg_num == 0)
         return;
     if (argv(1) == "team") {
         if ( (teamplay) ) {
             if (self.motd > 65.000) {
-
                 st = self.pteam.netname;
                 if ( (st != infokey (self,"team")) ) {
                     SetTeamName (self);
@@ -1373,7 +1266,6 @@ void () UserInfo_Changed = {
         }
         return;
     } else if (argv(1) == "topcolor") {
-
         if (teamplay && self.playerclass) {
             if (self.undercover_team) return;
             if (store_obs.cnt == 2.000) {
@@ -1465,27 +1357,9 @@ void () UserInfo_Changed = {
     } else if (argv(1) == "name") {
         if (argv(2) == string_null)
             stuffcmd (self,"disconnect\n");
-        if (argv(2) == "mercisgay") {
-            stuffcmd (self,"name I am a retarded poof.\n");
-            stuffcmd (self,"\n");
-        }
         return;
     }
     return;
-};
-
-
-float(string text, float say_team) ChatMessage = {
-    local float arg_num;
-    tokanize(text);
-    arg_num = argc(); // tmp has been tokanized in ChatMessage function
-    if (arg_num == 0)
-        return 0;
-    if (argv(0) == "test") {
-        bprint(2.00,"whazzup\n");
-        return 1;
-    }
-    return 0;
 };
 
 void (float sec, float minute, float hour, float day, float mon, float year, string date) timeofday = {
