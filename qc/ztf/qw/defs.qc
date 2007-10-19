@@ -493,13 +493,13 @@ float		coop;
 
 .float		speed;
 
-.float lefty; // qwtf hook
-.entity oldenemy; // qwtf
-.void() th_missile; // qwtf
-.void() th_melee; // qwtf
-.float maxspeed; // qwtf
-vector vector_null; // qwtf
+.float lefty;       // qwtf hook
+.float maxspeed;    // qwtf
+.entity oldenemy;   // qwtf
 .float search_time; // qwtf
+.void() th_melee;   // qwtf
+.void() th_missile; // qwtf
+vector vector_null; // qwtf
 
 //
 // player only fields
