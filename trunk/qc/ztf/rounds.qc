@@ -182,7 +182,7 @@ void () RoundThink = {
     if (!self.cnt2) {
         if ((self.cnt == 1.000) || (self.cnt == 5.000)) {
             tmp = ftos(self.cnt);
-            bprint3(2, "ê", tmp, "ë minute");
+            bprint(2, "ê", tmp, "ë minute");
             if (self.cnt != 1.000) bprint(2, "s");
             bprint(2, " remaining\n");
         }
@@ -203,7 +203,7 @@ void () RoundThink = {
         fl = ceil(self.cnt2);
         if (!(fl - self.cnt2)) {
             tmp = ftos(self.cnt2);
-            bprint3(2, "ê", tmp, "ë second");
+            bprint(2, "ê", tmp, "ë second");
             if (self.cnt2 != 1.000) bprint(2, "s");
             bprint(2, " remaining\n");
         }

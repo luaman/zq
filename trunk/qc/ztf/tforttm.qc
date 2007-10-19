@@ -339,7 +339,7 @@ float (float tno) TeamFortress_TeamSet = {
    if ((self.immune_to_check) != floor(time)) {
    self.immune_to_check = (floor(time) + 2);
    } else {
-   bprint2 (1.000,self.netname," has been kicked for changing team.\n");
+   bprint (1.000,self.netname," has been kicked for changing team.\n");
    sprint (self,2.000,"You have been kicked for changing your team. Don't do it.\n");
    stuffcmd (self,"disconnect\n");
    return ;
@@ -369,7 +369,7 @@ float (float tno) TeamFortress_TeamSet = {
    if ((self.immune_to_check) != floor(time)) {
    self.immune_to_check = (floor(time) + 2);
    } else {
-   bprint2 (1.000,self.netname," has been kicked for changing top color.\n");
+   bprint (1.000,self.netname," has been kicked for changing top color.\n");
    sprint (self,2.000,"You have been kicked for changing your top color. Don't do it.\n");
    stuffcmd (self,"disconnect\n");
    return ;
@@ -387,7 +387,7 @@ float (float tno) TeamFortress_TeamSet = {
    if ((self.immune_to_check) != floor(time)) {
    self.immune_to_check = (floor(time) + 2);
 } else {
-	bprint2 (1.000,self.netname," has been kicked for changing top color.\n");
+	bprint (1.000,self.netname," has been kicked for changing top color.\n");
 	sprint (self,2.000,"You have been kicked for changing your top color. Don't do it.\n");
 	stuffcmd (self,"disconnect\n");
 	return ;
@@ -410,7 +410,7 @@ if ( ((self.team_no > 0.000) && (teamplay)) ) {
 			if ((self.immune_to_check) != floor(time)) {
 				self.immune_to_check = (floor(time) + 2);
 			} else {
-				bprint2 (1.000,self.netname," has been kicked for changing color.\n");
+				bprint (1.000,self.netname," has been kicked for changing color.\n");
 				sprint (self,2.000,"You have been kicked for changing your pants color. Don't do it.\n");
 				stuffcmd (self,"disconnect\n");
 				return ;
@@ -426,7 +426,7 @@ if ( ((self.team_no > 0.000) && (teamplay)) ) {
 			if ((self.immune_to_check) != floor(time)) {
 				self.immune_to_check = (floor(time) + 2);
 			} else {
-				bprint2 (1.000,self.netname," has been kicked for changing color.\n");
+				bprint (1.000,self.netname," has been kicked for changing color.\n");
 				sprint (self,2.000,"You have been kicked for changing your pants color. Don't do it.\n");
 				stuffcmd (self,"disconnect\n");
 				return ;
@@ -442,7 +442,7 @@ if ( ((self.team_no > 0.000) && (teamplay)) ) {
 			if ((self.immune_to_check) != floor(time)) {
 				self.immune_to_check = (floor(time) + 2);
 			} else {
-				bprint2 (1.000,self.netname," has been kicked for changing skin.\n");
+				bprint (1.000,self.netname," has been kicked for changing skin.\n");
 				sprint (self,2.000,"You have been kicked for changing your skin. Don't do it.\n");
 				stuffcmd (self,"disconnect\n");
 				return;
@@ -458,7 +458,7 @@ if ( ((self.team_no > 0.000) && (teamplay)) ) {
 		if ((self.immune_to_check) != floor(time)) {
 			self.immune_to_check = (floor(time) + 2);
 		} else {
-			bprint2 (1.000,self.netname," has been kicked for changing team.\n");
+			bprint (1.000,self.netname," has been kicked for changing team.\n");
 			sprint (self,2.000,"You have been kicked for changing your team. Don't do it.\n");
 			stuffcmd (self,"disconnect\n");
 			return ;

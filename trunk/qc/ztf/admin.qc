@@ -6,26 +6,26 @@ void () Admin_CountPlayers = {
     local float nump;
     nump = TeamFortress_GetNoPlayers ();
     st = ftos (nump);
-    sprint3 (self,2.000,"Players In Game : ",st,"\n");
+    sprint (self,2.000,"Players In Game : ",st,"\n");
     if ( (store_obs.cnt > 0.000) ) {
         nump = TeamFortress_TeamGetNoPlayers (1.000);
         st = ftos (nump);
-        sprint3 (self,2.000,"Players In Team1: ",st,"\n");
+        sprint (self,2.000,"Players In Team1: ",st,"\n");
     }
     if ( (store_obs.cnt > 1.000) ) {
         nump = TeamFortress_TeamGetNoPlayers (2.000);
         st = ftos (nump);
-        sprint3 (self,2.000,"Players In Team2: ",st,"\n");
+        sprint (self,2.000,"Players In Team2: ",st,"\n");
     }
     if ( (store_obs.cnt > 2.000) ) {
         nump = TeamFortress_TeamGetNoPlayers (3.000);
         st = ftos (nump);
-        sprint3 (self,2.000,"Players In Team3: ",st,"\n");
+        sprint (self,2.000,"Players In Team3: ",st,"\n");
     }
     if ( (store_obs.cnt > 3.000) ) {
         nump = TeamFortress_TeamGetNoPlayers (4.000);
         st = ftos (nump);
-        sprint3 (self,2.000,"Players In Team4: ",st,"\n");
+        sprint (self,2.000,"Players In Team4: ",st,"\n");
     }
 };
 
@@ -101,7 +101,7 @@ void () Admin_ListIPs = {
 };
 
 void () Admin_DoKick = {
-    bprint4 (2.000,self.admin_use.netname," was kicked by ",self.netname,"\n");
+    bprint (2.000,self.admin_use.netname," was kicked by ",self.netname,"\n");
     stuffcmd (self.admin_use,"disconnect\n");
     stuffcmd (self.admin_use,"cmd drop\n");
     self.admin_mode = 0.000;
@@ -158,7 +158,7 @@ void () Admin_CycleDeal = {
         self.admin_mode = 1.000;
         sprint (self,2.000,"   ");
         sprint (self,2.000,self.admin_use.netname);
-        sprint3 (self,2.000," (",self.admin_use.ip,")");
+        sprint (self,2.000," (",self.admin_use.ip,")");
         if ( (self.admin_use.classname == "observer") ) {
             sprint (self,2.000," (SPECTATOR)");
         }
@@ -236,7 +236,7 @@ void (entity p) CheckAutoKick = {
     local float rnum;
     local entity te;
     if ( ((p.teamkills >= autokick_kills) && (autokick_kills != 0.000)) ) {
-        bprint2 (2.000,p.netname," was kicked for killing teammates.\n");
+        bprint (2.000,p.netname," was kicked for killing teammates.\n");
         sprint (p,2.000,"You were kicked for killing teammates.\n");
         stuffcmd (p,"disconnect\n");
     } else {
@@ -306,7 +306,7 @@ void() VoteAdmin = {
         return;
     }
     if (self.is_admin == 2.000) {
-        bprint2(2, self.netname, " aborts election!");
+        bprint(2, self.netname, " aborts election!");
         bprint(3, "\n");
         AbortElect();
         return;
@@ -317,7 +317,7 @@ void() VoteAdmin = {
         sprint(self, 2, "An election is already in progress\n");
         return;
     }
-    bprint2(2, self.netname, " has requested admin rights!\n");
+    bprint(2, self.netname, " has requested admin rights!\n");
     self.is_admin = 2.000;
     elect = 1;
     tmp = infokey (world,"votespercentage");
@@ -330,7 +330,7 @@ void() VoteAdmin = {
     f2 = (elect / f1);
     if (f2 > f3) {
         if (self.is_admin == 2.000) {
-            bprint2(2, self.netname, " çáéîó áäíéî óôáôõó!");
+            bprint(2, self.netname, " çáéîó áäíéî óôáôõó!");
             bprint(3, "\n");
             sprint(self, 2, "Type ãïííáîäó for admin commands.\n");
             self.is_admin = 1.000;
@@ -367,7 +367,7 @@ void() VoteYes = {
     }
     // register the vote
     elect = elect + 1;
-    bprint2(2, self.netname, " gives ");
+    bprint(2, self.netname, " gives ");
     if (infokey(self, "gender") == "f") bprint(2, "her");
     else bprint(2, "his");
     bprint(2, " vote\n");
@@ -385,7 +385,7 @@ void() VoteYes = {
         while (p.is_admin != 2.000) p = find(p, classname, "player");
         if (p.is_admin == 2.000) {
             // s: election was admin election
-            bprint2(2, p.netname, " çáéîó áäíéî óôáôõó!");
+            bprint(2, p.netname, " çáéîó áäíéî óôáôõó!");
             bprint(3, "\n");
             sprint(p, 2, "Type ãïííáîäó for admin commands.\n");
             p.is_admin = 1.000;
@@ -398,7 +398,7 @@ void() VoteYes = {
     if ( elect != 0 ) {
         f1 = f2 - elect;
         tmp = ftos(rint(f1));
-        bprint3(2, "", tmp, "‘ more vote");
+        bprint(2, "", tmp, "‘ more vote");
         if (f1 > 1) bprint(2, "s");
         bprint(2, " needed\n");
     }
@@ -412,7 +412,7 @@ void() VoteNo = {
         return;
     }
     if (elect == 0 || self.is_admin == 2.000 || self.vote == 0.000) return;
-    bprint2(2, self.netname, " withdraws ");
+    bprint(2, self.netname, " withdraws ");
     if (infokey(self, "gender") == "f") bprint(2, "her");
     else bprint(2, "his");
     bprint(2, " vote\n");
@@ -422,7 +422,7 @@ void() VoteNo = {
     f2 = (floor(f1 / 2)) + 1;
     f1 = f2 - elect;
     tmp = ftos(f1);
-    bprint3(2, "", tmp, "‘ more vote");
+    bprint(2, "", tmp, "‘ more vote");
     if (f1 > 1) bprint(2, "s");
     bprint(2, " needed\n");
 };

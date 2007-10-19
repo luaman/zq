@@ -1731,22 +1731,22 @@ void (entity Goal, entity AP, float addb) DoResults = {
     if ( (ctfmap == 1) ) {
         if ( (AP != world) ) {
             if ( (Goal.goal_no == 1.000) ) {
-                bprint2(2.000, AP.netname, " ÇÏÔ the ÂÌÕÅ flag!\n");
+                bprint(2.000, AP.netname, " ÇÏÔ the ÂÌÕÅ flag!\n");
                 AP.items = (AP.items | 131072.000);
                 AP.effects = (AP.effects | 96.000);
             } else {
                 if ( (Goal.goal_no == 2.000) ) {
-                    bprint2 (2.000,AP.netname, " ÇÏÔ the ÒÅÄ flag!\n");
+                    bprint (2.000,AP.netname, " ÇÏÔ the ÒÅÄ flag!\n");
                     AP.items = (AP.items | 262144.000);
                     AP.effects = (AP.effects | 144.000);
                 } else {
                     if ( (Goal.goal_no == 3.000) ) {
-                        bprint2 (2.000,AP.netname, " ÃÁÐÔÕÒÅÄ the ÒÅÄ flag!\n");
+                        bprint (2.000,AP.netname, " ÃÁÐÔÕÒÅÄ the ÒÅÄ flag!\n");
                         AP.items = (AP.items - (AP.items & 262144.000));
                         AP.effects = (AP.effects - (AP.effects & 144.000));
                     } else {
                         if ( (Goal.goal_no == 4.000) ) {
-                            bprint2 (2.000,AP.netname, " ÃÁÐÔÕÒÅÄ the ÂÌÕÅ flag!\n");
+                            bprint (2.000,AP.netname, " ÃÁÐÔÕÒÅÄ the ÂÌÕÅ flag!\n");
                             AP.items = (AP.items - (AP.items & 131072.000));
                             AP.effects = (AP.effects - (AP.effects & 96.000));
                         }
@@ -2464,7 +2464,7 @@ string (entity Goal, entity Player, entity Item) ItemStatus = {
                         tmp = strcat(tmp, " Return Time: ");
                         tmp = strcat(tmp, ftos(rint(Item.nextthink - time)));
                         tmp = strcat(tmp, " seconds");
-                        // sprint3 (Player,2.000, " Return time: ", ftos(rint(Item.nextthink - time)), " seconds.");
+                        // sprint (Player,2.000, " Return time: ", ftos(rint(Item.nextthink - time)), " seconds.");
 
                     }
                 } else {
@@ -2473,7 +2473,7 @@ string (entity Goal, entity Player, entity Item) ItemStatus = {
                         tmp = strcat(tmp, " Return Time: ");
                         tmp = strcat(tmp, ftos(rint(Item.nextthink - time)));
                         tmp = strcat(tmp, " seconds");
-                        //sprint3 (Player,2.000, " Return time: ", ftos(rint(Item.nextthink - time)), " seconds.");
+                        //sprint (Player,2.000, " Return time: ", ftos(rint(Item.nextthink - time)), " seconds.");
                     }
                 }
                 //sprint (Player,2.000,"\n");

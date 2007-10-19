@@ -19,7 +19,7 @@ void (entity te) dremove = {
 void () display_location = {
     local string st;
     st = vtos (self.origin);
-    sprint3 (self,2.000,"Location : ",st,"\n");
+    sprint (self,2.000,"Location : ",st,"\n");
     st = vtos (self.angles);
-    sprint3 (self,2.000,"Angles   : ",st,"\n");
+    sprint (self,2.000,"Angles   : ",st,"\n");
 };

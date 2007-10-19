@@ -41,24 +41,24 @@ void () TeamFortress_AmmoboxTouch = {
         if ( (self.ammo_shells > 0) ) {
             other.ammo_shells = (other.ammo_shells + self.ammo_shells);
             quantity = ftos (self.ammo_shells);
-            sprint2 (other,2,quantity," shells  ");
+            sprint (other,2,quantity," shells  ");
         }
         if ( (self.ammo_nails > 0) ) {
             other.ammo_nails = (other.ammo_nails + self.ammo_nails);
             quantity = ftos (self.ammo_nails);
-            sprint2 (other,2,quantity," nails  ");
+            sprint (other,2,quantity," nails  ");
         }
         if ( (self.ammo_rockets > 0) ) {
             other.ammo_rockets = (other.ammo_rockets + self.ammo_rockets);
             quantity = ftos (self.ammo_rockets);
-            sprint2 (other,2,quantity," rockets  ");
+            sprint (other,2,quantity," rockets  ");
         }
         if ( (self.ammo_cells > 0) ) {
             other.ammo_cells = (other.ammo_cells + self.ammo_cells);
             quantity = ftos (self.ammo_cells);
-            sprint2 (other,2,quantity," cells  ");
+            sprint (other,2,quantity," cells  ");
         }
-        sprint3 (other,2," from ",self.enemy.netname,"'s discarded pack.\n");
+        sprint (other,2," from ",self.enemy.netname,"'s discarded pack.\n");
     } else if ( (self.weapon == 1) ) {
         if (other.ammo_shells >= other.maxammo_shells)
             return ;
@@ -117,7 +117,7 @@ void () TeamFortress_AmmoboxTouch = {
         }
         if (modetype & 4) {
             self.netname = "Bomb";
-            bprint2(2.000, other.netname, " picked up the bomb.\n");
+            bprint(2.000, other.netname, " picked up the bomb.\n");
             stuffcmd (other,"topcolor 0\n");
             if (other.playerclass == 8.000) {
                 other.is_unabletospy = 1.000;
@@ -129,7 +129,7 @@ void () TeamFortress_AmmoboxTouch = {
     bound_other_ammo (other);
     if (self.weapon > 0) {
         quantity = ftos (self.aflag);
-        sprint4 (other,0,"You picked up ",quantity," ",self.netname);
+        sprint (other,0,"You picked up ",quantity," ",self.netname);
         if (self.aflag != 1)
             sprint (other,0,"s");
         sprint (other,0,"\n");
@@ -304,7 +304,7 @@ void () Drop_detpack = {
         newmis.nextthink = (time + 30.000);
     } else {
         if (round_active) {
-            bprint2 (2.000, self.netname, " dropped the bomb!\n");
+            bprint (2.000, self.netname, " dropped the bomb!\n");
         }
     }
     newmis.touch = TeamFortress_AmmoboxTouch;

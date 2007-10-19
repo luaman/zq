@@ -82,7 +82,7 @@ void() CheckConnectRate = {
             sprint(self, 2, "\nYour עבפו setting is too high for this server.\n");
             tmp=ftos(maxrate);
             sprint(self, 2, "Rate set to ");
-            sprint2(self, 3, tmp, "\n");
+            sprint(self, 3, tmp, "\n");
             stuffcmd(self, "rate ");
             stuffcmd(self, tmp);
             stuffcmd(self, "\n");
@@ -91,7 +91,7 @@ void() CheckConnectRate = {
             sprint(self, 2, "\nYour עבפו setting is too low for this server.\n");
             tmp=ftos(minrate);
             sprint(self, 2, "Rate set to ");
-            sprint2(self, 3, tmp, "\n");
+            sprint(self, 3, tmp, "\n");
             stuffcmd(self, "rate ");
             stuffcmd(self, tmp);
             stuffcmd(self, "\n");
@@ -874,7 +874,7 @@ void () PutClientInServer = {
             if (self.a_n == 3.000) {
                 sprint(self, 2.000, "You are next in line\n");
             } else {
-                sprint3(self, 2.000, "You are ", ftos(self.a_n), "th in the queue\n");
+                sprint(self, 2.000, "You are ", ftos(self.a_n), "th in the queue\n");
             }
         }
     }
@@ -1966,7 +1966,7 @@ void () ClientDisconnect = {
     fr = rint (self.frags);
     st = ftos (fr);
     if (TeamFortress_GetNoPlayers() == 1 && (!cb_prematch) && (modetype & 1)) GotoNextMap();
-    bprint4 (2.000,self.netname," left the game with ",st," frags\n");
+    bprint (2.000,self.netname," left the game with ",st," frags\n");
     sound (self,4.000,"player/tornoff2.wav",1.000,0.000);
     self.has_disconnected = 1.000;
     TeamFortress_RemoveTimers ();

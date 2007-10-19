@@ -473,7 +473,7 @@ void () Menu_Intro = {
     st1 = infokey (world,"motd1");
     if ( (st1 != string_null) ) {
         st2 = infokey (world,"motd2");
-        centerprint3 (self,st1,"\n",st2);
+        centerprint (self,st1,"\n",st2);
     } else {
         CenterPrint (self,"Welcome to Oz Team Fortress 1.77a\nŸ\nhttp://quakeworld.nu/forum/\n");
     }
@@ -1037,7 +1037,7 @@ void () Menu_Engineer = {
             s_sentry = "\n";
         }
     }
-    centerprint4 (self,s_action,s_disp,s_sentry,s_nothing);
+    centerprint (self,s_action,s_disp,s_sentry,s_nothing);
 };
 
 void (float inp) Menu_Engineer_Input = {
@@ -1150,7 +1150,7 @@ void (float inp) Menu_EngineerFix_Dispenser_Input = {
                     sprint (self,2.000,"You dismantle the Dispenser.\n");
                     self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells + (100.000 / 2.000));
                     if ( (self.building.real_owner != self) ) {
-                        sprint2 (self.building.real_owner,2.000,self.netname," dismantled your Dispenser.\n");
+                        sprint (self.building.real_owner,2.000,self.netname," dismantled your Dispenser.\n");
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.netname);
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner," dismantled ");
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.building.real_owner.netname);
@@ -1260,7 +1260,7 @@ void (float inp) Menu_EngineerFix_SentryGun_Input = {
                     sprint (self,2.000,"You dismantle the Sentry Gun.\n");
                     self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - 130.000);
                     if ( (self.building.real_owner != self) ) {
-                        sprint2 (self.building.real_owner,2.000,self.netname," dismantled your Sentry Gun.\n");
+                        sprint (self.building.real_owner,2.000,self.netname," dismantled your Sentry Gun.\n");
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.netname);
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner," dismantled ");
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.building.real_owner.netname);
