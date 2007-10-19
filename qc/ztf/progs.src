@@ -2,7 +2,6 @@ qwprogs.dat
 
 ../qw/defs.qc
 defs-tf.qc
-qw.qc
 debug.qc
 sbardef.qc // qwtf sbar defs
 status.qc // qwtf sbar
