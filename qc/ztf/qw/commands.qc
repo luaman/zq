@@ -84,20 +84,20 @@ void () ShowScores = {
         sprint(self, 2.000, "\n\n");
         sprint(self, 2.000,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint2(self, 2.000,  st, "     Team2:   ");
+        sprint(self, 2.000,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint2(self, 2.000,  st, "\n");
+        sprint(self, 2.000,  st, "\n");
     } else {
         sprint(self, 2.000, "\n\n");
         sprint(self, 2.000,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint2(self, 2.000,  st, "     Team2:   ");
+        sprint(self, 2.000,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint2(self, 2.000,  st, "\n Team3:   ");
+        sprint(self, 2.000,  st, "\n Team3:   ");
         st =  ftos(pteam3.frags);
-        sprint2(self, 2.000,  st, "     Team4:   ");
+        sprint(self, 2.000,  st, "     Team4:   ");
         st =  ftos(pteam4.frags);
-        sprint2(self, 2.000,  st, "\n");
+        sprint(self, 2.000,  st, "\n");
     }
     if ((modetype & 1) && (!cb_prematch)) {
         st = infokey (world, "status");
@@ -125,90 +125,90 @@ void(entity print) ShowFrags = {
         }
         st = ftos(te.real_frags );
         sp = spacefornum(te.real_frags, 4);
-        sprint3(print, 2.000, "  ", st, sp);
+        sprint(print, 2.000, "  ", st, sp);
         st = ftos(te.teamkills );
         sp = spacefornum(te.teamkills, 3);
-        sprint3(print, 2.000, "  ", st, sp);
+        sprint(print, 2.000, "  ", st, sp);
         st = ftos(te.deaths );
         sp = spacefornum(te.deaths, 5);
-        sprint3(print, 2.000, "  ", st, sp);
+        sprint(print, 2.000, "  ", st, sp);
         st = ftos(eff);
         sp = spacefornum(eff, 3);
-        sprint3(print, 2.000, "  ", st, sp);
+        sprint(print, 2.000, "  ", st, sp);
         /*
            st = ftos(te.real_frags);
            if ( te.real_frags < 10)
            {
-           sprint3(print, 2.000, "  ", st, "     ");
+           sprint(print, 2.000, "  ", st, "     ");
            }
            else if (te.real_frags < 100)
            {
-           sprint3(print, 2.000, "  ", st, "    ");
+           sprint(print, 2.000, "  ", st, "    ");
            }
            else
            {
-           sprint3(print, 2.000, "  ", st, "   ");
+           sprint(print, 2.000, "  ", st, "   ");
            }
            st =  ftos(te.teamkills);
            if ( te.teamkills < 10)
            {
-           sprint2(print, 2.000,  st, "      ");
+           sprint(print, 2.000,  st, "      ");
            }
            else if (te.teamkills < 100)
            {
-           sprint2(print, 2.000,  st, "     ");
+           sprint(print, 2.000,  st, "     ");
            }
            else
            {
-           sprint2(print, 2.000,  st, "    ");
+           sprint(print, 2.000,  st, "    ");
            }
            st =  ftos(te.deaths);
            if (te.deaths < 10)
            {
-           sprint2(print, 2.000,  st, "      ");
+           sprint(print, 2.000,  st, "      ");
            }
            else if ( te.deaths < 100)
            {
-           sprint2(print, 2.000,  st, "     ");
+           sprint(print, 2.000,  st, "     ");
            }
            else
            {
-           sprint2(print, 2.000,  st, "    ");
+           sprint(print, 2.000,  st, "    ");
            }
            st =  ftos(eff);
            if (eff < 10)
            {
-           sprint2(print, 2.000,  st, "     ");
+           sprint(print, 2.000,  st, "     ");
            }
            else if ( eff < 100)
            {
-           sprint2(print, 2.000,  st, "    ");
+           sprint(print, 2.000,  st, "    ");
            }
            else
            {
-           sprint2(print, 2.000,  st, "   ");
+           sprint(print, 2.000,  st, "   ");
            }*/
-        sprint2(print, 2.000,  te.netname , "\n");
+        sprint(print, 2.000,  te.netname , "\n");
         te = te.nextp;
     }
     if (store_obs.cnt == 2) {
         sprint(print, 2.000, "\n\n");
         sprint(print, 2.000,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint2(print, 2.000,  st, "     Team2:   ");
+        sprint(print, 2.000,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint2(print, 2.000,  st, "\n");
+        sprint(print, 2.000,  st, "\n");
     } else {
         sprint(print, 2.000, "\n\n");
         sprint(print, 2.000,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint2(print, 2.000,  st, "     Team2:   ");
+        sprint(print, 2.000,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint2(print, 2.000,  st, "\n Team3:   ");
+        sprint(print, 2.000,  st, "\n Team3:   ");
         st =  ftos(pteam3.frags);
-        sprint2(print, 2.000,  st, "     Team4:   ");
+        sprint(print, 2.000,  st, "     Team4:   ");
         st =  ftos(pteam4.frags);
-        sprint2(print, 2.000,  st, "\n");
+        sprint(print, 2.000,  st, "\n");
     }
     sprint(print, 2.000, "\n\n");
 };
@@ -225,54 +225,54 @@ void() ShowTouches = {
         if (te.flag_touches ) {
             st = ftos(te.flag_touches );
             sp = spacefornum(te.flag_touches, 6);
-            sprint3(self, 2.000, "  ", st, sp);
+            sprint(self, 2.000, "  ", st, sp);
             st = ftos(te.flag_captures );
             sp = spacefornum(te.flag_captures, 7);
-            sprint3(self, 2.000, "  ", st, sp);
+            sprint(self, 2.000, "  ", st, sp);
             st = ftos(te.flag_fumbles );
             sp = spacefornum(te.flag_fumbles, 7);
-            sprint3(self, 2.000, "  ", st, sp);
+            sprint(self, 2.000, "  ", st, sp);
             /*
                if ( te.flag_touches  < 10)
                {
-               sprint3(self, 2.000, "  ", st, "       ");
+               sprint(self, 2.000, "  ", st, "       ");
                }
                else if (te.flag_touches < 100)
                {
-               sprint3(self, 2.000, "  ", st, "      ");
+               sprint(self, 2.000, "  ", st, "      ");
                }
                else
                {
-               sprint3(self, 2.000, "  ", st, "     ");
+               sprint(self, 2.000, "  ", st, "     ");
                }
                st =  ftos(te.flag_captures);
                if ( te.flag_captures < 10)
                {
-               sprint2(self, 2.000,  st, "         ");
+               sprint(self, 2.000,  st, "         ");
                }
                else if (te.flag_captures < 100)
                {
-               sprint2(self, 2.000,  st, "        ");
+               sprint(self, 2.000,  st, "        ");
                }
                else
                {
-               sprint2(self, 2.000,  st, "       ");
+               sprint(self, 2.000,  st, "       ");
                }
                st =  ftos(te.flag_fumbles);
                if (te.flag_fumbles < 10)
                {
-               sprint2(self, 2.000,  st, "         ");
+               sprint(self, 2.000,  st, "         ");
                }
                else if ( te.flag_fumbles < 100)
                {
-               sprint2(self, 2.000,  st, "        ");
+               sprint(self, 2.000,  st, "        ");
                }
                else
                {
-               sprint2(self, 2.000,  st, "       ");
+               sprint(self, 2.000,  st, "       ");
                }
              */
-            sprint2(self, 2.000,  te.netname , "\n");
+            sprint(self, 2.000,  te.netname , "\n");
         }
         te = te.nextp;
     }
@@ -280,20 +280,20 @@ void() ShowTouches = {
         sprint(self, 2.000, "\n\n");
         sprint(self, 2.000,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint2(self, 2.000,  st, "     Team2:   ");
+        sprint(self, 2.000,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint2(self, 2.000,  st, "\n");
+        sprint(self, 2.000,  st, "\n");
     } else {
         sprint(self, 2.000, "\n\n");
         sprint(self, 2.000,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint2(self, 2.000,  st, "     Team2:   ");
+        sprint(self, 2.000,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint2(self, 2.000,  st, "\n Team3:   ");
+        sprint(self, 2.000,  st, "\n Team3:   ");
         st =  ftos(pteam3.frags);
-        sprint2(self, 2.000,  st, "     Team4:   ");
+        sprint(self, 2.000,  st, "     Team4:   ");
         st =  ftos(pteam4.frags);
-        sprint2(self, 2.000,  st, "\n");
+        sprint(self, 2.000,  st, "\n");
     }
     sprint(self, 2.000, "\n\n");
 };
@@ -310,11 +310,11 @@ void() ShowFps = {
     while (te) {
         fps = rint( 1000 / ( te.fAverageFrameTime / te.fFrameCount * 1000 ) );
         st = ftos( fps );
-        sprint3(self, 2.000, " ", st, "     ");
+        sprint(self, 2.000, " ", st, "     ");
         r = fabs(te.fAverageFrameTime * 100 / (time - te.real_time));
         st = ftos(r);
-        sprint2(self, 2.000,  st, "%       ");
-        sprint2(self, 2.000,  te.netname , "\n");
+        sprint(self, 2.000,  st, "%       ");
+        sprint(self, 2.000,  te.netname , "\n");
         te = te.nextp;
     }
     sprint(self, 2.000, "\n\n");
@@ -325,7 +325,7 @@ void () ShowSpeed = {
     local string st;
     if (self.speed) {
         st = ftos(rint(self.speed));
-        sprint3(self, 2.000, " Current Speed:  ", st,"\n");
+        sprint(self, 2.000, " Current Speed:  ", st,"\n");
     }
     if (self.a_speed) {
         /*  ends up all 3.69 / 0.36 which is 10.25
@@ -336,7 +336,7 @@ void () ShowSpeed = {
          */
         dist = self.speed / 10.25;
         st = ftos(rint(dist));
-        sprint3(self, 2.000, " Metric Speed:   ", st," km/h\n");
+        sprint(self, 2.000, " Metric Speed:   ", st," km/h\n");
     }
 };
 
@@ -344,16 +344,16 @@ void() ShowStats = {
     local string st;
     local float eff;
     sprint(self, 2.000, "\n\n");
-    sprint3(self, 2.000, " ", self.netname, "'s Statistics\n");
+    sprint(self, 2.000, " ", self.netname, "'s Statistics\n");
     sprint(self, 2.000, "\n");
     if (self.enemy)
-        sprint3(self, 2.000, " Last enemy: ", self.enemy.netname,"\n");
+        sprint(self, 2.000, " Last enemy: ", self.enemy.netname,"\n");
     st = ftos(self.real_frags);
-    sprint3(self, 2.000, " Frags:      ", st,"\n");
+    sprint(self, 2.000, " Frags:      ", st,"\n");
     st = ftos(self.deaths);
-    sprint3(self, 2.000, " Deaths:     ", st,"\n");
+    sprint(self, 2.000, " Deaths:     ", st,"\n");
     st = ftos(self.teamkills);
-    sprint3(self, 2.000, " Teamkills:  ", st,"\n");
+    sprint(self, 2.000, " Teamkills:  ", st,"\n");
     if (self.real_frags <= 0.000) {
         eff = 0.000;
     } else {
@@ -361,36 +361,36 @@ void() ShowStats = {
         eff = rint(eff);
     }
     st = ftos(eff);
-    sprint3(self, 2.000, " Efficiency: ", st,"\n\n");
+    sprint(self, 2.000, " Efficiency: ", st,"\n\n");
     st = ftos(rint(self.dmg_inflicted));
-    sprint3(self, 2.000, " Damage given:  ", st,"\n");
+    sprint(self, 2.000, " Damage given:  ", st,"\n");
     st = ftos(rint(self.dmg_recieved));
-    sprint3(self, 2.000, " Damage taken:  ", st,"\n");
+    sprint(self, 2.000, " Damage taken:  ", st,"\n");
     st = ftos(rint(self.dmg_self));
-    sprint3(self, 2.000, " Damage self:   ", st,"\n");
+    sprint(self, 2.000, " Damage self:   ", st,"\n");
     st = ftos(rint(self.dmg_team));
-    sprint3(self, 2.000, " Damage team:   ", st,"\n\n");
+    sprint(self, 2.000, " Damage team:   ", st,"\n\n");
     st = ftos(self.flag_touches);
-    sprint3(self, 2.000, " Touches:    ", st,"\n");
+    sprint(self, 2.000, " Touches:    ", st,"\n");
     st = ftos(self.flag_captures);
-    sprint3(self, 2.000, " Captures:   ", st,"\n");
+    sprint(self, 2.000, " Captures:   ", st,"\n");
     st = ftos(self.flag_fumbles);
-    sprint3(self, 2.000, " Fumbles:    ", st,"\n\n");
+    sprint(self, 2.000, " Fumbles:    ", st,"\n\n");
     if (self.a_speed) {
         eff = (self.a_speed / self.cnt);
         st = ftos(rint(eff));
-        sprint3(self, 2.000, " Average Speed:       ", st,"\n");
+        sprint(self, 2.000, " Average Speed:       ", st,"\n");
         if (self.a_gspeed) {
             eff = (self.a_gspeed / self.g_count);
             st = ftos(rint(eff));
-            sprint3(self, 2.000, " Average Groundspeed: ", st,"\n");
+            sprint(self, 2.000, " Average Groundspeed: ", st,"\n");
             eff = ((self.a_speed - self.a_gspeed) / (self.cnt - self.g_count));
             st = ftos(rint(eff));
-            sprint3(self, 2.000, " Average Airspeed:    ", st,"\n");
+            sprint(self, 2.000, " Average Airspeed:    ", st,"\n");
         }
         eff = (self.a_speed / (81.63 * 72));  // assume * 72 fps
         st = ftos(rint(eff));
-        sprint3(self, 2.000, " Distance Travelled:  ", st," metres\n");
+        sprint(self, 2.000, " Distance Travelled:  ", st," metres\n");
     }
     sprint(self, 2.000, "\n\n");
 };
@@ -399,12 +399,12 @@ void() ModStatus = {
     local string tmp;
     local float f1;
     tmp = ftos(teamplay);
-    sprint3(self, 2, "Τεανπμαω        ", tmp, "\n");
+    sprint(self, 2, "Τεανπμαω        ", tmp, "\n");
     tmp = ftos((timelimit/60));
-    sprint3(self, 2, "Τινεμινιτ       ", tmp, "  ");
+    sprint(self, 2, "Τινεμινιτ       ", tmp, "  ");
     if (timelimit < 10) sprint(self, 2, " ");
     tmp = ftos(fraglimit);
-    sprint3(self, 2, "\nΖςαημινιτ       ", tmp, "\n");
+    sprint(self, 2, "\nΖςαημινιτ       ", tmp, "\n");
     if ( (modetype & 1 )) {
         sprint(self, 2, "Clan Mode       on\n");
     } else {
@@ -412,24 +412,24 @@ void() ModStatus = {
     }
     tmp = infokey (world,"overtime");
     if ( stof (tmp)) {
-        sprint3(self, 2, "Overtime        ", tmp, "\n");
+        sprint(self, 2, "Overtime        ", tmp, "\n");
     } else {
         sprint(self, 2, "Overtime        off\n");
     }
     tmp = infokey (world,"teamfrags");
     if ( (tmp == "on") ) {
-        sprint3(self, 2, "Teamfrags       ", tmp, "\n");
+        sprint(self, 2, "Teamfrags       ", tmp, "\n");
     } else {
         sprint(self, 2, "Teamfrags       off\n");
     }
     tmp = infokey (world,"fullteamscore");
     if ( (tmp == "on") ) {
-        sprint3(self, 2, "Full Team Score ", tmp, "\n");
+        sprint(self, 2, "Full Team Score ", tmp, "\n");
     } else {
         sprint(self, 2, "Full Team Score off\n");
     }
     tmp = ftos(gspeed);
-    sprint3(self, 2, "Ground speed    ", tmp, "\n");
+    sprint(self, 2, "Ground speed    ", tmp, "\n");
     /*
        if ( tfvsdm ) {
        sprint(self, 2, "ΤΖφσΔΝ:         on\n");
@@ -452,7 +452,7 @@ void() ModStatus = {
     }
     tmp = infokey (world,"gibs");
     if ( (tmp == "off") ) {
-        sprint3(self, 2, "Player Gibs     ", tmp, " \n");
+        sprint(self, 2, "Player Gibs     ", tmp, " \n");
     }
     if (allow_hook) {
         sprint(self, 2, "Grapple:        on\n");
@@ -483,7 +483,7 @@ void() ModStatus = {
         sprint(self, 2, "Rounds:         on\n");
     } else if (rounds > 1) {
         tmp = ftos(rounds);
-        sprint3(self, 2, "Rounds:        ", tmp ,"\n");
+        sprint(self, 2, "Rounds:        ", tmp ,"\n");
     }
     f1 = stof(infokey(world, "fpd"));
     if (f1 & 256) {
@@ -499,7 +499,7 @@ void() ModStatus = {
     }
     if (elect) {
         tmp = ftos(elect);
-        sprint3(self, 2, "\nElection in progress\n", tmp, "‘ votes received\n");
+        sprint(self, 2, "\nElection in progress\n", tmp, "‘ votes received\n");
     }
 };
 
@@ -514,7 +514,7 @@ void(float t) TimeDown = {
     }
     tmp = ftos(tl);
     bprint(2, " ");
-    bprint3(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+    bprint(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
     timelimit = (tl * 60);
     cvar_set("timelimit", tmp);
 };
@@ -530,7 +530,7 @@ void(float t) TimeUp = {
     }
     tmp = ftos(tl);
     bprint(2, " ");
-    bprint3(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+    bprint(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
     timelimit = (tl * 60);
     cvar_set("timelimit", tmp);
 };
@@ -546,9 +546,9 @@ void(float t, string option) MiscTimeDown = {
     tmp = ftos(ml);
     bprint(2, " ");
     if (option == "cft") {
-        bprint3(2, "Ceasefire time σετ το ", tmp, " νιξυτεσ\n");
+        bprint(2, "Ceasefire time σετ το ", tmp, " νιξυτεσ\n");
     } else {
-        bprint4(2, option, " μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+        bprint(2, option, " μεξητθ σετ το ", tmp, " νιξυτεσ\n");
     }
     localcmd("localinfo ");
     localcmd(option);
@@ -571,9 +571,9 @@ void(float t, string option) MiscTimeUp = {
     tmp = ftos(ml);
     bprint(2, " ");
     if (option == "cft") {
-        bprint3(2, "Ceasefire time σετ το ", tmp, " νιξυτεσ\n");
+        bprint(2, "Ceasefire time σετ το ", tmp, " νιξυτεσ\n");
     } else {
-        bprint4(2, option, " μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+        bprint(2, option, " μεξητθ σετ το ", tmp, " νιξυτεσ\n");
     }
     localcmd("localinfo ");
     localcmd(option);
@@ -588,7 +588,7 @@ void (float add) FragLimit = {
     if (fraglimit < 0) fraglimit = 0;
     tmp = ftos(fraglimit);
     bprint(2, " ");
-    bprint3(2, "Ζςαημινιτ σετ το ", tmp, "\n");
+    bprint(2, "Ζςαημινιτ σετ το ", tmp, "\n");
     cvar_set("fraglimit", tmp);
 };
 
@@ -635,7 +635,7 @@ void() ChangeTP = {
         }
     }
     cvar_set("teamplay", tmp);
-    bprint3(2.000, " Teamplay set to: ", ftos(teamplay), " - ");
+    bprint(2.000, " Teamplay set to: ", ftos(teamplay), " - ");
     bprint(2.000,  desc);
 };
 
@@ -690,7 +690,7 @@ void() GroundSpeed = {
         gspeed = 0.000;
         desc = "Ground Speed Normal.";
     }
-    bprint3(2.000, " ",  desc,"\n");
+    bprint(2.000, " ",  desc,"\n");
     localcmd("localinfo pm_gspeed ");
     localcmd(ftos(gspeed));
     localcmd("\n");
@@ -701,11 +701,11 @@ void() ToggleFreeze = {
     if (( freeze == 0 )) {
         freeze = 1;
         localcmd("localinfo freeze on\n");
-        bprint2(2, self.netname, " freezes map\n");
+        bprint(2, self.netname, " freezes map\n");
     } else {
         freeze = 0;
         localcmd("localinfo freeze off\n");
-        bprint2(2, self.netname, " unfreezes map\n");
+        bprint(2, self.netname, " unfreezes map\n");
     }
 };
 
@@ -723,7 +723,7 @@ void (string option) Toggle_Misc = {
     localcmd(st);
     localcmd("\n");
     bprint(2, " ");
-    bprint4(2, option, " set to ", st, " \n");
+    bprint(2, option, " set to ", st, " \n");
 };
 /*
 
@@ -732,36 +732,36 @@ void (string option) Toggle_Misc = {
    bprint(2, "Map Restart needed to take affect!\n")
 
    void() Toggle_TFvsDM =
-   bprint3(2, "TFvsDM Mode set to ", st, "\n"
+   bprint(2, "TFvsDM Mode set to ", st, "\n"
 
    void() Toggle_SpeedCap
-   bprint3(2, "Speed Capture Mode set to ", st, "\n");
+   bprint(2, "Speed Capture Mode set to ", st, "\n");
 
    void() Toggle_Practice =
-   bprint3(2, "Practice Mode set to ", st, "\n");
+   bprint(2, "Practice Mode set to ", st, "\n");
 
    void() Toggle_TFStrike =
-   bprint3(2, "TFStrike Mode set to ", st, "\n");
+   bprint(2, "TFStrike Mode set to ", st, "\n");
 
    void() Toggle_Duel =
-   bprint3(2, "Duel Mode set to ", st, "\n");
+   bprint(2, "Duel Mode set to ", st, "\n");
 
    void() Toggle_Rounds =
 
    void () Toggle_Teamfrags = {
-   bprint3(2, "Teamfrags set to ", st, " \n");
+   bprint(2, "Teamfrags set to ", st, " \n");
 
    void () Toggle_Fullts = {
-   bprint3(2, "Full Team Score set to ", st, " \n");
+   bprint(2, "Full Team Score set to ", st, " \n");
 
    void () Toggle_Grapple = {
-   bprint3(2, "Grapple set to ", st, " \n");
+   bprint(2, "Grapple set to ", st, " \n");
 
    void () Toggle_Gibs = {
-   bprint3(2, "Gibs set to ", st, " \n");
+   bprint(2, "Gibs set to ", st, " \n");
 
    void () Toggle_Highlander = {
-   bprint3(2, "Highlander mode set to ", st, " \n");
+   bprint(2, "Highlander mode set to ", st, " \n");
  */
 
 void() ResetSetup = {
@@ -833,7 +833,7 @@ void() Toggle_Quad = {
    localcmd("localinfo obs_teamtrack off\n");
    }
    bprint(2, " ");
-   bprint3(2, "Observer Team-Only Tracking set to ", st, " \n");
+   bprint(2, "Observer Team-Only Tracking set to ", st, " \n");
    };
  */
 
@@ -952,7 +952,7 @@ void () Toggle_flag_emu = {
     localcmd(ftos(fl));
     localcmd("\n");
     bprint(2, " ");
-    bprint3(2, "Goal Item model set to ", st, " \n");
+    bprint(2, "Goal Item model set to ", st, " \n");
 };
 
 void () Toggle_Grenpacks = {
@@ -1016,7 +1016,7 @@ void () Toggle_SentryFire = {
     localcmd(ftos(sentry_fire));
     localcmd("\n");
     bprint(2, " ");
-    bprint3(2, "Sentry Fire set to ", st, " \n");
+    bprint(2, "Sentry Fire set to ", st, " \n");
 };
 
 void () Toggle_PipeDelay = {
@@ -1033,7 +1033,7 @@ void () Toggle_PipeDelay = {
     localcmd(st);
     localcmd("\n");
     bprint(2, " ");
-    bprint3(2, "Demoman Pipebomb Delay set to ", st, " \n");
+    bprint(2, "Demoman Pipebomb Delay set to ", st, " \n");
 };
 
 void () Toggle_Detpack = {
@@ -1048,7 +1048,7 @@ void () Toggle_Detpack = {
     localcmd(st);
     localcmd("\n");
     bprint(2, " ");
-    bprint3(2, "Solid Detpacks σετ το ", st, " \n");
+    bprint(2, "Solid Detpacks σετ το ", st, " \n");
 };
 
 void () Toggle_Lighting = {
@@ -1118,7 +1118,7 @@ void () AgreeMiscVote = {
     }
     self.allowvote = time + 3.000;
     if (self.mvote) {
-        bprint2(2, self.netname, " χιτθδςαχσ ");
+        bprint(2, self.netname, " χιτθδςαχσ ");
         if (infokey(self, "gender") == "f") bprint(2, "θες ");
         else bprint(2, "θισ ");
         bprint(3, "vote\n");
@@ -1147,7 +1147,7 @@ void () AgreeMiscVote = {
     if ( v_misc != 0.000 ) {
         f1 = f2 - v_misc;
         tmp = ftos(f1);
-        bprint3(2, "", tmp, "‘ more vote");
+        bprint(2, "", tmp, "‘ more vote");
         if (f1 > 1) bprint(2, "s");
         bprint(2, " needed\n");
     }
@@ -1173,7 +1173,7 @@ void (string Misc, float type) PlayerMiscVote = {
         return;
     }
     if (self.mvote == 2.000) {
-        bprint2(2, self.netname, " χιτθδςαχσ ");
+        bprint(2, self.netname, " χιτθδςαχσ ");
         if (infokey(self, "gender") == "f") bprint(2, "θες ");
         else bprint(2, "θισ ");
         bprint(3, "vote\n");
@@ -1187,7 +1187,7 @@ void (string Misc, float type) PlayerMiscVote = {
         if (type == 1)   bprint(3, " votes for map ");
         else if (type == 2)  bprint(3, " votes for mode ");
         else if (type == 3)  bprint(3, " votes for setting ");
-        bprint2(2, Misc, "\n");
+        bprint(2, Misc, "\n");
         miscvote = spawn();
         miscvote.owner = world;
         miscvote.classname = "miscvote";
@@ -1230,7 +1230,7 @@ void (string Misc, float type) PlayerMiscVote = {
     if ( v_misc != 0.000 ) {
         f1 = f2 - v_misc;
         st = ftos(f1);
-        bprint3(2, "", tmp, "‘ more vote");
+        bprint(2, "", tmp, "‘ more vote");
         if (f1 > 1) bprint(2, "s");
         bprint(2, " needed\n");
     }
@@ -1324,7 +1324,7 @@ void () ToggleSpecMsgs = {
     localcmd(st);
     localcmd("\n");
     bprint(2, " ");
-    bprint3(2, "Messages for spectators  σετ το ", st, " \n");
+    bprint(2, "Messages for spectators  σετ το ", st, " \n");
 };
 
 void (entity p) unpause_player = {

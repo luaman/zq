@@ -471,7 +471,7 @@ void (float objtobuild) TeamFortress_Build = {
                     te = find (te,classname,"building_sentry");
                 }
                 if ( nomisc >= maxblds) {
-                    sprint3 (self,2.000,"You can only have ", st, " sentry guns on your team.\n");
+                    sprint (self,2.000,"You can only have ", st, " sentry guns on your team.\n");
                     return ;
                 }
             }

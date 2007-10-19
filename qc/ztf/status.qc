@@ -536,7 +536,7 @@ void (entity pl, string s1, string s2) CenterPrint2 = {
     //pl.b_b = s1;
     //pl.b_t = s2;
     //pl.b_n = string_null;
-    centerprint2 (pl,s1,s2);
+    centerprint (pl,s1,s2);
     pl.StatusRefreshTime = (time + 1.500);
 };
 
@@ -544,7 +544,7 @@ void (entity pl, string s1, string s2, string s3) CenterPrint3 = {
     //pl.b_b = s1;
     //pl.b_t = s2;
     //pl.b_n = s3;
-    centerprint3 (pl,s1,s2,s3);
+    centerprint (pl,s1,s2,s3);
     pl.StatusRefreshTime = (time + 1.500);
 };
 

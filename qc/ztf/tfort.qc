@@ -73,9 +73,9 @@ void () UseSpecialSkill = {
                                             traceline (src,(src + (v_forward * 2048.000)),0.000,self);
                                             if ( (trace_ent != world) ) {
                                                 if (trace_ent.netname != string_null) {
-                                                    sprint3 (self,2.000,"Locked onto ",trace_ent.netname,"\n");
+                                                    sprint (self,2.000,"Locked onto ",trace_ent.netname,"\n");
                                                 } else {
-                                                    sprint3 (self,2.000,"Locked onto ",trace_ent.classname,"\n");
+                                                    sprint (self,2.000,"Locked onto ",trace_ent.classname,"\n");
                                                 }
                                                 self.goalentity = trace_ent;
                                                 if (!self.tracking) Toggle_Tracking();
@@ -279,7 +279,7 @@ void () TeamFortress_Inventory = {
     if ( (self.no_grenades_1 > 0.000) ) {
         sprint (self,2.000,"Gren.Type 1 : ");
         ac = Status_GrenTypeToString(self.tp_grenades_1);
-        sprint2 (self,2.000, ac, " (");
+        sprint (self,2.000, ac, " (");
         ac = ftos (self.no_grenades_1);
         sprint (self,2.000,ac);
         sprint (self,2.000,")\n");
@@ -287,7 +287,7 @@ void () TeamFortress_Inventory = {
     if ( (self.no_grenades_2 > 0.000) ) {
         sprint (self,2.000,"Gren.Type 2 : ");
         ac = Status_GrenTypeToString (self.tp_grenades_2);
-        sprint2 (self,2.000, ac, " (");
+        sprint (self,2.000, ac, " (");
         ac = ftos (self.no_grenades_2);
         sprint (self,2.000,ac);
         sprint (self,2.000,")\n");
@@ -1887,33 +1887,33 @@ void (entity Gren) TeamFortress_ExplodePerson = {
     setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
     setorigin (newmis,Gren.owner.origin);
     if ( ((Gren.owner.playerclass == 1.000) && (Gren.weapon != 10.000)) ) {
-        bprint3 (1.000,"No ",Gren.owner.netname,", swallowing the grenade isn't very effective!\n");
+        bprint (1.000,"No ",Gren.owner.netname,", swallowing the grenade isn't very effective!\n");
     } else {
         if ( (Gren.owner.playerclass == 2.000) ) {
-            bprint3 (1.000,"Well ",Gren.owner.netname,", don't quit your day job!\n");
+            bprint (1.000,"Well ",Gren.owner.netname,", don't quit your day job!\n");
         } else {
             if ( (Gren.owner.playerclass == 3.000) ) {
-                bprint3 (1.000,"Ummm, ",Gren.owner.netname,", you're supposed to THROW the grenade!\n");
+                bprint (1.000,"Ummm, ",Gren.owner.netname,", you're supposed to THROW the grenade!\n");
             } else {
                 if ( (Gren.owner.playerclass == 4.000) ) {
-                    bprint3 (1.000,"Ack! ",Gren.owner.netname,"! The grenade is your friend for another reason!\n");
+                    bprint (1.000,"Ack! ",Gren.owner.netname,"! The grenade is your friend for another reason!\n");
                 } else {
                     if ( (Gren.owner.playerclass == 5.000) ) {
-                        bprint3 (1.000,"No ",Gren.owner.netname,"! Assist your own suicide some other time!\n");
+                        bprint (1.000,"No ",Gren.owner.netname,"! Assist your own suicide some other time!\n");
                     } else {
                         if ( (Gren.owner.playerclass == 6.000) ) {
-                            bprint3 (1.000,"Hey ",Gren.owner.netname,", you're not THAT heavy!\n");
+                            bprint (1.000,"Hey ",Gren.owner.netname,", you're not THAT heavy!\n");
                         } else {
                             if ( (Gren.owner.playerclass == 7.000) ) {
-                                bprint3 (1.000,"Yes ",Gren.owner.netname,", the grenade does explode on '3'!\n");
+                                bprint (1.000,"Yes ",Gren.owner.netname,", the grenade does explode on '3'!\n");
                             } else {
                                 if ( (Gren.owner.playerclass == 8.000) ) {
-                                    bprint3 (1.000,"You do realize ",Gren.owner.netname,", you can blow your cover in easier ways!\n");
+                                    bprint (1.000,"You do realize ",Gren.owner.netname,", you can blow your cover in easier ways!\n");
                                 } else {
                                     if ( (Gren.owner.playerclass == 9.000) ) {
-                                        bprint3 (1.000,"Hey ",Gren.owner.netname,", study grenade dynamics on your own time!\n");
+                                        bprint (1.000,"Hey ",Gren.owner.netname,", study grenade dynamics on your own time!\n");
                                     } else {
-                                        bprint3 (1.000,"No ",Gren.owner.netname,", throw the grenade, not the pin!\n");
+                                        bprint (1.000,"No ",Gren.owner.netname,", throw the grenade, not the pin!\n");
                                     }
                                 }
                             }

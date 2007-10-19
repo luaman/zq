@@ -13,7 +13,7 @@ void (float type, float print) SetOptCmd = {
     localcmd ("\n");
     if (print) {
         bprint(2, " ");
-        bprint4(2, argv(0), " set to ", argv(1), " \n");
+        bprint(2, argv(0), " set to ", argv(1), " \n");
     }
 };
 
@@ -111,7 +111,7 @@ float () UserCmd = {
             Admin_Check(argv(1));
             if (self.is_admin == 3.000) {
                 Admin_Aliases();
-                bprint2(2, self.netname, " çáéîó æõìì áäíéî óôáôõó!");
+                bprint(2, self.netname, " çáéîó æõìì áäíéî óôáôõó!");
                 bprint(3, "\n");
                 sprint(self, 2, "Type ãïííáîäó for admin commands.\n");
             } else {
@@ -155,7 +155,7 @@ float () UserCmd = {
     } else if (argv(0) == "abort") {
         if (arg_num == 1) {
             if (self.mvote) {
-                bprint2(2, self.netname, " ÷éôèäòá÷ó ");
+                bprint(2, self.netname, " ÷éôèäòá÷ó ");
                 if (infokey(self, "gender") == "f") bprint(2, "èåò ");
                 else bprint(2, "èéó ");
                 bprint(3, "vote\n");
@@ -680,7 +680,7 @@ float () UserCmd = {
                 SetOptCmd(0,0);
                 PrintPlayers("\nServer Password changed to \"", argv(1), "\"\n\n");
                 if (self.classname == "observer")
-                    sprint3(self, 2, "\nServer Password changed to \"", argv(1), "\"\n");
+                    sprint(self, 2, "\nServer Password changed to \"", argv(1), "\"\n");
                 return 1;
             }
         } else if (argv(0) == "spec_password") {
@@ -694,7 +694,7 @@ float () UserCmd = {
                 localcmd ("\n");
                 PrintSpecs("\nSpectator Password changed to \"", argv(1), "\"\n");
                 if (self.classname == "player")
-                    sprint3(self, 2, "\nSpectator Password changed to \"", argv(1), "\"\n");
+                    sprint(self, 2, "\nSpectator Password changed to \"", argv(1), "\"\n");
                 return 1;
             }
         } else if (argv(0) == "cr_scout") {

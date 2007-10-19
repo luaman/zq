@@ -31,13 +31,13 @@ void () CheckFps = {
         r = self.fAverageFrameTime * 100 / (time - self.real_time);
         tmp = ftos(r);
         if (r > 103 ) {
-            bprint5(2 , "WARNING: ", self.netname, "'s speed time is ", tmp, "%\n");
+            bprint(2 , "WARNING: ", self.netname, "'s speed time is ", tmp, "%\n");
 
             if (r > 105)
                 self.rs_g = self.rs_g + 1;
         }
         if (self.rs_g > 3) {
-            bprint3(2, "\n", self.netname, " gets kicked for an excessive speed update time\n");
+            bprint(2, "\n", self.netname, " gets kicked for an excessive speed update time\n");
             sprint(self, 2, "Reboot your machine to get rid of this bug\n");
             stuffcmd(self, "disconnect\n");
             stuffcmd (self, "cmd drop\n");
@@ -49,14 +49,14 @@ void () CheckFps = {
         maxfps = stof(tmp);
         if (!maxfps) maxfps = 76;
         if ( fps > maxfps ) {
-            bprint3(2,"\nWARNING: ", self.netname, "'s frames per second is too high.\n" );
+            bprint(2,"\nWARNING: ", self.netname, "'s frames per second is too high.\n" );
             sprint(self, 2, "Your FPS is exceeding the quakeworld standard. Lower your fps.\n");
             if (tmp != string_null)
                 self.rv_g = self.rv_g + 1;
 
             if ( self.rv_g > 3 ) {
                 // kick the player from server!
-                bprint2(2, self.netname, " gets kicked for exceeding fps limits\n");
+                bprint(2, self.netname, " gets kicked for exceeding fps limits\n");
                 stuffcmd(self, "disconnect\n");
                 stuffcmd (self, "cmd drop\n");
             }
