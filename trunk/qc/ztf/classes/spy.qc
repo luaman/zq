@@ -647,7 +647,7 @@ void (float teamno) TeamFortress_SpyChangeColor = {
 };
 
 void () GasGrenadeTouch = {
-    sound (self,1.000,"weapons/bounce.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }

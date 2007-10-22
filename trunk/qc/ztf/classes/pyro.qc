@@ -96,7 +96,7 @@ void () Remove = {
 };
 
 void () NapalmGrenadeTouch = {
-    sound (self,1.000,"weapons/bounce.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
@@ -584,9 +584,9 @@ void () W_FireFlame = {
         NewBubbles (2.000,(self.origin + (v_forward * 64.000)));
         rn = random ();
         if ( (rn < 0.500) ) {
-            sound (self,1.000,"misc/water1.wav",1.000,1.000);
+            sound (self,CHAN_WEAPON,"misc/water1.wav",1.000,1.000);
         } else {
-            sound (self,1.000,"misc/water2.wav",1.000,1.000);
+            sound (self,CHAN_WEAPON,"misc/water2.wav",1.000,1.000);
         }
         return ;
     }
@@ -685,7 +685,7 @@ void () W_FireIncendiaryCannon = {
     self.currentammo = self.ammo_rockets;
     newmis = spawn ();
     newmis.owner = self;
-    sound (self,1.000,"weapons/sgun1.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/sgun1.wav",1.000,1.000);
     KickPlayer (-3.000,self);
     newmis.movetype = 9.000;
     newmis.solid = 2.000;

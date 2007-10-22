@@ -29,7 +29,7 @@ void () TeamFortress_DetonatePipebombs = {
 };
 
 void () MirvGrenadeTouch = {
-    sound (self,1.000,"weapons/bounce.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
@@ -342,7 +342,7 @@ void () TeamFortress_DetpackExplode = {
     local entity te;
     local vector org;
     bprint (1.000,"FIRE IN THE HOLE!\n");
-    sound (self,1.000,"weapons/detpack.wav",1.000,0.000);
+    sound (self,CHAN_WEAPON,"weapons/detpack.wav",1.000,0.000);
     pos = pointcontents (self.origin);
     if ( (((pos != -2.000) && (pos != -6.000)) && (!self.owner.has_disconnected )) ) {
         deathmsg = 12.000;

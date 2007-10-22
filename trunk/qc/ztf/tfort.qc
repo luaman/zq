@@ -485,7 +485,7 @@ void () TeamFortress_GrenadePrimed = {
     }
     user.tfstate = (user.tfstate - (user.tfstate & 1.000));
     user.tfstate = (user.tfstate - (user.tfstate & 1024.000));
-    sound (user,1.000,"weapons/ax1.wav",1.000,1.000);
+    sound (user,CHAN_WEAPON,"weapons/ax1.wav",1.000,1.000);
     KickPlayer (-1.000,user);
     newmis = spawn ();
     newmis.owner = user;
@@ -1930,7 +1930,7 @@ void () NormalGrenadeTouch = {
     if ( (other == self.owner) ) {
         return ;
     }
-    sound (self,1.000,"weapons/bounce.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }

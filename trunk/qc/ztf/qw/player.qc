@@ -403,7 +403,7 @@ void () player_assaultcannonup1 = [ 103.000, player_assaultcannonup2 ] {
     }
     self.fire_held_down = 1.000;
     if ( (self.heat == 1.000) ) {
-        sound (self,1.000,"weapons/asscan1.wav",1.000,1.000);
+        sound (self,CHAN_WEAPON,"weapons/asscan1.wav",1.000,1.000);
     }
     SuperDamageSound ();
     Attack_Finished (0.100);
@@ -457,7 +457,7 @@ void () player_assaultcannon1 = [ 103.000, player_assaultcannon2 ] {
     local string st;
     if ( (!(classtype & 2.000) && (self.speed < 150.000)) || ((classtype & 2.000) && (self.speed < 50.000))  ) {
         muzzleflash ();
-        sound (self,1.000,"weapons/asscan2.wav",1.000,1.000);
+        sound (self,CHAN_WEAPON,"weapons/asscan2.wav",1.000,1.000);
         if ( (self.weaponframe == 2.000) ) {
             self.weaponframe = 4.000;
         } else {
@@ -476,7 +476,7 @@ void () player_assaultcannon1 = [ 103.000, player_assaultcannon2 ] {
             stuffcmd (self, "\n");
         }
     } else {
-        sound (self,1.000,"weapons/asscan4.wav",1.000,1.000);
+        sound (self,CHAN_WEAPON,"weapons/asscan4.wav",1.000,1.000);
         if ( (self.weaponframe == 2.000) ) {
             self.weaponframe = 0.000;
         } else {
@@ -540,7 +540,7 @@ void () player_assaultcannondown1 = [ 103.000, player_assaultcannondown1 ] {
     if (self.flags & 512.000) {
         if ( (self.count == 1.000) ) {
 
-            sound (self,1.000,"weapons/asscan3.wav",1.000,1.000);
+            sound (self,CHAN_WEAPON,"weapons/asscan3.wav",1.000,1.000);
         }
 
         if ( (self.count >= 15.000) ) {
@@ -572,7 +572,7 @@ void () player_assaultcannondown1 = [ 103.000, player_assaultcannondown1 ] {
     } else {
         if ( (self.count == 1.000) ) {
 
-            sound (self,1.000,"weapons/asscan3.wav",1.000,1.000);
+            sound (self,CHAN_WEAPON,"weapons/asscan3.wav",1.000,1.000);
         }
         self.heat = 0.000;
         self.fire_held_down = 0.000;
@@ -1015,7 +1015,7 @@ void () PlayerDie = {
     }
     if ( (self.heat && (self.current == WEAP_ASSAULT_CANNON)) ) {
         self.count = 0.000;
-        sound (self,1.000,"weapons/asscan3.wav",1.000,1.000);
+        sound (self,CHAN_WEAPON,"weapons/asscan3.wav",1.000,1.000);
     }
     self.items = (self.items - (self.items & 524288.000));
     self.invisible_finished = 0.000;

@@ -1,29 +1,64 @@
+/*
+	items.qc
 
-float (entity Retriever, float AmmoType) TeamFortress_GetMaxAmmo;
+	item functions
 
-float (entity Retriever, float WeaponType) TeamFortress_CanGetWeapon;
+	Copyright (C) 1996-1997  Id Software, Inc.
 
-void (entity Retriever, entity Items) TeamFortress_AddBackpackItems;
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
 
-void (entity p) TeamFortress_SetSpeed;
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-void () tfgoal_touch;
+	See the GNU General Public License for more details.
 
-void () SUB_regen = {
-    self.model = self.mdl;
-    self.solid = 1.000;
-    sound (self,2.000,"items/itembk2.wav",1.000,1.000);
-    setorigin (self,self.origin);
-};
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
 
-void () noclass = {
+		Free Software Foundation, Inc.
+		59 Temple Place - Suite 330
+		Boston, MA  02111-1307, USA
+
+*/
+
+float TeamFortress_GetMaxAmmo (entity Retriever, float AmmoType);
+float TeamFortress_CanGetWeapon (entity Retriever, float WeaponType);
+void TeamFortress_AddBackpackItems (entity Retriever, entity Items);
+void TeamFortress_SetSpeed (entity p);
+void tfgoal_touch ();
+void W_SetCurrentAmmo ();
+/* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
+BE .8 .3 .4 IN COLOR */
+
+
+void SUB_regen ()
+{
+	self.model = self.mdl;          // restore original model
+	self.solid = SOLID_TRIGGER;     // allow it to be touched again
+	sound (self, CHAN_VOICE, "items/itembk2.wav", 1, ATTN_NORM);    // play respawn sound
+	setorigin (self, self.origin);
+}
+
+
+
+/*QUAKED noclass (0 0 0) (-8 -8 -8) (8 8 8)
+prints a warning message when spawned
+*/
+void noclass ()
+{
     dprint ("noclass spawned at");
-    dprint (vtos (self.origin));
+	dprint (vtos(self.origin));
     dprint ("\n");
     remove (self);
-};
+}
 
-void () q_touch = {
+
+void q_touch ()
+{
     local string s;
     if ( (other.classname != "player") ) {
         return ;
@@ -46,7 +81,7 @@ void () q_touch = {
     bprint (0.000," seconds remaining!\n");
     activator = other;
     SUB_UseTargets ();
-};
+}
 
 void (float timeleft) DropQuad = {
     local entity item;
@@ -65,9 +100,10 @@ void (float timeleft) DropQuad = {
     item.touch = q_touch;
     item.nextthink = (time + timeleft);
     item.think = SUB_Remove;
-};
+}
 
-void () r_touch = {
+void r_touch ()
+{
     local string s;
     if ( (other.classname != "player") ) {
         return ;
@@ -90,7 +126,7 @@ void () r_touch = {
     bprint (0.000," seconds remaining!\n");
     activator = other;
     SUB_UseTargets ();
-};
+}
 
 void (float timeleft) DropRing = {
     local entity item;
@@ -109,9 +145,10 @@ void (float timeleft) DropRing = {
     item.touch = r_touch;
     item.nextthink = (time + timeleft);
     item.think = SUB_Remove;
-};
+}
 
-void () PlaceItem = {
+void PlaceItem ()
+{
     local vector oldorg;
     self.mdl = self.model;
     self.flags = 256.000;
@@ -134,12 +171,13 @@ void () PlaceItem = {
         return ;
     }
 
-};
+}
 
-void () StartItem = {
+void StartItem ()
+{
     self.nextthink = (time + 0.100);
     self.think = PlaceItem;
-};
+}
 
 float (entity e, float healamount, float ignore) T_Heal = {
     if ( (modetype & 2) ) {
@@ -181,7 +219,7 @@ float (entity e, float healamount, float ignore) T_Heal = {
         TeamFortress_SetSpeed (e);
     }
     return ( 1.000 );
-};
+}
 .float healamount;
 .float healtype;
 
@@ -189,7 +227,8 @@ void () health_touch;
 
 void () item_megahealth_rot;
 
-void () item_health = {
+void item_health ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -221,9 +260,10 @@ void () item_health = {
     }
     setsize (self,'0.000 0.000 0.000','32.000 32.000 56.000');
     StartItem ();
-};
+}
 
-void () health_touch = {
+void health_touch ()
+{
     local float medi;
     local string s;
     if ( (other.classname != "player") ) {
@@ -310,9 +350,10 @@ void () health_touch = {
     }
     activator = other;
     SUB_UseTargets ();
-};
+}
 
-void () item_megahealth_rot = {
+void item_megahealth_rot ()
+{
     other = self.owner;
     if ( (other.health > other.max_health) ) {
         other.health = (other.health - 1.000);
@@ -328,9 +369,10 @@ void () item_megahealth_rot = {
         self.nextthink = (time + 20.000);
         self.think = SUB_regen;
     }
-};
+}
 
-void () armor_touch = {
+void armor_touch ()
+{
     local float type;
     local float value;
     local float bit;
@@ -446,7 +488,7 @@ void () armor_touch = {
     stuffcmd (other,"bf\n");
     activator = other;
     SUB_UseTargets ();
-};
+}
 
 void () item_armor1 = {
     if ( (CheckExistence () == 0.000) ) {
@@ -459,7 +501,7 @@ void () item_armor1 = {
     self.skin = 0.000;
     setsize (self,'-16.000 -16.000 0.000','16.000 16.000 56.000');
     StartItem ();
-};
+}
 
 void () item_armor2 = {
     if ( (CheckExistence () == 0.000) ) {
@@ -472,9 +514,10 @@ void () item_armor2 = {
     self.skin = 1.000;
     setsize (self,'-16.000 -16.000 0.000','16.000 16.000 56.000');
     StartItem ();
-};
+}
 
-void () item_armorInv = {
+void item_armorInv ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -485,11 +528,11 @@ void () item_armorInv = {
     self.skin = 2.000;
     setsize (self,'-16.000 -16.000 0.000','16.000 16.000 56.000');
     StartItem ();
-};
+}
 
 void () item_armor3 = {
     item_armorInv ();
-};
+}
 
 void (entity p) bound_other_ammo = {
     if ( (p.ammo_shells > TeamFortress_GetMaxAmmo (p,256.000)) ) {
@@ -534,7 +577,7 @@ void (entity p) bound_other_ammo = {
     if ( ((p.tp_grenades_2 == 10.000) && (p.no_grenades_2 > 3.000)) ) {
         p.no_grenades_2 = 3.000;
     }
-};
+}
 
 void () ammo_touch;
 
@@ -555,11 +598,12 @@ void (entity ritem, entity act) Respawn_Item = {
     activator = act;
     SUB_UseTargets ();
     self = oldself;
-};
+}
 
 float () W_BestWeapon;
 
-void () weapon_touch = {
+void weapon_touch ()
+{
     local float hadammo;
     local float new;
     local float old;
@@ -712,9 +756,10 @@ void () weapon_touch = {
     activator = other;
     SUB_UseTargets();
     // Respawn_Item (self,other);
-};
+}
 
-void () weapon_supershotgun = {
+void weapon_supershotgun ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -725,9 +770,10 @@ void () weapon_supershotgun = {
     self.touch = weapon_touch;
     setsize (self,'-16.000 -16.000 0.000','16.000 16.000 56.000');
     StartItem ();
-};
+}
 
-void () weapon_nailgun = {
+void weapon_nailgun ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -738,9 +784,10 @@ void () weapon_nailgun = {
     self.touch = weapon_touch;
     setsize (self,'-16.000 -16.000 0.000','16.000 16.000 56.000');
     StartItem ();
-};
+}
 
-void () weapon_supernailgun = {
+void weapon_supernailgun ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -751,9 +798,10 @@ void () weapon_supernailgun = {
     self.touch = weapon_touch;
     setsize (self,'-16.000 -16.000 0.000','16.000 16.000 56.000');
     StartItem ();
-};
+}
 
-void () weapon_grenadelauncher = {
+void weapon_grenadelauncher ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -764,9 +812,10 @@ void () weapon_grenadelauncher = {
     self.touch = weapon_touch;
     setsize (self,'-16.000 -16.000 0.000','16.000 16.000 56.000');
     StartItem ();
-};
+}
 
-void () weapon_rocketlauncher = {
+void weapon_rocketlauncher ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -777,9 +826,10 @@ void () weapon_rocketlauncher = {
     self.touch = weapon_touch;
     setsize (self,'-16.000 -16.000 0.000','16.000 16.000 56.000');
     StartItem ();
-};
+}
 
-void () weapon_lightning = {
+void weapon_lightning ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -790,7 +840,7 @@ void () weapon_lightning = {
     self.touch = weapon_touch;
     setsize (self,'-16.000 -16.000 0.000','16.000 16.000 56.000');
     StartItem ();
-};
+}
 
 float () GetGrenadePossibility = {
     local float maxg;
@@ -833,9 +883,10 @@ float () GetGrenadePossibility = {
         }
     }
     return ( 0.000 );
-};
+}
 
-void () ammo_touch = {
+void ammo_touch ()
+{
     local entity stemp;
     local float best;
     local float gotgren;
@@ -907,9 +958,10 @@ void () ammo_touch = {
         self = stemp;
     }
     Respawn_Item (self,other);
-};
+}
 
-void () item_shells = {
+void item_shells ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -928,9 +980,10 @@ void () item_shells = {
     self.netname = "shells";
     setsize (self,'0.000 0.000 0.000','32.000 32.000 56.000');
     StartItem ();
-};
+}
 
-void () item_spikes = {
+void item_spikes ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -949,9 +1002,10 @@ void () item_spikes = {
     self.netname = "nails";
     setsize (self,'0.000 0.000 0.000','32.000 32.000 56.000');
     StartItem ();
-};
+}
 
-void () item_rockets = {
+void item_rockets ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -970,9 +1024,10 @@ void () item_rockets = {
     self.netname = "rockets";
     setsize (self,'0.000 0.000 0.000','32.000 32.000 56.000');
     StartItem ();
-};
+}
 
-void () item_cells = {
+void item_cells ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -991,9 +1046,10 @@ void () item_cells = {
     self.netname = "cells";
     setsize (self,'0.000 0.000 0.000','32.000 32.000 56.000');
     StartItem ();
-};
+}
 
-void () item_weapon = {
+void item_weapon ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -1040,9 +1096,10 @@ void () item_weapon = {
     }
     setsize (self,'0.000 0.000 0.000','32.000 32.000 56.000');
     StartItem ();
-};
+}
 
-void () key_touch = {
+void key_touch ()
+{
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -1079,9 +1136,10 @@ void () key_touch = {
     }
     activator = other;
     SUB_UseTargets ();
-};
+}
 
-void () key_setsounds = {
+void key_setsounds ()
+{
     if ( (world.worldtype == 0.000) ) {
         precache_sound ("misc/medkey.wav");
         self.noise = "misc/medkey.wav";
@@ -1094,7 +1152,7 @@ void () key_setsounds = {
         precache_sound2 ("misc/basekey.wav");
         self.noise = "misc/basekey.wav";
     }
-};
+}
 
 void () item_key1 = {
     if ( (CheckExistence () == 0.000) ) {
@@ -1123,7 +1181,7 @@ void () item_key1 = {
     self.items = 131072.000;
     setsize (self,'-16.000 -16.000 -24.000','16.000 16.000 32.000');
     StartItem ();
-};
+}
 
 void () item_key2 = {
     if ( (CheckExistence () == 0.000) ) {
@@ -1150,9 +1208,10 @@ void () item_key2 = {
     self.items = 262144.000;
     setsize (self,'-16.000 -16.000 -24.000','16.000 16.000 32.000');
     StartItem ();
-};
+}
 
-void () sigil_touch = {
+void sigil_touch ()
+{
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -1177,9 +1236,10 @@ void () sigil_touch = {
     self.classname = "";
     activator = other;
     SUB_UseTargets ();
-};
+}
 
-void () item_sigil = {
+void item_sigil ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -1208,9 +1268,10 @@ void () item_sigil = {
     self.touch = sigil_touch;
     setsize (self,'-16.000 -16.000 -24.000','16.000 16.000 32.000');
     StartItem ();
-};
+}
 
-void () powerup_touch = {
+void powerup_touch ()
+{
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -1272,9 +1333,10 @@ void () powerup_touch = {
     }
     activator = other;
     SUB_UseTargets ();
-};
+}
 
-void () item_artifact_invulnerability = {
+void item_artifact_invulnerability ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -1292,9 +1354,10 @@ void () item_artifact_invulnerability = {
     self.items = 1048576.000;
     setsize (self,'-16.000 -16.000 -24.000','16.000 16.000 32.000');
     StartItem ();
-};
+}
 
-void () item_artifact_envirosuit = {
+void item_artifact_envirosuit ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -1309,9 +1372,10 @@ void () item_artifact_envirosuit = {
     self.items = 2097152.000;
     setsize (self,'-16.000 -16.000 -24.000','16.000 16.000 32.000');
     StartItem ();
-};
+}
 
-void () item_artifact_invisibility = {
+void item_artifact_invisibility ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -1328,9 +1392,10 @@ void () item_artifact_invisibility = {
     self.items = 524288.000;
     setsize (self,'-16.000 -16.000 -24.000','16.000 16.000 32.000');
     StartItem ();
-};
+}
 
-void () item_artifact_super_damage = {
+void item_artifact_super_damage ()
+{
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -1355,9 +1420,10 @@ void () item_artifact_super_damage = {
     self.items = 4194304.000;
     setsize (self,'-16.000 -16.000 -24.000','16.000 16.000 32.000');
     StartItem ();
-};
+}
 
-void () BackpackTouch = {
+void BackpackTouch ()
+{
     local string s;
     local float best;
     local entity stemp;
@@ -1440,9 +1506,10 @@ void () BackpackTouch = {
     dremove (self);
     self = other;
     W_SetCurrentAmmo ();
-};
+}
 
-void () DropBackpack = {
+void DropBackpack ()
+{
     if ( cb_prematch ) {
         return ;
     }
@@ -1477,4 +1544,5 @@ void () DropBackpack = {
     newmis.touch = BackpackTouch;
     newmis.nextthink = (time + 120.000);
     newmis.think = SUB_Remove;
-};
+}
+

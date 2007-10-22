@@ -27,7 +27,8 @@
 
 void button_return ();
 
-void button_wait () {
+void button_wait ()
+{
     self.state = STATE_TOP;
     self.nextthink = self.ltime + self.wait;
     self.think = button_return;

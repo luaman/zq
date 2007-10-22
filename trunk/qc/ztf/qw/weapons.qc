@@ -114,7 +114,7 @@ void () W_FireAxe = {
             }
         }
     } else {
-        sound (self,1.000,"player/axhit2.wav",1.000,1.000);
+        sound (self,CHAN_WEAPON,"player/axhit2.wav",1.000,1.000);
         WriteByte (4.000,23.000);
         WriteByte (4.000,2.000);
         WriteByte (4.000,3.000);
@@ -156,7 +156,7 @@ void () W_FireSpanner = {
                     AttemptToActivate (te,self,trace_ent);
                 }
             } else {
-                sound (self,1.000,"player/axhit2.wav",1.000,1.000);
+                sound (self,CHAN_WEAPON,"player/axhit2.wav",1.000,1.000);
                 WriteByte (4.000,23.000);
                 WriteByte (4.000,2.000);
                 WriteByte (4.000,3.000);
@@ -171,7 +171,7 @@ void () W_FireSpanner = {
     if ( trace_ent.takedamage ) {
         Spanner_Fire();
     } else {
-        sound (self,1.000,"player/axhit2.wav",1.000,1.000);
+        sound (self,CHAN_WEAPON,"player/axhit2.wav",1.000,1.000);
         WriteByte (4.000,23.000);
         WriteByte (4.000,2.000);
         WriteByte (4.000,3.000);
@@ -196,7 +196,7 @@ void () W_FireMedikit = {
     if ( trace_ent.takedamage ) {
         Medikit_Fire ();
     } else {
-        sound (self,1.000,"player/axhit2.wav",1.000,1.000);
+        sound (self,CHAN_WEAPON,"player/axhit2.wav",1.000,1.000);
         WriteByte (4.000,23.000);
         WriteByte (4.000,2.000);
         WriteByte (4.000,3.000);
@@ -434,7 +434,7 @@ float (float cur_val, float new_val) SetAttribute = {
 
 void () W_FireShotgun = {
     local vector dir;
-    sound (self,1.000,"weapons/guncock.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/guncock.wav",1.000,1.000);
     KickPlayer (-2.000,self);
     if (!modetype & 2) {
         self.ammo_shells = (self.ammo_shells - 1.000);
@@ -454,7 +454,7 @@ void () W_FireSuperShotgun = {
         W_FireShotgun ();
         return ;
     }
-    sound (self,1.000,"weapons/shotgn2.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/shotgn2.wav",1.000,1.000);
     KickPlayer (-4.000,self);
     if (!modetype & 2) {
         self.ammo_shells = (self.ammo_shells - 2.000);
@@ -496,7 +496,7 @@ void () W_FireSniperRifle = {
     local vector g;
     local vector h;
     local float heattime;
-    sound (self,1.000,"weapons/sniper.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/sniper.wav",1.000,1.000);
     KickPlayer (-2.000,self);
     if (!modetype & 2) {
         self.ammo_shells = (self.ammo_shells - 1.000);
@@ -579,7 +579,7 @@ void () W_FireSniperRifle = {
 
 void () W_FireAutoRifle = {
     local vector dir;
-    sound (self,1.000,"weapons/autorifle.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/autorifle.wav",1.000,1.000);
     KickPlayer (-1.000,self);
     if (!modetype & 2) {
         self.ammo_shells = (self.ammo_shells - 1.000);
@@ -636,9 +636,9 @@ void () W_FirePlasma = {
         //NewBubbles (2.000,(self.origin + (v_forward * 64.000)));
         rn = random ();
         if ( (rn < 0.500) ) {
-            sound (self,1.000,"misc/water1.wav",1.000,1.000);
+            sound (self,CHAN_WEAPON,"misc/water1.wav",1.000,1.000);
         } else {
-            sound (self,1.000,"misc/water2.wav",1.000,1.000);
+            sound (self,CHAN_WEAPON,"misc/water2.wav",1.000,1.000);
         }
         return ;
     }
@@ -794,7 +794,7 @@ void () W_FireRocket = {
         if (allow_stamina)
             self.stamina = self.stamina - 300;
     }
-    sound (self,1.000,"weapons/sgun1.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/sgun1.wav",1.000,1.000);
     KickPlayer (-2.000,self);
     newmis = spawn ();
     newmis.owner = self;
@@ -904,7 +904,7 @@ void () W_FireLightning = {
         return ;
     }
     if ( (self.t_width < time) ) {
-        sound (self,1.000,"weapons/lhit.wav",1.000,1.000);
+        sound (self,CHAN_WEAPON,"weapons/lhit.wav",1.000,1.000);
         self.t_width = (time + 0.600);
     }
     KickPlayer (-2.000,self);
@@ -999,7 +999,7 @@ void () PipebombTouch = {
     if ( (other.classname != "worldspawn") ) {
         return ;
     }
-    sound (self,1.000,"weapons/bounce.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
@@ -1013,7 +1013,7 @@ void () GrenadeTouch = {
         GrenadeExplode ();
         return ;
     }
-    sound (self,1.000,"weapons/bounce.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
@@ -1027,7 +1027,7 @@ void (entity te) InitGrenade = {
         if (allow_stamina)
             self.stamina = self.stamina - 180;
     }
-    sound (self,1.000,"weapons/grenade.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/grenade.wav",1.000,1.000);
     KickPlayer (-2.000,self);
 
     te.voided = 0.000;
@@ -1173,7 +1173,7 @@ void (vector org, vector dir) launch_spike = {
 
 void () W_FireSuperSpikes = {
     local vector dir;
-    sound (self,1.000,"weapons/spike2.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/spike2.wav",1.000,1.000);
     if (!modetype & 2) {
         self.ammo_nails = (self.ammo_nails - 2.000);
         self.currentammo = self.ammo_nails;
@@ -1203,7 +1203,7 @@ void (float ox) W_FireSpikes = {
         W_PrintWeaponMessage ();
         return ;
     }
-    sound (self,1.000,"weapons/rocket1i.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/rocket1i.wav",1.000,1.000);
     if (!modetype & 2) {
         if (allow_stamina)
             self.stamina = self.stamina - 20;
@@ -1636,7 +1636,7 @@ void () attack_none = {
 void () attack_axe = {
     local float r;
     Attack_Finished (0.500);
-    sound (self,1.000,"weapons/ax1.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/ax1.wav",1.000,1.000);
     r = random ();
     if ( (r < 0.250) ) {
         player_axe1 ();
@@ -1655,7 +1655,7 @@ void () attack_axe = {
 
 void () attack_medi = {
     local float r;
-    sound (self,1.000,"weapons/ax1.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/ax1.wav",1.000,1.000);
     r = random ();
     if ( (r < 0.250) ) {
         player_medikit1 ();
@@ -1675,7 +1675,7 @@ void () attack_medi = {
 
 void () attack_span = {
     Attack_Finished (0.500);
-    sound (self,1.000,"weapons/ax1.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/ax1.wav",1.000,1.000);
     player_axe1 ();
 };
 
@@ -1796,14 +1796,14 @@ void () attack_ic = {
 };
 
 void () attack_tr = {
-    sound (self,1.000,"weapons/dartgun.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/dartgun.wav",1.000,1.000);
     player_shot1 ();
     W_FireTranq ();
     Attack_Finished (1.500);
 };
 
 void () attack_rg = {
-    sound (self,1.000,"weapons/railgun.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/railgun.wav",1.000,1.000);
     player_shot1 ();
     if (railgun)
         W_FireRailgun ();
