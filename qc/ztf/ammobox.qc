@@ -134,7 +134,7 @@ void () TeamFortress_AmmoboxTouch = {
             sprint (other,0,"s");
         sprint (other,0,"\n");
     }
-    sound (other,3,"weapons/lock4.wav",1,1);
+    sound (other,CHAN_ITEM,"weapons/lock4.wav",1,1);
     stuffcmd (other,"bf\n");
     if (took) {
         TeamFortress_AmmoboxThink();
@@ -353,7 +353,7 @@ void () TeamFortress_Discard = {
     self.ammo_rockets = self.ammo_rockets - newmis.ammo_rockets;
     self.ammo_cells = self.ammo_cells - newmis.ammo_cells;
     W_SetCurrentAmmo ();
-    sound (self,3,"weapons/lock4.wav",1,1);
+    sound (self,CHAN_ITEM,"weapons/lock4.wav",1,1);
     store_obs.num_ammoboxes = store_obs.num_ammoboxes + 1.000;
     if (store_obs.num_ammoboxes > store_obs.max_ammoboxes)
         RemoveboldAmmobox ();

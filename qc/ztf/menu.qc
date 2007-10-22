@@ -1227,7 +1227,7 @@ void (float inp) Menu_EngineerFix_SentryGun_Input = {
             self.building.health = self.building.max_health;
             self.building.maxammo_shells = (self.building.maxammo_shells * 1.200);
             if ( (self.building.weapon == 2.000) ) {
-                sound (self.building,3.000,"weapons/turrset.wav",1.000,1.000);
+                sound (self.building,CHAN_ITEM,"weapons/turrset.wav",1.000,1.000);
                 if (sgtype) {
                     self.building.think = lvl2_sentry_stand;
                 } else {
@@ -1235,7 +1235,7 @@ void (float inp) Menu_EngineerFix_SentryGun_Input = {
                 }
                 self.building.skin = 1.000;
             } else {
-                sound (self.building,3.000,"weapons/turrset.wav",1.000,1.000);
+                sound (self.building,CHAN_ITEM,"weapons/turrset.wav",1.000,1.000);
                 if (sgtype) {
                     self.building.think = lvl3_sentry_stand;
                 } else {

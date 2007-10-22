@@ -294,7 +294,7 @@ void () Laser_Touch = {
         dremove (self);
         return ;
     }
-    sound (self,1.000,"enforcer/enfstop.wav",1.000,3.000);
+    sound (self,CHAN_WEAPON,"enforcer/enfstop.wav",1.000,3.000);
     org = (self.origin - (8.000 * normalize (self.velocity)));
     if ( other.health ) {
         SpawnBlood (org,15.000);
@@ -312,7 +312,7 @@ void () Laser_Touch = {
 };
 
 void (vector org, vector vec) LaunchLaser = {
-    sound (self,1.000,"enforcer/enfire.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"enforcer/enfire.wav",1.000,1.000);
     vec = normalize (vec);
     newmis = spawn ();
     newmis.owner = self;
@@ -633,7 +633,7 @@ void () ambient_generic = {
 
 void () noise_think = {
     self.nextthink = (time + 0.500);
-    sound (self,1.000,"enforcer/enfire.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"enforcer/enfire.wav",1.000,1.000);
     sound (self,2.000,"enforcer/enfstop.wav",1.000,1.000);
     sound (self,3.000,"enforcer/sight1.wav",1.000,1.000);
     sound (self,4.000,"enforcer/sight2.wav",1.000,1.000);

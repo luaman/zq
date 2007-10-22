@@ -4,9 +4,9 @@ void () TeamFortress_SaveMe = {
     local entity tl;
     if ( (self.last_sound < time) ) {
         if ( (random () < 0.800) ) {
-            sound (self,1.000,"speech/saveme1.wav",1.000,1.000);
+            sound (self,CHAN_WEAPON,"speech/saveme1.wav",1.000,1.000); // XXX: should these be on a different CHAN?
         } else {
-            sound (self,1.000,"speech/saveme2.wav",1.000,1.000);
+            sound (self,CHAN_WEAPON,"speech/saveme2.wav",1.000,1.000); // XXX: should these be on a different CHAN?
         }
         self.last_sound = (time + 4.000);
     }
@@ -247,7 +247,7 @@ void () Medikit_Fire = {
                 return ;
             }
             if ( (trace_ent.numflames > 0.000) ) {
-                sound (trace_ent,1.000,"items/r_item1.wav",1.000,1.000);
+                sound (trace_ent,CHAN_WEAPON,"items/r_item1.wav",1.000,1.000); // XXX: should this be CHAN_ITEM
                 trace_ent.numflames = 0.000;
                 if ( (self.classname == "player") ) {
                     bprint (1.000,self.netname);
@@ -258,7 +258,7 @@ void () Medikit_Fire = {
                 return ;
             }
             if ( ((healam > 0.000) && (trace_ent.health < trace_ent.max_health)) ) {
-                sound (trace_ent,1.000,"items/r_item1.wav",1.000,1.000);
+                sound (trace_ent,CHAN_WEAPON,"items/r_item1.wav",1.000,1.000); // XXX: should this be CHAN_ITEM
                 trace_ent.axhitme = 1.000;
                 SpawnBlood (org,20.000);
                 T_Heal (trace_ent,healam,0.000);
@@ -269,7 +269,7 @@ void () Medikit_Fire = {
                         healam = (self.ammo_medikit * 5.000);
                     }
                     if ( (healam > 0.000) ) {
-                        sound (trace_ent,3.000,"items/r_item2.wav",1.000,1.000);
+                        sound (trace_ent,CHAN_ITEM,"items/r_item2.wav",1.000,1.000);
                         T_Heal (trace_ent,healam,1.000);
                         self.ammo_medikit = (self.ammo_medikit - rint ((healam / 5.000)));
                         if ( !(trace_ent.items & 65536.000) ) {
@@ -349,7 +349,7 @@ void () Spanner_Fire = {
                                     trace_ent.armorvalue = trace_ent.maxarmor;
                                 }
                                 self.ammo_cells = (self.ammo_cells - healam);
-                                sound (trace_ent,1.000,"items/r_item1.wav",1.000,1.000);
+                                sound (trace_ent,CHAN_WEAPON,"items/r_item1.wav",1.000,1.000); // XXX: should this be CHAN_ITEM?
                                 WriteByte (4.000,23.000);
                                 WriteByte (4.000,2.000);
                                 WriteByte (4.000,3.000);

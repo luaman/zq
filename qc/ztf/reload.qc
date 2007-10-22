@@ -63,22 +63,22 @@ void () Cancel_reload = {
     if (self.owner.current == WEAP_SHOTGUN) {
         self.think = W_Reload_shotgun_fin;
         if (reload_sound) {
-            sound (self.owner,0.000,"weapons/sg_draw.wav",1.000,1.000);
+            sound (self.owner,CHAN_AUTO,"weapons/sg_draw.wav",1.000,1.000);
         }
     } else  if (self.owner.current == WEAP_SUPER_SHOTGUN) {
         self.think = W_Reload_super_shotgun_fin;
         if (reload_sound) {
-            sound (self.owner,0.000,"weapons/sg_draw.wav",1.000,1.000);
+            sound (self.owner,CHAN_AUTO,"weapons/sg_draw.wav",1.000,1.000);
         }
     } else  if ((self.owner.current == WEAP_GRENADE_LAUNCHER) || (self.owner.current == WEAP_PIPEBOMB_LAUNCHER)) {
         self.think = W_Reload_grenade_launcher_fin;
         if (reload_sound) {
-            sound (self.owner,0.000,"weapons/gl_draw.wav",1.000,1.000);
+            sound (self.owner,CHAN_AUTO,"weapons/gl_draw.wav",1.000,1.000);
         }
     } else  if (self.owner.current == WEAP_ROCKET_LAUNCHER) {
         self.think = W_Reload_rocket_launcher_fin;
         if (reload_sound) {
-            sound (self.owner,0.000,"weapons/rl_draw.wav",1.000,1.000);
+            sound (self.owner,CHAN_AUTO,"weapons/rl_draw.wav",1.000,1.000);
         }
     }
     self.nextthink = self.pausetime;
@@ -94,7 +94,7 @@ void () W_Reload_shotgun = {
         }
         if (!self.owner.reload_shotgun) {
             if (reload_sound) {
-                sound (self.owner,0.000,"weapons/sg_draw.wav",1.000,1.000);
+                sound (self.owner,CHAN_AUTO,"weapons/sg_draw.wav",1.000,1.000);
             }
         }
     } else {
@@ -112,7 +112,7 @@ void () W_Reload_super_shotgun = {
         }
         if (!self.owner.reload_super_shotgun ) {
             if (reload_sound) {
-                sound (self.owner,0.000,"weapons/sg_draw.wav",1.000,1.000);
+                sound (self.owner,CHAN_AUTO,"weapons/sg_draw.wav",1.000,1.000);
             }
         }
     } else {
@@ -127,7 +127,7 @@ void () W_Reload_grenade_launcher = {
         self.nextthink = (time + 0.6);
         if (!self.owner.reload_grenade_launcher) {
             if (reload_sound) {
-                sound (self.owner,0.000,"weapons/gl_draw.wav",1.000,1.000);
+                sound (self.owner,CHAN_AUTO,"weapons/gl_draw.wav",1.000,1.000);
             }
         }
     } else {
@@ -142,7 +142,7 @@ void () W_Reload_rocket_launcher = {
         self.nextthink = (time + 0.8);
         if (!self.owner.reload_rocket_launcher) {
             if (reload_sound) {
-                sound (self.owner,0.000,"weapons/rl_draw.wav",1.000,1.000);
+                sound (self.owner,CHAN_AUTO,"weapons/rl_draw.wav",1.000,1.000);
             }
         }
     } else {

@@ -119,7 +119,7 @@ void () RoundOver = {
 
         } else if (round_winner.team == 1) {
             if (modetype & 4) {
-                sound (self,2.000,"speech/ctwin.wav",1.000,0.000);
+                sound (self,CHAN_VOICE,"speech/ctwin.wav",1.000,0.000);
                 bprint (2.000,"Counter Terrorists WIN!\n");
                 TeamFortress_TeamIncreaseScore (round_winner.team,10.000);
             } else {
@@ -127,7 +127,7 @@ void () RoundOver = {
             }
         } else if (round_winner.team == 2) {
             if (modetype & 4) {
-                sound (self,2.000,"speech/terwin.wav",1.000,0.000);
+                sound (self,CHAN_VOICE,"speech/terwin.wav",1.000,0.000);
                 bprint (2.000,"Terrorists WIN!\n");
                 TeamFortress_TeamIncreaseScore (round_winner.team,10.000);
             } else {

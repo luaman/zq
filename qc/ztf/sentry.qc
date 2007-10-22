@@ -222,7 +222,7 @@ void () OldSentry_Rotate = {
             CheckBelowBuilding (self.trigger_field);
             self.heat = 1;
             if ((random () < 0.1)) {
-                sound (self, 3, "weapons/turridle.wav", 1, 1);
+                sound (self, CHAN_ITEM, "weapons/turridle.wav", 1, 1);
             }
         }
     } else {
@@ -343,7 +343,7 @@ void () Sentry_Rotate = {
     if ( Sentry_FindTarget () ) {
         self.think = Sentry_HuntTarget;
         self.nextthink = (time + sentry_delay);
-        sound (self,2.000,"weapons/turrspot.wav",1.000,1.000);
+        sound (self,CHAN_VOICE,"weapons/turrspot.wav",1.000,1.000);
         return;
     }
     if ( (self.heat == 0.000) ) {
@@ -355,7 +355,7 @@ void () Sentry_Rotate = {
             CheckBelowBuilding (self.trigger_field);
             self.heat = 1.000;
             if ( (random () < 0.100) ) {
-                sound (self,3.000,"weapons/turridle.wav",1.000,1.000);
+                sound (self,CHAN_ITEM,"weapons/turridle.wav",1.000,1.000);
             }
         }
     } else {
@@ -543,7 +543,7 @@ float () OldSentry_FindTarget = {
 
 void () OldSentry_FoundTarget = {
     if (((self.ammo_shells > 0.000000) || ((self.ammo_rockets > 0.000000) && (self.weapon == 3)))) {
-        sound (self, 2, "weapons/turrspot.wav", 1, 1);
+        sound (self, CHAN_VOICE, "weapons/turrspot.wav", 1, 1);
     }
     Sentry_HuntTarget ();
 };
@@ -650,7 +650,7 @@ float () OldSentry_Fire = {
     }
     if ((((self.weapon == 3) && (self.ammo_rockets > 0.000000)) && (self.super_damage_finished < time))) {
         Sentry_MuzzleFlash ();
-        sound (self, 1, "weapons/rocket1i.wav", 1, 1);
+        sound (self, CHAN_WEAPON, "weapons/rocket1i.wav", 1, 1);
         newmis = spawn ();
         newmis.owner = self;
         newmis.movetype = 9;
@@ -676,7 +676,7 @@ float () OldSentry_Fire = {
         return (0.000000);
     }
     Sentry_MuzzleFlash ();
-    sound (self, 1, "weapons/sniper.wav", 1, 1);
+    sound (self, CHAN_WEAPON, "weapons/sniper.wav", 1, 1);
     deathmsg = 27;
     self.v_angle = self.angles;
     FireBullets (4, dir, '0.1 0.1 0');
@@ -742,7 +742,7 @@ float () Sentry_Fire = {
     if ( (((self.weapon == 3.000) && (self.ammo_rockets > 0.000)) && (self.super_damage_finished < time)) ) {
 
         Sentry_MuzzleFlash ();
-        sound (self,1.000,"weapons/rocket1i.wav",1.000,1.000);
+        sound (self,CHAN_WEAPON,"weapons/rocket1i.wav",1.000,1.000);
         newmis = spawn ();
         newmis.owner = self;
         newmis.movetype = 9.000;
@@ -769,7 +769,7 @@ float () Sentry_Fire = {
     if (sentry_fire == 1.000) {
         if ( (self.ammo_shells > 0.000) ) {
             Sentry_MuzzleFlash ();
-            sound (self,1.000,"weapons/lhit.wav",1.000,1.000);
+            sound (self,CHAN_WEAPON,"weapons/lhit.wav",1.000,1.000);
 
             traceline (org,(self.movedir),1.000,self);
 
@@ -810,7 +810,7 @@ float () Sentry_Fire = {
             if (sentry_fire == 2.000) {
                 LaunchLaser(org, self.movedir - (self.origin + '0 0 16'));
             } else {
-                sound (self,1.000,"weapons/sniper.wav",1.000,1.000);
+                sound (self,CHAN_WEAPON,"weapons/sniper.wav",1.000,1.000);
                 if (r <= 700 ) {
                     FireSentry (14.000, self.movedir  - (self.origin + '0 16 32'), '0.100 0.100 0.000');
                 } else {

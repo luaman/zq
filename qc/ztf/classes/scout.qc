@@ -19,7 +19,7 @@ void (entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBo
 entity (entity scanner, float scanrange, float enemies, float friends) T_RadiusScan;
 
 void () CanisterTouch = {
-    sound (self,1.000,"weapons/tink1.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/tink1.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
@@ -112,7 +112,7 @@ void () ScatterCaltrops = {
 };
 
 void () ConcussionGrenadeTouch = {
-    sound (self,1.000,"weapons/bounce.wav",1.000,1.000);
+    sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
