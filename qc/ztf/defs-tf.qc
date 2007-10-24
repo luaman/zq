@@ -505,12 +505,6 @@ void (float psize, entity p) KickPlayer = {
      */
 };
 
-void () muzzleflash = {
-    WriteByte (4.000,39.000);
-    WriteEntity (4.000,self);
-    multicast (self.origin,2.000);
-};
-
 const float WEAP_HOOK                = 1;
 const float WEAP_MEDIKIT             = 2;
 const float WEAP_SPANNER             = 4;

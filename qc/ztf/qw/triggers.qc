@@ -79,16 +79,18 @@ void () multi_touch = {
     self.enemy = other;
     multi_trigger ();
 };
-string __fullspawndata;
 
 #ifdef Q3_ENTS
+string __fullspawndata;
 float (string fullentdata) CheckQ3FcapPoint;
 #endif
 
 void () info_tfgoal;
 
 void () trigger_multiple = {
+#ifdef Q3_ENTS
     local string tmp;
+#endif
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
