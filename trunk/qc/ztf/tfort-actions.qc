@@ -1,5 +1,5 @@
 /*
-	actions.qc
+	tfort-actions.qc
 
 	qwtf actions, medic, engineer and id
 
