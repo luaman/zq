@@ -11,7 +11,8 @@ void (entity Goal, entity AP, float addb) DoResults;
 
 float (entity Goal, entity AP) Activated;
 
-float (entity targ, entity inflictor) CanDamage = {
+float CanDamage (entity targ, entity inflictor)
+{
     local vector offset;
     traceline (inflictor.origin,targ.origin,0.000,self);
     if (trace_ent.classname == "func_glass") {
@@ -101,7 +102,8 @@ float (entity targ, entity inflictor) CanDamage = {
     return ( 0.000 );
 };
 
-void (entity targ, entity attacker) Killed = {
+void Killed (entity targ, entity attacker)
+{
     local entity oself;
     oself = self;
     self = targ;
@@ -124,116 +126,9 @@ void (entity targ, entity attacker) Killed = {
     self.th_die ();
     self = oself;
 };
-/*
 
-   void (entity targ, entity inflictor, entity attacker, float damage) T_Damage = {
-   local vector dir;
-   local entity oldself;
-   local entity te;
-   local float save;
-   local float take;
-   if ( !targ.takedamage ) {
-   return ;
-   }
-   if (round_active) {
-   round_pause = time;
-   }
-   if ( (attacker.classname == "player") ) {
-   damage = (damage * 0.900);
-   }
-   if ( (attacker.classname == "player") ) {
-   if ( (attacker.super_damage_finished > time) ) {
-   damage = (damage * 4.000);
-   }
-   if ( (targ.classname != "player") ) {
-   if ( !Activated (targ,attacker) ) {
-   if ( (targ.else_goal != 0.000) ) {
-   te = Findgoal (targ.else_goal);
-   if ( te ) {
-   AttemptToActivate (te,attacker,targ);
-   }
-   }
-   return ;
-   }
-   }
-   }
-   damage_attacker = attacker;
-   save = ceil ((targ.armortype * damage));
-   if ( (save >= targ.armorvalue) ) {
-   save = targ.armorvalue;
-   targ.armortype = 0.000;
-   targ.armorclass = 0.000;
-   targ.items = (targ.items - (targ.items & ((8192.000 | 16384.000) | 32768.000)));
-   }
-   targ.armorvalue = (targ.armorvalue - save);
-   take = ceil ((damage - save));
-   if ((targ.flags & 8))
-   {
-   targ.dmg_take = (targ.dmg_take + take);
-   targ.dmg_save = (targ.dmg_save + save);
-   targ.dmg_inflictor = inflictor;
-   }
-   if ( ((inflictor != world) && (targ.movetype == 3.000)) ) {
-   dir = (targ.origin - ((inflictor.absmin + inflictor.absmax) * 0.500));
-   dir = normalize (dir);
-   if ( (((damage < 60.000) & ((attacker.classname == "player") & (targ.classname == "player"))) & (attacker.netname != targ.netname)) ) {
-   targ.velocity = (targ.velocity + ((dir * damage) * 11.000));
-   } else {
-   targ.velocity = (targ.velocity + ((dir * damage) * 8.000));
-   }
-   if ( (((rj > 1.000) & ((attacker.classname == "player") & (targ.classname == "player"))) & (attacker.netname == targ.netname)) ) {
-   targ.velocity = (targ.velocity + ((dir * damage) * rj));
-   }
-   }
-   if ( (targ.flags & 64.000) ) {
-   return ;
-   }
-   if ( (targ.invincible_finished >= time) ) {
-   if ( (self.invincible_sound < time) ) {
-   sound (targ,3.000,"items/protect3.wav",1.000,1.000);
-   self.invincible_sound = (time + 2.000);
-   }
-   return ;
-   }
-if ( ((attacker.classname == "player") && ((targ.classname == "player") || (targ.classname == "building_sentrygun"))) ) {
-	if ( (((targ.pteam.team > 0.000) && (targ.pteam.team == attacker.pteam.team)) && (targ != attacker)) ) {
-		if ( (teamplay & 16.000) ) {
-			return ;
-		} else {
-			if ( (teamplay & 8.000) ) {
-				take = (take / 2.000);
-			}
-		}
-	}
-}
-if ( ((take < 1.000) && (take != 0.000)) ) {
-	take = 1.000;
-}
-if ((modetype & 2) && (targ.classname == "player")) {
-	targ.health = (1000 + take);
-} else {
-	targ.health = (targ.health - take);
-}
-if ( (targ.armorvalue < 1.000) ) {
-	targ.armorclass = 0.000;
-	targ.armorvalue = 0.000;
-}
-if ( (targ.health <= 0.000) ) {
-	Killed (targ,attacker);
-	return ;
-}
-oldself = self;
-self = targ;
-if ( self.th_pain ) {
-	self.th_pain (attacker,take);
-	if ( (skill >= 3.000) ) {
-		self.pain_finished = (time + 5.000);
-	}
-}
-self = oldself;
-};*/
-
-void (entity targ, entity inflictor, entity attacker, float damage, float T_flags, float T_AttackType) TF_T_Damage = {
+void TF_T_Damage (entity targ, entity inflictor, entity attacker, float damage, float T_flags, float T_AttackType)
+{
     local vector dir;
     local entity oldself;
     local entity te;
@@ -474,7 +369,8 @@ void (entity targ, entity inflictor, entity attacker, float damage, float T_flag
     self = oldself;
 };
 
-void (entity inflictor, entity attacker, float damage, entity ignore) T_RadiusDamage = {
+void T_RadiusDamage (entity inflictor, entity attacker, float damage, entity ignore)
+{
     local float points;
     local entity head;
     local vector org;
@@ -511,7 +407,8 @@ void (entity inflictor, entity attacker, float damage, entity ignore) T_RadiusDa
     }
 };
 
-void (entity attacker, float damage) T_BeamDamage = {
+void T_BeamDamage (entity attacker, float damage)
+{
     local float points;
     local entity head;
     head = findradius (attacker.origin,(damage + 40.000));

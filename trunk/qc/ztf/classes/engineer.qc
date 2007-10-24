@@ -16,6 +16,8 @@ void () Dispenser_Die;
 void () CheckDistance;
 float (entity obj, entity builder) CheckArea;
 
+void () T_Dispenser;
+
 void () Rail_Think = {
     self.solid = 1.000;
     self.movetype = 9.000;

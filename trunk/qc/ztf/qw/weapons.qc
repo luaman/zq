@@ -1515,7 +1515,7 @@ void () W_SetCurrentAmmo = {
     self.items = (self.items - (self.items & (((256.000 | 512.000) | 1024.000) | 2048.000)));
     self.weapon = 0.000;
     for (b = 1; b < WEAP_LAST;  b *= 2) {
-        i++;
+        i+=1;
         if (self.current == b) {
             break;
         }
@@ -1884,7 +1884,7 @@ void () W_Attack = {
     makevectors (self.v_angle);
     self.show_hostile = (time + 1.000);
     for (b = 1; b < WEAP_LAST;  b *= 2) {
-        i++;
+        i+=1;
         if (self.current == b) {
             break;
         }
