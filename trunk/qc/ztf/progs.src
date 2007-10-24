@@ -51,7 +51,7 @@ qw/commands.qc
 ctf/hook.qc
 ctf/ctf.qc
 coop.qc
-actions.qc
+tfort-actions.qc
 impulse.qc
 spect.qc
 mvdsv.qc
