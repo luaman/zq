@@ -527,3 +527,14 @@ const float WEAP_TRANQ               = 262144;
 const float WEAP_RAILGUN             = 524288;
 const float WEAP_LAST                = 1048576;
 
+const float CLASS_NONE               = 0;
+const float CLASS_SCOUT              = 1;
+const float CLASS_SNIPER             = 2;
+const float CLASS_SOLDIER            = 3;
+const float CLASS_DEMOMAN            = 4;
+const float CLASS_MEDIC              = 5;
+const float CLASS_HWGUY              = 6;
+const float CLASS_PYRO               = 7;
+const float CLASS_SPY                = 8;
+const float CLASS_ENGINEER           = 9;
+const float CLASS_SENTRY             = 13;
