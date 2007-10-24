@@ -538,3 +538,22 @@ const float CLASS_PYRO               = 7;
 const float CLASS_SPY                = 8;
 const float CLASS_ENGINEER           = 9;
 const float CLASS_SENTRY             = 13;
+
+const float bled = 137;
+const float gled = 134;
+const float rled = 135;
+const float yled = 136;
+
+const float COLOR_BROWN = 176;
+const float COLOR_GREEN = 18;
+const float COLOR_WHITE = 48;
+
+const float SBAR_200 = 11;
+const float SBAR_240 = 16;
+const float SBAR_300 = 22;
+const float SBAR_350 = 27;
+const float SBAR_384 = 33;
+const float SBAR_400 = 35;
+const float SBAR_480 = 45;
+const float SBAR_600 = 60;
+const float SBAR_768 = 80;

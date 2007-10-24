@@ -1,17 +1,16 @@
 qwprogs.dat
 
 ../qw/defs.qc
-defs-tf.qc
+tfort-defs.qc // qwtf defs file
 debug.qc
-sbardef.qc // qwtf sbar defs
-status.qc // qwtf sbar
-menu.qc  // qwtf menu
+tfort-sbar.qc // qwtf sbar
+tfort-menu.qc  // qwtf menu
 qw/subs.qc
 qw/combat.qc
 qw/items.qc
 infocheck.qc
 track.qc
-reload.qc
+tfort-reload.qc
 stored.qc
 qw/weapons.qc
 qw/world.qc
@@ -20,7 +19,7 @@ qw/player.qc
 qw/doors.qc
 qw/buttons.qc
 qw/triggers.qc
-tforttm.qc
+tfort-team.qc
 qw/plats.qc
 qw/misc.qc
 qwsp/monsters.qc
@@ -35,11 +34,11 @@ classes/engineer.qc
 classes/soldier.qc
 classes/sniper.qc
 
-clan.qc
+tfort-clan.qc
 rounds.qc
-ammobox.qc
+tfort-ammo.qc
 tfort.qc
-tforthlp.qc
+tfort-help.qc // qwtf 'help' motd
 
 ents/ents.qc
 //ents/halflife.qc // halflife
@@ -52,6 +51,6 @@ ctf/hook.qc
 ctf/ctf.qc
 coop.qc
 tfort-actions.qc
-impulse.qc
+tfort-impulses.qc
 spect.qc
 mvdsv.qc
