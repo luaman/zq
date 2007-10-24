@@ -249,7 +249,7 @@ void (float inp) TeamFortress_ChangeClass = {
     if ( (inp > 0.000) && (inp < 12.000) ) {
         self.playerclass = (inp);
     } else {
-        self.playerclass = 0.000;
+        self.playerclass = CLASS_NONE;
     }
     TeamFortress_ExecClassScript (self);
     if ( (self.playerclass == 10.000) ) {

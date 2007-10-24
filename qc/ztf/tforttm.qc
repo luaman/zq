@@ -236,7 +236,7 @@ float (float tno) TeamFortress_TeamSet = {
         }
         SetTeamName (self);
         self.camdist = 160.000;
-        self.playerclass = 0.000;
+        self.playerclass = CLASS_NONE;
         return(1.000);
     }
     if ( ((tno > store_obs.cnt) && (store_obs.cnt != 0.000)) ) {
@@ -277,7 +277,7 @@ float (float tno) TeamFortress_TeamSet = {
                 }
                 te = find (te,classname,"detpack");
             }
-            self.playerclass = 0.000;
+            self.playerclass = CLASS_NONE;
             ClientKill();
         }
         if ( TeamFortress_TeamIsCivilian (tno) ) {
@@ -297,7 +297,7 @@ float (float tno) TeamFortress_TeamSet = {
     st = ftos (tno);
     bprint (2.000,st);
     bprint (2.000,".\n");
-    //self.playerclass = 0.000;  fixme   already set?
+    //self.playerclass = CLASS_NONE;  fixme   already set?
     if (tno == 1.000) {
         self.pteam = pteam1;
     } else if (tno == 2.000) {
@@ -377,7 +377,7 @@ float (float tno) TeamFortress_TeamSet = {
    }
    } else {
    if(self.pteam.team == 2.000  ) {
-   if ( (self.playerclass == 8.000) && (self.undercover_team != 0.000) ) return;
+   if ( (self.playerclass == CLASS_SPY) && (self.undercover_team != 0.000) ) return;
    if ( (tc != (TeamFortress_GetColor (self.pteam.team) - 1.000)) ) {
    stuffcmd (self,"topcolor ");
    tc = (TeamFortress_GetColor (self.team_no) - 1.000);
@@ -400,7 +400,7 @@ float (float tno) TeamFortress_TeamSet = {
 if ( ((self.team_no > 0.000) && (teamplay)) ) {
 	st = infokey (self,"bottomcolor");
 	tc = stof (st);
-	if ( ((self.playerclass == 8.000) && (self.undercover_team != 0.000)) ) {
+	if ( ((self.playerclass == CLASS_SPY) && (self.undercover_team != 0.000)) ) {
 		if ( ((TeamFortress_GetColor (self.undercover_team) - 1.000) != tc) ) {
 			stuffcmd (self,"color ");
 			tc = (TeamFortress_GetColor (self.undercover_team) - 1.000);
@@ -448,8 +448,8 @@ if ( ((self.team_no > 0.000) && (teamplay)) ) {
 				return;
 			}
 		}
-		if ( (tc == 8.000) ) {
-			self.playerclass = 8.000;
+		if (tc == CLASS_SPY) {
+			self.playerclass = CLASS_SPY;
 		}
 	}
 	st = GetTeamName (self.team_no);
