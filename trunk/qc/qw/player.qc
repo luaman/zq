@@ -265,8 +265,7 @@ void() player_light2   =[$light2, player_light1  ]
 //============================================================================
 
 
-void() player_rocket1   =[$rockatt1, player_rocket2  ] {self.weaponframe=1;
-	muzzleflash();}
+void() player_rocket1   =[$rockatt1, player_rocket2  ] {self.weaponframe=1;muzzleflash();}
 void() player_rocket2   =[$rockatt2, player_rocket3  ] {self.weaponframe=2;}
 void() player_rocket3   =[$rockatt3, player_rocket4  ] {self.weaponframe=3;}
 void() player_rocket4   =[$rockatt4, player_rocket5  ] {self.weaponframe=4;}
@@ -650,8 +649,9 @@ void PlayerDie ()
 		return;
 	}
 
-	// Note that this generates random values in 1..6 range, so player_diee1 is
-	// executed twice as often as other death sequences. Dunno if this should be fixed -- Tonik
+	// XXX: this generates random values in 1..6 range, so player_diee1 is
+	// executed twice as often as other death sequences. Dunno if this should be
+	// fixed -- Tonik
 	i = 1 + floor(random()*6);
 
 	if (i == 1)
