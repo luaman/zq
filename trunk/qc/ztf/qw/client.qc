@@ -1,11 +1,11 @@
 
-void () player_pain;
+void player_pain ();
 
-void () player_stand1;
+void player_stand1 ();
 
-void (vector org) spawn_tfog;
+void spawn_tfog (vector org);
 
-void (vector org, entity death_owner) spawn_tdeath;
+void spawn_tdeath (vector org, entity death_owner);
 
 float modelindex_eyes /* = 0.000 */;
 
@@ -13,60 +13,60 @@ float modelindex_player /* = 0.000 */;
 
 float modelindex_null /* = 0.000 */;
 
-void (entity Viewer, float pc, float rpc) TeamFortress_PrintClassName;
+void TeamFortress_PrintClassName (entity Viewer, float pc, float rpc);
 
-void () TeamFortress_RemoveTimers;
+void TeamFortress_RemoveTimers ();
 
-void () TeamFortress_SetupRespawn;
+void TeamFortress_SetupRespawn ();
 
-float (float pc) IsLegalClass;
+float IsLegalClass (float pc);
 
-void () CeaseFire_think;
+void CeaseFire_think ();
 
-void (entity print) ShowFrags;
+void ShowFrags (entity print);
 
-void () StartRound;
+void StartRound ();
 
-void () StartTimer;
+void StartTimer ();
 
-void () RemoveVotes;
+void RemoveVotes ();
 
-void () TeamFortress_MOTD;
+void TeamFortress_MOTD ();
 
-void () ConcussionGrenadeTimer;
+void ConcussionGrenadeTimer ();
 
-void () Drop_detpack;
+void Drop_detpack ();
 
-void () BioInfection_Decay;
+void BioInfection_Decay ();
 
-void (entity pl, float fr, float type) TF_AddFrags;
+void TF_AddFrags (entity pl, float fr, float type);
 
-void (entity eng) Engineer_RemoveBuildings;
+void Engineer_RemoveBuildings (entity eng);
 
-void (string halias, float himpulse1, float himpulse2) TeamFortress_Alias;
+void TeamFortress_Alias (string halias, float himpulse1, float himpulse2);
 
-void (entity p) CheckAutoKick;
+void CheckAutoKick (entity p);
 
-void (entity p) TeamFortress_ExecClassScript;
+void TeamFortress_ExecClassScript (entity p);
 
-void (entity p) TeamFortress_ExecMapScript;
+void TeamFortress_ExecMapScript (entity p);
 
-void () PreMatch_Think;
+void PreMatch_Think ();
 
-void (entity p) SetTeam;
+void SetTeam (entity p);
 
-float (float tno, float pc) ClassIsRestricted;
+float ClassIsRestricted (float tno, float pc);
 
-float (float tno) CheckClassAvailable;
+float CheckClassAvailable (float tno);
 
-void () Service_Grapple;
+void Service_Grapple ();
 
-void (entity AD) ParseTFDetect;
-entity (float ino) Finditem;
+void ParseTFDetect (entity AD);
+entity Finditem (float ino);
 
-void (entity Item, entity AP, entity Goal) tfgoalitem_GiveToPlayer;
+void tfgoalitem_GiveToPlayer (entity Item, entity AP, entity Goal);
 
-void () CTF_FlagCheck;
+void CTF_FlagCheck ();
 
 void() CheckConnectRate = {
     local float player_rate;
@@ -99,7 +99,7 @@ void() CheckConnectRate = {
     }
 };
 
-void () SetChangeParms = {
+void SetChangeParms () {
     if ( (self.health <= 0.000) ) {
         SetNewParms ();
         return ;
@@ -132,7 +132,7 @@ void () SetChangeParms = {
     parm15 = self.is_admin;
 };
 
-void () SetNewParms = {
+void SetNewParms () {
     parm1 = 0.000;
     parm2 = 100.000;
     parm3 = 0.000;
@@ -182,7 +182,7 @@ void() Remove_All_Items = {
     Remove_Entity("item_health");
 };
 
-void () DecodeLevelParms = {
+void DecodeLevelParms () {
     local string st;
     local entity ent;
     local entity te;
@@ -406,7 +406,7 @@ void () DecodeLevelParms = {
         self.is_admin = parm15;
     }
 };
-entity () FindIntermission = {
+entity FindIntermission () {
     local entity spot;
     local float cyc;
     spot = find (world,classname,"info_intermission");
@@ -433,7 +433,7 @@ entity () FindIntermission = {
     objerror ("FindIntermission: no spot");
     return ( world );
 };
-entity (entity start_point) FindNextIntermission = {
+entity FindNextIntermission (entity start_point) {
     local entity spot;
     if ( deathmatch ) {
         if ( ((start_point.classname == "info_intermission") || (start_point == world)) ) {
@@ -467,7 +467,7 @@ entity (entity start_point) FindNextIntermission = {
     return ( FindIntermission () );
 };
 
-void () TF_MovePlayer = {
+void TF_MovePlayer () {
     local entity place;
     place = FindNextIntermission (self.observer_list);
     self.observer_list = place;
@@ -476,7 +476,7 @@ void () TF_MovePlayer = {
     self.fixangle = 1.000;
 };
 
-void () GotoNextMap = {
+void GotoNextMap () {
     local float nextlevel;
     local string sl;
     local string st;
@@ -518,7 +518,7 @@ void () GotoNextMap = {
     }
 };
 
-void () ExitIntermission = {
+void ExitIntermission () {
     dprint ("Exiting intermission...\n");
     if ( deathmatch ) {
         dprint ("Exit Intermission in Deathmatch.\n");
@@ -531,7 +531,7 @@ void () ExitIntermission = {
     GotoNextMap ();
 };
 
-void () IntermissionThink = {
+void IntermissionThink () {
     local float minp;
     local float maxp;
     local float currp;
@@ -590,7 +590,7 @@ void () IntermissionThink = {
     }
 };
 
-void () execute_changelevel = {
+void execute_changelevel () {
     local entity pos;
     dprint ("execute_changelevel()\n");
     intermission_running = 1.000;
@@ -619,14 +619,14 @@ void () execute_changelevel = {
     }
 };
 
-void () trigger_changelevel = {
+void trigger_changelevel () {
     dremove (self);
     return ;
 };
 
-void () set_suicide_frame;
+void set_suicide_frame ();
 
-void () respawn = {
+void respawn () {
     if ( (self.has_disconnected == 1.000) ) {
         return ;
     }
@@ -638,7 +638,7 @@ void () respawn = {
     PutClientInServer ();
 };
 
-void () ClientKill = {
+void ClientKill () {
     local entity te;
     if ( (self.has_disconnected == 1.000) ) {
         return ;
@@ -687,7 +687,7 @@ void () ClientKill = {
     self.deadflag = 3.000;
     self.takedamage = 0.000;
 };
-entity () FindTeamSpawnPoint = {
+entity FindTeamSpawnPoint () {
     local entity spot;
     local entity at_spot;
     local float spot_found;
@@ -748,7 +748,7 @@ entity () FindTeamSpawnPoint = {
     }
     return ( world );
 };
-entity () SelectSpawnPoint = {
+entity SelectSpawnPoint () {
     local entity spot;
     local entity at_spot;
     local float spot_found;
@@ -808,15 +808,15 @@ entity () SelectSpawnPoint = {
     return ( spot );
 };
 
-void () PlayerDie;
+void PlayerDie ();
 
-void () TeamFortress_SetHealth;
+void TeamFortress_SetHealth ();
 
-void () TeamFortress_SetEquipment;
+void TeamFortress_SetEquipment ();
 
-void () player_touch;
+void player_touch ();
 
-void () PutClientInServer = {
+void PutClientInServer () {
     local float iszoom;
     local entity spot;
     local entity te;
@@ -1007,7 +1007,7 @@ void () PutClientInServer = {
     }
 };
 
-void (entity c) PrintClientScore = {
+void PrintClientScore (entity c) {
     if ( ((c.frags > -10.000) && (c.frags < 0.000)) ) {
         bprint (1.000," ");
     } else {
@@ -1026,7 +1026,7 @@ void (entity c) PrintClientScore = {
     bprint (1.000,"\n");
 };
 
-void () DumpScore = {
+void DumpScore () {
     local entity e;
     local entity sort;
     local entity walk;
@@ -1072,7 +1072,7 @@ void () DumpScore = {
 
 float already_cycled /* = 0.000 */;
 
-void () NextLevel = {
+void NextLevel () {
     local entity o;
     if ( already_cycled ) {
         return ;
@@ -1084,7 +1084,7 @@ void () NextLevel = {
     o.nextthink = (time + 0.100);
 };
 
-void () CheckRules = {
+void CheckRules () {
     if ( !(modetype & 1))  {
         if ( (timelimit && (time >= timelimit)) ) {
             NextLevel ();
@@ -1095,7 +1095,7 @@ void () CheckRules = {
     }
 };
 
-void () PlayerDeathThink = {
+void PlayerDeathThink () {
     local float fwd;
     if ( (self.flags & 512.000) ) {
         fwd = self.speed;
@@ -1158,7 +1158,7 @@ void () PlayerDeathThink = {
     }
 };
 
-void () PlayerJump = {
+void PlayerJump () {
     local entity te;
     local float stumble;
     if ( (self.has_disconnected == 1.000) ) {
@@ -1264,7 +1264,7 @@ void () PlayerJump = {
 };
 .float dmgtime;
 
-void () WaterMove = {
+void WaterMove () {
     if ( (self.movetype == 8.000) ) {
         return ;
     }
@@ -1332,7 +1332,7 @@ void () WaterMove = {
     }
 };
 
-void () CheckWaterJump = {
+void CheckWaterJump () {
     local vector start;
     local vector end;
     makevectors (self.angles);
@@ -1357,7 +1357,7 @@ void () CheckWaterJump = {
     }
 };
 
-void () PlayerPreThink = {
+void PlayerPreThink () {
     if ( (self.is_feigning && (self.waterlevel == 1.000)) ) {
         self.watertype = -3.000;
         self.waterlevel = 3.000;
@@ -1441,7 +1441,7 @@ void () PlayerPreThink = {
     }
 };
 
-void () CheckPowerups = {
+void CheckPowerups () {
     local float lighton;
     local entity te;
     if ( (self.health <= 0.000) ) {
@@ -1598,7 +1598,7 @@ void () CheckPowerups = {
     }
 };
 
-void (string alias) Admin_Alias = {
+void Admin_Alias (string alias) {
     stuffcmd (self,"alias ");
     stuffcmd (self,alias);
     stuffcmd (self," \"cmd ");
@@ -1606,7 +1606,7 @@ void (string alias) Admin_Alias = {
     stuffcmd (self,"\"\n");
 };
 
-void () Admin_Aliases = {
+void Admin_Aliases () {
     if (self.motd <= 130.000) {
         self.motd = (self.motd + 1.000);
     }
@@ -1668,7 +1668,7 @@ void () Admin_Aliases = {
     }
 };
 
-void () PlayerPostThink = {
+void PlayerPostThink () {
     local float fdmg;
     if ( (self.motd <= 80.000) ) {
         TeamFortress_MOTD ();
@@ -1738,7 +1738,7 @@ void () PlayerPostThink = {
     W_WeaponFrame ();
 };
 
-void (string cl_pwd) Admin_Check = {
+void Admin_Check (string cl_pwd) {
     local string st;
     st = infokey (self,"ip");
     if (st == "0.0.0.0" || st == "127.0.0.1") {
@@ -1859,7 +1859,7 @@ void () remove_crash_catcher =
 };
 */
 
-void () ClientConnect = {
+void ClientConnect () {
     local string st;
     //local string st2;
     local float res;
@@ -1959,7 +1959,7 @@ void () ClientConnect = {
     stuffcmd (self,"cl_sidespeed 999\n");
 };
 
-void () ClientDisconnect = {
+void ClientDisconnect () {
     local entity te;
     local string st;
     local float fr;
@@ -2143,7 +2143,7 @@ void () ClientDisconnect = {
     self.think = SUB_Null;
 };
 
-void (entity targ, entity attacker) ClientObituary = {
+void ClientObituary (entity targ, entity attacker) {
     local float rnum;
     local string deathstring;
     local string deathstring2;

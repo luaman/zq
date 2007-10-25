@@ -25,33 +25,33 @@
 
 */
 
-void () CaltropTouch;
+void CaltropTouch ();
 
-void () CaltropScatterThink;
+void CaltropScatterThink ();
 
-void () ScatterCaltrops;
+void ScatterCaltrops ();
 
-void () ConcussionGrenadeTouch;
+void ConcussionGrenadeTouch ();
 
-void () ConcussionGrenadeExplode;
+void ConcussionGrenadeExplode ();
 
-void () FlashGrenadeTouch;
+void FlashGrenadeTouch ();
 
-void () FlashTimer;
+void FlashTimer ();
 
-void () FlashGrenadeExplode;
+void FlashGrenadeExplode ();
 
-void (entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBounce;
-entity (entity scanner, float scanrange, float enemies, float friends) T_RadiusScan;
+void T_RadiusBounce (entity inflictor, entity attacker, float bounce, entity ignore);
+entity T_RadiusScan (entity scanner, float scanrange, float enemies, float friends);
 
-void () CanisterTouch = {
+void CanisterTouch () {
     sound (self,CHAN_WEAPON,"weapons/tink1.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
 };
 
-void () CaltropTouch = {
+void CaltropTouch () {
     if ( (((other.classname != "player") || !(other.flags & 512.000)) || other.deadflag) ) {
         return ;
     }
@@ -68,7 +68,7 @@ void () CaltropTouch = {
     dremove (self);
 };
 
-void () CaltropScatterThink = {
+void CaltropScatterThink () {
     self.nextthink = (time + 0.200);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         if ( (self.flags & 512.000) ) {
@@ -104,7 +104,7 @@ void () CaltropScatterThink = {
     }
 };
 
-void () ScatterCaltrops = {
+void ScatterCaltrops () {
     local float num;
     local entity e;
     num = 6.000;
@@ -137,14 +137,14 @@ void () ScatterCaltrops = {
     dremove (self);
 };
 
-void () ConcussionGrenadeTouch = {
+void ConcussionGrenadeTouch () {
     sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
 };
 
-void () ConcussionGrenadeExplode = {
+void ConcussionGrenadeExplode () {
     local entity te;
     if (anti_spam) {
         te = findradius (self.origin, anti_spam);
@@ -168,7 +168,7 @@ void () ConcussionGrenadeExplode = {
     dremove (self);
 };
 
-void () ConcussionGrenadeTimer = {
+void ConcussionGrenadeTimer () {
     local string st;
     local vector src;
     local float pos, stumble, fl;
@@ -250,7 +250,7 @@ void () ConcussionGrenadeTimer = {
     }
 };
 
-void () TeamFortress_Scan = {
+void TeamFortress_Scan () {
     local entity list;
     local float scancost;
     local float scanrange;
@@ -383,7 +383,7 @@ void () TeamFortress_Scan = {
     return ;
 };
 
-void () ScannerSwitch = {
+void ScannerSwitch () {
     local entity te;
     if ( (self.ScannerOn != 1.000) ) {
         te = spawn ();
@@ -407,7 +407,7 @@ void () ScannerSwitch = {
     }
 };
 
-void (entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBounce = {
+void T_RadiusBounce (entity inflictor, entity attacker, float bounce, entity ignore) {
     local float points;
     local float accel;
     local float length;
@@ -465,7 +465,7 @@ void (entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBo
         head = head.chain2;
     }
 };
-entity (entity scanner, float scanrange, float enemies, float friends) T_RadiusScan = {
+entity T_RadiusScan (entity scanner, float scanrange, float enemies, float friends) {
     local entity head;
     local float rangedist;
     rangedist = 0.000;
@@ -530,14 +530,14 @@ entity (entity scanner, float scanrange, float enemies, float friends) T_RadiusS
     return ( world );
 };
 
-void () FlashGrenadeTouch = {
+void FlashGrenadeTouch () {
     sound (self, 1, "weapons/bounce.wav", 1, 1);
     if ((self.velocity == '0 0 0')) {
         self.avelocity = '0 0 0';
     }
 };
 
-void () FlashTimer = {
+void FlashTimer () {
     local entity te;
     local string st;
     te = self.owner;
@@ -561,7 +561,7 @@ void () FlashTimer = {
     self.nextthink = (time + 0.6);
 };
 
-void () FlashGrenadeExplode = {
+void FlashGrenadeExplode () {
     local entity te;
     local string st;
     local float dist;

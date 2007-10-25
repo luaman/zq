@@ -25,26 +25,26 @@
 
 */
 
-void () Rail_Touch;
+void Rail_Touch ();
 
-void () EMPExplode;
+void EMPExplode ();
 
-void () EMPGrenadeTouch;
+void EMPGrenadeTouch ();
 
-void () EMPGrenadeExplode;
+void EMPGrenadeExplode ();
 
-void () TeamFortress_FinishedBuilding;
+void TeamFortress_FinishedBuilding ();
 
-void (entity Gren) TeamFortress_ExplodePerson;
+void TeamFortress_ExplodePerson (entity Gren);
 
-void () Dispenser_Die;
+void Dispenser_Die ();
 
-void () CheckDistance;
-float (entity obj, entity builder) CheckArea;
+void CheckDistance ();
+float CheckArea (entity obj, entity builder);
 
-void () T_Dispenser;
+void T_Dispenser ();
 
-void () Rail_Think = {
+void Rail_Think () {
     self.solid = 1.000;
     self.movetype = 9.000;
     self.velocity = self.oldorigin;
@@ -54,7 +54,7 @@ void () Rail_Think = {
     self.think = SUB_Remove;
 };
 
-void () Rail_Touch = {
+void Rail_Touch () {
     local vector org;
     if ( (other == self.owner) ) {
         return ;
@@ -89,7 +89,7 @@ void () Rail_Touch = {
     dremove (self);
 };
 
-void () W_FireRail = {
+void W_FireRail () {
     local vector vec;
     local vector org;
     local float heattime;
@@ -125,7 +125,7 @@ void () W_FireRail = {
     newmis.touch = Rail_Touch;
 };
 
-void () W_FireRailgun = {
+void W_FireRailgun () {
     local float num;
     local vector org;
     local float damg;
@@ -166,7 +166,7 @@ void () W_FireRailgun = {
     LightningDamage (self.origin,(trace_endpos + (v_forward * 4.000)),self, damg);
 };
 
-void () EMPExplode = {
+void EMPExplode () {
     local float expsize;
     expsize = 10.000;
     if ( (self.touch == weapon_touch) ) {
@@ -208,14 +208,14 @@ void () EMPExplode = {
     Respawn_Item (self,self.enemy);
 };
 
-void () EMPGrenadeTouch = {
+void EMPGrenadeTouch () {
     sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
 };
 
-void () EMPGrenadeExplode = {
+void EMPGrenadeExplode () {
     local float expsize;
     local entity te;
     local entity oldself;
@@ -328,7 +328,7 @@ void () EMPGrenadeExplode = {
     dremove (self);
 };
 
-void () nobuild_touch = {
+void nobuild_touch () {
     if (other.classname != "player") return;
     if (other.playerclass == 9.000) {
         if (other.current_menu == 15.000) {
@@ -341,7 +341,7 @@ void () nobuild_touch = {
     }
 };
 
-void () TeamFortress_EngineerBuild = {
+void TeamFortress_EngineerBuild () {
     local entity te;
     if ( !(self.flags & 512.000) ) {
         CenterPrint (self,"You can't build in the air!\n\n");
@@ -375,7 +375,7 @@ void () TeamFortress_EngineerBuild = {
     }
 };
 
-void () T_Antispam = {
+void T_Antispam () {
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -391,8 +391,8 @@ void () T_Antispam = {
 
 };
 
-void () AntiSpamDie;
-float (entity obj, entity builder) CheckArea = {
+void AntiSpamDie ();
+float CheckArea (entity obj, entity builder) {
     local vector src;
     local vector end;
     local float pos;
@@ -448,7 +448,7 @@ float (entity obj, entity builder) CheckArea = {
     return ( 1.000 );
 };
 
-void (float objtobuild) TeamFortress_Build = {
+void TeamFortress_Build (float objtobuild) {
     local float btime;
     local entity te;
     local vector tmp1;
@@ -574,7 +574,7 @@ void (float objtobuild) TeamFortress_Build = {
     newmis.flags = (newmis.flags - (newmis.flags & 512.000));
 };
 
-void (entity bld) CheckBelowBuilding = {
+void CheckBelowBuilding (entity bld) {
     local vector below;
     below = bld.origin;
     if ( (bld.classname == "detpack") ) {
@@ -589,7 +589,7 @@ void (entity bld) CheckBelowBuilding = {
     }
 };
 
-void () DispenserThink = {
+void DispenserThink () {
     CheckBelowBuilding (self);
     if ( (self.hook_out > 3.000) ) {
         self.ammo_shells = (self.ammo_shells + rint ((400.000 / 20.000)));
@@ -618,7 +618,7 @@ void () DispenserThink = {
     self.nextthink = (time + 3.000);
 };
 
-void () TeamFortress_FinishedBuilding = {
+void TeamFortress_FinishedBuilding () {
     local entity oldself;
     if ( (self.owner.is_building != 1.000) ) {
         return ;
@@ -778,7 +778,7 @@ void () TeamFortress_FinishedBuilding = {
     self = oldself;
 };
 
-void () T_Dispenser = {
+void T_Dispenser () {
     local entity dist_checker;
     if ( (other.classname != "player") ) {
         return ;
@@ -802,7 +802,7 @@ void () T_Dispenser = {
     }
 };
 
-void () Dispenser_Explode = {
+void Dispenser_Explode () {
     local float sdmg;
     if ( (self.real_owner.has_disconnected != 1.000) ) {
         deathmsg = 39.000;
@@ -824,18 +824,18 @@ void () Dispenser_Explode = {
     dremove(self);
 };
 
-void () Dispenser_Die = {
+void Dispenser_Die () {
     self.real_owner.has_dispenser = 0.000;
     self.think = Dispenser_Explode;
     self.nextthink = (time + 0.100);
 };
 
-void () AntiSpamDie = {
+void AntiSpamDie () {
     self.think = Dispenser_Explode;
     self.nextthink = (time + 0.100);
 };
 
-void (entity disp) Engineer_UseDispenser = {
+void Engineer_UseDispenser (entity disp) {
     local entity dist_checker;
     local string st;
     sprint (self,2.000,"Dispenser has ");
@@ -868,7 +868,7 @@ void (entity disp) Engineer_UseDispenser = {
     dist_checker.nextthink = (time + 0.300);
 };
 
-void (entity gun) Engineer_UseSentryGun = {
+void Engineer_UseSentryGun (entity gun) {
     local entity dist_checker;
     local string st;
     sprint (self,2.000,"Level ");
@@ -899,7 +899,7 @@ void (entity gun) Engineer_UseSentryGun = {
     dist_checker.nextthink = (time + 0.300);
 };
 
-void (entity gunhead) CheckSentry = {
+void CheckSentry (entity gunhead) {
     local vector dist;
     local entity gunbase;
     gunbase = gunhead.trigger_field;
@@ -911,7 +911,7 @@ void (entity gunhead) CheckSentry = {
     }
 };
 
-void () CheckDistance = {
+void CheckDistance () {
     local vector dist;
     if ( (self.owner.building != self.enemy) ) {
         dremove (self);
@@ -929,7 +929,7 @@ void () CheckDistance = {
     self.nextthink = (time + 0.300);
 };
 
-void (entity eng, string bld) DestroyBuilding = {
+void DestroyBuilding (entity eng, string bld) {
     local entity te;
     local entity oldself;
     local float pos;
@@ -961,7 +961,7 @@ void (entity eng, string bld) DestroyBuilding = {
     }
 };
 
-void (entity eng) Engineer_RemoveBuildings = {
+void Engineer_RemoveBuildings (entity eng) {
     DestroyBuilding (eng,"building_dispenser");
     DestroyBuilding (eng,"building_sentrygun");
     DestroyBuilding (eng,"building_antispam");

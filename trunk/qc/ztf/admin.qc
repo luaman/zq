@@ -25,9 +25,9 @@
 
 */
 
-void () StopTimer;
+void StopTimer ();
 
-void () Admin_CountPlayers = {
+void Admin_CountPlayers () {
     local string st;
     local float nump;
     nump = TeamFortress_GetNoPlayers ();
@@ -55,7 +55,7 @@ void () Admin_CountPlayers = {
     }
 };
 
-void () Admin_ListPlayers = {
+void Admin_ListPlayers () {
     local entity pl;
     local float num;
     local string st;
@@ -92,7 +92,7 @@ void () Admin_ListPlayers = {
     pl = world;
 };
 
-void () Admin_ListIPs = {
+void Admin_ListIPs () {
     local entity pl;
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
         sprint (self,2.000,"No other players in the game.\n");
@@ -126,7 +126,7 @@ void () Admin_ListIPs = {
     pl = world;
 };
 
-void () Admin_DoKick = {
+void Admin_DoKick () {
     bprint (2.000,self.admin_use.netname," was kicked by ",self.netname,"\n");
     stuffcmd (self.admin_use,"disconnect\n");
     stuffcmd (self.admin_use,"cmd drop\n");
@@ -134,7 +134,7 @@ void () Admin_DoKick = {
     self.admin_use = world;
 };
 
-void (float num) Admin_KickNum = {
+void Admin_KickNum (float num) {
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
         sprint (self,2.000,"No other players in the game.\n");
         return ;
@@ -155,7 +155,7 @@ void (float num) Admin_KickNum = {
     }
 };
 
-void () Admin_CycleDeal = {
+void Admin_CycleDeal () {
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
         sprint (self,2.000,"No other players in the game.\n");
         self.admin_use = world;
@@ -196,7 +196,7 @@ void () Admin_CycleDeal = {
     }
 };
 
-void () CeaseFire_think = {
+void CeaseFire_think () {
     local entity te;
     if ( !cease_fire ) {
         dremove (self);
@@ -210,7 +210,7 @@ void () CeaseFire_think = {
     self.nextthink = (time + 5.000);
 };
 
-void () Admin_CeaseFire = {
+void Admin_CeaseFire () {
     local entity te;
     if ( !cease_fire ) {
         if (cb_prematch) {
@@ -253,12 +253,12 @@ void () Admin_CeaseFire = {
     }
 };
 
-void () autokick_think = {
+void autokick_think () {
     self.owner.teamkills = 0.000;
     dremove (self);
 };
 
-void (entity p) CheckAutoKick = {
+void CheckAutoKick (entity p) {
     local float rnum;
     local entity te;
     if ( ((p.teamkills >= autokick_kills) && (autokick_kills != 0.000)) ) {

@@ -25,7 +25,7 @@
 
 */
 
-float (float v) anglemod = {
+float anglemod (float v) {
     while ( (v >= 360.000) ) {
         v = (v - 360.000);
     }
@@ -35,7 +35,7 @@ float (float v) anglemod = {
     return ( v );
 };
 
-float() FacingIdeal = {
+float FacingIdeal () {
     local	float	delta;
 
     delta = anglemod(self.angles_y - self.ideal_yaw);
@@ -44,7 +44,7 @@ float() FacingIdeal = {
     return 1.000;
 };
 
-float (entity targ) range = {
+float range (entity targ) {
     local vector spot1;
     local vector spot2;
     local float r;
@@ -62,7 +62,7 @@ float (entity targ) range = {
     }
     return ( 3.000 );
 };
-vector (entity targ) visible = {
+vector visible (entity targ) {
     local vector spot1;
     local vector spot2;
     spot1 = (self.origin + self.view_ofs);
@@ -84,7 +84,7 @@ vector (entity targ) visible = {
     return ( vector_null );
 };
 
-float (entity targ) infront = {
+float infront (entity targ) {
     local vector vec;
     local float dot;
     makevectors (self.angles);
@@ -96,39 +96,39 @@ float (entity targ) infront = {
     return ( 0.000 );
 };
 
-void (entity bld) CheckBelowBuilding;
+void CheckBelowBuilding (entity bld);
 
-void (entity gunhead) CheckSentry;
+void CheckSentry (entity gunhead);
 
-void () Sentry_Rotate;
+void Sentry_Rotate ();
 
-void () Sentry_Target;
+void Sentry_Target ();
 
-float () Sentry_FindTarget;
+float Sentry_FindTarget ();
 
-float () OldSentry_FindTarget;
+float OldSentry_FindTarget ();
 
-void () OldSentry_FoundTarget;
+void OldSentry_FoundTarget ();
 
-void () Sentry_HuntTarget;
+void Sentry_HuntTarget ();
 
-void () Sentry_Pain;
+void Sentry_Pain ();
 
-void () Sentry_Die;
+void Sentry_Die ();
 
-float () Sentry_Fire;
+float Sentry_Fire ();
 
-float () OldSentry_Fire;
+float OldSentry_Fire ();
 
-void () Sentry_MuzzleFlash;
+void Sentry_MuzzleFlash ();
 
-void () ai_face = {
+void ai_face () {
     self.ideal_yaw = vectoyaw ((self.enemy.origin - self.origin));
     self.ideal_yaw = anglemod (self.ideal_yaw);
     ChangeYaw ();
 };
 
-void () lvl1_sentry_atk3;
+void lvl1_sentry_atk3 ();
 
 void () lvl1_sentry_stand = [ 0.000, lvl1_sentry_stand ] {
     Sentry_Rotate ();
@@ -159,9 +159,9 @@ void () lvl1_sentry_atk2 = [ 0.000, lvl1_sentry_atk1 ] {
     ai_face ();
 };
 
-void () lvl2_sentry_atk2;
+void lvl2_sentry_atk2 ();
 
-void () lvl2_sentry_atk3;
+void lvl2_sentry_atk3 ();
 
 void () lvl2_sentry_stand = [ 3.000, lvl2_sentry_stand ] {
     Sentry_Rotate ();
@@ -193,7 +193,7 @@ void () lvl2_sentry_atk3 = [ 3.000, lvl2_sentry_atk1 ] {
     Sentry_Fire ();
 };
 
-void () lvl3_sentry_atk2;
+void lvl3_sentry_atk2 ();
 
 void () lvl3_sentry_stand = [ 6.000, lvl3_sentry_stand ] {
     Sentry_Rotate ();
@@ -225,14 +225,14 @@ void () lvl3_sentry_atk3 = [ 6.000, lvl3_sentry_atk1 ] {
     Sentry_Fire ();
 };
 
-void () Sentry_Target = {
+void Sentry_Target () {
     if ( Sentry_FindTarget () ) {
         Sentry_HuntTarget();
     }
 };
 // Tf 2.9 sg
 
-void () OldSentry_Rotate = {
+void OldSentry_Rotate () {
     local float ay;
     self.effects = (self.effects - (self.effects & 8));
     CheckSentry (self);
@@ -263,7 +263,7 @@ void () OldSentry_Rotate = {
     }
 };
 
-float () Target_IsEnemy = {
+float Target_IsEnemy () {
     if (self.enemy != world) {
         if (!self.enemy.is_feigning) {
             if (self.enemy.health > 0.000000) {
@@ -279,7 +279,7 @@ float () Target_IsEnemy = {
 };
 
 
-void () lvl1_oldsentry_atk3;
+void lvl1_oldsentry_atk3 ();
 
 void () lvl1_oldsentry_stand = [ 0.000, lvl1_oldsentry_stand ] {
     OldSentry_Rotate ();
@@ -305,9 +305,9 @@ void () lvl1_oldsentry_atk3 = [ 0.000, lvl1_oldsentry_atk1 ] {
     ai_face ();
 };
 
-void () lvl2_oldsentry_atk2;
+void lvl2_oldsentry_atk2 ();
 
-void () lvl2_oldsentry_atk3;
+void lvl2_oldsentry_atk3 ();
 
 void () lvl2_oldsentry_stand = [ 3.000, lvl2_oldsentry_stand ] {
     OldSentry_Rotate ();
@@ -334,7 +334,7 @@ void () lvl2_oldsentry_atk3 = [ 3.000, lvl2_oldsentry_atk1 ] {
     OldSentry_Fire ();
 };
 
-void () lvl3_oldsentry_atk3;
+void lvl3_oldsentry_atk3 ();
 
 void () lvl3_oldsentry_stand = [ 6.000, lvl3_oldsentry_stand ] {
     OldSentry_Rotate ();
@@ -362,7 +362,7 @@ void () lvl3_oldsentry_atk3 = [ 6.000, lvl3_oldsentry_atk1 ] {
 };
 // old sg end
 
-void () Sentry_Rotate = {
+void Sentry_Rotate () {
     local float ay;
     self.effects = (self.effects - (self.effects & 8.000));
     CheckSentry (self);
@@ -396,7 +396,7 @@ void () Sentry_Rotate = {
     }
 };
 
-float (entity targ) Sentry_InRange = {
+float Sentry_InRange (entity targ) {
     local float r;
 
     r = vlen ((self.origin - targ.origin));
@@ -411,7 +411,7 @@ float (entity targ) Sentry_InRange = {
     return(0.000);
 };
 
-float () Sentry_FindTarget = {
+float Sentry_FindTarget () {
     local entity e;
     local float found;
     local float r;
@@ -505,7 +505,7 @@ float () Sentry_FindTarget = {
     }
 };
 
-float () OldSentry_FindTarget = {
+float OldSentry_FindTarget () {
     local entity client;
     local float r;
     local float gotone;
@@ -567,14 +567,14 @@ float () OldSentry_FindTarget = {
     return (1);
 };
 
-void () OldSentry_FoundTarget = {
+void OldSentry_FoundTarget () {
     if (((self.ammo_shells > 0.000000) || ((self.ammo_rockets > 0.000000) && (self.weapon == 3)))) {
         sound (self, CHAN_VOICE, "weapons/turrspot.wav", 1, 1);
     }
     Sentry_HuntTarget ();
 };
 
-void () Sentry_HuntTarget = {
+void Sentry_HuntTarget () {
     if (!sgtype) {
         if ( (self.weapon == 1.000) ) {
             self.think = lvl1_oldsentry_atk1;
@@ -606,11 +606,11 @@ void () Sentry_HuntTarget = {
     }
 };
 
-void () Sentry_Pain = {
+void Sentry_Pain () {
     self.real_owner.StatusRefreshTime = (time + 0.200);
 };
 
-void () Sentry_Explode = {
+void Sentry_Explode () {
 #ifndef CSQC
     ThrowGib ("progs/tgib2.mdl",-70.000);
     ThrowGib ("progs/tgib2.mdl",-70.000);
@@ -636,7 +636,7 @@ void () Sentry_Explode = {
     dremove(self);
 };
 
-void (float damg, vector dir, vector spread) FireSentry = {
+void FireSentry (float damg, vector dir, vector spread) {
     local vector direction;
     local vector src;
     makevectors (self.v_angle);
@@ -659,7 +659,7 @@ void (float damg, vector dir, vector spread) FireSentry = {
     ApplyMultiDamage();
 };
 
-void () Sentry_Die = {
+void Sentry_Die () {
     sprint (self.real_owner, 2, "Your sentry gun was destroyed.\n");
     self.real_owner.has_sentry = 0.000000;
     self.think = Sentry_Explode;
@@ -667,7 +667,7 @@ void () Sentry_Die = {
 };
 // tf2.9 sg
 
-float () OldSentry_Fire = {
+float OldSentry_Fire () {
     local vector dir;
     self.effects = (self.effects - (self.effects & 8));
     dir = (self.enemy.origin - self.origin);
@@ -723,7 +723,7 @@ float () OldSentry_Fire = {
 };
 // sg end
 
-float () Sentry_Fire = {
+float Sentry_Fire () {
     //local vector dir;
     local float r;
     local vector org;
@@ -862,6 +862,6 @@ float () Sentry_Fire = {
     return (1.000);
 };
 
-void () Sentry_MuzzleFlash = {
+void Sentry_MuzzleFlash () {
     self.effects = (self.effects | 8.000);
 };

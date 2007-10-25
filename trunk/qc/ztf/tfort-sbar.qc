@@ -25,30 +25,30 @@
 
 */
 
-void () Status_StartWrite;
+void Status_StartWrite ();
 
-void () Status_EndWrite;
+void Status_EndWrite ();
 //merc skillz!~
 
-void (string str) WriteStr;
+void WriteStr (string str);
 
-void (float f1, float len) WriteRep;
-string (float tno) Status_TeamNumToTeamString;
-string (float pc) TeamFortress_GetClassName;
+void WriteRep (float f1, float len);
+string Status_TeamNumToTeamString (float tno);
+string TeamFortress_GetClassName (float pc);
 //
 //void (float f,float c) WriteIntXX;
 //
 //void (float f,float c) WriteIntXXX;
 
-void (float f,float c) WriteIntXXXX;
+void WriteIntXXXX (float f,float c);
 
-void (float f) WriteSIntXXXX;	// == -WriteRIntXXX or WriteRIntXXXX
+void WriteSIntXXXX (float f);	// == -WriteRIntXXX or WriteRIntXXXX
 
-void (float i) WriteSpace;
+void WriteSpace (float i);
 
-void (float v, float vmax) WriteBar;
+void WriteBar (float v, float vmax);
 
-void () RefreshStatusBar = {
+void RefreshStatusBar () {
     local float x; // max 30
     local entity te;
     local float num;
@@ -287,7 +287,7 @@ void () RefreshStatusBar = {
     Status_EndWrite();
 };
 
-void () Status_StartWrite = {
+void Status_StartWrite () {
     local float i;
     if (self.sbar_type & 2.000) {
         self.StatusRefreshTime = (time + 1.000);
@@ -337,7 +337,7 @@ void () Status_StartWrite = {
     }
 };
 
-void (float v, float vmax) WriteBar = {
+void WriteBar (float v, float vmax) {
     if (v > vmax * 7 / 8) {
         WriteRep(gled,8);
     } else if (v > vmax * 6 / 8) {
@@ -364,7 +364,7 @@ void (float v, float vmax) WriteBar = {
     }
 };
 
-void (string str) WriteStr = {
+void WriteStr (string str) {
     local float len;
     local float i;
     local string nwstr;
@@ -381,7 +381,7 @@ void (string str) WriteStr = {
     }
 };
 
-void (float f1, float len) WriteRep = {
+void WriteRep (float f1, float len) {
     local float i;
 	/*
     for (i = 0; i < len - 1; i = i + 2) {
@@ -393,7 +393,7 @@ void (float f1, float len) WriteRep = {
     }
 };
 
-void (float f, float c) WriteIntXXXX = {
+void WriteIntXXXX (float f, float c) {
     local float y;
     local float print;
 
@@ -434,7 +434,7 @@ void (float f, float c) WriteIntXXXX = {
 
 };
 
-void (float f) WriteSIntXXXX = {
+void WriteSIntXXXX (float f) {
     local float i;
 
     if (f >= 0) {
@@ -461,19 +461,19 @@ void (float f) WriteSIntXXXX = {
     WriteByte (1, 32);
 };
 
-void (float i) WriteSpace = {
+void WriteSpace (float i) {
     while (i) {
         WriteByte(1, 32);
         i = i - 1;
     }
 };
 
-void () Status_EndWrite = {
+void Status_EndWrite () {
     WriteByte (1, 0);		// will put some more code later :)
 };
 
 
-void () StatusBar_On = {
+void StatusBar_On () {
     if (!self.StatusBarSize) {
         self.StatusRefreshTime = (time + 60.000);
     } else {
@@ -485,7 +485,7 @@ void () StatusBar_On = {
 
 // END status bar
 
-float (float f) Impulse2Res = {
+float Impulse2Res (float f) {
     if (f == 1)
         return SBAR_200;
     if (f == 2)
@@ -508,7 +508,7 @@ float (float f) Impulse2Res = {
 };
 
 
-void (float res) StatusRes = {
+void StatusRes (float res) {
     self.last_impulse = 0.000;
     if (!res) return;
     self.StatusBarRes = Impulse2Res(res);
@@ -549,7 +549,7 @@ void (float res) StatusRes = {
     }
 };
 
-void (entity pl, string s1) CenterPrint = {
+void CenterPrint (entity pl, string s1) {
     //pl.b_b = s1;
     //pl.b_t = string_null;
     //pl.b_n = string_null;
@@ -558,7 +558,7 @@ void (entity pl, string s1) CenterPrint = {
     pl.StatusRefreshTime = (time + 1.500);
 };
 
-void (entity pl, string s1, string s2) CenterPrint2 = {
+void CenterPrint2 (entity pl, string s1, string s2) {
     //pl.b_b = s1;
     //pl.b_t = s2;
     //pl.b_n = string_null;
@@ -566,7 +566,7 @@ void (entity pl, string s1, string s2) CenterPrint2 = {
     pl.StatusRefreshTime = (time + 1.500);
 };
 
-void (entity pl, string s1, string s2, string s3) CenterPrint3 = {
+void CenterPrint3 (entity pl, string s1, string s2, string s3) {
     //pl.b_b = s1;
     //pl.b_t = s2;
     //pl.b_n = s3;
@@ -574,7 +574,7 @@ void (entity pl, string s1, string s2, string s3) CenterPrint3 = {
     pl.StatusRefreshTime = (time + 1.500);
 };
 
-void (string s1, string s2, string s3) PrintPlayers = {
+void PrintPlayers (string s1, string s2, string s3) {
     local entity te;
     te = player_head;
     while (te) {
@@ -591,7 +591,7 @@ void (string s1, string s2, string s3) PrintPlayers = {
     }
 };
 
-void (string s1, string s2, string s3) PrintSpecs = {
+void PrintSpecs (string s1, string s2, string s3) {
     local entity te;
     te = spec_head;
     while (te) {
@@ -633,7 +633,7 @@ string(float type) Status_GrenTypeToString = {
 
 };
 
-string (float tno) Status_TeamNumToTeamString = {
+string Status_TeamNumToTeamString (float tno) {
     if (tno == 1)
         return "blue";
     if (tno == 2)

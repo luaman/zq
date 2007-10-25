@@ -1,9 +1,9 @@
 
-void () Sentry_Rotate;
+void Sentry_Rotate ();
 
-void () InitBodyQue;
+void InitBodyQue ();
 
-void () Eluminate = {
+void Eluminate () {
     lights = 1;
     lightstyle (0.000,"m");
     lightstyle (1.000,"mmnmmommommnonmmonqnmmo");
@@ -20,7 +20,7 @@ void () Eluminate = {
     lightstyle (63.000,"a");
 };
 
-void () Deluminate = {
+void Deluminate () {
     lights = 0;
     lightstyle (0.000,"a");
     lightstyle (1.000,"a");
@@ -37,7 +37,7 @@ void () Deluminate = {
     lightstyle (63.000,"a");
 };
 
-void () main = {
+void main () {
     precache_file ("qwprogs.dat");
     precache_file ("gfx.wad");
     precache_file ("quake.rc");
@@ -113,7 +113,7 @@ void () main = {
 };
 entity lastspawn;
 
-void () worldspawn = {
+void worldspawn () {
     local string st;
     local float fl;
     lastspawn = world;
@@ -366,7 +366,7 @@ void () worldspawn = {
     Eluminate();
 };
 
-void () StartFrame = {
+void StartFrame () {
     teamplay = cvar ("teamplay");
     timelimit = (cvar ("timelimit") * 60.000);
     fraglimit = cvar ("fraglimit");
@@ -374,7 +374,7 @@ void () StartFrame = {
 };
 entity bodyque_head;
 
-void () InitBodyQue = {
+void InitBodyQue () {
     bodyque_head = spawn ();
     bodyque_head.classname = "bodyque";
     bodyque_head.owner = spawn ();
@@ -386,7 +386,7 @@ void () InitBodyQue = {
     bodyque_head.owner.owner.owner.owner = bodyque_head;
 };
 
-void (entity ent) CopyToBodyQue = {
+void CopyToBodyQue (entity ent) {
     if ( cb_prematch ) {
         return ;
     }

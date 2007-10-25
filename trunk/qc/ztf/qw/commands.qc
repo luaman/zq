@@ -14,7 +14,7 @@ float(float num, float digits) spaceoutnum = {
     if (num >= 1000000) d = d - 1;
     return (d);
 };
-string (float num) spacestring = {
+string spacestring (float num) {
     local string st;
     st = strcat (st, " ");
     while (num > 0)  {
@@ -23,7 +23,7 @@ string (float num) spacestring = {
     }
     return (st);
 };
-string (float num, float digits) spacefornum = {
+string spacefornum (float num, float digits) {
     local string st;
     local float fl;
     fl = spaceoutnum(num, digits);
@@ -71,7 +71,7 @@ void() Commands = {
     }
 };
 
-void () ShowScores = {
+void ShowScores () {
     local string st;
     stuffcmd(self, "scores ");
     stuffcmd(self, self.netname);
@@ -320,7 +320,7 @@ void() ShowFps = {
     sprint(self, 2.000, "\n\n");
 };
 
-void () ShowSpeed = {
+void ShowSpeed () {
     local float dist;
     local string st;
     if (self.speed) {
@@ -582,7 +582,7 @@ void(float t, string option) MiscTimeUp = {
     localcmd("\n");
 };
 
-void (float add) FragLimit = {
+void FragLimit (float add) {
     local string tmp;
     fraglimit = fraglimit + add;
     if (fraglimit < 0) fraglimit = 0;
@@ -709,7 +709,7 @@ void() ToggleFreeze = {
     }
 };
 
-void (string option) Toggle_Misc = {
+void Toggle_Misc (string option) {
     local string st;
     st = infokey (world, option);
     if ( (st == "on") ) {
@@ -748,19 +748,19 @@ void (string option) Toggle_Misc = {
 
    void() Toggle_Rounds =
 
-   void () Toggle_Teamfrags = {
+   void Toggle_Teamfrags () {
    bprint(2, "Teamfrags set to ", st, " \n");
 
-   void () Toggle_Fullts = {
+   void Toggle_Fullts () {
    bprint(2, "Full Team Score set to ", st, " \n");
 
-   void () Toggle_Grapple = {
+   void Toggle_Grapple () {
    bprint(2, "Grapple set to ", st, " \n");
 
-   void () Toggle_Gibs = {
+   void Toggle_Gibs () {
    bprint(2, "Gibs set to ", st, " \n");
 
-   void () Toggle_Highlander = {
+   void Toggle_Highlander () {
    bprint(2, "Highlander mode set to ", st, " \n");
  */
 
@@ -780,7 +780,7 @@ void() ResetSetup = {
     RestartMap();
 };
 
-void () ClanSetup = {
+void ClanSetup () {
     local float f1;
     cvar_set("teamplay", "1?TeamFortress");
     cvar_set("timelimit", "35");
@@ -931,7 +931,7 @@ void() Toggle_Frj = {
     }
 };
 
-void () Toggle_flag_emu = {
+void Toggle_flag_emu () {
     local string st;
     local float fl;
     fl = stof(infokey (world,"flag_model"));
@@ -955,7 +955,7 @@ void () Toggle_flag_emu = {
     bprint(2, "Goal Item model set to ", st, " \n");
 };
 
-void () Toggle_Grenpacks = {
+void Toggle_Grenpacks () {
     local string st;
     st = infokey (world,"grenpacks");
     bprint(2, " ");
@@ -973,7 +973,7 @@ void () Toggle_Grenpacks = {
     localcmd("\n");
 };
 
-void () Toggle_SentryType = {
+void Toggle_SentryType () {
     local string st;
     bprint(2, " ");
     if (sgtype == 0) {
@@ -989,7 +989,7 @@ void () Toggle_SentryType = {
     localcmd("\n");
 };
 
-void () Toggle_SentryFire = {
+void Toggle_SentryFire () {
     local string st;
     local float fl;
     if (!sgtype) {
@@ -1019,7 +1019,7 @@ void () Toggle_SentryFire = {
     bprint(2, "Sentry Fire set to ", st, " \n");
 };
 
-void () Toggle_PipeDelay = {
+void Toggle_PipeDelay () {
     local string st;
     st = infokey (world,"pipedelay");
     if ( (st == "off") ) {
@@ -1036,7 +1036,7 @@ void () Toggle_PipeDelay = {
     bprint(2, "Demoman Pipebomb Delay set to ", st, " \n");
 };
 
-void () Toggle_Detpack = {
+void Toggle_Detpack () {
     local string st;
     st = infokey (world,"soliddet");
     if ( (st == "on") ) {
@@ -1051,7 +1051,7 @@ void () Toggle_Detpack = {
     bprint(2, "Solid Detpacks σετ το ", st, " \n");
 };
 
-void () Toggle_Lighting = {
+void Toggle_Lighting () {
     if (lights) {
         Deluminate();
     } else {
@@ -1059,7 +1059,7 @@ void () Toggle_Lighting = {
     }
 };
 
-void () Give_Quad = {
+void Give_Quad () {
     if (!self.playerclass || self.deadflag) return;
     sound (self,2.000,"items/damage.wav",1.000,1.000);
     stuffcmd (self,"bf\n");
@@ -1068,7 +1068,7 @@ void () Give_Quad = {
     self.super_damage_finished = (time + 300.000);
 };
 
-void () Give_Eyes = {
+void Give_Eyes () {
     if (!self.playerclass || self.deadflag) return;
     sound (self,2.000,"items/inv1.wav",1.000,1.000);
     stuffcmd (self,"bf\n");
@@ -1077,7 +1077,7 @@ void () Give_Eyes = {
     self.invisible_finished = (time + 30.000);
 };
 
-void () Give_Pent = {
+void Give_Pent () {
     if (!self.playerclass || self.deadflag) return;
     sound (self,2.000,"items/protect.wav",1.000,1.000);
     stuffcmd (self,"bf\n");
@@ -1107,7 +1107,7 @@ void() MiscVoteThink = {
     AbortMiscVote();
 };
 
-void () AgreeMiscVote = {
+void AgreeMiscVote () {
     local float f1, f2;
     local string tmp;
     local entity mv;
@@ -1153,7 +1153,7 @@ void () AgreeMiscVote = {
     }
 };
 
-void (string Misc, float type) PlayerMiscVote = {
+void PlayerMiscVote (string Misc, float type) {
     local float f1, f2;
     local string st, tmp;
     local entity miscvote;
@@ -1236,7 +1236,7 @@ void (string Misc, float type) PlayerMiscVote = {
     }
 };
 
-void () RandomPickup = {
+void RandomPickup () {
     local entity te;
     local float fl;
     local float fl2;
@@ -1292,7 +1292,7 @@ void () RandomPickup = {
     }
 };
 
-void () TogglePowerups = {
+void TogglePowerups () {
     local string st;
     bprint (2.000000, " Ποχεςυπσ ");
     if (powerups) {
@@ -1311,7 +1311,7 @@ void () TogglePowerups = {
     localcmd("\n");
 };
 
-void () ToggleSpecMsgs = {
+void ToggleSpecMsgs () {
     local string st;
     if (!spec_msgs) {
         spec_msgs = 1;
@@ -1327,19 +1327,19 @@ void () ToggleSpecMsgs = {
     bprint(2, "Messages for spectators  σετ το ", st, " \n");
 };
 
-void (entity p) unpause_player = {
+void unpause_player (entity p) {
     msg_entity = p;
     WriteByte (1.000000, 24.000000);
     WriteByte (1.000000, 0.000000);
 };
 
-void (entity p) pause_player = {
+void pause_player (entity p) {
     msg_entity = p;
     WriteByte (1.000000, 24.000000);
     WriteByte (1.000000, 1.000000);
 };
 
-void () PausePlayers = {
+void PausePlayers () {
     local entity te;
     te = find (world, classname, "player");
     while (te) {

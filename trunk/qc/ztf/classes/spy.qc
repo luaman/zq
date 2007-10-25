@@ -25,15 +25,15 @@
 
 */
 
-void (entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer;
+void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method);
 
-void (entity spy) TeamFortress_SpyCalcName;
+void TeamFortress_SpyCalcName (entity spy);
 
-void () TeamFortress_SpyUndercoverThink;
+void TeamFortress_SpyUndercoverThink ();
 
-void () GasGrenadeMakeGas;
+void GasGrenadeMakeGas ();
 
-void () T_TranqDartTouch;
+void T_TranqDartTouch ();
 
 void () spy_diea1 = [ 50.000, spy_diea2 ] {
 };
@@ -326,22 +326,22 @@ void () spy_upd9 = [ 85.000, spy_upd9 ] {
 void () spy_upe1 = [ 94.000, spy_upe9 ] {
 };
 
-void () spy_upe9;
+void spy_upe9 ();
 
 void () spy_upe2 = [ 95.000, spy_upe8 ] {
 };
 
-void () spy_upe8;
+void spy_upe8 ();
 
 void () spy_upe3 = [ 96.000, spy_upe7 ] {
 };
 
-void () spy_upe7;
+void spy_upe7 ();
 
 void () spy_upe4 = [ 97.000, spy_upe6 ] {
 };
 
-void () spy_upe6;
+void spy_upe6 ();
 
 void () spy_upe5 = [ 98.000, spy_upe5 ] {
 };
@@ -387,7 +387,7 @@ void () spy_upaxe9 = [ 41.000, spy_upaxe9 ] {
     player_stand1 ();
 };
 
-void (float issilent) TeamFortress_SpyFeignDeath = {
+void TeamFortress_SpyFeignDeath (float issilent) {
     local float i;
     local float j;
     local entity at_spot;
@@ -543,7 +543,7 @@ void (float issilent) TeamFortress_SpyFeignDeath = {
     }
 };
 
-void () TeamFortress_SpyGoUndercover = {
+void TeamFortress_SpyGoUndercover () {
     if ( (self.effects & (8.000 | 4.000)) ) {
         sprint (self,1.000,"You cannot disguise while glowing.\n");
         return ;
@@ -561,7 +561,7 @@ void () TeamFortress_SpyGoUndercover = {
     }
 };
 
-void (entity spy) TeamFortress_SpyCalcName = {
+void TeamFortress_SpyCalcName (entity spy) {
     local entity te;
     spy.undercover_name = string_null;
     if ( (spy.undercover_team != 0.000) ) {
@@ -588,7 +588,7 @@ void (entity spy) TeamFortress_SpyCalcName = {
     }
 };
 
-void () TeamFortress_SpyUndercoverThink = {
+void TeamFortress_SpyUndercoverThink () {
     local float tc;
     local string st;
     if ( (self.owner.playerclass != 8.000) ) {
@@ -625,7 +625,7 @@ void () TeamFortress_SpyUndercoverThink = {
     dremove (self);
 };
 
-void (float pclass) TeamFortress_SpyChangeSkin = {
+void TeamFortress_SpyChangeSkin (float pclass) {
     local entity te;
     if ( (pclass == 8.000) ) {
         sprint (self,2.000,"Skin reset.\n");
@@ -647,7 +647,7 @@ void (float pclass) TeamFortress_SpyChangeSkin = {
     TeamFortress_SetSkin (self);
 };
 
-void (float teamno) TeamFortress_SpyChangeColor = {
+void TeamFortress_SpyChangeColor (float teamno) {
     local entity te;
     if ( (teamno == self.pteam.team) ) {
         sprint (self,2.000,"Colors reset.\n");
@@ -672,14 +672,14 @@ void (float teamno) TeamFortress_SpyChangeColor = {
     te.team = teamno;
 };
 
-void () GasGrenadeTouch = {
+void GasGrenadeTouch () {
     sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
 };
 
-void () GasGrenadeExplode = {
+void GasGrenadeExplode () {
     local entity te;
     local float pos;
     if (anti_spam) {
@@ -728,7 +728,7 @@ void () GasGrenadeExplode = {
     dremove (self);
 };
 
-void (entity te) viewsmoke = {
+void viewsmoke (entity te) {
     local string st,st2;
     st = ftos (135 + (crandom() * 80));
     st2 = ftos (100 + (crandom() * 50));
@@ -743,7 +743,7 @@ void (entity te) viewsmoke = {
     stuffcmd (te, "\n");
 };
 
-void () HallucinationTimer = {
+void HallucinationTimer () {
     local entity te;
     local float tmpx;
     local float tmpy;
@@ -874,7 +874,7 @@ void () HallucinationTimer = {
     }
 };
 
-void () W_FireTranq = {
+void W_FireTranq () {
     if (!modetype & 2) {
         self.ammo_shells = (self.ammo_shells - 1.000);
         self.currentammo = self.ammo_shells;
@@ -896,14 +896,14 @@ void () W_FireTranq = {
     setorigin (newmis,((self.origin + (v_forward * 8.000)) + '0.000 0.000 16.000'));
 };
 
-void () TranquiliserTimer = {
+void TranquiliserTimer () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 32768.000));
     TeamFortress_SetSpeed (self.owner);
     sprint (self.owner,2.000,"You feel more alert now\n");
     dremove (self);
 };
 
-void () T_TranqDartTouch = {
+void T_TranqDartTouch () {
     local entity timer;
     if ( (other.solid == 1.000) ) {
         return ;
@@ -948,7 +948,7 @@ void () T_TranqDartTouch = {
     dremove (self);
 };
 
-void (entity spy) Spy_RemoveDisguise = {
+void Spy_RemoveDisguise (entity spy) {
     if ( (spy.playerclass == 8.000) ) {
         if ( (spy.undercover_team != 0.000) ) {
             spy.undercover_team = 0.000;
@@ -967,7 +967,7 @@ void (entity spy) Spy_RemoveDisguise = {
     }
 };
 
-void () GasGrenadeMakeGas = {
+void GasGrenadeMakeGas () {
     local float nextloop;
     local entity te;
     local entity timer;

@@ -25,25 +25,25 @@
 
 */
 
-void () NormalGrenadeTouch;
+void NormalGrenadeTouch ();
 
-void () NormalGrenadeExplode;
+void NormalGrenadeExplode ();
 
-void () MirvGrenadeTouch;
+void MirvGrenadeTouch ();
 
-void () MirvGrenadeExplode;
+void MirvGrenadeExplode ();
 
-void (vector org, entity shooter) MirvGrenadeLaunch;
+void MirvGrenadeLaunch (vector org, entity shooter);
 
-void () TeamFortress_DetpackSet;
+void TeamFortress_DetpackSet ();
 
-void () TeamFortress_DetpackTouch;
+void TeamFortress_DetpackTouch ();
 
-void () TeamFortress_DetpackDisarm;
+void TeamFortress_DetpackDisarm ();
 
-void () TeamFortress_DetpackCountDown;
+void TeamFortress_DetpackCountDown ();
 
-void () TeamFortress_DetonatePipebombs = {
+void TeamFortress_DetonatePipebombs () {
     local entity e;
     e = find (world,classname,"pipebomb");
     while ( (e != world) ) {
@@ -54,14 +54,14 @@ void () TeamFortress_DetonatePipebombs = {
     }
 };
 
-void () MirvGrenadeTouch = {
+void MirvGrenadeTouch () {
     sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
 };
 
-void () MirvGrenadeExplode = {
+void MirvGrenadeExplode () {
     local float i;
     local entity te;
     if (anti_spam) {
@@ -93,7 +93,7 @@ void () MirvGrenadeExplode = {
     dremove(self);
 };
 
-void (vector org, entity shooter) MirvGrenadeLaunch = {
+void MirvGrenadeLaunch (vector org, entity shooter) {
     local float xdir;
     local float ydir;
     local float zdir;
@@ -118,7 +118,7 @@ void (vector org, entity shooter) MirvGrenadeLaunch = {
     setorigin (newmis,org);
 };
 
-void (entity bowner) TeamFortress_SetBomb = {
+void TeamFortress_SetBomb (entity bowner) {
     local string stimer;
     local float timer;
     local entity at_spot;
@@ -196,7 +196,7 @@ void (entity bowner) TeamFortress_SetBomb = {
     newmis.health = timer;
 };
 
-void (float timer) TeamFortress_SetDetpack = {
+void TeamFortress_SetDetpack (float timer) {
     local string stimer;
     local entity te;
     local entity at_spot;
@@ -279,7 +279,7 @@ void (float timer) TeamFortress_SetDetpack = {
     newmis.health = timer;
 };
 
-void () TeamFortress_DetpackStop = {
+void TeamFortress_DetpackStop () {
     local entity detpack_timer;
     self.is_detpacking = 0.000;
     detpack_timer = find (world,netname,"detpack_timer");
@@ -299,7 +299,7 @@ void () TeamFortress_DetpackStop = {
     self.pausetime = time;
 };
 
-void () TeamFortress_DetpackSet = {
+void TeamFortress_DetpackSet () {
     local entity countd;
     local entity oldself;
     local string st;
@@ -361,7 +361,7 @@ void () TeamFortress_DetpackSet = {
     dremove (self);
 };
 
-void () TeamFortress_DetpackExplode = {
+void TeamFortress_DetpackExplode () {
     local float pos;
     local float points;
     local entity head;
@@ -434,7 +434,7 @@ void () TeamFortress_DetpackExplode = {
     dremove(self);
 };
 
-void () TeamFortress_DetpackTouch = {
+void TeamFortress_DetpackTouch () {
     local entity disarm;
     local vector src;
     local float defusetime;
@@ -498,7 +498,7 @@ void () TeamFortress_DetpackTouch = {
     self.observer_list = disarm;
 };
 
-void () TeamFortress_DetpackDisarm = {
+void TeamFortress_DetpackDisarm () {
     if ( (self.owner.deadflag) ) {
         dremove (self);
         return ;
@@ -529,7 +529,7 @@ void () TeamFortress_DetpackDisarm = {
     dremove (self);
 };
 
-void () TeamFortress_DetpackCountDown = {
+void TeamFortress_DetpackCountDown () {
     local string cd;
     cd = ftos (self.health);
     CheckBelowBuilding (self.enemy);

@@ -25,13 +25,13 @@
 
 */
 
-void () TeamFortress_AmmoboxThink = {
+void TeamFortress_AmmoboxThink () {
     //self.pteam.num_ammoboxes = self.pteam.num_ammoboxes - 1.000;
     store_obs.num_ammoboxes = store_obs.num_ammoboxes - 1.000;
     dremove(self);
 };
 
-void () RemoveboldAmmobox = {
+void RemoveboldAmmobox () {
     local entity box, bold;
     local float rt;
     rt = time + 999;
@@ -50,7 +50,7 @@ void () RemoveboldAmmobox = {
     dremove(bold);
 };
 
-void () TeamFortress_AmmoboxTouch = {
+void TeamFortress_AmmoboxTouch () {
     local float took;
     local string quantity;
     took = 1;
@@ -169,7 +169,7 @@ void () TeamFortress_AmmoboxTouch = {
     W_SetCurrentAmmo ();
 };
 
-void (float type, float ammo) TeamFortress_DropAmmo = {
+void TeamFortress_DropAmmo (float type, float ammo) {
     self.impulse = 0;
     if (type == 1) {
         if ( (self.ammo_shells < ammo) ) {
@@ -292,7 +292,7 @@ void (float type, float ammo) TeamFortress_DropAmmo = {
     setmodel (newmis,"progs/ammobox.mdl");
 };
 
-void () Drop_detpack = {
+void Drop_detpack () {
     if (!self.ammo_detpack) return;
     if (!self.playerclass) return;
     self.ammo_detpack = self.ammo_detpack - 1.000;
@@ -338,7 +338,7 @@ void () Drop_detpack = {
     setsize (newmis,'-16.000 -16.000 0.000','16.000 16.000 8.000');
 };
 
-void () TeamFortress_Discard = {
+void TeamFortress_Discard () {
     newmis = spawn ();
     if (self.playerclass == 1) {
         newmis.ammo_rockets = self.ammo_rockets;
@@ -406,7 +406,7 @@ void () TeamFortress_Discard = {
     setmodel (newmis,"progs/backpack.mdl");
 };
 
-void () Ammobox_Explode = {
+void Ammobox_Explode () {
     local float expsize;
     expsize = self.ammo_shells * 0.75 + self.ammo_rockets * 1.5 + self.ammo_cells * 1.5;
     if (expsize > 0) {

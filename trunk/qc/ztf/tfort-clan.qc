@@ -25,9 +25,9 @@
 
 */
 
-void () TeamFortress_ThrowGrenade;
+void TeamFortress_ThrowGrenade ();
 
-void () AutoRecord = {
+void AutoRecord () {
     local float i;
     local string tmp;
     local entity t;
@@ -82,7 +82,7 @@ void () AutoRecord = {
     localcmd("\n");
 };
 
-void () MatchOvertime = {
+void MatchOvertime () {
     local float f2;
     local string st;
     if (cease_fire ) {
@@ -111,7 +111,7 @@ void () MatchOvertime = {
     NextLevel ();
 };
 
-void (string soundname) PlaySoundAll = {
+void PlaySoundAll (string soundname) {
     local entity te;
     te = player_head;
     while (te) {
@@ -129,15 +129,15 @@ void (string soundname) PlaySoundAll = {
     }
 };
 
-void () ReturnItem;
+void ReturnItem ();
 
 #ifdef SOCCER
-void () ball_reset;
+void ball_reset ();
 #endif
 
-void () TeamFortress_AmmoboxThink;
+void TeamFortress_AmmoboxThink ();
 
-void () ResetAll = {
+void ResetAll () {
     local entity te;
     local entity oldself;
     te = player_head;
@@ -222,7 +222,7 @@ void () ResetAll = {
     }
 };
 
-void () MatchThink = {
+void MatchThink () {
     local string tmp;
     if ( self.cnt == -1 ) {
         return;
@@ -294,7 +294,7 @@ void () MatchThink = {
     self.nextthink = time + 1.000;
 };
 
-void () StartMatch = {
+void StartMatch () {
     local string st;
     local float f1,f2;
     local entity te;
@@ -389,7 +389,7 @@ void () StartMatch = {
     }
 };
 
-void () PreMatch_Think = {
+void PreMatch_Think () {
     local entity p;
     local string num;
     local float fl;
@@ -644,7 +644,7 @@ void() PlayerBreak = {
     }
 };
 
-void () RemoveVotes = {
+void RemoveVotes () {
     if (self.bvote) {
         bprint(2, self.netname, " קיפטהעבקף ");
         if (infokey(self, "gender") == "f") bprint(2, "טוע ");

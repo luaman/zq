@@ -1,37 +1,37 @@
 
-void () ImpulseCommands;
+void ImpulseCommands ();
 
-void () player_run;
+void player_run ();
 
-float (vector veca, vector vecb) crossproduct;
+float crossproduct (vector veca, vector vecb);
 
-void (vector org, float damage) SpawnBlood;
+void SpawnBlood (vector org, float damage);
 
-void (entity rhook) Reset_Grapple;
+void Reset_Grapple (entity rhook);
 
-void () W_PrintWeaponMessage;
+void W_PrintWeaponMessage ();
 
-void () button_touch;
+void button_touch ();
 
-void () button_fire;
+void button_fire ();
 
-void () RemoveGrenade;
+void RemoveGrenade ();
 
-void () SniperSight_Create;
+void SniperSight_Create ();
 
-void (float zoom_level) TF_zoom;
+void TF_zoom (float zoom_level);
 
-void () W_FireFlame;
+void W_FireFlame ();
 
-void () W_FireIncendiaryCannon;
+void W_FireIncendiaryCannon ();
 
-void () W_FireTranq;
+void W_FireTranq ();
 
-void () W_FireRail;
+void W_FireRail ();
 
-void () W_FireRailgun;
+void W_FireRailgun ();
 
-void () W_Precache = {
+void W_Precache () {
     precache_sound ("weapons/r_exp3.wav");
     precache_sound ("weapons/rocket1i.wav");
     precache_sound ("weapons/sgun1.wav");
@@ -80,7 +80,7 @@ void () W_Precache = {
     precache_sound ("weapons/tink2.wav");
 };
 
-void () W_FireAxe = {
+void W_FireAxe () {
     local vector source;
     local vector org;
     local vector def;
@@ -125,7 +125,7 @@ void () W_FireAxe = {
     }
 };
 
-void () W_FireSpanner = {
+void W_FireSpanner () {
     local vector source;
     local vector org;
     local entity te;
@@ -182,7 +182,7 @@ void () W_FireSpanner = {
     }
 };
 
-void () W_FireMedikit = {
+void W_FireMedikit () {
     local vector org;
     local vector source;
     source = (self.origin + '0.000 0.000 16.000');
@@ -221,7 +221,7 @@ float(entity toplayer) SendShell = {
 };
 #endif
 
-void () ShellHit = {
+void ShellHit () {
     if ((self.skin == 1.000)) {
         sound (self, 3.000, "weapons/shell2.wav", 0.500, 1.000);
     } else {
@@ -234,7 +234,7 @@ void () ShellHit = {
     return;
 };
 
-void () EjectShell = {
+void EjectShell () {
     newmis = spawn ();
     newmis.movetype = 10.000;
     newmis.solid = 1.000;
@@ -271,7 +271,7 @@ void () EjectShell = {
     newmis.Version+=1;
 #endif
 };
-vector () wall_velocity = {
+vector wall_velocity () {
     local vector vel;
     vel = normalize (self.velocity);
     vel = normalize (((vel + (v_up * (random () - 0.500))) + (v_right * (random () - 0.500))));
@@ -280,7 +280,7 @@ vector () wall_velocity = {
     return ( vel );
 };
 
-void (vector org, vector vel) SpawnMeatSpray = {
+void SpawnMeatSpray (vector org, vector vel) {
     local entity missile;
     missile = spawn ();
     missile.owner = self;
@@ -297,7 +297,7 @@ void (vector org, vector vel) SpawnMeatSpray = {
     setorigin (missile,org);
 };
 
-void (vector org, float damage) SpawnBlood = {
+void SpawnBlood (vector org, float damage) {
     WriteByte (4.000,23.000);
     WriteByte (4.000,12.000);
     WriteByte (4.000,1.000);
@@ -307,14 +307,14 @@ void (vector org, float damage) SpawnBlood = {
     multicast (org,2.000);
 };
 
-void (float damage) spawn_touchblood = {
+void spawn_touchblood (float damage) {
     local vector vel;
     vel = (wall_velocity () * 0.200);
     SpawnBlood ((self.origin + (vel * 0.010)),damage);
 };
 /*
 
-   void (vector org, vector vel) SpawnChunk = {
+   void SpawnChunk (vector org, vector vel) {
    particle (org,(vel * 0.020),0.000,10.000);
    };
  */
@@ -328,21 +328,21 @@ vector puff_org /* = '0.000 0.000 0.000' */;
 
 float puff_count /* = 0.000 */;
 
-void () ClearMultiDamage = {
+void ClearMultiDamage () {
     multi_ent = world;
     multi_damage = 0.000;
     blood_count = 0.000;
     puff_count = 0.000;
 };
 
-void () ApplyMultiDamage = {
+void ApplyMultiDamage () {
     if ( !multi_ent ) {
         return ;
     }
     TF_T_Damage (multi_ent,self,self,multi_damage,2.000,1.000);
 };
 
-void (entity hit, float damage) AddMultiDamage = {
+void AddMultiDamage (entity hit, float damage) {
     if ( !hit ) {
         return ;
     }
@@ -355,7 +355,7 @@ void (entity hit, float damage) AddMultiDamage = {
     }
 };
 
-void () Multi_Finish = {
+void Multi_Finish () {
     if ( puff_count ) {
         WriteByte (4.000,23.000);
         WriteByte (4.000,2.000);
@@ -376,7 +376,7 @@ void () Multi_Finish = {
     }
 };
 
-void (float damage, vector dir) TraceAttack = {
+void TraceAttack (float damage, vector dir) {
     local vector vel;
     local vector org;
     vel = normalize (((dir + (v_up * crandom ())) + (v_right * crandom ())));
@@ -392,7 +392,7 @@ void (float damage, vector dir) TraceAttack = {
     }
 };
 
-void (float shotcount, vector dir, vector spread) FireBullets = {
+void FireBullets (float shotcount, vector dir, vector spread) {
     local vector direction;
     local vector src;
     makevectors (self.v_angle);
@@ -427,12 +427,12 @@ void (float shotcount, vector dir, vector spread) FireBullets = {
     }
 };
 
-float (float cur_val, float new_val) SetAttribute = {
+float SetAttribute (float cur_val, float new_val) {
     if (modetype & 2) return(cur_val);
     return(new_val);
 };
 
-void () W_FireShotgun = {
+void W_FireShotgun () {
     local vector dir;
     sound (self,CHAN_WEAPON,"weapons/guncock.wav",1.000,1.000);
     KickPlayer (-2.000,self);
@@ -448,7 +448,7 @@ void () W_FireShotgun = {
     FireBullets (6.000,dir,'0.040 0.040 0.000');
 };
 
-void () W_FireSuperShotgun = {
+void W_FireSuperShotgun () {
     local vector dir;
     if ( (self.currentammo == 1.000) ) {
         W_FireShotgun ();
@@ -468,7 +468,7 @@ void () W_FireSuperShotgun = {
     FireBullets (14.000,dir,'0.140 0.080 0.000');
 };
 
-void (vector direction, float damage, vector spread) FireSniperBullet = {
+void FireSniperBullet (vector direction, float damage, vector spread) {
     local vector src;
     local vector dir;
     makevectors (self.v_angle);
@@ -485,7 +485,7 @@ void (vector direction, float damage, vector spread) FireSniperBullet = {
     ApplyMultiDamage ();
 };
 
-void () W_FireSniperRifle = {
+void W_FireSniperRifle () {
     local vector dir;
     local vector src;
     local float dam_mult;
@@ -577,7 +577,7 @@ void () W_FireSniperRifle = {
     ApplyMultiDamage ();
 };
 
-void () W_FireAutoRifle = {
+void W_FireAutoRifle () {
     local vector dir;
     sound (self,CHAN_WEAPON,"weapons/autorifle.wav",1.000,1.000);
     KickPlayer (-1.000,self);
@@ -601,7 +601,7 @@ void () s_plasma3 = [ 2.000, s_plasma4 ] {};
 
 void () s_plasma4 = [ 3.000, s_plasma1 ] {};
 
-void () Plasma_stream_touch = {
+void Plasma_stream_touch () {
     if ( ((other.takedamage == 2.000) && (other.health > 0.000)) ) {
         TF_T_Damage (other,self,self.owner,20.000,2.000,8.000);
         if (cb_prematch ) return ;
@@ -628,7 +628,7 @@ float(entity toplayer) SendPlasma = {
 };
 #endif
 
-void () W_FirePlasma = {
+void W_FirePlasma () {
     local float rn;
     local entity plasma;
     if ( (self.waterlevel > 2.000) ) {
@@ -672,7 +672,7 @@ void () W_FirePlasma = {
 #endif
 };
 
-void () W_FireAssaultCannon = {
+void W_FireAssaultCannon () {
     local vector dir;
     KickPlayer (-4.000,self);
     if (!modetype & 2) {
@@ -708,7 +708,7 @@ void () s_explode5 = [ 4.000, s_explode6 ] {};
 
 void () s_explode6 = [ 5.000, SUB_Remove ] {};
 
-void () MissileRadius = {
+void MissileRadius () {
     local float damg;
     if ( (self.owner.classname == "building_sentrygun") ) {
         damg = 150.000;
@@ -732,7 +732,7 @@ void () MissileRadius = {
     dremove (self);
 };
 
-void () T_MissileTouch = {
+void T_MissileTouch () {
     local float damg;
 
     if ( self.voided ) {
@@ -756,7 +756,7 @@ void () T_MissileTouch = {
     MissileRadius();
 };
 
-void () RealisticMove = {
+void RealisticMove () {
     if (self.attack_finished < time) {
         if (self.weapon == 6.000) {
             MissileRadius();
@@ -786,7 +786,7 @@ float(entity toplayer) SendRocket = {
 };
 #endif
 
-void () W_FireRocket = {
+void W_FireRocket () {
     local vector pvel;
     if (!modetype & 2) {
         self.ammo_rockets = (self.ammo_rockets - 1.000);
@@ -841,7 +841,7 @@ void () W_FireRocket = {
 #endif
 };
 
-void (entity from, float damage) LightningHit = {
+void LightningHit (entity from, float damage) {
     WriteByte (4.000,23.000);
     WriteByte (4.000,13.000);
     WriteCoord (4.000,trace_endpos_x);
@@ -852,7 +852,7 @@ void (entity from, float damage) LightningHit = {
     TF_T_Damage (trace_ent,from,from,damage,2.000,8.000);
 };
 
-void (vector p1, vector p2, entity from, float damage) LightningDamage = {
+void LightningDamage (vector p1, vector p2, entity from, float damage) {
     local entity e1;
     local entity e2;
     local vector f;
@@ -885,7 +885,7 @@ void (vector p1, vector p2, entity from, float damage) LightningDamage = {
     }
 };
 
-void () W_FireLightning = {
+void W_FireLightning () {
     local vector org;
     local float cells;
     if ( (self.ammo_cells < 1.000) ) {
@@ -929,7 +929,7 @@ void () W_FireLightning = {
     LightningDamage (self.origin,(trace_endpos + (v_forward * 4.000)),self,30.000);
 };
 
-void (entity player) ExplodeOldPipebomb = {
+void ExplodeOldPipebomb (entity player) {
     local entity old;
     local float index;
     if ( (player != world) ) {
@@ -956,7 +956,7 @@ void (entity player) ExplodeOldPipebomb = {
     }
 };
 
-void () GrenadeExplode = {
+void GrenadeExplode () {
     local entity te;
 
     if ( self.voided ) {
@@ -995,7 +995,7 @@ void () GrenadeExplode = {
     dremove (self);
 };
 
-void () PipebombTouch = {
+void PipebombTouch () {
     if ( (other.classname != "worldspawn") ) {
         return ;
     }
@@ -1005,7 +1005,7 @@ void () PipebombTouch = {
     }
 };
 
-void () GrenadeTouch = {
+void GrenadeTouch () {
     if ( (other == self.owner) ) {
         return ;
     }
@@ -1019,7 +1019,7 @@ void () GrenadeTouch = {
     }
 };
 
-void (entity te) InitGrenade = {
+void InitGrenade (entity te) {
     local vector pvel;
     if (!modetype & 2) {
         self.ammo_rockets = (self.ammo_rockets - 1.000);
@@ -1074,7 +1074,7 @@ float(entity toplayer) SendGrenade = {
 };
 #endif
 
-void () W_FireGrenade = {
+void W_FireGrenade () {
     newmis = spawn ();
     InitGrenade(newmis);
     newmis.weapon = 5.000;
@@ -1089,7 +1089,7 @@ void () W_FireGrenade = {
 #endif
 };
 
-void () W_FirePipebomb = {
+void W_FirePipebomb () {
     newmis = spawn ();
     InitGrenade(newmis);
     if ( (self.pteam) ) {
@@ -1131,11 +1131,11 @@ float(entity toplayer) SendNail = {
 };
 #endif
 
-void () spike_touch;
+void spike_touch ();
 
-void () superspike_touch;
+void superspike_touch ();
 
-void (vector org, vector dir) launch_spike = {
+void launch_spike (vector org, vector dir) {
     local vector pvel;
     newmis = spawn ();
 
@@ -1171,7 +1171,7 @@ void (vector org, vector dir) launch_spike = {
 #endif
 };
 
-void () W_FireSuperSpikes = {
+void W_FireSuperSpikes () {
     local vector dir;
     sound (self,CHAN_WEAPON,"weapons/spike2.wav",1.000,1.000);
     if (!modetype & 2) {
@@ -1189,7 +1189,7 @@ void () W_FireSuperSpikes = {
     KickPlayer (-2.000,self);
 };
 
-void (float ox) W_FireSpikes = {
+void W_FireSpikes (float ox) {
     local vector dir;
     makevectors (self.v_angle);
     if ( ((self.ammo_nails >= 2.000) && (self.current == WEAP_SUPER_NAILGUN)) ) {
@@ -1228,7 +1228,7 @@ void (float ox) W_FireSpikes = {
 };
 //.float hit_z;
 
-void () spike_touch = {
+void spike_touch () {
 
     if ( self.voided ) {
         return ;
@@ -1263,7 +1263,7 @@ void () spike_touch = {
     dremove (self);
 };
 
-void () superspike_touch = {
+void superspike_touch () {
     local float ndmg;
 
     if ( self.voided ) {
@@ -1309,27 +1309,27 @@ void () superspike_touch = {
     dremove (self);
 };
 
-void () set_ca_none = {
+void set_ca_none () {
     self.currentammo = 0.000;
     self.weaponmodel = "";
 };
 
-void () set_ca_hook = {
+void set_ca_hook () {
     self.currentammo = 0.000;
     self.weaponmodel = "progs/v_grap.mdl";
 };
 
-void () set_ca_medi = {
+void set_ca_medi () {
     self.currentammo = self.ammo_medikit;
     self.weaponmodel = "progs/v_medi.mdl";
 };
 
-void () set_ca_span = {
+void set_ca_span () {
     self.currentammo = self.ammo_cells;
     self.weaponmodel = "progs/v_span.mdl";
 };
 
-void () set_ca_axe = {
+void set_ca_axe () {
     self.currentammo = 0.000;
     if ( (self.playerclass == 8.000) ) {
         self.weaponmodel = "progs/v_knife.mdl";
@@ -1342,21 +1342,21 @@ void () set_ca_axe = {
     }
 };
 
-void () set_ca_sr = {
+void set_ca_sr () {
     self.currentammo = self.ammo_shells;
     self.weaponmodel = "progs/v_srifle.mdl";
     self.items = (self.items | 256.000);
     self.weapon = 1.000;
 };
 
-void () set_ca_ar = {
+void set_ca_ar () {
     self.currentammo = self.ammo_shells;
     self.items = (self.items | 256.000);
     self.weaponmodel = "progs/v_srifle.mdl";
     self.weapon = 2.000;
 };
 
-void () set_ca_sg = {
+void set_ca_sg () {
     self.currentammo = self.ammo_shells;
     self.items = (self.items | 2048.000);
     if ( !(self.tfstate & 2.000) ) {
@@ -1366,7 +1366,7 @@ void () set_ca_sg = {
     self.weapon = 1.000;
 };
 
-void () set_ca_ssg = {
+void set_ca_ssg () {
     self.currentammo = self.ammo_shells;
     if ( !(self.tfstate & 2.000) ) {
         self.weaponmodel = "progs/v_shot2.mdl";
@@ -1376,21 +1376,21 @@ void () set_ca_ssg = {
     self.weapon = 2.000;
 };
 
-void () set_ca_ng = {
+void set_ca_ng () {
     self.currentammo = self.ammo_nails;
     self.weaponmodel = "progs/v_nail.mdl";
     self.items = (self.items | 512.000);
     self.weapon = 4.000;
 };
 
-void () set_ca_sng = {
+void set_ca_sng () {
     self.currentammo = self.ammo_nails;
     self.weaponmodel = "progs/v_nail2.mdl";
     self.items = (self.items | 512.000);
     self.weapon = 8.000;
 };
 
-void () set_ca_gren = {
+void set_ca_gren () {
     self.currentammo = self.ammo_rockets;
     if ( !(self.tfstate & 2.000) ) {
         self.weaponmodel = "progs/v_rock.mdl";
@@ -1398,17 +1398,17 @@ void () set_ca_gren = {
     self.items = (self.items | 1024.000);
 };
 
-void () set_ca_gl = {
+void set_ca_gl () {
     set_ca_gren();
     self.weapon = 16.000;
 };
 
-void () set_ca_pbl = {
+void set_ca_pbl () {
     set_ca_gren();
     self.weapon = 32.000;
 };
 
-void () set_ca_ft = {
+void set_ca_ft () {
     self.currentammo = self.ammo_cells;
     if (sep_models) {
         self.weaponmodel = "progs/v_flame.mdl";
@@ -1419,7 +1419,7 @@ void () set_ca_ft = {
     self.weapon = 8.000;
 };
 
-void () set_ca_rl = {
+void set_ca_rl () {
     self.currentammo = self.ammo_rockets;
     if ( !(self.tfstate & 2.000) ) {
         self.weaponmodel = "progs/v_rock2.mdl";
@@ -1428,7 +1428,7 @@ void () set_ca_rl = {
     self.weapon = 32.000;
 };
 
-void () set_ca_ic = {
+void set_ca_ic () {
     self.currentammo = self.ammo_rockets;
     if (sep_models) {
         self.weaponmodel = "progs/v_ican.mdl";
@@ -1439,28 +1439,28 @@ void () set_ca_ic = {
     self.weapon = 32.000;
 };
 
-void () set_ca_ac = {
+void set_ca_ac () {
     self.currentammo = self.ammo_shells;
     self.weaponmodel = "progs/v_asscan.mdl";
     self.items = (self.items | 256.000);
     self.weapon = 64.000;
 };
 
-void () set_ca_lg = {
+void set_ca_lg () {
     self.currentammo = self.ammo_cells;
     self.weaponmodel = "progs/v_light.mdl";
     self.items = (self.items | 2048.000);
     self.weapon = 64.000;
 };
 
-void () set_ca_pl = {
+void set_ca_pl () {
     self.currentammo = self.ammo_cells;
     self.items = (self.items | 2048.000);
     self.weaponmodel = "progs/v_plasma.mdl";
     self.weapon = 16.000;
 };
 
-void () set_ca_tr = {
+void set_ca_tr () {
     self.currentammo = self.ammo_shells;
     if (sep_models) {
         self.weaponmodel = "progs/v_tranq.mdl";
@@ -1472,7 +1472,7 @@ void () set_ca_tr = {
     self.weapon = 1.000;
 };
 
-void () set_ca_rg = {
+void set_ca_rg () {
     self.currentammo = self.ammo_nails;
     self.weaponmodel = "progs/v_rail.mdl";
     self.items = (self.items | 512.000);
@@ -1503,7 +1503,7 @@ var void() weapnum_setammo[21] = {
     set_ca_rg
 };
 
-void () W_SetCurrentAmmo = {
+void W_SetCurrentAmmo () {
     local float i, b;
     if ( ((self.health <= 0.000) || (self.current == 0.000)) ) {
         return ;
@@ -1527,7 +1527,7 @@ void () W_SetCurrentAmmo = {
     self.weaponframe = 0.000;
 };
 
-float () W_BestWeapon = {
+float W_BestWeapon () {
 	local float it;
 	it = self.carried;
 	if ( (((self.ammo_cells >= 1.000) && (it & WEAP_LIGHTNING)) && (self.waterlevel <= 1.000)) ) {
@@ -1559,7 +1559,7 @@ float () W_BestWeapon = {
 	}
 };
 
-float () W_CheckNoAmmo = {
+float W_CheckNoAmmo () {
     if ( (self.current == WEAP_MEDIKIT) ) {
         return ( 1.000 );
 
@@ -1587,53 +1587,53 @@ float () W_CheckNoAmmo = {
 
 };
 
-void () player_axe1;
+void player_axe1 ();
 
-void () player_axeb1;
+void player_axeb1 ();
 
-void () player_axec1;
+void player_axec1 ();
 
-void () player_axed1;
+void player_axed1 ();
 
-void () player_shot1;
+void player_shot1 ();
 
-void () player_nail1;
+void player_nail1 ();
 
-void () player_light1;
+void player_light1 ();
 
-void () player_rocket1;
+void player_rocket1 ();
 
-void () player_autorifle1;
+void player_autorifle1 ();
 
-void () player_assaultcannon1;
+void player_assaultcannon1 ();
 
-void () player_assaultcannonup1;
+void player_assaultcannonup1 ();
 
-void () player_assaultcannondown1;
+void player_assaultcannondown1 ();
 
-void () player_medikit1;
+void player_medikit1 ();
 
-void () player_medikitb1;
+void player_medikitb1 ();
 
-void () player_medikitc1;
+void player_medikitc1 ();
 
-void () player_medikitd1;
+void player_medikitd1 ();
 
-void () player_chain1;
+void player_chain1 ();
 
-void () player_chain2;
+void player_chain2 ();
 
-void () player_chain3;
+void player_chain3 ();
 
-void () player_chain4;
+void player_chain4 ();
 
-void () player_chain5;
+void player_chain5 ();
 
-void () attack_none = {
+void attack_none () {
     player_run();
 };
 
-void () attack_axe = {
+void attack_axe () {
     local float r;
     Attack_Finished (0.500);
     sound (self,CHAN_WEAPON,"weapons/ax1.wav",1.000,1.000);
@@ -1653,7 +1653,7 @@ void () attack_axe = {
     }
 };
 
-void () attack_medi = {
+void attack_medi () {
     local float r;
     sound (self,CHAN_WEAPON,"weapons/ax1.wav",1.000,1.000);
     r = random ();
@@ -1673,19 +1673,19 @@ void () attack_medi = {
     Attack_Finished (0.500);
 };
 
-void () attack_span = {
+void attack_span () {
     Attack_Finished (0.500);
     sound (self,CHAN_WEAPON,"weapons/ax1.wav",1.000,1.000);
     player_axe1 ();
 };
 
-void () attack_hook = {
+void attack_hook () {
     if ( !self.hook_out )
         player_chain1 ();
     Attack_Finished (0.100);
 };
 
-void () attack_sg = {
+void attack_sg () {
     if ( (CheckForReload ()) ) return ;
     player_shot1 ();
     W_FireShotgun ();
@@ -1694,7 +1694,7 @@ void () attack_sg = {
     Attack_Finished (0.500);
 };
 
-void () attack_ssg = {
+void attack_ssg () {
     if ( (CheckForReload ()) )   return ;
     player_shot1 ();
     W_FireSuperShotgun ();
@@ -1703,31 +1703,31 @@ void () attack_ssg = {
     Attack_Finished (0.700);
 };
 
-void () attack_ng = {
+void attack_ng () {
     player_nail1 ();
 };
 
-void () gren_end = {
+void gren_end () {
     self.reload_grenade_launcher = (self.reload_grenade_launcher + 1.000);
     CheckForReload ();
     Attack_Finished (0.600);
 };
 
-void () attack_gl = {
+void attack_gl () {
     if ( (CheckForReload ()) )  return ;
     player_rocket1 ();
     W_FireGrenade ();
     gren_end();
 };
 
-void () attack_pbl = {
+void attack_pbl () {
     if ( (CheckForReload ()) )  return ;
     player_rocket1 ();
     W_FirePipebomb ();
     gren_end();
 };
 
-void () attack_rl = {
+void attack_rl () {
     if ( (CheckForReload ()) )  return ;
     player_rocket1 ();
     W_FireRocket ();
@@ -1738,13 +1738,13 @@ void () attack_rl = {
     Attack_Finished (0.800);
 };
 
-void () attack_lg = {
+void attack_lg () {
     player_light1 ();
     Attack_Finished (1.100);
     sound (self,0.000,"weapons/lstart.wav",1.000,1.000);
 };
 
-void () attack_sr = {
+void attack_sr () {
     if (self.flags & 512.000) {
         player_shot1 ();
         W_FireSniperRifle ();
@@ -1752,19 +1752,19 @@ void () attack_sr = {
     }
 };
 
-void () attack_pl = {
+void attack_pl () {
     player_autorifle1 ();
     W_FirePlasma ();
     Attack_Finished (0.125);
 };
 
-void () attack_ar = {
+void attack_ar () {
     player_autorifle1 ();
     W_FireAutoRifle ();
     Attack_Finished (0.100);
 };
 
-void () attack_ac = {
+void attack_ac () {
     self.ammo_cells = (self.ammo_cells - 7.000);
     self.heat = 1.000;
     if (classtype & 2.000)
@@ -1775,7 +1775,7 @@ void () attack_ac = {
 
 };
 
-void () attack_ft = {
+void attack_ft () {
     player_shot1 ();
     W_FireFlame ();
     if ( (self.waterlevel > 2.000) ) {
@@ -1785,7 +1785,7 @@ void () attack_ft = {
     }
 };
 
-void () attack_ic = {
+void attack_ic () {
     player_rocket1 ();
     W_FireIncendiaryCannon ();
     if (classtype & 16) {
@@ -1795,14 +1795,14 @@ void () attack_ic = {
     }
 };
 
-void () attack_tr = {
+void attack_tr () {
     sound (self,CHAN_WEAPON,"weapons/dartgun.wav",1.000,1.000);
     player_shot1 ();
     W_FireTranq ();
     Attack_Finished (1.500);
 };
 
-void () attack_rg = {
+void attack_rg () {
     sound (self,CHAN_WEAPON,"weapons/railgun.wav",1.000,1.000);
     player_shot1 ();
     if (railgun)
@@ -1836,7 +1836,7 @@ var void() weapnum_attack[21] = {
     attack_rg
 };
 
-void () W_Attack = {
+void W_Attack () {
     local float b;
     local float i;
     local entity te;
@@ -1893,7 +1893,7 @@ void () W_Attack = {
     self.th_missile();
 };
 
-void () W_PrintWeaponMessage = {
+void W_PrintWeaponMessage () {
     if ( (self.current == WEAP_AXE) ) {
         if ( (self.playerclass != 8.000) ) {
             sprint (self,1.000,"Axe selected\n");
@@ -1937,7 +1937,7 @@ void () W_PrintWeaponMessage = {
     }
 };
 
-float () imp_1 = {
+float imp_1 () {
     if (self.carried & WEAP_MEDIKIT) {
         return (WEAP_MEDIKIT);
     } else if (self.carried & WEAP_SPANNER) {
@@ -1947,7 +1947,7 @@ float () imp_1 = {
     }
 };
 
-void () W_ChangeWeapon = {
+void W_ChangeWeapon () {
     local float fl, imp;
     if ( (self.tfstate & 2.000) ) {
         return ;
@@ -2064,7 +2064,7 @@ void () W_ChangeWeapon = {
     W_PrintWeaponMessage ();
 };
 
-void (float weap) SetWeapon = {
+void SetWeapon (float weap) {
     self.last = self.current;
     self.current = weap;
     if ( (self.carried & self.current) ) {
@@ -2073,7 +2073,7 @@ void (float weap) SetWeapon = {
     }
 };
 
-void () PrevWeaponCmd = {
+void PrevWeaponCmd () {
     local float i;
     if ( ((self.weaponmodel == string_null) || (self.current == 0.000)) ) {
         return ;
@@ -2104,7 +2104,7 @@ void () PrevWeaponCmd = {
     }
 };
 
-void () NextWeaponCmd = {
+void NextWeaponCmd () {
     local float i;
     if ( ((self.weaponmodel == string_null) || (self.current == 0.000)) ) {
         return ;
@@ -2142,13 +2142,13 @@ void () NextWeaponCmd = {
 // also procedures prematch and dead impulses was defined as a float to return to the weaponframe instead
 // of just returning to impulse commands. Since commands is the last lot of impulses it was not needed to return directly.
 
-float () PreMatchImpulses;
+float PreMatchImpulses ();
 
-void () CommandImpulses;
+void CommandImpulses ();
 
-float () DeadImpulses;
+float DeadImpulses ();
 
-float () CheckClanMode = {
+float CheckClanMode () {
     if (( modetype & 1) && (!cb_prematch)) {
         sprint(self, 2.000, "Clan Battle in progress....\n");
         self.impulse = 0.000;
@@ -2157,7 +2157,7 @@ float () CheckClanMode = {
     return 0;
 };
 
-void () SuperDamageSound = {
+void SuperDamageSound () {
     if ( (self.super_damage_finished > time) ) {
         if ( (self.super_sound < time) ) {
             self.super_sound = (time + 1.000);
@@ -2167,7 +2167,7 @@ void () SuperDamageSound = {
     return ;
 };
 
-void () W_WeaponFrame = {
+void W_WeaponFrame () {
     local vector tv;
     if ( !(self.tfstate & 2048.000) ) {
         if ( ((self.height > 29.000) && (self.height < self.oldheight)) ) {
@@ -2305,7 +2305,7 @@ void () W_WeaponFrame = {
     }
 };
 
-void () RemoveGrenade = {
+void RemoveGrenade () {
     local entity te;
     if ( (self.no_active_napalm_grens > 0.000) ) {
         self.no_active_napalm_grens = 0.000;

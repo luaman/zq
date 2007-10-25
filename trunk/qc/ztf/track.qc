@@ -48,7 +48,7 @@ entity(float num) NumEntity = {
     return e;
 }
 
-void () Spect_Track = {
+void Spect_Track () {
     local float num;
     num = EntityNum(self.goalentity);
     stuffcmd(self,"track #");
@@ -56,7 +56,7 @@ void () Spect_Track = {
     stuffcmd(self,"\n");
 };
 
-void () Flymode = {
+void Flymode () {
     local entity spot;
     spot = find (world,classname,"info_player_start");
     self.origin = spot.origin;
@@ -67,7 +67,7 @@ void () Flymode = {
     self.gravity = 1.000;
 };
 
-void () Toggle_Tracking = {
+void Toggle_Tracking () {
     if (self.playerclass) return;
     if (self.goalentity == world) return;
     if (!self.tracking) {
@@ -84,7 +84,7 @@ void () Toggle_Tracking = {
     }
 };
 
-void () Track_Object = {
+void Track_Object () {
     local vector v1,v2,v3;
     local entity goal;
     local float new;
@@ -166,7 +166,7 @@ void () Track_Object = {
     }
 };
 
-void () Track_Tfgoal = {
+void Track_Tfgoal () {
     local entity te;
     if (self.classname == "observer") Flymode();
     if (self.pteam != store_obs) {
@@ -192,7 +192,7 @@ void () Track_Tfgoal = {
     }
 };
 
-void () Track_Player = {
+void Track_Player () {
     local entity te;
     te = self.goalentity.nextp;
     if (( te == world)  )  {
@@ -230,7 +230,7 @@ void () Track_Player = {
     }
 };
 
-void () Track_Sentry = {
+void Track_Sentry () {
     local entity te;
     if (self.classname == "observer") Flymode();
     te = find (self.goalentity,classname,"building_sentrygun");
@@ -252,7 +252,7 @@ void () Track_Sentry = {
     }
 };
 
-void () Toggle_Autotrack = {
+void Toggle_Autotrack () {
     local entity te;
     local entity autotrack;
     local entity exception;
@@ -288,7 +288,7 @@ void () Toggle_Autotrack = {
     CenterPrint3(self,"You are tracking: ", self.goalentity.netname, ".\n");
 };
 
-void () Check_Track = {
+void Check_Track () {
     if (self.tracking) {
         if ((self.goalentity != world) ) {
             Track_Object();

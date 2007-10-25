@@ -1,13 +1,13 @@
 #ifndef Q3_ENTS
 #define Q3_ENTS
 
-void () ammo_bullets = { item_spikes();
+void ammo_bullets () { item_spikes();
                        };
 
-void () ammo_slugs = { item_cells();
+void ammo_slugs () { item_cells();
                      };
 
-void () ammo_grenades = { item_rockets();
+void ammo_grenades () { item_rockets();
                         };
 
 void() weapon_shotgun    = {weapon_supershotgun ();
@@ -27,33 +27,33 @@ void() weapon_railgun       = {
     StartItem ();
 };
 
-void () item_armor_body = {self.classname="item_armorInv";
+void item_armor_body () {self.classname="item_armorInv";
                            item_armorInv();
                           };
 
-void () item_armor_combat = {self.classname="item_armor2";
+void item_armor_combat () {self.classname="item_armor2";
                              item_armor2();
                             };
 
-void () item_quad = {self.classname="item_artifact_super_damage";
+void item_quad () {self.classname="item_artifact_super_damage";
                      item_artifact_super_damage();
                     };
 
-void () item_health_small = {
+void item_health_small () {
     self.spawnflags = self.spawnflags & 1;
     item_health ();
 };
 
-void () item_health_large = { item_health ();
+void item_health_large () { item_health ();
                             };
 
-void () item_health_mega = {
+void item_health_mega () {
     self.classname = "item_health";
     self.spawnflags = 2.000;
     item_health ();
 };
 
-void () armor_shard_touch = {
+void armor_shard_touch () {
     local float value;
     if ( (other.health <= 0.000) ) {
         return ;
@@ -92,7 +92,7 @@ void () armor_shard_touch = {
     activator = other;
 };
 
-void () item_armor_shard = {
+void item_armor_shard () {
     self.touch = armor_shard_touch;
     precache_model ("models/powerups/armor/shard.md3");
     setmodel (self,"models/powerups/armor/shard.md3");
@@ -102,34 +102,34 @@ void () item_armor_shard = {
     StartItem ();
 }
 
-void () item_invis = {self.origin_z = self.origin_z + 16;
+void item_invis () {self.origin_z = self.origin_z + 16;
                       item_artifact_invisibility ();
                      };
 
-void () team_CTF_bluespawn = {self.origin_z = self.origin_z + 8;
+void team_CTF_bluespawn () {self.origin_z = self.origin_z + 8;
                               info_player_team1();
                              };
 
-void () team_CTF_redspawn = {self.origin_z = self.origin_z + 8;
+void team_CTF_redspawn () {self.origin_z = self.origin_z + 8;
                              info_player_team2();
                             };
 
-void () team_CTF_blueflag = {item_flag_team1();
+void team_CTF_blueflag () {item_flag_team1();
                             };
 
-void () team_CTF_redflag = {item_flag_team2();
+void team_CTF_redflag () {item_flag_team2();
                            };
 //team_CTF_blueplayer
 
-void () misc_teleporter_dest = {info_teleport_destination();
+void misc_teleporter_dest () {info_teleport_destination();
                                };
 
-void () target_position = {};
+void target_position () {};
 
-void () target_location = { dremove(self);
+void target_location () { dremove(self);
                           };
 
-void () target_speaker = {
+void target_speaker () {
     if (self.spawnflags & 1) {
         if (self.noise) {
             dremove(self);
@@ -141,14 +141,14 @@ void () target_speaker = {
     }
 };
 
-void () info_player_intermission = {info_intermission();
+void info_player_intermission () {info_intermission();
                                    };
 
-void () func_static = {
+void func_static () {
     InitTrigger ();
 };
 
-void () misc_model = {
+void misc_model () {
     if (self.model == "models/mapobjects/storch/storch2.md3") {
         light_torch_small_walltorch ();
     } else if (self.model == "models/mapobjects/gratelamp/gratelamp.md3") {
@@ -161,7 +161,7 @@ void () misc_model = {
 //q3f + fe
 .string allowteams;
 
-void (string fullentdata) ConvertQ3Fent = {
+void ConvertQ3Fent (string fullentdata) {
     local float args;
     local string key;
     local string value;
@@ -184,7 +184,7 @@ void (string fullentdata) ConvertQ3Fent = {
         args = args - 2;
     }
 };
-float (string fullentdata) CheckQ3FcapPoint = {
+float CheckQ3FcapPoint (string fullentdata) {
     local float args;
     local float active;
     local string key;
@@ -218,7 +218,7 @@ float (string fullentdata) CheckQ3FcapPoint = {
     return (active);
 };
 
-void () func_goalinfo = {
+void func_goalinfo () {
     local string tmp;
     if (__fullspawndata != "") {
         dprint("MULTI MANAGER spawned!\n");
@@ -236,7 +236,7 @@ void () func_goalinfo = {
     info_tfgoal();
 };
 
-void () func_goalitem = {
+void func_goalitem () {
     local string tmp;
     if (__fullspawndata != "") {
         dprint("MULTI MANAGER spawned!\n");
@@ -254,7 +254,7 @@ void () func_goalitem = {
     item_tfgoal();
 };
 
-void () fe_spawn = {
+void fe_spawn () {
     if (self.allowteams == "blue") {
         self.team_no = 1.000;
         self.classname = "info_player_teamspawn";

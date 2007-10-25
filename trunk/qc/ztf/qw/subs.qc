@@ -1,22 +1,22 @@
 
-void (vector tdest, float tspeed, void() func) SUB_CalcMove;
+void SUB_CalcMove (vector tdest, float tspeed, void() func);
 
-void () SUB_CalcMoveDone;
+void SUB_CalcMoveDone ();
 
-void (vector destangle, float tspeed, void() func) SUB_CalcAngleMove;
+void SUB_CalcAngleMove (vector destangle, float tspeed, void() func);
 
-void (entity Goal, entity AP) DoGoalWork;
+void DoGoalWork (entity Goal, entity AP);
 
-void (entity Goal, entity AP) DoGroupWork;
+void DoGroupWork (entity Goal, entity AP);
 
-void () SUB_Null = {
+void SUB_Null () {
 };
 
-void () SUB_Remove = {
+void SUB_Remove () {
     dremove (self);
 };
 
-void () SetMovedir = {
+void SetMovedir () {
     if ( (self.angles == '0.000 -1.000 0.000') ) {
         self.movedir = '0.000 0.000 1.000';
     } else {
@@ -31,7 +31,7 @@ void () SetMovedir = {
     self.angles = '0.000 0.000 0.000';
 };
 
-void () InitTrigger = {
+void InitTrigger () {
     if ( (self.angles != '0.000 0.000 0.000') ) {
         SetMovedir ();
     }
@@ -42,7 +42,7 @@ void () InitTrigger = {
     self.model = "";
 };
 
-void (vector tdest, float tspeed, void() func) SUB_CalcMove = {
+void SUB_CalcMove (vector tdest, float tspeed, void() func) {
     local vector vdestdelta;
     local float len;
     local float traveltime;
@@ -67,7 +67,7 @@ void (vector tdest, float tspeed, void() func) SUB_CalcMove = {
     self.velocity = (vdestdelta * (1.000 / traveltime));
 };
 
-void () SUB_CalcMoveDone = {
+void SUB_CalcMoveDone () {
     setorigin (self,self.finaldest);
     self.velocity = '0.000 0.000 0.000';
     self.nextthink = -1.000;
@@ -76,7 +76,7 @@ void () SUB_CalcMoveDone = {
     }
 };
 
-void (vector destangle, float tspeed, void() func) SUB_CalcAngleMove = {
+void SUB_CalcAngleMove (vector destangle, float tspeed, void() func) {
     local vector destdelta;
     local float len;
     local float traveltime;
@@ -93,7 +93,7 @@ void (vector destangle, float tspeed, void() func) SUB_CalcAngleMove = {
     self.think = SUB_CalcAngleMoveDone;
 };
 
-void () SUB_CalcAngleMoveDone = {
+void SUB_CalcAngleMoveDone () {
     self.angles = self.finalangle;
     self.avelocity = '0.000 0.000 0.000';
     self.nextthink = -1.000;
@@ -102,13 +102,13 @@ void () SUB_CalcAngleMoveDone = {
     }
 };
 
-void () DelayThink = {
+void DelayThink () {
     activator = self.enemy;
     SUB_UseTargets ();
     dremove (self);
 };
 
-void () SUB_UseTargets = {
+void SUB_UseTargets () {
     local entity t;
     local entity stemp;
     local entity otemp;
@@ -172,7 +172,7 @@ void () SUB_UseTargets = {
     }
 };
 
-void (float normal) SUB_AttackFinished = {
+void SUB_AttackFinished (float normal) {
     self.cnt = 0.000;
     if ( (skill < 3.000) ) {
         self.attack_finished = (time + normal);

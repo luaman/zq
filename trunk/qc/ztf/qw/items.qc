@@ -83,7 +83,7 @@ void q_touch ()
     SUB_UseTargets ();
 }
 
-void (float timeleft) DropQuad = {
+void DropQuad (float timeleft) {
     local entity item;
     item = spawn ();
     item.origin = (self.origin - '0.000 0.000 24.000');
@@ -128,7 +128,7 @@ void r_touch ()
     SUB_UseTargets ();
 }
 
-void (float timeleft) DropRing = {
+void DropRing (float timeleft) {
     local entity item;
     item = spawn ();
     item.origin = (self.origin - '0.000 0.000 24.000');
@@ -179,7 +179,7 @@ void StartItem ()
     self.think = PlaceItem;
 }
 
-float (entity e, float healamount, float ignore) T_Heal = {
+float T_Heal (entity e, float healamount, float ignore) {
     if ( (modetype & 2) ) {
         e.health = 1000.000;
         return ( 0.000 );
@@ -223,9 +223,9 @@ float (entity e, float healamount, float ignore) T_Heal = {
 .float healamount;
 .float healtype;
 
-void () health_touch;
+void health_touch ();
 
-void () item_megahealth_rot;
+void item_megahealth_rot ();
 
 void item_health ()
 {
@@ -490,7 +490,7 @@ void armor_touch ()
     SUB_UseTargets ();
 }
 
-void () item_armor1 = {
+void item_armor1 () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -503,7 +503,7 @@ void () item_armor1 = {
     StartItem ();
 }
 
-void () item_armor2 = {
+void item_armor2 () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -530,11 +530,11 @@ void item_armorInv ()
     StartItem ();
 }
 
-void () item_armor3 = {
+void item_armor3 () {
     item_armorInv ();
 }
 
-void (entity p) bound_other_ammo = {
+void bound_other_ammo (entity p) {
     if ( (p.ammo_shells > TeamFortress_GetMaxAmmo (p,256.000)) ) {
         p.ammo_shells = TeamFortress_GetMaxAmmo (p,256.000);
     }
@@ -579,9 +579,9 @@ void (entity p) bound_other_ammo = {
     }
 }
 
-void () ammo_touch;
+void ammo_touch ();
 
-void (entity ritem, entity act) Respawn_Item = {
+void Respawn_Item (entity ritem, entity act) {
     local entity oldself;
     oldself = self;
     self = ritem;
@@ -600,7 +600,7 @@ void (entity ritem, entity act) Respawn_Item = {
     self = oldself;
 }
 
-float () W_BestWeapon;
+float W_BestWeapon ();
 
 void weapon_touch ()
 {
@@ -842,7 +842,7 @@ void weapon_lightning ()
     StartItem ();
 }
 
-float () GetGrenadePossibility = {
+float GetGrenadePossibility () {
     local float maxg;
     local float med;
     if ( (random () < 0.500) ) {
@@ -1154,7 +1154,7 @@ void key_setsounds ()
     }
 }
 
-void () item_key1 = {
+void item_key1 () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -1183,7 +1183,7 @@ void () item_key1 = {
     StartItem ();
 }
 
-void () item_key2 = {
+void item_key2 () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;

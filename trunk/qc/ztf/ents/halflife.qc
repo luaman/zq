@@ -8,10 +8,10 @@
 //.float renderamt;
 .string LaserTarget;
 
-void () info_target = {
+void info_target () {
 };
 
-void () item_healthkit = {
+void item_healthkit () {
     self.origin_z = self.origin_z + 40;
     item_health ();
 };
@@ -37,7 +37,7 @@ void() lightning_fire = {
     }
 };
 
-void () laser_use = {
+void laser_use () {
     if (self.spawnflags & 1.000) {
         lightning_fire();
         self.spawnflags = (self.spawnflags - 1.000);
@@ -47,12 +47,12 @@ void () laser_use = {
     }
 };
 
-void () env_laser = {
+void env_laser () {
     //dremove(self);
     self.use = laser_use;
 };
 
-void () Explode = {
+void Explode () {
     WriteByte (4.000,23.000);
     WriteByte (4.000,3.000);
     WriteCoord (4.000,self.origin_x);
@@ -61,11 +61,11 @@ void () Explode = {
     multicast (self.origin,1.000);
 };
 
-void () env_explosion = {
+void env_explosion () {
     self.use = Explode;
 };
 
-void () env_glow = {
+void env_glow () {
     dremove(self);
 };
 
@@ -73,11 +73,11 @@ void () FadeUse {
     eprint(activator);
 }
 
-void () env_fade = {
+void env_fade () {
     self.use = FadeUse;
 };
 
-void () env_beam_use = {
+void env_beam_use () {
     if ( (self.spawnflags & 1.000) ) {
         self.solid = 0.000;
         setmodel (self, string_null);
@@ -89,7 +89,7 @@ void () env_beam_use = {
     }
 };
 
-void () beam_delayed_spawn = {
+void beam_delayed_spawn () {
     local vector orgStart;
     local vector orgEnd;
     local entity te;
@@ -110,7 +110,7 @@ void () beam_delayed_spawn = {
     self.think = SUB_Null;
 };
 
-void () env_beam = {
+void env_beam () {
     self.solid = 1.000;
     self.movetype = 5.000;
     if ( self.mdl ) {
@@ -134,7 +134,7 @@ void () env_beam = {
     }
 };
 
-void () Item_Use = {
+void Item_Use () {
     if ( (self.use != SUB_Null) ) {
         if ( self.use ) {
             self.use ();
@@ -142,7 +142,7 @@ void () Item_Use = {
     }
 };
 
-void () Delayed_Use = {
+void Delayed_Use () {
     local entity t;
     local entity ste;
     t = find (world,targetname, self.target);
@@ -165,7 +165,7 @@ void () Delayed_Use = {
     //}
 };
 
-void () multi_spawn = {
+void multi_spawn () {
     local string key;
     local string value;
     local float args;
@@ -212,7 +212,7 @@ void () multi_spawn = {
     }
 };
 
-void () multi_manager = {
+void multi_manager () {
     if (__fullspawndata != "") {
         dprint("MULTI MANAGER spawned!\n");
         self.use = multi_spawn;
@@ -221,7 +221,7 @@ void () multi_manager = {
         dprint("no server support for multi_manager\n");
 };
 
-void () bomb_target_touch = {
+void bomb_target_touch () {
     if (!modetype & 4) return;
     if (other.is_detpacking) {
         TeamFortress_SetBomb(other);
@@ -229,13 +229,13 @@ void () bomb_target_touch = {
     }
 };
 
-void () SplashTouch = {
+void SplashTouch () {
     if (other.classname != "player") return;
     other.watertype = -3;
     other.waterlevel = 1;
 };
 
-void () func_water = {
+void func_water () {
     if (mapname == "openfire" || mapname == "tfc_openfire")
         dremove(self);
     self.solid = 1.000;
@@ -257,7 +257,7 @@ void () Breakaway  = {
     setmodel (self,string_null);
 };
 
-void () Breakuse = {
+void Breakuse () {
     if ( (self.spawnflags & 1.000) ) {
         Breakaway();
         self.spawnflags = (self.spawnflags - 1.000);
@@ -268,12 +268,12 @@ void () Breakuse = {
     }
 };
 
-void () Breaktouch = {
+void Breaktouch () {
     if (other.classname != "player") return;
     Breakaway();
 };
 
-void () func_breakable = {
+void func_breakable () {
     self.solid = 4.000;
     self.movetype = 7.000;
     setorigin (self, self.origin);
@@ -294,7 +294,7 @@ void () func_breakable = {
     }
 };
 
-void () func_wall_toggle = {
+void func_wall_toggle () {
     self.movetype = 7.000;
     self.solid = 4.000;
     if (self.targetname)
@@ -304,14 +304,14 @@ void () func_wall_toggle = {
     self.spawnflags = 1.000;
 };
 
-void () info_areadef = {
+void info_areadef () {
     dremove(self);
 };
 
-void () infodecal = {
+void infodecal () {
     dremove(self);
 };
 
-void () trigger_camera = {
+void trigger_camera () {
     self.classname = "info_player_start";
 };

@@ -1,5 +1,5 @@
 
-void () TeamFortress_CTF_FlagInfo = {
+void TeamFortress_CTF_FlagInfo () {
     local entity te;
     te = Finditem (1.000);
     if ( (te.goal_state == 1.000) ) {

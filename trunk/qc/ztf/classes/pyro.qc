@@ -26,8 +26,8 @@
 */
 
 //void (vector org, entity shooter) NapalmGrenadeLaunch;
-float (string id_flame) RemoveFlameFromQueue;
-entity (string type, entity p_owner) FlameSpawn = {
+float RemoveFlameFromQueue (string id_flame);
+entity FlameSpawn (string type, entity p_owner) {
     if ( (cb_prematch == 1.000) ) {
         return ( world );
     }
@@ -79,11 +79,11 @@ entity (string type, entity p_owner) FlameSpawn = {
     return ( newmis );
 };
 
-void (entity this) FlameDestroy = {
+void FlameDestroy (entity this) {
     num_world_flames = (num_world_flames - 1.000);
     dremove (this);
 };
-float (string id_flame) RemoveFlameFromQueue = {
+float RemoveFlameFromQueue (string id_flame) {
     local entity tmp;
     if ( (num_world_flames < 20.000) ) {
         dprint ("ERROR in RemoveFlameFromQueue\n");
@@ -117,18 +117,18 @@ float (string id_flame) RemoveFlameFromQueue = {
     return ( 1.000 );
 };
 
-void () Remove = {
+void Remove () {
     FlameDestroy (self);
 };
 
-void () NapalmGrenadeTouch = {
+void NapalmGrenadeTouch () {
     sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
 };
 
-void () NapalmGrenadeNetThink = {
+void NapalmGrenadeNetThink () {
     local entity head;
     local entity te;
     if ( (self.heat == 0.000) ) {
@@ -181,7 +181,7 @@ void () NapalmGrenadeNetThink = {
     }
 };
 
-void () NapalmGrenadeExplode = {
+void NapalmGrenadeExplode () {
     local entity te;
     local entity head;
     if (anti_spam) {
@@ -215,7 +215,7 @@ void () NapalmGrenadeExplode = {
 };
 /*
 
-   void () NapalmGrenadeExplode2 = {
+   void NapalmGrenadeExplode2 () {
    local float points;
    local vector org;
    local entity te;
@@ -275,9 +275,9 @@ dremove (self);
 };
  */
 
-void () OnPlayerFlame_touch;
+void OnPlayerFlame_touch ();
 
-void () FlameFollow = {
+void FlameFollow () {
     local vector dir;
     local vector vtemp;
     local vector boundsize;
@@ -351,7 +351,7 @@ void () FlameFollow = {
     }
 };
 
-void () OnPlayerFlame_touch = {
+void OnPlayerFlame_touch () {
     local entity flame;
     local vector vtemp;
     if ( (((other != world) && (other.health > 0.000)) && (other != self.enemy)) ) {
@@ -392,9 +392,9 @@ void () OnPlayerFlame_touch = {
     }
 };
 
-void () QW_Flame_ResetTouch;
+void QW_Flame_ResetTouch ();
 
-void () WorldFlame_touch = {
+void WorldFlame_touch () {
     local entity flame;
     local vector vtemp;
     deathmsg = 15.000;
@@ -442,13 +442,13 @@ void () WorldFlame_touch = {
     }
 };
 
-void () QW_Flame_ResetTouch = {
+void QW_Flame_ResetTouch () {
     self.touch = WorldFlame_touch;
     self.think = Remove;
     self.nextthink = self.heat;
 };
 
-void () Flamer_stream_touch = {
+void Flamer_stream_touch () {
     local entity flame;
     local vector vtemp;
     if ( (other.classname == "fire") ) {
@@ -517,7 +517,7 @@ void () Flamer_stream_touch = {
     }
 };
 
-void () Napalm_touch = {
+void Napalm_touch () {
     local entity flame;
     local vector vtemp;
     if ( (other.classname == "fire") ) {
@@ -585,7 +585,7 @@ void () Napalm_touch = {
     }
 };
 
-void (float num_bubbles, vector bub_origin) NewBubbles = {
+void NewBubbles (float num_bubbles, vector bub_origin) {
     local entity bubble_spawner;
     bubble_spawner = spawn ();
     setorigin (bubble_spawner,bub_origin);
@@ -602,7 +602,7 @@ void (float num_bubbles, vector bub_origin) NewBubbles = {
     return ;
 };
 
-void () W_FireFlame = {
+void W_FireFlame () {
     local entity flame;
     local float rn;
     if ( (self.waterlevel > 2.000) ) {
@@ -637,7 +637,7 @@ void () W_FireFlame = {
     setorigin (flame,((self.origin + (v_forward * 16.000)) + '0.000 0.000 16.000'));
 };
 
-void () IncendiaryRadius = {
+void IncendiaryRadius () {
     local float damg;
     damg = 52.000;
     self.volume = 1.23;
@@ -655,7 +655,7 @@ void () IncendiaryRadius = {
     dremove (self);
 };
 
-void () T_IncendiaryTouch = {
+void T_IncendiaryTouch () {
     local float damg;
     local entity head;
     if ( (other == self.owner) ) {
@@ -703,7 +703,7 @@ void () T_IncendiaryTouch = {
     }
 };
 
-void () W_FireIncendiaryCannon = {
+void W_FireIncendiaryCannon () {
     if ( (self.ammo_rockets < ic_ammo) ) {
         return ;
     }
@@ -734,7 +734,7 @@ void () W_FireIncendiaryCannon = {
     setorigin (newmis,((self.origin + (v_forward * 8.000)) + '0.000 0.000 16.000'));
 };
 
-void () TeamFortress_IncendiaryCannon = {
+void TeamFortress_IncendiaryCannon () {
     if ( !(self.carried & 16384.000) ) {
         return ;
     }
@@ -747,7 +747,7 @@ void () TeamFortress_IncendiaryCannon = {
     W_SetCurrentAmmo ();
 };
 
-void () TeamFortress_FlameThrower = {
+void TeamFortress_FlameThrower () {
     if ( !(self.carried & 4096.000) ) {
         return ;
     }

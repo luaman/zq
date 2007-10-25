@@ -25,7 +25,7 @@
 
 */
 
-void () Initialise_Teams = {
+void Initialise_Teams () {
     store_obs = spawn();
     store_obs.team = 0.000;
     store_obs.colormap = 0.000;
