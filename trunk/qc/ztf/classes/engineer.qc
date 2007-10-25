@@ -55,7 +55,7 @@ void Rail_Think () {
 };
 
 void Rail_Touch () {
-    local vector org;
+    vector org;
     if ( (other == self.owner) ) {
         return ;
     }
@@ -90,9 +90,9 @@ void Rail_Touch () {
 };
 
 void W_FireRail () {
-    local vector vec;
-    local vector org;
-    local float heattime;
+    vector vec;
+    vector org;
+    float heattime;
     if (!modetype & 2) {
         self.ammo_nails = (self.ammo_nails - 1.000);
         self.currentammo = self.ammo_nails;
@@ -126,9 +126,9 @@ void W_FireRail () {
 };
 
 void W_FireRailgun () {
-    local float num;
-    local vector org;
-    local float damg;
+    float num;
+    vector org;
+    float damg;
     if ( (self.ammo_nails < 1.000) ) {
         self.last = self.current;
         self.current = W_BestWeapon ();
@@ -167,7 +167,7 @@ void W_FireRailgun () {
 };
 
 void EMPExplode () {
-    local float expsize;
+    float expsize;
     expsize = 10.000;
     if ( (self.touch == weapon_touch) ) {
         expsize = 60.000;
@@ -216,9 +216,9 @@ void EMPGrenadeTouch () {
 };
 
 void EMPGrenadeExplode () {
-    local float expsize;
-    local entity te;
-    local entity oldself;
+    float expsize;
+    entity te;
+    entity oldself;
     if (anti_spam) {
         te = findradius (self.origin, anti_spam);
         while ( te ) {
@@ -342,7 +342,7 @@ void nobuild_touch () {
 };
 
 void TeamFortress_EngineerBuild () {
-    local entity te;
+    entity te;
     if ( !(self.flags & 512.000) ) {
         CenterPrint (self,"You can't build in the air!\n\n");
         return ;
@@ -393,10 +393,10 @@ void T_Antispam () {
 
 void AntiSpamDie ();
 float CheckArea (entity obj, entity builder) {
-    local vector src;
-    local vector end;
-    local float pos;
-    local entity te;
+    vector src;
+    vector end;
+    float pos;
+    entity te;
     pos = pointcontents (obj.origin);
     if ( ((pos == -2.000) || (pos == -6.000)) ) {
         return ( 0.000 );
@@ -449,13 +449,13 @@ float CheckArea (entity obj, entity builder) {
 };
 
 void TeamFortress_Build (float objtobuild) {
-    local float btime;
-    local entity te;
-    local vector tmp1;
-    local vector tmp2;
-    local string st;
-    local float maxblds;
-    local float nomisc;
+    float btime;
+    entity te;
+    vector tmp1;
+    vector tmp2;
+    string st;
+    float maxblds;
+    float nomisc;
     newmis = spawn ();
     makevectors (self.v_angle);
     v_forward_z = 0.000;
@@ -575,7 +575,7 @@ void TeamFortress_Build (float objtobuild) {
 };
 
 void CheckBelowBuilding (entity bld) {
-    local vector below;
+    vector below;
     below = bld.origin;
     if ( (bld.classname == "detpack") ) {
         below_z = (below_z - 8.000);
@@ -619,7 +619,7 @@ void DispenserThink () {
 };
 
 void TeamFortress_FinishedBuilding () {
-    local entity oldself;
+    entity oldself;
     if ( (self.owner.is_building != 1.000) ) {
         return ;
     }
@@ -779,7 +779,7 @@ void TeamFortress_FinishedBuilding () {
 };
 
 void T_Dispenser () {
-    local entity dist_checker;
+    entity dist_checker;
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -803,7 +803,7 @@ void T_Dispenser () {
 };
 
 void Dispenser_Explode () {
-    local float sdmg;
+    float sdmg;
     if ( (self.real_owner.has_disconnected != 1.000) ) {
         deathmsg = 39.000;
         sdmg = ((25.000 + (self.ammo_rockets * 1.500)) + self.ammo_cells);
@@ -836,8 +836,8 @@ void AntiSpamDie () {
 };
 
 void Engineer_UseDispenser (entity disp) {
-    local entity dist_checker;
-    local string st;
+    entity dist_checker;
+    string st;
     sprint (self,2.000,"Dispenser has ");
     st = ftos (disp.health);
     sprint (self,2.000,st);
@@ -869,8 +869,8 @@ void Engineer_UseDispenser (entity disp) {
 };
 
 void Engineer_UseSentryGun (entity gun) {
-    local entity dist_checker;
-    local string st;
+    entity dist_checker;
+    string st;
     sprint (self,2.000,"Level ");
     st = ftos (gun.weapon);
     sprint (self,2.000,st);
@@ -900,8 +900,8 @@ void Engineer_UseSentryGun (entity gun) {
 };
 
 void CheckSentry (entity gunhead) {
-    local vector dist;
-    local entity gunbase;
+    vector dist;
+    entity gunbase;
     gunbase = gunhead.trigger_field;
     dist = (gunbase.origin - gunhead.origin);
     if ( (vlen (dist) > 15.000) ) {
@@ -912,7 +912,7 @@ void CheckSentry (entity gunhead) {
 };
 
 void CheckDistance () {
-    local vector dist;
+    vector dist;
     if ( (self.owner.building != self.enemy) ) {
         dremove (self);
         return ;
@@ -930,9 +930,9 @@ void CheckDistance () {
 };
 
 void DestroyBuilding (entity eng, string bld) {
-    local entity te;
-    local entity oldself;
-    local float pos;
+    entity te;
+    entity oldself;
+    float pos;
     te = find (world,classname,bld);
     while ( te ) {
         if ( (te.real_owner == eng) ) {

@@ -1,5 +1,5 @@
 
-void (entity rhook) Reset_Grapple = {
+void Reset_Grapple (entity rhook) {
     sound (rhook.owner,1.000,"weapons/bounce.wav",1.000,0.000);
     rhook.owner.on_hook = 0.000;
     rhook.owner.gravity = 1.000;
@@ -10,8 +10,8 @@ void (entity rhook) Reset_Grapple = {
     rhook.nextthink = time;
 }
 
-void () Grapple_Track = {
-    //local vector org;
+void Grapple_Track () {
+    //vector org;
     if ( (!self.owner.on_hook || (self.owner.health <= 0.000)) ) {
         Reset_Grapple (self);
         return ;
@@ -21,7 +21,7 @@ void () Grapple_Track = {
     self.nextthink = (time + 0.100);
 }
 
-entity () MakeLink = {
+entity MakeLink () {
     newmis = spawn ();
     newmis.movetype = 9.000;
     newmis.solid = 0.000;
@@ -33,7 +33,7 @@ entity () MakeLink = {
     return ( newmis );
 }
 
-void () Remove_Chain = {
+void Remove_Chain () {
     self.think = SUB_Remove;
     self.nextthink = time;
     if ( self.goalentity ) {
@@ -46,8 +46,8 @@ void () Remove_Chain = {
     }
 }
 
-void () Update_Chain = {
-    local vector temp;
+void Update_Chain () {
+    vector temp;
     if ( !self.owner.hook_out ) {
         self.think = Remove_Chain;
         self.nextthink = time;
@@ -60,7 +60,7 @@ void () Update_Chain = {
     self.nextthink = (time + 0.100);
 }
 
-void () Build_Chain = {
+void Build_Chain () {
     self.goalentity = MakeLink ();
     self.goalentity.think = Update_Chain;
     self.goalentity.nextthink = (time + 0.100);
@@ -69,9 +69,9 @@ void () Build_Chain = {
     self.goalentity.goalentity.goalentity = MakeLink ();
 }
 
-float () Check_Overhead = {
-    local vector src;
-    local vector end;
+float Check_Overhead () {
+    vector src;
+    vector end;
     makevectors (self.owner.angles);
     src = (self.owner.origin - '0.000 0.000 24.000');
     end = (self.owner.origin - '0.000 0.000 24.000');
@@ -106,8 +106,8 @@ float () Check_Overhead = {
     return ( 1.000 );
 }
 
-void () Anchor_Grapple = {
-    local float test;
+void Anchor_Grapple () {
+    float test;
     if ( (other == self.owner) ) {
         return ;
     }
@@ -155,7 +155,7 @@ void () Anchor_Grapple = {
     self.touch = SUB_Null;
 }
 
-void () Throw_Grapple = {
+void Throw_Grapple () {
     if ( self.hook_out ) {
         return ;
     }
@@ -179,8 +179,8 @@ void () Throw_Grapple = {
     self.fire_held_down = 1.000;
 }
 
-void () Service_Grapple = {
-    local vector hook_dir;
+void Service_Grapple () {
+    vector hook_dir;
     if ( !self.button0 ) {
         self.fire_held_down = 0.000;
         if ( (self.current == 1.000) ) {

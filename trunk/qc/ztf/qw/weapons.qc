@@ -81,9 +81,9 @@ void W_Precache () {
 }
 
 void W_FireAxe () {
-    local vector source;
-    local vector org;
-    local vector def;
+    vector source;
+    vector org;
+    vector def;
     makevectors (self.v_angle);
     source = (self.origin + '0.000 0.000 16.000');
     traceline (source,(source + (v_forward * 64.000)),0.000,self);
@@ -126,9 +126,9 @@ void W_FireAxe () {
 }
 
 void W_FireSpanner () {
-    local vector source;
-    local vector org;
-    local entity te;
+    vector source;
+    vector org;
+    entity te;
     makevectors (self.v_angle);
     source = (self.origin + '0.000 0.000 16.000');
     traceline (source,(source + (v_forward * 64.000)),0.000,self);
@@ -183,8 +183,8 @@ void W_FireSpanner () {
 }
 
 void W_FireMedikit () {
-    local vector org;
-    local vector source;
+    vector org;
+    vector source;
     source = (self.origin + '0.000 0.000 16.000');
     traceline (source,(source + (v_forward * 64.000)),0.000,self);
     if ( (trace_fraction == 1.000) ) {
@@ -209,7 +209,7 @@ void W_FireMedikit () {
 #ifdef CSQC
 .float starttime;
 
-float(entity toplayer) SendShell = {
+float SendShell (entity toplayer) {
     WriteByte(MSG_ENTITY, CLASS_SHELL);
     WriteByte(MSG_ENTITY, self.skin);
     WriteCoord(MSG_ENTITY, self.origin_x);
@@ -272,7 +272,7 @@ void EjectShell () {
 #endif
 }
 vector wall_velocity () {
-    local vector vel;
+    vector vel;
     vel = normalize (self.velocity);
     vel = normalize (((vel + (v_up * (random () - 0.500))) + (v_right * (random () - 0.500))));
     vel = (vel + (2.000 * trace_plane_normal));
@@ -281,7 +281,7 @@ vector wall_velocity () {
 }
 
 void SpawnMeatSpray (vector org, vector vel) {
-    local entity missile;
+    entity missile;
     missile = spawn ();
     missile.owner = self;
     missile.movetype = 10.000;
@@ -308,7 +308,7 @@ void SpawnBlood (vector org, float damage) {
 }
 
 void spawn_touchblood (float damage) {
-    local vector vel;
+    vector vel;
     vel = (wall_velocity () * 0.200);
     SpawnBlood ((self.origin + (vel * 0.010)),damage);
 }
@@ -377,8 +377,8 @@ void Multi_Finish () {
 }
 
 void TraceAttack (float damage, vector dir) {
-    local vector vel;
-    local vector org;
+    vector vel;
+    vector org;
     vel = normalize (((dir + (v_up * crandom ())) + (v_right * crandom ())));
     vel = (vel + (2.000 * trace_plane_normal));
     vel = (vel * 200.000);
@@ -393,8 +393,8 @@ void TraceAttack (float damage, vector dir) {
 }
 
 void FireBullets (float shotcount, vector dir, vector spread) {
-    local vector direction;
-    local vector src;
+    vector direction;
+    vector src;
     makevectors (self.v_angle);
     src = (self.origin + (v_forward * 10.000));
     src_z = (self.absmin_z + (self.size_z * 0.700));
@@ -433,7 +433,7 @@ float SetAttribute (float cur_val, float new_val) {
 }
 
 void W_FireShotgun () {
-    local vector dir;
+    vector dir;
     sound (self,CHAN_WEAPON,"weapons/guncock.wav",1.000,1.000);
     KickPlayer (-2.000,self);
     if (!modetype & 2) {
@@ -449,7 +449,7 @@ void W_FireShotgun () {
 }
 
 void W_FireSuperShotgun () {
-    local vector dir;
+    vector dir;
     if ( (self.currentammo == 1.000) ) {
         W_FireShotgun ();
         return ;
@@ -469,8 +469,8 @@ void W_FireSuperShotgun () {
 }
 
 void FireSniperBullet (vector direction, float damage, vector spread) {
-    local vector src;
-    local vector dir;
+    vector src;
+    vector dir;
     makevectors (self.v_angle);
     src = (self.origin + (v_forward * 10.000));
     src_z = (self.absmin_z + (self.size_z * 0.700));
@@ -486,16 +486,16 @@ void FireSniperBullet (vector direction, float damage, vector spread) {
 }
 
 void W_FireSniperRifle () {
-    local vector dir;
-    local vector src;
-    local float dam_mult;
-    local float zdif;
-    local float use_this;
-    local float x;
-    local vector f;
-    local vector g;
-    local vector h;
-    local float heattime;
+    vector dir;
+    vector src;
+    float dam_mult;
+    float zdif;
+    float use_this;
+    float x;
+    vector f;
+    vector g;
+    vector h;
+    float heattime;
     sound (self,CHAN_WEAPON,"weapons/sniper.wav",1.000,1.000);
     KickPlayer (-2.000,self);
     if (!modetype & 2) {
@@ -578,7 +578,7 @@ void W_FireSniperRifle () {
 }
 
 void W_FireAutoRifle () {
-    local vector dir;
+    vector dir;
     sound (self,CHAN_WEAPON,"weapons/autorifle.wav",1.000,1.000);
     KickPlayer (-1.000,self);
     if (!modetype & 2) {
@@ -616,7 +616,7 @@ void Plasma_stream_touch () {
 }
 #ifdef CSQC
 
-float(entity toplayer) SendPlasma = {
+float SendPlasma (entity toplayer) {
     WriteByte(MSG_ENTITY, CLASS_PLASMA);
     WriteCoord(MSG_ENTITY, self.origin_x);
     WriteCoord(MSG_ENTITY, self.origin_y);
@@ -629,8 +629,8 @@ float(entity toplayer) SendPlasma = {
 #endif
 
 void W_FirePlasma () {
-    local float rn;
-    local entity plasma;
+    float rn;
+    entity plasma;
     if ( (self.waterlevel > 2.000) ) {
         makevectors (self.v_angle);
         //NewBubbles (2.000,(self.origin + (v_forward * 64.000)));
@@ -673,7 +673,7 @@ void W_FirePlasma () {
 }
 
 void W_FireAssaultCannon () {
-    local vector dir;
+    vector dir;
     KickPlayer (-4.000,self);
     if (!modetype & 2) {
         self.ammo_shells = (self.ammo_shells - 1.000);
@@ -709,7 +709,7 @@ void () s_explode5 = [ 4.000, s_explode6 ] {};
 void () s_explode6 = [ 5.000, SUB_Remove ] {};
 
 void MissileRadius () {
-    local float damg;
+    float damg;
     if ( (self.owner.classname == "building_sentrygun") ) {
         damg = 150.000;
     } else {
@@ -733,7 +733,7 @@ void MissileRadius () {
 }
 
 void T_MissileTouch () {
-    local float damg;
+    float damg;
 
     if ( self.voided ) {
         return ;
@@ -774,7 +774,7 @@ void RealisticMove () {
 }
 #ifdef CSQC
 
-float(entity toplayer) SendRocket = {
+float SendRocket (entity toplayer) {
     WriteByte(MSG_ENTITY, CLASS_ROCKET);
     WriteCoord(MSG_ENTITY, self.origin_x);
     WriteCoord(MSG_ENTITY, self.origin_y);
@@ -787,7 +787,7 @@ float(entity toplayer) SendRocket = {
 #endif
 
 void W_FireRocket () {
-    local vector pvel;
+    vector pvel;
     if (!modetype & 2) {
         self.ammo_rockets = (self.ammo_rockets - 1.000);
         self.currentammo = self.ammo_rockets;
@@ -853,9 +853,9 @@ void LightningHit (entity from, float damage) {
 }
 
 void LightningDamage (vector p1, vector p2, entity from, float damage) {
-    local entity e1;
-    local entity e2;
-    local vector f;
+    entity e1;
+    entity e2;
+    vector f;
     f = (p2 - p1);
     normalize (f);
     f_x = (0.000 - f_y);
@@ -886,8 +886,8 @@ void LightningDamage (vector p1, vector p2, entity from, float damage) {
 }
 
 void W_FireLightning () {
-    local vector org;
-    local float cells;
+    vector org;
+    float cells;
     if ( (self.ammo_cells < 1.000) ) {
         self.last = self.current;
         self.current = W_BestWeapon ();
@@ -930,8 +930,8 @@ void W_FireLightning () {
 }
 
 void ExplodeOldPipebomb (entity player) {
-    local entity old;
-    local float index;
+    entity old;
+    float index;
     if ( (player != world) ) {
         index = player.pteam.num_pipebombs;
         index = (index - (store_obs.max_pipebombs / store_obs.cnt));
@@ -957,7 +957,7 @@ void ExplodeOldPipebomb (entity player) {
 }
 
 void GrenadeExplode () {
-    local entity te;
+    entity te;
 
     if ( self.voided ) {
         return ;
@@ -1020,7 +1020,7 @@ void GrenadeTouch () {
 }
 
 void InitGrenade (entity te) {
-    local vector pvel;
+    vector pvel;
     if (!modetype & 2) {
         self.ammo_rockets = (self.ammo_rockets - 1.000);
         self.currentammo = self.ammo_rockets;
@@ -1059,7 +1059,7 @@ void InitGrenade (entity te) {
 }
 #ifdef CSQC
 
-float(entity toplayer) SendGrenade = {
+float SendGrenade (entity toplayer) {
     WriteByte(MSG_ENTITY, CLASS_GRENADE);
     WriteByte(MSG_ENTITY, self.skin);
     WriteCoord(MSG_ENTITY, self.origin_x);
@@ -1117,7 +1117,7 @@ void W_FirePipebomb () {
 }
 #ifdef CSQC
 
-float(entity toplayer) SendNail = {
+float SendNail (entity toplayer) {
     vector v;
     v = self.origin + self.velocity*(time-self.starttime);
     WriteByte(MSG_ENTITY, CLASS_NAIL);
@@ -1136,7 +1136,7 @@ void spike_touch ();
 void superspike_touch ();
 
 void launch_spike (vector org, vector dir) {
-    local vector pvel;
+    vector pvel;
     newmis = spawn ();
 
     newmis.voided = 0.000;
@@ -1172,7 +1172,7 @@ void launch_spike (vector org, vector dir) {
 }
 
 void W_FireSuperSpikes () {
-    local vector dir;
+    vector dir;
     sound (self,CHAN_WEAPON,"weapons/spike2.wav",1.000,1.000);
     if (!modetype & 2) {
         self.ammo_nails = (self.ammo_nails - 2.000);
@@ -1190,7 +1190,7 @@ void W_FireSuperSpikes () {
 }
 
 void W_FireSpikes (float ox) {
-    local vector dir;
+    vector dir;
     makevectors (self.v_angle);
     if ( ((self.ammo_nails >= 2.000) && (self.current == WEAP_SUPER_NAILGUN)) ) {
         W_FireSuperSpikes ();
@@ -1264,7 +1264,7 @@ void spike_touch () {
 }
 
 void superspike_touch () {
-    local float ndmg;
+    float ndmg;
 
     if ( self.voided ) {
         return ;
@@ -1504,7 +1504,7 @@ var void() weapnum_setammo[21] = {
 }
 
 void W_SetCurrentAmmo () {
-    local float i, b;
+    float i, b;
     if ( ((self.health <= 0.000) || (self.current == 0.000)) ) {
         return ;
     }
@@ -1528,7 +1528,7 @@ void W_SetCurrentAmmo () {
 }
 
 float W_BestWeapon () {
-	local float it;
+	float it;
 	it = self.carried;
 	if ( (((self.ammo_cells >= 1.000) && (it & WEAP_LIGHTNING)) && (self.waterlevel <= 1.000)) ) {
 		return ( WEAP_LIGHTNING );
@@ -1634,7 +1634,7 @@ void attack_none () {
 }
 
 void attack_axe () {
-    local float r;
+    float r;
     Attack_Finished (0.500);
     sound (self,CHAN_WEAPON,"weapons/ax1.wav",1.000,1.000);
     r = random ();
@@ -1654,7 +1654,7 @@ void attack_axe () {
 }
 
 void attack_medi () {
-    local float r;
+    float r;
     sound (self,CHAN_WEAPON,"weapons/ax1.wav",1.000,1.000);
     r = random ();
     if ( (r < 0.250) ) {
@@ -1837,9 +1837,9 @@ var void() weapnum_attack[21] = {
 }
 
 void W_Attack () {
-    local float b;
-    local float i;
-    local entity te;
+    float b;
+    float i;
+    entity te;
     if ( !W_CheckNoAmmo () ) {
         self.current = W_BestWeapon ();
         W_SetCurrentAmmo ();
@@ -1948,7 +1948,7 @@ float imp_1 () {
 }
 
 void W_ChangeWeapon () {
-    local float fl, imp;
+    float fl, imp;
     if ( (self.tfstate & 2.000) ) {
         return ;
     }
@@ -2074,7 +2074,7 @@ void SetWeapon (float weap) {
 }
 
 void PrevWeaponCmd () {
-    local float i;
+    float i;
     if ( ((self.weaponmodel == string_null) || (self.current == 0.000)) ) {
         return ;
     }
@@ -2105,7 +2105,7 @@ void PrevWeaponCmd () {
 }
 
 void NextWeaponCmd () {
-    local float i;
+    float i;
     if ( ((self.weaponmodel == string_null) || (self.current == 0.000)) ) {
         return ;
     }
@@ -2168,7 +2168,7 @@ void SuperDamageSound () {
 }
 
 void W_WeaponFrame () {
-    local vector tv;
+    vector tv;
     if ( !(self.tfstate & 2048.000) ) {
         if ( ((self.height > 29.000) && (self.height < self.oldheight)) ) {
             self.height = (self.height + 8.000);
@@ -2306,7 +2306,7 @@ void W_WeaponFrame () {
 }
 
 void RemoveGrenade () {
-    local entity te;
+    entity te;
     if ( (self.no_active_napalm_grens > 0.000) ) {
         self.no_active_napalm_grens = 0.000;
         self.owner.no_active_napalm_grens = (self.owner.no_active_napalm_grens - 1.000);

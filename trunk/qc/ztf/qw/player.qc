@@ -382,7 +382,7 @@ void() player_assaultcannonup2 = [ 103, player_assaultcannonup1 ] {
 }
 
 void() player_assaultcannon1 = [ 103, player_assaultcannon2 ] {
-    local string st;
+    string st;
     if ( (!(classtype & 2) && (self.speed < 150)) || ((classtype & 2) && (self.speed < 50))  ) {
         muzzleflash ();
         sound (self,CHAN_WEAPON,"weapons/asscan2.wav",1,1);
@@ -464,7 +464,7 @@ void() player_assaultcannon2 = [ 104, player_assaultcannon1 ] {
 }
 
 void() player_assaultcannondown1 = [ 103, player_assaultcannondown1 ] {
-    //local entity tcool;
+    //entity tcool;
     if (self.flags & 512) {
         if ( (self.count == 1) ) {
 
@@ -867,7 +867,7 @@ void KillPlayer ()
 }
 
 #ifdef CSQC
-float(entity ent) WriteGibs = {
+float WriteGibs (entity ent) {
     WriteByte(MSG_ENTITY, CLASS_GIB);
     WriteByte(MSG_ENTITY, self.cnt);
     WriteByte(MSG_ENTITY, -self.health);
@@ -877,7 +877,7 @@ float(entity ent) WriteGibs = {
     return 1;
 }
 
-void(float type) ThrowCSQCGibs = {
+void ThrowCSQCGibs (float type) {
     self.cnt = type;
     self.Version = self.Version+1;
     self.SendEntity = WriteGibs;

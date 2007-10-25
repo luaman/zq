@@ -2,7 +2,7 @@
 #define SOCCER
 
 void DecrementQue () {
-    local entity te;
+    entity te;
     te = player_head;
     while (( te != world)  ) {
         if (te.a_n > 1.000) te.a_n = te.a_n - 1.000;
@@ -11,8 +11,8 @@ void DecrementQue () {
 }
 
 float ping (entity Player) {
-    local string st;
-    local float fl;
+    string st;
+    float fl;
     st = infokey (Player, "ping");
     fl = stof (st);
     fl = fl / 1000.000000;
@@ -34,8 +34,8 @@ void ball_reset () {
 }
 
 void ball_spin () {
-    local float vel_x;
-    local float vel_y;
+    float vel_x;
+    float vel_y;
     if (self.velocity) {
 
         if (self.velocity_x < 0.000) {
@@ -53,7 +53,7 @@ void ball_spin () {
 }
 
 void ball_kick (vector o, float z) {
-    local vector v;
+    vector v;
     v_x = ((o_x * 1.65) + (random() * 20) );
     v_y = ((o_y * 1.65) + (random() * 20) );
     if (o_x < 0.000) {
@@ -70,7 +70,7 @@ void ball_kick (vector o, float z) {
 }
 
 void ball_fly (vector o) {
-    local vector v;
+    vector v;
     v_x = (o_x * 0.600) + (crandom() * 40);
     v_y = (o_y * 0.600) + (crandom() * 40);
     if (o_x < 0.000) {
@@ -176,15 +176,15 @@ void func_glass () {
 // RAIN CODE
 // ===============================================================
 
-void() rain_touch = {
+void rain_touch () {
 
     // remove rain when it hits ground or any other object
     dremove(self);
 }
 
-void() rain_think = {
-    local float temp1,temp2;
-    local vector rain_org, rain_vel;
+void rain_think () {
+    float temp1,temp2;
+    vector rain_org, rain_vel;
     rain_org = self.origin + '0 0 64';
     temp1 = random();
     temp2 = random();
@@ -211,7 +211,7 @@ void() rain_think = {
     self.think = rain_think;
 }
 
-void() func_rain = {
+void func_rain () {
     precache_model ("progs/s_rain.spr");
     precache_sound("ambience/rain.wav");
     ambientsound (self.origin, "ambience/rain.wav", 0.5, 3.000);

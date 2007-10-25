@@ -30,7 +30,7 @@ void MsgAdminDis () {
 }
 
 void ImpulseCommands () {
-    local float imp;
+    float imp;
     imp = self.impulse;
     if (self.last_impulse) {
         if ( imp ) {
@@ -338,7 +338,7 @@ void ImpulseCommands () {
  */
 
 void CommandImpulses () {
-    local float imp;
+    float imp;
     imp = self.impulse;
     if (imp == 41.000) {
         Toggle_Tracking();
@@ -543,7 +543,7 @@ void CommandImpulses () {
 }
 
 float PreMatchImpulses () {
-    local float imp;
+    float imp;
     imp = self.impulse;
     if ( ((imp == 9.000) && (self.current_menu != 6.000)) ) {
         self.current_menu = 6.000;
@@ -614,8 +614,8 @@ float PreMatchImpulses () {
 }
 
 float DeadImpulses () {
-    local string st;
-    local float imp;
+    string st;
+    float imp;
     imp = self.impulse;
     if ( (imp == 136.000) ) {
         TeamFortress_ShowTF ();

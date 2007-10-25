@@ -28,7 +28,7 @@
 float CheckExistence ();
 entity Findgoal (float gno);
 
-void (entity te) dremove = {
+void dremove (entity te) {
     if ( (te == world) ) {
         dprint ("***BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG***\n");
         dprint ("WORLD has nearly been removed. Don't worry\n");
@@ -42,8 +42,8 @@ void (entity te) dremove = {
     remove (te);
 }
 
-void () display_location = {
-    local string st;
+void display_location () {
+    string st;
     st = vtos (self.origin);
     sprint (self,2.000,"Location : ",st,"\n");
     st = vtos (self.angles);

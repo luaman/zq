@@ -84,7 +84,7 @@ void FlameDestroy (entity this) {
     dremove (this);
 };
 float RemoveFlameFromQueue (string id_flame) {
-    local entity tmp;
+    entity tmp;
     if ( (num_world_flames < 20.000) ) {
         dprint ("ERROR in RemoveFlameFromQueue\n");
         return 0.000 ;
@@ -129,8 +129,8 @@ void NapalmGrenadeTouch () {
 };
 
 void NapalmGrenadeNetThink () {
-    local entity head;
-    local entity te;
+    entity head;
+    entity te;
     if ( (self.heat == 0.000) ) {
         self.owner.no_active_napalm_grens = (self.owner.no_active_napalm_grens + 1.000);
         if ( (self.owner.no_active_napalm_grens > 1.000) ) {
@@ -182,8 +182,8 @@ void NapalmGrenadeNetThink () {
 };
 
 void NapalmGrenadeExplode () {
-    local entity te;
-    local entity head;
+    entity te;
+    entity head;
     if (anti_spam) {
         te = findradius (self.origin, anti_spam);
         while ( te ) {
@@ -216,10 +216,10 @@ void NapalmGrenadeExplode () {
 /*
 
    void NapalmGrenadeExplode2 () {
-   local float points;
-   local vector org;
-   local entity te;
-   local entity head;
+   float points;
+   vector org;
+   entity te;
+   entity head;
    te = findradius (self.origin,500.000);
    while ( te ) {
    te.chain2 = te.chain;
@@ -278,10 +278,10 @@ dremove (self);
 void OnPlayerFlame_touch ();
 
 void FlameFollow () {
-    local vector dir;
-    local vector vtemp;
-    local vector boundsize;
-    local float damage;
+    vector dir;
+    vector vtemp;
+    vector boundsize;
+    float damage;
     vtemp = self.enemy.absmin;
     boundsize = self.enemy.size;
     self.solid = 0.000;
@@ -352,8 +352,8 @@ void FlameFollow () {
 };
 
 void OnPlayerFlame_touch () {
-    local entity flame;
-    local vector vtemp;
+    entity flame;
+    vector vtemp;
     if ( (((other != world) && (other.health > 0.000)) && (other != self.enemy)) ) {
         if ( (cb_prematch == 1.000) ) {
             return ;
@@ -395,8 +395,8 @@ void OnPlayerFlame_touch () {
 void QW_Flame_ResetTouch ();
 
 void WorldFlame_touch () {
-    local entity flame;
-    local vector vtemp;
+    entity flame;
+    vector vtemp;
     deathmsg = 15.000;
     TF_T_Damage (other,self,self.enemy,10.000,2.000,16.000);
     self.touch = SUB_Null;
@@ -449,8 +449,8 @@ void QW_Flame_ResetTouch () {
 };
 
 void Flamer_stream_touch () {
-    local entity flame;
-    local vector vtemp;
+    entity flame;
+    vector vtemp;
     if ( (other.classname == "fire") ) {
         return ;
     }
@@ -518,8 +518,8 @@ void Flamer_stream_touch () {
 };
 
 void Napalm_touch () {
-    local entity flame;
-    local vector vtemp;
+    entity flame;
+    vector vtemp;
     if ( (other.classname == "fire") ) {
         return ;
     }
@@ -586,7 +586,7 @@ void Napalm_touch () {
 };
 
 void NewBubbles (float num_bubbles, vector bub_origin) {
-    local entity bubble_spawner;
+    entity bubble_spawner;
     bubble_spawner = spawn ();
     setorigin (bubble_spawner,bub_origin);
     bubble_spawner.movetype = 0.000;
@@ -603,8 +603,8 @@ void NewBubbles (float num_bubbles, vector bub_origin) {
 };
 
 void W_FireFlame () {
-    local entity flame;
-    local float rn;
+    entity flame;
+    float rn;
     if ( (self.waterlevel > 2.000) ) {
         makevectors (self.v_angle);
         NewBubbles (2.000,(self.origin + (v_forward * 64.000)));
@@ -638,7 +638,7 @@ void W_FireFlame () {
 };
 
 void IncendiaryRadius () {
-    local float damg;
+    float damg;
     damg = 52.000;
     self.volume = 1.23;
     //damg = 64.000;
@@ -656,8 +656,8 @@ void IncendiaryRadius () {
 };
 
 void T_IncendiaryTouch () {
-    local float damg;
-    local entity head;
+    float damg;
+    entity head;
     if ( (other == self.owner) ) {
         return ;
     }

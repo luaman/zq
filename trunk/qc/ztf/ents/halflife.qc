@@ -17,7 +17,7 @@ void item_healthkit () {
 };
 
 void() lightning_fire = {
-    local entity te;
+    entity te;
     te = find (world,targetname,self.LaserTarget);
     if (te) {
         sound (self,2.000,"misc/power.wav",1.000,1.000);
@@ -90,9 +90,9 @@ void env_beam_use () {
 };
 
 void beam_delayed_spawn () {
-    local vector orgStart;
-    local vector orgEnd;
-    local entity te;
+    vector orgStart;
+    vector orgEnd;
+    entity te;
     te = find( world, targetname,self.LightningStart);
     if (te != world) {
         //dprint("found start\n");
@@ -143,8 +143,8 @@ void Item_Use () {
 };
 
 void Delayed_Use () {
-    local entity t;
-    local entity ste;
+    entity t;
+    entity ste;
     t = find (world,targetname, self.target);
     if ( t ) {
         //bprint(2.000, t.classname, " delayed 2\n");
@@ -166,13 +166,13 @@ void Delayed_Use () {
 };
 
 void multi_spawn () {
-    local string key;
-    local string value;
-    local float args;
-    local entity t;
-    local entity timer;
-    local float stlen;
-    local string st;
+    string key;
+    string value;
+    float args;
+    entity t;
+    entity timer;
+    float stlen;
+    string st;
     tokanize(self.netname);
     args = argc() - 2;
     while (args>0) {

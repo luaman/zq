@@ -26,9 +26,9 @@
 */
 
 entity CheckDuelWinner () {
-    local float totalp;
-    local entity Player;
-    local entity winner;
+    float totalp;
+    entity Player;
+    entity winner;
     Player = player_head;
     while ( Player != world ) {
         if (Player.playerclass) {
@@ -51,13 +51,13 @@ entity CheckDuelWinner () {
 }
 
 entity CheckWinner () {
-    local float team1alive;
-    local float team2alive;
-    local float team3alive;
-    local float team4alive;
-    local float nump;
-    local float totalp;
-    local entity Player;
+    float team1alive;
+    float team2alive;
+    float team3alive;
+    float team4alive;
+    float nump;
+    float totalp;
+    entity Player;
 
     if (round_winner != world) return (round_winner);
     Player = player_head;
@@ -117,8 +117,8 @@ entity CheckWinner () {
 }
 
 void RoundOver () {
-    local string st;
-    local float fl;
+    string st;
+    float fl;
     round_over = 2;
     if (round_winner == store_obs) {
         bprint (2.000,"Round Drawn!\n");
@@ -175,8 +175,8 @@ void RoundOver () {
 }
 
 void RoundThink () {
-    local string tmp;
-    local float fl;
+    string tmp;
+    float fl;
     if (round_pause + 0.750 < time) {
         if (modetype & 32) {
             round_winner = CheckDuelWinner ();
@@ -238,9 +238,9 @@ void RoundThink () {
 }
 
 float tfs_givebomb () {
-    local float counter;
-    local entity te;
-    local float the_one;
+    float counter;
+    entity te;
+    float the_one;
     te = player_head;
     while ( te != world) {
         if ((te.pteam == pteam2) && (te.playerclass)) {
@@ -257,10 +257,10 @@ float tfs_givebomb () {
 }
 
 void RoundBegin () {
-    local entity te;
-    local entity oldself;
-    local float bomber;
-    local float counter;
+    entity te;
+    entity oldself;
+    float bomber;
+    float counter;
     te = find (world,classname,"func_breakable");
     while ( te ) {
         oldself = self;
@@ -370,9 +370,9 @@ void RoundBegin () {
 }
 
 void RoundInit () {
-    local string num;
-    local float fl;
-    local entity p;
+    string num;
+    float fl;
+    entity p;
     fl = TeamFortress_NoTeams();
     if (fl < 1.000) {
         self.nextthink = time + 2.000;
@@ -412,8 +412,8 @@ void RoundInit () {
 }
 
 void StartRound () {
-    local string st;
-    local float fl;
+    string st;
+    float fl;
     if (rounds == 1) {
         NextLevel();
         bprint (2.000,"Rounds Over!\n");

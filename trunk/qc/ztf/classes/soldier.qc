@@ -42,8 +42,8 @@ void NailGrenadeTouch () {
 };
 
 void NailGrenadeExplode () {
-    local entity te;
-    local float pos;
+    entity te;
+    float pos;
     if (anti_spam) {
         te = findradius (self.origin, anti_spam);
         while ( te ) {
@@ -95,9 +95,9 @@ void NailGrenadeNailEm () {
 };
 
 void NailGrenadeLaunchNail () {
-    local float i;
-    local float j;
-    local float cur_yaw;
+    float i;
+    float j;
+    float cur_yaw;
     i = 0.000;
     while ( (i < 3.000) ) {
         j = ((random () + 2.000) * 5.000);

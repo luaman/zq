@@ -44,11 +44,11 @@ float TeamFortress_TeamGetIllegalClasses (float tno);
 string TeamFortress_GetSkin (entity p);
 
 float TeamFortress_TeamPutPlayerInTeam () {
-    local float i;
-    local float j;
-    local float k, lowscore;
-    local float lowest;
-    local float likely_team;
+    float i;
+    float j;
+    float k, lowscore;
+    float lowest;
+    float likely_team;
     i = 1.000;
     likely_team = (random () * store_obs.cnt);
     likely_team = ceil (likely_team);
@@ -107,7 +107,7 @@ float PTeamGetMaxPlayers (float tno) {
 }
 /*
    string GetTeamName (float tno) {
-   local string st;
+   string st;
    if (self.classname == "player") {
    if (!self.playerclass) {
    return ( "observe" );
@@ -147,7 +147,7 @@ float PTeamGetMaxPlayers (float tno) {
    };
  */
 string GetPTeamName (float tno) {
-    local string st;
+    string st;
     if ( (tno == 1.000) ) {
         st = pteam1.netname;
     } else if (tno == 2.000) {
@@ -169,8 +169,8 @@ void SetTeamName (entity p) {
 }
 
 void SetTeam (entity p) {
-    local string st;
-    local float fl;
+    string st;
+    float fl;
     st = infokey (p,"bottomcolor");
     fl = stof (st);
     if ( (fl != p.pteam.colormap) ) {
@@ -183,8 +183,8 @@ void SetTeam (entity p) {
 }
 
 void TeamFortress_TeamShowMemberClasses (entity Player) {
-    local entity e;
-    local float found;
+    entity e;
+    float found;
     found = 0.000;
     e = player_head;
     while ( e ) {
@@ -207,9 +207,9 @@ void TeamFortress_TeamShowMemberClasses (entity Player) {
 }
 
 float TeamFortress_TeamSet (float tno) {
-    local string st;
-    local float tc;
-    local entity te;
+    string st;
+    float tc;
+    entity te;
     if ( (teamplay < 1.000) ) {
         sprint (self,2.000,"Teamplay is not On, so FortressTeams are inactive.\n");
         return ( 0.000 );
@@ -344,9 +344,9 @@ float TeamFortress_TeamSet (float tno) {
 /*
 
    void TeamFortress_CheckTeamCheats () {
-   local string st;
-   local string sk;
-   local float tc;
+   string st;
+   string sk;
+   float tc;
    if ( (self.immune_to_check > time) ) {
    return ;
    }
@@ -495,7 +495,7 @@ if ( ((self.team_no > 0.000) && (teamplay)) ) {
 */
 
 void TeamFortress_TeamIncreaseScore (float tno, float scoretoadd) {
-    local entity e;
+    entity e;
     if ( ((tno == 0.000) || (scoretoadd == 0.000)) ) {
         return ;
     }
@@ -564,8 +564,8 @@ float PTeamGetScoreFrags (float tno) {
 }
 
 float TeamFortress_TeamGetNoPlayers (float tno) {
-    local float size_team;
-    local entity search;
+    float size_team;
+    entity search;
     search = player_head;
     while ( (search != world) ) {
         if ( (search.pteam.team == tno) ) {
@@ -586,8 +586,8 @@ float TeamFortress_TeamGetNoPlayers (float tno) {
 }
 
 float TeamFortress_GetNoPlayersClass (float tno) {
-    local float size_team;
-    local entity search;
+    float size_team;
+    entity search;
     search = player_head;
     while ( (search != world) ) {
         if ( (search.pteam.team == tno) ) {
@@ -601,9 +601,9 @@ float TeamFortress_GetNoPlayersClass (float tno) {
 }
 
 float TeamFortress_NoActiveTeams () {
-    local float no_teams;
-    local float i;
-    local float p;
+    float no_teams;
+    float i;
+    float p;
     i = 1;
 
     while (( i <= store_obs.cnt) ) {
@@ -617,9 +617,9 @@ float TeamFortress_NoActiveTeams () {
 }
 
 float TeamFortress_NoTeams () {
-    local float no_teams;
-    local float i;
-    local float p;
+    float no_teams;
+    float i;
+    float p;
     i = 1;
 
     while (( i <= store_obs.cnt) ) {
@@ -633,8 +633,8 @@ float TeamFortress_NoTeams () {
 }
 
 float TeamFortress_GetNoPlayers () {
-    local float nump;
-    local entity search;
+    float nump;
+    entity search;
     search = player_head;
     while ( (search != world) ) {
         if ( (search.netname != string_null) ) {
@@ -646,10 +646,10 @@ float TeamFortress_GetNoPlayers () {
 }
 
 float TeamFortress_TeamGetWinner () {
-    local float i;
-    local float j;
-    local float highest;
-    local float highestteam;
+    float i;
+    float j;
+    float highest;
+    float highestteam;
     i = 1.000;
     highest = 0.000;
     highestteam = 0.000;
@@ -665,12 +665,12 @@ float TeamFortress_TeamGetWinner () {
 }
 
 float TeamFortress_TeamGetSecond () {
-    local float i;
-    local float j;
-    local float highest;
-    local float highestteam;
-    local float secondteam;
-    local float second;
+    float i;
+    float j;
+    float highest;
+    float highestteam;
+    float secondteam;
+    float second;
     i = 1.000;
     highestteam = TeamFortress_TeamGetWinner ();
     highest = PTeamGetScoreFrags (highestteam);
@@ -688,12 +688,12 @@ float TeamFortress_TeamGetSecond () {
 }
 
 float TeamFortress_CheckDraw () {
-    local float i;
-    local float j;
-    local float score;
-    local float score2;
-    local float result;
-    local float no_teams;
+    float i;
+    float j;
+    float score;
+    float score2;
+    float result;
+    float no_teams;
     i = 1.000;
     score2 = 0.000;
     result = 0.000;
@@ -717,9 +717,9 @@ float TeamFortress_CheckDraw () {
 }
 
 void TeamFortress_TeamShowScores (float all) {
-    local string st;
-    local float i;
-    local float j;
+    string st;
+    float i;
+    float j;
     i = 1.000;
     if ( (all == 2.000) ) {
         while ( (i <= store_obs.cnt) ) {
@@ -783,7 +783,7 @@ void TeamFortress_TeamShowScores (float all) {
     }
 }
 string PTeamGetColorString (float tno) {
-    local float col;
+    float col;
     col = PTeamGetColor (tno);
     if ( (col == 0.000) ) {
         return ( "White" );
@@ -828,8 +828,8 @@ string PTeamGetColorString (float tno) {
 }
 
 void TeamFortress_StatusQuery () {
-    local float ft;
-    local string st;
+    float ft;
+    string st;
     sprint (self,2.000,"players per team: ");
     ft = TeamFortress_TeamGetNoPlayers (1.000);
     st = ftos (ft);
@@ -854,7 +854,7 @@ void TeamFortress_StatusQuery () {
 }
 
 float TeamFortress_TeamGetIllegalClasses (float tno) {
-    local entity te;
+    entity te;
     te = find (world,classname,"info_tfdetect");
     if ( (te != world) ) {
         if ( (tno == 1.000) ) {
@@ -899,7 +899,7 @@ float TeamFortress_TeamIsCivilian (float tno) {
 }
 
 float CheckClassAvailable (float tno) {
-    local float pc;
+    float pc;
     pc = 1.000;
 
     while (pc < 10) {
@@ -912,10 +912,10 @@ float CheckClassAvailable (float tno) {
 }
 
 float ClassIsRestricted (float tno, float pc) {
-    local float num;
-    local float pmax;
-    local entity te;
-    local string st;
+    float num;
+    float pmax;
+    entity te;
+    string st;
     if ( (tno == 0.000) ) {
         return ( 0.000 );
     }
@@ -1005,7 +1005,7 @@ float ClassIsRestricted (float tno, float pc) {
 }
 
 void teamsprint (float tno, entity ignore, string st) {
-    local entity te;
+    entity te;
     if ( (tno == 0.000) ) {
         return ;
     }
@@ -1019,9 +1019,9 @@ void teamsprint (float tno, entity ignore, string st) {
 }
 /*
    entity TeamFortress_TopFragger () {
-   local entity te;
-   local float j;
-   local entity highest;
+   entity te;
+   float j;
+   entity highest;
    te = player_head;
    while (te != world) {
    j = te.real_frags;

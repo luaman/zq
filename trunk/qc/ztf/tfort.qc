@@ -34,7 +34,7 @@ void TeamFortress_DescribeArmor (entity Player, float Armorclass);
 void TeamFortress_Regenerate ();
 
 void UseSpecialSkill () {
-    local vector src;
+    vector src;
     self.impulse = 0.000;
     if ( (self.playerclass == 1.000) ) {
         self.impulse = 159.000;
@@ -119,8 +119,8 @@ void UseSpecialSkill () {
 }
 
 void TeamFortress_DisplayLegalClasses () {
-    local float gotone;
-    local float ill;
+    float gotone;
+    float ill;
     sprint (self,2.000,"Legal Classes for your team are:\n");
     gotone = 0.000;
     ill = TeamFortress_TeamGetIllegalClasses (self.pteam.team);
@@ -287,8 +287,8 @@ void TeamFortress_ChangeClass (float inp) {
 }
 
 void TeamFortress_Inventory () {
-    local entity tg;
-    local string ac;
+    entity tg;
+    string ac;
     if (teamplay) {
         if (!self.pteam.team ) {
             sprint (self,2.000,"You're an observer\n");
@@ -370,7 +370,7 @@ void TeamFortress_Inventory () {
 }
 
 void TeamFortress_ShowTF () {
-    local string st;
+    string st;
     if ( (toggleflags & 1.000) ) {
         sprint (self,2.000,"Class Persistence On.\n");
     } else {
@@ -407,10 +407,10 @@ void TeamFortress_ShowTF () {
 void TeamFortress_GrenadePrimed ();
 
 void TeamFortress_PrimeGrenade () {
-    local float gtype;
-    local string gs;
-    local string ptime;
-    local entity tGrenade;
+    float gtype;
+    string gs;
+    string ptime;
+    entity tGrenade;
     if (self.playerclass == 11.000) return;
     if ( (self.tfstate & 1024.000) ) {
         return ;
@@ -493,8 +493,8 @@ void TeamFortress_PrimeGrenade () {
 }
 
 void TeamFortress_GrenadePrimed () {
-    local entity user;
-    local entity oldself;
+    entity user;
+    entity oldself;
     user = self.owner;
     if ( (!(user.tfstate & 1024.000) && !user.deadflag) ) {
         self.nextthink = (time + 0.100);
@@ -638,7 +638,7 @@ void TeamFortress_ThrowGrenade () {
 }
 
 float IsLegalClass (float pc) {
-    local float bit;
+    float bit;
     if ( (pc == 1.000) ) {
         bit = 1.000;
     } else {
@@ -685,12 +685,12 @@ float IsLegalClass (float pc) {
 }
 
 void TeamFortress_SetSpeed (entity p) {
-    //local string sp;
-    local float tf;
-    local entity te;
-    local float wpdec;
-    local float armdec;
-    local float medspeed;
+    //string sp;
+    float tf;
+    entity te;
+    float wpdec;
+    float armdec;
+    float medspeed;
     if ( (p.tfstate & 65536.000) ) {
         p.velocity = '0.000 0.000 0.000';
         p.maxspeed = 0.000;
@@ -858,8 +858,8 @@ void TeamFortress_SetHealth () {
     self.health = self.max_health;
 }
 string TeamFortress_GetSkin (entity p) {
-    local float pc;
-    local string st;
+    float pc;
+    string st;
     if ( ((p.playerclass == 11.000) || (p.pteam.team == 0.000)) ) {
         return ( "base" );
     }
@@ -961,7 +961,7 @@ string TeamFortress_GetSkin (entity p) {
 }
 
 void TeamFortress_SetSkin (entity p) {
-    local string st;
+    string st;
     if ( ((p.playerclass == 8.000) && (p.undercover_skin != 0.000)) ) {
         p.skin = p.undercover_skin;
     } else {
@@ -978,10 +978,10 @@ void TeamFortress_SetSkin (entity p) {
 }
 
 void TeamFortress_SetEquipment () {
-    local entity te;
-    local string st;
-    local float kept_items;
-    local float noitems;
+    entity te;
+    string st;
+    float kept_items;
+    float noitems;
     if ( (self.classname != "player") ) {
         return ;
     }
@@ -1597,7 +1597,7 @@ string TeamFortress_GetClassName (float pc) {
 }
 
 void TeamFortress_PrintClassName (entity Viewer, float pc, float rpc) {
-    local string st;
+    string st;
     st = TeamFortress_GetClassName (pc);
     sprint (Viewer,2.000,st);
     if ( (rpc != 0.000) ) {
@@ -1607,7 +1607,7 @@ void TeamFortress_PrintClassName (entity Viewer, float pc, float rpc) {
 }
 
 void TeamFortress_RemoveTimers () {
-    local entity te;
+    entity te;
     self.leg_damage = 0.000;
     self.is_undercover = 0.000;
     self.is_building = 0.000;
@@ -1691,8 +1691,8 @@ void TeamFortress_RemoveTimers () {
 }
 
 void TeamFortress_SetupRespawn () {
-    local float restime;
-    local string db;
+    float restime;
+    string db;
     if ( (self.respawn_time > time) ) {
         return ;
     }
@@ -1975,8 +1975,8 @@ void NormalGrenadeExplode () {
 }
 
 void TeamFortress_DisplayDetectionItems () {
-    local entity Goal;
-    local entity te;
+    entity Goal;
+    entity te;
     if (!self.playerclass) return;
     Goal = find (world,classname,"info_tfdetect");
     if ( !Goal ) {
@@ -2026,8 +2026,8 @@ void TeamFortress_DisplayDetectionItems () {
 }
 
 void BioInfection_Decay () {
-    local entity te;
-    local entity Bio;
+    entity te;
+    entity Bio;
     if ( (((teamplay & 16.000) && (self.owner.pteam == self.enemy.pteam)) && (self.owner.pteam.team != 0.000)) ) {
         self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 16.000));
         dremove (self);
@@ -2076,7 +2076,7 @@ void BioInfection_Decay () {
 }
 
 void TeamFortress_Alias (string halias, float himpulse1, float himpulse2) {
-    local string imp;
+    string imp;
     stuffcmd (self,"alias ");
     stuffcmd (self,halias);
     stuffcmd (self," \"impulse ");
@@ -2091,7 +2091,7 @@ void TeamFortress_Alias (string halias, float himpulse1, float himpulse2) {
 }
 
 void TeamFortress_Regenerate () {
-    local float value;
+    float value;
     if (modetype & 256)
         value = 2;
     else
@@ -2122,13 +2122,13 @@ void TeamFortress_Regenerate () {
 }
 
 float crossproduct (vector veca, vector vecb) {
-    local float result;
+    float result;
     result = ((veca_x * vecb_y) - (vecb_x * veca_y));
     return ( result );
 }
 
 void TF_AddFrags (entity pl, float fr, float type) {
-    local entity e;
+    entity e;
     if ( ((intermission_running != 0.000) || (intermission_exittime > time)) ) {
         return ;
     }
@@ -2158,7 +2158,7 @@ void TF_AddFrags (entity pl, float fr, float type) {
 }
 
 void TeamFortress_ExecClassScript (entity p) {
-    local string st;
+    string st;
     st = infokey (p,"ec");
     if ( (st == string_null) ) {
         st = infokey (p,"exec_class");
@@ -2207,7 +2207,7 @@ void TeamFortress_ExecClassScript (entity p) {
 }
 
 void TeamFortress_ExecMapScript (entity p) {
-    local string st;
+    string st;
     st = infokey (p,"em");
     if ( (st == string_null) ) {
         st = infokey (p,"exec_map");

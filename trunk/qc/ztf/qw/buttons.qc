@@ -77,7 +77,7 @@ void button_use ()
 
 void button_touch ()
 {
-    local entity te;
+    entity te;
     if ( (cb_prematch) ) {
         return ;
     }

@@ -44,7 +44,7 @@ void TeamFortress_DetpackDisarm ();
 void TeamFortress_DetpackCountDown ();
 
 void TeamFortress_DetonatePipebombs () {
-    local entity e;
+    entity e;
     e = find (world,classname,"pipebomb");
     while ( (e != world) ) {
         if ( (e.owner == self) ) {
@@ -62,8 +62,8 @@ void MirvGrenadeTouch () {
 };
 
 void MirvGrenadeExplode () {
-    local float i;
-    local entity te;
+    float i;
+    entity te;
     if (anti_spam) {
         te = findradius (self.origin, anti_spam);
         while ( te ) {
@@ -94,9 +94,9 @@ void MirvGrenadeExplode () {
 };
 
 void MirvGrenadeLaunch (vector org, entity shooter) {
-    local float xdir;
-    local float ydir;
-    local float zdir;
+    float xdir;
+    float ydir;
+    float zdir;
     xdir = ((150.000 * random ()) - 75.000);
     ydir = ((150.000 * random ()) - 75.000);
     zdir = (40.000 * random ());
@@ -119,10 +119,10 @@ void MirvGrenadeLaunch (vector org, entity shooter) {
 };
 
 void TeamFortress_SetBomb (entity bowner) {
-    local string stimer;
-    local float timer;
-    local entity at_spot;
-    local float bombarmtime;
+    string stimer;
+    float timer;
+    entity at_spot;
+    float bombarmtime;
     bowner.is_detpacking = 0.000;
     if ((bowner.pteam.team != 2.000) ) {
         return ;
@@ -197,9 +197,9 @@ void TeamFortress_SetBomb (entity bowner) {
 };
 
 void TeamFortress_SetDetpack (float timer) {
-    local string stimer;
-    local entity te;
-    local entity at_spot;
+    string stimer;
+    entity te;
+    entity at_spot;
     if (modetype & 4) {
         self.is_detpacking = 1.000;
         return;
@@ -280,7 +280,7 @@ void TeamFortress_SetDetpack (float timer) {
 };
 
 void TeamFortress_DetpackStop () {
-    local entity detpack_timer;
+    entity detpack_timer;
     self.is_detpacking = 0.000;
     detpack_timer = find (world,netname,"detpack_timer");
     while ( ((detpack_timer.owner != self) && (detpack_timer != world)) ) {
@@ -300,9 +300,9 @@ void TeamFortress_DetpackStop () {
 };
 
 void TeamFortress_DetpackSet () {
-    local entity countd;
-    local entity oldself;
-    local string st;
+    entity countd;
+    entity oldself;
+    string st;
     self.is_detpacking = 0.000;
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 65536.000));
     TeamFortress_SetSpeed (self.owner);
@@ -362,11 +362,11 @@ void TeamFortress_DetpackSet () {
 };
 
 void TeamFortress_DetpackExplode () {
-    local float pos;
-    local float points;
-    local entity head;
-    local entity te;
-    local vector org;
+    float pos;
+    float points;
+    entity head;
+    entity te;
+    vector org;
     bprint (1.000,"FIRE IN THE HOLE!\n");
     sound (self,CHAN_WEAPON,"weapons/detpack.wav",1.000,0.000);
     pos = pointcontents (self.origin);
@@ -435,9 +435,9 @@ void TeamFortress_DetpackExplode () {
 };
 
 void TeamFortress_DetpackTouch () {
-    local entity disarm;
-    local vector src;
-    local float defusetime;
+    entity disarm;
+    vector src;
+    float defusetime;
 
     CheckBelowBuilding (self);
     if ( (other.classname != "player") ) {
@@ -530,7 +530,7 @@ void TeamFortress_DetpackDisarm () {
 };
 
 void TeamFortress_DetpackCountDown () {
-    local string cd;
+    string cd;
     cd = ftos (self.health);
     CheckBelowBuilding (self.enemy);
     self.nextthink = (time + 1.000);

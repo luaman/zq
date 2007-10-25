@@ -83,8 +83,8 @@ void CheckModel () {
 }
 
 void UpdateAbbreviations (entity Goal) {
-    local string st;
-    local float flag;
+    string st;
+    float flag;
     //dprint(Goal.classname);
     //dprint("\n");
     if ( (Goal.has_abbreviated == 0.000) ) {
@@ -268,7 +268,7 @@ void UpdateAbbreviations (entity Goal) {
 }
 
 void TF_PlaceItem () {
-    local float oldz;
+    float oldz;
     self.flags = 256.000;
     self.velocity = '0.000 0.000 0.000';
     if ( (self.goal_activation & 2048.000) ) {
@@ -315,7 +315,7 @@ void TF_StartItem () {
 }
 
 void TF_PlaceGoal () {
-    local float oldz;
+    float oldz;
     if ( (self.classname != "info_tfgoal_timer") ) {
         if ( (self.goal_activation & 1.000) ) {
             self.touch = tfgoal_touch;
@@ -535,7 +535,7 @@ void item_flag_team1 ();
 void item_flag_team2 ();
 
 void item_tfgoal () {
-    local string st;
+    string st;
     if ((CheckExistence () == 0.000)) {
         dremove (self);
         return;
@@ -601,7 +601,7 @@ void item_tfgoal () {
 }
 
 void ParseTFDetect (entity AD) {
-    local float fl;
+    float fl;
     if ( (AD.team_broadcast != string_null) ) {
         team_menu_string = AD.team_broadcast;
     }
@@ -675,8 +675,8 @@ void ParseTFDetect (entity AD) {
 }
 
 entity Finditem (float ino) {
-    local entity tg;
-    local string st;
+    entity tg;
+    string st;
     tg = find (world,classname,"item_tfgoal");
     while ( tg ) {
         if ( (tg.goal_no == ino) ) {
@@ -692,8 +692,8 @@ entity Finditem (float ino) {
 }
 
 entity Findgoal (float gno) {
-    local entity tg;
-    local string st;
+    entity tg;
+    string st;
     tg = find (world,classname,"info_tfgoal");
     while ( tg ) {
         if ( (tg.goal_no == gno) ) {
@@ -709,8 +709,8 @@ entity Findgoal (float gno) {
 }
 
 entity Findteamspawn (float gno) {
-    local entity tg;
-    local string st;
+    entity tg;
+    string st;
     tg = find (world,classname,"info_player_teamspawn");
     while ( tg ) {
         if ( (tg.goal_no == gno) ) {
@@ -769,7 +769,7 @@ void RemoveGoal (entity Goal) {
 }
 
 float IsAffectedBy (entity Goal, entity Player, entity AP) {
-    local float genv;
+    float genv;
     if ( (!Player.playerclass ) ) {
         return ( 0.000 );
     }
@@ -815,11 +815,11 @@ float IsAffectedBy (entity Goal, entity Player, entity AP) {
 }
 
 void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
-    local entity oldself;
-    local entity te;
-    local entity oldte;
-    local float captime;
-    local string st;
+    entity oldself;
+    entity te;
+    entity oldte;
+    float captime;
+    string st;
     stuffcmd (Player,"bf\n");
     if ( (Goal.classname == "item_tfgoal") ) {
         Player.item_list = (Player.item_list | Goal.item_list);
@@ -1033,12 +1033,12 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
 }
 
 void RemoveResults (entity Goal, entity Player) {
-    local entity oldself;
-    local entity te;
-    local float puinvin;
-    local float puinvis;
-    local float puquad;
-    local float purad;
+    entity oldself;
+    entity te;
+    float puinvin;
+    float puinvis;
+    float puquad;
+    float purad;
     if ( (Goal.classname == "item_tfgoal") ) {
         if ( !(Player.item_list & Goal.item_list) ) {
             return ;
@@ -1161,8 +1161,8 @@ void RemoveResults (entity Goal, entity Player) {
 }
 
 float APMeetsCriteria (entity Goal,entity AP) {
-    local float gotone;
-    local entity te;
+    float gotone;
+    entity te;
     if ((AP != world)) {
         if (Goal.team_no) {
             if ((Goal.team_no != AP.pteam.team)) {
@@ -1304,9 +1304,9 @@ void DoRespawn () {
 }
 
 float Activated (entity Goal, entity AP) {
-    local float APMet;
-    local float RevAct;
-    local float Act;
+    float APMet;
+    float RevAct;
+    float Act;
     if ( (Goal.goal_state == 1.000) ) {
         return ( 0.000 );
     }
@@ -1336,7 +1336,7 @@ float Activated (entity Goal, entity AP) {
 }
 
 void AttemptToActivate (entity Goal, entity AP, entity ActivatingGoal) {
-    local entity te;
+    entity te;
     if (cb_prematch) return;
     if (round_over) return;
     if ( Activated (Goal,AP) ) {
@@ -1361,8 +1361,8 @@ void AttemptToActivate (entity Goal, entity AP, entity ActivatingGoal) {
 }
 
 void DoGoalWork (entity Goal, entity AP) {
-    local entity te;
-    local entity RI;
+    entity te;
+    entity RI;
     if ( (Goal.activate_goal_no != 0.000) ) {
         te = Findgoal (Goal.activate_goal_no);
         if ( te ) {
@@ -1434,9 +1434,9 @@ void DoGoalWork (entity Goal, entity AP) {
 }
 
 void DoGroupWork (entity Goal, entity AP) {
-    local string st;
-    local entity tg;
-    local float allset;
+    string st;
+    entity tg;
+    float allset;
     if ( (Goal.all_active != 0.000) ) {
         if ( (Goal.last_impulse == 0.000) ) {
             dprint ("Goal ");
@@ -1535,10 +1535,10 @@ void DoGroupWork (entity Goal, entity AP) {
 }
 
 void DoItemGroupWork (entity Item, entity AP) {
-    local entity tg;
-    local entity carrier;
-    local float allcarried;
-    local string st;
+    entity tg;
+    entity carrier;
+    float allcarried;
+    string st;
     allcarried = 1.000;
     if ( (Item.distance != 0.000) ) {
         if ( (Item.pain_finished == 0.000) ) {
@@ -1599,7 +1599,7 @@ void DoItemGroupWork (entity Item, entity AP) {
 }
 
 void DoTriggerWork (entity Goal, entity AP) {
-    local entity t;
+    entity t;
     if ( Goal.killtarget ) {
         t = world;
         do {
@@ -1641,7 +1641,7 @@ void DelayedResult () {
 }
 
 void PrintSelfCTF (entity te) {
-    local float winners;
+    float winners;
     winners = floor ( random () * 8);
     if ( (winners < 1.000) ) {
         CenterPrint2 (te,"\n\n\n","You got the enemy flag!\n\nFlee!");
@@ -1671,9 +1671,9 @@ void PrintSelfCTF (entity te) {
 }
 
 void DoResults (entity Goal, entity AP, float addb) {
-    local entity te;
-    local float winners;
-    local float gotone;
+    entity te;
+    float winners;
+    float gotone;
     if (cb_prematch) return;
     if (round_over) return;
     if ( (Goal.goal_state == 1.000) ) {
@@ -1883,7 +1883,7 @@ void DoResults (entity Goal, entity AP, float addb) {
 }
 
 void tfgoal_touch () {
-    local entity te;
+    entity te;
     if ( !(self.goal_activation & 1.000) ) {
         return ;
     }
@@ -1939,7 +1939,7 @@ void tfgoal_timer_tick () {
 }
 
 void item_tfgoal_touch () {
-    local entity te;
+    entity te;
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -2088,7 +2088,7 @@ void tfgoalitem_GiveToPlayer (entity Item, entity AP, entity Goal) {
 }
 
 void ReturnItem () {
-    local entity te;
+    entity te;
     self.enemy.goal_state = 2.000;
     if (self.enemy.classname == "item_tfgoal") {
         if (((self.enemy.goal_activation & 8192.000)) || ((toggleflags & 16.000))) {
@@ -2125,13 +2125,13 @@ void ReturnItem () {
 }
 
 void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
-    local entity te;
-    local float lighton;
-    local float slowon;
-    local float key1on;
-    local float key2on;
-    local float spyoff;
-    local entity DelayReturn;
+    entity te;
+    float lighton;
+    float slowon;
+    float key1on;
+    float key2on;
+    float spyoff;
+    entity DelayReturn;
     if ( (Item == world) ) {
         objerror ("error: tfgoalitem_RemoveFromPlayer(): Item == world");
         return ;
@@ -2303,8 +2303,8 @@ void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
 }
 
 void tfgoalitem_dropthink () {
-    local float pos;
-    local string st;
+    float pos;
+    string st;
     self.movetype = 6.000;
     if ( (self.pausetime != 0.000) ) {
         pos = pointcontents (self.origin);
@@ -2359,8 +2359,8 @@ void tfgoalitem_droptouch () {
 }
 
 void tfgoalitem_drop (entity Item, float PAlive, entity P) {
-    local string st;
-    local float fl;
+    string st;
+    float fl;
     Item.origin = Item.owner.origin;
     setorigin (Item,Item.origin);
     //Item.camangle = (Item.owner.origin - '0.000 0.000 8.000');
@@ -2405,7 +2405,7 @@ void tfgoalitem_drop (entity Item, float PAlive, entity P) {
 }
 
 void tfgoalitem_remove () {
-    local entity te;
+    entity te;
     if ( (self.goal_state == 1.000) ) {
         return ;
     }
@@ -2421,7 +2421,7 @@ void tfgoalitem_remove () {
 }
 
 void tfgoalitem_checkgoalreturn (entity Item) {
-    local entity te;
+    entity te;
     if ( (Item.impulse != 0.000) ) {
         te = Findgoal (Item.impulse);
         if ( te ) {
@@ -2433,7 +2433,7 @@ void tfgoalitem_checkgoalreturn (entity Item) {
     }
 }
 string ItemStatus (entity Goal, entity Player, entity Item) {
-    local string tmp;
+    string tmp;
     if ( (Item.goal_state == 1.000) ) {
         if ( ((Goal.team_str_carried != string_null) || (Goal.non_team_str_carried != string_null)) ) {
             if ( (Player.pteam.team == Item.owned_by) ) {
@@ -2518,7 +2518,7 @@ void info_player_team1 () {
 }
 
 void item_flag_team1 () {
-    local entity dp;
+    entity dp;
     ctfmap = 1;
     UpdateAbbreviations (self);
     precache_model ("progs/flag.mdl");
@@ -2591,7 +2591,7 @@ void item_flag_team1 () {
 }
 
 void item_flag_team2 () {
-    local entity dp;
+    entity dp;
     ctfmap = 1;
     UpdateAbbreviations (self);
     precache_model ("progs/flag.mdl");
@@ -2664,9 +2664,9 @@ void item_flag_team2 () {
 }
 
 void CTF_FlagCheck () {
-    local entity te;
-    local float flagcount;
-    local float pos;
+    entity te;
+    float flagcount;
+    float pos;
     flagcount = 0.000;
     te = find (world,classname,"item_tfgoal");
     while ( (te != world) ) {
@@ -2700,9 +2700,9 @@ void CTF_FlagCheck () {
 }
 
 void ForceRespawn (entity P) {
-    local entity spot;
-    local entity te;
-    local entity oldself;
+    entity spot;
+    entity te;
+    entity oldself;
     oldself = self;
     self = P;
     spot = SelectSpawnPoint ();
@@ -2752,7 +2752,7 @@ void ForceRespawn (entity P) {
 }
 
 void DropGoalItems () {
-    local entity te;
+    entity te;
     te = find (world,classname,"item_tfgoal");
     while ( te ) {
         if ( (te.owner == self) ) {

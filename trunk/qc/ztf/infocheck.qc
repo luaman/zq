@@ -34,7 +34,7 @@
 .float real_time;
 // ILLEGALFPS]
 
-float () crandom = {
+float crandom () {
     return ( (2.000 * (random () - 0.500)) );
 }
 
@@ -44,10 +44,10 @@ void autoteam_think () {
 }
 
 void CheckFps () {
-    local float r;
-    local string tmp;
-    local float fps;
-    local float maxfps;
+    float r;
+    string tmp;
+    float fps;
+    float maxfps;
     self.fAverageFrameTime = self.fAverageFrameTime + frametime;
     self.fFrameCount = self.fFrameCount + 1;
     if ( frametime < self.fLowestFrameTime )
@@ -98,9 +98,9 @@ void CheckFps () {
 }
 
 void CheckGspeed () {
-    local float maxvel;
-    local float medvel;
-    local vector dir;
+    float maxvel;
+    float medvel;
+    vector dir;
     if (gspeed >= 1.000) {
         maxvel = self.maxspeed * gspeed;
 
@@ -119,7 +119,7 @@ void CheckGspeed () {
 }
 
 void PowerupsOff () {
-    local entity te;
+    entity te;
     te = find (world, deathtype, "pow");
     while (te) {
         if ((te.classname == "item_artifact_invulnerability")) {
@@ -138,7 +138,7 @@ void PowerupsOff () {
 }
 
 void PowerupsOn () {
-    local entity te;
+    entity te;
     te = find (world, deathtype, "pow");
     while (te) {
         if ((te.classname == "item_artifact_invulnerability")) {
@@ -162,10 +162,10 @@ void PowerupsOn () {
 float bspversion;
 
 void Calibrate_Level () {
-    local string st;
-    local float fl;
-    local float autoteam_time;
-    local entity ent;
+    string st;
+    float fl;
+    float autoteam_time;
+    entity ent;
     st = infokey (world,"max_pipebombs");
     fl = (stof (st)) + 1.000;
 
@@ -476,8 +476,8 @@ void CheckUse () {
 }
 
 void fadetoblack () {
-    local float fade;
-    local string x;
+    float fade;
+    string x;
     fade = 10;
     while ( fade <= 250 ) {
         x = ftos( fade );
@@ -489,9 +489,9 @@ void fadetoblack () {
     stuffcmd( self, "v_cshift 0 0 0 255\n" );
 }
 
-void() fadefromblack = {
-    local float fade;
-    local string x;
+void fadefromblack () {
+    float fade;
+    string x;
     fade = 250;
     while ( fade >= 0 ) {
         x = ftos( fade );

@@ -43,9 +43,9 @@ void InitTrigger () {
 }
 
 void SUB_CalcMove (vector tdest, float tspeed, void() func) {
-    local vector vdestdelta;
-    local float len;
-    local float traveltime;
+    vector vdestdelta;
+    float len;
+    float traveltime;
     if ( !tspeed ) {
         objerror ("No speed is defined!");
     }
@@ -77,9 +77,9 @@ void SUB_CalcMoveDone () {
 }
 
 void SUB_CalcAngleMove (vector destangle, float tspeed, void() func) {
-    local vector destdelta;
-    local float len;
-    local float traveltime;
+    vector destdelta;
+    float len;
+    float traveltime;
     if ( !tspeed ) {
         objerror ("No speed is defined!");
     }
@@ -109,10 +109,10 @@ void DelayThink () {
 }
 
 void SUB_UseTargets () {
-    local entity t;
-    local entity stemp;
-    local entity otemp;
-    local entity act;
+    entity t;
+    entity stemp;
+    entity otemp;
+    entity act;
     if ( self.dont_do_triggerwork ) {
         self.dont_do_triggerwork = 0.000;
         return ;

@@ -311,7 +311,7 @@ void Menu_Team_Input (float inp) {
 }
 
 void Menu_Class () {
-    local entity AD;
+    entity AD;
     AD = find (world,classname,"info_tfdetect");
     if ( AD ) {
         if ( (self.pteam.team == 1.000) ) {
@@ -358,8 +358,8 @@ void Menu_Class () {
 }
 
 void Menu_Class_Input (float inp) {
-    local float new_class;
-    local string st;
+    float new_class;
+    string st;
     if ( ((inp > 11.000) || (inp < 1.000)) ) {
         return ;
     }
@@ -468,8 +468,8 @@ void Menu_Input (float inp) {
 }
 
 void Menu_Intro () {
-    local string st1;
-    local string st2;
+    string st1;
+    string st2;
     st1 = infokey (world,"motd1");
     if ( (st1 != string_null) ) {
         st2 = infokey (world,"motd2");
@@ -646,8 +646,8 @@ void Menu_ClassHelp_Input (float inp) {
 }
 
 void Menu_Speech_Sound (float type, float num) {
-    local string snd;
-    local entity te;
+    string snd;
+    entity te;
     if (type == 1) {
         if (num == 1) {
             snd = "speech/def_incflag1.wav";
@@ -1013,10 +1013,10 @@ void Menu_Spy_Color_Input (float inp) {
 }
 
 void Menu_Engineer () {
-    local string s_action;
-    local string s_disp;
-    local string s_sentry;
-    local string s_nothing;
+    string s_action;
+    string s_disp;
+    string s_sentry;
+    string s_nothing;
     s_action = "Action:                           \n";
     s_nothing = "—‘ Nothing                      \n\n";
     if ( self.has_dispenser ) {
@@ -1084,8 +1084,8 @@ void Menu_EngineerFix_Dispenser () {
 float SetAttribute (float cur_ammo, float new_ammo);
 
 void Menu_EngineerFix_Dispenser_Input (float inp) {
-    local float metalcost;
-    local float am;
+    float metalcost;
+    float am;
     if ( ((self.classname != "player") || (self.building == world)) ) {
         return ;
     }
@@ -1185,9 +1185,9 @@ void Menu_EngineerFix_SentryGun () {
 }
 
 void Menu_EngineerFix_SentryGun_Input (float inp) {
-    local float am;
-    local float metalcost;
-    local string st;
+    float am;
+    float metalcost;
+    string st;
     if ( (self.building.real_owner.has_sentry == 0.000) ) {
         return ;
     }
@@ -1297,8 +1297,8 @@ void Menu_Dispenser () {
 }
 
 void Menu_Dispenser_Input (float inp) {
-    local float am;
-    local float empty;
+    float am;
+    float empty;
     empty = 0.000;
     if ( (inp == 1.000) ) {
         if ( ((((self.building.ammo_shells == 0.000) && (self.building.ammo_nails == 0.000)) && (self.building.ammo_rockets == 0.000)) && (self.building.ammo_cells == 0.000)) ) {

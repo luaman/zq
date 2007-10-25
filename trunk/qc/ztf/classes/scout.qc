@@ -105,8 +105,8 @@ void CaltropScatterThink () {
 };
 
 void ScatterCaltrops () {
-    local float num;
-    local entity e;
+    float num;
+    entity e;
     num = 6.000;
     while ( (num > 0.000) ) {
         e = spawn ();
@@ -145,7 +145,7 @@ void ConcussionGrenadeTouch () {
 };
 
 void ConcussionGrenadeExplode () {
-    local entity te;
+    entity te;
     if (anti_spam) {
         te = findradius (self.origin, anti_spam);
         while ( te ) {
@@ -169,9 +169,9 @@ void ConcussionGrenadeExplode () {
 };
 
 void ConcussionGrenadeTimer () {
-    local string st;
-    local vector src;
-    local float pos, stumble, fl;
+    string st;
+    vector src;
+    float pos, stumble, fl;
     if ( (self.owner.invincible_finished > time) ) {
         sprint (self.owner,2.000,"Your head feels better now.\n");
         dremove (self);
@@ -251,15 +251,15 @@ void ConcussionGrenadeTimer () {
 };
 
 void TeamFortress_Scan () {
-    local entity list;
-    local float scancost;
-    local float scanrange;
-    local float scen;
-    local float scfr;
-    local float num;
-    local vector lightningvec;
-    local float enemy_detected;
-    local float any_detected;
+    entity list;
+    float scancost;
+    float scanrange;
+    float scen;
+    float scfr;
+    float num;
+    vector lightningvec;
+    float enemy_detected;
+    float any_detected;
     scanrange = 100.000;
     self.owner.impulse = 0.000;
     self.owner.last_impulse = 0.000;
@@ -384,7 +384,7 @@ void TeamFortress_Scan () {
 };
 
 void ScannerSwitch () {
-    local entity te;
+    entity te;
     if ( (self.ScannerOn != 1.000) ) {
         te = spawn ();
         te.nextthink = (time + 2.000);
@@ -408,13 +408,13 @@ void ScannerSwitch () {
 };
 
 void T_RadiusBounce (entity inflictor, entity attacker, float bounce, entity ignore) {
-    local float points;
-    local float accel;
-    local float length;
-    local float nextloop;
-    local entity head;
-    local entity te;
-    local vector org;
+    float points;
+    float accel;
+    float length;
+    float nextloop;
+    entity head;
+    entity te;
+    vector org;
     head = findradius (inflictor.origin,(bounce + 40.000));
     while ( head ) {
         head.chain2 = head.chain;
@@ -466,8 +466,8 @@ void T_RadiusBounce (entity inflictor, entity attacker, float bounce, entity ign
     }
 };
 entity T_RadiusScan (entity scanner, float scanrange, float enemies, float friends) {
-    local entity head;
-    local float rangedist;
+    entity head;
+    float rangedist;
     rangedist = 0.000;
     head = world;
     while ( (rangedist <= scanrange) ) {
@@ -538,8 +538,8 @@ void FlashGrenadeTouch () {
 };
 
 void FlashTimer () {
-    local entity te;
-    local string st;
+    entity te;
+    string st;
     te = self.owner;
     te.FlashTime = (te.FlashTime - 0.6);
     if ((te.FlashTime < 3)) {
@@ -562,9 +562,9 @@ void FlashTimer () {
 };
 
 void FlashGrenadeExplode () {
-    local entity te;
-    local string st;
-    local float dist;
+    entity te;
+    string st;
+    float dist;
     if (anti_spam) {
         te = findradius (self.origin, anti_spam);
         while ( te ) {

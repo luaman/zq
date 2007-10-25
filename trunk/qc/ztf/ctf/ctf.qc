@@ -1,6 +1,6 @@
 
 void TeamFortress_CTF_FlagInfo () {
-    local entity te;
+    entity te;
     te = Finditem (1.000);
     if ( (te.goal_state == 1.000) ) {
         if ( (self == te.owner) ) {

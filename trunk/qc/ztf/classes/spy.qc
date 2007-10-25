@@ -388,10 +388,10 @@ void () spy_upaxe9 = [ 41.000, spy_upaxe9 ] {
 }
 
 void TeamFortress_SpyFeignDeath (float issilent) {
-    local float i;
-    local float j;
-    local entity at_spot;
-    local entity te;
+    float i;
+    float j;
+    entity at_spot;
+    entity te;
     if ( self.is_feigning ) {
         at_spot = findradius (self.origin,40.000);
         i = 1.000;
@@ -562,7 +562,7 @@ void TeamFortress_SpyGoUndercover () {
 }
 
 void TeamFortress_SpyCalcName (entity spy) {
-    local entity te;
+    entity te;
     spy.undercover_name = string_null;
     if ( (spy.undercover_team != 0.000) ) {
         te = player_head;
@@ -589,8 +589,8 @@ void TeamFortress_SpyCalcName (entity spy) {
 }
 
 void TeamFortress_SpyUndercoverThink () {
-    local float tc;
-    local string st;
+    float tc;
+    string st;
     if ( (self.owner.playerclass != 8.000) ) {
         return ;
     }
@@ -626,7 +626,7 @@ void TeamFortress_SpyUndercoverThink () {
 }
 
 void TeamFortress_SpyChangeSkin (float pclass) {
-    local entity te;
+    entity te;
     if ( (pclass == 8.000) ) {
         sprint (self,2.000,"Skin reset.\n");
         self.undercover_skin = 0.000;
@@ -648,7 +648,7 @@ void TeamFortress_SpyChangeSkin (float pclass) {
 }
 
 void TeamFortress_SpyChangeColor (float teamno) {
-    local entity te;
+    entity te;
     if ( (teamno == self.pteam.team) ) {
         sprint (self,2.000,"Colors reset.\n");
         //self.immune_to_check = (time + 2.000);
@@ -680,8 +680,8 @@ void GasGrenadeTouch () {
 }
 
 void GasGrenadeExplode () {
-    local entity te;
-    local float pos;
+    entity te;
+    float pos;
     if (anti_spam) {
         te = findradius (self.origin, anti_spam);
         while ( te ) {
@@ -729,7 +729,7 @@ void GasGrenadeExplode () {
 }
 
 void viewsmoke (entity te) {
-    local string st,st2;
+    string st,st2;
     st = ftos (135 + (crandom() * 80));
     st2 = ftos (100 + (crandom() * 50));
     stuffcmd (te, "v_cshift ");
@@ -744,10 +744,10 @@ void viewsmoke (entity te) {
 }
 
 void HallucinationTimer () {
-    local entity te;
-    local float tmpx;
-    local float tmpy;
-    local float halltype;
+    entity te;
+    float tmpx;
+    float tmpy;
+    float halltype;
     self.health = (self.health - 3.000);
     if ( (self.owner.playerclass == 5.000) ) {
         self.health = (self.health - 2.000);
@@ -904,7 +904,7 @@ void TranquiliserTimer () {
 }
 
 void T_TranqDartTouch () {
-    local entity timer;
+    entity timer;
     if ( (other.solid == 1.000) ) {
         return ;
     }
@@ -968,9 +968,9 @@ void Spy_RemoveDisguise (entity spy) {
 }
 
 void GasGrenadeMakeGas () {
-    local float nextloop;
-    local entity te;
-    local entity timer;
+    float nextloop;
+    entity te;
+    entity timer;
     if ( (self.heat == 0.000) ) {
         self.owner.no_active_gas_grens = (self.owner.no_active_gas_grens + 1.000);
         if ( (self.owner.no_active_gas_grens > 0.000) ) {

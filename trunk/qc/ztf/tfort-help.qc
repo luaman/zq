@@ -26,7 +26,7 @@
 */
 
 void TeamFortress_MOTD () {
-    local string ya;
+    string ya;
     if ( (self.motd <= 20.000) ) {
         self.motd = (self.motd + 1.000);
         return ;
@@ -200,7 +200,7 @@ void TeamFortress_MOTD () {
 }
 
 void TeamFortress_HelpMap () {
-    local entity te;
+    entity te;
     te = find (world,classname,"info_tfdetect");
     if ( te ) {
         if ( (te.non_team_broadcast != string_null) ) {

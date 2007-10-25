@@ -13,7 +13,7 @@ float Activated (entity Goal, entity AP);
 
 float CanDamage (entity targ, entity inflictor)
 {
-    local vector offset;
+    vector offset;
     traceline (inflictor.origin,targ.origin,0.000,self);
     if (trace_ent.classname == "func_glass") {
         return  (0.000);
@@ -104,7 +104,7 @@ float CanDamage (entity targ, entity inflictor)
 
 void Killed (entity targ, entity attacker)
 {
-    local entity oself;
+    entity oself;
     oself = self;
     self = targ;
     if ( (self.health < -99.000) ) {
@@ -129,13 +129,13 @@ void Killed (entity targ, entity attacker)
 
 void TF_T_Damage (entity targ, entity inflictor, entity attacker, float damage, float T_flags, float T_AttackType)
 {
-    local vector dir;
-    local entity oldself;
-    local entity te;
-    local float save;
-    local float take;
-    local float no_damage;
-    local float moment;
+    vector dir;
+    entity oldself;
+    entity te;
+    float save;
+    float take;
+    float no_damage;
+    float moment;
     if ( (targ.takedamage == 0.000) ) {
         return ;
     }
@@ -371,9 +371,9 @@ void TF_T_Damage (entity targ, entity inflictor, entity attacker, float damage, 
 
 void T_RadiusDamage (entity inflictor, entity attacker, float damage, entity ignore)
 {
-    local float points;
-    local entity head;
-    local vector org;
+    float points;
+    entity head;
+    vector org;
     head = findradius (inflictor.origin,(damage + 40.000));
     while ( head ) {
         if ( (head != ignore) ) {
@@ -409,8 +409,8 @@ void T_RadiusDamage (entity inflictor, entity attacker, float damage, entity ign
 
 void T_BeamDamage (entity attacker, float damage)
 {
-    local float points;
-    local entity head;
+    float points;
+    entity head;
     head = findradius (attacker.origin,(damage + 40.000));
     while ( head ) {
         if ( head.takedamage ) {
