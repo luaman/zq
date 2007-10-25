@@ -28,9 +28,9 @@
 void TeamFortress_ThrowGrenade ();
 
 void AutoRecord () {
-    local float i;
-    local string tmp;
-    local entity t;
+    float i;
+    string tmp;
+    entity t;
     if (infokey(world, "serverdemo") != string_null) {
         return;
     }
@@ -83,8 +83,8 @@ void AutoRecord () {
 }
 
 void MatchOvertime () {
-    local float f2;
-    local string st;
+    float f2;
+    string st;
     if (cease_fire ) {
         self.nextthink = time + 1.000;
         return ;
@@ -112,7 +112,7 @@ void MatchOvertime () {
 }
 
 void PlaySoundAll (string soundname) {
-    local entity te;
+    entity te;
     te = player_head;
     while (te) {
         stuffcmd(te,"play ");
@@ -138,8 +138,8 @@ void ball_reset ();
 void TeamFortress_AmmoboxThink ();
 
 void ResetAll () {
-    local entity te;
-    local entity oldself;
+    entity te;
+    entity oldself;
     te = player_head;
     while (te) {
         oldself = self;
@@ -223,7 +223,7 @@ void ResetAll () {
 }
 
 void MatchThink () {
-    local string tmp;
+    string tmp;
     if ( self.cnt == -1 ) {
         return;
     }
@@ -295,11 +295,11 @@ void MatchThink () {
 }
 
 void StartMatch () {
-    local string st;
-    local float f1,f2;
-    local entity te;
-    local entity oldself;
-    local entity gren;
+    string st;
+    float f1,f2;
+    entity te;
+    entity oldself;
+    entity gren;
     lightstyle (0.000,"m");
     bprint (2.000,"MATCH BEGINS NOW\n");
     store_obs.count = store_obs.count + 1.000;
@@ -390,9 +390,9 @@ void StartMatch () {
 }
 
 void PreMatch_Think () {
-    local entity p;
-    local string num;
-    local float fl;
+    entity p;
+    string num;
+    float fl;
     self.cnt2 = self.cnt2 - 1;
     if (self.cnt2 == 1)  {
         p = player_head;
@@ -479,9 +479,9 @@ void PreMatch_Think () {
 void() StartTimer =
 // Spawns the timer and starts the countdown.
 {
-    local entity timer, p;
-    local float f1;
-    local string tmp;
+    entity timer, p;
+    float f1;
+    string tmp;
     if (!(modetype & 1)) {
         if (self != world) {
             sprint(self, 2.000, "Clan mode off....\n");
@@ -557,9 +557,9 @@ void() StartTimer =
     timer.think = PreMatch_Think;
 }
 
-void() StopTimer = {
+void StopTimer () {
     // Whenever a countdown or match stops, remove the timer and reset everything.
-    local entity t;
+    entity t;
     if (infokey(world, "serverdemo") != string_null) {
         localcmd("cancel\n");
     }
@@ -584,9 +584,9 @@ void() StopTimer = {
     }
 }
 
-void() PlayerBreak = {
-    local float f1, f2;
-    local string tmp;
+void PlayerBreak () {
+    float f1, f2;
+    string tmp;
     if (intermission_running) return;
     if (self.classname != "player") {
         return;

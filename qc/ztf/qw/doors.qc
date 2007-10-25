@@ -207,7 +207,7 @@ void door_use ()
 
 void door_trigger_touch ()
 {
-    local entity te;
+    entity te;
 
     if (freeze == 1)
         return;
@@ -644,7 +644,7 @@ const float DOOR_REVERSE      = 2;
 const float DOOR_X_AXIS       = 64;
 const float DOOR_Y_AXIS       = 128;
 
-void() func_door_rotating = {
+void func_door_rotating () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;

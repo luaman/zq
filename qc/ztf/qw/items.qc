@@ -59,7 +59,7 @@ void noclass ()
 
 void q_touch ()
 {
-    local string s;
+    string s;
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -84,7 +84,7 @@ void q_touch ()
 }
 
 void DropQuad (float timeleft) {
-    local entity item;
+    entity item;
     item = spawn ();
     item.origin = (self.origin - '0.000 0.000 24.000');
     item.velocity_z = 300.000;
@@ -104,7 +104,7 @@ void DropQuad (float timeleft) {
 
 void r_touch ()
 {
-    local string s;
+    string s;
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -129,7 +129,7 @@ void r_touch ()
 }
 
 void DropRing (float timeleft) {
-    local entity item;
+    entity item;
     item = spawn ();
     item.origin = (self.origin - '0.000 0.000 24.000');
     item.velocity_z = 300.000;
@@ -149,7 +149,7 @@ void DropRing (float timeleft) {
 
 void PlaceItem ()
 {
-    local vector oldorg;
+    vector oldorg;
     self.mdl = self.model;
     self.flags = 256.000;
     self.solid = 1.000;
@@ -264,8 +264,8 @@ void item_health ()
 
 void health_touch ()
 {
-    local float medi;
-    local string s;
+    float medi;
+    string s;
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -373,11 +373,11 @@ void item_megahealth_rot ()
 
 void armor_touch ()
 {
-    local float type;
-    local float value;
-    local float bit;
-    local string s;
-    local entity oldself;
+    float type;
+    float value;
+    float bit;
+    string s;
+    entity oldself;
     if ( (other.health <= 0.000) ) {
         return ;
     }
@@ -582,7 +582,7 @@ void bound_other_ammo (entity p) {
 void ammo_touch ();
 
 void Respawn_Item (entity ritem, entity act) {
-    local entity oldself;
+    entity oldself;
     oldself = self;
     self = ritem;
     self.model = string_null;
@@ -604,12 +604,12 @@ float W_BestWeapon ();
 
 void weapon_touch ()
 {
-    local float hadammo;
-    local float new;
-    local float old;
-    local float item;
-    local entity stemp;
-    local float leave;
+    float hadammo;
+    float new;
+    float old;
+    float item;
+    entity stemp;
+    float leave;
     if ( !(other.flags & 8.000) ) {
         return ;
     }
@@ -843,8 +843,8 @@ void weapon_lightning ()
 }
 
 float GetGrenadePossibility () {
-    local float maxg;
-    local float med;
+    float maxg;
+    float med;
     if ( (random () < 0.500) ) {
         return ( 0.000 );
     }
@@ -887,10 +887,10 @@ float GetGrenadePossibility () {
 
 void ammo_touch ()
 {
-    local entity stemp;
-    local float best;
-    local float gotgren;
-    local float gotbox;
+    entity stemp;
+    float best;
+    float gotgren;
+    float gotbox;
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -1424,10 +1424,10 @@ void item_artifact_super_damage ()
 
 void BackpackTouch ()
 {
-    local string s;
-    local float best;
-    local entity stemp;
-    local float b_switch, new, old;
+    string s;
+    float best;
+    entity stemp;
+    float b_switch, new, old;
     if ( (other.classname != "player") ) {
         return ;
     }

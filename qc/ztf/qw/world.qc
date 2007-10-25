@@ -114,8 +114,8 @@ void main () {
 entity lastspawn;
 
 void worldspawn () {
-    local string st;
-    local float fl;
+    string st;
+    float fl;
     lastspawn = world;
     store_obs.cnt = 0.000;
     bspversion = cvar("halflifebsp");

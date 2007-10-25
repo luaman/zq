@@ -93,11 +93,11 @@ void DropKey () {
     }
 }
 
-float () DoorShouldOpen = {
-    local entity ptr;
-    local float plyrcount;
-    local entity plyr1;
-    local entity plyr2;
+float DoorShouldOpen () {
+    entity ptr;
+    float plyrcount;
+    entity plyr1;
+    entity plyr2;
     if ( (coop != 2.000) ) {
         return ( 1.000 );
     }

@@ -29,7 +29,7 @@ void SniperSight_Update ();
 /*
 
    void RemoveFreeze () {
-   local entity te;
+   entity te;
    te = player_head
    while ( te != world )
    {
@@ -84,7 +84,7 @@ void FreezePlayer () {
 };
 
 void FreezeGrenadeExplode () {
-    local entity te;
+    entity te;
     if (anti_spam) {
         te = findradius (self.origin, anti_spam);
         while ( te ) {
@@ -159,7 +159,7 @@ void TeamFortress_SniperWeapon () {
 };
 
 void TF_zoom (float zoom_level) {
-    local string zl;
+    string zl;
     if ( (self.tfstate & 4096.000) ) {
         return ;
     }
@@ -186,7 +186,7 @@ void () MakeDot4 = [ 3.000, MakeDot4 ] {
 };
 
 void SniperSight_Update () {
-    local vector org;
+    vector org;
     if (!(self.owner.tfstate & 2048.000)) {
         self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2048.000));
         TeamFortress_SetSpeed (self.owner);
@@ -208,7 +208,7 @@ void SniperSight_Update () {
 };
 
 void SniperSight_Create () {
-    local entity sight;
+    entity sight;
     if ( (self.has_disconnected == 1.000) ) {
         return ;
     }

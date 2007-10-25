@@ -33,7 +33,7 @@ void SpectatorThink ();
 
 void SpectatorConnect () {
 
-    local string st;
+    string st;
     self.classname = "observer";
     self.flags = 8.000;
 
@@ -63,7 +63,7 @@ void SpectatorConnect () {
 }
 
 void SpectatorDisconnect () {
-    local entity te;
+    entity te;
     if (spec_head == self)
         spec_head = self.nexts;
     else {

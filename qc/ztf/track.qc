@@ -25,9 +25,9 @@
 
 */
 
-float(entity ent) EntityNum = {
-    local float num = 1;
-    local entity e;
+float EntityNum (entity ent) {
+    float num = 1;
+    entity e;
 
     e = world;
     do {
@@ -36,9 +36,9 @@ float(entity ent) EntityNum = {
     } while (e != ent);
     return num;
 }
-entity(float num) NumEntity = {
-    local float fl;
-    local entity e;
+entity NumEntity (float num) {
+    float fl;
+    entity e;
     fl  = 1;
     e = world;
     do {
@@ -49,7 +49,7 @@ entity(float num) NumEntity = {
 }
 
 void Spect_Track () {
-    local float num;
+    float num;
     num = EntityNum(self.goalentity);
     stuffcmd(self,"track #");
     stuffcmd(self,ftos(num));
@@ -57,7 +57,7 @@ void Spect_Track () {
 }
 
 void Flymode () {
-    local entity spot;
+    entity spot;
     spot = find (world,classname,"info_player_start");
     self.origin = spot.origin;
     if (self.classname == "observer" && self.tracking == 2.000) {
@@ -85,9 +85,9 @@ void Toggle_Tracking () {
 }
 
 void Track_Object () {
-    local vector v1,v2,v3;
-    local entity goal;
-    local float new;
+    vector v1,v2,v3;
+    entity goal;
+    float new;
     if ( (self.goalentity != world) ) {
         if (self.goalentity.solid == 0.000) {
             goal = self.goalentity.owner;
@@ -167,7 +167,7 @@ void Track_Object () {
 }
 
 void Track_Tfgoal () {
-    local entity te;
+    entity te;
     if (self.classname == "observer") Flymode();
     if (self.pteam != store_obs) {
         while (te != world) {
@@ -193,7 +193,7 @@ void Track_Tfgoal () {
 }
 
 void Track_Player () {
-    local entity te;
+    entity te;
     te = self.goalentity.nextp;
     if (( te == world)  )  {
         te = player_head;
@@ -231,7 +231,7 @@ void Track_Player () {
 }
 
 void Track_Sentry () {
-    local entity te;
+    entity te;
     if (self.classname == "observer") Flymode();
     te = find (self.goalentity,classname,"building_sentrygun");
     if ( (te == world) ) {
@@ -253,10 +253,10 @@ void Track_Sentry () {
 }
 
 void Toggle_Autotrack () {
-    local entity te;
-    local entity autotrack;
-    local entity exception;
-    local float pfrags;
+    entity te;
+    entity autotrack;
+    entity exception;
+    float pfrags;
     self.a_c = 1.000;
     if (store_obs.goalentity == world) {
         te = player_head;

@@ -151,7 +151,7 @@ void W_Reload_rocket_launcher () {
 }
 
 float CheckForReload () {
-    local entity tWeapon;
+    entity tWeapon;
     //   if (practice) return (0.000);
 
     if ( (self.playerclass != 11.000) ) {
@@ -246,7 +246,7 @@ float CheckForReload () {
 }
 
 void TeamFortress_ReloadCurrentWeapon () {
-    local entity tWeapon;
+    entity tWeapon;
     if ( (self.tfstate & 2.000) )  return ;
     if ( (self.playerclass == 11.000) ) return;
 

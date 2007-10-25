@@ -32,8 +32,8 @@ void TeamFortress_AmmoboxThink () {
 }
 
 void RemoveboldAmmobox () {
-    local entity box, bold;
-    local float rt;
+    entity box, bold;
+    float rt;
     rt = time + 999;
     box = find (world, classname, "ammobox");
     while (box != world) {
@@ -51,8 +51,8 @@ void RemoveboldAmmobox () {
 }
 
 void TeamFortress_AmmoboxTouch () {
-    local float took;
-    local string quantity;
+    float took;
+    string quantity;
     took = 1;
     if ((other == self.enemy) && (time < (self.health + 2)))
         return ;
@@ -407,7 +407,7 @@ void TeamFortress_Discard () {
 }
 
 void Ammobox_Explode () {
-    local float expsize;
+    float expsize;
     expsize = self.ammo_shells * 0.75 + self.ammo_rockets * 1.5 + self.ammo_cells * 1.5;
     if (expsize > 0) {
         self.solid = 0;

@@ -54,7 +54,7 @@ void item_health_mega () {
 };
 
 void armor_shard_touch () {
-    local float value;
+    float value;
     if ( (other.health <= 0.000) ) {
         return ;
     }
@@ -162,9 +162,9 @@ void misc_model () {
 .string allowteams;
 
 void ConvertQ3Fent (string fullentdata) {
-    local float args;
-    local string key;
-    local string value;
+    float args;
+    string key;
+    string value;
 
     tokanize(fullentdata);
     args = argc() - 2;
@@ -185,10 +185,10 @@ void ConvertQ3Fent (string fullentdata) {
     }
 };
 float CheckQ3FcapPoint (string fullentdata) {
-    local float args;
-    local float active;
-    local string key;
-    local string value;
+    float args;
+    float active;
+    string key;
+    string value;
 
     tokanize(fullentdata);
     args = argc() - 2;
@@ -219,7 +219,7 @@ float CheckQ3FcapPoint (string fullentdata) {
 };
 
 void func_goalinfo () {
-    local string tmp;
+    string tmp;
     if (__fullspawndata != "") {
         dprint("MULTI MANAGER spawned!\n");
         tmp = __fullspawndata;
@@ -237,7 +237,7 @@ void func_goalinfo () {
 };
 
 void func_goalitem () {
-    local string tmp;
+    string tmp;
     if (__fullspawndata != "") {
         dprint("MULTI MANAGER spawned!\n");
         tmp = __fullspawndata;

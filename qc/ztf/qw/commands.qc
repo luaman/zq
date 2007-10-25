@@ -1,6 +1,6 @@
 
-float(float num, float digits) spaceoutnum = {
-    local float d;
+float spaceoutnum (float num, float digits) {
+    float d;
     d = digits - 1;
     if (num < 0) {
         d = d - 1;
@@ -15,7 +15,7 @@ float(float num, float digits) spaceoutnum = {
     return (d);
 }
 string spacestring (float num) {
-    local string st;
+    string st;
     st = strcat (st, " ");
     while (num > 0)  {
         st = strcat (st, " ");
@@ -24,19 +24,19 @@ string spacestring (float num) {
     return (st);
 }
 string spacefornum (float num, float digits) {
-    local string st;
-    local float fl;
+    string st;
+    float fl;
     fl = spaceoutnum(num, digits);
     st = spacestring(fl);
     return (st);
 }
 
-void() ShowVersion = {
+void ShowVersion () {
     sprint(self, 2,"\n\nΤθισ ισ Oz Team Fortress φεςσιοξ 1.77a         βω Mercury\n\nΣπεγιαμ τθαξψ το Omicron, γςεατοςσ οζ Kombat Teams 2.21\nΑξδ ξοξε οτθες τθεξ τθε γςεατοςσ οζ Team Fortress\n\n\nPlease visit θττπΊ――οϊτζ®ρυαλεχοςμδ®ξυ― for more info. \n\n\n");
 }
 //Special thanx to Rawhide, Omicron, creators of Kombat Teams 2.21\nAnd none other then the creators of Team Fortress\n\n Also thank you to all those test dummies.\n Including the fatty fv nitemare.\n And the annoying sh33p b0y bliP :)\n\nPlease visit ρχτζ®αυσζοςτςεσσ®γον for more info. \n");
 
-void() Commands = {
+void Commands () {
     sprint(self, 2, "αβουτ...... about the Oztf Mod\nνοδστατυσ.. current settings\nβςεαλ...... vote matchend/stop countdown\nεμεγτ...... toggle admin election\nωεσ........ vote yes for current elective\nξο......... change vote\n");
     if (self.is_admin == 1) {
         if (stof(infokey (world,"adminlevel")) > 0) {
@@ -72,7 +72,7 @@ void() Commands = {
 }
 
 void ShowScores () {
-    local string st;
+    string st;
     stuffcmd(self, "scores ");
     stuffcmd(self, self.netname);
     stuffcmd(self, " ");
@@ -108,10 +108,10 @@ void ShowScores () {
     sprint(self, 2.000, "\n\n");
 }
 
-void(entity print) ShowFrags = {
-    local entity te;
-    local float eff;
-    local string st, sp;
+void ShowFrags (entity print) {
+    entity te;
+    float eff;
+    string st, sp;
     sprint(print, 2.000, "\n\n");
     sprint(print, 2.000, " Frags  TK's  Deaths  Eff  Name\n");
     sprint(print, 2.000, "\n");
@@ -213,9 +213,9 @@ void(entity print) ShowFrags = {
     sprint(print, 2.000, "\n\n");
 }
 
-void() ShowTouches = {
-    local entity te;
-    local string st, sp;
+void ShowTouches () {
+    entity te;
+    string st, sp;
     sprint(self, 2.000, "\n Flag running:\n");
     sprint(self, 2.000, "\n");
     sprint(self, 2.000, " Touched  Captured  Dropped  Name\n");
@@ -298,11 +298,11 @@ void() ShowTouches = {
     sprint(self, 2.000, "\n\n");
 }
 
-void() ShowFps = {
-    local entity te;
-    local float r;
-    local float fps;
-    local string st;
+void ShowFps () {
+    entity te;
+    float r;
+    float fps;
+    string st;
     sprint(self, 2.000, "\n\n");
     sprint(self, 2.000, " Fps    Speed       Name\n");
     sprint(self, 2.000, "\n");
@@ -321,8 +321,8 @@ void() ShowFps = {
 }
 
 void ShowSpeed () {
-    local float dist;
-    local string st;
+    float dist;
+    string st;
     if (self.speed) {
         st = ftos(rint(self.speed));
         sprint(self, 2.000, " Current Speed:  ", st,"\n");
@@ -340,9 +340,9 @@ void ShowSpeed () {
     }
 }
 
-void() ShowStats = {
-    local string st;
-    local float eff;
+void ShowStats () {
+    string st;
+    float eff;
     sprint(self, 2.000, "\n\n");
     sprint(self, 2.000, " ", self.netname, "'s Statistics\n");
     sprint(self, 2.000, "\n");
@@ -395,9 +395,9 @@ void() ShowStats = {
     sprint(self, 2.000, "\n\n");
 }
 
-void() ModStatus = {
-    local string tmp;
-    local float f1;
+void ModStatus () {
+    string tmp;
+    float f1;
     tmp = ftos(teamplay);
     sprint(self, 2, "Τεανπμαω        ", tmp, "\n");
     tmp = ftos((timelimit/60));
@@ -503,10 +503,10 @@ void() ModStatus = {
     }
 }
 
-void(float t) TimeDown = {
-    local string tmp;
-    local float lowest;
-    local float tl;
+void TimeDown (float t) {
+    string tmp;
+    float lowest;
+    float tl;
     lowest = 0.000;
     tl = (timelimit / 60) - t;
     if (tl < 1.000) {
@@ -519,10 +519,10 @@ void(float t) TimeDown = {
     cvar_set("timelimit", tmp);
 }
 
-void(float t) TimeUp = {
-    local string tmp;
-    local float highest;
-    local float tl;
+void TimeUp (float t) {
+    string tmp;
+    float highest;
+    float tl;
     highest = 70.000;
     tl = (timelimit / 60) + t;
     if (tl > highest) {
@@ -535,10 +535,10 @@ void(float t) TimeUp = {
     cvar_set("timelimit", tmp);
 }
 
-void(float t, string option) MiscTimeDown = {
-    local string tmp;
-    local float lowest;
-    local float ml;
+void MiscTimeDown (float t, string option) {
+    string tmp;
+    float lowest;
+    float ml;
     lowest = 0.000;
     tmp = infokey (world, option);
     ml = stof(tmp) - t;
@@ -557,10 +557,10 @@ void(float t, string option) MiscTimeDown = {
     localcmd("\n");
 }
 
-void(float t, string option) MiscTimeUp = {
-    local string tmp;
-    local float highest;
-    local float ml;
+void MiscTimeUp (float t, string option) {
+    string tmp;
+    float highest;
+    float ml;
     highest = 15.000;
     tmp = infokey (world, option);
     ml = stof(tmp);
@@ -583,7 +583,7 @@ void(float t, string option) MiscTimeUp = {
 }
 
 void FragLimit (float add) {
-    local string tmp;
+    string tmp;
     fraglimit = fraglimit + add;
     if (fraglimit < 0) fraglimit = 0;
     tmp = ftos(fraglimit);
@@ -592,9 +592,9 @@ void FragLimit (float add) {
     cvar_set("fraglimit", tmp);
 }
 
-void() ChangeTP = {
-    local string tmp;
-    local string desc;
+void ChangeTP () {
+    string tmp;
+    string desc;
     if (teamplay ==  1.000) {
         teamplay = 11.000;
         tmp = "11?TeamFortress";
@@ -639,15 +639,15 @@ void() ChangeTP = {
     bprint(2.000,  desc);
 }
 
-void() RestartMap = {
+void RestartMap () {
     localcmd("map ");
     localcmd(mapname);
     localcmd("\n");
 }
 
-void() ToggleSpecTalk = {
-    local float tmp, tmp2;
-    local string s1;
+void ToggleSpecTalk () {
+    float tmp, tmp2;
+    string s1;
     tmp2 = stof(infokey(world, "fpd"));
     tmp2 = tmp2 - (tmp2 & 64);
     tmp = stof(infokey(world, "spectalk"));
@@ -669,8 +669,8 @@ void() ToggleSpecTalk = {
     return;
 }
 
-void() GroundSpeed = {
-    local string desc;
+void GroundSpeed () {
+    string desc;
     if (gspeed == 0.000) {
         gspeed = 1.000;
         desc = "Maximum Ground Speed set to maximum Class Speed.";
@@ -696,7 +696,7 @@ void() GroundSpeed = {
     localcmd("\n");
 }
 
-void() ToggleFreeze = {
+void ToggleFreeze () {
     bprint(2, " ");
     if (( freeze == 0 )) {
         freeze = 1;
@@ -710,7 +710,7 @@ void() ToggleFreeze = {
 }
 
 void Toggle_Misc (string option) {
-    local string st;
+    string st;
     st = infokey (world, option);
     if ( (st == "on") ) {
         st = "off";
@@ -764,7 +764,7 @@ void Toggle_Misc (string option) {
    bprint(2, "Highlander mode set to ", st, " \n");
  */
 
-void() ResetSetup = {
+void ResetSetup () {
     cvar_set("teamplay", "21?TeamFortress");
     cvar_set("timelimit", "40");
     localcmd("localinfo sentrytype 0\n");
@@ -781,7 +781,7 @@ void() ResetSetup = {
 }
 
 void ClanSetup () {
-    local float f1;
+    float f1;
     cvar_set("teamplay", "1?TeamFortress");
     cvar_set("timelimit", "35");
     localcmd("localinfo prematch 5\n");
@@ -806,7 +806,7 @@ void ClanSetup () {
     RestartMap();
 }
 
-void() Toggle_Quad = {
+void Toggle_Quad () {
     cvar_set("teamplay", "1?TeamFortress");
     cvar_set("timelimit", "10");
     localcmd("localinfo prematch 3\n");
@@ -821,8 +821,8 @@ void() Toggle_Quad = {
 }
 /*
 
-   void() Toggle_Observer = {
-   local string st;
+   void Toggle_Observer () {
+   string st;
    if (( !allow_ttrack )) {
    allow_ttrack = 1;
    st = "on";
@@ -837,9 +837,9 @@ void() Toggle_Quad = {
    };
  */
 
-void() TogglePointing = {
-    local float f1, f2;
-    local string s1;
+void TogglePointing () {
+    float f1, f2;
+    string s1;
     bprint(2, " ");
     f1 = stof(infokey(world, "fpd"));
     f2 = f1 - (f1 & 128);
@@ -860,9 +860,9 @@ void() TogglePointing = {
     }
 }
 
-void() ToggleEnemy = {
-    local float f1, f2;
-    local string s1;
+void ToggleEnemy () {
+    float f1, f2;
+    string s1;
     bprint(2, " ");
     f1 = stof(infokey(world, "fpd"));
     f2 = f1 - (f1 & 32);
@@ -883,9 +883,9 @@ void() ToggleEnemy = {
     }
 }
 
-void() ToggleFbskins = {
-    local float f1, f2;
-    local string s1;
+void ToggleFbskins () {
+    float f1, f2;
+    string s1;
     bprint(2, " ");
     f1 = stof(infokey(world, "fpd"));
     f2 = f1 - (f1 & 256);
@@ -908,9 +908,9 @@ void() ToggleFbskins = {
     }
 }
 
-void() Toggle_Frj = {
-    local float f1, f2;
-    local string s1;
+void Toggle_Frj () {
+    float f1, f2;
+    string s1;
     bprint(2, " ");
     f1 = stof(infokey(world, "fpd"));
     f2 = f1 - (f1 & 32768);
@@ -932,8 +932,8 @@ void() Toggle_Frj = {
 }
 
 void Toggle_flag_emu () {
-    local string st;
-    local float fl;
+    string st;
+    float fl;
     fl = stof(infokey (world,"flag_model"));
     if (fl == 0.000) {
         fl = 1.000;
@@ -956,7 +956,7 @@ void Toggle_flag_emu () {
 }
 
 void Toggle_Grenpacks () {
-    local string st;
+    string st;
     st = infokey (world,"grenpacks");
     bprint(2, " ");
     if ( (st == "on") ) {
@@ -974,7 +974,7 @@ void Toggle_Grenpacks () {
 }
 
 void Toggle_SentryType () {
-    local string st;
+    string st;
     bprint(2, " ");
     if (sgtype == 0) {
         sgtype = 1;
@@ -990,8 +990,8 @@ void Toggle_SentryType () {
 }
 
 void Toggle_SentryFire () {
-    local string st;
-    local float fl;
+    string st;
+    float fl;
     if (!sgtype) {
         if (self == world) {
             dprint("Sentry type is currently Normal. Change sentry type to enable firing mode.\n");
@@ -1020,7 +1020,7 @@ void Toggle_SentryFire () {
 }
 
 void Toggle_PipeDelay () {
-    local string st;
+    string st;
     st = infokey (world,"pipedelay");
     if ( (st == "off") ) {
         st = "on";
@@ -1037,7 +1037,7 @@ void Toggle_PipeDelay () {
 }
 
 void Toggle_Detpack () {
-    local string st;
+    string st;
     st = infokey (world,"soliddet");
     if ( (st == "on") ) {
         st = "off";
@@ -1086,8 +1086,8 @@ void Give_Pent () {
     self.invincible_finished = (time + 300.000);
 }
 
-void() AbortMiscVote = {
-    local entity p;
+void AbortMiscVote () {
+    entity p;
     v_misc = 0;
     p = player_head;
     while (p) {
@@ -1101,16 +1101,16 @@ void() AbortMiscVote = {
     if (p.classname == "miscvote") dremove(p);
 }
 
-void() MiscVoteThink = {
+void MiscVoteThink () {
     bprint(2, "The voting has timed out.\nVote aborted\n");
     self.nextthink = -1;
     AbortMiscVote();
 }
 
 void AgreeMiscVote () {
-    local float f1, f2;
-    local string tmp;
-    local entity mv;
+    float f1, f2;
+    string tmp;
+    entity mv;
     if (intermission_running) return;
     if (self.classname != "player") return;
     if (self.allowvote > time) {
@@ -1154,9 +1154,9 @@ void AgreeMiscVote () {
 }
 
 void PlayerMiscVote (string Misc, float type) {
-    local float f1, f2;
-    local string st, tmp;
-    local entity miscvote;
+    float f1, f2;
+    string st, tmp;
+    entity miscvote;
     if (intermission_running) return;
     if (self.classname != "player")
         return;
@@ -1237,14 +1237,14 @@ void PlayerMiscVote (string Misc, float type) {
 }
 
 void RandomPickup () {
-    local entity te;
-    local float fl;
-    local float fl2;
-    local float fl3;
-    local float fl4;
-    local float fl5;
-    local float fl6;
-    local float fl7;
+    entity te;
+    float fl;
+    float fl2;
+    float fl3;
+    float fl4;
+    float fl5;
+    float fl6;
+    float fl7;
     if (!cb_prematch) {
         return;
     }
@@ -1293,7 +1293,7 @@ void RandomPickup () {
 }
 
 void TogglePowerups () {
-    local string st;
+    string st;
     bprint (2.000000, " Ποχεςυπσ ");
     if (powerups) {
         bprint (2.000000, "disabled\n");
@@ -1312,7 +1312,7 @@ void TogglePowerups () {
 }
 
 void ToggleSpecMsgs () {
-    local string st;
+    string st;
     if (!spec_msgs) {
         spec_msgs = 1;
         st = "on";
@@ -1340,7 +1340,7 @@ void pause_player (entity p) {
 }
 
 void PausePlayers () {
-    local entity te;
+    entity te;
     te = find (world, classname, "player");
     while (te) {
         if ((te.netname != "")) {

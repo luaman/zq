@@ -36,7 +36,7 @@ float anglemod (float v) {
 }
 
 float FacingIdeal () {
-    local	float	delta;
+    float	delta;
 
     delta = anglemod(self.angles_y - self.ideal_yaw);
     if (delta > 60 && delta < 290)
@@ -45,9 +45,9 @@ float FacingIdeal () {
 }
 
 float range (entity targ) {
-    local vector spot1;
-    local vector spot2;
-    local float r;
+    vector spot1;
+    vector spot2;
+    float r;
     spot1 = (self.origin + self.view_ofs);
     spot2 = (targ.origin + targ.view_ofs);
     r = vlen ((spot1 - spot2));
@@ -63,8 +63,8 @@ float range (entity targ) {
     return ( 3.000 );
 }
 vector visible (entity targ) {
-    local vector spot1;
-    local vector spot2;
+    vector spot1;
+    vector spot2;
     spot1 = (self.origin + self.view_ofs);
     spot2 = (targ.origin + targ.view_ofs);
     traceline (spot1,spot2,0.000,self);
@@ -85,8 +85,8 @@ vector visible (entity targ) {
 }
 
 float infront (entity targ) {
-    local vector vec;
-    local float dot;
+    vector vec;
+    float dot;
     makevectors (self.angles);
     vec = normalize ((targ.origin - self.origin));
     dot = (vec * v_forward);
@@ -233,7 +233,7 @@ void Sentry_Target () {
 // Tf 2.9 sg
 
 void OldSentry_Rotate () {
-    local float ay;
+    float ay;
     self.effects = (self.effects - (self.effects & 8));
     CheckSentry (self);
     if (OldSentry_FindTarget ()) {
@@ -363,7 +363,7 @@ void () lvl3_oldsentry_atk3 = [ 6.000, lvl3_oldsentry_atk1 ] {
 // old sg end
 
 void Sentry_Rotate () {
-    local float ay;
+    float ay;
     self.effects = (self.effects - (self.effects & 8.000));
     CheckSentry (self);
     if ( Sentry_FindTarget () ) {
@@ -397,7 +397,7 @@ void Sentry_Rotate () {
 }
 
 float Sentry_InRange (entity targ) {
-    local float r;
+    float r;
 
     r = vlen ((self.origin - targ.origin));
 
@@ -412,9 +412,9 @@ float Sentry_InRange (entity targ) {
 }
 
 float Sentry_FindTarget () {
-    local entity e;
-    local float found;
-    local float r;
+    entity e;
+    float found;
+    float r;
     if ( (self.ammo_shells <= 0.000) && (self.ammo_rockets <= 0.000)) {
         return (0.000);
     }
@@ -506,10 +506,10 @@ float Sentry_FindTarget () {
 }
 
 float OldSentry_FindTarget () {
-    local entity client;
-    local float r;
-    local float gotone;
-    local float loopc;
+    entity client;
+    float r;
+    float gotone;
+    float loopc;
     r = 0.000000;
     loopc = 0.000000;
     gotone = 0.000000;
@@ -637,8 +637,8 @@ void Sentry_Explode () {
 }
 
 void FireSentry (float damg, vector dir, vector spread) {
-    local vector direction;
-    local vector src;
+    vector direction;
+    vector src;
     makevectors (self.v_angle);
     src = (self.origin + (v_forward * 10.000));
     src_z = (self.absmin_z + (self.size_z * 0.700));
@@ -668,7 +668,7 @@ void Sentry_Die () {
 // tf2.9 sg
 
 float OldSentry_Fire () {
-    local vector dir;
+    vector dir;
     self.effects = (self.effects - (self.effects & 8));
     dir = (self.enemy.origin - self.origin);
     if ((((self.ideal_yaw - anglemod (self.angles_y)) < -10.000000) || ((self.ideal_yaw - anglemod (self.angles_y)) > 10))) {
@@ -724,9 +724,9 @@ float OldSentry_Fire () {
 // sg end
 
 float Sentry_Fire () {
-    //local vector dir;
-    local float r;
-    local vector org;
+    //vector dir;
+    float r;
+    vector org;
     if (self.tfstate > time) {
         return(1.000);
     }

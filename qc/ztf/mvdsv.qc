@@ -44,8 +44,8 @@ void SetOptCmd (float type, float print) {
     }
 }
 
-void () ShowOptValue  = {
-    local string tmp;
+void ShowOptValue () {
+    string tmp;
     tmp = infokey (world, argv(0));
     sprint(self,2, argv(0));
     sprint(self,2, " is \"");
@@ -54,7 +54,7 @@ void () ShowOptValue  = {
 }
 
 
-float (string mode) CheckMode = {
+float CheckMode (string mode) {
 	if (mode == "clan") return 1;
 	if (mode == "clansetup") return 1;
 	if (mode == "duel") return 1;
@@ -79,9 +79,9 @@ float (string mode) CheckMode = {
 }
 
 
-float () UserCmd = {
-    local float arg_num, fl, adminlvl;
-    local string st;
+float UserCmd () {
+    float arg_num, fl, adminlvl;
+    string st;
     arg_num = argc();
     if (arg_num == 0)
         return 0;
@@ -854,9 +854,9 @@ float () UserCmd = {
 }
 
 
-float () ConsoleCmd = {
-    local string tmp;
-    local float arg_num, fl;
+float ConsoleCmd () {
+    string tmp;
+    float arg_num, fl;
     arg_num = argc();
     if (arg_num == 0)
         return 0;
@@ -1192,10 +1192,10 @@ float () ConsoleCmd = {
 }
 
 
-float () localinfoChanged = {
-    local string tmp;
-    local float fl;
-    local float arg_num;
+float localinfoChanged () {
+    string tmp;
+    float fl;
+    float arg_num;
     arg_num = argc();
     if (arg_num == 0)
         return 0;
@@ -1244,8 +1244,8 @@ float () localinfoChanged = {
 }
 
 void UserInfo_Changed () {
-    local string sk, st;
-    local float arg_num, tc;
+    string sk, st;
+    float arg_num, tc;
     arg_num = argc();
     if (arg_num == 0)
         return;
@@ -1390,7 +1390,7 @@ void UserInfo_Changed () {
 }
 
 void timeofday (float sec, float minute, float hour, float day, float mon, float year, string date) {
-    local entity t;
+    entity t;
     t = find(world, classname, "prematch");
     if (t != world) {
         t.no_grenades_1 = sec;

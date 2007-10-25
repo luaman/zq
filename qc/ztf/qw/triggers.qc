@@ -4,11 +4,11 @@ entity otemp;
 
 void TeamFortress_DetpackExplode ();
 
-void () trigger_reactivate = {
+void trigger_reactivate () {
     self.solid = 1.000;
 }
 
-void () multi_wait = {
+void multi_wait () {
     if ( self.max_health ) {
         self.health = self.max_health;
         self.takedamage = 1.000;
@@ -16,7 +16,7 @@ void () multi_wait = {
     }
 }
 
-void () multi_trigger = {
+void multi_trigger () {
     if ( (self.nextthink > time) ) {
         return ;
     }
@@ -43,18 +43,18 @@ void () multi_trigger = {
     }
 }
 
-void () multi_killed = {
+void multi_killed () {
     self.enemy = damage_attacker;
     multi_trigger ();
 }
 
-void () multi_use = {
+void multi_use () {
     self.enemy = activator;
     multi_trigger ();
 }
 
-void () multi_touch = {
-    local entity te;
+void multi_touch () {
+    entity te;
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -87,9 +87,9 @@ float CheckQ3FcapPoint (string fullentdata);
 
 void info_tfgoal ();
 
-void () trigger_multiple = {
+void trigger_multiple () {
 #ifdef Q3_ENTS
-    local string tmp;
+    string tmp;
 #endif
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
@@ -140,7 +140,7 @@ void () trigger_multiple = {
     }
 }
 
-void () trigger_once = {
+void trigger_once () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -149,7 +149,7 @@ void () trigger_once = {
     trigger_multiple ();
 }
 
-void () trigger_relay = {
+void trigger_relay () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -157,7 +157,7 @@ void () trigger_relay = {
     self.use = SUB_UseTargets;
 }
 
-void () trigger_secret = {
+void trigger_secret () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -182,7 +182,7 @@ void () trigger_secret = {
     trigger_multiple ();
 }
 
-void () counter_use = {
+void counter_use () {
     self.count = (self.count - 1.000);
     if ( (self.count < 0.000) ) {
         return ;
@@ -212,7 +212,7 @@ void () counter_use = {
     multi_trigger ();
 }
 
-void () trigger_counter = {
+void trigger_counter () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -224,9 +224,9 @@ void () trigger_counter = {
     self.use = counter_use;
 }
 
-void () play_teleport = {
-    local float v;
-    local string tmpstr;
+void play_teleport () {
+    float v;
+    string tmpstr;
     v = (random () * 5.000);
     if ( (v < 1.000) ) {
         tmpstr = "misc/r_tele1.wav";
@@ -249,8 +249,8 @@ void () play_teleport = {
     dremove (self);
 }
 
-void (vector org) spawn_tfog = {
-    local entity s;
+void spawn_tfog (vector org) {
+    entity s;
     s = spawn ();
     s.origin = org;
     s.nextthink = (time + 0.200);
@@ -263,7 +263,7 @@ void (vector org) spawn_tfog = {
     multicast (org,1.000);
 }
 
-void () tdeath_touch = {
+void tdeath_touch () {
     if ( (other == self.owner) ) {
         return ;
     }
@@ -281,8 +281,8 @@ void () tdeath_touch = {
     }
 }
 
-void (vector org, entity death_owner) spawn_tdeath = {
-    local entity death;
+void spawn_tdeath (vector org, entity death_owner) {
+    entity death;
     death = spawn ();
     death.classname = "teledeath";
     death.movetype = 0.000;
@@ -297,10 +297,10 @@ void (vector org, entity death_owner) spawn_tdeath = {
     force_retouch = 2.000;
 }
 
-void () teleport_touch = {
-    local entity t;
-    local entity te;
-    local vector org;
+void teleport_touch () {
+    entity t;
+    entity te;
+    vector org;
     if ( self.targetname ) {
         if ( (self.nextthink < time) ) {
             return ;
@@ -359,7 +359,7 @@ void () teleport_touch = {
     other.flags = (other.flags - (other.flags & 512.000));
 }
 
-void () info_teleport_destination = {
+void info_teleport_destination () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -373,14 +373,14 @@ void () info_teleport_destination = {
     }
 }
 
-void () teleport_use = {
+void teleport_use () {
     self.nextthink = (time + 0.200);
     force_retouch = 2.000;
     self.think = SUB_Null;
 }
 
-void () trigger_teleport = {
-    local vector o;
+void trigger_teleport () {
+    vector o;
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -398,8 +398,8 @@ void () trigger_teleport = {
     }
 }
 
-void () trigger_skill_touch = {
-    local entity te;
+void trigger_skill_touch () {
+    entity te;
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -415,13 +415,13 @@ void () trigger_skill_touch = {
     cvar_set ("skill",self.message);
 }
 
-void () trigger_setskill = {
+void trigger_setskill () {
     dremove (self);
     return ;
 }
 
-void () trigger_onlyregistered_touch = {
-    local entity te;
+void trigger_onlyregistered_touch () {
+    entity te;
     if ( (other.classname != "player") ) {
         return ;
     }
@@ -450,7 +450,7 @@ void () trigger_onlyregistered_touch = {
     }
 }
 
-void () trigger_onlyregistered = {
+void trigger_onlyregistered () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -460,13 +460,13 @@ void () trigger_onlyregistered = {
     self.touch = trigger_onlyregistered_touch;
 }
 //
-//void () hurt_on = {
+//void hurt_on () {
 // self.solid = 1.000;
 // self.nextthink = -1.000;
 //};
 
-void () hurt_touch = {
-    local entity te;
+void hurt_touch () {
+    entity te;
     if (other.classname == "item_tfgoal") {
         other.nextthink = time;
     }
@@ -497,7 +497,7 @@ void () hurt_touch = {
     }
 }
 
-void () hurt_use = {
+void hurt_use () {
     if ( (self.spawnflags & 1.000) ) {
         self.touch = hurt_touch;
         self.spawnflags = (self.spawnflags - 1.000);
@@ -507,7 +507,7 @@ void () hurt_use = {
     }
 }
 
-void () trigger_hurt = {
+void trigger_hurt () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -520,8 +520,8 @@ void () trigger_hurt = {
     }
 }
 
-void () trigger_push_touch = {
-    local entity te;
+void trigger_push_touch () {
+    entity te;
     if ( !Activated (self,other) ) {
         if ( (self.else_goal != 0.000) ) {
             te = Findgoal (self.else_goal);
@@ -551,9 +551,9 @@ void () trigger_push_touch = {
     }
 }
 
-void() trigger_push_findtarget = {
-    local float flighttime, dist, grav;
-    local vector org;
+void trigger_push_findtarget () {
+    float flighttime, dist, grav;
+    vector org;
     // find the target
     self.enemy = find(world, targetname, self.target);
     if (!self.enemy)
@@ -576,7 +576,7 @@ void() trigger_push_findtarget = {
     self.movedir_z = flighttime * grav;
 }
 
-void () trigger_push = {
+void trigger_push () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
@@ -595,10 +595,10 @@ void () trigger_push = {
     }
 }
 
-void () func_pushable = {trigger_push();
+void func_pushable () {trigger_push();
                         };
 
-void () trigger_monsterjump_touch = {
+void trigger_monsterjump_touch () {
     if ( ((other.flags & ((32.000 | 1.000) | 2.000)) != 32.000) ) {
         return ;
     }
@@ -611,7 +611,7 @@ void () trigger_monsterjump_touch = {
     other.velocity_z = self.height;
 }
 
-void () trigger_monsterjump = {
+void trigger_monsterjump () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;

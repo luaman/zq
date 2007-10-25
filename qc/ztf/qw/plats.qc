@@ -142,7 +142,7 @@ void plat_center_touch ()
 
 void plat_outside_touch ()
 {
-    local entity te;
+    entity te;
     if (freeze == 1)
         return;
 

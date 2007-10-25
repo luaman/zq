@@ -49,9 +49,9 @@ void WriteSpace (float i);
 void WriteBar (float v, float vmax);
 
 void RefreshStatusBar () {
-    local float x; // max 30
-    local entity te;
-    local float num;
+    float x; // max 30
+    entity te;
+    float num;
 
     if (self.current_menu)
         return;
@@ -288,7 +288,7 @@ void RefreshStatusBar () {
 }
 
 void Status_StartWrite () {
-    local float i;
+    float i;
     if (self.sbar_type & 2.000) {
         self.StatusRefreshTime = (time + 1.000);
         WriteByte (1,8);		// start print
@@ -365,9 +365,9 @@ void WriteBar (float v, float vmax) {
 }
 
 void WriteStr (string str) {
-    local float len;
-    local float i;
-    local string nwstr;
+    float len;
+    float i;
+    string nwstr;
     len = strlen (str);
 	/*
     for (i = 0; i < len - 1; i = i + 2) {
@@ -382,7 +382,7 @@ void WriteStr (string str) {
 }
 
 void WriteRep (float f1, float len) {
-    local float i;
+    float i;
 	/*
     for (i = 0; i < len - 1; i = i + 2) {
         WriteShort(1, f1 * 256 + f1);
@@ -394,8 +394,8 @@ void WriteRep (float f1, float len) {
 }
 
 void WriteIntXXXX (float f, float c) {
-    local float y;
-    local float print;
+    float y;
+    float print;
 
     if (f >= 100000) {
         y = floor(f/100000);
@@ -435,7 +435,7 @@ void WriteIntXXXX (float f, float c) {
 }
 
 void WriteSIntXXXX (float f) {
-    local float i;
+    float i;
 
     if (f >= 0) {
         WriteIntXXXX(f,COLOR_WHITE);
@@ -575,7 +575,7 @@ void CenterPrint3 (entity pl, string s1, string s2, string s3) {
 }
 
 void PrintPlayers (string s1, string s2, string s3) {
-    local entity te;
+    entity te;
     te = player_head;
     while (te) {
         if (s1 != string_null) {
@@ -592,7 +592,7 @@ void PrintPlayers (string s1, string s2, string s3) {
 }
 
 void PrintSpecs (string s1, string s2, string s3) {
-    local entity te;
+    entity te;
     te = spec_head;
     while (te) {
         if (s1 != string_null) {
@@ -608,7 +608,7 @@ void PrintSpecs (string s1, string s2, string s3) {
     }
 }
 
-string(float type) Status_GrenTypeToString = {
+string Status_GrenTypeToString (float type) {
     if (type == 1)
         return "Grenade";
     if (type == 2)

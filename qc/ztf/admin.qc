@@ -28,8 +28,8 @@
 void StopTimer ();
 
 void Admin_CountPlayers () {
-    local string st;
-    local float nump;
+    string st;
+    float nump;
     nump = TeamFortress_GetNoPlayers ();
     st = ftos (nump);
     sprint (self,2.000,"Players In Game : ",st,"\n");
@@ -56,9 +56,9 @@ void Admin_CountPlayers () {
 }
 
 void Admin_ListPlayers () {
-    local entity pl;
-    local float num;
-    local string st;
+    entity pl;
+    float num;
+    string st;
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
         sprint (self,2.000,"No other players in the game.\n");
         return ;
@@ -93,7 +93,7 @@ void Admin_ListPlayers () {
 }
 
 void Admin_ListIPs () {
-    local entity pl;
+    entity pl;
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
         sprint (self,2.000,"No other players in the game.\n");
         return ;
@@ -197,7 +197,7 @@ void Admin_CycleDeal () {
 }
 
 void CeaseFire_think () {
-    local entity te;
+    entity te;
     if ( !cease_fire ) {
         dremove (self);
         return ;
@@ -211,7 +211,7 @@ void CeaseFire_think () {
 }
 
 void Admin_CeaseFire () {
-    local entity te;
+    entity te;
     if ( !cease_fire ) {
         if (cb_prematch) {
             StopTimer();
@@ -259,8 +259,8 @@ void autokick_think () {
 }
 
 void CheckAutoKick (entity p) {
-    local float rnum;
-    local entity te;
+    float rnum;
+    entity te;
     if ( ((p.teamkills >= autokick_kills) && (autokick_kills != 0.000)) ) {
         bprint (2.000,p.netname," was kicked for killing teammates.\n");
         sprint (p,2.000,"You were kicked for killing teammates.\n");
@@ -291,8 +291,8 @@ void CheckAutoKick (entity p) {
     }
 }
 
-void() AbortElect = {
-    local entity p;
+void AbortElect () {
+    entity p;
     elect = 0;
     p = find(world, classname, "player");
     while (p != world) {
@@ -312,16 +312,16 @@ void() AbortElect = {
     if (p.classname == "electguard") dremove(p);
 }
 
-void() ElectThink = {
+void ElectThink () {
     bprint(2, "The voting has timed out.\nElection aborted\n");
     self.nextthink = -1;
     AbortElect();
 }
 
-void() VoteAdmin = {
-    local float f1, f2, f3;
-    local string tmp;
-    local entity electguard;
+void VoteAdmin () {
+    float f1, f2, f3;
+    string tmp;
+    entity electguard;
     if (self.electtime > time) {
         sprint(self, 2.000, "You cannot elect at this time.\n");
         return;
@@ -376,10 +376,10 @@ void() VoteAdmin = {
     }
 }
 
-void() VoteYes = {
-    local float f1, f2, f3;
-    local string tmp;
-    local entity p;
+void VoteYes () {
+    float f1, f2, f3;
+    string tmp;
+    entity p;
     if ( !elect) {
         return;
     }
@@ -430,9 +430,9 @@ void() VoteYes = {
     }
 }
 
-void() VoteNo = {
-    local float f1, f2;
-    local string tmp;
+void VoteNo () {
+    float f1, f2;
+    string tmp;
     // withdraw one's vote
     if (self.is_admin == 1.000)  {
         return;
