@@ -29,7 +29,7 @@ void DroppedKeyThink () {
     self.think = SUB_Null;
     self.touch = key_touch;
     self.owner = world;
-};
+}
 
 void DropKey () {
     if ( ((self.items & 131072.000) || (self.items & 262144.000)) ) {
@@ -91,7 +91,7 @@ void DropKey () {
     } else {
         sprint (self,2.000,"You don't have a key\n");
     }
-};
+}
 
 float () DoorShouldOpen = {
     local entity ptr;
@@ -147,4 +147,4 @@ float () DoorShouldOpen = {
     }
     bprint (2.000," door has been unlocked\n");
     return ( 1.000 );
-};
+}

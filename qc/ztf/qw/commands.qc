@@ -13,7 +13,7 @@ float(float num, float digits) spaceoutnum = {
     if (num >= 100000) d = d - 1;
     if (num >= 1000000) d = d - 1;
     return (d);
-};
+}
 string spacestring (float num) {
     local string st;
     st = strcat (st, " ");
@@ -22,18 +22,18 @@ string spacestring (float num) {
         num =  num - 1;
     }
     return (st);
-};
+}
 string spacefornum (float num, float digits) {
     local string st;
     local float fl;
     fl = spaceoutnum(num, digits);
     st = spacestring(fl);
     return (st);
-};
+}
 
 void() ShowVersion = {
     sprint(self, 2,"\n\n‘ËÈÛ†ÈÛ Oz†Team†Fortress ˆÂÚÛÈÔÓ 1.77a         ‚˘ Mercury\n\n”Â„È·Ï†ÙË·Ó¯†ÙÔ Omicron, „ÚÂ·ÙÔÚÛ†ÔÊ Kombat Teams 2.21\n¡Ó‰†ÓÔÓÂ†ÔÙËÂÚ†ÙËÂÓ†ÙËÂ „ÚÂ·ÙÔÚÛ ÔÊ†Team Fortress\n\n\nPlease visit ËÙÙ∫ØØÔ˙ÙÊÆÒı·ÎÂ˜ÔÚÏ‰ÆÓıØ for more info. \n\n\n");
-};
+}
 //Special thanx to Rawhide, Omicron, creators of Kombat Teams 2.21\nAnd none other then the creators of Team Fortress\n\n Also thank you to all those test dummies.\n Including the fatty fv nitemare.\n And the annoying sh33p b0y bliP :)\n\nPlease visit Ò˜ÙÊÆ·ıÛÊÔÚÙÚÂÛÛÆ„ÔÌ for more info. \n");
 
 void() Commands = {
@@ -69,7 +69,7 @@ void() Commands = {
         sprint(self, 2, "„Ï·Ó....... toggle clan mode\nÙÊˆÛ‰Ì..... toggle tfvsdm mode\nÙÊÛÙÚÈÎÂ... toggle tfstrike mode\nÙÂ·ÌÊÚ·ÁÛ.. toggle teamfrags\nÊıÏÏÙÛ..... toggle full team score\nÁÚ·ÏÂ.... toggle grapple\n");
         sprint(self, 2, "ËÈÁËÏ·Ó‰ÂÚ. toggle highlander mode\nÚÔıÓ‰Û..... toggle rounds\n‰ıÂÏ....... toggle duel mode\nÛÂÂ‰„·... toggle speed capture mode\nÚ·„ÙÈ„Â... toggle practice mode\n");
     }
-};
+}
 
 void ShowScores () {
     local string st;
@@ -106,7 +106,7 @@ void ShowScores () {
         sprint(self, 2.000,  "\n");
     }
     sprint(self, 2.000, "ùûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûü\n\n");
-};
+}
 
 void(entity print) ShowFrags = {
     local entity te;
@@ -211,7 +211,7 @@ void(entity print) ShowFrags = {
         sprint(print, 2.000,  st, "\n");
     }
     sprint(print, 2.000, "ùûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûü\n\n");
-};
+}
 
 void() ShowTouches = {
     local entity te;
@@ -296,7 +296,7 @@ void() ShowTouches = {
         sprint(self, 2.000,  st, "\n");
     }
     sprint(self, 2.000, "ùûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûü\n\n");
-};
+}
 
 void() ShowFps = {
     local entity te;
@@ -318,7 +318,7 @@ void() ShowFps = {
         te = te.nextp;
     }
     sprint(self, 2.000, "ùûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûü\n\n");
-};
+}
 
 void ShowSpeed () {
     local float dist;
@@ -338,7 +338,7 @@ void ShowSpeed () {
         st = ftos(rint(dist));
         sprint(self, 2.000, " Metric Speed:   ", st," km/h\n");
     }
-};
+}
 
 void() ShowStats = {
     local string st;
@@ -393,7 +393,7 @@ void() ShowStats = {
         sprint(self, 2.000, " Distance Travelled:  ", st," metres\n");
     }
     sprint(self, 2.000, "ùûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûûü\n\n");
-};
+}
 
 void() ModStatus = {
     local string tmp;
@@ -501,7 +501,7 @@ void() ModStatus = {
         tmp = ftos(elect);
         sprint(self, 2, "\nElection in progress\nê", tmp, "ë votes received\n");
     }
-};
+}
 
 void(float t) TimeDown = {
     local string tmp;
@@ -517,7 +517,7 @@ void(float t) TimeDown = {
     bprint(2, "Õ·Ù„Ë ÏÂÓÁÙË ÛÂÙ ÙÔ ", tmp, " ÌÈÓıÙÂÛ\n");
     timelimit = (tl * 60);
     cvar_set("timelimit", tmp);
-};
+}
 
 void(float t) TimeUp = {
     local string tmp;
@@ -533,7 +533,7 @@ void(float t) TimeUp = {
     bprint(2, "Õ·Ù„Ë ÏÂÓÁÙË ÛÂÙ ÙÔ ", tmp, " ÌÈÓıÙÂÛ\n");
     timelimit = (tl * 60);
     cvar_set("timelimit", tmp);
-};
+}
 
 void(float t, string option) MiscTimeDown = {
     local string tmp;
@@ -555,7 +555,7 @@ void(float t, string option) MiscTimeDown = {
     localcmd(" ");
     localcmd(tmp);
     localcmd("\n");
-};
+}
 
 void(float t, string option) MiscTimeUp = {
     local string tmp;
@@ -580,7 +580,7 @@ void(float t, string option) MiscTimeUp = {
     localcmd(" ");
     localcmd(tmp);
     localcmd("\n");
-};
+}
 
 void FragLimit (float add) {
     local string tmp;
@@ -590,7 +590,7 @@ void FragLimit (float add) {
     bprint(2, "ç ");
     bprint(2, "∆Ú·ÁÏÈÌÈÙ ÛÂÙ ÙÔ ", tmp, "\n");
     cvar_set("fraglimit", tmp);
-};
+}
 
 void() ChangeTP = {
     local string tmp;
@@ -637,13 +637,13 @@ void() ChangeTP = {
     cvar_set("teamplay", tmp);
     bprint(2.000, "ç Teamplay set to: ", ftos(teamplay), " - ");
     bprint(2.000,  desc);
-};
+}
 
 void() RestartMap = {
     localcmd("map ");
     localcmd(mapname);
     localcmd("\n");
-};
+}
 
 void() ToggleSpecTalk = {
     local float tmp, tmp2;
@@ -667,7 +667,7 @@ void() ToggleSpecTalk = {
     localcmd("\nlocalinfo spectalk 1\n");
     bprint(2, "on: Ï·˘ÂÚÛ „·Ó ÓÔ˜ ËÂ·Ú ÛÂ„Ù·ÙÔÚÛ\n");
     return;
-};
+}
 
 void() GroundSpeed = {
     local string desc;
@@ -694,7 +694,7 @@ void() GroundSpeed = {
     localcmd("localinfo pm_gspeed ");
     localcmd(ftos(gspeed));
     localcmd("\n");
-};
+}
 
 void() ToggleFreeze = {
     bprint(2, "ç ");
@@ -707,7 +707,7 @@ void() ToggleFreeze = {
         localcmd("localinfo freeze off\n");
         bprint(2, self.netname, " unfreezes map\n");
     }
-};
+}
 
 void Toggle_Misc (string option) {
     local string st;
@@ -724,7 +724,7 @@ void Toggle_Misc (string option) {
     localcmd("\n");
     bprint(2, "ç ");
     bprint(2, option, " set to ", st, " \n");
-};
+}
 /*
 
    void() ClanMode =
@@ -778,7 +778,7 @@ void() ResetSetup = {
     localcmd("localinfo duel off\n");
     localcmd("localinfo speedcap off\n");
     RestartMap();
-};
+}
 
 void ClanSetup () {
     local float f1;
@@ -804,7 +804,7 @@ void ClanSetup () {
     localcmd("serverinfo fbskins 0\n");
     localcmd("localinfo observermode off\n");
     RestartMap();
-};
+}
 
 void() Toggle_Quad = {
     cvar_set("teamplay", "1?TeamFortress");
@@ -818,7 +818,7 @@ void() Toggle_Quad = {
     // localcmd("localinfo cr_soldier 1\n");
     localcmd("localinfo quadmode on\n");
     RestartMap();
-};
+}
 /*
 
    void() Toggle_Observer = {
@@ -858,7 +858,7 @@ void() TogglePointing = {
         localcmd("\n");
         bprint(2, "ÔÈÓÙÈÓÁ disabled\n");
     }
-};
+}
 
 void() ToggleEnemy = {
     local float f1, f2;
@@ -881,7 +881,7 @@ void() ToggleEnemy = {
         localcmd("\n");
         bprint(2, "enemy reporting disallowed\n");
     }
-};
+}
 
 void() ToggleFbskins = {
     local float f1, f2;
@@ -906,7 +906,7 @@ void() ToggleFbskins = {
         localcmd("serverinfo fbskins 0\n");
         bprint(2, "Fullbright skins disabled\n");
     }
-};
+}
 
 void() Toggle_Frj = {
     local float f1, f2;
@@ -929,7 +929,7 @@ void() Toggle_Frj = {
         localcmd("\n");
         bprint(2, "Forward Rocketjump disabled\n");
     }
-};
+}
 
 void Toggle_flag_emu () {
     local string st;
@@ -953,7 +953,7 @@ void Toggle_flag_emu () {
     localcmd("\n");
     bprint(2, "ç ");
     bprint(2, "Goal Item model set to ", st, " \n");
-};
+}
 
 void Toggle_Grenpacks () {
     local string st;
@@ -971,7 +971,7 @@ void Toggle_Grenpacks () {
     localcmd("localinfo grenpacks ");
     localcmd(st);
     localcmd("\n");
-};
+}
 
 void Toggle_SentryType () {
     local string st;
@@ -987,7 +987,7 @@ void Toggle_SentryType () {
     localcmd("localinfo sentrytype ");
     localcmd(st);
     localcmd("\n");
-};
+}
 
 void Toggle_SentryFire () {
     local string st;
@@ -1017,7 +1017,7 @@ void Toggle_SentryFire () {
     localcmd("\n");
     bprint(2, "ç ");
     bprint(2, "Sentry Fire set to ", st, " \n");
-};
+}
 
 void Toggle_PipeDelay () {
     local string st;
@@ -1034,7 +1034,7 @@ void Toggle_PipeDelay () {
     localcmd("\n");
     bprint(2, "ç ");
     bprint(2, "Demoman Pipebomb Delay set to ", st, " \n");
-};
+}
 
 void Toggle_Detpack () {
     local string st;
@@ -1049,7 +1049,7 @@ void Toggle_Detpack () {
     localcmd("\n");
     bprint(2, "ç ");
     bprint(2, "Solid Detpacks ÛÂÙ ÙÔ ", st, " \n");
-};
+}
 
 void Toggle_Lighting () {
     if (lights) {
@@ -1057,7 +1057,7 @@ void Toggle_Lighting () {
     } else {
         Eluminate();
     }
-};
+}
 
 void Give_Quad () {
     if (!self.playerclass || self.deadflag) return;
@@ -1066,7 +1066,7 @@ void Give_Quad () {
     self.items = (self.items | 4194304.000);
     self.super_time = 1.000;
     self.super_damage_finished = (time + 300.000);
-};
+}
 
 void Give_Eyes () {
     if (!self.playerclass || self.deadflag) return;
@@ -1075,7 +1075,7 @@ void Give_Eyes () {
     self.items = (self.items | 524288.000);
     self.invisible_time = 1.000;
     self.invisible_finished = (time + 30.000);
-};
+}
 
 void Give_Pent () {
     if (!self.playerclass || self.deadflag) return;
@@ -1084,7 +1084,7 @@ void Give_Pent () {
     self.items = (self.items | 1048576.000);
     self.invincible_time = 1.000;
     self.invincible_finished = (time + 300.000);
-};
+}
 
 void() AbortMiscVote = {
     local entity p;
@@ -1099,13 +1099,13 @@ void() AbortMiscVote = {
     p = find(world, classname, "miscvote");
     // Kill timeout checker entity
     if (p.classname == "miscvote") dremove(p);
-};
+}
 
 void() MiscVoteThink = {
     bprint(2, "The voting has timed out.\nVote aborted\n");
     self.nextthink = -1;
     AbortMiscVote();
-};
+}
 
 void AgreeMiscVote () {
     local float f1, f2;
@@ -1151,7 +1151,7 @@ void AgreeMiscVote () {
         if (f1 > 1) bprint(2, "s");
         bprint(2, " needed\n");
     }
-};
+}
 
 void PlayerMiscVote (string Misc, float type) {
     local float f1, f2;
@@ -1234,7 +1234,7 @@ void PlayerMiscVote (string Misc, float type) {
         if (f1 > 1) bprint(2, "s");
         bprint(2, " needed\n");
     }
-};
+}
 
 void RandomPickup () {
     local entity te;
@@ -1290,7 +1290,7 @@ void RandomPickup () {
         SetTeam(te);
         te = te.nextp;
     }
-};
+}
 
 void TogglePowerups () {
     local string st;
@@ -1309,7 +1309,7 @@ void TogglePowerups () {
     localcmd("localinfo powerups ");
     localcmd(st);
     localcmd("\n");
-};
+}
 
 void ToggleSpecMsgs () {
     local string st;
@@ -1325,19 +1325,19 @@ void ToggleSpecMsgs () {
     localcmd("\n");
     bprint(2, "ç ");
     bprint(2, "Messages for spectators  ÛÂÙ ÙÔ ", st, " \n");
-};
+}
 
 void unpause_player (entity p) {
     msg_entity = p;
     WriteByte (1.000000, 24.000000);
     WriteByte (1.000000, 0.000000);
-};
+}
 
 void pause_player (entity p) {
     msg_entity = p;
     WriteByte (1.000000, 24.000000);
     WriteByte (1.000000, 1.000000);
-};
+}
 
 void PausePlayers () {
     local entity te;
@@ -1355,4 +1355,4 @@ void PausePlayers () {
         }
         te = find (te, classname, "spectator");
     }
-};
+}

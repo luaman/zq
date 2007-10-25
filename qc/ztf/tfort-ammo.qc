@@ -29,7 +29,7 @@ void TeamFortress_AmmoboxThink () {
     //self.pteam.num_ammoboxes = self.pteam.num_ammoboxes - 1.000;
     store_obs.num_ammoboxes = store_obs.num_ammoboxes - 1.000;
     dremove(self);
-};
+}
 
 void RemoveboldAmmobox () {
     local entity box, bold;
@@ -48,7 +48,7 @@ void RemoveboldAmmobox () {
     store_obs.num_ammoboxes = store_obs.num_ammoboxes - 1.000;
     //bold.pteam.num_ammoboxes = bold.pteam.num_ammoboxes - 1.000;
     dremove(bold);
-};
+}
 
 void TeamFortress_AmmoboxTouch () {
     local float took;
@@ -167,7 +167,7 @@ void TeamFortress_AmmoboxTouch () {
     }
     self = other;
     W_SetCurrentAmmo ();
-};
+}
 
 void TeamFortress_DropAmmo (float type, float ammo) {
     self.impulse = 0;
@@ -290,7 +290,7 @@ void TeamFortress_DropAmmo (float type, float ammo) {
     if (newmis.skin > 5)
         newmis.skin = 2;
     setmodel (newmis,"progs/ammobox.mdl");
-};
+}
 
 void Drop_detpack () {
     if (!self.ammo_detpack) return;
@@ -336,7 +336,7 @@ void Drop_detpack () {
     newmis.touch = TeamFortress_AmmoboxTouch;
     setmodel (newmis,"progs/detpack.mdl");
     setsize (newmis,'-16.000 -16.000 0.000','16.000 16.000 8.000');
-};
+}
 
 void TeamFortress_Discard () {
     newmis = spawn ();
@@ -404,7 +404,7 @@ void TeamFortress_Discard () {
     newmis.think = TeamFortress_AmmoboxThink;
     newmis.touch = TeamFortress_AmmoboxTouch;
     setmodel (newmis,"progs/backpack.mdl");
-};
+}
 
 void Ammobox_Explode () {
     local float expsize;
@@ -421,4 +421,4 @@ void Ammobox_Explode () {
         multicast (self.origin,1);
     }
     TeamFortress_AmmoboxThink();
-};
+}

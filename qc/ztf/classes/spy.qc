@@ -36,356 +36,356 @@ void GasGrenadeMakeGas ();
 void T_TranqDartTouch ();
 
 void () spy_diea1 = [ 50.000, spy_diea2 ] {
-};
+}
 
 void () spy_diea2 = [ 51.000, spy_diea3 ] {
-};
+}
 
 void () spy_diea3 = [ 52.000, spy_diea4 ] {
-};
+}
 
 void () spy_diea4 = [ 53.000, spy_diea5 ] {
-};
+}
 
 void () spy_diea5 = [ 54.000, spy_diea6 ] {
-};
+}
 
 void () spy_diea6 = [ 55.000, spy_diea7 ] {
-};
+}
 
 void () spy_diea7 = [ 56.000, spy_diea8 ] {
-};
+}
 
 void () spy_diea8 = [ 57.000, spy_diea9 ] {
-};
+}
 
 void () spy_diea9 = [ 58.000, spy_diea10 ] {
-};
+}
 
 void () spy_diea10 = [ 59.000, spy_diea11 ] {
-};
+}
 
 void () spy_diea11 = [ 60.000, spy_diea11 ] {
-};
+}
 
 void () spy_dieb1 = [ 61.000, spy_dieb2 ] {
-};
+}
 
 void () spy_dieb2 = [ 62.000, spy_dieb3 ] {
-};
+}
 
 void () spy_dieb3 = [ 63.000, spy_dieb4 ] {
-};
+}
 
 void () spy_dieb4 = [ 64.000, spy_dieb5 ] {
-};
+}
 
 void () spy_dieb5 = [ 65.000, spy_dieb6 ] {
-};
+}
 
 void () spy_dieb6 = [ 66.000, spy_dieb7 ] {
-};
+}
 
 void () spy_dieb7 = [ 67.000, spy_dieb8 ] {
-};
+}
 
 void () spy_dieb8 = [ 68.000, spy_dieb9 ] {
-};
+}
 
 void () spy_dieb9 = [ 69.000, spy_dieb9 ] {
-};
+}
 
 void () spy_diec1 = [ 70.000, spy_diec2 ] {
-};
+}
 
 void () spy_diec2 = [ 71.000, spy_diec3 ] {
-};
+}
 
 void () spy_diec3 = [ 72.000, spy_diec4 ] {
-};
+}
 
 void () spy_diec4 = [ 73.000, spy_diec5 ] {
-};
+}
 
 void () spy_diec5 = [ 74.000, spy_diec6 ] {
-};
+}
 
 void () spy_diec6 = [ 75.000, spy_diec7 ] {
-};
+}
 
 void () spy_diec7 = [ 76.000, spy_diec8 ] {
-};
+}
 
 void () spy_diec8 = [ 77.000, spy_diec9 ] {
-};
+}
 
 void () spy_diec9 = [ 78.000, spy_diec10 ] {
-};
+}
 
 void () spy_diec10 = [ 79.000, spy_diec11 ] {
-};
+}
 
 void () spy_diec11 = [ 80.000, spy_diec12 ] {
-};
+}
 
 void () spy_diec12 = [ 81.000, spy_diec13 ] {
-};
+}
 
 void () spy_diec13 = [ 82.000, spy_diec14 ] {
-};
+}
 
 void () spy_diec14 = [ 83.000, spy_diec15 ] {
-};
+}
 
 void () spy_diec15 = [ 84.000, spy_diec15 ] {
-};
+}
 
 void () spy_died1 = [ 85.000, spy_died2 ] {
-};
+}
 
 void () spy_died2 = [ 86.000, spy_died3 ] {
-};
+}
 
 void () spy_died3 = [ 87.000, spy_died4 ] {
-};
+}
 
 void () spy_died4 = [ 88.000, spy_died5 ] {
-};
+}
 
 void () spy_died5 = [ 89.000, spy_died6 ] {
-};
+}
 
 void () spy_died6 = [ 90.000, spy_died7 ] {
-};
+}
 
 void () spy_died7 = [ 91.000, spy_died8 ] {
-};
+}
 
 void () spy_died8 = [ 92.000, spy_died9 ] {
-};
+}
 
 void () spy_died9 = [ 93.000, spy_died9 ] {
-};
+}
 
 void () spy_diee1 = [ 94.000, spy_diee2 ] {
-};
+}
 
 void () spy_diee2 = [ 95.000, spy_diee3 ] {
-};
+}
 
 void () spy_diee3 = [ 96.000, spy_diee4 ] {
-};
+}
 
 void () spy_diee4 = [ 97.000, spy_diee5 ] {
-};
+}
 
 void () spy_diee5 = [ 98.000, spy_diee6 ] {
-};
+}
 
 void () spy_diee6 = [ 99.000, spy_diee7 ] {
-};
+}
 
 void () spy_diee7 = [ 100.000, spy_diee8 ] {
-};
+}
 
 void () spy_diee8 = [ 101.000, spy_diee9 ] {
-};
+}
 
 void () spy_diee9 = [ 102.000, spy_diee9 ] {
-};
+}
 
 void () spy_die_ax1 = [ 41.000, spy_die_ax2 ] {
-};
+}
 
 void () spy_die_ax2 = [ 42.000, spy_die_ax3 ] {
-};
+}
 
 void () spy_die_ax3 = [ 43.000, spy_die_ax4 ] {
-};
+}
 
 void () spy_die_ax4 = [ 44.000, spy_die_ax5 ] {
-};
+}
 
 void () spy_die_ax5 = [ 45.000, spy_die_ax6 ] {
-};
+}
 
 void () spy_die_ax6 = [ 46.000, spy_die_ax7 ] {
-};
+}
 
 void () spy_die_ax7 = [ 47.000, spy_die_ax8 ] {
-};
+}
 
 void () spy_die_ax8 = [ 48.000, spy_die_ax9 ] {
-};
+}
 
 void () spy_die_ax9 = [ 49.000, spy_die_ax9 ] {
-};
+}
 
 void () spy_upb1 = [ 69.000, spy_upb2 ] {
-};
+}
 
 void () spy_upb2 = [ 68.000, spy_upb3 ] {
-};
+}
 
 void () spy_upb3 = [ 67.000, spy_upb4 ] {
-};
+}
 
 void () spy_upb4 = [ 66.000, spy_upb5 ] {
-};
+}
 
 void () spy_upb5 = [ 65.000, spy_upb6 ] {
-};
+}
 
 void () spy_upb6 = [ 64.000, spy_upb7 ] {
-};
+}
 
 void () spy_upb7 = [ 63.000, spy_upb8 ] {
-};
+}
 
 void () spy_upb8 = [ 62.000, spy_upb9 ] {
-};
+}
 
 void () spy_upb9 = [ 61.000, spy_upb9 ] {
     player_stand1 ();
-};
+}
 
 void () spy_upc1 = [ 84.000, spy_upc2 ] {
-};
+}
 
 void () spy_upc2 = [ 83.000, spy_upc3 ] {
-};
+}
 
 void () spy_upc3 = [ 82.000, spy_upc4 ] {
-};
+}
 
 void () spy_upc4 = [ 81.000, spy_upc5 ] {
-};
+}
 
 void () spy_upc5 = [ 80.000, spy_upc6 ] {
-};
+}
 
 void () spy_upc6 = [ 79.000, spy_upc7 ] {
-};
+}
 
 void () spy_upc7 = [ 78.000, spy_upc8 ] {
-};
+}
 
 void () spy_upc8 = [ 77.000, spy_upc9 ] {
-};
+}
 
 void () spy_upc9 = [ 76.000, spy_upc10 ] {
-};
+}
 
 void () spy_upc10 = [ 75.000, spy_upc11 ] {
-};
+}
 
 void () spy_upc11 = [ 74.000, spy_upc12 ] {
-};
+}
 
 void () spy_upc12 = [ 73.000, spy_upc13 ] {
-};
+}
 
 void () spy_upc13 = [ 72.000, spy_upc14 ] {
-};
+}
 
 void () spy_upc14 = [ 71.000, spy_upc15 ] {
-};
+}
 
 void () spy_upc15 = [ 70.000, spy_upc15 ] {
     player_stand1 ();
-};
+}
 
 void () spy_upd1 = [ 93.000, spy_upd2 ] {
-};
+}
 
 void () spy_upd2 = [ 92.000, spy_upd3 ] {
-};
+}
 
 void () spy_upd3 = [ 91.000, spy_upd4 ] {
-};
+}
 
 void () spy_upd4 = [ 90.000, spy_upd5 ] {
-};
+}
 
 void () spy_upd5 = [ 89.000, spy_upd6 ] {
-};
+}
 
 void () spy_upd6 = [ 88.000, spy_upd7 ] {
-};
+}
 
 void () spy_upd7 = [ 87.000, spy_upd8 ] {
-};
+}
 
 void () spy_upd8 = [ 86.000, spy_upd9 ] {
-};
+}
 
 void () spy_upd9 = [ 85.000, spy_upd9 ] {
     player_stand1 ();
-};
+}
 
 void () spy_upe1 = [ 94.000, spy_upe9 ] {
-};
+}
 
 void spy_upe9 ();
 
 void () spy_upe2 = [ 95.000, spy_upe8 ] {
-};
+}
 
 void spy_upe8 ();
 
 void () spy_upe3 = [ 96.000, spy_upe7 ] {
-};
+}
 
 void spy_upe7 ();
 
 void () spy_upe4 = [ 97.000, spy_upe6 ] {
-};
+}
 
 void spy_upe6 ();
 
 void () spy_upe5 = [ 98.000, spy_upe5 ] {
-};
+}
 
 void () spy_upe6 = [ 99.000, spy_upe4 ] {
-};
+}
 
 void () spy_upe7 = [ 100.000, spy_upe3 ] {
-};
+}
 
 void () spy_upe8 = [ 101.000, spy_upe2 ] {
-};
+}
 
 void () spy_upe9 = [ 102.000, spy_upe1 ] {
     player_stand1 ();
-};
+}
 
 void () spy_upaxe1 = [ 49.000, spy_upaxe2 ] {
-};
+}
 
 void () spy_upaxe2 = [ 48.000, spy_upaxe3 ] {
-};
+}
 
 void () spy_upaxe3 = [ 47.000, spy_upaxe4 ] {
-};
+}
 
 void () spy_upaxe4 = [ 46.000, spy_upaxe5 ] {
-};
+}
 
 void () spy_upaxe5 = [ 45.000, spy_upaxe6 ] {
-};
+}
 
 void () spy_upaxe6 = [ 44.000, spy_upaxe7 ] {
-};
+}
 
 void () spy_upaxe7 = [ 43.000, spy_upaxe8 ] {
-};
+}
 
 void () spy_upaxe8 = [ 42.000, spy_upaxe9 ] {
-};
+}
 
 void () spy_upaxe9 = [ 41.000, spy_upaxe9 ] {
     player_stand1 ();
-};
+}
 
 void TeamFortress_SpyFeignDeath (float issilent) {
     local float i;
@@ -541,7 +541,7 @@ void TeamFortress_SpyFeignDeath (float issilent) {
             }
         }
     }
-};
+}
 
 void TeamFortress_SpyGoUndercover () {
     if ( (self.effects & (8.000 | 4.000)) ) {
@@ -559,7 +559,7 @@ void TeamFortress_SpyGoUndercover () {
         sprint (self,2.000,"You stop going undercover.\n");
         self.is_undercover = 0.000;
     }
-};
+}
 
 void TeamFortress_SpyCalcName (entity spy) {
     local entity te;
@@ -586,7 +586,7 @@ void TeamFortress_SpyCalcName (entity spy) {
             }
         }
     }
-};
+}
 
 void TeamFortress_SpyUndercoverThink () {
     local float tc;
@@ -623,7 +623,7 @@ void TeamFortress_SpyUndercoverThink () {
     }
     self.owner.StatusRefreshTime = (time + 0.100);
     dremove (self);
-};
+}
 
 void TeamFortress_SpyChangeSkin (float pclass) {
     local entity te;
@@ -645,7 +645,7 @@ void TeamFortress_SpyChangeSkin (float pclass) {
     te.nextthink = (time + 4.000);
     te.skin = pclass;
     TeamFortress_SetSkin (self);
-};
+}
 
 void TeamFortress_SpyChangeColor (float teamno) {
     local entity te;
@@ -670,14 +670,14 @@ void TeamFortress_SpyChangeColor (float teamno) {
     te.think = TeamFortress_SpyUndercoverThink;
     te.nextthink = (time + 4.000);
     te.team = teamno;
-};
+}
 
 void GasGrenadeTouch () {
     sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
-};
+}
 
 void GasGrenadeExplode () {
     local entity te;
@@ -726,7 +726,7 @@ void GasGrenadeExplode () {
         }
     }
     dremove (self);
-};
+}
 
 void viewsmoke (entity te) {
     local string st,st2;
@@ -741,7 +741,7 @@ void viewsmoke (entity te) {
     stuffcmd (te, " ");
     stuffcmd (te, st2);
     stuffcmd (te, "\n");
-};
+}
 
 void HallucinationTimer () {
     local entity te;
@@ -872,7 +872,7 @@ void HallucinationTimer () {
             dremove (te);
         }
     }
-};
+}
 
 void W_FireTranq () {
     if (!modetype & 2) {
@@ -894,14 +894,14 @@ void W_FireTranq () {
     setmodel (newmis,"progs/spike.mdl");
     setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
     setorigin (newmis,((self.origin + (v_forward * 8.000)) + '0.000 0.000 16.000'));
-};
+}
 
 void TranquiliserTimer () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 32768.000));
     TeamFortress_SetSpeed (self.owner);
     sprint (self.owner,2.000,"You feel more alert now\n");
     dremove (self);
-};
+}
 
 void T_TranqDartTouch () {
     local entity timer;
@@ -946,7 +946,7 @@ void T_TranqDartTouch () {
         multicast (self.origin,2.000);
     }
     dremove (self);
-};
+}
 
 void Spy_RemoveDisguise (entity spy) {
     if ( (spy.playerclass == 8.000) ) {
@@ -965,7 +965,7 @@ void Spy_RemoveDisguise (entity spy) {
         TeamFortress_SetSkin (spy);
         TeamFortress_SpyCalcName (spy);
     }
-};
+}
 
 void GasGrenadeMakeGas () {
     local float nextloop;
@@ -1056,4 +1056,4 @@ void GasGrenadeMakeGas () {
         return ;
     }
     RemoveGrenade ();
-};
+}

@@ -78,7 +78,7 @@ void W_Precache () {
     precache_sound ("weapons/shell2.wav");
     precache_sound ("weapons/tink1.wav");
     precache_sound ("weapons/tink2.wav");
-};
+}
 
 void W_FireAxe () {
     local vector source;
@@ -123,7 +123,7 @@ void W_FireAxe () {
         WriteCoord (4.000,org_z);
         multicast (org,2.000);
     }
-};
+}
 
 void W_FireSpanner () {
     local vector source;
@@ -180,7 +180,7 @@ void W_FireSpanner () {
         WriteCoord (4.000,org_z);
         multicast (org,2.000);
     }
-};
+}
 
 void W_FireMedikit () {
     local vector org;
@@ -205,7 +205,7 @@ void W_FireMedikit () {
         WriteCoord (4.000,org_z);
         multicast (org,2.000);
     }
-};
+}
 #ifdef CSQC
 .float starttime;
 
@@ -218,7 +218,7 @@ float(entity toplayer) SendShell = {
     WriteAngle(MSG_ENTITY, self.angles_x);
     WriteAngle(MSG_ENTITY, self.angles_y);
     return 1.000;
-};
+}
 #endif
 
 void ShellHit () {
@@ -232,7 +232,7 @@ void ShellHit () {
         }
     }
     return;
-};
+}
 
 void EjectShell () {
     newmis = spawn ();
@@ -270,7 +270,7 @@ void EjectShell () {
     newmis.SendEntity = SendShell;
     newmis.Version+=1;
 #endif
-};
+}
 vector wall_velocity () {
     local vector vel;
     vel = normalize (self.velocity);
@@ -278,7 +278,7 @@ vector wall_velocity () {
     vel = (vel + (2.000 * trace_plane_normal));
     vel = (vel * 200.000);
     return ( vel );
-};
+}
 
 void SpawnMeatSpray (vector org, vector vel) {
     local entity missile;
@@ -295,7 +295,7 @@ void SpawnMeatSpray (vector org, vector vel) {
     setmodel (missile,"progs/zom_gib.mdl");
     setsize (missile,'0.000 0.000 0.000','0.000 0.000 0.000');
     setorigin (missile,org);
-};
+}
 
 void SpawnBlood (vector org, float damage) {
     WriteByte (4.000,23.000);
@@ -305,13 +305,13 @@ void SpawnBlood (vector org, float damage) {
     WriteCoord (4.000,org_y);
     WriteCoord (4.000,org_z);
     multicast (org,2.000);
-};
+}
 
 void spawn_touchblood (float damage) {
     local vector vel;
     vel = (wall_velocity () * 0.200);
     SpawnBlood ((self.origin + (vel * 0.010)),damage);
-};
+}
 /*
 
    void SpawnChunk (vector org, vector vel) {
@@ -333,14 +333,14 @@ void ClearMultiDamage () {
     multi_damage = 0.000;
     blood_count = 0.000;
     puff_count = 0.000;
-};
+}
 
 void ApplyMultiDamage () {
     if ( !multi_ent ) {
         return ;
     }
     TF_T_Damage (multi_ent,self,self,multi_damage,2.000,1.000);
-};
+}
 
 void AddMultiDamage (entity hit, float damage) {
     if ( !hit ) {
@@ -353,7 +353,7 @@ void AddMultiDamage (entity hit, float damage) {
     } else {
         multi_damage = (multi_damage + damage);
     }
-};
+}
 
 void Multi_Finish () {
     if ( puff_count ) {
@@ -374,7 +374,7 @@ void Multi_Finish () {
         WriteCoord (4.000,blood_org_z);
         multicast (puff_org,2.000);
     }
-};
+}
 
 void TraceAttack (float damage, vector dir) {
     local vector vel;
@@ -390,7 +390,7 @@ void TraceAttack (float damage, vector dir) {
     } else {
         puff_count = (puff_count + 1.000);
     }
-};
+}
 
 void FireBullets (float shotcount, vector dir, vector spread) {
     local vector direction;
@@ -425,12 +425,12 @@ void FireBullets (float shotcount, vector dir, vector spread) {
     if ( (self.current != 32768.000)) {
         Multi_Finish ();
     }
-};
+}
 
 float SetAttribute (float cur_val, float new_val) {
     if (modetype & 2) return(cur_val);
     return(new_val);
-};
+}
 
 void W_FireShotgun () {
     local vector dir;
@@ -446,7 +446,7 @@ void W_FireShotgun () {
     deathmsg = 1.000;
     EjectShell ();
     FireBullets (6.000,dir,'0.040 0.040 0.000');
-};
+}
 
 void W_FireSuperShotgun () {
     local vector dir;
@@ -466,7 +466,7 @@ void W_FireSuperShotgun () {
     deathmsg = 2.000;
     EjectShell ();
     FireBullets (14.000,dir,'0.140 0.080 0.000');
-};
+}
 
 void FireSniperBullet (vector direction, float damage, vector spread) {
     local vector src;
@@ -483,7 +483,7 @@ void FireSniperBullet (vector direction, float damage, vector spread) {
     puff_org = (trace_endpos + direction);
     Multi_Finish ();
     ApplyMultiDamage ();
-};
+}
 
 void W_FireSniperRifle () {
     local vector dir;
@@ -575,7 +575,7 @@ void W_FireSniperRifle () {
         TraceAttack ((self.heat * dam_mult),dir);
     }
     ApplyMultiDamage ();
-};
+}
 
 void W_FireAutoRifle () {
     local vector dir;
@@ -591,7 +591,7 @@ void W_FireAutoRifle () {
     dir = v_forward;
     deathmsg = 19.000;
     FireSniperBullet (dir,8.000, '0.04 0.04 0');
-};
+}
 
 void () s_plasma1 = [ 0.000, s_plasma2 ] {};
 
@@ -613,7 +613,7 @@ void Plasma_stream_touch () {
     deathmsg = 18.000;
     sound (self,0.000,"weapons/laserhit.wav",1.000,1.000);
     dremove(self);
-};
+}
 #ifdef CSQC
 
 float(entity toplayer) SendPlasma = {
@@ -625,7 +625,7 @@ float(entity toplayer) SendPlasma = {
     WriteAngle(MSG_ENTITY, self.angles_y);
     //WriteByte(MSG_ENTITY, ));
     return 1.000;
-};
+}
 #endif
 
 void W_FirePlasma () {
@@ -670,7 +670,7 @@ void W_FirePlasma () {
     //newmis.starttime = time;
     plasma.Version+=1;
 #endif
-};
+}
 
 void W_FireAssaultCannon () {
     local vector dir;
@@ -693,10 +693,10 @@ void W_FireAssaultCannon () {
         FireBullets (5, dir, '0.1 0.1 0');
     }
     EjectShell ();
-};
+}
 
 void () s_explode1 = [ 0.000, s_explode2 ] {
-};
+}
 
 void () s_explode2 = [ 1.000, s_explode3 ] {};
 
@@ -730,7 +730,7 @@ void MissileRadius () {
     WriteCoord (4.000,self.origin_z);
     multicast (self.origin,1.000);
     dremove (self);
-};
+}
 
 void T_MissileTouch () {
     local float damg;
@@ -754,7 +754,7 @@ void T_MissileTouch () {
         TF_T_Damage (other,self,self.owner,damg,2.000,0.000);
     }
     MissileRadius();
-};
+}
 
 void RealisticMove () {
     if (self.attack_finished < time) {
@@ -771,7 +771,7 @@ void RealisticMove () {
         self.velocity_z = self.velocity_z + (self.movedir_z / 20);
     }
     self.nextthink = time + 0.01;
-};
+}
 #ifdef CSQC
 
 float(entity toplayer) SendRocket = {
@@ -783,7 +783,7 @@ float(entity toplayer) SendRocket = {
     WriteAngle(MSG_ENTITY, self.angles_y);
     //WriteByte(MSG_ENTITY, ));
     return 1.000;
-};
+}
 #endif
 
 void W_FireRocket () {
@@ -839,7 +839,7 @@ void W_FireRocket () {
     //newmis.starttime = time;
     newmis.Version+=1;
 #endif
-};
+}
 
 void LightningHit (entity from, float damage) {
     WriteByte (4.000,23.000);
@@ -850,7 +850,7 @@ void LightningHit (entity from, float damage) {
     multicast (trace_endpos,2.000);
     deathmsg = 7.000;
     TF_T_Damage (trace_ent,from,from,damage,2.000,8.000);
-};
+}
 
 void LightningDamage (vector p1, vector p2, entity from, float damage) {
     local entity e1;
@@ -883,7 +883,7 @@ void LightningDamage (vector p1, vector p2, entity from, float damage) {
     if ( (((trace_ent != e1) && (trace_ent != e2)) && trace_ent.takedamage) ) {
         LightningHit (from,damage);
     }
-};
+}
 
 void W_FireLightning () {
     local vector org;
@@ -927,7 +927,7 @@ void W_FireLightning () {
     WriteCoord (4.000,trace_endpos_z);
     multicast (org,1.000);
     LightningDamage (self.origin,(trace_endpos + (v_forward * 4.000)),self,30.000);
-};
+}
 
 void ExplodeOldPipebomb (entity player) {
     local entity old;
@@ -954,7 +954,7 @@ void ExplodeOldPipebomb (entity player) {
         }
         old = find (old,classname,"pipebomb");
     }
-};
+}
 
 void GrenadeExplode () {
     local entity te;
@@ -993,7 +993,7 @@ void GrenadeExplode () {
     WriteCoord (4.000,self.origin_z);
     multicast (self.origin,1.000);
     dremove (self);
-};
+}
 
 void PipebombTouch () {
     if ( (other.classname != "worldspawn") ) {
@@ -1003,7 +1003,7 @@ void PipebombTouch () {
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
-};
+}
 
 void GrenadeTouch () {
     if ( (other == self.owner) ) {
@@ -1017,7 +1017,7 @@ void GrenadeTouch () {
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
-};
+}
 
 void InitGrenade (entity te) {
     local vector pvel;
@@ -1056,7 +1056,7 @@ void InitGrenade (entity te) {
     setmodel (te,"progs/grenade2.mdl");
     setsize (te,'0.000 0.000 0.000','0.000 0.000 0.000');
     setorigin (te,self.origin);
-};
+}
 #ifdef CSQC
 
 float(entity toplayer) SendGrenade = {
@@ -1071,7 +1071,7 @@ float(entity toplayer) SendGrenade = {
     WriteAngle(MSG_ENTITY, self.angles_x);
     WriteAngle(MSG_ENTITY, self.angles_y);
     return 1.000;
-};
+}
 #endif
 
 void W_FireGrenade () {
@@ -1087,7 +1087,7 @@ void W_FireGrenade () {
     newmis.starttime = time;
     newmis.Version+=1;
 #endif
-};
+}
 
 void W_FirePipebomb () {
     newmis = spawn ();
@@ -1114,7 +1114,7 @@ void W_FirePipebomb () {
     newmis.starttime = time;
     newmis.Version+=1;
 #endif
-};
+}
 #ifdef CSQC
 
 float(entity toplayer) SendNail = {
@@ -1128,7 +1128,7 @@ float(entity toplayer) SendNail = {
     WriteAngle(MSG_ENTITY, self.angles_y);
     //WriteByte(MSG_ENTITY, );
     return 1.000;
-};
+}
 #endif
 
 void spike_touch ();
@@ -1169,7 +1169,7 @@ void launch_spike (vector org, vector dir) {
     newmis.starttime = time;
     newmis.Version+=1;
 #endif
-};
+}
 
 void W_FireSuperSpikes () {
     local vector dir;
@@ -1187,7 +1187,7 @@ void W_FireSuperSpikes () {
     setmodel (newmis,"progs/s_spike.mdl");
     setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
     KickPlayer (-2.000,self);
-};
+}
 
 void W_FireSpikes (float ox) {
     local vector dir;
@@ -1225,7 +1225,7 @@ void W_FireSpikes (float ox) {
         launch_spike (((self.origin + '0.000 0.000 16.000') + (v_right * ox)),dir);
     }
     KickPlayer (-2.000,self);
-};
+}
 //.float hit_z;
 
 void spike_touch () {
@@ -1261,7 +1261,7 @@ void spike_touch () {
         multicast (self.origin,1.000);
     }
     dremove (self);
-};
+}
 
 void superspike_touch () {
     local float ndmg;
@@ -1307,27 +1307,27 @@ void superspike_touch () {
         multicast (self.origin,1.000);
     }
     dremove (self);
-};
+}
 
 void set_ca_none () {
     self.currentammo = 0.000;
     self.weaponmodel = "";
-};
+}
 
 void set_ca_hook () {
     self.currentammo = 0.000;
     self.weaponmodel = "progs/v_grap.mdl";
-};
+}
 
 void set_ca_medi () {
     self.currentammo = self.ammo_medikit;
     self.weaponmodel = "progs/v_medi.mdl";
-};
+}
 
 void set_ca_span () {
     self.currentammo = self.ammo_cells;
     self.weaponmodel = "progs/v_span.mdl";
-};
+}
 
 void set_ca_axe () {
     self.currentammo = 0.000;
@@ -1340,21 +1340,21 @@ void set_ca_axe () {
             self.weaponmodel = "progs/v_axe.mdl";
         }
     }
-};
+}
 
 void set_ca_sr () {
     self.currentammo = self.ammo_shells;
     self.weaponmodel = "progs/v_srifle.mdl";
     self.items = (self.items | 256.000);
     self.weapon = 1.000;
-};
+}
 
 void set_ca_ar () {
     self.currentammo = self.ammo_shells;
     self.items = (self.items | 256.000);
     self.weaponmodel = "progs/v_srifle.mdl";
     self.weapon = 2.000;
-};
+}
 
 void set_ca_sg () {
     self.currentammo = self.ammo_shells;
@@ -1364,7 +1364,7 @@ void set_ca_sg () {
     }
     self.items = (self.items | 256.000);
     self.weapon = 1.000;
-};
+}
 
 void set_ca_ssg () {
     self.currentammo = self.ammo_shells;
@@ -1374,21 +1374,21 @@ void set_ca_ssg () {
     }
     self.items = (self.items | 256.000);
     self.weapon = 2.000;
-};
+}
 
 void set_ca_ng () {
     self.currentammo = self.ammo_nails;
     self.weaponmodel = "progs/v_nail.mdl";
     self.items = (self.items | 512.000);
     self.weapon = 4.000;
-};
+}
 
 void set_ca_sng () {
     self.currentammo = self.ammo_nails;
     self.weaponmodel = "progs/v_nail2.mdl";
     self.items = (self.items | 512.000);
     self.weapon = 8.000;
-};
+}
 
 void set_ca_gren () {
     self.currentammo = self.ammo_rockets;
@@ -1396,17 +1396,17 @@ void set_ca_gren () {
         self.weaponmodel = "progs/v_rock.mdl";
     }
     self.items = (self.items | 1024.000);
-};
+}
 
 void set_ca_gl () {
     set_ca_gren();
     self.weapon = 16.000;
-};
+}
 
 void set_ca_pbl () {
     set_ca_gren();
     self.weapon = 32.000;
-};
+}
 
 void set_ca_ft () {
     self.currentammo = self.ammo_cells;
@@ -1417,7 +1417,7 @@ void set_ca_ft () {
     }
     self.items = (self.items | 2048.000);
     self.weapon = 8.000;
-};
+}
 
 void set_ca_rl () {
     self.currentammo = self.ammo_rockets;
@@ -1426,7 +1426,7 @@ void set_ca_rl () {
     }
     self.items = (self.items | 1024.000);
     self.weapon = 32.000;
-};
+}
 
 void set_ca_ic () {
     self.currentammo = self.ammo_rockets;
@@ -1437,28 +1437,28 @@ void set_ca_ic () {
     }
     self.items = (self.items | 1024.000);
     self.weapon = 32.000;
-};
+}
 
 void set_ca_ac () {
     self.currentammo = self.ammo_shells;
     self.weaponmodel = "progs/v_asscan.mdl";
     self.items = (self.items | 256.000);
     self.weapon = 64.000;
-};
+}
 
 void set_ca_lg () {
     self.currentammo = self.ammo_cells;
     self.weaponmodel = "progs/v_light.mdl";
     self.items = (self.items | 2048.000);
     self.weapon = 64.000;
-};
+}
 
 void set_ca_pl () {
     self.currentammo = self.ammo_cells;
     self.items = (self.items | 2048.000);
     self.weaponmodel = "progs/v_plasma.mdl";
     self.weapon = 16.000;
-};
+}
 
 void set_ca_tr () {
     self.currentammo = self.ammo_shells;
@@ -1470,14 +1470,14 @@ void set_ca_tr () {
 
     self.items = (self.items | 256.000);
     self.weapon = 1.000;
-};
+}
 
 void set_ca_rg () {
     self.currentammo = self.ammo_nails;
     self.weaponmodel = "progs/v_rail.mdl";
     self.items = (self.items | 512.000);
     self.weapon = 1.000;
-};
+}
 
 var void() weapnum_setammo[21] = {
     set_ca_none,
@@ -1501,7 +1501,7 @@ var void() weapnum_setammo[21] = {
     set_ca_pl,
     set_ca_tr,
     set_ca_rg
-};
+}
 
 void W_SetCurrentAmmo () {
     local float i, b;
@@ -1525,7 +1525,7 @@ void W_SetCurrentAmmo () {
     if (self.StatusBarSize)
         self.StatusRefreshTime = (time + 0.100);
     self.weaponframe = 0.000;
-};
+}
 
 float W_BestWeapon () {
 	local float it;
@@ -1557,7 +1557,7 @@ float W_BestWeapon () {
 	} else {
 		return ( 0.000 );
 	}
-};
+}
 
 float W_CheckNoAmmo () {
     if ( (self.current == WEAP_MEDIKIT) ) {
@@ -1585,7 +1585,7 @@ float W_CheckNoAmmo () {
     sprint (self,2.000,"not enough ammo.\n");
     return ( 0.000 );
 
-};
+}
 
 void player_axe1 ();
 
@@ -1631,7 +1631,7 @@ void player_chain5 ();
 
 void attack_none () {
     player_run();
-};
+}
 
 void attack_axe () {
     local float r;
@@ -1651,7 +1651,7 @@ void attack_axe () {
             }
         }
     }
-};
+}
 
 void attack_medi () {
     local float r;
@@ -1671,19 +1671,19 @@ void attack_medi () {
         }
     }
     Attack_Finished (0.500);
-};
+}
 
 void attack_span () {
     Attack_Finished (0.500);
     sound (self,CHAN_WEAPON,"weapons/ax1.wav",1.000,1.000);
     player_axe1 ();
-};
+}
 
 void attack_hook () {
     if ( !self.hook_out )
         player_chain1 ();
     Attack_Finished (0.100);
-};
+}
 
 void attack_sg () {
     if ( (CheckForReload ()) ) return ;
@@ -1692,7 +1692,7 @@ void attack_sg () {
     self.reload_shotgun = (self.reload_shotgun + 1.000);
     CheckForReload ();
     Attack_Finished (0.500);
-};
+}
 
 void attack_ssg () {
     if ( (CheckForReload ()) )   return ;
@@ -1701,31 +1701,31 @@ void attack_ssg () {
     self.reload_super_shotgun = (self.reload_super_shotgun + 2.000);
     CheckForReload ();
     Attack_Finished (0.700);
-};
+}
 
 void attack_ng () {
     player_nail1 ();
-};
+}
 
 void gren_end () {
     self.reload_grenade_launcher = (self.reload_grenade_launcher + 1.000);
     CheckForReload ();
     Attack_Finished (0.600);
-};
+}
 
 void attack_gl () {
     if ( (CheckForReload ()) )  return ;
     player_rocket1 ();
     W_FireGrenade ();
     gren_end();
-};
+}
 
 void attack_pbl () {
     if ( (CheckForReload ()) )  return ;
     player_rocket1 ();
     W_FirePipebomb ();
     gren_end();
-};
+}
 
 void attack_rl () {
     if ( (CheckForReload ()) )  return ;
@@ -1736,13 +1736,13 @@ void attack_rl () {
         self.StatusRefreshTime = (time + 0.100);
     CheckForReload ();
     Attack_Finished (0.800);
-};
+}
 
 void attack_lg () {
     player_light1 ();
     Attack_Finished (1.100);
     sound (self,0.000,"weapons/lstart.wav",1.000,1.000);
-};
+}
 
 void attack_sr () {
     if (self.flags & 512.000) {
@@ -1750,19 +1750,19 @@ void attack_sr () {
         W_FireSniperRifle ();
         Attack_Finished (1.700);
     }
-};
+}
 
 void attack_pl () {
     player_autorifle1 ();
     W_FirePlasma ();
     Attack_Finished (0.125);
-};
+}
 
 void attack_ar () {
     player_autorifle1 ();
     W_FireAutoRifle ();
     Attack_Finished (0.100);
-};
+}
 
 void attack_ac () {
     self.ammo_cells = (self.ammo_cells - 7.000);
@@ -1773,7 +1773,7 @@ void attack_ac () {
     TeamFortress_SetSpeed (self);
     player_assaultcannonup1 ();
 
-};
+}
 
 void attack_ft () {
     player_shot1 ();
@@ -1783,7 +1783,7 @@ void attack_ft () {
     } else {
         Attack_Finished (0.150);
     }
-};
+}
 
 void attack_ic () {
     player_rocket1 ();
@@ -1793,14 +1793,14 @@ void attack_ic () {
     } else {
         Attack_Finished (0.900);
     }
-};
+}
 
 void attack_tr () {
     sound (self,CHAN_WEAPON,"weapons/dartgun.wav",1.000,1.000);
     player_shot1 ();
     W_FireTranq ();
     Attack_Finished (1.500);
-};
+}
 
 void attack_rg () {
     sound (self,CHAN_WEAPON,"weapons/railgun.wav",1.000,1.000);
@@ -1810,7 +1810,7 @@ void attack_rg () {
     else
         W_FireRail ();
     Attack_Finished (0.400);
-};
+}
 
 var void() weapnum_attack[21] = {
     attack_none,
@@ -1834,7 +1834,7 @@ var void() weapnum_attack[21] = {
     attack_pl,
     attack_tr,
     attack_rg
-};
+}
 
 void W_Attack () {
     local float b;
@@ -1891,7 +1891,7 @@ void W_Attack () {
     }
     self.th_missile = weapnum_attack[i];
     self.th_missile();
-};
+}
 
 void W_PrintWeaponMessage () {
     if ( (self.current == WEAP_AXE) ) {
@@ -1935,7 +1935,7 @@ void W_PrintWeaponMessage () {
             }
         }
     }
-};
+}
 
 float imp_1 () {
     if (self.carried & WEAP_MEDIKIT) {
@@ -1945,7 +1945,7 @@ float imp_1 () {
     } else {
         return (WEAP_AXE);
     }
-};
+}
 
 void W_ChangeWeapon () {
     local float fl, imp;
@@ -2062,7 +2062,7 @@ void W_ChangeWeapon () {
     self.current = fl;
     W_SetCurrentAmmo ();
     W_PrintWeaponMessage ();
-};
+}
 
 void SetWeapon (float weap) {
     self.last = self.current;
@@ -2071,7 +2071,7 @@ void SetWeapon (float weap) {
         W_SetCurrentAmmo ();
         W_PrintWeaponMessage ();
     }
-};
+}
 
 void PrevWeaponCmd () {
     local float i;
@@ -2102,7 +2102,7 @@ void PrevWeaponCmd () {
             }
         }
     }
-};
+}
 
 void NextWeaponCmd () {
     local float i;
@@ -2134,7 +2134,7 @@ void NextWeaponCmd () {
             }
         }
     }
-};
+}
 // everytime a impulse is pressed, this procedure is looped. If the time pressed is greated then 1 frame,
 // it is loooped many times until impulse = 0.
 // therefore after each procedure the addition of impulse = 0 and a return was added after each procedure
@@ -2155,7 +2155,7 @@ float CheckClanMode () {
         return 1;
     }
     return 0;
-};
+}
 
 void SuperDamageSound () {
     if ( (self.super_damage_finished > time) ) {
@@ -2165,7 +2165,7 @@ void SuperDamageSound () {
         }
     }
     return ;
-};
+}
 
 void W_WeaponFrame () {
     local vector tv;
@@ -2303,7 +2303,7 @@ void W_WeaponFrame () {
             }
         }
     }
-};
+}
 
 void RemoveGrenade () {
     local entity te;
@@ -2338,4 +2338,4 @@ void RemoveGrenade () {
         }
         dremove (self);
     }
-};
+}

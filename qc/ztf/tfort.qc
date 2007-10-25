@@ -116,7 +116,7 @@ void UseSpecialSkill () {
             }
         }
     }
-};
+}
 
 void TeamFortress_DisplayLegalClasses () {
     local float gotone;
@@ -199,7 +199,7 @@ void TeamFortress_DisplayLegalClasses () {
         sprint (self,2.000,"RandomPC");
     }
     sprint (self,2.000,"\n");
-};
+}
 
 void TeamFortress_ChangeClass (float inp) {
     if ( (!self.playerclass) ) {
@@ -284,7 +284,7 @@ void TeamFortress_ChangeClass (float inp) {
     }
     self.nextpc = 0.000;
     PutClientInServer();
-};
+}
 
 void TeamFortress_Inventory () {
     local entity tg;
@@ -367,7 +367,7 @@ void TeamFortress_Inventory () {
         sprint (self,2.000,ac);
     }
     sprint (self,2.000,"\n");
-};
+}
 
 void TeamFortress_ShowTF () {
     local string st;
@@ -402,7 +402,7 @@ void TeamFortress_ShowTF () {
     } else {
         sprint (self,2.000,"Full TeamScore Off.\n");
     }
-};
+}
 
 void TeamFortress_GrenadePrimed ();
 
@@ -490,7 +490,7 @@ void TeamFortress_PrimeGrenade () {
         tGrenade.heat = ((time + 3.000) + 0.800);
     }
     tGrenade.think = TeamFortress_GrenadePrimed;
-};
+}
 
 void TeamFortress_GrenadePrimed () {
     local entity user;
@@ -628,14 +628,14 @@ void TeamFortress_GrenadePrimed () {
     self = self.owner;
     self = oldself;
     dremove (self);
-};
+}
 
 void TeamFortress_ThrowGrenade () {
     if ( !(self.tfstate & 1.000) ) {
         return ;
     }
     self.tfstate = (self.tfstate | 1024.000);
-};
+}
 
 float IsLegalClass (float pc) {
     local float bit;
@@ -682,7 +682,7 @@ float IsLegalClass (float pc) {
         return ( 0.000 );
     }
     return ( 1.000 );
-};
+}
 
 void TeamFortress_SetSpeed (entity p) {
     //local string sp;
@@ -800,7 +800,7 @@ void TeamFortress_SetSpeed (entity p) {
             }
         }
     }
-};
+}
 
 void TeamFortress_SetHealth () {
     if (modetype & 8) {
@@ -856,7 +856,7 @@ void TeamFortress_SetHealth () {
         }
     }
     self.health = self.max_health;
-};
+}
 string TeamFortress_GetSkin (entity p) {
     local float pc;
     local string st;
@@ -958,7 +958,7 @@ string TeamFortress_GetSkin (entity p) {
         }
     }
     return ( "base" );
-};
+}
 
 void TeamFortress_SetSkin (entity p) {
     local string st;
@@ -975,7 +975,7 @@ void TeamFortress_SetSkin (entity p) {
     } else {
         stuffcmd (p,"skin base\n");
     }
-};
+}
 
 void TeamFortress_SetEquipment () {
     local entity te;
@@ -1491,7 +1491,7 @@ void TeamFortress_SetEquipment () {
         self.ammo_cells = self.maxammo_cells;
     }
     W_SetCurrentAmmo ();
-};
+}
 
 float TeamFortress_GetMaxAmmo (entity Retriever, float AmmoType) {
     if ( (AmmoType == 256.000) ) {
@@ -1520,7 +1520,7 @@ float TeamFortress_GetMaxAmmo (entity Retriever, float AmmoType) {
     dprint ("Error in TeamFortress_GetMaxAmmo()\n");
     dprint ("Invalid ammo type passed.\n");
     return ( 0.000 );
-};
+}
 
 float TeamFortress_CanGetWeapon (entity Retriever, float WeaponType) {
     //if (modetype & 8) return 1.000;
@@ -1528,7 +1528,7 @@ float TeamFortress_CanGetWeapon (entity Retriever, float WeaponType) {
         return ( 1.000 );
     }
     return ( 0.000 );
-};
+}
 
 void TeamFortress_DescribeArmor (entity Player, float Armorclass) {
     if ( (Armorclass == 0.000) ) {
@@ -1550,11 +1550,11 @@ void TeamFortress_DescribeArmor (entity Player, float Armorclass) {
         sprint (Player,2.000,"Kevlar ");
     }
     sprint (Player,2.000,"armor\n");
-};
+}
 
 void TeamFortress_AddBackpackItems (entity Retriever, entity Items) {
     return ;
-};
+}
 string TeamFortress_GetClassName (float pc) {
     if ( (pc == 1.000) ) {
         return ( "Scout" );
@@ -1594,7 +1594,7 @@ string TeamFortress_GetClassName (float pc) {
         return ( "Observer" );
     }
     return ( "" );
-};
+}
 
 void TeamFortress_PrintClassName (entity Viewer, float pc, float rpc) {
     local string st;
@@ -1604,7 +1604,7 @@ void TeamFortress_PrintClassName (entity Viewer, float pc, float rpc) {
         sprint (Viewer,2.000," (Random)");
     }
     sprint (Viewer,2.000,"\n");
-};
+}
 
 void TeamFortress_RemoveTimers () {
     local entity te;
@@ -1688,7 +1688,7 @@ void TeamFortress_RemoveTimers () {
         self.current_menu = 1.000;
     }
     self.impulse = 0.000;
-};
+}
 
 void TeamFortress_SetupRespawn () {
     local float restime;
@@ -1711,7 +1711,7 @@ void TeamFortress_SetupRespawn () {
             sprint (self,2.000," seconds till respawn.\n");
         }
     }
-};
+}
 
 void TeamFortress_CheckClassStats () {
     if ( (self.armortype > self.armor_allowed) ) {
@@ -1786,7 +1786,7 @@ void TeamFortress_CheckClassStats () {
             }
         }
     }
-};
+}
 
 void TeamFortress_AssaultWeapon () {
     self.impulse = 0.000;
@@ -1810,7 +1810,7 @@ void TeamFortress_AssaultWeapon () {
     }
     self.current = WEAP_ASSAULT_CANNON;
     W_SetCurrentAmmo ();
-};
+}
 
 void TeamFortress_ExplodePerson (entity Gren) {
     Gren.owner.tfstate = (Gren.owner.tfstate - (Gren.owner.tfstate & 1.000));
@@ -1950,7 +1950,7 @@ void TeamFortress_ExplodePerson (entity Gren) {
         }
     }
     dremove (Gren);
-};
+}
 
 void NormalGrenadeTouch () {
     if ( (other == self.owner) ) {
@@ -1960,7 +1960,7 @@ void NormalGrenadeTouch () {
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
-};
+}
 
 void NormalGrenadeExplode () {
     deathmsg = 8.000;
@@ -1972,7 +1972,7 @@ void NormalGrenadeExplode () {
     WriteCoord (4.000,self.origin_z);
     multicast (self.origin,1.000);
     dremove (self);
-};
+}
 
 void TeamFortress_DisplayDetectionItems () {
     local entity Goal;
@@ -2023,7 +2023,7 @@ void TeamFortress_DisplayDetectionItems () {
             sprint (self,2.000,"Item is missing.\n");
         }
     }
-};
+}
 
 void BioInfection_Decay () {
     local entity te;
@@ -2073,7 +2073,7 @@ void BioInfection_Decay () {
     deathmsg = 13.000;
     TF_T_Damage (self.owner,self,self.enemy,8.000,1.000,0.000);
     SpawnBlood (self.owner.origin,30.000);
-};
+}
 
 void TeamFortress_Alias (string halias, float himpulse1, float himpulse2) {
     local string imp;
@@ -2088,7 +2088,7 @@ void TeamFortress_Alias (string halias, float himpulse1, float himpulse2) {
         stuffcmd (self,imp);
     }
     stuffcmd (self,"\"\n");
-};
+}
 
 void TeamFortress_Regenerate () {
     local float value;
@@ -2119,13 +2119,13 @@ void TeamFortress_Regenerate () {
             self.owner.health = self.owner.max_health;
         }
     }
-};
+}
 
 float crossproduct (vector veca, vector vecb) {
     local float result;
     result = ((veca_x * vecb_y) - (vecb_x * veca_y));
     return ( result );
-};
+}
 
 void TF_AddFrags (entity pl, float fr, float type) {
     local entity e;
@@ -2155,7 +2155,7 @@ void TF_AddFrags (entity pl, float fr, float type) {
             pl.frags = pl.frags + fr;
         }
     }
-};
+}
 
 void TeamFortress_ExecClassScript (entity p) {
     local string st;
@@ -2204,7 +2204,7 @@ void TeamFortress_ExecClassScript (entity p) {
             }
         }
     }
-};
+}
 
 void TeamFortress_ExecMapScript (entity p) {
     local string st;
@@ -2218,4 +2218,4 @@ void TeamFortress_ExecMapScript (entity p) {
         stuffcmd (p,mapname);
         stuffcmd (p,".cfg\n");
     }
-};
+}

@@ -27,7 +27,7 @@
 
 void MsgAdminDis () {
     sprint(self,2,"Administrators disabled by server.\n");
-};
+}
 
 void ImpulseCommands () {
     local float imp;
@@ -298,7 +298,7 @@ void ImpulseCommands () {
         }
     }
     self.impulse = 0.000;
-};
+}
 /*
 
    void MsgLimitedAcc () {
@@ -540,7 +540,7 @@ void CommandImpulses () {
     self.impulse = 0.000;
     return;
 
-};
+}
 
 float PreMatchImpulses () {
     local float imp;
@@ -611,7 +611,7 @@ float PreMatchImpulses () {
         }
     }
     return(0.000);
-};
+}
 
 float DeadImpulses () {
     local string st;
@@ -808,4 +808,4 @@ float DeadImpulses () {
         }
     }
     return(0.000);
-};
+}

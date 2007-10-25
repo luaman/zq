@@ -53,7 +53,7 @@ void Admin_CountPlayers () {
         st = ftos (nump);
         sprint (self,2.000,"Players In Team4: ",st,"\n");
     }
-};
+}
 
 void Admin_ListPlayers () {
     local entity pl;
@@ -90,7 +90,7 @@ void Admin_ListPlayers () {
     }
     sprint (self,2.000,"End of player list\n");
     pl = world;
-};
+}
 
 void Admin_ListIPs () {
     local entity pl;
@@ -124,7 +124,7 @@ void Admin_ListIPs () {
     }
     sprint (self,2.000,"End of player list\n");
     pl = world;
-};
+}
 
 void Admin_DoKick () {
     bprint (2.000,self.admin_use.netname," was kicked by ",self.netname,"\n");
@@ -132,7 +132,7 @@ void Admin_DoKick () {
     stuffcmd (self.admin_use,"cmd drop\n");
     self.admin_mode = 0.000;
     self.admin_use = world;
-};
+}
 
 void Admin_KickNum (float num) {
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
@@ -153,7 +153,7 @@ void Admin_KickNum (float num) {
         self.admin_mode = 0.000;
         return ;
     }
-};
+}
 
 void Admin_CycleDeal () {
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
@@ -194,7 +194,7 @@ void Admin_CycleDeal () {
         self.admin_mode = 0.000;
         sprint (self,2.000,"End of player list\n");
     }
-};
+}
 
 void CeaseFire_think () {
     local entity te;
@@ -208,7 +208,7 @@ void CeaseFire_think () {
         te = te.nextp;
     }
     self.nextthink = (time + 5.000);
-};
+}
 
 void Admin_CeaseFire () {
     local entity te;
@@ -251,12 +251,12 @@ void Admin_CeaseFire () {
             te = te.nextp;
         }
     }
-};
+}
 
 void autokick_think () {
     self.owner.teamkills = 0.000;
     dremove (self);
-};
+}
 
 void CheckAutoKick (entity p) {
     local float rnum;
@@ -289,7 +289,7 @@ void CheckAutoKick (entity p) {
             }
         }
     }
-};
+}
 
 void() AbortElect = {
     local entity p;
@@ -310,13 +310,13 @@ void() AbortElect = {
     p = find(world, classname, "electguard");
     // Kill timeout checker entity
     if (p.classname == "electguard") dremove(p);
-};
+}
 
 void() ElectThink = {
     bprint(2, "The voting has timed out.\nElection aborted\n");
     self.nextthink = -1;
     AbortElect();
-};
+}
 
 void() VoteAdmin = {
     local float f1, f2, f3;
@@ -374,7 +374,7 @@ void() VoteAdmin = {
         electguard.think = ElectThink;
         electguard.nextthink = time + 60;
     }
-};
+}
 
 void() VoteYes = {
     local float f1, f2, f3;
@@ -428,7 +428,7 @@ void() VoteYes = {
         if (f1 > 1) bprint(2, "s");
         bprint(2, " needed\n");
     }
-};
+}
 
 void() VoteNo = {
     local float f1, f2;
@@ -451,4 +451,4 @@ void() VoteNo = {
     bprint(2, "", tmp, "‘ more vote");
     if (f1 > 1) bprint(2, "s");
     bprint(2, " needed\n");
-};
+}

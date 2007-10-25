@@ -6,7 +6,7 @@ void TeamFortress_DetpackExplode ();
 
 void () trigger_reactivate = {
     self.solid = 1.000;
-};
+}
 
 void () multi_wait = {
     if ( self.max_health ) {
@@ -14,7 +14,7 @@ void () multi_wait = {
         self.takedamage = 1.000;
         self.solid = 2.000;
     }
-};
+}
 
 void () multi_trigger = {
     if ( (self.nextthink > time) ) {
@@ -41,17 +41,17 @@ void () multi_trigger = {
         self.nextthink = (time + 0.100);
         self.think = SUB_Remove;
     }
-};
+}
 
 void () multi_killed = {
     self.enemy = damage_attacker;
     multi_trigger ();
-};
+}
 
 void () multi_use = {
     self.enemy = activator;
     multi_trigger ();
-};
+}
 
 void () multi_touch = {
     local entity te;
@@ -78,7 +78,7 @@ void () multi_touch = {
     }
     self.enemy = other;
     multi_trigger ();
-};
+}
 
 #ifdef Q3_ENTS
 string __fullspawndata;
@@ -138,7 +138,7 @@ void () trigger_multiple = {
             self.touch = multi_touch;
         }
     }
-};
+}
 
 void () trigger_once = {
     if ( (CheckExistence () == 0.000) ) {
@@ -147,7 +147,7 @@ void () trigger_once = {
     }
     self.wait = -1.000;
     trigger_multiple ();
-};
+}
 
 void () trigger_relay = {
     if ( (CheckExistence () == 0.000) ) {
@@ -155,7 +155,7 @@ void () trigger_relay = {
         return ;
     }
     self.use = SUB_UseTargets;
-};
+}
 
 void () trigger_secret = {
     if ( (CheckExistence () == 0.000) ) {
@@ -180,7 +180,7 @@ void () trigger_secret = {
         }
     }
     trigger_multiple ();
-};
+}
 
 void () counter_use = {
     self.count = (self.count - 1.000);
@@ -210,7 +210,7 @@ void () counter_use = {
     }
     self.enemy = activator;
     multi_trigger ();
-};
+}
 
 void () trigger_counter = {
     if ( (CheckExistence () == 0.000) ) {
@@ -222,7 +222,7 @@ void () trigger_counter = {
         self.count = 2.000;
     }
     self.use = counter_use;
-};
+}
 
 void () play_teleport = {
     local float v;
@@ -247,7 +247,7 @@ void () play_teleport = {
     }
     sound (self,2.000,tmpstr,1.000,1.000);
     dremove (self);
-};
+}
 
 void (vector org) spawn_tfog = {
     local entity s;
@@ -261,7 +261,7 @@ void (vector org) spawn_tfog = {
     WriteCoord (4.000,org_y);
     WriteCoord (4.000,org_z);
     multicast (org,1.000);
-};
+}
 
 void () tdeath_touch = {
     if ( (other == self.owner) ) {
@@ -279,7 +279,7 @@ void () tdeath_touch = {
     if ( other.health ) {
         TF_T_Damage (other,self,self,5000.000, 1.000 , 0.000);
     }
-};
+}
 
 void (vector org, entity death_owner) spawn_tdeath = {
     local entity death;
@@ -295,7 +295,7 @@ void (vector org, entity death_owner) spawn_tdeath = {
     death.think = SUB_Remove;
     death.owner = death_owner;
     force_retouch = 2.000;
-};
+}
 
 void () teleport_touch = {
     local entity t;
@@ -357,7 +357,7 @@ void () teleport_touch = {
         other.velocity = (v_forward * 300.000);
     }
     other.flags = (other.flags - (other.flags & 512.000));
-};
+}
 
 void () info_teleport_destination = {
     if ( (CheckExistence () == 0.000) ) {
@@ -371,13 +371,13 @@ void () info_teleport_destination = {
     if ( !self.targetname ) {
         objerror ("no targetname");
     }
-};
+}
 
 void () teleport_use = {
     self.nextthink = (time + 0.200);
     force_retouch = 2.000;
     self.think = SUB_Null;
-};
+}
 
 void () trigger_teleport = {
     local vector o;
@@ -396,7 +396,7 @@ void () trigger_teleport = {
         o = ((self.mins + self.maxs) * 0.500);
         ambientsound (o,"ambience/hum1.wav",0.500,3.000);
     }
-};
+}
 
 void () trigger_skill_touch = {
     local entity te;
@@ -413,12 +413,12 @@ void () trigger_skill_touch = {
         return ;
     }
     cvar_set ("skill",self.message);
-};
+}
 
 void () trigger_setskill = {
     dremove (self);
     return ;
-};
+}
 
 void () trigger_onlyregistered_touch = {
     local entity te;
@@ -448,7 +448,7 @@ void () trigger_onlyregistered_touch = {
             sound (other,4.000,"misc/talk.wav",1.000,1.000);
         }
     }
-};
+}
 
 void () trigger_onlyregistered = {
     if ( (CheckExistence () == 0.000) ) {
@@ -458,7 +458,7 @@ void () trigger_onlyregistered = {
     precache_sound ("misc/talk.wav");
     InitTrigger ();
     self.touch = trigger_onlyregistered_touch;
-};
+}
 //
 //void () hurt_on = {
 // self.solid = 1.000;
@@ -495,7 +495,7 @@ void () hurt_touch = {
         // self.think = hurt_on;
         //  self.nextthink = (time + 0.100);
     }
-};
+}
 
 void () hurt_use = {
     if ( (self.spawnflags & 1.000) ) {
@@ -505,7 +505,7 @@ void () hurt_use = {
         self.touch = SUB_Null;
         self.spawnflags = (self.spawnflags + 1.000);
     }
-};
+}
 
 void () trigger_hurt = {
     if ( (CheckExistence () == 0.000) ) {
@@ -518,7 +518,7 @@ void () trigger_hurt = {
     if ( !self.dmg ) {
         self.dmg = 5.000;
     }
-};
+}
 
 void () trigger_push_touch = {
     local entity te;
@@ -549,7 +549,7 @@ void () trigger_push_touch = {
     if ( (self.spawnflags & 1.000) ) {
         dremove (self);
     }
-};
+}
 
 void() trigger_push_findtarget = {
     local float flighttime, dist, grav;
@@ -574,7 +574,7 @@ void() trigger_push_findtarget = {
     // finally calculate the velocity
     self.movedir = normalize(self.movedir) * (dist / flighttime);
     self.movedir_z = flighttime * grav;
-};
+}
 
 void () trigger_push = {
     if ( (CheckExistence () == 0.000) ) {
@@ -593,7 +593,7 @@ void () trigger_push = {
         self.think = trigger_push_findtarget;
         self.nextthink = time + 0.2;
     }
-};
+}
 
 void () func_pushable = {trigger_push();
                         };
@@ -609,7 +609,7 @@ void () trigger_monsterjump_touch = {
     }
     other.flags = (other.flags - 512.000);
     other.velocity_z = self.height;
-};
+}
 
 void () trigger_monsterjump = {
     if ( (CheckExistence () == 0.000) ) {
@@ -627,4 +627,4 @@ void () trigger_monsterjump = {
     }
     InitTrigger ();
     self.touch = trigger_monsterjump_touch;
-};
+}

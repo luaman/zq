@@ -80,7 +80,7 @@ void CheckModel () {
     if (self.mdl == "models/ball.mdl")
         self.mdl = "progs/ball2.mdl";
 
-};
+}
 
 void UpdateAbbreviations (entity Goal) {
     local string st;
@@ -265,7 +265,7 @@ void UpdateAbbreviations (entity Goal) {
         }
         Goal.has_abbreviated = 1.000;
     }
-};
+}
 
 void TF_PlaceItem () {
     local float oldz;
@@ -303,7 +303,7 @@ void TF_PlaceItem () {
     }
     self.item_list = item_list_bit;
     item_list_bit = (item_list_bit * 2.000);
-};
+}
 
 void TF_StartItem () {
     UpdateAbbreviations (self);
@@ -312,7 +312,7 @@ void TF_StartItem () {
     if ( (self.goal_state == 3.000) ) {
         RemoveGoal (self);
     }
-};
+}
 
 void TF_PlaceGoal () {
     local float oldz;
@@ -341,7 +341,7 @@ void TF_PlaceGoal () {
     self.movetype = 0.000;
     self.velocity = '0.000 0.000 0.000';
     self.oldorigin = self.origin;
-};
+}
 
 void TF_StartGoal () {
     UpdateAbbreviations (self);
@@ -351,7 +351,7 @@ void TF_StartGoal () {
     if ( (self.goal_state == 3.000) ) {
         RemoveGoal (self);
     }
-};
+}
 
 float CheckExistence () {
     UpdateAbbreviations (self);
@@ -371,11 +371,11 @@ float CheckExistence () {
         }
     }
     return (1.000);
-};
+}
 
 void info_tfdetect () {
     UpdateAbbreviations (self);
-};
+}
 
 void info_player_teamspawn () {
     if ((CheckExistence () == 0.000)) {
@@ -415,12 +415,12 @@ void info_player_teamspawn () {
             }
         }
     }
-};
+}
 
 void i_p_t () {
     self.classname = "info_player_teamspawn";
     info_player_teamspawn ();
-};
+}
 
 void info_tfgoal () {
     if ((CheckExistence () == 0.000)) {
@@ -485,12 +485,12 @@ void info_tfgoal () {
     if ( (self.goal_state == 0.000) ) {
         self.goal_state = 2.000;
     }
-};
+}
 
 void i_t_g () {
     self.classname = "info_tfgoal";
     info_tfgoal ();
-};
+}
 
 void info_tfgoal_timer () {
     if ((CheckExistence () == 0.000)) {
@@ -523,12 +523,12 @@ void info_tfgoal_timer () {
     }
     setsize (self,self.goal_min,self.goal_max);
     TF_StartGoal ();
-};
+}
 
 void i_t_t () {
     self.classname = "info_tfgoal_timer";
     info_tfgoal_timer ();
-};
+}
 
 void item_flag_team1 ();
 
@@ -598,7 +598,7 @@ void item_tfgoal () {
     }
     setsize (self,self.goal_min,self.goal_max);
     TF_StartItem ();
-};
+}
 
 void ParseTFDetect (entity AD) {
     local float fl;
@@ -672,7 +672,7 @@ void ParseTFDetect (entity AD) {
     if ( (AD.maxammo_cells == -1.000) ) {
         store_obs.maxammo_shells = (store_obs.maxammo_shells | 8.000);
     }
-};
+}
 
 entity Finditem (float ino) {
     local entity tg;
@@ -689,7 +689,7 @@ entity Finditem (float ino) {
     dprint (st);
     dprint (".\n");
     return(world);
-};
+}
 
 entity Findgoal (float gno) {
     local entity tg;
@@ -706,7 +706,7 @@ entity Findgoal (float gno) {
     dprint (st);
     dprint (".\n");
     return(world);
-};
+}
 
 entity Findteamspawn (float gno) {
     local entity tg;
@@ -723,7 +723,7 @@ entity Findteamspawn (float gno) {
     dprint (st);
     dprint (".\n");
     return(world);
-};
+}
 
 void InactivateGoal (entity Goal) {
     if ( (Goal.goal_state == 1.000) ) {
@@ -739,7 +739,7 @@ void InactivateGoal (entity Goal) {
             setmodel (Goal,Goal.mdl);
         }
     }
-};
+}
 
 void RestoreGoal (entity Goal) {
     if ( (Goal.goal_state == 3.000) ) {
@@ -758,7 +758,7 @@ void RestoreGoal (entity Goal) {
             setmodel (Goal,Goal.mdl);
         }
     }
-};
+}
 
 void RemoveGoal (entity Goal) {
     Goal.solid = 0.000;
@@ -766,7 +766,7 @@ void RemoveGoal (entity Goal) {
     if ( (Goal.mdl != string_null) ) {
         setmodel (Goal,string_null);
     }
-};
+}
 
 float IsAffectedBy (entity Goal, entity Player, entity AP) {
     local float genv;
@@ -812,7 +812,7 @@ float IsAffectedBy (entity Goal, entity Player, entity AP) {
         return ( 1.000 );
     }
     return ( 0.000 );
-};
+}
 
 void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
     local entity oldself;
@@ -1030,7 +1030,7 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
     if ( (Goal.goal_result & 32.000) ) {
         ForceRespawn (Player);
     }
-};
+}
 
 void RemoveResults (entity Goal, entity Player) {
     local entity oldself;
@@ -1158,7 +1158,7 @@ void RemoveResults (entity Goal, entity Player) {
     TeamFortress_CheckClassStats ();
     W_SetCurrentAmmo ();
     self = oldself;
-};
+}
 
 float APMeetsCriteria (entity Goal,entity AP) {
     local float gotone;
@@ -1273,7 +1273,7 @@ float APMeetsCriteria (entity Goal,entity AP) {
         }
     }
     return (1.000);
-};
+}
 
 void SetupRespawn (entity Goal) {
     if ( (Goal.search_time != 0.000) ) {
@@ -1296,12 +1296,12 @@ void SetupRespawn (entity Goal) {
         }
     }
     InactivateGoal (Goal);
-};
+}
 
 void DoRespawn () {
     RestoreGoal (self);
     InactivateGoal (self);
-};
+}
 
 float Activated (entity Goal, entity AP) {
     local float APMet;
@@ -1333,7 +1333,7 @@ float Activated (entity Goal, entity AP) {
         }
     }
     return ( Act );
-};
+}
 
 void AttemptToActivate (entity Goal, entity AP, entity ActivatingGoal) {
     local entity te;
@@ -1358,7 +1358,7 @@ void AttemptToActivate (entity Goal, entity AP, entity ActivatingGoal) {
             }
         }
     }
-};
+}
 
 void DoGoalWork (entity Goal, entity AP) {
     local entity te;
@@ -1431,7 +1431,7 @@ void DoGoalWork (entity Goal, entity AP) {
             }
         }
     }
-};
+}
 
 void DoGroupWork (entity Goal, entity AP) {
     local string st;
@@ -1532,7 +1532,7 @@ void DoGroupWork (entity Goal, entity AP) {
             tg = find (tg,classname,"info_player_teamspawn");
         }
     }
-};
+}
 
 void DoItemGroupWork (entity Item, entity AP) {
     local entity tg;
@@ -1596,7 +1596,7 @@ void DoItemGroupWork (entity Item, entity AP) {
             }
         }
     }
-};
+}
 
 void DoTriggerWork (entity Goal, entity AP) {
     local entity t;
@@ -1631,14 +1631,14 @@ void DoTriggerWork (entity Goal, entity AP) {
             activator = AP;
         } while ( (t != world) );
     }
-};
+}
 
 void DelayedResult () {
     if ( (self.enemy.goal_state == 4.000) ) {
         DoResults (self.enemy,self.owner,self.weapon);
     }
     dremove (self);
-};
+}
 
 void PrintSelfCTF (entity te) {
     local float winners;
@@ -1668,7 +1668,7 @@ void PrintSelfCTF (entity te) {
             }
         }
     }
-};
+}
 
 void DoResults (entity Goal, entity AP, float addb) {
     local entity te;
@@ -1880,7 +1880,7 @@ void DoResults (entity Goal, entity AP, float addb) {
     if ( (Goal.classname == "info_tfgoal") ) {
         SetupRespawn (Goal);
     }
-};
+}
 
 void tfgoal_touch () {
     local entity te;
@@ -1916,7 +1916,7 @@ void tfgoal_touch () {
         }
     }
     AttemptToActivate (self,other,self);
-};
+}
 
 void info_tfgoal_use () {
     if ( (cb_prematch) ) {
@@ -1924,7 +1924,7 @@ void info_tfgoal_use () {
     }
     if (round_over) return;
     AttemptToActivate (self,activator,self);
-};
+}
 
 void tfgoal_timer_tick () {
     if ( (self.goal_state != 3.000) ) {
@@ -1936,7 +1936,7 @@ void tfgoal_timer_tick () {
             self.nextthink = (time + self.search_time);
         }
     }
-};
+}
 
 void item_tfgoal_touch () {
     local entity te;
@@ -2035,7 +2035,7 @@ void item_tfgoal_touch () {
             }
         }
     }
-};
+}
 
 void tfgoalitem_GiveToPlayer (entity Item, entity AP, entity Goal) {
     Item.owner = AP;
@@ -2085,7 +2085,7 @@ void tfgoalitem_GiveToPlayer (entity Item, entity AP, entity Goal) {
     }
     DoResults (Item,AP,1.000);
     DoItemGroupWork (Item,AP);
-};
+}
 
 void ReturnItem () {
     local entity te;
@@ -2122,7 +2122,7 @@ void ReturnItem () {
         }
     }
     dremove (self);
-};
+}
 
 void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
     local entity te;
@@ -2300,7 +2300,7 @@ void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
         }
     }
     objerror ("Invalid method passed into tfgoalitem_RemoveFromPlayer\n");
-};
+}
 
 void tfgoalitem_dropthink () {
     local float pos;
@@ -2350,13 +2350,13 @@ void tfgoalitem_dropthink () {
             self.think = tfgoalitem_remove;
         }
     }
-};
+}
 
 void tfgoalitem_droptouch () {
     self.touch = item_tfgoal_touch;
     self.nextthink = (time + 4.250);
     self.think = tfgoalitem_dropthink;
-};
+}
 
 void tfgoalitem_drop (entity Item, float PAlive, entity P) {
     local string st;
@@ -2402,7 +2402,7 @@ void tfgoalitem_drop (entity Item, float PAlive, entity P) {
         Item.nextthink = (time + 5.000);
         Item.think = tfgoalitem_dropthink;
     }
-};
+}
 
 void tfgoalitem_remove () {
     local entity te;
@@ -2418,7 +2418,7 @@ void tfgoalitem_remove () {
         return ;
     }
     dremove (self);
-};
+}
 
 void tfgoalitem_checkgoalreturn (entity Item) {
     local entity te;
@@ -2431,7 +2431,7 @@ void tfgoalitem_checkgoalreturn (entity Item) {
             }
         }
     }
-};
+}
 string ItemStatus (entity Goal, entity Player, entity Item) {
     local string tmp;
     if ( (Item.goal_state == 1.000) ) {
@@ -2499,7 +2499,7 @@ string ItemStatus (entity Goal, entity Player, entity Item) {
             }
         }
     }
-};
+}
 
 void info_player_team2 () {
     ctfmap = 1;
@@ -2507,7 +2507,7 @@ void info_player_team2 () {
     self.team_no = 2.000;
     self.goal_effects = 1.000;
     self.team_str_home = "ts2";
-};
+}
 
 void info_player_team1 () {
     ctfmap = 1;
@@ -2515,7 +2515,7 @@ void info_player_team1 () {
     self.team_no = 1.000;
     self.goal_effects = 1.000;
     self.team_str_home = "ts1";
-};
+}
 
 void item_flag_team1 () {
     local entity dp;
@@ -2588,7 +2588,7 @@ void item_flag_team1 () {
     setsize (dp,dp.goal_min,dp.goal_max);
     dp.nextthink = (time + 0.200);
     dp.think = TF_PlaceGoal;
-};
+}
 
 void item_flag_team2 () {
     local entity dp;
@@ -2661,7 +2661,7 @@ void item_flag_team2 () {
     setsize (dp,dp.goal_min,dp.goal_max);
     dp.nextthink = (time + 0.200);
     dp.think = TF_PlaceGoal;
-};
+}
 
 void CTF_FlagCheck () {
     local entity te;
@@ -2697,7 +2697,7 @@ void CTF_FlagCheck () {
         }
     }
     self.nextthink = (time + 30.000);
-};
+}
 
 void ForceRespawn (entity P) {
     local entity spot;
@@ -2749,7 +2749,7 @@ void ForceRespawn (entity P) {
         }
     }
     self = oldself;
-};
+}
 
 void DropGoalItems () {
     local entity te;
@@ -2762,4 +2762,4 @@ void DropGoalItems () {
         }
         te = find (te,classname,"item_tfgoal");
     }
-};
+}

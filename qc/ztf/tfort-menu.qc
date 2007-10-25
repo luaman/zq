@@ -139,7 +139,7 @@ void ResetMenu () {
     }
     self.menu_count = 25.000;
     self.current_menu = 1.000;
-};
+}
 
 void Player_Menu () {
     if ( (self.menu_count > 25.000) ) {
@@ -233,7 +233,7 @@ void Player_Menu () {
 			self.current_menu = 0.000;
 		}
 	}
-};
+}
 
 void DisplayMenu (float menu_no) {
     self.current_menu = menu_no;
@@ -244,7 +244,7 @@ void DisplayMenu (float menu_no) {
             Menu_Class ();
         }
     }
-};
+}
 
 void Menu_Team () {
     if ( ((toggleflags & 64.000) && teamplay) ) {
@@ -274,7 +274,7 @@ void Menu_Team () {
             }
         }
     }
-};
+}
 
 void Menu_Team_Input (float inp) {
     if ((inp  > 5.000) && (inp < 10.000)) {
@@ -308,7 +308,7 @@ void Menu_Team_Input (float inp) {
     }
     ResetMenu ();
     self.impulse = 0.000;
-};
+}
 
 void Menu_Class () {
     local entity AD;
@@ -355,7 +355,7 @@ void Menu_Class () {
             CenterPrint (self," Choose Your Class \n\n“‘ Scout   \n”‘ Sniper  \n•‘ Soldier \n–‘ Demoman \n—‘ Medic   \n˜‘ HWGuy   \n™‘ Pyro    \nš‘ Spy     \n›‘ Engineer\n’‘ RandomPC\n");
         }
     }
-};
+}
 
 void Menu_Class_Input (float inp) {
     local float new_class;
@@ -381,7 +381,7 @@ void Menu_Class_Input (float inp) {
         }
     }
     self.menu_displaytime = 0.000;
-};
+}
 
 void Menu_Drop () {
     if ( (self.playerclass == 9.000) ) {
@@ -389,11 +389,11 @@ void Menu_Drop () {
     } else {
         CenterPrint (self,"\nDrop Ammo:                    \n“‘ Shells                    \n”‘ Nails                     \n•‘ Rockets                   \n–‘ Cells                     \n—‘ Grenade 1                 \n˜‘ Grenade 2                 \n™‘ Nothing                   \n");
     }
-};
+}
 
 void Menu_RepeatHelp () {
     CenterPrint (self,"Press › to see this help again\n");
-};
+}
 
 void Menu_Drop_Input (float inp) {
     if ( ((inp > 0.000) && (inp < 7.000)) ) {
@@ -402,7 +402,7 @@ void Menu_Drop_Input (float inp) {
 
     ResetMenu ();
     self.impulse = 0.000;
-};
+}
 
 void Menu_Input (float inp) {
     if ( (self.current_menu == 2.000) ) {
@@ -465,7 +465,7 @@ void Menu_Input (float inp) {
             }
         }
     }
-};
+}
 
 void Menu_Intro () {
     local string st1;
@@ -477,7 +477,7 @@ void Menu_Intro () {
     } else {
         CenterPrint (self,"Welcome to Oz Team Fortress 1.77a\nŸ\nhttp://quakeworld.nu/forum/\n");
     }
-};
+}
 
 void Menu_ClassHelp () {
     if ( (self.menu_displaytime < 5.000) ) {
@@ -561,7 +561,7 @@ void Menu_ClassHelp () {
             }
         }
     }
-};
+}
 
 void Menu_StuffClassHelp () {
     if ( (self.playerclass == 1.000) ) {
@@ -626,11 +626,11 @@ void Menu_StuffClassHelp () {
             }
         }
     }
-};
+}
 
 void Menu_ClassHelp2 () {
     CenterPrint (self,"Commands:\ninv       : Show inventory \n+gren1    : Throw grenade 1\n+gren2    : Throw Grenade 2\nreload    : Force a reload \ndropammo  : drop some ammo \n\n");
-};
+}
 
 void Menu_ClassHelp_Input (float inp) {
     if (TeamFortress_TeamIsCivilian(self.pteam.team)) {
@@ -643,7 +643,7 @@ void Menu_ClassHelp_Input (float inp) {
         self.menu_displaytime = 0.000;
         self.impulse = 0.000;
     }
-};
+}
 
 void Menu_Speech_Sound (float type, float num) {
     local string snd;
@@ -699,19 +699,19 @@ void Menu_Speech_Sound (float type, float num) {
         te = te.nextp;
     }
     self.pteam.last_sound = time + 2.000;
-};
+}
 
 void Menu_Speech_Defensive () {
     CenterPrint (self," Defensive Commands: \n\n“‘ Incoming Flag!\n”‘ Flag in Danger\n•‘ Defend Flag!  \n–‘ Repair Sentry \n’‘ Cancel        \n");
-};
+}
 
 void Menu_Speech_Offensive () {
     CenterPrint (self," Offensive Commands: \n\n“‘ I Have the Flag!\n”‘ I'm Attacking   \n•‘ Take the Flag   \n–‘ Cover me        \n—‘ Attack Sentry   \n’‘ Cancel          \n");
-};
+}
 
 void Menu_Speech_General () {
     CenterPrint (self," General Commands: \n\n“‘ Save Me!     \n”‘ Need Engineer\n•‘ No Problem   \n–‘ GO GO GO!    \n—‘ Give me ammo \n˜‘ Move Please  \n’‘ Cancel       \n");
-};
+}
 
 void Menu_Speech_Def_Input (float inp) {
     if ((inp == 10) || (self.pteam.last_sound > time )) {
@@ -724,7 +724,7 @@ void Menu_Speech_Def_Input (float inp) {
         return ;
     }
 
-};
+}
 
 void Menu_Speech_Off_Input (float inp) {
     if ((inp == 10) || (self.pteam.last_sound > time )) {
@@ -737,7 +737,7 @@ void Menu_Speech_Off_Input (float inp) {
         return ;
     }
 
-};
+}
 
 void Menu_Speech_Gen_Input (float inp) {
     if ((inp == 10) || (self.pteam.last_sound > time )) {
@@ -750,11 +750,11 @@ void Menu_Speech_Gen_Input (float inp) {
         return ;
     }
 
-};
+}
 
 void Menu_Speech () {
     CenterPrint (self," Speech Command: \n\n“‘ Defensive  \n”‘ Offensive  \n•‘ General    \n’‘ Cancel     \n");
-};
+}
 
 void Menu_Speech_Input (float inp) {
     if (inp == 10) {
@@ -779,56 +779,56 @@ void Menu_Speech_Input (float inp) {
         self.menu_displaytime = 0.000;
         self.impulse = 0.000;
     }
-};
+}
 
 // ************** UPGRADES ***************
 void Menu_Upgrade_Weapons () {
     CenterPrint (self," Defensive Commands: \n\n“‘ Incoming Flag!\n”‘ Flag in Danger\n•‘ Defend Flag!  \n–‘ Repair Sentry \n’‘ Cancel        \n");
-};
+}
 
 void Menu_Upgrade_Armor () {
     CenterPrint (self," Offensive Commands: \n\n“‘ I Have the Flag!\n”‘ I'm Attacking   \n•‘ Take the Flag   \n–‘ Cover me        \n—‘ Attack Sentry   \n’‘ Cancel          \n");
-};
+}
 
 void Menu_Upgrade_Movement () {
     CenterPrint (self," General Commands: \n\n“‘ Save Me!     \n”‘ Need Engineer\n•‘ No Problem   \n–‘ GO GO GO!    \n—‘ Give me ammo \n˜‘ Move Please  \n’‘ Cancel       \n");
-};
+}
 
 void Menu_Upgrade_Other () {
     CenterPrint (self," General Commands: \n\n“‘ Save Me!     \n”‘ Need Engineer\n•‘ No Problem   \n–‘ GO GO GO!    \n—‘ Give me ammo \n˜‘ Move Please  \n’‘ Cancel       \n");
-};
+}
 
 void Menu_Upgrade_Wea_Input (float inp) {
     if ((inp == 10)) {
         ResetMenu ();
         return ;
     }
-};
+}
 
 void Menu_Upgrade_Arm_Input (float inp) {
     if ((inp == 10)) {
         ResetMenu ();
         return ;
     }
-};
+}
 
 void Menu_Upgrade_Mov_Input (float inp) {
     if ((inp == 10)) {
         ResetMenu ();
         return ;
     }
-};
+}
 
 void Menu_Upgrade_Oth_Input (float inp) {
     if ((inp == 10)) {
         ResetMenu ();
         return ;
     }
-};
+}
 
 void Menu_Upgrades () {
     CenterPrint (self," Upgrade Command: \n\n“‘ Weapons  \n”‘ Armor  \n•‘ Movement   \n4. Other    \n’‘ Cancel     \n");
-};
+}
 
 void Menu_Upgrades_Input (float inp) {
     if (inp == 10) {
@@ -859,7 +859,7 @@ void Menu_Upgrades_Input (float inp) {
         self.menu_displaytime = 0.000;
         self.impulse = 0.000;
     }
-};
+}
 
 void Menu_Spy () {
     if ( ((self.effects & (8.000 | 4.000)) || (self.is_unabletospy == 1.000)) ) {
@@ -895,7 +895,7 @@ void Menu_Spy () {
             }
         }
     }
-};
+}
 
 void Menu_Spy_Input (float inp) {
     if ( ((inp == 1.000) || (inp == 2.000)) ) {
@@ -956,7 +956,7 @@ void Menu_Spy_Input (float inp) {
             }
         }
     }
-};
+}
 
 void Menu_Spy_Skin () {
     if (TeamFortress_TeamIsCivilian(self.undercover_team)) {
@@ -964,7 +964,7 @@ void Menu_Spy_Skin () {
         return;
     }
     CenterPrint (self," Change Skin to: \n“‘ Scout   \n”‘ Sniper  \n•‘ Soldier \n–‘ Demoman \n—‘ Medic   \n˜‘ Hvwep   \n™‘ Pyro    \nš‘ Spy     \n›‘ Engineer\n\n");
-};
+}
 
 void Menu_Spy_Skin_Input (float inp) {
     if (TeamFortress_TeamIsCivilian(self.undercover_team)) {
@@ -981,7 +981,7 @@ void Menu_Spy_Skin_Input (float inp) {
         ResetMenu ();
         self.impulse = 0.000;
     }
-};
+}
 
 void Menu_Spy_Color () {
     if ( (store_obs.cnt == 0.000) ) {
@@ -995,7 +995,7 @@ void Menu_Spy_Color () {
     } else {
         CenterPrint (self," Change Color to the Same Color as: \n\n“‘ Team One  \n”‘ Team Two  \n•‘ Team Three\n–‘ Team Four \n\n");
     }
-};
+}
 
 void Menu_Spy_Color_Input (float inp) {
     if ( ((inp >= 1.000) && (inp <= store_obs.cnt)) ) {
@@ -1010,7 +1010,7 @@ void Menu_Spy_Color_Input (float inp) {
         ResetMenu ();
         self.impulse = 0.000;
     }
-};
+}
 
 void Menu_Engineer () {
     local string s_action;
@@ -1038,7 +1038,7 @@ void Menu_Engineer () {
         }
     }
     centerprint (self,s_action,s_disp,s_sentry,s_nothing);
-};
+}
 
 void Menu_Engineer_Input (float inp) {
     if ( (((inp == 1.000) && (self.ammo_cells >= 100.000)) && (self.has_dispenser != 1.000)) ) {
@@ -1075,11 +1075,11 @@ void Menu_Engineer_Input (float inp) {
             }
         }
     }
-};
+}
 
 void Menu_EngineerFix_Dispenser () {
     CenterPrint (self,"Action:                            \n“‘ Put Ammo into Dispenser     \n”‘ Put Armor into Dispenser    \n•‘ Repair Dispenser            \n–‘ Dismantle Dispenser         \n—‘ Nothing                     \n\n");
-};
+}
 
 float SetAttribute (float cur_ammo, float new_ammo);
 
@@ -1174,7 +1174,7 @@ void Menu_EngineerFix_Dispenser_Input (float inp) {
         }
         W_SetCurrentAmmo ();
     }
-};
+}
 
 void Menu_EngineerFix_SentryGun () {
     if ( ((self.building.weapon < 3.000) && (self.ammo_cells >= 130.000)) ) {
@@ -1182,7 +1182,7 @@ void Menu_EngineerFix_SentryGun () {
     } else {
         CenterPrint (self,"Action:                            \n“‘ Put Ammo into Sentry Gun    \n\n•‘ Repair Sentry Gun           \n–‘ Dismantle Sentry Gun        \n—‘ Nothing                     \n\n˜‘ Rotate SentryGun            \n");
     }
-};
+}
 
 void Menu_EngineerFix_SentryGun_Input (float inp) {
     local float am;
@@ -1290,11 +1290,11 @@ void Menu_EngineerFix_SentryGun_Input (float inp) {
         }
         W_SetCurrentAmmo ();
     }
-};
+}
 
 void Menu_Dispenser () {
     CenterPrint (self,"Use Dispenser:                     \n“‘ Withdraw some ammo          \n”‘ Withdraw some Armor         \n•‘ Nothing                     \n\n");
-};
+}
 
 void Menu_Dispenser_Input (float inp) {
     local float am;
@@ -1363,4 +1363,4 @@ void Menu_Dispenser_Input (float inp) {
         }
         W_SetCurrentAmmo ();
     }
-};
+}

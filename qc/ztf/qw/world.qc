@@ -18,7 +18,7 @@ void Eluminate () {
     lightstyle (10.000,"mmamammmmammamamaaamammma");
     lightstyle (11.000,"abcdefghijklmnopqrrqponmlkjihgfedcba");
     lightstyle (63.000,"a");
-};
+}
 
 void Deluminate () {
     lights = 0;
@@ -35,7 +35,7 @@ void Deluminate () {
     lightstyle (10.000,"a");
     lightstyle (11.000,"a");
     lightstyle (63.000,"a");
-};
+}
 
 void main () {
     precache_file ("qwprogs.dat");
@@ -110,7 +110,7 @@ void main () {
     precache_sound ("ambience/water1.wav");
     precache_sound ("ambience/wind2.wav");
     precache_file2 ("gfx/pop.lmp");
-};
+}
 entity lastspawn;
 
 void worldspawn () {
@@ -364,14 +364,14 @@ void worldspawn () {
     precache_sound2 ("speech/saveme1.wav");
     precache_sound2 ("speech/saveme2.wav");
     Eluminate();
-};
+}
 
 void StartFrame () {
     teamplay = cvar ("teamplay");
     timelimit = (cvar ("timelimit") * 60.000);
     fraglimit = cvar ("fraglimit");
     deathmatch = cvar ("deathmatch");
-};
+}
 entity bodyque_head;
 
 void InitBodyQue () {
@@ -384,7 +384,7 @@ void InitBodyQue () {
     bodyque_head.owner.owner.owner = spawn ();
     bodyque_head.owner.owner.owner.classname = "bodyque";
     bodyque_head.owner.owner.owner.owner = bodyque_head;
-};
+}
 
 void CopyToBodyQue (entity ent) {
     if ( cb_prematch ) {
@@ -403,4 +403,4 @@ void CopyToBodyQue (entity ent) {
     setsize (bodyque_head,ent.mins,ent.maxs);
     // makestatic(bodyque_head);
     bodyque_head = bodyque_head.owner;
-};
+}

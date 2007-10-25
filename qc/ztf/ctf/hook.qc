@@ -8,7 +8,7 @@ void (entity rhook) Reset_Grapple = {
     rhook.owner.weaponframe = 0.000;
     rhook.think = SUB_Remove;
     rhook.nextthink = time;
-};
+}
 
 void () Grapple_Track = {
     //local vector org;
@@ -19,7 +19,7 @@ void () Grapple_Track = {
         self.velocity = self.enemy.velocity;
     }
     self.nextthink = (time + 0.100);
-};
+}
 
 entity () MakeLink = {
     newmis = spawn ();
@@ -31,7 +31,7 @@ entity () MakeLink = {
     setorigin (newmis,self.origin);
     setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
     return ( newmis );
-};
+}
 
 void () Remove_Chain = {
     self.think = SUB_Remove;
@@ -44,7 +44,7 @@ void () Remove_Chain = {
             self.goalentity.goalentity.nextthink = time;
         }
     }
-};
+}
 
 void () Update_Chain = {
     local vector temp;
@@ -58,7 +58,7 @@ void () Update_Chain = {
     setorigin (self.goalentity,(self.owner.origin + (temp * 0.500)));
     setorigin (self.goalentity.goalentity,(self.owner.origin + (temp * 0.750)));
     self.nextthink = (time + 0.100);
-};
+}
 
 void () Build_Chain = {
     self.goalentity = MakeLink ();
@@ -67,7 +67,7 @@ void () Build_Chain = {
     self.goalentity.owner = self.owner;
     self.goalentity.goalentity = MakeLink ();
     self.goalentity.goalentity.goalentity = MakeLink ();
-};
+}
 
 float () Check_Overhead = {
     local vector src;
@@ -104,7 +104,7 @@ float () Check_Overhead = {
         return ( 0.000 );
     }
     return ( 1.000 );
-};
+}
 
 void () Anchor_Grapple = {
     local float test;
@@ -153,7 +153,7 @@ void () Anchor_Grapple = {
     self.nextthink = time;
     self.solid = 0.000;
     self.touch = SUB_Null;
-};
+}
 
 void () Throw_Grapple = {
     if ( self.hook_out ) {
@@ -177,7 +177,7 @@ void () Throw_Grapple = {
     setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
     self.hook_out = 1.000;
     self.fire_held_down = 1.000;
-};
+}
 
 void () Service_Grapple = {
     local vector hook_dir;
@@ -202,4 +202,4 @@ void () Service_Grapple = {
         }
         self.lefty = 0.000;
     }
-};
+}

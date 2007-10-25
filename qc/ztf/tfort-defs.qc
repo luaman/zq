@@ -504,11 +504,11 @@ vector	VEC_HULL3_MAX;
 
 float SetPlayerStat30(float def) {
     return self.no_grenades_1;
-};
+}
 
 float SetPlayerStat31(float def) {
     return self.no_grenades_2;
-};
+}
 #endif
 
 void KickPlayer (float psize, entity p) {
@@ -531,7 +531,7 @@ void KickPlayer (float psize, entity p) {
     WriteByte (1.000,35.000);
     }
      */
-};
+}
 
 const float WEAP_HOOK                = 1;
 const float WEAP_MEDIKIT             = 2;
