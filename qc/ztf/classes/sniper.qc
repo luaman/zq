@@ -26,40 +26,38 @@
 */
 
 void SniperSight_Update ();
-/*
 
-   void RemoveFreeze () {
-   entity te;
-   te = player_head
-   while ( te != world )
-   {
-
-   if (te.classname == "player")
-   {
-
-   if (te.is_frozen)
-   {
-   te.is_frozen = 0.000;
-   te.velocity = te.movedir;
-   te.tfstate = (te.tfstate - (te.tfstate & 65536.000));
-   sprint(te,2.000,"Freeze wears off\n");
-   TeamFortress_SetSpeed (te);
-   }
-   }
-   if ((te.classname == "grenade") || (te.classname == "rocket"))
-   {
-   if (te.is_frozen)
-   {
-   te.is_frozen = 0.000;
-   te.gravity = 1.000;
-   te.velocity = te.movedir;
-   }
-   }
-   te = te.nextp;
-   }
-   dremove (self);
-   };
- */
+#if 0
+void RemoveFreeze () {
+	entity te;
+	te = player_head
+		while ( te != world )
+		{
+			if (te.classname == "player")
+			{
+				if (te.is_frozen)
+				{
+					te.is_frozen = 0.000;
+					te.velocity = te.movedir;
+					te.tfstate = (te.tfstate - (te.tfstate & 65536.000));
+					sprint(te,2.000,"Freeze wears off\n");
+					TeamFortress_SetSpeed (te);
+				}
+			}
+			if ((te.classname == "grenade") || (te.classname == "rocket"))
+			{
+				if (te.is_frozen)
+				{
+					te.is_frozen = 0.000;
+					te.gravity = 1.000;
+					te.velocity = te.movedir;
+				}
+			}
+			te = te.nextp;
+		}
+	dremove (self);
+}
+#endif
 
 void RemoveFreeze () {
     self.owner.is_frozen = 1.000;
@@ -68,7 +66,7 @@ void RemoveFreeze () {
     sprint(self.owner,2.000,"Freeze wears off\n");
     TeamFortress_SetSpeed (self.owner);
     dremove (self);
-};
+}
 
 void FreezePlayer () {
     self.owner.is_frozen = 1.000;
@@ -81,7 +79,7 @@ void FreezePlayer () {
     sprint(self.owner,2.000,"Freeze bitch!\n");
     self.think = RemoveFreeze;
     self.nextthink = time + 2.6;
-};
+}
 
 void FreezeGrenadeExplode () {
     entity te;
@@ -110,23 +108,22 @@ void FreezeGrenadeExplode () {
             newmis.nextthink = time + 0.1;
             newmis.owner = te;
         }
-        /*
-           if ((te.classname == "grenade") || (te.classname == "rocket")) {
-           if (!te.is_frozen) {
-           newmis = spawn ();
-           newmis.owner = te;
-           newmis.netname = "freezetimer";
-           newmis.pteam = self.owner.pteam;
-           newmis.classname = "timer";
-           newmis.think = RemoveFreeze;
-           newmis.nextthink = time + 2.5;
-           te.is_frozen = 1.000;
-           te.movedir = te.velocity;
-           te.velocity = '0 0 0';
-           }
-           }
-         */
-
+#if 0
+		if ((te.classname == "grenade") || (te.classname == "rocket")) {
+			if (!te.is_frozen) {
+				newmis = spawn ();
+				newmis.owner = te;
+				newmis.netname = "freezetimer";
+				newmis.pteam = self.owner.pteam;
+				newmis.classname = "timer";
+				newmis.think = RemoveFreeze;
+				newmis.nextthink = time + 2.5;
+				te.is_frozen = 1.000;
+				te.movedir = te.velocity;
+				te.velocity = '0 0 0';
+			}
+		}
+#endif
         te = te.chain2;
     }
     WriteByte (4.000,23.000);
@@ -136,7 +133,7 @@ void FreezeGrenadeExplode () {
     WriteCoord (4.000,self.origin_z);
     multicast (self.origin,1.000);
     dremove (self);
-};
+}
 
 void TeamFortress_SniperWeapon () {
     self.impulse = 0.000;
@@ -156,7 +153,7 @@ void TeamFortress_SniperWeapon () {
         self.current = WEAP_SNIPER_RIFLE;
     }
     W_SetCurrentAmmo ();
-};
+}
 
 void TF_zoom (float zoom_level) {
     string zl;
@@ -167,23 +164,23 @@ void TF_zoom (float zoom_level) {
     stuffcmd (self,"fov ");
     stuffcmd (self,zl);
     stuffcmd (self,"\n");
-};
+}
 
 void () MakeDot1 = [ 0.000, MakeDot1 ] {
     SniperSight_Update();
-};
+}
 
 void () MakeDot2 = [ 1.000, MakeDot2 ] {
     SniperSight_Update();
-};
+}
 
 void () MakeDot3 =  [ 2.000, MakeDot3 ] {
     SniperSight_Update();
-};
+}
 
 void () MakeDot4 = [ 3.000, MakeDot4 ] {
     SniperSight_Update();
-};
+}
 
 void SniperSight_Update () {
     vector org;
@@ -205,7 +202,7 @@ void SniperSight_Update () {
     self.angles = vectoangles (v_forward);
     setorigin (self,trace_endpos - (v_forward * 1.000));
     self.nextthink = (time + 0.030);
-};
+}
 
 void SniperSight_Create () {
     entity sight;
@@ -236,7 +233,7 @@ void SniperSight_Create () {
         }
     }
     sight.nextthink = (time + 0.050);
-};
+}
 
 void TeamFortress_AutoZoomToggle () {
     if ( (self.tfstate & 4096.000) ) {
@@ -247,4 +244,4 @@ void TeamFortress_AutoZoomToggle () {
         self.tfstate = (self.tfstate | 4096.000);
         sprint (self,2.000,"autozoom OFF\n");
     }
-};
+}

@@ -39,7 +39,7 @@ void NailGrenadeTouch () {
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
-};
+}
 
 void NailGrenadeExplode () {
     entity te;
@@ -85,14 +85,14 @@ void NailGrenadeExplode () {
     self.avelocity = '0.000 500.000 0.000';
     self.nextthink = (time + 0.700);
     self.think = NailGrenadeNailEm;
-};
+}
 
 void NailGrenadeNailEm () {
     self.velocity = '0.000 0.000 0.000';
     self.nextthink = (time + 0.100);
     self.think = NailGrenadeLaunchNail;
     self.playerclass = 0.000;
-};
+}
 
 void NailGrenadeLaunchNail () {
     float i;
@@ -124,4 +124,4 @@ void NailGrenadeLaunchNail () {
         self.weapon = 9.000;
         self.think = GrenadeExplode;
     }
-};
+}

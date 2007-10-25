@@ -52,14 +52,14 @@ void TeamFortress_DetonatePipebombs () {
         }
         e = find (e,classname,"pipebomb");
     }
-};
+}
 
 void MirvGrenadeTouch () {
     sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
-};
+}
 
 void MirvGrenadeExplode () {
     float i;
@@ -91,7 +91,7 @@ void MirvGrenadeExplode () {
         i = (i + 1.000);
     }
     dremove(self);
-};
+}
 
 void MirvGrenadeLaunch (vector org, entity shooter) {
     float xdir;
@@ -116,7 +116,7 @@ void MirvGrenadeLaunch (vector org, entity shooter) {
     setmodel (newmis,"progs/grenade2.mdl");
     setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
     setorigin (newmis,org);
-};
+}
 
 void TeamFortress_SetBomb (entity bowner) {
     string stimer;
@@ -137,25 +137,19 @@ void TeamFortress_SetBomb (entity bowner) {
             sprint (bowner,2.000,"You can't set a bomb on someone!\n");
             bowner.is_detpacking = 0.000;
             return ;
-        } else {
-            if ( ((at_spot.mdl == "progs/turrbase.mdl") || (at_spot.mdl == "progs/turrgun.mdl")) ) {
-                sprint (bowner,2.000,"You can't set a bomb on a sentry gun!\n");
-                bowner.is_detpacking = 0.000;
-                return ;
-            } else {
-                if ( (at_spot.mdl == "progs/disp.mdl") ) {
-                    sprint (bowner,2.000,"You can't set a bomb on a dispenser!\n");
-                    bowner.is_detpacking = 0.000;
-                    return ;
-                } else {
-                    if ( (at_spot.classname == "detpack") ) {
-                        sprint (bowner,2.000,"Bombs can't be stacked!\n");
-                        bowner.is_detpacking = 0.000;
-                        return ;
-                    }
-                }
-            }
-        }
+        } else if ( ((at_spot.mdl == "progs/turrbase.mdl") || (at_spot.mdl == "progs/turrgun.mdl")) ) {
+			sprint (bowner,2.000,"You can't set a bomb on a sentry gun!\n");
+			bowner.is_detpacking = 0.000;
+			return ;
+		} else if ( (at_spot.mdl == "progs/disp.mdl") ) {
+			sprint (bowner,2.000,"You can't set a bomb on a dispenser!\n");
+			bowner.is_detpacking = 0.000;
+			return ;
+		} else if ( (at_spot.classname == "detpack") ) {
+			sprint (bowner,2.000,"Bombs can't be stacked!\n");
+			bowner.is_detpacking = 0.000;
+			return ;
+		}
         at_spot = at_spot.chain;
     }
     if ( !(bowner.flags & 512.000) ) {
@@ -194,7 +188,7 @@ void TeamFortress_SetBomb (entity bowner) {
     newmis.nextthink = (time + bombarmtime);
     newmis.think = TeamFortress_DetpackSet;
     newmis.health = timer;
-};
+}
 
 void TeamFortress_SetDetpack (float timer) {
     string stimer;
@@ -216,25 +210,19 @@ void TeamFortress_SetDetpack (float timer) {
         if ( ((at_spot.classname == "player") && (self != at_spot)) ) {
             sprint (self,2.000,"You can't set a detpack on someone!\n");
             return ;
-        } else {
-            if ( ((at_spot.mdl == "progs/turrbase.mdl") || (at_spot.mdl == "progs/turrgun.mdl")) ) {
-                sprint (self,2.000,"You can't set a detpack on a sentry gun!\n");
-                return ;
-            } else {
-                if ( (at_spot.mdl == "progs/disp.mdl") ) {
-                    sprint (self,2.000,"You can't set a detpack on a dispenser!\n");
-                    return ;
-                } else {
-                    if ( (at_spot.classname == "detpack") ) {
-                        sprint (self,2.000,"Detpacks can't be stacked!\n");
-                        return ;
-                    }
-                }
-            }
-        }
+        } else if ( ((at_spot.mdl == "progs/turrbase.mdl") || (at_spot.mdl == "progs/turrgun.mdl")) ) {
+			sprint (self,2.000,"You can't set a detpack on a sentry gun!\n");
+			return ;
+		} else if ( (at_spot.mdl == "progs/disp.mdl") ) {
+			sprint (self,2.000,"You can't set a detpack on a dispenser!\n");
+			return ;
+		} else if ( (at_spot.classname == "detpack") ) {
+			sprint (self,2.000,"Detpacks can't be stacked!\n");
+			return ;
+		}
         at_spot = at_spot.chain;
     }
-    if ( !(self.flags & 512.000) ) {
+    if ( !(self.flags & FL_ONGROUND) ) {
         sprint (self,2.000,"You can't set detpacks in the air!\n");
         return ;
     }
@@ -277,7 +265,7 @@ void TeamFortress_SetDetpack (float timer) {
     newmis.nextthink = (time + 3.000);
     newmis.think = TeamFortress_DetpackSet;
     newmis.health = timer;
-};
+}
 
 void TeamFortress_DetpackStop () {
     entity detpack_timer;
@@ -297,7 +285,7 @@ void TeamFortress_DetpackStop () {
     W_SetCurrentAmmo ();
     TeamFortress_SetSpeed (self);
     self.pausetime = time;
-};
+}
 
 void TeamFortress_DetpackSet () {
     entity countd;
@@ -359,7 +347,7 @@ void TeamFortress_DetpackSet () {
         sprint (self.owner,2.000,"Detpack set!\n");
     }
     dremove (self);
-};
+}
 
 void TeamFortress_DetpackExplode () {
     float pos;
@@ -381,8 +369,7 @@ void TeamFortress_DetpackExplode () {
                     if ( (trace_fraction == 1.000) ) {
                         if ( Activated (head,self.owner) ) {
                             DoResults (head,self.owner,1.000);
-                        } else {
-                            if ( (head.else_goal != 0.000) ) {
+                        } else  if ( (head.else_goal != 0.000) ) {
                                 te = Findgoal (head.else_goal);
                                 if ( te ) {
                                     AttemptToActivate (te,self.owner,head);
@@ -390,7 +377,6 @@ void TeamFortress_DetpackExplode () {
                             }
                         }
                     }
-                }
             } else {
                 if ( (head.takedamage && (vlen ((head.origin - self.origin)) <= 900.000)) ) {
                     org = (head.origin + ((head.mins + head.maxs) * 0.500));
@@ -400,7 +386,6 @@ void TeamFortress_DetpackExplode () {
                     }
                     points = (700.000 - points);
                     if ( points ) {
-
                         if (grenradius & 2) {
                             TF_T_Damage (head,self,self.owner,(points * 2.000),2.000,4.000);
                         } else {
@@ -432,7 +417,7 @@ void TeamFortress_DetpackExplode () {
         dremove (self.observer_list);
     }
     dremove(self);
-};
+}
 
 void TeamFortress_DetpackTouch () {
     entity disarm;
@@ -496,7 +481,7 @@ void TeamFortress_DetpackTouch () {
     self.weaponmode = 1.000;
     self.enemy = other;
     self.observer_list = disarm;
-};
+}
 
 void TeamFortress_DetpackDisarm () {
     if ( (self.owner.deadflag) ) {
@@ -527,7 +512,7 @@ void TeamFortress_DetpackDisarm () {
     dremove (self.enemy.oldenemy);
     dremove (self.enemy);
     dremove (self);
-};
+}
 
 void TeamFortress_DetpackCountDown () {
     string cd;
@@ -551,4 +536,4 @@ void TeamFortress_DetpackCountDown () {
             dremove (self);
         }
     }
-};
+}

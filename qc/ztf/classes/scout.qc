@@ -49,7 +49,7 @@ void CanisterTouch () {
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
-};
+}
 
 void CaltropTouch () {
     if ( (((other.classname != "player") || !(other.flags & 512.000)) || other.deadflag) ) {
@@ -66,7 +66,7 @@ void CaltropTouch () {
         TF_T_Damage (other,self,self.owner,10.000,0.000, 0.000);
     }
     dremove (self);
-};
+}
 
 void CaltropScatterThink () {
     self.nextthink = (time + 0.200);
@@ -102,7 +102,7 @@ void CaltropScatterThink () {
         remove (self);
         return ;
     }
-};
+}
 
 void ScatterCaltrops () {
     float num;
@@ -135,14 +135,14 @@ void ScatterCaltrops () {
         num = (num - 1.000);
     }
     dremove (self);
-};
+}
 
 void ConcussionGrenadeTouch () {
     sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
-};
+}
 
 void ConcussionGrenadeExplode () {
     entity te;
@@ -166,7 +166,7 @@ void ConcussionGrenadeExplode () {
     WriteCoord (4.000,self.origin_z);
     multicast (self.origin,1.000);
     dremove (self);
-};
+}
 
 void ConcussionGrenadeTimer () {
     string st;
@@ -248,7 +248,7 @@ void ConcussionGrenadeTimer () {
         if (conctype)  stuffcmd (self.owner, "v_idlescale 0\n");
         dremove (self);
     }
-};
+}
 
 void TeamFortress_Scan () {
     entity list;
@@ -381,7 +381,7 @@ void TeamFortress_Scan () {
     W_SetCurrentAmmo ();
     self.nextthink = (time + 2.000);
     return ;
-};
+}
 
 void ScannerSwitch () {
     entity te;
@@ -405,7 +405,7 @@ void ScannerSwitch () {
         sprint (self,2.000,"Scanner Off.\n");
         self.ScannerOn = 0.000;
     }
-};
+}
 
 void T_RadiusBounce (entity inflictor, entity attacker, float bounce, entity ignore) {
     float points;
@@ -464,7 +464,8 @@ void T_RadiusBounce (entity inflictor, entity attacker, float bounce, entity ign
         }
         head = head.chain2;
     }
-};
+}
+
 entity T_RadiusScan (entity scanner, float scanrange, float enemies, float friends) {
     entity head;
     float rangedist;
@@ -528,14 +529,14 @@ entity T_RadiusScan (entity scanner, float scanrange, float enemies, float frien
         rangedist = (rangedist + 100.000);
     }
     return ( world );
-};
+}
 
 void FlashGrenadeTouch () {
     sound (self, 1, "weapons/bounce.wav", 1, 1);
     if ((self.velocity == '0 0 0')) {
         self.avelocity = '0 0 0';
     }
-};
+}
 
 void FlashTimer () {
     entity te;
@@ -559,7 +560,7 @@ void FlashTimer () {
     stuffcmd (te, st);
     stuffcmd (te, "\n");
     self.nextthink = (time + 0.6);
-};
+}
 
 void FlashGrenadeExplode () {
     entity te;
@@ -637,4 +638,4 @@ void FlashGrenadeExplode () {
         te = te.chain;
     }
     dremove (self);
-};
+}

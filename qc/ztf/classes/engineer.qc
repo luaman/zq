@@ -52,7 +52,7 @@ void Rail_Think () {
     setmodel (self,"progs/e_spike2.mdl");
     self.nextthink = (time + 1.000);
     self.think = SUB_Remove;
-};
+}
 
 void Rail_Touch () {
     vector org;
@@ -87,7 +87,7 @@ void Rail_Touch () {
         multicast (self.origin,1.000);
     }
     dremove (self);
-};
+}
 
 void W_FireRail () {
     vector vec;
@@ -123,7 +123,7 @@ void W_FireRail () {
         newmis.heat = 25.000;
     }
     newmis.touch = Rail_Touch;
-};
+}
 
 void W_FireRailgun () {
     float num;
@@ -164,7 +164,7 @@ void W_FireRailgun () {
     WriteCoord (4.000, trace_endpos_z);
     multicast (org, 1.000);
     LightningDamage (self.origin,(trace_endpos + (v_forward * 4.000)),self, damg);
-};
+}
 
 void EMPExplode () {
     float expsize;
@@ -206,14 +206,14 @@ void EMPExplode () {
     WriteCoord (4.000,self.origin_z);
     multicast (self.origin,1.000);
     Respawn_Item (self,self.enemy);
-};
+}
 
 void EMPGrenadeTouch () {
     sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
-};
+}
 
 void EMPGrenadeExplode () {
     float expsize;
@@ -326,7 +326,7 @@ void EMPGrenadeExplode () {
         //te = te.chain;
     }
     dremove (self);
-};
+}
 
 void nobuild_touch () {
     if (other.classname != "player") return;
@@ -339,7 +339,7 @@ void nobuild_touch () {
 
         }
     }
-};
+}
 
 void TeamFortress_EngineerBuild () {
     entity te;
@@ -373,7 +373,7 @@ void TeamFortress_EngineerBuild () {
             W_SetCurrentAmmo ();
         }
     }
-};
+}
 
 void T_Antispam () {
     if ( (other.classname != "player") ) {
@@ -389,7 +389,7 @@ void T_Antispam () {
     centerprint(other, ftos(self.health));
     centerprint(other, "\n");
 
-};
+}
 
 void AntiSpamDie ();
 float CheckArea (entity obj, entity builder) {
@@ -446,7 +446,7 @@ float CheckArea (entity obj, entity builder) {
         return ( 0.000 );
     }
     return ( 1.000 );
-};
+}
 
 void TeamFortress_Build (float objtobuild) {
     float btime;
@@ -572,7 +572,7 @@ void TeamFortress_Build (float objtobuild) {
     setsize (newmis,tmp1,tmp2);
     setorigin (newmis,newmis.origin);
     newmis.flags = (newmis.flags - (newmis.flags & 512.000));
-};
+}
 
 void CheckBelowBuilding (entity bld) {
     vector below;
@@ -587,7 +587,7 @@ void CheckBelowBuilding (entity bld) {
         bld.movetype = 6.000;
         bld.flags = (bld.flags - (bld.flags & 512.000));
     }
-};
+}
 
 void DispenserThink () {
     CheckBelowBuilding (self);
@@ -616,7 +616,7 @@ void DispenserThink () {
     }
     self.hook_out = (self.hook_out + 1.000);
     self.nextthink = (time + 3.000);
-};
+}
 
 void TeamFortress_FinishedBuilding () {
     entity oldself;
@@ -776,7 +776,7 @@ void TeamFortress_FinishedBuilding () {
     }
     W_SetCurrentAmmo ();
     self = oldself;
-};
+}
 
 void T_Dispenser () {
     entity dist_checker;
@@ -800,7 +800,7 @@ void T_Dispenser () {
         dist_checker.think = CheckDistance;
         dist_checker.nextthink = (time + 0.300);
     }
-};
+}
 
 void Dispenser_Explode () {
     float sdmg;
@@ -822,18 +822,18 @@ void Dispenser_Explode () {
     WriteCoord (4.000,self.origin_z);
     multicast (self.origin,1.000);
     dremove(self);
-};
+}
 
 void Dispenser_Die () {
     self.real_owner.has_dispenser = 0.000;
     self.think = Dispenser_Explode;
     self.nextthink = (time + 0.100);
-};
+}
 
 void AntiSpamDie () {
     self.think = Dispenser_Explode;
     self.nextthink = (time + 0.100);
-};
+}
 
 void Engineer_UseDispenser (entity disp) {
     entity dist_checker;
@@ -866,7 +866,7 @@ void Engineer_UseDispenser (entity disp) {
     dist_checker.enemy = disp;
     dist_checker.think = CheckDistance;
     dist_checker.nextthink = (time + 0.300);
-};
+}
 
 void Engineer_UseSentryGun (entity gun) {
     entity dist_checker;
@@ -897,7 +897,7 @@ void Engineer_UseSentryGun (entity gun) {
     dist_checker.enemy = gun;
     dist_checker.think = CheckDistance;
     dist_checker.nextthink = (time + 0.300);
-};
+}
 
 void CheckSentry (entity gunhead) {
     vector dist;
@@ -909,7 +909,7 @@ void CheckSentry (entity gunhead) {
         bprint (1.000,"'s sentry gun malfunctioned\n");
         Sentry_Die ();
     }
-};
+}
 
 void CheckDistance () {
     vector dist;
@@ -927,7 +927,7 @@ void CheckDistance () {
         return ;
     }
     self.nextthink = (time + 0.300);
-};
+}
 
 void DestroyBuilding (entity eng, string bld) {
     entity te;
@@ -959,10 +959,10 @@ void DestroyBuilding (entity eng, string bld) {
         }
         te = find (te,classname,bld);
     }
-};
+}
 
 void Engineer_RemoveBuildings (entity eng) {
     DestroyBuilding (eng,"building_dispenser");
     DestroyBuilding (eng,"building_sentrygun");
     DestroyBuilding (eng,"building_antispam");
-};
+}

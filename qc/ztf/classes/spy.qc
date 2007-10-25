@@ -396,26 +396,19 @@ void TeamFortress_SpyFeignDeath (float issilent) {
         at_spot = findradius (self.origin,40.000);
         i = 1.000;
         j = 0.000;
-        while ( (at_spot != world) ) {
-            if ( (at_spot.mdl == "progs/detpack.mdl") ) {
-                j = 1.000;
-            } else {
-                if ( (at_spot.mdl == "progs/turrbase.mdl") ) {
-                    j = 1.000;
-                } else {
-                    if ( (at_spot.mdl == "progs/turrgun.mdl") ) {
-                        j = 1.000;
-                    } else {
-                        if ( (at_spot.mdl == "progs/disp.mdl") ) {
-                            j = 1.000;
-                        } else {
-                            if ( (((at_spot.classname == "player") && (at_spot.deadflag == 0.000)) && (self != at_spot)) ) {
-                                j = 2.000;
-                            }
-                        }
-                    }
-                }
-            }
+		while ( (at_spot != world) ) {
+			if ( (at_spot.mdl == "progs/detpack.mdl") ) {
+				j = 1.000;
+			} else  if ( (at_spot.mdl == "progs/turrbase.mdl") ) {
+				j = 1.000;
+			} else if ( (at_spot.mdl == "progs/turrgun.mdl") ) {
+				j = 1.000;
+			} else if ( (at_spot.mdl == "progs/disp.mdl") ) {
+				j = 1.000;
+			} else if ( (((at_spot.classname == "player") && (at_spot.deadflag == 0.000)) && (self != at_spot)) ) {
+				j = 2.000;
+			}
+
             if ( (j > 0.000) ) {
                 i = 0.000;
             }
@@ -438,17 +431,13 @@ void TeamFortress_SpyFeignDeath (float issilent) {
             }
             if ( (i == 1.000) ) {
                 spy_upb1 ();
-            } else {
-                if ( (i == 2.000) ) {
-                    spy_upc1 ();
-                } else {
-                    if ( (i == 3.000) ) {
-                        spy_upd1 ();
-                    } else {
-                        spy_upe1 ();
-                    }
-                }
-            }
+            } else if ( (i == 2.000) ) {
+				spy_upc1 ();
+			} else if ( (i == 3.000) ) {
+				spy_upd1 ();
+			} else {
+				spy_upe1 ();
+			}
         } else {
             if ( (j == 1.000) ) {
                 sprint (self,2.000,"You can't get up with something\non top of you.\n");
@@ -797,77 +786,45 @@ void HallucinationTimer () {
         WriteCoord (1.000,(msg_entity.origin_y + tmpy));
         WriteCoord (1.000,msg_entity.origin_z);
         halltype = random ();
-        if ( (halltype < 0.100) ) {
-            stuffcmd (self.owner,"play weapons/r_exp3.wav\n");
-        } else {
-            if ( (halltype < 0.150) ) {
-                stuffcmd (self.owner,"play weapons/rocket1i.wav\n");
-            } else {
-                if ( (halltype < 0.200) ) {
-                    stuffcmd (self.owner,"play weapons/sgun1.wav\n");
-                } else {
-                    if ( (halltype < 0.250) ) {
-                        stuffcmd (self.owner,"play weapons/guncock.wav\n");
-                    } else {
-                        if ( (halltype < 0.300) ) {
-                            stuffcmd (self.owner,"play weapons/ric1.wav\n");
-                        } else {
-                            if ( (halltype < 0.350) ) {
-                                stuffcmd (self.owner,"play weapons/ric2.wav\n");
-                            } else {
-                                if ( (halltype < 0.400) ) {
-                                    stuffcmd (self.owner,"play weapons/ric3.wav\n");
-                                } else {
-                                    if ( (halltype < 0.450) ) {
-                                        stuffcmd (self.owner,"play weapons/spike2.wav\n");
-                                    } else {
-                                        if ( (halltype < 0.500) ) {
-                                            stuffcmd (self.owner,"play weapons/tink1.wav\n");
-                                        } else {
-                                            if ( (halltype < 0.550) ) {
-                                                CenterPrint (self.owner,"\n\n\nYour team цаптуред the flag!!");
-                                                stuffcmd (self.owner,"play weapons/grenade.wav\n");
-                                            } else {
-                                                if ( (halltype < 0.600) ) {
-                                                    stuffcmd (self.owner,"play weapons/bounce.wav\n");
-                                                } else {
-                                                    if ( (halltype < 0.650) ) {
-                                                        stuffcmd (self.owner,"play weapons/shotgn2.wav\n");
-                                                    } else {
-                                                        if ( (halltype < 0.700) ) {
-                                                            stuffcmd (self.owner,"play wizard/wattack.wav\n");
-                                                        } else {
-                                                            if ( (halltype < 0.750) ) {
-                                                                stuffcmd (self.owner,"play items/r_item1.wav\n");
-                                                            } else {
-                                                                if ( (halltype < 0.800) ) {
-                                                                    stuffcmd (self.owner,"play items/r_item2.wav\n");
-                                                                } else {
-                                                                    if ( (halltype < 0.850) ) {
-                                                                        CenterPrint (self.owner,"You are on fire!\n");
-                                                                        stuffcmd (self.owner,"play weapons/lhit.wav\n");
-                                                                    } else {
-                                                                        if ( (halltype < 0.900) ) {
-                                                                            stuffcmd (self.owner,"play misc/r_tele1.wav\n");
-                                                                        } else {
-                                                                            stuffcmd (self.owner,"play weapons/railgun.wav\n");
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+		if ( (halltype < 0.100) ) {
+			stuffcmd (self.owner,"play weapons/r_exp3.wav\n");
+		} else if ( (halltype < 0.150) ) {
+			stuffcmd (self.owner,"play weapons/rocket1i.wav\n");
+		} else if ( (halltype < 0.200) ) {
+			stuffcmd (self.owner,"play weapons/sgun1.wav\n");
+		} else if ( (halltype < 0.250) ) {
+			stuffcmd (self.owner,"play weapons/guncock.wav\n");
+		} else if ( (halltype < 0.300) ) {
+			stuffcmd (self.owner,"play weapons/ric1.wav\n");
+		} else if ( (halltype < 0.350) ) {
+			stuffcmd (self.owner,"play weapons/ric2.wav\n");
+		} else if ( (halltype < 0.400) ) {
+			stuffcmd (self.owner,"play weapons/ric3.wav\n");
+		} else if ( (halltype < 0.450) ) {
+			stuffcmd (self.owner,"play weapons/spike2.wav\n");
+		} else  if ( (halltype < 0.500) ) {
+			stuffcmd (self.owner,"play weapons/tink1.wav\n");
+		} else if ( (halltype < 0.550) ) {
+			CenterPrint (self.owner,"\n\n\nYour team цаптуред the flag!!");
+			stuffcmd (self.owner,"play weapons/grenade.wav\n");
+		} else if ( (halltype < 0.600) ) {
+			stuffcmd (self.owner,"play weapons/bounce.wav\n");
+		} else if ( (halltype < 0.650) ) {
+			stuffcmd (self.owner,"play weapons/shotgn2.wav\n");
+		} else if ( (halltype < 0.700) ) {
+			stuffcmd (self.owner,"play wizard/wattack.wav\n");
+		} else if ( (halltype < 0.750) ) {
+			stuffcmd (self.owner,"play items/r_item1.wav\n");
+		} else if ( (halltype < 0.800) ) {
+			stuffcmd (self.owner,"play items/r_item2.wav\n");
+		} else if ( (halltype < 0.850) ) {
+			CenterPrint (self.owner,"You are on fire!\n");
+			stuffcmd (self.owner,"play weapons/lhit.wav\n");
+		} else if ( (halltype < 0.900) ) {
+			stuffcmd (self.owner,"play misc/r_tele1.wav\n");
+		} else {
+			stuffcmd (self.owner,"play weapons/railgun.wav\n");
+		}
         if (te != world) {
             dremove (te);
         }
