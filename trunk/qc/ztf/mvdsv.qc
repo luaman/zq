@@ -42,7 +42,7 @@ void SetOptCmd (float type, float print) {
         bprint(2, "ç ");
         bprint(2, argv(0), " set to ", argv(1), " \n");
     }
-};
+}
 
 void () ShowOptValue  = {
     local string tmp;
@@ -51,7 +51,7 @@ void () ShowOptValue  = {
     sprint(self,2, " is \"");
     sprint(self,2, tmp);
     sprint(self,2, "\"\n");
-};
+}
 
 
 float (string mode) CheckMode = {
@@ -76,7 +76,7 @@ float (string mode) CheckMode = {
 	if (mode == "tfstrike") return 1;
 	if (mode == "tfvsdm") return 1;
     return 0;
-};
+}
 
 
 float () UserCmd = {
@@ -851,7 +851,7 @@ float () UserCmd = {
         }
     }
     return 0;
-};
+}
 
 
 float () ConsoleCmd = {
@@ -1189,7 +1189,7 @@ float () ConsoleCmd = {
         return 1;
     }
     return 0;
-};
+}
 
 
 float () localinfoChanged = {
@@ -1241,7 +1241,7 @@ float () localinfoChanged = {
     dprint(argv(2));
     dprint("\n");
     return (1.000);
-};
+}
 
 void UserInfo_Changed () {
     local string sk, st;
@@ -1387,7 +1387,7 @@ void UserInfo_Changed () {
         return;
     }
     return;
-};
+}
 
 void timeofday (float sec, float minute, float hour, float day, float mon, float year, string date) {
     local entity t;
@@ -1403,4 +1403,4 @@ void timeofday (float sec, float minute, float hour, float day, float mon, float
     }
     dprint(date);
     dprint("\n");
-};
+}

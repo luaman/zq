@@ -197,7 +197,7 @@ void TeamFortress_MOTD () {
         }
         self.get_aliases = 0.000;
     }
-};
+}
 
 void TeamFortress_HelpMap () {
     local entity te;
@@ -209,4 +209,4 @@ void TeamFortress_HelpMap () {
         }
     }
     sprint (self,2.000,"There is no help for this map.\n");
-};
+}

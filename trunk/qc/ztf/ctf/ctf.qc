@@ -57,4 +57,4 @@ void TeamFortress_CTF_FlagInfo () {
             }
         }
     }
-};
+}

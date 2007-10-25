@@ -36,12 +36,12 @@
 
 float () crandom = {
     return ( (2.000 * (random () - 0.500)) );
-};
+}
 
 void autoteam_think () {
     toggleflags = (toggleflags | 64);
     dremove (self);
-};
+}
 
 void CheckFps () {
     local float r;
@@ -95,7 +95,7 @@ void CheckFps () {
         self.fFrameCount = 0;
         self.fLowestFrameTime = 0.013;
     }
-};
+}
 
 void CheckGspeed () {
     local float maxvel;
@@ -116,7 +116,7 @@ void CheckGspeed () {
             }
         }
     }
-};
+}
 
 void PowerupsOff () {
     local entity te;
@@ -135,7 +135,7 @@ void PowerupsOff () {
         }
         te = find (te, deathtype, "pow");
     }
-};
+}
 
 void PowerupsOn () {
     local entity te;
@@ -157,7 +157,7 @@ void PowerupsOn () {
         }
         te = find (te, deathtype, "pow");
     }
-};
+}
 
 float bspversion;
 
@@ -439,7 +439,7 @@ void Calibrate_Level () {
     } else {
         powerups = 1;
     }
-};
+}
 
 void Medikit_Fire ();
 
@@ -473,7 +473,7 @@ void CheckUse () {
             }
         }
     }
-};
+}
 
 void fadetoblack () {
     local float fade;
@@ -487,7 +487,7 @@ void fadetoblack () {
         fade = fade + 10;
     }
     stuffcmd( self, "v_cshift 0 0 0 255\n" );
-};
+}
 
 void() fadefromblack = {
     local float fade;
@@ -501,4 +501,4 @@ void() fadefromblack = {
         fade = fade - 10;
     }
     stuffcmd( self, "v_cshift 0 0 0 0\n" );
-};
+}

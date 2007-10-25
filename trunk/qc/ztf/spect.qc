@@ -60,7 +60,7 @@ void SpectatorConnect () {
         self.camdist = 160.000;
     }
     CheckConnectRate();
-};
+}
 
 void SpectatorDisconnect () {
     local entity te;
@@ -74,7 +74,7 @@ void SpectatorDisconnect () {
             te = te.nexts;
         }
     }
-};
+}
 
 void SpectatorImpulseCommand () {
     if ( (self.impulse == 1.000) ) {
@@ -139,7 +139,7 @@ void SpectatorImpulseCommand () {
     }
     CommandImpulses();
     self.impulse = 0.000;
-};
+}
 
 void SpectatorThink () {
     Check_Track();
@@ -158,4 +158,4 @@ void SpectatorThink () {
         }
     }
 
-};
+}

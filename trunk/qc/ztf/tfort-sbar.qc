@@ -285,7 +285,7 @@ void RefreshStatusBar () {
     WriteStr(" Ç²º");
     WriteSIntXXXX(self.no_grenades_2);
     Status_EndWrite();
-};
+}
 
 void Status_StartWrite () {
     local float i;
@@ -335,7 +335,7 @@ void Status_StartWrite () {
             i = i - 1;
         }
     }
-};
+}
 
 void WriteBar (float v, float vmax) {
     if (v > vmax * 7 / 8) {
@@ -362,7 +362,7 @@ void WriteBar (float v, float vmax) {
         WriteSpace(7);
         WriteByte (1, rled);
     }
-};
+}
 
 void WriteStr (string str) {
     local float len;
@@ -379,7 +379,7 @@ void WriteStr (string str) {
         nwstr = substr(str , i , 1);
         WriteByte(1,str2byte(nwstr));
     }
-};
+}
 
 void WriteRep (float f1, float len) {
     local float i;
@@ -391,7 +391,7 @@ void WriteRep (float f1, float len) {
     if (i == len - 1) {
         WriteByte(1,f1);
     }
-};
+}
 
 void WriteIntXXXX (float f, float c) {
     local float y;
@@ -432,7 +432,7 @@ void WriteIntXXXX (float f, float c) {
         WriteByte (1,f + c);
     }
 
-};
+}
 
 void WriteSIntXXXX (float f) {
     local float i;
@@ -459,18 +459,18 @@ void WriteSIntXXXX (float f) {
     WriteByte (1, 45);
     WriteByte (1, i + 48);
     WriteByte (1, 32);
-};
+}
 
 void WriteSpace (float i) {
     while (i) {
         WriteByte(1, 32);
         i = i - 1;
     }
-};
+}
 
 void Status_EndWrite () {
     WriteByte (1, 0);		// will put some more code later :)
-};
+}
 
 
 void StatusBar_On () {
@@ -481,7 +481,7 @@ void StatusBar_On () {
             self.StatusRefreshTime = (time + 0.100);
 
     }
-};
+}
 
 // END status bar
 
@@ -505,7 +505,7 @@ float Impulse2Res (float f) {
     if (f == 9)
         return SBAR_768;
     return f;
-};
+}
 
 
 void StatusRes (float res) {
@@ -547,7 +547,7 @@ void StatusRes (float res) {
             }
         }
     }
-};
+}
 
 void CenterPrint (entity pl, string s1) {
     //pl.b_b = s1;
@@ -556,7 +556,7 @@ void CenterPrint (entity pl, string s1) {
     //pl.CenterPrintTime = (time + 1.500);
     centerprint (pl,s1);
     pl.StatusRefreshTime = (time + 1.500);
-};
+}
 
 void CenterPrint2 (entity pl, string s1, string s2) {
     //pl.b_b = s1;
@@ -564,7 +564,7 @@ void CenterPrint2 (entity pl, string s1, string s2) {
     //pl.b_n = string_null;
     centerprint (pl,s1,s2);
     pl.StatusRefreshTime = (time + 1.500);
-};
+}
 
 void CenterPrint3 (entity pl, string s1, string s2, string s3) {
     //pl.b_b = s1;
@@ -572,7 +572,7 @@ void CenterPrint3 (entity pl, string s1, string s2, string s3) {
     //pl.b_n = s3;
     centerprint (pl,s1,s2,s3);
     pl.StatusRefreshTime = (time + 1.500);
-};
+}
 
 void PrintPlayers (string s1, string s2, string s3) {
     local entity te;
@@ -589,7 +589,7 @@ void PrintPlayers (string s1, string s2, string s3) {
         }
         te = te.nextp;
     }
-};
+}
 
 void PrintSpecs (string s1, string s2, string s3) {
     local entity te;
@@ -606,7 +606,7 @@ void PrintSpecs (string s1, string s2, string s3) {
         }
         te = te.nexts;
     }
-};
+}
 
 string(float type) Status_GrenTypeToString = {
     if (type == 1)
@@ -631,7 +631,7 @@ string(float type) Status_GrenTypeToString = {
         return "Caltrop canister";
     return "N/A";
 
-};
+}
 
 string Status_TeamNumToTeamString (float tno) {
     if (tno == 1)
@@ -643,4 +643,4 @@ string Status_TeamNumToTeamString (float tno) {
     if (tno == 4)
         return "green";
     return "observer";
-};
+}

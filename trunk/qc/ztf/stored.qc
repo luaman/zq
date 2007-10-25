@@ -62,5 +62,5 @@ void Initialise_Teams () {
     pteam4.real_frags = 0.000;
     pteam4.maxplayers = 100;
 
-};
+}
 

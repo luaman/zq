@@ -5,7 +5,7 @@ void Attack_Finished (float att_delay) {
     } else {
         self.attack_finished = (time + att_delay);
     }
-};
+}
 
 void W_Reload_shotgun_fin () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2.000));
@@ -18,7 +18,7 @@ void W_Reload_shotgun_fin () {
     }
     dremove (self);
     self.owner.StatusRefreshTime = (time + 0.100);
-};
+}
 
 void W_Reload_super_shotgun_fin () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2.000));
@@ -31,7 +31,7 @@ void W_Reload_super_shotgun_fin () {
     }
     dremove (self);
     self.owner.StatusRefreshTime = (time + 0.100);
-};
+}
 
 void W_Reload_grenade_launcher_fin () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2.000));
@@ -44,7 +44,7 @@ void W_Reload_grenade_launcher_fin () {
     }
     dremove (self);
     self.owner.StatusRefreshTime = (time + 0.100);
-};
+}
 
 void W_Reload_rocket_launcher_fin () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2.000));
@@ -57,7 +57,7 @@ void W_Reload_rocket_launcher_fin () {
     }
     dremove (self);
     self.owner.StatusRefreshTime = (time + 0.100);
-};
+}
 
 void Cancel_reload () {
     if (self.owner.current == WEAP_SHOTGUN) {
@@ -82,7 +82,7 @@ void Cancel_reload () {
         }
     }
     self.nextthink = self.pausetime;
-};
+}
 
 void W_Reload_shotgun () {
     if (self.owner.reload_shotgun) {
@@ -100,7 +100,7 @@ void W_Reload_shotgun () {
     } else {
         W_Reload_shotgun_fin();
     }
-};
+}
 
 void W_Reload_super_shotgun () {
     if (self.owner.reload_super_shotgun >= 2) {
@@ -118,7 +118,7 @@ void W_Reload_super_shotgun () {
     } else {
         W_Reload_super_shotgun_fin();
     }
-};
+}
 
 void W_Reload_grenade_launcher () {
     if (self.owner.reload_grenade_launcher) {
@@ -133,7 +133,7 @@ void W_Reload_grenade_launcher () {
     } else {
         W_Reload_grenade_launcher_fin();
     }
-};
+}
 
 void W_Reload_rocket_launcher () {
     if (self.owner.reload_rocket_launcher) {
@@ -148,7 +148,7 @@ void W_Reload_rocket_launcher () {
     } else {
         W_Reload_rocket_launcher_fin();
     }
-};
+}
 
 float CheckForReload () {
     local entity tWeapon;
@@ -243,7 +243,7 @@ float CheckForReload () {
         }
     }
     return ( 0.000 );
-};
+}
 
 void TeamFortress_ReloadCurrentWeapon () {
     local entity tWeapon;
@@ -370,4 +370,4 @@ void TeamFortress_ReloadCurrentWeapon () {
             }
         }
     }
-};
+}

@@ -48,7 +48,7 @@ entity CheckDuelWinner () {
         return(store_obs);
     }
     return(world);
-};
+}
 
 entity CheckWinner () {
     local float team1alive;
@@ -114,7 +114,7 @@ entity CheckWinner () {
         return(store_obs);
     }
     return(world);
-};
+}
 
 void RoundOver () {
     local string st;
@@ -172,7 +172,7 @@ void RoundOver () {
     }
     self.think = StartRound;
     self.nextthink = time + 0.500;
-};
+}
 
 void RoundThink () {
     local string tmp;
@@ -235,7 +235,7 @@ void RoundThink () {
         }
     }
     self.nextthink = time + 0.500;
-};
+}
 
 float tfs_givebomb () {
     local float counter;
@@ -254,7 +254,7 @@ float tfs_givebomb () {
         the_one = ceil (random() * counter);
     }
     return (the_one);
-};
+}
 
 void RoundBegin () {
     local entity te;
@@ -367,7 +367,7 @@ void RoundBegin () {
     }
     self.think = RoundThink;
     self.nextthink = time + 0.100;
-};
+}
 
 void RoundInit () {
     local string num;
@@ -409,7 +409,7 @@ void RoundInit () {
         }
     }
     self.nextthink = time + 1.000;
-};
+}
 
 void StartRound () {
     local string st;
@@ -469,4 +469,4 @@ void StartRound () {
     self.cnt = stof(st);
     self.think = RoundInit;
     self.nextthink = time + 2.000;
-};
+}

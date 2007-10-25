@@ -40,7 +40,7 @@ void (entity te) dremove = {
     }
     te.is_removed = 1.000;
     remove (te);
-};
+}
 
 void () display_location = {
     local string st;
@@ -48,4 +48,4 @@ void () display_location = {
     sprint (self,2.000,"Location : ",st,"\n");
     st = vtos (self.angles);
     sprint (self,2.000,"Angles   : ",st,"\n");
-};
+}

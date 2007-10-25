@@ -8,7 +8,7 @@ void DecrementQue () {
         if (te.a_n > 1.000) te.a_n = te.a_n - 1.000;
         te = te.nextp;
     }
-};
+}
 
 float ping (entity Player) {
     local string st;
@@ -17,7 +17,7 @@ float ping (entity Player) {
     fl = stof (st);
     fl = fl / 1000.000000;
     return (fl);
-};
+}
 
 void ball_reset () {
     self.solid = 1.000;
@@ -31,7 +31,7 @@ void ball_reset () {
         dremove (self);
         return ;
     }
-};
+}
 
 void ball_spin () {
     local float vel_x;
@@ -50,7 +50,7 @@ void ball_spin () {
         }
         self.avelocity_x = (vel_x + vel_y) * 2.000;
     }
-};
+}
 
 void ball_kick (vector o, float z) {
     local vector v;
@@ -67,7 +67,7 @@ void ball_kick (vector o, float z) {
     self.velocity = v;
     self.angles = vectoangles (self.velocity);
     ball_spin();
-};
+}
 
 void ball_fly (vector o) {
     local vector v;
@@ -84,7 +84,7 @@ void ball_fly (vector o) {
     self.velocity = v;
     self.angles = vectoangles (self.velocity);
     ball_spin();
-};
+}
 
 void ball_touch () {
     if (other.classname == "worldspawn") {
@@ -101,7 +101,7 @@ void ball_touch () {
     self.oldenemy = other.owner;
     ball_fly(other.velocity);
     return;
-};
+}
 
 void item_ball () {
     self.solid = 1.000;
@@ -128,7 +128,7 @@ void item_ball () {
     setorigin (self,self.origin );
     self.oldorigin = self.origin;
     self.touch = ball_touch;
-};
+}
 
 void soccer_goal_touch () {
     if (round_over)  return;
@@ -143,7 +143,7 @@ void soccer_goal_touch () {
         }
         return;
     }
-};
+}
 
 void info_soccer_goal () {
 
@@ -163,7 +163,7 @@ void info_soccer_goal () {
     }
     InitTrigger();
     self.touch = soccer_goal_touch;
-};
+}
 
 void func_glass () {
     self.solid = 2.000;
@@ -171,7 +171,7 @@ void func_glass () {
     self.movetype = 0.000;
     self.modelindex = 0.000;
     self.model = "";
-};
+}
 // ===============================================================
 // RAIN CODE
 // ===============================================================
@@ -180,7 +180,7 @@ void() rain_touch = {
 
     // remove rain when it hits ground or any other object
     dremove(self);
-};
+}
 
 void() rain_think = {
     local float temp1,temp2;
@@ -209,7 +209,7 @@ void() rain_think = {
     newmis.touch = rain_touch;
     self.nextthink = time + 0.5;
     self.think = rain_think;
-};
+}
 
 void() func_rain = {
     precache_model ("progs/s_rain.spr");
@@ -218,7 +218,7 @@ void() func_rain = {
     self.think = rain_think;
     //self.touch = func_rain_touch;
     self.nextthink = time  + random();
-};
+}
 
 void nogren_touch () {
 
@@ -246,15 +246,15 @@ void nogren_touch () {
         }
         return;
     }
-};
+}
 
 void func_nogrenades () {
     InitTrigger ();
     self.touch = nogren_touch;
-};
+}
 
 void func_nobuild () {
     InitTrigger ();
     self.touch = nobuild_touch;
-};
+}
 #endif

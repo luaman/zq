@@ -54,7 +54,7 @@ void Spect_Track () {
     stuffcmd(self,"track #");
     stuffcmd(self,ftos(num));
     stuffcmd(self,"\n");
-};
+}
 
 void Flymode () {
     local entity spot;
@@ -65,7 +65,7 @@ void Flymode () {
     }
     self.tracking = 0.000;
     self.gravity = 1.000;
-};
+}
 
 void Toggle_Tracking () {
     if (self.playerclass) return;
@@ -82,7 +82,7 @@ void Toggle_Tracking () {
         Flymode();
         sprint(self, 2, "Tracking mode: Flymode.\n");
     }
-};
+}
 
 void Track_Object () {
     local vector v1,v2,v3;
@@ -164,7 +164,7 @@ void Track_Object () {
             self.currentammo = 0.000;
         }
     }
-};
+}
 
 void Track_Tfgoal () {
     local entity te;
@@ -190,7 +190,7 @@ void Track_Tfgoal () {
         CenterPrint(self,"No TF Goals in game to track.\n");
         Flymode();
     }
-};
+}
 
 void Track_Player () {
     local entity te;
@@ -228,7 +228,7 @@ void Track_Player () {
             Flymode();
         }
     }
-};
+}
 
 void Track_Sentry () {
     local entity te;
@@ -250,7 +250,7 @@ void Track_Sentry () {
         CenterPrint(self,"No Sentry Gun's in game to track.\n");
         Flymode();
     }
-};
+}
 
 void Toggle_Autotrack () {
     local entity te;
@@ -286,7 +286,7 @@ void Toggle_Autotrack () {
     self.goalentity = store_obs.goalentity;
     if (!self.tracking) Toggle_Tracking();
     CenterPrint3(self,"You are tracking: ", self.goalentity.netname, ".\n");
-};
+}
 
 void Check_Track () {
     if (self.tracking) {
@@ -302,4 +302,4 @@ void Check_Track () {
             if ( self.camdist > 500) self.camdist = 500;
         }
     }
-};
+}

@@ -10,11 +10,11 @@ void DoGoalWork (entity Goal, entity AP);
 void DoGroupWork (entity Goal, entity AP);
 
 void SUB_Null () {
-};
+}
 
 void SUB_Remove () {
     dremove (self);
-};
+}
 
 void SetMovedir () {
     if ( (self.angles == '0.000 -1.000 0.000') ) {
@@ -29,7 +29,7 @@ void SetMovedir () {
     }
 
     self.angles = '0.000 0.000 0.000';
-};
+}
 
 void InitTrigger () {
     if ( (self.angles != '0.000 0.000 0.000') ) {
@@ -40,7 +40,7 @@ void InitTrigger () {
     self.movetype = 0.000;
     self.modelindex = 0.000;
     self.model = "";
-};
+}
 
 void SUB_CalcMove (vector tdest, float tspeed, void() func) {
     local vector vdestdelta;
@@ -65,7 +65,7 @@ void SUB_CalcMove (vector tdest, float tspeed, void() func) {
     }
     self.nextthink = (self.ltime + traveltime);
     self.velocity = (vdestdelta * (1.000 / traveltime));
-};
+}
 
 void SUB_CalcMoveDone () {
     setorigin (self,self.finaldest);
@@ -74,7 +74,7 @@ void SUB_CalcMoveDone () {
     if ( self.think1 ) {
         self.think1 ();
     }
-};
+}
 
 void SUB_CalcAngleMove (vector destangle, float tspeed, void() func) {
     local vector destdelta;
@@ -91,7 +91,7 @@ void SUB_CalcAngleMove (vector destangle, float tspeed, void() func) {
     self.think1 = func;
     self.finalangle = destangle;
     self.think = SUB_CalcAngleMoveDone;
-};
+}
 
 void SUB_CalcAngleMoveDone () {
     self.angles = self.finalangle;
@@ -100,13 +100,13 @@ void SUB_CalcAngleMoveDone () {
     if ( self.think1 ) {
         self.think1 ();
     }
-};
+}
 
 void DelayThink () {
     activator = self.enemy;
     SUB_UseTargets ();
     dremove (self);
-};
+}
 
 void SUB_UseTargets () {
     local entity t;
@@ -170,11 +170,11 @@ void SUB_UseTargets () {
             activator = act;
         } while ( 1.000 );
     }
-};
+}
 
 void SUB_AttackFinished (float normal) {
     self.cnt = 0.000;
     if ( (skill < 3.000) ) {
         self.attack_finished = (time + normal);
     }
-};
+}

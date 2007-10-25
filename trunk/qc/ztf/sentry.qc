@@ -33,7 +33,7 @@ float anglemod (float v) {
         v = (v + 360.000);
     }
     return ( v );
-};
+}
 
 float FacingIdeal () {
     local	float	delta;
@@ -42,7 +42,7 @@ float FacingIdeal () {
     if (delta > 60 && delta < 290)
         return 0.000;
     return 1.000;
-};
+}
 
 float range (entity targ) {
     local vector spot1;
@@ -61,7 +61,7 @@ float range (entity targ) {
         return ( 2.000 );
     }
     return ( 3.000 );
-};
+}
 vector visible (entity targ) {
     local vector spot1;
     local vector spot2;
@@ -82,7 +82,7 @@ vector visible (entity targ) {
         return ( trace_endpos );
     }
     return ( vector_null );
-};
+}
 
 float infront (entity targ) {
     local vector vec;
@@ -94,7 +94,7 @@ float infront (entity targ) {
         return ( 1.000 );
     }
     return ( 0.000 );
-};
+}
 
 void CheckBelowBuilding (entity bld);
 
@@ -126,17 +126,17 @@ void ai_face () {
     self.ideal_yaw = vectoyaw ((self.enemy.origin - self.origin));
     self.ideal_yaw = anglemod (self.ideal_yaw);
     ChangeYaw ();
-};
+}
 
 void lvl1_sentry_atk3 ();
 
 void () lvl1_sentry_stand = [ 0.000, lvl1_sentry_stand ] {
     Sentry_Rotate ();
-};
+}
 
 void () lvl1_sentry_target = [ 0.000, lvl1_sentry_target ] {
     Sentry_Target ();
-};
+}
 
 void () lvl1_sentry_atk1 = [ 1.000, lvl1_sentry_atk2 ] {
     ai_face ();
@@ -148,16 +148,16 @@ void () lvl1_sentry_atk1 = [ 1.000, lvl1_sentry_atk2 ] {
         lvl1_sentry_stand();
         return;
     }
-};
+}
 
 void () lvl1_sentry_atk3 = [ 2.000, lvl1_sentry_atk2 ] {
     ai_face ();
     Sentry_Fire ();
-};
+}
 
 void () lvl1_sentry_atk2 = [ 0.000, lvl1_sentry_atk1 ] {
     ai_face ();
-};
+}
 
 void lvl2_sentry_atk2 ();
 
@@ -165,11 +165,11 @@ void lvl2_sentry_atk3 ();
 
 void () lvl2_sentry_stand = [ 3.000, lvl2_sentry_stand ] {
     Sentry_Rotate ();
-};
+}
 
 void () lvl2_sentry_target = [ 3.000, lvl2_sentry_target ] {
     Sentry_Target ();
-};
+}
 
 void () lvl2_sentry_atk1 = [ 4.000, lvl2_sentry_atk2 ] {
     ai_face ();
@@ -181,27 +181,27 @@ void () lvl2_sentry_atk1 = [ 4.000, lvl2_sentry_atk2 ] {
         lvl2_sentry_stand();
         return;
     }
-};
+}
 
 void () lvl2_sentry_atk2 = [ 5.000, lvl2_sentry_atk3 ] {
     ai_face ();
     Sentry_Fire ();
-};
+}
 
 void () lvl2_sentry_atk3 = [ 3.000, lvl2_sentry_atk1 ] {
     ai_face ();
     Sentry_Fire ();
-};
+}
 
 void lvl3_sentry_atk2 ();
 
 void () lvl3_sentry_stand = [ 6.000, lvl3_sentry_stand ] {
     Sentry_Rotate ();
-};
+}
 
 void () lvl3_sentry_target = [ 6.000, lvl3_sentry_target ] {
     Sentry_Target ();
-};
+}
 
 void () lvl3_sentry_atk1 = [ 7.000, lvl3_sentry_atk2 ] {
     ai_face ();
@@ -213,23 +213,23 @@ void () lvl3_sentry_atk1 = [ 7.000, lvl3_sentry_atk2 ] {
         lvl3_sentry_stand();
         return;
     }
-};
+}
 
 void () lvl3_sentry_atk2 = [ 8.000, lvl3_sentry_atk3 ] {
     ai_face ();
     Sentry_Fire ();
-};
+}
 
 void () lvl3_sentry_atk3 = [ 6.000, lvl3_sentry_atk1 ] {
     ai_face ();
     Sentry_Fire ();
-};
+}
 
 void Sentry_Target () {
     if ( Sentry_FindTarget () ) {
         Sentry_HuntTarget();
     }
-};
+}
 // Tf 2.9 sg
 
 void OldSentry_Rotate () {
@@ -261,7 +261,7 @@ void OldSentry_Rotate () {
             self.heat = 0.000000;
         }
     }
-};
+}
 
 float Target_IsEnemy () {
     if (self.enemy != world) {
@@ -276,14 +276,14 @@ float Target_IsEnemy () {
         }
     }
     return(0.000);
-};
+}
 
 
 void lvl1_oldsentry_atk3 ();
 
 void () lvl1_oldsentry_stand = [ 0.000, lvl1_oldsentry_stand ] {
     OldSentry_Rotate ();
-};
+}
 
 void () lvl1_oldsentry_atk1 = [ 1.000, lvl1_oldsentry_atk3 ] {
     ai_face ();
@@ -294,16 +294,16 @@ void () lvl1_oldsentry_atk1 = [ 1.000, lvl1_oldsentry_atk3 ] {
             lvl1_oldsentry_atk3 ();
         }
     }
-};
+}
 
 void () lvl1_oldsentry_atk2 = [ 2.000, lvl1_oldsentry_atk3 ] {
     ai_face ();
     OldSentry_Fire ();
-};
+}
 
 void () lvl1_oldsentry_atk3 = [ 0.000, lvl1_oldsentry_atk1 ] {
     ai_face ();
-};
+}
 
 void lvl2_oldsentry_atk2 ();
 
@@ -311,7 +311,7 @@ void lvl2_oldsentry_atk3 ();
 
 void () lvl2_oldsentry_stand = [ 3.000, lvl2_oldsentry_stand ] {
     OldSentry_Rotate ();
-};
+}
 
 void () lvl2_oldsentry_atk1 = [ 4.000, lvl2_oldsentry_atk2 ] {
     ai_face ();
@@ -322,23 +322,23 @@ void () lvl2_oldsentry_atk1 = [ 4.000, lvl2_oldsentry_atk2 ] {
             lvl2_oldsentry_atk3 ();
         }
     }
-};
+}
 
 void () lvl2_oldsentry_atk2 = [ 5.000, lvl2_oldsentry_atk3 ] {
     ai_face ();
     OldSentry_Fire ();
-};
+}
 
 void () lvl2_oldsentry_atk3 = [ 3.000, lvl2_oldsentry_atk1 ] {
     ai_face ();
     OldSentry_Fire ();
-};
+}
 
 void lvl3_oldsentry_atk3 ();
 
 void () lvl3_oldsentry_stand = [ 6.000, lvl3_oldsentry_stand ] {
     OldSentry_Rotate ();
-};
+}
 
 void () lvl3_oldsentry_atk1 = [ 7.000, lvl3_oldsentry_atk2 ] {
     ai_face ();
@@ -349,17 +349,17 @@ void () lvl3_oldsentry_atk1 = [ 7.000, lvl3_oldsentry_atk2 ] {
             lvl3_oldsentry_atk3 ();
         }
     }
-};
+}
 
 void () lvl3_oldsentry_atk2 = [ 8.000, lvl3_oldsentry_atk3 ] {
     ai_face ();
     OldSentry_Fire ();
-};
+}
 
 void () lvl3_oldsentry_atk3 = [ 6.000, lvl3_oldsentry_atk1 ] {
     ai_face ();
     OldSentry_Fire ();
-};
+}
 // old sg end
 
 void Sentry_Rotate () {
@@ -394,7 +394,7 @@ void Sentry_Rotate () {
             self.heat = 0.000;
         }
     }
-};
+}
 
 float Sentry_InRange (entity targ) {
     local float r;
@@ -409,7 +409,7 @@ float Sentry_InRange (entity targ) {
         }
     }
     return(0.000);
-};
+}
 
 float Sentry_FindTarget () {
     local entity e;
@@ -503,7 +503,7 @@ float Sentry_FindTarget () {
     } else {
         return(0.000);
     }
-};
+}
 
 float OldSentry_FindTarget () {
     local entity client;
@@ -565,14 +565,14 @@ float OldSentry_FindTarget () {
     }
     OldSentry_FoundTarget ();
     return (1);
-};
+}
 
 void OldSentry_FoundTarget () {
     if (((self.ammo_shells > 0.000000) || ((self.ammo_rockets > 0.000000) && (self.weapon == 3)))) {
         sound (self, CHAN_VOICE, "weapons/turrspot.wav", 1, 1);
     }
     Sentry_HuntTarget ();
-};
+}
 
 void Sentry_HuntTarget () {
     if (!sgtype) {
@@ -604,11 +604,11 @@ void Sentry_HuntTarget () {
     if ( (self.super_damage_finished < time) ) {
         self.super_damage_finished = (time + 0.500);
     }
-};
+}
 
 void Sentry_Pain () {
     self.real_owner.StatusRefreshTime = (time + 0.200);
-};
+}
 
 void Sentry_Explode () {
 #ifndef CSQC
@@ -634,7 +634,7 @@ void Sentry_Explode () {
     WriteCoord (4.000,self.origin_z);
     multicast (self.origin,1.000);
     dremove(self);
-};
+}
 
 void FireSentry (float damg, vector dir, vector spread) {
     local vector direction;
@@ -657,14 +657,14 @@ void FireSentry (float damg, vector dir, vector spread) {
     puff_org = (trace_endpos + direction);
     Multi_Finish ();
     ApplyMultiDamage();
-};
+}
 
 void Sentry_Die () {
     sprint (self.real_owner, 2, "Your sentry gun was destroyed.\n");
     self.real_owner.has_sentry = 0.000000;
     self.think = Sentry_Explode;
     self.nextthink = (time + 0.1);
-};
+}
 // tf2.9 sg
 
 float OldSentry_Fire () {
@@ -720,7 +720,7 @@ float OldSentry_Fire () {
         }
     }
     return (1.000);
-};
+}
 // sg end
 
 float Sentry_Fire () {
@@ -860,8 +860,8 @@ float Sentry_Fire () {
         }
     }
     return (1.000);
-};
+}
 
 void Sentry_MuzzleFlash () {
     self.effects = (self.effects | 8.000);
-};
+}

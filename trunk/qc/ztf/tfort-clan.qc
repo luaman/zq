@@ -80,7 +80,7 @@ void AutoRecord () {
         }
     }
     localcmd("\n");
-};
+}
 
 void MatchOvertime () {
     local float f2;
@@ -109,7 +109,7 @@ void MatchOvertime () {
     self.think = SUB_Remove;
     self.nextthink = time + 0.5;
     NextLevel ();
-};
+}
 
 void PlaySoundAll (string soundname) {
     local entity te;
@@ -127,7 +127,7 @@ void PlaySoundAll (string soundname) {
         stuffcmd(te,"\n");
         te = te.nexts;
     }
-};
+}
 
 void ReturnItem ();
 
@@ -220,7 +220,7 @@ void ResetAll () {
         te.think = TeamFortress_AmmoboxThink;
         te = find (te,classname,"ammobox");
     }
-};
+}
 
 void MatchThink () {
     local string tmp;
@@ -292,7 +292,7 @@ void MatchThink () {
         bprint(2, " remaining\n");
     }
     self.nextthink = time + 1.000;
-};
+}
 
 void StartMatch () {
     local string st;
@@ -387,7 +387,7 @@ void StartMatch () {
         oldself.nextthink = (time + 1.000);
         oldself.think = StartRound;
     }
-};
+}
 
 void PreMatch_Think () {
     local entity p;
@@ -474,7 +474,7 @@ void PreMatch_Think () {
         }
     }
     self.nextthink = time + 1;
-};
+}
 
 void() StartTimer =
 // Spawns the timer and starts the countdown.
@@ -555,7 +555,7 @@ void() StartTimer =
     timer.nextthink = time + 0.1;
     tmp = ftos(timer.cnt2);
     timer.think = PreMatch_Think;
-};
+}
 
 void() StopTimer = {
     // Whenever a countdown or match stops, remove the timer and reset everything.
@@ -582,7 +582,7 @@ void() StopTimer = {
     } else {
         bprint(2.000, "No match to break.\n");
     }
-};
+}
 
 void() PlayerBreak = {
     local float f1, f2;
@@ -642,7 +642,7 @@ void() PlayerBreak = {
         if (f1 > 1) bprint(2, "s");
         bprint(2, " needed\n");
     }
-};
+}
 
 void RemoveVotes () {
     if (self.bvote) {
@@ -664,4 +664,4 @@ void RemoveVotes () {
             AbortElect();
         }
     }
-};
+}

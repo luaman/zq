@@ -100,7 +100,7 @@ float CanDamage (entity targ, entity inflictor)
     }
     return (0.000000);
     return ( 0.000 );
-};
+}
 
 void Killed (entity targ, entity attacker)
 {
@@ -125,7 +125,7 @@ void Killed (entity targ, entity attacker)
     self.touch = SUB_Null;
     self.th_die ();
     self = oself;
-};
+}
 
 void TF_T_Damage (entity targ, entity inflictor, entity attacker, float damage, float T_flags, float T_AttackType)
 {
@@ -367,7 +367,7 @@ void TF_T_Damage (entity targ, entity inflictor, entity attacker, float damage, 
         }
     }
     self = oldself;
-};
+}
 
 void T_RadiusDamage (entity inflictor, entity attacker, float damage, entity ignore)
 {
@@ -405,7 +405,7 @@ void T_RadiusDamage (entity inflictor, entity attacker, float damage, entity ign
         }
         head = head.chain;
     }
-};
+}
 
 void T_BeamDamage (entity attacker, float damage)
 {
@@ -427,4 +427,4 @@ void T_BeamDamage (entity attacker, float damage)
         }
         head = head.chain;
     }
-};
+}

@@ -97,7 +97,7 @@ void() CheckConnectRate = {
             stuffcmd(self, "\n");
         }
     }
-};
+}
 
 void SetChangeParms () {
     if ( (self.health <= 0.000) ) {
@@ -130,7 +130,7 @@ void SetChangeParms () {
     parm13 = self.StatusBarRes;
     parm14 = self.StatusBarSize;
     parm15 = self.is_admin;
-};
+}
 
 void SetNewParms () {
     parm1 = 0.000;
@@ -148,7 +148,7 @@ void SetNewParms () {
     parm13 = 0.000;
     parm14 = 0.000;
     parm15 = 0.000;
-};
+}
 
 void(string entname) Remove_Entity = {
     local   entity  e;
@@ -158,7 +158,7 @@ void(string entname) Remove_Entity = {
         e.nextthink = time + 0.1;
         e = find(e, classname, entname);
     }
-};
+}
 
 void() Remove_All_Items = {
     Remove_Entity("item_artifact_super_damage");
@@ -180,7 +180,7 @@ void() Remove_All_Items = {
     Remove_Entity("weapon_grenadelauncher");
     Remove_Entity("weapon_lightning");
     Remove_Entity("item_health");
-};
+}
 
 void DecodeLevelParms () {
     local string st;
@@ -405,7 +405,7 @@ void DecodeLevelParms () {
     if ( parm15 ) {
         self.is_admin = parm15;
     }
-};
+}
 entity FindIntermission () {
     local entity spot;
     local float cyc;
@@ -432,7 +432,7 @@ entity FindIntermission () {
     }
     objerror ("FindIntermission: no spot");
     return ( world );
-};
+}
 entity FindNextIntermission (entity start_point) {
     local entity spot;
     if ( deathmatch ) {
@@ -465,7 +465,7 @@ entity FindNextIntermission (entity start_point) {
         }
     }
     return ( FindIntermission () );
-};
+}
 
 void TF_MovePlayer () {
     local entity place;
@@ -474,7 +474,7 @@ void TF_MovePlayer () {
     setorigin (self,(place.origin + '0.000 0.000 1.000'));
     self.angles = place.angles;
     self.fixangle = 1.000;
-};
+}
 
 void GotoNextMap () {
     local float nextlevel;
@@ -516,7 +516,7 @@ void GotoNextMap () {
     if ( (infokey (world,"n") == "0") ) {
         already_chosen_map = 0.000;
     }
-};
+}
 
 void ExitIntermission () {
     dprint ("Exiting intermission...\n");
@@ -529,7 +529,7 @@ void ExitIntermission () {
     intermission_running = (intermission_running + 1.000);
     dprint ("Exit Intermission.\n");
     GotoNextMap ();
-};
+}
 
 void IntermissionThink () {
     local float minp;
@@ -588,7 +588,7 @@ void IntermissionThink () {
         localcmd ("localinfo maxp \"\"\n");
         localcmd ("localinfo nmap \"\"\n");
     }
-};
+}
 
 void execute_changelevel () {
     local entity pos;
@@ -617,12 +617,12 @@ void execute_changelevel () {
         other.modelindex = 0.000;
         other = other.nextp;
     }
-};
+}
 
 void trigger_changelevel () {
     dremove (self);
     return ;
-};
+}
 
 void set_suicide_frame ();
 
@@ -636,7 +636,7 @@ void respawn () {
     CopyToBodyQue (self);
     setspawnparms (self);
     PutClientInServer ();
-};
+}
 
 void ClientKill () {
     local entity te;
@@ -686,7 +686,7 @@ void ClientKill () {
     self.th_die ();
     self.deadflag = 3.000;
     self.takedamage = 0.000;
-};
+}
 entity FindTeamSpawnPoint () {
     local entity spot;
     local entity at_spot;
@@ -747,7 +747,7 @@ entity FindTeamSpawnPoint () {
         }
     }
     return ( world );
-};
+}
 entity SelectSpawnPoint () {
     local entity spot;
     local entity at_spot;
@@ -806,7 +806,7 @@ entity SelectSpawnPoint () {
         }
     }
     return ( spot );
-};
+}
 
 void PlayerDie ();
 
@@ -1005,7 +1005,7 @@ void PutClientInServer () {
         self.tfstate = (self.tfstate | 65536.000);
         TeamFortress_SetSpeed (self);
     }
-};
+}
 
 void PrintClientScore (entity c) {
     if ( ((c.frags > -10.000) && (c.frags < 0.000)) ) {
@@ -1024,7 +1024,7 @@ void PrintClientScore (entity c) {
     bprint (1.000," ");
     bprint (1.000,c.netname);
     bprint (1.000,"\n");
-};
+}
 
 void DumpScore () {
     local entity e;
@@ -1068,7 +1068,7 @@ void DumpScore () {
         sort = sort.chain;
     }
     bprint (1.000,"\n");
-};
+}
 
 float already_cycled /* = 0.000 */;
 
@@ -1082,7 +1082,7 @@ void NextLevel () {
     o.map = nextmap;
     o.think = execute_changelevel;
     o.nextthink = (time + 0.100);
-};
+}
 
 void CheckRules () {
     if ( !(modetype & 1))  {
@@ -1093,7 +1093,7 @@ void CheckRules () {
     if ( (fraglimit && (self.frags >= fraglimit)) ) {
         NextLevel ();
     }
-};
+}
 
 void PlayerDeathThink () {
     local float fwd;
@@ -1156,7 +1156,7 @@ void PlayerDeathThink () {
         self.impulse = 0.000;
         return ;
     }
-};
+}
 
 void PlayerJump () {
     local entity te;
@@ -1261,7 +1261,7 @@ void PlayerJump () {
         }
     }
     return;
-};
+}
 .float dmgtime;
 
 void WaterMove () {
@@ -1330,7 +1330,7 @@ void WaterMove () {
         self.flags = (self.flags + 16.000);
         self.dmgtime = 0.000;
     }
-};
+}
 
 void CheckWaterJump () {
     local vector start;
@@ -1355,7 +1355,7 @@ void CheckWaterJump () {
             return ;
         }
     }
-};
+}
 
 void PlayerPreThink () {
     if ( (self.is_feigning && (self.waterlevel == 1.000)) ) {
@@ -1439,7 +1439,7 @@ void PlayerPreThink () {
     if ( self.on_hook ) {
         Service_Grapple ();
     }
-};
+}
 
 void CheckPowerups () {
     local float lighton;
@@ -1596,7 +1596,7 @@ void CheckPowerups () {
             self.radsuit_finished = 0.000;
         }
     }
-};
+}
 
 void Admin_Alias (string alias) {
     stuffcmd (self,"alias ");
@@ -1604,7 +1604,7 @@ void Admin_Alias (string alias) {
     stuffcmd (self," \"cmd ");
     stuffcmd (self,alias);
     stuffcmd (self,"\"\n");
-};
+}
 
 void Admin_Aliases () {
     if (self.motd <= 130.000) {
@@ -1666,7 +1666,7 @@ void Admin_Aliases () {
         stuffcmd(self, "on_admin\n");
         self.get_admin_aliases = 0.000;
     }
-};
+}
 
 void PlayerPostThink () {
     local float fdmg;
@@ -1736,7 +1736,7 @@ void PlayerPostThink () {
     self.jump_flag = self.velocity_z;
     CheckPowerups ();
     W_WeaponFrame ();
-};
+}
 
 void Admin_Check (string cl_pwd) {
     local string st;
@@ -1758,7 +1758,7 @@ void Admin_Check (string cl_pwd) {
     if (st != string_null) {
         self.is_admin = 1.000;
     }
-};
+}
 /*
 
    void () crash_catcher_think =
@@ -1836,7 +1836,7 @@ te.classname = "crash_catcher";
 te.think = crash_catcher_think;
 te.owner = self;
 te.nextthink = time;
-};
+}
 
 void () remove_crash_catcher =
 {
@@ -1856,7 +1856,7 @@ void () remove_crash_catcher =
 			te = find (te, classname, "crash_catcher");
 		}
 	}
-};
+}
 */
 
 void ClientConnect () {
@@ -1957,7 +1957,7 @@ void ClientConnect () {
     stuffcmd (self,"cl_backspeed 999\n");
     stuffcmd (self,"cl_forwardspeed 999\n");
     stuffcmd (self,"cl_sidespeed 999\n");
-};
+}
 
 void ClientDisconnect () {
     local entity te;
@@ -2141,7 +2141,7 @@ void ClientDisconnect () {
     setsize (self,'0.000 0.000 0.000','0.000 0.000 0.000');
     self.nextthink = 0.000;
     self.think = SUB_Null;
-};
+}
 
 void ClientObituary (entity targ, entity attacker) {
     local float rnum;
@@ -2876,4 +2876,4 @@ void ClientObituary (entity targ, entity attacker) {
             }
         }
     }
-};
+}
