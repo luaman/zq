@@ -55,6 +55,8 @@ void tfgoalitem_checkgoalreturn (entity Item);
 
 void ForceRespawn (entity P);
 
+void ReturnItem ();
+
 void CheckModel () {
     if (self.mdl == "models/flag.mdl") {
         self.mdl = "progs/tf_stan.mdl";

@@ -33,6 +33,8 @@ void TeamFortress_DescribeArmor (entity Player, float Armorclass);
 
 void TeamFortress_Regenerate ();
 
+void TeamFortress_ThrowGrenade ();
+
 void UseSpecialSkill () {
     vector src;
     self.impulse = 0.000;

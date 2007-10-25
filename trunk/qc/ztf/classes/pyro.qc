@@ -27,6 +27,7 @@
 
 //void (vector org, entity shooter) NapalmGrenadeLaunch;
 float RemoveFlameFromQueue (string id_flame);
+
 entity FlameSpawn (string type, entity p_owner) {
     if ( (cb_prematch == 1.000) ) {
         return ( world );
@@ -42,47 +43,42 @@ entity FlameSpawn (string type, entity p_owner) {
     }
     newmis = spawn ();
     if ( (type == "1") ) {
-        newmis.movetype = 9.000;
-        newmis.solid = 2.000;
+        newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.solid = SOLID_BBOX;
         newmis.effects = 8.000;
         newmis.flame_id = "1";
         setmodel (newmis,"progs/flame2.mdl");
         setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
-    } else {
-        if ( (type == "2") ) {
-            newmis.movetype = 10.000;
-            newmis.solid = 2.000;
-            newmis.flame_id = "2";
-            setmodel (newmis,"progs/flame2.mdl");
-            newmis.frame = 1.000;
-            setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
-        } else {
-            if ( (type == "3") ) {
-                newmis.movetype = 9.000;
-                newmis.solid = 2.000;
-                newmis.flame_id = "3";
-                setmodel (newmis,"progs/flame2.mdl");
-                setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
-            } else {
-                if ( (type == "4") ) {
-                    newmis.movetype = 9.000;
-                    newmis.flame_id = "4";
-                    newmis.frame = 1.000;
-                    newmis.solid = 2.000;
-                    setmodel (newmis,"progs/flame2.mdl");
-                    setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
-                }
-            }
-        }
-    }
+	} else if ( (type == "2") ) {
+		newmis.movetype = MOVETYPE_BOUNCE;
+		newmis.solid = SOLID_BBOX;
+		newmis.flame_id = "2";
+		setmodel (newmis,"progs/flame2.mdl");
+		newmis.frame = 1.000;
+		setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
+	} else if ( (type == "3") ) {
+		newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.solid = 2.000;
+		newmis.flame_id = "3";
+		setmodel (newmis,"progs/flame2.mdl");
+		setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
+	} else if ( (type == "4") ) {
+		newmis.movetype = 9.000;
+		newmis.flame_id = "4";
+		newmis.frame = 1.000;
+		newmis.solid = 2.000;
+		setmodel (newmis,"progs/flame2.mdl");
+		setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
+	}
     newmis.owner = p_owner;
     return ( newmis );
-};
+}
 
 void FlameDestroy (entity this) {
     num_world_flames = (num_world_flames - 1.000);
     dremove (this);
-};
+}
+
 float RemoveFlameFromQueue (string id_flame) {
     entity tmp;
     if ( (num_world_flames < 20.000) ) {
@@ -115,18 +111,18 @@ float RemoveFlameFromQueue (string id_flame) {
     }
     dremove (tmp);
     return ( 1.000 );
-};
+}
 
 void Remove () {
     FlameDestroy (self);
-};
+}
 
 void NapalmGrenadeTouch () {
     sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
     if ( (self.velocity == '0.000 0.000 0.000') ) {
         self.avelocity = '0.000 0.000 0.000';
     }
-};
+}
 
 void NapalmGrenadeNetThink () {
     entity head;
@@ -179,7 +175,7 @@ void NapalmGrenadeNetThink () {
     if ( (self.heat > 7.000) ) {
         RemoveGrenade ();
     }
-};
+}
 
 void NapalmGrenadeExplode () {
     entity te;
@@ -212,68 +208,68 @@ void NapalmGrenadeExplode () {
     head.owner = self.owner;
     head.pteam = self.owner.pteam;
     head.enemy = self;
-};
-/*
+}
 
-   void NapalmGrenadeExplode2 () {
-   float points;
-   vector org;
-   entity te;
-   entity head;
-   te = findradius (self.origin,500.000);
-   while ( te ) {
-   te.chain2 = te.chain;
-   if ( (te.classname == "building_antispam") ) {
-   spawn_tfog(self.origin);
-   dremove (self);
-   return;
-   }
-   te = te.chain2;
-   }
-   sound (self,0.000,"weapons/flmgrexp.wav",1.000,1.000);
-   traceline (self.origin,self.origin,1.000,self);
-   if ( (trace_inwater == 1.000) ) {
-   sound (self,2.000,"misc/vapeur2.wav",1.000,1.000);
-   dremove (self);
-   return ;
-   }
-   self.effects = (self.effects | 8.000);
-// self.origin = self.enemy.origin;
-makevectors (self.v_angle);
-traceline (self.origin,self.origin,1.000,self);
+#if 0
+void NapalmGrenadeExplode2 () {
+	float points;
+	vector org;
+	entity te;
+	entity head;
+	te = findradius (self.origin,500.000);
+	while ( te ) {
+		te.chain2 = te.chain;
+		if ( (te.classname == "building_antispam") ) {
+			spawn_tfog(self.origin);
+			dremove (self);
+			return;
+		}
+		te = te.chain2;
+	}
+	sound (self,0.000,"weapons/flmgrexp.wav",1.000,1.000);
+	traceline (self.origin,self.origin,1.000,self);
+	if ( (trace_inwater == 1.000) ) {
+		sound (self,2.000,"misc/vapeur2.wav",1.000,1.000);
+		dremove (self);
+		return ;
+	}
+	self.effects = (self.effects | 8.000);
+	// self.origin = self.enemy.origin;
+	makevectors (self.v_angle);
+	traceline (self.origin,self.origin,1.000,self);
 
-head = findradius (self.origin, 800);
-while ( head ) {
-head.chain2 = head.chain;
-if ( head.takedamage ) {
-points = (0.45 * vlen ((self.origin - head.origin)));
-points = (400.000 - points);
-if ( (head == self.owner) ) {
-points = (points * 0.800);
+	head = findradius (self.origin, 800);
+	while ( head ) {
+		head.chain2 = head.chain;
+		if ( head.takedamage ) {
+			points = (0.45 * vlen ((self.origin - head.origin)));
+			points = (400.000 - points);
+			if ( (head == self.owner) ) {
+				points = (points * 0.800);
+			}
+			if ( (points > 0.000) ) {
+				if ( CanDamage (head,self) ) {
+					deathmsg = 15.000;
+					TF_T_Damage (head,self.enemy,self.owner, points,2.000,16.000);
+					other = head;
+					Napalm_touch ();
+					if ( (other.classname == "player") ) {
+						stuffcmd (other,"bf\nbf\n");
+					}
+				}
+			}
+		}
+		head = head.chain2;
+	}
+	WriteByte (4.000,23.000);
+	WriteByte (4.000,3.000);
+	WriteCoord (4.000,self.origin_x);
+	WriteCoord (4.000,self.origin_y);
+	WriteCoord (4.000,self.origin_z);
+	multicast (self.origin,1.000);
+	dremove (self);
 }
-if ( (points > 0.000) ) {
-if ( CanDamage (head,self) ) {
-deathmsg = 15.000;
-TF_T_Damage (head,self.enemy,self.owner, points,2.000,16.000);
-other = head;
-Napalm_touch ();
-if ( (other.classname == "player") ) {
-stuffcmd (other,"bf\nbf\n");
-}
-}
-}
-}
-head = head.chain2;
-}
-WriteByte (4.000,23.000);
-WriteByte (4.000,3.000);
-WriteCoord (4.000,self.origin_x);
-WriteCoord (4.000,self.origin_y);
-WriteCoord (4.000,self.origin_z);
-multicast (self.origin,1.000);
-dremove (self);
-};
- */
+#endif
 
 void OnPlayerFlame_touch ();
 
@@ -349,7 +345,7 @@ void FlameFollow () {
             self.heat = (self.heat + 1.000);
         }
     }
-};
+}
 
 void OnPlayerFlame_touch () {
     entity flame;
@@ -390,7 +386,7 @@ void OnPlayerFlame_touch () {
         flame.nextthink = (time + 0.100);
         flame.think = FlameFollow;
     }
-};
+}
 
 void QW_Flame_ResetTouch ();
 
@@ -440,13 +436,13 @@ void WorldFlame_touch () {
         flame.nextthink = (time + 0.150);
         flame.think = FlameFollow;
     }
-};
+}
 
 void QW_Flame_ResetTouch () {
     self.touch = WorldFlame_touch;
     self.think = Remove;
     self.nextthink = self.heat;
-};
+}
 
 void Flamer_stream_touch () {
     entity flame;
@@ -515,7 +511,7 @@ void Flamer_stream_touch () {
         }
         if ((classtype & 16.000)) dremove (self);
     }
-};
+}
 
 void Napalm_touch () {
     entity flame;
@@ -583,7 +579,7 @@ void Napalm_touch () {
         }
         FlameDestroy (self);
     }
-};
+}
 
 void NewBubbles (float num_bubbles, vector bub_origin) {
     entity bubble_spawner;
@@ -600,7 +596,7 @@ void NewBubbles (float num_bubbles, vector bub_origin) {
     bubble_spawner.think = DeathBubblesSpawn;
     bubble_spawner.bubble_count = num_bubbles;
     return ;
-};
+}
 
 void W_FireFlame () {
     entity flame;
@@ -635,7 +631,7 @@ void W_FireFlame () {
     setmodel (flame,"progs/s_explod.spr");
     setsize (flame,'0.000 0.000 0.000','0.000 0.000 0.000');
     setorigin (flame,((self.origin + (v_forward * 16.000)) + '0.000 0.000 16.000'));
-};
+}
 
 void IncendiaryRadius () {
     float damg;
@@ -653,7 +649,7 @@ void IncendiaryRadius () {
     WriteCoord (4.000,self.origin_z);
     multicast (self.origin,1.000);
     dremove (self);
-};
+}
 
 void T_IncendiaryTouch () {
     float damg;
@@ -701,7 +697,7 @@ void T_IncendiaryTouch () {
     } else {
         IncendiaryRadius();
     }
-};
+}
 
 void W_FireIncendiaryCannon () {
     if ( (self.ammo_rockets < ic_ammo) ) {
@@ -732,7 +728,7 @@ void W_FireIncendiaryCannon () {
     setmodel (newmis,"progs/missile.mdl");
     setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
     setorigin (newmis,((self.origin + (v_forward * 8.000)) + '0.000 0.000 16.000'));
-};
+}
 
 void TeamFortress_IncendiaryCannon () {
     if ( !(self.carried & 16384.000) ) {
@@ -745,7 +741,7 @@ void TeamFortress_IncendiaryCannon () {
 
     self.current = 16384.000;
     W_SetCurrentAmmo ();
-};
+}
 
 void TeamFortress_FlameThrower () {
     if ( !(self.carried & 4096.000) ) {
@@ -757,4 +753,4 @@ void TeamFortress_FlameThrower () {
     }
     self.current = 4096.000;
     W_SetCurrentAmmo ();
-};
+}
