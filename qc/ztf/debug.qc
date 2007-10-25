@@ -25,8 +25,8 @@
 
 */
 
-float () CheckExistence;
-entity (float gno) Findgoal;
+float CheckExistence ();
+entity Findgoal (float gno);
 
 void (entity te) dremove = {
     if ( (te == world) ) {

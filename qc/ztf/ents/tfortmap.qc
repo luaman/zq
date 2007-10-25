@@ -1,61 +1,61 @@
 
-void () TF_PlaceItem;
+void TF_PlaceItem ();
 
-void () TF_StartItem;
+void TF_StartItem ();
 
-void () TF_PlaceGoal;
+void TF_PlaceGoal ();
 
-void () TF_StartGoal;
+void TF_StartGoal ();
 
-void () info_tfdetect;
+void info_tfdetect ();
 
-void () info_player_teamspawn;
+void info_player_teamspawn ();
 
-void () info_tfgoal;
+void info_tfgoal ();
 
-void () info_tfgoal_timer;
+void info_tfgoal_timer ();
 
-void () item_tfgoal;
+void item_tfgoal ();
 
-entity (float gno) Findteamspawn;
+entity Findteamspawn (float gno);
 
-void (entity Goal) InactivateGoal;
+void InactivateGoal (entity Goal);
 
-void (entity Goal) RestoreGoal;
+void RestoreGoal (entity Goal);
 
-void (entity Goal) RemoveGoal;
+void RemoveGoal (entity Goal);
 
-float (entity Goal, entity Player, entity AP) IsAffectedBy;
+float IsAffectedBy (entity Goal, entity Player, entity AP);
 
-void (entity Goal, entity Player, entity AP, float addb) Apply_Results;
+void Apply_Results (entity Goal, entity Player, entity AP, float addb);
 
-float (entity Goal, entity AP) APMeetsCriteria;
+float APMeetsCriteria (entity Goal, entity AP);
 
-void (entity Goal) SetupRespawn;
+void SetupRespawn (entity Goal);
 
-void () DoRespawn;
+void DoRespawn ();
 
-void (entity Item, entity AP) DoItemGroupWork;
+void DoItemGroupWork (entity Item, entity AP);
 
-void (entity Goal, entity AP) DoTriggerWork;
+void DoTriggerWork (entity Goal, entity AP);
 
-void (entity Goal, entity Player) RemoveResults;
+void RemoveResults (entity Goal, entity Player);
 
-void () info_tfgoal_use;
+void info_tfgoal_use ();
 
-void () tfgoal_timer_tick;
+void tfgoal_timer_tick ();
 
-void () item_tfgoal_touch;
+void item_tfgoal_touch ();
 
-void () tfgoalitem_remove;
+void tfgoalitem_remove ();
 
-void (entity Item, float PAlive, entity P) tfgoalitem_drop;
+void tfgoalitem_drop (entity Item, float PAlive, entity P);
 
-void (entity Item) tfgoalitem_checkgoalreturn;
+void tfgoalitem_checkgoalreturn (entity Item);
 
-void (entity P) ForceRespawn;
+void ForceRespawn (entity P);
 
-void () CheckModel = {
+void CheckModel () {
     if (self.mdl == "models/flag.mdl") {
         self.mdl = "progs/tf_stan.mdl";
         if (self.skin == 1.000)
@@ -82,7 +82,7 @@ void () CheckModel = {
 
 };
 
-void (entity Goal) UpdateAbbreviations = {
+void UpdateAbbreviations (entity Goal) {
     local string st;
     local float flag;
     //dprint(Goal.classname);
@@ -267,7 +267,7 @@ void (entity Goal) UpdateAbbreviations = {
     }
 };
 
-void () TF_PlaceItem = {
+void TF_PlaceItem () {
     local float oldz;
     self.flags = 256.000;
     self.velocity = '0.000 0.000 0.000';
@@ -305,7 +305,7 @@ void () TF_PlaceItem = {
     item_list_bit = (item_list_bit * 2.000);
 };
 
-void () TF_StartItem = {
+void TF_StartItem () {
     UpdateAbbreviations (self);
     self.nextthink = (time + 0.200);
     self.think = TF_PlaceItem;
@@ -314,7 +314,7 @@ void () TF_StartItem = {
     }
 };
 
-void () TF_PlaceGoal = {
+void TF_PlaceGoal () {
     local float oldz;
     if ( (self.classname != "info_tfgoal_timer") ) {
         if ( (self.goal_activation & 1.000) ) {
@@ -343,7 +343,7 @@ void () TF_PlaceGoal = {
     self.oldorigin = self.origin;
 };
 
-void () TF_StartGoal = {
+void TF_StartGoal () {
     UpdateAbbreviations (self);
     self.nextthink = (time + 0.200);
     self.think = TF_PlaceGoal;
@@ -353,7 +353,7 @@ void () TF_StartGoal = {
     }
 };
 
-float () CheckExistence = {
+float CheckExistence () {
     UpdateAbbreviations (self);
     skill = cvar ("skill");
     if (((self.ex_skill_min == -1.000) && (skill < 0.000))) {
@@ -373,11 +373,11 @@ float () CheckExistence = {
     return (1.000);
 };
 
-void () info_tfdetect = {
+void info_tfdetect () {
     UpdateAbbreviations (self);
 };
 
-void () info_player_teamspawn = {
+void info_player_teamspawn () {
     if ((CheckExistence () == 0.000)) {
         dremove (self);
         return;
@@ -417,12 +417,12 @@ void () info_player_teamspawn = {
     }
 };
 
-void () i_p_t = {
+void i_p_t () {
     self.classname = "info_player_teamspawn";
     info_player_teamspawn ();
 };
 
-void () info_tfgoal = {
+void info_tfgoal () {
     if ((CheckExistence () == 0.000)) {
         dremove (self);
         return;
@@ -487,12 +487,12 @@ void () info_tfgoal = {
     }
 };
 
-void () i_t_g = {
+void i_t_g () {
     self.classname = "info_tfgoal";
     info_tfgoal ();
 };
 
-void () info_tfgoal_timer = {
+void info_tfgoal_timer () {
     if ((CheckExistence () == 0.000)) {
         dremove (self);
         return;
@@ -525,16 +525,16 @@ void () info_tfgoal_timer = {
     TF_StartGoal ();
 };
 
-void () i_t_t = {
+void i_t_t () {
     self.classname = "info_tfgoal_timer";
     info_tfgoal_timer ();
 };
 
-void () item_flag_team1;
+void item_flag_team1 ();
 
-void () item_flag_team2;
+void item_flag_team2 ();
 
-void () item_tfgoal = {
+void item_tfgoal () {
     local string st;
     if ((CheckExistence () == 0.000)) {
         dremove (self);
@@ -600,7 +600,7 @@ void () item_tfgoal = {
     TF_StartItem ();
 };
 
-void (entity AD) ParseTFDetect = {
+void ParseTFDetect (entity AD) {
     local float fl;
     if ( (AD.team_broadcast != string_null) ) {
         team_menu_string = AD.team_broadcast;
@@ -674,7 +674,7 @@ void (entity AD) ParseTFDetect = {
     }
 };
 
-entity (float ino) Finditem = {
+entity Finditem (float ino) {
     local entity tg;
     local string st;
     tg = find (world,classname,"item_tfgoal");
@@ -691,7 +691,7 @@ entity (float ino) Finditem = {
     return(world);
 };
 
-entity (float gno) Findgoal = {
+entity Findgoal (float gno) {
     local entity tg;
     local string st;
     tg = find (world,classname,"info_tfgoal");
@@ -708,7 +708,7 @@ entity (float gno) Findgoal = {
     return(world);
 };
 
-entity (float gno) Findteamspawn = {
+entity Findteamspawn (float gno) {
     local entity tg;
     local string st;
     tg = find (world,classname,"info_player_teamspawn");
@@ -725,7 +725,7 @@ entity (float gno) Findteamspawn = {
     return(world);
 };
 
-void (entity Goal) InactivateGoal = {
+void InactivateGoal (entity Goal) {
     if ( (Goal.goal_state == 1.000) ) {
         if ( (Goal.search_time == 0.000) ) {
             if ( ((Goal.goal_activation & 8192.000) || (toggleflags & 16.000)) && (Goal.classname == "item_tfgoal") ) {
@@ -741,7 +741,7 @@ void (entity Goal) InactivateGoal = {
     }
 };
 
-void (entity Goal) RestoreGoal = {
+void RestoreGoal (entity Goal) {
     if ( (Goal.goal_state == 3.000) ) {
         if ( (Goal.search_time == 0.000) ) {
             if ( ((Goal.goal_activation & 8192.000) || (toggleflags & 16.000)) && (Goal.classname == "item_tfgoal")) {
@@ -760,7 +760,7 @@ void (entity Goal) RestoreGoal = {
     }
 };
 
-void (entity Goal) RemoveGoal = {
+void RemoveGoal (entity Goal) {
     Goal.solid = 0.000;
     Goal.goal_state = 3.000;
     if ( (Goal.mdl != string_null) ) {
@@ -768,7 +768,7 @@ void (entity Goal) RemoveGoal = {
     }
 };
 
-float (entity Goal, entity Player, entity AP) IsAffectedBy = {
+float IsAffectedBy (entity Goal, entity Player, entity AP) {
     local float genv;
     if ( (!Player.playerclass ) ) {
         return ( 0.000 );
@@ -814,7 +814,7 @@ float (entity Goal, entity Player, entity AP) IsAffectedBy = {
     return ( 0.000 );
 };
 
-void (entity Goal, entity Player, entity AP, float addb) Apply_Results = {
+void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
     local entity oldself;
     local entity te;
     local entity oldte;
@@ -1032,7 +1032,7 @@ void (entity Goal, entity Player, entity AP, float addb) Apply_Results = {
     }
 };
 
-void (entity Goal, entity Player) RemoveResults = {
+void RemoveResults (entity Goal, entity Player) {
     local entity oldself;
     local entity te;
     local float puinvin;
@@ -1160,7 +1160,7 @@ void (entity Goal, entity Player) RemoveResults = {
     self = oldself;
 };
 
-float (entity Goal,entity AP) APMeetsCriteria = {
+float APMeetsCriteria (entity Goal,entity AP) {
     local float gotone;
     local entity te;
     if ((AP != world)) {
@@ -1275,7 +1275,7 @@ float (entity Goal,entity AP) APMeetsCriteria = {
     return (1.000);
 };
 
-void (entity Goal) SetupRespawn = {
+void SetupRespawn (entity Goal) {
     if ( (Goal.search_time != 0.000) ) {
         InactivateGoal (Goal);
         Goal.think = tfgoal_timer_tick;
@@ -1298,12 +1298,12 @@ void (entity Goal) SetupRespawn = {
     InactivateGoal (Goal);
 };
 
-void () DoRespawn = {
+void DoRespawn () {
     RestoreGoal (self);
     InactivateGoal (self);
 };
 
-float (entity Goal, entity AP) Activated = {
+float Activated (entity Goal, entity AP) {
     local float APMet;
     local float RevAct;
     local float Act;
@@ -1335,7 +1335,7 @@ float (entity Goal, entity AP) Activated = {
     return ( Act );
 };
 
-void (entity Goal, entity AP, entity ActivatingGoal) AttemptToActivate = {
+void AttemptToActivate (entity Goal, entity AP, entity ActivatingGoal) {
     local entity te;
     if (cb_prematch) return;
     if (round_over) return;
@@ -1360,7 +1360,7 @@ void (entity Goal, entity AP, entity ActivatingGoal) AttemptToActivate = {
     }
 };
 
-void (entity Goal, entity AP) DoGoalWork = {
+void DoGoalWork (entity Goal, entity AP) {
     local entity te;
     local entity RI;
     if ( (Goal.activate_goal_no != 0.000) ) {
@@ -1433,7 +1433,7 @@ void (entity Goal, entity AP) DoGoalWork = {
     }
 };
 
-void (entity Goal, entity AP) DoGroupWork = {
+void DoGroupWork (entity Goal, entity AP) {
     local string st;
     local entity tg;
     local float allset;
@@ -1534,7 +1534,7 @@ void (entity Goal, entity AP) DoGroupWork = {
     }
 };
 
-void (entity Item, entity AP) DoItemGroupWork = {
+void DoItemGroupWork (entity Item, entity AP) {
     local entity tg;
     local entity carrier;
     local float allcarried;
@@ -1598,7 +1598,7 @@ void (entity Item, entity AP) DoItemGroupWork = {
     }
 };
 
-void (entity Goal, entity AP) DoTriggerWork = {
+void DoTriggerWork (entity Goal, entity AP) {
     local entity t;
     if ( Goal.killtarget ) {
         t = world;
@@ -1633,14 +1633,14 @@ void (entity Goal, entity AP) DoTriggerWork = {
     }
 };
 
-void () DelayedResult = {
+void DelayedResult () {
     if ( (self.enemy.goal_state == 4.000) ) {
         DoResults (self.enemy,self.owner,self.weapon);
     }
     dremove (self);
 };
 
-void (entity te) PrintSelfCTF = {
+void PrintSelfCTF (entity te) {
     local float winners;
     winners = floor ( random () * 8);
     if ( (winners < 1.000) ) {
@@ -1670,7 +1670,7 @@ void (entity te) PrintSelfCTF = {
     }
 };
 
-void (entity Goal, entity AP, float addb) DoResults = {
+void DoResults (entity Goal, entity AP, float addb) {
     local entity te;
     local float winners;
     local float gotone;
@@ -1882,7 +1882,7 @@ void (entity Goal, entity AP, float addb) DoResults = {
     }
 };
 
-void () tfgoal_touch = {
+void tfgoal_touch () {
     local entity te;
     if ( !(self.goal_activation & 1.000) ) {
         return ;
@@ -1918,7 +1918,7 @@ void () tfgoal_touch = {
     AttemptToActivate (self,other,self);
 };
 
-void () info_tfgoal_use = {
+void info_tfgoal_use () {
     if ( (cb_prematch) ) {
         return ;
     }
@@ -1926,7 +1926,7 @@ void () info_tfgoal_use = {
     AttemptToActivate (self,activator,self);
 };
 
-void () tfgoal_timer_tick = {
+void tfgoal_timer_tick () {
     if ( (self.goal_state != 3.000) ) {
         if ( APMeetsCriteria (self,world) ) {
             DoResults (self,world,1.000);
@@ -1938,7 +1938,7 @@ void () tfgoal_timer_tick = {
     }
 };
 
-void () item_tfgoal_touch = {
+void item_tfgoal_touch () {
     local entity te;
     if ( (other.classname != "player") ) {
         return ;
@@ -2037,7 +2037,7 @@ void () item_tfgoal_touch = {
     }
 };
 
-void (entity Item, entity AP, entity Goal) tfgoalitem_GiveToPlayer = {
+void tfgoalitem_GiveToPlayer (entity Item, entity AP, entity Goal) {
     Item.owner = AP;
     if ( (Item.mdl != string_null) ) {
         setmodel (Item,string_null);
@@ -2087,7 +2087,7 @@ void (entity Item, entity AP, entity Goal) tfgoalitem_GiveToPlayer = {
     DoItemGroupWork (Item,AP);
 };
 
-void () ReturnItem = {
+void ReturnItem () {
     local entity te;
     self.enemy.goal_state = 2.000;
     if (self.enemy.classname == "item_tfgoal") {
@@ -2124,7 +2124,7 @@ void () ReturnItem = {
     dremove (self);
 };
 
-void (entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer = {
+void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
     local entity te;
     local float lighton;
     local float slowon;
@@ -2302,7 +2302,7 @@ void (entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer = {
     objerror ("Invalid method passed into tfgoalitem_RemoveFromPlayer\n");
 };
 
-void () tfgoalitem_dropthink = {
+void tfgoalitem_dropthink () {
     local float pos;
     local string st;
     self.movetype = 6.000;
@@ -2352,13 +2352,13 @@ void () tfgoalitem_dropthink = {
     }
 };
 
-void () tfgoalitem_droptouch = {
+void tfgoalitem_droptouch () {
     self.touch = item_tfgoal_touch;
     self.nextthink = (time + 4.250);
     self.think = tfgoalitem_dropthink;
 };
 
-void (entity Item, float PAlive, entity P) tfgoalitem_drop = {
+void tfgoalitem_drop (entity Item, float PAlive, entity P) {
     local string st;
     local float fl;
     Item.origin = Item.owner.origin;
@@ -2404,7 +2404,7 @@ void (entity Item, float PAlive, entity P) tfgoalitem_drop = {
     }
 };
 
-void () tfgoalitem_remove = {
+void tfgoalitem_remove () {
     local entity te;
     if ( (self.goal_state == 1.000) ) {
         return ;
@@ -2420,7 +2420,7 @@ void () tfgoalitem_remove = {
     dremove (self);
 };
 
-void (entity Item) tfgoalitem_checkgoalreturn = {
+void tfgoalitem_checkgoalreturn (entity Item) {
     local entity te;
     if ( (Item.impulse != 0.000) ) {
         te = Findgoal (Item.impulse);
@@ -2432,7 +2432,7 @@ void (entity Item) tfgoalitem_checkgoalreturn = {
         }
     }
 };
-string (entity Goal, entity Player, entity Item) ItemStatus = {
+string ItemStatus (entity Goal, entity Player, entity Item) {
     local string tmp;
     if ( (Item.goal_state == 1.000) ) {
         if ( ((Goal.team_str_carried != string_null) || (Goal.non_team_str_carried != string_null)) ) {
@@ -2501,7 +2501,7 @@ string (entity Goal, entity Player, entity Item) ItemStatus = {
     }
 };
 
-void () info_player_team2 = {
+void info_player_team2 () {
     ctfmap = 1;
     self.classname = "info_player_teamspawn";
     self.team_no = 2.000;
@@ -2509,7 +2509,7 @@ void () info_player_team2 = {
     self.team_str_home = "ts2";
 };
 
-void () info_player_team1 = {
+void info_player_team1 () {
     ctfmap = 1;
     self.classname = "info_player_teamspawn";
     self.team_no = 1.000;
@@ -2517,7 +2517,7 @@ void () info_player_team1 = {
     self.team_str_home = "ts1";
 };
 
-void () item_flag_team1 = {
+void item_flag_team1 () {
     local entity dp;
     ctfmap = 1;
     UpdateAbbreviations (self);
@@ -2590,7 +2590,7 @@ void () item_flag_team1 = {
     dp.think = TF_PlaceGoal;
 };
 
-void () item_flag_team2 = {
+void item_flag_team2 () {
     local entity dp;
     ctfmap = 1;
     UpdateAbbreviations (self);
@@ -2663,7 +2663,7 @@ void () item_flag_team2 = {
     dp.think = TF_PlaceGoal;
 };
 
-void () CTF_FlagCheck = {
+void CTF_FlagCheck () {
     local entity te;
     local float flagcount;
     local float pos;
@@ -2699,7 +2699,7 @@ void () CTF_FlagCheck = {
     self.nextthink = (time + 30.000);
 };
 
-void (entity P) ForceRespawn = {
+void ForceRespawn (entity P) {
     local entity spot;
     local entity te;
     local entity oldself;
@@ -2751,7 +2751,7 @@ void (entity P) ForceRespawn = {
     self = oldself;
 };
 
-void () DropGoalItems = {
+void DropGoalItems () {
     local entity te;
     te = find (world,classname,"item_tfgoal");
     while ( te ) {

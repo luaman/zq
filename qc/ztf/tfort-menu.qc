@@ -1,137 +1,137 @@
 
-void (float class) TeamFortress_SpyChangeSkin;
+void TeamFortress_SpyChangeSkin (float class);
 
-void (float teamno) TeamFortress_SpyChangeColor;
+void TeamFortress_SpyChangeColor (float teamno);
 
-void (float issilent) TeamFortress_SpyFeignDeath;
+void TeamFortress_SpyFeignDeath (float issilent);
 
-void (entity spy) Spy_RemoveDisguise;
+void Spy_RemoveDisguise (entity spy);
 
-void (entity eng, string bld) DestroyBuilding;
+void DestroyBuilding (entity eng, string bld);
 
-void (float objtobuild) TeamFortress_Build;
+void TeamFortress_Build (float objtobuild);
 
-void () lvl2_sentry_stand;
+void lvl2_sentry_stand ();
 
-void () lvl3_sentry_stand;
+void lvl3_sentry_stand ();
 
-void () lvl2_oldsentry_stand;
+void lvl2_oldsentry_stand ();
 
-void () lvl3_oldsentry_stand;
+void lvl3_oldsentry_stand ();
 
-float (float tno) TeamFortress_TeamSet;
+float TeamFortress_TeamSet (float tno);
 
-float () TeamFortress_TeamPutPlayerInTeam;
+float TeamFortress_TeamPutPlayerInTeam ();
 
-float (float tno) TeamFortress_TeamIsCivilian;
+float TeamFortress_TeamIsCivilian (float tno);
 
-float () TeamFortress_GetNoPlayers;
+float TeamFortress_GetNoPlayers ();
 
-void (float inp) TeamFortress_ChangeClass;
+void TeamFortress_ChangeClass (float inp);
 
-void (entity p) TeamFortress_SetSkin;
+void TeamFortress_SetSkin (entity p);
 
-void (float type, float ammo) TeamFortress_DropAmmo;
+void TeamFortress_DropAmmo (float type, float ammo);
 
-void (entity targ, entity inflictor, entity attacker, float damage, float T_flags, float T_AttackType) TF_T_Damage;
+void TF_T_Damage (entity targ, entity inflictor, entity attacker, float damage, float T_flags, float T_AttackType);
 
-void () W_SetCurrentAmmo;
+void W_SetCurrentAmmo ();
 
-void (entity p) bound_other_ammo;
+void bound_other_ammo (entity p);
 
-float (float v) anglemod;
+float anglemod (float v);
 
-void (float tno, entity ignore, string st) teamsprint;
+void teamsprint (float tno, entity ignore, string st);
 
-void (float menu_no) DisplayMenu;
+void DisplayMenu (float menu_no);
 
-void () Menu_Team;
+void Menu_Team ();
 
-void () Menu_Class;
+void Menu_Class ();
 
-void () Menu_Drop;
+void Menu_Drop ();
 
-void () Menu_Intro;
+void Menu_Intro ();
 
-void () Menu_ClassHelp;
+void Menu_ClassHelp ();
 
-void () Menu_ClassHelp2;
+void Menu_ClassHelp2 ();
 
-void () Menu_StuffClassHelp;
+void Menu_StuffClassHelp ();
 
-void (float inp) Menu_ClassHelp_Input;
+void Menu_ClassHelp_Input (float inp);
 
-void () Menu_RepeatHelp;
+void Menu_RepeatHelp ();
 
-void () Menu_Speech;
+void Menu_Speech ();
 
-void () Menu_Speech_Defensive;
+void Menu_Speech_Defensive ();
 
-void () Menu_Speech_Offensive;
+void Menu_Speech_Offensive ();
 
-void () Menu_Speech_General;
+void Menu_Speech_General ();
 
-void (float inp) Menu_Speech_Input;
+void Menu_Speech_Input (float inp);
 
-void (float inp) Menu_Speech_Def_Input;
+void Menu_Speech_Def_Input (float inp);
 
-void (float inp) Menu_Speech_Off_Input;
+void Menu_Speech_Off_Input (float inp);
 
-void (float inp) Menu_Speech_Gen_Input;
+void Menu_Speech_Gen_Input (float inp);
 
-void () Menu_Upgrades;
+void Menu_Upgrades ();
 
-void () Menu_Upgrade_Weapons;
+void Menu_Upgrade_Weapons ();
 
-void () Menu_Upgrade_Armor;
+void Menu_Upgrade_Armor ();
 
-void () Menu_Upgrade_Movement;
+void Menu_Upgrade_Movement ();
 
-void () Menu_Upgrade_Other;
+void Menu_Upgrade_Other ();
 
-void (float inp) Menu_Upgrades_Input;
+void Menu_Upgrades_Input (float inp);
 
-void (float inp) Menu_Upgrade_Wea_Input;
+void Menu_Upgrade_Wea_Input (float inp);
 
-void (float inp) Menu_Upgrade_Arm_Input;
+void Menu_Upgrade_Arm_Input (float inp);
 
-void (float inp) Menu_Upgrade_Mov_Input;
+void Menu_Upgrade_Mov_Input (float inp);
 
-void (float inp) Menu_Upgrade_Oth_Input;
+void Menu_Upgrade_Oth_Input (float inp);
 
-void () Menu_Spy;
+void Menu_Spy ();
 
-void () Menu_Spy_Skin;
+void Menu_Spy_Skin ();
 
-void () Menu_Spy_Color;
+void Menu_Spy_Color ();
 
-void (float inp) Menu_Spy_Input;
+void Menu_Spy_Input (float inp);
 
-void (float inp) Menu_Spy_Skin_Input;
+void Menu_Spy_Skin_Input (float inp);
 
-void (float inp) Menu_Spy_Color_Input;
+void Menu_Spy_Color_Input (float inp);
 
-void () Menu_Engineer;
+void Menu_Engineer ();
 
-void () Menu_EngineerFix_Dispenser;
+void Menu_EngineerFix_Dispenser ();
 
-void () Menu_EngineerFix_SentryGun;
+void Menu_EngineerFix_SentryGun ();
 
-void (float inp) Menu_Engineer_Input;
+void Menu_Engineer_Input (float inp);
 
-void (float inp) Menu_EngineerFix_Dispenser_Input;
+void Menu_EngineerFix_Dispenser_Input (float inp);
 
-void (float inp) Menu_EngineerFix_SentryGun_Input;
+void Menu_EngineerFix_SentryGun_Input (float inp);
 
-void () Menu_Dispenser;
+void Menu_Dispenser ();
 
-void (float inp) Menu_Dispenser_Input;
+void Menu_Dispenser_Input (float inp);
 
-void (entity pl, string s1) CenterPrint;
+void CenterPrint (entity pl, string s1);
 
-void (entity pl, string s1, string s2) CenterPrint2;
+void CenterPrint2 (entity pl, string s1, string s2);
 
-void () ResetMenu = {
+void ResetMenu () {
     if ( (self.StatusBarSize == 0.000) ) {
         CenterPrint (self,"\n");
     } else {
@@ -141,7 +141,7 @@ void () ResetMenu = {
     self.current_menu = 1.000;
 };
 
-void () Player_Menu = {
+void Player_Menu () {
     if ( (self.menu_count > 25.000) ) {
         self.menu_count = 0.000;
     } else {
@@ -235,7 +235,7 @@ void () Player_Menu = {
 	}
 };
 
-void (float menu_no) DisplayMenu = {
+void DisplayMenu (float menu_no) {
     self.current_menu = menu_no;
     if ( (menu_no == 2.000) ) {
         Menu_Team ();
@@ -246,7 +246,7 @@ void (float menu_no) DisplayMenu = {
     }
 };
 
-void () Menu_Team = {
+void Menu_Team () {
     if ( ((toggleflags & 64.000) && teamplay) ) {
         if ( TeamFortress_TeamPutPlayerInTeam () ) {
             ResetMenu ();
@@ -276,7 +276,7 @@ void () Menu_Team = {
     }
 };
 
-void (float inp) Menu_Team_Input = {
+void Menu_Team_Input (float inp) {
     if ((inp  > 5.000) && (inp < 10.000)) {
         if (inp <= 5 + store_obs.cnt) {
             if (modetype & 1) {
@@ -310,7 +310,7 @@ void (float inp) Menu_Team_Input = {
     self.impulse = 0.000;
 };
 
-void () Menu_Class = {
+void Menu_Class () {
     local entity AD;
     AD = find (world,classname,"info_tfdetect");
     if ( AD ) {
@@ -357,7 +357,7 @@ void () Menu_Class = {
     }
 };
 
-void (float inp) Menu_Class_Input = {
+void Menu_Class_Input (float inp) {
     local float new_class;
     local string st;
     if ( ((inp > 11.000) || (inp < 1.000)) ) {
@@ -383,7 +383,7 @@ void (float inp) Menu_Class_Input = {
     self.menu_displaytime = 0.000;
 };
 
-void () Menu_Drop = {
+void Menu_Drop () {
     if ( (self.playerclass == 9.000) ) {
         CenterPrint (self,"\nDrop or Make Ammo:            \n“‘ Shells                    \n”‘ Nails                     \n•‘ Rockets                   \n–‘ Cells                     \n—‘ Grenade 1                 \n˜‘ Grenade 2                 \n™‘ Nothing                   \n");
     } else {
@@ -391,11 +391,11 @@ void () Menu_Drop = {
     }
 };
 
-void () Menu_RepeatHelp = {
+void Menu_RepeatHelp () {
     CenterPrint (self,"Press › to see this help again\n");
 };
 
-void (float inp) Menu_Drop_Input = {
+void Menu_Drop_Input (float inp) {
     if ( ((inp > 0.000) && (inp < 7.000)) ) {
         TeamFortress_DropAmmo (inp, 10.000);
     }
@@ -404,7 +404,7 @@ void (float inp) Menu_Drop_Input = {
     self.impulse = 0.000;
 };
 
-void (float inp) Menu_Input = {
+void Menu_Input (float inp) {
     if ( (self.current_menu == 2.000) ) {
         Menu_Team_Input (inp);
     } else {
@@ -467,7 +467,7 @@ void (float inp) Menu_Input = {
     }
 };
 
-void () Menu_Intro = {
+void Menu_Intro () {
     local string st1;
     local string st2;
     st1 = infokey (world,"motd1");
@@ -479,7 +479,7 @@ void () Menu_Intro = {
     }
 };
 
-void () Menu_ClassHelp = {
+void Menu_ClassHelp () {
     if ( (self.menu_displaytime < 5.000) ) {
         if ( (self.playerclass == 1.000) ) {
             CenterPrint (self,"ÓÃÏÕÔ Details:               \n\n×ÅÁĞÏÎÓ:                     \n”‘ Shotgun                  \n–‘ Nailgun                  \n\nPress › for alias help\n");
@@ -563,7 +563,7 @@ void () Menu_ClassHelp = {
     }
 };
 
-void () Menu_StuffClassHelp = {
+void Menu_StuffClassHelp () {
     if ( (self.playerclass == 1.000) ) {
         sprint (self,2.000,"ÓÃÏÕÔ Details:\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   –‘ Nailgun\n");
         sprint (self,2.000,"ÇÒÅÎÁÄÅÓ:\n   Concussion Grenade\nÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n");
@@ -628,11 +628,11 @@ void () Menu_StuffClassHelp = {
     }
 };
 
-void () Menu_ClassHelp2 = {
+void Menu_ClassHelp2 () {
     CenterPrint (self,"Commands:\ninv       : Show inventory \n+gren1    : Throw grenade 1\n+gren2    : Throw Grenade 2\nreload    : Force a reload \ndropammo  : drop some ammo \n\n");
 };
 
-void (float inp) Menu_ClassHelp_Input = {
+void Menu_ClassHelp_Input (float inp) {
     if (TeamFortress_TeamIsCivilian(self.pteam.team)) {
         return;
     }
@@ -645,7 +645,7 @@ void (float inp) Menu_ClassHelp_Input = {
     }
 };
 
-void (float type, float num) Menu_Speech_Sound = {
+void Menu_Speech_Sound (float type, float num) {
     local string snd;
     local entity te;
     if (type == 1) {
@@ -701,19 +701,19 @@ void (float type, float num) Menu_Speech_Sound = {
     self.pteam.last_sound = time + 2.000;
 };
 
-void () Menu_Speech_Defensive = {
+void Menu_Speech_Defensive () {
     CenterPrint (self," Defensive Commands: \n\n“‘ Incoming Flag!\n”‘ Flag in Danger\n•‘ Defend Flag!  \n–‘ Repair Sentry \n’‘ Cancel        \n");
 };
 
-void () Menu_Speech_Offensive = {
+void Menu_Speech_Offensive () {
     CenterPrint (self," Offensive Commands: \n\n“‘ I Have the Flag!\n”‘ I'm Attacking   \n•‘ Take the Flag   \n–‘ Cover me        \n—‘ Attack Sentry   \n’‘ Cancel          \n");
 };
 
-void () Menu_Speech_General = {
+void Menu_Speech_General () {
     CenterPrint (self," General Commands: \n\n“‘ Save Me!     \n”‘ Need Engineer\n•‘ No Problem   \n–‘ GO GO GO!    \n—‘ Give me ammo \n˜‘ Move Please  \n’‘ Cancel       \n");
 };
 
-void (float inp) Menu_Speech_Def_Input = {
+void Menu_Speech_Def_Input (float inp) {
     if ((inp == 10) || (self.pteam.last_sound > time )) {
         ResetMenu ();
         return ;
@@ -726,7 +726,7 @@ void (float inp) Menu_Speech_Def_Input = {
 
 };
 
-void (float inp) Menu_Speech_Off_Input = {
+void Menu_Speech_Off_Input (float inp) {
     if ((inp == 10) || (self.pteam.last_sound > time )) {
         ResetMenu ();
         return ;
@@ -739,7 +739,7 @@ void (float inp) Menu_Speech_Off_Input = {
 
 };
 
-void (float inp) Menu_Speech_Gen_Input = {
+void Menu_Speech_Gen_Input (float inp) {
     if ((inp == 10) || (self.pteam.last_sound > time )) {
         ResetMenu ();
         return ;
@@ -752,11 +752,11 @@ void (float inp) Menu_Speech_Gen_Input = {
 
 };
 
-void () Menu_Speech = {
+void Menu_Speech () {
     CenterPrint (self," Speech Command: \n\n“‘ Defensive  \n”‘ Offensive  \n•‘ General    \n’‘ Cancel     \n");
 };
 
-void (float inp) Menu_Speech_Input = {
+void Menu_Speech_Input (float inp) {
     if (inp == 10) {
         ResetMenu ();
         return ;
@@ -782,55 +782,55 @@ void (float inp) Menu_Speech_Input = {
 };
 
 // ************** UPGRADES ***************
-void () Menu_Upgrade_Weapons = {
+void Menu_Upgrade_Weapons () {
     CenterPrint (self," Defensive Commands: \n\n“‘ Incoming Flag!\n”‘ Flag in Danger\n•‘ Defend Flag!  \n–‘ Repair Sentry \n’‘ Cancel        \n");
 };
 
-void () Menu_Upgrade_Armor = {
+void Menu_Upgrade_Armor () {
     CenterPrint (self," Offensive Commands: \n\n“‘ I Have the Flag!\n”‘ I'm Attacking   \n•‘ Take the Flag   \n–‘ Cover me        \n—‘ Attack Sentry   \n’‘ Cancel          \n");
 };
 
-void () Menu_Upgrade_Movement = {
+void Menu_Upgrade_Movement () {
     CenterPrint (self," General Commands: \n\n“‘ Save Me!     \n”‘ Need Engineer\n•‘ No Problem   \n–‘ GO GO GO!    \n—‘ Give me ammo \n˜‘ Move Please  \n’‘ Cancel       \n");
 };
 
-void () Menu_Upgrade_Other = {
+void Menu_Upgrade_Other () {
     CenterPrint (self," General Commands: \n\n“‘ Save Me!     \n”‘ Need Engineer\n•‘ No Problem   \n–‘ GO GO GO!    \n—‘ Give me ammo \n˜‘ Move Please  \n’‘ Cancel       \n");
 };
 
-void (float inp) Menu_Upgrade_Wea_Input = {
+void Menu_Upgrade_Wea_Input (float inp) {
     if ((inp == 10)) {
         ResetMenu ();
         return ;
     }
 };
 
-void (float inp) Menu_Upgrade_Arm_Input = {
+void Menu_Upgrade_Arm_Input (float inp) {
     if ((inp == 10)) {
         ResetMenu ();
         return ;
     }
 };
 
-void (float inp) Menu_Upgrade_Mov_Input = {
+void Menu_Upgrade_Mov_Input (float inp) {
     if ((inp == 10)) {
         ResetMenu ();
         return ;
     }
 };
 
-void (float inp) Menu_Upgrade_Oth_Input = {
+void Menu_Upgrade_Oth_Input (float inp) {
     if ((inp == 10)) {
         ResetMenu ();
         return ;
     }
 };
 
-void () Menu_Upgrades = {
+void Menu_Upgrades () {
     CenterPrint (self," Upgrade Command: \n\n“‘ Weapons  \n”‘ Armor  \n•‘ Movement   \n4. Other    \n’‘ Cancel     \n");
 };
 
-void (float inp) Menu_Upgrades_Input = {
+void Menu_Upgrades_Input (float inp) {
     if (inp == 10) {
         ResetMenu ();
         return ;
@@ -861,7 +861,7 @@ void (float inp) Menu_Upgrades_Input = {
     }
 };
 
-void () Menu_Spy = {
+void Menu_Spy () {
     if ( ((self.effects & (8.000 | 4.000)) || (self.is_unabletospy == 1.000)) ) {
         ResetMenu ();
         return ;
@@ -897,7 +897,7 @@ void () Menu_Spy = {
     }
 };
 
-void (float inp) Menu_Spy_Input = {
+void Menu_Spy_Input (float inp) {
     if ( ((inp == 1.000) || (inp == 2.000)) ) {
         if ( (self.effects & (8.000 | 4.000)) ) {
             sprint (self,2.000,"You can't go undercover while glowing.\n");
@@ -958,7 +958,7 @@ void (float inp) Menu_Spy_Input = {
     }
 };
 
-void () Menu_Spy_Skin = {
+void Menu_Spy_Skin () {
     if (TeamFortress_TeamIsCivilian(self.undercover_team)) {
         CenterPrint (self," Change Skin to: \n“‘ Base" ) ;
         return;
@@ -966,7 +966,7 @@ void () Menu_Spy_Skin = {
     CenterPrint (self," Change Skin to: \n“‘ Scout   \n”‘ Sniper  \n•‘ Soldier \n–‘ Demoman \n—‘ Medic   \n˜‘ Hvwep   \n™‘ Pyro    \nš‘ Spy     \n›‘ Engineer\n\n");
 };
 
-void (float inp) Menu_Spy_Skin_Input = {
+void Menu_Spy_Skin_Input (float inp) {
     if (TeamFortress_TeamIsCivilian(self.undercover_team)) {
         if ( (inp == 1.000)) {
             TeamFortress_SpyChangeSkin (inp);
@@ -983,7 +983,7 @@ void (float inp) Menu_Spy_Skin_Input = {
     }
 };
 
-void () Menu_Spy_Color = {
+void Menu_Spy_Color () {
     if ( (store_obs.cnt == 0.000) ) {
         sprint (self,2.000,"No Color changing allowed in deathmatch.\n");
         ResetMenu ();
@@ -997,7 +997,7 @@ void () Menu_Spy_Color = {
     }
 };
 
-void (float inp) Menu_Spy_Color_Input = {
+void Menu_Spy_Color_Input (float inp) {
     if ( ((inp >= 1.000) && (inp <= store_obs.cnt)) ) {
         if (( self.undercover_skin != 0.000)) {
             if (TeamFortress_TeamIsCivilian(inp)) {
@@ -1012,7 +1012,7 @@ void (float inp) Menu_Spy_Color_Input = {
     }
 };
 
-void () Menu_Engineer = {
+void Menu_Engineer () {
     local string s_action;
     local string s_disp;
     local string s_sentry;
@@ -1040,7 +1040,7 @@ void () Menu_Engineer = {
     centerprint (self,s_action,s_disp,s_sentry,s_nothing);
 };
 
-void (float inp) Menu_Engineer_Input = {
+void Menu_Engineer_Input (float inp) {
     if ( (((inp == 1.000) && (self.ammo_cells >= 100.000)) && (self.has_dispenser != 1.000)) ) {
         TeamFortress_Build (1.000);
         ResetMenu ();
@@ -1077,13 +1077,13 @@ void (float inp) Menu_Engineer_Input = {
     }
 };
 
-void () Menu_EngineerFix_Dispenser = {
+void Menu_EngineerFix_Dispenser () {
     CenterPrint (self,"Action:                            \n“‘ Put Ammo into Dispenser     \n”‘ Put Armor into Dispenser    \n•‘ Repair Dispenser            \n–‘ Dismantle Dispenser         \n—‘ Nothing                     \n\n");
 };
 
-float (float cur_ammo, float new_ammo) SetAttribute;
+float SetAttribute (float cur_ammo, float new_ammo);
 
-void (float inp) Menu_EngineerFix_Dispenser_Input = {
+void Menu_EngineerFix_Dispenser_Input (float inp) {
     local float metalcost;
     local float am;
     if ( ((self.classname != "player") || (self.building == world)) ) {
@@ -1176,7 +1176,7 @@ void (float inp) Menu_EngineerFix_Dispenser_Input = {
     }
 };
 
-void () Menu_EngineerFix_SentryGun = {
+void Menu_EngineerFix_SentryGun () {
     if ( ((self.building.weapon < 3.000) && (self.ammo_cells >= 130.000)) ) {
         CenterPrint (self,"Action:                            \n“‘ Put Ammo into Sentry Gun    \n”‘ Upgrade Sentry Gun          \n•‘ Repair Sentry Gun           \n–‘ Dismantle Sentry Gun        \n—‘ Nothing                     \n\n˜‘ Rotate SentryGun            \n");
     } else {
@@ -1184,7 +1184,7 @@ void () Menu_EngineerFix_SentryGun = {
     }
 };
 
-void (float inp) Menu_EngineerFix_SentryGun_Input = {
+void Menu_EngineerFix_SentryGun_Input (float inp) {
     local float am;
     local float metalcost;
     local string st;
@@ -1292,11 +1292,11 @@ void (float inp) Menu_EngineerFix_SentryGun_Input = {
     }
 };
 
-void () Menu_Dispenser = {
+void Menu_Dispenser () {
     CenterPrint (self,"Use Dispenser:                     \n“‘ Withdraw some ammo          \n”‘ Withdraw some Armor         \n•‘ Nothing                     \n\n");
 };
 
-void (float inp) Menu_Dispenser_Input = {
+void Menu_Dispenser_Input (float inp) {
     local float am;
     local float empty;
     empty = 0.000;

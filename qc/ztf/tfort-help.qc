@@ -25,7 +25,7 @@
 
 */
 
-void () TeamFortress_MOTD = {
+void TeamFortress_MOTD () {
     local string ya;
     if ( (self.motd <= 20.000) ) {
         self.motd = (self.motd + 1.000);
@@ -199,7 +199,7 @@ void () TeamFortress_MOTD = {
     }
 };
 
-void () TeamFortress_HelpMap = {
+void TeamFortress_HelpMap () {
     local entity te;
     te = find (world,classname,"info_tfdetect");
     if ( te ) {

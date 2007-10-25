@@ -25,11 +25,11 @@
 
 */
 
-void () MsgAdminDis = {
+void MsgAdminDis () {
     sprint(self,2,"Administrators disabled by server.\n");
 };
 
-void () ImpulseCommands = {
+void ImpulseCommands () {
     local float imp;
     imp = self.impulse;
     if (self.last_impulse) {
@@ -301,10 +301,10 @@ void () ImpulseCommands = {
 };
 /*
 
-   void () MsgLimitedAcc = {
+   void MsgLimitedAcc () {
    sprint(self,2,"You have limited Access, You cannot use this command.\n");
    };
-   float () AdminComVal3 = {
+   float AdminComVal3 () {
    if (self.is_admin != 3.000) {
    if (stof(infokey (world,"adminlevel")) < 3)
    {
@@ -314,7 +314,7 @@ void () ImpulseCommands = {
    }
    return(1.000);
    };
-   float () AdminComVal2 = {
+   float AdminComVal2 () {
    if (self.is_admin != 3.000) {
    if (stof(infokey (world,"adminlevel")) < 2)
    {
@@ -324,7 +324,7 @@ void () ImpulseCommands = {
    }
    return(1.000);
    };
-   float () AdminComVal = {
+   float AdminComVal () {
    if (self.is_admin != 3.000) {
    if(!stof(infokey(world, "adminlevel")))
    {
@@ -337,7 +337,7 @@ void () ImpulseCommands = {
    };
  */
 
-void () CommandImpulses = {
+void CommandImpulses () {
     local float imp;
     imp = self.impulse;
     if (imp == 41.000) {
@@ -542,7 +542,7 @@ void () CommandImpulses = {
 
 };
 
-float () PreMatchImpulses = {
+float PreMatchImpulses () {
     local float imp;
     imp = self.impulse;
     if ( ((imp == 9.000) && (self.current_menu != 6.000)) ) {
@@ -613,7 +613,7 @@ float () PreMatchImpulses = {
     return(0.000);
 };
 
-float () DeadImpulses = {
+float DeadImpulses () {
     local string st;
     local float imp;
     imp = self.impulse;

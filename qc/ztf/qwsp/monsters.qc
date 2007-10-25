@@ -1,65 +1,65 @@
 
-void () monster_boss = {
+void monster_boss () {
     dremove(self);
 };
 
-void () event_lightning = {
+void event_lightning () {
     dremove(self);
 };
 
-void () monster_ogre = {
+void monster_ogre () {
     dremove (self);
 };
 
-void () monster_knight = {
+void monster_knight () {
     dremove (self);
 };
 
-void () monster_shambler = {
+void monster_shambler () {
     dremove (self);
 };
 
-void () monster_demon1 = {
+void monster_demon1 () {
     dremove (self);
 };
 
-void () monster_wizard = {
+void monster_wizard () {
     dremove (self);
 };
 
-void () monster_zombie = {
+void monster_zombie () {
     dremove (self);
 };
 
-void () monster_dog = {
+void monster_dog () {
     dremove (self);
 };
 
-void () monster_hell_knight = {
+void monster_hell_knight () {
     dremove (self);
 };
 
-void () monster_tarbaby = {
+void monster_tarbaby () {
     dremove (self);
 };
 
-void () monster_vomit = {
+void monster_vomit () {
     dremove (self);
 };
 
-void () monster_enforcer = {
+void monster_enforcer () {
     dremove (self);
 };
 
-void () monster_shalrath = {
+void monster_shalrath () {
     dremove (self);
 };
 
-void () monster_dragon = {
+void monster_dragon () {
     dremove (self);
 };
 
-void () monster_army = {
+void monster_army () {
     dremove (self);
 };
 

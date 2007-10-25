@@ -38,12 +38,12 @@ float () crandom = {
     return ( (2.000 * (random () - 0.500)) );
 };
 
-void () autoteam_think = {
+void autoteam_think () {
     toggleflags = (toggleflags | 64);
     dremove (self);
 };
 
-void () CheckFps = {
+void CheckFps () {
     local float r;
     local string tmp;
     local float fps;
@@ -97,7 +97,7 @@ void () CheckFps = {
     }
 };
 
-void () CheckGspeed = {
+void CheckGspeed () {
     local float maxvel;
     local float medvel;
     local vector dir;
@@ -118,7 +118,7 @@ void () CheckGspeed = {
     }
 };
 
-void () PowerupsOff = {
+void PowerupsOff () {
     local entity te;
     te = find (world, deathtype, "pow");
     while (te) {
@@ -137,7 +137,7 @@ void () PowerupsOff = {
     }
 };
 
-void () PowerupsOn = {
+void PowerupsOn () {
     local entity te;
     te = find (world, deathtype, "pow");
     while (te) {
@@ -161,7 +161,7 @@ void () PowerupsOn = {
 
 float bspversion;
 
-void () Calibrate_Level = {
+void Calibrate_Level () {
     local string st;
     local float fl;
     local float autoteam_time;
@@ -441,11 +441,11 @@ void () Calibrate_Level = {
     }
 };
 
-void () Medikit_Fire;
+void Medikit_Fire ();
 
-void () Spanner_Fire;
+void Spanner_Fire ();
 
-void () CheckUse = {
+void CheckUse () {
     if (self.playerclass) {
         traceline (self.origin + '0 0 16',(self.origin + '0 0 16' + (v_forward * 80.000)),0.000,self);
         if ( (trace_fraction != 1.000) ) {
@@ -475,7 +475,7 @@ void () CheckUse = {
     }
 };
 
-void() fadetoblack = {
+void fadetoblack () {
     local float fade;
     local string x;
     fade = 10;

@@ -932,7 +932,7 @@ void GibPlayer ()
 }
 
 #ifdef Q3_ENTS
-void () DecrementQue;
+void DecrementQue ();
 #endif
 
 void PlayerDie ()

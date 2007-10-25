@@ -2,7 +2,7 @@
 entity stemp;
 entity otemp;
 
-void () TeamFortress_DetpackExplode;
+void TeamFortress_DetpackExplode ();
 
 void () trigger_reactivate = {
     self.solid = 1.000;
@@ -82,10 +82,10 @@ void () multi_touch = {
 
 #ifdef Q3_ENTS
 string __fullspawndata;
-float (string fullentdata) CheckQ3FcapPoint;
+float CheckQ3FcapPoint (string fullentdata);
 #endif
 
-void () info_tfgoal;
+void info_tfgoal ();
 
 void () trigger_multiple = {
 #ifdef Q3_ENTS

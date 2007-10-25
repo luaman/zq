@@ -1,40 +1,40 @@
 
-void () info_intermission = {
+void info_intermission () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
     }
 };
 
-void () info_player_start = {
+void info_player_start () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
     }
 };
 
-void () info_player_start2 = {
+void info_player_start2 () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
     }
 };
 
-void () testplayerstart = {
+void testplayerstart () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
     }
 };
 
-void () info_player_deathmatch = {
+void info_player_deathmatch () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;
     }
 };
 
-void () info_player_coop = {
+void info_player_coop () {
     if ( (CheckExistence () == 0.000) ) {
         dremove (self);
         return ;

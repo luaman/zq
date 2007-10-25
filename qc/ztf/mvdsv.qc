@@ -28,7 +28,7 @@
 // XXX: there seems to be a huge mass of if/else soup in these methods
 //        cleanups needed ASAP
 
-void (float type, float print) SetOptCmd = {
+void SetOptCmd (float type, float print) {
     if (type == 1) {
         localcmd ("localinfo ");
     } else if (type == 2) {
@@ -1243,7 +1243,7 @@ float () localinfoChanged = {
     return (1.000);
 };
 
-void () UserInfo_Changed = {
+void UserInfo_Changed () {
     local string sk, st;
     local float arg_num, tc;
     arg_num = argc();
@@ -1389,7 +1389,7 @@ void () UserInfo_Changed = {
     return;
 };
 
-void (float sec, float minute, float hour, float day, float mon, float year, string date) timeofday = {
+void timeofday (float sec, float minute, float hour, float day, float mon, float year, string date) {
     local entity t;
     t = find(world, classname, "prematch");
     if (t != world) {

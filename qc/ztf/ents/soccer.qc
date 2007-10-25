@@ -1,7 +1,7 @@
 #ifndef SOCCER
 #define SOCCER
 
-void () DecrementQue = {
+void DecrementQue () {
     local entity te;
     te = player_head;
     while (( te != world)  ) {
@@ -10,7 +10,7 @@ void () DecrementQue = {
     }
 };
 
-float (entity Player) ping = {
+float ping (entity Player) {
     local string st;
     local float fl;
     st = infokey (Player, "ping");
@@ -19,7 +19,7 @@ float (entity Player) ping = {
     return (fl);
 };
 
-void () ball_reset = {
+void ball_reset () {
     self.solid = 1.000;
     self.velocity = '0 0 0';
     self.origin = self.oldorigin;
@@ -33,7 +33,7 @@ void () ball_reset = {
     }
 };
 
-void () ball_spin = {
+void ball_spin () {
     local float vel_x;
     local float vel_y;
     if (self.velocity) {
@@ -52,7 +52,7 @@ void () ball_spin = {
     }
 };
 
-void (vector o, float z) ball_kick = {
+void ball_kick (vector o, float z) {
     local vector v;
     v_x = ((o_x * 1.65) + (random() * 20) );
     v_y = ((o_y * 1.65) + (random() * 20) );
@@ -69,7 +69,7 @@ void (vector o, float z) ball_kick = {
     ball_spin();
 };
 
-void (vector o) ball_fly = {
+void ball_fly (vector o) {
     local vector v;
     v_x = (o_x * 0.600) + (crandom() * 40);
     v_y = (o_y * 0.600) + (crandom() * 40);
@@ -86,7 +86,7 @@ void (vector o) ball_fly = {
     ball_spin();
 };
 
-void () ball_touch = {
+void ball_touch () {
     if (other.classname == "worldspawn") {
         return;
     }
@@ -103,7 +103,7 @@ void () ball_touch = {
     return;
 };
 
-void () item_ball = {
+void item_ball () {
     self.solid = 1.000;
     self.movetype = 10.000;
     //self.flags= 256.000;
@@ -130,7 +130,7 @@ void () item_ball = {
     self.touch = ball_touch;
 };
 
-void () soccer_goal_touch = {
+void soccer_goal_touch () {
     if (round_over)  return;
     if (cb_prematch) return;
     if (other.classname == "item_ball") {
@@ -145,7 +145,7 @@ void () soccer_goal_touch = {
     }
 };
 
-void () info_soccer_goal = {
+void info_soccer_goal () {
 
     if (!self.noise ) {
         self.noise = "items/tf2kfgc.wav";
@@ -165,7 +165,7 @@ void () info_soccer_goal = {
     self.touch = soccer_goal_touch;
 };
 
-void () func_glass = {
+void func_glass () {
     self.solid = 2.000;
     setmodel (self,self.model);
     self.movetype = 0.000;
@@ -220,7 +220,7 @@ void() func_rain = {
     self.nextthink = time  + random();
 };
 
-void () nogren_touch = {
+void nogren_touch () {
 
     if (other.classname == "grenade") {
         if (self.spawnflags == 1.000) {
@@ -248,12 +248,12 @@ void () nogren_touch = {
     }
 };
 
-void () func_nogrenades = {
+void func_nogrenades () {
     InitTrigger ();
     self.touch = nogren_touch;
 };
 
-void () func_nobuild = {
+void func_nobuild () {
     InitTrigger ();
     self.touch = nobuild_touch;
 };

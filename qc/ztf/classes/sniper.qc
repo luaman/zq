@@ -25,10 +25,10 @@
 
 */
 
-void () SniperSight_Update;
+void SniperSight_Update ();
 /*
 
-   void () RemoveFreeze = {
+   void RemoveFreeze () {
    local entity te;
    te = player_head
    while ( te != world )
@@ -61,7 +61,7 @@ void () SniperSight_Update;
    };
  */
 
-void () RemoveFreeze = {
+void RemoveFreeze () {
     self.owner.is_frozen = 1.000;
     self.owner.velocity = self.owner.movedir;
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 65536.000));
@@ -70,7 +70,7 @@ void () RemoveFreeze = {
     dremove (self);
 };
 
-void () FreezePlayer = {
+void FreezePlayer () {
     self.owner.is_frozen = 1.000;
     self.owner.movedir = self.owner.velocity;
     //self.owner.gravity = 0.000;
@@ -83,7 +83,7 @@ void () FreezePlayer = {
     self.nextthink = time + 2.6;
 };
 
-void () FreezeGrenadeExplode = {
+void FreezeGrenadeExplode () {
     local entity te;
     if (anti_spam) {
         te = findradius (self.origin, anti_spam);
@@ -138,7 +138,7 @@ void () FreezeGrenadeExplode = {
     dremove (self);
 };
 
-void () TeamFortress_SniperWeapon = {
+void TeamFortress_SniperWeapon () {
     self.impulse = 0.000;
     if ( (self.tfstate & 2.000) ) {
         return ;
@@ -158,7 +158,7 @@ void () TeamFortress_SniperWeapon = {
     W_SetCurrentAmmo ();
 };
 
-void (float zoom_level) TF_zoom = {
+void TF_zoom (float zoom_level) {
     local string zl;
     if ( (self.tfstate & 4096.000) ) {
         return ;
@@ -185,7 +185,7 @@ void () MakeDot4 = [ 3.000, MakeDot4 ] {
     SniperSight_Update();
 };
 
-void () SniperSight_Update = {
+void SniperSight_Update () {
     local vector org;
     if (!(self.owner.tfstate & 2048.000)) {
         self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2048.000));
@@ -207,7 +207,7 @@ void () SniperSight_Update = {
     self.nextthink = (time + 0.030);
 };
 
-void () SniperSight_Create = {
+void SniperSight_Create () {
     local entity sight;
     if ( (self.has_disconnected == 1.000) ) {
         return ;
@@ -238,7 +238,7 @@ void () SniperSight_Create = {
     sight.nextthink = (time + 0.050);
 };
 
-void () TeamFortress_AutoZoomToggle = {
+void TeamFortress_AutoZoomToggle () {
     if ( (self.tfstate & 4096.000) ) {
         self.tfstate = (self.tfstate - 4096.000);
         sprint (self,2.000,"autozoom ON\n");

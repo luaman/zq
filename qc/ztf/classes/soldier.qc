@@ -25,13 +25,13 @@
 
 */
 
-void () NailGrenadeExplode;
+void NailGrenadeExplode ();
 
-void () NailGrenadeNailEm;
+void NailGrenadeNailEm ();
 
-void () NailGrenadeLaunchNail;
+void NailGrenadeLaunchNail ();
 
-void () NailGrenadeTouch = {
+void NailGrenadeTouch () {
     if ( (other == self.owner) ) {
         return ;
     }
@@ -41,7 +41,7 @@ void () NailGrenadeTouch = {
     }
 };
 
-void () NailGrenadeExplode = {
+void NailGrenadeExplode () {
     local entity te;
     local float pos;
     if (anti_spam) {
@@ -87,14 +87,14 @@ void () NailGrenadeExplode = {
     self.think = NailGrenadeNailEm;
 };
 
-void () NailGrenadeNailEm = {
+void NailGrenadeNailEm () {
     self.velocity = '0.000 0.000 0.000';
     self.nextthink = (time + 0.100);
     self.think = NailGrenadeLaunchNail;
     self.playerclass = 0.000;
 };
 
-void () NailGrenadeLaunchNail = {
+void NailGrenadeLaunchNail () {
     local float i;
     local float j;
     local float cur_yaw;

@@ -25,13 +25,13 @@
 
 */
 
-void () SpectatorDisconnect;
+void SpectatorDisconnect ();
 
-void () SpectatorImpulseCommand;
+void SpectatorImpulseCommand ();
 
-void () SpectatorThink;
+void SpectatorThink ();
 
-void () SpectatorConnect = {
+void SpectatorConnect () {
 
     local string st;
     self.classname = "observer";
@@ -62,7 +62,7 @@ void () SpectatorConnect = {
     CheckConnectRate();
 };
 
-void () SpectatorDisconnect = {
+void SpectatorDisconnect () {
     local entity te;
     if (spec_head == self)
         spec_head = self.nexts;
@@ -76,7 +76,7 @@ void () SpectatorDisconnect = {
     }
 };
 
-void () SpectatorImpulseCommand = {
+void SpectatorImpulseCommand () {
     if ( (self.impulse == 1.000) ) {
         self.goalentity = find (self.goalentity,classname,"info_player_deathmatch");
         if ( (self.goalentity == world) ) {
@@ -141,7 +141,7 @@ void () SpectatorImpulseCommand = {
     self.impulse = 0.000;
 };
 
-void () SpectatorThink = {
+void SpectatorThink () {
     Check_Track();
     if ( self.impulse ) {
         SpectatorImpulseCommand ();

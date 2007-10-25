@@ -25,7 +25,7 @@
 
 */
 
-entity () CheckDuelWinner = {
+entity CheckDuelWinner () {
     local float totalp;
     local entity Player;
     local entity winner;
@@ -50,7 +50,7 @@ entity () CheckDuelWinner = {
     return(world);
 };
 
-entity () CheckWinner = {
+entity CheckWinner () {
     local float team1alive;
     local float team2alive;
     local float team3alive;
@@ -116,7 +116,7 @@ entity () CheckWinner = {
     return(world);
 };
 
-void () RoundOver = {
+void RoundOver () {
     local string st;
     local float fl;
     round_over = 2;
@@ -174,7 +174,7 @@ void () RoundOver = {
     self.nextthink = time + 0.500;
 };
 
-void () RoundThink = {
+void RoundThink () {
     local string tmp;
     local float fl;
     if (round_pause + 0.750 < time) {
@@ -237,7 +237,7 @@ void () RoundThink = {
     self.nextthink = time + 0.500;
 };
 
-float () tfs_givebomb = {
+float tfs_givebomb () {
     local float counter;
     local entity te;
     local float the_one;
@@ -256,7 +256,7 @@ float () tfs_givebomb = {
     return (the_one);
 };
 
-void () RoundBegin = {
+void RoundBegin () {
     local entity te;
     local entity oldself;
     local float bomber;
@@ -369,7 +369,7 @@ void () RoundBegin = {
     self.nextthink = time + 0.100;
 };
 
-void () RoundInit = {
+void RoundInit () {
     local string num;
     local float fl;
     local entity p;
@@ -411,7 +411,7 @@ void () RoundInit = {
     self.nextthink = time + 1.000;
 };
 
-void () StartRound = {
+void StartRound () {
     local string st;
     local float fl;
     if (rounds == 1) {

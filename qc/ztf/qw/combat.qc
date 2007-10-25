@@ -1,15 +1,15 @@
 
-void () Napalm_touch;
+void Napalm_touch ();
 
-void () T_MissileTouch;
+void T_MissileTouch ();
 
-void () info_player_start;
+void info_player_start ();
 
-void (entity targ, entity attacker) ClientObituary;
+void ClientObituary (entity targ, entity attacker);
 
-void (entity Goal, entity AP, float addb) DoResults;
+void DoResults (entity Goal, entity AP, float addb);
 
-float (entity Goal, entity AP) Activated;
+float Activated (entity Goal, entity AP);
 
 float CanDamage (entity targ, entity inflictor)
 {

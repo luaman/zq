@@ -1,5 +1,5 @@
 
-void (float att_delay) Attack_Finished = {
+void Attack_Finished (float att_delay) {
     if ( (self.tfstate & 32768.000) ) {
         self.attack_finished = (time + (att_delay * 2.000));
     } else {
@@ -7,7 +7,7 @@ void (float att_delay) Attack_Finished = {
     }
 };
 
-void () W_Reload_shotgun_fin = {
+void W_Reload_shotgun_fin () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2.000));
     self.owner.weaponmodel = "progs/v_shot.mdl";
 
@@ -20,7 +20,7 @@ void () W_Reload_shotgun_fin = {
     self.owner.StatusRefreshTime = (time + 0.100);
 };
 
-void () W_Reload_super_shotgun_fin = {
+void W_Reload_super_shotgun_fin () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2.000));
     self.owner.weaponmodel = "progs/v_shot2.mdl";
 
@@ -33,7 +33,7 @@ void () W_Reload_super_shotgun_fin = {
     self.owner.StatusRefreshTime = (time + 0.100);
 };
 
-void () W_Reload_grenade_launcher_fin = {
+void W_Reload_grenade_launcher_fin () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2.000));
     self.owner.weaponmodel = "progs/v_rock.mdl";
 
@@ -46,7 +46,7 @@ void () W_Reload_grenade_launcher_fin = {
     self.owner.StatusRefreshTime = (time + 0.100);
 };
 
-void () W_Reload_rocket_launcher_fin = {
+void W_Reload_rocket_launcher_fin () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2.000));
     self.owner.weaponmodel = "progs/v_rock2.mdl";
 
@@ -59,7 +59,7 @@ void () W_Reload_rocket_launcher_fin = {
     self.owner.StatusRefreshTime = (time + 0.100);
 };
 
-void () Cancel_reload = {
+void Cancel_reload () {
     if (self.owner.current == WEAP_SHOTGUN) {
         self.think = W_Reload_shotgun_fin;
         if (reload_sound) {
@@ -84,7 +84,7 @@ void () Cancel_reload = {
     self.nextthink = self.pausetime;
 };
 
-void () W_Reload_shotgun = {
+void W_Reload_shotgun () {
     if (self.owner.reload_shotgun) {
         self.owner.reload_shotgun = self.owner.reload_shotgun - 1.000;
         self.think = W_Reload_shotgun;
@@ -102,7 +102,7 @@ void () W_Reload_shotgun = {
     }
 };
 
-void () W_Reload_super_shotgun = {
+void W_Reload_super_shotgun () {
     if (self.owner.reload_super_shotgun >= 2) {
         self.owner.reload_super_shotgun = self.owner.reload_super_shotgun - 2.000;
         self.think = W_Reload_super_shotgun;
@@ -120,7 +120,7 @@ void () W_Reload_super_shotgun = {
     }
 };
 
-void () W_Reload_grenade_launcher = {
+void W_Reload_grenade_launcher () {
     if (self.owner.reload_grenade_launcher) {
         self.owner.reload_grenade_launcher = self.owner.reload_grenade_launcher - 1.000;
         self.think = W_Reload_grenade_launcher;
@@ -135,7 +135,7 @@ void () W_Reload_grenade_launcher = {
     }
 };
 
-void () W_Reload_rocket_launcher = {
+void W_Reload_rocket_launcher () {
     if (self.owner.reload_rocket_launcher) {
         self.owner.reload_rocket_launcher = self.owner.reload_rocket_launcher - 1.000;
         self.think = W_Reload_rocket_launcher;
@@ -150,7 +150,7 @@ void () W_Reload_rocket_launcher = {
     }
 };
 
-float () CheckForReload = {
+float CheckForReload () {
     local entity tWeapon;
     //   if (practice) return (0.000);
 
@@ -245,7 +245,7 @@ float () CheckForReload = {
     return ( 0.000 );
 };
 
-void () TeamFortress_ReloadCurrentWeapon = {
+void TeamFortress_ReloadCurrentWeapon () {
     local entity tWeapon;
     if ( (self.tfstate & 2.000) )  return ;
     if ( (self.playerclass == 11.000) ) return;

@@ -85,7 +85,7 @@ string(float id) findmapname = #106;
 float	MSG_ENTITY		= 5;
 #endif
 
-void (entity Goal, entity AP, entity ActivatingGoal) AttemptToActivate;
+void AttemptToActivate (entity Goal, entity AP, entity ActivatingGoal);
 //added for optimization
 entity store_obs;
 entity pteam1;
@@ -511,7 +511,7 @@ float SetPlayerStat31(float def) {
 };
 #endif
 
-void (float psize, entity p) KickPlayer = {
+void KickPlayer (float psize, entity p) {
     msg_entity = p;
     /*
        dprint(ftos(p.angles_x));

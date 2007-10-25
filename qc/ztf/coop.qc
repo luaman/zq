@@ -25,13 +25,13 @@
 
 */
 
-void () DroppedKeyThink = {
+void DroppedKeyThink () {
     self.think = SUB_Null;
     self.touch = key_touch;
     self.owner = world;
 };
 
-void () DropKey = {
+void DropKey () {
     if ( ((self.items & 131072.000) || (self.items & 262144.000)) ) {
         newmis = spawn ();
         if ( (self.items & 131072.000) ) {
