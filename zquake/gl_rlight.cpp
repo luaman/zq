@@ -90,8 +90,12 @@ void R_InitBubble(void) {
 float bubblecolor[NUM_DLIGHTTYPES][4] = {
 	{ 0.2, 0.1, 0.05 },		// dimlight or brightlight
 	{ 0.05, 0.05, 0.3 },	// blue
+	{ 0.05, 0.5, 0.05 },	// green
+	{ 0.05, 0.45, 0.4  },	// cyan
 	{ 0.5, 0.05, 0.05 },	// red
 	{ 0.5, 0.05, 0.4 },		// red + blue
+	{ 0.5,  0.45, 0.05 },	// yellow
+	{ 0.5,  0.5,  0.5  },	// white
 	{ 0.2, 0.1, 0.05 },		// muzzleflash
 	{ 0.2, 0.1, 0.05 },		// explosion
 	{ 0, 0, 0 }				// rocket (no light bubble)

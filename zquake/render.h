@@ -45,7 +45,9 @@ typedef struct
 
 #define	MAX_DLIGHTS		32
 
-typedef enum {	lt_default, lt_blue, lt_red, lt_redblue, lt_muzzleflash,
+typedef enum {	lt_default,
+				lt_blue, lt_green, lt_cyan, lt_red, lt_redblue, lt_yellow, lt_white,
+				lt_muzzleflash,
 				lt_explosion, lt_rocket, NUM_DLIGHTTYPES
 } dlighttype_t;
 

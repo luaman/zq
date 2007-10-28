@@ -215,8 +215,12 @@ void R_BuildDlightList (msurface_t *surf)
 int dlightcolor[NUM_DLIGHTTYPES][3] = {
 	{ 100, 90, 80 },	// dimlight or brightlight
 	{ 0, 0, 128 },		// blue
+	{ 0, 128, 0 },		// green
+	{ 0, 128, 128 },	// cyan
 	{ 128, 0, 0 },		// red
 	{ 128, 0, 128 },	// red + blue
+	{ 128, 128, 0 },	// yellow
+	{ 128, 128, 128 },	// white
 	{ 100, 50, 10 },		// muzzleflash
 	{ 100, 50, 10 },		// explosion
 	{ 90, 60, 7 }		// rocket
