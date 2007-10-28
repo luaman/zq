@@ -114,7 +114,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // entity effects
 //
 #define	EF_BRIGHTFIELD			1
-#define	EF_MUZZLEFLASH 			2
+#define	EF_MUZZLEFLASH 			2	// NetQuake
+#define	EF_GREEN	 			2	// QW (ezQuake extension)
 #define	EF_BRIGHTLIGHT 			4
 #define	EF_DIMLIGHT 			8
 #define	EF_FLAG1	 			16

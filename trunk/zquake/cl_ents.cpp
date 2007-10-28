@@ -477,13 +477,12 @@ void CL_LinkPacketEntities (void)
 		{
 			flicker = r_lightflicker.value ? (rand() & 31) : 10;
 			// spawn light flashes, even ones coming from invisible objects
-			if ((state->effects & (EF_BLUE | EF_RED)) == (EF_BLUE | EF_RED))
-				V_AddDlight (state->number, cur_origin, 200 + flicker, 0, lt_redblue);
-			else if (state->effects & EF_BLUE)
-				V_AddDlight (state->number, cur_origin, 200 + flicker, 0, lt_blue);
-			else if (state->effects & EF_RED)
-				V_AddDlight (state->number, cur_origin, 200 + flicker, 0, lt_red);
-			else if (state->effects & EF_BRIGHTLIGHT) {
+			if (state->effects & (EF_BLUE | EF_GREEN | EF_RED))
+			{
+				int type = ((state->effects & EF_BLUE) ? 1 : 0) | ((state->effects & EF_GREEN) ? 2 : 0)
+					| ((state->effects & EF_RED) ? 4 : 0) - 1 + lt_blue;
+				V_AddDlight (state->number, cur_origin, 200 + flicker, 0, (dlighttype_t)type);
+			} else if (state->effects & EF_BRIGHTLIGHT) {
 				vec3_t	tmp;
 				VectorCopy (cur_origin, tmp);
 				tmp[2] += 16;
