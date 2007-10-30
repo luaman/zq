@@ -173,7 +173,7 @@ void ConcussionGrenadeTimer () {
     vector src;
     float pos, stumble, fl;
     if ( (self.owner.invincible_finished > time) ) {
-        sprint (self.owner,2.000,"Your head feels better now.\n");
+        sprint (self.owner,PRINT_HIGH,"Your head feels better now.\n");
         dremove (self);
         return ;
     }
@@ -244,7 +244,7 @@ void ConcussionGrenadeTimer () {
         }
     }
     if ( (self.health <= 0.000) ) {
-        sprint (self.owner,2.000,"Your head feels better now.\n");
+        sprint (self.owner,PRINT_HIGH,"Your head feels better now.\n");
         if (conctype)  stuffcmd (self.owner, "v_idlescale 0\n");
         dremove (self);
     }
@@ -269,7 +269,7 @@ void TeamFortress_Scan () {
         }
         scancost = 2.000;
         if ( (self.owner.ammo_cells <= 0.000) ) {
-            sprint (self.owner,2.000,"Not enough cells to run scanner.\n");
+            sprint (self.owner,PRINT_HIGH,"Not enough cells to run scanner.\n");
             self.owner.ammo_cells = 0.000;
             W_SetCurrentAmmo ();
             self.owner.ScannerOn = 0.000;
@@ -290,7 +290,7 @@ void TeamFortress_Scan () {
             scfr = 1.000;
         }
         if ( ((scen == 0.000) && (scfr == 0.000)) ) {
-            sprint (self.owner,2.000,"No target specified.\n");
+            sprint (self.owner,PRINT_HIGH,"No target specified.\n");
             self.owner.ScannerOn = 0.000;
             dremove (self);
             return ;
@@ -392,7 +392,7 @@ void ScannerSwitch () {
         te.owner = self;
         te.classname = "timer";
         te.netname = "scanner";
-        sprint (self,2.000,"Scanner On.\n");
+        sprint (self,PRINT_HIGH,"Scanner On.\n");
         self.ScannerOn = 1.000;
     } else {
         te = find (world,netname,"scanner");
@@ -402,7 +402,7 @@ void ScannerSwitch () {
             }
             te = find (te,netname,"scanner");
         }
-        sprint (self,2.000,"Scanner Off.\n");
+        sprint (self,PRINT_HIGH,"Scanner Off.\n");
         self.ScannerOn = 0.000;
     }
 }

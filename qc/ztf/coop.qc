@@ -89,7 +89,7 @@ void DropKey () {
         newmis.think = DroppedKeyThink;
         newmis.nextthink = (time + 1.500);
     } else {
-        sprint (self,2.000,"You don't have a key\n");
+        sprint (self,PRINT_HIGH,"You don't have a key\n");
     }
 }
 
@@ -118,33 +118,33 @@ float DoorShouldOpen () {
     }
     if ( (plyrcount != 0.000) ) {
         if ( (plyrcount == 1.000) ) {
-            bprint (2.000,plyr1.netname);
-            bprint (2.000," needs");
+            bprint (PRINT_HIGH,plyr1.netname);
+            bprint (PRINT_HIGH," needs");
         } else {
             if ( (plyrcount == 2.000) ) {
-                bprint (2.000,plyr1.netname);
-                bprint (2.000," and ");
-                bprint (2.000,plyr2.netname);
-                bprint (2.000," need");
+                bprint (PRINT_HIGH,plyr1.netname);
+                bprint (PRINT_HIGH," and ");
+                bprint (PRINT_HIGH,plyr2.netname);
+                bprint (PRINT_HIGH," need");
             } else {
-                bprint (2.000,"More players need");
+                bprint (PRINT_HIGH,"More players need");
             }
         }
-        bprint (2.000," to unlock the ");
+        bprint (PRINT_HIGH," to unlock the ");
         if ( (self.items & 131072.000) ) {
-            bprint (2.000,"silver");
+            bprint (PRINT_HIGH,"silver");
         } else {
-            bprint (2.000,"gold");
+            bprint (PRINT_HIGH,"gold");
         }
-        bprint (2.000," door\n");
+        bprint (PRINT_HIGH," door\n");
         return ( 0.000 );
     }
-    bprint (2.000,"The ");
+    bprint (PRINT_HIGH,"The ");
     if ( (self.items & 131072.000) ) {
-        bprint (2.000,"silver");
+        bprint (PRINT_HIGH,"silver");
     } else {
-        bprint (2.000,"gold");
+        bprint (PRINT_HIGH,"gold");
     }
-    bprint (2.000," door has been unlocked\n");
+    bprint (PRINT_HIGH," door has been unlocked\n");
     return ( 1.000 );
 }

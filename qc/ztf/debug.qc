@@ -45,7 +45,7 @@ void dremove (entity te) {
 void display_location () {
     string st;
     st = vtos (self.origin);
-    sprint (self,2.000,"Location : ",st,"\n");
+    sprint (self,PRINT_HIGH,"Location : ",st,"\n");
     st = vtos (self.angles);
-    sprint (self,2.000,"Angles   : ",st,"\n");
+    sprint (self,PRINT_HIGH,"Angles   : ",st,"\n");
 }

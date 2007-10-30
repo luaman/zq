@@ -43,10 +43,10 @@ void TeamFortress_MOTD () {
             stuffcmd (self,"team observe\n");
         }
         if ( (self.get_aliases) ) {
-            sprint (self,2.000,"\n\n\n");
+            sprint (self,PRINT_HIGH,"\n\n\n");
         }
 
-        sprint (self,2.000,"Oz Team Fortress v1.77a\nhttp://quakeworld.nu/forum/\n");
+        sprint (self,PRINT_HIGH,"Oz Team Fortress v1.77a\nhttp://quakeworld.nu/forum/\n");
         self.menu_displaytime = 0.000;
         self.current_menu = 5.000;
         self.menu_count = 25.000;
@@ -54,7 +54,7 @@ void TeamFortress_MOTD () {
         if ( (!self.get_aliases) ) {
             return ;
         }
-        sprint (self,2.000,"binding aliases...\n");
+        sprint (self,PRINT_HIGH,"binding aliases...\n");
         TeamFortress_Alias ("inv",135.000,0.000);
         TeamFortress_Alias ("showtf",136.000,0.000);
         TeamFortress_Alias ("changeclass",99.000,0.000);
@@ -204,9 +204,9 @@ void TeamFortress_HelpMap () {
     te = find (world,classname,"info_tfdetect");
     if ( te ) {
         if ( (te.non_team_broadcast != string_null) ) {
-            sprint (self,2.000,te.non_team_broadcast);
+            sprint (self,PRINT_HIGH,te.non_team_broadcast);
             return ;
         }
     }
-    sprint (self,2.000,"There is no help for this map.\n");
+    sprint (self,PRINT_HIGH,"There is no help for this map.\n");
 }

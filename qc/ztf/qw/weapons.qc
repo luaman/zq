@@ -548,7 +548,7 @@ void W_FireSniperRifle () {
                 TF_T_Damage (trace_ent,self,self,(self.heat * dam_mult),2.000,1.000);
                 if ( (trace_ent.health > 0.000) ) {
                     sprint (trace_ent,0.000,"Leg injury!\n");
-                    sprint (self,1.000,"Leg shot - that'll slow him down!\n");
+                    sprint (self,PRINT_MEDIUM,"Leg shot - that'll slow him down!\n");
                 }
                 return ;
             } else {
@@ -560,7 +560,7 @@ void W_FireSniperRifle () {
                     TF_T_Damage (trace_ent,self,self,(self.heat * dam_mult),2.000,1.000);
                     if ( (trace_ent.health > 0.000) ) {
                         sprint (trace_ent,0.000,"Head injury!\n");
-                        sprint (self,1.000,"Head shot - that's gotta hurt!\n");
+                        sprint (self,PRINT_MEDIUM,"Head shot - that's gotta hurt!\n");
                     }
                     return ;
                 } else {
@@ -1573,7 +1573,7 @@ float W_CheckNoAmmo () {
                     return ( 1.000 );
                 }
             } else if ((self.current == WEAP_ASSAULT_CANNON) && (self.ammo_cells < 7.000)) {
-                sprint (self,2.000,"Insufficient cells to power up the Assault Cannon.\n");
+                sprint (self,PRINT_HIGH,"Insufficient cells to power up the Assault Cannon.\n");
                 return (0.000);
             } else {
                 if ( (self.currentammo > 0.000) ) {
@@ -1582,7 +1582,7 @@ float W_CheckNoAmmo () {
             }
         }
     }
-    sprint (self,2.000,"not enough ammo.\n");
+    sprint (self,PRINT_HIGH,"not enough ammo.\n");
     return ( 0.000 );
 
 }
@@ -1896,32 +1896,32 @@ void W_Attack () {
 void W_PrintWeaponMessage () {
     if ( (self.current == WEAP_AXE) ) {
         if ( (self.playerclass != 8.000) ) {
-            sprint (self,1.000,"Axe selected\n");
+            sprint (self,PRINT_MEDIUM,"Axe selected\n");
         }
     } else {
         if ( (self.current == WEAP_HOOK) && allow_hook ) {
-            sprint (self,1.000,"grappling hook selected\n");
+            sprint (self,PRINT_MEDIUM,"grappling hook selected\n");
         } else {
             if ( (self.current == WEAP_GRENADE_LAUNCHER) ) {
                 if ((self.playerclass != 11.000)) {
-                    sprint (self,1.000,"Normal grenade mode\n");
+                    sprint (self,PRINT_MEDIUM,"Normal grenade mode\n");
                 } else {
                     if ( (self.current == WEAP_PIPEBOMB_LAUNCHER) ) {
-                        sprint (self,1.000,"Pipebomb mode\n");
+                        sprint (self,PRINT_MEDIUM,"Pipebomb mode\n");
                     }
                 }
             } else {
                 if ( (self.current == WEAP_SNIPER_RIFLE) ) {
-                    sprint (self,1.000,"Sniper rifle ready\n");
+                    sprint (self,PRINT_MEDIUM,"Sniper rifle ready\n");
                 } else {
                     if ( (self.current == WEAP_AUTO_RIFLE) ) {
-                        sprint (self,1.000,"Rifle on fully auto\n");
+                        sprint (self,PRINT_MEDIUM,"Rifle on fully auto\n");
                     } else {
                         if ( (self.current == WEAP_TRANQ) ) {
-                            sprint (self,1.000,"Tranquiliser gun selected\n");
+                            sprint (self,PRINT_MEDIUM,"Tranquiliser gun selected\n");
                         } else {
                             if ( (self.current == WEAP_MEDIKIT) ) {
-                                sprint (self,1.000,"Medikit/Bioweapon readied\n");
+                                sprint (self,PRINT_MEDIUM,"Medikit/Bioweapon readied\n");
                             } else {
 
                                 if ( (self.current == WEAP_INCENDIARY )) {
@@ -2055,7 +2055,7 @@ void W_ChangeWeapon () {
     }
     self.impulse = 0.000;
     if (!(self.carried & fl)) {
-        sprint (self,2.000,"no weapon.\n");
+        sprint (self,PRINT_HIGH,"no weapon.\n");
         return ;
     }
     self.last = self.current;
@@ -2150,7 +2150,7 @@ float DeadImpulses ();
 
 float CheckClanMode () {
     if (( modetype & 1) && (!cb_prematch)) {
-        sprint(self, 2.000, "Clan Battle in progress....\n");
+        sprint (self, PRINT_HIGH, "Clan Battle in progress....\n");
         self.impulse = 0.000;
         return 1;
     }

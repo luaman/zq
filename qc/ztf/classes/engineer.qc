@@ -356,7 +356,7 @@ void TeamFortress_EngineerBuild () {
         self.menu_count = 25.000;
     } else {
         if ( (self.is_building == 1.000) ) {
-            sprint (self,2.000,"You stop building.\n");
+            sprint (self,PRINT_HIGH,"You stop building.\n");
             self.tfstate = (self.tfstate - (self.tfstate & 65536.000));
             TeamFortress_SetSpeed (self);
             te = find (world,netname,"build_timer");
@@ -462,13 +462,13 @@ void TeamFortress_Build (float objtobuild) {
     v_forward = (normalize (v_forward) * 64.000);
     newmis.origin = (self.origin + v_forward);
     if ( (CheckArea (newmis,self) == 0.000) ) {
-        sprint (self,2.000,"Not enough room to build here\n");
+        sprint (self,PRINT_HIGH,"Not enough room to build here\n");
         dremove (newmis);
         return ;
     }
     if ( (objtobuild == 1.000) ) {
         if ( self.has_dispenser ) {
-            sprint (self,2.000,"You can only have one dispenser.\nTry dismantling your old one.\n");
+            sprint (self,PRINT_HIGH,"You can only have one dispenser.\nTry dismantling your old one.\n");
             return ;
         }
         tmp1 = '-16.000 -16.000 0.000';
@@ -479,14 +479,14 @@ void TeamFortress_Build (float objtobuild) {
     } else {
         if ( (objtobuild == 2.000) ) {
             if ( self.has_sentry ) {
-                sprint (self,2.000,"You can only have one sentry gun.\nTry dismantling your old one.\n");
+                sprint (self,PRINT_HIGH,"You can only have one sentry gun.\nTry dismantling your old one.\n");
                 return ;
             }
             st = infokey (world,"max_teamsgs");
 
             maxblds = stof(st);
             if (maxblds == -1.000) {
-                sprint (self,2.000,"You cannot have sentry guns on your team.\nDisabled by Administrator.\n");
+                sprint (self,PRINT_HIGH,"You cannot have sentry guns on your team.\nDisabled by Administrator.\n");
                 return ;
             }
             if (maxblds > 0.000) {
@@ -499,7 +499,7 @@ void TeamFortress_Build (float objtobuild) {
                     te = find (te,classname,"building_sentry");
                 }
                 if ( nomisc >= maxblds) {
-                    sprint (self,2.000,"You can only have ", st, " sentry guns on your team.\n");
+                    sprint (self,PRINT_HIGH,"You can only have ", st, " sentry guns on your team.\n");
                     return ;
                 }
             }
@@ -520,7 +520,7 @@ void TeamFortress_Build (float objtobuild) {
                     te = find (te,classname,"info_player_teamspawn");
                 }
                 if ( !btime) {
-                    sprint (self,2.000,"You must build the Anti-Spam device within 300 units of your team-spawn\n");
+                    sprint (self,PRINT_HIGH,"You must build the Anti-Spam device within 300 units of your team-spawn\n");
                     return ;
                 }
                 if (maxblds > 0.000) {
@@ -533,7 +533,7 @@ void TeamFortress_Build (float objtobuild) {
                         te = find (te,classname,"building_antispam");
                     }
                     if ( nomisc >= 2) {
-                        sprint (self,2.000,"You can only have two anti spam devices on your team.\n");
+                        sprint (self,PRINT_HIGH,"You can only have two anti spam devices on your team.\n");
                         return ;
                     }
                 }
@@ -634,7 +634,7 @@ void TeamFortress_FinishedBuilding () {
     TeamFortress_SetSpeed (self);
     if ( (oldself.weapon == 1.000) ) {
         self.has_dispenser = 1.000;
-        sprint (self,2.000,"You finish building the dispenser.\n");
+        sprint (self,PRINT_HIGH,"You finish building the dispenser.\n");
         teamsprint (self.pteam.team,self,self.netname);
         teamsprint (self.pteam.team,self," has built a Dispenser.\n");
 
@@ -744,7 +744,7 @@ void TeamFortress_FinishedBuilding () {
 
         } else {
             if ( (oldself.weapon == 3.000) ) {
-                sprint (self,2.000,"You finish building the anti-spam Device.\n");
+                sprint (self,PRINT_HIGH,"You finish building the anti-spam Device.\n");
                 teamsprint (self.pteam.team,self,self.netname);
                 teamsprint (self.pteam.team,self," has built a Anti-Spam Device.\n");
 
@@ -838,25 +838,25 @@ void AntiSpamDie () {
 void Engineer_UseDispenser (entity disp) {
     entity dist_checker;
     string st;
-    sprint (self,2.000,"Dispenser has ");
+    sprint (self,PRINT_HIGH,"Dispenser has ");
     st = ftos (disp.health);
-    sprint (self,2.000,st);
-    sprint (self,2.000," health\n");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH," health\n");
     st = ftos (disp.ammo_shells);
-    sprint (self,2.000,st);
-    sprint (self,2.000," shells, ");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH," shells, ");
     st = ftos (disp.ammo_nails);
-    sprint (self,2.000,st);
-    sprint (self,2.000," nails,");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH," nails,");
     st = ftos (disp.ammo_rockets);
-    sprint (self,2.000,st);
-    sprint (self,2.000," rockets\n");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH," rockets\n");
     st = ftos (disp.ammo_cells);
-    sprint (self,2.000,st);
-    sprint (self,2.000," cells, and ");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH," cells, and ");
     st = ftos (disp.armorvalue);
-    sprint (self,2.000,st);
-    sprint (self,2.000," armor\n");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH," armor\n");
     self.current_menu = 16.000;
     self.menu_count = 25.000;
     self.building = disp;
@@ -871,23 +871,23 @@ void Engineer_UseDispenser (entity disp) {
 void Engineer_UseSentryGun (entity gun) {
     entity dist_checker;
     string st;
-    sprint (self,2.000,"Level ");
+    sprint (self,PRINT_HIGH,"Level ");
     st = ftos (gun.weapon);
-    sprint (self,2.000,st);
-    sprint (self,2.000," Sentry Gun has ");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH," Sentry Gun has ");
     st = ftos (gun.health);
-    sprint (self,2.000,st);
-    sprint (self,2.000," health, ");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH," health, ");
     st = ftos (gun.ammo_shells);
-    sprint (self,2.000,st);
-    sprint (self,2.000," shells");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH," shells");
     if ( (gun.weapon == 3.000) ) {
         st = ftos (gun.ammo_rockets);
-        sprint (self,2.000,", ");
-        sprint (self,2.000,st);
-        sprint (self,2.000," rockets");
+        sprint (self,PRINT_HIGH,", ");
+        sprint (self,PRINT_HIGH,st);
+        sprint (self,PRINT_HIGH," rockets");
     }
-    sprint (self,2.000,"\n");
+    sprint (self,PRINT_HIGH,"\n");
     self.current_menu = 17.000;
     self.menu_count = 25.000;
     self.building = gun;
@@ -905,8 +905,8 @@ void CheckSentry (entity gunhead) {
     gunbase = gunhead.trigger_field;
     dist = (gunbase.origin - gunhead.origin);
     if ( (vlen (dist) > 15.000) ) {
-        bprint (1.000,self.real_owner.netname);
-        bprint (1.000,"'s sentry gun malfunctioned\n");
+        bprint (PRINT_MEDIUM,self.real_owner.netname);
+        bprint (PRINT_MEDIUM,"'s sentry gun malfunctioned\n");
         Sentry_Die ();
     }
 }

@@ -79,18 +79,18 @@ void CheckConnectRate () {
     minrate = stof(infokey(world, "minrate"));
     if (maxrate  || minrate) {
         if ((player_rate > maxrate) && (maxrate!=0 )) {
-            sprint(self, 2, "\nYour Ú·ÙÂ setting is too high for this server.\n");
+            sprint (self, PRINT_HIGH, "\nYour Ú·ÙÂ setting is too high for this server.\n");
             tmp=ftos(maxrate);
-            sprint(self, 2, "Rate set to ");
+            sprint (self, PRINT_HIGH, "Rate set to ");
             sprint(self, 3, tmp, "\n");
             stuffcmd(self, "rate ");
             stuffcmd(self, tmp);
             stuffcmd(self, "\n");
         }
         if ((player_rate < minrate) && (minrate < maxrate)) {
-            sprint(self, 2, "\nYour Ú·ÙÂ setting is too low for this server.\n");
+            sprint (self, PRINT_HIGH, "\nYour Ú·ÙÂ setting is too low for this server.\n");
             tmp=ftos(minrate);
-            sprint(self, 2, "Rate set to ");
+            sprint (self, PRINT_HIGH, "Rate set to ");
             sprint(self, 3, tmp, "\n");
             stuffcmd(self, "rate ");
             stuffcmd(self, tmp);
@@ -258,9 +258,9 @@ void DecodeLevelParms () {
             rounds = -1;
             store_obs.cnt = 2.000;
         }
-        bprint (2.000,"Mapname: ");
-        bprint (2.000,mapname);
-        bprint (2.000,"\n");
+        bprint (PRINT_HIGH,"Mapname: ");
+        bprint (PRINT_HIGH,mapname);
+        bprint (PRINT_HIGH,"\n");
         if ( store_obs.cnt == 2) {
             dremove(pteam3);
             dremove(pteam4);
@@ -351,7 +351,7 @@ void DecodeLevelParms () {
                 pmtime = stof (st);
                 if (pmtime) {
                     cease_fire = 1;
-                    bprint (2.000,"CEASE FIRE\n");
+                    bprint (PRINT_HIGH,"CEASE FIRE\n");
                     te = player_head;
                     while ( te ) {
                         centerprint (te,"CEASE FIRE\n");
@@ -658,8 +658,8 @@ void ClientKill () {
         self.respawn_time = (time + 5.000);
     }
     if ( (self.playerclass ) ) {
-        bprint (1.000,self.netname);
-        bprint (1.000," suicides\n");
+        bprint (PRINT_MEDIUM,self.netname);
+        bprint (PRINT_MEDIUM," suicides\n");
         if (!cb_prematch)
             TF_AddFrags (self,-1.000, 0.000);
         set_suicide_frame ();
@@ -872,9 +872,9 @@ void PutClientInServer () {
         if (self.a_n > 2.000) {
             self.playerclass = 0.000;
             if (self.a_n == 3.000) {
-                sprint(self, 2.000, "You are next in line\n");
+                sprint (self, PRINT_HIGH, "You are next in line\n");
             } else {
-                sprint(self, 2.000, "You are ", ftos(self.a_n), "th in the queue\n");
+                sprint (self, PRINT_HIGH, "You are ", ftos(self.a_n), "th in the queue\n");
             }
         }
     }
@@ -904,7 +904,7 @@ void PutClientInServer () {
                     self.playerclass = (1.000 + floor ((random () * (10.000 - 1.000))));
                 }
             } else {
-                sprint (self,2.000,"All classes disabled, returning to Observer mode.\n");
+                sprint (self,PRINT_HIGH,"All classes disabled, returning to Observer mode.\n");
                 self.playerclass = 0.000;
             }
             self.tfstate = 8.000;
@@ -1001,7 +1001,7 @@ void PutClientInServer () {
         }
     }
     if ( cease_fire ) {
-        sprint (self,2.000,"\n\nCEASE FIRE MODE\n");
+        sprint (self,PRINT_HIGH,"\n\nCEASE FIRE MODE\n");
         self.tfstate = (self.tfstate | 65536.000);
         TeamFortress_SetSpeed (self);
     }
@@ -1009,21 +1009,21 @@ void PutClientInServer () {
 
 void PrintClientScore (entity c) {
     if ( ((c.frags > -10.000) && (c.frags < 0.000)) ) {
-        bprint (1.000," ");
+        bprint (PRINT_MEDIUM," ");
     } else {
         if ( (c.frags >= 0.000) ) {
             if ( (c.frags < 100.000) ) {
-                bprint (1.000," ");
+                bprint (PRINT_MEDIUM," ");
             }
             if ( (c.frags < 10.000) ) {
-                bprint (1.000," ");
+                bprint (PRINT_MEDIUM," ");
             }
         }
     }
     bprint (c.frags,ftos (c.frags));
-    bprint (1.000," ");
-    bprint (1.000,c.netname);
-    bprint (1.000,"\n");
+    bprint (PRINT_MEDIUM," ");
+    bprint (PRINT_MEDIUM,c.netname);
+    bprint (PRINT_MEDIUM,"\n");
 }
 
 void DumpScore () {
@@ -1062,12 +1062,12 @@ void DumpScore () {
         }
         e = e.nextp;
     }
-    bprint (1.000,"\n");
+    bprint (PRINT_MEDIUM,"\n");
     while ( sort ) {
         PrintClientScore (sort);
         sort = sort.chain;
     }
-    bprint (1.000,"\n");
+    bprint (PRINT_MEDIUM,"\n");
 }
 
 float already_cycled /* = 0.000 */;
@@ -1232,7 +1232,7 @@ void PlayerJump () {
     self.button2 = 0.000;
     sound (self,4.000,"player/plyrjmp8.wav",1.000,1.000);
     if ((self.speed > 150.000) && (self.button0 && (self.current == WEAP_ASSAULT_CANNON)) ) {
-        sprint (self,1.000,"You cannot fire the assault cannon without your feet on the ground...\n");
+        sprint (self,PRINT_MEDIUM,"You cannot fire the assault cannon without your feet on the ground...\n");
         self.tfstate = (self.tfstate - (self.tfstate & 2048.000));
         if (classtype & 2.000)
             self.tfstate = self.tfstate - (self.tfstate & 65536);
@@ -1379,11 +1379,11 @@ void PlayerPreThink () {
     }
     if ( ((self.undercover_team || self.undercover_skin) || self.is_undercover) ) {
         if ( (self.effects & (8.000 | 4.000)) ) {
-            sprint (self,1.000,"The glowing removes your disguise.\n");
+            sprint (self,PRINT_MEDIUM,"The glowing removes your disguise.\n");
             Spy_RemoveDisguise (self);
         }
         if ( (modetype & 4 && self.ammo_detpack) ) {
-            sprint (self,1.000,"The bomb removes your disguise.\n");
+            sprint (self,PRINT_MEDIUM,"The bomb removes your disguise.\n");
             Spy_RemoveDisguise (self);
         }
     }
@@ -1462,7 +1462,7 @@ void CheckPowerups () {
             }
             if ( (self.invisible_finished < (time + 3.000)) ) {
                 if ( (self.invisible_time == 1.000) ) {
-                    sprint (self,2.000,"Ring of Shadows magic is fading\n");
+                    sprint (self,PRINT_HIGH,"Ring of Shadows magic is fading\n");
                     stuffcmd (self,"bf\n");
                     sound (self,0.000,"items/inv2.wav",1.000,1.000);
                     self.invisible_time = (time + 1.000);
@@ -1491,7 +1491,7 @@ void CheckPowerups () {
         }
         if ( (self.invincible_finished < (time + 3.000)) ) {
             if ( (self.invincible_time == 1.000) ) {
-                sprint (self,2.000,"Protection is almost burned out\n");
+                sprint (self,PRINT_HIGH,"Protection is almost burned out\n");
                 stuffcmd (self,"bf\n");
                 sound (self,0.000,"items/protect2.wav",1.000,1.000);
                 self.invincible_time = (time + 1.000);
@@ -1535,7 +1535,7 @@ void CheckPowerups () {
         }
         if ( (self.super_damage_finished < (time + 3.000)) ) {
             if ( (self.super_time == 1.000) ) {
-                sprint (self,2.000,"Quad Damage is wearing off\n");
+                sprint (self,PRINT_HIGH,"Quad Damage is wearing off\n");
                 stuffcmd (self,"bf\n");
                 sound (self,0.000,"items/damage2.wav",1.000,1.000);
                 self.super_time = (time + 1.000);
@@ -1580,7 +1580,7 @@ void CheckPowerups () {
         }
         if ( (self.radsuit_finished < (time + 3.000)) ) {
             if ( (self.rad_time == 1.000) ) {
-                sprint (self,2.000,"Air supply in Biosuit expiring\n");
+                sprint (self,PRINT_HIGH,"Air supply in Biosuit expiring\n");
                 stuffcmd (self,"bf\n");
                 sound (self,0.000,"items/suit2.wav",1.000,1.000);
                 self.rad_time = (time + 1.000);
@@ -1787,8 +1787,8 @@ void Admin_Check (string cl_pwd) {
    {
    if ((timing_action & 1.000000))
    {
-   bprint (2.000000, "á◊¡“Œ…Œ«∫ ", self.owner.netname, " is timing!");
-   bprint (3.000000, "\n");
+   bprint (PRINT_HIGH000, "á◊¡“Œ…Œ«∫ ", self.owner.netname, " is timing!");
+   bprint (PRINT_CHAT000, "\n");
    }
    if (!self.owner.menu.lastthink)
    {
@@ -1863,8 +1863,8 @@ void ClientConnect () {
     string st;
     //string st2;
     float res;
-    bprint (2.000,self.netname);
-    bprint (2.000," entered the game\n");
+    bprint (PRINT_HIGH,self.netname);
+    bprint (PRINT_HIGH," entered the game\n");
     //stuffcmd (self,"say -d\n");
     stuffcmd (self,"on_connect\n");
     self.tfstate = (self.tfstate | 4096.000);
@@ -1951,7 +1951,7 @@ void ClientConnect () {
         self.get_admin_aliases = 1.000;
     }
     if ( (cb_prematch) ) {
-        sprint (self,2.000,"CURRENTLY IN PREMATCH TIME\n");
+        sprint (self,PRINT_HIGH,"CURRENTLY IN PREMATCH TIME\n");
     }
     //self.a_n = TeamFortress_GetNoPlayers() + 1.000;	queue
     stuffcmd (self,"cl_backspeed 999\n");
@@ -1966,7 +1966,7 @@ void ClientDisconnect () {
     fr = rint (self.frags);
     st = ftos (fr);
     if (TeamFortress_GetNoPlayers() == 1 && (!cb_prematch) && (modetype & 1)) GotoNextMap();
-    bprint (2.000,self.netname," left the game with ",st," frags\n");
+    bprint (PRINT_HIGH,self.netname," left the game with ",st," frags\n");
     sound (self,4.000,"player/tornoff2.wav",1.000,0.000);
     self.has_disconnected = 1.000;
     TeamFortress_RemoveTimers ();
@@ -2154,32 +2154,32 @@ void ClientObituary (entity targ, entity attacker) {
     }
     if ( (targ.classname == "player") ) {
         if ( (attacker.classname == "teledeath") ) {
-            bprint (1.000,targ.netname);
-            bprint (1.000," was telefragged by ");
-            bprint (1.000,attacker.owner.netname);
-            bprint (1.000,"\n");
+            bprint (PRINT_MEDIUM,targ.netname);
+            bprint (PRINT_MEDIUM," was telefragged by ");
+            bprint (PRINT_MEDIUM,attacker.owner.netname);
+            bprint (PRINT_MEDIUM,"\n");
             if ( ((attacker.owner.pteam != targ.pteam) || (attacker.owner.pteam.team < 1.000)) ) {
                 TF_AddFrags (attacker.owner,1.000 , 0.000);
             }
             return ;
         }
         if ( (attacker.classname == "teledeath2") ) {
-            bprint (1.000,"Satan's power deflects ");
-            bprint (1.000,targ.netname);
-            bprint (1.000,"'s telefrag\n");
+            bprint (PRINT_MEDIUM,"Satan's power deflects ");
+            bprint (PRINT_MEDIUM,targ.netname);
+            bprint (PRINT_MEDIUM,"'s telefrag\n");
             TF_AddFrags (targ,-1.000, 0.000);
             logfrag (targ,targ);
             return ;
         }
         if ( (deathmsg == 37.000) ) {
-            bprint (1.000,targ.netname);
-            bprint (1.000," shoots his teammate one too many times.\n");
+            bprint (PRINT_MEDIUM,targ.netname);
+            bprint (PRINT_MEDIUM," shoots his teammate one too many times.\n");
             return ;
         }
         if ( ((attacker.classname == "info_tfgoal") || (attacker.classname == "item_tfgoal")) ) {
             if ( (attacker.deathtype != "") ) {
-                bprint (1.000,targ.netname);
-                bprint (1.000,attacker.deathtype);
+                bprint (PRINT_MEDIUM,targ.netname);
+                bprint (PRINT_MEDIUM,attacker.deathtype);
             }
             logfrag (targ,targ);
             return ;
@@ -2187,7 +2187,7 @@ void ClientObituary (entity targ, entity attacker) {
         if ( (attacker.classname == "player")) {
             if ( (targ == attacker) ) {
                 TF_AddFrags (attacker,-1.000, 0.000);
-                bprint (1.000,targ.netname);
+                bprint (PRINT_MEDIUM,targ.netname);
                 if ( (deathmsg == 8.000) ) {
                     if ( (targ.playerclass == 2.000) ) {
                         deathstring = " got splattered by his own grenade\n";
@@ -2277,7 +2277,7 @@ void ClientObituary (entity targ, entity attacker) {
                                                                                 deathstring = " torches himself\n";
                                                                             } else {
                                                                                 if ( ((deathmsg == 7.000) && (targ.waterlevel > 1.000)) ) {
-                                                                                    bprint (1.000," discharges into the water.\n");
+                                                                                    bprint (PRINT_MEDIUM," discharges into the water.\n");
                                                                                     return ;
                                                                                 } else {
                                                                                     if ( (deathmsg == 38.000) ) {
@@ -2308,7 +2308,7 @@ void ClientObituary (entity targ, entity attacker) {
                         }
                     }
                 }
-                bprint (1.000,deathstring);
+                bprint (PRINT_MEDIUM,deathstring);
                 return ;
             } else {
                 if ( ((teamplay && (attacker.pteam == targ.pteam)) && (attacker.pteam.team > 0.000)) ) {
@@ -2330,16 +2330,16 @@ void ClientObituary (entity targ, entity attacker) {
                         }
                     }
                     if ( (deathmsg == 23.000) ) {
-                        bprint (1.000,targ.netname);
-                        bprint (1.000," didn't survive the operation by ");
-                        bprint (1.000,attacker.netname);
-                        bprint (1.000,"\n");
+                        bprint (PRINT_MEDIUM,targ.netname);
+                        bprint (PRINT_MEDIUM," didn't survive the operation by ");
+                        bprint (PRINT_MEDIUM,attacker.netname);
+                        bprint (PRINT_MEDIUM,"\n");
                         return ;
                     }
-                    bprint (1.000,attacker.netname);
-                    bprint (1.000,deathstring);
-                    bprint (1.000,targ.netname);
-                    bprint (1.000,deathstring2);
+                    bprint (PRINT_MEDIUM,attacker.netname);
+                    bprint (PRINT_MEDIUM,deathstring);
+                    bprint (PRINT_MEDIUM,targ.netname);
+                    bprint (PRINT_MEDIUM,deathstring2);
                     CheckAutoKick (attacker);
                     return ;
                 } else {
@@ -2726,10 +2726,10 @@ void ClientObituary (entity targ, entity attacker) {
                         deathstring = " died.";
                         deathstring2 = "\n";
                     }
-                    bprint (1.000,targ.netname);
-                    bprint (1.000,deathstring);
-                    bprint (1.000,attacker.netname);
-                    bprint (1.000,deathstring2);
+                    bprint (PRINT_MEDIUM,targ.netname);
+                    bprint (PRINT_MEDIUM,deathstring);
+                    bprint (PRINT_MEDIUM,attacker.netname);
+                    bprint (PRINT_MEDIUM,deathstring2);
                 }
             }
             return ;
@@ -2747,12 +2747,12 @@ void ClientObituary (entity targ, entity attacker) {
                             }
                         }
                     }
-                    bprint (1.000,targ.netname);
-                    bprint (1.000,deathstring);
+                    bprint (PRINT_MEDIUM,targ.netname);
+                    bprint (PRINT_MEDIUM,deathstring);
                 } else {
                     if ( ((teamplay && (attacker.pteam == targ.pteam)) && (attacker.pteam.team > 0.000)) ) {
-                        bprint (1.000,targ.netname);
-                        bprint (1.000," obstructs his team's sentry gun\n");
+                        bprint (PRINT_MEDIUM,targ.netname);
+                        bprint (PRINT_MEDIUM," obstructs his team's sentry gun\n");
                     } else {
                         TF_AddFrags (attacker.real_owner,1.000, 1.000);
                         logfrag (attacker.real_owner,targ);
@@ -2770,17 +2770,17 @@ void ClientObituary (entity targ, entity attacker) {
                                 }
                             }
                         }
-                        bprint (1.000,targ.netname);
-                        bprint (1.000,deathstring);
-                        bprint (1.000,attacker.real_owner.netname);
-                        bprint (1.000,deathstring2);
+                        bprint (PRINT_MEDIUM,targ.netname);
+                        bprint (PRINT_MEDIUM,deathstring);
+                        bprint (PRINT_MEDIUM,attacker.real_owner.netname);
+                        bprint (PRINT_MEDIUM,deathstring2);
                     }
                 }
             } else {
                 logfrag (targ,targ);
                 TF_AddFrags (targ,-1.000, 0.000);
                 rnum = targ.watertype;
-                bprint (1.000,targ.netname);
+                bprint (PRINT_MEDIUM,targ.netname);
                 if ( (rnum == -3.000) ) {
                     if ( (random () < 0.500) ) {
                         deathstring = " sleeps with the fishes\n";
@@ -2835,28 +2835,28 @@ void ClientObituary (entity targ, entity attacker) {
                         }
                     }
                 }
-                bprint (1.000,deathstring);
+                bprint (PRINT_MEDIUM,deathstring);
             }
         }
     } else {
         if ( (targ.classname == "building_sentrygun") ) {
             if ( (attacker.classname == "teledeath") ) {
-                bprint (1.000,targ.real_owner.netname);
-                bprint (1.000,"'s sentrygun was telefragged by ");
-                bprint (1.000,attacker.owner.netname);
-                bprint (1.000,"\n");
+                bprint (PRINT_MEDIUM,targ.real_owner.netname);
+                bprint (PRINT_MEDIUM,"'s sentrygun was telefragged by ");
+                bprint (PRINT_MEDIUM,attacker.owner.netname);
+                bprint (PRINT_MEDIUM,"\n");
                 return ;
             }
             if ( (attacker.classname == "player") ) {
                 if ( (attacker == targ.real_owner) ) {
-                    bprint (1.000,targ.real_owner.netname);
-                    bprint (1.000," destroys his sentrygun\n");
+                    bprint (PRINT_MEDIUM,targ.real_owner.netname);
+                    bprint (PRINT_MEDIUM," destroys his sentrygun\n");
                     return ;
                 }
-                bprint (1.000,targ.real_owner.netname);
-                bprint (1.000,"'s sentrygun was destroyed by ");
-                bprint (1.000,attacker.netname);
-                bprint (1.000,"\n");
+                bprint (PRINT_MEDIUM,targ.real_owner.netname);
+                bprint (PRINT_MEDIUM,"'s sentrygun was destroyed by ");
+                bprint (PRINT_MEDIUM,attacker.netname);
+                bprint (PRINT_MEDIUM,"\n");
                 if ( ((attacker.pteam.team > 0.000) && (attacker.pteam == targ.real_owner.pteam)) ) {
                     TF_AddFrags (attacker,-1.000 , 0.000);
                     attacker.teamkills = (attacker.teamkills + 1.000);

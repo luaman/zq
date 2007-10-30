@@ -73,14 +73,14 @@ void Toggle_Tracking () {
     if (!self.tracking) {
         self.tracking = 1.000;
         self.gravity = 0.000;
-        sprint(self, 2, "Tracking mode: 3rd Person.\n");
+        sprint (self, PRINT_HIGH, "Tracking mode: 3rd Person.\n");
     } else if ((self.goalentity.classname == "player") || (self.goalentity.classname == "building_sentrygun") && (self.tracking == 1.000)) {
         self.tracking = 2.000;
         if (self.classname == "observer" && self.goalentity.classname == "player") Spect_Track();
-        sprint(self, 2, "Tracking mode: 1st Person.\n");
+        sprint (self, PRINT_HIGH, "Tracking mode: 1st Person.\n");
     } else  {
         Flymode();
-        sprint(self, 2, "Tracking mode: Flymode.\n");
+        sprint (self, PRINT_HIGH, "Tracking mode: Flymode.\n");
     }
 }
 
