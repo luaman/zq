@@ -1399,11 +1399,6 @@ if (cls.physframe)
 	// fetch results from server
 	CL_ReadPackets ();
 
-#ifdef MVDPLAY
-	if (cls.mvdplayback)
-		MVD_Interpolate ();
-#endif
-
 	// process stuffed commands
 	Cbuf_ExecuteEx (&cbuf_svc);
 
