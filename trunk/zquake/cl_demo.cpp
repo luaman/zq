@@ -279,6 +279,10 @@ readnext:
 	switch (c) {
 #endif
 	case dem_cmd :
+#ifdef MVDPLAY
+		if (cls.mvdplayback)
+			Host_Error ("dem_cmd in MVD");
+#endif
 		// user sent input
 		i = cls.netchan.outgoing_sequence & UPDATE_MASK;
 		pcmd = &cl.frames[i].cmd;
