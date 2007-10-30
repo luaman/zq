@@ -1600,6 +1600,10 @@ void CL_EmitEntities (void)
 	if (cls.nqprotocol)
 		CLNQ_LinkEntities ();
 	else {
+#ifdef MVDPLAY
+		if (cls.mvdplayback)
+			MVD_Interpolate ();
+#endif
 		CL_LinkPlayers ();
 		CL_LinkPacketEntities ();
 		CL_LinkNails ();
