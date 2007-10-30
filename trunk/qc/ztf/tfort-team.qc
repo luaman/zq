@@ -192,17 +192,17 @@ void TeamFortress_TeamShowMemberClasses (entity Player) {
             if ( (e.model != string_null) ) {
                 if ( !found ) {
                     found = 1.000;
-                    sprint (self,2.000,"The other members of your team are:\n");
+                    sprint (self,PRINT_HIGH,"The other members of your team are:\n");
                 }
-                sprint (Player,2.000,e.netname);
-                sprint (Player,2.000," : ");
+                sprint (Player,PRINT_HIGH,e.netname);
+                sprint (Player,PRINT_HIGH," : ");
                 TeamFortress_PrintClassName (Player,e.playerclass,(e.tfstate & 8.000));
             }
         }
         e = e.nextp;
     }
     if ( !found ) {
-        sprint (Player,2.000,"There are no other players on your team.\n");
+        sprint (Player,PRINT_HIGH,"There are no other players on your team.\n");
     }
 }
 
@@ -211,7 +211,7 @@ float TeamFortress_TeamSet (float tno) {
     float tc;
     entity te;
     if ( (teamplay < 1.000) ) {
-        sprint (self,2.000,"Teamplay is not On, so FortressTeams are inactive.\n");
+        sprint (self,PRINT_HIGH,"Teamplay is not On, so FortressTeams are inactive.\n");
         return ( 0.000 );
     }
     if (tno > -6.000 && tno < 0.000) {
@@ -237,7 +237,7 @@ float TeamFortress_TeamSet (float tno) {
                 ClientKill();
             }
         }
-        bprint (2.000,self.netname);
+        bprint (PRINT_HIGH,self.netname);
         /*
            st = strcat( "[OBS] ",self.netname);
            stuffcmd (self, "name ");
@@ -246,19 +246,19 @@ float TeamFortress_TeamSet (float tno) {
          */
         if (tno == -1.000) {
             self.pteam = pteam1;
-            bprint (2.000," is Observering Team No. 1.\n");
+            bprint (PRINT_HIGH," is Observering Team No. 1.\n");
         } else if (tno == -2.000) {
             self.pteam = pteam2;
-            bprint (2.000," is Observering Team No. 2.\n");
+            bprint (PRINT_HIGH," is Observering Team No. 2.\n");
         } else if (tno == -3.000) {
             self.pteam = pteam3;
-            bprint (2.000," is Observering Team No. 3.\n");
+            bprint (PRINT_HIGH," is Observering Team No. 3.\n");
         } else if (tno == -4.000) {
             self.pteam = pteam4;
-            bprint (2.000," is Observering Team No. 4.\n");
+            bprint (PRINT_HIGH," is Observering Team No. 4.\n");
         } else {
             self.pteam = store_obs;
-            bprint (2.000," has joined as an Observer.\n");
+            bprint (PRINT_HIGH," has joined as an Observer.\n");
         }
         SetTeamName (self);
         self.camdist = 160.000;
@@ -266,14 +266,14 @@ float TeamFortress_TeamSet (float tno) {
         return(1.000);
     }
     if ( ((tno > store_obs.cnt) && (store_obs.cnt != 0.000)) ) {
-        sprint (self,2.000,"There can be only ");
+        sprint (self,PRINT_HIGH,"There can be only ");
         st = ftos (store_obs.cnt);
-        sprint (self,2.000,st);
-        sprint (self,2.000," teams on this map.\nTry again\n");
+        sprint (self,PRINT_HIGH,st);
+        sprint (self,PRINT_HIGH," teams on this map.\nTry again\n");
         return ( 0.000 );
     }
     if ( (self.pteam.team == tno) ) {
-        sprint (self,2.000,"You are already in that team. Pick another.\n");
+        sprint (self,PRINT_HIGH,"You are already in that team. Pick another.\n");
         return ( 0.000 );
     }
     if ( (self.pteam) ) {
@@ -315,14 +315,14 @@ float TeamFortress_TeamSet (float tno) {
     if (tno < 0) return (1.000);
     tc = TeamFortress_TeamGetNoPlayers (tno);
     if (tc >= PTeamGetMaxPlayers (tno) ) {
-        sprint (self,2.000,"That team is full. Pick another.\n");
+        sprint (self,PRINT_HIGH,"That team is full. Pick another.\n");
         return ( 0.000 );
     }
-    bprint (2.000,self.netname);
-    bprint (2.000," has joined Team No ");
+    bprint (PRINT_HIGH,self.netname);
+    bprint (PRINT_HIGH," has joined Team No ");
     st = ftos (tno);
-    bprint (2.000,st);
-    bprint (2.000,".\n");
+    bprint (PRINT_HIGH,st);
+    bprint (PRINT_HIGH,".\n");
     //self.playerclass = CLASS_NONE;  fixme   already set?
     if (tno == 1.000) {
         self.pteam = pteam1;
@@ -365,8 +365,8 @@ float TeamFortress_TeamSet (float tno) {
    if ((self.immune_to_check) != floor(time)) {
    self.immune_to_check = (floor(time) + 2);
    } else {
-   bprint (1.000,self.netname," has been kicked for changing team.\n");
-   sprint (self,2.000,"You have been kicked for changing your team. Don't do it.\n");
+   bprint (PRINT_MEDIUM,self.netname," has been kicked for changing team.\n");
+   sprint (self,PRINT_HIGH,"You have been kicked for changing your team. Don't do it.\n");
    stuffcmd (self,"disconnect\n");
    return ;
    }
@@ -395,8 +395,8 @@ float TeamFortress_TeamSet (float tno) {
    if ((self.immune_to_check) != floor(time)) {
    self.immune_to_check = (floor(time) + 2);
    } else {
-   bprint (1.000,self.netname," has been kicked for changing top color.\n");
-   sprint (self,2.000,"You have been kicked for changing your top color. Don't do it.\n");
+   bprint (PRINT_MEDIUM,self.netname," has been kicked for changing top color.\n");
+   sprint (self,PRINT_HIGH,"You have been kicked for changing your top color. Don't do it.\n");
    stuffcmd (self,"disconnect\n");
    return ;
    }
@@ -413,8 +413,8 @@ float TeamFortress_TeamSet (float tno) {
    if ((self.immune_to_check) != floor(time)) {
    self.immune_to_check = (floor(time) + 2);
 } else {
-	bprint (1.000,self.netname," has been kicked for changing top color.\n");
-	sprint (self,2.000,"You have been kicked for changing your top color. Don't do it.\n");
+	bprint (PRINT_MEDIUM,self.netname," has been kicked for changing top color.\n");
+	sprint (self,PRINT_HIGH,"You have been kicked for changing your top color. Don't do it.\n");
 	stuffcmd (self,"disconnect\n");
 	return ;
 }
@@ -436,8 +436,8 @@ if ( ((self.team_no > 0.000) && (teamplay)) ) {
 			if ((self.immune_to_check) != floor(time)) {
 				self.immune_to_check = (floor(time) + 2);
 			} else {
-				bprint (1.000,self.netname," has been kicked for changing color.\n");
-				sprint (self,2.000,"You have been kicked for changing your pants color. Don't do it.\n");
+				bprint (PRINT_MEDIUM,self.netname," has been kicked for changing color.\n");
+				sprint (self,PRINT_HIGH,"You have been kicked for changing your pants color. Don't do it.\n");
 				stuffcmd (self,"disconnect\n");
 				return ;
 			}
@@ -452,8 +452,8 @@ if ( ((self.team_no > 0.000) && (teamplay)) ) {
 			if ((self.immune_to_check) != floor(time)) {
 				self.immune_to_check = (floor(time) + 2);
 			} else {
-				bprint (1.000,self.netname," has been kicked for changing color.\n");
-				sprint (self,2.000,"You have been kicked for changing your pants color. Don't do it.\n");
+				bprint (PRINT_MEDIUM,self.netname," has been kicked for changing color.\n");
+				sprint (self,PRINT_HIGH,"You have been kicked for changing your pants color. Don't do it.\n");
 				stuffcmd (self,"disconnect\n");
 				return ;
 			}
@@ -468,8 +468,8 @@ if ( ((self.team_no > 0.000) && (teamplay)) ) {
 			if ((self.immune_to_check) != floor(time)) {
 				self.immune_to_check = (floor(time) + 2);
 			} else {
-				bprint (1.000,self.netname," has been kicked for changing skin.\n");
-				sprint (self,2.000,"You have been kicked for changing your skin. Don't do it.\n");
+				bprint (PRINT_MEDIUM,self.netname," has been kicked for changing skin.\n");
+				sprint (self,PRINT_HIGH,"You have been kicked for changing your skin. Don't do it.\n");
 				stuffcmd (self,"disconnect\n");
 				return;
 			}
@@ -484,8 +484,8 @@ if ( ((self.team_no > 0.000) && (teamplay)) ) {
 		if ((self.immune_to_check) != floor(time)) {
 			self.immune_to_check = (floor(time) + 2);
 		} else {
-			bprint (1.000,self.netname," has been kicked for changing team.\n");
-			sprint (self,2.000,"You have been kicked for changing your team. Don't do it.\n");
+			bprint (PRINT_MEDIUM,self.netname," has been kicked for changing team.\n");
+			sprint (self,PRINT_HIGH,"You have been kicked for changing your team. Don't do it.\n");
 			stuffcmd (self,"disconnect\n");
 			return ;
 		}
@@ -726,57 +726,57 @@ void TeamFortress_TeamShowScores (float all) {
             if ( (PTeamGetColor (i) > 0.000) ) {
                 j = PTeamGetScore (i);
                 st = PTeamGetColorString (i);
-                bprint (2.000,st);
-                bprint (2.000,": ");
+                bprint (PRINT_HIGH,st);
+                bprint (PRINT_HIGH,": ");
                 st = ftos (j);
-                bprint (2.000,st);
-                bprint (2.000," ");
+                bprint (PRINT_HIGH,st);
+                bprint (PRINT_HIGH," ");
             }
             i = (i + 1.000);
         }
-        bprint (2.000,"\n");
+        bprint (PRINT_HIGH,"\n");
         return ;
     }
     while ( (i <= store_obs.cnt) ) {
         if ( (PTeamGetColor (i) > 0.000) ) {
             if ( all ) {
-                bprint (2.000,"Team ");
+                bprint (PRINT_HIGH,"Team ");
             } else {
-                sprint (self,2.000,"Team ");
+                sprint (self,PRINT_HIGH,"Team ");
             }
             st = ftos (i);
             if ( all ) {
-                bprint (2.000,st);
+                bprint (PRINT_HIGH,st);
             } else {
-                sprint (self,2.000,st);
+                sprint (self,PRINT_HIGH,st);
             }
             if ( all ) {
-                bprint (2.000," (");
+                bprint (PRINT_HIGH," (");
             } else {
-                sprint (self,2.000," (");
+                sprint (self,PRINT_HIGH," (");
             }
             st = PTeamGetColorString (i);
             if ( all ) {
-                bprint (2.000,st);
+                bprint (PRINT_HIGH,st);
             } else {
-                sprint (self,2.000,st);
+                sprint (self,PRINT_HIGH,st);
             }
             if ( all ) {
-                bprint (2.000,") : ");
+                bprint (PRINT_HIGH,") : ");
             } else {
-                sprint (self,2.000,") : ");
+                sprint (self,PRINT_HIGH,") : ");
             }
             j = PTeamGetScore (i);
             st = ftos (j);
             if ( all ) {
-                bprint (2.000,st);
+                bprint (PRINT_HIGH,st);
             } else {
-                sprint (self,2.000,st);
+                sprint (self,PRINT_HIGH,st);
             }
             if ( all ) {
-                bprint (2.000,"\n");
+                bprint (PRINT_HIGH,"\n");
             } else {
-                sprint (self,2.000,"\n");
+                sprint (self,PRINT_HIGH,"\n");
             }
         }
         i = (i + 1.000);
@@ -830,27 +830,27 @@ string PTeamGetColorString (float tno) {
 void TeamFortress_StatusQuery () {
     float ft;
     string st;
-    sprint (self,2.000,"players per team: ");
+    sprint (self,PRINT_HIGH,"players per team: ");
     ft = TeamFortress_TeamGetNoPlayers (1.000);
     st = ftos (ft);
-    sprint (self,2.000,st);
-    sprint (self,2.000,"  ");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH,"  ");
     ft = TeamFortress_TeamGetNoPlayers (2.000);
     st = ftos (ft);
-    sprint (self,2.000,st);
-    sprint (self,2.000,"  ");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH,"  ");
     ft = TeamFortress_TeamGetNoPlayers (3.000);
     st = ftos (ft);
-    sprint (self,2.000,st);
-    sprint (self,2.000,"  ");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH,"  ");
     ft = TeamFortress_TeamGetNoPlayers (4.000);
     st = ftos (ft);
-    sprint (self,2.000,st);
-    sprint (self,2.000,"\n");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH,"\n");
     st = ftos (teamplay);
-    sprint (self,2.000,"Teamplay is ");
-    sprint (self,2.000,st);
-    sprint (self,2.000,"\n");
+    sprint (self,PRINT_HIGH,"Teamplay is ");
+    sprint (self,PRINT_HIGH,st);
+    sprint (self,PRINT_HIGH,"\n");
 }
 
 float TeamFortress_TeamGetIllegalClasses (float tno) {

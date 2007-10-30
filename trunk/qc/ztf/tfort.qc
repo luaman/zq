@@ -66,7 +66,7 @@ void UseSpecialSkill () {
                         if ( (self.playerclass == 6.000) ) {
                             if ( (self.current == WEAP_ASSAULT_CANNON )) {
                                 if ( (self.tfstate & 2048.000) ) {
-                                    sprint (self,2.000,"Cannot switch weapons while firing.\n");
+                                    sprint (self,PRINT_HIGH,"Cannot switch weapons while firing.\n");
                                     return;
                                 } else {
                                     self.impulse = 3.000;
@@ -101,9 +101,9 @@ void UseSpecialSkill () {
                                             traceline (src,(src + (v_forward * 2048.000)),0.000,self);
                                             if ( (trace_ent != world) ) {
                                                 if (trace_ent.netname != string_null) {
-                                                    sprint (self,2.000,"Locked onto ",trace_ent.netname,"\n");
+                                                    sprint (self,PRINT_HIGH,"Locked onto ",trace_ent.netname,"\n");
                                                 } else {
-                                                    sprint (self,2.000,"Locked onto ",trace_ent.classname,"\n");
+                                                    sprint (self,PRINT_HIGH,"Locked onto ",trace_ent.classname,"\n");
                                                 }
                                                 self.goalentity = trace_ent;
                                                 if (!self.tracking) Toggle_Tracking();
@@ -123,84 +123,84 @@ void UseSpecialSkill () {
 void TeamFortress_DisplayLegalClasses () {
     float gotone;
     float ill;
-    sprint (self,2.000,"Legal Classes for your team are:\n");
+    sprint (self,PRINT_HIGH,"Legal Classes for your team are:\n");
     gotone = 0.000;
     ill = TeamFortress_TeamGetIllegalClasses (self.pteam.team);
     if ( (!(store_obs.ammo_nails & 1.000) && !(ill & 1.000)) ) {
         if ( gotone ) {
-            sprint (self,2.000,", ");
+            sprint (self,PRINT_HIGH,", ");
         }
         gotone = 1.000;
-        sprint (self,2.000,"Scout");
+        sprint (self,PRINT_HIGH,"Scout");
     }
     if ( (!(store_obs.ammo_nails & 2.000) && !(ill & 2.000)) ) {
         if ( gotone ) {
-            sprint (self,2.000,", ");
+            sprint (self,PRINT_HIGH,", ");
         }
         gotone = 1.000;
         if (classtype & 1.000) {
-            sprint (self,2.000,"Technician");
+            sprint (self,PRINT_HIGH,"Technician");
         } else {
-            sprint (self,2.000,"Sniper");
+            sprint (self,PRINT_HIGH,"Sniper");
         }
     }
     if ( (!(store_obs.ammo_nails & 4.000) && !(ill & 4.000)) ) {
         if ( gotone ) {
-            sprint (self,2.000,", ");
+            sprint (self,PRINT_HIGH,", ");
         }
         gotone = 1.000;
-        sprint (self,2.000,"Soldier");
+        sprint (self,PRINT_HIGH,"Soldier");
     }
     if ( (!(store_obs.ammo_nails & 8.000) && !(ill & 8.000)) ) {
         if ( gotone ) {
-            sprint (self,2.000,", ");
+            sprint (self,PRINT_HIGH,", ");
         }
         gotone = 1.000;
-        sprint (self,2.000,"Demolitions Man");
+        sprint (self,PRINT_HIGH,"Demolitions Man");
     }
     if ( (!(store_obs.ammo_nails & 16.000) && !(ill & 16.000)) ) {
         if ( gotone ) {
-            sprint (self,2.000,", ");
+            sprint (self,PRINT_HIGH,", ");
         }
         gotone = 1.000;
-        sprint (self,2.000,"Combat Medic");
+        sprint (self,PRINT_HIGH,"Combat Medic");
     }
     if ( (!(store_obs.ammo_nails & 32.000) && !(ill & 32.000)) ) {
         if ( gotone ) {
-            sprint (self,2.000,", ");
+            sprint (self,PRINT_HIGH,", ");
         }
         gotone = 1.000;
-        sprint (self,2.000,"Heavy Weapons Guy");
+        sprint (self,PRINT_HIGH,"Heavy Weapons Guy");
     }
     if ( (!(store_obs.ammo_nails & 64.000) && !(ill & 64.000)) ) {
         if ( gotone ) {
-            sprint (self,2.000,", ");
+            sprint (self,PRINT_HIGH,", ");
         }
         gotone = 1.000;
-        sprint (self,2.000,"Pyro");
+        sprint (self,PRINT_HIGH,"Pyro");
     }
     if ( (!(store_obs.ammo_nails & 256.000) && !(ill & 256.000)) ) {
         if ( gotone ) {
-            sprint (self,2.000,", ");
+            sprint (self,PRINT_HIGH,", ");
         }
         gotone = 1.000;
-        sprint (self,2.000,"Spy");
+        sprint (self,PRINT_HIGH,"Spy");
     }
     if ( (!(store_obs.ammo_nails & 512.000) && !(ill & 512.000)) ) {
         if ( gotone ) {
-            sprint (self,2.000,", ");
+            sprint (self,PRINT_HIGH,", ");
         }
         gotone = 1.000;
-        sprint (self,2.000,"Engineer");
+        sprint (self,PRINT_HIGH,"Engineer");
     }
     if ( (!(store_obs.ammo_nails & 128.000) && !(ill & 128.000)) ) {
         if ( gotone ) {
-            sprint (self,2.000,", ");
+            sprint (self,PRINT_HIGH,", ");
         }
         gotone = 1.000;
-        sprint (self,2.000,"RandomPC");
+        sprint (self,PRINT_HIGH,"RandomPC");
     }
-    sprint (self,2.000,"\n");
+    sprint (self,PRINT_HIGH,"\n");
 }
 
 void TeamFortress_ChangeClass (float inp) {
@@ -208,33 +208,33 @@ void TeamFortress_ChangeClass (float inp) {
         if (round_active && !modetype & 64) {
             if ( !IsLegalClass (inp) ) {
 
-                sprint (self,2.000,"Your team cannot play that class.\n");
+                sprint (self,PRINT_HIGH,"Your team cannot play that class.\n");
                 TeamFortress_DisplayLegalClasses ();
                 return ;
             }
             if ( ClassIsRestricted (self.pteam.team, inp) ) {
-                sprint (self,2.000,"Your team already has enough of that class.\n");
+                sprint (self,PRINT_HIGH,"Your team already has enough of that class.\n");
                 return ;
             }
             if ( TeamFortress_TeamIsCivilian (self.pteam.team) ) {
 
-                sprint (self,2.000,"You cannot change class.\n");
+                sprint (self,PRINT_HIGH,"You cannot change class.\n");
                 self.nextpc = 11.000;
                 return;
             }
             self.nextpc = inp;
-            sprint (self,2.000,"Next Round, you will return as a ");
+            sprint (self,PRINT_HIGH,"Next Round, you will return as a ");
             TeamFortress_PrintClassName (self,self.nextpc,(self.tfstate & 8.000));
             return ;
         }
     } else {
         if ( !IsLegalClass (inp) ) {
-            sprint (self,2.000,"Your team cannot play that class.\n");
+            sprint (self,PRINT_HIGH,"Your team cannot play that class.\n");
             TeamFortress_DisplayLegalClasses ();
             return ;
         }
         if ( ClassIsRestricted (self.pteam.team, inp) ) {
-            sprint (self,2.000,"Your team already has enough of that class.\n");
+            sprint (self,PRINT_HIGH,"Your team already has enough of that class.\n");
             return ;
         }
         if ( TeamFortress_TeamIsCivilian (self.pteam.team) ) {
@@ -242,9 +242,9 @@ void TeamFortress_ChangeClass (float inp) {
         }
         self.nextpc = inp;
         if (rounds) {
-            sprint (self,2.000,"Next Round, you will return as a ");
+            sprint (self,PRINT_HIGH,"Next Round, you will return as a ");
         } else {
-            sprint (self,2.000,"After dying, you will return as a ");
+            sprint (self,PRINT_HIGH,"After dying, you will return as a ");
         }
         TeamFortress_PrintClassName (self,self.nextpc,(self.tfstate & 8.000));
         return ;
@@ -255,7 +255,7 @@ void TeamFortress_ChangeClass (float inp) {
                 return ;
             }
         } else {
-            sprint (self,2.000,"You must join a team first. \n");
+            sprint (self,PRINT_HIGH,"You must join a team first. \n");
             return ;
         }
     }
@@ -266,12 +266,12 @@ void TeamFortress_ChangeClass (float inp) {
         return;
     }
     if ( (!IsLegalClass (inp ) && (inp != 11.000)) ) {
-        sprint (self,2.000,"You cannot play that playerclass on this map. \n");
+        sprint (self,PRINT_HIGH,"You cannot play that playerclass on this map. \n");
         TeamFortress_DisplayLegalClasses ();
         return ;
     }
     if ( ClassIsRestricted (self.pteam.team,inp) ) {
-        sprint (self,2.000,"Your team has enough of that class.\n");
+        sprint (self,PRINT_HIGH,"Your team has enough of that class.\n");
         return ;
     }
     if ( (inp > 0.000) && (inp < 12.000) ) {
@@ -281,7 +281,7 @@ void TeamFortress_ChangeClass (float inp) {
     }
     TeamFortress_ExecClassScript (self);
     if ( (self.playerclass == 10.000) ) {
-        sprint (self,2.000,"Random Playerclass.\n");
+        sprint (self,PRINT_HIGH,"Random Playerclass.\n");
         self.tfstate = (self.tfstate | 8.000);
     }
     self.nextpc = 0.000;
@@ -293,60 +293,60 @@ void TeamFortress_Inventory () {
     string ac;
     if (teamplay) {
         if (!self.pteam.team ) {
-            sprint (self,2.000,"You're an observer\n");
+            sprint (self,PRINT_HIGH,"You're an observer\n");
             return;
         }
-        sprint (self,2.000,"You're in team ");
+        sprint (self,PRINT_HIGH,"You're in team ");
         ac = ftos (self.pteam.team);
-        sprint (self,2.000,ac);
-        sprint (self,2.000,", color ");
+        sprint (self,PRINT_HIGH,ac);
+        sprint (self,PRINT_HIGH,", color ");
         ac = ftos (self.pteam.colormap);
-        sprint (self,2.000,ac);
-        sprint (self,2.000,".\n");
+        sprint (self,PRINT_HIGH,ac);
+        sprint (self,PRINT_HIGH,".\n");
     }
     if ( (self.no_grenades_1 > 0.000) ) {
-        sprint (self,2.000,"Gren.Type 1 : ");
+        sprint (self,PRINT_HIGH,"Gren.Type 1 : ");
         ac = Status_GrenTypeToString(self.tp_grenades_1);
-        sprint (self,2.000, ac, " (");
+        sprint (self,PRINT_HIGH, ac, " (");
         ac = ftos (self.no_grenades_1);
-        sprint (self,2.000,ac);
-        sprint (self,2.000,")\n");
+        sprint (self,PRINT_HIGH,ac);
+        sprint (self,PRINT_HIGH,")\n");
     }
     if ( (self.no_grenades_2 > 0.000) ) {
-        sprint (self,2.000,"Gren.Type 2 : ");
+        sprint (self,PRINT_HIGH,"Gren.Type 2 : ");
         ac = Status_GrenTypeToString (self.tp_grenades_2);
-        sprint (self,2.000, ac, " (");
+        sprint (self,PRINT_HIGH, ac, " (");
         ac = ftos (self.no_grenades_2);
-        sprint (self,2.000,ac);
-        sprint (self,2.000,")\n");
+        sprint (self,PRINT_HIGH,ac);
+        sprint (self,PRINT_HIGH,")\n");
     }
     if ( (self.tf_items & 1.000) ) {
-        sprint (self,2.000,"Scanner. ");
+        sprint (self,PRINT_HIGH,"Scanner. ");
     }
     if ( (self.carried & 4.000) ) {
-        sprint (self,2.000,"Medikit (");
+        sprint (self,PRINT_HIGH,"Medikit (");
         ac = ftos (self.ammo_medikit);
-        sprint (self,2.000,ac);
-        sprint (self,2.000,") ");
+        sprint (self,PRINT_HIGH,ac);
+        sprint (self,PRINT_HIGH,") ");
     }
     if ( (self.ammo_detpack > 0.000) ) {
         ac = ftos (self.ammo_detpack);
-        sprint (self,2.000,ac);
+        sprint (self,PRINT_HIGH,ac);
         if (modetype & 4) {
-            sprint (self,2.000," Bomb");
+            sprint (self,PRINT_HIGH," Bomb");
         } else {
-            sprint (self,2.000," Detpack");
+            sprint (self,PRINT_HIGH," Detpack");
         }
         if ( (self.ammo_detpack > 1.000) ) {
-            sprint (self,2.000,"s");
+            sprint (self,PRINT_HIGH,"s");
         }
-        sprint (self,2.000,". ");
+        sprint (self,PRINT_HIGH,". ");
     }
     tg = find (world,classname,"item_tfgoal");
     while ( tg ) {
         if ( (tg.owner == self) ) {
-            sprint (self,2.000,tg.netname);
-            sprint (self,2.000,". ");
+            sprint (self,PRINT_HIGH,tg.netname);
+            sprint (self,PRINT_HIGH,". ");
         }
         tg = find (tg,classname,"item_tfgoal");
     }
@@ -354,55 +354,55 @@ void TeamFortress_Inventory () {
         TeamFortress_DescribeArmor (self,self.armorclass);
     }
     if ( self.playerclass == 8.000  ) {
-        sprint (self,2.000,"Skin : ");
+        sprint (self,PRINT_HIGH,"Skin : ");
         if ( (self.undercover_skin != 0.000) ) {
             TeamFortress_PrintClassName (self,self.undercover_skin,0.000);
         } else {
-            sprint (self,2.000,"Spy\n");
+            sprint (self,PRINT_HIGH,"Spy\n");
         }
-        sprint (self,2.000,"Colors : Team ");
+        sprint (self,PRINT_HIGH,"Colors : Team ");
         if ( (self.undercover_team != 0.000) ) {
             ac = ftos (self.undercover_team);
         } else {
             ac = ftos (self.pteam.team);
         }
-        sprint (self,2.000,ac);
+        sprint (self,PRINT_HIGH,ac);
     }
-    sprint (self,2.000,"\n");
+    sprint (self,PRINT_HIGH,"\n");
 }
 
 void TeamFortress_ShowTF () {
     string st;
     if ( (toggleflags & 1.000) ) {
-        sprint (self,2.000,"Class Persistence On.\n");
+        sprint (self,PRINT_HIGH,"Class Persistence On.\n");
     } else {
-        sprint (self,2.000,"Class Persistence Off.\n");
+        sprint (self,PRINT_HIGH,"Class Persistence Off.\n");
     }
     if ( (toggleflags & 64.000) ) {
-        sprint (self,2.000,"AutoTeam On.\n");
+        sprint (self,PRINT_HIGH,"AutoTeam On.\n");
     }
     if ( (toggleflags & 4.000) ) {
         st = ftos (respawn_delay_time);
     } else {
         st = "No";
     }
-    sprint (self,2.000,st);
+    sprint (self,PRINT_HIGH,st);
     if ( (st != "No") ) {
-        sprint (self,2.000," second");
+        sprint (self,PRINT_HIGH," second");
     }
-    sprint (self,2.000," Respawn Delay.\n");
+    sprint (self,PRINT_HIGH," Respawn Delay.\n");
     if ( (toggleflags & 128.000) ) {
-        sprint (self,2.000,"TeamFrags On.\n");
+        sprint (self,PRINT_HIGH,"TeamFrags On.\n");
     } else {
-        sprint (self,2.000,"TeamFrags Off.\n");
+        sprint (self,PRINT_HIGH,"TeamFrags Off.\n");
     }
     if ( allow_hook ) {
-        sprint (self,2.000,"Grapple On.\n");
+        sprint (self,PRINT_HIGH,"Grapple On.\n");
     }
     if ( (toggleflags & 2048.000) ) {
-        sprint (self,2.000,"Full TeamScore On.\n");
+        sprint (self,PRINT_HIGH,"Full TeamScore On.\n");
     } else {
-        sprint (self,2.000,"Full TeamScore Off.\n");
+        sprint (self,PRINT_HIGH,"Full TeamScore Off.\n");
     }
 }
 
@@ -434,20 +434,20 @@ void TeamFortress_PrimeGrenade () {
             }
             if ( (gtype == 10.000) ) {
                 ptime = ftos (0.500);
-                sprint (self,2.000,"Opening ");
-                sprint (self,2.000,gs);
-                sprint (self,2.000,"...\n");
+                sprint (self,PRINT_HIGH,"Opening ");
+                sprint (self,PRINT_HIGH,gs);
+                sprint (self,PRINT_HIGH,"...\n");
             } else {
                 ptime = ftos (3.000);
-                sprint (self,2.000,gs);
-                sprint (self,2.000," primed, ");
-                sprint (self,2.000,ptime);
-                sprint (self,2.000," seconds...\n");
+                sprint (self,PRINT_HIGH,gs);
+                sprint (self,PRINT_HIGH," primed, ");
+                sprint (self,PRINT_HIGH,ptime);
+                sprint (self,PRINT_HIGH," seconds...\n");
             }
         } else {
-            sprint (self,2.000,"No ");
-            sprint (self,2.000,gs);
-            sprint (self,2.000,"s left.\n");
+            sprint (self,PRINT_HIGH,"No ");
+            sprint (self,PRINT_HIGH,gs);
+            sprint (self,PRINT_HIGH,"s left.\n");
             return ;
         }
     }
@@ -462,20 +462,20 @@ void TeamFortress_PrimeGrenade () {
             }
             if ( (gtype == 10.000) ) {
                 ptime = ftos (0.500);
-                sprint (self,2.000,"Opening ");
-                sprint (self,2.000,gs);
-                sprint (self,2.000,"...\n");
+                sprint (self,PRINT_HIGH,"Opening ");
+                sprint (self,PRINT_HIGH,gs);
+                sprint (self,PRINT_HIGH,"...\n");
             } else {
                 ptime = ftos (3.000);
-                sprint (self,2.000,gs);
-                sprint (self,2.000," primed, ");
-                sprint (self,2.000,ptime);
-                sprint (self,2.000," seconds...\n");
+                sprint (self,PRINT_HIGH,gs);
+                sprint (self,PRINT_HIGH," primed, ");
+                sprint (self,PRINT_HIGH,ptime);
+                sprint (self,PRINT_HIGH," seconds...\n");
             }
         } else {
-            sprint (self,2.000,"No ");
-            sprint (self,2.000,gs);
-            sprint (self,2.000,"s left.\n");
+            sprint (self,PRINT_HIGH,"No ");
+            sprint (self,PRINT_HIGH,gs);
+            sprint (self,PRINT_HIGH,"s left.\n");
             return ;
         }
     }
@@ -1537,21 +1537,21 @@ void TeamFortress_DescribeArmor (entity Player, float Armorclass) {
         return ;
     }
     if ( (Armorclass & 16.000) ) {
-        sprint (Player,2.000,"Asbestos ");
+        sprint (Player,PRINT_HIGH,"Asbestos ");
     }
     if ( (Armorclass & 2.000) ) {
-        sprint (Player,2.000,"Wooden ");
+        sprint (Player,PRINT_HIGH,"Wooden ");
     }
     if ( (Armorclass & 4.000) ) {
-        sprint (Player,2.000,"Blast ");
+        sprint (Player,PRINT_HIGH,"Blast ");
     }
     if ( (Armorclass & 8.000) ) {
-        sprint (Player,2.000,"Shockproof ");
+        sprint (Player,PRINT_HIGH,"Shockproof ");
     }
     if ( (Armorclass & 1.000) ) {
-        sprint (Player,2.000,"Kevlar ");
+        sprint (Player,PRINT_HIGH,"Kevlar ");
     }
-    sprint (Player,2.000,"armor\n");
+    sprint (Player,PRINT_HIGH,"armor\n");
 }
 
 void TeamFortress_AddBackpackItems (entity Retriever, entity Items) {
@@ -1601,11 +1601,11 @@ string TeamFortress_GetClassName (float pc) {
 void TeamFortress_PrintClassName (entity Viewer, float pc, float rpc) {
     string st;
     st = TeamFortress_GetClassName (pc);
-    sprint (Viewer,2.000,st);
+    sprint (Viewer,PRINT_HIGH,st);
     if ( (rpc != 0.000) ) {
-        sprint (Viewer,2.000," (Random)");
+        sprint (Viewer,PRINT_HIGH," (Random)");
     }
-    sprint (Viewer,2.000,"\n");
+    sprint (Viewer,PRINT_HIGH,"\n");
 }
 
 void TeamFortress_RemoveTimers () {
@@ -1650,12 +1650,12 @@ void TeamFortress_RemoveTimers () {
                 tfgoalitem_RemoveFromPlayer (te,self,0.000);
             }
             if ( ((ctfmap == 1) && (te.goal_no == 1.000)) ) {
-                bprint (2.000,self.netname);
-                bprint (2.000," лост the блуе flag!\n");
+                bprint (PRINT_HIGH,self.netname);
+                bprint (PRINT_HIGH," лост the блуе flag!\n");
             } else {
                 if ( ((ctfmap == 1) && (te.goal_no == 2.000)) ) {
-                    bprint (2.000,self.netname);
-                    bprint (2.000," лост the ред flag!\n");
+                    bprint (PRINT_HIGH,self.netname);
+                    bprint (PRINT_HIGH," лост the ред flag!\n");
                 }
             }
         }
@@ -1709,8 +1709,8 @@ void TeamFortress_SetupRespawn () {
         self.respawn_time = (time + restime);
         if ( (restime > 3.000) ) {
             db = ftos (restime);
-            sprint (self,2.000,db);
-            sprint (self,2.000," seconds till respawn.\n");
+            sprint (self,PRINT_HIGH,db);
+            sprint (self,PRINT_HIGH," seconds till respawn.\n");
         }
     }
 }
@@ -1799,15 +1799,15 @@ void TeamFortress_AssaultWeapon () {
         return ;
     }
     if ( (self.heat > 0.000) ) {
-        sprint (self,2.000,"the assault cannon is still overheated.\n");
+        sprint (self,PRINT_HIGH,"the assault cannon is still overheated.\n");
         return ;
     }
     if ( (self.ammo_shells < 1.000) ) {
-        sprint (self,2.000,"not enough ammo.\n");
+        sprint (self,PRINT_HIGH,"not enough ammo.\n");
         return ;
     }
     if ( (self.ammo_cells < 6.000) ) {
-        sprint (self,2.000,"not enough cells to power the assault cannon.\n");
+        sprint (self,PRINT_HIGH,"not enough cells to power the assault cannon.\n");
         return ;
     }
     self.current = WEAP_ASSAULT_CANNON;
@@ -1915,33 +1915,33 @@ void TeamFortress_ExplodePerson (entity Gren) {
     setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
     setorigin (newmis,Gren.owner.origin);
     if ( ((Gren.owner.playerclass == 1.000) && (Gren.weapon != 10.000)) ) {
-        bprint (1.000,"No ",Gren.owner.netname,", swallowing the grenade isn't very effective!\n");
+        bprint (PRINT_MEDIUM,"No ",Gren.owner.netname,", swallowing the grenade isn't very effective!\n");
     } else {
         if ( (Gren.owner.playerclass == 2.000) ) {
-            bprint (1.000,"Well ",Gren.owner.netname,", don't quit your day job!\n");
+            bprint (PRINT_MEDIUM,"Well ",Gren.owner.netname,", don't quit your day job!\n");
         } else {
             if ( (Gren.owner.playerclass == 3.000) ) {
-                bprint (1.000,"Ummm, ",Gren.owner.netname,", you're supposed to THROW the grenade!\n");
+                bprint (PRINT_MEDIUM,"Ummm, ",Gren.owner.netname,", you're supposed to THROW the grenade!\n");
             } else {
                 if ( (Gren.owner.playerclass == 4.000) ) {
-                    bprint (1.000,"Ack! ",Gren.owner.netname,"! The grenade is your friend for another reason!\n");
+                    bprint (PRINT_MEDIUM,"Ack! ",Gren.owner.netname,"! The grenade is your friend for another reason!\n");
                 } else {
                     if ( (Gren.owner.playerclass == 5.000) ) {
-                        bprint (1.000,"No ",Gren.owner.netname,"! Assist your own suicide some other time!\n");
+                        bprint (PRINT_MEDIUM,"No ",Gren.owner.netname,"! Assist your own suicide some other time!\n");
                     } else {
                         if ( (Gren.owner.playerclass == 6.000) ) {
-                            bprint (1.000,"Hey ",Gren.owner.netname,", you're not THAT heavy!\n");
+                            bprint (PRINT_MEDIUM,"Hey ",Gren.owner.netname,", you're not THAT heavy!\n");
                         } else {
                             if ( (Gren.owner.playerclass == 7.000) ) {
-                                bprint (1.000,"Yes ",Gren.owner.netname,", the grenade does explode on '3'!\n");
+                                bprint (PRINT_MEDIUM,"Yes ",Gren.owner.netname,", the grenade does explode on '3'!\n");
                             } else {
                                 if ( (Gren.owner.playerclass == 8.000) ) {
-                                    bprint (1.000,"You do realize ",Gren.owner.netname,", you can blow your cover in easier ways!\n");
+                                    bprint (PRINT_MEDIUM,"You do realize ",Gren.owner.netname,", you can blow your cover in easier ways!\n");
                                 } else {
                                     if ( (Gren.owner.playerclass == 9.000) ) {
-                                        bprint (1.000,"Hey ",Gren.owner.netname,", study grenade dynamics on your own time!\n");
+                                        bprint (PRINT_MEDIUM,"Hey ",Gren.owner.netname,", study grenade dynamics on your own time!\n");
                                     } else {
-                                        bprint (1.000,"No ",Gren.owner.netname,", throw the grenade, not the pin!\n");
+                                        bprint (PRINT_MEDIUM,"No ",Gren.owner.netname,", throw the grenade, not the pin!\n");
                                     }
                                 }
                             }
@@ -1987,42 +1987,42 @@ void TeamFortress_DisplayDetectionItems () {
     if ( (Goal.display_item_status1) ) {
         te = Finditem (Goal.display_item_status1);
         if ( te ) {
-            sprint (self,2.000, ItemStatus (Goal,self,te));
+            sprint (self,PRINT_HIGH, ItemStatus (Goal,self,te));
         } else {
-            sprint (self,2.000,"Item is missing.\n");
+            sprint (self,PRINT_HIGH,"Item is missing.\n");
         }
     } else {
-        sprint (self,2.000,"\n");
+        sprint (self,PRINT_HIGH,"\n");
         return ;
     }
     if ( (Goal.display_item_status2) ) {
         te = Finditem (Goal.display_item_status2);
         if ( te ) {
-            sprint (self,2.000, ItemStatus (Goal,self,te));
+            sprint (self,PRINT_HIGH, ItemStatus (Goal,self,te));
         } else {
-            sprint (self,2.000,"Item is missing.\n");
+            sprint (self,PRINT_HIGH,"Item is missing.\n");
         }
     } else {
-        sprint (self,2.000,"\n");
+        sprint (self,PRINT_HIGH,"\n");
         return ;
     }
     if ( (Goal.display_item_status3) ) {
         te = Finditem (Goal.display_item_status3);
         if ( te ) {
-            sprint (self,2.000, ItemStatus (Goal,self,te));
+            sprint (self,PRINT_HIGH, ItemStatus (Goal,self,te));
         } else {
-            sprint (self,2.000,"Item is missing.\n");
+            sprint (self,PRINT_HIGH,"Item is missing.\n");
         }
     } else {
-        sprint (self,2.000,"\n");
+        sprint (self,PRINT_HIGH,"\n");
         return ;
     }
     if ( (Goal.display_item_status4) ) {
         te = Finditem (Goal.display_item_status4);
         if ( te ) {
-            sprint (self,2.000, ItemStatus (Goal,self,te));
+            sprint (self,PRINT_HIGH, ItemStatus (Goal,self,te));
         } else {
-            sprint (self,2.000,"Item is missing.\n");
+            sprint (self,PRINT_HIGH,"Item is missing.\n");
         }
     }
 }
@@ -2062,9 +2062,9 @@ void BioInfection_Decay () {
                         sprint (te,1.000,"You have been infected by ");
                         sprint (te,1.000,self.owner.netname);
                         sprint (te,1.000,"!\n");
-                        sprint (self.owner,1.000,"You have infected ");
-                        sprint (self.owner,1.000,te.netname);
-                        sprint (self.owner,1.000,"!\n");
+                        sprint (self.owner,PRINT_MEDIUM,"You have infected ");
+                        sprint (self.owner,PRINT_MEDIUM,te.netname);
+                        sprint (self.owner,PRINT_MEDIUM,"!\n");
                     }
                 }
             }

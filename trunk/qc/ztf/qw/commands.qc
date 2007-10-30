@@ -32,17 +32,17 @@ string spacefornum (float num, float digits) {
 }
 
 void ShowVersion () {
-    sprint(self, 2,"\n\nΤθισ ισ Oz Team Fortress φεςσιοξ 1.77a         βω Mercury\n\nΣπεγιαμ τθαξψ το Omicron, γςεατοςσ οζ Kombat Teams 2.21\nΑξδ ξοξε οτθες τθεξ τθε γςεατοςσ οζ Team Fortress\n\n\nPlease visit θττπΊ――οϊτζ®ρυαλεχοςμδ®ξυ― for more info. \n\n\n");
+    sprint (self, PRINT_HIGH,"\n\nΤθισ ισ Oz Team Fortress φεςσιοξ 1.77a         βω Mercury\n\nΣπεγιαμ τθαξψ το Omicron, γςεατοςσ οζ Kombat Teams 2.21\nΑξδ ξοξε οτθες τθεξ τθε γςεατοςσ οζ Team Fortress\n\n\nPlease visit θττπΊ――οϊτζ®ρυαλεχοςμδ®ξυ― for more info. \n\n\n");
 }
 //Special thanx to Rawhide, Omicron, creators of Kombat Teams 2.21\nAnd none other then the creators of Team Fortress\n\n Also thank you to all those test dummies.\n Including the fatty fv nitemare.\n And the annoying sh33p b0y bliP :)\n\nPlease visit ρχτζ®αυσζοςτςεσσ®γον for more info. \n");
 
 void Commands () {
-    sprint(self, 2, "αβουτ...... about the Oztf Mod\nνοδστατυσ.. current settings\nβςεαλ...... vote matchend/stop countdown\nεμεγτ...... toggle admin election\nωεσ........ vote yes for current elective\nξο......... change vote\n");
+    sprint (self, PRINT_HIGH, "αβουτ...... about the Oztf Mod\nνοδστατυσ.. current settings\nβςεαλ...... vote matchend/stop countdown\nεμεγτ...... toggle admin election\nωεσ........ vote yes for current elective\nξο......... change vote\n");
     if (self.is_admin == 1) {
         if (stof(infokey (world,"adminlevel")) > 0) {
-            sprint(self, 2, "\nAdmin Commands:\n\n");
-            sprint(self, 2, "τινεδοχξ... decrease timelimit\nτινευπ..... increase timelimit\nπνδοχξ..... decrease prematch time\nπνυπ....... increase prematch time\nγζδοχξ..... decrease ceasefire time\nγζυπ....... increase ceasefire time\nοτδοχξ..... decrease overtime\n");
-            sprint(self, 2, "οτυπ....... increase overtime\nζςαησδοχξ.. reduce fraglimit\nζςαησυπ.... increase fraglimit\nσιμεξγε.... toggle spectator talk\nςεσταςτναπ. restart the current map\nσταςτνατγθ. starts clan match (requires clan mode on)\n");
+            sprint (self, PRINT_HIGH, "\nAdmin Commands:\n\n");
+            sprint (self, PRINT_HIGH, "τινεδοχξ... decrease timelimit\nτινευπ..... increase timelimit\nπνδοχξ..... decrease prematch time\nπνυπ....... increase prematch time\nγζδοχξ..... decrease ceasefire time\nγζυπ....... increase ceasefire time\nοτδοχξ..... decrease overtime\n");
+            sprint (self, PRINT_HIGH, "οτυπ....... increase overtime\nζςαησδοχξ.. reduce fraglimit\nζςαησυπ.... increase fraglimit\nσιμεξγε.... toggle spectator talk\nςεσταςτναπ. restart the current map\nσταςτνατγθ. starts clan match (requires clan mode on)\n");
             if (stof(infokey (world,"adminlevel")) > 1) {
                 sprint(self , 2 , "ςεσετ...... reset all settings to standard\nγμαξσετυπ.. set clan settings and restart\nγεασεζιςε.. freeze the gameplay\nζςεεϊε..... (un)freeze the map\nζβσλιξσ.... toggle full bright skins\nζςκυνπ..... toggle forward rocketjump\n");
                 sprint(self , 2 , "ποιξτιξη... toggle pointing\nεξενω...... toggle enemy printing\nηςεξπαγλ... toggle backpacks\nησπεεδ..... modify maximum ground speed\nτπ......... modify teamplay\nηιβσ....... toggle gibs\nσητωπε..... toggle sentry type\nσηζιςε..... toggle sentry fire\n");
@@ -51,23 +51,23 @@ void Commands () {
             if (stof(infokey (world,"adminlevel")) > 2) {
                 sprint(self , 2 , "δεαμ....... kick a player\nμιστιπσ.... list players ip addresses\n");
             }
-            sprint(self, 2, "\n*** The following commands require a map restart ***\n\n");
-            sprint(self, 2, "τεανζςαησ.. toggle teamfrags\nζυμμτσ..... toggle full team score\nηςαππμε.... toggle grapple\n");
+            sprint (self, PRINT_HIGH, "\n*** The following commands require a map restart ***\n\n");
+            sprint (self, PRINT_HIGH, "τεανζςαησ.. toggle teamfrags\nζυμμτσ..... toggle full team score\nηςαππμε.... toggle grapple\n");
             if (stof(infokey (world,"adminlevel")) > 1) {
                 sprint(self , 2 , "γμαξ....... toggle clan mode\nτζφσδν..... toggle tfvsdm mode\nτζστςιλε... toggle tfstrike mode\nςουξδσ..... toggle rounds\nδυεμ....... toggle duel mode\nσπεεδγαπ... toggle speed capture mode\nθιηθμαξδες. toggle highlander mode\nπςαγτιγε... toggle practice mode\n");
             }
         }
     }
     if (self.is_admin == 3) {
-        sprint(self, 2, "\nAdmin Commands:\n\n");
-        sprint(self, 2, "τινεδοχξ... decrease timelimit\nτινευπ..... increase timelimit\nπνδοχξ..... decrease prematch time\nπνυπ....... increase prematch time\nγζδοχξ..... decrease ceasefire time\nγζυπ....... increase ceasefire time\nοτδοχξ..... decrease overtime\n");
-        sprint(self, 2, "οτυπ....... increase overtime\nζςαησδοχξ.. reduce fraglimit\nζςαησυπ.... increase fraglimit\nσιμεξγε.... toggle spectator talk\nςεσταςτναπ. restart the current map\nσταςτνατγθ. starts clan match (requires clan mode on)\n");
-        sprint(self, 2, "ςεσετ...... reset all settings to standard\nγμαξσετυπ.. set clan settings and restart\nγεασεζιςε.. freeze the gameplay\nζςεεϊε..... (un)freeze the map\nζβσλιξσ.... toggle full bright skins\nζςκυνπ..... toggle forward rocketjump\n");
-        sprint(self, 2, "ποιξτιξη... toggle pointing\nεξενω...... toggle enemy printing\nηςεξπαγλ... toggle backpacks\nησπεεδ..... modify maximum ground speed\nτπ......... modify teamplay\nηιβσ....... toggle gibs\nσητωπε..... toggle sentry type\n");
-        sprint(self, 2, "σηζιςε..... toggle sentry fire\nπιπεδεμαω.. (dis)allow pipebomb delay\nσομιδδετ... toggle solid detpacks\nδεαμ....... kick a player\nμιστιπσ.... list players ip addresses\n");
-        sprint(self, 2, "\n*** The following commands require a map restart ***\n\n");
-        sprint(self, 2, "γμαξ....... toggle clan mode\nτζφσδν..... toggle tfvsdm mode\nτζστςιλε... toggle tfstrike mode\nτεανζςαησ.. toggle teamfrags\nζυμμτσ..... toggle full team score\nηςαππμε.... toggle grapple\n");
-        sprint(self, 2, "θιηθμαξδες. toggle highlander mode\nςουξδσ..... toggle rounds\nδυεμ....... toggle duel mode\nσπεεδγαπ... toggle speed capture mode\nπςαγτιγε... toggle practice mode\n");
+        sprint (self, PRINT_HIGH, "\nAdmin Commands:\n\n");
+        sprint (self, PRINT_HIGH, "τινεδοχξ... decrease timelimit\nτινευπ..... increase timelimit\nπνδοχξ..... decrease prematch time\nπνυπ....... increase prematch time\nγζδοχξ..... decrease ceasefire time\nγζυπ....... increase ceasefire time\nοτδοχξ..... decrease overtime\n");
+        sprint (self, PRINT_HIGH, "οτυπ....... increase overtime\nζςαησδοχξ.. reduce fraglimit\nζςαησυπ.... increase fraglimit\nσιμεξγε.... toggle spectator talk\nςεσταςτναπ. restart the current map\nσταςτνατγθ. starts clan match (requires clan mode on)\n");
+        sprint (self, PRINT_HIGH, "ςεσετ...... reset all settings to standard\nγμαξσετυπ.. set clan settings and restart\nγεασεζιςε.. freeze the gameplay\nζςεεϊε..... (un)freeze the map\nζβσλιξσ.... toggle full bright skins\nζςκυνπ..... toggle forward rocketjump\n");
+        sprint (self, PRINT_HIGH, "ποιξτιξη... toggle pointing\nεξενω...... toggle enemy printing\nηςεξπαγλ... toggle backpacks\nησπεεδ..... modify maximum ground speed\nτπ......... modify teamplay\nηιβσ....... toggle gibs\nσητωπε..... toggle sentry type\n");
+        sprint (self, PRINT_HIGH, "σηζιςε..... toggle sentry fire\nπιπεδεμαω.. (dis)allow pipebomb delay\nσομιδδετ... toggle solid detpacks\nδεαμ....... kick a player\nμιστιπσ.... list players ip addresses\n");
+        sprint (self, PRINT_HIGH, "\n*** The following commands require a map restart ***\n\n");
+        sprint (self, PRINT_HIGH, "γμαξ....... toggle clan mode\nτζφσδν..... toggle tfvsdm mode\nτζστςιλε... toggle tfstrike mode\nτεανζςαησ.. toggle teamfrags\nζυμμτσ..... toggle full team score\nηςαππμε.... toggle grapple\n");
+        sprint (self, PRINT_HIGH, "θιηθμαξδες. toggle highlander mode\nςουξδσ..... toggle rounds\nδυεμ....... toggle duel mode\nσπεεδγαπ... toggle speed capture mode\nπςαγτιγε... toggle practice mode\n");
     }
 }
 
@@ -81,31 +81,31 @@ void ShowScores () {
     stuffcmd(self, ftos(pteam2.frags));
     stuffcmd(self, "\n");
     if (store_obs.cnt == 2) {
-        sprint(self, 2.000, "\n\n");
-        sprint(self, 2.000,  " Team Scores:\n Team1:   ");
+        sprint (self, PRINT_HIGH, "\n\n");
+        sprint (self, PRINT_HIGH,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint(self, 2.000,  st, "     Team2:   ");
+        sprint (self, PRINT_HIGH,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint(self, 2.000,  st, "\n");
+        sprint (self, PRINT_HIGH,  st, "\n");
     } else {
-        sprint(self, 2.000, "\n\n");
-        sprint(self, 2.000,  " Team Scores:\n Team1:   ");
+        sprint (self, PRINT_HIGH, "\n\n");
+        sprint (self, PRINT_HIGH,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint(self, 2.000,  st, "     Team2:   ");
+        sprint (self, PRINT_HIGH,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint(self, 2.000,  st, "\n Team3:   ");
+        sprint (self, PRINT_HIGH,  st, "\n Team3:   ");
         st =  ftos(pteam3.frags);
-        sprint(self, 2.000,  st, "     Team4:   ");
+        sprint (self, PRINT_HIGH,  st, "     Team4:   ");
         st =  ftos(pteam4.frags);
-        sprint(self, 2.000,  st, "\n");
+        sprint (self, PRINT_HIGH,  st, "\n");
     }
     if ((modetype & 1) && (!cb_prematch)) {
         st = infokey (world, "status");
-        sprint(self, 2.000,  "\n Time: ");
-        sprint(self, 2.000,   st );
-        sprint(self, 2.000,  "\n");
+        sprint (self, PRINT_HIGH,  "\n Time: ");
+        sprint (self, PRINT_HIGH,   st );
+        sprint (self, PRINT_HIGH,  "\n");
     }
-    sprint(self, 2.000, "\n\n");
+    sprint (self, PRINT_HIGH, "\n\n");
 }
 
 void ShowFrags (entity print) {
@@ -216,86 +216,86 @@ void ShowFrags (entity print) {
 void ShowTouches () {
     entity te;
     string st, sp;
-    sprint(self, 2.000, "\n Flag running:\n");
-    sprint(self, 2.000, "\n");
-    sprint(self, 2.000, " Touched  Captured  Dropped  Name\n");
-    sprint(self, 2.000, "\n");
+    sprint (self, PRINT_HIGH, "\n Flag running:\n");
+    sprint (self, PRINT_HIGH, "\n");
+    sprint (self, PRINT_HIGH, " Touched  Captured  Dropped  Name\n");
+    sprint (self, PRINT_HIGH, "\n");
     te = player_head;
     while (te) {
         if (te.flag_touches ) {
             st = ftos(te.flag_touches );
             sp = spacefornum(te.flag_touches, 6);
-            sprint(self, 2.000, "  ", st, sp);
+            sprint (self, PRINT_HIGH, "  ", st, sp);
             st = ftos(te.flag_captures );
             sp = spacefornum(te.flag_captures, 7);
-            sprint(self, 2.000, "  ", st, sp);
+            sprint (self, PRINT_HIGH, "  ", st, sp);
             st = ftos(te.flag_fumbles );
             sp = spacefornum(te.flag_fumbles, 7);
-            sprint(self, 2.000, "  ", st, sp);
+            sprint (self, PRINT_HIGH, "  ", st, sp);
             /*
                if ( te.flag_touches  < 10)
                {
-               sprint(self, 2.000, "  ", st, "       ");
+               sprint (self, PRINT_HIGH, "  ", st, "       ");
                }
                else if (te.flag_touches < 100)
                {
-               sprint(self, 2.000, "  ", st, "      ");
+               sprint (self, PRINT_HIGH, "  ", st, "      ");
                }
                else
                {
-               sprint(self, 2.000, "  ", st, "     ");
+               sprint (self, PRINT_HIGH, "  ", st, "     ");
                }
                st =  ftos(te.flag_captures);
                if ( te.flag_captures < 10)
                {
-               sprint(self, 2.000,  st, "         ");
+               sprint (self, PRINT_HIGH,  st, "         ");
                }
                else if (te.flag_captures < 100)
                {
-               sprint(self, 2.000,  st, "        ");
+               sprint (self, PRINT_HIGH,  st, "        ");
                }
                else
                {
-               sprint(self, 2.000,  st, "       ");
+               sprint (self, PRINT_HIGH,  st, "       ");
                }
                st =  ftos(te.flag_fumbles);
                if (te.flag_fumbles < 10)
                {
-               sprint(self, 2.000,  st, "         ");
+               sprint (self, PRINT_HIGH,  st, "         ");
                }
                else if ( te.flag_fumbles < 100)
                {
-               sprint(self, 2.000,  st, "        ");
+               sprint (self, PRINT_HIGH,  st, "        ");
                }
                else
                {
-               sprint(self, 2.000,  st, "       ");
+               sprint (self, PRINT_HIGH,  st, "       ");
                }
              */
-            sprint(self, 2.000,  te.netname , "\n");
+            sprint (self, PRINT_HIGH,  te.netname , "\n");
         }
         te = te.nextp;
     }
     if (store_obs.cnt == 2) {
-        sprint(self, 2.000, "\n\n");
-        sprint(self, 2.000,  " Team Scores:\n Team1:   ");
+        sprint (self, PRINT_HIGH, "\n\n");
+        sprint (self, PRINT_HIGH,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint(self, 2.000,  st, "     Team2:   ");
+        sprint (self, PRINT_HIGH,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint(self, 2.000,  st, "\n");
+        sprint (self, PRINT_HIGH,  st, "\n");
     } else {
-        sprint(self, 2.000, "\n\n");
-        sprint(self, 2.000,  " Team Scores:\n Team1:   ");
+        sprint (self, PRINT_HIGH, "\n\n");
+        sprint (self, PRINT_HIGH,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint(self, 2.000,  st, "     Team2:   ");
+        sprint (self, PRINT_HIGH,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint(self, 2.000,  st, "\n Team3:   ");
+        sprint (self, PRINT_HIGH,  st, "\n Team3:   ");
         st =  ftos(pteam3.frags);
-        sprint(self, 2.000,  st, "     Team4:   ");
+        sprint (self, PRINT_HIGH,  st, "     Team4:   ");
         st =  ftos(pteam4.frags);
-        sprint(self, 2.000,  st, "\n");
+        sprint (self, PRINT_HIGH,  st, "\n");
     }
-    sprint(self, 2.000, "\n\n");
+    sprint (self, PRINT_HIGH, "\n\n");
 }
 
 void ShowFps () {
@@ -303,21 +303,21 @@ void ShowFps () {
     float r;
     float fps;
     string st;
-    sprint(self, 2.000, "\n\n");
-    sprint(self, 2.000, " Fps    Speed       Name\n");
-    sprint(self, 2.000, "\n");
+    sprint (self, PRINT_HIGH, "\n\n");
+    sprint (self, PRINT_HIGH, " Fps    Speed       Name\n");
+    sprint (self, PRINT_HIGH, "\n");
     te = player_head;
     while (te) {
         fps = rint( 1000 / ( te.fAverageFrameTime / te.fFrameCount * 1000 ) );
         st = ftos( fps );
-        sprint(self, 2.000, " ", st, "     ");
+        sprint (self, PRINT_HIGH, " ", st, "     ");
         r = fabs(te.fAverageFrameTime * 100 / (time - te.real_time));
         st = ftos(r);
-        sprint(self, 2.000,  st, "%       ");
-        sprint(self, 2.000,  te.netname , "\n");
+        sprint (self, PRINT_HIGH,  st, "%       ");
+        sprint (self, PRINT_HIGH,  te.netname , "\n");
         te = te.nextp;
     }
-    sprint(self, 2.000, "\n\n");
+    sprint (self, PRINT_HIGH, "\n\n");
 }
 
 void ShowSpeed () {
@@ -325,7 +325,7 @@ void ShowSpeed () {
     string st;
     if (self.speed) {
         st = ftos(rint(self.speed));
-        sprint(self, 2.000, " Current Speed:  ", st,"\n");
+        sprint (self, PRINT_HIGH, " Current Speed:  ", st,"\n");
     }
     if (self.a_speed) {
         /*  ends up all 3.69 / 0.36 which is 10.25
@@ -336,24 +336,24 @@ void ShowSpeed () {
          */
         dist = self.speed / 10.25;
         st = ftos(rint(dist));
-        sprint(self, 2.000, " Metric Speed:   ", st," km/h\n");
+        sprint (self, PRINT_HIGH, " Metric Speed:   ", st," km/h\n");
     }
 }
 
 void ShowStats () {
     string st;
     float eff;
-    sprint(self, 2.000, "\n\n");
-    sprint(self, 2.000, " ", self.netname, "'s Statistics\n");
-    sprint(self, 2.000, "\n");
+    sprint (self, PRINT_HIGH, "\n\n");
+    sprint (self, PRINT_HIGH, " ", self.netname, "'s Statistics\n");
+    sprint (self, PRINT_HIGH, "\n");
     if (self.enemy)
-        sprint(self, 2.000, " Last enemy: ", self.enemy.netname,"\n");
+        sprint (self, PRINT_HIGH, " Last enemy: ", self.enemy.netname,"\n");
     st = ftos(self.real_frags);
-    sprint(self, 2.000, " Frags:      ", st,"\n");
+    sprint (self, PRINT_HIGH, " Frags:      ", st,"\n");
     st = ftos(self.deaths);
-    sprint(self, 2.000, " Deaths:     ", st,"\n");
+    sprint (self, PRINT_HIGH, " Deaths:     ", st,"\n");
     st = ftos(self.teamkills);
-    sprint(self, 2.000, " Teamkills:  ", st,"\n");
+    sprint (self, PRINT_HIGH, " Teamkills:  ", st,"\n");
     if (self.real_frags <= 0.000) {
         eff = 0.000;
     } else {
@@ -361,145 +361,145 @@ void ShowStats () {
         eff = rint(eff);
     }
     st = ftos(eff);
-    sprint(self, 2.000, " Efficiency: ", st,"\n\n");
+    sprint (self, PRINT_HIGH, " Efficiency: ", st,"\n\n");
     st = ftos(rint(self.dmg_inflicted));
-    sprint(self, 2.000, " Damage given:  ", st,"\n");
+    sprint (self, PRINT_HIGH, " Damage given:  ", st,"\n");
     st = ftos(rint(self.dmg_recieved));
-    sprint(self, 2.000, " Damage taken:  ", st,"\n");
+    sprint (self, PRINT_HIGH, " Damage taken:  ", st,"\n");
     st = ftos(rint(self.dmg_self));
-    sprint(self, 2.000, " Damage self:   ", st,"\n");
+    sprint (self, PRINT_HIGH, " Damage self:   ", st,"\n");
     st = ftos(rint(self.dmg_team));
-    sprint(self, 2.000, " Damage team:   ", st,"\n\n");
+    sprint (self, PRINT_HIGH, " Damage team:   ", st,"\n\n");
     st = ftos(self.flag_touches);
-    sprint(self, 2.000, " Touches:    ", st,"\n");
+    sprint (self, PRINT_HIGH, " Touches:    ", st,"\n");
     st = ftos(self.flag_captures);
-    sprint(self, 2.000, " Captures:   ", st,"\n");
+    sprint (self, PRINT_HIGH, " Captures:   ", st,"\n");
     st = ftos(self.flag_fumbles);
-    sprint(self, 2.000, " Fumbles:    ", st,"\n\n");
+    sprint (self, PRINT_HIGH, " Fumbles:    ", st,"\n\n");
     if (self.a_speed) {
         eff = (self.a_speed / self.cnt);
         st = ftos(rint(eff));
-        sprint(self, 2.000, " Average Speed:       ", st,"\n");
+        sprint (self, PRINT_HIGH, " Average Speed:       ", st,"\n");
         if (self.a_gspeed) {
             eff = (self.a_gspeed / self.g_count);
             st = ftos(rint(eff));
-            sprint(self, 2.000, " Average Groundspeed: ", st,"\n");
+            sprint (self, PRINT_HIGH, " Average Groundspeed: ", st,"\n");
             eff = ((self.a_speed - self.a_gspeed) / (self.cnt - self.g_count));
             st = ftos(rint(eff));
-            sprint(self, 2.000, " Average Airspeed:    ", st,"\n");
+            sprint (self, PRINT_HIGH, " Average Airspeed:    ", st,"\n");
         }
         eff = (self.a_speed / (81.63 * 72));  // assume * 72 fps
         st = ftos(rint(eff));
-        sprint(self, 2.000, " Distance Travelled:  ", st," metres\n");
+        sprint (self, PRINT_HIGH, " Distance Travelled:  ", st," metres\n");
     }
-    sprint(self, 2.000, "\n\n");
+    sprint (self, PRINT_HIGH, "\n\n");
 }
 
 void ModStatus () {
     string tmp;
     float f1;
     tmp = ftos(teamplay);
-    sprint(self, 2, "Τεανπμαω        ", tmp, "\n");
+    sprint (self, PRINT_HIGH, "Τεανπμαω        ", tmp, "\n");
     tmp = ftos((timelimit/60));
-    sprint(self, 2, "Τινεμινιτ       ", tmp, "  ");
-    if (timelimit < 10) sprint(self, 2, " ");
+    sprint (self, PRINT_HIGH, "Τινεμινιτ       ", tmp, "  ");
+    if (timelimit < 10) sprint (self, PRINT_HIGH, " ");
     tmp = ftos(fraglimit);
-    sprint(self, 2, "\nΖςαημινιτ       ", tmp, "\n");
+    sprint (self, PRINT_HIGH, "\nΖςαημινιτ       ", tmp, "\n");
     if ( (modetype & 1 )) {
-        sprint(self, 2, "Clan Mode       on\n");
+        sprint (self, PRINT_HIGH, "Clan Mode       on\n");
     } else {
-        sprint(self, 2, "Clan Mode       off\n");
+        sprint (self, PRINT_HIGH, "Clan Mode       off\n");
     }
     tmp = infokey (world,"overtime");
     if ( stof (tmp)) {
-        sprint(self, 2, "Overtime        ", tmp, "\n");
+        sprint (self, PRINT_HIGH, "Overtime        ", tmp, "\n");
     } else {
-        sprint(self, 2, "Overtime        off\n");
+        sprint (self, PRINT_HIGH, "Overtime        off\n");
     }
     tmp = infokey (world,"teamfrags");
     if ( (tmp == "on") ) {
-        sprint(self, 2, "Teamfrags       ", tmp, "\n");
+        sprint (self, PRINT_HIGH, "Teamfrags       ", tmp, "\n");
     } else {
-        sprint(self, 2, "Teamfrags       off\n");
+        sprint (self, PRINT_HIGH, "Teamfrags       off\n");
     }
     tmp = infokey (world,"fullteamscore");
     if ( (tmp == "on") ) {
-        sprint(self, 2, "Full Team Score ", tmp, "\n");
+        sprint (self, PRINT_HIGH, "Full Team Score ", tmp, "\n");
     } else {
-        sprint(self, 2, "Full Team Score off\n");
+        sprint (self, PRINT_HIGH, "Full Team Score off\n");
     }
     tmp = ftos(gspeed);
-    sprint(self, 2, "Ground speed    ", tmp, "\n");
+    sprint (self, PRINT_HIGH, "Ground speed    ", tmp, "\n");
     /*
        if ( tfvsdm ) {
-       sprint(self, 2, "ΤΖφσΔΝ:         on\n");
+       sprint (self, PRINT_HIGH, "ΤΖφσΔΝ:         on\n");
        } else {
-       sprint(self, 2, "ΤΖφσΔΝ:         off\n");
+       sprint (self, PRINT_HIGH, "ΤΖφσΔΝ:         off\n");
        }
      */
     if ( modetype & 4 ) {
-        sprint(self, 2, "TFStrike:       on\n");
+        sprint (self, PRINT_HIGH, "TFStrike:       on\n");
     } else {
-        sprint(self, 2, "TFStrike:       off\n");
+        sprint (self, PRINT_HIGH, "TFStrike:       off\n");
     }
     if (allow_grenpack) {
-        sprint(self, 2, "Gren Backpacks: on\n");
+        sprint (self, PRINT_HIGH, "Gren Backpacks: on\n");
     }
     if ( (pipedelay)) {
-        sprint(self, 2, "Pipebomb Delay: on\n");
+        sprint (self, PRINT_HIGH, "Pipebomb Delay: on\n");
     } else {
-        sprint(self, 2, "Pipebomb Delay: off\n");
+        sprint (self, PRINT_HIGH, "Pipebomb Delay: off\n");
     }
     tmp = infokey (world,"gibs");
     if ( (tmp == "off") ) {
-        sprint(self, 2, "Player Gibs     ", tmp, " \n");
+        sprint (self, PRINT_HIGH, "Player Gibs     ", tmp, " \n");
     }
     if (allow_hook) {
-        sprint(self, 2, "Grapple:        on\n");
+        sprint (self, PRINT_HIGH, "Grapple:        on\n");
     } else {
-        sprint(self, 2, "Grapple:        off\n");
+        sprint (self, PRINT_HIGH, "Grapple:        off\n");
     }
     if (!sentry_fire) {
-        sprint(self, 2, "Sentry Fire: Normal\n");
+        sprint (self, PRINT_HIGH, "Sentry Fire: Normal\n");
     } else if (sentry_fire == 1) {
-        sprint(self, 2, "Sentry Fire: Lightning\n");
+        sprint (self, PRINT_HIGH, "Sentry Fire: Lightning\n");
     } else if (sentry_fire == 2) {
-        sprint(self, 2, "Sentry Fire: Laser\n");
+        sprint (self, PRINT_HIGH, "Sentry Fire: Laser\n");
     }
     tmp = infokey (world,"highlander");
     if ( (tmp == "on") ) {
-        sprint(self, 2, "Highlander mode on\n");
+        sprint (self, PRINT_HIGH, "Highlander mode on\n");
     }
     if (modetype & 32) {
-        sprint(self, 2, "Duel mode:      on\n");
+        sprint (self, PRINT_HIGH, "Duel mode:      on\n");
     }
     if (modetype & 16) {
-        sprint(self, 2, "Speed capture:  on\n");
+        sprint (self, PRINT_HIGH, "Speed capture:  on\n");
     }
     if (modetype & 2) {
-        sprint(self, 2, "Practice:       on\n");
+        sprint (self, PRINT_HIGH, "Practice:       on\n");
     }
     if (rounds < 0) {
-        sprint(self, 2, "Rounds:         on\n");
+        sprint (self, PRINT_HIGH, "Rounds:         on\n");
     } else if (rounds > 1) {
         tmp = ftos(rounds);
-        sprint(self, 2, "Rounds:        ", tmp ,"\n");
+        sprint (self, PRINT_HIGH, "Rounds:        ", tmp ,"\n");
     }
     f1 = stof(infokey(world, "fpd"));
     if (f1 & 256) {
-        sprint(self, 2, "ζυμμβςιηθτ σλιξσ disabled\n");
+        sprint (self, PRINT_HIGH, "ζυμμβςιηθτ σλιξσ disabled\n");
     } else {
-        sprint(self, 2, "ζυμμβςιηθτ σλιξσ enabled\n");
+        sprint (self, PRINT_HIGH, "ζυμμβςιηθτ σλιξσ enabled\n");
     }
     f1 = stof(infokey(world, "fpd"));
     if (f1 & 128) {
-        sprint(self, 2, "ποιξτιξη disabled\n");
+        sprint (self, PRINT_HIGH, "ποιξτιξη disabled\n");
     } else {
-        sprint(self, 2, "ποιξτιξη enabled\n");
+        sprint (self, PRINT_HIGH, "ποιξτιξη enabled\n");
     }
     if (elect) {
         tmp = ftos(elect);
-        sprint(self, 2, "\nElection in progress\n", tmp, "‘ votes received\n");
+        sprint (self, PRINT_HIGH, "\nElection in progress\n", tmp, "‘ votes received\n");
     }
 }
 
@@ -996,7 +996,7 @@ void Toggle_SentryFire () {
         if (self == world) {
             dprint("Sentry type is currently Normal. Change sentry type to enable firing mode.\n");
         } else {
-            sprint(self, 2.000, "Sentry type is currently Normal. Change sentry type to enable firing mode.\n");
+            sprint (self, PRINT_HIGH, "Sentry type is currently Normal. Change sentry type to enable firing mode.\n");
         }
         return;
     }
@@ -1163,13 +1163,13 @@ void PlayerMiscVote (string Misc, float type) {
     if ((modetype & 1) && (!cb_prematch))
         return;
     if (v_misc) {
-        sprint(self, 2.000, "Vote currently active. You cannot vote at this time.\n");
+        sprint (self, PRINT_HIGH, "Vote currently active. You cannot vote at this time.\n");
         return;
     }
     tmp = infokey (world,"votetime");
     f1 = (stof(tmp) * 60);
     if (f1 > time) {
-        sprint(self, 2.000, "You cannot vote at this time.\n");
+        sprint (self, PRINT_HIGH, "You cannot vote at this time.\n");
         return;
     }
     if (self.mvote == 2.000) {
@@ -1226,7 +1226,7 @@ void PlayerMiscVote (string Misc, float type) {
         dremove (miscvote);
         return;
     }
-    sprint(self, 2, "Type cmd abort, to abort vote\n");
+    sprint (self, PRINT_HIGH, "Type cmd abort, to abort vote\n");
     if ( v_misc != 0.000 ) {
         f1 = f2 - v_misc;
         st = ftos(f1);
@@ -1294,14 +1294,14 @@ void RandomPickup () {
 
 void TogglePowerups () {
     string st;
-    bprint (2.000000, " Ποχεςυπσ ");
+    bprint (PRINT_HIGH, " Ποχεςυπσ ");
     if (powerups) {
-        bprint (2.000000, "disabled\n");
+        bprint (PRINT_HIGH, "disabled\n");
         PowerupsOff ();
         powerups = 0;
         st = "off";
     } else {
-        bprint (2.000000, "enabled\n");
+        bprint (PRINT_HIGH, "enabled\n");
         PowerupsOn ();
         powerups = 1;
         st = "on";

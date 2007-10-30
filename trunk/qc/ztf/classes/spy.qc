@@ -440,28 +440,28 @@ void TeamFortress_SpyFeignDeath (float issilent) {
 			}
         } else {
             if ( (j == 1.000) ) {
-                sprint (self,2.000,"You can't get up with something\non top of you.\n");
+                sprint (self,PRINT_HIGH,"You can't get up with something\non top of you.\n");
             } else {
-                sprint (self,2.000,"You can't get up while someone\nis standing on you.\n");
+                sprint (self,PRINT_HIGH,"You can't get up while someone\nis standing on you.\n");
             }
         }
     } else {
         if ( (self.is_unabletospy == 1.000) ) {
-            sprint (self,2.000,"You can't feign right now.\n");
+            sprint (self,PRINT_HIGH,"You can't feign right now.\n");
             return ;
         }
         if ( self.hook_out ) {
-            sprint (self,2.000,"You can't feign with the hook out.\n");
+            sprint (self,PRINT_HIGH,"You can't feign with the hook out.\n");
             return ;
         }
         if ( (!(self.flags & 512.000) && (self.waterlevel == 0.000)) ) {
-            sprint (self,2.000,"You can't feign in the air.\n");
+            sprint (self,PRINT_HIGH,"You can't feign in the air.\n");
             return ;
         }
         at_spot = findradius (self.origin,64.000);
         while ( (at_spot != world) ) {
             if ( (((at_spot.classname == "player") && (self != at_spot)) && (at_spot.is_feigning == 1.000)) ) {
-                sprint (self,2.000,"You can't feign on top of another spy!\n");
+                sprint (self,PRINT_HIGH,"You can't feign on top of another spy!\n");
                 return ;
             }
             at_spot = at_spot.chain;
@@ -497,12 +497,12 @@ void TeamFortress_SpyFeignDeath (float issilent) {
                     tfgoalitem_RemoveFromPlayer (te,self,0.000);
                 }
                 if ( ((ctfmap == 1) && (te.goal_no == 1.000)) ) {
-                    bprint (2.000,self.netname);
-                    bprint (2.000," лост the блуе flag!\n");
+                    bprint (PRINT_HIGH,self.netname);
+                    bprint (PRINT_HIGH," лост the блуе flag!\n");
                 } else {
                     if ( ((ctfmap == 1) && (te.goal_no == 2.000)) ) {
-                        bprint (2.000,self.netname);
-                        bprint (2.000," лост the ред flag!\n");
+                        bprint (PRINT_HIGH,self.netname);
+                        bprint (PRINT_HIGH," лост the ред flag!\n");
                     }
                 }
             }
@@ -534,18 +534,18 @@ void TeamFortress_SpyFeignDeath (float issilent) {
 
 void TeamFortress_SpyGoUndercover () {
     if ( (self.effects & (8.000 | 4.000)) ) {
-        sprint (self,1.000,"You cannot disguise while glowing.\n");
+        sprint (self,PRINT_MEDIUM,"You cannot disguise while glowing.\n");
         return ;
     }
     if ( (self.is_unabletospy == 1.000) ) {
-        sprint (self,2.000,"You can't go undercover right now.\n");
+        sprint (self,PRINT_HIGH,"You can't go undercover right now.\n");
         return ;
     }
     if ( (self.is_undercover != 2.000) ) {
         self.current_menu = 12.000;
         self.menu_count = 25.000;
     } else {
-        sprint (self,2.000,"You stop going undercover.\n");
+        sprint (self,PRINT_HIGH,"You stop going undercover.\n");
         self.is_undercover = 0.000;
     }
 }
@@ -586,16 +586,16 @@ void TeamFortress_SpyUndercoverThink () {
     if ( (self.owner.is_undercover == 2.000) ) {
         //self.owner.immune_to_check = (time + 2.000);
         if ( (self.skin != 0.000) ) {
-            sprint (self.owner,2.000,"Skin set to ");
+            sprint (self.owner,PRINT_HIGH,"Skin set to ");
             TeamFortress_PrintClassName (self.owner,self.skin,0.000);
             self.owner.undercover_skin = self.skin;
             TeamFortress_SetSkin (self.owner);
         }
         if ( (self.team != 0.000) ) {
-            sprint (self.owner,2.000,"Colors set to Team ");
+            sprint (self.owner,PRINT_HIGH,"Colors set to Team ");
             st = ftos (self.team);
-            sprint (self.owner,2.000,st);
-            sprint (self.owner,2.000,"\n");
+            sprint (self.owner,PRINT_HIGH,st);
+            sprint (self.owner,PRINT_HIGH,"\n");
             self.owner.undercover_team = self.team;
             stuffcmd (self.owner,"color ");
             tc = (PTeamGetColor (self.team) - 1.000);
@@ -617,7 +617,7 @@ void TeamFortress_SpyUndercoverThink () {
 void TeamFortress_SpyChangeSkin (float pclass) {
     entity te;
     if ( (pclass == 8.000) ) {
-        sprint (self,2.000,"Skin reset.\n");
+        sprint (self,PRINT_HIGH,"Skin reset.\n");
         self.undercover_skin = 0.000;
         TeamFortress_SetSkin (self);
         if ( (self.undercover_team == 0.000) ) {
@@ -625,7 +625,7 @@ void TeamFortress_SpyChangeSkin (float pclass) {
         }
         return ;
     }
-    sprint (self,2.000,"Going undercover...\n");
+    sprint (self,PRINT_HIGH,"Going undercover...\n");
     self.is_undercover = 2.000;
     te = spawn ();
     te.classname = "timer";
@@ -639,7 +639,7 @@ void TeamFortress_SpyChangeSkin (float pclass) {
 void TeamFortress_SpyChangeColor (float teamno) {
     entity te;
     if ( (teamno == self.pteam.team) ) {
-        sprint (self,2.000,"Colors reset.\n");
+        sprint (self,PRINT_HIGH,"Colors reset.\n");
         //self.immune_to_check = (time + 2.000);
         self.undercover_team = 0.000;
         stuffcmd (self,"color ");
@@ -651,7 +651,7 @@ void TeamFortress_SpyChangeColor (float teamno) {
         TeamFortress_SetSkin (self);
         return ;
     }
-    sprint (self,2.000,"Going undercover...\n");
+    sprint (self,PRINT_HIGH,"Going undercover...\n");
     self.is_undercover = 2.000;
     te = spawn ();
     te.classname = "timer";
@@ -751,7 +751,7 @@ void HallucinationTimer () {
     }
     if ( !(self.owner.tfstate & 16384.000) ) {
         stuffcmd (self.owner,"v_cshift; wait; bf\n");
-        sprint (self.owner,2.000,"You feel a little better now.\n");
+        sprint (self.owner,PRINT_HIGH,"You feel a little better now.\n");
         dremove (self);
         return ;
     }
@@ -856,7 +856,7 @@ void W_FireTranq () {
 void TranquiliserTimer () {
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 32768.000));
     TeamFortress_SetSpeed (self.owner);
-    sprint (self.owner,2.000,"You feel more alert now\n");
+    sprint (self.owner,PRINT_HIGH,"You feel more alert now\n");
     dremove (self);
 }
 

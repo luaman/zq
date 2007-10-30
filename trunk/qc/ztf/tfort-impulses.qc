@@ -26,7 +26,7 @@
 */
 
 void MsgAdminDis () {
-    sprint(self,2,"Administrators disabled by server.\n");
+    sprint (self, PRINT_HIGH,"Administrators disabled by server.\n");
 }
 
 void ImpulseCommands () {
@@ -302,7 +302,7 @@ void ImpulseCommands () {
 /*
 
    void MsgLimitedAcc () {
-   sprint(self,2,"You have limited Access, You cannot use this command.\n");
+   sprint (self, PRINT_HIGH,"You have limited Access, You cannot use this command.\n");
    };
    float AdminComVal3 () {
    if (self.is_admin != 3.000) {
@@ -503,7 +503,7 @@ void CommandImpulses () {
         return;
     } else if (imp == 255.000) {
         if ( (infokey(world, "*cheats")) == string_null) {
-            sprint(self, 2, "Cheats are disabled on this server.\n");
+            sprint (self, PRINT_HIGH, "Cheats are disabled on this server.\n");
             self.impulse = 0.000;
             return;
         }
@@ -512,7 +512,7 @@ void CommandImpulses () {
         return;
     } else if (imp == 254.000) {
         if ( (infokey(world, "*cheats")) == string_null) {
-            sprint(self, 2, "Cheats are disabled on this server.\n");
+            sprint (self, PRINT_HIGH, "Cheats are disabled on this server.\n");
             self.impulse = 0.000;
             return;
         }
@@ -521,7 +521,7 @@ void CommandImpulses () {
         return;
     } else if (imp == 253.000) {
         if ( (infokey(world, "*cheats")) == string_null) {
-            sprint(self, 2, "Cheats are disabled on this server.\n");
+            sprint (self, PRINT_HIGH, "Cheats are disabled on this server.\n");
             self.impulse = 0.000;
             return;
         }
@@ -709,53 +709,53 @@ float DeadImpulses () {
                                         return(1.000);
                                     } else {
                                         if ( ((self.playerclass == 1.000) && (imp == 162.000)) ) {
-                                            sprint (self,2.000,"Scanner sound: ");
+                                            sprint (self,PRINT_HIGH,"Scanner sound: ");
 
                                             if ( (self.tf_items_flags & 4.000) ) {
                                                 self.tf_items_flags = (self.tf_items_flags - 4.000);
-                                                sprint (self,2.000,"Off\n");
+                                                sprint (self,PRINT_HIGH,"Off\n");
                                             } else {
                                                 self.tf_items_flags = (self.tf_items_flags | 4.000);
-                                                sprint (self,2.000,"On\n");
+                                                sprint (self,PRINT_HIGH,"On\n");
                                             }
                                             self.impulse = 0.000;
                                             return(1.000);
                                         } else {
                                             if ( ((self.playerclass == 1.000) && (imp == 160.000)) ) {
-                                                sprint (self,2.000,"Scanning for: ");
+                                                sprint (self,PRINT_HIGH,"Scanning for: ");
                                                 if ( (self.tf_items_flags & 1.000) ) {
                                                     self.tf_items_flags = (self.tf_items_flags - 1.000);
                                                     if ( (self.tf_items_flags & 2.000) ) {
-                                                        sprint (self,2.000,"Friendlies Only.\n");
+                                                        sprint (self,PRINT_HIGH,"Friendlies Only.\n");
                                                     } else {
-                                                        sprint (self,2.000,"Nothing\n");
+                                                        sprint (self,PRINT_HIGH,"Nothing\n");
                                                     }
                                                 } else {
                                                     self.tf_items_flags = (self.tf_items_flags | 1.000);
                                                     if ( (self.tf_items_flags & 2.000) ) {
-                                                        sprint (self,2.000,"Friendlies and Enemies\n");
+                                                        sprint (self,PRINT_HIGH,"Friendlies and Enemies\n");
                                                     } else {
-                                                        sprint (self,2.000,"Enemies Only\n");
+                                                        sprint (self,PRINT_HIGH,"Enemies Only\n");
                                                     }
                                                 }
                                                 self.impulse = 0.000;
                                                 return(1.000);
                                             } else {
                                                 if ( ((self.playerclass == 1.000) && (imp == 161.000)) ) {
-                                                    sprint (self,2.000,"Scanning for: ");
+                                                    sprint (self,PRINT_HIGH,"Scanning for: ");
                                                     if ( (self.tf_items_flags & 2.000) ) {
                                                         self.tf_items_flags = (self.tf_items_flags - 2.000);
                                                         if ( (self.tf_items_flags & 1.000) ) {
-                                                            sprint (self,2.000,"Enemies Only.\n");
+                                                            sprint (self,PRINT_HIGH,"Enemies Only.\n");
                                                         } else {
-                                                            sprint (self,2.000,"Nothing\n");
+                                                            sprint (self,PRINT_HIGH,"Nothing\n");
                                                         }
                                                     } else {
                                                         self.tf_items_flags = (self.tf_items_flags | 2.000);
                                                         if ( (self.tf_items_flags & 1.000) ) {
-                                                            sprint (self,2.000,"Friendlies and Enemies\n");
+                                                            sprint (self,PRINT_HIGH,"Friendlies and Enemies\n");
                                                         } else {
-                                                            sprint (self,2.000,"Friendlies Only\n");
+                                                            sprint (self,PRINT_HIGH,"Friendlies Only\n");
                                                         }
 
                                                     }
@@ -764,7 +764,7 @@ float DeadImpulses () {
                                                 } else {
                                                     if ( (imp == 182.000) ) {
                                                         if (!server_type) {
-                                                            sprint(self,2.000, "Server incompatible - Unable to activate status bar.\n");
+                                                            sprint (self, PRINT_HIGH, "Server incompatible - Unable to activate status bar.\n");
                                                             self.impulse = 0.000;
                                                             return(1.000);
                                                         }

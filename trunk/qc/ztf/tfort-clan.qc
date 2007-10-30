@@ -301,7 +301,7 @@ void StartMatch () {
     entity oldself;
     entity gren;
     lightstyle (0.000,"m");
-    bprint (2.000,"MATCH BEGINS NOW\n");
+    bprint (PRINT_HIGH,"MATCH BEGINS NOW\n");
     store_obs.count = store_obs.count + 1.000;
     Initialise_Teams();
     te = player_head;
@@ -345,7 +345,7 @@ void StartMatch () {
     te.cnt = (timelimit / 60);
     te.cnt2 = 60.000;
     if ( te.cnt == 0 ) {
-        bprint (2.000,"Warning no timelimit set!\n");
+        bprint (PRINT_HIGH,"Warning no timelimit set!\n");
         localcmd("\nserverinfo status \"0 min left\"\n");
         te.cnt = -1.000;
         te.cnt2 = -1.000;
@@ -484,8 +484,8 @@ void() StartTimer =
     string tmp;
     if (!(modetype & 1)) {
         if (self != world) {
-            sprint(self, 2.000, "Clan mode off....\n");
-            sprint(self, 2.000, "Match cannot be started.\n");
+            sprint (self, PRINT_HIGH, "Clan mode off....\n");
+            sprint (self, PRINT_HIGH, "Match cannot be started.\n");
         } else {
             dprint("Clan mode off....\n");
             dprint("Match cannot be started.\n");
@@ -494,8 +494,8 @@ void() StartTimer =
     }
     if (( modetype & 1) && (cb_prematch == 0.000)) {
         if (self != world) {
-            sprint(self, 2.000, "Clan Battle in progress....\n");
-            sprint(self, 2.000, "Type break to stop the current battle.\n");
+            sprint (self, PRINT_HIGH, "Clan Battle in progress....\n");
+            sprint (self, PRINT_HIGH, "Type break to stop the current battle.\n");
         } else {
             dprint("Clan Battle in progress....\n");
             dprint("Type break to stop the current battle.\n");
@@ -504,7 +504,7 @@ void() StartTimer =
     }
     if ((infokey(world, "status") == "Countdown")) {
         if (self != world) {
-            sprint(self, 2.000, "Countdown in progress....\n");
+            sprint (self, PRINT_HIGH, "Countdown in progress....\n");
         } else {
             dprint("Countdown in progress....\n");
         }
@@ -601,7 +601,7 @@ void PlayerBreak () {
     tmp = infokey (world,"votetime");
     f1 = (stof(tmp) * 60);
     if (f1 > time) {
-        sprint(self, 2.000, "You cannot break at this time.\n");
+        sprint (self, PRINT_HIGH, "You cannot break at this time.\n");
         return;
     }
     if (self.allowvote > time) {

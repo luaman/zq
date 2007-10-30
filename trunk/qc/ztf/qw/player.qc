@@ -1185,9 +1185,9 @@ void player_touch ()
                         sprint (other,1,"You have been infected by ");
                         sprint (other,1,self.netname);
                         sprint (other,1,"!\n");
-                        sprint (self,1,"You have infected ");
-                        sprint (self,1,other.netname);
-                        sprint (self,1,"!\n");
+                        sprint (self,PRINT_MEDIUM,"You have infected ");
+                        sprint (self,PRINT_MEDIUM,other.netname);
+                        sprint (self,PRINT_MEDIUM,"!\n");
                     }
                 }
             }

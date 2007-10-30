@@ -144,7 +144,7 @@ void TeamFortress_SniperWeapon () {
         return ;
     }
     if ( (self.ammo_shells < 1.000) ) {
-        sprint (self,2.000,"not enough ammo.\n");
+        sprint (self,PRINT_HIGH,"not enough ammo.\n");
         return ;
     }
     if ( (self.current == WEAP_SNIPER_RIFLE) ) {
@@ -238,10 +238,10 @@ void SniperSight_Create () {
 void TeamFortress_AutoZoomToggle () {
     if ( (self.tfstate & 4096.000) ) {
         self.tfstate = (self.tfstate - 4096.000);
-        sprint (self,2.000,"autozoom ON\n");
+        sprint (self,PRINT_HIGH,"autozoom ON\n");
 
     } else {
         self.tfstate = (self.tfstate | 4096.000);
-        sprint (self,2.000,"autozoom OFF\n");
+        sprint (self,PRINT_HIGH,"autozoom OFF\n");
     }
 }

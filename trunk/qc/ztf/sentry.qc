@@ -660,7 +660,7 @@ void FireSentry (float damg, vector dir, vector spread) {
 }
 
 void Sentry_Die () {
-    sprint (self.real_owner, 2, "Your sentry gun was destroyed.\n");
+    sprint (self.real_owner, PRINT_HIGH, "Your sentry gun was destroyed.\n");
     self.real_owner.has_sentry = 0.000000;
     self.think = Sentry_Explode;
     self.nextthink = (time + 0.1);
@@ -693,7 +693,7 @@ float OldSentry_Fire () {
         self.super_damage_finished = (time + 3);
         self.ammo_rockets = (self.ammo_rockets - 1.000);
         if ((self.ammo_rockets == 10)) {
-            sprint (self.real_owner, 2, "Sentry Gun is low on rockets.\n");
+            sprint (self.real_owner, PRINT_HIGH, "Sentry Gun is low on rockets.\n");
         }
     }
     self.ammo_shells = (self.ammo_shells - 1);
@@ -707,14 +707,14 @@ float OldSentry_Fire () {
     self.v_angle = self.angles;
     FireBullets (4, dir, '0.1 0.1 0');
     if (((self.ammo_shells == 0.000000) && (random () < 0.1))) {
-        sprint (self.real_owner, 2, "Sentry Gun is out of shells.\n");
+        sprint (self.real_owner, PRINT_HIGH, "Sentry Gun is out of shells.\n");
     } else {
         if ((self.ammo_shells == 20)) {
-            sprint (self.real_owner, 2, "Sentry Gun is low on shells.\n");
+            sprint (self.real_owner, PRINT_HIGH, "Sentry Gun is low on shells.\n");
         }
     }
     if ((((self.ammo_rockets == 0.000000) && (self.weapon == 3)) && (random () < 0.1))) {
-        sprint (self.real_owner, 2, "Sentry Gun is out of rockets.\n");
+        sprint (self.real_owner, PRINT_HIGH, "Sentry Gun is out of rockets.\n");
         if ((self.ammo_shells == 0.000000)) {
             return (0.000000);
         }

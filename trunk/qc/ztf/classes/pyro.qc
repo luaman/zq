@@ -735,7 +735,7 @@ void TeamFortress_IncendiaryCannon () {
         return ;
     }
     if ( (self.ammo_rockets < ic_ammo) ) {
-        sprint (self,2.000,"not enough ammo.\n");
+        sprint (self,PRINT_HIGH,"not enough ammo.\n");
         return ;
     }
 
@@ -748,7 +748,7 @@ void TeamFortress_FlameThrower () {
         return ;
     }
     if ( (self.ammo_cells < 1.000) ) {
-        sprint (self,2.000,"not enough ammo.\n");
+        sprint (self,PRINT_HIGH,"not enough ammo.\n");
         return ;
     }
     self.current = 4096.000;

@@ -47,10 +47,10 @@ void SetOptCmd (float type, float print) {
 void ShowOptValue () {
     string tmp;
     tmp = infokey (world, argv(0));
-    sprint(self,2, argv(0));
-    sprint(self,2, " is \"");
-    sprint(self,2, tmp);
-    sprint(self,2, "\"\n");
+    sprint (self, PRINT_HIGH, argv(0));
+    sprint (self, PRINT_HIGH, " is \"");
+    sprint (self, PRINT_HIGH, tmp);
+    sprint (self, PRINT_HIGH, "\"\n");
 }
 
 
@@ -88,8 +88,8 @@ float UserCmd () {
 
     if (argv(0) == "sbar_type") {
         if (arg_num == 1) {
-            sprint(self, 2, "usage: cmd sbar_type \"value\", where value is the sbar type\n");
-            sprint(self, 2, "\n");
+            sprint (self, PRINT_HIGH, "usage: cmd sbar_type \"value\", where value is the sbar type\n");
+            sprint (self, PRINT_HIGH, "\n");
             return 1;
         } else if (arg_num == 2) {
             fl = stof(argv(1));
@@ -110,9 +110,9 @@ float UserCmd () {
         return 1;
     } else if (argv(0) == "dl") {
         if (arg_num == 1) {
-            sprint(self, 2, "type: cmd dlist, for a list of available demos\n");
-            sprint(self, 2, "to download, type: cmd dl #, where # is the demo number\n");
-            sprint(self, 2, "\n");
+            sprint (self, PRINT_HIGH, "type: cmd dlist, for a list of available demos\n");
+            sprint (self, PRINT_HIGH, "to download, type: cmd dl #, where # is the demo number\n");
+            sprint (self, PRINT_HIGH, "\n");
             return 1;
         } else if (arg_num == 2) {
             stuffcmd(self, "cmd download demonum/");
@@ -123,16 +123,16 @@ float UserCmd () {
         }
     } else if (argv(0) == "adminpwd") {
         if (arg_num == 1) {
-            sprint(self, 2, "usage: cmd adminpwd password, where password is the admin password\n");
-            sprint(self, 2, "\n");
+            sprint (self, PRINT_HIGH, "usage: cmd adminpwd password, where password is the admin password\n");
+            sprint (self, PRINT_HIGH, "\n");
             return 1;
         } else if (arg_num == 2) {
             if ((self.is_admin == 3.000)) {
-                sprint(self, 2, "You are already an admin\n");
+                sprint (self, PRINT_HIGH, "You are already an admin\n");
                 return 1;
             }
             if (self.is_admin == 2.000) {
-                sprint(self, 2, "You cannot input password while electing.\n");
+                sprint (self, PRINT_HIGH, "You cannot input password while electing.\n");
                 return 1;
             }
             Admin_Check(argv(1));
@@ -140,9 +140,9 @@ float UserCmd () {
                 Admin_Aliases();
                 bprint(2, self.netname, " Á·ÈÓÛ ÊıÏÏ ·‰ÌÈÓ ÛÙ·ÙıÛ!");
                 bprint(3, "\n");
-                sprint(self, 2, "Type „ÔÌÌ·Ó‰Û for admin commands.\n");
+                sprint (self, PRINT_HIGH, "Type „ÔÌÌ·Ó‰Û for admin commands.\n");
             } else {
-                sprint(self, 2, "incorrect admin password\n");
+                sprint (self, PRINT_HIGH, "incorrect admin password\n");
             }
             return 1;
 
@@ -166,7 +166,7 @@ float UserCmd () {
                 st = findmapname(fl); //argv(1);
                 PlayerMiscVote(st, 1);
             } else {
-                sprint(self, 2, "map name not found.\n");
+                sprint (self, PRINT_HIGH, "map name not found.\n");
             }
             return 1;
         }
@@ -197,8 +197,8 @@ float UserCmd () {
         }
     } else if (argv(0) == "keep") {
         if (arg_num < 3) {
-            sprint(self, 2, "usage: cmd keep cells #value, to keep ammo that you specify and discard the rest.\n");
-            sprint(self, 2, "\n");
+            sprint (self, PRINT_HIGH, "usage: cmd keep cells #value, to keep ammo that you specify and discard the rest.\n");
+            sprint (self, PRINT_HIGH, "\n");
             return 1;
         } else if (arg_num == 3) {
             if (argv(1) == "shells" || argv(1) == "1") {
@@ -252,94 +252,94 @@ float UserCmd () {
         return 1;
     } else if (argv(0) == "help" || argv(0) == "list"  ) {
         if (arg_num == 1) {
-            sprint(self, 2, "Commands list:\ncmd adminpwd\ncmd dl\ncmd dlist or demolist\ncmd maplist\ncmd votemap\ncmd votemode\ncmd keep \"ammo\" \"value\"\n");
+            sprint (self, PRINT_HIGH, "Commands list:\ncmd adminpwd\ncmd dl\ncmd dlist or demolist\ncmd maplist\ncmd votemap\ncmd votemode\ncmd keep \"ammo\" \"value\"\n");
 
             if (self.is_admin == 3.000) {
-                sprint(self, 2, "cmd timelimit\ncmd watervis\ncmd prematch\ncmd fraglimit\ncmd teamplay\ncmd overtime\ncmd cft\ncmd password\ncmd spec_password\n");
-                sprint(self, 2, "cmd map\ncmd record\ncmd easyrecord\ncmd autorecord\ncmd cancel\ncmd stop\ncmd quadmode\ncmd teamname\ncmd maxclients\ncmd maxspectators\n");
-                //sprint(self, 2, "cmd observermode\n");
-                sprint(self, 2, "cmd deal\ncmd kick\ncmd rpickup\ncmd cr_\"classname\"\ncmd powerups\ncmd spec_msgs\n");
-                //sprint(self, 2, "");
+                sprint (self, PRINT_HIGH, "cmd timelimit\ncmd watervis\ncmd prematch\ncmd fraglimit\ncmd teamplay\ncmd overtime\ncmd cft\ncmd password\ncmd spec_password\n");
+                sprint (self, PRINT_HIGH, "cmd map\ncmd record\ncmd easyrecord\ncmd autorecord\ncmd cancel\ncmd stop\ncmd quadmode\ncmd teamname\ncmd maxclients\ncmd maxspectators\n");
+                //sprint (self, PRINT_HIGH, "cmd observermode\n");
+                sprint (self, PRINT_HIGH, "cmd deal\ncmd kick\ncmd rpickup\ncmd cr_\"classname\"\ncmd powerups\ncmd spec_msgs\n");
+                //sprint (self, PRINT_HIGH, "");
             }
-            sprint(self, 2, "cmd help or list (this command)\nFor more info on a command, type cmd help \"command\"\n\n");
+            sprint (self, PRINT_HIGH, "cmd help or list (this command)\nFor more info on a command, type cmd help \"command\"\n\n");
             return 1;
         } else if (arg_num == 2) {
             if (argv(1) == "adminpwd") {
-                sprint(self, 2, "usage: cmd adminpwd password, where password is the admin password\n\n");
+                sprint (self, PRINT_HIGH, "usage: cmd adminpwd password, where password is the admin password\n\n");
                 return 1;
             } else  if (argv(1) == "dl") {
-                sprint(self, 2, "usage: to download a demo off the server\ntype: cmd dl #, where # is the demo number\n\n");
+                sprint (self, PRINT_HIGH, "usage: to download a demo off the server\ntype: cmd dl #, where # is the demo number\n\n");
                 return 1;
             } else  if (argv(1) == "dlist") {
-                sprint(self, 2, "usage: a list of available demos on the server\n\n");
+                sprint (self, PRINT_HIGH, "usage: a list of available demos on the server\n\n");
                 return 1;
             } else  if (argv(1) == "demolist") {
-                sprint(self, 2, "usage: a list of available demos on the server\n\n");
+                sprint (self, PRINT_HIGH, "usage: a list of available demos on the server\n\n");
                 return 1;
             } else  if (argv(1) == "maplist") {
-                sprint(self, 2, "usage: a list of available maps on the server\n\n");
+                sprint (self, PRINT_HIGH, "usage: a list of available maps on the server\n\n");
                 return 1;
             } else  if (argv(1) == "votemap") {
-                sprint(self, 2, "usage: vote to change the current map\n\n");
+                sprint (self, PRINT_HIGH, "usage: vote to change the current map\n\n");
                 return 1;
             } else  if (argv(1) == "votemode") {
-                sprint(self, 2, "usage: vote to enable a mode ie. cmd votemode clan\n\n");
+                sprint (self, PRINT_HIGH, "usage: vote to enable a mode ie. cmd votemode clan\n\n");
                 return 1;
             }
             if (self.is_admin == 3.000) {
                 if (argv(1) == "timelimit") {
-                    sprint(self, 2, "usage: cmd timelimit \"time\", sets a timelimit on the server\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd timelimit \"time\", sets a timelimit on the server\n\n");
                     return 1;
                 } else  if (argv(1) == "prematch") {
-                    sprint(self, 2, "usage: cmd prematch \"time\", to change the current pre-match time \n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd prematch \"time\", to change the current pre-match time \n\n");
                     return 1;
                 } else  if (argv(1) == "fraglimit") {
-                    sprint(self, 2, "usage: cmd fraglimit \"frags+caps\", sets a fraglimit on the server\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd fraglimit \"frags+caps\", sets a fraglimit on the server\n\n");
                     return 1;
                 } else  if (argv(1) == "overtime") {
-                    sprint(self, 2, "usage: cmd overtime \"time\", sets the match overtime\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd overtime \"time\", sets the match overtime\n\n");
                     return 1;
                 } else  if (argv(1) == "cft") {
-                    sprint(self, 2, "usage: cmd cft \"time\", to change the current ceasefire time\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd cft \"time\", to change the current ceasefire time\n\n");
                     return 1;
                 } else  if (argv(1) == "password") {
-                    sprint(self, 2, "usage: cmd password \"password\", sets a client password on the server\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd password \"password\", sets a client password on the server\n\n");
                     return 1;
                 } else  if (argv(1) == "spec_password") {
-                    sprint(self, 2, "usage: cmd spec_password \"password\", sets a spectator password on the server\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd spec_password \"password\", sets a spectator password on the server\n\n");
                     return 1;
                 } else  if (argv(1) == "password") {
-                    sprint(self, 2, "usage: cmd map \"mapname\", changes the current map\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd map \"mapname\", changes the current map\n\n");
                     return 1;
                 } else  if (argv(1) == "record") {
-                    sprint(self, 2, "usage: cmd record \"demoname\", records a server multi-view-demo\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd record \"demoname\", records a server multi-view-demo\n\n");
                     return 1;
                 } else  if (argv(1) == "easyrecord") {
-                    sprint(self, 2, "usage: cmd easyrecord, records a server demo without naming convention\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd easyrecord, records a server demo without naming convention\n\n");
                     return 1;
                 } else  if (argv(1) == "autorecord") {
-                    sprint(self, 2, "usage: cmd autorecord, toggles autorecording on, which records\n a server demo automatically when a match countdown begins\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd autorecord, toggles autorecording on, which records\n a server demo automatically when a match countdown begins\n\n");
                     return 1;
                 } else  if (argv(1) == "cancel") {
-                    sprint(self, 2, "usage: cmd cancel, cancels the current server demo, and deletes it.\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd cancel, cancels the current server demo, and deletes it.\n\n");
                     return 1;
                 } else  if (argv(1) == "stop") {
-                    sprint(self, 2, "usage: cmd stop, stops recording the current server demo\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd stop, stops recording the current server demo\n\n");
                     return 1;
                 } else  if (argv(1) == "maxclients") {
-                    sprint(self, 2, "usage: cmd maxclients \"clients\", limits the maximum\n amount of players in the server.\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd maxclients \"clients\", limits the maximum\n amount of players in the server.\n\n");
                     return 1;
                 } else  if (argv(1) == "maxspectators") {
-                    sprint(self, 2, "usage: cmd maxspectators \"specs\", limits the maximum\n amount of spectators in the server.\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd maxspectators \"specs\", limits the maximum\n amount of spectators in the server.\n\n");
                     return 1;
                 } else  if (argv(1) == "deal") {
-                    sprint(self, 2, "usage: cmd deal, cycles the kick procedure to \n kick a player from the server.\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd deal, cycles the kick procedure to \n kick a player from the server.\n\n");
                     return 1;
                 } else  if (argv(1) == "kick") {
-                    sprint(self, 2, "usage: cmd kick \"value\", kick a player from the server.\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd kick \"value\", kick a player from the server.\n\n");
                     return 1;
                 } else  if (argv(1) == "rpickup") {
-                    sprint(self, 2, "usage: cmd rpickup, randomises player teams.\n\n");
+                    sprint (self, PRINT_HIGH, "usage: cmd rpickup, randomises player teams.\n\n");
                     return 1;
                 }
             }
@@ -568,8 +568,8 @@ float UserCmd () {
             }
         } else if (argv(0) == "record") {
             if (arg_num == 1) {
-                sprint(self, 2, "usage: cmd record demo, where demo is the demo name\n");
-                sprint(self, 2, "\n");
+                sprint (self, PRINT_HIGH, "usage: cmd record demo, where demo is the demo name\n");
+                sprint (self, PRINT_HIGH, "\n");
                 return 1;
             } else if (arg_num == 2) {
                 SetOptCmd(3,0);
@@ -642,8 +642,8 @@ float UserCmd () {
         } else if (argv(0) == "maxclients") {
             if (arg_num == 1) {
                 ShowOptValue ();
-                //sprint(self, 2, "usage: cmd maxclients clients, where clients is the maximum number of players name you wish join the game.\n");
-                //sprint(self, 2, "\n");
+                //sprint (self, PRINT_HIGH, "usage: cmd maxclients clients, where clients is the maximum number of players name you wish join the game.\n");
+                //sprint (self, PRINT_HIGH, "\n");
                 return 1;
             } else if (arg_num == 2) {
                 SetOptCmd(0,1);
@@ -652,8 +652,8 @@ float UserCmd () {
         } else if (argv(0) == "maxspectators") {
             if (arg_num == 1) {
                 ShowOptValue ();
-                //sprint(self, 2, "usage: cmd maxspectators specs, where specs is the maximum number of spectators name you wish to observe.\n");
-                //sprint(self, 2, "\n");
+                //sprint (self, PRINT_HIGH, "usage: cmd maxspectators specs, where specs is the maximum number of spectators name you wish to observe.\n");
+                //sprint (self, PRINT_HIGH, "\n");
                 return 1;
             } else if (arg_num == 2) {
                 SetOptCmd(0,1);
@@ -661,8 +661,8 @@ float UserCmd () {
             }
         } else if (argv(0) == "map") {
             if (arg_num == 1) {
-                sprint(self, 2, "usage: cmd map mapname, where mapname is the map name you wish to change to\n");
-                sprint(self, 2, "\n");
+                sprint (self, PRINT_HIGH, "usage: cmd map mapname, where mapname is the map name you wish to change to\n");
+                sprint (self, PRINT_HIGH, "\n");
                 return 1;
             } else if (arg_num == 2) {
                 SetOptCmd(0,0);
@@ -700,20 +700,20 @@ float UserCmd () {
             }
         } else if (argv(0) == "password") {
             if (arg_num == 1) {
-                sprint(self, 2, "usage: cmd password \"password\"\n");
-                sprint(self, 2, "\n");
+                sprint (self, PRINT_HIGH, "usage: cmd password \"password\"\n");
+                sprint (self, PRINT_HIGH, "\n");
                 return 1;
             } else if (arg_num == 2) {
                 SetOptCmd(0,0);
                 PrintPlayers("\nçServer Password changed to \"", argv(1), "\"\n\n");
                 if (self.classname == "observer")
-                    sprint(self, 2, "\nçServer Password changed to \"", argv(1), "\"\n");
+                    sprint (self, PRINT_HIGH, "\nçServer Password changed to \"", argv(1), "\"\n");
                 return 1;
             }
         } else if (argv(0) == "spec_password") {
             if (arg_num == 1) {
-                sprint(self, 2, "usage: cmd spec_password \"password\"\n");
-                sprint(self, 2, "\n");
+                sprint (self, PRINT_HIGH, "usage: cmd spec_password \"password\"\n");
+                sprint (self, PRINT_HIGH, "\n");
                 return 1;
             } else if (arg_num == 2) {
                 localcmd ("spectator_password ");
@@ -721,7 +721,7 @@ float UserCmd () {
                 localcmd ("\n");
                 PrintSpecs("\nçSpectator Password changed to \"", argv(1), "\"\n");
                 if (self.classname == "player")
-                    sprint(self, 2, "\nçSpectator Password changed to \"", argv(1), "\"\n");
+                    sprint (self, PRINT_HIGH, "\nçSpectator Password changed to \"", argv(1), "\"\n");
                 return 1;
             }
         } else if (argv(0) == "cr_scout") {
@@ -807,25 +807,25 @@ float UserCmd () {
         } else if (argv(0) == "floodprot") {
             if (arg_num == 1) {
                 st = readcmd (st);
-                sprint(self, 2, st);
+                sprint (self, PRINT_HIGH, st);
                 return 1;
             } else if (arg_num == 2) {
                 SetOptCmd(0,0);
                 return 1;
             } else if (arg_num > 2) {
-                sprint(self, 2, "Ensure you use quotations around value - ie cmd floodprot \"8 4 2\"\n");
+                sprint (self, PRINT_HIGH, "Ensure you use quotations around value - ie cmd floodprot \"8 4 2\"\n");
                 return 1;
             }
         } else if (argv(0) == "rmdemo") {
             if (arg_num == 1) {
                 st = readcmd (st);
                 /*
-                   sprint(self, 2, "usage: rmdemo <demoname> - removes the demo\n");
-                   sprint(self, 2, "       rmdemo *<token>   - removes demo with <token> in the name\n");
-                   sprint(self, 2, "       rmdemo *          - removes all demos\n");
-                   sprint(self, 2, "\n");
+                   sprint (self, PRINT_HIGH, "usage: rmdemo <demoname> - removes the demo\n");
+                   sprint (self, PRINT_HIGH, "       rmdemo *<token>   - removes demo with <token> in the name\n");
+                   sprint (self, PRINT_HIGH, "       rmdemo *          - removes all demos\n");
+                   sprint (self, PRINT_HIGH, "\n");
                  */
-                sprint(self, 2, st);
+                sprint (self, PRINT_HIGH, st);
                 return 1;
             } else if (arg_num == 2) {
                 SetOptCmd(0,0);
@@ -834,9 +834,9 @@ float UserCmd () {
         } else if (argv(0) == "rmdemonum") {
             if (arg_num == 1) {
                 st = readcmd (st);
-                sprint(self, 2, st);
-                //sprint(self, 2, "usage: rmdemonum <#> - removes the demo of the number specified\n");
-                //sprint(self, 2, "\n");
+                sprint (self, PRINT_HIGH, st);
+                //sprint (self, PRINT_HIGH, "usage: rmdemonum <#> - removes the demo of the number specified\n");
+                //sprint (self, PRINT_HIGH, "\n");
                 return 1;
             } else if (arg_num == 2) {
                 SetOptCmd(0,0);
@@ -1298,7 +1298,7 @@ void UserInfo_Changed () {
             if (store_obs.cnt == 2.000) {
                 if (self.pteam == pteam1) {
                     if (argv(2) == "4") {
-                        sprint(self,2.000,"You cannot use another teams colour as your topcolor.\n");
+                        sprint (self, PRINT_HIGH,"You cannot use another teams colour as your topcolor.\n");
                         stuffcmd (self,"topcolor ");
                         st = ftos(self.pteam.colormap);
                         stuffcmd (self,st);
@@ -1307,7 +1307,7 @@ void UserInfo_Changed () {
                     }
                 } else if (self.pteam == pteam2) {
                     if (argv(2) == "13") {
-                        sprint(self,2.000,"You cannot use another teams colour as your topcolor.\n");
+                        sprint (self, PRINT_HIGH,"You cannot use another teams colour as your topcolor.\n");
                         stuffcmd (self,"topcolor ");
                         st = ftos(self.pteam.colormap);
                         stuffcmd (self,st);
@@ -1319,7 +1319,7 @@ void UserInfo_Changed () {
             if (store_obs.cnt == 4.000) {
                 if (self.pteam == pteam1) {
                     if (argv(2) == "4" || argv(2) == "12" || argv(2) == "11") {
-                        sprint(self,2.000,"You cannot use another teams colour as your topcolor.\n");
+                        sprint (self, PRINT_HIGH,"You cannot use another teams colour as your topcolor.\n");
                         stuffcmd (self,"topcolor ");
                         st = ftos(self.pteam.colormap);
                         stuffcmd (self,st);
@@ -1328,7 +1328,7 @@ void UserInfo_Changed () {
                     }
                 } else if (self.pteam == pteam2) {
                     if (argv(2) == "13" || argv(2) == "12" || argv(2) == "11") {
-                        sprint(self,2.000,"You cannot use another teams colour as your topcolor.\n");
+                        sprint (self, PRINT_HIGH,"You cannot use another teams colour as your topcolor.\n");
                         stuffcmd (self,"topcolor ");
                         st = ftos(self.pteam.colormap);
                         stuffcmd (self,st);
@@ -1337,7 +1337,7 @@ void UserInfo_Changed () {
                     }
                 } else if (self.pteam == pteam3) {
                     if (argv(2) == "4" || argv(2) == "13" || argv(2) == "11") {
-                        sprint(self,2.000,"You cannot use another teams colour as your topcolor.\n");
+                        sprint (self, PRINT_HIGH,"You cannot use another teams colour as your topcolor.\n");
                         stuffcmd (self,"topcolor ");
                         st = ftos(self.pteam.colormap);
                         stuffcmd (self,st);
@@ -1346,7 +1346,7 @@ void UserInfo_Changed () {
                     }
                 } else if (self.pteam == pteam4) {
                     if (argv(2) == "4" || argv(2) == "13" || argv(2) == "12") {
-                        sprint(self,2.000,"You cannot use another teams colour as your topcolor.\n");
+                        sprint (self, PRINT_HIGH,"You cannot use another teams colour as your topcolor.\n");
                         stuffcmd (self,"topcolor ");
                         st = ftos(self.pteam.colormap);
                         stuffcmd (self,st);

@@ -75,10 +75,10 @@ void q_touch ()
     other.super_time = 1.000;
     other.super_damage_finished = self.cnt;
     s = ftos (rint ((other.super_damage_finished - time)));
-    bprint (0.000,other.netname);
-    bprint (0.000," recovered a Quad with ");
-    bprint (0.000,s);
-    bprint (0.000," seconds remaining!\n");
+    bprint (PRINT_LOW,other.netname);
+    bprint (PRINT_LOW," recovered a Quad with ");
+    bprint (PRINT_LOW,s);
+    bprint (PRINT_LOW," seconds remaining!\n");
     activator = other;
     SUB_UseTargets ();
 }
@@ -120,10 +120,10 @@ void r_touch ()
     other.invisible_time = 1.000;
     other.invisible_finished = self.cnt;
     s = ftos (rint ((other.invisible_finished - time)));
-    bprint (0.000,other.netname);
-    bprint (0.000," recovered a Ring with ");
-    bprint (0.000,s);
-    bprint (0.000," seconds remaining!\n");
+    bprint (PRINT_LOW,other.netname);
+    bprint (PRINT_LOW," recovered a Ring with ");
+    bprint (PRINT_LOW,s);
+    bprint (PRINT_LOW," seconds remaining!\n");
     activator = other;
     SUB_UseTargets ();
 }

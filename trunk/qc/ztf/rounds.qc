@@ -121,7 +121,7 @@ void RoundOver () {
     float fl;
     round_over = 2;
     if (round_winner == store_obs) {
-        bprint (2.000,"Round Drawn!\n");
+        bprint (PRINT_HIGH,"Round Drawn!\n");
     } else {
         if (modetype & 32) {
             if (teamplay) {
@@ -140,29 +140,29 @@ void RoundOver () {
                 }
                 SetTeamName (round_winner);
             }
-            bprint (2.000, round_winner.netname);
-            bprint (2.000," Wins the Round!\n");
+            bprint (PRINT_HIGH, round_winner.netname);
+            bprint (PRINT_HIGH," Wins the Round!\n");
 
         } else if (round_winner.team == 1) {
             if (modetype & 4) {
                 sound (self,CHAN_VOICE,"speech/ctwin.wav",1.000,0.000);
-                bprint (2.000,"Counter Terrorists WIN!\n");
+                bprint (PRINT_HIGH,"Counter Terrorists WIN!\n");
                 TeamFortress_TeamIncreaseScore (round_winner.team,10.000);
             } else {
-                bprint (2.000,"Blue Team Wins the Round!\n");
+                bprint (PRINT_HIGH,"Blue Team Wins the Round!\n");
             }
         } else if (round_winner.team == 2) {
             if (modetype & 4) {
                 sound (self,CHAN_VOICE,"speech/terwin.wav",1.000,0.000);
-                bprint (2.000,"Terrorists WIN!\n");
+                bprint (PRINT_HIGH,"Terrorists WIN!\n");
                 TeamFortress_TeamIncreaseScore (round_winner.team,10.000);
             } else {
-                bprint (2.000,"Red Team Wins the Round!\n");
+                bprint (PRINT_HIGH,"Red Team Wins the Round!\n");
             }
         } else if (round_winner.team == 3) {
-            bprint (2.000,"Yellow Team Wins the Round!\n");
+            bprint (PRINT_HIGH,"Yellow Team Wins the Round!\n");
         } else if (round_winner.team == 4) {
-            bprint (2.000,"Green Team Wins the Round!\n");
+            bprint (PRINT_HIGH,"Green Team Wins the Round!\n");
         }
     }
     if (TeamFortress_CheckDraw()) {
@@ -213,7 +213,7 @@ void RoundThink () {
             bprint(2, " remaining\n");
         }
         if (!self.cnt) {
-            bprint (2.000,"ROUND TIME OVER\n");
+            bprint (PRINT_HIGH,"ROUND TIME OVER\n");
             if (modetype & 4) {
                 round_winner = pteam1;
             } else {
@@ -344,7 +344,7 @@ void RoundBegin () {
         te = te.nextp;
     }
 
-    bprint (2.000,"ROUND BEGINS NOW\n");
+    bprint (PRINT_HIGH,"ROUND BEGINS NOW\n");
     round_active = 1;
     round_over = 0;
     if (modetype & 16) self.invisible_time = time;
@@ -416,7 +416,7 @@ void StartRound () {
     float fl;
     if (rounds == 1) {
         NextLevel();
-        bprint (2.000,"Rounds Over!\n");
+        bprint (PRINT_HIGH,"Rounds Over!\n");
     }
     if (rounds > 1) {
         rounds = rounds - 1;

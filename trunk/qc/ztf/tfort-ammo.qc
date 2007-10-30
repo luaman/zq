@@ -175,7 +175,7 @@ void TeamFortress_DropAmmo (float type, float ammo) {
         if ( (self.ammo_shells < ammo) ) {
             if ( (self.playerclass == 9) ) {
                 if ( ((self.ammo_cells / 3) > (ammo - self.ammo_shells)) ) {
-                    sprint (self,2,"you make some shells.\n");
+                    sprint (self,PRINT_HIGH,"you make some shells.\n");
                     self.ammo_cells = (self.ammo_cells - ((ammo - self.ammo_shells) * 3));
                     self.ammo_shells = ammo;
                 }
@@ -190,7 +190,7 @@ void TeamFortress_DropAmmo (float type, float ammo) {
             if ( (self.ammo_nails < ammo) ) {
                 if ( (self.playerclass == 9) ) {
                     if ( ((self.ammo_cells / 2) > (ammo - self.ammo_nails)) ) {
-                        sprint (self,2,"you make some nails.\n");
+                        sprint (self,PRINT_HIGH,"you make some nails.\n");
                         self.ammo_cells = (self.ammo_cells - ((ammo - self.ammo_nails) * 2));
                         self.ammo_nails = ammo;
                     }
@@ -205,7 +205,7 @@ void TeamFortress_DropAmmo (float type, float ammo) {
                 if ( (self.ammo_rockets < ammo) ) {
                     if ( (self.playerclass == 9) ) {
                         if ( ((self.ammo_cells / 5) > (ammo - self.ammo_rockets)) ) {
-                            sprint (self,2,"you make some rockets.\n");
+                            sprint (self,PRINT_HIGH,"you make some rockets.\n");
                             self.ammo_cells = (self.ammo_cells - ((ammo - self.ammo_rockets) * 5));
                             self.ammo_rockets = ammo;
                         }
@@ -330,7 +330,7 @@ void Drop_detpack () {
         newmis.nextthink = (time + 30.000);
     } else {
         if (round_active) {
-            bprint (2.000, self.netname, " dropped the bomb!\n");
+            bprint (PRINT_HIGH, self.netname, " dropped the bomb!\n");
         }
     }
     newmis.touch = TeamFortress_AmmoboxTouch;

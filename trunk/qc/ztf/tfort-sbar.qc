@@ -513,31 +513,31 @@ void StatusRes (float res) {
     if (!res) return;
     self.StatusBarRes = Impulse2Res(res);
     if ( (res == 9) ) {
-        sprint (self,2,"Status Bar Res set to 1024x768.\n");
+        sprint (self,PRINT_HIGH,"Status Bar Res set to 1024x768.\n");
     } else {
         if ( (res == 8) ) {
-            sprint (self,2,"Status Bar Res set to 800x600.\n");
+            sprint (self,PRINT_HIGH,"Status Bar Res set to 800x600.\n");
         } else {
             if ( (res == 7) ) {
-                sprint (self,2,"Status Bar Res set to 640x480.\n");
+                sprint (self,PRINT_HIGH,"Status Bar Res set to 640x480.\n");
             } else {
                 if ( (res == 6) ) {
-                    sprint (self,2,"Status Bar Res set to 640x400.\n");
+                    sprint (self,PRINT_HIGH,"Status Bar Res set to 640x400.\n");
                 } else {
                     if ( (res == 5) ) {
-                        sprint (self,2,"Status Bar Res set to 512x384.\n");
+                        sprint (self,PRINT_HIGH,"Status Bar Res set to 512x384.\n");
                     } else {
                         if ( (res == 4) ) {
-                            sprint (self,2,"Status Bar Res set to 320x350.\n");
+                            sprint (self,PRINT_HIGH,"Status Bar Res set to 320x350.\n");
                         } else {
                             if ( (res == 3) ) {
-                                sprint (self,2,"Status Bar Res set to 400x300.\n");
+                                sprint (self,PRINT_HIGH,"Status Bar Res set to 400x300.\n");
                             } else {
                                 if ( (res == 2) ) {
-                                    sprint (self,2,"Status Bar Res set to 320x240.\n");
+                                    sprint (self,PRINT_HIGH,"Status Bar Res set to 320x240.\n");
                                 } else {
                                     if ( (res == 1) ) {
-                                        sprint (self,2,"Status Bar Res set to 320x200.\n");
+                                        sprint (self,PRINT_HIGH,"Status Bar Res set to 320x200.\n");
                                     }
                                 }
                             }

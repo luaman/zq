@@ -32,26 +32,26 @@ void Admin_CountPlayers () {
     float nump;
     nump = TeamFortress_GetNoPlayers ();
     st = ftos (nump);
-    sprint (self,2.000,"Players In Game : ",st,"\n");
+    sprint (self,PRINT_HIGH,"Players In Game : ",st,"\n");
     if ( (store_obs.cnt > 0.000) ) {
         nump = TeamFortress_TeamGetNoPlayers (1.000);
         st = ftos (nump);
-        sprint (self,2.000,"Players In Team1: ",st,"\n");
+        sprint (self,PRINT_HIGH,"Players In Team1: ",st,"\n");
     }
     if ( (store_obs.cnt > 1.000) ) {
         nump = TeamFortress_TeamGetNoPlayers (2.000);
         st = ftos (nump);
-        sprint (self,2.000,"Players In Team2: ",st,"\n");
+        sprint (self,PRINT_HIGH,"Players In Team2: ",st,"\n");
     }
     if ( (store_obs.cnt > 2.000) ) {
         nump = TeamFortress_TeamGetNoPlayers (3.000);
         st = ftos (nump);
-        sprint (self,2.000,"Players In Team3: ",st,"\n");
+        sprint (self,PRINT_HIGH,"Players In Team3: ",st,"\n");
     }
     if ( (store_obs.cnt > 3.000) ) {
         nump = TeamFortress_TeamGetNoPlayers (4.000);
         st = ftos (nump);
-        sprint (self,2.000,"Players In Team4: ",st,"\n");
+        sprint (self,PRINT_HIGH,"Players In Team4: ",st,"\n");
     }
 }
 
@@ -60,7 +60,7 @@ void Admin_ListPlayers () {
     float num;
     string st;
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
-        sprint (self,2.000,"No other players in the game.\n");
+        sprint (self,PRINT_HIGH,"No other players in the game.\n");
         return ;
     }
     pl = player_head;
@@ -68,10 +68,10 @@ void Admin_ListPlayers () {
         if ( ((pl.netname != string_null) && (pl != self)) ) {
             num = EntityNum (pl);
             st = ftos(num);
-            sprint (self,2.000,pl.netname);
-            sprint (self,2.000,"   ");
-            sprint (self,2.000, st);
-            sprint (self,2.000,"\n");
+            sprint (self,PRINT_HIGH,pl.netname);
+            sprint (self,PRINT_HIGH,"   ");
+            sprint (self,PRINT_HIGH, st);
+            sprint (self,PRINT_HIGH,"\n");
         }
         pl = pl.nextp;
     }
@@ -80,33 +80,33 @@ void Admin_ListPlayers () {
         if ( ((pl.netname != string_null) && (pl != self)) ) {
             num = EntityNum (pl);
             st = ftos(num);
-            sprint (self,2.000,pl.netname);
-            sprint (self,2.000,"   ");
-            sprint (self,2.000, st);
-            sprint (self,2.000,"\n");
-            sprint (self,2.000," (SPECTATOR)\n");
+            sprint (self,PRINT_HIGH,pl.netname);
+            sprint (self,PRINT_HIGH,"   ");
+            sprint (self,PRINT_HIGH, st);
+            sprint (self,PRINT_HIGH,"\n");
+            sprint (self,PRINT_HIGH," (SPECTATOR)\n");
         }
         pl = pl.nexts;
     }
-    sprint (self,2.000,"End of player list\n");
+    sprint (self,PRINT_HIGH,"End of player list\n");
     pl = world;
 }
 
 void Admin_ListIPs () {
     entity pl;
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
-        sprint (self,2.000,"No other players in the game.\n");
+        sprint (self,PRINT_HIGH,"No other players in the game.\n");
         return ;
     }
     pl = player_head;
     while ( (pl != world) ) {
         if ( ((pl.netname != string_null) && (pl != self)) ) {
             pl.ip = infokey (pl,"ip");
-            sprint (self,2.000,pl.netname);
-            sprint (self,2.000," (");
-            sprint (self,2.000,pl.ip);
-            sprint (self,2.000,")");
-            sprint (self,2.000,"\n");
+            sprint (self,PRINT_HIGH,pl.netname);
+            sprint (self,PRINT_HIGH," (");
+            sprint (self,PRINT_HIGH,pl.ip);
+            sprint (self,PRINT_HIGH,")");
+            sprint (self,PRINT_HIGH,"\n");
         }
         pl = pl.nextp;
     }
@@ -114,20 +114,20 @@ void Admin_ListIPs () {
     while ( (pl != world) ) {
         if ( ((pl.netname != string_null) && (pl != self)) ) {
             pl.ip = infokey (pl,"ip");
-            sprint (self,2.000,pl.netname);
-            sprint (self,2.000," (");
-            sprint (self,2.000,pl.ip);
-            sprint (self,2.000,")");
-            sprint (self,2.000," (SPECTATOR)\n");
+            sprint (self,PRINT_HIGH,pl.netname);
+            sprint (self,PRINT_HIGH," (");
+            sprint (self,PRINT_HIGH,pl.ip);
+            sprint (self,PRINT_HIGH,")");
+            sprint (self,PRINT_HIGH," (SPECTATOR)\n");
         }
         pl = pl.nexts;
     }
-    sprint (self,2.000,"End of player list\n");
+    sprint (self,PRINT_HIGH,"End of player list\n");
     pl = world;
 }
 
 void Admin_DoKick () {
-    bprint (2.000,self.admin_use.netname," was kicked by ",self.netname,"\n");
+    bprint (PRINT_HIGH,self.admin_use.netname," was kicked by ",self.netname,"\n");
     stuffcmd (self.admin_use,"disconnect\n");
     stuffcmd (self.admin_use,"cmd drop\n");
     self.admin_mode = 0.000;
@@ -136,11 +136,11 @@ void Admin_DoKick () {
 
 void Admin_KickNum (float num) {
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
-        sprint (self,2.000,"No other players in the game.\n");
+        sprint (self,PRINT_HIGH,"No other players in the game.\n");
         return ;
     }
     if (num < 1) {
-        sprint (self,2.000,"Number invalid - player not found.\n");
+        sprint (self,PRINT_HIGH,"Number invalid - player not found.\n");
         self.admin_use = world;
         return ;
     }
@@ -148,7 +148,7 @@ void Admin_KickNum (float num) {
     if ( self.admin_use.classname == "player" || self.admin_use.classname == "observer") {
         Admin_DoKick();
     } else {
-        sprint (self,2.000,"Number invalid - player not found.\n");
+        sprint (self,PRINT_HIGH,"Number invalid - player not found.\n");
         self.admin_use = world;
         self.admin_mode = 0.000;
         return ;
@@ -157,7 +157,7 @@ void Admin_KickNum (float num) {
 
 void Admin_CycleDeal () {
     if ( (TeamFortress_GetNoPlayers () <= 1.000) ) {
-        sprint (self,2.000,"No other players in the game.\n");
+        sprint (self,PRINT_HIGH,"No other players in the game.\n");
         self.admin_use = world;
         self.admin_mode = 0.000;
         return ;
@@ -182,17 +182,17 @@ void Admin_CycleDeal () {
     if ( self.admin_use ) {
         self.admin_use.ip = infokey (self.admin_use,"ip");
         self.admin_mode = 1.000;
-        sprint (self,2.000,"   ");
-        sprint (self,2.000,self.admin_use.netname);
-        sprint (self,2.000," (",self.admin_use.ip,")");
+        sprint (self,PRINT_HIGH,"   ");
+        sprint (self,PRINT_HIGH,self.admin_use.netname);
+        sprint (self,PRINT_HIGH," (",self.admin_use.ip,")");
         if ( (self.admin_use.classname == "observer") ) {
-            sprint (self,2.000," (SPECTATOR)");
+            sprint (self,PRINT_HIGH," (SPECTATOR)");
         }
-        sprint (self,2.000,"\n");
-        sprint (self,2.000,"   KICK/NEXT?\n");
+        sprint (self,PRINT_HIGH,"\n");
+        sprint (self,PRINT_HIGH,"   KICK/NEXT?\n");
     } else {
         self.admin_mode = 0.000;
-        sprint (self,2.000,"End of player list\n");
+        sprint (self,PRINT_HIGH,"End of player list\n");
     }
 }
 
@@ -217,7 +217,7 @@ void Admin_CeaseFire () {
             StopTimer();
         }
         cease_fire = 1.000;
-        bprint (2.000,"CEASE FIRE\n");
+        bprint (PRINT_HIGH,"CEASE FIRE\n");
         te = player_head;
         while ( te ) {
             CenterPrint3 (te,"CEASE FIRE\nCalled by: ",self.netname,"\n");
@@ -241,7 +241,7 @@ void Admin_CeaseFire () {
             pmtime = 0.000;
             StartTimer();
         }
-        bprint (2.000,"RESUME FIRE\n");
+        bprint (PRINT_HIGH,"RESUME FIRE\n");
         te = player_head;
         while ( te ) {
             CenterPrint3 (te,"RESUME FIRE\nCalled by: ",self.netname,"\n");
@@ -262,7 +262,7 @@ void CheckAutoKick (entity p) {
     float rnum;
     entity te;
     if ( ((p.teamkills >= autokick_kills) && (autokick_kills != 0.000)) ) {
-        bprint (2.000,p.netname," was kicked for killing teammates.\n");
+        bprint (PRINT_HIGH,p.netname," was kicked for killing teammates.\n");
         sprint (p,2.000,"You were kicked for killing teammates.\n");
         stuffcmd (p,"disconnect\n");
     } else {
@@ -323,12 +323,12 @@ void VoteAdmin () {
     string tmp;
     entity electguard;
     if (self.electtime > time) {
-        sprint(self, 2.000, "You cannot elect at this time.\n");
+        sprint (self, PRINT_HIGH, "You cannot elect at this time.\n");
         return;
     }
     self.electtime = time + 3.000;
     if ((self.is_admin == 1.000) || (self.is_admin == 3.000)) {
-        sprint(self, 2, "You are already an admin\n");
+        sprint (self, PRINT_HIGH, "You are already an admin\n");
         return;
     }
     if (self.is_admin == 2.000) {
@@ -340,7 +340,7 @@ void VoteAdmin () {
     // Only one election per server because otherwise we wouldn't know how to count
     // "yes"s or "no"s
     if (elect != 0) {
-        sprint(self, 2, "An election is already in progress\n");
+        sprint (self, PRINT_HIGH, "An election is already in progress\n");
         return;
     }
     bprint(2, self.netname, " has requested admin rights!\n");
@@ -358,7 +358,7 @@ void VoteAdmin () {
         if (self.is_admin == 2.000) {
             bprint(2, self.netname, " ηαιξσ αδνιξ στατυσ!");
             bprint(3, "\n");
-            sprint(self, 2, "Type γονναξδσ for admin commands.\n");
+            sprint (self, PRINT_HIGH, "Type γονναξδσ for admin commands.\n");
             self.is_admin = 1.000;
             self.get_admin_aliases = 1.000;
             elect = 0;
@@ -367,7 +367,7 @@ void VoteAdmin () {
         bprint(2, "Type");
         bprint(3, " yes");
         bprint(2, " in console to approve\n");
-        sprint(self, 2, "Type εμεγτ to abort election\n");
+        sprint (self, PRINT_HIGH, "Type εμεγτ to abort election\n");
         electguard = spawn(); // Check the 1 minute timeout for election
         electguard.owner = world;
         electguard.classname = "electguard";
@@ -384,11 +384,11 @@ void VoteYes () {
         return;
     }
     if (self.is_admin == 2.000) {
-        sprint(self, 2, "You cannot vote for yourself\n");
+        sprint (self, PRINT_HIGH, "You cannot vote for yourself\n");
         return;
     }
     if (self.vote) {
-        sprint(self, 2, "--- your vote is still good ---\n");
+        sprint (self, PRINT_HIGH, "--- your vote is still good ---\n");
         return;
     }
     // register the vote

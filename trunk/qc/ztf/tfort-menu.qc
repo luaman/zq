@@ -565,57 +565,57 @@ void Menu_ClassHelp () {
 
 void Menu_StuffClassHelp () {
     if ( (self.playerclass == 1.000) ) {
-        sprint (self,2.000,"ÓÃÏÕÔ Details:\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   –‘ Nailgun\n");
-        sprint (self,2.000,"ÇÒÅÎÁÄÅÓ:\n   Concussion Grenade\nÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n");
-        sprint (self,2.000,"Scanner: autoscan,scansound,scane,scanf\n\n\n");
+        sprint (self,PRINT_HIGH,"ÓÃÏÕÔ Details:\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   –‘ Nailgun\n");
+        sprint (self,PRINT_HIGH,"ÇÒÅÎÁÄÅÓ:\n   Concussion Grenade\nÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n");
+        sprint (self,PRINT_HIGH,"Scanner: autoscan,scansound,scane,scanf\n\n\n");
     } else {
         if ( (self.playerclass == 2.000) ) {
-            sprint (self,2.000,"ÓÎÉĞÅÒ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Sniper Rifle/Auto Rifle\n");
-            sprint (self,2.000,"–‘ Nailgun\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n\n\nÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n");
-            sprint (self,2.000,"  autozoom : Toggle Rifle Autozooming\n\n\n");
+            sprint (self,PRINT_HIGH,"ÓÎÉĞÅÒ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Sniper Rifle/Auto Rifle\n");
+            sprint (self,PRINT_HIGH,"–‘ Nailgun\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n\n\nÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n");
+            sprint (self,PRINT_HIGH,"  autozoom : Toggle Rifle Autozooming\n\n\n");
         } else {
             if ( (self.playerclass == 3.000) ) {
-                sprint (self,2.000,"ÓÏÌÄÉÅÒ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   •‘ Super Shotgun\n");
-                sprint (self,2.000,"   ™‘ Rocket Launcher\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Nail Grenade\n");
-                sprint (self,2.000,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   None\n\n\n");
+                sprint (self,PRINT_HIGH,"ÓÏÌÄÉÅÒ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   •‘ Super Shotgun\n");
+                sprint (self,PRINT_HIGH,"   ™‘ Rocket Launcher\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Nail Grenade\n");
+                sprint (self,PRINT_HIGH,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   None\n\n\n");
             } else {
                 if ( (self.playerclass == 4.000) ) {
-                    sprint (self,2.000,"ÄÅÍÏÌÉÔÉÏÎÓ ÍÁÎ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   ˜‘ Grenade/Pipebomb Launcher\n");
-                    sprint (self,2.000,"ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Mirv Grenade\n");
-                    sprint (self,2.000,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   The Detpack : +det5,+det20,+det50,+det255\n   Detonate Pipebombs : detpipe\n\n\n");
+                    sprint (self,PRINT_HIGH,"ÄÅÍÏÌÉÔÉÏÎÓ ÍÁÎ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   ˜‘ Grenade/Pipebomb Launcher\n");
+                    sprint (self,PRINT_HIGH,"ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Mirv Grenade\n");
+                    sprint (self,PRINT_HIGH,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   The Detpack : +det5,+det20,+det50,+det255\n   Detonate Pipebombs : detpipe\n\n\n");
                 } else {
                     if ( (self.playerclass == 5.000) ) {
-                        sprint (self,2.000,"ÍÅÄÉÃ Details:\n\n×ÅÁĞÏÎÓ:\n   “‘ Medikit/BioWeapon\n   ”‘ Shotgun\n   •‘ Super Shotgun\n");
-                        sprint (self,2.000,"   —‘ Super Nailgun\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Concussion Grenade\n");
-                        sprint (self,2.000,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   None\n\n\n");
+                        sprint (self,PRINT_HIGH,"ÍÅÄÉÃ Details:\n\n×ÅÁĞÏÎÓ:\n   “‘ Medikit/BioWeapon\n   ”‘ Shotgun\n   •‘ Super Shotgun\n");
+                        sprint (self,PRINT_HIGH,"   —‘ Super Nailgun\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Concussion Grenade\n");
+                        sprint (self,PRINT_HIGH,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   None\n\n\n");
                     } else {
                         if ( (self.playerclass == 6.000) ) {
-                            sprint (self,2.000,"ÈÅÁÖÙ ×ÅÁĞÏÎÓ ÇÕÙ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   •‘ Super Shotgun\n");
-                            sprint (self,2.000,"   ™‘ Assault Cannon\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n");
-                            sprint (self,2.000,"   Mirv Grenade\nÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   None\n\n\n");
+                            sprint (self,PRINT_HIGH,"ÈÅÁÖÙ ×ÅÁĞÏÎÓ ÇÕÙ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   •‘ Super Shotgun\n");
+                            sprint (self,PRINT_HIGH,"   ™‘ Assault Cannon\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n");
+                            sprint (self,PRINT_HIGH,"   Mirv Grenade\nÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   None\n\n\n");
                         } else {
                             if ( (self.playerclass == 7.000) ) {
                                 if (classtype & 16) {
-                                    sprint (self,2.000,"ĞÙÒÏ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   —‘ Flamethrower\n   ™‘ Incendiary Cannon\n");
+                                    sprint (self,PRINT_HIGH,"ĞÙÒÏ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   —‘ Flamethrower\n   ™‘ Incendiary Cannon\n");
                                 } else {
-                                    sprint (self,2.000,"ĞÙÒÏ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   —‘ Flamethrower\n   ˜‘ Light Incendiary Cannon\n   ™‘ Heavy Incendiary Cannon\n");
+                                    sprint (self,PRINT_HIGH,"ĞÙÒÏ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Shotgun\n   —‘ Flamethrower\n   ˜‘ Light Incendiary Cannon\n   ™‘ Heavy Incendiary Cannon\n");
                                 }
-                                sprint (self,2.000,"ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Napalm Grenade\n");
-                                sprint (self,2.000,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   None\n\n\n");
+                                sprint (self,PRINT_HIGH,"ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Napalm Grenade\n");
+                                sprint (self,PRINT_HIGH,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   None\n\n\n");
                             } else {
                                 if ( (self.playerclass == 8.000) ) {
-                                    sprint (self,2.000,"ÓĞÙ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Tranquiliser Gun\n   •‘ Super Shotgun\n   –‘ Nailgun\n");
-                                    sprint (self,2.000,"ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Hallucinogenic Grenade\n");
-                                    sprint (self,2.000,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   Go Undercover : disguise\n   Feign Death : feign, sfeign\n\n\n");
+                                    sprint (self,PRINT_HIGH,"ÓĞÙ Details:\n\n×ÅÁĞÏÎÓ:\n   ”‘ Tranquiliser Gun\n   •‘ Super Shotgun\n   –‘ Nailgun\n");
+                                    sprint (self,PRINT_HIGH,"ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Hallucinogenic Grenade\n");
+                                    sprint (self,PRINT_HIGH,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   Go Undercover : disguise\n   Feign Death : feign, sfeign\n\n\n");
                                 } else {
                                     if ( (self.playerclass == 9.000) ) {
-                                        sprint (self,2.000,"ÅÎÇÉÎÅÅÒ Details:\n\n×ÅÁĞÏÎÓ:\n   “‘ Spanner\n   ”‘ RailGun\n   •‘ Super Shotgun\n");
-                                        sprint (self,2.000,"ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   EMP Grenade\n");
-                                        sprint (self,2.000,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   Start Building : build\n\n\n");
+                                        sprint (self,PRINT_HIGH,"ÅÎÇÉÎÅÅÒ Details:\n\n×ÅÁĞÏÎÓ:\n   “‘ Spanner\n   ”‘ RailGun\n   •‘ Super Shotgun\n");
+                                        sprint (self,PRINT_HIGH,"ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   EMP Grenade\n");
+                                        sprint (self,PRINT_HIGH,"ÓĞÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   Start Building : build\n\n\n");
 
                                     } else {
                                         if ( (!self.playerclass) ) {
-                                            sprint (self,2.000,"\n\nObserver Details:\n\n\nÃÏÍÍÁÎÄÓ: \n   tracking:     toggle tracking mode\n   track_player: observe a player\n   track_sentry: observe a sentrygun\n   track_tfgoal: observe a team's flag\n   special:      lock onto and observe an object\n");
+                                            sprint (self,PRINT_HIGH,"\n\nObserver Details:\n\n\nÃÏÍÍÁÎÄÓ: \n   tracking:     toggle tracking mode\n   track_player: observe a player\n   track_sentry: observe a sentrygun\n   track_tfgoal: observe a team's flag\n   special:      lock onto and observe an object\n");
                                         }
                                     }
                                 }
@@ -900,13 +900,13 @@ void Menu_Spy () {
 void Menu_Spy_Input (float inp) {
     if ( ((inp == 1.000) || (inp == 2.000)) ) {
         if ( (self.effects & (8.000 | 4.000)) ) {
-            sprint (self,2.000,"You can't go undercover while glowing.\n");
+            sprint (self,PRINT_HIGH,"You can't go undercover while glowing.\n");
             ResetMenu ();
             self.impulse = 0.000;
             return ;
         }
         if ( (self.is_unabletospy == 1.000) ) {
-            sprint (self,2.000,"You can't go undercover right now.\n");
+            sprint (self,PRINT_HIGH,"You can't go undercover right now.\n");
             ResetMenu ();
             self.impulse = 0.000;
             return ;
@@ -942,10 +942,10 @@ void Menu_Spy_Input (float inp) {
                     } else {
                         if ( (inp == 6.000) ) {
                             if (self.alpha == 0.400) {
-                                sprint(self, 2.000, "self.alpha 1\n");
+                                sprint (self, PRINT_HIGH, "self.alpha 1\n");
                                 self.alpha = 1.000;
                             } else {
-                                sprint(self, 2.000, "self.alpha 0.4\n");
+                                sprint (self, PRINT_HIGH, "self.alpha 0.4\n");
                                 self.alpha = 0.400;
                             }
                             ResetMenu ();
@@ -985,7 +985,7 @@ void Menu_Spy_Skin_Input (float inp) {
 
 void Menu_Spy_Color () {
     if ( (store_obs.cnt == 0.000) ) {
-        sprint (self,2.000,"No Color changing allowed in deathmatch.\n");
+        sprint (self,PRINT_HIGH,"No Color changing allowed in deathmatch.\n");
         ResetMenu ();
         self.impulse = 0.000;
         return ;
@@ -1147,10 +1147,10 @@ void Menu_EngineerFix_Dispenser_Input (float inp) {
                 self.building.health = (self.building.health + (metalcost * 5.000));
             } else {
                 if ( (inp == 4.000) ) {
-                    sprint (self,2.000,"You dismantle the Dispenser.\n");
+                    sprint (self,PRINT_HIGH,"You dismantle the Dispenser.\n");
                     self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells + (100.000 / 2.000));
                     if ( (self.building.real_owner != self) ) {
-                        sprint (self.building.real_owner,2.000,self.netname," dismantled your Dispenser.\n");
+                        sprint (self.building.real_owner,PRINT_HIGH,self.netname," dismantled your Dispenser.\n");
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.netname);
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner," dismantled ");
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.building.real_owner.netname);
@@ -1243,10 +1243,10 @@ void Menu_EngineerFix_SentryGun_Input (float inp) {
                 }
                 self.building.skin = 2.000;
             }
-            sprint (self,2.000,"You upgrade the Sentry Gun to level ");
+            sprint (self,PRINT_HIGH,"You upgrade the Sentry Gun to level ");
             st = ftos (self.building.weapon);
-            sprint (self,2.000,st);
-            sprint (self,2.000,"\n");
+            sprint (self,PRINT_HIGH,st);
+            sprint (self,PRINT_HIGH,"\n");
         } else {
             if ( (inp == 3.000) ) {
                 metalcost = ((self.building.max_health - self.building.health) / 5.000);
@@ -1257,10 +1257,10 @@ void Menu_EngineerFix_SentryGun_Input (float inp) {
                 self.building.health = (self.building.health + (metalcost * 5.000));
             } else {
                 if ( (inp == 4.000) ) {
-                    sprint (self,2.000,"You dismantle the Sentry Gun.\n");
+                    sprint (self,PRINT_HIGH,"You dismantle the Sentry Gun.\n");
                     self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - 130.000);
                     if ( (self.building.real_owner != self) ) {
-                        sprint (self.building.real_owner,2.000,self.netname," dismantled your Sentry Gun.\n");
+                        sprint (self.building.real_owner,PRINT_HIGH,self.netname," dismantled your Sentry Gun.\n");
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.netname);
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner," dismantled ");
                         teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.building.real_owner.netname);
@@ -1271,7 +1271,7 @@ void Menu_EngineerFix_SentryGun_Input (float inp) {
                     self.building.real_owner.has_sentry = 0.000;
                 } else {
                     if ( (inp == 6.000) ) {
-                        sprint (self,2.000,"Rotating 45 degrees to the left...\n");
+                        sprint (self,PRINT_HIGH,"Rotating 45 degrees to the left...\n");
                         self.building.waitmin = anglemod ((self.building.waitmin + 45.000));
                         self.building.waitmax = anglemod ((self.building.waitmax + 45.000));
                     }
@@ -1349,7 +1349,7 @@ void Menu_Dispenser_Input (float inp) {
     }
     if ( ((inp >= 1.000) && (inp <= 3.000)) ) {
         if ( empty ) {
-            sprint (self,2.000,"The dispenser is empty.\n");
+            sprint (self,PRINT_HIGH,"The dispenser is empty.\n");
         }
         ResetMenu ();
         self.impulse = 0.000;

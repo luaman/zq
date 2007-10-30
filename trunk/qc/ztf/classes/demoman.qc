@@ -201,41 +201,41 @@ void TeamFortress_SetDetpack (float timer) {
     self.impulse = 0.000;
     self.last_impulse = 0.000;
     if ( (self.ammo_detpack <= 0.000) ) {
-        sprint (self,2.000,"You have no detpacks left!\n");
+        sprint (self,PRINT_HIGH,"You have no detpacks left!\n");
         return ;
     }
 
     at_spot = findradius (self.origin,65.000);
     while ( (at_spot != world) ) {
         if ( ((at_spot.classname == "player") && (self != at_spot)) ) {
-            sprint (self,2.000,"You can't set a detpack on someone!\n");
+            sprint (self,PRINT_HIGH,"You can't set a detpack on someone!\n");
             return ;
         } else if ( ((at_spot.mdl == "progs/turrbase.mdl") || (at_spot.mdl == "progs/turrgun.mdl")) ) {
-			sprint (self,2.000,"You can't set a detpack on a sentry gun!\n");
+			sprint (self,PRINT_HIGH,"You can't set a detpack on a sentry gun!\n");
 			return ;
 		} else if ( (at_spot.mdl == "progs/disp.mdl") ) {
-			sprint (self,2.000,"You can't set a detpack on a dispenser!\n");
+			sprint (self,PRINT_HIGH,"You can't set a detpack on a dispenser!\n");
 			return ;
 		} else if ( (at_spot.classname == "detpack") ) {
-			sprint (self,2.000,"Detpacks can't be stacked!\n");
+			sprint (self,PRINT_HIGH,"Detpacks can't be stacked!\n");
 			return ;
 		}
         at_spot = at_spot.chain;
     }
     if ( !(self.flags & FL_ONGROUND) ) {
-        sprint (self,2.000,"You can't set detpacks in the air!\n");
+        sprint (self,PRINT_HIGH,"You can't set detpacks in the air!\n");
         return ;
     }
     te = find (world,classname,"detpack");
     while ( te ) {
         if ( (te.owner == self) ) {
-            sprint (self,2.000,"You can only have 1 detpack active at a time.\n");
+            sprint (self,PRINT_HIGH,"You can only have 1 detpack active at a time.\n");
             return ;
         }
         te = find (te,classname,"detpack");
     }
     if ( (timer < 5.000) ) {
-        sprint (self,2.000,"You can't set detpacks for less than 5 seconds.\n");
+        sprint (self,PRINT_HIGH,"You can't set detpacks for less than 5 seconds.\n");
         return ;
     }
     self.is_detpacking = 1.000;
@@ -254,9 +254,9 @@ void TeamFortress_SetDetpack (float timer) {
     }
     stimer = ftos (timer);
     self.pausetime = (time + 3.000);
-    sprint (self,2.000,"Setting detpack for ");
-    sprint (self,2.000,stimer);
-    sprint (self,2.000," seconds...\n");
+    sprint (self,PRINT_HIGH,"Setting detpack for ");
+    sprint (self,PRINT_HIGH,stimer);
+    sprint (self,PRINT_HIGH," seconds...\n");
 
     newmis = spawn ();
     newmis.owner = self;
@@ -277,7 +277,7 @@ void TeamFortress_DetpackStop () {
     if ( (detpack_timer == world) ) {
         return ;
     }
-    sprint (self,2.000,"Detpack retrieved.\n");
+    sprint (self,PRINT_HIGH,"Detpack retrieved.\n");
     self.ammo_detpack = (self.ammo_detpack + 1.000);
     dremove (detpack_timer);
     self.tfstate = (self.tfstate - (self.tfstate & 65536.000));
@@ -344,7 +344,7 @@ void TeamFortress_DetpackSet () {
         sound(self.owner,2.000,"speech/bombpl.wav",1.000,0.000);
     } else {
         sound (self.owner,2.000,"doors/medtry.wav",1.000,1.000);
-        sprint (self.owner,2.000,"Detpack set!\n");
+        sprint (self.owner,PRINT_HIGH,"Detpack set!\n");
     }
     dremove (self);
 }
@@ -355,7 +355,7 @@ void TeamFortress_DetpackExplode () {
     entity head;
     entity te;
     vector org;
-    bprint (1.000,"FIRE IN THE HOLE!\n");
+    bprint (PRINT_MEDIUM,"FIRE IN THE HOLE!\n");
     sound (self,CHAN_WEAPON,"weapons/detpack.wav",1.000,0.000);
     pos = pointcontents (self.origin);
     if ( (((pos != -2.000) && (pos != -6.000)) && (!self.owner.has_disconnected )) ) {
@@ -409,7 +409,7 @@ void TeamFortress_DetpackExplode () {
         WriteCoord (4.000,self.origin_z);
         multicast (self.origin,1.000);
     } else {
-        sprint (self.owner,2.000,"Your detpack fizzled out.\n");
+        sprint (self.owner,PRINT_HIGH,"Your detpack fizzled out.\n");
     }
     if ( (self.weaponmode == 1.000) ) {
         TeamFortress_SetSpeed (self.enemy);
@@ -495,16 +495,16 @@ void TeamFortress_DetpackDisarm () {
         // self.nextthink = (time + 1.000);
         // return;
         // }
-        bprint (1.000,self.enemy.owner.netname);
-        bprint (1.000,"'s bomb was defused by ");
-        bprint (1.000,self.owner.netname);
-        bprint (1.000,"\n");
+        bprint (PRINT_MEDIUM,self.enemy.owner.netname);
+        bprint (PRINT_MEDIUM,"'s bomb was defused by ");
+        bprint (PRINT_MEDIUM,self.owner.netname);
+        bprint (PRINT_MEDIUM,"\n");
         round_winner = self.owner.pteam;
     } else {
-        bprint (1.000,self.enemy.owner.netname);
-        bprint (1.000,"'s detpack was defused by ");
-        bprint (1.000,self.owner.netname);
-        bprint (1.000,"\n");
+        bprint (PRINT_MEDIUM,self.enemy.owner.netname);
+        bprint (PRINT_MEDIUM,"'s detpack was defused by ");
+        bprint (PRINT_MEDIUM,self.owner.netname);
+        bprint (PRINT_MEDIUM,"\n");
     }
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 65536.000));
     TF_AddFrags (self.owner,1.000, 0.000);
@@ -521,8 +521,8 @@ void TeamFortress_DetpackCountDown () {
     self.nextthink = (time + 1.000);
     self.health = (self.health - 1.000);
     if ( (self.health < 10.000) ) {
-        sprint (self.owner,2.000,cd);
-        sprint (self.owner,2.000,"...\n");
+        sprint (self.owner,PRINT_HIGH,cd);
+        sprint (self.owner,PRINT_HIGH,"...\n");
         if ( ((self.health < 5.000) && (self.has_disconnected == 0.000)) ) {
             sound (self.enemy,2.000,"doors/baseuse.wav",1.000,1.000);
             self.has_disconnected = 1.000;

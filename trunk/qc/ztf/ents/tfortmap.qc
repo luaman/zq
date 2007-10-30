@@ -835,10 +835,10 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
                         captime = time - te.invisible_time;
                         if (( captime != 0.000 )) {
                             st = ftos(captime);
-                            bprint (2.000,Player.netname);
-                            bprint (2.000," Captured the flag in ");
-                            bprint (2.000,st);
-                            bprint (2.000," seconds\n");
+                            bprint (PRINT_HIGH,Player.netname);
+                            bprint (PRINT_HIGH," Captured the flag in ");
+                            bprint (PRINT_HIGH,st);
+                            bprint (PRINT_HIGH," seconds\n");
                         }
 
                     }
@@ -1000,33 +1000,33 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
     if ( (Goal.display_item_status1 != 0.000) ) {
         te = Finditem (Goal.display_item_status1);
         if ( te ) {
-            sprint (Player,2.000, ItemStatus (Goal,Player,te));
+            sprint (Player,PRINT_HIGH, ItemStatus (Goal,Player,te));
         } else {
-            sprint (Player,2.000,"Item is missing.\n");
+            sprint (Player,PRINT_HIGH,"Item is missing.\n");
         }
     }
     if ( (Goal.display_item_status2 != 0.000) ) {
         te = Finditem (Goal.display_item_status2);
         if ( te ) {
-            sprint (Player,2.000, ItemStatus (Goal,Player,te));
+            sprint (Player,PRINT_HIGH, ItemStatus (Goal,Player,te));
         } else {
-            sprint (Player,2.000,"Item is missing.\n");
+            sprint (Player,PRINT_HIGH,"Item is missing.\n");
         }
     }
     if ( (Goal.display_item_status3 != 0.000) ) {
         te = Finditem (Goal.display_item_status3);
         if ( te ) {
-            sprint (Player,2.000, ItemStatus (Goal,Player,te));
+            sprint (Player,PRINT_HIGH, ItemStatus (Goal,Player,te));
         } else {
-            sprint (Player,2.000,"Item is missing.\n");
+            sprint (Player,PRINT_HIGH,"Item is missing.\n");
         }
     }
     if ( (Goal.display_item_status4 != 0.000) ) {
         te = Finditem (Goal.display_item_status4);
         if ( te ) {
-            sprint (Player,2.000, ItemStatus (Goal,Player,te));
+            sprint (Player,PRINT_HIGH, ItemStatus (Goal,Player,te));
         } else {
-            sprint (Player,2.000,"Item is missing.\n");
+            sprint (Player,PRINT_HIGH,"Item is missing.\n");
         }
     }
     if ( (Goal.goal_result & 32.000) ) {
@@ -1738,17 +1738,17 @@ void DoResults (entity Goal, entity AP, float addb) {
                 AP.effects = (AP.effects | 96.000);
             } else {
                 if ( (Goal.goal_no == 2.000) ) {
-                    bprint (2.000,AP.netname, " ÇÏÔ the ÒÅÄ flag!\n");
+                    bprint (PRINT_HIGH,AP.netname, " ÇÏÔ the ÒÅÄ flag!\n");
                     AP.items = (AP.items | 262144.000);
                     AP.effects = (AP.effects | 144.000);
                 } else {
                     if ( (Goal.goal_no == 3.000) ) {
-                        bprint (2.000,AP.netname, " ÃÁÐÔÕÒÅÄ the ÒÅÄ flag!\n");
+                        bprint (PRINT_HIGH,AP.netname, " ÃÁÐÔÕÒÅÄ the ÒÅÄ flag!\n");
                         AP.items = (AP.items - (AP.items & 262144.000));
                         AP.effects = (AP.effects - (AP.effects & 144.000));
                     } else {
                         if ( (Goal.goal_no == 4.000) ) {
-                            bprint (2.000,AP.netname, " ÃÁÐÔÕÒÅÄ the ÂÌÕÅ flag!\n");
+                            bprint (PRINT_HIGH,AP.netname, " ÃÁÐÔÕÒÅÄ the ÂÌÕÅ flag!\n");
                             AP.items = (AP.items - (AP.items & 131072.000));
                             AP.effects = (AP.effects - (AP.effects & 96.000));
                         }
@@ -1965,8 +1965,8 @@ void item_tfgoal_touch () {
         if ( (self.goal_no == 1.000) ) {
             if ( (self.origin != self.oldorigin) ) {
                 if ( (other.pteam == pteam1) ) {
-                    bprint (2.000,other.netname);
-                    bprint (2.000," ÒÅÔÕÒÎÅÄ the ÂÌÕÅ flag!\n");
+                    bprint (PRINT_HIGH,other.netname);
+                    bprint (PRINT_HIGH," ÒÅÔÕÒÎÅÄ the ÂÌÕÅ flag!\n");
                     te = player_head;
                     while (te) {
                         if ( (te.pteam == pteam1) ) {
@@ -1995,8 +1995,8 @@ void item_tfgoal_touch () {
             if ( (self.goal_no == 2.000) ) {
                 if ( (self.origin != self.oldorigin) ) {
                     if ( (other.pteam == pteam2) ) {
-                        bprint (2.000,other.netname);
-                        bprint (2.000," ÒÅÔÕÒÎÅÄ the ÒÅÄ flag!\n");
+                        bprint (PRINT_HIGH,other.netname);
+                        bprint (PRINT_HIGH," ÒÅÔÕÒÎÅÄ the ÒÅÄ flag!\n");
                         te = player_head;
                         while ( te ) {
                             if ( (te.pteam == pteam2) ) {
@@ -2444,15 +2444,15 @@ string ItemStatus (entity Goal, entity Player, entity Item) {
                 tmp = Goal.non_team_str_carried;
             }
             tmp = strcat(tmp, " ");
-            //sprint (Player,2.000," ");
+            //sprint (Player,PRINT_HIGH," ");
             if ( (Player == Item.owner) ) {
-                //sprint (Player,2.000,"You");
+                //sprint (Player,PRINT_HIGH,"You");
                 tmp = strcat(tmp, "You");
             } else {
-                //sprint (Player,2.000,Item.owner.netname);
+                //sprint (Player,PRINT_HIGH,Item.owner.netname);
                 tmp = strcat(tmp, Item.owner.netname);
             }
-            //sprint (Player,2.000,".\n");
+            //sprint (Player,PRINT_HIGH,".\n");
             tmp = strcat(tmp, ".\n");
             return(tmp);
         }
@@ -2466,7 +2466,7 @@ string ItemStatus (entity Goal, entity Player, entity Item) {
                         tmp = strcat(tmp, " Return Time: ");
                         tmp = strcat(tmp, ftos(rint(Item.nextthink - time)));
                         tmp = strcat(tmp, " seconds");
-                        // sprint (Player,2.000, " Return time: ", ftos(rint(Item.nextthink - time)), " seconds.");
+                        // sprint (Player,PRINT_HIGH, " Return time: ", ftos(rint(Item.nextthink - time)), " seconds.");
 
                     }
                 } else {
@@ -2475,10 +2475,10 @@ string ItemStatus (entity Goal, entity Player, entity Item) {
                         tmp = strcat(tmp, " Return Time: ");
                         tmp = strcat(tmp, ftos(rint(Item.nextthink - time)));
                         tmp = strcat(tmp, " seconds");
-                        //sprint (Player,2.000, " Return time: ", ftos(rint(Item.nextthink - time)), " seconds.");
+                        //sprint (Player,PRINT_HIGH, " Return time: ", ftos(rint(Item.nextthink - time)), " seconds.");
                     }
                 }
-                //sprint (Player,2.000,"\n");
+                //sprint (Player,PRINT_HIGH,"\n");
                 tmp = strcat(tmp, ".\n");
                 return(tmp);
             }
