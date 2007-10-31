@@ -1465,63 +1465,7 @@ void CL_SetUpPlayerPrediction ()
 }
 
 
-/*
-===
-Calculate the new position of players, without other player clipping
-
-We do this to set up real player prediction.
-Players are predicted twice, first without clipping other players,
-then with clipping against them.
-This sets up the first phase.
-===
-*/
-void CL_PredictOtherPlayers_NoClip ()
-{
-	int				j;
-	player_state_t	*state;
-	player_state_t	exact;
-	double			playertime;
-	int				msec;
-	frame_t			*frame;
-	struct predicted_player *pplayer;
-
-	if (!cl_predict_players.value)
-		return;
-
-	playertime = cls.realtime - cls.latency + 0.02;
-	if (playertime > cls.realtime)
-		playertime = cls.realtime;
-
-	frame = &cl.frames[cl.parsecount&UPDATE_MASK];
-
-	for (j=0, pplayer = predicted_players, state=frame->playerstate; 
-		j < MAX_CLIENTS;
-		j++, pplayer++, state++) {
-
-		if (!pplayer->active)
-			continue;
-
-		// note that the local player is special, since he moves locally
-		// we use his last predicted postition
-		if (j == cl.playernum) {
-			VectorCopy(cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].playerstate[cl.playernum].origin,
-				pplayer->origin);
-		} else {
-			if (state->state_time >= playertime)
-				continue;
-
-			// only predict half the move to minimize overruns
-			msec = 500*(playertime - state->state_time);
-			state->command.msec = min(msec, 255);
-
-			CL_PredictUsercmd (state, &exact, &state->command);
-			VectorCopy (exact.origin, pplayer->origin);
-		}
-	}
-}
-
-
-void CL_PredictOtherPlayers_Final ()
+void CL_PredictOtherPlayers ()
 {
 	int				j;
 	player_state_t	*state;
@@ -1540,6 +1484,11 @@ void CL_PredictOtherPlayers_Final ()
 		playertime = cls.realtime;
 
 	frame = &cl.frames[cl.parsecount&UPDATE_MASK];
+
+	// the local player is special, since he moves locally
+	// we use his last predicted postition
+	VectorCopy(cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].playerstate[cl.playernum].origin,
+		predicted_players[cl.playernum].origin);
 
 	for (j=0, pplayer = predicted_players, state=frame->playerstate; 
 		j < MAX_CLIENTS;
@@ -1639,7 +1588,7 @@ void CL_EmitEntities (void)
 		if (cls.mvdplayback)
 			MVD_Interpolate ();
 #endif
-		CL_PredictOtherPlayers_Final ();
+		CL_PredictOtherPlayers ();
 		CL_LinkPlayers ();
 		CL_LinkPacketEntities ();
 		CL_LinkNails ();

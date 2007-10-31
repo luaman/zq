@@ -481,7 +481,7 @@ void CL_PredictMovement (void)
 
 	CL_SetUpPlayerPrediction();
 	CL_PredictLocalPlayer ();
-	CL_PredictOtherPlayers_NoClip ();
+//	CL_PredictOtherPlayers ();	// done every display frame to make things smooth
 }
 
 
