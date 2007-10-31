@@ -67,6 +67,7 @@ cvar_t	enemyskin = {"enemyskin", "", 0, OnChangeSkinForcing};
 cvar_t	cl_independentPhysics = {"cl_independentPhysics", "1"};
 cvar_t	cl_physfps = {"cl_physfps", "0"};
 cvar_t	cl_zerolocalping = {"cl_zerolocalping", "1"};
+cvar_t	sys_yieldcpu = {"sys_yieldcpu", "1"};
 
 
 //
@@ -1105,6 +1106,7 @@ void CL_InitLocal (void)
 	Cvar_Register (&cl_independentPhysics);
 	Cvar_Register (&cl_physfps);
 	Cvar_Register (&cl_zerolocalping);
+	Cvar_Register (&sys_yieldcpu);
 
 #ifndef RELEASE_VERSION
 	// inform everyone that we're using a development version
@@ -1327,8 +1329,13 @@ void CL_Frame (double time)
 	extratime += time;
 
 	minframetime = CL_MinFrameTime();
-	if (extratime < minframetime)
+	if (extratime < minframetime) {
+		if (minframetime - extratime > 0.001) {
+			if (sys_yieldcpu.value)
+				Sys_MSleep((minframetime - extratime) * 1000);
+		}
 		return;
+	}
 
 	cls.trueframetime = extratime - 0.001;
 	if (cls.trueframetime < minframetime)
@@ -1404,6 +1411,9 @@ if (cls.physframe)
 
 	if (!(cl_zerolocalping.value && com_serveractive && !cls.demorecording))
 		CL_SendToServer ();
+
+	// predict all players
+	CL_PredictMovement ();
 }
 else {
 	usercmd_t dummy;
@@ -1411,11 +1421,11 @@ else {
 	CL_AdjustAngles ();
 }
 
-	// predict all players
-	CL_PredictMovement ();
-
 	// build a refresh entity list
 	CL_EmitEntities ();
+
+	extern void CL_SetViewPosition ();
+	CL_SetViewPosition ();
 
 	// update video
 	if (host_speeds.value)
