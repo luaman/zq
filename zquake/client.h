@@ -593,7 +593,9 @@ void CL_EntityParticles (vec3_t org);
 //
 void CL_Ents_Init (void);
 void CL_SetSolidPlayers (int playernum);
-void CL_SetUpPlayerPrediction (qbool dopred);
+void CL_SetUpPlayerPrediction (void);
+void CL_PredictOtherPlayers_NoClip (void);
+void CL_PredictOtherPlayers_Final (void);
 void CL_EmitEntities (void);
 void CL_ClearNails (void);
 #ifdef MVDPLAY
