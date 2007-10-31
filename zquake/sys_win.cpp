@@ -52,6 +52,58 @@ cvar_t	sys_sleep = {"sys_sleep", "8"};
 cvar_t	sys_nostdout = {"sys_nostdout","0"};
 #endif
 
+#ifndef SERVERONLY
+void OnChange_sys_highpriority (cvar_t *, char *, qbool *);
+cvar_t	sys_highpriority = {"sys_highpriority", "0", 0, OnChange_sys_highpriority};
+
+int Sys_SetPriority(int priority) 
+{
+    DWORD p;
+
+	switch (priority) 
+	{
+		case 0:	p = IDLE_PRIORITY_CLASS; break;
+		case 1:	p = NORMAL_PRIORITY_CLASS; break;
+		case 2:	p = HIGH_PRIORITY_CLASS; break;
+		default: return 0;
+	}
+
+	return SetPriorityClass(GetCurrentProcess(), p);
+}
+
+void OnChange_sys_highpriority (cvar_t *var, char *s, qbool *cancel) 
+{
+	int ok, q_priority;
+	char *desc;
+	float priority;
+
+	priority = Q_atof(s);
+	if (priority == 1) 
+	{
+		q_priority = 2;
+		desc = "high";
+	} 
+	else if (priority == -1) 
+	{
+		q_priority = 0;
+		desc = "low";
+	} 
+	else 
+	{
+		q_priority = 1;
+		desc = "normal";
+	}
+
+	if (!(ok = Sys_SetPriority(q_priority))) 
+	{
+		Com_Printf("Changing process priority failed\n");
+		*cancel = true;	// hmm
+		return;
+	}
+
+	Com_Printf("Process priority set to %s\n", desc);
+}
+#endif
 
 /*
 ===============================================================================
@@ -425,6 +477,14 @@ void Sys_Init (void)
 		if (WinNT)
 			Cvar_Set (&sys_sleep, "0");
 	}
+#else
+	Cvar_Register(&sys_highpriority);
+	// we don't get an OnChange callback if the cvar was set in config.cfg
+	// or on the command line (BUG?), so we have to do it manually
+	qbool dummy;
+	if (sys_highpriority.value != 0)
+		OnChange_sys_highpriority (&sys_highpriority, va("%i", sys_highpriority.value), &dummy);
+
 #endif
 }
 
