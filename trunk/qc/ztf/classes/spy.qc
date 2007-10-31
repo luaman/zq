@@ -880,7 +880,7 @@ void T_TranqDartTouch () {
                     timer.nextthink = (time + 15.000);
                 }
             } else {
-                sprint (other,2.000,"You feel tired...\n");
+                sprint (other, PRINT_HIGH,"You feel tired...\n");
                 other.tfstate = (other.tfstate | 32768.000);
                 timer = spawn ();
                 timer.nextthink = (time + 15.000);
@@ -971,7 +971,7 @@ void GasGrenadeMakeGas () {
                         }
                     }
                 } else {
-                    sprint (te,2.000,"Run for cover! They're everywhere!\n");
+                    sprint (te,PRINT_HIGH,"Run for cover! They're everywhere!\n");
                     te.tfstate = (te.tfstate | 16384.000);
                     timer = spawn ();
 

@@ -263,12 +263,12 @@ void CheckAutoKick (entity p) {
     entity te;
     if ( ((p.teamkills >= autokick_kills) && (autokick_kills != 0.000)) ) {
         bprint (PRINT_HIGH,p.netname," was kicked for killing teammates.\n");
-        sprint (p,2.000,"You were kicked for killing teammates.\n");
+        sprint (p,PRINT_HIGH,"You were kicked for killing teammates.\n");
         stuffcmd (p,"disconnect\n");
     } else {
         if ( (autokick_kills != 0.000) ) {
             if ( (p.teamkills == (autokick_kills - 1.000)) ) {
-                sprint (p,2.000,"Kill one more teammate, and you're outta here.\n");
+                sprint (p,PRINT_HIGH,"Kill one more teammate, and you're outta here.\n");
             }
             rnum = 0.000;
             te = find (world,classname,"ak_timer");
@@ -413,7 +413,7 @@ void VoteYes () {
             // s: election was admin election
             bprint(2, p.netname, " ηαιξσ αδνιξ στατυσ!");
             bprint(3, "\n");
-            sprint(p, 2, "Type γονναξδσ for admin commands.\n");
+            sprint (p,PRINT_HIGH, "Type γονναξδσ for admin commands.\n");
             p.is_admin = 1.000;
             p.get_admin_aliases = 1.000;
             AbortElect();

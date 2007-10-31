@@ -1792,13 +1792,13 @@ void DoResults (entity Goal, entity AP, float addb) {
                 CenterPrint2 (te,"\n\n\n",Goal.broadcast);
             }
             if ( (Goal.netname_broadcast != string_null) ) {
-                sprint (te,2.000,AP.netname);
-                sprint (te,2.000,Goal.netname_broadcast);
+                sprint (te,PRINT_HIGH,AP.netname);
+                sprint (te,PRINT_HIGH,Goal.netname_broadcast);
             } else if (Goal.classname == "item_tfgoal") {
-                sprint (te,2.000,AP.netname);
-                sprint (te,2.000," took the ");
-                sprint (te,2.000,Goal.netname);
-                sprint (te,2.000,"\n");
+                sprint (te,PRINT_HIGH,AP.netname);
+                sprint (te,PRINT_HIGH," took the ");
+                sprint (te,PRINT_HIGH,Goal.netname);
+                sprint (te,PRINT_HIGH,"\n");
             }
             if ( (AP == te) ) {
                 if ( (Goal.message != string_null) ) {
@@ -1815,12 +1815,12 @@ void DoResults (entity Goal, entity AP, float addb) {
                         }
                     }
                     if ( ((Goal.netname_owners_team_broadcast != string_null) && (te.pteam.team == Goal.owned_by)) ) {
-                        sprint (te,2.000,AP.netname);
-                        sprint (te,2.000,Goal.netname_owners_team_broadcast);
+                        sprint (te,PRINT_HIGH,AP.netname);
+                        sprint (te,PRINT_HIGH,Goal.netname_owners_team_broadcast);
                     } else {
                         if ( (Goal.netname_team_broadcast != string_null) ) {
-                            sprint (te,2.000,AP.netname);
-                            sprint (te,2.000,Goal.netname_team_broadcast);
+                            sprint (te,PRINT_HIGH,AP.netname);
+                            sprint (te,PRINT_HIGH,Goal.netname_team_broadcast);
                         }
                     }
                 } else {
@@ -1832,12 +1832,12 @@ void DoResults (entity Goal, entity AP, float addb) {
                         }
                     }
                     if ( ((Goal.netname_owners_team_broadcast != string_null) && (te.pteam.team == Goal.owned_by)) ) {
-                        sprint (te,2.000,AP.netname);
-                        sprint (te,2.000,Goal.netname_owners_team_broadcast);
+                        sprint (te,PRINT_HIGH,AP.netname);
+                        sprint (te,PRINT_HIGH,Goal.netname_owners_team_broadcast);
                     } else {
                         if ( (Goal.netname_non_team_broadcast != string_null) ) {
-                            sprint (te,2.000,AP.netname);
-                            sprint (te,2.000,Goal.netname_non_team_broadcast);
+                            sprint (te,PRINT_HIGH,AP.netname);
+                            sprint (te,PRINT_HIGH,Goal.netname_non_team_broadcast);
                         }
                     }
                 }
@@ -2217,19 +2217,19 @@ void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
                 }
                 if ( (Item.netname_team_drop != string_null) ) {
                     if (bspversion == 30 || mapname == "tf2k") {
-                        sprint (te,2.000,AP.netname);
-                        sprint (te,2.000," ");
-                        sprint (te,2.000,Item.netname_team_drop);
-                        sprint (te,2.000,"\n");
+                        sprint (te,PRINT_HIGH,AP.netname);
+                        sprint (te,PRINT_HIGH," ");
+                        sprint (te,PRINT_HIGH,Item.netname_team_drop);
+                        sprint (te,PRINT_HIGH,"\n");
                     } else {
-                        sprint (te,2.000,AP.netname);
-                        sprint (te,2.000,Item.netname_team_drop);
+                        sprint (te,PRINT_HIGH,AP.netname);
+                        sprint (te,PRINT_HIGH,Item.netname_team_drop);
                     }
                 } else {
-                    sprint (te,2.000,AP.netname);
-                    sprint (te,2.000," dropped ");
-                    sprint (te,2.000,Item.netname);
-                    sprint (te,2.000,"\n");
+                    sprint (te,PRINT_HIGH,AP.netname);
+                    sprint (te,PRINT_HIGH," dropped ");
+                    sprint (te,PRINT_HIGH,Item.netname);
+                    sprint (te,PRINT_HIGH,"\n");
                 }
             } else {
                 if ( (Item.non_team_drop != string_null) ) {
@@ -2237,19 +2237,19 @@ void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
                 }
                 if ( (Item.netname_non_team_drop != string_null) ) {
                     if (bspversion == 30 || mapname == "tf2k") {
-                        sprint (te,2.000,AP.netname);
-                        sprint (te,2.000," ");
-                        sprint (te,2.000,Item.netname_non_team_drop);
-                        sprint (te,2.000,"\n");
+                        sprint (te,PRINT_HIGH,AP.netname);
+                        sprint (te,PRINT_HIGH," ");
+                        sprint (te,PRINT_HIGH,Item.netname_non_team_drop);
+                        sprint (te,PRINT_HIGH,"\n");
                     } else {
-                        sprint (te,2.000,AP.netname);
-                        sprint (te,2.000,Item.netname_non_team_drop);
+                        sprint (te,PRINT_HIGH,AP.netname);
+                        sprint (te,PRINT_HIGH,Item.netname_non_team_drop);
                     }
                 } else {
-                    sprint (te,2.000,AP.netname);
-                    sprint (te,2.000," dropped ");
-                    sprint (te,2.000,Item.netname);
-                    sprint (te,2.000,"\n");
+                    sprint (te,PRINT_HIGH,AP.netname);
+                    sprint (te,PRINT_HIGH," dropped ");
+                    sprint (te,PRINT_HIGH,Item.netname);
+                    sprint (te,PRINT_HIGH,"\n");
                 }
             }
             te = te.nextp;

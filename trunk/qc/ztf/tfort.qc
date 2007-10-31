@@ -2059,9 +2059,9 @@ void BioInfection_Decay () {
                         Bio.enemy = self.enemy;
                         te.tfstate = (te.tfstate | 16.000);
                         te.infection_team_no = self.owner.infection_team_no;
-                        sprint (te,1.000,"You have been infected by ");
-                        sprint (te,1.000,self.owner.netname);
-                        sprint (te,1.000,"!\n");
+                        sprint (te,PRINT_MEDIUM,"You have been infected by ");
+                        sprint (te,PRINT_MEDIUM,self.owner.netname);
+                        sprint (te,PRINT_MEDIUM,"!\n");
                         sprint (self.owner,PRINT_MEDIUM,"You have infected ");
                         sprint (self.owner,PRINT_MEDIUM,te.netname);
                         sprint (self.owner,PRINT_MEDIUM,"!\n");

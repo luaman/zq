@@ -58,7 +58,7 @@ void CaltropTouch () {
     if ( ((((teamplay & 16.000) && (other != self.owner)) && (other.pteam == self.owner.pteam)) && (self.owner.pteam.team != 0.000)) ) {
         return ;
     }
-    sprint (other,2.000,"Ow, Ow, Ow! Caltrops!\n");
+    sprint (other, PRINT_HIGH,"Ow, Ow, Ow! Caltrops!\n");
     if (!modetype & 2) {
         other.leg_damage = (other.leg_damage + 2.000);
         TeamFortress_SetSpeed (other);

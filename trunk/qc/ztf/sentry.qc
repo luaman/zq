@@ -785,10 +785,10 @@ float Sentry_Fire () {
         self.super_damage_finished = (time + 3.000);
         self.ammo_rockets = (self.ammo_rockets - 1.000);
         if ( (self.ammo_rockets == 10.000) ) {
-            sprint (self.real_owner,2.000,"Sentry Gun is low on rockets.\n");
+            sprint (self.real_owner,PRINT_HIGH,"Sentry Gun is low on rockets.\n");
         }
         if ( self.ammo_rockets == 0.000) {
-            sprint (self.real_owner,2.000,"Sentry Gun is out of rockets.\n");
+            sprint (self.real_owner,PRINT_HIGH,"Sentry Gun is out of rockets.\n");
         }
     }
     org = (self.origin + '0.000 0.000 16.000');
@@ -820,10 +820,10 @@ float Sentry_Fire () {
             }
             self.ammo_shells = (self.ammo_shells - 1.000);
             if ( (self.ammo_shells == 20.000) ) {
-                sprint (self.real_owner,2.000,"Sentry Gun is low on shells.\n");
+                sprint (self.real_owner,PRINT_HIGH,"Sentry Gun is low on shells.\n");
             }
             if ( (self.ammo_shells <= 0.000) ) {
-                sprint (self.real_owner,2.000,"Sentry Gun is out of shells.\n");
+                sprint (self.real_owner,PRINT_HIGH,"Sentry Gun is out of shells.\n");
                 self.ammo_shells = 0.000;
 
             }
@@ -849,10 +849,10 @@ float Sentry_Fire () {
             }
             self.ammo_shells = (self.ammo_shells - 1.000);
             if ( (self.ammo_shells == 20.000) ) {
-                sprint (self.real_owner,2.000,"Sentry Gun is low on shells.\n");
+                sprint (self.real_owner,PRINT_HIGH,"Sentry Gun is low on shells.\n");
             }
             if ( (self.ammo_shells <= 0.000) ) {
-                sprint (self.real_owner,2.000,"Sentry Gun is out of shells.\n");
+                sprint (self.real_owner,PRINT_HIGH,"Sentry Gun is out of shells.\n");
                 self.ammo_shells = 0.000;
 
             }

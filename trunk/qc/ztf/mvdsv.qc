@@ -191,7 +191,7 @@ float UserCmd () {
                 self.mvote = 0;
                 return 1;
             } else {
-                sprint(self,2 , "There are no current votes active.\n");
+                sprint(self, PRINT_HIGH, "There are no current votes active.\n");
                 return 1;
             }
         }

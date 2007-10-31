@@ -1182,9 +1182,9 @@ void player_touch ()
                         Bio.enemy = te.enemy;
                         other.tfstate = (other.tfstate | 16);
                         other.infection_team_no = self.infection_team_no;
-                        sprint (other,1,"You have been infected by ");
-                        sprint (other,1,self.netname);
-                        sprint (other,1,"!\n");
+                        sprint (other,PRINT_MEDIUM,"You have been infected by ");
+                        sprint (other,PRINT_MEDIUM,self.netname);
+                        sprint (other,PRINT_MEDIUM,"!\n");
                         sprint (self,PRINT_MEDIUM,"You have infected ");
                         sprint (self,PRINT_MEDIUM,other.netname);
                         sprint (self,PRINT_MEDIUM,"!\n");

@@ -82,7 +82,7 @@ void CheckConnectRate () {
             sprint (self, PRINT_HIGH, "\nYour עבפו setting is too high for this server.\n");
             tmp=ftos(maxrate);
             sprint (self, PRINT_HIGH, "Rate set to ");
-            sprint(self, 3, tmp, "\n");
+            sprint (self, PRINT_CHAT, tmp, "\n");
             stuffcmd(self, "rate ");
             stuffcmd(self, tmp);
             stuffcmd(self, "\n");
@@ -91,7 +91,7 @@ void CheckConnectRate () {
             sprint (self, PRINT_HIGH, "\nYour עבפו setting is too low for this server.\n");
             tmp=ftos(minrate);
             sprint (self, PRINT_HIGH, "Rate set to ");
-            sprint(self, 3, tmp, "\n");
+            sprint(self, PRINT_CHAT, tmp, "\n");
             stuffcmd(self, "rate ");
             stuffcmd(self, tmp);
             stuffcmd(self, "\n");

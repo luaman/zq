@@ -200,7 +200,7 @@ void Player_Menu () {
 		}
 		self.current_menu = 2.000;
 		Menu_Team ();
-	} else if ((self.playerclass == 0.000) && (self.pteam != store_obs)) {
+	} else if ((self.playerclass == CLASS_NONE) && (self.pteam != store_obs)) {
 		if (round_active && !modetype & 64) {
 			return;
 		}
@@ -218,20 +218,18 @@ void Player_Menu () {
 		Menu_Speech_Offensive ();
 	} else if ( (self.current_menu == 24.000) ) {
 		Menu_Speech_General ();
-	} else {
-		if ( (self.current_menu == 25.000) ) {
+	} else if ( (self.current_menu == 25.000) ) {
 			Menu_Upgrades ();
-		} else if ( (self.current_menu == 26.000) ) {
-			Menu_Upgrade_Weapons ();
-		} else if ( (self.current_menu == 27.000) ) {
-			Menu_Upgrade_Armor ();
-		} else if ( (self.current_menu == 28.000) ) {
-			Menu_Upgrade_Movement ();
-		} else if ( (self.current_menu == 29.000) ) {
-			Menu_Upgrade_Other ();
-		} else {
-			self.current_menu = 0.000;
-		}
+	} else if ( (self.current_menu == 26.000) ) {
+		Menu_Upgrade_Weapons ();
+	} else if ( (self.current_menu == 27.000) ) {
+		Menu_Upgrade_Armor ();
+	} else if ( (self.current_menu == 28.000) ) {
+		Menu_Upgrade_Movement ();
+	} else if ( (self.current_menu == 29.000) ) {
+		Menu_Upgrade_Other ();
+	} else {
+		self.current_menu = 0.000;
 	}
 }
 
@@ -369,7 +367,7 @@ void Menu_Class_Input (float inp) {
     TeamFortress_ChangeClass (inp);
     self.impulse = 0.000;
     ResetMenu ();
-    if ( ((self.playerclass) && (new_class != 1.000) && (self.playerclass != 11.000)) ) {
+    if ( ((self.playerclass) && (new_class != 1.000) && (self.playerclass != CLASS_CIVILIAN)) ) {
         st = infokey (self,"ch");
         if ( (st == string_null) ) {
             st = infokey (self,"classhelp");
@@ -384,7 +382,7 @@ void Menu_Class_Input (float inp) {
 }
 
 void Menu_Drop () {
-    if ( (self.playerclass == 9.000) ) {
+    if ( (self.playerclass == CLASS_ENGINEER) ) {
         CenterPrint (self,"\nDrop or Make Ammo:            \nêìë Shells                    \nêîë Nails                     \nêïë Rockets                   \nêñë Cells                     \nêóë Grenade 1                 \nêòë Grenade 2                 \nêôë Nothing                   \n");
     } else {
         CenterPrint (self,"\nDrop Ammo:                    \nêìë Shells                    \nêîë Nails                     \nêïë Rockets                   \nêñë Cells                     \nêóë Grenade 1                 \nêòë Grenade 2                 \nêôë Nothing                   \n");
@@ -480,152 +478,99 @@ void Menu_Intro () {
 }
 
 void Menu_ClassHelp () {
-    if ( (self.menu_displaytime < 5.000) ) {
-        if ( (self.playerclass == 1.000) ) {
-            CenterPrint (self,"”√œ’‘ Details:               \n\n◊≈¡–œŒ”:                     \nêîë Shotgun                  \nêñë Nailgun                  \n\nPress õ for alias help\n");
-        } else {
-            if ( (self.playerclass == 2.000) ) {
-                CenterPrint (self,"”Œ…–≈“ Details:              \n\n◊≈¡–œŒ”:                     \nêîë Sniper Rifle/Auto Rifle  \nêñë Nailgun                  \n\nPress õ for alias help\n");
-            } else {
-                if ( (self.playerclass == 3.000) ) {
-                    CenterPrint (self,"”œÃƒ…≈“ Details:             \n\n◊≈¡–œŒ”:                     \nêîë Shotgun                  \nêïë Super Shotgun            \nêôë Rocket Launcher          \n\nPress õ for alias help\n");
-                } else {
-                    if ( (self.playerclass == 4.000) ) {
-                        CenterPrint (self,"ƒ≈ÕœÃ…‘…œŒ” Õ¡Œ Details:     \n\n◊≈¡–œŒ”:                     \nêîë Shotgun                  \nêòë Grenade Launcher         \nêôë Pipebomb Launcher        \n\nPress õ for alias help\n");
-                    } else {
-                        if ( (self.playerclass == 5.000) ) {
-                            CenterPrint (self,"Õ≈ƒ…√ Details:               \n\n◊≈¡–œŒ”:                     \nêìë Medikit/BioWeapon        \nêîë Shotgun                  \nêïë Super Shotgun            \nêóë Super Nailgun            \n\nPress õ for alias help\n");
-                        } else {
-                            if ( (self.playerclass == 6.000) ) {
-                                CenterPrint (self,"»≈¡÷Ÿ ◊≈¡–œŒ” «’Ÿ Details:   \n\n◊≈¡–œŒ”:                     \nêîë Shotgun                  \nêïë Super Shotgun            \nêôë Assault Cannon           \n\nPress õ for alias help\n");
-                            } else {
-                                if ( (self.playerclass == 7.000) ) {
-                                    if (classtype & 16) {
-                                        CenterPrint (self,"–Ÿ“œ Details:          \n\n◊≈¡–œŒ”:               \nêîë Shotgun            \nêóë Flamethrower       \nêôë Incendiary Cannon  \n\nPress õ for alias help\n");
-                                    } else {
-                                        CenterPrint (self,"–Ÿ“œ Details:                \n\n◊≈¡–œŒ”:                     \nêîë Shotgun                  \nêóë Flamethrower             \nêòë Light Incendiary Cannon  \nêôë Heavy Incendiary Cannon  \n\nPress õ for alias help\n");
-                                    }
-                                } else {
-                                    if ( (self.playerclass == 8.000) ) {
-                                        CenterPrint (self,"”–Ÿ Details:                 \n\n◊≈¡–œŒ”:                     \nêîë Tranquiliser Gun         \nêïë Super Shotgun            \nêñë Nailgun                  \n\nPress õ for alias help\n");
-                                    } else {
-                                        if ( (self.playerclass == 9.000) ) {
-                                            CenterPrint (self,"≈Œ«…Œ≈≈“ Details:            \n\n◊≈¡–œŒ”:                     \nêìë Spanner                  \nêîë RailGun                  \nêïë Super Shotgun            \n\nPress õ for alias help\n");
-                                        } else {
-                                            if ( (!self.playerclass) ) {
-                                                CenterPrint (self,"\n\n\nObserver Details:             \n\n√œÕÕ¡Œƒ”:                     \ntracking: toggle tracking mode\ntrack_player: player camera   \ntrack_sentry: sentrygun camera\ntrack_tfgoal: flag camera     \nspecial: camera lock-on       \n");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    } else {
-        if ( (self.playerclass == 1.000) ) {
-            CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nCaltrops            \nConcussion Grenade  \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nScanner: autoscan,scansound,scane,scanf\n\n\nPress õ for alias help\n");
-        } else {
-            if ( (self.playerclass == 2.000) ) {
-                CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nFlash               \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nautozoom : Toggle Rifle Autozooming\n\n\nPress õ for alias help\n");
-            } else {
-                if ( (self.playerclass == 3.000) ) {
-                    CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nNail Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
-                } else {
-                    if ( (self.playerclass == 4.000) ) {
-                        CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nMirv Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nThe Detpack : +det5,+det20,+det50,+det255\nDetonate Pipebombs : detpipe  \n\n\nPress õ for alias help\n");
-                    } else {
-                        if ( (self.playerclass == 5.000) ) {
-                            CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nConcussion Grenade  \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
-                        } else {
-                            if ( (self.playerclass == 6.000) ) {
-                                CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nMirv Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
-                            } else {
-                                if ( (self.playerclass == 7.000) ) {
-                                    CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nNapalm Grenade      \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
-                                } else {
-                                    if ( (self.playerclass == 8.000) ) {
-                                        CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nHallucinogen Grenade\n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nGo Undercover : disguise\nFeign Death : feign, sfeign\n\n\nPress õ for alias help\n");
-                                    } else {
-                                        if ( (self.playerclass == 9.000) ) {
-                                            CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nEMP Grenade         \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nStart Building : build  \n\n\nPress õ for alias help\n");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	if ( (self.menu_displaytime < 5.000) ) {
+		if ( (self.playerclass == CLASS_SCOUT) ) {
+			CenterPrint (self,"”√œ’‘ Details:               \n\n◊≈¡–œŒ”:                     \nêîë Shotgun                  \nêñë Nailgun                  \n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_SNIPER) ) {
+			CenterPrint (self,"”Œ…–≈“ Details:              \n\n◊≈¡–œŒ”:                     \nêîë Sniper Rifle/Auto Rifle  \nêñë Nailgun                  \n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_SOLDIER) ) {
+			CenterPrint (self,"”œÃƒ…≈“ Details:             \n\n◊≈¡–œŒ”:                     \nêîë Shotgun                  \nêïë Super Shotgun            \nêôë Rocket Launcher          \n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_DEMOMAN) ) {
+			CenterPrint (self,"ƒ≈ÕœÃ…‘…œŒ” Õ¡Œ Details:     \n\n◊≈¡–œŒ”:                     \nêîë Shotgun                  \nêòë Grenade Launcher         \nêôë Pipebomb Launcher        \n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_MEDIC) ) {
+			CenterPrint (self,"Õ≈ƒ…√ Details:               \n\n◊≈¡–œŒ”:                     \nêìë Medikit/BioWeapon        \nêîë Shotgun                  \nêïë Super Shotgun            \nêóë Super Nailgun            \n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_HWGUY) ) {
+			CenterPrint (self,"»≈¡÷Ÿ ◊≈¡–œŒ” «’Ÿ Details:   \n\n◊≈¡–œŒ”:                     \nêîë Shotgun                  \nêïë Super Shotgun            \nêôë Assault Cannon           \n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_PYRO) ) {
+			if (classtype & 16) {
+				CenterPrint (self,"–Ÿ“œ Details:          \n\n◊≈¡–œŒ”:               \nêîë Shotgun            \nêóë Flamethrower       \nêôë Incendiary Cannon  \n\nPress õ for alias help\n");
+			} else {
+				CenterPrint (self,"–Ÿ“œ Details:                \n\n◊≈¡–œŒ”:                     \nêîë Shotgun                  \nêóë Flamethrower             \nêòë Light Incendiary Cannon  \nêôë Heavy Incendiary Cannon  \n\nPress õ for alias help\n");
+			}
+		} else if ( (self.playerclass == CLASS_SPY) ) {
+			CenterPrint (self,"”–Ÿ Details:                 \n\n◊≈¡–œŒ”:                     \nêîë Tranquiliser Gun         \nêïë Super Shotgun            \nêñë Nailgun                  \n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_ENGINEER) ) {
+			CenterPrint (self,"≈Œ«…Œ≈≈“ Details:            \n\n◊≈¡–œŒ”:                     \nêìë Spanner                  \nêîë RailGun                  \nêïë Super Shotgun            \n\nPress õ for alias help\n");
+		} else if ( (!self.playerclass) ) {
+			CenterPrint (self,"\n\n\nObserver Details:             \n\n√œÕÕ¡Œƒ”:                     \ntracking: toggle tracking mode\ntrack_player: player camera   \ntrack_sentry: sentrygun camera\ntrack_tfgoal: flag camera     \nspecial: camera lock-on       \n");
+		}
+	} else {
+		if ( (self.playerclass == CLASS_SCOUT) ) {
+			CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nCaltrops            \nConcussion Grenade  \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nScanner: autoscan,scansound,scane,scanf\n\n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_SNIPER) ) {
+			CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nFlash               \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nautozoom : Toggle Rifle Autozooming\n\n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_SOLDIER) ) {
+			CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nNail Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_DEMOMAN) ) {
+			CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nMirv Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nThe Detpack : +det5,+det20,+det50,+det255\nDetonate Pipebombs : detpipe  \n\n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_MEDIC) ) {
+			CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nConcussion Grenade  \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_HWGUY) ) {
+			CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nMirv Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_PYRO) ) {
+			CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nNapalm Grenade      \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nNone\n\n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_SPY) ) {
+			CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nHallucinogen Grenade\n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nGo Undercover : disguise\nFeign Death : feign, sfeign\n\n\nPress õ for alias help\n");
+		} else if ( (self.playerclass == CLASS_ENGINEER) ) {
+			CenterPrint (self,"«“≈Œ¡ƒ≈”:            \nHand Grenade        \nEMP Grenade         \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nStart Building : build  \n\n\nPress õ for alias help\n");
+		}
+	}
 }
 
 void Menu_StuffClassHelp () {
-    if ( (self.playerclass == 1.000) ) {
-        sprint (self,PRINT_HIGH,"”√œ’‘ Details:\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êñë Nailgun\n");
-        sprint (self,PRINT_HIGH,"«“≈Œ¡ƒ≈”:\n   Concussion Grenade\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n");
-        sprint (self,PRINT_HIGH,"Scanner: autoscan,scansound,scane,scanf\n\n\n");
-    } else {
-        if ( (self.playerclass == 2.000) ) {
-            sprint (self,PRINT_HIGH,"”Œ…–≈“ Details:\n\n◊≈¡–œŒ”:\n   êîë Sniper Rifle/Auto Rifle\n");
-            sprint (self,PRINT_HIGH,"êñë Nailgun\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n\n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n");
-            sprint (self,PRINT_HIGH,"  autozoom : Toggle Rifle Autozooming\n\n\n");
-        } else {
-            if ( (self.playerclass == 3.000) ) {
-                sprint (self,PRINT_HIGH,"”œÃƒ…≈“ Details:\n\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êïë Super Shotgun\n");
-                sprint (self,PRINT_HIGH,"   êôë Rocket Launcher\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Nail Grenade\n");
-                sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
-            } else {
-                if ( (self.playerclass == 4.000) ) {
-                    sprint (self,PRINT_HIGH,"ƒ≈ÕœÃ…‘…œŒ” Õ¡Œ Details:\n\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êòë Grenade/Pipebomb Launcher\n");
-                    sprint (self,PRINT_HIGH,"«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Mirv Grenade\n");
-                    sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   The Detpack : +det5,+det20,+det50,+det255\n   Detonate Pipebombs : detpipe\n\n\n");
-                } else {
-                    if ( (self.playerclass == 5.000) ) {
-                        sprint (self,PRINT_HIGH,"Õ≈ƒ…√ Details:\n\n◊≈¡–œŒ”:\n   êìë Medikit/BioWeapon\n   êîë Shotgun\n   êïë Super Shotgun\n");
-                        sprint (self,PRINT_HIGH,"   êóë Super Nailgun\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Concussion Grenade\n");
-                        sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
-                    } else {
-                        if ( (self.playerclass == 6.000) ) {
-                            sprint (self,PRINT_HIGH,"»≈¡÷Ÿ ◊≈¡–œŒ” «’Ÿ Details:\n\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êïë Super Shotgun\n");
-                            sprint (self,PRINT_HIGH,"   êôë Assault Cannon\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n");
-                            sprint (self,PRINT_HIGH,"   Mirv Grenade\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
-                        } else {
-                            if ( (self.playerclass == 7.000) ) {
-                                if (classtype & 16) {
-                                    sprint (self,PRINT_HIGH,"–Ÿ“œ Details:\n\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êóë Flamethrower\n   êôë Incendiary Cannon\n");
-                                } else {
-                                    sprint (self,PRINT_HIGH,"–Ÿ“œ Details:\n\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êóë Flamethrower\n   êòë Light Incendiary Cannon\n   êôë Heavy Incendiary Cannon\n");
-                                }
-                                sprint (self,PRINT_HIGH,"«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Napalm Grenade\n");
-                                sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
-                            } else {
-                                if ( (self.playerclass == 8.000) ) {
-                                    sprint (self,PRINT_HIGH,"”–Ÿ Details:\n\n◊≈¡–œŒ”:\n   êîë Tranquiliser Gun\n   êïë Super Shotgun\n   êñë Nailgun\n");
-                                    sprint (self,PRINT_HIGH,"«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Hallucinogenic Grenade\n");
-                                    sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Go Undercover : disguise\n   Feign Death : feign, sfeign\n\n\n");
-                                } else {
-                                    if ( (self.playerclass == 9.000) ) {
-                                        sprint (self,PRINT_HIGH,"≈Œ«…Œ≈≈“ Details:\n\n◊≈¡–œŒ”:\n   êìë Spanner\n   êîë RailGun\n   êïë Super Shotgun\n");
-                                        sprint (self,PRINT_HIGH,"«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   EMP Grenade\n");
-                                        sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Start Building : build\n\n\n");
-
-                                    } else {
-                                        if ( (!self.playerclass) ) {
-                                            sprint (self,PRINT_HIGH,"\n\nObserver Details:\n\n\n√œÕÕ¡Œƒ”: \n   tracking:     toggle tracking mode\n   track_player: observe a player\n   track_sentry: observe a sentrygun\n   track_tfgoal: observe a team's flag\n   special:      lock onto and observe an object\n");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	if ( (self.playerclass == CLASS_SCOUT) ) {
+		sprint (self,PRINT_HIGH,"”√œ’‘ Details:\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êñë Nailgun\n");
+		sprint (self,PRINT_HIGH,"«“≈Œ¡ƒ≈”:\n   Concussion Grenade\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n");
+		sprint (self,PRINT_HIGH,"Scanner: autoscan,scansound,scane,scanf\n\n\n");
+	} else if ( (self.playerclass == CLASS_SNIPER) ) {
+		sprint (self,PRINT_HIGH,"”Œ…–≈“ Details:\n\n◊≈¡–œŒ”:\n   êîë Sniper Rifle/Auto Rifle\n");
+		sprint (self,PRINT_HIGH,"êñë Nailgun\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n\n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n");
+		sprint (self,PRINT_HIGH,"  autozoom : Toggle Rifle Autozooming\n\n\n");
+	} else if ( (self.playerclass == CLASS_SOLDIER) ) {
+		sprint (self,PRINT_HIGH,"”œÃƒ…≈“ Details:\n\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êïë Super Shotgun\n");
+		sprint (self,PRINT_HIGH,"   êôë Rocket Launcher\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Nail Grenade\n");
+		sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
+	} else if ( (self.playerclass == CLASS_DEMOMAN) ) {
+		sprint (self,PRINT_HIGH,"ƒ≈ÕœÃ…‘…œŒ” Õ¡Œ Details:\n\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êòë Grenade/Pipebomb Launcher\n");
+		sprint (self,PRINT_HIGH,"«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Mirv Grenade\n");
+		sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   The Detpack : +det5,+det20,+det50,+det255\n   Detonate Pipebombs : detpipe\n\n\n");
+	} else if ( (self.playerclass == CLASS_MEDIC) ) {
+		sprint (self,PRINT_HIGH,"Õ≈ƒ…√ Details:\n\n◊≈¡–œŒ”:\n   êìë Medikit/BioWeapon\n   êîë Shotgun\n   êïë Super Shotgun\n");
+		sprint (self,PRINT_HIGH,"   êóë Super Nailgun\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Concussion Grenade\n");
+		sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
+	} else if ( (self.playerclass == CLASS_HWGUY) ) {
+		sprint (self,PRINT_HIGH,"»≈¡÷Ÿ ◊≈¡–œŒ” «’Ÿ Details:\n\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êïë Super Shotgun\n");
+		sprint (self,PRINT_HIGH,"   êôë Assault Cannon\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n");
+		sprint (self,PRINT_HIGH,"   Mirv Grenade\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
+	} else if ( (self.playerclass == CLASS_PYRO) ) {
+		if (classtype & 16) {
+			sprint (self,PRINT_HIGH,"–Ÿ“œ Details:\n\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êóë Flamethrower\n   êôë Incendiary Cannon\n");
+		} else {
+			sprint (self,PRINT_HIGH,"–Ÿ“œ Details:\n\n◊≈¡–œŒ”:\n   êîë Shotgun\n   êóë Flamethrower\n   êòë Light Incendiary Cannon\n   êôë Heavy Incendiary Cannon\n");
+		}
+		sprint (self,PRINT_HIGH,"«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Napalm Grenade\n");
+		sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
+	} else if ( (self.playerclass == CLASS_SPY) ) {
+		sprint (self,PRINT_HIGH,"”–Ÿ Details:\n\n◊≈¡–œŒ”:\n   êîë Tranquiliser Gun\n   êïë Super Shotgun\n   êñë Nailgun\n");
+		sprint (self,PRINT_HIGH,"«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Hallucinogenic Grenade\n");
+		sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Go Undercover : disguise\n   Feign Death : feign, sfeign\n\n\n");
+	} else if ( (self.playerclass == CLASS_ENGINEER) ) {
+		sprint (self,PRINT_HIGH,"≈Œ«…Œ≈≈“ Details:\n\n◊≈¡–œŒ”:\n   êìë Spanner\n   êîë RailGun\n   êïë Super Shotgun\n");
+		sprint (self,PRINT_HIGH,"«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   EMP Grenade\n");
+		sprint (self,PRINT_HIGH,"”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Start Building : build\n\n\n");
+	} else if ( (!self.playerclass) ) {
+		sprint (self,PRINT_HIGH,"\n\nObserver Details:\n\n\n√œÕÕ¡Œƒ”: \n   tracking:     toggle tracking mode\n   track_player: observe a player\n   track_sentry: observe a sentrygun\n   track_tfgoal: observe a team's flag\n   special:      lock onto and observe an object\n");
+	}
 }
 
 void Menu_ClassHelp2 () {
@@ -869,93 +814,75 @@ void Menu_Spy () {
     if ( self.is_feigning ) {
         if ( ((self.undercover_team != 0.000) && (self.undercover_skin != 0.000)) ) {
             CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Stop Feigning               \nêñë Reset Skin and Color        \nêóë Nothing                     \n\n");
-        } else {
-            if ( (self.undercover_team != 0.000) ) {
+        } else if ( (self.undercover_team != 0.000) ) {
                 CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Stop Feigning               \nêñë Reset Color                 \nêóë Nothing                     \n\n");
-            } else {
-                if ( (self.undercover_skin != 0.000) ) {
-                    CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Stop Feigning               \nêñë Reset Skin                  \nêóë Nothing                     \n\n");
-                } else {
-                    CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Stop Feigning               \nêñë Nothing                     \n\n");
-                }
-            }
-        }
+		} else if ( (self.undercover_skin != 0.000) ) {
+			CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Stop Feigning               \nêñë Reset Skin                  \nêóë Nothing                     \n\n");
+		} else {
+			CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Stop Feigning               \nêñë Nothing                     \n\n");
+		}
     } else {
         if ( ((self.undercover_team != 0.000) && (self.undercover_skin != 0.000)) ) {
             CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Start Feigning              \nêñë Reset Skin and Color        \nêóë Nothing                     \n\n");
-        } else {
-            if ( (self.undercover_team != 0.000) ) {
-                CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Start Feigning              \nêñë Reset Color                 \nêóë Nothing                     \n\n");
-            } else {
-                if ( (self.undercover_skin != 0.000) ) {
-                    CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Start Feigning              \nêñë Reset Skin                  \nêóë Nothing                     \n\n");
-                } else {
-                    CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Start Feigning              \nêñë Nothing                     \n\n");
-                }
-            }
-        }
-    }
+        } else if ( (self.undercover_team != 0.000) ) {
+			CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Start Feigning              \nêñë Reset Color                 \nêóë Nothing                     \n\n");
+		} else if ( (self.undercover_skin != 0.000) ) {
+			CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Start Feigning              \nêñë Reset Skin                  \nêóë Nothing                     \n\n");
+		} else {
+			CenterPrint (self,"Action:                           \nêìë Change Skin                 \nêîë Change Color                \nêïë Start Feigning              \nêñë Nothing                     \n\n");
+		}
+	}
 }
 
 void Menu_Spy_Input (float inp) {
-    if ( ((inp == 1.000) || (inp == 2.000)) ) {
-        if ( (self.effects & (8.000 | 4.000)) ) {
-            sprint (self,PRINT_HIGH,"You can't go undercover while glowing.\n");
-            ResetMenu ();
-            self.impulse = 0.000;
-            return ;
-        }
-        if ( (self.is_unabletospy == 1.000) ) {
-            sprint (self,PRINT_HIGH,"You can't go undercover right now.\n");
-            ResetMenu ();
-            self.impulse = 0.000;
-            return ;
-        }
-    }
-    if ( (inp == 1.000) ) {
-        Menu_Spy_Skin ();
-        self.menu_count = 25.000;
-        self.current_menu = 13.000;
-        self.menu_displaytime = 0.000;
-        self.impulse = 0.000;
-    } else {
-        if ( (inp == 2.000) ) {
-            Menu_Spy_Color ();
-            self.menu_count = 25.000;
-            self.current_menu = 14.000;
-            self.menu_displaytime = 0.000;
-            self.impulse = 0.000;
-        } else {
-            if ( (inp == 3.000) ) {
-                TeamFortress_SpyFeignDeath (0.000);
-                ResetMenu ();
-                self.impulse = 0.000;
-            } else {
-                if ( (inp == 4.000) ) {
-                    Spy_RemoveDisguise (self);
-                    ResetMenu ();
-                    self.impulse = 0.000;
-                } else {
-                    if ( ((inp == 5.000) && ((self.undercover_team != 0.000) || (self.undercover_skin != 0.000))) ) {
-                        ResetMenu ();
-                        self.impulse = 0.000;
-                    } else {
-                        if ( (inp == 6.000) ) {
-                            if (self.alpha == 0.400) {
-                                sprint (self, PRINT_HIGH, "self.alpha 1\n");
-                                self.alpha = 1.000;
-                            } else {
-                                sprint (self, PRINT_HIGH, "self.alpha 0.4\n");
-                                self.alpha = 0.400;
-                            }
-                            ResetMenu ();
-                            self.impulse = 0.000;
-                        }
-                    }
-                }
-            }
-        }
-    }
+	if ( ((inp == 1.000) || (inp == 2.000)) ) {
+		if ( (self.effects & (8.000 | 4.000)) ) {
+			sprint (self,PRINT_HIGH,"You can't go undercover while glowing.\n");
+			ResetMenu ();
+			self.impulse = 0.000;
+			return ;
+		}
+		if ( (self.is_unabletospy == 1.000) ) {
+			sprint (self,PRINT_HIGH,"You can't go undercover right now.\n");
+			ResetMenu ();
+			self.impulse = 0.000;
+			return ;
+		}
+	}
+	if ( (inp == 1.000) ) {
+		Menu_Spy_Skin ();
+		self.menu_count = 25.000;
+		self.current_menu = 13.000;
+		self.menu_displaytime = 0.000;
+		self.impulse = 0.000;
+	} else if ( (inp == 2.000) ) {
+		Menu_Spy_Color ();
+		self.menu_count = 25.000;
+		self.current_menu = 14.000;
+		self.menu_displaytime = 0.000;
+		self.impulse = 0.000;
+	} else if ( (inp == 3.000) ) {
+		TeamFortress_SpyFeignDeath (0.000);
+		ResetMenu ();
+		self.impulse = 0.000;
+	} else if ( (inp == 4.000) ) {
+		Spy_RemoveDisguise (self);
+		ResetMenu ();
+		self.impulse = 0.000;
+	} else if ( ((inp == 5.000) && ((self.undercover_team != 0.000) || (self.undercover_skin != 0.000))) ) {
+		ResetMenu ();
+		self.impulse = 0.000;
+	} else if ( (inp == 6.000) ) {
+		if (self.alpha == 0.400) {
+			sprint (self, PRINT_HIGH, "self.alpha 1\n");
+			self.alpha = 1.000;
+		} else {
+			sprint (self, PRINT_HIGH, "self.alpha 0.4\n");
+			self.alpha = 0.400;
+		}
+		ResetMenu ();
+		self.impulse = 0.000;
+	}
 }
 
 void Menu_Spy_Skin () {
@@ -1041,40 +968,30 @@ void Menu_Engineer () {
 }
 
 void Menu_Engineer_Input (float inp) {
-    if ( (((inp == 1.000) && (self.ammo_cells >= 100.000)) && (self.has_dispenser != 1.000)) ) {
-        TeamFortress_Build (1.000);
-        ResetMenu ();
-        self.impulse = 0.000;
-    } else {
-        if ( (((inp == 2.000) && (self.ammo_cells >= 130.000)) && (self.has_sentry != 1.000)) ) {
-            TeamFortress_Build (2.000);
-            ResetMenu ();
-            self.impulse = 0.000;
-        } else {
-            if ( (((inp == 3.000) && (self.ammo_cells >= 180.000)) && (self.has_sentry != 1.000)) ) {
-                TeamFortress_Build (3.000);
-                ResetMenu ();
-                self.impulse = 0.000;
-            } else {
-                if ( ((inp == 7.000) && (self.has_dispenser == 1.000)) ) {
-                    DestroyBuilding (self,"building_dispenser");
-                    ResetMenu ();
-                    self.impulse = 0.000;
-                } else {
-                    if ( ((inp == 8.000) && (self.has_sentry == 1.000)) ) {
-                        DestroyBuilding (self,"building_sentrygun");
-                        ResetMenu ();
-                        self.impulse = 0.000;
-                    } else {
-                        if ( (inp == 5.000) ) {
-                            ResetMenu ();
-                            self.impulse = 0.000;
-                        }
-                    }
-                }
-            }
-        }
-    }
+	if ( (((inp == 1.000) && (self.ammo_cells >= 100.000)) && (self.has_dispenser != 1.000)) ) {
+		TeamFortress_Build (1.000);
+		ResetMenu ();
+		self.impulse = 0.000;
+	} else if ( (((inp == 2.000) && (self.ammo_cells >= 130.000)) && (self.has_sentry != 1.000)) ) {
+		TeamFortress_Build (2.000);
+		ResetMenu ();
+		self.impulse = 0.000;
+	} else if ( (((inp == 3.000) && (self.ammo_cells >= 180.000)) && (self.has_sentry != 1.000)) ) {
+		TeamFortress_Build (3.000);
+		ResetMenu ();
+		self.impulse = 0.000;
+	} else if ( ((inp == 7.000) && (self.has_dispenser == 1.000)) ) {
+		DestroyBuilding (self,"building_dispenser");
+		ResetMenu ();
+		self.impulse = 0.000;
+	} else if ( ((inp == 8.000) && (self.has_sentry == 1.000)) ) {
+		DestroyBuilding (self,"building_sentrygun");
+		ResetMenu ();
+		self.impulse = 0.000;
+	} else if ( (inp == 5.000) ) {
+		ResetMenu ();
+		self.impulse = 0.000;
+	}
 }
 
 void Menu_EngineerFix_Dispenser () {
@@ -1084,84 +1001,78 @@ void Menu_EngineerFix_Dispenser () {
 float SetAttribute (float cur_ammo, float new_ammo);
 
 void Menu_EngineerFix_Dispenser_Input (float inp) {
-    float metalcost;
-    float am;
-    if ( ((self.classname != "player") || (self.building == world)) ) {
-        return ;
-    }
-    if ( (inp == 1.000) ) {
-        am = (20.000 * 2.000);
-        if ( (am > self.ammo_shells) ) {
-            am = self.ammo_shells;
-        }
-        if ( (am > (400.000 - self.building.ammo_shells)) ) {
-            am = (400.000 - self.building.ammo_shells);
-        }
-        self.ammo_shells = SetAttribute(self.ammo_shells, self.ammo_shells - am);
-        self.building.ammo_shells = (self.building.ammo_shells + am);
-        am = (20.000 * 2.000);
-        if ( (am > self.ammo_nails) ) {
-            am = self.ammo_nails;
-        }
-        if ( (am > (600.000 - self.building.ammo_nails)) ) {
-            am = (600.000 - self.building.ammo_nails);
-        }
-        self.ammo_nails = SetAttribute(self.ammo_nails, self.ammo_nails - am);
-        self.building.ammo_nails = (self.building.ammo_nails + am);
-        am = (10.000 * 2.000);
-        if ( (am > self.ammo_rockets) ) {
-            am = self.ammo_rockets;
-        }
-        if ( (am > (300.000 - self.building.ammo_rockets)) ) {
-            am = (300.000 - self.building.ammo_rockets);
-        }
-        self.ammo_rockets  = SetAttribute(self.ammo_rockets, self.ammo_rockets - am);
-        self.building.ammo_rockets = (self.building.ammo_rockets + am);
-        am = (10.000 * 2.000);
-        if ( (am > self.ammo_cells) ) {
-            am = self.ammo_cells;
-        }
-        if ( (am > (400.000 - self.building.ammo_cells)) ) {
-            am = (400.000 - self.building.ammo_cells);
-        }
-        self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - am);
-        self.building.ammo_cells = (self.building.ammo_cells + am);
-    } else {
-        if ( (inp == 2.000) ) {
-            am = (40.000 * 2.000);
-            if ( (am > self.armorvalue) ) {
-                am = self.armorvalue;
-            }
-            if ( (am > (500.000 - self.building.armorvalue)) ) {
-                am = (500.000 - self.building.armorvalue);
-            }
-            self.armorvalue = SetAttribute(self.armorvalue, self.armorvalue - am);
-            self.building.armorvalue = (self.building.armorvalue + am);
-        } else {
-            if ( (inp == 3.000) ) {
-                metalcost = ((self.building.max_health - self.building.health) / 5.000);
-                if ( (metalcost > self.ammo_cells) ) {
-                    metalcost = self.ammo_cells;
-                }
-                self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - am);
-                self.building.health = (self.building.health + (metalcost * 5.000));
-            } else {
-                if ( (inp == 4.000) ) {
-                    sprint (self,PRINT_HIGH,"You dismantle the Dispenser.\n");
-                    self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells + (100.000 / 2.000));
-                    if ( (self.building.real_owner != self) ) {
-                        sprint (self.building.real_owner,PRINT_HIGH,self.netname," dismantled your Dispenser.\n");
-                        teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.netname);
-                        teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner," dismantled ");
-                        teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.building.real_owner.netname);
-                        teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,"'s Dispenser.\n");
-                    }
-                    dremove (self.building);
-                    self.building.real_owner.has_dispenser = 0.000;
-                }
-            }
-        }
-    }
+	float metalcost;
+	float am;
+	if ( ((self.classname != "player") || (self.building == world)) ) {
+		return ;
+	}
+	if ( (inp == 1.000) ) {
+		am = (20.000 * 2.000);
+		if ( (am > self.ammo_shells) ) {
+			am = self.ammo_shells;
+		}
+		if ( (am > (400.000 - self.building.ammo_shells)) ) {
+			am = (400.000 - self.building.ammo_shells);
+		}
+		self.ammo_shells = SetAttribute(self.ammo_shells, self.ammo_shells - am);
+		self.building.ammo_shells = (self.building.ammo_shells + am);
+		am = (20.000 * 2.000);
+		if ( (am > self.ammo_nails) ) {
+			am = self.ammo_nails;
+		}
+		if ( (am > (600.000 - self.building.ammo_nails)) ) {
+			am = (600.000 - self.building.ammo_nails);
+		}
+		self.ammo_nails = SetAttribute(self.ammo_nails, self.ammo_nails - am);
+		self.building.ammo_nails = (self.building.ammo_nails + am);
+		am = (10.000 * 2.000);
+		if ( (am > self.ammo_rockets) ) {
+			am = self.ammo_rockets;
+		}
+		if ( (am > (300.000 - self.building.ammo_rockets)) ) {
+			am = (300.000 - self.building.ammo_rockets);
+		}
+		self.ammo_rockets  = SetAttribute(self.ammo_rockets, self.ammo_rockets - am);
+		self.building.ammo_rockets = (self.building.ammo_rockets + am);
+		am = (10.000 * 2.000);
+		if ( (am > self.ammo_cells) ) {
+			am = self.ammo_cells;
+		}
+		if ( (am > (400.000 - self.building.ammo_cells)) ) {
+			am = (400.000 - self.building.ammo_cells);
+		}
+		self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - am);
+		self.building.ammo_cells = (self.building.ammo_cells + am);
+	} else if ( (inp == 2.000) ) {
+		am = (40.000 * 2.000);
+		if ( (am > self.armorvalue) ) {
+			am = self.armorvalue;
+		}
+		if ( (am > (500.000 - self.building.armorvalue)) ) {
+			am = (500.000 - self.building.armorvalue);
+		}
+		self.armorvalue = SetAttribute(self.armorvalue, self.armorvalue - am);
+		self.building.armorvalue = (self.building.armorvalue + am);
+	} else if ( (inp == 3.000) ) {
+		metalcost = ((self.building.max_health - self.building.health) / 5.000);
+		if ( (metalcost > self.ammo_cells) ) {
+			metalcost = self.ammo_cells;
+		}
+		self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - am);
+		self.building.health = (self.building.health + (metalcost * 5.000));
+	} else if ( (inp == 4.000) ) {
+		sprint (self,PRINT_HIGH,"You dismantle the Dispenser.\n");
+		self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells + (100.000 / 2.000));
+		if ( (self.building.real_owner != self) ) {
+			sprint (self.building.real_owner,PRINT_HIGH,self.netname," dismantled your Dispenser.\n");
+			teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.netname);
+			teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner," dismantled ");
+			teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.building.real_owner.netname);
+			teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,"'s Dispenser.\n");
+		}
+		dremove (self.building);
+		self.building.real_owner.has_dispenser = 0.000;
+	}
     if ( ((inp >= 1.000) && (inp <= 5.000)) ) {
         ResetMenu ();
         self.impulse = 0.000;
@@ -1185,100 +1096,92 @@ void Menu_EngineerFix_SentryGun () {
 }
 
 void Menu_EngineerFix_SentryGun_Input (float inp) {
-    float am;
-    float metalcost;
-    string st;
-    if ( (self.building.real_owner.has_sentry == 0.000) ) {
-        return ;
-    }
-    if ( ((self.classname != "player") || (self.building == world)) ) {
-        return ;
-    }
-    if ( (inp == 1.000) ) {
-        am = (20.000 * 2.000);
-        if ( (am > self.ammo_shells) ) {
-            am = self.ammo_shells;
-        }
-        if ( (am > (self.building.maxammo_shells - self.building.ammo_shells)) ) {
-            am = (self.building.maxammo_shells - self.building.ammo_shells);
-        }
-        self.ammo_shells = SetAttribute(self.ammo_shells, self.ammo_shells - am);
-        self.building.ammo_shells = (self.building.ammo_shells + am);
-        if ( (self.building.weapon == 3.000) ) {
-            am = (10.000 * 2.000);
-            if ( (am > self.ammo_rockets) ) {
-                am = self.ammo_rockets;
-            }
-            if ( (am > (self.building.maxammo_rockets - self.building.ammo_rockets)) ) {
-                am = (self.building.maxammo_rockets - self.building.ammo_rockets);
-            }
-            self.ammo_rockets = SetAttribute(self.ammo_rockets, self.ammo_rockets - am);
-            self.building.ammo_rockets = (self.building.ammo_rockets + am);
-        }
-    } else {
-        if ( (((self.building.weapon < 3.000) && (inp == 2.000)) && (self.ammo_cells >= 130.000)) ) {
-            self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - 130.000);
-            self.building.weapon = (self.building.weapon + 1.000);
-            if (sgtype) {
-                self.building.max_health = floor(self.building.max_health * 1.250);
-            } else {
-                self.building.max_health = floor(self.building.max_health * 1.200);
-            }
-            self.building.health = self.building.max_health;
-            self.building.maxammo_shells = (self.building.maxammo_shells * 1.200);
-            if ( (self.building.weapon == 2.000) ) {
-                sound (self.building,CHAN_ITEM,"weapons/turrset.wav",1.000,1.000);
-                if (sgtype) {
-                    self.building.think = lvl2_sentry_stand;
-                } else {
-                    self.building.think = lvl2_oldsentry_stand;
-                }
-                self.building.skin = 1.000;
-            } else {
-                sound (self.building,CHAN_ITEM,"weapons/turrset.wav",1.000,1.000);
-                if (sgtype) {
-                    self.building.think = lvl3_sentry_stand;
-                } else {
-                    self.building.think = lvl3_oldsentry_stand;
-                }
-                self.building.skin = 2.000;
-            }
-            sprint (self,PRINT_HIGH,"You upgrade the Sentry Gun to level ");
-            st = ftos (self.building.weapon);
-            sprint (self,PRINT_HIGH,st);
-            sprint (self,PRINT_HIGH,"\n");
-        } else {
-            if ( (inp == 3.000) ) {
-                metalcost = ((self.building.max_health - self.building.health) / 5.000);
-                if ( (metalcost > self.ammo_cells) ) {
-                    metalcost = self.ammo_cells;
-                }
-                self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - metalcost);
-                self.building.health = (self.building.health + (metalcost * 5.000));
-            } else {
-                if ( (inp == 4.000) ) {
-                    sprint (self,PRINT_HIGH,"You dismantle the Sentry Gun.\n");
-                    self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - 130.000);
-                    if ( (self.building.real_owner != self) ) {
-                        sprint (self.building.real_owner,PRINT_HIGH,self.netname," dismantled your Sentry Gun.\n");
-                        teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.netname);
-                        teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner," dismantled ");
-                        teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.building.real_owner.netname);
-                        teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,"'s Sentry Gun.\n");
-                    }
-                    dremove (self.building.trigger_field);
-                    dremove (self.building);
-                    self.building.real_owner.has_sentry = 0.000;
-                } else {
-                    if ( (inp == 6.000) ) {
-                        sprint (self,PRINT_HIGH,"Rotating 45 degrees to the left...\n");
-                        self.building.waitmin = anglemod ((self.building.waitmin + 45.000));
-                        self.building.waitmax = anglemod ((self.building.waitmax + 45.000));
-                    }
-                }
-            }
-        }
-    }
+	float am;
+	float metalcost;
+	string st;
+	if ( (self.building.real_owner.has_sentry == 0.000) ) {
+		return ;
+	}
+	if ( ((self.classname != "player") || (self.building == world)) ) {
+		return ;
+	}
+	if ( (inp == 1.000) ) {
+		am = (20.000 * 2.000);
+		if ( (am > self.ammo_shells) ) {
+			am = self.ammo_shells;
+		}
+		if ( (am > (self.building.maxammo_shells - self.building.ammo_shells)) ) {
+			am = (self.building.maxammo_shells - self.building.ammo_shells);
+		}
+		self.ammo_shells = SetAttribute(self.ammo_shells, self.ammo_shells - am);
+		self.building.ammo_shells = (self.building.ammo_shells + am);
+		if ( (self.building.weapon == 3.000) ) {
+			am = (10.000 * 2.000);
+			if ( (am > self.ammo_rockets) ) {
+				am = self.ammo_rockets;
+			}
+			if ( (am > (self.building.maxammo_rockets - self.building.ammo_rockets)) ) {
+				am = (self.building.maxammo_rockets - self.building.ammo_rockets);
+			}
+			self.ammo_rockets = SetAttribute(self.ammo_rockets, self.ammo_rockets - am);
+			self.building.ammo_rockets = (self.building.ammo_rockets + am);
+		}
+	} else if ( (((self.building.weapon < 3.000) && (inp == 2.000)) && (self.ammo_cells >= 130.000)) ) {
+		self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - 130.000);
+		self.building.weapon = (self.building.weapon + 1.000);
+		if (sgtype) {
+			self.building.max_health = floor(self.building.max_health * 1.250);
+		} else {
+			self.building.max_health = floor(self.building.max_health * 1.200);
+		}
+		self.building.health = self.building.max_health;
+		self.building.maxammo_shells = (self.building.maxammo_shells * 1.200);
+		if ( (self.building.weapon == 2.000) ) {
+			sound (self.building,CHAN_ITEM,"weapons/turrset.wav",1.000,1.000);
+			if (sgtype) {
+				self.building.think = lvl2_sentry_stand;
+			} else {
+				self.building.think = lvl2_oldsentry_stand;
+			}
+			self.building.skin = 1.000;
+		} else {
+			sound (self.building,CHAN_ITEM,"weapons/turrset.wav",1.000,1.000);
+			if (sgtype) {
+				self.building.think = lvl3_sentry_stand;
+			} else {
+				self.building.think = lvl3_oldsentry_stand;
+			}
+			self.building.skin = 2.000;
+		}
+		sprint (self,PRINT_HIGH,"You upgrade the Sentry Gun to level ");
+		st = ftos (self.building.weapon);
+		sprint (self,PRINT_HIGH,st);
+		sprint (self,PRINT_HIGH,"\n");
+	} else if ( (inp == 3.000) ) {
+		metalcost = ((self.building.max_health - self.building.health) / 5.000);
+		if ( (metalcost > self.ammo_cells) ) {
+			metalcost = self.ammo_cells;
+		}
+		self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - metalcost);
+		self.building.health = (self.building.health + (metalcost * 5.000));
+	} else if ( (inp == 4.000) ) {
+		sprint (self,PRINT_HIGH,"You dismantle the Sentry Gun.\n");
+		self.ammo_cells = SetAttribute(self.ammo_cells, self.ammo_cells - 130.000);
+		if ( (self.building.real_owner != self) ) {
+			sprint (self.building.real_owner,PRINT_HIGH,self.netname," dismantled your Sentry Gun.\n");
+			teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.netname);
+			teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner," dismantled ");
+			teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,self.building.real_owner.netname);
+			teamsprint (self.building.real_owner.pteam.team ,self.building.real_owner,"'s Sentry Gun.\n");
+		}
+		dremove (self.building.trigger_field);
+		dremove (self.building);
+		self.building.real_owner.has_sentry = 0.000;
+	} else if ( (inp == 6.000) ) {
+		sprint (self,PRINT_HIGH,"Rotating 45 degrees to the left...\n");
+		self.building.waitmin = anglemod ((self.building.waitmin + 45.000));
+		self.building.waitmax = anglemod ((self.building.waitmax + 45.000));
+	}
     if ( ((inp >= 1.000) && (inp <= 6.000)) ) {
         ResetMenu ();
         self.impulse = 0.000;
@@ -1297,56 +1200,54 @@ void Menu_Dispenser () {
 }
 
 void Menu_Dispenser_Input (float inp) {
-    float am;
-    float empty;
-    empty = 0.000;
-    if ( (inp == 1.000) ) {
-        if ( ((((self.building.ammo_shells == 0.000) && (self.building.ammo_nails == 0.000)) && (self.building.ammo_rockets == 0.000)) && (self.building.ammo_cells == 0.000)) ) {
-            empty = 1.000;
-        } else {
-            am = (self.maxammo_shells - self.ammo_shells);
-            if ( (am > self.building.ammo_shells) ) {
-                am = self.building.ammo_shells;
-            }
-            self.building.ammo_shells = (self.building.ammo_shells - am);
-            self.ammo_shells = (self.ammo_shells + am);
-            am = (self.maxammo_nails - self.ammo_nails);
-            if ( (am > self.building.ammo_nails) ) {
-                am = self.building.ammo_nails;
-            }
-            self.building.ammo_nails = (self.building.ammo_nails - am);
-            self.ammo_nails = (self.ammo_nails + am);
-            am = (self.maxammo_rockets - self.ammo_rockets);
-            if ( (am > self.building.ammo_rockets) ) {
-                am = self.building.ammo_rockets;
-            }
-            self.building.ammo_rockets = (self.building.ammo_rockets - am);
-            self.ammo_rockets = (self.ammo_rockets + am);
-            am = (self.maxammo_cells - self.ammo_cells);
-            if ( (am > self.building.ammo_cells) ) {
-                am = self.building.ammo_cells;
-            }
-            self.building.ammo_cells = (self.building.ammo_cells - am);
-            self.ammo_cells = (self.ammo_cells + am);
-        }
-    } else {
-        if ( (inp == 2.000) ) {
-            if ( (self.building.armorvalue == 0.000) ) {
-                empty = 1.000;
-            } else {
-                am = (self.maxarmor - self.armorvalue);
-                if ( (am > self.building.armorvalue) ) {
-                    am = self.building.armorvalue;
-                }
-                if ( (self.armortype == 0.000) ) {
-                    self.armortype = 0.300;
-                    self.items = (self.items | 8192.000);
-                }
-                self.building.armorvalue = (self.building.armorvalue - am);
-                self.armorvalue = (self.armorvalue + am);
-            }
-        }
-    }
+	float am;
+	float empty;
+	empty = 0.000;
+	if ( (inp == 1.000) ) {
+		if ( ((((self.building.ammo_shells == 0.000) && (self.building.ammo_nails == 0.000)) && (self.building.ammo_rockets == 0.000)) && (self.building.ammo_cells == 0.000)) ) {
+			empty = 1.000;
+		} else {
+			am = (self.maxammo_shells - self.ammo_shells);
+			if ( (am > self.building.ammo_shells) ) {
+				am = self.building.ammo_shells;
+			}
+			self.building.ammo_shells = (self.building.ammo_shells - am);
+			self.ammo_shells = (self.ammo_shells + am);
+			am = (self.maxammo_nails - self.ammo_nails);
+			if ( (am > self.building.ammo_nails) ) {
+				am = self.building.ammo_nails;
+			}
+			self.building.ammo_nails = (self.building.ammo_nails - am);
+			self.ammo_nails = (self.ammo_nails + am);
+			am = (self.maxammo_rockets - self.ammo_rockets);
+			if ( (am > self.building.ammo_rockets) ) {
+				am = self.building.ammo_rockets;
+			}
+			self.building.ammo_rockets = (self.building.ammo_rockets - am);
+			self.ammo_rockets = (self.ammo_rockets + am);
+			am = (self.maxammo_cells - self.ammo_cells);
+			if ( (am > self.building.ammo_cells) ) {
+				am = self.building.ammo_cells;
+			}
+			self.building.ammo_cells = (self.building.ammo_cells - am);
+			self.ammo_cells = (self.ammo_cells + am);
+		}
+	} else if ( (inp == 2.000) ) {
+		if ( (self.building.armorvalue == 0.000) ) {
+			empty = 1.000;
+		} else {
+			am = (self.maxarmor - self.armorvalue);
+			if ( (am > self.building.armorvalue) ) {
+				am = self.building.armorvalue;
+			}
+			if ( (self.armortype == 0.000) ) {
+				self.armortype = 0.300;
+				self.items = (self.items | 8192.000);
+			}
+			self.building.armorvalue = (self.building.armorvalue - am);
+			self.armorvalue = (self.armorvalue + am);
+		}
+	}
     if ( ((inp >= 1.000) && (inp <= 3.000)) ) {
         if ( empty ) {
             sprint (self,PRINT_HIGH,"The dispenser is empty.\n");
