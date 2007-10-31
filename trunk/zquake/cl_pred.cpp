@@ -471,19 +471,17 @@ void CL_PredictMovement (void)
 		cl.onground = false;
 		return;
 	}
+
+	if (cls.mvdplayback)
+		return;
 #endif
 
 	if (cl.paused)
 		return;
 
-	// set up prediction for other players
-	CL_SetUpPlayerPrediction (false);
-
-	// predict the local player
+	CL_SetUpPlayerPrediction();
 	CL_PredictLocalPlayer ();
-
-	// predict other players
-	CL_SetUpPlayerPrediction (true);
+	CL_PredictOtherPlayers_NoClip ();
 }
 
 

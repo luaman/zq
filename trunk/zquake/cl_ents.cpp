@@ -1149,19 +1149,11 @@ void CL_LinkPlayers (void)
 	int				j;
 	player_info_t	*info;
 	player_state_t	*state;
-	player_state_t	exact;
-	double			playertime;
 	entity_t		ent;
 	centity_t		*cent;
-	int				msec;
 	frame_t			*frame;
-	int				oldphysent;
 	vec3_t			org;
 	float			flicker;
-
-	playertime = cls.realtime - cls.latency + 0.02;
-	if (playertime > cls.realtime)
-		playertime = cls.realtime;
 
 	frame = &cl.frames[cl.parsecount&UPDATE_MASK];
 
@@ -1248,25 +1240,8 @@ void CL_LinkPlayers (void)
 		ent.angles[ROLL] = 0;
 		ent.angles[ROLL] = V_CalcRoll (ent.angles, state->velocity)*4;
 
-		// only predict half the move to minimize overruns
-		msec = 1000 * (playertime - state->state_time);
-		if (msec <= 0 || !cl_predict_players.value)
-		{
-			VectorCopy (state->origin, ent.origin);
-		}
-		else
-		{
-			// predict players movement
-			if (msec > 255)
-				msec = 255;
-			state->command.msec = msec;
-
-			oldphysent = cl.pmove.numphysent;
-			CL_SetSolidPlayers (j);
-			CL_PredictUsercmd (state, &exact, &state->command);
-			cl.pmove.numphysent = oldphysent;
-			VectorCopy (exact.origin, ent.origin);
-		}
+		// origin
+		VectorCopy (predicted_players[j].origin, ent.origin);
 
 		if (state->effects & EF_FLAG1)
 			CL_AddFlagModels (&ent, 0);
@@ -1297,7 +1272,7 @@ void CL_LinkPlayers (void)
 
 /*
 ===============
-CL_SetSolid
+CL_SetSolidEntities
 
 Builds all the pmove physents for the current frame
 ===============
@@ -1462,29 +1437,12 @@ void MVD_Interpolate(void)
 
 #endif
 
-/*
-===
-Calculate the new position of players, without other player clipping
-
-We do this to set up real player prediction.
-Players are predicted twice, first without clipping other players,
-then with clipping against them.
-This sets up the first phase.
-===
-*/
-void CL_SetUpPlayerPrediction (qbool dopred)
+void CL_SetUpPlayerPrediction ()
 {
 	int				j;
 	player_state_t	*state;
-	player_state_t	exact;
-	double			playertime;
-	int				msec;
 	frame_t			*frame;
 	struct predicted_player *pplayer;
-
-	playertime = cls.realtime - cls.latency + 0.02;
-	if (playertime > cls.realtime)
-		playertime = cls.realtime;
 
 	frame = &cl.frames[cl.parsecount&UPDATE_MASK];
 
@@ -1502,6 +1460,46 @@ void CL_SetUpPlayerPrediction (qbool dopred)
 
 		pplayer->active = true;
 		pplayer->flags = state->flags;
+		VectorCopy (state->origin, pplayer->origin);
+	}
+}
+
+
+/*
+===
+Calculate the new position of players, without other player clipping
+
+We do this to set up real player prediction.
+Players are predicted twice, first without clipping other players,
+then with clipping against them.
+This sets up the first phase.
+===
+*/
+void CL_PredictOtherPlayers_NoClip ()
+{
+	int				j;
+	player_state_t	*state;
+	player_state_t	exact;
+	double			playertime;
+	int				msec;
+	frame_t			*frame;
+	struct predicted_player *pplayer;
+
+	if (!cl_predict_players.value)
+		return;
+
+	playertime = cls.realtime - cls.latency + 0.02;
+	if (playertime > cls.realtime)
+		playertime = cls.realtime;
+
+	frame = &cl.frames[cl.parsecount&UPDATE_MASK];
+
+	for (j=0, pplayer = predicted_players, state=frame->playerstate; 
+		j < MAX_CLIENTS;
+		j++, pplayer++, state++) {
+
+		if (!pplayer->active)
+			continue;
 
 		// note that the local player is special, since he moves locally
 		// we use his last predicted postition
@@ -1509,33 +1507,69 @@ void CL_SetUpPlayerPrediction (qbool dopred)
 			VectorCopy(cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].playerstate[cl.playernum].origin,
 				pplayer->origin);
 		} else {
+			if (state->state_time >= playertime)
+				continue;
+
 			// only predict half the move to minimize overruns
 			msec = 500*(playertime - state->state_time);
-#ifdef MVDPLAY
-			if (msec <= 0 || !cl_predict_players.value || !dopred || cls.mvdplayback)
-#else
-			if (msec <= 0 || !cl_predict_players.value || !dopred)
-#endif
-			{
-				VectorCopy (state->origin, pplayer->origin);
-			}
-			else
-			{
-				// predict players movement
-				if (msec > 255)
-					msec = 255;
-				state->command.msec = msec;
+			state->command.msec = min(msec, 255);
 
-				CL_PredictUsercmd (state, &exact, &state->command);
-				VectorCopy (exact.origin, pplayer->origin);
-			}
+			CL_PredictUsercmd (state, &exact, &state->command);
+			VectorCopy (exact.origin, pplayer->origin);
 		}
 	}
 }
 
+
+void CL_PredictOtherPlayers_Final ()
+{
+	int				j;
+	player_state_t	*state;
+	player_state_t	exact;
+	double			playertime;
+	int				msec;
+	frame_t			*frame;
+	int				oldphysent;
+	struct predicted_player *pplayer;
+
+	if (!cl_predict_players.value)
+		return;
+
+	playertime = cls.realtime - cls.latency + 0.02;
+	if (playertime > cls.realtime)
+		playertime = cls.realtime;
+
+	frame = &cl.frames[cl.parsecount&UPDATE_MASK];
+
+	for (j=0, pplayer = predicted_players, state=frame->playerstate; 
+		j < MAX_CLIENTS;
+		j++, pplayer++, state++) {
+
+		if (!pplayer->active)
+			continue;
+
+		if (j == cl.playernum)
+			continue;
+
+		if (state->state_time >= playertime)
+			continue;
+
+		// only predict half the move to minimize overruns?
+		msec = 1000 * (playertime - state->state_time);
+		state->command.msec = min(msec, 255);
+
+		oldphysent = cl.pmove.numphysent;
+		CL_SetSolidPlayers (j);
+		CL_PredictUsercmd (state, &exact, &state->command);
+		cl.pmove.numphysent = oldphysent;
+		VectorCopy (exact.origin, pplayer->origin);
+	}
+}
+
+
 /*
 ===============
-CL_SetSolid
+CL_SetSolidPlayers
 
 Builds all the pmove physents for the current frame
 Note that CL_SetUpPlayerPrediction() must be called first!
@@ -1543,7 +1577,7 @@ pmove must be setup with world and solid entity hulls before calling
 (via CL_PredictMove)
 ===============
 */
-void CL_SetSolidPlayers (int playernum)
+void CL_SetSolidPlayers (int ignore)
 {
 	int		j;
 	extern	vec3_t	player_mins;
@@ -1561,8 +1595,7 @@ void CL_SetSolidPlayers (int playernum)
 		if (!pplayer->active)
 			continue;	// not present this frame
 
-		// the player object never gets added
-		if (j == playernum)
+		if (j == ignore)
 			continue;
 
 		if (pplayer->flags & PF_DEAD)
@@ -1606,6 +1639,7 @@ void CL_EmitEntities (void)
 		if (cls.mvdplayback)
 			MVD_Interpolate ();
 #endif
+		CL_PredictOtherPlayers_Final ();
 		CL_LinkPlayers ();
 		CL_LinkPacketEntities ();
 		CL_LinkNails ();
