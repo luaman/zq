@@ -1012,7 +1012,7 @@ void teamsprint (float tno, entity ignore, string st) {
     te = player_head;
     while ( te ) {
         if ( ((te.pteam.team == tno) && (te != ignore)) ) {
-            sprint (te,2.000,st);
+            sprint (te,PRINT_HIGH,st);
         }
         te = te.nextp;
     }

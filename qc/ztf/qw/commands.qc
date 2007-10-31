@@ -44,17 +44,17 @@ void Commands () {
             sprint (self, PRINT_HIGH, "τινεδοχξ... decrease timelimit\nτινευπ..... increase timelimit\nπνδοχξ..... decrease prematch time\nπνυπ....... increase prematch time\nγζδοχξ..... decrease ceasefire time\nγζυπ....... increase ceasefire time\nοτδοχξ..... decrease overtime\n");
             sprint (self, PRINT_HIGH, "οτυπ....... increase overtime\nζςαησδοχξ.. reduce fraglimit\nζςαησυπ.... increase fraglimit\nσιμεξγε.... toggle spectator talk\nςεσταςτναπ. restart the current map\nσταςτνατγθ. starts clan match (requires clan mode on)\n");
             if (stof(infokey (world,"adminlevel")) > 1) {
-                sprint(self , 2 , "ςεσετ...... reset all settings to standard\nγμαξσετυπ.. set clan settings and restart\nγεασεζιςε.. freeze the gameplay\nζςεεϊε..... (un)freeze the map\nζβσλιξσ.... toggle full bright skins\nζςκυνπ..... toggle forward rocketjump\n");
-                sprint(self , 2 , "ποιξτιξη... toggle pointing\nεξενω...... toggle enemy printing\nηςεξπαγλ... toggle backpacks\nησπεεδ..... modify maximum ground speed\nτπ......... modify teamplay\nηιβσ....... toggle gibs\nσητωπε..... toggle sentry type\nσηζιςε..... toggle sentry fire\n");
-                sprint(self , 2 , "πιπεδεμαω.. (dis)allow pipebomb delay\nσομιδδετ... toggle solid detpacks\n");
+                sprint (self, PRINT_HIGH, "ςεσετ...... reset all settings to standard\nγμαξσετυπ.. set clan settings and restart\nγεασεζιςε.. freeze the gameplay\nζςεεϊε..... (un)freeze the map\nζβσλιξσ.... toggle full bright skins\nζςκυνπ..... toggle forward rocketjump\n");
+                sprint (self, PRINT_HIGH, "ποιξτιξη... toggle pointing\nεξενω...... toggle enemy printing\nηςεξπαγλ... toggle backpacks\nησπεεδ..... modify maximum ground speed\nτπ......... modify teamplay\nηιβσ....... toggle gibs\nσητωπε..... toggle sentry type\nσηζιςε..... toggle sentry fire\n");
+                sprint (self, PRINT_HIGH, "πιπεδεμαω.. (dis)allow pipebomb delay\nσομιδδετ... toggle solid detpacks\n");
             }
             if (stof(infokey (world,"adminlevel")) > 2) {
-                sprint(self , 2 , "δεαμ....... kick a player\nμιστιπσ.... list players ip addresses\n");
+                sprint (self, PRINT_HIGH, "δεαμ....... kick a player\nμιστιπσ.... list players ip addresses\n");
             }
             sprint (self, PRINT_HIGH, "\n*** The following commands require a map restart ***\n\n");
             sprint (self, PRINT_HIGH, "τεανζςαησ.. toggle teamfrags\nζυμμτσ..... toggle full team score\nηςαππμε.... toggle grapple\n");
             if (stof(infokey (world,"adminlevel")) > 1) {
-                sprint(self , 2 , "γμαξ....... toggle clan mode\nτζφσδν..... toggle tfvsdm mode\nτζστςιλε... toggle tfstrike mode\nςουξδσ..... toggle rounds\nδυεμ....... toggle duel mode\nσπεεδγαπ... toggle speed capture mode\nθιηθμαξδες. toggle highlander mode\nπςαγτιγε... toggle practice mode\n");
+                sprint (self, PRINT_HIGH, "γμαξ....... toggle clan mode\nτζφσδν..... toggle tfvsdm mode\nτζστςιλε... toggle tfstrike mode\nςουξδσ..... toggle rounds\nδυεμ....... toggle duel mode\nσπεεδγαπ... toggle speed capture mode\nθιηθμαξδες. toggle highlander mode\nπςαγτιγε... toggle practice mode\n");
             }
         }
     }
@@ -112,9 +112,9 @@ void ShowFrags (entity print) {
     entity te;
     float eff;
     string st, sp;
-    sprint(print, 2.000, "\n\n");
-    sprint(print, 2.000, " Frags  TK's  Deaths  Eff  Name\n");
-    sprint(print, 2.000, "\n");
+    sprint (print, PRINT_HIGH, "\n\n");
+    sprint (print, PRINT_HIGH, " Frags  TK's  Deaths  Eff  Name\n");
+    sprint (print, PRINT_HIGH, "\n");
     te = player_head;
     while (te) {
         if (te.real_frags <= 0.000) {
@@ -125,92 +125,92 @@ void ShowFrags (entity print) {
         }
         st = ftos(te.real_frags );
         sp = spacefornum(te.real_frags, 4);
-        sprint(print, 2.000, "  ", st, sp);
+        sprint (print, PRINT_HIGH, "  ", st, sp);
         st = ftos(te.teamkills );
         sp = spacefornum(te.teamkills, 3);
-        sprint(print, 2.000, "  ", st, sp);
+        sprint (print, PRINT_HIGH, "  ", st, sp);
         st = ftos(te.deaths );
         sp = spacefornum(te.deaths, 5);
-        sprint(print, 2.000, "  ", st, sp);
+        sprint (print, PRINT_HIGH, "  ", st, sp);
         st = ftos(eff);
         sp = spacefornum(eff, 3);
-        sprint(print, 2.000, "  ", st, sp);
+        sprint (print, PRINT_HIGH, "  ", st, sp);
         /*
            st = ftos(te.real_frags);
            if ( te.real_frags < 10)
            {
-           sprint(print, 2.000, "  ", st, "     ");
+           sprint (print, PRINT_HIGH, "  ", st, "     ");
            }
            else if (te.real_frags < 100)
            {
-           sprint(print, 2.000, "  ", st, "    ");
+           sprint (print, PRINT_HIGH, "  ", st, "    ");
            }
            else
            {
-           sprint(print, 2.000, "  ", st, "   ");
+           sprint (print, PRINT_HIGH, "  ", st, "   ");
            }
            st =  ftos(te.teamkills);
            if ( te.teamkills < 10)
            {
-           sprint(print, 2.000,  st, "      ");
+           sprint (print, PRINT_HIGH,  st, "      ");
            }
            else if (te.teamkills < 100)
            {
-           sprint(print, 2.000,  st, "     ");
+           sprint (print, PRINT_HIGH,  st, "     ");
            }
            else
            {
-           sprint(print, 2.000,  st, "    ");
+           sprint (print, PRINT_HIGH,  st, "    ");
            }
            st =  ftos(te.deaths);
            if (te.deaths < 10)
            {
-           sprint(print, 2.000,  st, "      ");
+           sprint (print, PRINT_HIGH,  st, "      ");
            }
            else if ( te.deaths < 100)
            {
-           sprint(print, 2.000,  st, "     ");
+           sprint (print, PRINT_HIGH,  st, "     ");
            }
            else
            {
-           sprint(print, 2.000,  st, "    ");
+           sprint (print, PRINT_HIGH,  st, "    ");
            }
            st =  ftos(eff);
            if (eff < 10)
            {
-           sprint(print, 2.000,  st, "     ");
+           sprint (print, PRINT_HIGH,  st, "     ");
            }
            else if ( eff < 100)
            {
-           sprint(print, 2.000,  st, "    ");
+           sprint (print, PRINT_HIGH,  st, "    ");
            }
            else
            {
-           sprint(print, 2.000,  st, "   ");
+           sprint (print, PRINT_HIGH,  st, "   ");
            }*/
-        sprint(print, 2.000,  te.netname , "\n");
+        sprint (print, PRINT_HIGH,  te.netname , "\n");
         te = te.nextp;
     }
     if (store_obs.cnt == 2) {
-        sprint(print, 2.000, "\n\n");
-        sprint(print, 2.000,  " Team Scores:\n Team1:   ");
+        sprint (print, PRINT_HIGH, "\n\n");
+        sprint (print, PRINT_HIGH,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint(print, 2.000,  st, "     Team2:   ");
+        sprint (print, PRINT_HIGH,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint(print, 2.000,  st, "\n");
+        sprint (print, PRINT_HIGH,  st, "\n");
     } else {
-        sprint(print, 2.000, "\n\n");
-        sprint(print, 2.000,  " Team Scores:\n Team1:   ");
+        sprint (print, PRINT_HIGH, "\n\n");
+        sprint (print, PRINT_HIGH,  " Team Scores:\n Team1:   ");
         st =  ftos(pteam1.frags);
-        sprint(print, 2.000,  st, "     Team2:   ");
+        sprint (print, PRINT_HIGH,  st, "     Team2:   ");
         st =  ftos(pteam2.frags);
-        sprint(print, 2.000,  st, "\n Team3:   ");
+        sprint (print, PRINT_HIGH,  st, "\n Team3:   ");
         st =  ftos(pteam3.frags);
-        sprint(print, 2.000,  st, "     Team4:   ");
+        sprint (print, PRINT_HIGH,  st, "     Team4:   ");
         st =  ftos(pteam4.frags);
-        sprint(print, 2.000,  st, "\n");
+        sprint (print, PRINT_HIGH,  st, "\n");
     }
-    sprint(print, 2.000, "\n\n");
+    sprint (print, PRINT_HIGH, "\n\n");
 }
 
 void ShowTouches () {
@@ -1249,11 +1249,11 @@ void RandomPickup () {
         return;
     }
     if (!teamplay) {
-        sprint (self, 2.000000, "Teamplay is not set.\n");
+        sprint (self,PRINT_HIGH, "Teamplay is not set.\n");
         return;
     }
     if (store_obs.cnt != 2.000) {
-        sprint (self, 2.000000, "This command can only be used with 2 teams.\n");
+        sprint (self,PRINT_HIGH, "This command can only be used with 2 teams.\n");
         return;
     }
     fl2 = 1.000000;
@@ -1261,7 +1261,7 @@ void RandomPickup () {
     fl4 = 0.000000;
     fl = TeamFortress_GetNoPlayers  ();
     if ((fl < 3.000000)) {
-        sprint (self, 2.000000, "You need at least 3 players to do this\n");
+        sprint (self,PRINT_HIGH, "You need at least 3 players to do this\n");
         return;
     }
     fl3 = fl / 2.000000;

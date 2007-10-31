@@ -40,7 +40,7 @@ void RemoveFreeze () {
 					te.is_frozen = 0.000;
 					te.velocity = te.movedir;
 					te.tfstate = (te.tfstate - (te.tfstate & 65536.000));
-					sprint(te,2.000,"Freeze wears off\n");
+					sprint (te,PRINT_HIGH,"Freeze wears off\n");
 					TeamFortress_SetSpeed (te);
 				}
 			}
@@ -63,7 +63,7 @@ void RemoveFreeze () {
     self.owner.is_frozen = 1.000;
     self.owner.velocity = self.owner.movedir;
     self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 65536.000));
-    sprint(self.owner,2.000,"Freeze wears off\n");
+    sprint (self.owner, PRINT_HIGH,"Freeze wears off\n");
     TeamFortress_SetSpeed (self.owner);
     dremove (self);
 }
@@ -76,7 +76,7 @@ void FreezePlayer () {
     //self.owner.maxspeed = 0.000;
     self.owner.tfstate = (self.owner.tfstate | 65536.000);
     TeamFortress_SetSpeed (self.owner);
-    sprint(self.owner,2.000,"Freeze bitch!\n");
+    sprint (self.owner, PRINT_HIGH,"Freeze bitch!\n");
     self.think = RemoveFreeze;
     self.nextthink = time + 2.6;
 }

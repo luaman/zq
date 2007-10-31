@@ -547,7 +547,7 @@ void W_FireSniperRifle () {
                 deathmsg = 28.000;
                 TF_T_Damage (trace_ent,self,self,(self.heat * dam_mult),2.000,1.000);
                 if ( (trace_ent.health > 0.000) ) {
-                    sprint (trace_ent,0.000,"Leg injury!\n");
+                    sprint (trace_ent,PRINT_LOW,"Leg injury!\n");
                     sprint (self,PRINT_MEDIUM,"Leg shot - that'll slow him down!\n");
                 }
                 return ;
@@ -559,7 +559,7 @@ void W_FireSniperRifle () {
                     deathmsg = 29.000;
                     TF_T_Damage (trace_ent,self,self,(self.heat * dam_mult),2.000,1.000);
                     if ( (trace_ent.health > 0.000) ) {
-                        sprint (trace_ent,0.000,"Head injury!\n");
+                        sprint (trace_ent,PRINT_LOW,"Head injury!\n");
                         sprint (self,PRINT_MEDIUM,"Head shot - that's gotta hurt!\n");
                     }
                     return ;
@@ -1894,47 +1894,25 @@ void W_Attack () {
 }
 
 void W_PrintWeaponMessage () {
-    if ( (self.current == WEAP_AXE) ) {
-        if ( (self.playerclass != 8.000) ) {
-            sprint (self,PRINT_MEDIUM,"Axe selected\n");
-        }
-    } else {
-        if ( (self.current == WEAP_HOOK) && allow_hook ) {
-            sprint (self,PRINT_MEDIUM,"grappling hook selected\n");
-        } else {
-            if ( (self.current == WEAP_GRENADE_LAUNCHER) ) {
-                if ((self.playerclass != 11.000)) {
-                    sprint (self,PRINT_MEDIUM,"Normal grenade mode\n");
-                } else {
-                    if ( (self.current == WEAP_PIPEBOMB_LAUNCHER) ) {
-                        sprint (self,PRINT_MEDIUM,"Pipebomb mode\n");
-                    }
-                }
-            } else {
-                if ( (self.current == WEAP_SNIPER_RIFLE) ) {
-                    sprint (self,PRINT_MEDIUM,"Sniper rifle ready\n");
-                } else {
-                    if ( (self.current == WEAP_AUTO_RIFLE) ) {
-                        sprint (self,PRINT_MEDIUM,"Rifle on fully auto\n");
-                    } else {
-                        if ( (self.current == WEAP_TRANQ) ) {
-                            sprint (self,PRINT_MEDIUM,"Tranquiliser gun selected\n");
-                        } else {
-                            if ( (self.current == WEAP_MEDIKIT) ) {
-                                sprint (self,PRINT_MEDIUM,"Medikit/Bioweapon readied\n");
-                            } else {
-
-                                if ( (self.current == WEAP_INCENDIARY )) {
-                                    sprint(self,1.000,"Incendiary Cannon\n");
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    if (self.current == WEAP_AXE && self.playerclass != CLASS_SPY) { // TODO: should we not have knife selected when spy?
+		sprint (self,PRINT_MEDIUM,"Axe selected\n");
+    } else if (self.current == WEAP_HOOK && allow_hook ) {
+		sprint (self,PRINT_MEDIUM,"Grappling hook selected\n");
+	} else if (self.current == WEAP_GRENADE_LAUNCHER) {
+		sprint (self,PRINT_MEDIUM,"Normal grenade mode\n");
+	} else if (self.current == WEAP_PIPEBOMB_LAUNCHER) {
+		sprint (self,PRINT_MEDIUM,"Pipebomb mode\n");
+	} else if (self.current == WEAP_SNIPER_RIFLE) {
+		sprint (self,PRINT_MEDIUM,"Sniper rifle ready\n");
+	} else if (self.current == WEAP_AUTO_RIFLE) {
+		sprint (self,PRINT_MEDIUM,"Rifle on fully auto\n");
+	} else if (self.current == WEAP_TRANQ) {
+		sprint (self,PRINT_MEDIUM,"Tranquiliser gun selected\n");
+	} else if (self.current == WEAP_MEDIKIT) {
+		sprint (self,PRINT_MEDIUM,"Medikit/Bioweapon readied\n");
+	} else if (self.current == WEAP_INCENDIARY) {
+		sprint(self,PRINT_MEDIUM,"Incendiary Cannon\n");
+	}
 }
 
 float imp_1 () {

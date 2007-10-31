@@ -301,9 +301,9 @@ void health_touch ()
                         other.ammo_medikit = other.maxammo_medikit;
                     }
                     s = ftos (self.healamount);
-                    sprint (other,0.000,"You gather ");
-                    sprint (other,0.000,s);
-                    sprint (other,0.000," medikit ammo\n");
+                    sprint (other,PRINT_LOW,"You gather ");
+                    sprint (other,PRINT_LOW,s);
+                    sprint (other,PRINT_LOW," medikit ammo\n");
                     sound (other,3.000,self.noise,1.000,1.000);
                     stuffcmd (other,"bf\n");
                     self.model = string_null;
@@ -323,13 +323,13 @@ void health_touch ()
         }
     }
     if ( ((other.tfstate & 16.000) && (self.healamount > 80.000)) ) {
-        sprint (other,1.000,"You have been healed of your infection!");
+        sprint (other,PRINT_MEDIUM,"You have been healed of your infection!");
         other.tfstate = (other.tfstate - (other.tfstate & 16.000));
     } else {
         s = ftos (self.healamount);
-        sprint (other,0.000,"You receive ");
-        sprint (other,0.000,s);
-        sprint (other,0.000," health\n");
+        sprint (other,PRINT_LOW,"You receive ");
+        sprint (other,PRINT_LOW,s);
+        sprint (other,PRINT_LOW," health\n");
     }
     sound (other,3.000,self.noise,1.000,1.000);
     stuffcmd (other,"bf\n");
@@ -449,12 +449,12 @@ void armor_touch ()
             }
         }
     }
-    sprint (other,2.000,"You got armor\n");
+    sprint (other, PRINT_HIGH,"You got armor\n");
     if ( (value > other.maxarmor) ) {
         if ( ((other.playerclass == 9.000) && (other.ammo_cells < other.maxammo_cells)) ) {
             s = ftos ((value - other.maxarmor));
-            sprint (other,0.000,s);
-            sprint (other,0.000," metal\n");
+            sprint (other,PRINT_LOW,s);
+            sprint (other,PRINT_LOW," metal\n");
             other.ammo_cells = (other.ammo_cells + (value - other.maxarmor));
             if ( (other.ammo_cells > other.maxammo_cells) ) {
                 other.ammo_cells = other.maxammo_cells;
@@ -727,9 +727,9 @@ void weapon_touch ()
             }
         }
     }
-    sprint (other,0.000,"You got the ");
-    sprint (other,0.000,self.netname);
-    sprint (other,0.000,"\n");
+    sprint (other,PRINT_LOW,"You got the ");
+    sprint (other,PRINT_LOW,self.netname);
+    sprint (other,PRINT_LOW,"\n");
     sound (other,3.000,"weapons/pkup.wav",1.000,1.000);
     stuffcmd (other,"bf\n");
     bound_other_ammo (other);
@@ -862,9 +862,9 @@ float GetGrenadePossibility () {
         }
         if ( (other.tp_grenades_1 != 0.000) && (other.no_grenades_1 < maxg) ) {
             other.no_grenades_1 = (other.no_grenades_1 + 1.000);
-            sprint (other,2.000,"You found a ");
-            sprint (other,2.000, Status_GrenTypeToString(other.tp_grenades_2));
-            sprint (other,2.000,"\n");
+            sprint (other, PRINT_HIGH,"You found a ");
+            sprint (other, PRINT_HIGH, Status_GrenTypeToString(other.tp_grenades_2));
+            sprint (other, PRINT_HIGH,"\n");
             return ( 1.000 );
         }
     } else {
@@ -876,9 +876,9 @@ float GetGrenadePossibility () {
         }
         if ( (other.tp_grenades_2 != 0.000) && (other.no_grenades_2 < maxg) ) {
             other.no_grenades_2 = (other.no_grenades_2 + 1.000);
-            sprint (other,2.000,"You found a ");
-            sprint (other,2.000, Status_GrenTypeToString(other.tp_grenades_2));
-            sprint (other,2.000,"\n");
+            sprint (other, PRINT_HIGH,"You found a ");
+            sprint (other, PRINT_HIGH, Status_GrenTypeToString(other.tp_grenades_2));
+            sprint (other, PRINT_HIGH,"\n");
             return ( 1.000 );
         }
     }
@@ -949,9 +949,9 @@ void ammo_touch ()
     stuffcmd (other,"bf\n");
     if ( gotbox ) {
         bound_other_ammo (other);
-        sprint (other,0.000,"You got the ");
-        sprint (other,0.000,self.netname);
-        sprint (other,0.000,"\n");
+        sprint (other,PRINT_LOW,"You got the ");
+        sprint (other,PRINT_LOW,self.netname);
+        sprint (other,PRINT_LOW,"\n");
         stemp = self;
         self = other;
         W_SetCurrentAmmo ();
@@ -1119,9 +1119,9 @@ void key_touch ()
         return ;
     }
     if (round_over) return;
-    sprint (other,0.000,"You got the ");
-    sprint (other,0.000,self.netname);
-    sprint (other,0.000,"\n");
+    sprint (other,PRINT_LOW,"You got the ");
+    sprint (other,PRINT_LOW,self.netname);
+    sprint (other,PRINT_LOW,"\n");
     sound (other,3.000,self.noise,1.000,1.000);
     stuffcmd (other,"bf\n");
     other.items = (other.items | self.items);
@@ -1288,9 +1288,9 @@ void powerup_touch ()
         return ;
     }
     if (round_over) return;
-    sprint (other,0.000,"You got the ");
-    sprint (other,0.000,self.netname);
-    sprint (other,0.000,"\n");
+    sprint (other,PRINT_LOW,"You got the ");
+    sprint (other,PRINT_LOW,self.netname);
+    sprint (other,PRINT_LOW,"\n");
     if ( deathmatch ) {
         self.mdl = self.model;
         if ( ((self.classname == "item_artifact_invulnerability") || (self.classname == "item_artifact_invisibility")) ) {
@@ -1437,7 +1437,7 @@ void BackpackTouch ()
     if ( other.button0 ) {
         return ;
     }
-    sprint (other,0.000,"You get ");
+    sprint (other,PRINT_LOW,"You get ");
     if (modetype & 8) {
         if ((stof(infokey(other,"b_switch"))) == 0)
             b_switch = 8;
@@ -1446,8 +1446,8 @@ void BackpackTouch ()
         if (self.items)
             if ((other.items & self.items) == 0) {
                 //acount = 1;
-                sprint (other, 0.000, "the ");
-                sprint (other, 0.000, self.netname);
+                sprint (other, PRINT_LOW, "the ");
+                sprint (other, PRINT_LOW, self.netname);
             }
 
         // if the player was using his best weapon, change up to the new one if better
@@ -1473,34 +1473,34 @@ void BackpackTouch ()
     bound_other_ammo (other);
     if ( self.ammo_shells ) {
         s = ftos (self.ammo_shells);
-        sprint (other,0.000,s);
-        sprint (other,0.000," shells  ");
+        sprint (other,PRINT_LOW,s);
+        sprint (other,PRINT_LOW," shells  ");
     }
     if ( self.ammo_nails ) {
         s = ftos (self.ammo_nails);
-        sprint (other,0.000,s);
-        sprint (other,0.000," nails ");
+        sprint (other,PRINT_LOW,s);
+        sprint (other,PRINT_LOW," nails ");
     }
     if ( self.ammo_rockets ) {
         s = ftos (self.ammo_rockets);
-        sprint (other,0.000,s);
-        sprint (other,0.000," rockets  ");
+        sprint (other,PRINT_LOW,s);
+        sprint (other,PRINT_LOW," rockets  ");
     }
     if ( self.ammo_cells ) {
         s = ftos (self.ammo_cells);
-        sprint (other,0.000,s);
-        sprint (other,0.000," cells  ");
+        sprint (other,PRINT_LOW,s);
+        sprint (other,PRINT_LOW," cells  ");
     }
     if ( ((self.armorvalue && (other.playerclass == 9.000)) && (other.ammo_cells < other.maxammo_cells)) ) {
         s = ftos (self.armorvalue);
-        sprint (other,0.000,s);
-        sprint (other,0.000," metal  ");
+        sprint (other,PRINT_LOW,s);
+        sprint (other,PRINT_LOW," metal  ");
         other.ammo_cells = (other.ammo_cells + self.armorvalue);
         if ( (other.ammo_cells > other.maxammo_cells) ) {
             other.ammo_cells = other.maxammo_cells;
         }
     }
-    sprint (other,0.000,"\n");
+    sprint (other,PRINT_LOW,"\n");
     sound (other,3.000,"weapons/lock4.wav",1.000,1.000);
     stuffcmd (other,"bf\n");
     dremove (self);

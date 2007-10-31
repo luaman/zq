@@ -128,32 +128,32 @@ void TeamFortress_SetBomb (entity bowner) {
         return ;
     }
     if ( !(bowner.ammo_detpack )) {
-        sprint (bowner,2.000,"You need the Bomb!\n");
+        sprint (bowner,PRINT_HIGH,"You need the Bomb!\n");
         return ;
     }
     at_spot = findradius (bowner.origin,65.000);
     while ( (at_spot != world) ) {
         if ( ((at_spot.classname == "player") && (bowner != at_spot)) ) {
-            sprint (bowner,2.000,"You can't set a bomb on someone!\n");
+            sprint (bowner,PRINT_HIGH,"You can't set a bomb on someone!\n");
             bowner.is_detpacking = 0.000;
             return ;
         } else if ( ((at_spot.mdl == "progs/turrbase.mdl") || (at_spot.mdl == "progs/turrgun.mdl")) ) {
-			sprint (bowner,2.000,"You can't set a bomb on a sentry gun!\n");
+			sprint (bowner,PRINT_HIGH,"You can't set a bomb on a sentry gun!\n");
 			bowner.is_detpacking = 0.000;
 			return ;
 		} else if ( (at_spot.mdl == "progs/disp.mdl") ) {
-			sprint (bowner,2.000,"You can't set a bomb on a dispenser!\n");
+			sprint (bowner,PRINT_HIGH,"You can't set a bomb on a dispenser!\n");
 			bowner.is_detpacking = 0.000;
 			return ;
 		} else if ( (at_spot.classname == "detpack") ) {
-			sprint (bowner,2.000,"Bombs can't be stacked!\n");
+			sprint (bowner,PRINT_HIGH,"Bombs can't be stacked!\n");
 			bowner.is_detpacking = 0.000;
 			return ;
 		}
         at_spot = at_spot.chain;
     }
     if ( !(bowner.flags & 512.000) ) {
-        sprint (bowner,2.000,"You can't set the bomb in the air!\n");
+        sprint (bowner,PRINT_HIGH,"You can't set the bomb in the air!\n");
         bowner.is_detpacking = 0.000;
         return ;
     }
@@ -180,7 +180,7 @@ void TeamFortress_SetBomb (entity bowner) {
     bombarmtime = stof(infokey (world,"bombarmtime"));
     if (bombarmtime < 1.000 || bombarmtime >  10.000) bombarmtime = 3.000;
     bowner.pausetime = (time + bombarmtime);
-    sprint(bowner,2.000,"Setting Bomb...\n");
+    sprint (bowner,PRINT_HIGH,"Setting Bomb...\n");
     newmis = spawn ();
     newmis.owner = bowner;
     newmis.classname = "timer";
@@ -472,10 +472,10 @@ void TeamFortress_DetpackTouch () {
         if (defusetime < 3.000 || defusetime > 15.000) defusetime = 8.000;
         disarm.nextthink = (time + defusetime);
         //disarm.weapon = defusetime;
-        sprint (other,2.000,"Defusing Bomb...\n");
+        sprint (other, PRINT_HIGH,"Defusing Bomb...\n");
     } else {
         disarm.nextthink = (time + 3.000);
-        sprint (other,2.000,"Disarming detpack...\n");
+        sprint (other, PRINT_HIGH,"Disarming detpack...\n");
     }
     disarm.think = TeamFortress_DetpackDisarm;
     self.weaponmode = 1.000;

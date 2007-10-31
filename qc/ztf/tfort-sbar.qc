@@ -579,11 +579,11 @@ void PrintPlayers (string s1, string s2, string s3) {
     te = player_head;
     while (te) {
         if (s1 != string_null) {
-            sprint(te, 2.000, s1);
+            sprint (te,PRINT_HIGH, s1);
             if (s2 != string_null) {
-                sprint(te, 2.000, s2);
+                sprint (te,PRINT_HIGH, s2);
                 if (s3 != string_null) {
-                    sprint(te, 2.000, s3);
+                    sprint (te,PRINT_HIGH, s3);
                 }
             }
         }
@@ -596,11 +596,11 @@ void PrintSpecs (string s1, string s2, string s3) {
     te = spec_head;
     while (te) {
         if (s1 != string_null) {
-            sprint(te, 2.000, s1);
+            sprint (te,PRINT_HIGH, s1);
             if (s2 != string_null) {
-                sprint(te, 2.000, s2);
+                sprint (te,PRINT_HIGH, s2);
                 if (s3 != string_null) {
-                    sprint(te, 2.000, s3);
+                    sprint (te,PRINT_HIGH, s3);
                 }
             }
         }

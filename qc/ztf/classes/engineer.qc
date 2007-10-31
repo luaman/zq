@@ -332,7 +332,7 @@ void nobuild_touch () {
     if (other.classname != "player") return;
     if (other.playerclass == 9.000) {
         if (other.current_menu == 15.000) {
-            sprint (other,2.000, "You can't build in this area.\n");
+            sprint (other, PRINT_HIGH, "You can't build in this area.\n");
             CenterPrint (other,"\n");
             other.menu_count = 25.000;
             other.current_menu = 1.000;
@@ -678,7 +678,7 @@ void TeamFortress_FinishedBuilding () {
     } else {
         if ((oldself.weapon == 2)) {
             self.has_sentry = 1;
-            sprint (self, 2, "You finish building the sentry gun.\n");
+            sprint (self,PRINT_HIGH, "You finish building the sentry gun.\n");
             teamsprint (self.pteam.team, self, self.netname);
             teamsprint (self.pteam.team, self, " has built a Sentry Gun.\n");
             oldself.classname = "building_sentrygun_base";

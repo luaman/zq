@@ -565,6 +565,8 @@ const float CLASS_HWGUY              = 6;
 const float CLASS_PYRO               = 7;
 const float CLASS_SPY                = 8;
 const float CLASS_ENGINEER           = 9;
+const float CLASS_RANDOM             = 10;
+const float CLASS_CIVILIAN           = 11;
 const float CLASS_SENTRY             = 13;
 
 const float bled = 137;

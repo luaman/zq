@@ -63,28 +63,28 @@ void TeamFortress_AmmoboxTouch () {
     if (other.health <= 0)
         return ;
     if ( (self.weapon == 0) ) {
-        sprint (other,2,"You got ");
+        sprint (other, PRINT_HIGH,"You got ");
         if ( (self.ammo_shells > 0) ) {
             other.ammo_shells = (other.ammo_shells + self.ammo_shells);
             quantity = ftos (self.ammo_shells);
-            sprint (other,2,quantity," shells  ");
+            sprint (other, PRINT_HIGH,quantity," shells  ");
         }
         if ( (self.ammo_nails > 0) ) {
             other.ammo_nails = (other.ammo_nails + self.ammo_nails);
             quantity = ftos (self.ammo_nails);
-            sprint (other,2,quantity," nails  ");
+            sprint (other, PRINT_HIGH,quantity," nails  ");
         }
         if ( (self.ammo_rockets > 0) ) {
             other.ammo_rockets = (other.ammo_rockets + self.ammo_rockets);
             quantity = ftos (self.ammo_rockets);
-            sprint (other,2,quantity," rockets  ");
+            sprint (other, PRINT_HIGH,quantity," rockets  ");
         }
         if ( (self.ammo_cells > 0) ) {
             other.ammo_cells = (other.ammo_cells + self.ammo_cells);
             quantity = ftos (self.ammo_cells);
-            sprint (other,2,quantity," cells  ");
+            sprint (other, PRINT_HIGH,quantity," cells  ");
         }
-        sprint (other,2," from ",self.enemy.netname,"'s discarded pack.\n");
+        sprint (other, PRINT_HIGH," from ",self.enemy.netname,"'s discarded pack.\n");
     } else if ( (self.weapon == 1) ) {
         if (other.ammo_shells >= other.maxammo_shells)
             return ;
@@ -155,10 +155,10 @@ void TeamFortress_AmmoboxTouch () {
     bound_other_ammo (other);
     if (self.weapon > 0) {
         quantity = ftos (self.aflag);
-        sprint (other,0,"You picked up ",quantity," ",self.netname);
+        sprint (other,PRINT_LOW,"You picked up ",quantity," ",self.netname);
         if (self.aflag != 1)
-            sprint (other,0,"s");
-        sprint (other,0,"\n");
+            sprint (other,PRINT_LOW,"s");
+        sprint (other,PRINT_LOW,"\n");
     }
     sound (other,CHAN_ITEM,"weapons/lock4.wav",1,1);
     stuffcmd (other,"bf\n");
