@@ -1177,6 +1177,8 @@ void CL_LinkPlayers (void)
 		if (r_powerupglow.value && !(r_powerupglow.value == 2 && j == Cam_PlayerNum()))
 		{
 			if (j == Cam_PlayerNum()) {
+				// FIXME, this is lagging behind because we moved
+				// setting of cl.simorg till after CL_EmitEntities
 				VectorCopy (cl.simorg, org);
 			} else
 				VectorCopy (state->origin, org);
@@ -1429,7 +1431,7 @@ void MVD_Interpolate(void)
 		MVD_InitInterpolation ();
 	}
 
-	cls.netchan.outgoing_sequence = cl.parsecount + 1;
+//	cls.netchan.outgoing_sequence = cl.parsecount + 1;
 
 	if (!cl.validsequence)
 		return;

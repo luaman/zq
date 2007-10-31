@@ -686,6 +686,7 @@ void CL_SendCmd (void)
 #ifdef MVDPLAY
     if (cls.mvdplayback)
     {
+		cls.netchan.outgoing_sequence = cl.parsecount + 1;
 		CL_Move(&cl.lastcmd);
 		cls.netchan.outgoing_sequence++;
 		SZ_Clear (&cls.netchan.message);	// don't overflow

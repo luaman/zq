@@ -216,15 +216,11 @@ void Cam_FinishMove (usercmd_t *cmd)
 		player_state_t	*state;
 		state = &cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cam_curtarget];
 		if (state->messagenum == cl.parsecount) {
-			VectorCopy (state->viewangles, cl.simangles);
-			VectorCopy (state->viewangles, cl.viewangles);
-			VectorCopy (state->origin, cl.simorg);
-
 			// move there so that we get correct PVS
 			MSG_WriteByte (&cls.netchan.message, clc_tmove);
-			MSG_WriteCoord (&cls.netchan.message, cl.simorg[0]);
-			MSG_WriteCoord (&cls.netchan.message, cl.simorg[1]);
-			MSG_WriteCoord (&cls.netchan.message, cl.simorg[2]);
+			MSG_WriteCoord (&cls.netchan.message, state->origin[0]);
+			MSG_WriteCoord (&cls.netchan.message, state->origin[1]);
+			MSG_WriteCoord (&cls.netchan.message, state->origin[2]);
 		}
 		else {
 			// lost target (player disconnected?)
