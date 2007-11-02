@@ -170,6 +170,7 @@ void CL_CalcCrouch (void)
 
 vec3_t predicted_simorg;
 vec3_t predicted_simangles;
+player_state_t predicted_state;
 
 // for .qwd demo playback
 static void CL_LerpMove (float msgtime)
@@ -376,39 +377,41 @@ static void CL_PredictLocalPlayer (void)
 {
 	qbool		nopred = false;
 	int			i;
-	frame_t		*from = NULL, *to;
+	frame_t		*frame;
 	int			oldphysent;
 	extern cvar_t cl_smartjump;
 
-	if (!cl.validsequence || cls.netchan.outgoing_sequence - cl.validsequence >= UPDATE_BACKUP-1)
+	if (CL_NetworkStalled())
 		return;
 
-	if (cam_track && !cls.demoplayback /* FIXME */)
-		return;
+	assert(!(cls.netchan.outgoing_sequence - cl.frames[0].sequence >= SENT_BACKUP-1));
+
+//	if (cam_track && !cls.demoplayback /* FIXME */)
+//		return;
 
 	// this is the last valid frame received from the server
-	to = &cl.frames[cl.validsequence & UPDATE_MASK];
+	frame = &cl.frames[0];
 
 	// setup cl.simangles + decide whether to predict local player
 	if (cls.demoplayback && cl.spectator && cam_curtarget != CAM_NOTARGET) {
 		// useless?
-		VectorCopy (to->playerstate[Cam_PlayerNum()].viewangles, predicted_simangles);
+		VectorCopy (frame->playerstate[Cam_PlayerNum()].viewangles, predicted_simangles);
 		nopred = true;		// FIXME
 	} else if (cls.demoplayback) {
 		// CL_GetDemoMessage fills in cl.viewangles
 		VectorCopy (cl.viewangles, predicted_simangles);
 	} else {
-		nopred = (cl_nopred.value || cls.netchan.outgoing_sequence - cl.validsequence <= 1);
+		nopred = (cl_nopred.value || cls.netchan.outgoing_sequence - cl.frames[0].sequence <= 1);
 	}
 
 	if (nopred)
 	{
-		VectorCopy (to->playerstate[Cam_PlayerNum()].velocity, cl.simvel);
-		VectorCopy (to->playerstate[Cam_PlayerNum()].origin, predicted_simorg);
+		VectorCopy (frame->playerstate[Cam_PlayerNum()].velocity, cl.simvel);
+		VectorCopy (frame->playerstate[Cam_PlayerNum()].origin, predicted_simorg);
 		if (cl.z_ext & Z_EXT_PF_ONGROUND) {
 			if (cl_smartjump.value)
 				CL_CategorizePosition ();	// need to get cl.waterlevel
-			cl.onground = to->playerstate[Cam_PlayerNum()].onground;
+			cl.onground = frame->playerstate[Cam_PlayerNum()].onground;
 		}
 		else
 			CL_CategorizePosition ();
@@ -419,19 +422,19 @@ static void CL_PredictLocalPlayer (void)
 	CL_SetSolidPlayers (cl.playernum);
 
 	// run frames
-	for (i=1 ; i < cls.netchan.outgoing_sequence - cl.validsequence; i++)
+	player_state_t state = frame->playerstate[cl.playernum];
+	for (i = cl.frames[0].sequence + 1; i < cls.netchan.outgoing_sequence; i++)
 	{
-		from = to;
-		to = &cl.frames[(cl.validsequence+i) & UPDATE_MASK];
-		CL_PredictUsercmd (&from->playerstate[cl.playernum]
-			, &to->playerstate[cl.playernum], &to->cmd);
+		outpacket_t *outp = &cl.outpackets[i & SENT_MASK];
+		CL_PredictUsercmd (&state, &state, &outp->cmd);
 	}
 
 	cl.pmove.numphysent = oldphysent;
 
 	// save results
-	VectorCopy (to->playerstate[cl.playernum].velocity, cl.simvel);
-	VectorCopy (to->playerstate[cl.playernum].origin, predicted_simorg);
+	predicted_state = state;
+	VectorCopy (state.velocity, cl.simvel);
+	VectorCopy (state.origin, predicted_simorg);
 	cl.onground = cl.pmove.onground;
 	cl.waterlevel = cl.pmove.waterlevel;
 	if (cl.pmove.landspeed < -650 && !cl.landtime)
@@ -479,26 +482,18 @@ void CL_PredictMovement (void)
 	if (cl.paused)
 		return;
 
+	if (cl.spectator && cam_curtarget != CAM_NOTARGET /**/)
+		return;
+
 	CL_SetUpPlayerPrediction();
 	CL_PredictLocalPlayer ();
 //	CL_PredictOtherPlayers ();	// done every display frame to make things smooth
 }
 
 
-/*
-==============
-CL_InitPrediction
-==============
-*/
-void CL_InitPrediction (void)
-{
-	Cvar_Register (&cl_nopred);
-	Cvar_Register (&cl_nolerp);
-}
-
 void CL_SetViewPosition ()
 {
-	if (cls.state < ca_active)
+	if (cls.state < ca_active || CL_NetworkStalled())
 		return;
 
 	if (cl.intermission) {
@@ -509,8 +504,7 @@ void CL_SetViewPosition ()
 			// we expect progs to move the player to the intermission spot
 			// and set their angles correctly.  This is unlike qwcl, but
 			// QW never used svc_finale so this should't break anything
-			VectorCopy (cl.frames[cl.validsequence & UPDATE_MASK]
-				.playerstate[Cam_PlayerNum()].origin, cl.simorg);
+			VectorCopy (cl.frames[0].playerstate[Cam_PlayerNum()].origin, cl.simorg);
 
 		return;
 	}
@@ -518,10 +512,11 @@ void CL_SetViewPosition ()
 	if (cls.mvdplayback) {
 		// if tracking a player, update view position
 		if (cam_curtarget != CAM_NOTARGET) {
-			frame_t *frame = &cl.frames[cl.parsecount & UPDATE_MASK];
-			player_state_t *state = &frame->playerstate[cam_curtarget];
-			VectorCopy (state->viewangles, cl.simangles);
+			player_state_t *state = &cl.frames[0].playerstate[cam_curtarget];
 			VectorCopy (state->origin, cl.simorg);
+			VectorCopy (state->viewangles, cl.simangles);
+			// so that we're looking that way when we go into free fly
+			VectorCopy (state->viewangles, cl.viewangles);
 		}
 		return;
 	}
@@ -533,20 +528,24 @@ void CL_SetViewPosition ()
 		return;
 	}
 
-	frame_t *to = &cl.frames[cl.validsequence & UPDATE_MASK];
-	if (cls.demoplayback)
-		CL_LerpMove (to->senttime);
+	outpacket_t *outp = &cl.outpackets[cl.frames[0].sequence & SENT_MASK];
+	if (cls.demoplayback && !(cl.spectator && cam_curtarget != CAM_NOTARGET)) {
+//		CL_LerpMove (outp->senttime);
+		CL_LerpMove (cl.frames[0].receivedtime);
+	}
 	else if (cl.spectator && cam_curtarget != CAM_NOTARGET) {
-		player_state_t *state = &to->playerstate[cam_curtarget];
-		VectorCopy (state->origin, cl.simorg);
-		VectorCopy (state->viewangles, cl.simangles);
+		player_state_t *state = &cl.frames[0].playerstate[cam_curtarget];
+//		VectorCopy (state->origin, cl.simorg);
+//		VectorCopy (state->viewangles, cl.simangles);
+		VectorCopy (predicted_simorg, cl.simorg);
+		VectorCopy (predicted_simangles, cl.simangles);
 		// so that we're looking that way when we go into free fly
-		VectorCopy (state->viewangles, cl.viewangles);
+		VectorCopy (cl.simangles, cl.viewangles);
 	}
 	else {
 		// player has the control (normal movement or spectator free fly)
 		if (cl_independentPhysics.value)
-			CL_LerpMovePhys (cls.realtime, to->senttime);
+			CL_LerpMovePhys (cls.realtime, outp->senttime);
 		else
 			VectorCopy (predicted_simorg, cl.simorg);
 		VectorCopy (cl.viewangles, cl.simangles);
@@ -555,3 +554,13 @@ void CL_SetViewPosition ()
 	CL_CalcCrouch ();
 }
 
+/*
+==============
+CL_InitPrediction
+==============
+*/
+void CL_InitPrediction (void)
+{
+	Cvar_Register (&cl_nopred);
+	Cvar_Register (&cl_nolerp);
+}

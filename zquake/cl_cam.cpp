@@ -204,8 +204,7 @@ void Cam_FinishMove (usercmd_t *cmd)
 
 	if (cam_track && !cam_locked) {
 		// try to lock to desired target
-		if (cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cam_target].messagenum
-				== cl.parsecount) {
+		if (cl.frames[0].playerstate_valid[cam_target]) {
 			// good
 			cam_locked = true;
 			cam_curtarget = cam_target;
@@ -214,8 +213,8 @@ void Cam_FinishMove (usercmd_t *cmd)
 
 	if (cam_curtarget != CAM_NOTARGET) {
 		player_state_t	*state;
-		state = &cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cam_curtarget];
-		if (state->messagenum == cl.parsecount) {
+		state = &cl.frames[0].playerstate[cam_curtarget];
+		if (cl.frames[0].playerstate_valid[cam_curtarget]) {
 			// move there so that we get correct PVS
 			MSG_WriteByte (&cls.netchan.message, clc_tmove);
 			MSG_WriteCoord (&cls.netchan.message, state->origin[0]);
@@ -268,7 +267,7 @@ void Cam_TryLock (void)
 	int		old_locked, old_target;
 	static	float lastlocktime;
 
-	if (!cl.validsequence)
+	if (cls.state != ca_active)
 		return;
 
 	// this is to make sure lastlocktime is initialized (FIXME)
@@ -278,13 +277,13 @@ void Cam_TryLock (void)
 	old_locked = cam_locked;
 	old_target = cam_target;
 
-	state = cl.frames[cl.validsequence & UPDATE_MASK].playerstate;
+	state = cl.frames[0].playerstate;
 	for (i=0 ; i<MAX_CLIENTS ; i++) {
 		if (!cl.players[i].name[0] || cl.players[i].spectator ||
-			state[i].messagenum != cl.parsecount)
+			!cl.frames[0].playerstate_valid[i])
 			continue;
-		if (fabs(state[i].command.angles[0] - cl.viewangles[0]) < 2 &&
-			fabs(state[i].command.angles[1] - cl.viewangles[1]) < 2)
+		if (fabs(state[i].viewangles[0] - cl.viewangles[0]) < 2 &&
+			fabs(state[i].viewangles[1] - cl.viewangles[1]) < 2)
 		{
 			for (j=0 ; j<3 ; j++)
 				if (fabs(state[i].origin[j] - state[cl.playernum].origin[j]) > 200)

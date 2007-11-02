@@ -66,7 +66,9 @@ cvar_t	teamskin = {"teamskin", "", 0, OnChangeSkinForcing};
 cvar_t	enemyskin = {"enemyskin", "", 0, OnChangeSkinForcing};
 cvar_t	cl_independentPhysics = {"cl_independentPhysics", "1"};
 cvar_t	cl_physfps = {"cl_physfps", "0"};
+cvar_t	cl_physfps_spectator = {"cl_physfps_spectator", "30"};
 cvar_t	cl_zerolocalping = {"cl_zerolocalping", "1"};
+cvar_t	cl_predictiontimeout = {"cl_predictiontimeout", "3"};
 cvar_t	sys_yieldcpu = {"sys_yieldcpu", "1"};
 
 
@@ -159,12 +161,11 @@ void client_state_t::clear ()
 	allow_frj = false;
 	parsecount = 0;
 	oldparsecount = 0;
-	validsequence = 0;
-	oldvalidsequence = 0;
-	delta_sequence = 0;
 	spectator = false;
 	last_ping_request = 0;
+	// do the freeing of packets here?
 	memset (frames, 0, sizeof(frames));
+	numframes = 0;
 	memset (&lastcmd, 0, sizeof(lastcmd));
 	servertime = 0;
 	memset (stats, 0, sizeof(stats));
@@ -517,7 +518,7 @@ void CL_ClearState (void)
 	CL_ClearParticles ();
 	CL_ClearNails ();
 
-	for (i = 0; i < UPDATE_BACKUP; i++)
+	for (i = 0; i < cl.numframes; i++)
 		Q_free (cl.frames[i].packet_entities.entities);
 
 	cl.clear();
@@ -1007,6 +1008,8 @@ void CL_ReadPackets (void)
 		}
 		if (!Netchan_Process(&cls.netchan))
 			continue;		// wasn't accepted for some reason
+if (Cvar_Value("dropp"))//@@@testing
+continue;
 		CL_ParseServerMessage ();
 	}
 
@@ -1105,7 +1108,9 @@ void CL_InitLocal (void)
 	Cvar_Register (&qizmo_dir);
 	Cvar_Register (&cl_independentPhysics);
 	Cvar_Register (&cl_physfps);
+	Cvar_Register (&cl_physfps_spectator);
 	Cvar_Register (&cl_zerolocalping);
+	Cvar_Register (&cl_predictiontimeout);
 	Cvar_Register (&sys_yieldcpu);
 
 #ifndef RELEASE_VERSION
@@ -1255,6 +1260,18 @@ static void CL_CheckAutoPause (void)
 #endif
 }
 
+qbool CL_NetworkStalled (void)
+{
+	if (cls.state < ca_active || cls.mvdplayback)
+		return false;
+	if (cls.nqprotocol)
+		return false;	// FIXME?
+	if (cls.realtime - cl.frames[0].receivedtime > cl_predictiontimeout.value)
+		return true;
+	if (cls.netchan.outgoing_sequence - cl.frames[0].sequence >= SENT_BACKUP-1)
+		return true;	// can't predict any further
+	return false;
+}
 
 /*
 ===================
@@ -1302,8 +1319,13 @@ static double MinPhysFrameTime ()
 	float fpscap = (cl.maxfps ? cl.maxfps : 72.0);
 
 	// the user can lower it for testing
-	if (cl_physfps.value)
-		fpscap = min(fpscap, cl_physfps.value);
+	if (cl.spectator && strcmp(cl_physfps_spectator.string, "same")) {
+		if (cl_physfps_spectator.value)
+			fpscap = min(fpscap, cl_physfps_spectator.value);
+	} else {
+		if (cl_physfps.value)
+			fpscap = min(fpscap, cl_physfps.value);
+	}
 
 	// not less than this no matter what
 	fpscap = max(fpscap, 10);
@@ -1421,11 +1443,14 @@ else {
 	CL_AdjustAngles ();
 }
 
-	// build a refresh entity list
-	CL_EmitEntities ();
+	extern void CL_PredictAndLerpPlayers ();
+	CL_PredictAndLerpPlayers ();
 
 	extern void CL_SetViewPosition ();
 	CL_SetViewPosition ();
+
+	// build a refresh entity list
+	CL_EmitEntities ();
 
 	// update video
 	if (host_speeds.value)

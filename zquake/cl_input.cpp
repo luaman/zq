@@ -186,9 +186,8 @@ void IN_JumpDown(void) {
 		up = cam_track ? false : true;
 	else if (cl.stats[STAT_HEALTH] <= 0)
 		up = false;
-	else if (cl.validsequence && (
-	((pmt = cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cl.playernum].pm_type) == PM_FLY)
-	|| pmt == PM_SPECTATOR || pmt == PM_OLD_SPECTATOR))
+	else if (((pmt = cl.frames[0].playerstate[cl.playernum].pm_type) == PM_FLY)
+	|| pmt == PM_SPECTATOR || pmt == PM_OLD_SPECTATOR)
 		up = true;
 	else if (cl.waterlevel >= 2 && !(cl.teamfortress && (in_forward.state & 1)))
 		up = true;
@@ -706,10 +705,11 @@ void CL_SendCmd (void)
 	}
 
 	// save this command off for prediction
-	i = cls.netchan.outgoing_sequence & UPDATE_MASK;
-	cmd = &cl.frames[i].cmd;
-	cl.frames[i].senttime = cls.realtime;
-	cl.frames[i].receivedtime = -1;		// we haven't gotten a reply yet
+	i = cls.netchan.outgoing_sequence & SENT_MASK;
+	cmd = &cl.outpackets[i].cmd;
+	cl.outpackets[i].senttime = cls.realtime;
+	cl.outpackets[i].receivedtime = -1;		// we haven't gotten a reply yet
+	cl.outpackets[i].invalid_delta = false;
 
 	CL_Move(cmd);
 
@@ -730,22 +730,22 @@ void CL_SendCmd (void)
 	// if the last packet was dropped, it can be recovered
 	dontdrop = false;
 
-	i = (cls.netchan.outgoing_sequence-2) & UPDATE_MASK;
-	cmd = &cl.frames[i].cmd;
+	i = (cls.netchan.outgoing_sequence-2) & SENT_MASK;
+	cmd = &cl.outpackets[i].cmd;
 	if (cl_c2sImpulseBackup.value >= 2)
 		dontdrop = dontdrop || cmd->impulse;
 	MSG_WriteDeltaUsercmd (&buf, &nullcmd, cmd);
 	oldcmd = cmd;
 
-	i = (cls.netchan.outgoing_sequence-1) & UPDATE_MASK;
-	cmd = &cl.frames[i].cmd;
+	i = (cls.netchan.outgoing_sequence-1) & SENT_MASK;
+	cmd = &cl.outpackets[i].cmd;
 	if (cl_c2sImpulseBackup.value >= 3)
 		dontdrop = dontdrop || cmd->impulse;
 	MSG_WriteDeltaUsercmd (&buf, oldcmd, cmd);
 	oldcmd = cmd;
 
-	i = (cls.netchan.outgoing_sequence) & UPDATE_MASK;
-	cmd = &cl.frames[i].cmd;
+	i = (cls.netchan.outgoing_sequence) & SENT_MASK;
+	cmd = &cl.outpackets[i].cmd;
 	if (cl_c2sImpulseBackup.value >= 1)
 		dontdrop = dontdrop || cmd->impulse;
 	MSG_WriteDeltaUsercmd (&buf, oldcmd, cmd);
@@ -755,19 +755,18 @@ void CL_SendCmd (void)
 		buf.data + checksumIndex + 1, buf.cursize - checksumIndex - 1,
 		cls.netchan.outgoing_sequence);
 
-	// request delta compression of entities
-	if (cls.netchan.outgoing_sequence - cl.validsequence >= UPDATE_BACKUP-1) {
-		cl.validsequence = 0;
-		cl.delta_sequence = 0;
-	}
-
-	if (cl.delta_sequence && !cl_nodelta.value && cls.state == ca_active) {
-		cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].delta_sequence = cl.delta_sequence;
+	// <pedantic mode on>
+	// UPDATE_BACKUP would probably work as well, but I'm too lazy to make a rigorous
+	// check, hence UPDATE_BACKUP-1
+	if (!cl_nodelta.value && cls.state == ca_active
+	&& cls.netchan.outgoing_sequence - cl.frames[0].sequence < UPDATE_BACKUP-1) {
+		assert(cl.numframes > 0);
+		cl.outpackets[cls.netchan.outgoing_sequence&SENT_MASK].delta_sequence = cl.frames[0].sequence;
 		MSG_WriteByte (&buf, clc_delta);
-		MSG_WriteByte (&buf, cl.delta_sequence&255);
+		MSG_WriteByte (&buf, cl.frames[0].sequence & 255);
 	}
 	else
-		cl.frames[cls.netchan.outgoing_sequence&UPDATE_MASK].delta_sequence = -1;
+		cl.outpackets[cls.netchan.outgoing_sequence&SENT_MASK].delta_sequence = -1;
 
 	if (cls.demorecording)
 		CL_WriteDemoCmd (cmd);
@@ -788,7 +787,7 @@ void CL_SendCmd (void)
 			dropcount = 0;
 		} else {
 			// don't count this message when calculating PL
-			cl.frames[i].receivedtime = -3;
+			cl.outpackets[cls.netchan.outgoing_sequence&SENT_MASK].receivedtime = -3;
 			// drop this message
 			cls.netchan.outgoing_sequence++;
 			dropcount++;

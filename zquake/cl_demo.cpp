@@ -126,9 +126,15 @@ void CL_WriteDemoCmd (usercmd_t *pcmd)
 
 	fwrite(&cmd, sizeof(cmd), 1, cls.demofile);
 
-	t[0] = LittleFloat (cl.viewangles[0]);
-	t[1] = LittleFloat (cl.viewangles[1]);
-	t[2] = LittleFloat (cl.viewangles[2]);
+	float *viewangles;
+	if (cl.spectator && cam_curtarget != CAM_NOTARGET)
+		// so that we can find the tracked player on playback
+		viewangles = cl.frames[0].playerstate[cam_curtarget].viewangles;
+	else
+		viewangles = cl.viewangles;
+	t[0] = LittleFloat (viewangles[0]);
+	t[1] = LittleFloat (viewangles[1]);
+	t[2] = LittleFloat (viewangles[2]);
 	fwrite (t, 12, 1, cls.demofile);
 
 	fflush (cls.demofile);
@@ -255,6 +261,10 @@ readnext:
 		{
 			extern void CL_ParseClientdata ();
 
+// FIXME?
+extern void CheckAndAddNewFrame (void);
+CheckAndAddNewFrame();
+
 			cls.mvd_oldtime = cls.mvd_newtime;
 			cls.mvd_newtime = demotime;
 			cls.netchan.incoming_sequence++;
@@ -284,8 +294,8 @@ readnext:
 			Host_Error ("dem_cmd in MVD");
 #endif
 		// user sent input
-		i = cls.netchan.outgoing_sequence & UPDATE_MASK;
-		pcmd = &cl.frames[i].cmd;
+		i = cls.netchan.outgoing_sequence & SENT_MASK;
+		pcmd = &cl.outpackets[i].cmd;
 		r = fread (pcmd, sizeof(*pcmd), 1, cls.demofile);
 		if (r != 1)
 			Host_Error ("Unexpected end of demo");
@@ -295,8 +305,8 @@ readnext:
 		pcmd->forwardmove = LittleShort(pcmd->forwardmove);
 		pcmd->sidemove    = LittleShort(pcmd->sidemove);
 		pcmd->upmove      = LittleShort(pcmd->upmove);
-		cl.frames[i].senttime = demotime + (cls.realtime - cls.demotime);
-		cl.frames[i].receivedtime = -1;		// we haven't gotten a reply yet
+		cl.outpackets[i].senttime = demotime + (cls.realtime - cls.demotime);
+		cl.outpackets[i].receivedtime = -1;		// we haven't gotten a reply yet
 		cls.netchan.outgoing_sequence++;
 
 		fread (cl.viewangles, 12, 1, cls.demofile);

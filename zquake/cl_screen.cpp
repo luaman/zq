@@ -496,9 +496,7 @@ SCR_DrawNet
 */
 void SCR_DrawNet (void)
 {
-	if (cls.netchan.outgoing_sequence - cls.netchan.incoming_acknowledged < UPDATE_BACKUP-1)
-		return;
-	if (cls.demoplayback)
+	if (!CL_NetworkStalled())
 		return;
 
 	R_DrawPic (scr_vrect.x+64, scr_vrect.y, scr_net);
@@ -553,12 +551,10 @@ void SCR_DrawSpeed (void)
 		speed = CLNQ_CalcPlayerSpeed();
 	else
 	{
-		if (show_speed.value == 2) {
+		if (show_speed.value == 2)
 			VectorCopy (cl.simvel, vel);	// predicted velocity
-		} else if (cl.validsequence)
-			VectorCopy (cl.frames[cl.validsequence & UPDATE_MASK].playerstate[cl.playernum].velocity, vel);
 		else
-			VectorClear (vel);
+			VectorCopy (cl.frames[0].playerstate[cl.playernum].velocity, vel);
 		vel[2] = 0;
 		speed = VectorLength(vel);
 	}
