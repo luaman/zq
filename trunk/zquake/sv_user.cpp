@@ -141,14 +141,14 @@ static void Cmd_New_f (void)
 	// send the movevars
 	ClientReliableWrite_Float (sv.movevars.gravity);
 	ClientReliableWrite_Float (sv.movevars.stopspeed);
-	ClientReliableWrite_Float (sv_client->maxspeed);
+	ClientReliableWrite_Float (sv.movevars.maxspeed);
 	ClientReliableWrite_Float (sv.movevars.spectatormaxspeed);
 	ClientReliableWrite_Float (sv.movevars.accelerate);
 	ClientReliableWrite_Float (sv.movevars.airaccelerate);
 	ClientReliableWrite_Float (sv.movevars.wateraccelerate);
 	ClientReliableWrite_Float (sv.movevars.friction);
 	ClientReliableWrite_Float (sv.movevars.waterfriction);
-	ClientReliableWrite_Float (sv_client->entgravity);
+	ClientReliableWrite_Float (sv.movevars.entgravity);
 	ClientReliableWrite_End ();
 
 	// send music
