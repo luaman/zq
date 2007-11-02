@@ -1145,16 +1145,16 @@ void player_touch ()
             if ( ((self.undercover_team != 0) || (self.undercover_skin != 0)) ) {
                 if ( (((other.playerclass == 8) || (other.playerclass == 1)) && (other.pteam != self.pteam)) ) {
                     TF_AddFrags (other,1, 0);
-                    bprint (1,other.netname);
-                    bprint (1," uncovered an enemy spy!\n");
+                    bprint (PRINT_MEDIUM,other.netname);
+                    bprint (PRINT_MEDIUM," uncovered an enemy spy!\n");
                     Spy_RemoveDisguise (self);
                 }
             }
             if ( ((other.undercover_team != 0) || (other.undercover_skin != 0)) ) {
                 if ( (((self.playerclass == 8) || (self.playerclass == 1)) && (self.pteam != other.pteam)) ) {
                     TF_AddFrags (self,1, 0);
-                    bprint (1,self.netname);
-                    bprint (1," uncovered an enemy spy!\n");
+                    bprint (PRINT_MEDIUM,self.netname);
+                    bprint (PRINT_MEDIUM," uncovered an enemy spy!\n");
                     Spy_RemoveDisguise (other);
                 }
             }

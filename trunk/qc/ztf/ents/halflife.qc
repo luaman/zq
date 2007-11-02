@@ -147,7 +147,7 @@ void Delayed_Use () {
     entity ste;
     t = find (world,targetname, self.target);
     if ( t ) {
-        //bprint(2.000, t.classname, " delayed 2\n");
+        //bprint(PRINT_HIGH, t.classname, " delayed 2\n");
         ste = self;
         self = t;
         if ( (self.use != SUB_Null) ) {
@@ -159,9 +159,9 @@ void Delayed_Use () {
     }
     //else
     // {
-    //    bprint(2.000,t.target);
-    //    bprint(2.000,"  ");
-    //    bprint(2.000, t.classname, " not found \n");
+    //    bprint(PRINT_HIGH,t.target);
+    //    bprint(PRINT_HIGH,"  ");
+    //    bprint(PRINT_HIGH, t.classname, " not found \n");
     //}
 };
 
@@ -186,9 +186,9 @@ void multi_spawn () {
                 stlen = strlen (key);
                 key = substr(self.target , 0 , stlen - 2);
             }
-            //  bprint(2.000,key);
-            //  bprint(2.000,"  ");
-            //  bprint(2.000, ftos(stlen), "\n");
+            //  bprint(PRINT_HIGH,key);
+            //  bprint(PRINT_HIGH,"  ");
+            //  bprint(PRINT_HIGH, ftos(stlen), "\n");
             if (self.delay) {
                 if (stlen) {
                     timer = spawn ();

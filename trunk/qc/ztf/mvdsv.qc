@@ -39,8 +39,8 @@ void SetOptCmd (float type, float print) {
     localcmd (argv(1));
     localcmd ("\n");
     if (print) {
-        bprint(2, " ");
-        bprint(2, argv(0), " set to ", argv(1), " \n");
+        bprint(PRINT_HIGH, " ");
+        bprint(PRINT_HIGH, argv(0), " set to ", argv(1), " \n");
     }
 }
 
@@ -138,8 +138,8 @@ float UserCmd () {
             Admin_Check(argv(1));
             if (self.is_admin == 3.000) {
                 Admin_Aliases();
-                bprint(2, self.netname, " çáéîó æõìì áäíéî óôáôõó!");
-                bprint(3, "\n");
+                bprint(PRINT_HIGH, self.netname, " çáéîó æõìì áäíéî óôáôõó!");
+                bprint(PRINT_CHAT, "\n");
                 sprint (self, PRINT_HIGH, "Type ãïííáîäó for admin commands.\n");
             } else {
                 sprint (self, PRINT_HIGH, "incorrect admin password\n");
@@ -182,10 +182,10 @@ float UserCmd () {
     } else if (argv(0) == "abort") {
         if (arg_num == 1) {
             if (self.mvote) {
-                bprint(2, self.netname, " ÷éôèäòá÷ó ");
-                if (infokey(self, "gender") == "f") bprint(2, "èåò ");
-                else bprint(2, "èéó ");
-                bprint(3, "vote\n");
+                bprint(PRINT_HIGH, self.netname, " ÷éôèäòá÷ó ");
+                if (infokey(self, "gender") == "f") bprint(PRINT_HIGH, "èåò ");
+                else bprint(PRINT_HIGH, "èéó ");
+                bprint(PRINT_CHAT, "vote\n");
                 v_misc = v_misc - 1;
                 if (self.mvote == 2.000) AbortMiscVote ();
                 self.mvote = 0;
@@ -587,11 +587,11 @@ float UserCmd () {
             if (arg_num == 1) {
                 st = infokey (world, "demo_auto_left");
                 if (stof (st) > 0) {
-                    bprint(2.000, "Auto-Recording off\n");
+                    bprint(PRINT_HIGH, "Auto-Recording off\n");
                     localcmd ("localinfo demo_auto_left 0\n");
                     return 1;
                 } else {
-                    bprint(2.000, "Auto-Recording the next match\n");
+                    bprint(PRINT_HIGH, "Auto-Recording the next match\n");
                     localcmd ("localinfo demo_auto_left 1\n");
                     return 1;
                 }

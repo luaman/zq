@@ -1310,8 +1310,10 @@ void superspike_touch () {
 }
 
 void set_ca_none () {
+	dprint("Entering set_ca_none\n");
     self.currentammo = 0.000;
     self.weaponmodel = "";
+	dprint("Leaving set_ca_none\n");
 }
 
 void set_ca_hook () {
@@ -1504,6 +1506,7 @@ var void() weapnum_setammo[21] = {
 }
 
 void W_SetCurrentAmmo () {
+	dprint("Entering W_SetCurrentAmmo\n");
     float i, b;
     if ( ((self.health <= 0.000) || (self.current == 0.000)) ) {
         return ;
@@ -1511,20 +1514,30 @@ void W_SetCurrentAmmo () {
     if ( ((self.current == WEAP_ASSAULT_CANNON) && (self.tfstate & 2048.000)) ) {
         return ;
     }
+	dprint("W_SetCurrentAmmo: player_run\n");
     player_run ();
     self.items = (self.items - (self.items & (((256.000 | 512.000) | 1024.000) | 2048.000)));
     self.weapon = 0.000;
+	i = 0;
+	dprint("W_SetCurrentAmmo: i =");
+	dprint(ftos(i));
+	dprint("\n");
     for (b = 1; b < WEAP_LAST;  b *= 2) {
         i+=1;
         if (self.current == b) {
             break;
         }
     }
+	dprint("W_SetCurrentAmmo: weapnum_setammo");
     self.th_melee = weapnum_setammo[i];
+	dprint("W_SetCurrentAmmo: th_melee()\n");
     self.th_melee();
+	dprint("W_SetCurrentAmmo: StatusBarSize\n");
     if (self.StatusBarSize)
         self.StatusRefreshTime = (time + 0.100);
+	dprint("W_SetCurrentAmmo: weaponframe\n");
     self.weaponframe = 0.000;
+	dprint("Leaving W_SetCurrentAmmo\n");
 }
 
 float W_BestWeapon () {

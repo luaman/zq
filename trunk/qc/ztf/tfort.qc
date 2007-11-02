@@ -204,6 +204,7 @@ void TeamFortress_DisplayLegalClasses () {
 }
 
 void TeamFortress_ChangeClass (float inp) {
+	dprint ("Entered TeamFortress_ChangeClass\n");
     if ( (!self.playerclass) ) {
         if (round_active && !modetype & 64) {
             if ( !IsLegalClass (inp) ) {
@@ -285,7 +286,9 @@ void TeamFortress_ChangeClass (float inp) {
         self.tfstate = (self.tfstate | 8.000);
     }
     self.nextpc = 0.000;
+	dprint ("TeamFortress_ChangeClass: About to PutClientInServer()\n");
     PutClientInServer();
+	dprint ("Leaving TeamFortress_ChangeClass\n");
 }
 
 void TeamFortress_Inventory () {
@@ -762,11 +765,11 @@ void TeamFortress_SetSpeed (entity p) {
     if (realistic & 4) {
 
         wpdec = p.num_weaps * 30;
-        //bprint(2.000, ftos(wpdec));
-        //bprint(2.000,"\n");
+        //bprint(PRINT_HIGH, ftos(wpdec));
+        //bprint(PRINT_HIGH,"\n");
         armdec = p.armortype * 50;
-        //bprint(2.000, ftos(armdec));
-        //bprint(2.000, "\n");
+        //bprint(PRINT_HIGH, ftos(armdec));
+        //bprint(PRINT_HIGH, "\n");
 
         medspeed = 300 - (wpdec + armdec);
         //p.maxspeed = (p.maxspeed + medspeed / 2);
@@ -980,411 +983,394 @@ void TeamFortress_SetSkin (entity p) {
 }
 
 void TeamFortress_SetEquipment () {
-    entity te;
-    string st;
-    float kept_items;
-    float noitems;
-    if ( (self.classname != "player") ) {
-        return ;
-    }
-    kept_items = (self.tf_items & (131072.000 | 262144.000));
-    self.items = 0.000;
-    self.last = 0.000;
-    self.current = 0.000;
-    self.carried = 0.000;
-    self.tf_items = 0.000;
-    if ( (self.playerclass != 1.000) ) {
-        self.tf_items_flags = 0.000;
-    }
-    self.armorclass = 0.000;
-    self.impulse = 0.000;
-    self.undercover_skin = 0.000;
-    if ( (self.undercover_team != 0.000) ) {
-        //self.immune_to_check = (time + 5.000);
-        self.undercover_team = 0.000;
-        stuffcmd (self,"color ");
-        st = ftos (self.pteam.colormap);
-        stuffcmd (self,st);
-        stuffcmd (self,"\n");
-    }
-    self.is_building = 0.000;
-    self.is_detpacking = 0.000;
-    self.is_undercover = 0.000;
-    self.is_feigning = 0.000;
-    self.is_unabletospy = 0.000;
-    self.ammo_medikit = 0.000;
-    self.maxammo_medikit = 0.000;
-    self.ammo_detpack = 0.000;
-    self.maxammo_detpack = 0.000;
-    self.items_allowed = 0.000;
-    self.armor_allowed = 0.000;
-    self.maxarmor = 0.000;
-    self.respawn_time = 0.000;
-    self.heat = 0.000;
-    self.tfstate = (self.tfstate - (self.tfstate & 2.000));
-    self.items = (self.items | kept_items);
-    if ( (self.playerclass == 1.000) ) {
-        self.carried = (((self.carried | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_NAILGUN);
-        self.ammo_rockets = 0.000;
-        self.ammo_nails = 100.000;
-        self.ammo_shells = 25.000;
-        self.ammo_cells = 50.000;
-        self.maxammo_rockets = 25.000;
-        self.maxammo_nails = 200.000;
-        self.maxammo_shells = 50.000;
-        self.maxammo_cells = 100.000;
-        self.no_grenades_1 = 2.000;
-        self.no_grenades_2 = 3.000;
-        self.tp_grenades_1 = 10.000;
-        self.tp_grenades_2 = 2.000;
-        self.tf_items = 1.000;
-        self.ScannerOn = 0.000;
-        if ( (self.tf_items_flags <= 0.000) ) {
-            self.tf_items_flags = (self.tf_items_flags | 1.000);
-        }
-        self.armorclass = (self.armorclass | 0.000);
-        self.armortype = 0.300;
-        self.armorvalue = 25.000;
-        self.armor_allowed = 0.300;
-        self.maxarmor = 50.000;
-        self.current = WEAP_NAILGUN;
-        self.items_allowed = ((WEAP_AXE | WEAP_SHOTGUN) | WEAP_NAILGUN);
-        self.items = ((self.items | 1.000) | 4.000);
-        self.num_weaps = 3.000;
-    } else {
-        if ( (self.playerclass == 2.000) ) {
-            if (classtype & 1.000) {
-                self.carried = ((((self.carried | WEAP_PLASMAGUN) | WEAP_NAILGUN) | WEAP_SHOTGUN) | WEAP_AXE);
-                self.ammo_cells = 100.000;
-                self.ammo_nails = 0.000;
-                self.maxammo_cells = 200.000;
-                self.maxammo_nails = 50.000;
-                self.armortype = 0.600;
-                self.armorvalue = 50.000;
-                self.armor_allowed = 0.600;
-                self.maxarmor = 130.000;
-                self.current = WEAP_PLASMAGUN;
-                self.items_allowed = (((WEAP_PLASMAGUN | WEAP_NAILGUN) | WEAP_SHOTGUN) | WEAP_AXE);
-                self.items = (((self.items | 1.000) | 4.000) | 16.000);
-                self.num_weaps = 3.000;
-            } else {
-                self.carried = ((((self.carried | WEAP_SNIPER_RIFLE) | WEAP_AUTO_RIFLE	) | WEAP_AXE) | WEAP_NAILGUN);
-                self.ammo_cells = 0.000;
-                self.ammo_nails = 50.000;
-                self.maxammo_nails = 100.000;
-                self.maxammo_cells = 50.000;
-                self.armortype = 0.300;
-                self.armorvalue = 0.000;
-                self.armor_allowed = 0.300;
-                self.maxarmor = 50.000;
-                self.current = WEAP_SNIPER_RIFLE;
-                self.items_allowed = (((WEAP_SNIPER_RIFLE | WEAP_AUTO_RIFLE	) | WEAP_AXE) | WEAP_NAILGUN);
-                self.items = (((self.items | 1.000) | 2.000) | 4.000);
-                self.num_weaps = 4.000;
-            }
-            self.ammo_rockets = 0.000;
-            self.ammo_shells = 60.000;
-            self.maxammo_rockets = 25.000;
-            self.maxammo_shells = 75.000;
-            self.no_grenades_1 = 2.000;
-            self.no_grenades_2 = 2.000;
-            self.tp_grenades_1 = 1.000;
-            self.tp_grenades_2 = 9.000;
-            self.tf_items = 0.000;
-            self.armorclass = (self.armorclass | 0.000);
-        } else {
-            if ( (self.playerclass == 3.000) ) {
-                self.carried = ((((self.carried | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_ROCKET_LAUNCHER);
-                self.ammo_rockets = 10.000;
-                self.ammo_nails = 0.000;
-                self.ammo_shells = 50.000;
-                self.ammo_cells = 0.000;
-                self.maxammo_rockets = 50.000;
-                self.maxammo_nails = 50.000;
-                self.maxammo_shells = 100.000;
-                self.maxammo_cells = 50.000;
-                self.no_grenades_1 = 4.000;
-                self.no_grenades_2 = 1.000; //2
-                self.tp_grenades_1 = 1.000;
-                self.tp_grenades_2 = 3.000;
-                self.tf_items = 0.000;
-                self.armorclass = (self.armorclass | 0.000);
-                self.armortype = 0.800;
-                self.armorvalue = 100.000;
-                self.armor_allowed = 0.800;
-                self.maxarmor = 200.000;
-                self.current = WEAP_ROCKET_LAUNCHER;
-                self.items_allowed = (((WEAP_AXE | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_ROCKET_LAUNCHER);
-                self.items = (((self.items | 1.000) | 2.000) | 32.000);
-                self.num_weaps = 4.000;
-            } else {
-                if ( (self.playerclass == 4.000) ) {
-                    self.carried = ((((self.carried | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_GRENADE_LAUNCHER) | WEAP_PIPEBOMB_LAUNCHER);
-                    self.ammo_rockets = 20.000;
-                    self.ammo_nails = 0.000;
-                    self.ammo_shells = 30.000;
-                    self.ammo_cells = 0.000;
-                    self.maxammo_rockets = 50.000;
-                    self.maxammo_nails = 50.000;
-                    self.maxammo_shells = 70.000;
-                    self.maxammo_cells = 50.000;
-                    self.no_grenades_1 = 4.000;
-                    if (modetype & 256) {
-                        self.no_grenades_2 = 4.000;
-                    } else {
-                        self.no_grenades_2 = 2.000; //4
-                    }
-                    self.tp_grenades_1 = 1.000;
-                    self.tp_grenades_2 = 4.000;
-                    self.tf_items = 0.000;
-                    self.ammo_detpack = 1.000;
-                    self.maxammo_detpack = 1.000;
-                    self.armorclass = (self.armorclass | 2.000);
-                    self.armortype = 0.600;
-                    self.armorvalue = 50.000;
-                    self.armor_allowed = 0.600;
-                    self.maxarmor = 120.000;
-                    self.current = WEAP_GRENADE_LAUNCHER;
-                    self.items_allowed = (((WEAP_AXE | WEAP_SHOTGUN) | WEAP_GRENADE_LAUNCHER) | WEAP_PIPEBOMB_LAUNCHER);
-                    self.items = (((self.items | 1.000) | 16.000) | 32.000);
-                    self.num_weaps = 3.000;
-                } else {
-                    if ( (self.playerclass == 5.000) ) {
-                        self.carried = ((((self.carried | WEAP_MEDIKIT) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_SUPER_NAILGUN);
-                        self.ammo_rockets = 0.000;
-                        self.ammo_nails = 50.000;
-                        self.ammo_shells = 50.000;
-                        self.ammo_cells = 0.000;
-                        self.maxammo_rockets = 25.000;
-                        self.maxammo_nails = 150.000;
-                        self.maxammo_shells = 80.000;
-                        self.maxammo_cells = 50.000;
-                        self.no_grenades_1 = 3.000;
-                        if (modetype & 256) {
-                            self.no_grenades_2 = 2.000;
-                        } else {
-                            self.no_grenades_2 = 3.000;
-                        }
-                        self.tp_grenades_1 = 1.000;
-                        if (grentype)
-                            self.tp_grenades_2 = 6.000; //2
-                        else
-                            self.tp_grenades_2 = 2.000;
-                        self.tf_items = 0.000;
-                        self.armorclass = (self.armorclass | 0.000);
-                        self.armortype = 0.300;
-                        self.armorvalue = 50.000;
-                        self.armor_allowed = 0.600;
-                        self.maxarmor = 100.000;
-                        self.current = WEAP_SUPER_NAILGUN;
-                        self.ammo_medikit = 50.000;
-                        self.maxammo_medikit = 100.000;
-                        te = spawn ();
-                        te.nextthink = (time + 3.000);
-                        te.think = TeamFortress_Regenerate;
-                        te.owner = self;
-                        te.classname = "timer";
-                        self.items_allowed = ((((WEAP_MEDIKIT ) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_SUPER_NAILGUN);
-                        self.items = (((self.items | 1.000) | 2.000) | 8.000 );
-                        self.num_weaps = 4.000;
-                    } else {
-                        if ( (self.playerclass == 6.000) ) {
-                            self.carried = ((((self.carried | WEAP_ASSAULT_CANNON) | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN);
-                            self.ammo_rockets = 0.000;
-                            self.ammo_nails = 0.000;
-                            self.ammo_shells = 200.000;
-                            self.ammo_cells = 30.000;
-                            self.maxammo_rockets = 25.000;
-                            self.maxammo_nails = 200.000;
-                            self.maxammo_shells = 200.000;
-                            self.maxammo_cells = 56.000;
-                            self.no_grenades_1 = 4.000;
-                            self.no_grenades_2 = 1.000;
-                            self.tp_grenades_1 = 1.000;
-                            self.tp_grenades_2 = 4.000;
-                            self.tf_items = 0.000;
-                            self.armorclass = (self.armorclass | 0.000);
-                            self.armortype = 0.800;
-                            self.armorvalue = 150.000;
-                            self.armor_allowed = 0.800;
-                            self.maxarmor = 300.000;
-                            self.current = WEAP_ASSAULT_CANNON;
-                            self.items_allowed = (((WEAP_ASSAULT_CANNON | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN);
-                            self.items = (((self.items | 1.000) | 2.000) | 64.000);
-                            self.num_weaps = 4.000;
-                        } else {
-                            if ( (self.playerclass == 7.000) ) {
-                                self.carried = ((((self.carried | WEAP_INCENDIARY) | WEAP_FLAMETHROWER) | WEAP_AXE) | WEAP_SHOTGUN);
-                                self.ammo_rockets = 20.000;
-                                self.ammo_nails = 0.000;
-                                self.ammo_shells = 20.000;
-                                self.ammo_cells = 120.000;
-                                self.maxammo_rockets = 60.000;
-                                self.maxammo_nails = 50.000;
-                                self.maxammo_shells = 40.000;
-                                self.maxammo_cells = 200.000;
-                                if (modetype & 256) {
-                                    self.no_grenades_1 = 1.000;
-                                    self.no_grenades_2 = 4.000;
-                                } else {
-                                    self.no_grenades_1 = 2.000;
-                                    self.no_grenades_2 = 3.000;
-                                }
-                                self.tp_grenades_1 = 1.000;
-                                self.tp_grenades_2 = 5.000;
-                                self.tf_items = 0.000;
-                                self.armorclass = (self.armorclass | 16.000);
-                                self.armortype = 0.600;
-                                self.armorvalue = 50.000;
-                                self.armor_allowed = 0.600;
-                                self.maxarmor = 150.000;
-                                self.current = WEAP_FLAMETHROWER;
-                                self.items_allowed = (((WEAP_INCENDIARY | WEAP_FLAMETHROWER) | WEAP_AXE) | WEAP_SHOTGUN);
-                                self.items = (((self.items | 1.000) | 8.000) | 32.000);
-                                self.num_weaps = 4.000;
-                            } else {
-                                if ( (self.playerclass == 11.000) ) {
-                                    if (( classtype & 64 || rounds)) {
-                                        self.ammo_rockets = 10.000;
-                                        self.ammo_nails = 60.000;
-                                        self.ammo_shells = 40.000;
-                                        self.ammo_cells = 8.000;
-                                        self.maxammo_rockets = 25.000;
-                                        self.maxammo_nails = 200.000;
-                                        self.maxammo_shells = 100.000;
-                                        self.maxammo_cells = 20.000;
-                                        self.armortype = 0.600;
-                                        self.maxarmor = 140.000;
-                                        self.current = WEAP_ROCKET_LAUNCHER;
-                                        self.items_allowed = ((((((((self.carried | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_NAILGUN) | WEAP_SUPER_NAILGUN) | WEAP_GRENADE_LAUNCHER) | WEAP_ROCKET_LAUNCHER) | WEAP_LIGHTNING);
-                                        self.carried = ((((((((self.carried | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_NAILGUN) | WEAP_SUPER_NAILGUN) | WEAP_GRENADE_LAUNCHER) | WEAP_ROCKET_LAUNCHER) | WEAP_LIGHTNING);
-                                        self.items = (((((((self.items | 1.000) | 2.000) | 4.000) | 8.000) | 16.000) | 32.000) | 64.000);
-                                        self.armor_allowed = 0.600;
-                                        self.num_weaps = 8.000;
+	dprint("Entering TeamFortress_SetEquipment\n");
+	entity te;
+	string st;
+	float kept_items;
+	float noitems;
+	if ( (self.classname != "player") ) {
+		return ;
+	}
+	kept_items = (self.tf_items & (131072.000 | 262144.000));
+	self.items = 0.000;
+	self.last = 0.000;
+	self.current = 0.000;
+	self.carried = 0.000;
+	self.tf_items = 0.000;
+	if ( (self.playerclass != 1.000) ) {
+		self.tf_items_flags = 0.000;
+	}
+	self.armorclass = 0.000;
+	self.impulse = 0.000;
+	self.undercover_skin = 0.000;
+	if ( (self.undercover_team != 0.000) ) {
+		//self.immune_to_check = (time + 5.000);
+		self.undercover_team = 0.000;
+		stuffcmd (self,"color ");
+		st = ftos (self.pteam.colormap);
+		stuffcmd (self,st);
+		stuffcmd (self,"\n");
+	}
+	self.is_building = 0.000;
+	self.is_detpacking = 0.000;
+	self.is_undercover = 0.000;
+	self.is_feigning = 0.000;
+	self.is_unabletospy = 0.000;
+	self.ammo_medikit = 0.000;
+	self.maxammo_medikit = 0.000;
+	self.ammo_detpack = 0.000;
+	self.maxammo_detpack = 0.000;
+	self.items_allowed = 0.000;
+	self.armor_allowed = 0.000;
+	self.maxarmor = 0.000;
+	self.respawn_time = 0.000;
+	self.heat = 0.000;
+	self.tfstate = (self.tfstate - (self.tfstate & 2.000));
+	self.items = (self.items | kept_items);
 
-                                    } else {
-                                        self.ammo_rockets = 0.000;
-                                        self.ammo_nails = 0.000;
-                                        self.ammo_shells = 0.000;
-                                        self.ammo_cells = 0.000;
-                                        self.maxammo_rockets = 0.000;
-                                        self.maxammo_nails = 0.000;
-                                        self.maxammo_shells = 0.000;
-                                        self.maxammo_cells = 0.000;
-                                        self.armortype = 0.000;
-                                        self.armor_allowed = 0.000;
-                                        self.maxarmor = 0.000;
-                                        self.current = WEAP_AXE;
-                                        self.items_allowed = 16.000;
-                                        self.items = 0.000;
-                                    }
-                                    self.no_grenades_1 = 0.000;
-                                    self.no_grenades_2 = 0.000;
-                                    self.tp_grenades_1 = 0.000;
-                                    self.tp_grenades_2 = 0.000;
-                                    self.tf_items = 0.000;
-                                    self.armorvalue = 0.000;
-                                    self.armorclass = (self.armorclass | 0.000);
+	if ( (self.playerclass == 1.000) ) {
+		self.carried = (((self.carried | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_NAILGUN);
+		self.ammo_rockets = 0.000;
+		self.ammo_nails = 100.000;
+		self.ammo_shells = 25.000;
+		self.ammo_cells = 50.000;
+		self.maxammo_rockets = 25.000;
+		self.maxammo_nails = 200.000;
+		self.maxammo_shells = 50.000;
+		self.maxammo_cells = 100.000;
+		self.no_grenades_1 = 2.000;
+		self.no_grenades_2 = 3.000;
+		self.tp_grenades_1 = 10.000;
+		self.tp_grenades_2 = 2.000;
+		self.tf_items = 1.000;
+		self.ScannerOn = 0.000;
+		if ( (self.tf_items_flags <= 0.000) ) {
+			self.tf_items_flags = (self.tf_items_flags | 1.000);
+		}
+		self.armorclass = (self.armorclass | 0.000);
+		self.armortype = 0.300;
+		self.armorvalue = 25.000;
+		self.armor_allowed = 0.300;
+		self.maxarmor = 50.000;
+		self.current = WEAP_NAILGUN;
+		self.items_allowed = ((WEAP_AXE | WEAP_SHOTGUN) | WEAP_NAILGUN);
+		self.items = ((self.items | 1.000) | 4.000);
+		self.num_weaps = 3.000;
+	} else if ( (self.playerclass == 2.000) ) {
+		if (classtype & 1.000) {
+			self.carried = ((((self.carried | WEAP_PLASMAGUN) | WEAP_NAILGUN) | WEAP_SHOTGUN) | WEAP_AXE);
+			self.ammo_cells = 100.000;
+			self.ammo_nails = 0.000;
+			self.maxammo_cells = 200.000;
+			self.maxammo_nails = 50.000;
+			self.armortype = 0.600;
+			self.armorvalue = 50.000;
+			self.armor_allowed = 0.600;
+			self.maxarmor = 130.000;
+			self.current = WEAP_PLASMAGUN;
+			self.items_allowed = (((WEAP_PLASMAGUN | WEAP_NAILGUN) | WEAP_SHOTGUN) | WEAP_AXE);
+			self.items = (((self.items | 1.000) | 4.000) | 16.000);
+			self.num_weaps = 3.000;
+		} else {
+			self.carried = ((((self.carried | WEAP_SNIPER_RIFLE) | WEAP_AUTO_RIFLE	) | WEAP_AXE) | WEAP_NAILGUN);
+			self.ammo_cells = 0.000;
+			self.ammo_nails = 50.000;
+			self.maxammo_nails = 100.000;
+			self.maxammo_cells = 50.000;
+			self.armortype = 0.300;
+			self.armorvalue = 0.000;
+			self.armor_allowed = 0.300;
+			self.maxarmor = 50.000;
+			self.current = WEAP_SNIPER_RIFLE;
+			self.items_allowed = (((WEAP_SNIPER_RIFLE | WEAP_AUTO_RIFLE	) | WEAP_AXE) | WEAP_NAILGUN);
+			self.items = (((self.items | 1.000) | 2.000) | 4.000);
+			self.num_weaps = 4.000;
+		}
+		self.ammo_rockets = 0.000;
+		self.ammo_shells = 60.000;
+		self.maxammo_rockets = 25.000;
+		self.maxammo_shells = 75.000;
+		self.no_grenades_1 = 2.000;
+		self.no_grenades_2 = 2.000;
+		self.tp_grenades_1 = 1.000;
+		self.tp_grenades_2 = 9.000;
+		self.tf_items = 0.000;
+		self.armorclass = (self.armorclass | 0.000);
+	} else if ( (self.playerclass == 3.000) ) {
+		self.carried = ((((self.carried | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_ROCKET_LAUNCHER);
+		self.ammo_rockets = 10.000;
+		self.ammo_nails = 0.000;
+		self.ammo_shells = 50.000;
+		self.ammo_cells = 0.000;
+		self.maxammo_rockets = 50.000;
+		self.maxammo_nails = 50.000;
+		self.maxammo_shells = 100.000;
+		self.maxammo_cells = 50.000;
+		self.no_grenades_1 = 4.000;
+		self.no_grenades_2 = 1.000; //2
+		self.tp_grenades_1 = 1.000;
+		self.tp_grenades_2 = 3.000;
+		self.tf_items = 0.000;
+		self.armorclass = (self.armorclass | 0.000);
+		self.armortype = 0.800;
+		self.armorvalue = 100.000;
+		self.armor_allowed = 0.800;
+		self.maxarmor = 200.000;
+		self.current = WEAP_ROCKET_LAUNCHER;
+		self.items_allowed = (((WEAP_AXE | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_ROCKET_LAUNCHER);
+		self.items = (((self.items | 1.000) | 2.000) | 32.000);
+		self.num_weaps = 4.000;
+	} else if ( (self.playerclass == 4.000) ) {
+		self.carried = ((((self.carried | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_GRENADE_LAUNCHER) | WEAP_PIPEBOMB_LAUNCHER);
+		self.ammo_rockets = 20.000;
+		self.ammo_nails = 0.000;
+		self.ammo_shells = 30.000;
+		self.ammo_cells = 0.000;
+		self.maxammo_rockets = 50.000;
+		self.maxammo_nails = 50.000;
+		self.maxammo_shells = 70.000;
+		self.maxammo_cells = 50.000;
+		self.no_grenades_1 = 4.000;
+		if (modetype & 256) {
+			self.no_grenades_2 = 4.000;
+		} else {
+			self.no_grenades_2 = 2.000; //4
+		}
+		self.tp_grenades_1 = 1.000;
+		self.tp_grenades_2 = 4.000;
+		self.tf_items = 0.000;
+		self.ammo_detpack = 1.000;
+		self.maxammo_detpack = 1.000;
+		self.armorclass = (self.armorclass | 2.000);
+		self.armortype = 0.600;
+		self.armorvalue = 50.000;
+		self.armor_allowed = 0.600;
+		self.maxarmor = 120.000;
+		self.current = WEAP_GRENADE_LAUNCHER;
+		self.items_allowed = (((WEAP_AXE | WEAP_SHOTGUN) | WEAP_GRENADE_LAUNCHER) | WEAP_PIPEBOMB_LAUNCHER);
+		self.items = (((self.items | 1.000) | 16.000) | 32.000);
+		self.num_weaps = 3.000;
+	} else if ( (self.playerclass == 5.000) ) {
+		self.carried = ((((self.carried | WEAP_MEDIKIT) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_SUPER_NAILGUN);
+		self.ammo_rockets = 0.000;
+		self.ammo_nails = 50.000;
+		self.ammo_shells = 50.000;
+		self.ammo_cells = 0.000;
+		self.maxammo_rockets = 25.000;
+		self.maxammo_nails = 150.000;
+		self.maxammo_shells = 80.000;
+		self.maxammo_cells = 50.000;
+		self.no_grenades_1 = 3.000;
+		if (modetype & 256) {
+			self.no_grenades_2 = 2.000;
+		} else {
+			self.no_grenades_2 = 3.000;
+		}
+		self.tp_grenades_1 = 1.000;
+		if (grentype)
+			self.tp_grenades_2 = 6.000; //2
+		else
+			self.tp_grenades_2 = 2.000;
+		self.tf_items = 0.000;
+		self.armorclass = (self.armorclass | 0.000);
+		self.armortype = 0.300;
+		self.armorvalue = 50.000;
+		self.armor_allowed = 0.600;
+		self.maxarmor = 100.000;
+		self.current = WEAP_SUPER_NAILGUN;
+		self.ammo_medikit = 50.000;
+		self.maxammo_medikit = 100.000;
+		te = spawn ();
+		te.nextthink = (time + 3.000);
+		te.think = TeamFortress_Regenerate;
+		te.owner = self;
+		te.classname = "timer";
+		self.items_allowed = ((((WEAP_MEDIKIT ) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_SUPER_NAILGUN);
+		self.items = (((self.items | 1.000) | 2.000) | 8.000 );
+		self.num_weaps = 4.000;
+	} else if ( (self.playerclass == 6.000) ) {
+		self.carried = ((((self.carried | WEAP_ASSAULT_CANNON) | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN);
+		self.ammo_rockets = 0.000;
+		self.ammo_nails = 0.000;
+		self.ammo_shells = 200.000;
+		self.ammo_cells = 30.000;
+		self.maxammo_rockets = 25.000;
+		self.maxammo_nails = 200.000;
+		self.maxammo_shells = 200.000;
+		self.maxammo_cells = 56.000;
+		self.no_grenades_1 = 4.000;
+		self.no_grenades_2 = 1.000;
+		self.tp_grenades_1 = 1.000;
+		self.tp_grenades_2 = 4.000;
+		self.tf_items = 0.000;
+		self.armorclass = (self.armorclass | 0.000);
+		self.armortype = 0.800;
+		self.armorvalue = 150.000;
+		self.armor_allowed = 0.800;
+		self.maxarmor = 300.000;
+		self.current = WEAP_ASSAULT_CANNON;
+		self.items_allowed = (((WEAP_ASSAULT_CANNON | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN);
+		self.items = (((self.items | 1.000) | 2.000) | 64.000);
+		self.num_weaps = 4.000;
+	} else if ( (self.playerclass == 7.000) ) {
+		self.carried = ((((self.carried | WEAP_INCENDIARY) | WEAP_FLAMETHROWER) | WEAP_AXE) | WEAP_SHOTGUN);
+		self.ammo_rockets = 20.000;
+		self.ammo_nails = 0.000;
+		self.ammo_shells = 20.000;
+		self.ammo_cells = 120.000;
+		self.maxammo_rockets = 60.000;
+		self.maxammo_nails = 50.000;
+		self.maxammo_shells = 40.000;
+		self.maxammo_cells = 200.000;
+		if (modetype & 256) {
+			self.no_grenades_1 = 1.000;
+			self.no_grenades_2 = 4.000;
+		} else {
+			self.no_grenades_1 = 2.000;
+			self.no_grenades_2 = 3.000;
+		}
+		self.tp_grenades_1 = 1.000;
+		self.tp_grenades_2 = 5.000;
+		self.tf_items = 0.000;
+		self.armorclass = (self.armorclass | 16.000);
+		self.armortype = 0.600;
+		self.armorvalue = 50.000;
+		self.armor_allowed = 0.600;
+		self.maxarmor = 150.000;
+		self.current = WEAP_FLAMETHROWER;
+		self.items_allowed = (((WEAP_INCENDIARY | WEAP_FLAMETHROWER) | WEAP_AXE) | WEAP_SHOTGUN);
+		self.items = (((self.items | 1.000) | 8.000) | 32.000);
+		self.num_weaps = 4.000;
+	} else if ( (self.playerclass == 11.000) ) {
+		if (( classtype & 64 || rounds)) {
+			self.ammo_rockets = 10.000;
+			self.ammo_nails = 60.000;
+			self.ammo_shells = 40.000;
+			self.ammo_cells = 8.000;
+			self.maxammo_rockets = 25.000;
+			self.maxammo_nails = 200.000;
+			self.maxammo_shells = 100.000;
+			self.maxammo_cells = 20.000;
+			self.armortype = 0.600;
+			self.maxarmor = 140.000;
+			self.current = WEAP_ROCKET_LAUNCHER;
+			self.items_allowed = ((((((((self.carried | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_NAILGUN) | WEAP_SUPER_NAILGUN) | WEAP_GRENADE_LAUNCHER) | WEAP_ROCKET_LAUNCHER) | WEAP_LIGHTNING);
+			self.carried = ((((((((self.carried | WEAP_AXE) | WEAP_SHOTGUN) | WEAP_SUPER_SHOTGUN) | WEAP_NAILGUN) | WEAP_SUPER_NAILGUN) | WEAP_GRENADE_LAUNCHER) | WEAP_ROCKET_LAUNCHER) | WEAP_LIGHTNING);
+			self.items = (((((((self.items | 1.000) | 2.000) | 4.000) | 8.000) | 16.000) | 32.000) | 64.000);
+			self.armor_allowed = 0.600;
+			self.num_weaps = 8.000;
 
-                                } else {
-                                    if ( (self.playerclass == 8.000) ) {
-                                        self.carried = ((((self.carried | WEAP_AXE) | WEAP_TRANQ) | WEAP_SUPER_SHOTGUN) | WEAP_NAILGUN);
-                                        self.ammo_rockets = 0.000;
-                                        self.ammo_nails = 50.000;
-                                        self.ammo_shells = 40.000;
-                                        self.ammo_cells = 10.000;
-                                        self.maxammo_rockets = 15.000;
-                                        self.maxammo_nails = 100.000;
-                                        self.maxammo_shells = 40.000;
-                                        self.maxammo_cells = 30.000;
-                                        if (modetype & 256) {
-                                            self.no_grenades_1 = 2.000;
-                                            self.no_grenades_2 = 2.000;
-                                        } else {
-                                            self.no_grenades_1 = 3.000;
-                                            self.no_grenades_2 = 2.000;
-                                        }
-                                        self.tp_grenades_1 = 1.000;
-                                        self.tp_grenades_2 = 7.000;
-                                        self.tf_items = 0.000;
-                                        self.armorclass = (self.armorclass | 0.000);
-                                        self.armortype = 0.600;
-                                        self.armorvalue = 25.000;
-                                        self.armor_allowed = 0.600;
-                                        self.maxarmor = 100.000;
-                                        self.current = WEAP_TRANQ;
-                                        self.items_allowed = (((WEAP_AXE | WEAP_TRANQ) | WEAP_SUPER_SHOTGUN) | WEAP_NAILGUN);
-                                        self.items = (((self.items | 1.000) | 2.000) | 4.000);
-                                        self.num_weaps = 4.000;
-                                    } else {
-                                        if ( (self.playerclass == 9.000) ) {
-                                            self.carried = (((self.carried | WEAP_SPANNER) | WEAP_RAILGUN) | WEAP_SUPER_SHOTGUN);
-                                            self.ammo_rockets = 0.000;
-                                            self.ammo_nails = 25.000;
-                                            self.ammo_shells = 20.000;
-                                            self.ammo_cells = 100.000;
-                                            self.maxammo_rockets = 30.000;
-                                            self.maxammo_nails = 50.000;
-                                            self.maxammo_shells = 50.000;
-                                            self.maxammo_cells = 200.000;
-                                            self.no_grenades_1 = 2.000;
-                                            self.no_grenades_2 = 2.000;
-                                            self.tp_grenades_1 = 1.000;
-                                            self.tp_grenades_2 = 8.000;
-                                            self.tf_items = 0.000;
-                                            self.armorclass = (self.armorclass | 0.000);
-                                            self.armortype = 0.300;
-                                            self.armorvalue = 25.000;
-                                            self.armor_allowed = 0.600;
-                                            if (classtype & 32) {
-                                                self.maxarmor = 70.000;
-                                            } else {
-                                                self.maxarmor = 50.000;
-                                            }
-                                            self.current = WEAP_RAILGUN;
-                                            self.items_allowed = ((WEAP_SPANNER | WEAP_RAILGUN) | WEAP_SUPER_SHOTGUN);
-                                            self.items = ((self.items | 1.000) | 2.000);
-                                            self.num_weaps = 3.000;
-                                        } else {
-                                            if ( (!self.playerclass) ) {
-                                                self.items = 0.000;
-                                                self.ammo_rockets = 0.000;
-                                                self.ammo_nails = 0.000;
-                                                self.ammo_shells = 0.000;
-                                                self.ammo_cells = 0.000;
-                                                self.no_grenades_1 = 0.000;
-                                                self.no_grenades_2 = 0.000;
-                                                self.tp_grenades_1 = 0.000;
-                                                self.tp_grenades_2 = 0.000;
-                                                self.armorclass = 0.000;
-                                                self.armortype = 0.000;
-                                                self.armorvalue = 0.000;
-                                                self.weapon = 0.000;
-                                                self.current = 0.000;
-                                                self.carried = 0.000;
-                                                self.flags = 8.000;
-                                                self.gravity = 1.000;
-                                                self.waterlevel = -1.000;
-                                                self.takedamage = 0.000;
-                                                self.solid = 0.000;
-                                                self.model = string_null;
-                                                self.mdl = string_null;
-                                                self.modelindex = 0.000;
-                                                self.weaponmodel = string_null;
-                                                modelindex_player = 0.000;
-                                                self.tfstate = (self.tfstate | 2.000);
-                                                setmodel (self,string_null);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+		} else {
+			self.ammo_rockets = 0.000;
+			self.ammo_nails = 0.000;
+			self.ammo_shells = 0.000;
+			self.ammo_cells = 0.000;
+			self.maxammo_rockets = 0.000;
+			self.maxammo_nails = 0.000;
+			self.maxammo_shells = 0.000;
+			self.maxammo_cells = 0.000;
+			self.armortype = 0.000;
+			self.armor_allowed = 0.000;
+			self.maxarmor = 0.000;
+			self.current = WEAP_AXE;
+			self.items_allowed = 16.000;
+			self.items = 0.000;
+		}
+		self.no_grenades_1 = 0.000;
+		self.no_grenades_2 = 0.000;
+		self.tp_grenades_1 = 0.000;
+		self.tp_grenades_2 = 0.000;
+		self.tf_items = 0.000;
+		self.armorvalue = 0.000;
+		self.armorclass = (self.armorclass | 0.000);
+
+	} else if ( (self.playerclass == 8.000) ) {
+		self.carried = ((((self.carried | WEAP_AXE) | WEAP_TRANQ) | WEAP_SUPER_SHOTGUN) | WEAP_NAILGUN);
+		self.ammo_rockets = 0.000;
+		self.ammo_nails = 50.000;
+		self.ammo_shells = 40.000;
+		self.ammo_cells = 10.000;
+		self.maxammo_rockets = 15.000;
+		self.maxammo_nails = 100.000;
+		self.maxammo_shells = 40.000;
+		self.maxammo_cells = 30.000;
+		if (modetype & 256) {
+			self.no_grenades_1 = 2.000;
+			self.no_grenades_2 = 2.000;
+		} else {
+			self.no_grenades_1 = 3.000;
+			self.no_grenades_2 = 2.000;
+		}
+		self.tp_grenades_1 = 1.000;
+		self.tp_grenades_2 = 7.000;
+		self.tf_items = 0.000;
+		self.armorclass = (self.armorclass | 0.000);
+		self.armortype = 0.600;
+		self.armorvalue = 25.000;
+		self.armor_allowed = 0.600;
+		self.maxarmor = 100.000;
+		self.current = WEAP_TRANQ;
+		self.items_allowed = (((WEAP_AXE | WEAP_TRANQ) | WEAP_SUPER_SHOTGUN) | WEAP_NAILGUN);
+		self.items = (((self.items | 1.000) | 2.000) | 4.000);
+		self.num_weaps = 4.000;
+	} else if ( (self.playerclass == 9.000) ) {
+		self.carried = (((self.carried | WEAP_SPANNER) | WEAP_RAILGUN) | WEAP_SUPER_SHOTGUN);
+		self.ammo_rockets = 0.000;
+		self.ammo_nails = 25.000;
+		self.ammo_shells = 20.000;
+		self.ammo_cells = 100.000;
+		self.maxammo_rockets = 30.000;
+		self.maxammo_nails = 50.000;
+		self.maxammo_shells = 50.000;
+		self.maxammo_cells = 200.000;
+		self.no_grenades_1 = 2.000;
+		self.no_grenades_2 = 2.000;
+		self.tp_grenades_1 = 1.000;
+		self.tp_grenades_2 = 8.000;
+		self.tf_items = 0.000;
+		self.armorclass = (self.armorclass | 0.000);
+		self.armortype = 0.300;
+		self.armorvalue = 25.000;
+		self.armor_allowed = 0.600;
+		if (classtype & 32) {
+			self.maxarmor = 70.000;
+		} else {
+			self.maxarmor = 50.000;
+		}
+		self.current = WEAP_RAILGUN;
+		self.items_allowed = ((WEAP_SPANNER | WEAP_RAILGUN) | WEAP_SUPER_SHOTGUN);
+		self.items = ((self.items | 1.000) | 2.000);
+		self.num_weaps = 3.000;
+	} else if ( (!self.playerclass) ) {
+		self.items = 0.000;
+		self.ammo_rockets = 0.000;
+		self.ammo_nails = 0.000;
+		self.ammo_shells = 0.000;
+		self.ammo_cells = 0.000;
+		self.no_grenades_1 = 0.000;
+		self.no_grenades_2 = 0.000;
+		self.tp_grenades_1 = 0.000;
+		self.tp_grenades_2 = 0.000;
+		self.armorclass = 0.000;
+		self.armortype = 0.000;
+		self.armorvalue = 0.000;
+		self.weapon = 0.000;
+		self.current = 0.000;
+		self.carried = 0.000;
+		self.flags = 8.000;
+		self.gravity = 1.000;
+		self.waterlevel = -1.000;
+		self.takedamage = 0.000;
+		self.solid = 0.000;
+		self.model = string_null;
+		self.mdl = string_null;
+		self.modelindex = 0.000;
+		self.weaponmodel = string_null;
+		modelindex_player = 0.000;
+		self.tfstate = (self.tfstate | 2.000);
+		setmodel (self,string_null);
+	}
+
     if (self.playerclass) {
         if (modetype & 8) {
             self.armorvalue = 200.000;
@@ -1460,6 +1446,7 @@ void TeamFortress_SetEquipment () {
             self.carried = (self.carried | WEAP_HOOK);
         }
     }
+
     if ( (self.armortype >= 0.800) ) {
         self.items = (self.items | 32768.000);
     } else {
@@ -1471,6 +1458,7 @@ void TeamFortress_SetEquipment () {
             }
         }
     }
+	dprint("TeamFortress_SetEquipment: noitems\n");
     noitems = (stof(infokey(world,"noitems")));
     if ( noitems & 1.000 ) {
         self.no_grenades_1 = 0.000;
@@ -1492,7 +1480,9 @@ void TeamFortress_SetEquipment () {
         self.ammo_shells = self.maxammo_shells;
         self.ammo_cells = self.maxammo_cells;
     }
+	dprint("TeamFortress_SetEquipment: W_SetCurrentAmmo\n");
     W_SetCurrentAmmo ();
+	dprint("Leaving TeamFortress_SetEquipment\n");
 }
 
 float TeamFortress_GetMaxAmmo (entity Retriever, float AmmoType) {

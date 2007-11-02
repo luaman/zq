@@ -143,7 +143,7 @@ void TeamFortress_AmmoboxTouch () {
         }
         if (modetype & 4) {
             self.netname = "Bomb";
-            bprint(2.000, other.netname, " picked up the bomb.\n");
+            bprint(PRINT_HIGH, other.netname, " picked up the bomb.\n");
             stuffcmd (other,"topcolor 0\n");
             if (other.playerclass == 8.000) {
                 other.is_unabletospy = 1.000;
@@ -170,72 +170,65 @@ void TeamFortress_AmmoboxTouch () {
 }
 
 void TeamFortress_DropAmmo (float type, float ammo) {
-    self.impulse = 0;
-    if (type == 1) {
-        if ( (self.ammo_shells < ammo) ) {
-            if ( (self.playerclass == 9) ) {
-                if ( ((self.ammo_cells / 3) > (ammo - self.ammo_shells)) ) {
-                    sprint (self,PRINT_HIGH,"you make some shells.\n");
-                    self.ammo_cells = (self.ammo_cells - ((ammo - self.ammo_shells) * 3));
-                    self.ammo_shells = ammo;
-                }
-            }
-            if ( (self.ammo_shells < ammo) ) {
-                return ;
-            }
-        }
-        self.ammo_shells = (self.ammo_shells - ammo);
-    } else {
-        if ( (type == 2) ) {
-            if ( (self.ammo_nails < ammo) ) {
-                if ( (self.playerclass == 9) ) {
-                    if ( ((self.ammo_cells / 2) > (ammo - self.ammo_nails)) ) {
-                        sprint (self,PRINT_HIGH,"you make some nails.\n");
-                        self.ammo_cells = (self.ammo_cells - ((ammo - self.ammo_nails) * 2));
-                        self.ammo_nails = ammo;
-                    }
-                }
-                if ( (self.ammo_nails < ammo) ) {
-                    return ;
-                }
-            }
-            self.ammo_nails = (self.ammo_nails - ammo);
-        } else {
-            if ( (type == 3) ) {
-                if ( (self.ammo_rockets < ammo) ) {
-                    if ( (self.playerclass == 9) ) {
-                        if ( ((self.ammo_cells / 5) > (ammo - self.ammo_rockets)) ) {
-                            sprint (self,PRINT_HIGH,"you make some rockets.\n");
-                            self.ammo_cells = (self.ammo_cells - ((ammo - self.ammo_rockets) * 5));
-                            self.ammo_rockets = ammo;
-                        }
-                    }
-                    if ( (self.ammo_rockets < ammo) ) {
-                        return ;
-                    }
-                }
-                self.ammo_rockets = (self.ammo_rockets - ammo);
-            } else {
-                if ( (type == 4) ) {
-                    if (self.ammo_cells < ammo)
-                        return ;
-                    self.ammo_cells = (self.ammo_cells - ammo);
-                } else {
-                    if (type == 5)  {
-                        ammo = 1;
-                        if (self.no_grenades_1 < 1)
-                            return;
-                        self.no_grenades_1 = self.no_grenades_1 - 1;
-                    } else if (type == 6)  {
-                        ammo = 1;
-                        if (self.no_grenades_2 < 1)
-                            return;
-                        self.no_grenades_2 = self.no_grenades_2 - 1;
-                    }
-                }
-            }
-        }
-    }
+	self.impulse = 0;
+	if (type == AMMO_CELLS) {
+		if ( (self.ammo_shells < ammo) ) {
+			if ( (self.playerclass == CLASS_ENGINEER) ) {
+				if ( ((self.ammo_cells / 3) > (ammo - self.ammo_shells)) ) {
+					sprint (self,PRINT_HIGH,"you make some shells.\n");
+					self.ammo_cells = (self.ammo_cells - ((ammo - self.ammo_shells) * 3));
+					self.ammo_shells = ammo;
+				}
+			}
+			if ( (self.ammo_shells < ammo) ) {
+				return ;
+			}
+		}
+		self.ammo_shells = (self.ammo_shells - ammo);
+	} else if ( (type == AMMO_NAILS) ) {
+		if ( (self.ammo_nails < ammo) ) {
+			if ( (self.playerclass == CLASS_ENGINEER) ) {
+				if ( ((self.ammo_cells / 2) > (ammo - self.ammo_nails)) ) {
+					sprint (self,PRINT_HIGH,"you make some nails.\n");
+					self.ammo_cells = (self.ammo_cells - ((ammo - self.ammo_nails) * 2));
+					self.ammo_nails = ammo;
+				}
+			}
+			if ( (self.ammo_nails < ammo) ) {
+				return ;
+			}
+		}
+		self.ammo_nails = (self.ammo_nails - ammo);
+	} else if ( (type == AMMO_ROCKETS) ) {
+		if ( (self.ammo_rockets < ammo) ) {
+			if ( (self.playerclass == CLASS_ENGINEER) ) {
+				if ( ((self.ammo_cells / 5) > (ammo - self.ammo_rockets)) ) {
+					sprint (self,PRINT_HIGH,"you make some rockets.\n");
+					self.ammo_cells = (self.ammo_cells - ((ammo - self.ammo_rockets) * 5));
+					self.ammo_rockets = ammo;
+				}
+			}
+			if ( (self.ammo_rockets < ammo) ) {
+				return ;
+			}
+		}
+		self.ammo_rockets = (self.ammo_rockets - ammo);
+	} else if ( (type == AMMO_CELLS) ) {
+		if (self.ammo_cells < ammo)
+			return ;
+		self.ammo_cells = (self.ammo_cells - ammo);
+	} else if (type == AMMO_GREN1)  {
+		ammo = 1;
+		if (self.no_grenades_1 < 1)
+			return;
+		self.no_grenades_1 = self.no_grenades_1 - 1;
+	} else if (type == AMMO_GREN2) {
+		ammo = 1;
+		if (self.no_grenades_2 < 1)
+			return;
+		self.no_grenades_2 = self.no_grenades_2 - 1;
+	}
+
     W_SetCurrentAmmo ();
     store_obs.num_ammoboxes = store_obs.num_ammoboxes + 1.000;
     if (store_obs.num_ammoboxes > store_obs.max_ammoboxes )
@@ -243,29 +236,22 @@ void TeamFortress_DropAmmo (float type, float ammo) {
     newmis = spawn ();
     newmis.aflag = ammo;
     newmis.weapon = type;
-    if ( (newmis.weapon == 1) ) {
-        newmis.ammo_shells = ammo;
-    } else {
-        if ( (newmis.weapon == 2) ) {
-            newmis.ammo_nails = ammo;
-        } else {
-            if ( (newmis.weapon == 3) ) {
-                newmis.ammo_rockets = ammo;
-            } else {
-                if ( (newmis.weapon == 4) ) {
-                    newmis.ammo_cells = ammo;
-                } else {
-                    if (newmis.weapon == 5) {
-                        newmis.no_grenades_1 = ammo;
-                        newmis.tp_grenades_1 = self.tp_grenades_1;
-                    } else if (newmis.weapon == 6) {
-                        newmis.no_grenades_2 = ammo;
-                        newmis.tp_grenades_2 = self.tp_grenades_2;
-                    }
-                }
-            }
-        }
-    }
+	if ( (newmis.weapon == AMMO_SHELLS) ) {
+		newmis.ammo_shells = ammo;
+	} else if ( (newmis.weapon == AMMO_NAILS) ) {
+		newmis.ammo_nails = ammo;
+	} else if ( (newmis.weapon == AMMO_ROCKETS) ) {
+		newmis.ammo_rockets = ammo;
+	} else if ( (newmis.weapon == AMMO_CELLS) ) {
+		newmis.ammo_cells = ammo;
+	} else if (newmis.weapon == AMMO_GREN1) {
+		newmis.no_grenades_1 = ammo;
+		newmis.tp_grenades_1 = self.tp_grenades_1;
+	} else if (newmis.weapon == AMMO_GREN2) {
+		newmis.no_grenades_2 = ammo;
+		newmis.tp_grenades_2 = self.tp_grenades_2;
+	}
+
     newmis.enemy = self;
     newmis.health = time;
     newmis.movetype = 6;
@@ -340,34 +326,33 @@ void Drop_detpack () {
 
 void TeamFortress_Discard () {
     newmis = spawn ();
-    if (self.playerclass == 1) {
+    if (self.playerclass == CLASS_SCOUT) {
         newmis.ammo_rockets = self.ammo_rockets;
-        //newmis.ammo_cells = self.ammo_cells;
-    } else if (self.playerclass == 2) {
+    } else if (self.playerclass == CLASS_SNIPER) {
         newmis.ammo_rockets = self.ammo_rockets;
         if (classtype & 1.000) {
             newmis.ammo_nails = self.ammo_nails;
         } else {
             newmis.ammo_cells = self.ammo_cells;
         }
-    } else if (self.playerclass == 3) {
+    } else if (self.playerclass == CLASS_SOLDIER) {
         newmis.ammo_cells = self.ammo_cells;
         newmis.ammo_nails = self.ammo_nails;
-    } else if (self.playerclass == 4) {
+    } else if (self.playerclass == CLASS_DEMOMAN) {
         newmis.ammo_cells = self.ammo_cells;
         newmis.ammo_nails = self.ammo_nails;
-    } else if (self.playerclass == 5) {
+    } else if (self.playerclass == CLASS_MEDIC) {
         newmis.ammo_rockets = self.ammo_rockets;
         newmis.ammo_cells = self.ammo_cells;
-    } else if (self.playerclass == 6) {
+    } else if (self.playerclass == CLASS_HWGUY) {
         newmis.ammo_rockets = self.ammo_rockets;
         newmis.ammo_nails = self.ammo_nails;
-    } else if (self.playerclass == 7) {
+    } else if (self.playerclass == CLASS_PYRO) {
         newmis.ammo_nails = self.ammo_nails;
-    } else if (self.playerclass == 8) {
+    } else if (self.playerclass == CLASS_SPY) {
         newmis.ammo_rockets = self.ammo_rockets;
         newmis.ammo_cells = self.ammo_cells;
-    } else if (self.playerclass == 9) {
+    } else if (self.playerclass == CLASS_ENGINEER) {
         newmis.ammo_rockets = self.ammo_rockets;
     }
     if ( !(((newmis.ammo_shells + newmis.ammo_nails) + newmis.ammo_rockets * 2) + newmis.ammo_cells * 2) ) {

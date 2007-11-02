@@ -105,24 +105,22 @@ void TeamFortress_ID ()
                             centerprint (self,"\n\n\n\n",trace_ent.undercover_name,"\nFriendly Spy\n",st," health\n");
                         }
                         return ;
-                    } else {
-                        if (self.playerclass == CLASS_ENGINEER) {
-                            st = ftos ( rint (trace_ent.armorvalue));
-                            if (trace_ent.undercover_skin != 0) {
-                                centerprint (self,"\n\n\n\n",trace_ent.undercover_name,"\nFriendly ",cls,"\n",st," armor\n");
-                            } else {
-                                centerprint (self,"\n\n\n\n",trace_ent.undercover_name,"\nFriendly Spy\n",st," armor\n");
-                            }
-                            return ;
-                        } else {
-                            st = ftos ( rint (trace_ent.armorvalue));
-                            if (trace_ent.undercover_skin != 0) {
-                                centerprint (self,"\n\n\n\n",trace_ent.undercover_name,"\nFriendly ",cls);
-                            } else {
-                                centerprint (self,"\n\n\n\n",trace_ent.undercover_name,"\nFriendly Spy\n");
-                            }
-                            return ;
-                        }
+					} else if (self.playerclass == CLASS_ENGINEER) {
+						st = ftos ( rint (trace_ent.armorvalue));
+						if (trace_ent.undercover_skin != 0) {
+							centerprint (self,"\n\n\n\n",trace_ent.undercover_name,"\nFriendly ",cls,"\n",st," armor\n");
+						} else {
+							centerprint (self,"\n\n\n\n",trace_ent.undercover_name,"\nFriendly Spy\n",st," armor\n");
+						}
+						return ;
+					} else {
+						st = ftos ( rint (trace_ent.armorvalue));
+						if (trace_ent.undercover_skin != 0) {
+							centerprint (self,"\n\n\n\n",trace_ent.undercover_name,"\nFriendly ",cls);
+						} else {
+							centerprint (self,"\n\n\n\n",trace_ent.undercover_name,"\nFriendly Spy\n");
+						}
+						return ;
                     }
                 }
                 if (trace_ent.undercover_name != string_null) {
@@ -150,23 +148,21 @@ void TeamFortress_ID ()
                 } else {
                     centerprint (self,"\n\n\n\nDispenser made by ",trace_ent.real_owner.netname);
                 }
-            } else {
-                if ((trace_ent.classname == "building_sentrygun") || (trace_ent.classname == "building_sentrygun_base")) {
-                    self.StatusRefreshTime = (time + 1.500);
-                    if (self == trace_ent.real_owner) {
-                        centerprint (self,"\n\n\n\nYour SentryGun");
-                    } else {
-                        if ( !teamplay ) {
-                            centerprint (self,"\n\n\n\nSentrygun made by\n",trace_ent.real_owner.netname);
-                        } else {
-                            if (((self.pteam.team != 0) && (self.pteam == trace_ent.pteam)) || (!self.playerclass)) {
-                                centerprint (self,"\n\n\n\nFriendly Sentrygun made by\n",trace_ent.real_owner.netname);
-                            } else {
-                                centerprint (self,"\n\n\n\nEnemy Sentrygun made by\n",trace_ent.real_owner.netname);
-                            }
-                        }
-                    }
-                }
+			} else if ((trace_ent.classname == "building_sentrygun") || (trace_ent.classname == "building_sentrygun_base")) {
+				self.StatusRefreshTime = (time + 1.500);
+				if (self == trace_ent.real_owner) {
+					centerprint (self,"\n\n\n\nYour SentryGun");
+				} else {
+					if ( !teamplay ) {
+						centerprint (self,"\n\n\n\nSentrygun made by\n",trace_ent.real_owner.netname);
+					} else {
+						if (((self.pteam.team != 0) && (self.pteam == trace_ent.pteam)) || (!self.playerclass)) {
+							centerprint (self,"\n\n\n\nFriendly Sentrygun made by\n",trace_ent.real_owner.netname);
+						} else {
+							centerprint (self,"\n\n\n\nEnemy Sentrygun made by\n",trace_ent.real_owner.netname);
+						}
+					}
+				}
             }
         }
     }
@@ -188,10 +184,10 @@ void Medikit_Fire ()
             }
             if (te != world) {
                 SpawnBlood (org,20);
-                bprint (1,self.netname);
-                bprint (1," cured ");
-                bprint (1,trace_ent.netname);
-                bprint (1,"'s concussion\n");
+                bprint (PRINT_MEDIUM,self.netname);
+                bprint (PRINT_MEDIUM," cured ");
+                bprint (PRINT_MEDIUM,trace_ent.netname);
+                bprint (PRINT_MEDIUM,"'s concussion\n");
                 if (te.pteam != self.pteam) {
                     TF_AddFrags (self,1, 0);
                 }
@@ -205,10 +201,10 @@ void Medikit_Fire ()
                 if (te != world) {
                     trace_ent.tfstate = (trace_ent.tfstate - (trace_ent.tfstate & 16384));
                     SpawnBlood (org,20);
-                    bprint (1,self.netname);
-                    bprint (1," healed ");
-                    bprint (1,trace_ent.netname);
-                    bprint (1," of his hallucinations\n");
+                    bprint (PRINT_MEDIUM,self.netname);
+                    bprint (PRINT_MEDIUM," healed ");
+                    bprint (PRINT_MEDIUM,trace_ent.netname);
+                    bprint (PRINT_MEDIUM," of his hallucinations\n");
                     if (te.pteam != self.pteam) {
                         TF_AddFrags (self,1, 0);
                     }
@@ -226,10 +222,10 @@ void Medikit_Fire ()
                     trace_ent.tfstate = (trace_ent.tfstate - (trace_ent.tfstate & 32768));
                     TeamFortress_SetSpeed (trace_ent);
                     SpawnBlood (org,20);
-                    bprint (1,self.netname);
-                    bprint (1," healed ");
-                    bprint (1,trace_ent.netname);
-                    bprint (1,"'s tranquilisation\n");
+                    bprint (PRINT_MEDIUM,self.netname);
+                    bprint (PRINT_MEDIUM," healed ");
+                    bprint (PRINT_MEDIUM,trace_ent.netname);
+                    bprint (PRINT_MEDIUM,"'s tranquilisation\n");
                     if (te.pteam != self.pteam) {
                         TF_AddFrags (self,1, 0);
                     }
@@ -246,10 +242,10 @@ void Medikit_Fire ()
                 if ((te != world)) {
                     trace_ent.FlashTime = 0;
                     SpawnBlood (org, 20);
-                    bprint (1, self.netname);
-                    bprint (1, " cured ");
-                    bprint (1, trace_ent.netname);
-                    bprint (1, "'s blindness\n");
+                    bprint (PRINT_MEDIUM, self.netname);
+                    bprint (PRINT_MEDIUM, " cured ");
+                    bprint (PRINT_MEDIUM, trace_ent.netname);
+                    bprint (PRINT_MEDIUM, "'s blindness\n");
                     if ((te.pteam != self.pteam)) {
                         TF_AddFrags (self, 1, 0);
                     }
@@ -266,10 +262,10 @@ void Medikit_Fire ()
                 TF_T_Damage (trace_ent,self,self,healam, 1, 0);
                 SpawnBlood (org,30);
                 if (self.classname == "player") {
-                    bprint (1,self.netname);
-                    bprint (1," cured ");
-                    bprint (1,trace_ent.netname);
-                    bprint (1,"'s infection\n");
+                    bprint (PRINT_MEDIUM,self.netname);
+                    bprint (PRINT_MEDIUM," cured ");
+                    bprint (PRINT_MEDIUM,trace_ent.netname);
+                    bprint (PRINT_MEDIUM,"'s infection\n");
                     if (trace_ent.infection_team_no != self.pteam.team) {
                         TF_AddFrags (self,1, 0);
                     }
@@ -280,10 +276,10 @@ void Medikit_Fire ()
                 sound (trace_ent,CHAN_WEAPON,"items/r_item1.wav",1,1); // XXX: should this be CHAN_ITEM
                 trace_ent.numflames = 0;
                 if (self.classname == "player") {
-                    bprint (1,self.netname);
-                    bprint (1," put out ");
-                    bprint (1,trace_ent.netname);
-                    bprint (1,"'s fire.\n");
+                    bprint (PRINT_MEDIUM,self.netname);
+                    bprint (PRINT_MEDIUM," put out ");
+                    bprint (PRINT_MEDIUM,trace_ent.netname);
+                    bprint (PRINT_MEDIUM,"'s fire.\n");
                 }
                 return ;
             }

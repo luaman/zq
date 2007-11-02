@@ -208,9 +208,9 @@ void RoundThink () {
     if (!self.cnt2) {
         if ((self.cnt == 1.000) || (self.cnt == 5.000)) {
             tmp = ftos(self.cnt);
-            bprint(2, "ê", tmp, "ë minute");
-            if (self.cnt != 1.000) bprint(2, "s");
-            bprint(2, " remaining\n");
+            bprint(PRINT_HIGH, "ê", tmp, "ë minute");
+            if (self.cnt != 1.000) bprint(PRINT_HIGH, "s");
+            bprint(PRINT_HIGH, " remaining\n");
         }
         if (!self.cnt) {
             bprint (PRINT_HIGH,"ROUND TIME OVER\n");
@@ -229,9 +229,9 @@ void RoundThink () {
         fl = ceil(self.cnt2);
         if (!(fl - self.cnt2)) {
             tmp = ftos(self.cnt2);
-            bprint(2, "ê", tmp, "ë second");
-            if (self.cnt2 != 1.000) bprint(2, "s");
-            bprint(2, " remaining\n");
+            bprint(PRINT_HIGH, "ê", tmp, "ë second");
+            if (self.cnt2 != 1.000) bprint(PRINT_HIGH, "s");
+            bprint(PRINT_HIGH, " remaining\n");
         }
     }
     self.nextthink = time + 0.500;
@@ -439,7 +439,7 @@ void StartRound () {
         if (fl == 1.000 ) {
             self.weapon = self.weapon + 1.000;
             if (self.weapon == 10.000)
-                bprint(2.000, "Waiting for challenger to join.\n");
+                bprint(PRINT_HIGH, "Waiting for challenger to join.\n");
             self.nextthink = (time + 1.000);
             return;
         }
@@ -452,7 +452,7 @@ void StartRound () {
         if (fl == 1.000 ) {
             self.weapon = self.weapon + 1.000;
             if (self.weapon == 10.000)
-                bprint(2.000, "Scoring will not start until more teams join.\n");
+                bprint(PRINT_HIGH, "Scoring will not start until more teams join.\n");
             self.nextthink = (time + 1.000);
             return;
         }
