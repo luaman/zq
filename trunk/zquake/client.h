@@ -43,7 +43,6 @@ typedef struct
 // to do move prediction and to generate a drawable entity
 typedef struct
 {
-	int			messagenum;		// cl.parsecount of last valid update
 	double		state_time;		// not the same as the packet time,
 								// because player commands come asyncronously
 	usercmd_t	command;		// last command for prediction
@@ -110,20 +109,24 @@ typedef struct player_info_s
 } player_info_t;
 
 
+// game state received from server
 typedef struct
 {
-	// generated on client side
-	usercmd_t	cmd;		// cmd that generated the frame
-	double		senttime;	// cls.realtime when cmd was sent off
-	int			delta_sequence;		// sequence number to delta from, -1 = full update
-
-	// received from server
-	double		receivedtime;	// cls.realtime when message was received, or -1
-	player_state_t	playerstate[MAX_CLIENTS];	// message received that reflects performing
-							// the usercmd
-	packet_entities_t	packet_entities;
+	int			sequence;		// cls.netchan.incoming_sequence when it was received
+	double		receivedtime;	// cls.realtime when message was received
+	player_state_t	playerstate[MAX_CLIENTS];	// players
+	qbool		playerstate_valid[MAX_CLIENTS];		// corresponding playerstate is valid?
+	packet_entities_t	packet_entities;		// normal entities
 	qbool		valid;		// are packet_entities valid?
 } frame_t;
+
+typedef struct {
+	usercmd_t	cmd;   		// cmd that generated the frame
+	double		senttime;	// cls.realtime when cmd was sent off
+	double		receivedtime;	// cls.realtime when a reply was received, or -1
+	int			delta_sequence;		// sequence number to delta from, -1 = full update
+	qbool		invalid_delta;
+} outpacket_t;
 
 typedef struct
 {
@@ -325,19 +328,15 @@ struct client_state_t
 
 	int			parsecount;		// server message counter
 	int			oldparsecount;	// previouse server message counter
-	int			validsequence;	// this is the sequence number of the last good
-								// packetentity_t we got.  If this is 0, we can't
-								// render a frame yet
-	int			oldvalidsequence;
-	int			delta_sequence;	// sequence number of the packet we can request
-								// delta from
 
 	int			spectator;
 
 	double		last_ping_request;	// while showing scoreboard
 
-// sentcmds[cl.netchan.outgoing_sequence & UPDATE_MASK] = cmd
-	frame_t		frames[UPDATE_BACKUP];
+	frame_t		frames[UPDATE_BACKUP];	// game state from server
+	int			numframes;				// number of valid frames (>=1 when ca_active)
+
+	outpacket_t	outpackets[SENT_BACKUP];	// sent commands, sent/received times
 	usercmd_t	lastcmd;			// observer intentions (demo playback only)
 
 // information for local display
@@ -494,6 +493,7 @@ void CL_BeginServerConnect(void);
 void CL_Disconnect (void);
 void CL_Disconnect_f (void);
 void CL_NextDemo (void);
+qbool CL_NetworkStalled (void);
 
 extern int			cl_entframecount;
 

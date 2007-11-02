@@ -29,6 +29,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "textencoding.h"
 
 
+frame_t newframe;
+
 char *svc_strings[] =
 {
 	"svc_bad",
@@ -110,33 +112,32 @@ int packet_latency[NET_TIMINGS];
 int CL_CalcNet (void)
 {
 	int		a, i;
-	frame_t	*frame;
 	int lost;
 	int packetcount;
 
-	for (i=cls.netchan.outgoing_sequence-UPDATE_BACKUP+1
+	for (i=cls.netchan.outgoing_sequence-SENT_BACKUP+1
 		; i <= cls.netchan.outgoing_sequence
 		; i++)
 	{
-		frame = &cl.frames[i&UPDATE_MASK];
-		if (frame->receivedtime == -1)
+		outpacket_t *outp = &cl.outpackets[i & SENT_MASK];
+		if (outp->receivedtime == -1)
 			packet_latency[i&NET_TIMINGSMASK] = 9999;	// dropped
-		else if (frame->receivedtime == -2)
+		else if (outp->receivedtime == -2)
 			packet_latency[i&NET_TIMINGSMASK] = 10000;	// choked
-		else if (frame->receivedtime == -3)
+		else if (outp->receivedtime == -3)
 			packet_latency[i&NET_TIMINGSMASK] = -1;	// choked by c2spps
-		else if (!frame->valid)
+		else if (outp->invalid_delta)
 			packet_latency[i&NET_TIMINGSMASK] = 9998;	// invalid delta
 		else
-			packet_latency[i&NET_TIMINGSMASK] = (frame->receivedtime - frame->senttime)*20;
+			packet_latency[i&NET_TIMINGSMASK] = (outp->receivedtime - outp->senttime)*20;
 	}
 
 	lost = 0;
 	packetcount = 0;
 	for (a=0 ; a<NET_TIMINGS ; a++)
 	{
-		if (a < UPDATE_BACKUP && (cls.realtime -
-			cl.frames[(cls.netchan.outgoing_sequence-a)&UPDATE_MASK].senttime) < cls.latency)
+		if (a < SENT_BACKUP && (cls.realtime -
+			cl.outpackets[(cls.netchan.outgoing_sequence-a)&SENT_MASK].senttime) < cls.latency)
 			continue;
 
 		i = (cls.netchan.outgoing_sequence-a) & NET_TIMINGSMASK;
@@ -1142,22 +1143,22 @@ Server information pertaining to this client only, sent every frame
 void CL_ParseClientdata (void)
 {
 	float		latency;
-	frame_t		*frame;
 
 // calculate simulated time of message
     cl.oldparsecount = cl.parsecount;
 	cl.parsecount = cls.netchan.incoming_acknowledged;
-	frame = &cl.frames[cl.parsecount & UPDATE_MASK];
+	outpacket_t *outp = &cl.outpackets[cl.parsecount & SENT_MASK];
 
 #ifdef MVDPLAY
+	// FIXME, do we need this?
 	if (cls.mvdplayback)
-        frame->senttime = cls.realtime - cls.frametime;
+        outp->senttime = cls.realtime - cls.frametime;
 #endif
 
-	frame->receivedtime = cls.realtime;
+	outp->receivedtime = cls.realtime;
 
 // calculate latency
-	latency = frame->receivedtime - frame->senttime;
+	latency = outp->receivedtime - outp->senttime;
 
 	if (latency >= 0 && latency <= 1) {
 	// drift the average latency towards the observed latency
@@ -1168,6 +1169,13 @@ void CL_ParseClientdata (void)
     }
 
 	cl.num_nails = 0;
+
+	Q_free (newframe.packet_entities.entities);	//?
+	newframe.packet_entities.entities = NULL;
+	memset (&newframe, 0, sizeof(newframe));
+	newframe.receivedtime = cls.realtime;
+	newframe.valid = false;
+	newframe.sequence = cls.netchan.incoming_sequence;
 }
 
 /*
@@ -1697,16 +1705,13 @@ void CL_MuzzleFlash (void)
 	if (!cl_muzzleflash.value)
 		return;
 
-	if (!cl.validsequence)
-		return;
-
 	if ((unsigned)(i-1) >= MAX_CLIENTS)
 	{
 		// a monster firing
-		num_ent = cl.frames[cl.validsequence & UPDATE_MASK].packet_entities.num_entities;
+		num_ent = cl.frames[0].packet_entities.num_entities;
 		for (j=0; j<num_ent; j++)
 		{
-			ent = &cl.frames[cl.validsequence & UPDATE_MASK].packet_entities.entities[j];
+			ent = &cl.frames[0].packet_entities.entities[j];
 			if (ent->number == i)
 			{
 				dl = CL_AllocDlight (-i);
@@ -1739,10 +1744,11 @@ void CL_MuzzleFlash (void)
 	{
 #ifdef MVDPLAY
 		if (cls.mvdplayback)
-			state = &cl.frames[cl.oldparsecount & UPDATE_MASK].playerstate[i-1];
+			// FIXME: why do we need this special case?
+			state = &cl.frames[1].playerstate[i-1];
 		else
 #endif
-			state = &cl.frames[cl.parsecount & UPDATE_MASK].playerstate[i-1];
+			state = &cl.frames[0].playerstate[i-1];
 
 		VectorCopy (state->origin, origin);
 		VectorCopy (state->viewangles, angles);
@@ -1830,13 +1836,52 @@ void CL_ParseQizmoVoice (void)
 		MSG_ReadByte ();
 }
 
+void FreeSomeFrames (int newnumframes)
+{
+	assert (newnumframes >= 0 && newnumframes <= cl.numframes);
+	for (int i = newnumframes; i < cl.numframes; i++) {
+		// clear this frame
+		Q_free(cl.frames[i].packet_entities.entities);
+	}
+	cl.numframes = newnumframes;
+}
+
+void CheckAndAddNewFrame (void)
+{
+	if (!newframe.valid) {
+		// it's either invalid delta, or no svc_[delta]packetentities at all this frame
+		cl.outpackets[cls.netchan.outgoing_sequence&SENT_MASK].invalid_delta = true;
+		return;
+	}
+
+	if (cl.numframes == UPDATE_BACKUP)
+		FreeSomeFrames (cl.numframes - 1);
+	cl.numframes++;
+
+	// this may be somewhat CPU expensive right now
+	// (frame_t is around 3.5K in size)
+	for (int i = cl.numframes - 1; i > 0; i--)
+		cl.frames[i] = cl.frames[i - 1];
+
+	cl.frames[0] = newframe;
+	newframe.valid = false;
+	newframe.packet_entities.entities = NULL;
+	newframe.packet_entities.num_entities = 0;
+
+	CL_SetSolidEntities ();
+
+	// we can now render a frame
+	if (cls.state == ca_onserver)
+		CL_Spawn();
+}
+
+
 #define SHOWNET(x) {if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);}
 /*
 =====================
 CL_ParseServerMessage
 =====================
 */
-
 void CL_ParseServerMessage (void)
 {
 	int			cmd;
@@ -2134,10 +2179,10 @@ bad_message:
 		case svc_chokecount:		// some preceding packets were choked
 			i = MSG_ReadByte ();
 			for (j = cls.netchan.incoming_acknowledged - 1 ; i > 0
-				&& j > cls.netchan.outgoing_sequence - UPDATE_BACKUP ; j--)
+				&& j > cls.netchan.outgoing_sequence - SENT_BACKUP ; j--)
 			{
-				if (cl.frames[j & UPDATE_MASK].receivedtime != -3) {
-					cl.frames[j & UPDATE_MASK].receivedtime = -2;
+				if (cl.outpackets[j & SENT_MASK].receivedtime != -3) {
+					cl.outpackets[j & SENT_MASK].receivedtime = -2;
 					i--;
 				}
 			}
@@ -2190,7 +2235,10 @@ bad_message:
 		}
 	}
 
-	CL_SetSolidEntities ();
+#ifdef MVDPLAY
+	if (!cls.mvdplayback)
+#endif
+	CheckAndAddNewFrame ();
 
 	CL_WriteDemoMessage (&cls.demomessage);
 }

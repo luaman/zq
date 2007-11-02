@@ -385,7 +385,7 @@ char *Macro_Powerups (void)
 		strcat(macro_buf, "ring");
 	}
 
-	effects = cl.frames[cl.parsecount&UPDATE_MASK].playerstate[cl.playernum].effects;
+	effects = cl.frames[0].playerstate[cl.playernum].effects;
 	if ( (effects & (EF_FLAG1|EF_FLAG2)) ||		// CTF
 		(cl.teamfortress && cl.stats[STAT_ITEMS] & (IT_KEY1|IT_KEY2)) ) // TF
 	{
@@ -1835,11 +1835,10 @@ static int FindNearestItem (int flags, item_t **pitem)
 	vec3_t	org, v;
 	item_t	*item;
 
-	VectorCopy (cl.frames[cl.validsequence&UPDATE_MASK]
-		.playerstate[cl.playernum].origin, org);
+	VectorCopy (cl.frames[0].playerstate[cl.playernum].origin, org);
 
 	// look in previous frame 
-	frame = &cl.frames[cl.oldvalidsequence&UPDATE_MASK];
+	frame = &cl.frames[1];
 	pak = &frame->packet_entities;
 	bestdist = 100.0f;
 	bestidx = 0;
@@ -1956,7 +1955,7 @@ void TP_CheckPickupSound (char *s, vec3_t org)
 	return;
 
 more:
-	if (!cl.validsequence || !cl.oldvalidsequence)
+	if (cl.numframes < 2)	// need the previous frame to track pickups
 		return;
 
 	// weapons
@@ -2046,12 +2045,9 @@ void TP_FindPoint (void)
 	vieworg[2] += 22;	// adjust for view height
 	vieworg[2] += (v_viewheight.value ? bound (-7, v_viewheight.value, 4) : 0);
 
-	if (!cl.validsequence)
-		goto nothing;
-
 	best = -1;
 
-	pak = &cl.frames[cl.validsequence&UPDATE_MASK].packet_entities;
+	pak = &cl.frames[0].packet_entities;
 	for (i=0,ent=pak->entities ; i<pak->num_entities ; i++,ent++)
 	{
 		vec3_t	v, v2, v3;
@@ -2173,7 +2169,6 @@ ok:
 		VectorCopy (entorg, vars.pointorg);
 	}
 	else {
-nothing:
 		strlcpy (vars.pointname, tp_name_nothing.string, sizeof(vars.pointname));
 		vars.pointloc[0] = 0;
 	}
@@ -2223,7 +2218,7 @@ void TP_StatChanged (int stat, int value)
 		if (i & (IT_KEY1|IT_KEY2)) {
 			if (cl.teamfortress && !cl.spectator)
 				ExecTookTrigger (tp_name_flag.string, it_flag,
-				cl.frames[cl.validsequence&UPDATE_MASK].playerstate[cl.playernum].origin);
+				cl.frames[0].playerstate[cl.playernum].origin);
 		}
 
 		vars.olditems = vars.items;

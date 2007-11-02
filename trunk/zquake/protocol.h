@@ -336,6 +336,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 							// must be power of two
 #define	UPDATE_MASK		(UPDATE_BACKUP-1)
 
+#define	SENT_BACKUP	128		// history of sent packets to keep
+							// must be power of two
+#define	SENT_MASK		(SENT_BACKUP-1)
+
 // entity_state_t is the information conveyed from the server
 // in an update message
 typedef struct entity_state_s
