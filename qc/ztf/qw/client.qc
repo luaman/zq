@@ -817,13 +817,11 @@ void TeamFortress_SetEquipment ();
 void player_touch ();
 
 void PutClientInServer () {
-	dprint("Entering PutClientInServer\n");
     float iszoom;
     entity spot;
     entity te;
     float oldclass;
     //self.immune_to_check = (time + 5.000);
-	dprint("PutClientInServer: setting self.properties...\n");
     self.touch = player_touch;
     self.classname = "player";
     self.health = 100.000;
@@ -849,7 +847,6 @@ void PutClientInServer () {
     self.fire_held_down = 0.000;
     self.gravity = 1.000;
     self.camdist = 0.000;
-	dprint("PutClientInServer: DecodeLevelParms\n");
     DecodeLevelParms ();
     if (self.pteam.team) {
         if ( (!self.playerclass ) ) {
@@ -896,7 +893,6 @@ void PutClientInServer () {
             }
         }
     }
-	dprint("PutClientInServer: Checking tfstat\n");
     if ( (self.tfstate & 8.000) ) {
         if (round_active) {
             self.playerclass = 0.000;
@@ -924,31 +920,22 @@ void PutClientInServer () {
         Engineer_RemoveBuildings (self);
     }
     self.takedamage = 2.000;
-	dprint("PutClientInServer: Running TeamFortress_PrintClassName\n");
     TeamFortress_PrintClassName (self,self.playerclass,(self.tfstate & 8.000));
-	dprint("PutClientInServer: Running TeamFortress_SetEquipment\n");
     TeamFortress_SetEquipment ();
-	dprint("PutClientInServer: Running TeamFortress_SetHealth\n");
     TeamFortress_SetHealth ();
-	dprint("PutClientInServer: Running TeamFortress_SetSpeed\n");
     TeamFortress_SetSpeed (self);
-	dprint("PutClientInServer: Running TeamFortress_SetSkin\n");
     TeamFortress_SetSkin (self);
-	dprint("PutClientInServer: setting v_cshift\n");
     stuffcmd (self,"v_cshift 0 0 0 0\n");
-	dprint("PutClientInServer: W_SetCurrentAmmo\n");
     W_SetCurrentAmmo ();
     self.attack_finished = (time + 0.300);
     self.th_pain = player_pain;
     self.th_die = PlayerDie;
     self.deadflag = 0.000;
     self.pausetime = 0.000;
-	dprint("PutClientInServer: sellecting spawn point\n");
     spot = SelectSpawnPoint ();
     if ( (self.playerclass ) ) {
         spawn_tdeath (spot.origin,self);
     }
-	dprint("PutClientInServer: setting origin\n");
     self.observer_list = spot;
     //self.origin = (spot.origin + '0.000 0.000 1.000');
     if (spot.oldorigin) {
@@ -987,7 +974,6 @@ void PutClientInServer () {
             spot.think = SUB_Remove;
         }
     }
-	dprint("PutClientInServer: setmodel\n");
     setmodel (self,string_null);
     modelindex_null = self.modelindex;
     setmodel (self,"progs/eyes.mdl");
@@ -1004,11 +990,9 @@ void PutClientInServer () {
     if (teamplay) {
         SetTeam(self);
     }
-	dprint("PutClientInServer: setsize\n");
     setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
     self.view_ofs = '0.000 0.000 22.000';
     self.velocity = '0.000 0.000 0.000';
-	dprint("PutClientInServer: player_stand1\n");
     player_stand1 ();
     if ( (deathmatch || coop) ) {
         makevectors (self.angles);
@@ -1021,7 +1005,6 @@ void PutClientInServer () {
         self.tfstate = (self.tfstate | 65536.000);
         TeamFortress_SetSpeed (self);
     }
-	dprint("Leaving PutClientInServer\n");
 }
 
 void PrintClientScore (entity c) {

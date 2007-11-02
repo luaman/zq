@@ -204,7 +204,6 @@ void TeamFortress_DisplayLegalClasses () {
 }
 
 void TeamFortress_ChangeClass (float inp) {
-	dprint ("Entered TeamFortress_ChangeClass\n");
     if ( (!self.playerclass) ) {
         if (round_active && !modetype & 64) {
             if ( !IsLegalClass (inp) ) {
@@ -286,9 +285,7 @@ void TeamFortress_ChangeClass (float inp) {
         self.tfstate = (self.tfstate | 8.000);
     }
     self.nextpc = 0.000;
-	dprint ("TeamFortress_ChangeClass: About to PutClientInServer()\n");
     PutClientInServer();
-	dprint ("Leaving TeamFortress_ChangeClass\n");
 }
 
 void TeamFortress_Inventory () {
@@ -983,7 +980,6 @@ void TeamFortress_SetSkin (entity p) {
 }
 
 void TeamFortress_SetEquipment () {
-	dprint("Entering TeamFortress_SetEquipment\n");
 	entity te;
 	string st;
 	float kept_items;
@@ -1458,7 +1454,6 @@ void TeamFortress_SetEquipment () {
             }
         }
     }
-	dprint("TeamFortress_SetEquipment: noitems\n");
     noitems = (stof(infokey(world,"noitems")));
     if ( noitems & 1.000 ) {
         self.no_grenades_1 = 0.000;
@@ -1480,9 +1475,7 @@ void TeamFortress_SetEquipment () {
         self.ammo_shells = self.maxammo_shells;
         self.ammo_cells = self.maxammo_cells;
     }
-	dprint("TeamFortress_SetEquipment: W_SetCurrentAmmo\n");
     W_SetCurrentAmmo ();
-	dprint("Leaving TeamFortress_SetEquipment\n");
 }
 
 float TeamFortress_GetMaxAmmo (entity Retriever, float AmmoType) {
