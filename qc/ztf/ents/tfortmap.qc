@@ -1733,7 +1733,7 @@ void DoResults (entity Goal, entity AP, float addb) {
     if ( (ctfmap == 1) ) {
         if ( (AP != world) ) {
             if ( (Goal.goal_no == 1.000) ) {
-                bprint(2.000, AP.netname, " ÇÏÔ the ÂÌÕÅ flag!\n");
+                bprint(PRINT_HIGH, AP.netname, " ÇÏÔ the ÂÌÕÅ flag!\n");
                 AP.items = (AP.items | 131072.000);
                 AP.effects = (AP.effects | 96.000);
             } else {

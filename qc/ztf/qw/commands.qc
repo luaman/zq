@@ -513,8 +513,8 @@ void TimeDown (float t) {
         tl = lowest;
     }
     tmp = ftos(tl);
-    bprint(2, " ");
-    bprint(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+    bprint(PRINT_HIGH, " ");
+    bprint(PRINT_HIGH, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
     timelimit = (tl * 60);
     cvar_set("timelimit", tmp);
 }
@@ -529,8 +529,8 @@ void TimeUp (float t) {
         tl = highest;
     }
     tmp = ftos(tl);
-    bprint(2, " ");
-    bprint(2, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+    bprint(PRINT_HIGH, " ");
+    bprint(PRINT_HIGH, "Νατγθ μεξητθ σετ το ", tmp, " νιξυτεσ\n");
     timelimit = (tl * 60);
     cvar_set("timelimit", tmp);
 }
@@ -544,11 +544,11 @@ void MiscTimeDown (float t, string option) {
     ml = stof(tmp) - t;
     if (ml < lowest) ml = lowest;
     tmp = ftos(ml);
-    bprint(2, " ");
+    bprint(PRINT_HIGH, " ");
     if (option == "cft") {
-        bprint(2, "Ceasefire time σετ το ", tmp, " νιξυτεσ\n");
+        bprint(PRINT_HIGH, "Ceasefire time σετ το ", tmp, " νιξυτεσ\n");
     } else {
-        bprint(2, option, " μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+        bprint(PRINT_HIGH, option, " μεξητθ σετ το ", tmp, " νιξυτεσ\n");
     }
     localcmd("localinfo ");
     localcmd(option);
@@ -569,11 +569,11 @@ void MiscTimeUp (float t, string option) {
         ml = highest;
     }
     tmp = ftos(ml);
-    bprint(2, " ");
+    bprint(PRINT_HIGH, " ");
     if (option == "cft") {
-        bprint(2, "Ceasefire time σετ το ", tmp, " νιξυτεσ\n");
+        bprint(PRINT_HIGH, "Ceasefire time σετ το ", tmp, " νιξυτεσ\n");
     } else {
-        bprint(2, option, " μεξητθ σετ το ", tmp, " νιξυτεσ\n");
+        bprint(PRINT_HIGH, option, " μεξητθ σετ το ", tmp, " νιξυτεσ\n");
     }
     localcmd("localinfo ");
     localcmd(option);
@@ -587,8 +587,8 @@ void FragLimit (float add) {
     fraglimit = fraglimit + add;
     if (fraglimit < 0) fraglimit = 0;
     tmp = ftos(fraglimit);
-    bprint(2, " ");
-    bprint(2, "Ζςαημινιτ σετ το ", tmp, "\n");
+    bprint(PRINT_HIGH, " ");
+    bprint(PRINT_HIGH, "Ζςαημινιτ σετ το ", tmp, "\n");
     cvar_set("fraglimit", tmp);
 }
 
@@ -635,8 +635,8 @@ void ChangeTP () {
         }
     }
     cvar_set("teamplay", tmp);
-    bprint(2.000, " Teamplay set to: ", ftos(teamplay), " - ");
-    bprint(2.000,  desc);
+    bprint(PRINT_HIGH, " Teamplay set to: ", ftos(teamplay), " - ");
+    bprint(PRINT_HIGH,  desc);
 }
 
 void RestartMap () {
@@ -651,21 +651,21 @@ void ToggleSpecTalk () {
     tmp2 = stof(infokey(world, "fpd"));
     tmp2 = tmp2 - (tmp2 & 64);
     tmp = stof(infokey(world, "spectalk"));
-    bprint(2, " Spectalk ");
+    bprint(PRINT_HIGH, " Spectalk ");
     if (tmp != 0) {
         localcmd("sv_spectalk 0\nserverinfo fpd ");
         tmp2 = tmp2 + 64;
         s1 = ftos(tmp2);
         localcmd(s1);
         localcmd("\nlocalinfo spectalk 0\n");
-        bprint(2, "off: πμαωεςσ γαξ ξο μοξηες θεας σπεγτατοςσ\n");
+        bprint(PRINT_HIGH, "off: πμαωεςσ γαξ ξο μοξηες θεας σπεγτατοςσ\n");
         return;
     }
     localcmd("sv_spectalk 1\nserverinfo fpd ");
     s1 = ftos(tmp2);
     localcmd(s1);
     localcmd("\nlocalinfo spectalk 1\n");
-    bprint(2, "on: πμαωεςσ γαξ ξοχ θεας σπεγτατοςσ\n");
+    bprint(PRINT_HIGH, "on: πμαωεςσ γαξ ξοχ θεας σπεγτατοςσ\n");
     return;
 }
 
@@ -690,22 +690,22 @@ void GroundSpeed () {
         gspeed = 0.000;
         desc = "Ground Speed Normal.";
     }
-    bprint(2.000, " ",  desc,"\n");
+    bprint(PRINT_HIGH, " ",  desc,"\n");
     localcmd("localinfo pm_gspeed ");
     localcmd(ftos(gspeed));
     localcmd("\n");
 }
 
 void ToggleFreeze () {
-    bprint(2, " ");
+    bprint(PRINT_HIGH, " ");
     if (( freeze == 0 )) {
         freeze = 1;
         localcmd("localinfo freeze on\n");
-        bprint(2, self.netname, " freezes map\n");
+        bprint(PRINT_HIGH, self.netname, " freezes map\n");
     } else {
         freeze = 0;
         localcmd("localinfo freeze off\n");
-        bprint(2, self.netname, " unfreezes map\n");
+        bprint(PRINT_HIGH, self.netname, " unfreezes map\n");
     }
 }
 
@@ -722,46 +722,46 @@ void Toggle_Misc (string option) {
     localcmd(" ");
     localcmd(st);
     localcmd("\n");
-    bprint(2, " ");
-    bprint(2, option, " set to ", st, " \n");
+    bprint(PRINT_HIGH, " ");
+    bprint(PRINT_HIGH, option, " set to ", st, " \n");
 }
 /*
 
    void() ClanMode =
    localcmd("localinfo clan on\n");
-   bprint(2, "Map Restart needed to take affect!\n")
+   bprint(PRINT_HIGH, "Map Restart needed to take affect!\n")
 
    void() Toggle_TFvsDM =
-   bprint(2, "TFvsDM Mode set to ", st, "\n"
+   bprint(PRINT_HIGH, "TFvsDM Mode set to ", st, "\n"
 
    void() Toggle_SpeedCap
-   bprint(2, "Speed Capture Mode set to ", st, "\n");
+   bprint(PRINT_HIGH, "Speed Capture Mode set to ", st, "\n");
 
    void() Toggle_Practice =
-   bprint(2, "Practice Mode set to ", st, "\n");
+   bprint(PRINT_HIGH, "Practice Mode set to ", st, "\n");
 
    void() Toggle_TFStrike =
-   bprint(2, "TFStrike Mode set to ", st, "\n");
+   bprint(PRINT_HIGH, "TFStrike Mode set to ", st, "\n");
 
    void() Toggle_Duel =
-   bprint(2, "Duel Mode set to ", st, "\n");
+   bprint(PRINT_HIGH, "Duel Mode set to ", st, "\n");
 
    void() Toggle_Rounds =
 
    void Toggle_Teamfrags () {
-   bprint(2, "Teamfrags set to ", st, " \n");
+   bprint(PRINT_HIGH, "Teamfrags set to ", st, " \n");
 
    void Toggle_Fullts () {
-   bprint(2, "Full Team Score set to ", st, " \n");
+   bprint(PRINT_HIGH, "Full Team Score set to ", st, " \n");
 
    void Toggle_Grapple () {
-   bprint(2, "Grapple set to ", st, " \n");
+   bprint(PRINT_HIGH, "Grapple set to ", st, " \n");
 
    void Toggle_Gibs () {
-   bprint(2, "Gibs set to ", st, " \n");
+   bprint(PRINT_HIGH, "Gibs set to ", st, " \n");
 
    void Toggle_Highlander () {
-   bprint(2, "Highlander mode set to ", st, " \n");
+   bprint(PRINT_HIGH, "Highlander mode set to ", st, " \n");
  */
 
 void ResetSetup () {
@@ -832,15 +832,15 @@ void Toggle_Quad () {
    st = "off";
    localcmd("localinfo obs_teamtrack off\n");
    }
-   bprint(2, " ");
-   bprint(2, "Observer Team-Only Tracking set to ", st, " \n");
+   bprint(PRINT_HIGH, " ");
+   bprint(PRINT_HIGH, "Observer Team-Only Tracking set to ", st, " \n");
    };
  */
 
 void TogglePointing () {
     float f1, f2;
     string s1;
-    bprint(2, " ");
+    bprint(PRINT_HIGH, " ");
     f1 = stof(infokey(world, "fpd"));
     f2 = f1 - (f1 & 128);
     if (f1 & 128) {
@@ -848,7 +848,7 @@ void TogglePointing () {
         s1 = ftos(f2);
         localcmd(s1);
         localcmd("\n");
-        bprint(2, "ποιξτιξη enabled\n");
+        bprint(PRINT_HIGH, "ποιξτιξη enabled\n");
         return;
     } else {
         localcmd("serverinfo fpd ");
@@ -856,14 +856,14 @@ void TogglePointing () {
         s1 = ftos(f2);
         localcmd(s1);
         localcmd("\n");
-        bprint(2, "ποιξτιξη disabled\n");
+        bprint(PRINT_HIGH, "ποιξτιξη disabled\n");
     }
 }
 
 void ToggleEnemy () {
     float f1, f2;
     string s1;
-    bprint(2, " ");
+    bprint(PRINT_HIGH, " ");
     f1 = stof(infokey(world, "fpd"));
     f2 = f1 - (f1 & 32);
     if (f1 & 32) {
@@ -871,7 +871,7 @@ void ToggleEnemy () {
         s1 = ftos(f2);
         localcmd(s1);
         localcmd("\n");
-        bprint(2, "enemy reporting allowed\n");
+        bprint(PRINT_HIGH, "enemy reporting allowed\n");
         return;
     } else {
         localcmd("serverinfo fpd ");
@@ -879,14 +879,14 @@ void ToggleEnemy () {
         s1 = ftos(f2);
         localcmd(s1);
         localcmd("\n");
-        bprint(2, "enemy reporting disallowed\n");
+        bprint(PRINT_HIGH, "enemy reporting disallowed\n");
     }
 }
 
 void ToggleFbskins () {
     float f1, f2;
     string s1;
-    bprint(2, " ");
+    bprint(PRINT_HIGH, " ");
     f1 = stof(infokey(world, "fpd"));
     f2 = f1 - (f1 & 256);
     if (f1 & 256) {
@@ -895,7 +895,7 @@ void ToggleFbskins () {
         localcmd(s1);
         localcmd("\n");
         localcmd("serverinfo fbskins 1\n");
-        bprint(2, "Fullbright skins enabled\n");
+        bprint(PRINT_HIGH, "Fullbright skins enabled\n");
         return;
     } else {
         localcmd("serverinfo fpd ");
@@ -904,14 +904,14 @@ void ToggleFbskins () {
         localcmd(s1);
         localcmd("\n");
         localcmd("serverinfo fbskins 0\n");
-        bprint(2, "Fullbright skins disabled\n");
+        bprint(PRINT_HIGH, "Fullbright skins disabled\n");
     }
 }
 
 void Toggle_Frj () {
     float f1, f2;
     string s1;
-    bprint(2, " ");
+    bprint(PRINT_HIGH, " ");
     f1 = stof(infokey(world, "fpd"));
     f2 = f1 - (f1 & 32768);
     if (f1 & 32768) {
@@ -919,7 +919,7 @@ void Toggle_Frj () {
         s1 = ftos(f2);
         localcmd(s1);
         localcmd("\n");
-        bprint(2, "Forward Rocketjump enabled\n");
+        bprint(PRINT_HIGH, "Forward Rocketjump enabled\n");
         return;
     } else {
         localcmd("serverinfo fpd ");
@@ -927,7 +927,7 @@ void Toggle_Frj () {
         s1 = ftos(f2);
         localcmd(s1);
         localcmd("\n");
-        bprint(2, "Forward Rocketjump disabled\n");
+        bprint(PRINT_HIGH, "Forward Rocketjump disabled\n");
     }
 }
 
@@ -951,22 +951,22 @@ void Toggle_flag_emu () {
     localcmd("localinfo flag_model ");
     localcmd(ftos(fl));
     localcmd("\n");
-    bprint(2, " ");
-    bprint(2, "Goal Item model set to ", st, " \n");
+    bprint(PRINT_HIGH, " ");
+    bprint(PRINT_HIGH, "Goal Item model set to ", st, " \n");
 }
 
 void Toggle_Grenpacks () {
     string st;
     st = infokey (world,"grenpacks");
-    bprint(2, " ");
+    bprint(PRINT_HIGH, " ");
     if ( (st == "on") ) {
         st = "off";
         allow_grenpack = 0;
-        bprint(2, "Backpacks Normal.\n");
+        bprint(PRINT_HIGH, "Backpacks Normal.\n");
     } else {
         st = "on";
         allow_grenpack = 1;
-        bprint(2, "Backpacks now Include Grenades / Detpack.\n");
+        bprint(PRINT_HIGH, "Backpacks now Include Grenades / Detpack.\n");
     }
     localcmd("localinfo grenpacks ");
     localcmd(st);
@@ -975,13 +975,13 @@ void Toggle_Grenpacks () {
 
 void Toggle_SentryType () {
     string st;
-    bprint(2, " ");
+    bprint(PRINT_HIGH, " ");
     if (sgtype == 0) {
         sgtype = 1;
-        bprint(2, "Sentries Special (Oztf).\n");
+        bprint(PRINT_HIGH, "Sentries Special (Oztf).\n");
     } else {
         sgtype = 0;
-        bprint(2, "Sentries Normal (TF 2.9).\n");
+        bprint(PRINT_HIGH, "Sentries Normal (TF 2.9).\n");
     }
     st = ftos(sgtype);
     localcmd("localinfo sentrytype ");
@@ -1015,8 +1015,8 @@ void Toggle_SentryFire () {
     localcmd("localinfo sentryfire ");
     localcmd(ftos(sentry_fire));
     localcmd("\n");
-    bprint(2, " ");
-    bprint(2, "Sentry Fire set to ", st, " \n");
+    bprint(PRINT_HIGH, " ");
+    bprint(PRINT_HIGH, "Sentry Fire set to ", st, " \n");
 }
 
 void Toggle_PipeDelay () {
@@ -1032,8 +1032,8 @@ void Toggle_PipeDelay () {
     localcmd("localinfo pipedelay ");
     localcmd(st);
     localcmd("\n");
-    bprint(2, " ");
-    bprint(2, "Demoman Pipebomb Delay set to ", st, " \n");
+    bprint(PRINT_HIGH, " ");
+    bprint(PRINT_HIGH, "Demoman Pipebomb Delay set to ", st, " \n");
 }
 
 void Toggle_Detpack () {
@@ -1047,8 +1047,8 @@ void Toggle_Detpack () {
     localcmd("localinfo soliddet ");
     localcmd(st);
     localcmd("\n");
-    bprint(2, " ");
-    bprint(2, "Solid Detpacks σετ το ", st, " \n");
+    bprint(PRINT_HIGH, " ");
+    bprint(PRINT_HIGH, "Solid Detpacks σετ το ", st, " \n");
 }
 
 void Toggle_Lighting () {
@@ -1102,7 +1102,7 @@ void AbortMiscVote () {
 }
 
 void MiscVoteThink () {
-    bprint(2, "The voting has timed out.\nVote aborted\n");
+    bprint(PRINT_HIGH, "The voting has timed out.\nVote aborted\n");
     self.nextthink = -1;
     AbortMiscVote();
 }
@@ -1118,10 +1118,10 @@ void AgreeMiscVote () {
     }
     self.allowvote = time + 3.000;
     if (self.mvote) {
-        bprint(2, self.netname, " χιτθδςαχσ ");
-        if (infokey(self, "gender") == "f") bprint(2, "θες ");
-        else bprint(2, "θισ ");
-        bprint(3, "vote\n");
+        bprint(PRINT_HIGH, self.netname, " χιτθδςαχσ ");
+        if (infokey(self, "gender") == "f") bprint(PRINT_HIGH, "θες ");
+        else bprint(PRINT_HIGH, "θισ ");
+        bprint(PRINT_CHAT, "vote\n");
         self.mvote = 0;
         v_misc = v_misc - 1;
         return;
@@ -1147,9 +1147,9 @@ void AgreeMiscVote () {
     if ( v_misc != 0.000 ) {
         f1 = f2 - v_misc;
         tmp = ftos(f1);
-        bprint(2, "", tmp, "‘ more vote");
-        if (f1 > 1) bprint(2, "s");
-        bprint(2, " needed\n");
+        bprint(PRINT_HIGH, "", tmp, "‘ more vote");
+        if (f1 > 1) bprint(PRINT_HIGH, "s");
+        bprint(PRINT_HIGH, " needed\n");
     }
 }
 
@@ -1173,21 +1173,21 @@ void PlayerMiscVote (string Misc, float type) {
         return;
     }
     if (self.mvote == 2.000) {
-        bprint(2, self.netname, " χιτθδςαχσ ");
-        if (infokey(self, "gender") == "f") bprint(2, "θες ");
-        else bprint(2, "θισ ");
-        bprint(3, "vote\n");
+        bprint(PRINT_HIGH, self.netname, " χιτθδςαχσ ");
+        if (infokey(self, "gender") == "f") bprint(PRINT_HIGH, "θες ");
+        else bprint(PRINT_HIGH, "θισ ");
+        bprint(PRINT_CHAT, "vote\n");
         self.mvote = 0;
         v_misc = v_misc - 1;
         AbortMiscVote ();
         return;
     }
     if (Misc != string_null) {
-        bprint(2, self.netname);
-        if (type == 1)   bprint(3, " votes for map ");
-        else if (type == 2)  bprint(3, " votes for mode ");
-        else if (type == 3)  bprint(3, " votes for setting ");
-        bprint(2, Misc, "\n");
+        bprint(PRINT_HIGH, self.netname);
+        if (type == 1)   bprint(PRINT_CHAT, " votes for map ");
+        else if (type == 2)  bprint(PRINT_CHAT, " votes for mode ");
+        else if (type == 3)  bprint(PRINT_CHAT, " votes for setting ");
+        bprint(PRINT_HIGH, Misc, "\n");
         miscvote = spawn();
         miscvote.owner = world;
         miscvote.classname = "miscvote";
@@ -1230,9 +1230,9 @@ void PlayerMiscVote (string Misc, float type) {
     if ( v_misc != 0.000 ) {
         f1 = f2 - v_misc;
         st = ftos(f1);
-        bprint(2, "", tmp, "‘ more vote");
-        if (f1 > 1) bprint(2, "s");
-        bprint(2, " needed\n");
+        bprint(PRINT_HIGH, "", tmp, "‘ more vote");
+        if (f1 > 1) bprint(PRINT_HIGH, "s");
+        bprint(PRINT_HIGH, " needed\n");
     }
 }
 
@@ -1323,8 +1323,8 @@ void ToggleSpecMsgs () {
     localcmd("localinfo spec_msgs ");
     localcmd(st);
     localcmd("\n");
-    bprint(2, " ");
-    bprint(2, "Messages for spectators  σετ το ", st, " \n");
+    bprint(PRINT_HIGH, " ");
+    bprint(PRINT_HIGH, "Messages for spectators  σετ το ", st, " \n");
 }
 
 void unpause_player (entity p) {

@@ -340,7 +340,7 @@ void TeamFortress_DetpackSet () {
     if (modetype & 4) {
         newmis.target = self.owner.target;
         self.owner.target = string_null;
-        bprint(2, "The Bomb has been planted!\n");
+        bprint(PRINT_HIGH, "The Bomb has been planted!\n");
         sound(self.owner,2.000,"speech/bombpl.wav",1.000,0.000);
     } else {
         sound (self.owner,2.000,"doors/medtry.wav",1.000,1.000);

@@ -313,7 +313,7 @@ void AbortElect () {
 }
 
 void ElectThink () {
-    bprint(2, "The voting has timed out.\nElection aborted\n");
+    bprint(PRINT_HIGH, "The voting has timed out.\nElection aborted\n");
     self.nextthink = -1;
     AbortElect();
 }
@@ -332,8 +332,8 @@ void VoteAdmin () {
         return;
     }
     if (self.is_admin == 2.000) {
-        bprint(2, self.netname, " aborts election!");
-        bprint(3, "\n");
+        bprint(PRINT_HIGH, self.netname, " aborts election!");
+        bprint(PRINT_CHAT, "\n");
         AbortElect();
         return;
     }
@@ -343,7 +343,7 @@ void VoteAdmin () {
         sprint (self, PRINT_HIGH, "An election is already in progress\n");
         return;
     }
-    bprint(2, self.netname, " has requested admin rights!\n");
+    bprint(PRINT_HIGH, self.netname, " has requested admin rights!\n");
     self.is_admin = 2.000;
     elect = 1;
     tmp = infokey (world,"votespercentage");
@@ -356,17 +356,17 @@ void VoteAdmin () {
     f2 = (elect / f1);
     if (f2 > f3) {
         if (self.is_admin == 2.000) {
-            bprint(2, self.netname, " ηαιξσ αδνιξ στατυσ!");
-            bprint(3, "\n");
+            bprint(PRINT_HIGH, self.netname, " ηαιξσ αδνιξ στατυσ!");
+            bprint(PRINT_CHAT, "\n");
             sprint (self, PRINT_HIGH, "Type γονναξδσ for admin commands.\n");
             self.is_admin = 1.000;
             self.get_admin_aliases = 1.000;
             elect = 0;
         }
     } else {
-        bprint(2, "Type");
-        bprint(3, " yes");
-        bprint(2, " in console to approve\n");
+        bprint(PRINT_HIGH, "Type");
+        bprint(PRINT_CHAT, " yes");
+        bprint(PRINT_HIGH, " in console to approve\n");
         sprint (self, PRINT_HIGH, "Type εμεγτ to abort election\n");
         electguard = spawn(); // Check the 1 minute timeout for election
         electguard.owner = world;
@@ -393,10 +393,10 @@ void VoteYes () {
     }
     // register the vote
     elect = elect + 1;
-    bprint(2, self.netname, " gives ");
-    if (infokey(self, "gender") == "f") bprint(2, "her");
-    else bprint(2, "his");
-    bprint(2, " vote\n");
+    bprint(PRINT_HIGH, self.netname, " gives ");
+    if (infokey(self, "gender") == "f") bprint(PRINT_HIGH, "her");
+    else bprint(PRINT_HIGH, "his");
+    bprint(PRINT_HIGH, " vote\n");
     self.vote = 1;
     tmp = infokey (world,"votespercentage");
     f3 = stof(tmp);
@@ -411,8 +411,8 @@ void VoteYes () {
         while (p.is_admin != 2.000) p = find(p, classname, "player");
         if (p.is_admin == 2.000) {
             // s: election was admin election
-            bprint(2, p.netname, " ηαιξσ αδνιξ στατυσ!");
-            bprint(3, "\n");
+            bprint(PRINT_HIGH, p.netname, " ηαιξσ αδνιξ στατυσ!");
+            bprint(PRINT_CHAT, "\n");
             sprint (p,PRINT_HIGH, "Type γονναξδσ for admin commands.\n");
             p.is_admin = 1.000;
             p.get_admin_aliases = 1.000;
@@ -424,9 +424,9 @@ void VoteYes () {
     if ( elect != 0 ) {
         f1 = f2 - elect;
         tmp = ftos(rint(f1));
-        bprint(2, "", tmp, "‘ more vote");
-        if (f1 > 1) bprint(2, "s");
-        bprint(2, " needed\n");
+        bprint(PRINT_HIGH, "", tmp, "‘ more vote");
+        if (f1 > 1) bprint(PRINT_HIGH, "s");
+        bprint(PRINT_HIGH, " needed\n");
     }
 }
 
@@ -438,17 +438,17 @@ void VoteNo () {
         return;
     }
     if (elect == 0 || self.is_admin == 2.000 || self.vote == 0.000) return;
-    bprint(2, self.netname, " withdraws ");
-    if (infokey(self, "gender") == "f") bprint(2, "her");
-    else bprint(2, "his");
-    bprint(2, " vote\n");
+    bprint(PRINT_HIGH, self.netname, " withdraws ");
+    if (infokey(self, "gender") == "f") bprint(PRINT_HIGH, "her");
+    else bprint(PRINT_HIGH, "his");
+    bprint(PRINT_HIGH, " vote\n");
     self.vote = 0;
     elect = elect - 1;
     f1 = TeamFortress_GetNoPlayers ();
     f2 = (floor(f1 / 2)) + 1;
     f1 = f2 - elect;
     tmp = ftos(f1);
-    bprint(2, "", tmp, "‘ more vote");
-    if (f1 > 1) bprint(2, "s");
-    bprint(2, " needed\n");
+    bprint(PRINT_HIGH, "", tmp, "‘ more vote");
+    if (f1 > 1) bprint(PRINT_HIGH, "s");
+    bprint(PRINT_HIGH, " needed\n");
 }

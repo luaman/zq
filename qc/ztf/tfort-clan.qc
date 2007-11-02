@@ -249,12 +249,12 @@ void MatchThink () {
         if (self.cnt == 5.000) {
             PlaySoundAll("speech/5_minute.wav");
             tmp = ftos(self.cnt);
-            bprint(2, "", tmp, "‘ minute's remaining\n");
+            bprint(PRINT_HIGH, "", tmp, "‘ minute's remaining\n");
         }
         if (self.cnt == 1.000) {
             PlaySoundAll("speech/1_minute.wav");
             tmp = ftos(self.cnt);
-            bprint(2, "", tmp, "‘ minute remaining\n");
+            bprint(PRINT_HIGH, "", tmp, "‘ minute remaining\n");
         }
         if (!self.cnt) {
             if (modetype & 64) {
@@ -272,7 +272,7 @@ void MatchThink () {
             tmp = infokey (world,"overtime");
             if (( stof(tmp) )) {
                 if (TeamFortress_CheckDraw()) {
-                    bprint(2,"Draw, overtime set.\n Golden Cap WINS!!!\n");
+                    bprint(PRINT_HIGH,"Draw, overtime set.\n Golden Cap WINS!!!\n");
                     self.cnt2 = 0.000;
                     MatchOvertime();
                     self.cnt = -1;
@@ -287,9 +287,9 @@ void MatchThink () {
     }
     if ((!self.cnt) && (self.cnt2 == 30.000 || self.cnt2 == 15.000 || self.cnt2 <= 10.000)) {
         tmp = ftos(self.cnt2);
-        bprint(2, "", tmp, "‘ second");
-        if (self.cnt2 != 1.000) bprint(2, "s");
-        bprint(2, " remaining\n");
+        bprint(PRINT_HIGH, "", tmp, "‘ second");
+        if (self.cnt2 != 1.000) bprint(PRINT_HIGH, "s");
+        bprint(PRINT_HIGH, " remaining\n");
     }
     self.nextthink = time + 1.000;
 }
@@ -428,11 +428,11 @@ void PreMatch_Think () {
     fl = self.cnt2 / 60;
     if (fl == 1 || fl == 2 || fl == 3 || fl == 4 || fl == 5 || fl == 6 || fl == 7 || fl == 8 || fl == 9 || fl == 10) {
         num = ftos(fl) ;
-        bprint(2, "Match will begin in ",num," minute(s).\n");
+        bprint(PRINT_HIGH, "Match will begin in ",num," minute(s).\n");
     }
     if (self.cnt2 == 30) {
         num = ftos(self.cnt2 / 60) ;
-        bprint(2, "Match will begin in 30 seconds.\n");
+        bprint(PRINT_HIGH, "Match will begin in 30 seconds.\n");
     }
     if (self.cnt2 <= 10) {
         if (self.cnt2 == 10) {
@@ -468,17 +468,16 @@ void PreMatch_Think () {
             p = p.nextp;
         }
         if ((self.cnt2 > 1)) {
-            bprint (2, num, " seconds.\n");
+            bprint (PRINT_HIGH, num, " seconds.\n");
         } else {
-            bprint (2, "1 second.\n");
+            bprint (PRINT_HIGH, "1 second.\n");
         }
     }
     self.nextthink = time + 1;
 }
 
-void() StartTimer =
 // Spawns the timer and starts the countdown.
-{
+void StartTimer () {
     entity timer, p;
     float f1;
     string tmp;
@@ -518,12 +517,12 @@ void() StartTimer =
     // print qizmo settings
     f1 = stof(infokey(world, "fpd"));
     if (f1 & 170) {
-        bprint(2, "QiZmo:");
-        if (f1 & 2) bprint(2, " פיםוע");
-        if (f1 & 8) bprint(2, " לבח");
-        if (f1 & 32) bprint(2, " ומוםש");
-        if (f1 & 128) bprint(2, " נןימפ");
-        bprint(2, " disabled\n");
+        bprint(PRINT_HIGH, "QiZmo:");
+        if (f1 & 2) bprint(PRINT_HIGH, " פיםוע");
+        if (f1 & 8) bprint(PRINT_HIGH, " לבח");
+        if (f1 & 32) bprint(PRINT_HIGH, " ומוםש");
+        if (f1 & 128) bprint(PRINT_HIGH, " נןימפ");
+        bprint(PRINT_HIGH, " disabled\n");
     }
     f1 = stof(infokey (world,"prematch"));
     timer = spawn();
@@ -580,7 +579,7 @@ void StopTimer () {
         localcmd("serverinfo status Normal\n");
         NextLevel();
     } else {
-        bprint(2.000, "No match to break.\n");
+        bprint(PRINT_HIGH, "No match to break.\n");
     }
 }
 
@@ -593,7 +592,7 @@ void PlayerBreak () {
     }
     if (cb_prematch) {
         if (!pmtime) {
-            bprint(2, self.netname, " stops the countdown\n");
+            bprint(PRINT_HIGH, self.netname, " stops the countdown\n");
             StopTimer();
         }
         return;
@@ -609,18 +608,18 @@ void PlayerBreak () {
     }
     self.allowvote = time + 3.000;
     if (self.bvote) {
-        bprint(2, self.netname, " קיפטהעבקף ");
-        if (infokey(self, "gender") == "f") bprint(2, "טוע ");
-        else bprint(2, "טיף ");
-        bprint(3, "vote\n");
+        bprint(PRINT_HIGH, self.netname, " קיפטהעבקף ");
+        if (infokey(self, "gender") == "f") bprint(PRINT_HIGH, "טוע ");
+        else bprint(PRINT_HIGH, "טיף ");
+        bprint(PRINT_CHAT, "vote\n");
         self.bvote = 0;
         v_break = v_break - 1;
         return;
     }
     if (modetype & 1) {
-        bprint(3, self.netname, " votes for stopping the match\n");
+        bprint(PRINT_CHAT, self.netname, " votes for stopping the match\n");
     } else {
-        bprint(3, self.netname, " votes to end the current map\n");
+        bprint(PRINT_CHAT, self.netname, " votes to end the current map\n");
     }
     self.bvote = 1;
     v_break = v_break + 1;
@@ -628,9 +627,9 @@ void PlayerBreak () {
     f2 = (floor(f1 / 2)) + 1;
     if (v_break >= f2) {
         if (modetype & 1) {
-            bprint(2, "Match stopped by majority vote\n");
+            bprint(PRINT_HIGH, "Match stopped by majority vote\n");
         } else {
-            bprint(2, "Map ended by majority vote\n");
+            bprint(PRINT_HIGH, "Map ended by majority vote\n");
         }
         StopTimer();
         return;
@@ -638,18 +637,18 @@ void PlayerBreak () {
     if ( v_break != 0.000 ) {
         f1 = f2 - v_break;
         tmp = ftos(f1);
-        bprint(2, "", tmp, "‘ more vote");
-        if (f1 > 1) bprint(2, "s");
-        bprint(2, " needed\n");
+        bprint(PRINT_HIGH, "", tmp, "‘ more vote");
+        if (f1 > 1) bprint(PRINT_HIGH, "s");
+        bprint(PRINT_HIGH, " needed\n");
     }
 }
 
 void RemoveVotes () {
     if (self.bvote) {
-        bprint(2, self.netname, " קיפטהעבקף ");
-        if (infokey(self, "gender") == "f") bprint(2, "טוע ");
-        else bprint(2, "טיף ");
-        bprint(3, "vote\n");
+        bprint(PRINT_HIGH, self.netname, " קיפטהעבקף ");
+        if (infokey(self, "gender") == "f") bprint(PRINT_HIGH, "טוע ");
+        else bprint(PRINT_HIGH, "טיף ");
+        bprint(PRINT_CHAT, "vote\n");
         self.bvote = 0;
         v_break = v_break - 1;
     }
@@ -659,8 +658,8 @@ void RemoveVotes () {
     }
     if (elect) {
         if (self.is_admin == 2.000) {
-            bprint(2, self.netname, " aborts election!");
-            bprint(3, "\n");
+            bprint(PRINT_HIGH, self.netname, " aborts election!");
+            bprint(PRINT_CHAT, "\n");
             AbortElect();
         }
     }

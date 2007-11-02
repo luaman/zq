@@ -356,6 +356,7 @@ void Menu_Class () {
 }
 
 void Menu_Class_Input (float inp) {
+	dprint("Entering Menu_Class_Input\n");
     float new_class;
     string st;
     if ( ((inp > 11.000) || (inp < 1.000)) ) {
@@ -379,6 +380,7 @@ void Menu_Class_Input (float inp) {
         }
     }
     self.menu_displaytime = 0.000;
+	dprint("Leaving Menu_Class_Input\n");
 }
 
 void Menu_Drop () {
