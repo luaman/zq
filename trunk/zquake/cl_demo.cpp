@@ -239,7 +239,7 @@ readnext:
 						SEEK_SET);
 
 				if (cls.mvd_gotframe) {
-					new_snapshot.receivedtime = demotime;
+					new_snapshot.servertime = demotime;
 					CL_CheckAndSaveSnapshot();
 					cls.mvd_gotframe = false;
 				}

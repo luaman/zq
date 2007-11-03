@@ -35,6 +35,7 @@ qbool new_snapshot_entities_valid;
 void Snapshot::clear() {
 	sequence = 0;
 	receivedtime = 0;
+	servertime = 0;
 	Q_free(packet_entities.entities);
 	packet_entities.entities = NULL;
 	packet_entities.num_entities = 0;
@@ -1174,6 +1175,7 @@ void CL_BeginParsingSnapshot (void)
 
 	new_snapshot.clear();
 	new_snapshot.receivedtime = cls.realtime;
+	new_snapshot.servertime = cls.realtime;
 	new_snapshot.sequence = cls.netchan.incoming_sequence;
 	new_snapshot_entities_valid = false;
 }

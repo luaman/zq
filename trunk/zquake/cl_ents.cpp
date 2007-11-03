@@ -414,8 +414,8 @@ void CL_LinkPacketEntities (void)
 	if (cls.mvdplayback) {
 		if (cl.num_snapshots < 2)
 			return;
-		assert (frame->receivedtime > oldframe->receivedtime);
-		f = bound(0, (cls.demotime - cl.snapshots[1].receivedtime) / (cl.snapshots[0].receivedtime - cl.snapshots[1].receivedtime), 1);
+		assert (cl.snapshots[0].servertime > cl.snapshots[1].servertime);
+		f = bound(0, (cls.demotime - cl.snapshots[1].servertime) / (cl.snapshots[0].servertime - cl.snapshots[1].servertime), 1);
 	}
 	else
 #endif
@@ -426,18 +426,17 @@ void CL_LinkPacketEntities (void)
 		float t, simtime;
 
 		simtime = cls.realtime - cl.entlatency;
-		if (simtime > cl.snapshots[0].receivedtime) {
-			cl.entlatency = cls.realtime - cl.snapshots[0].receivedtime;
-		} else if (simtime < cl.snapshots[1].receivedtime) {
-			cl.entlatency = cls.realtime - cl.snapshots[1].receivedtime;
+		if (simtime > cl.snapshots[0].servertime) {
+			cl.entlatency = cls.realtime - cl.snapshots[0].servertime;
+		} else if (simtime < cl.snapshots[1].servertime) {
+			cl.entlatency = cls.realtime - cl.snapshots[1].servertime;
 		} else {
 			// drift towards ideal latency
 		}
 
-		t = cl.snapshots[0].receivedtime -
-			cl.snapshots[1].receivedtime;
+		t = cl.snapshots[0].servertime - cl.snapshots[1].servertime;
 		if (t)
-			f = (cls.realtime - cl.entlatency - cl.snapshots[1].receivedtime) / t;
+			f = (cls.realtime - cl.entlatency - cl.snapshots[1].servertime) / t;
 		else
 			f = 1;
 		f = bound (0, f, 1);
@@ -765,8 +764,8 @@ static void CL_LinkNails (void)
 #ifdef MVDPLAY
 	if (cl.num_snapshots < 2)
 		return;
-	assert (frame->receivedtime > oldframe->receivedtime);
-	f = bound(0, (cls.demotime - cl.snapshots[1].receivedtime) / (cl.snapshots[0].receivedtime - cl.snapshots[1].receivedtime), 1);
+	assert (cl.snapshots[0].servertime > cl.snapshots[1].servertime);
+	f = bound(0, (cls.demotime - cl.snapshots[1].servertime) / (cl.snapshots[0].servertime - cl.snapshots[1].servertime), 1);
 #endif
 
 	for (i = 0, pr = cl_nails; i < cl.num_nails; i++, pr++)	{
@@ -934,7 +933,7 @@ void CL_ParsePlayerState (void)
 	// before the packet was sent out, so accurately track
 	// the exact time it was valid at
 	if (cls.demoplayback) {
-		state->state_time = new_snapshot.receivedtime;
+		state->state_time = new_snapshot.servertime;
 	} else {
 		// FIXME, make sure new_snapshot.sequence is within range
 		state->state_time = cl.outpackets[new_snapshot.sequence & SENT_MASK].senttime;
@@ -1323,7 +1322,7 @@ void MVD_InitInterpolation (void)
     frame = &cl.snapshots[0];
     oldframe = &cl.snapshots[1];
 
-	assert (frame->receivedtime > oldframe->receivedtime);
+	assert (cl.snapshots[0].servertime > cl.snapshots[1].servertime);
 
     // clients
     for (i=0, pplayer = predicted_players, state=frame->playerstate, oldstate=oldframe->playerstate; 
@@ -1380,7 +1379,7 @@ void MVD_InitInterpolation (void)
         pplayer->predict = true;
 
         for (j = 0; j < 3; j++)
-            pplayer->vel[j] = (state->origin[j] - oldstate->origin[j]) / (frame->receivedtime - oldframe->receivedtime);
+            pplayer->vel[j] = (state->origin[j] - oldstate->origin[j]) / (frame->servertime - oldframe->servertime);
     }
 
 }
@@ -1404,10 +1403,10 @@ void MVD_Interpolate(void)
 	frame = &cl.snapshots[0];
 	oldframe = &cl.snapshots[1];
 
-	assert (frame->receivedtime > oldframe->receivedtime);
-	f = bound(0, (cls.demotime - oldframe->receivedtime) / (frame->receivedtime - oldframe->receivedtime), 1);
+	assert (frame->servertime > oldframe->servertime);
+	f = bound(0, (cls.demotime - oldframe->servertime) / (frame->servertime - oldframe->servertime), 1);
 
-//	Com_Printf ("%f  (%f -> %f)\n", cls.demotime, oldframe->receivedtime, frame->receivedtime);
+//	Com_Printf ("%f  (%f -> %f)\n", cls.demotime, oldframe->servertime, frame->servertime);
 
 	// interpolate clients
 	for (i = 0; i < MAX_CLIENTS; i++) {
@@ -1517,7 +1516,7 @@ void CL_LerpPlayers ()
 
 	int maxsnaps = min(cl.num_snapshots, 3);
 	for (i = 0; i < maxsnaps; i++) {
-		if (cl.snapshots[i].receivedtime <= playertime)
+		if (cl.snapshots[i].servertime <= playertime)
 			break;
 	}
 	if (i == maxsnaps) {
@@ -1528,24 +1527,24 @@ void CL_LerpPlayers ()
 		frame = &cl.snapshots[max(i - 1, 0)];
 	}
 
-	if (frame->receivedtime - oldframe->receivedtime > 0)
-		f = (playertime - oldframe->receivedtime) / (frame->receivedtime - oldframe->receivedtime);
+	if (frame->servertime - oldframe->servertime > 0)
+		f = (playertime - oldframe->servertime) / (frame->servertime - oldframe->servertime);
 	else
 		f = 0;
 	Com_DPrintf ("%i->%i  f = %f\n", oldframe-cl.snapshots, frame-cl.snapshots, f);
 	f = bound(0, f, 1);
 
 	// adjust latency
-	if (playertime > cl.snapshots[0].receivedtime) {
+	if (playertime > cl.snapshots[0].servertime) {
 		Com_DPrintf ("HIGH clamp\n");
-		playerlatency = cls.realtime - cl.snapshots[0].receivedtime;
+		playerlatency = cls.realtime - cl.snapshots[0].servertime;
 	}
-	else if (playertime < oldframe->receivedtime) {
+	else if (playertime < oldframe->servertime) {
 		Com_DPrintf ("   low clamp\n");
-		playerlatency = cls.realtime - oldframe->receivedtime;
+		playerlatency = cls.realtime - oldframe->servertime;
 	} else {
 		// drift towards ideal latency
-		float ideal_latency = (frame->receivedtime - oldframe->receivedtime) * 1.2;
+		float ideal_latency = (frame->servertime - oldframe->servertime) * 1.2;
 		if (Cvar_Value("driftlatency") && ideal_latency && playerlatency > ideal_latency)
 			playerlatency = max(playerlatency - cls.frametime * 0.05, ideal_latency);
 	}
