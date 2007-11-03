@@ -531,7 +531,7 @@ void CL_SetViewPosition ()
 	outpacket_t *outp = &cl.outpackets[cl.snapshots[0].sequence & SENT_MASK];
 	if (cls.demoplayback && !(cl.spectator && cam_curtarget != CAM_NOTARGET)) {
 //		CL_LerpMove (outp->senttime);
-		CL_LerpMove (cl.snapshots[0].receivedtime);
+		CL_LerpMove (cl.snapshots[0].servertime);
 	}
 	else if (cl.spectator && cam_curtarget != CAM_NOTARGET) {
 		player_state_t *state = &cl.snapshots[0].playerstate[cam_curtarget];
