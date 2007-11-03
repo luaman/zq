@@ -199,7 +199,7 @@ readnext:
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
 		fread(&msec, sizeof(msec), 1, cls.demofile);
-		demotime = cls.mvd_newtime + msec * 0.001;
+		demotime = cls.mvd_oldtime + msec * 0.001;
 	}
 	else
 #endif
@@ -234,9 +234,18 @@ readnext:
 #ifdef MVDPLAY
 		if (cls.mvdplayback)
 		{
-			if (msec/* a hack! */ && cls.demotime < cls.mvd_newtime) {
+			if (cls.demotime < demotime) {
 				fseek(cls.demofile, ftell(cls.demofile) - sizeof(msec),
 						SEEK_SET);
+
+				extern void CheckAndAddNewFrame (void);
+				if (cls.mvd_gotframe) {
+					extern frame_t newframe;
+					newframe.receivedtime = demotime;
+					CheckAndAddNewFrame();
+					cls.mvd_gotframe = false;
+				}
+
 				return false;
 			}
 		}
@@ -257,20 +266,22 @@ readnext:
 #ifdef MVDPLAY
 	if (cls.mvdplayback)
 	{
+		cls.mvd_oldtime = demotime;
 		if (msec)
 		{
+			extern void CheckAndAddNewFrame (void);
+			if (msec && cls.mvd_gotframe && cls.state < ca_active) {
+				CheckAndAddNewFrame();
+				cls.mvd_gotframe = false;
+			}
+
 			extern void CL_ParseClientdata ();
 
-// FIXME?
-extern void CheckAndAddNewFrame (void);
-CheckAndAddNewFrame();
-
-			cls.mvd_oldtime = cls.mvd_newtime;
-			cls.mvd_newtime = demotime;
 			cls.netchan.incoming_sequence++;
 			cls.netchan.incoming_acknowledged++;
 
 			CL_ParseClientdata();
+			cls.mvd_gotframe = true;
 		}
 	}
 #endif
@@ -1197,7 +1208,8 @@ try_again:
 	cls.demotime = 0;
 
 #ifdef MVDPLAY
-	cls.mvd_newtime = cls.mvd_oldtime = 0;
+	cls.mvd_oldtime = 0;
+	cls.mvd_gotframe = false;
 	cls.mvd_findtarget = true;
 	cls.mvd_lasttype = 0;
 	cls.mvd_lastto = 0;

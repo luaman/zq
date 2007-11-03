@@ -273,8 +273,8 @@ struct client_persistent_t
 	int			mvd_lastto;
 	int			mvd_lasttype;
 	qbool   	mvd_findtarget;
-	float		mvd_newtime;
 	float		mvd_oldtime;
+	qbool		mvd_gotframe;
 #endif
 	FILE		*demofile;
 	byte		demomessage_data[MAX_MSGLEN * 2 /* FIXME */];

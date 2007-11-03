@@ -831,8 +831,9 @@ void CL_ParseServerData (void)
 #ifdef MVDPLAY
 	if (cls.mvdplayback)
 	{
+		// MVDs record the time of first packet, but there's no point in using it
+		MSG_ReadFloat ();
 		// FIXME
-		cls.mvd_newtime = cls.mvd_oldtime = MSG_ReadFloat();
 		cl.playernum = MAX_CLIENTS - 1;
 		cl.spectator = true;
 	} else
@@ -1869,6 +1870,11 @@ void CheckAndAddNewFrame (void)
 	newframe.packet_entities.num_entities = 0;
 
 	CL_SetSolidEntities ();
+
+#ifdef MVDPLAY
+	if (cls.mvdplayback)
+		MVD_InitInterpolation ();
+#endif
 
 	// we can now render a frame
 	if (cls.state == ca_onserver)
