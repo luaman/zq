@@ -329,6 +329,9 @@ usedown:
 		pm->velocity[1] *= scale;
 	}
 
+	if (blocked & BLOCKED_STEP)
+		pm->step = true;
+
 	return blocked;
 }
 
@@ -990,6 +993,7 @@ void PM_PlayerMove (playermove_t *pmove, movevars_t *_movevars)
 	pm_frametime = pm->cmd.msec * 0.001;
 	pm->numtouch = 0;
 	pm->landspeed = 0;
+	pm->step = false;
 
 	if (pm->pm_type == PM_NONE || pm->pm_type == PM_FREEZE) {
 		PM_CategorizePosition (pm);
