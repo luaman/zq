@@ -413,7 +413,10 @@ void CL_LinkPacketEntities (void)
 
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
-		f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
+		if (cl.numframes < 2)
+			return;
+		assert (frame->receivedtime > oldframe->receivedtime);
+		f = bound(0, (cls.demotime - cl.frames[1].receivedtime) / (cl.frames[0].receivedtime - cl.frames[1].receivedtime), 1);
 	}
 	else
 #endif
@@ -761,7 +764,10 @@ static void CL_LinkNails (void)
 	ent.colormap = 0;
 
 #ifdef MVDPLAY
-	f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
+	if (cl.numframes < 2)
+		return;
+	assert (frame->receivedtime > oldframe->receivedtime);
+	f = bound(0, (cls.demotime - cl.frames[1].receivedtime) / (cl.frames[0].receivedtime - cl.frames[1].receivedtime), 1);
 #endif
 
 	for (i = 0, pr = cl_nails; i < cl.num_nails; i++, pr++)	{
@@ -1312,11 +1318,13 @@ void MVD_InitInterpolation (void)
     player_state_t	*state, *oldstate;
     vec3_t	dist;
 
-//    if (!cl.validsequence)
-//        return;
+	if (cl.numframes < 2)
+		return;
 
     frame = &cl.frames[0];
     oldframe = &cl.frames[1];
+
+	assert (frame->receivedtime > oldframe->receivedtime);
 
     // clients
     for (i=0, pplayer = predicted_players, state=frame->playerstate, oldstate=oldframe->playerstate; 
@@ -1372,9 +1380,8 @@ void MVD_InitInterpolation (void)
         pplayer->oldstate = oldstate;
         pplayer->predict = true;
 
-        assert (cls.mvd_newtime > cls.mvd_oldtime);
         for (j = 0; j < 3; j++)
-            pplayer->vel[j] = (state->origin[j] - oldstate->origin[j]) / (cls.mvd_newtime - cls.mvd_oldtime);
+            pplayer->vel[j] = (state->origin[j] - oldstate->origin[j]) / (frame->receivedtime - oldframe->receivedtime);
     }
 
 }
@@ -1391,23 +1398,17 @@ void MVD_Interpolate(void)
 	frame_t	*frame, *oldframe;
 	player_state_t *state, *oldstate;
 	struct predicted_player *pplayer;
-	static float old;
 
-	if (old != cls.mvd_newtime) {
-		old = cls.mvd_newtime;
-		MVD_InitInterpolation ();
-	}
-
-//	cls.netchan.outgoing_sequence = cl.parsecount + 1;
-
-	if (cls.mvd_newtime <= cls.mvd_oldtime)
+	if (cl.numframes < 2)
 		return;
 
 	frame = &cl.frames[0];
 	oldframe = &cl.frames[1];
 
-//Com_Printf ("%f of %f\n", cls.demotime - cls.mvd_oldtime, cls.mvd_newtime - cls.mvd_oldtime);
-	f = bound(0, (cls.demotime - cls.mvd_oldtime) / (cls.mvd_newtime - cls.mvd_oldtime), 1);
+	assert (frame->receivedtime > oldframe->receivedtime);
+	f = bound(0, (cls.demotime - oldframe->receivedtime) / (frame->receivedtime - oldframe->receivedtime), 1);
+
+//	Com_Printf ("%f  (%f -> %f)\n", cls.demotime, oldframe->receivedtime, frame->receivedtime);
 
 	// interpolate clients
 	for (i = 0; i < MAX_CLIENTS; i++) {
@@ -1609,6 +1610,13 @@ calc_angles:
 
 void CL_PredictAndLerpPlayers ()
 {
+#ifdef MVDPLAY
+	if (cls.mvdplayback && cls.state == ca_active) {
+		MVD_Interpolate ();
+		return;
+	}
+#endif
+
 	if (cls.state != ca_active || CL_NetworkStalled() || cls.mvdplayback
 	|| cls.nqprotocol)
 		return;
@@ -1685,10 +1693,6 @@ void CL_EmitEntities (void)
 	if (cls.nqprotocol)
 		CLNQ_LinkEntities ();
 	else {
-#ifdef MVDPLAY
-		if (cls.mvdplayback)
-			MVD_Interpolate ();
-#endif
 		CL_LinkPlayers ();
 		CL_LinkPacketEntities ();
 		CL_LinkNails ();
