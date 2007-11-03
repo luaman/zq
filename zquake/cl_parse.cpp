@@ -29,7 +29,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "textencoding.h"
 
 
-frame_t newframe;
+Snapshot new_snapshot;
+qbool new_snapshot_entities_valid;
+
+void Snapshot::clear() {
+	sequence = 0;
+	receivedtime = 0;
+	Q_free(packet_entities.entities);
+	packet_entities.entities = NULL;
+	packet_entities.num_entities = 0;
+	memset (playerstate_valid, 0, sizeof(playerstate_valid));
+}
 
 char *svc_strings[] =
 {
@@ -50,7 +60,7 @@ char *svc_strings[] =
 	"svc_lightstyle",		// [byte] [string]
 	"NQ svc_updatename",	// [byte] [string]
 	"svc_updatefrags",		// [byte] [short]
-	"svc_clientdata",		// <shortbits + data>
+	"NQ svc_clientdata",	// <shortbits + data>
 	"svc_stopsound",		// <see code>
 	"NQ svc_updatecolors",	// [byte] [byte]
 	"NQ svc_particle",		// [vec3] <variable>
@@ -1134,17 +1144,8 @@ void CL_ParseStartSoundPacket(void)
 }       
 
 
-/*
-==================
-CL_ParseClientdata
-
-Server information pertaining to this client only, sent every frame
-==================
-*/
-void CL_ParseClientdata (void)
+void CL_BeginParsingSnapshot (void)
 {
-	float		latency;
-
 // calculate simulated time of message
     cl.oldparsecount = cl.parsecount;
 	cl.parsecount = cls.netchan.incoming_acknowledged;
@@ -1159,7 +1160,7 @@ void CL_ParseClientdata (void)
 	outp->receivedtime = cls.realtime;
 
 // calculate latency
-	latency = outp->receivedtime - outp->senttime;
+	float latency = outp->receivedtime - outp->senttime;
 
 	if (latency >= 0 && latency <= 1) {
 	// drift the average latency towards the observed latency
@@ -1171,12 +1172,10 @@ void CL_ParseClientdata (void)
 
 	cl.num_nails = 0;
 
-	Q_free (newframe.packet_entities.entities);	//?
-	newframe.packet_entities.entities = NULL;
-	memset (&newframe, 0, sizeof(newframe));
-	newframe.receivedtime = cls.realtime;
-	newframe.valid = false;
-	newframe.sequence = cls.netchan.incoming_sequence;
+	new_snapshot.clear();
+	new_snapshot.receivedtime = cls.realtime;
+	new_snapshot.sequence = cls.netchan.incoming_sequence;
+	new_snapshot_entities_valid = false;
 }
 
 /*
@@ -1709,10 +1708,10 @@ void CL_MuzzleFlash (void)
 	if ((unsigned)(i-1) >= MAX_CLIENTS)
 	{
 		// a monster firing
-		num_ent = cl.frames[0].packet_entities.num_entities;
+		num_ent = cl.snapshots[0].packet_entities.num_entities;
 		for (j=0; j<num_ent; j++)
 		{
-			ent = &cl.frames[0].packet_entities.entities[j];
+			ent = &cl.snapshots[0].packet_entities.entities[j];
 			if (ent->number == i)
 			{
 				dl = CL_AllocDlight (-i);
@@ -1746,10 +1745,10 @@ void CL_MuzzleFlash (void)
 #ifdef MVDPLAY
 		if (cls.mvdplayback)
 			// FIXME: why do we need this special case?
-			state = &cl.frames[1].playerstate[i-1];
+			state = &cl.snapshots[1].playerstate[i-1];
 		else
 #endif
-			state = &cl.frames[0].playerstate[i-1];
+			state = &cl.snapshots[0].playerstate[i-1];
 
 		VectorCopy (state->origin, origin);
 		VectorCopy (state->viewangles, angles);
@@ -1837,37 +1836,53 @@ void CL_ParseQizmoVoice (void)
 		MSG_ReadByte ();
 }
 
-void FreeSomeFrames (int newnumframes)
+void CL_FreeSomeSnapshots (int newsize)
 {
-	assert (newnumframes >= 0 && newnumframes <= cl.numframes);
-	for (int i = newnumframes; i < cl.numframes; i++) {
+	assert (newsize >= 0 && newsize <= cl.num_snapshots);
+	for (int i = newsize; i < cl.num_snapshots; i++) {
 		// clear this frame
-		Q_free(cl.frames[i].packet_entities.entities);
+		Q_free(cl.snapshots[i].packet_entities.entities);
 	}
-	cl.numframes = newnumframes;
+	cl.num_snapshots = newsize;
 }
 
-void CheckAndAddNewFrame (void)
+void CL_CheckAndSaveSnapshot (void)
 {
-	if (!newframe.valid) {
+	if (!new_snapshot_entities_valid) {
 		// it's either invalid delta, or no svc_[delta]packetentities at all this frame
-		cl.outpackets[cls.netchan.outgoing_sequence&SENT_MASK].invalid_delta = true;
+		if (cls.mvdplayback) {
+			// what do we do?
+			Com_Printf ("WARNING: MVD packet without packetentities\n");
+		}
+		else
+			cl.outpackets[cls.netchan.outgoing_sequence&SENT_MASK].invalid_delta = true;
 		return;
 	}
 
-	if (cl.numframes == UPDATE_BACKUP)
-		FreeSomeFrames (cl.numframes - 1);
-	cl.numframes++;
+#ifdef MVDPLAY
+	if (cls.mvdplayback) {
+		// we only need two snapshots for MVD playback.
+		// so clear all but the latest one
+		if (cl.num_snapshots > 1)
+			CL_FreeSomeSnapshots (1);
+	}
+	else
+#endif
+	{
+		if (cl.num_snapshots == UPDATE_BACKUP)
+			CL_FreeSomeSnapshots (cl.num_snapshots - 1);
+	}
+
+	cl.num_snapshots++;
 
 	// this may be somewhat CPU expensive right now
-	// (frame_t is around 3.5K in size)
-	for (int i = cl.numframes - 1; i > 0; i--)
-		cl.frames[i] = cl.frames[i - 1];
+	// (Snapshot is around 3.5K in size)
+	for (int i = cl.num_snapshots - 1; i > 0; i--)
+		cl.snapshots[i] = cl.snapshots[i - 1];
 
-	cl.frames[0] = newframe;
-	newframe.valid = false;
-	newframe.packet_entities.entities = NULL;
-	newframe.packet_entities.num_entities = 0;
+	cl.snapshots[0] = new_snapshot;
+	new_snapshot.packet_entities.entities = NULL;
+	new_snapshot.clear();
 
 	CL_SetSolidEntities ();
 
@@ -1909,7 +1924,7 @@ void CL_ParseServerMessage (void)
 #ifdef MVDPLAY
 	if (!cls.mvdplayback)
 #endif
-		CL_ParseClientdata ();
+		CL_BeginParsingSnapshot ();
 
 //
 // parse the message
@@ -2244,7 +2259,7 @@ bad_message:
 #ifdef MVDPLAY
 	if (!cls.mvdplayback)
 #endif
-	CheckAndAddNewFrame ();
+		CL_CheckAndSaveSnapshot ();
 
 	CL_WriteDemoMessage (&cls.demomessage);
 }

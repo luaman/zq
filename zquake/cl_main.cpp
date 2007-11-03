@@ -163,9 +163,8 @@ void client_state_t::clear ()
 	oldparsecount = 0;
 	spectator = false;
 	last_ping_request = 0;
-	// do the freeing of packets here?
-	memset (frames, 0, sizeof(frames));
-	numframes = 0;
+	CL_FreeSomeSnapshots(0);	// clear all
+	num_snapshots = 0;
 	memset (&lastcmd, 0, sizeof(lastcmd));
 	servertime = 0;
 	memset (stats, 0, sizeof(stats));
@@ -517,9 +516,6 @@ void CL_ClearState (void)
 	CL_ClearDlights ();
 	CL_ClearParticles ();
 	CL_ClearNails ();
-
-	for (i = 0; i < cl.numframes; i++)
-		Q_free (cl.frames[i].packet_entities.entities);
 
 	cl.clear();
 
@@ -1266,9 +1262,9 @@ qbool CL_NetworkStalled (void)
 		return false;
 	if (cls.nqprotocol)
 		return false;	// FIXME?
-	if (cls.realtime - cl.frames[0].receivedtime > cl_predictiontimeout.value)
+	if (cls.realtime - cl.snapshots[0].receivedtime > cl_predictiontimeout.value)
 		return true;
-	if (cls.netchan.outgoing_sequence - cl.frames[0].sequence >= SENT_BACKUP-1)
+	if (cls.netchan.outgoing_sequence - cl.snapshots[0].sequence >= SENT_BACKUP-1)
 		return true;	// can't predict any further
 	return false;
 }

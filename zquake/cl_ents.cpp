@@ -56,7 +56,6 @@ static struct predicted_player {
 #endif
 } predicted_players[MAX_CLIENTS];
 
-extern frame_t newframe;
 extern	int		cl_spikeindex, cl_playerindex, cl_flagindex;
 
 /*
@@ -184,7 +183,7 @@ static void UpdateEntities (void)
 	entity_state_t *ent;
 	centity_t	*cent;
 
-	pack = &newframe.packet_entities;
+	pack = &new_snapshot.packet_entities;
 
 	for (i = 0; i < pack->num_entities; i++) {
 		ent = &pack->entities[i];
@@ -229,12 +228,12 @@ void CL_ParsePacketEntities (qbool delta)
 	int maxents = MAX_PACKET_ENTITIES;
 #endif
 
-	newp = &newframe.packet_entities;
+	newp = &new_snapshot.packet_entities;
 
 #ifdef MVDPLAY
 	if (delta && cls.mvdplayback) {
 		MSG_ReadByte ();
-		oldp = &cl.frames[0].packet_entities;
+		oldp = &cl.snapshots[0].packet_entities;
 		full = false;
 	} else
 #endif
@@ -242,13 +241,13 @@ void CL_ParsePacketEntities (qbool delta)
 	{
 		from = MSG_ReadByte ();
 
-		if (cls.netchan.outgoing_sequence - newframe.sequence >= SENT_BACKUP-1)
+		if (cls.netchan.outgoing_sequence - new_snapshot.sequence >= SENT_BACKUP-1)
 		{	// don't have delta_sequence history for this packet
 			FlushEntityPacket ();
 			return;
 		}
 
-		oldpacket = cl.outpackets[newframe.sequence&SENT_MASK].delta_sequence;
+		oldpacket = cl.outpackets[new_snapshot.sequence&SENT_MASK].delta_sequence;
 
 		if ( (from&UPDATE_MASK) != (oldpacket&UPDATE_MASK) ) {
 			// should never happens unless the server misbehaves
@@ -258,17 +257,17 @@ void CL_ParsePacketEntities (qbool delta)
 		}
 
 		int i;
-		for (i = 0; i < cl.numframes; i++)
-			if (cl.frames[i].sequence == oldpacket)
+		for (i = 0; i < cl.num_snapshots; i++)
+			if (cl.snapshots[i].sequence == oldpacket)
 				break;
 
-		if (i == cl.numframes) {
+		if (i == cl.num_snapshots) {
 			// packet is too old, don't have the base frame anymore
 			FlushEntityPacket ();
 			return;
 		}
 
-		oldp = &cl.frames[i].packet_entities;
+		oldp = &cl.snapshots[i].packet_entities;
 		full = false;
 	}
 	else
@@ -368,8 +367,8 @@ void CL_ParsePacketEntities (qbool delta)
 	Q_free (newp->entities);
 	newp->entities = (entity_state_t *)Q_malloc (sizeof(entity_state_t) * newp->num_entities);
 	memcpy (newp->entities, newents, sizeof(entity_state_t) * newp->num_entities);
-
-	newframe.valid = true;
+	extern qbool new_snapshot_entities_valid;
+	new_snapshot_entities_valid = true;
 
 	cl_entframecount++;
 	UpdateEntities ();
@@ -407,16 +406,16 @@ void CL_LinkPacketEntities (void)
 	int					pnum;
 	extern cvar_t		cl_nolerp;
 
-	pack = &cl.frames[0].packet_entities;
+	pack = &cl.snapshots[0].packet_entities;
 
 	autorotate = anglemod (100*cl.time);
 
 #ifdef MVDPLAY
 	if (cls.mvdplayback) {
-		if (cl.numframes < 2)
+		if (cl.num_snapshots < 2)
 			return;
 		assert (frame->receivedtime > oldframe->receivedtime);
-		f = bound(0, (cls.demotime - cl.frames[1].receivedtime) / (cl.frames[0].receivedtime - cl.frames[1].receivedtime), 1);
+		f = bound(0, (cls.demotime - cl.snapshots[1].receivedtime) / (cl.snapshots[0].receivedtime - cl.snapshots[1].receivedtime), 1);
 	}
 	else
 #endif
@@ -427,18 +426,18 @@ void CL_LinkPacketEntities (void)
 		float t, simtime;
 
 		simtime = cls.realtime - cl.entlatency;
-		if (simtime > cl.frames[0].receivedtime) {
-			cl.entlatency = cls.realtime - cl.frames[0].receivedtime;
-		} else if (simtime < cl.frames[1].receivedtime) {
-			cl.entlatency = cls.realtime - cl.frames[1].receivedtime;
+		if (simtime > cl.snapshots[0].receivedtime) {
+			cl.entlatency = cls.realtime - cl.snapshots[0].receivedtime;
+		} else if (simtime < cl.snapshots[1].receivedtime) {
+			cl.entlatency = cls.realtime - cl.snapshots[1].receivedtime;
 		} else {
 			// drift towards ideal latency
 		}
 
-		t = cl.frames[0].receivedtime -
-			cl.frames[1].receivedtime;
+		t = cl.snapshots[0].receivedtime -
+			cl.snapshots[1].receivedtime;
 		if (t)
-			f = (cls.realtime - cl.entlatency - cl.frames[1].receivedtime) / t;
+			f = (cls.realtime - cl.entlatency - cl.snapshots[1].receivedtime) / t;
 		else
 			f = 1;
 		f = bound (0, f, 1);
@@ -764,10 +763,10 @@ static void CL_LinkNails (void)
 	ent.colormap = 0;
 
 #ifdef MVDPLAY
-	if (cl.numframes < 2)
+	if (cl.num_snapshots < 2)
 		return;
 	assert (frame->receivedtime > oldframe->receivedtime);
-	f = bound(0, (cls.demotime - cl.frames[1].receivedtime) / (cl.frames[0].receivedtime - cl.frames[1].receivedtime), 1);
+	f = bound(0, (cls.demotime - cl.snapshots[1].receivedtime) / (cl.snapshots[0].receivedtime - cl.snapshots[1].receivedtime), 1);
 #endif
 
 	for (i = 0, pr = cl_nails; i < cl.num_nails; i++, pr++)	{
@@ -836,19 +835,19 @@ static void MVD_ParsePlayerState (void)
 		cls.mvd_findtarget = false;
 	}
 
-	state = &newframe.playerstate[num];
-	newframe.playerstate_valid[num] = true;
+	state = &new_snapshot.playerstate[num];
+	new_snapshot.playerstate_valid[num] = true;
 
-	if (!cl.frames[0].playerstate_valid[num]) {
+	if (!cl.snapshots[0].playerstate_valid[num]) {
 		oldstate = &dummy;
 	} else {
 		// FIXME, info->prevcount?  wtf?
 		if (cl.parsecount - info->prevcount >= UPDATE_BACKUP-1)
 			oldstate = &dummy;
 		else 
-//			oldstate = &cl.frames[info->prevcount&UPDATE_MASK].playerstate[num];
+//			oldstate = &cl.snapshots[info->prevcount&UPDATE_MASK].playerstate[num];
 			// FIXME
-			oldstate = &cl.frames[0].playerstate[num];
+			oldstate = &cl.snapshots[0].playerstate[num];
 	}
 
 	info->prevcount = cl.parsecount;
@@ -920,8 +919,8 @@ void CL_ParsePlayerState (void)
 
 	info = &cl.players[num];
 
-	state = &newframe.playerstate[num];
-	newframe.playerstate_valid[num] = true;
+	state = &new_snapshot.playerstate[num];
+	new_snapshot.playerstate_valid[num] = true;
 
 	flags = state->flags = MSG_ReadShort ();
 
@@ -935,10 +934,10 @@ void CL_ParsePlayerState (void)
 	// before the packet was sent out, so accurately track
 	// the exact time it was valid at
 	if (cls.demoplayback) {
-		state->state_time = newframe.receivedtime;
+		state->state_time = new_snapshot.receivedtime;
 	} else {
-		// FIXME, make sure newframe.sequence is within range
-		state->state_time = cl.outpackets[newframe.sequence & SENT_MASK].senttime;
+		// FIXME, make sure new_snapshot.sequence is within range
+		state->state_time = cl.outpackets[new_snapshot.sequence & SENT_MASK].senttime;
 	}
 	if (flags & PF_MSEC)
 	{
@@ -1147,19 +1146,19 @@ void CL_LinkPlayers (void)
 	player_state_t	*state;
 	entity_t		ent;
 	centity_t		*cent;
-	frame_t			*frame;
+	Snapshot		*snap;
 	vec3_t			org;
 	float			flicker;
 
-	frame = &cl.frames[0];
+	snap = &cl.snapshots[0];
 
 	memset (&ent, 0, sizeof(entity_t));
 
-	for (i=0, info=cl.players, state=frame->playerstate; i < MAX_CLIENTS;
+	for (i=0, info=cl.players, state=snap->playerstate; i < MAX_CLIENTS;
 		i++, info++, state++)
 	{
-		if (!frame->playerstate_valid[i])
-			continue;	// not present this frame
+		if (!snap->playerstate_valid[i])
+			continue;	// not present in this snapshot
 
 		// spawn light flashes, even ones coming from invisible objects
 		if (r_powerupglow.value && !(r_powerupglow.value == 2 && i == Cam_PlayerNum()))
@@ -1279,7 +1278,7 @@ Builds all the pmove physents for the current frame
 void CL_SetSolidEntities (void)
 {
 	int		i;
-	frame_t	*frame;
+	Snapshot	*frame;
 	packet_entities_t	*pak;
 	entity_state_t		*state;
 
@@ -1288,7 +1287,7 @@ void CL_SetSolidEntities (void)
 	cl.pmove.physents[0].info = 0;
 	cl.pmove.numphysent = 1;
 
-	frame = &cl.frames[0];
+	frame = &cl.snapshots[0];
 	pak = &frame->packet_entities;
 
 	for (i = 0; i < pak->num_entities; i++) {
@@ -1314,15 +1313,15 @@ void MVD_InitInterpolation (void)
 {
     int		i,j;
     struct predicted_player *pplayer;
-    frame_t	*frame, *oldframe;
+    Snapshot	*frame, *oldframe;
     player_state_t	*state, *oldstate;
     vec3_t	dist;
 
-	if (cl.numframes < 2)
+	if (cl.num_snapshots < 2)
 		return;
 
-    frame = &cl.frames[0];
-    oldframe = &cl.frames[1];
+    frame = &cl.snapshots[0];
+    oldframe = &cl.snapshots[1];
 
 	assert (frame->receivedtime > oldframe->receivedtime);
 
@@ -1395,15 +1394,15 @@ void MVD_Interpolate(void)
 {
 	int i;
 	float f;
-	frame_t	*frame, *oldframe;
+	Snapshot	*frame, *oldframe;
 	player_state_t *state, *oldstate;
 	struct predicted_player *pplayer;
 
-	if (cl.numframes < 2)
+	if (cl.num_snapshots < 2)
 		return;
 
-	frame = &cl.frames[0];
-	oldframe = &cl.frames[1];
+	frame = &cl.snapshots[0];
+	oldframe = &cl.snapshots[1];
 
 	assert (frame->receivedtime > oldframe->receivedtime);
 	f = bound(0, (cls.demotime - oldframe->receivedtime) / (frame->receivedtime - oldframe->receivedtime), 1);
@@ -1431,10 +1430,10 @@ void CL_SetUpPlayerPrediction ()
 {
 	int				i;
 	player_state_t	*state;
-	frame_t			*frame;
+	Snapshot		*frame;
 	struct predicted_player *pplayer;
 
-	frame = &cl.frames[0];
+	frame = &cl.snapshots[0];
 
 	for (i=0, pplayer = predicted_players, state=frame->playerstate; 
 		i < MAX_CLIENTS;
@@ -1462,7 +1461,7 @@ void CL_PredictOtherPlayers ()
 	player_state_t	exact;
 	double			playertime;
 	int				msec;
-	frame_t			*frame;
+	Snapshot		*frame;
 	int				oldphysent;
 	struct predicted_player *pplayer;
 
@@ -1473,7 +1472,7 @@ void CL_PredictOtherPlayers ()
 	if (playertime > cls.realtime)
 		playertime = cls.realtime;
 
-	frame = &cl.frames[0];
+	frame = &cl.snapshots[0];
 
 	// the local player is special, since he moves locally
 	// we use his last predicted postition
@@ -1509,37 +1508,37 @@ void CL_LerpPlayers ()
 {
 	int				i;
 	double			playertime;
-	frame_t			*frame, *oldframe;
+	Snapshot		*frame, *oldframe;
 	float			f;	// lerp frac from old to new
 	struct predicted_player *pplayer;
 	static float playerlatency;
 
 	playertime = cls.realtime - playerlatency;
 
-	int maxframes = min(cl.numframes, 3);
-	for (i = 0; i < maxframes; i++) {
-		if (cl.frames[i].receivedtime <= playertime)
+	int maxsnaps = min(cl.num_snapshots, 3);
+	for (i = 0; i < maxsnaps; i++) {
+		if (cl.snapshots[i].receivedtime <= playertime)
 			break;
 	}
-	if (i == maxframes) {
-		i = maxframes - 1;	// guaranteed to be >= 0 because cl.numframes is always >= 1
-		frame = oldframe = &cl.frames[i];
+	if (i == maxsnaps) {
+		i = maxsnaps - 1;	// guaranteed to be >= 0 because cl.num_snapshots is always >= 1
+		frame = oldframe = &cl.snapshots[i];
 	} else {
-		oldframe = &cl.frames[i];
-		frame = &cl.frames[max(i - 1, 0)];
+		oldframe = &cl.snapshots[i];
+		frame = &cl.snapshots[max(i - 1, 0)];
 	}
 
 	if (frame->receivedtime - oldframe->receivedtime > 0)
 		f = (playertime - oldframe->receivedtime) / (frame->receivedtime - oldframe->receivedtime);
 	else
 		f = 0;
-	Com_DPrintf ("%i->%i  f = %f\n", oldframe-cl.frames, frame-cl.frames, f);
+	Com_DPrintf ("%i->%i  f = %f\n", oldframe-cl.snapshots, frame-cl.snapshots, f);
 	f = bound(0, f, 1);
 
 	// adjust latency
-	if (playertime > cl.frames[0].receivedtime) {
+	if (playertime > cl.snapshots[0].receivedtime) {
 		Com_DPrintf ("HIGH clamp\n");
-		playerlatency = cls.realtime - cl.frames[0].receivedtime;
+		playerlatency = cls.realtime - cl.snapshots[0].receivedtime;
 	}
 	else if (playertime < oldframe->receivedtime) {
 		Com_DPrintf ("   low clamp\n");
@@ -1558,11 +1557,11 @@ void CL_LerpPlayers ()
 //		if (!pplayer->active)
 //			continue;
 		if (!frame->playerstate_valid[i]) {
-			if (cl.frames[0].playerstate_valid[i]) {
-				// CL_LinkPlayers uses cl.frames[0], so fill in some sane values
-				VectorCopy (cl.frames[0].playerstate[i].origin, pplayer->origin);
-				VectorCopy (cl.frames[0].playerstate[i].viewangles, viewangles);
-				VectorCopy (cl.frames[0].playerstate[i].velocity, velocity);
+			if (cl.snapshots[0].playerstate_valid[i]) {
+				// CL_LinkPlayers uses cl.snapshots[0], so fill in some sane values
+				VectorCopy (cl.snapshots[0].playerstate[i].origin, pplayer->origin);
+				VectorCopy (cl.snapshots[0].playerstate[i].viewangles, viewangles);
+				VectorCopy (cl.snapshots[0].playerstate[i].velocity, velocity);
 				goto calc_angles;
 			}
 			continue;

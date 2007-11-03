@@ -204,7 +204,7 @@ void Cam_FinishMove (usercmd_t *cmd)
 
 	if (cam_track && !cam_locked) {
 		// try to lock to desired target
-		if (cl.frames[0].playerstate_valid[cam_target]) {
+		if (cl.snapshots[0].playerstate_valid[cam_target]) {
 			// good
 			cam_locked = true;
 			cam_curtarget = cam_target;
@@ -213,8 +213,8 @@ void Cam_FinishMove (usercmd_t *cmd)
 
 	if (cam_curtarget != CAM_NOTARGET) {
 		player_state_t	*state;
-		state = &cl.frames[0].playerstate[cam_curtarget];
-		if (cl.frames[0].playerstate_valid[cam_curtarget]) {
+		state = &cl.snapshots[0].playerstate[cam_curtarget];
+		if (cl.snapshots[0].playerstate_valid[cam_curtarget]) {
 			// move there so that we get correct PVS
 			MSG_WriteByte (&cls.netchan.message, clc_tmove);
 			MSG_WriteCoord (&cls.netchan.message, state->origin[0]);
@@ -277,10 +277,10 @@ void Cam_TryLock (void)
 	old_locked = cam_locked;
 	old_target = cam_target;
 
-	state = cl.frames[0].playerstate;
+	state = cl.snapshots[0].playerstate;
 	for (i=0 ; i<MAX_CLIENTS ; i++) {
 		if (!cl.players[i].name[0] || cl.players[i].spectator ||
-			!cl.frames[0].playerstate_valid[i])
+			!cl.snapshots[0].playerstate_valid[i])
 			continue;
 		if (fabs(state[i].viewangles[0] - cl.viewangles[0]) < 2 &&
 			fabs(state[i].viewangles[1] - cl.viewangles[1]) < 2)

@@ -110,15 +110,15 @@ typedef struct player_info_s
 
 
 // game state received from server
-typedef struct
+struct Snapshot
 {
 	int			sequence;		// cls.netchan.incoming_sequence when it was received
 	double		receivedtime;	// cls.realtime when message was received
 	player_state_t	playerstate[MAX_CLIENTS];	// players
 	qbool		playerstate_valid[MAX_CLIENTS];		// corresponding playerstate is valid?
 	packet_entities_t	packet_entities;		// normal entities
-	qbool		valid;		// are packet_entities valid?
-} frame_t;
+	void clear();
+};
 
 typedef struct {
 	usercmd_t	cmd;   		// cmd that generated the frame
@@ -333,8 +333,8 @@ struct client_state_t
 
 	double		last_ping_request;	// while showing scoreboard
 
-	frame_t		frames[UPDATE_BACKUP];	// game state from server
-	int			numframes;				// number of valid frames (>=1 when ca_active)
+	Snapshot	snapshots[UPDATE_BACKUP];	// entities, players etc
+	int			num_snapshots;				// number of valid snapshots (>=1 when ca_active)
 
 	outpacket_t	outpackets[SENT_BACKUP];	// sent commands, sent/received times
 	usercmd_t	lastcmd;			// observer intentions (demo playback only)
@@ -539,6 +539,9 @@ float CLNQ_CalcPlayerSpeed (void);
 #define NET_TIMINGS 256
 #define NET_TIMINGSMASK 255
 extern int	packet_latency[NET_TIMINGS];
+extern Snapshot new_snapshot;	// game state being parsed (make it
+								// private to cl_parse.cpp one day)
+void CL_FreeSomeSnapshots(int newsize);
 int CL_CalcNet (void);
 void CL_ParseServerMessage (void);
 void CL_NewTranslation (int slot);
@@ -549,6 +552,8 @@ void CL_NextUpload (void);
 void CL_StartUpload (byte *data, int size);
 void CL_StopUpload (void);
 void CL_ParseParticleEffect (void);
+void CL_BeginParsingSnapshot (void);
+void CL_CheckAndSaveSnapshot (void);
 
 
 //

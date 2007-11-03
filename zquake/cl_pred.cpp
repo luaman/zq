@@ -377,20 +377,20 @@ static void CL_PredictLocalPlayer (void)
 {
 	qbool		nopred = false;
 	int			i;
-	frame_t		*frame;
+	Snapshot	*frame;
 	int			oldphysent;
 	extern cvar_t cl_smartjump;
 
 	if (CL_NetworkStalled())
 		return;
 
-	assert(!(cls.netchan.outgoing_sequence - cl.frames[0].sequence >= SENT_BACKUP-1));
+	assert(!(cls.netchan.outgoing_sequence - cl.snapshots[0].sequence >= SENT_BACKUP-1));
 
 //	if (cam_track && !cls.demoplayback /* FIXME */)
 //		return;
 
 	// this is the last valid frame received from the server
-	frame = &cl.frames[0];
+	frame = &cl.snapshots[0];
 
 	// setup cl.simangles + decide whether to predict local player
 	if (cls.demoplayback && cl.spectator && cam_curtarget != CAM_NOTARGET) {
@@ -401,7 +401,7 @@ static void CL_PredictLocalPlayer (void)
 		// CL_GetDemoMessage fills in cl.viewangles
 		VectorCopy (cl.viewangles, predicted_simangles);
 	} else {
-		nopred = (cl_nopred.value || cls.netchan.outgoing_sequence - cl.frames[0].sequence <= 1);
+		nopred = (cl_nopred.value || cls.netchan.outgoing_sequence - cl.snapshots[0].sequence <= 1);
 	}
 
 	if (nopred)
@@ -423,7 +423,7 @@ static void CL_PredictLocalPlayer (void)
 
 	// run frames
 	player_state_t state = frame->playerstate[cl.playernum];
-	for (i = cl.frames[0].sequence + 1; i < cls.netchan.outgoing_sequence; i++)
+	for (i = cl.snapshots[0].sequence + 1; i < cls.netchan.outgoing_sequence; i++)
 	{
 		outpacket_t *outp = &cl.outpackets[i & SENT_MASK];
 		CL_PredictUsercmd (&state, &state, &outp->cmd);
@@ -504,7 +504,7 @@ void CL_SetViewPosition ()
 			// we expect progs to move the player to the intermission spot
 			// and set their angles correctly.  This is unlike qwcl, but
 			// QW never used svc_finale so this should't break anything
-			VectorCopy (cl.frames[0].playerstate[Cam_PlayerNum()].origin, cl.simorg);
+			VectorCopy (cl.snapshots[0].playerstate[Cam_PlayerNum()].origin, cl.simorg);
 
 		return;
 	}
@@ -512,7 +512,7 @@ void CL_SetViewPosition ()
 	if (cls.mvdplayback) {
 		// if tracking a player, update view position
 		if (cam_curtarget != CAM_NOTARGET) {
-			player_state_t *state = &cl.frames[0].playerstate[cam_curtarget];
+			player_state_t *state = &cl.snapshots[0].playerstate[cam_curtarget];
 			VectorCopy (state->origin, cl.simorg);
 			VectorCopy (state->viewangles, cl.simangles);
 			// so that we're looking that way when we go into free fly
@@ -528,13 +528,13 @@ void CL_SetViewPosition ()
 		return;
 	}
 
-	outpacket_t *outp = &cl.outpackets[cl.frames[0].sequence & SENT_MASK];
+	outpacket_t *outp = &cl.outpackets[cl.snapshots[0].sequence & SENT_MASK];
 	if (cls.demoplayback && !(cl.spectator && cam_curtarget != CAM_NOTARGET)) {
 //		CL_LerpMove (outp->senttime);
-		CL_LerpMove (cl.frames[0].receivedtime);
+		CL_LerpMove (cl.snapshots[0].receivedtime);
 	}
 	else if (cl.spectator && cam_curtarget != CAM_NOTARGET) {
-		player_state_t *state = &cl.frames[0].playerstate[cam_curtarget];
+		player_state_t *state = &cl.snapshots[0].playerstate[cam_curtarget];
 //		VectorCopy (state->origin, cl.simorg);
 //		VectorCopy (state->viewangles, cl.simangles);
 		VectorCopy (predicted_simorg, cl.simorg);
