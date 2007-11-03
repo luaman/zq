@@ -166,6 +166,7 @@ void client_state_t::clear ()
 	CL_FreeSomeSnapshots(0);	// clear all
 	num_snapshots = 0;
 	memset (&lastcmd, 0, sizeof(lastcmd));
+	cmdtime_msec = 0;
 	servertime = 0;
 	memset (stats, 0, sizeof(stats));
 	memset (item_gettime, 0, sizeof(item_gettime));

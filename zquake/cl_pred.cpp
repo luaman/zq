@@ -172,179 +172,83 @@ vec3_t predicted_simorg;
 vec3_t predicted_simangles;
 player_state_t predicted_state;
 
-// for .qwd demo playback
-static void CL_LerpMove (float msgtime)
-{
-	static int		lastsequence = 0;
-	static vec3_t	lerp_angles[3];
-	static vec3_t	lerp_origin[3];
-	static float	lerp_times[3];
-	static qbool	nolerp[2];
-	static float	demo_latency = 0.01;
-	float	frac;
-	float	simtime;
-	int		i;
-	int		from, to;
 
-	VectorCopy (predicted_simorg, cl.simorg);
-	VectorCopy (predicted_simangles, cl.simangles);
-
-	if (cl_nolerp.value)
-		return;
-
-	if (cls.netchan.outgoing_sequence < lastsequence) {
-		// reset
-		lastsequence = -1;
-		lerp_times[0] = -1;
-		demo_latency = 0.01;
-	}
-
-	if (cls.netchan.outgoing_sequence > lastsequence) {
-		lastsequence = cls.netchan.outgoing_sequence;
-		// move along
-		lerp_times[2] = lerp_times[1];
-		lerp_times[1] = lerp_times[0];
-		lerp_times[0] = msgtime;
-
-		VectorCopy (lerp_origin[1], lerp_origin[2]);
-		VectorCopy (lerp_origin[0], lerp_origin[1]);
-		VectorCopy (predicted_simorg, lerp_origin[0]);
-
-		VectorCopy (lerp_angles[1], lerp_angles[2]);
-		VectorCopy (lerp_angles[0], lerp_angles[1]);
-		VectorCopy (predicted_simangles, lerp_angles[0]);
-
-		nolerp[1] = nolerp[0];
-		nolerp[0] = false;
-		for (i = 0; i < 3; i++)
-			if (fabs(lerp_origin[0][i] - lerp_origin[1][i]) > 40)
-				break;
-		if (i < 3)
-			nolerp[0] = true;	// a teleport or something
-	}
-
-	simtime = cls.realtime - demo_latency;
-
-	// adjust latency
-	if (simtime > lerp_times[0]) {
-		// Com_DPrintf ("HIGH clamp\n");
-		demo_latency = cls.realtime - lerp_times[0];
-	}
-	else if (simtime < lerp_times[2]) {
-		// Com_DPrintf ("   low clamp\n");
-		demo_latency = cls.realtime - lerp_times[2];
-	} else {
-		// drift towards ideal latency
-		float ideal_latency = (lerp_times[0] - lerp_times[2]) * 0.6;
-		if (demo_latency > ideal_latency)
-			demo_latency = max(demo_latency - cls.frametime * 0.1, ideal_latency);
-	}
-
-	// decide where to lerp from
-	if (simtime > lerp_times[1]) {
-		from = 1;
-		to = 0;
-	} else {
-		from = 2;
-		to = 1;
-	}
-
-	if (nolerp[to])
-		return;
-
-	frac = (simtime - lerp_times[from]) / (lerp_times[to] - lerp_times[from]);
-	frac = bound (0, frac, 1);
-
-	LerpVector (lerp_origin[from], lerp_origin[to], frac, cl.simorg);
-	LerpAngles (lerp_angles[from], lerp_angles[to], frac, cl.simangles);
-}
-
-
-static void CL_LerpMovePhys (double msgtime, float f)
+static void CL_LerpViewPlayer (qbool demo)
 {	
-	static int		lastsequence = 0;
-	static vec3_t	lerp_origin[3];
-	static double	lerp_times[3];
-	static qbool	nolerp[2];
-	static double	demo_latency = 0.01;
-	float	frac;
+	static double playerlatency = 0.01;
 	float	simtime;
-	int		i;
 	int		from, to;
 	extern cvar_t cl_nolerp;
 
-	if (cl_nolerp.value) 
-	{
-		lastsequence = ((unsigned)-1) >> 1;	//reset
+	if (cl_nolerp.value || cls.netchan.outgoing_sequence < 3) {
+		VectorCopy (predicted_simorg, cl.simorg);
+		if (demo)
+			VectorCopy(cl.outpackets[(cls.netchan.outgoing_sequence-1)&SENT_MASK].demo_angles,
+				cl.simangles);
 		return;
 	}
+	
+	double basetime = demo ? cls.demotime : cls.realtime;
+	simtime = basetime - playerlatency;
 
-	if (cls.netchan.outgoing_sequence < lastsequence) 
-	{
-		// reset
-		lastsequence = -1;
-		lerp_times[0] = -1;
-		demo_latency = 0.01;
+	double	lerp_times[3];
+	float	*lerp_origin[3];
+	float	*lerp_angles[3];
+
+	int cur = cls.netchan.outgoing_sequence - 1;
+	for (int i = 0; i < 3; i++) {
+		if (demo)
+			lerp_times[i] = cl.outpackets[(cur-i)&SENT_MASK].senttime;
+		else
+			lerp_times[i] = cl.outpackets[(cur-i)&SENT_MASK].cmdtime_msec * 0.001;
+		lerp_origin[i] = cl.outpackets[(cur-i)&SENT_MASK].predicted_origin;
+		lerp_angles[i] = cl.outpackets[(cur-i)&SENT_MASK].demo_angles;
 	}
-
-	if (cls.physframe) 
-	{
-		lastsequence = cls.netchan.outgoing_sequence;
-
-		// move along
-		lerp_times[2] = lerp_times[1];
-		lerp_times[1] = lerp_times[0];
-		lerp_times[0] = msgtime;
-
-		VectorCopy (lerp_origin[1], lerp_origin[2]);
-		VectorCopy (lerp_origin[0], lerp_origin[1]);
-		VectorCopy (predicted_simorg, lerp_origin[0]);
-
-		nolerp[1] = nolerp[0];
-		nolerp[0] = false;
-
-		for (i = 0; i < 3; i++)
-		{
-			if (fabs(lerp_origin[0][i] - lerp_origin[1][i]) > 100)
-			{
-				break;
-			}
-		}
-
-		if (i < 3)
-		{
-			// a teleport or something
-			nolerp[0] = true;	
-		}
-	}
-
-	simtime = cls.realtime - demo_latency;
 
 	// Adjust latency
 	if (simtime > lerp_times[0]) {
 		// High clamp
-		demo_latency = cls.realtime - lerp_times[0];
+		Com_DPrintf ("HIGH clamp\n");
+		playerlatency = basetime - lerp_times[0];
 	}
 	else if (simtime < lerp_times[2]) {
 		// Low clamp
-		demo_latency = cls.realtime - lerp_times[2];
+		Com_DPrintf ("   low clamp\n");
+		playerlatency = basetime - lerp_times[2];
 	} 
 	else
 	{
 		// Drift towards ideal latency.
 		float ideal_latency = 0;
 
-		if (cls.physframe) {
-			if (demo_latency > ideal_latency)
-				demo_latency = max(demo_latency - cls.frametime * 0.1, ideal_latency);
-			
-			if (demo_latency < ideal_latency)
-				demo_latency = min(demo_latency + cls.frametime * 0.1, ideal_latency);
+		if (demo) {
+			ideal_latency = (lerp_times[0] - lerp_times[2]) * 0.6;
+			if (playerlatency > ideal_latency)
+				playerlatency = max(playerlatency - cls.frametime * 0.1, ideal_latency);
+		}
+		else {
+#if 0
+			/* 
+			FIXME: cmdtime_msec and cls.frametime are not in sync so we shouldn't do this...
+			ideal_latency = (lerp_times[0] - lerp_times[2]) * 0.2;	// tune this!
+			if (cls.physframe) {
+				if (playerlatency > ideal_latency)
+					playerlatency = max(playerlatency - cls.frametime * 0.1, ideal_latency);
+				
+				if (playerlatency < ideal_latency)
+					playerlatency = min(playerlatency + cls.frametime * 0.1, ideal_latency);
+			}
+			*/
+#else
+			// just drift down till corrected
+			if (cls.physframe)
+				playerlatency -= cls.frametime * 0.1;
+#endif
 		}
 	}
 
 	// decide where to lerp from
-	if (simtime > lerp_times[1]) 
+	if (simtime > lerp_times[1])
 	{
 		from = 1;
 		to = 0;
@@ -355,23 +259,34 @@ static void CL_LerpMovePhys (double msgtime, float f)
 		to = 1;
 	}
 
-	if (nolerp[to])
-	{
-		return;
-	}
+//	outpacket_t *to_p = &cl.outpackets[(cur - to)&SENT_MASK];
+//	outpacket_t *from_p = &cl.outpackets[(cur - from)&SENT_MASK];
 
-    	frac = (simtime - lerp_times[from]) / (lerp_times[to] - lerp_times[from]);
-    	frac = bound (0, frac, 1);
+   	float frac = (simtime - lerp_times[from]) / (lerp_times[to] - lerp_times[from]);
+   	frac = bound (0, frac, 1);
 
+	int i;
 	for (i = 0; i < 3; i++)
-	{
-		cl.simorg[i] = lerp_origin[from][i] + (lerp_origin[to][i] - lerp_origin[from][i]) * frac;
+		if (fabs(lerp_origin[to][i] - lerp_origin[from][i]) > 100)
+			break;
+
+	if (i < 3) {
+		// no lerp
+		VectorCopy (lerp_origin[to], cl.simorg);
+		if (demo)
+			VectorCopy (lerp_angles[to], cl.simangles);
+	}
+	else {
+		LerpVector (lerp_origin[from], lerp_origin[to], frac, cl.simorg);
+		if (demo)
+			LerpAngles (lerp_angles[from], lerp_angles[to], frac, cl.simangles);
 	}
 }
 
 /*
 ** CL_PredictLocalPlayer
-** Only for QW
+** Normal player movement or spectator free fly, on server and in QWD demos
+** (QW protocol only)
 */
 static void CL_PredictLocalPlayer (void)
 {
@@ -427,6 +342,7 @@ static void CL_PredictLocalPlayer (void)
 	{
 		outpacket_t *outp = &cl.outpackets[i & SENT_MASK];
 		CL_PredictUsercmd (&state, &state, &outp->cmd);
+		VectorCopy (state.origin, outp->predicted_origin);
 	}
 
 	cl.pmove.numphysent = oldphysent;
@@ -530,8 +446,7 @@ void CL_SetViewPosition ()
 
 	outpacket_t *outp = &cl.outpackets[cl.snapshots[0].sequence & SENT_MASK];
 	if (cls.demoplayback && !(cl.spectator && cam_curtarget != CAM_NOTARGET)) {
-//		CL_LerpMove (outp->senttime);
-		CL_LerpMove (cl.snapshots[0].servertime);
+		CL_LerpViewPlayer (true);
 	}
 	else if (cl.spectator && cam_curtarget != CAM_NOTARGET) {
 		player_state_t *state = &cl.snapshots[0].playerstate[cam_curtarget];
@@ -545,7 +460,7 @@ void CL_SetViewPosition ()
 	else {
 		// player has the control (normal movement or spectator free fly)
 		if (cl_independentPhysics.value)
-			CL_LerpMovePhys (cls.realtime, outp->senttime);
+			CL_LerpViewPlayer (false);
 		else
 			VectorCopy (predicted_simorg, cl.simorg);
 		VectorCopy (cl.viewangles, cl.simangles);
