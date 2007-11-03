@@ -713,6 +713,9 @@ void CL_SendCmd (void)
 
 	CL_Move(cmd);
 
+	cl.cmdtime_msec += cmd->msec;
+	cl.outpackets[i].cmdtime_msec = cl.cmdtime_msec;
+
 	SZ_Init (&buf, data, sizeof(data));
 
 	// begin a client move command

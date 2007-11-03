@@ -123,10 +123,14 @@ struct Snapshot
 
 typedef struct {
 	usercmd_t	cmd;   		// cmd that generated the frame
+	int			cmdtime_msec;
 	double		senttime;	// cls.realtime when cmd was sent off
 	double		receivedtime;	// cls.realtime when a reply was received, or -1
 	int			delta_sequence;		// sequence number to delta from, -1 = full update
 	qbool		invalid_delta;
+	// these could be in a separate array, but it doesn't hurt to have them here
+	vec3_t		predicted_origin;
+	vec3_t		demo_angles;	// for QWD playback
 } outpacket_t;
 
 typedef struct
@@ -339,6 +343,7 @@ struct client_state_t
 
 	outpacket_t	outpackets[SENT_BACKUP];	// sent commands, sent/received times
 	usercmd_t	lastcmd;			// observer intentions (demo playback only)
+	int			cmdtime_msec;
 
 // information for local display
 	double		servertime;			// for display on solo status bar

@@ -311,13 +311,15 @@ readnext:
 		pcmd->forwardmove = LittleShort(pcmd->forwardmove);
 		pcmd->sidemove    = LittleShort(pcmd->sidemove);
 		pcmd->upmove      = LittleShort(pcmd->upmove);
-		cl.outpackets[i].senttime = demotime + (cls.realtime - cls.demotime);
+		cl.outpackets[i].senttime = demotime;
 		cl.outpackets[i].receivedtime = -1;		// we haven't gotten a reply yet
 		cls.netchan.outgoing_sequence++;
 
 		fread (cl.viewangles, 12, 1, cls.demofile);
 		for (i = 0; i < 3; i++)
 			cl.viewangles[i] = LittleFloat (cl.viewangles[i]);
+		VectorCopy(cl.viewangles, 
+			cl.outpackets[(cls.netchan.outgoing_sequence-1)&SENT_MASK].demo_angles);
 		if (cl.spectator)
 			Cam_TryLock();
 		goto readnext;
