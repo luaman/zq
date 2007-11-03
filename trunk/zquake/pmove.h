@@ -73,6 +73,7 @@ typedef struct
 	float		landspeed;
 	int			waterlevel;
 	int			watertype;
+	qbool		step;			// walked up a step?
 } playermove_t;
 
 typedef struct {
