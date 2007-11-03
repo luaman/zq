@@ -385,7 +385,7 @@ char *Macro_Powerups (void)
 		strcat(macro_buf, "ring");
 	}
 
-	effects = cl.frames[0].playerstate[cl.playernum].effects;
+	effects = cl.snapshots[0].playerstate[cl.playernum].effects;
 	if ( (effects & (EF_FLAG1|EF_FLAG2)) ||		// CTF
 		(cl.teamfortress && cl.stats[STAT_ITEMS] & (IT_KEY1|IT_KEY2)) ) // TF
 	{
@@ -1827,7 +1827,7 @@ void TP_FindModelNumbers (void)
 // for armors, returns skinnum+1 on success
 static int FindNearestItem (int flags, item_t **pitem)
 {
-	frame_t		*frame;
+	Snapshot		*frame;
 	packet_entities_t	*pak;
 	entity_state_t		*ent;
 	int	i = 0, bestidx = 0, bestskin = 0;
@@ -1835,10 +1835,10 @@ static int FindNearestItem (int flags, item_t **pitem)
 	vec3_t	org, v;
 	item_t	*item;
 
-	VectorCopy (cl.frames[0].playerstate[cl.playernum].origin, org);
+	VectorCopy (cl.snapshots[0].playerstate[cl.playernum].origin, org);
 
 	// look in previous frame 
-	frame = &cl.frames[1];
+	frame = &cl.snapshots[1];
 	pak = &frame->packet_entities;
 	bestdist = 100.0f;
 	bestidx = 0;
@@ -1955,7 +1955,7 @@ void TP_CheckPickupSound (char *s, vec3_t org)
 	return;
 
 more:
-	if (cl.numframes < 2)	// need the previous frame to track pickups
+	if (cl.num_snapshots < 2)	// need the previous frame to track pickups
 		return;
 
 	// weapons
@@ -2047,7 +2047,7 @@ void TP_FindPoint (void)
 
 	best = -1;
 
-	pak = &cl.frames[0].packet_entities;
+	pak = &cl.snapshots[0].packet_entities;
 	for (i=0,ent=pak->entities ; i<pak->num_entities ; i++,ent++)
 	{
 		vec3_t	v, v2, v3;
@@ -2218,7 +2218,7 @@ void TP_StatChanged (int stat, int value)
 		if (i & (IT_KEY1|IT_KEY2)) {
 			if (cl.teamfortress && !cl.spectator)
 				ExecTookTrigger (tp_name_flag.string, it_flag,
-				cl.frames[0].playerstate[cl.playernum].origin);
+				cl.snapshots[0].playerstate[cl.playernum].origin);
 		}
 
 		vars.olditems = vars.items;

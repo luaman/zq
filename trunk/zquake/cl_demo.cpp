@@ -129,7 +129,7 @@ void CL_WriteDemoCmd (usercmd_t *pcmd)
 	float *viewangles;
 	if (cl.spectator && cam_curtarget != CAM_NOTARGET)
 		// so that we can find the tracked player on playback
-		viewangles = cl.frames[0].playerstate[cam_curtarget].viewangles;
+		viewangles = cl.snapshots[0].playerstate[cam_curtarget].viewangles;
 	else
 		viewangles = cl.viewangles;
 	t[0] = LittleFloat (viewangles[0]);
@@ -238,11 +238,9 @@ readnext:
 				fseek(cls.demofile, ftell(cls.demofile) - sizeof(msec),
 						SEEK_SET);
 
-				extern void CheckAndAddNewFrame (void);
 				if (cls.mvd_gotframe) {
-					extern frame_t newframe;
-					newframe.receivedtime = demotime;
-					CheckAndAddNewFrame();
+					new_snapshot.receivedtime = demotime;
+					CL_CheckAndSaveSnapshot();
 					cls.mvd_gotframe = false;
 				}
 
@@ -269,18 +267,15 @@ readnext:
 		cls.mvd_oldtime = demotime;
 		if (msec)
 		{
-			extern void CheckAndAddNewFrame (void);
 			if (msec && cls.mvd_gotframe && cls.state < ca_active) {
-				CheckAndAddNewFrame();
+				CL_CheckAndSaveSnapshot();
 				cls.mvd_gotframe = false;
 			}
-
-			extern void CL_ParseClientdata ();
 
 			cls.netchan.incoming_sequence++;
 			cls.netchan.incoming_acknowledged++;
 
-			CL_ParseClientdata();
+			CL_BeginParsingSnapshot();
 			cls.mvd_gotframe = true;
 		}
 	}

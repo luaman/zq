@@ -1168,7 +1168,7 @@ cl.simangles[ROLL] = 0;	// FIXME @@@
 		return;
 	}
 
-	view_message = cl.frames[0].playerstate[Cam_PlayerNum()];
+	view_message = cl.snapshots[0].playerstate[Cam_PlayerNum()];
 
 	DropPunchAngle ();
 	if (cl.intermission)

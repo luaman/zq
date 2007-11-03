@@ -554,7 +554,7 @@ void SCR_DrawSpeed (void)
 		if (show_speed.value == 2)
 			VectorCopy (cl.simvel, vel);	// predicted velocity
 		else
-			VectorCopy (cl.frames[0].playerstate[cl.playernum].velocity, vel);
+			VectorCopy (cl.snapshots[0].playerstate[cl.playernum].velocity, vel);
 		vel[2] = 0;
 		speed = VectorLength(vel);
 	}
