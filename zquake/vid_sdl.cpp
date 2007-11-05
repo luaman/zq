@@ -423,7 +423,7 @@ void    VID_Init (unsigned char *palette)
 #endif
     VGA_width = vid.width;
     VGA_height = vid.height;
-    vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
+    vid.pixelaspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
     vid.numpages = 1;
 #ifdef FULLSCREENHACK
     if(fullscreenhack == true) {

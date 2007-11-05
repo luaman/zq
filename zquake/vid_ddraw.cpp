@@ -361,7 +361,7 @@ void VID_Init (unsigned char *palette)
 
 	vid.width = BASEWIDTH;
 	vid.height = BASEHEIGHT;
-	vid.aspect = ((float)vid.height / (float)vid.width) *
+	vid.pixelaspect = ((float)vid.height / (float)vid.width) *
 				(320.0 / 240.0);
 
 

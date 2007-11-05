@@ -835,7 +835,7 @@ void VID_Init(unsigned char *palette)
     if (vid.width > width)
         vid.width = width;
 
-    vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
+    vid.pixelaspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
     vid.numpages = 2;
 
     InitSig(); // trap evil signals

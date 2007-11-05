@@ -40,7 +40,7 @@ void VID_Init (unsigned char *palette)
 {
 	vid.width = BASEWIDTH;
 	vid.height = BASEHEIGHT;
-	vid.aspect = 1.0;
+	vid.pixelaspect = 1.0;
 	vid.numpages = 1;
 	vid.buffer = vid_buffer;
 	vid.rowbytes = BASEWIDTH;

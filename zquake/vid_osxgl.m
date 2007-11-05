@@ -387,7 +387,7 @@ void VID_Init (unsigned char *palette)
 	
 	vid.width = 640;
 	vid.height = 480;
-	vid.aspect = 1.0;
+	vid.pixelaspect = 1.0;
 	vid.numpages = 1;
 	vid.buffer = NULL;
 
@@ -481,7 +481,7 @@ void VID_Init (unsigned char *palette)
     if (vid.height > gGLDisplayHeight)
         vid.height = gGLDisplayHeight;
 
-    vid.aspect = ((float) vid.height / (float) vid.width) * (320.0f / 240.0f);
+    vid.pixelaspect = ((float) vid.height / (float) vid.width) * (320.0f / 240.0f);
     vid.numpages = 2;
 	
     // setup OpenGL:

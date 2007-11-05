@@ -103,7 +103,7 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 
 	if (!svgalib_inited || !vid.direct || !vga_oktowrite()) return;
 
-	if (vid.aspect > 1.5)
+	if (vid.pixelaspect > 1.5)
 	{
 		reps = 2;
 		repshift = 1;
@@ -167,7 +167,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 	if (!svgalib_inited || !vid.direct || !vga_oktowrite()) return;
 
-	if (vid.aspect > 1.5)
+	if (vid.pixelaspect > 1.5)
 	{
 		reps = 2;
 		repshift = 1;
@@ -287,7 +287,7 @@ void VID_Debug_f (void)
 	Com_Printf ("mode: %d\n",current_mode);
 	Com_Printf ("height x width: %d x %d\n",vid.height,vid.width);
 	Com_Printf ("bpp: %d\n",modes[current_mode].bytesperpixel*8);
-	Com_Printf ("vid.aspect: %f\n",vid.aspect);
+	Com_Printf ("vid.pixelaspect: %f\n",vid.pixelaspect);
 }
 
 
@@ -474,7 +474,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 		vid.rowbytes = modes[current_mode].linewidth*4;
 	}
 
-	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
+	vid.pixelaspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 	vid.numpages = 1;
 	
 	// alloc zbuffer and surface cache
