@@ -444,7 +444,7 @@ void VID_Init (unsigned char *palette)
 
 	vid.width = 320;
 	vid.height = 240;
-	vid.aspect = 1;
+	vid.pixelaspect = 1;
 // Tonik: I dunno if it's a bug, but window contents seem to get garbaged
 // every frame, so we need to redraw everything every frame
 	vid.numpages = 0x7FFFFFFF;	// "infinite"
@@ -617,7 +617,7 @@ void VID_Init (unsigned char *palette)
 	            // Move the viewport to top left
     	        XF86VidModeSetViewPort(x_disp, scrnum, 0, 0);
         	    vidmode_active = true;
-				vid.aspect = ((float) vidmodes[best_fit]->vdisplay
+				vid.pixelaspect = ((float) vidmodes[best_fit]->vdisplay
 								/ (float) vidmodes[best_fit]->hdisplay) * (320.0 / 240.0);	
 			}
 			else
