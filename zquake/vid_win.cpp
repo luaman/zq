@@ -88,6 +88,7 @@ cvar_t		vid_window_x = {"vid_window_x","0",CVAR_ARCHIVE};
 cvar_t		vid_window_y = {"vid_window_y","0",CVAR_ARCHIVE};
 cvar_t		vid_resetonswitch = {"vid_resetonswitch","0",CVAR_ARCHIVE};
 cvar_t		vid_displayfrequency = {"vid_displayfrequency", "0"};
+cvar_t		vid_screenaspect = {"vid_screenaspect", "auto", CVAR_ARCHIVE};
 
 typedef struct {
 	int		width;
@@ -1412,7 +1413,7 @@ qbool VID_SetWindowedMode (int modenum)
 	vid.numpages = 1;
 	vid.height = DIBHeight;
 	vid.width = DIBWidth;
-	vid.aspect = 1.0;
+	vid.pixelaspect = 1.0;
 
 	vid_stretched = stretched;
 
@@ -1457,8 +1458,14 @@ qbool VID_SetFullscreenMode (int modenum)
 	vid.buffer = vid.direct = NULL;
 	DIBHeight = vid.height = modelist[modenum].height;
 	DIBWidth = vid.width = modelist[modenum].width;
-	vid.aspect = ((float)vid.height / (float)vid.width) *
-				(320.0 / 240.0);
+	vid.realheight = vid.height;
+	vid.realwidth = vid.width;
+	float screenaspect = vid_screenaspect.value;
+	if (!screenaspect) {
+		// TODO: make an educated guess based on known widescreen resolutions
+		screenaspect = (4.0/3.0);
+	}
+	vid.pixelaspect = screenaspect * (float)vid.realheight / (float)vid.realwidth;
 
 	vid_stretched = modelist[modenum].stretched;
 
@@ -1577,8 +1584,12 @@ qbool VID_SetFullDIBMode (int modenum)
 	vid.numpages = 1;
 	vid.height = DIBHeight;
 	vid.width = DIBWidth;
-	vid.aspect = ((float)vid.height / (float)vid.width) *
-				(320.0 / 240.0);
+	float screenaspect = vid_screenaspect.value;
+	if (!screenaspect) {
+		// TODO: make an educated guess based on known widescreen resolutions
+		screenaspect = (4.0/3.0);
+	}
+	vid.pixelaspect = screenaspect * (float)vid.realheight / (float)vid.realwidth;
 
 	vid_stretched = modelist[modenum].stretched;
 
@@ -2050,6 +2061,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_Register (&vid_window_y);
 	Cvar_Register (&vid_resetonswitch);
 	Cvar_Register (&vid_displayfrequency);
+	Cvar_Register (&vid_screenaspect);
 
 	Cmd_AddCommand ("vid_testmode", VID_TestMode_f);
 	Cmd_AddCommand ("vid_modelist", VID_ModeList_f);
@@ -2402,7 +2414,7 @@ EXTERNC void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int heig
 	if (!vid_initialized)
 		return;
 
-	if (vid.aspect > 1.5)
+	if (vid.pixelaspect > 1.5)
 	{
 		reps = 2;
 		repshift = 1;
@@ -2497,7 +2509,7 @@ EXTERNC void D_EndDirectRect (int x, int y, int width, int height)
 	if (!vid_initialized)
 		return;
 
-	if (vid.aspect > 1.5)
+	if (vid.pixelaspect > 1.5)
 	{
 		reps = 2;
 		repshift = 1;

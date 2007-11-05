@@ -782,7 +782,7 @@ void R_SetupFrame (void)
 				r_refdef.vrect.width = vid.width;
 				r_refdef.vrect.height = vid.height;
 
-				R_ViewChanged (vid.aspect);
+				R_ViewChanged (vid.pixelaspect);
 			}
 			else
 			{
@@ -806,7 +806,7 @@ void R_SetupFrame (void)
 				r_refdef.vrect.width = (int)w;
 				r_refdef.vrect.height = (int)h;
 
-				R_ViewChanged (vid.aspect /* * (h / w) *
+				R_ViewChanged (vid.pixelaspect /* * (h / w) *
 								 ((float)vid.width / (float)vid.height)*/);
 			}
 		}
@@ -814,7 +814,7 @@ void R_SetupFrame (void)
 		{
 			r_refdef.vrect = r_refdef2.vrect;
 
-			R_ViewChanged (vid.aspect);
+			R_ViewChanged (vid.pixelaspect);
 		}
 	}
 
