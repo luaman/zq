@@ -522,17 +522,17 @@ void R_SetupFrame (void)
 }
 
 
-void MYgluPerspective( GLdouble fovy, GLdouble aspect,
-			GLdouble zNear, GLdouble zFar )
+void MYgluPerspective( GLdouble fovx, GLdouble fovy, 
+					  GLdouble zNear, GLdouble zFar )
 {
 	GLdouble xmin, xmax, ymin, ymax;
 	
+	xmax = zNear * tan( fovx * M_PI / 360.0 );
+	xmin = -xmax;
+	
 	ymax = zNear * tan( fovy * M_PI / 360.0 );
 	ymin = -ymax;
-	
-	xmin = ymin * aspect;
-	xmax = ymax * aspect;
-	
+
 	glFrustum( xmin, xmax, ymin, ymax, zNear, zFar );
 }
 
@@ -544,7 +544,6 @@ R_SetupGL
 */
 void R_SetupGL (void)
 {
-	float	screenaspect;
 	int		x, x2, y2, y, w, h, farclip;
 
 	//
@@ -571,9 +570,8 @@ void R_SetupGL (void)
 	h = y - y2;
 
 	glViewport (x, y2, w, h);
-	screenaspect = (float)r_refdef2.vrect.width/r_refdef2.vrect.height * vid.aspect;
 	farclip = max((int) r_farclip.value, 4096);
-	MYgluPerspective (r_refdef2.fov_y,  screenaspect,  4,  farclip);
+	MYgluPerspective (r_refdef2.fov_x,  r_refdef2.fov_y, 4, farclip);
 
 	glCullFace(GL_FRONT);
 

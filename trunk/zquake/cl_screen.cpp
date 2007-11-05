@@ -264,22 +264,16 @@ CalcFov
 float CalcFov (float fov_x, float width, float height)
 {
 	float   a;
-	float   x;
-
-/*
-FIXME: this function is broken in GL (doesn't take screen aspect into account)
-Probably in software also, but software doesn't care about fov_y
-*/
 
 	if (fov_x < 1 || fov_x > 179)
 		Sys_Error ("Bad fov: %f", fov_x);
-	
-	x = width / tan(fov_x/360*M_PI);
-	
-	a = atan (height/x);
-	
+
+	float virtual_pixel_aspect = vid.pixelaspect *
+		(float)vid.height/vid.width * (float)vid.realwidth/vid.realheight;
+	a = atan (height/width / virtual_pixel_aspect * tan(fov_x/360*M_PI));
+
 	a = a*360/M_PI;
-	
+
 	return a;
 }
 

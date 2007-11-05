@@ -129,6 +129,7 @@ cvar_t		vid_config_y = {"vid_config_y","600",CVAR_ARCHIVE};
 cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1",CVAR_ARCHIVE};
 cvar_t		_windowed_mouse = {"_windowed_mouse","1",CVAR_ARCHIVE};
 cvar_t		vid_displayfrequency = {"vid_displayfrequency", "0"};
+cvar_t		vid_screenaspect = {"vid_screenaspect", "auto", CVAR_ARCHIVE};
 
 int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
@@ -253,9 +254,7 @@ else {
 	if (vid.width > modelist[modenum].width)
 		vid.width = modelist[modenum].width;
 
-	vid.aspect = ((float)vid.height / (float)vid.width) *
-				((float)vid.realwidth / (float)vid.realheight);
-
+	vid.pixelaspect = 1;
 	vid.numpages = 2;
 
 	mainwindow = dibwindow;
@@ -353,8 +352,12 @@ else {
 	if (vid.width > modelist[modenum].width)
 		vid.width = modelist[modenum].width;
 
-	vid.aspect = ((float)vid.height / (float)vid.width) *
-				(320.0 / 240.0);
+	float screenaspect = vid_screenaspect.value;
+	if (!screenaspect) {
+		// TODO: make an educated guess based on known widescreen resolutions
+		screenaspect = (4.0/3.0);
+	}
+	vid.pixelaspect = screenaspect * (float)vid.realheight / (float)vid.realwidth;
 
 	vid.numpages = 2;
 
@@ -1519,6 +1522,7 @@ void VID_Init (unsigned char *palette)
 	Cvar_Register (&_windowed_mouse);
 	Cvar_Register (&vid_hwgammacontrol);
 	Cvar_Register (&vid_displayfrequency);
+	Cvar_Register (&vid_screenaspect);
 	Cvar_Register (&vid_vsync);
 	Cvar_Register (&gl_ext_swapinterval);
 

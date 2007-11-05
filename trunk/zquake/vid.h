@@ -35,15 +35,15 @@ typedef struct vrect_s
 
 typedef struct
 {
-	pixel_t			*buffer;		// invisible buffer
-	int				rowbytes;		// may be > width if displayed in a window
-	int				width;
-	int				height;
-	float			aspect;			// width / height -- < 0 is taller than wide
+	int				width;			// in GL this is virtual width (should be a client thing really)
+	int				height;			// in GL this is virtual height (should be a client thing really)
+	int				realwidth;		// GL: pixel width of GL window
+	int				realheight;		// GL: pixel height of GL window
+	float			pixelaspect;	// pixel proportions (w/h)
 	int				numpages;
-	int				realwidth;		// pixel width of GL window
-	int				realheight;		// pixel height of GL window
-	pixel_t			*direct;		// direct drawing to framebuffer, if not
+	pixel_t			*buffer;		// SW: invisible buffer
+	int				rowbytes;		// SW: may be > width if displayed in a window
+	pixel_t			*direct;		// SW: direct drawing to framebuffer, if not
 									//  NULL
 } viddef_t;
 
