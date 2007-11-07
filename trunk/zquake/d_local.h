@@ -90,7 +90,9 @@ extern void D_PolysetAff8Start (void);
 extern void D_PolysetAff8End (void);
 #endif
 
-EXTERNC extern short *d_pzbuffer;
+EXTERNC_START
+extern short *d_pzbuffer;
+EXTERNC_END
 extern unsigned int d_zrowbytes, d_zwidth;
 
 extern int	*d_pscantable;
@@ -100,7 +102,9 @@ extern int	d_vrectx, d_vrecty, d_vrectright_particle, d_vrectbottom_particle;
 
 extern int	d_y_aspect_shift, d_pix_min, d_pix_max, d_pix_shift;
 
-EXTERNC extern pixel_t	*d_viewbuffer;
+EXTERNC_START
+extern pixel_t	*d_viewbuffer;
+EXTERNC_END
 
 extern short	*zspantable[MAXHEIGHT];
 

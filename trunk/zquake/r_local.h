@@ -317,12 +317,14 @@ extern unsigned char	r_palette[768];
 extern qbool			d_15to8table_made;
 extern unsigned char	d_15to8table[65536];
 extern unsigned short	d_8to16table[256];
-EXTERNC extern unsigned char	*r_colormap;	// [256 * VID_GRADES]
-EXTERNC extern unsigned short	r_colormap16[256 * VID_GRADES];
+EXTERNC_START
+extern unsigned char	*r_colormap;	// [256 * VID_GRADES]
+extern unsigned short	r_colormap16[256 * VID_GRADES];
 
 // r_draw.c
 #define		MAX_CHARSETS 16
-EXTERNC byte		*draw_chars[MAX_CHARSETS];				// 8*8 graphic characters
+extern byte		*draw_chars[MAX_CHARSETS];				// 8*8 graphic characters
+EXTERNC_END
 
 // r_misc.c
 void R_Build15to8table (void);

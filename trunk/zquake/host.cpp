@@ -163,8 +163,10 @@ void Host_InitMemory (int memsize)
 }
 
 
-EXTERNC extern void D_FlushCaches (void);
-EXTERNC extern void Mod_ClearAll (void);
+EXTERNC_START
+extern void D_FlushCaches (void);
+extern void Mod_ClearAll (void);
+EXTERNC_END
 
 /*
 ===============

@@ -58,12 +58,11 @@ wchar *Sys_GetClipboardTextW (void);
 // Perform Key_Event () callbacks until the input que is empty
 void Sys_SendKeyEvents (void);
 
+EXTERNC_START
 void Sys_LowFPPrecision (void);
 void Sys_HighFPPrecision (void);
-#ifdef __cplusplus
-extern "C"
-#endif
 void Sys_SetFPCW (void);
+EXTERNC_END
 
 void Sys_Init (void);
 

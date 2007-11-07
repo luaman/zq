@@ -309,7 +309,7 @@ void ResetFrameBuffer (void)
 
 	X11_buffersize += vid_surfcachesize;
 
-	d_pzbuffer = Hunk_HighAllocName (X11_buffersize, "video");
+	d_pzbuffer = (short int *)Hunk_HighAllocName (X11_buffersize, "video");
 	if (d_pzbuffer == NULL)
 		Sys_Error ("Not enough memory for video mode\n");
 
@@ -328,7 +328,7 @@ void ResetFrameBuffer (void)
 									 x_visinfo->depth,
 									 ZPixmap,
 									 0,
-									 Q_malloc (mem),
+									 (char *)Q_malloc(mem),
 									 vid.width, vid.height, 32, 0);
 
 	if (!x_framebuffer[0])
@@ -360,7 +360,7 @@ void ResetSharedFrameBuffers (void)
 
 	X11_buffersize += vid_surfcachesize;
 
-	d_pzbuffer = Hunk_HighAllocName (X11_buffersize, "video");
+	d_pzbuffer = (short int *)Hunk_HighAllocName (X11_buffersize, "video");
 	if (d_pzbuffer == NULL)
 		Sys_Error ("Not enough memory for video mode\n");
 
@@ -403,7 +403,7 @@ void ResetSharedFrameBuffers (void)
 			Sys_Error ("VID: Could not get any shared memory\n");
 
 		// attach to the shared memory segment
-		x_shminfo[frm].shmaddr = (void *) shmat (x_shminfo[frm].shmid, 0, 0);
+		x_shminfo[frm].shmaddr = (char *) shmat (x_shminfo[frm].shmid, 0, 0);
 
 //		printf ("VID: shared memory id=%d, addr=0x%lx\n", x_shminfo[frm].shmid,
 //				(long) x_shminfo[frm].shmaddr);
@@ -436,7 +436,7 @@ static int handler(Display *disp, XErrorEvent *ev)
 void VID_Init (unsigned char *palette)
 {
 	int pnum, i;
-	XVisualInfo template;
+	XVisualInfo the_template;
 	int num_visuals;
 	int template_mask;
 
@@ -514,7 +514,7 @@ void VID_Init (unsigned char *palette)
 	{
 		if (pnum >= com_argc - 1)
 			Sys_Error ("VID: -visualid <id#>\n");
-		template.visualid = Q_atoi (com_argv[pnum + 1]);
+		the_template.visualid = Q_atoi (com_argv[pnum + 1]);
 		template_mask = VisualIDMask;
 	}
 
@@ -523,27 +523,27 @@ void VID_Init (unsigned char *palette)
 	{
 		int screen;
 		screen = XDefaultScreen (x_disp);
-		template.visualid =
+		the_template.visualid =
 			XVisualIDFromVisual (XDefaultVisual (x_disp, screen));
 		template_mask = VisualIDMask;
 	}
 
 // pick a visual- warn if more than one was available
 	x_visinfo =
-		XGetVisualInfo (x_disp, template_mask, &template, &num_visuals);
+		XGetVisualInfo (x_disp, template_mask, &the_template, &num_visuals);
 	if (num_visuals > 1)
 	{
 		printf ("Found more than one visual id at depth %d:\n",
-				template.depth);
+				the_template.depth);
 		for (i = 0; i < num_visuals; i++)
 			printf ("	-visualid %d\n", (int) (x_visinfo[i].visualid));
 	}
 	else if (num_visuals == 0)
 	{
 		if (template_mask == VisualIDMask)
-			Sys_Error ("VID: Bad visual id %d\n", template.visualid);
+			Sys_Error ("VID: Bad visual id %d\n", the_template.visualid);
 		else
-			Sys_Error ("VID: No visuals at depth %d\n", template.depth);
+			Sys_Error ("VID: No visuals at depth %d\n", the_template.depth);
 	}
 
 	if (verbose)
@@ -668,7 +668,7 @@ void VID_Init (unsigned char *palette)
 		XStoreName (x_disp, x_win, PROGRAM);
 
 
-		if (x_visinfo->class != TrueColor)
+		if (x_visinfo->c_class != TrueColor)
 			XFreeColormap (x_disp, tmpcmap);
 
 	}
@@ -677,7 +677,7 @@ void VID_Init (unsigned char *palette)
 	{
 
 		// create and upload the palette
-		if (x_visinfo->class == PseudoColor)
+		if (x_visinfo->c_class == PseudoColor)
 		{
 			x_cmap = XCreateColormap (x_disp, x_win, x_vis, AllocAll);
 			VID_SetPalette (palette);
@@ -767,7 +767,7 @@ void VID_SetPalette (unsigned char *palette)
 						palette[i * 3 + 2]);
 	}
 
-	if (x_visinfo->class == PseudoColor && x_visinfo->depth == 8)
+	if (x_visinfo->c_class == PseudoColor && x_visinfo->depth == 8)
 	{
 		if (palette != current_palette)
 			memcpy (current_palette, palette, 768);

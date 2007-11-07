@@ -149,7 +149,9 @@ typedef struct mpic_s
 //
 // refresh
 //
-EXTERNC extern refdef2_t	r_refdef2;
+EXTERNC_START
+extern refdef2_t	r_refdef2;
+EXTERNC_END
 
 EXTERNC void R_Init (unsigned char *palette);
 EXTERNC void R_InitTextures (void);
@@ -172,7 +174,9 @@ EXTERNC void R_RSShot (byte **pcxdata, int *pcxsize);
 //
 // surface cache related
 //
-EXTERNC extern qbool	r_cache_thrash;	// set if thrashing the surface cache
+EXTERNC_START
+extern qbool	r_cache_thrash;	// set if thrashing the surface cache
+EXTERNC_END
 
 EXTERNC int	D_SurfaceCacheForRes (int width, int height);
 EXTERNC void D_FlushCaches (void);

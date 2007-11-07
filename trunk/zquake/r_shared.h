@@ -48,7 +48,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern int		cachewidth;
 extern pixel_t	*cacheblock;
-EXTERNC extern int		r_screenwidth;
+EXTERNC_START
+extern int		r_screenwidth;
+EXTERNC_END
 
 extern	float	pixelAspect;
 

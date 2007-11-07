@@ -40,8 +40,12 @@ using std::wstring;
 
 #ifdef __cplusplus
 #define EXTERNC extern "C"
+#define EXTERNC_START extern "C" {
+#define EXTERNC_END }
 #else
 #define EXTERNC
+#define EXTERNC_START
+#define EXTERNC_END
 #endif
 
 //#define wchar unsigned short	// 16-bit Unicode char
