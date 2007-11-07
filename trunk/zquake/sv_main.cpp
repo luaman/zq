@@ -1472,7 +1472,6 @@ void SV_Frame (double time)
 	{
 		// FIXME, would it be better to advance svs.realtime even when paused?
 		svs.realtime += time;
-		sv.time += time;
 	}
 
 // check timeouts
@@ -1632,6 +1631,7 @@ void SV_InitLocal (void)
 
 	svs.info.set("*version", va(PROGRAM " %s", VersionString()));
 	svs.info.set("*z_ext", va("%i", SERVER_EXTENSIONS));
+	svs.info.set("snaptime_test", "1");	//##snaptime test
 
 	if (strcmp(com_gamedirfile, "qw"))
 		svs.info.set("*gamedir", com_gamedirfile);

@@ -148,10 +148,10 @@ void SV_RunBots (void)
 		if (!cl->bot)
 			continue;
 
-		// FIXME FIXME, we get an infinite loop in COM_HullPointContents
+		// FIXME, we get an infinite loop in COM_HullPointContents
 		// if we spawn the bot in one of the first two SV_Physics calls
-		// sv.old_time is a workaround for now
-		if (cl->state == cs_connected && sv.old_time) {
+		// Why?
+		if (cl->state == cs_connected && sv.state == ss_active) {
 			Bot_Spawn_And_Begin (cl);
 			continue;
 		}

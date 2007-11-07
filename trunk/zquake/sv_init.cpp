@@ -372,14 +372,15 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 
 	// all spawning is completed, any further precache statements
 	// or prog writes to the signon message are errors
-	sv.state = ss_active;
-	
+	sv.state = ss_firsttwoframes;
+
 	// run two frames to allow everything to settle
 	SV_Physics ();
-	sv.time += 0.1;
+	sv.mstime += 100;
 	SV_Physics ();
-	sv.time += 0.1;
-	sv.old_time = sv.time;
+	sv.mstime += 100;
+
+	sv.state = ss_active;
 
 	// save movement vars
 	SV_SetMoveVars();

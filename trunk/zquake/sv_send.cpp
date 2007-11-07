@@ -521,6 +521,30 @@ void SV_FindModelNumbers (void)
 	}
 }
 
+//##snaptime test
+static void WriteDeltaSnaptime (client_t *client, sizebuf_t *msg, int mstime)
+{
+	qbool delta;
+	int ack = client->netchan.incoming_acknowledged;
+	if (client->netchan.outgoing_sequence > ack + UPDATE_BACKUP-1)	// FIXME?
+		delta = false;
+	else if (client->frames[ack&UPDATE_MASK].mssnaptime < mstime - 255)	// FIXME?
+		delta = false;
+	else
+		delta = true;
+
+	if (delta) {
+		//Com_DPrintf ("send delta\n");
+		MSG_WriteByte (msg, svc_updatestat);
+		MSG_WriteByte (msg, STAT_SNAPTIME);
+		MSG_WriteByte (msg, mstime&255);
+	} else {
+		//Com_DPrintf ("send full\n");
+		MSG_WriteByte (msg, svc_updatestatlong);
+		MSG_WriteByte (msg, STAT_SNAPTIME);
+		MSG_WriteLong (msg, mstime);
+	}
+}
 
 /*
 ==================
@@ -574,9 +598,14 @@ void SV_WriteClientdataToMessage (client_t *client, sizebuf_t *msg)
 	{
 		MSG_WriteByte (msg, svc_updatestatlong);
 		MSG_WriteByte (msg, STAT_TIME);
-		MSG_WriteLong (msg, (int)(sv.time * 1000));
-
+		MSG_WriteLong (msg, sv.mstime + (sv_paused.value ? 0
+							: (svs.realtime - sv.oldrealtime) * 1000));
 		client->lastservertimeupdate = svs.realtime;
+	}
+
+//##snaptime test
+	if (atoi(client->userinfo["sttest"].c_str()) && atoi(svs.info["snaptime_test"].c_str())) {
+		WriteDeltaSnaptime(client, msg, sv.mstime);
 	}
 }
 

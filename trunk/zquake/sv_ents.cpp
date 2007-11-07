@@ -378,6 +378,8 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	// this is the frame we are creating
 	frame = &client->frames[client->netchan.incoming_sequence & UPDATE_MASK];
 
+frame->mssnaptime = sv.mstime;//##snaptime test
+
 	if (sv.intermission_running && sv.intermission_origin_valid) {
 		pvs = CM_FatPVS (sv.intermission_origin);
 	}

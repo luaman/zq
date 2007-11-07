@@ -41,6 +41,7 @@ typedef struct
 typedef enum {
 	ss_dead,			// no map loaded
 	ss_loading,			// spawning level edicts
+	ss_firsttwoframes,	// first two physics frames
 	ss_active			// actively running
 } server_state_t;
 // some qc commands are only valid before the server has finished
@@ -60,8 +61,9 @@ typedef struct
 {
 	server_state_t	state;			// precache commands are only valid during load
 
-	double		time;
-	double		old_time;			// bumped by SV_Physics
+	int			mstime;				// world time of last game frame in milliseconds
+	double		time;				// = mstime * 0.001
+	double		oldrealtime;		// to determine when to run next frame
 
 	int			lastcheck;			// used by PF_checkclient
 	double		lastchecktime;		// for monster ai
@@ -125,7 +127,9 @@ typedef struct
 
 	void clear () {
 		state = ss_dead;
-		time = old_time = 0;
+		mstime = 0;
+		time = 0;
+		oldrealtime = 0;
 		lastcheck = 0;
 		lastchecktime = 0;
 		pausedstart = 0;
@@ -185,6 +189,7 @@ typedef struct
 	// reply
 	double				senttime;
 	float				ping_time;
+	int					mssnaptime;
 	packet_entities_t	entities;
 } client_frame_t;
 

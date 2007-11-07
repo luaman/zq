@@ -1037,21 +1037,43 @@ void SV_Physics (void)
 	int		i;
 	edict_t	*ent;
 
-	if (sv.state != ss_active)
+	if (sv.state < ss_firsttwoframes)
 		return;
 
-	if (sv.old_time)
+	if (sv.state == ss_active)
 	{
-		// don't bother running a frame if sv_mintic seconds haven't passed
-		sv_frametime = sv.time - sv.old_time;
-		if (sv_frametime < sv_mintic.value)
+		int msmintic = max(sv_mintic.value * 1000, 0);
+		if (svs.realtime < sv.oldrealtime + msmintic * 0.001)
 			return;
-		if (sv_frametime > sv_maxtic.value)
-			sv_frametime = sv_maxtic.value;
-		sv.old_time = sv.time;
+
+		if (svs.realtime - sv.oldrealtime > sv_maxtic.value)
+			sv.oldrealtime = svs.realtime - sv_maxtic.value;
+
+		int msframetime;
+		if (!dedicated && msmintic)	{
+			// don't use up all the time now, otherwise we won't possibly
+			// be able to run a frame next time
+			msframetime = msmintic;
+			while (msframetime + msmintic <= (int)((svs.realtime - sv.oldrealtime)*1000))
+				msframetime += msmintic;
+		}
+		else
+			msframetime = (int)((svs.realtime - sv.oldrealtime) * 1000);
+
+		sv.oldrealtime += msframetime*0.001;
+
+		double old_sv_time = sv.time;
+		sv.mstime += msframetime;
+		sv.time = sv.mstime * 0.001;
+		sv_frametime = sv.time - old_sv_time;
 	}
 	else
-		sv_frametime = 0.1;		// initialization frame
+	{
+		assert (sv.state == ss_firsttwoframes);
+		sv.time = sv.mstime * 0.001;
+		sv_frametime = 0.1;
+		sv.oldrealtime = svs.realtime;
+	}
 
 	if (pr_nqprogs)
 		NQP_Reset ();
