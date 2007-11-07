@@ -1635,7 +1635,7 @@ static void CheckIntermission (void)
 		// to make sure intermission screen has the right value
 		MSG_WriteByte (&sv.reliable_datagram, svc_updatestatlong);
 		MSG_WriteByte (&sv.reliable_datagram, STAT_TIME);
-		MSG_WriteLong (&sv.reliable_datagram, (int)(sv.time * 1000));
+		MSG_WriteLong (&sv.reliable_datagram, sv.mstime);
 	}
 }
 
