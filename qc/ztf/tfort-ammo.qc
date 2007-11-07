@@ -26,8 +26,8 @@
 */
 
 void TeamFortress_AmmoboxThink () {
-    //self.pteam.num_ammoboxes = self.pteam.num_ammoboxes - 1.000;
-    store_obs.num_ammoboxes = store_obs.num_ammoboxes - 1.000;
+    //self.pteam.num_ammoboxes = self.pteam.num_ammoboxes - 1;
+    store_obs.num_ammoboxes = store_obs.num_ammoboxes - 1;
     dremove(self);
 }
 
@@ -45,8 +45,8 @@ void RemoveboldAmmobox () {
     }
     if (bold == world) // impossible?
         return ;
-    store_obs.num_ammoboxes = store_obs.num_ammoboxes - 1.000;
-    //bold.pteam.num_ammoboxes = bold.pteam.num_ammoboxes - 1.000;
+    store_obs.num_ammoboxes = store_obs.num_ammoboxes - 1;
+    //bold.pteam.num_ammoboxes = bold.pteam.num_ammoboxes - 1;
     dremove(bold);
 }
 
@@ -145,8 +145,8 @@ void TeamFortress_AmmoboxTouch () {
             self.netname = "Bomb";
             bprint(PRINT_HIGH, other.netname, " picked up the bomb.\n");
             stuffcmd (other,"topcolor 0\n");
-            if (other.playerclass == 8.000) {
-                other.is_unabletospy = 1.000;
+            if (other.playerclass == 8) {
+                other.is_unabletospy = 1;
             }
         } else {
             self.netname = "detpack";
@@ -230,7 +230,7 @@ void TeamFortress_DropAmmo (float type, float ammo) {
 	}
 
     W_SetCurrentAmmo ();
-    store_obs.num_ammoboxes = store_obs.num_ammoboxes + 1.000;
+    store_obs.num_ammoboxes = store_obs.num_ammoboxes + 1;
     if (store_obs.num_ammoboxes > store_obs.max_ammoboxes )
         RemoveboldAmmobox ();
     newmis = spawn ();
@@ -269,7 +269,7 @@ void TeamFortress_DropAmmo (float type, float ammo) {
     newmis.avelocity = '0 300 0';
     setsize (newmis,'0 0 0','0 0 0');
     setorigin (newmis,self.origin);
-    newmis.nextthink = (time + 20.000);
+    newmis.nextthink = (time + 20);
     newmis.think = TeamFortress_AmmoboxThink;
     newmis.touch = TeamFortress_AmmoboxTouch;
     newmis.skin = (type - 1);
@@ -281,23 +281,23 @@ void TeamFortress_DropAmmo (float type, float ammo) {
 void Drop_detpack () {
     if (!self.ammo_detpack) return;
     if (!self.playerclass) return;
-    self.ammo_detpack = self.ammo_detpack - 1.000;
+    self.ammo_detpack = self.ammo_detpack - 1;
     if (modetype & 4) {
         if (self.pteam == pteam2) {
             stuffcmd (self,"topcolor ");
             stuffcmd (self,ftos(self.pteam.colormap));
             stuffcmd (self,"\n");
         }
-        self.is_unabletospy = 0.000;
+        self.is_unabletospy = 0;
     }
     newmis = spawn ();
     newmis.health = time;
-    newmis.ammo_detpack = 1.000;
-    newmis.weapon = 10.000;
+    newmis.ammo_detpack = 1;
+    newmis.weapon = 10;
     newmis.pteam = self.pteam;
-    newmis.angles = '90.000 0.000 0.000';
-    newmis.solid = 1.000;
-    newmis.movetype = 6.000;
+    newmis.angles = '90 0 0';
+    newmis.solid = 1;
+    newmis.movetype = 6;
     newmis.enemy = self;
     newmis.classname = "ammobox";
     makevectors (self.v_angle);
@@ -313,7 +313,7 @@ void Drop_detpack () {
     setorigin (newmis,self.origin);
     if (!modetype & 4) {
         newmis.think = TeamFortress_AmmoboxThink;
-        newmis.nextthink = (time + 30.000);
+        newmis.nextthink = (time + 30);
     } else {
         if (round_active) {
             bprint (PRINT_HIGH, self.netname, " dropped the bomb!\n");
@@ -321,7 +321,7 @@ void Drop_detpack () {
     }
     newmis.touch = TeamFortress_AmmoboxTouch;
     setmodel (newmis,"progs/detpack.mdl");
-    setsize (newmis,'-16.000 -16.000 0.000','16.000 16.000 8.000');
+    setsize (newmis,'-16 -16 0','16 16 8');
 }
 
 void TeamFortress_Discard () {
@@ -330,7 +330,7 @@ void TeamFortress_Discard () {
         newmis.ammo_rockets = self.ammo_rockets;
     } else if (self.playerclass == CLASS_SNIPER) {
         newmis.ammo_rockets = self.ammo_rockets;
-        if (classtype & 1.000) {
+        if (classtype & 1) {
             newmis.ammo_nails = self.ammo_nails;
         } else {
             newmis.ammo_cells = self.ammo_cells;
@@ -365,7 +365,7 @@ void TeamFortress_Discard () {
     self.ammo_cells = self.ammo_cells - newmis.ammo_cells;
     W_SetCurrentAmmo ();
     sound (self,CHAN_ITEM,"weapons/lock4.wav",1,1);
-    store_obs.num_ammoboxes = store_obs.num_ammoboxes + 1.000;
+    store_obs.num_ammoboxes = store_obs.num_ammoboxes + 1;
     if (store_obs.num_ammoboxes > store_obs.max_ammoboxes)
         RemoveboldAmmobox ();
     newmis.enemy = self;
@@ -385,7 +385,7 @@ void TeamFortress_Discard () {
     }
     setsize (newmis,'0 0 0','0 0 0');
     setorigin (newmis,self.origin);
-    newmis.nextthink = (time + 30.000);
+    newmis.nextthink = (time + 30);
     newmis.think = TeamFortress_AmmoboxThink;
     newmis.touch = TeamFortress_AmmoboxTouch;
     setmodel (newmis,"progs/backpack.mdl");

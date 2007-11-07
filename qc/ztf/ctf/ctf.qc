@@ -1,8 +1,8 @@
 
 void TeamFortress_CTF_FlagInfo () {
     entity te;
-    te = Finditem (1.000);
-    if ( (te.goal_state == 1.000) ) {
+    te = Finditem (1);
+    if ( (te.goal_state == 1) ) {
         if ( (self == te.owner) ) {
             sprint (self,PRINT_HIGH,"You have the enemy flag.\n");
         } else {
@@ -29,8 +29,8 @@ void TeamFortress_CTF_FlagInfo () {
             }
         }
     }
-    te = Finditem (2.000);
-    if ( (te.goal_state == 1.000) ) {
+    te = Finditem (2);
+    if ( (te.goal_state == 1) ) {
         if ( (self == te.owner) ) {
             sprint (self,PRINT_HIGH,"You have the enemy flag.\n");
         } else {

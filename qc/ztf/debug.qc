@@ -35,10 +35,10 @@ void dremove (entity te) {
         dprint ("***BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG***\n");
         return ;
     }
-    if ( (te.is_removed == 1.000) ) {
+    if ( (te.is_removed == 1) ) {
         return ;
     }
-    te.is_removed = 1.000;
+    te.is_removed = 1;
     remove (te);
 }
 

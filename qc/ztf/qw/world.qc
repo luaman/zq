@@ -5,36 +5,36 @@ void InitBodyQue ();
 
 void Eluminate () {
     lights = 1;
-    lightstyle (0.000,"m");
-    lightstyle (1.000,"mmnmmommommnonmmonqnmmo");
-    lightstyle (2.000,"abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
-    lightstyle (3.000,"mmmmmaaaaammmmmaaaaaabcdefgabcdefg");
-    lightstyle (4.000,"mamamamamama");
-    lightstyle (5.000,"jklmnopqrstuvwxyzyxwvutsrqponmlkj");
-    lightstyle (6.000,"nmonqnmomnmomomno");
-    lightstyle (7.000,"mmmaaaabcdefgmmmmaaaammmaamm");
-    lightstyle (8.000,"mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");
-    lightstyle (9.000,"aaaaaaaazzzzzzzz");
-    lightstyle (10.000,"mmamammmmammamamaaamammma");
-    lightstyle (11.000,"abcdefghijklmnopqrrqponmlkjihgfedcba");
-    lightstyle (63.000,"a");
+    lightstyle (0,"m");
+    lightstyle (1,"mmnmmommommnonmmonqnmmo");
+    lightstyle (2,"abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
+    lightstyle (3,"mmmmmaaaaammmmmaaaaaabcdefgabcdefg");
+    lightstyle (4,"mamamamamama");
+    lightstyle (5,"jklmnopqrstuvwxyzyxwvutsrqponmlkj");
+    lightstyle (6,"nmonqnmomnmomomno");
+    lightstyle (7,"mmmaaaabcdefgmmmmaaaammmaamm");
+    lightstyle (8,"mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");
+    lightstyle (9,"aaaaaaaazzzzzzzz");
+    lightstyle (10,"mmamammmmammamamaaamammma");
+    lightstyle (11,"abcdefghijklmnopqrrqponmlkjihgfedcba");
+    lightstyle (63,"a");
 }
 
 void Deluminate () {
     lights = 0;
-    lightstyle (0.000,"a");
-    lightstyle (1.000,"a");
-    lightstyle (2.000,"a");
-    lightstyle (3.000,"a");
-    lightstyle (4.000,"a");
-    lightstyle (5.000,"a");
-    lightstyle (6.000,"a");
-    lightstyle (7.000,"a");
-    lightstyle (8.000,"a");
-    lightstyle (9.000,"a");
-    lightstyle (10.000,"a");
-    lightstyle (11.000,"a");
-    lightstyle (63.000,"a");
+    lightstyle (0,"a");
+    lightstyle (1,"a");
+    lightstyle (2,"a");
+    lightstyle (3,"a");
+    lightstyle (4,"a");
+    lightstyle (5,"a");
+    lightstyle (6,"a");
+    lightstyle (7,"a");
+    lightstyle (8,"a");
+    lightstyle (9,"a");
+    lightstyle (10,"a");
+    lightstyle (11,"a");
+    lightstyle (63,"a");
 }
 
 void main () {
@@ -117,9 +117,9 @@ void worldspawn () {
     string st;
     float fl;
     lastspawn = world;
-    store_obs.cnt = 0.000;
+    store_obs.cnt = 0;
     bspversion = cvar("halflifebsp");
-    if (bspversion == 1.000) {
+    if (bspversion == 1) {
         bspversion = 30;
     } else {
         bspversion = stof(infokey(world, "*bspversion"));
@@ -157,7 +157,7 @@ void worldspawn () {
     } else {
         st = infokey (world,"gravity");
         if (st == string_null) {
-            fl = 800.000;
+            fl = 800;
         } else {
             fl = stof(st);
 
@@ -170,7 +170,7 @@ void worldspawn () {
     cvar_set ("pausable","0");
     st = infokey (world,"friction");
     if (st == string_null) {
-        fl = 6.000;
+        fl = 6;
     } else {
         fl = stof(st);
 
@@ -181,7 +181,7 @@ void worldspawn () {
     cvar_set ("sv_friction",ftos(fl));
     st = infokey (world,"waterfriction");
     if (st == string_null) {
-        fl = 1.000;
+        fl = 1;
     } else {
         fl = stof(st);
 
@@ -203,10 +203,10 @@ void worldspawn () {
         localcmd (mapname);
         localcmd (".cfg\n");
     }
-    server_type = 0.000;
+    server_type = 0;
     st = infokey (world,"*qwe_version");
     if (st != string_null) {
-        server_type = 1.000;
+        server_type = 1;
     }
     st = infokey (world, "*version");
     if (st != string_null) {
@@ -214,21 +214,21 @@ void worldspawn () {
         if (st == string_null) {
             st = infokey (world, "*ez_version");
             if (st == string_null) {
-                server_type = 1.000;
+                server_type = 1;
             }
         }
     }
     /* fix me
        if ((strstr (st, "FTE") != ""))
        {
-       server_type = 1.000;
+       server_type = 1;
        }
      */
     if (!server_type)
         dprint("Server incompatible - some features have been disabled.\n");
     st = infokey (world,"unique_models");
     if (st == "on") {
-        sep_models = 1.000;
+        sep_models = 1;
     }
     W_Precache ();
     precache_sound ("demon/dland2.wav");
@@ -368,7 +368,7 @@ void worldspawn () {
 
 void StartFrame () {
     teamplay = cvar ("teamplay");
-    timelimit = (cvar ("timelimit") * 60.000);
+    timelimit = (cvar ("timelimit") * 60);
     fraglimit = cvar ("fraglimit");
     deathmatch = cvar ("deathmatch");
 }
@@ -398,7 +398,7 @@ void CopyToBodyQue (entity ent) {
     bodyque_head.colormap = ent.colormap;
     bodyque_head.movetype = ent.movetype;
     bodyque_head.velocity = ent.velocity;
-    bodyque_head.flags = 0.000;
+    bodyque_head.flags = 0;
     setorigin (bodyque_head,ent.origin);
     setsize (bodyque_head,ent.mins,ent.maxs);
     // makestatic(bodyque_head);

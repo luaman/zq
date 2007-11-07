@@ -37,9 +37,9 @@ void RemoveFreeze () {
 			{
 				if (te.is_frozen)
 				{
-					te.is_frozen = 0.000;
+					te.is_frozen = 0;
 					te.velocity = te.movedir;
-					te.tfstate = (te.tfstate - (te.tfstate & 65536.000));
+					te.tfstate = (te.tfstate - (te.tfstate & 65536));
 					sprint (te,PRINT_HIGH,"Freeze wears off\n");
 					TeamFortress_SetSpeed (te);
 				}
@@ -48,8 +48,8 @@ void RemoveFreeze () {
 			{
 				if (te.is_frozen)
 				{
-					te.is_frozen = 0.000;
-					te.gravity = 1.000;
+					te.is_frozen = 0;
+					te.gravity = 1;
 					te.velocity = te.movedir;
 				}
 			}
@@ -60,21 +60,21 @@ void RemoveFreeze () {
 #endif
 
 void RemoveFreeze () {
-    self.owner.is_frozen = 1.000;
+    self.owner.is_frozen = 1;
     self.owner.velocity = self.owner.movedir;
-    self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 65536.000));
+    self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 65536));
     sprint (self.owner, PRINT_HIGH,"Freeze wears off\n");
     TeamFortress_SetSpeed (self.owner);
     dremove (self);
 }
 
 void FreezePlayer () {
-    self.owner.is_frozen = 1.000;
+    self.owner.is_frozen = 1;
     self.owner.movedir = self.owner.velocity;
-    //self.owner.gravity = 0.000;
-    self.owner.velocity = '0.000 0.000 0.000';
-    //self.owner.maxspeed = 0.000;
-    self.owner.tfstate = (self.owner.tfstate | 65536.000);
+    //self.owner.gravity = 0;
+    self.owner.velocity = '0 0 0';
+    //self.owner.maxspeed = 0;
+    self.owner.tfstate = (self.owner.tfstate | 65536);
     TeamFortress_SetSpeed (self.owner);
     sprint (self.owner, PRINT_HIGH,"Freeze bitch!\n");
     self.think = RemoveFreeze;
@@ -95,7 +95,7 @@ void FreezeGrenadeExplode () {
             te = te.chain2;
         }
     }
-    te = findradius (self.origin,240.000);
+    te = findradius (self.origin,240);
     while ( te ) {
         te.chain2 = te.chain;
         if (te.classname == "player") {
@@ -118,7 +118,7 @@ void FreezeGrenadeExplode () {
 				newmis.classname = "timer";
 				newmis.think = RemoveFreeze;
 				newmis.nextthink = time + 2.5;
-				te.is_frozen = 1.000;
+				te.is_frozen = 1;
 				te.movedir = te.velocity;
 				te.velocity = '0 0 0';
 			}
@@ -126,24 +126,24 @@ void FreezeGrenadeExplode () {
 #endif
         te = te.chain2;
     }
-    WriteByte (4.000,23.000);
-    WriteByte (4.000,4.000);
-    WriteCoord (4.000,self.origin_x);
-    WriteCoord (4.000,self.origin_y);
-    WriteCoord (4.000,self.origin_z);
-    multicast (self.origin,1.000);
+    WriteByte (4,23);
+    WriteByte (4,4);
+    WriteCoord (4,self.origin_x);
+    WriteCoord (4,self.origin_y);
+    WriteCoord (4,self.origin_z);
+    multicast (self.origin,1);
     dremove (self);
 }
 
 void TeamFortress_SniperWeapon () {
-    self.impulse = 0.000;
-    if ( (self.tfstate & 2.000) ) {
+    self.impulse = 0;
+    if ( (self.tfstate & 2) ) {
         return ;
     }
     if ( !((self.carried & WEAP_SNIPER_RIFLE) && (self.carried & WEAP_AUTO_RIFLE)) ) {
         return ;
     }
-    if ( (self.ammo_shells < 1.000) ) {
+    if ( (self.ammo_shells < 1) ) {
         sprint (self,PRINT_HIGH,"not enough ammo.\n");
         return ;
     }
@@ -157,7 +157,7 @@ void TeamFortress_SniperWeapon () {
 
 void TF_zoom (float zoom_level) {
     string zl;
-    if ( (self.tfstate & 4096.000) ) {
+    if ( (self.tfstate & 4096) ) {
         return ;
     }
     zl = ftos (zoom_level);
@@ -166,67 +166,67 @@ void TF_zoom (float zoom_level) {
     stuffcmd (self,"\n");
 }
 
-void () MakeDot1 = [ 0.000, MakeDot1 ] {
+void () MakeDot1 = [ 0, MakeDot1 ] {
     SniperSight_Update();
 }
 
-void () MakeDot2 = [ 1.000, MakeDot2 ] {
+void () MakeDot2 = [ 1, MakeDot2 ] {
     SniperSight_Update();
 }
 
-void () MakeDot3 =  [ 2.000, MakeDot3 ] {
+void () MakeDot3 =  [ 2, MakeDot3 ] {
     SniperSight_Update();
 }
 
-void () MakeDot4 = [ 3.000, MakeDot4 ] {
+void () MakeDot4 = [ 3, MakeDot4 ] {
     SniperSight_Update();
 }
 
 void SniperSight_Update () {
     vector org;
-    if (!(self.owner.tfstate & 2048.000)) {
-        self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2048.000));
+    if (!(self.owner.tfstate & 2048)) {
+        self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2048));
         TeamFortress_SetSpeed (self.owner);
-        self.owner.heat = 0.000;
+        self.owner.heat = 0;
         dremove (self);
         return ;
     }
     makevectors (self.owner.v_angle);
-    org = (self.owner.origin + (v_forward * 10.000));
+    org = (self.owner.origin + (v_forward * 10));
     org_z = (self.owner.absmin_z + (self.owner.size_z * 0.700));
-    traceline (org,(org + (v_forward * 9192.000)),0.000,self);
-    if ( (trace_fraction == 1.000) ) {
+    traceline (org,(org + (v_forward * 9192)),0,self);
+    if ( (trace_fraction == 1) ) {
         setorigin (self,self.owner.origin);
         return ;
     }
     self.angles = vectoangles (v_forward);
-    setorigin (self,trace_endpos - (v_forward * 1.000));
+    setorigin (self,trace_endpos - (v_forward * 1));
     self.nextthink = (time + 0.030);
 }
 
 void SniperSight_Create () {
     entity sight;
-    if ( (self.has_disconnected == 1.000) ) {
+    if ( (self.has_disconnected == 1) ) {
         return ;
     }
     sight = spawn ();
     sight.owner = self;
-    sight.movetype = 8.000;
-    sight.solid = 0.000;
+    sight.movetype = 8;
+    sight.solid = 0;
     //sight.alpha = 0.500;
     sight.classname = "timer";
     setorigin (sight,self.origin);
     setmodel (sight,"progs/dot.spr");
-    if (self.pteam.team == 1.000) {
+    if (self.pteam.team == 1) {
         sight.think = MakeDot1;
     } else {
-        if (self.pteam.team == 2.000) {
+        if (self.pteam.team == 2) {
             sight.think = MakeDot2;
         } else {
-            if (self.pteam.team == 3.000) {
+            if (self.pteam.team == 3) {
                 sight.think = MakeDot3;
             } else {
-                if (self.pteam.team == 4.000) {
+                if (self.pteam.team == 4) {
                     sight.think = MakeDot4;
                 }
             }
@@ -236,12 +236,12 @@ void SniperSight_Create () {
 }
 
 void TeamFortress_AutoZoomToggle () {
-    if ( (self.tfstate & 4096.000) ) {
-        self.tfstate = (self.tfstate - 4096.000);
+    if ( (self.tfstate & 4096) ) {
+        self.tfstate = (self.tfstate - 4096);
         sprint (self,PRINT_HIGH,"autozoom ON\n");
 
     } else {
-        self.tfstate = (self.tfstate | 4096.000);
+        self.tfstate = (self.tfstate | 4096);
         sprint (self,PRINT_HIGH,"autozoom OFF\n");
     }
 }

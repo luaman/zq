@@ -17,28 +17,28 @@ void SUB_Remove () {
 }
 
 void SetMovedir () {
-    if ( (self.angles == '0.000 -1.000 0.000') ) {
-        self.movedir = '0.000 0.000 1.000';
+    if ( (self.angles == '0 -1 0') ) {
+        self.movedir = '0 0 1';
     } else {
-        if ( (self.angles == '0.000 -2.000 0.000') ) {
-            self.movedir = '0.000 0.000 -1.000';
+        if ( (self.angles == '0 -2 0') ) {
+            self.movedir = '0 0 -1';
         } else {
             makevectors (self.angles);
             self.movedir = v_forward;
         }
     }
 
-    self.angles = '0.000 0.000 0.000';
+    self.angles = '0 0 0';
 }
 
 void InitTrigger () {
-    if ( (self.angles != '0.000 0.000 0.000') ) {
+    if ( (self.angles != '0 0 0') ) {
         SetMovedir ();
     }
-    self.solid = 1.000;
+    self.solid = 1;
     setmodel (self,self.model);
-    self.movetype = 0.000;
-    self.modelindex = 0.000;
+    self.movetype = 0;
+    self.modelindex = 0;
     self.model = "";
 }
 
@@ -53,7 +53,7 @@ void SUB_CalcMove (vector tdest, float tspeed, void() func) {
     self.finaldest = tdest;
     self.think = SUB_CalcMoveDone;
     if ( (tdest == self.origin) ) {
-        self.velocity = '0.000 0.000 0.000';
+        self.velocity = '0 0 0';
         self.nextthink = (self.ltime + 0.100);
         return ;
     }
@@ -64,13 +64,13 @@ void SUB_CalcMove (vector tdest, float tspeed, void() func) {
         traveltime = 0.030;
     }
     self.nextthink = (self.ltime + traveltime);
-    self.velocity = (vdestdelta * (1.000 / traveltime));
+    self.velocity = (vdestdelta * (1 / traveltime));
 }
 
 void SUB_CalcMoveDone () {
     setorigin (self,self.finaldest);
-    self.velocity = '0.000 0.000 0.000';
-    self.nextthink = -1.000;
+    self.velocity = '0 0 0';
+    self.nextthink = -1;
     if ( self.think1 ) {
         self.think1 ();
     }
@@ -87,7 +87,7 @@ void SUB_CalcAngleMove (vector destangle, float tspeed, void() func) {
     len = vlen (destdelta);
     traveltime = (len / tspeed);
     self.nextthink = (self.ltime + traveltime);
-    self.avelocity = (destdelta * (1.000 / traveltime));
+    self.avelocity = (destdelta * (1 / traveltime));
     self.think1 = func;
     self.finalangle = destangle;
     self.think = SUB_CalcAngleMoveDone;
@@ -95,8 +95,8 @@ void SUB_CalcAngleMove (vector destangle, float tspeed, void() func) {
 
 void SUB_CalcAngleMoveDone () {
     self.angles = self.finalangle;
-    self.avelocity = '0.000 0.000 0.000';
-    self.nextthink = -1.000;
+    self.avelocity = '0 0 0';
+    self.nextthink = -1;
     if ( self.think1 ) {
         self.think1 ();
     }
@@ -114,7 +114,7 @@ void SUB_UseTargets () {
     entity otemp;
     entity act;
     if ( self.dont_do_triggerwork ) {
-        self.dont_do_triggerwork = 0.000;
+        self.dont_do_triggerwork = 0;
         return ;
     }
     if ( self.delay ) {
@@ -131,7 +131,7 @@ void SUB_UseTargets () {
     if ( ((activator.classname == "player") && (self.message != "")) ) {
         CenterPrint (activator,self.message);
         if ( !self.noise ) {
-            sound (activator,2.000,"misc/talk.wav",1.000,1.000);
+            sound (activator,2,"misc/talk.wav",1,1);
         }
     }
     if ( (activator.classname == "player") ) {
@@ -146,7 +146,7 @@ void SUB_UseTargets () {
                 return ;
             }
             remove (t);
-        } while ( 1.000 );
+        } while ( 1 );
     }
     if ( self.target ) {
         act = activator;
@@ -168,13 +168,13 @@ void SUB_UseTargets () {
             self = stemp;
             other = otemp;
             activator = act;
-        } while ( 1.000 );
+        } while ( 1 );
     }
 }
 
 void SUB_AttackFinished (float normal) {
-    self.cnt = 0.000;
-    if ( (skill < 3.000) ) {
+    self.cnt = 0;
+    if ( (skill < 3) ) {
         self.attack_finished = (time + normal);
     }
 }

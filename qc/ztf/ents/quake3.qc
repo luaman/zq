@@ -14,16 +14,16 @@ void() weapon_shotgun    = {weapon_supershotgun ();
                            };
 
 void() weapon_railgun       = {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
     precache_model ("progs/g_light.mdl");
     setmodel (self,"progs/g_light.mdl");
-    self.weapon = 3.000;
+    self.weapon = 3;
     self.netname = "Railgun";
     self.touch = weapon_touch;
-    setsize (self,'-16.000 -16.000 0.000','16.000 16.000 56.000');
+    setsize (self,'-16 -16 0','16 16 56');
     StartItem ();
 };
 
@@ -49,13 +49,13 @@ void item_health_large () { item_health ();
 
 void item_health_mega () {
     self.classname = "item_health";
-    self.spawnflags = 2.000;
+    self.spawnflags = 2;
     item_health ();
 };
 
 void armor_shard_touch () {
     float value;
-    if ( (other.health <= 0.000) ) {
+    if ( (other.health <= 0) ) {
         return ;
     }
     if ( (other.classname != "player") ) {
@@ -64,30 +64,30 @@ void armor_shard_touch () {
     if ( other.is_feigning ) {
         return ;
     }
-    if ( ((other.tfstate & 65536.000) || (other.tfstate & 2048.000)) ) {
+    if ( ((other.tfstate & 65536) || (other.tfstate & 2048)) ) {
         return ;
     }
-    if ( (cb_prematch == 1.000) ) {
+    if ( (cb_prematch == 1) ) {
         return ;
     }
     if (round_over) return;
     if (!other.armorvalue) return;
-    value = other.armorvalue + 5.000;
+    value = other.armorvalue + 5;
     if ( (value > other.maxarmor) ) {
         value = other.maxarmor;
     }
     other.armorvalue = value;
-    self.solid = 0.000;
+    self.solid = 0;
     self.model = string_null;
     if (modetype & 8) TeamFortress_SetSpeed(other);
-    if ( (deathmatch != 2.000) ) {
-        self.nextthink = (time + 20.000);
+    if ( (deathmatch != 2) ) {
+        self.nextthink = (time + 20);
     }
     if ( coop ) {
-        self.nextthink = (time + 40.000);
+        self.nextthink = (time + 40);
     }
     self.think = SUB_regen;
-    sound (other,3.000,"items/armor1.wav",1.000,1.000);
+    sound (other,3,"items/armor1.wav",1,1);
     stuffcmd (other,"bf\n");
     activator = other;
 };
@@ -97,8 +97,8 @@ void item_armor_shard () {
     precache_model ("models/powerups/armor/shard.md3");
     setmodel (self,"models/powerups/armor/shard.md3");
     self.mdl = "models/powerups/armor/shard.md3";
-    self.solid = 1.000;
-    setsize (self,'-16.000 -16.000 -24.000','16.000 16.000 32.000');
+    self.solid = 1;
+    setsize (self,'-16 -16 -24','16 16 32');
     StartItem ();
 }
 
@@ -134,7 +134,7 @@ void target_speaker () {
         if (self.noise) {
             dremove(self);
             //precache_sound (self.noise);
-            //ambientsound (self.origin,self.noise,0.700,3.000);
+            //ambientsound (self.origin,self.noise,0.700,3);
         }
     } else {
         trigger_push();
@@ -198,17 +198,17 @@ float CheckQ3FcapPoint (string fullentdata) {
         if (key == "teamscore") {
             self.count = stof(value);
             self.frags = stof(value);
-            active = 1.000;
+            active = 1;
         } else if (key == "holding") {
             if (value == "redflag") {
-                self.team_no = 2.000;
-                self.axhitme = 1.000;
+                self.team_no = 2;
+                self.axhitme = 1;
             }
             if (value == "blueflag") {
-                self.team_no = 1.000;
-                self.axhitme = 2.000;
+                self.team_no = 1;
+                self.axhitme = 2;
             }
-            active = 1.000;
+            active = 1;
         } else if (key == "active_message") {
             self.message = value;
         }
@@ -227,9 +227,9 @@ void func_goalinfo () {
     } else
         dprint("no server support for multi_manager\n");
     if (self.allowteams == "blue") {
-        self.team_no = 1.000;
+        self.team_no = 1;
     } else if (self.allowteams == "red") {
-        self.team_no = 2.000;
+        self.team_no = 2;
     }
     self.classname = "info_tfgoal";
     self.mdl = self.model;
@@ -245,9 +245,9 @@ void func_goalitem () {
     } else
         dprint("no server support for multi_manager\n");
     if (self.allowteams == "blue") {
-        self.team_no = 1.000;
+        self.team_no = 1;
     } else if (self.allowteams == "red") {
-        self.team_no = 2.000;
+        self.team_no = 2;
     }
     self.classname = "item_tfgoal";
     self.mdl = self.model;
@@ -256,10 +256,10 @@ void func_goalitem () {
 
 void fe_spawn () {
     if (self.allowteams == "blue") {
-        self.team_no = 1.000;
+        self.team_no = 1;
         self.classname = "info_player_teamspawn";
     } else if (self.allowteams == "red") {
-        self.team_no = 2.000;
+        self.team_no = 2;
         self.classname = "info_player_teamspawn";
     } else {
         self.classname = "info_player_spawn";

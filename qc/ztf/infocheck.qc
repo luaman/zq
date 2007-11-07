@@ -35,7 +35,7 @@
 // ILLEGALFPS]
 
 float crandom () {
-    return ( (2.000 * (random () - 0.500)) );
+    return ( (2 * (random () - 0.500)) );
 }
 
 void autoteam_think () {
@@ -67,7 +67,7 @@ void CheckFps () {
             sprint (self, PRINT_HIGH, "Reboot your machine to get rid of this bug\n");
             stuffcmd(self, "disconnect\n");
             stuffcmd (self, "cmd drop\n");
-            self.rs_g = 0.000;
+            self.rs_g = 0;
         }
         fps = floor( 72 * 13 / ( self.fAverageFrameTime / self.fFrameCount * 1000 ) );
 
@@ -101,14 +101,14 @@ void CheckGspeed () {
     float maxvel;
     float medvel;
     vector dir;
-    if (gspeed >= 1.000) {
+    if (gspeed >= 1) {
         maxvel = self.maxspeed * gspeed;
 
         if (self.speed > maxvel) {
             if (gspeedtype == 2) {
                 self.gs_interval = time + 0.500;
                 medvel = self.speed - maxvel;
-                medvel = medvel / 8.000;
+                medvel = medvel / 8;
                 dir = self.velocity;
                 self.velocity = normalize(dir) * (self.speed - medvel);
             } else {
@@ -142,12 +142,12 @@ void PowerupsOn () {
     te = find (world, deathtype, "pow");
     while (te) {
         if ((te.classname == "item_artifact_invulnerability")) {
-            te.effects = (te.effects | 128.000000);
+            te.effects = (te.effects | 128);
             te.think = SUB_regen;
             te.nextthink = time + 0.100;
         } else {
             if ((te.classname == "item_artifact_super_damage")) {
-                te.effects = (te.effects | 64.000000);
+                te.effects = (te.effects | 64);
                 te.think = SUB_regen;
                 te.nextthink = time + 0.100;
             } else {
@@ -167,19 +167,19 @@ void Calibrate_Level () {
     float autoteam_time;
     entity ent;
     st = infokey (world,"max_pipebombs");
-    fl = (stof (st)) + 1.000;
+    fl = (stof (st)) + 1;
 
     if (fl < 11 || fl > 25) {
-        if (store_obs.cnt == 4.000) {
-            store_obs.max_pipebombs = 21.000;
+        if (store_obs.cnt == 4) {
+            store_obs.max_pipebombs = 21;
         } else {
-            store_obs.max_pipebombs = 15.000;
+            store_obs.max_pipebombs = 15;
         }
     }
     st = infokey (world,"max_ammoboxes");
-    fl = (stof (st)) + 1.000;
+    fl = (stof (st)) + 1;
     if (fl < 13 || fl > 29) {
-        store_obs.max_ammoboxes = 21.000;
+        store_obs.max_ammoboxes = 21;
     }
     st = infokey (world,"grapple");
     if ( (st == "on") || (toggleflags & 1024) ) {
@@ -189,12 +189,12 @@ void Calibrate_Level () {
     }
     st = infokey (world,"tfvsdm");
     if ((st == "on")) {
-        store_obs.maxammo_shells = 10.000;
+        store_obs.maxammo_shells = 10;
         classtype = classtype | 64;
     }
     st = infokey (world,"ctfmap");
     if ((st == "on")) {
-        ctfmap = 1.000;
+        ctfmap = 1;
     }
     st = infokey (world,"dmteams");
     fl = stof(st);
@@ -204,7 +204,7 @@ void Calibrate_Level () {
     }
     st = infokey (world,"realdm");
     if ( (st == "on") ) {
-        realdm = 1.000;
+        realdm = 1;
         classtype = classtype | 64;
     }
     /*
@@ -232,13 +232,13 @@ void Calibrate_Level () {
     }
     st = infokey (world, "autoteam");
     if ((st == "on")) {
-        autoteam_time = 30.000;
+        autoteam_time = 30;
         toggleflags = (toggleflags | 64);
     } else {
         if ((st == "off")) {
             toggleflags = (toggleflags - (toggleflags & 64));
         } else {
-            if ((stof (st) != 0.000000)) {
+            if ((stof (st) != 0)) {
                 toggleflags = (toggleflags | 64);
                 autoteam_time = stof (st);
             }
@@ -246,7 +246,7 @@ void Calibrate_Level () {
     }
     st = infokey (world,"autokick_time");
     autokick_time = stof (st);
-    if ( (autokick_time != 0.000) ) {
+    if ( (autokick_time != 0) ) {
         st = infokey (world,"autokick_kills");
         autokick_kills = stof (st);
     }
@@ -254,23 +254,23 @@ void Calibrate_Level () {
     // autokick_concs = stof (st);
     st = infokey (world,"teamfrags");
     if ( (st == "on") ) {
-        toggleflags = (toggleflags | 128.000);
+        toggleflags = (toggleflags | 128);
     } else {
         if ( (st == "off") ) {
-            toggleflags = (toggleflags - (toggleflags & 128.000));
+            toggleflags = (toggleflags - (toggleflags & 128));
         }
     }
     st = infokey (world,"fullteamscore");
     if ( (st == "on") ) {
-        toggleflags = (toggleflags | 2048.000);
+        toggleflags = (toggleflags | 2048);
     }
     st = infokey (world,"rd");
     respawn_delay_time = stof (st);
     if ( respawn_delay_time ) {
-        toggleflags = (toggleflags | 4.000);
+        toggleflags = (toggleflags | 4);
     }
-    if ( ((toggleflags & 4.000) && (respawn_delay_time == 0.000)) ) {
-        respawn_delay_time = 3.000;
+    if ( ((toggleflags & 4) && (respawn_delay_time == 0)) ) {
+        respawn_delay_time = 3;
     }
     if ((toggleflags & 64)) {
         toggleflags = (toggleflags - (toggleflags & 64));
@@ -307,7 +307,7 @@ void Calibrate_Level () {
     if (fl > 3 || fl < 1) {
         fl = 2;
     }
-    if (fl == 3.000) fl = 4;
+    if (fl == 3) fl = 4;
     classtype = classtype | (fl*2);
     st = infokey (world,"pyrotype");
 
@@ -328,7 +328,7 @@ void Calibrate_Level () {
     st = infokey (world,"plasmaclass");
 
     if ( (st == "on") ) {
-        classtype = classtype | 1.000;
+        classtype = classtype | 1;
     }
     st = infokey (world,"forzamode");
 
@@ -344,17 +344,17 @@ void Calibrate_Level () {
         if (st == "off") {
             holdlimit = 0;
         } else {
-            holdlimit = 1.000;
+            holdlimit = 1;
         }
-        conctype = 0.000;
-        grenradius = 0.000;
-        grentype = 0.000;
+        conctype = 0;
+        grenradius = 0;
+        grentype = 0;
         modetype = (modetype | 256);
     }
     if (classtype & 16) {
-        ic_ammo = 3.000;
+        ic_ammo = 3;
     } else {
-        ic_ammo = 2.000;
+        ic_ammo = 2;
     }
 
     st = infokey (world,"real_weapons");
@@ -372,11 +372,11 @@ void Calibrate_Level () {
     }
     st = infokey (world,"railgun");
     if ( (st == "on") ) {
-        railgun = 1.000;
+        railgun = 1;
     }
     st = infokey (world,"light_ents");
     if ( (st == "on") ) {
-        light_ents = 1.000;
+        light_ents = 1;
     }
     st = infokey (world,"stamina");
 
@@ -385,7 +385,7 @@ void Calibrate_Level () {
     }
     gspeed = stof(infokey (world,"pm_gspeed"));
     if ((gspeed < 1) || (gspeed > 3 ))  {
-        gspeed = 0.000;
+        gspeed = 0;
     }
     gspeedtype = stof(infokey (world,"pm_gspeedtype"));
     if ((gspeedtype < 1) || (gspeedtype > 3 ))  {
@@ -393,7 +393,7 @@ void Calibrate_Level () {
     }
     airspeed = stof(infokey (world,"pm_aspeed"));
     if ((gspeed < 1) || (gspeed > 4 ))  {
-        airspeed = 0.000;
+        airspeed = 0;
     }
     st = infokey (world,"sentrytype");
 
@@ -413,14 +413,14 @@ void Calibrate_Level () {
 
     sentry_delay = stof(st);
 
-    if (sentry_delay > 1.000 || sentry_delay < 0.100) {
+    if (sentry_delay > 1 || sentry_delay < 0.100) {
         sentry_delay = 0.250;
     }
     st = infokey (world,"sentryfire");
     sentry_fire = stof(st);
 
     if (sentry_fire > 2 || sentry_fire < 0) {
-        sentry_fire = 0.000;
+        sentry_fire = 0;
     }
     st = infokey (world,"pipedelay");
     pipedelay = 1;
@@ -447,8 +447,8 @@ void Spanner_Fire ();
 
 void CheckUse () {
     if (self.playerclass) {
-        traceline (self.origin + '0 0 16',(self.origin + '0 0 16' + (v_forward * 80.000)),0.000,self);
-        if ( (trace_fraction != 1.000) ) {
+        traceline (self.origin + '0 0 16',(self.origin + '0 0 16' + (v_forward * 80)),0,self);
+        if ( (trace_fraction != 1) ) {
             if ( (trace_ent.classname == "func_button") ) {
                 trace_ent.enemy = self;
                 other = self;
@@ -459,13 +459,13 @@ void CheckUse () {
 
                 stuffcmd( self, "-use\n");
             }
-            if (self.playerclass == 5.000) {
+            if (self.playerclass == 5) {
                 if ( trace_ent.takedamage ) {
                     if (self.attack_finished < time)
                         Medikit_Fire ();
                     stuffcmd( self, "-use\n");
                 }
-            } else if (self.playerclass == 9.000) {
+            } else if (self.playerclass == 9) {
                 if ( trace_ent.takedamage ) {
                     if (self.attack_finished < time)
                         Spanner_Fire ();

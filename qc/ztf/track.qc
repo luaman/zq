@@ -60,22 +60,22 @@ void Flymode () {
     entity spot;
     spot = find (world,classname,"info_player_start");
     self.origin = spot.origin;
-    if (self.classname == "observer" && self.tracking == 2.000) {
+    if (self.classname == "observer" && self.tracking == 2) {
         stuffcmd(self, "+attack; wait; -attack\n");
     }
-    self.tracking = 0.000;
-    self.gravity = 1.000;
+    self.tracking = 0;
+    self.gravity = 1;
 }
 
 void Toggle_Tracking () {
     if (self.playerclass) return;
     if (self.goalentity == world) return;
     if (!self.tracking) {
-        self.tracking = 1.000;
-        self.gravity = 0.000;
+        self.tracking = 1;
+        self.gravity = 0;
         sprint (self, PRINT_HIGH, "Tracking mode: 3rd Person.\n");
-    } else if ((self.goalentity.classname == "player") || (self.goalentity.classname == "building_sentrygun") && (self.tracking == 1.000)) {
-        self.tracking = 2.000;
+    } else if ((self.goalentity.classname == "player") || (self.goalentity.classname == "building_sentrygun") && (self.tracking == 1)) {
+        self.tracking = 2;
         if (self.classname == "observer" && self.goalentity.classname == "player") Spect_Track();
         sprint (self, PRINT_HIGH, "Tracking mode: 1st Person.\n");
     } else  {
@@ -89,10 +89,10 @@ void Track_Object () {
     entity goal;
     float new;
     if ( (self.goalentity != world) ) {
-        if (self.goalentity.solid == 0.000) {
+        if (self.goalentity.solid == 0) {
             goal = self.goalentity.owner;
-            new = 1.000;
-        } else if ((self.goalentity.classname == "player") && (self.goalentity.health <= 0.000)) {
+            new = 1;
+        } else if ((self.goalentity.classname == "player") && (self.goalentity.health <= 0)) {
             goal = self.goalentity.enemy;
         } else {
             goal = self.goalentity;
@@ -110,12 +110,12 @@ void Track_Object () {
             if (self.classname == "player") {
                 self.origin = goal.origin + self.goalentity.view_ofs;
                 if (goal.classname == "player") {
-                    self.angles_x = goal.angles_x * -1.000;
+                    self.angles_x = goal.angles_x * -1;
                     self.angles_y = goal.angles_y;
                 } else  if (goal.classname == "building_sentrygun") {
                     self.angles = goal.angles;
                 }
-                self.fixangle = 1.000;
+                self.fixangle = 1;
                 return;
             }
         }  else  if (self.tracking) {
@@ -124,12 +124,12 @@ void Track_Object () {
             v2 = self.v_angle;
             makevectors(v2);
             v2 = v_forward * self.camdist;
-            traceline(v1, v1 - v2, 1.000, goal);
+            traceline(v1, v1 - v2, 1, goal);
             v2 = v2 * trace_fraction;
             v3 = v1 - (v2 * 0.6);
             v2 = v1 - v2;
-            traceline(self.origin, v2, 1.000, goal);
-            if (trace_fraction == 1.0) {
+            traceline(self.origin, v2, 1, goal);
+            if (trace_fraction == 1) {
                 v1 = v3 - self.origin;
                 v1 = v1 * 10;
                 self.velocity = v1;
@@ -140,7 +140,7 @@ void Track_Object () {
             self.items = goal.items;
             self.armorvalue = goal.armorvalue;
             if (goal.health <= 0) {
-                self.health = 1.000;
+                self.health = 1;
             } else {
                 self.health = goal.health;
             }
@@ -148,7 +148,7 @@ void Track_Object () {
             self.currentammo = goal.currentammo;
         } else if (goal.classname == "building_sentrygun") {
             if (goal.health <= 0) {
-                self.health = 1.000;
+                self.health = 1;
             } else {
                 self.health = goal.health;
             }
@@ -158,10 +158,10 @@ void Track_Object () {
             if (goal.origin != goal.oldorigin) {
                 self.armorvalue = goal.nextthink - time;
             } else {
-                self.armorvalue = 0.000;
+                self.armorvalue = 0;
             }
-            self.health = 1.000;
-            self.currentammo = 0.000;
+            self.health = 1;
+            self.currentammo = 0;
         }
     }
 }
@@ -257,7 +257,7 @@ void Toggle_Autotrack () {
     entity autotrack;
     entity exception;
     float pfrags;
-    self.a_c = 1.000;
+    self.a_c = 1;
     if (store_obs.goalentity == world) {
         te = player_head;
         while (te) {
@@ -266,9 +266,9 @@ void Toggle_Autotrack () {
                     exception = te;
                     if (te.real_frags > pfrags)
                         autotrack = te;
-                    if (te.items & (4194304.000 | 1048576.000 | 524288.000))
+                    if (te.items & (4194304 | 1048576 | 524288))
                         autotrack = te;
-                    if (te.effects & (8.000 | 4.000))
+                    if (te.effects & (8 | 4))
                         autotrack = te;
                 }
             }

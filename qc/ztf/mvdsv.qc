@@ -127,16 +127,16 @@ float UserCmd () {
             sprint (self, PRINT_HIGH, "\n");
             return 1;
         } else if (arg_num == 2) {
-            if ((self.is_admin == 3.000)) {
+            if ((self.is_admin == 3)) {
                 sprint (self, PRINT_HIGH, "You are already an admin\n");
                 return 1;
             }
-            if (self.is_admin == 2.000) {
+            if (self.is_admin == 2) {
                 sprint (self, PRINT_HIGH, "You cannot input password while electing.\n");
                 return 1;
             }
             Admin_Check(argv(1));
-            if (self.is_admin == 3.000) {
+            if (self.is_admin == 3) {
                 Admin_Aliases();
                 bprint(PRINT_HIGH, self.netname, " ηαιξσ ζυμμ αδνιξ στατυσ!");
                 bprint(PRINT_CHAT, "\n");
@@ -150,13 +150,13 @@ float UserCmd () {
     } else if (argv(0) == "maplist") {
         if (arg_num == 1) {
             fl = 1;
-            fl = listmaps(self, 2.000, 50, fl, 3, 1);
+            fl = listmaps(self, 2, 50, fl, 3, 1);
             return 1;
         }
     } else if (argv(0) == "votemap") {
         if (arg_num == 1) {
             fl = 1;
-            fl = listmaps(self, 2.000, 50, fl, 3, 1);
+            fl = listmaps(self, 2, 50, fl, 3, 1);
             stuffcmd(self, "\n");
             return 1;
         } else if (arg_num == 2) {
@@ -187,7 +187,7 @@ float UserCmd () {
                 else bprint(PRINT_HIGH, "θισ ");
                 bprint(PRINT_CHAT, "vote\n");
                 v_misc = v_misc - 1;
-                if (self.mvote == 2.000) AbortMiscVote ();
+                if (self.mvote == 2) AbortMiscVote ();
                 self.mvote = 0;
                 return 1;
             } else {
@@ -205,46 +205,46 @@ float UserCmd () {
                 st = argv(2);
                 fl = stof(st);
                 fl = self.ammo_shells - fl;
-                if (fl > 0) TeamFortress_DropAmmo( 1.000, fl);
+                if (fl > 0) TeamFortress_DropAmmo( 1, fl);
                 return 1;
             } else if (argv(1) == "nails" || argv(1) == "2") {
                 st = argv(2);
                 fl = stof(st);
                 fl = self.ammo_nails - fl;
-                if (fl > 0) TeamFortress_DropAmmo( 2.000, fl);
+                if (fl > 0) TeamFortress_DropAmmo( 2, fl);
                 return 1;
 
             } else if (argv(1) == "rockets" || argv(1) == "3") {
                 st = argv(2);
                 fl = stof(st);
                 fl = self.ammo_rockets - fl;
-                if (fl > 0) TeamFortress_DropAmmo( 3.000, fl);
+                if (fl > 0) TeamFortress_DropAmmo( 3, fl);
                 return 1;
 
             } else if (argv(1) == "cells" || argv(1) == "4") {
                 st = argv(2);
                 fl = stof(st);
                 fl = self.ammo_cells - fl;
-                if (fl > 0) TeamFortress_DropAmmo( 4.000, fl);
+                if (fl > 0) TeamFortress_DropAmmo( 4, fl);
                 return 1;
             }
         } else if (arg_num == 5) {
             st = argv(1);
             fl = stof(st);
             fl = self.ammo_shells - fl;
-            if (fl > 0) TeamFortress_DropAmmo( 1.000, fl);
+            if (fl > 0) TeamFortress_DropAmmo( 1, fl);
             st = argv(2);
             fl = stof(st);
             fl = self.ammo_nails - fl;
-            if (fl > 0) TeamFortress_DropAmmo( 2.000, fl);
+            if (fl > 0) TeamFortress_DropAmmo( 2, fl);
             st = argv(3);
             fl = stof(st);
             fl = self.ammo_rockets - fl;
-            if (fl > 0) TeamFortress_DropAmmo( 3.000, fl);
+            if (fl > 0) TeamFortress_DropAmmo( 3, fl);
             st = argv(4);
             fl = stof(st);
             fl = self.ammo_cells - fl;
-            if (fl > 0) TeamFortress_DropAmmo( 4.000, fl);
+            if (fl > 0) TeamFortress_DropAmmo( 4, fl);
             return 1;
         }
     } else if (argv(0) == "eprint") {
@@ -254,7 +254,7 @@ float UserCmd () {
         if (arg_num == 1) {
             sprint (self, PRINT_HIGH, "Commands list:\ncmd adminpwd\ncmd dl\ncmd dlist or demolist\ncmd maplist\ncmd votemap\ncmd votemode\ncmd keep \"ammo\" \"value\"\n");
 
-            if (self.is_admin == 3.000) {
+            if (self.is_admin == 3) {
                 sprint (self, PRINT_HIGH, "cmd timelimit\ncmd watervis\ncmd prematch\ncmd fraglimit\ncmd teamplay\ncmd overtime\ncmd cft\ncmd password\ncmd spec_password\n");
                 sprint (self, PRINT_HIGH, "cmd map\ncmd record\ncmd easyrecord\ncmd autorecord\ncmd cancel\ncmd stop\ncmd quadmode\ncmd teamname\ncmd maxclients\ncmd maxspectators\n");
                 //sprint (self, PRINT_HIGH, "cmd observermode\n");
@@ -286,7 +286,7 @@ float UserCmd () {
                 sprint (self, PRINT_HIGH, "usage: vote to enable a mode ie. cmd votemode clan\n\n");
                 return 1;
             }
-            if (self.is_admin == 3.000) {
+            if (self.is_admin == 3) {
                 if (argv(1) == "timelimit") {
                     sprint (self, PRINT_HIGH, "usage: cmd timelimit \"time\", sets a timelimit on the server\n\n");
                     return 1;
@@ -347,7 +347,7 @@ float UserCmd () {
     }
 
     adminlvl = stof(infokey(world, "adminlevel"));
-    if ((self.is_admin == 3.000) || ((self.is_admin == 1.000) && (adminlvl >= 1))) {
+    if ((self.is_admin == 3) || ((self.is_admin == 1) && (adminlvl >= 1))) {
         if (argv(0) == "timedown") {
             TimeDown (5);
             return 1;
@@ -374,7 +374,7 @@ float UserCmd () {
             return 1;
         } else if (argv(0) == "startmatch") {
             if (CheckClanMode()) return 1;
-            pmtime = 0.000;
+            pmtime = 0;
             StartTimer();
             return 1;
         } else if (argv(0) == "fragsdown") {
@@ -415,7 +415,7 @@ float UserCmd () {
             return 1;
         }
     }
-    if (((self.is_admin == 1.000) && (adminlvl >= 2)) || (self.is_admin == 3.000)) {
+    if (((self.is_admin == 1) && (adminlvl >= 2)) || (self.is_admin == 3)) {
         if (argv(0) == "quadmode") {
             Toggle_Quad();
             return 1;
@@ -678,9 +678,9 @@ float UserCmd () {
             }
         }
     }
-    if (((self.is_admin == 1.000) && (adminlvl >= 3)) || (self.is_admin == 3.000)) {
+    if (((self.is_admin == 1) && (adminlvl >= 3)) || (self.is_admin == 3)) {
         if (argv(0) == "next") {
-            if (self.admin_mode == 1.000)
+            if (self.admin_mode == 1)
                 Admin_CycleDeal ();
             return 1;
         } else if (argv(0) == "deal") {
@@ -688,7 +688,7 @@ float UserCmd () {
             return 1;
         } else if (argv(0) == "kick") {
             if (arg_num == 1) {
-                if (self.admin_mode == 1.000) {
+                if (self.admin_mode == 1) {
                     Admin_DoKick ();
                     return 1;
                 }
@@ -974,7 +974,7 @@ float ConsoleCmd () {
         } else if (arg_num == 2) {
             gspeed = stof(argv(1));
             if ((gspeed < 1) || (gspeed > 3 ))  {
-                gspeed = 0.000;
+                gspeed = 0;
                 dprint("invalid value\n");
                 return 1;
             }
@@ -994,7 +994,7 @@ float ConsoleCmd () {
         } else if (arg_num == 2) {
             airspeed = stof(argv(1));
             if ((airspeed < 1) || (airspeed > 4 ))  {
-                airspeed = 0.000;
+                airspeed = 0;
                 dprint("invalid value\n");
                 return 1;
             }
@@ -1068,17 +1068,17 @@ float ConsoleCmd () {
         return 1;
     } else if (argv(0) == "startmatch") {
         fl = TeamFortress_NoTeams();
-        if (fl < 1.000) {
+        if (fl < 1) {
             dprint("No teams in game\n");
             dprint("Match cannot be started.\n");
             return 1;
         }
-        pmtime = 0.000;
+        pmtime = 0;
 
         StartTimer();
         return 1;
     } else if (argv(0) == "break") {
-        pmtime = 0.000;
+        pmtime = 0;
         StopTimer();
         return 1;
     } else if (argv(0) == "clan") {
@@ -1200,10 +1200,10 @@ float localinfoChanged () {
     if (arg_num == 0)
         return 0;
     if (argv(1) == "rj") {
-        if ( (stof (argv(1)) != 0.000) ) {
+        if ( (stof (argv(1)) != 0) ) {
             rj = stof (infokey (world,"rj"));
         } else {
-            rj = 1.000;
+            rj = 1;
         }
         return 1;
     } else if (argv(1) == "gravity") {
@@ -1240,7 +1240,7 @@ float localinfoChanged () {
     dprint(" ");
     dprint(argv(2));
     dprint("\n");
-    return (1.000);
+    return (1);
 }
 
 void UserInfo_Changed () {
@@ -1251,7 +1251,7 @@ void UserInfo_Changed () {
         return;
     if (argv(1) == "team") {
         if ( (teamplay) ) {
-            if (self.motd > 65.000) {
+            if (self.motd > 65) {
                 st = self.pteam.netname;
                 if ( (st != infokey (self,"team")) ) {
                     SetTeamName (self);
@@ -1263,7 +1263,7 @@ void UserInfo_Changed () {
     } else if (argv(1) == "skin") {
         if ( (self.playerclass) ) {
             st = infokey (self,"skin");
-            tc = 0.000;
+            tc = 0;
             sk = TeamFortress_GetSkin (self);
             if ( (st != sk) ) {
                 TeamFortress_SetSkin (self);
@@ -1274,7 +1274,7 @@ void UserInfo_Changed () {
         if (teamplay) {
             st = infokey (self,"bottomcolor");
             tc = stof (st);
-            if ( ((self.playerclass == 8.000) && (self.undercover_team != 0.000)) ) {
+            if ( ((self.playerclass == 8) && (self.undercover_team != 0)) ) {
                 if ( ((PTeamGetColor (self.undercover_team) ) != tc) ) {
                     stuffcmd (self,"color ");
                     tc = (PTeamGetColor (self.undercover_team) );
@@ -1295,7 +1295,7 @@ void UserInfo_Changed () {
     } else if (argv(1) == "topcolor") {
         if (teamplay && self.playerclass) {
             if (self.undercover_team) return;
-            if (store_obs.cnt == 2.000) {
+            if (store_obs.cnt == 2) {
                 if (self.pteam == pteam1) {
                     if (argv(2) == "4") {
                         sprint (self, PRINT_HIGH,"You cannot use another teams colour as your topcolor.\n");
@@ -1316,7 +1316,7 @@ void UserInfo_Changed () {
                     }
                 }
             }
-            if (store_obs.cnt == 4.000) {
+            if (store_obs.cnt == 4) {
                 if (self.pteam == pteam1) {
                     if (argv(2) == "4" || argv(2) == "12" || argv(2) == "11") {
                         sprint (self, PRINT_HIGH,"You cannot use another teams colour as your topcolor.\n");
@@ -1366,7 +1366,7 @@ void UserInfo_Changed () {
                     }
                 } else {
                     if (self.pteam == pteam2) {
-                        if ( (self.playerclass == 8.000) && (self.undercover_team != 0.000) ) return;
+                        if ( (self.playerclass == 8) && (self.undercover_team != 0) ) return;
                         if (tc != (self.pteam.colormap) ) {
                             stuffcmd (self,"topcolor ");
                             st = ftos(self.pteam.colormap);

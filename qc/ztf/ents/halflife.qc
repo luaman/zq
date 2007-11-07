@@ -20,17 +20,17 @@ void() lightning_fire = {
     entity te;
     te = find (world,targetname,self.LaserTarget);
     if (te) {
-        sound (self,2.000,"misc/power.wav",1.000,1.000);
-        WriteByte (4.000,23.000);
-        WriteByte (4.000,6.000);
-        WriteEntity(4.000, self);
-        WriteCoord (4.000, self.origin_x);
-        WriteCoord (4.000, self.origin_y);
-        WriteCoord (4.000, self.origin_z);
-        WriteCoord (4.000, te.origin_x);
-        WriteCoord (4.000, te.origin_y);
-        WriteCoord (4.000, te.origin_z);
-        multicast (self.origin ,1.000);
+        sound (self,2,"misc/power.wav",1,1);
+        WriteByte (4,23);
+        WriteByte (4,6);
+        WriteEntity(4, self);
+        WriteCoord (4, self.origin_x);
+        WriteCoord (4, self.origin_y);
+        WriteCoord (4, self.origin_z);
+        WriteCoord (4, te.origin_x);
+        WriteCoord (4, te.origin_y);
+        WriteCoord (4, te.origin_z);
+        multicast (self.origin ,1);
     } else {
         dprint (te.classname);
         dprint (" missing laser targets\n");
@@ -38,12 +38,12 @@ void() lightning_fire = {
 };
 
 void laser_use () {
-    if (self.spawnflags & 1.000) {
+    if (self.spawnflags & 1) {
         lightning_fire();
-        self.spawnflags = (self.spawnflags - 1.000);
+        self.spawnflags = (self.spawnflags - 1);
     } else {
         SUB_Null();
-        self.spawnflags = (self.spawnflags + 1.000);
+        self.spawnflags = (self.spawnflags + 1);
     }
 };
 
@@ -53,12 +53,12 @@ void env_laser () {
 };
 
 void Explode () {
-    WriteByte (4.000,23.000);
-    WriteByte (4.000,3.000);
-    WriteCoord (4.000,self.origin_x);
-    WriteCoord (4.000,self.origin_y);
-    WriteCoord (4.000,self.origin_z);
-    multicast (self.origin,1.000);
+    WriteByte (4,23);
+    WriteByte (4,3);
+    WriteCoord (4,self.origin_x);
+    WriteCoord (4,self.origin_y);
+    WriteCoord (4,self.origin_z);
+    multicast (self.origin,1);
 };
 
 void env_explosion () {
@@ -78,14 +78,14 @@ void env_fade () {
 };
 
 void env_beam_use () {
-    if ( (self.spawnflags & 1.000) ) {
-        self.solid = 0.000;
+    if ( (self.spawnflags & 1) ) {
+        self.solid = 0;
         setmodel (self, string_null);
-        self.spawnflags = (self.spawnflags - 1.000);
+        self.spawnflags = (self.spawnflags - 1);
     } else {
-        self.solid = 1.000;
+        self.solid = 1;
         setmodel (self,self.mdl);
-        self.spawnflags = (self.spawnflags + 1.000);
+        self.spawnflags = (self.spawnflags + 1);
     }
 };
 
@@ -111,8 +111,8 @@ void beam_delayed_spawn () {
 };
 
 void env_beam () {
-    self.solid = 1.000;
-    self.movetype = 5.000;
+    self.solid = 1;
+    self.movetype = 5;
     if ( self.mdl ) {
         precache_model (self.mdl);
     } else {
@@ -126,10 +126,10 @@ void env_beam () {
     //use a beam model and try to correct its orientation
     self.use = env_beam_use;
     self.think = beam_delayed_spawn;
-    self.nextthink = (time + 3.000);
+    self.nextthink = (time + 3);
     if (self.rendercolor_z < self.rendercolor_x)
-        self.skin = 1.000;
-    if (self.spawnflags & 1.000) {
+        self.skin = 1;
+    if (self.spawnflags & 1) {
         setmodel (self,self.mdl);
     }
 };
@@ -206,7 +206,7 @@ void multi_spawn () {
             } else {
                 SUB_UseTargets();
             }
-            stlen = 0.000;
+            stlen = 0;
         }
         args = args - 2;
     }
@@ -238,33 +238,33 @@ void SplashTouch () {
 void func_water () {
     if (mapname == "openfire" || mapname == "tfc_openfire")
         dremove(self);
-    self.solid = 1.000;
-    self.movetype = 0.000;
+    self.solid = 1;
+    self.movetype = 0;
     //setorigin (self,self.origin);
     setmodel (self,self.model);
     self.touch = SplashTouch;
 };
 
 void() func_ladder = {
-    self.movetype = 0.000;
-    self.solid = 5.000;
+    self.movetype = 0;
+    self.solid = 5;
     setmodel(self, self.model);
     self.model = "";
 };
 
 void () Breakaway  = {
-    self.solid = 0.000;
+    self.solid = 0;
     setmodel (self,string_null);
 };
 
 void Breakuse () {
-    if ( (self.spawnflags & 1.000) ) {
+    if ( (self.spawnflags & 1) ) {
         Breakaway();
-        self.spawnflags = (self.spawnflags - 1.000);
+        self.spawnflags = (self.spawnflags - 1);
     } else {
-        self.solid = 4.000;
+        self.solid = 4;
         setmodel (self,self.mdl);
-        self.spawnflags = (self.spawnflags + 1.000);
+        self.spawnflags = (self.spawnflags + 1);
     }
 };
 
@@ -274,34 +274,34 @@ void Breaktouch () {
 };
 
 void func_breakable () {
-    self.solid = 4.000;
-    self.movetype = 7.000;
+    self.solid = 4;
+    self.movetype = 7;
     setorigin (self, self.origin);
     self.mdl = self.model;
     setmodel (self, self.mdl);
     setsize (self, self.mins , self.maxs);
-    if (self.spawnflags & 1.000) {
+    if (self.spawnflags & 1) {
         if (self.targetname)
             self.use = Breakuse;
     } else {
         if (self.health) {
-            self.takedamage = 1.000;
+            self.takedamage = 1;
             self.th_die = Breakaway;
         }
     }
-    if (self.spawnflags & 2.000) {
+    if (self.spawnflags & 2) {
         self.touch = Breaktouch;
     }
 };
 
 void func_wall_toggle () {
-    self.movetype = 7.000;
-    self.solid = 4.000;
+    self.movetype = 7;
+    self.solid = 4;
     if (self.targetname)
         self.use = Breakuse;
     self.mdl = self.model;
     setmodel (self,self.mdl);
-    self.spawnflags = 1.000;
+    self.spawnflags = 1;
 };
 
 void info_areadef () {

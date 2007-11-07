@@ -60,17 +60,17 @@ void ReturnItem ();
 void CheckModel () {
     if (self.mdl == "models/flag.mdl") {
         self.mdl = "progs/tf_stan.mdl";
-        if (self.skin == 1.000)
-            self.skin = 2.000;
-        else if (self.skin == 2.000)
-            self.skin = 1.000;
+        if (self.skin == 1)
+            self.skin = 2;
+        else if (self.skin == 2)
+            self.skin = 1;
     }
     if (self.mdl == "models/backpack.mdl")
         self.mdl = "progs/backpack.mdl";
     if (self.mdl == "models/keycard.mdl") {
-        if (self.owned_by == 1.000) {
+        if (self.owned_by == 1) {
             self.mdl = "progs/basbkey.bsp";
-        } else if (self.owned_by == 2.000) {
+        } else if (self.owned_by == 2) {
             self.mdl = "progs/basrkey.bsp";
         }
     }
@@ -89,50 +89,50 @@ void UpdateAbbreviations (entity Goal) {
     float flag;
     //dprint(Goal.classname);
     //dprint("\n");
-    if ( (Goal.has_abbreviated == 0.000) ) {
-        if ( ((Goal.g_a != 0.000) && (Goal.goal_activation == 0.000)) ) {
+    if ( (Goal.has_abbreviated == 0) ) {
+        if ( ((Goal.g_a != 0) && (Goal.goal_activation == 0)) ) {
             Goal.goal_activation = Goal.g_a;
         }
-        if ( ((Goal.g_e != 0.000) && (Goal.goal_effects == 0.000)) ) {
+        if ( ((Goal.g_e != 0) && (Goal.goal_effects == 0)) ) {
             Goal.goal_effects = Goal.g_e;
         }
-        if ( ((Goal.h_i_g != 0.000) && (Goal.has_item_from_group == 0.000)) ) {
+        if ( ((Goal.h_i_g != 0) && (Goal.has_item_from_group == 0)) ) {
             Goal.has_item_from_group = Goal.h_i_g;
         }
-        if ( ((Goal.hn_i_g != 0.000) && (Goal.hasnt_item_from_group == 0.000)) ) {
+        if ( ((Goal.hn_i_g != 0) && (Goal.hasnt_item_from_group == 0)) ) {
             Goal.hasnt_item_from_group = Goal.hn_i_g;
         }
-        if ( ((Goal.r_i_g != 0.000) && (Goal.remove_item_group == 0.000)) ) {
+        if ( ((Goal.r_i_g != 0) && (Goal.remove_item_group == 0)) ) {
             Goal.remove_item_group = Goal.r_i_g;
         }
-        if ( ((Goal.a_s != 0.000) && (Goal.ammo_shells == 0.000)) ) {
+        if ( ((Goal.a_s != 0) && (Goal.ammo_shells == 0)) ) {
             Goal.ammo_shells = Goal.a_s;
         }
-        if ( ((Goal.a_n != 0.000) && (Goal.ammo_nails == 0.000)) ) {
+        if ( ((Goal.a_n != 0) && (Goal.ammo_nails == 0)) ) {
             Goal.ammo_nails = Goal.a_n;
         }
-        if ( ((Goal.a_r != 0.000) && (Goal.ammo_rockets == 0.000)) ) {
+        if ( ((Goal.a_r != 0) && (Goal.ammo_rockets == 0)) ) {
             Goal.ammo_rockets = Goal.a_r;
         }
-        if ( ((Goal.a_c != 0.000) && (Goal.ammo_cells == 0.000)) ) {
+        if ( ((Goal.a_c != 0) && (Goal.ammo_cells == 0)) ) {
             Goal.ammo_cells = Goal.a_c;
         }
-        if ( ((Goal.rv_s_h != 0.000) && (Goal.remove_spawngroup == 0.000)) ) {
+        if ( ((Goal.rv_s_h != 0) && (Goal.remove_spawngroup == 0)) ) {
             Goal.remove_spawngroup = Goal.rv_s_h;
         }
-        if ( ((Goal.rs_s_h != 0.000) && (Goal.restore_spawngroup == 0.000)) ) {
+        if ( ((Goal.rs_s_h != 0) && (Goal.restore_spawngroup == 0)) ) {
             Goal.restore_spawngroup = Goal.rs_s_h;
         }
-        if ( ((Goal.rv_gr != 0.000) && (Goal.remove_group_no == 0.000)) ) {
+        if ( ((Goal.rv_gr != 0) && (Goal.remove_group_no == 0)) ) {
             Goal.remove_group_no = Goal.rv_gr;
         }
-        if ( ((Goal.rs_gr != 0.000) && (Goal.restore_group_no == 0.000)) ) {
+        if ( ((Goal.rs_gr != 0) && (Goal.restore_group_no == 0)) ) {
             Goal.restore_group_no = Goal.rs_gr;
         }
-        if ( ((Goal.rv_g != 0.000) && (Goal.remove_goal_no == 0.000)) ) {
+        if ( ((Goal.rv_g != 0) && (Goal.remove_goal_no == 0)) ) {
             Goal.remove_goal_no = Goal.rv_g;
         }
-        if ( ((Goal.rs_g != 0.000) && (Goal.restore_goal_no == 0.000)) ) {
+        if ( ((Goal.rs_g != 0) && (Goal.restore_goal_no == 0)) ) {
             Goal.restore_goal_no = Goal.rs_g;
         }
         if ( (Goal.t_s_h != string_null) ) {
@@ -189,36 +189,36 @@ void UpdateAbbreviations (entity Goal) {
         if ( (Goal.d_n_n != string_null) ) {
             Goal.netname_non_team_drop = Goal.d_n_n;
         }
-        if ((flagem_checked == 0.000)) {
+        if ((flagem_checked == 0)) {
             st = infokey (world,"flag_drop");
             if ( (st == "on") ) {
-                toggleflags = (toggleflags | 8.000);
+                toggleflags = (toggleflags | 8);
             }
             st = infokey (world,"flag_solid");
             if ( (st == "on") ) {
-                toggleflags = (toggleflags | 16.000);
+                toggleflags = (toggleflags | 16);
             }
             flag = stof(infokey (world,"flag_model"));
-            if (flag == 1.000 ) {
+            if (flag == 1 ) {
                 toggleflags = (toggleflags | 4096);
-            } else if (flag == 2.000) {
+            } else if (flag == 2) {
                 toggleflags = (toggleflags | 8192);
-            } else if (flag == 3.000) {
+            } else if (flag == 3) {
                 toggleflags = (toggleflags | 16384);
             }
-            flagem_checked = 1.000;
+            flagem_checked = 1;
         }
 
         if ( (toggleflags & 4096) ) {
             if ( (((Goal.mdl == "progs/b_s_key.mdl") || (Goal.mdl == "progs/m_s_key.mdl")) || (Goal.mdl == "progs/w_s_key.mdl")) ) {
                 precache_model2 ("progs/tf_flag.mdl");
                 Goal.mdl = "progs/tf_flag.mdl";
-                Goal.skin = 1.000;
+                Goal.skin = 1;
             } else {
                 if ( (((Goal.mdl == "progs/b_g_key.mdl") || (Goal.mdl == "progs/m_g_key.mdl")) || (Goal.mdl == "progs/w_g_key.mdl")) ) {
                     precache_model2 ("progs/tf_flag.mdl");
                     Goal.mdl = "progs/tf_flag.mdl";
-                    Goal.skin = 2.000;
+                    Goal.skin = 2;
                 } else {
                     if ( (Goal.mdl == "progs/tf_stan.mdl") || (Goal.mdl == "progs/flag.mdl")  ) {
                         precache_model2 ("progs/tf_flag.mdl");
@@ -231,12 +231,12 @@ void UpdateAbbreviations (entity Goal) {
             if ( (((Goal.mdl == "progs/b_s_key.mdl") || (Goal.mdl == "progs/m_s_key.mdl")) || (Goal.mdl == "progs/w_s_key.mdl")) ) {
                 precache_model2 ("progs/tf_stan.mdl");
                 Goal.mdl = "progs/tf_stan.mdl";
-                Goal.skin = 1.000;
+                Goal.skin = 1;
             } else {
                 if ( (((Goal.mdl == "progs/b_g_key.mdl") || (Goal.mdl == "progs/m_g_key.mdl")) || (Goal.mdl == "progs/w_g_key.mdl")) ) {
                     precache_model2 ("progs/tf_stan.mdl");
                     Goal.mdl = "progs/tf_stan.mdl";
-                    Goal.skin = 2.000;
+                    Goal.skin = 2;
                 } else {
                     if ( (Goal.mdl == "progs/tf_flag.mdl") || (Goal.mdl == "progs/flag.mdl")  ) {
                         precache_model2 ("progs/tf_stan.mdl");
@@ -249,33 +249,33 @@ void UpdateAbbreviations (entity Goal) {
             if ( (((Goal.mdl == "progs/b_s_key.mdl") || (Goal.mdl == "progs/m_s_key.mdl")) || (Goal.mdl == "progs/w_s_key.mdl")) ) {
                 precache_model2 ("progs/flag.mdl");
                 Goal.mdl = "progs/flag.mdl";
-                Goal.skin = 1.000;
+                Goal.skin = 1;
             } else {
                 if ( (((Goal.mdl == "progs/b_g_key.mdl") || (Goal.mdl == "progs/m_g_key.mdl")) || (Goal.mdl == "progs/w_g_key.mdl")) ) {
                     precache_model2 ("progs/flag.mdl");
                     Goal.mdl = "progs/flag.mdl";
-                    Goal.skin = 0.000;
+                    Goal.skin = 0;
                 } else {
                     if ( (Goal.mdl == "progs/tf_flag.mdl") || (Goal.mdl == "progs/tf_stan.mdl")  ) {
                         precache_model2 ("progs/flag.mdl");
                         Goal.mdl = "progs/flag.mdl";
-                        if (Goal.skin == 2.000) Goal.skin = 0.000;
+                        if (Goal.skin == 2) Goal.skin = 0;
 
                     }
                 }
             }
         }
-        Goal.has_abbreviated = 1.000;
+        Goal.has_abbreviated = 1;
     }
 }
 
 void TF_PlaceItem () {
     float oldz;
-    self.flags = 256.000;
-    self.velocity = '0.000 0.000 0.000';
-    if ( (self.goal_activation & 2048.000) ) {
-        self.movetype = 6.000;
-        self.origin_z = (self.origin_z + 6.000);
+    self.flags = 256;
+    self.velocity = '0 0 0';
+    if ( (self.goal_activation & 2048) ) {
+        self.movetype = 6;
+        self.origin_z = (self.origin_z + 6);
         oldz = self.origin_z;
         if ( !droptofloor () ) {
             dprint ("GoalItem fell out of level at ");
@@ -285,33 +285,33 @@ void TF_PlaceItem () {
             return ;
         }
     }
-    self.movetype = 0.000;
+    self.movetype = 0;
     self.oldorigin = self.origin;
-    if ( (self.goal_activation & 512.000) ) {
-        if (self.owned_by == 1.000) {
-            self.effects = (self.effects | 64.000);
+    if ( (self.goal_activation & 512) ) {
+        if (self.owned_by == 1) {
+            self.effects = (self.effects | 64);
         } else {
-            if (self.owned_by == 2.000) {
-                self.effects = (self.effects | 128.000);
+            if (self.owned_by == 2) {
+                self.effects = (self.effects | 128);
             } else {
-                self.effects = (self.effects | 8.000);
+                self.effects = (self.effects | 8);
             }
         }
 
 
     }
-    if ( (item_list_bit == 0.000) ) {
-        item_list_bit = 1.000;
+    if ( (item_list_bit == 0) ) {
+        item_list_bit = 1;
     }
     self.item_list = item_list_bit;
-    item_list_bit = (item_list_bit * 2.000);
+    item_list_bit = (item_list_bit * 2);
 }
 
 void TF_StartItem () {
     UpdateAbbreviations (self);
     self.nextthink = (time + 0.200);
     self.think = TF_PlaceItem;
-    if ( (self.goal_state == 3.000) ) {
+    if ( (self.goal_state == 3) ) {
         RemoveGoal (self);
     }
 }
@@ -319,7 +319,7 @@ void TF_StartItem () {
 void TF_PlaceGoal () {
     float oldz;
     if ( (self.classname != "info_tfgoal_timer") ) {
-        if ( (self.goal_activation & 1.000) ) {
+        if ( (self.goal_activation & 1) ) {
             self.touch = tfgoal_touch;
         }
     } else {
@@ -327,9 +327,9 @@ void TF_PlaceGoal () {
         self.nextthink = (time + self.search_time);
         self.classname = "info_tfgoal";
     }
-    if ( (self.goal_activation & 2048.000) ) {
-        self.movetype = 6.000;
-        self.origin_z = (self.origin_z + 6.000);
+    if ( (self.goal_activation & 2048) ) {
+        self.movetype = 6;
+        self.origin_z = (self.origin_z + 6);
         oldz = self.origin_z;
         if ( !droptofloor () ) {
             dprint ("Goal fell out of level at ");
@@ -339,9 +339,9 @@ void TF_PlaceGoal () {
             return ;
         }
     }
-    self.flags = 256.000;
-    self.movetype = 0.000;
-    self.velocity = '0.000 0.000 0.000';
+    self.flags = 256;
+    self.movetype = 0;
+    self.velocity = '0 0 0';
     self.oldorigin = self.origin;
 }
 
@@ -350,7 +350,7 @@ void TF_StartGoal () {
     self.nextthink = (time + 0.200);
     self.think = TF_PlaceGoal;
     self.use = info_tfgoal_use;
-    if ( (self.goal_state == 3.000) ) {
+    if ( (self.goal_state == 3) ) {
         RemoveGoal (self);
     }
 }
@@ -358,21 +358,21 @@ void TF_StartGoal () {
 float CheckExistence () {
     UpdateAbbreviations (self);
     skill = cvar ("skill");
-    if (((self.ex_skill_min == -1.000) && (skill < 0.000))) {
-        return (0.000000);
+    if (((self.ex_skill_min == -1) && (skill < 0))) {
+        return (0);
     } else {
-        if (((self.ex_skill_max == -1.000) && (skill > 0.000))) {
-            return (0.000);
+        if (((self.ex_skill_max == -1) && (skill > 0))) {
+            return (0);
         }
     }
-    if (((self.ex_skill_min && (self.ex_skill_min != -1.000)) && (skill < self.ex_skill_min))) {
-        return (0.000);
+    if (((self.ex_skill_min && (self.ex_skill_min != -1)) && (skill < self.ex_skill_min))) {
+        return (0);
     } else {
-        if (((self.ex_skill_max && (self.ex_skill_max != -1.000)) && (skill > self.ex_skill_max))) {
-            return (0.000);
+        if (((self.ex_skill_max && (self.ex_skill_max != -1)) && (skill > self.ex_skill_max))) {
+            return (0);
         }
     }
-    return (1.000);
+    return (1);
 }
 
 void info_tfdetect () {
@@ -380,11 +380,11 @@ void info_tfdetect () {
 }
 
 void info_player_teamspawn () {
-    if ((CheckExistence () == 0.000)) {
+    if ((CheckExistence () == 0)) {
         dremove (self);
         return;
     }
-    if ( ((self.team_no <= 0.000) || (self.team_no > 4.000)) ) {
+    if ( ((self.team_no <= 0) || (self.team_no > 4)) ) {
         objerror ("error: bad team_no associated with info_player_teamspawn\n");
         dremove (self);
         return ;
@@ -402,16 +402,16 @@ void info_player_teamspawn () {
     if ( (store_obs.cnt < self.team_no) ) {
         store_obs.cnt = self.team_no;
     }
-    if ( (self.team_no == 1.000) ) {
+    if ( (self.team_no == 1) ) {
         self.team_str_home = "ts1";
     } else {
-        if ( (self.team_no == 2.000) ) {
+        if ( (self.team_no == 2) ) {
             self.team_str_home = "ts2";
         } else {
-            if ( (self.team_no == 3.000) ) {
+            if ( (self.team_no == 3) ) {
                 self.team_str_home = "ts3";
             } else {
-                if ( (self.team_no == 4.000) ) {
+                if ( (self.team_no == 4) ) {
                     self.team_str_home = "ts4";
                 }
             }
@@ -425,7 +425,7 @@ void i_p_t () {
 }
 
 void info_tfgoal () {
-    if ((CheckExistence () == 0.000)) {
+    if ((CheckExistence () == 0)) {
         dremove (self);
         return;
     }
@@ -444,13 +444,13 @@ void info_tfgoal () {
     precache_sound ("items/damage.wav");
     precache_sound ("items/damage2.wav");
     precache_sound ("items/damage3.wav");
-    self.solid = 1.000;
+    self.solid = 1;
     if (bspversion == 30) {
         CheckModel ();
         if (self.model) {
             setmodel (self,self.model);
-            self.movetype = 0.000;
-            self.modelindex = 0.000;
+            self.movetype = 0;
+            self.modelindex = 0;
             self.model = "";
         } else {
             if ( self.mdl ) {
@@ -458,11 +458,11 @@ void info_tfgoal () {
                 precache_model2 (self.mdl);
                 setmodel (self,self.mdl);
             }
-            if ( (self.goal_min == '0.000 0.000 0.000') ) {
-                self.goal_min = '-16.000 -16.000 -24.000';
+            if ( (self.goal_min == '0 0 0') ) {
+                self.goal_min = '-16 -16 -24';
             }
-            if ( (self.goal_max == '0.000 0.000 0.000') ) {
-                self.goal_max = '16.000 16.000 32.000';
+            if ( (self.goal_max == '0 0 0') ) {
+                self.goal_max = '16 16 32';
             }
             setsize (self,self.goal_min,self.goal_max);
         }
@@ -475,17 +475,17 @@ void info_tfgoal () {
             precache_model2 (self.mdl);
             setmodel (self,self.mdl);
         }
-        if ( (self.goal_min == '0.000 0.000 0.000') ) {
-            self.goal_min = '-16.000 -16.000 -24.000';
+        if ( (self.goal_min == '0 0 0') ) {
+            self.goal_min = '-16 -16 -24';
         }
-        if ( (self.goal_max == '0.000 0.000 0.000') ) {
-            self.goal_max = '16.000 16.000 32.000';
+        if ( (self.goal_max == '0 0 0') ) {
+            self.goal_max = '16 16 32';
         }
         setsize (self,self.goal_min,self.goal_max);
         TF_StartGoal ();
     }
-    if ( (self.goal_state == 0.000) ) {
-        self.goal_state = 2.000;
+    if ( (self.goal_state == 0) ) {
+        self.goal_state = 2;
     }
 }
 
@@ -495,7 +495,7 @@ void i_t_g () {
 }
 
 void info_tfgoal_timer () {
-    if ((CheckExistence () == 0.000)) {
+    if ((CheckExistence () == 0)) {
         dremove (self);
         return;
     }
@@ -509,19 +509,19 @@ void info_tfgoal_timer () {
         precache_sound (self.noise);
         precache_sound2 (self.noise);
     }
-    if ( (self.search_time <= 0.000) ) {
+    if ( (self.search_time <= 0) ) {
         dprint ("Timer Goal created with no specified time.\n");
         dremove (self);
     }
-    self.solid = 0.000;
-    if ( (self.goal_state == 0.000) ) {
-        self.goal_state = 2.000;
+    self.solid = 0;
+    if ( (self.goal_state == 0) ) {
+        self.goal_state = 2;
     }
-    if ( (self.goal_min == '0.000 0.000 0.000') ) {
-        self.goal_min = '-16.000 -16.000 -24.000';
+    if ( (self.goal_min == '0 0 0') ) {
+        self.goal_min = '-16 -16 -24';
     }
-    if ( (self.goal_max == '0.000 0.000 0.000') ) {
-        self.goal_max = '16.000 16.000 32.000';
+    if ( (self.goal_max == '0 0 0') ) {
+        self.goal_max = '16 16 32';
     }
     setsize (self,self.goal_min,self.goal_max);
     TF_StartGoal ();
@@ -538,23 +538,23 @@ void item_flag_team2 ();
 
 void item_tfgoal () {
     string st;
-    if ((CheckExistence () == 0.000)) {
+    if ((CheckExistence () == 0)) {
         dremove (self);
         return;
     }
     st = infokey (world,"ctfmap");
     if ((st == "on")) {
-        ctfmap = 1.000;
+        ctfmap = 1;
     }
     if (ctfmap) {
-        if (self.team_no == 1.000) {
-            self.owned_by = 0.000;
-            self.team_no = 0.000;
+        if (self.team_no == 1) {
+            self.owned_by = 0;
+            self.team_no = 0;
             item_flag_team2();
             return;
-        } else if (self.team_no == 2.000) {
-            self.owned_by = 0.000;
-            self.team_no = 0.000;
+        } else if (self.team_no == 2) {
+            self.owned_by = 0;
+            self.team_no = 0;
             item_flag_team1();
             return;
         }
@@ -574,29 +574,29 @@ void item_tfgoal () {
         precache_sound2 (self.noise);
     }
     self.touch = item_tfgoal_touch;
-    if ( (self.goal_state == 0.000) ) {
-        self.goal_state = 2.000;
+    if ( (self.goal_state == 0) ) {
+        self.goal_state = 2;
     }
-    if ( (self.goal_activation & 8192.000) || (toggleflags & 16.000 )) {
-        self.solid = 2.000;
+    if ( (self.goal_activation & 8192) || (toggleflags & 16 )) {
+        self.solid = 2;
     } else {
-        self.solid = 1.000;
+        self.solid = 1;
     }
     setorigin (self,self.origin);
     if ( !self.netname ) {
         self.netname = "goalitem";
     }
-    if ( (self.pausetime <= 0.000) ) {
-        self.pausetime = 45.000;
+    if ( (self.pausetime <= 0) ) {
+        self.pausetime = 45;
     }
-    if ( ((self.delay != 0.000) && (self.pausetime == 0.000)) ) {
+    if ( ((self.delay != 0) && (self.pausetime == 0)) ) {
         self.pausetime = self.delay;
     }
-    if ( (self.goal_min == '0.000 0.000 0.000') ) {
-        self.goal_min = '-16.000 -16.000 -24.000';
+    if ( (self.goal_min == '0 0 0') ) {
+        self.goal_min = '-16 -16 -24';
     }
-    if ( (self.goal_max == '0.000 0.000 0.000') ) {
-        self.goal_max = '16.000 16.000 32.000';
+    if ( (self.goal_max == '0 0 0') ) {
+        self.goal_max = '16 16 32';
     }
     setsize (self,self.goal_min,self.goal_max);
     TF_StartItem ();
@@ -609,8 +609,8 @@ void ParseTFDetect (entity AD) {
     }
     localcmd (AD.message);
     cvar_set ("sv_maxspeed","600");
-    if ( (AD.hook_out == 1.000) ) {
-        allow_hook = 1.000;
+    if ( (AD.hook_out == 1) ) {
+        allow_hook = 1;
     }
     fl = stof(infokey (world,"t1maxplayers"));
     if (fl) {
@@ -628,17 +628,17 @@ void ParseTFDetect (entity AD) {
     if (fl) {
         AD.maxammo_detpack = fl;
     }
-    if ( (AD.ammo_medikit < 1.000) ) {
-        AD.ammo_medikit = 100.000;
+    if ( (AD.ammo_medikit < 1) ) {
+        AD.ammo_medikit = 100;
     }
-    if ( (AD.ammo_detpack < 1.000) ) {
-        AD.ammo_detpack = 100.000;
+    if ( (AD.ammo_detpack < 1) ) {
+        AD.ammo_detpack = 100;
     }
-    if ( (AD.maxammo_medikit < 1.000) ) {
-        AD.maxammo_medikit = 100.000;
+    if ( (AD.maxammo_medikit < 1) ) {
+        AD.maxammo_medikit = 100;
     }
-    if ( (AD.maxammo_detpack < 1.000) ) {
-        AD.maxammo_detpack = 100.000;
+    if ( (AD.maxammo_detpack < 1) ) {
+        AD.maxammo_detpack = 100;
     }
     pteam1.maxplayers = AD.ammo_medikit;
     pteam2.maxplayers = AD.ammo_detpack;
@@ -661,18 +661,18 @@ void ParseTFDetect (entity AD) {
     if (fl) {
         AD.maxammo_cells = fl;
     }
-    store_obs.maxammo_shells = 0.000;
-    if ( (AD.maxammo_shells == -1.000) ) {
-        store_obs.maxammo_shells = (store_obs.maxammo_shells | 1.000);
+    store_obs.maxammo_shells = 0;
+    if ( (AD.maxammo_shells == -1) ) {
+        store_obs.maxammo_shells = (store_obs.maxammo_shells | 1);
     }
-    if ( (AD.maxammo_nails == -1.000) ) {
-        store_obs.maxammo_shells = (store_obs.maxammo_shells | 2.000);
+    if ( (AD.maxammo_nails == -1) ) {
+        store_obs.maxammo_shells = (store_obs.maxammo_shells | 2);
     }
-    if ( (AD.maxammo_rockets == -1.000) ) {
-        store_obs.maxammo_shells = (store_obs.maxammo_shells | 4.000);
+    if ( (AD.maxammo_rockets == -1) ) {
+        store_obs.maxammo_shells = (store_obs.maxammo_shells | 4);
     }
-    if ( (AD.maxammo_cells == -1.000) ) {
-        store_obs.maxammo_shells = (store_obs.maxammo_shells | 8.000);
+    if ( (AD.maxammo_cells == -1) ) {
+        store_obs.maxammo_shells = (store_obs.maxammo_shells | 8);
     }
 }
 
@@ -728,15 +728,15 @@ entity Findteamspawn (float gno) {
 }
 
 void InactivateGoal (entity Goal) {
-    if ( (Goal.goal_state == 1.000) ) {
-        if ( (Goal.search_time == 0.000) ) {
-            if ( ((Goal.goal_activation & 8192.000) || (toggleflags & 16.000)) && (Goal.classname == "item_tfgoal") ) {
-                Goal.solid = 2.000;
+    if ( (Goal.goal_state == 1) ) {
+        if ( (Goal.search_time == 0) ) {
+            if ( ((Goal.goal_activation & 8192) || (toggleflags & 16)) && (Goal.classname == "item_tfgoal") ) {
+                Goal.solid = 2;
             } else {
-                Goal.solid = 1.000;
+                Goal.solid = 1;
             }
         }
-        Goal.goal_state = 2.000;
+        Goal.goal_state = 2;
         if ( (Goal.mdl != string_null) ) {
             setmodel (Goal,Goal.mdl);
         }
@@ -744,18 +744,18 @@ void InactivateGoal (entity Goal) {
 }
 
 void RestoreGoal (entity Goal) {
-    if ( (Goal.goal_state == 3.000) ) {
-        if ( (Goal.search_time == 0.000) ) {
-            if ( ((Goal.goal_activation & 8192.000) || (toggleflags & 16.000)) && (Goal.classname == "item_tfgoal")) {
-                Goal.solid = 2.000;
+    if ( (Goal.goal_state == 3) ) {
+        if ( (Goal.search_time == 0) ) {
+            if ( ((Goal.goal_activation & 8192) || (toggleflags & 16)) && (Goal.classname == "item_tfgoal")) {
+                Goal.solid = 2;
             } else {
-                Goal.solid = 1.000;
+                Goal.solid = 1;
             }
 
         } else {
             Goal.nextthink = (time + Goal.search_time);
         }
-        Goal.goal_state = 2.000;
+        Goal.goal_state = 2;
         if ( (Goal.mdl != string_null) ) {
             setmodel (Goal,Goal.mdl);
         }
@@ -763,8 +763,8 @@ void RestoreGoal (entity Goal) {
 }
 
 void RemoveGoal (entity Goal) {
-    Goal.solid = 0.000;
-    Goal.goal_state = 3.000;
+    Goal.solid = 0;
+    Goal.goal_state = 3;
     if ( (Goal.mdl != string_null) ) {
         setmodel (Goal,string_null);
     }
@@ -773,47 +773,47 @@ void RemoveGoal (entity Goal) {
 float IsAffectedBy (entity Goal, entity Player, entity AP) {
     float genv;
     if ( (!Player.playerclass ) ) {
-        return ( 0.000 );
+        return ( 0 );
     }
-    if ( (Goal.goal_effects & 32.000) ) {
+    if ( (Goal.goal_effects & 32) ) {
         genv = pointcontents (Goal.origin);
         if ( (pointcontents (Player.origin) != genv) ) {
-            return ( 0.000 );
+            return ( 0 );
         }
     }
-    if ( (Goal.t_length != 0.000) ) {
+    if ( (Goal.t_length != 0) ) {
         if ( (vlen ((Goal.origin - Player.origin)) <= Goal.t_length) ) {
-            if ( (Goal.goal_effects & 16.000) ) {
-                traceline (Goal.origin,Player.origin,1.000,Goal);
-                if ( (trace_fraction == 1.000) ) {
-                    return ( 1.000 );
+            if ( (Goal.goal_effects & 16) ) {
+                traceline (Goal.origin,Player.origin,1,Goal);
+                if ( (trace_fraction == 1) ) {
+                    return ( 1 );
                 }
             } else {
-                return ( 1.000 );
+                return ( 1 );
             }
         }
     }
     if ( (Goal.classname != "info_tfgoal_timer") ) {
-        if ( ((Goal.goal_effects & 1.000) && (Player == AP)) ) {
-            return ( 1.000 );
+        if ( ((Goal.goal_effects & 1) && (Player == AP)) ) {
+            return ( 1 );
         }
-        if ( ((Goal.goal_effects & 2.000) && (AP.pteam == Player.pteam)) ) {
-            return ( 1.000 );
+        if ( ((Goal.goal_effects & 2) && (AP.pteam == Player.pteam)) ) {
+            return ( 1 );
         }
-        if ( ((Goal.goal_effects & 4.000) && (AP.pteam != Player.pteam)) ) {
-            return ( 1.000 );
+        if ( ((Goal.goal_effects & 4) && (AP.pteam != Player.pteam)) ) {
+            return ( 1 );
         }
-        if ( ((Goal.goal_effects & 8.000) && (Player != AP)) ) {
-            return ( 1.000 );
+        if ( ((Goal.goal_effects & 8) && (Player != AP)) ) {
+            return ( 1 );
         }
     }
-    if ( ((Goal.maxammo_shells != 0.000) && (Player.pteam.team == Goal.maxammo_shells)) ) {
-        return ( 1.000 );
+    if ( ((Goal.maxammo_shells != 0) && (Player.pteam.team == Goal.maxammo_shells)) ) {
+        return ( 1 );
     }
-    if ( ((Goal.maxammo_nails != 0.000) && (Player.pteam.team != Goal.maxammo_shells)) ) {
-        return ( 1.000 );
+    if ( ((Goal.maxammo_nails != 0) && (Player.pteam.team != Goal.maxammo_shells)) ) {
+        return ( 1 );
     }
-    return ( 0.000 );
+    return ( 0 );
 }
 
 void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
@@ -827,13 +827,13 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
         Player.item_list = (Player.item_list | Goal.item_list);
     }
     if ( (Player == AP) ) {
-        if ( (Goal.count > 0.000) ) {
-            if ( (Player.pteam.team > 0.000) ) {
+        if ( (Goal.count > 0) ) {
+            if ( (Player.pteam.team > 0) ) {
                 if (rounds) {
                     if (modetype & 16) {
                         te = find (world,classname,"round");
                         captime = time - te.invisible_time;
-                        if (( captime != 0.000 )) {
+                        if (( captime != 0 )) {
                             st = ftos(captime);
                             bprint (PRINT_HIGH,Player.netname);
                             bprint (PRINT_HIGH," Captured the flag in ");
@@ -844,37 +844,37 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
                     }
                     if (round_active) round_winner = Player.pteam;
                 }
-                Player.flag_captures = Player.flag_captures + 1.000;
+                Player.flag_captures = Player.flag_captures + 1;
                 if (Player.StatusBarSize)
                     Player.StatusRefreshTime = (time + 0.100);
                 TeamFortress_TeamIncreaseScore (Player.pteam.team,Goal.count);
-                TeamFortress_TeamShowScores (2.000);
+                TeamFortress_TeamShowScores (2);
             }
         }
     }
     if ( addb ) {
-        if ( (Player.health > 0.000) ) {
-            if ( (Goal.health > 0.000) ) {
-                T_Heal (Player,Goal.health,0.000);
+        if ( (Player.health > 0) ) {
+            if ( (Goal.health > 0) ) {
+                T_Heal (Player,Goal.health,0);
             }
-            if ( (Goal.health < 0.000) ) {
-                if ( ((0.000 - Player.health) > Goal.health) ) {
-                    TF_T_Damage (Player,Goal,Goal,(Player.health - Goal.health),1.000,0.000);
+            if ( (Goal.health < 0) ) {
+                if ( ((0 - Player.health) > Goal.health) ) {
+                    TF_T_Damage (Player,Goal,Goal,(Player.health - Goal.health),1,0);
                 } else {
-                    TF_T_Damage (Player,Goal,Goal,(0.000 - Goal.health),1.000,0.000);
+                    TF_T_Damage (Player,Goal,Goal,(0 - Goal.health),1,0);
                 }
             }
         }
-        if ( (Player.health > 0.000) ) {
-            if ( (Goal.armortype > 0.000) ) {
+        if ( (Player.health > 0) ) {
+            if ( (Goal.armortype > 0) ) {
                 Player.armortype = Goal.armortype;
             } else {
-                if ( (Goal.armorvalue > 0.000) ) {
+                if ( (Goal.armorvalue > 0) ) {
                     Player.armortype = Player.armor_allowed;
                 }
             }
             Player.armorvalue = (Player.armorvalue + Goal.armorvalue);
-            if ( (Goal.armorclass > 0.000) ) {
+            if ( (Goal.armorclass > 0) ) {
                 Player.armorclass = Goal.armorclass;
             }
             Player.ammo_shells = (Player.ammo_shells + Goal.ammo_shells);
@@ -885,33 +885,33 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
             Player.ammo_detpack = (Player.ammo_detpack + Goal.ammo_detpack);
             Player.no_grenades_1 = (Player.no_grenades_1 + Goal.no_grenades_1);
             Player.no_grenades_2 = (Player.no_grenades_2 + Goal.no_grenades_2);
-            if ( (Player.no_grenades_1 > 4.000) ) {
-                Player.no_grenades_1 = 4.000;
+            if ( (Player.no_grenades_1 > 4) ) {
+                Player.no_grenades_1 = 4;
             }
-            if ( (Player.no_grenades_2 > 4.000) ) {
-                Player.no_grenades_2 = 4.000;
+            if ( (Player.no_grenades_2 > 4) ) {
+                Player.no_grenades_2 = 4;
             }
-            if ( ((Player.tp_grenades_1 == 3.000) && (Player.no_grenades_1 > 2.000)) ) {
-                Player.no_grenades_1 = 2.000;
+            if ( ((Player.tp_grenades_1 == 3) && (Player.no_grenades_1 > 2)) ) {
+                Player.no_grenades_1 = 2;
             }
-            if ( ((Player.tp_grenades_2 == 3.000) && (Player.no_grenades_2 > 2.000)) ) {
-                Player.no_grenades_2 = 2.000;
+            if ( ((Player.tp_grenades_2 == 3) && (Player.no_grenades_2 > 2)) ) {
+                Player.no_grenades_2 = 2;
             }
             if ( (Player.ammo_detpack > Player.maxammo_detpack) ) {
                 Player.ammo_detpack = Player.maxammo_detpack;
             }
-            if ( (Player.tfstate & 1.000) ) {
+            if ( (Player.tfstate & 1) ) {
                 te = find (world,classname,"primer");
                 while ( te ) {
                     if ( (te.owner == Player) ) {
-                        if ( ((te.impulse == 151.000) && (Player.no_grenades_2 <= 0.000)) ) {
-                            Player.tfstate = (Player.tfstate - (Player.tfstate & 1.000));
-                            Player.tfstate = (Player.tfstate - (Player.tfstate & 1024.000));
+                        if ( ((te.impulse == 151) && (Player.no_grenades_2 <= 0)) ) {
+                            Player.tfstate = (Player.tfstate - (Player.tfstate & 1));
+                            Player.tfstate = (Player.tfstate - (Player.tfstate & 1024));
                             dremove (te);
                         } else {
-                            if ( ((te.impulse == 150.000) && (Player.no_grenades_1 <= 0.000)) ) {
-                                Player.tfstate = (Player.tfstate - (Player.tfstate & 1.000));
-                                Player.tfstate = (Player.tfstate - (Player.tfstate & 1024.000));
+                            if ( ((te.impulse == 150) && (Player.no_grenades_1 <= 0)) ) {
+                                Player.tfstate = (Player.tfstate - (Player.tfstate & 1));
+                                Player.tfstate = (Player.tfstate - (Player.tfstate & 1024));
                                 dremove (te);
                             }
                         }
@@ -921,46 +921,46 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
                     }
                 }
             }
-            if ( (Goal.invincible_finished > 0.000) ) {
-                Player.items = (Player.items | 1048576.000);
-                Player.invincible_time = 1.000;
+            if ( (Goal.invincible_finished > 0) ) {
+                Player.items = (Player.items | 1048576);
+                Player.invincible_time = 1;
                 Player.invincible_finished = (time + Goal.invincible_finished);
                 if ( (Goal.classname == "item_tfgoal") ) {
-                    Player.tfstate = (Player.tfstate | 32.000);
-                    Player.invincible_finished = (time + 666.000);
+                    Player.tfstate = (Player.tfstate | 32);
+                    Player.invincible_finished = (time + 666);
                 }
             }
-            if ( (Goal.invisible_finished > 0.000) ) {
-                Player.items = (Player.items | 524288.000);
-                Player.invisible_time = 1.000;
+            if ( (Goal.invisible_finished > 0) ) {
+                Player.items = (Player.items | 524288);
+                Player.invisible_time = 1;
                 Player.invisible_finished = (time + Goal.invisible_finished);
                 if ( (Goal.classname == "item_tfgoal") ) {
-                    Player.tfstate = (Player.tfstate | 64.000);
-                    Player.invisible_finished = (time + 666.000);
+                    Player.tfstate = (Player.tfstate | 64);
+                    Player.invisible_finished = (time + 666);
                 }
             }
-            if ( (Goal.super_damage_finished > 0.000) ) {
-                Player.items = (Player.items | 4194304.000);
-                Player.super_time = 1.000;
+            if ( (Goal.super_damage_finished > 0) ) {
+                Player.items = (Player.items | 4194304);
+                Player.super_time = 1;
                 Player.super_damage_finished = (time + Goal.super_damage_finished);
                 if ( (Goal.classname == "item_tfgoal") ) {
-                    Player.tfstate = (Player.tfstate | 128.000);
-                    Player.super_damage_finished = (time + 666.000);
+                    Player.tfstate = (Player.tfstate | 128);
+                    Player.super_damage_finished = (time + 666);
                 }
             }
-            if ( (Goal.radsuit_finished > 0.000) ) {
-                Player.items = (Player.items | 2097152.000);
-                Player.rad_time = 1.000;
+            if ( (Goal.radsuit_finished > 0) ) {
+                Player.items = (Player.items | 2097152);
+                Player.rad_time = 1;
                 Player.radsuit_finished = (time + Goal.radsuit_finished);
                 if ( (Goal.classname == "item_tfgoal") ) {
-                    Player.tfstate = (Player.tfstate | 256.000);
-                    Player.radsuit_finished = (time + 666.000);
+                    Player.tfstate = (Player.tfstate | 256);
+                    Player.radsuit_finished = (time + 666);
                 }
             }
         }
         if ( Goal.frags ) {
-            if ( ((Goal.goal_effects == 1.000) || !(toggleflags & 2048.000)) ) {
-                TF_AddFrags (Player,Goal.frags, 0.000);
+            if ( ((Goal.goal_effects == 1) || !(toggleflags & 2048)) ) {
+                TF_AddFrags (Player,Goal.frags, 0);
             }
         }
         oldself = self;
@@ -969,35 +969,35 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
         W_SetCurrentAmmo ();
         self = oldself;
     }
-    if ( ((Player.playerclass == 8.000) && (Goal.goal_result & 16.000)) ) {
-        //self.immune_to_check = (time + 5.000);
+    if ( ((Player.playerclass == 8) && (Goal.goal_result & 16)) ) {
+        //self.immune_to_check = (time + 5);
         Spy_RemoveDisguise (Player);
     }
-    if ( ((Goal.items != 0.000) && (Goal.classname != "item_tfgoal")) ) {
+    if ( ((Goal.items != 0) && (Goal.classname != "item_tfgoal")) ) {
         te = Finditem (Goal.items);
         if ( ((te != world) && (te != Goal)) ) {
             tfgoalitem_GiveToPlayer (te,Player,Goal);
         }
     }
-    if ( (Goal.axhitme != 0.000) ) {
+    if ( (Goal.axhitme != 0) ) {
         te = Finditem (Goal.axhitme);
         if ( (te.owner == Player) ) {
-            tfgoalitem_RemoveFromPlayer (te,Player,1.000);
+            tfgoalitem_RemoveFromPlayer (te,Player,1);
         }
     }
-    if ( (Goal.remove_item_group != 0.000) ) {
+    if ( (Goal.remove_item_group != 0) ) {
         te = find (world,classname,"item_tfgoal");
         while ( te ) {
             if ( ((te.group_no == Goal.remove_item_group) && (te.owner == AP)) ) {
                 oldte = te;
                 te = find (te,classname,"item_tfgoal");
-                tfgoalitem_RemoveFromPlayer (oldte,Player,1.000);
+                tfgoalitem_RemoveFromPlayer (oldte,Player,1);
             } else {
                 te = find (te,classname,"item_tfgoal");
             }
         }
     }
-    if ( (Goal.display_item_status1 != 0.000) ) {
+    if ( (Goal.display_item_status1 != 0) ) {
         te = Finditem (Goal.display_item_status1);
         if ( te ) {
             sprint (Player,PRINT_HIGH, ItemStatus (Goal,Player,te));
@@ -1005,7 +1005,7 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
             sprint (Player,PRINT_HIGH,"Item is missing.\n");
         }
     }
-    if ( (Goal.display_item_status2 != 0.000) ) {
+    if ( (Goal.display_item_status2 != 0) ) {
         te = Finditem (Goal.display_item_status2);
         if ( te ) {
             sprint (Player,PRINT_HIGH, ItemStatus (Goal,Player,te));
@@ -1013,7 +1013,7 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
             sprint (Player,PRINT_HIGH,"Item is missing.\n");
         }
     }
-    if ( (Goal.display_item_status3 != 0.000) ) {
+    if ( (Goal.display_item_status3 != 0) ) {
         te = Finditem (Goal.display_item_status3);
         if ( te ) {
             sprint (Player,PRINT_HIGH, ItemStatus (Goal,Player,te));
@@ -1021,7 +1021,7 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
             sprint (Player,PRINT_HIGH,"Item is missing.\n");
         }
     }
-    if ( (Goal.display_item_status4 != 0.000) ) {
+    if ( (Goal.display_item_status4 != 0) ) {
         te = Finditem (Goal.display_item_status4);
         if ( te ) {
             sprint (Player,PRINT_HIGH, ItemStatus (Goal,Player,te));
@@ -1029,7 +1029,7 @@ void Apply_Results (entity Goal, entity Player, entity AP, float addb) {
             sprint (Player,PRINT_HIGH,"Item is missing.\n");
         }
     }
-    if ( (Goal.goal_result & 32.000) ) {
+    if ( (Goal.goal_result & 32) ) {
         ForceRespawn (Player);
     }
 }
@@ -1045,24 +1045,24 @@ void RemoveResults (entity Goal, entity Player) {
         if ( !(Player.item_list & Goal.item_list) ) {
             return ;
         }
-        if ( (Goal.goal_activation & 1024.000) ) {
+        if ( (Goal.goal_activation & 1024) ) {
             return ;
         }
         Player.item_list = (Player.item_list - (Player.item_list & Goal.item_list));
     }
-    if ( (Goal.health > 0.000) ) {
-        TF_T_Damage (Player,Goal,Goal,Goal.health,1.000,0.000);
+    if ( (Goal.health > 0) ) {
+        TF_T_Damage (Player,Goal,Goal,Goal.health,1,0);
     }
-    if ( (Goal.health < 0.000) ) {
-        T_Heal (Player,(0.000 - Goal.health),0.000);
+    if ( (Goal.health < 0) ) {
+        T_Heal (Player,(0 - Goal.health),0);
     }
     Player.armortype = (Player.armortype - Goal.armortype);
     Player.armorvalue = (Player.armorvalue - Goal.armorvalue);
     Player.armorclass = (Player.armorclass - (Player.armorclass & Goal.armorclass));
 
     if ( Goal.frags ) {
-        if ( ((Goal.goal_effects == 1.000) || !(toggleflags & 2048.000)) ) {
-            TF_AddFrags (Player,Goal.frags, 0.000);
+        if ( ((Goal.goal_effects == 1) || !(toggleflags & 2048)) ) {
+            TF_AddFrags (Player,Goal.frags, 0);
         }
     }
     Player.ammo_shells = (Player.ammo_shells - Goal.ammo_shells);
@@ -1073,33 +1073,33 @@ void RemoveResults (entity Goal, entity Player) {
     Player.ammo_detpack = (Player.ammo_detpack - Goal.ammo_detpack);
     Player.no_grenades_1 = (Player.no_grenades_1 - Goal.no_grenades_1);
     Player.no_grenades_2 = (Player.no_grenades_2 - Goal.no_grenades_2);
-    if ( (Player.no_grenades_1 > 4.000) ) {
-        Player.no_grenades_1 = 4.000;
+    if ( (Player.no_grenades_1 > 4) ) {
+        Player.no_grenades_1 = 4;
     }
-    if ( (Player.no_grenades_2 > 4.000) ) {
-        Player.no_grenades_2 = 4.000;
+    if ( (Player.no_grenades_2 > 4) ) {
+        Player.no_grenades_2 = 4;
     }
-    if ( ((Player.tp_grenades_1 == 3.000) && (Player.no_grenades_1 > 2.000)) ) {
-        Player.no_grenades_1 = 2.000;
+    if ( ((Player.tp_grenades_1 == 3) && (Player.no_grenades_1 > 2)) ) {
+        Player.no_grenades_1 = 2;
     }
-    if ( ((Player.tp_grenades_2 == 3.000) && (Player.no_grenades_2 > 2.000)) ) {
-        Player.no_grenades_2 = 2.000;
+    if ( ((Player.tp_grenades_2 == 3) && (Player.no_grenades_2 > 2)) ) {
+        Player.no_grenades_2 = 2;
     }
     if ( (Player.ammo_detpack > Player.maxammo_detpack) ) {
         Player.ammo_detpack = Player.maxammo_detpack;
     }
-    if ( (Player.tfstate & 1.000) ) {
+    if ( (Player.tfstate & 1) ) {
         te = find (world,classname,"primer");
         while ( te ) {
             if ( (te.owner == Player) ) {
-                if ( ((te.impulse == 151.000) && (Player.no_grenades_2 <= 0.000)) ) {
-                    Player.tfstate = (Player.tfstate - (Player.tfstate & 1.000));
-                    Player.tfstate = (Player.tfstate - (Player.tfstate & 1024.000));
+                if ( ((te.impulse == 151) && (Player.no_grenades_2 <= 0)) ) {
+                    Player.tfstate = (Player.tfstate - (Player.tfstate & 1));
+                    Player.tfstate = (Player.tfstate - (Player.tfstate & 1024));
                     dremove (te);
                 } else {
-                    if ( ((te.impulse == 150.000) && (Player.no_grenades_1 <= 0.000)) ) {
-                        Player.tfstate = (Player.tfstate - (Player.tfstate & 1.000));
-                        Player.tfstate = (Player.tfstate - (Player.tfstate & 1024.000));
+                    if ( ((te.impulse == 150) && (Player.no_grenades_1 <= 0)) ) {
+                        Player.tfstate = (Player.tfstate - (Player.tfstate & 1));
+                        Player.tfstate = (Player.tfstate - (Player.tfstate & 1024));
                         dremove (te);
                     }
                 }
@@ -1109,50 +1109,50 @@ void RemoveResults (entity Goal, entity Player) {
             }
         }
     }
-    puinvin = 0.000;
-    puinvis = 0.000;
-    puquad = 0.000;
-    purad = 0.000;
+    puinvin = 0;
+    puinvis = 0;
+    puquad = 0;
+    purad = 0;
     te = find (world,classname,"item_tfgoal");
     while ( te ) {
         if ( ((te.owner == Player) && (te != Goal)) ) {
-            if ( (te.invincible_finished > 0.000) ) {
-                puinvin = 1.000;
+            if ( (te.invincible_finished > 0) ) {
+                puinvin = 1;
             }
-            if ( (te.invisible_finished > 0.000) ) {
-                puinvis = 1.000;
+            if ( (te.invisible_finished > 0) ) {
+                puinvis = 1;
             }
-            if ( (te.super_damage_finished > 0.000) ) {
-                puquad = 1.000;
+            if ( (te.super_damage_finished > 0) ) {
+                puquad = 1;
             }
-            if ( (te.radsuit_finished > 0.000) ) {
-                purad = 1.000;
+            if ( (te.radsuit_finished > 0) ) {
+                purad = 1;
             }
         }
         te = find (te,classname,"item_tfgoal");
     }
-    if ( ((Goal.invincible_finished > 0.000) && !puinvin) ) {
-        Player.tfstate = (Player.tfstate - (Player.tfstate & 32.000));
-        Player.items = (Player.items | 1048576.000);
-        Player.invincible_time = 1.000;
+    if ( ((Goal.invincible_finished > 0) && !puinvin) ) {
+        Player.tfstate = (Player.tfstate - (Player.tfstate & 32));
+        Player.items = (Player.items | 1048576);
+        Player.invincible_time = 1;
         Player.invincible_finished = (time + Goal.invincible_finished);
     }
-    if ( ((Goal.invisible_finished > 0.000) && !puinvis) ) {
-        Player.tfstate = (Player.tfstate - (Player.tfstate & 64.000));
-        Player.items = (Player.items | 524288.000);
-        Player.invisible_time = 1.000;
+    if ( ((Goal.invisible_finished > 0) && !puinvis) ) {
+        Player.tfstate = (Player.tfstate - (Player.tfstate & 64));
+        Player.items = (Player.items | 524288);
+        Player.invisible_time = 1;
         Player.invisible_finished = (time + Goal.invisible_finished);
     }
-    if ( ((Goal.super_damage_finished > 0.000) && !puquad) ) {
-        Player.tfstate = (Player.tfstate - (Player.tfstate & 128.000));
-        Player.items = (Player.items | 4194304.000);
-        Player.super_time = 1.000;
+    if ( ((Goal.super_damage_finished > 0) && !puquad) ) {
+        Player.tfstate = (Player.tfstate - (Player.tfstate & 128));
+        Player.items = (Player.items | 4194304);
+        Player.super_time = 1;
         Player.super_damage_finished = (time + Goal.super_damage_finished);
     }
-    if ( ((Goal.radsuit_finished > 0.000) && !purad) ) {
-        Player.tfstate = (Player.tfstate - (Player.tfstate & 256.000));
-        Player.items = (Player.items | 2097152.000);
-        Player.rad_time = 1.000;
+    if ( ((Goal.radsuit_finished > 0) && !purad) ) {
+        Player.tfstate = (Player.tfstate - (Player.tfstate & 256));
+        Player.items = (Player.items | 2097152);
+        Player.rad_time = 1;
         Player.radsuit_finished = (time + Goal.radsuit_finished);
     }
     oldself = self;
@@ -1168,37 +1168,37 @@ float APMeetsCriteria (entity Goal,entity AP) {
     if ((AP != world)) {
         if (Goal.team_no) {
             if ((Goal.team_no != AP.pteam.team)) {
-                return (0.000000);
+                return (0);
             }
         }
         if (Goal.playerclass) {
             if ((Goal.playerclass != AP.playerclass)) {
-                return (0.000000);
+                return (0);
             }
         }
         if (Goal.items_allowed) {
             te = Finditem (Goal.items_allowed);
             if ((te.owner != AP)) {
-                return (0.000000);
+                return (0);
             }
         }
     }
     if (Goal.if_goal_is_active) {
         te = Findgoal (Goal.if_goal_is_active);
         if ((te.goal_state != 1)) {
-            return (0.000000);
+            return (0);
         }
     }
     if (Goal.if_goal_is_inactive) {
         te = Findgoal (Goal.if_goal_is_inactive);
         if ((te.goal_state != 2)) {
-            return (0.000000);
+            return (0);
         }
     }
     if (Goal.if_goal_is_removed) {
         te = Findgoal (Goal.if_goal_is_removed);
         if ((te.goal_state != 3)) {
-            return (0.000000);
+            return (0);
         }
     }
     if (Goal.if_group_is_active) {
@@ -1206,7 +1206,7 @@ float APMeetsCriteria (entity Goal,entity AP) {
         while (te) {
             if ((te.group_no == Goal.if_group_is_active)) {
                 if ((te.goal_state != 1)) {
-                    return (0.000000);
+                    return (0);
                 }
             }
             te = find (te, classname, "info_tfgoal");
@@ -1217,7 +1217,7 @@ float APMeetsCriteria (entity Goal,entity AP) {
         while (te) {
             if ((te.group_no == Goal.if_group_is_inactive)) {
                 if ((te.goal_state != 2)) {
-                    return (0.000000);
+                    return (0);
                 }
             }
             te = find (te, classname, "info_tfgoal");
@@ -1228,7 +1228,7 @@ float APMeetsCriteria (entity Goal,entity AP) {
         while (te) {
             if ((te.group_no == Goal.if_group_is_removed)) {
                 if ((te.goal_state != 3)) {
-                    return (0.000000);
+                    return (0);
                 }
             }
             te = find (te, classname, "info_tfgoal");
@@ -1238,7 +1238,7 @@ float APMeetsCriteria (entity Goal,entity AP) {
         te = Finditem (Goal.if_item_has_moved);
         if (te) {
             if (((te.goal_state != 1) && (te.origin == te.oldorigin))) {
-                return (0.000000);
+                return (0);
             }
         }
     }
@@ -1246,12 +1246,12 @@ float APMeetsCriteria (entity Goal,entity AP) {
         te = Finditem (Goal.if_item_hasnt_moved);
         if (te) {
             if (((te.goal_state == 1) || (te.origin != te.oldorigin))) {
-                return (0.000000);
+                return (0);
             }
         }
     }
     if ((AP != world)) {
-        gotone = 0.000000;
+        gotone = 0;
         if (Goal.has_item_from_group) {
             te = find (world, classname, "item_tfgoal");
             while (((te != world) && !gotone)) {
@@ -1261,39 +1261,39 @@ float APMeetsCriteria (entity Goal,entity AP) {
                 te = find (te, classname, "item_tfgoal");
             }
             if (!gotone) {
-                return (0.000000);
+                return (0);
             }
         }
         if (Goal.hasnt_item_from_group) {
             te = find (world, classname, "item_tfgoal");
             while (((te != world) && !gotone)) {
                 if (((te.group_no == Goal.hasnt_item_from_group) && (te.owner == AP))) {
-                    return (0.000000);
+                    return (0);
                 }
                 te = find (te, classname, "item_tfgoal");
             }
         }
     }
-    return (1.000);
+    return (1);
 }
 
 void SetupRespawn (entity Goal) {
-    if ( (Goal.search_time != 0.000) ) {
+    if ( (Goal.search_time != 0) ) {
         InactivateGoal (Goal);
         Goal.think = tfgoal_timer_tick;
         Goal.nextthink = (time + Goal.search_time);
         return ;
     }
-    if ( (Goal.goal_result & 1.000) ) {
+    if ( (Goal.goal_result & 1) ) {
         RemoveGoal (Goal);
         return ;
     }
-    if ( (Goal.wait > 0.000) ) {
+    if ( (Goal.wait > 0) ) {
         Goal.nextthink = (time + Goal.wait);
         Goal.think = DoRespawn;
         return ;
     } else {
-        if ( (Goal.wait == -1.000) ) {
+        if ( (Goal.wait == -1) ) {
             return ;
         }
     }
@@ -1309,29 +1309,29 @@ float Activated (entity Goal, entity AP) {
     float APMet;
     float RevAct;
     float Act;
-    if ( (Goal.goal_state == 1.000) ) {
-        return ( 0.000 );
+    if ( (Goal.goal_state == 1) ) {
+        return ( 0 );
     }
-    if ( (Goal.goal_state == 3.000) ) {
-        return ( 0.000 );
+    if ( (Goal.goal_state == 3) ) {
+        return ( 0 );
     }
-    if ( (Goal.goal_state == 4.000) ) {
-        return ( 0.000 );
+    if ( (Goal.goal_state == 4) ) {
+        return ( 0 );
     }
     APMet = APMeetsCriteria (Goal,AP);
     if ( (Goal.classname == "item_tfgoal") ) {
-        RevAct = (Goal.goal_activation & 64.000);
+        RevAct = (Goal.goal_activation & 64);
     } else {
-        RevAct = (Goal.goal_activation & 4.000);
+        RevAct = (Goal.goal_activation & 4);
     }
-    Act = 0.000;
+    Act = 0;
     if ( APMet ) {
         if ( !RevAct ) {
-            Act = 1.000;
+            Act = 1;
         }
     } else {
         if ( RevAct ) {
-            Act = 1.000;
+            Act = 1;
         }
     }
     return ( Act );
@@ -1344,16 +1344,16 @@ void AttemptToActivate (entity Goal, entity AP, entity ActivatingGoal) {
     if ( Activated (Goal,AP) ) {
 
         if ( (ActivatingGoal == Goal) ) {
-            DoResults (Goal,AP,1.000);
+            DoResults (Goal,AP,1);
         } else {
             if ( (ActivatingGoal != world) ) {
-                DoResults (Goal,AP,(ActivatingGoal.goal_result & 2.000));
+                DoResults (Goal,AP,(ActivatingGoal.goal_result & 2));
             } else {
-                DoResults (Goal,AP,0.000);
+                DoResults (Goal,AP,0);
             }
         }
     } else {
-        if ( (Goal.else_goal != 0.000) ) {
+        if ( (Goal.else_goal != 0) ) {
             te = Findgoal (Goal.else_goal);
             if ( te ) {
                 AttemptToActivate (te,AP,Goal);
@@ -1365,66 +1365,66 @@ void AttemptToActivate (entity Goal, entity AP, entity ActivatingGoal) {
 void DoGoalWork (entity Goal, entity AP) {
     entity te;
     entity RI;
-    if ( (Goal.activate_goal_no != 0.000) ) {
+    if ( (Goal.activate_goal_no != 0) ) {
         te = Findgoal (Goal.activate_goal_no);
         if ( te ) {
             AttemptToActivate (te,AP,Goal);
         }
     }
-    if ( (Goal.inactivate_goal_no != 0.000) ) {
+    if ( (Goal.inactivate_goal_no != 0) ) {
         te = Findgoal (Goal.inactivate_goal_no);
         if ( te ) {
             InactivateGoal (te);
         }
     }
-    if ( (Goal.restore_goal_no != 0.000) ) {
+    if ( (Goal.restore_goal_no != 0) ) {
         te = Findgoal (Goal.restore_goal_no);
         if ( te ) {
             RestoreGoal (te);
         }
     }
-    if ( (Goal.remove_goal_no != 0.000) ) {
+    if ( (Goal.remove_goal_no != 0) ) {
         te = Findgoal (Goal.remove_goal_no);
         if ( te ) {
             RemoveGoal (te);
         }
     }
-    if ( (Goal.return_item_no != 0.000) ) {
+    if ( (Goal.return_item_no != 0) ) {
         te = Finditem (Goal.return_item_no);
         if ( te ) {
-            if ( (te.goal_state == 1.000) ) {
-                tfgoalitem_RemoveFromPlayer (te,te.owner,1.000);
+            if ( (te.goal_state == 1) ) {
+                tfgoalitem_RemoveFromPlayer (te,te.owner,1);
             }
             RI = spawn ();
             RI.enemy = te;
-            RI.weapon = 2.000;
+            RI.weapon = 2;
             RI.think = ReturnItem;
             RI.nextthink = (time + 0.100);
-            te.solid = 0.000;
+            te.solid = 0;
         }
     }
-    if ( (Goal.remove_spawnpoint != 0.000) ) {
+    if ( (Goal.remove_spawnpoint != 0) ) {
         te = Findteamspawn (Goal.remove_spawnpoint);
         if ( te ) {
-            te.goal_state = 3.000;
+            te.goal_state = 3;
             te.team_str_home = string_null;
         }
     }
-    if ( (Goal.restore_spawnpoint != 0.000) ) {
+    if ( (Goal.restore_spawnpoint != 0) ) {
         te = Findteamspawn (Goal.restore_spawnpoint);
         if ( te ) {
-            if ( (te.goal_state == 3.000) ) {
-                te.goal_state = 2.000;
-                if ( (te.team_no == 1.000) ) {
+            if ( (te.goal_state == 3) ) {
+                te.goal_state = 2;
+                if ( (te.team_no == 1) ) {
                     te.team_str_home = "ts1";
                 } else {
-                    if ( (te.team_no == 2.000) ) {
+                    if ( (te.team_no == 2) ) {
                         te.team_str_home = "ts2";
                     } else {
-                        if ( (te.team_no == 3.000) ) {
+                        if ( (te.team_no == 3) ) {
                             te.team_str_home = "ts3";
                         } else {
-                            if ( (te.team_no == 4.000) ) {
+                            if ( (te.team_no == 4) ) {
                                 te.team_str_home = "ts4";
                             }
                         }
@@ -1439,19 +1439,19 @@ void DoGroupWork (entity Goal, entity AP) {
     string st;
     entity tg;
     float allset;
-    if ( (Goal.all_active != 0.000) ) {
-        if ( (Goal.last_impulse == 0.000) ) {
+    if ( (Goal.all_active != 0) ) {
+        if ( (Goal.last_impulse == 0) ) {
             dprint ("Goal ");
             st = ftos (Goal.goal_no);
             dprint (st);
             dprint (" has a .all_active specified, but no .last_impulse\n");
         } else {
-            allset = 1.000;
+            allset = 1;
             tg = find (world,classname,"info_tfgoal");
             while ( tg ) {
                 if ( (tg.group_no == Goal.all_active) ) {
-                    if ( (tg.goal_state != 1.000) ) {
-                        allset = 0.000;
+                    if ( (tg.goal_state != 1) ) {
+                        allset = 0;
                     }
                 }
                 tg = find (tg,classname,"info_tfgoal");
@@ -1459,21 +1459,21 @@ void DoGroupWork (entity Goal, entity AP) {
             if ( allset ) {
                 tg = Findgoal (Goal.last_impulse);
                 if ( tg ) {
-                    DoResults (tg,AP,(Goal.goal_result & 2.000));
+                    DoResults (tg,AP,(Goal.goal_result & 2));
                 }
             }
         }
     }
-    if ( (Goal.activate_group_no != 0.000) ) {
+    if ( (Goal.activate_group_no != 0) ) {
         tg = find (world,classname,"info_tfgoal");
         while ( tg ) {
             if ( (tg.group_no == Goal.activate_group_no) ) {
-                DoResults (tg,AP,0.000);
+                DoResults (tg,AP,0);
             }
             tg = find (tg,classname,"info_tfgoal");
         }
     }
-    if ( (Goal.inactivate_group_no != 0.000) ) {
+    if ( (Goal.inactivate_group_no != 0) ) {
         tg = find (world,classname,"info_tfgoal");
         while ( tg ) {
             if ( (tg.group_no == Goal.inactivate_group_no) ) {
@@ -1482,7 +1482,7 @@ void DoGroupWork (entity Goal, entity AP) {
             tg = find (tg,classname,"info_tfgoal");
         }
     }
-    if ( (Goal.remove_group_no != 0.000) ) {
+    if ( (Goal.remove_group_no != 0) ) {
         tg = find (world,classname,"info_tfgoal");
         while ( tg ) {
             if ( (tg.group_no == Goal.remove_group_no) ) {
@@ -1491,7 +1491,7 @@ void DoGroupWork (entity Goal, entity AP) {
             tg = find (tg,classname,"info_tfgoal");
         }
     }
-    if ( (Goal.restore_group_no != 0.000) ) {
+    if ( (Goal.restore_group_no != 0) ) {
         tg = find (world,classname,"info_tfgoal");
         while ( tg ) {
             if ( (tg.group_no == Goal.restore_group_no) ) {
@@ -1500,31 +1500,31 @@ void DoGroupWork (entity Goal, entity AP) {
             tg = find (tg,classname,"info_tfgoal");
         }
     }
-    if ( (Goal.remove_spawngroup != 0.000) ) {
+    if ( (Goal.remove_spawngroup != 0) ) {
         tg = find (world,classname,"info_player_teamspawn");
         while ( tg ) {
             if ( (tg.group_no == Goal.remove_spawngroup) ) {
-                tg.goal_state = 3.000;
+                tg.goal_state = 3;
                 tg.team_str_home = string_null;
             }
             tg = find (tg,classname,"info_player_teamspawn");
         }
     }
-    if ( (Goal.restore_spawngroup != 0.000) ) {
+    if ( (Goal.restore_spawngroup != 0) ) {
         tg = find (world,classname,"info_player_teamspawn");
         while ( tg ) {
             if ( (tg.group_no == Goal.restore_spawngroup) ) {
-                tg.goal_state = 2.000;
-                if ( (tg.team_no == 1.000) ) {
+                tg.goal_state = 2;
+                if ( (tg.team_no == 1) ) {
                     tg.team_str_home = "ts1";
                 } else {
-                    if ( (tg.team_no == 2.000) ) {
+                    if ( (tg.team_no == 2) ) {
                         tg.team_str_home = "ts2";
                     } else {
-                        if ( (tg.team_no == 3.000) ) {
+                        if ( (tg.team_no == 3) ) {
                             tg.team_str_home = "ts3";
                         } else {
-                            if ( (tg.team_no == 4.000) ) {
+                            if ( (tg.team_no == 4) ) {
                                 tg.team_str_home = "ts4";
                             }
                         }
@@ -1541,9 +1541,9 @@ void DoItemGroupWork (entity Item, entity AP) {
     entity carrier;
     float allcarried;
     string st;
-    allcarried = 1.000;
-    if ( (Item.distance != 0.000) ) {
-        if ( (Item.pain_finished == 0.000) ) {
+    allcarried = 1;
+    if ( (Item.distance != 0) ) {
+        if ( (Item.pain_finished == 0) ) {
             dprint ("GoalItem ");
             st = ftos (Item.goal_no);
             dprint (st);
@@ -1552,22 +1552,22 @@ void DoItemGroupWork (entity Item, entity AP) {
         tg = find (world,classname,"item_tfgoal");
         while ( tg ) {
             if ( (tg.group_no == Item.distance) ) {
-                if ( (tg.goal_state != 1.000) ) {
-                    allcarried = 0.000;
+                if ( (tg.goal_state != 1) ) {
+                    allcarried = 0;
                 }
             }
             tg = find (tg,classname,"item_tfgoal");
         }
-        if ( (allcarried == 1.000) ) {
+        if ( (allcarried == 1) ) {
             tg = Findgoal (Item.pain_finished);
             if ( tg ) {
-                DoResults (tg,AP,(Item.goal_result & 2.000));
+                DoResults (tg,AP,(Item.goal_result & 2));
             }
         }
     }
-    allcarried = 1.000;
-    if ( (Item.speed != 0.000) ) {
-        if ( (Item.attack_finished == 0.000) ) {
+    allcarried = 1;
+    if ( (Item.speed != 0) ) {
+        if ( (Item.attack_finished == 0) ) {
             dprint ("GoalItem ");
             st = ftos (Item.goal_no);
             dprint (st);
@@ -1577,24 +1577,24 @@ void DoItemGroupWork (entity Item, entity AP) {
         tg = find (world,classname,"item_tfgoal");
         while ( tg ) {
             if ( (tg.group_no == Item.speed) ) {
-                if ( (tg.goal_state != 1.000) ) {
-                    allcarried = 0.000;
+                if ( (tg.goal_state != 1) ) {
+                    allcarried = 0;
                 } else {
                     if ( (carrier == world) ) {
                         carrier = tg.owner;
                     } else {
                         if ( (carrier != tg.owner) ) {
-                            allcarried = 0.000;
+                            allcarried = 0;
                         }
                     }
                 }
             }
             tg = find (tg,classname,"item_tfgoal");
         }
-        if ( (allcarried == 1.000) ) {
+        if ( (allcarried == 1) ) {
             tg = Findgoal (Item.attack_finished);
             if ( tg ) {
-                DoResults (tg,AP,(Item.goal_result & 2.000));
+                DoResults (tg,AP,(Item.goal_result & 2));
             }
         }
     }
@@ -1636,7 +1636,7 @@ void DoTriggerWork (entity Goal, entity AP) {
 }
 
 void DelayedResult () {
-    if ( (self.enemy.goal_state == 4.000) ) {
+    if ( (self.enemy.goal_state == 4) ) {
         DoResults (self.enemy,self.owner,self.weapon);
     }
     dremove (self);
@@ -1645,22 +1645,22 @@ void DelayedResult () {
 void PrintSelfCTF (entity te) {
     float winners;
     winners = floor ( random () * 8);
-    if ( (winners < 1.000) ) {
+    if ( (winners < 1) ) {
         CenterPrint2 (te,"\n\n\n","You got the enemy flag!\n\nFlee!");
     } else {
-        if ( (winners < 2.000) ) {
+        if ( (winners < 2) ) {
             CenterPrint2 (te,"\n\n\n","You got the enemy flag!\n\nHead for home!");
         } else {
-            if ( (winners < 4.000) ) {
+            if ( (winners < 4) ) {
                 CenterPrint2 (te,"\n\n\n","You got the enemy flag!\n\nReturn to base!");
             } else {
-                if ( (winners < 5.00) ) {
+                if ( (winners < 5) ) {
                     CenterPrint2 (te,"\n\n\n","You got the enemy flag!\n\n<Insert witty comment here>");
                 } else {
-                    if ( (winners < 6.000) ) {
+                    if ( (winners < 6) ) {
                         CenterPrint2 (te,"\n\n\n","You got the enemy flag!\n\nZed's dead baby, Zed's dead...");
                     } else {
-                        if ( (winners < 7.000) ) {
+                        if ( (winners < 7) ) {
                             CenterPrint2 (te,"\n\n\n","You got the enemy flag!\n\n");
                         } else {
                             CenterPrint2 (te,"\n\n\n","Is that a flag in your pocket\nor a you just happy to see me?");
@@ -1678,11 +1678,11 @@ void DoResults (entity Goal, entity AP, float addb) {
     float gotone;
     if (cb_prematch) return;
     if (round_over) return;
-    if ( (Goal.goal_state == 1.000) ) {
+    if ( (Goal.goal_state == 1) ) {
         return ;
     }
-    if ( ((Goal.delay_time > 0.000) && (Goal.goal_state != 4.000)) ) {
-        Goal.goal_state = 4.000;
+    if ( ((Goal.delay_time > 0) && (Goal.goal_state != 4)) ) {
+        Goal.goal_state = 4;
         te = spawn ();
         te.think = DelayedResult;
         te.nextthink = (time + Goal.delay_time);
@@ -1692,39 +1692,39 @@ void DoResults (entity Goal, entity AP, float addb) {
         return ;
     }
     UpdateAbbreviations (Goal);
-    Goal.goal_state = 2.000;
+    Goal.goal_state = 2;
     if ( ((Goal.classname == "info_tfgoal") && (Goal.mdl != string_null)) ) {
         setmodel (Goal,string_null);
     }
     if (Goal.classname == "item_tfgoal") {
-        AP.flag_touches = AP.flag_touches + 1.000;
+        AP.flag_touches = AP.flag_touches + 1;
         if (AP.StatusBarSize)
             AP.StatusRefreshTime = (time + 0.100);
         if (spec_msgs)
             PrintSpecs (AP.netname," took the ",Goal.netname);
     }
     if ( Goal.noise ) {
-        sound (other,3.000,Goal.noise,1.000,1.000);
+        sound (other,3,Goal.noise,1,1);
     }
 
-    if ( (Goal.increase_team1 != 0.000) ) {
-        TeamFortress_TeamIncreaseScore (1.000,Goal.increase_team1);
-        winners = 1.000;
+    if ( (Goal.increase_team1 != 0) ) {
+        TeamFortress_TeamIncreaseScore (1,Goal.increase_team1);
+        winners = 1;
     }
-    if ( (Goal.increase_team2 != 0.000) ) {
-        TeamFortress_TeamIncreaseScore (2.000,Goal.increase_team2);
-        winners = 1.000;
+    if ( (Goal.increase_team2 != 0) ) {
+        TeamFortress_TeamIncreaseScore (2,Goal.increase_team2);
+        winners = 1;
     }
-    if ( (Goal.increase_team3 != 0.000) ) {
-        TeamFortress_TeamIncreaseScore (3.000,Goal.increase_team3);
-        winners = 1.000;
+    if ( (Goal.increase_team3 != 0) ) {
+        TeamFortress_TeamIncreaseScore (3,Goal.increase_team3);
+        winners = 1;
     }
-    if ( (Goal.increase_team4 != 0.000) ) {
-        TeamFortress_TeamIncreaseScore (4.000,Goal.increase_team4);
-        winners = 1.000;
+    if ( (Goal.increase_team4 != 0) ) {
+        TeamFortress_TeamIncreaseScore (4,Goal.increase_team4);
+        winners = 1;
     }
-    if ( (winners == 1.000) ) {
-        TeamFortress_TeamShowScores (2.000);
+    if ( (winners == 1) ) {
+        TeamFortress_TeamShowScores (2);
         if (Goal.owned_by) {
             if (spec_msgs)
                 PrintSpecs (AP.netname," captured the ",Goal.netname);
@@ -1732,25 +1732,25 @@ void DoResults (entity Goal, entity AP, float addb) {
     }
     if ( (ctfmap == 1) ) {
         if ( (AP != world) ) {
-            if ( (Goal.goal_no == 1.000) ) {
+            if ( (Goal.goal_no == 1) ) {
                 bprint(PRINT_HIGH, AP.netname, " ÇÏÔ the ÂÌÕÅ flag!\n");
-                AP.items = (AP.items | 131072.000);
-                AP.effects = (AP.effects | 96.000);
+                AP.items = (AP.items | 131072);
+                AP.effects = (AP.effects | 96);
             } else {
-                if ( (Goal.goal_no == 2.000) ) {
+                if ( (Goal.goal_no == 2) ) {
                     bprint (PRINT_HIGH,AP.netname, " ÇÏÔ the ÒÅÄ flag!\n");
-                    AP.items = (AP.items | 262144.000);
-                    AP.effects = (AP.effects | 144.000);
+                    AP.items = (AP.items | 262144);
+                    AP.effects = (AP.effects | 144);
                 } else {
-                    if ( (Goal.goal_no == 3.000) ) {
+                    if ( (Goal.goal_no == 3) ) {
                         bprint (PRINT_HIGH,AP.netname, " ÃÁÐÔÕÒÅÄ the ÒÅÄ flag!\n");
-                        AP.items = (AP.items - (AP.items & 262144.000));
-                        AP.effects = (AP.effects - (AP.effects & 144.000));
+                        AP.items = (AP.items - (AP.items & 262144));
+                        AP.effects = (AP.effects - (AP.effects & 144));
                     } else {
-                        if ( (Goal.goal_no == 4.000) ) {
+                        if ( (Goal.goal_no == 4) ) {
                             bprint (PRINT_HIGH,AP.netname, " ÃÁÐÔÕÒÅÄ the ÂÌÕÅ flag!\n");
-                            AP.items = (AP.items - (AP.items & 131072.000));
-                            AP.effects = (AP.effects - (AP.effects & 96.000));
+                            AP.items = (AP.items - (AP.items & 131072));
+                            AP.effects = (AP.effects - (AP.effects & 96));
                         }
                     }
                 }
@@ -1784,7 +1784,7 @@ void DoResults (entity Goal, entity AP, float addb) {
             }
         }
     }
-    gotone = 0.000;
+    gotone = 0;
     te = player_head;
     while ( te ) {
         if (!ctfmap) {
@@ -1844,34 +1844,34 @@ void DoResults (entity Goal, entity AP, float addb) {
             }
         }
         if ( IsAffectedBy (Goal,te,AP) ) {
-            if ( ((Goal.search_time != 0.000) && (Goal.goal_effects & 64.000)) ) {
+            if ( ((Goal.search_time != 0) && (Goal.goal_effects & 64)) ) {
                 if ( APMeetsCriteria (Goal,te) ) {
                     Apply_Results (Goal,te,AP,addb);
-                    gotone = 1.000;
+                    gotone = 1;
                 }
             } else {
                 Apply_Results (Goal,te,AP,addb);
-                gotone = 1.000;
+                gotone = 1;
             }
         }
         te = te.nextp;
     }
     if ( (Goal.classname != "item_tfgoal") ) {
-        Goal.goal_state = 1.000;
+        Goal.goal_state = 1;
     }
-    if ( (Goal.goal_result & 4.000) ) {
-        TeamFortress_TeamShowScores (1.000);
+    if ( (Goal.goal_result & 4) ) {
+        TeamFortress_TeamShowScores (1);
         winners = TeamFortress_TeamGetWinner ();
         te = player_head;
         while ( te ) {
-            te.takedamage = 0.000;
-            te.movetype = 0.000;
-            te.velocity = '0.000 0.000 0.000';
-            te.avelocity = '0.000 0.000 0.000';
+            te.takedamage = 0;
+            te.movetype = 0;
+            te.velocity = '0 0 0';
+            te.avelocity = '0 0 0';
             te = te.nextp;
         }
         te = spawn ();
-        te.nextthink = (time + 5.000);
+        te.nextthink = (time + 5);
         te.think = execute_changelevel;
         dremove (Goal);
         return ;
@@ -1886,7 +1886,7 @@ void DoResults (entity Goal, entity AP, float addb) {
 
 void tfgoal_touch () {
     entity te;
-    if ( !(self.goal_activation & 1.000) ) {
+    if ( !(self.goal_activation & 1) ) {
         return ;
     }
     if (other.classname == "trigger_hurt") {
@@ -1895,24 +1895,24 @@ void tfgoal_touch () {
     if ( (other.classname != "player") ) {
         return ;
     }
-    if ( ((other.tfstate & 65536.000) || (other.tfstate & 2048.000)) ) {
+    if ( ((other.tfstate & 65536) || (other.tfstate & 2048)) ) {
         return ;
     }
     if (cb_prematch) return ;
     if (round_over) return;
-    if ( (self.goal_state == 1.000) ) {
+    if ( (self.goal_state == 1) ) {
         return ;
     }
     if ( (ctfmap == 1) ) {
-        if ( ((self.goal_no == 3.000) && (other.pteam == pteam1)) ) {
-            te = Finditem (1.000);
-            if ( ((te.goal_state == 1.000) || (te.origin != te.oldorigin)) ) {
+        if ( ((self.goal_no == 3) && (other.pteam == pteam1)) ) {
+            te = Finditem (1);
+            if ( ((te.goal_state == 1) || (te.origin != te.oldorigin)) ) {
                 return ;
             }
         }
-        if ( ((self.goal_no == 4.000) && (other.pteam == pteam2)) ) {
-            te = Finditem (2.000);
-            if ( ((te.goal_state == 1.000) || (te.origin != te.oldorigin)) ) {
+        if ( ((self.goal_no == 4) && (other.pteam == pteam2)) ) {
+            te = Finditem (2);
+            if ( ((te.goal_state == 1) || (te.origin != te.oldorigin)) ) {
                 return ;
             }
         }
@@ -1929,9 +1929,9 @@ void info_tfgoal_use () {
 }
 
 void tfgoal_timer_tick () {
-    if ( (self.goal_state != 3.000) ) {
+    if ( (self.goal_state != 3) ) {
         if ( APMeetsCriteria (self,world) ) {
-            DoResults (self,world,1.000);
+            DoResults (self,world,1);
         } else {
             InactivateGoal (self);
             self.think = tfgoal_timer_tick;
@@ -1945,11 +1945,11 @@ void item_tfgoal_touch () {
     if ( (other.classname != "player") ) {
         return ;
     }
-    if ( ((other.tfstate & 65536.000) || (other.tfstate & 2048.000)) ) {
+    if ( ((other.tfstate & 65536) || (other.tfstate & 2048)) ) {
         return ;
     }
     if (other.rs_g > time) return;
-    if ( (other.health <= 0.000) ) {
+    if ( (other.health <= 0) ) {
         return ;
     }
     if (cb_prematch) return;
@@ -1962,7 +1962,7 @@ void item_tfgoal_touch () {
     }
     if ( (ctfmap == 1) ) {
 
-        if ( (self.goal_no == 1.000) ) {
+        if ( (self.goal_no == 1) ) {
             if ( (self.origin != self.oldorigin) ) {
                 if ( (other.pteam == pteam1) ) {
                     bprint (PRINT_HIGH,other.netname);
@@ -1976,13 +1976,13 @@ void item_tfgoal_touch () {
                         }
                         te = te.nextp;
                     }
-                    self.goal_state = 2.000;
-                    self.solid = 1.000;
+                    self.goal_state = 2;
+                    self.solid = 1;
                     self.touch = item_tfgoal_touch;
                     self.origin = self.oldorigin;
                     setmodel (self,self.mdl);
                     setorigin (self,self.origin);
-                    sound (self,2.000,"items/itembk2.wav",1.000,1.000);
+                    sound (self,2,"items/itembk2.wav",1,1);
 
                     return ;
                 }
@@ -1992,7 +1992,7 @@ void item_tfgoal_touch () {
                 }
             }
         } else {
-            if ( (self.goal_no == 2.000) ) {
+            if ( (self.goal_no == 2) ) {
                 if ( (self.origin != self.oldorigin) ) {
                     if ( (other.pteam == pteam2) ) {
                         bprint (PRINT_HIGH,other.netname);
@@ -2006,13 +2006,13 @@ void item_tfgoal_touch () {
                             }
                             te = te.nextp;
                         }
-                        self.goal_state = 2.000;
-                        self.solid = 1.000;
+                        self.goal_state = 2;
+                        self.solid = 1;
                         self.touch = item_tfgoal_touch;
                         self.origin = self.oldorigin;
                         setmodel (self,self.mdl);
                         setorigin (self,self.origin);
-                        sound (self,2.000,"items/itembk2.wav",1.000,1.000);
+                        sound (self,2,"items/itembk2.wav",1,1);
                         return ;
                     }
                 } else {
@@ -2026,11 +2026,11 @@ void item_tfgoal_touch () {
 
     if ( Activated (self,other) ) {
         tfgoalitem_GiveToPlayer (self,other,self);
-        if ( (other.health > 0.000) ) {
-            self.goal_state = 1.000;
+        if ( (other.health > 0) ) {
+            self.goal_state = 1;
         }
     } else {
-        if ( (self.else_goal != 0.000) ) {
+        if ( (self.else_goal != 0) ) {
             te = Findgoal (self.else_goal);
             if ( te ) {
                 AttemptToActivate (te,other,self);
@@ -2044,73 +2044,73 @@ void tfgoalitem_GiveToPlayer (entity Item, entity AP, entity Goal) {
     if ( (Item.mdl != string_null) ) {
         setmodel (Item,string_null);
     }
-    Item.solid = 0.000;
-    if ( (Item.goal_activation & 1.000) ) {
+    Item.solid = 0;
+    if ( (Item.goal_activation & 1) ) {
         if (Item.mdl == "progs/flag.mdl") {
-            if (Item.owned_by == 1.000) {
-                AP.effects = (AP.effects | 16.000);
-            } else if (Item.owned_by == 2.000) {
-                AP.effects = (AP.effects | 32.000);
+            if (Item.owned_by == 1) {
+                AP.effects = (AP.effects | 16);
+            } else if (Item.owned_by == 2) {
+                AP.effects = (AP.effects | 32);
             }
 
         }
-        AP.effects = (AP.effects | 8.000);
+        AP.effects = (AP.effects | 8);
     }
-    if ( (Item.goal_activation & 2.000) ) {
+    if ( (Item.goal_activation & 2) ) {
         TeamFortress_SetSpeed (AP);
     }
-    if ( (Item.goal_activation & 512.000) ) {
-        if (Item.owned_by == 1.000)   {
-            Item.effects = (Item.effects | 64.000);
+    if ( (Item.goal_activation & 512) ) {
+        if (Item.owned_by == 1)   {
+            Item.effects = (Item.effects | 64);
         } else {
-            if (Item.owned_by == 2.000)  {
-                Item.effects = (Item.effects | 128.000);
+            if (Item.owned_by == 2)  {
+                Item.effects = (Item.effects | 128);
             } else {
-                Item.effects = (Item.effects | 8.000);
+                Item.effects = (Item.effects | 8);
             }
         }
     }
-    if ( (Item.items & 131072.000) ) {
-        AP.items = (AP.items | 131072.000);
+    if ( (Item.items & 131072) ) {
+        AP.items = (AP.items | 131072);
     }
-    if ( (Item.items & 262144.000) ) {
-        AP.items = (AP.items | 262144.000);
+    if ( (Item.items & 262144) ) {
+        AP.items = (AP.items | 262144);
     }
     if ( (Goal != Item) ) {
-        if ( (Goal.goal_result & 8.000) ) {
-            Item.goal_state = 1.000;
+        if ( (Goal.goal_result & 8) ) {
+            Item.goal_state = 1;
             return ;
         }
     }
-    if ( ((AP.playerclass == 8.000) && (Item.goal_result & 16.000)) ) {
-        AP.is_unabletospy = 1.000;
+    if ( ((AP.playerclass == 8) && (Item.goal_result & 16)) ) {
+        AP.is_unabletospy = 1;
     }
-    DoResults (Item,AP,1.000);
+    DoResults (Item,AP,1);
     DoItemGroupWork (Item,AP);
 }
 
 void ReturnItem () {
     entity te;
-    self.enemy.goal_state = 2.000;
+    self.enemy.goal_state = 2;
     if (self.enemy.classname == "item_tfgoal") {
-        if (((self.enemy.goal_activation & 8192.000)) || ((toggleflags & 16.000))) {
-            self.enemy.solid = 2.000;
+        if (((self.enemy.goal_activation & 8192)) || ((toggleflags & 16))) {
+            self.enemy.solid = 2;
         } else {
-            self.enemy.solid = 1.000;
+            self.enemy.solid = 1;
         }
     }
-    self.flags = self.flags - ( self.flags & 512.000);
-    self.enemy.movetype = 0.000;
-    self.enemy.camdist = 0.000;
+    self.flags = self.flags - ( self.flags & 512);
+    self.enemy.movetype = 0;
+    self.enemy.camdist = 0;
     self.enemy.touch = item_tfgoal_touch;
     self.enemy.origin = self.enemy.oldorigin;
     if ( (self.enemy.mdl != string_null) ) {
         setmodel (self.enemy,self.enemy.mdl);
     }
     setorigin (self.enemy,self.enemy.origin);
-    sound (self.enemy,2.000,"items/itembk2.wav",1.000,1.000);
+    sound (self.enemy,2,"items/itembk2.wav",1,1);
     tfgoalitem_checkgoalreturn (self.enemy);
-    if ( (self.weapon != 2.000) ) {
+    if ( (self.weapon != 2) ) {
         if ( ((self.enemy.noise3 != string_null) || (self.enemy.noise4 != string_null)) ) {
             te = player_head;
             while ( te ) {
@@ -2138,65 +2138,65 @@ void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
         objerror ("error: tfgoalitem_RemoveFromPlayer(): Item == world");
         return ;
     }
-    lighton = 0.000;
-    slowon = 0.000;
-    key1on = 0.000;
-    key2on = 0.000;
-    spyoff = 0.000;
+    lighton = 0;
+    slowon = 0;
+    key1on = 0;
+    key2on = 0;
+    spyoff = 0;
     te = find (world,classname,"item_tfgoal");
     while ( te ) {
         if ( ((te.owner == AP) && (te != Item)) ) {
-            if ( (te.goal_activation & 1.000) ) {
-                lighton = 1.000;
+            if ( (te.goal_activation & 1) ) {
+                lighton = 1;
             }
-            if ( (te.goal_activation & 2.000) ) {
-                slowon = 1.000;
+            if ( (te.goal_activation & 2) ) {
+                slowon = 1;
             }
-            if ( (te.items & 131072.000) ) {
-                key1on = 1.000;
+            if ( (te.items & 131072) ) {
+                key1on = 1;
             }
-            if ( (te.items & 262144.000) ) {
-                key2on = 1.000;
+            if ( (te.items & 262144) ) {
+                key2on = 1;
             }
-            if ( (te.goal_result & 16.000) ) {
-                spyoff = 1.000;
+            if ( (te.goal_result & 16) ) {
+                spyoff = 1;
             }
         }
         te = find (te,classname,"item_tfgoal");
     }
     if ( !lighton ) {
-        if ( (AP.invincible_finished > (time + 3.000)) ) {
-            lighton = 1.000;
+        if ( (AP.invincible_finished > (time + 3)) ) {
+            lighton = 1;
         } else {
-            if ( (AP.super_damage_finished > (time + 3.000)) ) {
-                lighton = 1.000;
+            if ( (AP.super_damage_finished > (time + 3)) ) {
+                lighton = 1;
             }
         }
     }
     if ( !lighton ) {
-        AP.effects = (AP.effects - (AP.effects & 8.000));
-        AP.effects = (AP.effects - (AP.effects & 80.000));
-        AP.effects = (AP.effects - (AP.effects & 160.000));
+        AP.effects = (AP.effects - (AP.effects & 8));
+        AP.effects = (AP.effects - (AP.effects & 80));
+        AP.effects = (AP.effects - (AP.effects & 160));
     }
-    if ( (Item.goal_activation & 512.000) ) {
-        if (Item.owned_by == 1.000)   {
-            Item.effects = (Item.effects | 64.000);
+    if ( (Item.goal_activation & 512) ) {
+        if (Item.owned_by == 1)   {
+            Item.effects = (Item.effects | 64);
         } else {
-            if (Item.owned_by == 2.000)  {
-                Item.effects = (Item.effects | 128.000);
+            if (Item.owned_by == 2)  {
+                Item.effects = (Item.effects | 128);
             } else {
-                Item.effects = (Item.effects | 8.000);
+                Item.effects = (Item.effects | 8);
             }
         }
     }
     if ( !spyoff ) {
-        AP.is_unabletospy = 0.000;
+        AP.is_unabletospy = 0;
     }
     if ( !key1on ) {
-        AP.items = (AP.items - (AP.items & 131072.000));
+        AP.items = (AP.items - (AP.items & 131072));
     }
     if ( !key2on ) {
-        AP.items = (AP.items - (AP.items & 262144.000));
+        AP.items = (AP.items - (AP.items & 262144));
     }
     te = player_head;
     while ( te ) {
@@ -2205,8 +2205,8 @@ void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
         }
         te = te.nextp;
     }
-    if ( ((method == 0.000) || (method == 2.000)) ) {
-        AP.flag_fumbles = AP.flag_fumbles + 1.000;
+    if ( ((method == 0) || (method == 2)) ) {
+        AP.flag_fumbles = AP.flag_fumbles + 1;
         if (AP.StatusBarSize)
             AP.StatusRefreshTime = (time + 0.100);
         te = player_head;
@@ -2254,22 +2254,22 @@ void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
             }
             te = te.nextp;
         }
-        if ( (Item.goal_activation & 8.000) ) {
+        if ( (Item.goal_activation & 8) ) {
             DelayReturn = spawn ();
             DelayReturn.enemy = Item;
-            if ( (method == 0.000) ) {
-                DelayReturn.weapon = 0.000;
+            if ( (method == 0) ) {
+                DelayReturn.weapon = 0;
             } else {
-                DelayReturn.weapon = 1.000;
+                DelayReturn.weapon = 1;
             }
             DelayReturn.think = ReturnItem;
             DelayReturn.nextthink = (time + 0.500);
         } else {
-            if ( (Item.goal_activation & 4.000) ) {
-                if ( ((method == 2.000) && ((Item.goal_activation & 4096.000) || (toggleflags & 8.000))  ) ) {
-                    tfgoalitem_drop (Item,1.000,AP);
+            if ( (Item.goal_activation & 4) ) {
+                if ( ((method == 2) && ((Item.goal_activation & 4096) || (toggleflags & 8))  ) ) {
+                    tfgoalitem_drop (Item,1,AP);
                 } else {
-                    tfgoalitem_drop (Item,0.000,AP);
+                    tfgoalitem_drop (Item,0,AP);
                 }
             } else {
                 Item.owner = world;
@@ -2279,23 +2279,23 @@ void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
             }
         }
         Item.owner = world;
-        Item.flags = (Item.flags - (Item.flags & 512.000));
+        Item.flags = (Item.flags - (Item.flags & 512));
         setsize (Item,Item.goal_min,Item.goal_max);
         TeamFortress_SetSpeed (AP);
         return ;
     } else {
-        if ( (method == 1.000) ) {
-            if ( (Item.goal_activation & 16.000) ) {
+        if ( (method == 1) ) {
+            if ( (Item.goal_activation & 16) ) {
                 DelayReturn = spawn ();
                 DelayReturn.enemy = Item;
-                DelayReturn.weapon = 2.000;
+                DelayReturn.weapon = 2;
                 DelayReturn.think = ReturnItem;
                 DelayReturn.nextthink = (time + 0.500);
                 Item.owner = world;
                 TeamFortress_SetSpeed (AP);
                 return ;
             }
-            Item.solid = 0.000;
+            Item.solid = 0;
             Item.owner = world;
             TeamFortress_SetSpeed (AP);
             return ;
@@ -2307,42 +2307,42 @@ void tfgoalitem_RemoveFromPlayer (entity Item, entity AP, float method) {
 void tfgoalitem_dropthink () {
     float pos;
     string st;
-    self.movetype = 6.000;
-    if ( (self.pausetime != 0.000) ) {
+    self.movetype = 6;
+    if ( (self.pausetime != 0) ) {
         pos = pointcontents (self.origin);
-        if ( (pos == -4.000) ) {
-            self.nextthink = (time + (self.pausetime / 4.000));
+        if ( (pos == -4) ) {
+            self.nextthink = (time + (self.pausetime / 4));
         } else {
-            if ( (pos == -5.000) ) {
-                self.nextthink = (time + 5.000);
+            if ( (pos == -5) ) {
+                self.nextthink = (time + 5);
             } else {
-                if ( ((pos == -2.000) || (pos == -6.000)) ) {
-                    if ( (self.camdist < 3.000) ) {
+                if ( ((pos == -2) || (pos == -6)) ) {
+                    if ( (self.camdist < 3) ) {
                         // self.origin = self.camangle;
                         setorigin (self,self.origin);
-                        self.velocity_z = 400.000;
-                        self.velocity_x = (-50.000 + (random () * 100.000));
-                        self.velocity_y = (-50.000 + (random () * 100.000));
-                        self.goal_state = 2.000;
-                        self.movetype = 6.000;
-                        if ( (self.goal_activation & 8192.000) || (toggleflags & 16.000)) {
-                            self.solid = 2.000;
+                        self.velocity_z = 400;
+                        self.velocity_x = (-50 + (random () * 100));
+                        self.velocity_y = (-50 + (random () * 100));
+                        self.goal_state = 2;
+                        self.movetype = 6;
+                        if ( (self.goal_activation & 8192) || (toggleflags & 16)) {
+                            self.solid = 2;
                         } else {
-                            self.solid = 1.000;
+                            self.solid = 1;
                         }
                         if ( (self.mdl != string_null) ) {
                             setmodel (self,self.mdl);
                         }
                         setsize (self,self.goal_min,self.goal_max);
-                        self.camdist = (self.camdist + 1.000);
-                        self.nextthink = (time + 5.000);
+                        self.camdist = (self.camdist + 1);
+                        self.nextthink = (time + 5);
                         self.think = tfgoalitem_dropthink;
                         return ;
                     } else {
-                        self.nextthink = (time + 2.000);
+                        self.nextthink = (time + 2);
                     }
                 } else {
-                    self.camdist = -1.000;
+                    self.camdist = -1;
                     self.nextthink = (time + self.pausetime);
                 }
             }
@@ -2365,17 +2365,17 @@ void tfgoalitem_drop (entity Item, float PAlive, entity P) {
     float fl;
     Item.origin = Item.owner.origin;
     setorigin (Item,Item.origin);
-    //Item.camangle = (Item.owner.origin - '0.000 0.000 8.000');
-    Item.camdist = 0.000;
-    Item.velocity_z = 400.000;
-    Item.velocity_x = (-50.000 + (random () * 100.000));
-    Item.velocity_y = (-50.000 + (random () * 100.000));
-    Item.goal_state = 2.000;
-    Item.movetype = 6.000;
-    if (((Item.goal_activation & 8192.000)) || ((toggleflags & 16.000))) {
-        Item.solid = 2.000;
+    //Item.camangle = (Item.owner.origin - '0 0 8');
+    Item.camdist = 0;
+    Item.velocity_z = 400;
+    Item.velocity_x = (-50 + (random () * 100));
+    Item.velocity_y = (-50 + (random () * 100));
+    Item.goal_state = 2;
+    Item.movetype = 6;
+    if (((Item.goal_activation & 8192)) || ((toggleflags & 16))) {
+        Item.solid = 2;
     } else {
-        Item.solid = 1.000;
+        Item.solid = 1;
     }
     if ( (Item.mdl != string_null) ) {
         setmodel (Item,Item.mdl);
@@ -2387,34 +2387,34 @@ void tfgoalitem_drop (entity Item, float PAlive, entity P) {
     if (fl > 0 && fl < 10) {
         P.rs_g = time + fl;
     }
-    if ( (PAlive == 1.000) ) {
+    if ( (PAlive == 1) ) {
         makevectors (P.v_angle);
         if ( P.v_angle_x ) {
-            Item.velocity = ((v_forward * 400.000) + (v_up * 200.000));
+            Item.velocity = ((v_forward * 400) + (v_up * 200));
         } else {
-            Item.velocity = aim (P,10000.000);
-            Item.velocity = (Item.velocity * 400.000);
-            Item.velocity_z = 200.000;
+            Item.velocity = aim (P,10000);
+            Item.velocity = (Item.velocity * 400);
+            Item.velocity_z = 200;
         }
         Item.touch = SUB_Null;
         Item.nextthink = (time + 0.750);
         Item.think = tfgoalitem_droptouch;
     } else {
         Item.touch = item_tfgoal_touch;
-        Item.nextthink = (time + 5.000);
+        Item.nextthink = (time + 5);
         Item.think = tfgoalitem_dropthink;
     }
 }
 
 void tfgoalitem_remove () {
     entity te;
-    if ( (self.goal_state == 1.000) ) {
+    if ( (self.goal_state == 1) ) {
         return ;
     }
-    if ( (self.goal_activation & 32.000) ) {
+    if ( (self.goal_activation & 32) ) {
         te = spawn ();
         te.enemy = self;
-        te.weapon = 3.000;
+        te.weapon = 3;
         te.nextthink = (time + 0.100);
         te.think = ReturnItem;
         return ;
@@ -2424,7 +2424,7 @@ void tfgoalitem_remove () {
 
 void tfgoalitem_checkgoalreturn (entity Item) {
     entity te;
-    if ( (Item.impulse != 0.000) ) {
+    if ( (Item.impulse != 0) ) {
         te = Findgoal (Item.impulse);
         if ( te ) {
             te = Findgoal (Item.impulse);
@@ -2436,7 +2436,7 @@ void tfgoalitem_checkgoalreturn (entity Item) {
 }
 string ItemStatus (entity Goal, entity Player, entity Item) {
     string tmp;
-    if ( (Item.goal_state == 1.000) ) {
+    if ( (Item.goal_state == 1) ) {
         if ( ((Goal.team_str_carried != string_null) || (Goal.non_team_str_carried != string_null)) ) {
             if ( (Player.pteam.team == Item.owned_by) ) {
                 tmp = Goal.team_str_carried;
@@ -2506,16 +2506,16 @@ string ItemStatus (entity Goal, entity Player, entity Item) {
 void info_player_team2 () {
     ctfmap = 1;
     self.classname = "info_player_teamspawn";
-    self.team_no = 2.000;
-    self.goal_effects = 1.000;
+    self.team_no = 2;
+    self.goal_effects = 1;
     self.team_str_home = "ts2";
 }
 
 void info_player_team1 () {
     ctfmap = 1;
     self.classname = "info_player_teamspawn";
-    self.team_no = 1.000;
-    self.goal_effects = 1.000;
+    self.team_no = 1;
+    self.goal_effects = 1;
     self.team_str_home = "ts1";
 }
 
@@ -2527,51 +2527,51 @@ void item_flag_team1 () {
     precache_sound ("ogre/ogwake.wav");
     precache_sound ("boss2/pop2.wav");
     self.classname = "item_tfgoal";
-    self.owned_by = 1.000;
+    self.owned_by = 1;
     self.netname = "Team 1 Flag";
     //self.broadcast = " ÇÏÔ the enemy team's flag!\n";
     //self.deathtype = "You've got the enemy flag!\n";
     self.noise = "ogre/ogwake.wav";
     self.noise2 = "ctf";
     self.mdl = "progs/flag.mdl";
-    self.skin = 1.000;
+    self.skin = 1;
     setmodel (self,self.mdl);
-    self.goal_no = 1.000;
-    self.goal_activation = (((((1.000 | 4.000) | 128.000) | 32.000) | 16.000) | 512.000);
-    self.goal_effects = 1.000;
-    self.effects = 64.000;
-    //self.pausetime = 128.000;
-    self.pausetime = 15.000;
-    self.goal_min = '-16.000 -16.000 -24.000';
-    self.goal_max = '16.000 16.000 32.000';
+    self.goal_no = 1;
+    self.goal_activation = (((((1 | 4) | 128) | 32) | 16) | 512);
+    self.goal_effects = 1;
+    self.effects = 64;
+    //self.pausetime = 128;
+    self.pausetime = 15;
+    self.goal_min = '-16 -16 -24';
+    self.goal_max = '16 16 32';
     setsize (self,self.goal_min,self.goal_max);
     self.touch = item_tfgoal_touch;
-    self.goal_state = 2.000;
-    self.solid = 1.000;
+    self.goal_state = 2;
+    self.solid = 1;
     setorigin (self,self.origin);
     self.nextthink = (time + 0.200);
     self.think = TF_PlaceItem;
     dp = spawn ();
     dp.origin = self.origin;
     dp.classname = "info_tfgoal";
-    dp.goal_activation = 1.000;
-    dp.team_no = 1.000;
-    dp.owned_by = 1.000;
-    dp.items_allowed = 2.000;
-    dp.goal_no = 3.000;
-    dp.goal_effects = 3.000;
+    dp.goal_activation = 1;
+    dp.team_no = 1;
+    dp.owned_by = 1;
+    dp.items_allowed = 2;
+    dp.goal_no = 3;
+    dp.goal_effects = 3;
     //dp.broadcast = " ÃÁÐÔÕÒÅÄ the enemy flag!\n";
     //dp.message = "You ÃÁÐÔÕÒÅÄ the enemy flag!\n";
     dp.noise = "boss2/pop2.wav";
-    dp.goal_result = 2.000;
-    dp.activate_goal_no = 5.000;
-    dp.axhitme = 2.000;
-    dp.count = 10.000;
-    dp.frags = 10.000;
-    dp.solid = 1.000;
-    dp.goal_state = 2.000;
-    dp.goal_min = '-16.000 -16.000 -24.000';
-    dp.goal_max = '16.000 16.000 32.000';
+    dp.goal_result = 2;
+    dp.activate_goal_no = 5;
+    dp.axhitme = 2;
+    dp.count = 10;
+    dp.frags = 10;
+    dp.solid = 1;
+    dp.goal_state = 2;
+    dp.goal_min = '-16 -16 -24';
+    dp.goal_max = '16 16 32';
     setsize (dp,dp.goal_min,dp.goal_max);
     dp.nextthink = (time + 0.200);
     dp.think = TF_PlaceGoal;
@@ -2579,14 +2579,14 @@ void item_flag_team1 () {
     dp.origin = dp.origin;
     dp.classname = "info_tfgoal";
     dp.noise2 = "ctf";
-    dp.goal_effects = 1.000;
-    dp.frags = 5.000;
-    dp.goal_activation = 0.000;
-    dp.goal_no = 5.000;
-    dp.solid = 0.000;
-    dp.goal_state = 2.000;
-    dp.goal_min = '-16.000 -16.000 -24.000';
-    dp.goal_max = '16.000 16.000 32.000';
+    dp.goal_effects = 1;
+    dp.frags = 5;
+    dp.goal_activation = 0;
+    dp.goal_no = 5;
+    dp.solid = 0;
+    dp.goal_state = 2;
+    dp.goal_min = '-16 -16 -24';
+    dp.goal_max = '16 16 32';
     setsize (dp,dp.goal_min,dp.goal_max);
     dp.nextthink = (time + 0.200);
     dp.think = TF_PlaceGoal;
@@ -2607,44 +2607,44 @@ void item_flag_team2 () {
     self.noise2 = "ctf";
     self.mdl = "progs/flag.mdl";
     setmodel (self,self.mdl);
-    self.skin = 0.000;
-    self.owned_by = 2.000;
-    self.goal_no = 2.000;
-    self.goal_activation = (((((1.000 | 4.000) | 128.000) | 32.000) | 16.000) | 512.000);
-    self.goal_effects = 1.000;
-    self.pausetime = 15.000;
-    //self.pausetime = 128.000;
-    self.effects = 128.000;
-    self.goal_min = '-16.000 -16.000 -24.000';
-    self.goal_max = '16.000 16.000 32.000';
+    self.skin = 0;
+    self.owned_by = 2;
+    self.goal_no = 2;
+    self.goal_activation = (((((1 | 4) | 128) | 32) | 16) | 512);
+    self.goal_effects = 1;
+    self.pausetime = 15;
+    //self.pausetime = 128;
+    self.effects = 128;
+    self.goal_min = '-16 -16 -24';
+    self.goal_max = '16 16 32';
     setsize (self,self.goal_min,self.goal_max);
     self.touch = item_tfgoal_touch;
-    self.goal_state = 2.000;
-    self.solid = 1.000;
+    self.goal_state = 2;
+    self.solid = 1;
     setorigin (self,self.origin);
     self.nextthink = (time + 0.200);
     self.think = TF_PlaceItem;
     dp = spawn ();
     dp.origin = self.origin;
     dp.classname = "info_tfgoal";
-    dp.goal_activation = 1.000;
-    dp.team_no = 2.000;
-    dp.owned_by = 2.000;
-    dp.items_allowed = 1.000;
-    dp.goal_no = 4.000;
-    dp.goal_effects = 3.000;
+    dp.goal_activation = 1;
+    dp.team_no = 2;
+    dp.owned_by = 2;
+    dp.items_allowed = 1;
+    dp.goal_no = 4;
+    dp.goal_effects = 3;
     //  dp.broadcast = " ÃÁÐÔÕÒÅÄ the enemy flag!\n";
     //  dp.message = "You ÃÁÐÔÕÒÅÄ the enemy flag!\n";
     dp.noise = "boss2/pop2.wav";
-    dp.goal_result = 2.000;
-    dp.activate_goal_no = 6.000;
-    dp.axhitme = 1.000;
-    dp.count = 10.000;
-    dp.frags = 10.000;
-    dp.solid = 1.000;
-    dp.goal_state = 2.000;
-    dp.goal_min = '-16.000 -16.000 -24.000';
-    dp.goal_max = '16.000 16.000 32.000';
+    dp.goal_result = 2;
+    dp.activate_goal_no = 6;
+    dp.axhitme = 1;
+    dp.count = 10;
+    dp.frags = 10;
+    dp.solid = 1;
+    dp.goal_state = 2;
+    dp.goal_min = '-16 -16 -24';
+    dp.goal_max = '16 16 32';
     setsize (dp,dp.goal_min,dp.goal_max);
     dp.nextthink = (time + 0.200);
     dp.think = TF_PlaceGoal;
@@ -2652,14 +2652,14 @@ void item_flag_team2 () {
     dp.origin = dp.origin;
     dp.classname = "info_tfgoal";
     dp.noise2 = "ctf";
-    dp.goal_effects = 1.000;
-    dp.frags = 5.000;
-    dp.goal_activation = 0.000;
-    dp.goal_no = 6.000;
-    dp.solid = 0.000;
-    dp.goal_state = 2.000;
-    dp.goal_min = '-16.000 -16.000 -24.000';
-    dp.goal_max = '16.000 16.000 32.000';
+    dp.goal_effects = 1;
+    dp.frags = 5;
+    dp.goal_activation = 0;
+    dp.goal_no = 6;
+    dp.solid = 0;
+    dp.goal_state = 2;
+    dp.goal_min = '-16 -16 -24';
+    dp.goal_max = '16 16 32';
     setsize (dp,dp.goal_min,dp.goal_max);
     dp.nextthink = (time + 0.200);
     dp.think = TF_PlaceGoal;
@@ -2669,36 +2669,36 @@ void CTF_FlagCheck () {
     entity te;
     float flagcount;
     float pos;
-    flagcount = 0.000;
+    flagcount = 0;
     te = find (world,classname,"item_tfgoal");
     while ( (te != world) ) {
-        if ( (te.goal_no == 1.000) ) {
+        if ( (te.goal_no == 1) ) {
             pos = pointcontents (te.origin);
-            if ( ((pos == -2.000) || (pos == -6.000)) ) {
+            if ( ((pos == -2) || (pos == -6)) ) {
                 dprint ("*****BUG*****\nFlag(s) outside world.\n");
                 te.nextthink = (time + 0.200);
                 te.think = tfgoalitem_remove;
             }
-            flagcount = (flagcount + 1.000);
+            flagcount = (flagcount + 1);
         } else {
-            if ( (te.goal_no == 2.000) ) {
+            if ( (te.goal_no == 2) ) {
                 pos = pointcontents (te.origin);
-                if ( ((pos == -2.000) || (pos == -6.000)) ) {
+                if ( ((pos == -2) || (pos == -6)) ) {
                     dprint ("*****BUG*****\nFlag(s) outside world.\n");
                     te.nextthink = (time + 0.200);
                     te.think = tfgoalitem_remove;
                 }
-                flagcount = (flagcount + 1.000);
+                flagcount = (flagcount + 1);
             }
         }
         te = find (te,classname,"item_tfgoal");
     }
     if ( !rounds) {
-        if ( (flagcount != 2.000) ) {
+        if ( (flagcount != 2) ) {
             dprint ("*****BUG*****\nFlag(s) missing.\n");
         }
     }
-    self.nextthink = (time + 30.000);
+    self.nextthink = (time + 30);
 }
 
 void ForceRespawn (entity P) {
@@ -2712,42 +2712,42 @@ void ForceRespawn (entity P) {
         spawn_tdeath (spot.origin,self);
     }
     self.observer_list = spot;
-    self.origin = (spot.origin + '0.000 0.000 1.000');
+    self.origin = (spot.origin + '0 0 1');
     self.angles = spot.angles;
-    self.fixangle = 1.000;
+    self.fixangle = 1;
     if ( ((spot.classname == "info_player_teamspawn") && (!cb_prematch)) ) {
-        if ( (spot.items != 0.000) ) {
+        if ( (spot.items != 0) ) {
             te = Finditem (spot.items);
             if ( te ) {
                 tfgoalitem_GiveToPlayer (te,self,self);
             }
-            if ( !(spot.goal_activation & 1.000) ) {
-                spot.items = 0.000;
+            if ( !(spot.goal_activation & 1) ) {
+                spot.items = 0;
             }
         }
         if ( spot.message ) {
             CenterPrint (self,spot.message);
-            if ( !(spot.goal_activation & 2.000) ) {
+            if ( !(spot.goal_activation & 2) ) {
                 spot.message = string_null;
             }
         }
-        if ( (spot.activate_goal_no != 0.000) ) {
+        if ( (spot.activate_goal_no != 0) ) {
             te = Findgoal (spot.activate_goal_no);
             if ( te ) {
                 AttemptToActivate (te,self,spot);
             }
         }
-        if ( (spot.goal_effects == 1.000) ) {
+        if ( (spot.goal_effects == 1) ) {
             spot.classname = "deadpoint";
             spot.team_str_home = string_null;
-            spot.nextthink = (time + 1.000);
+            spot.nextthink = (time + 1);
             spot.think = SUB_Remove;
         }
     }
     if ( (deathmatch || coop) ) {
         makevectors (self.angles);
         if ( (self.playerclass) ) {
-            spawn_tfog ((self.origin + (v_forward * 20.000)));
+            spawn_tfog ((self.origin + (v_forward * 20)));
         }
     }
     self = oldself;
@@ -2758,8 +2758,8 @@ void DropGoalItems () {
     te = find (world,classname,"item_tfgoal");
     while ( te ) {
         if ( (te.owner == self) ) {
-            if ( (te.goal_activation & 4096.000) || (toggleflags & 8.000)) {
-                tfgoalitem_RemoveFromPlayer (te,self,2.000);
+            if ( (te.goal_activation & 4096) || (toggleflags & 8)) {
+                tfgoalitem_RemoveFromPlayer (te,self,2);
             }
         }
         te = find (te,classname,"item_tfgoal");

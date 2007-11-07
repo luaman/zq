@@ -7,11 +7,11 @@ void spawn_tfog (vector org);
 
 void spawn_tdeath (vector org, entity death_owner);
 
-float modelindex_eyes /* = 0.000 */;
+float modelindex_eyes /* = 0 */;
 
-float modelindex_player /* = 0.000 */;
+float modelindex_player /* = 0 */;
 
-float modelindex_null /* = 0.000 */;
+float modelindex_null /* = 0 */;
 
 void TeamFortress_PrintClassName (entity Viewer, float pc, float rpc);
 
@@ -100,22 +100,22 @@ void CheckConnectRate () {
 }
 
 void SetChangeParms () {
-    if ( (self.health <= 0.000) ) {
+    if ( (self.health <= 0) ) {
         SetNewParms ();
         return ;
     }
-    self.items = (self.items - (self.items & (((((131072.000 | 262144.000) | 524288.000) | 1048576.000) | 2097152.000) | 4194304.000)));
-    if ( (self.health > 100.000) ) {
-        self.health = 100.000;
+    self.items = (self.items - (self.items & (((((131072 | 262144) | 524288) | 1048576) | 2097152) | 4194304)));
+    if ( (self.health > 100) ) {
+        self.health = 100;
     }
-    if ( (self.health < 50.000) ) {
-        self.health = 50.000;
+    if ( (self.health < 50) ) {
+        self.health = 50;
     }
     parm1 = self.items;
     parm2 = self.health;
     parm3 = self.armorvalue;
-    if ( (self.ammo_shells < 25.000) ) {
-        parm4 = 25.000;
+    if ( (self.ammo_shells < 25) ) {
+        parm4 = 25;
     } else {
         parm4 = self.ammo_shells;
     }
@@ -123,31 +123,31 @@ void SetChangeParms () {
     parm6 = self.ammo_rockets;
     parm7 = self.ammo_cells;
     parm8 = self.current;
-    parm9 = (self.armortype * 100.000);
-    parm10 = 0.000;
-    parm11 = 0.000;
-    parm12 = 0.000;
+    parm9 = (self.armortype * 100);
+    parm10 = 0;
+    parm11 = 0;
+    parm12 = 0;
     parm13 = self.StatusBarRes;
     parm14 = self.StatusBarSize;
     parm15 = self.is_admin;
 }
 
 void SetNewParms () {
-    parm1 = 0.000;
-    parm2 = 100.000;
-    parm3 = 0.000;
-    parm4 = 25.000;
-    parm5 = 0.000;
-    parm6 = 0.000;
-    parm7 = 0.000;
-    parm8 = 1.000;
-    parm9 = 0.000;
-    parm10 = 0.000;
-    parm11 = 0.000;
-    parm12 = 0.000;
-    parm13 = 0.000;
-    parm14 = 0.000;
-    parm15 = 0.000;
+    parm1 = 0;
+    parm2 = 100;
+    parm3 = 0;
+    parm4 = 25;
+    parm5 = 0;
+    parm6 = 0;
+    parm7 = 0;
+    parm8 = 1;
+    parm9 = 0;
+    parm10 = 0;
+    parm11 = 0;
+    parm12 = 0;
+    parm13 = 0;
+    parm14 = 0;
+    parm15 = 0;
 }
 
 void Remove_Entity (string entname) {
@@ -201,18 +201,18 @@ void DecodeLevelParms () {
     self.ammo_cells = parm7;
     self.current = parm8;
     self.armortype = (parm9 * 0.010);
-    if ( !(toggleflags & 256.000) ) {
+    if ( !(toggleflags & 256) ) {
         localcmd("serverinfo oztf 1.77a\n");
         Initialise_Teams();
         //toggleflags = (toggleflags | parm10);
-        flagem_checked = 0.000;
+        flagem_checked = 0;
         if ( (coop || !deathmatch) ) {
-            toggleflags = (toggleflags | 1.000);
+            toggleflags = (toggleflags | 1);
         }
         nextmap = mapname;
         ent = find (world,classname,"info_tfdetect");
         if ( (ent != world) ) {
-            if ( (teamplay == 0.000) ) {
+            if ( (teamplay == 0) ) {
                 cvar_set ("teamplay","1?OzTeamFortress");
             }
             te = find (world,classname,"info_player_teamspawn");
@@ -223,40 +223,40 @@ void DecodeLevelParms () {
                 te = find (te,classname,"info_player_teamspawn");
             }
             ParseTFDetect (ent);
-            if ( ((store_obs.cnt <= 0.000) || (store_obs.cnt >= 5.000)) ) {
-                store_obs.cnt = 4.000;
+            if ( ((store_obs.cnt <= 0) || (store_obs.cnt >= 5)) ) {
+                store_obs.cnt = 4;
             }
         } else {
             ent = find (world,classname,"info_player_team1");
             if ( ((ent != world) || (ctfmap == 1)) ) {
                 ctfmap = 1;
-                if ( (teamplay == 0.000) ) {
+                if ( (teamplay == 0) ) {
                     cvar_set ("teamplay","11?OzTeamFortress");
                 }
                 ent = spawn ();
-                ent.nextthink = (time + 30.000);
+                ent.nextthink = (time + 30);
                 ent.think = CTF_FlagCheck;
-                store_obs.cnt = 2.000;
+                store_obs.cnt = 2;
             } else {
                 ent = find (world,classname,"func_bomb_target");
                 if ( ent != world ) {
                     cvar_set ("teamplay","21?OzTeamFortress");
                     modetype = modetype | 4;
                     rounds = -1;
-                    store_obs.cnt = 2.000;
+                    store_obs.cnt = 2;
                 } else {
                     cvar_set ("teamplay","1?OzTeamFortress");
-                    store_obs.cnt = 4.000;
-                    store_obs.maxammo_shells = 15.000;
-                    classtype = classtype | 64.000;
-                    realdm = 1.000;
+                    store_obs.cnt = 4;
+                    store_obs.maxammo_shells = 15;
+                    classtype = classtype | 64;
+                    realdm = 1;
                 }
             }
         }
         ent = find (world,classname,"info_soccer_goal");
         if ( ent != world ) {
             rounds = -1;
-            store_obs.cnt = 2.000;
+            store_obs.cnt = 2;
         }
         bprint (PRINT_HIGH,"Mapname: ");
         bprint (PRINT_HIGH,mapname);
@@ -265,31 +265,31 @@ void DecodeLevelParms () {
             dremove(pteam3);
             dremove(pteam4);
         }
-        autokick_kills = 0.000;
-        autokick_time = 0.000;
-        cease_fire = 0.000;
-        toggleflags = (toggleflags | 128.000);
-        toggleflags = (toggleflags - (toggleflags & 2.000));
-        toggleflags = (toggleflags | 256.000);
+        autokick_kills = 0;
+        autokick_time = 0;
+        cease_fire = 0;
+        toggleflags = (toggleflags | 128);
+        toggleflags = (toggleflags - (toggleflags & 2));
+        toggleflags = (toggleflags | 256);
         st = infokey (world,"temp1");
         fl = stof (st);
         if (fl) {
             toggleflags = (toggleflags | fl);
         }
-        if ( (stof (infokey (world,"rj")) != 0.000) ) {
+        if ( (stof (infokey (world,"rj")) != 0) ) {
             rj = stof (infokey (world,"rj"));
         } else {
-            rj = 1.000;
+            rj = 1;
         }
         st = infokey (world,"arena");
         if ((st == "on")) {
             rounds = -1;
             //cvar_set ("deathmatch","4");
             cvar_set ("teamplay","1333?OzArena");
-            realdm = 0.000;
-            modetype = modetype | 8.000;
+            realdm = 0;
+            modetype = modetype | 8;
             Remove_All_Items ();
-            // deathmatch = 4.000;
+            // deathmatch = 4;
         }
         st = infokey (world, "tfstrike");
         if ((st == "on")) {
@@ -310,8 +310,8 @@ void DecodeLevelParms () {
         if ((st == "on")) {
             rounds = -1;
         } else {
-            if (stof(st) > 0.000 ) {
-                rounds = stof(st) + 1.000;
+            if (stof(st) > 0 ) {
+                rounds = stof(st) + 1;
             }
         }
         st = infokey (world,"practice");
@@ -355,15 +355,15 @@ void DecodeLevelParms () {
                     te = player_head;
                     while ( te ) {
                         centerprint (te,"CEASE FIRE\n");
-                        te.tfstate = (te.tfstate | 65536.000);
+                        te.tfstate = (te.tfstate | 65536);
                         TeamFortress_SetSpeed (te);
                         te = te.nextp;
                     }
                     te = spawn ();
                     te.classname = "ceasefire";
                     te.think = CeaseFire_think;
-                    te.nextthink = (time + 5.000);
-                    te.weapon = 1.000;
+                    te.nextthink = (time + 5);
+                    te.weapon = 1;
                     StartTimer ();
                 }
             }
@@ -384,7 +384,7 @@ void DecodeLevelParms () {
             te.classname = "round";
             te.cnt = stof(st);
             if (!(modetype & 1)) {
-                te.nextthink = (time + 1.000);
+                te.nextthink = (time + 1);
                 te.think = StartRound;
             }
         }
@@ -411,7 +411,7 @@ entity FindIntermission () {
     float cyc;
     spot = find (world,classname,"info_intermission");
     if ( spot ) {
-        cyc = (random () * 1.000);
+        cyc = (random () * 1);
         return ( spot );
     }
     spot = find (world,classname,"info_player_start");
@@ -420,13 +420,13 @@ entity FindIntermission () {
     }
     spot = find (world,classname,"info_player_deathmatch");
     if ( spot ) {
-        cyc = (random () * 6.000);
-        while ( (cyc > 1.000) ) {
+        cyc = (random () * 6);
+        while ( (cyc > 1) ) {
             spot = find (spot,classname,"info_player_deathmatch");
             if ( !spot ) {
                 spot = find (spot,classname,"info_player_deathmatch");
             }
-            cyc = (cyc - 1.000);
+            cyc = (cyc - 1);
         }
         return ( spot );
     }
@@ -471,9 +471,9 @@ void TF_MovePlayer () {
     entity place;
     place = FindNextIntermission (self.observer_list);
     self.observer_list = place;
-    setorigin (self,(place.origin + '0.000 0.000 1.000'));
+    setorigin (self,(place.origin + '0 0 1'));
     self.angles = place.angles;
-    self.fixangle = 1.000;
+    self.fixangle = 1;
 }
 
 void GotoNextMap () {
@@ -482,18 +482,18 @@ void GotoNextMap () {
     string st;
     if ( (nextmap != mapname) ) {
         changelevel (nextmap);
-        already_chosen_map = 1.000;
+        already_chosen_map = 1;
     }
     sl = infokey (world,mapname);
     if ( (sl != string_null) ) {
         nextmap = sl;
-        already_chosen_map = 1.000;
+        already_chosen_map = 1;
         return ;
     }
     if ( !already_chosen_map ) {
         sl = infokey (world,"n");
         nextlevel = stof (sl);
-        nextlevel = (nextlevel + 1.000);
+        nextlevel = (nextlevel + 1);
         sl = ftos (nextlevel);
         localcmd ("localinfo n ");
         localcmd (sl);
@@ -511,10 +511,10 @@ void GotoNextMap () {
         }
         localcmd (sl);
         localcmd (".cfg\n");
-        already_chosen_map = 1.000;
+        already_chosen_map = 1;
     }
     if ( (infokey (world,"n") == "0") ) {
-        already_chosen_map = 0.000;
+        already_chosen_map = 0;
     }
 }
 
@@ -525,8 +525,8 @@ void ExitIntermission () {
         GotoNextMap ();
         return ;
     }
-    intermission_exittime = (time + 1.000);
-    intermission_running = (intermission_running + 1.000);
+    intermission_exittime = (time + 1);
+    intermission_running = (intermission_running + 1);
     dprint ("Exit Intermission.\n");
     GotoNextMap ();
 }
@@ -544,8 +544,8 @@ void IntermissionThink () {
         localcmd("stop\n");
         st = infokey(world, "demo_auto_left");
         currp = stof(st);
-        if (currp > 0.000) {
-            currp = currp - 1.000;
+        if (currp > 0) {
+            currp = currp - 1;
             st = ftos(currp);
             localcmd("localinfo demo_auto_left ");
             localcmd(st);
@@ -582,7 +582,7 @@ void IntermissionThink () {
             localcmd (".cfg\n");
         } else {
             dprint ("outside range. Next map.\n");
-            already_chosen_map = 0.000;
+            already_chosen_map = 0;
         }
         localcmd ("localinfo minp \"\"\n");
         localcmd ("localinfo maxp \"\"\n");
@@ -593,28 +593,28 @@ void IntermissionThink () {
 void execute_changelevel () {
     entity pos;
     dprint ("execute_changelevel()\n");
-    intermission_running = 1.000;
-    intermission_exittime = (time + 5.000);
+    intermission_running = 1;
+    intermission_exittime = (time + 5);
     pos = FindIntermission ();
-    WriteByte (2.000,32.000);
-    WriteByte (2.000,3.000);
-    WriteByte (2.000,30.000);
-    WriteCoord (2.000,pos.origin_x);
-    WriteCoord (2.000,pos.origin_y);
-    WriteCoord (2.000,pos.origin_z);
-    WriteAngle (2.000,pos.mangle_x);
-    WriteAngle (2.000,pos.mangle_y);
-    WriteAngle (2.000,pos.mangle_z);
+    WriteByte (2,32);
+    WriteByte (2,3);
+    WriteByte (2,30);
+    WriteCoord (2,pos.origin_x);
+    WriteCoord (2,pos.origin_y);
+    WriteCoord (2,pos.origin_z);
+    WriteAngle (2,pos.mangle_x);
+    WriteAngle (2,pos.mangle_y);
+    WriteAngle (2,pos.mangle_z);
     localcmd("serverinfo status Standby\n");
     other = player_head;
     while (other) {
         stuffcmd (other, "play endgame.wav\n");
         ShowFrags(other);
         stuffcmd (other, "on_matchend\n");
-        other.takedamage = 0.000;
-        other.solid = 0.000;
-        other.movetype = 0.000;
-        other.modelindex = 0.000;
+        other.takedamage = 0;
+        other.solid = 0;
+        other.movetype = 0;
+        other.modelindex = 0;
         other = other.nextp;
     }
 }
@@ -627,7 +627,7 @@ void trigger_changelevel () {
 void set_suicide_frame ();
 
 void respawn () {
-    if ( (self.has_disconnected == 1.000) ) {
+    if ( (self.has_disconnected == 1) ) {
         return ;
     }
     if ( cease_fire ) {
@@ -640,7 +640,7 @@ void respawn () {
 
 void ClientKill () {
     entity te;
-    if ( (self.has_disconnected == 1.000) ) {
+    if ( (self.has_disconnected == 1) ) {
         return ;
     }
     if ( (self.respawn_time > time) ) {
@@ -653,23 +653,23 @@ void ClientKill () {
         return;
     }
     if (modetype & 2) {
-        self.respawn_time = (time + 1.000);
+        self.respawn_time = (time + 1);
     } else {
-        self.respawn_time = (time + 5.000);
+        self.respawn_time = (time + 5);
     }
     if ( (self.playerclass ) ) {
         bprint (PRINT_MEDIUM,self.netname);
         bprint (PRINT_MEDIUM," suicides\n");
         if (!cb_prematch)
-            TF_AddFrags (self,-1.000, 0.000);
+            TF_AddFrags (self,-1, 0);
         set_suicide_frame ();
         self.modelindex = modelindex_player;
-        if ( (self.tfstate & 16.000) ) {
+        if ( (self.tfstate & 16) ) {
             te = find (world,classname,"timer");
             while ( te ) {
                 if ( ((te.owner == self) && (te.think == BioInfection_Decay)) ) {
                     logfrag (te,self);
-                    TF_AddFrags (te.enemy,1.000, 1.000);
+                    TF_AddFrags (te.enemy,1, 1);
                 }
                 te = find (te,classname,"timer");
             }
@@ -678,14 +678,14 @@ void ClientKill () {
         }
     }
     self.weaponmodel = "";
-    self.view_ofs = '0.000 0.000 -8.000';
-    self.movetype = 0.000;
+    self.view_ofs = '0 0 -8';
+    self.movetype = 0;
     TeamFortress_RemoveTimers ();
     TeamFortress_SetupRespawn ();
-    self.health = -1.000;
+    self.health = -1;
     self.th_die ();
-    self.deadflag = 3.000;
-    self.takedamage = 0.000;
+    self.deadflag = 3;
+    self.takedamage = 0;
 }
 entity FindTeamSpawnPoint () {
     entity spot;
@@ -697,22 +697,22 @@ entity FindTeamSpawnPoint () {
     if (server_type) {
         st = strcat("ts", ftos(self.pteam.team));
     } else {
-        if (self.pteam.team == 1.000) {
+        if (self.pteam.team == 1) {
             st = "ts1";
-        } else if (self.pteam.team == 2.000) {
+        } else if (self.pteam.team == 2) {
             st = "ts2";
-        } else if (self.pteam.team== 3.000) {
+        } else if (self.pteam.team== 3) {
             st = "ts3";
-        } else if (self.pteam.team == 4.000) {
+        } else if (self.pteam.team == 4) {
             st = "ts4";
         }
     }
     //  if ((modetype & 4) && (bspversion)) {
     //     spot = find (spot, classname, "info_player_start");
     spot = self.pteam.movetarget;
-    attempts = 0.000;
-    while ( 1.000 ) {
-        attempts = (attempts + 1.000);
+    attempts = 0;
+    while ( 1 ) {
+        attempts = (attempts + 1);
         spot = find (spot,team_str_home,st);
         if ( (spot == world) ) {
             spot = find (world,team_str_home,st);
@@ -720,28 +720,28 @@ entity FindTeamSpawnPoint () {
         if ( (spot == world) ) {
             return ( world );
         }
-        attempts = (attempts + 1.000);
+        attempts = (attempts + 1);
         /*
-           cyc = (random () * 6.000);
-           while ( (cyc > 1.000) ) {
+           cyc = (random () * 6);
+           while ( (cyc > 1) ) {
            spot = find (spot,team_str_home,st);
            if ( !spot )
            spot = find (spot,team_str_home,st);
-           cyc = (cyc - 1.000);
+           cyc = (cyc - 1);
            }
          */
-        at_spot = findradius (spot.origin,40.000);
-        spot_found = 1.000;
+        at_spot = findradius (spot.origin,40);
+        spot_found = 1;
         while ( (at_spot != world) ) {
-            if ( ((at_spot.classname == "player") && (at_spot.deadflag == 0.000)) ) {
-                spot_found = 0.000;
+            if ( ((at_spot.classname == "player") && (at_spot.deadflag == 0)) ) {
+                spot_found = 0;
             }
             at_spot = at_spot.chain;
         }
         if ( !Activated (spot,self) ) {
-            spot_found = 0.000;
+            spot_found = 0;
         }
-        if ( (spot_found || (attempts >= 30.000)) ) {
+        if ( (spot_found || (attempts >= 30)) ) {
             self.pteam.movetarget = spot;
             return ( spot );
         }
@@ -753,7 +753,7 @@ entity SelectSpawnPoint () {
     entity at_spot;
     float spot_found;
     float attempts;
-    if ( (self.pteam.team != 0.000) ) {
+    if ( (self.pteam.team != 0) ) {
         spot = FindTeamSpawnPoint ();
         if ( (spot != world) ) {
             return ( spot );
@@ -773,18 +773,18 @@ entity SelectSpawnPoint () {
             if ( (spot == world) ) {
                 spot = find (world,classname,"info_player_deathmatch");
             }
-            attempts = 0.000;
-            while ( ((spot != world) && (attempts < 100.000)) ) {
-                attempts = (attempts + 1.000);
-                at_spot = findradius (spot.origin,40.000);
-                spot_found = 1.000;
+            attempts = 0;
+            while ( ((spot != world) && (attempts < 100)) ) {
+                attempts = (attempts + 1);
+                at_spot = findradius (spot.origin,40);
+                spot_found = 1;
                 while ( at_spot ) {
-                    if ( ((at_spot.classname == "player") && (at_spot.deadflag == 0.000)) ) {
-                        spot_found = 0.000;
+                    if ( ((at_spot.classname == "player") && (at_spot.deadflag == 0)) ) {
+                        spot_found = 0;
                     }
                     at_spot = at_spot.chain;
                 }
-                if ( (spot_found || (attempts >= 10.000)) ) {
+                if ( (spot_found || (attempts >= 10)) ) {
                     lastspawn = spot;
                     return ( spot );
                 }
@@ -821,57 +821,57 @@ void PutClientInServer () {
     entity spot;
     entity te;
     float oldclass;
-    //self.immune_to_check = (time + 5.000);
+    //self.immune_to_check = (time + 5);
     self.touch = player_touch;
     self.classname = "player";
-    self.health = 100.000;
-    self.solid = 3.000;
-    self.movetype = 3.000;
-    self.show_hostile = 0.000;
-    self.max_health = 100.000;
-    self.flags = 8.000;
-    self.air_finished = (time + 12.000);
-    self.dmg = 2.000;
-    self.super_damage_finished = 0.000;
-    self.radsuit_finished = 0.000;
-    self.invisible_finished = 0.000;
-    self.invincible_finished = 0.000;
-    self.effects = 0.000;
-    self.invincible_time = 0.000;
-    self.reload_shotgun = 0.000;
-    self.reload_super_shotgun = 0.000;
-    self.reload_grenade_launcher = 0.000;
-    self.reload_rocket_launcher = 0.000;
-    self.on_hook = 0.000;
-    self.hook_out = 0.000;
-    self.fire_held_down = 0.000;
-    self.gravity = 1.000;
-    self.camdist = 0.000;
+    self.health = 100;
+    self.solid = 3;
+    self.movetype = 3;
+    self.show_hostile = 0;
+    self.max_health = 100;
+    self.flags = 8;
+    self.air_finished = (time + 12);
+    self.dmg = 2;
+    self.super_damage_finished = 0;
+    self.radsuit_finished = 0;
+    self.invisible_finished = 0;
+    self.invincible_finished = 0;
+    self.effects = 0;
+    self.invincible_time = 0;
+    self.reload_shotgun = 0;
+    self.reload_super_shotgun = 0;
+    self.reload_grenade_launcher = 0;
+    self.reload_rocket_launcher = 0;
+    self.on_hook = 0;
+    self.hook_out = 0;
+    self.fire_held_down = 0;
+    self.gravity = 1;
+    self.camdist = 0;
     DecodeLevelParms ();
     if (self.pteam.team) {
         if ( (!self.playerclass ) ) {
             if ( TeamFortress_TeamIsCivilian (self.pteam.team) ) {
-                self.nextpc = 11.000;
+                self.nextpc = 11;
             }
         }
     }
-    iszoom = 0.000;
-    if ( (self.tfstate & 4096.000) ) {
-        iszoom = 1.000;
+    iszoom = 0;
+    if ( (self.tfstate & 4096) ) {
+        iszoom = 1;
     }
     if (modetype & 32) {
         if (teamplay) {
-            if (self.a_n == 1.000) {
+            if (self.a_n == 1) {
                 self.pteam = pteam1;
-            } else if (self.a_n == 2.000) {
+            } else if (self.a_n == 2) {
                 self.pteam = pteam2;
-            } else if (self.a_n > 2.000) {
+            } else if (self.a_n > 2) {
                 self.pteam = store_obs;
             }
         }
-        if (self.a_n > 2.000) {
-            self.playerclass = 0.000;
-            if (self.a_n == 3.000) {
+        if (self.a_n > 2) {
+            self.playerclass = 0;
+            if (self.a_n == 3) {
                 sprint (self, PRINT_HIGH, "You are next in line\n");
             } else {
                 sprint (self, PRINT_HIGH, "You are ", ftos(self.a_n), "th in the queue\n");
@@ -880,47 +880,47 @@ void PutClientInServer () {
     }
     if (round_active) {
         //if (self.a_n != 2)
-        self.playerclass = 0.000;
+        self.playerclass = 0;
     } else {
-        if ((self.nextpc != 0.000) ) {
+        if ((self.nextpc != 0) ) {
             self.playerclass = self.nextpc;
-            self.nextpc = 0.000;
-            if ( (self.playerclass == 10.000) ) {
-                self.tfstate = (self.tfstate | 8.000);
+            self.nextpc = 0;
+            if ( (self.playerclass == 10) ) {
+                self.tfstate = (self.tfstate | 8);
             } else {
-                self.tfstate = (self.tfstate - (self.tfstate & 8.000));
+                self.tfstate = (self.tfstate - (self.tfstate & 8));
                 TeamFortress_ExecClassScript (self);
             }
         }
     }
-    if ( (self.tfstate & 8.000) ) {
+    if ( (self.tfstate & 8) ) {
         if (round_active) {
-            self.playerclass = 0.000;
+            self.playerclass = 0;
         } else {
             if (CheckClassAvailable(self.pteam.team)) {
                 oldclass = self.playerclass;
-                self.playerclass = (1.000 + floor ((random () * (10.000 - 1.000))));
+                self.playerclass = (1 + floor ((random () * (10 - 1))));
                 while ((!IsLegalClass (self.playerclass) || (self.playerclass == oldclass) || (ClassIsRestricted (self.pteam.team,self.playerclass))  ) ) {
-                    self.playerclass = (1.000 + floor ((random () * (10.000 - 1.000))));
+                    self.playerclass = (1 + floor ((random () * (10 - 1))));
                 }
             } else {
                 sprint (self,PRINT_HIGH,"All classes disabled, returning to Observer mode.\n");
-                self.playerclass = 0.000;
+                self.playerclass = 0;
             }
-            self.tfstate = 8.000;
+            self.tfstate = 8;
             TeamFortress_ExecClassScript (self);
         }
     } else {
-        self.tfstate = 0.000;
+        self.tfstate = 0;
     }
-    if ( (iszoom == 1.000) ) {
-        self.tfstate = (self.tfstate | 4096.000);
+    if ( (iszoom == 1) ) {
+        self.tfstate = (self.tfstate | 4096);
     }
-    if ( (self.playerclass != 9.000) ) {
+    if ( (self.playerclass != 9) ) {
         Engineer_RemoveBuildings (self);
     }
-    self.takedamage = 2.000;
-    TeamFortress_PrintClassName (self,self.playerclass,(self.tfstate & 8.000));
+    self.takedamage = 2;
+    TeamFortress_PrintClassName (self,self.playerclass,(self.tfstate & 8));
     TeamFortress_SetEquipment ();
     TeamFortress_SetHealth ();
     TeamFortress_SetSpeed (self);
@@ -930,47 +930,47 @@ void PutClientInServer () {
     self.attack_finished = (time + 0.300);
     self.th_pain = player_pain;
     self.th_die = PlayerDie;
-    self.deadflag = 0.000;
-    self.pausetime = 0.000;
+    self.deadflag = 0;
+    self.pausetime = 0;
     spot = SelectSpawnPoint ();
     if ( (self.playerclass ) ) {
         spawn_tdeath (spot.origin,self);
     }
     self.observer_list = spot;
-    //self.origin = (spot.origin + '0.000 0.000 1.000');
+    //self.origin = (spot.origin + '0 0 1');
     if (spot.oldorigin) {
         setorigin(self, spot.oldorigin + '0 0 1');
     } else {
         setorigin(self, spot.origin + '0 0 1');
     }
     self.angles = spot.angles;
-    self.fixangle = 1.000;
+    self.fixangle = 1;
     if ( ((spot.classname == "info_player_teamspawn") && (!cb_prematch)) ) {
-        if ( (spot.items != 0.000) ) {
+        if ( (spot.items != 0) ) {
             te = Finditem (spot.items);
             if ( te ) {
                 tfgoalitem_GiveToPlayer (te,self,self);
             }
-            if ( !(spot.goal_activation & 1.000) ) {
-                spot.items = 0.000;
+            if ( !(spot.goal_activation & 1) ) {
+                spot.items = 0;
             }
         }
         if ( spot.message ) {
             CenterPrint (self,spot.message);
-            if ( !(spot.goal_activation & 2.000) ) {
+            if ( !(spot.goal_activation & 2) ) {
                 spot.message = string_null;
             }
         }
-        if ( (spot.activate_goal_no != 0.000) ) {
+        if ( (spot.activate_goal_no != 0) ) {
             te = Findgoal (spot.activate_goal_no);
             if ( te ) {
                 AttemptToActivate (te,self,spot);
             }
         }
-        if ( (spot.goal_effects == 1.000) ) {
+        if ( (spot.goal_effects == 1) ) {
             spot.classname = "deadpoint";
             spot.team_str_home = string_null;
-            spot.nextthink = (time + 1.000);
+            spot.nextthink = (time + 1);
             spot.think = SUB_Remove;
         }
     }
@@ -983,39 +983,39 @@ void PutClientInServer () {
     if ( (!self.playerclass ) ) {
         self.modelindex = modelindex_null;
         if (round_active) {
-            self.current_menu = 0.000;
+            self.current_menu = 0;
         }
-        self.movetype = 8.000;
+        self.movetype = 8;
     }
     if (teamplay) {
         SetTeam(self);
     }
     setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
-    self.view_ofs = '0.000 0.000 22.000';
-    self.velocity = '0.000 0.000 0.000';
+    self.view_ofs = '0 0 22';
+    self.velocity = '0 0 0';
     player_stand1 ();
     if ( (deathmatch || coop) ) {
         makevectors (self.angles);
         if ( (self.playerclass) ) {
-            spawn_tfog ((self.origin + (v_forward * 20.000)));
+            spawn_tfog ((self.origin + (v_forward * 20)));
         }
     }
     if ( cease_fire ) {
         sprint (self,PRINT_HIGH,"\n\nCEASE FIRE MODE\n");
-        self.tfstate = (self.tfstate | 65536.000);
+        self.tfstate = (self.tfstate | 65536);
         TeamFortress_SetSpeed (self);
     }
 }
 
 void PrintClientScore (entity c) {
-    if ( ((c.frags > -10.000) && (c.frags < 0.000)) ) {
+    if ( ((c.frags > -10) && (c.frags < 0)) ) {
         bprint (PRINT_MEDIUM," ");
     } else {
-        if ( (c.frags >= 0.000) ) {
-            if ( (c.frags < 100.000) ) {
+        if ( (c.frags >= 0) ) {
+            if ( (c.frags < 100) ) {
                 bprint (PRINT_MEDIUM," ");
             }
-            if ( (c.frags < 10.000) ) {
+            if ( (c.frags < 10) ) {
                 bprint (PRINT_MEDIUM," ");
             }
         }
@@ -1070,14 +1070,14 @@ void DumpScore () {
     bprint (PRINT_MEDIUM,"\n");
 }
 
-float already_cycled /* = 0.000 */;
+float already_cycled /* = 0 */;
 
 void NextLevel () {
     entity o;
     if ( already_cycled ) {
         return ;
     }
-    already_cycled = 1.000;
+    already_cycled = 1;
     o = spawn ();
     o.map = nextmap;
     o.think = execute_changelevel;
@@ -1097,33 +1097,33 @@ void CheckRules () {
 
 void PlayerDeathThink () {
     float fwd;
-    if ( (self.flags & 512.000) ) {
+    if ( (self.flags & 512) ) {
         fwd = self.speed;
-        fwd = (fwd - 20.000);
-        if ( (fwd <= 0.000) ) {
-            self.velocity = '0.000 0.000 0.000';
+        fwd = (fwd - 20);
+        if ( (fwd <= 0) ) {
+            self.velocity = '0 0 0';
         } else {
             self.velocity = (fwd * normalize (self.velocity));
         }
     }
-    if ( (self.deadflag == 2.000) ) {
+    if ( (self.deadflag == 2) ) {
         if ( ((self.button2 || self.button1) || self.button0) ) {
             return ;
         }
-        self.deadflag = 3.000;
+        self.deadflag = 3;
         return ;
     }
     if (round_over == 2) {
-        self.button0 = 0.000;
-        self.button1 = 0.000;
-        self.button2 = 0.000;
+        self.button0 = 0;
+        self.button1 = 0;
+        self.button2 = 0;
         return ;
     }
     if (round_active && !modetype & 32) {
         if ( (self.respawn_time <= time) ) {
-            self.button0 = 0.000;
-            self.button1 = 0.000;
-            self.button2 = 0.000;
+            self.button0 = 0;
+            self.button1 = 0;
+            self.button2 = 0;
             respawn ();
         }
         return ;
@@ -1131,29 +1131,29 @@ void PlayerDeathThink () {
     if ( ((!self.button2 && !self.button1) && !self.button0) ) {
         if ( self.respawn_time ) {
             if ( (self.respawn_time <= time) ) {
-                self.button0 = 0.000;
-                self.button1 = 0.000;
-                self.button2 = 0.000;
+                self.button0 = 0;
+                self.button1 = 0;
+                self.button2 = 0;
             }
             return ;
         }
     } else {
         if ( (self.respawn_time <= time) ) {
-            self.button0 = 0.000;
-            self.button1 = 0.000;
-            self.button2 = 0.000;
+            self.button0 = 0;
+            self.button1 = 0;
+            self.button2 = 0;
             respawn ();
         }
         return ;
     }
-    if ( (self.impulse == 171.000) ) {
+    if ( (self.impulse == 171) ) {
         if ( (self.respawn_time <= time) ) {
-            self.button0 = 0.000;
-            self.button1 = 0.000;
-            self.button2 = 0.000;
+            self.button0 = 0;
+            self.button1 = 0;
+            self.button2 = 0;
             respawn ();
         }
-        self.impulse = 0.000;
+        self.impulse = 0;
         return ;
     }
 }
@@ -1161,66 +1161,66 @@ void PlayerDeathThink () {
 void PlayerJump () {
     entity te;
     float stumble;
-    if ( (self.has_disconnected == 1.000) ) {
+    if ( (self.has_disconnected == 1) ) {
         return ;
     }
     if (allow_stamina) {
-        if (self.stamina < 0.000) {
+        if (self.stamina < 0) {
             return;
         }
     }
-    if ( (self.flags & 2048.000) ) {
+    if ( (self.flags & 2048) ) {
         return ;
     }
-    if (self.tfstate & 65536.000) {
+    if (self.tfstate & 65536) {
         return ;
     }
     if ( (!self.playerclass)) {
-        if ((self.waterlevel >= 2.000)) {
-            self.velocity_z = 350.000;
+        if ((self.waterlevel >= 2)) {
+            self.velocity_z = 350;
         } else {
-            self.velocity_z = 200.000;
+            self.velocity_z = 200;
         }
         if (self.flags & 4096) {
             self.flags = self.flags - (self.flags & 4096);
         }
-        self.button2 = 0.000;
+        self.button2 = 0;
         return ;
     }
-    if ( (self.waterlevel >= 2.000) ) {
-        if ( (self.watertype == -3.000) ) {
-            self.velocity_z = 100.000;
+    if ( (self.waterlevel >= 2) ) {
+        if ( (self.watertype == -3) ) {
+            self.velocity_z = 100;
         } else {
-            if ( (self.watertype == -4.000) ) {
-                self.velocity_z = 80.000;
+            if ( (self.watertype == -4) ) {
+                self.velocity_z = 80;
             } else {
-                self.velocity_z = 50.000;
+                self.velocity_z = 50;
             }
         }
         if ( (self.swim_flag < time) ) {
-            self.swim_flag = (time + 1.000);
+            self.swim_flag = (time + 1);
             if ( (random () < 0.500) ) {
-                sound (self,4.000,"misc/water1.wav",1.000,1.000);
+                sound (self,4,"misc/water1.wav",1,1);
             } else {
-                sound (self,4.000,"misc/water2.wav",1.000,1.000);
+                sound (self,4,"misc/water2.wav",1,1);
             }
         }
         if ((self.fire_held_down && (self.current == WEAP_ASSAULT_CANNON)) ) {
-            self.tfstate = (self.tfstate - (self.tfstate & 2048.000));
-            if (classtype & 2.000)
+            self.tfstate = (self.tfstate - (self.tfstate & 2048));
+            if (classtype & 2)
                 self.tfstate = self.tfstate - (self.tfstate & 65536);
             TeamFortress_SetSpeed (self);
-            self.weaponframe = 0.000;
-            self.heat = 0.000;
-            // self.count = 1.000;
+            self.weaponframe = 0;
+            self.heat = 0;
+            // self.count = 1;
             player_assaultcannondown1 ();
         }
         return ;
     }
-    if ( !(self.flags & 512.000) ) {
+    if ( !(self.flags & 512) ) {
         return ;
     }
-    if ( !(self.flags & 4096.000) ) {
+    if ( !(self.flags & 4096) ) {
         return ;
     }
     if (allow_stamina) {
@@ -1228,18 +1228,18 @@ void PlayerJump () {
             self.stamina = self.stamina - 200;
         }
     }
-    self.flags = (self.flags - (self.flags & 4096.000));
-    self.button2 = 0.000;
-    sound (self,4.000,"player/plyrjmp8.wav",1.000,1.000);
-    if ((self.speed > 150.000) && (self.button0 && (self.current == WEAP_ASSAULT_CANNON)) ) {
+    self.flags = (self.flags - (self.flags & 4096));
+    self.button2 = 0;
+    sound (self,4,"player/plyrjmp8.wav",1,1);
+    if ((self.speed > 150) && (self.button0 && (self.current == WEAP_ASSAULT_CANNON)) ) {
         sprint (self,PRINT_MEDIUM,"You cannot fire the assault cannon without your feet on the ground...\n");
-        self.tfstate = (self.tfstate - (self.tfstate & 2048.000));
-        if (classtype & 2.000)
+        self.tfstate = (self.tfstate - (self.tfstate & 2048));
+        if (classtype & 2)
             self.tfstate = self.tfstate - (self.tfstate & 65536);
         TeamFortress_SetSpeed (self);
-        self.weaponframe = 0.000;
-        self.count = 1.000;
-        self.heat = 0.000;
+        self.weaponframe = 0;
+        self.count = 1;
+        self.heat = 0;
         player_assaultcannondown1 ();
     }
     if (!conctype) {
@@ -1251,12 +1251,12 @@ void PlayerJump () {
         if (((te != world) && (te != self))) {
             crandom ();
             stumble = (crandom () * (te.health / 100));
-            if ((crandom () < 0.000)) {
+            if ((crandom () < 0)) {
                 self.velocity_x = (self.velocity_y + stumble);
                 self.velocity_y = (self.velocity_x + stumble);
             } else {
-                self.velocity_x = ((-1.000 * self.velocity_y) + stumble);
-                self.velocity_y = ((-1.000 * self.velocity_x) + stumble);
+                self.velocity_x = ((-1 * self.velocity_y) + stumble);
+                self.velocity_y = ((-1 * self.velocity_x) + stumble);
             }
         }
     }
@@ -1265,70 +1265,70 @@ void PlayerJump () {
 .float dmgtime;
 
 void WaterMove () {
-    if ( (self.movetype == 8.000) ) {
+    if ( (self.movetype == 8) ) {
         return ;
     }
-    if ( (self.health < 0.000) ) {
+    if ( (self.health < 0) ) {
         return ;
     }
-    if ( (self.waterlevel != 3.000) ) {
+    if ( (self.waterlevel != 3) ) {
         if ( (self.air_finished < time) ) {
-            sound (self,2.000,"player/gasp2.wav",1.000,1.000);
+            sound (self,2,"player/gasp2.wav",1,1);
         } else {
-            if ( (self.air_finished < (time + 9.000)) ) {
-                sound (self,2.000,"player/gasp1.wav",1.000,1.000);
+            if ( (self.air_finished < (time + 9)) ) {
+                sound (self,2,"player/gasp1.wav",1,1);
             }
         }
-        self.air_finished = (time + 12.000);
-        self.dmg = 2.000;
+        self.air_finished = (time + 12);
+        self.dmg = 2;
     } else {
         if ( (self.air_finished < time) ) {
             if ( (self.pain_finished < time) ) {
-                self.dmg = (self.dmg + 2.000);
-                if ( (self.dmg > 15.000) ) {
-                    self.dmg = 10.000;
+                self.dmg = (self.dmg + 2);
+                if ( (self.dmg > 15) ) {
+                    self.dmg = 10;
                 }
-                TF_T_Damage (self,world,world,self.dmg,1.000,0.000);
-                self.pain_finished = (time + 1.000);
+                TF_T_Damage (self,world,world,self.dmg,1,0);
+                self.pain_finished = (time + 1);
             }
         }
     }
     if ( !self.waterlevel ) {
-        if ( (self.flags & 16.000) ) {
-            sound (self,4.000,"misc/outwater.wav",1.000,1.000);
-            self.flags = (self.flags - 16.000);
+        if ( (self.flags & 16) ) {
+            sound (self,4,"misc/outwater.wav",1,1);
+            self.flags = (self.flags - 16);
         }
         return ;
     }
-    if ( (self.watertype == -5.000) ) {
+    if ( (self.watertype == -5) ) {
         if ( (self.dmgtime < time) ) {
             if ( (self.radsuit_finished > time) ) {
-                self.dmgtime = (time + 1.000);
+                self.dmgtime = (time + 1);
             } else {
                 self.dmgtime = (time + 0.200);
             }
-            TF_T_Damage (self,world,world,(10.000 * self.waterlevel),0.000,16.000);
+            TF_T_Damage (self,world,world,(10 * self.waterlevel),0,16);
         }
     } else {
-        if ( (self.watertype == -4.000) ) {
+        if ( (self.watertype == -4) ) {
             if ( ((self.dmgtime < time) && (self.radsuit_finished < time)) ) {
-                self.dmgtime = (time + 1.000);
-                TF_T_Damage (self,world,world,(4.000 * self.waterlevel), 0.000, 0.000);
+                self.dmgtime = (time + 1);
+                TF_T_Damage (self,world,world,(4 * self.waterlevel), 0, 0);
             }
         }
     }
-    if ( !(self.flags & 16.000) ) {
-        if ( (self.watertype == -5.000) ) {
-            sound (self,4.000,"player/inlava.wav",1.000,1.000);
+    if ( !(self.flags & 16) ) {
+        if ( (self.watertype == -5) ) {
+            sound (self,4,"player/inlava.wav",1,1);
         }
-        if ( (self.watertype == -3.000) ) {
-            sound (self,4.000,"player/inh2o.wav",1.000,1.000);
+        if ( (self.watertype == -3) ) {
+            sound (self,4,"player/inh2o.wav",1,1);
         }
-        if ( (self.watertype == -4.000) ) {
-            sound (self,4.000,"player/slimbrn2.wav",1.000,1.000);
+        if ( (self.watertype == -4) ) {
+            sound (self,4,"player/slimbrn2.wav",1,1);
         }
-        self.flags = (self.flags + 16.000);
-        self.dmgtime = 0.000;
+        self.flags = (self.flags + 16);
+        self.dmgtime = 0;
     }
 }
 
@@ -1337,30 +1337,30 @@ void CheckWaterJump () {
     vector end;
     makevectors (self.angles);
     start = self.origin;
-    start_z = (start_z + 8.000);
-    v_forward_z = 0.000;
+    start_z = (start_z + 8);
+    v_forward_z = 0;
     normalize (v_forward);
-    end = (start + (v_forward * 24.000));
-    traceline (start,end,1.000,self);
-    if ( (trace_fraction < 1.000) ) {
-        start_z = ((start_z + self.maxs_z) - 8.000);
-        end = (start + (v_forward * 24.000));
-        self.movedir = (trace_plane_normal * -50.000);
-        traceline (start,end,1.000,self);
-        if ( (trace_fraction == 1.000) ) {
-            self.flags = (self.flags | 2048.000);
-            self.velocity_z = 225.000;
-            self.flags = (self.flags - (self.flags & 4096.000));
-            self.teleport_time = (time + 2.000);
+    end = (start + (v_forward * 24));
+    traceline (start,end,1,self);
+    if ( (trace_fraction < 1) ) {
+        start_z = ((start_z + self.maxs_z) - 8);
+        end = (start + (v_forward * 24));
+        self.movedir = (trace_plane_normal * -50);
+        traceline (start,end,1,self);
+        if ( (trace_fraction == 1) ) {
+            self.flags = (self.flags | 2048);
+            self.velocity_z = 225;
+            self.flags = (self.flags - (self.flags & 4096));
+            self.teleport_time = (time + 2);
             return ;
         }
     }
 }
 
 void PlayerPreThink () {
-    if ( (self.is_feigning && (self.waterlevel == 1.000)) ) {
-        self.watertype = -3.000;
-        self.waterlevel = 3.000;
+    if ( (self.is_feigning && (self.waterlevel == 1)) ) {
+        self.watertype = -3;
+        self.waterlevel = 3;
     }
     if ( intermission_running ) {
         IntermissionThink ();
@@ -1368,17 +1368,17 @@ void PlayerPreThink () {
     }
     CheckFps ();
     makevectors (self.v_angle);
-    if ( (self.view_ofs == '0.000 0.000 0.000') ) {
+    if ( (self.view_ofs == '0 0 0') ) {
         return ;
     }
     CheckRules ();
-    if ( (self.deadflag >= 2.000) ) {
-        self.movetype = 6.000;
+    if ( (self.deadflag >= 2) ) {
+        self.movetype = 6;
         PlayerDeathThink ();
         return ;
     }
     if ( ((self.undercover_team || self.undercover_skin) || self.is_undercover) ) {
-        if ( (self.effects & (8.000 | 4.000)) ) {
+        if ( (self.effects & (8 | 4)) ) {
             sprint (self,PRINT_MEDIUM,"The glowing removes your disguise.\n");
             Spy_RemoveDisguise (self);
         }
@@ -1387,21 +1387,21 @@ void PlayerPreThink () {
             Spy_RemoveDisguise (self);
         }
     }
-    if ( (self.deadflag == 1.000) ) {
+    if ( (self.deadflag == 1) ) {
         return ;
     }
     if ( !self.is_feigning ) {
-        /* if (self.crouch == 2.000) {
+        /* if (self.crouch == 2) {
            pos = self.origin;
-           traceline(pos, pos, 0.000, self, VEC_HULL_MIN, VEC_HULL_MAX);
+           traceline(pos, pos, 0, self, VEC_HULL_MIN, VEC_HULL_MAX);
            if (trace_allsolid)	//if player would be stuck
            {
            pos = self.origin+'0 0 18';	//can we move them up a little
-           traceline(pos, pos, 0.000, self, VEC_HULL_MIN, VEC_HULL_MAX);
+           traceline(pos, pos, 0, self, VEC_HULL_MIN, VEC_HULL_MAX);
            if (!trace_allsolid)
            {
            self.origin = pos;
-           self.crouch = 0.000;
+           self.crouch = 0;
            setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
            TeamFortress_SetSpeed (self);
            }
@@ -1410,29 +1410,29 @@ void PlayerPreThink () {
         if ( self.button2 ) {
             PlayerJump ();
         } else {
-            self.flags = (self.flags | 4096.000);
+            self.flags = (self.flags | 4096);
         }
         if ( self.button1 ) {
             CheckUse ();
         }
     } else {
         if ( self.waterlevel ) {
-            self.velocity_z = -100.000;
+            self.velocity_z = -100;
         }
     }
     if (allow_stamina) {
         if (self.stamina != 1000) {
             if (self.stamina < (1000 - 4)) {
-                self.stamina = self.stamina + 4.000;
+                self.stamina = self.stamina + 4;
             } else {
                 self.stamina = 1000;
             }
         }
     }
-    if ( ((time < self.pausetime) || (cease_fire == 1.000)) ) {
-        self.velocity = '0.000 0.000 0.000';
+    if ( ((time < self.pausetime) || (cease_fire == 1)) ) {
+        self.velocity = '0 0 0';
     }
-    if ( (((time > self.attack_finished) && (self.currentammo == 0.000)) && (self.weapon > 16.000)) ) {
+    if ( (((time > self.attack_finished) && (self.currentammo == 0)) && (self.weapon > 16)) ) {
         self.weapon = W_BestWeapon ();
         W_SetCurrentAmmo ();
     }
@@ -1444,156 +1444,156 @@ void PlayerPreThink () {
 void CheckPowerups () {
     float lighton;
     entity te;
-    if ( (self.health <= 0.000) ) {
+    if ( (self.health <= 0) ) {
         return ;
     }
     if ( (!self.playerclass) ) {
         self.modelindex = modelindex_null;
     } else {
         if ( self.invisible_finished ) {
-            if ( (self.tfstate & 64.000) ) {
-                if ( (self.invisible_finished < (time + 10.000)) ) {
-                    self.invisible_finished = (time + 666.000);
+            if ( (self.tfstate & 64) ) {
+                if ( (self.invisible_finished < (time + 10)) ) {
+                    self.invisible_finished = (time + 666);
                 }
             }
             if ( (self.invisible_sound < time) ) {
-                sound (self,0.000,"items/inv3.wav",0.500,2.000);
-                self.invisible_sound = (time + ((random () * 3.000) + 1.000));
+                sound (self,0,"items/inv3.wav",0.500,2);
+                self.invisible_sound = (time + ((random () * 3) + 1));
             }
-            if ( (self.invisible_finished < (time + 3.000)) ) {
-                if ( (self.invisible_time == 1.000) ) {
+            if ( (self.invisible_finished < (time + 3)) ) {
+                if ( (self.invisible_time == 1) ) {
                     sprint (self,PRINT_HIGH,"Ring of Shadows magic is fading\n");
                     stuffcmd (self,"bf\n");
-                    sound (self,0.000,"items/inv2.wav",1.000,1.000);
-                    self.invisible_time = (time + 1.000);
+                    sound (self,0,"items/inv2.wav",1,1);
+                    self.invisible_time = (time + 1);
                 }
                 if ( (self.invisible_time < time) ) {
-                    self.invisible_time = (time + 1.000);
+                    self.invisible_time = (time + 1);
                     stuffcmd (self,"bf\n");
                 }
             }
             if ( (self.invisible_finished < time) ) {
-                self.items = (self.items - 524288.000);
-                self.invisible_finished = 0.000;
-                self.invisible_time = 0.000;
+                self.items = (self.items - 524288);
+                self.invisible_finished = 0;
+                self.invisible_time = 0;
             }
-            self.frame = 0.000;
+            self.frame = 0;
             self.modelindex = modelindex_eyes;
         } else {
             self.modelindex = modelindex_player;
         }
     }
     if ( self.invincible_finished ) {
-        if ( (self.tfstate & 32.000) ) {
-            if ( (self.invincible_finished < (time + 10.000)) ) {
-                self.invincible_finished = (time + 666.000);
+        if ( (self.tfstate & 32) ) {
+            if ( (self.invincible_finished < (time + 10)) ) {
+                self.invincible_finished = (time + 666);
             }
         }
-        if ( (self.invincible_finished < (time + 3.000)) ) {
-            if ( (self.invincible_time == 1.000) ) {
+        if ( (self.invincible_finished < (time + 3)) ) {
+            if ( (self.invincible_time == 1) ) {
                 sprint (self,PRINT_HIGH,"Protection is almost burned out\n");
                 stuffcmd (self,"bf\n");
-                sound (self,0.000,"items/protect2.wav",1.000,1.000);
-                self.invincible_time = (time + 1.000);
+                sound (self,0,"items/protect2.wav",1,1);
+                self.invincible_time = (time + 1);
             }
             if ( (self.invincible_time < time) ) {
-                self.invincible_time = (time + 1.000);
+                self.invincible_time = (time + 1);
                 stuffcmd (self,"bf\n");
             }
         }
         if ( (self.invincible_finished < time) ) {
-            self.items = (self.items - 1048576.000);
-            self.invincible_time = 0.000;
-            self.invincible_finished = 0.000;
+            self.items = (self.items - 1048576);
+            self.invincible_time = 0;
+            self.invincible_finished = 0;
         }
         if ( (self.invincible_finished > time) ) {
-            self.effects = (self.effects | 8.000);
-            self.effects = (self.effects | 128.000);
+            self.effects = (self.effects | 8);
+            self.effects = (self.effects | 128);
         } else {
-            lighton = 0.000;
+            lighton = 0;
             te = find (world,classname,"item_tfgoal");
             while ( te ) {
                 if ( (te.owner == self) ) {
-                    if ( (te.goal_activation & 1.000) ) {
-                        lighton = 1.000;
+                    if ( (te.goal_activation & 1) ) {
+                        lighton = 1;
                     }
                 }
                 te = find (te,classname,"item_tfgoal");
             }
             if ( !lighton ) {
-                self.effects = (self.effects - (self.effects & 8.000));
-                self.effects = (self.effects - (self.effects & 32.000));
-                self.effects = (self.effects - (self.effects & 128.000));
+                self.effects = (self.effects - (self.effects & 8));
+                self.effects = (self.effects - (self.effects & 32));
+                self.effects = (self.effects - (self.effects & 128));
             }
         }
     }
     if ( self.super_damage_finished ) {
-        if ( (self.tfstate & 128.000) ) {
-            if ( (self.super_damage_finished == (time + 10.000)) ) {
-                self.super_damage_finished = (time + 666.000);
+        if ( (self.tfstate & 128) ) {
+            if ( (self.super_damage_finished == (time + 10)) ) {
+                self.super_damage_finished = (time + 666);
             }
         }
-        if ( (self.super_damage_finished < (time + 3.000)) ) {
-            if ( (self.super_time == 1.000) ) {
+        if ( (self.super_damage_finished < (time + 3)) ) {
+            if ( (self.super_time == 1) ) {
                 sprint (self,PRINT_HIGH,"Quad Damage is wearing off\n");
                 stuffcmd (self,"bf\n");
-                sound (self,0.000,"items/damage2.wav",1.000,1.000);
-                self.super_time = (time + 1.000);
+                sound (self,0,"items/damage2.wav",1,1);
+                self.super_time = (time + 1);
             }
             if ( (self.super_time < time) ) {
-                self.super_time = (time + 1.000);
+                self.super_time = (time + 1);
                 stuffcmd (self,"bf\n");
             }
         }
         if ( (self.super_damage_finished < time) ) {
-            self.items = (self.items - 4194304.000);
-            self.super_damage_finished = 0.000;
-            self.super_time = 0.000;
+            self.items = (self.items - 4194304);
+            self.super_damage_finished = 0;
+            self.super_time = 0;
         }
         if ( (self.super_damage_finished > time) ) {
-            self.effects = (self.effects | 8.000);
-            self.effects = (self.effects | 64.000);
+            self.effects = (self.effects | 8);
+            self.effects = (self.effects | 64);
         } else {
-            lighton = 0.000;
+            lighton = 0;
             te = find (world,classname,"item_tfgoal");
             while ( te ) {
                 if ( (te.owner == self) ) {
-                    if ( (te.goal_activation & 1.000) ) {
-                        lighton = 1.000;
+                    if ( (te.goal_activation & 1) ) {
+                        lighton = 1;
                     }
                 }
                 te = find (te,classname,"item_tfgoal");
             }
             if ( !lighton ) {
-                self.effects = (self.effects - (self.effects & 8.000));
-                self.effects = (self.effects - (self.effects & 16.000));
-                self.effects = (self.effects - (self.effects & 64.000));
+                self.effects = (self.effects - (self.effects & 8));
+                self.effects = (self.effects - (self.effects & 16));
+                self.effects = (self.effects - (self.effects & 64));
             }
         }
     }
     if ( self.radsuit_finished ) {
-        self.air_finished = (time + 12.000);
-        if ( (self.tfstate & 256.000) ) {
-            if ( (self.radsuit_finished == (time + 10.000)) ) {
-                self.radsuit_finished = (time + 666.000);
+        self.air_finished = (time + 12);
+        if ( (self.tfstate & 256) ) {
+            if ( (self.radsuit_finished == (time + 10)) ) {
+                self.radsuit_finished = (time + 666);
             }
         }
-        if ( (self.radsuit_finished < (time + 3.000)) ) {
-            if ( (self.rad_time == 1.000) ) {
+        if ( (self.radsuit_finished < (time + 3)) ) {
+            if ( (self.rad_time == 1) ) {
                 sprint (self,PRINT_HIGH,"Air supply in Biosuit expiring\n");
                 stuffcmd (self,"bf\n");
-                sound (self,0.000,"items/suit2.wav",1.000,1.000);
-                self.rad_time = (time + 1.000);
+                sound (self,0,"items/suit2.wav",1,1);
+                self.rad_time = (time + 1);
             }
             if ( (self.rad_time < time) ) {
-                self.rad_time = (time + 1.000);
+                self.rad_time = (time + 1);
                 stuffcmd (self,"bf\n");
             }
         }
         if ( (self.radsuit_finished < time) ) {
-            self.items = (self.items - 2097152.000);
-            self.rad_time = 0.000;
-            self.radsuit_finished = 0.000;
+            self.items = (self.items - 2097152);
+            self.rad_time = 0;
+            self.radsuit_finished = 0;
         }
     }
 }
@@ -1607,10 +1607,10 @@ void Admin_Alias (string alias) {
 }
 
 void Admin_Aliases () {
-    if (self.motd <= 130.000) {
-        self.motd = (self.motd + 1.000);
+    if (self.motd <= 130) {
+        self.motd = (self.motd + 1);
     }
-    if (self.motd == 90.000) {
+    if (self.motd == 90) {
         Admin_Alias ("countplayers");
         Admin_Alias ("deal");
         Admin_Alias ("kick");
@@ -1621,7 +1621,7 @@ void Admin_Aliases () {
         Admin_Alias ("timeup");
         Admin_Alias ("pmdown");
     }
-    if (self.motd == 96.000) {
+    if (self.motd == 96) {
         Admin_Alias ("pmup");
         Admin_Alias ("cfdown");
         Admin_Alias ("cfup");
@@ -1632,7 +1632,7 @@ void Admin_Aliases () {
         Admin_Alias ("fragsup");
         Admin_Alias ("tp");
     }
-    if (self.motd == 112.000) {
+    if (self.motd == 112) {
         Admin_Alias ("clan");
         Admin_Alias ("restartmap");
         Admin_Alias ("gspeed");
@@ -1643,7 +1643,7 @@ void Admin_Aliases () {
         Admin_Alias ("teamfrags");
         Admin_Alias ("fullts");
     }
-    if (self.motd == 118.000) {
+    if (self.motd == 118) {
         Admin_Alias ("grapple");
         Admin_Alias ("clansetup");
         Admin_Alias ("fbskins");
@@ -1654,7 +1654,7 @@ void Admin_Aliases () {
         Admin_Alias ("soliddp");
         Admin_Alias ("flag_model");
     }
-    if (self.motd == 124.000) {
+    if (self.motd == 124) {
         Admin_Alias ("flag_solid");
         Admin_Alias ("flag_drop");
         Admin_Alias ("frjump");
@@ -1664,29 +1664,29 @@ void Admin_Aliases () {
         Admin_Alias ("practice");
         Admin_Alias ("tfstrike");
         stuffcmd(self, "on_admin\n");
-        self.get_admin_aliases = 0.000;
+        self.get_admin_aliases = 0;
     }
 }
 
 // FIXME: crashing mvdsv from here...
 void PlayerPostThink () {
     float fdmg;
-    if ( (self.motd <= 80.000) ) {
+    if ( (self.motd <= 80) ) {
         TeamFortress_MOTD ();
     } else {
-        if ( ((time > self.StatusRefreshTime) && (self.StatusBarSize != 0.000)) ) {
+        if ( ((time > self.StatusRefreshTime) && (self.StatusBarSize != 0)) ) {
             RefreshStatusBar ();
         }
         if (self.is_admin) {
             if (self.get_admin_aliases) {
-                if (self.motd <= 130.000) {
+                if (self.motd <= 130) {
                     Admin_Aliases();
                 }
             }
         }
     }
 
-    if ( (self.view_ofs == '0.000 0.000 0.000') ) {
+    if ( (self.view_ofs == '0 0 0') ) {
         return ;
     }
 
@@ -1694,41 +1694,41 @@ void PlayerPostThink () {
         if ( (self.impulse) && (!self.has_disconnected) ) {
             if (DeadImpulses() ) return;
             CommandImpulses();
-            self.impulse = 0.000;
+            self.impulse = 0;
         }
         return ;
     }
     if ( (self.playerclass) ) {
         self.speed = vlen (self.velocity); // its current speed
-        self.cnt = self.cnt + 1.000000;
+        self.cnt = self.cnt + 1;
         self.a_speed = self.a_speed + self.speed;
         WaterMove ();
-        if ((self.flags & 512.000)) {
-            self.g_count = self.g_count + 1.000000;
+        if ((self.flags & 512)) {
+            self.g_count = self.g_count + 1;
             self.a_gspeed = self.a_gspeed + self.speed;
             if (time > self.gs_interval)  CheckGspeed ();
-            if ( ((self.jump_flag < -300.000) && (self.health > 0.000)) ) {
-                if ( (self.watertype == -3.000) ) {
-                    sound (self,4.000,"player/h2ojump.wav",1.000,1.000);
+            if ( ((self.jump_flag < -300) && (self.health > 0)) ) {
+                if ( (self.watertype == -3) ) {
+                    sound (self,4,"player/h2ojump.wav",1,1);
                 } else {
-                    if ( (self.jump_flag < -680.000) ) {
+                    if ( (self.jump_flag < -680) ) {
                         if ((infokey(world,"fallbunny") != "off") && !round_over) {
-                            fdmg = 5.000;
-                            fdmg = ((fdmg * (self.jump_flag / 400.000)) * -1.000);
-                            if ( (self.playerclass == 1.000) ) {
-                                fdmg = (fdmg / 2.000);
+                            fdmg = 5;
+                            fdmg = ((fdmg * (self.jump_flag / 400)) * -1);
+                            if ( (self.playerclass == 1) ) {
+                                fdmg = (fdmg / 2);
                             } else {
-                                if ( (self.playerclass == 6.000) ) {
+                                if ( (self.playerclass == 6) ) {
                                     fdmg = (fdmg * 1.500);
                                 }
                             }
                             fdmg = rint (fdmg);
-                            TF_T_Damage (self,world,world,fdmg,1.000,0.000);
+                            TF_T_Damage (self,world,world,fdmg,1,0);
                             self.deathtype = "falling";
                         }
-                        sound (self,2.000,"player/land2.wav",1.000,1.000);
+                        sound (self,2,"player/land2.wav",1,1);
                     } else {
-                        sound (self,2.000,"player/land.wav",1.000,1.000);
+                        sound (self,2,"player/land.wav",1,1);
                     }
                 }
             }
@@ -1744,8 +1744,8 @@ void PlayerPostThink () {
 void Admin_Check (string cl_pwd) {
     string st;
     st = infokey (self,"ip");
-    if (st == "0.0.0.0" || st == "127.0.0.1") {
-        self.is_admin = 3.000;
+    if (st == "0.0" || st == "127.0.1") {
+        self.is_admin = 3;
         return;
     }
     st = infokey (world,"adminpwd");
@@ -1753,13 +1753,13 @@ void Admin_Check (string cl_pwd) {
         stuffcmd (self,"setinfo adminpwd \"");
         stuffcmd (self,"\"\n");
         if ( (st != string_null) &&  (cl_pwd == st)) {
-            self.is_admin = 3.000;
+            self.is_admin = 3;
             return;
         }
     }
     st = infokey (self,"*VIP");
     if (st != string_null) {
-        self.is_admin = 1.000;
+        self.is_admin = 1;
     }
 }
 /*
@@ -1782,44 +1782,44 @@ void Admin_Check (string cl_pwd) {
    }
    if (self.style)
    {
-   self.style = 0.000000;
-   self.nextthink = (time + 30.000000);
+   self.style = 0;
+   self.nextthink = (time + 30);
    return;
    }
-   if ((fl > 2.000))
+   if ((fl > 2))
    {
-   if ((timing_action & 1.000000))
+   if ((timing_action & 1))
    {
    bprint (PRINT_HIGH000, "┤варнинг╨ ", self.owner.netname, " is timing!");
    bprint (PRINT_CHAT000, "\n");
    }
    if (!self.owner.menu.lastthink)
    {
-   if ((timing_action & 2.000000))
+   if ((timing_action & 2))
    {
-   self.owner.effects = (self.owner.effects | 8.000000);
+   self.owner.effects = (self.owner.effects | 8);
    }
-   if ((timing_action & 16.000000))
+   if ((timing_action & 16))
    {
    self.owner.menu.tp_back_weapon = self.owner.modelindex;
    self.owner.modelindex = modelindex_zombie;
    }
-   if ((timing_action & 4.000000))
+   if ((timing_action & 4))
    {
-   self.owner.menu.loc_idx = 1.000000;
+   self.owner.menu.loc_idx = 1;
    }
-   if ((timing_action & 8.000000))
+   if ((timing_action & 8))
    {
    if (!k_pause)
    {
-   AdminForcePause (1.000000);
+   AdminForcePause (1);
    }
    }
    }
-   self.style = 1.000000;
-   self.owner.menu.lastthink = 1.000000;
+   self.style = 1;
+   self.owner.menu.lastthink = 1;
    }
-   self.nextthink = (time + 1.000000);
+   self.nextthink = (time + 1);
    }
    else
    {
@@ -1846,11 +1846,11 @@ void () remove_crash_catcher =
 	entity te;
 	float fl;
 	te = find (world, classname, "crash_catcher");
-	while (((te != world) && (fl == 0.000000)))
+	while (((te != world) && (fl == 0)))
 	{
 		if ((te.owner == self))
 		{
-			fl = 1.000000;
+			fl = 1;
 			dprint ("crash_catcher REMOVED\n");
 			dremove (te);
 		}
@@ -1870,13 +1870,13 @@ void ClientConnect () {
     bprint (PRINT_HIGH," entered the game\n");
     //stuffcmd (self,"say -d\n");
     stuffcmd (self,"on_connect\n");
-    self.tfstate = (self.tfstate | 4096.000);
+    self.tfstate = (self.tfstate | 4096);
     if ( (self.netname == string_null) ) {
         stuffcmd (self, "disconnect\n");
     }
     //make_crash_catcher ();
-    //self.motd = 0.000;
-    self.get_aliases = 1.000;
+    //self.motd = 0;
+    self.get_aliases = 1;
     self.nextp = player_head;
     player_head = self;
     self.fFrameReset = time + 15;
@@ -1929,19 +1929,19 @@ void ClientConnect () {
         st = infokey (self,"sbar_size");
     }
     self.StatusBarSize = stof (st);
-    if ( ((self.StatusBarSize > 10.000) || (self.StatusBarSize < 1.000)) ) {
-        if (self.tfkey & 8.000) {
-            self.StatusBarSize = 3.000;
+    if ( ((self.StatusBarSize > 10) || (self.StatusBarSize < 1)) ) {
+        if (self.tfkey & 8) {
+            self.StatusBarSize = 3;
         } else {
-            self.StatusBarSize = 0.000;
+            self.StatusBarSize = 0;
         }
     }
     if (!server_type) {
-        self.StatusBarSize = 0.000;
+        self.StatusBarSize = 0;
     }
     CheckConnectRate();
     TeamFortress_ExecMapScript (self);
-    self.has_disconnected = 0.000;
+    self.has_disconnected = 0;
     if ( (self.netname == string_null) ) {
         stuffcmd (self,"disconnect\n");
     }
@@ -1951,12 +1951,12 @@ void ClientConnect () {
     st = infokey (self,"adminpwd");
     Admin_Check(st);
     if (self.is_admin) {
-        self.get_admin_aliases = 1.000;
+        self.get_admin_aliases = 1;
     }
     if ( (cb_prematch) ) {
         sprint (self,PRINT_HIGH,"CURRENTLY IN PREMATCH TIME\n");
     }
-    //self.a_n = TeamFortress_GetNoPlayers() + 1.000;	queue
+    //self.a_n = TeamFortress_GetNoPlayers() + 1;	queue
     stuffcmd (self,"cl_backspeed 999\n");
     stuffcmd (self,"cl_forwardspeed 999\n");
     stuffcmd (self,"cl_sidespeed 999\n");
@@ -1970,8 +1970,8 @@ void ClientDisconnect () {
     st = ftos (fr);
     if (TeamFortress_GetNoPlayers() == 1 && (!cb_prematch) && (modetype & 1)) GotoNextMap();
     bprint (PRINT_HIGH,self.netname," left the game with ",st," frags\n");
-    sound (self,4.000,"player/tornoff2.wav",1.000,0.000);
-    self.has_disconnected = 1.000;
+    sound (self,4,"player/tornoff2.wav",1,0);
+    self.has_disconnected = 1;
     TeamFortress_RemoveTimers ();
     RemoveVotes();
     Engineer_RemoveBuildings (self);
@@ -1994,7 +1994,7 @@ void ClientDisconnect () {
         }
     } else {
         if (self.is_detpacking) {
-            self.ammo_detpack = 1.000;
+            self.ammo_detpack = 1;
         }
         Drop_detpack();
     }
@@ -2010,7 +2010,7 @@ void ClientDisconnect () {
     }
     set_suicide_frame ();
     self.netname = string_null;
-    // self.team_no = 0.000;
+    // self.team_no = 0;
     self.real_time = 0;
     self.flag_touches = 0;
     self.flag_captures = 0;
@@ -2032,104 +2032,104 @@ void ClientDisconnect () {
     self.fFrameCount = 0;
     self.fFrameReset = 0;
     self.fLowestFrameTime = 0;
-    self.infection_team_no = 0.000;
-    self.solid = 0.000;
-    self.is_building = 0.000;
-    self.is_detpacking = 0.000;
-    self.is_undercover = 0.000;
-    self.is_feigning = 0.000;
-    self.is_unabletospy = 0.000;
-    self.ammo_medikit = 0.000;
-    self.maxammo_medikit = 0.000;
-    self.ammo_detpack = 0.000;
-    self.maxammo_detpack = 0.000;
-    self.items_allowed = 0.000;
-    self.armor_allowed = 0.000;
-    self.maxarmor = 0.000;
-    self.respawn_time = 0.000;
-    self.heat = 0.000;
-    self.ammo_rockets = 0.000;
-    self.ammo_nails = 0.000;
-    self.ammo_shells = 0.000;
-    self.ammo_cells = 0.000;
-    self.maxammo_rockets = 0.000;
-    self.maxammo_nails = 0.000;
-    self.maxammo_shells = 0.000;
-    self.maxammo_cells = 0.000;
-    self.no_grenades_1 = 0.000;
-    self.no_grenades_2 = 0.000;
-    self.tp_grenades_1 = 0.000;
-    self.tp_grenades_2 = 0.000;
-    self.tf_items = 0.000;
-    self.ScannerOn = 0.000;
-    self.armorclass = 0.000;
-    self.armortype = 0.000;
-    self.armorvalue = 0.000;
-    self.current = 0.000;
-    self.items = 0.000;
-    self.carried = 0.000;
+    self.infection_team_no = 0;
+    self.solid = 0;
+    self.is_building = 0;
+    self.is_detpacking = 0;
+    self.is_undercover = 0;
+    self.is_feigning = 0;
+    self.is_unabletospy = 0;
+    self.ammo_medikit = 0;
+    self.maxammo_medikit = 0;
+    self.ammo_detpack = 0;
+    self.maxammo_detpack = 0;
+    self.items_allowed = 0;
+    self.armor_allowed = 0;
+    self.maxarmor = 0;
+    self.respawn_time = 0;
+    self.heat = 0;
+    self.ammo_rockets = 0;
+    self.ammo_nails = 0;
+    self.ammo_shells = 0;
+    self.ammo_cells = 0;
+    self.maxammo_rockets = 0;
+    self.maxammo_nails = 0;
+    self.maxammo_shells = 0;
+    self.maxammo_cells = 0;
+    self.no_grenades_1 = 0;
+    self.no_grenades_2 = 0;
+    self.tp_grenades_1 = 0;
+    self.tp_grenades_2 = 0;
+    self.tf_items = 0;
+    self.ScannerOn = 0;
+    self.armorclass = 0;
+    self.armortype = 0;
+    self.armorvalue = 0;
+    self.current = 0;
+    self.items = 0;
+    self.carried = 0;
     self.touch = SUB_Null;
     self.classname = string_null;
-    self.health = 0.000;
-    self.movetype = 0.000;
-    self.show_hostile = 0.000;
-    self.max_health = 0.000;
-    self.flags = 0.000;
-    self.air_finished = 0.000;
-    self.dmg = 0.000;
-    self.super_damage_finished = 0.000;
-    self.radsuit_finished = 0.000;
-    self.invisible_finished = 0.000;
-    self.invincible_finished = 0.000;
-    self.effects = 0.000;
-    self.invincible_time = 0.000;
-    self.reload_shotgun = 0.000;
-    self.reload_super_shotgun = 0.000;
-    self.reload_grenade_launcher = 0.000;
-    self.reload_rocket_launcher = 0.000;
-    self.on_hook = 0.000;
-    self.hook_out = 0.000;
-    self.fire_held_down = 0.000;
-    self.motd = 0.000;
-    self.menu_count = 0.000;
-    self.menu_displaytime = 0.000;
-    self.current_menu = 0.000;
-    self.tfstate = 0.000;
-    //self.cheat_check = 0.000;
-    self.maxspeed = 0.000;
-    self.attack_finished = 0.000;
-    self.gravity = 0.000;
-    self.walkframe = 0.000;
-    self.frame = 0.000;
-    self.watertype = 0.000;
-    self.colormap = 0.000;
-    self.skin =  0.000;
-    self.weapon = 0.000;
+    self.health = 0;
+    self.movetype = 0;
+    self.show_hostile = 0;
+    self.max_health = 0;
+    self.flags = 0;
+    self.air_finished = 0;
+    self.dmg = 0;
+    self.super_damage_finished = 0;
+    self.radsuit_finished = 0;
+    self.invisible_finished = 0;
+    self.invincible_finished = 0;
+    self.effects = 0;
+    self.invincible_time = 0;
+    self.reload_shotgun = 0;
+    self.reload_super_shotgun = 0;
+    self.reload_grenade_launcher = 0;
+    self.reload_rocket_launcher = 0;
+    self.on_hook = 0;
+    self.hook_out = 0;
+    self.fire_held_down = 0;
+    self.motd = 0;
+    self.menu_count = 0;
+    self.menu_displaytime = 0;
+    self.current_menu = 0;
+    self.tfstate = 0;
+    //self.cheat_check = 0;
+    self.maxspeed = 0;
+    self.attack_finished = 0;
+    self.gravity = 0;
+    self.walkframe = 0;
+    self.frame = 0;
+    self.watertype = 0;
+    self.colormap = 0;
+    self.skin =  0;
+    self.weapon = 0;
     self.weaponmodel = string_null;
-    self.pain_finished = 0.000;
-    self.playerclass = 0.000;
-    self.has_dispenser = 0.000;
-    self.has_sentry = 0.000;
-    self.deaths = 0.000;
-    self.real_frags = 0.000;
-    self.teamkills = 0.000;
-    self.heat = 0.000;
-    //self.immune_to_check = 0.000;
-    self.last_sound = 0.000;
+    self.pain_finished = 0;
+    self.playerclass = 0;
+    self.has_dispenser = 0;
+    self.has_sentry = 0;
+    self.deaths = 0;
+    self.real_frags = 0;
+    self.teamkills = 0;
+    self.heat = 0;
+    //self.immune_to_check = 0;
+    self.last_sound = 0;
     //self.observer_list  entity 101
-    self.StatusRefreshTime = 0.000;
-    self.StatusBarSize = 0.000;
-    self.StatusBarRes = 0.000;
-    self.currentammo = 0.000;
-    self.takedamage = 0.000;
-    self.dmg_inflicted = 0.000;
-    self.dmg_recieved = 0.000;
-    self.dmg_self = 0.000;
-    self.dmg_team = 0.000;
-    self.vote = 0.000;
-    self.bvote = 0.000;
-    //self.is_admin = 0.000;
-    self.admin_mode = 0.000;
+    self.StatusRefreshTime = 0;
+    self.StatusBarSize = 0;
+    self.StatusBarRes = 0;
+    self.currentammo = 0;
+    self.takedamage = 0;
+    self.dmg_inflicted = 0;
+    self.dmg_recieved = 0;
+    self.dmg_self = 0;
+    self.dmg_team = 0;
+    self.vote = 0;
+    self.bvote = 0;
+    //self.is_admin = 0;
+    self.admin_mode = 0;
     self.velocity = '0 0 0';
     self.angles = '0 0 0';
     self.avelocity = '0 0 0';
@@ -2141,8 +2141,8 @@ void ClientDisconnect () {
     self.noise = string_null;
     self.th_pain  = SUB_Null;
     self.th_die = SUB_Null;
-    setsize (self,'0.000 0.000 0.000','0.000 0.000 0.000');
-    self.nextthink = 0.000;
+    setsize (self,'0 0 0','0 0 0');
+    self.nextthink = 0;
     self.think = SUB_Null;
 }
 
@@ -2161,8 +2161,8 @@ void ClientObituary (entity targ, entity attacker) {
             bprint (PRINT_MEDIUM," was telefragged by ");
             bprint (PRINT_MEDIUM,attacker.owner.netname);
             bprint (PRINT_MEDIUM,"\n");
-            if ( ((attacker.owner.pteam != targ.pteam) || (attacker.owner.pteam.team < 1.000)) ) {
-                TF_AddFrags (attacker.owner,1.000 , 0.000);
+            if ( ((attacker.owner.pteam != targ.pteam) || (attacker.owner.pteam.team < 1)) ) {
+                TF_AddFrags (attacker.owner,1 , 0);
             }
             return ;
         }
@@ -2170,11 +2170,11 @@ void ClientObituary (entity targ, entity attacker) {
             bprint (PRINT_MEDIUM,"Satan's power deflects ");
             bprint (PRINT_MEDIUM,targ.netname);
             bprint (PRINT_MEDIUM,"'s telefrag\n");
-            TF_AddFrags (targ,-1.000, 0.000);
+            TF_AddFrags (targ,-1, 0);
             logfrag (targ,targ);
             return ;
         }
-        if ( (deathmsg == 37.000) ) {
+        if ( (deathmsg == 37) ) {
             bprint (PRINT_MEDIUM,targ.netname);
             bprint (PRINT_MEDIUM," shoots his teammate one too many times.\n");
             return ;
@@ -2189,31 +2189,31 @@ void ClientObituary (entity targ, entity attacker) {
         }
         if ( (attacker.classname == "player")) {
             if ( (targ == attacker) ) {
-                TF_AddFrags (attacker,-1.000, 0.000);
+                TF_AddFrags (attacker,-1, 0);
                 bprint (PRINT_MEDIUM,targ.netname);
-                if ( (deathmsg == 8.000) ) {
-                    if ( (targ.playerclass == 2.000) ) {
+                if ( (deathmsg == 8) ) {
+                    if ( (targ.playerclass == 2) ) {
                         deathstring = " got splattered by his own grenade\n";
                     } else {
-                        if ( (targ.playerclass == 3.000) ) {
+                        if ( (targ.playerclass == 3) ) {
                             deathstring = " sat on his own grenade\n";
                         } else {
-                            if ( (targ.playerclass == 4.000) ) {
+                            if ( (targ.playerclass == 4) ) {
                                 deathstring = " got to know his grenade too well\n";
                             } else {
-                                if ( (targ.playerclass == 5.000) ) {
+                                if ( (targ.playerclass == 5) ) {
                                     deathstring = " caught the end of his own grenade\n";
                                 } else {
-                                    if ( (targ.playerclass == 6.000) ) {
+                                    if ( (targ.playerclass == 6) ) {
                                         deathstring = " got too close to his own grenade\n";
                                     } else {
-                                        if ( (targ.playerclass == 7.000) ) {
+                                        if ( (targ.playerclass == 7) ) {
                                             deathstring = " let his own grenade get the best of him\n";
                                         } else {
-                                            if ( (targ.playerclass == 8.000) ) {
+                                            if ( (targ.playerclass == 8) ) {
                                                 deathstring = " tiptoed over his own grenade\n";
                                             } else {
-                                                if ( (targ.playerclass == 9.000) ) {
+                                                if ( (targ.playerclass == 9) ) {
                                                     deathstring = " stared at his grenade too long\n";
                                                 } else {
                                                     deathstring = " grenades himself\n";
@@ -2226,70 +2226,70 @@ void ClientObituary (entity targ, entity attacker) {
                         }
                     }
                 } else {
-                    if ( (deathmsg == 9.000) ) {
+                    if ( (deathmsg == 9) ) {
                         deathstring = " hammers himself\n";
                     } else {
-                        if ( (deathmsg == 10.000) ) {
-                            if ( (targ.playerclass == 4.000) ) {
+                        if ( (deathmsg == 10) ) {
+                            if ( (targ.playerclass == 4) ) {
                                 deathstring = " practiced his own Mirv dance\n";
                             } else {
-                                if ( (targ.playerclass == 6.000) ) {
+                                if ( (targ.playerclass == 6) ) {
                                     deathstring = " allowed his Mirv to turn against him\n";
                                 } else {
                                     deathstring = " goes to pieces\n";
                                 }
                             }
                         } else {
-                            if ( (deathmsg == 11.000) ) {
+                            if ( (deathmsg == 11) ) {
                                 deathstring = " ambushes himself with his own pipebombs\n";
                             } else {
-                                if ( (deathmsg == 40.000) ) {
+                                if ( (deathmsg == 40) ) {
                                     deathstring = " tried to juggle his own pipebombs\n";
                                 } else {
-                                    if ( (deathmsg == 24.000) ) {
+                                    if ( (deathmsg == 24) ) {
                                         deathstring = " chokes on his own gas\n";
                                     } else {
-                                        if ( (deathmsg == 30.000) ) {
+                                        if ( (deathmsg == 30) ) {
                                             deathstring = " explodes his ammo and body\n";
                                         } else {
-                                            if ( (deathmsg == 41.000) ) {
+                                            if ( (deathmsg == 41) ) {
                                                 deathstring = " stepped on too many of his own caltrops\n";
                                             } else {
-                                                if ( (deathmsg == 35.000) ) {
+                                                if ( (deathmsg == 35) ) {
                                                     deathstring = " is charred by his own flash grenade\n";
                                                 } else {
-                                                    if ( (deathmsg == 31.000) ) {
+                                                    if ( (deathmsg == 31) ) {
                                                         deathstring = " detonates an ammo box too close to him\n";
                                                     } else {
-                                                        if ( (deathmsg == 12.000) ) {
+                                                        if ( (deathmsg == 12) ) {
                                                             deathstring = " set the detpack and forgot to run\n";
                                                         } else {
-                                                            if ( (deathmsg == 13.000) ) {
+                                                            if ( (deathmsg == 13) ) {
                                                                 deathstring = " died impossibly!\n";
                                                             } else {
-                                                                if ( (deathmsg == 6.000) ) {
+                                                                if ( (deathmsg == 6) ) {
                                                                     deathstring = " becomes bored with life\n";
                                                                 } else {
-                                                                    if ( (deathmsg == 33.000) ) {
+                                                                    if ( (deathmsg == 33) ) {
                                                                         deathstring = " chars himself with an incendiary rocket\n";
                                                                     } else {
-                                                                        if ( (deathmsg == 5.000) ) {
+                                                                        if ( (deathmsg == 5) ) {
                                                                             deathstring = " tries to put the pin back in\n";
                                                                         } else {
-                                                                            if ( (deathmsg == 15.000) ) {
+                                                                            if ( (deathmsg == 15) ) {
                                                                                 deathstring = " torches himself\n";
                                                                             } else {
-                                                                                if ( ((deathmsg == 7.000) && (targ.waterlevel > 1.000)) ) {
+                                                                                if ( ((deathmsg == 7) && (targ.waterlevel > 1)) ) {
                                                                                     bprint (PRINT_MEDIUM," discharges into the water.\n");
                                                                                     return ;
                                                                                 } else {
-                                                                                    if ( (deathmsg == 38.000) ) {
+                                                                                    if ( (deathmsg == 38) ) {
                                                                                         deathstring = " gets too friendly with his sentrygun.\n";
                                                                                     } else {
-                                                                                        if ( (deathmsg == 39.000) ) {
+                                                                                        if ( (deathmsg == 39) ) {
                                                                                             deathstring = " dispenses with himself.\n";
                                                                                         } else {
-                                                                                            if ( deathmsg == 18.000) {
+                                                                                            if ( deathmsg == 18) {
                                                                                                 deathstring = " melted himself.\n";
                                                                                             }
                                                                                         }
@@ -2314,10 +2314,10 @@ void ClientObituary (entity targ, entity attacker) {
                 bprint (PRINT_MEDIUM,deathstring);
                 return ;
             } else {
-                if ( ((teamplay && (attacker.pteam == targ.pteam)) && (attacker.pteam.team > 0.000)) ) {
-                    TF_AddFrags (attacker,-1.000, 0.000);
-                    if ( (targ.undercover_team == 0.000) ) {
-                        attacker.teamkills = (attacker.teamkills + 1.000);
+                if ( ((teamplay && (attacker.pteam == targ.pteam)) && (attacker.pteam.team > 0)) ) {
+                    TF_AddFrags (attacker,-1, 0);
+                    if ( (targ.undercover_team == 0) ) {
+                        attacker.teamkills = (attacker.teamkills + 1);
                     }
                     deathstring2 = "\n";
                     if ( (rnum < 0.333) ) {
@@ -2332,7 +2332,7 @@ void ClientObituary (entity targ, entity attacker) {
                             deathstring2 = "\n";
                         }
                     }
-                    if ( (deathmsg == 23.000) ) {
+                    if ( (deathmsg == 23) ) {
                         bprint (PRINT_MEDIUM,targ.netname);
                         bprint (PRINT_MEDIUM," didn't survive the operation by ");
                         bprint (PRINT_MEDIUM,attacker.netname);
@@ -2346,38 +2346,38 @@ void ClientObituary (entity targ, entity attacker) {
                     CheckAutoKick (attacker);
                     return ;
                 } else {
-                    TF_AddFrags (attacker,1.000, 1.000);
+                    TF_AddFrags (attacker,1, 1);
                     logfrag (attacker,targ);
-                    if ( (deathmsg == 8.000) ) {
-                        if ( (attacker.playerclass == 2.000) ) {
+                    if ( (deathmsg == 8) ) {
+                        if ( (attacker.playerclass == 2) ) {
                             deathstring = " got up-close and personal with ";
                             deathstring2 = "'s grenade\n";
                         } else {
-                            if ( (attacker.playerclass == 3.000) ) {
+                            if ( (attacker.playerclass == 3) ) {
                                 deathstring = " played catch with ";
                                 deathstring2 = "'s grenade\n";
                             } else {
-                                if ( (attacker.playerclass == 4.000) ) {
+                                if ( (attacker.playerclass == 4) ) {
                                     deathstring = " received a pineapple enema from ";
                                     deathstring2 = "\n";
                                 } else {
-                                    if ( (attacker.playerclass == 5.000) ) {
+                                    if ( (attacker.playerclass == 5) ) {
                                         deathstring = " fetched ";
                                         deathstring2 = "'s pineapple\n";
                                     } else {
-                                        if ( (attacker.playerclass == 6.000) ) {
+                                        if ( (attacker.playerclass == 6) ) {
                                             deathstring = " caught too much shrapnel from ";
                                             deathstring2 = "'s grenade\n";
                                         } else {
-                                            if ( (attacker.playerclass == 7.000) ) {
+                                            if ( (attacker.playerclass == 7) ) {
                                                 deathstring = " tried to pick up ";
                                                 deathstring2 = "'s hot potato\n";
                                             } else {
-                                                if ( (attacker.playerclass == 8.000) ) {
+                                                if ( (attacker.playerclass == 8) ) {
                                                     deathstring = " thought ";
                                                     deathstring2 = " was tossing him a spare grenade\n";
                                                 } else {
-                                                    if ( (attacker.playerclass == 9.000) ) {
+                                                    if ( (attacker.playerclass == 9) ) {
                                                         deathstring = " stops to ponder the technical details of ";
                                                         deathstring2 = "'s grenade\n";
                                                     } else {
@@ -2392,12 +2392,12 @@ void ClientObituary (entity targ, entity attacker) {
                             }
                         }
                     } else {
-                        if ( (deathmsg == 9.000) ) {
+                        if ( (deathmsg == 9) ) {
                             deathstring = " gets flayed by ";
                             deathstring2 = "'s nail grenade\n";
                         } else {
-                            if ( (deathmsg == 10.000) ) {
-                                if ( (attacker.playerclass == 4.000) ) {
+                            if ( (deathmsg == 10) ) {
+                                if ( (attacker.playerclass == 4) ) {
                                     deathstring = " does a dance on ";
                                     deathstring2 = "'s Mirv grenade\n";
                                 } else {
@@ -2405,67 +2405,67 @@ void ClientObituary (entity targ, entity attacker) {
                                     deathstring2 = "'s Mirv grenade\n";
                                 }
                             } else {
-                                if ( (deathmsg == 11.000) ) {
+                                if ( (deathmsg == 11) ) {
                                     deathstring = " is caught by ";
                                     deathstring2 = "'s pipebomb trap\n";
                                 } else {
-                                    if ( (deathmsg == 40.000) ) {
+                                    if ( (deathmsg == 40) ) {
                                         deathstring = " fell victim to ";
                                         deathstring2 = "'s fireworks\n";
                                     } else {
-                                        if ( (deathmsg == 24.000) ) {
+                                        if ( (deathmsg == 24) ) {
                                             deathstring = " gags on ";
                                             deathstring2 = "'s noxious gasses\n";
                                         } else {
-                                            if ( (deathmsg == 30.000) ) {
+                                            if ( (deathmsg == 30) ) {
                                                 deathstring = "'s ammo detonates him as ";
                                                 deathstring2 = "'s EMP fries it\n";
                                             } else {
-                                                if ( (deathmsg == 41.000) ) {
+                                                if ( (deathmsg == 41) ) {
                                                     deathstring = " stepped on too many of ";
                                                     deathstring2 = "'s caltrops\n";
                                                 } else {
-                                                    if ( (deathmsg == 35.000) ) {
+                                                    if ( (deathmsg == 35) ) {
                                                         deathstring = " is charred by ";
                                                         deathstring2 = "'s flash grenade\n";
                                                     } else {
-                                                        if ( (deathmsg == 31.000) ) {
+                                                        if ( (deathmsg == 31) ) {
                                                             deathstring = " stands near some ammo as ";
                                                             deathstring2 = "'s EMP nukes it\n";
                                                         } else {
-                                                            if ( (deathmsg == 12.000) ) {
+                                                            if ( (deathmsg == 12) ) {
                                                                 deathstring = " reaches orbit via ";
                                                                 deathstring2 = "'s detpack\n";
                                                             } else {
-                                                                if ( (deathmsg == 16.000) ) {
+                                                                if ( (deathmsg == 16) ) {
                                                                     deathstring = " cut the red wire of ";
                                                                     deathstring2 = "'s detpack\n";
                                                                 } else {
-                                                                    if ( (deathmsg == 13.000) ) {
+                                                                    if ( (deathmsg == 13) ) {
                                                                         deathstring = " dies from ";
                                                                         deathstring2 = "'s mysterious tropical disease\n";
                                                                     } else {
-                                                                        if ( (deathmsg == 14.000) ) {
+                                                                        if ( (deathmsg == 14) ) {
                                                                             deathstring = " escapes infection from ";
                                                                             deathstring2 = " by dying first\n";
                                                                         } else {
-                                                                            if ( (deathmsg == 5.000) ) {
+                                                                            if ( (deathmsg == 5) ) {
                                                                                 deathstring = " eats ";
                                                                                 deathstring2 = "'s pineapple\n";
-                                                                                if ( (targ.health < -40.000) ) {
+                                                                                if ( (targ.health < -40) ) {
                                                                                     deathstring = " was gibbed by ";
                                                                                     deathstring2 = "'s grenade\n";
                                                                                 }
                                                                             } else {
-                                                                                if ( (deathmsg == 6.000) ) {
+                                                                                if ( (deathmsg == 6) ) {
                                                                                     deathstring = " rides ";
                                                                                     deathstring2 = "'s rocket\n";
-                                                                                    if ( (targ.health < -40.000) ) {
+                                                                                    if ( (targ.health < -40) ) {
                                                                                         deathstring = " was gibbed by ";
                                                                                         deathstring2 = "'s rocket\n";
                                                                                     }
                                                                                 } else {
-                                                                                    if ( (deathmsg == 15.000) ) {
+                                                                                    if ( (deathmsg == 15) ) {
                                                                                         if ( (rnum < 0.200) ) {
                                                                                             deathstring = " is burnt up by ";
                                                                                             deathstring2 = "'s flame\n";
@@ -2489,29 +2489,29 @@ void ClientObituary (entity targ, entity attacker) {
                                                                                             }
                                                                                         }
                                                                                     } else {
-                                                                                        if ( (deathmsg == 17.000) ) {
+                                                                                        if ( (deathmsg == 17) ) {
                                                                                             deathstring2 = "\n";
-                                                                                            if ( (attacker.playerclass == 8.000) ) {
+                                                                                            if ( (attacker.playerclass == 8) ) {
                                                                                                 deathstring = " was knife-murdered by ";
                                                                                             } else {
-                                                                                                if ( (attacker.playerclass == 1.000) ) {
+                                                                                                if ( (attacker.playerclass == 1) ) {
                                                                                                     deathstring = "'s mellon was split by ";
                                                                                                 } else {
-                                                                                                    if ( (attacker.playerclass == 2.000) ) {
+                                                                                                    if ( (attacker.playerclass == 2) ) {
                                                                                                         deathstring = " was put on the chop block by ";
                                                                                                     } else {
-                                                                                                        if ( (attacker.playerclass == 3.000) ) {
+                                                                                                        if ( (attacker.playerclass == 3) ) {
                                                                                                             deathstring = " was sliced and diced by ";
                                                                                                             deathstring2 = "'s blade\n";
                                                                                                         } else {
-                                                                                                            if ( (attacker.playerclass == 4.000) ) {
+                                                                                                            if ( (attacker.playerclass == 4) ) {
                                                                                                                 deathstring = " is split from crotch to sternum by ";
                                                                                                                 deathstring2 = "'s axe swing\n";
                                                                                                             } else {
-                                                                                                                if ( (attacker.playerclass == 6.000) ) {
+                                                                                                                if ( (attacker.playerclass == 6) ) {
                                                                                                                     deathstring = " is split in two with a powerful axe blow from ";
                                                                                                                 } else {
-                                                                                                                    if ( (attacker.playerclass == 7.000) ) {
+                                                                                                                    if ( (attacker.playerclass == 7) ) {
                                                                                                                         deathstring = "'s death put another notch on ";
                                                                                                                         deathstring2 = "'s axe\n";
                                                                                                                     } else {
@@ -2524,32 +2524,32 @@ void ClientObituary (entity targ, entity attacker) {
                                                                                                 }
                                                                                             }
                                                                                         } else {
-                                                                                            if ( (deathmsg == 32.000) ) {
+                                                                                            if ( (deathmsg == 32) ) {
                                                                                                 deathstring = " was spanner-murdered by ";
                                                                                                 deathstring2 = "\n";
                                                                                             } else {
-                                                                                                if ( (deathmsg == 1.000) ) {
-                                                                                                    if ( (attacker.playerclass == 1.000) ) {
+                                                                                                if ( (deathmsg == 1) ) {
+                                                                                                    if ( (attacker.playerclass == 1) ) {
                                                                                                         deathstring = " got too close to ";
                                                                                                         deathstring2 = "'s muzzleflash\n";
                                                                                                     } else {
-                                                                                                        if ( (attacker.playerclass == 3.000) ) {
+                                                                                                        if ( (attacker.playerclass == 3) ) {
                                                                                                             deathstring = " practices being ";
                                                                                                             deathstring2 = "'s clay pigeon\n";
                                                                                                         } else {
-                                                                                                            if ( (attacker.playerclass == 4.000) ) {
+                                                                                                            if ( (attacker.playerclass == 4) ) {
                                                                                                                 deathstring = " was on the receiving end of ";
                                                                                                                 deathstring2 = "'s shotgun barrel\n";
                                                                                                             } else {
-                                                                                                                if ( (attacker.playerclass == 5.000) ) {
+                                                                                                                if ( (attacker.playerclass == 5) ) {
                                                                                                                     deathstring = " was fed a lead diet by ";
                                                                                                                     deathstring2 = "\n";
                                                                                                                 } else {
-                                                                                                                    if ( (attacker.playerclass == 6.000) ) {
+                                                                                                                    if ( (attacker.playerclass == 6) ) {
                                                                                                                         deathstring = " got blasted by ";
                                                                                                                         deathstring2 = "'s last resort\n";
                                                                                                                     } else {
-                                                                                                                        if ( (attacker.playerclass == 7.000) ) {
+                                                                                                                        if ( (attacker.playerclass == 7) ) {
                                                                                                                             deathstring = " got more than a powderburn from ";
                                                                                                                             deathstring2 = "'s shotgun blast\n";
                                                                                                                         } else {
@@ -2562,24 +2562,24 @@ void ClientObituary (entity targ, entity attacker) {
                                                                                                         }
                                                                                                     }
                                                                                                 } else {
-                                                                                                    if ( (deathmsg == 2.000) ) {
-                                                                                                        if ( (attacker.playerclass == 3.000) ) {
+                                                                                                    if ( (deathmsg == 2) ) {
+                                                                                                        if ( (attacker.playerclass == 3) ) {
                                                                                                             deathstring = " was turned into swiss cheese by ";
                                                                                                             deathstring2 = "'s buckshot\n";
                                                                                                         } else {
-                                                                                                            if ( (attacker.playerclass == 5.000) ) {
+                                                                                                            if ( (attacker.playerclass == 5) ) {
                                                                                                                 deathstring = " got a double-dose of ";
                                                                                                                 deathstring2 = "'s buckshot\n";
                                                                                                             } else {
-                                                                                                                if ( (attacker.playerclass == 6.000) ) {
+                                                                                                                if ( (attacker.playerclass == 6) ) {
                                                                                                                     deathstring = " unfortunately forgot ";
                                                                                                                     deathstring2 = " carried a super-shotgun\n";
                                                                                                                 } else {
-                                                                                                                    if ( (attacker.playerclass == 8.000) ) {
+                                                                                                                    if ( (attacker.playerclass == 8) ) {
                                                                                                                         deathstring = " gets ventilated by ";
                                                                                                                         deathstring2 = "'s super-shotgun blast\n";
                                                                                                                     } else {
-                                                                                                                        if ( (attacker.playerclass == 9.000) ) {
+                                                                                                                        if ( (attacker.playerclass == 9) ) {
                                                                                                                             deathstring = "'s body got chuck full of ";
                                                                                                                             deathstring2 = "'s lead pellets\n";
                                                                                                                         } else {
@@ -2591,16 +2591,16 @@ void ClientObituary (entity targ, entity attacker) {
                                                                                                             }
                                                                                                         }
                                                                                                     } else {
-                                                                                                        if ( (deathmsg == 3.000) ) {
-                                                                                                            if ( (attacker.playerclass == 1.000) ) {
+                                                                                                        if ( (deathmsg == 3) ) {
+                                                                                                            if ( (attacker.playerclass == 1) ) {
                                                                                                                 deathstring = " caught one too many nails from ";
                                                                                                                 deathstring2 = "\n";
                                                                                                             } else {
-                                                                                                                if ( (attacker.playerclass == 2.000) ) {
+                                                                                                                if ( (attacker.playerclass == 2) ) {
                                                                                                                     deathstring = " ran into ";
                                                                                                                     deathstring2 = "'s nails\n";
                                                                                                                 } else {
-                                                                                                                    if ( (attacker.playerclass == 8.000) ) {
+                                                                                                                    if ( (attacker.playerclass == 8) ) {
                                                                                                                         deathstring = " was turned into ";
                                                                                                                         deathstring2 = "'s pin-cushion\n";
                                                                                                                     } else {
@@ -2610,24 +2610,24 @@ void ClientObituary (entity targ, entity attacker) {
                                                                                                                 }
                                                                                                             }
                                                                                                         } else {
-                                                                                                            if ( (deathmsg == 4.000) ) {
+                                                                                                            if ( (deathmsg == 4) ) {
                                                                                                                 deathstring = " was punctured by ";
                                                                                                                 deathstring2 = "\n";
                                                                                                             } else {
-                                                                                                                if ( (deathmsg == 7.000) ) {
+                                                                                                                if ( (deathmsg == 7) ) {
                                                                                                                     deathstring = " accepts ";
-                                                                                                                    if ( (attacker.waterlevel > 1.000) ) {
+                                                                                                                    if ( (attacker.waterlevel > 1) ) {
                                                                                                                         deathstring2 = "'s discharge\n";
                                                                                                                     } else {
                                                                                                                         deathstring2 = "'s shaft\n";
                                                                                                                     }
                                                                                                                 } else {
-                                                                                                                    if ( (deathmsg == 21.000) ) {
+                                                                                                                    if ( (deathmsg == 21) ) {
                                                                                                                         deathstring = " grappled with ";
                                                                                                                         deathstring2 = "\n";
                                                                                                                     } else {
-                                                                                                                        if ( (deathmsg == 18.000) ) {
-                                                                                                                            if (classtype & 1.000) {
+                                                                                                                        if ( (deathmsg == 18) ) {
+                                                                                                                            if (classtype & 1) {
                                                                                                                                 deathstring = " was melted by ";
                                                                                                                                 deathstring2 = "'s plasmagun\n";
                                                                                                                             } else {
@@ -2640,7 +2640,7 @@ void ClientObituary (entity targ, entity attacker) {
                                                                                                                                 }
                                                                                                                             }
                                                                                                                         } else {
-                                                                                                                            if ( (deathmsg == 29.000) ) {
+                                                                                                                            if ( (deathmsg == 29) ) {
                                                                                                                                 if ( (rnum <= 0.500) ) {
                                                                                                                                     deathstring = " gets a third eye from ";
                                                                                                                                     deathstring2 = "\n";
@@ -2649,7 +2649,7 @@ void ClientObituary (entity targ, entity attacker) {
                                                                                                                                     deathstring2 = "\n";
                                                                                                                                 }
                                                                                                                             } else {
-                                                                                                                                if ( (deathmsg == 28.000) ) {
+                                                                                                                                if ( (deathmsg == 28) ) {
                                                                                                                                     if ( (rnum <= 0.500) ) {
                                                                                                                                         deathstring = " is made legless by ";
                                                                                                                                         deathstring2 = "\n";
@@ -2658,35 +2658,35 @@ void ClientObituary (entity targ, entity attacker) {
                                                                                                                                         deathstring2 = "\n";
                                                                                                                                     }
                                                                                                                                 } else {
-                                                                                                                                    if ( (deathmsg == 19.000) ) {
+                                                                                                                                    if ( (deathmsg == 19) ) {
                                                                                                                                         deathstring = " collects ";
                                                                                                                                         deathstring2 = "'s bullet spray.\n";
                                                                                                                                     } else {
-                                                                                                                                        if ( (deathmsg == 20.000) ) {
+                                                                                                                                        if ( (deathmsg == 20) ) {
                                                                                                                                             deathstring = " gets sawn in half by ";
                                                                                                                                             deathstring2 = "\n";
                                                                                                                                         } else {
-                                                                                                                                            if ( (deathmsg == 22.000) ) {
+                                                                                                                                            if ( (deathmsg == 22) ) {
                                                                                                                                                 deathstring = " gets knifed from behind by ";
                                                                                                                                                 deathstring2 = "\n";
                                                                                                                                             } else {
-                                                                                                                                                if ( (deathmsg == 25.000) ) {
+                                                                                                                                                if ( (deathmsg == 25) ) {
                                                                                                                                                     deathstring = " is put to sleep by ";
                                                                                                                                                     deathstring2 = "\n";
                                                                                                                                                 } else {
-                                                                                                                                                    if ( (deathmsg == 26.000) ) {
+                                                                                                                                                    if ( (deathmsg == 26) ) {
                                                                                                                                                         deathstring = " gets a hole in his heart from ";
                                                                                                                                                         deathstring2 = "'s railgun\n";
                                                                                                                                                     } else {
-                                                                                                                                                        if ( (deathmsg == 33.000) ) {
+                                                                                                                                                        if ( (deathmsg == 33) ) {
                                                                                                                                                             deathstring = " gets well done by ";
                                                                                                                                                             deathstring2 = "'s incendiary rocket\n";
                                                                                                                                                         } else {
-                                                                                                                                                            if ( (deathmsg == 38.000) ) {
+                                                                                                                                                            if ( (deathmsg == 38) ) {
                                                                                                                                                                 deathstring = " gets destroyed by ";
                                                                                                                                                                 deathstring2 = "'s exploding sentrygun\n";
                                                                                                                                                             } else {
-                                                                                                                                                                if ( (deathmsg == 39.000) ) {
+                                                                                                                                                                if ( (deathmsg == 39) ) {
                                                                                                                                                                     deathstring = " didn't insert the correct change into ";
                                                                                                                                                                     deathstring2 = "'s dispenser.\n";
                                                                                                                                                                 }
@@ -2725,7 +2725,7 @@ void ClientObituary (entity targ, entity attacker) {
                             }
                         }
                     }
-                    if ( ((attacker.has_disconnected == 1.000) || (attacker.netname == string_null)) ) {
+                    if ( ((attacker.has_disconnected == 1) || (attacker.netname == string_null)) ) {
                         deathstring = " died.";
                         deathstring2 = "\n";
                     }
@@ -2739,13 +2739,13 @@ void ClientObituary (entity targ, entity attacker) {
         } else {
             if ( (attacker.classname == "building_sentrygun") ) {
                 if ( (targ == attacker.real_owner) ) {
-                    if ( (deathmsg == 34.000) ) {
+                    if ( (deathmsg == 34) ) {
                         deathstring = " intercepts his sentry gun's rocket\n";
                     } else {
-                        if ( (deathmsg == 27.000) ) {
+                        if ( (deathmsg == 27) ) {
                             deathstring = " crossed his sentry gun's line of fire\n";
                         } else {
-                            if ( (deathmsg == 7.000) ) {
+                            if ( (deathmsg == 7) ) {
                                 deathstring = " crossed his sentry gun's shaft\n";
                             }
                         }
@@ -2753,21 +2753,21 @@ void ClientObituary (entity targ, entity attacker) {
                     bprint (PRINT_MEDIUM,targ.netname);
                     bprint (PRINT_MEDIUM,deathstring);
                 } else {
-                    if ( ((teamplay && (attacker.pteam == targ.pteam)) && (attacker.pteam.team > 0.000)) ) {
+                    if ( ((teamplay && (attacker.pteam == targ.pteam)) && (attacker.pteam.team > 0)) ) {
                         bprint (PRINT_MEDIUM,targ.netname);
                         bprint (PRINT_MEDIUM," obstructs his team's sentry gun\n");
                     } else {
-                        TF_AddFrags (attacker.real_owner,1.000, 1.000);
+                        TF_AddFrags (attacker.real_owner,1, 1);
                         logfrag (attacker.real_owner,targ);
-                        if ( (deathmsg == 34.000) ) {
+                        if ( (deathmsg == 34) ) {
                             deathstring = " hates ";
                             deathstring2 = "'s sentry gun\n";
                         } else {
-                            if ( (deathmsg == 27.000) ) {
+                            if ( (deathmsg == 27) ) {
                                 deathstring = " is mown down by ";
                                 deathstring2 = "'s sentry gun\n";
                             } else {
-                                if ( (deathmsg == 7.000) ) {
+                                if ( (deathmsg == 7) ) {
                                     deathstring = " is electrocuted by ";
                                     deathstring2 = "'s sentry gun\n";
                                 }
@@ -2781,25 +2781,25 @@ void ClientObituary (entity targ, entity attacker) {
                 }
             } else {
                 logfrag (targ,targ);
-                TF_AddFrags (targ,-1.000, 0.000);
+                TF_AddFrags (targ,-1, 0);
                 rnum = targ.watertype;
                 bprint (PRINT_MEDIUM,targ.netname);
-                if ( (rnum == -3.000) ) {
+                if ( (rnum == -3) ) {
                     if ( (random () < 0.500) ) {
                         deathstring = " sleeps with the fishes\n";
                     } else {
                         deathstring = " sucks it down\n";
                     }
                 } else {
-                    if ( (rnum == -4.000) ) {
+                    if ( (rnum == -4) ) {
                         if ( (random () < 0.500) ) {
                             deathstring = " gulped a load of slime\n";
                         } else {
                             deathstring = " can't exist on slime alone\n";
                         }
                     } else {
-                        if ( (rnum == -5.000) ) {
-                            if ( (targ.health < -15.000) ) {
+                        if ( (rnum == -5) ) {
+                            if ( (targ.health < -15) ) {
                                 deathstring = " burst into flames\n";
                             } else {
                                 if ( (random () < 0.500) ) {
@@ -2812,7 +2812,7 @@ void ClientObituary (entity targ, entity attacker) {
                             if ( (attacker.classname == "explo_box") ) {
                                 deathstring = " blew up\n";
                             } else {
-                                if ( ((attacker.solid == 4.000) && (attacker != world)) ) {
+                                if ( ((attacker.solid == 4) && (attacker != world)) ) {
                                     deathstring = " was squished\n";
                                 } else {
                                     if ( (targ.deathtype == "falling") ) {
@@ -2860,20 +2860,20 @@ void ClientObituary (entity targ, entity attacker) {
                 bprint (PRINT_MEDIUM,"'s sentrygun was destroyed by ");
                 bprint (PRINT_MEDIUM,attacker.netname);
                 bprint (PRINT_MEDIUM,"\n");
-                if ( ((attacker.pteam.team > 0.000) && (attacker.pteam == targ.real_owner.pteam)) ) {
-                    TF_AddFrags (attacker,-1.000 , 0.000);
-                    attacker.teamkills = (attacker.teamkills + 1.000);
+                if ( ((attacker.pteam.team > 0) && (attacker.pteam == targ.real_owner.pteam)) ) {
+                    TF_AddFrags (attacker,-1 , 0);
+                    attacker.teamkills = (attacker.teamkills + 1);
                     CheckAutoKick (attacker);
                 } else {
-                    TF_AddFrags (attacker,1.000 , 1.000);
+                    TF_AddFrags (attacker,1 , 1);
                 }
                 return ;
             }
         } else {
             if ( (targ.classname == "building_dispenser") ) {
-                if ( ((attacker.pteam.team > 0.000) && (attacker.pteam == targ.real_owner.pteam)) ) {
-                    TF_AddFrags (attacker,-1.000, 0.000);
-                    attacker.teamkills = (attacker.teamkills + 1.000);
+                if ( ((attacker.pteam.team > 0) && (attacker.pteam == targ.real_owner.pteam)) ) {
+                    TF_AddFrags (attacker,-1, 0);
+                    attacker.teamkills = (attacker.teamkills + 1);
                     CheckAutoKick (attacker);
                 }
             }

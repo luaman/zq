@@ -55,9 +55,9 @@ void TeamFortress_DetonatePipebombs () {
 }
 
 void MirvGrenadeTouch () {
-    sound (self,CHAN_WEAPON,"weapons/bounce.wav",1.000,1.000);
-    if ( (self.velocity == '0.000 0.000 0.000') ) {
-        self.avelocity = '0.000 0.000 0.000';
+    sound (self,CHAN_WEAPON,"weapons/bounce.wav",1,1);
+    if ( (self.velocity == '0 0 0') ) {
+        self.avelocity = '0 0 0';
     }
 }
 
@@ -76,19 +76,19 @@ void MirvGrenadeExplode () {
             te = te.chain2;
         }
     }
-    deathmsg = 10.000;
-    T_RadiusDamage (self,self.owner,100.000,world);
-    WriteByte (4.000,23.000);
-    WriteByte (4.000,3.000);
-    WriteCoord (4.000,self.origin_x);
-    WriteCoord (4.000,self.origin_y);
-    WriteCoord (4.000,self.origin_z);
-    multicast (self.origin,1.000);
-    self.solid = 0.000;
-    i = 0.000;
-    while ( (i < 4.000) ) {
-        MirvGrenadeLaunch ((self.origin + '0.000 0.000 -1.000'),self.owner);
-        i = (i + 1.000);
+    deathmsg = 10;
+    T_RadiusDamage (self,self.owner,100,world);
+    WriteByte (4,23);
+    WriteByte (4,3);
+    WriteCoord (4,self.origin_x);
+    WriteCoord (4,self.origin_y);
+    WriteCoord (4,self.origin_z);
+    multicast (self.origin,1);
+    self.solid = 0;
+    i = 0;
+    while ( (i < 4) ) {
+        MirvGrenadeLaunch ((self.origin + '0 0 -1'),self.owner);
+        i = (i + 1);
     }
     dremove(self);
 }
@@ -97,24 +97,24 @@ void MirvGrenadeLaunch (vector org, entity shooter) {
     float xdir;
     float ydir;
     float zdir;
-    xdir = ((150.000 * random ()) - 75.000);
-    ydir = ((150.000 * random ()) - 75.000);
-    zdir = (40.000 * random ());
+    xdir = ((150 * random ()) - 75);
+    ydir = ((150 * random ()) - 75);
+    zdir = (40 * random ());
     newmis = spawn ();
     newmis.owner = shooter;
-    newmis.movetype = 10.000;
-    newmis.solid = 2.000;
+    newmis.movetype = 10;
+    newmis.solid = 2;
     newmis.classname = "grenade";
-    newmis.weapon = 10.000;
+    newmis.weapon = 10;
     newmis.touch = NormalGrenadeTouch;
     newmis.think = NormalGrenadeExplode;
-    newmis.nextthink = ((time + 2.000) + random ());
-    newmis.velocity_x = (xdir * 2.000);
-    newmis.velocity_y = (ydir * 2.000);
-    newmis.velocity_z = (zdir * 15.000);
-    newmis.avelocity = '250.000 300.000 400.000';
+    newmis.nextthink = ((time + 2) + random ());
+    newmis.velocity_x = (xdir * 2);
+    newmis.velocity_y = (ydir * 2);
+    newmis.velocity_z = (zdir * 15);
+    newmis.avelocity = '250 300 400';
     setmodel (newmis,"progs/grenade2.mdl");
-    setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
+    setsize (newmis,'0 0 0','0 0 0');
     setorigin (newmis,org);
 }
 
@@ -123,62 +123,62 @@ void TeamFortress_SetBomb (entity bowner) {
     float timer;
     entity at_spot;
     float bombarmtime;
-    bowner.is_detpacking = 0.000;
-    if ((bowner.pteam.team != 2.000) ) {
+    bowner.is_detpacking = 0;
+    if ((bowner.pteam.team != 2) ) {
         return ;
     }
     if ( !(bowner.ammo_detpack )) {
         sprint (bowner,PRINT_HIGH,"You need the Bomb!\n");
         return ;
     }
-    at_spot = findradius (bowner.origin,65.000);
+    at_spot = findradius (bowner.origin,65);
     while ( (at_spot != world) ) {
         if ( ((at_spot.classname == "player") && (bowner != at_spot)) ) {
             sprint (bowner,PRINT_HIGH,"You can't set a bomb on someone!\n");
-            bowner.is_detpacking = 0.000;
+            bowner.is_detpacking = 0;
             return ;
         } else if ( ((at_spot.mdl == "progs/turrbase.mdl") || (at_spot.mdl == "progs/turrgun.mdl")) ) {
 			sprint (bowner,PRINT_HIGH,"You can't set a bomb on a sentry gun!\n");
-			bowner.is_detpacking = 0.000;
+			bowner.is_detpacking = 0;
 			return ;
 		} else if ( (at_spot.mdl == "progs/disp.mdl") ) {
 			sprint (bowner,PRINT_HIGH,"You can't set a bomb on a dispenser!\n");
-			bowner.is_detpacking = 0.000;
+			bowner.is_detpacking = 0;
 			return ;
 		} else if ( (at_spot.classname == "detpack") ) {
 			sprint (bowner,PRINT_HIGH,"Bombs can't be stacked!\n");
-			bowner.is_detpacking = 0.000;
+			bowner.is_detpacking = 0;
 			return ;
 		}
         at_spot = at_spot.chain;
     }
-    if ( !(bowner.flags & 512.000) ) {
+    if ( !(bowner.flags & 512) ) {
         sprint (bowner,PRINT_HIGH,"You can't set the bomb in the air!\n");
-        bowner.is_detpacking = 0.000;
+        bowner.is_detpacking = 0;
         return ;
     }
     if (!modetype & 2) {
-        bowner.ammo_detpack = (bowner.ammo_detpack - 1.000);
+        bowner.ammo_detpack = (bowner.ammo_detpack - 1);
     }
     stuffcmd (bowner,"topcolor ");
     stuffcmd (bowner, ftos(bowner.pteam.colormap));
     stuffcmd (bowner,"\n");
 
-    //bowner.immune_to_check = (time + 5.000);
-    bowner.tfstate = (bowner.tfstate | 65536.000);
+    //bowner.immune_to_check = (time + 5);
+    bowner.tfstate = (bowner.tfstate | 65536);
     bowner.weapon = bowner.current;
-    bowner.current = 0.000;
+    bowner.current = 0;
     bowner.weaponmodel = "";
-    bowner.weaponframe = 0.000;
+    bowner.weaponframe = 0;
     TeamFortress_SetSpeed (bowner);
     if (bowner.is_unabletospy) {
-        bowner.is_unabletospy = 0.000;
+        bowner.is_unabletospy = 0;
     }
     timer = stof(infokey (world,"bombtime"));
-    if (timer < 5.000 || timer >  90.000) timer = 50.000;
+    if (timer < 5 || timer >  90) timer = 50;
     stimer = ftos (timer);
     bombarmtime = stof(infokey (world,"bombarmtime"));
-    if (bombarmtime < 1.000 || bombarmtime >  10.000) bombarmtime = 3.000;
+    if (bombarmtime < 1 || bombarmtime >  10) bombarmtime = 3;
     bowner.pausetime = (time + bombarmtime);
     sprint (bowner,PRINT_HIGH,"Setting Bomb...\n");
     newmis = spawn ();
@@ -195,17 +195,17 @@ void TeamFortress_SetDetpack (float timer) {
     entity te;
     entity at_spot;
     if (modetype & 4) {
-        self.is_detpacking = 1.000;
+        self.is_detpacking = 1;
         return;
     }
-    self.impulse = 0.000;
-    self.last_impulse = 0.000;
-    if ( (self.ammo_detpack <= 0.000) ) {
+    self.impulse = 0;
+    self.last_impulse = 0;
+    if ( (self.ammo_detpack <= 0) ) {
         sprint (self,PRINT_HIGH,"You have no detpacks left!\n");
         return ;
     }
 
-    at_spot = findradius (self.origin,65.000);
+    at_spot = findradius (self.origin,65);
     while ( (at_spot != world) ) {
         if ( ((at_spot.classname == "player") && (self != at_spot)) ) {
             sprint (self,PRINT_HIGH,"You can't set a detpack on someone!\n");
@@ -234,26 +234,26 @@ void TeamFortress_SetDetpack (float timer) {
         }
         te = find (te,classname,"detpack");
     }
-    if ( (timer < 5.000) ) {
+    if ( (timer < 5) ) {
         sprint (self,PRINT_HIGH,"You can't set detpacks for less than 5 seconds.\n");
         return ;
     }
-    self.is_detpacking = 1.000;
+    self.is_detpacking = 1;
     if (!modetype & 2) {
-        self.ammo_detpack = (self.ammo_detpack - 1.000);
+        self.ammo_detpack = (self.ammo_detpack - 1);
     }
-    //self.immune_to_check = (time + 5.000);
-    self.tfstate = (self.tfstate | 65536.000);
+    //self.immune_to_check = (time + 5);
+    self.tfstate = (self.tfstate | 65536);
     self.weapon = self.current;
-    self.current = 0.000;
+    self.current = 0;
     self.weaponmodel = "";
-    self.weaponframe = 0.000;
+    self.weaponframe = 0;
     TeamFortress_SetSpeed (self);
     if (self.is_unabletospy) {
-        self.is_unabletospy = 0.000;
+        self.is_unabletospy = 0;
     }
     stimer = ftos (timer);
-    self.pausetime = (time + 3.000);
+    self.pausetime = (time + 3);
     sprint (self,PRINT_HIGH,"Setting detpack for ");
     sprint (self,PRINT_HIGH,stimer);
     sprint (self,PRINT_HIGH," seconds...\n");
@@ -262,14 +262,14 @@ void TeamFortress_SetDetpack (float timer) {
     newmis.owner = self;
     newmis.classname = "timer";
     newmis.netname = "detpack_timer";
-    newmis.nextthink = (time + 3.000);
+    newmis.nextthink = (time + 3);
     newmis.think = TeamFortress_DetpackSet;
     newmis.health = timer;
 }
 
 void TeamFortress_DetpackStop () {
     entity detpack_timer;
-    self.is_detpacking = 0.000;
+    self.is_detpacking = 0;
     detpack_timer = find (world,netname,"detpack_timer");
     while ( ((detpack_timer.owner != self) && (detpack_timer != world)) ) {
         detpack_timer = find (detpack_timer,netname,"detpack_timer");
@@ -278,9 +278,9 @@ void TeamFortress_DetpackStop () {
         return ;
     }
     sprint (self,PRINT_HIGH,"Detpack retrieved.\n");
-    self.ammo_detpack = (self.ammo_detpack + 1.000);
+    self.ammo_detpack = (self.ammo_detpack + 1);
     dremove (detpack_timer);
-    self.tfstate = (self.tfstate - (self.tfstate & 65536.000));
+    self.tfstate = (self.tfstate - (self.tfstate & 65536));
     self.current = self.weapon;
     W_SetCurrentAmmo ();
     TeamFortress_SetSpeed (self);
@@ -291,49 +291,49 @@ void TeamFortress_DetpackSet () {
     entity countd;
     entity oldself;
     string st;
-    self.is_detpacking = 0.000;
-    self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 65536.000));
+    self.is_detpacking = 0;
+    self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 65536));
     TeamFortress_SetSpeed (self.owner);
     oldself = self;
     self = self.owner;
-    self.is_detpacking = 0.000;
+    self.is_detpacking = 0;
     self.current = self.weapon;
     W_SetCurrentAmmo ();
     self = oldself;
     newmis = spawn ();
     newmis.owner = self.owner;
-    newmis.origin = (self.owner.origin - '0.000 0.000 23.000');
-    newmis.movetype = 10.000;
+    newmis.origin = (self.owner.origin - '0 0 23');
+    newmis.movetype = 10;
     st = infokey (world,"soliddet");
     if ( (st == "off") ) {
-        newmis.solid = 1.000;
+        newmis.solid = 1;
     } else {
-        newmis.solid = 2.000;
+        newmis.solid = 2;
     }
     newmis.classname = "detpack";
-    newmis.flags = 256.000;
-    newmis.angles = '90.000 0.000 0.000';
+    newmis.flags = 256;
+    newmis.angles = '90 0 0';
     newmis.angles_y = self.owner.angles_y;
-    newmis.velocity = '0.000 0.000 0.000';
-    newmis.avelocity = '0.000 0.000 0.000';
-    newmis.weaponmode = 0.000;
+    newmis.velocity = '0 0 0';
+    newmis.avelocity = '0 0 0';
+    newmis.weaponmode = 0;
     newmis.touch = TeamFortress_DetpackTouch;
     setmodel (newmis,"progs/detpack.mdl");
-    setsize (newmis,'-16.000 -16.000 0.000','16.000 16.000 8.000');
+    setsize (newmis,'-16 -16 0','16 16 8');
     setorigin (newmis,self.owner.origin);
     countd = spawn ();
     newmis.linked_list = countd;
     countd.think = TeamFortress_DetpackCountDown;
-    countd.health = (self.health - 1.000);
+    countd.health = (self.health - 1);
     countd.owner = self.owner;
     countd.classname = "detpack_timer";
     countd.enemy = newmis;
     newmis.oldenemy = countd;
-    if ( (self.health <= 255.000) ) {
-        countd.nextthink = (time + 1.000);
+    if ( (self.health <= 255) ) {
+        countd.nextthink = (time + 1);
     } else {
-        countd.nextthink = ((time + self.health) - 10.000);
-        countd.health = 9.000;
+        countd.nextthink = ((time + self.health) - 10);
+        countd.health = 9;
     }
     newmis.nextthink = (time + self.health);
     newmis.think = TeamFortress_DetpackExplode;
@@ -341,9 +341,9 @@ void TeamFortress_DetpackSet () {
         newmis.target = self.owner.target;
         self.owner.target = string_null;
         bprint(PRINT_HIGH, "The Bomb has been planted!\n");
-        sound(self.owner,2.000,"speech/bombpl.wav",1.000,0.000);
+        sound(self.owner,2,"speech/bombpl.wav",1,0);
     } else {
-        sound (self.owner,2.000,"doors/medtry.wav",1.000,1.000);
+        sound (self.owner,2,"doors/medtry.wav",1,1);
         sprint (self.owner,PRINT_HIGH,"Detpack set!\n");
     }
     dremove (self);
@@ -356,20 +356,20 @@ void TeamFortress_DetpackExplode () {
     entity te;
     vector org;
     bprint (PRINT_MEDIUM,"FIRE IN THE HOLE!\n");
-    sound (self,CHAN_WEAPON,"weapons/detpack.wav",1.000,0.000);
+    sound (self,CHAN_WEAPON,"weapons/detpack.wav",1,0);
     pos = pointcontents (self.origin);
-    if ( (((pos != -2.000) && (pos != -6.000)) && (!self.owner.has_disconnected )) ) {
-        deathmsg = 12.000;
-        head = findradius (self.origin,1000.000);
+    if ( (((pos != -2) && (pos != -6)) && (!self.owner.has_disconnected )) ) {
+        deathmsg = 12;
+        head = findradius (self.origin,1000);
         while ( head ) {
             head.chain2 = head.chain;
             if ( (head.classname == "info_tfgoal") ) {
-                if ( ((head.goal_activation & 2.000) && (head.search_time == 0.000)) ) {
-                    traceline (self.origin,head.origin,1.000,self);
-                    if ( (trace_fraction == 1.000) ) {
+                if ( ((head.goal_activation & 2) && (head.search_time == 0)) ) {
+                    traceline (self.origin,head.origin,1,self);
+                    if ( (trace_fraction == 1) ) {
                         if ( Activated (head,self.owner) ) {
-                            DoResults (head,self.owner,1.000);
-                        } else  if ( (head.else_goal != 0.000) ) {
+                            DoResults (head,self.owner,1);
+                        } else  if ( (head.else_goal != 0) ) {
                                 te = Findgoal (head.else_goal);
                                 if ( te ) {
                                     AttemptToActivate (te,self.owner,head);
@@ -378,19 +378,19 @@ void TeamFortress_DetpackExplode () {
                         }
                     }
             } else {
-                if ( (head.takedamage && (vlen ((head.origin - self.origin)) <= 900.000)) ) {
+                if ( (head.takedamage && (vlen ((head.origin - self.origin)) <= 900)) ) {
                     org = (head.origin + ((head.mins + head.maxs) * 0.500));
                     points = (0.500 * vlen ((self.origin - org)));
-                    if ( (points < 0.000) ) {
-                        points = 0.000;
+                    if ( (points < 0) ) {
+                        points = 0;
                     }
-                    points = (700.000 - points);
+                    points = (700 - points);
                     if ( points ) {
                         if (grenradius & 2) {
-                            TF_T_Damage (head,self,self.owner,(points * 2.000),2.000,4.000);
+                            TF_T_Damage (head,self,self.owner,(points * 2),2,4);
                         } else {
                             if ( CanDamage (head,self) ) {
-                                TF_T_Damage (head,self,self.owner,(points * 2.000),2.000,4.000);
+                                TF_T_Damage (head,self,self.owner,(points * 2),2,4);
                             }
                         }
                     }
@@ -402,16 +402,16 @@ void TeamFortress_DetpackExplode () {
             SUB_UseTargets ();
             round_winner = self.owner.pteam;
         }
-        WriteByte (4.000,23.000);
-        WriteByte (4.000,3.000);
-        WriteCoord (4.000,self.origin_x);
-        WriteCoord (4.000,self.origin_y);
-        WriteCoord (4.000,self.origin_z);
-        multicast (self.origin,1.000);
+        WriteByte (4,23);
+        WriteByte (4,3);
+        WriteCoord (4,self.origin_x);
+        WriteCoord (4,self.origin_y);
+        WriteCoord (4,self.origin_z);
+        multicast (self.origin,1);
     } else {
         sprint (self.owner,PRINT_HIGH,"Your detpack fizzled out.\n");
     }
-    if ( (self.weaponmode == 1.000) ) {
+    if ( (self.weaponmode == 1) ) {
         TeamFortress_SetSpeed (self.enemy);
         dremove (self.oldenemy);
         dremove (self.observer_list);
@@ -429,39 +429,39 @@ void TeamFortress_DetpackTouch () {
         return ;
     }
     if (!modetype & 4) {
-        if ( (other.playerclass != 1.000) ) {
+        if ( (other.playerclass != 1) ) {
             return ;
         }
     } else {
-        if ( (!other.playerclass) || (other.pteam.team == 2.000) ) {
+        if ( (!other.playerclass) || (other.pteam.team == 2) ) {
             return ;
         }
     }
     if ( other.deadflag ) {
         return ;
     }
-    if ( (self.weaponmode == 1.000) ) {
+    if ( (self.weaponmode == 1) ) {
         return ;
     }
-    if ( ((other.pteam == self.owner.pteam) && (self.owner.pteam.team != 0.000)) ) {
+    if ( ((other.pteam == self.owner.pteam) && (self.owner.pteam.team != 0)) ) {
         return ;
     }
     makevectors (other.v_angle);
-    src = (other.origin + '0.000 0.000 16.000');
-    traceline (src,(src + (v_forward * 64.000)),0.000,other);
+    src = (other.origin + '0 0 16');
+    traceline (src,(src + (v_forward * 64)),0,other);
 
-    if (self.solid == 2.000) {
+    if (self.solid == 2) {
         if ((trace_fraction == 1) || (trace_ent != self)) {
             return;
         }
     } else {
-        if ( (trace_fraction == 1.000)  ) {
+        if ( (trace_fraction == 1)  ) {
 
             return ;
         }
     }
 
-    other.tfstate = (other.tfstate | 65536.000);
+    other.tfstate = (other.tfstate | 65536);
     TeamFortress_SetSpeed (other);
     disarm = spawn ();
     disarm.owner = other;
@@ -469,16 +469,16 @@ void TeamFortress_DetpackTouch () {
     disarm.classname = "timer";
     if (modetype & 4) {
         defusetime = stof(infokey (world,"bombdefusetime"));
-        if (defusetime < 3.000 || defusetime > 15.000) defusetime = 8.000;
+        if (defusetime < 3 || defusetime > 15) defusetime = 8;
         disarm.nextthink = (time + defusetime);
         //disarm.weapon = defusetime;
         sprint (other, PRINT_HIGH,"Defusing Bomb...\n");
     } else {
-        disarm.nextthink = (time + 3.000);
+        disarm.nextthink = (time + 3);
         sprint (other, PRINT_HIGH,"Disarming detpack...\n");
     }
     disarm.think = TeamFortress_DetpackDisarm;
-    self.weaponmode = 1.000;
+    self.weaponmode = 1;
     self.enemy = other;
     self.observer_list = disarm;
 }
@@ -492,7 +492,7 @@ void TeamFortress_DetpackDisarm () {
         //if (self.weapon > 0) {
         // CenterPrint3(self.owner, "Defusing Bomb in ", ftos(self.weapon), " second(s)\n");
         // self.weapon = self.weapon - 1;
-        // self.nextthink = (time + 1.000);
+        // self.nextthink = (time + 1);
         // return;
         // }
         bprint (PRINT_MEDIUM,self.enemy.owner.netname);
@@ -506,8 +506,8 @@ void TeamFortress_DetpackDisarm () {
         bprint (PRINT_MEDIUM,self.owner.netname);
         bprint (PRINT_MEDIUM,"\n");
     }
-    self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 65536.000));
-    TF_AddFrags (self.owner,1.000, 0.000);
+    self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 65536));
+    TF_AddFrags (self.owner,1, 0);
     TeamFortress_SetSpeed (self.owner);
     dremove (self.enemy.oldenemy);
     dremove (self.enemy);
@@ -518,21 +518,21 @@ void TeamFortress_DetpackCountDown () {
     string cd;
     cd = ftos (self.health);
     CheckBelowBuilding (self.enemy);
-    self.nextthink = (time + 1.000);
-    self.health = (self.health - 1.000);
-    if ( (self.health < 10.000) ) {
+    self.nextthink = (time + 1);
+    self.health = (self.health - 1);
+    if ( (self.health < 10) ) {
         sprint (self.owner,PRINT_HIGH,cd);
         sprint (self.owner,PRINT_HIGH,"...\n");
-        if ( ((self.health < 5.000) && (self.has_disconnected == 0.000)) ) {
-            sound (self.enemy,2.000,"doors/baseuse.wav",1.000,1.000);
-            self.has_disconnected = 1.000;
+        if ( ((self.health < 5) && (self.has_disconnected == 0)) ) {
+            sound (self.enemy,2,"doors/baseuse.wav",1,1);
+            self.has_disconnected = 1;
         }
-        if ( ((self.health < 5.000) && (self.enemy.skin == 0.000)) ) {
-            self.enemy.skin = 1.000;
+        if ( ((self.health < 5) && (self.enemy.skin == 0)) ) {
+            self.enemy.skin = 1;
         } else {
-            self.enemy.skin = 0.000;
+            self.enemy.skin = 0;
         }
-        if ( (self.health <= 0.000) ) {
+        if ( (self.health <= 0) ) {
             dremove (self);
         }
     }
