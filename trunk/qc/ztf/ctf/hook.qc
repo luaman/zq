@@ -1,18 +1,18 @@
 
 void Reset_Grapple (entity rhook) {
-    sound (rhook.owner,1.000,"weapons/bounce.wav",1.000,0.000);
-    rhook.owner.on_hook = 0.000;
-    rhook.owner.gravity = 1.000;
-    rhook.owner.hook_out = 0.000;
-    rhook.owner.fire_held_down = 0.000;
-    rhook.owner.weaponframe = 0.000;
+    sound (rhook.owner,1,"weapons/bounce.wav",1,0);
+    rhook.owner.on_hook = 0;
+    rhook.owner.gravity = 1;
+    rhook.owner.hook_out = 0;
+    rhook.owner.fire_held_down = 0;
+    rhook.owner.weaponframe = 0;
     rhook.think = SUB_Remove;
     rhook.nextthink = time;
 }
 
 void Grapple_Track () {
     //vector org;
-    if ( (!self.owner.on_hook || (self.owner.health <= 0.000)) ) {
+    if ( (!self.owner.on_hook || (self.owner.health <= 0)) ) {
         Reset_Grapple (self);
         return ;
     } else {
@@ -23,13 +23,13 @@ void Grapple_Track () {
 
 entity MakeLink () {
     newmis = spawn ();
-    newmis.movetype = 9.000;
-    newmis.solid = 0.000;
+    newmis.movetype = 9;
+    newmis.solid = 0;
     newmis.owner = self;
-    newmis.avelocity = '200.000 200.000 200.000';
+    newmis.avelocity = '200 200 200';
     setmodel (newmis,"progs/s_spike.mdl");
     setorigin (newmis,self.origin);
-    setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
+    setsize (newmis,'0 0 0','0 0 0');
     return ( newmis );
 }
 
@@ -73,37 +73,37 @@ float Check_Overhead () {
     vector src;
     vector end;
     makevectors (self.owner.angles);
-    src = (self.owner.origin - '0.000 0.000 24.000');
-    end = (self.owner.origin - '0.000 0.000 24.000');
-    traceline (src,end,0.000,self.owner);
-    if ( (trace_fraction != 1.000) ) {
-        return ( 0.000 );
+    src = (self.owner.origin - '0 0 24');
+    end = (self.owner.origin - '0 0 24');
+    traceline (src,end,0,self.owner);
+    if ( (trace_fraction != 1) ) {
+        return ( 0 );
     }
-    src = ((self.owner.origin - '0.000 0.000 24.000') - (v_forward * 16.000));
-    end = (((self.owner.origin - '0.000 0.000 24.000') - (v_forward * 16.000)) + '0.000 0.000 58.000');
-    traceline (src,end,0.000,self.owner);
-    if ( (trace_fraction != 1.000) ) {
-        return ( 0.000 );
+    src = ((self.owner.origin - '0 0 24') - (v_forward * 16));
+    end = (((self.owner.origin - '0 0 24') - (v_forward * 16)) + '0 0 58');
+    traceline (src,end,0,self.owner);
+    if ( (trace_fraction != 1) ) {
+        return ( 0 );
     }
-    src = ((self.owner.origin - '0.000 0.000 24.000') + (v_forward * 16.000));
-    end = (((self.owner.origin - '0.000 0.000 24.000') + (v_forward * 16.000)) + '0.000 0.000 58.000');
-    traceline (src,end,0.000,self.owner);
-    if ( (trace_fraction != 1.000) ) {
-        return ( 0.000 );
+    src = ((self.owner.origin - '0 0 24') + (v_forward * 16));
+    end = (((self.owner.origin - '0 0 24') + (v_forward * 16)) + '0 0 58');
+    traceline (src,end,0,self.owner);
+    if ( (trace_fraction != 1) ) {
+        return ( 0 );
     }
-    src = ((self.owner.origin - '0.000 0.000 24.000') - (v_right * 16.000));
-    end = (((self.owner.origin - '0.000 0.000 24.000') - (v_right * 16.000)) + '0.000 0.000 58.000');
-    traceline (src,end,0.000,self.owner);
-    if ( (trace_fraction != 1.000) ) {
-        return ( 0.000 );
+    src = ((self.owner.origin - '0 0 24') - (v_right * 16));
+    end = (((self.owner.origin - '0 0 24') - (v_right * 16)) + '0 0 58');
+    traceline (src,end,0,self.owner);
+    if ( (trace_fraction != 1) ) {
+        return ( 0 );
     }
-    src = ((self.owner.origin - '0.000 0.000 24.000') + (v_right * 16.000));
-    end = (((self.owner.origin - '0.000 0.000 24.000') + (v_right * 16.000)) + '0.000 0.000 58.000');
-    traceline (src,end,0.000,self.owner);
-    if ( (trace_fraction != 1.000) ) {
-        return ( 0.000 );
+    src = ((self.owner.origin - '0 0 24') + (v_right * 16));
+    end = (((self.owner.origin - '0 0 24') + (v_right * 16)) + '0 0 58');
+    traceline (src,end,0,self.owner);
+    if ( (trace_fraction != 1) ) {
+        return ( 0 );
     }
-    return ( 1.000 );
+    return ( 1 );
 }
 
 void Anchor_Grapple () {
@@ -117,21 +117,21 @@ void Anchor_Grapple () {
     if ( ((((other.classname == "missile") || (other.classname == "grenade")) || (other.classname == "spike")) || (other.classname == "hook")) ) {
         return ;
     }
-    if ( (pointcontents (self.origin) == -6.000) ) {
+    if ( (pointcontents (self.origin) == -6) ) {
         Reset_Grapple (self);
         return ;
     }
     if ( (other.classname == "player") ) {
-        sound (self,1.000,"player/axhit2.wav",1.000,1.000);
+        sound (self,1,"player/axhit2.wav",1,1);
         if ( other.takedamage ) {
-            deathmsg = 21.000;
-            TF_T_Damage (other,self,self.owner,1.000, 0.000, 0.000);
+            deathmsg = 21;
+            TF_T_Damage (other,self,self.owner,1, 0, 0);
         }
-        //self.velocity = '0.000 0.000 0.000';
-        //self.avelocity = '0.000 0.000 0.000';
+        //self.velocity = '0 0 0';
+        //self.avelocity = '0 0 0';
 
     }
-    sound (self.owner,1.000,"weapons/tink1.wav",1.000,1.000);
+    sound (self.owner,1,"weapons/tink1.wav",1,1);
     if ( !self.owner.button0 ) {
         Reset_Grapple (self);
         return ;
@@ -141,17 +141,17 @@ void Anchor_Grapple () {
         Reset_Grapple (self);
         return ;
     }
-    self.owner.on_hook = 1.000;
-    if ( (self.owner.flags & 512.000) ) {
-        self.owner.flags = (self.owner.flags - 512.000);
-        setorigin (self.owner,(self.owner.origin + '0.000 0.000 1.000'));
+    self.owner.on_hook = 1;
+    if ( (self.owner.flags & 512) ) {
+        self.owner.flags = (self.owner.flags - 512);
+        setorigin (self.owner,(self.owner.origin + '0 0 1'));
     }
-    self.owner.gravity = 0.000;
-    self.owner.lefty = 1.000;
+    self.owner.gravity = 0;
+    self.owner.lefty = 1;
     self.enemy = other;
     self.think = Grapple_Track;
     self.nextthink = time;
-    self.solid = 0.000;
+    self.solid = 0;
     self.touch = SUB_Null;
 }
 
@@ -159,31 +159,31 @@ void Throw_Grapple () {
     if ( self.hook_out ) {
         return ;
     }
-    KickPlayer (-1.000,self);
+    KickPlayer (-1,self);
     newmis = spawn ();
-    newmis.movetype = 9.000;
-    newmis.solid = 2.000;
+    newmis.movetype = 9;
+    newmis.solid = 2;
     newmis.owner = self;
     self.hook = newmis;
     newmis.classname = "hook";
     makevectors (self.v_angle);
-    newmis.velocity = (v_forward * 800.000);
+    newmis.velocity = (v_forward * 800);
     newmis.angles = vectoangles (newmis.velocity);
     newmis.touch = Anchor_Grapple;
     newmis.think = Build_Chain;
     newmis.nextthink = (time + 0.100);
     setmodel (newmis,"progs/hook.mdl");
-    setorigin (newmis,((self.origin + (v_forward * 16.000)) + '0.000 0.000 16.000'));
-    setsize (newmis,'0.000 0.000 0.000','0.000 0.000 0.000');
-    self.hook_out = 1.000;
-    self.fire_held_down = 1.000;
+    setorigin (newmis,((self.origin + (v_forward * 16)) + '0 0 16'));
+    setsize (newmis,'0 0 0','0 0 0');
+    self.hook_out = 1;
+    self.fire_held_down = 1;
 }
 
 void Service_Grapple () {
     vector hook_dir;
     if ( !self.button0 ) {
-        self.fire_held_down = 0.000;
-        if ( (self.current == 1.000) ) {
+        self.fire_held_down = 0;
+        if ( (self.current == 1) ) {
             Reset_Grapple (self.hook);
         }
     }
@@ -194,12 +194,12 @@ void Service_Grapple () {
             hook_dir = (self.hook.origin - self.origin);
         }
     }
-    self.velocity = ((normalize (hook_dir) * self.maxspeed) * 2.000);
-    if ( ((vlen (hook_dir) <= 100.000) && self.lefty) ) {
+    self.velocity = ((normalize (hook_dir) * self.maxspeed) * 2);
+    if ( ((vlen (hook_dir) <= 100) && self.lefty) ) {
         if ( self.hook.goalentity ) {
             self.hook.goalentity.think = Remove_Chain;
             self.hook.goalentity.nextthink = time;
         }
-        self.lefty = 0.000;
+        self.lefty = 0;
     }
 }

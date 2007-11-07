@@ -35,7 +35,7 @@ void SpectatorConnect () {
 
     string st;
     self.classname = "observer";
-    self.flags = 8.000;
+    self.flags = 8;
 
     stuffcmd (self,"on_spec_connect\n");
     st = infokey (self,"em");
@@ -48,16 +48,16 @@ void SpectatorConnect () {
         stuffcmd (self,mapname);
         stuffcmd (self,".cfg\n");
     }
-    self.motd = 0.000;
+    self.motd = 0;
     st = infokey (self,"adminpwd");
     Admin_Check(st);
     if (self.is_admin) {
-        self.get_admin_aliases = 1.000;
+        self.get_admin_aliases = 1;
     }
     self.nexts = spec_head;
     spec_head = self;
     if (!self.camdist) {
-        self.camdist = 160.000;
+        self.camdist = 160;
     }
     CheckConnectRate();
 }
@@ -77,7 +77,7 @@ void SpectatorDisconnect () {
 }
 
 void SpectatorImpulseCommand () {
-    if ( (self.impulse == 1.000) ) {
+    if ( (self.impulse == 1) ) {
         self.goalentity = find (self.goalentity,classname,"info_player_deathmatch");
         if ( (self.goalentity == world) ) {
             self.goalentity = find (self.goalentity,classname,"info_player_deathmatch");
@@ -85,49 +85,49 @@ void SpectatorImpulseCommand () {
         if ( (self.goalentity != world) ) {
             setorigin (self,self.goalentity.origin);
             self.angles = self.goalentity.angles;
-            self.fixangle = 1.000;
+            self.fixangle = 1;
             self.last_impulse = self.impulse;
         }
-        self.impulse = 0.000;
+        self.impulse = 0;
         return ;
     } else {
-        if ( (self.impulse == 9.000) ) {
+        if ( (self.impulse == 9) ) {
             fadetoblack();
-            self.impulse = 0.000;
+            self.impulse = 0;
             return ;
         } else {
-            if ( (self.impulse == 10.000) ) {
+            if ( (self.impulse == 10) ) {
                 fadefromblack();
-                self.impulse = 0.000;
+                self.impulse = 0;
                 return ;
             } else {
-                if ( (self.impulse == 185.000) ) {
+                if ( (self.impulse == 185) ) {
                     TeamFortress_ID ();
-                    self.impulse = 0.000;
+                    self.impulse = 0;
                     return ;
                 } else {
-                    if ( (self.impulse == 131.000) ) {
+                    if ( (self.impulse == 131) ) {
                         TeamFortress_HelpMap ();
-                        self.impulse = 0.000;
+                        self.impulse = 0;
                         return ;
                     } else {
-                        if ( (self.impulse == 119.000) ) {
+                        if ( (self.impulse == 119) ) {
                             TeamFortress_StatusQuery ();
-                            self.impulse = 0.000;
+                            self.impulse = 0;
                             return ;
                         } else {
-                            if ( (self.impulse == 145.000) ) {
-                                TeamFortress_TeamShowScores (0.000);
-                                self.impulse = 0.000;
+                            if ( (self.impulse == 145) ) {
+                                TeamFortress_TeamShowScores (0);
+                                self.impulse = 0;
                                 return ;
                             } else {
-                                if ( (self.impulse == 23.000) ) {
+                                if ( (self.impulse == 23) ) {
                                     if ( (ctfmap == 1) ) {
                                         TeamFortress_CTF_FlagInfo ();
                                     } else {
                                         TeamFortress_DisplayDetectionItems ();
                                     }
-                                    self.impulse = 0.000;
+                                    self.impulse = 0;
                                     return;
                                 }
                             }
@@ -138,7 +138,7 @@ void SpectatorImpulseCommand () {
         }
     }
     CommandImpulses();
-    self.impulse = 0.000;
+    self.impulse = 0;
 }
 
 void SpectatorThink () {
@@ -146,10 +146,10 @@ void SpectatorThink () {
     if ( self.impulse ) {
         SpectatorImpulseCommand ();
     }
-    if ( (self.motd <= 65.000) ) {
+    if ( (self.motd <= 65) ) {
         TeamFortress_MOTD ();
     }
-    if ( ((time > self.StatusRefreshTime) && (self.StatusBarSize != 0.000)) ) {
+    if ( ((time > self.StatusRefreshTime) && (self.StatusBarSize != 0)) ) {
         RefreshStatusBar() ;
     }
     if (self.is_admin) {

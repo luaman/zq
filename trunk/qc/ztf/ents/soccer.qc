@@ -5,7 +5,7 @@ void DecrementQue () {
     entity te;
     te = player_head;
     while (( te != world)  ) {
-        if (te.a_n > 1.000) te.a_n = te.a_n - 1.000;
+        if (te.a_n > 1) te.a_n = te.a_n - 1;
         te = te.nextp;
     }
 }
@@ -15,12 +15,12 @@ float ping (entity Player) {
     float fl;
     st = infokey (Player, "ping");
     fl = stof (st);
-    fl = fl / 1000.000000;
+    fl = fl / 1000;
     return (fl);
 }
 
 void ball_reset () {
-    self.solid = 1.000;
+    self.solid = 1;
     self.velocity = '0 0 0';
     self.origin = self.oldorigin;
     setorigin (self,self.origin);
@@ -38,17 +38,17 @@ void ball_spin () {
     float vel_y;
     if (self.velocity) {
 
-        if (self.velocity_x < 0.000) {
-            vel_x = self.velocity_x * -1.000;
+        if (self.velocity_x < 0) {
+            vel_x = self.velocity_x * -1;
         } else {
             vel_x = self.velocity_x;
         }
-        if (self.velocity_y < 0.000) {
-            vel_y = self.velocity_y * -1.000;
+        if (self.velocity_y < 0) {
+            vel_y = self.velocity_y * -1;
         } else {
             vel_y = self.velocity_y;
         }
-        self.avelocity_x = (vel_x + vel_y) * 2.000;
+        self.avelocity_x = (vel_x + vel_y) * 2;
     }
 }
 
@@ -56,14 +56,14 @@ void ball_kick (vector o, float z) {
     vector v;
     v_x = ((o_x * 1.65) + (random() * 20) );
     v_y = ((o_y * 1.65) + (random() * 20) );
-    if (o_x < 0.000) {
-        o_x = o_x * -1.000;
+    if (o_x < 0) {
+        o_x = o_x * -1;
     }
-    if (o_y < 0.000) {
-        o_y = o_y * -1.000;
+    if (o_y < 0) {
+        o_y = o_y * -1;
     }
     v_z = ((100 + (random() * 30))  + ((o_y + o_x) * 0.20) + (z * 2.5)  );
-    self.flags = self.flags - ( self.flags & 512.000);
+    self.flags = self.flags - ( self.flags & 512);
     self.velocity = v;
     self.angles = vectoangles (self.velocity);
     ball_spin();
@@ -73,14 +73,14 @@ void ball_fly (vector o) {
     vector v;
     v_x = (o_x * 0.600) + (crandom() * 40);
     v_y = (o_y * 0.600) + (crandom() * 40);
-    if (o_x < 0.000) {
-        o_x = o_x * -1.000;
+    if (o_x < 0) {
+        o_x = o_x * -1;
     }
-    if (o_y < 0.000) {
-        o_y = o_y * -1.000;
+    if (o_y < 0) {
+        o_y = o_y * -1;
     }
     v_z = (140 + (crandom() * 40))  + ((o_y + o_x) * 0.20);
-    self.flags = self.flags - ( self.flags & 512.000);
+    self.flags = self.flags - ( self.flags & 512);
     self.velocity = v;
     self.angles = vectoangles (self.velocity);
     ball_spin();
@@ -95,7 +95,7 @@ void ball_touch () {
     }
     if (other.classname == "player") {
         self.oldenemy = other;
-        ball_kick(other.velocity, (other.v_angle_x * -1.000));
+        ball_kick(other.velocity, (other.v_angle_x * -1));
         return;
     }
     self.oldenemy = other.owner;
@@ -104,9 +104,9 @@ void ball_touch () {
 }
 
 void item_ball () {
-    self.solid = 1.000;
-    self.movetype = 10.000;
-    //self.flags= 256.000;
+    self.solid = 1;
+    self.movetype = 10;
+    //self.flags= 256;
     if ( self.mdl ) {
         precache_model (self.mdl);
         setmodel (self,self.mdl);
@@ -118,11 +118,11 @@ void item_ball () {
     if ( !self.netname ) {
         self.netname = "ball";
     }
-    if ( (self.goal_min == '0.000 0.000 0.000') ) {
-        self.goal_min = '-12.000 -12.000 -12.000';
+    if ( (self.goal_min == '0 0 0') ) {
+        self.goal_min = '-12 -12 -12';
     }
-    if ( (self.goal_max == '0.000 0.000 0.000') ) {
-        self.goal_max = '12.000 12.000 12.000';
+    if ( (self.goal_max == '0 0 0') ) {
+        self.goal_max = '12 12 12';
     }
     setsize (self,self.goal_min,self.goal_max);
     setorigin (self,self.origin );
@@ -136,10 +136,10 @@ void soccer_goal_touch () {
     if (other.classname == "item_ball") {
         if (other.solid) {
             TeamFortress_TeamIncreaseScore (self.owned_by,self.count);
-            TeamFortress_TeamShowScores (2.000);
-            sound (self,2.000,self.noise,1.000,0.000);
+            TeamFortress_TeamShowScores (2);
+            sound (self,2,self.noise,1,0);
             round_winner = self.pteam;
-            other.solid = 0.000;
+            other.solid = 0;
         }
         return;
     }
@@ -152,13 +152,13 @@ void info_soccer_goal () {
     }
     precache_sound (self.noise);
 
-    if (self.owned_by == 1.000) {
+    if (self.owned_by == 1) {
         self.pteam = pteam1;
-    } else if (self.owned_by == 2.000) {
+    } else if (self.owned_by == 2) {
         self.pteam = pteam2;
-    } else if (self.owned_by == 3.000) {
+    } else if (self.owned_by == 3) {
         self.pteam = pteam3;
-    } else if (self.owned_by == 4.000) {
+    } else if (self.owned_by == 4) {
         self.pteam = pteam4;
     }
     InitTrigger();
@@ -166,10 +166,10 @@ void info_soccer_goal () {
 }
 
 void func_glass () {
-    self.solid = 2.000;
+    self.solid = 2;
     setmodel (self,self.model);
-    self.movetype = 0.000;
-    self.modelindex = 0.000;
+    self.movetype = 0;
+    self.modelindex = 0;
     self.model = "";
 }
 // ===============================================================
@@ -201,8 +201,8 @@ void rain_think () {
     setorigin (newmis, rain_org);
     setmodel (newmis, "progs/s_rain.spr");
     newmis.classname = "raindrop";
-    newmis.movetype = 6.000;
-    newmis.solid = 1.000;
+    newmis.movetype = 6;
+    newmis.solid = 1;
     setsize (newmis, '0 0 0', '0 0 0');
     rain_vel = '0 0 0';
     rain_vel_z = -20*random();
@@ -214,7 +214,7 @@ void rain_think () {
 void func_rain () {
     precache_model ("progs/s_rain.spr");
     precache_sound("ambience/rain.wav");
-    ambientsound (self.origin, "ambience/rain.wav", 0.5, 3.000);
+    ambientsound (self.origin, "ambience/rain.wav", 0.5, 3);
     self.think = rain_think;
     //self.touch = func_rain_touch;
     self.nextthink = time  + random();
@@ -223,11 +223,11 @@ void func_rain () {
 void nogren_touch () {
 
     if (other.classname == "grenade") {
-        if (self.spawnflags == 1.000) {
+        if (self.spawnflags == 1) {
             if (other.tp_grenades_1) {
                 other.think = SUB_Remove;
             }
-        } else if (self.spawnflags == 2.000) {
+        } else if (self.spawnflags == 2) {
             if (other.tp_grenades_2) {
                 other.think = SUB_Remove;
             }
@@ -235,11 +235,11 @@ void nogren_touch () {
         return;
     }
     if (other.classname == "grentimer") {
-        if (self.spawnflags == 1.000) {
+        if (self.spawnflags == 1) {
             if (other.tp_grenades_1) {
                 other.think = SUB_Remove;
             }
-        } else if (self.spawnflags == 2.000) {
+        } else if (self.spawnflags == 2) {
             if (other.tp_grenades_2) {
                 other.think = SUB_Remove;
             }

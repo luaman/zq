@@ -153,7 +153,7 @@ void plat_outside_touch ()
 		return;
 
     if ( !Activated (self,other) ) {
-        if ( (self.else_goal != 0.000) ) {
+        if ( (self.else_goal != 0) ) {
             te = Findgoal (self.else_goal);
             if ( te ) {
                 AttemptToActivate (te,other,self);
@@ -181,7 +181,7 @@ void plat_crush ()
 //dprint ("plat_crush\n");
     if (other.classname == "detpack") {
         sprint (other.owner,PRINT_HIGH,"Your detpack was squashed.\n");
-        if ( (other.weaponmode == 1.000) ) {
+        if ( (other.weaponmode == 1) ) {
             TeamFortress_SetSpeed (other.enemy);
             dremove (other.observer_list);
         }
@@ -190,7 +190,7 @@ void plat_crush ()
         return;
     }
 	other.deathtype = "squish";
-    TF_T_Damage (other,self,self,1.000, 0.000, 0.000);
+    TF_T_Damage (other,self,self,1, 0, 0);
 
 	if (self.state == STATE_UP)
 		plat_go_down ();
@@ -225,7 +225,7 @@ Set "sounds" to one of the following:
 
 void func_plat ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -304,7 +304,7 @@ void train_blocked ()
 		return;
 	self.attack_finished = time + 0.5;
 	other.deathtype = "squish";
-    TF_T_Damage (other,self,self,self.dmg,0.000, 0.000);
+    TF_T_Damage (other,self,self,self.dmg,0, 0);
 }
 
 void train_use ()
@@ -370,7 +370,7 @@ sounds
 */
 void func_train ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -418,7 +418,7 @@ This is used for the final bos
 */
 void misc_teleporttrain ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }

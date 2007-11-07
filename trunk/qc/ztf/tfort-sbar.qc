@@ -62,7 +62,7 @@ void RefreshStatusBar () {
     Status_StartWrite();
     if (round_active) {
         if ((!self.ScannerOn)) {
-            if ((self.is_undercover != 2.000)) {
+            if ((self.is_undercover != 2)) {
                 te = find (te, classname, "round");
                 WriteSIntXXXX(te.cnt);
                 WriteByte (MSG_ONE, 58);
@@ -74,7 +74,7 @@ void RefreshStatusBar () {
             if (self.is_detpacking) {
                 WriteStr("setting BOMB");
                 num = stof(infokey (world,"bombarmtime"));
-                if (num < 1.000 || num >  10.000) num = 3.000;
+                if (num < 1 || num >  10) num = 3;
                 WriteBar (time - self.pausetime, num);
                 WriteSpace(13);
             }
@@ -83,7 +83,7 @@ void RefreshStatusBar () {
         Status_EndWrite();
         return;
     }
-    if (self.sbar_type & 4.000) {
+    if (self.sbar_type & 4) {
         //WriteSpace(23);
         WriteStr("SF:");
         WriteSIntXXXX (self.real_frags);
@@ -92,7 +92,7 @@ void RefreshStatusBar () {
         //WriteByte (MSG_ONE,10);
         WriteSpace(1);
     }
-    if (self.sbar_type & 8.000) {
+    if (self.sbar_type & 8) {
         //WriteSpace(23);
         WriteStr("DR:");
         WriteSIntXXXX (self.dmg_inflicted);
@@ -101,7 +101,7 @@ void RefreshStatusBar () {
         //WriteByte (MSG_ONE,10);
         WriteSpace(1);
     }
-    if (self.sbar_type & 16.000) {
+    if (self.sbar_type & 16) {
         //WriteSpace(23);
         WriteStr("FT:");
         WriteSIntXXXX (self.flag_touches);
@@ -110,18 +110,18 @@ void RefreshStatusBar () {
         WriteByte (MSG_ONE,10);
         //WriteSpace(1);
     }
-    if (self.sbar_type & 32.000) {
+    if (self.sbar_type & 32) {
         if (store_obs.cnt == 2) {
             te = find (world,classname,"item_tfgoal");
             while ((te != world) && (te.camdist != -1) && (te.team_no == self.pteam.team)) {
                 te = find (te, classname, "item_tfgoal");
             }
             //WriteSpace(23);
-            if ((te.owned_by == 1.000) && (te.nextthink - time > 0)) {
+            if ((te.owned_by == 1) && (te.nextthink - time > 0)) {
                 WriteStr("Blue Flag:");
                 WriteSIntXXXX (rint(te.nextthink - time));
             }
-            if ((te.owned_by == 2.000) && (te.nextthink - time > 0)) {
+            if ((te.owned_by == 2) && (te.nextthink - time > 0)) {
                 WriteStr(" Red Flag:");
                 WriteSIntXXXX (rint(te.nextthink - time));
             }
@@ -135,7 +135,7 @@ void RefreshStatusBar () {
         while ((te != world) && (te.owner != self)) {
             te = find (te, classname, "scanner");
         }
-        if ( (self.ScannerOn == 1.000) ) {
+        if ( (self.ScannerOn == 1) ) {
             x = 0;
             if (te.health > 0) {
                 WriteStr(Status_TeamNumToTeamString(te.pteam.team));
@@ -181,7 +181,7 @@ void RefreshStatusBar () {
             //W8C (_S,_e,_n,_t,_r,_y,dperiod,space);
             WriteSIntXXXX (te.health);
             x = x + 11;
-            if (!self.sbar_type & 1.000) {
+            if (!self.sbar_type & 1) {
                 if ((te.ammo_rockets == 0) && (te.ammo_shells == 0)) {
                     WriteStr(" no ammo");
                     x = x + 8;
@@ -214,7 +214,7 @@ void RefreshStatusBar () {
                 }
             }
         }
-        if ((self.has_dispenser) && (self.sbar_type & 1.000)) {
+        if ((self.has_dispenser) && (self.sbar_type & 1)) {
             newmis = find (world, classname, "building_dispenser");
             while ((newmis != world) && (newmis.real_owner != self))
                 newmis = find (newmis, classname, "building_dispenser");
@@ -252,7 +252,7 @@ void RefreshStatusBar () {
         return;
     }
 
-    if (!self.sbar_type & 1.000) {
+    if (!self.sbar_type & 1) {
 		// XXX: these first two were previously 128 and 256 which
 		// doesn't match WEAP_SHOTGUN and WEAP_SUPER_SHOTGUN, but
 		// SUPER_SHOTGUN and NAILGUN... a bug?
@@ -291,8 +291,8 @@ void RefreshStatusBar () {
 
 void Status_StartWrite () {
     float i;
-    if (self.sbar_type & 2.000) {
-        self.StatusRefreshTime = (time + 1.000);
+    if (self.sbar_type & 2) {
+        self.StatusRefreshTime = (time + 1);
         WriteByte (MSG_ONE, SVC_PRINT);
         WriteByte (MSG_ONE, PRINT_HIGH);
     } else {
@@ -302,17 +302,17 @@ void Status_StartWrite () {
 		{
 			if (self.b_b != string_null)
 			{
-				i = i - 1.000;
+				i = i - 1;
 				WriteStr(self.b_b);
 			}
 			if (self.b_t != string_null)
 			{
-				i = i - 1.000;
+				i = i - 1;
 				WriteStr(self.b_t);
 			}
 			if (self.b_n != string_null)
 			{
-				i = i - 1.000;
+				i = i - 1;
 				WriteStr(self.b_n);
 			}
 		}
@@ -478,7 +478,7 @@ void StatusBar_On () {
     if (self.StatusBarSize) {
 		self.StatusRefreshTime = (time + 0.100);
     } else {
-        self.StatusRefreshTime = (time + 60.000);
+        self.StatusRefreshTime = (time + 60);
 	}
 }
 
@@ -508,7 +508,7 @@ float Impulse2Res (float f) {
 
 
 void StatusRes (float res) {
-	self.last_impulse = 0.000;
+	self.last_impulse = 0;
 	if (!res) return;
 	self.StatusBarRes = Impulse2Res(res);
 	if ( (res == 9) ) {

@@ -34,14 +34,14 @@ entity CheckDuelWinner () {
         if (Player.playerclass) {
             if (!Player.deadflag) {
                 if (Player.health > 0) {
-                    totalp = totalp + 1.000;
+                    totalp = totalp + 1;
                     winner = Player;
                 }
             }
         }
         Player = Player.nextp;
     }
-    if (totalp == 1.000)  {
+    if (totalp == 1)  {
         return(winner);
     }
     if (!totalp) {
@@ -63,28 +63,28 @@ entity CheckWinner () {
     Player = player_head;
     while ( Player != world ) {
         if (Player.pteam.team) {
-            totalp = totalp + 1.000;
+            totalp = totalp + 1;
 
             if (Player.playerclass) {
                 if (!Player.deadflag) {
-                    nump = nump + 1.000;
+                    nump = nump + 1;
                     if (Player.pteam == pteam1)
-                        team1alive = (team1alive + 1.000);
+                        team1alive = (team1alive + 1);
 
                     if (Player.pteam == pteam2)
-                        team2alive = (team2alive + 1.000);
+                        team2alive = (team2alive + 1);
 
                     if (Player.pteam == pteam3)
-                        team3alive = (team3alive + 1.000);
+                        team3alive = (team3alive + 1);
 
                     if (Player.pteam == pteam4)
-                        team4alive = (team4alive + 1.000);
+                        team4alive = (team4alive + 1);
                 }
             }
         }
         Player = Player.nextp;
     }
-    if ((nump > 0.000) && (totalp > 1.000))  {
+    if ((nump > 0) && (totalp > 1))  {
         if (team1alive && !team2alive && !team3alive && !team4alive) {
             if (modetype & 4) {
                 Player = find (world,classname,"detpack");
@@ -125,9 +125,9 @@ void RoundOver () {
     } else {
         if (modetype & 32) {
             if (teamplay) {
-                if (round_winner.a_n == 1.000) {
+                if (round_winner.a_n == 1) {
                     round_winner.pteam = pteam1;
-                } else if (self.a_n == 2.000) {
+                } else if (self.a_n == 2) {
                     round_winner.pteam = pteam2;
                 }
                 st = infokey (round_winner,"bottomcolor");
@@ -145,17 +145,17 @@ void RoundOver () {
 
         } else if (round_winner.team == 1) {
             if (modetype & 4) {
-                sound (self,CHAN_VOICE,"speech/ctwin.wav",1.000,0.000);
+                sound (self,CHAN_VOICE,"speech/ctwin.wav",1,0);
                 bprint (PRINT_HIGH,"Counter Terrorists WIN!\n");
-                TeamFortress_TeamIncreaseScore (round_winner.team,10.000);
+                TeamFortress_TeamIncreaseScore (round_winner.team,10);
             } else {
                 bprint (PRINT_HIGH,"Blue Team Wins the Round!\n");
             }
         } else if (round_winner.team == 2) {
             if (modetype & 4) {
-                sound (self,CHAN_VOICE,"speech/terwin.wav",1.000,0.000);
+                sound (self,CHAN_VOICE,"speech/terwin.wav",1,0);
                 bprint (PRINT_HIGH,"Terrorists WIN!\n");
-                TeamFortress_TeamIncreaseScore (round_winner.team,10.000);
+                TeamFortress_TeamIncreaseScore (round_winner.team,10);
             } else {
                 bprint (PRINT_HIGH,"Red Team Wins the Round!\n");
             }
@@ -196,20 +196,20 @@ void RoundThink () {
     if (!TeamFortress_GetNoPlayers ()) {
 
         self.think = StartRound;
-        self.nextthink = time + 3.000;
+        self.nextthink = time + 3;
         return;
     }
     self.cnt2 = self.cnt2 - 0.5;
     if (self.cnt2 == -1) {
         // Calculate every 60 seconds.
-        self.cnt2 = 59.000;
+        self.cnt2 = 59;
         self.cnt = self.cnt - 1;
     }
     if (!self.cnt2) {
-        if ((self.cnt == 1.000) || (self.cnt == 5.000)) {
+        if ((self.cnt == 1) || (self.cnt == 5)) {
             tmp = ftos(self.cnt);
             bprint(PRINT_HIGH, "ê", tmp, "ë minute");
-            if (self.cnt != 1.000) bprint(PRINT_HIGH, "s");
+            if (self.cnt != 1) bprint(PRINT_HIGH, "s");
             bprint(PRINT_HIGH, " remaining\n");
         }
         if (!self.cnt) {
@@ -225,12 +225,12 @@ void RoundThink () {
 
         }
     }
-    if ((!self.cnt) && (self.cnt2 == 30.000 || self.cnt2 == 15.000 || self.cnt2 <= 10.000)) {
+    if ((!self.cnt) && (self.cnt2 == 30 || self.cnt2 == 15 || self.cnt2 <= 10)) {
         fl = ceil(self.cnt2);
         if (!(fl - self.cnt2)) {
             tmp = ftos(self.cnt2);
             bprint(PRINT_HIGH, "ê", tmp, "ë second");
-            if (self.cnt2 != 1.000) bprint(PRINT_HIGH, "s");
+            if (self.cnt2 != 1) bprint(PRINT_HIGH, "s");
             bprint(PRINT_HIGH, " remaining\n");
         }
     }
@@ -244,13 +244,13 @@ float tfs_givebomb () {
     te = player_head;
     while ( te != world) {
         if ((te.pteam == pteam2) && (te.playerclass)) {
-            counter = counter + 1.000;
+            counter = counter + 1;
         }
         te = te.nextp;
     }
-    if (counter == 1.000) {
+    if (counter == 1) {
         the_one = counter;
-    } else if (counter > 1.000) {
+    } else if (counter > 1) {
         the_one = ceil (random() * counter);
     }
     return (the_one);
@@ -265,7 +265,7 @@ void RoundBegin () {
     while ( te ) {
         oldself = self;
         self = te;
-        if (!(self.spawnflags & 1.000))
+        if (!(self.spawnflags & 1))
             self.use();
         te = self;
         self = oldself;
@@ -283,17 +283,17 @@ void RoundBegin () {
         if ( self.hook_out ) {
             Reset_Grapple (self.hook);
             Attack_Finished (0.750);
-            self.hook_out = 1.000;
+            self.hook_out = 1;
         }
         TeamFortress_RemoveTimers ();
         if (modetype & 32) {
             if (self.deadflag ) {
                 PutClientInServer() ;
             } else {
-                if ( (self.tfstate & 8.000) ) {
-                    self.tfstate = 8.000;
+                if ( (self.tfstate & 8) ) {
+                    self.tfstate = 8;
                 } else {
-                    self.tfstate = 0.000;
+                    self.tfstate = 0;
                 }
                 setmodel (self,string_null);
                 modelindex_null = self.modelindex;
@@ -301,23 +301,23 @@ void RoundBegin () {
                 modelindex_eyes = self.modelindex;
                 setmodel (self,"progs/player.mdl");
                 modelindex_player = self.modelindex;
-                self.takedamage = 2.000;
-                self.flags = 8.000;
-                self.air_finished = (time + 12.000);
-                self.dmg = 2.000;
-                self.super_damage_finished = 0.000;
-                self.radsuit_finished = 0.000;
-                self.invisible_finished = 0.000;
-                self.invincible_finished = 0.000;
-                self.effects = 0.000;
-                self.invincible_time = 0.000;
-                self.reload_shotgun = 0.000;
-                self.reload_super_shotgun = 0.000;
-                self.reload_grenade_launcher = 0.000;
-                self.reload_rocket_launcher = 0.000;
-                self.on_hook = 0.000;
-                self.hook_out = 0.000;
-                self.fire_held_down = 0.000;
+                self.takedamage = 2;
+                self.flags = 8;
+                self.air_finished = (time + 12);
+                self.dmg = 2;
+                self.super_damage_finished = 0;
+                self.radsuit_finished = 0;
+                self.invisible_finished = 0;
+                self.invincible_finished = 0;
+                self.effects = 0;
+                self.invincible_time = 0;
+                self.reload_shotgun = 0;
+                self.reload_super_shotgun = 0;
+                self.reload_grenade_launcher = 0;
+                self.reload_rocket_launcher = 0;
+                self.on_hook = 0;
+                self.hook_out = 0;
+                self.fire_held_down = 0;
                 TeamFortress_SetEquipment ();
                 TeamFortress_SetHealth ();
                 TeamFortress_SetSpeed (self);
@@ -328,13 +328,13 @@ void RoundBegin () {
             PutClientInServer ();
             if (modetype & 4) {
                 if ((self.pteam == pteam2) && (self.playerclass)) {
-                    counter = counter + 1.000;
+                    counter = counter + 1;
                     if ( counter == bomber) {
-                        self.ammo_detpack = 1.000;
+                        self.ammo_detpack = 1;
                         stuffcmd (self,"topcolor 0\n");
                         CenterPrint( self, "You have the bomb!\n");
-                        if (self.playerclass == 8.000) {
-                            self.is_unabletospy = 1.000;
+                        if (self.playerclass == 8) {
+                            self.is_unabletospy = 1;
                         }
                     }
                 }
@@ -349,18 +349,18 @@ void RoundBegin () {
     round_over = 0;
     if (modetype & 16) self.invisible_time = time;
     if (!self.cnt) {
-        self.cnt = 3.000;
-        self.cnt2 = 60.000;
+        self.cnt = 3;
+        self.cnt2 = 60;
     } else {
         counter = floor(self.cnt);
         if (counter < self.cnt) {
-            self.cnt2 = (self.cnt - counter) * 60.000;
+            self.cnt2 = (self.cnt - counter) * 60;
         } else {
-            self.cnt2 = 60.000;
+            self.cnt2 = 60;
         }
 
-        if (self.cnt2 == 60.000) {
-            self.cnt = self.cnt - 1.000;
+        if (self.cnt2 == 60) {
+            self.cnt = self.cnt - 1;
         } else {
             self.cnt = counter;
         }
@@ -374,8 +374,8 @@ void RoundInit () {
     float fl;
     entity p;
     fl = TeamFortress_NoTeams();
-    if (fl < 1.000) {
-        self.nextthink = time + 2.000;
+    if (fl < 1) {
+        self.nextthink = time + 2;
         return;
     }
     self.cnt2 = self.cnt2 - 1;
@@ -383,7 +383,7 @@ void RoundInit () {
         round_over = 2;
     }
     if (self.cnt2 == 1) {
-        self.nextthink = time + 1.000;
+        self.nextthink = time + 1;
         self.think = RoundBegin;
     }
     if (self.cnt2 <= 5) {
@@ -392,7 +392,7 @@ void RoundInit () {
         while (p) {
             if (p.netname != "") {
                 CenterPrint3(p,"Round begins in: ",num," second(s).\n");
-                cease_fire = 0.000;
+                cease_fire = 0;
                 if (modetype & 32) {
                     if (self.cnt2 == 3) {
                         stuffcmd (p, "play 3.wav\n");
@@ -408,7 +408,7 @@ void RoundInit () {
             p = p.nextp;
         }
     }
-    self.nextthink = time + 1.000;
+    self.nextthink = time + 1;
 }
 
 void StartRound () {
@@ -432,28 +432,28 @@ void StartRound () {
     round_over = 1;
     if (modetype & 32) {
         fl = TeamFortress_NoActiveTeams();
-        if (fl < 1.000 ) {
-            self.nextthink = (time + 3.000);
+        if (fl < 1 ) {
+            self.nextthink = (time + 3);
             return;
         }
-        if (fl == 1.000 ) {
-            self.weapon = self.weapon + 1.000;
-            if (self.weapon == 10.000)
+        if (fl == 1 ) {
+            self.weapon = self.weapon + 1;
+            if (self.weapon == 10)
                 bprint(PRINT_HIGH, "Waiting for challenger to join.\n");
-            self.nextthink = (time + 1.000);
+            self.nextthink = (time + 1);
             return;
         }
     } else {
         fl = TeamFortress_NoTeams();
-        if (fl < 1.000 ) {
-            self.nextthink = (time + 3.000);
+        if (fl < 1 ) {
+            self.nextthink = (time + 3);
             return;
         }
-        if (fl == 1.000 ) {
-            self.weapon = self.weapon + 1.000;
-            if (self.weapon == 10.000)
+        if (fl == 1 ) {
+            self.weapon = self.weapon + 1;
+            if (self.weapon == 10)
                 bprint(PRINT_HIGH, "Scoring will not start until more teams join.\n");
-            self.nextthink = (time + 1.000);
+            self.nextthink = (time + 1);
             return;
         }
     }
@@ -468,5 +468,5 @@ void StartRound () {
     st = infokey (world,"round_time");
     self.cnt = stof(st);
     self.think = RoundInit;
-    self.nextthink = time + 2.000;
+    self.nextthink = time + 2;
 }

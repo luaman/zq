@@ -117,8 +117,8 @@ void ShowFrags (entity print) {
     sprint (print, PRINT_HIGH, "\n");
     te = player_head;
     while (te) {
-        if (te.real_frags <= 0.000) {
-            eff = 0.000;
+        if (te.real_frags <= 0) {
+            eff = 0;
         } else {
             eff = (te.real_frags / (te.real_frags + te.deaths)) * 100;
             eff = rint(eff);
@@ -354,8 +354,8 @@ void ShowStats () {
     sprint (self, PRINT_HIGH, " Deaths:     ", st,"\n");
     st = ftos(self.teamkills);
     sprint (self, PRINT_HIGH, " Teamkills:  ", st,"\n");
-    if (self.real_frags <= 0.000) {
-        eff = 0.000;
+    if (self.real_frags <= 0) {
+        eff = 0;
     } else {
         eff = (self.real_frags / (self.real_frags + self.deaths)) * 100;
         eff = rint(eff);
@@ -507,9 +507,9 @@ void TimeDown (float t) {
     string tmp;
     float lowest;
     float tl;
-    lowest = 0.000;
+    lowest = 0;
     tl = (timelimit / 60) - t;
-    if (tl < 1.000) {
+    if (tl < 1) {
         tl = lowest;
     }
     tmp = ftos(tl);
@@ -523,7 +523,7 @@ void TimeUp (float t) {
     string tmp;
     float highest;
     float tl;
-    highest = 70.000;
+    highest = 70;
     tl = (timelimit / 60) + t;
     if (tl > highest) {
         tl = highest;
@@ -539,7 +539,7 @@ void MiscTimeDown (float t, string option) {
     string tmp;
     float lowest;
     float ml;
-    lowest = 0.000;
+    lowest = 0;
     tmp = infokey (world, option);
     ml = stof(tmp) - t;
     if (ml < lowest) ml = lowest;
@@ -561,7 +561,7 @@ void MiscTimeUp (float t, string option) {
     string tmp;
     float highest;
     float ml;
-    highest = 15.000;
+    highest = 15;
     tmp = infokey (world, option);
     ml = stof(tmp);
     ml = ml + t;
@@ -595,37 +595,37 @@ void FragLimit (float add) {
 void ChangeTP () {
     string tmp;
     string desc;
-    if (teamplay ==  1.000) {
-        teamplay = 11.000;
+    if (teamplay ==  1) {
+        teamplay = 11;
         tmp = "11?TeamFortress";
         desc = "Team-members inflict half damamge.\n";
     } else {
-        if (teamplay ==  11.000) {
-            teamplay = 13.000;
+        if (teamplay ==  11) {
+            teamplay = 13;
             tmp = "13?TeamFortress";
             desc = "Team-members take half damage from area effects, No damage from direct fire.\n";
         } else {
-            if (teamplay == 13.000) {
-                teamplay = 19.000;
+            if (teamplay == 13) {
+                teamplay = 19;
                 tmp = "19?TeamFortress";
                 desc = "Team-members take half damage from direct fire.\n";
             } else {
-                if (teamplay == 19.000) {
-                    teamplay = 21.000;
+                if (teamplay == 19) {
+                    teamplay = 21;
                     tmp = "21?TeamFortress";
                     desc = "Team-members inflicts armor damage only.\n";
                 } else {
-                    if (teamplay == 21.000) {
-                        teamplay = 641.000;
+                    if (teamplay == 21) {
+                        teamplay = 641;
                         tmp = "641?TeamFortress";
                         desc = "Team-members inflict half damage to armor.\n";
                     } else {
-                        if (teamplay == 641.000) {
-                            teamplay = 1301.000;
+                        if (teamplay == 641) {
+                            teamplay = 1301;
                             tmp = "1301?TeamFortress";
                             desc = "Team-members inflict no damage.\n";
                         } else {
-                            teamplay = 1.000;
+                            teamplay = 1;
                             tmp = "1?TeamFortress";
                             desc = "Teamplay On\n";
                         }
@@ -671,10 +671,10 @@ void ToggleSpecTalk () {
 
 void GroundSpeed () {
     string desc;
-    if (gspeed == 0.000) {
-        gspeed = 1.000;
+    if (gspeed == 0) {
+        gspeed = 1;
         desc = "Maximum Ground Speed set to maximum Class Speed.";
-    } else if (gspeed ==  1.000) {
+    } else if (gspeed ==  1) {
         gspeed = 1.250;
         desc = "Maximum Ground Speed set to 1.25 times the maximum Class Speed.";
     } else if (gspeed ==  1.250) {
@@ -684,10 +684,10 @@ void GroundSpeed () {
         gspeed = 1.750;
         desc = "Maximum Ground Speed set to 1.75 times the maximum Class Speed.";
     } else if (gspeed ==  1.750) {
-        gspeed = 2.000;
+        gspeed = 2;
         desc = "Maximum Ground Speed set to 2 times the maximum Class Speed.";
     } else {
-        gspeed = 0.000;
+        gspeed = 0;
         desc = "Ground Speed Normal.";
     }
     bprint(PRINT_HIGH, " ",  desc,"\n");
@@ -935,17 +935,17 @@ void Toggle_flag_emu () {
     string st;
     float fl;
     fl = stof(infokey (world,"flag_model"));
-    if (fl == 0.000) {
-        fl = 1.000;
+    if (fl == 0) {
+        fl = 1;
         st = "TF Flag.";
-    } else if (fl == 1.000) {
-        fl = 2.000;
+    } else if (fl == 1) {
+        fl = 2;
         st = "TF Standard.";
-    } else if (fl == 2.000) {
-        fl = 3.000;
+    } else if (fl == 2) {
+        fl = 3;
         st = "CTF Flag.";
     } else {
-        fl = 0.000;
+        fl = 0;
         st = "Map default.";
     }
     localcmd("localinfo flag_model ");
@@ -1004,10 +1004,10 @@ void Toggle_SentryFire () {
     fl = stof(st);
     if ( (fl < 1) || (fl > 2) ) {
         st = "Lightning";
-        sentry_fire = 1.000;
+        sentry_fire = 1;
     } else if (fl == 1) {
         st = "Laser";
-        sentry_fire = 2.000;
+        sentry_fire = 2;
     } else {
         st = "Normal";
         sentry_fire = 0;
@@ -1061,29 +1061,29 @@ void Toggle_Lighting () {
 
 void Give_Quad () {
     if (!self.playerclass || self.deadflag) return;
-    sound (self,2.000,"items/damage.wav",1.000,1.000);
+    sound (self,2,"items/damage.wav",1,1);
     stuffcmd (self,"bf\n");
-    self.items = (self.items | 4194304.000);
-    self.super_time = 1.000;
-    self.super_damage_finished = (time + 300.000);
+    self.items = (self.items | 4194304);
+    self.super_time = 1;
+    self.super_damage_finished = (time + 300);
 }
 
 void Give_Eyes () {
     if (!self.playerclass || self.deadflag) return;
-    sound (self,2.000,"items/inv1.wav",1.000,1.000);
+    sound (self,2,"items/inv1.wav",1,1);
     stuffcmd (self,"bf\n");
-    self.items = (self.items | 524288.000);
-    self.invisible_time = 1.000;
-    self.invisible_finished = (time + 30.000);
+    self.items = (self.items | 524288);
+    self.invisible_time = 1;
+    self.invisible_finished = (time + 30);
 }
 
 void Give_Pent () {
     if (!self.playerclass || self.deadflag) return;
-    sound (self,2.000,"items/protect.wav",1.000,1.000);
+    sound (self,2,"items/protect.wav",1,1);
     stuffcmd (self,"bf\n");
-    self.items = (self.items | 1048576.000);
-    self.invincible_time = 1.000;
-    self.invincible_finished = (time + 300.000);
+    self.items = (self.items | 1048576);
+    self.invincible_time = 1;
+    self.invincible_finished = (time + 300);
 }
 
 void AbortMiscVote () {
@@ -1116,7 +1116,7 @@ void AgreeMiscVote () {
     if (self.allowvote > time) {
         return;
     }
-    self.allowvote = time + 3.000;
+    self.allowvote = time + 3;
     if (self.mvote) {
         bprint(PRINT_HIGH, self.netname, " χιτθδςαχσ ");
         if (infokey(self, "gender") == "f") bprint(PRINT_HIGH, "θες ");
@@ -1133,18 +1133,18 @@ void AgreeMiscVote () {
     if (v_misc >= f2) {
         mv = find(world, classname, "miscvote");
         if (mv.classname == "miscvote") {
-            if (mv.weapon == 1.000) {
+            if (mv.weapon == 1) {
                 localcmd("map ");
                 localcmd(mv.netname);
                 localcmd("\n");
-            } else if (mv.weapon == 2.000) {
+            } else if (mv.weapon == 2) {
                 Toggle_Misc(mv.netname);
             }
             AbortMiscVote();
             return;
         }
     }
-    if ( v_misc != 0.000 ) {
+    if ( v_misc != 0 ) {
         f1 = f2 - v_misc;
         tmp = ftos(f1);
         bprint(PRINT_HIGH, "", tmp, "‘ more vote");
@@ -1172,7 +1172,7 @@ void PlayerMiscVote (string Misc, float type) {
         sprint (self, PRINT_HIGH, "You cannot vote at this time.\n");
         return;
     }
-    if (self.mvote == 2.000) {
+    if (self.mvote == 2) {
         bprint(PRINT_HIGH, self.netname, " χιτθδςαχσ ");
         if (infokey(self, "gender") == "f") bprint(PRINT_HIGH, "θες ");
         else bprint(PRINT_HIGH, "θισ ");
@@ -1214,20 +1214,20 @@ void PlayerMiscVote (string Misc, float type) {
     f1 = TeamFortress_GetNoPlayers ();
     f2 = (floor(f1 / 2)) + 1;
     if (v_misc >= f2) {
-        if (type == 1.000) {
+        if (type == 1) {
             localcmd("map ");
             localcmd(Misc);
             localcmd("\n");
-        } else if (type == 2.000) {
+        } else if (type == 2) {
             Toggle_Misc(Misc);
         }
-        v_misc = 0.000;
-        self.mvote = 0.000;
+        v_misc = 0;
+        self.mvote = 0;
         dremove (miscvote);
         return;
     }
     sprint (self, PRINT_HIGH, "Type cmd abort, to abort vote\n");
-    if ( v_misc != 0.000 ) {
+    if ( v_misc != 0 ) {
         f1 = f2 - v_misc;
         st = ftos(f1);
         bprint(PRINT_HIGH, "", tmp, "‘ more vote");
@@ -1252,19 +1252,19 @@ void RandomPickup () {
         sprint (self,PRINT_HIGH, "Teamplay is not set.\n");
         return;
     }
-    if (store_obs.cnt != 2.000) {
+    if (store_obs.cnt != 2) {
         sprint (self,PRINT_HIGH, "This command can only be used with 2 teams.\n");
         return;
     }
-    fl2 = 1.000000;
-    fl3 = 0.000000;
-    fl4 = 0.000000;
+    fl2 = 1;
+    fl3 = 0;
+    fl4 = 0;
     fl = TeamFortress_GetNoPlayers  ();
-    if ((fl < 3.000000)) {
+    if ((fl < 3)) {
         sprint (self,PRINT_HIGH, "You need at least 3 players to do this\n");
         return;
     }
-    fl3 = fl / 2.000000;
+    fl3 = fl / 2;
     te = player_head;
     while (te) {
         if ((te.netname != "")) {
@@ -1278,10 +1278,10 @@ void RandomPickup () {
                     te.pteam = pteam1;
                 } else {
                     if ((fl5 < 0.500000)) {
-                        fl6 =  fl6 + 1.000;
+                        fl6 =  fl6 + 1;
                         te.pteam = pteam1;
                     } else {
-                        fl7 = fl7 + 1.000;
+                        fl7 = fl7 + 1;
                         te.pteam = pteam2;
                     }
                 }
@@ -1329,14 +1329,14 @@ void ToggleSpecMsgs () {
 
 void unpause_player (entity p) {
     msg_entity = p;
-    WriteByte (1.000000, 24.000000);
-    WriteByte (1.000000, 0.000000);
+    WriteByte (1, 24);
+    WriteByte (1, 0);
 }
 
 void pause_player (entity p) {
     msg_entity = p;
-    WriteByte (1.000000, 24.000000);
-    WriteByte (1.000000, 1.000000);
+    WriteByte (1, 24);
+    WriteByte (1, 1);
 }
 
 void PausePlayers () {

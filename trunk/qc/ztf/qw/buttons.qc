@@ -84,14 +84,14 @@ void button_touch ()
     if (other.classname != "player")
         return;
 
-    if ( (self.goal_activation & 8.000) ) {
+    if ( (self.goal_activation & 8) ) {
         return ;
     }
     if ( (!other.playerclass ) ) {
         return ;
     }
     if ( !Activated (self,other) ) {
-        if ( (self.else_goal != 0.000) ) {
+        if ( (self.else_goal != 0) ) {
             te = Findgoal (self.else_goal);
             if ( te ) {
                 AttemptToActivate (te,other,self);
@@ -105,7 +105,7 @@ void button_touch ()
 
 void button_killed ()
 {
-    if ( (self.goal_activation & 8.000) ) {
+    if ( (self.goal_activation & 8) ) {
         return;
     }
     self.enemy = damage_attacker;
@@ -132,7 +132,7 @@ When a button is touched, it moves some distance in the direction of its angle, 
 */
 void func_button ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }

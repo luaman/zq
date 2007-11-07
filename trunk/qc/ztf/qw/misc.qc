@@ -84,7 +84,7 @@ void light ()
 
 void light_spot ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -92,9 +92,9 @@ void light_spot ()
         dremove (self);
         return ;
     }
-    if ( (self.style >= 32.000) ) {
+    if ( (self.style >= 32) ) {
         self.use = light_use;
-        if ( (self.spawnflags & 1.000) ) {
+        if ( (self.spawnflags & 1) ) {
             lightstyle (self.style,"a");
         } else {
             lightstyle (self.style,"m");
@@ -104,7 +104,7 @@ void light_spot ()
 
 void light_environment ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -112,9 +112,9 @@ void light_environment ()
         dremove (self);
         return ;
     }
-    if ( (self.style >= 32.000) ) {
+    if ( (self.style >= 32) ) {
         self.use = light_use;
-        if ( (self.spawnflags & 1.000) ) {
+        if ( (self.spawnflags & 1) ) {
             lightstyle (self.style,"a");
         } else {
             lightstyle (self.style,"m");
@@ -131,7 +131,7 @@ Makes steady fluorescent humming sound
 */
 void light_fluoro ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -156,7 +156,7 @@ Makes sparking, broken fluorescent sound
 */
 void light_fluorospark ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -174,7 +174,7 @@ Default style is 0
 */
 void light_globe ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -197,12 +197,12 @@ Default style is 0
 */
 void light_torch_small_walltorch ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
     if ( !self.style ) {
-        self.style = 8.000;
+        self.style = 8;
     }
 	precache_model ("progs/flame.mdl");
 	setmodel (self, "progs/flame.mdl");
@@ -215,12 +215,12 @@ Large yellow flame ball
 */
 void light_flame_large_yellow ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
     if ( !self.style ) {
-        self.style = 7.000;
+        self.style = 7;
     }
 	precache_model ("progs/flame2.mdl");
 	setmodel (self, "progs/flame2.mdl");
@@ -234,12 +234,12 @@ Small yellow flame ball
 */
 void light_flame_small_yellow ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
     if ( !self.style ) {
-        self.style = 3.000;
+        self.style = 3;
     }
 	precache_model ("progs/flame2.mdl");
 	setmodel (self, "progs/flame2.mdl");
@@ -252,12 +252,12 @@ Small white flame ball
 */
 void light_flame_small_white ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
     if ( !self.style ) {
-        self.style = 3.000;
+        self.style = 3;
     }
 	precache_model ("progs/flame2.mdl");
 	setmodel (self, "progs/flame2.mdl");
@@ -277,7 +277,7 @@ void fire_touch ();
 
 void misc_fireball ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -316,7 +316,7 @@ void fire_fly ()
 void fire_touch ()
 {
     if ( other.takedamage ) {
-        TF_T_Damage (other,self,self,20.000,0.000,16.000);
+        TF_T_Damage (other,self,self,20,0,16);
     }
     dremove (self);
 }
@@ -349,7 +349,7 @@ void misc_explobox ()
 {
 	float	oldz;
 
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -386,7 +386,7 @@ void misc_explobox2 ()
 {
 	float	oldz;
 
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -511,7 +511,7 @@ Laser is only for REGISTERED.
 
 void trap_spikeshooter ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -531,12 +531,12 @@ void trap_spikeshooter ()
 
 /*QUAKED trap_shooter (0 .5 .8) (-8 -8 -8) (8 8 8) superspike laser
 Continuously fires spikes.
-"wait" time between spike (1.0 default)
+"wait" time between spike (1 default)
 "nextthink" delay before firing first spike, so multiple shooters can be stagered.
 */
 void trap_shooter ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -698,7 +698,7 @@ This is just a solid wall if not inhibitted
 */
 void func_wall ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -715,7 +715,7 @@ A simple entity that looks solid but lets you walk through it.
 */
 void func_illusionary ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -732,7 +732,7 @@ This bmodel will appear if the episode has already been completed, so players ca
 void func_episodegate ()
 
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -752,7 +752,7 @@ This bmodel appears unless players have all of the episode sigils.
 void func_bossgate ()
 
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -770,7 +770,7 @@ void func_bossgate ()
 */
 void ambient_suck_wind ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -782,7 +782,7 @@ void ambient_suck_wind ()
 */
 void ambient_drone ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -794,7 +794,7 @@ void ambient_drone ()
 */
 void ambient_flouro_buzz ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -805,7 +805,7 @@ void ambient_flouro_buzz ()
 */
 void ambient_drip ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -816,7 +816,7 @@ void ambient_drip ()
 */
 void ambient_comp_hum ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -827,7 +827,7 @@ void ambient_comp_hum ()
 */
 void ambient_thunder ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -838,7 +838,7 @@ void ambient_thunder ()
 */
 void ambient_light_buzz ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -849,7 +849,7 @@ void ambient_light_buzz ()
 */
 void ambient_swamp1 ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -860,7 +860,7 @@ void ambient_swamp1 ()
 */
 void ambient_swamp2 ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -870,12 +870,12 @@ void ambient_swamp2 ()
 
 void ambient_play ()
 {
-    sound (self, 2.000, self.message, 1.000,0.000);
+    sound (self, 2, self.message, 1,0);
 }
 
 void ambient_generic ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -883,7 +883,7 @@ void ambient_generic ()
         precache_sound (self.message);
     self.use = ambient_play;
     if (!self.targetname) {
-        ambientsound (self.origin,self.message,1.000,3.000);
+        ambientsound (self.origin,self.message,1,3);
     }
 }
 
@@ -908,7 +908,7 @@ For optimzation testing, starts a lot of sounds.
 
 void misc_noisemaker ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }

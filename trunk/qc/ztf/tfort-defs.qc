@@ -357,7 +357,7 @@ float already_chosen_map;
 .float StatusRefreshTime;
 .float StatusBarSize;
 .float StatusBarRes;
-//.float mapcount /* = 100.000 */;
+//.float mapcount /* = 100 */;
 
 float holdlimit;
 //pm_speed
@@ -491,9 +491,9 @@ float autokick_kills;
 float deathmsg;
 string nextmap /* = "" */;
 
-float intermission_running /* = 0.000 */;
+float intermission_running /* = 0 */;
 
-float intermission_exittime /* = 0.000 */;
+float intermission_exittime /* = 0 */;
 vector	VEC_HULL_MIN;
 vector	VEC_HULL_MAX;
 vector	VEC_HULL2_MIN;
@@ -513,24 +513,24 @@ float SetPlayerStat31(float def) {
 
 void KickPlayer (float psize, entity p) {
     msg_entity = p;
-    /*
-       dprint(ftos(p.angles_x));
-       dprint("\n");
-       if (p.angles_x > 0) {
-       p.angles_x = p.angles_x  + (psize * 2);
-       } else {
-       p.angles_x = p.angles_x * -1 + (psize * 2);
-       }
-       p.angles_z = p.angles_z;
-       p.angles_y = p.angles_y;
-       p.fixangle = 1.000;
-    //fixme fucks csqc angle
-    if ( (psize > -3.000) ) {
-    WriteByte (1.000,34.000);
-    } else {
-    WriteByte (1.000,35.000);
-    }
-     */
+#if 0
+	dprint(ftos(p.angles_x));
+	dprint("\n");
+	if (p.angles_x > 0) {
+		p.angles_x = p.angles_x  + (psize * 2);
+	} else {
+		p.angles_x = p.angles_x * -1 + (psize * 2);
+	}
+	p.angles_z = p.angles_z;
+	p.angles_y = p.angles_y;
+	p.fixangle = 1;
+	// FIXME fucks csqc angle
+	if ( (psize > -3) ) {
+		WriteByte (1,34);
+	} else {
+		WriteByte (1,35);
+	}
+#endif
 }
 
 const float WEAP_HOOK                = 1;

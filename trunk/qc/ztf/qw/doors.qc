@@ -59,7 +59,7 @@ void door_blocked ()
 {
     if ( (other.classname == "detpack") ) {
         sprint (other.owner,PRINT_HIGH,"Your detpack was squashed.\n");
-        if ( (other.weaponmode == 1.000) ) {
+        if ( (other.weaponmode == 1) ) {
             TeamFortress_SetSpeed (other.enemy);
             dremove (other.observer_list);
         }
@@ -94,7 +94,7 @@ void door_hit_top ()
 
 void door_hit_bottom ()
 {
-    self.goal_state = 2.000;
+    self.goal_state = 2;
     sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise1, 1, ATTN_NORM);
     self.state = STATE_BOTTOM;
 }
@@ -217,7 +217,7 @@ void door_trigger_touch ()
         return;
 
     if ( !Activated (self,other) ) {
-        if ( (self.else_goal != 0.000) ) {
+        if ( (self.else_goal != 0) ) {
             te = Findgoal (self.else_goal);
             if ( te ) {
                 AttemptToActivate (te,other,self);
@@ -515,7 +515,7 @@ Key doors are always wait -1.
 
 void func_door ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -645,7 +645,7 @@ const float DOOR_X_AXIS       = 64;
 const float DOOR_Y_AXIS       = 128;
 
 void func_door_rotating () {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }
@@ -698,11 +698,11 @@ void func_door_rotating () {
         self.noise2 = "doors/ddoor1.wav";
     }
     if (self.spawnflags & DOOR_X_AXIS)
-        self.movedir_z = 1.0;
+        self.movedir_z = 1;
     else if (self.spawnflags & DOOR_Y_AXIS)
-        self.movedir_x = 1.0;
+        self.movedir_x = 1;
     else // Z_AXIS
-        self.movedir_y = 1.0;
+        self.movedir_y = 1;
     // check for reverse rotation
     if (self.spawnflags & DOOR_REVERSE)
         self.movedir = '0 0 0' - self.movedir;
@@ -796,7 +796,7 @@ void fd_secret_use ()
 	if (self.origin != self.oldorigin)
 		return;
 
-    if (self.spawnflags & 32.000)
+    if (self.spawnflags & 32)
         return ;
 
 	self.message = "";             // no more message
@@ -842,7 +842,7 @@ void fd_secret_use ()
 // Wait after first movement...
 void fd_secret_move1 ()
 {
-	self.nextthink = self.ltime + 1.0;
+	self.nextthink = self.ltime + 1;
     self.think = fd_secret_move2;
 	sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 }
@@ -875,7 +875,7 @@ void fd_secret_move4 ()
 // Wait 1 second...
 void fd_secret_move5 ()
 {
-	self.nextthink = self.ltime + 1.0;
+	self.nextthink = self.ltime + 1;
     self.think = fd_secret_move6;
 	sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
 }
@@ -922,7 +922,7 @@ void secret_touch ()
 		return;
 	if (self.attack_finished > time)
 		return;
-    if (self.spawnflags & 32.000)
+    if (self.spawnflags & 32)
         return ;
 	self.attack_finished = time + 2;
 
@@ -953,7 +953,7 @@ If a secret door has a targetname, it will only be opened by its button or trigg
 
 void func_door_secret ()
 {
-    if ( (CheckExistence () == 0.000) ) {
+    if ( (CheckExistence () == 0) ) {
         dremove (self);
         return ;
     }

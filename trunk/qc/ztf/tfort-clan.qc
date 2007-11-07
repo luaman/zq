@@ -86,7 +86,7 @@ void MatchOvertime () {
     float f2;
     string st;
     if (cease_fire ) {
-        self.nextthink = time + 1.000;
+        self.nextthink = time + 1;
         return ;
     }
     if (TeamFortress_CheckDraw()) {
@@ -98,7 +98,7 @@ void MatchOvertime () {
             return;
         }
         f2 = stof(st);
-        if (( f2 > 0.000 )) {
+        if (( f2 > 0 )) {
             if (self.cnt2 <= (f2 * 60)) {
                 self.think = MatchOvertime;
                 self.nextthink = time + 1;
@@ -147,21 +147,21 @@ void ResetAll () {
         if ( self.hook_out ) {
             Reset_Grapple (self.hook);
             Attack_Finished (0.750);
-            self.hook_out = 1.000;
+            self.hook_out = 1;
         }
-        self.menu_count = 25.000;
-        self.current_menu = 1.000;
+        self.menu_count = 25;
+        self.current_menu = 1;
         TeamFortress_ThrowGrenade ();
         TeamFortress_RemoveTimers ();
         if (modetype & 64) {
             ShowFrags(self);
         }
-        if ( (self.playerclass == 9.000) ) {
+        if ( (self.playerclass == 9) ) {
             Engineer_RemoveBuildings(self);
         }
         if (modetype & 4) {
             if ((self.pteam == pteam2) && (self.playerclass)) {
-                self.ammo_detpack = 0.000;
+                self.ammo_detpack = 0;
                 stuffcmd (self,"topcolor ");
                 stuffcmd (self,ftos(self.pteam.colormap));
                 stuffcmd (self,"\n");
@@ -184,7 +184,7 @@ void ResetAll () {
     }
     te = find (world,classname,"detpack");
     while ( te ) {
-        if ( (te.weaponmode == 1.000) ) {
+        if ( (te.weaponmode == 1) ) {
             TeamFortress_SetSpeed (te.enemy);
             dremove (te.oldenemy);
             dremove (te.observer_list);
@@ -198,7 +198,7 @@ void ResetAll () {
         if ( (te.origin != te.oldorigin) ) {
             oldself = spawn ();
             oldself.enemy = te;
-            oldself.weapon = 3.000;
+            oldself.weapon = 3;
             oldself.nextthink = (time + 0.200);
             oldself.think = ReturnItem;
         }
@@ -228,7 +228,7 @@ void MatchThink () {
         return;
     }
     if (cease_fire ) {
-        self.nextthink = time + 1.000;
+        self.nextthink = time + 1;
         return ;
     }
     self.cnt2 = self.cnt2 - 1;
@@ -238,7 +238,7 @@ void MatchThink () {
     }
     if (self.cnt2 == -1) {
         // Calculate every 60 seconds.
-        self.cnt2 = 59.000;
+        self.cnt2 = 59;
         self.cnt = self.cnt - 1;
         localcmd("serverinfo status \"");
         tmp = ftos(self.cnt);
@@ -246,19 +246,19 @@ void MatchThink () {
         localcmd(" min left\"\n");
     }
     if (!self.cnt2) {
-        if (self.cnt == 5.000) {
+        if (self.cnt == 5) {
             PlaySoundAll("speech/5_minute.wav");
             tmp = ftos(self.cnt);
             bprint(PRINT_HIGH, "Р", tmp, "С minute's remaining\n");
         }
-        if (self.cnt == 1.000) {
+        if (self.cnt == 1) {
             PlaySoundAll("speech/1_minute.wav");
             tmp = ftos(self.cnt);
             bprint(PRINT_HIGH, "Р", tmp, "С minute remaining\n");
         }
         if (!self.cnt) {
             if (modetype & 64) {
-                if (store_obs.count < 2.000) {
+                if (store_obs.count < 2) {
                     pmtime = stof(infokey (world,"prematch"));
                     if (!pmtime)     pmtime = stof( infokey (world,"cft"));
                     ResetAll();
@@ -273,7 +273,7 @@ void MatchThink () {
             if (( stof(tmp) )) {
                 if (TeamFortress_CheckDraw()) {
                     bprint(PRINT_HIGH,"Draw, overtime set.\n Golden Cap WINS!!!\n");
-                    self.cnt2 = 0.000;
+                    self.cnt2 = 0;
                     MatchOvertime();
                     self.cnt = -1;
                     return;
@@ -285,13 +285,13 @@ void MatchThink () {
             return;
         }
     }
-    if ((!self.cnt) && (self.cnt2 == 30.000 || self.cnt2 == 15.000 || self.cnt2 <= 10.000)) {
+    if ((!self.cnt) && (self.cnt2 == 30 || self.cnt2 == 15 || self.cnt2 <= 10)) {
         tmp = ftos(self.cnt2);
         bprint(PRINT_HIGH, "Р", tmp, "С second");
-        if (self.cnt2 != 1.000) bprint(PRINT_HIGH, "s");
+        if (self.cnt2 != 1) bprint(PRINT_HIGH, "s");
         bprint(PRINT_HIGH, " remaining\n");
     }
-    self.nextthink = time + 1.000;
+    self.nextthink = time + 1;
 }
 
 void StartMatch () {
@@ -300,9 +300,9 @@ void StartMatch () {
     entity te;
     entity oldself;
     entity gren;
-    lightstyle (0.000,"m");
+    lightstyle (0,"m");
     bprint (PRINT_HIGH,"MATCH BEGINS NOW\n");
-    store_obs.count = store_obs.count + 1.000;
+    store_obs.count = store_obs.count + 1;
     Initialise_Teams();
     te = player_head;
     while ( te ) {
@@ -311,12 +311,12 @@ void StartMatch () {
         if ( self.hook_out ) {
             Reset_Grapple (self.hook);
             Attack_Finished (0.750);
-            self.hook_out = 1.000;
+            self.hook_out = 1;
         }
         TeamFortress_RemoveTimers ();
         if (!modetype & 64) {
-            self.frags = 0.000;
-            self.real_frags = 0.000;
+            self.frags = 0;
+            self.real_frags = 0;
         }
         setspawnparms (self);
         PutClientInServer ();
@@ -338,24 +338,24 @@ void StartMatch () {
         gren = find (gren,classname,"grenade");
     }
     freeze = 0;
-    cb_prematch = 0.000;
-    cease_fire = 0.000;
+    cb_prematch = 0;
+    cease_fire = 0;
     te = find(world, classname, "prematch");
     te.classname = "match";
     te.cnt = (timelimit / 60);
-    te.cnt2 = 60.000;
+    te.cnt2 = 60;
     if ( te.cnt == 0 ) {
         bprint (PRINT_HIGH,"Warning no timelimit set!\n");
         localcmd("\nserverinfo status \"0 min left\"\n");
-        te.cnt = -1.000;
-        te.cnt2 = -1.000;
+        te.cnt = -1;
+        te.cnt2 = -1;
     } else {
         f1 = floor(self.cnt);
         if (f1 < te.cnt) {
-            te.cnt2 = (te.cnt - f1) * 60.000;
+            te.cnt2 = (te.cnt - f1) * 60;
         }
-        if (te.cnt2 == 60.000) {
-            te.cnt = te.cnt - 1.000;
+        if (te.cnt2 == 60) {
+            te.cnt = te.cnt - 1;
         } else {
             te.cnt = f1;
         }
@@ -364,7 +364,7 @@ void StartMatch () {
         localcmd(st);
         localcmd(" min left\"\n");
         te.think = MatchThink;
-        te.nextthink = time + 1.000;
+        te.nextthink = time + 1;
     }
     st = infokey(world, "spectalk");
     f2 = stof(st);
@@ -384,7 +384,7 @@ void StartMatch () {
         oldself = spawn();
         oldself.owner = world;
         oldself.classname = "round";
-        oldself.nextthink = (time + 1.000);
+        oldself.nextthink = (time + 1);
         oldself.think = StartRound;
     }
 }
@@ -398,7 +398,7 @@ void PreMatch_Think () {
         p = player_head;
         while (p != world) {
             if (p.netname != "") {
-                p.respawn_time = (time + 2.000);
+                p.respawn_time = (time + 2);
                 //set to ghost 1 second before matchstart
                 p.takedamage = 0;
                 p.solid = 0;
@@ -436,11 +436,11 @@ void PreMatch_Think () {
     }
     if (self.cnt2 <= 10) {
         if (self.cnt2 == 10) {
-            lightstyle (0.000,"e");
+            lightstyle (0,"e");
             if ((infokey(world, "status") != "Countdown")) {
                 localcmd("serverinfo status Countdown\n");
             }
-            if (stof(infokey(world, "demo_auto_left")) > 0.000) {
+            if (stof(infokey(world, "demo_auto_left")) > 0) {
                 AutoRecord();
             }
         }
@@ -451,7 +451,7 @@ void PreMatch_Think () {
                 //WriteByte(2,26);
                 CenterPrint3(p,"Countdown ",num,"\n");
                 if (self.cnt2 < 6) {
-                    cease_fire = 0.000;
+                    cease_fire = 0;
                     stuffcmd (p, "play buttons/switch04.wav\n");
                     /* Fte Extension
                        st = infokey (world, "*version");
@@ -491,7 +491,7 @@ void StartTimer () {
         }
         return;
     }
-    if (( modetype & 1) && (cb_prematch == 0.000)) {
+    if (( modetype & 1) && (cb_prematch == 0)) {
         if (self != world) {
             sprint (self, PRINT_HIGH, "Clan Battle in progress....\n");
             sprint (self, PRINT_HIGH, "Type break to stop the current battle.\n");
@@ -532,11 +532,11 @@ void StartTimer () {
     if (pmtime) {
         timer.cnt2 = rint(pmtime * 60);
         if (timer.cnt2 < 1 ) {
-            timer.cnt2 = 1.000;
+            timer.cnt2 = 1;
         }
     } else {
-        lightstyle (0.000,"e");
-        if (stof(infokey(world, "demo_auto_left")) > 0.000) {
+        lightstyle (0,"e");
+        if (stof(infokey(world, "demo_auto_left")) > 0) {
             AutoRecord();
         }
         localcmd("serverinfo status Countdown\n");
@@ -547,7 +547,7 @@ void StartTimer () {
         }
         timer.cnt2 = rint(stof(infokey(world, "count")));
         if (timer.cnt2 < 1 ) {
-            timer.cnt2 = 0.000;
+            timer.cnt2 = 0;
         }
     }
     timer.cnt2 = timer.cnt2 + 1;
@@ -570,7 +570,7 @@ void StopTimer () {
             t = find(t, classname, "prematch");
         }
         localcmd("serverinfo status Standby\n");
-        lightstyle (0.000,"m");
+        lightstyle (0,"m");
         return;
     }
     t = find(world, classname, "match");
@@ -606,7 +606,7 @@ void PlayerBreak () {
     if (self.allowvote > time) {
         return;
     }
-    self.allowvote = time + 3.000;
+    self.allowvote = time + 3;
     if (self.bvote) {
         bprint(PRINT_HIGH, self.netname, " чйфидтбчу ");
         if (infokey(self, "gender") == "f") bprint(PRINT_HIGH, "иет ");
@@ -634,7 +634,7 @@ void PlayerBreak () {
         StopTimer();
         return;
     }
-    if ( v_break != 0.000 ) {
+    if ( v_break != 0 ) {
         f1 = f2 - v_break;
         tmp = ftos(f1);
         bprint(PRINT_HIGH, "Р", tmp, "С more vote");
@@ -657,7 +657,7 @@ void RemoveVotes () {
         v_misc = v_misc - 1;
     }
     if (elect) {
-        if (self.is_admin == 2.000) {
+        if (self.is_admin == 2) {
             bprint(PRINT_HIGH, self.netname, " aborts election!");
             bprint(PRINT_CHAT, "\n");
             AbortElect();
