@@ -21,9 +21,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // nonintel.c: code for non-Intel processors only
 //
 
-#include "common.h"
+#include "q_shared.h"
 
 #if	!id386
+
+extern "C" {
 
 /*
 ================
@@ -64,6 +66,8 @@ void Sys_HighFPPrecision (void)
 void Sys_LowFPPrecision (void)
 {
 }
+
+} // extern "C"
 
 #endif	// !id386
 

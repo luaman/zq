@@ -519,7 +519,9 @@ int MipColor(int r, int g, int b)
 }
 
 // from gl_draw.c
-EXTERNC extern byte		*draw_chars;				// 8*8 graphic characters
+EXTERNC_START
+extern byte		*draw_chars;				// 8*8 graphic characters
+EXTERNC_END
 
 void R_DrawCharToSnap (int num, byte *dest, int width)
 {

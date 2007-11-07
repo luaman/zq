@@ -47,7 +47,9 @@ typedef struct
 									//  NULL
 } viddef_t;
 
-EXTERNC extern	viddef_t	vid;				// global video state
+EXTERNC_START
+extern	viddef_t	vid;				// global video state
+EXTERNC_END
 
 extern void (*vid_menudrawfn)(void);
 extern void (*vid_menukeyfn)(int key);

@@ -1552,7 +1552,7 @@ void CL_LerpPlayers ()
 	for (i=0, pplayer = predicted_players; i < MAX_CLIENTS; i++, pplayer++)
 	{
 		vec3_t viewangles, velocity;
-
+		player_state_t *state;
 //		if (!pplayer->active)
 //			continue;
 		if (!frame->playerstate_valid[i]) {
@@ -1566,7 +1566,7 @@ void CL_LerpPlayers ()
 			continue;
 		}
 
-		player_state_t *state = &frame->playerstate[i];
+		state = &frame->playerstate[i];
 
 		if (!cls.demoplayback && i == cl.playernum)
 			continue;

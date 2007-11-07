@@ -34,9 +34,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define NUMVERTEXNORMALS	162
 
 // also used in cl_effects.c
-EXTERNC float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
+EXTERNC_START
+float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 #include "anorms.h"
 };
+EXTERNC_END
 
 static vec3_t	shadevector;
 static float	shadescale = 0;

@@ -578,6 +578,7 @@ void R_Draw_Init (void)
 	draw_disc = R_CachePic_impl ("disc", true, false);
 }
 
+#ifdef _WIN32
 static void CreateFontBitmap (int base, int slot) {
 	extern HDC maindc;
 
@@ -654,6 +655,7 @@ static void CreateFontBitmap (int base, int slot) {
 	char_textures[slot] = tex;
 	char_range[slot] = base;
 }
+#endif
 
 EXTERNC qbool R_CharAvailable (wchar num)
 {
@@ -816,8 +818,10 @@ static byte *StringToRGB(char *s) {
 	return rgb;
 }
 
-EXTERNC extern vrect_t scr_vrect;
-EXTERNC extern cvar_t crosshaircolor;
+EXTERNC_START
+extern vrect_t scr_vrect;
+extern cvar_t crosshaircolor;
+EXTERNC_END
 void R_DrawCrosshair (int num, int crossx, int crossy)
 {
 	int		x, y;

@@ -217,7 +217,9 @@ void COM_ForceExtension (char *path, char *extension);
 
 //============================================================================
 
-EXTERNC extern int fs_filesize;
+EXTERNC_START
+extern int fs_filesize;
+EXTERNC_END
 struct cache_user_s;
 
 extern char	com_gamedir[MAX_OSPATH];

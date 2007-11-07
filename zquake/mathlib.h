@@ -49,7 +49,9 @@ typedef struct mplane_s
 } mplane_t;
 
 
-EXTERNC extern vec3_t vec3_origin;
+EXTERNC_START
+extern vec3_t vec3_origin;
+EXTERNC_END
 
 #define DEG2RAD( a ) ( ( (a) * M_PI ) / 180.0f )
 #define RAD2DEG( a ) ( ( (a) * 180.0f ) / M_PI )

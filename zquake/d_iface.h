@@ -91,7 +91,9 @@ extern int		r_framecount;		// sequence # of current frame since Quake
 extern float	r_aliasuvscale;		// scale-up factor for screen u and v
 									//  on Alias vertices passed to driver
 extern int		r_pixbytes;
-EXTERNC extern qbool	r_dowarp;
+EXTERNC_START
+extern qbool	r_dowarp;
+EXTERNC_END
 
 extern affinetridesc_t	r_affinetridesc;
 extern spritedesc_t		r_spritedesc;
@@ -176,7 +178,9 @@ extern float	skyshift;
 
 extern int		c_surf;
 
-EXTERNC extern byte		r_warpbuffer[WARP_WIDTH * WARP_HEIGHT];
+EXTERNC_START
+extern byte		r_warpbuffer[WARP_WIDTH * WARP_HEIGHT];
+EXTERNC_END
 
 #endif /* _D_IFACE_H_ */
 
