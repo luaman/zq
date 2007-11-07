@@ -184,9 +184,9 @@ void()  player_shot4 =  [$shotatt4, player_shot5        ] {self.weaponframe=4;}
 void()  player_shot5 =  [$shotatt5, player_shot6        ] {self.weaponframe=5;}
 void()  player_shot6 =  [$shotatt6, player_run  ] {self.weaponframe=6;}
 
-void() player_autorifle1 = [ 113, player_autorifle2 ] {self.weaponframe=1;muzzleflash();}
-void() player_autorifle2 = [ 114, player_autorifle3 ] {self.weaponframe=2;}
-void() player_autorifle3 = [ 118, player_run ] {self.weaponframe = 6;}
+void() player_autorifle1 = [ $shotatt1, player_autorifle2 ] {self.weaponframe=1;muzzleflash();}
+void() player_autorifle2 = [ $shotatt2, player_autorifle3 ] {self.weaponframe=2;}
+void() player_autorifle3 = [ $shotatt6, player_run ] {self.weaponframe = 6;}
 
 void()  player_axe1 =   [$axatt1, player_axe2   ] {self.weaponframe=1;}
 void()  player_axe2 =   [$axatt2, player_axe3   ] {self.weaponframe=2;}
@@ -233,11 +233,11 @@ void()  player_axed3 =  [$axattd3, player_axed4 ] {self.weaponframe=7;
 }
 void()  player_axed4 =  [$axattd4, player_run   ] {self.weaponframe=8;}
 
-void() player_chain1 = [ 137, player_chain1a ] {self.weaponframe=1;Throw_Grapple();}
-void() player_chain1a = [ 137, player_chain2 ] {self.weaponframe=2;} 
-void() player_chain2 = [ 138, player_chain2a ] {self.weaponframe=3;}
-void() player_chain2a = [ 138, player_chain3 ] {self.weaponframe=4;}
-void() player_chain3 = [ 139, player_chain3 ] {self.weaponframe=6;
+void() player_chain1 = [ $axattd1, player_chain1a ] {self.weaponframe=1;Throw_Grapple();}
+void() player_chain1a = [ $axattd1, player_chain2 ] {self.weaponframe=2;} 
+void() player_chain2 = [ $axattd2, player_chain2a ] {self.weaponframe=3;}
+void() player_chain2a = [ $axattd2, player_chain3 ] {self.weaponframe=4;}
+void() player_chain3 = [ $axattd3, player_chain3 ] {self.weaponframe=6;
     if ( !self.hook_out ) {
         player_chain5 ();
         return;
@@ -247,7 +247,7 @@ void() player_chain3 = [ 139, player_chain3 ] {self.weaponframe=6;
         return;
     }
 }
-void() player_chain4 = [ 73, player_chain4 ] { self.weaponframe=6;
+void() player_chain4 = [ $deathc4, player_chain4 ] { self.weaponframe=6;
     if ( !self.hook_out ) {
         player_chain5 ();
         return;
@@ -257,27 +257,27 @@ void() player_chain4 = [ 73, player_chain4 ] { self.weaponframe=6;
         return;
     }
 }
-void() player_chain5 = [ 140, player_run ] { self.weaponframe=0;}
+void() player_chain5 = [ $axattd4, player_run ] { self.weaponframe=0;}
 
-void() player_medikit1 = [ 119, player_medikit2 ] {self.weaponframe=1;}
-void() player_medikit2 = [ 120, player_medikit3 ] {self.weaponframe=2;}
-void() player_medikit3 = [ 121, player_medikit4 ] {self.weaponframe=3;W_FireMedikit();}
-void() player_medikit4 = [ 122, player_run ] {self.weaponframe=4;}
+void() player_medikit1 = [ $axatt1, player_medikit2 ] {self.weaponframe=1;}
+void() player_medikit2 = [ $axatt2, player_medikit3 ] {self.weaponframe=2;}
+void() player_medikit3 = [ $axatt3, player_medikit4 ] {self.weaponframe=3;W_FireMedikit();}
+void() player_medikit4 = [ $axatt4, player_run ] {self.weaponframe=4;}
 
-void() player_medikitb1 = [ 125, player_medikitb2 ] {self.weaponframe=5;}
-void() player_medikitb2 = [ 126, player_medikitb3 ] {self.weaponframe=6;}
-void() player_medikitb3 = [ 127, player_medikitb4 ] {self.weaponframe=7;W_FireMedikit();}
-void() player_medikitb4 = [ 128, player_run ] {self.weaponframe=8;}
+void() player_medikitb1 = [ $axattb1, player_medikitb2 ] {self.weaponframe=5;}
+void() player_medikitb2 = [ $axattb2, player_medikitb3 ] {self.weaponframe=6;}
+void() player_medikitb3 = [ $axattb3, player_medikitb4 ] {self.weaponframe=7;W_FireMedikit();}
+void() player_medikitb4 = [ $axattb4, player_run ] {self.weaponframe=8;}
 
-void() player_medikitc1 = [ 131, player_medikitc2 ] {self.weaponframe=1;}
-void() player_medikitc2 = [ 132, player_medikitc3 ] {self.weaponframe=2;}
-void() player_medikitc3 = [ 133, player_medikitc4 ] {self.weaponframe=3;W_FireMedikit();}
-void() player_medikitc4 = [ 134, player_run ] {self.weaponframe=4;}
+void() player_medikitc1 = [ $axattc1, player_medikitc2 ] {self.weaponframe=1;}
+void() player_medikitc2 = [ $axattc2, player_medikitc3 ] {self.weaponframe=2;}
+void() player_medikitc3 = [ $axattc3, player_medikitc4 ] {self.weaponframe=3;W_FireMedikit();}
+void() player_medikitc4 = [ $axattc4, player_run ] {self.weaponframe=4;}
 
-void() player_medikitd1 = [ 137, player_medikitd2 ] {self.weaponframe=5;}
-void() player_medikitd2 = [ 138, player_medikitd3 ] {self.weaponframe=6;}
-void() player_medikitd3 = [ 139, player_medikitd4 ] {self.weaponframe=7;W_FireMedikit();}
-void() player_medikitd4 = [ 140, player_run ] {self.weaponframe=8;}
+void() player_medikitd1 = [ $axattd1, player_medikitd2 ] {self.weaponframe=5;}
+void() player_medikitd2 = [ $axattd2, player_medikitd3 ] {self.weaponframe=6;}
+void() player_medikitd3 = [ $axattd3, player_medikitd4 ] {self.weaponframe=7;W_FireMedikit();}
+void() player_medikitd4 = [ $axattd4, player_run ] {self.weaponframe=8;}
 
 //============================================================================
 
@@ -317,7 +317,7 @@ void() player_nail2   =[$nailatt2, player_nail1  ]
 
 //============================================================================
 
-void() player_assaultcannonup1 = [ 103, player_assaultcannonup2 ] {
+void() player_assaultcannonup1 = [ $nailatt1, player_assaultcannonup2 ] {
     if ( ((!self.button0 || (self.ammo_shells < 1)) || intermission_running)) {
         //self.tfstate = (self.tfstate - (self.tfstate & 2048));
         if (classtype & 2)
@@ -349,7 +349,7 @@ void() player_assaultcannonup1 = [ 103, player_assaultcannonup2 ] {
     }
 }
 
-void() player_assaultcannonup2 = [ 103, player_assaultcannonup1 ] {
+void() player_assaultcannonup2 = [ $nailatt1, player_assaultcannonup1 ] {
     if ( ((!self.button0 || (self.ammo_shells < 1)) || intermission_running) || (!(self.flags & 512))  ) {
         self.tfstate = (self.tfstate - (self.tfstate & 2048));
         if (classtype & 2) {
@@ -381,7 +381,7 @@ void() player_assaultcannonup2 = [ 103, player_assaultcannonup1 ] {
     }
 }
 
-void() player_assaultcannon1 = [ 103, player_assaultcannon2 ] {
+void() player_assaultcannon1 = [ $nailatt1, player_assaultcannon2 ] {
     string st;
     if ( (!(classtype & 2) && (self.speed < 150)) || ((classtype & 2) && (self.speed < 50))  ) {
         muzzleflash ();
@@ -428,7 +428,7 @@ void() player_assaultcannon1 = [ 103, player_assaultcannon2 ] {
     Attack_Finished (0.100);
 }
 
-void() player_assaultcannon2 = [ 104, player_assaultcannon1 ] {
+void() player_assaultcannon2 = [ $nailatt2, player_assaultcannon1 ] {
     if (classtype & 2)
         stuffcmd (self, "v_idlescale 0\n");
     if ( (!(classtype & 2) && (self.speed < 135)) || ((classtype & 2) && (self.speed < 20))  ) {
@@ -463,7 +463,7 @@ void() player_assaultcannon2 = [ 104, player_assaultcannon1 ] {
     Attack_Finished (0.100);
 }
 
-void() player_assaultcannondown1 = [ 103, player_assaultcannondown1 ] {
+void() player_assaultcannondown1 = [ $nailatt1, player_assaultcannondown1 ] {
     //entity tcool;
     if (self.flags & 512) {
         if ( (self.count == 1) ) {

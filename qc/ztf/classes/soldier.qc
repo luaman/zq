@@ -70,7 +70,7 @@ void NailGrenadeExplode () {
     }
     self.no_active_nail_grens = self.owner.no_active_nail_grens;
     self.velocity = '0 0 0';
-    self.movetype = 5.000;
+    self.movetype = MOVETYPE_FLY;
     pos = pointcontents (self.origin + '0.000 0.000 32.000');
     if ( ((pos == -2.000) || (pos == -6.000)) ) {
         pos = pointcontents (self.origin - '0.000 0.000 32.000');
@@ -107,6 +107,7 @@ void NailGrenadeLaunchNail () {
         self.angles_z = 0.000;
         makevectors (self.angles);
         deathmsg = 9.000;
+		// XXX: identical branches?
         if (modetype & 256) {
             launch_spike (self.origin,v_forward);
             newmis.touch = superspike_touch;
