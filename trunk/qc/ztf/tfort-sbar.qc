@@ -28,7 +28,6 @@
 void Status_StartWrite ();
 
 void Status_EndWrite ();
-//merc skillz!~
 
 void WriteStr (string str);
 
@@ -66,7 +65,7 @@ void RefreshStatusBar () {
             if ((self.is_undercover != 2.000)) {
                 te = find (te, classname, "round");
                 WriteSIntXXXX(te.cnt);
-                WriteByte (1, 58);
+                WriteByte (MSG_ONE, 58);
                 WriteSIntXXXX(te.cnt2);
                 WriteSpace(4);
             }
@@ -90,7 +89,7 @@ void RefreshStatusBar () {
         WriteSIntXXXX (self.real_frags);
         WriteStr(" SD:");
         WriteSIntXXXX (self.deaths);
-        //WriteByte (1,10);
+        //WriteByte (MSG_ONE,10);
         WriteSpace(1);
     }
     if (self.sbar_type & 8.000) {
@@ -99,7 +98,7 @@ void RefreshStatusBar () {
         WriteSIntXXXX (self.dmg_inflicted);
         WriteStr(" DT:");
         WriteSIntXXXX (self.dmg_recieved);
-        //WriteByte (1,10);
+        //WriteByte (MSG_ONE,10);
         WriteSpace(1);
     }
     if (self.sbar_type & 16.000) {
@@ -108,7 +107,7 @@ void RefreshStatusBar () {
         WriteSIntXXXX (self.flag_touches);
         WriteStr(" FC:");
         WriteSIntXXXX (self.flag_captures);
-        WriteByte (1,10);
+        WriteByte (MSG_ONE,10);
         //WriteSpace(1);
     }
     if (self.sbar_type & 32.000) {
@@ -126,12 +125,12 @@ void RefreshStatusBar () {
                 WriteStr(" Red Flag:");
                 WriteSIntXXXX (rint(te.nextthink - time));
             }
-            WriteByte (1,10);
+            WriteByte (MSG_ONE,10);
         }
     } else if (self.stamina && allow_stamina) {
         WriteStr("stamina: ");
         WriteBar (self.stamina, 1000);
-    } else if (self.playerclass == 1) { //scout
+    } else if (self.playerclass == CLASS_SCOUT) {
         te = find (world,netname,"scanner");
         while ((te != world) && (te.owner != self)) {
             te = find (te, classname, "scanner");
@@ -153,12 +152,12 @@ void RefreshStatusBar () {
             WriteStr("Range: ");
             WriteSIntXXXX(te.health);
         }
-    } else if (self.playerclass == 4) { // demoman
+    } else if (self.playerclass == CLASS_DEMOMAN) {
         if (self.is_detpacking) {
             WriteStr("setting detpack");
             WriteSpace(15);
         }
-    } else if (self.playerclass == 8) {
+    } else if (self.playerclass == CLASS_SPY) {
         if (self.is_undercover)
             if (self.is_undercover == 2) {
                 WriteStr("going undercover ");
@@ -172,7 +171,7 @@ void RefreshStatusBar () {
                 if (x)
                     WriteSpace(30-x);
             }
-    } else if (self.playerclass == 9) {
+    } else if (self.playerclass == CLASS_ENGINEER) {
         x = 0;
         if (self.has_sentry) {
             te = find (world, classname, "building_sentrygun");
@@ -196,25 +195,26 @@ void RefreshStatusBar () {
                     WriteStr(" damaged");
                     x = x + 8;
                 }
-                //				else if ((te.ammo_shells != te.maxammo_shells) || ((te.ammo_rockets != te.maxammo_rockets) && (te.weapon == 3)))
-                //				{
-                //				 	W8C (space,_n,_o,_t,space,_f,_u,_l);
-                //					WriteByte (1, _l);
-                //					x = x + 9;
-                //				}
+#if 0
+				else if ((te.ammo_shells != te.maxammo_shells) || ((te.ammo_rockets != te.maxammo_rockets) && (te.weapon == 3)))
+				{
+					W8C (space,_n,_o,_t,space,_f,_u,_l);
+					WriteByte (MSG_ONE, _l);
+					x = x + 9;
+				}
+#endif
             } else {
-                WriteByte (1,47);
+                WriteByte (MSG_ONE,47);
                 WriteSIntXXXX(te.ammo_shells);
                 x = x + 4;
                 if (te.weapon == 3) {
-                    WriteByte (1,47);
+                    WriteByte (MSG_ONE,47);
                     WriteSIntXXXX(te.ammo_rockets);
                     x = x + 3;
                 }
             }
         }
         if ((self.has_dispenser) && (self.sbar_type & 1.000)) {
-
             newmis = find (world, classname, "building_dispenser");
             while ((newmis != world) && (newmis.real_owner != self))
                 newmis = find (newmis, classname, "building_dispenser");
@@ -224,16 +224,14 @@ void RefreshStatusBar () {
         }
         if ((x >= 0) && (x < 35))
             WriteSpace(35-x);
-    } else if (self.playerclass == 5) {
+    } else if (self.playerclass == CLASS_MEDIC) {
         WriteStr("Medikit: ");
         WriteSIntXXXX (self.ammo_medikit);
         WriteSpace(19);
     }
 
-    WriteByte (1,10);
+    WriteByte (MSG_ONE,10);
 
-    // else
-    //{
     if (store_obs.cnt == 2) {
         WriteStr("Blue:");
         WriteSIntXXXX (pteam1.frags);
@@ -241,38 +239,42 @@ void RefreshStatusBar () {
         WriteSIntXXXX (pteam2.frags);
     } else {
         WriteSIntXXXX (pteam1.frags);
-        WriteByte(1,47);
+        WriteByte (MSG_ONE,47);
         WriteSIntXXXX (pteam2.frags);
-        WriteByte(1,47);
+        WriteByte (MSG_ONE,47);
         WriteSIntXXXX (pteam3.frags);
-        WriteByte(1,47);
+        WriteByte (MSG_ONE,47);
         WriteSIntXXXX (pteam4.frags);
     }
-    // }
 
-    if ( (self.playerclass == 11.000) ) {
-
+    if ( (self.playerclass == CLASS_CIVILIAN) ) {
         Status_EndWrite();
         return;
     }
+
     if (!self.sbar_type & 1.000) {
-        if (self.current == 128) {
-            if ((8 - self.reload_shotgun) > self.ammo_shells) // fixme: ???
+		// XXX: these first two were previously 128 and 256 which
+		// doesn't match WEAP_SHOTGUN and WEAP_SUPER_SHOTGUN, but
+		// SUPER_SHOTGUN and NAILGUN... a bug?
+        if (self.current == WEAP_SHOTGUN) {
+            if ((8 - self.reload_shotgun) > self.ammo_shells) // FIXME: ???
                 self.reload_shotgun = (8 - self.ammo_shells);
             num =(8 - self.reload_shotgun);
-        } else if (self.current == 256) {
+        } else if (self.current == WEAP_SUPER_SHOTGUN) {
             if ((16 - self.reload_super_shotgun) > self.ammo_shells)
                 self.reload_super_shotgun = (16 - self.ammo_shells);
             num =(16 - self.reload_super_shotgun);
-        } else if (self.current == 2048) {
+        } else if (self.current == WEAP_GRENADE_LAUNCHER || self.current == WEAP_PIPEBOMB_LAUNCHER) {
             if ((6 - self.reload_grenade_launcher) > self.ammo_rockets)
                 self.reload_grenade_launcher = (6 - self.ammo_rockets);
             num =(6 - self.reload_grenade_launcher);
-        } else if (self.current == 8192) {
+        } else if (self.current == WEAP_ROCKET_LAUNCHER) {
             if ((4 - self.reload_rocket_launcher) > self.ammo_rockets)
                 self.reload_rocket_launcher = (4 - self.ammo_rockets);
             num =(4 - self.reload_rocket_launcher);
-        } else	num = -1;
+        } else	{
+			num = -1;
+		}
         if (num >= 0) {
             //clip
             WriteStr("  √Ã…–∫");
@@ -291,31 +293,30 @@ void Status_StartWrite () {
     float i;
     if (self.sbar_type & 2.000) {
         self.StatusRefreshTime = (time + 1.000);
-        WriteByte (1,8);		// start print
-        WriteByte (1,2);		// high channel
+        WriteByte (MSG_ONE, SVC_PRINT);
+        WriteByte (MSG_ONE, PRINT_HIGH);
     } else {
-
-        WriteByte (1,26);		// start centerprint
-        /*
-           if (time < self.CenterPrintTime)
-           {
-           if (self.b_b != string_null)
-           {
-           i = i - 1.000;
-           WriteStr(self.b_b);
-           }
-           if (self.b_t != string_null)
-           {
-           i = i - 1.000;
-           WriteStr(self.b_t);
-           }
-           if (self.b_n != string_null)
-           {
-           i = i - 1.000;
-           WriteStr(self.b_n);
-           }
-           }
-         */
+        WriteByte (MSG_ONE, SVC_CENTERPRINT);
+#if 0
+		if (time < self.CenterPrintTime)
+		{
+			if (self.b_b != string_null)
+			{
+				i = i - 1.000;
+				WriteStr(self.b_b);
+			}
+			if (self.b_t != string_null)
+			{
+				i = i - 1.000;
+				WriteStr(self.b_t);
+			}
+			if (self.b_n != string_null)
+			{
+				i = i - 1.000;
+				WriteStr(self.b_n);
+			}
+		}
+#endif
         self.StatusRefreshTime = (time + 1.500);
         i = self.StatusBarRes  + self.StatusBarSize;
         if (self.sbar_type & 4) {
@@ -331,7 +332,7 @@ void Status_StartWrite () {
             i = i - 1;
         }
         while (i > 0) {
-            WriteByte (1, 10);  		// = \n
+            WriteByte (MSG_ONE, 10); // = \n
             i = i - 1;
         }
     }
@@ -360,7 +361,7 @@ void WriteBar (float v, float vmax) {
         WriteShort (1, rled*256 + rled);
     } else {
         WriteSpace(7);
-        WriteByte (1, rled);
+        WriteByte (MSG_ONE, rled);
     }
 }
 
@@ -377,7 +378,7 @@ void WriteStr (string str) {
 	*/
     if (i == len - 1) {
         nwstr = substr(str , i , 1);
-        WriteByte(1,str2byte(nwstr));
+        WriteByte (MSG_ONE,str2byte(nwstr));
     }
 }
 
@@ -389,7 +390,7 @@ void WriteRep (float f1, float len) {
     }
 	*/
     if (i == len - 1) {
-        WriteByte(1,f1);
+        WriteByte (MSG_ONE,f1);
     }
 }
 
@@ -399,37 +400,37 @@ void WriteIntXXXX (float f, float c) {
 
     if (f >= 100000) {
         y = floor(f/100000);
-        WriteByte(1,y + c);
+        WriteByte (MSG_ONE,y + c);
         f = f - y * 100000;
         print = 1;
     }
     if (f >= 10000 || print) {
         y = floor(f/10000);
-        WriteByte(1,y + c);
+        WriteByte (MSG_ONE,y + c);
         f = f - y * 10000;
         print = 1;
     }
     if (f >= 1000 || print) {
         y = floor(f/1000);
-        WriteByte(1,y + c);
+        WriteByte (MSG_ONE,y + c);
         f = f - y * 1000;
         print = 1;
     }
     if (f >= 100 || print) {
         y = floor(f/100);
-        WriteByte(1,y + c);
+        WriteByte (MSG_ONE,y + c);
         f = f - y * 100;
         print = 1;
     }
     if (f >= 10 || print) {
         y = floor(f/10);
-        WriteByte (1,y + c);
+        WriteByte (MSG_ONE,y + c);
         f = f - y * 10;
-        WriteByte (1,f + c);
+        WriteByte (MSG_ONE,f + c);
 
     } else {
-        WriteByte (1, 32);
-        WriteByte (1,f + c);
+        WriteByte (MSG_ONE, 32);
+        WriteByte (MSG_ONE,f + c);
     }
 
 }
@@ -444,43 +445,41 @@ void WriteSIntXXXX (float f) {
     f = 0 - f;
 
     if (f > 99) {
-        WriteByte (1, 45 + 128);
+        WriteByte (MSG_ONE, 45 + 128);
         WriteIntXXXX(i, COLOR_WHITE);
         return;
     }
     if (f > 9) {
-        WriteByte (1, 32);
-        WriteByte (1, 45 + 128);
+        WriteByte (MSG_ONE, 32);
+        WriteByte (MSG_ONE, 45 + 128);
         WriteIntXXXX(i,COLOR_WHITE);
         return;
     }
 
-    WriteByte (1, 32);
-    WriteByte (1, 45);
-    WriteByte (1, i + 48);
-    WriteByte (1, 32);
+    WriteByte (MSG_ONE, 32);
+    WriteByte (MSG_ONE, 45);
+    WriteByte (MSG_ONE, i + 48);
+    WriteByte (MSG_ONE, 32);
 }
 
 void WriteSpace (float i) {
     while (i) {
-        WriteByte(1, 32);
+        WriteByte (MSG_ONE, 32);
         i = i - 1;
     }
 }
 
 void Status_EndWrite () {
-    WriteByte (1, 0);		// will put some more code later :)
+    WriteByte (MSG_ONE, 0);		// TODO: merc will put some more code later :)
 }
 
 
 void StatusBar_On () {
-    if (!self.StatusBarSize) {
-        self.StatusRefreshTime = (time + 60.000);
+    if (self.StatusBarSize) {
+		self.StatusRefreshTime = (time + 0.100);
     } else {
-        if (self.StatusBarSize)
-            self.StatusRefreshTime = (time + 0.100);
-
-    }
+        self.StatusRefreshTime = (time + 60.000);
+	}
 }
 
 // END status bar
@@ -509,44 +508,28 @@ float Impulse2Res (float f) {
 
 
 void StatusRes (float res) {
-    self.last_impulse = 0.000;
-    if (!res) return;
-    self.StatusBarRes = Impulse2Res(res);
-    if ( (res == 9) ) {
-        sprint (self,PRINT_HIGH,"Status Bar Res set to 1024x768.\n");
-    } else {
-        if ( (res == 8) ) {
-            sprint (self,PRINT_HIGH,"Status Bar Res set to 800x600.\n");
-        } else {
-            if ( (res == 7) ) {
-                sprint (self,PRINT_HIGH,"Status Bar Res set to 640x480.\n");
-            } else {
-                if ( (res == 6) ) {
-                    sprint (self,PRINT_HIGH,"Status Bar Res set to 640x400.\n");
-                } else {
-                    if ( (res == 5) ) {
-                        sprint (self,PRINT_HIGH,"Status Bar Res set to 512x384.\n");
-                    } else {
-                        if ( (res == 4) ) {
-                            sprint (self,PRINT_HIGH,"Status Bar Res set to 320x350.\n");
-                        } else {
-                            if ( (res == 3) ) {
-                                sprint (self,PRINT_HIGH,"Status Bar Res set to 400x300.\n");
-                            } else {
-                                if ( (res == 2) ) {
-                                    sprint (self,PRINT_HIGH,"Status Bar Res set to 320x240.\n");
-                                } else {
-                                    if ( (res == 1) ) {
-                                        sprint (self,PRINT_HIGH,"Status Bar Res set to 320x200.\n");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	self.last_impulse = 0.000;
+	if (!res) return;
+	self.StatusBarRes = Impulse2Res(res);
+	if ( (res == 9) ) {
+		sprint (self,PRINT_HIGH,"Status Bar Res set to 1024x768.\n");
+	} else if ( (res == 8) ) {
+		sprint (self,PRINT_HIGH,"Status Bar Res set to 800x600.\n");
+	} else if ( (res == 7) ) {
+		sprint (self,PRINT_HIGH,"Status Bar Res set to 640x480.\n");
+	} else if ( (res == 6) ) {
+		sprint (self,PRINT_HIGH,"Status Bar Res set to 640x400.\n");
+	} else if ( (res == 5) ) {
+		sprint (self,PRINT_HIGH,"Status Bar Res set to 512x384.\n");
+	} else if ( (res == 4) ) {
+		sprint (self,PRINT_HIGH,"Status Bar Res set to 320x350.\n");
+	} else if ( (res == 3) ) {
+		sprint (self,PRINT_HIGH,"Status Bar Res set to 400x300.\n");
+	} else if ( (res == 2) ) {
+		sprint (self,PRINT_HIGH,"Status Bar Res set to 320x240.\n");
+	} else if ( (res == 1) ) {
+		sprint (self,PRINT_HIGH,"Status Bar Res set to 320x200.\n");
+	}
 }
 
 void CenterPrint (entity pl, string s1) {

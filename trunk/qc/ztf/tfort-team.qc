@@ -105,47 +105,42 @@ float PTeamGetMaxPlayers (float tno) {
     }
     return ( 0.000 );
 }
-/*
-   string GetTeamName (float tno) {
-   string st;
-   if (self.classname == "player") {
-   if (!self.playerclass) {
-   return ( "observe" );
 
-   }
-   }
-   if ( (tno == 1.000) ) {
-   st = infokey (world,"team1");
-   if ((st == string_null)) {
-   return ( "blue" );
-   }
-   } else {
-   if ( (tno == 2.000) ) {
-   st = infokey (world,"team2");
-   if ( (st == string_null) ) {
-   return ( "red" );
-   }
-   } else {
-   if ( (tno == 3.000) ) {
-   st = infokey (world,"team3");
-   if ( (st == string_null) ) {
-   return ( "yell" );
-   }
-   } else {
-   if ( (tno == 4.000) ) {
-   st = infokey (world,"team4");
-   if ( (st == string_null) ) {
-   return ( "gren" );
-   }
-   } else {
-   st = "\"\"";
-   }
-   }
-   }
-   }
-   return ( st );
-   };
- */
+#if 0
+string GetTeamName (float tno) {
+	string st;
+	if (self.classname == "player") {
+		if (!self.playerclass) {
+			return "observe";
+		}
+	}
+	if ( (tno == 1.000) ) {
+		st = infokey (world,"team1");
+		if ((st == string_null)) {
+			return ( "blue" );
+		}
+	} else if ( (tno == 2.000) ) {
+		st = infokey (world,"team2");
+		if ( (st == string_null) ) {
+			return ( "red" );
+		}
+	} else if ( (tno == 3.000) ) {
+		st = infokey (world,"team3");
+		if ( (st == string_null) ) {
+			return ( "yell" );
+		}
+	} else if ( (tno == 4.000) ) {
+		st = infokey (world,"team4");
+		if ( (st == string_null) ) {
+			return ( "gren" );
+		}
+	} else {
+		st = "\"\"";
+	}
+	return st;
+}
+#endif
+
 string GetPTeamName (float tno) {
     string st;
     if ( (tno == 1.000) ) {
@@ -340,159 +335,159 @@ float TeamFortress_TeamSet (float tno) {
     SetTeam (self);
     return ( 1.000 );
 }
-//mvdsvr
-/*
 
-   void TeamFortress_CheckTeamCheats () {
-   string st;
-   string sk;
-   float tc;
-   if ( (self.immune_to_check > time) ) {
-   return ;
-   }
-   if ( (self.netname == string_null) ) {
-   stuffcmd (self,"disconnect\n");
-   } else {
-   if ( (((self.playerclass) && (self.pteam.team == 0.000)) && (teamplay )) ) {
-   stuffcmd (self,"disconnect\n");
-   }
-   }
-   if ( ((teamplay) && (self.pteam.team == 0.000)) ) {
-   if (self.motd > 65.000) {
-   st = GetTeamName (self.pteam.team);
-   if ( (st != infokey (self,"team")) ) {
-   SetTeamName (self);
-   if ((self.immune_to_check) != floor(time)) {
-   self.immune_to_check = (floor(time) + 2);
-   } else {
-   bprint (PRINT_MEDIUM,self.netname," has been kicked for changing team.\n");
-   sprint (self,PRINT_HIGH,"You have been kicked for changing your team. Don't do it.\n");
-   stuffcmd (self,"disconnect\n");
-   return ;
-   }
-   }
-   st = infokey (self,"bottomcolor");
-   tc = stof (st);
-   if ( (tc != (TeamFortress_TeamGetColor (self.pteam.team) - 1.000)) ) {
-   stuffcmd (self,"color ");
-   tc = (TeamFortress_TeamGetColor (self.pteam.team) - 1.000);
-   st = ftos (tc);
-   stuffcmd (self,st);
-   stuffcmd (self,"\n");
-   if ((self.immune_to_check) != floor(time)) {
-   self.immune_to_check = (floor(time) + 2);
-   }
-   }
-   }
-   }
-   if (tfstrike) {
-   if ( ((self.pteam.team > 0.000) && (teamplay) && (self.playerclass) )) {
-   st = infokey (self,"topcolor");
-   tc = stof (st);
-   if (self.ammo_detpack) {
-   if ( tc ) {
-   stuffcmd (self,"topcolor 0\n");
-   if ((self.immune_to_check) != floor(time)) {
-   self.immune_to_check = (floor(time) + 2);
-   } else {
-   bprint (PRINT_MEDIUM,self.netname," has been kicked for changing top color.\n");
-   sprint (self,PRINT_HIGH,"You have been kicked for changing your top color. Don't do it.\n");
-   stuffcmd (self,"disconnect\n");
-   return ;
-   }
-   }
-   } else {
-   if(self.pteam.team == 2.000  ) {
-   if ( (self.playerclass == CLASS_SPY) && (self.undercover_team != 0.000) ) return;
-   if ( (tc != (TeamFortress_GetColor (self.pteam.team) - 1.000)) ) {
-   stuffcmd (self,"topcolor ");
-   tc = (TeamFortress_GetColor (self.team_no) - 1.000);
-   st = ftos (tc);
-   stuffcmd (self,st);
-   stuffcmd (self,"\n");
-   if ((self.immune_to_check) != floor(time)) {
-   self.immune_to_check = (floor(time) + 2);
-} else {
-	bprint (PRINT_MEDIUM,self.netname," has been kicked for changing top color.\n");
-	sprint (self,PRINT_HIGH,"You have been kicked for changing your top color. Don't do it.\n");
-	stuffcmd (self,"disconnect\n");
-	return ;
-}
-}
-}
-}
-}
-}
-if ( ((self.team_no > 0.000) && (teamplay)) ) {
-	st = infokey (self,"bottomcolor");
-	tc = stof (st);
-	if ( ((self.playerclass == CLASS_SPY) && (self.undercover_team != 0.000)) ) {
-		if ( ((TeamFortress_GetColor (self.undercover_team) - 1.000) != tc) ) {
-			stuffcmd (self,"color ");
-			tc = (TeamFortress_GetColor (self.undercover_team) - 1.000);
-			st = ftos (tc);
-			stuffcmd (self,st);
-			stuffcmd (self,"\n");
-			if ((self.immune_to_check) != floor(time)) {
-				self.immune_to_check = (floor(time) + 2);
-			} else {
-				bprint (PRINT_MEDIUM,self.netname," has been kicked for changing color.\n");
-				sprint (self,PRINT_HIGH,"You have been kicked for changing your pants color. Don't do it.\n");
-				stuffcmd (self,"disconnect\n");
-				return ;
-			}
-		}
+#if 0
+// mvdsvr
+void TeamFortress_CheckTeamCheats () {
+	string st;
+	string sk;
+	float tc;
+	if ( (self.immune_to_check > time) ) {
+		return ;
+	}
+	if ( (self.netname == string_null) ) {
+		stuffcmd (self,"disconnect\n");
 	} else {
-		if ( (tc != (TeamFortress_TeamGetColor (self.team_no) - 1.000)) ) {
-			stuffcmd (self,"color ");
-			tc = (TeamFortress_TeamGetColor (self.team_no) - 1.000);
-			st = ftos (tc);
-			stuffcmd (self,st);
-			stuffcmd (self,"\n");
+		if ( (((self.playerclass) && (self.pteam.team == 0.000)) && (teamplay )) ) {
+			stuffcmd (self,"disconnect\n");
+		}
+	}
+	if ( ((teamplay) && (self.pteam.team == 0.000)) ) {
+		if (self.motd > 65.000) {
+			st = GetTeamName (self.pteam.team);
+			if ( (st != infokey (self,"team")) ) {
+				SetTeamName (self);
+				if ((self.immune_to_check) != floor(time)) {
+					self.immune_to_check = (floor(time) + 2);
+				} else {
+					bprint (PRINT_MEDIUM,self.netname," has been kicked for changing team.\n");
+					sprint (self,PRINT_HIGH,"You have been kicked for changing your team. Don't do it.\n");
+					stuffcmd (self,"disconnect\n");
+					return ;
+				}
+			}
+			st = infokey (self,"bottomcolor");
+			tc = stof (st);
+			if ( (tc != (TeamFortress_TeamGetColor (self.pteam.team) - 1.000)) ) {
+				stuffcmd (self,"color ");
+				tc = (TeamFortress_TeamGetColor (self.pteam.team) - 1.000);
+				st = ftos (tc);
+				stuffcmd (self,st);
+				stuffcmd (self,"\n");
+				if ((self.immune_to_check) != floor(time)) {
+					self.immune_to_check = (floor(time) + 2);
+				}
+			}
+		}
+	}
+	if (tfstrike) {
+		if ( ((self.pteam.team > 0.000) && (teamplay) && (self.playerclass) )) {
+			st = infokey (self,"topcolor");
+			tc = stof (st);
+			if (self.ammo_detpack) {
+				if ( tc ) {
+					stuffcmd (self,"topcolor 0\n");
+					if ((self.immune_to_check) != floor(time)) {
+						self.immune_to_check = (floor(time) + 2);
+					} else {
+						bprint (PRINT_MEDIUM,self.netname," has been kicked for changing top color.\n");
+						sprint (self,PRINT_HIGH,"You have been kicked for changing your top color. Don't do it.\n");
+						stuffcmd (self,"disconnect\n");
+						return ;
+					}
+				}
+			} else {
+				if(self.pteam.team == 2.000  ) {
+					if ( (self.playerclass == CLASS_SPY) && (self.undercover_team != 0.000) ) return;
+					if ( (tc != (TeamFortress_GetColor (self.pteam.team) - 1.000)) ) {
+						stuffcmd (self,"topcolor ");
+						tc = (TeamFortress_GetColor (self.team_no) - 1.000);
+						st = ftos (tc);
+						stuffcmd (self,st);
+						stuffcmd (self,"\n");
+						if ((self.immune_to_check) != floor(time)) {
+							self.immune_to_check = (floor(time) + 2);
+						} else {
+							bprint (PRINT_MEDIUM,self.netname," has been kicked for changing top color.\n");
+							sprint (self,PRINT_HIGH,"You have been kicked for changing your top color. Don't do it.\n");
+							stuffcmd (self,"disconnect\n");
+							return ;
+						}
+					}
+				}
+			}
+		}
+	}
+	if ( ((self.team_no > 0.000) && (teamplay)) ) {
+		st = infokey (self,"bottomcolor");
+		tc = stof (st);
+		if ( ((self.playerclass == CLASS_SPY) && (self.undercover_team != 0.000)) ) {
+			if ( ((TeamFortress_GetColor (self.undercover_team) - 1.000) != tc) ) {
+				stuffcmd (self,"color ");
+				tc = (TeamFortress_GetColor (self.undercover_team) - 1.000);
+				st = ftos (tc);
+				stuffcmd (self,st);
+				stuffcmd (self,"\n");
+				if ((self.immune_to_check) != floor(time)) {
+					self.immune_to_check = (floor(time) + 2);
+				} else {
+					bprint (PRINT_MEDIUM,self.netname," has been kicked for changing color.\n");
+					sprint (self,PRINT_HIGH,"You have been kicked for changing your pants color. Don't do it.\n");
+					stuffcmd (self,"disconnect\n");
+					return ;
+				}
+			}
+		} else {
+			if ( (tc != (TeamFortress_TeamGetColor (self.team_no) - 1.000)) ) {
+				stuffcmd (self,"color ");
+				tc = (TeamFortress_TeamGetColor (self.team_no) - 1.000);
+				st = ftos (tc);
+				stuffcmd (self,st);
+				stuffcmd (self,"\n");
+				if ((self.immune_to_check) != floor(time)) {
+					self.immune_to_check = (floor(time) + 2);
+				} else {
+					bprint (PRINT_MEDIUM,self.netname," has been kicked for changing color.\n");
+					sprint (self,PRINT_HIGH,"You have been kicked for changing your pants color. Don't do it.\n");
+					stuffcmd (self,"disconnect\n");
+					return ;
+				}
+			}
+		}
+		if ( (self.playerclass) ) {
+			st = infokey (self,"skin");
+			tc = 0.000;
+			sk = TeamFortress_GetSkin (self);
+			if ( (st != sk) ) {
+				TeamFortress_SetSkin (self);
+				if ((self.immune_to_check) != floor(time)) {
+					self.immune_to_check = (floor(time) + 2);
+				} else {
+					bprint (PRINT_MEDIUM,self.netname," has been kicked for changing skin.\n");
+					sprint (self,PRINT_HIGH,"You have been kicked for changing your skin. Don't do it.\n");
+					stuffcmd (self,"disconnect\n");
+					return;
+				}
+			}
+			if (tc == CLASS_SPY) {
+				self.playerclass = CLASS_SPY;
+			}
+		}
+		st = GetTeamName (self.team_no);
+		if ( (st != infokey (self,"team")) ) {
+			SetTeamName (self);
 			if ((self.immune_to_check) != floor(time)) {
 				self.immune_to_check = (floor(time) + 2);
 			} else {
-				bprint (PRINT_MEDIUM,self.netname," has been kicked for changing color.\n");
-				sprint (self,PRINT_HIGH,"You have been kicked for changing your pants color. Don't do it.\n");
+				bprint (PRINT_MEDIUM,self.netname," has been kicked for changing team.\n");
+				sprint (self,PRINT_HIGH,"You have been kicked for changing your team. Don't do it.\n");
 				stuffcmd (self,"disconnect\n");
 				return ;
 			}
 		}
 	}
-	if ( (self.playerclass) ) {
-		st = infokey (self,"skin");
-		tc = 0.000;
-		sk = TeamFortress_GetSkin (self);
-		if ( (st != sk) ) {
-			TeamFortress_SetSkin (self);
-			if ((self.immune_to_check) != floor(time)) {
-				self.immune_to_check = (floor(time) + 2);
-			} else {
-				bprint (PRINT_MEDIUM,self.netname," has been kicked for changing skin.\n");
-				sprint (self,PRINT_HIGH,"You have been kicked for changing your skin. Don't do it.\n");
-				stuffcmd (self,"disconnect\n");
-				return;
-			}
-		}
-		if (tc == CLASS_SPY) {
-			self.playerclass = CLASS_SPY;
-		}
-	}
-	st = GetTeamName (self.team_no);
-	if ( (st != infokey (self,"team")) ) {
-		SetTeamName (self);
-		if ((self.immune_to_check) != floor(time)) {
-			self.immune_to_check = (floor(time) + 2);
-		} else {
-			bprint (PRINT_MEDIUM,self.netname," has been kicked for changing team.\n");
-			sprint (self,PRINT_HIGH,"You have been kicked for changing your team. Don't do it.\n");
-			stuffcmd (self,"disconnect\n");
-			return ;
-		}
-	}
 }
-}
-*/
+#endif
 
 void TeamFortress_TeamIncreaseScore (float tno, float scoretoadd) {
     entity e;
@@ -912,62 +907,44 @@ float CheckClassAvailable (float tno) {
 }
 
 float ClassIsRestricted (float tno, float pc) {
-    float num;
-    float pmax;
-    entity te;
-    string st;
-    if ( (tno == 0.000) ) {
-        return ( 0.000 );
-    }
-    if ( (pc == 1.000) ) {
-        st = infokey (world,"cr_scout");
-        pmax = stof (st);
-    } else {
-        if ( (pc == 2.000) ) {
-            st = infokey (world,"cr_sniper");
-            pmax = stof (st);
-        } else {
-            if ( (pc == 3.000) ) {
-                st = infokey (world,"cr_soldier");
-                pmax = stof (st);
-            } else {
-                if ( (pc == 4.000) ) {
-                    st = infokey (world,"cr_demoman");
-                    pmax = stof (st);
-                } else {
-                    if ( (pc == 5.000) ) {
-                        st = infokey (world,"cr_medic");
-                        pmax = stof (st);
-                    } else {
-                        if ( (pc == 6.000) ) {
-                            st = infokey (world,"cr_hwguy");
-                            pmax = stof (st);
-                        } else {
-                            if ( (pc == 7.000) ) {
-                                st = infokey (world,"cr_pyro");
-                                pmax = stof (st);
-                            } else {
-                                if ( (pc == 8.000) ) {
-                                    st = infokey (world,"cr_spy");
-                                    pmax = stof (st);
-                                } else {
-                                    if ( (pc == 9.000) ) {
-                                        st = infokey (world,"cr_engineer");
-                                        pmax = stof (st);
-                                    } else {
-                                        if ( (pc == 10.000) ) {
-                                            st = infokey (world,"cr_random");
-                                            pmax = stof (st);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	float num;
+	float pmax;
+	entity te;
+	string st;
+	if ( (tno == 0.000) ) {
+		return ( 0.000 );
+	}
+	if ( (pc == 1.000) ) {
+		st = infokey (world,"cr_scout");
+		pmax = stof (st);
+	} else if ( (pc == 2.000) ) {
+		st = infokey (world,"cr_sniper");
+		pmax = stof (st);
+	} else if ( (pc == 3.000) ) {
+		st = infokey (world,"cr_soldier");
+		pmax = stof (st);
+	} else if ( (pc == 4.000) ) {
+		st = infokey (world,"cr_demoman");
+		pmax = stof (st);
+	} else if ( (pc == 5.000) ) {
+		st = infokey (world,"cr_medic");
+		pmax = stof (st);
+	} else if ( (pc == 6.000) ) {
+		st = infokey (world,"cr_hwguy");
+		pmax = stof (st);
+	} else if ( (pc == 7.000) ) {
+		st = infokey (world,"cr_pyro");
+		pmax = stof (st);
+	} else if ( (pc == 8.000) ) {
+		st = infokey (world,"cr_spy");
+		pmax = stof (st);
+	} else if ( (pc == 9.000) ) {
+		st = infokey (world,"cr_engineer");
+		pmax = stof (st);
+	} else if ( (pc == 10.000) ) {
+		st = infokey (world,"cr_random");
+		pmax = stof (st);
+	}
 
     if (!pmax) {
         st = infokey (world,"highlander");
@@ -1017,19 +994,20 @@ void teamsprint (float tno, entity ignore, string st) {
         te = te.nextp;
     }
 }
-/*
-   entity TeamFortress_TopFragger () {
-   entity te;
-   float j;
-   entity highest;
-   te = player_head;
-   while (te != world) {
-   j = te.real_frags;
-   if (j > highest.real_frags){
-   highest = te;
-   }
-   te = te.nextp;
-   }
-   return ( highest );
-   };
- */
+
+#if 0
+entity TeamFortress_TopFragger () {
+	entity te;
+	float j;
+	entity highest;
+	te = player_head;
+	while (te != world) {
+		j = te.real_frags;
+		if (j > highest.real_frags){
+			highest = te;
+		}
+		te = te.nextp;
+	}
+	return ( highest );
+};
+#endif
