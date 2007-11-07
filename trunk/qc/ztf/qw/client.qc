@@ -707,8 +707,10 @@ entity FindTeamSpawnPoint () {
             st = "ts4";
         }
     }
-    //  if ((modetype & 4) && (bspversion)) {
-    //     spot = find (spot, classname, "info_player_start");
+#if 0
+	if ((modetype & 4) && (bspversion)) {
+		spot = find (spot, classname, "info_player_start");
+#endif
     spot = self.pteam.movetarget;
     attempts = 0;
     while ( 1 ) {
@@ -721,7 +723,7 @@ entity FindTeamSpawnPoint () {
             return ( world );
         }
         attempts = (attempts + 1);
-        /*
+#if 0
            cyc = (random () * 6);
            while ( (cyc > 1) ) {
            spot = find (spot,team_str_home,st);
@@ -729,7 +731,7 @@ entity FindTeamSpawnPoint () {
            spot = find (spot,team_str_home,st);
            cyc = (cyc - 1);
            }
-         */
+#endif
         at_spot = findradius (spot.origin,40);
         spot_found = 1;
         while ( (at_spot != world) ) {
@@ -1391,22 +1393,24 @@ void PlayerPreThink () {
         return ;
     }
     if ( !self.is_feigning ) {
-        /* if (self.crouch == 2) {
-           pos = self.origin;
-           traceline(pos, pos, 0, self, VEC_HULL_MIN, VEC_HULL_MAX);
-           if (trace_allsolid)	//if player would be stuck
-           {
-           pos = self.origin+'0 0 18';	//can we move them up a little
-           traceline(pos, pos, 0, self, VEC_HULL_MIN, VEC_HULL_MAX);
-           if (!trace_allsolid)
-           {
-           self.origin = pos;
-           self.crouch = 0;
-           setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
-           TeamFortress_SetSpeed (self);
-           }
-           }
-           } */
+#if 0
+		if (self.crouch == 2) {
+			pos = self.origin;
+			traceline(pos, pos, 0, self, VEC_HULL_MIN, VEC_HULL_MAX);
+			if (trace_allsolid)	//if player would be stuck
+			{
+				pos = self.origin+'0 0 18';	//can we move them up a little
+				traceline(pos, pos, 0, self, VEC_HULL_MIN, VEC_HULL_MAX);
+				if (!trace_allsolid)
+				{
+					self.origin = pos;
+					self.crouch = 0;
+					setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
+					TeamFortress_SetSpeed (self);
+				}
+			}
+		}
+#endif
         if ( self.button2 ) {
             PlayerJump ();
         } else {
@@ -1717,10 +1721,8 @@ void PlayerPostThink () {
                             fdmg = ((fdmg * (self.jump_flag / 400)) * -1);
                             if ( (self.playerclass == 1) ) {
                                 fdmg = (fdmg / 2);
-                            } else {
-                                if ( (self.playerclass == 6) ) {
-                                    fdmg = (fdmg * 1.500);
-                                }
+							} else if ( (self.playerclass == 6) ) {
+								fdmg = (fdmg * 1.500);
                             }
                             fdmg = rint (fdmg);
                             TF_T_Damage (self,world,world,fdmg,1,0);
@@ -1762,83 +1764,83 @@ void Admin_Check (string cl_pwd) {
         self.is_admin = 1;
     }
 }
-/*
 
-   void () crash_catcher_think =
-   {
-   float _l_8315;
-   if (!self.owner)
-   {
-   remove (self);
-   return;
-   }
-   if (!intermission_running)
-   {
-   fl = time - self.owner.lastthink;
-   if ((fl > 0.800000))
-   {
+#if 0
+void () crash_catcher_think =
+{
+	float _l_8315;
+	if (!self.owner)
+	{
+		remove (self);
+		return;
+	}
+	if (!intermission_running)
+	{
+		fl = time - self.owner.lastthink;
+		if ((fl > 0.800000))
+		{
 
-   void_self (self.owner, reset_fps);
-   }
-   if (self.style)
-   {
-   self.style = 0;
-   self.nextthink = (time + 30);
-   return;
-   }
-   if ((fl > 2))
-   {
-   if ((timing_action & 1))
-   {
-   bprint (PRINT_HIGH000, "┤варнинг╨ ", self.owner.netname, " is timing!");
-   bprint (PRINT_CHAT000, "\n");
-   }
-   if (!self.owner.menu.lastthink)
-   {
-   if ((timing_action & 2))
-   {
-   self.owner.effects = (self.owner.effects | 8);
-   }
-   if ((timing_action & 16))
-   {
-   self.owner.menu.tp_back_weapon = self.owner.modelindex;
-   self.owner.modelindex = modelindex_zombie;
-   }
-   if ((timing_action & 4))
-   {
-   self.owner.menu.loc_idx = 1;
-   }
-   if ((timing_action & 8))
-   {
-   if (!k_pause)
-   {
-   AdminForcePause (1);
-   }
-   }
-   }
-   self.style = 1;
-   self.owner.menu.lastthink = 1;
-   }
-   self.nextthink = (time + 1);
-   }
-   else
-   {
-   remove (self);
-   }
-   };
+			void_self (self.owner, reset_fps);
+		}
+		if (self.style)
+		{
+			self.style = 0;
+			self.nextthink = (time + 30);
+			return;
+		}
+		if ((fl > 2))
+		{
+			if ((timing_action & 1))
+			{
+				bprint (PRINT_HIGH000, "┤варнинг╨ ", self.owner.netname, " is timing!");
+				bprint (PRINT_CHAT000, "\n");
+			}
+			if (!self.owner.menu.lastthink)
+			{
+				if ((timing_action & 2))
+				{
+					self.owner.effects = (self.owner.effects | 8);
+				}
+				if ((timing_action & 16))
+				{
+					self.owner.menu.tp_back_weapon = self.owner.modelindex;
+					self.owner.modelindex = modelindex_zombie;
+				}
+				if ((timing_action & 4))
+				{
+					self.owner.menu.loc_idx = 1;
+				}
+				if ((timing_action & 8))
+				{
+					if (!k_pause)
+					{
+						AdminForcePause (1);
+					}
+				}
+			}
+			self.style = 1;
+			self.owner.menu.lastthink = 1;
+		}
+		self.nextthink = (time + 1);
+	}
+	else
+	{
+		remove (self);
+	}
+};
 
-   void () make_crash_catcher =
-   {
-   entity te;
-   if (!allow_timing)
-   {
-   return;
-}
-te = spawn ();
-te.classname = "crash_catcher";
-te.think = crash_catcher_think;
-te.owner = self;
-te.nextthink = time;
+void () make_crash_catcher =
+{
+	entity te;
+	if (!allow_timing)
+	{
+		return;
+	}
+	te = spawn ();
+	te.classname = "crash_catcher";
+	te.think = crash_catcher_think;
+	te.owner = self;
+	te.nextthink = time;
 }
 
 void () remove_crash_catcher =
@@ -1860,7 +1862,7 @@ void () remove_crash_catcher =
 		}
 	}
 }
-*/
+#endif
 
 void ClientConnect () {
     string st;
@@ -2192,125 +2194,75 @@ void ClientObituary (entity targ, entity attacker) {
                 TF_AddFrags (attacker,-1, 0);
                 bprint (PRINT_MEDIUM,targ.netname);
                 if ( (deathmsg == 8) ) {
-                    if ( (targ.playerclass == 2) ) {
-                        deathstring = " got splattered by his own grenade\n";
-                    } else {
-                        if ( (targ.playerclass == 3) ) {
-                            deathstring = " sat on his own grenade\n";
-                        } else {
-                            if ( (targ.playerclass == 4) ) {
-                                deathstring = " got to know his grenade too well\n";
-                            } else {
-                                if ( (targ.playerclass == 5) ) {
-                                    deathstring = " caught the end of his own grenade\n";
-                                } else {
-                                    if ( (targ.playerclass == 6) ) {
-                                        deathstring = " got too close to his own grenade\n";
-                                    } else {
-                                        if ( (targ.playerclass == 7) ) {
-                                            deathstring = " let his own grenade get the best of him\n";
-                                        } else {
-                                            if ( (targ.playerclass == 8) ) {
-                                                deathstring = " tiptoed over his own grenade\n";
-                                            } else {
-                                                if ( (targ.playerclass == 9) ) {
-                                                    deathstring = " stared at his grenade too long\n";
-                                                } else {
-                                                    deathstring = " grenades himself\n";
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+					if ( (targ.playerclass == 2) ) {
+						deathstring = " got splattered by his own grenade\n";
+					} else if ( (targ.playerclass == 3) ) {
+						deathstring = " sat on his own grenade\n";
+					} else if ( (targ.playerclass == 4) ) {
+						deathstring = " got to know his grenade too well\n";
+					} else if ( (targ.playerclass == 5) ) {
+						deathstring = " caught the end of his own grenade\n";
+					} else if ( (targ.playerclass == 6) ) {
+						deathstring = " got too close to his own grenade\n";
+					} else if ( (targ.playerclass == 7) ) {
+						deathstring = " let his own grenade get the best of him\n";
+					} else if ( (targ.playerclass == 8) ) {
+						deathstring = " tiptoed over his own grenade\n";
+					} else if ( (targ.playerclass == 9) ) {
+						deathstring = " stared at his grenade too long\n";
+					} else {
+						deathstring = " grenades himself\n";
+					}
                 } else {
                     if ( (deathmsg == 9) ) {
                         deathstring = " hammers himself\n";
-                    } else {
-                        if ( (deathmsg == 10) ) {
-                            if ( (targ.playerclass == 4) ) {
-                                deathstring = " practiced his own Mirv dance\n";
-                            } else {
-                                if ( (targ.playerclass == 6) ) {
-                                    deathstring = " allowed his Mirv to turn against him\n";
-                                } else {
-                                    deathstring = " goes to pieces\n";
-                                }
-                            }
-                        } else {
-                            if ( (deathmsg == 11) ) {
-                                deathstring = " ambushes himself with his own pipebombs\n";
-                            } else {
-                                if ( (deathmsg == 40) ) {
-                                    deathstring = " tried to juggle his own pipebombs\n";
-                                } else {
-                                    if ( (deathmsg == 24) ) {
-                                        deathstring = " chokes on his own gas\n";
-                                    } else {
-                                        if ( (deathmsg == 30) ) {
-                                            deathstring = " explodes his ammo and body\n";
-                                        } else {
-                                            if ( (deathmsg == 41) ) {
-                                                deathstring = " stepped on too many of his own caltrops\n";
-                                            } else {
-                                                if ( (deathmsg == 35) ) {
-                                                    deathstring = " is charred by his own flash grenade\n";
-                                                } else {
-                                                    if ( (deathmsg == 31) ) {
-                                                        deathstring = " detonates an ammo box too close to him\n";
-                                                    } else {
-                                                        if ( (deathmsg == 12) ) {
-                                                            deathstring = " set the detpack and forgot to run\n";
-                                                        } else {
-                                                            if ( (deathmsg == 13) ) {
-                                                                deathstring = " died impossibly!\n";
-                                                            } else {
-                                                                if ( (deathmsg == 6) ) {
-                                                                    deathstring = " becomes bored with life\n";
-                                                                } else {
-                                                                    if ( (deathmsg == 33) ) {
-                                                                        deathstring = " chars himself with an incendiary rocket\n";
-                                                                    } else {
-                                                                        if ( (deathmsg == 5) ) {
-                                                                            deathstring = " tries to put the pin back in\n";
-                                                                        } else {
-                                                                            if ( (deathmsg == 15) ) {
-                                                                                deathstring = " torches himself\n";
-                                                                            } else {
-                                                                                if ( ((deathmsg == 7) && (targ.waterlevel > 1)) ) {
-                                                                                    bprint (PRINT_MEDIUM," discharges into the water.\n");
-                                                                                    return ;
-                                                                                } else {
-                                                                                    if ( (deathmsg == 38) ) {
-                                                                                        deathstring = " gets too friendly with his sentrygun.\n";
-                                                                                    } else {
-                                                                                        if ( (deathmsg == 39) ) {
-                                                                                            deathstring = " dispenses with himself.\n";
-                                                                                        } else {
-                                                                                            if ( deathmsg == 18) {
-                                                                                                deathstring = " melted himself.\n";
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+					} else if ( (deathmsg == 10) ) {
+						if ( (targ.playerclass == 4) ) {
+							deathstring = " practiced his own Mirv dance\n";
+						} else {
+							if ( (targ.playerclass == 6) ) {
+								deathstring = " allowed his Mirv to turn against him\n";
+							} else {
+								deathstring = " goes to pieces\n";
+							}
+						}
+					} else if ( (deathmsg == 11) ) {
+						deathstring = " ambushes himself with his own pipebombs\n";
+					} else if ( (deathmsg == 40) ) {
+						deathstring = " tried to juggle his own pipebombs\n";
+					} else if ( (deathmsg == 24) ) {
+						deathstring = " chokes on his own gas\n";
+					} else if ( (deathmsg == 30) ) {
+						deathstring = " explodes his ammo and body\n";
+					} else if ( (deathmsg == 41) ) {
+						deathstring = " stepped on too many of his own caltrops\n";
+					} else if ( (deathmsg == 35) ) {
+						deathstring = " is charred by his own flash grenade\n";
+					} else if ( (deathmsg == 31) ) {
+						deathstring = " detonates an ammo box too close to him\n";
+					} else if ( (deathmsg == 12) ) {
+						deathstring = " set the detpack and forgot to run\n";
+					} else if ( (deathmsg == 13) ) {
+						deathstring = " died impossibly!\n";
+					} else if ( (deathmsg == 6) ) {
+						deathstring = " becomes bored with life\n";
+					} else if ( (deathmsg == 33) ) {
+						deathstring = " chars himself with an incendiary rocket\n";
+					} else if ( (deathmsg == 5) ) {
+						deathstring = " tries to put the pin back in\n";
+					} else if ( (deathmsg == 15) ) {
+						deathstring = " torches himself\n";
+					} else if ( ((deathmsg == 7) && (targ.waterlevel > 1)) ) {
+						bprint (PRINT_MEDIUM," discharges into the water.\n");
+						return ;
+					} else if ( (deathmsg == 38) ) {
+						deathstring = " gets too friendly with his sentrygun.\n";
+					} else if ( (deathmsg == 39) ) {
+						deathstring = " dispenses with himself.\n";
+					} else if ( deathmsg == 18) {
+						deathstring = " melted himself.\n";
+					}
+				}
                 bprint (PRINT_MEDIUM,deathstring);
                 return ;
             } else {
@@ -2323,15 +2275,13 @@ void ClientObituary (entity targ, entity attacker) {
                     if ( (rnum < 0.333) ) {
                         deathstring = " mows down teammate ";
                         deathstring2 = "\n";
-                    } else {
-                        if ( (rnum < 0.666) ) {
-                            deathstring = " checks his glasses after killing ";
-                            deathstring2 = "\n";
-                        } else {
+					} else if ( (rnum < 0.666) ) {
+						deathstring = " checks his glasses after killing ";
+						deathstring2 = "\n";
+					} else {
                             deathstring = " killed his supposed friend ";
                             deathstring2 = "\n";
                         }
-                    }
                     if ( (deathmsg == 23) ) {
                         bprint (PRINT_MEDIUM,targ.netname);
                         bprint (PRINT_MEDIUM," didn't survive the operation by ");
@@ -2352,378 +2302,254 @@ void ClientObituary (entity targ, entity attacker) {
                         if ( (attacker.playerclass == 2) ) {
                             deathstring = " got up-close and personal with ";
                             deathstring2 = "'s grenade\n";
-                        } else {
-                            if ( (attacker.playerclass == 3) ) {
-                                deathstring = " played catch with ";
-                                deathstring2 = "'s grenade\n";
-                            } else {
-                                if ( (attacker.playerclass == 4) ) {
-                                    deathstring = " received a pineapple enema from ";
-                                    deathstring2 = "\n";
-                                } else {
-                                    if ( (attacker.playerclass == 5) ) {
-                                        deathstring = " fetched ";
-                                        deathstring2 = "'s pineapple\n";
-                                    } else {
-                                        if ( (attacker.playerclass == 6) ) {
-                                            deathstring = " caught too much shrapnel from ";
-                                            deathstring2 = "'s grenade\n";
-                                        } else {
-                                            if ( (attacker.playerclass == 7) ) {
-                                                deathstring = " tried to pick up ";
-                                                deathstring2 = "'s hot potato\n";
-                                            } else {
-                                                if ( (attacker.playerclass == 8) ) {
-                                                    deathstring = " thought ";
-                                                    deathstring2 = " was tossing him a spare grenade\n";
-                                                } else {
-                                                    if ( (attacker.playerclass == 9) ) {
-                                                        deathstring = " stops to ponder the technical details of ";
-                                                        deathstring2 = "'s grenade\n";
-                                                    } else {
-                                                        deathstring = " surfs on a grenade from ";
-                                                        deathstring2 = "\n";
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+						} else if ( (attacker.playerclass == 3) ) {
+							deathstring = " played catch with ";
+							deathstring2 = "'s grenade\n";
+						} else if ( (attacker.playerclass == 4) ) {
+							deathstring = " received a pineapple enema from ";
+							deathstring2 = "\n";
+						} else if ( (attacker.playerclass == 5) ) {
+							deathstring = " fetched ";
+							deathstring2 = "'s pineapple\n";
+						} else if ( (attacker.playerclass == 6) ) {
+							deathstring = " caught too much shrapnel from ";
+							deathstring2 = "'s grenade\n";
+						} else if ( (attacker.playerclass == 7) ) {
+							deathstring = " tried to pick up ";
+							deathstring2 = "'s hot potato\n";
+						} else if ( (attacker.playerclass == 8) ) {
+							deathstring = " thought ";
+							deathstring2 = " was tossing him a spare grenade\n";
+						} else if ( (attacker.playerclass == 9) ) {
+							deathstring = " stops to ponder the technical details of ";
+							deathstring2 = "'s grenade\n";
+						} else {
+							deathstring = " surfs on a grenade from ";
+							deathstring2 = "\n";
+						}
                     } else {
                         if ( (deathmsg == 9) ) {
                             deathstring = " gets flayed by ";
                             deathstring2 = "'s nail grenade\n";
-                        } else {
-                            if ( (deathmsg == 10) ) {
-                                if ( (attacker.playerclass == 4) ) {
-                                    deathstring = " does a dance on ";
-                                    deathstring2 = "'s Mirv grenade\n";
-                                } else {
-                                    deathstring = " gets spammed by ";
-                                    deathstring2 = "'s Mirv grenade\n";
-                                }
-                            } else {
-                                if ( (deathmsg == 11) ) {
-                                    deathstring = " is caught by ";
-                                    deathstring2 = "'s pipebomb trap\n";
-                                } else {
-                                    if ( (deathmsg == 40) ) {
-                                        deathstring = " fell victim to ";
-                                        deathstring2 = "'s fireworks\n";
-                                    } else {
-                                        if ( (deathmsg == 24) ) {
-                                            deathstring = " gags on ";
-                                            deathstring2 = "'s noxious gasses\n";
-                                        } else {
-                                            if ( (deathmsg == 30) ) {
-                                                deathstring = "'s ammo detonates him as ";
-                                                deathstring2 = "'s EMP fries it\n";
-                                            } else {
-                                                if ( (deathmsg == 41) ) {
-                                                    deathstring = " stepped on too many of ";
-                                                    deathstring2 = "'s caltrops\n";
-                                                } else {
-                                                    if ( (deathmsg == 35) ) {
-                                                        deathstring = " is charred by ";
-                                                        deathstring2 = "'s flash grenade\n";
-                                                    } else {
-                                                        if ( (deathmsg == 31) ) {
-                                                            deathstring = " stands near some ammo as ";
-                                                            deathstring2 = "'s EMP nukes it\n";
-                                                        } else {
-                                                            if ( (deathmsg == 12) ) {
-                                                                deathstring = " reaches orbit via ";
-                                                                deathstring2 = "'s detpack\n";
-                                                            } else {
-                                                                if ( (deathmsg == 16) ) {
-                                                                    deathstring = " cut the red wire of ";
-                                                                    deathstring2 = "'s detpack\n";
-                                                                } else {
-                                                                    if ( (deathmsg == 13) ) {
-                                                                        deathstring = " dies from ";
-                                                                        deathstring2 = "'s mysterious tropical disease\n";
-                                                                    } else {
-                                                                        if ( (deathmsg == 14) ) {
-                                                                            deathstring = " escapes infection from ";
-                                                                            deathstring2 = " by dying first\n";
-                                                                        } else {
-                                                                            if ( (deathmsg == 5) ) {
-                                                                                deathstring = " eats ";
-                                                                                deathstring2 = "'s pineapple\n";
-                                                                                if ( (targ.health < -40) ) {
-                                                                                    deathstring = " was gibbed by ";
-                                                                                    deathstring2 = "'s grenade\n";
-                                                                                }
-                                                                            } else {
-                                                                                if ( (deathmsg == 6) ) {
-                                                                                    deathstring = " rides ";
-                                                                                    deathstring2 = "'s rocket\n";
-                                                                                    if ( (targ.health < -40) ) {
-                                                                                        deathstring = " was gibbed by ";
-                                                                                        deathstring2 = "'s rocket\n";
-                                                                                    }
-                                                                                } else {
-                                                                                    if ( (deathmsg == 15) ) {
-                                                                                        if ( (rnum < 0.200) ) {
-                                                                                            deathstring = " is burnt up by ";
-                                                                                            deathstring2 = "'s flame\n";
-                                                                                        } else {
-                                                                                            if ( (rnum < 0.400) ) {
-                                                                                                deathstring = " is fried by ";
-                                                                                                deathstring2 = "'s fire\n";
-                                                                                            } else {
-                                                                                                if ( (rnum < 0.600) ) {
-                                                                                                    deathstring = " feels ";
-                                                                                                    deathstring2 = "'s fire of wrath\n";
-                                                                                                } else {
-                                                                                                    if ( (rnum < 0.800) ) {
-                                                                                                        deathstring = " is reduced to ashes by ";
-                                                                                                        deathstring2 = "\n";
-                                                                                                    } else {
-                                                                                                        deathstring = " is grilled by ";
-                                                                                                        deathstring2 = "'s flame\n";
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    } else {
-                                                                                        if ( (deathmsg == 17) ) {
-                                                                                            deathstring2 = "\n";
-                                                                                            if ( (attacker.playerclass == 8) ) {
-                                                                                                deathstring = " was knife-murdered by ";
-                                                                                            } else {
-                                                                                                if ( (attacker.playerclass == 1) ) {
-                                                                                                    deathstring = "'s mellon was split by ";
-                                                                                                } else {
-                                                                                                    if ( (attacker.playerclass == 2) ) {
-                                                                                                        deathstring = " was put on the chop block by ";
-                                                                                                    } else {
-                                                                                                        if ( (attacker.playerclass == 3) ) {
-                                                                                                            deathstring = " was sliced and diced by ";
-                                                                                                            deathstring2 = "'s blade\n";
-                                                                                                        } else {
-                                                                                                            if ( (attacker.playerclass == 4) ) {
-                                                                                                                deathstring = " is split from crotch to sternum by ";
-                                                                                                                deathstring2 = "'s axe swing\n";
-                                                                                                            } else {
-                                                                                                                if ( (attacker.playerclass == 6) ) {
-                                                                                                                    deathstring = " is split in two with a powerful axe blow from ";
-                                                                                                                } else {
-                                                                                                                    if ( (attacker.playerclass == 7) ) {
-                                                                                                                        deathstring = "'s death put another notch on ";
-                                                                                                                        deathstring2 = "'s axe\n";
-                                                                                                                    } else {
-                                                                                                                        deathstring = " was ax-murdered by ";
-                                                                                                                    }
-                                                                                                                }
-                                                                                                            }
-                                                                                                        }
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                        } else {
-                                                                                            if ( (deathmsg == 32) ) {
-                                                                                                deathstring = " was spanner-murdered by ";
-                                                                                                deathstring2 = "\n";
-                                                                                            } else {
-                                                                                                if ( (deathmsg == 1) ) {
-                                                                                                    if ( (attacker.playerclass == 1) ) {
-                                                                                                        deathstring = " got too close to ";
-                                                                                                        deathstring2 = "'s muzzleflash\n";
-                                                                                                    } else {
-                                                                                                        if ( (attacker.playerclass == 3) ) {
-                                                                                                            deathstring = " practices being ";
-                                                                                                            deathstring2 = "'s clay pigeon\n";
-                                                                                                        } else {
-                                                                                                            if ( (attacker.playerclass == 4) ) {
-                                                                                                                deathstring = " was on the receiving end of ";
-                                                                                                                deathstring2 = "'s shotgun barrel\n";
-                                                                                                            } else {
-                                                                                                                if ( (attacker.playerclass == 5) ) {
-                                                                                                                    deathstring = " was fed a lead diet by ";
-                                                                                                                    deathstring2 = "\n";
-                                                                                                                } else {
-                                                                                                                    if ( (attacker.playerclass == 6) ) {
-                                                                                                                        deathstring = " got blasted by ";
-                                                                                                                        deathstring2 = "'s last resort\n";
-                                                                                                                    } else {
-                                                                                                                        if ( (attacker.playerclass == 7) ) {
-                                                                                                                            deathstring = " got more than a powderburn from ";
-                                                                                                                            deathstring2 = "'s shotgun blast\n";
-                                                                                                                        } else {
-                                                                                                                            deathstring = " chewed on ";
-                                                                                                                            deathstring2 = "'s boomstick\n";
-                                                                                                                        }
-                                                                                                                    }
-                                                                                                                }
-                                                                                                            }
-                                                                                                        }
-                                                                                                    }
-                                                                                                } else {
-                                                                                                    if ( (deathmsg == 2) ) {
-                                                                                                        if ( (attacker.playerclass == 3) ) {
-                                                                                                            deathstring = " was turned into swiss cheese by ";
-                                                                                                            deathstring2 = "'s buckshot\n";
-                                                                                                        } else {
-                                                                                                            if ( (attacker.playerclass == 5) ) {
-                                                                                                                deathstring = " got a double-dose of ";
-                                                                                                                deathstring2 = "'s buckshot\n";
-                                                                                                            } else {
-                                                                                                                if ( (attacker.playerclass == 6) ) {
-                                                                                                                    deathstring = " unfortunately forgot ";
-                                                                                                                    deathstring2 = " carried a super-shotgun\n";
-                                                                                                                } else {
-                                                                                                                    if ( (attacker.playerclass == 8) ) {
-                                                                                                                        deathstring = " gets ventilated by ";
-                                                                                                                        deathstring2 = "'s super-shotgun blast\n";
-                                                                                                                    } else {
-                                                                                                                        if ( (attacker.playerclass == 9) ) {
-                                                                                                                            deathstring = "'s body got chuck full of ";
-                                                                                                                            deathstring2 = "'s lead pellets\n";
-                                                                                                                        } else {
-                                                                                                                            deathstring = " ate 2 loads of ";
-                                                                                                                            deathstring2 = "'s buckshot\n";
-                                                                                                                        }
-                                                                                                                    }
-                                                                                                                }
-                                                                                                            }
-                                                                                                        }
-                                                                                                    } else {
-                                                                                                        if ( (deathmsg == 3) ) {
-                                                                                                            if ( (attacker.playerclass == 1) ) {
-                                                                                                                deathstring = " caught one too many nails from ";
-                                                                                                                deathstring2 = "\n";
-                                                                                                            } else {
-                                                                                                                if ( (attacker.playerclass == 2) ) {
-                                                                                                                    deathstring = " ran into ";
-                                                                                                                    deathstring2 = "'s nails\n";
-                                                                                                                } else {
-                                                                                                                    if ( (attacker.playerclass == 8) ) {
-                                                                                                                        deathstring = " was turned into ";
-                                                                                                                        deathstring2 = "'s pin-cushion\n";
-                                                                                                                    } else {
-                                                                                                                        deathstring = " was nailed by ";
-                                                                                                                        deathstring2 = "\n";
-                                                                                                                    }
-                                                                                                                }
-                                                                                                            }
-                                                                                                        } else {
-                                                                                                            if ( (deathmsg == 4) ) {
-                                                                                                                deathstring = " was punctured by ";
-                                                                                                                deathstring2 = "\n";
-                                                                                                            } else {
-                                                                                                                if ( (deathmsg == 7) ) {
-                                                                                                                    deathstring = " accepts ";
-                                                                                                                    if ( (attacker.waterlevel > 1) ) {
-                                                                                                                        deathstring2 = "'s discharge\n";
-                                                                                                                    } else {
-                                                                                                                        deathstring2 = "'s shaft\n";
-                                                                                                                    }
-                                                                                                                } else {
-                                                                                                                    if ( (deathmsg == 21) ) {
-                                                                                                                        deathstring = " grappled with ";
-                                                                                                                        deathstring2 = "\n";
-                                                                                                                    } else {
-                                                                                                                        if ( (deathmsg == 18) ) {
-                                                                                                                            if (classtype & 1) {
-                                                                                                                                deathstring = " was melted by ";
-                                                                                                                                deathstring2 = "'s plasmagun\n";
-                                                                                                                            } else {
-                                                                                                                                if ( (rnum <= 0.300) ) {
-                                                                                                                                    deathstring = " takes a bullet in the chest from ";
-                                                                                                                                    deathstring2 = "\n";
-                                                                                                                                } else {
-                                                                                                                                    deathstring = " succumbs to sniperfire from ";
-                                                                                                                                    deathstring2 = "\n";
-                                                                                                                                }
-                                                                                                                            }
-                                                                                                                        } else {
-                                                                                                                            if ( (deathmsg == 29) ) {
-                                                                                                                                if ( (rnum <= 0.500) ) {
-                                                                                                                                    deathstring = " gets a third eye from ";
-                                                                                                                                    deathstring2 = "\n";
-                                                                                                                                } else {
-                                                                                                                                    deathstring = " gets his head blown off by ";
-                                                                                                                                    deathstring2 = "\n";
-                                                                                                                                }
-                                                                                                                            } else {
-                                                                                                                                if ( (deathmsg == 28) ) {
-                                                                                                                                    if ( (rnum <= 0.500) ) {
-                                                                                                                                        deathstring = " is made legless by ";
-                                                                                                                                        deathstring2 = "\n";
-                                                                                                                                    } else {
-                                                                                                                                        deathstring = " gets his legs blown off by ";
-                                                                                                                                        deathstring2 = "\n";
-                                                                                                                                    }
-                                                                                                                                } else {
-                                                                                                                                    if ( (deathmsg == 19) ) {
-                                                                                                                                        deathstring = " collects ";
-                                                                                                                                        deathstring2 = "'s bullet spray.\n";
-                                                                                                                                    } else {
-                                                                                                                                        if ( (deathmsg == 20) ) {
-                                                                                                                                            deathstring = " gets sawn in half by ";
-                                                                                                                                            deathstring2 = "\n";
-                                                                                                                                        } else {
-                                                                                                                                            if ( (deathmsg == 22) ) {
-                                                                                                                                                deathstring = " gets knifed from behind by ";
-                                                                                                                                                deathstring2 = "\n";
-                                                                                                                                            } else {
-                                                                                                                                                if ( (deathmsg == 25) ) {
-                                                                                                                                                    deathstring = " is put to sleep by ";
-                                                                                                                                                    deathstring2 = "\n";
-                                                                                                                                                } else {
-                                                                                                                                                    if ( (deathmsg == 26) ) {
-                                                                                                                                                        deathstring = " gets a hole in his heart from ";
-                                                                                                                                                        deathstring2 = "'s railgun\n";
-                                                                                                                                                    } else {
-                                                                                                                                                        if ( (deathmsg == 33) ) {
-                                                                                                                                                            deathstring = " gets well done by ";
-                                                                                                                                                            deathstring2 = "'s incendiary rocket\n";
-                                                                                                                                                        } else {
-                                                                                                                                                            if ( (deathmsg == 38) ) {
-                                                                                                                                                                deathstring = " gets destroyed by ";
-                                                                                                                                                                deathstring2 = "'s exploding sentrygun\n";
-                                                                                                                                                            } else {
-                                                                                                                                                                if ( (deathmsg == 39) ) {
-                                                                                                                                                                    deathstring = " didn't insert the correct change into ";
-                                                                                                                                                                    deathstring2 = "'s dispenser.\n";
-                                                                                                                                                                }
-                                                                                                                                                            }
-                                                                                                                                                        }
-                                                                                                                                                    }
-                                                                                                                                                }
-                                                                                                                                            }
-                                                                                                                                        }
-                                                                                                                                    }
-                                                                                                                                }
-                                                                                                                            }
-                                                                                                                        }
-                                                                                                                    }
-                                                                                                                }
-                                                                                                            }
-                                                                                                        }
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+						} else if ( (deathmsg == 10) ) {
+							if ( (attacker.playerclass == 4) ) {
+								deathstring = " does a dance on ";
+								deathstring2 = "'s Mirv grenade\n";
+							} else {
+								deathstring = " gets spammed by ";
+								deathstring2 = "'s Mirv grenade\n";
+							}
+						} else if ( (deathmsg == 11) ) {
+							deathstring = " is caught by ";
+							deathstring2 = "'s pipebomb trap\n";
+						} else if ( (deathmsg == 40) ) {
+							deathstring = " fell victim to ";
+							deathstring2 = "'s fireworks\n";
+						} else if ( (deathmsg == 24) ) {
+							deathstring = " gags on ";
+							deathstring2 = "'s noxious gasses\n";
+						} else if ( (deathmsg == 30) ) {
+							deathstring = "'s ammo detonates him as ";
+							deathstring2 = "'s EMP fries it\n";
+						} else if ( (deathmsg == 41) ) {
+							deathstring = " stepped on too many of ";
+							deathstring2 = "'s caltrops\n";
+						} else if ( (deathmsg == 35) ) {
+							deathstring = " is charred by ";
+							deathstring2 = "'s flash grenade\n";
+						} else if ( (deathmsg == 31) ) {
+							deathstring = " stands near some ammo as ";
+							deathstring2 = "'s EMP nukes it\n";
+						} else if ( (deathmsg == 12) ) {
+							deathstring = " reaches orbit via ";
+							deathstring2 = "'s detpack\n";
+						} else if ( (deathmsg == 16) ) {
+							deathstring = " cut the red wire of ";
+							deathstring2 = "'s detpack\n";
+						} else if ( (deathmsg == 13) ) {
+							deathstring = " dies from ";
+							deathstring2 = "'s mysterious tropical disease\n";
+						} else if ( (deathmsg == 14) ) {
+							deathstring = " escapes infection from ";
+							deathstring2 = " by dying first\n";
+						} else if ( (deathmsg == 5) ) {
+							deathstring = " eats ";
+							deathstring2 = "'s pineapple\n";
+							if ( (targ.health < -40) ) {
+								deathstring = " was gibbed by ";
+								deathstring2 = "'s grenade\n";
+							}
+						} else if ( (deathmsg == 6) ) {
+							deathstring = " rides ";
+							deathstring2 = "'s rocket\n";
+							if ( (targ.health < -40) ) {
+								deathstring = " was gibbed by ";
+								deathstring2 = "'s rocket\n";
+							}
+						} else if ( (deathmsg == 15) ) {
+							if ( (rnum < 0.200) ) {
+								deathstring = " is burnt up by ";
+								deathstring2 = "'s flame\n";
+							} else if ( (rnum < 0.400) ) {
+								deathstring = " is fried by ";
+								deathstring2 = "'s fire\n";
+							} else if ( (rnum < 0.600) ) {
+								deathstring = " feels ";
+								deathstring2 = "'s fire of wrath\n";
+							} else if ( (rnum < 0.800) ) {
+								deathstring = " is reduced to ashes by ";
+								deathstring2 = "\n";
+							} else {
+								deathstring = " is grilled by ";
+								deathstring2 = "'s flame\n";
+							}
+						} else if ( (deathmsg == 17) ) {
+							deathstring2 = "\n";
+							if ( (attacker.playerclass == 8) ) {
+								deathstring = " was knife-murdered by ";
+							} else if ( (attacker.playerclass == 1) ) {
+								deathstring = "'s mellon was split by ";
+							} else if ( (attacker.playerclass == 2) ) {
+								deathstring = " was put on the chop block by ";
+							} else if ( (attacker.playerclass == 3) ) {
+								deathstring = " was sliced and diced by ";
+								deathstring2 = "'s blade\n";
+							} else if ( (attacker.playerclass == 4) ) {
+								deathstring = " is split from crotch to sternum by ";
+								deathstring2 = "'s axe swing\n";
+							} else if ( (attacker.playerclass == 6) ) {
+								deathstring = " is split in two with a powerful axe blow from ";
+							} else if ( (attacker.playerclass == 7) ) {
+								deathstring = "'s death put another notch on ";
+								deathstring2 = "'s axe\n";
+							} else {
+								deathstring = " was ax-murdered by ";
+							}
+						} else if ( (deathmsg == 32) ) {
+							deathstring = " was spanner-murdered by ";
+							deathstring2 = "\n";
+						} else if ( (deathmsg == 1) ) {
+							if ( (attacker.playerclass == 1) ) {
+								deathstring = " got too close to ";
+								deathstring2 = "'s muzzleflash\n";
+							} else if ( (attacker.playerclass == 3) ) {
+								deathstring = " practices being ";
+								deathstring2 = "'s clay pigeon\n";
+							} else if ( (attacker.playerclass == 4) ) {
+								deathstring = " was on the receiving end of ";
+								deathstring2 = "'s shotgun barrel\n";
+							} else if ( (attacker.playerclass == 5) ) {
+								deathstring = " was fed a lead diet by ";
+								deathstring2 = "\n";
+							} else if ( (attacker.playerclass == 6) ) {
+								deathstring = " got blasted by ";
+								deathstring2 = "'s last resort\n";
+							} else if ( (attacker.playerclass == 7) ) {
+								deathstring = " got more than a powderburn from ";
+								deathstring2 = "'s shotgun blast\n";
+							} else {
+								deathstring = " chewed on ";
+								deathstring2 = "'s boomstick\n";
+							}
+						} else if ( (deathmsg == 2) ) {
+							if ( (attacker.playerclass == 3) ) {
+								deathstring = " was turned into swiss cheese by ";
+								deathstring2 = "'s buckshot\n";
+							} else if ( (attacker.playerclass == 5) ) {
+								deathstring = " got a double-dose of ";
+								deathstring2 = "'s buckshot\n";
+							} else if ( (attacker.playerclass == 6) ) {
+								deathstring = " unfortunately forgot ";
+								deathstring2 = " carried a super-shotgun\n";
+							} else if ( (attacker.playerclass == 8) ) {
+								deathstring = " gets ventilated by ";
+								deathstring2 = "'s super-shotgun blast\n";
+							} else if ( (attacker.playerclass == 9) ) {
+								deathstring = "'s body got chuck full of ";
+								deathstring2 = "'s lead pellets\n";
+							} else {
+								deathstring = " ate 2 loads of ";
+								deathstring2 = "'s buckshot\n";
+							}
+						} else if ( (deathmsg == 3) ) {
+							if ( (attacker.playerclass == 1) ) {
+								deathstring = " caught one too many nails from ";
+								deathstring2 = "\n";
+							} else if ( (attacker.playerclass == 2) ) {
+								deathstring = " ran into ";
+								deathstring2 = "'s nails\n";
+							} else if ( (attacker.playerclass == 8) ) {
+								deathstring = " was turned into ";
+								deathstring2 = "'s pin-cushion\n";
+							} else {
+								deathstring = " was nailed by ";
+								deathstring2 = "\n";
+							}
+						} else if ( (deathmsg == 4) ) {
+							deathstring = " was punctured by ";
+							deathstring2 = "\n";
+						} else if ( (deathmsg == 7) ) {
+							deathstring = " accepts ";
+							if ( (attacker.waterlevel > 1) ) {
+								deathstring2 = "'s discharge\n";
+							} else {
+								deathstring2 = "'s shaft\n";
+							}
+						} else if ( (deathmsg == 21) ) {
+							deathstring = " grappled with ";
+							deathstring2 = "\n";
+						} else if ( (deathmsg == 18) ) {
+							if (classtype & 1) {
+								deathstring = " was melted by ";
+								deathstring2 = "'s plasmagun\n";
+							} else if ( (rnum <= 0.300) ) {
+								deathstring = " takes a bullet in the chest from ";
+								deathstring2 = "\n";
+							} else {
+								deathstring = " succumbs to sniperfire from ";
+								deathstring2 = "\n";
+							}
+						} else if ( (deathmsg == 29) ) {
+							if ( (rnum <= 0.500) ) {
+								deathstring = " gets a third eye from ";
+								deathstring2 = "\n";
+							} else {
+								deathstring = " gets his head blown off by ";
+								deathstring2 = "\n";
+							}
+						} else if ( (deathmsg == 28) ) {
+							if ( (rnum <= 0.500) ) {
+								deathstring = " is made legless by ";
+								deathstring2 = "\n";
+							} else {
+								deathstring = " gets his legs blown off by ";
+								deathstring2 = "\n";
+							}
+						} else if ( (deathmsg == 19) ) {
+							deathstring = " collects ";
+							deathstring2 = "'s bullet spray.\n";
+						} else if ( (deathmsg == 20) ) {
+							deathstring = " gets sawn in half by ";
+							deathstring2 = "\n";
+						} else if ( (deathmsg == 22) ) {
+							deathstring = " gets knifed from behind by ";
+							deathstring2 = "\n";
+						} else if ( (deathmsg == 25) ) {
+							deathstring = " is put to sleep by ";
+							deathstring2 = "\n";
+						} else if ( (deathmsg == 26) ) {
+							deathstring = " gets a hole in his heart from ";
+							deathstring2 = "'s railgun\n";
+						} else if ( (deathmsg == 33) ) {
+							deathstring = " gets well done by ";
+							deathstring2 = "'s incendiary rocket\n";
+						} else if ( (deathmsg == 38) ) {
+							deathstring = " gets destroyed by ";
+							deathstring2 = "'s exploding sentrygun\n";
+						} else if ( (deathmsg == 39) ) {
+							deathstring = " didn't insert the correct change into ";
+							deathstring2 = "'s dispenser.\n";
+						}
                     }
                     if ( ((attacker.has_disconnected == 1) || (attacker.netname == string_null)) ) {
                         deathstring = " died.";
@@ -2741,15 +2567,11 @@ void ClientObituary (entity targ, entity attacker) {
                 if ( (targ == attacker.real_owner) ) {
                     if ( (deathmsg == 34) ) {
                         deathstring = " intercepts his sentry gun's rocket\n";
-                    } else {
-                        if ( (deathmsg == 27) ) {
-                            deathstring = " crossed his sentry gun's line of fire\n";
-                        } else {
-                            if ( (deathmsg == 7) ) {
-                                deathstring = " crossed his sentry gun's shaft\n";
-                            }
-                        }
-                    }
+					} else if ( (deathmsg == 27) ) {
+						deathstring = " crossed his sentry gun's line of fire\n";
+					} else if ( (deathmsg == 7) ) {
+						deathstring = " crossed his sentry gun's shaft\n";
+					}
                     bprint (PRINT_MEDIUM,targ.netname);
                     bprint (PRINT_MEDIUM,deathstring);
                 } else {
@@ -2762,17 +2584,13 @@ void ClientObituary (entity targ, entity attacker) {
                         if ( (deathmsg == 34) ) {
                             deathstring = " hates ";
                             deathstring2 = "'s sentry gun\n";
-                        } else {
-                            if ( (deathmsg == 27) ) {
-                                deathstring = " is mown down by ";
-                                deathstring2 = "'s sentry gun\n";
-                            } else {
-                                if ( (deathmsg == 7) ) {
-                                    deathstring = " is electrocuted by ";
-                                    deathstring2 = "'s sentry gun\n";
-                                }
-                            }
-                        }
+						} else if ( (deathmsg == 27) ) {
+							deathstring = " is mown down by ";
+							deathstring2 = "'s sentry gun\n";
+						} else if ( (deathmsg == 7) ) {
+							deathstring = " is electrocuted by ";
+							deathstring2 = "'s sentry gun\n";
+						}
                         bprint (PRINT_MEDIUM,targ.netname);
                         bprint (PRINT_MEDIUM,deathstring);
                         bprint (PRINT_MEDIUM,attacker.real_owner.netname);
@@ -2801,42 +2619,30 @@ void ClientObituary (entity targ, entity attacker) {
                         if ( (rnum == -5) ) {
                             if ( (targ.health < -15) ) {
                                 deathstring = " burst into flames\n";
-                            } else {
-                                if ( (random () < 0.500) ) {
-                                    deathstring = " turned into hot slag\n";
-                                } else {
-                                    deathstring = " visits the Volcano God\n";
-                                }
-                            }
+							} else if ( (random () < 0.500) ) {
+								deathstring = " turned into hot slag\n";
+							} else {
+								deathstring = " visits the Volcano God\n";
+							}
                         } else {
                             if ( (attacker.classname == "explo_box") ) {
                                 deathstring = " blew up\n";
-                            } else {
-                                if ( ((attacker.solid == 4) && (attacker != world)) ) {
-                                    deathstring = " was squished\n";
-                                } else {
-                                    if ( (targ.deathtype == "falling") ) {
-                                        targ.deathtype = string_null;
-                                        deathstring = " fell to his death\n";
-                                    } else {
-                                        if ( ((attacker.classname == "trap_shooter") || (attacker.classname == "trap_spikeshooter")) ) {
-                                            deathstring = " was spiked\n";
-                                        } else {
-                                            if ( (attacker.classname == "fireball") ) {
-                                                deathstring = " ate a lavaball\n";
-                                            } else {
-                                                if ( (attacker.classname == "trigger_changelevel") ) {
-                                                    deathstring = " tried to leave\n";
-                                                } else {
-                                                    deathstring = " died\n";
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+							} else if ( ((attacker.solid == 4) && (attacker != world)) ) {
+								deathstring = " was squished\n";
+							} else if ( (targ.deathtype == "falling") ) {
+								targ.deathtype = string_null;
+								deathstring = " fell to his death\n";
+							} else if ( ((attacker.classname == "trap_shooter") || (attacker.classname == "trap_spikeshooter")) ) {
+								deathstring = " was spiked\n";
+							} else if ( (attacker.classname == "fireball") ) {
+								deathstring = " ate a lavaball\n";
+							} else if ( (attacker.classname == "trigger_changelevel") ) {
+								deathstring = " tried to leave\n";
+							} else {
+								deathstring = " died\n";
+							}
+						}
+					}
                 }
                 bprint (PRINT_MEDIUM,deathstring);
             }
