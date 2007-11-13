@@ -390,6 +390,66 @@ CL_LinkPacketEntities
 
 ===============
 */
+static entity_state_t *FindEnt(Snapshot *snap, int num)
+{
+	for (int i = 0; i < snap->packet_entities.num_entities; i++)
+		if (snap->packet_entities.entities[i].number == num)
+			return &snap->packet_entities.entities[i];
+	return NULL;
+}
+
+void CL_AdjustEntlatency (void)
+{
+	if (cls.state != ca_active)
+		return;
+
+	float avg_frametime = 0;
+	int numtimes = 0;
+	for (int i = 0; i < cl.num_snapshots-1; i++)
+	{
+		float t = cl.snapshots[i].servertime - cl.snapshots[i+1].servertime;
+		if (t) {
+			avg_frametime += t;
+			numtimes++;
+			if (numtimes == 5)
+				break;	// count last 5 server frames at most
+		}
+	}
+	if (numtimes)
+		avg_frametime /= numtimes;
+
+//	double basetime = cls.demoplayback ? cls.demotime : cls.realtime;
+	double basetime = cl.snapshots[0].receivedtime;
+
+	if (basetime - cl.entlatency > cl.snapshots[0].servertime) {
+		Com_DPrintf ("HIGH clamp\n");
+		cl.entlatency = basetime - cl.snapshots[0].servertime;
+	} else if (basetime - cl.entlatency < cl.snapshots[0].servertime - avg_frametime * 2) {
+		Com_DPrintf ("low clamp\n");
+		cl.entlatency = basetime - (cl.snapshots[0].servertime - avg_frametime * 2);
+	} else {
+		if (!avg_frametime)
+			return;
+
+		// drift towards ideal latency
+		if (!Cvar_Value("nodrift") && cl.num_snapshots >= 2)
+		{
+			float ideal_entlatency = basetime - (cl.snapshots[0].servertime - avg_frametime * 1.1);
+			// drift 5 msec per second, but not more than 1ms every time
+			float adjust = min((cl.snapshots[0].receivedtime -
+							cl.snapshots[1].receivedtime) * 0.005, 0.001);
+			if (cl.entlatency > ideal_entlatency) {
+				cl.entlatency -= adjust;
+				cl.entlatency = max(cl.entlatency, ideal_entlatency);
+			}
+			else if (cl.entlatency < ideal_entlatency) {
+				cl.entlatency += adjust;
+				cl.entlatency = min(cl.entlatency, ideal_entlatency);
+			}
+		}
+	}
+}
+
 void CL_LinkPacketEntities (void)
 {
 	entity_t			ent;
@@ -405,6 +465,7 @@ void CL_LinkPacketEntities (void)
 	int					i;
 	int					pnum;
 	extern cvar_t		cl_nolerp;
+	Snapshot			*newsnap, *oldsnap;
 
 	pack = &cl.snapshots[0].packet_entities;
 
@@ -416,30 +477,43 @@ void CL_LinkPacketEntities (void)
 			return;
 		assert (cl.snapshots[0].servertime > cl.snapshots[1].servertime);
 		f = bound(0, (cls.demotime - cl.snapshots[1].servertime) / (cl.snapshots[0].servertime - cl.snapshots[1].servertime), 1);
+		newsnap = &cl.snapshots[0];
+		oldsnap = &cl.snapshots[1];
 	}
 	else
 #endif
-	if (cl_nolerp.value)
+	if (cl_nolerp.value || cl.num_snapshots < 2) {
 		f = 1;
+		newsnap = oldsnap = &cl.snapshots[0];
+	}
 	else
 	{
 		float t, simtime;
 
-		simtime = cls.realtime - cl.entlatency;
-		if (simtime > cl.snapshots[0].servertime) {
-			cl.entlatency = cls.realtime - cl.snapshots[0].servertime;
-		} else if (simtime < cl.snapshots[1].servertime) {
-			cl.entlatency = cls.realtime - cl.snapshots[1].servertime;
+		simtime = (cls.demoplayback ? cls.demotime : cls.realtime) - cl.entlatency;
+
+		int maxsnaps = cl.num_snapshots;	//min(cl.num_snapshots, 3);
+		for (i = 0; i < maxsnaps; i++) {
+			if (cl.snapshots[i].servertime <= simtime)
+				break;
+		}
+		if (i == maxsnaps) {
+			i = maxsnaps - 1;	// guaranteed to be >= 0 because cl.num_snapshots is always >= 1
+			newsnap = oldsnap = &cl.snapshots[i];
 		} else {
-			// drift towards ideal latency
+			oldsnap = &cl.snapshots[i];
+			newsnap = &cl.snapshots[max(i - 1, 0)];
 		}
 
-		t = cl.snapshots[0].servertime - cl.snapshots[1].servertime;
+		t = newsnap->servertime - oldsnap->servertime;
 		if (t)
-			f = (cls.realtime - cl.entlatency - cl.snapshots[1].servertime) / t;
+			f = (simtime - oldsnap->servertime) / t;
 		else
 			f = 1;
 		f = bound (0, f, 1);
+		Cvar_Get("showf", "0", 0);
+		if (Cvar_Value("showf"))
+			Com_Printf ("%f of %f [%i -> %i]\n", f, t, oldsnap-cl.snapshots, newsnap-cl.snapshots);
 	}
 
 	for (pnum=0 ; pnum<pack->num_entities ; pnum++)
@@ -589,10 +663,29 @@ void CL_LinkPacketEntities (void)
 		else
 		{
 			// generic angles interpolation
+#if 0
 			vec3_t	old, cur;
 			MSG_UnpackAngles (cent->previous.s_angles, old);
 			MSG_UnpackAngles (cent->current.s_angles, cur);
 			LerpAngles (old, cur, f, ent.angles);
+#else
+			entity_state_t *oldstate = FindEnt(oldsnap, state->number);
+			entity_state_t *newstate = FindEnt(newsnap, state->number);
+			if (!oldstate || !newstate) {
+				continue;//@@@
+				//Com_DPrintf ("!oldstate || !newstate\n");
+				if (/*!oldstate &&*/ !newstate)
+					MSG_UnpackAngles (cent->current.s_angles, ent.angles);
+				else if (newstate)
+					MSG_UnpackAngles(newstate->s_angles, ent.angles);
+			}
+			else {
+				vec3_t o, n;
+				MSG_UnpackAngles (oldstate->s_angles, o);
+				MSG_UnpackAngles (newstate->s_angles, n);
+				LerpAngles (o, n, f, ent.angles);
+			}
+#endif
 		}
 
 		//
@@ -624,9 +717,28 @@ void CL_LinkPacketEntities (void)
 		}
 		else {
 			// generic origin interpolation
+#if 0
 			for (i=0 ; i<3 ; i++)
 				ent.origin[i] = cent->previous.s_origin[i] * 0.125 + 
 					f * (cur_origin[i] - cent->previous.s_origin[i] * 0.125);
+#else
+			entity_state_t *oldstate = FindEnt(oldsnap, state->number);
+			entity_state_t *newstate = FindEnt(newsnap, state->number);
+			if (!oldstate || !newstate) {
+				continue;//@@@
+				//Com_DPrintf ("!oldstate || !newstate\n");
+				if (/*!oldstate &&*/ !newstate)
+					VectorCopy (cur_origin, ent.origin);
+				else if (newstate)
+					MSG_UnpackOrigin(newstate->s_origin, ent.origin);
+			}
+			else {
+				vec3_t o, n;
+				MSG_UnpackOrigin (oldstate->s_origin, o);
+				MSG_UnpackOrigin (newstate->s_origin, n);
+				LerpVector (o, n, f, ent.origin);
+			}
+#endif
 		}
 
 		// add automatic particle trails
@@ -757,6 +869,7 @@ static void CL_LinkNails (void)
 	float f;
 #endif
 
+return;//@@@
 	memset(&ent, 0, sizeof(entity_t));
 	ent.model = cl.model_precache[cl_spikeindex];
 	ent.colormap = 0;
@@ -1692,6 +1805,7 @@ void CL_EmitEntities (void)
 		CLNQ_LinkEntities ();
 	else {
 		CL_LinkPlayers ();
+		CL_AdjustEntlatency ();
 		CL_LinkPacketEntities ();
 		CL_LinkNails ();
 	}

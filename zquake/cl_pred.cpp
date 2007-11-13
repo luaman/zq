@@ -208,12 +208,12 @@ static void CL_LerpViewPlayer (qbool demo)
 	// Adjust latency
 	if (simtime > lerp_times[0]) {
 		// High clamp
-		Com_DPrintf ("HIGH clamp\n");
+		//Com_DPrintf ("HIGH clamp\n");
 		playerlatency = basetime - lerp_times[0];
 	}
 	else if (simtime < lerp_times[2]) {
 		// Low clamp
-		Com_DPrintf ("   low clamp\n");
+		//Com_DPrintf ("   low clamp\n");
 		playerlatency = basetime - lerp_times[2];
 	} 
 	else
@@ -242,7 +242,7 @@ static void CL_LerpViewPlayer (qbool demo)
 #else
 			// just drift down till corrected
 			if (cls.physframe)
-				playerlatency -= cls.frametime * 0.1;
+				playerlatency -= min(cls.physframetime * 0.005, 0.001);
 #endif
 		}
 	}

@@ -1153,7 +1153,7 @@ void CL_BeginParsingSnapshot (void)
         outp->senttime = cls.realtime - cls.frametime;
 #endif
 
-	outp->receivedtime = cls.realtime;
+	outp->receivedtime = cls.demoplayback ? cls.demotime : cls.realtime;
 
 // calculate latency
 	float latency = outp->receivedtime - outp->senttime;
@@ -1169,8 +1169,8 @@ void CL_BeginParsingSnapshot (void)
 	cl.num_nails = 0;
 
 	new_snapshot.clear();
-	new_snapshot.receivedtime = cls.realtime;
-	new_snapshot.servertime = cls.realtime;
+	new_snapshot.receivedtime = cls.demoplayback ? cls.demotime : cls.realtime;
+	new_snapshot.servertime = cls.demoplayback ? cls.demotime : cls.realtime;
 	new_snapshot.sequence = cls.netchan.incoming_sequence;
 	new_snapshot_entities_valid = false;
 }
@@ -1898,9 +1898,6 @@ void CL_CheckAndSaveSnapshot (void)
 	cl.snapshots[0] = new_snapshot;
 	new_snapshot.packet_entities.entities = NULL;
 	new_snapshot.clear();
-
-	void CL_AdjustEntlatency ();
-	CL_AdjustEntlatency ();
 
 	CL_SetSolidEntities ();
 
