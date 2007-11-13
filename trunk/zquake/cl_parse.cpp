@@ -462,7 +462,6 @@ void Sound_NextDownload (void)
 	}
 
 	// done with sounds, request models now
-	memset (cl.model_precache, 0, sizeof(cl.model_precache));
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 	MSG_WriteString (&cls.netchan.message, va("modellist %i %i", cl.servercount, 0));
 }
@@ -915,9 +914,6 @@ void CL_ParseSoundlist (void)
 	int	numsounds;
 	char	*str;
 	int n;
-
-// precache sounds
-//	memset (cl.sound_precache, 0, sizeof(cl.sound_precache));
 
 	if (cl.protocol >= 26)
 		numsounds = MSG_ReadByte();
@@ -1644,7 +1640,7 @@ void CL_ParseStufftext (void)
 CL_SetStat
 =====================
 */
-void CL_SetStat (int stat, int value)
+void CL_SetStat (int stat, int value, qbool updatestatlong)
 {
 	int	j;
 	if (stat < 0 || stat >= MAX_CL_STATS)
@@ -1674,6 +1670,7 @@ void CL_SetStat (int stat, int value)
 		}
 	}
 
+if (!(stat == STAT_SNAPTIME))	//##snaptime test
 	cl.stats[stat] = value;
 
 	if (stat == STAT_VIEWHEIGHT && cl.z_ext & Z_EXT_VIEWHEIGHT)
@@ -1682,6 +1679,23 @@ void CL_SetStat (int stat, int value)
 	if (stat == STAT_TIME && cl.z_ext & Z_EXT_SERVERTIME) {
 		cl.servertime_works = true;
 		cl.servertime = cl.stats[STAT_TIME] * 0.001;
+	}
+
+//##snaptime test
+	if (stat == STAT_SNAPTIME) {
+		// FIXME: only if we negotiated snaptime with the server
+		if (!updatestatlong) {
+			// svc_updatestat is a delta against previous
+			if (value >= (cl.stats[STAT_SNAPTIME] & 255))
+				cl.stats[STAT_SNAPTIME] = (cl.stats[STAT_SNAPTIME]&~255) + value;
+			else
+				cl.stats[STAT_SNAPTIME] = (cl.stats[STAT_SNAPTIME]&~255) + 256 + value;
+		}
+		else
+			cl.stats[STAT_SNAPTIME] = value;
+			
+		if (atoi(cls.userinfo["sttest"].c_str()) && atoi(cl.serverinfo["snaptime_test"].c_str()))
+			new_snapshot.servertime = cl.stats[STAT_SNAPTIME] * 0.001;
 	}
 
 	TP_StatChanged(stat, value);
@@ -1885,6 +1899,9 @@ void CL_CheckAndSaveSnapshot (void)
 	cl.snapshots[0] = new_snapshot;
 	new_snapshot.packet_entities.entities = NULL;
 	new_snapshot.clear();
+
+	void CL_AdjustEntlatency ();
+	CL_AdjustEntlatency ();
 
 	CL_SetSolidEntities ();
 
@@ -2115,14 +2132,14 @@ bad_message:
 		case svc_updatestat:
 			i = MSG_ReadByte ();
 			j = MSG_ReadByte ();
-			CL_SetStat (i, j);
+			CL_SetStat (i, j, false);
 			break;
 		case svc_updatestatlong:
 			i = MSG_ReadByte ();
 			j = MSG_ReadLong ();
-			CL_SetStat (i, j);
+			CL_SetStat (i, j, true);
 			break;
-			
+
 		case svc_spawnstaticsound:
 			CL_ParseStaticSound ();
 			break;
