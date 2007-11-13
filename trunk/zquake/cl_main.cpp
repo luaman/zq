@@ -1114,6 +1114,7 @@ void CL_InitLocal (void)
 	// inform everyone that we're using a development version
 //	cls.userinfo.set( "*ver", va(PROGRAM " %s", VersionString()));
 #endif
+	cls.userinfo.set("sttest", "1");	// snaptime test
 
 	//
 	// info mirrors
@@ -1383,6 +1384,7 @@ void CL_Frame (double time)
 	} else {
 		extraphysframetime = 0;
 		cls.physframe = true;
+		cls.physframetime = cls.frametime;
 	}
 
 	if (cls.demoplayback) {
