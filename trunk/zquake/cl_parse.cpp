@@ -896,7 +896,6 @@ void CL_ParseServerData (void)
 	if (!strstr(str, "\236\236\236"))
 		Com_Printf ("\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
 	// ask for the sound list next
-	memset(cl.sound_name, 0, sizeof(cl.sound_name));
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 	MSG_WriteString (&cls.netchan.message, va("soundlist %i %i", cl.servercount, 0));
 
