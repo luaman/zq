@@ -1,6 +1,11 @@
 #import "Cocoa/Cocoa.h"
 #import "Quake.h"
-#import "quakedef.h"
+#import "common.h"
+#import "q_shared.h"
+#import "mathlib.h"
+#import "cmodel.h"
+#import "pmove.h"
+#import "input.h"
 
 @interface Quake (NSApplicationDefined)
 - (void) applicationDidFinishLaunching: (NSNotification *) theNote;
