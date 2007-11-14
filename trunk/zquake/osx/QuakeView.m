@@ -9,7 +9,10 @@
 //____________________________________________________________________________________________________________________iNCLUDES
 
 #import "QuakeView.h"
-#import "quakedef.h"
+#import "common.h"
+#import "vid.h"
+#import "render.h"
+#import "input.h"
 #import "vid_osx.h"
 
 //_________________________________________________________________________________________________________fUNCTION_pROTOTYPES
