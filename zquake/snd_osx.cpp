@@ -27,12 +27,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OUTPUT_BUFFER_SIZE		(2 * 1024)
 
 static AudioDeviceID 			gSndDeviceID;
+static AudioDeviceIOProcID*		gAudioIOProcID;
 static unsigned char 			gSndBuffer[64*1024];
 static bool						gSndIOProcIsInstalled = false;
-static UInt32					gSndBufferPosition,
-gSndBufferByteCount;
+static UInt32					gSndBufferPosition, gSndBufferByteCount;
 
-OSStatus	SNDDMA_AudioIOProc (AudioDeviceID inDevice,
+static OSStatus	SNDDMA_AudioIOProc (AudioDeviceID inDevice,
                              const AudioTimeStamp *inNow,
                              const AudioBufferList *inInputData,
                              const AudioTimeStamp *inInputTime,
@@ -61,7 +61,7 @@ OSStatus	SNDDMA_AudioIOProc (AudioDeviceID inDevice,
     return 0;
 }
 
-bool	SNDDMA_ReserveBufferSize (void)
+static bool	SNDDMA_ReserveBufferSize (void)
 {
     OSStatus		myError;
     AudioDeviceID	myAudioDevice;
@@ -158,14 +158,14 @@ qbool SNDDMA_Init(void)
     if (!COM_CheckParm ("-nosound"))
     {
         // add the sound FX IO:
-        if (AudioDeviceAddIOProc (gSndDeviceID, SNDDMA_AudioIOProc, NULL))
+        if (AudioDeviceCreateIOProcID (gSndDeviceID, SNDDMA_AudioIOProc, NULL, gAudioIOProcID))
         {
             Com_Printf ("Audio init fails: Can\'t install IOProc.\n");
             return false;
         }
 
         // start the sound FX:
-        if (AudioDeviceStart (gSndDeviceID, SNDDMA_AudioIOProc))
+        if (AudioDeviceStart (gSndDeviceID, *gAudioIOProcID))
         {
             Com_Printf ("Audio init fails: Can\'t start audio.\n");
             return false;
@@ -211,8 +211,8 @@ void SNDDMA_Shutdown(void)
     // shut everything down:
     if (gSndIOProcIsInstalled == true)
     {
-        AudioDeviceStop (gSndDeviceID, SNDDMA_AudioIOProc);
-        AudioDeviceRemoveIOProc (gSndDeviceID, SNDDMA_AudioIOProc);
+        AudioDeviceStop (gSndDeviceID, *gAudioIOProcID);
+        AudioDeviceDestroyIOProcID (gSndDeviceID, *gAudioIOProcID);
         gSndIOProcIsInstalled = false;
     }
 }
