@@ -14,7 +14,7 @@
 @implementation Quake
 
 extern int main_argc;
-extern char *main_argv[];
+extern char **main_argv;
 
 - (void) timerTic: (NSTimer *) theTimer
 {
@@ -73,7 +73,7 @@ extern char *main_argv[];
 	// we need to check for -noconinput and -nostdout
 	// before Host_Init is called
 	COM_InitArgv (argc, argv);
-	
+
 	Host_Init (argc, argv, 32*1024*1024);
 	
 	[self installFrameTimer];
@@ -98,6 +98,7 @@ extern char *main_argv[];
         [mDistantPast release];
         mDistantPast = NULL;
     }
+	[super dealloc];
 }
 
 //___________________________________________________________________________________________________distantPast
