@@ -47,8 +47,7 @@ static BOOL						gGLDisplayIs8Bit;
 //static BOOL gGLAnisotropic = NO;
 //static BOOL gGLMultiTextureAvailable = NO;
 //static BOOL gGLMultiTexture = NO;
-UInt32							gGLDisplayWidth, 
-gGLDisplayHeight;
+UInt32							gGLDisplayWidth, gGLDisplayHeight, gGLDisplayDepth;
 static float					gGLVideoWait = 0.0f;
 //static float					gGLFSAALevel = 1.0f;
 //static float					gGLPNTriangleLevel = -1.0f;
@@ -63,6 +62,7 @@ static vid_glpntrianglesfatix_t	gGLPNTrianglesfATIX = NULL;
 
 cvar_t	_windowed_mouse = {"_windowed_mouse", "0"};
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1", 0};
+cvar_t		vid_screenaspect = {"vid_screenaspect", "auto", CVAR_ARCHIVE};
 // qbool	vid_hwgamma_enabled = FALSE;
 extern qbool	vid_hwgamma_enabled;
 
@@ -381,6 +381,7 @@ qbool VID_SetDisplayMode (void)
 void VID_Init (unsigned char *palette)
 {
 	int i;
+	NSArray		*myDisplayModes;
 	
 	vid.width = 640;
 	vid.height = 480;
@@ -391,6 +392,7 @@ void VID_Init (unsigned char *palette)
     Cvar_Register (&vid_vsync);
 	Cvar_Register(&vid_hwgammacontrol);
     Cvar_Register (&_windowed_mouse);
+	Cvar_Register (&vid_screenaspect);
 //    Cvar_Register (&gl_anisotropic);
 //    Cvar_Register (&gl_fsaa);
 //    Cvar_Register (&gl_truform);
@@ -406,7 +408,6 @@ void VID_Init (unsigned char *palette)
     
 	// get the list of display modes:
 	{
-		NSArray		*myDisplayModes;
 		CGDirectDisplayID	mySelectedDisplay;
 		int			myDisplayIndex = 0;
 		
@@ -417,7 +418,7 @@ void VID_Init (unsigned char *palette)
 		myDisplayModes = [(NSArray *) CGDisplayAvailableModes (mySelectedDisplay) retain];
 		SYS_CHECK_MALLOC (myDisplayModes);
 		
-		gVidDisplayMode = [myDisplayModes objectAtIndex: 8];		// OMG OMG OMG
+		gVidDisplayMode = [myDisplayModes objectAtIndex: 8]; // XXX: defaulting to 1024x768
 	}
 
 	if (COM_CheckParm("-window"))
@@ -425,6 +426,7 @@ void VID_Init (unsigned char *palette)
 	else if (COM_CheckParm("-fullscreen"))
 		gVidDisplayFullscreen = YES;
 		
+	gGLDisplayDepth = 32;
 	if (gVidDisplayFullscreen) {
 		gGLDisplayWidth  = [[gVidDisplayMode objectForKey: (id)kCGDisplayWidth] intValue];
 		gGLDisplayHeight = [[gVidDisplayMode objectForKey: (id)kCGDisplayHeight] intValue];
@@ -440,6 +442,21 @@ void VID_Init (unsigned char *palette)
     // get height from command line parameters [only for windowed mode]:
     if ((i = COM_CheckParm("-height")))
         gGLDisplayHeight = atoi (com_argv[i+1]);
+
+
+	if (gGLDisplayWidth != [[gVidDisplayMode objectForKey: (id)kCGDisplayWidth] intValue] || gGLDisplayHeight != [[gVidDisplayMode objectForKey: (id)kCGDisplayHeight] intValue]) {
+		for (i = 0; i < [myDisplayModes count]; i++)
+		{			
+			//printf("checking %dx%d@%d bpp, want %dx%d@%d bpp\n", [[[myDisplayModes objectAtIndex:i] objectForKey: (NSString *)kCGDisplayWidth] intValue], [[[myDisplayModes objectAtIndex:i] objectForKey: (NSString *)kCGDisplayHeight] intValue], [[[myDisplayModes objectAtIndex:i] objectForKey: (NSString *)kCGDisplayBitsPerPixel] intValue], gGLDisplayWidth, gGLDisplayHeight, gGLDisplayDepth);
+			if (gGLDisplayWidth == [[[myDisplayModes objectAtIndex:i] objectForKey: (NSString *)kCGDisplayWidth] intValue] &&
+				gGLDisplayHeight == [[[myDisplayModes objectAtIndex:i] objectForKey: (NSString *)kCGDisplayHeight] intValue] &&
+				gGLDisplayDepth == [[[myDisplayModes objectAtIndex:i] objectForKey: (NSString *)kCGDisplayBitsPerPixel] intValue]) {
+				gVidDisplayMode = [myDisplayModes objectAtIndex:i];
+				//printf("found %dx%d@%d bpp\n", [[[myDisplayModes objectAtIndex:i] objectForKey: (NSString *)kCGDisplayWidth] intValue], [[[myDisplayModes objectAtIndex:i] objectForKey: (NSString *)kCGDisplayHeight] intValue], [[[myDisplayModes objectAtIndex:i] objectForKey: (NSString *)kCGDisplayBitsPerPixel] intValue]);
+				break;
+			}
+		}
+	}
 
 	
     // switch the video mode:
@@ -478,7 +495,18 @@ void VID_Init (unsigned char *palette)
     if (vid.height > gGLDisplayHeight)
         vid.height = gGLDisplayHeight;
 
-    vid.pixelaspect = ((float) vid.height / (float) vid.width) * (320.0f / 240.0f);
+	if (gVidDisplayFullscreen) {
+		float screenaspect = vid_screenaspect.value;
+		if (!screenaspect) {
+			// TODO: make an educated guess based on known widescreen resolutions
+			screenaspect = (4.0/3.0);
+			screenaspect = (gGLDisplayWidth / gGLDisplayHeight);
+		}
+		vid.pixelaspect = screenaspect * (float)vid.realheight / (float)vid.realwidth;
+		vid.pixelaspect = ((float) vid.height / (float) vid.width) * (320.0f / 240.0f);
+	} else {
+		vid.pixelaspect = 1;
+	}
     vid.numpages = 2;
 	
     // setup OpenGL:
