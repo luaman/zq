@@ -65,7 +65,12 @@
 #import <sys/mman.h>
 #import <sys/param.h>
 #import <errno.h>
+
+#ifdef __i386__
+#import <IOKit/hidsystem/event_status_driver.h>
+#else
 #import <drivers/event_status_driver.h>
+#endif // __i386__
 
 #if defined(SERVERONLY)
 
@@ -73,6 +78,9 @@
 
 #else
 
+#import "common.h"
+#import "cmodel.h"
+#import "info.h"
 #import "client.h"
 #import "QuakeApplication.h"
 #import "Quake.h"
