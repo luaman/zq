@@ -1133,10 +1133,17 @@ SInt main (SInt theArgCount, const char **theArgValues)
 int main_argc;
 char **main_argv;
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
 	main_argc = argc;
 	main_argv = argv;
+
+#if 0
+	// duplicate argv if needed
+	main_argv = (char **) calloc(MAX(argc + 1, 1), sizeof(*main_argv));
+	for (int n = 0; n < argc; n++)
+		main_argv[n] = strdup(argv[n]);
+#endif
 	
-    return NSApplicationMain(argc,  (const char **) argv);
+    return NSApplicationMain(argc, (const char**) argv);
 }
