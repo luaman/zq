@@ -48,7 +48,7 @@ qbool SV_AuthListAdd(authqh_t *header)
         return false;
     }
     
-    authclient_t *new = Q_malloc(sizeof(authclient_t));
+    authclient_t *newauth = (authclient_t *) Q_malloc(sizeof(authclient_t));
     char *msgline = NULL;
     char *newname = NULL;
     char *newhash = NULL;
@@ -57,7 +57,7 @@ qbool SV_AuthListAdd(authqh_t *header)
     msgline = MSG_ReadStringLine();
     if( !msgline )
     {
-        Q_free(new);
+        Q_free(newauth);
         Com_Printf("SV_AuthListAdd: Malformed M2S_AUTH_TOK packet from %s.\n", NET_AdrToString (net_from));
         return false;
     }
@@ -65,41 +65,41 @@ qbool SV_AuthListAdd(authqh_t *header)
     // Check that the name has not already been added to our queue...
     if( SV_AuthListFind(header, msgline) != NULL )
     {
-        Q_free(new);
+        Q_free(newauth);
         return false;
     }
    
     // Allocate and store name...
-    newname = Q_malloc(strlen(msgline)+1);
-    new->name = strncpy(newname, msgline, strlen(msgline)+1);
+    newname = (char *) Q_malloc(strlen(msgline)+1);
+    newauth->name = strncpy(newname, msgline, strlen(msgline)+1);
 
     // Read, allocate and store hash...
     msgline = MSG_ReadStringLine();
     if( !msgline )
     {
         Q_free(newname);
-        Q_free(new);
+        Q_free(newauth);
         Com_Printf("SV_AuthListAdd: Malformed M2S_AUTH_TOK packet from %s.\n", NET_AdrToString (net_from));
         return false;
     }
-    newhash = Q_malloc(strlen(msgline)+1);
-    new->hash = strncpy(newhash, msgline, strlen(msgline)+1);
+    newhash = (char *) Q_malloc(strlen(msgline)+1);
+    newauth->hash = strncpy(newhash, msgline, strlen(msgline)+1);
 
     // We've not yet been told this is a valid record by the master...
-    new->valid = false;
+    newauth->valid = false;
 
     // Link into beginning of list...
     if( header->start )
     {
         // only if there is a node to link to at start of header!
-        header->start->prev = new;
+        header->start->prev = newauth;
     }
-    new->next = header->start;
-    new->prev = NULL;
-    header->start = new;
+    newauth->next = header->start;
+    newauth->prev = NULL;
+    header->start = newauth;
     header->curlen++;
 
-    Com_Printf("SV_AuthListAdd: Queued token for %s.\n", new->name);
+    Com_Printf("SV_AuthListAdd: Queued token for %s.\n", newauth->name);
     return true;
 }
 
