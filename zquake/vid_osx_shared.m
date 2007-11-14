@@ -217,7 +217,7 @@ BOOL	VSH_FadeGammaInit (BOOL theFadeOnAllDisplays)
     }
     
     // get memory for our original gamma table(s):
-    gVshOriginalGamma = malloc (sizeof (vid_gamma_t) * gVidDisplayCount);
+    gVshOriginalGamma = (vid_gamma_t*) malloc (sizeof (vid_gamma_t) * gVidDisplayCount);
     if (gVshOriginalGamma == NULL)
     {
         return (NO);

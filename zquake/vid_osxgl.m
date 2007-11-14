@@ -23,9 +23,6 @@
 
 //viddef_t	vid;				// global video state
 
-NSWindow	*gVidWindow;
-float		gVidWindowPosX, gVidWindowPosY;
-
 NSDictionary *					gVidDisplayMode;
 CGDirectDisplayID				gVidDisplayList[VID_MAX_DISPLAYS];
 CGDisplayCount					gVidDisplayCount;
@@ -205,7 +202,7 @@ NSOpenGLPixelFormat *	VID_CreateGLPixelFormat (BOOL theFullscreenMode)
 
 void VID_SetWait (UInt32 theState)
 {
-	const long params = theState;
+	const GLint params = theState;
 	
     // set theState to 1 to enable, to 0 to disable VBL syncing.
     [gGLContext makeCurrentContext];
