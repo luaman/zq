@@ -1592,6 +1592,24 @@ static void Cmd_Fly_f (void)
 	}
 }
 
+static void Cmd_Notarget_f (void)
+{
+	if (sv_client->spectator || deathmatch.value != 0)
+		return;
+
+	if (!sv_allow_cheats)
+	{
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cheats are not allowed on this server\n");
+		return;
+	}
+
+	sv_player->v.flags = (int)sv_player->v.flags ^ FL_NOTARGET;
+	if (!((int)sv_player->v.flags & FL_NOTARGET) )
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "notarget OFF\n");
+	else
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "notarget ON\n");
+}
+
 
 //=============================================================================
 
@@ -1638,6 +1656,7 @@ static ucmd_t ucmds2[] =
 	{"god", Cmd_God_f},
 	{"give", Cmd_Give_f},
 	{"noclip", Cmd_Noclip_f},
+	{"notarget", Cmd_Notarget_f},
 	{"fly", Cmd_Fly_f},
 	{"join", Cmd_Join_f},
 	{"observe", Cmd_Observe_f},
