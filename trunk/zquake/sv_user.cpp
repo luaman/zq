@@ -1483,46 +1483,107 @@ Cmd_Give_f
 */
 static void Cmd_Give_f (void)
 {
-	char	*t;
-	int		v;
-	
 	if (!sv_allow_cheats)
 	{
 		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cheats are not allowed on this server\n");
 		return;
 	}
-	
-	t = Cmd_Argv(1);
-	v = atoi (Cmd_Argv(2));
-	
-	switch (t[0])
-	{
-	case '2':
-	case '3':
-	case '4':
-	case '5':
-	case '6':
-	case '7':
-	case '8':
-	case '9':
-		sv_player->v.items = (int)sv_player->v.items | IT_SHOTGUN<< (t[0] - '2');
-		break;
-	
-	case 's':
-		sv_player->v.ammo_shells = v;
-		break;		
-	case 'n':
-		sv_player->v.ammo_nails = v;
-		break;		
-	case 'r':
-		sv_player->v.ammo_rockets = v;
-		break;		
-	case 'h':
-		sv_player->v.health = v;
-		break;		
-	case 'c':
-		sv_player->v.ammo_cells = v;
-		break;		
+
+	string item = Cmd_Argv(1);
+	int amount = Cmd_Argc() >= 3 ? atoi(Cmd_Argv(2)) : 100;
+
+	entvars_t &self = sv_player->v;
+
+	if (item == "2" || item == "sg")
+		self.items = (int)self.items | IT_SHOTGUN;
+	else if (item == "3" || item == "ssg")
+		self.items = (int)self.items | IT_SUPER_SHOTGUN;
+	else if (item == "4" || item == "ng")
+		self.items = (int)self.items | IT_NAILGUN;
+	else if (item == "5" || item == "sng")
+		self.items = (int)self.items | IT_SUPER_NAILGUN;
+	else if (item == "6" || item == "gl")
+		self.items = (int)self.items | IT_GRENADE_LAUNCHER;
+	else if (item == "7" || item == "rl")
+		self.items = (int)self.items | IT_ROCKET_LAUNCHER;
+	else if (item == "8" || item == "lg")
+		self.items = (int)self.items | IT_LIGHTNING;
+	else if (item == "s" || item == "shells")
+		self.ammo_shells = amount;
+	else if (item == "n" || item == "nails")
+		self.ammo_nails = amount;
+	else if (item == "r" || item == "rockets")
+		self.ammo_rockets =amount;
+	else if (item == "c" || item == "cells")
+		self.ammo_cells = amount;
+	else if (item == "h" || item == "health") {
+		self.health = amount;
+	}
+	else if (item == "ga") {
+		self.items = (int)self.items &~ (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+		if (amount > 0) {
+			self.items = (int)self.items | IT_ARMOR1;
+			self.armorvalue = amount;
+			self.armortype = 0.3;
+		}
+		else
+			self.armorvalue = 0;
+	}
+	else if (item == "ya") {
+		if (Cmd_Argc() < 3)
+			amount = 150;
+		self.items = (int)self.items &~ (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+		if (amount > 0) {
+			self.items = (int)self.items | IT_ARMOR2;
+			self.armorvalue = amount;
+			self.armortype = 0.6;
+		}
+		else
+			self.armorvalue = 0;
+	}
+	else if (item == "ra") {
+		if (Cmd_Argc() < 3)
+			amount = 200;
+		self.items = (int)self.items &~ (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+		if (amount > 0) {
+			self.items = (int)self.items | IT_ARMOR3;
+			self.armorvalue = amount;
+			self.armortype = 0.8;
+		}
+		else
+			self.armorvalue = 0;
+	}
+	else if (item == "quad") {
+		extern int ED_FindFieldOffset (char *field);
+		int fofs_super_time = ED_FindFieldOffset("super_time");
+		int fofs_super_damage_finished = ED_FindFieldOffset("super_damage_finished");
+		if (fofs_super_time && fofs_super_damage_finished) {
+			self.items = (int)self.items | IT_QUAD;
+			EdictFieldFloat(sv_player, fofs_super_time) = 0;
+			EdictFieldFloat(sv_player, fofs_super_damage_finished) = sv.time + 30;
+		}
+	}
+	else if (item == "key1")
+		self.items = (int)self.items | IT_KEY1;
+	else if (item == "key2")
+		self.items = (int)self.items | IT_KEY2;
+	else if (item == "rune")
+		PR_GLOBAL(serverflags) = ((int)PR_GLOBAL(serverflags) * 2 + 1) & 15;
+	else if (item == "all") {
+		const int IT_ALL_WEAPONS = 0x107f;
+		self.items = (int)self.items | IT_ALL_WEAPONS | IT_KEY1 | IT_KEY2;
+		self.ammo_shells = 100;
+		self.ammo_nails = 200;
+		self.ammo_rockets = 100;
+		self.ammo_cells = 100;
+		if (self.health < 100)
+			self.health = 100;
+		self.items = ((int)self.items &~ (IT_ARMOR1 | IT_ARMOR2)) | IT_ARMOR3;
+		self.armortype = 0.8;
+		self.armorvalue = 200;
+	}
+	else {
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "no such item: %s\n", item.c_str());
 	}
 }
 
