@@ -950,6 +950,7 @@ void CL_InitCommands (void)
 	Cmd_AddCommand ("god", NULL);
 	Cmd_AddCommand ("give", NULL);
 	Cmd_AddCommand ("noclip", NULL);
+	Cmd_AddCommand ("notarget", NULL);
 	Cmd_AddCommand ("fly", NULL);
 
 //
