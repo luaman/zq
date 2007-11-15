@@ -1019,7 +1019,7 @@ void PM_PlayerMove (playermove_t *pmove, movevars_t *_movevars)
 	VectorCopy (pm->velocity, oldvelocity);
 	oldonground = pm->onground;
 
-	if (pm->waterlevel == 2 && pm->pm_type != PM_FLY)
+	if (pm->pm_type == PM_NORMAL && pm->waterlevel == 2)
 		PM_CheckWaterJump ();
 
 	if (pm->velocity[2] < 0 || pm->pm_type == PM_DEAD)
@@ -1055,7 +1055,7 @@ void PM_PlayerMove (playermove_t *pmove, movevars_t *_movevars)
 	PM_CategorizePosition (pm);
 
 	// emulate NetQuake waterjump for some maps where otherwise waterjumps wouldn't work
-	if (oldwaterlevel == 2 && pm->waterlevel < 2 && !pm->waterjumptime)
+	if (pm->pm_type == PM_NORMAL && oldwaterlevel == 2 && pm->waterlevel < 2 && !pm->waterjumptime)
 		PM_CheckWaterJump();
 
 	if (pm->onground && !oldonground)
