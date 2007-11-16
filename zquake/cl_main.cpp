@@ -38,7 +38,7 @@ cvar_t	*cl_rconPassword;
 cvar_t	cl_rconAddress = {"rcon_address", ""};
 cvar_t	cl_timeout = {"cl_timeout", "60"};
 cvar_t	cl_shownet = {"cl_shownet", "0"};	// can be 0, 1, or 2
-cvar_t	cl_maxfps	= {"cl_maxfps", "0", CVAR_ARCHIVE};
+cvar_t	cl_maxfps	= {"cl_maxfps", "300", CVAR_ARCHIVE};
 cvar_t	cl_writecfg = {"cl_writecfg", "1"};
 cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
 cvar_t  localid = {"localid", ""};
