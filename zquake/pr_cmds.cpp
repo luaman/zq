@@ -987,7 +987,8 @@ void dprint(string s, ...) = #25
 */
 static void PF_dprint (void)
 {
-	Com_Printf ("%s", PF_VarString(0));
+	if (developer.value || dedicated)
+		Com_Printf ("%s", PF_VarString(0));
 }
 
 
