@@ -48,6 +48,7 @@ cvar_t	sv_pausable = {"sv_pausable", "1"};
 cvar_t	sv_paused = {"sv_paused", "0", CVAR_ROM};
 cvar_t	sv_maxrate = {"sv_maxrate", "0"};
 cvar_t	sv_fastconnect = {"sv_fastconnect", "0"};
+cvar_t	sv_keep_stuck_items = {"sv_keep_stuck_items", "0"};
 
 #ifdef MAUTH
 #include "sv_authlists.h"
@@ -1582,6 +1583,7 @@ void SV_InitLocal (void)
 		Cvar_Register (&sv_minping);
 	Cvar_Register (&sv_maxpitch);
 	Cvar_Register (&sv_minpitch);
+	Cvar_Register (&sv_keep_stuck_items);
 
 	Cvar_Register (&deathmatch);
 	Cvar_Register (&teamplay);

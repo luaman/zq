@@ -1320,6 +1320,7 @@ static void PF_droptofloor (void)
 	edict_t		*ent;
 	vec3_t		end;
 	trace_t		trace;
+	extern cvar_t sv_keep_stuck_items;
 	
 	ent = PROG_TO_EDICT(pr_global_struct->self);
 
@@ -1328,7 +1329,7 @@ static void PF_droptofloor (void)
 	
 	trace = SV_Trace (ent->v.origin, ent->v.mins, ent->v.maxs, end, false, ent);
 
-	if (trace.fraction == 1 || trace.allsolid)
+	if ((!trace.allsolid && trace.fraction == 1) || (trace.allsolid && !sv_keep_stuck_items.value))
 		G_FLOAT(OFS_RETURN) = 0;
 	else
 	{
