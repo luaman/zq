@@ -56,14 +56,13 @@ extern "C" { cvar_t	crosshaircolor = {"crosshaircolor", "13", CVAR_ARCHIVE}; }//
 cvar_t  cl_crossx = {"cl_crossx", "0", CVAR_ARCHIVE};
 cvar_t  cl_crossy = {"cl_crossy", "0", CVAR_ARCHIVE};
 
-cvar_t  v_contentblend = {"v_contentblend", "1"};
-cvar_t	v_damagecshift = {"v_damagecshift", "1"};
-cvar_t	v_quadcshift = {"v_quadcshift", "1"};
-cvar_t	v_suitcshift = {"v_suitcshift", "1"};
-cvar_t	v_ringcshift = {"v_ringcshift", "1"};
-cvar_t	v_pentcshift = {"v_pentcshift", "1"};
-
-cvar_t	v_bonusflash = {"cl_bonusflash", "1"};
+cvar_t  v_contentblend = {"v_contentblend", "1.0"};
+cvar_t	v_damagecshift = {"v_damagecshift", "0.0"};
+cvar_t	v_quadcshift = {"v_quadcshift", "0.0"};
+cvar_t	v_suitcshift = {"v_suitcshift", "0.0"};
+cvar_t	v_ringcshift = {"v_ringcshift", "0.0"};
+cvar_t	v_pentcshift = {"v_pentcshift", "0.0"};
+cvar_t	v_bonusflash = {"cl_bonusflash", "0"};
 
 float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
