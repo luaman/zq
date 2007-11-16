@@ -1262,7 +1262,8 @@ qbool CL_NetworkStalled (void)
 		return false;
 	if (cls.nqprotocol)
 		return false;	// FIXME?
-	if (cls.realtime - cl.snapshots[0].receivedtime > cl_predictiontimeout.value)
+	if ((cls.demoplayback ? cls.realtime : cls.demotime)
+			- cl.snapshots[0].receivedtime > cl_predictiontimeout.value)
 		return true;
 	if (cls.netchan.outgoing_sequence - cl.snapshots[0].sequence >= SENT_BACKUP-1)
 		return true;	// can't predict any further
