@@ -1653,6 +1653,23 @@ static void Cmd_Fly_f (void)
 	}
 }
 
+static void Cmd_Setpos_f (void)
+{
+	if (!sv_allow_cheats)
+	{
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Cheats are not allowed on this server\n");
+		return;
+	}
+	if (Cmd_Argc() < 3) {
+		SV_ClientPrintf (sv_client, PRINT_HIGH, "Usage: setpos x y [z]\n");
+		return;
+	}
+	sv_player->v.origin[0] = atof(Cmd_Argv(1));
+	sv_player->v.origin[1] = atof(Cmd_Argv(2));
+	if (Cmd_Argc() >= 4)
+		sv_player->v.origin[2] = atof(Cmd_Argv(3));
+}
+
 static void Cmd_Notarget_f (void)
 {
 	if (sv_client->spectator || deathmatch.value != 0)
@@ -1721,6 +1738,7 @@ static ucmd_t ucmds2[] =
 	{"fly", Cmd_Fly_f},
 	{"join", Cmd_Join_f},
 	{"observe", Cmd_Observe_f},
+	{"setpos", Cmd_Setpos_f},
 
 	{NULL, NULL}
 };
