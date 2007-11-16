@@ -213,7 +213,6 @@ void client_state_t::clear ()
 	free_efrags = NULL;
 	num_entities = 0;
 	num_statics = 0;
-	num_nails = 0;
 	cdtrack = 0;
 	for (int i = 0; i < MAX_CLIENTS; i++)
 		players[i].clear();
@@ -516,7 +515,6 @@ void CL_ClearState (void)
 	CL_ClearTEnts ();
 	CL_ClearDlights ();
 	CL_ClearParticles ();
-	CL_ClearNails ();
 
 	cl.clear();
 

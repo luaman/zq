@@ -36,10 +36,16 @@ void Snapshot::clear() {
 	sequence = 0;
 	receivedtime = 0;
 	servertime = 0;
+	// entities
 	Q_free(packet_entities.entities);
 	packet_entities.entities = NULL;
 	packet_entities.num_entities = 0;
+	// players
 	memset (playerstate_valid, 0, sizeof(playerstate_valid));
+	// nails
+	Q_free(nails);
+	nails = NULL;
+	num_nails = 0;
 }
 
 char *svc_strings[] =
@@ -1166,8 +1172,6 @@ void CL_BeginParsingSnapshot (void)
 			cls.latency += 0.001;	// drift up, so correction is needed
     }
 
-	cl.num_nails = 0;
-
 	new_snapshot.clear();
 	new_snapshot.receivedtime = cls.demoplayback ? cls.demotime : cls.realtime;
 	new_snapshot.servertime = cls.demoplayback ? cls.demotime : cls.realtime;
@@ -1896,7 +1900,11 @@ void CL_CheckAndSaveSnapshot (void)
 		cl.snapshots[i] = cl.snapshots[i - 1];
 
 	cl.snapshots[0] = new_snapshot;
+	// NULL out the pointers because the data no longer belongs to us,
+	// and new_snapshot.clear() shouldn't try to free the memory
 	new_snapshot.packet_entities.entities = NULL;
+	new_snapshot.nails = NULL;
+
 	new_snapshot.clear();
 
 	CL_SetSolidEntities ();
@@ -2200,17 +2208,16 @@ bad_message:
 			break;
 
 		case svc_nails:
-#ifndef MVDPLAY
-			CL_ParseNails ();
-#else
             CL_ParseNails (false);
             break;
+
+#ifdef MVDPLAY
         case svc_nails2:
 			if (!cls.mvdplayback)
 				goto bad_message;
             CL_ParseNails (true);
-#endif
 			break;
+#endif
 
 		case svc_chokecount:		// some preceding packets were choked
 			i = MSG_ReadByte ();
