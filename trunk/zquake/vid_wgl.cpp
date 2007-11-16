@@ -92,7 +92,7 @@ HDC		maindc;
 
 
 cvar_t	vid_hwgammacontrol = {"vid_hwgammacontrol","1"};
-cvar_t	vid_vsync = {"vid_vsync", "1"};
+cvar_t	vid_vsync = {"vid_vsync", "ignore"};
 cvar_t	gl_ext_swapinterval = {"gl_ext_swapinterval", "1"};
 
 qbool	vid_gammaworks = false;
@@ -565,10 +565,11 @@ void CheckSwapIntervalExtension (void)
 
 void UpdateSwapInterval (void)
 {
-	static float old_vid_vsync = 0;
+	static float old_vid_vsync = 42;
 
 	if (qwglSwapIntervalEXT) {
-		if (vid_vsync.value != old_vid_vsync) {
+		if (vid_vsync.value != old_vid_vsync
+		&& stricmp(vid_vsync.string, "ignore")) {
 			old_vid_vsync = vid_vsync.value;
 			qwglSwapIntervalEXT (vid_vsync.value != 0);
 		}
