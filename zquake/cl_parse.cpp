@@ -1875,6 +1875,7 @@ void CL_CheckAndSaveSnapshot (void)
 		}
 		else
 			cl.outpackets[cls.netchan.outgoing_sequence&SENT_MASK].invalid_delta = true;
+		new_snapshot.clear ();
 		return;
 	}
 
@@ -1892,6 +1893,18 @@ void CL_CheckAndSaveSnapshot (void)
 			CL_FreeSomeSnapshots (cl.num_snapshots - 1);
 	}
 
+	// clean up the old snapshot to reduce memory usage
+#ifdef MVDPLAY
+	if (!cls.mvdplayback)	// MVD needs old frame for lerped nails
+#endif
+	{
+		Q_free(cl.snapshots[0].nails);
+		cl.snapshots[0].nails = 0;
+		cl.snapshots[0].num_nails = 0;
+	}
+
+//=========================================
+// Copy the new snapshot to the list (this could be a separate function)
 	cl.num_snapshots++;
 
 	// this may be somewhat CPU expensive right now
@@ -1906,6 +1919,7 @@ void CL_CheckAndSaveSnapshot (void)
 	new_snapshot.nails = NULL;
 
 	new_snapshot.clear();
+//=========================================
 
 	CL_SetSolidEntities ();
 
