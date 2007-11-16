@@ -345,38 +345,33 @@ void CL_ParseTEnt (void)
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
 
-		if (cl_explosion.value == 6)
+		// particles
+		if (r_explosiontype.value == 0)
+			CL_ParticleExplosion (pos);
+		else if (r_explosiontype.value == 2)
 			CL_TeleportSplash (pos);
-		else if (cl_explosion.value == 7)
-			CL_RunParticleEffect (pos, vec3_origin, 73, 20*32);
-		else if (cl_explosion.value == 8)
-			CL_RunParticleEffect (pos, vec3_origin, 225, 50);
-		else
-		{
+		else if (r_explosiontype.value == 3)
+			CL_RunParticleEffect (pos, vec3_origin, 225, 50);	// lightning blood
+		else if (r_explosiontype.value == 4)
+			CL_RunParticleEffect (pos, vec3_origin, 73, 20*32); // big blood
 
-		// Tonik: explosion modifiers...
-			if (cl_explosion.value != 1 && cl_explosion.value != 3)
-			{
-				CL_ParticleExplosion (pos);
-			}
-		
 		// light
-			if (cl_explosion.value != 2 && cl_explosion.value != 3)
-			{
-				dl = CL_AllocDlight (0);
-				VectorCopy (pos, dl->origin);
-				dl->radius = 350;
-				dl->die = cl.time + 0.5;
-				dl->decay = 300;
-				dl->type = lt_explosion;
-			}
+		if (r_explosionlight.value)
+		{
+			dl = CL_AllocDlight (0);
+			VectorCopy (pos, dl->origin);
+			dl->radius = 350;
+			dl->die = cl.time + 0.5;
+			dl->decay = 300;
+			dl->type = lt_explosion;
 		}
 
-	// sound
+		// sound
 		S_StartSound (-1, 0, cl_sfx_r_exp3, pos, 1, 1);
 
-	// sprite
-		if (cl_explosion.value != 6 && cl_explosion.value != 7 && cl_explosion.value != 8)
+		// sprite
+		if (r_explosiontype.value == 0 || r_explosiontype.value == 1
+			|| r_explosiontype.value > 4)
 		{
 			if (!cl_explo_mod)
 				cl_explo_mod = Mod_ForName ("progs/s_explod.spr", true, false);

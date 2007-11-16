@@ -853,9 +853,9 @@ void M_Fps_Draw (void)
 	M_DrawPic ( (320 - GetPicWidth(p))/2, 4, p);
 
 	M_Print (16, 32, "            Explosions");
-	M_Print (220, 32, cl_explosion.value==0 ? "normal" :
-		cl_explosion.value==1 ? "type 1" : cl_explosion.value==2 ? "type 2" :
-		cl_explosion.value==3 ? "type 3" : "");
+	M_Print (220, 32, r_explosiontype.value==0 ? "classic" :
+		r_explosiontype.value==1 ? "sprite" : r_explosiontype.value==2 ? "teleport" :
+		r_explosiontype.value==3 ? "blood" : r_explosiontype.value==4 ? "big blood" : "");
 
 	M_Print (16, 40, "         Muzzleflashes");
 	M_Print (220, 40, cl_muzzleflash.value==2 ? "own off" :
@@ -957,10 +957,10 @@ void M_Fps_Key (int k)
 		S_LocalSound ("misc/menu2.wav");
 		switch (fps_cursor) {
 		case 0:
-			i = cl_explosion.value + 1;
-			if (i > 3 || i < 0)
+			i = r_explosiontype.value + 1;
+			if (i > 4 || i < 0)
 				i = 0;
-			Cvar_SetValue (&cl_explosion, i);
+			Cvar_SetValue (&r_explosiontype, i);
 			break;
 		case 1:
 			Cvar_SetValue (&cl_muzzleflash, cl_muzzleflash.value==2 ? 1 :
@@ -1011,7 +1011,7 @@ void M_Fps_Key (int k)
 
 		// fast
 		case 13:
-			Cvar_SetValue (&cl_explosion, 3);
+			Cvar_SetValue (&r_explosiontype, 3);
 			Cvar_SetValue (&cl_muzzleflash, 2);
 			Cvar_SetValue (&cl_gibfilter, 1);
 			Cvar_SetValue (&cl_deadbodyfilter, 1);
@@ -1026,7 +1026,7 @@ void M_Fps_Key (int k)
 
 		// high quality
 		case 14:
-			Cvar_SetValue (&cl_explosion, 0);
+			Cvar_SetValue (&r_explosiontype, 0);
 			Cvar_SetValue (&cl_muzzleflash, 1);
 			Cvar_SetValue (&cl_gibfilter, 0);
 			Cvar_SetValue (&cl_deadbodyfilter, 0);
