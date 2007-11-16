@@ -796,46 +796,24 @@ NAIL PARSING / LINKING
 
 #define	MAX_NAILS	32
 
-typedef struct {
-	byte	number;
-	vec3_t	origin;
-	vec3_t	angles;
-} nail_t;
-
-static nail_t			cl_nails[MAX_NAILS];
-
-#ifdef MVDPLAY
-typedef struct {
-	int		newindex;
-	int		sequence[2];
-	vec3_t	origin[2];
-} lerped_nail_t;
-
-static lerped_nail_t	cl_lerped_nails[256];
-#endif
-
-
-void CL_ClearNails (void)
-{
-#ifdef MVDPLAY
-	memset(cl_nails, 0, sizeof(cl_nails));
-	memset(cl_lerped_nails, 0, sizeof(cl_lerped_nails));
-#endif
-}
-
-#ifdef MVDPLAY
 void CL_ParseNails (qbool tagged)
-#else
-void CL_ParsNails (void)
-#endif
 {
 	byte bits[6];
 	int i, c, j, num = 0;
 	nail_t *pr;
 
+	if (new_snapshot.num_nails) {
+		// qwcl doesn't mind more than one svc_nails in a message, but
+		// there's no reason whatsoever why the server would want to send that
+		Host_Error ("More than one svc_nails in datagram");
+	}
+
 	c = MSG_ReadByte();
 
-	for (i = 0; i < c && cl.num_nails < MAX_NAILS; i++) {
+	new_snapshot.num_nails = min(c, MAX_NAILS);
+	new_snapshot.nails = (nail_t *)Q_malloc(new_snapshot.num_nails * sizeof(nail_t));
+
+	for (i = 0; i < c; i++) {
 #ifdef MVDPLAY
 		num = tagged ? MSG_ReadByte() : 0;
 #endif
@@ -843,21 +821,20 @@ void CL_ParsNails (void)
 		for (j = 0; j < 6; j++)
 			bits[j] = MSG_ReadByte();
 
-		pr = &cl_nails[cl.num_nails++];
+		if (i >= MAX_NAILS)
+			continue;		// read it, but ignore it (like qwcl)
+
+		pr = &new_snapshot.nails[i];
+
+#ifdef MVDPLAY
+		pr->number = num;
+#endif
 
 		pr->origin[0] = (( bits[0] + ((bits[1] & 15) << 8)) << 1) - 4096;
 		pr->origin[1] = (((bits[1] >> 4) + (bits[2] << 4)) << 1) - 4096;
 		pr->origin[2] = ((bits[3] + ((bits[4] & 15) << 8)) << 1) - 4096;
 		pr->angles[0] = 360 * (bits[4] >> 4) / 16;
 		pr->angles[1] = 360 * bits[5] / 256;
-
-#ifdef MVDPLAY
-		if ((pr->number = num)) {
-			int newindex = cl_lerped_nails[num].newindex = !cl_lerped_nails[num].newindex;
-//@@FIXME			cl_lerped_nails[num].sequence[newindex] = cl.validsequence;
-			VectorCopy(pr->origin, cl_lerped_nails[num].origin[newindex]);
-		}
-#endif
 	}
 }
 
@@ -870,33 +847,39 @@ static void CL_LinkNails (void)
 	float f;
 #endif
 
-return;//@@@
 	memset(&ent, 0, sizeof(entity_t));
 	ent.model = cl.model_precache[cl_spikeindex];
 	ent.colormap = 0;
 
 #ifdef MVDPLAY
-	if (cl.num_snapshots < 2)
-		return;
-	assert (cl.snapshots[0].servertime > cl.snapshots[1].servertime);
-	f = bound(0, (cls.demotime - cl.snapshots[1].servertime) / (cl.snapshots[0].servertime - cl.snapshots[1].servertime), 1);
+	if (cl.num_snapshots > 1) {
+		assert (cl.snapshots[0].servertime > cl.snapshots[1].servertime);
+		f = (cls.demotime - cl.snapshots[1].servertime) / (cl.snapshots[0].servertime - cl.snapshots[1].servertime);
+		f = bound (0, f, 1);
+	}
 #endif
 
-	for (i = 0, pr = cl_nails; i < cl.num_nails; i++, pr++)	{
+	for (i = 0; i < cl.snapshots[0].num_nails; i++)	{
+		pr = &cl.snapshots[0].nails[i];
 #ifdef MVDPLAY
-		int num;
-		if ((num = cl_nails[i].number)) {
-			lerped_nail_t *lpr = &cl_lerped_nails[num];
-			// FIXME
-			if (cl.oldparsecount && lpr->sequence[!lpr->newindex] == cl.oldparsecount) {
-				LerpVector(lpr->origin[!lpr->newindex], lpr->origin[lpr->newindex], f, ent.origin);
+		int num = pr->number;
+		if (num && cl.num_snapshots > 1) {
+			int j;
+			for (j = 0; j < cl.snapshots[1].num_nails; j++) {
+				if (cl.snapshots[1].nails[j].number == num)
+					break;
+			}
+			if (j != cl.snapshots[1].num_nails) {
+				// lerp from previous origin
+				LerpVector (cl.snapshots[1].nails[j].origin, pr->origin, f, ent.origin);
 				goto done_origin;
 			}
 		}
-#endif
 		VectorCopy(pr->origin, ent.origin);
-		goto done_origin;		// suppress warning
 done_origin:
+#else
+		VectorCopy(pr->origin, ent.origin);
+#endif
 		VectorCopy(pr->angles, ent.angles);
 		V_AddEntity(&ent);
 	}

@@ -66,6 +66,12 @@ typedef struct
 } player_state_t;
 
 
+typedef struct {
+	byte	number;
+	vec3_t	origin;
+	vec3_t	angles;
+} nail_t;
+
 #define	MAX_SCOREBOARDNAME	16
 typedef struct player_info_s
 {
@@ -118,6 +124,9 @@ struct Snapshot
 	player_state_t	playerstate[MAX_CLIENTS];	// players
 	qbool		playerstate_valid[MAX_CLIENTS];		// corresponding playerstate is valid?
 	packet_entities_t	packet_entities;		// normal entities
+	int			num_nails;
+	nail_t		*nails;
+	Snapshot() { memset(this, 0, sizeof(*this)); };
 	void clear();
 };
 
@@ -413,7 +422,6 @@ struct client_state_t
 	struct efrag_s	*free_efrags;
 	int			num_entities;	// stored bottom up in cl_entities array
 	int			num_statics;	// stored top down in cl_entities
-	int			num_nails;
 
 	int			cdtrack;		// cd audio
 
@@ -608,12 +616,7 @@ void CL_SetSolidPlayers (int playernum);
 void CL_SetUpPlayerPrediction (void);
 void CL_PredictOtherPlayers (void);
 void CL_EmitEntities (void);
-void CL_ClearNails (void);
-#ifdef MVDPLAY
-void CL_ParseNails (qbool nail2);
-#else
-void CL_ParseNails (void);
-#endif
+void CL_ParseNails (qbool tagged);
 void CL_ParsePacketEntities (qbool delta);
 void CL_SetSolidEntities (void);
 void CL_ParsePlayerState (void);
