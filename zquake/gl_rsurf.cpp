@@ -1400,7 +1400,7 @@ Builds the lightmap texture
 with all the surfaces from all brush models
 ==================
 */
-void GL_BuildLightmaps (void)
+void GL_BuildLightmaps (model_t *model_precache[MAX_MODELS])
 {
 	int		i, j;
 	model_t	*m;
@@ -1419,7 +1419,7 @@ void GL_BuildLightmaps (void)
 
 	for (j=1 ; j<MAX_MODELS ; j++)
 	{
-		m = cl.model_precache[j];
+		m = model_precache[j];
 		if (!m)
 			break;
 		if (m->name[0] == '*')

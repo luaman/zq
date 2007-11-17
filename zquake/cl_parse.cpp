@@ -291,7 +291,7 @@ void CL_Prespawn (void)
 		Host_Error ("CL_Prespawn: NULL worldmodel");
 
 	CL_FindModelNumbers ();
-	R_NewMap (cl.model_precache[1]);
+	R_NewMap (cl.model_precache);
 	R_SetSky (cl.sky.c_str());
 
 	TP_NewMap ();

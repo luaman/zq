@@ -18,18 +18,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// FIXME
-#ifdef GLQUAKE
-#include "gl_local.h"
-#else
 #include "client.h"
-#endif
-
 #include "winquake.h"
 #include "input.h"
 #include "keys.h"
 #include "sound.h"
 #include "version.h"
+
+#ifdef GLQUAKE
+#include "gl_local.h"
+#endif
 
 #ifndef _WIN32
 #include <dirent.h>

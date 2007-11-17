@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_misc.c
 
+#include "client.h"		// FIXME
 #include "gl_local.h"
 #include "rc_image.h"
 #include <time.h>
@@ -300,14 +301,14 @@ inlineskin:
 R_NewMap
 ===============
 */
-void R_NewMap (struct model_s *worldmodel)
+void R_NewMap (struct model_s *model_precache[MAX_MODELS])
 {
 	int		i;
 
 	for (i=0 ; i<256 ; i++)
 		d_lightstylevalue[i] = 264;		// normal light value
 
-	r_worldmodel = worldmodel;
+	r_worldmodel = model_precache[1];
 
 	memset (&r_worldentity, 0, sizeof(r_worldentity));
 	r_worldentity.model = r_worldmodel;
@@ -317,7 +318,7 @@ void R_NewMap (struct model_s *worldmodel)
 
 	r_viewleaf = NULL;
 
-	GL_BuildLightmaps ();
+	GL_BuildLightmaps (model_precache);
 
 	memset (playerfbtextures, 0, sizeof(playerfbtextures));
 

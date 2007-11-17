@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // vid_wgl.c -- Windows 9x/NT OpenGL driver
 
+#include "client.h"
 #include "gl_local.h"
 #include "cdaudio.h"
 #include "keys.h"
@@ -1617,7 +1618,7 @@ void CL_VID_Restart_f ()
 
 	CL_ReloadTextures ();
 
-	GL_BuildLightmaps ();
+	GL_BuildLightmaps (cl.model_precache);
 }
 
 

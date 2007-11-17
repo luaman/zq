@@ -21,7 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _GL_LOCAL_H_
 #define _GL_LOCAL_H_
 
-#include "client.h"		// FIXME
+#include "common.h"
+#include "vid.h"
+#include "render.h"
 #include "gl_model.h"
 
 #ifdef _MSC_VER
@@ -250,7 +252,7 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
 void R_DrawBrushModel (entity_t *e);
 void R_DrawWorld (void);
 void R_DrawWaterSurfaces (void);
-void GL_BuildLightmaps (void);
+void GL_BuildLightmaps (model_t *model_precache[MAX_MODELS]);
 
 //
 // gl_ngraph.cpp

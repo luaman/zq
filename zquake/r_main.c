@@ -258,9 +258,9 @@ void R_Init (unsigned char *palette)
 R_NewMap
 ===============
 */
-void R_NewMap (struct model_s *worldmodel)
+void R_NewMap (struct model_s *model_precache[MAX_MODELS])
 {
-	r_worldmodel = worldmodel;
+	r_worldmodel = model_precache[1];
 
 	memset (&r_worldentity, 0, sizeof(r_worldentity));
 	r_worldentity.model = r_worldmodel;
