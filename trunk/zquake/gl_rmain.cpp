@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // gl_rmain.c
 
+#include "client.h"		// FIXME
 #include "gl_local.h"
 #include "sound.h"
 #include "rc_image.h"
@@ -165,10 +166,11 @@ void R_AddStaticEntity (entity_t *ent)
 		sent->leafnums[i] = (short)leafnums[i];
 }
 
-void R_EmitStaticEntities (void)
+void R_EmitStaticEntities (entity_t *statics[MAX_STATIC_ENTITIES], int *numstatics)
 {
 	int i, j;
 
+	*numstatics = 0;
 	for (i = 0; i < r_num_static_entities; i++) {
 		static_entity_t *sent = &r_static_entities[i];
 		if (sent->entity.model->modhint == MOD_FLAME && !r_drawflame.value)
@@ -180,7 +182,8 @@ void R_EmitStaticEntities (void)
 		if (j == sent->num_leafs)
 			continue;	// not in pvs
 		// add to list
-		V_AddEntity (&sent->entity);	// FIXME!
+		statics[*numstatics] = &sent->entity;
+		(*numstatics)++;
 	}
 }
 //===============================================================================
@@ -283,17 +286,22 @@ void R_DrawEntitiesOnList (void)
 	int		i;
 	qbool	draw_sprites;
 	qbool	draw_translucent;
+	entity_t *statics[MAX_STATIC_ENTITIES];
+	int		numstatics;
 
 	if (!r_drawentities.value)
 		return;
 
-	R_EmitStaticEntities ();
+	R_EmitStaticEntities (statics, &numstatics);
 
 	draw_sprites = draw_translucent = false;
 
-	for (i = 0; i < cl_numvisedicts; i++)
+#define GETENTITY (i < r_refdef2.num_entities) ? &r_refdef2.entities[i] : \
+										statics[i - r_refdef2.num_entities];
+
+	for (i = 0; i < r_refdef2.num_entities + numstatics; i++)
 	{
-		currententity = &cl_visedicts[i];
+		currententity = GETENTITY(i);
 
 		switch (currententity->model->type)
 		{
@@ -324,9 +332,9 @@ void R_DrawEntitiesOnList (void)
 		glEnable (GL_ALPHA_TEST);
 //		glDepthMask (GL_FALSE);
 
-		for (i = 0; i < cl_numvisedicts; i++)
+		for (i = 0; i < r_refdef2.num_entities + numstatics; i++)
 		{
-			currententity = &cl_visedicts[i];
+			currententity = GETENTITY(i);
 
 			if (currententity->model->type == mod_sprite)
 				R_DrawSpriteModel (currententity);
@@ -340,9 +348,9 @@ void R_DrawEntitiesOnList (void)
 	if (draw_translucent)
 	{
 //		glDepthMask (GL_FALSE);		// no z writes
-		for (i = 0; i < cl_numvisedicts; i++)
+		for (i = 0; i < r_refdef2.num_entities + numstatics; i++)
 		{
-			currententity = &cl_visedicts[i];
+			currententity = GETENTITY(i);
 
 			if (currententity->model->type == mod_alias
 					&& (currententity->renderfx & RF_TRANSLUCENT))

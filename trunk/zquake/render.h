@@ -146,7 +146,7 @@ EXTERNC_END
 
 EXTERNC void R_Init (unsigned char *palette);
 EXTERNC void R_InitTextures (void);
-EXTERNC void R_NewMap (struct model_s *worldmodel);
+EXTERNC void R_NewMap (struct model_s *model_precache[MAX_MODELS]);
 #ifdef GLQUAKE
 void R_AddStaticEntity (entity_t *ent);
 #else

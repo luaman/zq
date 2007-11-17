@@ -455,7 +455,7 @@ static void CLNQ_ParseServerData (void)
 
 	CL_ClearParticles ();
 	CL_FindModelNumbers ();
-	R_NewMap (cl.model_precache[1]);
+	R_NewMap (cl.model_precache);
 
 	TP_NewMap ();
 

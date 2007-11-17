@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#include "client.h"			// FIXME host_basepal
 #include "gl_local.h"
 #include "rc_wad.h"
 #include "rc_image.h"

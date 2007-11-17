@@ -19,10 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // screen.c -- master for refresh, status bar, console, chat, notify, etc
 
+#include "client.h"
 #ifdef GLQUAKE
 #include "gl_local.h"
 #else
-#include "client.h"
 #include "r_local.h"
 #endif
 #include "keys.h"

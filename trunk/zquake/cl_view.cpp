@@ -19,10 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_view.c -- player eye positioning
 
+#include "client.h"
 #ifdef GLQUAKE
 #include "gl_local.h"
 #else
-#include "client.h"
 #include "r_local.h"
 #endif
 
