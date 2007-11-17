@@ -1135,10 +1135,6 @@ void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 			mark++;
 		} while (--c);
 	}
-
-// deal with model fragments in this leaf
-	if (pleaf->efrags)
-		R_StoreEfrags (&pleaf->efrags);
 }
 
 

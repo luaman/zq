@@ -93,7 +93,6 @@ client_persistent_t	cls;
 client_state_t		cl;
 
 centity_t		cl_entities[MAX_CL_EDICTS];
-efrag_t			cl_efrags[MAX_EFRAGS];
 entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
 
@@ -210,7 +209,6 @@ void client_state_t::clear ()
 	num_static_sounds = 0;
 	levelname = "";
 	playernum = 0;
-	free_efrags = NULL;
 	num_entities = 0;
 	num_statics = 0;
 	cdtrack = 0;
@@ -500,7 +498,6 @@ CL_ClearState
 */
 void CL_ClearState (void)
 {
-	int			i;
 	extern float	scr_centertime_off;
 
 	S_StopAllSounds (true);
@@ -521,7 +518,6 @@ void CL_ClearState (void)
 	SZ_Clear (&cls.netchan.message);
 
 // clear other arrays	
-	memset (cl_efrags, 0, sizeof(cl_efrags));
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
 	memset (cl_entities, 0, sizeof(cl_entities));
 
@@ -534,14 +530,6 @@ void CL_ClearState (void)
 
 // make sure no centerprint messages are left from previous level
 	scr_centertime_off = 0;
-
-//
-// allocate the efrags and chain together into a free list
-//
-	cl.free_efrags = cl_efrags;
-	for (i=0 ; i<MAX_EFRAGS-1 ; i++)
-		cl.free_efrags[i].entnext = &cl.free_efrags[i+1];
-	cl.free_efrags[i].entnext = NULL;
 }
 
 /*

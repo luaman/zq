@@ -1056,7 +1056,7 @@ void CL_ParseStatic (void)
 	MSG_UnpackOrigin (es.s_origin, ent->origin);
 	MSG_UnpackAngles (es.s_angles, ent->angles);
 	
-	R_AddEfrags (ent);
+	R_AddStaticEntity (ent);
 }
 
 /*

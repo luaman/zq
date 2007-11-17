@@ -312,11 +312,9 @@ void R_NewMap (struct model_s *worldmodel)
 	memset (&r_worldentity, 0, sizeof(r_worldentity));
 	r_worldentity.model = r_worldmodel;
 
-// clear out efrags in case the level hasn't been reloaded
-// FIXME: is this one short?
-	for (i = 0; i < r_worldmodel->numleafs; i++)
-		r_worldmodel->leafs[i].efrags = NULL;
-		 	
+	extern int r_num_static_entities;
+	r_num_static_entities = 0;
+
 	r_viewleaf = NULL;
 
 	GL_BuildLightmaps ();
