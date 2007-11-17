@@ -147,11 +147,7 @@ EXTERNC_END
 EXTERNC void R_Init (unsigned char *palette);
 EXTERNC void R_InitTextures (void);
 EXTERNC void R_NewMap (struct model_s *model_precache[MAX_MODELS]);
-#ifdef GLQUAKE
-void R_AddStaticEntity (entity_t *ent);
-#else
-#define R_AddStaticEntity(ent)
-#endif
+EXTERNC void R_AddStaticEntity (entity_t *ent);
 EXTERNC void R_RenderView (void);			// must set r_refdef first
 EXTERNC void R_SetSky (const char *name);	// Quake2 skybox
 

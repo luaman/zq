@@ -541,7 +541,7 @@ static void FindTouchedLeafs_r (const cnode_t *node)
 /*
 ** Returns an array filled with leaf nums
 */
-int CM_FindTouchedLeafs (const vec3_t mins, const vec3_t maxs, int leafs[], int maxleafs, int headnode, int *topnode)
+EXTERNC int CM_FindTouchedLeafs (const vec3_t mins, const vec3_t maxs, int leafs[], int maxleafs, int headnode, int *topnode)
 {
 	leafs_count = 0;
 	leafs_maxcount = maxleafs;

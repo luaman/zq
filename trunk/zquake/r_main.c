@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "r_local.h"
 #include "sound.h"
+#include "cmodel.h"		// CM_FindTouchedLeafs
 
 void		*colormap;
 float		r_time1;
@@ -144,6 +145,78 @@ void R_NetGraph (void);
 void R_ZGraph (void);
 void R_LoadSky_f (void);
 
+//===============================================================================
+// Static entities
+//
+#define MAX_ENT_LEAFS 16
+typedef struct {
+	entity_t entity;
+	short leafnums[MAX_ENT_LEAFS];
+	int num_leafs;
+} static_entity_t;
+
+#define MAX_STATIC_ENTITIES 128		// same as in client.h
+static_entity_t r_static_entities[MAX_STATIC_ENTITIES];
+int r_num_static_entities;
+
+// entities visible this frame
+static entity_t *r_statics[MAX_STATIC_ENTITIES];
+static int r_numstatics;
+
+void R_AddStaticEntity (entity_t *ent)
+{
+	int leafnums[MAX_ENT_LEAFS];
+	int i, numleafs;
+	static_entity_t *sent;
+	vec3_t absmin, absmax;
+
+	if (!ent->model)
+		return;
+	if (r_num_static_entities == MAX_STATIC_ENTITIES)
+		return;
+
+	VectorAdd (ent->origin, ent->model->mins, absmin);
+	VectorAdd (ent->origin, ent->model->maxs, absmax);
+	numleafs = CM_FindTouchedLeafs (absmin, absmax,
+					leafnums, MAX_ENT_LEAFS, 0, NULL);
+	if (!numleafs)
+		return;		// entity is entirely in solid?
+
+	sent = &r_static_entities[r_num_static_entities];
+	r_num_static_entities++;
+
+	sent->entity = *ent;
+	sent->num_leafs = numleafs;
+	for (i = 0; i < numleafs; i++)
+		sent->leafnums[i] = (short)leafnums[i];
+}
+
+void R_EmitStaticEntities (void)
+{
+	int i, j;
+
+	r_numstatics = 0;
+
+	if (!r_drawentities.value)
+		return;
+
+	for (i = 0; i < r_num_static_entities; i++) {
+		static_entity_t *sent = &r_static_entities[i];
+		if (sent->entity.model->modhint == MOD_FLAME && !r_drawflame.value)
+			continue;
+		for (j = 0; j < sent->num_leafs; j++) {
+			if (r_worldmodel->leafs[sent->leafnums[j]].visframe == r_visframecount)
+				break;
+		}
+		if (j == sent->num_leafs)
+			continue;	// not in pvs
+		// add to list
+		r_statics[r_numstatics] = &sent->entity;
+		r_numstatics++;
+	}
+}
+//===============================================================================
+
 /*
 ==================
 R_InitTextures
@@ -265,6 +338,8 @@ void R_NewMap (struct model_s *model_precache[MAX_MODELS])
 	memset (&r_worldentity, 0, sizeof(r_worldentity));
 	r_worldentity.model = r_worldmodel;
 
+	r_num_static_entities = 0;
+
 	r_viewleaf = NULL;
 
 	r_cnumsurfs = r_maxsurfs.value;
@@ -365,6 +440,9 @@ void R_MarkLeaves (void)
 }
 
 
+#define GETENTITY (i < r_refdef2.num_entities) ? &r_refdef2.entities[i] : \
+										r_statics[i - r_refdef2.num_entities];
+
 /*
 =============
 R_DrawEntitiesOnList
@@ -377,9 +455,9 @@ void R_DrawEntitiesOnList (void)
 	if (!r_drawentities.value)
 		return;
 
-	for (i=0 ; i<r_refdef2.num_entities ; i++)
+	for (i = 0; i < r_refdef2.num_entities + r_numstatics; i++)
 	{
-		currententity = &r_refdef2.entities[i];
+		currententity = GETENTITY(i);
 
 		switch (currententity->model->type)
 		{
@@ -527,9 +605,9 @@ void R_DrawBEntitiesOnList (void)
 	insubmodel = true;
 	r_dlightframecount = r_framecount;
 
-	for (i=0 ; i<r_refdef2.num_entities ; i++)
+	for (i=0 ; i<r_refdef2.num_entities + r_numstatics; i++)
 	{
-		currententity = &r_refdef2.entities[i];
+		currententity = GETENTITY(i);
 		clmodel = currententity->model;
 
 		if (clmodel->type != mod_brush)
@@ -693,7 +771,9 @@ void R_RenderView (void)
 	{
 		S_ExtraUpdate ();	// don't let sound get messed up if going slow
 	}
-	
+
+	R_EmitStaticEntities ();
+
 	R_EdgeDrawing ();
 
 	if (!r_dspeeds.value)

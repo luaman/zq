@@ -72,7 +72,7 @@ int	CM_LeafAmbientLevel (const struct cleaf_s *leaf, int ambient_channel);
 byte *CM_LeafPVS (const struct cleaf_s *leaf);
 byte *CM_LeafPHS (const struct cleaf_s *leaf);		// only for the server
 byte *CM_FatPVS (vec3_t org);
-int CM_FindTouchedLeafs (const vec3_t mins, const vec3_t maxs, int leafs[], int maxleafs, int headnode, int *topnode);
+EXTERNC int CM_FindTouchedLeafs (const vec3_t mins, const vec3_t maxs, int leafs[], int maxleafs, int headnode, int *topnode);
 char *CM_EntityString (void);
 int	CM_NumInlineModels (void);
 cmodel_t *CM_InlineModel (const string name);
