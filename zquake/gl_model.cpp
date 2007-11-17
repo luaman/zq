@@ -1280,7 +1280,6 @@ void Mod_LoadLeafs (lump_t *l)
 			out->compressed_vis = NULL;
 		else
 			out->compressed_vis = loadmodel->visdata + p;
-		out->efrags = NULL;
 	}	
 }
 

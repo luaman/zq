@@ -419,7 +419,6 @@ struct client_state_t
 	int			playernum;
 
 // refresh related state
-	struct efrag_s	*free_efrags;
 	int			num_entities;	// stored bottom up in cl_entities array
 	int			num_statics;	// stored top down in cl_entities
 
@@ -482,12 +481,10 @@ extern cvar_t	r_lightflicker;
 extern cvar_t	r_shaftalpha;
 extern cvar_t	cl_independentPhysics;
 
-#define	MAX_EFRAGS		512
 #define	MAX_STATIC_ENTITIES	128			// torches, etc
 
 // FIXME, allocate dynamically
 extern	centity_t		cl_entities[MAX_CL_EDICTS];
-extern	efrag_t			cl_efrags[MAX_EFRAGS];
 extern	entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 extern	lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
 

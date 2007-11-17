@@ -60,14 +60,6 @@ typedef struct
 	dlighttype_t	type;
 } dlight_t;
 
-typedef struct efrag_s
-{
-	struct mleaf_s		*leaf;
-	struct efrag_s		*leafnext;
-	struct entity_s		*entity;
-	struct efrag_s		*entnext;
-} efrag_t;
-
 typedef struct entity_s
 {
 	vec3_t					origin;
@@ -81,7 +73,6 @@ typedef struct entity_s
 	int						renderfx;		// RF_WEAPONMODEL, etc
 	float					alpha;
 
-	struct efrag_s			*efrag;			// linked list of efrags (FIXME)
 	int						visframe;		// last frame this entity was
 											// found in an active leaf
 											// only used for static objects
@@ -155,15 +146,14 @@ EXTERNC_END
 
 EXTERNC void R_Init (unsigned char *palette);
 EXTERNC void R_InitTextures (void);
-EXTERNC void R_InitEfrags (void);
-EXTERNC void R_RenderView (void);		// must set r_refdef first
-EXTERNC void R_SetSky (const char *name);				// Quake2 skybox
-// called whenever r_refdef or vid change
-
-EXTERNC void R_AddEfrags (entity_t *ent);
-EXTERNC void R_RemoveEfrags (entity_t *ent);
-
 EXTERNC void R_NewMap (struct model_s *worldmodel);
+#ifdef GLQUAKE
+void R_AddStaticEntity (entity_t *ent);
+#else
+#define R_AddStaticEntity(ent)
+#endif
+EXTERNC void R_RenderView (void);			// must set r_refdef first
+EXTERNC void R_SetSky (const char *name);	// Quake2 skybox
 
 EXTERNC void R_PushDlights (void);
 

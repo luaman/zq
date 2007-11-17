@@ -172,9 +172,6 @@ void R_AddEfrags (entity_t *ent)
 	if (!ent->model)
 		return;
 
-	if (ent == &r_worldentity)
-		return;		// never add the world
-
 	r_addent = ent;
 			
 	lastlink = &ent->efrag;

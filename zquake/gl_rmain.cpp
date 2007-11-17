@@ -121,6 +121,69 @@ qbool vid_hwgamma_enabled = false;	// dummy
 
 void R_MarkLeaves (void);
 
+//===============================================================================
+// Static entities
+//
+#define MAX_ENT_LEAFS 16
+typedef struct {
+	entity_t entity;
+	short leafnums[MAX_ENT_LEAFS];
+	int num_leafs;
+} static_entity_t;
+
+#ifndef MAX_STATIC_ENTITIES
+#define MAX_STATIC_ENTITIES 128		// same as in client.h
+#endif
+static_entity_t r_static_entities[MAX_STATIC_ENTITIES];
+int r_num_static_entities;
+
+void R_AddStaticEntity (entity_t *ent)
+{
+	int leafnums[MAX_ENT_LEAFS];
+	int i, numleafs;
+	static_entity_t *sent;
+	vec3_t absmin, absmax;
+
+	if (!ent->model)
+		return;
+	if (r_num_static_entities == MAX_STATIC_ENTITIES)
+		return;
+
+	VectorAdd (ent->origin, ent->model->mins, absmin);
+	VectorAdd (ent->origin, ent->model->maxs, absmax);
+	numleafs = CM_FindTouchedLeafs (absmin, absmax,
+					leafnums, MAX_ENT_LEAFS, 0, NULL);
+	if (!numleafs)
+		return;		// entity is entirely in solid?
+
+	sent = &r_static_entities[r_num_static_entities];
+	r_num_static_entities++;
+
+	sent->entity = *ent;
+	sent->num_leafs = numleafs;
+	for (i = 0; i < numleafs; i++)
+		sent->leafnums[i] = (short)leafnums[i];
+}
+
+void R_EmitStaticEntities (void)
+{
+	int i, j;
+
+	for (i = 0; i < r_num_static_entities; i++) {
+		static_entity_t *sent = &r_static_entities[i];
+		if (sent->entity.model->modhint == MOD_FLAME && !r_drawflame.value)
+			continue;
+		for (j = 0; j < sent->num_leafs; j++) {
+			if (r_worldmodel->leafs[sent->leafnums[j]].visframe == r_visframecount)
+				break;
+		}
+		if (j == sent->num_leafs)
+			continue;	// not in pvs
+		// add to list
+		V_AddEntity (&sent->entity);	// FIXME!
+	}
+}
+//===============================================================================
 
 /*
 =================
@@ -223,6 +286,8 @@ void R_DrawEntitiesOnList (void)
 
 	if (!r_drawentities.value)
 		return;
+
+	R_EmitStaticEntities ();
 
 	draw_sprites = draw_translucent = false;
 

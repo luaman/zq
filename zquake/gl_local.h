@@ -240,11 +240,6 @@ void R_RenderDlights (void);
 int R_LightPoint (vec3_t p, /* out */ vec3_t color);
 
 //
-// gl_refrag.cpp
-//
-void R_StoreEfrags (efrag_t **ppefrag);
-
-//
 // gl_mesh.cpp
 //
 void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
