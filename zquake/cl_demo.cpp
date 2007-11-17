@@ -666,7 +666,7 @@ static void CL_Record (void)
 			MSG_WriteByte (&buf, j);
 
 		MSG_WriteByte (&buf, ent->frame);
-		MSG_WriteByte (&buf, 0);
+		MSG_WriteByte (&buf, ent->colormap);
 		MSG_WriteByte (&buf, ent->skinnum);
 		for (j=0 ; j<3 ; j++)
 		{
