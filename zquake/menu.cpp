@@ -2677,6 +2677,8 @@ void M_Draw (void)
 		R_FadeScreen ();
 
 #ifdef GLQUAKE
+	// TODO: use vid.pixelaspect to retain menu's correct aspect ratio
+	//       when scaling
 	if (scr_scaleMenu.value) {
 		menuwidth = 320;
 		menuheight = min (vid.height, 240);
