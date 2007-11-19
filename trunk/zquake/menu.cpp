@@ -2011,9 +2011,57 @@ typedef struct
 
 level_t		levels[] =
 {
-	{"start", "Entrance"},	// 0
+	// XXX: for reference these are the map names from the .map/.bsp
+	//      headers
+#if 0
+	{"start", "Introduction"},        // 0
 
-	{"e1m1", "Slipgate Complex"},				// 1
+	{"e1m1", "the Slipgate Complex"}, // 1
+	{"e1m2", "Castle of the Damned"},
+	{"e1m3", "the Necropolis"},
+	{"e1m4", "the Grisly Grotto"},
+	{"e1m5", "Gloom Keep"},
+	{"e1m6", "The Door To Chthon"},
+	{"e1m7", "The House of Chthon"},
+	{"e1m8", "Ziggurat Vertigo"},
+
+	{"e2m1", "the Installation"},     // 9
+	{"e2m2", "the Ogre Citadel"},
+	{"e2m3", "the Crypt of Decay"},
+	{"e2m4", "the Ebon Fortress"},
+	{"e2m5", "the Wizard's Manse"},
+	{"e2m6", "the Dismal Oubliette"},
+	{"e2m7", "the Underearth"},
+
+	{"e3m1", "Termination Central"},  // 16
+	{"e3m2", "The Vaults of Zin"},
+	{"e3m3", "the Tomb of Terror"},
+	{"e3m4", "Satan's Dark Delight"},
+	{"e3m5", "the Wind Tunnels"},
+	{"e3m6", "Chambers of Torment"},
+	{"e3m7", "the Haunted Halls"},
+
+	{"e4m1", "the Sewage System"},    // 23
+	{"e4m2", "The Tower of Despair"},
+	{"e4m3", "The Elder God Shrine"},
+	{"e4m4", "the Palace of Hate"},
+	{"e4m5", "Hell's Atrium"},
+	{"e4m6", "The Pain Maze"},
+	{"e4m7", "Azure Agony"},
+	{"e4m8", "the Nameless City"},
+
+	{"end", "Shub-Niggurath's Pit"},  // 31
+
+	{"dm1", "Place of Two Deaths"},   // 32
+	{"dm2", "Claustrophobopolis"},
+	{"dm3", "The Abandoned Base"},
+	{"dm4", "The Bad Place"},
+	{"dm5", "The Cistern"},
+	{"dm6", "The Dark Zone"}
+#else
+	{"start", "Entrance"},            // 0
+
+	{"e1m1", "Slipgate Complex"},     // 1
 	{"e1m2", "Castle of the Damned"},
 	{"e1m3", "The Necropolis"},
 	{"e1m4", "The Grisly Grotto"},
@@ -2022,7 +2070,7 @@ level_t		levels[] =
 	{"e1m7", "The House of Chthon"},
 	{"e1m8", "Ziggurat Vertigo"},
 
-	{"e2m1", "The Installation"},				// 9
+	{"e2m1", "The Installation"},     // 9
 	{"e2m2", "Ogre Citadel"},
 	{"e2m3", "Crypt of Decay"},
 	{"e2m4", "The Ebon Fortress"},
@@ -2030,7 +2078,7 @@ level_t		levels[] =
 	{"e2m6", "The Dismal Oubliette"},
 	{"e2m7", "Underearth"},
 
-	{"e3m1", "Termination Central"},			// 16
+	{"e3m1", "Termination Central"},  // 16
 	{"e3m2", "The Vaults of Zin"},
 	{"e3m3", "The Tomb of Terror"},
 	{"e3m4", "Satan's Dark Delight"},
@@ -2038,7 +2086,7 @@ level_t		levels[] =
 	{"e3m6", "Chambers of Torment"},
 	{"e3m7", "The Haunted Halls"},
 
-	{"e4m1", "The Sewage System"},				// 23
+	{"e4m1", "The Sewage System"},    // 23
 	{"e4m2", "The Tower of Despair"},
 	{"e4m3", "The Elder God Shrine"},
 	{"e4m4", "The Palace of Hate"},
@@ -2047,14 +2095,15 @@ level_t		levels[] =
 	{"e4m7", "Azure Agony"},
 	{"e4m8", "The Nameless City"},
 
-	{"end", "Shub-Niggurath's Pit"},			// 31
+	{"end", "Shub-Niggurath's Pit"},  // 31
 
-	{"dm1", "Place of Two Deaths"},				// 32
+	{"dm1", "Place of Two Deaths"},   // 32
 	{"dm2", "Claustrophobopolis"},
 	{"dm3", "The Abandoned Base"},
 	{"dm4", "The Bad Place"},
 	{"dm5", "The Cistern"},
 	{"dm6", "The Dark Zone"}
+#endif
 };
 
 typedef struct
