@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // file IO
 //
 
-void Sys_mkdir (char *path);
+void Sys_mkdir (const char *path);
 
 //
 // memory protection
@@ -39,10 +39,10 @@ void Sys_mkdir (char *path);
 EXTERNC void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
 
 
-EXTERNC void Sys_Error (char *error, ...);
+EXTERNC void Sys_Error (const char *error, ...);
 // an error will cause the entire program to exit
 
-EXTERNC void Sys_Printf (char *fmt, ...);
+EXTERNC void Sys_Printf (const char *fmt, ...);
 // send text to the console
 
 void Sys_Quit (void);

@@ -50,18 +50,18 @@ extern cbuf_t	cbuf_svc;	// svc_stufftext commands
 extern cbuf_t	cbuf_safe;	// msg_trigger commands
 extern cbuf_t	*cbuf_current;
 
-void Cbuf_AddTextEx (cbuf_t *cbuf, char *text);
-void Cbuf_InsertTextEx (cbuf_t *cbuf, char *text);
+void Cbuf_AddTextEx (cbuf_t *cbuf, const char *text);
+void Cbuf_InsertTextEx (cbuf_t *cbuf, const char *text);
 void Cbuf_ExecuteEx (cbuf_t *cbuf);
 
 void Cbuf_Init (void);
 // allocates an initial text buffer that will grow as needed
 
-void Cbuf_AddText (char *text);
+void Cbuf_AddText (const char *text);
 // as new commands are generated from the console or keybindings,
 // the text is added to the end of the command buffer.
 
-void Cbuf_InsertText (char *text);
+void Cbuf_InsertText (const char *text);
 // when a command wants to issue other commands immediately, the text is
 // inserted at the beginning of the buffer, before any remaining unexecuted
 // commands.
@@ -87,31 +87,31 @@ typedef struct cmd_function_s
 {
 	struct cmd_function_s	*hash_next;
 	struct cmd_function_s	*next;
-	char					*name;
+	const char				*name;
 	xcommand_t				function;
 } cmd_function_t;
 
 void Cmd_Init (void);
 
-EXTERNC void Cmd_AddCommand (char *cmd_name, xcommand_t function);
+EXTERNC void Cmd_AddCommand (const char *cmd_name, xcommand_t function);
 // called by the init functions of other parts of the program to
 // register commands and functions to call for them.
 // The cmd_name is referenced later, so it should not be in temp memory
 // if function is NULL, the command will be forwarded to the server
 // as a clc_stringcmd instead of executed locally
 
-qbool Cmd_Exists (char *cmd_name);
+qbool Cmd_Exists (const char *cmd_name);
 // used by the cvar code to check for cvar / command name overlap
 
 cmd_function_t *Cmd_FindCommand (char *cmd_name);  // for message triggers
 
-char 	*Cmd_CompleteCommand (char *partial);
+const char	*Cmd_CompleteCommand (const char *partial);
 // attempts to match a partial command for automatic command line completion
 // returns NULL if nothing fits
 
 EXTERNC int	Cmd_Argc (void);
-EXTERNC char *Cmd_Argv (int arg);
-EXTERNC char *Cmd_Args (void);
+EXTERNC const char *Cmd_Argv (int arg);
+EXTERNC const char *Cmd_Args (void);
 char *Cmd_MakeArgs (int start);
 // The functions that execute commands get their parameters with these
 // functions. Cmd_Argv () will return an empty string, not a NULL
@@ -141,9 +141,9 @@ void Cmd_ForwardToServer (void);
 
 void Cbuf_AddEarlyCommands (void);
 void Cmd_StuffCmds_f (void);
-void Cmd_AddLegacyCommand (char *oldname, char *newname);
-qbool Cmd_IsLegacyCommand (char *oldname);
-char *Cmd_LegacyCommandValue(char *oldname);
+void Cmd_AddLegacyCommand (const char *oldname, const char *newname);
+qbool Cmd_IsLegacyCommand (const char *oldname);
+const char *Cmd_LegacyCommandValue(const char *oldname);
 
 
 //===========================================================================
@@ -160,10 +160,10 @@ typedef struct cmd_alias_s
 	int		flags;
 } cmd_alias_t;
 
-qbool Cmd_DeleteAlias (char *name);	// return true if successful
+qbool Cmd_DeleteAlias (const char *name);	// return true if successful
 void Cmd_RemoveStuffedAliases (void);
-cmd_alias_t *Cmd_FindAlias (char *name); // returns NULL on failure
-char *Cmd_AliasString (char *name); // returns NULL on failure
+cmd_alias_t *Cmd_FindAlias (const char *name); // returns NULL on failure
+const char *Cmd_AliasString (const char *name); // returns NULL on failure
 void Cmd_WriteAliases (FILE *f);
 cmd_alias_t *Alias_Next (cmd_alias_t *alias);	// use to enumerate all aliases
 

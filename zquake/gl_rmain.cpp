@@ -276,6 +276,14 @@ void R_RotateForEntity (entity_t *e)
 
 //==================================================================================
 
+entity_t *GETENTITY (int i, entity_t *statics[MAX_STATIC_ENTITIES])
+{
+	if (i < r_refdef2.num_entities)
+		return &r_refdef2.entities[i];
+
+	return statics[i - r_refdef2.num_entities];
+}
+
 /*
 =============
 R_DrawEntitiesOnList
@@ -296,12 +304,9 @@ void R_DrawEntitiesOnList (void)
 
 	draw_sprites = draw_translucent = false;
 
-#define GETENTITY (i < r_refdef2.num_entities) ? &r_refdef2.entities[i] : \
-										statics[i - r_refdef2.num_entities];
-
 	for (i = 0; i < r_refdef2.num_entities + numstatics; i++)
 	{
-		currententity = GETENTITY(i);
+		currententity = GETENTITY(i, statics);
 
 		switch (currententity->model->type)
 		{
@@ -334,7 +339,7 @@ void R_DrawEntitiesOnList (void)
 
 		for (i = 0; i < r_refdef2.num_entities + numstatics; i++)
 		{
-			currententity = GETENTITY(i);
+			currententity = GETENTITY(i, statics);
 
 			if (currententity->model->type == mod_sprite)
 				R_DrawSpriteModel (currententity);
@@ -350,7 +355,7 @@ void R_DrawEntitiesOnList (void)
 //		glDepthMask (GL_FALSE);		// no z writes
 		for (i = 0; i < r_refdef2.num_entities + numstatics; i++)
 		{
-			currententity = GETENTITY(i);
+			currententity = GETENTITY(i, statics);
 
 			if (currententity->model->type == mod_alias
 					&& (currententity->renderfx & RF_TRANSLUCENT))

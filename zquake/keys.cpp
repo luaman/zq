@@ -50,7 +50,7 @@ qbool	keyactive[256];
 
 typedef struct
 {
-	char	*name;
+	const char	*name;
 	int		keynum;
 } keyname_t;
 
@@ -216,7 +216,8 @@ keyname_t keynames[] =
 qbool CheckForCommand (void)
 {
 	char	command[128];
-	char	*cmd, *s;
+	const char	*cmd;
+	char	*s;
 	int		i;
 
 	s = wcs2str(key_lines[edit_line]+1);
@@ -245,7 +246,7 @@ qbool CheckForCommand (void)
 #define COLUMNWIDTH 20
 #define MINCOLUMNWIDTH 18	// the last column may be slightly smaller
 
-static void PaddedPrint (char *s)
+static void PaddedPrint (const char *s)
 {
 	extern int con_linewidth;
 	int	nextcolx = 0;
@@ -268,7 +269,7 @@ static char	compl_common[64];
 static int	compl_clen;
 static int	compl_len;
 
-static void FindCommonSubString (char *s)
+static void FindCommonSubString (const char *s)
 {
 	if (!compl_clen) {
 		strlcpy (compl_common, s, sizeof(compl_common));
@@ -280,15 +281,15 @@ static void FindCommonSubString (char *s)
 }
 
 
-extern int Cmd_CompleteCountPossible (char *partial);
-extern int Cmd_AliasCompleteCountPossible (char *partial);
-extern int Cvar_CompleteCountPossible (char *partial);
+extern int Cmd_CompleteCountPossible (const char *partial);
+extern int Cmd_AliasCompleteCountPossible (const char *partial);
+extern int Cvar_CompleteCountPossible (const char *partial);
 
 extern cmd_function_t *cmd_functions;
 
 void CompleteCommand (void)
 {
-	char	*cmd, *s;
+	const char	*cmd, *s;
 	int		c, a, v;
 
 	s = wcs2str(key_lines[edit_line]+1);
@@ -1151,7 +1152,7 @@ the given string.  Single ascii characters return themselves, while
 the K_* names are matched up.
 ===================
 */
-int Key_StringToKeynum (char *str)
+int Key_StringToKeynum (const char *str)
 {
 	keyname_t	*kn;
 	int			keynum;
@@ -1182,13 +1183,11 @@ Key_KeynumToString
 
 Returns a string for the given keynum.
   (either a single ascii char, or a K_* name)
-it uses either the given buffer or a internal one
-  (parameter buffer == NULL)
 =================================================
 */
-char *Key_KeynumToString (int keynum, char *buffer, size_t buf_size)
+const char *Key_KeynumToString (int keynum)
 {
-	static char *retval        = NULL;
+	static const char *retval        = NULL;
 	keyname_t	*kn            = NULL;
 	static	char	tinystr[5] = "\0";
 
@@ -1223,13 +1222,6 @@ char *Key_KeynumToString (int keynum, char *buffer, size_t buf_size)
 	if (retval == NULL)
 		retval = "<UNKNOWN KEYNUM>";
 
-	// use the buffer if given
-	if (buffer != NULL && buf_size > (size_t)0)
-	{
-		strlcpy (buffer, retval, buf_size);
-		return (buffer);
-	}
-
 	return retval;
 }
 
@@ -1239,7 +1231,7 @@ char *Key_KeynumToString (int keynum, char *buffer, size_t buf_size)
 Key_SetBinding
 ===================
 */
-void Key_SetBinding (int keynum, char *binding)
+void Key_SetBinding (int keynum, const char *binding)
 {
 	if (keynum == -1)
 		return;
@@ -1349,7 +1341,7 @@ void Key_BindList_f (void)
 
 	for (i=0 ; i<256 ; i++)
 		if (keybindings[i])
-			Com_Printf ("%s \"%s\"\n", Key_KeynumToString(i, NULL, 0), keybindings[i]);
+			Com_Printf ("%s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
 }
 
 
@@ -1370,7 +1362,7 @@ void Key_WriteBindings (FILE *f)
 			if (i == ';')
 				fprintf (f, "bind \";\" \"%s\"\n", keybindings[i]);
 			else
-				fprintf (f, "bind %s \"%s\"\n", Key_KeynumToString(i, NULL, 0), keybindings[i]);
+				fprintf (f, "bind %s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
 		}
 }
 

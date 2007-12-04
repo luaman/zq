@@ -30,7 +30,7 @@ EXTERNC void R_EndDisc (void);
 
 usercmd_t nullcmd; // guaranteed to be zero
 
-static char	*largv[MAX_NUM_ARGVS + 1];
+static const char	*largv[MAX_NUM_ARGVS + 1];
 
 cvar_t	developer = {"developer","0"};
 cvar_t	registered = {"registered","0"};
@@ -92,7 +92,7 @@ void COM_StripExtension (char *in, char *out)
 COM_FileExtension
 ============
 */
-char *COM_FileExtension (char *in)
+const char *COM_FileExtension (const char *in)
 {
 	static char exten[8];
 	int		i;
@@ -154,9 +154,9 @@ If path doesn't have a .EXT, append extension
 (extension should include the .)
 ==================
 */
-void COM_DefaultExtension (char *path, char *extension)
+void COM_DefaultExtension (char *path, const char *extension)
 {
-	char    *src;
+	const char    *src;
 
 	src = path + strlen(path) - 1;
 
@@ -179,9 +179,9 @@ append(!) specified extension
 Extension should include the .
 ==================
 */
-void COM_ForceExtension (char *path, char *extension)
+void COM_ForceExtension (char *path, const char *extension)
 {
-	char    *src;
+	const char    *src;
 
 	src = path + strlen(path) - strlen(extension);
 	if (src >= path && !strcmp(src, extension))
@@ -196,7 +196,7 @@ void COM_ForceExtension (char *path, char *extension)
 
 char	com_token[MAX_COM_TOKEN];
 int		com_argc;
-char	**com_argv;
+const char	**com_argv;
 
 /*
 ==============
@@ -316,7 +316,7 @@ Returns the position (1 to argc-1) in the program's argument list
 where the given parameter appears, or 0 if not present
 ================
 */
-EXTERNC int COM_CheckParm (char *parm)
+EXTERNC int COM_CheckParm (const char *parm)
 {
 	int		i;
 	
@@ -334,7 +334,7 @@ int COM_Argc (void)
 	return com_argc;
 }
 
-EXTERNC char *COM_Argv (int arg)
+EXTERNC const char *COM_Argv (int arg)
 {
 	if (arg < 0 || arg >= com_argc)
 		return "";
@@ -545,7 +545,7 @@ COM_WriteFile
 The filename will be prefixed by com_basedir
 ============
 */
-void COM_WriteFile (char *filename, void *data, int len)
+void COM_WriteFile (const char *filename, void *data, int len)
 {
 	FILE	*f;
 	char	name[MAX_OSPATH];
@@ -573,11 +573,11 @@ COM_CreatePath
 Only used for CopyFile and download
 ============
 */
-void COM_CreatePath (char *path)
+void COM_CreatePath (const char *path)
 {
 	char	*ofs;
-	
-	for (ofs = path+1 ; *ofs ; ofs++)
+
+	for (ofs = (char*)path+1 ; *ofs ; ofs++)
 	{
 		if (*ofs == '/')
 		{	// create the directory
@@ -916,7 +916,7 @@ Sets com_gamedir, adds the directory to the head of the path,
 then loads and adds pak1.pak pak2.pak ... 
 ================
 */
-void FS_AddGameDirectory (char *dir)
+void FS_AddGameDirectory (const char *dir)
 {
 	int				i;
 	searchpath_t	*search;
@@ -963,7 +963,7 @@ FS_SetGamedir
 Sets the gamedir and path to a different directory.
 ================
 */
-void FS_SetGamedir (char *dir)
+void FS_SetGamedir (const char *dir)
 {
 	searchpath_t	*search, *next;
 	int				i;
@@ -1211,8 +1211,8 @@ Com_Printf
 All console printing must go through this in order to be logged to disk
 ================
 */
-extern void Con_PrintW (wchar *txt);
-EXTERNC void Com_Printf (char *fmt, ...)
+extern void Con_PrintW (const wchar *txt);
+EXTERNC void Com_Printf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
@@ -1286,7 +1286,7 @@ Com_DPrintf
 A Com_Printf that only shows up if the "developer" cvar is set
 ================
 */
-EXTERNC void Com_DPrintf (char *fmt, ...)
+EXTERNC void Com_DPrintf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];

@@ -81,7 +81,7 @@ byte		currentpalette[1024];
 VID_SetCaption
 ================
 */
-void VID_SetCaption (char *text)
+void VID_SetCaption (const char *text)
 {
 	if (vid_initialized)
 		SetWindowText (mainwindow, text);

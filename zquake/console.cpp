@@ -326,7 +326,7 @@ Con_Print
 Handles cursor positioning, line wrapping, etc
 ================
 */
-void Con_Print (char *txt)
+void Con_Print (const char *txt)
 {
 	int		y;
 	int		c, l;
@@ -399,7 +399,7 @@ void Con_Print (char *txt)
 
 
 //##U
-void Con_PrintW (wchar *txt)
+void Con_PrintW (const wchar *txt)
 {
 	int		y;
 	int		c, l;

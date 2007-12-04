@@ -51,7 +51,7 @@ Space padding is so names can be printed nicely in tables.
 Can safely be performed in place.
 ==================
 */
-static void W_CleanupName (char *in, char *out)
+static void W_CleanupName (const char *in, char *out)
 {
 	int		i;
 	int		c;
@@ -75,7 +75,7 @@ static void W_CleanupName (char *in, char *out)
 
 /*
 ====================
-W_LoadWadFile
+W_FreeWadFile
 ====================
 */
 EXTERNC void W_FreeWadFile (void)
@@ -93,7 +93,7 @@ EXTERNC void W_FreeWadFile (void)
 W_LoadWadFile
 ====================
 */
-EXTERNC void W_LoadWadFile (char *filename)
+EXTERNC void W_LoadWadFile (const char *filename)
 {
 	lumpinfo_t		*lump_p;
 	wadinfo_t		*header;
@@ -146,7 +146,7 @@ EXTERNC void W_LoadWadFile (char *filename)
 W_GetLumpinfo
 =============
 */
-lumpinfo_t *W_GetLumpinfo (char *name, qbool crash)
+lumpinfo_t *W_GetLumpinfo (const char *name, qbool crash)
 {
 	int		i;
 	lumpinfo_t	*lump_p;
@@ -170,7 +170,7 @@ static void W_HackOcranaLedsIntoConchars (byte *data);
 
 int wad_lump_disksize;
 
-EXTERNC void *W_GetLumpName (char *name, qbool crash)
+EXTERNC void *W_GetLumpName (const char *name, qbool crash)
 {
 	lumpinfo_t	*lump;
 	

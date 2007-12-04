@@ -325,7 +325,7 @@ int	Sys_FileTime (char *thePath)
 
 //___________________________________________________________________________________________________Sys_mkdir()
 
-void Sys_mkdir (char *thePath)
+void Sys_mkdir (const char *thePath)
 {
     if (mkdir (thePath, 0777) != -1)
     {
@@ -360,7 +360,7 @@ void Sys_MakeCodeWriteable (UInt32 theStartAddress, UInt32 theLength)
 
 //___________________________________________________________________________________________________Sys_Error()
 
-void Sys_Error (char *theError, ...)
+void Sys_Error (const char *theError, ...)
 {
     va_list     myArgPtr;
     char        myString[SYS_STRING_SIZE];
@@ -429,7 +429,7 @@ char *	Sys_sprintf (char *theFormat, ...)
 
 //__________________________________________________________________________________________________Sys_Printf()
 
-void	Sys_Printf (char *theFormat, ...)
+void	Sys_Printf (const char *theFormat, ...)
 {
 // only required by qwsv [command line only]:
 

@@ -43,16 +43,16 @@ NULL_OBJ_DIR=release/null
 #------------------------------------------------------------------------------
 
 CFLAGS = -DVWEP_TEST -DHALFLIFEBSP
-CFLAGS += -Wall -Wno-format-y2k
+CFLAGS += -g -Wall -Wno-format-y2k -Wno-sign-compare -Wno-unused-variable #-Werror 
 
 # optimizations (should be only for release)
-CFLAGS +=-ffast-math -fomit-frame-pointer -fexpensive-optimizations
+# CFLAGS +=-ffast-math -fomit-frame-pointer -fexpensive-optimizations
 
 ifeq ($(ARCH),mingw32)
 	CFLAGS += -D_WIN32 -DMINGW32
 endif
 ifeq ($(OS),linux)
-	CFLAGS += -DUSE_ALSA -DUSE_VMODE -DUSE_DGA
+	CFLAGS += -DUSE_ALSA -DUSE_VMODE #-DUSE_DGA
 endif
 ifeq ($(ARCH),ppc-linux)
 	CFLAGS += -DBIGENDIAN
@@ -65,7 +65,7 @@ ifeq ($(ARCH),ppc-darwin)
 endif
 
 SERVER_CFLAGS = -DSERVERONLY
-GL_CFLAGS = -DGLQUAKE
+GL_CFLAGS = -DGLQUAKE -DWITH_PNG
 SW_CFLAGS =
 NULL_CFLAGS =
 
@@ -83,7 +83,7 @@ ifeq ($(OS),darwin)
 	LDFLAGS				+=-framework "CoreAudio" -framework OpenGL
 endif
 ifeq ($(OS),linux)
-	LDFLAGS				+=-lm -lGL -lXxf86vm -lXxf86dga
+	LDFLAGS				+=-lm -lGL -lXxf86vm -lXxf86dga -lprofiler
 					# -L/usr/X11R6/lib -lX11 -lXext
 endif
 

@@ -255,7 +255,7 @@ void SV_Status_f (void)
 	int			i, j, l;
 	client_t	*cl;
 	float		cpu, avg, pak;
-	char		*s;
+	const char		*s;
 
 #ifndef SERVERONLY
 	// some mods use a "status" alias for their own needs, sigh
@@ -375,7 +375,7 @@ void SV_ConSay_f(void)
 		return;
 
 	strcpy (text, "console: ");
-	p = Cmd_Args();
+	p = strdup(Cmd_Args());
 
 	if (*p == '"')
 	{
@@ -394,7 +394,7 @@ void SV_ConSay_f(void)
 }
 
 
-void SV_SendServerInfoChange(char *key, char *value)
+void SV_SendServerInfoChange(const char *key, const char *value)
 {
 	if (!sv.state)
 		return;
@@ -411,7 +411,7 @@ SV_ServerinfoChanged
 Cvar system calls this when a CVAR_SERVERINFO cvar changes
 ==================
 */
-void SV_ServerinfoChanged (char *key, char *str)
+void SV_ServerinfoChanged (const char *key, const char *str)
 {
 	if ( (!strcmp(key, "pm_bunnyspeedcap") || !strcmp(key, "pm_slidefix")
 		|| !strcmp(key, "pm_airstep") || !strcmp(key, "pm_pground")
@@ -449,7 +449,7 @@ bool SV_ChangeServerinfo (const string key, const string value)
 	}
 
 	// FIXME, don't send if the key hasn't changed
-	SV_SendServerInfoChange ((char *)key.c_str(), (char *)value.c_str());
+	SV_SendServerInfoChange ((const char *)key.c_str(), (const char *)value.c_str());
 	return true;
 }
 
@@ -475,8 +475,8 @@ void SV_Serverinfo_f (void)
 		return;
 	}
 
-	char *key = Cmd_Argv(1);
-	char *value = Cmd_Argv(2);
+	const char *key = Cmd_Argv(1);
+	const char *value = Cmd_Argv(2);
 
 	if (key[0] == '*')
 	{
@@ -549,7 +549,7 @@ Sets the fake *gamedir to a different directory.
 */
 void SV_Gamedir (void)
 {
-	char			*dir;
+	const char	*dir;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -632,7 +632,7 @@ Sets the gamedir and path to a different directory.
 */
 void SV_Gamedir_f (void)
 {
-	char			*dir;
+	const char	*dir;
 
 	if (Cmd_Argc() == 1)
 	{

@@ -77,7 +77,7 @@ void S_StopSound (int entnum, int entchannel)
 {
 }
 
-sfx_t *S_PrecacheSound (char *sample)
+sfx_t *S_PrecacheSound (const char *sample)
 {
 	return NULL;
 }
@@ -106,7 +106,7 @@ void S_ExtraUpdate (void)
 {
 }
 
-void S_LocalSound (char *s)
+void S_LocalSound (const char *s)
 {
 }
 

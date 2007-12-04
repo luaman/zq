@@ -30,7 +30,7 @@ qbool do_stdin = true;
 qbool stdin_ready;
 
 
-void Sys_mkdir (char *path)
+void Sys_mkdir (const char *path)
 {
 }
 
@@ -48,7 +48,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 }
 
 
-void Sys_Error (char *error, ...)
+void Sys_Error (const char *error, ...)
 {
 	va_list	 argptr;
 
@@ -62,7 +62,7 @@ void Sys_Error (char *error, ...)
 }
 
 
-void Sys_Printf (char *fmt, ...)
+void Sys_Printf (const char *fmt, ...)
 {
 	va_list		argptr;
 

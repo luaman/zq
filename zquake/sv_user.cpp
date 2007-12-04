@@ -682,7 +682,7 @@ static void Cmd_NextDL_f (void)
 
 }
 
-static void OutofBandPrintf (netadr_t where, char *fmt, ...)
+static void OutofBandPrintf (netadr_t where, const char *fmt, ...)
 {
 	va_list		argptr;
 	char	send[1024];
@@ -925,7 +925,7 @@ static void SV_Say (qbool team)
 		sv_client->whensaid[sv_client->whensaidhead] = svs.realtime;
 	}
 
-	p = Cmd_Args();
+	p = strdup(Cmd_Args());
 
 	if (*p == '"')
 	{
@@ -1554,7 +1554,7 @@ static void Cmd_Give_f (void)
 			self.armorvalue = 0;
 	}
 	else if (item == "quad") {
-		extern int ED_FindFieldOffset (char *field);
+		extern int ED_FindFieldOffset (const char *field);
 		int fofs_super_time = ED_FindFieldOffset("super_time");
 		int fofs_super_damage_finished = ED_FindFieldOffset("super_damage_finished");
 		if (fofs_super_time && fofs_super_damage_finished) {
@@ -1694,7 +1694,7 @@ static void Cmd_Notarget_f (void)
 
 typedef struct
 {
-	char	*name;
+	const char	*name;
 	void	(*func) (void);
 } ucmd_t;
 
@@ -1751,7 +1751,7 @@ SV_ExecuteUserCommand
 static void SV_ExecuteUserCommand (char *s)
 {
 	ucmd_t	*u;
-	char	*cmd;
+	const char	*cmd;
 	
 	Cmd_TokenizeString (s);
 	sv_player = sv_client->edict;
@@ -2164,9 +2164,8 @@ void SV_PostRunCmd (void)
 	vec3_t		oldvelocity;
 
 	// run post-think
-
 	if (!sv_client->spectator) {
-		qbool onground = (int)sv_player->v.flags & FL_ONGROUND;
+		// qbool onground = (int)sv_player->v.flags & FL_ONGROUND;
 
 		pr_global_struct->time = sv.time;
 		pr_global_struct->self = EDICT_TO_PROG(sv_player);

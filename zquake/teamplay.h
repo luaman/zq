@@ -31,7 +31,7 @@ extern cvar_t cl_triggers;
 extern cvar_t snd_trigger;
 
 // triggers
-void TP_ExecTrigger (char *s);
+void TP_ExecTrigger (const char *s);
 void TP_StatChanged (int stat, int value);
 void TP_CheckPickupSound (char *s, vec3_t org);
 qbool TP_CheckSoundTrigger (char *str);
@@ -41,11 +41,11 @@ void TP_SearchForMsgTriggers (char *s, int level);
 
 // used by easyrecord command
 int TP_CountPlayers();
-char *TP_MapName();
+const char *TP_MapName();
 char *TP_PlayerName();
 char *TP_PlayerTeam();
-char *TP_EnemyName();
-char *TP_EnemyTeam();
+const char *TP_EnemyName();
+const char *TP_EnemyTeam();
 
 // teamcolor&enemycolor
 extern int cl_teamtopcolor;
@@ -53,9 +53,9 @@ extern int cl_teambottomcolor;
 extern int cl_enemytopcolor;
 extern int cl_enemybottomcolor;
 
-void TP_LoadLocFile (char *path, qbool quiet);
-char *TP_ParseMacroString (char *s);
-char *TP_ParseFunChars (char *s, qbool chat);
+void TP_LoadLocFile (const char *path, qbool quiet);
+const char *TP_ParseMacroString (const char *s);
+const char *TP_ParseFunChars (const char *s, qbool chat);
 void TP_NewMap ();
 void TP_CheckVersionRequest(char *s);
 int TP_CategorizeMessage (char *s, int *offset);

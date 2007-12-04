@@ -520,10 +520,10 @@ void SV_MoveToGoal (void);
 //
 // sv_init.c
 //
-int SV_ModelIndex (char *name);
+int SV_ModelIndex (const char *name);
 void SV_FlushSignon (void);
 void SV_SaveSpawnparms (void);
-void SV_SpawnServer (char *mapname, qbool devmap);
+void SV_SpawnServer (const char *mapname, qbool devmap);
 
 
 //
@@ -547,11 +547,11 @@ void SV_EndRedirect (void);
 void SV_Multicast (vec3_t origin, int to);
 void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count,
 						int replacement_te, int replacement_count);
-void SV_StartSound (edict_t *entity, int channel, char *sample, int volume,
+void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume,
 					float attenuation, /* optional */ client_t *to_client);
-void SV_ClientPrintf (client_t *cl, int level, char *fmt, ...);
-void SV_BroadcastPrintf (int level, char *fmt, ...);
-void SV_BroadcastCommand (char *fmt, ...);
+void SV_ClientPrintf (client_t *cl, int level, const char *fmt, ...);
+void SV_BroadcastPrintf (int level, const char *fmt, ...);
+void SV_BroadcastCommand (const char *fmt, ...);
 void SV_SendClientMessages (void);
 void SV_SendMessagesToAll (void);
 void SV_FindModelNumbers (void);
@@ -568,7 +568,7 @@ void SV_TogglePause (qbool menu, const string msg);
 // sv_ccmds.c
 //
 void SV_Status_f (void);
-void SV_SendServerInfoChange (char *key, char *value);
+void SV_SendServerInfoChange (const char *key, const char *value);
 
 //
 // sv_ents.c

@@ -115,7 +115,7 @@ void R_RotateBmodel (void)
 	temp2[2][1] = 0;
 	temp2[2][2] = c;
 
-	R_ConcatRotations (temp2, temp1, temp3);
+	R_ConcatRotations ((const float (*)[3]) temp2, (const float (*)[3]) temp1, temp3);
 
 // roll
 	angle = currententity->angles[ROLL];		
@@ -133,7 +133,7 @@ void R_RotateBmodel (void)
 	temp1[2][1] = -s;
 	temp1[2][2] = c;
 
-	R_ConcatRotations (temp1, temp3, entity_rotation);
+	R_ConcatRotations ((const float (*)[3]) temp1, (const float (*)[3]) temp3, entity_rotation);
 
 //
 // rotate modelorg and the transformation matrix

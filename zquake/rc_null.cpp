@@ -69,8 +69,8 @@ void R_FadeScreen (void) {}
 void R_DrawDebugChar (char num) {}
 void R_BeginDisc (void) {}
 void R_EndDisc (void) {}
-mpic_t *R_CachePic (char *path) { return NULL; }
-mpic_t *R_CacheWadPic (char *name) { return NULL; }
+mpic_t *R_CachePic (const char *path) { return NULL; }
+mpic_t *R_CacheWadPic (const char *name) { return NULL; }
 void R_FlushPics (void) {}
 void R_DrawStretchPic (int x, int y, int width, int height, mpic_t *pic, float alpha) {}
 void R_DrawCrosshair (int num, int crossx, int crossy) {}

@@ -190,7 +190,7 @@ ddef_t *ED_FieldAtOfs (int ofs)
 ED_FindField
 ============
 */
-ddef_t *ED_FindField (char *name)
+ddef_t *ED_FindField (const char *name)
 {
 	ddef_t		*def;
 	int			i;
@@ -230,7 +230,7 @@ ddef_t *ED_FindGlobal (char *name)
 ED_FindFunction
 ============
 */
-dfunction_t *ED_FindFunction (char *name)
+dfunction_t *ED_FindFunction (const char *name)
 {
 	dfunction_t		*func;
 	int				i;
@@ -244,7 +244,7 @@ dfunction_t *ED_FindFunction (char *name)
 	return NULL;
 }
 
-func_t ED_FindFunctionOffset (char *name)
+func_t ED_FindFunctionOffset (const char *name)
 {
 	dfunction_t *func;
 
@@ -252,7 +252,7 @@ func_t ED_FindFunctionOffset (char *name)
 	return func ? (func_t)(func - pr_functions) : 0;
 }
 
-int ED_FindFieldOffset (char *field)
+int ED_FindFieldOffset (const char *field)
 {
 	ddef_t *d;
 	d = ED_FindField(field);
@@ -430,7 +430,7 @@ void ED_Print (edict_t *ed)
 	ddef_t	*d;
 	int		*v;
 	int		i, j;
-	char	*name;
+	const char	*name;
 	int		type;
 
 	if (!ed->inuse)
@@ -478,7 +478,7 @@ void ED_Write (FILE *f, edict_t *ed)
 	ddef_t	*d;
 	int		*v;
 	int		i, j;
-	char	*name;
+	const char	*name;
 	int		type;
 
 	fprintf (f, "{\n");
@@ -618,7 +618,7 @@ void ED_WriteGlobals (FILE *f)
 {
 	ddef_t		*def;
 	int			i;
-	char		*name;
+	const char		*name;
 	int			type;
 
 	fprintf (f,"{\n");
@@ -992,7 +992,7 @@ void PR_LoadProgs (void)
 	static int lumpsize[6] = { sizeof(dstatement_t), sizeof(ddef_t),
 		sizeof(ddef_t), sizeof(dfunction_t), 4, 4 };
 	int	filesize = 0;
-	char	*progsname;
+	const char	*progsname;
 
 	progs = NULL;
 

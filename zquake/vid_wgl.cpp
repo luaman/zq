@@ -163,7 +163,7 @@ EXTERNC void D_EndDirectRect (int x, int y, int width, int height)
 VID_SetCaption
 ================
 */
-void VID_SetCaption (char *text)
+void VID_SetCaption (const char *text)
 {
 	if (vid_initialized)
 		SetWindowText (mainwindow, text);

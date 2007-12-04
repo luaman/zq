@@ -354,7 +354,7 @@ We hardcode a list of names, checksums and alternative names to provide a way
 for external texture packs to differentiate them. */
 static struct {
 	int md4;
-	char *origname, *newname;
+	const char *origname, *newname;
 } translate_names[] = {
 //	{ 0x8a010dc0, "sky4", "sky4" },
 	{ 0xde688b77, "sky4", "sky1" },
@@ -369,7 +369,7 @@ static struct {
 	{ 0, NULL, NULL },
 };
 
-static char *TranslateTextureName (texture_t *tx)
+static const char *TranslateTextureName (texture_t *tx)
 {
 	int i;
 	int checksum;
@@ -578,11 +578,12 @@ void Mod_LoadTextures (lump_t *l)
 	}
 }
 
-int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int matchheight, int mode);
+int GL_LoadTextureImage (const char *filename, const char *identifier, int matchwidth, int matchheight, int mode);
 
 static int LoadExternalTexture (texture_t *tx, int mode)
 {
-	char *name, *altname, *mapname /*, *groupname*/;
+	const char *name, *altname;
+	const char *mapname /*, *groupname*/;
 	qbool noscale;
 
 	if (loadmodel->halflifebsp)
@@ -667,7 +668,7 @@ static int LoadExternalTexture (texture_t *tx, int mode)
 
 static qbool LoadExternalSkyTexture (texture_t *tx)
 {
-	char *altname, *mapname;
+	const char *altname, *mapname;
 	char solidname[MAX_QPATH], alphaname[MAX_QPATH];
 	char altsolidname[MAX_QPATH], altalphaname[MAX_QPATH];
 	byte alphapixel = 255;

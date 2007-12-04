@@ -625,7 +625,7 @@ void M_Options_Key (int k)
 //=============================================================================
 /* KEYS MENU */
 
-char *bindnames[][2] =
+const char *bindnames[][2] =
 {
 {"+attack", 		"attack"},
 {"+use", 			"use"},
@@ -657,7 +657,7 @@ void M_Menu_Keys_f (void)
 }
 
 
-void M_FindKeysForCommand (char *command, int *twokeys)
+void M_FindKeysForCommand (const char *command, int *twokeys)
 {
 	int		count;
 	int		j;
@@ -683,7 +683,7 @@ void M_FindKeysForCommand (char *command, int *twokeys)
 	}
 }
 
-void M_UnbindCommand (char *command)
+void M_UnbindCommand (const char *command)
 {
 	int		j;
 	int		l;
@@ -706,7 +706,7 @@ void M_Keys_Draw (void)
 {
 	int		i, l;
 	int		keys[2];
-	char	*name;
+	const char	*name;
 	int		x, y;
 	mpic_t	*p;
 
@@ -735,15 +735,13 @@ void M_Keys_Draw (void)
 		}
 		else
 		{
-			char str[64];
-
-			name = Key_KeynumToString (keys[0], str, sizeof(str) - 1);
+			name = Key_KeynumToString (keys[0]);
 			M_Print (156, y, name);
 			x = strlen(name) * 8;
 			if (keys[1] != -1)
 			{
 				M_Print (156 + x + 8, y, "or");
-				M_Print (156 + x + 32, y, Key_KeynumToString (keys[1], NULL, 0));
+				M_Print (156 + x + 32, y, Key_KeynumToString (keys[1]));
 			}
 		}
 	}
@@ -1720,7 +1718,7 @@ static void ReadDir (void)
 	FindClose (h);
 
 	// TODO: position demo cursor
-	if (prevdir) {
+	if (strlen(prevdir) > 0) {
 		for (i=0 ; i<numfiles ; i++) {
 			if (!strcmp (dir[i].name, prevdir)) {
 				demo_cursor = i;
@@ -1823,7 +1821,7 @@ static void ReadDir (void)
 	} while ((dstruct = readdir (d)));
 	closedir (d);
 
-	if (prevdir) {
+	if (strlen(prevdir) > 0) {
 		for (i=0 ; i<numfiles ; i++) {
 			if (!strcmp (dir[i].name, prevdir)) {
 				demo_cursor = i;
@@ -1850,11 +1848,12 @@ void M_Menu_Demos_f (void)
 	ReadDir ();
 }
 
-static char *toyellow (char *s)
+static const char *toyellow (const char *input)
 {
 	static char buf[20];
+	char *s;
 
-	strlcpy (buf, s, sizeof(buf));
+	strlcpy (buf, input, sizeof(buf));
 	for (s=buf ; *s ; s++)
 		if ( isdigit((int)(unsigned char)*s) )
 			*s = *s - '0' + 18;
@@ -2005,8 +2004,8 @@ void M_Demos_Key (int k)
 
 typedef struct
 {
-	char	*name;
-	char	*description;
+	const char	*name;
+	const char	*description;
 } level_t;
 
 level_t		levels[] =
@@ -2108,7 +2107,7 @@ level_t		levels[] =
 
 typedef struct
 {
-	char	*description;
+	const char	*description;
 	int		firstLevel;
 	int		levels;
 } episode_t;
@@ -2173,7 +2172,7 @@ void M_GameOptions_Draw (void)
 
 	M_Print (0, 64, "         teamplay");
 	{
-		char *msg;
+		const char *msg;
 
 		switch(_teamplay)
 		{
@@ -2592,7 +2591,7 @@ void M_Setup_Key (int k, wchar unichar)
 
 void M_Quit_Draw (void)
 {
-	static char *quitmsg[] = {
+	static const char *quitmsg[] = {
 	"0" PROGRAM " " PROGRAM_VERSION,
 	"1based on QuakeWorld by Id Software",
 	"1",
@@ -2616,7 +2615,7 @@ void M_Quit_Draw (void)
 	"0licensed to Nothing Interactive, Inc.",
 	"0All rights reserved. Press y to exit",
 	NULL};
-	char **p;
+	const char **p;
 	int x, y;
 
 	M_DrawTextBox (0, 0, 38, 23);

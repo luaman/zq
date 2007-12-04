@@ -114,7 +114,7 @@ qbool NET_IsLocalAddress (netadr_t a)
 	return false;
 }
 
-char *NET_AdrToString (netadr_t a)
+const char *NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
@@ -128,7 +128,7 @@ char *NET_AdrToString (netadr_t a)
 	return s;
 }
 
-char *NET_BaseAdrToString (netadr_t a)
+const char *NET_BaseAdrToString (netadr_t a)
 {
 	static	char	s[64];
 	
@@ -152,7 +152,7 @@ idnewt:28000
 192.246.40.70:28000
 =============
 */
-qbool NET_StringToAdr (char *s, netadr_t *a)
+qbool NET_StringToAdr (const char *s, netadr_t *a)
 {
 	struct hostent	*h;
 	struct sockaddr_in sadr;

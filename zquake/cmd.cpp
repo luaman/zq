@@ -61,8 +61,8 @@ void Cmd_Wait_f (void)
 */
 
 
-void Cbuf_AddText (char *text) { Cbuf_AddTextEx (&cbuf_main, text); }
-void Cbuf_InsertText (char *text) { Cbuf_InsertTextEx (&cbuf_main, text); }
+void Cbuf_AddText (const char *text) { Cbuf_AddTextEx (&cbuf_main, text); }
+void Cbuf_InsertText (const char *text) { Cbuf_InsertTextEx (&cbuf_main, text); }
 void Cbuf_Execute () { Cbuf_ExecuteEx (&cbuf_main); }
 
 
@@ -100,7 +100,7 @@ Cbuf_AddText
 Adds command text at the end of the buffer
 ============
 */
-void Cbuf_AddTextEx (cbuf_t *cbuf, char *text)
+void Cbuf_AddTextEx (cbuf_t *cbuf, const char *text)
 {
 	int		len;
 	int		new_start;
@@ -139,7 +139,7 @@ Cbuf_InsertText
 Adds command text at the beginning of the buffer
 ============
 */
-void Cbuf_InsertTextEx (cbuf_t *cbuf, char *text)
+void Cbuf_InsertTextEx (cbuf_t *cbuf, const char *text)
 {
 	int		len;
 	int		new_start;
@@ -438,7 +438,7 @@ cmd_alias_t *Alias_Next (cmd_alias_t *alias)
 		return cmd_alias;
 }
 
-cmd_alias_t *Cmd_FindAlias (char *name)
+cmd_alias_t *Cmd_FindAlias (const char *name)
 {
 	int			key;
 	cmd_alias_t *alias;
@@ -452,7 +452,7 @@ cmd_alias_t *Cmd_FindAlias (char *name)
 	return NULL;
 }
 
-char *Cmd_AliasString (char *name)
+const char *Cmd_AliasString (const char *name)
 {
 	int			key;
 	cmd_alias_t *alias;
@@ -497,7 +497,7 @@ Cmd_AliasList_f
 void Cmd_AliasList_f (void)
 {
 	cmd_alias_t	*a;
-	char *pattern;
+	const char *pattern;
 
 	pattern = Cmd_Argc() > 1 ? Cmd_Argv(1) : NULL;
 
@@ -520,7 +520,7 @@ void Cmd_Alias_f (void)
 {
 	cmd_alias_t	*a;
 	int			key;
-	char		*name;
+	const char		*name;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -568,7 +568,7 @@ void Cmd_Alias_f (void)
 }
 
 
-qbool Cmd_DeleteAlias (char *name)
+qbool Cmd_DeleteAlias (const char *name)
 {
 	cmd_alias_t	*a, *prev;
 	int			key;
@@ -619,7 +619,7 @@ qbool Cmd_DeleteAlias (char *name)
 
 void Cmd_UnAlias_f (void)
 {
-	char	*name;
+	const char	*name;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -687,14 +687,14 @@ void Cmd_WriteAliases (FILE *f)
 */
 
 typedef struct legacycmd_s {
-	char *oldname, *newname;
+	const char *oldname, *newname;
 	struct legacycmd_s *next;
 } legacycmd_t;
 
 static legacycmd_t *legacycmds = NULL;
 
 
-static legacycmd_t *Cmd_GetLegacyCommand (char *oldname)
+static legacycmd_t *Cmd_GetLegacyCommand (const char *oldname)
 {
 	legacycmd_t *cmd;
 
@@ -705,7 +705,7 @@ static legacycmd_t *Cmd_GetLegacyCommand (char *oldname)
 	return NULL;
 }
 
-void Cmd_AddLegacyCommand (char *oldname, char *newname)
+void Cmd_AddLegacyCommand (const char *oldname, const char *newname)
 {
 	legacycmd_t *cmd;
 	cmd = (legacycmd_t *) Q_malloc (sizeof(legacycmd_t));
@@ -716,12 +716,12 @@ void Cmd_AddLegacyCommand (char *oldname, char *newname)
 	cmd->newname = newname;
 }
 
-qbool Cmd_IsLegacyCommand (char *oldname)
+qbool Cmd_IsLegacyCommand (const char *oldname)
 {
 	return Cmd_GetLegacyCommand (oldname) != NULL;
 }
 
-char *Cmd_LegacyCommandValue (char *oldname)
+const char *Cmd_LegacyCommandValue (const char *oldname)
 {
 	legacycmd_t *cmd;
 
@@ -767,9 +767,9 @@ static qbool Cmd_LegacyCommand (void)
 #define	MAX_ARGS		80
 
 static	int			cmd_argc;
-static	char		*cmd_argv[MAX_ARGS];
-static	char		*cmd_null_string = "";
-static	char		*cmd_args = NULL;
+static	const char	*cmd_argv[MAX_ARGS];
+static	const char	*cmd_null_string = "";
+static	const char	*cmd_args = NULL;
 
 cmd_function_t	*cmd_hash_array[32];
 /*static*/ cmd_function_t	*cmd_functions;		// possible commands to execute
@@ -789,11 +789,11 @@ EXTERNC int Cmd_Argc (void)
 Cmd_Argv
 ============
 */
-EXTERNC char *Cmd_Argv (int arg)
+EXTERNC const char *Cmd_Argv (int arg)
 {
 	if ( arg >= cmd_argc )
 		return cmd_null_string;
-	return cmd_argv[arg];	
+	return cmd_argv[arg];
 }
 
 /*
@@ -803,7 +803,7 @@ Cmd_Args
 Returns a single string containing argv(1) to argv(argc()-1)
 ============
 */
-EXTERNC char *Cmd_Args (void)
+EXTERNC const char *Cmd_Args (void)
 {
 	if (!cmd_args)
 		return "";
@@ -880,7 +880,7 @@ void Cmd_TokenizeString (const char *text)
 		if (cmd_argc < MAX_ARGS)
 		{
 			cmd_argv[cmd_argc] = argv_buf + idx;
-			strcpy (cmd_argv[cmd_argc], com_token);
+			strcpy ((char *) cmd_argv[cmd_argc], com_token);
 			idx += strlen(com_token) + 1;
 			cmd_argc++;
 		}
@@ -894,7 +894,7 @@ void Cmd_TokenizeString (const char *text)
 Cmd_AddCommand
 ============
 */
-EXTERNC void Cmd_AddCommand (char *cmd_name, xcommand_t function)
+EXTERNC void Cmd_AddCommand (const char *cmd_name, xcommand_t function)
 {
 	cmd_function_t	*cmd;
 	int	key;
@@ -937,7 +937,7 @@ EXTERNC void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 Cmd_Exists
 ============
 */
-qbool Cmd_Exists (char *cmd_name)
+qbool Cmd_Exists (const char *cmd_name)
 {
 	int	key;
 	cmd_function_t	*cmd;
@@ -979,7 +979,7 @@ cmd_function_t *Cmd_FindCommand (char *cmd_name)
 Cmd_CompleteCommand
 ============
 */
-char *Cmd_CompleteCommand (char *partial)
+const char *Cmd_CompleteCommand (const char *partial)
 {
 	cmd_function_t	*cmd;
 	int				len;
@@ -1009,7 +1009,7 @@ char *Cmd_CompleteCommand (char *partial)
 	return NULL;
 }
 
-int Cmd_CompleteCountPossible (char *partial)
+int Cmd_CompleteCountPossible (const char *partial)
 {
 	cmd_function_t	*cmd;
 	int		len, c = 0;
@@ -1025,7 +1025,7 @@ int Cmd_CompleteCountPossible (char *partial)
 	return c;
 }
 
-int Cmd_AliasCompleteCountPossible (char *partial)
+int Cmd_AliasCompleteCountPossible (const char *partial)
 {
 	cmd_alias_t		*alias;
 	int		len, c = 0;
@@ -1056,7 +1056,7 @@ void Cmd_CmdList_f (void)
 {
 	cmd_function_t	*cmd;
 	int	count;
-	char *pattern;
+	const char *pattern;
 
 	pattern = Cmd_Argc() > 1 ? Cmd_Argv(1) : NULL;
 	
@@ -1105,7 +1105,7 @@ void Cmd_ExpandString (const char *data, char *dest)
 	int		i, len;
 	cvar_t	*var, *bestvar;
 	int		quotes = 0;
-	char	*str = NULL;
+	const char	*str = NULL;
 	int		name_length = 0;
 #ifndef SERVERONLY
 	extern int	macro_length;
@@ -1192,7 +1192,7 @@ void Cmd_ExpandString (const char *data, char *dest)
 }
 
 // Commands allowed for msg_trigger
-char *safe_commands[] = {
+const char *safe_commands[] = {
 	"play",
 	"playvol",
 	"stopsound",
@@ -1230,7 +1230,7 @@ void Cmd_ExecuteString (const char *text)
 	static char		buf[1024];
 	cbuf_t			*inserttarget;
 #ifndef SERVERONLY
-	char			**s;
+	const char		**s;
 #endif
 
 	Cmd_ExpandString (text, buf);
@@ -1337,7 +1337,7 @@ checkaliases:
 }
 
 
-static qbool is_numeric (char *c)
+static qbool is_numeric (const char *c)
 {	
 	return ( isdigit((int)(unsigned char)*c) ||
 		((*c == '-' || *c == '+') && (c[1] == '.' || isdigit((int)(unsigned char)c[1]))) ||
@@ -1351,7 +1351,7 @@ Cmd_If_f
 void Cmd_If_f (void)
 {
 	int		i, c;
-	char	*op;
+	const char	*op;
 	qbool	result;
 	char	buf[256];
 

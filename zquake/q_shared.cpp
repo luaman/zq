@@ -482,7 +482,7 @@ Does a varargs printf into a temp buffer
 2 buffers are used to allow subsequent va calls
 ============
 */
-EXTERNC char *va (char *format, ...)
+EXTERNC const char *va (const char *format, ...)
 {
 	va_list argptr;
 	static char string[2][2048];

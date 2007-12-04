@@ -472,7 +472,7 @@ static void CLNQ_ParseServerData (void)
 
 void CLNQ_SignonReply (void)
 {
-	extern cvar_t	skin, name, topcolor, bottomcolor;
+	extern cvar_t	name, topcolor, bottomcolor;
 
 	Com_DPrintf ("CL_SignonReply: %i\n", nq_signon);
 

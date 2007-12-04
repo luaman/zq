@@ -30,8 +30,8 @@ void CL_Disconnect (void) {}
 void CL_HandleHostError (void) {}
 void CL_BeginLocalConnection (void) {}
 void Con_Init (void) {}
-void Con_Print (char *text) {}
-void Con_PrintW (wchar *text) {}
+void Con_Print (const char *text) {}
+void Con_PrintW (const wchar *text) {}
 void Cmd_ForwardToServer (void) {}
 EXTERNC void D_FlushCaches (void) {}
 void Key_Init (void) {}

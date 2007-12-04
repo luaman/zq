@@ -34,7 +34,7 @@ void SV_SavegameComment (char *text)
 {
 	int		i;
 	char	kills[20];
-	char	*levelname;
+	const char	*levelname;
 
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 		text[i] = ' ';

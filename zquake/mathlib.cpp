@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 
-EXTERNC void Sys_Error (char *error, ...);
+EXTERNC void Sys_Error (const char *error, ...);
 
-EXTERNC vec3_t vec3_origin = {0,0,0};
+vec3_t vec3_origin = {0,0,0}; // XXX: initialised and defined but extern???
 
 /*-----------------------------------------------------------------*/
 
@@ -132,8 +132,8 @@ EXTERNC void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t
 	zrot[1][0] = -zrot[0][1];
 	zrot[1][1] = zrot[0][0];
 
-	R_ConcatRotations( m, zrot, tmpmat );
-	R_ConcatRotations( tmpmat, im, rot );
+	R_ConcatRotations((const float (*)[3]) m, (const float (*)[3]) zrot, tmpmat);
+	R_ConcatRotations((const float (*)[3]) tmpmat, (const float (*)[3]) im, rot);
 
 	for ( i = 0; i < 3; i++ )
 	{

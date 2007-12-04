@@ -46,7 +46,7 @@ typedef struct cachepic_s
 static cachepic_t	cachepics[MAX_CACHED_PICS];
 static int			numcachepics;
 
-mpic_t *R_CacheWadPic (char *name)
+mpic_t *R_CacheWadPic (const char *name)
 {
 	int			i;
 	cachepic_t	*cpic;
@@ -80,7 +80,7 @@ mpic_t *R_CacheWadPic (char *name)
 R_CachePic
 ================
 */
-mpic_t *R_CachePic (char *path)
+mpic_t *R_CachePic (const char *path)
 {
 	cachepic_t	*cpic;
 	int			i;

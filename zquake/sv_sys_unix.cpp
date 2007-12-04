@@ -56,7 +56,7 @@ Sys_mkdir
 
 ============
 */
-void		 Sys_mkdir (char *path)
+void		 Sys_mkdir (const char *path)
 {
 	if (mkdir (path, 0777) != -1)
 		return;
@@ -93,10 +93,10 @@ double		 Sys_DoubleTime (void)
 Sys_Error
 ================
 */
-void		 Sys_Error (char *error, ...)
+void		 Sys_Error (const char *error, ...)
 {
-	va_list		 argptr;
-	char		 string[1024];
+	va_list		argptr;
+	char		string[1024];
 
 	va_start (argptr, error);
 	vsnprintf (string, sizeof(string), error, argptr);
@@ -112,7 +112,7 @@ void		 Sys_Error (char *error, ...)
 Sys_Printf
 ================
 */
-void		 Sys_Printf (char *fmt, ...)
+void		 Sys_Printf (const char *fmt, ...)
 {
 	va_list		 argptr;
 	static char	 text[2048];

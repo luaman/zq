@@ -189,7 +189,7 @@ static void PF_setmodel (void)
 {
 	int			i;
 	edict_t		*e;
-	char		*m;
+	const char	*m;
 	string		*check;
 	cmodel_t	*mod;
 
@@ -542,7 +542,7 @@ void ambientsound(vector pos, string samp, float vol, float atten) = #74
 static void PF_ambientsound (void)
 {
 	string		*check;
-	char		*samp;
+	const char	*samp;
 	float		*pos;
 	float 		vol, attenuation;
 	int			i, soundnum;
@@ -594,18 +594,18 @@ void sound(entity e, float chan, string samp) = #8
 */
 static void PF_sound (void)
 {
-	char		*sample;
+	const char	*sample;
 	int			channel;
 	edict_t		*entity;
-	int 		volume;
+	int			volume;
 	float attenuation;
-		
+
 	entity = G_EDICT(OFS_PARM0);
 	channel = G_FLOAT(OFS_PARM1);
 	sample = G_STRING(OFS_PARM2);
 	volume = G_FLOAT(OFS_PARM3) * 255;
 	attenuation = G_FLOAT(OFS_PARM4);
-	
+
 	SV_StartSound (entity, channel, sample, volume, attenuation, NULL);
 }
 
@@ -786,7 +786,8 @@ static void PF_stuffcmd (void)
 {
 	int		entnum;
 	client_t	*cl;
-	char	*buf, *str;
+	char	*buf;
+	const char *str;
 	int		buflen, newlen;
 	int		i;
 	
@@ -854,7 +855,7 @@ void localcmd(string cmd) = #46
 */
 static void PF_localcmd (void)
 {
-	char	*str;
+	const char	*str;
 	
 	str = G_STRING(OFS_PARM0);
 
@@ -876,7 +877,7 @@ float cvar(string) = #45
 */
 static void PF_cvar (void)
 {
-	char	*str, *temp;
+	const char	*str, *temp;
 
 	str = G_STRING(OFS_PARM0);
 
@@ -909,7 +910,7 @@ void cvar_set(string var, string val) = #72
 */
 static void PF_cvar_set (void)
 {
-	char	*var_name, *val, *temp;
+	const char	*var_name, *val, *temp;
 	cvar_t	*var;
 
 	var_name = G_STRING(OFS_PARM0);
@@ -1098,7 +1099,7 @@ static void PF_Find (void)
 {
 	int		e;	
 	int		f;
-	char	*s, *t;
+	const char	*s, *t;
 	edict_t	*ed;
 	
 	e = G_EDICTNUM(OFS_PARM0);
@@ -1126,7 +1127,7 @@ static void PF_Find (void)
 }
 
 
-static void PR_CheckEmptyString (char *s)
+static void PR_CheckEmptyString (const char *s)
 {
 	if (s[0] <= ' ')
 		PR_RunError ("Bad string");
@@ -1155,7 +1156,7 @@ void precache_sound(string s) = #19
 */
 static void PF_precache_sound (void)
 {
-	char	*s;
+	const char	*s;
 	int		i;
 	
 	if (sv.state != ss_loading)
@@ -1187,7 +1188,7 @@ void precache_model(string s) = #20
 */
 static void PF_precache_model (void)
 {
-	char	*s;
+	const char	*s;
 	int		i;
 	
 	if (sv.state != ss_loading)
@@ -1352,7 +1353,7 @@ void lightstyle(float style, string value) = #35
 static void PF_lightstyle (void)
 {
 	int		style;
-	char	*val;
+	const char	*val;
 	client_t	*client;
 	int			j;
 	
@@ -1360,7 +1361,7 @@ static void PF_lightstyle (void)
 	val = G_STRING(OFS_PARM1);
 
 // change the string in sv
-	sv.lightstyles[style] = val;
+	sv.lightstyles[style] = (char *) val;
 	
 // send message to all clients on this server
 	if (sv.state != ss_active)
@@ -2197,7 +2198,7 @@ void changelevel(string s) = #70
 */
 static void PF_changelevel (void)
 {
-	char	*s;
+	const char	*s;
 	static	int	last_spawncount;
 
 // make sure we don't issue two changelevels
@@ -2268,8 +2269,7 @@ static void PF_infokey (void)
 {
 	edict_t	*e;
 	int		e1;
-	char	*value;
-	char	*key;
+	const char	*value, *key;
 	static	char ov[256];
 
 	e = G_EDICT(OFS_PARM0);
@@ -2312,7 +2312,7 @@ float stof(string s) = #81
 */
 static void PF_stof (void)
 {
-	char	*s;
+	const char	*s;
 
 	s = G_STRING(OFS_PARM0);
 
@@ -2498,7 +2498,7 @@ string cvar_string(string varname) = #103;
 */
 static void PF_cvar_string (void)
 {
-	char	*str;
+	const char	*str;
 	cvar_t	*var;
 
 	str = G_STRING(OFS_PARM0);
@@ -2520,7 +2520,7 @@ static void PF_cvar_string (void)
 // as a third parameter;  I don't see how that can be useful so it's not implemented
 void PF_registercvar (void)
 {
-	char *name, *value;
+	const char *name, *value;
 
 	name = G_STRING(OFS_PARM0);
 	value = G_STRING(OFS_PARM0);
@@ -2579,7 +2579,7 @@ string substr(string s, float start, float count) = #116;
 static void PF_substr (void)
 {
 	int		start, count;
-	char	*s;
+	const char	*s;
 
 	s = G_STRING(OFS_PARM0);
 	start = (int)G_FLOAT(OFS_PARM1);
@@ -2650,7 +2650,7 @@ string strzone(string s) = #118
 static void PF_strzone (void)
 {
 	int i;
-	char *s;
+	const char *s;
 
 	if (pr_argc >= 1)
 		s = G_STRING(OFS_PARM0);
@@ -2701,7 +2701,7 @@ extern bool SV_ChangeServerinfo (const string key, const string value);
 static void PF_setinfo (void)
 {
 	int entnum;
-	char *key, *value;
+	const char *key, *value;
 	client_t *cl;
 	qbool success;
 
@@ -2723,7 +2723,7 @@ static void PF_setinfo (void)
 
 	cl = &svs.clients[entnum - 1];
 
-	if (key == "name" && value != "")
+	if (!strcmp(key, "name") && (strlen(value) > 0))
 		cl->sendinfo = true;
 
 	G_FLOAT(OFS_RETURN) = success = cl->userinfo.set(key, value);
@@ -2753,7 +2753,7 @@ float checkextension(string extension) = #99;
 */
 static void PF_checkextension (void)
 {
-	static char *supported_extensions[] = {
+	static const char *supported_extensions[] = {
 		"DP_CON_SET",
 		"DP_HALFLIFE_MAP_CVAR",
 		"DP_MONSTERWALK",
@@ -2782,7 +2782,7 @@ static void PF_checkextension (void)
 		"ZQ_BOT_TEST",
 		NULL
 	};
-	char **pstr, *extension;
+	const char **pstr, *extension;
 	extension = G_STRING(OFS_PARM0);
 
 	for (pstr = supported_extensions; *pstr; pstr++) {
@@ -2815,7 +2815,7 @@ static void PF_spawnbot (void)
 
 static void PF_precache_vwep_model (void)
 {
-	char	*s;
+	const char	*s;
 	int		i;
 	
 	if (sv.state != ss_loading)
@@ -2853,7 +2853,7 @@ void soundtoclient(entity client, entity e, float chan, string samp, float vol, 
 */
 static void PF_soundtoclient (void)
 {
-	char		*sample;
+	const char	*sample;
 	int			channel, clientnum;
 	edict_t		*entity;
 	int 		volume;
@@ -2883,7 +2883,7 @@ static void PF_soundtoclient (void)
 // FIXME, make independent of Cmd_TokenizeString?
 void PF_tokenize (void)
 {
-	char *str;
+	const char *str;
 
 	str = G_STRING(OFS_PARM0);
 	Cmd_TokenizeString (str);

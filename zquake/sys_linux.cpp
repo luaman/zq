@@ -54,7 +54,7 @@ int			 nostdout	= 0;
 // General routines
 // =======================================================================
 
-void		 Sys_Printf (char *fmt, ...)
+void		 Sys_Printf (const char *fmt, ...)
 {
 	va_list			 argptr;
 	char			 text[2048];
@@ -100,7 +100,7 @@ void		 Sys_Init(void)
 }
 
 
-void		 Sys_Error (char *error, ...)
+void		 Sys_Error (const char *error, ...)
 {
 	va_list	 argptr;
 	char	 string[1024];
@@ -119,7 +119,7 @@ void		 Sys_Error (char *error, ...)
 
 
 
-void		 Sys_mkdir (char *path)
+void		 Sys_mkdir (const char *path)
 {
 	mkdir (path, 0777);
 }

@@ -83,9 +83,9 @@ startup hunk allocations
 void Memory_Init (void *buf, int size);
 
 EXTERNC void *Hunk_Alloc (int size);		// returns 0 filled memory
-EXTERNC void *Hunk_AllocName (int size, char *name);
+EXTERNC void *Hunk_AllocName (int size, const char *name);
 
-void *Hunk_HighAllocName (int size, char *name);
+void *Hunk_HighAllocName (int size, const char *name);
 
 EXTERNC int	Hunk_LowMark (void);
 EXTERNC void Hunk_FreeToLowMark (int mark);

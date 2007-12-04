@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 #include <signal.h>
 
+#include "client.h"
 #include "gl_local.h"
 #include "keys.h"
 #include "input.h"
@@ -108,7 +109,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 {
 }
 
-void VID_SetCaption (char *text)
+void VID_SetCaption (const char *text)
 {
 	if (!x_disp)
 		return;
@@ -364,8 +365,6 @@ static Cursor CreateNullCursor(Display *display, Window root)
 
 static void install_grabs(void)
 {
-    int MajorVersion, MinorVersion;
-
     input_grabbed = true;
 
     // don't show mouse cursor icon
@@ -380,6 +379,8 @@ static void install_grabs(void)
                  CurrentTime);
 
 #ifdef USE_DGA
+    int MajorVersion, MinorVersion;
+
     if (!COM_CheckParm("-nodga") &&
             XF86DGAQueryVersion(x_disp, &MajorVersion, &MinorVersion)) {
         // let us hope XF86DGADirectMouse will work

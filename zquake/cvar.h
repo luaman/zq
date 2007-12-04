@@ -32,8 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef struct cvar_s
 {
-	char	*name;
-	char	*string;
+	const char	*name;
+	const char	*string;
 	int		flags;
 	void	(*OnChange)(struct cvar_s *var, char *value, qbool *cancel);
 	float	value;
@@ -47,26 +47,26 @@ typedef struct cvar_s
 EXTERNC void Cvar_Register (cvar_t *var);
 
 // returns existing var or creates a new, dynamic one.  cvarflags will be or'ed in
-cvar_t *Cvar_Get (const char *name, char *string, int cvarflags);
+cvar_t *Cvar_Get (const char *name, const char *string, int cvarflags);
 
 // equivalent to "<name> <variable>" typed at the console
 void Cvar_Set (cvar_t *var, const char *string);
 
 // force a set even if the cvar is read only
-void Cvar_ForceSet (cvar_t *var, char *string);
+void Cvar_ForceSet (cvar_t *var, const char *string);
 
 // expands value to a string and calls Cvar_Set
 EXTERNC void Cvar_SetValue (cvar_t *var, float value);
 
 // returns 0 if not defined or non-numeric
-float Cvar_Value (char *name);
+float Cvar_Value (const char *name);
 
 // returns an empty string if not defined
-char *Cvar_String (char *name);
+const char *Cvar_String (const char *name);
 
 // attempts to match a partial variable name for command line completion
 // returns NULL if nothing fits
-char  *Cvar_CompleteVariable (char *partial);
+const char  *Cvar_CompleteVariable (const char *partial);
 
 // called by Cmd_ExecuteString when Cmd_Argv(0) doesn't match a known
 // command.  Returns true if the command was a variable reference that
