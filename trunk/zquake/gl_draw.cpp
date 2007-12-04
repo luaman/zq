@@ -196,10 +196,10 @@ static int			numcachepics;
 
 byte		menuplyr_pixels[4096];		// the menu needs them
 
-static int	GL_LoadPicTexture (char *name, cachepic_t *pic, byte *data);
+static int	GL_LoadPicTexture (const char *name, cachepic_t *pic, byte *data);
 
 
-static mpic_t *R_CachePic_impl (char *path, qbool wad, qbool crash)
+static mpic_t *R_CachePic_impl (const char *path, qbool wad, qbool crash)
 {
 	qpic_t	*p;
 	cachepic_t	*pic;
@@ -292,12 +292,12 @@ no24bit:
 	return &pic->pic;
 }
 
-mpic_t *R_CachePic (char *path)
+mpic_t *R_CachePic (const char *path)
 {
 	return R_CachePic_impl (path, false, true);
 }
 
-mpic_t *R_CacheWadPic (char *name)
+mpic_t *R_CacheWadPic (const char *name)
 {
 	return R_CachePic_impl (name, true, false);
 }
@@ -308,7 +308,7 @@ mpic_t *R_CacheWadPic (char *name)
 GL_LoadPicTexture
 ================
 */
-static int GL_LoadPicTexture (char *name, cachepic_t *cpic, byte *data)
+static int GL_LoadPicTexture (const char *name, cachepic_t *cpic, byte *data)
 {
 	int		glwidth, glheight;
 	int		i;
@@ -383,7 +383,7 @@ static void OnChange_gl_smoothfont (cvar_t *var, char *string, qbool *cancel)
 	}
 }
 
-static int LoadCharsetImage (char *filename)
+static int LoadCharsetImage (const char *filename)
 {
 	byte *pic;
 	int width, height;
@@ -419,7 +419,7 @@ static int LoadCharsetImage (char *filename)
 	return texnum;
 }
 
-static int LoadCharsetFromWadOrLmp (char *name, byte **pixels)
+static int LoadCharsetFromWadOrLmp (const char *name, byte **pixels)
 {
 	int i;
 	byte	buf[128*256];
@@ -800,7 +800,7 @@ void R_DrawStringW (int x, int y, const wchar *ws)
 	}
 }
 
-static byte *StringToRGB(char *s) {
+static byte *StringToRGB(const char *s) {
 	byte *col;
 	static byte rgb[4];
 

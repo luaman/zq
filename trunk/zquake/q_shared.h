@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <ctype.h>
 #include <assert.h>
+#include <wchar.h>
 
 #ifdef __cplusplus
 #include <string>
@@ -208,7 +209,7 @@ EXTERNC int vsnprintf(char *buffer, size_t count, const char *format, va_list ar
 qbool Q_glob_match (const char *pattern, const char *text);
 
 // does a varargs printf into a temp buffer
-EXTERNC char	*va(char *format, ...);
+EXTERNC const char	*va(const char *format, ...);
 
 int Com_HashKey (const char *name);
 
@@ -218,7 +219,7 @@ EXTERNC void *Q_malloc (size_t size);
 void *Q_calloc (size_t count, size_t size);
 char *Q_strdup (const char *src);
 // might be turned into a function that makes sure all Q_*alloc calls are matched with Q_free
-#define Q_free(ptr) free(ptr)
+#define Q_free(ptr) free((void *)ptr)
 
 //============================================================================
 

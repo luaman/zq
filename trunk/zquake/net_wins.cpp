@@ -136,7 +136,7 @@ idnewt:28000
 192.246.40.70:28000
 =============
 */
-qbool NET_StringToAdr (char *s, netadr_t *a)
+qbool NET_StringToAdr (const char *s, netadr_t *a)
 {
 	struct hostent	*h;
 	struct sockaddr_in sadr;

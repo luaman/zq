@@ -8,7 +8,7 @@ EXTERNC_END
 
 /* KOI8-R encodes Russian capital hard sign as 0xFF, but we can't use it
 because it breaks older clients (qwcl).  We use 0xaf ('/'+ 0x80) instead. */
-static char *wc2koi_table =
+static const char *wc2koi_table =
 "?3??4?67??" "??" "??" ">?"
 "abwgdevzijklmnop"
 "rstufhc~{}/yx|`q"
@@ -168,7 +168,7 @@ wchar *decode_utf8 (char *str) {
 typedef wchar *(*decodeFUNC) (char *);
 
 static struct {
-	char *name;
+	const char *name;
 	decodeFUNC func;
 } decode_table[] = {
 	{"utf-8", decode_utf8},

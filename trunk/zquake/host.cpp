@@ -53,7 +53,7 @@ void Host_EndGame (void)
 	NET_ClearLoopback ();
 }
 
-void Host_Error (char *message, ...)
+void Host_Error (const char *message, ...)
 {
 	va_list		argptr;
 	char		str[1024];
@@ -82,7 +82,7 @@ EXTERNC void Host_Error_wrapper (char *message, ...)
 	Host_Error (str);
 }
 
-void Host_HandleError (char *error, ...)
+void Host_HandleError (const char *error, ...)
 {
 	va_list		argptr;
 	char		str[1024];

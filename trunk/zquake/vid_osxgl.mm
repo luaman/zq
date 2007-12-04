@@ -109,7 +109,7 @@ void VID_SetDeviceGammaRamp (unsigned short *ramps) {};
 //______________________________________________________________________________________iMPLEMENTATION_QuakeView
 
 
-void VID_SetCaption (char *text)
+void VID_SetCaption (const char *text)
 {
     if (gVidWindow != NULL)
     {

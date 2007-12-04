@@ -686,7 +686,7 @@ void VID_UnlockBuffer(void) {}
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height) {}
 void D_EndDirectRect (int x, int y, int width, int height) {}
 
-void VID_SetCaption (char *text) {
+void VID_SetCaption (const char *text) {
 	SDL_WM_SetCaption(text, text);
 }
 void VID_SetDeviceGammaRamp (unsigned short *ramps) {

@@ -439,9 +439,13 @@ void R_MarkLeaves (void)
 	}
 }
 
+entity_t *GETENTITY (int i)
+{
+	if (i < r_refdef2.num_entities)
+		return &r_refdef2.entities[i];
 
-#define GETENTITY (i < r_refdef2.num_entities) ? &r_refdef2.entities[i] : \
-										r_statics[i - r_refdef2.num_entities];
+	return r_statics[i - r_refdef2.num_entities];
+}
 
 /*
 =============

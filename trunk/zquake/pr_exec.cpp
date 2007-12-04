@@ -46,7 +46,7 @@ int			pr_xstatement;
 
 int		pr_argc;
 
-char *pr_opnames[] =
+const char *pr_opnames[] =
 {
 "DONE",
 
@@ -266,7 +266,7 @@ PR_RunError
 Aborts the currently executing function
 ============
 */
-void PR_RunError (char *error, ...)
+void PR_RunError (const char *error, ...)
 {
 	va_list		argptr;
 	char		string[1024];
@@ -675,10 +675,10 @@ while (1)
 
 /*----------------------*/
 
-char *pr_strtbl[MAX_PRSTR + MAX_DYN_PRSTR];
+const char *pr_strtbl[MAX_PRSTR + MAX_DYN_PRSTR];
 int num_prstr;
 
-char *PR_GetString(int num)
+const char *PR_GetString(int num)
 {
 	if (num < 0) {
 //Com_DPrintf ("GET:%d == %s\n", num, pr_strtbl[-num]);
@@ -687,7 +687,7 @@ char *PR_GetString(int num)
 	return pr_strings + num;
 }
 
-int PR_SetString(char *s)
+int PR_SetString(const char *s)
 {
 	int i;
 

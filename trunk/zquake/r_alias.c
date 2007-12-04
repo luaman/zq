@@ -370,8 +370,7 @@ void R_AliasSetUpTransform (int trivial_accept)
 	t2matrix[2][3] = -modelorg[2];
 
 // FIXME: can do more efficiently than full concatenation
-	R_ConcatTransforms (t2matrix, tmatrix, rotationmatrix);
-
+	R_ConcatTransforms ((const float (*)[4]) t2matrix, (const float (*)[4]) tmatrix, rotationmatrix);
 // TODO: should be global, set when vright, etc., set
 	VectorCopy (vright, viewmatrix[0]);
 	VectorNegate (vup, viewmatrix[1]);
@@ -381,7 +380,7 @@ void R_AliasSetUpTransform (int trivial_accept)
 //	viewmatrix[1][3] = 0;
 //	viewmatrix[2][3] = 0;
 
-	R_ConcatTransforms (viewmatrix, rotationmatrix, aliastransform);
+	R_ConcatTransforms ((const float (*)[4]) viewmatrix, (const float (*)[4]) rotationmatrix, aliastransform);
 
 // do the scaling up of x and y to screen coordinates as part of the transform
 // for the unclipped case (it would mess up clipping in the clipped case).
@@ -684,9 +683,10 @@ void R_AliasSetupLighting (void)
 			r_ambientlight = r_shadelight = 8;
 	}
 
-	if ((r_fullbrightModels.value || r_fullbrightSkins.value &&
-	(currententity->model->modhint == MOD_PLAYER || currententity->renderfx & RF_PLAYERMODEL))
-	&& r_refdef2.allow_fbskins) {
+	if ((r_fullbrightModels.value || ((r_fullbrightSkins.value &&
+					(currententity->model->modhint == MOD_PLAYER)) ||
+				currententity->renderfx & RF_PLAYERMODEL)) &&
+		r_refdef2.allow_fbskins) {
 			r_ambientlight = max (r_ambientlight, 100);
 			r_shadelight = max (r_shadelight, 100);
 	}

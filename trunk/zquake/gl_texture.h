@@ -42,14 +42,14 @@ void GL_Upload8 (byte *data, int width, int height, int mode);
 
 // TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN, TEX_NOSCALE
 // + TEX WORLD etc
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, int mode);
+int GL_LoadTexture (const char *identifier, int width, int height, byte *data, int mode);
 
 // TEX_MIPMAP, TEX_ALPHA, TEX_BRIGHTEN(FIXME not yet)
 // + TEX WORLD etc
-int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, int mode);
+int GL_LoadTexture32 (const char *identifier, int width, int height, byte *data, int mode);
 
 int GL_FindTexture (char *identifier);
-//int GL_LoadPicTexture (char *name, mpic_t *pic, byte *data);
+//int GL_LoadPicTexture (const char *name, mpic_t *pic, byte *data);
 
 
 void GL_Bind (int texnum);
@@ -62,9 +62,9 @@ void GL_EnableMultitexture (void);
 // here's what FuhQuake has...
 void GL_Upload8 (byte *data, int width, int height, int mode);
 void GL_Upload32 (unsigned *data, int width, int height, int mode);
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, int mode, int bpp);
+int GL_LoadTexture (const char *identifier, int width, int height, byte *data, int mode, int bpp);
 
-byte *GL_LoadImagePixels (char *, int, int, int);
+byte *GL_LoadImagePixels (const char *, int, int, int);
 int GL_LoadTexturePixels (byte *, char *, int, int, int);
 mpic_t *GL_LoadPicImage (char *, char *, int, int, int);
 int GL_LoadCharsetImage (char *, char *);
@@ -72,8 +72,8 @@ int GL_LoadCharsetImage (char *, char *);
 void GL_Texture_Init(void);
 */
 
-byte *GL_LoadImagePixels (char *filename, int *width, int *height);
-int GL_LoadTextureImage (char * , char *, int, int, int);
+byte *GL_LoadImagePixels (const char *filename, int *width, int *height);
+int GL_LoadTextureImage (const char * , const char *, int, int, int);
 
 extern int gl_lightmap_format, gl_solid_format, gl_alpha_format;
 

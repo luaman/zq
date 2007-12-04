@@ -444,12 +444,12 @@ void CL_SetViewPosition ()
 		return;
 	}
 
-	outpacket_t *outp = &cl.outpackets[cl.snapshots[0].sequence & SENT_MASK];
+//	outpacket_t *outp = &cl.outpackets[cl.snapshots[0].sequence & SENT_MASK];
 	if (cls.demoplayback && !(cl.spectator && cam_curtarget != CAM_NOTARGET)) {
 		CL_LerpViewPlayer (true);
 	}
 	else if (cl.spectator && cam_curtarget != CAM_NOTARGET) {
-		player_state_t *state = &cl.snapshots[0].playerstate[cam_curtarget];
+//		player_state_t *state = &cl.snapshots[0].playerstate[cam_curtarget];
 //		VectorCopy (state->origin, cl.simorg);
 //		VectorCopy (state->viewangles, cl.simangles);
 		VectorCopy (predicted_simorg, cl.simorg);

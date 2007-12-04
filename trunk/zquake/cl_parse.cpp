@@ -48,7 +48,7 @@ void Snapshot::clear() {
 	num_nails = 0;
 }
 
-char *svc_strings[] =
+const char *svc_strings[] =
 {
 	"svc_bad",
 	"svc_nop",

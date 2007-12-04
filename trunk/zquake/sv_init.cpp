@@ -35,7 +35,7 @@ cvar_t	sv_loadentfiles = {"sv_loadentfiles", "0"};
 SV_ModelIndex
 ================
 */
-int SV_ModelIndex (char *name)
+int SV_ModelIndex (const char *name)
 {
 	int		i;
 	
@@ -190,7 +190,7 @@ void SV_SaveSpawnparms (void)
 	}
 }
 
-unsigned SV_CheckModel(char *mdl)
+unsigned SV_CheckModel(const char *mdl)
 {
 	byte	stackbuf[1024];		// avoid dirtying the cache heap
 	byte *buf;
@@ -222,7 +222,7 @@ clients along with it.
 This is only called from the SV_Map_f() function.
 ================
 */
-void SV_SpawnServer (char *mapname, qbool devmap)
+void SV_SpawnServer (const char *mapname, qbool devmap)
 {
 	edict_t			*ent;
 	int				i;
@@ -345,9 +345,9 @@ void SV_SpawnServer (char *mapname, qbool devmap)
 
 	if (pr_nqprogs) {
 		// register the cvars that NetQuake provides for mod use
-		char *nqcvars[] = {"gamecfg", "scratch1", "scratch2", "scratch3", "scratch4",
+		const char *nqcvars[] = {"gamecfg", "scratch1", "scratch2", "scratch3", "scratch4",
 			"saved1", "saved2", "saved3", "saved4", "savedgamecfg", "temp1", NULL};
-		for (char **var = nqcvars; *var; var++)
+		for (const char **var = nqcvars; *var; var++)
 			Cvar_Get(*var, "0", 0);
 	}
 

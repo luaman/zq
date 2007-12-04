@@ -53,9 +53,9 @@ void	NET_Sleep (int msec);
 qbool	NET_CompareAdr (netadr_t a, netadr_t b);
 qbool	NET_CompareBaseAdr (netadr_t a, netadr_t b);
 qbool	NET_IsLocalAddress (netadr_t a);
-char	*NET_AdrToString (netadr_t a);
-char	*NET_BaseAdrToString (netadr_t a);
-qbool	NET_StringToAdr (char *s, netadr_t *a);
+const char	*NET_AdrToString (netadr_t a);
+const char	*NET_BaseAdrToString (netadr_t a);
+qbool	NET_StringToAdr (const char *s, netadr_t *a);
 
 //============================================================================
 
@@ -123,7 +123,7 @@ typedef struct
 void Netchan_Init (void);
 void Netchan_Transmit (netchan_t *chan, int length, byte *data);
 void Netchan_OutOfBand (netsrc_t sock, netadr_t adr, int length, byte *data);
-void Netchan_OutOfBandPrint (netsrc_t sock, netadr_t adr, char *format, ...);
+void Netchan_OutOfBandPrint (netsrc_t sock, netadr_t adr, const char *format, ...);
 qbool Netchan_Process (netchan_t *chan);
 int NQNetchan_Process (netchan_t *chan);
 void Netchan_Setup (netsrc_t sock, netchan_t *chan, netadr_t adr, int qport);

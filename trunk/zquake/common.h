@@ -195,13 +195,13 @@ char *COM_Parse (const char *data);
 
 
 extern	int		com_argc;
-extern	char	**com_argv;
+extern	const char	**com_argv;
 
 void COM_InitArgv (int argc, char **argv);
 int	COM_Argc (void);
-EXTERNC char *COM_Argv (int arg);	// range and null checked
+EXTERNC const char *COM_Argv (int arg);	// range and null checked
 void COM_ClearArgv (int arg);
-EXTERNC int COM_CheckParm (char *parm);
+EXTERNC int COM_CheckParm (const char *parm);
 void COM_AddParm (char *parm);
 
 
@@ -210,11 +210,11 @@ void COM_Shutdown (void);
 
 
 char *COM_SkipPath (const char *pathname);
-char *COM_FileExtension (char *in);
+const char *COM_FileExtension (const char *in);
 void COM_StripExtension (char *in, char *out);
 EXTERNC void COM_FileBase (const char *in, char *out);
-void COM_DefaultExtension (char *path, char *extension);
-void COM_ForceExtension (char *path, char *extension);
+void COM_DefaultExtension (char *path, const char *extension);
+void COM_ForceExtension (char *path, const char *extension);
 
 //============================================================================
 
@@ -231,7 +231,7 @@ extern qbool	file_from_pak;		// set if file came from a pak file
 extern qbool	file_from_gamedir;	// set if file came from a gamedir (and gamedir wasn't id1/qw)
 
 void FS_InitFilesystem (void);
-void FS_SetGamedir (char *dir);
+void FS_SetGamedir (const char *dir);
 int FS_FOpenFile (const string filename, FILE **file);
 qbool FS_FindFile (const string filename);
 EXTERNC byte *FS_LoadStackFile (const char *path, void *buffer, int bufsize);
@@ -240,8 +240,8 @@ EXTERNC byte *FS_LoadHunkFile (const char *path);
 EXTERNC void FS_LoadCacheFile (const char *path, struct cache_user_s *cu);
 byte *FS_LoadHeapFile (const string path);
 
-void COM_WriteFile (char *filename, void *data, int len);
-void COM_CreatePath (char *path);
+void COM_WriteFile (const char *filename, void *data, int len);
+void COM_CreatePath (const char *path);
 
 void COM_CheckRegistered (void);
 
@@ -274,9 +274,9 @@ int Com_TranslateMapChecksum (const string mapname, int checksum);
 
 void Com_BeginRedirect (void (*RedirectedPrint) (char *));
 void Com_EndRedirect (void);
-EXTERNC void Com_Printf (char *fmt, ...);
+EXTERNC void Com_Printf (const char *fmt, ...);
 void Com_PrintW (wchar *msg);
-EXTERNC void Com_DPrintf (char *fmt, ...);
+EXTERNC void Com_DPrintf (const char *fmt, ...);
 
 //============================================================================
 
@@ -308,19 +308,19 @@ extern cvar_t	host_mapname;
 #ifdef __cplusplus
 // generic exception with a text message
 struct EMessage {
-	char *msg;
-	EMessage (char *_msg) : msg(_msg) {}
+	const char *msg;
+	EMessage (const char *_msg) : msg(_msg) {}
 };
 
 // shut down client and server and drop to console, printing a message
 // dedicated servers will exit
 struct Error : EMessage {
-	Error(char *_msg) : EMessage(_msg) {}
+	Error(const char *_msg) : EMessage(_msg) {}
 };
 
 // shut down client and server and silently drop to console
 struct EndGame : EMessage {
-	EndGame(char *_msg) : EMessage(_msg) {}
+	EndGame(const char *_msg) : EMessage(_msg) {}
 };
 #endif
 
@@ -336,7 +336,7 @@ void Host_Shutdown (void);
 void Host_Frame (double time);
 void Host_Abort (void);					// longjmp() to Host_Frame
 void Host_EndGame (void);				// kill local client and server
-void Host_Error (char *error, ...);
+void Host_Error (const char *message, ...);
 void Host_Quit (void);
 
 void CL_Init (void);
@@ -347,8 +347,8 @@ void CL_Disconnect (void);
 void CL_HandleHostError (void);
 void CL_BeginLocalConnection (void);
 void Con_Init (void);
-void Con_Print (char *txt);
-void Con_PrintW (wchar *txt);
+void Con_Print (const char *txt);
+void Con_PrintW (const wchar *txt);
 void Key_Init (void);
 void SCR_EndLoadingPlaque (void);
 

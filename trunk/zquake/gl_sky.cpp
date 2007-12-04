@@ -247,7 +247,7 @@ void R_InitSky (texture_t *mt)
 R_SetSky
 ==================
 */
-static char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
+static const char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
 void R_SetSky (const char *name)
 {
 	int		i;

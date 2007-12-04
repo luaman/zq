@@ -114,7 +114,7 @@ FILE IO
 */
 
 
-void Sys_mkdir (char *path)
+void Sys_mkdir (const char *path)
 {
 	_mkdir (path);
 }
@@ -143,7 +143,7 @@ EXTERNC void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long lengt
 }
 
 
-EXTERNC void Sys_Error (char *error, ...)
+EXTERNC void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[1024];
@@ -173,7 +173,7 @@ EXTERNC void Sys_Error (char *error, ...)
 	exit (1);
 }
 
-EXTERNC void Sys_Printf (char *fmt, ...)
+EXTERNC void Sys_Printf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[1024];

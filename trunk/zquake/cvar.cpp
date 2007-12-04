@@ -21,8 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 
-extern void CL_UserinfoChanged (char *key, char *string);
-extern void SV_ServerinfoChanged (char *key, char *string);
+extern void CL_UserinfoChanged (const char *key, const char *string);
+extern void SV_ServerinfoChanged (const char *key, const char *string);
 
 static cvar_t	*cvar_hash[32];
 static cvar_t	*cvar_vars;
@@ -68,7 +68,7 @@ cvar_t *Cvar_Find (const char *name)
 Cvar_Value
 ============
 */
-float Cvar_Value (char *name)
+float Cvar_Value (const char *name)
 {
 	cvar_t	*var = Cvar_Find (name);
 	if (!var)
@@ -82,7 +82,7 @@ float Cvar_Value (char *name)
 Cvar_String
 ============
 */
-char *Cvar_String (char *name)
+const char *Cvar_String (const char *name)
 {
 	cvar_t *var = Cvar_Find (name);
 	if (!var)
@@ -96,7 +96,7 @@ char *Cvar_String (char *name)
 Cvar_CompleteVariable
 ============
 */
-char *Cvar_CompleteVariable (char *partial)
+const char *Cvar_CompleteVariable (const char *partial)
 {
 	cvar_t		*cvar;
 	int			len;
@@ -119,7 +119,7 @@ char *Cvar_CompleteVariable (char *partial)
 	return NULL;
 }
 
-int Cvar_CompleteCountPossible (char *partial)
+int Cvar_CompleteCountPossible (const char *partial)
 {
 	cvar_t	*cvar;
 	int		len;
@@ -196,7 +196,7 @@ void Cvar_Set (cvar_t *var, const char *string)
 Cvar_ForceSet
 ============
 */
-void Cvar_ForceSet (cvar_t *var, char *string)
+void Cvar_ForceSet (cvar_t *var, const char *string)
 {
 	int saved_flags;
 
@@ -390,7 +390,7 @@ void Cvar_CvarList_f (void)
 {
 	cvar_t	*var;
 	int count;
-	char *pattern;
+	const char *pattern;
 
 	pattern = (Cmd_Argc() > 1) ? Cmd_Argv(1) : NULL;
 
@@ -415,7 +415,7 @@ void Cvar_CvarList_f (void)
 Cvar_Get
 ===========
 */
-cvar_t *Cvar_Get (const char *name, char *string, int cvarflags)
+cvar_t *Cvar_Get (const char *name, const char *string, int cvarflags)
 {
 	cvar_t		*var;
 	int			key;
@@ -507,7 +507,7 @@ qbool Cvar_Delete (const char *name)
 // config.cfg, assume it's a cvar set and spawn a temp var
 qbool Cvar_CreateTempVar (void)
 {
-	char *name = Cmd_Argv(0);
+	const char *name = Cmd_Argv(0);
 	// FIXME, make sure it's a valid cvar name, return false if not
 	Cvar_Get (name, Cmd_MakeArgs(1), CVAR_TEMP);
 	return true;
@@ -531,7 +531,7 @@ static qbool cvar_seta = false;
 void Cvar_Set_f (void)
 {
 	cvar_t *var;
-	char *name;
+	const char *name;
 
 	if (Cmd_Argc() != 3)
 	{

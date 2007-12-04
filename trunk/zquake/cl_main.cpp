@@ -67,7 +67,7 @@ cvar_t	enemyskin = {"enemyskin", "", 0, OnChangeSkinForcing};
 cvar_t	cl_independentPhysics = {"cl_independentPhysics", "1"};
 cvar_t	cl_physfps = {"cl_physfps", "0"};
 cvar_t	cl_physfps_spectator = {"cl_physfps_spectator", "30"};
-cvar_t	cl_zerolocalping = {"cl_zerolocalping", "1"};
+cvar_t	cl_zerolocalping = {"cl_zerolocalping", "0"}; // FIXME: currently broken
 cvar_t	cl_predictiontimeout = {"cl_predictiontimeout", "3"};
 cvar_t	sys_yieldcpu = {"sys_yieldcpu", "1"};
 
@@ -256,9 +256,9 @@ CL_UserinfoChanged
 Cvar system calls this when a CVAR_USERINFO cvar changes
 ==================
 */
-void CL_UserinfoChanged (char *key, char *string)
+void CL_UserinfoChanged (const char *key, const char *string)
 {
-	char *s;
+	const char *s;
 
 	s = TP_ParseFunChars (string, false);
 
@@ -369,7 +369,7 @@ CL_Connect_f
 */
 void CL_Connect_f (void)
 {
-	char	*server;
+	const char	*server;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -449,7 +449,7 @@ void CL_Connect_f (void)
 
 void CL_NQConnect_f (void)
 {
-	char	*server;
+	const char	*server;
 
 	if (Cmd_Argc() != 2)
 	{

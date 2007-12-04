@@ -135,7 +135,7 @@ void GL_EnableMultitexture (void)
 
 typedef struct
 {
-	char *name, *shortname;
+	const char *name, *shortname;
 	int	minimize, maximize;
 } glmode_t;
 
@@ -391,12 +391,14 @@ ScaleDimensions (int width, int height, int *scaled_width, int *scaled_height, i
 	*scaled_height = bound(1, *scaled_height, max_texsize);
 }
 
+#if 0
 static int RoundToPowerOf2 (int in) {
 	int out;
 	for (out = 1; out < in; out <<= 1)
 		;
 	return out;
 }
+#endif
 
 /*
 ===============
@@ -541,7 +543,7 @@ GL_LoadTexture
 Accepts TEX_MIPMAP, TEX_ALPHA, TEX_FULLBRIGHTMASK, TEX_BRIGHTEN, TEX_NOSCALE
 ================
 */
-int GL_LoadTexture (char *identifier, int width, int height, byte *data, int mode)
+int GL_LoadTexture (const char *identifier, int width, int height, byte *data, int mode)
 {
 	int i, scaled_width, scaled_height;
 	unsigned	crc = 0;
@@ -617,7 +619,7 @@ Accepts TEX_MIPMAP, TEX_ALPHA, TEX_BRIGHTEN(FIXME not yet), TEX_NOSCALE
 FIXME: merge with GL_LoadTexture
 ================
 */
-int GL_LoadTexture32 (char *identifier, int width, int height, byte *data, int mode)
+int GL_LoadTexture32 (const char *identifier, int width, int height, byte *data, int mode)
 {
 	int			i;
 	unsigned	crc = 0;
@@ -671,7 +673,7 @@ setuptexture:
 }
 
 // filename is without extension
-byte *GL_LoadImagePixels (char *filename, int *width, int *height)
+byte *GL_LoadImagePixels (const char *filename, int *width, int *height)
 {
 	char	extname[MAX_QPATH], *c;
 	byte *data;
@@ -698,7 +700,7 @@ byte *GL_LoadImagePixels (char *filename, int *width, int *height)
 	return data;
 }
 
-int GL_LoadTextureImage (char *filename, char *identifier, int matchwidth, int matchheight, int mode)
+int GL_LoadTextureImage (const char *filename, const char *identifier, int matchwidth, int matchheight, int mode)
 {
 	int texnum;
 	byte *data;

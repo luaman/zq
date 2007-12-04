@@ -184,7 +184,7 @@ extern int	fofs_buttonX[8-3];
 #define EdictFieldFloat(ed, fieldoffset) ((eval_t *)((byte *)&(ed)->v + (fieldoffset)))->_float
 
 
-void PR_RunError (char *error, ...);
+void PR_RunError (const char *error, ...);
 
 void ED_PrintEdicts_f (void);
 void ED_PrintNum (int ent);
@@ -195,11 +195,11 @@ void ED_PrintNum (int ent);
 #define MAX_PRSTR 1024		// max static strings
 #define MAX_DYN_PRSTR 1024	// max dynamic strings
 
-extern char *pr_strtbl[MAX_PRSTR + MAX_DYN_PRSTR];
+extern const char *pr_strtbl[MAX_PRSTR + MAX_DYN_PRSTR];
 extern int num_prstr;
 
-char *PR_GetString(int num);
-int PR_SetString(char *s);
+const char *PR_GetString(int num);
+int PR_SetString(const char *s);
 void PR_InitStrings (void);
 void PR_FreeStrings (void);
 

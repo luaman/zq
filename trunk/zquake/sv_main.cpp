@@ -838,7 +838,7 @@ connectionless packets.
 void SV_ConnectionlessPacket (void)
 {
 	char	*s;
-	char	*c;
+	const char	*c;
 
 	MSG_BeginReading ();
 	MSG_ReadLong ();		// skip the -1 marker
@@ -974,7 +974,7 @@ cvar_t	filterban = {"filterban", "1"};
 StringToFilter
 =================
 */
-qbool StringToFilter (char *s, ipfilter_t *f)
+qbool StringToFilter (const char *s, ipfilter_t *f)
 {
 	char	num[128];
 	int		i, j;
@@ -1376,9 +1376,9 @@ void SV_CheckVars (void)
 		Cvar_Set (&sv_spectatorPassword, spw);
 		
 		v = 0;
-		if (pw && pw[0] && strcmp(pw, "none"))
+		if (pw[0] && strcmp(pw, "none"))
 			v |= 1;
-		if (spw && spw[0] && strcmp(spw, "none"))
+		if (spw[0] && strcmp(spw, "none"))
 			v |= 2;
 		
 		Com_DPrintf ("Updated needpass.\n");

@@ -62,7 +62,7 @@ extern char _temp_modulename[MAX_OSPATH];
 #define QLIB_ERROR_MODULE_MISSING_PROC		-2
 
 typedef struct qlib_dllfunction_s {
-	char *name;
+	const char *name;
 	void **function;
 } qlib_dllfunction_t;
 
@@ -79,6 +79,6 @@ void QLib_Shutdown(void);
 void QLib_RegisterModule(qlib_id_t module, qlib_shutdown_fn shutdown);
 qbool QLib_isModuleLoaded (qlib_id_t module);
 qbool QLib_ProcessProcdef(QLIB_HANDLETYPE_T handle, qlib_dllfunction_t *procdefs, int size);
-void QLib_MissingModuleError(int, char *libname, char *cmdline, char *features);
+void QLib_MissingModuleError(int, const char *libname, const char *cmdline, const char *features);
 
 #endif

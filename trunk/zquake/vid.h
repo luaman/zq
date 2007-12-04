@@ -81,7 +81,7 @@ void VID_HandlePause (qbool pause);
 EXTERNC void VID_LockBuffer (void);
 EXTERNC void VID_UnlockBuffer (void);
 
-void VID_SetCaption (char *text);
+void VID_SetCaption (const char *text);
 
 void VID_SetDeviceGammaRamp (unsigned short *ramps);
 extern qbool vid_hwgamma_enabled;

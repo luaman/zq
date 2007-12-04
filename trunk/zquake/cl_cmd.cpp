@@ -55,10 +55,12 @@ void Cmd_ForwardToServer (void)
 	}
 
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+
 	// lowercase command
-	for (s=Cmd_Argv(0) ; *s ; s++)
+	for (s=strdup(Cmd_Argv(0)) ; *s ; s++)
 		*s = (char)tolower(*s);
-	SZ_Print (&cls.netchan.message, Cmd_Argv(0));
+
+	SZ_Print (&cls.netchan.message, s);
 	if (Cmd_Argc() > 1)
 	{
 		SZ_Print (&cls.netchan.message, " ");
@@ -133,7 +135,8 @@ Handles both say and say_team
 void CL_Say (qbool team)
 {
 	extern cvar_t cl_fakename;
-	char	text[1024], sendtext[1024], *s;
+	char	text[1024], sendtext[1024];
+	const char *s;
 
 	if (Cmd_Argc() < 2) {
 		if (team)
@@ -213,7 +216,8 @@ void CL_Packet_f (void)
 {
 	char	send[2048];
 	int		i, l;
-	char	*in, *out;
+	const char	*in;
+	char	*out;
 	netadr_t	adr;
 
 	if (Cmd_Argc() != 3)
@@ -573,7 +577,7 @@ void CL_FullInfo_f (void)
 	char	key[512];
 	char	value[512];
 	char	*o;
-	char	*s;
+	const char	*s;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -709,7 +713,7 @@ void CL_Serverinfo_f (void)
 
 //============================================================================
 
-void CL_WriteConfig (char *name)
+void CL_WriteConfig (const char *name)
 {
 	FILE	*f;
 
@@ -1089,7 +1093,7 @@ void V_cshift_f (void)
 extern void CL_Skins_f (void);
 
 typedef struct {
-	char	*name;
+	const char	*name;
 	void	(*func) (void);
 } svcmd_t;
 
@@ -1124,7 +1128,7 @@ Called by Cmd_ExecuteString if cbuf_current==&cbuf_svc
 qbool CL_CheckServerCommand ()
 {
 	svcmd_t	*cmd;
-	char	*s;
+	const char	*s;
 
 	s = Cmd_Argv (0);
 	for (cmd=svcmds ; cmd->name ; cmd++)

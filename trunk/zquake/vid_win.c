@@ -158,7 +158,7 @@ qbool msg_suppress_1 = 0;	// suppresses resolution and cache size console output
 VID_SetCaption
 ================
 */
-void VID_SetCaption (char *text)
+void VID_SetCaption (const char *text)
 {
 	if (vid_initialized)
 		SetWindowText (mainwindow, text);

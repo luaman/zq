@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "common.h"
 
 typedef struct {
-	char *mapname;
+	const char *mapname;
 	int original;
 	int gpl;
 } csentry_t;
