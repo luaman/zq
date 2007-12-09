@@ -313,8 +313,8 @@ void R_DrawAliasModel (entity_t *ent)
 		VectorClear (shadelight_v);
 		full_light = true;
 	}
-	else if ((r_fullbrightModels.value || (r_fullbrightSkins.value &&
-	(clmodel->modhint == MOD_PLAYER || ent->renderfx & RF_PLAYERMODEL)))
+	else if (((r_fullbrightModels.value && clmodel->modhint != MOD_EYES)
+	|| (r_fullbrightSkins.value && (clmodel->modhint == MOD_PLAYER || ent->renderfx & RF_PLAYERMODEL)))
 	&& r_refdef2.allow_fbskins) {
 		ambientlight = shadelight = 128;
 		VectorSet (ambientlight_v, 128, 128, 128);
