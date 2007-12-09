@@ -81,7 +81,7 @@ cvar_t	r_fullbrightModels = {"r_fullbrightModels", "0", CVAR_ARCHIVE};
 cvar_t	r_fastsky = {"r_fastsky", "0", CVAR_ARCHIVE};
 cvar_t	r_skycolor = {"r_skycolor", "4", CVAR_ARCHIVE};
 cvar_t	r_fastturb = {"r_fastturb", "0", CVAR_ARCHIVE};
-cvar_t	r_farclip = {"r_farclip", "4096"};
+cvar_t	r_farclip = {"r_farclip", "8192"};
 
 cvar_t	gl_subdivide_size = {"gl_subdivide_size", "64", CVAR_ARCHIVE};
 cvar_t	gl_clear = {"gl_clear","0"};
