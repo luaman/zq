@@ -574,7 +574,7 @@ void R_SetupFrame (void)
 	{
 		// look up a bit
 		VectorCopy (r_origin, testorigin);
-		testorigin[2] += 10;
+		testorigin[2] += 9;
 		leaf = Mod_PointInLeaf (testorigin, r_worldmodel);
 		if (leaf->contents == CONTENTS_EMPTY)
 			r_viewleaf2 = leaf;
@@ -583,7 +583,7 @@ void R_SetupFrame (void)
 	{
 		// look down a bit
 		VectorCopy (r_origin, testorigin);
-		testorigin[2] -= 10;
+		testorigin[2] -= 9;
 		leaf = Mod_PointInLeaf (testorigin, r_worldmodel);
 		if (leaf->contents <= CONTENTS_WATER &&	leaf->contents >= CONTENTS_LAVA)
 			r_viewleaf2 = leaf;
