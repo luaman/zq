@@ -423,6 +423,12 @@ static void CLNQ_ParseServerData (void)
 //
 	cl.clipmodels[1] = CM_LoadMap (cl.model_name[1], true, NULL, &cl.map_checksum2);
 
+	// Build the physent list (NQ only needs the world)
+	cl.pmove.physents[0].model = cl.clipmodels[1];
+	VectorClear (cl.pmove.physents[0].origin);
+	cl.pmove.physents[0].info = 0;
+	cl.pmove.numphysent = 1;
+
 	COM_StripExtension (COM_SkipPath(cl.model_name[1].c_str()), mapname);
 	cs2 = Com_TranslateMapChecksum (mapname, cl.map_checksum2);
 	gpl_map = (cl.map_checksum2 != cs2);
@@ -1052,7 +1058,7 @@ void CLNQ_InitLerp (void)
 	}
 }
 
-extern char *svc_strings[];
+extern const char *svc_strings[];
 extern int num_svc_strings;
 
 #define SHOWNET(x) {if(cl_shownet.value==2)Com_Printf ("%3i:%s\n", msg_readcount-1, x);}
