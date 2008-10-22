@@ -293,6 +293,7 @@ void SV_SpawnServer (const char *mapname, qbool devmap)
 	}
 
 	sv.time = 1.0;
+	sv.mstime = 1000;
 	
 	sv.mapname = mapname;
 	Cvar_ForceSet (&host_mapname, mapname);
