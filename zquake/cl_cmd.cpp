@@ -46,8 +46,6 @@ so when they are typed in at the console, they will need to be forwarded.
 */
 void Cmd_ForwardToServer (void)
 {
-	char	*s;
-
 	if (cls.state == ca_disconnected)
 	{
 		Com_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
@@ -57,10 +55,11 @@ void Cmd_ForwardToServer (void)
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 
 	// lowercase command
-	for (s=strdup(Cmd_Argv(0)) ; *s ; s++)
-		*s = (char)tolower(*s);
+	string s = Cmd_Argv(0);
+	for (int i = 0; i < s.length(); i++)
+		s[i] = (char)tolower(s[i]);
 
-	SZ_Print (&cls.netchan.message, s);
+	SZ_Print (&cls.netchan.message, s.c_str());
 	if (Cmd_Argc() > 1)
 	{
 		SZ_Print (&cls.netchan.message, " ");
