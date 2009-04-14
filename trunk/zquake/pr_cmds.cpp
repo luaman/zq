@@ -887,8 +887,9 @@ static void PF_cvar (void)
 		return;
 	}
 
-	if (pr_nqprogs && !strcmp(str, "timelimit") && !pr_globals[35] /* deathmatch */) {
-		// stupid NQ bug: timelimit is checked in single player/coop
+	if (pr_nqprogs && !pr_globals[35]/* deathmatch */
+	&& (!strcmp(str, "timelimit") || !strcmp(str, "samelevel"))) {
+		// workaround for NQ progs bug: timelimit and samelevel are checked in SP/coop
 		G_FLOAT(OFS_RETURN) = 0.0;
 		return;
 	}
