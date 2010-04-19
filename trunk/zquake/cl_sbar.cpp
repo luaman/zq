@@ -448,6 +448,7 @@ typedef struct {
 	int frags;
 	int players;
 	int plow, phigh, ptotal;
+	void clear() { team = ""; frags = players = plow = phigh = ptotal = 0; }
 } team_t;
 team_t teams[MAX_CLIENTS];
 int teamsort[MAX_CLIENTS];
@@ -498,9 +499,10 @@ static void Sbar_SortTeams (void)
 		return;
 
 // sort the teams
-	memset(teams, 0, sizeof(teams));
-	for (i = 0; i < MAX_CLIENTS; i++)
+	for (i = 0; i < MAX_CLIENTS; i++) {
+		teams[i].clear();
 		teams[i].plow = 999;
+	}
 
 	for (i = 0; i < MAX_CLIENTS; i++) {
 		s = &cl.players[i];
