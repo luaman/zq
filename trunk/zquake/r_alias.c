@@ -118,15 +118,22 @@ qbool R_AliasCheckBBox (entity_t *ent) {
 	qbool zclipped, zfullyclipped;
 	unsigned anyclip, allclip;
 	trivertx_t *mins, *maxs, *oldmins, *oldmaxs;
+	int frame, oldframe;
 
 	ent->trivial_accept = 0;
 
 	// expand, rotate, and translate points into worldspace
 	R_AliasSetUpTransform (0);
 
+	frame = ent->frame;
+	if ((unsigned int)frame >= pmdl->numframes)
+	{
+		Com_DPrintf ("R_AliasSetupFrame: no such frame %d\n", frame);
+		frame = 0;
+	}
 	// construct the base bounding box for this frame
 	if (r_framelerp == 1) {
-		R_AliasCheckBBoxFrame (ent->frame, &mins, &maxs);
+		R_AliasCheckBBoxFrame (frame, &mins, &maxs);
 
 		// x worldspace coordinates
 		basepts[0][0] = basepts[1][0] = basepts[2][0] = basepts[3][0] = (float) mins->v[0];
@@ -138,8 +145,14 @@ qbool R_AliasCheckBBox (entity_t *ent) {
 		basepts[0][2] = basepts[1][2] = basepts[4][2] = basepts[5][2] = (float) mins->v[2];
 		basepts[2][2] = basepts[3][2] = basepts[6][2] = basepts[7][2] = (float) maxs->v[2];
 	} else {
-		R_AliasCheckBBoxFrame (ent->oldframe, &oldmins, &oldmaxs);
-		R_AliasCheckBBoxFrame (ent->frame, &mins, &maxs);
+		oldframe = ent->oldframe;
+		if ((unsigned int)oldframe >= pmdl->numframes)
+		{
+			Com_DPrintf ("R_AliasSetupFrame: no such frame %d\n", oldframe);
+			oldframe = 0;
+		}
+		R_AliasCheckBBoxFrame (oldframe, &oldmins, &oldmaxs);
+		R_AliasCheckBBoxFrame (frame, &mins, &maxs);
 
 		// x worldspace coordinates
 		basepts[0][0] = basepts[1][0] = basepts[2][0] = basepts[3][0] =	(float) min(mins->v[0], oldmins->v[0]);
@@ -757,13 +770,13 @@ static void R_AliasSetupFrame (void)
 	int				frame, oldframe;
 
 	frame = currententity->frame;
-	if ((frame >= pmdl->numframes) || (frame < 0))
+	if ((unsigned int)frame >= pmdl->numframes)
 	{
 		Com_DPrintf ("R_AliasSetupFrame: no such frame %d\n", frame);
 		frame = 0;
 	}
 	oldframe = currententity->oldframe;
-	if ((oldframe >= pmdl->numframes) || (oldframe < 0))
+	if ((unsigned int)oldframe >= pmdl->numframes)
 	{
 		Com_DPrintf ("R_AliasSetupFrame: no such frame %d\n", oldframe);
 		oldframe = 0;
