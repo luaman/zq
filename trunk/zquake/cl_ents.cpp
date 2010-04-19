@@ -853,8 +853,11 @@ static void CL_LinkNails (void)
 
 #ifdef MVDPLAY
 	if (cl.num_snapshots > 1) {
-		assert (cl.snapshots[0].servertime > cl.snapshots[1].servertime);
-		f = (cls.demotime - cl.snapshots[1].servertime) / (cl.snapshots[0].servertime - cl.snapshots[1].servertime);
+		//assert (cl.snapshots[0].servertime > cl.snapshots[1].servertime);
+		if (!(cl.snapshots[0].servertime > cl.snapshots[1].servertime))
+			f = 1;
+		else
+			f = (cls.demotime - cl.snapshots[1].servertime) / (cl.snapshots[0].servertime - cl.snapshots[1].servertime);
 		f = bound (0, f, 1);
 	}
 #endif
