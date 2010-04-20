@@ -210,7 +210,7 @@ int			 main (int argc, char **argv)
 	Sys_SetFPCW();
 #endif
 
-	Host_Init (argc, argv, 16*1024*1024);
+	Host_Init (argc, argv, 32*1024*1024);
 
 	oldtime = Sys_DoubleTime ();
 	while (1)
