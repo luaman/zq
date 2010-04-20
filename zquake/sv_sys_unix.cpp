@@ -215,7 +215,7 @@ int			 main (int argc, char *argv[])
 	allow_unaligned_data_access();
 #endif
 
-	Host_Init (argc, argv, 16*1024*1024);
+	Host_Init (argc, argv, 32*1024*1024);
 
 	//
 	// main loop
