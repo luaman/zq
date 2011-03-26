@@ -83,7 +83,7 @@ ifeq ($(OS),darwin)
 	LDFLAGS				+=-framework "CoreAudio" -framework OpenGL
 endif
 ifeq ($(OS),linux)
-	LDFLAGS				+=-lm -lGL -lXxf86vm -lXxf86dga -lprofiler
+	LDFLAGS				+=-lm -lGL -lXxf86vm -lXxf86dga
 					# -L/usr/X11R6/lib -lX11 -lXext
 endif
 
