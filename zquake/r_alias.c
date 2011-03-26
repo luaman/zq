@@ -697,7 +697,7 @@ void R_AliasSetupLighting (void)
 	}
 
 	if (((r_fullbrightModels.value && currententity->model->modhint != MOD_EYES)
-	|| r_fullbrightSkins.value && (currententity->model->modhint == MOD_PLAYER || currententity->renderfx & RF_PLAYERMODEL))
+	|| (r_fullbrightSkins.value && (currententity->model->modhint == MOD_PLAYER || currententity->renderfx & RF_PLAYERMODEL)))
 	&& r_refdef2.allow_fbskins) {
 			r_ambientlight = max (r_ambientlight, 100);
 			r_shadelight = max (r_shadelight, 100);
