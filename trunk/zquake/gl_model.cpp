@@ -867,21 +867,16 @@ void Mod_LoadLighting (lump_t *l)
 	}
 
 	// a valid .lit was successfully loaded
-	// clamp brightness to original level. also helps broken lits (e1m1.lit)
-	// where brighness is abnormally low in some places
+	// clamp brightness to avoid color wash-out
 	in = mod_base + l->fileofs;
 	out = loadmodel->lightdata = data + 8;
 	for (i = l->filelen; i; i--) {
-		byte b = max(out[0], max(out[1], out[2]));
-		if (!b) {
-			out[0] = *in;
-			out[1] = *in;
-			out[2] = *in;
-		} else {
-			float scale = ((int)*in << 16) / b;
-			out[0] = (int)(out[0] * scale) >> 16;
-			out[1] = (int)(out[1] * scale) >> 16;
-			out[2] = (int)(out[2] * scale) >> 16;
+		int threshold = (lightmode == 1 ? 255 : lightmode == 2 ? 170 : 128);
+		int m = max(out[0], max(out[1], out[2]));
+		if (m > threshold) {
+			out[0] = out[0] * threshold / m;
+			out[1] = out[1] * threshold / m;
+			out[2] = out[2] * threshold / m;
 		}
 		out += 3;
 		in++;
