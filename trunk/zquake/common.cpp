@@ -924,7 +924,7 @@ void FS_AddGameDirectory (const char *dir)
 	char			pakfile[MAX_OSPATH];
 	char			*p;
 
-	if ((p = strrchr(dir, '/')) != NULL)
+	if ((p = strrchr((char *)dir, '/')) != NULL)
 		strcpy(com_gamedirfile, ++p);
 	else
 		strcpy(com_gamedirfile, p);
