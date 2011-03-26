@@ -537,8 +537,8 @@ void CL_LinkPacketEntities (void)
 			// spawn light flashes, even ones coming from invisible objects
 			if (state->effects & (EF_BLUE | EF_GREEN | EF_RED))
 			{
-				int type = ((state->effects & EF_BLUE) ? 1 : 0) | ((state->effects & EF_GREEN) ? 2 : 0)
-					| ((state->effects & EF_RED) ? 4 : 0) - 1 + lt_blue;
+				int type = (((state->effects & EF_BLUE) ? 1 : 0) | ((state->effects & EF_GREEN) ? 2 : 0)
+					| ((state->effects & EF_RED) ? 4 : 0)) - 1 + lt_blue;
 				V_AddDlight (state->number, cur_origin, 200 + flicker, 0, (dlighttype_t)type);
 			} else if (state->effects & EF_BRIGHTLIGHT) {
 				vec3_t	tmp;
